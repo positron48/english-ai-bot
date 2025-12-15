@@ -10,7 +10,7 @@ APP_DIR="${PWD}"  # Use current directory
 
 # Load SERVICE_NAME from .env file
 if [ -f "$APP_DIR/.env" ]; then
-    export $(grep -v '^#' "$APP_DIR/.env" | xargs)
+    SERVICE_NAME=$(grep '^SERVICE_NAME=' "$APP_DIR/.env" | cut -d'=' -f2)
 fi
 SERVICE_NAME="${SERVICE_NAME:-ai-bot}"
 

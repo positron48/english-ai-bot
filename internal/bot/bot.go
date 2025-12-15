@@ -7,11 +7,15 @@ import (
 	"net/url"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"strings"
 	"syscall"
 
 	"tgbot-skeleton/internal/ai"
 	"tgbot-skeleton/internal/config"
+	"tgbot-skeleton/internal/database"
+	"tgbot-skeleton/internal/repository"
+	"tgbot-skeleton/internal/service"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"go.uber.org/zap"
@@ -23,6 +27,7 @@ type Bot struct {
 	config  *config.Config
 	logger  *zap.Logger
 	handler *Handler
+	db      *database.DB
 }
 
 // New creates a new bot instance
@@ -45,6 +50,20 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 
 	log.Info("authorized on account", zap.String("username", bot.Self.UserName))
 
+	// Initialize database
+	dbPath := cfg.Database.Path
+	// Ensure directory exists
+	if dir := filepath.Dir(dbPath); dir != "." && dir != "" {
+		if err := os.MkdirAll(dir, 0755); err != nil {
+			return nil, fmt.Errorf("failed to create database directory: %w", err)
+		}
+	}
+
+	db, err := database.New(dbPath, log)
+	if err != nil {
+		return nil, fmt.Errorf("failed to initialize database: %w", err)
+	}
+
 	// Create AI service
 	aiService := ai.NewService(
 		cfg.AI.URL,
@@ -54,14 +73,21 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 		log,
 	)
 
+	// Create repository
+	wordRepo := repository.NewWordRepository(db.GetConnection(), log)
+
+	// Create word service
+	wordService := service.NewWordService(wordRepo, aiService, log)
+
 	// Create handler
-	handler := NewHandler(bot, log, aiService, cfg)
+	handler := NewHandler(bot, log, aiService, wordService, cfg)
 
 	return &Bot{
 		api:     bot,
 		config:  cfg,
 		logger:  log,
 		handler: handler,
+		db:      db,
 	}, nil
 }
 
@@ -141,6 +167,13 @@ func (b *Bot) startWebhook(ctx context.Context) error {
 		b.logger.Info("webhook deleted successfully")
 	}
 
+	// Close database connection
+	if b.db != nil {
+		if err := b.db.Close(); err != nil {
+			b.logger.Warn("failed to close database", zap.Error(err))
+		}
+	}
+
 	b.logger.Info("shutting down")
 	return nil
 }
@@ -169,6 +202,12 @@ func (b *Bot) startLongPolling(ctx context.Context) error {
 		select {
 		case <-ctx.Done():
 			b.logger.Info("shutting down")
+			// Close database connection
+			if b.db != nil {
+				if err := b.db.Close(); err != nil {
+					b.logger.Warn("failed to close database", zap.Error(err))
+				}
+			}
 			return nil
 		case update := <-updates:
 			b.handler.HandleUpdate(ctx, update)

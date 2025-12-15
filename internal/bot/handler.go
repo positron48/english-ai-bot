@@ -5,6 +5,7 @@ import (
 
 	"tgbot-skeleton/internal/ai"
 	"tgbot-skeleton/internal/config"
+	"tgbot-skeleton/internal/service"
 	"tgbot-skeleton/internal/utils"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -13,19 +14,21 @@ import (
 
 // Handler handles Telegram updates
 type Handler struct {
-	bot       *tgbotapi.BotAPI
-	logger    *zap.Logger
-	aiService *ai.Service
-	config    *config.Config
+	bot         *tgbotapi.BotAPI
+	logger      *zap.Logger
+	aiService   *ai.Service
+	wordService *service.WordService
+	config      *config.Config
 }
 
 // NewHandler creates a new handler
-func NewHandler(bot *tgbotapi.BotAPI, logger *zap.Logger, aiService *ai.Service, config *config.Config) *Handler {
+func NewHandler(bot *tgbotapi.BotAPI, logger *zap.Logger, aiService *ai.Service, wordService *service.WordService, config *config.Config) *Handler {
 	return &Handler{
-		bot:       bot,
-		logger:    logger,
-		aiService: aiService,
-		config:    config,
+		bot:         bot,
+		logger:      logger,
+		aiService:   aiService,
+		wordService: wordService,
+		config:      config,
 	}
 }
 
@@ -72,6 +75,7 @@ func (h *Handler) handleCommand(ctx context.Context, message *tgbotapi.Message) 
 // handleMessage handles regular text messages
 func (h *Handler) handleMessage(ctx context.Context, message *tgbotapi.Message) {
 	chatID := message.Chat.ID
+	userID := message.From.ID
 	text := message.Text
 
 	if text == "" {
@@ -81,21 +85,34 @@ func (h *Handler) handleMessage(ctx context.Context, message *tgbotapi.Message) 
 
 	h.logger.Info("processing user message",
 		zap.Int64("chat_id", chatID),
+		zap.Int64("user_id", userID),
 		zap.String("text", text),
 	)
 
 	// Send typing indicator
 	h.sendTyping(chatID)
 
-	// Get AI response
-	response, err := h.aiService.GenerateResponse(ctx, text)
+	var response string
+	var err error
+
+	// Check if it's a single word - use word service (DB + AI)
+	if h.wordService.IsSingleWord(text) {
+		h.logger.Debug("detected single word request",
+			zap.String("word", text),
+		)
+		response, err = h.wordService.GetWordDefinition(ctx, userID, text)
+	} else {
+		// Regular message - use AI service directly
+		response, err = h.aiService.GenerateResponse(ctx, text)
+	}
+
 	if err != nil {
-		h.logger.Error("failed to get AI response", zap.Error(err))
+		h.logger.Error("failed to get response", zap.Error(err))
 		h.sendMessage(chatID, h.config.Bot.ErrorMessage)
 		return
 	}
 
-	// Convert Markdown to Telegram format and send AI response
+	// Convert Markdown to Telegram format and send response
 	telegramResponse := utils.ConvertMarkdownToTelegram(response)
 	h.sendMessage(chatID, telegramResponse)
 }

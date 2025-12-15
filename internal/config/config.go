@@ -16,6 +16,7 @@ type Config struct {
 	Logging  LoggingConfig  `mapstructure:"logging"`
 	AI       AIConfig       `mapstructure:"ai"`
 	Bot      BotConfig      `mapstructure:"bot"`
+	Database DatabaseConfig `mapstructure:"database"`
 }
 
 // TelegramConfig holds Telegram bot configuration
@@ -58,6 +59,11 @@ type BotConfig struct {
 	EmptyMessage          string `mapstructure:"empty_message"`
 }
 
+// DatabaseConfig holds database configuration
+type DatabaseConfig struct {
+	Path string `mapstructure:"path"`
+}
+
 // Load loads configuration from environment variables and config file
 func Load() (*Config, error) {
 	// Load .env file if it exists
@@ -74,6 +80,7 @@ func Load() (*Config, error) {
 	viper.SetDefault("server.address", ":8080")
 	viper.SetDefault("logging.level", "info")
 	viper.SetDefault("ai.model", "gpt-3.5-turbo")
+	viper.SetDefault("database.path", "./data/words.db")
 
 	// Bot message defaults
 	viper.SetDefault("bot.start_message", "🤖 Hello! I'm a universal AI assistant.\n\n💡 Just send me a message and I'll help you with any questions!\n\nUse /help for additional information.")
@@ -107,6 +114,7 @@ func Load() (*Config, error) {
 	_ = viper.BindEnv("bot.unknown_command_message", "BOT_UNKNOWN_COMMAND_MESSAGE")
 	_ = viper.BindEnv("bot.error_message", "BOT_ERROR_MESSAGE")
 	_ = viper.BindEnv("bot.empty_message", "BOT_EMPTY_MESSAGE")
+	_ = viper.BindEnv("database.path", "DATABASE_PATH")
 
 	// Set config file
 	viper.SetConfigName("config")

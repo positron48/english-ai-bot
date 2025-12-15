@@ -16,13 +16,13 @@ RUN go mod download
 # Copy source code
 COPY . .
 
-# Build the application
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main ./cmd/bot
+# Build the application (static binary, no CGO required)
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags '-extldflags "-static"' -o main ./cmd/bot
 
 # Final stage
 FROM alpine:latest
 
-# Install ca-certificates for HTTPS requests
+# Install ca-certificates for HTTPS requests (no SQLite needed - it's compiled in)
 RUN apk --no-cache add ca-certificates tzdata
 
 # Create non-root user
@@ -31,6 +31,9 @@ RUN addgroup -g 1001 -S appgroup && \
 
 # Set working directory
 WORKDIR /app
+
+# Create data directory for database
+RUN mkdir -p /app/data && chown -R appuser:appgroup /app/data
 
 # Copy binary from builder stage
 COPY --from=builder /app/main .

@@ -7,6 +7,9 @@ A simple AI-powered Telegram bot written in Go that integrates with OpenAI-compa
 - AI-powered responses using OpenAI-compatible APIs
 - Support for OpenRouter and other providers
 - **Automatic Markdown to Telegram formatting** - converts AI responses to proper Telegram format
+- **Vocabulary cards caching** - SQLite database for storing word definitions
+- **Request history tracking** - tracks which users requested which words and when
+- **Smart word detection** - automatically detects single-word queries and uses cached definitions when available
 - Long polling and webhook support
 - Structured logging with Zap
 - Configuration management with Viper
@@ -36,6 +39,7 @@ AI_URL=https://openrouter.ai/api/v1
 AI_API_KEY=your_openrouter_api_key
 AI_MODEL=qwen/qwen3-coder:free
 AI_PROMPT=You are a helpful AI assistant. Please respond to the user's message in a helpful and informative way.
+DATABASE_PATH=./data/words.db
 EOF
 ```
 
@@ -52,10 +56,12 @@ Your bot is now running and ready to respond to messages in Telegram.
 
 ## Requirements
 
-- Go 1.23+
+- Go 1.23+ (for building from source)
 - Docker and Docker Compose (optional)
 - Telegram Bot Token
 - AI Provider API Key (OpenRouter, OpenAI, etc.)
+
+> **Note:** The compiled binary is **fully static** and doesn't require SQLite or any other system dependencies. You can use the pre-built binary on any Linux system without installing additional packages.
 
 ## Installation and Setup
 
@@ -86,7 +92,10 @@ AI_PROMPT=You are a helpful AI assistant. Please respond to the user's message i
 TELEGRAM_DEBUG=false
 LOG_LEVEL=info
 SERVER_ADDRESS=:8080
+DATABASE_PATH=./data/words.db
 ```
+
+> **Note:** The database file and directory will be created automatically on first run if they don't exist.
 
 ### 3. Running
 
@@ -120,12 +129,33 @@ make docker-stop
 
 ## How it Works
 
-1. User sends any text message to the bot
+### Regular Messages
+1. User sends a text message to the bot
 2. Bot sends a typing indicator
 3. Bot forwards the message to the AI provider with the configured system prompt
 4. AI provider processes the request and returns a response
 5. Bot converts Markdown formatting to Telegram format
 6. Bot sends the formatted AI response back to the user
+
+### Single Word Queries (Vocabulary Cards)
+When a user sends a single word, the bot uses intelligent caching:
+
+1. **Word Detection** - Bot detects if the message is a single word (after trimming punctuation)
+2. **Database Lookup** - Bot checks SQLite database for cached definition
+3. **Cache Hit** - If found:
+   - Returns cached definition immediately (faster response)
+   - Records the request in history (user_id, word, timestamp)
+4. **Cache Miss** - If not found:
+   - Requests definition from AI provider
+   - Saves the definition to database for future use
+   - Records the request in history
+   - Returns the definition to user
+
+This approach:
+- ✅ Reduces API calls and costs
+- ✅ Provides faster responses for previously requested words
+- ✅ Maintains a searchable vocabulary database
+- ✅ Tracks user activity and popular words
 
 ## Supported AI Providers
 
@@ -157,6 +187,7 @@ The bot supports the following commands:
 | `AI_MODEL` | AI model to use | `gpt-3.5-turbo` |
 | `AI_PROMPT` | System prompt for AI | **Required** (or use `AI_PROMPT_FILE`) |
 | `AI_PROMPT_FILE` | Path to file containing system prompt | Alternative to `AI_PROMPT` |
+| `DATABASE_PATH` | Path to SQLite database file | `./data/words.db` |
 | `TELEGRAM_DEBUG` | Debug mode | `false` |
 | `TELEGRAM_UPDATES_TIMEOUT` | Updates timeout | `30` |
 | `TELEGRAM_WEBHOOK_ENABLE` | Enable webhook | `false` |
@@ -313,12 +344,18 @@ english-bot/
 │   ├── ai/                  # AI service for provider integration
 │   ├── bot/                 # Bot logic and handlers
 │   ├── config/              # Configuration management
+│   ├── database/            # Database initialization and migrations
 │   ├── logger/              # Logging configuration
+│   ├── models/              # Data models (word cards, history)
+│   ├── repository/          # Database repositories
+│   ├── service/             # Business logic services
 │   └── utils/               # Utility functions (Markdown conversion)
 ├── prompts/                 # AI prompt files
 │   ├── simple-assistant.txt
 │   ├── customer-support.txt
 │   └── english-teacher.txt
+├── data/                    # Database files (created automatically)
+│   └── words.db            # SQLite database
 ├── .github/workflows/       # GitHub Actions
 ├── Dockerfile               # Docker image
 ├── docker-compose.yml       # Docker Compose
@@ -365,13 +402,17 @@ docker build -t ai-telegram-bot .
 docker run -d \
   --name ai-telegram-bot \
   -p 8080:8080 \
+  -v $(pwd)/data:/app/data \
   -e TELEGRAM_TOKEN=your_token_here \
   -e AI_URL=https://openrouter.ai/api/v1 \
   -e AI_API_KEY=your_api_key \
   -e AI_MODEL=gpt-3.5-turbo \
   -e AI_PROMPT="You are a helpful assistant" \
+  -e DATABASE_PATH=/app/data/words.db \
   ai-telegram-bot
 ```
+
+> **Note:** The `-v $(pwd)/data:/app/data` volume mount persists the database between container restarts.
 
 ### Docker Compose
 
@@ -391,6 +432,59 @@ docker-compose down
 When running, the bot exposes the following HTTP endpoints:
 
 - `GET /health` - Health check endpoint
+
+## Database
+
+The bot uses SQLite to store vocabulary cards and request history. The database is automatically created on first run.
+
+### Database Schema
+
+**word_cards** - Stores vocabulary card definitions:
+- `id` - Primary key
+- `word` - Word (normalized, unique)
+- `definition` - AI-generated definition
+- `created_at` - Creation timestamp
+- `updated_at` - Last update timestamp
+
+**word_request_history** - Tracks user requests:
+- `id` - Primary key
+- `user_id` - Telegram user ID
+- `word` - Requested word
+- `requested_at` - Request timestamp
+
+### Database Location
+
+By default, the database is stored at `./data/words.db`. You can change this with the `DATABASE_PATH` environment variable.
+
+### Backup
+
+To backup your database:
+```bash
+# Copy the database file
+cp ./data/words.db ./data/words.db.backup
+
+# Or use sqlite3 backup command
+sqlite3 ./data/words.db ".backup './data/words.db.backup'"
+```
+
+### Viewing Database
+
+You can inspect the database using SQLite CLI:
+```bash
+sqlite3 ./data/words.db
+
+# View all words
+SELECT * FROM word_cards;
+
+# View request history
+SELECT * FROM word_request_history ORDER BY requested_at DESC LIMIT 10;
+
+# Count words per user
+SELECT user_id, COUNT(*) as word_count 
+FROM word_request_history 
+GROUP BY user_id 
+ORDER BY word_count DESC;
+```
 
 ## Development
 
