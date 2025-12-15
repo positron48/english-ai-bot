@@ -8,7 +8,7 @@ on:
     branches: [ main, master ]
 
 env:
-  GO_VERSION: '1.23.1'
+  GO_VERSION: '1.24'
   APP_NAME: 'universal-ai-bot'
 
 jobs:
@@ -49,7 +49,7 @@ jobs:
         version: v1.61.0
         args: --timeout=3m
       env:
-        GOTOOLCHAIN: go1.23.1
+        GOTOOLCHAIN: auto
 
   release:
     name: Build and Release
