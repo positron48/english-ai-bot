@@ -1,35 +1,44 @@
 # Deployment Makefile for Universal AI Bot
-GITHUB_REPO ?= positron48/universal-ai-bot
+# This Makefile is a wrapper around scripts/deploy.sh
+# All deployment logic is in deploy.sh to avoid code duplication
+
+# Default values - can be overridden via .env or environment variables
+GITHUB_REPO ?= positron48/english-ai-bot
 APP_NAME ?= universal-ai-bot
 
-# Load SERVICE_NAME from .env file
+# Load variables from .env file
 ifneq (,$(wildcard .env))
     include .env
     export
 endif
 SERVICE_NAME ?= ai-bot
 
+.PHONY: deploy update status logs restart stop start help
+
 # Download and install binary
 deploy:
-	@echo "Deploying AI Bot..."
-	@mkdir -p bin
-	@VERSION=$$(curl -s "https://api.github.com/repos/$(GITHUB_REPO)/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/'); \
-	echo "Version: $$VERSION"; \
-	if systemctl --user is-active $(SERVICE_NAME) >/dev/null 2>&1; then \
-		echo "Stopping service..."; \
-		systemctl --user stop $(SERVICE_NAME); \
-	fi; \
-	curl -L -o "bin/$(SERVICE_NAME)" "https://github.com/$(GITHUB_REPO)/releases/download/$$VERSION/$(APP_NAME)-linux_amd64"; \
-	chmod +x "bin/$(SERVICE_NAME)"; \
-	if systemctl --user is-enabled $(SERVICE_NAME) >/dev/null 2>&1; then \
-		systemctl --user restart $(SERVICE_NAME); \
+	@if [ -f deploy.sh ]; then \
+		chmod +x deploy.sh; \
+		GITHUB_REPO=$(GITHUB_REPO) APP_NAME=$(APP_NAME) SERVICE_NAME=$(SERVICE_NAME) ./deploy.sh deploy; \
+	elif [ -f scripts/deploy.sh ]; then \
+		chmod +x scripts/deploy.sh; \
+		GITHUB_REPO=$(GITHUB_REPO) APP_NAME=$(APP_NAME) SERVICE_NAME=$(SERVICE_NAME) ./scripts/deploy.sh deploy; \
 	else \
-		echo "Service not configured. Run setup first."; \
+		echo "Error: deploy.sh not found. Run setup first."; \
 		exit 1; \
-	fi; \
-	echo "Done! Status: systemctl --user status $(SERVICE_NAME)"
+	fi
 
-update: deploy
+update:
+	@if [ -f deploy.sh ]; then \
+		chmod +x deploy.sh; \
+		GITHUB_REPO=$(GITHUB_REPO) APP_NAME=$(APP_NAME) SERVICE_NAME=$(SERVICE_NAME) ./deploy.sh update; \
+	elif [ -f scripts/deploy.sh ]; then \
+		chmod +x scripts/deploy.sh; \
+		GITHUB_REPO=$(GITHUB_REPO) APP_NAME=$(APP_NAME) SERVICE_NAME=$(SERVICE_NAME) ./scripts/deploy.sh update; \
+	else \
+		echo "Error: deploy.sh not found. Run setup first."; \
+		exit 1; \
+	fi
 
 status:
 	@systemctl --user status $(SERVICE_NAME)

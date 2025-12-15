@@ -43,6 +43,9 @@ Set the required variables:
 # Service Configuration
 SERVICE_NAME=ai-bot
 
+# GitHub Configuration (required for private repositories)
+GITHUB_TOKEN=your_github_personal_access_token_here
+
 # Telegram Bot Configuration
 TELEGRAM_TOKEN=your_bot_token_here
 AI_URL=https://openrouter.ai/api/v1
@@ -50,6 +53,8 @@ AI_API_KEY=your_openrouter_api_key
 AI_MODEL=qwen/qwen3-coder:free
 AI_PROMPT="You are a helpful AI assistant..."
 ```
+
+**Note:** If you're using a private repository, you must set `GITHUB_TOKEN` with a GitHub Personal Access Token that has `repo` scope.
 
 **Note:** You can customize the `SERVICE_NAME` to change the systemd service name. This is useful if you want to run multiple bot instances.
 

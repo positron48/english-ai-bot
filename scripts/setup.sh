@@ -41,8 +41,9 @@ curl -s "https://raw.githubusercontent.com/$GITHUB_REPO/master/Makefile.deploy" 
 echo "✅ Downloaded Makefile.deploy from GitHub"
 
 # Download deployment script
-curl -s "https://raw.githubusercontent.com/$GITHUB_REPO/master/scripts/deploy.sh" > "$APP_DIR/deploy.sh"
-chmod +x "$APP_DIR/deploy.sh"
+mkdir -p "$APP_DIR/scripts"
+curl -s "https://raw.githubusercontent.com/$GITHUB_REPO/master/scripts/deploy.sh" > "$APP_DIR/scripts/deploy.sh"
+chmod +x "$APP_DIR/scripts/deploy.sh"
 echo "✅ Downloaded deployment script"
 
 # Create user systemd service
