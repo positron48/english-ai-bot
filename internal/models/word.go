@@ -18,4 +18,3 @@ type WordRequestHistory struct {
 	Word        string
 	RequestedAt time.Time
 }
-

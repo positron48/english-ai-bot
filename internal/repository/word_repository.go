@@ -91,4 +91,3 @@ func (r *WordRepository) AddWordRequestHistory(userID int64, word string) error 
 
 	return nil
 }
-

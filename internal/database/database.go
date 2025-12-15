@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 
-	_ "modernc.org/sqlite"
 	"go.uber.org/zap"
+	_ "modernc.org/sqlite"
 )
 
 // DB wraps database connection
@@ -76,4 +76,3 @@ func (db *DB) migrate() error {
 	db.logger.Info("database migration completed successfully")
 	return nil
 }
-

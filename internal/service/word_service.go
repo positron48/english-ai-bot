@@ -95,4 +95,3 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 func (s *WordService) GetWordCard(word string) (*models.WordCard, error) {
 	return s.wordRepo.GetWordCard(word)
 }
-
