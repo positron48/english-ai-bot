@@ -116,6 +116,11 @@ func (s *TrainingService) generateQueue(userID int64, config SessionConfig) ([]*
 		return nil, fmt.Errorf("failed to get due cards: %w", err)
 	}
 
+	s.logger.Info("got due cards for user",
+		zap.Int64("user_id", userID),
+		zap.Int("due_count", len(dueCards)),
+	)
+
 	// Get new cards if we have space
 	remainingSlots := config.MaxCardsPerSession - len(dueCards)
 	var newCards []*models.UserCard
@@ -128,6 +133,10 @@ func (s *TrainingService) generateQueue(userID int64, config SessionConfig) ([]*
 		if err != nil {
 			return nil, fmt.Errorf("failed to get new cards: %w", err)
 		}
+		s.logger.Info("got new cards for user",
+			zap.Int64("user_id", userID),
+			zap.Int("new_count", len(newCards)),
+		)
 	}
 
 	// Combine cards

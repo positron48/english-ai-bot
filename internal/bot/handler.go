@@ -110,15 +110,21 @@ func (h *Handler) handleCommand(ctx context.Context, message *tgbotapi.Message) 
 
 // handleTrainCommand handles /train command
 func (h *Handler) handleTrainCommand(ctx context.Context, chatID, userID int64) {
-	// Ensure user exists
-	if _, err := h.userRepo.GetOrCreateUser(userID); err != nil {
+	// Ensure user exists and get internal user ID
+	user, err := h.userRepo.GetOrCreateUser(userID)
+	if err != nil {
 		h.logger.Error("failed to get/create user", zap.Error(err))
 		h.sendMessage(chatID, "Произошла ошибка. Попробуйте позже.")
 		return
 	}
 
-	// Start training
-	if err := h.trainingHandler.StartTraining(ctx, chatID, userID, models.SourceManual); err != nil {
+	h.logger.Info("starting training for user",
+		zap.Int64("telegram_id", userID),
+		zap.Int64("internal_user_id", user.ID),
+	)
+
+	// Start training with internal user ID
+	if err := h.trainingHandler.StartTraining(ctx, chatID, user.ID, models.SourceManual); err != nil {
 		h.logger.Error("failed to start training", zap.Error(err))
 		if strings.Contains(err.Error(), "no cards available") {
 			h.sendMessage(chatID, "У вас пока нет карточек для тренировки. Сначала запросите несколько слов!")
@@ -210,6 +216,11 @@ func (h *Handler) handleMessage(ctx context.Context, message *tgbotapi.Message) 
 		zap.Int64("user_id", userID),
 		zap.String("text", text),
 	)
+
+	// Ensure user exists in database (for training cards)
+	if _, userErr := h.userRepo.GetOrCreateUser(userID); userErr != nil {
+		h.logger.Error("failed to get/create user", zap.Error(userErr))
+	}
 
 	// Send typing indicator
 	h.sendTyping(chatID)

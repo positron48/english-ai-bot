@@ -211,7 +211,13 @@ func (w *TrainingWorker) processCard(ctx context.Context, wordCard *models.WordC
 		users = []*models.User{}
 	}
 
+	w.logger.Info("found users for word",
+		zap.String("word", wordCard.Word),
+		zap.Int("user_count", len(users)),
+	)
+
 	// Create user_cards for each user and training card
+	createdCount := 0
 	for _, user := range users {
 		for _, trainingCardID := range trainingCardIDs {
 			// Create ru_en card
@@ -227,6 +233,8 @@ func (w *TrainingWorker) processCard(ctx context.Context, wordCard *models.WordC
 					zap.Int64("user_id", user.ID),
 					zap.Error(err),
 				)
+			} else {
+				createdCount++
 			}
 
 			// Create en_ru card
@@ -242,6 +250,8 @@ func (w *TrainingWorker) processCard(ctx context.Context, wordCard *models.WordC
 					zap.Int64("user_id", user.ID),
 					zap.Error(err),
 				)
+			} else {
+				createdCount++
 			}
 		}
 	}
@@ -250,6 +260,7 @@ func (w *TrainingWorker) processCard(ctx context.Context, wordCard *models.WordC
 		zap.String("word", wordCard.Word),
 		zap.Int("training_cards", len(trainingCardIDs)),
 		zap.Int("users", len(users)),
+		zap.Int("user_cards_created", createdCount),
 	)
 
 	return nil

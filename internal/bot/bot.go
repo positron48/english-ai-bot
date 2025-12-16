@@ -49,7 +49,8 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 		return nil, fmt.Errorf("failed to initialize bot: %w", err)
 	}
 
-	bot.Debug = cfg.Telegram.Debug
+	// Disable debug mode to avoid verbose Telegram API logs
+	bot.Debug = false
 
 	log.Info("authorized on account", zap.String("username", bot.Self.UserName))
 
