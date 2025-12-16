@@ -15,14 +15,15 @@ import (
 
 // TrainingHandler handles training sessions
 type TrainingHandler struct {
-	bot              *tgbotapi.BotAPI
-	trainingService  *service.TrainingService
-	srsService       *service.SRSService
-	optionsService   *service.OptionsService
-	logger           *zap.Logger
-	sessions         map[int64]*SessionState
-	sessionsMutex    sync.RWMutex
-	optionsDelayMS   int
+	bot                   *tgbotapi.BotAPI
+	trainingService       *service.TrainingService
+	srsService            *service.SRSService
+	optionsService        *service.OptionsService
+	logger                *zap.Logger
+	sessions              map[int64]*SessionState
+	sessionsMutex          sync.RWMutex
+	optionsDelayMS         int
+	wrongAnswerDelaySeconds int
 }
 
 // SessionState holds the state of an active training session
@@ -45,15 +46,17 @@ func NewTrainingHandler(
 	optionsService *service.OptionsService,
 	logger *zap.Logger,
 	optionsDelayMS int,
+	wrongAnswerDelaySeconds int,
 ) *TrainingHandler {
 	return &TrainingHandler{
-		bot:             bot,
-		trainingService: trainingService,
-		srsService:      srsService,
-		optionsService:  optionsService,
-		logger:          logger,
-		sessions:        make(map[int64]*SessionState),
-		optionsDelayMS:  optionsDelayMS,
+		bot:                    bot,
+		trainingService:        trainingService,
+		srsService:             srsService,
+		optionsService:         optionsService,
+		logger:                 logger,
+		sessions:               make(map[int64]*SessionState),
+		optionsDelayMS:          optionsDelayMS,
+		wrongAnswerDelaySeconds: wrongAnswerDelaySeconds,
 	}
 }
 
@@ -293,8 +296,10 @@ func (h *TrainingHandler) HandleAnswer(chatID int64, optionIndex int) error {
 	state.CurrentIndex++
 	h.sessionsMutex.Unlock()
 
-	// Show next card after delay
-	time.Sleep(2 * time.Second)
+	// Show next card after delay (only for wrong answers)
+	if !isCorrect {
+		time.Sleep(time.Duration(h.wrongAnswerDelaySeconds) * time.Second)
+	}
 	return h.showCard(chatID)
 }
 

@@ -75,6 +75,7 @@ type TrainingConfig struct {
 	CircuitBreakerThreshold int    `mapstructure:"circuit_breaker_threshold"`
 	CircuitBreakerAutoReset int    `mapstructure:"circuit_breaker_auto_reset_hours"`
 	OptionsDelayMS          int    `mapstructure:"options_delay_ms"`
+	WrongAnswerDelaySeconds int    `mapstructure:"wrong_answer_delay_seconds"`
 }
 
 // AdminConfig holds admin configuration
@@ -108,6 +109,7 @@ func Load() (*Config, error) {
 	viper.SetDefault("training.circuit_breaker_threshold", 5)
 	viper.SetDefault("training.circuit_breaker_auto_reset_hours", 24)
 	viper.SetDefault("training.options_delay_ms", 5000)
+	viper.SetDefault("training.wrong_answer_delay_seconds", 5)
 	
 	// Admin defaults
 	viper.SetDefault("admin.telegram_id", 0)
@@ -152,6 +154,7 @@ func Load() (*Config, error) {
 	_ = viper.BindEnv("training.circuit_breaker_threshold", "CIRCUIT_BREAKER_THRESHOLD")
 	_ = viper.BindEnv("training.circuit_breaker_auto_reset_hours", "CIRCUIT_BREAKER_AUTO_RESET_HOURS")
 	_ = viper.BindEnv("training.options_delay_ms", "TRAINING_OPTIONS_DELAY_MS")
+	_ = viper.BindEnv("training.wrong_answer_delay_seconds", "TRAINING_WRONG_ANSWER_DELAY_SECONDS")
 	_ = viper.BindEnv("admin.telegram_id", "ADMIN_TELEGRAM_ID")
 
 	// Set config file
