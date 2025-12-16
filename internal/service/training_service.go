@@ -173,7 +173,12 @@ func (s *TrainingService) generateQueue(userID int64, config SessionConfig) ([]*
 		})
 	}
 
-	// Shuffle to avoid same word appearing twice in a row
+	// First, shuffle all cards randomly
+	rand.Shuffle(len(queue), func(i, j int) {
+		queue[i], queue[j] = queue[j], queue[i]
+	})
+
+	// Then apply algorithm to prevent same words appearing close together
 	queue = s.shufflePreventDuplicates(queue)
 
 	return queue, nil
@@ -209,37 +214,56 @@ func (s *TrainingService) shufflePreventDuplicates(queue []*models.UserCardWithT
 		return queue
 	}
 
-	// Group by word_card_id
+	// Group by word_card_id (same word, different senses/directions)
 	wordGroups := make(map[int64][]*models.UserCardWithTraining)
 	for _, card := range queue {
 		wordGroups[card.TrainingCard.WordCardID] = append(wordGroups[card.TrainingCard.WordCardID], card)
 	}
 
-	// If no duplicates, just shuffle randomly
+	// If no duplicates, already shuffled, return as is
 	if len(wordGroups) == len(queue) {
-		rand.Shuffle(len(queue), func(i, j int) {
-			queue[i], queue[j] = queue[j], queue[i]
-		})
 		return queue
 	}
 
-	// Build new queue spreading duplicates apart
+	// Build new queue spreading duplicates apart with larger minimum distance
 	result := make([]*models.UserCardWithTraining, 0, len(queue))
+	
+	// Calculate minimum distance based on queue size
+	// For larger queues, use larger distance to better spread words
+	minDistance := 5
+	if len(queue) < 10 {
+		minDistance = 3
+	} else if len(queue) < 20 {
+		minDistance = 4
+	}
+
+	// Shuffle groups to randomize which word we try first
+	groupKeys := make([]int64, 0, len(wordGroups))
+	for k := range wordGroups {
+		groupKeys = append(groupKeys, k)
+	}
+	rand.Shuffle(len(groupKeys), func(i, j int) {
+		groupKeys[i], groupKeys[j] = groupKeys[j], groupKeys[i]
+	})
 
 	for len(result) < len(queue) {
 		added := false
-		for wordCardID, cards := range wordGroups {
+		
+		// Try each word group in random order
+		for _, wordCardID := range groupKeys {
+			cards := wordGroups[wordCardID]
 			if len(cards) == 0 {
 				continue
 			}
 
-			// Check if we can add this word (not used in last 3 positions)
+			// Check if we can add this word (not used in last N positions)
 			canAdd := true
-			minDistance := 3
-			if len(result) < minDistance {
-				minDistance = len(result)
+			checkDistance := minDistance
+			if len(result) < checkDistance {
+				checkDistance = len(result)
 			}
-			for i := len(result) - minDistance; i < len(result); i++ {
+			
+			for i := len(result) - checkDistance; i < len(result); i++ {
 				if result[i].TrainingCard.WordCardID == wordCardID {
 					canAdd = false
 					break
@@ -247,6 +271,11 @@ func (s *TrainingService) shufflePreventDuplicates(queue []*models.UserCardWithT
 			}
 
 			if canAdd || len(result) == 0 {
+				// Shuffle cards within this word group to randomize which card we take
+				rand.Shuffle(len(cards), func(i, j int) {
+					cards[i], cards[j] = cards[j], cards[i]
+				})
+				
 				// Add first card from this group
 				result = append(result, cards[0])
 				wordGroups[wordCardID] = cards[1:]
@@ -254,10 +283,15 @@ func (s *TrainingService) shufflePreventDuplicates(queue []*models.UserCardWithT
 			}
 		}
 
-		// If we couldn't add any card, just add the next available
+		// If we couldn't add any card (all words are too recent), add the next available
+		// This should rarely happen with proper distance
 		if !added {
-			for wordCardID, cards := range wordGroups {
+			for _, wordCardID := range groupKeys {
+				cards := wordGroups[wordCardID]
 				if len(cards) > 0 {
+					rand.Shuffle(len(cards), func(i, j int) {
+						cards[i], cards[j] = cards[j], cards[i]
+					})
 					result = append(result, cards[0])
 					wordGroups[wordCardID] = cards[1:]
 					break
@@ -266,9 +300,9 @@ func (s *TrainingService) shufflePreventDuplicates(queue []*models.UserCardWithT
 		}
 
 		// Clean up empty groups
-		for wordCardID, cards := range wordGroups {
-			if len(cards) == 0 {
-				delete(wordGroups, wordCardID)
+		for i := len(groupKeys) - 1; i >= 0; i-- {
+			if len(wordGroups[groupKeys[i]]) == 0 {
+				groupKeys = append(groupKeys[:i], groupKeys[i+1:]...)
 			}
 		}
 	}
