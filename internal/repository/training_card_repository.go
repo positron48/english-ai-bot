@@ -187,3 +187,23 @@ func (r *TrainingCardRepository) DeleteTrainingCardsByWordEN(wordEN string) (int
 	return rowsAffected, nil
 }
 
+// DeleteAllTrainingCards deletes all training cards (cascades to user_cards and review_events)
+func (r *TrainingCardRepository) DeleteAllTrainingCards() (int64, error) {
+	query := `DELETE FROM training_cards`
+	result, err := r.db.Exec(query)
+	if err != nil {
+		return 0, fmt.Errorf("failed to delete all training cards: %w", err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return 0, fmt.Errorf("failed to get rows affected: %w", err)
+	}
+
+	r.logger.Info("deleted all training cards",
+		zap.Int64("rows_affected", rowsAffected),
+	)
+
+	return rowsAffected, nil
+}
+

@@ -108,6 +108,8 @@ func (h *Handler) handleCommand(ctx context.Context, message *tgbotapi.Message) 
 		h.handleResetCircuitCommand(chatID, userID)
 	case "delete_train":
 		h.handleDeleteTrainCommand(chatID, userID, message.CommandArguments())
+	case "delete_train_all":
+		h.handleDeleteTrainAllCommand(chatID, userID)
 	default:
 		h.sendMessage(chatID, h.config.Bot.UnknownCommandMessage)
 	}
@@ -203,6 +205,39 @@ func (h *Handler) handleDeleteTrainCommand(chatID, userID int64, wordEN string) 
 	)
 
 	h.sendMessage(chatID, fmt.Sprintf("✅ Удалено тренировочных карточек для слова `%s`: %d", wordEN, rowsAffected))
+}
+
+// handleDeleteTrainAllCommand handles /delete_train_all command (admin only)
+func (h *Handler) handleDeleteTrainAllCommand(chatID, userID int64) {
+	// Check if user is admin
+	if h.config.Admin.TelegramID == 0 || userID != h.config.Admin.TelegramID {
+		// Silently ignore for non-admins
+		return
+	}
+
+	h.logger.Warn("admin requested deletion of all training cards",
+		zap.Int64("admin_id", userID),
+	)
+
+	// Delete all training cards (cascades to user_cards and review_events)
+	rowsAffected, err := h.trainingCardRepo.DeleteAllTrainingCards()
+	if err != nil {
+		h.logger.Error("failed to delete all training cards",
+			zap.Error(err),
+		)
+		h.sendMessage(chatID, "❌ Ошибка при удалении всех тренировочных карточек")
+		return
+	}
+
+	h.logger.Info("deleted all training cards",
+		zap.Int64("rows_affected", rowsAffected),
+		zap.Int64("admin_id", userID),
+	)
+
+	h.sendMessage(chatID, fmt.Sprintf("✅ Удалено всех тренировочных карточек: %d\n\n"+
+		"Также автоматически удалены:\n"+
+		"• Все пользовательские карточки (user_cards)\n"+
+		"• Вся история ответов (review_events)", rowsAffected))
 }
 
 // handleCallbackQuery handles callback queries from inline keyboards
