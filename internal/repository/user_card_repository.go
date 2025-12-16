@@ -249,3 +249,27 @@ func (r *UserCardRepository) scanUserCards(rows *sql.Rows) ([]*models.UserCard, 
 	return cards, nil
 }
 
+// DeleteOrphanedUserCards deletes user_cards that reference non-existent training_cards
+func (r *UserCardRepository) DeleteOrphanedUserCards() (int64, error) {
+	query := `DELETE FROM user_cards 
+			  WHERE training_card_id NOT IN (SELECT id FROM training_cards)`
+	
+	result, err := r.db.Exec(query)
+	if err != nil {
+		return 0, fmt.Errorf("failed to delete orphaned user cards: %w", err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return 0, fmt.Errorf("failed to get rows affected: %w", err)
+	}
+
+	if rowsAffected > 0 {
+		r.logger.Info("deleted orphaned user cards",
+			zap.Int64("rows_affected", rowsAffected),
+		)
+	}
+
+	return rowsAffected, nil
+}
+

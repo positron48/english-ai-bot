@@ -26,6 +26,7 @@ type Handler struct {
 	trainingHandler    *TrainingHandler
 	userRepo           *repository.UserRepository
 	trainingCardRepo   *repository.TrainingCardRepository
+	userCardRepo       *repository.UserCardRepository
 	cbService          *service.CircuitBreakerService
 	config             *config.Config
 }
@@ -39,6 +40,7 @@ func NewHandler(
 	trainingHandler *TrainingHandler,
 	userRepo *repository.UserRepository,
 	trainingCardRepo *repository.TrainingCardRepository,
+	userCardRepo *repository.UserCardRepository,
 	cbService *service.CircuitBreakerService,
 	config *config.Config,
 ) *Handler {
@@ -50,6 +52,7 @@ func NewHandler(
 		trainingHandler:  trainingHandler,
 		userRepo:         userRepo,
 		trainingCardRepo: trainingCardRepo,
+		userCardRepo:     userCardRepo,
 		cbService:        cbService,
 		config:           config,
 	}
@@ -229,15 +232,28 @@ func (h *Handler) handleDeleteTrainAllCommand(chatID, userID int64) {
 		return
 	}
 
+	// Clean up any orphaned user_cards that might remain
+	orphanedCount, err := h.userCardRepo.DeleteOrphanedUserCards()
+	if err != nil {
+		h.logger.Warn("failed to delete orphaned user cards",
+			zap.Error(err),
+		)
+	}
+
 	h.logger.Info("deleted all training cards",
 		zap.Int64("rows_affected", rowsAffected),
+		zap.Int64("orphaned_user_cards", orphanedCount),
 		zap.Int64("admin_id", userID),
 	)
 
-	h.sendMessage(chatID, fmt.Sprintf("✅ Удалено всех тренировочных карточек: %d\n\n"+
+	message := fmt.Sprintf("✅ Удалено всех тренировочных карточек: %d\n\n"+
 		"Также автоматически удалены:\n"+
 		"• Все пользовательские карточки (user_cards)\n"+
-		"• Вся история ответов (review_events)", rowsAffected))
+		"• Вся история ответов (review_events)", rowsAffected)
+	if orphanedCount > 0 {
+		message += fmt.Sprintf("\n• Дополнительно очищено висячих записей: %d", orphanedCount)
+	}
+	h.sendMessage(chatID, message)
 }
 
 // handleCallbackQuery handles callback queries from inline keyboards
