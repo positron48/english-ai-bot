@@ -91,3 +91,25 @@ func (r *WordRepository) AddWordRequestHistory(userID int64, word string) error 
 
 	return nil
 }
+
+// GetUserIDsByWord gets telegram user IDs who requested a specific word
+func (r *WordRepository) GetUserIDsByWord(word string) ([]int64, error) {
+	query := `SELECT DISTINCT user_id FROM word_request_history WHERE LOWER(word) = LOWER(?)`
+	
+	rows, err := r.db.Query(query, word)
+	if err != nil {
+		return nil, fmt.Errorf("failed to query user IDs: %w", err)
+	}
+	defer rows.Close()
+
+	var userIDs []int64
+	for rows.Next() {
+		var userID int64
+		if err := rows.Scan(&userID); err != nil {
+			return nil, fmt.Errorf("failed to scan user ID: %w", err)
+		}
+		userIDs = append(userIDs, userID)
+	}
+
+	return userIDs, nil
+}

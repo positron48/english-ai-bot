@@ -1,0 +1,269 @@
+package service
+
+import (
+	"encoding/json"
+	"fmt"
+	"math/rand"
+	"time"
+
+	"tgbot-skeleton/internal/models"
+	"tgbot-skeleton/internal/repository"
+
+	"go.uber.org/zap"
+)
+
+// TrainingService handles training session management
+type TrainingService struct {
+	userCardRepo     *repository.UserCardRepository
+	trainingCardRepo *repository.TrainingCardRepository
+	sessionRepo      *repository.SessionRepository
+	logger           *zap.Logger
+}
+
+// NewTrainingService creates a new training service
+func NewTrainingService(
+	userCardRepo *repository.UserCardRepository,
+	trainingCardRepo *repository.TrainingCardRepository,
+	sessionRepo *repository.SessionRepository,
+	logger *zap.Logger,
+) *TrainingService {
+	return &TrainingService{
+		userCardRepo:     userCardRepo,
+		trainingCardRepo: trainingCardRepo,
+		sessionRepo:      sessionRepo,
+		logger:           logger,
+	}
+}
+
+// SessionConfig holds session configuration
+type SessionConfig struct {
+	MaxCardsPerSession int
+	MaxNewPerSession   int
+	AlgoVersion        string
+}
+
+// StartSession starts a new training session
+func (s *TrainingService) StartSession(userID int64, source models.SessionSource) (*models.TrainingSession, []*models.UserCardWithTraining, error) {
+	// Check if there's already an active session
+	activeSession, err := s.sessionRepo.GetActiveSession(userID)
+	if err != nil {
+		return nil, nil, fmt.Errorf("failed to check active session: %w", err)
+	}
+	if activeSession != nil {
+		// Finish the old session
+		s.logger.Info("finishing old active session", zap.Int64("session_id", activeSession.ID))
+		if err := s.sessionRepo.FinishSession(activeSession.ID, activeSession.DoneCount); err != nil {
+			s.logger.Warn("failed to finish old session", zap.Error(err))
+		}
+	}
+
+	// Get session configuration
+	config := SessionConfig{
+		MaxCardsPerSession: models.DefaultMaxCardsPerSession,
+		MaxNewPerSession:   models.DefaultMaxNewPerSession,
+		AlgoVersion:        "srs_v2_delayed_mcq_sm2_autoquality",
+	}
+
+	// Generate card queue
+	queue, err := s.generateQueue(userID, config)
+	if err != nil {
+		return nil, nil, fmt.Errorf("failed to generate queue: %w", err)
+	}
+
+	if len(queue) == 0 {
+		return nil, nil, fmt.Errorf("no cards available for training")
+	}
+
+	// Create session
+	configJSON, _ := json.Marshal(config)
+	session := &models.TrainingSession{
+		UserID:       userID,
+		Source:       source,
+		PlannedCount: len(queue),
+		DoneCount:    0,
+		SessionJSON:  string(configJSON),
+	}
+
+	sessionID, err := s.sessionRepo.CreateSession(session)
+	if err != nil {
+		return nil, nil, fmt.Errorf("failed to create session: %w", err)
+	}
+
+	session.ID = sessionID
+
+	s.logger.Info("started training session",
+		zap.Int64("session_id", sessionID),
+		zap.Int64("user_id", userID),
+		zap.String("source", string(source)),
+		zap.Int("planned_count", len(queue)),
+	)
+
+	return session, queue, nil
+}
+
+// FinishSession finishes a training session
+func (s *TrainingService) FinishSession(sessionID int64, doneCount int) error {
+	return s.sessionRepo.FinishSession(sessionID, doneCount)
+}
+
+// generateQueue generates a queue of cards for training
+func (s *TrainingService) generateQueue(userID int64, config SessionConfig) ([]*models.UserCardWithTraining, error) {
+	now := time.Now()
+
+	// Get due cards (learning + review)
+	dueCards, err := s.userCardRepo.GetDueCards(userID, now, config.MaxCardsPerSession)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get due cards: %w", err)
+	}
+
+	// Get new cards if we have space
+	remainingSlots := config.MaxCardsPerSession - len(dueCards)
+	var newCards []*models.UserCard
+	if remainingSlots > 0 {
+		maxNew := config.MaxNewPerSession
+		if remainingSlots < maxNew {
+			maxNew = remainingSlots
+		}
+		newCards, err = s.userCardRepo.GetNewCards(userID, maxNew)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get new cards: %w", err)
+		}
+	}
+
+	// Combine cards
+	allCards := append(dueCards, newCards...)
+
+	if len(allCards) == 0 {
+		return nil, nil
+	}
+
+	// Sort: learning first, then review, then new
+	s.sortCards(allCards, now)
+
+	// Fetch training card data
+	queue := make([]*models.UserCardWithTraining, 0, len(allCards))
+	for _, userCard := range allCards {
+		trainingCard, err := s.trainingCardRepo.GetTrainingCard(userCard.TrainingCardID)
+		if err != nil {
+			s.logger.Warn("failed to get training card", zap.Error(err))
+			continue
+		}
+		if trainingCard == nil {
+			s.logger.Warn("training card not found", zap.Int64("id", userCard.TrainingCardID))
+			continue
+		}
+
+		queue = append(queue, &models.UserCardWithTraining{
+			UserCard:     *userCard,
+			TrainingCard: *trainingCard,
+		})
+	}
+
+	// Shuffle to avoid same word appearing twice in a row
+	queue = s.shufflePreventDuplicates(queue)
+
+	return queue, nil
+}
+
+// sortCards sorts cards by priority
+func (s *TrainingService) sortCards(cards []*models.UserCard, now time.Time) {
+	// Sort: learning first, then by overdue time
+	for i := 0; i < len(cards); i++ {
+		for j := i + 1; j < len(cards); j++ {
+			// Learning cards come first
+			if cards[i].State != models.StateLearning && cards[j].State == models.StateLearning {
+				cards[i], cards[j] = cards[j], cards[i]
+				continue
+			}
+			if cards[i].State == models.StateLearning && cards[j].State != models.StateLearning {
+				continue
+			}
+
+			// For same state, sort by overdue time
+			if cards[i].NextDueAt != nil && cards[j].NextDueAt != nil {
+				if cards[i].NextDueAt.After(*cards[j].NextDueAt) {
+					cards[i], cards[j] = cards[j], cards[i]
+				}
+			}
+		}
+	}
+}
+
+// shufflePreventDuplicates shuffles cards while preventing same word appearing close together
+func (s *TrainingService) shufflePreventDuplicates(queue []*models.UserCardWithTraining) []*models.UserCardWithTraining {
+	if len(queue) <= 1 {
+		return queue
+	}
+
+	// Group by word_card_id
+	wordGroups := make(map[int64][]*models.UserCardWithTraining)
+	for _, card := range queue {
+		wordGroups[card.TrainingCard.WordCardID] = append(wordGroups[card.TrainingCard.WordCardID], card)
+	}
+
+	// If no duplicates, just shuffle randomly
+	if len(wordGroups) == len(queue) {
+		rand.Shuffle(len(queue), func(i, j int) {
+			queue[i], queue[j] = queue[j], queue[i]
+		})
+		return queue
+	}
+
+	// Build new queue spreading duplicates apart
+	result := make([]*models.UserCardWithTraining, 0, len(queue))
+
+	for len(result) < len(queue) {
+		added := false
+		for wordCardID, cards := range wordGroups {
+			if len(cards) == 0 {
+				continue
+			}
+
+			// Check if we can add this word (not used in last 3 positions)
+			canAdd := true
+			minDistance := 3
+			if len(result) < minDistance {
+				minDistance = len(result)
+			}
+			for i := len(result) - minDistance; i < len(result); i++ {
+				if result[i].TrainingCard.WordCardID == wordCardID {
+					canAdd = false
+					break
+				}
+			}
+
+			if canAdd || len(result) == 0 {
+				// Add first card from this group
+				result = append(result, cards[0])
+				wordGroups[wordCardID] = cards[1:]
+				added = true
+			}
+		}
+
+		// If we couldn't add any card, just add the next available
+		if !added {
+			for wordCardID, cards := range wordGroups {
+				if len(cards) > 0 {
+					result = append(result, cards[0])
+					wordGroups[wordCardID] = cards[1:]
+					break
+				}
+			}
+		}
+
+		// Clean up empty groups
+		for wordCardID, cards := range wordGroups {
+			if len(cards) == 0 {
+				delete(wordGroups, wordCardID)
+			}
+		}
+	}
+
+	return result
+}
+
+// GetDueCount gets the count of due cards for a user
+func (s *TrainingService) GetDueCount(userID int64) (int, error) {
+	return s.userCardRepo.GetDueCount(userID, time.Now())
+}
+

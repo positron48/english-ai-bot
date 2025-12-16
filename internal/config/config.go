@@ -17,6 +17,8 @@ type Config struct {
 	AI       AIConfig       `mapstructure:"ai"`
 	Bot      BotConfig      `mapstructure:"bot"`
 	Database DatabaseConfig `mapstructure:"database"`
+	Training TrainingConfig `mapstructure:"training"`
+	Admin    AdminConfig    `mapstructure:"admin"`
 }
 
 // TelegramConfig holds Telegram bot configuration
@@ -64,6 +66,21 @@ type DatabaseConfig struct {
 	Path string `mapstructure:"path"`
 }
 
+// TrainingConfig holds training system configuration
+type TrainingConfig struct {
+	WorkerEnabled           bool   `mapstructure:"worker_enabled"`
+	WorkerInterval          string `mapstructure:"worker_interval"`
+	WorkerBatchSize         int    `mapstructure:"worker_batch_size"`
+	PromptFile              string `mapstructure:"prompt_file"`
+	CircuitBreakerThreshold int    `mapstructure:"circuit_breaker_threshold"`
+	CircuitBreakerAutoReset int    `mapstructure:"circuit_breaker_auto_reset_hours"`
+}
+
+// AdminConfig holds admin configuration
+type AdminConfig struct {
+	TelegramID int64 `mapstructure:"telegram_id"`
+}
+
 // Load loads configuration from environment variables and config file
 func Load() (*Config, error) {
 	// Load .env file if it exists
@@ -81,6 +98,17 @@ func Load() (*Config, error) {
 	viper.SetDefault("logging.level", "info")
 	viper.SetDefault("ai.model", "gpt-3.5-turbo")
 	viper.SetDefault("database.path", "./data/words.db")
+	
+	// Training defaults
+	viper.SetDefault("training.worker_enabled", true)
+	viper.SetDefault("training.worker_interval", "30s")
+	viper.SetDefault("training.worker_batch_size", 5)
+	viper.SetDefault("training.prompt_file", "prompts/training-card-generator.txt")
+	viper.SetDefault("training.circuit_breaker_threshold", 5)
+	viper.SetDefault("training.circuit_breaker_auto_reset_hours", 24)
+	
+	// Admin defaults
+	viper.SetDefault("admin.telegram_id", 0)
 
 	// Bot message defaults
 	viper.SetDefault("bot.start_message", "🤖 Hello! I'm a universal AI assistant.\n\n💡 Just send me a message and I'll help you with any questions!\n\nUse /help for additional information.")
@@ -115,6 +143,13 @@ func Load() (*Config, error) {
 	_ = viper.BindEnv("bot.error_message", "BOT_ERROR_MESSAGE")
 	_ = viper.BindEnv("bot.empty_message", "BOT_EMPTY_MESSAGE")
 	_ = viper.BindEnv("database.path", "DATABASE_PATH")
+	_ = viper.BindEnv("training.worker_enabled", "TRAINING_WORKER_ENABLED")
+	_ = viper.BindEnv("training.worker_interval", "TRAINING_WORKER_INTERVAL")
+	_ = viper.BindEnv("training.worker_batch_size", "TRAINING_WORKER_BATCH_SIZE")
+	_ = viper.BindEnv("training.prompt_file", "TRAINING_PROMPT_FILE")
+	_ = viper.BindEnv("training.circuit_breaker_threshold", "CIRCUIT_BREAKER_THRESHOLD")
+	_ = viper.BindEnv("training.circuit_breaker_auto_reset_hours", "CIRCUIT_BREAKER_AUTO_RESET_HOURS")
+	_ = viper.BindEnv("admin.telegram_id", "ADMIN_TELEGRAM_ID")
 
 	// Set config file
 	viper.SetConfigName("config")

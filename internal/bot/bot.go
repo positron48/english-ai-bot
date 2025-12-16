@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"strings"
 	"syscall"
+	"time"
 
 	"tgbot-skeleton/internal/ai"
 	"tgbot-skeleton/internal/config"
@@ -23,11 +24,13 @@ import (
 
 // Bot represents the Telegram bot
 type Bot struct {
-	api     *tgbotapi.BotAPI
-	config  *config.Config
-	logger  *zap.Logger
-	handler *Handler
-	db      *database.DB
+	api                 *tgbotapi.BotAPI
+	config              *config.Config
+	logger              *zap.Logger
+	handler             *Handler
+	db                  *database.DB
+	trainingWorker      *service.TrainingWorker
+	notificationService *service.NotificationService
 }
 
 // New creates a new bot instance
@@ -73,21 +76,84 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 		log,
 	)
 
-	// Create repository
-	wordRepo := repository.NewWordRepository(db.GetConnection(), log)
+	// Load training prompt
+	if cfg.Training.PromptFile != "" {
+		trainingPrompt, err := os.ReadFile(cfg.Training.PromptFile)
+		if err != nil {
+			log.Warn("failed to load training prompt file, training worker will not work",
+				zap.String("file", cfg.Training.PromptFile),
+				zap.Error(err),
+			)
+		} else {
+			aiService.SetTrainingPrompt(string(trainingPrompt))
+		}
+	}
 
-	// Create word service
+	// Create repositories
+	conn := db.GetConnection()
+	wordRepo := repository.NewWordRepository(conn, log)
+	userRepo := repository.NewUserRepository(conn, log)
+	trainingCardRepo := repository.NewTrainingCardRepository(conn, log)
+	userCardRepo := repository.NewUserCardRepository(conn, log)
+	sessionRepo := repository.NewSessionRepository(conn, log)
+	cbRepo := repository.NewCircuitBreakerRepository(conn, log)
+	nudgeRepo := repository.NewNudgeRepository(conn, log)
+
+	// Create services
 	wordService := service.NewWordService(wordRepo, aiService, log)
+	srsService := service.NewSRSService(userCardRepo, log)
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, log)
+	optionsService := service.NewOptionsService(trainingCardRepo, log)
+	cbService := service.NewCircuitBreakerService(cbRepo, cfg.Training.CircuitBreakerThreshold, log)
+
+	// Create training handler
+	trainingHandler := NewTrainingHandler(bot, trainingService, srsService, optionsService, log)
 
 	// Create handler
-	handler := NewHandler(bot, log, aiService, wordService, cfg)
+	handler := NewHandler(bot, log, aiService, wordService, trainingHandler, userRepo, cbService, cfg)
+
+	// Create training worker
+	var trainingWorker *service.TrainingWorker
+	if cfg.Training.WorkerEnabled {
+		workerInterval, err := parseDuration(cfg.Training.WorkerInterval)
+		if err != nil {
+			log.Warn("invalid worker interval, using default 30s", zap.Error(err))
+			workerInterval = 30 * time.Second
+		}
+
+		trainingWorker = service.NewTrainingWorker(
+			aiService,
+			wordRepo,
+			trainingCardRepo,
+			userCardRepo,
+			userRepo,
+			cbService,
+			bot,
+			cfg.Admin.TelegramID,
+			cfg.Training.WorkerBatchSize,
+			workerInterval,
+			log,
+		)
+	}
+
+	// Create notification service
+	notificationService := service.NewNotificationService(
+		bot,
+		userRepo,
+		userCardRepo,
+		nudgeRepo,
+		sessionRepo,
+		log,
+	)
 
 	return &Bot{
-		api:     bot,
-		config:  cfg,
-		logger:  log,
-		handler: handler,
-		db:      db,
+		api:                 bot,
+		config:              cfg,
+		logger:              log,
+		handler:             handler,
+		db:                  db,
+		trainingWorker:      trainingWorker,
+		notificationService: notificationService,
 	}, nil
 }
 
@@ -97,12 +163,42 @@ func (b *Bot) Start(ctx context.Context) error {
 	ctx, cancel := signal.NotifyContext(ctx, os.Interrupt, syscall.SIGTERM)
 	defer cancel()
 
+	// Start training worker
+	if b.trainingWorker != nil {
+		go b.trainingWorker.Start(ctx)
+		b.logger.Info("training worker started")
+	}
+
+	// Start notification service
+	if b.notificationService != nil {
+		go b.notificationService.Start(ctx)
+		b.logger.Info("notification service started")
+	}
+
+	// Register bot commands
+	b.registerCommands()
+
 	// Webhook mode vs long polling
 	if b.config.Telegram.WebhookEnable {
 		return b.startWebhook(ctx)
 	}
 
 	return b.startLongPolling(ctx)
+}
+
+// registerCommands registers bot commands
+func (b *Bot) registerCommands() {
+	commands := []tgbotapi.BotCommand{
+		{Command: "start", Description: "Начать работу с ботом"},
+		{Command: "help", Description: "Помощь"},
+		{Command: "train", Description: "Начать тренировку слов"},
+	}
+
+	if _, err := b.api.Request(tgbotapi.NewSetMyCommands(commands...)); err != nil {
+		b.logger.Warn("failed to set bot commands", zap.Error(err))
+	} else {
+		b.logger.Info("bot commands registered")
+	}
 }
 
 // startWebhook starts the bot in webhook mode
@@ -234,4 +330,9 @@ func normalizeAPIEndpoint(base string) string {
 		return s + "bot%s/%s"
 	}
 	return s + "/bot%s/%s"
+}
+
+// parseDuration parses a duration string (e.g., "30s", "5m")
+func parseDuration(s string) (time.Duration, error) {
+	return time.ParseDuration(s)
 }

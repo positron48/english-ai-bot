@@ -1,0 +1,180 @@
+package repository
+
+import (
+	"database/sql"
+	"fmt"
+	"time"
+
+	"tgbot-skeleton/internal/models"
+
+	"go.uber.org/zap"
+)
+
+// UserRepository handles database operations for users
+type UserRepository struct {
+	db     *sql.DB
+	logger *zap.Logger
+}
+
+// NewUserRepository creates a new user repository
+func NewUserRepository(db *sql.DB, logger *zap.Logger) *UserRepository {
+	return &UserRepository{
+		db:     db,
+		logger: logger,
+	}
+}
+
+// GetOrCreateUser gets a user by telegram ID or creates a new one
+func (r *UserRepository) GetOrCreateUser(telegramID int64) (*models.User, error) {
+	// Try to get existing user
+	user, err := r.GetUserByTelegramID(telegramID)
+	if err != nil {
+		return nil, err
+	}
+	if user != nil {
+		return user, nil
+	}
+
+	// Create new user
+	query := `INSERT INTO users (telegram_id) VALUES (?)`
+	result, err := r.db.Exec(query, telegramID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create user: %w", err)
+	}
+
+	userID, err := result.LastInsertId()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get user ID: %w", err)
+	}
+
+	r.logger.Info("created new user",
+		zap.Int64("user_id", userID),
+		zap.Int64("telegram_id", telegramID),
+	)
+
+	return r.GetUserByID(userID)
+}
+
+// GetUserByID gets a user by internal ID
+func (r *UserRepository) GetUserByID(userID int64) (*models.User, error) {
+	query := `SELECT id, telegram_id, timezone, preferred_training_time, 
+			  COALESCE(settings_json, ''), created_at, updated_at
+			  FROM users WHERE id = ?`
+
+	var user models.User
+	var createdAt, updatedAt string
+
+	err := r.db.QueryRow(query, userID).Scan(
+		&user.ID,
+		&user.TelegramID,
+		&user.Timezone,
+		&user.PreferredTrainingTime,
+		&user.SettingsJSON,
+		&createdAt,
+		&updatedAt,
+	)
+
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, fmt.Errorf("failed to get user: %w", err)
+	}
+
+	user.CreatedAt, _ = time.Parse("2006-01-02 15:04:05", createdAt)
+	user.UpdatedAt, _ = time.Parse("2006-01-02 15:04:05", updatedAt)
+
+	return &user, nil
+}
+
+// GetUserByTelegramID gets a user by telegram ID
+func (r *UserRepository) GetUserByTelegramID(telegramID int64) (*models.User, error) {
+	query := `SELECT id, telegram_id, timezone, preferred_training_time, 
+			  COALESCE(settings_json, ''), created_at, updated_at
+			  FROM users WHERE telegram_id = ?`
+
+	var user models.User
+	var createdAt, updatedAt string
+
+	err := r.db.QueryRow(query, telegramID).Scan(
+		&user.ID,
+		&user.TelegramID,
+		&user.Timezone,
+		&user.PreferredTrainingTime,
+		&user.SettingsJSON,
+		&createdAt,
+		&updatedAt,
+	)
+
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, fmt.Errorf("failed to get user: %w", err)
+	}
+
+	user.CreatedAt, _ = time.Parse("2006-01-02 15:04:05", createdAt)
+	user.UpdatedAt, _ = time.Parse("2006-01-02 15:04:05", updatedAt)
+
+	return &user, nil
+}
+
+// UpdateUserSettings updates user settings
+func (r *UserRepository) UpdateUserSettings(userID int64, settingsJSON string) error {
+	query := `UPDATE users SET settings_json = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?`
+	_, err := r.db.Exec(query, settingsJSON, userID)
+	if err != nil {
+		return fmt.Errorf("failed to update user settings: %w", err)
+	}
+	return nil
+}
+
+// UpdateUserPreferredTime updates user's preferred training time
+func (r *UserRepository) UpdateUserPreferredTime(userID int64, preferredTime string) error {
+	query := `UPDATE users SET preferred_training_time = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?`
+	_, err := r.db.Exec(query, preferredTime, userID)
+	if err != nil {
+		return fmt.Errorf("failed to update preferred time: %w", err)
+	}
+	return nil
+}
+
+// GetAllUsers returns all users (for notification scheduler)
+func (r *UserRepository) GetAllUsers() ([]*models.User, error) {
+	query := `SELECT id, telegram_id, timezone, preferred_training_time, 
+			  COALESCE(settings_json, ''), created_at, updated_at
+			  FROM users ORDER BY id`
+
+	rows, err := r.db.Query(query)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get all users: %w", err)
+	}
+	defer rows.Close()
+
+	var users []*models.User
+	for rows.Next() {
+		var user models.User
+		var createdAt, updatedAt string
+
+		err := rows.Scan(
+			&user.ID,
+			&user.TelegramID,
+			&user.Timezone,
+			&user.PreferredTrainingTime,
+			&user.SettingsJSON,
+			&createdAt,
+			&updatedAt,
+		)
+		if err != nil {
+			return nil, fmt.Errorf("failed to scan user: %w", err)
+		}
+
+		user.CreatedAt, _ = time.Parse("2006-01-02 15:04:05", createdAt)
+		user.UpdatedAt, _ = time.Parse("2006-01-02 15:04:05", updatedAt)
+
+		users = append(users, &user)
+	}
+
+	return users, nil
+}
+
