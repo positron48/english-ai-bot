@@ -20,9 +20,4 @@ linters:
 issues:
   max-issues-per-linter: 0
   max-same-issues: 0
-  exclude-rules:
-    # Игнорируем magic numbers в тестах
-    - path: _test\.go
-      linters:
-        - mnd
 
