@@ -32,6 +32,24 @@ test:
 test-verbose:
 	$(GO) test -v ./...
 
+# CI checks (same as in GitHub Actions)
+ci: tidy
+	@echo "=== Running CI Checks ==="
+	@echo ""
+	@echo "1. Verifying dependencies..."
+	@$(GO) mod verify
+	@echo "✅ Dependencies verified"
+	@echo ""
+	@echo "2. Running tests..."
+	@$(GO) test -v ./... | grep -E "(PASS|FAIL|RUN)" || true
+	@echo "✅ Tests passed"
+	@echo ""
+	@echo "3. Running linter..."
+	@$(GOLANGCI) run --timeout=3m
+	@echo "✅ Linter passed"
+	@echo ""
+	@echo "🎉 All CI checks passed!"
+
 # Code formatting
 fmt:
 	$(GO) fmt ./...

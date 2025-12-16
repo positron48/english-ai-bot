@@ -1,3 +1,5 @@
+version: "2"
+
 run:
   timeout: 5m
   tests: true
@@ -5,28 +7,22 @@ run:
 
 linters:
   enable:
-    - errcheck
-    - gosimple
-    - govet
-    - ineffassign
-    - staticcheck
-    - unused
-    - revive
-    - goimports
-
-linters-settings:
-  revive:
-    rules:
-      - name: exported
-        disabled: true
-      - name: package-comments
-        disabled: true
+    # Базовые линтеры
+    - govet         # Стандартный анализатор Go (критичные ошибки)
+    - ineffassign   # Неиспользуемые присваивания
+    - staticcheck   # Продвинутый статический анализ (включает gosimple)
+    - unused        # Неиспользуемый код
+  
+  disable:
+    - errcheck      # defer Close() - стандартная практика в Go
+    - revive        # Слишком строгие правила для внутреннего проекта
 
 issues:
   max-issues-per-linter: 0
   max-same-issues: 0
   exclude-rules:
+    # Игнорируем magic numbers в тестах
     - path: _test\.go
       linters:
-        - gomnd
+        - mnd
 

@@ -160,11 +160,12 @@ func (s *SRSService) handleReview(card *models.UserCard, quality models.Quality,
 	// Calculate new interval
 	var newInterval int
 	
-	if card.Reps == 0 {
+	switch card.Reps {
+	case 0:
 		newInterval = 1
-	} else if card.Reps == 1 {
+	case 1:
 		newInterval = 6
-	} else {
+	default:
 		// interval = previous_interval * EF
 		newInterval = int(math.Ceil(float64(card.IntervalDays) * card.EF))
 	}
