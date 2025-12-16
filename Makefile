@@ -12,7 +12,7 @@ SERVICE_NAME ?= ai-bot
 -include .env
 .EXPORT_ALL_VARIABLES:
 
-.PHONY: all tidy build run test lint fmt setup up clean
+.PHONY: all tidy build run test lint fmt setup up clean check ci
 
 all: build
 
@@ -33,7 +33,7 @@ test-verbose:
 	$(GO) test -v ./...
 
 # CI checks (same as in GitHub Actions)
-ci: tidy
+check: tidy
 	@echo "=== Running CI Checks ==="
 	@echo ""
 	@echo "1. Verifying dependencies..."
@@ -49,6 +49,9 @@ ci: tidy
 	@echo "✅ Linter passed"
 	@echo ""
 	@echo "🎉 All CI checks passed!"
+
+# Alias for check
+ci: check
 
 # Code formatting
 fmt:
@@ -142,6 +145,7 @@ help:
 	@echo "  make test           - Run tests"
 	@echo "  make fmt            - Format code"
 	@echo "  make lint           - Run linter"
+	@echo "  make check          - Run all CI checks (tests, lint, verify)"
 	@echo "  make clean          - Clean build artifacts"
 	@echo ""
 	@echo "Docker commands:"

@@ -3,7 +3,10 @@ You are a vocabulary training card generator for English learners.
 Given an English word, generate a structured training card in JSON format.
 
 Requirements:
-1. Extract 1-3 main meanings/senses of the word
+1. Extract 1-3 MOST COMMON and BASIC meanings/senses of the word
+   - Focus on the most frequently used meanings in everyday English
+   - Avoid rare, archaic, or highly specialized meanings
+   - Prioritize meanings that learners encounter most often
 2. For each sense provide:
    - Russian translation (meaning_ru)
    - English definition (meaning_en)
@@ -18,6 +21,8 @@ Distractors rules:
 - Include words from the same semantic field
 - Include common learner mistakes (false friends, similar words)
 - Avoid obvious wrong answers
+- IMPORTANT: Do NOT include other meanings of the SAME word as distractors
+  (e.g., for "bank" as "банк", do NOT use "берег" as a distractor)
 
 Hint rules:
 - Should be memorable and creative

@@ -22,6 +22,7 @@ type TrainingHandler struct {
 	logger           *zap.Logger
 	sessions         map[int64]*SessionState
 	sessionsMutex    sync.RWMutex
+	optionsDelayMS   int
 }
 
 // SessionState holds the state of an active training session
@@ -43,6 +44,7 @@ func NewTrainingHandler(
 	srsService *service.SRSService,
 	optionsService *service.OptionsService,
 	logger *zap.Logger,
+	optionsDelayMS int,
 ) *TrainingHandler {
 	return &TrainingHandler{
 		bot:             bot,
@@ -51,6 +53,7 @@ func NewTrainingHandler(
 		optionsService:  optionsService,
 		logger:          logger,
 		sessions:        make(map[int64]*SessionState),
+		optionsDelayMS:  optionsDelayMS,
 	}
 }
 
@@ -126,18 +129,12 @@ func (h *TrainingHandler) showCard(chatID int64) error {
 			"🇬🇧 Переведите на английский:\n\n*%s*",
 			card.TrainingCard.MeaningRU,
 		)
-		if card.TrainingCard.Hint != "" {
-			questionText += fmt.Sprintf("\n\n💡 Подсказка: _%s_", card.TrainingCard.Hint)
-		}
 	} else {
 		questionText = fmt.Sprintf(
 			"🇷🇺 Что означает слово:\n\n*%s* %s",
 			card.TrainingCard.WordEN,
 			card.TrainingCard.Transcription,
 		)
-		if card.TrainingCard.ExampleEN != "" {
-			questionText += fmt.Sprintf("\n\n📝 Пример: _%s_", card.TrainingCard.ExampleEN)
-		}
 	}
 
 	// Add progress
@@ -148,23 +145,15 @@ func (h *TrainingHandler) showCard(chatID int64) error {
 		questionText,
 	)
 
-	// Create keyboard with "Show options" button
-	keyboard := tgbotapi.NewInlineKeyboardMarkup(
-		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData("Показать варианты", "show_options"),
-		),
-	)
-
 	msg := tgbotapi.NewMessage(chatID, questionText)
 	msg.ParseMode = tgbotapi.ModeMarkdown
-	msg.ReplyMarkup = keyboard
 
 	if _, err := h.bot.Send(msg); err != nil {
 		return fmt.Errorf("failed to send message: %w", err)
 	}
 
 	// Schedule automatic options reveal after delay
-	go h.autoRevealOptions(chatID, models.OptionsDelayMS)
+	go h.autoRevealOptions(chatID, h.optionsDelayMS)
 
 	return nil
 }
@@ -265,10 +254,10 @@ func (h *TrainingHandler) HandleAnswer(chatID int64, optionIndex int) error {
 	var earlyReveal bool
 	if optionsShownAt != nil {
 		tDelayMS = int(optionsShownAt.Sub(shownAt).Milliseconds())
-		earlyReveal = tDelayMS < models.OptionsDelayMS
+		earlyReveal = tDelayMS < h.optionsDelayMS
 	} else {
 		// User answered before options were shown (shouldn't happen)
-		tDelayMS = models.OptionsDelayMS
+		tDelayMS = h.optionsDelayMS
 		earlyReveal = false
 	}
 
@@ -314,15 +303,20 @@ func (h *TrainingHandler) sendFeedback(chatID int64, card *models.TrainingCard, 
 	var message string
 
 	if isCorrect {
-		message = fmt.Sprintf("✅ Правильно!\n\n*%s* — %s", card.WordEN, card.MeaningRU)
+		message = "✅ Правильно!"
 	} else {
 		message = fmt.Sprintf("❌ Неправильно\n\nВы выбрали: %s\nПравильный ответ: *%s*\n\n%s — %s",
 			chosen, correct, card.WordEN, card.MeaningRU)
-	}
-
-	// Add example
-	if card.ExampleEN != "" {
-		message += fmt.Sprintf("\n\n📝 %s\n_%s_", card.ExampleEN, card.ExampleRU)
+		
+		// Show hint only after wrong answer
+		if card.Hint != "" {
+			message += fmt.Sprintf("\n\n💡 Подсказка: _%s_", card.Hint)
+		}
+		
+		// Add example only for wrong answers
+		if card.ExampleEN != "" {
+			message += fmt.Sprintf("\n\n📝 %s\n_%s_", card.ExampleEN, card.ExampleRU)
+		}
 	}
 
 	msg := tgbotapi.NewMessage(chatID, message)

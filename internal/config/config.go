@@ -74,6 +74,7 @@ type TrainingConfig struct {
 	PromptFile              string `mapstructure:"prompt_file"`
 	CircuitBreakerThreshold int    `mapstructure:"circuit_breaker_threshold"`
 	CircuitBreakerAutoReset int    `mapstructure:"circuit_breaker_auto_reset_hours"`
+	OptionsDelayMS          int    `mapstructure:"options_delay_ms"`
 }
 
 // AdminConfig holds admin configuration
@@ -106,6 +107,7 @@ func Load() (*Config, error) {
 	viper.SetDefault("training.prompt_file", "prompts/training-card-generator.txt")
 	viper.SetDefault("training.circuit_breaker_threshold", 5)
 	viper.SetDefault("training.circuit_breaker_auto_reset_hours", 24)
+	viper.SetDefault("training.options_delay_ms", 5000)
 	
 	// Admin defaults
 	viper.SetDefault("admin.telegram_id", 0)
@@ -149,6 +151,7 @@ func Load() (*Config, error) {
 	_ = viper.BindEnv("training.prompt_file", "TRAINING_PROMPT_FILE")
 	_ = viper.BindEnv("training.circuit_breaker_threshold", "CIRCUIT_BREAKER_THRESHOLD")
 	_ = viper.BindEnv("training.circuit_breaker_auto_reset_hours", "CIRCUIT_BREAKER_AUTO_RESET_HOURS")
+	_ = viper.BindEnv("training.options_delay_ms", "TRAINING_OPTIONS_DELAY_MS")
 	_ = viper.BindEnv("admin.telegram_id", "ADMIN_TELEGRAM_ID")
 
 	// Set config file

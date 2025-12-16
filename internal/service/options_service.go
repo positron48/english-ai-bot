@@ -53,6 +53,18 @@ func (s *OptionsService) GenerateOptions(
 		}
 	}
 
+	// Get all meanings of this word to exclude them from distractors
+	excludedMeanings := s.getOtherMeaningsOfWord(card.TrainingCard.WordCardID, card.UserCard.Direction)
+	
+	// Filter out other meanings of the same word
+	filteredDistractors := make([]string, 0, len(distractors))
+	for _, d := range distractors {
+		if !contains(excludedMeanings, d) && d != correctAnswer {
+			filteredDistractors = append(filteredDistractors, d)
+		}
+	}
+	distractors = filteredDistractors
+
 	// Parse user's wrong answers for personalization
 	var wrongAnswers []string
 	if card.UserCard.WrongAnswersJSON != "" {
@@ -147,6 +159,32 @@ func (s *OptionsService) getFallbackDistractors(direction models.CardDirection) 
 		"находить", "говорить", "спрашивать", "работать", "звонить",
 		"пытаться", "нуждаться", "чувствовать", "становиться", "покидать",
 	}
+}
+
+// getOtherMeaningsOfWord gets all meanings of the word to exclude from distractors
+func (s *OptionsService) getOtherMeaningsOfWord(wordCardID int64, direction models.CardDirection) []string {
+	// Get all training cards for this word
+	cards, err := s.trainingCardRepo.GetTrainingCardsByWordCardID(wordCardID)
+	if err != nil {
+		s.logger.Warn("failed to get other meanings", zap.Error(err))
+		return []string{}
+	}
+
+	meanings := make([]string, 0, len(cards))
+	for _, c := range cards {
+		if direction == models.DirectionRUtoEN {
+			// For RU->EN, exclude English word meanings (but we use the same word, so skip)
+			// Not applicable here as we're translating to the same word
+			continue
+		} else {
+			// For EN->RU, exclude all Russian meanings
+			if c.MeaningRU != "" {
+				meanings = append(meanings, c.MeaningRU)
+			}
+		}
+	}
+
+	return meanings
 }
 
 // contains checks if a slice contains a string
