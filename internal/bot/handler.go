@@ -19,14 +19,15 @@ import (
 
 // Handler handles Telegram updates
 type Handler struct {
-	bot             *tgbotapi.BotAPI
-	logger          *zap.Logger
-	aiService       *ai.Service
-	wordService     *service.WordService
-	trainingHandler *TrainingHandler
-	userRepo        *repository.UserRepository
-	cbService       *service.CircuitBreakerService
-	config          *config.Config
+	bot                *tgbotapi.BotAPI
+	logger             *zap.Logger
+	aiService          *ai.Service
+	wordService        *service.WordService
+	trainingHandler    *TrainingHandler
+	userRepo           *repository.UserRepository
+	trainingCardRepo   *repository.TrainingCardRepository
+	cbService          *service.CircuitBreakerService
+	config             *config.Config
 }
 
 // NewHandler creates a new handler
@@ -37,18 +38,20 @@ func NewHandler(
 	wordService *service.WordService,
 	trainingHandler *TrainingHandler,
 	userRepo *repository.UserRepository,
+	trainingCardRepo *repository.TrainingCardRepository,
 	cbService *service.CircuitBreakerService,
 	config *config.Config,
 ) *Handler {
 	return &Handler{
-		bot:             bot,
-		logger:          logger,
-		aiService:       aiService,
-		wordService:     wordService,
-		trainingHandler: trainingHandler,
-		userRepo:        userRepo,
-		cbService:       cbService,
-		config:          config,
+		bot:              bot,
+		logger:           logger,
+		aiService:        aiService,
+		wordService:      wordService,
+		trainingHandler:  trainingHandler,
+		userRepo:         userRepo,
+		trainingCardRepo: trainingCardRepo,
+		cbService:        cbService,
+		config:           config,
 	}
 }
 
@@ -103,6 +106,8 @@ func (h *Handler) handleCommand(ctx context.Context, message *tgbotapi.Message) 
 		h.handleGetIDCommand(chatID, userID)
 	case "reset_circuit":
 		h.handleResetCircuitCommand(chatID, userID)
+	case "delete_train":
+		h.handleDeleteTrainCommand(chatID, userID, message.CommandArguments())
 	default:
 		h.sendMessage(chatID, h.config.Bot.UnknownCommandMessage)
 	}
@@ -158,6 +163,46 @@ func (h *Handler) handleResetCircuitCommand(chatID, userID int64) {
 	}
 
 	h.sendMessage(chatID, "✅ Circuit breaker сброшен. Воркер возобновит работу.")
+}
+
+// handleDeleteTrainCommand handles /delete_train command (admin only)
+func (h *Handler) handleDeleteTrainCommand(chatID, userID int64, wordEN string) {
+	// Check if user is admin
+	if h.config.Admin.TelegramID == 0 || userID != h.config.Admin.TelegramID {
+		// Silently ignore for non-admins
+		return
+	}
+
+	// Validate word
+	wordEN = strings.TrimSpace(wordEN)
+	if wordEN == "" {
+		h.sendMessage(chatID, "❌ Укажите слово для удаления: `/delete_train word`")
+		return
+	}
+
+	// Delete training cards
+	rowsAffected, err := h.trainingCardRepo.DeleteTrainingCardsByWordEN(wordEN)
+	if err != nil {
+		h.logger.Error("failed to delete training cards",
+			zap.String("word_en", wordEN),
+			zap.Error(err),
+		)
+		h.sendMessage(chatID, fmt.Sprintf("❌ Ошибка при удалении карточек для слова `%s`", wordEN))
+		return
+	}
+
+	if rowsAffected == 0 {
+		h.sendMessage(chatID, fmt.Sprintf("ℹ️ Тренировочные карточки для слова `%s` не найдены", wordEN))
+		return
+	}
+
+	h.logger.Info("deleted training cards",
+		zap.String("word_en", wordEN),
+		zap.Int64("rows_affected", rowsAffected),
+		zap.Int64("admin_id", userID),
+	)
+
+	h.sendMessage(chatID, fmt.Sprintf("✅ Удалено тренировочных карточек для слова `%s`: %d", wordEN, rowsAffected))
 }
 
 // handleCallbackQuery handles callback queries from inline keyboards

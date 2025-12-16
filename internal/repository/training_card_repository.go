@@ -166,3 +166,24 @@ func (r *TrainingCardRepository) HasTrainingCards(wordCardID int64) (bool, error
 	return count > 0, nil
 }
 
+// DeleteTrainingCardsByWordEN deletes all training cards for a word by word_en
+func (r *TrainingCardRepository) DeleteTrainingCardsByWordEN(wordEN string) (int64, error) {
+	query := `DELETE FROM training_cards WHERE word_en = ?`
+	result, err := r.db.Exec(query, wordEN)
+	if err != nil {
+		return 0, fmt.Errorf("failed to delete training cards: %w", err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return 0, fmt.Errorf("failed to get rows affected: %w", err)
+	}
+
+	r.logger.Info("deleted training cards",
+		zap.String("word_en", wordEN),
+		zap.Int64("rows_affected", rowsAffected),
+	)
+
+	return rowsAffected, nil
+}
+

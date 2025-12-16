@@ -111,7 +111,7 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 	trainingHandler := NewTrainingHandler(bot, trainingService, srsService, optionsService, log, cfg.Training.OptionsDelayMS)
 
 	// Create handler
-	handler := NewHandler(bot, log, aiService, wordService, trainingHandler, userRepo, cbService, cfg)
+	handler := NewHandler(bot, log, aiService, wordService, trainingHandler, userRepo, trainingCardRepo, cbService, cfg)
 
 	// Create training worker
 	var trainingWorker *service.TrainingWorker
