@@ -13,7 +13,9 @@ ifneq (,$(wildcard .env))
 endif
 SERVICE_NAME ?= ai-bot
 
-.PHONY: deploy update status logs restart stop start help
+.PHONY: FORCE deploy update status logs restart stop start help
+
+FORCE:
 
 # Download and install binary
 deploy:
@@ -43,7 +45,7 @@ update:
 status:
 	@systemctl --user status $(SERVICE_NAME)
 
-logs:
+logs: FORCE
 	@journalctl --user -u $(SERVICE_NAME) -f
 
 restart:

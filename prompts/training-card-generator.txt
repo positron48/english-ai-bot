@@ -17,10 +17,12 @@ Requirements:
    - A memorable hint in Russian to help remember this meaning
 
 Distractors rules:
-- Distractors should be plausible but clearly wrong
-- Include words from the same semantic field
-- Include common learner mistakes (false friends, similar words)
-- Avoid obvious wrong answers
+- Distractors should be plausible but clearly wrong for the SPECIFIC definition given
+- Distractors CAN be from the same semantic field or similar in meaning/sound
+- However, distractors must NOT match the specific definition provided
+- The definition should be specific enough to clearly distinguish the correct answer from distractors
+- Include common learner mistakes (false friends, similar-sounding words)
+- Avoid obviously absurd or completely unrelated words
 - IMPORTANT: Do NOT include other meanings of the SAME word as distractors
   (e.g., for "bank" as "банк", do NOT use "берег" as a distractor)
 
