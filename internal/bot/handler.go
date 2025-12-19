@@ -113,6 +113,8 @@ func (h *Handler) handleCommand(ctx context.Context, message *tgbotapi.Message) 
 		h.handleDeleteTrainCommand(chatID, userID, message.CommandArguments())
 	case "delete_train_all":
 		h.handleDeleteTrainAllCommand(chatID, userID)
+	case "get_train_data":
+		h.handleGetTrainDataCommand(chatID, userID, message.CommandArguments())
 	default:
 		h.sendMessage(chatID, h.config.Bot.UnknownCommandMessage)
 	}
@@ -256,6 +258,82 @@ func (h *Handler) handleDeleteTrainAllCommand(chatID, userID int64) {
 	h.sendMessage(chatID, message)
 }
 
+// handleGetTrainDataCommand handles /get_train_data command (admin only)
+func (h *Handler) handleGetTrainDataCommand(chatID, userID int64, wordEN string) {
+	// Check if user is admin
+	if h.config.Admin.TelegramID == 0 || userID != h.config.Admin.TelegramID {
+		// Silently ignore for non-admins
+		return
+	}
+
+	// Validate word
+	wordEN = strings.TrimSpace(wordEN)
+	if wordEN == "" {
+		h.sendMessage(chatID, "❌ Укажите слово: `/get_train_data word`")
+		return
+	}
+
+	// Get training cards
+	cards, err := h.trainingCardRepo.GetTrainingCardsByWordEN(wordEN)
+	if err != nil {
+		h.logger.Error("failed to get training cards",
+			zap.String("word_en", wordEN),
+			zap.Error(err),
+		)
+		h.sendMessage(chatID, fmt.Sprintf("❌ Ошибка при получении данных для слова `%s`", wordEN))
+		return
+	}
+
+	if len(cards) == 0 {
+		h.sendMessage(chatID, fmt.Sprintf("ℹ️ Тренировочные карточки для слова `%s` не найдены", wordEN))
+		return
+	}
+
+	// Format response
+	var message strings.Builder
+	message.WriteString(fmt.Sprintf("📊 Данные по тренировочным карточкам для слова `%s`:\n\n", wordEN))
+	message.WriteString(fmt.Sprintf("Всего карточек: %d\n\n", len(cards)))
+
+	for i, card := range cards {
+		message.WriteString(fmt.Sprintf("*Карточка #%d* (ID: `%d`)\n", i+1, card.ID))
+		message.WriteString(fmt.Sprintf("• Word Card ID: `%d`\n", card.WordCardID))
+		message.WriteString(fmt.Sprintf("• Sense Index: `%d`\n", card.SenseIndex))
+		if card.Transcription != "" {
+			message.WriteString(fmt.Sprintf("• Transcription: `%s`\n", card.Transcription))
+		}
+		message.WriteString(fmt.Sprintf("• Word EN: `%s`\n", card.WordEN))
+		message.WriteString(fmt.Sprintf("• Meaning RU: %s\n", card.MeaningRU))
+		message.WriteString(fmt.Sprintf("• Meaning EN: %s\n", card.MeaningEN))
+		if card.ExampleEN != "" {
+			message.WriteString(fmt.Sprintf("• Example EN: %s\n", card.ExampleEN))
+		}
+		if card.ExampleRU != "" {
+			message.WriteString(fmt.Sprintf("• Example RU: %s\n", card.ExampleRU))
+		}
+		if card.Hint != "" {
+			message.WriteString(fmt.Sprintf("• Hint: _%s_\n", card.Hint))
+		}
+		if card.DistractorsRU != "" {
+			message.WriteString(fmt.Sprintf("• Distractors RU: `%s`\n", card.DistractorsRU))
+		}
+		if card.DistractorsEN != "" {
+			message.WriteString(fmt.Sprintf("• Distractors EN: `%s`\n", card.DistractorsEN))
+		}
+		message.WriteString(fmt.Sprintf("• Created: `%s`\n", card.CreatedAt.Format("2006-01-02 15:04:05")))
+		if i < len(cards)-1 {
+			message.WriteString("\n---\n\n")
+		}
+	}
+
+	h.logger.Info("retrieved training cards data",
+		zap.String("word_en", wordEN),
+		zap.Int("count", len(cards)),
+		zap.Int64("admin_id", userID),
+	)
+
+	h.sendMessage(chatID, message.String())
+}
+
 // handleCallbackQuery handles callback queries from inline keyboards
 func (h *Handler) handleCallbackQuery(ctx context.Context, query *tgbotapi.CallbackQuery) {
 	chatID := query.Message.Chat.ID
@@ -276,22 +354,46 @@ func (h *Handler) handleCallbackQuery(ctx context.Context, query *tgbotapi.Callb
 	if data == "train_start" {
 		// Start training from notification
 		h.handleTrainCommand(ctx, chatID, query.From.ID)
-	} else if data == "show_options" {
-		// Show options for current card
-		if err := h.trainingHandler.ShowOptions(chatID, true); err != nil {
-			h.logger.Error("failed to show options", zap.Error(err))
-		}
-	} else if strings.HasPrefix(data, "answer_") {
-		// Handle answer selection
-		optionIndexStr := strings.TrimPrefix(data, "answer_")
-		optionIndex, err := strconv.Atoi(optionIndexStr)
+	} else if data == "show_options" || strings.HasPrefix(data, "answer_") {
+		// Ensure user exists and get internal user ID
+		user, err := h.userRepo.GetOrCreateUser(query.From.ID)
 		if err != nil {
-			h.logger.Error("invalid option index", zap.Error(err))
+			h.logger.Error("failed to get/create user", zap.Error(err))
+			h.sendMessage(chatID, "Произошла ошибка. Попробуйте позже.")
 			return
 		}
 
-		if err := h.trainingHandler.HandleAnswer(chatID, optionIndex); err != nil {
-			h.logger.Error("failed to handle answer", zap.Error(err))
+		// Try to restore session if not in memory
+		if !h.trainingHandler.HasActiveSession(chatID) {
+			_, restoreErr := h.trainingHandler.RestoreSession(chatID, user.ID)
+			if restoreErr != nil {
+				h.logger.Warn("failed to restore session", zap.Error(restoreErr))
+			}
+		}
+
+		if data == "show_options" {
+			// Show options for current card
+			if err := h.trainingHandler.ShowOptions(chatID, true); err != nil {
+				h.logger.Error("failed to show options", zap.Error(err))
+				if strings.Contains(err.Error(), "no active session") {
+					h.sendMessage(chatID, "Сессия не найдена. Начните новую тренировку командой /train")
+				}
+			}
+		} else if strings.HasPrefix(data, "answer_") {
+			// Handle answer selection
+			optionIndexStr := strings.TrimPrefix(data, "answer_")
+			optionIndex, err := strconv.Atoi(optionIndexStr)
+			if err != nil {
+				h.logger.Error("invalid option index", zap.Error(err))
+				return
+			}
+
+			if err := h.trainingHandler.HandleAnswer(chatID, optionIndex); err != nil {
+				h.logger.Error("failed to handle answer", zap.Error(err))
+				if strings.Contains(err.Error(), "no active session") {
+					h.sendMessage(chatID, "Сессия не найдена. Начните новую тренировку командой /train")
+				}
+			}
 		}
 	}
 }

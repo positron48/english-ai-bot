@@ -2,6 +2,7 @@ package bot
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"sync"
 	"time"
@@ -38,6 +39,12 @@ type SessionState struct {
 	CorrectAnswer  string
 }
 
+// SessionStateData holds serializable session state data
+type SessionStateData struct {
+	UserCardIDs  []int64 `json:"user_card_ids"`
+	CurrentIndex int     `json:"current_index"`
+}
+
 // NewTrainingHandler creates a new training handler
 func NewTrainingHandler(
 	bot *tgbotapi.BotAPI,
@@ -62,7 +69,27 @@ func NewTrainingHandler(
 
 // StartTraining starts a training session for a user
 func (h *TrainingHandler) StartTraining(ctx context.Context, chatID, userID int64, source models.SessionSource) error {
-	// Start session
+	// Check if there's an active session in memory
+	h.sessionsMutex.RLock()
+	existingState, existsInMemory := h.sessions[chatID]
+	h.sessionsMutex.RUnlock()
+
+	if existsInMemory && existingState != nil {
+		// Session already exists in memory, just show current card
+		return h.showCard(chatID)
+	}
+
+	// Try to restore session from database
+	restored, err := h.restoreSession(chatID, userID)
+	if err != nil {
+		h.logger.Warn("failed to restore session", zap.Error(err))
+	}
+	if restored {
+		// Session restored, show current card
+		return h.showCard(chatID)
+	}
+
+	// Start new session
 	session, queue, err := h.trainingService.StartSession(userID, source)
 	if err != nil {
 		return fmt.Errorf("failed to start session: %w", err)
@@ -81,6 +108,11 @@ func (h *TrainingHandler) StartTraining(ctx context.Context, chatID, userID int6
 	h.sessions[chatID] = state
 	h.sessionsMutex.Unlock()
 
+	// Save state to database
+	if err := h.saveSessionState(state); err != nil {
+		h.logger.Warn("failed to save session state", zap.Error(err))
+	}
+
 	// Send welcome message
 	welcomeMsg := fmt.Sprintf("Начинаем тренировку! Сегодня %d карточек.", len(queue))
 	h.sendMessage(chatID, welcomeMsg)
@@ -96,7 +128,7 @@ func (h *TrainingHandler) showCard(chatID int64) error {
 	state, exists := h.sessions[chatID]
 	h.sessionsMutex.RUnlock()
 
-	if !exists {
+	if !exists || state == nil {
 		return fmt.Errorf("no active session")
 	}
 
@@ -158,6 +190,11 @@ func (h *TrainingHandler) showCard(chatID int64) error {
 		return fmt.Errorf("failed to send message: %w", err)
 	}
 
+	// Save state to database
+	if err := h.saveSessionState(state); err != nil {
+		h.logger.Warn("failed to save session state", zap.Error(err))
+	}
+
 	// Schedule automatic options reveal after delay
 	go h.autoRevealOptions(chatID, h.optionsDelayMS)
 
@@ -184,7 +221,7 @@ func (h *TrainingHandler) autoRevealOptions(chatID int64, delayMS int) {
 func (h *TrainingHandler) ShowOptions(chatID int64, earlyReveal bool) error {
 	h.sessionsMutex.Lock()
 	state, exists := h.sessions[chatID]
-	if !exists {
+	if !exists || state == nil {
 		h.sessionsMutex.Unlock()
 		return fmt.Errorf("no active session")
 	}
@@ -222,6 +259,11 @@ func (h *TrainingHandler) ShowOptions(chatID int64, earlyReveal bool) error {
 		return fmt.Errorf("failed to send options: %w", err)
 	}
 
+	// Save state to database
+	if err := h.saveSessionState(state); err != nil {
+		h.logger.Warn("failed to save session state", zap.Error(err))
+	}
+
 	return nil
 }
 
@@ -229,8 +271,9 @@ func (h *TrainingHandler) ShowOptions(chatID int64, earlyReveal bool) error {
 func (h *TrainingHandler) HandleAnswer(chatID int64, optionIndex int) error {
 	h.sessionsMutex.RLock()
 	state, exists := h.sessions[chatID]
-	if !exists {
-		h.sessionsMutex.RUnlock()
+	h.sessionsMutex.RUnlock()
+
+	if !exists || state == nil {
 		return fmt.Errorf("no active session")
 	}
 
@@ -298,6 +341,11 @@ func (h *TrainingHandler) HandleAnswer(chatID int64, optionIndex int) error {
 	h.sessionsMutex.Lock()
 	state.CurrentIndex++
 	h.sessionsMutex.Unlock()
+
+	// Save state to database
+	if err := h.saveSessionState(state); err != nil {
+		h.logger.Warn("failed to save session state", zap.Error(err))
+	}
 
 	// Show next card after delay (only for wrong answers)
 	if !isCorrect {
@@ -447,5 +495,143 @@ func (h *TrainingHandler) sendMessage(chatID int64, text string) {
 	if _, err := h.bot.Send(msg); err != nil {
 		h.logger.Error("failed to send message", zap.Error(err))
 	}
+}
+
+// saveSessionState saves session state to database
+func (h *TrainingHandler) saveSessionState(state *SessionState) error {
+	// Extract user card IDs from queue
+	userCardIDs := make([]int64, 0, len(state.Queue))
+	for _, card := range state.Queue {
+		userCardIDs = append(userCardIDs, card.UserCard.ID)
+	}
+
+	// Create state data
+	stateData := SessionStateData{
+		UserCardIDs:  userCardIDs,
+		CurrentIndex: state.CurrentIndex,
+	}
+
+	// Get session from database to merge with existing session_json
+	session, err := h.trainingService.GetSession(state.SessionID)
+	if err != nil {
+		return fmt.Errorf("failed to get session: %w", err)
+	}
+	if session == nil {
+		return fmt.Errorf("session not found")
+	}
+
+	// Parse existing session_json to preserve config
+	var sessionData map[string]interface{}
+	if session.SessionJSON != "" {
+		if err := json.Unmarshal([]byte(session.SessionJSON), &sessionData); err != nil {
+			// If parsing fails, create new map
+			sessionData = make(map[string]interface{})
+		}
+	} else {
+		sessionData = make(map[string]interface{})
+	}
+
+	// Add state data
+	sessionData["state"] = stateData
+
+	// Serialize back to JSON
+	mergedJSON, err := json.Marshal(sessionData)
+	if err != nil {
+		return fmt.Errorf("failed to marshal merged session data: %w", err)
+	}
+
+	// Update session in database
+	return h.trainingService.UpdateSessionState(state.SessionID, string(mergedJSON))
+}
+
+// restoreSession restores session from database
+func (h *TrainingHandler) restoreSession(chatID, userID int64) (bool, error) {
+	// Get active session from database
+	activeSession, err := h.trainingService.GetActiveSession(userID)
+	if err != nil {
+		return false, fmt.Errorf("failed to get active session: %w", err)
+	}
+	if activeSession == nil {
+		return false, nil
+	}
+
+	// Parse session_json to get state
+	var sessionData map[string]interface{}
+	if activeSession.SessionJSON == "" {
+		return false, nil
+	}
+
+	if err := json.Unmarshal([]byte(activeSession.SessionJSON), &sessionData); err != nil {
+		return false, fmt.Errorf("failed to parse session_json: %w", err)
+	}
+
+	// Extract state data
+	stateDataRaw, ok := sessionData["state"]
+	if !ok {
+		return false, nil
+	}
+
+	stateDataJSON, err := json.Marshal(stateDataRaw)
+	if err != nil {
+		return false, fmt.Errorf("failed to marshal state data: %w", err)
+	}
+
+	var stateData SessionStateData
+	if err := json.Unmarshal(stateDataJSON, &stateData); err != nil {
+		return false, fmt.Errorf("failed to unmarshal state data: %w", err)
+	}
+
+	// Restore queue from user card IDs
+	queue, err := h.trainingService.RestoreQueue(userID, stateData.UserCardIDs)
+	if err != nil {
+		return false, fmt.Errorf("failed to restore queue: %w", err)
+	}
+
+	if len(queue) == 0 {
+		// Queue is empty, finish session
+		if err := h.trainingService.FinishSession(activeSession.ID, activeSession.DoneCount); err != nil {
+			h.logger.Warn("failed to finish empty session", zap.Error(err))
+		}
+		return false, nil
+	}
+
+	// Create session state
+	state := &SessionState{
+		UserID:       userID,
+		SessionID:    activeSession.ID,
+		Queue:        queue,
+		CurrentIndex: stateData.CurrentIndex,
+	}
+
+	// Validate current index
+	if state.CurrentIndex < 0 {
+		state.CurrentIndex = 0
+	}
+	if state.CurrentIndex >= len(state.Queue) {
+		// Session was already finished, mark it as such
+		if err := h.trainingService.FinishSession(activeSession.ID, len(state.Queue)); err != nil {
+			h.logger.Warn("failed to finish completed session", zap.Error(err))
+		}
+		return false, nil
+	}
+
+	// Store session in memory
+	h.sessionsMutex.Lock()
+	h.sessions[chatID] = state
+	h.sessionsMutex.Unlock()
+
+	h.logger.Info("restored session from database",
+		zap.Int64("session_id", activeSession.ID),
+		zap.Int64("user_id", userID),
+		zap.Int("current_index", state.CurrentIndex),
+		zap.Int("queue_length", len(queue)),
+	)
+
+	return true, nil
+}
+
+// RestoreSession restores session from database (public method for handler)
+func (h *TrainingHandler) RestoreSession(chatID, userID int64) (bool, error) {
+	return h.restoreSession(chatID, userID)
 }
 

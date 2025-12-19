@@ -315,3 +315,87 @@ func (s *TrainingService) GetDueCount(userID int64) (int, error) {
 	return s.userCardRepo.GetDueCount(userID, time.Now())
 }
 
+// GetSession gets a session by ID
+func (s *TrainingService) GetSession(sessionID int64) (*models.TrainingSession, error) {
+	return s.sessionRepo.GetSession(sessionID)
+}
+
+// GetActiveSession gets the active session for a user
+func (s *TrainingService) GetActiveSession(userID int64) (*models.TrainingSession, error) {
+	return s.sessionRepo.GetActiveSession(userID)
+}
+
+// UpdateSessionState updates session state in database
+func (s *TrainingService) UpdateSessionState(sessionID int64, sessionJSON string) error {
+	session, err := s.sessionRepo.GetSession(sessionID)
+	if err != nil {
+		return fmt.Errorf("failed to get session: %w", err)
+	}
+	if session == nil {
+		return fmt.Errorf("session not found")
+	}
+
+	session.SessionJSON = sessionJSON
+	return s.sessionRepo.UpdateSession(session)
+}
+
+// RestoreQueue restores queue from user card IDs
+func (s *TrainingService) RestoreQueue(userID int64, userCardIDs []int64) ([]*models.UserCardWithTraining, error) {
+	if len(userCardIDs) == 0 {
+		return nil, nil
+	}
+
+	queue := make([]*models.UserCardWithTraining, 0, len(userCardIDs))
+
+	for _, userCardID := range userCardIDs {
+		// Get user card
+		userCard, err := s.userCardRepo.GetUserCard(userCardID)
+		if err != nil {
+			s.logger.Warn("failed to get user card during restore",
+				zap.Int64("user_card_id", userCardID),
+				zap.Error(err),
+			)
+			continue
+		}
+		if userCard == nil {
+			s.logger.Warn("user card not found during restore",
+				zap.Int64("user_card_id", userCardID),
+			)
+			continue
+		}
+
+		// Verify user owns this card
+		if userCard.UserID != userID {
+			s.logger.Warn("user card belongs to different user",
+				zap.Int64("user_card_id", userCardID),
+				zap.Int64("expected_user_id", userID),
+				zap.Int64("actual_user_id", userCard.UserID),
+			)
+			continue
+		}
+
+		// Get training card
+		trainingCard, err := s.trainingCardRepo.GetTrainingCard(userCard.TrainingCardID)
+		if err != nil {
+			s.logger.Warn("failed to get training card during restore",
+				zap.Int64("training_card_id", userCard.TrainingCardID),
+				zap.Error(err),
+			)
+			continue
+		}
+		if trainingCard == nil {
+			s.logger.Warn("training card not found during restore",
+				zap.Int64("training_card_id", userCard.TrainingCardID),
+			)
+			continue
+		}
+
+		queue = append(queue, &models.UserCardWithTraining{
+			UserCard:     *userCard,
+			TrainingCard: *trainingCard,
+		})
+	}
+
+	return queue, nil
+}
+

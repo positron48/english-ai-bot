@@ -207,3 +207,39 @@ func (r *TrainingCardRepository) DeleteAllTrainingCards() (int64, error) {
 	return rowsAffected, nil
 }
 
+// GetTrainingCardsByWordEN gets all training cards for a word by word_en
+func (r *TrainingCardRepository) GetTrainingCardsByWordEN(wordEN string) ([]*models.TrainingCard, error) {
+	query := `SELECT id, word_card_id, word_en, COALESCE(transcription, ''), sense_index,
+			  meaning_ru, meaning_en, COALESCE(example_en, ''), COALESCE(example_ru, ''),
+			  COALESCE(distractors_ru, ''), COALESCE(distractors_en, ''), COALESCE(hint, ''),
+			  created_at
+			  FROM training_cards WHERE word_en = ? ORDER BY sense_index`
+
+	rows, err := r.db.Query(query, wordEN)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get training cards: %w", err)
+	}
+	defer rows.Close()
+
+	var cards []*models.TrainingCard
+	for rows.Next() {
+		var card models.TrainingCard
+		var createdAt string
+
+		err := rows.Scan(
+			&card.ID, &card.WordCardID, &card.WordEN, &card.Transcription, &card.SenseIndex,
+			&card.MeaningRU, &card.MeaningEN, &card.ExampleEN, &card.ExampleRU,
+			&card.DistractorsRU, &card.DistractorsEN, &card.Hint,
+			&createdAt,
+		)
+		if err != nil {
+			return nil, fmt.Errorf("failed to scan training card: %w", err)
+		}
+
+		card.CreatedAt, _ = time.Parse("2006-01-02 15:04:05", createdAt)
+		cards = append(cards, &card)
+	}
+
+	return cards, nil
+}
+
