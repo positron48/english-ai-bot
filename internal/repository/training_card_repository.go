@@ -28,13 +28,13 @@ func NewTrainingCardRepository(db *sql.DB, logger *zap.Logger) *TrainingCardRepo
 func (r *TrainingCardRepository) CreateTrainingCard(card *models.TrainingCard) (int64, error) {
 	query := `INSERT INTO training_cards (
 		word_card_id, word_en, transcription, sense_index,
-		meaning_ru, meaning_en, example_en, example_ru,
+		word_ru, meaning_en, example_en, example_ru,
 		distractors_ru, distractors_en, hint
 	) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
 
 	result, err := r.db.Exec(query,
 		card.WordCardID, card.WordEN, card.Transcription, card.SenseIndex,
-		card.MeaningRU, card.MeaningEN, card.ExampleEN, card.ExampleRU,
+		card.WordRU, card.MeaningEN, card.ExampleEN, card.ExampleRU,
 		card.DistractorsRU, card.DistractorsEN, card.Hint,
 	)
 	if err != nil {
@@ -58,7 +58,7 @@ func (r *TrainingCardRepository) CreateTrainingCard(card *models.TrainingCard) (
 // GetTrainingCard gets a training card by ID
 func (r *TrainingCardRepository) GetTrainingCard(id int64) (*models.TrainingCard, error) {
 	query := `SELECT id, word_card_id, word_en, COALESCE(transcription, ''), sense_index,
-			  meaning_ru, meaning_en, COALESCE(example_en, ''), COALESCE(example_ru, ''),
+			  word_ru, meaning_en, COALESCE(example_en, ''), COALESCE(example_ru, ''),
 			  COALESCE(distractors_ru, ''), COALESCE(distractors_en, ''), COALESCE(hint, ''),
 			  created_at
 			  FROM training_cards WHERE id = ?`
@@ -68,7 +68,7 @@ func (r *TrainingCardRepository) GetTrainingCard(id int64) (*models.TrainingCard
 
 	err := r.db.QueryRow(query, id).Scan(
 		&card.ID, &card.WordCardID, &card.WordEN, &card.Transcription, &card.SenseIndex,
-		&card.MeaningRU, &card.MeaningEN, &card.ExampleEN, &card.ExampleRU,
+		&card.WordRU, &card.MeaningEN, &card.ExampleEN, &card.ExampleRU,
 		&card.DistractorsRU, &card.DistractorsEN, &card.Hint,
 		&createdAt,
 	)
@@ -88,7 +88,7 @@ func (r *TrainingCardRepository) GetTrainingCard(id int64) (*models.TrainingCard
 // GetTrainingCardsByWordCardID gets all training cards for a word card
 func (r *TrainingCardRepository) GetTrainingCardsByWordCardID(wordCardID int64) ([]*models.TrainingCard, error) {
 	query := `SELECT id, word_card_id, word_en, COALESCE(transcription, ''), sense_index,
-			  meaning_ru, meaning_en, COALESCE(example_en, ''), COALESCE(example_ru, ''),
+			  word_ru, meaning_en, COALESCE(example_en, ''), COALESCE(example_ru, ''),
 			  COALESCE(distractors_ru, ''), COALESCE(distractors_en, ''), COALESCE(hint, ''),
 			  created_at
 			  FROM training_cards WHERE word_card_id = ? ORDER BY sense_index`
@@ -106,7 +106,7 @@ func (r *TrainingCardRepository) GetTrainingCardsByWordCardID(wordCardID int64) 
 
 		err := rows.Scan(
 			&card.ID, &card.WordCardID, &card.WordEN, &card.Transcription, &card.SenseIndex,
-			&card.MeaningRU, &card.MeaningEN, &card.ExampleEN, &card.ExampleRU,
+			&card.WordRU, &card.MeaningEN, &card.ExampleEN, &card.ExampleRU,
 			&card.DistractorsRU, &card.DistractorsEN, &card.Hint,
 			&createdAt,
 		)
@@ -210,7 +210,7 @@ func (r *TrainingCardRepository) DeleteAllTrainingCards() (int64, error) {
 // GetTrainingCardsByWordEN gets all training cards for a word by word_en
 func (r *TrainingCardRepository) GetTrainingCardsByWordEN(wordEN string) ([]*models.TrainingCard, error) {
 	query := `SELECT id, word_card_id, word_en, COALESCE(transcription, ''), sense_index,
-			  meaning_ru, meaning_en, COALESCE(example_en, ''), COALESCE(example_ru, ''),
+			  word_ru, meaning_en, COALESCE(example_en, ''), COALESCE(example_ru, ''),
 			  COALESCE(distractors_ru, ''), COALESCE(distractors_en, ''), COALESCE(hint, ''),
 			  created_at
 			  FROM training_cards WHERE word_en = ? ORDER BY sense_index`
@@ -228,7 +228,7 @@ func (r *TrainingCardRepository) GetTrainingCardsByWordEN(wordEN string) ([]*mod
 
 		err := rows.Scan(
 			&card.ID, &card.WordCardID, &card.WordEN, &card.Transcription, &card.SenseIndex,
-			&card.MeaningRU, &card.MeaningEN, &card.ExampleEN, &card.ExampleRU,
+			&card.WordRU, &card.MeaningEN, &card.ExampleEN, &card.ExampleRU,
 			&card.DistractorsRU, &card.DistractorsEN, &card.Hint,
 			&createdAt,
 		)

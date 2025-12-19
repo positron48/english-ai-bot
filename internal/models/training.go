@@ -9,7 +9,7 @@ type TrainingCard struct {
 	WordEN        string
 	Transcription string
 	SenseIndex    int
-	MeaningRU     string
+	WordRU        string
 	MeaningEN     string
 	ExampleEN     string
 	ExampleRU     string
@@ -125,7 +125,7 @@ type CircuitBreakerState struct {
 // TrainingCardSense represents one sense/meaning in LLM response
 type TrainingCardSense struct {
 	Index         int      `json:"index"`
-	MeaningRU     string   `json:"meaning_ru"`
+	WordRU        string   `json:"word_ru"`
 	MeaningEN     string   `json:"meaning_en"`
 	ExampleEN     string   `json:"example_en"`
 	ExampleRU     string   `json:"example_ru"`

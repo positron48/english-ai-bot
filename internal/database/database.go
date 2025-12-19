@@ -80,7 +80,7 @@ func (db *DB) migrate() error {
 			word_en TEXT NOT NULL,
 			transcription TEXT,
 			sense_index INTEGER NOT NULL DEFAULT 0,
-			meaning_ru TEXT NOT NULL,
+			word_ru TEXT NOT NULL,
 			meaning_en TEXT NOT NULL,
 			example_en TEXT,
 			example_ru TEXT,

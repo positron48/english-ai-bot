@@ -302,7 +302,7 @@ func (h *Handler) handleGetTrainDataCommand(chatID, userID int64, wordEN string)
 			message.WriteString(fmt.Sprintf("• Transcription: `%s`\n", card.Transcription))
 		}
 		message.WriteString(fmt.Sprintf("• Word EN: `%s`\n", card.WordEN))
-		message.WriteString(fmt.Sprintf("• Meaning RU: %s\n", card.MeaningRU))
+		message.WriteString(fmt.Sprintf("• Word RU: %s\n", card.WordRU))
 		message.WriteString(fmt.Sprintf("• Meaning EN: %s\n", card.MeaningEN))
 		if card.ExampleEN != "" {
 			message.WriteString(fmt.Sprintf("• Example EN: %s\n", card.ExampleEN))

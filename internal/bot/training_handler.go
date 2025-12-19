@@ -165,7 +165,7 @@ func (h *TrainingHandler) showCard(chatID int64) error {
 	if card.UserCard.Direction == models.DirectionRUtoEN {
 		questionText = fmt.Sprintf(
 			"🇬🇧 Переведите на английский:\n\n*%s*",
-			card.TrainingCard.MeaningRU,
+			card.TrainingCard.WordRU,
 		)
 	} else {
 		questionText = fmt.Sprintf(
@@ -278,7 +278,6 @@ func (h *TrainingHandler) HandleAnswer(chatID int64, optionIndex int) error {
 	}
 
 	if state.CurrentIndex >= len(state.Queue) {
-		h.sessionsMutex.RUnlock()
 		return nil
 	}
 
@@ -288,7 +287,6 @@ func (h *TrainingHandler) HandleAnswer(chatID int64, optionIndex int) error {
 	optionsShownAt := state.OptionsShownAt
 	options := state.Options
 	correctAnswer := state.CorrectAnswer
-	h.sessionsMutex.RUnlock()
 
 	// Validate option index
 	if optionIndex < 0 || optionIndex >= len(options) {
@@ -362,7 +360,7 @@ func (h *TrainingHandler) sendFeedback(chatID int64, card *models.TrainingCard, 
 		message = "✅ Правильно!"
 	} else {
 		message = fmt.Sprintf("❌ Неправильно\n\nВы выбрали: %s\nПравильный ответ: *%s*\n\n%s — %s",
-			chosen, correct, card.WordEN, card.MeaningRU)
+			chosen, correct, card.WordEN, card.WordRU)
 		
 		// Show hint only after wrong answer
 		if card.Hint != "" {
@@ -479,8 +477,8 @@ func (h *TrainingHandler) extractSessionWords(queue []*models.UserCardWithTraini
 			}
 		} else {
 			// For EN->RU, collect Russian meanings
-			if card.TrainingCard.MeaningRU != "" {
-				sessionWords = append(sessionWords, card.TrainingCard.MeaningRU)
+			if card.TrainingCard.WordRU != "" {
+				sessionWords = append(sessionWords, card.TrainingCard.WordRU)
 			}
 		}
 	}

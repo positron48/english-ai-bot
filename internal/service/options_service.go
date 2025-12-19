@@ -42,7 +42,7 @@ func (s *OptionsService) GenerateOptions(
 		distractorsJSON = card.TrainingCard.DistractorsEN
 	} else {
 		// Question in English, answer in Russian
-		correctAnswer = card.TrainingCard.MeaningRU
+		correctAnswer = card.TrainingCard.WordRU
 		distractorsJSON = card.TrainingCard.DistractorsRU
 	}
 
@@ -217,8 +217,8 @@ func (s *OptionsService) getOtherMeaningsOfWord(wordCardID int64, direction mode
 			continue
 		} else {
 			// For EN->RU, exclude all Russian meanings
-			if c.MeaningRU != "" {
-				meanings = append(meanings, c.MeaningRU)
+			if c.WordRU != "" {
+				meanings = append(meanings, c.WordRU)
 			}
 		}
 	}

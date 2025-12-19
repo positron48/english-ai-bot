@@ -8,9 +8,13 @@ Requirements:
    - Avoid rare, archaic, or highly specialized meanings
    - Prioritize meanings that learners encounter most often
 2. For each sense provide:
-   - Russian translation (meaning_ru) - MUST be concise: 1-2 words maximum, primary translation only
-     * Do NOT include multiple synonyms separated by commas (e.g., use "бежать" not "бежать, бегать, мчаться")
-     * Choose the most common single-word translation
+   - Russian word (word_ru) - MUST be EXACTLY ONE WORD, the primary Russian translation
+     * Provide only the single Russian word that translates the English word - this is a word, not a definition or explanation
+     * Use only one word without synonyms or additional context (e.g., use "монах" instead of "монах, духовен человек, живущий по монашескому обету")
+     * Provide the word itself without explanations, descriptions, or additional context
+     * Choose the most common single-word translation (noun, verb, adjective, etc.)
+     * Examples of correct format: "монах", "бежать", "банк"
+     * Examples of incorrect format: "монах, духовен человек", "бежать, бегать", "банк, финансовое учреждение"
    - English definition (meaning_en)
    - Example sentence in English (example_en)
    - Example translation in Russian (example_ru)
@@ -20,20 +24,19 @@ Requirements:
 
 Distractors rules:
 - Distractors should be plausible but clearly wrong for the SPECIFIC definition given
-- Distractors CAN be from the same semantic field or similar in meaning/sound
-- However, distractors must NOT match the specific definition provided
+- Distractors can be from the same semantic field or similar in meaning/sound
+- Distractors must be different from the specific definition provided
 - The definition should be specific enough to clearly distinguish the correct answer from distractors
 - Include common learner mistakes (false friends, similar-sounding words)
-- Avoid obviously absurd or completely unrelated words
-- IMPORTANT: Do NOT include other meanings of the SAME word as distractors
-  (e.g., for "bank" as "банк", do NOT use "берег" as a distractor)
-- CRITICAL: Distractors must NOT be synonyms of the correct answer
-  * If the correct answer is "бежать", do NOT use "мчаться", "нестись", "спешить" as distractors
-  * Focus on words that are semantically different but plausibly confusing
-  * Use words with similar spelling, false friends, or same category but different meaning
-- Length consistency: Distractors should be similar in length and style to the correct answer
-  * If meaning_ru is a single word, distractors should also be single words
-  * Avoid mixing long phrases with short words
+- Use plausible words that could reasonably be confused with the correct answer
+- CRITICAL: Use distractors that are semantically DIFFERENT from the correct answer, not synonyms or closely related words
+  * Select words that are semantically DIFFERENT but plausibly confusing:
+    - Words with similar spelling or sound (false friends)
+    - Words that represent common learner mistakes
+  * The goal is to test if the user knows the SPECIFIC word, not just a related concept
+- Length consistency: Distractors should match the length and style of the correct answer
+  * Since word_ru is always a single word, use only single words as distractors
+  * Maintain consistent word length - use single words throughout, not phrases
 
 Hint rules:
 - Should be memorable and creative
@@ -50,7 +53,7 @@ JSON Schema:
   "senses": [
     {
       "index": 0,
-      "meaning_ru": "string",
+      "word_ru": "string",
       "meaning_en": "string",
       "example_en": "string",
       "example_ru": "string",

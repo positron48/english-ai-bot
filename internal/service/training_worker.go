@@ -186,7 +186,7 @@ func (w *TrainingWorker) processCard(ctx context.Context, wordCard *models.WordC
 			WordEN:        trainingResp.WordEN,
 			Transcription: trainingResp.Transcription,
 			SenseIndex:    sense.Index,
-			MeaningRU:     sense.MeaningRU,
+			WordRU:        sense.WordRU,
 			MeaningEN:     sense.MeaningEN,
 			ExampleEN:     sense.ExampleEN,
 			ExampleRU:     sense.ExampleRU,
