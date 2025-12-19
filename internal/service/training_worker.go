@@ -158,9 +158,20 @@ func (w *TrainingWorker) processCard(ctx context.Context, wordCard *models.WordC
 		return fmt.Errorf("LLM generation failed: %w", err)
 	}
 
+	// Log raw LLM response for debugging
+	w.logger.Info("raw LLM response",
+		zap.String("word", wordCard.Word),
+		zap.String("raw_response", response),
+	)
+
 	// Parse response
 	var trainingResp models.TrainingCardResponse
 	if err := json.Unmarshal([]byte(response), &trainingResp); err != nil {
+		w.logger.Error("failed to parse LLM response",
+			zap.String("word", wordCard.Word),
+			zap.String("raw_response", response),
+			zap.Error(err),
+		)
 		return fmt.Errorf("failed to parse LLM response: %w", err)
 	}
 
