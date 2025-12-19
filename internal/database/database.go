@@ -46,6 +46,11 @@ func (db *DB) GetConnection() *sql.DB {
 
 // migrate creates necessary tables
 func (db *DB) migrate() error {
+	// Migrate training_cards: rename meaning_ru to word_ru if needed
+	if err := db.migrateTrainingCardsColumn(); err != nil {
+		return fmt.Errorf("failed to migrate training_cards column: %w", err)
+	}
+
 	queries := []string{
 		// Existing tables
 		`CREATE TABLE IF NOT EXISTS word_cards (
@@ -204,5 +209,120 @@ func (db *DB) migrate() error {
 	}
 
 	db.logger.Info("database migration completed successfully")
+	return nil
+}
+
+// migrateTrainingCardsColumn migrates meaning_ru column to word_ru
+func (db *DB) migrateTrainingCardsColumn() error {
+	// Check if training_cards table exists
+	var tableExists int
+	err := db.conn.QueryRow(`
+		SELECT COUNT(*) FROM sqlite_master 
+		WHERE type='table' AND name='training_cards'
+	`).Scan(&tableExists)
+	if err != nil {
+		return fmt.Errorf("failed to check table existence: %w", err)
+	}
+
+	if tableExists == 0 {
+		// Table doesn't exist yet, will be created with correct schema
+		return nil
+	}
+
+	// Check if meaning_ru column exists
+	var columnExists int
+	err = db.conn.QueryRow(`
+		SELECT COUNT(*) FROM pragma_table_info('training_cards') 
+		WHERE name='meaning_ru'
+	`).Scan(&columnExists)
+	if err != nil {
+		return fmt.Errorf("failed to check column existence: %w", err)
+	}
+
+	if columnExists > 0 {
+		// Column exists, need to rename it
+		// SQLite 3.25.0+ supports ALTER TABLE ... RENAME COLUMN
+		// For older versions, we'd need to recreate the table, but we'll try the modern approach first
+		_, err = db.conn.Exec(`ALTER TABLE training_cards RENAME COLUMN meaning_ru TO word_ru`)
+		if err != nil {
+			// If RENAME COLUMN is not supported, fall back to table recreation
+			db.logger.Warn("RENAME COLUMN not supported, recreating table", zap.Error(err))
+			return db.recreateTrainingCardsTable()
+		}
+		db.logger.Info("migrated training_cards.meaning_ru to word_ru")
+	}
+
+	return nil
+}
+
+// recreateTrainingCardsTable recreates training_cards table with word_ru column
+func (db *DB) recreateTrainingCardsTable() error {
+	// Start transaction
+	tx, err := db.conn.Begin()
+	if err != nil {
+		return fmt.Errorf("failed to begin transaction: %w", err)
+	}
+	defer tx.Rollback()
+
+	// Create new table with correct schema
+	_, err = tx.Exec(`
+		CREATE TABLE training_cards_new (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			word_card_id INTEGER NOT NULL,
+			word_en TEXT NOT NULL,
+			transcription TEXT,
+			sense_index INTEGER NOT NULL DEFAULT 0,
+			word_ru TEXT NOT NULL,
+			meaning_en TEXT NOT NULL,
+			example_en TEXT,
+			example_ru TEXT,
+			distractors_ru TEXT,
+			distractors_en TEXT,
+			hint TEXT,
+			created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+			FOREIGN KEY (word_card_id) REFERENCES word_cards(id) ON DELETE CASCADE,
+			UNIQUE(word_card_id, sense_index)
+		)
+	`)
+	if err != nil {
+		return fmt.Errorf("failed to create new table: %w", err)
+	}
+
+	// Copy data from old table to new table
+	_, err = tx.Exec(`
+		INSERT INTO training_cards_new 
+		(id, word_card_id, word_en, transcription, sense_index, word_ru, meaning_en, example_en, example_ru, distractors_ru, distractors_en, hint, created_at)
+		SELECT 
+		id, word_card_id, word_en, transcription, sense_index, meaning_ru AS word_ru, meaning_en, example_en, example_ru, distractors_ru, distractors_en, hint, created_at
+		FROM training_cards
+	`)
+	if err != nil {
+		return fmt.Errorf("failed to copy data: %w", err)
+	}
+
+	// Drop old table
+	_, err = tx.Exec(`DROP TABLE training_cards`)
+	if err != nil {
+		return fmt.Errorf("failed to drop old table: %w", err)
+	}
+
+	// Rename new table
+	_, err = tx.Exec(`ALTER TABLE training_cards_new RENAME TO training_cards`)
+	if err != nil {
+		return fmt.Errorf("failed to rename table: %w", err)
+	}
+
+	// Recreate indexes
+	_, err = tx.Exec(`CREATE INDEX IF NOT EXISTS idx_training_cards_word_card_id ON training_cards(word_card_id)`)
+	if err != nil {
+		return fmt.Errorf("failed to recreate index: %w", err)
+	}
+
+	// Commit transaction
+	if err = tx.Commit(); err != nil {
+		return fmt.Errorf("failed to commit transaction: %w", err)
+	}
+
+	db.logger.Info("recreated training_cards table with word_ru column")
 	return nil
 }
