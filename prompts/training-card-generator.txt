@@ -8,7 +8,9 @@ Requirements:
    - Avoid rare, archaic, or highly specialized meanings
    - Prioritize meanings that learners encounter most often
 2. For each sense provide:
-   - Russian translation (meaning_ru)
+   - Russian translation (meaning_ru) - MUST be concise: 1-2 words maximum, primary translation only
+     * Do NOT include multiple synonyms separated by commas (e.g., use "бежать" not "бежать, бегать, мчаться")
+     * Choose the most common single-word translation
    - English definition (meaning_en)
    - Example sentence in English (example_en)
    - Example translation in Russian (example_ru)
@@ -25,6 +27,13 @@ Distractors rules:
 - Avoid obviously absurd or completely unrelated words
 - IMPORTANT: Do NOT include other meanings of the SAME word as distractors
   (e.g., for "bank" as "банк", do NOT use "берег" as a distractor)
+- CRITICAL: Distractors must NOT be synonyms of the correct answer
+  * If the correct answer is "бежать", do NOT use "мчаться", "нестись", "спешить" as distractors
+  * Focus on words that are semantically different but plausibly confusing
+  * Use words with similar spelling, false friends, or same category but different meaning
+- Length consistency: Distractors should be similar in length and style to the correct answer
+  * If meaning_ru is a single word, distractors should also be single words
+  * Avoid mixing long phrases with short words
 
 Hint rules:
 - Should be memorable and creative

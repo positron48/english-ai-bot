@@ -26,9 +26,11 @@ func NewOptionsService(trainingCardRepo *repository.TrainingCardRepository, logg
 }
 
 // GenerateOptions generates multiple choice options for a card
+// sessionWords: correct answers from other cards in the current session (to mix in as distractors)
 func (s *OptionsService) GenerateOptions(
 	card *models.UserCardWithTraining,
 	optionCount int,
+	sessionWords []string,
 ) ([]string, string, error) {
 	var correctAnswer string
 	var distractorsJSON string
@@ -92,18 +94,55 @@ func (s *OptionsService) GenerateOptions(
 		}
 	}
 
+	// Filter session words: exclude current card's answer and already included options
+	filteredSessionWords := make([]string, 0, len(sessionWords))
+	for _, sw := range sessionWords {
+		if sw != correctAnswer && !contains(optionsPool, sw) {
+			filteredSessionWords = append(filteredSessionWords, sw)
+		}
+	}
+
 	// Select distractors (need optionCount - 1)
 	neededDistractors := optionCount - 1
 	selectedDistractors := make([]string, 0, neededDistractors)
 
-	// Shuffle pool
+	// Mix in 1-2 session words (familiar words from current training session)
+	// This prevents guessing by word recognition since all options look familiar
+	sessionWordsToUse := 1
+	if len(filteredSessionWords) >= 2 && neededDistractors >= 3 {
+		// Use 2 session words if we have enough and need at least 3 distractors
+		sessionWordsToUse = 2
+	}
+	if sessionWordsToUse > len(filteredSessionWords) {
+		sessionWordsToUse = len(filteredSessionWords)
+	}
+
+	// Shuffle session words and take what we need
+	shuffledSessionWords := make([]string, len(filteredSessionWords))
+	copy(shuffledSessionWords, filteredSessionWords)
+	rand.Shuffle(len(shuffledSessionWords), func(i, j int) {
+		shuffledSessionWords[i], shuffledSessionWords[j] = shuffledSessionWords[j], shuffledSessionWords[i]
+	})
+
+	// Add session words to selected distractors
+	for i := 0; i < sessionWordsToUse && i < len(shuffledSessionWords); i++ {
+		selectedDistractors = append(selectedDistractors, shuffledSessionWords[i])
+	}
+
+	// Shuffle LLM distractors pool
 	rand.Shuffle(len(optionsPool), func(i, j int) {
 		optionsPool[i], optionsPool[j] = optionsPool[j], optionsPool[i]
 	})
 
-	// Take what we need
-	for i := 0; i < neededDistractors && i < len(optionsPool); i++ {
-		selectedDistractors = append(selectedDistractors, optionsPool[i])
+	// Fill remaining slots with LLM-generated distractors (wrong answers + distractors)
+	// Exclude session words we already added
+	for _, d := range optionsPool {
+		if !contains(selectedDistractors, d) && len(selectedDistractors) < neededDistractors {
+			selectedDistractors = append(selectedDistractors, d)
+		}
+		if len(selectedDistractors) >= neededDistractors {
+			break
+		}
 	}
 
 	// If we don't have enough distractors, try to get from other cards of the same word

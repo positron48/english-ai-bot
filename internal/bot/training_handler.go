@@ -107,6 +107,9 @@ func (h *TrainingHandler) showCard(chatID int64) error {
 
 	card := state.Queue[state.CurrentIndex]
 	
+	// Extract session words from other cards in the queue (for mixing into distractors)
+	sessionWords := h.extractSessionWords(state.Queue, state.CurrentIndex, card.UserCard.Direction)
+	
 	// Update state
 	h.sessionsMutex.Lock()
 	state.ShownAt = time.Now()
@@ -114,7 +117,7 @@ func (h *TrainingHandler) showCard(chatID int64) error {
 	h.sessionsMutex.Unlock()
 
 	// Generate options
-	options, correctAnswer, err := h.optionsService.GenerateOptions(card, models.DefaultOptionCount)
+	options, correctAnswer, err := h.optionsService.GenerateOptions(card, models.DefaultOptionCount, sessionWords)
 	if err != nil {
 		h.logger.Error("failed to generate options", zap.Error(err))
 		return h.skipCard(chatID, "Ошибка генерации вариантов")
@@ -407,6 +410,34 @@ func (h *TrainingHandler) HasActiveSession(chatID int64) bool {
 	defer h.sessionsMutex.RUnlock()
 	_, exists := h.sessions[chatID]
 	return exists
+}
+
+// extractSessionWords extracts correct answers from other cards in the session
+// to be used as distractors (prevents guessing by word recognition)
+func (h *TrainingHandler) extractSessionWords(queue []*models.UserCardWithTraining, currentIndex int, direction models.CardDirection) []string {
+	sessionWords := make([]string, 0, len(queue))
+	
+	for i, card := range queue {
+		// Skip current card
+		if i == currentIndex {
+			continue
+		}
+		
+		// Extract correct answer based on direction
+		if direction == models.DirectionRUtoEN {
+			// For RU->EN, collect English words
+			if card.TrainingCard.WordEN != "" {
+				sessionWords = append(sessionWords, card.TrainingCard.WordEN)
+			}
+		} else {
+			// For EN->RU, collect Russian meanings
+			if card.TrainingCard.MeaningRU != "" {
+				sessionWords = append(sessionWords, card.TrainingCard.MeaningRU)
+			}
+		}
+	}
+	
+	return sessionWords
 }
 
 // sendMessage is a helper to send text messages
