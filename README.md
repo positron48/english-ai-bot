@@ -10,6 +10,9 @@ A simple AI-powered Telegram bot written in Go that integrates with OpenAI-compa
 - **Vocabulary cards caching** - SQLite database for storing word definitions
 - **Request history tracking** - tracks which users requested which words and when
 - **Smart word detection** - automatically detects single-word queries and uses cached definitions when available
+- **Spaced Repetition System (SRS)** - intelligent vocabulary training with adaptive scheduling
+- **Training sessions** - interactive vocabulary card training with multiple choice questions
+- **Session persistence** - training sessions survive bot restarts
 - Long polling and webhook support
 - Structured logging with Zap
 - Configuration management with Viper
@@ -171,9 +174,21 @@ This bot works with any OpenAI-compatible API, including:
 
 The bot supports the following commands:
 
+### User Commands
+
 - `/start` - Start the bot and get welcome message
 - `/help` - Show help message with available commands
-- `/status` - Show bot status and AI connection info
+- `/train` - Start a training session with vocabulary cards
+- `/get_id` - Get your Telegram user ID
+
+### Admin Commands
+
+The following commands are available only to the configured admin user:
+
+- `/reset_circuit` - Reset the circuit breaker for the training worker
+- `/delete_train [word]` - Delete all training cards for a specific word
+- `/delete_train_all` - Delete all training cards (cascades to user_cards and review_events)
+- `/get_train_data [word]` - Get detailed information about all training cards for a word
 
 ## Configuration
 
