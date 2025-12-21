@@ -195,7 +195,7 @@ func (r *UserRepository) UpdateUsername(telegramID int64, username string) error
 
 // GetAllUsers returns all users (for notification scheduler)
 func (r *UserRepository) GetAllUsers() ([]*models.User, error) {
-	query := `SELECT id, telegram_id, timezone, preferred_training_time, 
+	query := `SELECT id, telegram_id, COALESCE(telegram_username, ''), timezone, preferred_training_time, 
 			  COALESCE(settings_json, ''), created_at, updated_at
 			  FROM users ORDER BY id`
 

@@ -291,9 +291,24 @@ func (h *TrainingHandler) HandleAnswer(chatID int64, optionIndex int) error {
 	options := state.Options
 	correctAnswer := state.CorrectAnswer
 
+	// Check if card state is initialized
+	// This can happen if session was restored but showCard wasn't called yet
+	if len(options) == 0 || correctAnswer == "" {
+		// Card wasn't shown yet, show it now
+		h.logger.Warn("card state not initialized, showing card",
+			zap.Int64("chat_id", chatID),
+			zap.Int("current_index", state.CurrentIndex),
+		)
+		if err := h.showCard(chatID); err != nil {
+			return fmt.Errorf("failed to show card: %w", err)
+		}
+		// Return error to indicate that user should wait for options
+		return fmt.Errorf("card is being shown, please wait for options to appear")
+	}
+
 	// Validate option index
 	if optionIndex < 0 || optionIndex >= len(options) {
-		return fmt.Errorf("invalid option index")
+		return fmt.Errorf("invalid option index: %d (valid range: 0-%d)", optionIndex, len(options)-1)
 	}
 
 	chosenOption := options[optionIndex]
@@ -617,25 +632,27 @@ func (h *TrainingHandler) restoreSession(chatID, userID int64) (bool, error) {
 		return false, nil
 	}
 
-	// Create session state
+	// Validate current index
+	currentIndex := stateData.CurrentIndex
+	if currentIndex < 0 {
+		currentIndex = 0
+	}
+	if currentIndex >= len(queue) {
+		// Session was already finished, mark it as such
+		if err := h.trainingService.FinishSession(activeSession.ID, len(queue)); err != nil {
+			h.logger.Warn("failed to finish completed session", zap.Error(err))
+		}
+		return false, nil
+	}
+
+	// Create session state (without card state - will be set when showCard is called)
 	state := &SessionState{
 		UserID:              userID,
 		SessionID:           activeSession.ID,
 		Queue:               queue,
-		CurrentIndex:        stateData.CurrentIndex,
+		CurrentIndex:        currentIndex,
 		RecentCorrectAnswers: make([]string, 0, 2),
-	}
-
-	// Validate current index
-	if state.CurrentIndex < 0 {
-		state.CurrentIndex = 0
-	}
-	if state.CurrentIndex >= len(state.Queue) {
-		// Session was already finished, mark it as such
-		if err := h.trainingService.FinishSession(activeSession.ID, len(state.Queue)); err != nil {
-			h.logger.Warn("failed to finish completed session", zap.Error(err))
-		}
-		return false, nil
+		// Options, CorrectAnswer, ShownAt, OptionsShownAt will be set when showCard is called
 	}
 
 	// Store session in memory
@@ -650,6 +667,8 @@ func (h *TrainingHandler) restoreSession(chatID, userID int64) (bool, error) {
 		zap.Int("queue_length", len(queue)),
 	)
 
+	// Note: showCard will be called by StartTraining after restoreSession returns true
+	// This ensures that Options, CorrectAnswer, etc. are properly initialized
 	return true, nil
 }
 

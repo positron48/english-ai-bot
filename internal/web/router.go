@@ -72,8 +72,8 @@ func NewRouter(
 	}
 	r.templates = tmpl
 
-	// Setup routes
-	r.setupRoutes()
+	// Setup public routes only (protected routes will be added after SetDependencies)
+	r.setupPublicRoutes()
 
 	return r
 }
@@ -102,6 +102,9 @@ func (r *Router) SetDependencies(
 		r.config,
 		botToken,
 	)
+
+	// Setup protected routes now that auth middleware is initialized
+	r.setupProtectedRoutes()
 }
 
 // SetOTPRepo sets the OTP repository
@@ -114,8 +117,8 @@ func (r *Router) getAuthMiddleware() *AuthMiddleware {
 	return r.authMiddleware
 }
 
-// setupRoutes configures all routes
-func (r *Router) setupRoutes() {
+// setupPublicRoutes configures public routes (called during initialization)
+func (r *Router) setupPublicRoutes() {
 	// Static files
 	staticFS, err := fs.Sub(staticFS, "static")
 	if err != nil {
@@ -132,9 +135,16 @@ func (r *Router) setupRoutes() {
 	r.mux.HandleFunc("/auth/request_otp", r.handleAuthRequestOTP)
 	r.mux.HandleFunc("/auth/otp", r.handleAuthOTP)
 	r.mux.HandleFunc("/logout", r.handleLogout)
+}
+
+// setupProtectedRoutes configures protected routes (called after SetDependencies)
+func (r *Router) setupProtectedRoutes() {
+	auth := r.getAuthMiddleware()
+	if auth == nil {
+		r.logger.Fatal("auth middleware not initialized - call SetDependencies first")
+	}
 
 	// Protected user routes (wrapped with auth middleware)
-	auth := r.getAuthMiddleware()
 	r.mux.HandleFunc("/app/dashboard", auth.RequireAuth(r.handleDashboard))
 	r.mux.HandleFunc("/app/vocab", auth.RequireAuth(r.handleVocab))
 	r.mux.HandleFunc("/app/vocab/", auth.RequireAuth(r.handleVocabDelete))

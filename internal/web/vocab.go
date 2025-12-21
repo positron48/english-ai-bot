@@ -83,6 +83,12 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 
 // handleVocabDelete handles vocabulary deletion (confirm and delete)
 func (r *Router) handleVocabDelete(w http.ResponseWriter, req *http.Request) {
+	// Safety check: ensure we're handling the correct path
+	if !strings.HasPrefix(req.URL.Path, "/app/vocab/") {
+		http.Error(w, "Invalid path", http.StatusBadRequest)
+		return
+	}
+
 	userID := getUserIDFromContext(req.Context())
 	if userID == 0 {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
