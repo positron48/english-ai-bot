@@ -95,7 +95,7 @@ AI_PROMPT=You are a helpful AI assistant. Please respond to the user's message i
 # Optional settings
 TELEGRAM_DEBUG=false
 LOG_LEVEL=info
-SERVER_ADDRESS=:8080
+SERVER_ADDRESS=:8184
 DATABASE_PATH=./data/words.db
 ```
 
@@ -243,7 +243,7 @@ The following commands are available only to the configured admin user:
 | `TELEGRAM_WEBHOOK_ENABLE` | Enable webhook | `false` |
 | `TELEGRAM_WEBHOOK_DOMAIN` | Webhook domain | - |
 | `TELEGRAM_WEBHOOK_PATH` | Webhook path | `/webhook` |
-| `SERVER_ADDRESS` | Server address | `:8080` |
+| `SERVER_ADDRESS` | Server address | `:8184` |
 | `LOG_LEVEL` | Logging level | `info` |
 | `WEBAPP_PUBLIC_URL` | Public URL for Mini App (HTTPS) | - |
 | `WEBAPP_SESSION_SECRET` | Secret key for session encryption | - |
@@ -459,7 +459,7 @@ docker build -t ai-telegram-bot .
 ```bash
 docker run -d \
   --name ai-telegram-bot \
-  -p 8080:8080 \
+  -p 8184:8184 \
   -v $(pwd)/data:/app/data \
   -e TELEGRAM_TOKEN=your_token_here \
   -e AI_URL=https://openrouter.ai/api/v1 \
@@ -603,7 +603,7 @@ go test -cover ./...
 The bot provides a health check endpoint:
 
 ```bash
-curl http://localhost:8080/health
+curl http://localhost:8184/health
 ```
 
 ## Security

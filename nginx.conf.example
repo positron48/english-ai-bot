@@ -1,0 +1,103 @@
+# Конфигурация Nginx для English Bot
+# Скопируйте в /etc/nginx/sites-available/english.positroid.tech
+# и создайте симлинк: ln -s /etc/nginx/sites-available/english.positroid.tech /etc/nginx/sites-enabled/
+
+# Основной сервер для домена бота
+server {
+    server_name english.positroid.tech;
+
+    # Логи
+    access_log /var/log/nginx/english.positroid.tech-access.log;
+    error_log /var/log/nginx/english.positroid.tech-error.log;
+
+    # Webhook endpoint для Telegram
+    location /webhook {
+        proxy_pass http://127.0.0.1:8184/webhook;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        # Таймауты для Telegram API
+        proxy_connect_timeout 30s;
+        proxy_send_timeout 30s;
+        proxy_read_timeout 30s;
+
+        # Дополнительные заголовки для Telegram
+        proxy_set_header X-Forwarded-Host $server_name;
+        proxy_set_header X-Forwarded-Port $server_port;
+    }
+
+    # Telegram Mini App и веб-приложение
+    location /app {
+        proxy_pass http://127.0.0.1:8184;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        
+        # Для HTMX и WebSocket (если понадобится в будущем)
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+
+    # Статические файлы Mini App
+    location /static {
+        proxy_pass http://127.0.0.1:8184;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        
+        # Кэширование статики
+        expires 1d;
+        add_header Cache-Control "public, immutable";
+    }
+
+    # Авторизация и логин
+    location ~ ^/(login|auth) {
+        proxy_pass http://127.0.0.1:8184;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    # Статус сервиса
+    location /health {
+        proxy_pass http://127.0.0.1:8184/health;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    # Информационная страница
+    location / {
+        return 200 'English Bot is running!\nMini App: https://english.positroid.tech/app\n';
+        add_header Content-Type text/plain;
+    }
+
+    # Запрет доступа к скрытым файлам
+    location ~ /\. {
+        deny all;
+    }
+
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/english.positroid.tech/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/english.positroid.tech/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+}
+
+server {
+    if ($host = english.positroid.tech) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+    listen 80;
+    server_name english.positroid.tech;
+    return 404; # managed by Certbot
+}
+

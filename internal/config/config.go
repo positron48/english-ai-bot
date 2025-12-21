@@ -105,7 +105,7 @@ func Load() (*Config, error) {
 	viper.SetDefault("telegram.updates_timeout", 30)
 	viper.SetDefault("telegram.webhook_enable", false)
 	viper.SetDefault("telegram.webhook_path", "/webhook")
-	viper.SetDefault("server.address", ":8080")
+	viper.SetDefault("server.address", ":8184")
 	viper.SetDefault("logging.level", "info")
 	viper.SetDefault("ai.model", "gpt-3.5-turbo")
 	viper.SetDefault("database.path", "./data/words.db")
