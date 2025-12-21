@@ -198,6 +198,7 @@ func getDataKeys(data interface{}) []string {
 		return keys
 	}
 	return []string{"unknown"}
+}
 
 // handleApp is the main entry point
 func (r *Router) handleApp(w http.ResponseWriter, req *http.Request) {
@@ -208,20 +209,20 @@ func (r *Router) handleApp(w http.ResponseWriter, req *http.Request) {
 
 	// Check if user is authenticated
 	auth := r.getAuthMiddleware()
-	if auth == nil {
-		// Auth middleware not initialized, redirect to login
-		http.Redirect(w, req, "/login", http.StatusFound)
-		return
-	}
-	userID, err := auth.GetUserFromSession(req)
-	if err != nil || userID == 0 {
-		// Not authenticated, redirect to login
-		http.Redirect(w, req, "/login", http.StatusFound)
-		return
+	if auth != nil {
+		userID, err := auth.GetUserFromSession(req)
+		if err == nil && userID != 0 {
+			// User is authenticated, redirect to dashboard
+			http.Redirect(w, req, "/app/dashboard", http.StatusFound)
+			return
+		}
 	}
 
-	// User is authenticated, redirect to dashboard
-	http.Redirect(w, req, "/app/dashboard", http.StatusFound)
+	// Not authenticated - show app.html which will handle Telegram WebApp initData
+	// This allows the JavaScript in app.html to get initData from Telegram and authenticate
+	r.renderTemplate(w, "app.html", map[string]interface{}{
+		"Title": "English Bot",
+	})
 }
 
 // handleLogin shows login page
