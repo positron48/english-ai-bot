@@ -13,15 +13,17 @@
         </nav>
     </header>
     <main id="main-content">
-        <p>Loading...</p>
+        <p id="status-message">Initializing...</p>
     </main>
 </div>
 <script>
     (function() {
         // Check if we're in Telegram WebApp
         if (!window.Telegram || !window.Telegram.WebApp) {
-            // Not in Telegram, redirect to login
-            window.location.href = '/login';
+            // Not in Telegram, redirect to login after a short delay
+            setTimeout(function() {
+                window.location.href = '/login';
+            }, 100);
             return;
         }
         
@@ -32,6 +34,15 @@
         tg.expand();
         
         let authAttempted = false;
+        let retryCount = 0;
+        const maxRetries = 10; // 5 seconds total (10 * 500ms)
+        
+        function updateStatus(message) {
+            const statusEl = document.getElementById('status-message');
+            if (statusEl) {
+                statusEl.textContent = message;
+            }
+        }
         
         // Function to authenticate
         function authenticate() {
@@ -39,44 +50,17 @@
                 return; // Prevent multiple attempts
             }
             
-            // Try to get initData string
+            retryCount++;
+            updateStatus('Checking authentication... (attempt ' + retryCount + ')');
+            
+            // First, try to get initData string
             let initData = tg.initData;
             
-            // If initData is not available, try to construct it from initDataUnsafe
-            if (!initData || initData.length === 0) {
-                if (tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.hash) {
-                    // Construct initData string from initDataUnsafe
-                    const params = [];
-                    const unsafe = tg.initDataUnsafe;
-                    
-                    // Add query_id if available
-                    if (unsafe.query_id) {
-                        params.push('query_id=' + encodeURIComponent(unsafe.query_id));
-                    }
-                    
-                    // Add user (required)
-                    if (unsafe.user) {
-                        params.push('user=' + encodeURIComponent(JSON.stringify(unsafe.user)));
-                    }
-                    
-                    // Add auth_date (required)
-                    if (unsafe.auth_date) {
-                        params.push('auth_date=' + encodeURIComponent(String(unsafe.auth_date)));
-                    }
-                    
-                    // Add hash (required for validation)
-                    if (unsafe.hash) {
-                        params.push('hash=' + encodeURIComponent(unsafe.hash));
-                    }
-                    
-                    initData = params.join('&');
-                }
-            }
-            
+            // If initData is available, use it
             if (initData && initData.length > 0) {
+                updateStatus('Found initData, authenticating...');
                 authAttempted = true;
                 
-                // Submit authentication form with initData
                 const form = document.createElement('form');
                 form.method = 'POST';
                 form.action = '/auth/telegram';
@@ -90,36 +74,91 @@
                 
                 document.body.appendChild(form);
                 form.submit();
-            } else if (tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) {
-                // Fallback: use initDataUnsafe directly (less secure, but works)
-                authAttempted = true;
+                return;
+            }
+            
+            // If initData is not available, try to construct it from initDataUnsafe
+            if (tg.initDataUnsafe) {
+                const unsafe = tg.initDataUnsafe;
                 
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = '/auth/telegram_unsafe';
-                form.style.display = 'none';
+                // Check if we have user and hash (required for validation)
+                if (unsafe.user && unsafe.hash) {
+                    updateStatus('Constructing initData from initDataUnsafe...');
+                    
+                    // Construct initData string from initDataUnsafe
+                    const params = [];
+                    
+                    // Add query_id if available
+                    if (unsafe.query_id) {
+                        params.push('query_id=' + encodeURIComponent(unsafe.query_id));
+                    }
+                    
+                    // Add user (required)
+                    params.push('user=' + encodeURIComponent(JSON.stringify(unsafe.user)));
+                    
+                    // Add auth_date (required)
+                    if (unsafe.auth_date) {
+                        params.push('auth_date=' + encodeURIComponent(String(unsafe.auth_date)));
+                    }
+                    
+                    // Add hash (required for validation)
+                    params.push('hash=' + encodeURIComponent(unsafe.hash));
+                    
+                    initData = params.join('&');
+                    
+                    if (initData && initData.length > 0) {
+                        updateStatus('Authenticating with constructed initData...');
+                        authAttempted = true;
+                        
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = '/auth/telegram';
+                        form.style.display = 'none';
+                        
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = 'initData';
+                        input.value = initData;
+                        form.appendChild(input);
+                        
+                        document.body.appendChild(form);
+                        form.submit();
+                        return;
+                    }
+                }
                 
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = 'user_id';
-                input.value = String(tg.initDataUnsafe.user.id);
-                form.appendChild(input);
-                
-                document.body.appendChild(form);
-                form.submit();
+                // Fallback: use initDataUnsafe.user.id directly if available
+                if (unsafe.user && unsafe.user.id) {
+                    updateStatus('Using fallback authentication (user ID: ' + unsafe.user.id + ')...');
+                    authAttempted = true;
+                    
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '/auth/telegram_unsafe';
+                    form.style.display = 'none';
+                    
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'user_id';
+                    input.value = String(unsafe.user.id);
+                    form.appendChild(input);
+                    
+                    document.body.appendChild(form);
+                    form.submit();
+                    return;
+                }
+            }
+            
+            // No data available yet - wait and retry
+            if (retryCount < maxRetries) {
+                updateStatus('Waiting for Telegram data... (attempt ' + retryCount + '/' + maxRetries + ')');
+                setTimeout(authenticate, 500);
             } else {
-                // No initData available yet - wait and retry (max 3 seconds)
-                if (typeof authenticate.retryCount === 'undefined') {
-                    authenticate.retryCount = 0;
-                }
-                authenticate.retryCount++;
-                
-                if (authenticate.retryCount < 6) { // 6 attempts = 3 seconds total
-                    setTimeout(authenticate, 500);
-                } else {
-                    // After 3 seconds, redirect to login if still no initData
+                // After max retries, redirect to login
+                updateStatus('Telegram data not available, redirecting to login...');
+                setTimeout(function() {
                     window.location.href = '/login';
-                }
+                }, 1000);
             }
         }
         

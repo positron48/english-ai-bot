@@ -51,6 +51,13 @@ func (m *AuthMiddleware) RequireAuth(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		userID, err := m.GetUserFromSession(r)
 		if err != nil || userID == 0 {
+			// Log why authentication failed
+			if err != nil {
+				m.logger.Debug("auth failed", zap.String("path", r.URL.Path), zap.Error(err))
+			} else {
+				m.logger.Debug("auth failed: userID is 0", zap.String("path", r.URL.Path))
+			}
+			
 			// Redirect to login or return 401
 			if strings.HasPrefix(r.URL.Path, "/app/") {
 				http.Redirect(w, r, "/login", http.StatusFound)
@@ -175,7 +182,7 @@ func (m *AuthMiddleware) ValidateTelegramInitData(initData string) (int64, error
 }
 
 // CreateSession creates a new web session
-func (m *AuthMiddleware) CreateSession(w http.ResponseWriter, userID int64) error {
+func (m *AuthMiddleware) CreateSession(w http.ResponseWriter, r *http.Request, userID int64) error {
 	token, err := generateSessionToken()
 	if err != nil {
 		return err
@@ -195,17 +202,28 @@ func (m *AuthMiddleware) CreateSession(w http.ResponseWriter, userID int64) erro
 		return err
 	}
 
+	// Determine if we should use Secure flag based on request scheme
+	// In production with HTTPS, use Secure=true. For development with HTTP, use Secure=false
+	isHTTPS := r.TLS != nil || 
+		r.Header.Get("X-Forwarded-Proto") == "https" || 
+		strings.Contains(r.Header.Get("X-Forwarded-Ssl"), "on")
+	
 	// Set cookie
 	cookie := &http.Cookie{
 		Name:     "session",
 		Value:    token,
 		Path:     "/",
 		HttpOnly: true,
-		Secure:   true, // Set to true in production with HTTPS
+		Secure:   isHTTPS,
 		SameSite: http.SameSiteLaxMode,
 		MaxAge:   int(ttl.Seconds()),
 	}
 	http.SetCookie(w, cookie)
+
+	m.logger.Info("session created and cookie set",
+		zap.Int64("user_id", userID),
+		zap.Bool("secure_cookie", isHTTPS),
+		zap.String("cookie_path", cookie.Path))
 
 	return nil
 }

@@ -337,7 +337,7 @@ func (r *Router) handleAuthTelegram(w http.ResponseWriter, req *http.Request) {
 	}
 
 	// Create session
-	if err := auth.CreateSession(w, user.ID); err != nil {
+	if err := auth.CreateSession(w, req, user.ID); err != nil {
 		r.logger.Error("failed to create session", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
@@ -349,7 +349,10 @@ func (r *Router) handleAuthTelegram(w http.ResponseWriter, req *http.Request) {
 
 // handleAuthTelegramUnsafe handles Telegram WebApp authentication using initDataUnsafe (less secure, fallback)
 func (r *Router) handleAuthTelegramUnsafe(w http.ResponseWriter, req *http.Request) {
-	r.logger.Info("handleAuthTelegramUnsafe called", zap.String("method", req.Method))
+	r.logger.Info("handleAuthTelegramUnsafe called", 
+		zap.String("method", req.Method),
+		zap.String("path", req.URL.Path),
+		zap.String("remote_addr", req.RemoteAddr))
 	
 	if req.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -358,14 +361,17 @@ func (r *Router) handleAuthTelegramUnsafe(w http.ResponseWriter, req *http.Reque
 
 	// Get user ID directly from initDataUnsafe (less secure, but works when initData is not available)
 	userIDStr := req.FormValue("user_id")
+	r.logger.Info("received user_id", zap.String("user_id", userIDStr))
+	
 	if userIDStr == "" {
+		r.logger.Warn("user_id is empty")
 		http.Error(w, "user_id is required", http.StatusBadRequest)
 		return
 	}
 
 	telegramID, err := strconv.ParseInt(userIDStr, 10, 64)
 	if err != nil {
-		r.logger.Warn("invalid user_id", zap.Error(err))
+		r.logger.Warn("invalid user_id", zap.String("user_id", userIDStr), zap.Error(err))
 		http.Error(w, "Invalid user_id", http.StatusBadRequest)
 		return
 	}
@@ -383,7 +389,7 @@ func (r *Router) handleAuthTelegramUnsafe(w http.ResponseWriter, req *http.Reque
 
 	// Create session
 	auth := r.getAuthMiddleware()
-	if err := auth.CreateSession(w, user.ID); err != nil {
+	if err := auth.CreateSession(w, req, user.ID); err != nil {
 		r.logger.Error("failed to create session", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return

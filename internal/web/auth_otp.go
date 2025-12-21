@@ -132,15 +132,29 @@ func (r *Router) handleAuthOTP(w http.ResponseWriter, req *http.Request) {
 
 	// Create session
 	auth := r.getAuthMiddleware()
-	if err := auth.CreateSession(w, otp.UserID); err != nil {
+	if err := auth.CreateSession(w, req, otp.UserID); err != nil {
 		r.logger.Error("failed to create session", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 
-	// Redirect to dashboard
-	w.Header().Set("HX-Redirect", "/app/dashboard")
-	w.WriteHeader(http.StatusOK)
+	// Check if this is an HTMX request
+	isHTMX := req.Header.Get("HX-Request") == "true"
+	
+	r.logger.Info("OTP authentication successful, redirecting to dashboard",
+		zap.Int64("user_id", userID),
+		zap.Bool("is_htmx", isHTMX))
+	
+	if isHTMX {
+		// For HTMX requests, use HX-Redirect header
+		w.Header().Set("HX-Redirect", "/app/dashboard")
+		w.WriteHeader(http.StatusOK)
+	} else {
+		// For regular requests, use JavaScript redirect
+		w.Header().Set("Content-Type", "text/html")
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, `<script>window.location.href = "/app/dashboard";</script>`)
+	}
 }
 
 // normalizeOTPCode removes all non-digit characters from the code
