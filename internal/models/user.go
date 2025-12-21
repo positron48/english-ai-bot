@@ -6,6 +6,7 @@ import "time"
 type User struct {
 	ID                    int64
 	TelegramID            int64
+	TelegramUsername      string
 	Timezone              string
 	PreferredTrainingTime string
 	SettingsJSON          string

@@ -129,6 +129,7 @@ func (h *Handler) handleTrainCommand(ctx context.Context, chatID, userID int64) 
 		h.sendMessage(chatID, "Произошла ошибка. Попробуйте позже.")
 		return
 	}
+	// Note: Username is updated in handleMessage when user sends messages
 
 	h.logger.Info("starting training for user",
 		zap.Int64("telegram_id", userID),
@@ -362,6 +363,12 @@ func (h *Handler) handleCallbackQuery(ctx context.Context, query *tgbotapi.Callb
 			h.sendMessage(chatID, "Произошла ошибка. Попробуйте позже.")
 			return
 		}
+		// Update username if it changed
+		if query.From.UserName != "" && user != nil && user.TelegramUsername != query.From.UserName {
+			if err := h.userRepo.UpdateUsername(query.From.ID, query.From.UserName); err != nil {
+				h.logger.Warn("failed to update username", zap.Error(err))
+			}
+		}
 
 		// Try to restore session if not in memory
 		if !h.trainingHandler.HasActiveSession(chatID) {
@@ -416,8 +423,14 @@ func (h *Handler) handleMessage(ctx context.Context, message *tgbotapi.Message) 
 	)
 
 	// Ensure user exists in database (for training cards)
-	if _, userErr := h.userRepo.GetOrCreateUser(userID); userErr != nil {
+	user, userErr := h.userRepo.GetOrCreateUser(userID)
+	if userErr != nil {
 		h.logger.Error("failed to get/create user", zap.Error(userErr))
+	} else if user != nil && message.From.UserName != "" && user.TelegramUsername != message.From.UserName {
+		// Update username if it changed
+		if err := h.userRepo.UpdateUsername(userID, message.From.UserName); err != nil {
+			h.logger.Warn("failed to update username", zap.Error(err))
+		}
 	}
 
 	// Send typing indicator

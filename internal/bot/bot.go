@@ -17,6 +17,7 @@ import (
 	"tgbot-skeleton/internal/database"
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/service"
+	"tgbot-skeleton/internal/web"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"go.uber.org/zap"
@@ -31,6 +32,7 @@ type Bot struct {
 	db                  *database.DB
 	trainingWorker      *service.TrainingWorker
 	notificationService *service.NotificationService
+	webRouter           *web.Router
 }
 
 // New creates a new bot instance
@@ -147,6 +149,23 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 		log,
 	)
 
+	// Create web repositories
+	webSessionRepo := repository.NewWebSessionRepository(conn, log)
+	otpRepo := repository.NewWebOTPRepository(conn, log)
+
+	// Create web router
+	webRouter := web.NewRouter(
+		log,
+		cfg,
+		conn,
+		trainingService,
+		srsService,
+		optionsService,
+		cbService,
+	)
+	webRouter.SetDependencies(userRepo, wordService, aiService, bot, webSessionRepo, cfg.Telegram.Token)
+	webRouter.SetOTPRepo(otpRepo)
+
 	return &Bot{
 		api:                 bot,
 		config:              cfg,
@@ -155,6 +174,7 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 		db:                  db,
 		trainingWorker:      trainingWorker,
 		notificationService: notificationService,
+		webRouter:           webRouter,
 	}, nil
 }
 
@@ -224,8 +244,11 @@ func (b *Bot) startWebhook(ctx context.Context) error {
 
 	b.logger.Info("webhook set successfully")
 
+	// Create main mux
+	mux := http.NewServeMux()
+
 	// Serve webhook
-	http.HandleFunc(b.config.Telegram.WebhookPath, func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc(b.config.Telegram.WebhookPath, func(w http.ResponseWriter, r *http.Request) {
 		update, err := b.api.HandleUpdate(r)
 		if err != nil {
 			b.logger.Warn("webhook handle error", zap.Error(err))
@@ -239,16 +262,19 @@ func (b *Bot) startWebhook(ctx context.Context) error {
 	})
 
 	// Health endpoint
-	http.HandleFunc("/health", func(w http.ResponseWriter, _ *http.Request) {
+	mux.HandleFunc("/health", func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		if _, err := w.Write([]byte("OK")); err != nil {
 			b.logger.Error("failed to write health response", zap.Error(err))
 		}
 	})
 
+	// Web app routes
+	mux.Handle("/", b.webRouter)
+
 	b.logger.Info("starting HTTP server for webhook", zap.String("address", b.config.Server.Address))
 	go func() {
-		if err := http.ListenAndServe(b.config.Server.Address, nil); err != nil {
+		if err := http.ListenAndServe(b.config.Server.Address, mux); err != nil {
 			b.logger.Error("HTTP server error", zap.Error(err))
 		}
 	}()
@@ -277,15 +303,23 @@ func (b *Bot) startWebhook(ctx context.Context) error {
 
 // startLongPolling starts the bot in long polling mode
 func (b *Bot) startLongPolling(ctx context.Context) error {
+	// Create main mux
+	mux := http.NewServeMux()
+
 	// Health endpoint
+	mux.HandleFunc("/health", func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		if _, err := w.Write([]byte("OK")); err != nil {
+			b.logger.Error("failed to write health response", zap.Error(err))
+		}
+	})
+
+	// Web app routes
+	mux.Handle("/", b.webRouter)
+
+	// Start HTTP server
 	go func() {
-		http.HandleFunc("/health", func(w http.ResponseWriter, _ *http.Request) {
-			w.WriteHeader(http.StatusOK)
-			if _, err := w.Write([]byte("OK")); err != nil {
-				b.logger.Error("failed to write health response", zap.Error(err))
-			}
-		})
-		if err := http.ListenAndServe(b.config.Server.Address, nil); err != nil {
+		if err := http.ListenAndServe(b.config.Server.Address, mux); err != nil {
 			b.logger.Error("HTTP server error", zap.Error(err))
 		}
 	}()

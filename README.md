@@ -13,6 +13,7 @@ A simple AI-powered Telegram bot written in Go that integrates with OpenAI-compa
 - **Spaced Repetition System (SRS)** - intelligent vocabulary training with adaptive scheduling
 - **Training sessions** - interactive vocabulary card training with multiple choice questions
 - **Session persistence** - training sessions survive bot restarts
+- **Telegram Mini App** - web-based user cabinet and admin panel with server-rendered HTMX interface
 - Long polling and webhook support
 - Structured logging with Zap
 - Configuration management with Viper
@@ -170,6 +171,40 @@ This bot works with any OpenAI-compatible API, including:
 - **Google** - Gemini models (if using OpenRouter)
 - **Local models** - Any self-hosted OpenAI-compatible API
 
+## Telegram Mini App
+
+The bot includes a full-featured web application accessible as a Telegram Mini App or in a regular browser.
+
+### Features
+
+**For Regular Users:**
+- **Dashboard** - View due card counts and quick access to training
+- **AI Chat** - Simple one-request-one-response AI chat interface
+- **Vocabulary Management** - View all learned words with statistics and delete words from your learning
+- **Web Training** - Full training session experience in the browser with the same UX as Telegram bot
+
+**For Administrators:**
+- **Circuit Breaker Management** - View status and reset circuit breaker
+- **Training Cards Management** - Delete training cards by word, delete all cards, or view detailed data
+
+### Access Methods
+
+1. **Inside Telegram** - Open Mini App link (automatically authenticates via Telegram `initData`)
+2. **External Browser** - Login with Telegram username/ID and OTP code sent via bot
+
+### Configuration
+
+Add these environment variables to enable Mini App:
+
+```env
+WEBAPP_PUBLIC_URL=https://your-domain.com
+WEBAPP_SESSION_SECRET=your-secret-key-for-session-encryption
+WEBAPP_OTP_TTL_SECONDS=300
+WEBAPP_SESSION_TTL_HOURS=720
+```
+
+The Mini App is automatically available at `/app` route on the same server as the webhook.
+
 ## Commands
 
 The bot supports the following commands:
@@ -210,6 +245,11 @@ The following commands are available only to the configured admin user:
 | `TELEGRAM_WEBHOOK_PATH` | Webhook path | `/webhook` |
 | `SERVER_ADDRESS` | Server address | `:8080` |
 | `LOG_LEVEL` | Logging level | `info` |
+| `WEBAPP_PUBLIC_URL` | Public URL for Mini App (HTTPS) | - |
+| `WEBAPP_SESSION_SECRET` | Secret key for session encryption | - |
+| `WEBAPP_OTP_TTL_SECONDS` | OTP code expiration time | `300` |
+| `WEBAPP_SESSION_TTL_HOURS` | Web session expiration time | `720` |
+| `ADMIN_TELEGRAM_ID` | Telegram ID of admin user | `0` |
 
 ### Example Configuration for OpenRouter
 
@@ -364,7 +404,10 @@ english-bot/
 │   ├── models/              # Data models (word cards, history)
 │   ├── repository/          # Database repositories
 │   ├── service/             # Business logic services
-│   └── utils/               # Utility functions (Markdown conversion)
+│   ├── utils/               # Utility functions (Markdown conversion)
+│   └── web/                 # Web application (Mini App)
+│       ├── templates/       # HTML templates (embedded)
+│       └── static/          # CSS and static assets (embedded)
 ├── prompts/                 # AI prompt files
 │   ├── simple-assistant.txt
 │   ├── customer-support.txt
@@ -447,6 +490,15 @@ docker-compose down
 When running, the bot exposes the following HTTP endpoints:
 
 - `GET /health` - Health check endpoint
+- `GET /app` - Mini App entry point (redirects to dashboard or login)
+- `GET /login` - External browser login page
+- `POST /auth/telegram` - Telegram initData authentication
+- `POST /auth/request_otp` - Request OTP for external login
+- `POST /auth/otp` - Verify OTP and create session
+- `GET /app/dashboard` - User dashboard (requires auth)
+- `GET /app/vocab` - Vocabulary list (requires auth)
+- `POST /app/training/start` - Start training session (requires auth)
+- `GET /app/admin` - Admin panel (requires admin access)
 
 ## Database
 
@@ -466,6 +518,24 @@ The bot uses SQLite to store vocabulary cards and request history. The database 
 - `user_id` - Telegram user ID
 - `word` - Requested word
 - `requested_at` - Request timestamp
+
+**web_sessions** - Web application sessions:
+- `id` - Primary key
+- `user_id` - User ID
+- `session_token` - Unique session token
+- `expires_at` - Session expiration time
+- `created_at` - Creation timestamp
+- `last_seen_at` - Last activity timestamp
+
+**web_otps** - One-time passwords for external login:
+- `id` - Primary key
+- `user_id` - User ID
+- `code_hash` - Hashed OTP code
+- `expires_at` - OTP expiration time
+- `consumed_at` - When OTP was used (NULL if unused)
+- `created_at` - Creation timestamp
+
+**users** - Extended with `telegram_username` field for OTP login
 
 ### Database Location
 

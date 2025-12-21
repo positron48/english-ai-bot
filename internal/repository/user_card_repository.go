@@ -273,3 +273,31 @@ func (r *UserCardRepository) DeleteOrphanedUserCards() (int64, error) {
 	return rowsAffected, nil
 }
 
+// DeleteUserCardsByWordENForUser deletes all user_cards for a specific word and user
+// This will cascade delete review_events due to foreign key constraint
+func (r *UserCardRepository) DeleteUserCardsByWordENForUser(userID int64, wordEN string) (int64, error) {
+	query := `DELETE FROM user_cards 
+			  WHERE user_id = ? 
+			  AND training_card_id IN (
+				  SELECT id FROM training_cards WHERE word_en = ?
+			  )`
+	
+	result, err := r.db.Exec(query, userID, wordEN)
+	if err != nil {
+		return 0, fmt.Errorf("failed to delete user cards: %w", err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return 0, fmt.Errorf("failed to get rows affected: %w", err)
+	}
+
+	r.logger.Info("deleted user cards by word",
+		zap.Int64("user_id", userID),
+		zap.String("word_en", wordEN),
+		zap.Int64("rows_affected", rowsAffected),
+	)
+
+	return rowsAffected, nil
+}
+

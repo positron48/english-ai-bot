@@ -1,0 +1,59 @@
+{{template "base.html" .}}
+{{define "content"}}
+<div class="admin-panel">
+    <h1>Admin Panel</h1>
+    
+    <div class="admin-section">
+        <h2>Circuit Breaker</h2>
+        {{if .CBState}}
+        <div class="cb-status">
+            <p><strong>Status:</strong> 
+                {{if .CBState.IsOpen}}
+                    <span class="status-open">OPEN</span>
+                {{else}}
+                    <span class="status-closed">CLOSED</span>
+                {{end}}
+            </p>
+            <p><strong>Failure Count:</strong> {{.CBState.FailureCount}}</p>
+            {{if .CBState.LastFailureAt}}
+            <p><strong>Last Failure:</strong> {{.CBState.LastFailureAt.Format "2006-01-02 15:04:05"}}</p>
+            {{end}}
+            {{if .CBState.LastFailureMessage}}
+            <p><strong>Last Failure Message:</strong> {{.CBState.LastFailureMessage}}</p>
+            {{end}}
+            {{if .CBState.LastResetAt}}
+            <p><strong>Last Reset:</strong> {{.CBState.LastResetAt.Format "2006-01-02 15:04:05"}}</p>
+            {{end}}
+        </div>
+        <form method="POST" action="/app/admin/circuit/reset">
+            <button type="submit" class="btn btn-primary">Reset Circuit Breaker</button>
+        </form>
+        {{else}}
+        <p>Circuit breaker state not available</p>
+        {{end}}
+    </div>
+    
+    <div class="admin-section">
+        <h2>Training Cards Management</h2>
+        <div class="training-actions">
+            <form method="GET" action="/app/admin/training/" class="inline-form" onsubmit="event.preventDefault(); window.location.href='/app/admin/training/' + document.getElementById('word').value; return false;">
+                <label for="word">View data for word:</label>
+                <input type="text" id="word" name="word" placeholder="word_en" required>
+                <button type="submit" class="btn">View Data</button>
+            </form>
+            
+            <form method="POST" action="/app/admin/training/" class="inline-form">
+                <label for="delete-word">Delete training cards for word:</label>
+                <input type="text" id="delete-word" name="word" placeholder="word_en" required>
+                <input type="hidden" name="action" value="delete">
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
+            
+            <form method="POST" action="/app/admin/training/delete_all" class="inline-form">
+                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete ALL training cards? This cannot be undone!')">Delete All Training Cards</button>
+            </form>
+        </div>
+    </div>
+</div>
+{{end}}
+

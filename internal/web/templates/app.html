@@ -1,0 +1,47 @@
+{{template "base.html" .}}
+{{define "content"}}
+<div class="app-shell">
+    <header>
+        <h1>English Bot</h1>
+        <nav>
+            <a href="/app/dashboard">Dashboard</a>
+            <a href="/app/vocab">Vocabulary</a>
+            <a href="/app/training/start">Training</a>
+        </nav>
+    </header>
+    <main id="main-content">
+        <p>Loading...</p>
+    </main>
+</div>
+<script>
+    // Check if we're in Telegram WebApp
+    if (window.Telegram && window.Telegram.WebApp) {
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        
+        // Get initData and authenticate
+        const initData = tg.initData;
+        if (initData) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/auth/telegram';
+            
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'initData';
+            input.value = initData;
+            form.appendChild(input);
+            
+            document.body.appendChild(form);
+            form.submit();
+        } else {
+            // No initData, redirect to login
+            window.location.href = '/login';
+        }
+    } else {
+        // Not in Telegram, redirect to login
+        window.location.href = '/login';
+    }
+</script>
+{{end}}
+

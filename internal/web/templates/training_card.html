@@ -1,0 +1,35 @@
+{{template "base.html" .}}
+{{define "content"}}
+<div id="training-content" class="training">
+    <div class="progress">
+        Card {{.CardIndex}} of {{.TotalCards}}
+    </div>
+    
+    <div class="question">
+        <p>{{.Question | html}}</p>
+    </div>
+    
+    <div id="options-container">
+        <div class="thinking">
+            <p>Think about the answer...</p>
+            <button class="btn" id="show-options-btn" 
+                    hx-post="/app/training/reveal" 
+                    hx-target="#options-container" 
+                    hx-swap="innerHTML">
+                Show Options
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        // Auto-reveal options after delay
+        setTimeout(function() {
+            const btn = document.getElementById('show-options-btn');
+            if (btn && !document.querySelector('.options')) {
+                btn.click();
+            }
+        }, {{.DelayMS}});
+    </script>
+</div>
+{{end}}
+

@@ -72,6 +72,7 @@ func (db *DB) migrate() error {
 		`CREATE TABLE IF NOT EXISTS users (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			telegram_id INTEGER NOT NULL UNIQUE,
+			telegram_username TEXT,
 			timezone TEXT DEFAULT 'Europe/Moscow',
 			preferred_training_time TEXT DEFAULT '19:00',
 			settings_json TEXT,
@@ -179,6 +180,27 @@ func (db *DB) migrate() error {
 			updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 		)`,
 		
+		// Web app tables
+		`CREATE TABLE IF NOT EXISTS web_sessions (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			user_id INTEGER NOT NULL,
+			session_token TEXT NOT NULL UNIQUE,
+			expires_at DATETIME NOT NULL,
+			created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+			last_seen_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+			FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+		)`,
+		
+		`CREATE TABLE IF NOT EXISTS web_otps (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			user_id INTEGER NOT NULL,
+			code_hash TEXT NOT NULL,
+			expires_at DATETIME NOT NULL,
+			consumed_at DATETIME,
+			created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+			FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+		)`,
+		
 		// Indexes for existing tables
 		`CREATE INDEX IF NOT EXISTS idx_word_cards_word ON word_cards(word)`,
 		`CREATE INDEX IF NOT EXISTS idx_word_request_history_user_id ON word_request_history(user_id)`,
@@ -194,6 +216,15 @@ func (db *DB) migrate() error {
 		`CREATE INDEX IF NOT EXISTS idx_training_sessions_user_id ON training_sessions(user_id)`,
 		`CREATE INDEX IF NOT EXISTS idx_review_events_user_id ON review_events(user_id)`,
 		`CREATE INDEX IF NOT EXISTS idx_training_nudges_user_date ON training_nudges(user_id, local_date)`,
+		
+		// Indexes for web app tables
+		`CREATE INDEX IF NOT EXISTS idx_web_sessions_user_id ON web_sessions(user_id)`,
+		`CREATE INDEX IF NOT EXISTS idx_web_sessions_token ON web_sessions(session_token)`,
+		`CREATE INDEX IF NOT EXISTS idx_web_sessions_expires_at ON web_sessions(expires_at)`,
+		`CREATE INDEX IF NOT EXISTS idx_web_otps_user_id ON web_otps(user_id)`,
+		`CREATE INDEX IF NOT EXISTS idx_web_otps_code_hash ON web_otps(code_hash)`,
+		`CREATE INDEX IF NOT EXISTS idx_web_otps_expires_at ON web_otps(expires_at)`,
+		`CREATE INDEX IF NOT EXISTS idx_users_telegram_username ON users(telegram_username)`,
 	}
 
 	for _, query := range queries {
@@ -208,7 +239,36 @@ func (db *DB) migrate() error {
 		return fmt.Errorf("failed to initialize circuit breaker: %w", err)
 	}
 
+	// Migrate users table to add telegram_username if it doesn't exist
+	if err := db.migrateUsersTable(); err != nil {
+		return fmt.Errorf("failed to migrate users table: %w", err)
+	}
+
 	db.logger.Info("database migration completed successfully")
+	return nil
+}
+
+// migrateUsersTable adds telegram_username column if it doesn't exist
+func (db *DB) migrateUsersTable() error {
+	// Check if column exists
+	var count int
+	err := db.conn.QueryRow(`
+		SELECT COUNT(*) FROM pragma_table_info('users') 
+		WHERE name='telegram_username'
+	`).Scan(&count)
+	if err != nil {
+		return fmt.Errorf("failed to check column existence: %w", err)
+	}
+
+	if count == 0 {
+		// Column doesn't exist, add it
+		_, err := db.conn.Exec(`ALTER TABLE users ADD COLUMN telegram_username TEXT`)
+		if err != nil {
+			return fmt.Errorf("failed to add telegram_username column: %w", err)
+		}
+		db.logger.Info("added telegram_username column to users table")
+	}
+
 	return nil
 }
 

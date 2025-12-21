@@ -19,6 +19,7 @@ type Config struct {
 	Database DatabaseConfig `mapstructure:"database"`
 	Training TrainingConfig `mapstructure:"training"`
 	Admin    AdminConfig    `mapstructure:"admin"`
+	WebApp   WebAppConfig   `mapstructure:"webapp"`
 }
 
 // TelegramConfig holds Telegram bot configuration
@@ -83,6 +84,14 @@ type AdminConfig struct {
 	TelegramID int64 `mapstructure:"telegram_id"`
 }
 
+// WebAppConfig holds web app configuration
+type WebAppConfig struct {
+	PublicURL      string `mapstructure:"public_url"`
+	SessionSecret  string `mapstructure:"session_secret"`
+	OTPTTLSeconds  int    `mapstructure:"otp_ttl_seconds"`
+	SessionTTLHours int   `mapstructure:"session_ttl_hours"`
+}
+
 // Load loads configuration from environment variables and config file
 func Load() (*Config, error) {
 	// Load .env file if it exists
@@ -113,6 +122,12 @@ func Load() (*Config, error) {
 	
 	// Admin defaults
 	viper.SetDefault("admin.telegram_id", 0)
+	
+	// WebApp defaults
+	viper.SetDefault("webapp.public_url", "")
+	viper.SetDefault("webapp.session_secret", "")
+	viper.SetDefault("webapp.otp_ttl_seconds", 300)
+	viper.SetDefault("webapp.session_ttl_hours", 720)
 
 	// Bot message defaults
 	viper.SetDefault("bot.start_message", "🤖 Hello! I'm a universal AI assistant.\n\n💡 Just send me a message and I'll help you with any questions!\n\nUse /help for additional information.")
@@ -156,6 +171,10 @@ func Load() (*Config, error) {
 	_ = viper.BindEnv("training.options_delay_ms", "TRAINING_OPTIONS_DELAY_MS")
 	_ = viper.BindEnv("training.wrong_answer_delay_seconds", "TRAINING_WRONG_ANSWER_DELAY_SECONDS")
 	_ = viper.BindEnv("admin.telegram_id", "ADMIN_TELEGRAM_ID")
+	_ = viper.BindEnv("webapp.public_url", "WEBAPP_PUBLIC_URL")
+	_ = viper.BindEnv("webapp.session_secret", "WEBAPP_SESSION_SECRET")
+	_ = viper.BindEnv("webapp.otp_ttl_seconds", "WEBAPP_OTP_TTL_SECONDS")
+	_ = viper.BindEnv("webapp.session_ttl_hours", "WEBAPP_SESSION_TTL_HOURS")
 
 	// Set config file
 	viper.SetConfigName("config")

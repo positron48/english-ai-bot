@@ -1,0 +1,31 @@
+{{template "base.html" .}}
+{{define "content"}}
+<div class="dashboard">
+    <h1>Dashboard</h1>
+    
+    <div class="stats">
+        <div class="stat-card">
+            <h2>{{.DueCount}}</h2>
+            <p>Cards due for review</p>
+        </div>
+    </div>
+    
+    <div class="actions">
+        <a href="/app/training/start" class="btn btn-primary">Start Training</a>
+        <a href="/app/vocab" class="btn">View Vocabulary</a>
+    </div>
+    
+    <div class="ai-chat">
+        <h2>AI Chat</h2>
+        <form hx-post="/app/chat" hx-target="#chat-response" hx-swap="innerHTML">
+            <div>
+                <label for="message">Ask a question:</label>
+                <textarea id="message" name="message" rows="3" required></textarea>
+            </div>
+            <button type="submit">Send</button>
+        </form>
+        <div id="chat-response"></div>
+    </div>
+</div>
+{{end}}
+

@@ -1,0 +1,24 @@
+{{template "base.html" .}}
+{{define "content"}}
+<div class="confirm-delete">
+    <h1>Confirm Delete</h1>
+    
+    <div class="warning">
+        <p><strong>Are you sure you want to delete all training cards for the word "{{.WordEN}}"?</strong></p>
+        <p>This will permanently delete:</p>
+        <ul>
+            <li>{{.Count}} training card(s) from your learning</li>
+            <li>All your progress and review history for this word</li>
+        </ul>
+        <p><strong>This action cannot be undone!</strong></p>
+    </div>
+    
+    <form method="POST" action="/app/vocab/{{.WordEN}}/delete">
+        <div class="actions">
+            <button type="submit" class="btn btn-danger">Yes, Delete</button>
+            <a href="/app/vocab" class="btn">Cancel</a>
+        </div>
+    </form>
+</div>
+{{end}}
+

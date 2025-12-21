@@ -3,6 +3,8 @@ package repository
 import (
 	"database/sql"
 	"fmt"
+	"strconv"
+	"strings"
 	"time"
 
 	"tgbot-skeleton/internal/models"
@@ -57,7 +59,7 @@ func (r *UserRepository) GetOrCreateUser(telegramID int64) (*models.User, error)
 
 // GetUserByID gets a user by internal ID
 func (r *UserRepository) GetUserByID(userID int64) (*models.User, error) {
-	query := `SELECT id, telegram_id, timezone, preferred_training_time, 
+	query := `SELECT id, telegram_id, COALESCE(telegram_username, ''), timezone, preferred_training_time, 
 			  COALESCE(settings_json, ''), created_at, updated_at
 			  FROM users WHERE id = ?`
 
@@ -67,6 +69,7 @@ func (r *UserRepository) GetUserByID(userID int64) (*models.User, error) {
 	err := r.db.QueryRow(query, userID).Scan(
 		&user.ID,
 		&user.TelegramID,
+		&user.TelegramUsername,
 		&user.Timezone,
 		&user.PreferredTrainingTime,
 		&user.SettingsJSON,
@@ -89,7 +92,7 @@ func (r *UserRepository) GetUserByID(userID int64) (*models.User, error) {
 
 // GetUserByTelegramID gets a user by telegram ID
 func (r *UserRepository) GetUserByTelegramID(telegramID int64) (*models.User, error) {
-	query := `SELECT id, telegram_id, timezone, preferred_training_time, 
+	query := `SELECT id, telegram_id, COALESCE(telegram_username, ''), timezone, preferred_training_time, 
 			  COALESCE(settings_json, ''), created_at, updated_at
 			  FROM users WHERE telegram_id = ?`
 
@@ -99,6 +102,7 @@ func (r *UserRepository) GetUserByTelegramID(telegramID int64) (*models.User, er
 	err := r.db.QueryRow(query, telegramID).Scan(
 		&user.ID,
 		&user.TelegramID,
+		&user.TelegramUsername,
 		&user.Timezone,
 		&user.PreferredTrainingTime,
 		&user.SettingsJSON,
@@ -139,6 +143,56 @@ func (r *UserRepository) UpdateUserPreferredTime(userID int64, preferredTime str
 	return nil
 }
 
+// GetUserByUsernameOrID gets a user by username (without @) or telegram_id
+func (r *UserRepository) GetUserByUsernameOrID(usernameOrID string) (*models.User, error) {
+	// Try to parse as telegram_id first
+	if telegramID, err := strconv.ParseInt(usernameOrID, 10, 64); err == nil {
+		return r.GetUserByTelegramID(telegramID)
+	}
+
+	// Try to find by username (remove @ if present)
+	username := strings.TrimPrefix(usernameOrID, "@")
+	query := `SELECT id, telegram_id, COALESCE(telegram_username, ''), timezone, preferred_training_time, 
+			  COALESCE(settings_json, ''), created_at, updated_at
+			  FROM users WHERE telegram_username = ?`
+
+	var user models.User
+	var createdAt, updatedAt string
+
+	err := r.db.QueryRow(query, username).Scan(
+		&user.ID,
+		&user.TelegramID,
+		&user.TelegramUsername,
+		&user.Timezone,
+		&user.PreferredTrainingTime,
+		&user.SettingsJSON,
+		&createdAt,
+		&updatedAt,
+	)
+
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, fmt.Errorf("failed to get user: %w", err)
+	}
+
+	user.CreatedAt, _ = time.Parse("2006-01-02 15:04:05", createdAt)
+	user.UpdatedAt, _ = time.Parse("2006-01-02 15:04:05", updatedAt)
+
+	return &user, nil
+}
+
+// UpdateUsername updates user's telegram username
+func (r *UserRepository) UpdateUsername(telegramID int64, username string) error {
+	query := `UPDATE users SET telegram_username = ?, updated_at = CURRENT_TIMESTAMP WHERE telegram_id = ?`
+	_, err := r.db.Exec(query, username, telegramID)
+	if err != nil {
+		return fmt.Errorf("failed to update username: %w", err)
+	}
+	return nil
+}
+
 // GetAllUsers returns all users (for notification scheduler)
 func (r *UserRepository) GetAllUsers() ([]*models.User, error) {
 	query := `SELECT id, telegram_id, timezone, preferred_training_time, 
@@ -159,6 +213,7 @@ func (r *UserRepository) GetAllUsers() ([]*models.User, error) {
 		err := rows.Scan(
 			&user.ID,
 			&user.TelegramID,
+			&user.TelegramUsername,
 			&user.Timezone,
 			&user.PreferredTrainingTime,
 			&user.SettingsJSON,
