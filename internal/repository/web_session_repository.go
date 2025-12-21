@@ -114,20 +114,34 @@ func (r *WebSessionRepository) GetSessionByToken(token string) (*WebSession, err
 	}
 
 	// Parse times as UTC to match how we store them
+	// SQLite may return times in different formats, so we try both
 	loc, _ := time.LoadLocation("UTC")
-	var parseErr error
-	session.ExpiresAt, parseErr = time.ParseInLocation("2006-01-02 15:04:05", expiresAt, loc)
-	if parseErr != nil {
-		r.logger.Warn("failed to parse expires_at", zap.String("expires_at", expiresAt), zap.Error(parseErr))
+	
+	// Helper function to parse time with multiple format attempts
+	parseTime := func(timeStr, fieldName string) time.Time {
+		// Try ISO 8601 format first (what SQLite returns)
+		if t, err := time.Parse("2006-01-02T15:04:05Z", timeStr); err == nil {
+			return t.UTC()
+		}
+		// Try ISO 8601 with timezone offset
+		if t, err := time.Parse("2006-01-02T15:04:05-07:00", timeStr); err == nil {
+			return t.UTC()
+		}
+		// Try our custom format
+		if t, err := time.ParseInLocation("2006-01-02 15:04:05", timeStr, loc); err == nil {
+			return t.UTC()
+		}
+		// Try RFC3339
+		if t, err := time.Parse(time.RFC3339, timeStr); err == nil {
+			return t.UTC()
+		}
+		r.logger.Warn("failed to parse time", zap.String("field", fieldName), zap.String("value", timeStr))
+		return time.Time{}
 	}
-	session.CreatedAt, parseErr = time.ParseInLocation("2006-01-02 15:04:05", createdAt, loc)
-	if parseErr != nil {
-		r.logger.Warn("failed to parse created_at", zap.String("created_at", createdAt), zap.Error(parseErr))
-	}
-	session.LastSeenAt, parseErr = time.ParseInLocation("2006-01-02 15:04:05", lastSeenAt, loc)
-	if parseErr != nil {
-		r.logger.Warn("failed to parse last_seen_at", zap.String("last_seen_at", lastSeenAt), zap.Error(parseErr))
-	}
+	
+	session.ExpiresAt = parseTime(expiresAt, "expires_at")
+	session.CreatedAt = parseTime(createdAt, "created_at")
+	session.LastSeenAt = parseTime(lastSeenAt, "last_seen_at")
 
 	r.logger.Info("session found in database",
 		zap.Int64("session_id", session.ID),
