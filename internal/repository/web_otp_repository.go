@@ -73,6 +73,11 @@ func (r *WebOTPRepository) ValidateOTP(userID int64, code string) (*WebOTP, erro
 	hash := sha256.Sum256([]byte(code))
 	codeHash := hex.EncodeToString(hash[:])
 
+	r.logger.Debug("validating OTP", 
+		zap.Int64("user_id", userID),
+		zap.String("code_length", fmt.Sprintf("%d", len(code))),
+		zap.String("code_hash", codeHash))
+
 	query := `SELECT id, user_id, code_hash, expires_at, consumed_at, created_at
 			  FROM web_otps 
 			  WHERE user_id = ? AND code_hash = ? AND consumed_at IS NULL`
@@ -91,9 +96,19 @@ func (r *WebOTPRepository) ValidateOTP(userID int64, code string) (*WebOTP, erro
 	)
 
 	if err == sql.ErrNoRows {
+		r.logger.Debug("OTP not found in database", 
+			zap.Int64("user_id", userID),
+			zap.String("code_hash", codeHash))
+		// Check if there are any OTPs for this user (for debugging)
+		var count int
+		countQuery := `SELECT COUNT(*) FROM web_otps WHERE user_id = ? AND consumed_at IS NULL`
+		if err := r.db.QueryRow(countQuery, userID).Scan(&count); err == nil {
+			r.logger.Debug("available OTPs for user", zap.Int64("user_id", userID), zap.Int("count", count))
+		}
 		return nil, fmt.Errorf("invalid OTP code")
 	}
 	if err != nil {
+		r.logger.Error("failed to query OTP", zap.Error(err))
 		return nil, fmt.Errorf("failed to validate OTP: %w", err)
 	}
 
@@ -104,8 +119,17 @@ func (r *WebOTPRepository) ValidateOTP(userID int64, code string) (*WebOTP, erro
 		otp.ConsumedAt = &t
 	}
 
+	r.logger.Debug("OTP found", 
+		zap.Int64("otp_id", otp.ID),
+		zap.Time("expires_at", otp.ExpiresAt),
+		zap.Time("now", time.Now()))
+
 	// Check expiration
 	if time.Now().After(otp.ExpiresAt) {
+		r.logger.Debug("OTP expired", 
+			zap.Int64("otp_id", otp.ID),
+			zap.Time("expires_at", otp.ExpiresAt),
+			zap.Time("now", time.Now()))
 		return nil, fmt.Errorf("OTP expired")
 	}
 

@@ -3,9 +3,11 @@ package web
 import (
 	"database/sql"
 	"embed"
+	"fmt"
 	"html/template"
 	"io/fs"
 	"net/http"
+	"strings"
 
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/repository"
@@ -284,13 +286,20 @@ func (r *Router) handleLogin(w http.ResponseWriter, req *http.Request) {
 
 // handleAuthTelegram handles Telegram WebApp initData authentication
 func (r *Router) handleAuthTelegram(w http.ResponseWriter, req *http.Request) {
+	r.logger.Info("handleAuthTelegram called", zap.String("method", req.Method))
+	
 	if req.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
 
 	initData := req.FormValue("initData")
+	r.logger.Info("received initData", 
+		zap.String("initData_length", fmt.Sprintf("%d", len(initData))),
+		zap.String("initData_preview", maskInitData(initData)))
+	
 	if initData == "" {
+		r.logger.Warn("initData is empty")
 		http.Error(w, "initData is required", http.StatusBadRequest)
 		return
 	}
@@ -303,6 +312,8 @@ func (r *Router) handleAuthTelegram(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, "Invalid initData", http.StatusUnauthorized)
 		return
 	}
+	
+	r.logger.Info("initData validated successfully", zap.Int64("telegram_id", telegramID))
 
 	// Get or create user
 	userRepo := r.userRepo.(*repository.UserRepository)
@@ -351,6 +362,17 @@ func (r *Router) handleLogout(w http.ResponseWriter, req *http.Request) {
 	})
 
 	http.Redirect(w, req, "/login", http.StatusFound)
+}
+
+// maskInitData masks the initData for logging (shows first 20 and last 10 characters)
+func maskInitData(initData string) string {
+	if len(initData) == 0 {
+		return ""
+	}
+	if len(initData) <= 30 {
+		return strings.Repeat("*", len(initData))
+	}
+	return initData[:20] + "..." + initData[len(initData)-10:]
 }
 
 // handleDashboard and handleChat are implemented in dashboard.go

@@ -17,14 +17,25 @@
     </main>
 </div>
 <script>
+    console.log('App page loaded');
+    console.log('Telegram available:', !!window.Telegram);
+    console.log('WebApp available:', !!(window.Telegram && window.Telegram.WebApp));
+    
     // Check if we're in Telegram WebApp
     if (window.Telegram && window.Telegram.WebApp) {
         const tg = window.Telegram.WebApp;
+        console.log('WebApp version:', tg.version);
+        console.log('WebApp platform:', tg.platform);
+        
+        // Wait for WebApp to be ready
         tg.ready();
         
-        // Get initData and authenticate
+        // Get initData - in Telegram WebApp, initData should be available as a string
         const initData = tg.initData;
-        if (initData) {
+        console.log('initData:', initData ? 'present (length: ' + initData.length + ')' : 'not available');
+        
+        if (initData && initData.length > 0) {
+            console.log('Submitting authentication with initData...');
             const form = document.createElement('form');
             form.method = 'POST';
             form.action = '/auth/telegram';
@@ -38,11 +49,34 @@
             document.body.appendChild(form);
             form.submit();
         } else {
-            // No initData, redirect to login
-            window.location.href = '/login';
+            // No initData - this shouldn't happen in Telegram Mini App
+            // But if it does, wait a bit and try again
+            console.warn('initData not available, waiting 1 second...');
+            setTimeout(function() {
+                const retryInitData = tg.initData;
+                console.log('Retry initData:', retryInitData ? 'present (length: ' + retryInitData.length + ')' : 'still not available');
+                if (retryInitData && retryInitData.length > 0) {
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '/auth/telegram';
+                    
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'initData';
+                    input.value = retryInitData;
+                    form.appendChild(input);
+                    
+                    document.body.appendChild(form);
+                    form.submit();
+                } else {
+                    console.error('initData still not available after retry, redirecting to login');
+                    window.location.href = '/login';
+                }
+            }, 1000);
         }
     } else {
         // Not in Telegram, redirect to login
+        console.log('Not in Telegram WebApp, redirecting to login');
         window.location.href = '/login';
     }
 </script>

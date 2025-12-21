@@ -93,14 +93,24 @@ func (r *Router) handleAuthOTP(w http.ResponseWriter, req *http.Request) {
 
 	userIDStr := req.FormValue("user_id")
 	code := strings.TrimSpace(req.FormValue("code"))
+	
+	// Normalize code - remove all non-digit characters
+	code = normalizeOTPCode(code)
+
+	r.logger.Info("OTP validation attempt", 
+		zap.String("user_id", userIDStr),
+		zap.String("code_length", fmt.Sprintf("%d", len(code))),
+		zap.String("code_preview", maskCode(code)))
 
 	if userIDStr == "" || code == "" {
+		r.logger.Warn("OTP validation failed: missing user_id or code")
 		http.Error(w, "user_id and code are required", http.StatusBadRequest)
 		return
 	}
 
 	userID, err := strconv.ParseInt(userIDStr, 10, 64)
 	if err != nil {
+		r.logger.Warn("OTP validation failed: invalid user_id", zap.Error(err))
 		http.Error(w, "Invalid user_id", http.StatusBadRequest)
 		return
 	}
@@ -108,11 +118,17 @@ func (r *Router) handleAuthOTP(w http.ResponseWriter, req *http.Request) {
 	// Validate OTP
 	otp, err := r.otpRepo.ValidateOTP(userID, code)
 	if err != nil {
+		r.logger.Warn("OTP validation failed", 
+			zap.Int64("user_id", userID),
+			zap.String("code_length", fmt.Sprintf("%d", len(code))),
+			zap.Error(err))
 		w.Header().Set("Content-Type", "text/html")
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprintf(w, `<div class="error">Invalid or expired OTP code. Please try again.</div>`)
 		return
 	}
+
+	r.logger.Info("OTP validated successfully", zap.Int64("user_id", userID), zap.Int64("otp_id", otp.ID))
 
 	// Create session
 	auth := r.getAuthMiddleware()
@@ -125,5 +141,27 @@ func (r *Router) handleAuthOTP(w http.ResponseWriter, req *http.Request) {
 	// Redirect to dashboard
 	w.Header().Set("HX-Redirect", "/app/dashboard")
 	w.WriteHeader(http.StatusOK)
+}
+
+// normalizeOTPCode removes all non-digit characters from the code
+func normalizeOTPCode(code string) string {
+	var result strings.Builder
+	for _, r := range code {
+		if r >= '0' && r <= '9' {
+			result.WriteRune(r)
+		}
+	}
+	return result.String()
+}
+
+// maskCode masks the OTP code for logging (shows first and last character)
+func maskCode(code string) string {
+	if len(code) == 0 {
+		return ""
+	}
+	if len(code) <= 2 {
+		return "**"
+	}
+	return string(code[0]) + strings.Repeat("*", len(code)-2) + string(code[len(code)-1])
 }
 
