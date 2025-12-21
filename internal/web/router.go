@@ -7,6 +7,7 @@ import (
 	"html/template"
 	"io/fs"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"tgbot-skeleton/internal/config"
@@ -125,6 +126,9 @@ func (r *Router) SetDependencies(
 		r.config,
 		botToken,
 	)
+	
+	// Setup protected routes now that auth middleware is initialized
+	r.setupProtectedRoutes()
 }
 
 // SetOTPRepo sets the OTP repository
@@ -152,12 +156,20 @@ func (r *Router) setupRoutes() {
 
 	// Auth routes
 	r.mux.HandleFunc("/auth/telegram", r.handleAuthTelegram)
+	r.mux.HandleFunc("/auth/telegram_unsafe", r.handleAuthTelegramUnsafe)
 	r.mux.HandleFunc("/auth/request_otp", r.handleAuthRequestOTP)
 	r.mux.HandleFunc("/auth/otp", r.handleAuthOTP)
 	r.mux.HandleFunc("/logout", r.handleLogout)
+}
+
+// setupProtectedRoutes configures protected routes (called after SetDependencies)
+func (r *Router) setupProtectedRoutes() {
+	auth := r.getAuthMiddleware()
+	if auth == nil {
+		r.logger.Fatal("auth middleware not initialized - call SetDependencies first")
+	}
 
 	// Protected user routes (wrapped with auth middleware)
-	auth := r.getAuthMiddleware()
 	r.mux.HandleFunc("/app/dashboard", auth.RequireAuth(r.handleDashboard))
 	r.mux.HandleFunc("/app/vocab", auth.RequireAuth(r.handleVocab))
 	r.mux.HandleFunc("/app/vocab/", auth.RequireAuth(r.handleVocabDelete))
@@ -325,6 +337,52 @@ func (r *Router) handleAuthTelegram(w http.ResponseWriter, req *http.Request) {
 	}
 
 	// Create session
+	if err := auth.CreateSession(w, user.ID); err != nil {
+		r.logger.Error("failed to create session", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	// Redirect to dashboard
+	http.Redirect(w, req, "/app/dashboard", http.StatusFound)
+}
+
+// handleAuthTelegramUnsafe handles Telegram WebApp authentication using initDataUnsafe (less secure, fallback)
+func (r *Router) handleAuthTelegramUnsafe(w http.ResponseWriter, req *http.Request) {
+	r.logger.Info("handleAuthTelegramUnsafe called", zap.String("method", req.Method))
+	
+	if req.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// Get user ID directly from initDataUnsafe (less secure, but works when initData is not available)
+	userIDStr := req.FormValue("user_id")
+	if userIDStr == "" {
+		http.Error(w, "user_id is required", http.StatusBadRequest)
+		return
+	}
+
+	telegramID, err := strconv.ParseInt(userIDStr, 10, 64)
+	if err != nil {
+		r.logger.Warn("invalid user_id", zap.Error(err))
+		http.Error(w, "Invalid user_id", http.StatusBadRequest)
+		return
+	}
+
+	r.logger.Info("authenticating via initDataUnsafe", zap.Int64("telegram_id", telegramID))
+
+	// Get or create user
+	userRepo := r.userRepo.(*repository.UserRepository)
+	user, err := userRepo.GetOrCreateUser(telegramID)
+	if err != nil {
+		r.logger.Error("failed to get/create user", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	// Create session
+	auth := r.getAuthMiddleware()
 	if err := auth.CreateSession(w, user.ID); err != nil {
 		r.logger.Error("failed to create session", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
