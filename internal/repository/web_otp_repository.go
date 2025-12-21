@@ -44,14 +44,23 @@ func (r *WebOTPRepository) GenerateOTP(userID int64, ttl time.Duration) (string,
 	hash := sha256.Sum256([]byte(code))
 	codeHash := hex.EncodeToString(hash[:])
 
+	// Use UTC for all time operations to avoid timezone issues
+	now := time.Now().UTC()
 	otp := &WebOTP{
 		UserID:    userID,
 		CodeHash:  codeHash,
-		ExpiresAt: time.Now().Add(ttl),
+		ExpiresAt: now.Add(ttl),
 	}
 
+	r.logger.Debug("generating OTP", 
+		zap.Int64("user_id", userID),
+		zap.Time("expires_at", otp.ExpiresAt),
+		zap.Duration("ttl", ttl))
+
+	// Format time as UTC string for SQLite
+	expiresAtStr := otp.ExpiresAt.Format("2006-01-02 15:04:05")
 	query := `INSERT INTO web_otps (user_id, code_hash, expires_at) VALUES (?, ?, ?)`
-	result, err := r.db.Exec(query, otp.UserID, otp.CodeHash, otp.ExpiresAt)
+	result, err := r.db.Exec(query, otp.UserID, otp.CodeHash, expiresAtStr)
 	if err != nil {
 		return "", nil, fmt.Errorf("failed to create OTP: %w", err)
 	}
@@ -112,24 +121,51 @@ func (r *WebOTPRepository) ValidateOTP(userID int64, code string) (*WebOTP, erro
 		return nil, fmt.Errorf("failed to validate OTP: %w", err)
 	}
 
-	otp.ExpiresAt, _ = time.Parse("2006-01-02 15:04:05", expiresAt)
-	otp.CreatedAt, _ = time.Parse("2006-01-02 15:04:05", createdAt)
+	// Parse times as UTC - SQLite stores times as strings, we store them in UTC format
+	// Parse as UTC to avoid timezone issues
+	loc, _ := time.LoadLocation("UTC")
+	var errParse error
+	otp.ExpiresAt, errParse = time.ParseInLocation("2006-01-02 15:04:05", expiresAt, loc)
+	if errParse != nil {
+		// Try with timezone format
+		otp.ExpiresAt, errParse = time.Parse("2006-01-02T15:04:05Z", expiresAt)
+		if errParse != nil {
+			r.logger.Warn("failed to parse expires_at", zap.String("expires_at", expiresAt), zap.Error(errParse))
+		}
+	}
+	
+	otp.CreatedAt, errParse = time.ParseInLocation("2006-01-02 15:04:05", createdAt, loc)
+	if errParse != nil {
+		var errParse2 error
+		otp.CreatedAt, errParse2 = time.Parse("2006-01-02T15:04:05Z", createdAt)
+		if errParse2 != nil {
+			r.logger.Warn("failed to parse created_at", zap.String("created_at", createdAt), zap.Error(errParse2))
+		}
+	}
 	if consumedAt.Valid {
 		t, _ := time.Parse("2006-01-02 15:04:05", consumedAt.String)
 		otp.ConsumedAt = &t
 	}
 
+	// Use UTC for comparison to match how we store times
+	now := time.Now().UTC()
+	timeUntilExpiry := otp.ExpiresAt.Sub(now)
+	
 	r.logger.Debug("OTP found", 
 		zap.Int64("otp_id", otp.ID),
+		zap.Time("created_at", otp.CreatedAt),
 		zap.Time("expires_at", otp.ExpiresAt),
-		zap.Time("now", time.Now()))
+		zap.Time("now", now),
+		zap.String("time_until_expiry", timeUntilExpiry.String()),
+		zap.Float64("seconds_until_expiry", timeUntilExpiry.Seconds()))
 
-	// Check expiration
-	if time.Now().After(otp.ExpiresAt) {
+	// Check expiration - add 5 second grace period to account for clock skew
+	if now.After(otp.ExpiresAt.Add(5 * time.Second)) {
 		r.logger.Debug("OTP expired", 
 			zap.Int64("otp_id", otp.ID),
 			zap.Time("expires_at", otp.ExpiresAt),
-			zap.Time("now", time.Now()))
+			zap.Time("now", now),
+			zap.String("expired_by", now.Sub(otp.ExpiresAt).String()))
 		return nil, fmt.Errorf("OTP expired")
 	}
 

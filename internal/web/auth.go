@@ -88,8 +88,8 @@ func (m *AuthMiddleware) GetUserFromSession(r *http.Request) (int64, error) {
 		return 0, fmt.Errorf("session not found")
 	}
 
-	// Check expiration
-	if time.Now().After(session.ExpiresAt) {
+	// Check expiration - use UTC for consistency
+	if time.Now().UTC().After(session.ExpiresAt) {
 		_ = m.sessionRepo.DeleteSession(session.Token)
 		return 0, fmt.Errorf("session expired")
 	}
@@ -182,7 +182,8 @@ func (m *AuthMiddleware) CreateSession(w http.ResponseWriter, userID int64) erro
 	}
 
 	ttl := time.Duration(m.config.WebApp.SessionTTLHours) * time.Hour
-	expiresAt := time.Now().Add(ttl)
+	// Use UTC for consistency with database storage
+	expiresAt := time.Now().UTC().Add(ttl)
 
 	session := &repository.WebSession{
 		UserID:    userID,

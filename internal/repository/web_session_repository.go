@@ -35,8 +35,10 @@ func NewWebSessionRepository(db *sql.DB, logger *zap.Logger) *WebSessionReposito
 
 // CreateSession creates a new web session
 func (r *WebSessionRepository) CreateSession(session *WebSession) error {
+	// Format time as UTC string for SQLite to avoid timezone issues
+	expiresAtStr := session.ExpiresAt.UTC().Format("2006-01-02 15:04:05")
 	query := `INSERT INTO web_sessions (user_id, session_token, expires_at) VALUES (?, ?, ?)`
-	result, err := r.db.Exec(query, session.UserID, session.Token, session.ExpiresAt)
+	result, err := r.db.Exec(query, session.UserID, session.Token, expiresAtStr)
 	if err != nil {
 		return fmt.Errorf("failed to create session: %w", err)
 	}
@@ -75,9 +77,11 @@ func (r *WebSessionRepository) GetSessionByToken(token string) (*WebSession, err
 		return nil, fmt.Errorf("failed to get session: %w", err)
 	}
 
-	session.ExpiresAt, _ = time.Parse("2006-01-02 15:04:05", expiresAt)
-	session.CreatedAt, _ = time.Parse("2006-01-02 15:04:05", createdAt)
-	session.LastSeenAt, _ = time.Parse("2006-01-02 15:04:05", lastSeenAt)
+	// Parse times as UTC to match how we store them
+	loc, _ := time.LoadLocation("UTC")
+	session.ExpiresAt, _ = time.ParseInLocation("2006-01-02 15:04:05", expiresAt, loc)
+	session.CreatedAt, _ = time.ParseInLocation("2006-01-02 15:04:05", createdAt, loc)
+	session.LastSeenAt, _ = time.ParseInLocation("2006-01-02 15:04:05", lastSeenAt, loc)
 
 	return &session, nil
 }
