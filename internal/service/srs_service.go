@@ -94,7 +94,7 @@ func (s *SRSService) handleLapse(card *models.UserCard, now time.Time) {
 	card.EF = math.Max(models.MinEF, card.EF-0.2)
 	
 	// Set next due to first learning step
-	steps := models.LearningStepsDays()
+	steps := models.LearningStepsDays(card.Direction)
 	nextDue := now.Add(time.Duration(steps[0]) * 24 * time.Hour)
 	card.NextDueAt = &nextDue
 }
@@ -104,7 +104,7 @@ func (s *SRSService) handleNew(card *models.UserCard, quality models.Quality, no
 	card.State = models.StateLearning
 	card.LearningStep = 0
 	
-	steps := models.LearningStepsDays()
+	steps := models.LearningStepsDays(card.Direction)
 	
 	if quality == models.QualityHard {
 		// Stay on step 0
@@ -125,7 +125,7 @@ func (s *SRSService) handleNew(card *models.UserCard, quality models.Quality, no
 
 // handleLearning handles a learning card
 func (s *SRSService) handleLearning(card *models.UserCard, quality models.Quality, now time.Time) {
-	steps := models.LearningStepsDays()
+	steps := models.LearningStepsDays(card.Direction)
 	
 	if quality == models.QualityHard {
 		// Repeat current step
@@ -140,8 +140,18 @@ func (s *SRSService) handleLearning(card *models.UserCard, quality models.Qualit
 		card.LearningStep++
 		
 		if card.LearningStep >= len(steps) {
-			// Graduate to review
-			s.graduate(card, now)
+			// Graduate to review with improved initial interval
+			// If we completed 2+ steps, use a more honest interval (3-4 days)
+			// Otherwise use standard 1 day
+			if card.LearningStep >= 2 {
+				card.State = models.StateReview
+				card.Reps = 1
+				card.IntervalDays = 3 // Start with 3 days for better progression
+				nextDue := now.Add(3 * 24 * time.Hour)
+				card.NextDueAt = &nextDue
+			} else {
+				s.graduate(card, now)
+			}
 		} else {
 			// Move to next learning step
 			nextDue := now.Add(time.Duration(steps[card.LearningStep]) * 24 * time.Hour)

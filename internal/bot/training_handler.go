@@ -29,14 +29,15 @@ type TrainingHandler struct {
 
 // SessionState holds the state of an active training session
 type SessionState struct {
-	UserID         int64
-	SessionID      int64
-	Queue          []*models.UserCardWithTraining
-	CurrentIndex   int
-	ShownAt        time.Time
-	OptionsShownAt *time.Time
-	Options        []string
-	CorrectAnswer  string
+	UserID              int64
+	SessionID           int64
+	Queue               []*models.UserCardWithTraining
+	CurrentIndex        int
+	ShownAt             time.Time
+	OptionsShownAt      *time.Time
+	Options             []string
+	CorrectAnswer       string
+	RecentCorrectAnswers []string // Last N correct answers to exclude from distractors
 }
 
 // SessionStateData holds serializable session state data
@@ -97,10 +98,11 @@ func (h *TrainingHandler) StartTraining(ctx context.Context, chatID, userID int6
 
 	// Create session state
 	state := &SessionState{
-		UserID:       userID,
-		SessionID:    session.ID,
-		Queue:        queue,
-		CurrentIndex: 0,
+		UserID:              userID,
+		SessionID:           session.ID,
+		Queue:               queue,
+		CurrentIndex:        0,
+		RecentCorrectAnswers: make([]string, 0, 2),
 	}
 
 	// Store session
@@ -140,7 +142,8 @@ func (h *TrainingHandler) showCard(chatID int64) error {
 	card := state.Queue[state.CurrentIndex]
 	
 	// Extract session words from other cards in the queue (for mixing into distractors)
-	sessionWords := h.extractSessionWords(state.Queue, state.CurrentIndex, card.UserCard.Direction)
+	// Exclude recent correct answers to avoid "freshness recognition"
+	sessionWords := h.extractSessionWords(state.Queue, state.CurrentIndex, card.UserCard.Direction, state.RecentCorrectAnswers)
 	
 	// Update state
 	h.sessionsMutex.Lock()
@@ -330,6 +333,18 @@ func (h *TrainingHandler) HandleAnswer(chatID int64, optionIndex int) error {
 		if err := h.srsService.RecordWrongAnswer(&card.UserCard, chosenOption); err != nil {
 			h.logger.Error("failed to record wrong answer", zap.Error(err))
 		}
+	} else {
+		// Track correct answer for exclusion from future distractors
+		h.sessionsMutex.Lock()
+		if state.RecentCorrectAnswers == nil {
+			state.RecentCorrectAnswers = make([]string, 0, 2)
+		}
+		// Add to front, keep only last 2
+		state.RecentCorrectAnswers = append([]string{correctAnswer}, state.RecentCorrectAnswers...)
+		if len(state.RecentCorrectAnswers) > 2 {
+			state.RecentCorrectAnswers = state.RecentCorrectAnswers[:2]
+		}
+		h.sessionsMutex.Unlock()
 	}
 
 	// Send feedback
@@ -460,8 +475,15 @@ func (h *TrainingHandler) HasActiveSession(chatID int64) bool {
 
 // extractSessionWords extracts correct answers from other cards in the session
 // to be used as distractors (prevents guessing by word recognition)
-func (h *TrainingHandler) extractSessionWords(queue []*models.UserCardWithTraining, currentIndex int, direction models.CardDirection) []string {
+// recentCorrectAnswers: list of recent correct answers to exclude (to avoid "freshness recognition")
+func (h *TrainingHandler) extractSessionWords(queue []*models.UserCardWithTraining, currentIndex int, direction models.CardDirection, recentCorrectAnswers []string) []string {
 	sessionWords := make([]string, 0, len(queue))
+	
+	// Create a set of excluded words for fast lookup
+	excludedSet := make(map[string]bool)
+	for _, word := range recentCorrectAnswers {
+		excludedSet[word] = true
+	}
 	
 	for i, card := range queue {
 		// Skip current card
@@ -470,16 +492,18 @@ func (h *TrainingHandler) extractSessionWords(queue []*models.UserCardWithTraini
 		}
 		
 		// Extract correct answer based on direction
+		var word string
 		if direction == models.DirectionRUtoEN {
 			// For RU->EN, collect English words
-			if card.TrainingCard.WordEN != "" {
-				sessionWords = append(sessionWords, card.TrainingCard.WordEN)
-			}
+			word = card.TrainingCard.WordEN
 		} else {
 			// For EN->RU, collect Russian meanings
-			if card.TrainingCard.WordRU != "" {
-				sessionWords = append(sessionWords, card.TrainingCard.WordRU)
-			}
+			word = card.TrainingCard.WordRU
+		}
+		
+		// Add word if it's not in the excluded set
+		if word != "" && !excludedSet[word] {
+			sessionWords = append(sessionWords, word)
 		}
 	}
 	
@@ -595,10 +619,11 @@ func (h *TrainingHandler) restoreSession(chatID, userID int64) (bool, error) {
 
 	// Create session state
 	state := &SessionState{
-		UserID:       userID,
-		SessionID:    activeSession.ID,
-		Queue:        queue,
-		CurrentIndex: stateData.CurrentIndex,
+		UserID:              userID,
+		SessionID:           activeSession.ID,
+		Queue:               queue,
+		CurrentIndex:        stateData.CurrentIndex,
+		RecentCorrectAnswers: make([]string, 0, 2),
 	}
 
 	// Validate current index

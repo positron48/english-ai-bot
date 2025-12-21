@@ -107,9 +107,20 @@ func (s *NotificationService) checkAndSendNotifications() {
 			preferredTime, _ = time.Parse("15:04", "19:00")
 		}
 
-		// Check if it's time to send notification
-		// Send if current hour matches preferred hour
-		if userNow.Hour() != preferredTime.Hour() {
+		// Check if we're in the notification window
+		// Window: from preferred_time to end of day (23:59:59)
+		currentHour := userNow.Hour()
+		currentMinute := userNow.Minute()
+		preferredHour := preferredTime.Hour()
+		preferredMinute := preferredTime.Minute()
+		
+		// Check if we're before the preferred time
+		if currentHour < preferredHour || (currentHour == preferredHour && currentMinute < preferredMinute) {
+			continue // Too early, skip
+		}
+		
+		// Check if we're past the end of day (shouldn't happen, but safety check)
+		if currentHour >= 24 {
 			continue
 		}
 

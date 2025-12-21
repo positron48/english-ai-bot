@@ -95,6 +95,7 @@ func (s *OptionsService) GenerateOptions(
 	}
 
 	// Filter session words: exclude current card's answer and already included options
+	// Note: recent correct answers should already be excluded by the caller (extractSessionWords)
 	filteredSessionWords := make([]string, 0, len(sessionWords))
 	for _, sw := range sessionWords {
 		if sw != correctAnswer && !contains(optionsPool, sw) {

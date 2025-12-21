@@ -7,10 +7,11 @@ const (
 	MinEF              = 1.3
 	MaxEF              = 2.5
 	
-	// Learning steps in days
+	// Learning steps in days (defaults, can be overridden by config)
 	LearningStep0 = 1
 	LearningStep1 = 3
 	LearningStep2 = 7
+	LearningStep3 = 14 // For RU->EN direction
 	
 	// Quality thresholds (in milliseconds)
 	FastThresholdMS = 2500
@@ -28,8 +29,15 @@ const (
 	MaxOptionCount     = 6
 )
 
-// LearningStepsDays returns the learning steps in days
-func LearningStepsDays() []int {
+// LearningStepsDays returns the learning steps in days for a given direction
+// RU->EN is harder (active recall), so it has more steps
+// EN->RU is easier (passive recognition), so it has fewer steps
+func LearningStepsDays(direction CardDirection) []int {
+	if direction == DirectionRUtoEN {
+		// RU->EN: [1, 3, 7, 14] - more gradual progression
+		return []int{LearningStep0, LearningStep1, LearningStep2, LearningStep3}
+	}
+	// EN->RU: [1, 3, 7] - faster progression
 	return []int{LearningStep0, LearningStep1, LearningStep2}
 }
 
