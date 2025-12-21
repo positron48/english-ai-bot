@@ -76,8 +76,9 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 	}
 
 	r.renderTemplate(w, "vocab.html", map[string]interface{}{
-		"Title": "Vocabulary",
-		"Words": words,
+		"Title":        "Vocabulary",
+		"Words":         words,
+		"ContentBlock":  "vocab-content",
 	})
 }
 
@@ -132,9 +133,10 @@ func (r *Router) handleVocabDelete(w http.ResponseWriter, req *http.Request) {
 		}
 
 		r.renderTemplate(w, "vocab_confirm_delete.html", map[string]interface{}{
-			"Title": "Confirm Delete",
-			"WordEN": wordEN,
-			"Count": count,
+			"Title":        "Confirm Delete",
+			"WordEN":       wordEN,
+			"Count":        count,
+			"ContentBlock": "vocab-confirm-delete-content",
 		})
 		return
 	}

@@ -164,6 +164,7 @@ func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, stat
 		"Question":     questionText,
 		"CardIndex":    state.CurrentIndex + 1,
 		"TotalCards":   len(state.Queue),
+		"ContentBlock": "training-card-content",
 		"SessionID":    state.SessionID,
 		"UserCardID":   card.UserCard.ID,
 		"DelayMS":      r.config.Training.OptionsDelayMS,

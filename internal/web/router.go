@@ -65,11 +65,32 @@ func NewRouter(
 	}
 
 	// Load templates - parse base first, then others
+	// Parse base.html first to ensure it's available for other templates
 	tmpl := template.New("base.html")
-	tmpl, err := tmpl.ParseFS(templatesFS, "templates/*.html")
+	
+	// Parse base.html first
+	baseContent, err := templatesFS.ReadFile("templates/base.html")
+	if err != nil {
+		logger.Fatal("failed to read base.html", zap.Error(err))
+	}
+	tmpl, err = tmpl.Parse(string(baseContent))
+	if err != nil {
+		logger.Fatal("failed to parse base.html", zap.Error(err))
+	}
+	
+	// Then parse all other templates
+	tmpl, err = tmpl.ParseFS(templatesFS, "templates/*.html")
 	if err != nil {
 		logger.Fatal("failed to parse templates", zap.Error(err))
 	}
+	
+	// Log all parsed templates for debugging
+	var templateNames []string
+	for _, t := range tmpl.Templates() {
+		templateNames = append(templateNames, t.Name())
+	}
+	logger.Info("parsed templates", zap.Strings("templates", templateNames))
+	
 	r.templates = tmpl
 
 	// Setup routes
@@ -180,12 +201,18 @@ func (r *Router) renderTemplate(w http.ResponseWriter, name string, data interfa
 		}
 	}
 	
-	r.logger.Info("rendering template", zap.String("template_name", name), zap.Any("data_keys", getDataKeys(data)))
+	r.logger.Info("rendering template", 
+		zap.String("template_name", name), 
+		zap.Any("data_keys", getDataKeys(data)),
+		zap.String("template_found_name", tmpl.Name()))
 	
 	if err := r.templates.ExecuteTemplate(w, name, data); err != nil {
 		r.logger.Error("failed to render template", zap.String("template", name), zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
 	}
+	
+	r.logger.Info("template rendered successfully", zap.String("template_name", name))
 }
 
 // getDataKeys extracts keys from data map for logging
@@ -221,7 +248,8 @@ func (r *Router) handleApp(w http.ResponseWriter, req *http.Request) {
 	// Not authenticated - show app.html which will handle Telegram WebApp initData
 	// This allows the JavaScript in app.html to get initData from Telegram and authenticate
 	r.renderTemplate(w, "app.html", map[string]interface{}{
-		"Title": "English Bot",
+		"Title":        "English Bot",
+		"ContentBlock": "app-content",
 	})
 }
 
@@ -232,8 +260,25 @@ func (r *Router) handleLogin(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	// Log available templates for debugging
+	var availableTemplates []string
+	for _, t := range r.templates.Templates() {
+		availableTemplates = append(availableTemplates, t.Name())
+	}
+	r.logger.Info("handleLogin: available templates", zap.Strings("templates", availableTemplates))
+	
+	// Check if login.html template exists
+	loginTmpl := r.templates.Lookup("login.html")
+	if loginTmpl == nil {
+		r.logger.Error("login.html template not found!")
+		http.Error(w, "Template not found", http.StatusInternalServerError)
+		return
+	}
+	r.logger.Info("handleLogin: login.html template found", zap.String("template_name", loginTmpl.Name()))
+
 	r.renderTemplate(w, "login.html", map[string]interface{}{
-		"Title": "Login",
+		"Title":        "Login",
+		"ContentBlock": "login-content",
 	})
 }
 

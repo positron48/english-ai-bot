@@ -54,9 +54,10 @@ func (r *Router) handleAdmin(w http.ResponseWriter, req *http.Request) {
 	}
 
 	r.renderTemplate(w, "admin.html", map[string]interface{}{
-		"Title":      "Admin Panel",
-		"CBState":    cbState,
-		"AdminID":    r.config.Admin.TelegramID,
+		"Title":        "Admin Panel",
+		"CBState":      cbState,
+		"AdminID":      r.config.Admin.TelegramID,
+		"ContentBlock": "admin-content",
 	})
 }
 
@@ -118,9 +119,10 @@ func (r *Router) handleAdminTraining(w http.ResponseWriter, req *http.Request) {
 		cardsJSON, _ := json.MarshalIndent(cards, "", "  ")
 
 		r.renderTemplate(w, "admin_training_data.html", map[string]interface{}{
-			"Title":     "Training Data",
-			"WordEN":    wordEN,
-			"Cards":     cards,
+			"Title":        "Training Data",
+			"WordEN":       wordEN,
+			"Cards":        cards,
+			"ContentBlock": "admin-training-data-content",
 			"CardsJSON": string(cardsJSON),
 		})
 		return

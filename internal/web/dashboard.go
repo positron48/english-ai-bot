@@ -34,8 +34,9 @@ func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 	}
 
 	r.renderTemplate(w, "dashboard.html", map[string]interface{}{
-		"Title":    "Dashboard",
-		"DueCount": dueCount,
+		"Title":        "Dashboard",
+		"DueCount":     dueCount,
+		"ContentBlock": "dashboard-content",
 	})
 }
 
