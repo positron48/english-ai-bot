@@ -83,8 +83,12 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 
 // handleVocabDelete handles vocabulary deletion (confirm and delete)
 func (r *Router) handleVocabDelete(w http.ResponseWriter, req *http.Request) {
-	// Safety check: ensure we're handling the correct path
-	if !strings.HasPrefix(req.URL.Path, "/app/vocab/") {
+	r.logger.Info("handleVocabDelete called", zap.String("path", req.URL.Path), zap.String("method", req.Method))
+	
+	// Validate that path starts with /app/vocab/
+	path := req.URL.Path
+	if !strings.HasPrefix(path, "/app/vocab/") {
+		r.logger.Error("handleVocabDelete called with invalid path", zap.String("path", path))
 		http.Error(w, "Invalid path", http.StatusBadRequest)
 		return
 	}
@@ -96,10 +100,20 @@ func (r *Router) handleVocabDelete(w http.ResponseWriter, req *http.Request) {
 	}
 
 	// Extract word from URL path: /app/vocab/{word}/confirm_delete or /app/vocab/{word}/delete
-	path := req.URL.Path
-	parts := strings.Split(strings.TrimPrefix(path, "/app/vocab/"), "/")
-	if len(parts) < 1 {
-		http.Error(w, "Invalid path", http.StatusBadRequest)
+	// Remove leading /app/vocab/ prefix
+	remainingPath := strings.TrimPrefix(path, "/app/vocab/")
+	
+	// If path is empty or just a slash, redirect to vocab list
+	if remainingPath == "" || remainingPath == "/" {
+		r.logger.Warn("empty path in handleVocabDelete, redirecting to vocab list", zap.String("original_path", path))
+		http.Redirect(w, req, "/app/vocab", http.StatusFound)
+		return
+	}
+
+	parts := strings.Split(remainingPath, "/")
+	if len(parts) < 1 || parts[0] == "" {
+		// Invalid path, redirect to vocab list
+		http.Redirect(w, req, "/app/vocab", http.StatusFound)
 		return
 	}
 
@@ -109,6 +123,7 @@ func (r *Router) handleVocabDelete(w http.ResponseWriter, req *http.Request) {
 		action = parts[1]
 	}
 
+	// Validate wordEN is not empty
 	if wordEN == "" {
 		// Invalid path, redirect to vocab list
 		http.Redirect(w, req, "/app/vocab", http.StatusFound)
@@ -119,6 +134,13 @@ func (r *Router) handleVocabDelete(w http.ResponseWriter, req *http.Request) {
 
 	if req.Method == http.MethodGet && action == "confirm_delete" {
 		// Show confirmation page
+		// Validate wordEN is not empty before querying
+		if wordEN == "" {
+			r.logger.Warn("empty wordEN in confirm_delete request", zap.String("path", req.URL.Path))
+			http.Redirect(w, req, "/app/vocab", http.StatusFound)
+			return
+		}
+
 		// Get word info
 		query := `SELECT COUNT(*) FROM user_cards uc
 				  JOIN training_cards tc ON uc.training_card_id = tc.id
@@ -131,8 +153,9 @@ func (r *Router) handleVocabDelete(w http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		// If word not found or empty, redirect to vocab list
-		if count == 0 || wordEN == "" {
+		// If word not found, redirect to vocab list
+		if count == 0 {
+			r.logger.Warn("word not found for user", zap.String("word", wordEN), zap.Int64("userID", userID))
 			http.Redirect(w, req, "/app/vocab", http.StatusFound)
 			return
 		}
@@ -146,6 +169,13 @@ func (r *Router) handleVocabDelete(w http.ResponseWriter, req *http.Request) {
 	}
 
 	if req.Method == http.MethodPost && action == "delete" {
+		// Validate wordEN is not empty before deletion
+		if wordEN == "" {
+			r.logger.Warn("empty wordEN in delete request", zap.String("path", req.URL.Path))
+			http.Redirect(w, req, "/app/vocab", http.StatusFound)
+			return
+		}
+
 		// Perform deletion
 		rowsAffected, err := userCardRepo.DeleteUserCardsByWordENForUser(userID, wordEN)
 		if err != nil {
@@ -159,6 +189,12 @@ func (r *Router) handleVocabDelete(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	// If we get here, the request doesn't match any expected pattern
+	r.logger.Warn("unexpected request in handleVocabDelete", 
+		zap.String("path", req.URL.Path), 
+		zap.String("method", req.Method),
+		zap.String("wordEN", wordEN),
+		zap.String("action", action))
 	http.Error(w, "Invalid request", http.StatusBadRequest)
 }
 

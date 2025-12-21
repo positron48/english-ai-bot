@@ -145,8 +145,10 @@ func (r *Router) setupProtectedRoutes() {
 	}
 
 	// Protected user routes (wrapped with auth middleware)
+	// Register more specific routes first to avoid prefix matching issues
 	r.mux.HandleFunc("/app/dashboard", auth.RequireAuth(r.handleDashboard))
 	r.mux.HandleFunc("/app/vocab", auth.RequireAuth(r.handleVocab))
+	// Use exact path matching for vocab delete - register specific patterns
 	r.mux.HandleFunc("/app/vocab/", auth.RequireAuth(r.handleVocabDelete))
 	r.mux.HandleFunc("/app/training/start", auth.RequireAuth(r.handleTrainingStart))
 	r.mux.HandleFunc("/app/training/current", auth.RequireAuth(r.handleTrainingCurrent))
@@ -164,6 +166,12 @@ func (r *Router) setupProtectedRoutes() {
 
 // ServeHTTP implements http.Handler
 func (r *Router) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	// Log request for debugging (use Info level to see in production)
+	r.logger.Info("handling request",
+		zap.String("method", req.Method),
+		zap.String("path", req.URL.Path),
+		zap.String("remote_addr", req.RemoteAddr),
+	)
 	r.mux.ServeHTTP(w, req)
 }
 
@@ -202,11 +210,21 @@ func (r *Router) handleApp(w http.ResponseWriter, req *http.Request) {
 
 // handleLogin shows login page
 func (r *Router) handleLogin(w http.ResponseWriter, req *http.Request) {
+	r.logger.Info("handleLogin called", zap.String("path", req.URL.Path), zap.String("method", req.Method))
+	
+	// Validate path is exactly /login
+	if req.URL.Path != "/login" {
+		r.logger.Error("handleLogin called with invalid path", zap.String("path", req.URL.Path))
+		http.Error(w, "Invalid path", http.StatusBadRequest)
+		return
+	}
+	
 	if req.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
 
+	r.logger.Info("rendering login template")
 	r.renderTemplate(w, "login.html", map[string]interface{}{
 		"Title": "Login",
 	})
