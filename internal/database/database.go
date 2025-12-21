@@ -224,7 +224,6 @@ func (db *DB) migrate() error {
 		`CREATE INDEX IF NOT EXISTS idx_web_otps_user_id ON web_otps(user_id)`,
 		`CREATE INDEX IF NOT EXISTS idx_web_otps_code_hash ON web_otps(code_hash)`,
 		`CREATE INDEX IF NOT EXISTS idx_web_otps_expires_at ON web_otps(expires_at)`,
-		`CREATE INDEX IF NOT EXISTS idx_users_telegram_username ON users(telegram_username)`,
 	}
 
 	for _, query := range queries {
@@ -240,8 +239,14 @@ func (db *DB) migrate() error {
 	}
 
 	// Migrate users table to add telegram_username if it doesn't exist
+	// This must be done BEFORE creating index on telegram_username
 	if err := db.migrateUsersTable(); err != nil {
 		return fmt.Errorf("failed to migrate users table: %w", err)
+	}
+
+	// Create index on telegram_username AFTER the column is guaranteed to exist
+	if _, err := db.conn.Exec(`CREATE INDEX IF NOT EXISTS idx_users_telegram_username ON users(telegram_username)`); err != nil {
+		return fmt.Errorf("failed to create index on telegram_username: %w", err)
 	}
 
 	db.logger.Info("database migration completed successfully")
