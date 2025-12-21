@@ -72,8 +72,8 @@ func NewRouter(
 	}
 	r.templates = tmpl
 
-	// Setup public routes only (protected routes will be added after SetDependencies)
-	r.setupPublicRoutes()
+	// Setup routes
+	r.setupRoutes()
 
 	return r
 }
@@ -102,9 +102,6 @@ func (r *Router) SetDependencies(
 		r.config,
 		botToken,
 	)
-
-	// Setup protected routes now that auth middleware is initialized
-	r.setupProtectedRoutes()
 }
 
 // SetOTPRepo sets the OTP repository
@@ -117,8 +114,8 @@ func (r *Router) getAuthMiddleware() *AuthMiddleware {
 	return r.authMiddleware
 }
 
-// setupPublicRoutes configures public routes (called during initialization)
-func (r *Router) setupPublicRoutes() {
+// setupRoutes configures all routes
+func (r *Router) setupRoutes() {
 	// Static files
 	staticFS, err := fs.Sub(staticFS, "static")
 	if err != nil {
@@ -135,20 +132,11 @@ func (r *Router) setupPublicRoutes() {
 	r.mux.HandleFunc("/auth/request_otp", r.handleAuthRequestOTP)
 	r.mux.HandleFunc("/auth/otp", r.handleAuthOTP)
 	r.mux.HandleFunc("/logout", r.handleLogout)
-}
-
-// setupProtectedRoutes configures protected routes (called after SetDependencies)
-func (r *Router) setupProtectedRoutes() {
-	auth := r.getAuthMiddleware()
-	if auth == nil {
-		r.logger.Fatal("auth middleware not initialized - call SetDependencies first")
-	}
 
 	// Protected user routes (wrapped with auth middleware)
-	// Register more specific routes first to avoid prefix matching issues
+	auth := r.getAuthMiddleware()
 	r.mux.HandleFunc("/app/dashboard", auth.RequireAuth(r.handleDashboard))
 	r.mux.HandleFunc("/app/vocab", auth.RequireAuth(r.handleVocab))
-	// Use exact path matching for vocab delete - register specific patterns
 	r.mux.HandleFunc("/app/vocab/", auth.RequireAuth(r.handleVocabDelete))
 	r.mux.HandleFunc("/app/training/start", auth.RequireAuth(r.handleTrainingStart))
 	r.mux.HandleFunc("/app/training/current", auth.RequireAuth(r.handleTrainingCurrent))
@@ -166,22 +154,50 @@ func (r *Router) setupProtectedRoutes() {
 
 // ServeHTTP implements http.Handler
 func (r *Router) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-	// Log request for debugging (use Info level to see in production)
-	r.logger.Info("handling request",
-		zap.String("method", req.Method),
-		zap.String("path", req.URL.Path),
-		zap.String("remote_addr", req.RemoteAddr),
-	)
 	r.mux.ServeHTTP(w, req)
 }
 
 // renderTemplate renders a template with data
 func (r *Router) renderTemplate(w http.ResponseWriter, name string, data interface{}) {
+	// Check if template exists
+	tmpl := r.templates.Lookup(name)
+	if tmpl == nil {
+		// Try with templates/ prefix
+		tmpl = r.templates.Lookup("templates/" + name)
+		if tmpl != nil {
+			name = "templates/" + name
+		} else {
+			// Log all available template names for debugging
+			var availableTemplates []string
+			for _, t := range r.templates.Templates() {
+				availableTemplates = append(availableTemplates, t.Name())
+			}
+			r.logger.Error("template not found", 
+				zap.String("requested_template", name),
+				zap.Strings("available_templates", availableTemplates))
+			http.Error(w, "Template not found", http.StatusInternalServerError)
+			return
+		}
+	}
+	
+	r.logger.Info("rendering template", zap.String("template_name", name), zap.Any("data_keys", getDataKeys(data)))
+	
 	if err := r.templates.ExecuteTemplate(w, name, data); err != nil {
 		r.logger.Error("failed to render template", zap.String("template", name), zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 	}
 }
+
+// getDataKeys extracts keys from data map for logging
+func getDataKeys(data interface{}) []string {
+	if m, ok := data.(map[string]interface{}); ok {
+		keys := make([]string, 0, len(m))
+		for k := range m {
+			keys = append(keys, k)
+		}
+		return keys
+	}
+	return []string{"unknown"}
 
 // handleApp is the main entry point
 func (r *Router) handleApp(w http.ResponseWriter, req *http.Request) {
@@ -210,21 +226,11 @@ func (r *Router) handleApp(w http.ResponseWriter, req *http.Request) {
 
 // handleLogin shows login page
 func (r *Router) handleLogin(w http.ResponseWriter, req *http.Request) {
-	r.logger.Info("handleLogin called", zap.String("path", req.URL.Path), zap.String("method", req.Method))
-	
-	// Validate path is exactly /login
-	if req.URL.Path != "/login" {
-		r.logger.Error("handleLogin called with invalid path", zap.String("path", req.URL.Path))
-		http.Error(w, "Invalid path", http.StatusBadRequest)
-		return
-	}
-	
 	if req.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
 
-	r.logger.Info("rendering login template")
 	r.renderTemplate(w, "login.html", map[string]interface{}{
 		"Title": "Login",
 	})
