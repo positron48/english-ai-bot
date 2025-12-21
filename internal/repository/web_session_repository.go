@@ -37,19 +37,40 @@ func NewWebSessionRepository(db *sql.DB, logger *zap.Logger) *WebSessionReposito
 func (r *WebSessionRepository) CreateSession(session *WebSession) error {
 	// Format time as UTC string for SQLite to avoid timezone issues
 	expiresAtStr := session.ExpiresAt.UTC().Format("2006-01-02 15:04:05")
+	
+	// Log token preview for debugging
+	tokenPreview := session.Token
+	if len(session.Token) > 16 {
+		tokenPreview = session.Token[:8] + "..." + session.Token[len(session.Token)-8:]
+	}
+	r.logger.Info("creating session in database",
+		zap.Int64("user_id", session.UserID),
+		zap.String("token_preview", tokenPreview),
+		zap.String("token_length", fmt.Sprintf("%d", len(session.Token))),
+		zap.Time("expires_at", session.ExpiresAt),
+		zap.String("expires_at_str", expiresAtStr))
+	
 	query := `INSERT INTO web_sessions (user_id, session_token, expires_at) VALUES (?, ?, ?)`
 	result, err := r.db.Exec(query, session.UserID, session.Token, expiresAtStr)
 	if err != nil {
+		r.logger.Error("failed to insert session into database",
+			zap.Int64("user_id", session.UserID),
+			zap.String("token_preview", tokenPreview),
+			zap.Error(err))
 		return fmt.Errorf("failed to create session: %w", err)
 	}
 
 	id, err := result.LastInsertId()
 	if err != nil {
+		r.logger.Error("failed to get session ID", zap.Error(err))
 		return fmt.Errorf("failed to get session ID: %w", err)
 	}
 
 	session.ID = id
-	r.logger.Debug("created web session", zap.Int64("session_id", id), zap.Int64("user_id", session.UserID))
+	r.logger.Info("session created successfully in database",
+		zap.Int64("session_id", id),
+		zap.Int64("user_id", session.UserID),
+		zap.String("token_preview", tokenPreview))
 	return nil
 }
 
@@ -61,6 +82,13 @@ func (r *WebSessionRepository) GetSessionByToken(token string) (*WebSession, err
 	var session WebSession
 	var createdAt, lastSeenAt, expiresAt string
 
+	// Log token preview for debugging (first 8 and last 8 chars)
+	tokenPreview := token
+	if len(token) > 16 {
+		tokenPreview = token[:8] + "..." + token[len(token)-8:]
+	}
+	r.logger.Info("looking up session by token", zap.String("token_preview", tokenPreview), zap.String("token_length", fmt.Sprintf("%d", len(token))))
+
 	err := r.db.QueryRow(query, token).Scan(
 		&session.ID,
 		&session.UserID,
@@ -71,17 +99,41 @@ func (r *WebSessionRepository) GetSessionByToken(token string) (*WebSession, err
 	)
 
 	if err == sql.ErrNoRows {
+		r.logger.Warn("session not found in database", zap.String("token_preview", tokenPreview))
+		// Check if there are any sessions at all
+		var count int
+		countQuery := `SELECT COUNT(*) FROM web_sessions`
+		if err2 := r.db.QueryRow(countQuery).Scan(&count); err2 == nil {
+			r.logger.Info("total sessions in database", zap.Int("count", count))
+		}
 		return nil, nil
 	}
 	if err != nil {
+		r.logger.Error("failed to query session", zap.String("token_preview", tokenPreview), zap.Error(err))
 		return nil, fmt.Errorf("failed to get session: %w", err)
 	}
 
 	// Parse times as UTC to match how we store them
 	loc, _ := time.LoadLocation("UTC")
-	session.ExpiresAt, _ = time.ParseInLocation("2006-01-02 15:04:05", expiresAt, loc)
-	session.CreatedAt, _ = time.ParseInLocation("2006-01-02 15:04:05", createdAt, loc)
-	session.LastSeenAt, _ = time.ParseInLocation("2006-01-02 15:04:05", lastSeenAt, loc)
+	var parseErr error
+	session.ExpiresAt, parseErr = time.ParseInLocation("2006-01-02 15:04:05", expiresAt, loc)
+	if parseErr != nil {
+		r.logger.Warn("failed to parse expires_at", zap.String("expires_at", expiresAt), zap.Error(parseErr))
+	}
+	session.CreatedAt, parseErr = time.ParseInLocation("2006-01-02 15:04:05", createdAt, loc)
+	if parseErr != nil {
+		r.logger.Warn("failed to parse created_at", zap.String("created_at", createdAt), zap.Error(parseErr))
+	}
+	session.LastSeenAt, parseErr = time.ParseInLocation("2006-01-02 15:04:05", lastSeenAt, loc)
+	if parseErr != nil {
+		r.logger.Warn("failed to parse last_seen_at", zap.String("last_seen_at", lastSeenAt), zap.Error(parseErr))
+	}
+
+	r.logger.Info("session found in database",
+		zap.Int64("session_id", session.ID),
+		zap.Int64("user_id", session.UserID),
+		zap.String("token_preview", tokenPreview),
+		zap.Time("expires_at", session.ExpiresAt))
 
 	return &session, nil
 }
