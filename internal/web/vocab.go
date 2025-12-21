@@ -104,7 +104,8 @@ func (r *Router) handleVocabDelete(w http.ResponseWriter, req *http.Request) {
 	}
 
 	if wordEN == "" {
-		http.Error(w, "word is required", http.StatusBadRequest)
+		// Invalid path, redirect to vocab list
+		http.Redirect(w, req, "/app/vocab", http.StatusFound)
 		return
 	}
 
@@ -121,6 +122,12 @@ func (r *Router) handleVocabDelete(w http.ResponseWriter, req *http.Request) {
 		if err != nil {
 			r.logger.Error("failed to get word count", zap.Error(err))
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
+		}
+
+		// If word not found or empty, redirect to vocab list
+		if count == 0 || wordEN == "" {
+			http.Redirect(w, req, "/app/vocab", http.StatusFound)
 			return
 		}
 

@@ -49,7 +49,7 @@ func NewAuthMiddleware(
 // RequireAuth wraps a handler to require authentication
 func (m *AuthMiddleware) RequireAuth(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		userID, err := m.getUserFromSession(r)
+		userID, err := m.GetUserFromSession(r)
 		if err != nil || userID == 0 {
 			// Redirect to login or return 401
 			if strings.HasPrefix(r.URL.Path, "/app/") {
@@ -72,8 +72,8 @@ func (m *AuthMiddleware) RequireAuth(next http.HandlerFunc) http.HandlerFunc {
 	}
 }
 
-// getUserFromSession extracts user ID from session cookie
-func (m *AuthMiddleware) getUserFromSession(r *http.Request) (int64, error) {
+// GetUserFromSession extracts user ID from session cookie (public method)
+func (m *AuthMiddleware) GetUserFromSession(r *http.Request) (int64, error) {
 	cookie, err := r.Cookie("session")
 	if err != nil {
 		return 0, err

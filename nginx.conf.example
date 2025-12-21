@@ -73,10 +73,9 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
     }
 
-    # Информационная страница
-    location / {
-        return 200 'English Bot is running!\nMini App: https://english.positroid.tech/app\n';
-        add_header Content-Type text/plain;
+    # Редирект корневого пути на Mini App
+    location = / {
+        return 301 /app;
     }
 
     # Запрет доступа к скрытым файлам
