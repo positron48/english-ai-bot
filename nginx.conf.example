@@ -28,7 +28,10 @@ server {
         proxy_set_header X-Forwarded-Port $server_port;
     }
 
-    # API endpoints для Telegram Mini App (Vue frontend)
+    # Web Application (Vue SPA) and API endpoints
+    # The frontend is embedded in the Go binary and served at /app
+    # API endpoints are at /app/dashboard, /app/vocab, etc.
+    # UI routes use hash-based routing: /app/#/dashboard, /app/#/vocab, etc.
     location /app {
         proxy_pass http://127.0.0.1:8184;
         proxy_set_header Host $host;
@@ -40,6 +43,15 @@ server {
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "upgrade";
+    }
+
+    # Swagger API documentation
+    location /swagger {
+        proxy_pass http://127.0.0.1:8184;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
     }
 
     # Авторизация и логин
@@ -60,7 +72,7 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
     }
 
-    # Редирект корневого пути на Mini App
+    # Редирект корневого пути на Web App
     location = / {
         return 301 /app;
     }

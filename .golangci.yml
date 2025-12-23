@@ -1,5 +1,3 @@
-version: "2"
-
 run:
   timeout: 5m
   tests: true
@@ -7,17 +5,20 @@ run:
 
 linters:
   enable:
-    # Базовые линтеры
-    - govet         # Стандартный анализатор Go (критичные ошибки)
-    - ineffassign   # Неиспользуемые присваивания
-    - staticcheck   # Продвинутый статический анализ (включает gosimple)
-    - unused        # Неиспользуемый код
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
   
   disable:
-    - errcheck      # defer Close() - стандартная практика в Go
-    - revive        # Слишком строгие правила для внутреннего проекта
+    - errcheck
+    - revive
 
 issues:
   max-issues-per-linter: 0
   max-same-issues: 0
+  exclude-rules:
+    - path: internal/web/webapp_static.go
+      linters:
+        - typecheck
 

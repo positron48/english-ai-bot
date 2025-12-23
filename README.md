@@ -173,9 +173,9 @@ This bot works with any OpenAI-compatible API, including:
 - **Google** - Gemini models (if using OpenRouter)
 - **Local models** - Any self-hosted OpenAI-compatible API
 
-## Telegram Mini App
+## Web Application (Vue SPA)
 
-The bot includes a full-featured web application accessible as a Telegram Mini App or in a regular browser.
+The bot includes a full-featured Vue 3 Single Page Application (SPA) accessible as a Telegram Mini App or in a regular browser. The frontend is embedded directly into the Go binary using `go:embed`, so no separate web server is needed.
 
 ### Features
 
@@ -191,8 +191,27 @@ The bot includes a full-featured web application accessible as a Telegram Mini A
 
 ### Access Methods
 
-1. **Inside Telegram** - Open Mini App link (automatically authenticates via Telegram `initData`)
-2. **External Browser** - Login with Telegram username/ID and OTP code sent via bot
+1. **Inside Telegram Mini App** - Open Mini App link (automatically authenticates via Telegram `initData`)
+   - The app detects `window.Telegram.WebApp.initData` and automatically calls `/auth/telegram`
+   - If Telegram auth fails, falls back to OTP login
+
+2. **External Browser** - Direct URL access with OTP login
+   - Navigate to `/app` on your domain
+   - Enter Telegram username or ID
+   - Receive OTP code via Telegram bot
+   - Enter code to authenticate
+
+### UI Routes
+
+The SPA uses hash-based routing to avoid conflicts with API endpoints:
+- `/app` or `/app/#/login` - Login page
+- `/app/#/dashboard` - Dashboard
+- `/app/#/vocab` - Vocabulary list
+- `/app/#/training` - Training session
+- `/app/#/chat` - AI chat
+- `/app/#/admin` - Admin panel (admin only)
+
+API endpoints remain at `/app/dashboard`, `/app/vocab`, etc. (without hash).
 
 ### Authentication
 
@@ -200,11 +219,12 @@ The web app uses **JWT (JSON Web Tokens)** for authentication:
 
 - **Access tokens** - Short-lived (24h by default) for API requests
 - **Refresh tokens** - Long-lived (30 days) for token renewal
-- **Automatic token refresh** - Swagger UI automatically refreshes expired tokens
+- **Automatic token refresh** - Frontend automatically refreshes expired access tokens using refresh token
+- **Token storage** - Tokens stored in browser localStorage
 
 ### Configuration
 
-Add these environment variables to enable Mini App:
+Add these environment variables to enable the web app:
 
 ```env
 WEBAPP_JWT_SECRET=your-secret-key-for-jwt-signing  # Required: openssl rand -hex 32
@@ -214,7 +234,21 @@ WEBAPP_OTP_TTL_SECONDS=300                         # OTP code expiration
 WEBAPP_PUBLIC_URL=https://your-domain.com          # Optional: for CORS
 ```
 
-The Mini App is automatically available at `/app` route on the same server as the webhook.
+The web app is automatically available at `/app` route on the same server. The frontend is embedded in the Go binary, so no separate build step is needed on the server - just deploy the binary.
+
+### Building the Frontend
+
+The frontend is built automatically during CI/CD:
+1. GitHub Actions installs Node.js and builds the Vue app (`npm install && npm run build`)
+2. The built `webapp/dist` folder is embedded into the Go binary using `go:embed`
+3. The Go binary serves the static files at runtime
+
+For local development:
+```bash
+cd webapp
+npm install
+npm run dev  # Runs Vite dev server (proxy to API at :8184)
+```
 
 ### API Documentation
 

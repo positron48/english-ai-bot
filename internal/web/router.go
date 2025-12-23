@@ -167,6 +167,9 @@ func (r *Router) setupRoutes() {
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprintf(w, `{"status": "ok"}`)
 	})
+
+	// Webapp static files (must be registered after API routes to avoid conflicts)
+	r.setupWebappRoutes()
 }
 
 // setupProtectedRoutes configures protected routes (called after SetDependencies)

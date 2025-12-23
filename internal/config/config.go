@@ -93,6 +93,7 @@ type WebAppConfig struct {
 	SessionTTLHours   int    `mapstructure:"session_ttl_hours"`
 	JWTTTLHours       int    `mapstructure:"jwt_ttl_hours"`
 	RefreshTTLHours   int    `mapstructure:"refresh_ttl_hours"`
+	ViteDevServerURL  string `mapstructure:"vite_dev_server_url"`
 }
 
 // Load loads configuration from environment variables and config file
@@ -134,6 +135,7 @@ func Load() (*Config, error) {
 	viper.SetDefault("webapp.session_ttl_hours", 720)
 	viper.SetDefault("webapp.jwt_ttl_hours", 24)
 	viper.SetDefault("webapp.refresh_ttl_hours", 720)
+	viper.SetDefault("webapp.vite_dev_server_url", "http://localhost:5173")
 
 	// Bot message defaults
 	viper.SetDefault("bot.start_message", "🤖 Hello! I'm a universal AI assistant.\n\n💡 Just send me a message and I'll help you with any questions!\n\nUse /help for additional information.")
@@ -184,6 +186,7 @@ func Load() (*Config, error) {
 	_ = viper.BindEnv("webapp.session_ttl_hours", "WEBAPP_SESSION_TTL_HOURS")
 	_ = viper.BindEnv("webapp.jwt_ttl_hours", "WEBAPP_JWT_TTL_HOURS")
 	_ = viper.BindEnv("webapp.refresh_ttl_hours", "WEBAPP_REFRESH_TTL_HOURS")
+	_ = viper.BindEnv("webapp.vite_dev_server_url", "WEBAPP_VITE_DEV_SERVER_URL")
 
 	// Set config file
 	viper.SetConfigName("config")

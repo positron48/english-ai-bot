@@ -6,6 +6,7 @@
 *.dylib
 bin/
 dist/
+!webapp/dist/
 bot
 
 # Test binary, built with `go test -c`
@@ -88,6 +89,12 @@ node_modules/
 
 # vuepress build output
 .vuepress/dist
+
+# Webapp dependencies
+webapp/node_modules
+
+# Note: webapp/dist is NOT ignored because go:embed requires files to be tracked
+# The dist folder is built during CI/CD and embedded into the Go binary
 
 # Serverless directories
 .serverless
