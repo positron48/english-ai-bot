@@ -2,7 +2,7 @@ package web
 
 import (
 	"database/sql"
-	"fmt"
+	"encoding/json"
 	"net/http"
 	"strings"
 	"time"
@@ -75,10 +75,11 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 		words = append(words, word)
 	}
 
-	r.renderTemplate(w, "vocab.html", map[string]interface{}{
-		"Title":        "Vocabulary",
-		"Words":         words,
-		"ContentBlock":  "vocab-content",
+	// Return JSON response
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"words": words,
 	})
 }
 
@@ -113,8 +114,7 @@ func (r *Router) handleVocabDelete(w http.ResponseWriter, req *http.Request) {
 	userCardRepo := repository.NewUserCardRepository(r.db, r.logger)
 
 	if req.Method == http.MethodGet && action == "confirm_delete" {
-		// Show confirmation page
-		// Get word info
+		// Get word info for confirmation
 		query := `SELECT COUNT(*) FROM user_cards uc
 				  JOIN training_cards tc ON uc.training_card_id = tc.id
 				  WHERE uc.user_id = ? AND tc.word_en = ?`
@@ -126,17 +126,22 @@ func (r *Router) handleVocabDelete(w http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		// If word not found or empty, redirect to vocab list
+		// If word not found or empty, return error
 		if count == 0 || wordEN == "" {
-			http.Redirect(w, req, "/app/vocab", http.StatusFound)
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusNotFound)
+			json.NewEncoder(w).Encode(map[string]interface{}{
+				"error": "Word not found",
+			})
 			return
 		}
 
-		r.renderTemplate(w, "vocab_confirm_delete.html", map[string]interface{}{
-			"Title":        "Confirm Delete",
-			"WordEN":       wordEN,
-			"Count":        count,
-			"ContentBlock": "vocab-confirm-delete-content",
+		// Return word info for confirmation
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"word_en": wordEN,
+			"count":   count,
 		})
 		return
 	}
@@ -150,8 +155,14 @@ func (r *Router) handleVocabDelete(w http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		// Redirect to vocab list with success message
-		http.Redirect(w, req, "/app/vocab?deleted="+wordEN+"&count="+fmt.Sprintf("%d", rowsAffected), http.StatusFound)
+		// Return success response
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"success":       true,
+			"word_en":       wordEN,
+			"rows_affected": rowsAffected,
+		})
 		return
 	}
 

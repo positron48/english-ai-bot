@@ -1,6 +1,7 @@
 package web
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -42,9 +43,11 @@ func (r *Router) handleAuthRequestOTP(w http.ResponseWriter, req *http.Request) 
 
 	if user == nil {
 		// User not found - return error message
-		w.Header().Set("Content-Type", "text/html")
-		w.WriteHeader(http.StatusOK)
-		fmt.Fprintf(w, `<div class="error">User not found. Please make sure you've started a conversation with the bot first.</div>`)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"error": "User not found. Please make sure you've started a conversation with the bot first.",
+		})
 		return
 	}
 
@@ -65,18 +68,14 @@ func (r *Router) handleAuthRequestOTP(w http.ResponseWriter, req *http.Request) 
 		return
 	}
 
-	// Return success message with OTP input form
-	w.Header().Set("Content-Type", "text/html")
+	// Return success response
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, `<div class="success">OTP code sent to your Telegram! Enter it below:</div>
-		<form hx-post="/auth/otp" hx-target="#otp-section" hx-swap="innerHTML">
-			<input type="hidden" name="user_id" value="%d">
-			<div>
-				<label for="otp_code">Enter OTP Code:</label>
-				<input type="text" id="otp_code" name="code" required maxlength="6" pattern="[0-9]{6}">
-			</div>
-			<button type="submit">Verify</button>
-		</form>`, user.ID)
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"success": true,
+		"message": "OTP code sent to your Telegram!",
+		"user_id": user.ID,
+	})
 }
 
 // handleAuthOTP handles OTP verification
@@ -122,9 +121,11 @@ func (r *Router) handleAuthOTP(w http.ResponseWriter, req *http.Request) {
 			zap.Int64("user_id", userID),
 			zap.String("code_length", fmt.Sprintf("%d", len(code))),
 			zap.Error(err))
-		w.Header().Set("Content-Type", "text/html")
-		w.WriteHeader(http.StatusOK)
-		fmt.Fprintf(w, `<div class="error">Invalid or expired OTP code. Please try again.</div>`)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusUnauthorized)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"error": "Invalid or expired OTP code. Please try again.",
+		})
 		return
 	}
 
@@ -138,23 +139,13 @@ func (r *Router) handleAuthOTP(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	// Check if this is an HTMX request
-	isHTMX := req.Header.Get("HX-Request") == "true"
-	
-	r.logger.Info("OTP authentication successful, redirecting to dashboard",
-		zap.Int64("user_id", userID),
-		zap.Bool("is_htmx", isHTMX))
-	
-	if isHTMX {
-		// For HTMX requests, use HX-Redirect header
-		w.Header().Set("HX-Redirect", "/app/dashboard")
-		w.WriteHeader(http.StatusOK)
-	} else {
-		// For regular requests, use JavaScript redirect
-		w.Header().Set("Content-Type", "text/html")
-		w.WriteHeader(http.StatusOK)
-		fmt.Fprintf(w, `<script>window.location.href = "/app/dashboard";</script>`)
-	}
+	// Return success response
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"success": true,
+		"message": "Authentication successful",
+	})
 }
 
 // normalizeOTPCode removes all non-digit characters from the code

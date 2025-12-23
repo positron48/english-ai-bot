@@ -2,11 +2,9 @@ package web
 
 import (
 	"context"
-	"fmt"
+	"encoding/json"
 	"net/http"
 	"time"
-
-	"tgbot-skeleton/internal/utils"
 
 	"go.uber.org/zap"
 )
@@ -33,10 +31,11 @@ func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 		dueCount = 0
 	}
 
-	r.renderTemplate(w, "dashboard.html", map[string]interface{}{
-		"Title":        "Dashboard",
-		"DueCount":     dueCount,
-		"ContentBlock": "dashboard-content",
+	// Return JSON response
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"due_count": dueCount,
 	})
 }
 
@@ -81,21 +80,19 @@ func (r *Router) handleChat(w http.ResponseWriter, req *http.Request) {
 	response, err := aiService.GenerateResponse(ctx, message)
 	if err != nil {
 		r.logger.Error("failed to generate AI response", zap.Error(err))
-		w.Header().Set("Content-Type", "text/html")
-		w.WriteHeader(http.StatusOK)
-		fmt.Fprint(w, `<div class="error">Sorry, an error occurred while processing your message. Please try again.</div>`)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"error": "Sorry, an error occurred while processing your message. Please try again.",
+		})
 		return
 	}
 
-	// Convert Markdown to HTML (simplified - just escape HTML for now)
-	// In production, use a proper markdown library
-	htmlResponse := utils.ConvertMarkdownToHTML(response)
-
-	// Return response as HTML fragment
-	w.Header().Set("Content-Type", "text/html")
+	// Return response as JSON
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, `<div class="ai-response">
-		<div class="message">%s</div>
-	</div>`, htmlResponse)
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"response": response,
+	})
 }
 

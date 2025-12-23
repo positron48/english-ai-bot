@@ -2,7 +2,6 @@ package web
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strings"
 
@@ -53,11 +52,12 @@ func (r *Router) handleAdmin(w http.ResponseWriter, req *http.Request) {
 		cbState = nil
 	}
 
-	r.renderTemplate(w, "admin.html", map[string]interface{}{
-		"Title":        "Admin Panel",
-		"CBState":      cbState,
-		"AdminID":      r.config.Admin.TelegramID,
-		"ContentBlock": "admin-content",
+	// Return JSON response
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"circuit_breaker": cbState,
+		"admin_id":        r.config.Admin.TelegramID,
 	})
 }
 
@@ -74,8 +74,13 @@ func (r *Router) handleAdminCircuitReset(w http.ResponseWriter, req *http.Reques
 		return
 	}
 
-	// Redirect back to admin panel
-	http.Redirect(w, req, "/app/admin?reset=success", http.StatusFound)
+	// Return success response
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"success": true,
+		"message": "Circuit breaker reset successfully",
+	})
 }
 
 // handleAdminTraining handles training card management
@@ -115,15 +120,12 @@ func (r *Router) handleAdminTraining(w http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		// Format as JSON for display
-		cardsJSON, _ := json.MarshalIndent(cards, "", "  ")
-
-		r.renderTemplate(w, "admin_training_data.html", map[string]interface{}{
-			"Title":        "Training Data",
-			"WordEN":       wordEN,
-			"Cards":        cards,
-			"ContentBlock": "admin-training-data-content",
-			"CardsJSON": string(cardsJSON),
+		// Return JSON response
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"word_en": wordEN,
+			"cards":   cards,
 		})
 		return
 	}
@@ -146,7 +148,14 @@ func (r *Router) handleAdminTraining(w http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		http.Redirect(w, req, fmt.Sprintf("/app/admin?deleted=%s&count=%d", wordEN, rowsAffected), http.StatusFound)
+		// Return success response
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"success":       true,
+			"word_en":       wordEN,
+			"rows_affected": rowsAffected,
+		})
 		return
 	}
 
@@ -159,7 +168,13 @@ func (r *Router) handleAdminTraining(w http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		http.Redirect(w, req, fmt.Sprintf("/app/admin?deleted_all=success&count=%d", rowsAffected), http.StatusFound)
+		// Return success response
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"success":       true,
+			"rows_affected": rowsAffected,
+		})
 		return
 	}
 

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
-	"strings"
 	"sync"
 	"time"
 
@@ -96,9 +95,11 @@ func (r *Router) handleTrainingStart(w http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		r.logger.Error("failed to start session", zap.Error(err))
 		if err.Error() == "no cards available for training" {
-			w.Header().Set("Content-Type", "text/html")
-			w.WriteHeader(http.StatusOK)
-			fmt.Fprint(w, `<div class="error">No cards available for training. Request some words first!</div>`)
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(map[string]interface{}{
+				"error": "No cards available for training. Request some words first!",
+			})
 			return
 		}
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -158,16 +159,16 @@ func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, stat
 		questionText = fmt.Sprintf("Что означает слово: <strong>%s</strong> %s", card.TrainingCard.WordEN, card.TrainingCard.Transcription)
 	}
 
-	// Render card template
-	r.renderTemplate(w, "training_card.html", map[string]interface{}{
-		"Title":        "Training",
-		"Question":     questionText,
-		"CardIndex":    state.CurrentIndex + 1,
-		"TotalCards":   len(state.Queue),
-		"ContentBlock": "training-card-content",
-		"SessionID":    state.SessionID,
-		"UserCardID":   card.UserCard.ID,
-		"DelayMS":      r.config.Training.OptionsDelayMS,
+	// Return card data as JSON
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"question":     questionText,
+		"card_index":    state.CurrentIndex + 1,
+		"total_cards":   len(state.Queue),
+		"session_id":    state.SessionID,
+		"user_card_id":  card.UserCard.ID,
+		"delay_ms":      r.config.Training.OptionsDelayMS,
 	})
 }
 
@@ -263,19 +264,13 @@ func (r *Router) handleTrainingReveal(w http.ResponseWriter, req *http.Request) 
 	state.OptionsShownAt = &now
 	r.webTrainingHandler.sessionsMutex.Unlock()
 
-	// Return options HTML
-	w.Header().Set("Content-Type", "text/html")
+	// Return options as JSON
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	
-	var optionsHTML strings.Builder
-	for i, option := range state.Options {
-		optionsHTML.WriteString(fmt.Sprintf(
-			`<button class="option-btn" hx-post="/app/training/answer" hx-vals='{"option_index": %d, "user_card_id": %d}' hx-target="#training-content" hx-swap="innerHTML">%s</button>`,
-			i, state.Queue[state.CurrentIndex].UserCard.ID, option,
-		))
-	}
-	
-	fmt.Fprintf(w, `<div class="options">%s</div>`, optionsHTML.String())
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"options":      state.Options,
+		"user_card_id": state.Queue[state.CurrentIndex].UserCard.ID,
+	})
 }
 
 // handleTrainingAnswer handles the user's answer
@@ -463,37 +458,24 @@ func (r *Router) handleTrainingAnswer(w http.ResponseWriter, req *http.Request) 
 
 // showTrainingFeedback shows feedback and moves to next card
 func (r *Router) showTrainingFeedback(w http.ResponseWriter, req *http.Request, state *WebTrainingState, isCorrect bool, chosenOption, correctAnswer string, trainingCard models.TrainingCard) {
-	w.Header().Set("Content-Type", "text/html")
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 
-	var feedbackHTML strings.Builder
-	if isCorrect {
-		feedbackHTML.WriteString(`<div class="feedback correct">✅ Correct!</div>`)
-	} else {
-		feedbackHTML.WriteString(fmt.Sprintf(
-			`<div class="feedback incorrect">❌ Incorrect. Correct answer: <strong>%s</strong></div>`,
-			correctAnswer,
-		))
-		if trainingCard.ExampleEN != "" {
-			feedbackHTML.WriteString(fmt.Sprintf(
-				`<div class="example">Example: %s</div>`,
-				trainingCard.ExampleEN,
-			))
-		}
+	feedback := map[string]interface{}{
+		"is_correct":     isCorrect,
+		"chosen_option":  chosenOption,
+		"correct_answer": correctAnswer,
 	}
 
-	// If incorrect, add delay before next card
+	if !isCorrect && trainingCard.ExampleEN != "" {
+		feedback["example"] = trainingCard.ExampleEN
+	}
+
 	if !isCorrect {
-		feedbackHTML.WriteString(fmt.Sprintf(
-			`<div class="next-card-delay" hx-trigger="load delay:%ds" hx-get="/app/training/current" hx-target="#training-content" hx-swap="innerHTML"></div>`,
-			r.config.Training.WrongAnswerDelaySeconds,
-		))
-	} else {
-		// If correct, show next card immediately
-		feedbackHTML.WriteString(`<div hx-trigger="load" hx-get="/app/training/current" hx-target="#training-content" hx-swap="innerHTML"></div>`)
+		feedback["delay_seconds"] = r.config.Training.WrongAnswerDelaySeconds
 	}
 
-	fmt.Fprint(w, feedbackHTML.String())
+	json.NewEncoder(w).Encode(feedback)
 }
 
 // finishTrainingSession finishes the training session
@@ -511,12 +493,11 @@ func (r *Router) finishTrainingSession(w http.ResponseWriter, req *http.Request,
 	}
 
 	// Show completion message
-	w.Header().Set("Content-Type", "text/html")
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, `<div class="session-complete">
-		<h2>Training Complete!</h2>
-		<p>You've completed %d cards.</p>
-		<a href="/app/dashboard" class="btn btn-primary">Back to Dashboard</a>
-	</div>`, state.CurrentIndex)
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"complete": true,
+		"cards_completed": state.CurrentIndex,
+	})
 }
 
