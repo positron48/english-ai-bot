@@ -10,6 +10,7 @@
     "lint": "npm run type-check"
   },
   "dependencies": {
+    "marked": "^17.0.1",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0"
   },
@@ -19,4 +20,3 @@
     "vite": "^7.3.0"
   }
 }
-

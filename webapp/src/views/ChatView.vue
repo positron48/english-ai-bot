@@ -9,7 +9,11 @@
           :key="index"
           :class="['message', msg.role]"
         >
-          <div class="message-content">{{ msg.content }}</div>
+          <div 
+            class="message-content"
+            :class="{ 'markdown-content': msg.role === 'assistant' }"
+            v-html="msg.role === 'assistant' ? renderMarkdown(msg.content) : escapeHtml(msg.content)"
+          ></div>
         </div>
       </div>
       
@@ -30,6 +34,7 @@
 
 <script setup lang="ts">
 import { ref, nextTick, onMounted } from 'vue'
+import { marked } from 'marked'
 import { apiClient } from '../api/client'
 
 interface Message {
@@ -71,6 +76,27 @@ const sendMessage = async () => {
     sending.value = false
     await scrollToBottom()
   }
+}
+
+// Configure marked for security
+marked.setOptions({
+  breaks: true, // Convert line breaks to <br>
+  gfm: true, // GitHub Flavored Markdown
+})
+
+const renderMarkdown = (text: string): string => {
+  try {
+    return marked.parse(text) as string
+  } catch (error) {
+    console.error('Failed to render markdown:', error)
+    return escapeHtml(text)
+  }
+}
+
+const escapeHtml = (text: string): string => {
+  const div = document.createElement('div')
+  div.textContent = text
+  return div.innerHTML
 }
 
 onMounted(() => {
@@ -119,6 +145,92 @@ onMounted(() => {
   background: white;
   color: #333;
   border: 1px solid #ddd;
+}
+
+.markdown-content {
+  text-align: left;
+}
+
+.markdown-content :deep(h1),
+.markdown-content :deep(h2),
+.markdown-content :deep(h3),
+.markdown-content :deep(h4),
+.markdown-content :deep(h5),
+.markdown-content :deep(h6) {
+  margin: 10px 0 5px 0;
+  font-weight: bold;
+}
+
+.markdown-content :deep(h1) {
+  font-size: 1.5em;
+}
+
+.markdown-content :deep(h2) {
+  font-size: 1.3em;
+}
+
+.markdown-content :deep(h3) {
+  font-size: 1.1em;
+}
+
+.markdown-content :deep(p) {
+  margin: 8px 0;
+  line-height: 1.5;
+}
+
+.markdown-content :deep(ul),
+.markdown-content :deep(ol) {
+  margin: 8px 0;
+  padding-left: 25px;
+}
+
+.markdown-content :deep(li) {
+  margin: 4px 0;
+}
+
+.markdown-content :deep(code) {
+  background: #f4f4f4;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9em;
+}
+
+.markdown-content :deep(pre) {
+  background: #f4f4f4;
+  padding: 10px;
+  border-radius: 4px;
+  overflow-x: auto;
+  margin: 10px 0;
+}
+
+.markdown-content :deep(pre code) {
+  background: none;
+  padding: 0;
+}
+
+.markdown-content :deep(strong) {
+  font-weight: bold;
+}
+
+.markdown-content :deep(em) {
+  font-style: italic;
+}
+
+.markdown-content :deep(a) {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.markdown-content :deep(a:hover) {
+  text-decoration: underline;
+}
+
+.markdown-content :deep(blockquote) {
+  border-left: 3px solid #ddd;
+  padding-left: 10px;
+  margin: 10px 0;
+  color: #666;
 }
 
 .chat-input {
