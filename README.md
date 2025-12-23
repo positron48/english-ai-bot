@@ -13,7 +13,7 @@ A simple AI-powered Telegram bot written in Go that integrates with OpenAI-compa
 - **Spaced Repetition System (SRS)** - intelligent vocabulary training with adaptive scheduling
 - **Training sessions** - interactive vocabulary card training with multiple choice questions
 - **Session persistence** - training sessions survive bot restarts
-- **Telegram Mini App** - web-based user cabinet and admin panel with server-rendered HTMX interface
+- **Telegram Mini App** - web-based user cabinet and admin panel (API backend ready for Vue frontend)
 - Long polling and webhook support
 - Structured logging with Zap
 - Configuration management with Viper
