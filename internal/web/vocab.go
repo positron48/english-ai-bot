@@ -14,10 +14,10 @@ import (
 
 // VocabWord represents a word with statistics
 type VocabWord struct {
-	WordEN      string
-	TotalCards  int
-	DueCount    int
-	LastReview  *time.Time
+	WordEN      string     `json:"word_en"`
+	TotalCards  int        `json:"total_cards"`
+	DueCount    int        `json:"due_count"`
+	LastReview  *time.Time `json:"last_review"`
 }
 
 // handleVocab shows the vocabulary list
@@ -78,9 +78,11 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 
 		word.TotalCards = totalCards
 		word.DueCount = dueCount
-		if lastReview.Valid {
-			t, _ := time.Parse("2006-01-02 15:04:05", lastReview.String)
-			word.LastReview = &t
+		if lastReview.Valid && lastReview.String != "" {
+			t, err := time.Parse("2006-01-02 15:04:05", lastReview.String)
+			if err == nil && !t.IsZero() {
+				word.LastReview = &t
+			}
 		}
 
 		words = append(words, word)

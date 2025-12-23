@@ -355,7 +355,7 @@ func (h *Handler) handleCallbackQuery(ctx context.Context, query *tgbotapi.Callb
 	if data == "train_start" {
 		// Start training from notification
 		h.handleTrainCommand(ctx, chatID, query.From.ID)
-	} else if data == "show_options" || strings.HasPrefix(data, "answer_") {
+	} else if strings.HasPrefix(data, "answer_") {
 		// Ensure user exists and get internal user ID
 		user, err := h.userRepo.GetOrCreateUser(query.From.ID)
 		if err != nil {
@@ -378,28 +378,18 @@ func (h *Handler) handleCallbackQuery(ctx context.Context, query *tgbotapi.Callb
 			}
 		}
 
-		if data == "show_options" {
-			// Show options for current card
-			if err := h.trainingHandler.ShowOptions(chatID, true); err != nil {
-				h.logger.Error("failed to show options", zap.Error(err))
-				if strings.Contains(err.Error(), "no active session") {
-					h.sendMessage(chatID, "Сессия не найдена. Начните новую тренировку командой /train")
-				}
-			}
-		} else if strings.HasPrefix(data, "answer_") {
-			// Handle answer selection
-			optionIndexStr := strings.TrimPrefix(data, "answer_")
-			optionIndex, err := strconv.Atoi(optionIndexStr)
-			if err != nil {
-				h.logger.Error("invalid option index", zap.Error(err))
-				return
-			}
+		// Handle answer selection
+		optionIndexStr := strings.TrimPrefix(data, "answer_")
+		optionIndex, err := strconv.Atoi(optionIndexStr)
+		if err != nil {
+			h.logger.Error("invalid option index", zap.Error(err))
+			return
+		}
 
-			if err := h.trainingHandler.HandleAnswer(chatID, optionIndex); err != nil {
-				h.logger.Error("failed to handle answer", zap.Error(err))
-				if strings.Contains(err.Error(), "no active session") {
-					h.sendMessage(chatID, "Сессия не найдена. Начните новую тренировку командой /train")
-				}
+		if err := h.trainingHandler.HandleAnswer(chatID, optionIndex); err != nil {
+			h.logger.Error("failed to handle answer", zap.Error(err))
+			if strings.Contains(err.Error(), "no active session") {
+				h.sendMessage(chatID, "Сессия не найдена. Начните новую тренировку командой /train")
 			}
 		}
 	}

@@ -15,13 +15,9 @@
 
       <div class="question" v-html="currentCard.question"></div>
 
-      <div v-if="!optionsShown && !feedback" class="card-actions">
-        <button @click="revealOptions" class="btn btn-primary">Show Options</button>
-      </div>
-
       <div v-if="optionsShown && !feedback" class="options">
         <button
-          v-for="(option, index) in currentCard.options"
+          v-for="(option, index) in options"
           :key="index"
           @click="submitAnswer(index)"
           class="btn option-btn"
@@ -39,13 +35,7 @@
           Correct answer: {{ feedback.correct_answer }}
         </p>
         <p v-if="feedback.example" class="example">{{ feedback.example }}</p>
-        <button
-          @click="nextCard"
-          class="btn btn-primary"
-          :disabled="waitingDelay"
-        >
-          {{ waitingDelay ? `Wait ${delaySeconds}s...` : 'Next Card' }}
-        </button>
+        <p v-if="waitingDelay" class="waiting-message">Wait {{ delaySeconds }}s...</p>
       </div>
 
       <div v-if="sessionComplete" class="card">
@@ -58,7 +48,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { apiClient } from '../api/client'
 
 interface Card {
@@ -99,22 +89,68 @@ const cardIndex = ref(0)
 const totalCards = ref(0)
 const userCardId = ref(0)
 
+// Timer for automatic options reveal
+let autoRevealTimer: ReturnType<typeof setTimeout> | null = null
+// Timer for automatic next card transition
+let autoNextCardTimer: ReturnType<typeof setTimeout> | null = null
+const cardShownAt = ref<Date | null>(null)
+
 onMounted(async () => {
   await checkCurrentSession()
+})
+
+onUnmounted(() => {
+  if (autoRevealTimer) {
+    clearTimeout(autoRevealTimer)
+    autoRevealTimer = null
+  }
+  if (autoNextCardTimer) {
+    clearTimeout(autoNextCardTimer)
+    autoNextCardTimer = null
+  }
 })
 
 const checkCurrentSession = async () => {
   try {
     const card: Card = await apiClient.request('/app/training/current')
     sessionActive.value = true
-    currentCard.value = card
-    cardIndex.value = card.card_index
-    totalCards.value = card.total_cards
-    userCardId.value = card.user_card_id
+    setupCard(card)
   } catch (error: any) {
     if (!error.message?.includes('404')) {
       console.error('Failed to check session:', error)
     }
+  }
+}
+
+const setupCard = (card: Card) => {
+  // Clear any existing timers
+  if (autoRevealTimer) {
+    clearTimeout(autoRevealTimer)
+    autoRevealTimer = null
+  }
+  if (autoNextCardTimer) {
+    clearTimeout(autoNextCardTimer)
+    autoNextCardTimer = null
+  }
+
+  currentCard.value = card
+  cardIndex.value = card.card_index
+  totalCards.value = card.total_cards
+  userCardId.value = card.user_card_id
+  optionsShown.value = false
+  options.value = []
+  feedback.value = null
+  waitingDelay.value = false
+  delaySeconds.value = 0
+  cardShownAt.value = new Date()
+
+  // Schedule automatic options reveal
+  if (card.delay_ms > 0) {
+    autoRevealTimer = setTimeout(() => {
+      if (!optionsShown.value) {
+        revealOptions(false) // false = not early reveal
+      }
+    }, card.delay_ms)
   }
 }
 
@@ -123,12 +159,7 @@ const startTraining = async () => {
   try {
     const card: Card = await apiClient.request('/app/training/start', { method: 'POST' })
     sessionActive.value = true
-    currentCard.value = card
-    cardIndex.value = card.card_index
-    totalCards.value = card.total_cards
-    userCardId.value = card.user_card_id
-    optionsShown.value = false
-    feedback.value = null
+    setupCard(card)
     sessionComplete.value = false
   } catch (error: any) {
     if (error.message?.includes('No cards available')) {
@@ -142,7 +173,18 @@ const startTraining = async () => {
   }
 }
 
-const revealOptions = async () => {
+const revealOptions = async (isEarly: boolean = false) => {
+  // Clear timer if it exists
+  if (autoRevealTimer) {
+    clearTimeout(autoRevealTimer)
+    autoRevealTimer = null
+  }
+
+  // If already shown, don't do anything
+  if (optionsShown.value) {
+    return
+  }
+
   try {
     const data: OptionsResponse = await apiClient.request('/app/training/reveal', { 
       method: 'POST',
@@ -165,9 +207,14 @@ const submitAnswer = async (optionIndex: number) => {
     const data: Feedback = await apiClient.requestFormData('/app/training/answer', formData)
     feedback.value = data
     
-    if (data.delay_seconds) {
-      delaySeconds.value = data.delay_seconds
+    // Schedule automatic transition to next card
+    const delayMs = data.delay_seconds ? data.delay_seconds * 1000 : 0
+    
+    if (delayMs > 0) {
+      delaySeconds.value = data.delay_seconds!
       waitingDelay.value = true
+      
+      // Update countdown
       const interval = setInterval(() => {
         delaySeconds.value--
         if (delaySeconds.value <= 0) {
@@ -175,6 +222,16 @@ const submitAnswer = async (optionIndex: number) => {
           waitingDelay.value = false
         }
       }, 1000)
+      
+      // Schedule automatic next card
+      autoNextCardTimer = setTimeout(() => {
+        nextCard()
+      }, delayMs)
+    } else {
+      // No delay, go to next card immediately
+      autoNextCardTimer = setTimeout(() => {
+        nextCard()
+      }, 1000) // Small delay to show feedback
     }
   } catch (error) {
     console.error('Failed to submit answer:', error)
@@ -184,18 +241,26 @@ const submitAnswer = async (optionIndex: number) => {
 }
 
 const nextCard = async () => {
-  if (waitingDelay.value) return
+  // Clear any existing timers
+  if (autoRevealTimer) {
+    clearTimeout(autoRevealTimer)
+    autoRevealTimer = null
+  }
+  if (autoNextCardTimer) {
+    clearTimeout(autoNextCardTimer)
+    autoNextCardTimer = null
+  }
 
   feedback.value = null
   optionsShown.value = false
   options.value = []
+  waitingDelay.value = false
+  delaySeconds.value = 0
+  cardShownAt.value = null
 
   try {
     const card: Card = await apiClient.request('/app/training/current')
-    currentCard.value = card
-    cardIndex.value = card.card_index
-    totalCards.value = card.total_cards
-    userCardId.value = card.user_card_id
+    setupCard(card)
     
     if (card.card_index > card.total_cards) {
       sessionComplete.value = true
@@ -211,12 +276,26 @@ const nextCard = async () => {
 }
 
 const resetSession = () => {
+  // Clear any existing timers
+  if (autoRevealTimer) {
+    clearTimeout(autoRevealTimer)
+    autoRevealTimer = null
+  }
+  if (autoNextCardTimer) {
+    clearTimeout(autoNextCardTimer)
+    autoNextCardTimer = null
+  }
+
   sessionActive.value = false
   currentCard.value = null
   optionsShown.value = false
+  options.value = []
   feedback.value = null
+  waitingDelay.value = false
+  delaySeconds.value = 0
   sessionComplete.value = false
   cardsCompleted.value = 0
+  cardShownAt.value = null
 }
 </script>
 
@@ -230,11 +309,6 @@ const resetSession = () => {
   font-size: 24px;
   margin: 30px 0;
   text-align: center;
-}
-
-.card-actions {
-  text-align: center;
-  margin: 20px 0;
 }
 
 .options {
@@ -260,6 +334,12 @@ const resetSession = () => {
   padding: 10px;
   background: #f0f0f0;
   border-radius: 4px;
+}
+
+.waiting-message {
+  margin-top: 20px;
+  font-size: 18px;
+  color: #666;
 }
 </style>
 
