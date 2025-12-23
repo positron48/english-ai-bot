@@ -12,7 +12,6 @@ import (
 )
 
 // webappFS is defined in webapp_static.go (production) or webapp_static_test.go (tests)
-var webappFS embed.FS
 
 // setupWebappRoutes configures routes for serving the embedded webapp
 func (r *Router) setupWebappRoutes() {
