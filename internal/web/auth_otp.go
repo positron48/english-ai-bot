@@ -15,6 +15,17 @@ import (
 )
 
 // handleAuthRequestOTP handles OTP request
+// @Summary      Запрос OTP кода
+// @Description  Генерирует и отправляет OTP код пользователю через Telegram бота. Пользователь должен быть найден по username или telegram_id.
+// @Tags         Auth
+// @Accept       application/x-www-form-urlencoded
+// @Produce      application/json
+// @Param        username  formData  string  true  "Username или Telegram ID пользователя"
+// @Success      200  {object}  map[string]interface{}  "OTP код отправлен"
+// @Failure      400  {string}  string  "Неверный запрос (отсутствует username)"
+// @Failure      404  {object}  map[string]interface{}  "Пользователь не найден"
+// @Failure      500  {string}  string  "Внутренняя ошибка сервера"
+// @Router       /auth/request_otp [post]
 func (r *Router) handleAuthRequestOTP(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -79,6 +90,18 @@ func (r *Router) handleAuthRequestOTP(w http.ResponseWriter, req *http.Request) 
 }
 
 // handleAuthOTP handles OTP verification
+// @Summary      Проверка OTP кода
+// @Description  Проверяет OTP код и возвращает JWT токен для пользователя при успешной проверке
+// @Tags         Auth
+// @Accept       application/x-www-form-urlencoded
+// @Produce      application/json
+// @Param        user_id  formData  string  true  "ID пользователя"
+// @Param        code     formData  string  true  "OTP код (только цифры)"
+// @Success      200  {object}  map[string]interface{}  "Успешная аутентификация с JWT токеном"
+// @Failure      400  {string}  string  "Неверный запрос (отсутствует user_id или code)"
+// @Failure      401  {object}  map[string]interface{}  "Неверный или истекший OTP код"
+// @Failure      500  {string}  string  "Внутренняя ошибка сервера"
+// @Router       /auth/otp [post]
 func (r *Router) handleAuthOTP(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -131,20 +154,24 @@ func (r *Router) handleAuthOTP(w http.ResponseWriter, req *http.Request) {
 
 	r.logger.Info("OTP validated successfully", zap.Int64("user_id", userID), zap.Int64("otp_id", otp.ID))
 
-	// Create session
+	// Generate JWT token pair
 	auth := r.getAuthMiddleware()
-	if err := auth.CreateSession(w, req, otp.UserID); err != nil {
-		r.logger.Error("failed to create session", zap.Error(err))
+	accessToken, refreshToken, err := auth.GenerateTokenPair(otp.UserID)
+	if err != nil {
+		r.logger.Error("failed to generate JWT tokens", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 
-	// Return success response
+	// Return success response with JWT tokens
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]interface{}{
-		"success": true,
-		"message": "Authentication successful",
+		"success":       true,
+		"message":       "Authentication successful",
+		"access_token":  accessToken,
+		"refresh_token": refreshToken,
+		"token_type":    "Bearer",
 	})
 }
 

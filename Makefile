@@ -20,6 +20,16 @@ all: build
 tidy:
 	$(GO) mod tidy
 
+swagger:
+	@echo "Generating Swagger documentation..."
+	@go run github.com/swaggo/swag/cmd/swag@latest init \
+		-g internal/web/router.go \
+		-o docs/swagger \
+		--parseDependency \
+		--parseInternal \
+		2>&1 | grep -vE "(warning: failed to get package name|warning: failed to evaluate const)" || true
+	@echo "✅ Swagger documentation generated in docs/swagger/"
+
 build:
 	$(GO) build -o bin/$(APP_NAME) ./cmd/bot
 
@@ -146,6 +156,7 @@ help:
 	@echo "  make fmt            - Format code"
 	@echo "  make lint           - Run linter"
 	@echo "  make check          - Run all CI checks (tests, lint, verify)"
+	@echo "  make swagger        - Generate Swagger API documentation"
 	@echo "  make clean          - Clean build artifacts"
 	@echo ""
 	@echo "Docker commands:"

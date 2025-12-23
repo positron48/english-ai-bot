@@ -1,0 +1,617 @@
+basePath: /
+definitions:
+  internal_web.RefreshTokenRequest:
+    properties:
+      refresh_token:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        type: string
+    type: object
+host: localhost:8184
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: API для English Bot - системы изучения английского языка с использованием
+    SRS (Spaced Repetition System)
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: English Bot API
+  version: "1.0"
+paths:
+  /app/admin:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает состояние circuit breaker и информацию об администраторе
+        (только для администраторов)
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Данные админ-панели
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "403":
+          description: Доступ запрещен (требуются права администратора)
+          schema:
+            type: string
+        "405":
+          description: Метод не разрешен
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Получить данные админ-панели
+      tags:
+      - Admin
+  /app/admin/circuit/reset:
+    post:
+      consumes:
+      - application/json
+      description: Сбрасывает состояние circuit breaker (только для администраторов)
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешный сброс
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "403":
+          description: Доступ запрещен (требуются права администратора)
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Сбросить circuit breaker
+      tags:
+      - Admin
+  /app/admin/training/{word}:
+    get:
+      consumes:
+      - application/json
+      description: 'Получение (GET) или удаление (POST) тренировочных карточек по
+        слову. Путь: /app/admin/training/{word} или /app/admin/training/{word}/delete
+        или /app/admin/training/delete_all'
+      parameters:
+      - description: Английское слово
+        in: path
+        name: word
+        type: string
+      - description: 'Действие: delete или delete_all'
+        in: path
+        name: action
+        type: string
+      - description: Английское слово (для GET запроса)
+        in: query
+        name: word
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Данные карточек или результат удаления
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Неверный запрос
+          schema:
+            type: string
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "403":
+          description: Доступ запрещен (требуются права администратора)
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Управление тренировочными карточками
+      tags:
+      - Admin
+  /app/chat:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: Отправляет сообщение в AI чат и получает ответ от AI помощника
+        для изучения языка
+      parameters:
+      - description: Текст сообщения для AI
+        in: formData
+        name: message
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Ответ от AI
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Неверный запрос (отсутствует message)
+          schema:
+            type: string
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "500":
+          description: Ошибка при обработке сообщения
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Отправить сообщение в AI чат
+      tags:
+      - Chat
+  /app/dashboard:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает количество карточек, готовых к повторению (due_count)
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Данные дашборда
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "405":
+          description: Метод не разрешен
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Получить данные дашборда
+      tags:
+      - Dashboard
+  /app/training/answer:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: Обрабатывает ответ пользователя на карточку, обновляет SRS состояние
+        и возвращает обратную связь
+      parameters:
+      - description: Индекс выбранного варианта ответа
+        in: formData
+        name: option_index
+        required: true
+        type: integer
+      - description: ID карточки пользователя
+        format: int64
+        in: formData
+        name: user_card_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Обратная связь и следующий шаг
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Неверный запрос (неверные параметры)
+          schema:
+            type: string
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "404":
+          description: Нет активной сессии
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Отправить ответ на карточку
+      tags:
+      - Training
+  /app/training/current:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает текущую карточку активной сессии тренировки (для обновления
+        страницы)
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Данные текущей карточки
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "404":
+          description: Нет активной сессии
+          schema:
+            type: string
+        "405":
+          description: Метод не разрешен
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Получить текущую карточку
+      tags:
+      - Training
+  /app/training/reveal:
+    post:
+      consumes:
+      - application/json
+      description: Показывает варианты ответов для текущей карточки тренировки
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Варианты ответов
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "404":
+          description: Нет активной сессии
+          schema:
+            type: string
+        "405":
+          description: Метод не разрешен
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Показать варианты ответов
+      tags:
+      - Training
+  /app/training/start:
+    post:
+      consumes:
+      - application/json
+      description: Создает новую сессию тренировки и возвращает первую карточку для
+        изучения
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Данные первой карточки
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Нет доступных карточек для тренировки
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Начать тренировку
+      tags:
+      - Training
+  /app/vocab:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает список всех слов пользователя с статистикой (общее количество
+        карточек, количество готовых к повторению, дата последнего повторения)
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список слов с статистикой
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "405":
+          description: Метод не разрешен
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Получить список слов
+      tags:
+      - Vocab
+  /app/vocab/{word}:
+    get:
+      consumes:
+      - application/json
+      description: 'Подтверждение удаления (GET) или удаление слова (POST) из словаря
+        пользователя. Путь: /app/vocab/{word}/confirm_delete или /app/vocab/{word}/delete'
+      parameters:
+      - description: Английское слово для удаления
+        in: path
+        name: word
+        required: true
+        type: string
+      - description: 'Действие: confirm_delete или delete'
+        in: path
+        name: action
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Информация о слове или результат удаления
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Неверный запрос
+          schema:
+            type: string
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "404":
+          description: Слово не найдено
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Удалить слово из словаря
+      tags:
+      - Vocab
+  /auth/otp:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: Проверяет OTP код и возвращает JWT токен для пользователя при успешной
+        проверке
+      parameters:
+      - description: ID пользователя
+        in: formData
+        name: user_id
+        required: true
+        type: string
+      - description: OTP код (только цифры)
+        in: formData
+        name: code
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешная аутентификация с JWT токеном
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Неверный запрос (отсутствует user_id или code)
+          schema:
+            type: string
+        "401":
+          description: Неверный или истекший OTP код
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      summary: Проверка OTP кода
+      tags:
+      - Auth
+  /auth/refresh:
+    post:
+      consumes:
+      - application/json
+      description: 'Обновляет access токен используя refresh токен. Возвращает новую
+        пару access и refresh токенов. Формат запроса: `{"refresh_token": "ваш_refresh_токен"}`'
+      parameters:
+      - description: Refresh token request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_web.RefreshTokenRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Новая пара токенов
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Неверный запрос (отсутствует refresh_token)
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Неверный или истекший refresh токен
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      summary: Обновление токенов
+      tags:
+      - Auth
+  /auth/request_otp:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: Генерирует и отправляет OTP код пользователю через Telegram бота.
+        Пользователь должен быть найден по username или telegram_id.
+      parameters:
+      - description: Username или Telegram ID пользователя
+        in: formData
+        name: username
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OTP код отправлен
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Неверный запрос (отсутствует username)
+          schema:
+            type: string
+        "404":
+          description: Пользователь не найден
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      summary: Запрос OTP кода
+      tags:
+      - Auth
+  /auth/telegram:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: Аутентификация пользователя через Telegram WebApp initData. Возвращает
+        пару JWT токенов (access и refresh) для авторизованного пользователя.
+      parameters:
+      - description: Telegram WebApp initData (подписанные данные от Telegram)
+        in: formData
+        name: initData
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешная аутентификация с JWT токенами
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Неверный запрос (отсутствует initData)
+          schema:
+            type: string
+        "401":
+          description: Неавторизован (неверный initData)
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      summary: Аутентификация через Telegram WebApp
+      tags:
+      - Auth
+  /auth/telegram_unsafe:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: Аутентификация пользователя через user_id напрямую (менее безопасный
+        метод, используется как fallback). Возвращает пару JWT токенов (access и refresh)
+        для авторизованного пользователя.
+      parameters:
+      - description: Telegram User ID
+        in: formData
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешная аутентификация с JWT токенами
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Неверный запрос (отсутствует user_id)
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      summary: Аутентификация через Telegram WebApp (небезопасный метод)
+      tags:
+      - Auth
+securityDefinitions:
+  ApiKeyAuth:
+    description: Bearer JWT token authentication. В Swagger UI введите только токен
+      (без "Bearer "), префикс будет добавлен автоматически.
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
+tags:
+- description: Методы аутентификации (Telegram WebApp и OTP)
+  name: Auth
+- description: Главная панель пользователя
+  name: Dashboard
+- description: Управление словарным запасом
+  name: Vocab
+- description: Система тренировок и обучения
+  name: Training
+- description: AI чат для помощи в изучении языка
+  name: Chat
+- description: Административные функции
+  name: Admin

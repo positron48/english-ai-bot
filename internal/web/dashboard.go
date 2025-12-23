@@ -10,6 +10,16 @@ import (
 )
 
 // handleDashboard shows the user dashboard
+// @Summary      Получить данные дашборда
+// @Description  Возвращает количество карточек, готовых к повторению (due_count)
+// @Tags         Dashboard
+// @Accept       json
+// @Produce      application/json
+// @Security     ApiKeyAuth
+// @Success      200  {object}  map[string]interface{}  "Данные дашборда"
+// @Failure      401  {string}  string  "Неавторизован"
+// @Failure      405  {string}  string  "Метод не разрешен"
+// @Router       /app/dashboard [get]
 func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -40,6 +50,18 @@ func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 }
 
 // handleChat handles AI chat requests
+// @Summary      Отправить сообщение в AI чат
+// @Description  Отправляет сообщение в AI чат и получает ответ от AI помощника для изучения языка
+// @Tags         Chat
+// @Accept       application/x-www-form-urlencoded
+// @Produce      application/json
+// @Security     ApiKeyAuth
+// @Param        message  formData  string  true  "Текст сообщения для AI"
+// @Success      200  {object}  map[string]interface{}  "Ответ от AI"
+// @Failure      400  {string}  string  "Неверный запрос (отсутствует message)"
+// @Failure      401  {string}  string  "Неавторизован"
+// @Failure      500  {object}  map[string]interface{}  "Ошибка при обработке сообщения"
+// @Router       /app/chat [post]
 func (r *Router) handleChat(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)

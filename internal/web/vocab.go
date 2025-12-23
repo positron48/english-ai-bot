@@ -21,6 +21,17 @@ type VocabWord struct {
 }
 
 // handleVocab shows the vocabulary list
+// @Summary      Получить список слов
+// @Description  Возвращает список всех слов пользователя с статистикой (общее количество карточек, количество готовых к повторению, дата последнего повторения)
+// @Tags         Vocab
+// @Accept       json
+// @Produce      application/json
+// @Security     ApiKeyAuth
+// @Success      200  {object}  map[string]interface{}  "Список слов с статистикой"
+// @Failure      401  {string}  string  "Неавторизован"
+// @Failure      405  {string}  string  "Метод не разрешен"
+// @Failure      500  {string}  string  "Внутренняя ошибка сервера"
+// @Router       /app/vocab [get]
 func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -84,6 +95,20 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 }
 
 // handleVocabDelete handles vocabulary deletion (confirm and delete)
+// @Summary      Удалить слово из словаря
+// @Description  Подтверждение удаления (GET) или удаление слова (POST) из словаря пользователя. Путь: /app/vocab/{word}/confirm_delete или /app/vocab/{word}/delete
+// @Tags         Vocab
+// @Accept       json
+// @Produce      application/json
+// @Security     ApiKeyAuth
+// @Param        word  path  string  true  "Английское слово для удаления"
+// @Param        action  path  string  false  "Действие: confirm_delete или delete"
+// @Success      200  {object}  map[string]interface{}  "Информация о слове или результат удаления"
+// @Failure      400  {string}  string  "Неверный запрос"
+// @Failure      401  {string}  string  "Неавторизован"
+// @Failure      404  {object}  map[string]interface{}  "Слово не найдено"
+// @Failure      500  {string}  string  "Внутренняя ошибка сервера"
+// @Router       /app/vocab/{word} [get]
 func (r *Router) handleVocabDelete(w http.ResponseWriter, req *http.Request) {
 	userID := getUserIDFromContext(req.Context())
 	if userID == 0 {

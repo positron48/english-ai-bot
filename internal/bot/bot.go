@@ -150,7 +150,6 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 	)
 
 	// Create web repositories
-	webSessionRepo := repository.NewWebSessionRepository(conn, log)
 	otpRepo := repository.NewWebOTPRepository(conn, log)
 
 	// Create web router
@@ -163,7 +162,7 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 		optionsService,
 		cbService,
 	)
-	webRouter.SetDependencies(userRepo, wordService, aiService, bot, webSessionRepo, cfg.Telegram.Token)
+	webRouter.SetDependencies(userRepo, wordService, aiService, bot, cfg.Telegram.Token)
 	webRouter.SetOTPRepo(otpRepo)
 
 	return &Bot{

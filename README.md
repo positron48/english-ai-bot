@@ -14,6 +14,8 @@ A simple AI-powered Telegram bot written in Go that integrates with OpenAI-compa
 - **Training sessions** - interactive vocabulary card training with multiple choice questions
 - **Session persistence** - training sessions survive bot restarts
 - **Telegram Mini App** - web-based user cabinet and admin panel (API backend ready for Vue frontend)
+- **JWT Authentication** - stateless auth with access/refresh tokens
+- **Swagger UI** - interactive API documentation with auto Bearer prefix and token refresh
 - Long polling and webhook support
 - Structured logging with Zap
 - Configuration management with Viper
@@ -192,18 +194,34 @@ The bot includes a full-featured web application accessible as a Telegram Mini A
 1. **Inside Telegram** - Open Mini App link (automatically authenticates via Telegram `initData`)
 2. **External Browser** - Login with Telegram username/ID and OTP code sent via bot
 
+### Authentication
+
+The web app uses **JWT (JSON Web Tokens)** for authentication:
+
+- **Access tokens** - Short-lived (24h by default) for API requests
+- **Refresh tokens** - Long-lived (30 days) for token renewal
+- **Automatic token refresh** - Swagger UI automatically refreshes expired tokens
+
 ### Configuration
 
 Add these environment variables to enable Mini App:
 
 ```env
-WEBAPP_PUBLIC_URL=https://your-domain.com
-WEBAPP_SESSION_SECRET=your-secret-key-for-session-encryption
-WEBAPP_OTP_TTL_SECONDS=300
-WEBAPP_SESSION_TTL_HOURS=720
+WEBAPP_JWT_SECRET=your-secret-key-for-jwt-signing  # Required: openssl rand -hex 32
+WEBAPP_JWT_TTL_HOURS=24                            # Access token TTL (default: 24h)
+WEBAPP_REFRESH_TTL_HOURS=720                       # Refresh token TTL (default: 30 days)
+WEBAPP_OTP_TTL_SECONDS=300                         # OTP code expiration
+WEBAPP_PUBLIC_URL=https://your-domain.com          # Optional: for CORS
 ```
 
 The Mini App is automatically available at `/app` route on the same server as the webhook.
+
+### API Documentation
+
+**Swagger UI** is available at `/swagger/` with:
+- Auto Bearer prefix - just enter token without "Bearer "
+- Auto token refresh - automatically refreshes expired access tokens
+- Full API documentation for all endpoints
 
 ## Commands
 
@@ -245,10 +263,11 @@ The following commands are available only to the configured admin user:
 | `TELEGRAM_WEBHOOK_PATH` | Webhook path | `/webhook` |
 | `SERVER_ADDRESS` | Server address | `:8184` |
 | `LOG_LEVEL` | Logging level | `info` |
-| `WEBAPP_PUBLIC_URL` | Public URL for Mini App (HTTPS) | - |
-| `WEBAPP_SESSION_SECRET` | Secret key for session encryption | - |
+| `WEBAPP_JWT_SECRET` | Secret key for JWT signing | **Required** |
+| `WEBAPP_JWT_TTL_HOURS` | Access token TTL | `24` |
+| `WEBAPP_REFRESH_TTL_HOURS` | Refresh token TTL | `720` |
 | `WEBAPP_OTP_TTL_SECONDS` | OTP code expiration time | `300` |
-| `WEBAPP_SESSION_TTL_HOURS` | Web session expiration time | `720` |
+| `WEBAPP_PUBLIC_URL` | Public URL for Mini App (HTTPS) | - |
 | `ADMIN_TELEGRAM_ID` | Telegram ID of admin user | `0` |
 
 ### Example Configuration for OpenRouter
@@ -489,16 +508,22 @@ docker-compose down
 
 When running, the bot exposes the following HTTP endpoints:
 
+**Public:**
 - `GET /health` - Health check endpoint
-- `GET /app` - Mini App entry point (redirects to dashboard or login)
-- `GET /login` - External browser login page
-- `POST /auth/telegram` - Telegram initData authentication
+- `GET /swagger/` - Swagger UI documentation
+- `POST /auth/telegram` - Telegram initData authentication (returns JWT tokens)
+- `POST /auth/telegram_unsafe` - Unsafe Telegram auth (fallback)
 - `POST /auth/request_otp` - Request OTP for external login
-- `POST /auth/otp` - Verify OTP and create session
-- `GET /app/dashboard` - User dashboard (requires auth)
-- `GET /app/vocab` - Vocabulary list (requires auth)
-- `POST /app/training/start` - Start training session (requires auth)
+- `POST /auth/otp` - Verify OTP and get JWT tokens
+- `POST /auth/refresh` - Refresh access token using refresh token
+
+**Protected (require JWT Bearer token):**
+- `GET /app/dashboard` - User dashboard
+- `GET /app/vocab` - Vocabulary list
+- `POST /app/training/start` - Start training session
 - `GET /app/admin` - Admin panel (requires admin access)
+
+See `/swagger/` for full API documentation.
 
 ## Database
 
@@ -519,14 +544,6 @@ The bot uses SQLite to store vocabulary cards and request history. The database 
 - `word` - Requested word
 - `requested_at` - Request timestamp
 
-**web_sessions** - Web application sessions:
-- `id` - Primary key
-- `user_id` - User ID
-- `session_token` - Unique session token
-- `expires_at` - Session expiration time
-- `created_at` - Creation timestamp
-- `last_seen_at` - Last activity timestamp
-
 **web_otps** - One-time passwords for external login:
 - `id` - Primary key
 - `user_id` - User ID
@@ -536,6 +553,8 @@ The bot uses SQLite to store vocabulary cards and request history. The database 
 - `created_at` - Creation timestamp
 
 **users** - Extended with `telegram_username` field for OTP login
+
+> **Note:** The project uses JWT tokens for authentication. Sessions are stateless and stored in tokens, not in the database.
 
 ### Database Location
 

@@ -64,6 +64,17 @@ func NewWebTrainingHandler(
 }
 
 // handleTrainingStart starts a new training session
+// @Summary      Начать тренировку
+// @Description  Создает новую сессию тренировки и возвращает первую карточку для изучения
+// @Tags         Training
+// @Accept       json
+// @Produce      application/json
+// @Security     ApiKeyAuth
+// @Success      200  {object}  map[string]interface{}  "Данные первой карточки"
+// @Failure      400  {object}  map[string]interface{}  "Нет доступных карточек для тренировки"
+// @Failure      401  {string}  string  "Неавторизован"
+// @Failure      500  {string}  string  "Внутренняя ошибка сервера"
+// @Router       /app/training/start [post]
 func (r *Router) handleTrainingStart(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -204,6 +215,17 @@ func (r *Router) extractSessionWords(queue []*models.UserCardWithTraining, curre
 }
 
 // handleTrainingCurrent shows the current card (for page refresh)
+// @Summary      Получить текущую карточку
+// @Description  Возвращает текущую карточку активной сессии тренировки (для обновления страницы)
+// @Tags         Training
+// @Accept       json
+// @Produce      application/json
+// @Security     ApiKeyAuth
+// @Success      200  {object}  map[string]interface{}  "Данные текущей карточки"
+// @Failure      401  {string}  string  "Неавторизован"
+// @Failure      404  {string}  string  "Нет активной сессии"
+// @Failure      405  {string}  string  "Метод не разрешен"
+// @Router       /app/training/current [get]
 func (r *Router) handleTrainingCurrent(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -234,6 +256,17 @@ func (r *Router) handleTrainingCurrent(w http.ResponseWriter, req *http.Request)
 }
 
 // handleTrainingReveal reveals the options
+// @Summary      Показать варианты ответов
+// @Description  Показывает варианты ответов для текущей карточки тренировки
+// @Tags         Training
+// @Accept       json
+// @Produce      application/json
+// @Security     ApiKeyAuth
+// @Success      200  {object}  map[string]interface{}  "Варианты ответов"
+// @Failure      401  {string}  string  "Неавторизован"
+// @Failure      404  {string}  string  "Нет активной сессии"
+// @Failure      405  {string}  string  "Метод не разрешен"
+// @Router       /app/training/reveal [post]
 func (r *Router) handleTrainingReveal(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -274,6 +307,20 @@ func (r *Router) handleTrainingReveal(w http.ResponseWriter, req *http.Request) 
 }
 
 // handleTrainingAnswer handles the user's answer
+// @Summary      Отправить ответ на карточку
+// @Description  Обрабатывает ответ пользователя на карточку, обновляет SRS состояние и возвращает обратную связь
+// @Tags         Training
+// @Accept       application/x-www-form-urlencoded
+// @Produce      application/json
+// @Security     ApiKeyAuth
+// @Param        option_index  formData  int  true  "Индекс выбранного варианта ответа"
+// @Param        user_card_id  formData  int64  true  "ID карточки пользователя"
+// @Success      200  {object}  map[string]interface{}  "Обратная связь и следующий шаг"
+// @Failure      400  {string}  string  "Неверный запрос (неверные параметры)"
+// @Failure      401  {string}  string  "Неавторизован"
+// @Failure      404  {string}  string  "Нет активной сессии"
+// @Failure      500  {string}  string  "Внутренняя ошибка сервера"
+// @Router       /app/training/answer [post]
 func (r *Router) handleTrainingAnswer(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)

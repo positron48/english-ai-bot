@@ -86,10 +86,13 @@ type AdminConfig struct {
 
 // WebAppConfig holds web app configuration
 type WebAppConfig struct {
-	PublicURL      string `mapstructure:"public_url"`
-	SessionSecret  string `mapstructure:"session_secret"`
-	OTPTTLSeconds  int    `mapstructure:"otp_ttl_seconds"`
-	SessionTTLHours int   `mapstructure:"session_ttl_hours"`
+	PublicURL         string `mapstructure:"public_url"`
+	SessionSecret     string `mapstructure:"session_secret"`
+	JWTSecret         string `mapstructure:"jwt_secret"`
+	OTPTTLSeconds     int    `mapstructure:"otp_ttl_seconds"`
+	SessionTTLHours   int    `mapstructure:"session_ttl_hours"`
+	JWTTTLHours       int    `mapstructure:"jwt_ttl_hours"`
+	RefreshTTLHours   int    `mapstructure:"refresh_ttl_hours"`
 }
 
 // Load loads configuration from environment variables and config file
@@ -126,8 +129,11 @@ func Load() (*Config, error) {
 	// WebApp defaults
 	viper.SetDefault("webapp.public_url", "")
 	viper.SetDefault("webapp.session_secret", "")
+	viper.SetDefault("webapp.jwt_secret", "")
 	viper.SetDefault("webapp.otp_ttl_seconds", 300)
 	viper.SetDefault("webapp.session_ttl_hours", 720)
+	viper.SetDefault("webapp.jwt_ttl_hours", 24)
+	viper.SetDefault("webapp.refresh_ttl_hours", 720)
 
 	// Bot message defaults
 	viper.SetDefault("bot.start_message", "🤖 Hello! I'm a universal AI assistant.\n\n💡 Just send me a message and I'll help you with any questions!\n\nUse /help for additional information.")
@@ -173,8 +179,11 @@ func Load() (*Config, error) {
 	_ = viper.BindEnv("admin.telegram_id", "ADMIN_TELEGRAM_ID")
 	_ = viper.BindEnv("webapp.public_url", "WEBAPP_PUBLIC_URL")
 	_ = viper.BindEnv("webapp.session_secret", "WEBAPP_SESSION_SECRET")
+	_ = viper.BindEnv("webapp.jwt_secret", "WEBAPP_JWT_SECRET")
 	_ = viper.BindEnv("webapp.otp_ttl_seconds", "WEBAPP_OTP_TTL_SECONDS")
 	_ = viper.BindEnv("webapp.session_ttl_hours", "WEBAPP_SESSION_TTL_HOURS")
+	_ = viper.BindEnv("webapp.jwt_ttl_hours", "WEBAPP_JWT_TTL_HOURS")
+	_ = viper.BindEnv("webapp.refresh_ttl_hours", "WEBAPP_REFRESH_TTL_HOURS")
 
 	// Set config file
 	viper.SetConfigName("config")
@@ -223,6 +232,11 @@ func Load() (*Config, error) {
 	}
 	if config.AI.Prompt == "" {
 		return nil, fmt.Errorf("ai prompt is required (either AI_PROMPT or AI_PROMPT_FILE must be set)")
+	}
+	
+	// Validate JWT secret (can use session secret as fallback)
+	if config.WebApp.JWTSecret == "" && config.WebApp.SessionSecret == "" {
+		return nil, fmt.Errorf("JWT secret is required (set WEBAPP_JWT_SECRET or WEBAPP_SESSION_SECRET)")
 	}
 
 	return &config, nil

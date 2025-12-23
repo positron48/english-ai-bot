@@ -38,6 +38,17 @@ func (r *Router) RequireAdmin(next http.HandlerFunc) http.HandlerFunc {
 }
 
 // handleAdmin shows the admin panel
+// @Summary      Получить данные админ-панели
+// @Description  Возвращает состояние circuit breaker и информацию об администраторе (только для администраторов)
+// @Tags         Admin
+// @Accept       json
+// @Produce      application/json
+// @Security     ApiKeyAuth
+// @Success      200  {object}  map[string]interface{}  "Данные админ-панели"
+// @Failure      401  {string}  string  "Неавторизован"
+// @Failure      403  {string}  string  "Доступ запрещен (требуются права администратора)"
+// @Failure      405  {string}  string  "Метод не разрешен"
+// @Router       /app/admin [get]
 func (r *Router) handleAdmin(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -62,6 +73,17 @@ func (r *Router) handleAdmin(w http.ResponseWriter, req *http.Request) {
 }
 
 // handleAdminCircuitReset resets the circuit breaker
+// @Summary      Сбросить circuit breaker
+// @Description  Сбрасывает состояние circuit breaker (только для администраторов)
+// @Tags         Admin
+// @Accept       json
+// @Produce      application/json
+// @Security     ApiKeyAuth
+// @Success      200  {object}  map[string]interface{}  "Успешный сброс"
+// @Failure      401  {string}  string  "Неавторизован"
+// @Failure      403  {string}  string  "Доступ запрещен (требуются права администратора)"
+// @Failure      500  {string}  string  "Внутренняя ошибка сервера"
+// @Router       /app/admin/circuit/reset [post]
 func (r *Router) handleAdminCircuitReset(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -84,6 +106,21 @@ func (r *Router) handleAdminCircuitReset(w http.ResponseWriter, req *http.Reques
 }
 
 // handleAdminTraining handles training card management
+// @Summary      Управление тренировочными карточками
+// @Description  Получение (GET) или удаление (POST) тренировочных карточек по слову. Путь: /app/admin/training/{word} или /app/admin/training/{word}/delete или /app/admin/training/delete_all
+// @Tags         Admin
+// @Accept       json
+// @Produce      application/json
+// @Security     ApiKeyAuth
+// @Param        word    path      string  false  "Английское слово"
+// @Param        action  path      string  false  "Действие: delete или delete_all"
+// @Param        word    query     string  false  "Английское слово (для GET запроса)"
+// @Success      200  {object}  map[string]interface{}  "Данные карточек или результат удаления"
+// @Failure      400  {string}  string  "Неверный запрос"
+// @Failure      401  {string}  string  "Неавторизован"
+// @Failure      403  {string}  string  "Доступ запрещен (требуются права администратора)"
+// @Failure      500  {string}  string  "Внутренняя ошибка сервера"
+// @Router       /app/admin/training/{word} [get]
 func (r *Router) handleAdminTraining(w http.ResponseWriter, req *http.Request) {
 	// Extract action and word from path: /app/admin/training/{word}/{action}
 	path := req.URL.Path
