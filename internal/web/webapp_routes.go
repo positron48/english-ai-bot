@@ -11,21 +11,22 @@ import (
 	"go.uber.org/zap"
 )
 
-// webappFS is defined in webapp_static.go (production) or webapp_static_test.go (tests)
+// webappFS is initialized in webapp_static.go from webappembed package
+var webappFS embed.FS
 
 // setupWebappRoutes configures routes for serving the embedded webapp
 func (r *Router) setupWebappRoutes() {
 	// Check if webappFS is empty (test mode) - in dev mode, Vite serves static files
 	// Try to read index.html to check if files are embedded
-	_, err := fs.ReadFile(webappFS, "webapp/dist/index.html")
+	_, err := fs.ReadFile(webappFS, "dist/index.html")
 	if err != nil {
 		r.logger.Info("webapp files not embedded (test/dev mode) - proxying static requests to Vite dev server")
 		r.setupDevProxy()
 		return
 	}
 
-	// Get the embedded filesystem, stripping the webapp/dist prefix
-	webappRoot, err := fs.Sub(webappFS, "webapp/dist")
+	// Get the embedded filesystem, stripping the dist prefix
+	webappRoot, err := fs.Sub(webappFS, "dist")
 	if err != nil {
 		r.logger.Warn("failed to create webapp filesystem sub", zap.Error(err))
 		return

@@ -1,10 +1,10 @@
-//go:build !test
-// +build !test
-
 package web
 
-import "embed"
+import (
+	"tgbot-skeleton/webapp"
+)
 
-//go:embed ../../webapp/dist
-var webappFS embed.FS
+func init() {
+	webappFS = webapp.FS
+}
 
