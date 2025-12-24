@@ -35,12 +35,9 @@ func (r *Router) setupWebappRoutes() {
 	fileServer := http.FileServer(http.FS(webappRoot))
 
 	// Serve static assets (JS, CSS, images, etc.)
-	r.mux.HandleFunc("/app/assets/", func(w http.ResponseWriter, req *http.Request) {
-		// Only serve if it's a static asset request
-		if !isAPIEndpoint(req.URL.Path) {
-			fileServer.ServeHTTP(w, req)
-		}
-	})
+	// Strip /app prefix before serving files
+	// This must be registered before the general /app/ handler to ensure assets are served correctly
+	r.mux.Handle("/app/assets/", http.StripPrefix("/app", fileServer))
 
 	// Serve other static files (favicon, robots.txt, etc.)
 	r.mux.HandleFunc("/app/", func(w http.ResponseWriter, req *http.Request) {
@@ -54,7 +51,8 @@ func (r *Router) setupWebappRoutes() {
 
 		// If it's a request for a file (has extension), try to serve it
 		if hasFileExtension(path) && path != "/app/" {
-			fileServer.ServeHTTP(w, req)
+			// Strip /app prefix before serving
+			http.StripPrefix("/app", fileServer).ServeHTTP(w, req)
 			return
 		}
 
