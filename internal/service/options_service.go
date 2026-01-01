@@ -262,13 +262,3 @@ func (s *OptionsService) getOtherMeaningsOfWord(wordCardID int64, direction mode
 	return meanings
 }
 
-// contains checks if a slice contains a string
-func contains(slice []string, item string) bool {
-	for _, s := range slice {
-		if s == item {
-			return true
-		}
-	}
-	return false
-}
-

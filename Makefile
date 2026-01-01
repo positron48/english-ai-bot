@@ -67,7 +67,7 @@ check: tidy
 	@echo "✅ Go tests passed"
 	@echo ""
 	@echo "6. Running Go linter..."
-	@$(GOLANGCI) run --timeout=3m 2>&1 | grep -v "webapp_static.go" || true
+	@$(GOLANGCI) run --timeout=3m
 	@echo "✅ Go linter passed"
 	@echo ""
 	@echo "🎉 All CI checks passed!"
@@ -86,9 +86,9 @@ lint: fmt
 	$(GOLANGCI) run --timeout=3m
 
 lint-install:
-	@echo "Installing golangci-lint v1.61.0 into ./bin..."
+	@echo "Installing golangci-lint v2.1.0 into ./bin..."
 	@mkdir -p bin
-	@curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b ./bin v1.61.0
+	@curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b ./bin v2.1.0
 
 # Local setup
 setup-local:
