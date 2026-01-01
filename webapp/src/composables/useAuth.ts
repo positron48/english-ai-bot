@@ -40,18 +40,47 @@ export function useAuth() {
   }
 
   const tryTelegramAuth = async (): Promise<boolean> => {
-    const tg = (window as any).Telegram?.WebApp
-    if (!tg || !tg.initData) {
-      return false
-    }
-
     try {
+      // Check if Telegram WebApp is available
+      const tg = (window as any).Telegram?.WebApp
+      
+      if (!tg) {
+        console.warn('[Telegram Auth] Telegram WebApp object not found')
+        return false
+      }
+      
+      if (!tg.initData) {
+        console.warn('[Telegram Auth] initData is not available')
+        return false
+      }
+      
+      console.log('[Telegram Auth] Attempting authentication with initData length:', tg.initData.length)
+      
+      // Try to authenticate
       const response = await apiClient.authTelegram(tg.initData)
-      login(response.access_token, response.refresh_token)
-      return true
-    } catch (error) {
-      console.error('Telegram auth failed:', error)
-      return false
+      
+      if (response && response.access_token && response.refresh_token) {
+        console.log('[Telegram Auth] Authentication successful')
+        login(response.access_token, response.refresh_token)
+        return true
+      } else {
+        console.error('[Telegram Auth] Invalid response from server:', response)
+        return false
+      }
+    } catch (error: any) {
+      console.error('[Telegram Auth] Authentication failed:', error)
+      
+      // Log more details about the error
+      if (error.message) {
+        console.error('[Telegram Auth] Error message:', error.message)
+      }
+      if (error.response) {
+        console.error('[Telegram Auth] Response status:', error.response?.status)
+        console.error('[Telegram Auth] Response text:', error.response?.statusText)
+      }
+      
+      // Re-throw the error so it can be caught and displayed in LoginView
+      throw error
     }
   }
 

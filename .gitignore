@@ -6,7 +6,6 @@
 *.dylib
 bin/
 dist/
-!webapp/dist/
 bot
 
 # Test binary, built with `go test -c`
@@ -93,8 +92,9 @@ node_modules/
 # Webapp dependencies
 webapp/node_modules
 
-# Note: webapp/dist is NOT ignored because go:embed requires files to be tracked
-# The dist folder is built during CI/CD and embedded into the Go binary
+# Webapp build output (generated files, not committed to git)
+# Note: webapp/dist is built before Go compilation in CI/CD and locally via 'make build'
+webapp/dist/
 
 # Serverless directories
 .serverless

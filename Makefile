@@ -30,8 +30,10 @@ swagger:
 		2>&1 | grep -vE "(warning: failed to get package name|warning: failed to evaluate const)" || true
 	@echo "✅ Swagger documentation generated in docs/swagger/"
 
-build:
+build: webapp-build
+	@echo "Building Go binary..."
 	$(GO) build -o bin/$(APP_NAME) ./cmd/bot
+	@echo "✅ Build complete: bin/$(APP_NAME)"
 
 run: tidy build
 	./bin/$(APP_NAME)

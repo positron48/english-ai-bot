@@ -112,7 +112,24 @@ class ApiClient {
 
     if (!response.ok) {
       const errorText = await response.text()
-      throw new Error(`API error: ${response.status} ${errorText}`)
+      let errorMessage = `API error: ${response.status} ${errorText}`
+      
+      // Try to parse JSON error if possible
+      try {
+        const errorJson = JSON.parse(errorText)
+        if (errorJson.message) {
+          errorMessage = errorJson.message
+        } else if (errorJson.error) {
+          errorMessage = errorJson.error
+        }
+      } catch {
+        // Not JSON, use text as-is
+      }
+      
+      const error = new Error(errorMessage)
+      ;(error as any).status = response.status
+      ;(error as any).response = response
+      throw error
     }
 
     return response.json()
@@ -156,16 +173,67 @@ class ApiClient {
 
     if (!response.ok) {
       const errorText = await response.text()
-      throw new Error(`API error: ${response.status} ${errorText}`)
+      let errorMessage = `API error: ${response.status} ${errorText}`
+      
+      // Try to parse JSON error if possible
+      try {
+        const errorJson = JSON.parse(errorText)
+        if (errorJson.message) {
+          errorMessage = errorJson.message
+        } else if (errorJson.error) {
+          errorMessage = errorJson.error
+        }
+      } catch {
+        // Not JSON, use text as-is
+      }
+      
+      const error = new Error(errorMessage)
+      ;(error as any).status = response.status
+      ;(error as any).response = response
+      throw error
     }
 
     return response.json()
   }
 
   async authTelegram(initData: string): Promise<AuthResponse> {
+    console.log('[API Client] authTelegram called, initData length:', initData.length)
+    console.log('[API Client] initData preview:', initData.substring(0, 50) + '...')
+    
+    // Telegram WebApp provides initData as a URL-encoded string
+    // We need to send it as-is without double encoding
+    // URLSearchParams will handle encoding properly, but we need to ensure
+    // that initData is sent correctly
+    
+    // Create form data - URLSearchParams will handle encoding
     const formData = new FormData()
     formData.append('initData', initData)
-    return this.requestFormData<AuthResponse>('/auth/telegram', formData)
+    
+    try {
+      console.log('[API Client] Sending request to /auth/telegram')
+      const response = await this.requestFormData<AuthResponse>('/auth/telegram', formData)
+      console.log('[API Client] Authentication successful')
+      return response
+    } catch (error: any) {
+      console.error('[API Client] authTelegram error:', error)
+      console.error('[API Client] Error details:', {
+        message: error.message,
+        status: error.status,
+        stack: error.stack
+      })
+      
+      // Log more details if available
+      if (error.response) {
+        try {
+          const errorText = await error.response.text()
+          console.error('[API Client] Error response:', errorText)
+        } catch {
+          // Ignore
+        }
+      }
+      
+      throw error
+    }
   }
 
   async requestOTP(username: string): Promise<{ success: boolean; message: string; user_id: number }> {
