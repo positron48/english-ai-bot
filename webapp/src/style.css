@@ -110,3 +110,14 @@ p {
   color: var(--text-primary);
 }
 
+/* Transcription styling for phonetic symbols (IPA) */
+.transcription,
+span.transcription,
+.question .transcription,
+div .transcription {
+  font-family: 'Arial Unicode MS', 'Lucida Sans Unicode', 'Charis SIL', 'Doulos SIL', 'Gentium Plus', 'DejaVu Sans', Arial, sans-serif !important;
+  font-style: italic !important;
+  letter-spacing: 0.5px !important;
+  font-size: 0.9em !important;
+}
+

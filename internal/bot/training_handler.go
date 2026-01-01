@@ -20,6 +20,9 @@ type TrainingHandler struct {
 	trainingService       *service.TrainingService
 	srsService            *service.SRSService
 	optionsService        *service.OptionsService
+	sessionRepo           interface {
+		GetSessionStats(sessionID int64) (totalCards int, correctCards int, err error)
+	}
 	logger                *zap.Logger
 	sessions              map[int64]*SessionState
 	sessionsMutex          sync.RWMutex
@@ -52,6 +55,9 @@ func NewTrainingHandler(
 	trainingService *service.TrainingService,
 	srsService *service.SRSService,
 	optionsService *service.OptionsService,
+	sessionRepo interface {
+		GetSessionStats(sessionID int64) (totalCards int, correctCards int, err error)
+	},
 	logger *zap.Logger,
 	optionsDelayMS int,
 	wrongAnswerDelaySeconds int,
@@ -61,6 +67,7 @@ func NewTrainingHandler(
 		trainingService:        trainingService,
 		srsService:             srsService,
 		optionsService:         optionsService,
+		sessionRepo:            sessionRepo,
 		logger:                 logger,
 		sessions:               make(map[int64]*SessionState),
 		optionsDelayMS:          optionsDelayMS,
@@ -445,11 +452,38 @@ func (h *TrainingHandler) finishSession(chatID int64) error {
 		h.logger.Error("failed to finish session", zap.Error(err))
 	}
 
-	// Send completion message
-	message := fmt.Sprintf(
-		"🎉 Тренировка завершена!\n\nВы прошли %d карточек.\n\nОтличная работа! До встречи завтра.",
-		doneCount,
-	)
+	// Get session statistics
+	totalCards := doneCount
+	correctCards := 0
+	if h.sessionRepo != nil {
+		total, correct, err := h.sessionRepo.GetSessionStats(sessionID)
+		if err != nil {
+			h.logger.Error("failed to get session stats", zap.Error(err))
+		} else {
+			totalCards = total
+			correctCards = correct
+		}
+	}
+
+	// Send completion message with statistics
+	var message string
+	if totalCards > 0 {
+		accuracy := (correctCards * 100) / totalCards
+		message = fmt.Sprintf(
+			"🎉 Тренировка завершена!\n\n"+
+				"📊 Результаты:\n"+
+				"• Всего карточек: %d\n"+
+				"• Правильных ответов: %d\n"+
+				"• Точность: %d%%\n\n"+
+				"Отличная работа! До встречи завтра.",
+			totalCards, correctCards, accuracy,
+		)
+	} else {
+		message = fmt.Sprintf(
+			"🎉 Тренировка завершена!\n\nВы прошли %d карточек.\n\nОтличная работа! До встречи завтра.",
+			doneCount,
+		)
+	}
 
 	h.sendMessage(chatID, message)
 

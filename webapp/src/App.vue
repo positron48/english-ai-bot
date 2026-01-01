@@ -41,7 +41,6 @@ const logout = () => {
 .navbar {
   background: var(--bg-secondary);
   box-shadow: 0 2px 4px var(--navbar-shadow);
-  margin-bottom: 20px;
 }
 
 .nav-links {

@@ -167,7 +167,11 @@ func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, stat
 	if card.UserCard.Direction == models.DirectionRUtoEN {
 		questionText = fmt.Sprintf("Переведите на английский: <strong>%s</strong>", card.TrainingCard.WordRU)
 	} else {
-		questionText = fmt.Sprintf("Что означает слово: <strong>%s</strong> %s", card.TrainingCard.WordEN, card.TrainingCard.Transcription)
+		transcriptionHTML := ""
+		if card.TrainingCard.Transcription != "" {
+			transcriptionHTML = fmt.Sprintf(` <span class="transcription">%s</span>`, card.TrainingCard.Transcription)
+		}
+		questionText = fmt.Sprintf("Что означает слово: <strong>%s</strong>%s", card.TrainingCard.WordEN, transcriptionHTML)
 	}
 
 	// Return card data as JSON
@@ -549,6 +553,16 @@ func (r *Router) finishTrainingSession(w http.ResponseWriter, req *http.Request,
 		r.logger.Error("failed to finish session", zap.Error(err))
 	}
 
+	// Get session statistics
+	sessionRepo := repository.NewSessionRepository(r.db, r.logger)
+	totalCards, correctCards, err := sessionRepo.GetSessionStats(state.SessionID)
+	if err != nil {
+		r.logger.Error("failed to get session stats", zap.Error(err))
+		// Use fallback values
+		totalCards = state.CurrentIndex
+		correctCards = 0
+	}
+
 	// Remove from memory
 	if r.webTrainingHandler != nil {
 		r.webTrainingHandler.sessionsMutex.Lock()
@@ -560,8 +574,10 @@ func (r *Router) finishTrainingSession(w http.ResponseWriter, req *http.Request,
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]interface{}{
-		"complete": true,
+		"complete":        true,
 		"cards_completed": state.CurrentIndex,
+		"total_cards":     totalCards,
+		"correct_cards":   correctCards,
 	})
 }
 

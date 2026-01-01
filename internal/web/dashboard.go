@@ -32,20 +32,65 @@ func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	// Get due count
-	query := `SELECT COUNT(*) FROM user_cards WHERE user_id = ? AND (next_due_at IS NULL OR next_due_at <= ?)`
+	now := time.Now()
+	
+	// Get due count (cards ready for review)
+	dueQuery := `SELECT COUNT(*) FROM user_cards WHERE user_id = ? AND (next_due_at IS NULL OR next_due_at <= ?)`
 	var dueCount int
-	err := r.db.QueryRow(query, userID, time.Now()).Scan(&dueCount)
+	err := r.db.QueryRow(dueQuery, userID, now).Scan(&dueCount)
 	if err != nil {
 		r.logger.Error("failed to get due count", zap.Error(err))
 		dueCount = 0
+	}
+
+	// Get new cards count
+	newQuery := `SELECT COUNT(*) FROM user_cards WHERE user_id = ? AND state = 'new'`
+	var newCount int
+	err = r.db.QueryRow(newQuery, userID).Scan(&newCount)
+	if err != nil {
+		r.logger.Error("failed to get new cards count", zap.Error(err))
+		newCount = 0
+	}
+
+	// Calculate available cards for training (same logic as training service)
+	// MaxCardsPerSession = 30, MaxNewPerSession = 5
+	maxCardsPerSession := 30
+	maxNewPerSession := 5
+	
+	availableForTraining := dueCount
+	remainingSlots := maxCardsPerSession - dueCount
+	if remainingSlots > 0 {
+		maxNew := maxNewPerSession
+		if remainingSlots < maxNew {
+			maxNew = remainingSlots
+		}
+		if newCount > maxNew {
+			availableForTraining += maxNew
+		} else {
+			availableForTraining += newCount
+		}
+	}
+	// Cap at maxCardsPerSession
+	if availableForTraining > maxCardsPerSession {
+		availableForTraining = maxCardsPerSession
+	}
+
+	// Get total cards count
+	totalQuery := `SELECT COUNT(*) FROM user_cards WHERE user_id = ?`
+	var totalCards int
+	err = r.db.QueryRow(totalQuery, userID).Scan(&totalCards)
+	if err != nil {
+		r.logger.Error("failed to get total cards count", zap.Error(err))
+		totalCards = 0
 	}
 
 	// Return JSON response
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]interface{}{
-		"due_count": dueCount,
+		"due_count":            dueCount,
+		"total_cards":          totalCards,
+		"available_for_training": availableForTraining,
 	})
 }
 

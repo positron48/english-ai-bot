@@ -176,6 +176,21 @@ func (r *SessionRepository) CreateReviewEvent(event *models.ReviewEvent) (int64,
 	return id, nil
 }
 
+// GetSessionStats gets statistics for a training session
+func (r *SessionRepository) GetSessionStats(sessionID int64) (totalCards int, correctCards int, err error) {
+	query := `SELECT 
+		COUNT(*) as total,
+		SUM(CASE WHEN is_correct = 1 THEN 1 ELSE 0 END) as correct
+	FROM review_events 
+	WHERE session_id = ? AND answered_at IS NOT NULL`
+	
+	err = r.db.QueryRow(query, sessionID).Scan(&totalCards, &correctCards)
+	if err != nil {
+		return 0, 0, fmt.Errorf("failed to get session stats: %w", err)
+	}
+	return totalCards, correctCards, nil
+}
+
 // GetTodaySessionCount checks if user has trained today
 func (r *SessionRepository) GetTodaySessionCount(userID int64, localDate string) (int, error) {
 	query := `SELECT COUNT(*) FROM training_sessions 
