@@ -491,7 +491,15 @@ func (h *TrainingHandler) HasActiveSession(chatID int64) bool {
 // extractSessionWords extracts correct answers from other cards in the session
 // to be used as distractors (prevents guessing by word recognition)
 // recentCorrectAnswers: list of recent correct answers to exclude (to avoid "freshness recognition")
+// Excludes cards with the same WordCardID to avoid showing correct answers from other cards of the same word
 func (h *TrainingHandler) extractSessionWords(queue []*models.UserCardWithTraining, currentIndex int, direction models.CardDirection, recentCorrectAnswers []string) []string {
+	if currentIndex >= len(queue) {
+		return []string{}
+	}
+	
+	currentCard := queue[currentIndex]
+	currentWordCardID := currentCard.TrainingCard.WordCardID
+	
 	sessionWords := make([]string, 0, len(queue))
 	
 	// Create a set of excluded words for fast lookup
@@ -500,9 +508,18 @@ func (h *TrainingHandler) extractSessionWords(queue []*models.UserCardWithTraini
 		excludedSet[word] = true
 	}
 	
+	// Track duplicates
+	seenWords := make(map[string]bool)
+	
 	for i, card := range queue {
 		// Skip current card
 		if i == currentIndex {
+			continue
+		}
+		
+		// Skip cards from the same word (same WordCardID)
+		// This prevents showing correct answers from other cards of the same word
+		if card.TrainingCard.WordCardID == currentWordCardID {
 			continue
 		}
 		
@@ -516,9 +533,10 @@ func (h *TrainingHandler) extractSessionWords(queue []*models.UserCardWithTraini
 			word = card.TrainingCard.WordRU
 		}
 		
-		// Add word if it's not in the excluded set
-		if word != "" && !excludedSet[word] {
+		// Add word if it's not in the excluded set and not a duplicate
+		if word != "" && !excludedSet[word] && !seenWords[word] {
 			sessionWords = append(sessionWords, word)
+			seenWords[word] = true
 		}
 	}
 	

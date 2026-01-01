@@ -198,4 +198,3 @@ func (m *AuthMiddleware) GenerateTokenPair(userID int64) (accessToken, refreshTo
 	
 	return accessToken, refreshToken, nil
 }
-

@@ -58,17 +58,28 @@ func (s *OptionsService) GenerateOptions(
 	// Get all meanings of this word to exclude them from distractors
 	excludedMeanings := s.getOtherMeaningsOfWord(card.TrainingCard.WordCardID, card.UserCard.Direction)
 	
-	// Filter out other meanings of the same word
+	// Create a set of excluded words for fast lookup (includes correct answer and other meanings)
+	excludedSet := make(map[string]bool)
+	excludedSet[correctAnswer] = true
+	for _, meaning := range excludedMeanings {
+		excludedSet[meaning] = true
+	}
+	
+	// Filter out other meanings of the same word and duplicates
 	filteredDistractors := make([]string, 0, len(distractors))
+	seenDistractors := make(map[string]bool)
 	for _, d := range distractors {
-		if !contains(excludedMeanings, d) && d != correctAnswer {
+		if !excludedSet[d] && !seenDistractors[d] {
 			filteredDistractors = append(filteredDistractors, d)
+			seenDistractors[d] = true
 		}
 	}
 	distractors = filteredDistractors
 
 	// Parse user's wrong answers for personalization
+	// Exclude duplicates and other meanings of the same word
 	var wrongAnswers []string
+	seenWrongAnswers := make(map[string]bool)
 	if card.UserCard.WrongAnswersJSON != "" {
 		type WrongAnswer struct {
 			Option string `json:"option"`
@@ -76,36 +87,50 @@ func (s *OptionsService) GenerateOptions(
 		var wrongs []WrongAnswer
 		if err := json.Unmarshal([]byte(card.UserCard.WrongAnswersJSON), &wrongs); err == nil {
 			for _, w := range wrongs {
-				if w.Option != correctAnswer {
+				if !excludedSet[w.Option] && !seenWrongAnswers[w.Option] {
 					wrongAnswers = append(wrongAnswers, w.Option)
+					seenWrongAnswers[w.Option] = true
 				}
 			}
 		}
 	}
 
 	// Build options pool: wrong answers first, then distractors
+	// Use a map to track duplicates
 	optionsPool := make([]string, 0, len(wrongAnswers)+len(distractors))
-	optionsPool = append(optionsPool, wrongAnswers...)
+	optionsPoolSet := make(map[string]bool)
+	
+	// Add wrong answers (already deduplicated)
+	for _, wa := range wrongAnswers {
+		if !optionsPoolSet[wa] {
+			optionsPool = append(optionsPool, wa)
+			optionsPoolSet[wa] = true
+		}
+	}
 	
 	// Add distractors that aren't already in wrong answers
 	for _, d := range distractors {
-		if !contains(optionsPool, d) && d != correctAnswer {
+		if !optionsPoolSet[d] && !excludedSet[d] {
 			optionsPool = append(optionsPool, d)
+			optionsPoolSet[d] = true
 		}
 	}
 
-	// Filter session words: exclude current card's answer and already included options
+	// Filter session words: exclude current card's answer, already included options, and other meanings of the same word
 	// Note: recent correct answers should already be excluded by the caller (extractSessionWords)
 	filteredSessionWords := make([]string, 0, len(sessionWords))
+	seenSessionWords := make(map[string]bool)
 	for _, sw := range sessionWords {
-		if sw != correctAnswer && !contains(optionsPool, sw) {
+		if !excludedSet[sw] && !optionsPoolSet[sw] && !seenSessionWords[sw] {
 			filteredSessionWords = append(filteredSessionWords, sw)
+			seenSessionWords[sw] = true
 		}
 	}
 
 	// Select distractors (need optionCount - 1)
 	neededDistractors := optionCount - 1
 	selectedDistractors := make([]string, 0, neededDistractors)
+	selectedDistractorsSet := make(map[string]bool) // Track selected distractors to avoid duplicates
 
 	// Mix in 1-2 session words (familiar words from current training session)
 	// This prevents guessing by word recognition since all options look familiar
@@ -127,7 +152,11 @@ func (s *OptionsService) GenerateOptions(
 
 	// Add session words to selected distractors
 	for i := 0; i < sessionWordsToUse && i < len(shuffledSessionWords); i++ {
-		selectedDistractors = append(selectedDistractors, shuffledSessionWords[i])
+		word := shuffledSessionWords[i]
+		if !selectedDistractorsSet[word] {
+			selectedDistractors = append(selectedDistractors, word)
+			selectedDistractorsSet[word] = true
+		}
 	}
 
 	// Shuffle LLM distractors pool
@@ -136,10 +165,11 @@ func (s *OptionsService) GenerateOptions(
 	})
 
 	// Fill remaining slots with LLM-generated distractors (wrong answers + distractors)
-	// Exclude session words we already added
+	// Exclude session words we already added and ensure no duplicates
 	for _, d := range optionsPool {
-		if !contains(selectedDistractors, d) && len(selectedDistractors) < neededDistractors {
+		if !selectedDistractorsSet[d] && !excludedSet[d] && len(selectedDistractors) < neededDistractors {
 			selectedDistractors = append(selectedDistractors, d)
+			selectedDistractorsSet[d] = true
 		}
 		if len(selectedDistractors) >= neededDistractors {
 			break
@@ -156,8 +186,9 @@ func (s *OptionsService) GenerateOptions(
 		// In production, you might query similar words
 		fallbacks := s.getFallbackDistractors(card.UserCard.Direction)
 		for _, fb := range fallbacks {
-			if !contains(selectedDistractors, fb) && fb != correctAnswer {
+			if !selectedDistractorsSet[fb] && !excludedSet[fb] {
 				selectedDistractors = append(selectedDistractors, fb)
+				selectedDistractorsSet[fb] = true
 				if len(selectedDistractors) >= neededDistractors {
 					break
 				}
@@ -202,6 +233,7 @@ func (s *OptionsService) getFallbackDistractors(direction models.CardDirection) 
 }
 
 // getOtherMeaningsOfWord gets all meanings of the word to exclude from distractors
+// Returns all correct answers from other training cards of the same word (WordCardID)
 func (s *OptionsService) getOtherMeaningsOfWord(wordCardID int64, direction models.CardDirection) []string {
 	// Get all training cards for this word
 	cards, err := s.trainingCardRepo.GetTrainingCardsByWordCardID(wordCardID)
@@ -213,11 +245,14 @@ func (s *OptionsService) getOtherMeaningsOfWord(wordCardID int64, direction mode
 	meanings := make([]string, 0, len(cards))
 	for _, c := range cards {
 		if direction == models.DirectionRUtoEN {
-			// For RU->EN, exclude English word meanings (but we use the same word, so skip)
-			// Not applicable here as we're translating to the same word
-			continue
+			// For RU->EN, exclude all English word meanings from other cards
+			// (same English word can have different Russian meanings)
+			if c.WordEN != "" {
+				meanings = append(meanings, c.WordEN)
+			}
 		} else {
-			// For EN->RU, exclude all Russian meanings
+			// For EN->RU, exclude all Russian meanings from other cards
+			// (same English word can have different Russian translations)
 			if c.WordRU != "" {
 				meanings = append(meanings, c.WordRU)
 			}

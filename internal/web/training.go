@@ -184,18 +184,33 @@ func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, stat
 }
 
 // extractSessionWords extracts words from other cards in the session for use as distractors
+// Excludes cards with the same WordCardID to avoid showing correct answers from other cards of the same word
 func (r *Router) extractSessionWords(queue []*models.UserCardWithTraining, currentIndex int, direction models.CardDirection, recentCorrect []string) []string {
+	if currentIndex >= len(queue) {
+		return []string{}
+	}
+	
+	currentCard := queue[currentIndex]
+	currentWordCardID := currentCard.TrainingCard.WordCardID
+	
 	var sessionWords []string
 	excludeSet := make(map[string]bool)
+	seenWords := make(map[string]bool) // Track duplicates
 	
 	// Add recent correct answers to exclude set
 	for _, word := range recentCorrect {
 		excludeSet[word] = true
 	}
 
-	// Collect words from other cards
+	// Collect words from other cards (excluding cards with the same WordCardID)
 	for i, card := range queue {
 		if i == currentIndex {
+			continue
+		}
+		
+		// Skip cards from the same word (same WordCardID)
+		// This prevents showing correct answers from other cards of the same word
+		if card.TrainingCard.WordCardID == currentWordCardID {
 			continue
 		}
 		
@@ -206,8 +221,10 @@ func (r *Router) extractSessionWords(queue []*models.UserCardWithTraining, curre
 			word = card.TrainingCard.WordRU
 		}
 		
-		if !excludeSet[word] {
+		// Exclude recent correct answers and duplicates
+		if word != "" && !excludeSet[word] && !seenWords[word] {
 			sessionWords = append(sessionWords, word)
+			seenWords[word] = true
 		}
 	}
 
