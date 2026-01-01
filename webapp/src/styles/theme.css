@@ -1,0 +1,127 @@
+/* Theme Variables - Light Theme (Default) */
+:root {
+  /* Background Colors */
+  --bg-primary: #f5f5f5;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f9f9f9;
+  --bg-hover: #f0f0f0;
+  --bg-modal-overlay: rgba(0, 0, 0, 0.5);
+  
+  /* Text Colors */
+  --text-primary: #333333;
+  --text-secondary: #666666;
+  --text-tertiary: #999999;
+  --text-inverse: #ffffff;
+  
+  /* Border Colors */
+  --border-primary: #dddddd;
+  --border-secondary: #e0e0e0;
+  --border-focus: #007bff;
+  
+  /* Primary Colors */
+  --color-primary: #007bff;
+  --color-primary-hover: #0056b3;
+  --color-primary-light: rgba(0, 123, 255, 0.1);
+  
+  /* Secondary Colors */
+  --color-secondary: #6c757d;
+  --color-secondary-hover: #5a6268;
+  
+  /* Danger Colors */
+  --color-danger: #dc3545;
+  --color-danger-hover: #c82333;
+  
+  /* Success Colors */
+  --color-success: #28a745;
+  --color-success-hover: #218838;
+  
+  /* Card & Shadow */
+  --card-bg: #ffffff;
+  --card-shadow: rgba(0, 0, 0, 0.1);
+  --navbar-shadow: rgba(0, 0, 0, 0.1);
+  
+  /* Input Colors */
+  --input-bg: #ffffff;
+  --input-border: #dddddd;
+  --input-focus-border: #007bff;
+  
+  /* Code Block Colors */
+  --code-bg: #f4f4f4;
+  --code-text: #333333;
+  
+  /* Chat Colors */
+  --chat-bg: #f9f9f9;
+  --chat-user-bg: #007bff;
+  --chat-assistant-bg: #ffffff;
+  --chat-assistant-border: #dddddd;
+  
+  /* Example/Highlight Background */
+  --example-bg: #f0f0f0;
+  
+  /* Training Progress */
+  --training-progress-text: #666666;
+}
+
+/* Dark Theme */
+[data-theme="dark"] {
+  /* Background Colors */
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #2d2d2d;
+  --bg-tertiary: #252525;
+  --bg-hover: #3a3a3a;
+  --bg-modal-overlay: rgba(0, 0, 0, 0.7);
+  
+  /* Text Colors */
+  --text-primary: #e0e0e0;
+  --text-secondary: #b0b0b0;
+  --text-tertiary: #808080;
+  --text-inverse: #1a1a1a;
+  
+  /* Border Colors */
+  --border-primary: #404040;
+  --border-secondary: #4a4a4a;
+  --border-focus: #4a9eff;
+  
+  /* Primary Colors */
+  --color-primary: #4a9eff;
+  --color-primary-hover: #2d7fff;
+  --color-primary-light: rgba(74, 158, 255, 0.2);
+  
+  /* Secondary Colors */
+  --color-secondary: #6c757d;
+  --color-secondary-hover: #5a6268;
+  
+  /* Danger Colors */
+  --color-danger: #ff6b6b;
+  --color-danger-hover: #ff5252;
+  
+  /* Success Colors */
+  --color-success: #51cf66;
+  --color-success-hover: #40c057;
+  
+  /* Card & Shadow */
+  --card-bg: #2d2d2d;
+  --card-shadow: rgba(0, 0, 0, 0.3);
+  --navbar-shadow: rgba(0, 0, 0, 0.3);
+  
+  /* Input Colors */
+  --input-bg: #2d2d2d;
+  --input-border: #404040;
+  --input-focus-border: #4a9eff;
+  
+  /* Code Block Colors */
+  --code-bg: #1e1e1e;
+  --code-text: #e0e0e0;
+  
+  /* Chat Colors */
+  --chat-bg: #252525;
+  --chat-user-bg: #4a9eff;
+  --chat-assistant-bg: #2d2d2d;
+  --chat-assistant-border: #404040;
+  
+  /* Example/Highlight Background */
+  --example-bg: #3a3a3a;
+  
+  /* Training Progress */
+  --training-progress-text: #b0b0b0;
+}

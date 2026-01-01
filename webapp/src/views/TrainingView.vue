@@ -332,14 +332,15 @@ const resetSession = () => {
   font-style: italic;
   margin: 10px 0;
   padding: 10px;
-  background: #f0f0f0;
+  background: var(--example-bg);
   border-radius: 4px;
+  color: var(--text-primary);
 }
 
 .waiting-message {
   margin-top: 20px;
   font-size: 18px;
-  color: #666;
+  color: var(--training-progress-text);
 }
 </style>
 

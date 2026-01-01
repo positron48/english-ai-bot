@@ -115,7 +115,7 @@ onMounted(() => {
   flex: 1;
   overflow-y: auto;
   padding: 20px;
-  background: #f9f9f9;
+  background: var(--chat-bg);
   border-radius: 4px;
   margin-bottom: 20px;
 }
@@ -137,14 +137,14 @@ onMounted(() => {
 }
 
 .message.user .message-content {
-  background: #007bff;
-  color: white;
+  background: var(--chat-user-bg);
+  color: var(--text-inverse);
 }
 
 .message.assistant .message-content {
-  background: white;
-  color: #333;
-  border: 1px solid #ddd;
+  background: var(--chat-assistant-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--chat-assistant-border);
 }
 
 .markdown-content {
@@ -189,7 +189,8 @@ onMounted(() => {
 }
 
 .markdown-content :deep(code) {
-  background: #f4f4f4;
+  background: var(--code-bg);
+  color: var(--code-text);
   padding: 2px 6px;
   border-radius: 3px;
   font-family: 'Courier New', monospace;
@@ -197,7 +198,8 @@ onMounted(() => {
 }
 
 .markdown-content :deep(pre) {
-  background: #f4f4f4;
+  background: var(--code-bg);
+  color: var(--code-text);
   padding: 10px;
   border-radius: 4px;
   overflow-x: auto;
@@ -218,7 +220,7 @@ onMounted(() => {
 }
 
 .markdown-content :deep(a) {
-  color: #007bff;
+  color: var(--color-primary);
   text-decoration: none;
 }
 
@@ -227,10 +229,10 @@ onMounted(() => {
 }
 
 .markdown-content :deep(blockquote) {
-  border-left: 3px solid #ddd;
+  border-left: 3px solid var(--border-primary);
   padding-left: 10px;
   margin: 10px 0;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .chat-input {

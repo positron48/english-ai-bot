@@ -154,8 +154,9 @@ const formatDate = (dateStr: string) => {
 .training-data {
   margin-top: 20px;
   padding: 15px;
-  background: #f5f5f5;
+  background: var(--bg-tertiary);
   border-radius: 4px;
+  color: var(--text-primary);
 }
 
 .training-data pre {

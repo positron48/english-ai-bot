@@ -43,7 +43,7 @@ onMounted(async () => {
 .stat-number {
   font-size: 48px;
   font-weight: bold;
-  color: #007bff;
+  color: var(--color-primary);
   margin: 20px 0;
 }
 
