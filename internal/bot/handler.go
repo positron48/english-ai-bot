@@ -430,11 +430,17 @@ func (h *Handler) handleMessage(ctx context.Context, message *tgbotapi.Message) 
 	var err error
 
 	// Check if it's a single word - use word service (DB + AI)
+	// Use internal user.ID instead of telegram_id to match web chat behavior
 	if h.wordService.IsSingleWord(text) {
 		h.logger.Debug("detected single word request",
 			zap.String("word", text),
 		)
-		response, err = h.wordService.GetWordDefinition(ctx, userID, text)
+		// Use internal user ID (not telegram_id) for consistency with web chat
+		internalUserID := userID // Default to telegram_id if user not found
+		if user != nil {
+			internalUserID = user.ID
+		}
+		response, err = h.wordService.GetWordDefinition(ctx, internalUserID, text)
 	} else {
 		// Regular message - use AI service directly
 		response, err = h.aiService.GenerateResponse(ctx, text)

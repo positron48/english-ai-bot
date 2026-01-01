@@ -19,10 +19,11 @@
       
       <div class="chat-input">
         <textarea
+          ref="textareaRef"
           v-model="inputMessage"
           placeholder="Type your message..."
           @keyup.enter.ctrl="sendMessage"
-          rows="3"
+          @input="autoResize"
         ></textarea>
         <button @click="sendMessage" class="btn btn-primary" :disabled="sending">
           {{ sending ? 'Sending...' : 'Send' }}
@@ -46,6 +47,7 @@ const messages = ref<Message[]>([])
 const inputMessage = ref('')
 const sending = ref(false)
 const messagesContainer = ref<HTMLElement | null>(null)
+const textareaRef = ref<HTMLTextAreaElement | null>(null)
 
 const scrollToBottom = async () => {
   await nextTick()
@@ -54,11 +56,29 @@ const scrollToBottom = async () => {
   }
 }
 
+const autoResize = () => {
+  if (textareaRef.value) {
+    // Reset height to calculate scrollHeight correctly
+    textareaRef.value.style.height = '40px'
+    const scrollHeight = textareaRef.value.scrollHeight
+    // Set height to scrollHeight, but not less than 40px (button height)
+    const newHeight = Math.max(40, scrollHeight)
+    textareaRef.value.style.height = `${newHeight}px`
+    // Hide scrollbar if content fits in max-height
+    if (newHeight <= 200) {
+      textareaRef.value.style.overflowY = 'hidden'
+    } else {
+      textareaRef.value.style.overflowY = 'auto'
+    }
+  }
+}
+
 const sendMessage = async () => {
   if (!inputMessage.value.trim() || sending.value) return
 
   const userMessage = inputMessage.value.trim()
   inputMessage.value = ''
+  autoResize() // Reset textarea height after clearing
   messages.value.push({ role: 'user', content: userMessage })
   await scrollToBottom()
 
@@ -101,10 +121,21 @@ const escapeHtml = (text: string): string => {
 
 onMounted(() => {
   scrollToBottom()
+  autoResize() // Set initial height
 })
 </script>
 
 <style scoped>
+.chat {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.chat h1 {
+  margin-bottom: 24px;
+}
+
 .chat-container {
   display: flex;
   flex-direction: column;
@@ -118,6 +149,23 @@ onMounted(() => {
   background: var(--chat-bg);
   border-radius: 4px;
   margin-bottom: 20px;
+}
+
+.chat-input {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.chat-input textarea {
+  flex: 1;
+  resize: vertical;
+  min-height: 60px;
+}
+
+.chat-input button {
+  align-self: flex-start;
+  margin-top: 0;
 }
 
 .message {
@@ -238,15 +286,26 @@ onMounted(() => {
 .chat-input {
   display: flex;
   gap: 10px;
+  align-items: center;
 }
 
 .chat-input textarea {
   flex: 1;
   resize: none;
+  height: 40px;
+  min-height: 40px;
+  max-height: 200px;
+  padding: 10px;
+  box-sizing: border-box;
+  line-height: 20px;
+  overflow-y: hidden;
 }
 
 .chat-input button {
-  align-self: flex-end;
+  height: 40px;
+  padding: 10px 20px;
+  box-sizing: border-box;
+  flex-shrink: 0;
 }
 </style>
 

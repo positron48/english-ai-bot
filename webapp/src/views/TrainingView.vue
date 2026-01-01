@@ -639,6 +639,15 @@ const resetSession = async () => {
 </script>
 
 <style scoped>
+.training {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.training h1 {
+  margin-bottom: 24px;
+}
 .training-progress {
   margin-bottom: 20px;
   text-align: center;

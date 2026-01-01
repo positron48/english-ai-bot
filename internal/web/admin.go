@@ -1,6 +1,7 @@
 package web
 
 import (
+	"database/sql"
 	"encoding/json"
 	"net/http"
 	"strings"
@@ -55,19 +56,71 @@ func (r *Router) handleAdmin(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	// Get circuit breaker status
-	cbRepo := repository.NewCircuitBreakerRepository(r.db, r.logger)
-	cbState, err := cbRepo.GetState()
-	if err != nil {
+	// Get circuit breaker status directly from DB (same approach as dashboard sessions)
+	// Query directly to get dates as strings, avoiding time.Time parsing issues
+	query := `SELECT id, is_open, failure_count, 
+			  COALESCE(last_failure_at, '') as last_failure_at,
+			  COALESCE(last_failure_message, '') as last_failure_message,
+			  COALESCE(last_reset_at, '') as last_reset_at
+			  FROM circuit_breaker_state WHERE id = 1`
+	
+	var cbID int64
+	var isOpen bool
+	var failureCount int
+	var lastFailureAt, lastFailureMessage, lastResetAt string
+	
+	err := r.db.QueryRow(query).Scan(&cbID, &isOpen, &failureCount, &lastFailureAt, &lastFailureMessage, &lastResetAt)
+	
+	var cbResponse map[string]interface{}
+	if err == sql.ErrNoRows {
+		// Initialize if not exists
+		initQuery := `INSERT OR IGNORE INTO circuit_breaker_state (id) VALUES (1)`
+		_, initErr := r.db.Exec(initQuery)
+		if initErr != nil {
+			r.logger.Error("failed to initialize circuit breaker state", zap.Error(initErr))
+		}
+		// Retry query after initialization
+		err = r.db.QueryRow(query).Scan(&cbID, &isOpen, &failureCount, &lastFailureAt, &lastFailureMessage, &lastResetAt)
+	}
+	
+	if err == nil {
+		state := "closed"
+		if isOpen {
+			state = "open"
+		}
+		cbResponse = map[string]interface{}{
+			"state":             state,
+			"is_open":           isOpen,
+			"failures":          failureCount,
+			"last_failure":       nil,
+			"last_failure_at":   nil,
+			"last_reset_at":     nil,
+		}
+		// Return dates as strings directly from SQL (same format as dashboard sessions)
+		if lastFailureAt != "" {
+			cbResponse["last_failure_at"] = lastFailureAt
+		}
+		if lastResetAt != "" {
+			cbResponse["last_reset_at"] = lastResetAt
+		}
+		if lastFailureMessage != "" {
+			cbResponse["last_failure"] = lastFailureMessage
+		}
+	} else {
 		r.logger.Error("failed to get circuit breaker state", zap.Error(err))
-		cbState = nil
+		// Default state if error
+		cbResponse = map[string]interface{}{
+			"state":   "closed",
+			"is_open": false,
+			"failures": 0,
+		}
 	}
 
 	// Return JSON response
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]interface{}{
-		"circuit_breaker": cbState,
+		"circuit_breaker": cbResponse,
 		"admin_id":        r.config.Admin.TelegramID,
 	})
 }

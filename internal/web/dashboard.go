@@ -11,7 +11,7 @@ import (
 
 // handleDashboard shows the user dashboard
 // @Summary      Получить данные дашборда
-// @Description  Возвращает количество карточек, готовых к повторению (due_count)
+// @Description  Возвращает расширенную статистику по карточкам и тренировкам
 // @Tags         Dashboard
 // @Accept       json
 // @Produce      application/json
@@ -52,6 +52,24 @@ func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 		newCount = 0
 	}
 
+	// Get learning cards count
+	learningQuery := `SELECT COUNT(*) FROM user_cards WHERE user_id = ? AND state = 'learning'`
+	var learningCount int
+	err = r.db.QueryRow(learningQuery, userID).Scan(&learningCount)
+	if err != nil {
+		r.logger.Error("failed to get learning count", zap.Error(err))
+		learningCount = 0
+	}
+
+	// Get review cards count
+	reviewQuery := `SELECT COUNT(*) FROM user_cards WHERE user_id = ? AND state = 'review'`
+	var reviewCount int
+	err = r.db.QueryRow(reviewQuery, userID).Scan(&reviewCount)
+	if err != nil {
+		r.logger.Error("failed to get review count", zap.Error(err))
+		reviewCount = 0
+	}
+
 	// Calculate available cards for training (same logic as training service)
 	// MaxCardsPerSession = 30, MaxNewPerSession = 5
 	maxCardsPerSession := 30
@@ -84,19 +102,119 @@ func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 		totalCards = 0
 	}
 
+	// Get today's session count and stats
+	today := now.Format("2006-01-02")
+	var todaySessions int
+	var todayCardsCompleted int
+	todayQuery := `SELECT COUNT(*), COALESCE(SUM(done_count), 0) 
+				   FROM training_sessions 
+				   WHERE user_id = ? AND DATE(started_at) = ?`
+	err = r.db.QueryRow(todayQuery, userID, today).Scan(&todaySessions, &todayCardsCompleted)
+	if err != nil {
+		r.logger.Error("failed to get today stats", zap.Error(err))
+		todaySessions = 0
+		todayCardsCompleted = 0
+	}
+
+	// Get week stats (last 7 days)
+	weekAgo := now.AddDate(0, 0, -7)
+	var weekSessions int
+	var weekCardsCompleted int
+	weekQuery := `SELECT COUNT(*), COALESCE(SUM(done_count), 0) 
+				  FROM training_sessions 
+				  WHERE user_id = ? AND started_at >= ? AND ended_at IS NOT NULL`
+	err = r.db.QueryRow(weekQuery, userID, weekAgo).Scan(&weekSessions, &weekCardsCompleted)
+	if err != nil {
+		r.logger.Error("failed to get week stats", zap.Error(err))
+		weekSessions = 0
+		weekCardsCompleted = 0
+	}
+
+	// Get accuracy (last 30 days)
+	monthAgo := now.AddDate(0, 0, -30)
+	var totalReviews int
+	var correctReviews int
+	accuracyQuery := `SELECT 
+		COUNT(*) as total,
+		SUM(CASE WHEN is_correct = 1 THEN 1 ELSE 0 END) as correct
+		FROM review_events 
+		WHERE user_id = ? AND answered_at >= ? AND answered_at IS NOT NULL`
+	err = r.db.QueryRow(accuracyQuery, userID, monthAgo).Scan(&totalReviews, &correctReviews)
+	if err != nil {
+		r.logger.Error("failed to get accuracy", zap.Error(err))
+		totalReviews = 0
+		correctReviews = 0
+	}
+	
+	var accuracyPercent float64
+	if totalReviews > 0 {
+		accuracyPercent = float64(correctReviews) / float64(totalReviews) * 100
+	}
+
+	// Get last 5 sessions (only completed sessions with at least 1 card)
+	lastSessionsQuery := `SELECT id, started_at, ended_at, done_count, source
+						  FROM training_sessions 
+						  WHERE user_id = ? AND ended_at IS NOT NULL AND done_count > 0
+						  ORDER BY started_at DESC 
+						  LIMIT 5`
+	rows, err := r.db.Query(lastSessionsQuery, userID)
+	var lastSessions []map[string]interface{}
+	if err == nil {
+		defer rows.Close()
+		for rows.Next() {
+			var sessionID int64
+			var startedAt, endedAt string
+			var doneCount int
+			var source string
+			
+			if err := rows.Scan(&sessionID, &startedAt, &endedAt, &doneCount, &source); err == nil {
+				// Get accuracy for this session
+				var sessionTotal, sessionCorrect int
+				sessionStatsQuery := `SELECT 
+					COUNT(*) as total,
+					SUM(CASE WHEN is_correct = 1 THEN 1 ELSE 0 END) as correct
+					FROM review_events 
+					WHERE session_id = ? AND answered_at IS NOT NULL`
+				r.db.QueryRow(sessionStatsQuery, sessionID).Scan(&sessionTotal, &sessionCorrect)
+				
+				var sessionAccuracy float64
+				if sessionTotal > 0 {
+					sessionAccuracy = float64(sessionCorrect) / float64(sessionTotal) * 100
+				}
+				
+				lastSessions = append(lastSessions, map[string]interface{}{
+					"id":       sessionID,
+					"date":     startedAt,
+					"completed": doneCount,
+					"accuracy":  sessionAccuracy,
+					"source":    source,
+				})
+			}
+		}
+	}
+
 	// Return JSON response
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]interface{}{
-		"due_count":            dueCount,
-		"total_cards":          totalCards,
+		"due_count":             dueCount,
+		"new_count":             newCount,
+		"learning_count":        learningCount,
+		"review_count":          reviewCount,
+		"total_cards":           totalCards,
 		"available_for_training": availableForTraining,
+		"today_sessions":        todaySessions,
+		"today_cards_completed": todayCardsCompleted,
+		"week_sessions":         weekSessions,
+		"week_cards_completed":  weekCardsCompleted,
+		"accuracy_percent":      accuracyPercent,
+		"last_sessions":         lastSessions,
 	})
 }
 
 // handleChat handles AI chat requests
 // @Summary      Отправить сообщение в AI чат
-// @Description  Отправляет сообщение в AI чат и получает ответ от AI помощника для изучения языка
+// @Description  Отправляет сообщение в AI чат и получает ответ от AI помощника для изучения языка. Если сообщение - одно слово, оно будет сохранено в БД и привязано к пользователю (как в телеграм-боте).
 // @Tags         Chat
 // @Accept       application/x-www-form-urlencoded
 // @Produce      application/json
@@ -130,23 +248,50 @@ func (r *Router) handleChat(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	// Get AI service - need to properly type it
-	// For now, access via interface assertion
-	type AIService interface {
-		GenerateResponse(ctx context.Context, text string) (string, error)
+	ctx := req.Context()
+	var response string
+	var err error
+
+	// Get WordService - need to properly type it
+	type WordService interface {
+		IsSingleWord(text string) bool
+		GetWordDefinition(ctx context.Context, userID int64, word string) (string, error)
 	}
-	aiService, ok := r.aiService.(AIService)
+	wordService, ok := r.wordService.(WordService)
 	if !ok {
-		r.logger.Error("AI service does not implement GenerateResponse")
+		r.logger.Error("Word service does not implement required interface")
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 
-	// Generate response
-	ctx := req.Context()
-	response, err := aiService.GenerateResponse(ctx, message)
+	// Check if it's a single word - use word service (DB + AI, saves to DB)
+	if wordService.IsSingleWord(message) {
+		r.logger.Info("detected single word in chat",
+			zap.String("word", message),
+			zap.Int64("user_id", userID),
+		)
+		// Use word service which will:
+		// 1. Check if word exists in DB
+		// 2. If not, request from AI
+		// 3. Save word to DB
+		// 4. Add to word_request_history for this user
+		response, err = wordService.GetWordDefinition(ctx, userID, message)
+	} else {
+		// Regular message - use AI service directly (no DB saving)
+		type AIService interface {
+			GenerateResponse(ctx context.Context, text string) (string, error)
+		}
+		aiService, ok := r.aiService.(AIService)
+		if !ok {
+			r.logger.Error("AI service does not implement GenerateResponse")
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
+		}
+		response, err = aiService.GenerateResponse(ctx, message)
+	}
+
 	if err != nil {
-		r.logger.Error("failed to generate AI response", zap.Error(err))
+		r.logger.Error("failed to generate response", zap.Error(err))
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(map[string]interface{}{

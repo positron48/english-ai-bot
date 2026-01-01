@@ -268,24 +268,51 @@ func (w *TrainingWorker) processCard(ctx context.Context, wordCard *models.WordC
 
 // getUsersForWord gets users who requested this word
 func (w *TrainingWorker) getUsersForWord(word string) ([]*models.User, error) {
-	// Get telegram user IDs who requested this word
-	telegramIDs, err := w.wordRepo.GetUserIDsByWord(word)
+	// Get user IDs who requested this word from word_request_history
+	// Note: user_id in word_request_history can be either:
+	// - Internal user_id (from web chat via JWT)
+	// - Telegram_id (from telegram bot - legacy)
+	userIDs, err := w.wordRepo.GetUserIDsByWord(word)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get user IDs: %w", err)
 	}
 
-	// Get or create users
-	users := make([]*models.User, 0, len(telegramIDs))
-	for _, telegramID := range telegramIDs {
-		user, err := w.userRepo.GetOrCreateUser(telegramID)
-		if err != nil {
-			w.logger.Warn("failed to get/create user",
-				zap.Int64("telegram_id", telegramID),
-				zap.Error(err),
-			)
+	// Get users by internal ID first, then fallback to telegram_id for backward compatibility
+	users := make([]*models.User, 0, len(userIDs))
+	seenUserIDs := make(map[int64]bool) // Track already added users to avoid duplicates
+	
+	for _, id := range userIDs {
+		// Skip if we already added this user
+		if seenUserIDs[id] {
 			continue
 		}
-		users = append(users, user)
+		
+		// First, try to get user by internal ID (for web chat users)
+		user, err := w.userRepo.GetUserByID(id)
+		if err != nil {
+			w.logger.Warn("failed to get user by ID",
+				zap.Int64("user_id", id),
+				zap.Error(err),
+			)
+			// Fallback: try as telegram_id (for legacy telegram bot entries)
+			user, err = w.userRepo.GetOrCreateUser(id)
+			if err != nil {
+				w.logger.Warn("failed to get/create user by telegram_id",
+					zap.Int64("id", id),
+					zap.Error(err),
+				)
+				continue
+			}
+		}
+		
+		if user != nil {
+			users = append(users, user)
+			seenUserIDs[user.ID] = true
+			// Also mark telegram_id as seen to avoid duplicates
+			if user.TelegramID > 0 {
+				seenUserIDs[user.TelegramID] = true
+			}
+		}
 	}
 
 	return users, nil
