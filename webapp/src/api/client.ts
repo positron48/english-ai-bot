@@ -211,6 +211,9 @@ class ApiClient {
     
     try {
       console.log('[API Client] Sending request to /auth/telegram')
+      console.log('[API Client] Request URL:', `${API_BASE}/auth/telegram`)
+      console.log('[API Client] initData preview:', initData.substring(0, 100) + '...')
+      
       const response = await this.requestFormData<AuthResponse>('/auth/telegram', formData)
       console.log('[API Client] Authentication successful')
       return response
@@ -219,8 +222,20 @@ class ApiClient {
       console.error('[API Client] Error details:', {
         message: error.message,
         status: error.status,
-        stack: error.stack
+        stack: error.stack,
+        name: error.name
       })
+      
+      // Check for network/CORS errors
+      if (error.message?.includes('Failed to fetch') || 
+          error.message?.includes('NetworkError') ||
+          error.name === 'TypeError') {
+        console.error('[API Client] Network/CORS error - request may be blocked')
+        const networkError = new Error('Ошибка сети: не удалось отправить запрос. Возможно, проблема с CORS или сервер недоступен.')
+        ;(networkError as any).status = 0
+        ;(networkError as any).isNetworkError = true
+        throw networkError
+      }
       
       // Log more details if available
       if (error.response) {

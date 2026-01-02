@@ -101,9 +101,20 @@ export function useAuth() {
       if (error.message) {
         console.error('[Telegram Auth] Error message:', error.message)
       }
+      if (error.status) {
+        console.error('[Telegram Auth] Response status:', error.status)
+      }
       if (error.response) {
         console.error('[Telegram Auth] Response status:', error.response?.status)
         console.error('[Telegram Auth] Response text:', error.response?.statusText)
+      }
+      
+      // Check for network errors
+      if (error.message?.includes('Failed to fetch') || error.message?.includes('NetworkError')) {
+        console.error('[Telegram Auth] Network error - request did not reach server')
+        const networkError = new Error('Ошибка сети: запрос не дошел до сервера')
+        ;(networkError as any).status = 0
+        throw networkError
       }
       
       // Re-throw the error so it can be caught and displayed in LoginView

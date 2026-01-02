@@ -1,5 +1,13 @@
 <template>
   <div id="app">
+    <!-- Auth Error Message -->
+    <div v-if="authError" class="auth-error-banner">
+      <div class="auth-error-content">
+        <strong>⚠️ Ошибка авторизации:</strong> {{ authError }}
+        <button @click="dismissAuthError" class="auth-error-close">×</button>
+      </div>
+    </div>
+    
     <!-- Debug info in development -->
     <div v-if="showDebugInfo" style="position: fixed; bottom: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white; padding: 10px; border-radius: 5px; font-size: 11px; z-index: 10000; max-width: 300px;">
       <strong>App Debug:</strong><br>
@@ -47,6 +55,7 @@ const { theme, toggleTheme } = useTheme()
 
 const mounted = ref(false)
 const showDebugInfo = ref(false)
+const authError = ref<string | null>(null)
 
 // Check if we're in Telegram Mini App and show debug
 onMounted(() => {
@@ -60,12 +69,43 @@ onMounted(() => {
     isAuthenticated: isAuthenticated.value,
     currentRoute: route.path
   })
+  
+  // Check auth status after a delay
+  setTimeout(() => {
+    if (!isAuthenticated.value && route.path !== '/login') {
+      // If not authenticated and not on login page, show error
+      const tg = (window as any).Telegram?.WebApp
+      if (tg) {
+        authError.value = 'Авторизация через Telegram не удалась. Пожалуйста, используйте OTP вход.'
+      }
+    }
+  }, 3000)
 })
 
 // Watch route changes
 watch(() => route.path, (newPath) => {
   console.log('[App] Route changed to:', newPath)
+  // Clear error when navigating to login
+  if (newPath === '/login') {
+    authError.value = null
+  }
 })
+
+// Watch auth status
+watch(() => isAuthenticated.value, (newValue) => {
+  if (newValue) {
+    authError.value = null
+  }
+})
+
+// Global error handler for auth errors
+;(window as any).__setAuthError = (error: string) => {
+  authError.value = error
+}
+
+const dismissAuthError = () => {
+  authError.value = null
+}
 
 const logout = () => {
   authLogout()
@@ -116,6 +156,43 @@ const logout = () => {
 .theme-toggle:hover {
   background-color: var(--bg-hover);
   border-color: var(--border-secondary);
+}
+
+.auth-error-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #ff4444;
+  color: white;
+  padding: 15px 20px;
+  z-index: 10001;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.auth-error-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+}
+
+.auth-error-close {
+  background: rgba(255,255,255,0.2);
+  border: none;
+  color: white;
+  font-size: 24px;
+  line-height: 1;
+  padding: 0 10px;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: background 0.2s;
+}
+
+.auth-error-close:hover {
+  background: rgba(255,255,255,0.3);
 }
 </style>
 

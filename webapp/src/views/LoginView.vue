@@ -159,13 +159,40 @@ onMounted(async () => {
           }, 500)
         } else {
           debugInfo.authStatus = 'Telegram auth failed, showing login form'
-          debugInfo.error = 'Telegram authentication failed. Please use OTP login.'
+          const errorMsg = 'Авторизация через Telegram не удалась. Пожалуйста, используйте OTP вход.'
+          debugInfo.error = errorMsg
+          error.value = errorMsg
+          
+          // Show global error
+          if ((window as any).__setAuthError) {
+            ;(window as any).__setAuthError(errorMsg)
+          }
+          
           console.warn('[LoginView] Telegram auth failed')
         }
       } catch (err: any) {
         debugInfo.authStatus = 'Error during Telegram auth'
-        debugInfo.error = err.message || 'Unknown error'
-        error.value = err.message || 'Telegram authentication failed'
+        let errorMsg = err.message || 'Неизвестная ошибка при авторизации'
+        
+        // Check for network errors
+        if (err.message?.includes('Failed to fetch') || err.message?.includes('NetworkError')) {
+          errorMsg = 'Ошибка сети: не удалось подключиться к серверу. Проверьте подключение к интернету.'
+        } else if (err.status === 401) {
+          errorMsg = 'Ошибка авторизации: неверные данные Telegram. Попробуйте использовать OTP вход.'
+        } else if (err.status === 400) {
+          errorMsg = 'Ошибка запроса: неверный формат данных. Попробуйте использовать OTP вход.'
+        } else if (err.status >= 500) {
+          errorMsg = 'Ошибка сервера. Попробуйте позже или используйте OTP вход.'
+        }
+        
+        debugInfo.error = errorMsg
+        error.value = errorMsg
+        
+        // Show global error
+        if ((window as any).__setAuthError) {
+          ;(window as any).__setAuthError(errorMsg)
+        }
+        
         console.error('[LoginView] Telegram auth error:', err)
       }
     }
