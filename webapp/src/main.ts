@@ -4,25 +4,54 @@ import router from './router'
 import './styles/theme.css'
 import './style.css'
 
-// Clean up Telegram URL parameters before router initialization
-// Telegram sometimes adds tgWebAppData to URL which can break hash routing
-if (window.location.search.includes('tgWebAppData') || window.location.hash.includes('tgWebAppData')) {
-  const url = new URL(window.location.href)
-  const tgWebAppData = url.searchParams.get('tgWebAppData') || url.hash.match(/tgWebAppData=([^&]+)/)?.[1]
+// CRITICAL: Clean up Telegram URL parameters BEFORE router initialization
+// Telegram adds tgWebAppData to URL which breaks hash routing
+console.log('[App] Initial URL:', window.location.href)
+console.log('[App] Initial hash:', window.location.hash)
+console.log('[App] Initial search:', window.location.search)
+
+// Clean hash from tgWebAppData
+let cleanedHash = window.location.hash
+if (cleanedHash.includes('tgWebAppData')) {
+  console.log('[App] Found tgWebAppData in hash, cleaning...')
   
-  if (tgWebAppData) {
-    // Store it for later use
-    ;(window as any).__tgWebAppData = decodeURIComponent(tgWebAppData)
-    console.log('[App] Found tgWebAppData in URL, stored for auth')
-    
-    // Clean URL to prevent routing issues
-    url.searchParams.delete('tgWebAppData')
-    const cleanHash = url.hash.replace(/[?&]tgWebAppData=[^&]*/g, '')
-    url.hash = cleanHash || '#/'
-    
-    // Replace URL without reload
-    window.history.replaceState({}, '', url.toString())
+  // Extract tgWebAppData from hash
+  const tgWebAppDataMatch = cleanedHash.match(/[?&]tgWebAppData=([^&]+)/)
+  if (tgWebAppDataMatch) {
+    const tgWebAppData = decodeURIComponent(tgWebAppDataMatch[1])
+    ;(window as any).__tgWebAppData = tgWebAppData
+    console.log('[App] Extracted tgWebAppData from hash, length:', tgWebAppData.length)
   }
+  
+  // Remove tgWebAppData from hash
+  cleanedHash = cleanedHash.replace(/[?&]tgWebAppData=[^&]*/g, '')
+  // If hash is empty or only contains #, set to #/
+  if (!cleanedHash || cleanedHash === '#' || cleanedHash === '#/') {
+    cleanedHash = '#/'
+  }
+  
+  // Clean search params too
+  const url = new URL(window.location.href)
+  url.searchParams.delete('tgWebAppData')
+  
+  // Replace URL
+  const newUrl = url.origin + url.pathname + (url.search || '') + cleanedHash
+  window.history.replaceState({}, '', newUrl)
+  console.log('[App] Cleaned URL:', window.location.href)
+  console.log('[App] Cleaned hash:', window.location.hash)
+}
+
+// Also clean search params
+if (window.location.search.includes('tgWebAppData')) {
+  const url = new URL(window.location.href)
+  const tgWebAppData = url.searchParams.get('tgWebAppData')
+  if (tgWebAppData) {
+    ;(window as any).__tgWebAppData = decodeURIComponent(tgWebAppData)
+    console.log('[App] Found tgWebAppData in search params, stored')
+  }
+  url.searchParams.delete('tgWebAppData')
+  window.history.replaceState({}, '', url.toString())
+  console.log('[App] Cleaned search params')
 }
 
 // Check if Telegram WebApp script is loaded

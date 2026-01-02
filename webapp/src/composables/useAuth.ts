@@ -65,9 +65,12 @@ export function useAuth() {
       console.log('[Telegram Auth] Got initData from Telegram.WebApp.initData')
       console.log('[Telegram Auth] initData length:', initData.length)
       console.log('[Telegram Auth] initData preview (first 100 chars):', initData.substring(0, 100))
+      console.log('[Telegram Auth] Full initData:', initData)
       
       // Try to authenticate - send initData as-is (it's already URL-encoded by Telegram)
+      console.log('[Telegram Auth] Calling apiClient.authTelegram...')
       const response = await apiClient.authTelegram(initData)
+      console.log('[Telegram Auth] Received response:', response)
       
       if (response && response.access_token && response.refresh_token) {
         console.log('[Telegram Auth] Authentication successful')

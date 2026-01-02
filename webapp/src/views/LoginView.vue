@@ -144,8 +144,11 @@ onMounted(async () => {
     } else {
       debugInfo.authStatus = 'Attempting Telegram auth...'
       console.log('[LoginView] Attempting Telegram authentication...')
+      console.log('[LoginView] initData from Telegram.WebApp.initData:', tg.initData)
+      console.log('[LoginView] initData length:', tg.initData.length)
       
       try {
+        console.log('[LoginView] Calling tryTelegramAuth()...')
         const success = await tryTelegramAuth()
         console.log('[LoginView] Telegram auth result:', success)
         
