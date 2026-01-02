@@ -105,10 +105,6 @@ func (m *AuthMiddleware) RequireAuth(next http.HandlerFunc) http.HandlerFunc {
 
 // ValidateTelegramInitData validates Telegram WebApp initData
 func (m *AuthMiddleware) ValidateTelegramInitData(initData string) (int64, error) {
-	m.logger.Debug("validating initData", 
-		zap.String("initData_length", fmt.Sprintf("%d", len(initData))),
-		zap.String("initData_preview", maskInitDataForLog(initData)))
-	
 	// Parse initData (format: key1=value1&key2=value2&hash=...)
 	params := make(map[string]string)
 	parts := strings.Split(initData, "&")
@@ -170,14 +166,8 @@ func (m *AuthMiddleware) ValidateTelegramInitData(initData string) (int64, error
 	expectedHash := hex.EncodeToString(calculatedHash.Sum(nil))
 
 	if hash != expectedHash {
-		m.logger.Warn("hash validation failed",
-			zap.String("received_hash", hash),
-			zap.String("expected_hash", expectedHash),
-			zap.String("data_check_string", dataCheckString))
 		return 0, fmt.Errorf("invalid hash")
 	}
-	
-	m.logger.Debug("hash validation successful")
 
 	// Extract user ID
 	userStr, ok := params["user"]
@@ -194,17 +184,6 @@ func (m *AuthMiddleware) ValidateTelegramInitData(initData string) (int64, error
 	}
 
 	return userData.ID, nil
-}
-
-// maskInitDataForLog masks the initData for logging
-func maskInitDataForLog(initData string) string {
-	if len(initData) == 0 {
-		return ""
-	}
-	if len(initData) <= 30 {
-		return strings.Repeat("*", len(initData))
-	}
-	return initData[:20] + "..." + initData[len(initData)-10:]
 }
 
 // GenerateJWTToken generates an access JWT token for a user

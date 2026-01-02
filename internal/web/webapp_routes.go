@@ -64,11 +64,8 @@ func (r *Router) setupWebappRoutes() {
 			return
 		}
 
-		// Inject console.log interceptor for Telegram Mini App debugging
-		indexHTML := injectConsoleLogger(string(indexData))
-		
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		w.Write([]byte(indexHTML))
+		w.Write(indexData)
 	})
 
 	// Root /app path - serve index.html
@@ -85,161 +82,9 @@ func (r *Router) setupWebappRoutes() {
 			return
 		}
 
-		// Inject console.log interceptor for Telegram Mini App debugging
-		indexHTML := injectConsoleLogger(string(indexData))
-		
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		w.Write([]byte(indexHTML))
+		w.Write(indexData)
 	})
-}
-
-// injectConsoleLogger injects console.log interceptor into index.html for Telegram Mini App debugging
-func injectConsoleLogger(html string) string {
-	consoleLoggerScript := `
-    <style>
-      #console-logger {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: #1e1e1e;
-        color: #d4d4d4;
-        font-family: 'Courier New', monospace;
-        font-size: 11px;
-        max-height: 400px;
-        overflow-y: auto;
-        z-index: 99999;
-        border-top: 2px solid #007acc;
-        padding: 10px;
-        box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
-      }
-      #console-logger-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 10px;
-        padding-bottom: 5px;
-        border-bottom: 1px solid #444;
-      }
-      #console-logger-header strong {
-        color: #4ec9b0;
-      }
-      #console-logger button {
-        padding: 5px 10px;
-        background: #007acc;
-        color: white;
-        border: none;
-        cursor: pointer;
-        border-radius: 3px;
-        font-size: 11px;
-      }
-      #console-logger button:hover {
-        background: #005a9e;
-      }
-      .log-entry {
-        margin: 2px 0;
-        padding: 2px 5px;
-        word-break: break-all;
-      }
-      .log-entry.log { color: #d4d4d4; }
-      .log-entry.info { color: #4ec9b0; }
-      .log-entry.warn { color: #dcdcaa; background: rgba(220, 220, 170, 0.1); }
-      .log-entry.error { color: #f48771; background: rgba(244, 135, 113, 0.1); }
-      .log-time {
-        color: #808080;
-        margin-right: 8px;
-      }
-    </style>
-    <div id="console-logger">
-      <div id="console-logger-header">
-        <strong>📋 Console Logs</strong>
-        <button onclick="document.getElementById('console-logger').style.display='none'">Hide</button>
-      </div>
-      <div id="console-logger-content"></div>
-    </div>
-    <script>
-      (function() {
-        const loggerDiv = document.getElementById('console-logger-content');
-        const maxLogs = 500;
-        let logCount = 0;
-        
-        function formatLog(args) {
-          return Array.from(args).map(arg => {
-            if (typeof arg === 'object') {
-              try {
-                return JSON.stringify(arg, null, 2);
-              } catch (e) {
-                return String(arg);
-              }
-            }
-            return String(arg);
-          }).join(' ');
-        }
-        
-        function addLog(level, args) {
-          const time = new Date().toISOString().split('T')[1].split('.')[0];
-          const logEntry = document.createElement('div');
-          logEntry.className = 'log-entry ' + level;
-          logEntry.innerHTML = '<span class="log-time">[' + time + ']</span>' + 
-            '<span class="log-level">[' + level.toUpperCase() + ']</span> ' + 
-            formatLog(args);
-          loggerDiv.appendChild(logEntry);
-          logCount++;
-          
-          // Keep only last maxLogs entries
-          if (logCount > maxLogs) {
-            loggerDiv.removeChild(loggerDiv.firstChild);
-            logCount--;
-          }
-          
-          // Auto-scroll to bottom
-          loggerDiv.scrollTop = loggerDiv.scrollHeight;
-        }
-        
-        // Intercept console methods
-        const originalLog = console.log;
-        const originalInfo = console.info;
-        const originalWarn = console.warn;
-        const originalError = console.error;
-        
-        console.log = function(...args) {
-          originalLog.apply(console, args);
-          addLog('log', args);
-        };
-        
-        console.info = function(...args) {
-          originalInfo.apply(console, args);
-          addLog('info', args);
-        };
-        
-        console.warn = function(...args) {
-          originalWarn.apply(console, args);
-          addLog('warn', args);
-        };
-        
-        console.error = function(...args) {
-          originalError.apply(console, args);
-          addLog('error', args);
-        };
-        
-        // Log initialization
-        console.log('[Console Logger] Initialized - all console.log calls will be displayed here');
-      })();
-    </script>
-`
-	
-	// Insert console logger before closing </body> tag
-	if idx := strings.LastIndex(html, "</body>"); idx > 0 {
-		return html[:idx] + consoleLoggerScript + "\n" + html[idx:]
-	}
-	
-	// If no </body> tag, insert before closing </html>
-	if idx := strings.LastIndex(html, "</html>"); idx > 0 {
-		return html[:idx] + consoleLoggerScript + "\n" + html[idx:]
-	}
-	
-	// If no closing tags, append at the end
-	return html + consoleLoggerScript
 }
 
 // isAPIEndpoint checks if the path is a known API endpoint

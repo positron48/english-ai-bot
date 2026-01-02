@@ -151,13 +151,6 @@ class ApiClient {
     }
 
     const fullUrl = `${API_BASE}${url}`
-    console.log('[API Client] requestFormData:', {
-      url: fullUrl,
-      method: 'POST',
-      headers,
-      bodyLength: params.toString().length,
-      bodyPreview: params.toString().substring(0, 100)
-    })
 
     let response: Response
     try {
@@ -166,19 +159,7 @@ class ApiClient {
         headers,
         body: params.toString(),
       })
-      console.log('[API Client] Response received:', {
-        status: response.status,
-        statusText: response.statusText,
-        ok: response.ok,
-        headers: Object.fromEntries(response.headers.entries())
-      })
     } catch (fetchError: any) {
-      console.error('[API Client] Fetch error:', fetchError)
-      console.error('[API Client] Error details:', {
-        name: fetchError.name,
-        message: fetchError.message,
-        stack: fetchError.stack
-      })
       throw fetchError
     }
 
@@ -197,88 +178,47 @@ class ApiClient {
         }
       }
 
-      if (!response.ok) {
-        const errorText = await response.text()
-        console.error('[API Client] Error response:', {
-          status: response.status,
-          statusText: response.statusText,
-          body: errorText
-        })
-        
-        let errorMessage = `API error: ${response.status} ${errorText}`
-        
-        // Try to parse JSON error if possible
-        try {
-          const errorJson = JSON.parse(errorText)
-          if (errorJson.message) {
-            errorMessage = errorJson.message
-          } else if (errorJson.error) {
-            errorMessage = errorJson.error
-          }
-        } catch {
-          // Not JSON, use text as-is
+    if (!response.ok) {
+      const errorText = await response.text()
+      let errorMessage = `API error: ${response.status} ${errorText}`
+      
+      // Try to parse JSON error if possible
+      try {
+        const errorJson = JSON.parse(errorText)
+        if (errorJson.message) {
+          errorMessage = errorJson.message
+        } else if (errorJson.error) {
+          errorMessage = errorJson.error
         }
-        
-        const error = new Error(errorMessage)
-        ;(error as any).status = response.status
-        ;(error as any).response = response
-        throw error
+      } catch {
+        // Not JSON, use text as-is
       }
-
-      const jsonData = await response.json()
-      console.log('[API Client] Response JSON:', jsonData)
-      return jsonData
+      
+      const error = new Error(errorMessage)
+      ;(error as any).status = response.status
+      ;(error as any).response = response
+      throw error
     }
 
+    return response.json()
+  }
+
   async authTelegram(initData: string): Promise<AuthResponse> {
-    console.log('[API Client] authTelegram called, initData length:', initData.length)
-    console.log('[API Client] initData preview:', initData.substring(0, 50) + '...')
-    
-    // Telegram WebApp provides initData as a URL-encoded string
-    // We need to send it as-is without double encoding
-    // URLSearchParams will handle encoding properly, but we need to ensure
-    // that initData is sent correctly
-    
-    // Create form data - URLSearchParams will handle encoding
     const formData = new FormData()
     formData.append('initData', initData)
     
     try {
-      console.log('[API Client] Sending request to /auth/telegram')
-      console.log('[API Client] Request URL:', `${API_BASE}/auth/telegram`)
-      console.log('[API Client] initData preview:', initData.substring(0, 100) + '...')
-      
       const response = await this.requestFormData<AuthResponse>('/auth/telegram', formData)
-      console.log('[API Client] Authentication successful')
       return response
     } catch (error: any) {
-      console.error('[API Client] authTelegram error:', error)
-      console.error('[API Client] Error details:', {
-        message: error.message,
-        status: error.status,
-        stack: error.stack,
-        name: error.name
-      })
-      
       // Check for network/CORS errors
       if (error.message?.includes('Failed to fetch') || 
           error.message?.includes('NetworkError') ||
           error.name === 'TypeError') {
-        console.error('[API Client] Network/CORS error - request may be blocked')
         const networkError = new Error('Ошибка сети: не удалось отправить запрос. Возможно, проблема с CORS или сервер недоступен.')
         ;(networkError as any).status = 0
         ;(networkError as any).isNetworkError = true
         throw networkError
-      }
-      
-      // Log more details if available
-      if (error.response) {
-        try {
-          const errorText = await error.response.text()
-          console.error('[API Client] Error response:', errorText)
-        } catch {
-          // Ignore
-        }
       }
       
       throw error

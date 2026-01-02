@@ -1,44 +1,7 @@
 <template>
   <div class="login-container">
-    <!-- Debug Panel (visible in Telegram Mini App) -->
-    <div v-if="showDebug" class="debug-panel">
-      <h3>Debug Info</h3>
-      <div class="debug-item">
-        <strong>Telegram WebApp:</strong> 
-        <span :class="debugInfo.telegramLoaded ? 'success' : 'error'">
-          {{ debugInfo.telegramLoaded ? 'Loaded' : 'Not loaded' }}
-        </span>
-      </div>
-      <div class="debug-item">
-        <strong>initData:</strong> 
-        <span :class="debugInfo.hasInitData ? 'success' : 'error'">
-          {{ debugInfo.hasInitData ? 'Available' : 'Not available' }}
-        </span>
-      </div>
-      <div class="debug-item" v-if="debugInfo.initDataLength > 0">
-        <strong>initData length:</strong> {{ debugInfo.initDataLength }}
-      </div>
-      <div class="debug-item">
-        <strong>Auth Status:</strong> {{ debugInfo.authStatus }}
-      </div>
-      <div class="debug-item" v-if="debugInfo.error">
-        <strong>Error:</strong> <span class="error">{{ debugInfo.error }}</span>
-      </div>
-      <button @click="showDebug = false" class="btn btn-secondary" style="margin-top: 10px;">Hide Debug</button>
-    </div>
-    
     <div class="card" style="max-width: 400px; margin: 50px auto;">
       <h1>English Bot Login</h1>
-      
-      <!-- Show debug button if in Telegram Mini App -->
-      <button 
-        v-if="isTelegramMiniApp" 
-        @click="showDebug = !showDebug" 
-        class="btn btn-secondary"
-        style="margin-bottom: 10px; font-size: 12px; padding: 5px 10px;"
-      >
-        {{ showDebug ? 'Hide' : 'Show' }} Debug
-      </button>
       
       <div v-if="step === 'username'" class="login-step">
         <p>Enter your Telegram username or ID:</p>
@@ -74,7 +37,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, reactive } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuth } from '../composables/useAuth'
 import { apiClient } from '../api/client'
@@ -88,122 +51,21 @@ const otpCode = ref('')
 const userId = ref('')
 const loading = ref(false)
 const error = ref('')
-const showDebug = ref(false)
-
-// Check if we're in Telegram Mini App
-const isTelegramMiniApp = ref(false)
-
-// Debug info
-const debugInfo = reactive({
-  telegramLoaded: false,
-  hasInitData: false,
-  initDataLength: 0,
-  authStatus: 'Initializing...',
-  error: ''
-})
 
 onMounted(async () => {
-  console.log('[LoginView] Component mounted')
-  
-  // Check if Telegram WebApp is available
+  // Check if Telegram WebApp is available and try to authenticate
   const tg = (window as any).Telegram?.WebApp
-  isTelegramMiniApp.value = !!tg
-  
-  console.log('[LoginView] Telegram check:', {
-    hasTelegram: !!tg,
-    hasInitData: !!(tg?.initData),
-    initDataLength: tg?.initData?.length || 0
-  })
-  
-  // Check for initData in multiple sources
-  const urlParams = new URLSearchParams(window.location.search)
-  const tgWebAppData = urlParams.get('tgWebAppData')
-  const hasInitDataInURL = !!tgWebAppData
-  const hasInitDataInObject = !!(tg?.initData)
-  const hasInitDataInStorage = !!(window as any).__tgWebAppData
-  
-  if (tg) {
-    debugInfo.telegramLoaded = true
-    debugInfo.hasInitData = hasInitDataInObject || hasInitDataInURL || hasInitDataInStorage
-    debugInfo.initDataLength = tg.initData ? tg.initData.length : (tgWebAppData ? tgWebAppData.length : 0)
-    
-    // Show debug panel automatically in Telegram Mini App
-    showDebug.value = true
-    
-    console.log('[LoginView] initData sources:', {
-      fromObject: hasInitDataInObject,
-      fromURL: hasInitDataInURL,
-      fromStorage: hasInitDataInStorage
-    })
-    
-    // Show debug panel automatically in Telegram Mini App if there's an issue
-    if (!debugInfo.hasInitData) {
-      debugInfo.authStatus = 'No initData available from any source'
-      debugInfo.error = 'Telegram WebApp is loaded but initData is missing from all sources'
-      console.warn('[LoginView] No initData available from any source')
-    } else {
-      debugInfo.authStatus = 'Attempting Telegram auth...'
-      console.log('[LoginView] Attempting Telegram authentication...')
-      console.log('[LoginView] initData from Telegram.WebApp.initData:', tg.initData)
-      console.log('[LoginView] initData length:', tg.initData.length)
-      
-      try {
-        console.log('[LoginView] Calling tryTelegramAuth()...')
-        const success = await tryTelegramAuth()
-        console.log('[LoginView] Telegram auth result:', success)
-        
-        if (success) {
-          debugInfo.authStatus = 'Authentication successful! Redirecting...'
-          console.log('[LoginView] Auth successful, redirecting to /dashboard')
-          
-          // Small delay to show success message
-          setTimeout(() => {
-            router.push('/dashboard')
-          }, 500)
-        } else {
-          debugInfo.authStatus = 'Telegram auth failed, showing login form'
-          const errorMsg = 'Авторизация через Telegram не удалась. Пожалуйста, используйте OTP вход.'
-          debugInfo.error = errorMsg
-          error.value = errorMsg
-          
-          // Show global error
-          if ((window as any).__setAuthError) {
-            ;(window as any).__setAuthError(errorMsg)
-          }
-          
-          console.warn('[LoginView] Telegram auth failed')
-        }
-      } catch (err: any) {
-        debugInfo.authStatus = 'Error during Telegram auth'
-        let errorMsg = err.message || 'Неизвестная ошибка при авторизации'
-        
-        // Check for network errors
-        if (err.message?.includes('Failed to fetch') || err.message?.includes('NetworkError')) {
-          errorMsg = 'Ошибка сети: не удалось подключиться к серверу. Проверьте подключение к интернету.'
-        } else if (err.status === 401) {
-          errorMsg = 'Ошибка авторизации: неверные данные Telegram. Попробуйте использовать OTP вход.'
-        } else if (err.status === 400) {
-          errorMsg = 'Ошибка запроса: неверный формат данных. Попробуйте использовать OTP вход.'
-        } else if (err.status >= 500) {
-          errorMsg = 'Ошибка сервера. Попробуйте позже или используйте OTP вход.'
-        }
-        
-        debugInfo.error = errorMsg
-        error.value = errorMsg
-        
-        // Show global error
-        if ((window as any).__setAuthError) {
-          ;(window as any).__setAuthError(errorMsg)
-        }
-        
-        console.error('[LoginView] Telegram auth error:', err)
+  if (tg && tg.initData) {
+    try {
+      const success = await tryTelegramAuth()
+      if (success) {
+        router.push('/dashboard')
+        return
       }
+    } catch (err: any) {
+      // Silent fail - show OTP login form
+      error.value = 'Авторизация через Telegram не удалась. Пожалуйста, используйте OTP вход.'
     }
-  } else {
-    debugInfo.telegramLoaded = false
-    debugInfo.authStatus = 'Not in Telegram Mini App'
-    debugInfo.error = 'Telegram WebApp script not loaded or not in Telegram Mini App'
-    console.log('[LoginView] Not in Telegram Mini App')
   }
 })
 
@@ -266,44 +128,6 @@ const verifyOTP = async () => {
 h1 {
   margin-bottom: 20px;
   text-align: center;
-}
-
-.debug-panel {
-  background: var(--bg-secondary, #f5f5f5);
-  border: 2px solid var(--border-primary, #ddd);
-  border-radius: 8px;
-  padding: 15px;
-  margin-bottom: 20px;
-  max-width: 500px;
-  width: 100%;
-  font-size: 12px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.debug-panel h3 {
-  margin-top: 0;
-  margin-bottom: 10px;
-  font-size: 14px;
-}
-
-.debug-item {
-  margin-bottom: 8px;
-  word-break: break-all;
-}
-
-.debug-item strong {
-  display: inline-block;
-  min-width: 120px;
-}
-
-.success {
-  color: green;
-  font-weight: bold;
-}
-
-.error {
-  color: red;
-  font-weight: bold;
 }
 </style>
 

@@ -759,15 +759,7 @@ func (r *Router) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 // @Failure      500  {string}  string  "Внутренняя ошибка сервера"
 // @Router       /auth/telegram [post]
 func (r *Router) handleAuthTelegram(w http.ResponseWriter, req *http.Request) {
-	r.logger.Info("handleAuthTelegram called", 
-		zap.String("method", req.Method),
-		zap.String("path", req.URL.Path),
-		zap.String("remote_addr", req.RemoteAddr),
-		zap.String("user_agent", req.UserAgent()),
-		zap.String("content_type", req.Header.Get("Content-Type")))
-	
 	if req.Method != http.MethodPost {
-		r.logger.Warn("invalid method for /auth/telegram", zap.String("method", req.Method))
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
@@ -780,15 +772,7 @@ func (r *Router) handleAuthTelegram(w http.ResponseWriter, req *http.Request) {
 	}
 
 	initData := req.FormValue("initData")
-	r.logger.Info("received initData", 
-		zap.String("initData_length", fmt.Sprintf("%d", len(initData))),
-		zap.String("initData_preview", maskInitData(initData)),
-		zap.String("form_keys", fmt.Sprintf("%v", getFormKeys(req.Form))))
-	
 	if initData == "" {
-		r.logger.Warn("initData is empty", 
-			zap.String("form_keys", fmt.Sprintf("%v", getFormKeys(req.Form))),
-			zap.String("raw_query", req.URL.RawQuery))
 		http.Error(w, "initData is required", http.StatusBadRequest)
 		return
 	}
@@ -801,8 +785,6 @@ func (r *Router) handleAuthTelegram(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, "Invalid initData", http.StatusUnauthorized)
 		return
 	}
-	
-	r.logger.Info("initData validated successfully", zap.Int64("telegram_id", telegramID))
 
 	// Get or create user
 	userRepo := r.userRepo.(*repository.UserRepository)
@@ -905,27 +887,6 @@ func (r *Router) handleAuthTelegramUnsafe(w http.ResponseWriter, req *http.Reque
 }
 
 // handleAuthRequestOTP and handleAuthOTP are implemented in auth_otp.go
-
-
-// maskInitData masks the initData for logging (shows first 20 and last 10 characters)
-func maskInitData(initData string) string {
-	if len(initData) == 0 {
-		return ""
-	}
-	if len(initData) <= 30 {
-		return strings.Repeat("*", len(initData))
-	}
-	return initData[:20] + "..." + initData[len(initData)-10:]
-}
-
-// getFormKeys returns all form keys for debugging
-func getFormKeys(form map[string][]string) []string {
-	keys := make([]string, 0, len(form))
-	for k := range form {
-		keys = append(keys, k)
-	}
-	return keys
-}
 
 // handleDashboard and handleChat are implemented in dashboard.go
 // handleVocab and handleVocabDelete are implemented in vocab.go

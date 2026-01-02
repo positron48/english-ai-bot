@@ -47,18 +47,12 @@ const { theme, toggleTheme } = useTheme()
 const mounted = ref(false)
 const authError = ref<string | null>(null)
 
-// Check if we're in Telegram Mini App
 onMounted(() => {
   mounted.value = true
-  console.log('[App] Component mounted', {
-    isAuthenticated: isAuthenticated.value,
-    currentRoute: route.path
-  })
   
   // Check auth status after a delay
   setTimeout(() => {
     if (!isAuthenticated.value && route.path !== '/login') {
-      // If not authenticated and not on login page, show error
       const tg = (window as any).Telegram?.WebApp
       if (tg) {
         authError.value = 'Авторизация через Telegram не удалась. Пожалуйста, используйте OTP вход.'
@@ -69,8 +63,6 @@ onMounted(() => {
 
 // Watch route changes
 watch(() => route.path, (newPath) => {
-  console.log('[App] Route changed to:', newPath)
-  // Clear error when navigating to login
   if (newPath === '/login') {
     authError.value = null
   }
