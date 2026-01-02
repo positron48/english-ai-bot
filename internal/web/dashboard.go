@@ -151,43 +151,29 @@ func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 		accuracyPercent = float64(correctReviews) / float64(totalReviews) * 100
 	}
 
-	// Get last 5 sessions (only completed sessions with at least 1 card)
-	lastSessionsQuery := `SELECT id, started_at, ended_at, done_count, source
-						  FROM training_sessions 
-						  WHERE user_id = ? AND ended_at IS NOT NULL AND done_count > 0
-						  ORDER BY started_at DESC 
-						  LIMIT 5`
-	rows, err := r.db.Query(lastSessionsQuery, userID)
-	var lastSessions []map[string]interface{}
+	// Get weekly stats by day (last 7 days) with correct cards count
+	weekAgoForDaily := now.AddDate(0, 0, -7)
+	weeklyStatsQuery := `SELECT 
+		DATE(ts.started_at) as day,
+		COALESCE(COUNT(DISTINCT re.id), 0) as cards_completed,
+		COALESCE(SUM(CASE WHEN re.is_correct = 1 THEN 1 ELSE 0 END), 0) as cards_correct
+		FROM training_sessions ts
+		LEFT JOIN review_events re ON re.session_id = ts.id AND re.answered_at IS NOT NULL
+		WHERE ts.user_id = ? AND ts.started_at >= ? AND ts.ended_at IS NOT NULL AND ts.done_count > 0
+		GROUP BY DATE(ts.started_at)
+		ORDER BY day ASC`
+	rows, err := r.db.Query(weeklyStatsQuery, userID, weekAgoForDaily)
+	var weeklyStats []map[string]interface{}
 	if err == nil {
 		defer rows.Close()
 		for rows.Next() {
-			var sessionID int64
-			var startedAt, endedAt string
-			var doneCount int
-			var source string
-			
-			if err := rows.Scan(&sessionID, &startedAt, &endedAt, &doneCount, &source); err == nil {
-				// Get accuracy for this session
-				var sessionTotal, sessionCorrect int
-				sessionStatsQuery := `SELECT 
-					COUNT(*) as total,
-					SUM(CASE WHEN is_correct = 1 THEN 1 ELSE 0 END) as correct
-					FROM review_events 
-					WHERE session_id = ? AND answered_at IS NOT NULL`
-				r.db.QueryRow(sessionStatsQuery, sessionID).Scan(&sessionTotal, &sessionCorrect)
-				
-				var sessionAccuracy float64
-				if sessionTotal > 0 {
-					sessionAccuracy = float64(sessionCorrect) / float64(sessionTotal) * 100
-				}
-				
-				lastSessions = append(lastSessions, map[string]interface{}{
-					"id":       sessionID,
-					"date":     startedAt,
-					"completed": doneCount,
-					"accuracy":  sessionAccuracy,
-					"source":    source,
+			var day string
+			var cardsCompleted, cardsCorrect int
+			if err := rows.Scan(&day, &cardsCompleted, &cardsCorrect); err == nil {
+				weeklyStats = append(weeklyStats, map[string]interface{}{
+					"day":             day,
+					"cards_completed": cardsCompleted,
+					"cards_correct":   cardsCorrect,
 				})
 			}
 		}
@@ -208,7 +194,7 @@ func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 		"week_sessions":         weekSessions,
 		"week_cards_completed":  weekCardsCompleted,
 		"accuracy_percent":      accuracyPercent,
-		"last_sessions":         lastSessions,
+		"weekly_stats":         weeklyStats,
 	})
 }
 

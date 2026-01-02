@@ -2,104 +2,13 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>English Bot</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-      #debug-info {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        background: #ff4444;
-        color: white;
-        padding: 10px;
-        font-family: monospace;
-        font-size: 12px;
-        z-index: 99999;
-        display: none;
-      }
-      #debug-info.show {
-        display: block;
-      }
-      #debug-info button {
-        margin-left: 10px;
-        padding: 5px 10px;
-        background: white;
-        color: #ff4444;
-        border: none;
-        cursor: pointer;
-        border-radius: 3px;
-      }
-    </style>
   </head>
   <body>
-    <div id="debug-info"></div>
     <div id="app"></div>
-    <script>
-      // Debug info display
-      (function() {
-        const debugDiv = document.getElementById('debug-info');
-        const messages = [];
-        
-        function addMessage(msg, type) {
-          messages.push({msg, type, time: new Date().toISOString()});
-          updateDisplay();
-        }
-        
-        function updateDisplay() {
-          if (messages.length === 0) return;
-          debugDiv.innerHTML = '<strong>Debug Info:</strong><br>' + 
-            messages.map(m => `[${m.time.split('T')[1].split('.')[0]}] ${m.msg}`).join('<br>') +
-            '<button onclick="document.getElementById(\'debug-info\').classList.remove(\'show\')">Hide</button>';
-          debugDiv.classList.add('show');
-        }
-        
-        // Check Telegram WebApp
-        window.addEventListener('load', function() {
-          setTimeout(function() {
-            if (typeof window.Telegram === 'undefined') {
-              addMessage('❌ Telegram WebApp script NOT loaded', 'error');
-            } else {
-              addMessage('✅ Telegram WebApp script loaded', 'success');
-              const tg = window.Telegram?.WebApp;
-              if (tg) {
-                addMessage('✅ Telegram.WebApp object available', 'success');
-                if (tg.initData) {
-                  addMessage('✅ initData available (length: ' + tg.initData.length + ')', 'success');
-                } else {
-                  addMessage('⚠️ initData NOT available', 'warning');
-                }
-              } else {
-                addMessage('❌ Telegram.WebApp object NOT available', 'error');
-              }
-            }
-            
-            // Check if Vue app mounted
-            setTimeout(function() {
-              const appDiv = document.getElementById('app');
-              if (appDiv && appDiv.innerHTML.trim() === '') {
-                addMessage('❌ Vue app did not mount - app div is empty', 'error');
-              } else if (appDiv && appDiv.innerHTML.trim() !== '') {
-                addMessage('✅ Vue app mounted successfully', 'success');
-              }
-            }, 2000);
-          }, 500);
-        });
-        
-        // Global error handler
-        window.addEventListener('error', function(e) {
-          addMessage('❌ JavaScript Error: ' + e.message + ' at ' + e.filename + ':' + e.lineno, 'error');
-        });
-        
-        window.addEventListener('unhandledrejection', function(e) {
-          addMessage('❌ Unhandled Promise Rejection: ' + (e.reason?.message || e.reason || 'Unknown'), 'error');
-        });
-        
-        addMessage('🔄 Page loaded, checking...', 'info');
-      })();
-    </script>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

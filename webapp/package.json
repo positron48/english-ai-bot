@@ -10,6 +10,7 @@
     "lint": "npm run type-check"
   },
   "dependencies": {
+    "chart.js": "^4.5.1",
     "marked": "^17.0.1",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0"
