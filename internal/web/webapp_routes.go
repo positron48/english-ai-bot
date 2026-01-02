@@ -64,8 +64,11 @@ func (r *Router) setupWebappRoutes() {
 			return
 		}
 
+		// Inject debug script for Telegram Mini App debugging
+		indexHTML := injectDebugScript(string(indexData))
+		
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		w.Write(indexData)
+		w.Write([]byte(indexHTML))
 	})
 
 	// Root /app path - serve index.html
@@ -82,9 +85,132 @@ func (r *Router) setupWebappRoutes() {
 			return
 		}
 
+		// Inject debug script for Telegram Mini App debugging
+		indexHTML := injectDebugScript(string(indexData))
+		
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		w.Write(indexData)
+		w.Write([]byte(indexHTML))
 	})
+}
+
+// injectDebugScript injects debug JavaScript into index.html for Telegram Mini App debugging
+func injectDebugScript(html string) string {
+	debugScript := `
+    <style>
+      #debug-info {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: #ff4444;
+        color: white;
+        padding: 10px;
+        font-family: monospace;
+        font-size: 12px;
+        z-index: 99999;
+        display: block;
+        max-height: 300px;
+        overflow-y: auto;
+      }
+      #debug-info button {
+        margin-left: 10px;
+        padding: 5px 10px;
+        background: white;
+        color: #ff4444;
+        border: none;
+        cursor: pointer;
+        border-radius: 3px;
+      }
+    </style>
+    <div id="debug-info"></div>
+    <script>
+      (function() {
+        const debugDiv = document.getElementById('debug-info');
+        const messages = [];
+        
+        function addMessage(msg, type) {
+          const time = new Date().toISOString().split('T')[1].split('.')[0];
+          messages.push({msg, type, time});
+          updateDisplay();
+        }
+        
+        function updateDisplay() {
+          if (messages.length === 0) return;
+          const html = '<strong>🔍 Debug Info (Telegram Mini App):</strong><br>' + 
+            messages.map(m => {
+              const icon = m.type === 'error' ? '❌' : m.type === 'warning' ? '⚠️' : m.type === 'success' ? '✅' : '🔄';
+              return '[' + m.time + '] ' + icon + ' ' + m.msg;
+            }).join('<br>') +
+            '<button onclick="document.getElementById(\'debug-info\').style.display=\'none\'">Hide</button>';
+          debugDiv.innerHTML = html;
+        }
+        
+        // Check Telegram WebApp
+        function checkTelegram() {
+          if (typeof window.Telegram === 'undefined') {
+            addMessage('Telegram WebApp script NOT loaded', 'error');
+          } else {
+            addMessage('Telegram WebApp script loaded', 'success');
+            const tg = window.Telegram?.WebApp;
+            if (tg) {
+              addMessage('Telegram.WebApp object available', 'success');
+              if (tg.initData) {
+                addMessage('initData available (length: ' + tg.initData.length + ')', 'success');
+              } else {
+                addMessage('initData NOT available', 'warning');
+              }
+            } else {
+              addMessage('Telegram.WebApp object NOT available', 'error');
+            }
+          }
+        }
+        
+        // Check Vue app mounting
+        function checkVueApp() {
+          setTimeout(function() {
+            const appDiv = document.getElementById('app');
+            if (!appDiv) {
+              addMessage('app div NOT found in DOM', 'error');
+            } else if (appDiv.innerHTML.trim() === '') {
+              addMessage('Vue app did not mount - app div is empty', 'error');
+            } else {
+              addMessage('Vue app mounted successfully', 'success');
+            }
+          }, 2000);
+        }
+        
+        window.addEventListener('load', function() {
+          addMessage('Page loaded, checking components...', 'info');
+          setTimeout(checkTelegram, 500);
+          checkVueApp();
+        });
+        
+        // Global error handlers
+        window.addEventListener('error', function(e) {
+          addMessage('JavaScript Error: ' + e.message + ' at ' + (e.filename || 'unknown') + ':' + e.lineno, 'error');
+        });
+        
+        window.addEventListener('unhandledrejection', function(e) {
+          addMessage('Unhandled Promise Rejection: ' + (e.reason?.message || e.reason || 'Unknown'), 'error');
+        });
+        
+        addMessage('Debug script initialized', 'info');
+      })();
+    </script>
+`
+	
+	// Insert debug script before closing </body> tag
+	if idx := strings.LastIndex(html, "</body>"); idx > 0 {
+		return html[:idx] + debugScript + "\n" + html[idx:]
+	}
+	
+	// If no </body> tag, insert before closing </html>
+	if idx := strings.LastIndex(html, "</html>"); idx > 0 {
+		return html[:idx] + debugScript + "\n" + html[idx:]
+	}
+	
+	// If no closing tags, append at the end
+	return html + debugScript
 }
 
 // isAPIEndpoint checks if the path is a known API endpoint
