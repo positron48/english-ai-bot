@@ -41,49 +41,32 @@ export function useAuth() {
 
   const tryTelegramAuth = async (): Promise<boolean> => {
     try {
-      let initData: string | null = null
-      
-      // Method 1: Try to get initData from Telegram.WebApp object
+      // According to Telegram Mini Apps documentation, initData should be in Telegram.WebApp.initData
       const tg = (window as any).Telegram?.WebApp
-      if (tg && tg.initData) {
-        initData = tg.initData
-        console.log('[Telegram Auth] Got initData from Telegram.WebApp.initData, length:', initData ? initData.length : 0)
-      }
       
-      // Method 2: Try to get initData from URL parameter tgWebAppData
-      if (!initData) {
-        const urlParams = new URLSearchParams(window.location.search)
-        const tgWebAppData = urlParams.get('tgWebAppData')
-        if (tgWebAppData) {
-          initData = decodeURIComponent(tgWebAppData)
-          console.log('[Telegram Auth] Got initData from URL parameter tgWebAppData, length:', initData ? initData.length : 0)
-        }
-      }
-      
-      // Method 3: Try to get from hash (if Telegram puts it there)
-      if (!initData && window.location.hash) {
-        const hashParams = new URLSearchParams(window.location.hash.substring(1))
-        const tgWebAppData = hashParams.get('tgWebAppData')
-        if (tgWebAppData) {
-          initData = decodeURIComponent(tgWebAppData)
-          console.log('[Telegram Auth] Got initData from hash parameter tgWebAppData, length:', initData ? initData.length : 0)
-        }
-      }
-      
-      // Method 4: Try to get from window storage (stored during URL cleanup)
-      if (!initData && (window as any).__tgWebAppData) {
-        initData = (window as any).__tgWebAppData
-        console.log('[Telegram Auth] Got initData from window storage, length:', initData ? initData.length : 0)
-      }
-      
-      if (!initData) {
-        console.warn('[Telegram Auth] initData is not available from any source')
+      if (!tg) {
+        console.warn('[Telegram Auth] Telegram.WebApp object not found')
         return false
       }
       
-      console.log('[Telegram Auth] Attempting authentication with initData length:', initData.length)
+      // Get initData directly from Telegram.WebApp.initData (as per Telegram docs)
+      const initData = tg.initData
       
-      // Try to authenticate
+      if (!initData || initData.trim() === '') {
+        console.warn('[Telegram Auth] Telegram.WebApp.initData is empty or not available')
+        console.log('[Telegram Auth] Telegram.WebApp object:', {
+          version: tg.version,
+          platform: tg.platform,
+          initDataUnsafe: tg.initDataUnsafe ? 'available' : 'not available'
+        })
+        return false
+      }
+      
+      console.log('[Telegram Auth] Got initData from Telegram.WebApp.initData')
+      console.log('[Telegram Auth] initData length:', initData.length)
+      console.log('[Telegram Auth] initData preview (first 100 chars):', initData.substring(0, 100))
+      
+      // Try to authenticate - send initData as-is (it's already URL-encoded by Telegram)
       const response = await apiClient.authTelegram(initData)
       
       if (response && response.access_token && response.refresh_token) {
@@ -110,10 +93,15 @@ export function useAuth() {
       }
       
       // Check for network errors
-      if (error.message?.includes('Failed to fetch') || error.message?.includes('NetworkError')) {
+      if (error.message?.includes('Failed to fetch') || 
+          error.message?.includes('NetworkError') ||
+          error.name === 'TypeError' ||
+          error.status === 0) {
         console.error('[Telegram Auth] Network error - request did not reach server')
-        const networkError = new Error('Ошибка сети: запрос не дошел до сервера')
+        console.error('[Telegram Auth] This could be a CORS issue or server is not accessible')
+        const networkError = new Error('Ошибка сети: запрос не дошел до сервера. Проверьте подключение и настройки CORS.')
         ;(networkError as any).status = 0
+        ;(networkError as any).isNetworkError = true
         throw networkError
       }
       

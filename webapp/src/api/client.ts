@@ -150,51 +150,85 @@ class ApiClient {
       headers['Authorization'] = `Bearer ${this.accessToken}`
     }
 
-    let response = await fetch(`${API_BASE}${url}`, {
+    const fullUrl = `${API_BASE}${url}`
+    console.log('[API Client] requestFormData:', {
+      url: fullUrl,
       method: 'POST',
       headers,
-      body: params.toString(),
+      bodyLength: params.toString().length,
+      bodyPreview: params.toString().substring(0, 100)
     })
 
-    if (response.status === 401 && this.refreshToken) {
-      const refreshed = await this.refreshAccessToken()
-      if (refreshed) {
-        headers['Authorization'] = `Bearer ${this.accessToken}`
-        response = await fetch(`${API_BASE}${url}`, {
-          method: 'POST',
-          headers,
-          body: params.toString(),
-        })
-      } else {
-        this.clearTokens()
-        throw new Error('Unauthorized')
-      }
+    let response: Response
+    try {
+      response = await fetch(fullUrl, {
+        method: 'POST',
+        headers,
+        body: params.toString(),
+      })
+      console.log('[API Client] Response received:', {
+        status: response.status,
+        statusText: response.statusText,
+        ok: response.ok,
+        headers: Object.fromEntries(response.headers.entries())
+      })
+    } catch (fetchError: any) {
+      console.error('[API Client] Fetch error:', fetchError)
+      console.error('[API Client] Error details:', {
+        name: fetchError.name,
+        message: fetchError.message,
+        stack: fetchError.stack
+      })
+      throw fetchError
     }
 
-    if (!response.ok) {
-      const errorText = await response.text()
-      let errorMessage = `API error: ${response.status} ${errorText}`
-      
-      // Try to parse JSON error if possible
-      try {
-        const errorJson = JSON.parse(errorText)
-        if (errorJson.message) {
-          errorMessage = errorJson.message
-        } else if (errorJson.error) {
-          errorMessage = errorJson.error
+      if (response.status === 401 && this.refreshToken) {
+        const refreshed = await this.refreshAccessToken()
+        if (refreshed) {
+          headers['Authorization'] = `Bearer ${this.accessToken}`
+          response = await fetch(fullUrl, {
+            method: 'POST',
+            headers,
+            body: params.toString(),
+          })
+        } else {
+          this.clearTokens()
+          throw new Error('Unauthorized')
         }
-      } catch {
-        // Not JSON, use text as-is
       }
-      
-      const error = new Error(errorMessage)
-      ;(error as any).status = response.status
-      ;(error as any).response = response
-      throw error
-    }
 
-    return response.json()
-  }
+      if (!response.ok) {
+        const errorText = await response.text()
+        console.error('[API Client] Error response:', {
+          status: response.status,
+          statusText: response.statusText,
+          body: errorText
+        })
+        
+        let errorMessage = `API error: ${response.status} ${errorText}`
+        
+        // Try to parse JSON error if possible
+        try {
+          const errorJson = JSON.parse(errorText)
+          if (errorJson.message) {
+            errorMessage = errorJson.message
+          } else if (errorJson.error) {
+            errorMessage = errorJson.error
+          }
+        } catch {
+          // Not JSON, use text as-is
+        }
+        
+        const error = new Error(errorMessage)
+        ;(error as any).status = response.status
+        ;(error as any).response = response
+        throw error
+      }
+
+      const jsonData = await response.json()
+      console.log('[API Client] Response JSON:', jsonData)
+      return jsonData
+    }
 
   async authTelegram(initData: string): Promise<AuthResponse> {
     console.log('[API Client] authTelegram called, initData length:', initData.length)

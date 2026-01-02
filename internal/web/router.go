@@ -223,6 +223,18 @@ func (r *Router) corsMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			if strings.HasPrefix(origin, "http://localhost:") || strings.HasPrefix(origin, "http://127.0.0.1:") {
 				w.Header().Set("Access-Control-Allow-Origin", origin)
 			}
+			// Allow Telegram Web App origins (web.telegram.org, etc.)
+			if strings.Contains(origin, "telegram.org") || strings.Contains(origin, "t.me") {
+				w.Header().Set("Access-Control-Allow-Origin", origin)
+			}
+			// Allow same-origin requests (when app is served from same domain)
+			if strings.HasPrefix(origin, "https://") || strings.HasPrefix(origin, "http://") {
+				// For production, allow requests from the same domain
+				// This handles cases where webapp is served from the same domain as API
+				if w.Header().Get("Access-Control-Allow-Origin") == "" {
+					w.Header().Set("Access-Control-Allow-Origin", origin)
+				}
+			}
 		} else {
 			// For requests without Origin header (same-origin), allow all
 			w.Header().Set("Access-Control-Allow-Origin", "*")
