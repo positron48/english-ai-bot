@@ -4,6 +4,27 @@ import router from './router'
 import './styles/theme.css'
 import './style.css'
 
+// Clean up Telegram URL parameters before router initialization
+// Telegram sometimes adds tgWebAppData to URL which can break hash routing
+if (window.location.search.includes('tgWebAppData') || window.location.hash.includes('tgWebAppData')) {
+  const url = new URL(window.location.href)
+  const tgWebAppData = url.searchParams.get('tgWebAppData') || url.hash.match(/tgWebAppData=([^&]+)/)?.[1]
+  
+  if (tgWebAppData) {
+    // Store it for later use
+    ;(window as any).__tgWebAppData = decodeURIComponent(tgWebAppData)
+    console.log('[App] Found tgWebAppData in URL, stored for auth')
+    
+    // Clean URL to prevent routing issues
+    url.searchParams.delete('tgWebAppData')
+    const cleanHash = url.hash.replace(/[?&]tgWebAppData=[^&]*/g, '')
+    url.hash = cleanHash || '#/'
+    
+    // Replace URL without reload
+    window.history.replaceState({}, '', url.toString())
+  }
+}
+
 // Check if Telegram WebApp script is loaded
 const checkTelegramScript = () => {
   // Wait a bit for the script to load

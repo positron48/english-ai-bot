@@ -115,19 +115,32 @@ onMounted(async () => {
     initDataLength: tg?.initData?.length || 0
   })
   
+  // Check for initData in multiple sources
+  const urlParams = new URLSearchParams(window.location.search)
+  const tgWebAppData = urlParams.get('tgWebAppData')
+  const hasInitDataInURL = !!tgWebAppData
+  const hasInitDataInObject = !!(tg?.initData)
+  const hasInitDataInStorage = !!(window as any).__tgWebAppData
+  
   if (tg) {
     debugInfo.telegramLoaded = true
-    debugInfo.hasInitData = !!tg.initData
-    debugInfo.initDataLength = tg.initData ? tg.initData.length : 0
+    debugInfo.hasInitData = hasInitDataInObject || hasInitDataInURL || hasInitDataInStorage
+    debugInfo.initDataLength = tg.initData ? tg.initData.length : (tgWebAppData ? tgWebAppData.length : 0)
     
     // Show debug panel automatically in Telegram Mini App
     showDebug.value = true
     
+    console.log('[LoginView] initData sources:', {
+      fromObject: hasInitDataInObject,
+      fromURL: hasInitDataInURL,
+      fromStorage: hasInitDataInStorage
+    })
+    
     // Show debug panel automatically in Telegram Mini App if there's an issue
-    if (!tg.initData) {
-      debugInfo.authStatus = 'No initData available'
-      debugInfo.error = 'Telegram WebApp is loaded but initData is missing'
-      console.warn('[LoginView] No initData available')
+    if (!debugInfo.hasInitData) {
+      debugInfo.authStatus = 'No initData available from any source'
+      debugInfo.error = 'Telegram WebApp is loaded but initData is missing from all sources'
+      console.warn('[LoginView] No initData available from any source')
     } else {
       debugInfo.authStatus = 'Attempting Telegram auth...'
       console.log('[LoginView] Attempting Telegram authentication...')

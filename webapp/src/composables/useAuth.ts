@@ -41,23 +41,50 @@ export function useAuth() {
 
   const tryTelegramAuth = async (): Promise<boolean> => {
     try {
-      // Check if Telegram WebApp is available
+      let initData: string | null = null
+      
+      // Method 1: Try to get initData from Telegram.WebApp object
       const tg = (window as any).Telegram?.WebApp
+      if (tg && tg.initData) {
+        initData = tg.initData
+        console.log('[Telegram Auth] Got initData from Telegram.WebApp.initData, length:', initData ? initData.length : 0)
+      }
       
-      if (!tg) {
-        console.warn('[Telegram Auth] Telegram WebApp object not found')
+      // Method 2: Try to get initData from URL parameter tgWebAppData
+      if (!initData) {
+        const urlParams = new URLSearchParams(window.location.search)
+        const tgWebAppData = urlParams.get('tgWebAppData')
+        if (tgWebAppData) {
+          initData = decodeURIComponent(tgWebAppData)
+          console.log('[Telegram Auth] Got initData from URL parameter tgWebAppData, length:', initData ? initData.length : 0)
+        }
+      }
+      
+      // Method 3: Try to get from hash (if Telegram puts it there)
+      if (!initData && window.location.hash) {
+        const hashParams = new URLSearchParams(window.location.hash.substring(1))
+        const tgWebAppData = hashParams.get('tgWebAppData')
+        if (tgWebAppData) {
+          initData = decodeURIComponent(tgWebAppData)
+          console.log('[Telegram Auth] Got initData from hash parameter tgWebAppData, length:', initData ? initData.length : 0)
+        }
+      }
+      
+      // Method 4: Try to get from window storage (stored during URL cleanup)
+      if (!initData && (window as any).__tgWebAppData) {
+        initData = (window as any).__tgWebAppData
+        console.log('[Telegram Auth] Got initData from window storage, length:', initData ? initData.length : 0)
+      }
+      
+      if (!initData) {
+        console.warn('[Telegram Auth] initData is not available from any source')
         return false
       }
       
-      if (!tg.initData) {
-        console.warn('[Telegram Auth] initData is not available')
-        return false
-      }
-      
-      console.log('[Telegram Auth] Attempting authentication with initData length:', tg.initData.length)
+      console.log('[Telegram Auth] Attempting authentication with initData length:', initData.length)
       
       // Try to authenticate
-      const response = await apiClient.authTelegram(tg.initData)
+      const response = await apiClient.authTelegram(initData)
       
       if (response && response.access_token && response.refresh_token) {
         console.log('[Telegram Auth] Authentication successful')
