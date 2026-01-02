@@ -1,5 +1,14 @@
 <template>
   <div id="app">
+    <!-- Debug info in development -->
+    <div v-if="showDebugInfo" style="position: fixed; bottom: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white; padding: 10px; border-radius: 5px; font-size: 11px; z-index: 10000; max-width: 300px;">
+      <strong>App Debug:</strong><br>
+      Auth: {{ isAuthenticated ? '✅' : '❌' }}<br>
+      Admin: {{ isAdmin ? '✅' : '❌' }}<br>
+      Route: {{ $route.path }}<br>
+      <button @click="showDebugInfo = false" style="margin-top: 5px; padding: 2px 5px;">Hide</button>
+    </div>
+    
     <nav v-if="isAuthenticated" class="navbar">
       <div class="container">
         <div class="nav-links">
@@ -17,19 +26,46 @@
       </div>
     </nav>
     <main class="container">
-      <router-view />
+      <router-view v-if="mounted" />
+      <div v-else style="padding: 20px; text-align: center;">
+        Loading...
+      </div>
     </main>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
+import { ref, onMounted, watch } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { useAuth } from './composables/useAuth'
 import { useTheme } from './composables/useTheme'
 
 const router = useRouter()
+const route = useRoute()
 const { isAuthenticated, isAdmin, logout: authLogout } = useAuth()
 const { theme, toggleTheme } = useTheme()
+
+const mounted = ref(false)
+const showDebugInfo = ref(false)
+
+// Check if we're in Telegram Mini App and show debug
+onMounted(() => {
+  const tg = (window as any).Telegram?.WebApp
+  if (tg) {
+    showDebugInfo.value = true
+  }
+  
+  mounted.value = true
+  console.log('[App] Component mounted', {
+    isAuthenticated: isAuthenticated.value,
+    currentRoute: route.path
+  })
+})
+
+// Watch route changes
+watch(() => route.path, (newPath) => {
+  console.log('[App] Route changed to:', newPath)
+})
 
 const logout = () => {
   authLogout()

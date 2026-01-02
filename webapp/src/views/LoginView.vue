@@ -103,43 +103,64 @@ const debugInfo = reactive({
 })
 
 onMounted(async () => {
+  console.log('[LoginView] Component mounted')
+  
   // Check if Telegram WebApp is available
   const tg = (window as any).Telegram?.WebApp
   isTelegramMiniApp.value = !!tg
+  
+  console.log('[LoginView] Telegram check:', {
+    hasTelegram: !!tg,
+    hasInitData: !!(tg?.initData),
+    initDataLength: tg?.initData?.length || 0
+  })
   
   if (tg) {
     debugInfo.telegramLoaded = true
     debugInfo.hasInitData = !!tg.initData
     debugInfo.initDataLength = tg.initData ? tg.initData.length : 0
     
+    // Show debug panel automatically in Telegram Mini App
+    showDebug.value = true
+    
     // Show debug panel automatically in Telegram Mini App if there's an issue
     if (!tg.initData) {
-      showDebug.value = true
       debugInfo.authStatus = 'No initData available'
       debugInfo.error = 'Telegram WebApp is loaded but initData is missing'
+      console.warn('[LoginView] No initData available')
     } else {
       debugInfo.authStatus = 'Attempting Telegram auth...'
-      showDebug.value = true // Show debug by default in Telegram Mini App
+      console.log('[LoginView] Attempting Telegram authentication...')
       
       try {
         const success = await tryTelegramAuth()
+        console.log('[LoginView] Telegram auth result:', success)
+        
         if (success) {
-          debugInfo.authStatus = 'Authentication successful!'
-          router.push('/dashboard')
+          debugInfo.authStatus = 'Authentication successful! Redirecting...'
+          console.log('[LoginView] Auth successful, redirecting to /dashboard')
+          
+          // Small delay to show success message
+          setTimeout(() => {
+            router.push('/dashboard')
+          }, 500)
         } else {
           debugInfo.authStatus = 'Telegram auth failed, showing login form'
           debugInfo.error = 'Telegram authentication failed. Please use OTP login.'
+          console.warn('[LoginView] Telegram auth failed')
         }
       } catch (err: any) {
         debugInfo.authStatus = 'Error during Telegram auth'
         debugInfo.error = err.message || 'Unknown error'
         error.value = err.message || 'Telegram authentication failed'
+        console.error('[LoginView] Telegram auth error:', err)
       }
     }
   } else {
     debugInfo.telegramLoaded = false
     debugInfo.authStatus = 'Not in Telegram Mini App'
     debugInfo.error = 'Telegram WebApp script not loaded or not in Telegram Mini App'
+    console.log('[LoginView] Not in Telegram Mini App')
   }
 })
 

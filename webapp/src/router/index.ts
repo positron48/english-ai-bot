@@ -47,14 +47,26 @@ const router = createRouter({
   ]
 })
 
-router.beforeEach((to, _from, next) => {
+router.beforeEach((to, from, next) => {
   const { isAuthenticated, isAdmin } = useAuth()
   
+  console.log('[Router] Navigation:', {
+    from: from.path,
+    to: to.path,
+    isAuthenticated: isAuthenticated.value,
+    isAdmin: isAdmin.value,
+    requiresAuth: to.meta.requiresAuth,
+    requiresAdmin: to.meta.requiresAdmin
+  })
+  
   if (to.meta.requiresAuth && !isAuthenticated.value) {
+    console.log('[Router] Redirecting to /login (not authenticated)')
     next('/login')
   } else if (to.meta.requiresAdmin && !isAdmin.value) {
+    console.log('[Router] Redirecting to /dashboard (not admin)')
     next('/dashboard')
   } else {
+    console.log('[Router] Allowing navigation to', to.path)
     next()
   }
 })
