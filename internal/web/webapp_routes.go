@@ -64,8 +64,8 @@ func (r *Router) setupWebappRoutes() {
 			return
 		}
 
-		// Inject debug script for Telegram Mini App debugging
-		indexHTML := injectDebugScript(string(indexData))
+		// Inject console.log interceptor for Telegram Mini App debugging
+		indexHTML := injectConsoleLogger(string(indexData))
 		
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		w.Write([]byte(indexHTML))
@@ -85,132 +85,161 @@ func (r *Router) setupWebappRoutes() {
 			return
 		}
 
-		// Inject debug script for Telegram Mini App debugging
-		indexHTML := injectDebugScript(string(indexData))
+		// Inject console.log interceptor for Telegram Mini App debugging
+		indexHTML := injectConsoleLogger(string(indexData))
 		
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		w.Write([]byte(indexHTML))
 	})
 }
 
-// injectDebugScript injects debug JavaScript into index.html for Telegram Mini App debugging
-func injectDebugScript(html string) string {
-	debugScript := `
+// injectConsoleLogger injects console.log interceptor into index.html for Telegram Mini App debugging
+func injectConsoleLogger(html string) string {
+	consoleLoggerScript := `
     <style>
-      #debug-info {
+      #console-logger {
         position: fixed;
-        top: 0;
+        bottom: 0;
         left: 0;
         right: 0;
-        background: #ff4444;
-        color: white;
-        padding: 10px;
-        font-family: monospace;
-        font-size: 12px;
-        z-index: 99999;
-        display: block;
-        max-height: 300px;
+        background: #1e1e1e;
+        color: #d4d4d4;
+        font-family: 'Courier New', monospace;
+        font-size: 11px;
+        max-height: 400px;
         overflow-y: auto;
+        z-index: 99999;
+        border-top: 2px solid #007acc;
+        padding: 10px;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
       }
-      #debug-info button {
-        margin-left: 10px;
+      #console-logger-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        padding-bottom: 5px;
+        border-bottom: 1px solid #444;
+      }
+      #console-logger-header strong {
+        color: #4ec9b0;
+      }
+      #console-logger button {
         padding: 5px 10px;
-        background: white;
-        color: #ff4444;
+        background: #007acc;
+        color: white;
         border: none;
         cursor: pointer;
         border-radius: 3px;
+        font-size: 11px;
+      }
+      #console-logger button:hover {
+        background: #005a9e;
+      }
+      .log-entry {
+        margin: 2px 0;
+        padding: 2px 5px;
+        word-break: break-all;
+      }
+      .log-entry.log { color: #d4d4d4; }
+      .log-entry.info { color: #4ec9b0; }
+      .log-entry.warn { color: #dcdcaa; background: rgba(220, 220, 170, 0.1); }
+      .log-entry.error { color: #f48771; background: rgba(244, 135, 113, 0.1); }
+      .log-time {
+        color: #808080;
+        margin-right: 8px;
       }
     </style>
-    <div id="debug-info"></div>
+    <div id="console-logger">
+      <div id="console-logger-header">
+        <strong>📋 Console Logs</strong>
+        <button onclick="document.getElementById('console-logger').style.display='none'">Hide</button>
+      </div>
+      <div id="console-logger-content"></div>
+    </div>
     <script>
       (function() {
-        const debugDiv = document.getElementById('debug-info');
-        const messages = [];
+        const loggerDiv = document.getElementById('console-logger-content');
+        const maxLogs = 500;
+        let logCount = 0;
         
-        function addMessage(msg, type) {
-          const time = new Date().toISOString().split('T')[1].split('.')[0];
-          messages.push({msg, type, time});
-          updateDisplay();
-        }
-        
-        function updateDisplay() {
-          if (messages.length === 0) return;
-          const html = '<strong>🔍 Debug Info (Telegram Mini App):</strong><br>' + 
-            messages.map(m => {
-              const icon = m.type === 'error' ? '❌' : m.type === 'warning' ? '⚠️' : m.type === 'success' ? '✅' : '🔄';
-              return '[' + m.time + '] ' + icon + ' ' + m.msg;
-            }).join('<br>') +
-            '<button onclick="document.getElementById(\'debug-info\').style.display=\'none\'">Hide</button>';
-          debugDiv.innerHTML = html;
-        }
-        
-        // Check Telegram WebApp
-        function checkTelegram() {
-          if (typeof window.Telegram === 'undefined') {
-            addMessage('Telegram WebApp script NOT loaded', 'error');
-          } else {
-            addMessage('Telegram WebApp script loaded', 'success');
-            const tg = window.Telegram?.WebApp;
-            if (tg) {
-              addMessage('Telegram.WebApp object available', 'success');
-              if (tg.initData) {
-                addMessage('initData available (length: ' + tg.initData.length + ')', 'success');
-              } else {
-                addMessage('initData NOT available', 'warning');
+        function formatLog(args) {
+          return Array.from(args).map(arg => {
+            if (typeof arg === 'object') {
+              try {
+                return JSON.stringify(arg, null, 2);
+              } catch (e) {
+                return String(arg);
               }
-            } else {
-              addMessage('Telegram.WebApp object NOT available', 'error');
             }
+            return String(arg);
+          }).join(' ');
+        }
+        
+        function addLog(level, args) {
+          const time = new Date().toISOString().split('T')[1].split('.')[0];
+          const logEntry = document.createElement('div');
+          logEntry.className = 'log-entry ' + level;
+          logEntry.innerHTML = '<span class="log-time">[' + time + ']</span>' + 
+            '<span class="log-level">[' + level.toUpperCase() + ']</span> ' + 
+            formatLog(args);
+          loggerDiv.appendChild(logEntry);
+          logCount++;
+          
+          // Keep only last maxLogs entries
+          if (logCount > maxLogs) {
+            loggerDiv.removeChild(loggerDiv.firstChild);
+            logCount--;
           }
+          
+          // Auto-scroll to bottom
+          loggerDiv.scrollTop = loggerDiv.scrollHeight;
         }
         
-        // Check Vue app mounting
-        function checkVueApp() {
-          setTimeout(function() {
-            const appDiv = document.getElementById('app');
-            if (!appDiv) {
-              addMessage('app div NOT found in DOM', 'error');
-            } else if (appDiv.innerHTML.trim() === '') {
-              addMessage('Vue app did not mount - app div is empty', 'error');
-            } else {
-              addMessage('Vue app mounted successfully', 'success');
-            }
-          }, 2000);
-        }
+        // Intercept console methods
+        const originalLog = console.log;
+        const originalInfo = console.info;
+        const originalWarn = console.warn;
+        const originalError = console.error;
         
-        window.addEventListener('load', function() {
-          addMessage('Page loaded, checking components...', 'info');
-          setTimeout(checkTelegram, 500);
-          checkVueApp();
-        });
+        console.log = function(...args) {
+          originalLog.apply(console, args);
+          addLog('log', args);
+        };
         
-        // Global error handlers
-        window.addEventListener('error', function(e) {
-          addMessage('JavaScript Error: ' + e.message + ' at ' + (e.filename || 'unknown') + ':' + e.lineno, 'error');
-        });
+        console.info = function(...args) {
+          originalInfo.apply(console, args);
+          addLog('info', args);
+        };
         
-        window.addEventListener('unhandledrejection', function(e) {
-          addMessage('Unhandled Promise Rejection: ' + (e.reason?.message || e.reason || 'Unknown'), 'error');
-        });
+        console.warn = function(...args) {
+          originalWarn.apply(console, args);
+          addLog('warn', args);
+        };
         
-        addMessage('Debug script initialized', 'info');
+        console.error = function(...args) {
+          originalError.apply(console, args);
+          addLog('error', args);
+        };
+        
+        // Log initialization
+        console.log('[Console Logger] Initialized - all console.log calls will be displayed here');
       })();
     </script>
 `
 	
-	// Insert debug script before closing </body> tag
+	// Insert console logger before closing </body> tag
 	if idx := strings.LastIndex(html, "</body>"); idx > 0 {
-		return html[:idx] + debugScript + "\n" + html[idx:]
+		return html[:idx] + consoleLoggerScript + "\n" + html[idx:]
 	}
 	
 	// If no </body> tag, insert before closing </html>
 	if idx := strings.LastIndex(html, "</html>"); idx > 0 {
-		return html[:idx] + debugScript + "\n" + html[idx:]
+		return html[:idx] + consoleLoggerScript + "\n" + html[idx:]
 	}
 	
 	// If no closing tags, append at the end
-	return html + debugScript
+	return html + consoleLoggerScript
 }
 
 // isAPIEndpoint checks if the path is a known API endpoint

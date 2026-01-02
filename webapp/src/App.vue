@@ -8,15 +8,6 @@
       </div>
     </div>
     
-    <!-- Debug info in development -->
-    <div v-if="showDebugInfo" style="position: fixed; bottom: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white; padding: 10px; border-radius: 5px; font-size: 11px; z-index: 10000; max-width: 300px;">
-      <strong>App Debug:</strong><br>
-      Auth: {{ isAuthenticated ? '✅' : '❌' }}<br>
-      Admin: {{ isAdmin ? '✅' : '❌' }}<br>
-      Route: {{ $route.path }}<br>
-      <button @click="showDebugInfo = false" style="margin-top: 5px; padding: 2px 5px;">Hide</button>
-    </div>
-    
     <nav v-if="isAuthenticated" class="navbar">
       <div class="container">
         <div class="nav-links">
@@ -54,16 +45,10 @@ const { isAuthenticated, isAdmin, logout: authLogout } = useAuth()
 const { theme, toggleTheme } = useTheme()
 
 const mounted = ref(false)
-const showDebugInfo = ref(false)
 const authError = ref<string | null>(null)
 
-// Check if we're in Telegram Mini App and show debug
+// Check if we're in Telegram Mini App
 onMounted(() => {
-  const tg = (window as any).Telegram?.WebApp
-  if (tg) {
-    showDebugInfo.value = true
-  }
-  
   mounted.value = true
   console.log('[App] Component mounted', {
     isAuthenticated: isAuthenticated.value,
