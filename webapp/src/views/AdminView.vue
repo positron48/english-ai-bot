@@ -62,21 +62,33 @@
       <div class="card">
         <h2>Words Management</h2>
         <div class="words-filters">
-          <select v-model="wordsFilterUser" class="admin-select">
+          <div class="search-box">
+            <input
+              type="text"
+              v-model="wordsSearchQuery"
+              @input="onWordsSearchInput"
+              placeholder="Search words..."
+              class="search-input"
+            />
+          </div>
+          <select v-model="wordsFilterUser" class="admin-select" @change="onFilterChange">
             <option :value="null">All users</option>
             <option v-for="user in users" :key="user.id" :value="user.id">
               {{ user.telegram_username || `User #${user.telegram_id}` }} (ID: {{ user.id }})
             </option>
           </select>
           <label class="checkbox-label">
-            <input type="checkbox" v-model="wordsOnlyErrors" />
+            <input type="checkbox" v-model="wordsOnlyErrors" @change="onFilterChange" />
             Only with errors
           </label>
           <button @click="loadWords" class="btn btn-primary">Refresh</button>
         </div>
 
         <div v-if="wordsLoading" class="loading">Loading words...</div>
-        <div v-else-if="words.length === 0" class="empty-message">No words found</div>
+        <div v-else-if="words.length === 0" class="empty-message">
+          <p v-if="wordsSearchQuery">No words found matching "{{ wordsSearchQuery }}".</p>
+          <p v-else>No words found</p>
+        </div>
         <div v-else class="words-table-container">
           <table class="words-table">
             <thead>
@@ -219,6 +231,26 @@
             </tbody>
           </table>
         </div>
+        <div class="pagination" v-if="wordsPagination.total_pages > 1">
+          <button 
+            @click="goToWordsPage(wordsPagination.page - 1)" 
+            :disabled="wordsPagination.page <= 1"
+            class="btn btn-secondary"
+          >
+            Previous
+          </button>
+          <span class="page-info">
+            Page {{ wordsPagination.page }} of {{ wordsPagination.total_pages }} 
+            ({{ wordsPagination.total }} total)
+          </span>
+          <button 
+            @click="goToWordsPage(wordsPagination.page + 1)" 
+            :disabled="wordsPagination.page >= wordsPagination.total_pages"
+            class="btn btn-secondary"
+          >
+            Next
+          </button>
+        </div>
       </div>
 
       <!-- Edit Training Card Modal -->
@@ -352,6 +384,14 @@ const words = ref<WordCard[]>([])
 const wordsLoading = ref(false)
 const wordsFilterUser = ref<number | null>(null)
 const wordsOnlyErrors = ref(false)
+const wordsSearchQuery = ref('')
+const wordsSearchTimeout = ref<number | null>(null)
+const wordsPagination = ref({
+  page: 1,
+  limit: 50,
+  total: 0,
+  total_pages: 0
+})
 const users = ref<User[]>([])
 
 // Training card editing
@@ -470,10 +510,14 @@ const loadWords = async () => {
     if (wordsOnlyErrors.value) {
       params.append('only_errors', '1')
     }
-    params.append('limit', '100')
-    params.append('offset', '0')
+    if (wordsSearchQuery.value) {
+      params.append('search', wordsSearchQuery.value)
+    }
+    const offset = (wordsPagination.value.page - 1) * wordsPagination.value.limit
+    params.append('limit', wordsPagination.value.limit.toString())
+    params.append('offset', offset.toString())
 
-    const data: { words: WordCard[] } = await apiClient.request(`/app/admin/words?${params.toString()}`)
+    const data: { words: WordCard[]; pagination: { page: number; limit: number; total: number; total_pages: number } } = await apiClient.request(`/app/admin/words?${params.toString()}`)
     words.value = data.words.map(w => ({ 
       ...w, 
       editing: false, 
@@ -481,12 +525,37 @@ const loadWords = async () => {
       cardsLoading: false,
       cards: undefined
     }))
+    if (data.pagination) {
+      wordsPagination.value = data.pagination
+    }
   } catch (error) {
     console.error('Failed to load words:', error)
     alert('Failed to load words')
   } finally {
     wordsLoading.value = false
   }
+}
+
+const onWordsSearchInput = () => {
+  if (wordsSearchTimeout.value) {
+    clearTimeout(wordsSearchTimeout.value)
+  }
+  wordsSearchTimeout.value = window.setTimeout(() => {
+    wordsPagination.value.page = 1
+    loadWords()
+  }, 500)
+}
+
+const goToWordsPage = (page: number) => {
+  if (page >= 1 && page <= wordsPagination.value.total_pages) {
+    wordsPagination.value.page = page
+    loadWords()
+  }
+}
+
+const onFilterChange = () => {
+  wordsPagination.value.page = 1
+  loadWords()
 }
 
 const toggleWordCards = async (word: WordCard) => {
@@ -883,9 +952,37 @@ const formatDate = (dateStr: string | null | undefined) => {
 .words-filters {
   display: flex;
   gap: 10px;
-  align-items: center;
-  margin-bottom: 20px;
   flex-wrap: wrap;
+  align-items: center;
+}
+
+.search-box {
+  flex: 1;
+  min-width: 200px;
+  max-width: 400px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--input-border);
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+  box-sizing: border-box;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.page-info {
+  color: var(--text-secondary);
 }
 
 .admin-select {

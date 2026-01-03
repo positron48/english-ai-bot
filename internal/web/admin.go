@@ -483,6 +483,7 @@ func (r *Router) handleAdminWords(w http.ResponseWriter, req *http.Request) {
 	}
 
 	onlyWithErrors := req.URL.Query().Get("only_errors") == "1" || req.URL.Query().Get("only_errors") == "true"
+	searchQuery := req.URL.Query().Get("search")
 
 	limit := 50
 	if limitStr := req.URL.Query().Get("limit"); limitStr != "" {
@@ -498,19 +499,37 @@ func (r *Router) handleAdminWords(w http.ResponseWriter, req *http.Request) {
 		}
 	}
 
-	words, err := wordRepo.ListWordCardsAdmin(filterUserID, onlyWithErrors, limit, offset)
+	words, err := wordRepo.ListWordCardsAdmin(filterUserID, onlyWithErrors, searchQuery, limit, offset)
 	if err != nil {
 		r.logger.Error("failed to list word cards", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 
+	// Get total count for pagination
+	total, err := wordRepo.CountWordCardsAdmin(filterUserID, onlyWithErrors, searchQuery)
+	if err != nil {
+		r.logger.Error("failed to count word cards", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	totalPages := (total + limit - 1) / limit // Ceiling division
+	if totalPages == 0 {
+		totalPages = 1
+	}
+	currentPage := (offset / limit) + 1
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]interface{}{
 		"words": words,
-		"limit": limit,
-		"offset": offset,
+		"pagination": map[string]interface{}{
+			"page":        currentPage,
+			"limit":       limit,
+			"total":       total,
+			"total_pages": totalPages,
+		},
 	})
 }
 

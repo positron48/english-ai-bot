@@ -183,7 +183,7 @@ type WordCardAdminItem struct {
 }
 
 // ListWordCardsAdmin lists word cards for admin view with optional filters
-func (r *WordRepository) ListWordCardsAdmin(filterUserID *int64, onlyWithErrors bool, limit, offset int) ([]*WordCardAdminItem, error) {
+func (r *WordRepository) ListWordCardsAdmin(filterUserID *int64, onlyWithErrors bool, searchQuery string, limit, offset int) ([]*WordCardAdminItem, error) {
 	// Use LEFT JOIN with GROUP BY to check for training cards - more reliable than subquery
 	query := `SELECT wc.id, wc.word, wc.definition,
 			  COALESCE(wc.processed_at, '') as processed_at,
@@ -205,6 +205,13 @@ func (r *WordRepository) ListWordCardsAdmin(filterUserID *int64, onlyWithErrors 
 	// Filter by errors if specified
 	if onlyWithErrors {
 		conditions = append(conditions, "wc.processing_error IS NOT NULL AND wc.processing_error != ''")
+	}
+
+	// Filter by search query if specified
+	if searchQuery != "" {
+		conditions = append(conditions, "(wc.word LIKE ? OR wc.definition LIKE ?)")
+		searchPattern := "%" + searchQuery + "%"
+		args = append(args, searchPattern, searchPattern)
 	}
 
 	if len(conditions) > 0 {
@@ -258,6 +265,44 @@ func (r *WordRepository) ListWordCardsAdmin(filterUserID *int64, onlyWithErrors 
 	}
 
 	return items, nil
+}
+
+// CountWordCardsAdmin counts total word cards matching filters (for pagination)
+func (r *WordRepository) CountWordCardsAdmin(filterUserID *int64, onlyWithErrors bool, searchQuery string) (int, error) {
+	query := `SELECT COUNT(DISTINCT wc.id) FROM word_cards wc`
+
+	args := []interface{}{}
+	conditions := []string{}
+
+	// Filter by user if specified
+	if filterUserID != nil {
+		conditions = append(conditions, "wc.word IN (SELECT DISTINCT word FROM word_request_history WHERE user_id = ?)")
+		args = append(args, *filterUserID)
+	}
+
+	// Filter by errors if specified
+	if onlyWithErrors {
+		conditions = append(conditions, "wc.processing_error IS NOT NULL AND wc.processing_error != ''")
+	}
+
+	// Filter by search query if specified
+	if searchQuery != "" {
+		conditions = append(conditions, "(wc.word LIKE ? OR wc.definition LIKE ?)")
+		searchPattern := "%" + searchQuery + "%"
+		args = append(args, searchPattern, searchPattern)
+	}
+
+	if len(conditions) > 0 {
+		query += " WHERE " + strings.Join(conditions, " AND ")
+	}
+
+	var count int
+	err := r.db.QueryRow(query, args...).Scan(&count)
+	if err != nil {
+		return 0, fmt.Errorf("failed to count word cards: %w", err)
+	}
+
+	return count, nil
 }
 
 // GetWordCardRequestingUsers gets user IDs who requested a specific word card
