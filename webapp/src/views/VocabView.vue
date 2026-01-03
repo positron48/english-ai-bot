@@ -162,69 +162,96 @@
         <div v-if="cardsLoading" class="loading">Loading cards...</div>
         <div v-else-if="cards.length === 0" class="no-cards">No cards found.</div>
         <div v-else class="cards-list">
-          <div v-for="card in cards" :key="`${card.training_card_id}-${card.direction}`" class="card-item">
-            <div class="card-header">
+          <div v-for="senseGroup in groupedCards" :key="senseGroup.sense_index" class="sense-group">
+            <div class="sense-header">
               <h4>
-                {{ card.word_ru }} 
-                <span class="direction-badge" :class="`direction-${card.direction}`">
-                  {{ card.direction === 'ru_en' ? 'RU→EN' : 'EN→RU' }}
-                </span>
-                <span class="sense-badge">Sense {{ card.sense_index }}</span>
+                Sense {{ senseGroup.sense_index }}
+                <span class="word-en">{{ selectedWord }}</span>
+                <span class="word-ru">{{ senseGroup.word_ru }}</span>
               </h4>
+              <div v-if="isAdmin" class="sense-actions">
+                <button 
+                  @click="editCard(senseGroup)" 
+                  class="btn btn-sm btn-primary"
+                  title="Edit card"
+                >
+                  Edit
+                </button>
+                <button 
+                  @click="confirmDeleteCard(senseGroup)" 
+                  class="btn btn-sm btn-danger"
+                  title="Delete card"
+                >
+                  Delete
+                </button>
+              </div>
             </div>
-            <div class="card-body">
-              <div class="card-row">
+            
+            <!-- Sense information (shown once per sense) -->
+            <div class="sense-info">
+              <div class="card-row" v-if="senseGroup.meaning_en">
                 <span class="label">Meaning:</span>
-                <span>{{ card.meaning_en }}</span>
+                <span>{{ senseGroup.meaning_en }}</span>
               </div>
-              <div class="card-row" v-if="card.example_en">
+              <div class="card-row" v-if="senseGroup.example_en">
                 <span class="label">Example EN:</span>
-                <span>{{ card.example_en }}</span>
+                <span>{{ senseGroup.example_en }}</span>
               </div>
-              <div class="card-row" v-if="card.example_ru">
+              <div class="card-row" v-if="senseGroup.example_ru">
                 <span class="label">Example RU:</span>
-                <span>{{ card.example_ru }}</span>
+                <span>{{ senseGroup.example_ru }}</span>
               </div>
-              <div class="card-row" v-if="card.transcription">
+              <div class="card-row" v-if="senseGroup.transcription">
                 <span class="label">Transcription:</span>
-                <span class="transcription">{{ card.transcription }}</span>
+                <span class="transcription">{{ senseGroup.transcription }}</span>
               </div>
-              <div class="card-stats">
-                <div class="stat-item">
-                  <span class="stat-label">State:</span>
-                  <span :class="['state-badge', `state-${card.state}`]">{{ card.state }}</span>
+            </div>
+            
+            <!-- Directions with training stats -->
+            <div class="directions-list">
+              <div v-for="directionCard in senseGroup.directions" :key="directionCard.direction" class="direction-item">
+                <div class="direction-header">
+                  <span class="direction-badge" :class="`direction-${directionCard.direction}`">
+                    {{ directionCard.direction === 'ru_en' ? 'RU→EN' : 'EN→RU' }}
+                  </span>
                 </div>
-                <div class="stat-item">
-                  <span class="stat-label">Reps:</span>
-                  <span>{{ card.reps }}</span>
-                </div>
-                <div class="stat-item">
-                  <span class="stat-label">Reviews:</span>
-                  <span>{{ card.review_count }}</span>
-                </div>
-                <div class="stat-item">
-                  <span class="stat-label">EF:</span>
-                  <span>{{ card.ef.toFixed(2) }}</span>
-                </div>
-                <div class="stat-item">
-                  <span class="stat-label">Interval:</span>
-                  <span>{{ card.interval_days }} days</span>
-                </div>
-                <div class="stat-item">
-                  <span class="stat-label">Lapses:</span>
-                  <span>{{ card.lapse_count }}</span>
-                </div>
-                <div class="stat-item" v-if="card.next_due_at">
-                  <span class="stat-label">Next Due:</span>
-                  <span>{{ formatDate(card.next_due_at) }}</span>
-                </div>
-                <div class="stat-item" v-if="card.last_review_at">
-                  <span class="stat-label">Last Review:</span>
-                  <span>{{ formatDate(card.last_review_at) }}</span>
-                </div>
-                <div class="stat-item" v-if="card.last_quality !== null">
-                  <span class="stat-label">Last Quality:</span>
-                  <span>{{ card.last_quality }}</span>
+                <div class="card-stats">
+                  <div class="stat-item">
+                    <span class="stat-label">State:</span>
+                    <span :class="['state-badge', `state-${directionCard.state}`]">{{ directionCard.state }}</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">Reps:</span>
+                    <span>{{ directionCard.reps }}</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">Reviews:</span>
+                    <span>{{ directionCard.review_count }}</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">EF:</span>
+                    <span>{{ directionCard.ef.toFixed(2) }}</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">Interval:</span>
+                    <span>{{ directionCard.interval_days }} days</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">Lapses:</span>
+                    <span>{{ directionCard.lapse_count }}</span>
+                  </div>
+                  <div class="stat-item" v-if="directionCard.next_due_at">
+                    <span class="stat-label">Next Due:</span>
+                    <span>{{ formatDate(directionCard.next_due_at) }}</span>
+                  </div>
+                  <div class="stat-item" v-if="directionCard.last_review_at">
+                    <span class="stat-label">Last Review:</span>
+                    <span>{{ formatDate(directionCard.last_review_at) }}</span>
+                  </div>
+                  <div class="stat-item" v-if="directionCard.last_quality !== null">
+                    <span class="stat-label">Last Quality:</span>
+                    <span>{{ directionCard.last_quality }}</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -232,12 +259,86 @@
         </div>
       </div>
     </div>
+
+    <!-- Edit Card Modal -->
+    <div v-if="showEditCardModal && cardToEdit" class="modal" @click.self="closeEditCardModal">
+      <div class="modal-content modal-large">
+        <div class="modal-header">
+          <h3>Edit Training Card (Sense {{ cardToEdit.sense_index }})</h3>
+          <button @click="closeEditCardModal" class="btn-close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <form @submit.prevent="saveCard" class="edit-form">
+            <div class="form-group">
+              <label>Word RU:</label>
+              <input v-model="editForm.word_ru" type="text" required class="form-input" />
+            </div>
+            <div class="form-group">
+              <label>Meaning EN:</label>
+              <textarea v-model="editForm.meaning_en" required class="form-textarea" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Example EN:</label>
+              <textarea v-model="editForm.example_en" class="form-textarea" rows="2"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Example RU:</label>
+              <textarea v-model="editForm.example_ru" class="form-textarea" rows="2"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Transcription:</label>
+              <input v-model="editForm.transcription" type="text" class="form-input" />
+            </div>
+            <div class="form-group">
+              <label>Distractors RU:</label>
+              <div class="distractors-list">
+                <input v-model="editForm.distractors_ru[0]" type="text" class="form-input" placeholder="Option 1" />
+                <input v-model="editForm.distractors_ru[1]" type="text" class="form-input" placeholder="Option 2" />
+                <input v-model="editForm.distractors_ru[2]" type="text" class="form-input" placeholder="Option 3" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Distractors EN:</label>
+              <div class="distractors-list">
+                <input v-model="editForm.distractors_en[0]" type="text" class="form-input" placeholder="Option 1" />
+                <input v-model="editForm.distractors_en[1]" type="text" class="form-input" placeholder="Option 2" />
+                <input v-model="editForm.distractors_en[2]" type="text" class="form-input" placeholder="Option 3" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Hint:</label>
+              <input v-model="editForm.hint" type="text" class="form-input" />
+            </div>
+            <div class="modal-actions">
+              <button type="submit" class="btn btn-primary">Save</button>
+              <button type="button" @click="closeEditCardModal" class="btn btn-secondary">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete Card Confirmation Modal -->
+    <div v-if="showDeleteCardConfirm && cardToDelete" class="modal" @click.self="closeDeleteCardConfirm">
+      <div class="modal-content">
+        <h3>Confirm Delete</h3>
+        <p>Are you sure you want to delete training card for "{{ cardToDelete.word_ru }}" (Sense {{ cardToDelete.sense_index }})?</p>
+        <p class="warning-text">This will delete the training card and all associated user cards. This action cannot be undone.</p>
+        <div class="modal-actions">
+          <button @click="deleteCard" class="btn btn-danger">Delete</button>
+          <button @click="closeDeleteCardConfirm" class="btn btn-secondary">Cancel</button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { apiClient } from '../api/client'
+import { useAuth } from '../composables/useAuth'
+
+const { isAdmin } = useAuth()
 
 interface VocabWord {
   word_en: string
@@ -281,6 +382,21 @@ interface CardDetail {
   review_count: number
 }
 
+interface TrainingCard {
+  id: number
+  word_card_id: number
+  word_en: string
+  transcription: string
+  sense_index: number
+  word_ru: string
+  meaning_en: string
+  example_en: string
+  example_ru: string
+  distractors_ru: string
+  distractors_en: string
+  hint: string
+}
+
 const words = ref<VocabWord[]>([])
 const loading = ref(true)
 const searchQuery = ref('')
@@ -301,6 +417,21 @@ const showCardsModal = ref(false)
 const selectedWord = ref('')
 const cards = ref<CardDetail[]>([])
 const cardsLoading = ref(false)
+
+const showEditCardModal = ref(false)
+const showDeleteCardConfirm = ref(false)
+const cardToEdit = ref<{ training_card_id: number; sense_index: number; word_ru: string; meaning_en: string; example_en: string; example_ru: string; transcription: string } | null>(null)
+const cardToDelete = ref<{ training_card_id: number; sense_index: number; word_ru: string } | null>(null)
+const editForm = ref({
+  word_ru: '',
+  meaning_en: '',
+  example_en: '',
+  example_ru: '',
+  transcription: '',
+  distractors_ru: ['', '', ''],
+  distractors_en: ['', '', ''],
+  hint: ''
+})
 
 onMounted(async () => {
   await loadVocab()
@@ -411,10 +542,212 @@ const closeCardsModal = () => {
   cards.value = []
 }
 
+// Group cards by sense_index
+interface SenseGroup {
+  sense_index: number
+  word_ru: string
+  meaning_en: string
+  example_en: string
+  example_ru: string
+  transcription: string
+  directions: CardDetail[]
+}
+
+const groupedCards = computed((): SenseGroup[] => {
+  const groups = new Map<number, SenseGroup>()
+  
+  for (const card of cards.value) {
+    if (!groups.has(card.sense_index)) {
+      groups.set(card.sense_index, {
+        sense_index: card.sense_index,
+        word_ru: card.word_ru,
+        meaning_en: card.meaning_en,
+        example_en: card.example_en,
+        example_ru: card.example_ru,
+        transcription: card.transcription,
+        directions: []
+      })
+    }
+    
+    const group = groups.get(card.sense_index)!
+    group.directions.push(card)
+  }
+  
+  // Sort by sense_index and sort directions within each group
+  return Array.from(groups.values())
+    .sort((a, b) => a.sense_index - b.sense_index)
+    .map(group => ({
+      ...group,
+      directions: group.directions.sort((a, b) => {
+        // Sort directions: EN→RU first, then RU→EN
+        if (a.direction === 'en_ru' && b.direction === 'ru_en') return -1
+        if (a.direction === 'ru_en' && b.direction === 'en_ru') return 1
+        return 0
+      })
+    }))
+})
+
 const formatDate = (dateStr: string | null) => {
   if (!dateStr) return '—'
   const date = new Date(dateStr)
   return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+}
+
+const editCard = async (senseGroup: SenseGroup) => {
+  // Get training_card_id from first direction card
+  if (senseGroup.directions.length === 0) return
+  
+  const trainingCardId = senseGroup.directions[0].training_card_id
+  
+  cardToEdit.value = {
+    training_card_id: trainingCardId,
+    sense_index: senseGroup.sense_index,
+    word_ru: senseGroup.word_ru,
+    meaning_en: senseGroup.meaning_en,
+    example_en: senseGroup.example_en || '',
+    example_ru: senseGroup.example_ru || '',
+    transcription: senseGroup.transcription || ''
+  }
+  
+  // Load full card data to get distractors and hint
+  try {
+    const data: { word_en: string, cards: TrainingCard[] } = await apiClient.request(`/app/admin/training/${selectedWord.value}`)
+    const card = data.cards.find(c => c.id === trainingCardId)
+    
+    // Parse distractors from JSON arrays
+    let distractorsRU: string[] = ['', '', '']
+    let distractorsEN: string[] = ['', '', '']
+    
+    if (card?.distractors_ru) {
+      try {
+        // Handle both string and already parsed array
+        let parsed: any
+        if (typeof card.distractors_ru === 'string') {
+          parsed = JSON.parse(card.distractors_ru)
+        } else {
+          parsed = card.distractors_ru
+        }
+        if (Array.isArray(parsed)) {
+          distractorsRU = [...parsed, '', '', ''].slice(0, 3)
+        }
+      } catch (e) {
+        console.error('Failed to parse distractors_ru:', e, 'Value:', card.distractors_ru)
+      }
+    }
+    
+    if (card?.distractors_en) {
+      try {
+        // Handle both string and already parsed array
+        let parsed: any
+        if (typeof card.distractors_en === 'string') {
+          parsed = JSON.parse(card.distractors_en)
+        } else {
+          parsed = card.distractors_en
+        }
+        if (Array.isArray(parsed)) {
+          distractorsEN = [...parsed, '', '', ''].slice(0, 3)
+        }
+      } catch (e) {
+        console.error('Failed to parse distractors_en:', e, 'Value:', card.distractors_en)
+      }
+    }
+    
+    editForm.value = {
+      word_ru: senseGroup.word_ru,
+      meaning_en: senseGroup.meaning_en,
+      example_en: senseGroup.example_en || '',
+      example_ru: senseGroup.example_ru || '',
+      transcription: senseGroup.transcription || '',
+      distractors_ru: distractorsRU,
+      distractors_en: distractorsEN,
+      hint: card?.hint || ''
+    }
+  } catch (error) {
+    console.error('Failed to load card details:', error)
+    // Use basic data if loading fails
+    editForm.value = {
+      word_ru: senseGroup.word_ru,
+      meaning_en: senseGroup.meaning_en,
+      example_en: senseGroup.example_en || '',
+      example_ru: senseGroup.example_ru || '',
+      transcription: senseGroup.transcription || '',
+      distractors_ru: ['', '', ''],
+      distractors_en: ['', '', ''],
+      hint: ''
+    }
+  }
+  
+  showEditCardModal.value = true
+}
+
+const confirmDeleteCard = (senseGroup: SenseGroup) => {
+  if (senseGroup.directions.length === 0) return
+  
+  cardToDelete.value = {
+    training_card_id: senseGroup.directions[0].training_card_id,
+    sense_index: senseGroup.sense_index,
+    word_ru: senseGroup.word_ru
+  }
+  
+  showDeleteCardConfirm.value = true
+}
+
+const saveCard = async () => {
+  if (!cardToEdit.value) return
+  
+  try {
+    // Convert distractors arrays to JSON
+    const distractorsRU = JSON.stringify(editForm.value.distractors_ru.filter(v => v.trim() !== ''))
+    const distractorsEN = JSON.stringify(editForm.value.distractors_en.filter(v => v.trim() !== ''))
+    
+    const params = new URLSearchParams()
+    params.append('word_ru', editForm.value.word_ru || '')
+    params.append('meaning_en', editForm.value.meaning_en || '')
+    params.append('example_en', editForm.value.example_en || '')
+    params.append('example_ru', editForm.value.example_ru || '')
+    params.append('transcription', editForm.value.transcription || '')
+    params.append('distractors_ru', distractorsRU)
+    params.append('distractors_en', distractorsEN)
+    params.append('hint', editForm.value.hint || '')
+    
+    await apiClient.request(`/app/admin/training/card/${cardToEdit.value.training_card_id}`, { 
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: params.toString()
+    })
+    showEditCardModal.value = false
+    cardToEdit.value = null
+    await showCards(selectedWord.value) // Reload cards
+    await loadVocab() // Reload words list
+  } catch (error) {
+    console.error('Failed to save card:', error)
+    alert('Failed to save card')
+  }
+}
+
+const deleteCard = async () => {
+  if (!cardToDelete.value) return
+  
+  try {
+    await apiClient.request(`/app/admin/training/card/${cardToDelete.value.training_card_id}`, { method: 'DELETE' })
+    showDeleteCardConfirm.value = false
+    cardToDelete.value = null
+    await showCards(selectedWord.value) // Reload cards
+    await loadVocab() // Reload words list
+  } catch (error) {
+    console.error('Failed to delete card:', error)
+    alert('Failed to delete card')
+  }
+}
+
+const closeEditCardModal = () => {
+  showEditCardModal.value = false
+  cardToEdit.value = null
+}
+
+const closeDeleteCardConfirm = () => {
+  showDeleteCardConfirm.value = false
+  cardToDelete.value = null
 }
 </script>
 
@@ -621,12 +954,147 @@ const formatDate = (dateStr: string | null) => {
   display: flex;
   gap: 10px;
   margin-top: 20px;
+  justify-content: flex-end;
+}
+
+.modal-body {
+  margin-top: 20px;
+}
+
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+.form-input,
+.form-textarea {
+  padding: 8px 12px;
+  border: 1px solid var(--input-border);
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+  font-family: inherit;
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+.warning-text {
+  color: var(--color-danger, #ef4444);
+  font-size: 13px;
+  margin-top: 8px;
+}
+
+.distractors-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+@media (min-width: 768px) {
+  .distractors-list {
+    flex-direction: row;
+    gap: 12px;
+  }
+  
+  .distractors-list input {
+    flex: 1;
+    min-width: 0;
+  }
 }
 
 .cards-list {
   display: flex;
   flex-direction: column;
+  gap: 24px;
+}
+
+.sense-group {
+  border: 1px solid var(--table-border, rgba(0, 0, 0, 0.1));
+  border-radius: 8px;
+  padding: 16px;
+  background: var(--card-bg);
+}
+
+.sense-header {
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--table-border, rgba(0, 0, 0, 0.1));
+}
+
+.sense-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.sense-header h4 {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.sense-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.word-en {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 16px;
+}
+
+.word-ru {
+  font-weight: 600;
+  color: var(--color-primary);
+  font-size: 18px;
+}
+
+.sense-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--table-border, rgba(0, 0, 0, 0.1));
+}
+
+.directions-list {
+  display: flex;
+  flex-direction: column;
   gap: 16px;
+}
+
+.direction-item {
+  padding: 12px;
+  background: var(--input-bg, rgba(0, 0, 0, 0.02));
+  border-radius: 6px;
+  border-left: 3px solid var(--color-primary);
+}
+
+.direction-header {
+  margin-bottom: 12px;
 }
 
 .card-item {

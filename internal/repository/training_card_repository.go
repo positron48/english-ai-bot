@@ -121,12 +121,15 @@ func (r *TrainingCardRepository) GetTrainingCardsByWordCardID(wordCardID int64) 
 	return cards, nil
 }
 
-// GetWordCardsWithoutTrainingCards gets word cards that don't have training cards yet
+// GetWordCardsWithoutTrainingCards gets word cards that don't have training cards yet and haven't been processed with an error
 func (r *TrainingCardRepository) GetWordCardsWithoutTrainingCards(limit int) ([]*models.WordCard, error) {
-	query := `SELECT wc.id, wc.word, wc.definition, wc.created_at, wc.updated_at
+	query := `SELECT wc.id, wc.word, wc.definition, 
+			  COALESCE(wc.processed_at, '') as processed_at,
+			  COALESCE(wc.processing_error, '') as processing_error,
+			  wc.created_at, wc.updated_at
 			  FROM word_cards wc
 			  LEFT JOIN training_cards tc ON wc.id = tc.word_card_id
-			  WHERE tc.id IS NULL
+			  WHERE tc.id IS NULL AND wc.processed_at IS NULL
 			  ORDER BY wc.created_at
 			  LIMIT ?`
 
@@ -139,15 +142,23 @@ func (r *TrainingCardRepository) GetWordCardsWithoutTrainingCards(limit int) ([]
 	var cards []*models.WordCard
 	for rows.Next() {
 		var card models.WordCard
-		var createdAt, updatedAt string
+		var createdAt, updatedAt, processedAtStr, processingErrorStr string
 
-		err := rows.Scan(&card.ID, &card.Word, &card.Definition, &createdAt, &updatedAt)
+		err := rows.Scan(&card.ID, &card.Word, &card.Definition, &processedAtStr, &processingErrorStr, &createdAt, &updatedAt)
 		if err != nil {
 			return nil, fmt.Errorf("failed to scan word card: %w", err)
 		}
 
 		card.CreatedAt, _ = time.Parse("2006-01-02 15:04:05", createdAt)
 		card.UpdatedAt, _ = time.Parse("2006-01-02 15:04:05", updatedAt)
+
+		if processedAtStr != "" {
+			processedAt, _ := time.Parse("2006-01-02 15:04:05", processedAtStr)
+			card.ProcessedAt = &processedAt
+		}
+		if processingErrorStr != "" {
+			card.ProcessingError = &processingErrorStr
+		}
 
 		cards = append(cards, &card)
 	}
@@ -241,5 +252,54 @@ func (r *TrainingCardRepository) GetTrainingCardsByWordEN(wordEN string) ([]*mod
 	}
 
 	return cards, nil
+}
+
+// UpdateTrainingCard updates a training card
+func (r *TrainingCardRepository) UpdateTrainingCard(card *models.TrainingCard) error {
+	query := `UPDATE training_cards SET
+			  word_ru = ?, meaning_en = ?, example_en = ?, example_ru = ?,
+			  transcription = ?, distractors_ru = ?, distractors_en = ?, hint = ?
+			  WHERE id = ?`
+
+	_, err := r.db.Exec(query,
+		card.WordRU, card.MeaningEN, card.ExampleEN, card.ExampleRU,
+		card.Transcription, card.DistractorsRU, card.DistractorsEN, card.Hint,
+		card.ID,
+	)
+	if err != nil {
+		return fmt.Errorf("failed to update training card: %w", err)
+	}
+
+	r.logger.Debug("updated training card",
+		zap.Int64("id", card.ID),
+		zap.String("word", card.WordEN),
+		zap.Int("sense_index", card.SenseIndex),
+	)
+
+	return nil
+}
+
+// DeleteTrainingCard deletes a training card by ID
+func (r *TrainingCardRepository) DeleteTrainingCard(id int64) error {
+	query := `DELETE FROM training_cards WHERE id = ?`
+	result, err := r.db.Exec(query, id)
+	if err != nil {
+		return fmt.Errorf("failed to delete training card: %w", err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("failed to get rows affected: %w", err)
+	}
+
+	if rowsAffected == 0 {
+		return fmt.Errorf("training card not found")
+	}
+
+	r.logger.Info("deleted training card",
+		zap.Int64("id", id),
+	)
+
+	return nil
 }
 

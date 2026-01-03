@@ -161,7 +161,31 @@ func (w *TrainingWorker) processCard(ctx context.Context, wordCard *models.WordC
 	// Parse response
 	var trainingResp models.TrainingCardResponse
 	if err := json.Unmarshal([]byte(response), &trainingResp); err != nil {
+		// Parsing error - don't mark as processed, allow retry
 		return fmt.Errorf("failed to parse LLM response: %w", err)
+	}
+
+	// Check for error from LLM (e.g., word is not English, proper noun, non-existent)
+	if trainingResp.Error != "" {
+		// LLM explicitly rejected the word - mark as processed with error
+		// This is not a transient error, so we mark it to prevent infinite retries
+		// Don't trigger circuit breaker as this is expected behavior
+		err := w.wordRepo.MarkWordCardProcessedError(wordCard.ID, trainingResp.Error)
+		if err != nil {
+			w.logger.Error("failed to mark word card as processed with error",
+				zap.Int64("word_card_id", wordCard.ID),
+				zap.String("error", trainingResp.Error),
+				zap.Error(err),
+			)
+			// Still return nil to avoid circuit breaker, but log the error
+		} else {
+			w.logger.Info("word card rejected by LLM",
+				zap.String("word", wordCard.Word),
+				zap.String("error", trainingResp.Error),
+			)
+		}
+		// Return nil (not an error) to avoid triggering circuit breaker
+		return nil
 	}
 
 	// Validate response

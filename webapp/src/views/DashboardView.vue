@@ -138,12 +138,12 @@
       <!-- Words Added Chart -->
       <div class="weekly-chart-section">
         <div class="card">
-          <h2>Words Added (7 days)</h2>
+          <h2>Cards Added (7 days)</h2>
           <div v-if="stats.wordsAddedStats && stats.wordsAddedStats.length > 0" class="chart-container">
             <canvas ref="wordsChartCanvas"></canvas>
           </div>
           <div v-else class="chart-empty">
-            <p>No words added in the last week</p>
+            <p>No cards added in the last week</p>
           </div>
         </div>
       </div>
@@ -307,9 +307,19 @@ const goToTraining = () => {
   router.push('/training')
 }
 
+// Format date to YYYY-MM-DD in local timezone (not UTC)
+const formatDateLocal = (date: Date): string => {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
 const formatDayLabel = (dayString: string): string => {
-  const date = new Date(dayString)
+  const date = new Date(dayString + 'T00:00:00') // Parse as local date
   const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  date.setHours(0, 0, 0, 0)
   const diffTime = today.getTime() - date.getTime()
   const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))
   
@@ -355,11 +365,12 @@ const updateChart = () => {
     dataMap.set(stat.day, { total: stat.cards_completed, correct: stat.cards_correct || 0 })
   })
   
-  // Generate last 7 days
+  // Generate last 7 days in local timezone
   for (let i = 6; i >= 0; i--) {
     const date = new Date(today)
     date.setDate(date.getDate() - i)
-    const dayStr = date.toISOString().split('T')[0]
+    date.setHours(0, 0, 0, 0) // Reset to start of day in local time
+    const dayStr = formatDateLocal(date)
     days.push(dayStr)
     
     const data = dataMap.get(dayStr) || { total: 0, correct: 0 }
@@ -535,11 +546,12 @@ const updateWordsChart = () => {
     dataMap.set(stat.day, stat.words_added)
   })
   
-  // Generate last 7 days
+  // Generate last 7 days in local timezone
   for (let i = 6; i >= 0; i--) {
     const date = new Date(today)
     date.setDate(date.getDate() - i)
-    const dayStr = date.toISOString().split('T')[0]
+    date.setHours(0, 0, 0, 0) // Reset to start of day in local time
+    const dayStr = formatDateLocal(date)
     days.push(dayStr)
     
     const count = dataMap.get(dayStr) || 0
@@ -581,7 +593,7 @@ const updateWordsChart = () => {
       labels: labels,
       datasets: [
         {
-          label: 'Words Added',
+          label: 'Cards Added',
           data: wordsAddedData,
           backgroundColor: hexToRgba(primaryColor, isDark ? 0.8 : 0.7),
           borderColor: primaryColor,
@@ -620,7 +632,7 @@ const updateWordsChart = () => {
           callbacks: {
             label: function(context) {
               const value = context.parsed.y || 0
-              return `Words added: ${value}`
+              return `Cards added: ${value}`
             },
           }
         }

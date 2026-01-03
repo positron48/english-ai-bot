@@ -195,6 +195,10 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/app/admin", adminAuth(adminGuard(r.handleAdmin)))
 	r.mux.HandleFunc("/app/admin/circuit/reset", adminAuth(adminGuard(r.handleAdminCircuitReset)))
 	r.mux.HandleFunc("/app/admin/training/", adminAuth(adminGuard(r.handleAdminTraining)))
+	r.mux.HandleFunc("/app/admin/training/card/", adminAuth(adminGuard(r.handleAdminTrainingCard)))
+	r.mux.HandleFunc("/app/admin/words", adminAuth(adminGuard(r.handleAdminWords)))
+	r.mux.HandleFunc("/app/admin/words/", adminAuth(adminGuard(r.handleAdminWord)))
+	r.mux.HandleFunc("/app/admin/users", adminAuth(adminGuard(r.handleAdminUsers)))
 }
 
 // corsMiddleware adds CORS headers to allow Swagger UI to make requests

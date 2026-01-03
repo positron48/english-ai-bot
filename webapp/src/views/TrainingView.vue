@@ -1119,6 +1119,11 @@ const resetSession = async () => {
   .training h1.hide-on-mobile {
     display: none;
   }
+  
+  /* Hide option number on mobile */
+  .option-number {
+    display: none;
+  }
 }
 </style>
 

@@ -4,19 +4,19 @@ import "time"
 
 // TrainingCard represents a training card with one sense of a word
 type TrainingCard struct {
-	ID            int64
-	WordCardID    int64
-	WordEN        string
-	Transcription string
-	SenseIndex    int
-	WordRU        string
-	MeaningEN     string
-	ExampleEN     string
-	ExampleRU     string
-	DistractorsRU string // JSON array
-	DistractorsEN string // JSON array
-	Hint          string
-	CreatedAt     time.Time
+	ID            int64     `json:"id"`
+	WordCardID    int64     `json:"word_card_id"`
+	WordEN        string    `json:"word_en"`
+	Transcription string    `json:"transcription"`
+	SenseIndex    int       `json:"sense_index"`
+	WordRU        string    `json:"word_ru"`
+	MeaningEN     string    `json:"meaning_en"`
+	ExampleEN     string    `json:"example_en"`
+	ExampleRU     string    `json:"example_ru"`
+	DistractorsRU string    `json:"distractors_ru"` // JSON array
+	DistractorsEN string    `json:"distractors_en"` // JSON array
+	Hint          string    `json:"hint"`
+	CreatedAt     time.Time `json:"created_at"`
 }
 
 // CardDirection represents the direction of a card (RU→EN or EN→RU)
@@ -136,6 +136,7 @@ type TrainingCardSense struct {
 
 // TrainingCardResponse represents LLM response for training card generation
 type TrainingCardResponse struct {
+	Error         string                `json:"error,omitempty"` // Error message if word is not English
 	WordEN        string                `json:"word_en"`
 	Transcription string                `json:"transcription"`
 	Senses        []TrainingCardSense   `json:"senses"`

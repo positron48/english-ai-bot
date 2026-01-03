@@ -51,6 +51,11 @@ func (db *DB) migrate() error {
 		return fmt.Errorf("failed to migrate training_cards column: %w", err)
 	}
 
+	// Migrate word_cards: add processed_at and processing_error columns if needed
+	if err := db.migrateWordCardsProcessingColumns(); err != nil {
+		return fmt.Errorf("failed to migrate word_cards processing columns: %w", err)
+	}
+
 	queries := []string{
 		// Existing tables
 		`CREATE TABLE IF NOT EXISTS word_cards (
@@ -389,5 +394,63 @@ func (db *DB) recreateTrainingCardsTable() error {
 	}
 
 	db.logger.Info("recreated training_cards table with word_ru column")
+	return nil
+}
+
+// migrateWordCardsProcessingColumns adds processed_at and processing_error columns to word_cards if they don't exist
+func (db *DB) migrateWordCardsProcessingColumns() error {
+	// Check if word_cards table exists
+	var tableExists int
+	err := db.conn.QueryRow(`
+		SELECT COUNT(*) FROM sqlite_master 
+		WHERE type='table' AND name='word_cards'
+	`).Scan(&tableExists)
+	if err != nil {
+		return fmt.Errorf("failed to check table existence: %w", err)
+	}
+
+	if tableExists == 0 {
+		// Table doesn't exist yet, will be created with correct schema
+		return nil
+	}
+
+	// Check if processed_at column exists
+	var processedAtExists int
+	err = db.conn.QueryRow(`
+		SELECT COUNT(*) FROM pragma_table_info('word_cards') 
+		WHERE name='processed_at'
+	`).Scan(&processedAtExists)
+	if err != nil {
+		return fmt.Errorf("failed to check processed_at column existence: %w", err)
+	}
+
+	// Add processed_at column if it doesn't exist
+	if processedAtExists == 0 {
+		_, err = db.conn.Exec(`ALTER TABLE word_cards ADD COLUMN processed_at DATETIME NULL`)
+		if err != nil {
+			return fmt.Errorf("failed to add processed_at column: %w", err)
+		}
+		db.logger.Info("added processed_at column to word_cards")
+	}
+
+	// Check if processing_error column exists
+	var processingErrorExists int
+	err = db.conn.QueryRow(`
+		SELECT COUNT(*) FROM pragma_table_info('word_cards') 
+		WHERE name='processing_error'
+	`).Scan(&processingErrorExists)
+	if err != nil {
+		return fmt.Errorf("failed to check processing_error column existence: %w", err)
+	}
+
+	// Add processing_error column if it doesn't exist
+	if processingErrorExists == 0 {
+		_, err = db.conn.Exec(`ALTER TABLE word_cards ADD COLUMN processing_error TEXT NULL`)
+		if err != nil {
+			return fmt.Errorf("failed to add processing_error column: %w", err)
+		}
+		db.logger.Info("added processing_error column to word_cards")
+	}
+
 	return nil
 }

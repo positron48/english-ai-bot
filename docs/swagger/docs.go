@@ -118,6 +118,240 @@ const docTemplate = `{
                 }
             }
         },
+        "/app/admin/training/card/{id}": {
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Редактирование (PUT) или удаление (DELETE) отдельной тренировочной карточки по ID",
+                "consumes": [
+                    "application/json",
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Управление отдельной тренировочной карточкой",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "ID тренировочной карточки",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Русский перевод слова",
+                        "name": "word_ru",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Английское значение",
+                        "name": "meaning_en",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Пример на английском",
+                        "name": "example_en",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Пример на русском",
+                        "name": "example_ru",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Транскрипция",
+                        "name": "transcription",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Отвлекающие варианты (RU, JSON array)",
+                        "name": "distractors_ru",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Отвлекающие варианты (EN, JSON array)",
+                        "name": "distractors_en",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Подсказка",
+                        "name": "hint",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешная операция",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный запрос",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Неавторизован",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "Доступ запрещен (требуются права администратора)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Карточка не найдена",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Редактирование (PUT) или удаление (DELETE) отдельной тренировочной карточки по ID",
+                "consumes": [
+                    "application/json",
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Управление отдельной тренировочной карточкой",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "ID тренировочной карточки",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Русский перевод слова",
+                        "name": "word_ru",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Английское значение",
+                        "name": "meaning_en",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Пример на английском",
+                        "name": "example_en",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Пример на русском",
+                        "name": "example_ru",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Транскрипция",
+                        "name": "transcription",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Отвлекающие варианты (RU, JSON array)",
+                        "name": "distractors_ru",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Отвлекающие варианты (EN, JSON array)",
+                        "name": "distractors_en",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Подсказка",
+                        "name": "hint",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешная операция",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный запрос",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Неавторизован",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "Доступ запрещен (требуются права администратора)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Карточка не найдена",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/app/admin/training/{word}": {
             "get": {
                 "security": [
@@ -198,7 +432,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Отправляет сообщение в AI чат и получает ответ от AI помощника для изучения языка",
+                "description": "Отправляет сообщение в AI чат и получает ответ от AI помощника для изучения языка. Если сообщение - одно слово, оно будет сохранено в БД и привязано к пользователю (как в телеграм-боте).",
                 "consumes": [
                     "application/x-www-form-urlencoded"
                 ],
@@ -255,7 +489,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Возвращает количество карточек, готовых к повторению (due_count)",
+                "description": "Возвращает расширенную статистику по карточкам и тренировкам",
                 "consumes": [
                     "application/json"
                 ],
@@ -508,7 +742,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Возвращает список всех слов пользователя с статистикой (общее количество карточек, количество готовых к повторению, дата последнего повторения)",
+                "description": "Возвращает список всех слов пользователя с статистикой (общее количество карточек, количество готовых к повторению, дата последнего повторения). Поддерживает пагинацию и поиск.",
                 "consumes": [
                     "application/json"
                 ],
@@ -519,6 +753,26 @@ const docTemplate = `{
                     "Vocab"
                 ],
                 "summary": "Получить список слов",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Поиск по слову",
+                        "name": "search",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Номер страницы (начиная с 1)",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Количество элементов на странице (по умолчанию 25)",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Список слов с статистикой",
@@ -606,6 +860,68 @@ const docTemplate = `{
                         "schema": {
                             "type": "object",
                             "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/app/vocab/{word}/cards": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Возвращает детальную информацию о всех карточках пользователя для указанного слова",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Vocab"
+                ],
+                "summary": "Получить детальную информацию о карточках слова",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Английское слово",
+                        "name": "word",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Детальная информация о карточках",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный запрос",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Неавторизован",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Слово не найдено",
+                        "schema": {
+                            "type": "string"
                         }
                     },
                     "500": {
