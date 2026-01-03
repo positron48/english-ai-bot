@@ -97,13 +97,13 @@ jobs:
         # Linux amd64
         GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -ldflags="-s -w -X main.version=${{ github.ref_name }} -X main.buildTime=$(date -u +%Y-%m-%dT%H:%M:%SZ) -X main.commit=${{ github.sha }}" -o dist/universal-ai-bot-linux_amd64 ./cmd/bot
         # Linux arm64
-        GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -ldflags="-s -w -X main.version=${{ github.ref_name }} -X main.buildTime=$(date -u +%Y-%m-%dT%H:%M:%SZ) -X main.commit=${{ github.sha }}" -o dist/universal-ai-bot-linux_arm64 ./cmd/bot
+        # GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -ldflags="-s -w -X main.version=${{ github.ref_name }} -X main.buildTime=$(date -u +%Y-%m-%dT%H:%M:%SZ) -X main.commit=${{ github.sha }}" -o dist/universal-ai-bot-linux_arm64 ./cmd/bot
         # Windows amd64
-        GOOS=windows GOARCH=amd64 CGO_ENABLED=0 go build -ldflags="-s -w -X main.version=${{ github.ref_name }} -X main.buildTime=$(date -u +%Y-%m-%dT%H:%M:%SZ) -X main.commit=${{ github.sha }}" -o dist/universal-ai-bot-windows_amd64.exe ./cmd/bot
+        # GOOS=windows GOARCH=amd64 CGO_ENABLED=0 go build -ldflags="-s -w -X main.version=${{ github.ref_name }} -X main.buildTime=$(date -u +%Y-%m-%dT%H:%M:%SZ) -X main.commit=${{ github.sha }}" -o dist/universal-ai-bot-windows_amd64.exe ./cmd/bot
         # macOS amd64
-        GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 go build -ldflags="-s -w -X main.version=${{ github.ref_name }} -X main.buildTime=$(date -u +%Y-%m-%dT%H:%M:%SZ) -X main.commit=${{ github.sha }}" -o dist/universal-ai-bot-darwin_amd64 ./cmd/bot
+        # GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 go build -ldflags="-s -w -X main.version=${{ github.ref_name }} -X main.buildTime=$(date -u +%Y-%m-%dT%H:%M:%SZ) -X main.commit=${{ github.sha }}" -o dist/universal-ai-bot-darwin_amd64 ./cmd/bot
         # macOS arm64
-        GOOS=darwin GOARCH=arm64 CGO_ENABLED=0 go build -ldflags="-s -w -X main.version=${{ github.ref_name }} -X main.buildTime=$(date -u +%Y-%m-%dT%H:%M:%SZ) -X main.commit=${{ github.sha }}" -o dist/universal-ai-bot-darwin_arm64 ./cmd/bot
+        # GOOS=darwin GOARCH=arm64 CGO_ENABLED=0 go build -ldflags="-s -w -X main.version=${{ github.ref_name }} -X main.buildTime=$(date -u +%Y-%m-%dT%H:%M:%SZ) -X main.commit=${{ github.sha }}" -o dist/universal-ai-bot-darwin_arm64 ./cmd/bot
         chmod +x dist/universal-ai-bot-*
         ls -la dist/
 
@@ -123,13 +123,13 @@ jobs:
           
           ### Downloads
           - `universal-ai-bot-linux_amd64` - Linux x86_64
-          - `universal-ai-bot-linux_arm64` - Linux ARM64
-          - `universal-ai-bot-windows_amd64.exe` - Windows x86_64
-          - `universal-ai-bot-darwin_amd64` - macOS x86_64
-          - `universal-ai-bot-darwin_arm64` - macOS ARM64
+          # - `universal-ai-bot-linux_arm64` - Linux ARM64
+          # - `universal-ai-bot-windows_amd64.exe` - Windows x86_64
+          # - `universal-ai-bot-darwin_amd64` - macOS x86_64
+          # - `universal-ai-bot-darwin_arm64` - macOS ARM64
           
           ### Installation
-          1. Download the appropriate binary for your system
+          1. Download the binary
           2. Make it executable: `chmod +x universal-ai-bot-linux_amd64`
           3. Create `.env` file with your configuration
           4. Run: `./universal-ai-bot-linux_amd64`
