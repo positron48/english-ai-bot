@@ -16,11 +16,11 @@
         <div class="stat-card stat-card-primary stat-card-clickable" @click="goToTraining">
           <div class="stat-header">
             <div class="stat-icon">📚</div>
-            <h3>Ready for Review</h3>
+            <h3>Available for Training</h3>
           </div>
           <div class="stat-value-row">
-            <p class="stat-number">{{ stats.dueCount }}</p>
-            <p class="stat-label">Cards due</p>
+            <p class="stat-number">{{ stats.availableForTraining }}</p>
+            <p class="stat-label">Cards available</p>
           </div>
         </div>
 
@@ -75,13 +75,13 @@
             
             <div class="progress-item">
               <div class="progress-header">
-                <span>Available for Training</span>
-                <span class="progress-value">{{ stats.availableForTraining }}</span>
+                <span>Ready for Review</span>
+                <span class="progress-value">{{ stats.dueCount }}</span>
               </div>
               <div class="progress-bar">
                 <div 
                   class="progress-fill progress-fill-primary" 
-                  :style="{ width: stats.totalCards > 0 ? (stats.availableForTraining / stats.totalCards * 100) + '%' : '0%' }"
+                  :style="{ width: stats.totalCards > 0 ? (stats.dueCount / stats.totalCards * 100) + '%' : '0%' }"
                 ></div>
               </div>
             </div>
