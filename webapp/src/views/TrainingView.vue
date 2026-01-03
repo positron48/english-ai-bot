@@ -28,6 +28,19 @@
 
     <div v-if="loading" class="loading">Loading...</div>
 
+    <!-- Network error notification -->
+    <div v-if="networkError" class="network-error-notification">
+      <div class="network-error-content">
+        <span class="network-error-icon">⚠️</span>
+        <div class="network-error-text">
+          <div class="network-error-title">Проблемы с сетью</div>
+          <div class="network-error-message">
+            {{ networkErrorRetrying ? `Попытка восстановить связь (${networkErrorAttempt}/${networkErrorMaxAttempts})...` : 'Не удалось подключиться к серверу' }}
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div v-if="sessionActive && currentCard" class="card">
       <div class="training-progress" v-if="cardIndex > 0 && totalCards > 0">
         <p>Card {{ cardIndex }} of {{ totalCards }}</p>
@@ -177,6 +190,10 @@ const stats = ref({
   totalCards: 0,
   availableForTraining: 0
 })
+const networkError = ref(false)
+const networkErrorRetrying = ref(false)
+const networkErrorAttempt = ref(0)
+const networkErrorMaxAttempts = ref(3)
 
 const estimatedTime = computed(() => {
   const cards = stats.value.availableForTraining
@@ -330,6 +347,20 @@ const processedQuestion = computed(() => {
 })
 
 onMounted(async () => {
+  // Set up network error callback
+  apiClient.setNetworkErrorCallback((isRetrying: boolean, attempt: number, maxAttempts: number) => {
+    networkError.value = true
+    networkErrorRetrying.value = isRetrying
+    networkErrorAttempt.value = attempt
+    networkErrorMaxAttempts.value = maxAttempts
+  })
+  
+  // Set up network success callback to hide error notification
+  apiClient.setNetworkSuccessCallback(() => {
+    networkError.value = false
+    networkErrorRetrying.value = false
+  })
+  
   await loadStats()
   await checkCurrentSession()
 })
@@ -443,8 +474,13 @@ const revealOptions = async (isEarly: boolean = false) => {
     })
     options.value = data.options
     optionsShown.value = true
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to reveal options:', error)
+    // Network error is already handled by callback, but we should handle other errors
+    if (!error.isNetworkError) {
+      // For non-network errors, show a simple message
+      alert('Не удалось загрузить варианты ответов. Попробуйте обновить страницу.')
+    }
   }
 }
 
@@ -527,8 +563,13 @@ const submitAnswer = async (optionIndex: number) => {
         nextCard()
       }, 1000) // Small delay to show feedback
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to submit answer:', error)
+    // Network error is already handled by callback
+    if (!error.isNetworkError) {
+      // For non-network errors, show a simple message
+      alert('Не удалось отправить ответ. Попробуйте еще раз.')
+    }
   } finally {
     answering.value = false
   }
@@ -622,6 +663,11 @@ const nextCard = async () => {
       await loadStats() // Refresh stats after completion
     } else {
       console.error('Failed to get next card:', error)
+      // Network error is already handled by callback
+      if (!error.isNetworkError) {
+        // For non-network errors, show a simple message
+        alert('Не удалось загрузить следующую карточку. Попробуйте обновить страницу.')
+      }
     }
   }
 }
@@ -961,6 +1007,60 @@ const resetSession = async () => {
 
 .completion-stats .stat-value.correct-stat {
   color: var(--color-success, #10b981);
+}
+
+.network-error-notification {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: white;
+  padding: 16px 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+  animation: slideDown 0.3s ease-out;
+  max-width: 90%;
+  width: auto;
+  min-width: 300px;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.network-error-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.network-error-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.network-error-text {
+  flex: 1;
+}
+
+.network-error-title {
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.network-error-message {
+  font-size: 14px;
+  opacity: 0.95;
 }
 </style>
 

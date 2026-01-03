@@ -17,12 +17,92 @@ interface RefreshResponse {
   token_type: string
 }
 
+// Network error callback type
+type NetworkErrorCallback = (isRetrying: boolean, attempt: number, maxAttempts: number) => void
+type NetworkSuccessCallback = () => void
+
 class ApiClient {
   private accessToken: string | null = null
   private refreshToken: string | null = null
+  private networkErrorCallback: NetworkErrorCallback | null = null
+  private networkSuccessCallback: NetworkSuccessCallback | null = null
+  private maxRetries: number = 3
+  private retryDelayMs: number = 1000 // Initial delay
 
   constructor() {
     this.loadTokens()
+  }
+
+  setNetworkErrorCallback(callback: NetworkErrorCallback | null) {
+    this.networkErrorCallback = callback
+  }
+
+  setNetworkSuccessCallback(callback: NetworkSuccessCallback | null) {
+    this.networkSuccessCallback = callback
+  }
+
+  setMaxRetries(maxRetries: number) {
+    this.maxRetries = maxRetries
+  }
+
+  private isNetworkError(error: any): boolean {
+    // Check for network errors
+    if (error.name === 'TypeError' && 
+        (error.message?.includes('Failed to fetch') || 
+         error.message?.includes('NetworkError') ||
+         error.message?.includes('network'))) {
+      return true
+    }
+    
+    // Check for fetch errors (no response)
+    if (error.message?.includes('Failed to fetch') || 
+        error.message?.includes('NetworkError') ||
+        error.isNetworkError) {
+      return true
+    }
+    
+    return false
+  }
+
+  private async sleep(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms))
+  }
+
+  private async retryWithBackoff<T>(
+    fn: () => Promise<T>,
+    url: string,
+    attempt: number = 1
+  ): Promise<T> {
+    try {
+      const result = await fn()
+      // Notify about successful request (hide error notification)
+      // Call on any successful attempt to hide notification after retry
+      if (this.networkSuccessCallback) {
+        this.networkSuccessCallback()
+      }
+      return result
+    } catch (error: any) {
+      const isNetworkErr = this.isNetworkError(error)
+      
+      // Only retry network errors, not HTTP errors (4xx, 5xx)
+      if (!isNetworkErr || attempt >= this.maxRetries) {
+        if (isNetworkErr && this.networkErrorCallback) {
+          this.networkErrorCallback(false, attempt, this.maxRetries)
+        }
+        throw error
+      }
+
+      // Notify about retry
+      if (this.networkErrorCallback) {
+        this.networkErrorCallback(true, attempt, this.maxRetries)
+      }
+
+      // Exponential backoff: delay = initialDelay * 2^(attempt-1)
+      const delay = this.retryDelayMs * Math.pow(2, attempt - 1)
+      await this.sleep(delay)
+
+      return this.retryWithBackoff(fn, url, attempt + 1)
+    }
   }
 
   private loadTokens() {
@@ -82,125 +162,156 @@ class ApiClient {
   }
 
   async request<T>(url: string, options: RequestInit = {}): Promise<T> {
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-      ...(options.headers as Record<string, string> || {}),
-    }
+    return this.retryWithBackoff(async () => {
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+        ...(options.headers as Record<string, string> || {}),
+      }
 
-    if (this.accessToken) {
-      headers['Authorization'] = `Bearer ${this.accessToken}`
-    }
-
-    let response = await fetch(`${API_BASE}${url}`, {
-      ...options,
-      headers,
-    })
-
-    if (response.status === 401 && this.refreshToken) {
-      const refreshed = await this.refreshAccessToken()
-      if (refreshed) {
+      if (this.accessToken) {
         headers['Authorization'] = `Bearer ${this.accessToken}`
+      }
+
+      let response: Response
+      try {
         response = await fetch(`${API_BASE}${url}`, {
           ...options,
           headers,
         })
-      } else {
-        this.clearTokens()
-        throw new Error('Unauthorized')
+      } catch (fetchError: any) {
+        // Wrap fetch errors as network errors
+        const networkError = new Error(fetchError.message || 'Network error')
+        ;(networkError as any).name = fetchError.name || 'TypeError'
+        ;(networkError as any).isNetworkError = true
+        throw networkError
       }
-    }
-
-    if (!response.ok) {
-      const errorText = await response.text()
-      let errorMessage = `API error: ${response.status} ${errorText}`
-      
-      // Try to parse JSON error if possible
-      try {
-        const errorJson = JSON.parse(errorText)
-        if (errorJson.message) {
-          errorMessage = errorJson.message
-        } else if (errorJson.error) {
-          errorMessage = errorJson.error
-        }
-      } catch {
-        // Not JSON, use text as-is
-      }
-      
-      const error = new Error(errorMessage)
-      ;(error as any).status = response.status
-      ;(error as any).response = response
-      throw error
-    }
-
-    return response.json()
-  }
-
-  async requestFormData<T>(url: string, formData: FormData): Promise<T> {
-    // Convert FormData to URLSearchParams for application/x-www-form-urlencoded
-    const params = new URLSearchParams()
-    formData.forEach((value, key) => {
-      params.append(key, value.toString())
-    })
-
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    }
-
-    if (this.accessToken) {
-      headers['Authorization'] = `Bearer ${this.accessToken}`
-    }
-
-    const fullUrl = `${API_BASE}${url}`
-
-    let response: Response
-    try {
-      response = await fetch(fullUrl, {
-        method: 'POST',
-        headers,
-        body: params.toString(),
-      })
-    } catch (fetchError: any) {
-      throw fetchError
-    }
 
       if (response.status === 401 && this.refreshToken) {
         const refreshed = await this.refreshAccessToken()
         if (refreshed) {
           headers['Authorization'] = `Bearer ${this.accessToken}`
-          response = await fetch(fullUrl, {
-            method: 'POST',
-            headers,
-            body: params.toString(),
-          })
+          try {
+            response = await fetch(`${API_BASE}${url}`, {
+              ...options,
+              headers,
+            })
+          } catch (fetchError: any) {
+            const networkError = new Error(fetchError.message || 'Network error')
+            ;(networkError as any).name = fetchError.name || 'TypeError'
+            ;(networkError as any).isNetworkError = true
+            throw networkError
+          }
         } else {
           this.clearTokens()
           throw new Error('Unauthorized')
         }
       }
 
-    if (!response.ok) {
-      const errorText = await response.text()
-      let errorMessage = `API error: ${response.status} ${errorText}`
-      
-      // Try to parse JSON error if possible
-      try {
-        const errorJson = JSON.parse(errorText)
-        if (errorJson.message) {
-          errorMessage = errorJson.message
-        } else if (errorJson.error) {
-          errorMessage = errorJson.error
+      if (!response.ok) {
+        const errorText = await response.text()
+        let errorMessage = `API error: ${response.status} ${errorText}`
+        
+        // Try to parse JSON error if possible
+        try {
+          const errorJson = JSON.parse(errorText)
+          if (errorJson.message) {
+            errorMessage = errorJson.message
+          } else if (errorJson.error) {
+            errorMessage = errorJson.error
+          }
+        } catch {
+          // Not JSON, use text as-is
         }
-      } catch {
-        // Not JSON, use text as-is
+        
+        const error = new Error(errorMessage)
+        ;(error as any).status = response.status
+        ;(error as any).response = response
+        throw error
       }
-      
-      const error = new Error(errorMessage)
-      ;(error as any).status = response.status
-      ;(error as any).response = response
-      throw error
-    }
 
-    return response.json()
+      return response.json()
+    }, url)
+  }
+
+  async requestFormData<T>(url: string, formData: FormData): Promise<T> {
+    return this.retryWithBackoff(async () => {
+      // Convert FormData to URLSearchParams for application/x-www-form-urlencoded
+      const params = new URLSearchParams()
+      formData.forEach((value, key) => {
+        params.append(key, value.toString())
+      })
+
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      }
+
+      if (this.accessToken) {
+        headers['Authorization'] = `Bearer ${this.accessToken}`
+      }
+
+      const fullUrl = `${API_BASE}${url}`
+
+      let response: Response
+      try {
+        response = await fetch(fullUrl, {
+          method: 'POST',
+          headers,
+          body: params.toString(),
+        })
+      } catch (fetchError: any) {
+        // Wrap fetch errors as network errors
+        const networkError = new Error(fetchError.message || 'Network error')
+        ;(networkError as any).name = fetchError.name || 'TypeError'
+        ;(networkError as any).isNetworkError = true
+        throw networkError
+      }
+
+      if (response.status === 401 && this.refreshToken) {
+        const refreshed = await this.refreshAccessToken()
+        if (refreshed) {
+          headers['Authorization'] = `Bearer ${this.accessToken}`
+          try {
+            response = await fetch(fullUrl, {
+              method: 'POST',
+              headers,
+              body: params.toString(),
+            })
+          } catch (fetchError: any) {
+            const networkError = new Error(fetchError.message || 'Network error')
+            ;(networkError as any).name = fetchError.name || 'TypeError'
+            ;(networkError as any).isNetworkError = true
+            throw networkError
+          }
+        } else {
+          this.clearTokens()
+          throw new Error('Unauthorized')
+        }
+      }
+
+      if (!response.ok) {
+        const errorText = await response.text()
+        let errorMessage = `API error: ${response.status} ${errorText}`
+        
+        // Try to parse JSON error if possible
+        try {
+          const errorJson = JSON.parse(errorText)
+          if (errorJson.message) {
+            errorMessage = errorJson.message
+          } else if (errorJson.error) {
+            errorMessage = errorJson.error
+          }
+        } catch {
+          // Not JSON, use text as-is
+        }
+        
+        const error = new Error(errorMessage)
+        ;(error as any).status = response.status
+        ;(error as any).response = response
+        throw error
+      }
+
+      return response.json()
+    }, url)
   }
 
   async authTelegram(initData: string): Promise<AuthResponse> {
