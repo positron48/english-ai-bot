@@ -134,6 +134,19 @@
           </div>
         </div>
       </div>
+
+      <!-- Words Added Chart -->
+      <div class="weekly-chart-section">
+        <div class="card">
+          <h2>Words Added (7 days)</h2>
+          <div v-if="stats.wordsAddedStats && stats.wordsAddedStats.length > 0" class="chart-container">
+            <canvas ref="wordsChartCanvas"></canvas>
+          </div>
+          <div v-else class="chart-empty">
+            <p>No words added in the last week</p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -150,12 +163,19 @@ Chart.register(...registerables)
 const router = useRouter()
 const { theme } = useTheme()
 const chartCanvas = ref<HTMLCanvasElement | null>(null)
+const wordsChartCanvas = ref<HTMLCanvasElement | null>(null)
 let chartInstance: Chart | null = null
+let wordsChartInstance: Chart | null = null
 
 interface WeeklyStat {
   day: string
   cards_completed: number
   cards_correct: number
+}
+
+interface WordsAddedStat {
+  day: string
+  words_added: number
 }
 
 interface DashboardStats {
@@ -171,6 +191,7 @@ interface DashboardStats {
   weekCardsCompleted: number
   accuracyPercent: number
   weeklyStats: WeeklyStat[]
+  wordsAddedStats: WordsAddedStat[]
 }
 
 const stats = ref<DashboardStats>({
@@ -185,7 +206,8 @@ const stats = ref<DashboardStats>({
   weekSessions: 0,
   weekCardsCompleted: 0,
   accuracyPercent: 0,
-  weeklyStats: []
+  weeklyStats: [],
+  wordsAddedStats: []
 })
 
 const loading = ref(true)
@@ -201,12 +223,28 @@ watch(() => stats.value.weeklyStats, async (newStats) => {
   }
 }, { deep: true })
 
-// Watch for theme changes and rebuild chart
+// Watch for changes in wordsAddedStats and update chart
+watch(() => stats.value.wordsAddedStats, async (newStats) => {
+  if (newStats && newStats.length > 0) {
+    await nextTick()
+    setTimeout(() => {
+      updateWordsChart()
+    }, 150)
+  }
+}, { deep: true })
+
+// Watch for theme changes and rebuild charts
 watch(() => theme.value, async () => {
   if (stats.value.weeklyStats && stats.value.weeklyStats.length > 0) {
     await nextTick()
     setTimeout(() => {
       updateChart()
+    }, 100)
+  }
+  if (stats.value.wordsAddedStats && stats.value.wordsAddedStats.length > 0) {
+    await nextTick()
+    setTimeout(() => {
+      updateWordsChart()
     }, 100)
   }
 })
@@ -227,10 +265,12 @@ const loadData = async () => {
       weekSessions: data.week_sessions || 0,
       weekCardsCompleted: data.week_cards_completed || 0,
       accuracyPercent: data.accuracy_percent || 0,
-      weeklyStats: data.weekly_stats || []
+      weeklyStats: data.weekly_stats || [],
+      wordsAddedStats: data.words_added_stats || []
     }
     await nextTick()
     updateChart()
+    updateWordsChart()
   } catch (error) {
     console.error('Failed to load dashboard:', error)
   } finally {
@@ -441,6 +481,164 @@ const updateChart = () => {
         },
         y: {
           stacked: true,
+          type: 'linear',
+          display: true,
+          beginAtZero: true,
+          ticks: {
+            stepSize: 1,
+            color: isDark ? textSecondary : '#555555',
+            font: {
+              size: 11
+            },
+            callback: function(value) {
+              return Number.isInteger(value) ? value : ''
+            }
+          },
+          grid: {
+            color: isDark ? borderColor : '#e0e0e0'
+          }
+        }
+      }
+    }
+  })
+}
+
+const updateWordsChart = () => {
+  if (!wordsChartCanvas.value) {
+    // Retry after a short delay
+    setTimeout(() => {
+      if (wordsChartCanvas.value) {
+        updateWordsChart()
+      }
+    }, 100)
+    return
+  }
+  
+  if (!stats.value.wordsAddedStats || stats.value.wordsAddedStats.length === 0) {
+    return
+  }
+  
+  // Destroy existing chart if it exists
+  if (wordsChartInstance) {
+    wordsChartInstance.destroy()
+    wordsChartInstance = null
+  }
+  
+  // Prepare data for last 7 days
+  const today = new Date()
+  const days: string[] = []
+  const wordsAddedData: number[] = []
+  
+  // Create a map of existing data
+  const dataMap = new Map<string, number>()
+  stats.value.wordsAddedStats.forEach((stat: WordsAddedStat) => {
+    dataMap.set(stat.day, stat.words_added)
+  })
+  
+  // Generate last 7 days
+  for (let i = 6; i >= 0; i--) {
+    const date = new Date(today)
+    date.setDate(date.getDate() - i)
+    const dayStr = date.toISOString().split('T')[0]
+    days.push(dayStr)
+    
+    const count = dataMap.get(dayStr) || 0
+    wordsAddedData.push(count)
+  }
+  
+  const labels = days.map(formatDayLabel)
+  
+  // Get theme colors from CSS variables
+  const root = getComputedStyle(document.documentElement)
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark'
+  
+  // Use darker, more contrasting colors for light theme
+  let primaryColor = root.getPropertyValue('--color-primary').trim() || '#007bff'
+  const textPrimary = root.getPropertyValue('--text-primary').trim() || '#333333'
+  let textSecondary = root.getPropertyValue('--text-secondary').trim() || '#666666'
+  let borderColor = root.getPropertyValue('--border-primary').trim() || '#dddddd'
+  
+  // Adjust colors for light theme for better contrast
+  if (!isDark) {
+    // Use darker colors for better visibility on light background
+    primaryColor = '#0056b3' // Darker blue
+    textSecondary = '#444444' // Darker grey for better readability
+    borderColor = '#cccccc' // Darker border
+  }
+  
+  // Convert hex to rgba
+  const hexToRgba = (hex: string, alpha: number) => {
+    const r = parseInt(hex.slice(1, 3), 16)
+    const g = parseInt(hex.slice(3, 5), 16)
+    const b = parseInt(hex.slice(5, 7), 16)
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`
+  }
+  
+  // Create bar chart for words added
+  wordsChartInstance = new Chart(wordsChartCanvas.value, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Words Added',
+          data: wordsAddedData,
+          backgroundColor: hexToRgba(primaryColor, isDark ? 0.8 : 0.7),
+          borderColor: primaryColor,
+          borderWidth: 1
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: {
+        mode: 'index',
+        intersect: false
+      },
+      plugins: {
+        legend: {
+          display: true,
+          position: 'top',
+          labels: {
+            color: isDark ? textPrimary : '#222222',
+            usePointStyle: true,
+            padding: 15,
+            font: {
+              size: 12,
+              weight: '500'
+            }
+          }
+        },
+        tooltip: {
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          titleColor: '#fff',
+          bodyColor: '#fff',
+          borderColor: borderColor,
+          borderWidth: 1,
+          padding: 12,
+          callbacks: {
+            label: function(context) {
+              const value = context.parsed.y || 0
+              return `Words added: ${value}`
+            },
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: {
+            color: isDark ? textSecondary : '#555555',
+            font: {
+              size: 11
+            }
+          },
+          grid: {
+            color: borderColor,
+            display: false
+          }
+        },
+        y: {
           type: 'linear',
           display: true,
           beginAtZero: true,

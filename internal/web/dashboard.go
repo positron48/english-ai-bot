@@ -165,6 +165,30 @@ func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 		}
 	}
 
+	// Get words added stats by day (last 7 days)
+	wordsAddedStatsQuery := `SELECT 
+		DATE(created_at) as day,
+		COUNT(*) as words_added
+		FROM user_cards
+		WHERE user_id = ? AND created_at >= ?
+		GROUP BY DATE(created_at)
+		ORDER BY day ASC`
+	wordsRows, err := r.db.Query(wordsAddedStatsQuery, userID, weekAgoForDaily)
+	var wordsAddedStats []map[string]interface{}
+	if err == nil {
+		defer wordsRows.Close()
+		for wordsRows.Next() {
+			var day string
+			var wordsAdded int
+			if err := wordsRows.Scan(&day, &wordsAdded); err == nil {
+				wordsAddedStats = append(wordsAddedStats, map[string]interface{}{
+					"day":          day,
+					"words_added": wordsAdded,
+				})
+			}
+		}
+	}
+
 	// Return JSON response
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
@@ -181,6 +205,7 @@ func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 		"week_cards_completed":  weekCardsCompleted,
 		"accuracy_percent":      accuracyPercent,
 		"weekly_stats":         weeklyStats,
+		"words_added_stats":     wordsAddedStats,
 	})
 }
 

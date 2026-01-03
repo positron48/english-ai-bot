@@ -2,6 +2,26 @@
   <div class="training">
     <h1>Training</h1>
     
+    <div v-if="sessionComplete && !sessionActive" class="card completion-screen">
+      <h2>Training Complete!</h2>
+      <div class="completion-stats">
+        <div class="stat-item">
+          <span class="stat-label">Total Cards:</span>
+          <span class="stat-value">{{ trainingStats.totalCards }}</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Correct Answers:</span>
+          <span class="stat-value correct-stat">{{ trainingStats.correctCards }}</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Accuracy:</span>
+          <span class="stat-value">
+            {{ trainingStats.totalCards > 0 ? Math.round((trainingStats.correctCards / trainingStats.totalCards) * 100) : 0 }}%
+          </span>
+        </div>
+      </div>
+    </div>
+
     <div v-if="!sessionActive && !loading" class="card start-screen">
       <h2>Ready to Train?</h2>
       <div class="training-stats">
@@ -114,27 +134,6 @@
         </div>
       </div>
 
-    </div>
-    
-    <div v-if="sessionComplete && !sessionActive" class="card completion-screen">
-      <h2>Training Complete!</h2>
-      <div class="completion-stats">
-        <div class="stat-item">
-          <span class="stat-label">Total Cards:</span>
-          <span class="stat-value">{{ trainingStats.totalCards }}</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-label">Correct Answers:</span>
-          <span class="stat-value correct-stat">{{ trainingStats.correctCards }}</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-label">Accuracy:</span>
-          <span class="stat-value">
-            {{ trainingStats.totalCards > 0 ? Math.round((trainingStats.correctCards / trainingStats.totalCards) * 100) : 0 }}%
-          </span>
-        </div>
-      </div>
-      <button @click="resetSession" class="btn btn-primary">Start New Training</button>
     </div>
   </div>
 </template>
