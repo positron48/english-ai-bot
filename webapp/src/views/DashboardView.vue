@@ -72,19 +72,6 @@
                 <div class="progress-fill" :style="{ width: '100%' }"></div>
               </div>
             </div>
-            
-            <div class="progress-item">
-              <div class="progress-header">
-                <span>Ready for Review</span>
-                <span class="progress-value">{{ stats.dueCount }}</span>
-              </div>
-              <div class="progress-bar">
-                <div 
-                  class="progress-fill progress-fill-primary" 
-                  :style="{ width: stats.totalCards > 0 ? (stats.dueCount / stats.totalCards * 100) + '%' : '0%' }"
-                ></div>
-              </div>
-            </div>
 
             <div class="progress-item">
               <div class="progress-header">
