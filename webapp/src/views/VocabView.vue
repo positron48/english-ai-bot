@@ -289,7 +289,7 @@ const sortField = ref<string>('word_en')
 const sortOrder = ref<'asc' | 'desc'>('asc')
 const pagination = ref<Pagination>({
   page: 1,
-  limit: 100,
+  limit: 25,
   total: 0,
   total_pages: 0
 })
@@ -346,7 +346,7 @@ const loadVocab = async () => {
     words.value = data.words || []
     pagination.value = data.pagination || {
       page: 1,
-      limit: 100,
+      limit: 25,
       total: 0,
       total_pages: 0
     }
@@ -355,7 +355,7 @@ const loadVocab = async () => {
     words.value = []
     pagination.value = {
       page: 1,
-      limit: 100,
+      limit: 25,
       total: 0,
       total_pages: 0
     }

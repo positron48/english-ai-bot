@@ -51,7 +51,7 @@ type VocabWord struct {
 // @Security     ApiKeyAuth
 // @Param        search  query  string  false  "Поиск по слову"
 // @Param        page    query  int     false  "Номер страницы (начиная с 1)"
-// @Param        limit   query  int     false  "Количество элементов на странице (по умолчанию 100)"
+// @Param        limit   query  int     false  "Количество элементов на странице (по умолчанию 25)"
 // @Success      200  {object}  map[string]interface{}  "Список слов с статистикой"
 // @Failure      401  {string}  string  "Неавторизован"
 // @Failure      405  {string}  string  "Метод не разрешен"
@@ -72,7 +72,7 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 	// Parse query parameters
 	search := req.URL.Query().Get("search")
 	page := 1
-	limit := 100
+	limit := 25
 	sortBy := "word_en"
 	sortOrder := "asc"
 	

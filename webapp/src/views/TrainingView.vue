@@ -1,6 +1,6 @@
 <template>
   <div class="training">
-    <h1>Training</h1>
+    <h1 :class="{ 'hide-on-mobile': sessionActive && currentCard }">Training</h1>
     
     <div v-if="sessionComplete && !sessionActive" class="card completion-screen">
       <h2>Training Complete!</h2>
@@ -84,7 +84,8 @@
           ]"
           :disabled="answering || !!feedback"
         >
-          {{ option }}
+          <span class="option-number">{{ index + 1 }}</span>
+          <span class="option-text">{{ option }}</span>
         </button>
       </div>
 
@@ -345,6 +346,24 @@ const processedQuestion = computed(() => {
   return question
 })
 
+const handleKeyPress = (event: KeyboardEvent) => {
+  // Only handle if training is active, options are shown, no feedback, and not answering
+  if (!sessionActive.value || !optionsShown.value || feedback.value || answering.value) {
+    return
+  }
+  
+  // Handle number keys 1-4
+  const key = event.key
+  if (key >= '1' && key <= '4') {
+    const optionIndex = parseInt(key) - 1 // Convert 1-4 to 0-3
+    // Check if option index is valid
+    if (optionIndex >= 0 && optionIndex < options.value.length) {
+      event.preventDefault()
+      submitAnswer(optionIndex)
+    }
+  }
+}
+
 onMounted(async () => {
   // Set up network error callback
   apiClient.setNetworkErrorCallback((isRetrying: boolean, attempt: number, maxAttempts: number) => {
@@ -359,6 +378,9 @@ onMounted(async () => {
     networkError.value = false
     networkErrorRetrying.value = false
   })
+  
+  // Add keyboard event listener
+  window.addEventListener('keydown', handleKeyPress)
   
   await loadStats()
   await checkCurrentSession()
@@ -376,6 +398,9 @@ const loadStats = async () => {
 }
 
 onUnmounted(() => {
+  // Remove keyboard event listener
+  window.removeEventListener('keydown', handleKeyPress)
+  
   if (autoRevealTimer) {
     clearTimeout(autoRevealTimer)
     autoRevealTimer = null
@@ -760,6 +785,33 @@ const resetSession = async () => {
   min-height: 60px;
   font-size: 16px;
   transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+}
+
+.option-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  font-weight: 600;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.option-btn.option-correct .option-number,
+.option-btn.option-incorrect .option-number {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.option-text {
+  flex: 1;
+  text-align: left;
 }
 
 .option-btn.option-disabled {
@@ -1060,6 +1112,13 @@ const resetSession = async () => {
 .network-error-message {
   font-size: 14px;
   opacity: 0.95;
+}
+
+/* Hide header on mobile during active training */
+@media (max-width: 768px) {
+  .training h1.hide-on-mobile {
+    display: none;
+  }
 }
 </style>
 
