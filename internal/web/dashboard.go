@@ -70,27 +70,13 @@ func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 		reviewCount = 0
 	}
 
-	// Calculate available cards for training (same logic as training service)
-	// MaxCardsPerSession = 30, MaxNewPerSession = 5
-	maxCardsPerSession := 30
-	maxNewPerSession := 5
-	
+	// Calculate available cards for training
+	// Show actual available count, not limited by session size
+	// Session will still be limited to MaxCardsPerSession (30), but we show total available
 	availableForTraining := dueCount
-	remainingSlots := maxCardsPerSession - dueCount
-	if remainingSlots > 0 {
-		maxNew := maxNewPerSession
-		if remainingSlots < maxNew {
-			maxNew = remainingSlots
-		}
-		if newCount > maxNew {
-			availableForTraining += maxNew
-		} else {
-			availableForTraining += newCount
-		}
-	}
-	// Cap at maxCardsPerSession
-	if availableForTraining > maxCardsPerSession {
-		availableForTraining = maxCardsPerSession
+	if newCount > 0 {
+		// Add new cards count (not limited here, session logic will handle the limit)
+		availableForTraining += newCount
 	}
 
 	// Get total cards count

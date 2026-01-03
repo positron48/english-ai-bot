@@ -7,7 +7,11 @@
       <div class="training-stats">
         <div class="stat-item">
           <span class="stat-label">Available for Training:</span>
-          <span class="stat-value">{{ stats.availableForTraining }}</span>
+          <span class="stat-value">{{ stats.availableForTraining }} cards</span>
+        </div>
+        <div v-if="estimatedTime" class="stat-item">
+          <span class="stat-label">Estimated Time:</span>
+          <span class="stat-value">{{ estimatedTime }}</span>
         </div>
         <div class="stat-item">
           <span class="stat-label">Total Cards:</span>
@@ -172,6 +176,24 @@ const stats = ref({
   dueCount: 0,
   totalCards: 0,
   availableForTraining: 0
+})
+
+const estimatedTime = computed(() => {
+  const cards = stats.value.availableForTraining
+  if (cards === 0) return null
+  
+  // Average 15 seconds per card (same as notification service)
+  const avgSecondsPerCard = 15
+  const totalSeconds = cards * avgSecondsPerCard
+  const minutes = Math.floor(totalSeconds / 60)
+  
+  if (minutes < 1) {
+    return 'less than 1 minute'
+  } else if (minutes === 1) {
+    return '~1 minute'
+  } else {
+    return `~${minutes} minutes`
+  }
 })
 
 // Calculate progress for circular progress bar
