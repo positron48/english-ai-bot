@@ -40,26 +40,6 @@
       </div>
 
       <div class="card">
-        <h2>Training Cards Management</h2>
-        <div class="admin-actions">
-          <input
-            v-model="wordToManage"
-            type="text"
-            placeholder="Enter word"
-            class="admin-input"
-          />
-          <button @click="getTrainingData" class="btn btn-primary">Get Training Data</button>
-          <button @click="deleteTrainingWord" class="btn btn-danger">Delete Word</button>
-          <button @click="deleteAllTraining" class="btn btn-danger">Delete All</button>
-        </div>
-        
-        <div v-if="trainingData" class="training-data">
-          <h3>Training Data for "{{ wordToManage }}"</h3>
-          <pre>{{ JSON.stringify(trainingData, null, 2) }}</pre>
-        </div>
-      </div>
-
-      <div class="card">
         <h2>Words Management</h2>
         <div class="words-filters">
           <div class="search-box">
@@ -77,14 +57,20 @@
               {{ user.telegram_username || `User #${user.telegram_id}` }} (ID: {{ user.id }})
             </option>
           </select>
-          <label class="checkbox-label">
-            <input type="checkbox" v-model="wordsOnlyErrors" @change="onFilterChange" />
+          <button 
+            @click="toggleOnlyErrors" 
+            :class="['btn', 'btn-toggle', { 'btn-toggle-active': wordsOnlyErrors }]"
+            type="button"
+          >
             Only with errors
-          </label>
+          </button>
           <button @click="loadWords" class="btn btn-primary">Refresh</button>
         </div>
 
         <div v-if="wordsLoading" class="loading">Loading words...</div>
+        <div v-else-if="wordsError" class="empty-message">
+          <p>{{ wordsError }}</p>
+        </div>
         <div v-else-if="words.length === 0" class="empty-message">
           <p v-if="wordsSearchQuery">No words found matching "{{ wordsSearchQuery }}".</p>
           <p v-else>No words found</p>
@@ -376,12 +362,11 @@ interface WordCard {
 
 const loading = ref(true)
 const circuitBreaker = ref<CircuitBreaker | null>(null)
-const wordToManage = ref('')
-const trainingData = ref<any>(null)
 
 // Words management
 const words = ref<WordCard[]>([])
 const wordsLoading = ref(false)
+const wordsError = ref<string | null>(null)
 const wordsFilterUser = ref<number | null>(null)
 const wordsOnlyErrors = ref(false)
 const wordsSearchQuery = ref('')
@@ -439,58 +424,6 @@ const resetCircuitBreaker = async () => {
   }
 }
 
-const getTrainingData = async () => {
-  if (!wordToManage.value.trim()) {
-    alert('Please enter a word')
-    return
-  }
-
-  try {
-    const data = await apiClient.request(`/app/admin/training/${wordToManage.value.trim()}`)
-    trainingData.value = data
-  } catch (error) {
-    console.error('Failed to get training data:', error)
-    alert('Failed to get training data')
-  }
-}
-
-const deleteTrainingWord = async () => {
-  if (!wordToManage.value.trim()) {
-    alert('Please enter a word')
-    return
-  }
-
-  if (!confirm(`Are you sure you want to delete all training cards for "${wordToManage.value}"?`)) {
-    return
-  }
-
-  try {
-    const formData = new FormData()
-    await apiClient.requestFormData(`/app/admin/training/${wordToManage.value.trim()}/delete`, formData)
-    trainingData.value = null
-    alert('Training cards deleted successfully')
-  } catch (error) {
-    console.error('Failed to delete training word:', error)
-    alert('Failed to delete training word')
-  }
-}
-
-const deleteAllTraining = async () => {
-  if (!confirm('Are you sure you want to delete ALL training cards? This cannot be undone!')) {
-    return
-  }
-
-  try {
-    const formData = new FormData()
-    await apiClient.requestFormData('/app/admin/training/delete_all', formData)
-    trainingData.value = null
-    alert('All training cards deleted successfully')
-  } catch (error) {
-    console.error('Failed to delete all training:', error)
-    alert('Failed to delete all training')
-  }
-}
-
 const loadUsers = async () => {
   try {
     const data: { users: User[] } = await apiClient.request('/app/admin/users')
@@ -502,6 +435,7 @@ const loadUsers = async () => {
 
 const loadWords = async () => {
   wordsLoading.value = true
+  wordsError.value = null
   try {
     const params = new URLSearchParams()
     if (wordsFilterUser.value !== null) {
@@ -518,7 +452,7 @@ const loadWords = async () => {
     params.append('offset', offset.toString())
 
     const data: { words: WordCard[]; pagination: { page: number; limit: number; total: number; total_pages: number } } = await apiClient.request(`/app/admin/words?${params.toString()}`)
-    words.value = data.words.map(w => ({ 
+    words.value = (data.words || []).map(w => ({ 
       ...w, 
       editing: false, 
       showingCards: false,
@@ -527,10 +461,18 @@ const loadWords = async () => {
     }))
     if (data.pagination) {
       wordsPagination.value = data.pagination
+    } else {
+      wordsPagination.value = {
+        page: 1,
+        limit: 50,
+        total: 0,
+        total_pages: 0
+      }
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to load words:', error)
-    alert('Failed to load words')
+    wordsError.value = error.message || 'Failed to load words'
+    words.value = []
   } finally {
     wordsLoading.value = false
   }
@@ -543,7 +485,7 @@ const onWordsSearchInput = () => {
   wordsSearchTimeout.value = window.setTimeout(() => {
     wordsPagination.value.page = 1
     loadWords()
-  }, 500)
+  }, 200)
 }
 
 const goToWordsPage = (page: number) => {
@@ -554,6 +496,12 @@ const goToWordsPage = (page: number) => {
 }
 
 const onFilterChange = () => {
+  wordsPagination.value.page = 1
+  loadWords()
+}
+
+const toggleOnlyErrors = () => {
+  wordsOnlyErrors.value = !wordsOnlyErrors.value
   wordsPagination.value.page = 1
   loadWords()
 }
@@ -913,42 +861,6 @@ const formatDate = (dateStr: string | null | undefined) => {
   letter-spacing: 0.5px;
 }
 
-.admin-actions {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  align-items: stretch;
-  margin-bottom: 20px;
-}
-
-.admin-input {
-  flex: 1;
-  min-width: 200px;
-  height: 40px;
-  padding: 10px;
-  box-sizing: border-box;
-}
-
-.admin-actions .btn {
-  height: 40px;
-  padding: 10px 20px;
-  box-sizing: border-box;
-  white-space: nowrap;
-}
-
-.training-data {
-  margin-top: 20px;
-  padding: 15px;
-  background: var(--bg-tertiary);
-  border-radius: 4px;
-  color: var(--text-primary);
-}
-
-.training-data pre {
-  overflow-x: auto;
-  font-size: 12px;
-}
-
 .words-filters {
   display: flex;
   gap: 10px;
@@ -964,13 +876,16 @@ const formatDate = (dateStr: string | null | undefined) => {
 
 .search-input {
   width: 100%;
-  padding: 10px;
+  padding: 8px 12px;
   border: 1px solid var(--input-border);
   border-radius: 4px;
-  font-size: 16px;
+  font-size: 14px;
   background-color: var(--input-bg);
   color: var(--text-primary);
   box-sizing: border-box;
+  height: 40px;
+  line-height: 1.5;
+  margin-bottom: 0;
 }
 
 .pagination {
@@ -992,6 +907,10 @@ const formatDate = (dateStr: string | null | undefined) => {
   background: var(--input-bg);
   color: var(--text-primary);
   min-width: 200px;
+  height: 40px;
+  box-sizing: border-box;
+  font-size: 14px;
+  line-height: 1.5;
 }
 
 .checkbox-label {
@@ -1000,10 +919,44 @@ const formatDate = (dateStr: string | null | undefined) => {
   gap: 8px;
   color: var(--text-primary);
   cursor: pointer;
+  height: 40px;
 }
 
 .checkbox-label input[type="checkbox"] {
   cursor: pointer;
+  margin: 0;
+}
+
+.words-filters .btn {
+  height: 40px;
+  padding: 8px 16px;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-toggle {
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--input-border);
+  transition: all 0.2s ease;
+}
+
+.btn-toggle:hover {
+  background-color: var(--table-row-hover, rgba(0, 0, 0, 0.1));
+  border-color: var(--color-primary);
+}
+
+.btn-toggle-active {
+  background-color: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+
+.btn-toggle-active:hover {
+  background-color: var(--color-primary-hover, var(--color-primary));
+  opacity: 0.9;
 }
 
 .words-table-container {
