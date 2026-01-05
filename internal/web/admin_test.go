@@ -1,0 +1,1047 @@
+package web
+
+import (
+	"context"
+	"database/sql"
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"net/http/httptest"
+	"strings"
+	"testing"
+
+	"tgbot-skeleton/internal/config"
+	"tgbot-skeleton/internal/models"
+	"tgbot-skeleton/internal/repository"
+	"tgbot-skeleton/internal/service"
+
+	_ "github.com/mattn/go-sqlite3"
+	"go.uber.org/zap"
+)
+
+func setupAdminTestDB(t *testing.T) (*sql.DB, *repository.UserRepository, *service.CircuitBreakerService) {
+	db, err := sql.Open("sqlite3", ":memory:")
+	if err != nil {
+		t.Fatalf("Failed to open test database: %v", err)
+	}
+
+	createTables := `
+	CREATE TABLE IF NOT EXISTS users (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		telegram_id INTEGER UNIQUE NOT NULL,
+		telegram_username TEXT,
+		username TEXT,
+		timezone TEXT DEFAULT '',
+		preferred_training_time TEXT DEFAULT '',
+		settings_json TEXT DEFAULT '',
+		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+	);
+	
+	CREATE TABLE IF NOT EXISTS word_cards (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		word TEXT UNIQUE NOT NULL,
+		definition TEXT NOT NULL,
+		processed_at DATETIME,
+		processing_error TEXT,
+		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+	);
+	
+	CREATE TABLE IF NOT EXISTS training_cards (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		word_card_id INTEGER NOT NULL,
+		word_en TEXT NOT NULL,
+		transcription TEXT,
+		sense_index INTEGER NOT NULL,
+		word_ru TEXT NOT NULL,
+		meaning_en TEXT NOT NULL,
+		example_en TEXT,
+		example_ru TEXT,
+		distractors_ru TEXT,
+		distractors_en TEXT,
+		hint TEXT,
+		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+	);
+	
+	CREATE TABLE IF NOT EXISTS circuit_breaker_state (
+		id INTEGER PRIMARY KEY CHECK(id = 1),
+		is_open INTEGER DEFAULT 0,
+		failure_count INTEGER DEFAULT 0,
+		last_failure_at DATETIME,
+		last_failure_message TEXT,
+		last_reset_at DATETIME,
+		updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+	);
+	
+	INSERT OR IGNORE INTO circuit_breaker_state (id) VALUES (1);
+	`
+
+	_, err = db.Exec(createTables)
+	if err != nil {
+		t.Fatalf("Failed to create tables: %v", err)
+	}
+
+	logger, _ := zap.NewDevelopment()
+	userRepo := repository.NewUserRepository(db, logger)
+	cbRepo := repository.NewCircuitBreakerRepository(db, logger)
+	cbService := service.NewCircuitBreakerService(cbRepo, 5, logger)
+
+	return db, userRepo, cbService
+}
+
+func TestHandleAdmin_Get(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	defer db.Close()
+
+	// Create admin user
+	adminTelegramID := int64(123456789)
+	adminUser, err := userRepo.GetOrCreateUser(adminTelegramID)
+	if err != nil {
+		t.Fatalf("Failed to create admin user: %v", err)
+	}
+
+	cfg := &config.Config{
+		Admin: config.AdminConfig{
+			TelegramID: adminTelegramID,
+		},
+		WebApp: config.WebAppConfig{
+			JWTSecret:     "test-secret",
+			JWTTTLHours:   24,
+			RefreshTTLHours: 720,
+		},
+	}
+
+	jwtService, _ := NewJWTService(cfg, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-token")
+
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	// Create request with admin user context
+	req := httptest.NewRequest("GET", "/app/admin", nil)
+	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+
+	// Call handler with admin middleware
+	adminHandler := router.RequireAdmin(router.handleAdmin)
+	adminHandler(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d", w.Code)
+	}
+
+	// Verify response
+	var response map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
+		t.Fatalf("Failed to decode response: %v", err)
+	}
+
+	if response["circuit_breaker"] == nil {
+		t.Error("Response should contain circuit_breaker")
+	}
+
+	if response["admin_id"] == nil {
+		t.Error("Response should contain admin_id")
+	}
+}
+
+func TestHandleAdmin_WrongMethod(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	defer db.Close()
+
+	adminTelegramID := int64(123456789)
+	adminUser, err := userRepo.GetOrCreateUser(adminTelegramID)
+	if err != nil {
+		t.Fatalf("Failed to create admin user: %v", err)
+	}
+
+	cfg := &config.Config{
+		Admin: config.AdminConfig{
+			TelegramID: adminTelegramID,
+		},
+		WebApp: config.WebAppConfig{
+			JWTSecret:     "test-secret",
+			JWTTTLHours:   24,
+			RefreshTTLHours: 720,
+		},
+	}
+
+	jwtService, _ := NewJWTService(cfg, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-token")
+
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("POST", "/app/admin", nil)
+	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+
+	adminHandler := router.RequireAdmin(router.handleAdmin)
+	adminHandler(w, req)
+
+	if w.Code != http.StatusMethodNotAllowed {
+		t.Errorf("Expected status 405, got %d", w.Code)
+	}
+}
+
+func TestHandleAdmin_Unauthorized(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	defer db.Close()
+
+	adminTelegramID := int64(123456789)
+
+	cfg := &config.Config{
+		Admin: config.AdminConfig{
+			TelegramID: adminTelegramID,
+		},
+		WebApp: config.WebAppConfig{
+			JWTSecret:     "test-secret",
+			JWTTTLHours:   24,
+			RefreshTTLHours: 720,
+		},
+	}
+
+	jwtService, _ := NewJWTService(cfg, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-token")
+
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("GET", "/app/admin", nil)
+	// No user context
+	w := httptest.NewRecorder()
+
+	adminHandler := router.RequireAdmin(router.handleAdmin)
+	adminHandler(w, req)
+
+	if w.Code != http.StatusUnauthorized {
+		t.Errorf("Expected status 401, got %d", w.Code)
+	}
+}
+
+func TestHandleAdmin_Forbidden(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	defer db.Close()
+
+	// Create non-admin user
+	nonAdminTelegramID := int64(999999999)
+	nonAdminUser, err := userRepo.GetOrCreateUser(nonAdminTelegramID)
+	if err != nil {
+		t.Fatalf("Failed to create non-admin user: %v", err)
+	}
+
+	adminTelegramID := int64(123456789)
+	cfg := &config.Config{
+		Admin: config.AdminConfig{
+			TelegramID: adminTelegramID,
+		},
+		WebApp: config.WebAppConfig{
+			JWTSecret:     "test-secret",
+			JWTTTLHours:   24,
+			RefreshTTLHours: 720,
+		},
+	}
+
+	jwtService, _ := NewJWTService(cfg, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-token")
+
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("GET", "/app/admin", nil)
+	ctx := context.WithValue(req.Context(), userIDKey, nonAdminUser.ID)
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+
+	adminHandler := router.RequireAdmin(router.handleAdmin)
+	adminHandler(w, req)
+
+	if w.Code != http.StatusForbidden {
+		t.Errorf("Expected status 403, got %d", w.Code)
+	}
+}
+
+func TestHandleAdminCircuitReset_Post(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	defer db.Close()
+
+	adminTelegramID := int64(123456789)
+	adminUser, err := userRepo.GetOrCreateUser(adminTelegramID)
+	if err != nil {
+		t.Fatalf("Failed to create admin user: %v", err)
+	}
+
+	cfg := &config.Config{
+		Admin: config.AdminConfig{
+			TelegramID: adminTelegramID,
+		},
+		WebApp: config.WebAppConfig{
+			JWTSecret:     "test-secret",
+			JWTTTLHours:   24,
+			RefreshTTLHours: 720,
+		},
+	}
+
+	jwtService, _ := NewJWTService(cfg, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-token")
+
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("POST", "/app/admin/circuit/reset", nil)
+	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+
+	adminHandler := router.RequireAdmin(router.handleAdminCircuitReset)
+	adminHandler(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d", w.Code)
+	}
+
+	// Verify response
+	var response map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
+		t.Fatalf("Failed to decode response: %v", err)
+	}
+
+	if response["success"] != true {
+		t.Error("Response should indicate success")
+	}
+
+	if response["message"] == nil {
+		t.Error("Response should contain message")
+	}
+}
+
+func TestHandleAdminCircuitReset_WrongMethod(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	defer db.Close()
+
+	adminTelegramID := int64(123456789)
+	adminUser, err := userRepo.GetOrCreateUser(adminTelegramID)
+	if err != nil {
+		t.Fatalf("Failed to create admin user: %v", err)
+	}
+
+	cfg := &config.Config{
+		Admin: config.AdminConfig{
+			TelegramID: adminTelegramID,
+		},
+		WebApp: config.WebAppConfig{
+			JWTSecret:     "test-secret",
+			JWTTTLHours:   24,
+			RefreshTTLHours: 720,
+		},
+	}
+
+	jwtService, _ := NewJWTService(cfg, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-token")
+
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("GET", "/app/admin/circuit/reset", nil)
+	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+
+	adminHandler := router.RequireAdmin(router.handleAdminCircuitReset)
+	adminHandler(w, req)
+
+	if w.Code != http.StatusMethodNotAllowed {
+		t.Errorf("Expected status 405, got %d", w.Code)
+	}
+}
+
+func TestHandleAdminUsers_Get(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	defer db.Close()
+
+	adminTelegramID := int64(123456789)
+	adminUser, err := userRepo.GetOrCreateUser(adminTelegramID)
+	if err != nil {
+		t.Fatalf("Failed to create admin user: %v", err)
+	}
+
+	// Create another user
+	_, err = userRepo.GetOrCreateUser(999999999)
+	if err != nil {
+		t.Fatalf("Failed to create user: %v", err)
+	}
+
+	cfg := &config.Config{
+		Admin: config.AdminConfig{
+			TelegramID: adminTelegramID,
+		},
+		WebApp: config.WebAppConfig{
+			JWTSecret:     "test-secret",
+			JWTTTLHours:   24,
+			RefreshTTLHours: 720,
+		},
+	}
+
+	jwtService, _ := NewJWTService(cfg, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-token")
+
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("GET", "/app/admin/users", nil)
+	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+
+	adminHandler := router.RequireAdmin(router.handleAdminUsers)
+	adminHandler(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d", w.Code)
+	}
+
+	var response map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
+		t.Fatalf("Failed to decode response: %v", err)
+	}
+
+	if response["users"] == nil {
+		t.Error("Response should contain users")
+	}
+}
+
+func TestHandleAdminWords_Get(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	defer db.Close()
+
+	adminTelegramID := int64(123456789)
+	adminUser, err := userRepo.GetOrCreateUser(adminTelegramID)
+	if err != nil {
+		t.Fatalf("Failed to create admin user: %v", err)
+	}
+
+	// Create word card
+	wordRepo := repository.NewWordRepository(db, logger)
+	err = wordRepo.SaveWordCard("test", "test definition")
+	if err != nil {
+		t.Fatalf("Failed to create word card: %v", err)
+	}
+
+	cfg := &config.Config{
+		Admin: config.AdminConfig{
+			TelegramID: adminTelegramID,
+		},
+		WebApp: config.WebAppConfig{
+			JWTSecret:     "test-secret",
+			JWTTTLHours:   24,
+			RefreshTTLHours: 720,
+		},
+	}
+
+	jwtService, _ := NewJWTService(cfg, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-token")
+
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("GET", "/app/admin/words", nil)
+	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+
+	adminHandler := router.RequireAdmin(router.handleAdminWords)
+	adminHandler(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d", w.Code)
+	}
+
+	var response map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
+		t.Fatalf("Failed to decode response: %v", err)
+	}
+
+	if response["words"] == nil {
+		t.Error("Response should contain words")
+	}
+}
+
+func TestHandleAdminWord_Put(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	defer db.Close()
+
+	adminTelegramID := int64(123456789)
+	adminUser, err := userRepo.GetOrCreateUser(adminTelegramID)
+	if err != nil {
+		t.Fatalf("Failed to create admin user: %v", err)
+	}
+
+	wordRepo := repository.NewWordRepository(db, logger)
+	err = wordRepo.SaveWordCard("update", "old definition")
+	if err != nil {
+		t.Fatalf("Failed to create word card: %v", err)
+	}
+	wordCard, err := wordRepo.GetWordCard("update")
+	if err != nil || wordCard == nil {
+		t.Fatalf("Failed to get word card: %v", err)
+	}
+	wordCardID := wordCard.ID
+
+	cfg := &config.Config{
+		Admin: config.AdminConfig{
+			TelegramID: adminTelegramID,
+		},
+		WebApp: config.WebAppConfig{
+			JWTSecret:     "test-secret",
+			JWTTTLHours:   24,
+			RefreshTTLHours: 720,
+		},
+	}
+
+	jwtService, _ := NewJWTService(cfg, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-token")
+
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("PUT", fmt.Sprintf("/app/admin/words/%d", wordCardID), strings.NewReader("definition=new definition"))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+
+	adminHandler := router.RequireAdmin(router.handleAdminWord)
+	adminHandler(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d", w.Code)
+	}
+
+	var response map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
+		t.Fatalf("Failed to decode response: %v", err)
+	}
+
+	if response["success"] != true {
+		t.Error("Response should indicate success")
+	}
+}
+
+func TestHandleAdminWord_Delete(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	defer db.Close()
+
+	adminTelegramID := int64(123456789)
+	adminUser, err := userRepo.GetOrCreateUser(adminTelegramID)
+	if err != nil {
+		t.Fatalf("Failed to create admin user: %v", err)
+	}
+
+	wordRepo := repository.NewWordRepository(db, logger)
+	err = wordRepo.SaveWordCard("delete", "definition")
+	if err != nil {
+		t.Fatalf("Failed to create word card: %v", err)
+	}
+	wordCard, err := wordRepo.GetWordCard("delete")
+	if err != nil || wordCard == nil {
+		t.Fatalf("Failed to get word card: %v", err)
+	}
+	wordCardID := wordCard.ID
+
+	cfg := &config.Config{
+		Admin: config.AdminConfig{
+			TelegramID: adminTelegramID,
+		},
+		WebApp: config.WebAppConfig{
+			JWTSecret:     "test-secret",
+			JWTTTLHours:   24,
+			RefreshTTLHours: 720,
+		},
+	}
+
+	jwtService, _ := NewJWTService(cfg, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-token")
+
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("DELETE", fmt.Sprintf("/app/admin/words/%d", wordCardID), nil)
+	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+
+	adminHandler := router.RequireAdmin(router.handleAdminWord)
+	adminHandler(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d", w.Code)
+	}
+
+	var response map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
+		t.Fatalf("Failed to decode response: %v", err)
+	}
+
+	if response["success"] != true {
+		t.Error("Response should indicate success")
+	}
+}
+
+func TestHandleAdminTraining_Get(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	defer db.Close()
+
+	adminTelegramID := int64(123456789)
+	adminUser, err := userRepo.GetOrCreateUser(adminTelegramID)
+	if err != nil {
+		t.Fatalf("Failed to create admin user: %v", err)
+	}
+
+	// Create word card and training card
+	wordRepo := repository.NewWordRepository(db, logger)
+	err = wordRepo.SaveWordCard("training", "definition")
+	if err != nil {
+		t.Fatalf("Failed to create word card: %v", err)
+	}
+	wordCard, err := wordRepo.GetWordCard("training")
+	if err != nil || wordCard == nil {
+		t.Fatalf("Failed to get word card: %v", err)
+	}
+	wordCardID := wordCard.ID
+
+	trainingCardRepo := repository.NewTrainingCardRepository(db, logger)
+	trainingCard := &models.TrainingCard{
+		WordCardID: wordCardID,
+		WordEN:     "training",
+		SenseIndex: 0,
+		WordRU:     "тренировка",
+		MeaningEN:  "training",
+	}
+	_, err = trainingCardRepo.CreateTrainingCard(trainingCard)
+	if err != nil {
+		t.Fatalf("Failed to create training card: %v", err)
+	}
+
+	cfg := &config.Config{
+		Admin: config.AdminConfig{
+			TelegramID: adminTelegramID,
+		},
+		WebApp: config.WebAppConfig{
+			JWTSecret:     "test-secret",
+			JWTTTLHours:   24,
+			RefreshTTLHours: 720,
+		},
+	}
+
+	jwtService, _ := NewJWTService(cfg, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-token")
+
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("GET", "/app/admin/training/training", nil)
+	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+
+	adminHandler := router.RequireAdmin(router.handleAdminTraining)
+	adminHandler(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d", w.Code)
+	}
+
+	var response map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
+		t.Fatalf("Failed to decode response: %v", err)
+	}
+
+	if response["word_en"] == nil {
+		t.Error("Response should contain word_en")
+	}
+}
+
+func TestHandleAdminTrainingCard_Delete(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	defer db.Close()
+
+	adminTelegramID := int64(123456789)
+	adminUser, err := userRepo.GetOrCreateUser(adminTelegramID)
+	if err != nil {
+		t.Fatalf("Failed to create admin user: %v", err)
+	}
+
+	wordRepo := repository.NewWordRepository(db, logger)
+	err = wordRepo.SaveWordCard("card", "definition")
+	if err != nil {
+		t.Fatalf("Failed to create word card: %v", err)
+	}
+	wordCard, err := wordRepo.GetWordCard("card")
+	if err != nil || wordCard == nil {
+		t.Fatalf("Failed to get word card: %v", err)
+	}
+	wordCardID := wordCard.ID
+
+	trainingCardRepo := repository.NewTrainingCardRepository(db, logger)
+	trainingCard := &models.TrainingCard{
+		WordCardID: wordCardID,
+		WordEN:     "card",
+		SenseIndex: 0,
+		WordRU:     "карта",
+		MeaningEN:  "card",
+	}
+	trainingCardID, err := trainingCardRepo.CreateTrainingCard(trainingCard)
+	if err != nil {
+		t.Fatalf("Failed to create training card: %v", err)
+	}
+
+	cfg := &config.Config{
+		Admin: config.AdminConfig{
+			TelegramID: adminTelegramID,
+		},
+		WebApp: config.WebAppConfig{
+			JWTSecret:     "test-secret",
+			JWTTTLHours:   24,
+			RefreshTTLHours: 720,
+		},
+	}
+
+	jwtService, _ := NewJWTService(cfg, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-token")
+
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("DELETE", fmt.Sprintf("/app/admin/training/card/%d", trainingCardID), nil)
+	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+
+	adminHandler := router.RequireAdmin(router.handleAdminTrainingCard)
+	adminHandler(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d", w.Code)
+	}
+
+	var response map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
+		t.Fatalf("Failed to decode response: %v", err)
+	}
+
+	if response["success"] != true {
+		t.Error("Response should indicate success")
+	}
+}
+
+func TestHandleAdminTrainingCard_Put(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	defer db.Close()
+
+	adminTelegramID := int64(123456789)
+	adminUser, err := userRepo.GetOrCreateUser(adminTelegramID)
+	if err != nil {
+		t.Fatalf("Failed to create admin user: %v", err)
+	}
+
+	wordRepo := repository.NewWordRepository(db, logger)
+	err = wordRepo.SaveWordCard("updatecard", "definition")
+	if err != nil {
+		t.Fatalf("Failed to create word card: %v", err)
+	}
+	wordCard, err := wordRepo.GetWordCard("updatecard")
+	if err != nil || wordCard == nil {
+		t.Fatalf("Failed to get word card: %v", err)
+	}
+
+	trainingCardRepo := repository.NewTrainingCardRepository(db, logger)
+	trainingCard := &models.TrainingCard{
+		WordCardID: wordCard.ID,
+		WordEN:     "updatecard",
+		SenseIndex: 0,
+		WordRU:     "карта",
+		MeaningEN:  "card",
+	}
+	trainingCardID, err := trainingCardRepo.CreateTrainingCard(trainingCard)
+	if err != nil {
+		t.Fatalf("Failed to create training card: %v", err)
+	}
+
+	cfg := &config.Config{
+		Admin: config.AdminConfig{
+			TelegramID: adminTelegramID,
+		},
+		WebApp: config.WebAppConfig{
+			JWTSecret:     "test-secret",
+			JWTTTLHours:   24,
+			RefreshTTLHours: 720,
+		},
+	}
+
+	jwtService, _ := NewJWTService(cfg, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-token")
+
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("PUT", fmt.Sprintf("/app/admin/training/card/%d", trainingCardID), strings.NewReader("word_ru=новая карта&meaning_en=new card&example_en=example"))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+
+	adminHandler := router.RequireAdmin(router.handleAdminTrainingCard)
+	adminHandler(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d", w.Code)
+	}
+
+	var response map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
+		t.Fatalf("Failed to decode response: %v", err)
+	}
+
+	if response["success"] != true {
+		t.Error("Response should indicate success")
+	}
+}
+
+func TestHandleAdminTraining_Delete(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	defer db.Close()
+
+	adminTelegramID := int64(123456789)
+	adminUser, err := userRepo.GetOrCreateUser(adminTelegramID)
+	if err != nil {
+		t.Fatalf("Failed to create admin user: %v", err)
+	}
+
+	wordRepo := repository.NewWordRepository(db, logger)
+	err = wordRepo.SaveWordCard("deleteword", "definition")
+	if err != nil {
+		t.Fatalf("Failed to create word card: %v", err)
+	}
+	wordCard, err := wordRepo.GetWordCard("deleteword")
+	if err != nil || wordCard == nil {
+		t.Fatalf("Failed to get word card: %v", err)
+	}
+
+	trainingCardRepo := repository.NewTrainingCardRepository(db, logger)
+	trainingCard := &models.TrainingCard{
+		WordCardID: wordCard.ID,
+		WordEN:     "deleteword",
+		SenseIndex: 0,
+		WordRU:     "удалить",
+		MeaningEN:  "delete",
+	}
+	_, err = trainingCardRepo.CreateTrainingCard(trainingCard)
+	if err != nil {
+		t.Fatalf("Failed to create training card: %v", err)
+	}
+
+	cfg := &config.Config{
+		Admin: config.AdminConfig{
+			TelegramID: adminTelegramID,
+		},
+		WebApp: config.WebAppConfig{
+			JWTSecret:     "test-secret",
+			JWTTTLHours:   24,
+			RefreshTTLHours: 720,
+		},
+	}
+
+	jwtService, _ := NewJWTService(cfg, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-token")
+
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("POST", "/app/admin/training/deleteword/delete", strings.NewReader("word=deleteword"))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+
+	adminHandler := router.RequireAdmin(router.handleAdminTraining)
+	adminHandler(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d", w.Code)
+	}
+
+	var response map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
+		t.Fatalf("Failed to decode response: %v", err)
+	}
+
+	if response["success"] != true {
+		t.Error("Response should indicate success")
+	}
+}
+
+func TestHandleAdminTraining_DeleteAll(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	defer db.Close()
+
+	adminTelegramID := int64(123456789)
+	adminUser, err := userRepo.GetOrCreateUser(adminTelegramID)
+	if err != nil {
+		t.Fatalf("Failed to create admin user: %v", err)
+	}
+
+	wordRepo := repository.NewWordRepository(db, logger)
+	err = wordRepo.SaveWordCard("deleteall1", "definition1")
+	if err != nil {
+		t.Fatalf("Failed to create word card: %v", err)
+	}
+	wordCard1, err := wordRepo.GetWordCard("deleteall1")
+	if err != nil || wordCard1 == nil {
+		t.Fatalf("Failed to get word card: %v", err)
+	}
+
+	trainingCardRepo := repository.NewTrainingCardRepository(db, logger)
+	trainingCard1 := &models.TrainingCard{
+		WordCardID: wordCard1.ID,
+		WordEN:     "deleteall1",
+		SenseIndex: 0,
+		WordRU:     "удалить1",
+		MeaningEN:  "delete1",
+	}
+	_, err = trainingCardRepo.CreateTrainingCard(trainingCard1)
+	if err != nil {
+		t.Fatalf("Failed to create training card: %v", err)
+	}
+
+	cfg := &config.Config{
+		Admin: config.AdminConfig{
+			TelegramID: adminTelegramID,
+		},
+		WebApp: config.WebAppConfig{
+			JWTSecret:     "test-secret",
+			JWTTTLHours:   24,
+			RefreshTTLHours: 720,
+		},
+	}
+
+	jwtService, _ := NewJWTService(cfg, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-token")
+
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("POST", "/app/admin/training/delete_all", nil)
+	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+
+	adminHandler := router.RequireAdmin(router.handleAdminTraining)
+	adminHandler(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d", w.Code)
+	}
+
+	var response map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
+		t.Fatalf("Failed to decode response: %v", err)
+	}
+
+	if response["success"] != true {
+		t.Error("Response should indicate success")
+	}
+}
+
+func TestHandleAdminWord_Reset(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	defer db.Close()
+
+	adminTelegramID := int64(123456789)
+	adminUser, err := userRepo.GetOrCreateUser(adminTelegramID)
+	if err != nil {
+		t.Fatalf("Failed to create admin user: %v", err)
+	}
+
+	wordRepo := repository.NewWordRepository(db, logger)
+	err = wordRepo.SaveWordCard("reset", "definition")
+	if err != nil {
+		t.Fatalf("Failed to create word card: %v", err)
+	}
+	wordCard, err := wordRepo.GetWordCard("reset")
+	if err != nil || wordCard == nil {
+		t.Fatalf("Failed to get word card: %v", err)
+	}
+
+	cfg := &config.Config{
+		Admin: config.AdminConfig{
+			TelegramID: adminTelegramID,
+		},
+		WebApp: config.WebAppConfig{
+			JWTSecret:     "test-secret",
+			JWTTTLHours:   24,
+			RefreshTTLHours: 720,
+		},
+	}
+
+	jwtService, _ := NewJWTService(cfg, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-token")
+
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("POST", fmt.Sprintf("/app/admin/words/%d/reset", wordCard.ID), nil)
+	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+
+	adminHandler := router.RequireAdmin(router.handleAdminWord)
+	adminHandler(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d", w.Code)
+	}
+
+	var response map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
+		t.Fatalf("Failed to decode response: %v", err)
+	}
+
+	if response["success"] != true {
+		t.Error("Response should indicate success")
+	}
+}

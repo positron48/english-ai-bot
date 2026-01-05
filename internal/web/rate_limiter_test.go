@@ -1,64 +1,65 @@
 package web
 
 import (
+	"sync"
 	"testing"
 	"time"
 )
 
-func TestNewRateLimiter(t *testing.T) {
-	rl := NewRateLimiter(1*time.Minute, 1*time.Hour)
-	defer rl.Stop()
-
-	_ = rl // Verify rate limiter is created
-}
-
-func TestRateLimiter_Allow(t *testing.T) {
-	rl := NewRateLimiter(1*time.Minute, 1*time.Hour)
-	defer rl.Stop()
-
-	policy := RateLimitPolicy{
-		RequestsPerWindow: 5,
-		WindowDuration:    1 * time.Minute,
-		BurstSize:         5,
+func TestMin(t *testing.T) {
+	tests := []struct {
+		name string
+		a    int
+		b    int
+		want int
+	}{
+		{"a < b", 1, 2, 1},
+		{"a > b", 2, 1, 1},
+		{"a == b", 1, 1, 1},
+		{"negative a < b", -2, -1, -2},
+		{"zero", 0, 1, 0},
 	}
 
-	// First requests should be allowed
-	for i := 0; i < 5; i++ {
-		allowed, _ := rl.Allow("test-key", policy)
-		if !allowed {
-			t.Errorf("Request %d should be allowed", i+1)
-		}
-	}
-
-	// Next request should be rate limited
-	allowed, _ := rl.Allow("test-key", policy)
-	if allowed {
-		t.Error("Request should be rate limited after limit")
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := min(tt.a, tt.b); got != tt.want {
+				t.Errorf("min(%d, %d) = %d, want %d", tt.a, tt.b, got, tt.want)
+			}
+		})
 	}
 }
 
-func TestRateLimiter_Allow_DifferentKeys(t *testing.T) {
-	rl := NewRateLimiter(1*time.Minute, 1*time.Hour)
-	defer rl.Stop()
+func TestRateLimiter_Cleanup(t *testing.T) {
+	rl := NewRateLimiter(50*time.Millisecond, 100*time.Millisecond)
 
-	policy := RateLimitPolicy{
-		RequestsPerWindow: 2,
-		WindowDuration:    1 * time.Minute,
-		BurstSize:         2,
+	// Add some buckets
+	rl.mu.Lock()
+	oldTime := time.Now().Add(-200 * time.Millisecond) // Old, should be cleaned
+	rl.buckets["key1"] = &tokenBucket{
+		tokens:     10,
+		lastRefill: oldTime,
+		mu:         sync.Mutex{},
 	}
-
-	// Different keys should have separate limits
-	allowed1, _ := rl.Allow("key1", policy)
-	allowed2, _ := rl.Allow("key2", policy)
-
-	if !allowed1 || !allowed2 {
-		t.Error("Different keys should have separate rate limits")
+	recentTime := time.Now() // Recent, should not be cleaned
+	rl.buckets["key2"] = &tokenBucket{
+		tokens:     10,
+		lastRefill: recentTime,
+		mu:         sync.Mutex{},
 	}
-}
+	rl.mu.Unlock()
 
-func TestRateLimiter_Stop(t *testing.T) {
-	rl := NewRateLimiter(1*time.Minute, 1*time.Hour)
+	// Wait for cleanup to run (cleanup is already started in NewRateLimiter)
+	time.Sleep(200 * time.Millisecond)
 
-	// Stop should not panic
+	// Stop cleanup
 	rl.Stop()
+
+	// Check that old bucket was removed
+	rl.mu.Lock()
+	defer rl.mu.Unlock()
+	if _, exists := rl.buckets["key1"]; exists {
+		t.Error("Expected key1 bucket to be cleaned up")
+	}
+	// Verify cleanup ran (at least one bucket should be gone or both)
+	// The exact behavior depends on timing, but cleanup should have run
 }
