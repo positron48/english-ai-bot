@@ -65,7 +65,9 @@ check: tidy
 	@echo "✅ Go dependencies verified"
 	@echo ""
 	@echo "5. Running Go tests..."
-	@$(GO) test -tags=test -v ./... | grep -E "(PASS|FAIL|RUN)" || true
+	@$(GO) test -tags=test -coverprofile=coverage.out -covermode=atomic -v ./... > .go-test-output.txt 2>&1
+	@grep -E "(PASS|FAIL|RUN)" .go-test-output.txt || true
+	@rm -f .go-test-output.txt
 	@echo "✅ Go tests passed"
 	@echo ""
 	@echo "6. Running Go linter..."
@@ -73,6 +75,7 @@ check: tidy
 	@echo "✅ Go linter passed"
 	@echo ""
 	@echo "🎉 All CI checks passed!"
+	@COVERAGE=$$($(GO) tool cover -func=coverage.out | awk '/^total:/ {print $$3}'); echo "📊 Total test coverage: $$COVERAGE"
 
 # Alias for check
 ci: check
