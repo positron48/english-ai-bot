@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/repository"
@@ -73,6 +74,7 @@ type Router struct {
 	otpRepo            *repository.WebOTPRepository
 	botToken           string
 	webTrainingHandler *WebTrainingHandler
+	rateLimiter        *RateLimiter
 }
 
 // NewRouter creates a new web router
@@ -85,6 +87,9 @@ func NewRouter(
 	optionsService *service.OptionsService,
 	cbService *service.CircuitBreakerService,
 ) *Router {
+	// Initialize rate limiter (cleanup every 5 minutes, TTL 1 hour)
+	rateLimiter := NewRateLimiter(5*time.Minute, 1*time.Hour)
+
 	r := &Router{
 		mux:             http.NewServeMux(),
 		logger:          logger,
@@ -94,6 +99,7 @@ func NewRouter(
 		srsService:      srsService,
 		optionsService:  optionsService,
 		cbService:       cbService,
+		rateLimiter:     rateLimiter,
 	}
 
 	// Setup routes
@@ -145,6 +151,30 @@ func (r *Router) getAuthMiddleware() *AuthMiddleware {
 	return r.authMiddleware
 }
 
+// getRateLimitPolicy creates a rate limit policy from config values
+func (r *Router) getRateLimitPolicy(requestsPerWindow, burstMultiplier int) RateLimitPolicy {
+	// Use defaults if config values are 0 or negative
+	if requestsPerWindow <= 0 {
+		requestsPerWindow = 60 // Safe default
+	}
+	windowMinutes := r.config.WebApp.RateLimitWindowMinutes
+	if windowMinutes <= 0 {
+		windowMinutes = 1
+	}
+	if burstMultiplier <= 0 {
+		burstMultiplier = 2
+	}
+	burst := requestsPerWindow * burstMultiplier
+	if burst < requestsPerWindow {
+		burst = requestsPerWindow
+	}
+	return RateLimitPolicy{
+		RequestsPerWindow: requestsPerWindow,
+		WindowDuration:    time.Duration(windowMinutes) * time.Minute,
+		BurstSize:         burst,
+	}
+}
+
 // setupRoutes configures all routes
 func (r *Router) setupRoutes() {
 	// Swagger documentation with custom UI that auto-adds "Bearer " prefix
@@ -154,12 +184,61 @@ func (r *Router) setupRoutes() {
 		http.ServeFile(w, req, "docs/swagger/swagger.json")
 	})
 
-	// Auth routes
-	r.mux.HandleFunc("/auth/telegram", r.handleAuthTelegram)
-	r.mux.HandleFunc("/auth/telegram_unsafe", r.handleAuthTelegramUnsafe)
-	r.mux.HandleFunc("/auth/request_otp", r.handleAuthRequestOTP)
-	r.mux.HandleFunc("/auth/otp", r.handleAuthOTP)
-	r.mux.HandleFunc("/auth/refresh", r.handleAuthRefresh)
+	// Auth routes with rate limiting
+	// POST /auth/telegram - moderate limit per IP
+	telegramPolicy := r.getRateLimitPolicy(
+		r.config.WebApp.RateLimitAuthTelegramPerIP,
+		r.config.WebApp.RateLimitBurstMultiplier,
+	)
+	telegramMiddleware := NewRateLimitMiddleware(r.rateLimiter, r.logger, telegramPolicy, KeyFuncIP)
+	r.mux.HandleFunc("/auth/telegram", telegramMiddleware.Wrap(r.handleAuthTelegram))
+
+	// POST /auth/telegram_unsafe - strict limit per IP, stricter per IP+user_id
+	telegramUnsafePolicyIP := r.getRateLimitPolicy(
+		r.config.WebApp.RateLimitAuthTelegramUnsafePerIP,
+		r.config.WebApp.RateLimitBurstMultiplier,
+	)
+	telegramUnsafePolicyIPUser := r.getRateLimitPolicy(
+		r.config.WebApp.RateLimitAuthTelegramUnsafePerIPUser,
+		r.config.WebApp.RateLimitBurstMultiplier,
+	)
+	telegramUnsafeMiddlewareIP := NewRateLimitMiddleware(r.rateLimiter, r.logger, telegramUnsafePolicyIP, KeyFuncIP)
+	telegramUnsafeMiddlewareIPUser := NewRateLimitMiddleware(r.rateLimiter, r.logger, telegramUnsafePolicyIPUser, KeyFuncIPAndUserID)
+	r.mux.HandleFunc("/auth/telegram_unsafe", telegramUnsafeMiddlewareIP.Wrap(telegramUnsafeMiddlewareIPUser.Wrap(r.handleAuthTelegramUnsafe)))
+
+	// POST /auth/request_otp - strict limit per IP, stricter per IP+username
+	requestOTPPolicyIP := r.getRateLimitPolicy(
+		r.config.WebApp.RateLimitAuthRequestOTPPerIP,
+		r.config.WebApp.RateLimitBurstMultiplier,
+	)
+	requestOTPPolicyIPUser := r.getRateLimitPolicy(
+		r.config.WebApp.RateLimitAuthRequestOTPPerIPUser,
+		r.config.WebApp.RateLimitBurstMultiplier,
+	)
+	requestOTPMiddlewareIP := NewRateLimitMiddleware(r.rateLimiter, r.logger, requestOTPPolicyIP, KeyFuncIP)
+	requestOTPMiddlewareIPUser := NewRateLimitMiddleware(r.rateLimiter, r.logger, requestOTPPolicyIPUser, KeyFuncIPAndUsername)
+	r.mux.HandleFunc("/auth/request_otp", requestOTPMiddlewareIP.Wrap(requestOTPMiddlewareIPUser.Wrap(r.handleAuthRequestOTP)))
+
+	// POST /auth/otp - moderate limit per IP, stricter per IP+user_id
+	otpPolicyIP := r.getRateLimitPolicy(
+		r.config.WebApp.RateLimitAuthOTPPerIP,
+		r.config.WebApp.RateLimitBurstMultiplier,
+	)
+	otpPolicyIPUser := r.getRateLimitPolicy(
+		r.config.WebApp.RateLimitAuthOTPPerIPUser,
+		r.config.WebApp.RateLimitBurstMultiplier,
+	)
+	otpMiddlewareIP := NewRateLimitMiddleware(r.rateLimiter, r.logger, otpPolicyIP, KeyFuncIP)
+	otpMiddlewareIPUser := NewRateLimitMiddleware(r.rateLimiter, r.logger, otpPolicyIPUser, KeyFuncIPAndUserID)
+	r.mux.HandleFunc("/auth/otp", otpMiddlewareIP.Wrap(otpMiddlewareIPUser.Wrap(r.handleAuthOTP)))
+
+	// POST /auth/refresh - moderate limit per IP
+	refreshPolicy := r.getRateLimitPolicy(
+		r.config.WebApp.RateLimitAuthRefreshPerIP,
+		r.config.WebApp.RateLimitBurstMultiplier,
+	)
+	refreshMiddleware := NewRateLimitMiddleware(r.rateLimiter, r.logger, refreshPolicy, KeyFuncIP)
+	r.mux.HandleFunc("/auth/refresh", refreshMiddleware.Wrap(r.handleAuthRefresh))
 	
 	// Health check
 	r.mux.HandleFunc("/health", func(w http.ResponseWriter, req *http.Request) {
@@ -179,26 +258,38 @@ func (r *Router) setupProtectedRoutes() {
 		r.logger.Fatal("auth middleware not initialized - call SetDependencies first")
 	}
 
-	// Protected user routes (wrapped with auth middleware)
-	r.mux.HandleFunc("/app/dashboard", auth.RequireAuth(r.handleDashboard))
-	r.mux.HandleFunc("/app/vocab", auth.RequireAuth(r.handleVocab))
-	r.mux.HandleFunc("/app/vocab/", auth.RequireAuth(r.handleVocabDelete))
-	r.mux.HandleFunc("/app/training/start", auth.RequireAuth(r.handleTrainingStart))
-	r.mux.HandleFunc("/app/training/current", auth.RequireAuth(r.handleTrainingCurrent))
-	r.mux.HandleFunc("/app/training/reveal", auth.RequireAuth(r.handleTrainingReveal))
-	r.mux.HandleFunc("/app/training/answer", auth.RequireAuth(r.handleTrainingAnswer))
-	r.mux.HandleFunc("/app/chat", auth.RequireAuth(r.handleChat))
+	// Rate limit policies for /app/* routes
+	appAPIPolicy := r.getRateLimitPolicy(
+		r.config.WebApp.RateLimitAppAPIPerUser,
+		r.config.WebApp.RateLimitBurstMultiplier,
+	)
+	appChatPolicy := r.getRateLimitPolicy(
+		r.config.WebApp.RateLimitAppChatPerUser,
+		r.config.WebApp.RateLimitBurstMultiplier,
+	)
+	appAPIMiddleware := NewRateLimitMiddleware(r.rateLimiter, r.logger, appAPIPolicy, KeyFuncIPAndUserIDFromContext)
+	appChatMiddleware := NewRateLimitMiddleware(r.rateLimiter, r.logger, appChatPolicy, KeyFuncIPAndUserIDFromContext)
 
-	// Admin routes (wrapped with admin guard)
+	// Protected user routes (wrapped with auth middleware and rate limiting)
+	r.mux.HandleFunc("/app/dashboard", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleDashboard)))
+	r.mux.HandleFunc("/app/vocab", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleVocab)))
+	r.mux.HandleFunc("/app/vocab/", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleVocabDelete)))
+	r.mux.HandleFunc("/app/training/start", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTrainingStart)))
+	r.mux.HandleFunc("/app/training/current", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTrainingCurrent)))
+	r.mux.HandleFunc("/app/training/reveal", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTrainingReveal)))
+	r.mux.HandleFunc("/app/training/answer", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTrainingAnswer)))
+	r.mux.HandleFunc("/app/chat", appChatMiddleware.Wrap(auth.RequireAuth(r.handleChat)))
+
+	// Admin routes (wrapped with admin guard and rate limiting)
 	adminAuth := auth.RequireAuth
 	adminGuard := r.RequireAdmin
-	r.mux.HandleFunc("/app/admin", adminAuth(adminGuard(r.handleAdmin)))
-	r.mux.HandleFunc("/app/admin/circuit/reset", adminAuth(adminGuard(r.handleAdminCircuitReset)))
-	r.mux.HandleFunc("/app/admin/training/", adminAuth(adminGuard(r.handleAdminTraining)))
-	r.mux.HandleFunc("/app/admin/training/card/", adminAuth(adminGuard(r.handleAdminTrainingCard)))
-	r.mux.HandleFunc("/app/admin/words", adminAuth(adminGuard(r.handleAdminWords)))
-	r.mux.HandleFunc("/app/admin/words/", adminAuth(adminGuard(r.handleAdminWord)))
-	r.mux.HandleFunc("/app/admin/users", adminAuth(adminGuard(r.handleAdminUsers)))
+	r.mux.HandleFunc("/app/admin", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdmin))))
+	r.mux.HandleFunc("/app/admin/circuit/reset", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminCircuitReset))))
+	r.mux.HandleFunc("/app/admin/training/", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminTraining))))
+	r.mux.HandleFunc("/app/admin/training/card/", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminTrainingCard))))
+	r.mux.HandleFunc("/app/admin/words", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminWords))))
+	r.mux.HandleFunc("/app/admin/words/", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminWord))))
+	r.mux.HandleFunc("/app/admin/users", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminUsers))))
 }
 
 // corsMiddleware adds CORS headers to allow Swagger UI to make requests

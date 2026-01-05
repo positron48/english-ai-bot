@@ -94,6 +94,20 @@ type WebAppConfig struct {
 	JWTTTLHours       int    `mapstructure:"jwt_ttl_hours"`
 	RefreshTTLHours   int    `mapstructure:"refresh_ttl_hours"`
 	ViteDevServerURL  string `mapstructure:"vite_dev_server_url"`
+	
+	// Rate limiting configuration
+	RateLimitAuthRequestOTPPerIP        int `mapstructure:"rate_limit_auth_request_otp_per_ip"`
+	RateLimitAuthRequestOTPPerIPUser    int `mapstructure:"rate_limit_auth_request_otp_per_ip_user"`
+	RateLimitAuthOTPPerIP               int `mapstructure:"rate_limit_auth_otp_per_ip"`
+	RateLimitAuthOTPPerIPUser           int `mapstructure:"rate_limit_auth_otp_per_ip_user"`
+	RateLimitAuthTelegramUnsafePerIP   int `mapstructure:"rate_limit_auth_telegram_unsafe_per_ip"`
+	RateLimitAuthTelegramUnsafePerIPUser int `mapstructure:"rate_limit_auth_telegram_unsafe_per_ip_user"`
+	RateLimitAuthTelegramPerIP         int `mapstructure:"rate_limit_auth_telegram_per_ip"`
+	RateLimitAuthRefreshPerIP          int `mapstructure:"rate_limit_auth_refresh_per_ip"`
+	RateLimitAppAPIPerUser             int `mapstructure:"rate_limit_app_api_per_user"`
+	RateLimitAppChatPerUser            int `mapstructure:"rate_limit_app_chat_per_user"`
+	RateLimitWindowMinutes             int `mapstructure:"rate_limit_window_minutes"`
+	RateLimitBurstMultiplier           int `mapstructure:"rate_limit_burst_multiplier"`
 }
 
 // Load loads configuration from environment variables and config file
@@ -136,6 +150,20 @@ func Load() (*Config, error) {
 	viper.SetDefault("webapp.jwt_ttl_hours", 24)
 	viper.SetDefault("webapp.refresh_ttl_hours", 720)
 	viper.SetDefault("webapp.vite_dev_server_url", "http://localhost:5173")
+	
+	// Rate limiting defaults
+	viper.SetDefault("webapp.rate_limit_auth_request_otp_per_ip", 10)
+	viper.SetDefault("webapp.rate_limit_auth_request_otp_per_ip_user", 3)
+	viper.SetDefault("webapp.rate_limit_auth_otp_per_ip", 20)
+	viper.SetDefault("webapp.rate_limit_auth_otp_per_ip_user", 5)
+	viper.SetDefault("webapp.rate_limit_auth_telegram_unsafe_per_ip", 30)
+	viper.SetDefault("webapp.rate_limit_auth_telegram_unsafe_per_ip_user", 10)
+	viper.SetDefault("webapp.rate_limit_auth_telegram_per_ip", 60)
+	viper.SetDefault("webapp.rate_limit_auth_refresh_per_ip", 60)
+	viper.SetDefault("webapp.rate_limit_app_api_per_user", 300)
+	viper.SetDefault("webapp.rate_limit_app_chat_per_user", 60)
+	viper.SetDefault("webapp.rate_limit_window_minutes", 1)
+	viper.SetDefault("webapp.rate_limit_burst_multiplier", 2)
 
 	// Bot message defaults
 	viper.SetDefault("bot.start_message", "🤖 Hello! I'm a universal AI assistant.\n\n💡 Just send me a message and I'll help you with any questions!\n\nUse /help for additional information.")
@@ -187,6 +215,18 @@ func Load() (*Config, error) {
 	_ = viper.BindEnv("webapp.jwt_ttl_hours", "WEBAPP_JWT_TTL_HOURS")
 	_ = viper.BindEnv("webapp.refresh_ttl_hours", "WEBAPP_REFRESH_TTL_HOURS")
 	_ = viper.BindEnv("webapp.vite_dev_server_url", "WEBAPP_VITE_DEV_SERVER_URL")
+	_ = viper.BindEnv("webapp.rate_limit_auth_request_otp_per_ip", "WEBAPP_RATE_LIMIT_AUTH_REQUEST_OTP_PER_IP")
+	_ = viper.BindEnv("webapp.rate_limit_auth_request_otp_per_ip_user", "WEBAPP_RATE_LIMIT_AUTH_REQUEST_OTP_PER_IP_USER")
+	_ = viper.BindEnv("webapp.rate_limit_auth_otp_per_ip", "WEBAPP_RATE_LIMIT_AUTH_OTP_PER_IP")
+	_ = viper.BindEnv("webapp.rate_limit_auth_otp_per_ip_user", "WEBAPP_RATE_LIMIT_AUTH_OTP_PER_IP_USER")
+	_ = viper.BindEnv("webapp.rate_limit_auth_telegram_unsafe_per_ip", "WEBAPP_RATE_LIMIT_AUTH_TELEGRAM_UNSAFE_PER_IP")
+	_ = viper.BindEnv("webapp.rate_limit_auth_telegram_unsafe_per_ip_user", "WEBAPP_RATE_LIMIT_AUTH_TELEGRAM_UNSAFE_PER_IP_USER")
+	_ = viper.BindEnv("webapp.rate_limit_auth_telegram_per_ip", "WEBAPP_RATE_LIMIT_AUTH_TELEGRAM_PER_IP")
+	_ = viper.BindEnv("webapp.rate_limit_auth_refresh_per_ip", "WEBAPP_RATE_LIMIT_AUTH_REFRESH_PER_IP")
+	_ = viper.BindEnv("webapp.rate_limit_app_api_per_user", "WEBAPP_RATE_LIMIT_APP_API_PER_USER")
+	_ = viper.BindEnv("webapp.rate_limit_app_chat_per_user", "WEBAPP_RATE_LIMIT_APP_CHAT_PER_USER")
+	_ = viper.BindEnv("webapp.rate_limit_window_minutes", "WEBAPP_RATE_LIMIT_WINDOW_MINUTES")
+	_ = viper.BindEnv("webapp.rate_limit_burst_multiplier", "WEBAPP_RATE_LIMIT_BURST_MULTIPLIER")
 
 	// Set config file
 	viper.SetConfigName("config")
