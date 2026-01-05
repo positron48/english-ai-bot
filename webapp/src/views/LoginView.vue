@@ -6,6 +6,7 @@
       <div v-if="step === 'username'" class="login-step">
         <p>Enter your Telegram username or ID:</p>
         <input
+          ref="usernameInput"
           v-model="username"
           type="text"
           placeholder="Username or Telegram ID"
@@ -20,6 +21,7 @@
       <div v-if="step === 'otp'" class="login-step">
         <p>Enter the OTP code sent to your Telegram:</p>
         <input
+          ref="otpInput"
           v-model="otpCode"
           type="text"
           placeholder="OTP Code"
@@ -37,7 +39,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuth } from '../composables/useAuth'
 import { apiClient } from '../api/client'
@@ -51,6 +53,9 @@ const otpCode = ref('')
 const userId = ref('')
 const loading = ref(false)
 const error = ref('')
+
+const usernameInput = ref<HTMLInputElement | null>(null)
+const otpInput = ref<HTMLInputElement | null>(null)
 
 onMounted(async () => {
   // Check if Telegram WebApp is available and try to authenticate
@@ -67,6 +72,22 @@ onMounted(async () => {
       error.value = 'Авторизация через Telegram не удалась. Пожалуйста, используйте OTP вход.'
     }
   }
+  
+  // Focus on username input when component is mounted
+  if (step.value === 'username') {
+    await nextTick()
+    usernameInput.value?.focus()
+  }
+})
+
+// Watch for step changes to focus on the appropriate input
+watch(step, async (newStep) => {
+  await nextTick()
+  if (newStep === 'username') {
+    usernameInput.value?.focus()
+  } else if (newStep === 'otp') {
+    otpInput.value?.focus()
+  }
 })
 
 const requestOTP = async () => {
@@ -82,6 +103,7 @@ const requestOTP = async () => {
     const response = await apiClient.requestOTP(username.value.trim())
     userId.value = response.user_id.toString()
     step.value = 'otp'
+    // Focus will be set automatically by watch on step change
   } catch (err: any) {
     error.value = err.message || 'Failed to send OTP'
   } finally {

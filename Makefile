@@ -93,12 +93,12 @@ check: tidy
 # Migration command for existing word cards
 build-migrate:
 	@echo "Building migration tool..."
-	$(GO) build -o bin/migrate_words ./cmd/migrate_words
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 $(GO) build -ldflags="-s -w" -o bin/migrate_words ./cmd/migrate_words
 	@echo "✅ Migration tool built: bin/migrate_words"
 
 build-migrate-training:
 	@echo "Building training cards migration tool..."
-	$(GO) build -o bin/migrate_training_cards ./cmd/migrate_training_cards
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 $(GO) build -ldflags="-s -w" -o bin/migrate_training_cards ./cmd/migrate_training_cards
 	@echo "✅ Training cards migration tool built: bin/migrate_training_cards"
 
 migrate-words: build-migrate
