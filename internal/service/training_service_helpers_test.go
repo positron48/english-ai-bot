@@ -31,13 +31,13 @@ func TestTrainingService_RestoreQueue_ValidCards(t *testing.T) {
 	defer db.Close()
 
 	// Create training cards
-	_, err := db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (?, ?, ?, ?, ?)",
-		1, "restore1", 0, "восстановить1", "restore 1")
+	_, err := db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (?, ?, ?, ?, ?, ?, ?)",
+		1, "restore1", 0, "восстановить1", "restore 1", "verb", "to restore1")
 	if err != nil {
 		t.Fatalf("Failed to create training card: %v", err)
 	}
-	_, err = db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (?, ?, ?, ?, ?)",
-		2, "restore2", 0, "восстановить2", "restore 2")
+	_, err = db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (?, ?, ?, ?, ?, ?, ?)",
+		2, "restore2", 0, "восстановить2", "restore 2", "verb", "to restore2")
 	if err != nil {
 		t.Fatalf("Failed to create training card: %v", err)
 	}
@@ -103,8 +103,8 @@ func TestTrainingService_RestoreQueue_WrongUser(t *testing.T) {
 	defer db.Close()
 
 	// Create training card
-	_, err := db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (?, ?, ?, ?, ?)",
-		1, "wronguser", 0, "неправильный пользователь", "wrong user")
+	_, err := db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (?, ?, ?, ?, ?, ?, ?)",
+		1, "wronguser", 0, "неправильный пользователь", "wrong user", "noun", "wronguser")
 	if err != nil {
 		t.Fatalf("Failed to create training card: %v", err)
 	}

@@ -47,6 +47,8 @@ func setupVocabCardsTestDB(t *testing.T) (*sql.DB, *repository.UserRepository) {
 		distractors_ru TEXT,
 		distractors_en TEXT,
 		hint TEXT,
+		pos TEXT,
+		display_word TEXT,
 		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 	);
 	

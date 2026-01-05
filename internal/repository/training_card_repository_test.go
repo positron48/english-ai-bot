@@ -21,6 +21,12 @@ func setupTrainingCardTestDB(t *testing.T) *sql.DB {
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		word TEXT UNIQUE NOT NULL,
 		definition TEXT NOT NULL,
+		pos TEXT,
+		transcription TEXT,
+		definition_ru TEXT,
+		examples_json TEXT,
+		verb_forms_json TEXT,
+		display_en TEXT,
 		processed_at TEXT,
 		processing_error TEXT,
 		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -40,6 +46,8 @@ func setupTrainingCardTestDB(t *testing.T) *sql.DB {
 		distractors_ru TEXT,
 		distractors_en TEXT,
 		hint TEXT,
+		pos TEXT,
+		display_word TEXT,
 		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 	);`
 

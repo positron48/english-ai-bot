@@ -42,10 +42,32 @@ func setupAdminTestDB(t *testing.T) (*sql.DB, *repository.UserRepository, *servi
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		word TEXT UNIQUE NOT NULL,
 		definition TEXT NOT NULL,
+		pos TEXT,
+		transcription TEXT,
+		definition_ru TEXT,
+		examples_json TEXT,
+		verb_forms_json TEXT,
+		display_en TEXT,
 		processed_at DATETIME,
 		processing_error TEXT,
 		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
 		updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+	);
+	
+	CREATE TABLE IF NOT EXISTS word_forms (
+		form TEXT PRIMARY KEY,
+		word_card_id INTEGER NOT NULL,
+		FOREIGN KEY (word_card_id) REFERENCES word_cards(id) ON DELETE CASCADE
+	);
+	
+	CREATE TABLE IF NOT EXISTS word_request_history (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		user_id INTEGER NOT NULL,
+		word TEXT,
+		word_card_id INTEGER,
+		input_word TEXT,
+		requested_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		FOREIGN KEY (word_card_id) REFERENCES word_cards(id) ON DELETE CASCADE
 	);
 	
 	CREATE TABLE IF NOT EXISTS training_cards (
@@ -61,6 +83,8 @@ func setupAdminTestDB(t *testing.T) (*sql.DB, *repository.UserRepository, *servi
 		distractors_ru TEXT,
 		distractors_en TEXT,
 		hint TEXT,
+		pos TEXT,
+		display_word TEXT,
 		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 	);
 	

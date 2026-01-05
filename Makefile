@@ -74,8 +74,47 @@ check: tidy
 	@$(GOLANGCI) run --timeout=3m
 	@echo "✅ Go linter passed"
 	@echo ""
+	@echo "7. Checking test coverage..."
+	@COVERAGE=$$($(GO) tool cover -func=coverage.out | awk '/^total:/ {print $$3}' | sed 's/%//'); \
+	if [ -z "$$COVERAGE" ]; then \
+		echo "❌ Failed to get coverage"; \
+		exit 1; \
+	fi; \
+	COVERAGE_INT=$$(echo "$$COVERAGE" | cut -d. -f1); \
+	if [ "$$COVERAGE_INT" -lt 48 ]; then \
+		echo "❌ Test coverage is $$COVERAGE% (minimum required: 48%)"; \
+		exit 1; \
+	fi; \
+	echo "✅ Test coverage: $$COVERAGE% (minimum: 48%)"
+	@echo ""
 	@echo "🎉 All CI checks passed!"
 	@COVERAGE=$$($(GO) tool cover -func=coverage.out | awk '/^total:/ {print $$3}'); echo "📊 Total test coverage: $$COVERAGE"
+
+# Migration command for existing word cards
+build-migrate:
+	@echo "Building migration tool..."
+	$(GO) build -o bin/migrate_words ./cmd/migrate_words
+	@echo "✅ Migration tool built: bin/migrate_words"
+
+build-migrate-training:
+	@echo "Building training cards migration tool..."
+	$(GO) build -o bin/migrate_training_cards ./cmd/migrate_training_cards
+	@echo "✅ Training cards migration tool built: bin/migrate_training_cards"
+
+migrate-words: build-migrate
+	@echo "⚠️  Word Cards Migration Tool"
+	@echo "⚠️  This will process all existing word cards and regenerate them with structured data"
+	@echo "⚠️  Make sure you have a backup of your database!"
+	@echo ""
+	@echo "To run migration, execute: ./bin/migrate_words"
+	@echo "Or run directly without confirmation: ./bin/migrate_words"
+
+migrate-training-cards: build-migrate-training
+	@echo "⚠️  Training Cards Migration Tool"
+	@echo "⚠️  This will update all existing training cards with POS and display_word"
+	@echo "⚠️  Make sure you have a backup of your database!"
+	@echo ""
+	@echo "To run migration, execute: ./bin/migrate_training_cards"
 
 # Alias for check
 ci: check
@@ -201,6 +240,8 @@ help:
 	@echo "  make check          - Run all CI checks (tests, lint, verify)"
 	@echo "  make swagger        - Generate Swagger API documentation"
 	@echo "  make clean          - Clean build artifacts"
+	@echo "  make migrate-words  - Migrate existing word cards to new structured format"
+	@echo "  make migrate-training-cards  - Migrate existing training cards with POS and display_word"
 	@echo ""
 	@echo "Docker commands:"
 	@echo "  make docker-build   - Build Docker image"

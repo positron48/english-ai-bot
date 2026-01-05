@@ -1,7 +1,10 @@
 package utils
 
 import (
+	"strings"
 	"testing"
+
+	"tgbot-skeleton/internal/models"
 )
 
 func TestConvertMarkdownToTelegram(t *testing.T) {
@@ -97,5 +100,96 @@ func TestEscapeTelegramMarkdown(t *testing.T) {
 				t.Errorf("EscapeTelegramMarkdown() = %v, want %v", result, tt.expected)
 			}
 		})
+	}
+}
+
+func TestRenderWordCardMarkdown(t *testing.T) {
+	pos := "noun"
+	transcription := "/spaɪ/"
+	definitionRU := "шпион"
+	displayEN := "spy"
+
+	card := &models.WordCard{
+		Word:          "spy",
+		Definition:    "",
+		POS:           &pos,
+		Transcription: &transcription,
+		DefinitionRU: &definitionRU,
+		DisplayEN:     &displayEN,
+	}
+
+	examples := []models.WordInfoExample{
+		{
+			ExampleEN: "He is a spy",
+			GlossRU:   "Он шпион",
+		},
+		{
+			ExampleEN: "The spy was caught",
+			GlossRU:   "Шпиона поймали",
+		},
+	}
+
+	result := RenderWordCardMarkdown(card, examples, nil)
+	
+	if !strings.Contains(result, "spy") {
+		t.Error("Result should contain word 'spy'")
+	}
+	if !strings.Contains(result, "noun") {
+		t.Error("Result should contain POS 'noun'")
+	}
+	if !strings.Contains(result, definitionRU) {
+		t.Error("Result should contain Russian definition")
+	}
+	if !strings.Contains(result, "He is a spy") {
+		t.Error("Result should contain example")
+	}
+}
+
+func TestRenderWordCardMarkdown_WithVerbForms(t *testing.T) {
+	pos := "verb"
+	transcription := "/raɪt/"
+	definitionRU := "писать"
+	displayEN := "to write"
+
+	card := &models.WordCard{
+		Word:          "write",
+		Definition:    "",
+		POS:           &pos,
+		Transcription: &transcription,
+		DefinitionRU: &definitionRU,
+		DisplayEN:     &displayEN,
+	}
+
+	examples := []models.WordInfoExample{
+		{
+			ExampleEN: "I write letters",
+			GlossRU:   "Я пишу письма",
+		},
+	}
+
+	verbForms := &models.WordInfoVerbForms{
+		V1:         "write",
+		V2:         "wrote",
+		V3:         "written",
+		Gerund:     "writing",
+		ThirdPerson: "writes",
+	}
+
+	result := RenderWordCardMarkdown(card, examples, verbForms)
+	
+	if !strings.Contains(result, "to write") {
+		t.Error("Result should contain display word 'to write'")
+	}
+	if !strings.Contains(result, "Verb Forms") {
+		t.Error("Result should contain 'Verb Forms' section")
+	}
+	if !strings.Contains(result, "write") {
+		t.Error("Result should contain V1")
+	}
+	if !strings.Contains(result, "wrote") {
+		t.Error("Result should contain V2")
+	}
+	if !strings.Contains(result, "written") {
+		t.Error("Result should contain V3")
 	}
 }

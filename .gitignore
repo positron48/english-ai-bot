@@ -7,6 +7,7 @@
 bin/
 dist/
 bot
+migrate_words
 
 # Test binary, built with `go test -c`
 *.test
@@ -117,3 +118,7 @@ webapp/dist/
 # Temporary files
 tmp/
 temp/
+.go-test-output.txt
+
+# Database
+data/

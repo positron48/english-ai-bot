@@ -22,9 +22,17 @@ func setupUserCardTestDB(t *testing.T) *sql.DB {
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		word_card_id INTEGER NOT NULL,
 		word_en TEXT NOT NULL,
+		transcription TEXT,
 		sense_index INTEGER NOT NULL,
 		word_ru TEXT NOT NULL,
 		meaning_en TEXT NOT NULL,
+		example_en TEXT,
+		example_ru TEXT,
+		distractors_ru TEXT,
+		distractors_en TEXT,
+		hint TEXT,
+		pos TEXT,
+		display_word TEXT,
 		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 	);
 	
@@ -74,8 +82,8 @@ func TestUserCardRepository_CreateUserCard(t *testing.T) {
 	repo := NewUserCardRepository(db, logger)
 
 	// Create a training card first
-	_, err := db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (?, ?, ?, ?, ?)",
-		1, "hello", 0, "привет", "greeting")
+	_, err := db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (?, ?, ?, ?, ?, ?, ?)",
+		1, "hello", 0, "привет", "greeting", "noun", "hello")
 	if err != nil {
 		t.Fatalf("Failed to create training card: %v", err)
 	}
@@ -111,8 +119,8 @@ func TestUserCardRepository_GetUserCard(t *testing.T) {
 	repo := NewUserCardRepository(db, logger)
 
 	// Create a training card first
-	_, err := db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (?, ?, ?, ?, ?)",
-		1, "world", 0, "мир", "earth")
+	_, err := db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (?, ?, ?, ?, ?, ?, ?)",
+		1, "world", 0, "мир", "earth", "noun", "world")
 	if err != nil {
 		t.Fatalf("Failed to create training card: %v", err)
 	}
@@ -159,8 +167,8 @@ func TestUserCardRepository_GetDueCards(t *testing.T) {
 	repo := NewUserCardRepository(db, logger)
 
 	// Create a training card first
-	_, err := db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (?, ?, ?, ?, ?)",
-		1, "test", 0, "тест", "test")
+	_, err := db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (?, ?, ?, ?, ?, ?, ?)",
+		1, "test", 0, "тест", "test", "noun", "test")
 	if err != nil {
 		t.Fatalf("Failed to create training card: %v", err)
 	}
@@ -214,8 +222,8 @@ func TestUserCardRepository_GetNewCards(t *testing.T) {
 	repo := NewUserCardRepository(db, logger)
 
 	// Create a training card first
-	_, err := db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (?, ?, ?, ?, ?)",
-		1, "new", 0, "новый", "new")
+	_, err := db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (?, ?, ?, ?, ?, ?, ?)",
+		1, "new", 0, "новый", "new", "adjective", "new")
 	if err != nil {
 		t.Fatalf("Failed to create training card: %v", err)
 	}
@@ -254,8 +262,8 @@ func TestUserCardRepository_UpdateUserCard(t *testing.T) {
 	repo := NewUserCardRepository(db, logger)
 
 	// Create a training card first
-	_, err := db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (?, ?, ?, ?, ?)",
-		1, "update", 0, "обновить", "update")
+	_, err := db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (?, ?, ?, ?, ?, ?, ?)",
+		1, "update", 0, "обновить", "update", "verb", "to update")
 	if err != nil {
 		t.Fatalf("Failed to create training card: %v", err)
 	}
@@ -306,8 +314,8 @@ func TestUserCardRepository_GetDueCount(t *testing.T) {
 	repo := NewUserCardRepository(db, logger)
 
 	// Create a training card first
-	_, err := db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (?, ?, ?, ?, ?)",
-		1, "count", 0, "считать", "count")
+	_, err := db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (?, ?, ?, ?, ?, ?, ?)",
+		1, "count", 0, "считать", "count", "verb", "to count")
 	if err != nil {
 		t.Fatalf("Failed to create training card: %v", err)
 	}

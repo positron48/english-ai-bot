@@ -6,7 +6,7 @@ import "time"
 type TrainingCard struct {
 	ID            int64     `json:"id"`
 	WordCardID    int64     `json:"word_card_id"`
-	WordEN        string    `json:"word_en"`
+	WordEN        string    `json:"word_en"` // Display word (e.g., "spy" or "to spy")
 	Transcription string    `json:"transcription"`
 	SenseIndex    int       `json:"sense_index"`
 	WordRU        string    `json:"word_ru"`
@@ -16,6 +16,8 @@ type TrainingCard struct {
 	DistractorsRU string    `json:"distractors_ru"` // JSON array
 	DistractorsEN string    `json:"distractors_en"` // JSON array
 	Hint          string    `json:"hint"`
+	POS           *string   `json:"pos,omitempty"` // Part of speech
+	DisplayWord   *string   `json:"display_word,omitempty"` // Display form (for RU→EN direction)
 	CreatedAt     time.Time `json:"created_at"`
 }
 
@@ -137,7 +139,10 @@ type TrainingCardSense struct {
 // TrainingCardResponse represents LLM response for training card generation
 type TrainingCardResponse struct {
 	Error         string                `json:"error,omitempty"` // Error message if word is not English
-	WordEN        string                `json:"word_en"`
+	WordEN        string                `json:"word_en"` // Display word
+	Lemma         string                `json:"lemma"` // Base form (lemma)
+	POS           string                `json:"pos"` // Part of speech
+	DisplayWord   string                `json:"display_word"` // Display form (e.g., "to spy" for verbs)
 	Transcription string                `json:"transcription"`
 	Senses        []TrainingCardSense   `json:"senses"`
 }

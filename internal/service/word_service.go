@@ -2,12 +2,14 @@ package service
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"strings"
 
 	"tgbot-skeleton/internal/ai"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
+	"tgbot-skeleton/internal/utils"
 
 	"go.uber.org/zap"
 )
@@ -46,49 +48,207 @@ func (s *WordService) NormalizeWord(word string) string {
 }
 
 // GetWordDefinition gets word definition from DB or AI
+// New flow: resolve word form -> lemma -> render markdown from structured data
 func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word string) (string, error) {
 	normalizedWord := s.NormalizeWord(word)
+	inputWord := word // Keep original for history
 
-	// First, try to get from database
-	card, err := s.wordRepo.GetWordCard(normalizedWord)
+	// Step 1: Try to resolve word form to lemma via word_forms table
+	wordForm, err := s.wordRepo.GetWordFormMapping(normalizedWord)
 	if err != nil {
-		s.logger.Error("failed to get word card from DB", zap.Error(err))
-		// Continue to AI service even if DB query fails
-	} else if card != nil {
+		s.logger.Warn("failed to get word form mapping", zap.Error(err))
+	}
+
+	var wordCard *models.WordCard
+	if wordForm != nil {
+		// Found mapping, get lemma
+		wordCard, err = s.wordRepo.GetWordCardByID(wordForm.WordCardID)
+		if err != nil {
+			s.logger.Warn("failed to get word card by ID", zap.Error(err))
+		}
+	}
+
+	// Step 2: If no mapping found, try direct lookup by lemma
+	if wordCard == nil {
+		wordCard, err = s.wordRepo.GetWordCardByLemma(normalizedWord)
+		if err != nil {
+			s.logger.Warn("failed to get word card by lemma", zap.Error(err))
+		}
+	}
+
+	// Step 3: If found in DB, render markdown and return
+	if wordCard != nil {
 		s.logger.Info("word found in database",
-			zap.String("word", normalizedWord),
+			zap.String("input", inputWord),
+			zap.String("lemma", wordCard.Word),
 		)
 
+		// Create mapping if it doesn't exist (for word forms)
+		if wordForm == nil && normalizedWord != strings.ToLower(wordCard.Word) {
+			if err := s.wordRepo.UpsertWordFormMapping(normalizedWord, wordCard.ID); err != nil {
+				s.logger.Warn("failed to create word form mapping", zap.Error(err))
+			}
+		}
+
 		// Record request history
-		if err := s.wordRepo.AddWordRequestHistory(userID, normalizedWord); err != nil {
+		wordCardID := wordCard.ID
+		if err := s.wordRepo.AddWordRequestHistoryWithCard(userID, inputWord, &wordCardID, nil); err != nil {
 			s.logger.Warn("failed to add word request history", zap.Error(err))
 		}
 
-		return card.Definition, nil
+		// Render markdown from structured data
+		markdown := s.renderWordCardMarkdown(wordCard)
+		return markdown, nil
 	}
 
-	// Word not found in DB, request from AI
+	// Step 4: Word not found, request from AI (expecting JSON)
 	s.logger.Info("word not found in database, requesting from AI",
 		zap.String("word", normalizedWord),
 	)
+
+	if s.aiService == nil {
+		return "", fmt.Errorf("AI service not available")
+	}
 
 	response, err := s.aiService.GenerateResponse(ctx, word)
 	if err != nil {
 		return "", fmt.Errorf("failed to get AI response: %w", err)
 	}
 
-	// Save word card to database
+	// Parse JSON response
+	var wordInfo models.WordInfoResponse
+	if err := json.Unmarshal([]byte(response), &wordInfo); err != nil {
+		// Not JSON, might be old format - try to save as-is for backward compatibility
+		s.logger.Warn("failed to parse AI response as JSON, saving as legacy format",
+			zap.Error(err),
+			zap.String("response", response[:min(100, len(response))]),
+		)
 	if err := s.wordRepo.SaveWordCard(normalizedWord, response); err != nil {
-		s.logger.Warn("failed to save word card to database", zap.Error(err))
-		// Continue even if save fails, but don't record history if word wasn't saved
+			s.logger.Warn("failed to save word card", zap.Error(err))
 	} else {
-		// Record request history only if word was successfully saved
 		if err := s.wordRepo.AddWordRequestHistory(userID, normalizedWord); err != nil {
 			s.logger.Warn("failed to add word request history", zap.Error(err))
 		}
 	}
-
 	return response, nil
+	}
+
+	// Check for error from LLM
+	if wordInfo.Error != "" {
+		return "", fmt.Errorf("LLM error: %s", wordInfo.Error)
+	}
+
+	// Step 5: Save structured data to word_cards (lemma)
+	lemma := strings.ToLower(wordInfo.Lemma)
+	if lemma == "" {
+		lemma = normalizedWord
+	}
+
+	displayEN := lemma
+	if wordInfo.POS == "verb" && wordInfo.VerbForms != nil && wordInfo.VerbForms.V1 != "" {
+		displayEN = "to " + wordInfo.VerbForms.V1
+	}
+
+	wordCard = &models.WordCard{
+		Word:          lemma,
+		Definition:    "", // Legacy field, keep empty
+		POS:           &wordInfo.POS,
+		Transcription: &wordInfo.Transcription,
+		DefinitionRU: &wordInfo.DefinitionRU,
+		DisplayEN:     &displayEN,
+	}
+
+	// Serialize examples
+	if len(wordInfo.Examples) > 0 {
+		examplesJSON, _ := json.Marshal(wordInfo.Examples)
+		examplesStr := string(examplesJSON)
+		wordCard.ExamplesJSON = &examplesStr
+	}
+
+	// Serialize verb forms
+	if wordInfo.VerbForms != nil {
+		verbFormsJSON, _ := json.Marshal(wordInfo.VerbForms)
+		verbFormsStr := string(verbFormsJSON)
+		wordCard.VerbFormsJSON = &verbFormsStr
+	}
+
+	wordCardID, err := s.wordRepo.UpsertWordCardLemma(wordCard)
+	if err != nil {
+		s.logger.Warn("failed to save word card lemma", zap.Error(err))
+		return "", fmt.Errorf("failed to save word card: %w", err)
+	}
+
+	// Step 6: Create word form mappings
+	// Map input word to lemma
+	if normalizedWord != lemma {
+		if err := s.wordRepo.UpsertWordFormMapping(normalizedWord, wordCardID); err != nil {
+			s.logger.Warn("failed to create word form mapping", zap.Error(err))
+		}
+	}
+
+	// Map lemma to itself
+	if err := s.wordRepo.UpsertWordFormMapping(lemma, wordCardID); err != nil {
+		s.logger.Warn("failed to create lemma mapping", zap.Error(err))
+	}
+
+	// Map verb forms if present
+	if wordInfo.VerbForms != nil {
+		forms := []string{wordInfo.VerbForms.V1, wordInfo.VerbForms.V2, wordInfo.VerbForms.V3}
+		if wordInfo.VerbForms.Gerund != "" {
+			forms = append(forms, wordInfo.VerbForms.Gerund)
+		}
+		if wordInfo.VerbForms.ThirdPerson != "" {
+			forms = append(forms, wordInfo.VerbForms.ThirdPerson)
+		}
+		for _, form := range forms {
+			if form != "" && strings.ToLower(form) != lemma {
+				if err := s.wordRepo.UpsertWordFormMapping(strings.ToLower(form), wordCardID); err != nil {
+					s.logger.Warn("failed to create verb form mapping", zap.String("form", form), zap.Error(err))
+				}
+			}
+		}
+	}
+
+	// Step 7: Record request history
+	if err := s.wordRepo.AddWordRequestHistoryWithCard(userID, inputWord, &wordCardID, nil); err != nil {
+		s.logger.Warn("failed to add word request history", zap.Error(err))
+	}
+
+	// Step 8: Render and return markdown
+	markdown := s.renderWordCardMarkdown(wordCard)
+	return markdown, nil
+}
+
+// renderWordCardMarkdown renders markdown from structured WordCard data
+func (s *WordService) renderWordCardMarkdown(card *models.WordCard) string {
+	var examples []models.WordInfoExample
+	var verbForms *models.WordInfoVerbForms
+
+	// Parse examples
+	if card.ExamplesJSON != nil && *card.ExamplesJSON != "" {
+		if err := json.Unmarshal([]byte(*card.ExamplesJSON), &examples); err != nil {
+			s.logger.Warn("failed to parse examples JSON", zap.Error(err))
+		}
+	}
+
+	// Parse verb forms
+	if card.VerbFormsJSON != nil && *card.VerbFormsJSON != "" {
+		var vf models.WordInfoVerbForms
+		if err := json.Unmarshal([]byte(*card.VerbFormsJSON), &vf); err != nil {
+			s.logger.Warn("failed to parse verb forms JSON", zap.Error(err))
+		} else {
+			verbForms = &vf
+		}
+	}
+
+	return utils.RenderWordCardMarkdown(card, examples, verbForms)
+}
+
+func min(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
 }
 
 // GetWordCard retrieves a word card from database

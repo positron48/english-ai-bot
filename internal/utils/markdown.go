@@ -3,6 +3,8 @@ package utils
 import (
 	"regexp"
 	"strings"
+
+	"tgbot-skeleton/internal/models"
 )
 
 // ConvertMarkdownToTelegram converts Markdown formatting to Telegram's format
@@ -322,4 +324,66 @@ func convertLinksToHTML(text string) string {
 	// Convert [text](url) to <a href="url">text</a>
 	text = regexp.MustCompile(`\[([^\]]+)\]\(([^)]+)\)`).ReplaceAllString(text, `<a href="$2">$1</a>`)
 	return text
+}
+
+// RenderWordCardMarkdown renders a markdown vocabulary card from structured WordCard data
+func RenderWordCardMarkdown(card *models.WordCard, examples []models.WordInfoExample, verbForms *models.WordInfoVerbForms) string {
+	var parts []string
+
+	// Header
+	displayWord := card.Word
+	if card.DisplayEN != nil && *card.DisplayEN != "" {
+		displayWord = *card.DisplayEN
+	}
+	parts = append(parts, "## Vocabulary Card")
+	parts = append(parts, "")
+	parts = append(parts, "**"+displayWord+"**")
+
+	// Part of speech
+	if card.POS != nil && *card.POS != "" {
+		parts = append(parts, "*"+*card.POS+"*")
+	}
+
+	// Transcription
+	if card.Transcription != nil && *card.Transcription != "" {
+		parts = append(parts, "`"+*card.Transcription+"`")
+	}
+
+	parts = append(parts, "")
+
+	// Definition
+	if card.DefinitionRU != nil && *card.DefinitionRU != "" {
+		parts = append(parts, "**Definition:** "+*card.DefinitionRU)
+		parts = append(parts, "")
+	}
+
+	// Verb forms (if verb)
+	if verbForms != nil && verbForms.V1 != "" {
+		parts = append(parts, "**Verb Forms:**")
+		parts = append(parts, "- V1 (Base): "+verbForms.V1)
+		if verbForms.V2 != "" {
+			parts = append(parts, "- V2 (Past Simple): "+verbForms.V2)
+		}
+		if verbForms.V3 != "" {
+			parts = append(parts, "- V3 (Past Participle): "+verbForms.V3)
+		}
+		if verbForms.Gerund != "" {
+			parts = append(parts, "- Gerund: "+verbForms.Gerund)
+		}
+		if verbForms.ThirdPerson != "" {
+			parts = append(parts, "- Third Person: "+verbForms.ThirdPerson)
+		}
+		parts = append(parts, "")
+	}
+
+	// Examples
+	if len(examples) > 0 {
+		parts = append(parts, "**Examples:**")
+		for _, ex := range examples {
+			parts = append(parts, "- "+ex.ExampleEN+" ("+ex.GlossRU+")")
+		}
+		parts = append(parts, "")
+	}
+
+	return strings.Join(parts, "\n")
 }

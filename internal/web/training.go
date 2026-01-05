@@ -171,7 +171,12 @@ func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, stat
 		if card.TrainingCard.Transcription != "" {
 			transcriptionHTML = fmt.Sprintf(` <span class="transcription">%s</span>`, card.TrainingCard.Transcription)
 		}
-		questionText = fmt.Sprintf("Что означает слово: <strong>%s</strong>%s", card.TrainingCard.WordEN, transcriptionHTML)
+		// Use display_word if available (e.g., "to spy" for verbs)
+		displayWord := card.TrainingCard.WordEN
+		if card.TrainingCard.DisplayWord != nil && *card.TrainingCard.DisplayWord != "" {
+			displayWord = *card.TrainingCard.DisplayWord
+		}
+		questionText = fmt.Sprintf("Что означает слово: <strong>%s</strong>%s", displayWord, transcriptionHTML)
 	}
 
 	// Return card data as JSON

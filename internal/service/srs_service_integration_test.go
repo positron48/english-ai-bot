@@ -23,9 +23,17 @@ func setupSRSServiceTestDB(t *testing.T) (*sql.DB, *repository.UserCardRepositor
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		word_card_id INTEGER NOT NULL,
 		word_en TEXT NOT NULL,
+		transcription TEXT,
 		sense_index INTEGER NOT NULL,
 		word_ru TEXT NOT NULL,
 		meaning_en TEXT NOT NULL,
+		example_en TEXT,
+		example_ru TEXT,
+		distractors_ru TEXT,
+		distractors_en TEXT,
+		hint TEXT,
+		pos TEXT,
+		display_word TEXT,
 		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 	);
 	

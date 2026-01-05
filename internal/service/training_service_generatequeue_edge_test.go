@@ -52,8 +52,8 @@ func TestTrainingService_generateQueue_MaxNewPerSession(t *testing.T) {
 	defer db.Close()
 
 	// Create training card
-	_, err := db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (?, ?, ?, ?, ?)",
-		1, "maxnew", 0, "максимум новых", "max new")
+	_, err := db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (?, ?, ?, ?, ?, ?, ?)",
+		1, "maxnew", 0, "максимум новых", "max new", "noun", "maxnew")
 	if err != nil {
 		t.Fatalf("Failed to create training card: %v", err)
 	}
@@ -104,13 +104,13 @@ func TestTrainingService_generateQueue_LearningCardsFirst(t *testing.T) {
 	defer db.Close()
 
 	// Create training cards
-	_, err := db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (?, ?, ?, ?, ?)",
-		1, "learning", 0, "изучение", "learning")
+	_, err := db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (?, ?, ?, ?, ?, ?, ?)",
+		1, "learning", 0, "изучение", "learning", "noun", "learning")
 	if err != nil {
 		t.Fatalf("Failed to create training card: %v", err)
 	}
-	_, err = db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (?, ?, ?, ?, ?)",
-		2, "review", 0, "повторение", "review")
+	_, err = db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (?, ?, ?, ?, ?, ?, ?)",
+		2, "review", 0, "повторение", "review", "noun", "review")
 	if err != nil {
 		t.Fatalf("Failed to create training card: %v", err)
 	}

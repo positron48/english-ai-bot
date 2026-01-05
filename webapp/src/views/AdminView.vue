@@ -81,7 +81,8 @@
               <tr>
                 <th>ID</th>
                 <th>Word</th>
-                <th>Definition</th>
+                <th>POS</th>
+                <th>Display EN</th>
                 <th>Has Cards</th>
                 <th>Processed At</th>
                 <th>Error</th>
@@ -93,16 +94,8 @@
                 <tr :class="{ 'has-error': word.ProcessingError }">
                   <td>{{ word.ID }}</td>
                   <td><strong>{{ word.Word }}</strong></td>
-                  <td>
-                    <span v-if="!word.editing">{{ word.Definition }}</span>
-                  <div v-else class="edit-form">
-                    <textarea v-model="word.editDefinition" rows="10" class="edit-textarea"></textarea>
-                      <div class="edit-actions">
-                        <button @click="saveWordDefinition(word)" class="btn btn-sm btn-primary">Save</button>
-                        <button @click="cancelEditWord(word)" class="btn btn-sm">Cancel</button>
-                      </div>
-                    </div>
-                  </td>
+                  <td>{{ word.POS || '—' }}</td>
+                  <td>{{ word.DisplayEN || '—' }}</td>
                   <td>
                     <span v-if="!word.HasTrainingCards" :class="{ 'badge': true, 'badge-secondary': true }">
                       No
@@ -124,7 +117,6 @@
                   <td>
                     <div class="action-buttons">
                       <button 
-                        v-if="!word.editing"
                         @click="startEditWord(word)" 
                         class="btn btn-sm btn-primary"
                       >
@@ -148,7 +140,7 @@
                 </tr>
                 <!-- Cards row -->
                 <tr v-if="word && word.showingCards === true && word.HasTrainingCards" class="cards-row">
-                <td colspan="7">
+                <td colspan="8">
                   <div v-if="word.cardsLoading" class="cards-loading">Loading cards...</div>
                   <div v-else-if="word.cards && word.cards.length > 0" class="cards-container">
                     <h4>Training Cards for "{{ word.Word }}"</h4>
@@ -178,6 +170,14 @@
                           <span class="field-label">Word EN:</span>
                           <span class="field-value">{{ card.word_en }}</span>
                           <span v-if="card.transcription" class="transcription">{{ card.transcription }}</span>
+                        </div>
+                        <div v-if="card.pos" class="card-field">
+                          <span class="field-label">POS:</span>
+                          <span class="field-value">{{ card.pos }}</span>
+                        </div>
+                        <div v-if="card.display_word" class="card-field">
+                          <span class="field-label">Display Word:</span>
+                          <span class="field-value">{{ card.display_word }}</span>
                         </div>
                         <div class="card-field">
                           <span class="field-label">Word RU:</span>
@@ -239,6 +239,56 @@
         </div>
       </div>
 
+      <!-- Edit Word Modal -->
+      <div v-if="showEditWordModal && wordToEdit" class="modal" @click.self="closeEditWordModal">
+        <div class="modal-content modal-large">
+          <div class="modal-header">
+            <h3>Edit Word: {{ wordToEdit.Word }}</h3>
+            <button @click="closeEditWordModal" class="btn-close">&times;</button>
+          </div>
+          <div class="modal-body">
+            <form @submit.prevent="saveWord" class="edit-form">
+              <div class="form-group">
+                <label>Word (Lemma):</label>
+                <input v-model="editWordForm.word" type="text" required class="form-input" />
+              </div>
+              <div class="form-group">
+                <label>Part of Speech (POS):</label>
+                <input v-model="editWordForm.pos" type="text" class="form-input" placeholder="noun, verb, adjective, etc." />
+              </div>
+              <div class="form-group">
+                <label>Transcription (IPA):</label>
+                <input v-model="editWordForm.transcription" type="text" class="form-input" />
+              </div>
+              <div class="form-group">
+                <label>Definition RU:</label>
+                <textarea v-model="editWordForm.definition_ru" class="form-textarea" rows="3"></textarea>
+              </div>
+              <div class="form-group">
+                <label>Display EN:</label>
+                <input v-model="editWordForm.display_en" type="text" class="form-input" placeholder="e.g., 'spy' or 'to spy' for verbs" />
+              </div>
+              <div class="form-group">
+                <label>Examples (JSON):</label>
+                <textarea v-model="editWordForm.examples_json" class="form-textarea" rows="5" placeholder='[{"example_en": "...", "gloss_ru": "..."}]'></textarea>
+              </div>
+              <div class="form-group">
+                <label>Verb Forms (JSON):</label>
+                <textarea v-model="editWordForm.verb_forms_json" class="form-textarea" rows="4" placeholder='{"v1": "...", "v2": "...", "v3": "..."}'></textarea>
+              </div>
+              <div class="form-group">
+                <label>Definition (Legacy):</label>
+                <textarea v-model="editWordForm.definition" class="form-textarea" rows="5"></textarea>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <button type="button" @click="closeEditWordModal" class="btn">Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
       <!-- Edit Training Card Modal -->
       <div v-if="showEditCardModal && cardToEdit" class="modal" @click.self="closeEditCardModal">
         <div class="modal-content modal-large">
@@ -248,6 +298,22 @@
           </div>
           <div class="modal-body">
             <form @submit.prevent="saveTrainingCard" class="edit-form">
+              <div class="form-group">
+                <label>Word EN:</label>
+                <input v-model="editCardForm.word_en" type="text" required class="form-input" />
+              </div>
+              <div class="form-group">
+                <label>Part of Speech (POS):</label>
+                <input v-model="editCardForm.pos" type="text" class="form-input" placeholder="noun, verb, adjective, etc." />
+              </div>
+              <div class="form-group">
+                <label>Display Word:</label>
+                <input v-model="editCardForm.display_word" type="text" class="form-input" placeholder="e.g., 'spy' or 'to spy' for verbs" />
+              </div>
+              <div class="form-group">
+                <label>Transcription (IPA):</label>
+                <input v-model="editCardForm.transcription" type="text" class="form-input" />
+              </div>
               <div class="form-group">
                 <label>Word RU:</label>
                 <input v-model="editCardForm.word_ru" type="text" required class="form-input" />
@@ -263,10 +329,6 @@
               <div class="form-group">
                 <label>Example RU:</label>
                 <textarea v-model="editCardForm.example_ru" class="form-textarea" rows="2"></textarea>
-              </div>
-              <div class="form-group">
-                <label>Transcription:</label>
-                <input v-model="editCardForm.transcription" type="text" class="form-input" />
               </div>
               <div class="form-group">
                 <label>Distractors RU:</label>
@@ -349,12 +411,16 @@ interface WordCard {
   ID: number
   Word: string
   Definition: string
+  POS?: string | null
+  Transcription?: string | null
+  DefinitionRU?: string | null
+  ExamplesJSON?: string | null
+  VerbFormsJSON?: string | null
+  DisplayEN?: string | null
   ProcessedAt?: string | null
   ProcessingError?: string | null
   HasTrainingCards: boolean
   RequestingUsers?: number[]
-  editing?: boolean
-  editDefinition?: string
   showingCards?: boolean
   cards?: TrainingCard[]
   cardsLoading?: boolean
@@ -380,16 +446,32 @@ const wordsPagination = ref({
 const users = ref<User[]>([])
 
 // Training card editing
+const showEditWordModal = ref(false)
+const wordToEdit = ref<WordCard | null>(null)
+const editWordForm = ref({
+  word: '',
+  pos: '',
+  transcription: '',
+  definition_ru: '',
+  display_en: '',
+  examples_json: '',
+  verb_forms_json: '',
+  definition: ''
+})
+
 const showEditCardModal = ref(false)
 const showDeleteCardConfirm = ref(false)
 const cardToEdit = ref<TrainingCard | null>(null)
 const cardToDelete = ref<{ card: TrainingCard; word: WordCard } | null>(null)
 const editCardForm = ref({
+  word_en: '',
+  pos: '',
+  display_word: '',
+  transcription: '',
   word_ru: '',
   meaning_en: '',
   example_en: '',
   example_ru: '',
-  transcription: '',
   distractors_ru: ['', '', ''],
   distractors_en: ['', '', ''],
   hint: ''
@@ -576,11 +658,14 @@ const editTrainingCard = async (card: TrainingCard, word: WordCard) => {
   }
   
   editCardForm.value = {
+    word_en: card.word_en || '',
+    pos: card.pos || '',
+    display_word: card.display_word || '',
+    transcription: card.transcription || '',
     word_ru: card.word_ru || '',
     meaning_en: card.meaning_en || '',
     example_en: card.example_en || '',
     example_ru: card.example_ru || '',
-    transcription: card.transcription || '',
     distractors_ru: distractorsRU,
     distractors_en: distractorsEN,
     hint: card.hint || ''
@@ -693,33 +778,53 @@ const closeDeleteCardConfirm = () => {
 }
 
 const startEditWord = (word: WordCard) => {
-  word.editing = true
-  word.editDefinition = word.Definition
-}
-
-const cancelEditWord = (word: WordCard) => {
-  word.editing = false
-  word.editDefinition = undefined
-}
-
-const saveWordDefinition = async (word: WordCard) => {
-  if (!word.editDefinition || word.editDefinition.trim() === '') {
-    alert('Definition cannot be empty')
-    return
+  wordToEdit.value = word
+  editWordForm.value = {
+    word: word.Word || '',
+    pos: word.POS || '',
+    transcription: word.Transcription || '',
+    definition_ru: word.DefinitionRU || '',
+    display_en: word.DisplayEN || '',
+    examples_json: word.ExamplesJSON || '',
+    verb_forms_json: word.VerbFormsJSON || '',
+    definition: word.Definition || ''
   }
+  showEditWordModal.value = true
+}
+
+const closeEditWordModal = () => {
+  showEditWordModal.value = false
+  wordToEdit.value = null
+}
+
+const saveWord = async () => {
+  if (!wordToEdit.value) return
 
   try {
-    await apiClient.request(`/app/admin/words/${word.ID}`, {
+    await apiClient.request(`/app/admin/words/${wordToEdit.value.ID}`, {
       method: 'PUT',
-      body: JSON.stringify({ definition: word.editDefinition.trim() })
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(editWordForm.value)
     })
-    word.Definition = word.editDefinition.trim()
-    word.editing = false
-    word.editDefinition = undefined
-    alert('Definition updated successfully')
+    
+    // Update word in list
+    const word = words.value.find(w => w.ID === wordToEdit.value!.ID)
+    if (word) {
+      word.Word = editWordForm.value.word
+      word.POS = editWordForm.value.pos || null
+      word.Transcription = editWordForm.value.transcription || null
+      word.DefinitionRU = editWordForm.value.definition_ru || null
+      word.DisplayEN = editWordForm.value.display_en || null
+      word.ExamplesJSON = editWordForm.value.examples_json || null
+      word.VerbFormsJSON = editWordForm.value.verb_forms_json || null
+      word.Definition = editWordForm.value.definition
+    }
+    
+    closeEditWordModal()
+    alert('Word updated successfully')
   } catch (error) {
-    console.error('Failed to update word definition:', error)
-    alert('Failed to update definition')
+    console.error('Failed to update word:', error)
+    alert('Failed to update word')
   }
 }
 

@@ -371,6 +371,7 @@ type VocabCardDetail struct {
 	ExampleRU       string     `json:"example_ru"`
 	Transcription   string     `json:"transcription"`
 	SenseIndex      int        `json:"sense_index"`
+	POS             *string    `json:"pos,omitempty"`
 	ReviewCount     int        `json:"review_count"` // Count of review events
 }
 
@@ -410,6 +411,7 @@ func (r *Router) handleVocabWordCards(w http.ResponseWriter, req *http.Request, 
 		COALESCE(tc.example_ru, '') as example_ru,
 		COALESCE(tc.transcription, '') as transcription,
 		tc.sense_index,
+		tc.pos,
 		(SELECT COUNT(*) FROM review_events re WHERE re.user_card_id = uc.id) as review_count
 	FROM user_cards uc
 	JOIN training_cards tc ON uc.training_card_id = tc.id
@@ -431,6 +433,7 @@ func (r *Router) handleVocabWordCards(w http.ResponseWriter, req *http.Request, 
 		var nextDueAt, lastReviewAt sql.NullString
 		var lastQuality sql.NullInt64
 
+		var pos sql.NullString
 		err := rows.Scan(
 			&card.ID,
 			&card.TrainingCardID,
@@ -452,8 +455,12 @@ func (r *Router) handleVocabWordCards(w http.ResponseWriter, req *http.Request, 
 			&card.ExampleRU,
 			&card.Transcription,
 			&card.SenseIndex,
+			&pos,
 			&card.ReviewCount,
 		)
+		if pos.Valid {
+			card.POS = &pos.String
+		}
 		if err != nil {
 			r.logger.Error("failed to scan card", zap.Error(err))
 			continue

@@ -68,7 +68,10 @@ Output ONLY valid JSON, no markdown, no explanations, no code blocks.
 
 JSON Schema:
 {
-  "word_en": "string",
+  "word_en": "string (display word, e.g., 'spy' or 'to spy' for verbs)",
+  "lemma": "string (base form/lemma, e.g., 'spy' for 'spied')",
+  "pos": "string (part of speech: noun, verb, adjective, adverb, etc.)",
+  "display_word": "string (display form for training: for verbs use 'to <lemma>', for others use lemma)",
   "transcription": "string (IPA)",
   "senses": [
     {
@@ -83,6 +86,11 @@ JSON Schema:
     }
   ]
 }
+
+CRITICAL: Display word rules:
+- For verbs: display_word MUST be "to <lemma>" (e.g., "to spy", "to run", "to be")
+- For non-verbs: display_word MUST be the lemma itself (e.g., "spy" for noun, "happy" for adjective)
+- word_en should match display_word (for backward compatibility)
 
 Word to process:
 

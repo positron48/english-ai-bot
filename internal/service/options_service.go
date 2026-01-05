@@ -38,7 +38,12 @@ func (s *OptionsService) GenerateOptions(
 	// Determine correct answer and distractors based on direction
 	if card.UserCard.Direction == models.DirectionRUtoEN {
 		// Question in Russian, answer in English
+		// Use display_word if available (e.g., "to spy" for verbs), otherwise word_en
+		if card.TrainingCard.DisplayWord != nil && *card.TrainingCard.DisplayWord != "" {
+			correctAnswer = *card.TrainingCard.DisplayWord
+		} else {
 		correctAnswer = card.TrainingCard.WordEN
+		}
 		distractorsJSON = card.TrainingCard.DistractorsEN
 	} else {
 		// Question in English, answer in Russian

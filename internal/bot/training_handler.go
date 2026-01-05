@@ -178,9 +178,14 @@ func (h *TrainingHandler) showCard(chatID int64) error {
 			card.TrainingCard.WordRU,
 		)
 	} else {
+		// Use display_word if available (e.g., "to spy" for verbs)
+		displayWord := card.TrainingCard.WordEN
+		if card.TrainingCard.DisplayWord != nil && *card.TrainingCard.DisplayWord != "" {
+			displayWord = *card.TrainingCard.DisplayWord
+		}
 		questionText = fmt.Sprintf(
 			"🇷🇺 Что означает слово:\n\n*%s* %s",
-			card.TrainingCard.WordEN,
+			displayWord,
 			card.TrainingCard.Transcription,
 		)
 	}

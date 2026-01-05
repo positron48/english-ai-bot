@@ -38,8 +38,20 @@ func setupVocabDeleteTestDB(t *testing.T) (*sql.DB, *repository.UserRepository) 
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		word TEXT UNIQUE NOT NULL,
 		definition TEXT NOT NULL,
+		pos TEXT,
+		transcription TEXT,
+		definition_ru TEXT,
+		examples_json TEXT,
+		verb_forms_json TEXT,
+		display_en TEXT,
 		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
 		updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+	);
+	
+	CREATE TABLE IF NOT EXISTS word_forms (
+		form TEXT PRIMARY KEY,
+		word_card_id INTEGER NOT NULL,
+		FOREIGN KEY (word_card_id) REFERENCES word_cards(id) ON DELETE CASCADE
 	);
 	
 	CREATE TABLE IF NOT EXISTS training_cards (
@@ -55,6 +67,8 @@ func setupVocabDeleteTestDB(t *testing.T) (*sql.DB, *repository.UserRepository) 
 		distractors_ru TEXT,
 		distractors_en TEXT,
 		hint TEXT,
+		pos TEXT,
+		display_word TEXT,
 		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 	);
 	

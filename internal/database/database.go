@@ -56,21 +56,54 @@ func (db *DB) migrate() error {
 		return fmt.Errorf("failed to migrate word_cards processing columns: %w", err)
 	}
 
+	// Migrate word_cards: add lemma-related columns (pos, transcription, etc.)
+	if err := db.migrateWordCardsLemmaColumns(); err != nil {
+		return fmt.Errorf("failed to migrate word_cards lemma columns: %w", err)
+	}
+
+	// Migrate word_request_history: add word_card_id and input_word
+	if err := db.migrateWordRequestHistory(); err != nil {
+		return fmt.Errorf("failed to migrate word_request_history: %w", err)
+	}
+
+	// Migrate training_cards: add pos and display_word
+	if err := db.migrateTrainingCardsDisplayColumns(); err != nil {
+		return fmt.Errorf("failed to migrate training_cards display columns: %w", err)
+	}
+
+	// Create word_forms table
+	if err := db.migrateWordFormsTable(); err != nil {
+		return fmt.Errorf("failed to migrate word_forms table: %w", err)
+	}
+
 	queries := []string{
 		// Existing tables
 		`CREATE TABLE IF NOT EXISTS word_cards (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			word TEXT NOT NULL UNIQUE,
 			definition TEXT NOT NULL,
+			pos TEXT,
+			transcription TEXT,
+			definition_ru TEXT,
+			examples_json TEXT,
+			verb_forms_json TEXT,
+			display_en TEXT,
 			created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 			updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+		)`,
+		`CREATE TABLE IF NOT EXISTS word_forms (
+			form TEXT PRIMARY KEY,
+			word_card_id INTEGER NOT NULL,
+			FOREIGN KEY (word_card_id) REFERENCES word_cards(id) ON DELETE CASCADE
 		)`,
 		`CREATE TABLE IF NOT EXISTS word_request_history (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			user_id INTEGER NOT NULL,
-			word TEXT NOT NULL,
+			word TEXT,
+			word_card_id INTEGER,
+			input_word TEXT,
 			requested_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-			FOREIGN KEY (word) REFERENCES word_cards(word) ON DELETE CASCADE
+			FOREIGN KEY (word_card_id) REFERENCES word_cards(id) ON DELETE CASCADE
 		)`,
 		
 		// Training system tables
@@ -98,6 +131,8 @@ func (db *DB) migrate() error {
 			distractors_ru TEXT,
 			distractors_en TEXT,
 			hint TEXT,
+			pos TEXT,
+			display_word TEXT,
 			created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 			FOREIGN KEY (word_card_id) REFERENCES word_cards(id) ON DELETE CASCADE,
 			UNIQUE(word_card_id, sense_index)
@@ -208,8 +243,10 @@ func (db *DB) migrate() error {
 		
 		// Indexes for existing tables
 		`CREATE INDEX IF NOT EXISTS idx_word_cards_word ON word_cards(word)`,
+		`CREATE INDEX IF NOT EXISTS idx_word_forms_word_card_id ON word_forms(word_card_id)`,
 		`CREATE INDEX IF NOT EXISTS idx_word_request_history_user_id ON word_request_history(user_id)`,
 		`CREATE INDEX IF NOT EXISTS idx_word_request_history_word ON word_request_history(word)`,
+		`CREATE INDEX IF NOT EXISTS idx_word_request_history_word_card_id ON word_request_history(word_card_id)`,
 		`CREATE INDEX IF NOT EXISTS idx_word_request_history_requested_at ON word_request_history(requested_at)`,
 		
 		// Indexes for training tables
@@ -452,5 +489,253 @@ func (db *DB) migrateWordCardsProcessingColumns() error {
 		db.logger.Info("added processing_error column to word_cards")
 	}
 
+	return nil
+}
+
+// migrateWordCardsLemmaColumns adds lemma-related columns to word_cards
+func (db *DB) migrateWordCardsLemmaColumns() error {
+	// Check if word_cards table exists
+	var tableExists int
+	err := db.conn.QueryRow(`
+		SELECT COUNT(*) FROM sqlite_master 
+		WHERE type='table' AND name='word_cards'
+	`).Scan(&tableExists)
+	if err != nil {
+		return fmt.Errorf("failed to check table existence: %w", err)
+	}
+
+	if tableExists == 0 {
+		return nil
+	}
+
+	columns := []struct {
+		name string
+		typ  string
+	}{
+		{"pos", "TEXT"},
+		{"transcription", "TEXT"},
+		{"definition_ru", "TEXT"},
+		{"examples_json", "TEXT"},
+		{"verb_forms_json", "TEXT"},
+		{"display_en", "TEXT"},
+	}
+
+	for _, col := range columns {
+		var exists int
+		err = db.conn.QueryRow(`
+			SELECT COUNT(*) FROM pragma_table_info('word_cards') 
+			WHERE name=?
+		`, col.name).Scan(&exists)
+		if err != nil {
+			return fmt.Errorf("failed to check column %s existence: %w", col.name, err)
+		}
+
+		if exists == 0 {
+			_, err = db.conn.Exec(fmt.Sprintf(`ALTER TABLE word_cards ADD COLUMN %s %s`, col.name, col.typ))
+			if err != nil {
+				return fmt.Errorf("failed to add column %s: %w", col.name, err)
+			}
+			db.logger.Info("added column to word_cards", zap.String("column", col.name))
+		}
+	}
+
+	return nil
+}
+
+// migrateWordRequestHistory migrates word_request_history to add word_card_id and input_word
+func (db *DB) migrateWordRequestHistory() error {
+	// Check if word_request_history table exists
+	var tableExists int
+	err := db.conn.QueryRow(`
+		SELECT COUNT(*) FROM sqlite_master 
+		WHERE type='table' AND name='word_request_history'
+	`).Scan(&tableExists)
+	if err != nil {
+		return fmt.Errorf("failed to check table existence: %w", err)
+	}
+
+	if tableExists == 0 {
+		return nil
+	}
+
+	// Check if word_card_id column exists
+	var wordCardIDExists int
+	err = db.conn.QueryRow(`
+		SELECT COUNT(*) FROM pragma_table_info('word_request_history') 
+		WHERE name='word_card_id'
+	`).Scan(&wordCardIDExists)
+	if err != nil {
+		return fmt.Errorf("failed to check word_card_id column: %w", err)
+	}
+
+	var inputWordExists int
+	err = db.conn.QueryRow(`
+		SELECT COUNT(*) FROM pragma_table_info('word_request_history') 
+		WHERE name='input_word'
+	`).Scan(&inputWordExists)
+	if err != nil {
+		return fmt.Errorf("failed to check input_word column: %w", err)
+	}
+
+	// If both columns exist, migration already done
+	if wordCardIDExists > 0 && inputWordExists > 0 {
+		return nil
+	}
+
+	// Need to recreate table with new schema
+	// Start transaction
+	tx, err := db.conn.Begin()
+	if err != nil {
+		return fmt.Errorf("failed to begin transaction: %w", err)
+	}
+	defer tx.Rollback()
+
+	// Create new table
+	_, err = tx.Exec(`
+		CREATE TABLE word_request_history_new (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			user_id INTEGER NOT NULL,
+			word TEXT,
+			word_card_id INTEGER,
+			input_word TEXT,
+			requested_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+			FOREIGN KEY (word_card_id) REFERENCES word_cards(id) ON DELETE CASCADE
+		)
+	`)
+	if err != nil {
+		return fmt.Errorf("failed to create new table: %w", err)
+	}
+
+	// Copy data: try to resolve word to word_card_id
+	// For existing records, we'll set input_word = word and try to find word_card_id
+	_, err = tx.Exec(`
+		INSERT INTO word_request_history_new (id, user_id, word, word_card_id, input_word, requested_at)
+		SELECT 
+			wrh.id,
+			wrh.user_id,
+			wrh.word,
+			wc.id as word_card_id,
+			wrh.word as input_word,
+			wrh.requested_at
+		FROM word_request_history wrh
+		LEFT JOIN word_cards wc ON LOWER(wc.word) = LOWER(wrh.word)
+	`)
+	if err != nil {
+		return fmt.Errorf("failed to copy data: %w", err)
+	}
+
+	// Drop old table
+	_, err = tx.Exec(`DROP TABLE word_request_history`)
+	if err != nil {
+		return fmt.Errorf("failed to drop old table: %w", err)
+	}
+
+	// Rename new table
+	_, err = tx.Exec(`ALTER TABLE word_request_history_new RENAME TO word_request_history`)
+	if err != nil {
+		return fmt.Errorf("failed to rename table: %w", err)
+	}
+
+	// Recreate indexes
+	indexes := []string{
+		`CREATE INDEX IF NOT EXISTS idx_word_request_history_user_id ON word_request_history(user_id)`,
+		`CREATE INDEX IF NOT EXISTS idx_word_request_history_word ON word_request_history(word)`,
+		`CREATE INDEX IF NOT EXISTS idx_word_request_history_word_card_id ON word_request_history(word_card_id)`,
+		`CREATE INDEX IF NOT EXISTS idx_word_request_history_requested_at ON word_request_history(requested_at)`,
+	}
+
+	for _, idx := range indexes {
+		if _, err = tx.Exec(idx); err != nil {
+			return fmt.Errorf("failed to create index: %w", err)
+		}
+	}
+
+	// Commit transaction
+	if err = tx.Commit(); err != nil {
+		return fmt.Errorf("failed to commit transaction: %w", err)
+	}
+
+	db.logger.Info("migrated word_request_history table")
+	return nil
+}
+
+// migrateTrainingCardsDisplayColumns adds pos and display_word columns to training_cards
+func (db *DB) migrateTrainingCardsDisplayColumns() error {
+	// Check if training_cards table exists
+	var tableExists int
+	err := db.conn.QueryRow(`
+		SELECT COUNT(*) FROM sqlite_master 
+		WHERE type='table' AND name='training_cards'
+	`).Scan(&tableExists)
+	if err != nil {
+		return fmt.Errorf("failed to check table existence: %w", err)
+	}
+
+	if tableExists == 0 {
+		return nil
+	}
+
+	columns := []struct {
+		name string
+		typ  string
+	}{
+		{"pos", "TEXT"},
+		{"display_word", "TEXT"},
+	}
+
+	for _, col := range columns {
+		var exists int
+		err = db.conn.QueryRow(`
+			SELECT COUNT(*) FROM pragma_table_info('training_cards') 
+			WHERE name=?
+		`, col.name).Scan(&exists)
+		if err != nil {
+			return fmt.Errorf("failed to check column %s existence: %w", col.name, err)
+		}
+
+		if exists == 0 {
+			_, err = db.conn.Exec(fmt.Sprintf(`ALTER TABLE training_cards ADD COLUMN %s %s`, col.name, col.typ))
+			if err != nil {
+				return fmt.Errorf("failed to add column %s: %w", col.name, err)
+			}
+			db.logger.Info("added column to training_cards", zap.String("column", col.name))
+		}
+	}
+
+	return nil
+}
+
+// migrateWordFormsTable creates word_forms table if it doesn't exist
+func (db *DB) migrateWordFormsTable() error {
+	var tableExists int
+	err := db.conn.QueryRow(`
+		SELECT COUNT(*) FROM sqlite_master 
+		WHERE type='table' AND name='word_forms'
+	`).Scan(&tableExists)
+	if err != nil {
+		return fmt.Errorf("failed to check table existence: %w", err)
+	}
+
+	if tableExists > 0 {
+		return nil
+	}
+
+	_, err = db.conn.Exec(`
+		CREATE TABLE word_forms (
+			form TEXT PRIMARY KEY,
+			word_card_id INTEGER NOT NULL,
+			FOREIGN KEY (word_card_id) REFERENCES word_cards(id) ON DELETE CASCADE
+		)
+	`)
+	if err != nil {
+		return fmt.Errorf("failed to create word_forms table: %w", err)
+	}
+
+	_, err = db.conn.Exec(`CREATE INDEX IF NOT EXISTS idx_word_forms_word_card_id ON word_forms(word_card_id)`)
+	if err != nil {
+		return fmt.Errorf("failed to create index: %w", err)
+	}
+
+	db.logger.Info("created word_forms table")
 	return nil
 }

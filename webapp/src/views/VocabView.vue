@@ -189,6 +189,10 @@
             
             <!-- Sense information (shown once per sense) -->
             <div class="sense-info">
+              <div class="card-row" v-if="senseGroup.pos">
+                <span class="label">POS:</span>
+                <span>{{ senseGroup.pos }}</span>
+              </div>
               <div class="card-row" v-if="senseGroup.meaning_en">
                 <span class="label">Meaning:</span>
                 <span>{{ senseGroup.meaning_en }}</span>
@@ -379,6 +383,7 @@ interface CardDetail {
   example_ru: string
   transcription: string
   sense_index: number
+  pos?: string
   review_count: number
 }
 
@@ -550,6 +555,7 @@ interface SenseGroup {
   example_en: string
   example_ru: string
   transcription: string
+  pos?: string
   directions: CardDetail[]
 }
 
@@ -565,6 +571,7 @@ const groupedCards = computed((): SenseGroup[] => {
         example_en: card.example_en,
         example_ru: card.example_ru,
         transcription: card.transcription,
+        pos: card.pos,
         directions: []
       })
     }

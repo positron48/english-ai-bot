@@ -40,6 +40,8 @@ func setupTrainingServiceTestDB(t *testing.T) (*sql.DB, *repository.UserCardRepo
 		distractors_ru TEXT,
 		distractors_en TEXT,
 		hint TEXT,
+		pos TEXT,
+		display_word TEXT,
 		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 	);
 	
@@ -94,8 +96,8 @@ func TestTrainingService_GetDueCount(t *testing.T) {
 	defer db.Close()
 
 	// Create a training card
-	_, err := db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (?, ?, ?, ?, ?)",
-		1, "test", 0, "тест", "test")
+	_, err := db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (?, ?, ?, ?, ?, ?, ?)",
+		1, "test", 0, "тест", "test", "noun", "test")
 	if err != nil {
 		t.Fatalf("Failed to create training card: %v", err)
 	}

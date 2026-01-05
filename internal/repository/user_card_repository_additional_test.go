@@ -17,8 +17,8 @@ func TestUserCardRepository_GetUserCardByTrainingCard(t *testing.T) {
 	repo := NewUserCardRepository(db, logger)
 
 	// Create a training card
-	_, err := db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (?, ?, ?, ?, ?)",
-		1, "bytraining", 0, "по обучению", "by training")
+	_, err := db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (?, ?, ?, ?, ?, ?, ?)",
+		1, "bytraining", 0, "по обучению", "by training", "noun", "bytraining")
 	if err != nil {
 		t.Fatalf("Failed to create training card: %v", err)
 	}
@@ -62,8 +62,8 @@ func TestUserCardRepository_DeleteOrphanedUserCards(t *testing.T) {
 	repo := NewUserCardRepository(db, logger)
 
 	// Create a training card
-	_, err := db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (?, ?, ?, ?, ?)",
-		1, "orphan", 0, "сирота", "orphan")
+	_, err := db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (?, ?, ?, ?, ?, ?, ?)",
+		1, "orphan", 0, "сирота", "orphan", "noun", "orphan")
 	if err != nil {
 		t.Fatalf("Failed to create training card: %v", err)
 	}
@@ -110,6 +110,12 @@ func TestUserCardRepository_DeleteUserCardsByWordENForUser(t *testing.T) {
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		word TEXT UNIQUE NOT NULL,
 		definition TEXT NOT NULL,
+		pos TEXT,
+		transcription TEXT,
+		definition_ru TEXT,
+		examples_json TEXT,
+		verb_forms_json TEXT,
+		display_en TEXT,
 		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
 		updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 	)`)
@@ -124,8 +130,8 @@ func TestUserCardRepository_DeleteUserCardsByWordENForUser(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create word card: %v", err)
 	}
-	_, err = db.Exec("INSERT INTO training_cards (id, word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (?, ?, ?, ?, ?, ?)",
-		1, 1, "deleteword", 0, "удалить", "to delete")
+	_, err = db.Exec("INSERT INTO training_cards (id, word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+		1, 1, "deleteword", 0, "удалить", "to delete", "verb", "to deleteword")
 	if err != nil {
 		t.Fatalf("Failed to create training card: %v", err)
 	}

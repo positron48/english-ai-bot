@@ -29,13 +29,20 @@ func (r *TrainingCardRepository) CreateTrainingCard(card *models.TrainingCard) (
 	query := `INSERT INTO training_cards (
 		word_card_id, word_en, transcription, sense_index,
 		word_ru, meaning_en, example_en, example_ru,
-		distractors_ru, distractors_en, hint
-	) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+		distractors_ru, distractors_en, hint, pos, display_word
+	) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+
+	// Use display_word if provided, otherwise fall back to word_en
+	displayWord := card.WordEN
+	if card.DisplayWord != nil && *card.DisplayWord != "" {
+		displayWord = *card.DisplayWord
+	}
 
 	result, err := r.db.Exec(query,
 		card.WordCardID, card.WordEN, card.Transcription, card.SenseIndex,
 		card.WordRU, card.MeaningEN, card.ExampleEN, card.ExampleRU,
 		card.DistractorsRU, card.DistractorsEN, card.Hint,
+		card.POS, displayWord,
 	)
 	if err != nil {
 		return 0, fmt.Errorf("failed to create training card: %w", err)
@@ -60,17 +67,18 @@ func (r *TrainingCardRepository) GetTrainingCard(id int64) (*models.TrainingCard
 	query := `SELECT id, word_card_id, word_en, COALESCE(transcription, ''), sense_index,
 			  word_ru, meaning_en, COALESCE(example_en, ''), COALESCE(example_ru, ''),
 			  COALESCE(distractors_ru, ''), COALESCE(distractors_en, ''), COALESCE(hint, ''),
-			  created_at
+			  pos, display_word, created_at
 			  FROM training_cards WHERE id = ?`
 
 	var card models.TrainingCard
 	var createdAt string
+	var pos, displayWord sql.NullString
 
 	err := r.db.QueryRow(query, id).Scan(
 		&card.ID, &card.WordCardID, &card.WordEN, &card.Transcription, &card.SenseIndex,
 		&card.WordRU, &card.MeaningEN, &card.ExampleEN, &card.ExampleRU,
 		&card.DistractorsRU, &card.DistractorsEN, &card.Hint,
-		&createdAt,
+		&pos, &displayWord, &createdAt,
 	)
 
 	if err == sql.ErrNoRows {
@@ -82,6 +90,13 @@ func (r *TrainingCardRepository) GetTrainingCard(id int64) (*models.TrainingCard
 
 	card.CreatedAt, _ = time.Parse("2006-01-02 15:04:05", createdAt)
 
+	if pos.Valid {
+		card.POS = &pos.String
+	}
+	if displayWord.Valid {
+		card.DisplayWord = &displayWord.String
+	}
+
 	return &card, nil
 }
 
@@ -90,7 +105,7 @@ func (r *TrainingCardRepository) GetTrainingCardsByWordCardID(wordCardID int64) 
 	query := `SELECT id, word_card_id, word_en, COALESCE(transcription, ''), sense_index,
 			  word_ru, meaning_en, COALESCE(example_en, ''), COALESCE(example_ru, ''),
 			  COALESCE(distractors_ru, ''), COALESCE(distractors_en, ''), COALESCE(hint, ''),
-			  created_at
+			  pos, display_word, created_at
 			  FROM training_cards WHERE word_card_id = ? ORDER BY sense_index`
 
 	rows, err := r.db.Query(query, wordCardID)
@@ -103,18 +118,27 @@ func (r *TrainingCardRepository) GetTrainingCardsByWordCardID(wordCardID int64) 
 	for rows.Next() {
 		var card models.TrainingCard
 		var createdAt string
+		var pos, displayWord sql.NullString
 
 		err := rows.Scan(
 			&card.ID, &card.WordCardID, &card.WordEN, &card.Transcription, &card.SenseIndex,
 			&card.WordRU, &card.MeaningEN, &card.ExampleEN, &card.ExampleRU,
 			&card.DistractorsRU, &card.DistractorsEN, &card.Hint,
-			&createdAt,
+			&pos, &displayWord, &createdAt,
 		)
 		if err != nil {
 			return nil, fmt.Errorf("failed to scan training card: %w", err)
 		}
 
 		card.CreatedAt, _ = time.Parse("2006-01-02 15:04:05", createdAt)
+
+		if pos.Valid {
+			card.POS = &pos.String
+		}
+		if displayWord.Valid {
+			card.DisplayWord = &displayWord.String
+		}
+
 		cards = append(cards, &card)
 	}
 
@@ -124,6 +148,8 @@ func (r *TrainingCardRepository) GetTrainingCardsByWordCardID(wordCardID int64) 
 // GetWordCardsWithoutTrainingCards gets word cards that don't have training cards yet and haven't been processed with an error
 func (r *TrainingCardRepository) GetWordCardsWithoutTrainingCards(limit int) ([]*models.WordCard, error) {
 	query := `SELECT wc.id, wc.word, wc.definition, 
+			  wc.pos, wc.transcription, wc.definition_ru,
+			  wc.examples_json, wc.verb_forms_json, wc.display_en,
 			  COALESCE(wc.processed_at, '') as processed_at,
 			  COALESCE(wc.processing_error, '') as processing_error,
 			  wc.created_at, wc.updated_at
@@ -143,8 +169,12 @@ func (r *TrainingCardRepository) GetWordCardsWithoutTrainingCards(limit int) ([]
 	for rows.Next() {
 		var card models.WordCard
 		var createdAt, updatedAt, processedAtStr, processingErrorStr string
+		var pos, transcription, definitionRU, examplesJSON, verbFormsJSON, displayEN sql.NullString
 
-		err := rows.Scan(&card.ID, &card.Word, &card.Definition, &processedAtStr, &processingErrorStr, &createdAt, &updatedAt)
+		err := rows.Scan(&card.ID, &card.Word, &card.Definition,
+			&pos, &transcription, &definitionRU,
+			&examplesJSON, &verbFormsJSON, &displayEN,
+			&processedAtStr, &processingErrorStr, &createdAt, &updatedAt)
 		if err != nil {
 			return nil, fmt.Errorf("failed to scan word card: %w", err)
 		}
@@ -152,6 +182,24 @@ func (r *TrainingCardRepository) GetWordCardsWithoutTrainingCards(limit int) ([]
 		card.CreatedAt, _ = time.Parse("2006-01-02 15:04:05", createdAt)
 		card.UpdatedAt, _ = time.Parse("2006-01-02 15:04:05", updatedAt)
 
+		if pos.Valid {
+			card.POS = &pos.String
+		}
+		if transcription.Valid {
+			card.Transcription = &transcription.String
+		}
+		if definitionRU.Valid {
+			card.DefinitionRU = &definitionRU.String
+		}
+		if examplesJSON.Valid {
+			card.ExamplesJSON = &examplesJSON.String
+		}
+		if verbFormsJSON.Valid {
+			card.VerbFormsJSON = &verbFormsJSON.String
+		}
+		if displayEN.Valid {
+			card.DisplayEN = &displayEN.String
+		}
 		if processedAtStr != "" {
 			processedAt, _ := time.Parse("2006-01-02 15:04:05", processedAtStr)
 			card.ProcessedAt = &processedAt
@@ -218,15 +266,15 @@ func (r *TrainingCardRepository) DeleteAllTrainingCards() (int64, error) {
 	return rowsAffected, nil
 }
 
-// GetTrainingCardsByWordEN gets all training cards for a word by word_en
+// GetTrainingCardsByWordEN gets all training cards for a word by word_en (or display_word)
 func (r *TrainingCardRepository) GetTrainingCardsByWordEN(wordEN string) ([]*models.TrainingCard, error) {
 	query := `SELECT id, word_card_id, word_en, COALESCE(transcription, ''), sense_index,
 			  word_ru, meaning_en, COALESCE(example_en, ''), COALESCE(example_ru, ''),
 			  COALESCE(distractors_ru, ''), COALESCE(distractors_en, ''), COALESCE(hint, ''),
-			  created_at
-			  FROM training_cards WHERE word_en = ? ORDER BY sense_index`
+			  pos, display_word, created_at
+			  FROM training_cards WHERE word_en = ? OR display_word = ? ORDER BY sense_index`
 
-	rows, err := r.db.Query(query, wordEN)
+	rows, err := r.db.Query(query, wordEN, wordEN)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get training cards: %w", err)
 	}
@@ -236,18 +284,27 @@ func (r *TrainingCardRepository) GetTrainingCardsByWordEN(wordEN string) ([]*mod
 	for rows.Next() {
 		var card models.TrainingCard
 		var createdAt string
+		var pos, displayWord sql.NullString
 
 		err := rows.Scan(
 			&card.ID, &card.WordCardID, &card.WordEN, &card.Transcription, &card.SenseIndex,
 			&card.WordRU, &card.MeaningEN, &card.ExampleEN, &card.ExampleRU,
 			&card.DistractorsRU, &card.DistractorsEN, &card.Hint,
-			&createdAt,
+			&pos, &displayWord, &createdAt,
 		)
 		if err != nil {
 			return nil, fmt.Errorf("failed to scan training card: %w", err)
 		}
 
 		card.CreatedAt, _ = time.Parse("2006-01-02 15:04:05", createdAt)
+
+		if pos.Valid {
+			card.POS = &pos.String
+		}
+		if displayWord.Valid {
+			card.DisplayWord = &displayWord.String
+		}
+
 		cards = append(cards, &card)
 	}
 
@@ -256,14 +313,21 @@ func (r *TrainingCardRepository) GetTrainingCardsByWordEN(wordEN string) ([]*mod
 
 // UpdateTrainingCard updates a training card
 func (r *TrainingCardRepository) UpdateTrainingCard(card *models.TrainingCard) error {
+	displayWord := card.WordEN
+	if card.DisplayWord != nil && *card.DisplayWord != "" {
+		displayWord = *card.DisplayWord
+	}
+
 	query := `UPDATE training_cards SET
 			  word_ru = ?, meaning_en = ?, example_en = ?, example_ru = ?,
-			  transcription = ?, distractors_ru = ?, distractors_en = ?, hint = ?
+			  transcription = ?, distractors_ru = ?, distractors_en = ?, hint = ?,
+			  pos = ?, display_word = ?
 			  WHERE id = ?`
 
 	_, err := r.db.Exec(query,
 		card.WordRU, card.MeaningEN, card.ExampleEN, card.ExampleRU,
 		card.Transcription, card.DistractorsRU, card.DistractorsEN, card.Hint,
+		card.POS, displayWord,
 		card.ID,
 	)
 	if err != nil {

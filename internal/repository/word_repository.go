@@ -25,19 +25,37 @@ func NewWordRepository(db *sql.DB, logger *zap.Logger) *WordRepository {
 	}
 }
 
-// GetWordCard retrieves a word card by word
+// GetWordCard retrieves a word card by word (backward compatibility - searches by lemma)
 func (r *WordRepository) GetWordCard(word string) (*models.WordCard, error) {
-	query := `SELECT id, word, definition, created_at, updated_at 
+	return r.GetWordCardByLemma(word)
+}
+
+// GetWordCardByID retrieves a word card by ID
+func (r *WordRepository) GetWordCardByID(id int64) (*models.WordCard, error) {
+	query := `SELECT id, word, definition, pos, transcription, definition_ru, 
+			  examples_json, verb_forms_json, display_en, 
+			  COALESCE(processed_at, '') as processed_at,
+			  COALESCE(processing_error, '') as processing_error,
+			  created_at, updated_at 
 			  FROM word_cards 
-			  WHERE LOWER(word) = LOWER(?)`
+			  WHERE id = ?`
 
 	var card models.WordCard
-	var createdAt, updatedAt string
+	var createdAt, updatedAt, processedAtStr, processingErrorStr string
+	var pos, transcription, definitionRU, examplesJSON, verbFormsJSON, displayEN sql.NullString
 
-	err := r.db.QueryRow(query, word).Scan(
+	err := r.db.QueryRow(query, id).Scan(
 		&card.ID,
 		&card.Word,
 		&card.Definition,
+		&pos,
+		&transcription,
+		&definitionRU,
+		&examplesJSON,
+		&verbFormsJSON,
+		&displayEN,
+		&processedAtStr,
+		&processingErrorStr,
 		&createdAt,
 		&updatedAt,
 	)
@@ -52,10 +70,105 @@ func (r *WordRepository) GetWordCard(word string) (*models.WordCard, error) {
 	card.CreatedAt, _ = time.Parse("2006-01-02 15:04:05", createdAt)
 	card.UpdatedAt, _ = time.Parse("2006-01-02 15:04:05", updatedAt)
 
+	if pos.Valid {
+		card.POS = &pos.String
+	}
+	if transcription.Valid {
+		card.Transcription = &transcription.String
+	}
+	if definitionRU.Valid {
+		card.DefinitionRU = &definitionRU.String
+	}
+	if examplesJSON.Valid {
+		card.ExamplesJSON = &examplesJSON.String
+	}
+	if verbFormsJSON.Valid {
+		card.VerbFormsJSON = &verbFormsJSON.String
+	}
+	if displayEN.Valid {
+		card.DisplayEN = &displayEN.String
+	}
+	if processedAtStr != "" {
+		processedAt, _ := time.Parse("2006-01-02 15:04:05", processedAtStr)
+		card.ProcessedAt = &processedAt
+	}
+	if processingErrorStr != "" {
+		card.ProcessingError = &processingErrorStr
+	}
+
 	return &card, nil
 }
 
-// SaveWordCard saves a new word card or updates existing one
+// GetWordCardByLemma retrieves a word card by lemma (base form)
+func (r *WordRepository) GetWordCardByLemma(lemma string) (*models.WordCard, error) {
+	query := `SELECT id, word, definition, pos, transcription, definition_ru, 
+			  examples_json, verb_forms_json, display_en,
+			  COALESCE(processed_at, '') as processed_at,
+			  COALESCE(processing_error, '') as processing_error,
+			  created_at, updated_at 
+			  FROM word_cards 
+			  WHERE LOWER(word) = LOWER(?)`
+
+	var card models.WordCard
+	var createdAt, updatedAt, processedAtStr, processingErrorStr string
+	var pos, transcription, definitionRU, examplesJSON, verbFormsJSON, displayEN sql.NullString
+
+	err := r.db.QueryRow(query, lemma).Scan(
+		&card.ID,
+		&card.Word,
+		&card.Definition,
+		&pos,
+		&transcription,
+		&definitionRU,
+		&examplesJSON,
+		&verbFormsJSON,
+		&displayEN,
+		&processedAtStr,
+		&processingErrorStr,
+		&createdAt,
+		&updatedAt,
+	)
+
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, fmt.Errorf("failed to get word card: %w", err)
+	}
+
+	card.CreatedAt, _ = time.Parse("2006-01-02 15:04:05", createdAt)
+	card.UpdatedAt, _ = time.Parse("2006-01-02 15:04:05", updatedAt)
+
+	if pos.Valid {
+		card.POS = &pos.String
+	}
+	if transcription.Valid {
+		card.Transcription = &transcription.String
+	}
+	if definitionRU.Valid {
+		card.DefinitionRU = &definitionRU.String
+	}
+	if examplesJSON.Valid {
+		card.ExamplesJSON = &examplesJSON.String
+	}
+	if verbFormsJSON.Valid {
+		card.VerbFormsJSON = &verbFormsJSON.String
+	}
+	if displayEN.Valid {
+		card.DisplayEN = &displayEN.String
+	}
+	if processedAtStr != "" {
+		processedAt, _ := time.Parse("2006-01-02 15:04:05", processedAtStr)
+		card.ProcessedAt = &processedAt
+	}
+	if processingErrorStr != "" {
+		card.ProcessingError = &processingErrorStr
+	}
+
+	return &card, nil
+}
+
+// SaveWordCard saves a new word card or updates existing one (backward compatibility)
 func (r *WordRepository) SaveWordCard(word, definition string) error {
 	query := `INSERT INTO word_cards (word, definition, updated_at) 
 			  VALUES (?, ?, CURRENT_TIMESTAMP)
@@ -75,29 +188,141 @@ func (r *WordRepository) SaveWordCard(word, definition string) error {
 	return nil
 }
 
-// AddWordRequestHistory adds a history entry for a word request
-func (r *WordRepository) AddWordRequestHistory(userID int64, word string) error {
-	query := `INSERT INTO word_request_history (user_id, word, requested_at) 
-			  VALUES (?, ?, CURRENT_TIMESTAMP)`
+// UpsertWordCardLemma saves or updates a word card (lemma) with structured data
+func (r *WordRepository) UpsertWordCardLemma(card *models.WordCard) (int64, error) {
+	query := `INSERT INTO word_cards (
+		word, definition, pos, transcription, definition_ru, 
+		examples_json, verb_forms_json, display_en, updated_at
+	) VALUES (?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+	ON CONFLICT(word) DO UPDATE SET 
+		definition = COALESCE(excluded.definition, word_cards.definition),
+		pos = COALESCE(excluded.pos, word_cards.pos),
+		transcription = COALESCE(excluded.transcription, word_cards.transcription),
+		definition_ru = COALESCE(excluded.definition_ru, word_cards.definition_ru),
+		examples_json = COALESCE(excluded.examples_json, word_cards.examples_json),
+		verb_forms_json = COALESCE(excluded.verb_forms_json, word_cards.verb_forms_json),
+		display_en = COALESCE(excluded.display_en, word_cards.display_en),
+		updated_at = CURRENT_TIMESTAMP`
 
-	_, err := r.db.Exec(query, userID, word)
+	result, err := r.db.Exec(query,
+		card.Word,
+		card.Definition,
+		card.POS,
+		card.Transcription,
+		card.DefinitionRU,
+		card.ExamplesJSON,
+		card.VerbFormsJSON,
+		card.DisplayEN,
+	)
+	if err != nil {
+		return 0, fmt.Errorf("failed to upsert word card: %w", err)
+	}
+
+	id, err := result.LastInsertId()
+	if err != nil {
+		// If LastInsertId fails, try to get by lemma
+		existing, err := r.GetWordCardByLemma(card.Word)
+		if err != nil {
+			return 0, fmt.Errorf("failed to get word card ID: %w", err)
+		}
+		if existing != nil {
+			id = existing.ID
+		}
+	}
+
+	r.logger.Debug("word card lemma upserted",
+		zap.Int64("id", id),
+		zap.String("lemma", card.Word),
+	)
+
+	return id, nil
+}
+
+// GetWordFormMapping retrieves word_card_id for a given word form
+func (r *WordRepository) GetWordFormMapping(form string) (*models.WordForm, error) {
+	query := `SELECT form, word_card_id FROM word_forms WHERE LOWER(form) = LOWER(?)`
+
+	var wf models.WordForm
+	err := r.db.QueryRow(query, form).Scan(&wf.Form, &wf.WordCardID)
+
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, fmt.Errorf("failed to get word form mapping: %w", err)
+	}
+
+	return &wf, nil
+}
+
+// UpsertWordFormMapping creates or updates a mapping from word form to lemma
+func (r *WordRepository) UpsertWordFormMapping(form string, wordCardID int64) error {
+	query := `INSERT INTO word_forms (form, word_card_id) 
+			  VALUES (?, ?)
+			  ON CONFLICT(form) DO UPDATE SET 
+			  	word_card_id = excluded.word_card_id`
+
+	_, err := r.db.Exec(query, strings.ToLower(form), wordCardID)
+	if err != nil {
+		return fmt.Errorf("failed to upsert word form mapping: %w", err)
+	}
+
+	r.logger.Debug("word form mapping upserted",
+		zap.String("form", form),
+		zap.Int64("word_card_id", wordCardID),
+	)
+
+	return nil
+}
+
+// AddWordRequestHistory adds a history entry for a word request (backward compatibility)
+func (r *WordRepository) AddWordRequestHistory(userID int64, word string) error {
+	return r.AddWordRequestHistoryWithCard(userID, word, nil, nil)
+}
+
+// AddWordRequestHistoryWithCard adds a history entry with word_card_id and input_word
+func (r *WordRepository) AddWordRequestHistoryWithCard(userID int64, inputWord string, wordCardID *int64, word *string) error {
+	query := `INSERT INTO word_request_history (user_id, word, word_card_id, input_word, requested_at) 
+			  VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)`
+
+	_, err := r.db.Exec(query, userID, word, wordCardID, inputWord)
 	if err != nil {
 		return fmt.Errorf("failed to add word request history: %w", err)
 	}
 
 	r.logger.Debug("word request history added",
 		zap.Int64("user_id", userID),
-		zap.String("word", word),
+		zap.String("input_word", inputWord),
+		zap.Int64p("word_card_id", wordCardID),
 	)
 
 	return nil
 }
 
-// GetUserIDsByWord gets telegram user IDs who requested a specific word
+// GetUserIDsByWord gets telegram user IDs who requested a specific word (by lemma or input_word)
 func (r *WordRepository) GetUserIDsByWord(word string) ([]int64, error) {
-	query := `SELECT DISTINCT user_id FROM word_request_history WHERE LOWER(word) = LOWER(?)`
+	// Try to find by word_card_id first (if word is a lemma)
+	wordCard, err := r.GetWordCardByLemma(word)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get word card: %w", err)
+	}
+
+	var query string
+	var args []interface{}
+
+	if wordCard != nil {
+		// Search by word_card_id
+		query = `SELECT DISTINCT user_id FROM word_request_history 
+				 WHERE word_card_id = ? OR LOWER(input_word) = LOWER(?) OR LOWER(word) = LOWER(?)`
+		args = []interface{}{wordCard.ID, word, word}
+	} else {
+		// Search by input_word or legacy word field
+		query = `SELECT DISTINCT user_id FROM word_request_history 
+				 WHERE LOWER(input_word) = LOWER(?) OR LOWER(word) = LOWER(?)`
+		args = []interface{}{word, word}
+	}
 	
-	rows, err := r.db.Query(query, word)
+	rows, err := r.db.Query(query, args...)
 	if err != nil {
 		return nil, fmt.Errorf("failed to query user IDs: %w", err)
 	}
@@ -175,6 +400,37 @@ func (r *WordRepository) UpdateWordCardDefinition(wordCardID int64, definition s
 	return nil
 }
 
+// UpdateWordCard updates all fields of a word card
+func (r *WordRepository) UpdateWordCard(card *models.WordCard) error {
+	query := `UPDATE word_cards 
+			  SET word = ?, definition = ?, pos = ?, transcription = ?, 
+			      definition_ru = ?, examples_json = ?, verb_forms_json = ?, 
+			      display_en = ?, updated_at = CURRENT_TIMESTAMP
+			  WHERE id = ?`
+
+	_, err := r.db.Exec(query,
+		card.Word,
+		card.Definition,
+		card.POS,
+		card.Transcription,
+		card.DefinitionRU,
+		card.ExamplesJSON,
+		card.VerbFormsJSON,
+		card.DisplayEN,
+		card.ID,
+	)
+	if err != nil {
+		return fmt.Errorf("failed to update word card: %w", err)
+	}
+
+	r.logger.Debug("word card updated",
+		zap.Int64("word_card_id", card.ID),
+		zap.String("word", card.Word),
+	)
+
+	return nil
+}
+
 // WordCardAdminItem represents a word card with additional info for admin view
 type WordCardAdminItem struct {
 	models.WordCard
@@ -186,6 +442,12 @@ type WordCardAdminItem struct {
 func (r *WordRepository) ListWordCardsAdmin(filterUserID *int64, onlyWithErrors bool, searchQuery string, limit, offset int) ([]*WordCardAdminItem, error) {
 	// Use LEFT JOIN with GROUP BY to check for training cards - more reliable than subquery
 	query := `SELECT wc.id, wc.word, wc.definition,
+			  COALESCE(wc.pos, '') as pos,
+			  COALESCE(wc.transcription, '') as transcription,
+			  COALESCE(wc.definition_ru, '') as definition_ru,
+			  COALESCE(wc.examples_json, '') as examples_json,
+			  COALESCE(wc.verb_forms_json, '') as verb_forms_json,
+			  COALESCE(wc.display_en, '') as display_en,
 			  COALESCE(wc.processed_at, '') as processed_at,
 			  COALESCE(wc.processing_error, '') as processing_error,
 			  wc.created_at, wc.updated_at,
@@ -198,7 +460,7 @@ func (r *WordRepository) ListWordCardsAdmin(filterUserID *int64, onlyWithErrors 
 
 	// Filter by user if specified - use subquery to avoid duplicates from JOIN
 	if filterUserID != nil {
-		conditions = append(conditions, "wc.word IN (SELECT DISTINCT word FROM word_request_history WHERE user_id = ?)")
+		conditions = append(conditions, "wc.id IN (SELECT DISTINCT COALESCE(word_card_id, (SELECT id FROM word_cards WHERE LOWER(word) = LOWER(word_request_history.word))) FROM word_request_history WHERE user_id = ?)")
 		args = append(args, *filterUserID)
 	}
 
@@ -218,7 +480,7 @@ func (r *WordRepository) ListWordCardsAdmin(filterUserID *int64, onlyWithErrors 
 		query += " WHERE " + strings.Join(conditions, " AND ")
 	}
 
-	query += " GROUP BY wc.id, wc.word, wc.definition, wc.processed_at, wc.processing_error, wc.created_at, wc.updated_at"
+	query += " GROUP BY wc.id, wc.word, wc.definition, wc.pos, wc.transcription, wc.definition_ru, wc.examples_json, wc.verb_forms_json, wc.display_en, wc.processed_at, wc.processing_error, wc.created_at, wc.updated_at"
 	query += " ORDER BY wc.created_at DESC LIMIT ? OFFSET ?"
 	args = append(args, limit, offset)
 
@@ -232,13 +494,35 @@ func (r *WordRepository) ListWordCardsAdmin(filterUserID *int64, onlyWithErrors 
 	for rows.Next() {
 		var item WordCardAdminItem
 		var createdAt, updatedAt, processedAtStr, processingErrorStr string
+		var posStr, transcriptionStr, definitionRUStr, examplesJSONStr, verbFormsJSONStr, displayENStr string
 		var hasTrainingCards int
 
 		err := rows.Scan(&item.ID, &item.Word, &item.Definition,
+			&posStr, &transcriptionStr, &definitionRUStr, &examplesJSONStr, &verbFormsJSONStr, &displayENStr,
 			&processedAtStr, &processingErrorStr,
 			&createdAt, &updatedAt, &hasTrainingCards)
 		if err != nil {
 			return nil, fmt.Errorf("failed to scan word card: %w", err)
+		}
+
+		// Set optional fields
+		if posStr != "" {
+			item.POS = &posStr
+		}
+		if transcriptionStr != "" {
+			item.Transcription = &transcriptionStr
+		}
+		if definitionRUStr != "" {
+			item.DefinitionRU = &definitionRUStr
+		}
+		if examplesJSONStr != "" {
+			item.ExamplesJSON = &examplesJSONStr
+		}
+		if verbFormsJSONStr != "" {
+			item.VerbFormsJSON = &verbFormsJSONStr
+		}
+		if displayENStr != "" {
+			item.DisplayEN = &displayENStr
 		}
 
 		item.CreatedAt, _ = time.Parse("2006-01-02 15:04:05", createdAt)

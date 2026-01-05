@@ -200,6 +200,21 @@ func (w *TrainingWorker) processCard(ctx context.Context, wordCard *models.WordC
 
 	// Create training cards
 	trainingCardIDs := make([]int64, 0, len(trainingResp.Senses))
+	
+	// Determine display_word: use from response, or fallback to word_en
+	displayWord := trainingResp.WordEN
+	if trainingResp.DisplayWord != "" {
+		displayWord = trainingResp.DisplayWord
+	}
+	
+	pos := trainingResp.POS
+	if pos == "" {
+		// Try to get from word_card if available
+		if wordCard.POS != nil {
+			pos = *wordCard.POS
+		}
+	}
+
 	for _, sense := range trainingResp.Senses {
 		// Marshal distractors
 		distractorsRU, _ := json.Marshal(sense.DistractorsRU)
@@ -207,7 +222,7 @@ func (w *TrainingWorker) processCard(ctx context.Context, wordCard *models.WordC
 
 		trainingCard := &models.TrainingCard{
 			WordCardID:    wordCard.ID,
-			WordEN:        trainingResp.WordEN,
+			WordEN:        displayWord, // For backward compatibility
 			Transcription: trainingResp.Transcription,
 			SenseIndex:    sense.Index,
 			WordRU:        sense.WordRU,
@@ -217,6 +232,14 @@ func (w *TrainingWorker) processCard(ctx context.Context, wordCard *models.WordC
 			DistractorsRU: string(distractorsRU),
 			DistractorsEN: string(distractorsEN),
 			Hint:          sense.Hint,
+		}
+		
+		// Set POS and display_word
+		if pos != "" {
+			trainingCard.POS = &pos
+		}
+		if displayWord != "" {
+			trainingCard.DisplayWord = &displayWord
 		}
 
 		id, err := w.trainingCardRepo.CreateTrainingCard(trainingCard)

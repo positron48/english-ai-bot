@@ -358,7 +358,7 @@ func (r *Router) handleAdminTrainingCard(w http.ResponseWriter, req *http.Reques
 		// Update training card
 		// Support both JSON and form data
 		contentType := req.Header.Get("Content-Type")
-		var wordRU, meaningEN, exampleEN, exampleRU, transcription, distractorsRU, distractorsEN, hint string
+		var wordEN, wordRU, meaningEN, exampleEN, exampleRU, transcription, distractorsRU, distractorsEN, hint, pos, displayWord string
 
 		if strings.Contains(contentType, "application/json") {
 			// Parse JSON body
@@ -368,6 +368,15 @@ func (r *Router) handleAdminTrainingCard(w http.ResponseWriter, req *http.Reques
 				return
 			}
 
+			if val, ok := updateData["word_en"].(string); ok {
+				wordEN = val
+			}
+			if val, ok := updateData["pos"].(string); ok {
+				pos = val
+			}
+			if val, ok := updateData["display_word"].(string); ok {
+				displayWord = val
+			}
 			if val, ok := updateData["word_ru"].(string); ok {
 				wordRU = val
 			}
@@ -399,6 +408,9 @@ func (r *Router) handleAdminTrainingCard(w http.ResponseWriter, req *http.Reques
 				return
 			}
 
+			wordEN = req.FormValue("word_en")
+			pos = req.FormValue("pos")
+			displayWord = req.FormValue("display_word")
 			wordRU = req.FormValue("word_ru")
 			meaningEN = req.FormValue("meaning_en")
 			exampleEN = req.FormValue("example_en")
@@ -422,6 +434,19 @@ func (r *Router) handleAdminTrainingCard(w http.ResponseWriter, req *http.Reques
 		}
 
 		// Update fields (always update, even if empty)
+		if wordEN != "" {
+			card.WordEN = wordEN
+		}
+		if pos != "" {
+			card.POS = &pos
+		} else {
+			card.POS = nil
+		}
+		if displayWord != "" {
+			card.DisplayWord = &displayWord
+		} else {
+			card.DisplayWord = nil
+		}
 		card.WordRU = wordRU
 		card.MeaningEN = meaningEN
 		card.ExampleEN = exampleEN
@@ -574,9 +599,9 @@ func (r *Router) handleAdminWord(w http.ResponseWriter, req *http.Request) {
 	wordRepo := repository.NewWordRepository(r.db, r.logger)
 
 	if req.Method == http.MethodPut {
-		// Update definition
+		// Update word card with all fields
 		contentType := req.Header.Get("Content-Type")
-		var definition string
+		var word, definition, pos, transcription, definitionRU, examplesJSON, verbFormsJSON, displayEN string
 
 		if strings.Contains(contentType, "application/json") {
 			var updateData map[string]interface{}
@@ -584,25 +609,96 @@ func (r *Router) handleAdminWord(w http.ResponseWriter, req *http.Request) {
 				http.Error(w, "Invalid JSON data", http.StatusBadRequest)
 				return
 			}
+			if val, ok := updateData["word"].(string); ok {
+				word = val
+			}
 			if val, ok := updateData["definition"].(string); ok {
 				definition = val
+			}
+			if val, ok := updateData["pos"].(string); ok {
+				pos = val
+			}
+			if val, ok := updateData["transcription"].(string); ok {
+				transcription = val
+			}
+			if val, ok := updateData["definition_ru"].(string); ok {
+				definitionRU = val
+			}
+			if val, ok := updateData["examples_json"].(string); ok {
+				examplesJSON = val
+			}
+			if val, ok := updateData["verb_forms_json"].(string); ok {
+				verbFormsJSON = val
+			}
+			if val, ok := updateData["display_en"].(string); ok {
+				displayEN = val
 			}
 		} else {
 			if err := req.ParseForm(); err != nil {
 				http.Error(w, "Invalid form data", http.StatusBadRequest)
 				return
 			}
+			word = req.FormValue("word")
 			definition = req.FormValue("definition")
+			pos = req.FormValue("pos")
+			transcription = req.FormValue("transcription")
+			definitionRU = req.FormValue("definition_ru")
+			examplesJSON = req.FormValue("examples_json")
+			verbFormsJSON = req.FormValue("verb_forms_json")
+			displayEN = req.FormValue("display_en")
 		}
 
-		if definition == "" {
-			http.Error(w, "definition is required", http.StatusBadRequest)
+		// Get existing card
+		existingCard, err := wordRepo.GetWordCardByID(wordCardID)
+		if err != nil {
+			r.logger.Error("failed to get word card", zap.Error(err), zap.Int64("word_card_id", wordCardID))
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
+		}
+		if existingCard == nil {
+			http.Error(w, "Word card not found", http.StatusNotFound)
 			return
 		}
 
-		err := wordRepo.UpdateWordCardDefinition(wordCardID, definition)
+		// Update fields (use provided values or keep existing)
+		if word == "" {
+			word = existingCard.Word
+		}
+		card := &models.WordCard{
+			ID:            wordCardID,
+			Word:          word,
+			Definition:    definition,
+			POS:           &pos,
+			Transcription: &transcription,
+			DefinitionRU: &definitionRU,
+			ExamplesJSON: &examplesJSON,
+			VerbFormsJSON: &verbFormsJSON,
+			DisplayEN:     &displayEN,
+		}
+
+		// Set to nil if empty strings
+		if pos == "" {
+			card.POS = nil
+		}
+		if transcription == "" {
+			card.Transcription = nil
+		}
+		if definitionRU == "" {
+			card.DefinitionRU = nil
+		}
+		if examplesJSON == "" {
+			card.ExamplesJSON = nil
+		}
+		if verbFormsJSON == "" {
+			card.VerbFormsJSON = nil
+		}
+		if displayEN == "" {
+			card.DisplayEN = nil
+		}
+
+		err = wordRepo.UpdateWordCard(card)
 		if err != nil {
-			r.logger.Error("failed to update word card definition", zap.Error(err), zap.Int64("word_card_id", wordCardID))
+			r.logger.Error("failed to update word card", zap.Error(err), zap.Int64("word_card_id", wordCardID))
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
@@ -611,7 +707,7 @@ func (r *Router) handleAdminWord(w http.ResponseWriter, req *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(map[string]interface{}{
 			"success": true,
-			"message": "Word card definition updated successfully",
+			"message": "Word card updated successfully",
 			"word_card_id": wordCardID,
 		})
 		return
