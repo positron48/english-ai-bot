@@ -359,6 +359,24 @@
         </div>
       </div>
 
+      <!-- Reset Word Error Confirmation Modal -->
+      <div v-if="showResetErrorConfirm && wordToResetError" class="modal" @click.self="closeResetErrorConfirm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3>Reset Error</h3>
+            <button @click="closeResetErrorConfirm" class="btn-close">&times;</button>
+          </div>
+          <div class="modal-body">
+            <p>Reset error for word "<strong>{{ wordToResetError.Word }}</strong>"?</p>
+            <p>This will allow the worker to process it again.</p>
+          </div>
+          <div class="modal-actions">
+            <button @click="confirmResetError" class="btn btn-warning">Reset Error</button>
+            <button @click="closeResetErrorConfirm" class="btn btn-secondary">Cancel</button>
+          </div>
+        </div>
+      </div>
+
       <!-- Delete Training Card Confirmation Modal -->
       <div v-if="showDeleteCardConfirm && cardToDelete" class="modal" @click.self="closeDeleteCardConfirm">
         <div class="modal-content">
@@ -461,6 +479,8 @@ const editWordForm = ref({
 
 const showEditCardModal = ref(false)
 const showDeleteCardConfirm = ref(false)
+const showResetErrorConfirm = ref(false)
+const wordToResetError = ref<WordCard | null>(null)
 const cardToEdit = ref<TrainingCard | null>(null)
 const cardToDelete = ref<{ card: TrainingCard; word: WordCard } | null>(null)
 const editCardForm = ref({
@@ -828,19 +848,30 @@ const saveWord = async () => {
   }
 }
 
-const resetWordError = async (word: WordCard) => {
-  if (!confirm(`Reset error for word "${word.Word}"? This will allow the worker to process it again.`)) {
-    return
-  }
+const resetWordError = (word: WordCard) => {
+  wordToResetError.value = word
+  showResetErrorConfirm.value = true
+}
+
+const closeResetErrorConfirm = () => {
+  showResetErrorConfirm.value = false
+  wordToResetError.value = null
+}
+
+const confirmResetError = async () => {
+  const targetWord = wordToResetError.value
+  if (!targetWord) return
 
   try {
-    await apiClient.request(`/app/admin/words/${word.ID}/reset`, { method: 'POST' })
-    word.ProcessingError = null
-    word.ProcessedAt = null
-    alert('Error reset successfully. Word will be processed again by the worker.')
+    await apiClient.request(`/app/admin/words/${targetWord.ID}/reset`, { method: 'POST' })
+    targetWord.ProcessingError = null
+    targetWord.ProcessedAt = null
+    closeResetErrorConfirm()
   } catch (error) {
     console.error('Failed to reset word error:', error)
-    alert('Failed to reset error')
+    // Show error in modal or use a toast notification
+    // For now, just close and let user see the error in console
+    closeResetErrorConfirm()
   }
 }
 

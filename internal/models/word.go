@@ -53,6 +53,7 @@ type WordInfoVerbForms struct {
 // WordInfoResponse represents LLM response for word information (JSON format)
 type WordInfoResponse struct {
 	Error         string              `json:"error,omitempty"` // Error if word is not English/proper noun/etc
+	Hint          string              `json:"hint,omitempty"` // User-friendly hint/suggestion when word is not found
 	InputWord     string              `json:"input_word"` // Word as entered by user
 	Lemma         string              `json:"lemma"` // Base form (lemma)
 	POS           string              `json:"pos"` // Part of speech

@@ -224,8 +224,47 @@ CRITICAL: Each training card represents ONE specific sense/meaning. Determine th
 		)
 
 		// Check for error from LLM
+		// LLM sometimes puts non-error strings in error field (like "load", "master", "none", "valid English word")
 		errorMsg := strings.TrimSpace(posResp.Error)
-		if errorMsg != "" && errorMsg != "null" && strings.ToLower(errorMsg) != "null" {
+		errorMsgLower := strings.ToLower(errorMsg)
+		
+		// List of known non-error strings that LLM sometimes puts in error field
+		nonErrorStrings := []string{
+			"null", "none", "false", "no",
+			"load", "master", "slave", "tor", "corm",
+			"valid english word", "valid English word",
+		}
+		
+		// Keywords that indicate a real error (word doesn't exist, gibberish, etc.)
+		errorKeywords := []string{
+			"gibberish", "does not exist", "not exist", "non-standard", "not a valid",
+			"not an english", "not english", "not recognized", "not a word",
+			"doesn't exist", "not found", "invalid word", "not a real",
+		}
+		
+		isNonErrorString := false
+		for _, nonError := range nonErrorStrings {
+			if errorMsgLower == strings.ToLower(nonError) {
+				isNonErrorString = true
+				break
+			}
+		}
+		
+		// Check if error message contains keywords indicating a real error
+		isRealError := false
+		if errorMsg != "" {
+			for _, keyword := range errorKeywords {
+				if strings.Contains(errorMsgLower, keyword) {
+					isRealError = true
+					break
+				}
+			}
+		}
+		
+		// Treat as error if:
+		// 1. Error field contains keywords indicating real error (word doesn't exist, etc.) OR
+		// 2. Error field is not empty AND it's not a known non-error string
+		if errorMsg != "" && (isRealError || !isNonErrorString) {
 			log.Info("LLM rejected training card",
 				zap.Int64("id", tc.ID),
 				zap.String("error", errorMsg),

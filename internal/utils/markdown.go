@@ -337,11 +337,12 @@ func RenderWordCardMarkdown(card *models.WordCard, examples []models.WordInfoExa
 	}
 	parts = append(parts, "## Vocabulary Card")
 	parts = append(parts, "")
-	parts = append(parts, "**"+displayWord+"**")
-
-	// Part of speech
+	
+	// Word with POS in parentheses on the same line
 	if card.POS != nil && *card.POS != "" {
-		parts = append(parts, "*"+*card.POS+"*")
+		parts = append(parts, "**"+displayWord+"** ("+*card.POS+")")
+	} else {
+		parts = append(parts, "**"+displayWord+"**")
 	}
 
 	// Transcription
