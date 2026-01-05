@@ -104,6 +104,53 @@ func TestTrainingCardRepository_CreateTrainingCard(t *testing.T) {
 	}
 }
 
+func TestTrainingCardRepository_CreateTrainingCard_WithDisplayWord(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := setupTrainingCardTestDB(t)
+	defer db.Close()
+
+	repo := NewTrainingCardRepository(db, logger)
+
+	// Create a word card first
+	_, err := db.Exec("INSERT INTO word_cards (word, definition) VALUES (?, ?)", "spy", "a secret agent")
+	if err != nil {
+		t.Fatalf("Failed to create word card: %v", err)
+	}
+
+	displayWord := "to spy"
+	pos := "verb"
+	card := &models.TrainingCard{
+		WordCardID:    1,
+		WordEN:        "spy",
+		Transcription: "spaɪ",
+		SenseIndex:    0,
+		WordRU:        "шпионить",
+		MeaningEN:     "to watch secretly",
+		DisplayWord:   &displayWord,
+		POS:           &pos,
+	}
+
+	id, err := repo.CreateTrainingCard(card)
+	if err != nil {
+		t.Fatalf("CreateTrainingCard() error = %v", err)
+	}
+	if id == 0 {
+		t.Error("CreateTrainingCard() should return non-zero ID")
+	}
+
+	// Verify display_word was saved
+	found, err := repo.GetTrainingCard(id)
+	if err != nil {
+		t.Fatalf("GetTrainingCard() error = %v", err)
+	}
+	if found == nil {
+		t.Fatal("GetTrainingCard() should not return nil")
+	}
+	if found.DisplayWord == nil || *found.DisplayWord != displayWord {
+		t.Errorf("Expected DisplayWord %q, got %v", displayWord, found.DisplayWord)
+	}
+}
+
 func TestTrainingCardRepository_GetTrainingCard(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupTrainingCardTestDB(t)

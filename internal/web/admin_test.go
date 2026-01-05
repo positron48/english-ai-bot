@@ -572,6 +572,85 @@ func TestHandleAdminWord_Put(t *testing.T) {
 	}
 }
 
+func TestHandleAdminWord_Put_WithJSON(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	defer db.Close()
+
+	adminTelegramID := int64(123456789)
+	adminUser, err := userRepo.GetOrCreateUser(adminTelegramID)
+	if err != nil {
+		t.Fatalf("Failed to create admin user: %v", err)
+	}
+
+	wordRepo := repository.NewWordRepository(db, logger)
+	err = wordRepo.SaveWordCard("jsonupdate", "old definition")
+	if err != nil {
+		t.Fatalf("Failed to create word card: %v", err)
+	}
+	wordCard, err := wordRepo.GetWordCard("jsonupdate")
+	if err != nil || wordCard == nil {
+		t.Fatalf("Failed to get word card: %v", err)
+	}
+	wordCardID := wordCard.ID
+
+	cfg := &config.Config{
+		Admin: config.AdminConfig{
+			TelegramID: adminTelegramID,
+		},
+		WebApp: config.WebAppConfig{
+			JWTSecret:     "test-secret",
+			JWTTTLHours:   24,
+			RefreshTTLHours: 720,
+		},
+	}
+
+	jwtService, _ := NewJWTService(cfg, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-token")
+
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	updateData := map[string]interface{}{
+		"definition": "new definition from JSON",
+		"pos":         "noun",
+		"transcription": "/dɪˈfɪnɪʃən/",
+	}
+	jsonData, _ := json.Marshal(updateData)
+
+	req := httptest.NewRequest("PUT", fmt.Sprintf("/app/admin/words/%d", wordCardID), strings.NewReader(string(jsonData)))
+	req.Header.Set("Content-Type", "application/json")
+	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+
+	adminHandler := router.RequireAdmin(router.handleAdminWord)
+	adminHandler(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d", w.Code)
+	}
+
+	var response map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
+		t.Fatalf("Failed to decode response: %v", err)
+	}
+
+	if response["success"] != true {
+		t.Error("Response should indicate success")
+	}
+
+	// Verify the update
+	updated, err := wordRepo.GetWordCardByID(wordCardID)
+	if err != nil {
+		t.Fatalf("Failed to get updated word card: %v", err)
+	}
+	if updated.Definition != "new definition from JSON" {
+		t.Errorf("Expected definition 'new definition from JSON', got %q", updated.Definition)
+	}
+}
+
 func TestHandleAdminWord_Delete(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo, cbService := setupAdminTestDB(t)
@@ -857,6 +936,106 @@ func TestHandleAdminTrainingCard_Put(t *testing.T) {
 
 	if response["success"] != true {
 		t.Error("Response should indicate success")
+	}
+}
+
+func TestHandleAdminTrainingCard_Put_UpdatePOS(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	defer db.Close()
+
+	adminTelegramID := int64(123456789)
+	adminUser, err := userRepo.GetOrCreateUser(adminTelegramID)
+	if err != nil {
+		t.Fatalf("Failed to create admin user: %v", err)
+	}
+
+	wordRepo := repository.NewWordRepository(db, logger)
+	err = wordRepo.SaveWordCard("poscard", "definition")
+	if err != nil {
+		t.Fatalf("Failed to create word card: %v", err)
+	}
+	wordCard, err := wordRepo.GetWordCard("poscard")
+	if err != nil || wordCard == nil {
+		t.Fatalf("Failed to get word card: %v", err)
+	}
+
+	trainingCardRepo := repository.NewTrainingCardRepository(db, logger)
+	pos := "noun"
+	trainingCard := &models.TrainingCard{
+		WordCardID: wordCard.ID,
+		WordEN:     "poscard",
+		SenseIndex: 0,
+		WordRU:     "карта",
+		MeaningEN:  "card",
+		POS:        &pos,
+	}
+	trainingCardID, err := trainingCardRepo.CreateTrainingCard(trainingCard)
+	if err != nil {
+		t.Fatalf("Failed to create training card: %v", err)
+	}
+
+	cfg := &config.Config{
+		Admin: config.AdminConfig{
+			TelegramID: adminTelegramID,
+		},
+		WebApp: config.WebAppConfig{
+			JWTSecret:     "test-secret",
+			JWTTTLHours:   24,
+			RefreshTTLHours: 720,
+		},
+	}
+
+	jwtService, _ := NewJWTService(cfg, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-token")
+
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	// Update POS to verb
+	req := httptest.NewRequest("PUT", fmt.Sprintf("/app/admin/training/card/%d", trainingCardID), strings.NewReader("pos=verb"))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+
+	adminHandler := router.RequireAdmin(router.handleAdminTrainingCard)
+	adminHandler(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d", w.Code)
+	}
+
+	// Verify POS was updated
+	updated, err := trainingCardRepo.GetTrainingCard(trainingCardID)
+	if err != nil {
+		t.Fatalf("Failed to get updated training card: %v", err)
+	}
+	if updated.POS == nil || *updated.POS != "verb" {
+		t.Errorf("Expected POS 'verb', got %v", updated.POS)
+	}
+
+	// Test clearing POS (empty string)
+	req2 := httptest.NewRequest("PUT", fmt.Sprintf("/app/admin/training/card/%d", trainingCardID), strings.NewReader("pos="))
+	req2.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	ctx2 := context.WithValue(req2.Context(), userIDKey, adminUser.ID)
+	req2 = req2.WithContext(ctx2)
+	w2 := httptest.NewRecorder()
+
+	adminHandler(w2, req2)
+
+	if w2.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d", w2.Code)
+	}
+
+	// Verify POS was cleared
+	updated2, err := trainingCardRepo.GetTrainingCard(trainingCardID)
+	if err != nil {
+		t.Fatalf("Failed to get updated training card: %v", err)
+	}
+	if updated2.POS != nil {
+		t.Errorf("Expected POS to be nil after clearing, got %v", updated2.POS)
 	}
 }
 

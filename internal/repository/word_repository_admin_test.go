@@ -131,6 +131,86 @@ func TestWordRepository_CountWordCardsAdmin(t *testing.T) {
 	}
 }
 
+func TestWordRepository_CountWordCardsAdmin_WithFilterUserID(t *testing.T) {
+	db, repo := setupWordAdminTestDB(t)
+	defer db.Close()
+
+	// Create word cards first
+	repo.SaveWordCard("userword1", "definition 1")
+	repo.SaveWordCard("userword2", "definition 2")
+
+	// Get word cards to get their IDs
+	card1, err := repo.GetWordCard("userword1")
+	if err != nil {
+		t.Fatalf("Failed to get word card: %v", err)
+	}
+	card2, err := repo.GetWordCard("userword2")
+	if err != nil {
+		t.Fatalf("Failed to get word card: %v", err)
+	}
+
+	// Add request history for user 100 with word_card_id
+	word1 := "userword1"
+	word2 := "userword2"
+	repo.AddWordRequestHistoryWithCard(100, "userword1", &card1.ID, &word1)
+	repo.AddWordRequestHistoryWithCard(100, "userword2", &card2.ID, &word2)
+
+	// Count word cards for user 100
+	userID := int64(100)
+	count, err := repo.CountWordCardsAdmin(&userID, false, "")
+	if err != nil {
+		t.Fatalf("CountWordCardsAdmin() error = %v", err)
+	}
+	if count < 2 {
+		t.Errorf("Expected at least 2 cards for user, got %d", count)
+	}
+}
+
+func TestWordRepository_CountWordCardsAdmin_WithErrors(t *testing.T) {
+	db, repo := setupWordAdminTestDB(t)
+	defer db.Close()
+
+	// Create word card with error
+	repo.SaveWordCard("errorword", "definition")
+	card, err := repo.GetWordCard("errorword")
+	if err != nil {
+		t.Fatalf("Failed to get word card: %v", err)
+	}
+	
+	// Mark as processed with error
+	err = repo.MarkWordCardProcessedError(card.ID, "test error")
+	if err != nil {
+		t.Fatalf("Failed to mark error: %v", err)
+	}
+
+	// Count word cards with errors
+	count, err := repo.CountWordCardsAdmin(nil, true, "")
+	if err != nil {
+		t.Fatalf("CountWordCardsAdmin() error = %v", err)
+	}
+	if count < 1 {
+		t.Errorf("Expected at least 1 card with error, got %d", count)
+	}
+}
+
+func TestWordRepository_CountWordCardsAdmin_WithSearch(t *testing.T) {
+	db, repo := setupWordAdminTestDB(t)
+	defer db.Close()
+
+	// Create word cards
+	repo.SaveWordCard("searchable", "definition")
+	repo.SaveWordCard("other", "definition")
+
+	// Count word cards with search
+	count, err := repo.CountWordCardsAdmin(nil, false, "search")
+	if err != nil {
+		t.Fatalf("CountWordCardsAdmin() error = %v", err)
+	}
+	if count < 1 {
+		t.Errorf("Expected at least 1 card matching search, got %d", count)
+	}
+}
+
 func TestWordRepository_GetWordCardRequestingUsers(t *testing.T) {
 	db, repo := setupWordAdminTestDB(t)
 	defer db.Close()

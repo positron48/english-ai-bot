@@ -359,6 +359,7 @@ func (r *Router) handleAdminTrainingCard(w http.ResponseWriter, req *http.Reques
 		// Support both JSON and form data
 		contentType := req.Header.Get("Content-Type")
 		var wordEN, wordRU, meaningEN, exampleEN, exampleRU, transcription, distractorsRU, distractorsEN, hint, pos, displayWord string
+		posProvided := false // Track if pos was provided in the request
 
 		if strings.Contains(contentType, "application/json") {
 			// Parse JSON body
@@ -373,6 +374,7 @@ func (r *Router) handleAdminTrainingCard(w http.ResponseWriter, req *http.Reques
 			}
 			if val, ok := updateData["pos"].(string); ok {
 				pos = val
+				posProvided = true
 			}
 			if val, ok := updateData["display_word"].(string); ok {
 				displayWord = val
@@ -409,7 +411,10 @@ func (r *Router) handleAdminTrainingCard(w http.ResponseWriter, req *http.Reques
 			}
 
 			wordEN = req.FormValue("word_en")
-			pos = req.FormValue("pos")
+			if req.Form.Has("pos") {
+				pos = req.FormValue("pos")
+				posProvided = true
+			}
 			displayWord = req.FormValue("display_word")
 			wordRU = req.FormValue("word_ru")
 			meaningEN = req.FormValue("meaning_en")
@@ -437,10 +442,13 @@ func (r *Router) handleAdminTrainingCard(w http.ResponseWriter, req *http.Reques
 		if wordEN != "" {
 			card.WordEN = wordEN
 		}
-		if pos != "" {
-			card.POS = &pos
-		} else {
-			card.POS = nil
+		// Update POS only if it was provided in the request
+		if posProvided {
+			if pos != "" {
+				card.POS = &pos
+			} else {
+				card.POS = nil
+			}
 		}
 		if displayWord != "" {
 			card.DisplayWord = &displayWord

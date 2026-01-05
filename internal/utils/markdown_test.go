@@ -19,6 +19,21 @@ func TestConvertMarkdownToTelegram(t *testing.T) {
 			expected: "**Main Title**\n**Subtitle**\n**Section**",
 		},
 		{
+			name:     "Headers H4",
+			input:    "#### H4 Header",
+			expected: "**H4 Header**",
+		},
+		{
+			name:     "Headers H5",
+			input:    "##### H5 Header",
+			expected: "**H5 Header**",
+		},
+		{
+			name:     "Headers H6",
+			input:    "###### H6 Header",
+			expected: "**# H6 Header**", // Function removes only 5 # symbols
+		},
+		{
 			name:     "Bold text with underscores",
 			input:    "This is __bold__ text",
 			expected: "This is **bold** text",
@@ -191,5 +206,130 @@ func TestRenderWordCardMarkdown_WithVerbForms(t *testing.T) {
 	}
 	if !strings.Contains(result, "written") {
 		t.Error("Result should contain V3")
+	}
+}
+
+func TestConvertMarkdownToHTML(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    string
+		contains []string // Check that result contains these strings
+		notContains []string // Check that result does not contain these strings
+	}{
+		{
+			name:     "Headers",
+			input:    "# Main Title\n## Subtitle\n### Section",
+			contains: []string{"<h1>Main Title</h1>", "<h2>Subtitle</h2>", "<h3>Section</h3>"},
+		},
+		{
+			name:     "Bold text",
+			input:    "This is **bold** text",
+			contains: []string{"<strong>bold</strong>"},
+		},
+		{
+			name:     "Italic text",
+			input:    "This is *italic* text",
+			contains: []string{"<em>italic</em>"},
+		},
+		{
+			name:     "Code blocks",
+			input:    "```go\nfunc main() {\n    fmt.Println(\"Hello\")\n}\n```",
+			contains: []string{"<pre><code>", "func main()", "fmt.Println"},
+		},
+		{
+			name:     "Inline code",
+			input:    "Use `fmt.Println()` function",
+			contains: []string{"<code>fmt.Println()</code>"},
+		},
+		{
+			name:     "Unordered lists",
+			input:    "- First item\n- Second item\n* Third item",
+			contains: []string{"<ul>", "<li>First item</li>", "<li>Second item</li>", "<li>Third item</li>", "</ul>"},
+		},
+		{
+			name:     "Ordered lists",
+			input:    "1. First item\n2. Second item",
+			contains: []string{"<ol>", "<li>First item</li>", "<li>Second item</li>"},
+		},
+		{
+			name:     "Links",
+			input:    "Visit [Google](https://google.com) for search",
+			contains: []string{"<a href=\"https://google.com\">Google</a>"},
+		},
+		{
+			name:     "HTML escaping",
+			input:    "Text with <tags> and & symbols",
+			contains: []string{"&lt;tags&gt;", "&amp;"},
+			notContains: []string{"<tags>", "& "},
+		},
+		{
+			name:     "Line breaks",
+			input:    "Line 1\nLine 2",
+			contains: []string{"Line 1<br>", "Line 2"},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := ConvertMarkdownToHTML(tt.input)
+			
+			for _, expected := range tt.contains {
+				if !strings.Contains(result, expected) {
+					t.Errorf("ConvertMarkdownToHTML() should contain %q, got %q", expected, result)
+				}
+			}
+			
+			for _, notExpected := range tt.notContains {
+				if strings.Contains(result, notExpected) {
+					t.Errorf("ConvertMarkdownToHTML() should not contain %q, got %q", notExpected, result)
+				}
+			}
+		})
+	}
+}
+
+func TestEscapeHTML(t *testing.T) {
+	// Test escapeHTML function indirectly through ConvertMarkdownToHTML
+	tests := []struct {
+		name     string
+		input    string
+		contains []string
+	}{
+		{
+			name:     "Ampersand escaping",
+			input:    "Text with & symbol",
+			contains: []string{"&amp;"},
+		},
+		{
+			name:     "Less than escaping",
+			input:    "Text with <tag>",
+			contains: []string{"&lt;tag&gt;"},
+		},
+		{
+			name:     "Greater than escaping",
+			input:    "Text with > symbol",
+			contains: []string{"&gt;"},
+		},
+		{
+			name:     "Quote escaping",
+			input:    "Text with \"quotes\"",
+			contains: []string{"&quot;"},
+		},
+		{
+			name:     "Apostrophe escaping",
+			input:    "Text with 'apostrophe'",
+			contains: []string{"&#39;"},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := ConvertMarkdownToHTML(tt.input)
+			for _, expected := range tt.contains {
+				if !strings.Contains(result, expected) {
+					t.Errorf("ConvertMarkdownToHTML() should contain %q, got %q", expected, result)
+				}
+			}
+		})
 	}
 }

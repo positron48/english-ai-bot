@@ -16,7 +16,7 @@ func setupSessionTestDB(t *testing.T) *sql.DB {
 		t.Fatalf("Failed to open test database: %v", err)
 	}
 
-	createTable := `
+	createTables := `
 	CREATE TABLE IF NOT EXISTS training_sessions (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		user_id INTEGER NOT NULL,
@@ -26,11 +26,33 @@ func setupSessionTestDB(t *testing.T) *sql.DB {
 		planned_count INTEGER NOT NULL DEFAULT 0,
 		done_count INTEGER NOT NULL DEFAULT 0,
 		session_json TEXT DEFAULT ''
-	)`
+	);
+	
+	CREATE TABLE IF NOT EXISTS review_events (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		session_id INTEGER,
+		user_id INTEGER NOT NULL,
+		user_card_id INTEGER NOT NULL,
+		direction TEXT NOT NULL,
+		shown_at TEXT NOT NULL,
+		options_shown_at TEXT,
+		answered_at TEXT,
+		t_delay_ms INTEGER,
+		early_reveal INTEGER NOT NULL DEFAULT 0,
+		option_count INTEGER NOT NULL,
+		options_json TEXT,
+		chosen_option TEXT,
+		is_correct INTEGER NOT NULL DEFAULT 0,
+		quality INTEGER NOT NULL,
+		metrics_json TEXT,
+		srs_before_json TEXT,
+		srs_after_json TEXT,
+		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+	);`
 
-	_, err = db.Exec(createTable)
+	_, err = db.Exec(createTables)
 	if err != nil {
-		t.Fatalf("Failed to create table: %v", err)
+		t.Fatalf("Failed to create tables: %v", err)
 	}
 
 	return db

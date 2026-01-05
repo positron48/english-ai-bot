@@ -35,6 +35,60 @@ func TestOptionsService_getFallbackDistractors(t *testing.T) {
 		}
 	})
 
+	t.Run("RU to EN with verb POS", func(t *testing.T) {
+		distractors := service.getFallbackDistractors(models.DirectionRUtoEN, "verb")
+		if len(distractors) == 0 {
+			t.Error("Should return verb distractors")
+		}
+		// Should contain common verbs
+		hasVerb := false
+		for _, d := range distractors {
+			if d == "make" || d == "take" || d == "get" {
+				hasVerb = true
+				break
+			}
+		}
+		if !hasVerb {
+			t.Error("Should contain common verbs")
+		}
+	})
+
+	t.Run("RU to EN with noun POS", func(t *testing.T) {
+		distractors := service.getFallbackDistractors(models.DirectionRUtoEN, "noun")
+		if len(distractors) == 0 {
+			t.Error("Should return noun distractors")
+		}
+		// Should contain common nouns
+		hasNoun := false
+		for _, d := range distractors {
+			if d == "time" || d == "person" || d == "year" {
+				hasNoun = true
+				break
+			}
+		}
+		if !hasNoun {
+			t.Error("Should contain common nouns")
+		}
+	})
+
+	t.Run("RU to EN with adjective POS", func(t *testing.T) {
+		distractors := service.getFallbackDistractors(models.DirectionRUtoEN, "adjective")
+		if len(distractors) == 0 {
+			t.Error("Should return adjective distractors")
+		}
+		// Should contain common adjectives
+		hasAdj := false
+		for _, d := range distractors {
+			if d == "good" || d == "new" || d == "first" {
+				hasAdj = true
+				break
+			}
+		}
+		if !hasAdj {
+			t.Error("Should contain common adjectives")
+		}
+	})
+
 	t.Run("EN to RU direction", func(t *testing.T) {
 		distractors := service.getFallbackDistractors(models.DirectionENtoRU, "")
 		if len(distractors) == 0 {
@@ -45,6 +99,27 @@ func TestOptionsService_getFallbackDistractors(t *testing.T) {
 			if d == "" {
 				t.Error("Distractor should not be empty")
 			}
+		}
+	})
+
+	t.Run("EN to RU with verb POS", func(t *testing.T) {
+		distractors := service.getFallbackDistractors(models.DirectionENtoRU, "verb")
+		if len(distractors) == 0 {
+			t.Error("Should return verb distractors")
+		}
+	})
+
+	t.Run("EN to RU with noun POS", func(t *testing.T) {
+		distractors := service.getFallbackDistractors(models.DirectionENtoRU, "noun")
+		if len(distractors) == 0 {
+			t.Error("Should return noun distractors")
+		}
+	})
+
+	t.Run("EN to RU with adjective POS", func(t *testing.T) {
+		distractors := service.getFallbackDistractors(models.DirectionENtoRU, "adjective")
+		if len(distractors) == 0 {
+			t.Error("Should return adjective distractors")
 		}
 	})
 }

@@ -325,3 +325,48 @@ func TestWordRepository_UpsertWordFormMapping(t *testing.T) {
 		t.Errorf("Expected word_card_id %d, got %d", card.ID, wordForm.WordCardID)
 	}
 }
+
+func TestWordRepository_AddWordRequestHistoryWithCard(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := setupWordTestDB(t)
+	defer db.Close()
+
+	repo := NewWordRepository(db, logger)
+
+	// Save a word card first
+	err := repo.SaveWordCard("test", "a test word")
+	if err != nil {
+		t.Fatalf("Failed to save word: %v", err)
+	}
+
+	card, err := repo.GetWordCard("test")
+	if err != nil {
+		t.Fatalf("GetWordCard() error = %v", err)
+	}
+	if card == nil {
+		t.Fatal("GetWordCard() should not return nil")
+	}
+
+	wordCardID := card.ID
+	word := "test"
+	userID := int64(123)
+	inputWord := "test"
+
+	// Test with wordCardID and word
+	err = repo.AddWordRequestHistoryWithCard(userID, inputWord, &wordCardID, &word)
+	if err != nil {
+		t.Fatalf("AddWordRequestHistoryWithCard() error = %v", err)
+	}
+
+	// Test with nil wordCardID
+	err = repo.AddWordRequestHistoryWithCard(userID, "another", nil, &word)
+	if err != nil {
+		t.Fatalf("AddWordRequestHistoryWithCard() with nil wordCardID error = %v", err)
+	}
+
+	// Test with nil word
+	err = repo.AddWordRequestHistoryWithCard(userID, "yet another", &wordCardID, nil)
+	if err != nil {
+		t.Fatalf("AddWordRequestHistoryWithCard() with nil word error = %v", err)
+	}
+}

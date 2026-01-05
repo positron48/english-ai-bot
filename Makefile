@@ -81,11 +81,11 @@ check: tidy
 		exit 1; \
 	fi; \
 	COVERAGE_INT=$$(echo "$$COVERAGE" | cut -d. -f1); \
-	if [ "$$COVERAGE_INT" -lt 48 ]; then \
-		echo "❌ Test coverage is $$COVERAGE% (minimum required: 48%)"; \
+	if [ "$$COVERAGE_INT" -lt 50 ]; then \
+		echo "❌ Test coverage is $$COVERAGE% (minimum required: 50%)"; \
 		exit 1; \
 	fi; \
-	echo "✅ Test coverage: $$COVERAGE% (minimum: 48%)"
+	echo "✅ Test coverage: $$COVERAGE% (minimum: 50%)"
 	@echo ""
 	@echo "🎉 All CI checks passed!"
 	@COVERAGE=$$($(GO) tool cover -func=coverage.out | awk '/^total:/ {print $$3}'); echo "📊 Total test coverage: $$COVERAGE"
