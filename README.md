@@ -1,691 +1,243 @@
-# AI Telegram Bot
+# English Bot
 
-A simple AI-powered Telegram bot written in Go that integrates with OpenAI-compatible API providers (like OpenRouter).
+Telegram бот для изучения английского языка с AI-ассистентом и системой тренировок на основе SRS (Spaced Repetition System).
 
-## Features
+## Быстрый старт
 
-- AI-powered responses using OpenAI-compatible APIs
-- Support for OpenRouter and other providers
-- **Automatic Markdown to Telegram formatting** - converts AI responses to proper Telegram format
-- **Vocabulary cards caching** - SQLite database for storing word definitions
-- **Request history tracking** - tracks which users requested which words and when
-- **Smart word detection** - automatically detects single-word queries and uses cached definitions when available
-- **Spaced Repetition System (SRS)** - intelligent vocabulary training with adaptive scheduling
-- **Training sessions** - interactive vocabulary card training with multiple choice questions
-- **Session persistence** - training sessions survive bot restarts
-- **Telegram Mini App** - web-based user cabinet and admin panel (API backend ready for Vue frontend)
-- **JWT Authentication** - stateless auth with access/refresh tokens
-- **Swagger UI** - interactive API documentation with auto Bearer prefix and token refresh
-- Long polling and webhook support
-- Structured logging with Zap
-- Configuration management with Viper
-- Graceful shutdown
-- Health check endpoint
-- Docker support
-
-## 🚀 Quick Start
-
-Want to get up and running in 2 minutes? Here's the fastest way:
-
-### 1. Download Binary
 ```bash
-# Download the latest release for your system
+# 1. Скачать бинарник
 curl -L -o universal-ai-bot https://github.com/positron48/universal-ai-bot/releases/latest/download/universal-ai-bot-linux_amd64
 chmod +x universal-ai-bot
-```
 
-Binaries for other systems are available on [the Releases page](https://github.com/positron48/universal-ai-bot/releases).
-
-### 2. Create .env File
-```bash
-# Create your configuration file
+# 2. Создать .env
 cat > .env << 'EOF'
 TELEGRAM_TOKEN=your_bot_token_here
 AI_URL=https://openrouter.ai/api/v1
 AI_API_KEY=your_openrouter_api_key
 AI_MODEL=qwen/qwen3-coder:free
-AI_PROMPT=You are a helpful AI assistant. Please respond to the user's message in a helpful and informative way.
+AI_PROMPT=You are a helpful AI assistant.
 DATABASE_PATH=./data/words.db
+WEBAPP_JWT_SECRET=$(openssl rand -hex 32)
+TRAINING_WORKER_ENABLED=true
+TRAINING_PROMPT_FILE=prompts/training-card-generator.txt
 EOF
-```
 
-### 3. Run!
-```bash
+# 3. Запустить
 ./universal-ai-bot
 ```
 
-**That's it!** 🎉
+## Архитектура
 
-Your bot is now running and ready to respond to messages in Telegram.
+### Компоненты
 
-> **Need help?** Get your Telegram bot token from [@BotFather](https://t.me/botfather) and your AI API key from [OpenRouter](https://openrouter.ai/).
+- **Telegram Bot** (`internal/bot/`) - обработка сообщений и команд
+- **AI Service** (`internal/ai/`) - интеграция с OpenAI-совместимыми API
+- **Training System** (`internal/service/training_*.go`) - система тренировок с SRS
+- **Training Worker** (`internal/service/training_worker.go`) - фоновый воркер для генерации тренировочных карточек
+- **Web App** (`internal/web/`, `webapp/`) - Vue SPA с JWT аутентификацией
+- **Database** (`internal/database/`, `internal/repository/`) - SQLite с репозиториями
 
-## Requirements
+### Сущности БД
 
-- Go 1.23+ (for building from source)
-- Docker and Docker Compose (optional)
-- Telegram Bot Token
-- AI Provider API Key (OpenRouter, OpenAI, etc.)
-
-> **Note:** The compiled binary is **fully static** and doesn't require SQLite or any other system dependencies. You can use the pre-built binary on any Linux system without installing additional packages.
-
-## Installation and Setup
-
-### 1. Cloning and Setup
-
-```bash
-git clone git@github.com:positron48/universal-ai-bot.git
-cd ai-bot
-make setup
+```
+word_cards (1) ←→ (N) training_cards (1) ←→ (2) user_cards
+                                              ↑
+                                         (ru_en, en_ru)
 ```
 
-### 2. Bot Configuration
+- **word_cards** - словарные карточки с определениями (создаются при запросе слова)
+- **training_cards** - тренировочные карточки (одно значение слова, создаются воркером)
+- **user_cards** - карточки пользователя для SRS (по 2 на training_card: RU→EN и EN→RU)
+- **training_sessions** - сессии тренировок
+- **review_events** - события ответов на карточки
 
-1. Create a bot via [@BotFather](https://t.me/botfather)
-2. Get the bot token
-3. Get an API key from an AI provider (e.g., [OpenRouter](https://openrouter.ai/))
-4. Edit the `.env` file:
+### SRS (Spaced Repetition System)
 
-```bash
-# Required settings
-TELEGRAM_TOKEN=your_bot_token_here
-AI_URL=https://openrouter.ai/api/v1
-AI_API_KEY=your_openrouter_api_key
-AI_MODEL=gpt-3.5-turbo
-AI_PROMPT=You are a helpful AI assistant. Please respond to the user's message in a helpful and informative way.
+Алгоритм SM-2 с автоматическим определением качества ответа:
 
-# Optional settings
-TELEGRAM_DEBUG=false
-LOG_LEVEL=info
-SERVER_ADDRESS=:8184
-DATABASE_PATH=./data/words.db
-```
+- **Quality 0** (Wrong) - неправильный ответ
+- **Quality 1** (Hard) - правильный, но сложный (ранний показ вариантов или медленный ответ >8с)
+- **Quality 2** (Good) - правильный, нормальный
+- **Quality 3** (Easy) - правильный и легкий (быстрый ответ <2.5с без раннего показа)
 
-> **Note:** The database file and directory will be created automatically on first run if they don't exist.
+**Состояния карточек:**
+- `new` → `learning` → `review`
+- При ошибке: сброс в `learning` с уменьшением EF (Easiness Factor)
 
-### 3. Running
+**Шаги обучения:**
+- RU→EN: [1, 3, 7, 14] дней (активное воспроизведение, сложнее)
+- EN→RU: [1, 3, 7] дней (пассивное распознавание, проще)
 
-#### Local Development
+### Тренировка
 
-```bash
-# Install dependencies
-make tidy
+**UX карточки:**
+1. Показ вопроса без вариантов (задержка `TRAINING_OPTIONS_DELAY_MS`, по умолчанию 5с)
+2. Показ вариантов ответа (4 варианта по умолчанию)
+3. Ответ пользователя → расчет качества → обновление SRS
 
-# Run in development mode
-make dev
+**Генерация очереди:**
+- Максимум 30 карточек за сессию (`DefaultMaxCardsPerSession`)
+- Максимум 5 новых карточек (`DefaultMaxNewPerSession`)
+- Приоритет: learning → review → new
 
-# Or build and run
-make build
-make run
-```
+### Training Worker
 
-#### Docker
+Фоновый процесс, который:
+1. Находит необработанные `word_cards` (где `processed_at IS NULL`)
+2. Генерирует `training_cards` через LLM (по одному на каждое значение слова)
+3. Создает `user_cards` для всех пользователей, запросивших это слово (по 2 направления)
+4. Использует Circuit Breaker для защиты от ошибок LLM
 
-```bash
-# Build and run with Docker Compose
-make docker-build
-make docker-run
+**Circuit Breaker:**
+- Открывается при `CIRCUIT_BREAKER_THRESHOLD` ошибках подряд
+- Автоматически закрывается через `CIRCUIT_BREAKER_AUTO_RESET_HOURS` часов
 
-# View logs
-make docker-logs
+## Команды
 
-# Stop
-make docker-stop
-```
+### Пользовательские
+- `/start` - приветствие
+- `/help` - справка
+- `/train` - начать тренировку
+- `/get_id` - получить Telegram ID
 
-## How it Works
+### Админские
+- `/reset_circuit` - сброс circuit breaker
+- `/delete_train [word]` - удалить тренировочные карточки слова
+- `/delete_train_all` - удалить все тренировочные карточки
+- `/get_train_data [word]` - данные о тренировочных карточках
 
-### Regular Messages
-1. User sends a text message to the bot
-2. Bot sends a typing indicator
-3. Bot forwards the message to the AI provider with the configured system prompt
-4. AI provider processes the request and returns a response
-5. Bot converts Markdown formatting to Telegram format
-6. Bot sends the formatted AI response back to the user
+## Веб-приложение
 
-### Single Word Queries (Vocabulary Cards)
-When a user sends a single word, the bot uses intelligent caching:
+Vue 3 SPA, встроенное в Go-бинарник через `go:embed`.
 
-1. **Word Detection** - Bot detects if the message is a single word (after trimming punctuation)
-2. **Database Lookup** - Bot checks SQLite database for cached definition
-3. **Cache Hit** - If found:
-   - Returns cached definition immediately (faster response)
-   - Records the request in history (user_id, word, timestamp)
-4. **Cache Miss** - If not found:
-   - Requests definition from AI provider
-   - Saves the definition to database for future use
-   - Records the request in history
-   - Returns the definition to user
+### Маршруты
+- `/app` или `/app/#/login` - вход
+- `/app/#/dashboard` - дашборд
+- `/app/#/vocab` - словарь
+- `/app/#/training` - тренировка
+- `/app/#/chat` - AI чат
+- `/app/#/admin` - админ-панель
 
-This approach:
-- ✅ Reduces API calls and costs
-- ✅ Provides faster responses for previously requested words
-- ✅ Maintains a searchable vocabulary database
-- ✅ Tracks user activity and popular words
+### Аутентификация
 
-## Supported AI Providers
+**JWT токены:**
+- Access token (TTL: 24h) - для API запросов
+- Refresh token (TTL: 30 дней) - для обновления access token
 
-This bot works with any OpenAI-compatible API, including:
+**Методы входа:**
+1. Telegram Mini App - автоматическая аутентификация через `initData`
+2. OTP - для внешнего браузера (запрос кода через бота)
 
-- **OpenRouter** - Access to multiple AI models through one API
-- **OpenAI** - Direct OpenAI API access
-- **Anthropic** - Claude models (if using OpenRouter)
-- **Google** - Gemini models (if using OpenRouter)
-- **Local models** - Any self-hosted OpenAI-compatible API
+### API
 
-## Web Application (Vue SPA)
+- `/swagger/` - Swagger UI документация
+- `/health` - health check
+- `/auth/*` - аутентификация
+- `/app/*` - защищенные эндпоинты (требуют JWT)
 
-The bot includes a full-featured Vue 3 Single Page Application (SPA) accessible as a Telegram Mini App or in a regular browser. The frontend is embedded directly into the Go binary using `go:embed`, so no separate web server is needed.
+## Конфигурация
 
-### Features
-
-**For Regular Users:**
-- **Dashboard** - View due card counts and quick access to training
-- **AI Chat** - Simple one-request-one-response AI chat interface
-- **Vocabulary Management** - View all learned words with statistics and delete words from your learning
-- **Web Training** - Full training session experience in the browser with the same UX as Telegram bot
-
-**For Administrators:**
-- **Circuit Breaker Management** - View status and reset circuit breaker
-- **Training Cards Management** - Delete training cards by word, delete all cards, or view detailed data
-
-### Access Methods
-
-1. **Inside Telegram Mini App** - Open Mini App link (automatically authenticates via Telegram `initData`)
-   - The app detects `window.Telegram.WebApp.initData` and automatically calls `/auth/telegram`
-   - If Telegram auth fails, falls back to OTP login
-
-2. **External Browser** - Direct URL access with OTP login
-   - Navigate to `/app` on your domain
-   - Enter Telegram username or ID
-   - Receive OTP code via Telegram bot
-   - Enter code to authenticate
-
-### UI Routes
-
-The SPA uses hash-based routing to avoid conflicts with API endpoints:
-- `/app` or `/app/#/login` - Login page
-- `/app/#/dashboard` - Dashboard
-- `/app/#/vocab` - Vocabulary list
-- `/app/#/training` - Training session
-- `/app/#/chat` - AI chat
-- `/app/#/admin` - Admin panel (admin only)
-
-API endpoints remain at `/app/dashboard`, `/app/vocab`, etc. (without hash).
-
-### Authentication
-
-The web app uses **JWT (JSON Web Tokens)** for authentication:
-
-- **Access tokens** - Short-lived (24h by default) for API requests
-- **Refresh tokens** - Long-lived (30 days) for token renewal
-- **Automatic token refresh** - Frontend automatically refreshes expired access tokens using refresh token
-- **Token storage** - Tokens stored in browser localStorage
-
-### Configuration
-
-Add these environment variables to enable the web app:
+### Обязательные переменные
 
 ```env
-WEBAPP_JWT_SECRET=your-secret-key-for-jwt-signing  # Required: openssl rand -hex 32
-WEBAPP_JWT_TTL_HOURS=24                            # Access token TTL (default: 24h)
-WEBAPP_REFRESH_TTL_HOURS=720                       # Refresh token TTL (default: 30 days)
-WEBAPP_OTP_TTL_SECONDS=300                         # OTP code expiration
-WEBAPP_PUBLIC_URL=https://your-domain.com          # Optional: for CORS
+TELEGRAM_TOKEN=              # Токен бота от @BotFather
+AI_URL=                      # URL AI провайдера
+AI_API_KEY=                  # API ключ
+AI_MODEL=                    # Модель AI
+AI_PROMPT=                   # Системный промпт (или AI_PROMPT_FILE)
+DATABASE_PATH=               # Путь к SQLite БД
+WEBAPP_JWT_SECRET=           # Секрет для JWT (openssl rand -hex 32)
 ```
 
-The web app is automatically available at `/app` route on the same server. The frontend is embedded in the Go binary, so no separate build step is needed on the server - just deploy the binary.
-
-### Building the Frontend
-
-The frontend is built automatically during CI/CD:
-1. GitHub Actions installs Node.js and builds the Vue app (`npm install && npm run build`)
-2. The built `webapp/dist` folder is embedded into the Go binary using `go:embed`
-3. The Go binary serves the static files at runtime
-
-For local development:
-```bash
-cd webapp
-npm install
-npm run dev  # Runs Vite dev server (proxy to API at :8184)
-```
-
-### API Documentation
-
-**Swagger UI** is available at `/swagger/` with:
-- Auto Bearer prefix - just enter token without "Bearer "
-- Auto token refresh - automatically refreshes expired access tokens
-- Full API documentation for all endpoints
-
-## Commands
-
-The bot supports the following commands:
-
-### User Commands
-
-- `/start` - Start the bot and get welcome message
-- `/help` - Show help message with available commands
-- `/train` - Start a training session with vocabulary cards
-- `/get_id` - Get your Telegram user ID
-
-### Admin Commands
-
-The following commands are available only to the configured admin user:
-
-- `/reset_circuit` - Reset the circuit breaker for the training worker
-- `/delete_train [word]` - Delete all training cards for a specific word
-- `/delete_train_all` - Delete all training cards (cascades to user_cards and review_events)
-- `/get_train_data [word]` - Get detailed information about all training cards for a word
-
-## Configuration
-
-### Environment Variables
-
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `TELEGRAM_TOKEN` | Telegram bot token | **Required** |
-| `AI_URL` | AI provider API URL | **Required** |
-| `AI_API_KEY` | AI provider API key | **Required** |
-| `AI_MODEL` | AI model to use | `gpt-3.5-turbo` |
-| `AI_PROMPT` | System prompt for AI | **Required** (or use `AI_PROMPT_FILE`) |
-| `AI_PROMPT_FILE` | Path to file containing system prompt | Alternative to `AI_PROMPT` |
-| `DATABASE_PATH` | Path to SQLite database file | `./data/words.db` |
-| `TELEGRAM_DEBUG` | Debug mode | `false` |
-| `TELEGRAM_UPDATES_TIMEOUT` | Updates timeout | `30` |
-| `TELEGRAM_WEBHOOK_ENABLE` | Enable webhook | `false` |
-| `TELEGRAM_WEBHOOK_DOMAIN` | Webhook domain | - |
-| `TELEGRAM_WEBHOOK_PATH` | Webhook path | `/webhook` |
-| `SERVER_ADDRESS` | Server address | `:8184` |
-| `LOG_LEVEL` | Logging level | `info` |
-| `WEBAPP_JWT_SECRET` | Secret key for JWT signing | **Required** |
-| `WEBAPP_JWT_TTL_HOURS` | Access token TTL | `24` |
-| `WEBAPP_REFRESH_TTL_HOURS` | Refresh token TTL | `720` |
-| `WEBAPP_OTP_TTL_SECONDS` | OTP code expiration time | `300` |
-| `WEBAPP_PUBLIC_URL` | Public URL for Mini App (HTTPS) | - |
-| `ADMIN_TELEGRAM_ID` | Telegram ID of admin user | `0` |
-
-### Example Configuration for OpenRouter
+### Тренировки
 
 ```env
-TELEGRAM_TOKEN=your_telegram_bot_token
-AI_URL=https://openrouter.ai/api/v1
-AI_API_KEY=your_openrouter_api_key
-AI_MODEL=anthropic/claude-3-sonnet
-AI_PROMPT=You are a helpful AI assistant. Please respond to the user's message in a helpful and informative way.
+TRAINING_WORKER_ENABLED=true              # Включить воркер
+TRAINING_WORKER_INTERVAL=30s              # Интервал обработки
+TRAINING_WORKER_BATCH_SIZE=5              # Размер батча
+TRAINING_PROMPT_FILE=prompts/training-card-generator.txt
+CIRCUIT_BREAKER_THRESHOLD=5              # Порог для circuit breaker
+TRAINING_OPTIONS_DELAY_MS=5000           # Задержка показа вариантов
+TRAINING_WRONG_ANSWER_DELAY_SECONDS=5    # Задержка после ошибки
 ```
 
-### Customizing AI Behavior
-
-You can customize the AI behavior in two ways:
-
-#### Option 1: Direct prompt in .env file
-Modify the `AI_PROMPT` environment variable to change how the AI responds. You can use multi-line prompts in several ways:
-
-**Single-line prompt:**
-```env
-AI_PROMPT=You are a friendly customer support assistant. Always be polite and helpful.
-```
-
-**Multi-line prompt with escaped newlines:**
-```env
-AI_PROMPT="You are a helpful AI assistant. You should:\n- Always be polite and respectful\n- Provide accurate information\n- Ask clarifying questions when needed\n- Keep responses concise but informative\n\nPlease respond to the user's message following these guidelines."
-```
-
-**Multi-line prompt with single quotes (works in some systems):**
-```env
-AI_PROMPT='You are a helpful AI assistant. You should:
-- Always be polite and respectful
-- Provide accurate information
-- Ask clarifying questions when needed
-- Keep responses concise but informative
-
-Please respond to the user's message following these guidelines.'
-```
-
-**Using heredoc in shell scripts:**
-```bash
-export AI_PROMPT=$(cat <<EOF
-You are a helpful AI assistant with the following characteristics:
-
-1. Personality:
-   - Friendly and approachable
-   - Professional but not formal
-   - Patient and understanding
-
-2. Capabilities:
-   - Answer questions accurately
-   - Provide step-by-step explanations
-   - Offer helpful suggestions
-
-3. Guidelines:
-   - Always be respectful
-   - Admit when you don't know something
-   - Ask clarifying questions when needed
-
-Please respond to the user's message following these guidelines.
-EOF
-)
-```
-
-#### Option 2: Load prompt from file (Recommended for long prompts)
-Instead of putting the prompt directly in the `.env` file, you can create a separate text file and reference it:
+### Веб-приложение
 
 ```env
-AI_PROMPT_FILE=prompts/english-teacher.txt
+WEBAPP_JWT_TTL_HOURS=24                  # TTL access token
+WEBAPP_REFRESH_TTL_HOURS=720             # TTL refresh token
+WEBAPP_OTP_TTL_SECONDS=300              # TTL OTP кода
+WEBAPP_PUBLIC_URL=https://your-domain.com  # Публичный URL (для CORS)
 ```
 
-**Available prompt files:**
-- `prompts/simple-assistant.txt` - Basic helpful assistant
-- `prompts/customer-support.txt` - Customer support specialist  
-- `prompts/english-teacher.txt` - English teacher and translator
+Полный список переменных см. в `env.example`.
 
-**Creating your own prompt file:**
-1. Create a new file in the `prompts/` directory
-2. Write your prompt in plain text (no need for escaping)
-3. Reference it in `.env` with `AI_PROMPT_FILE=prompts/your-file.txt`
-
-Example prompt file (`prompts/my-custom-prompt.txt`):
-```
-You are a specialized AI assistant for [your domain].
-
-Your main responsibilities:
-- Provide accurate information about [topic]
-- Help users with [specific tasks]
-- Maintain a [tone/style] communication style
-
-Guidelines:
-- Always be [specific behavior]
-- Never [specific restrictions]
-- When in doubt, [fallback behavior]
-
-Remember: [key principles]
-```
-
-## Markdown Formatting Support
-
-The bot automatically converts AI responses from Markdown to Telegram format. Supported formatting includes:
-
-### ✅ **Supported Elements:**
-- **Headers** (`#`, `##`, `###`) → **Bold text**
-- **Bold text** (`**text**`, `__text__`) → **Bold text**
-- **Italic text** (`*text*`) → _Italic text_
-- **Code blocks** (```language → ```)
-- **Inline code** (`` `code` ``)
-- **Unordered lists** (`-`, `*`) → • Bullet points
-- **Ordered lists** (`1.`, `2.`) → Numbered lists
-- **Links** (`[text](url)`) → [text](url)
-
-### 📝 **Example Conversion:**
-
-**Input (AI Response):**
-```markdown
-# Welcome to AI Bot
-
-This is **bold** and *italic* text.
-
-## Features
-- Feature 1
-- Feature 2
-
-Use `code` for examples.
-```
-
-**Output (Telegram):**
-```
-**Welcome to AI Bot**
-
-This is **bold** and _italic_ text.
-
-**Features**
-• Feature 1
-• Feature 2
-
-Use `code` for examples.
-```
-
-## Project Structure
+## Структура проекта
 
 ```
 english-bot/
-├── cmd/bot/                 # Application entry point
+├── cmd/bot/              # Точка входа
 ├── internal/
-│   ├── ai/                  # AI service for provider integration
-│   ├── bot/                 # Bot logic and handlers
-│   ├── config/              # Configuration management
-│   ├── database/            # Database initialization and migrations
-│   ├── logger/              # Logging configuration
-│   ├── models/              # Data models (word cards, history)
-│   ├── repository/          # Database repositories
-│   ├── service/             # Business logic services
-│   ├── utils/               # Utility functions (Markdown conversion)
-│   └── web/                 # Web application (Mini App)
-│       ├── templates/       # HTML templates (embedded)
-│       └── static/          # CSS and static assets (embedded)
-├── prompts/                 # AI prompt files
-│   ├── simple-assistant.txt
-│   ├── customer-support.txt
-│   └── english-teacher.txt
-├── data/                    # Database files (created automatically)
-│   └── words.db            # SQLite database
-├── .github/workflows/       # GitHub Actions
-├── Dockerfile               # Docker image
-├── docker-compose.yml       # Docker Compose
-├── Makefile                 # Development commands
-└── README.md               # Documentation
+│   ├── ai/              # AI сервис
+│   ├── bot/             # Telegram бот
+│   ├── config/           # Конфигурация
+│   ├── database/         # Инициализация БД
+│   ├── models/           # Модели данных
+│   ├── repository/       # Репозитории (работа с БД)
+│   ├── service/          # Бизнес-логика
+│   ├── utils/            # Утилиты (Markdown)
+│   └── web/              # Веб-приложение (API + статика)
+├── webapp/               # Vue SPA исходники
+│   ├── src/
+│   └── dist/             # Собранный фронтенд (embed в Go)
+├── prompts/              # Промпты для AI
+└── data/                 # SQLite БД (создается автоматически)
 ```
 
-## Commands
-
-### Main Commands
+## Разработка
 
 ```bash
-make setup          # Initial project setup
-make build          # Build application
-make run            # Run application
-make dev            # Run in development mode
-make test           # Run tests
-make lint           # Code linting
-make clean          # Clean build artifacts
+make setup      # Настройка проекта
+make build      # Сборка
+make run        # Запуск
+make dev        # Разработка
+make test       # Тесты
+make lint       # Линтинг
 ```
 
-### Docker Commands
+### Фронтенд
 
 ```bash
-make docker-build   # Build Docker image
-make docker-run     # Run with docker-compose
-make docker-stop    # Stop containers
-make docker-logs    # View logs
-make docker-clean   # Clean Docker resources
-make deploy         # Deploy with Docker
+cd webapp
+npm install
+npm run dev     # Vite dev server (прокси на :8184)
 ```
 
 ## Docker
 
-### Building Image
-
 ```bash
-docker build -t ai-telegram-bot .
+make docker-build
+make docker-run
 ```
 
-### Running Container
+## База данных
 
+SQLite база создается автоматически при первом запуске.
+
+**Просмотр:**
 ```bash
-docker run -d \
-  --name ai-telegram-bot \
-  -p 8184:8184 \
-  -v $(pwd)/data:/app/data \
-  -e TELEGRAM_TOKEN=your_token_here \
-  -e AI_URL=https://openrouter.ai/api/v1 \
-  -e AI_API_KEY=your_api_key \
-  -e AI_MODEL=gpt-3.5-turbo \
-  -e AI_PROMPT="You are a helpful assistant" \
-  -e DATABASE_PATH=/app/data/words.db \
-  ai-telegram-bot
+sqlite3 ./data/words.db
 ```
 
-> **Note:** The `-v $(pwd)/data:/app/data` volume mount persists the database between container restarts.
-
-### Docker Compose
-
+**Бэкап:**
 ```bash
-# Start
-docker-compose up -d
-
-# View logs
-docker-compose logs -f
-
-# Stop
-docker-compose down
-```
-
-## API Endpoints
-
-When running, the bot exposes the following HTTP endpoints:
-
-**Public:**
-- `GET /health` - Health check endpoint
-- `GET /swagger/` - Swagger UI documentation
-- `POST /auth/telegram` - Telegram initData authentication (returns JWT tokens)
-- `POST /auth/telegram_unsafe` - Unsafe Telegram auth (fallback)
-- `POST /auth/request_otp` - Request OTP for external login
-- `POST /auth/otp` - Verify OTP and get JWT tokens
-- `POST /auth/refresh` - Refresh access token using refresh token
-
-**Protected (require JWT Bearer token):**
-- `GET /app/dashboard` - User dashboard
-- `GET /app/vocab` - Vocabulary list
-- `POST /app/training/start` - Start training session
-- `GET /app/admin` - Admin panel (requires admin access)
-
-See `/swagger/` for full API documentation.
-
-## Database
-
-The bot uses SQLite to store vocabulary cards and request history. The database is automatically created on first run.
-
-### Database Schema
-
-**word_cards** - Stores vocabulary card definitions:
-- `id` - Primary key
-- `word` - Word (normalized, unique)
-- `definition` - AI-generated definition
-- `created_at` - Creation timestamp
-- `updated_at` - Last update timestamp
-
-**word_request_history** - Tracks user requests:
-- `id` - Primary key
-- `user_id` - Telegram user ID
-- `word` - Requested word
-- `requested_at` - Request timestamp
-
-**web_otps** - One-time passwords for external login:
-- `id` - Primary key
-- `user_id` - User ID
-- `code_hash` - Hashed OTP code
-- `expires_at` - OTP expiration time
-- `consumed_at` - When OTP was used (NULL if unused)
-- `created_at` - Creation timestamp
-
-**users** - Extended with `telegram_username` field for OTP login
-
-> **Note:** The project uses JWT tokens for authentication. Sessions are stateless and stored in tokens, not in the database.
-
-### Database Location
-
-By default, the database is stored at `./data/words.db`. You can change this with the `DATABASE_PATH` environment variable.
-
-### Backup
-
-To backup your database:
-```bash
-# Copy the database file
-cp ./data/words.db ./data/words.db.backup
-
-# Or use sqlite3 backup command
 sqlite3 ./data/words.db ".backup './data/words.db.backup'"
 ```
 
-### Viewing Database
+## Деплой
 
-You can inspect the database using SQLite CLI:
-```bash
-sqlite3 ./data/words.db
+См. [DEPLOYMENT.md](DEPLOYMENT.md)
 
-# View all words
-SELECT * FROM word_cards;
+## Лицензия
 
-# View request history
-SELECT * FROM word_request_history ORDER BY requested_at DESC LIMIT 10;
-
-# Count words per user
-SELECT user_id, COUNT(*) as word_count 
-FROM word_request_history 
-GROUP BY user_id 
-ORDER BY word_count DESC;
-```
-
-## Development
-
-### Adding New Commands
-
-1. Edit `internal/bot/handler.go`
-2. Add a new case to the `handleCommand` function
-3. Implement the command logic
-
-### Adding New Features
-
-1. Create new packages in `internal/`
-2. Add configuration if needed
-3. Update the main application
-
-## Testing
-
-```bash
-# Run all tests
-make test
-
-# Run tests with verbose output
-make test-verbose
-
-# Check coverage
-go test -cover ./...
-```
-
-## Monitoring
-
-The bot provides a health check endpoint:
-
-```bash
-curl http://localhost:8184/health
-```
-
-## Security
-
-- Uses non-root user in Docker
-- Security scanning with Gosec in CI
-- Configuration validation on startup
-- API keys are loaded from environment variables
-
-## Contributing
-
-1. Fork the project
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## License
-
-This project is distributed under the most permissive license - the MIT License. This allows maximum freedom for use, modification, and distribution. See the `LICENSE` file for details.
-
-## Deployment
-
-See [deployment.md](DEPLOYMENT.md)
-
-## Support
-
-If you have questions or issues:
-
-1. Check [Issues](https://github.com/your-repo/issues)
-2. Create a new Issue with detailed description
-3. Make sure to provide logs and configuration
+MIT License
