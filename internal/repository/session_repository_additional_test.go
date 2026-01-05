@@ -175,7 +175,8 @@ func TestSessionRepository_GetTodaySessionCount(t *testing.T) {
 	repo := NewSessionRepository(db, logger)
 
 	// Create sessions for today
-	today := time.Now().Format("2006-01-02")
+	// Use UTC time to match SQLite's CURRENT_TIMESTAMP which returns UTC
+	today := time.Now().UTC().Format("2006-01-02")
 	for i := 0; i < 3; i++ {
 		session := &models.TrainingSession{
 			UserID:       333,

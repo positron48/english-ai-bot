@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"math/rand"
+	"strings"
 
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
@@ -58,6 +59,12 @@ func (s *OptionsService) GenerateOptions(
 			s.logger.Warn("failed to parse distractors", zap.Error(err))
 			distractors = []string{}
 		}
+	}
+
+	// Get POS of current card for filtering
+	currentPOS := ""
+	if card.TrainingCard.POS != nil && *card.TrainingCard.POS != "" {
+		currentPOS = *card.TrainingCard.POS
 	}
 
 	// Get all meanings of this word to exclude them from distractors
@@ -122,11 +129,18 @@ func (s *OptionsService) GenerateOptions(
 	}
 
 	// Filter session words: exclude current card's answer, already included options, and other meanings of the same word
+	// Also filter by POS if current card has POS
 	// Note: recent correct answers should already be excluded by the caller (extractSessionWords)
 	filteredSessionWords := make([]string, 0, len(sessionWords))
 	seenSessionWords := make(map[string]bool)
 	for _, sw := range sessionWords {
 		if !excludedSet[sw] && !optionsPoolSet[sw] && !seenSessionWords[sw] {
+			// Check POS match if current card has POS
+			if currentPOS != "" {
+				if !s.hasMatchingPOS(sw, currentPOS, card.UserCard.Direction) {
+					continue
+				}
+			}
 			filteredSessionWords = append(filteredSessionWords, sw)
 			seenSessionWords[sw] = true
 		}
@@ -137,7 +151,37 @@ func (s *OptionsService) GenerateOptions(
 	selectedDistractors := make([]string, 0, neededDistractors)
 	selectedDistractorsSet := make(map[string]bool) // Track selected distractors to avoid duplicates
 
-	// Mix in 1-2 session words (familiar words from current training session)
+	// STEP 1: First, take 1-2 distractors from the current card's distractors
+	// This ensures that card-specific distractors are always used
+	cardDistractorsToUse := 1
+	if len(distractors) >= 2 && neededDistractors >= 3 {
+		// Use 2 card distractors if we have enough and need at least 3 distractors
+		cardDistractorsToUse = 2
+	}
+	if cardDistractorsToUse > len(distractors) {
+		cardDistractorsToUse = len(distractors)
+	}
+
+	// Shuffle card distractors and take what we need
+	shuffledCardDistractors := make([]string, len(distractors))
+	copy(shuffledCardDistractors, distractors)
+	rand.Shuffle(len(shuffledCardDistractors), func(i, j int) {
+		shuffledCardDistractors[i], shuffledCardDistractors[j] = shuffledCardDistractors[j], shuffledCardDistractors[i]
+	})
+
+	// Add card distractors to selected distractors
+	// Normalize verbs for RU->EN direction (add "to " if needed)
+	for i := 0; i < cardDistractorsToUse && i < len(shuffledCardDistractors); i++ {
+		word := shuffledCardDistractors[i]
+		if !selectedDistractorsSet[word] {
+			// Normalize verb format for RU->EN direction
+			normalizedWord := s.normalizeVerbFormat(word, currentPOS, card.UserCard.Direction)
+			selectedDistractors = append(selectedDistractors, normalizedWord)
+			selectedDistractorsSet[normalizedWord] = true
+		}
+	}
+
+	// STEP 2: Mix in 1-2 session words (familiar words from current training session)
 	// This prevents guessing by word recognition since all options look familiar
 	sessionWordsToUse := 1
 	if len(filteredSessionWords) >= 2 && neededDistractors >= 3 {
@@ -156,25 +200,38 @@ func (s *OptionsService) GenerateOptions(
 	})
 
 	// Add session words to selected distractors
-	for i := 0; i < sessionWordsToUse && i < len(shuffledSessionWords); i++ {
+	// Normalize verbs for RU->EN direction (add "to " if needed)
+	for i := 0; i < sessionWordsToUse && i < len(shuffledSessionWords) && len(selectedDistractors) < neededDistractors; i++ {
 		word := shuffledSessionWords[i]
 		if !selectedDistractorsSet[word] {
-			selectedDistractors = append(selectedDistractors, word)
-			selectedDistractorsSet[word] = true
+			// Normalize verb format for RU->EN direction
+			normalizedWord := s.normalizeVerbFormat(word, currentPOS, card.UserCard.Direction)
+			selectedDistractors = append(selectedDistractors, normalizedWord)
+			selectedDistractorsSet[normalizedWord] = true
 		}
 	}
 
+	// STEP 3: Fill remaining slots with LLM-generated distractors (wrong answers + remaining card distractors)
 	// Shuffle LLM distractors pool
 	rand.Shuffle(len(optionsPool), func(i, j int) {
 		optionsPool[i], optionsPool[j] = optionsPool[j], optionsPool[i]
 	})
 
-	// Fill remaining slots with LLM-generated distractors (wrong answers + distractors)
-	// Exclude session words we already added and ensure no duplicates
+	// Add remaining options from pool (wrong answers + remaining card distractors)
+	// Exclude already added distractors and ensure no duplicates
+	// Filter by POS if current card has POS
 	for _, d := range optionsPool {
 		if !selectedDistractorsSet[d] && !excludedSet[d] && len(selectedDistractors) < neededDistractors {
-			selectedDistractors = append(selectedDistractors, d)
-			selectedDistractorsSet[d] = true
+			// Check POS match if current card has POS
+			if currentPOS != "" {
+				if !s.hasMatchingPOS(d, currentPOS, card.UserCard.Direction) {
+					continue
+				}
+			}
+			// Normalize verb format for RU->EN direction
+			normalizedD := s.normalizeVerbFormat(d, currentPOS, card.UserCard.Direction)
+			selectedDistractors = append(selectedDistractors, normalizedD)
+			selectedDistractorsSet[normalizedD] = true
 		}
 		if len(selectedDistractors) >= neededDistractors {
 			break
@@ -187,13 +244,14 @@ func (s *OptionsService) GenerateOptions(
 			zap.Int("have", len(selectedDistractors)),
 			zap.Int("need", neededDistractors),
 		)
-		// For now, just use generic fallbacks
-		// In production, you might query similar words
-		fallbacks := s.getFallbackDistractors(card.UserCard.Direction)
+		// Use fallbacks filtered by POS if current card has POS
+		fallbacks := s.getFallbackDistractors(card.UserCard.Direction, currentPOS)
 		for _, fb := range fallbacks {
 			if !selectedDistractorsSet[fb] && !excludedSet[fb] {
-				selectedDistractors = append(selectedDistractors, fb)
-				selectedDistractorsSet[fb] = true
+				// Normalize verb format for RU->EN direction
+				normalizedFb := s.normalizeVerbFormat(fb, currentPOS, card.UserCard.Direction)
+				selectedDistractors = append(selectedDistractors, normalizedFb)
+				selectedDistractorsSet[normalizedFb] = true
 				if len(selectedDistractors) >= neededDistractors {
 					break
 				}
@@ -218,22 +276,68 @@ func (s *OptionsService) GenerateOptions(
 	return options, correctAnswer, nil
 }
 
-// getFallbackDistractors returns generic fallback distractors
-func (s *OptionsService) getFallbackDistractors(direction models.CardDirection) []string {
+// getFallbackDistractors returns generic fallback distractors filtered by POS
+func (s *OptionsService) getFallbackDistractors(direction models.CardDirection, pos string) []string {
 	if direction == models.DirectionRUtoEN {
 		// English fallbacks
-		return []string{
+		verbs := []string{
 			"make", "take", "get", "give", "come", "go", "see", "know",
 			"think", "want", "look", "use", "find", "tell", "ask", "work",
 			"call", "try", "need", "feel", "become", "leave", "put", "mean",
 		}
+		nouns := []string{
+			"time", "person", "year", "way", "day", "thing", "man", "world",
+			"life", "hand", "part", "child", "eye", "woman", "place", "work",
+			"week", "case", "point", "government", "company", "number", "group",
+		}
+		adjectives := []string{
+			"good", "new", "first", "last", "long", "great", "little", "own",
+			"other", "old", "right", "big", "high", "small", "large", "next",
+			"early", "young", "important", "few", "public", "bad", "same",
+		}
+		
+		// Filter by POS
+		switch pos {
+		case "verb":
+			return verbs
+		case "noun":
+			return nouns
+		case "adjective":
+			return adjectives
+		default:
+			// If no POS or unknown POS, return all
+			return append(append(verbs, nouns...), adjectives...)
+		}
 	}
 	// Russian fallbacks
-	return []string{
+	verbs := []string{
 		"делать", "брать", "получать", "давать", "приходить", "идти",
 		"видеть", "знать", "думать", "хотеть", "смотреть", "использовать",
 		"находить", "говорить", "спрашивать", "работать", "звонить",
 		"пытаться", "нуждаться", "чувствовать", "становиться", "покидать",
+	}
+	nouns := []string{
+		"время", "человек", "год", "путь", "день", "вещь", "мужчина", "мир",
+		"жизнь", "рука", "часть", "ребенок", "глаз", "женщина", "место", "работа",
+		"неделя", "случай", "точка", "правительство", "компания", "число", "группа",
+	}
+	adjectives := []string{
+		"хороший", "новый", "первый", "последний", "долгий", "великий", "маленький", "собственный",
+		"другой", "старый", "правый", "большой", "высокий", "малый", "крупный", "следующий",
+		"ранний", "молодой", "важный", "немного", "публичный", "плохой", "тот же",
+	}
+	
+	// Filter by POS
+	switch pos {
+	case "verb":
+		return verbs
+	case "noun":
+		return nouns
+	case "adjective":
+		return adjectives
+	default:
+		// If no POS or unknown POS, return all
+		return append(append(verbs, nouns...), adjectives...)
 	}
 }
 
@@ -267,3 +371,56 @@ func (s *OptionsService) getOtherMeaningsOfWord(wordCardID int64, direction mode
 	return meanings
 }
 
+// hasMatchingPOS checks if a word has the same POS as the current card
+func (s *OptionsService) hasMatchingPOS(word string, targetPOS string, direction models.CardDirection) bool {
+	if targetPOS == "" {
+		return true // If no POS specified, accept all
+	}
+	
+	// For RU->EN direction, search by word_en or display_word
+	// For EN->RU direction, we can't easily determine POS from Russian word alone
+	// So we'll be more lenient for EN->RU
+	if direction == models.DirectionENtoRU {
+		// For EN->RU, we can't easily check POS from Russian word
+		// Accept it for now (could be improved by storing POS in word_cards)
+		return true
+	}
+	
+	// For RU->EN, try to find the word in training_cards
+	// Remove "to " prefix if present for lookup
+	lookupWord := strings.TrimPrefix(word, "to ")
+	lookupWord = strings.TrimSpace(lookupWord)
+	
+	cards, err := s.trainingCardRepo.GetTrainingCardsByWordEN(lookupWord)
+	if err != nil {
+		s.logger.Debug("failed to get cards for POS check", zap.String("word", lookupWord), zap.Error(err))
+		// If we can't find it, be lenient and accept it
+		return true
+	}
+	
+	// Check if any card has matching POS
+	for _, card := range cards {
+		if card.POS != nil && *card.POS == targetPOS {
+			return true
+		}
+	}
+	
+	// If no cards found or no matching POS, reject
+	return false
+}
+
+// normalizeVerbFormat adds "to " prefix to verbs for RU->EN direction if needed
+func (s *OptionsService) normalizeVerbFormat(word string, pos string, direction models.CardDirection) string {
+	// Only normalize for RU->EN direction and if POS is verb
+	if direction != models.DirectionRUtoEN || pos != "verb" {
+		return word
+	}
+	
+	// Check if word already starts with "to "
+	if strings.HasPrefix(word, "to ") {
+		return word
+	}
+	
+	// Add "to " prefix
+	return "to " + word
+}

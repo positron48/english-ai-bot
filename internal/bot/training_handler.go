@@ -150,7 +150,7 @@ func (h *TrainingHandler) showCard(chatID int64) error {
 	
 	// Extract session words from other cards in the queue (for mixing into distractors)
 	// Exclude recent correct answers to avoid "freshness recognition"
-	sessionWords := h.extractSessionWords(state.Queue, state.CurrentIndex, card.UserCard.Direction, state.RecentCorrectAnswers)
+		sessionWords := h.extractSessionWords(state.Queue, state.CurrentIndex, card, state.RecentCorrectAnswers)
 	
 	// Update state
 	h.sessionsMutex.Lock()
@@ -531,13 +531,20 @@ func (h *TrainingHandler) HasActiveSession(chatID int64) bool {
 // to be used as distractors (prevents guessing by word recognition)
 // recentCorrectAnswers: list of recent correct answers to exclude (to avoid "freshness recognition")
 // Excludes cards with the same WordCardID to avoid showing correct answers from other cards of the same word
-func (h *TrainingHandler) extractSessionWords(queue []*models.UserCardWithTraining, currentIndex int, direction models.CardDirection, recentCorrectAnswers []string) []string {
+// Filters by POS to ensure only words with matching part of speech are included
+func (h *TrainingHandler) extractSessionWords(queue []*models.UserCardWithTraining, currentIndex int, currentCard *models.UserCardWithTraining, recentCorrectAnswers []string) []string {
 	if currentIndex >= len(queue) {
 		return []string{}
 	}
 	
-	currentCard := queue[currentIndex]
 	currentWordCardID := currentCard.TrainingCard.WordCardID
+	direction := currentCard.UserCard.Direction
+	
+	// Get POS of current card for filtering
+	currentPOS := ""
+	if currentCard.TrainingCard.POS != nil && *currentCard.TrainingCard.POS != "" {
+		currentPOS = *currentCard.TrainingCard.POS
+	}
 	
 	sessionWords := make([]string, 0, len(queue))
 	
@@ -562,11 +569,22 @@ func (h *TrainingHandler) extractSessionWords(queue []*models.UserCardWithTraini
 			continue
 		}
 		
+		// Filter by POS if current card has POS
+		if currentPOS != "" {
+			if card.TrainingCard.POS == nil || *card.TrainingCard.POS != currentPOS {
+				continue
+			}
+		}
+		
 		// Extract correct answer based on direction
 		var word string
 		if direction == models.DirectionRUtoEN {
-			// For RU->EN, collect English words
-			word = card.TrainingCard.WordEN
+			// For RU->EN, use DisplayWord if available (e.g., "to spy" for verbs), otherwise WordEN
+			if card.TrainingCard.DisplayWord != nil && *card.TrainingCard.DisplayWord != "" {
+				word = *card.TrainingCard.DisplayWord
+			} else {
+				word = card.TrainingCard.WordEN
+			}
 		} else {
 			// For EN->RU, collect Russian meanings
 			word = card.TrainingCard.WordRU
@@ -578,7 +596,7 @@ func (h *TrainingHandler) extractSessionWords(queue []*models.UserCardWithTraini
 			seenWords[word] = true
 		}
 	}
-	
+
 	return sessionWords
 }
 

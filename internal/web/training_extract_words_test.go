@@ -12,7 +12,8 @@ func TestExtractSessionWords(t *testing.T) {
 
 	// Test case 1: Empty queue
 	queue := []*models.UserCardWithTraining{}
-	words := router.extractSessionWords(queue, 0, models.DirectionENtoRU, []string{})
+	currentCard := &models.UserCardWithTraining{}
+	words := router.extractSessionWords(queue, 0, currentCard, []string{})
 	if len(words) != 0 {
 		t.Errorf("Expected empty words for empty queue, got %d", len(words))
 	}
@@ -30,7 +31,8 @@ func TestExtractSessionWords(t *testing.T) {
 	queue = []*models.UserCardWithTraining{
 		{UserCard: *userCard1, TrainingCard: *trainingCard1},
 	}
-	words = router.extractSessionWords(queue, 0, models.DirectionENtoRU, []string{})
+	currentCard = queue[0]
+	words = router.extractSessionWords(queue, 0, currentCard, []string{})
 	if len(words) != 0 {
 		t.Errorf("Expected empty words for single card, got %d", len(words))
 	}
@@ -59,7 +61,8 @@ func TestExtractSessionWords(t *testing.T) {
 		{UserCard: *userCard2, TrainingCard: *trainingCard2},
 		{UserCard: *userCard3, TrainingCard: *trainingCard3},
 	}
-	words = router.extractSessionWords(queue, 0, models.DirectionENtoRU, []string{})
+	currentCard = queue[0]
+	words = router.extractSessionWords(queue, 0, currentCard, []string{})
 	expectedCount := 2 // Should get WordRU from cards 2 and 3
 	if len(words) != expectedCount {
 		t.Errorf("Expected %d words, got %d: %v", expectedCount, len(words), words)
@@ -77,7 +80,17 @@ func TestExtractSessionWords(t *testing.T) {
 	}
 
 	// Test case 4: DirectionRUtoEN
-	words = router.extractSessionWords(queue, 0, models.DirectionRUtoEN, []string{})
+	// Update currentCard to have RUtoEN direction
+	userCard1RU := &models.UserCard{
+		ID:        1,
+		UserID:    1,
+		Direction: models.DirectionRUtoEN,
+	}
+	currentCard = &models.UserCardWithTraining{
+		UserCard:     *userCard1RU,
+		TrainingCard: *trainingCard1,
+	}
+	words = router.extractSessionWords(queue, 0, currentCard, []string{})
 	expectedCount = 2 // Should get WordEN from cards 2 and 3
 	if len(words) != expectedCount {
 		t.Errorf("Expected %d words for RUtoEN, got %d: %v", expectedCount, len(words), words)
@@ -98,7 +111,8 @@ func TestExtractSessionWords(t *testing.T) {
 		{UserCard: *userCard2, TrainingCard: *trainingCard2},
 		{UserCard: *userCard4, TrainingCard: *trainingCard4}, // Same WordCardID as card 1
 	}
-	words = router.extractSessionWords(queue, 0, models.DirectionENtoRU, []string{})
+	currentCard = queue[0]
+	words = router.extractSessionWords(queue, 0, currentCard, []string{})
 	// Should only get word from card 2, not from card 4 (same WordCardID as current)
 	expectedCount = 1
 	if len(words) != expectedCount {
@@ -106,14 +120,14 @@ func TestExtractSessionWords(t *testing.T) {
 	}
 
 	// Test case 6: With recent correct answers
-	words = router.extractSessionWords(queue, 0, models.DirectionENtoRU, []string{"привет"})
+	words = router.extractSessionWords(queue, 0, currentCard, []string{"привет"})
 	// Should exclude "привет" from results
 	if len(words) != 0 {
 		t.Errorf("Expected 0 words (all excluded by recent correct), got %d: %v", len(words), words)
 	}
 
 	// Test case 7: CurrentIndex >= len(queue)
-	words = router.extractSessionWords(queue, 10, models.DirectionENtoRU, []string{})
+	words = router.extractSessionWords(queue, 10, currentCard, []string{})
 	if len(words) != 0 {
 		t.Errorf("Expected empty words for invalid index, got %d", len(words))
 	}
@@ -142,7 +156,8 @@ func TestExtractSessionWords(t *testing.T) {
 		{UserCard: *userCard5, TrainingCard: *trainingCard5},
 		{UserCard: *userCard6, TrainingCard: *trainingCard6},
 	}
-	words = router.extractSessionWords(queue, 0, models.DirectionENtoRU, []string{})
+	currentCard = queue[0]
+	words = router.extractSessionWords(queue, 0, currentCard, []string{})
 	// Should only get one instance of "дубликат"
 	expectedCount = 1
 	if len(words) != expectedCount {

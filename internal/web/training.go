@@ -144,8 +144,8 @@ func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, stat
 
 	card := state.Queue[state.CurrentIndex]
 	
-	// Extract session words for distractors
-	sessionWords := r.extractSessionWords(state.Queue, state.CurrentIndex, card.UserCard.Direction, state.RecentCorrectAnswers)
+	// Extract session words for distractors (filtered by POS)
+	sessionWords := r.extractSessionWords(state.Queue, state.CurrentIndex, card, state.RecentCorrectAnswers)
 	
 	// Update state
 	state.ShownAt = time.Now()
@@ -194,13 +194,20 @@ func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, stat
 
 // extractSessionWords extracts words from other cards in the session for use as distractors
 // Excludes cards with the same WordCardID to avoid showing correct answers from other cards of the same word
-func (r *Router) extractSessionWords(queue []*models.UserCardWithTraining, currentIndex int, direction models.CardDirection, recentCorrect []string) []string {
+// Filters by POS to ensure only words with matching part of speech are included
+func (r *Router) extractSessionWords(queue []*models.UserCardWithTraining, currentIndex int, currentCard *models.UserCardWithTraining, recentCorrect []string) []string {
 	if currentIndex >= len(queue) {
 		return []string{}
 	}
 	
-	currentCard := queue[currentIndex]
 	currentWordCardID := currentCard.TrainingCard.WordCardID
+	direction := currentCard.UserCard.Direction
+	
+	// Get POS of current card for filtering
+	currentPOS := ""
+	if currentCard.TrainingCard.POS != nil && *currentCard.TrainingCard.POS != "" {
+		currentPOS = *currentCard.TrainingCard.POS
+	}
 	
 	var sessionWords []string
 	excludeSet := make(map[string]bool)
@@ -223,9 +230,21 @@ func (r *Router) extractSessionWords(queue []*models.UserCardWithTraining, curre
 			continue
 		}
 		
+		// Filter by POS if current card has POS
+		if currentPOS != "" {
+			if card.TrainingCard.POS == nil || *card.TrainingCard.POS != currentPOS {
+				continue
+			}
+		}
+		
 		var word string
 		if direction == models.DirectionRUtoEN {
-			word = card.TrainingCard.WordEN
+			// For RU->EN, use DisplayWord if available (e.g., "to spy" for verbs), otherwise WordEN
+			if card.TrainingCard.DisplayWord != nil && *card.TrainingCard.DisplayWord != "" {
+				word = *card.TrainingCard.DisplayWord
+			} else {
+				word = card.TrainingCard.WordEN
+			}
 		} else {
 			word = card.TrainingCard.WordRU
 		}

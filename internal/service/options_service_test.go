@@ -23,7 +23,7 @@ func TestOptionsService_getFallbackDistractors(t *testing.T) {
 	service := NewOptionsService(nil, logger)
 
 	t.Run("RU to EN direction", func(t *testing.T) {
-		distractors := service.getFallbackDistractors(models.DirectionRUtoEN)
+		distractors := service.getFallbackDistractors(models.DirectionRUtoEN, "")
 		if len(distractors) == 0 {
 			t.Error("Should return fallback distractors for RU->EN")
 		}
@@ -36,7 +36,7 @@ func TestOptionsService_getFallbackDistractors(t *testing.T) {
 	})
 
 	t.Run("EN to RU direction", func(t *testing.T) {
-		distractors := service.getFallbackDistractors(models.DirectionENtoRU)
+		distractors := service.getFallbackDistractors(models.DirectionENtoRU, "")
 		if len(distractors) == 0 {
 			t.Error("Should return fallback distractors for EN->RU")
 		}

@@ -121,3 +121,90 @@ func TestOptionsService_GenerateOptions_Integration(t *testing.T) {
 		t.Error("Correct answer should be in options")
 	}
 }
+
+func TestOptionsService_GenerateOptions_UsesCardDistractors(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, trainingCardRepo := setupOptionsServiceTestDB(t)
+	defer db.Close()
+
+	// Create a word card
+	_, err := db.Exec("INSERT INTO word_cards (word, definition) VALUES (?, ?)", "spy", "to spy")
+	if err != nil {
+		t.Fatalf("Failed to create word card: %v", err)
+	}
+
+	// Create training card with specific distractors
+	cardDistractors := []string{"watch", "observe", "monitor"}
+	distractorsEN, _ := json.Marshal(cardDistractors)
+	card1 := &models.TrainingCard{
+		WordCardID:    1,
+		WordEN:        "spy",
+		SenseIndex:    0,
+		WordRU:        "шпионить",
+		MeaningEN:     "to spy",
+		DistractorsEN: string(distractorsEN),
+	}
+	card1ID, err := trainingCardRepo.CreateTrainingCard(card1)
+	if err != nil {
+		t.Fatalf("Failed to create training card: %v", err)
+	}
+
+	service := NewOptionsService(trainingCardRepo, logger)
+
+	userCard := &models.UserCardWithTraining{
+		UserCard: models.UserCard{
+			ID:              1,
+			Direction:       models.DirectionRUtoEN,
+			WrongAnswersJSON: "",
+		},
+		TrainingCard: models.TrainingCard{
+			ID:            card1ID,
+			WordCardID:    1,
+			WordEN:        "spy",
+			WordRU:        "шпионить",
+			DistractorsEN: string(distractorsEN),
+		},
+	}
+
+	// Generate options without session words to ensure card distractors are used
+	options, correctAnswer, err := service.GenerateOptions(userCard, 4, []string{})
+	if err != nil {
+		t.Fatalf("GenerateOptions() error = %v", err)
+	}
+	if len(options) != 4 {
+		t.Errorf("Expected 4 options, got %d", len(options))
+	}
+	if correctAnswer != "spy" {
+		t.Errorf("Expected correct answer 'spy', got %q", correctAnswer)
+	}
+
+	// Verify that at least one card distractor is in the options
+	cardDistractorsSet := make(map[string]bool)
+	for _, d := range cardDistractors {
+		cardDistractorsSet[d] = true
+	}
+
+	foundCardDistractor := false
+	for _, opt := range options {
+		if opt != correctAnswer && cardDistractorsSet[opt] {
+			foundCardDistractor = true
+			break
+		}
+	}
+
+	if !foundCardDistractor {
+		t.Errorf("Expected at least one card distractor (%v) in options, got: %v", cardDistractors, options)
+	}
+
+	// For 4 options, we should have at least 1 card distractor
+	// Let's count how many card distractors are used
+	cardDistractorsUsed := 0
+	for _, opt := range options {
+		if opt != correctAnswer && cardDistractorsSet[opt] {
+			cardDistractorsUsed++
+		}
+	}
+	if cardDistractorsUsed < 1 {
+		t.Errorf("Expected at least 1 card distractor to be used, found %d", cardDistractorsUsed)
+	}
+}
