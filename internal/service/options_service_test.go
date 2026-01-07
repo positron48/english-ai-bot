@@ -189,6 +189,7 @@ func TestTrainingService_shufflePreventDuplicates(t *testing.T) {
 	t.Run("Single card", func(t *testing.T) {
 		queue := []*models.UserCardWithTraining{
 			{
+				UserCard: models.UserCard{ID: 1},
 				TrainingCard: models.TrainingCard{WordCardID: 1},
 			},
 		}
@@ -200,9 +201,9 @@ func TestTrainingService_shufflePreventDuplicates(t *testing.T) {
 
 	t.Run("No duplicates", func(t *testing.T) {
 		queue := []*models.UserCardWithTraining{
-			{TrainingCard: models.TrainingCard{WordCardID: 1}},
-			{TrainingCard: models.TrainingCard{WordCardID: 2}},
-			{TrainingCard: models.TrainingCard{WordCardID: 3}},
+			{UserCard: models.UserCard{ID: 1}, TrainingCard: models.TrainingCard{WordCardID: 1}},
+			{UserCard: models.UserCard{ID: 2}, TrainingCard: models.TrainingCard{WordCardID: 2}},
+			{UserCard: models.UserCard{ID: 3}, TrainingCard: models.TrainingCard{WordCardID: 3}},
 		}
 		result := service.shufflePreventDuplicates(queue)
 		if len(result) != 3 {
@@ -212,10 +213,10 @@ func TestTrainingService_shufflePreventDuplicates(t *testing.T) {
 
 	t.Run("With duplicates", func(t *testing.T) {
 		queue := []*models.UserCardWithTraining{
-			{TrainingCard: models.TrainingCard{WordCardID: 1}},
-			{TrainingCard: models.TrainingCard{WordCardID: 1}},
-			{TrainingCard: models.TrainingCard{WordCardID: 2}},
-			{TrainingCard: models.TrainingCard{WordCardID: 2}},
+			{UserCard: models.UserCard{ID: 1}, TrainingCard: models.TrainingCard{WordCardID: 1}},
+			{UserCard: models.UserCard{ID: 2}, TrainingCard: models.TrainingCard{WordCardID: 1}},
+			{UserCard: models.UserCard{ID: 3}, TrainingCard: models.TrainingCard{WordCardID: 2}},
+			{UserCard: models.UserCard{ID: 4}, TrainingCard: models.TrainingCard{WordCardID: 2}},
 		}
 		result := service.shufflePreventDuplicates(queue)
 		if len(result) != 4 {

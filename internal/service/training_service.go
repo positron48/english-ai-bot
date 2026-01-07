@@ -144,8 +144,25 @@ func (s *TrainingService) generateQueue(userID int64, config SessionConfig) ([]*
 		)
 	}
 
-	// Combine cards
-	allCards := append(dueCards, newCards...)
+	// Combine cards and remove duplicates by UserCard.ID
+	seenCardIDs := make(map[int64]bool)
+	allCards := make([]*models.UserCard, 0, len(dueCards)+len(newCards))
+	
+	// Add due cards, skipping duplicates
+	for _, card := range dueCards {
+		if !seenCardIDs[card.ID] {
+			allCards = append(allCards, card)
+			seenCardIDs[card.ID] = true
+		}
+	}
+	
+	// Add new cards, skipping duplicates
+	for _, card := range newCards {
+		if !seenCardIDs[card.ID] {
+			allCards = append(allCards, card)
+			seenCardIDs[card.ID] = true
+		}
+	}
 
 	if len(allCards) == 0 {
 		return nil, nil
@@ -227,6 +244,7 @@ func (s *TrainingService) shufflePreventDuplicates(queue []*models.UserCardWithT
 
 	// Build new queue spreading duplicates apart with larger minimum distance
 	result := make([]*models.UserCardWithTraining, 0, len(queue))
+	seenUserCardIDs := make(map[int64]bool) // Track UserCard.ID to prevent duplicates
 	
 	// Calculate minimum distance based on queue size
 	// For larger queues, use larger distance to better spread words
@@ -295,10 +313,23 @@ func (s *TrainingService) shufflePreventDuplicates(queue []*models.UserCardWithT
 					cards[i], cards[j] = cards[j], cards[i]
 				})
 				
-				// Add first card from this group
-				result = append(result, cards[0])
-				wordGroups[wordCardID] = cards[1:]
-				added = true
+				// Find first card that hasn't been added yet
+				cardAdded := false
+				for i, card := range cards {
+					if !seenUserCardIDs[card.UserCard.ID] {
+						result = append(result, card)
+						seenUserCardIDs[card.UserCard.ID] = true
+						// Remove this card from the group
+						wordGroups[wordCardID] = append(cards[:i], cards[i+1:]...)
+						cardAdded = true
+						added = true
+						break
+					}
+				}
+				if !cardAdded {
+					// All cards in this group are already added, remove the group
+					wordGroups[wordCardID] = []*models.UserCardWithTraining{}
+				}
 			}
 		}
 
@@ -311,9 +342,24 @@ func (s *TrainingService) shufflePreventDuplicates(queue []*models.UserCardWithT
 					rand.Shuffle(len(cards), func(i, j int) {
 						cards[i], cards[j] = cards[j], cards[i]
 					})
-					result = append(result, cards[0])
-					wordGroups[wordCardID] = cards[1:]
-					break
+					// Find first card that hasn't been added yet
+					cardAdded := false
+					for i, card := range cards {
+						if !seenUserCardIDs[card.UserCard.ID] {
+							result = append(result, card)
+							seenUserCardIDs[card.UserCard.ID] = true
+							// Remove this card from the group
+							wordGroups[wordCardID] = append(cards[:i], cards[i+1:]...)
+							cardAdded = true
+							break
+						}
+					}
+					if cardAdded {
+						break
+					} else {
+						// All cards in this group are already added, remove the group
+						wordGroups[wordCardID] = []*models.UserCardWithTraining{}
+					}
 				}
 			}
 		}
