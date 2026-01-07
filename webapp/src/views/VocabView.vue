@@ -253,7 +253,7 @@
                     <span>{{ formatDate(directionCard.last_review_at) }}</span>
                   </div>
                   <div class="stat-item" v-if="directionCard.last_quality !== null">
-                    <span class="stat-label tooltip-trigger" title="Оценка качества последнего ответа (0-5, где 5 - отлично, 0 - забыл)">Last Quality:</span>
+                    <span class="stat-label tooltip-trigger" title="Оценка качества последнего ответа (0-3, где 0 - неправильный, 1 - трудно, 2 - нормально, 3 - легко)">Last Quality:</span>
                     <span>{{ directionCard.last_quality }}</span>
                   </div>
                 </div>

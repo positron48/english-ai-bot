@@ -55,15 +55,17 @@ func (m *mockAIService) GenerateResponse(ctx context.Context, prompt string) (st
 func TestNewWordService(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	wordRepo := (*repository.WordRepository)(nil)
+	trainingCardRepo := (*repository.TrainingCardRepository)(nil)
+	userCardRepo := (*repository.UserCardRepository)(nil)
 	aiService := (*ai.Service)(nil)
 	
-	service := NewWordService(wordRepo, aiService, logger)
+	service := NewWordService(wordRepo, trainingCardRepo, userCardRepo, aiService, logger)
 	_ = service // Verify service is created
 }
 
 func TestWordService_IsSingleWord(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	service := NewWordService(nil, nil, logger)
+	service := NewWordService(nil, nil, nil, nil, logger)
 	
 	tests := []struct {
 		name     string
@@ -93,7 +95,7 @@ func TestWordService_IsSingleWord(t *testing.T) {
 
 func TestWordService_NormalizeWord(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	service := NewWordService(nil, nil, logger)
+	service := NewWordService(nil, nil, nil, nil, logger)
 	
 	tests := []struct {
 		name     string

@@ -34,7 +34,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick, onMounted } from 'vue'
+import { ref, nextTick, onMounted, watch, onActivated } from 'vue'
+import { useRoute } from 'vue-router'
 import { marked } from 'marked'
 import { apiClient } from '../api/client'
 
@@ -48,6 +49,7 @@ const inputMessage = ref('')
 const sending = ref(false)
 const messagesContainer = ref<HTMLElement | null>(null)
 const textareaRef = ref<HTMLTextAreaElement | null>(null)
+const route = useRoute()
 
 const scrollToBottom = async () => {
   await nextTick()
@@ -119,9 +121,30 @@ const escapeHtml = (text: string): string => {
   return div.innerHTML
 }
 
+const focusInput = async () => {
+  await nextTick()
+  if (textareaRef.value) {
+    textareaRef.value.focus()
+  }
+}
+
+// Focus input when component is mounted
 onMounted(() => {
   scrollToBottom()
   autoResize() // Set initial height
+  focusInput()
+})
+
+// Focus input when component is activated (if using keep-alive)
+onActivated(() => {
+  focusInput()
+})
+
+// Focus input when route changes to /chat
+watch(() => route.path, (newPath) => {
+  if (newPath === '/chat') {
+    focusInput()
+  }
 })
 </script>
 

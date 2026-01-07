@@ -16,17 +16,27 @@ import (
 
 // WordService handles word-related business logic
 type WordService struct {
-	wordRepo  *repository.WordRepository
-	aiService *ai.Service
-	logger    *zap.Logger
+	wordRepo         *repository.WordRepository
+	trainingCardRepo *repository.TrainingCardRepository
+	userCardRepo     *repository.UserCardRepository
+	aiService        *ai.Service
+	logger           *zap.Logger
 }
 
 // NewWordService creates a new word service
-func NewWordService(wordRepo *repository.WordRepository, aiService *ai.Service, logger *zap.Logger) *WordService {
+func NewWordService(
+	wordRepo *repository.WordRepository,
+	trainingCardRepo *repository.TrainingCardRepository,
+	userCardRepo *repository.UserCardRepository,
+	aiService *ai.Service,
+	logger *zap.Logger,
+) *WordService {
 	return &WordService{
-		wordRepo:  wordRepo,
-		aiService: aiService,
-		logger:    logger,
+		wordRepo:         wordRepo,
+		trainingCardRepo: trainingCardRepo,
+		userCardRepo:     userCardRepo,
+		aiService:        aiService,
+		logger:           logger,
 	}
 }
 
@@ -94,6 +104,20 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 		wordCardID := wordCard.ID
 		if err := s.wordRepo.AddWordRequestHistoryWithCard(userID, inputWord, &wordCardID, nil); err != nil {
 			s.logger.Warn("failed to add word request history", zap.Error(err))
+		}
+
+		// Create user_cards for existing training_cards if they exist
+		// This ensures that when a user requests a word that already has training cards,
+		// they get linked to the user for training
+		if s.trainingCardRepo != nil && s.userCardRepo != nil {
+			if err := s.ensureUserCardsForWord(userID, wordCardID); err != nil {
+				s.logger.Warn("failed to ensure user cards for word",
+					zap.Int64("user_id", userID),
+					zap.Int64("word_card_id", wordCardID),
+					zap.Error(err),
+				)
+				// Don't fail the request if user cards creation fails
+			}
 		}
 
 		// Render markdown from structured data
@@ -327,4 +351,70 @@ func min(a, b int) int {
 // GetWordCard retrieves a word card from database
 func (s *WordService) GetWordCard(word string) (*models.WordCard, error) {
 	return s.wordRepo.GetWordCard(word)
+}
+
+// ensureUserCardsForWord creates user_cards for all training_cards of a word if they don't exist
+// This is called when a user requests a word that already exists in the database with training cards
+func (s *WordService) ensureUserCardsForWord(userID, wordCardID int64) error {
+	// Get all training cards for this word
+	trainingCards, err := s.trainingCardRepo.GetTrainingCardsByWordCardID(wordCardID)
+	if err != nil {
+		return fmt.Errorf("failed to get training cards: %w", err)
+	}
+
+	if len(trainingCards) == 0 {
+		// No training cards yet, nothing to do
+		return nil
+	}
+
+	// Create user_cards for each training card (both directions)
+	createdCount := 0
+	for _, trainingCard := range trainingCards {
+		// Create ru_en card
+		ruEnCard := &models.UserCard{
+			UserID:         userID,
+			TrainingCardID: trainingCard.ID,
+			Direction:      models.DirectionRUtoEN,
+			State:          models.StateNew,
+			EF:             models.InitialEF,
+		}
+		if _, err := s.userCardRepo.CreateUserCard(ruEnCard); err != nil {
+			s.logger.Warn("failed to create ru_en user card",
+				zap.Int64("user_id", userID),
+				zap.Int64("training_card_id", trainingCard.ID),
+				zap.Error(err),
+			)
+		} else {
+			createdCount++
+		}
+
+		// Create en_ru card
+		enRuCard := &models.UserCard{
+			UserID:         userID,
+			TrainingCardID: trainingCard.ID,
+			Direction:      models.DirectionENtoRU,
+			State:          models.StateNew,
+			EF:             models.InitialEF,
+		}
+		if _, err := s.userCardRepo.CreateUserCard(enRuCard); err != nil {
+			s.logger.Warn("failed to create en_ru user card",
+				zap.Int64("user_id", userID),
+				zap.Int64("training_card_id", trainingCard.ID),
+				zap.Error(err),
+			)
+		} else {
+			createdCount++
+		}
+	}
+
+	if createdCount > 0 {
+		s.logger.Info("created user cards for existing word",
+			zap.Int64("user_id", userID),
+			zap.Int64("word_card_id", wordCardID),
+			zap.Int("training_cards", len(trainingCards)),
+			zap.Int("user_cards_created", createdCount),
+		)
+	}
+
+	return nil
 }
