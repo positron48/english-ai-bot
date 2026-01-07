@@ -16,7 +16,7 @@ type DB struct {
 
 // New creates a new database connection
 func New(dbPath string, logger *zap.Logger) (*DB, error) {
-	conn, err := sql.Open("sqlite", dbPath+"?_foreign_keys=1")
+	conn, err := sql.Open("sqlite", dbPath+"?_foreign_keys=1&_busy_timeout=5000")
 	if err != nil {
 		return nil, fmt.Errorf("failed to open database: %w", err)
 	}

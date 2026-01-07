@@ -34,22 +34,23 @@ func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 
 	now := time.Now()
 	
-	// Get due count (cards ready for review)
-	dueQuery := `SELECT COUNT(*) FROM user_cards WHERE user_id = ? AND (next_due_at IS NULL OR next_due_at <= ?)`
-	var dueCount int
-	err := r.db.QueryRow(dueQuery, userID, now).Scan(&dueCount)
-	if err != nil {
-		r.logger.Error("failed to get due count", zap.Error(err))
-		dueCount = 0
-	}
-
-	// Get new cards count
+	// Get new cards count (exclude from due count to avoid double counting)
 	newQuery := `SELECT COUNT(*) FROM user_cards WHERE user_id = ? AND state = 'new'`
 	var newCount int
-	err = r.db.QueryRow(newQuery, userID).Scan(&newCount)
+	err := r.db.QueryRow(newQuery, userID).Scan(&newCount)
 	if err != nil {
 		r.logger.Error("failed to get new cards count", zap.Error(err))
 		newCount = 0
+	}
+
+	// Get due count (cards ready for review, excluding new cards)
+	// New cards have next_due_at IS NULL, so we need to exclude them explicitly
+	dueQuery := `SELECT COUNT(*) FROM user_cards WHERE user_id = ? AND state != 'new' AND (next_due_at IS NULL OR next_due_at <= ?)`
+	var dueCount int
+	err = r.db.QueryRow(dueQuery, userID, now).Scan(&dueCount)
+	if err != nil {
+		r.logger.Error("failed to get due count", zap.Error(err))
+		dueCount = 0
 	}
 
 	// Get learning cards count

@@ -49,19 +49,22 @@
           <!-- Fireworks/Confetti for >90% -->
           <div v-if="accuracyPercentage > 90 && percentageAnimationComplete" class="celebration-container">
             <div class="fireworks">
-              <div v-for="i in 12" :key="i" class="firework" :style="getFireworkStyle(i)">
-                <div class="firework-particle" v-for="j in 8" :key="j" :style="{ '--angle': (j * 45) + 'deg' }"></div>
+              <div v-for="i in 20" :key="i" class="firework" :style="getFireworkStyle(i)">
+                <div class="firework-core"></div>
+                <div class="firework-particle" v-for="j in 12" :key="j" :data-particle-index="j" :style="{ '--angle': (j * 30) + 'deg' }"></div>
               </div>
             </div>
             <div class="confetti">
-              <div v-for="i in 30" :key="i" class="confetti-piece" :style="getConfettiStyle(i)"></div>
+              <div v-for="i in 50" :key="i" class="confetti-piece" :style="getConfettiStyle(i)"></div>
             </div>
           </div>
           
-          <!-- Poop animation for <10% -->
-          <div v-if="accuracyPercentage < 10 && percentageAnimationComplete" class="poop-container">
-            <div v-for="i in 16" :key="i" class="poop-piece" :style="getPoopStyle(i)">
-              <span class="poop-emoji">💩</span>
+          <!-- Failure animation for <10% -->
+          <div v-if="accuracyPercentage < 10 && percentageAnimationComplete" class="failure-container">
+            <div class="failure-rain">
+              <div v-for="i in 12" :key="i" class="failure-item" :style="getFailureItemStyle(i)">
+                <span class="failure-emoji">💩</span>
+              </div>
             </div>
           </div>
         </div>
@@ -156,6 +159,10 @@
 
       <div v-if="feedback" class="feedback-section">
         <div v-if="feedback.is_correct" class="feedback-badge feedback-success">
+          <!-- Success particles -->
+          <div class="success-particles">
+            <div v-for="i in 12" :key="i" class="success-particle" :style="getSuccessParticleStyle(i)"></div>
+          </div>
           <span class="feedback-icon">✓</span>
           <span class="feedback-text">{{ currentEncouragingPhrase }}</span>
         </div>
@@ -522,36 +529,54 @@ const getConfettiStyle = (index: number) => {
   }
 }
 
-// Poop styles - explode outward from circle edge randomly
-const getPoopStyle = (index: number) => {
-  // Random angle on circle edge (0-360 degrees)
-  const startAngle = Math.random() * 360
-  const startAngleRad = (startAngle * Math.PI) / 180
-  // Circle radius: viewBox 120x120, wrapper 200x200px, so scale = 200/120 = 1.67
-  // Radius in viewBox = 54, so real radius = 54 * 1.67 ≈ 90px
-  const circleRadius = 90
-  // Start position on circle edge
-  const startX = Math.cos(startAngleRad) * circleRadius
-  const startY = Math.sin(startAngleRad) * circleRadius
-  // Random direction outward (slightly varied from start angle)
-  const directionAngle = startAngle + (Math.random() - 0.5) * 30 // ±15 degrees variation
-  const directionAngleRad = (directionAngle * Math.PI) / 180
-  // Distance to travel outward
-  const distance = 200 + Math.random() * 100 // 200-300px
-  const endX = Math.cos(directionAngleRad) * distance
-  const endY = Math.sin(directionAngleRad) * distance
-  // Random delay and duration
-  const delay = Math.random() * 0.5
-  const duration = 1.2 + Math.random() * 0.8
-  const rotation = Math.random() * 720 // 0-720 degrees
+// Failure item styles - falling poop from top
+const getFailureItemStyle = (index: number) => {
+  // Start from random position at top (well above visible area)
+  const startX = (Math.random() - 0.5) * 400 // -200 to 200px from center
+  const startY = -200 - Math.random() * 150 // Start well above screen
+  
+  // End position - fall down and slightly outward
+  const endX = startX + (Math.random() - 0.5) * 100 // Some horizontal drift
+  const endY = 250 + Math.random() * 150 // Fall well below center
+  
+  // Rotation and scale
+  const rotation = (Math.random() - 0.5) * 720 // Random rotation
+  const scale = 0.6 + Math.random() * 0.4 // 0.6-1.0
+  
+  // Timing - staggered fall, ensure they start invisible and well above
+  const delay = 0.2 + Math.random() * 0.6 // Start after 0.2s to avoid center flash
+  const duration = 1.8 + Math.random() * 0.7 // 1.8-2.5s
+  
   return {
-    '--poop-start-x': `${startX}px`,
-    '--poop-start-y': `${startY}px`,
-    '--poop-end-x': `${endX}px`,
-    '--poop-end-y': `${endY}px`,
-    '--poop-delay': `${delay}s`,
-    '--poop-duration': `${duration}s`,
-    '--poop-rotation': `${rotation}deg`
+    '--start-x': `${startX}px`,
+    '--start-y': `${startY}px`,
+    '--end-x': `${endX}px`,
+    '--end-y': `${endY}px`,
+    '--rotation': `${rotation}deg`,
+    '--scale': scale,
+    '--delay': `${delay}s`,
+    '--duration': `${duration}s`
+  }
+}
+
+// Success particle styles - explode outward from center
+const getSuccessParticleStyle = (index: number) => {
+  // Random angle (0-360 degrees)
+  const angle = (index * 30) + Math.random() * 15 // Spread evenly with some randomness
+  const angleRad = (angle * Math.PI) / 180
+  // Distance to travel
+  const distance = 60 + Math.random() * 40 // 60-100px
+  const endX = Math.cos(angleRad) * distance
+  const endY = Math.sin(angleRad) * distance
+  // Random size
+  const size = 4 + Math.random() * 4 // 4-8px
+  // Random delay
+  const delay = Math.random() * 0.2
+  return {
+    '--particle-end-x': `${endX}px`,
+    '--particle-end-y': `${endY}px`,
+    '--particle-size': `${size}px`,
+    '--particle-delay': `${delay}s`
   }
 }
 
@@ -566,12 +591,15 @@ const getFireworkStyle = (index: number) => {
   // Start position on circle edge
   const startX = Math.cos(startAngleRad) * circleRadius
   const startY = Math.sin(startAngleRad) * circleRadius
-  // Random delay
-  const delay = Math.random() * 0.8
+  // Random delay for staggered explosion
+  const delay = Math.random() * 1.2
+  // Random size variation
+  const size = 0.8 + Math.random() * 0.4
   return {
     '--firework-x': `${startX}px`,
     '--firework-y': `${startY}px`,
-    '--delay': `${delay}s`
+    '--delay': `${delay}s`,
+    '--firework-size': size
   }
 }
 
@@ -1248,7 +1276,26 @@ const resetSession = async () => {
   color: white;
   border: 2px solid #10b981;
   box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-  animation: correct-pulse 0.5s ease-out;
+  animation: correct-success 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.option-btn.option-correct::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 70%
+  );
+  animation: correct-shine 0.8s ease-out;
+  pointer-events: none;
 }
 
 .option-btn.option-incorrect {
@@ -1256,30 +1303,97 @@ const resetSession = async () => {
   color: white;
   border: 2px solid #ef4444;
   box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
-  animation: incorrect-shake 0.5s ease-out;
+  animation: incorrect-fail 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  position: relative;
 }
 
-@keyframes correct-pulse {
+.option-btn.option-incorrect::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+  transform: translate(-50%, -50%) scale(0);
+  animation: incorrect-pulse 0.6s ease-out;
+  pointer-events: none;
+}
+
+@keyframes incorrect-pulse {
   0% {
-    transform: scale(1);
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0.6;
   }
   50% {
-    transform: scale(1.05);
+    transform: translate(-50%, -50%) scale(1.2);
+    opacity: 0.3;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.5);
+    opacity: 0;
+  }
+}
+
+@keyframes correct-success {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  }
+  30% {
+    transform: scale(1.15) rotate(2deg);
+    box-shadow: 0 8px 24px rgba(16, 185, 129, 0.5);
+  }
+  60% {
+    transform: scale(1.08) rotate(-1deg);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
   }
   100% {
     transform: scale(1);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
   }
 }
 
-@keyframes incorrect-shake {
+@keyframes correct-shine {
+  0% {
+    transform: translateX(-100%) translateY(-100%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(100%) translateY(100%) rotate(45deg);
+  }
+}
+
+@keyframes incorrect-fail {
   0%, 100% {
-    transform: translateX(0);
+    transform: translateX(0) scale(1);
   }
-  25% {
-    transform: translateX(-5px);
+  10% {
+    transform: translateX(-12px) scale(0.95) rotate(-3deg);
   }
-  75% {
-    transform: translateX(5px);
+  20% {
+    transform: translateX(12px) scale(0.95) rotate(3deg);
+  }
+  30% {
+    transform: translateX(-10px) scale(0.97) rotate(-2deg);
+  }
+  40% {
+    transform: translateX(10px) scale(0.97) rotate(2deg);
+  }
+  50% {
+    transform: translateX(-8px) scale(0.98) rotate(-1deg);
+  }
+  60% {
+    transform: translateX(8px) scale(0.98) rotate(1deg);
+  }
+  70% {
+    transform: translateX(-4px) scale(0.99);
+  }
+  80% {
+    transform: translateX(4px) scale(0.99);
+  }
+  90% {
+    transform: translateX(-2px) scale(1);
   }
 }
 
@@ -1297,29 +1411,113 @@ const resetSession = async () => {
   font-size: 20px;
   font-weight: 600;
   margin-bottom: 20px;
-  animation: feedback-appear 0.3s ease-out;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-@keyframes feedback-appear {
-  from {
-    opacity: 0;
-    transform: scale(0.8) translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
+  position: relative;
+  overflow: hidden;
 }
 
 .feedback-success {
   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: white;
+  animation: feedback-success-appear 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.feedback-success::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+  animation: feedback-success-glow 1.5s ease-out;
+  pointer-events: none;
 }
 
 .feedback-error {
   background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
   color: white;
+  animation: feedback-error-appear 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.feedback-error::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+  transform: translate(-50%, -50%) scale(0);
+  animation: feedback-error-pulse 0.6s ease-out;
+  pointer-events: none;
+}
+
+@keyframes feedback-error-pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.3);
+    opacity: 0.4;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.6);
+    opacity: 0;
+  }
+}
+
+@keyframes feedback-success-appear {
+  0% {
+    opacity: 0;
+    transform: scale(0.3) translateY(-30px) rotate(-10deg);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  }
+  50% {
+    transform: scale(1.1) translateY(0) rotate(5deg);
+    box-shadow: 0 12px 32px rgba(16, 185, 129, 0.5);
+  }
+  70% {
+    transform: scale(0.95) translateY(0) rotate(-2deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0) rotate(0deg);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  }
+}
+
+@keyframes feedback-success-glow {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.5);
+    opacity: 0;
+  }
+}
+
+@keyframes feedback-error-appear {
+  0% {
+    opacity: 0;
+    transform: scale(0.5) translateY(20px) rotate(10deg);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+  }
+  30% {
+    transform: scale(1.15) translateY(-5px) rotate(-5deg);
+    box-shadow: 0 8px 24px rgba(239, 68, 68, 0.5);
+  }
+  60% {
+    transform: scale(0.9) translateY(2px) rotate(2deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0) rotate(0deg);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+  }
 }
 
 .feedback-icon {
@@ -1333,6 +1531,70 @@ const resetSession = async () => {
   background: rgba(255, 255, 255, 0.2);
   border-radius: 50%;
   flex-shrink: 0;
+  animation: feedback-icon-spin 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.feedback-error .feedback-icon {
+  animation: feedback-icon-shake 0.5s ease-out;
+}
+
+@keyframes feedback-icon-spin {
+  0% {
+    transform: scale(0) rotate(-180deg);
+  }
+  60% {
+    transform: scale(1.3) rotate(10deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes feedback-icon-shake {
+  0%, 100% {
+    transform: translateX(0) rotate(0deg);
+  }
+  25% {
+    transform: translateX(-8px) rotate(-10deg);
+  }
+  75% {
+    transform: translateX(8px) rotate(10deg);
+  }
+}
+
+/* Success particles animation */
+.success-particles {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.success-particle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--particle-size, 6px);
+  height: var(--particle-size, 6px);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(16, 185, 129, 0.8) 100%);
+  border-radius: 50%;
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
+  animation: success-particle-fly 1s ease-out var(--particle-delay, 0s) forwards;
+}
+
+@keyframes success-particle-fly {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--particle-end-x, 0), var(--particle-end-y, 0)) scale(0);
+  }
 }
 
 .feedback-text {
@@ -1670,80 +1932,119 @@ const resetSession = async () => {
 
 .firework {
   position: absolute;
-  width: 4px;
-  height: 4px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   top: 0;
   left: 0;
-  transform: translate(var(--firework-x, 0), var(--firework-y, 0));
-  animation: firework-explode 1.5s ease-out var(--delay, 0s) forwards;
+  transform: translate(var(--firework-x, 0), var(--firework-y, 0)) scale(var(--firework-size, 1));
+  animation: firework-explode 2s ease-out var(--delay, 0s) forwards;
+}
+
+.firework-core {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff 0%, #ffd700 50%, transparent 100%);
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.8), 0 0 20px rgba(255, 215, 0, 0.5);
+  animation: firework-core-pulse 0.3s ease-out var(--delay, 0s) forwards;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
 }
 
 .firework-particle {
   position: absolute;
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: var(--particle-color, #10b981);
   top: 0;
   left: 0;
   transform: translate(-50%, -50%);
-  animation: particle-fly 1.5s ease-out 0s forwards;
+  box-shadow: 0 0 6px var(--particle-color, #10b981);
+  animation: particle-fly 2s ease-out var(--delay, 0s) forwards;
 }
 
-.firework:nth-child(odd) .firework-particle {
+.firework:nth-child(3n+1) .firework-particle {
   --particle-color: #3b82f6;
 }
 
-.firework:nth-child(even) .firework-particle {
+.firework:nth-child(3n+2) .firework-particle {
   --particle-color: #f59e0b;
+}
+
+.firework:nth-child(3n+3) .firework-particle {
+  --particle-color: #ec4899;
+}
+
+.firework:nth-child(4n+1) .firework-particle {
+  --particle-color: #10b981;
+}
+
+.firework:nth-child(4n+2) .firework-particle {
+  --particle-color: #8b5cf6;
 }
 
 @keyframes firework-explode {
   0% {
     opacity: 1;
-    transform: scale(1);
+    transform: translate(var(--firework-x, 0), var(--firework-y, 0)) scale(var(--firework-size, 1));
   }
-  50% {
+  15% {
     opacity: 1;
-    transform: scale(1);
+    transform: translate(var(--firework-x, 0), var(--firework-y, 0)) scale(calc(var(--firework-size, 1) * 1.5));
   }
   100% {
     opacity: 0;
-    transform: scale(0);
+    transform: translate(var(--firework-x, 0), var(--firework-y, 0)) scale(0);
+  }
+}
+
+@keyframes firework-core-pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(2);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(3);
+    opacity: 0;
   }
 }
 
 @keyframes particle-fly {
   0% {
     opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) translateX(calc(var(--offset-x, 0) * 0.5)) translateY(calc(var(--offset-y, 0) * 0.5)) scale(1.2) rotate(180deg);
   }
   100% {
     opacity: 0;
-    transform: translate(-50%, -50%) translateX(var(--offset-x, 0)) translateY(var(--offset-y, 0)) scale(0);
+    transform: translate(-50%, -50%) translateX(var(--offset-x, 0)) translateY(var(--offset-y, 0)) scale(0) rotate(360deg);
   }
 }
 
-/* Calculate offsets for each angle - particles fly outward from firework position */
-.firework-particle:nth-child(1) { --offset-x: 80px; --offset-y: 0px; }
-.firework-particle:nth-child(2) { --offset-x: 56.57px; --offset-y: -56.57px; }
-.firework-particle:nth-child(3) { --offset-x: 0px; --offset-y: -80px; }
-.firework-particle:nth-child(4) { --offset-x: -56.57px; --offset-y: -56.57px; }
-.firework-particle:nth-child(5) { --offset-x: -80px; --offset-y: 0px; }
-.firework-particle:nth-child(6) { --offset-x: -56.57px; --offset-y: 56.57px; }
-.firework-particle:nth-child(7) { --offset-x: 0px; --offset-y: 80px; }
-.firework-particle:nth-child(8) { --offset-x: 56.57px; --offset-y: 56.57px; }
-
-/* Calculate offsets for each angle - particles fly outward from firework position */
-.firework-particle:nth-child(1) { --offset-x: 80px; --offset-y: 0px; }
-.firework-particle:nth-child(2) { --offset-x: 56.57px; --offset-y: -56.57px; }
-.firework-particle:nth-child(3) { --offset-x: 0px; --offset-y: -80px; }
-.firework-particle:nth-child(4) { --offset-x: -56.57px; --offset-y: -56.57px; }
-.firework-particle:nth-child(5) { --offset-x: -80px; --offset-y: 0px; }
-.firework-particle:nth-child(6) { --offset-x: -56.57px; --offset-y: 56.57px; }
-.firework-particle:nth-child(7) { --offset-x: 0px; --offset-y: 80px; }
-.firework-particle:nth-child(8) { --offset-x: 56.57px; --offset-y: 56.57px; }
+/* Calculate offsets for 12 particles in a circle (30 degrees each) */
+.firework-particle[data-particle-index="1"] { --offset-x: 100px; --offset-y: 0px; }
+.firework-particle[data-particle-index="2"] { --offset-x: 86.6px; --offset-y: -50px; }
+.firework-particle[data-particle-index="3"] { --offset-x: 50px; --offset-y: -86.6px; }
+.firework-particle[data-particle-index="4"] { --offset-x: 0px; --offset-y: -100px; }
+.firework-particle[data-particle-index="5"] { --offset-x: -50px; --offset-y: -86.6px; }
+.firework-particle[data-particle-index="6"] { --offset-x: -86.6px; --offset-y: -50px; }
+.firework-particle[data-particle-index="7"] { --offset-x: -100px; --offset-y: 0px; }
+.firework-particle[data-particle-index="8"] { --offset-x: -86.6px; --offset-y: 50px; }
+.firework-particle[data-particle-index="9"] { --offset-x: -50px; --offset-y: 86.6px; }
+.firework-particle[data-particle-index="10"] { --offset-x: 0px; --offset-y: 100px; }
+.firework-particle[data-particle-index="11"] { --offset-x: 50px; --offset-y: 86.6px; }
+.firework-particle[data-particle-index="12"] { --offset-x: 86.6px; --offset-y: 50px; }
 
 .confetti {
   position: absolute;
@@ -1755,13 +2056,41 @@ const resetSession = async () => {
 
 .confetti-piece {
   position: absolute;
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   background: var(--confetti-color, #10b981);
   top: 0;
   left: 0;
-  animation: confetti-fly var(--confetti-duration, 2s) 0s ease-out forwards;
+  animation: confetti-fly var(--confetti-duration, 3s) 0s ease-out forwards;
   border-radius: 2px;
+  box-shadow: 0 0 4px var(--confetti-color, #10b981);
+}
+
+.confetti-piece:nth-child(3n+1) {
+  --confetti-color: #10b981;
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+}
+
+.confetti-piece:nth-child(3n+2) {
+  --confetti-color: #3b82f6;
+  border-radius: 50%;
+}
+
+.confetti-piece:nth-child(3n+3) {
+  --confetti-color: #f59e0b;
+  clip-path: polygon(25% 0%, 100% 0%, 75% 100%, 0% 100%);
+}
+
+.confetti-piece:nth-child(4n+1) {
+  --confetti-color: #ec4899;
+}
+
+.confetti-piece:nth-child(4n+2) {
+  --confetti-color: #8b5cf6;
+}
+
+.confetti-piece:nth-child(4n+3) {
+  --confetti-color: #06b6d4;
 }
 
 @keyframes confetti-fly {
@@ -1769,14 +2098,17 @@ const resetSession = async () => {
     transform: translate(var(--confetti-start-x, 0), var(--confetti-start-y, 0)) rotate(0deg) scale(1);
     opacity: 1;
   }
+  50% {
+    opacity: 1;
+  }
   100% {
-    transform: translate(var(--confetti-end-x, 0), var(--confetti-end-y, 0)) rotate(720deg) scale(0.5);
+    transform: translate(var(--confetti-end-x, 0), var(--confetti-end-y, 0)) rotate(1080deg) scale(0);
     opacity: 0;
   }
 }
 
-/* Poop animation for <10% */
-.poop-container {
+/* Failure animation for <10% */
+.failure-container {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -1788,32 +2120,58 @@ const resetSession = async () => {
   height: 0;
 }
 
-.poop-piece {
+.failure-rain {
   position: absolute;
-  top: 0;
-  left: 0;
-  font-size: 48px;
-  line-height: 1;
-  animation: poop-explode var(--poop-duration, 1.5s) 0s ease-out forwards;
-  transform-origin: center;
+  width: 0;
+  height: 0;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
-.poop-emoji {
+.failure-item {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  font-size: 48px;
+  line-height: 1;
+  animation: failure-fall var(--duration, 2s) var(--delay, 0s) ease-in forwards;
+  transform-origin: center;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  opacity: 0; /* Start completely invisible */
+  visibility: hidden; /* Hidden until animation starts */
+}
+
+.failure-emoji {
   display: block;
-  filter: grayscale(0.4) brightness(0.75);
+  filter: grayscale(0.4) brightness(0.8);
   user-select: none;
 }
 
-@keyframes poop-explode {
+@keyframes failure-fall {
   0% {
-    transform: translate(var(--poop-start-x, 0), var(--poop-start-y, 0)) rotate(0deg) scale(0.5);
+    opacity: 0;
+    visibility: hidden;
+    transform: translate(-50%, -50%) translate(var(--start-x, 0), var(--start-y, 0)) rotate(0deg) scale(0);
+  }
+  3% {
+    opacity: 0;
+    visibility: visible;
+    transform: translate(-50%, -50%) translate(var(--start-x, 0), var(--start-y, 0)) rotate(0deg) scale(0);
+  }
+  6% {
+    opacity: 1;
+    transform: translate(-50%, -50%) translate(var(--start-x, 0), var(--start-y, 0)) rotate(0deg) scale(0.5);
+  }
+  90% {
     opacity: 1;
   }
   100% {
-    transform: translate(var(--poop-end-x, 0), var(--poop-end-y, 0)) rotate(var(--poop-rotation, 0deg)) scale(1.2);
     opacity: 0;
+    transform: translate(-50%, -50%) translate(var(--end-x, 0), var(--end-y, 0)) rotate(var(--rotation, 0deg)) scale(var(--scale, 1));
   }
 }
+
 
 .completion-actions {
   display: flex;
