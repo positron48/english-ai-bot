@@ -1688,7 +1688,7 @@ const resetSession = async () => {
   top: 0;
   left: 0;
   transform: translate(-50%, -50%);
-  animation: particle-fly 1.5s ease-out var(--delay, 0s) forwards;
+  animation: particle-fly 1.5s ease-out 0s forwards;
 }
 
 .firework:nth-child(odd) .firework-particle {
@@ -1760,7 +1760,7 @@ const resetSession = async () => {
   background: var(--confetti-color, #10b981);
   top: 0;
   left: 0;
-  animation: confetti-fly var(--confetti-duration, 2s) var(--confetti-delay, 0s) ease-out forwards;
+  animation: confetti-fly var(--confetti-duration, 2s) 0s ease-out forwards;
   border-radius: 2px;
 }
 
@@ -1794,7 +1794,7 @@ const resetSession = async () => {
   left: 0;
   font-size: 48px;
   line-height: 1;
-  animation: poop-explode var(--poop-duration, 1.5s) var(--poop-delay, 0s) ease-out forwards;
+  animation: poop-explode var(--poop-duration, 1.5s) 0s ease-out forwards;
   transform-origin: center;
 }
 
@@ -1807,9 +1807,6 @@ const resetSession = async () => {
 @keyframes poop-explode {
   0% {
     transform: translate(var(--poop-start-x, 0), var(--poop-start-y, 0)) rotate(0deg) scale(0.5);
-    opacity: 1;
-  }
-  50% {
     opacity: 1;
   }
   100% {
