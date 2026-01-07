@@ -77,20 +77,23 @@ func TestTrainingService_generateQueue_OnlyDueCards(t *testing.T) {
 	db, userCardRepo, trainingCardRepo, _ := setupTrainingServiceTestDB(t)
 	defer db.Close()
 
-	// Create training card
-	_, err := db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (?, ?, ?, ?, ?, ?, ?)",
-		1, "onlydue", 0, "только просроченные", "only due", "adjective", "onlydue")
-	if err != nil {
-		t.Fatalf("Failed to create training card: %v", err)
+	// Create training cards
+	var err error
+	for i := 1; i <= 3; i++ {
+		_, err = db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (?, ?, ?, ?, ?, ?, ?)",
+			i, "onlydue", 0, "только просроченные", "only due", "adjective", "onlydue")
+		if err != nil {
+			t.Fatalf("Failed to create training card: %v", err)
+		}
 	}
 
 	// Create only due cards
 	now := time.Now()
 	past := now.Add(-24 * time.Hour)
-	for i := 0; i < 3; i++ {
+	for i := 1; i <= 3; i++ {
 		card := &models.UserCard{
 			UserID:         8888,
-			TrainingCardID: 1,
+			TrainingCardID: int64(i),
 			Direction:      models.DirectionENtoRU,
 			State:          models.StateReview,
 			EF:             2.0,

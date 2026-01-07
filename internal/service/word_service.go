@@ -134,59 +134,86 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 	}
 
 	// Check for error from LLM
-	// LLM sometimes puts non-error strings in error field (like "load", "master", "none", "valid English word")
-	errorMsg := strings.TrimSpace(wordInfo.Error)
-	hasValidData := wordInfo.Lemma != "" && wordInfo.POS != ""
+	// If definition_ru is present, ignore error field - we have valid data
+	hasDefinitionRU := strings.TrimSpace(wordInfo.DefinitionRU) != ""
 	
-	// List of known non-error strings that LLM sometimes puts in error field
-	nonErrorStrings := []string{
-		"null", "none", "false", "no",
-		"load", "master", "slave", "tor", "corm",
-		"valid english word", "valid English word",
+	// Priority 1: If error is true (bool or string "true") AND hint is present,
+	// return only hint - data about word refers to a different word from the suggestion
+	// BUT skip if we have definition_ru (valid data)
+	if !hasDefinitionRU && wordInfo.Error.IsTrue() && wordInfo.Hint != "" {
+		message := fmt.Sprintf("❌ Слово \"%s\" не найдено в словаре.\n\n💡 %s", inputWord, strings.TrimSpace(wordInfo.Hint))
+		return message, nil
 	}
 	
-	// Keywords that indicate a real error (word doesn't exist, gibberish, etc.)
-	errorKeywords := []string{
-		"gibberish", "does not exist", "not exist", "non-standard", "not a valid",
-		"not an english", "not english", "not recognized", "not a word",
-		"doesn't exist", "not found", "invalid word", "not a real",
-	}
-	
-	isNonErrorString := false
-	errorMsgLower := strings.ToLower(errorMsg)
-	for _, nonError := range nonErrorStrings {
-		if errorMsgLower == strings.ToLower(nonError) {
-			isNonErrorString = true
-			break
-		}
-	}
-	
-	// Check if error message contains keywords indicating a real error
-	isRealError := false
-	if errorMsg != "" {
-		for _, keyword := range errorKeywords {
-			if strings.Contains(errorMsgLower, keyword) {
-				isRealError = true
-				break
-			}
-		}
-	}
-	
-	// Treat as error if:
-	// 1. Error field contains keywords indicating real error (word doesn't exist, etc.) OR
-	// 2. Error field is not empty AND it's not a known non-error string AND we don't have valid data
-	if errorMsg != "" && (isRealError || (!isNonErrorString && !hasValidData)) {
-		// Build user-friendly message
+	// Priority 2: If error is true but no hint, return error message
+	// BUT skip if we have definition_ru (valid data)
+	if !hasDefinitionRU && wordInfo.Error.IsTrue() {
 		message := fmt.Sprintf("❌ Слово \"%s\" не найдено в словаре.\n\nВозможно, это:\n• Опечатка\n• Несуществующее слово\n• Слово на другом языке", inputWord)
-		
-		// Add LLM hint if available
 		if wordInfo.Hint != "" {
 			message += fmt.Sprintf("\n\n💡 %s", strings.TrimSpace(wordInfo.Hint))
 		} else {
 			message += "\n\nПопробуйте проверить написание или введите другое слово."
 		}
-		
 		return message, nil
+	}
+	
+	// Priority 3: Legacy handling for string error messages
+	// LLM sometimes puts non-error strings in error field (like "load", "master", "none", "valid English word")
+	// Skip this check if we have definition_ru (valid data)
+	if !hasDefinitionRU {
+		errorMsg := strings.TrimSpace(wordInfo.Error.Message)
+		hasValidData := wordInfo.Lemma != "" && wordInfo.POS != ""
+		
+		// List of known non-error strings that LLM sometimes puts in error field
+		nonErrorStrings := []string{
+			"null", "none", "false", "no",
+			"load", "master", "slave", "tor", "corm",
+			"valid english word", "valid English word",
+		}
+		
+		// Keywords that indicate a real error (word doesn't exist, gibberish, etc.)
+		errorKeywords := []string{
+			"gibberish", "does not exist", "not exist", "non-standard", "not a valid",
+			"not an english", "not english", "not recognized", "not a word",
+			"doesn't exist", "not found", "invalid word", "not a real",
+		}
+		
+		isNonErrorString := false
+		errorMsgLower := strings.ToLower(errorMsg)
+		for _, nonError := range nonErrorStrings {
+			if errorMsgLower == strings.ToLower(nonError) {
+				isNonErrorString = true
+				break
+			}
+		}
+		
+		// Check if error message contains keywords indicating a real error
+		isRealError := false
+		if errorMsg != "" {
+			for _, keyword := range errorKeywords {
+				if strings.Contains(errorMsgLower, keyword) {
+					isRealError = true
+					break
+				}
+			}
+		}
+		
+		// Treat as error if:
+		// 1. Error field contains keywords indicating real error (word doesn't exist, etc.) OR
+		// 2. Error field is not empty AND it's not a known non-error string AND we don't have valid data
+		if errorMsg != "" && (isRealError || (!isNonErrorString && !hasValidData)) {
+			// Build user-friendly message
+			message := fmt.Sprintf("❌ Слово \"%s\" не найдено в словаре.\n\nВозможно, это:\n• Опечатка\n• Несуществующее слово\n• Слово на другом языке", inputWord)
+			
+			// Add LLM hint if available
+			if wordInfo.Hint != "" {
+				message += fmt.Sprintf("\n\n💡 %s", strings.TrimSpace(wordInfo.Hint))
+			} else {
+				message += "\n\nПопробуйте проверить написание или введите другое слово."
+			}
+			
+			return message, nil
+		}
 	}
 
 	// Step 5: Save structured data to word_cards (lemma)

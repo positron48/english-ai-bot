@@ -184,3 +184,215 @@ func TestRouter_corsMiddleware(t *testing.T) {
 		})
 	}
 }
+
+func TestSwaggerResponseWriter_Write(t *testing.T) {
+	recorder := httptest.NewRecorder()
+	wrapped := &swaggerResponseWriter{
+		ResponseWriter: recorder,
+		statusCode:     http.StatusOK,
+	}
+
+	// Write before header is written - should buffer
+	data := []byte("test data")
+	n, err := wrapped.Write(data)
+	if err != nil {
+		t.Errorf("Write() error = %v", err)
+	}
+	if n != len(data) {
+		t.Errorf("Write() returned %d, want %d", n, len(data))
+	}
+	if len(wrapped.buf) != len(data) {
+		t.Errorf("Expected buffered data length %d, got %d", len(data), len(wrapped.buf))
+	}
+
+	// Write after header is written - should write directly
+	wrapped.headerWritten = true
+	n, err = wrapped.Write([]byte("more data"))
+	if err != nil {
+		t.Errorf("Write() error = %v", err)
+	}
+	if n != 9 {
+		t.Errorf("Write() returned %d, want 9", n)
+	}
+}
+
+func TestSwaggerResponseWriter_WriteHeader(t *testing.T) {
+	recorder := httptest.NewRecorder()
+	wrapped := &swaggerResponseWriter{
+		ResponseWriter: recorder,
+		statusCode:     http.StatusOK,
+		buf:            []byte("buffered data"),
+	}
+
+	// WriteHeader should set headerWritten and statusCode
+	wrapped.WriteHeader(http.StatusOK)
+	if !wrapped.headerWritten {
+		t.Error("headerWritten should be true after WriteHeader")
+	}
+	if wrapped.statusCode != http.StatusOK {
+		t.Errorf("Expected statusCode %d, got %d", http.StatusOK, wrapped.statusCode)
+	}
+
+	// Second call should not change anything
+	wrapped.WriteHeader(http.StatusNotFound)
+	if wrapped.statusCode != http.StatusOK {
+		t.Errorf("Expected statusCode to remain %d, got %d", http.StatusOK, wrapped.statusCode)
+	}
+}
+
+func TestSwaggerResponseWriter_WriteHeader_WithHTML(t *testing.T) {
+	recorder := httptest.NewRecorder()
+	wrapped := &swaggerResponseWriter{
+		ResponseWriter: recorder,
+		statusCode:     http.StatusOK,
+		buf:            []byte("<!DOCTYPE html><html><body>Test</body></html>"),
+	}
+
+	// Set Content-Type to HTML
+	recorder.Header().Set("Content-Type", "text/html; charset=utf-8")
+
+	// WriteHeader should process HTML content and inject JavaScript
+	wrapped.WriteHeader(http.StatusOK)
+	if !wrapped.headerWritten {
+		t.Error("headerWritten should be true after WriteHeader")
+	}
+	// Buffer is written to ResponseWriter, so it should be empty or nil after WriteHeader
+	// Check that the response was written (recorder should have the modified content)
+	if recorder.Code != http.StatusOK {
+		t.Errorf("Expected status code %d, got %d", http.StatusOK, recorder.Code)
+	}
+}
+
+func TestSwaggerResponseWriter_WriteHeader_WithHTMLContentType(t *testing.T) {
+	recorder := httptest.NewRecorder()
+	wrapped := &swaggerResponseWriter{
+		ResponseWriter: recorder,
+		statusCode:     http.StatusOK,
+		buf:            []byte("<html><head></head><body>Test</body></html>"),
+	}
+
+	// Set Content-Type to HTML (different way)
+	recorder.Header().Set("Content-Type", "text/html")
+
+	// WriteHeader should process HTML content
+	wrapped.WriteHeader(http.StatusOK)
+	if !wrapped.headerWritten {
+		t.Error("headerWritten should be true after WriteHeader")
+	}
+}
+
+func TestSwaggerResponseWriter_WriteHeader_NonHTML(t *testing.T) {
+	recorder := httptest.NewRecorder()
+	wrapped := &swaggerResponseWriter{
+		ResponseWriter: recorder,
+		statusCode:     http.StatusOK,
+		buf:            []byte("plain text"),
+	}
+
+	// Set Content-Type to plain text
+	recorder.Header().Set("Content-Type", "text/plain")
+
+	// WriteHeader should not inject JavaScript for non-HTML content
+	wrapped.WriteHeader(http.StatusOK)
+	if !wrapped.headerWritten {
+		t.Error("headerWritten should be true after WriteHeader")
+	}
+}
+
+func TestSwaggerResponseWriter_Header(t *testing.T) {
+	recorder := httptest.NewRecorder()
+	wrapped := &swaggerResponseWriter{
+		ResponseWriter: recorder,
+	}
+
+	headers := wrapped.Header()
+	if headers == nil {
+		t.Error("Header() should not return nil")
+	}
+
+	// Should be the same as underlying ResponseWriter
+	headers.Set("Test-Header", "test-value")
+	if recorder.Header().Get("Test-Header") != "test-value" {
+		t.Error("Header() should return the same header map as underlying ResponseWriter")
+	}
+}
+
+func TestRouter_SwaggerHandler(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{
+			JWTSecret: "test-secret",
+		},
+	}
+
+	router := NewRouter(logger, cfg, nil, nil, nil, nil, nil)
+
+	// Test swagger handler with non-HTML path (static file)
+	req := httptest.NewRequest("GET", "/swagger/swagger-ui.css", nil)
+	w := httptest.NewRecorder()
+
+	router.swaggerHandler(w, req)
+
+	// Should handle the request (may return 404 if swagger files don't exist, but function should execute)
+	_ = w.Code
+}
+
+func TestRouter_SwaggerHandler_HTMLPage(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{
+			JWTSecret: "test-secret",
+		},
+	}
+
+	router := NewRouter(logger, cfg, nil, nil, nil, nil, nil)
+
+	// Test swagger handler with HTML page path
+	req := httptest.NewRequest("GET", "/swagger/", nil)
+	w := httptest.NewRecorder()
+
+	router.swaggerHandler(w, req)
+
+	// Should handle the request
+	_ = w.Code
+}
+
+func TestRouter_SwaggerHandler_IndexHTML(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{
+			JWTSecret: "test-secret",
+		},
+	}
+
+	router := NewRouter(logger, cfg, nil, nil, nil, nil, nil)
+
+	// Test swagger handler with index.html path
+	req := httptest.NewRequest("GET", "/swagger/index.html", nil)
+	w := httptest.NewRecorder()
+
+	router.swaggerHandler(w, req)
+
+	// Should handle the request
+	_ = w.Code
+}
+
+func TestRouter_SwaggerHandler_RootPath(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{
+			JWTSecret: "test-secret",
+		},
+	}
+
+	router := NewRouter(logger, cfg, nil, nil, nil, nil, nil)
+
+	// Test swagger handler with root swagger path
+	req := httptest.NewRequest("GET", "/swagger", nil)
+	w := httptest.NewRecorder()
+
+	router.swaggerHandler(w, req)
+
+	// Should handle the request
+	_ = w.Code
+}

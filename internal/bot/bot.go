@@ -37,24 +37,30 @@ type Bot struct {
 
 // New creates a new bot instance
 func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
-	// Initialize Telegram bot
+	// Initialize Telegram bot (optional - app can work without it)
 	var bot *tgbotapi.BotAPI
 	var err error
 
-	if cfg.Telegram.APIBaseURL != "" {
-		endpoint := normalizeAPIEndpoint(cfg.Telegram.APIBaseURL)
-		bot, err = tgbotapi.NewBotAPIWithAPIEndpoint(cfg.Telegram.Token, endpoint)
+	if cfg.Telegram.Token != "" {
+		if cfg.Telegram.APIBaseURL != "" {
+			endpoint := normalizeAPIEndpoint(cfg.Telegram.APIBaseURL)
+			bot, err = tgbotapi.NewBotAPIWithAPIEndpoint(cfg.Telegram.Token, endpoint)
+		} else {
+			bot, err = tgbotapi.NewBotAPI(cfg.Telegram.Token)
+		}
+		if err != nil {
+			log.Warn("failed to initialize Telegram bot, continuing without it",
+				zap.Error(err),
+				zap.String("note", "Web application will continue to work, but Telegram features will be disabled"))
+			bot = nil
+		} else {
+			// Disable debug mode to avoid verbose Telegram API logs
+			bot.Debug = false
+			log.Info("authorized on account", zap.String("username", bot.Self.UserName))
+		}
 	} else {
-		bot, err = tgbotapi.NewBotAPI(cfg.Telegram.Token)
+		log.Info("Telegram token not provided, running without Telegram bot")
 	}
-	if err != nil {
-		return nil, fmt.Errorf("failed to initialize bot: %w", err)
-	}
-
-	// Disable debug mode to avoid verbose Telegram API logs
-	bot.Debug = false
-
-	log.Info("authorized on account", zap.String("username", bot.Self.UserName))
 
 	// Initialize database
 	dbPath := cfg.Database.Path
@@ -208,6 +214,11 @@ func (b *Bot) Start(ctx context.Context) error {
 
 // registerCommands registers bot commands
 func (b *Bot) registerCommands() {
+	if b.api == nil {
+		b.logger.Info("skipping bot commands registration (Telegram bot not initialized)")
+		return
+	}
+
 	commands := []tgbotapi.BotCommand{
 		{Command: "start", Description: "Начать работу с ботом"},
 		{Command: "help", Description: "Помощь"},
@@ -223,6 +234,11 @@ func (b *Bot) registerCommands() {
 
 // startWebhook starts the bot in webhook mode
 func (b *Bot) startWebhook(ctx context.Context) error {
+	if b.api == nil {
+		b.logger.Warn("webhook mode requested but Telegram bot not initialized, starting web server only")
+		return b.startWebServerOnly(ctx)
+	}
+
 	// Determine webhook URL
 	var webhookURL string
 	if b.config.Telegram.WebhookURL != "" {
@@ -282,11 +298,13 @@ func (b *Bot) startWebhook(ctx context.Context) error {
 	<-ctx.Done()
 
 	// Clean up webhook
-	b.logger.Info("cleaning up webhook")
-	if _, err := b.api.Request(tgbotapi.DeleteWebhookConfig{}); err != nil {
-		b.logger.Warn("failed to delete webhook", zap.Error(err))
-	} else {
-		b.logger.Info("webhook deleted successfully")
+	if b.api != nil {
+		b.logger.Info("cleaning up webhook")
+		if _, err := b.api.Request(tgbotapi.DeleteWebhookConfig{}); err != nil {
+			b.logger.Warn("failed to delete webhook", zap.Error(err))
+		} else {
+			b.logger.Info("webhook deleted successfully")
+		}
 	}
 
 	// Close database connection
@@ -302,6 +320,11 @@ func (b *Bot) startWebhook(ctx context.Context) error {
 
 // startLongPolling starts the bot in long polling mode
 func (b *Bot) startLongPolling(ctx context.Context) error {
+	if b.api == nil {
+		b.logger.Warn("long polling mode requested but Telegram bot not initialized, starting web server only")
+		return b.startWebServerOnly(ctx)
+	}
+
 	// Create main mux
 	mux := http.NewServeMux()
 
@@ -343,6 +366,55 @@ func (b *Bot) startLongPolling(ctx context.Context) error {
 			b.handler.HandleUpdate(ctx, update)
 		}
 	}
+}
+
+// startWebServerOnly starts only the web server without Telegram bot functionality
+func (b *Bot) startWebServerOnly(ctx context.Context) error {
+	// Create main mux
+	mux := http.NewServeMux()
+
+	// Health endpoint
+	mux.HandleFunc("/health", func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		if _, err := w.Write([]byte("OK")); err != nil {
+			b.logger.Error("failed to write health response", zap.Error(err))
+		}
+	})
+
+	// Web app routes
+	mux.Handle("/", b.webRouter)
+
+	b.logger.Info("starting HTTP server (without Telegram bot)", zap.String("address", b.config.Server.Address))
+	
+	// Start HTTP server
+	server := &http.Server{
+		Addr:    b.config.Server.Address,
+		Handler: mux,
+	}
+
+	go func() {
+		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			b.logger.Error("HTTP server error", zap.Error(err))
+		}
+	}()
+
+	// Wait for shutdown signal
+	<-ctx.Done()
+
+	b.logger.Info("shutting down HTTP server")
+	if err := server.Shutdown(context.Background()); err != nil {
+		b.logger.Warn("error shutting down HTTP server", zap.Error(err))
+	}
+
+	// Close database connection
+	if b.db != nil {
+		if err := b.db.Close(); err != nil {
+			b.logger.Warn("failed to close database", zap.Error(err))
+		}
+	}
+
+	b.logger.Info("shutdown complete")
+	return nil
 }
 
 // normalizeAPIEndpoint ensures endpoint string is a valid format expected by tgbotapi

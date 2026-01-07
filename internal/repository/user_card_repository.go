@@ -25,7 +25,23 @@ func NewUserCardRepository(db *sql.DB, logger *zap.Logger) *UserCardRepository {
 }
 
 // CreateUserCard creates a new user card
+// If a card with the same user_id, training_card_id and direction already exists, returns its ID
 func (r *UserCardRepository) CreateUserCard(card *models.UserCard) (int64, error) {
+	// Check if user card already exists
+	existing, err := r.GetUserCardByTrainingCard(card.UserID, card.TrainingCardID, card.Direction)
+	if err != nil {
+		return 0, fmt.Errorf("failed to check existing user card: %w", err)
+	}
+	if existing != nil {
+		r.logger.Debug("user card already exists, returning existing ID",
+			zap.Int64("id", existing.ID),
+			zap.Int64("user_id", card.UserID),
+			zap.Int64("training_card_id", card.TrainingCardID),
+			zap.String("direction", string(card.Direction)),
+		)
+		return existing.ID, nil
+	}
+
 	query := `INSERT INTO user_cards (
 		user_id, training_card_id, direction, state, ef, reps, interval_days,
 		learning_step, lapse_count, next_due_at, last_review_at, last_quality,

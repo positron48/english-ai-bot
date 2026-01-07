@@ -95,21 +95,24 @@ func TestTrainingService_GetDueCount(t *testing.T) {
 	db, userCardRepo, _, _ := setupTrainingServiceTestDB(t)
 	defer db.Close()
 
-	// Create a training card
-	_, err := db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (?, ?, ?, ?, ?, ?, ?)",
-		1, "test", 0, "тест", "test", "noun", "test")
-	if err != nil {
-		t.Fatalf("Failed to create training card: %v", err)
+	// Create training cards
+	var err error
+	for i := 1; i <= 2; i++ {
+		_, err = db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (?, ?, ?, ?, ?, ?, ?)",
+			i, "test", 0, "тест", "test", "noun", "test")
+		if err != nil {
+			t.Fatalf("Failed to create training card: %v", err)
+		}
 	}
 
 	// Create due cards
 	now := time.Now()
 	past := now.Add(-24 * time.Hour)
 
-	for i := 0; i < 2; i++ {
+	for i := 1; i <= 2; i++ {
 		card := &models.UserCard{
 			UserID:         333,
-			TrainingCardID: 1,
+			TrainingCardID: int64(i),
 			Direction:      models.DirectionENtoRU,
 			State:          models.StateReview,
 			EF:             2.0,

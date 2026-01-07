@@ -2,6 +2,11 @@
   <div class="admin">
     <h1>Admin Panel</h1>
     
+    <div class="admin-nav">
+      <router-link to="/admin" class="admin-nav-link" :class="{ active: $route.path === '/admin' }">Main</router-link>
+      <router-link to="/admin/prompt-tester" class="admin-nav-link" :class="{ active: $route.path === '/admin/prompt-tester' }">Prompt Tester</router-link>
+    </div>
+    
     <div v-if="loading" class="loading">Loading...</div>
     
     <div v-else>
@@ -929,6 +934,35 @@ const formatDate = (dateStr: string | null | undefined) => {
 
 .admin h1 {
   margin-bottom: 24px;
+}
+
+.admin-nav {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.admin-nav-link {
+  padding: 10px 20px;
+  text-decoration: none;
+  color: var(--text-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: 4px;
+  transition: all 0.2s;
+  background: var(--bg-secondary);
+}
+
+.admin-nav-link:hover {
+  background: var(--bg-hover);
+  border-color: var(--color-primary);
+}
+
+.admin-nav-link.active {
+  background: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
 }
 
 .admin .card h2 {

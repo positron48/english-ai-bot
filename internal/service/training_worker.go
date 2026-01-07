@@ -200,31 +200,32 @@ func (w *TrainingWorker) processCard(ctx context.Context, wordCard *models.WordC
 
 	// Create training cards
 	trainingCardIDs := make([]int64, 0, len(trainingResp.Senses))
-	
-	// Determine display_word: use from response, or fallback to word_en
-	displayWord := trainingResp.WordEN
-	if trainingResp.DisplayWord != "" {
-		displayWord = trainingResp.DisplayWord
-	}
-	
-	pos := trainingResp.POS
-	if pos == "" {
-		// Try to get from word_card if available
-		if wordCard.POS != nil {
-			pos = *wordCard.POS
-		}
-	}
 
-	for _, sense := range trainingResp.Senses {
+	for i, sense := range trainingResp.Senses {
 		// Marshal distractors
 		distractorsRU, _ := json.Marshal(sense.DistractorsRU)
 		distractorsEN, _ := json.Marshal(sense.DistractorsEN)
+
+		// Determine display_word for this sense: use from sense, or fallback to word_en
+		displayWord := trainingResp.WordEN
+		if sense.DisplayWord != "" {
+			displayWord = sense.DisplayWord
+		}
+		
+		// Get POS for this sense: use from sense, or fallback to word_card if available
+		pos := sense.POS
+		if pos == "" {
+			// Try to get from word_card if available
+			if wordCard.POS != nil {
+				pos = *wordCard.POS
+			}
+		}
 
 		trainingCard := &models.TrainingCard{
 			WordCardID:    wordCard.ID,
 			WordEN:        displayWord, // For backward compatibility
 			Transcription: trainingResp.Transcription,
-			SenseIndex:    sense.Index,
+			SenseIndex:    i, // Use index from loop instead of sense.Index
 			WordRU:        sense.WordRU,
 			MeaningEN:     sense.MeaningEN,
 			ExampleEN:     sense.ExampleEN,
@@ -234,7 +235,7 @@ func (w *TrainingWorker) processCard(ctx context.Context, wordCard *models.WordC
 			Hint:          sense.Hint,
 		}
 		
-		// Set POS and display_word
+		// Set POS and display_word from sense
 		if pos != "" {
 			trainingCard.POS = &pos
 		}
@@ -389,6 +390,13 @@ func (w *TrainingWorker) notifyAdmin(errorMessage string) {
 		lastError,
 		time.Now().Format("2006-01-02 15:04:05"),
 	)
+
+	if w.bot == nil {
+		w.logger.Warn("cannot send admin notification: Telegram bot not initialized",
+			zap.Int64("admin_id", w.adminTelegramID),
+		)
+		return
+	}
 
 	msg := tgbotapi.NewMessage(w.adminTelegramID, message)
 	if _, err := w.bot.Send(msg); err != nil {

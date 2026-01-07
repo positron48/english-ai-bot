@@ -72,6 +72,12 @@ func (r *Router) handleAuthRequestOTP(w http.ResponseWriter, req *http.Request) 
 	}
 
 	// Send OTP via bot
+	if r.bot == nil {
+		r.logger.Error("cannot send OTP: Telegram bot not initialized")
+		http.Error(w, "OTP service unavailable (Telegram bot not configured)", http.StatusServiceUnavailable)
+		return
+	}
+
 	msg := tgbotapi.NewMessage(user.TelegramID, fmt.Sprintf("Your login code: %s\n\nValid for %d seconds.", code, r.config.WebApp.OTPTTLSeconds))
 	if _, err := r.bot.Send(msg); err != nil {
 		r.logger.Error("failed to send OTP", zap.Error(err))

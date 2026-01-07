@@ -32,21 +32,21 @@ func main() {
 	}
 	defer log.Sync() //nolint:errcheck
 
-	log.Info("starting telegram bot",
+	log.Info("starting application",
 		zap.String("version", version),
 		zap.String("buildTime", buildTime),
 		zap.String("commit", commit),
 	)
 
-	// Create bot instance
+	// Create bot instance (Telegram bot initialization is optional)
 	telegramBot, err := bot.New(cfg, log)
 	if err != nil {
-		log.Fatal("failed to create bot", zap.Error(err))
+		log.Fatal("failed to initialize application", zap.Error(err))
 	}
 
-	// Start bot
+	// Start bot (includes web server)
 	ctx := context.Background()
 	if err := telegramBot.Start(ctx); err != nil {
-		log.Fatal("bot error", zap.Error(err))
+		log.Fatal("application error", zap.Error(err))
 	}
 }

@@ -24,8 +24,61 @@ func NewTrainingCardRepository(db *sql.DB, logger *zap.Logger) *TrainingCardRepo
 	}
 }
 
+// GetTrainingCardByWordCardIDAndSenseIndex gets a training card by word_card_id and sense_index
+func (r *TrainingCardRepository) GetTrainingCardByWordCardIDAndSenseIndex(wordCardID int64, senseIndex int) (*models.TrainingCard, error) {
+	query := `SELECT id, word_card_id, word_en, COALESCE(transcription, ''), sense_index,
+			  word_ru, meaning_en, COALESCE(example_en, ''), COALESCE(example_ru, ''),
+			  COALESCE(distractors_ru, ''), COALESCE(distractors_en, ''), COALESCE(hint, ''),
+			  pos, display_word, created_at
+			  FROM training_cards WHERE word_card_id = ? AND sense_index = ?`
+
+	var card models.TrainingCard
+	var createdAt string
+	var pos, displayWord sql.NullString
+
+	err := r.db.QueryRow(query, wordCardID, senseIndex).Scan(
+		&card.ID, &card.WordCardID, &card.WordEN, &card.Transcription, &card.SenseIndex,
+		&card.WordRU, &card.MeaningEN, &card.ExampleEN, &card.ExampleRU,
+		&card.DistractorsRU, &card.DistractorsEN, &card.Hint,
+		&pos, &displayWord, &createdAt,
+	)
+
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, fmt.Errorf("failed to get training card: %w", err)
+	}
+
+	card.CreatedAt, _ = time.Parse("2006-01-02 15:04:05", createdAt)
+
+	if pos.Valid {
+		card.POS = &pos.String
+	}
+	if displayWord.Valid {
+		card.DisplayWord = &displayWord.String
+	}
+
+	return &card, nil
+}
+
 // CreateTrainingCard creates a new training card
+// If a card with the same word_card_id and sense_index already exists, returns its ID
 func (r *TrainingCardRepository) CreateTrainingCard(card *models.TrainingCard) (int64, error) {
+	// Check if training card already exists
+	existing, err := r.GetTrainingCardByWordCardIDAndSenseIndex(card.WordCardID, card.SenseIndex)
+	if err != nil {
+		return 0, fmt.Errorf("failed to check existing training card: %w", err)
+	}
+	if existing != nil {
+		r.logger.Debug("training card already exists, returning existing ID",
+			zap.Int64("id", existing.ID),
+			zap.String("word", card.WordEN),
+			zap.Int("sense_index", card.SenseIndex),
+		)
+		return existing.ID, nil
+	}
+
 	query := `INSERT INTO training_cards (
 		word_card_id, word_en, transcription, sense_index,
 		word_ru, meaning_en, example_en, example_ru,

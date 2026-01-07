@@ -313,21 +313,24 @@ func TestUserCardRepository_GetDueCount(t *testing.T) {
 
 	repo := NewUserCardRepository(db, logger)
 
-	// Create a training card first
-	_, err := db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (?, ?, ?, ?, ?, ?, ?)",
-		1, "count", 0, "считать", "count", "verb", "to count")
-	if err != nil {
-		t.Fatalf("Failed to create training card: %v", err)
+	// Create training cards first
+	var err error
+	for i := 1; i <= 3; i++ {
+		_, err = db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (?, ?, ?, ?, ?, ?, ?)",
+			i, "count", 0, "считать", "count", "verb", "to count")
+		if err != nil {
+			t.Fatalf("Failed to create training card: %v", err)
+		}
 	}
 
 	// Create due cards
 	now := time.Now()
 	past := now.Add(-24 * time.Hour)
 
-	for i := 0; i < 3; i++ {
+	for i := 1; i <= 3; i++ {
 		card := &models.UserCard{
 			UserID:         222,
-			TrainingCardID: 1,
+			TrainingCardID: int64(i),
 			Direction:      models.DirectionENtoRU,
 			State:          models.StateReview,
 			EF:             2.0,

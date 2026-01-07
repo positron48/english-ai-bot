@@ -264,9 +264,7 @@ func Load() (*Config, error) {
 	config.Bot.EmptyMessage = processNewlines(config.Bot.EmptyMessage)
 
 	// Validate required fields
-	if config.Telegram.Token == "" {
-		return nil, fmt.Errorf("telegram token is required")
-	}
+	// Note: Telegram token is optional - app can work without it (web-only mode)
 	if config.AI.URL == "" {
 		return nil, fmt.Errorf("ai url is required")
 	}

@@ -187,6 +187,14 @@ func (s *NotificationService) sendNotificationIfNeeded(user *models.User, userNo
 		),
 	)
 
+	if s.bot == nil {
+		s.logger.Warn("cannot send notification: Telegram bot not initialized",
+			zap.Int64("user_id", user.ID),
+			zap.Int64("telegram_id", user.TelegramID),
+		)
+		return nil // Silently skip if bot is not available
+	}
+
 	msg := tgbotapi.NewMessage(user.TelegramID, message)
 	msg.ReplyMarkup = keyboard
 

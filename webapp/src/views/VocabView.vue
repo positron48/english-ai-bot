@@ -221,39 +221,39 @@
                 </div>
                 <div class="card-stats">
                   <div class="stat-item">
-                    <span class="stat-label">State:</span>
+                    <span class="stat-label tooltip-trigger" title="Состояние карточки: new (новая), learning (изучается), review (на повторении)">State:</span>
                     <span :class="['state-badge', `state-${directionCard.state}`]">{{ directionCard.state }}</span>
                   </div>
                   <div class="stat-item">
-                    <span class="stat-label">Reps:</span>
+                    <span class="stat-label tooltip-trigger" title="Количество повторений карточки">Reps:</span>
                     <span>{{ directionCard.reps }}</span>
                   </div>
                   <div class="stat-item">
-                    <span class="stat-label">Reviews:</span>
+                    <span class="stat-label tooltip-trigger" title="Общее количество просмотров карточки">Reviews:</span>
                     <span>{{ directionCard.review_count }}</span>
                   </div>
                   <div class="stat-item">
-                    <span class="stat-label">EF:</span>
+                    <span class="stat-label tooltip-trigger" title="Ease Factor (фактор легкости) - коэффициент, определяющий интервал повторения. Чем выше, тем реже нужно повторять">EF:</span>
                     <span>{{ directionCard.ef.toFixed(2) }}</span>
                   </div>
                   <div class="stat-item">
-                    <span class="stat-label">Interval:</span>
+                    <span class="stat-label tooltip-trigger" title="Интервал до следующего повторения в днях">Interval:</span>
                     <span>{{ directionCard.interval_days }} days</span>
                   </div>
                   <div class="stat-item">
-                    <span class="stat-label">Lapses:</span>
+                    <span class="stat-label tooltip-trigger" title="Количество раз, когда был дан неправильный ответ">Lapses:</span>
                     <span>{{ directionCard.lapse_count }}</span>
                   </div>
                   <div class="stat-item" v-if="directionCard.next_due_at">
-                    <span class="stat-label">Next Due:</span>
+                    <span class="stat-label tooltip-trigger" title="Дата и время следующего запланированного повторения">Next Due:</span>
                     <span>{{ formatDate(directionCard.next_due_at) }}</span>
                   </div>
                   <div class="stat-item" v-if="directionCard.last_review_at">
-                    <span class="stat-label">Last Review:</span>
+                    <span class="stat-label tooltip-trigger" title="Дата и время последнего повторения карточки">Last Review:</span>
                     <span>{{ formatDate(directionCard.last_review_at) }}</span>
                   </div>
                   <div class="stat-item" v-if="directionCard.last_quality !== null">
-                    <span class="stat-label">Last Quality:</span>
+                    <span class="stat-label tooltip-trigger" title="Оценка качества последнего ответа (0-5, где 5 - отлично, 0 - забыл)">Last Quality:</span>
                     <span>{{ directionCard.last_quality }}</span>
                   </div>
                 </div>
@@ -1181,6 +1181,14 @@ const closeDeleteCardConfirm = () => {
 .stat-label {
   font-weight: 600;
   color: var(--text-secondary);
+}
+
+.stat-label.tooltip-trigger {
+  cursor: help;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 2px;
+  position: relative;
 }
 
 .state-badge {

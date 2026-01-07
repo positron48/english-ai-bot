@@ -126,7 +126,8 @@ type CircuitBreakerState struct {
 
 // TrainingCardSense represents one sense/meaning in LLM response
 type TrainingCardSense struct {
-	Index         int      `json:"index"`
+	POS           string   `json:"pos"`           // Part of speech for this specific sense
+	DisplayWord   string   `json:"display_word"` // Display form for this specific sense
 	WordRU        string   `json:"word_ru"`
 	MeaningEN     string   `json:"meaning_en"`
 	ExampleEN     string   `json:"example_en"`
@@ -138,13 +139,11 @@ type TrainingCardSense struct {
 
 // TrainingCardResponse represents LLM response for training card generation
 type TrainingCardResponse struct {
-	Error         string                `json:"error,omitempty"` // Error message if word is not English
-	WordEN        string                `json:"word_en"` // Display word
-	Lemma         string                `json:"lemma"` // Base form (lemma)
-	POS           string                `json:"pos"` // Part of speech
-	DisplayWord   string                `json:"display_word"` // Display form (e.g., "to spy" for verbs)
-	Transcription string                `json:"transcription"`
-	Senses        []TrainingCardSense   `json:"senses"`
+	Error         string              `json:"error,omitempty"` // Error message if word is not English
+	WordEN        string              `json:"word_en"`         // Lemma/base form (for backward compatibility)
+	Lemma         string              `json:"lemma"`          // Base form (lemma)
+	Transcription string              `json:"transcription"`
+	Senses        []TrainingCardSense `json:"senses"`
 }
 
 // UserCardWithTraining combines UserCard with TrainingCard data for display
