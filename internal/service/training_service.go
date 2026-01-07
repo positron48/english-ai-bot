@@ -246,8 +246,27 @@ func (s *TrainingService) shufflePreventDuplicates(queue []*models.UserCardWithT
 		groupKeys[i], groupKeys[j] = groupKeys[j], groupKeys[i]
 	})
 
-	for len(result) < len(queue) {
+	// Track total cards available to prevent infinite loops
+	totalCardsAvailable := 0
+	for _, cards := range wordGroups {
+		totalCardsAvailable += len(cards)
+	}
+
+	for len(result) < totalCardsAvailable {
 		added := false
+		
+		// Check if we have any cards left
+		hasCardsLeft := false
+		for _, cards := range wordGroups {
+			if len(cards) > 0 {
+				hasCardsLeft = true
+				break
+			}
+		}
+		if !hasCardsLeft {
+			// No more cards available, stop
+			break
+		}
 		
 		// Try each word group in random order
 		for _, wordCardID := range groupKeys {
