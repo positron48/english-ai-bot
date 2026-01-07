@@ -604,8 +604,58 @@ func (r *WordRepository) GetWordCardRequestingUsers(wordCardID int64) ([]int64, 
 	return r.GetUserIDsByWord(word)
 }
 
-// DeleteWordCard deletes a word card by ID (CASCADE will delete related training_cards, user_cards, and word_request_history)
+// DeleteWordCard deletes a word card by ID and all related data
+// Explicitly deletes training_cards and user_cards to ensure cleanup even if CASCADE doesn't work
 func (r *WordRepository) DeleteWordCard(wordCardID int64) error {
+	// Enable foreign keys to ensure CASCADE works
+	_, err := r.db.Exec("PRAGMA foreign_keys = ON")
+	if err != nil {
+		r.logger.Warn("failed to enable foreign keys", zap.Error(err))
+	}
+
+	// Get word before deletion for logging
+	var word string
+	err = r.db.QueryRow("SELECT word FROM word_cards WHERE id = ?", wordCardID).Scan(&word)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return fmt.Errorf("word card not found")
+		}
+		return fmt.Errorf("failed to get word: %w", err)
+	}
+
+	// Step 1: Delete user_cards that reference training_cards for this word_card_id
+	// This must be done first to avoid foreign key violations
+	deleteUserCardsQuery := `DELETE FROM user_cards 
+		WHERE training_card_id IN (
+			SELECT id FROM training_cards WHERE word_card_id = ?
+		)`
+	userCardsResult, err := r.db.Exec(deleteUserCardsQuery, wordCardID)
+	if err != nil {
+		r.logger.Warn("failed to delete user cards", zap.Error(err), zap.Int64("word_card_id", wordCardID))
+		// Continue with deletion even if this fails
+	} else {
+		userCardsAffected, _ := userCardsResult.RowsAffected()
+		r.logger.Info("deleted user cards",
+			zap.Int64("word_card_id", wordCardID),
+			zap.Int64("user_cards_deleted", userCardsAffected),
+		)
+	}
+
+	// Step 2: Delete training_cards for this word_card_id
+	deleteTrainingCardsQuery := `DELETE FROM training_cards WHERE word_card_id = ?`
+	trainingCardsResult, err := r.db.Exec(deleteTrainingCardsQuery, wordCardID)
+	if err != nil {
+		r.logger.Warn("failed to delete training cards", zap.Error(err), zap.Int64("word_card_id", wordCardID))
+		// Continue with deletion even if this fails
+	} else {
+		trainingCardsAffected, _ := trainingCardsResult.RowsAffected()
+		r.logger.Info("deleted training cards",
+			zap.Int64("word_card_id", wordCardID),
+			zap.Int64("training_cards_deleted", trainingCardsAffected),
+		)
+	}
+
+	// Step 3: Delete the word card itself
 	query := `DELETE FROM word_cards WHERE id = ?`
 	result, err := r.db.Exec(query, wordCardID)
 	if err != nil {
@@ -621,8 +671,9 @@ func (r *WordRepository) DeleteWordCard(wordCardID int64) error {
 		return fmt.Errorf("word card not found")
 	}
 
-	r.logger.Info("deleted word card",
+	r.logger.Info("deleted word card and all related data",
 		zap.Int64("word_card_id", wordCardID),
+		zap.String("word", word),
 	)
 
 	return nil

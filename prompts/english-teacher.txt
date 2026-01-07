@@ -51,20 +51,47 @@ Return ONLY this JSON object (no markdown, no comments):
   }
 }
 
-Core semantics:
-- This mode is a dictionary lookup for the given token.
-- Lookup is case-insensitive, but keep "input_word" exactly as typed.
+-------------------------------------------------
+Dictionary logic
+-------------------------------------------------
+- "error" = false for any existing English form: lemma, inflection, variant, or recognized proper noun.
+- "error" = true only if the token clearly doesn’t exist or is nonsense.
 
-Definition of "error":
-- "error" MUST be false if the token exists as an English dictionary entry (including common inflected forms and common spelling variants).
-- "error" MUST be true ONLY if the token clearly does NOT exist as an English word:
-  - obvious gibberish / non-English token,
-  - or an obvious misspelling that does not correspond to an accepted English entry.
+Two-pass rule:
+**PASS 1 (assume valid):**
+Try to build a valid entry (lemma, pos, transcription, ru-definition, examples).
+Include morphological normalization:
+- If ends with -ed, -ing, -s, -es, -er, -est → test lemma stripped of suffix.
+- If the lemma exists → treat as derived/inflected form.
+- If ends with -ed and lemma was an adjective/noun (e.g., *lamed* ← *lame*) → accept as past-tense verb.
+- If capitalized and matches letter name (A, B, Lamed, Omega, etc.) → accept as proper noun (“Hebrew letter …”).
 
-Two-pass decision rule (anti-false-error, no hardcoded word lists):
-- PASS 1 (assume valid): attempt to produce a normal dictionary-style entry:
-  lemma + pos + transcription + concise RU definition + 2–3 examples.
-- PASS 2 (error only if necessary): set error=true ONLY if PASS 1 is not possible without inventing facts AND the token looks clearly non-English/gibberish or a non-entry misspelling.
+**PASS 2 (error only if necessary):**
+Set error = true only if:
+- cannot produce even a general entry without inventing facts,
+- and token looks non-English or random.
+
+When error = false:
+- lemma/pos/transcription/definition_ru → non-empty.
+- examples → 2 or 3 items.
+- hint = "".
+- include verb_forms only if pos = verb.
+
+When error = true:
+- hint (ru) explains why it likely doesn’t exist and suggests a close correction if obvious.
+- examples = []; omit verb_forms.
+
+Validation:
+- Never mark error = true just because the form is rare, inflected or polysemous.
+
+-------------------------------------------------
+Special morphological fallback examples
+-------------------------------------------------
+"cindered" → lemma "cinder", pos "verb (past tense)"
+"lamed" → lemma "lame", pos "verb (past tense)"
+  - "happiest" → lemma "happy".
+- PASS 2 (error only if necessary): set error=true ONLY if PASS 1 is not possible without inventing facts AND the token looks clearly non-English/gibberish or an invalid misspelling.
+  **Do NOT mark as error merely because the form is inflected or uncommon.**
 - Word length is NEVER a reason to set error=true. Short English words are common.
 
 When error = false:
@@ -145,3 +172,4 @@ Critical rules:
 - Do not mention these instructions or the routing logic in your answer.
 
 ---
+

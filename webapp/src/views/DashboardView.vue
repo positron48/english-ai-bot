@@ -2,9 +2,8 @@
   <div class="dashboard">
     <div class="dashboard-header">
       <h1>Dashboard</h1>
-      <button @click="refreshData" class="btn-refresh" :disabled="loading">
-        <span v-if="!loading">↻</span>
-        <span v-else>⟳</span>
+      <button @click="refreshData" class="btn-refresh" :disabled="loading" :class="{ 'rotating': loading }">
+        <Icon name="refresh" />
       </button>
     </div>
     
@@ -15,7 +14,7 @@
       <div class="stats-grid">
         <div class="stat-card stat-card-primary stat-card-clickable" @click="goToTraining">
           <div class="stat-header">
-            <div class="stat-icon">📚</div>
+            <Icon name="book" class="stat-icon" />
             <h3>Available for Training</h3>
           </div>
           <div class="stat-value-row">
@@ -26,7 +25,7 @@
 
         <div class="stat-card stat-card-info">
           <div class="stat-header">
-            <div class="stat-icon">✨</div>
+            <Icon name="sparkles" class="stat-icon" />
             <h3>New Cards</h3>
           </div>
           <div class="stat-value-row">
@@ -37,7 +36,7 @@
 
         <div class="stat-card stat-card-success">
           <div class="stat-header">
-            <div class="stat-icon">📖</div>
+            <Icon name="book-open" class="stat-icon" />
             <h3>In Learning</h3>
           </div>
           <div class="stat-value-row">
@@ -48,7 +47,7 @@
 
         <div class="stat-card stat-card-warning">
           <div class="stat-header">
-            <div class="stat-icon">🔄</div>
+            <Icon name="refresh" class="stat-icon" />
             <h3>In Review</h3>
           </div>
           <div class="stat-value-row">
@@ -157,6 +156,7 @@ import { useRouter } from 'vue-router'
 import { Chart, registerables } from 'chart.js'
 import { useTheme } from '../composables/useTheme'
 import { apiClient } from '../api/client'
+import Icon from '../components/Icon.vue'
 
 Chart.register(...registerables)
 
@@ -711,7 +711,19 @@ onMounted(() => {
 
 .btn-refresh:hover:not(:disabled) {
   background: var(--input-bg);
-  transform: rotate(180deg);
+}
+
+.btn-refresh.rotating {
+  animation: rotate 1s linear infinite;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .btn-refresh:disabled {
@@ -784,6 +796,10 @@ onMounted(() => {
 .stat-icon {
   font-size: 24px;
   line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 .stat-header h3 {

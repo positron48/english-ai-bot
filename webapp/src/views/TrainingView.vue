@@ -1,49 +1,114 @@
 <template>
   <div class="training">
-    <h1 :class="{ 'hide-on-mobile': sessionActive && currentCard }">Training</h1>
+    <h1 v-if="!(sessionActive && currentCard)" class="training-title">Training</h1>
     
     <div v-if="sessionComplete && !sessionActive" class="card completion-screen">
-      <h2>Training Complete!</h2>
-      <div class="completion-stats">
-        <div class="stat-item">
-          <span class="stat-label">Total Cards:</span>
-          <span class="stat-value">{{ trainingStats.totalCards }}</span>
+      <!-- Animated percentage display -->
+      <div class="completion-percentage">
+        <div class="percentage-circle-wrapper">
+          <svg class="percentage-circle" viewBox="0 0 120 120">
+            <circle
+              class="percentage-circle-bg"
+              cx="60"
+              cy="60"
+              r="54"
+              fill="none"
+              stroke="var(--bg-secondary, rgba(0, 0, 0, 0.1))"
+              stroke-width="8"
+            />
+            <circle
+              class="percentage-circle-outline"
+              cx="60"
+              cy="60"
+              r="54"
+              fill="none"
+              :stroke="percentageColor"
+              stroke-width="8"
+              stroke-opacity="0.2"
+            />
+            <circle
+              class="percentage-circle-fill"
+              cx="60"
+              cy="60"
+              r="54"
+              fill="none"
+              :stroke="percentageColor"
+              stroke-width="8"
+              stroke-linecap="round"
+              :style="{
+                strokeDasharray: circumference,
+                strokeDashoffset: percentageOffset
+              }"
+            />
+          </svg>
+          <div class="percentage-text">
+            <span class="percentage-number">{{ animatedPercentage }}%</span>
+            <span class="percentage-ratio">{{ trainingStats.correctCards }}/{{ trainingStats.totalCards }}</span>
+          </div>
+          
+          <!-- Fireworks/Confetti for >90% -->
+          <div v-if="accuracyPercentage > 90 && percentageAnimationComplete" class="celebration-container">
+            <div class="fireworks">
+              <div v-for="i in 12" :key="i" class="firework" :style="getFireworkStyle(i)">
+                <div class="firework-particle" v-for="j in 8" :key="j" :style="{ '--angle': (j * 45) + 'deg' }"></div>
+              </div>
+            </div>
+            <div class="confetti">
+              <div v-for="i in 30" :key="i" class="confetti-piece" :style="getConfettiStyle(i)"></div>
+            </div>
+          </div>
+          
+          <!-- Poop animation for <10% -->
+          <div v-if="accuracyPercentage < 10 && percentageAnimationComplete" class="poop-container">
+            <div v-for="i in 16" :key="i" class="poop-piece" :style="getPoopStyle(i)">
+              <span class="poop-emoji">💩</span>
+            </div>
+          </div>
         </div>
-        <div class="stat-item">
-          <span class="stat-label">Correct Answers:</span>
-          <span class="stat-value correct-stat">{{ trainingStats.correctCards }}</span>
+        
+        <!-- Motivational message -->
+        <div class="motivational-message" :class="messageClass">
+          <p class="message-text">{{ motivationalMessage }}</p>
         </div>
-        <div class="stat-item">
-          <span class="stat-label">Accuracy:</span>
-          <span class="stat-value">
-            {{ trainingStats.totalCards > 0 ? Math.round((trainingStats.correctCards / trainingStats.totalCards) * 100) : 0 }}%
-          </span>
+        
+        <!-- Compact info and continue button -->
+        <div class="completion-actions">
+          <div class="remaining-cards-info">
+            <span class="remaining-text">
+              <span class="remaining-label">Available:</span>
+              {{ stats.availableForTraining }} cards
+              <span v-if="estimatedTimeForRemaining">({{ estimatedTimeForRemaining }})</span>
+            </span>
+          </div>
+          <button 
+            v-if="stats.availableForTraining > 0" 
+            @click="startTraining" 
+            class="btn btn-primary btn-continue"
+          >
+            Continue Training
+          </button>
         </div>
       </div>
     </div>
 
-    <div v-if="!sessionActive && !loading" class="card start-screen">
-      <h2>Ready to Train?</h2>
-      <div class="training-stats">
-        <div class="stat-item">
-          <span class="stat-label">Available for Training:</span>
-          <span class="stat-value">{{ stats.availableForTraining }} cards</span>
+    <div v-if="!sessionActive && !loading && !sessionComplete" class="card start-screen">
+      <div class="start-screen-content">
+        <div class="start-screen-stats">
+          <div class="start-stat-item">
+            <span class="start-stat-label">Available for Training</span>
+            <span class="start-stat-value">
+              {{ stats.availableForTraining }} cards
+              <span v-if="estimatedTime">({{ estimatedTime }})</span>
+            </span>
+          </div>
         </div>
-        <div v-if="estimatedTime" class="stat-item">
-          <span class="stat-label">Estimated Time:</span>
-          <span class="stat-value">{{ estimatedTime }}</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-label">Total Cards:</span>
-          <span class="stat-value">{{ stats.totalCards }}</span>
-        </div>
+        <button v-if="stats.availableForTraining > 0" @click="startTraining" class="btn btn-primary btn-start">
+          Start Training
+        </button>
+        <p v-if="stats.availableForTraining === 0" class="no-cards-message">
+          No cards available for training. Add some words to your vocabulary first!
+        </p>
       </div>
-      <button v-if="stats.availableForTraining > 0" @click="startTraining" class="btn btn-primary">
-        Start Training
-      </button>
-      <p v-if="stats.availableForTraining === 0" class="no-cards-message">
-        No cards available for training. Add some words to your vocabulary first!
-      </p>
     </div>
 
     <div v-if="loading" class="loading">Loading...</div>
@@ -51,7 +116,7 @@
     <!-- Network error notification -->
     <div v-if="networkError" class="network-error-notification">
       <div class="network-error-content">
-        <span class="network-error-icon">⚠️</span>
+        <Icon name="warning" class="network-error-icon" />
         <div class="network-error-text">
           <div class="network-error-title">Проблемы с сетью</div>
           <div class="network-error-message">
@@ -95,11 +160,45 @@
           <span class="feedback-text">{{ currentEncouragingPhrase }}</span>
         </div>
         
-        <!-- For incorrect answers: show example first, then notification -->
+        <!-- For incorrect answers: show hint, example, then notification with circular progress -->
         <template v-if="!feedback.is_correct">
+          <div v-if="feedback.hint" class="hint">{{ feedback.hint }}</div>
           <div v-if="feedback.example" class="example">{{ feedback.example }}</div>
           <div class="feedback-badge feedback-error">
-            <span class="feedback-icon">✗</span>
+            <div v-if="waitingDelay" class="error-progress-wrapper">
+              <svg class="error-progress-ring" width="40" height="40">
+                <circle
+                  class="error-progress-circle-bg"
+                  stroke="rgba(255, 255, 255, 0.2)"
+                  stroke-width="2.5"
+                  fill="transparent"
+                  r="16"
+                  cx="20"
+                  cy="20"
+                />
+                <circle
+                  class="error-progress-circle"
+                  stroke="white"
+                  stroke-width="2.5"
+                  fill="transparent"
+                  r="16"
+                  cx="20"
+                  cy="20"
+                  :style="{ 
+                    strokeDasharray: errorCircumference, 
+                    strokeDashoffset: errorProgressOffset 
+                  }"
+                />
+              </svg>
+              <svg class="error-icon-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </div>
+            <svg v-else class="error-icon-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
             <span class="feedback-text">{{ currentDisappointingPhrase }}</span>
           </div>
         </template>
@@ -107,7 +206,8 @@
         <!-- For correct answers: show example after notification -->
         <div v-if="feedback.is_correct && feedback.example" class="example">{{ feedback.example }}</div>
         
-        <div v-if="waitingDelay" class="waiting-progress">
+        <!-- Circular progress for correct answers delay (if any) -->
+        <div v-if="waitingDelay && feedback.is_correct" class="waiting-progress">
           <div class="circular-progress">
             <svg class="progress-ring" width="80" height="80">
               <circle
@@ -127,7 +227,7 @@
                 r="34"
                 cx="40"
                 cy="40"
-                :style="{ strokeDasharray: circumference, strokeDashoffset: strokeDashoffset }"
+                :style="{ strokeDasharray: delayCircumference, strokeDashoffset: strokeDashoffset }"
               />
             </svg>
             <div class="progress-text">{{ delaySeconds }}</div>
@@ -140,8 +240,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { apiClient } from '../api/client'
+import Icon from '../components/Icon.vue'
 
 interface Card {
   question: string
@@ -161,6 +262,7 @@ interface Feedback {
   is_correct: boolean
   chosen_option: string
   correct_answer: string
+  hint?: string
   example?: string
   delay_seconds?: number
 }
@@ -194,6 +296,8 @@ const networkError = ref(false)
 const networkErrorRetrying = ref(false)
 const networkErrorAttempt = ref(0)
 const networkErrorMaxAttempts = ref(3)
+const animatedPercentage = ref(0)
+const percentageAnimationComplete = ref(false)
 
 const estimatedTime = computed(() => {
   const cards = stats.value.availableForTraining
@@ -213,19 +317,325 @@ const estimatedTime = computed(() => {
   }
 })
 
-// Calculate progress for circular progress bar
-const circumference = computed(() => {
+const estimatedTimeForRemaining = computed(() => {
+  const cards = stats.value.availableForTraining
+  if (cards === 0) return null
+  
+  // Average 15 seconds per card (same as notification service)
+  const avgSecondsPerCard = 15
+  const totalSeconds = cards * avgSecondsPerCard
+  const minutes = Math.floor(totalSeconds / 60)
+  
+  if (minutes < 1) {
+    return '~1 min'
+  } else if (minutes === 1) {
+    return '~1 min'
+  } else {
+    return `~${minutes} min`
+  }
+})
+
+// Calculate accuracy percentage
+const accuracyPercentage = computed(() => {
+  if (trainingStats.value.totalCards === 0) return 0
+  return Math.round((trainingStats.value.correctCards / trainingStats.value.totalCards) * 100)
+})
+
+// Percentage circle calculations
+const circumference = computed(() => 2 * Math.PI * 54)
+const animatedPercentageOffset = ref(0)
+const percentageOffset = computed(() => {
+  // Use animated offset during animation, computed offset after
+  if (!percentageAnimationComplete.value) {
+    return animatedPercentageOffset.value
+  }
+  const progress = animatedPercentage.value / 100
+  return circumference.value * (1 - progress)
+})
+
+// Color based on percentage
+const percentageColor = computed(() => {
+  const percent = accuracyPercentage.value
+  if (percent >= 90) return '#10b981' // green
+  if (percent >= 70) return '#3b82f6' // blue
+  if (percent >= 50) return '#f59e0b' // orange
+  return '#ef4444' // red
+})
+
+// Motivational messages with multiple variants
+const motivationalMessages = {
+  excellent: [
+    'Outstanding work! You\'re a true master!',
+    'Perfect score! You\'re absolutely brilliant!',
+    'Incredible performance! You\'ve mastered this!',
+    'Flawless execution! You\'re a champion!',
+    'Exceptional results! You\'re unstoppable!',
+    'Perfect mastery! You\'re a true expert!',
+    'Outstanding achievement! You\'re incredible!',
+    'Brilliant work! You\'re a natural!',
+    'Perfect performance! You\'re amazing!',
+    'Exceptional skill! You\'re a pro!'
+  ],
+  great: [
+    'Excellent! You\'re doing amazing! Keep it up!',
+    'Fantastic work! You\'re on fire!',
+    'Wonderful progress! You\'re crushing it!',
+    'Superb results! You\'re doing great!',
+    'Impressive performance! Keep going!',
+    'Terrific work! You\'re making great strides!',
+    'Awesome job! You\'re on the right path!',
+    'Brilliant effort! You\'re improving fast!',
+    'Splendid work! You\'re doing fantastic!',
+    'Marvelous results! You\'re getting better!'
+  ],
+  good: [
+    'Great job! You\'re making excellent progress!',
+    'Well done! You\'re improving steadily!',
+    'Nice work! You\'re on the right track!',
+    'Good progress! Keep up the momentum!',
+    'Solid effort! You\'re doing well!',
+    'Decent results! You\'re moving forward!',
+    'Not bad at all! You\'re getting there!',
+    'Good going! You\'re making progress!',
+    'Keep it up! You\'re doing fine!',
+    'Steady progress! You\'re on track!'
+  ],
+  okay: [
+    'Good work! You\'re on the right track!',
+    'Not bad! Keep practicing and you\'ll improve!',
+    'You\'re getting there! Don\'t give up!',
+    'Keep going! Practice makes perfect!',
+    'You\'re improving! Stay focused!',
+    'Good effort! Every attempt counts!',
+    'Keep trying! You\'re making progress!',
+    'Don\'t stop! You\'re learning!',
+    'Stay motivated! You can do better!',
+    'Keep pushing! Improvement is coming!'
+  ],
+  needsWork: [
+    'Keep practicing! Every mistake is a learning opportunity!',
+    'Don\'t give up! Every attempt makes you stronger!',
+    'Stay focused! Practice will improve your results!',
+    'Keep trying! You\'re building your skills!',
+    'Don\'t lose heart! Learning takes time!',
+    'Stay persistent! You\'ll get better!',
+    'Keep going! Every session helps!',
+    'Don\'t quit! Progress comes with practice!',
+    'Stay determined! You can improve!',
+    'Keep learning! Mistakes teach us!'
+  ],
+  poor: [
+    'Time to review! Let\'s go over the basics again.',
+    'Back to basics! Review will help you improve.',
+    'Let\'s practice more! Focus on the fundamentals.',
+    'Review time! Understanding comes with repetition.',
+    'Study harder! The basics are important.',
+    'More practice needed! Review the material.',
+    'Focus on learning! Review helps retention.',
+    'Time to study! Practice the fundamentals.',
+    'Review and practice! You\'ll improve.',
+    'Back to studying! Master the basics first.'
+  ]
+}
+
+// Generate weights for motivational messages (first 30%, last 1%)
+const generateMessageWeights = (count: number) => {
+  const weights: number[] = []
+  const maxWeight = 30 // 30%
+  const minWeight = 1 // 1%
+  
+  // Exponential decay: weight = maxWeight * (minWeight/maxWeight)^((i)/(n-1))
+  for (let i = 0; i < count; i++) {
+    const ratio = i / (count - 1)
+    const weight = maxWeight * Math.pow(minWeight / maxWeight, ratio)
+    weights.push(weight)
+  }
+  
+  // Normalize to sum to 100
+  const sum = weights.reduce((a, b) => a + b, 0)
+  return weights.map(w => w * 100 / sum)
+}
+
+const motivationalMessage = computed(() => {
+  const percent = accuracyPercentage.value
+  let messages: string[]
+  
+  if (percent >= 95) {
+    messages = motivationalMessages.excellent
+  } else if (percent >= 90) {
+    messages = motivationalMessages.great
+  } else if (percent >= 80) {
+    messages = motivationalMessages.good
+  } else if (percent >= 70) {
+    messages = motivationalMessages.okay
+  } else if (percent >= 50) {
+    messages = motivationalMessages.needsWork
+  } else if (percent >= 10) {
+    messages = motivationalMessages.poor
+  } else {
+    messages = motivationalMessages.poor
+  }
+  
+  // Weighted random selection (first 30%, last 1%)
+  return getWeightedMessage(messages)
+})
+
+const messageClass = computed(() => {
+  const percent = accuracyPercentage.value
+  if (percent >= 90) return 'message-excellent'
+  if (percent >= 70) return 'message-good'
+  if (percent >= 50) return 'message-okay'
+  return 'message-needs-improvement'
+})
+
+// Confetti styles - start from random points on circle edge
+const getConfettiStyle = (index: number) => {
+  const colors = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899']
+  const color = colors[index % colors.length]
+  // Random angle on circle edge
+  const startAngle = Math.random() * 360
+  const startAngleRad = (startAngle * Math.PI) / 180
+  // Circle radius: viewBox 120x120, wrapper 200x200px, so scale = 200/120 = 1.67
+  // Radius in viewBox = 54, so real radius = 54 * 1.67 ≈ 90px
+  const circleRadius = 90
+  // Start position on circle edge
+  const startX = Math.cos(startAngleRad) * circleRadius
+  const startY = Math.sin(startAngleRad) * circleRadius
+  // Random direction outward
+  const directionAngle = startAngle + (Math.random() - 0.5) * 40 // ±20 degrees variation
+  const directionAngleRad = (directionAngle * Math.PI) / 180
+  // Distance to travel
+  const distance = 150 + Math.random() * 100 // 150-250px
+  const endX = Math.cos(directionAngleRad) * distance
+  const endY = Math.sin(directionAngleRad) * distance
+  // Random delay and duration
+  const delay = Math.random() * 0.5
+  const duration = 1.5 + Math.random() * 1
+  return {
+    '--confetti-color': color,
+    '--confetti-start-x': `${startX}px`,
+    '--confetti-start-y': `${startY}px`,
+    '--confetti-end-x': `${endX}px`,
+    '--confetti-end-y': `${endY}px`,
+    '--confetti-delay': `${delay}s`,
+    '--confetti-duration': `${duration}s`
+  }
+}
+
+// Poop styles - explode outward from circle edge randomly
+const getPoopStyle = (index: number) => {
+  // Random angle on circle edge (0-360 degrees)
+  const startAngle = Math.random() * 360
+  const startAngleRad = (startAngle * Math.PI) / 180
+  // Circle radius: viewBox 120x120, wrapper 200x200px, so scale = 200/120 = 1.67
+  // Radius in viewBox = 54, so real radius = 54 * 1.67 ≈ 90px
+  const circleRadius = 90
+  // Start position on circle edge
+  const startX = Math.cos(startAngleRad) * circleRadius
+  const startY = Math.sin(startAngleRad) * circleRadius
+  // Random direction outward (slightly varied from start angle)
+  const directionAngle = startAngle + (Math.random() - 0.5) * 30 // ±15 degrees variation
+  const directionAngleRad = (directionAngle * Math.PI) / 180
+  // Distance to travel outward
+  const distance = 200 + Math.random() * 100 // 200-300px
+  const endX = Math.cos(directionAngleRad) * distance
+  const endY = Math.sin(directionAngleRad) * distance
+  // Random delay and duration
+  const delay = Math.random() * 0.5
+  const duration = 1.2 + Math.random() * 0.8
+  const rotation = Math.random() * 720 // 0-720 degrees
+  return {
+    '--poop-start-x': `${startX}px`,
+    '--poop-start-y': `${startY}px`,
+    '--poop-end-x': `${endX}px`,
+    '--poop-end-y': `${endY}px`,
+    '--poop-delay': `${delay}s`,
+    '--poop-duration': `${duration}s`,
+    '--poop-rotation': `${rotation}deg`
+  }
+}
+
+// Firework styles - start from random points on circle edge
+const getFireworkStyle = (index: number) => {
+  // Random angle on circle edge
+  const startAngle = Math.random() * 360
+  const startAngleRad = (startAngle * Math.PI) / 180
+  // Circle radius: viewBox 120x120, wrapper 200x200px, so scale = 200/120 = 1.67
+  // Radius in viewBox = 54, so real radius = 54 * 1.67 ≈ 90px
+  const circleRadius = 90
+  // Start position on circle edge
+  const startX = Math.cos(startAngleRad) * circleRadius
+  const startY = Math.sin(startAngleRad) * circleRadius
+  // Random delay
+  const delay = Math.random() * 0.8
+  return {
+    '--firework-x': `${startX}px`,
+    '--firework-y': `${startY}px`,
+    '--delay': `${delay}s`
+  }
+}
+
+// Animate percentage when training completes
+watch(() => sessionComplete.value, (complete) => {
+  if (complete) {
+    animatedPercentage.value = 0
+    animatedPercentageOffset.value = circumference.value // Start from full (empty circle)
+    percentageAnimationComplete.value = false
+    const target = accuracyPercentage.value
+    const duration = 1500 // 1.5 seconds
+    const startTime = Date.now()
+    
+    const animate = () => {
+      const elapsed = Date.now() - startTime
+      const progress = Math.min(elapsed / duration, 1)
+      // Easing function (ease-out cubic) - matches CSS cubic-bezier(0.4, 0, 0.2, 1)
+      // CSS cubic-bezier(0.4, 0, 0.2, 1) approximates to ease-out cubic
+      const eased = 1 - Math.pow(1 - progress, 3)
+      animatedPercentage.value = Math.round(target * eased)
+      // Animate circle offset simultaneously
+      animatedPercentageOffset.value = circumference.value * (1 - eased * target / 100)
+      
+      if (progress < 1) {
+        requestAnimationFrame(animate)
+      } else {
+        animatedPercentage.value = target
+        animatedPercentageOffset.value = circumference.value * (1 - target / 100)
+        percentageAnimationComplete.value = true
+      }
+    }
+    
+    requestAnimationFrame(animate)
+  }
+})
+
+// Calculate progress for circular progress bar (delay timer)
+const delayCircumference = computed(() => {
   const radius = 34
   return 2 * Math.PI * radius
 })
 
 const strokeDashoffset = computed(() => {
   if (initialDelayMs.value === 0 || remainingMs.value <= 0) {
-    return circumference.value
+    return delayCircumference.value
   }
   // Calculate progress based on remaining milliseconds for precision
   const progress = remainingMs.value / initialDelayMs.value
-  return circumference.value * (1 - progress)
+  return delayCircumference.value * (1 - progress)
+})
+
+// Calculate progress for error circular progress bar (5 seconds countdown)
+const errorCircumference = computed(() => {
+  const radius = 16
+  return 2 * Math.PI * radius
+})
+
+const errorProgressOffset = computed(() => {
+  if (initialDelayMs.value === 0 || remainingMs.value <= 0 || feedback.value?.is_correct) {
+    return 0
+  }
+  // For incorrect answers: progress goes from 0 to full (reverse countdown)
+  const progress = remainingMs.value / initialDelayMs.value
+  return errorCircumference.value * (1 - progress)
 })
 
 const cardIndex = ref(0)
@@ -290,6 +700,20 @@ const generateCumulativeWeights = (weights: number[]) => {
     cumulative.push(sum)
   }
   return cumulative
+}
+
+// Get weighted random message for motivational messages
+const getWeightedMessage = (messages: string[]): string => {
+  const weights = generateMessageWeights(messages.length)
+  const cumulative = generateCumulativeWeights(weights)
+  
+  const random = Math.random() * 100
+  for (let i = 0; i < cumulative.length; i++) {
+    if (random <= cumulative[i]) {
+      return messages[i]
+    }
+  }
+  return messages[0] // Fallback
 }
 
 // Generate weights and cumulative distributions
@@ -915,9 +1339,57 @@ const resetSession = async () => {
   letter-spacing: 0.5px;
 }
 
+.error-progress-wrapper {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.error-progress-ring {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  transform: rotate(-90deg);
+}
+
+.error-progress-circle-bg {
+  opacity: 0.3;
+}
+
+.error-progress-circle {
+  transition: stroke-dashoffset 0.1s linear;
+  stroke-linecap: round;
+}
+
+.error-icon-svg {
+  position: relative;
+  z-index: 1;
+  color: white;
+  flex-shrink: 0;
+}
+
+.hint {
+  margin: 20px 0 10px 0;
+  padding: 12px 18px;
+  background: var(--hint-bg, rgba(245, 158, 11, 0.1));
+  border-radius: 8px;
+  color: var(--text-primary);
+  border-left: 4px solid #f59e0b;
+  text-align: left;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
 .example {
   font-style: italic;
-  margin: 20px 0;
+  margin: 10px 0 20px 0;
   padding: 15px 20px;
   background: var(--example-bg, rgba(59, 130, 246, 0.1));
   border-radius: 8px;
@@ -969,20 +1441,66 @@ const resetSession = async () => {
 
 .start-screen {
   text-align: center;
+  padding: 40px 20px;
 }
 
-.start-screen h2 {
-  margin-bottom: 20px;
-}
-
-.training-stats {
+.start-screen-content {
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  margin: 20px 0;
-  padding: 20px;
+  align-items: center;
+  gap: 24px;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.start-screen-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.start-stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px;
   background: var(--bg-secondary, rgba(0, 0, 0, 0.05));
-  border-radius: 8px;
+  border-radius: 10px;
+  border: 1px solid var(--border-primary, rgba(0, 0, 0, 0.1));
+}
+
+.start-stat-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.start-stat-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--color-primary);
+  display: inline-block;
+}
+
+.start-stat-value span:last-child {
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  opacity: 0.8;
+  margin-left: 4px;
+}
+
+.btn-start {
+  width: 100%;
+  max-width: 300px;
+  padding: 14px 28px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 10px;
 }
 
 .stat-item {
@@ -1016,49 +1534,335 @@ const resetSession = async () => {
 
 .completion-screen {
   text-align: center;
+  position: relative;
+  overflow: hidden;
+  padding: 40px 20px;
 }
 
-.completion-screen h2 {
-  margin-bottom: 15px;
-  color: var(--color-success, #10b981);
-}
-
-.completion-stats {
+.completion-percentage {
+  margin: 20px 0;
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  margin: 20px 0;
-  padding: 20px;
-  background: var(--bg-secondary, rgba(0, 0, 0, 0.05));
-  border-radius: 8px;
-}
-
-.completion-stats .stat-item {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--border-primary, rgba(0, 0, 0, 0.1));
+  justify-content: center;
+  gap: 24px;
 }
 
-.completion-stats .stat-item:last-child {
-  border-bottom: none;
+.percentage-circle-wrapper {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  flex-shrink: 0;
 }
 
-.completion-stats .stat-label {
+.percentage-circle {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.percentage-circle-bg {
+  opacity: 0.2;
+}
+
+.percentage-circle-fill {
+  transition: stroke 0.3s ease;
+  /* No transition for stroke-dashoffset - animated via JavaScript for perfect sync */
+}
+
+.percentage-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.percentage-number {
+  font-size: 48px;
+  font-weight: 700;
+  color: var(--text-primary);
+  transition: color 0.3s ease;
+  line-height: 1;
+}
+
+.percentage-ratio {
+  font-size: 20px;
   font-weight: 500;
   color: var(--text-secondary);
+  opacity: 0.85;
+  line-height: 1;
 }
 
-.completion-stats .stat-value {
-  font-size: 24px;
-  font-weight: bold;
-  color: var(--color-primary);
+.motivational-message {
+  padding: 18px 28px;
+  border-radius: 12px;
+  max-width: 600px;
+  width: 100%;
+  animation: messageAppear 0.6s ease-out 0.3s both;
+  text-align: center;
 }
 
-.completion-stats .stat-value.correct-stat {
+.message-text {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.message-excellent {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.15) 100%);
   color: var(--color-success, #10b981);
+  border: 2px solid rgba(16, 185, 129, 0.3);
 }
+
+.message-good {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(37, 99, 235, 0.15) 100%);
+  color: #3b82f6;
+  border: 2px solid rgba(59, 130, 246, 0.3);
+}
+
+.message-okay {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(217, 119, 6, 0.15) 100%);
+  color: #f59e0b;
+  border: 2px solid rgba(245, 158, 11, 0.3);
+}
+
+.message-needs-improvement {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(220, 38, 38, 0.15) 100%);
+  color: #ef4444;
+  border: 2px solid rgba(239, 68, 68, 0.3);
+}
+
+@keyframes messageAppear {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Celebration animations */
+.celebration-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  overflow: visible;
+  z-index: 2;
+  width: 0;
+  height: 0;
+}
+
+.fireworks {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.firework {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  top: 0;
+  left: 0;
+  transform: translate(var(--firework-x, 0), var(--firework-y, 0));
+  animation: firework-explode 1.5s ease-out var(--delay, 0s) forwards;
+}
+
+.firework-particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--particle-color, #10b981);
+  top: 0;
+  left: 0;
+  transform: translate(-50%, -50%);
+  animation: particle-fly 1.5s ease-out var(--delay, 0s) forwards;
+}
+
+.firework:nth-child(odd) .firework-particle {
+  --particle-color: #3b82f6;
+}
+
+.firework:nth-child(even) .firework-particle {
+  --particle-color: #f59e0b;
+}
+
+@keyframes firework-explode {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0);
+  }
+}
+
+@keyframes particle-fly {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translateX(var(--offset-x, 0)) translateY(var(--offset-y, 0)) scale(0);
+  }
+}
+
+/* Calculate offsets for each angle - particles fly outward from firework position */
+.firework-particle:nth-child(1) { --offset-x: 80px; --offset-y: 0px; }
+.firework-particle:nth-child(2) { --offset-x: 56.57px; --offset-y: -56.57px; }
+.firework-particle:nth-child(3) { --offset-x: 0px; --offset-y: -80px; }
+.firework-particle:nth-child(4) { --offset-x: -56.57px; --offset-y: -56.57px; }
+.firework-particle:nth-child(5) { --offset-x: -80px; --offset-y: 0px; }
+.firework-particle:nth-child(6) { --offset-x: -56.57px; --offset-y: 56.57px; }
+.firework-particle:nth-child(7) { --offset-x: 0px; --offset-y: 80px; }
+.firework-particle:nth-child(8) { --offset-x: 56.57px; --offset-y: 56.57px; }
+
+/* Calculate offsets for each angle - particles fly outward from firework position */
+.firework-particle:nth-child(1) { --offset-x: 80px; --offset-y: 0px; }
+.firework-particle:nth-child(2) { --offset-x: 56.57px; --offset-y: -56.57px; }
+.firework-particle:nth-child(3) { --offset-x: 0px; --offset-y: -80px; }
+.firework-particle:nth-child(4) { --offset-x: -56.57px; --offset-y: -56.57px; }
+.firework-particle:nth-child(5) { --offset-x: -80px; --offset-y: 0px; }
+.firework-particle:nth-child(6) { --offset-x: -56.57px; --offset-y: 56.57px; }
+.firework-particle:nth-child(7) { --offset-x: 0px; --offset-y: 80px; }
+.firework-particle:nth-child(8) { --offset-x: 56.57px; --offset-y: 56.57px; }
+
+.confetti {
+  position: absolute;
+  width: 0;
+  height: 0;
+  top: 0;
+  left: 0;
+}
+
+.confetti-piece {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: var(--confetti-color, #10b981);
+  top: 0;
+  left: 0;
+  animation: confetti-fly var(--confetti-duration, 2s) var(--confetti-delay, 0s) ease-out forwards;
+  border-radius: 2px;
+}
+
+@keyframes confetti-fly {
+  0% {
+    transform: translate(var(--confetti-start-x, 0), var(--confetti-start-y, 0)) rotate(0deg) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--confetti-end-x, 0), var(--confetti-end-y, 0)) rotate(720deg) scale(0.5);
+    opacity: 0;
+  }
+}
+
+/* Poop animation for <10% */
+.poop-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  overflow: visible;
+  z-index: 2;
+  width: 0;
+  height: 0;
+}
+
+.poop-piece {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: 48px;
+  line-height: 1;
+  animation: poop-explode var(--poop-duration, 1.5s) var(--poop-delay, 0s) ease-out forwards;
+  transform-origin: center;
+}
+
+.poop-emoji {
+  display: block;
+  filter: grayscale(0.4) brightness(0.75);
+  user-select: none;
+}
+
+@keyframes poop-explode {
+  0% {
+    transform: translate(var(--poop-start-x, 0), var(--poop-start-y, 0)) rotate(0deg) scale(0.5);
+    opacity: 1;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--poop-end-x, 0), var(--poop-end-y, 0)) rotate(var(--poop-rotation, 0deg)) scale(1.2);
+    opacity: 0;
+  }
+}
+
+.completion-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.remaining-cards-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 16px 24px;
+  background: var(--bg-secondary, rgba(0, 0, 0, 0.05));
+  border-radius: 10px;
+  width: 100%;
+  border: 1px solid var(--border-primary, rgba(0, 0, 0, 0.1));
+}
+
+.remaining-text {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-primary);
+  text-align: center;
+  line-height: 1.4;
+}
+
+.remaining-text .remaining-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-right: 6px;
+}
+
+.btn-continue {
+  width: 100%;
+  max-width: 300px;
+  padding: 14px 28px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 10px;
+}
+
 
 .network-error-notification {
   position: fixed;
@@ -1114,15 +1918,69 @@ const resetSession = async () => {
   opacity: 0.95;
 }
 
-/* Hide header on mobile during active training */
+/* Hide option number on mobile */
 @media (max-width: 768px) {
-  .training h1.hide-on-mobile {
+  .option-number {
     display: none;
   }
   
-  /* Hide option number on mobile */
-  .option-number {
-    display: none;
+  /* Compact completion screen on mobile */
+  .completion-screen {
+    padding: 30px 15px;
+  }
+  
+  .completion-percentage {
+    gap: 20px;
+  }
+  
+  .percentage-circle-wrapper {
+    width: 180px;
+    height: 180px;
+  }
+  
+  .percentage-number {
+    font-size: 42px;
+  }
+  
+  .percentage-ratio {
+    font-size: 18px;
+  }
+  
+  .motivational-message {
+    padding: 14px 20px;
+    font-size: 16px;
+  }
+  
+  .completion-actions {
+    max-width: 100%;
+  }
+  
+  .remaining-cards-info {
+    padding: 14px 20px;
+  }
+  
+  .remaining-text {
+    font-size: 16px;
+  }
+  
+  .btn-continue {
+    max-width: 100%;
+  }
+  
+  .start-screen {
+    padding: 30px 15px;
+  }
+  
+  .start-screen-content {
+    gap: 20px;
+  }
+  
+  .start-stat-item {
+    padding: 14px;
+  }
+  
+  .start-stat-value {
+    font-size: 24px;
   }
 }
 </style>

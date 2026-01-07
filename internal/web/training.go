@@ -559,11 +559,13 @@ func (r *Router) showTrainingFeedback(w http.ResponseWriter, req *http.Request, 
 		"correct_answer": correctAnswer,
 	}
 
-	if !isCorrect && trainingCard.ExampleEN != "" {
-		feedback["example"] = trainingCard.ExampleEN
-	}
-
 	if !isCorrect {
+		if trainingCard.Hint != "" {
+			feedback["hint"] = trainingCard.Hint
+		}
+		if trainingCard.ExampleEN != "" {
+			feedback["example"] = trainingCard.ExampleEN
+		}
 		feedback["delay_seconds"] = r.config.Training.WrongAnswerDelaySeconds
 	}
 

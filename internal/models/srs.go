@@ -21,7 +21,7 @@ const (
 	OptionsDelayMS = 3000
 	
 	// Session limits
-	DefaultMaxCardsPerSession = 30
+	DefaultMaxCardsPerSession = 5  // Temporarily reduced from 30 for testing
 	DefaultMaxNewPerSession   = 5
 	
 	// Options

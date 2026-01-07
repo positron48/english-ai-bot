@@ -3,7 +3,7 @@
     <!-- Auth Error Message -->
     <div v-if="authError" class="auth-error-banner">
       <div class="auth-error-content">
-        <strong>⚠️ Ошибка авторизации:</strong> {{ authError }}
+        <strong><Icon name="warning" /> Ошибка авторизации:</strong> {{ authError }}
         <button @click="dismissAuthError" class="auth-error-close">×</button>
       </div>
     </div>
@@ -21,8 +21,8 @@
           </div>
           <div class="nav-right">
             <button @click="toggleTheme" class="theme-toggle" :title="theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'">
-              <span v-if="theme === 'dark'">☀️</span>
-              <span v-else>🌙</span>
+              <Icon v-if="theme === 'dark'" name="sun" />
+              <Icon v-else name="moon" />
             </button>
             <button v-if="!isTelegramMiniApp" @click="logout" class="btn btn-secondary">Logout</button>
           </div>
@@ -41,19 +41,19 @@
     <nav v-if="isAuthenticated" class="navbar-mobile">
       <div class="mobile-nav-main">
         <router-link to="/dashboard" class="mobile-nav-item" title="Dashboard">
-          <span class="mobile-nav-icon">📊</span>
+          <Icon name="dashboard" class="mobile-nav-icon" />
           <span class="mobile-nav-label">Dashboard</span>
         </router-link>
         <router-link to="/vocab" class="mobile-nav-item" title="Vocabulary">
-          <span class="mobile-nav-icon">📚</span>
+          <Icon name="book" class="mobile-nav-icon" />
           <span class="mobile-nav-label">Vocab</span>
         </router-link>
         <router-link to="/training" class="mobile-nav-item" title="Training">
-          <span class="mobile-nav-icon">🎯</span>
+          <Icon name="target" class="mobile-nav-icon" />
           <span class="mobile-nav-label">Training</span>
         </router-link>
         <router-link to="/chat" class="mobile-nav-item" title="Chat">
-          <span class="mobile-nav-icon">💬</span>
+          <Icon name="chat" class="mobile-nav-icon" />
           <span class="mobile-nav-label">Chat</span>
         </router-link>
         <button 
@@ -63,7 +63,7 @@
           :class="{ active: showSidebar }"
           title="More"
         >
-          <span class="mobile-nav-icon">⋯</span>
+          <Icon name="more" class="mobile-nav-icon" />
           <span class="mobile-nav-label">More</span>
         </button>
       </div>
@@ -80,15 +80,15 @@
       </div>
       <div class="sidebar-content">
         <router-link v-if="isAdmin" to="/admin" class="sidebar-item" @click="showSidebar = false">
-          <span class="sidebar-icon">⚙️</span>
+          <Icon name="settings" class="sidebar-icon" />
           <span>Admin</span>
         </router-link>
         <button @click="handleThemeToggle" class="sidebar-item">
-          <span class="sidebar-icon">{{ theme === 'dark' ? '☀️' : '🌙' }}</span>
+          <Icon :name="theme === 'dark' ? 'sun' : 'moon'" class="sidebar-icon" />
           <span>{{ theme === 'dark' ? 'Light' : 'Dark' }} Theme</span>
         </button>
         <button v-if="!isTelegramMiniApp" @click="handleLogout" class="sidebar-item">
-          <span class="sidebar-icon">🚪</span>
+          <Icon name="logout" class="sidebar-icon" />
           <span>Logout</span>
         </button>
       </div>
@@ -101,6 +101,7 @@ import { ref, onMounted, watch, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuth } from './composables/useAuth'
 import { useTheme } from './composables/useTheme'
+import Icon from './components/Icon.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -290,6 +291,9 @@ const hasMoreItems = computed(() => {
 .mobile-nav-icon {
   font-size: 20px;
   line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .mobile-nav-label {
@@ -407,6 +411,9 @@ const hasMoreItems = computed(() => {
   font-size: 20px;
   width: 24px;
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Main content padding for mobile footer */
