@@ -72,16 +72,19 @@
           <button @click="loadWords" class="btn btn-primary">Refresh</button>
         </div>
 
-        <div v-if="wordsLoading" class="loading">Loading words...</div>
-        <div v-else-if="wordsError" class="empty-message">
-          <p>{{ wordsError }}</p>
-        </div>
-        <div v-else-if="words.length === 0" class="empty-message">
-          <p v-if="wordsSearchQuery">No words found matching "{{ wordsSearchQuery }}".</p>
-          <p v-else>No words found</p>
-        </div>
-        <div v-else class="words-table-container">
-          <table class="words-table">
+        <div class="words-content">
+          <div v-if="wordsError && !wordsLoading" class="empty-message">
+            <p>{{ wordsError }}</p>
+          </div>
+          <div v-else-if="words.length === 0 && !wordsLoading" class="empty-message">
+            <p v-if="wordsSearchQuery">No words found matching "{{ wordsSearchQuery }}".</p>
+            <p v-else>No words found</p>
+          </div>
+          <div v-else class="words-table-container" :class="{ 'loading-overlay': wordsLoading }">
+            <div v-if="wordsLoading" class="loading-overlay-content">
+              <div class="loading">Loading words...</div>
+            </div>
+            <table class="words-table">
             <thead>
               <tr>
                 <th>ID</th>
@@ -221,8 +224,9 @@
               </template>
             </tbody>
           </table>
+          </div>
         </div>
-        <div class="pagination" v-if="wordsPagination.total_pages > 1">
+        <div class="pagination" v-if="wordsPagination.total_pages > 1 && !wordsLoading">
           <button 
             @click="goToWordsPage(wordsPagination.page - 1)" 
             :disabled="wordsPagination.page <= 1"
@@ -1510,6 +1514,40 @@ const formatDate = (dateStr: string | null | undefined) => {
     flex: 1;
     min-width: 0;
   }
+}
+
+.words-content {
+  position: relative;
+}
+
+.words-table-container {
+  position: relative;
+}
+
+.words-table-container.loading-overlay {
+  min-height: 200px;
+}
+
+.loading-overlay-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--card-bg);
+  opacity: 0.9;
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  border-radius: 8px;
+}
+
+.loading-overlay-content .loading {
+  font-size: 16px;
+  color: var(--text-primary);
+  padding: 20px;
 }
 </style>
 

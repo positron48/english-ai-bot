@@ -13,10 +13,8 @@
       </div>
     </div>
 
-    <div v-if="loading" class="loading">Loading...</div>
-    
-    <div v-else>
-      <div v-if="words.length === 0" class="card">
+    <div class="vocab-content">
+      <div v-if="words.length === 0 && !loading" class="card">
         <p v-if="searchQuery">
           No words found matching "{{ searchQuery }}".
         </p>
@@ -26,7 +24,10 @@
       </div>
       
       <div v-else>
-        <div class="table-container">
+        <div class="table-container" :class="{ 'loading-overlay': loading }">
+          <div v-if="loading" class="loading-overlay-content">
+            <div class="loading">Loading...</div>
+          </div>
           <table class="vocab-table">
             <thead>
               <tr>
@@ -117,7 +118,7 @@
           </table>
         </div>
 
-        <div class="pagination" v-if="pagination.total_pages > 1">
+        <div class="pagination" v-if="pagination.total_pages > 1 && !loading">
           <button 
             @click="goToPage(pagination.page - 1)" 
             :disabled="pagination.page <= 1"
@@ -1224,5 +1225,39 @@ const closeDeleteCardConfirm = () => {
   font-family: 'Arial Unicode MS', 'Lucida Sans Unicode', 'Charis SIL', 'Doulos SIL', 'Gentium Plus', 'DejaVu Sans', Arial, sans-serif;
   font-style: italic;
   letter-spacing: 0.5px;
+}
+
+.vocab-content {
+  position: relative;
+}
+
+.table-container {
+  position: relative;
+}
+
+.table-container.loading-overlay {
+  min-height: 200px;
+}
+
+.loading-overlay-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--card-bg);
+  opacity: 0.9;
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  border-radius: 8px;
+}
+
+.loading-overlay-content .loading {
+  font-size: 16px;
+  color: var(--text-primary);
+  padding: 20px;
 }
 </style>

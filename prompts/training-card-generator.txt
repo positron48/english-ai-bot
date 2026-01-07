@@ -8,7 +8,7 @@ IMPORTANT OUTPUT RULES
 - Always output ALL schema keys: word_en, lemma, transcription, senses, error.
 - If the word is rejected: set senses to [] and set error to a non-empty string. Otherwise: set error to "" (empty string).
 
-# ========================  REJECTION RULES (CRITICAL)
+========================  REJECTION RULES (CRITICAL)
 
 Be extremely conservative with rejection. Wrong rejection is worse than generating an imperfect card.
 
@@ -37,7 +37,7 @@ Hard acceptance overrides (must ACCEPT even if you feel uncertain):
 Reject examples (proper names only): "london", "microsoft", "coca-cola", "einstein", "paris".
  Accept examples (normal or slang words): "scholar", "coat", "proper", "violently", "teacher", "doctor", "bank", "apple", "earworm", "tor", "markable".
 
-# ========================  JSON SCHEMA (MUST MATCH)
+========================  JSON SCHEMA (MUST MATCH)
 
 {
  "word_en": "string (lemma/base form, for backward compatibility)",
@@ -59,7 +59,7 @@ Reject examples (proper names only): "london", "microsoft", "coca-cola", "einste
  "error": "string (description of reason for reject only if word has been rejected)"
  }
 
-# ========================  CARD CONTENT REQUIREMENTS
+========================  CARD CONTENT REQUIREMENTS
 
 1. Extract 1–3 MOST COMMON and BASIC senses of the word
 
@@ -92,6 +92,15 @@ Reject examples (proper names only): "london", "microsoft", "coca-cola", "einste
   - verb sense → all distractors_ru and distractors_en MUST be verbs (format in English: "to <verb>")
   - adjective sense → all distractors_ru and distractors_en MUST be adjectives
   - adverb sense → all distractors_ru and distractors_en MUST be adverbs
+- Language constraint (STRICT):
+  - distractors_ru MUST be in Russian (Cyrillic) only.
+  - distractors_ru MUST NOT contain any English words, Latin letters, or the prefix "to ".
+  - If you accidentally generate any English in distractors_ru, you MUST replace those items with correct Russian distractors before output.
+- For distractors_ru, keep the same part of speech in natural Russian dictionary form:
+  - verb sense → Russian infinitives (e.g., «писать», «печатать», «копировать»)
+  - noun sense → nouns in nominative singular (e.g., «отчёт», «файл»)
+  - adjective sense → masculine singular adjective (e.g., «быстрый»)
+  - adverb sense → adverbs (e.g., «быстро»)
 - Prefer common learner confusions: similar spelling/sound, false friends, or same broad topic but different meaning.
 - Keep distractors concise and similar “shape” to the correct answer.
 
@@ -99,15 +108,20 @@ Reject examples (proper names only): "london", "microsoft", "coca-cola", "einste
 
 - A memorable Russian hint (mnemonic/visual association) that helps remember THIS sense and distinguish it from others.
 
-# ========================  LEMMA & TRANSCRIPTION RULES
+========================  LEMMA & TRANSCRIPTION RULES
 
 - lemma must be the base form. If the input is inflected, convert to lemma.
 - word_en should equal lemma (for backward compatibility).
 - transcription should be IPA (e.g., /tɔːr/). If unsure, leave it as "" (empty string), but do NOT reject.
 
-# ========================  FINAL INSTRUCTIONS
+========================  FINAL INSTRUCTIONS
+
+Output validation (MANDATORY before printing JSON):
+
+- Verify distractors_ru items are all Cyrillic Russian and match the sense POS.
+- Verify distractors_en items are English and match the sense POS rules (verbs formatted as "to <verb>").
+- If any validation fails, fix it and re-check. Output ONLY the corrected JSON.
 
 When the user provides the word, output ONLY the JSON object that matches the schema. Set error to "" if accepted, otherwise set senses to [] and provide a clear error reason.
 
 Word to process:
-
