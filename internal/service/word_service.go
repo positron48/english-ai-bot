@@ -137,24 +137,19 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 	// If definition_ru is present, ignore error field - we have valid data
 	hasDefinitionRU := strings.TrimSpace(wordInfo.DefinitionRU) != ""
 	
-	// Priority 1: If error is true (bool or string "true") AND hint is present,
-	// return only hint - data about word refers to a different word from the suggestion
-	// BUT skip if we have definition_ru (valid data)
-	if !hasDefinitionRU && wordInfo.Error.IsTrue() && wordInfo.Hint != "" {
-		message := fmt.Sprintf("❌ Слово \"%s\" не найдено в словаре.\n\n💡 %s", inputWord, strings.TrimSpace(wordInfo.Hint))
-		return message, nil
-	}
-	
-	// Priority 2: If error is true but no hint, return error message
+	// Priority 1: If error is true (bool or string "true"), check hint first
 	// BUT skip if we have definition_ru (valid data)
 	if !hasDefinitionRU && wordInfo.Error.IsTrue() {
-		message := fmt.Sprintf("❌ Слово \"%s\" не найдено в словаре.\n\nВозможно, это:\n• Опечатка\n• Несуществующее слово\n• Слово на другом языке", inputWord)
-		if wordInfo.Hint != "" {
-			message += fmt.Sprintf("\n\n💡 %s", strings.TrimSpace(wordInfo.Hint))
+		hint := strings.TrimSpace(wordInfo.Hint)
+		if hint != "" {
+			// If hint is present, return only hint
+			message := fmt.Sprintf("💡 %s", hint)
+			return message, nil
 		} else {
-			message += "\n\nПопробуйте проверить написание или введите другое слово."
+			// If hint is empty, return default error message
+			message := "💡 Это слово, скорее всего, опечатка или несуществующее английское слово."
+			return message, nil
 		}
-		return message, nil
 	}
 	
 	// Priority 3: Legacy handling for string error messages
@@ -202,17 +197,17 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 		// 1. Error field contains keywords indicating real error (word doesn't exist, etc.) OR
 		// 2. Error field is not empty AND it's not a known non-error string AND we don't have valid data
 		if errorMsg != "" && (isRealError || (!isNonErrorString && !hasValidData)) {
-			// Build user-friendly message
-			message := fmt.Sprintf("❌ Слово \"%s\" не найдено в словаре.\n\nВозможно, это:\n• Опечатка\n• Несуществующее слово\n• Слово на другом языке", inputWord)
-			
-			// Add LLM hint if available
-			if wordInfo.Hint != "" {
-				message += fmt.Sprintf("\n\n💡 %s", strings.TrimSpace(wordInfo.Hint))
+			// Check hint first
+			hint := strings.TrimSpace(wordInfo.Hint)
+			if hint != "" {
+				// If hint is present, return only hint
+				message := fmt.Sprintf("💡 %s", hint)
+				return message, nil
 			} else {
-				message += "\n\nПопробуйте проверить написание или введите другое слово."
+				// If hint is empty, return default error message
+				message := "💡 Это слово, скорее всего, опечатка или несуществующее английское слово."
+				return message, nil
 			}
-			
-			return message, nil
 		}
 	}
 
