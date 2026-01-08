@@ -215,6 +215,8 @@ func (w *TrainingWorker) processCard(ctx context.Context, wordCard *models.WordC
 				zap.String("error", validationError),
 			)
 		}
+		// Notify admin about validation error
+		w.notifyAdminValidationError(wordCard.Word, validationError)
 		// Return nil (not an error) to avoid triggering circuit breaker
 		return nil
 	}
@@ -392,7 +394,7 @@ func (w *TrainingWorker) getUsersForWord(word string) ([]*models.User, error) {
 	return users, nil
 }
 
-// notifyAdmin sends a notification to the admin
+// notifyAdmin sends a notification to the admin about circuit breaker
 func (w *TrainingWorker) notifyAdmin(errorMessage string) {
 	if w.adminTelegramID == 0 {
 		w.logger.Debug("admin telegram ID not set, skipping notification")
@@ -430,6 +432,47 @@ func (w *TrainingWorker) notifyAdmin(errorMessage string) {
 	} else {
 		w.logger.Info("sent circuit breaker notification to admin",
 			zap.Int64("admin_id", w.adminTelegramID),
+		)
+	}
+}
+
+// notifyAdminValidationError sends a notification to the admin about validation error
+func (w *TrainingWorker) notifyAdminValidationError(word, validationError string) {
+	if w.adminTelegramID == 0 {
+		w.logger.Debug("admin telegram ID not set, skipping validation error notification")
+		return
+	}
+
+	// Truncate error message if too long for Telegram
+	errorMsg := validationError
+	if len(errorMsg) > 500 {
+		errorMsg = errorMsg[:500] + "..."
+	}
+
+	message := fmt.Sprintf(
+		"⚠️ Ошибка валидации карточки\n\n"+
+			"Слово: %s\n"+
+			"Ошибка валидации distractors:\n%s\n\n"+
+			"Время: %s",
+		word,
+		errorMsg,
+		time.Now().Format("2006-01-02 15:04:05"),
+	)
+
+	if w.bot == nil {
+		w.logger.Warn("cannot send admin notification: Telegram bot not initialized",
+			zap.Int64("admin_id", w.adminTelegramID),
+		)
+		return
+	}
+
+	msg := tgbotapi.NewMessage(w.adminTelegramID, message)
+	if _, err := w.bot.Send(msg); err != nil {
+		w.logger.Error("failed to send validation error notification to admin", zap.Error(err))
+	} else {
+		w.logger.Info("sent validation error notification to admin",
+			zap.Int64("admin_id", w.adminTelegramID),
+			zap.String("word", word),
 		)
 	}
 }
