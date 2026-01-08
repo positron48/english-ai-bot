@@ -35,7 +35,7 @@ Hard acceptance overrides (must ACCEPT even if you feel uncertain):
 - If the input is exactly "tor" (any casing), you MUST ACCEPT and treat it as a COMMON NOUN meaning “a rocky hill / rocky outcrop”, and generate a normal card. It is NOT a proper noun in this task.
 
 Reject examples (proper names only): "london", "microsoft", "coca-cola", "einstein", "paris".
- Accept examples (normal or slang words): "scholar", "coat", "proper", "violently", "teacher", "doctor", "bank", "apple", "earworm", "tor", "markable".
+Accept examples (normal or slang words): "scholar", "coat", "proper", "violently", "teacher", "doctor", "bank", "apple", "earworm", "tor", "markable".
 
 ========================  JSON SCHEMA (MUST MATCH)
 
@@ -44,20 +44,20 @@ Reject examples (proper names only): "london", "microsoft", "coca-cola", "einste
  "lemma": "string (base form/lemma, e.g., 'spy' for 'spied')",
  "transcription": "string (IPA)",
  "senses": [
- {
- "pos": "string (part of speech for THIS specific sense: noun, verb, adjective, adverb, etc.)",
- "display_word": "string (display form for THIS sense: for verbs use 'to <lemma>', for others use lemma)",
- "word_ru": "string",
- "meaning_en": "string",
- "example_en": "string",
- "example_ru": "string",
- "distractors_ru": ["string", "string", "string"],
- "distractors_en": ["string", "string", "string"],
- "hint": "string"
- }
+   {
+     "pos": "string (part of speech for THIS specific sense: noun, verb, adjective, adverb, etc.)",
+     "display_word": "string (display form for THIS sense: for verbs use 'to <lemma>', for others use lemma)",
+     "word_ru": "string",
+     "meaning_en": "string",
+     "example_en": "string",
+     "example_ru": "string",
+     "distractors_ru": ["string", "string", "string"],
+     "distractors_en": ["string", "string", "string"],
+     "hint": "string"
+   }
  ],
  "error": "string (description of reason for reject only if word has been rejected)"
- }
+}
 
 ========================  CARD CONTENT REQUIREMENTS
 
@@ -68,12 +68,12 @@ Reject examples (proper names only): "london", "microsoft", "coca-cola", "einste
 - Prioritize meanings learners encounter most often.
 - If the word has both everyday and technical meanings, prefer everyday sense(s) first.
 
-1. For each sense provide:
+2. For each sense provide:
 
 - pos: MUST match the part of speech of THIS specific sense.
 - display_word:
-  - For verbs: MUST be "to <lemma>".
-  - For non-verbs: MUST be the lemma.
+  - If pos is "verb": MUST be exactly "to <lemma>".
+  - If pos is NOT "verb": MUST be exactly lemma (no "to ").
 - word_ru: short, compact Russian translation (usually 1–4 words)
   - No comma-separated synonym lists.
   - Prefer 1–2 words when possible.
@@ -82,31 +82,78 @@ Reject examples (proper names only): "london", "microsoft", "coca-cola", "einste
 - example_en: natural everyday sentence showing THIS sense.
 - example_ru: accurate Russian translation of the example.
 
-1. Distractors (VERY IMPORTANT)
+3. Distractors (VERY IMPORTANT)
 
-- Provide 3–4 distractors in RU and EN (you may provide 3 items, but 4 is allowed and preferred).
-- Distractors must be plausible but clearly WRONG for THIS specific sense.
-- Do NOT use synonyms or near-synonyms of the correct meaning.
-- Part-of-speech consistency:
-  - noun sense → all distractors_ru and distractors_en MUST be nouns
-  - verb sense → all distractors_ru and distractors_en MUST be verbs (format in English: "to <verb>")
-  - adjective sense → all distractors_ru and distractors_en MUST be adjectives
-  - adverb sense → all distractors_ru and distractors_en MUST be adverbs
-- Language constraint (STRICT):
-  - distractors_ru MUST be in Russian (Cyrillic) only.
-  - distractors_ru MUST NOT contain any English words, Latin letters, or the prefix "to ".
-  - If you accidentally generate any English in distractors_ru, you MUST replace those items with correct Russian distractors before output.
-- For distractors_ru, keep the same part of speech in natural Russian dictionary form:
-  - verb sense → Russian infinitives (e.g., «писать», «печатать», «копировать»)
-  - noun sense → nouns in nominative singular (e.g., «отчёт», «файл»)
-  - adjective sense → masculine singular adjective (e.g., «быстрый»)
-  - adverb sense → adverbs (e.g., «быстро»)
-- Prefer common learner confusions: similar spelling/sound, false friends, or same broad topic but different meaning.
-- Keep distractors concise and similar “shape” to the correct answer.
+- Provide exactly 3 distractors in RU and EN.
+- Distractors must be plausible choices for a learner, but clearly WRONG for THIS specific sense.
 
-1. Hint
+Part-of-speech consistency (STRICT):
 
-- A memorable Russian hint (mnemonic/visual association) that helps remember THIS sense and distinguish it from others.
+- noun sense → distractors_ru and distractors_en MUST be nouns
+- verb sense → distractors_ru and distractors_en MUST be verbs
+  - distractors_en MUST be exactly in the format: "to <verb>" (infinitive marker REQUIRED)
+  - distractors_ru MUST be Russian infinitives (e.g., «делать», «писать»)
+- adjective sense → distractors_ru and distractors_en MUST be adjectives
+  - distractors_ru MUST be masculine singular adjective (e.g., «быстрый»)
+- adverb sense → distractors_ru and distractors_en MUST be adverbs
+  - distractors_ru MUST be adverbs (e.g., «быстро»)
+
+CRITICAL FORMAT GATE (NO EXCEPTIONS):
+
+- If pos is NOT "verb": NONE of distractors_en items may start with "to ".
+  - "to " is FORBIDDEN for nouns/adjectives/adverbs/etc.
+- If pos IS "verb": ALL distractors_en items MUST start with "to " and contain only one verb lemma after it.
+
+Language constraint (ZERO TOLERANCE):
+
+- distractors_ru MUST be Russian only (Cyrillic). No Latin letters, no English words, no "to ".
+- distractors_en MUST be English only.
+
+No leakage / no relatives / no near-meaning (CRITICAL):
+
+- Distractors MUST NOT contain the training word in any casing, and MUST NOT contain its lemma or obvious inflections.
+- Distractors MUST NOT be same-root / cognates / derived forms of the training word (e.g., decide → decision/decisive is forbidden).
+- Distractors MUST NOT be synonyms, near-synonyms, or translations of the correct meaning for this sense (including very close meaning words).
+  - If it feels “almost right”, replace it.
+
+How to choose (to avoid bad distractors):
+
+- distractors_ru should be selected as wrong Russian answers to the correct Russian translation (word_ru):
+  - same part of speech and similar everyday “shape”, but different meaning
+  - NOT synonyms/near-synonyms/related-by-root
+- distractors_en should be selected as wrong English confusions related to the original word form/sound/topic:
+  - similar spelling/sound or same broad context
+  - but NOT sharing the root and NOT close in meaning
+
+Final validation before output (MANDATORY):
+
+- Re-check that every distractors_ru item is Cyrillic Russian and correct POS form.
+- Re-check that every distractors_en item matches POS + format gate:
+  - verbs: must be "to <verb>"
+  - non-verbs: must NOT start with "to "
+- Re-check “no leakage / no relatives / no near-meaning” for ALL distractors.
+- If any check fails → replace the failing distractor(s) and re-check again.
+
+4. Hint (MEMORY HOOK)
+
+- hint MUST be a short Russian memory hook (1 sentence, ideally 5–12 words) that helps the learner remember the word and this exact sense.
+- The hint should be based on mnemonics, sound-alike, visual association, word-form cue, or a mini story image.
+  Examples of techniques:
+  - Созвучие: “sounds like … → imagine …”
+  - Образ: a vivid picture in the mind (funny/strange is good)
+  - Word-shape cue: highlight a memorable part of the spelling without turning it into another English word
+  - Contrast cue: “это НЕ …, а …” (contrast with a wrong idea, not listing distractors)
+- The hint MUST be meaning-targeted: it should lock onto the current sense, not a different sense of the same word.
+- The hint MUST NOT:
+  - repeat the definition in other words (no paraphrasing meaning_en)
+  - be just a translation (no "= <word_ru>")
+  - contain the training word, its lemma, or obvious inflections
+  - contain any distractor word (RU or EN) or explicitly list distractors
+- The hint SHOULD:
+  - be easy to visualize and recall
+  - include one concrete image or “scene” if possible
+  - avoid complex grammar; keep it punchy
+- If the word is abstract, use a metaphor or everyday situation (money, home, work, school) to anchor it.
 
 ========================  LEMMA & TRANSCRIPTION RULES
 
@@ -119,9 +166,12 @@ Reject examples (proper names only): "london", "microsoft", "coca-cola", "einste
 Output validation (MANDATORY before printing JSON):
 
 - Verify distractors_ru items are all Cyrillic Russian and match the sense POS.
-- Verify distractors_en items are English and match the sense POS rules (verbs formatted as "to <verb>").
+- Verify distractors_en items match BOTH:
+  - POS rule (noun/adjective/adverb/verb)
+  - FORMAT GATE: verbs must be "to <verb>", non-verbs must NOT start with "to "
 - If any validation fails, fix it and re-check. Output ONLY the corrected JSON.
 
 When the user provides the word, output ONLY the JSON object that matches the schema. Set error to "" if accepted, otherwise set senses to [] and provide a clear error reason.
 
 Word to process:
+
