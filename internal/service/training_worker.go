@@ -193,6 +193,32 @@ func (w *TrainingWorker) processCard(ctx context.Context, wordCard *models.WordC
 		return fmt.Errorf("no senses in LLM response")
 	}
 
+	// Validate distractors according to rules
+	if validationError := validateTrainingCardResponse(wordCard, &trainingResp); validationError != "" {
+		w.logger.Warn("training card validation failed",
+			zap.String("word", wordCard.Word),
+			zap.Int64("word_card_id", wordCard.ID),
+			zap.String("error", validationError),
+		)
+		// Mark as processed with error - don't create cards, don't trigger circuit breaker
+		err := w.wordRepo.MarkWordCardProcessedError(wordCard.ID, validationError)
+		if err != nil {
+			w.logger.Error("failed to mark word card as processed with error",
+				zap.Int64("word_card_id", wordCard.ID),
+				zap.String("error", validationError),
+				zap.Error(err),
+			)
+			// Still return nil to avoid circuit breaker
+		} else {
+			w.logger.Info("word card rejected due to validation failure",
+				zap.String("word", wordCard.Word),
+				zap.String("error", validationError),
+			)
+		}
+		// Return nil (not an error) to avoid triggering circuit breaker
+		return nil
+	}
+
 	w.logger.Info("parsed training card response",
 		zap.String("word", wordCard.Word),
 		zap.Int("senses", len(trainingResp.Senses)),
