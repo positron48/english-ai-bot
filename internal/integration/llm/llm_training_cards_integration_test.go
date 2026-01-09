@@ -57,26 +57,24 @@ func runTrainingTestCaseWithBusinessValidation(ctx context.Context, t *testing.T
 		// Clean JSON
 		response = cleanJSONResponse(response)
 
-		// Parse JSON into structured model
+		// Parse JSON into structured model for business validation
 		var trainingResp models.TrainingCardResponse
 		if err := json.Unmarshal([]byte(response), &trainingResp); err != nil {
 			t.Fatalf("Failed to parse JSON response: %v\nResponse: %s", err, response)
 		}
 
+		// Parse JSON into map for schema validation (needs []interface{} format)
+		var respMap map[string]interface{}
+		if err := json.Unmarshal([]byte(response), &respMap); err != nil {
+			t.Fatalf("Failed to parse JSON response as map: %v\nResponse: %s", err, response)
+		}
+
 		// Basic schema validation based on expect
 		var validationErrors []string
 		if tc.Expect == "ok" {
-			validationErrors = validateTrainingResponseOK(t, tc.Word, map[string]interface{}{
-				"error":  trainingResp.Error,
-				"senses": trainingResp.Senses,
-				"lemma":  trainingResp.Lemma,
-				"word_en": trainingResp.WordEN,
-			})
+			validationErrors = validateTrainingResponseOK(t, tc.Word, respMap)
 		} else if tc.Expect == "reject" {
-			validationErrors = validateTrainingResponseReject(t, tc.Word, map[string]interface{}{
-				"error":  trainingResp.Error,
-				"senses": trainingResp.Senses,
-			})
+			validationErrors = validateTrainingResponseReject(t, tc.Word, respMap)
 		} else {
 			t.Fatalf("Invalid expect value: %q (must be 'ok' or 'reject')", tc.Expect)
 		}

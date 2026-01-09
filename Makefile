@@ -50,12 +50,12 @@ llm-words:
 	@echo "⚠️  Requires: AI_URL, AI_API_KEY environment variables"
 	$(GO) test -tags=integration -v -run '^TestLLM_WordCards$$' -count=1 ./internal/integration/llm/...
 
-llm-training:
+llm-cards:
 	@echo "Running LLM training cards integration tests..."
 	@echo "⚠️  Requires: AI_URL, AI_API_KEY environment variables"
 	$(GO) test -tags=integration -v -run '^TestLLM_TrainingCards$$' -count=1 ./internal/integration/llm/...
 
-llm-all: llm-words llm-training
+llm-all: llm-words llm-cards
 	@echo "✅ All LLM integration tests completed"
 
 # CI checks (same as in GitHub Actions)

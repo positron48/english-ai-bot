@@ -25,8 +25,48 @@
     "note": "Proper noun (brand name) - should be rejected with error message and empty senses"
   },
   {
+    "word": "prado",
+    "expect": "reject",
+    "note": "Proper noun (brand name) - should be rejected with error message and empty senses"
+  },
+  {
     "word": "xyzqwerty123",
     "expect": "reject",
     "note": "Nonsense word - should be rejected"
+  },
+  {
+    "word": "jonas",
+    "expect": "reject",
+    "note": "name"
+  },
+  {
+    "word": "propel",
+    "expect": "ok",
+    "note": "correct word"
+  },
+  {
+    "word": "burst",
+    "expect": "ok",
+    "note": "correct word"
+  },
+  {
+    "word": "wound",
+    "expect": "ok",
+    "note": "correct word"
+  },
+  {
+    "word": "glaring",
+    "expect": "ok",
+    "note": "correct word"
+  },
+  {
+    "word": "nod",
+    "expect": "ok",
+    "note": "correct word"
+  },
+  {
+    "word": "slender",
+    "expect": "ok",
+    "note": "correct word"
   }
 ]
