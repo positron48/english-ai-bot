@@ -469,10 +469,11 @@ func (r *WordRepository) ListWordCardsAdmin(filterUserID *int64, onlyWithErrors 
 		conditions = append(conditions, "wc.processing_error IS NOT NULL AND wc.processing_error != ''")
 	}
 
-	// Filter by search query if specified (by word or translation)
+	// Filter by search query if specified (by word or translation) - case-insensitive
 	if searchQuery != "" {
-		conditions = append(conditions, "(wc.word LIKE ? OR wc.definition_ru LIKE ?)")
-		searchPattern := "%" + searchQuery + "%"
+		searchLower := strings.ToLower(searchQuery)
+		conditions = append(conditions, "(LOWER(wc.word) LIKE ? OR LOWER(wc.definition_ru) LIKE ?)")
+		searchPattern := "%" + searchLower + "%"
 		args = append(args, searchPattern, searchPattern)
 	}
 
@@ -569,10 +570,11 @@ func (r *WordRepository) CountWordCardsAdmin(filterUserID *int64, onlyWithErrors
 		conditions = append(conditions, "wc.processing_error IS NOT NULL AND wc.processing_error != ''")
 	}
 
-	// Filter by search query if specified (by word or translation)
+	// Filter by search query if specified (by word or translation) - case-insensitive
 	if searchQuery != "" {
-		conditions = append(conditions, "(wc.word LIKE ? OR wc.definition_ru LIKE ?)")
-		searchPattern := "%" + searchQuery + "%"
+		searchLower := strings.ToLower(searchQuery)
+		conditions = append(conditions, "(LOWER(wc.word) LIKE ? OR LOWER(wc.definition_ru) LIKE ?)")
+		searchPattern := "%" + searchLower + "%"
 		args = append(args, searchPattern, searchPattern)
 	}
 

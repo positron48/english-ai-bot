@@ -492,7 +492,7 @@ watch(() => route.path, (newPath) => {
   .chat-messages {
     flex: 1;
     overflow-y: auto;
-    padding: 15px 10px 15px 15px;
+    padding: 15px 8px 15px 8px;
     padding-bottom: 100px; /* Отступ для поля ввода */
     margin-bottom: 0;
     background: var(--bg-primary);
@@ -513,11 +513,11 @@ watch(() => route.path, (newPath) => {
 
   .chat-input-container {
     max-width: 100%;
-    padding: 10px 15px;
+    padding: 10px 8px;
   }
 
   .welcome-message {
-    padding: 30px 15px;
+    padding: 30px 8px;
     min-height: 200px;
   }
 

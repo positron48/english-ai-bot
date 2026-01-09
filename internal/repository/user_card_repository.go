@@ -346,3 +346,119 @@ func (r *UserCardRepository) DeleteUserCardsByWordCardIDForUser(userID int64, wo
 	return rowsAffected, nil
 }
 
+// OrphanedUserCardInfo represents information about an orphaned user card
+type OrphanedUserCardInfo struct {
+	UserCardID      int64
+	UserID          int64
+	TelegramID      int64
+	TelegramUsername *string
+	TrainingCardID  int64
+	Direction       string
+	State           string
+	Reps            int
+	CreatedAt       time.Time
+	ReviewEventsCount int64
+}
+
+// ListOrphanedUserCards lists user_cards that reference non-existent training_cards
+func (r *UserCardRepository) ListOrphanedUserCards(limit, offset int) ([]*OrphanedUserCardInfo, error) {
+	query := `SELECT 
+		uc.id as user_card_id,
+		uc.user_id,
+		u.telegram_id,
+		u.telegram_username,
+		uc.training_card_id,
+		uc.direction,
+		uc.state,
+		uc.reps,
+		uc.created_at,
+		COALESCE(COUNT(re.id), 0) as review_events_count
+	FROM user_cards uc
+	LEFT JOIN users u ON uc.user_id = u.id
+	LEFT JOIN review_events re ON re.user_card_id = uc.id
+	WHERE uc.training_card_id NOT IN (SELECT id FROM training_cards)
+	GROUP BY uc.id, uc.user_id, u.telegram_id, u.telegram_username, uc.training_card_id, uc.direction, uc.state, uc.reps, uc.created_at
+	ORDER BY uc.created_at DESC
+	LIMIT ? OFFSET ?`
+
+	rows, err := r.db.Query(query, limit, offset)
+	if err != nil {
+		return nil, fmt.Errorf("failed to list orphaned user cards: %w", err)
+	}
+	defer rows.Close()
+
+	var items []*OrphanedUserCardInfo
+	for rows.Next() {
+		var item OrphanedUserCardInfo
+		var createdAt string
+		var telegramUsername sql.NullString
+
+		err := rows.Scan(
+			&item.UserCardID,
+			&item.UserID,
+			&item.TelegramID,
+			&telegramUsername,
+			&item.TrainingCardID,
+			&item.Direction,
+			&item.State,
+			&item.Reps,
+			&createdAt,
+			&item.ReviewEventsCount,
+		)
+		if err != nil {
+			return nil, fmt.Errorf("failed to scan orphaned user card: %w", err)
+		}
+
+		if telegramUsername.Valid {
+			item.TelegramUsername = &telegramUsername.String
+		}
+
+		item.CreatedAt, _ = time.Parse("2006-01-02 15:04:05", createdAt)
+		items = append(items, &item)
+	}
+
+	return items, nil
+}
+
+// CountOrphanedUserCards counts total orphaned user cards
+func (r *UserCardRepository) CountOrphanedUserCards() (int, error) {
+	query := `SELECT COUNT(*) 
+	FROM user_cards 
+	WHERE training_card_id NOT IN (SELECT id FROM training_cards)`
+
+	var count int
+	err := r.db.QueryRow(query).Scan(&count)
+	if err != nil {
+		return 0, fmt.Errorf("failed to count orphaned user cards: %w", err)
+	}
+
+	return count, nil
+}
+
+// DeleteUserCard deletes a specific user card by ID
+// This will cascade delete review_events due to foreign key constraint
+func (r *UserCardRepository) DeleteUserCard(userCardID int64) error {
+	query := `DELETE FROM user_cards WHERE id = ?`
+	
+	result, err := r.db.Exec(query, userCardID)
+	if err != nil {
+		return fmt.Errorf("failed to delete user card: %w", err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("failed to get rows affected: %w", err)
+	}
+
+	if rowsAffected == 0 {
+		return fmt.Errorf("user card not found")
+	}
+
+	r.logger.Info("deleted user card",
+		zap.Int64("user_card_id", userCardID),
+		zap.Int64("rows_affected", rowsAffected),
+	)
+
+	return nil
+}
+

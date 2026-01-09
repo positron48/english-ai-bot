@@ -808,3 +808,140 @@ func (r *Router) handleAdminUsers(w http.ResponseWriter, req *http.Request) {
 	})
 }
 
+// handleAdminOrphanedCards handles orphaned training cards management
+// @Summary      Получить список подвешенных тренировочных карточек
+// @Description  Возвращает список training_cards, которые ссылаются на несуществующие word_cards
+// @Tags         Admin
+// @Accept       json
+// @Produce      application/json
+// @Security     ApiKeyAuth
+// @Param        limit   query     int     false  "Лимит записей"  default(50)
+// @Param        offset  query     int     false  "Смещение"       default(0)
+// @Success      200     {object}  map[string]interface{}  "Список подвешенных карточек"
+// @Failure      401     {string}  string  "Неавторизован"
+// @Failure      403     {string}  string  "Доступ запрещен"
+// @Router       /app/admin/orphaned-cards [get]
+func (r *Router) handleAdminOrphanedCards(w http.ResponseWriter, req *http.Request) {
+	if req.Method == http.MethodGet {
+		trainingCardRepo := repository.NewTrainingCardRepository(r.db, r.logger)
+
+		limit := 50
+		if limitStr := req.URL.Query().Get("limit"); limitStr != "" {
+			if parsedLimit, err := strconv.Atoi(limitStr); err == nil && parsedLimit > 0 {
+				limit = parsedLimit
+			}
+		}
+
+		offset := 0
+		if offsetStr := req.URL.Query().Get("offset"); offsetStr != "" {
+			if parsedOffset, err := strconv.Atoi(offsetStr); err == nil && parsedOffset >= 0 {
+				offset = parsedOffset
+			}
+		}
+
+		cards, err := trainingCardRepo.ListOrphanedTrainingCards(limit, offset)
+		if err != nil {
+			r.logger.Error("failed to list orphaned training cards", zap.Error(err))
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
+		}
+
+		total, err := trainingCardRepo.CountOrphanedTrainingCards()
+		if err != nil {
+			r.logger.Error("failed to count orphaned training cards", zap.Error(err))
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
+		}
+
+		totalPages := (total + limit - 1) / limit
+		if totalPages == 0 {
+			totalPages = 1
+		}
+		currentPage := (offset / limit) + 1
+
+		// Convert to JSON-friendly format
+		cardsList := make([]map[string]interface{}, 0, len(cards))
+		for _, card := range cards {
+			cardMap := map[string]interface{}{
+				"id":                card.TrainingCardID,
+				"word_card_id":      card.WordCardID,
+				"word_en":           card.WordEN,
+				"transcription":     card.Transcription,
+				"sense_index":       card.SenseIndex,
+				"word_ru":           card.WordRU,
+				"meaning_en":        card.MeaningEN,
+				"example_en":         card.ExampleEN,
+				"example_ru":         card.ExampleRU,
+				"pos":               card.POS,
+				"display_word":      card.DisplayWord,
+				"created_at":        card.CreatedAt.Format("2006-01-02 15:04:05"),
+				"user_cards_count":  card.UserCardsCount,
+			}
+			cardsList = append(cardsList, cardMap)
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"cards": cardsList,
+			"pagination": map[string]interface{}{
+				"page":        currentPage,
+				"limit":       limit,
+				"total":       total,
+				"total_pages": totalPages,
+			},
+		})
+		return
+	}
+
+	http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+}
+
+// handleAdminOrphanedCard handles individual orphaned card operations (delete)
+// @Summary      Удалить подвешенную тренировочную карточку
+// @Description  Удаляет training_card по ID (каскадно удаляет связанные user_cards и review_events)
+// @Tags         Admin
+// @Accept       json
+// @Produce      application/json
+// @Security     ApiKeyAuth
+// @Param        id   path      int     true  "ID тренировочной карточки"
+// @Success      200  {object}  map[string]interface{}  "Успешное удаление"
+// @Failure      401  {string}  string  "Неавторизован"
+// @Failure      403  {string}  string  "Доступ запрещен"
+// @Failure      404  {string}  string  "Карточка не найдена"
+// @Router       /app/admin/orphaned-cards/{id} [delete]
+func (r *Router) handleAdminOrphanedCard(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodDelete {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// Extract ID from path
+	path := strings.TrimPrefix(req.URL.Path, "/app/admin/orphaned-cards/")
+	trainingCardID, err := strconv.ParseInt(path, 10, 64)
+	if err != nil {
+		http.Error(w, "Invalid training card ID", http.StatusBadRequest)
+		return
+	}
+
+	trainingCardRepo := repository.NewTrainingCardRepository(r.db, r.logger)
+	err = trainingCardRepo.DeleteTrainingCard(trainingCardID)
+	if err != nil {
+		if strings.Contains(err.Error(), "not found") {
+			http.Error(w, "Training card not found", http.StatusNotFound)
+			return
+		}
+		r.logger.Error("failed to delete training card", zap.Error(err), zap.Int64("training_card_id", trainingCardID))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"success": true,
+		"message": "Training card and all related data deleted successfully",
+		"training_card_id": trainingCardID,
+	})
+}
+

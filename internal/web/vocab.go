@@ -148,9 +148,10 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 
 	args := []interface{}{now, userID, userID}
 	if search != "" {
-		// Search by lemma, display_word, or word_ru
-		baseQuery += " AND (wc.word LIKE ? OR COALESCE((SELECT display_word FROM training_cards tc2 WHERE tc2.word_card_id = tc.word_card_id AND tc2.display_word IS NOT NULL AND tc2.display_word != '' LIMIT 1), wc.display_en, wc.word) LIKE ? OR tc.word_ru LIKE ?)"
-		searchPattern := "%" + search + "%"
+		// Search by lemma, display_word, or word_ru (case-insensitive)
+		searchLower := strings.ToLower(search)
+		baseQuery += " AND (LOWER(wc.word) LIKE ? OR LOWER(COALESCE((SELECT display_word FROM training_cards tc2 WHERE tc2.word_card_id = tc.word_card_id AND tc2.display_word IS NOT NULL AND tc2.display_word != '' LIMIT 1), wc.display_en, wc.word)) LIKE ? OR LOWER(tc.word_ru) LIKE ?)"
+		searchPattern := "%" + searchLower + "%"
 		args = append(args, searchPattern, searchPattern, searchPattern)
 	}
 
@@ -164,9 +165,10 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 	WHERE uc.user_id = ?`
 	countArgs := []interface{}{userID}
 	if search != "" {
-		// Search by lemma, display_word, or word_ru
-		countQuery += " AND (wc.word LIKE ? OR COALESCE((SELECT display_word FROM training_cards tc2 WHERE tc2.word_card_id = tc.word_card_id AND tc2.display_word IS NOT NULL AND tc2.display_word != '' LIMIT 1), wc.display_en, wc.word) LIKE ? OR tc.word_ru LIKE ?)"
-		searchPattern := "%" + search + "%"
+		// Search by lemma, display_word, or word_ru (case-insensitive)
+		searchLower := strings.ToLower(search)
+		countQuery += " AND (LOWER(wc.word) LIKE ? OR LOWER(COALESCE((SELECT display_word FROM training_cards tc2 WHERE tc2.word_card_id = tc.word_card_id AND tc2.display_word IS NOT NULL AND tc2.display_word != '' LIMIT 1), wc.display_en, wc.word)) LIKE ? OR LOWER(tc.word_ru) LIKE ?)"
+		searchPattern := "%" + searchLower + "%"
 		countArgs = append(countArgs, searchPattern, searchPattern, searchPattern)
 	}
 	

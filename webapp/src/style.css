@@ -21,6 +21,13 @@ body {
   padding: 20px;
 }
 
+@media (max-width: 768px) {
+  .container {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+}
+
 .card {
   background: var(--card-bg);
   border-radius: 8px;

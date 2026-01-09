@@ -460,6 +460,8 @@ main.with-desktop-navbar {
   
   .container {
     padding-bottom: 20px;
+    padding-left: 8px;
+    padding-right: 8px;
   }
 }
 

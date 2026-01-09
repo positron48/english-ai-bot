@@ -13,7 +13,7 @@
         </div>
         <div class="sort-controls">
           <label for="sort-select" class="sort-label">Sort by:</label>
-          <select id="sort-select" v-model="sortField" @change="loadVocab" class="sort-select">
+          <select id="sort-select" v-model="sortField" @change="onSortChange" class="sort-select">
             <option value="display_word">A→Z</option>
             <option value="display_word_desc">Z→A</option>
             <option value="added_at">Recently added</option>
@@ -122,7 +122,7 @@
             <div class="word-summary">
               <span>{{ totalCards }} cards</span>
               <span v-if="totalDue > 0">{{ totalDue }} due</span>
-              <span v-if="lastReview">Last: {{ formatDateShort(lastReview) }}</span>
+              <span v-if="lastReview" :title="formatDateAbsolute(lastReview)">Last: {{ formatDateRelative(lastReview) }}</span>
             </div>
           </div>
           <button @click="closeCardsModal" class="btn-close">&times;</button>
@@ -156,9 +156,9 @@
                   <span :class="['state-badge', `state-${directionCard.state}`]">{{ directionCard.state }}</span>
                 </div>
                 <div class="direction-stats-simple">
-                  <span v-if="directionCard.reps > 0" title="Количество успешных повторений карточки">Reps: {{ directionCard.reps }}</span>
-                  <span v-else-if="directionCard.review_count > 0" title="Общее количество просмотров карточки">Reviews: {{ directionCard.review_count }}</span>
-                  <span v-if="directionCard.next_due_at" title="Дата следующего запланированного повторения">Due: {{ formatDateShort(directionCard.next_due_at) }}</span>
+                  <span v-if="directionCard.reps > 0" title="Number of successful card repetitions">Reps: {{ directionCard.reps }}</span>
+                  <span v-else-if="directionCard.review_count > 0" title="Total number of card views">Reviews: {{ directionCard.review_count }}</span>
+                  <span v-if="directionCard.next_due_at" :title="`Next scheduled review date: ${formatDateAbsolute(directionCard.next_due_at)}`">Due: {{ formatDateRelative(directionCard.next_due_at) }}</span>
                 </div>
               </div>
             </div>
@@ -268,6 +268,11 @@ const onSearchInput = () => {
     pagination.value.page = 1
     loadVocab()
   }, 500)
+}
+
+const onSortChange = () => {
+  pagination.value.page = 1
+  loadVocab()
 }
 
 const loadVocab = async () => {
@@ -510,11 +515,91 @@ const formatDateShort = (dateStr: string | null) => {
   const date = new Date(dateStr)
   return date.toLocaleDateString()
 }
+
+const formatDateRelative = (dateStr: string | null): string => {
+  if (!dateStr) return '—'
+  
+  const date = new Date(dateStr)
+  if (isNaN(date.getTime())) return '—'
+  
+  const now = new Date()
+  const diffTime = now.getTime() - date.getTime()
+  const diffDays = Math.floor(Math.abs(diffTime) / (1000 * 60 * 60 * 24))
+  const diffHours = Math.floor(Math.abs(diffTime) / (1000 * 60 * 60))
+  const diffMinutes = Math.floor(Math.abs(diffTime) / (1000 * 60))
+  const isFuture = diffTime < 0
+  
+  // Today
+  if (diffDays === 0) {
+    if (diffHours === 0) {
+      if (diffMinutes < 1) {
+        return 'just now'
+      }
+      if (isFuture) {
+        return `in ${diffMinutes} ${diffMinutes === 1 ? 'minute' : 'minutes'}`
+      }
+      return `${diffMinutes} ${diffMinutes === 1 ? 'minute' : 'minutes'} ago`
+    }
+    if (isFuture) {
+      return `in ${diffHours} ${diffHours === 1 ? 'hour' : 'hours'}`
+    }
+    return `${diffHours} ${diffHours === 1 ? 'hour' : 'hours'} ago`
+  }
+  
+  // Tomorrow / Yesterday
+  if (diffDays === 1) {
+    return isFuture ? 'tomorrow' : 'yesterday'
+  }
+  
+  // Days
+  if (diffDays < 7) {
+    return isFuture ? `in ${diffDays} days` : `${diffDays} days ago`
+  }
+  
+  // Weeks
+  const diffWeeks = Math.floor(diffDays / 7)
+  if (diffWeeks < 4) {
+    if (isFuture) {
+      return `in ${diffWeeks} ${diffWeeks === 1 ? 'week' : 'weeks'}`
+    }
+    return `${diffWeeks} ${diffWeeks === 1 ? 'week' : 'weeks'} ago`
+  }
+  
+  // Months
+  const diffMonths = Math.floor(diffDays / 30)
+  if (diffMonths < 12) {
+    if (isFuture) {
+      return `in ${diffMonths} ${diffMonths === 1 ? 'month' : 'months'}`
+    }
+    return `${diffMonths} ${diffMonths === 1 ? 'month' : 'months'} ago`
+  }
+  
+  // Years
+  const diffYears = Math.floor(diffDays / 365)
+  if (isFuture) {
+    return `in ${diffYears} ${diffYears === 1 ? 'year' : 'years'}`
+  }
+  return `${diffYears} ${diffYears === 1 ? 'year' : 'years'} ago`
+}
+
+const formatDateAbsolute = (dateStr: string | null): string => {
+  if (!dateStr) return '—'
+  
+  const date = new Date(dateStr)
+  if (isNaN(date.getTime())) return '—'
+  
+  const day = String(date.getDate()).padStart(2, '0')
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const year = date.getFullYear()
+  
+  return `${day}.${month}.${year}`
+}
+
 </script>
 
 <style scoped>
 .vocab {
-  padding: 20px;
+  padding: 10px;
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -591,9 +676,7 @@ const formatDateShort = (dateStr: string | null) => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: var(--card-bg);
-  opacity: 0.9;
-  backdrop-filter: blur(2px);
+  background: var(--bg-primary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -638,6 +721,8 @@ const formatDateShort = (dateStr: string | null) => {
   padding: 10px 12px;
   cursor: pointer;
   transition: all 0.2s;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .word-card:hover {
@@ -658,12 +743,17 @@ const formatDateShort = (dateStr: string | null) => {
   flex-direction: column;
   gap: 2px;
   flex: 1;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .word-display {
   font-size: 16px;
   font-weight: 600;
   color: var(--text-primary);
+  word-break: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
 }
 
 .mastery-badge {
@@ -997,7 +1087,7 @@ const formatDateShort = (dateStr: string | null) => {
 
 @media (max-width: 768px) {
   .vocab {
-    padding: 12px;
+    padding: 10px;
   }
   
   .words-grid {

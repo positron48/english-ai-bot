@@ -1,6 +1,23 @@
 <template>
   <div class="prompt-tester">
-    <h1>Prompt Tester</h1>
+    <h1>Admin Panel</h1>
+    
+    <div class="admin-tabs">
+      <router-link to="/admin" class="admin-tab" :class="{ active: $route.path === '/admin' }">
+        <span>Main</span>
+      </router-link>
+      <router-link to="/admin/circuit-breaker" class="admin-tab" :class="{ active: $route.path === '/admin/circuit-breaker' }">
+        <span>Circuit Breaker</span>
+      </router-link>
+      <router-link to="/admin/prompt-tester" class="admin-tab" :class="{ active: $route.path === '/admin/prompt-tester' }">
+        <span>Prompt Tester</span>
+      </router-link>
+      <router-link to="/admin/orphaned-cards" class="admin-tab" :class="{ active: $route.path === '/admin/orphaned-cards' }">
+        <span>Orphaned Cards</span>
+      </router-link>
+    </div>
+    
+    <h2>Prompt Tester</h2>
     
     <div class="card">
       <h2>Words</h2>
@@ -38,25 +55,33 @@
           <div v-if="hasWordPromptChanges" class="prompt-diff">
             <div class="prompt-diff-header">
               <h4>Changes from Default:</h4>
-              <div class="prompt-diff-mode-selector">
-                <label>Mode:</label>
-                <div class="toggle-switch">
-                  <button
-                    @click="promptDiffMode = 'unified'; saveToLocalStorage()"
-                    :class="['toggle-option', { active: promptDiffMode === 'unified' }]"
-                  >
-                    Unified
-                  </button>
-                  <button
-                    @click="promptDiffMode = 'side-by-side'; saveToLocalStorage()"
-                    :class="['toggle-option', { active: promptDiffMode === 'side-by-side' }]"
-                  >
-                    Side by Side
-                  </button>
+              <div class="prompt-diff-controls">
+                <button
+                  @click="showWordPromptDiff = !showWordPromptDiff; saveToLocalStorage()"
+                  class="btn btn-small"
+                >
+                  {{ showWordPromptDiff ? 'Hide' : 'Show' }} Diff
+                </button>
+                <div v-if="showWordPromptDiff" class="prompt-diff-mode-selector">
+                  <label>Mode:</label>
+                  <div class="toggle-switch">
+                    <button
+                      @click="promptDiffMode = 'unified'; saveToLocalStorage()"
+                      :class="['toggle-option', { active: promptDiffMode === 'unified' }]"
+                    >
+                      Unified
+                    </button>
+                    <button
+                      @click="promptDiffMode = 'side-by-side'; saveToLocalStorage()"
+                      :class="['toggle-option', { active: promptDiffMode === 'side-by-side' }]"
+                    >
+                      Side by Side
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-            <div class="diff-container">
+            <div v-if="showWordPromptDiff" class="diff-container">
               <component :is="wordPromptDiffComponent" />
             </div>
           </div>
@@ -82,25 +107,33 @@
           <div v-if="hasTrainingPromptChanges" class="prompt-diff">
             <div class="prompt-diff-header">
               <h4>Changes from Default:</h4>
-              <div class="prompt-diff-mode-selector">
-                <label>Mode:</label>
-                <div class="toggle-switch">
-                  <button
-                    @click="promptDiffMode = 'unified'; saveToLocalStorage()"
-                    :class="['toggle-option', { active: promptDiffMode === 'unified' }]"
-                  >
-                    Unified
-                  </button>
-                  <button
-                    @click="promptDiffMode = 'side-by-side'; saveToLocalStorage()"
-                    :class="['toggle-option', { active: promptDiffMode === 'side-by-side' }]"
-                  >
-                    Side by Side
-                  </button>
+              <div class="prompt-diff-controls">
+                <button
+                  @click="showTrainingPromptDiff = !showTrainingPromptDiff; saveToLocalStorage()"
+                  class="btn btn-small"
+                >
+                  {{ showTrainingPromptDiff ? 'Hide' : 'Show' }} Diff
+                </button>
+                <div v-if="showTrainingPromptDiff" class="prompt-diff-mode-selector">
+                  <label>Mode:</label>
+                  <div class="toggle-switch">
+                    <button
+                      @click="promptDiffMode = 'unified'; saveToLocalStorage()"
+                      :class="['toggle-option', { active: promptDiffMode === 'unified' }]"
+                    >
+                      Unified
+                    </button>
+                    <button
+                      @click="promptDiffMode = 'side-by-side'; saveToLocalStorage()"
+                      :class="['toggle-option', { active: promptDiffMode === 'side-by-side' }]"
+                    >
+                      Side by Side
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-            <div class="diff-container">
+            <div v-if="showTrainingPromptDiff" class="diff-container">
               <component :is="trainingPromptDiffComponent" />
             </div>
           </div>
@@ -126,7 +159,6 @@
           Clear Results
         </button>
         <div class="diff-mode-selector">
-          <label>Results Diff Mode:</label>
           <div class="toggle-switch">
             <button
               @click="diffMode = 'unified'; saveToLocalStorage()"
@@ -154,8 +186,8 @@
           <div v-for="(result, step) in wordResults" :key="step" class="step-result">
             <h4>{{ step === 'word' ? 'Word Data' : 'Training Cards' }}</h4>
             
-            <!-- Show current result only if there's no previous (first run) -->
-            <div v-if="result.current && !result.previous" class="result-current">
+            <!-- Always show current result -->
+            <div v-if="result.current" class="result-current">
               <div v-if="result.current.ok" class="result-success">
                 <div v-if="result.current.parsed" class="json-viewer">
                   <pre><code v-html="highlightJSON(result.current.parsed)"></code></pre>
@@ -165,26 +197,44 @@
                 </div>
                 <div class="result-meta">
                   Duration: {{ result.current.duration_ms }}ms
+                  <span v-if="result.current.timestamp" style="margin-left: 16px;">
+                    Last Updated: {{ new Date(result.current.timestamp).toLocaleString() }}
+                  </span>
                 </div>
               </div>
               <div v-else class="result-error">
                 <strong>Error:</strong> {{ result.current.error }}
                 <div class="result-meta">
                   Duration: {{ result.current.duration_ms }}ms
+                  <span v-if="result.current.timestamp" style="margin-left: 16px;">
+                    Last Updated: {{ new Date(result.current.timestamp).toLocaleString() }}
+                  </span>
                 </div>
               </div>
             </div>
 
-            <!-- Show diff if there's both previous and current -->
-            <div v-if="result.previous && result.current" class="result-diff">
-              <h5>Changes from Previous Run:</h5>
-              <div class="result-meta" style="margin-bottom: 10px;">
-                Duration: {{ result.current.duration_ms }}ms
-                <span v-if="result.current.timestamp" style="margin-left: 16px;">
-                  Last Updated: {{ new Date(result.current.timestamp).toLocaleString() }}
-                </span>
+            <!-- Show diff if there's both previous and current, and diff is enabled -->
+            <div v-if="result.previous && result.current && showResultDiffs" class="result-diff">
+              <div class="result-diff-header">
+                <h5>Changes from Previous Run:</h5>
+                <button
+                  @click="showResultDiffs = false; saveToLocalStorage()"
+                  class="btn btn-small"
+                >
+                  Hide Diff
+                </button>
               </div>
               <component :is="getResultDiffComponent(result)" />
+            </div>
+            
+            <!-- Show button to show diff if it's hidden -->
+            <div v-if="result.previous && result.current && !showResultDiffs" class="result-diff-toggle">
+              <button
+                @click="showResultDiffs = true; saveToLocalStorage()"
+                class="btn btn-small"
+              >
+                Show Diff
+              </button>
             </div>
           </div>
         </div>
@@ -466,6 +516,9 @@ const trainingPromptSource = ref('')
 const isRunning = ref(false)
 const diffMode = ref<'unified' | 'side-by-side'>('unified')
 const promptDiffMode = ref<'unified' | 'side-by-side'>('unified')
+const showWordPromptDiff = ref(true)
+const showTrainingPromptDiff = ref(true)
+const showResultDiffs = ref(true)
 const results = ref<PromptTesterEvent[]>([])
 
 // Computed
@@ -578,6 +631,9 @@ function loadFromLocalStorage() {
       trainingPromptCurrent.value = data.trainingPromptCurrent || ''
       diffMode.value = data.diffMode || 'unified'
       promptDiffMode.value = data.promptDiffMode || 'unified'
+      showWordPromptDiff.value = data.showWordPromptDiff !== undefined ? data.showWordPromptDiff : true
+      showTrainingPromptDiff.value = data.showTrainingPromptDiff !== undefined ? data.showTrainingPromptDiff : true
+      showResultDiffs.value = data.showResultDiffs !== undefined ? data.showResultDiffs : true
       // Load results and ensure they have timestamps and indices
       const loadedResults = data.results || []
       // Add timestamps and indices to old results that don't have them (for backward compatibility)
@@ -608,6 +664,9 @@ function saveToLocalStorage() {
       trainingPromptSource: trainingPromptSource.value,
       diffMode: diffMode.value,
       promptDiffMode: promptDiffMode.value,
+      showWordPromptDiff: showWordPromptDiff.value,
+      showTrainingPromptDiff: showTrainingPromptDiff.value,
+      showResultDiffs: showResultDiffs.value,
       results: results.value
     }
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
@@ -1338,11 +1397,46 @@ onMounted(async () => {
 .prompt-tester {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 10px;
 }
 
 .prompt-tester h1 {
   margin-bottom: 24px;
+}
+
+.prompt-tester h2 {
+  margin-bottom: 24px;
+}
+
+.admin-tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 24px;
+  border-bottom: 2px solid var(--border-primary);
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.admin-tab {
+  padding: 12px 24px;
+  text-decoration: none;
+  color: var(--text-secondary);
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s;
+  white-space: nowrap;
+  position: relative;
+  bottom: -2px;
+}
+
+.admin-tab:hover {
+  color: var(--text-primary);
+  background: var(--bg-hover);
+}
+
+.admin-tab.active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+  font-weight: 500;
 }
 
 .card {
@@ -1438,6 +1532,13 @@ onMounted(async () => {
   margin-bottom: 12px;
 }
 
+.prompt-diff-controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
 .prompt-diff-header h4 {
   margin: 0;
   font-size: 14px;
@@ -1458,6 +1559,7 @@ onMounted(async () => {
   display: flex;
   gap: 20px;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .diff-mode-selector {
@@ -1629,6 +1731,28 @@ onMounted(async () => {
   margin-top: 0;
   margin-bottom: 12px;
   font-size: 14px;
+}
+
+.result-diff-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.result-diff-header h5 {
+  margin: 0;
+}
+
+.result-diff-toggle {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-primary);
+}
+
+.btn-small {
+  padding: 6px 12px;
+  font-size: 12px;
 }
 
 .diff-container {
@@ -1880,5 +2004,118 @@ onMounted(async () => {
 
 .btn-secondary:hover {
   background: var(--bg-hover);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .prompt-tester {
+    padding: 10px;
+  }
+
+  .controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .controls .btn {
+    width: 100%;
+  }
+
+  .diff-mode-selector {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .prompt-diff-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .prompt-diff-controls {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    gap: 8px;
+  }
+
+  .prompt-diff-mode-selector {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .result-diff-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .result-diff-header h5 {
+    margin-bottom: 0;
+  }
+
+  .diff-side-by-side {
+    grid-template-columns: 1fr;
+  }
+
+  .diff-left,
+  .diff-right {
+    border-right: none;
+    border-bottom: 1px solid var(--border-primary);
+  }
+
+  .diff-right {
+    border-bottom: none;
+  }
+
+  .admin-tabs {
+    gap: 0;
+  }
+
+  .admin-tab {
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+
+  .card {
+    padding: 16px;
+  }
+
+  .prompt-section {
+    padding: 10px;
+  }
+
+  .word-result {
+    padding: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .prompt-tester {
+    padding: 8px;
+  }
+
+  .card {
+    padding: 12px;
+  }
+
+  .admin-tab {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  .toggle-option {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  .prompt-textarea {
+    font-size: 12px;
+  }
+
+  .words-input {
+    font-size: 13px;
+  }
 }
 </style>

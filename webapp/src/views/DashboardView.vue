@@ -952,7 +952,7 @@ onMounted(() => {
 
 @media (max-width: 768px) {
   .dashboard {
-    padding: 12px;
+    padding: 12px 8px;
   }
   
   .dashboard-header {

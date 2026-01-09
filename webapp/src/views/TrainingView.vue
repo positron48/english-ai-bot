@@ -75,7 +75,7 @@
         </div>
         
         <!-- Compact info and continue button -->
-        <div class="completion-actions">
+        <div class="completion-actions" v-if="statsLoaded">
           <div class="remaining-cards-info">
             <span class="remaining-text">
               <span class="remaining-label">Available:</span>
@@ -96,7 +96,7 @@
 
     <div v-if="!sessionActive && !loading && !sessionComplete" class="card start-screen">
       <div class="start-screen-content">
-        <div class="start-screen-stats">
+        <div class="start-screen-stats" v-if="statsLoaded">
           <div class="start-stat-item">
             <span class="start-stat-label">Available for Training</span>
             <span class="start-stat-value">
@@ -105,10 +105,10 @@
             </span>
           </div>
         </div>
-        <button v-if="stats.availableForTraining > 0" @click="startTraining" class="btn btn-primary btn-start">
+        <button v-if="statsLoaded && stats.availableForTraining > 0" @click="startTraining" class="btn btn-primary btn-start">
           Start Training
         </button>
-        <p v-if="stats.availableForTraining === 0" class="no-cards-message">
+        <p v-if="statsLoaded && stats.availableForTraining === 0" class="no-cards-message">
           No cards available for training. Add some words to your vocabulary first!
         </p>
       </div>
@@ -300,6 +300,7 @@ const stats = ref({
   totalCards: 0,
   availableForTraining: 0
 })
+const statsLoaded = ref(false)
 const networkError = ref(false)
 const networkErrorRetrying = ref(false)
 const networkErrorAttempt = ref(0)
@@ -845,8 +846,10 @@ const loadStats = async () => {
     stats.value.dueCount = data.due_count || 0
     stats.value.totalCards = data.total_cards || 0
     stats.value.availableForTraining = data.available_for_training || data.due_count || 0
+    statsLoaded.value = true
   } catch (error) {
     console.error('Failed to load stats:', error)
+    statsLoaded.value = true // Mark as loaded even on error to avoid infinite loading state
   }
 }
 
@@ -961,6 +964,51 @@ const revealOptions = async (isEarly: boolean = false) => {
   }
 }
 
+// Haptic feedback helper function
+const triggerHapticFeedback = (isCorrect: boolean) => {
+  const tg = (window as any).Telegram?.WebApp
+  
+  // Try Telegram Web App API first
+  if (tg?.HapticFeedback) {
+    try {
+      const haptic = tg.HapticFeedback
+      if (isCorrect) {
+        // Success feedback - try notificationOccurred first, then impactOccurred
+        if (typeof haptic.notificationOccurred === 'function') {
+          haptic.notificationOccurred('success')
+        } else if (typeof haptic.impactOccurred === 'function') {
+          haptic.impactOccurred('medium')
+        }
+      } else {
+        // Error feedback - try notificationOccurred first, then impactOccurred
+        if (typeof haptic.notificationOccurred === 'function') {
+          haptic.notificationOccurred('error')
+        } else if (typeof haptic.impactOccurred === 'function') {
+          haptic.impactOccurred('heavy')
+        }
+      }
+      return
+    } catch (error) {
+      console.warn('Telegram haptic feedback failed:', error)
+    }
+  }
+  
+  // Fallback to native Vibration API
+  if ('vibrate' in navigator && typeof navigator.vibrate === 'function') {
+    try {
+      if (isCorrect) {
+        // Short, pleasant vibration for correct answer
+        navigator.vibrate(50)
+      } else {
+        // Longer, more noticeable vibration for incorrect answer
+        navigator.vibrate([100, 50, 100])
+      }
+    } catch (error) {
+      console.warn('Native vibration failed:', error)
+    }
+  }
+}
+
 const submitAnswer = async (optionIndex: number) => {
   answering.value = true
   try {
@@ -970,6 +1018,9 @@ const submitAnswer = async (optionIndex: number) => {
     
     const data: Feedback = await apiClient.requestFormData('/app/training/answer', formData)
     feedback.value = data
+    
+    // Trigger haptic feedback based on answer correctness
+    triggerHapticFeedback(data.is_correct)
     
     // Generate random phrase based on answer correctness
     if (data.is_correct) {
@@ -1187,7 +1238,7 @@ const resetSession = async () => {
 .training {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 10px;
 }
 
 .training h1 {
@@ -2282,7 +2333,7 @@ const resetSession = async () => {
   
   /* Compact completion screen on mobile */
   .completion-screen {
-    padding: 30px 15px;
+    padding: 30px 8px;
   }
   
   .completion-percentage {
@@ -2303,7 +2354,7 @@ const resetSession = async () => {
   }
   
   .motivational-message {
-    padding: 14px 20px;
+    padding: 14px 8px;
     font-size: 16px;
   }
   
@@ -2312,7 +2363,7 @@ const resetSession = async () => {
   }
   
   .remaining-cards-info {
-    padding: 14px 20px;
+    padding: 14px 8px;
   }
   
   .remaining-text {
@@ -2324,7 +2375,7 @@ const resetSession = async () => {
   }
   
   .start-screen {
-    padding: 30px 15px;
+    padding: 30px 8px;
   }
   
   .start-screen-content {

@@ -420,3 +420,107 @@ func (r *TrainingCardRepository) DeleteTrainingCard(id int64) error {
 	return nil
 }
 
+// OrphanedTrainingCardInfo represents an orphaned training card (without word_card)
+type OrphanedTrainingCardInfo struct {
+	TrainingCardID int64
+	WordCardID      int64
+	WordEN          string
+	Transcription   string
+	SenseIndex      int
+	WordRU          string
+	MeaningEN       string
+	ExampleEN       string
+	ExampleRU       string
+	POS             *string
+	DisplayWord     *string
+	CreatedAt       time.Time
+	UserCardsCount  int64
+}
+
+// ListOrphanedTrainingCards lists training_cards that reference non-existent word_cards
+func (r *TrainingCardRepository) ListOrphanedTrainingCards(limit, offset int) ([]*OrphanedTrainingCardInfo, error) {
+	query := `SELECT 
+		tc.id as training_card_id,
+		tc.word_card_id,
+		tc.word_en,
+		COALESCE(tc.transcription, '') as transcription,
+		tc.sense_index,
+		tc.word_ru,
+		tc.meaning_en,
+		COALESCE(tc.example_en, '') as example_en,
+		COALESCE(tc.example_ru, '') as example_ru,
+		tc.pos,
+		tc.display_word,
+		tc.created_at,
+		COALESCE(COUNT(uc.id), 0) as user_cards_count
+	FROM training_cards tc
+	LEFT JOIN word_cards wc ON tc.word_card_id = wc.id
+	LEFT JOIN user_cards uc ON uc.training_card_id = tc.id
+	WHERE wc.id IS NULL
+	GROUP BY tc.id, tc.word_card_id, tc.word_en, tc.transcription, tc.sense_index, 
+	         tc.word_ru, tc.meaning_en, tc.example_en, tc.example_ru, tc.pos, tc.display_word, tc.created_at
+	ORDER BY tc.created_at DESC
+	LIMIT ? OFFSET ?`
+
+	rows, err := r.db.Query(query, limit, offset)
+	if err != nil {
+		return nil, fmt.Errorf("failed to list orphaned training cards: %w", err)
+	}
+	defer rows.Close()
+
+	var items []*OrphanedTrainingCardInfo
+	for rows.Next() {
+		var item OrphanedTrainingCardInfo
+		var createdAt string
+		var pos, displayWord sql.NullString
+
+		err := rows.Scan(
+			&item.TrainingCardID,
+			&item.WordCardID,
+			&item.WordEN,
+			&item.Transcription,
+			&item.SenseIndex,
+			&item.WordRU,
+			&item.MeaningEN,
+			&item.ExampleEN,
+			&item.ExampleRU,
+			&pos,
+			&displayWord,
+			&createdAt,
+			&item.UserCardsCount,
+		)
+		if err != nil {
+			return nil, fmt.Errorf("failed to scan orphaned training card: %w", err)
+		}
+
+		item.CreatedAt, _ = time.Parse("2006-01-02 15:04:05", createdAt)
+
+		if pos.Valid {
+			item.POS = &pos.String
+		}
+		if displayWord.Valid {
+			item.DisplayWord = &displayWord.String
+		}
+
+		items = append(items, &item)
+	}
+
+	return items, nil
+}
+
+// CountOrphanedTrainingCards counts total orphaned training cards
+func (r *TrainingCardRepository) CountOrphanedTrainingCards() (int, error) {
+	query := `SELECT COUNT(*) 
+	FROM training_cards tc
+	LEFT JOIN word_cards wc ON tc.word_card_id = wc.id
+	WHERE wc.id IS NULL`
+
+	var count int
+	err := r.db.QueryRow(query).Scan(&count)
+	if err != nil {
+		return 0, fmt.Errorf("failed to count orphaned training cards: %w", err)
+	}
+
+	return count, nil
+}
+

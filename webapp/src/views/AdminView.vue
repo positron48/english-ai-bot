@@ -2,110 +2,88 @@
   <div class="admin">
     <h1>Admin Panel</h1>
     
-    <div class="admin-nav">
-      <router-link to="/admin" class="admin-nav-link" :class="{ active: $route.path === '/admin' }">Main</router-link>
-      <router-link to="/admin/prompt-tester" class="admin-nav-link" :class="{ active: $route.path === '/admin/prompt-tester' }">Prompt Tester</router-link>
+    <div class="admin-tabs">
+      <router-link to="/admin" class="admin-tab" :class="{ active: $route.path === '/admin' }">
+        <span>Main</span>
+      </router-link>
+      <router-link to="/admin/circuit-breaker" class="admin-tab" :class="{ active: $route.path === '/admin/circuit-breaker' }">
+        <span>Circuit Breaker</span>
+      </router-link>
+      <router-link to="/admin/prompt-tester" class="admin-tab" :class="{ active: $route.path === '/admin/prompt-tester' }">
+        <span>Prompt Tester</span>
+      </router-link>
+      <router-link to="/admin/orphaned-cards" class="admin-tab" :class="{ active: $route.path === '/admin/orphaned-cards' }">
+        <span>Orphaned Cards</span>
+      </router-link>
     </div>
     
-    <div v-if="loading" class="loading">Loading...</div>
-    
-    <div v-else>
-      <div class="card">
-        <div class="circuit-breaker-header">
-          <h2>Circuit Breaker</h2>
-          <button v-if="circuitBreaker" @click="resetCircuitBreaker" class="btn btn-primary">Reset</button>
+    <div class="card">
+      <h2>Words Management</h2>
+      <div class="words-filters">
+        <div class="search-box">
+          <input
+            type="text"
+            v-model="wordsSearchQuery"
+            @input="onWordsSearchInput"
+            placeholder="Search words..."
+            class="search-input"
+          />
         </div>
-        <div v-if="circuitBreaker" class="circuit-breaker-content">
-          <div class="circuit-breaker-info">
-            <div class="info-row">
-              <span class="info-label">State:</span>
-              <span class="info-value" :class="{ 'state-open': circuitBreaker.state === 'open', 'state-closed': circuitBreaker.state === 'closed' }">
-                {{ circuitBreaker.state || 'closed' }}
-              </span>
-            </div>
-            <div v-if="circuitBreaker.failures !== undefined" class="info-row">
-              <span class="info-label">Failures:</span>
-              <span class="info-value">{{ circuitBreaker.failures }}</span>
-            </div>
-            <div v-if="circuitBreaker.last_failure_at" class="info-row">
-              <span class="info-label">Last failure at:</span>
-              <span class="info-value">{{ formatDate(circuitBreaker.last_failure_at) }}</span>
-            </div>
-            <div v-if="circuitBreaker.last_failure" class="info-row">
-              <span class="info-label">Last failure:</span>
-              <span class="info-value">{{ circuitBreaker.last_failure }}</span>
-            </div>
-            <div v-if="circuitBreaker.last_reset_at" class="info-row">
-              <span class="info-label">Last reset at:</span>
-              <span class="info-value">{{ formatDate(circuitBreaker.last_reset_at) }}</span>
-            </div>
-          </div>
-        </div>
-        <p v-else>No circuit breaker data</p>
+        <select v-model="wordsFilterUser" class="admin-select" @change="onFilterChange">
+          <option :value="null">All users</option>
+          <option v-for="user in users" :key="user.id" :value="user.id">
+            {{ user.telegram_username || `User #${user.telegram_id}` }} (ID: {{ user.id }})
+          </option>
+        </select>
+        <button 
+          @click="toggleOnlyErrors" 
+          :class="['btn', 'btn-toggle', { 'btn-toggle-active': wordsOnlyErrors }]"
+          type="button"
+        >
+          Only with errors
+        </button>
+        <button @click="loadWords" class="btn btn-primary">Refresh</button>
       </div>
 
-      <div class="card">
-        <h2>Words Management</h2>
-        <div class="words-filters">
-          <div class="search-box">
-            <input
-              type="text"
-              v-model="wordsSearchQuery"
-              @input="onWordsSearchInput"
-              placeholder="Search words..."
-              class="search-input"
-            />
-          </div>
-          <select v-model="wordsFilterUser" class="admin-select" @change="onFilterChange">
-            <option :value="null">All users</option>
-            <option v-for="user in users" :key="user.id" :value="user.id">
-              {{ user.telegram_username || `User #${user.telegram_id}` }} (ID: {{ user.id }})
-            </option>
-          </select>
-          <button 
-            @click="toggleOnlyErrors" 
-            :class="['btn', 'btn-toggle', { 'btn-toggle-active': wordsOnlyErrors }]"
-            type="button"
-          >
-            Only with errors
-          </button>
-          <button @click="loadWords" class="btn btn-primary">Refresh</button>
+      <div class="words-content">
+        <div v-if="wordsError && !wordsLoading" class="empty-message">
+          <p>{{ wordsError }}</p>
         </div>
-
-        <div class="words-content">
-          <div v-if="wordsError && !wordsLoading" class="empty-message">
-            <p>{{ wordsError }}</p>
+        <div v-else-if="words.length === 0 && !wordsLoading" class="empty-message">
+          <p v-if="wordsSearchQuery">No words found matching "{{ wordsSearchQuery }}".</p>
+          <p v-else>No words found</p>
+        </div>
+        <div v-else class="words-table-container" :class="{ 'loading-overlay': wordsLoading }">
+          <div v-if="wordsLoading" class="loading-overlay-content">
+            <div class="loading">Loading words...</div>
           </div>
-          <div v-else-if="words.length === 0 && !wordsLoading" class="empty-message">
-            <p v-if="wordsSearchQuery">No words found matching "{{ wordsSearchQuery }}".</p>
-            <p v-else>No words found</p>
-          </div>
-          <div v-else class="words-table-container" :class="{ 'loading-overlay': wordsLoading }">
-            <div v-if="wordsLoading" class="loading-overlay-content">
-              <div class="loading">Loading words...</div>
-            </div>
-            <table class="words-table">
+          <table class="words-table">
             <thead>
               <tr>
-                <th>ID</th>
+                <th class="desktop-only">ID</th>
                 <th>Word</th>
                 <th>POS</th>
                 <th>Display EN</th>
                 <th>Has Cards</th>
-                <th>Processed At</th>
-                <th>Error</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               <template v-for="word in words" :key="word.ID">
                 <tr :class="{ 'has-error': word.ProcessingError }">
-                  <td>{{ word.ID }}</td>
+                  <td class="desktop-only">{{ word.ID }}</td>
                   <td><strong>{{ word.Word }}</strong></td>
                   <td>{{ word.POS || '—' }}</td>
                   <td>{{ word.DisplayEN || '—' }}</td>
                   <td>
-                    <span v-if="!word.HasTrainingCards" :class="{ 'badge': true, 'badge-secondary': true }">
+                    <span v-if="word.ProcessingError" 
+                      @click.prevent="showErrorDetails(word)"
+                      class="card-link card-link-error"
+                      :style="{ cursor: 'pointer' }"
+                    >
+                      Error
+                    </span>
+                    <span v-else-if="!word.HasTrainingCards" :class="{ 'badge': true, 'badge-secondary': true }">
                       No
                     </span>
                     <a 
@@ -116,11 +94,6 @@
                     >
                       {{ (word.showingCards === true) ? 'Hide' : 'Yes' }}
                     </a>
-                  </td>
-                  <td>{{ word.ProcessedAt ? formatDate(word.ProcessedAt) : '—' }}</td>
-                  <td>
-                    <span v-if="word.ProcessingError" class="error-text">{{ word.ProcessingError }}</span>
-                    <span v-else>—</span>
                   </td>
                   <td>
                     <div class="action-buttons">
@@ -148,7 +121,7 @@
                 </tr>
                 <!-- Cards row -->
                 <tr v-if="word && word.showingCards === true && word.HasTrainingCards" class="cards-row">
-                <td colspan="8">
+                <td colspan="6">
                   <div v-if="word.cardsLoading" class="cards-loading">Loading cards...</div>
                   <div v-else-if="word.cards && word.cards.length > 0" class="cards-container">
                     <h4>Training Cards for "{{ word.Word }}"</h4>
@@ -398,8 +371,33 @@
           </div>
         </div>
       </div>
+
+      <!-- Error Details Modal -->
+      <div v-if="showErrorDetailsModal && wordWithError" class="modal" @click.self="closeErrorDetailsModal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3>Error Details: {{ wordWithError.Word }}</h3>
+            <button @click="closeErrorDetailsModal" class="btn-close">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="error-details">
+              <div class="error-detail-row">
+                <span class="error-detail-label">Date:</span>
+                <span class="error-detail-value" v-if="wordWithError.ProcessedAt" :title="formatDateAbsolute(wordWithError.ProcessedAt)">{{ formatDateRelative(wordWithError.ProcessedAt) }}</span>
+                <span class="error-detail-value" v-else>—</span>
+              </div>
+              <div class="error-detail-row">
+                <span class="error-detail-label">Error:</span>
+                <span class="error-detail-value error-text-full">{{ wordWithError.ProcessingError }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="modal-actions">
+            <button @click="closeErrorDetailsModal" class="btn btn-secondary">Close</button>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
 </template>
 
 <script setup lang="ts">
@@ -407,11 +405,6 @@ import { ref, onMounted } from 'vue'
 import { apiClient } from '../api/client'
 import { showAlert, showConfirm } from '../composables/useDialog'
 
-interface CircuitBreaker {
-  state: string
-  failures?: number
-  last_failure?: string
-}
 
 interface User {
   id: number
@@ -454,8 +447,7 @@ interface WordCard {
   cardsLoading?: boolean
 }
 
-const loading = ref(true)
-const circuitBreaker = ref<CircuitBreaker | null>(null)
+const loading = ref(false)
 
 // Words management
 const words = ref<WordCard[]>([])
@@ -490,7 +482,9 @@ const editWordForm = ref({
 const showEditCardModal = ref(false)
 const showDeleteCardConfirm = ref(false)
 const showResetErrorConfirm = ref(false)
+const showErrorDetailsModal = ref(false)
 const wordToResetError = ref<WordCard | null>(null)
+const wordWithError = ref<WordCard | null>(null)
 const cardToEdit = ref<TrainingCard | null>(null)
 const cardToDelete = ref<{ card: TrainingCard; word: WordCard } | null>(null)
 const editCardForm = ref({
@@ -508,33 +502,9 @@ const editCardForm = ref({
 })
 
 onMounted(async () => {
-  await loadAdminData()
   await loadUsers()
   await loadWords()
 })
-
-const loadAdminData = async () => {
-  loading.value = true
-  try {
-    const data: { circuit_breaker: CircuitBreaker } = await apiClient.request('/app/admin')
-    circuitBreaker.value = data.circuit_breaker
-  } catch (error) {
-    console.error('Failed to load admin data:', error)
-  } finally {
-    loading.value = false
-  }
-}
-
-const resetCircuitBreaker = async () => {
-  try {
-    await apiClient.request('/app/admin/circuit/reset', { method: 'POST' })
-    await loadAdminData()
-    await showAlert('Circuit breaker reset successfully')
-  } catch (error) {
-    console.error('Failed to reset circuit breaker:', error)
-    await showAlert('Failed to reset circuit breaker')
-  }
-}
 
 const loadUsers = async () => {
   try {
@@ -904,137 +874,156 @@ const deleteWord = async (word: WordCard) => {
   }
 }
 
-const formatDate = (dateStr: string | null | undefined) => {
+const showErrorDetails = (word: WordCard) => {
+  wordWithError.value = word
+  showErrorDetailsModal.value = true
+}
+
+const closeErrorDetailsModal = () => {
+  showErrorDetailsModal.value = false
+  wordWithError.value = null
+}
+
+
+const formatDateRelative = (dateStr: string | null | undefined): string => {
   if (!dateStr) return '—'
   
-  // Handle SQL datetime format "2006-01-02 15:04:05" (same as dashboard sessions)
   let date: Date
   if (dateStr.includes(' ')) {
-    // SQL format: replace space with T for ISO format, assume local timezone
     date = new Date(dateStr.replace(' ', 'T'))
   } else {
     date = new Date(dateStr)
   }
   
-  // Check if date is valid
-  if (isNaN(date.getTime())) {
-    return '—'
+  if (isNaN(date.getTime())) return '—'
+  
+  const now = new Date()
+  const diffTime = now.getTime() - date.getTime()
+  const diffDays = Math.floor(Math.abs(diffTime) / (1000 * 60 * 60 * 24))
+  const diffHours = Math.floor(Math.abs(diffTime) / (1000 * 60 * 60))
+  const diffMinutes = Math.floor(Math.abs(diffTime) / (1000 * 60))
+  const isFuture = diffTime < 0
+  
+  // Today
+  if (diffDays === 0) {
+    if (diffHours === 0) {
+      if (diffMinutes < 1) {
+        return 'just now'
+      }
+      if (isFuture) {
+        return `in ${diffMinutes} ${diffMinutes === 1 ? 'minute' : 'minutes'}`
+      }
+      return `${diffMinutes} ${diffMinutes === 1 ? 'minute' : 'minutes'} ago`
+    }
+    if (isFuture) {
+      return `in ${diffHours} ${diffHours === 1 ? 'hour' : 'hours'}`
+    }
+    return `${diffHours} ${diffHours === 1 ? 'hour' : 'hours'} ago`
   }
   
-  // Format same way as VocabView does it
-  return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { 
-    hour: '2-digit', 
-    minute: '2-digit',
-    second: '2-digit'
-  })
+  // Tomorrow / Yesterday
+  if (diffDays === 1) {
+    return isFuture ? 'tomorrow' : 'yesterday'
+  }
+  
+  // Days
+  if (diffDays < 7) {
+    return isFuture ? `in ${diffDays} days` : `${diffDays} days ago`
+  }
+  
+  // Weeks
+  const diffWeeks = Math.floor(diffDays / 7)
+  if (diffWeeks < 4) {
+    if (isFuture) {
+      return `in ${diffWeeks} ${diffWeeks === 1 ? 'week' : 'weeks'}`
+    }
+    return `${diffWeeks} ${diffWeeks === 1 ? 'week' : 'weeks'} ago`
+  }
+  
+  // Months
+  const diffMonths = Math.floor(diffDays / 30)
+  if (diffMonths < 12) {
+    if (isFuture) {
+      return `in ${diffMonths} ${diffMonths === 1 ? 'month' : 'months'}`
+    }
+    return `${diffMonths} ${diffMonths === 1 ? 'month' : 'months'} ago`
+  }
+  
+  // Years
+  const diffYears = Math.floor(diffDays / 365)
+  if (isFuture) {
+    return `in ${diffYears} ${diffYears === 1 ? 'year' : 'years'}`
+  }
+  return `${diffYears} ${diffYears === 1 ? 'year' : 'years'} ago`
 }
+
+const formatDateAbsolute = (dateStr: string | null | undefined): string => {
+  if (!dateStr) return '—'
+  
+  let date: Date
+  if (dateStr.includes(' ')) {
+    date = new Date(dateStr.replace(' ', 'T'))
+  } else {
+    date = new Date(dateStr)
+  }
+  
+  if (isNaN(date.getTime())) return '—'
+  
+  const day = String(date.getDate()).padStart(2, '0')
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const year = date.getFullYear()
+  
+  return `${day}.${month}.${year}`
+}
+
 </script>
 
 <style scoped>
 .admin {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 10px;
 }
 
 .admin h1 {
   margin-bottom: 24px;
 }
 
-.admin-nav {
+.admin-tabs {
   display: flex;
-  gap: 12px;
+  gap: 0;
   margin-bottom: 24px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--border-primary);
+  border-bottom: 2px solid var(--border-primary);
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
-.admin-nav-link {
-  padding: 10px 20px;
+.admin-tab {
+  padding: 12px 24px;
   text-decoration: none;
-  color: var(--text-primary);
-  border: 1px solid var(--border-primary);
-  border-radius: 4px;
+  color: var(--text-secondary);
+  border-bottom: 3px solid transparent;
   transition: all 0.2s;
-  background: var(--bg-secondary);
+  white-space: nowrap;
+  position: relative;
+  bottom: -2px;
 }
 
-.admin-nav-link:hover {
+.admin-tab:hover {
+  color: var(--text-primary);
   background: var(--bg-hover);
-  border-color: var(--color-primary);
 }
 
-.admin-nav-link.active {
-  background: var(--color-primary);
-  color: white;
-  border-color: var(--color-primary);
+.admin-tab.active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+  font-weight: 500;
 }
 
 .admin .card h2 {
   margin-bottom: 20px;
 }
 
-.circuit-breaker-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.circuit-breaker-header h2 {
-  margin: 0;
-}
-
-.circuit-breaker-content {
-  margin-top: 0;
-}
-
-.circuit-breaker-info {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.info-row {
-  display: flex;
-  gap: 10px;
-  align-items: baseline;
-}
-
-.info-label {
-  font-weight: 500;
-  color: var(--text-secondary);
-  min-width: 140px;
-}
-
-.info-value {
-  color: var(--text-primary);
-  word-break: break-word;
-}
-
-.info-value.state-open {
-  color: var(--color-danger);
-  font-weight: 600;
-  background: rgba(220, 53, 69, 0.1);
-  padding: 4px 12px;
-  border-radius: 4px;
-  display: inline-block;
-  text-transform: uppercase;
-  font-size: 0.9em;
-  letter-spacing: 0.5px;
-}
-
-.info-value.state-closed {
-  color: var(--color-success);
-  font-weight: 600;
-  background: rgba(40, 167, 69, 0.1);
-  padding: 4px 12px;
-  border-radius: 4px;
-  display: inline-block;
-  text-transform: uppercase;
-  font-size: 0.9em;
-  letter-spacing: 0.5px;
-}
 
 .words-filters {
   display: flex;
@@ -1147,7 +1136,7 @@ const formatDate = (dateStr: string | null | undefined) => {
 
 .words-table th,
 .words-table td {
-  padding: 12px;
+  padding: 10px 12px;
   text-align: left;
   border-bottom: 1px solid var(--border-primary);
 }
@@ -1549,6 +1538,91 @@ const formatDate = (dateStr: string | null | undefined) => {
   font-size: 16px;
   color: var(--text-primary);
   padding: 20px;
+}
+
+.card-link.card-link-error {
+  color: var(--color-danger) !important;
+  border-bottom-color: var(--color-danger) !important;
+}
+
+.card-link.card-link-error:hover {
+  color: var(--color-danger) !important;
+  border-bottom-color: var(--color-danger) !important;
+  opacity: 0.8;
+}
+
+.error-details {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.error-detail-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.error-detail-label {
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.error-detail-value {
+  color: var(--text-primary);
+  word-break: break-word;
+}
+
+.error-text-full {
+  color: var(--color-danger);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.desktop-only {
+  display: table-cell;
+}
+
+@media (max-width: 767px) {
+  .desktop-only {
+    display: none;
+  }
+
+  .words-filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .words-filters .search-box {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .words-filters .admin-select {
+    width: 100%;
+    min-width: auto;
+  }
+
+  .words-filters .btn {
+    width: 100%;
+  }
+
+  .words-table th,
+  .words-table td {
+    padding: 6px;
+    font-size: 13px;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .btn-sm {
+    padding: 4px 8px;
+    font-size: 11px;
+  }
 }
 </style>
 

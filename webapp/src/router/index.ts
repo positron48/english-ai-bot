@@ -45,9 +45,21 @@ const router = createRouter({
       meta: { requiresAuth: true, requiresAdmin: true }
     },
     {
+      path: '/admin/circuit-breaker',
+      name: 'AdminCircuitBreaker',
+      component: () => import('../views/AdminCircuitBreakerView.vue'),
+      meta: { requiresAuth: true, requiresAdmin: true }
+    },
+    {
       path: '/admin/prompt-tester',
       name: 'AdminPromptTester',
       component: () => import('../views/AdminPromptTesterView.vue'),
+      meta: { requiresAuth: true, requiresAdmin: true }
+    },
+    {
+      path: '/admin/orphaned-cards',
+      name: 'AdminOrphanedCards',
+      component: () => import('../views/AdminOrphanedCardsView.vue'),
       meta: { requiresAuth: true, requiresAdmin: true }
     }
   ]
