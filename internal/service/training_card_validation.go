@@ -8,9 +8,9 @@ import (
 	"tgbot-skeleton/internal/models"
 )
 
-// validateTrainingCardResponse validates the LLM response for training card generation
+// ValidateTrainingCardResponse validates the LLM response for training card generation
 // Returns an error message if validation fails, empty string if valid
-func validateTrainingCardResponse(wordCard *models.WordCard, resp *models.TrainingCardResponse) string {
+func ValidateTrainingCardResponse(wordCard *models.WordCard, resp *models.TrainingCardResponse) string {
 	if len(resp.Senses) == 0 {
 		return "" // This is handled separately
 	}

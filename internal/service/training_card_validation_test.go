@@ -23,7 +23,7 @@ func TestValidateTrainingCardResponse_R1_CyrillicInDistractorsEN(t *testing.T) {
 		},
 	}
 
-	errorMsg := validateTrainingCardResponse(wordCard, resp)
+	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
 	if errorMsg == "" {
 		t.Error("Expected validation error for R1 (Cyrillic in distractors_en), got empty")
 	}
@@ -48,7 +48,7 @@ func TestValidateTrainingCardResponse_R2_LatinInDistractorsRU(t *testing.T) {
 		},
 	}
 
-	errorMsg := validateTrainingCardResponse(wordCard, resp)
+	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
 	if errorMsg == "" {
 		t.Error("Expected validation error for R2 (Latin in distractors_ru), got empty")
 	}
@@ -73,7 +73,7 @@ func TestValidateTrainingCardResponse_R3_VerbWithoutToPrefix(t *testing.T) {
 		},
 	}
 
-	errorMsg := validateTrainingCardResponse(wordCard, resp)
+	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
 	if errorMsg == "" {
 		t.Error("Expected validation error for R3 (verb distractors_en without 'to ' prefix), got empty")
 	}
@@ -98,7 +98,7 @@ func TestValidateTrainingCardResponse_R4_NonVerbWithToPrefix(t *testing.T) {
 		},
 	}
 
-	errorMsg := validateTrainingCardResponse(wordCard, resp)
+	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
 	if errorMsg == "" {
 		t.Error("Expected validation error for R4 (non-verb distractors_en with 'to ' prefix), got empty")
 	}
@@ -123,7 +123,7 @@ func TestValidateTrainingCardResponse_R5_DistractorsENContainsLemma(t *testing.T
 		},
 	}
 
-	errorMsg := validateTrainingCardResponse(wordCard, resp)
+	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
 	if errorMsg == "" {
 		t.Error("Expected validation error for R5 (distractors_en contains lemma), got empty")
 	}
@@ -148,7 +148,7 @@ func TestValidateTrainingCardResponse_R6_DistractorsRUContainsWordRU(t *testing.
 		},
 	}
 
-	errorMsg := validateTrainingCardResponse(wordCard, resp)
+	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
 	if errorMsg == "" {
 		t.Error("Expected validation error for R6 (distractors_ru contains word_ru), got empty")
 	}
@@ -174,7 +174,7 @@ func TestValidateTrainingCardResponse_HappyPath(t *testing.T) {
 		},
 	}
 
-	errorMsg := validateTrainingCardResponse(wordCard, resp)
+	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
 	if errorMsg != "" {
 		t.Errorf("Expected no validation error for valid response, got: %s", errorMsg)
 	}
@@ -197,7 +197,7 @@ func TestValidateTrainingCardResponse_HappyPath_NonVerb(t *testing.T) {
 		},
 	}
 
-	errorMsg := validateTrainingCardResponse(wordCard, resp)
+	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
 	if errorMsg != "" {
 		t.Errorf("Expected no validation error for valid response, got: %s", errorMsg)
 	}
@@ -219,7 +219,7 @@ func TestValidateTrainingCardResponse_MultipleErrors(t *testing.T) {
 		},
 	}
 
-	errorMsg := validateTrainingCardResponse(wordCard, resp)
+	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
 	if errorMsg == "" {
 		t.Error("Expected validation error for multiple rule violations, got empty")
 	}
@@ -263,7 +263,7 @@ func TestValidateTrainingCardResponse_POSFromWordCard(t *testing.T) {
 		},
 	}
 
-	errorMsg := validateTrainingCardResponse(wordCard, resp)
+	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
 	if errorMsg == "" {
 		t.Error("Expected validation error for R3 (verb without 'to '), got empty")
 	}
@@ -281,7 +281,7 @@ func TestValidateTrainingCardResponse_EmptySenses(t *testing.T) {
 		Senses: []models.TrainingCardSense{},
 	}
 
-	errorMsg := validateTrainingCardResponse(wordCard, resp)
+	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
 	if errorMsg != "" {
 		t.Errorf("Expected empty error message for empty senses (handled separately), got: %s", errorMsg)
 	}

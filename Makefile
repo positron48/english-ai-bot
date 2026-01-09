@@ -44,6 +44,20 @@ test:
 test-verbose:
 	$(GO) test -v ./...
 
+# LLM integration tests (require AI_URL, AI_API_KEY env vars)
+llm-words:
+	@echo "Running LLM word cards integration tests..."
+	@echo "⚠️  Requires: AI_URL, AI_API_KEY environment variables"
+	$(GO) test -tags=integration -v -run '^TestLLM_WordCards$$' -count=1 ./internal/integration/llm/...
+
+llm-training:
+	@echo "Running LLM training cards integration tests..."
+	@echo "⚠️  Requires: AI_URL, AI_API_KEY environment variables"
+	$(GO) test -tags=integration -v -run '^TestLLM_TrainingCards$$' -count=1 ./internal/integration/llm/...
+
+llm-all: llm-words llm-training
+	@echo "✅ All LLM integration tests completed"
+
 # CI checks (same as in GitHub Actions)
 check: tidy
 	@echo "=== Running CI Checks ==="
@@ -235,6 +249,9 @@ help:
 	@echo "  make webapp-dev     - Run webapp dev server only"
 	@echo "  make webapp-build   - Build webapp for production"
 	@echo "  make test           - Run tests"
+	@echo "  make llm-words       - Run LLM word cards integration tests (requires AI_URL, AI_API_KEY)"
+	@echo "  make llm-training   - Run LLM training cards integration tests (requires AI_URL, AI_API_KEY)"
+	@echo "  make llm-all        - Run all LLM integration tests"
 	@echo "  make fmt            - Format code"
 	@echo "  make lint           - Run linter"
 	@echo "  make check          - Run all CI checks (tests, lint, verify)"

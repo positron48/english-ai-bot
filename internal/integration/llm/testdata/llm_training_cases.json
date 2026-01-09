@@ -1,0 +1,32 @@
+[
+  {
+    "word": "spy",
+    "expect": "ok",
+    "note": "Common verb - should generate valid training card with senses and distractors"
+  },
+  {
+    "word": "bank",
+    "expect": "ok",
+    "note": "Polysemous word (noun/verb) - should generate multiple senses"
+  },
+  {
+    "word": "teacher",
+    "expect": "ok",
+    "note": "Common noun - should generate valid training card"
+  },
+  {
+    "word": "tor",
+    "expect": "ok",
+    "note": "Common noun (rocky hill) - should be accepted per prompt rules (not rejected as proper noun)"
+  },
+  {
+    "word": "microsoft",
+    "expect": "reject",
+    "note": "Proper noun (brand name) - should be rejected with error message and empty senses"
+  },
+  {
+    "word": "xyzqwerty123",
+    "expect": "reject",
+    "note": "Nonsense word - should be rejected"
+  }
+]

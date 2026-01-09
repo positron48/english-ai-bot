@@ -194,7 +194,7 @@ func (w *TrainingWorker) processCard(ctx context.Context, wordCard *models.WordC
 	}
 
 	// Validate distractors according to rules
-	if validationError := validateTrainingCardResponse(wordCard, &trainingResp); validationError != "" {
+	if validationError := ValidateTrainingCardResponse(wordCard, &trainingResp); validationError != "" {
 		w.logger.Warn("training card validation failed",
 			zap.String("word", wordCard.Word),
 			zap.Int64("word_card_id", wordCard.ID),

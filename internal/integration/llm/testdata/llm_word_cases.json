@@ -1,0 +1,42 @@
+[
+  {
+    "word": "hello",
+    "expect": "ok",
+    "note": "Common English word - should generate valid word card"
+  },
+  {
+    "word": "run",
+    "expect": "ok",
+    "note": "Common verb - should have verb_forms"
+  },
+  {
+    "word": "beautiful",
+    "expect": "ok",
+    "note": "Common adjective - should not have verb_forms"
+  },
+  {
+    "word": "xyzqwerty123",
+    "expect": "reject",
+    "note": "Nonsense word - should be rejected with error=true and hint in Russian"
+  },
+  {
+    "word": "london",
+    "expect": "ok",
+    "note": "Proper noun (city name) - should be rejected according to prompt rules"
+  },
+  {
+    "word": "den",
+    "expect": "ok",
+    "note": "Логово"
+  },
+  {
+    "word": "Сегодня хорошая погода",
+    "expect": "translate",
+    "note": "перевод"
+  },
+  {
+    "word": "Today is good day.",
+    "expect": "correction",
+    "note": "коррекция"
+  }
+]
