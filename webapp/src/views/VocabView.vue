@@ -1014,6 +1014,10 @@ const formatDateShort = (dateStr: string | null) => {
     max-width: 100%;
   }
   
+  .section-header {
+    position: static;
+  }
+  
   .modal-content {
     padding: 20px;
     width: 95%;

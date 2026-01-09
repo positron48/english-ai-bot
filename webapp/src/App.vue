@@ -30,7 +30,7 @@
       </div>
     </nav>
     
-    <main class="container" :class="{ 'with-mobile-footer': isAuthenticated && isMobile }">
+    <main class="container" :class="{ 'with-mobile-footer': isAuthenticated && isMobile, 'with-desktop-navbar': isAuthenticated && !isMobile }">
       <router-view v-if="mounted" />
       <div v-else style="padding: 20px; text-align: center;">
         Loading...
@@ -202,8 +202,13 @@ const hasMoreItems = computed(() => {
 <style scoped>
 /* Desktop Navbar */
 .navbar-desktop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
   background: var(--bg-secondary);
   box-shadow: 0 2px 4px var(--navbar-shadow);
+  z-index: 1000;
 }
 
 .nav-links {
@@ -436,6 +441,11 @@ const hasMoreItems = computed(() => {
 /* Main content padding for mobile footer */
 main.with-mobile-footer {
   padding-bottom: 80px;
+}
+
+/* Main content padding for desktop navbar */
+main.with-desktop-navbar {
+  padding-top: 80px;
 }
 
 /* Responsive: Hide desktop nav on mobile, show mobile nav */

@@ -1,9 +1,22 @@
 <template>
   <div class="chat">
-    <h1>AI Chat</h1>
-    
     <div class="card chat-container">
       <div class="chat-messages" ref="messagesContainer">
+        <div v-if="messages.length === 0" class="welcome-message">
+          <div class="welcome-icon">🇬🇧</div>
+          <h2 class="welcome-title">Привет! Я ваш персональный тренер английского языка!</h2>
+          <p class="welcome-text">
+            Я могу помочь вам с:
+          </p>
+          <ul class="welcome-list">
+            <li>Созданием словарных карточек для изучения слов</li>
+            <li>Переводом текстов с русского на английский</li>
+            <li>Корректировкой и исправление английского текста</li>
+          </ul>
+          <p class="welcome-text">
+            Просто напишите мне сообщение, и я помогу вам!
+          </p>
+        </div>
         <div
           v-for="(msg, index) in messages"
           :key="index"
@@ -15,19 +28,30 @@
             v-html="msg.role === 'assistant' ? renderMarkdown(msg.content) : escapeHtml(msg.content)"
           ></div>
         </div>
+        <div v-if="sending" class="message assistant">
+          <div class="message-content typing-indicator">
+            <span class="typing-dot"></span>
+            <span class="typing-dot"></span>
+            <span class="typing-dot"></span>
+          </div>
+        </div>
       </div>
       
-      <div class="chat-input">
-        <textarea
-          ref="textareaRef"
-          v-model="inputMessage"
-          placeholder="Type your message..."
-          @keyup.enter.ctrl="sendMessage"
-          @input="autoResize"
-        ></textarea>
-        <button @click="sendMessage" class="btn btn-primary" :disabled="sending">
-          {{ sending ? 'Sending...' : 'Send' }}
-        </button>
+      <div class="chat-input-wrapper">
+        <div class="chat-input-container">
+          <div class="chat-input">
+            <textarea
+              ref="textareaRef"
+              v-model="inputMessage"
+              placeholder="Type your message..."
+              @keyup.enter.ctrl="sendMessage"
+              @input="autoResize"
+            ></textarea>
+            <button @click="sendMessage" class="btn btn-primary" :disabled="sending">
+              {{ sending ? 'Sending...' : 'Send' }}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -85,6 +109,7 @@ const sendMessage = async () => {
   await scrollToBottom()
 
   sending.value = true
+  await scrollToBottom() // Scroll to show typing indicator
   try {
     const formData = new FormData()
     formData.append('message', userMessage)
@@ -151,27 +176,55 @@ watch(() => route.path, (newPath) => {
 <style scoped>
 .chat {
   max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-.chat h1 {
-  margin-bottom: 24px;
+  margin: -20px auto 0; /* Компенсируем padding main сверху */
+  padding: 0;
+  height: calc(100vh - 80px); /* Высота экрана минус хедер (80px padding-top у main) */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .chat-container {
   display: flex;
   flex-direction: column;
-  height: 600px;
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  background: transparent;
+  box-shadow: none;
+  border: none;
+  padding: 0;
+  overflow: hidden;
+  height: 100%;
 }
 
 .chat-messages {
   flex: 1;
   overflow-y: auto;
-  padding: 20px;
+  overflow-x: hidden;
+  padding: 20px 15px 20px 20px;
   background: var(--chat-bg);
-  border-radius: 4px;
-  margin-bottom: 20px;
+  border-radius: 0;
+  margin-bottom: 0;
+  min-height: 0;
+  box-sizing: border-box;
+}
+
+.chat-input-wrapper {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--bg-primary);
+  border-top: 1px solid var(--border-primary);
+  z-index: 10;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.chat-input-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 10px 20px;
 }
 
 .chat-input {
@@ -182,13 +235,79 @@ watch(() => route.path, (newPath) => {
 
 .chat-input textarea {
   flex: 1;
-  resize: vertical;
-  min-height: 60px;
+  resize: none;
+  height: 40px;
+  min-height: 40px;
+  max-height: 200px;
+  padding: 10px;
+  box-sizing: border-box;
+  line-height: 20px;
+  overflow-y: hidden;
 }
 
 .chat-input button {
+  height: 40px;
+  padding: 10px 20px;
+  box-sizing: border-box;
+  flex-shrink: 0;
   align-self: flex-start;
   margin-top: 0;
+}
+
+.welcome-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-secondary);
+}
+
+.welcome-icon {
+  font-size: 64px;
+  margin-bottom: 20px;
+  animation: wave 2s ease-in-out infinite;
+}
+
+@keyframes wave {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(20deg);
+  }
+  75% {
+    transform: rotate(-20deg);
+  }
+}
+
+.welcome-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 16px 0;
+}
+
+.welcome-text {
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 12px 0;
+  max-width: 600px;
+  color: var(--text-secondary);
+}
+
+.welcome-list {
+  text-align: left;
+  max-width: 500px;
+  margin: 20px auto;
+  padding-left: 20px;
+  color: var(--text-primary);
+}
+
+.welcome-list li {
+  margin: 8px 0;
+  line-height: 1.5;
 }
 
 .message {
@@ -203,7 +322,7 @@ watch(() => route.path, (newPath) => {
   display: inline-block;
   padding: 10px 15px;
   border-radius: 8px;
-  max-width: 70%;
+  max-width: 85%;
   word-wrap: break-word;
 }
 
@@ -216,6 +335,47 @@ watch(() => route.path, (newPath) => {
   background: var(--chat-assistant-bg);
   color: var(--text-primary);
   border: 1px solid var(--chat-assistant-border);
+}
+
+.typing-indicator {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  padding: 12px 16px;
+  min-width: 50px;
+  padding-bottom: 14px;
+}
+
+.typing-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--text-secondary);
+  animation: typing 1.4s infinite ease-in-out;
+  display: inline-block;
+}
+
+.typing-dot:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.typing-dot:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+.typing-dot:nth-child(3) {
+  animation-delay: 0;
+}
+
+@keyframes typing {
+  0%, 60%, 100% {
+    transform: translateY(0);
+    opacity: 0.7;
+  }
+  30% {
+    transform: translateY(-6px);
+    opacity: 1;
+  }
 }
 
 .markdown-content {
@@ -306,29 +466,86 @@ watch(() => route.path, (newPath) => {
   color: var(--text-secondary);
 }
 
-.chat-input {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
+/* Mobile styles */
+@media (max-width: 768px) {
+  .chat {
+    padding: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    max-width: 100%;
+  }
 
-.chat-input textarea {
-  flex: 1;
-  resize: none;
-  height: 40px;
-  min-height: 40px;
-  max-height: 200px;
-  padding: 10px;
-  box-sizing: border-box;
-  line-height: 20px;
-  overflow-y: hidden;
-}
+  .chat-container {
+    flex: 1;
+    min-height: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background: transparent;
+    box-shadow: none;
+    border: none;
+    padding: 0;
+  }
 
-.chat-input button {
-  height: 40px;
-  padding: 10px 20px;
-  box-sizing: border-box;
-  flex-shrink: 0;
+  .chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px 10px 15px 15px;
+    padding-bottom: 100px; /* Отступ для поля ввода */
+    margin-bottom: 0;
+    background: var(--bg-primary);
+    border-radius: 0;
+  }
+
+  .chat-input-wrapper {
+    position: fixed;
+    bottom: 60px; /* Высота мобильного меню */
+    left: 0;
+    right: 0;
+    background: var(--bg-primary);
+    border-top: 1px solid var(--border-primary);
+    border-radius: 0;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 999;
+  }
+
+  .chat-input-container {
+    max-width: 100%;
+    padding: 10px 15px;
+  }
+
+  .welcome-message {
+    padding: 30px 15px;
+    min-height: 200px;
+  }
+
+  .welcome-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+  }
+
+  .welcome-title {
+    font-size: 20px;
+    margin-bottom: 12px;
+  }
+
+  .welcome-text {
+    font-size: 14px;
+    margin: 10px 0;
+  }
+
+  .welcome-list {
+    max-width: 100%;
+    margin: 16px auto;
+    padding-left: 16px;
+    font-size: 14px;
+  }
+
+  .welcome-list li {
+    margin: 6px 0;
+  }
 }
 </style>
 
