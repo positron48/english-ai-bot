@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"math"
 	"testing"
 	"time"
 
@@ -90,11 +91,27 @@ func TestSRSService_GradeCard(t *testing.T) {
 			// by checking that the card state is updated correctly
 			quality := models.CalculateQuality(tt.attemptData)
 			if quality == models.QualityWrong && tt.userCard.State != models.StateNew {
-				// Wrong answer should reset to learning
-				expectedState := models.StateLearning
+				initialInterval := tt.userCard.IntervalDays
+				initialReps := tt.userCard.Reps
 				service.updateCardState(tt.userCard, quality, now)
-				if tt.userCard.State != expectedState {
-					t.Errorf("Expected state %v, got %v", expectedState, tt.userCard.State)
+				
+				// For review cards: should stay in review with reduced interval (gentle approach)
+				switch tt.userCard.State {
+				case models.StateReview:
+					// Interval should be reduced (divided by 2)
+					expectedInterval := int(math.Max(1, math.Floor(float64(initialInterval)/2.0)))
+					if tt.userCard.IntervalDays != expectedInterval {
+						t.Errorf("Expected interval %d, got %d", expectedInterval, tt.userCard.IntervalDays)
+					}
+					// Reps should be preserved
+					if tt.userCard.Reps != initialReps {
+						t.Errorf("Expected reps %d (preserved), got %d", initialReps, tt.userCard.Reps)
+					}
+				case models.StateNew:
+					// New cards should go to learning
+					if tt.userCard.State != models.StateLearning {
+						t.Errorf("Expected state %v for new card, got %v", models.StateLearning, tt.userCard.State)
+					}
 				}
 			}
 		})
@@ -156,7 +173,7 @@ func TestSRSService_updateCardState(t *testing.T) {
 			},
 		},
 		{
-			name: "Wrong answer resets to learning",
+			name: "Wrong answer in review reduces interval (gentle approach)",
 			card: &models.UserCard{
 				State:        models.StateReview,
 				EF:           2.0,
@@ -166,17 +183,24 @@ func TestSRSService_updateCardState(t *testing.T) {
 			},
 			quality: models.QualityWrong,
 			validate: func(t *testing.T, card *models.UserCard) {
-				if card.State != models.StateLearning {
-					t.Errorf("Expected state %v, got %v", models.StateLearning, card.State)
+				// Should stay in review for first error
+				if card.State != models.StateReview {
+					t.Errorf("Expected state %v, got %v (should stay in review for first error)", models.StateReview, card.State)
 				}
-				if card.LearningStep != 0 {
-					t.Errorf("Expected learning step 0, got %d", card.LearningStep)
+				// Interval should be reduced (divided by 2)
+				if card.IntervalDays != 5 {
+					t.Errorf("Expected interval 5 (10/2), got %d", card.IntervalDays)
 				}
-				if card.Reps != 0 {
-					t.Errorf("Expected reps 0, got %d", card.Reps)
+				// Reps should be preserved
+				if card.Reps != 5 {
+					t.Errorf("Expected reps 5 (preserved), got %d", card.Reps)
 				}
-				if card.LapseCount == 0 {
-					t.Error("LapseCount should be incremented")
+				if card.LapseCount != 1 {
+					t.Errorf("Expected LapseCount 1, got %d", card.LapseCount)
+				}
+				// EF should be reduced
+				if card.EF >= 2.0 {
+					t.Errorf("Expected EF < 2.0, got %f", card.EF)
 				}
 			},
 		},

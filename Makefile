@@ -79,10 +79,18 @@ check: tidy
 	@echo "✅ Go dependencies verified"
 	@echo ""
 	@echo "5. Running Go tests..."
-	@$(GO) test -tags=test -coverprofile=coverage.out -covermode=atomic -v ./... > .go-test-output.txt 2>&1
-	@grep -E "(PASS|FAIL|RUN)" .go-test-output.txt || true
-	@rm -f .go-test-output.txt
-	@echo "✅ Go tests passed"
+	@$(GO) test -tags=test -coverprofile=coverage.out -covermode=atomic -v ./... > .go-test-output.txt 2>&1; \
+	TEST_EXIT_CODE=$$?; \
+	if [ $$TEST_EXIT_CODE -ne 0 ]; then \
+		echo "❌ Go tests failed:"; \
+		echo ""; \
+		cat .go-test-output.txt; \
+		rm -f .go-test-output.txt; \
+		exit $$TEST_EXIT_CODE; \
+	fi; \
+	grep -E "(PASS|FAIL|RUN)" .go-test-output.txt || true; \
+	rm -f .go-test-output.txt; \
+	echo "✅ Go tests passed"
 	@echo ""
 	@echo "6. Running Go linter..."
 	@$(GOLANGCI) run --timeout=3m

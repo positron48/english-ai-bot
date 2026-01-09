@@ -34,6 +34,20 @@ func setupVocabTestDB(t *testing.T) (*sql.DB, *repository.UserRepository) {
 		updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 	);
 	
+	CREATE TABLE IF NOT EXISTS word_cards (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		word TEXT UNIQUE NOT NULL,
+		definition TEXT NOT NULL,
+		pos TEXT,
+		transcription TEXT,
+		definition_ru TEXT,
+		examples_json TEXT,
+		verb_forms_json TEXT,
+		display_en TEXT,
+		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+	);
+	
 	CREATE TABLE IF NOT EXISTS training_cards (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		word_card_id INTEGER NOT NULL,
@@ -316,5 +330,123 @@ func TestHandleVocab_WithPagination(t *testing.T) {
 	}
 	if pagination["limit"] != float64(10) {
 		t.Errorf("Expected limit 10, got %v", pagination["limit"])
+	}
+}
+
+func TestHandleVocab_GroupByLemma(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo := setupVocabTestDB(t)
+	defer db.Close()
+
+	// Create a user
+	user, err := userRepo.GetOrCreateUser(55555)
+	if err != nil {
+		t.Fatalf("Failed to create user: %v", err)
+	}
+
+	// Create word_card (lemma)
+	_, err = db.Exec("INSERT INTO word_cards (id, word, definition) VALUES (?, ?, ?)", 1, "spy", "definition")
+	if err != nil {
+		t.Fatalf("Failed to create word card: %v", err)
+	}
+
+	// Create two training_cards with same word_card_id but different word_en (spy and to spy)
+	_, err = db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, display_word) VALUES (?, ?, ?, ?, ?, ?)",
+		1, "spy", 0, "шпионить", "to spy", "spy")
+	if err != nil {
+		t.Fatalf("Failed to create training card 1: %v", err)
+	}
+
+	_, err = db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, display_word) VALUES (?, ?, ?, ?, ?, ?)",
+		1, "spy", 1, "шпион", "spy", "to spy")
+	if err != nil {
+		t.Fatalf("Failed to create training card 2: %v", err)
+	}
+
+	// Get training card IDs
+	var trainingCardID1, trainingCardID2 int64
+	err = db.QueryRow("SELECT id FROM training_cards WHERE word_en = ? AND sense_index = 0", "spy").Scan(&trainingCardID1)
+	if err != nil {
+		t.Fatalf("Failed to get training card ID 1: %v", err)
+	}
+	err = db.QueryRow("SELECT id FROM training_cards WHERE word_en = ? AND sense_index = 1", "spy").Scan(&trainingCardID2)
+	if err != nil {
+		t.Fatalf("Failed to get training card ID 2: %v", err)
+	}
+
+	// Create user_cards for both training cards
+	_, err = db.Exec("INSERT INTO user_cards (user_id, training_card_id, direction, state, ef) VALUES (?, ?, ?, ?, ?)",
+		user.ID, trainingCardID1, "en_ru", "new", 2.5)
+	if err != nil {
+		t.Fatalf("Failed to create user card 1: %v", err)
+	}
+
+	_, err = db.Exec("INSERT INTO user_cards (user_id, training_card_id, direction, state, ef) VALUES (?, ?, ?, ?, ?)",
+		user.ID, trainingCardID2, "ru_en", "learning", 2.5)
+	if err != nil {
+		t.Fatalf("Failed to create user card 2: %v", err)
+	}
+
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{
+			JWTSecret:     "test-secret",
+			JWTTTLHours:   24,
+			RefreshTTLHours: 720,
+		},
+	}
+
+	jwtService, _ := NewJWTService(cfg, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-token")
+
+	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	// Create request
+	req := httptest.NewRequest("GET", "/app/vocab", nil)
+	ctx := context.WithValue(req.Context(), userIDKey, user.ID)
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+
+	// Call handler
+	router.handleVocab(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d", w.Code)
+	}
+
+	// Verify response
+	var response map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
+		t.Fatalf("Failed to decode response: %v", err)
+	}
+
+	words, ok := response["words"].([]interface{})
+	if !ok {
+		t.Fatal("Response should contain words array")
+	}
+
+	// Should have only 1 word (grouped by word_card_id/lemma), not 2
+	if len(words) != 1 {
+		t.Errorf("Expected 1 word (grouped by lemma), got %d", len(words))
+	}
+
+	// Verify the word has correct fields
+	word := words[0].(map[string]interface{})
+	if word["word_card_id"] == nil {
+		t.Error("Word should have word_card_id field")
+	}
+	if word["lemma"] == nil {
+		t.Error("Word should have lemma field")
+	}
+	if word["display_word"] == nil {
+		t.Error("Word should have display_word field")
+	}
+	if word["lemma"].(string) != "spy" {
+		t.Errorf("Expected lemma 'spy', got %v", word["lemma"])
+	}
+	// Should have 2 total_cards (one for each training_card)
+	if word["total_cards"].(float64) != 2 {
+		t.Errorf("Expected 2 total_cards, got %v", word["total_cards"])
 	}
 }

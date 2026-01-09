@@ -196,6 +196,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, h } from 'vue'
 import { apiClient } from '../api/client'
+import { showAlert, showConfirm } from '../composables/useDialog'
 // Custom character-level diff implementation
 interface DiffPart {
   value: string
@@ -615,8 +616,9 @@ function saveToLocalStorage() {
   }
 }
 
-function clearResults() {
-  if (confirm('Are you sure you want to clear all results?')) {
+async function clearResults() {
+  const confirmed = await showConfirm('Are you sure you want to clear all results?')
+  if (confirmed) {
     results.value = []
     saveToLocalStorage()
   }
@@ -641,7 +643,7 @@ async function loadDefaultPrompts() {
     saveToLocalStorage()
   } catch (error) {
     console.error('Failed to load default prompts:', error)
-    alert('Failed to load default prompts')
+    await showAlert('Failed to load default prompts')
   }
 }
 
@@ -654,7 +656,7 @@ async function resetWordPrompt() {
     saveToLocalStorage()
   } catch (error) {
     console.error('Failed to load default word prompt:', error)
-    alert('Failed to load default word prompt from server')
+    await showAlert('Failed to load default word prompt from server')
   }
 }
 
@@ -667,19 +669,19 @@ async function resetTrainingPrompt() {
     saveToLocalStorage()
   } catch (error) {
     console.error('Failed to load default training prompt:', error)
-    alert('Failed to load default training prompt from server')
+    await showAlert('Failed to load default training prompt from server')
   }
 }
 
 async function runTests() {
   const words = parseWords(wordsText.value)
   if (words.length === 0) {
-    alert('Please enter at least one word')
+    await showAlert('Please enter at least one word')
     return
   }
 
   if (!wordPromptCurrent.value || !trainingPromptCurrent.value) {
-    alert('Please ensure both prompts are set')
+    await showAlert('Please ensure both prompts are set')
     return
   }
 
@@ -765,7 +767,7 @@ async function runTests() {
     }
   } catch (error: any) {
     console.error('Failed to run tests:', error)
-    alert('Failed to run tests: ' + (error.message || 'Unknown error'))
+    await showAlert('Failed to run tests: ' + (error.message || 'Unknown error'))
   } finally {
     isRunning.value = false
   }

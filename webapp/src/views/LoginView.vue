@@ -5,6 +5,19 @@
       
       <div v-if="step === 'username'" class="login-step">
         <p>Enter your Telegram username or ID:</p>
+        <div class="info-box">
+          <svg class="info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="16" x2="12" y2="12"/>
+            <line x1="12" y1="8" x2="12.01" y2="8"/>
+          </svg>
+          <div class="info-content">
+            <p class="info-text">
+              Если по никнейму не находится пользователь, используйте Telegram ID. 
+              Получить ID можно командой <code>/get_id</code> в боте или через Telegram Mini App.
+            </p>
+          </div>
+        </div>
         <input
           ref="usernameInput"
           v-model="username"
@@ -150,6 +163,66 @@ const verifyOTP = async () => {
 h1 {
   margin-bottom: 20px;
   text-align: center;
+}
+
+.info-box {
+  display: flex;
+  gap: 12px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  background-color: var(--info-bg, #e3f2fd);
+  border: 1px solid var(--info-border, #90caf9);
+  border-radius: 8px;
+  align-items: flex-start;
+}
+
+.info-icon {
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  color: var(--info-icon, #1976d2);
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.info-content {
+  flex: 1;
+}
+
+.info-text {
+  margin: 0;
+  font-size: 0.875em;
+  line-height: 1.5;
+  color: var(--info-text, #1565c0);
+}
+
+.info-text code {
+  background-color: var(--info-code-bg, rgba(25, 118, 210, 0.1));
+  color: var(--info-code-text, #0d47a1);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.95em;
+  font-weight: 600;
+}
+
+/* Dark theme support */
+[data-theme="dark"] .info-box {
+  background-color: var(--info-bg, rgba(25, 118, 210, 0.15));
+  border-color: var(--info-border, rgba(144, 202, 249, 0.3));
+}
+
+[data-theme="dark"] .info-icon {
+  color: var(--info-icon, #64b5f6);
+}
+
+[data-theme="dark"] .info-text {
+  color: var(--info-text, #90caf9);
+}
+
+[data-theme="dark"] .info-text code {
+  background-color: var(--info-code-bg, rgba(100, 181, 246, 0.2));
+  color: var(--info-code-text, #bbdefb);
 }
 </style>
 

@@ -34,6 +34,20 @@ func setupVocabCardsTestDB(t *testing.T) (*sql.DB, *repository.UserRepository) {
 		updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 	);
 	
+	CREATE TABLE IF NOT EXISTS word_cards (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		word TEXT UNIQUE NOT NULL,
+		definition TEXT NOT NULL,
+		pos TEXT,
+		transcription TEXT,
+		definition_ru TEXT,
+		examples_json TEXT,
+		verb_forms_json TEXT,
+		display_en TEXT,
+		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+	);
+	
 	CREATE TABLE IF NOT EXISTS training_cards (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		word_card_id INTEGER NOT NULL,
@@ -117,6 +131,12 @@ func TestHandleVocabDelete_Cards(t *testing.T) {
 		t.Fatalf("Failed to create user: %v", err)
 	}
 
+	// Create word_card (lemma)
+	_, err = db.Exec("INSERT INTO word_cards (id, word, definition) VALUES (?, ?, ?)", 1, "cards", "definition")
+	if err != nil {
+		t.Fatalf("Failed to create word card: %v", err)
+	}
+
 	// Create training card
 	_, err = db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (?, ?, ?, ?, ?)",
 		1, "cards", 0, "карточки", "cards")
@@ -153,7 +173,7 @@ func TestHandleVocabDelete_Cards(t *testing.T) {
 	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
 	router.authMiddleware = authMiddleware
 
-	// Create request for cards
+	// Create request for cards using lemma
 	req := httptest.NewRequest("GET", "/app/vocab/cards/cards", nil)
 	ctx := context.WithValue(req.Context(), userIDKey, user.ID)
 	req = req.WithContext(ctx)
@@ -173,6 +193,12 @@ func TestHandleVocabDelete_Cards(t *testing.T) {
 	}
 	if response["cards"] == nil {
 		t.Error("Response should contain cards")
+	}
+	if response["lemma"] == nil {
+		t.Error("Response should contain lemma field")
+	}
+	if response["lemma"].(string) != "cards" {
+		t.Errorf("Expected lemma 'cards', got %v", response["lemma"])
 	}
 }
 

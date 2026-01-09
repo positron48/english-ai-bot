@@ -249,6 +249,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { apiClient } from '../api/client'
+import { showAlert } from '../composables/useDialog'
 import Icon from '../components/Icon.vue'
 
 interface Card {
@@ -921,10 +922,10 @@ const startTraining = async () => {
     await loadStats()
   } catch (error: any) {
     if (error.message?.includes('No cards available')) {
-      alert('No cards available for training. Request some words first!')
+      await showAlert('No cards available for training. Request some words first!')
     } else {
       console.error('Failed to start training:', error)
-      alert('Failed to start training')
+      await showAlert('Failed to start training')
     }
   } finally {
     loading.value = false
@@ -955,7 +956,7 @@ const revealOptions = async (isEarly: boolean = false) => {
     // Network error is already handled by callback, but we should handle other errors
     if (!error.isNetworkError) {
       // For non-network errors, show a simple message
-      alert('Не удалось загрузить варианты ответов. Попробуйте обновить страницу.')
+      await showAlert('Не удалось загрузить варианты ответов. Попробуйте обновить страницу.')
     }
   }
 }
@@ -1044,7 +1045,7 @@ const submitAnswer = async (optionIndex: number) => {
     // Network error is already handled by callback
     if (!error.isNetworkError) {
       // For non-network errors, show a simple message
-      alert('Не удалось отправить ответ. Попробуйте еще раз.')
+      await showAlert('Не удалось отправить ответ. Попробуйте еще раз.')
     }
   } finally {
     answering.value = false
@@ -1142,7 +1143,7 @@ const nextCard = async () => {
       // Network error is already handled by callback
       if (!error.isNetworkError) {
         // For non-network errors, show a simple message
-        alert('Не удалось загрузить следующую карточку. Попробуйте обновить страницу.')
+        await showAlert('Не удалось загрузить следующую карточку. Попробуйте обновить страницу.')
       }
     }
   }

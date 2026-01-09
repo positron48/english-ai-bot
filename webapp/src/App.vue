@@ -93,6 +93,19 @@
         </button>
       </div>
     </aside>
+    
+    <!-- Global Dialog Modals -->
+    <AlertModal 
+      :message="alertState.message" 
+      :visible="alertState.visible"
+      @close="closeAlert"
+    />
+    <ConfirmModal 
+      :message="confirmState.message" 
+      :visible="confirmState.visible"
+      @confirm="() => closeConfirm(true)"
+      @cancel="() => closeConfirm(false)"
+    />
   </div>
 </template>
 
@@ -101,12 +114,16 @@ import { ref, onMounted, watch, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuth } from './composables/useAuth'
 import { useTheme } from './composables/useTheme'
+import { useDialog } from './composables/useDialog'
 import Icon from './components/Icon.vue'
+import AlertModal from './components/AlertModal.vue'
+import ConfirmModal from './components/ConfirmModal.vue'
 
 const router = useRouter()
 const route = useRoute()
 const { isAuthenticated, isAdmin, logout: authLogout } = useAuth()
 const { theme, toggleTheme } = useTheme()
+const { alertState, confirmState, closeAlert, closeConfirm } = useDialog()
 
 const mounted = ref(false)
 const authError = ref<string | null>(null)

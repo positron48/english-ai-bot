@@ -405,6 +405,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { apiClient } from '../api/client'
+import { showAlert, showConfirm } from '../composables/useDialog'
 
 interface CircuitBreaker {
   state: string
@@ -528,10 +529,10 @@ const resetCircuitBreaker = async () => {
   try {
     await apiClient.request('/app/admin/circuit/reset', { method: 'POST' })
     await loadAdminData()
-    alert('Circuit breaker reset successfully')
+    await showAlert('Circuit breaker reset successfully')
   } catch (error) {
     console.error('Failed to reset circuit breaker:', error)
-    alert('Failed to reset circuit breaker')
+    await showAlert('Failed to reset circuit breaker')
   }
 }
 
@@ -636,7 +637,7 @@ const toggleWordCards = async (word: WordCard) => {
       word.cards = data.cards || []
     } catch (error) {
       console.error('Failed to load training cards:', error)
-      alert('Failed to load training cards')
+      await showAlert('Failed to load training cards')
       word.cards = []
     } finally {
       word.cardsLoading = false
@@ -756,10 +757,10 @@ const saveTrainingCard = async () => {
       await reloadWordCards(word)
     }
     
-    alert('Card updated successfully')
+    await showAlert('Card updated successfully')
   } catch (error) {
     console.error('Failed to save card:', error)
-    alert('Failed to save card')
+    await showAlert('Failed to save card')
   }
 }
 
@@ -789,10 +790,10 @@ const deleteTrainingCard = async () => {
       }
     }
     
-    alert('Card deleted successfully')
+    await showAlert('Card deleted successfully')
   } catch (error) {
     console.error('Failed to delete card:', error)
-    alert('Failed to delete card')
+    await showAlert('Failed to delete card')
   }
 }
 
@@ -850,10 +851,10 @@ const saveWord = async () => {
     }
     
     closeEditWordModal()
-    alert('Word updated successfully')
+    await showAlert('Word updated successfully')
   } catch (error) {
     console.error('Failed to update word:', error)
-    alert('Failed to update word')
+    await showAlert('Failed to update word')
   }
 }
 
@@ -885,7 +886,8 @@ const confirmResetError = async () => {
 }
 
 const deleteWord = async (word: WordCard) => {
-  if (!confirm(`Are you sure you want to delete word "${word.Word}"?\n\nThis will delete:\n- The word itself\n- All training cards\n- All user cards\n- All request history\n\nThis action cannot be undone!`)) {
+  const confirmed = await showConfirm(`Are you sure you want to delete word "${word.Word}"?\n\nThis will delete:\n- The word itself\n- All training cards\n- All user cards\n- All request history\n\nThis action cannot be undone!`)
+  if (!confirmed) {
     return
   }
 
@@ -896,10 +898,9 @@ const deleteWord = async (word: WordCard) => {
     if (index !== -1) {
       words.value.splice(index, 1)
     }
-    alert('Word and all related data deleted successfully')
   } catch (error) {
     console.error('Failed to delete word:', error)
-    alert('Failed to delete word')
+    await showAlert('Failed to delete word')
   }
 }
 

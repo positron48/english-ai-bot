@@ -165,30 +165,89 @@ func TestSRSService_handleLapse(t *testing.T) {
 
 	now := time.Now()
 	initialEF := 2.0
-	card := &models.UserCard{
-		State:        models.StateReview,
-		EF:           initialEF,
-		Reps:         5,
-		IntervalDays: 10,
-		LapseCount:   1,
-		Direction:    models.DirectionENtoRU,
-	}
+	
+	t.Run("First error in review - gentle approach", func(t *testing.T) {
+		card := &models.UserCard{
+			State:        models.StateReview,
+			EF:           initialEF,
+			Reps:         5,
+			IntervalDays: 10,
+			LapseCount:   0,
+			Direction:    models.DirectionENtoRU,
+		}
 
-	service.handleLapse(card, now)
+		service.handleLapse(card, now)
 
-	if card.State != models.StateLearning {
-		t.Errorf("Expected State %v, got %v", models.StateLearning, card.State)
-	}
-	if card.LearningStep != 0 {
-		t.Errorf("Expected LearningStep 0, got %d", card.LearningStep)
-	}
-	if card.Reps != 0 {
-		t.Errorf("Expected Reps 0, got %d", card.Reps)
-	}
-	if card.LapseCount != 2 {
-		t.Errorf("Expected LapseCount 2, got %d", card.LapseCount)
-	}
-	if card.EF >= initialEF {
-		t.Errorf("Expected EF < %f, got %f", initialEF, card.EF)
-	}
+		// Should stay in review
+		if card.State != models.StateReview {
+			t.Errorf("Expected State %v, got %v", models.StateReview, card.State)
+		}
+		// Interval should be reduced
+		if card.IntervalDays != 5 {
+			t.Errorf("Expected IntervalDays 5 (10/2), got %d", card.IntervalDays)
+		}
+		// Reps should be preserved
+		if card.Reps != 5 {
+			t.Errorf("Expected Reps 5 (preserved), got %d", card.Reps)
+		}
+		if card.LapseCount != 1 {
+			t.Errorf("Expected LapseCount 1, got %d", card.LapseCount)
+		}
+		if card.EF >= initialEF {
+			t.Errorf("Expected EF < %f, got %f", initialEF, card.EF)
+		}
+	})
+
+	t.Run("Third consecutive error - reset to learning", func(t *testing.T) {
+		card := &models.UserCard{
+			State:        models.StateReview,
+			EF:           initialEF,
+			Reps:         5,
+			IntervalDays: 10,
+			LapseCount:   2, // Already 2 errors
+			Direction:    models.DirectionENtoRU,
+		}
+
+		service.handleLapse(card, now)
+
+		// Should reset to learning after 3 errors
+		if card.State != models.StateLearning {
+			t.Errorf("Expected State %v, got %v", models.StateLearning, card.State)
+		}
+		if card.LearningStep != 0 {
+			t.Errorf("Expected LearningStep 0, got %d", card.LearningStep)
+		}
+		if card.Reps != 0 {
+			t.Errorf("Expected Reps 0, got %d", card.Reps)
+		}
+		if card.LapseCount != 3 {
+			t.Errorf("Expected LapseCount 3, got %d", card.LapseCount)
+		}
+	})
+
+	t.Run("Error in learning - stay in learning", func(t *testing.T) {
+		card := &models.UserCard{
+			State:        models.StateLearning,
+			EF:           initialEF,
+			Reps:         0,
+			IntervalDays: 0,
+			LearningStep: 2,
+			LapseCount:   0,
+			Direction:    models.DirectionENtoRU,
+		}
+
+		service.handleLapse(card, now)
+
+		// Should stay in learning
+		if card.State != models.StateLearning {
+			t.Errorf("Expected State %v, got %v", models.StateLearning, card.State)
+		}
+		// Should stay on current step (or step 0 if invalid)
+		if card.LearningStep < 0 || card.LearningStep > 2 {
+			t.Errorf("Expected LearningStep 0-2, got %d", card.LearningStep)
+		}
+		if card.LapseCount != 1 {
+			t.Errorf("Expected LapseCount 1, got %d", card.LapseCount)
+		}
+	})
 }

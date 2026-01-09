@@ -21,6 +21,7 @@ type TrainingHandler struct {
 	srsService            *service.SRSService
 	optionsService        *service.OptionsService
 	sessionRepo           interface {
+		CreateReviewEvent(event *models.ReviewEvent) (int64, error)
 		GetSessionStats(sessionID int64) (totalCards int, correctCards int, err error)
 	}
 	logger                *zap.Logger
@@ -56,6 +57,7 @@ func NewTrainingHandler(
 	srsService *service.SRSService,
 	optionsService *service.OptionsService,
 	sessionRepo interface {
+		CreateReviewEvent(event *models.ReviewEvent) (int64, error)
 		GetSessionStats(sessionID int64) (totalCards int, correctCards int, err error)
 	},
 	logger *zap.Logger,
@@ -338,7 +340,12 @@ func (h *TrainingHandler) HandleAnswer(chatID int64, optionIndex int) error {
 		earlyReveal = false
 	}
 
-	answerTimeMS := int(answeredAt.Sub(*optionsShownAt).Milliseconds())
+	var answerTimeMS int
+	if optionsShownAt != nil {
+		answerTimeMS = int(answeredAt.Sub(*optionsShownAt).Milliseconds())
+	} else {
+		answerTimeMS = 0
+	}
 
 	// Create attempt data
 	attemptData := models.AttemptData{
@@ -350,9 +357,69 @@ func (h *TrainingHandler) HandleAnswer(chatID int64, optionIndex int) error {
 		ChosenOption: chosenOption,
 	}
 
+	// Capture SRS state before update
+	srsBefore := models.SRSState{
+		State:        card.UserCard.State,
+		EF:           card.UserCard.EF,
+		Reps:         card.UserCard.Reps,
+		IntervalDays: card.UserCard.IntervalDays,
+		LearningStep: card.UserCard.LearningStep,
+		LapseCount:   card.UserCard.LapseCount,
+	}
+	srsBeforeJSON, _ := json.Marshal(srsBefore)
+
 	// Grade card
 	if err := h.srsService.GradeCard(&card.UserCard, attemptData); err != nil {
 		h.logger.Error("failed to grade card", zap.Error(err))
+	}
+
+	// Capture SRS state after update
+	srsAfter := models.SRSState{
+		State:        card.UserCard.State,
+		EF:           card.UserCard.EF,
+		Reps:         card.UserCard.Reps,
+		IntervalDays: card.UserCard.IntervalDays,
+		LearningStep: card.UserCard.LearningStep,
+		LapseCount:   card.UserCard.LapseCount,
+	}
+	srsAfterJSON, _ := json.Marshal(srsAfter)
+
+	// Create metrics JSON
+	metrics := map[string]interface{}{
+		"answer_time_ms": answerTimeMS,
+		"total_time_ms":  int(answeredAt.Sub(shownAt).Milliseconds()),
+	}
+	metricsJSON, _ := json.Marshal(metrics)
+
+	// Record review event (needed for correct session stats)
+	if h.sessionRepo != nil {
+		optionsJSON, _ := json.Marshal(options)
+		quality := models.CalculateQuality(attemptData)
+		sessionID := state.SessionID
+
+		reviewEvent := &models.ReviewEvent{
+			SessionID:      &sessionID,
+			UserID:         state.UserID,
+			UserCardID:     card.UserCard.ID,
+			Direction:      card.UserCard.Direction,
+			ShownAt:        shownAt,
+			OptionsShownAt: optionsShownAt,
+			AnsweredAt:     &answeredAt,
+			TDelayMS:       tDelayMS,
+			EarlyReveal:    earlyReveal,
+			OptionCount:    len(options),
+			OptionsJSON:    string(optionsJSON),
+			ChosenOption:   chosenOption,
+			IsCorrect:      isCorrect,
+			Quality:        int(quality),
+			MetricsJSON:    string(metricsJSON),
+			SRSBeforeJSON:  string(srsBeforeJSON),
+			SRSAfterJSON:   string(srsAfterJSON),
+		}
+
+		if _, err := h.sessionRepo.CreateReviewEvent(reviewEvent); err != nil {
+			h.logger.Error("failed to create review event", zap.Error(err))
+		}
 	}
 
 	// Record wrong answer if incorrect

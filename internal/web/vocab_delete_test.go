@@ -175,9 +175,12 @@ func TestHandleVocabDelete_ConfirmDelete(t *testing.T) {
 	if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
 		t.Fatalf("Failed to decode response: %v", err)
 	}
-	// Response should contain word_en or error
-	if response["word_en"] == nil && response["error"] == nil {
-		t.Error("Response should contain word_en or error")
+	// Response should contain lemma or error
+	if response["lemma"] == nil && response["error"] == nil {
+		t.Error("Response should contain lemma or error")
+	}
+	if response["lemma"] != nil && response["lemma"].(string) != "deleteword" {
+		t.Errorf("Expected lemma 'deleteword', got %v", response["lemma"])
 	}
 }
 

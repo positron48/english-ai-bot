@@ -1,20 +1,30 @@
 <template>
   <div class="vocab">
     <div class="vocab-header">
-      <h1>Vocabulary</h1>
-      <div class="search-box">
-        <input
-          type="text"
-          v-model="searchQuery"
-          @input="onSearchInput"
-          placeholder="Search words..."
-          class="search-input"
-        />
+      <div class="header-controls">
+        <div class="search-box">
+          <input
+            type="text"
+            v-model="searchQuery"
+            @input="onSearchInput"
+            placeholder="Search words..."
+            class="search-input"
+          />
+        </div>
+        <div class="sort-controls">
+          <label for="sort-select" class="sort-label">Sort by:</label>
+          <select id="sort-select" v-model="sortField" @change="loadVocab" class="sort-select">
+            <option value="display_word">A→Z</option>
+            <option value="display_word_desc">Z→A</option>
+            <option value="added_at">Recently added</option>
+            <option value="mastery_level">Mastery</option>
+          </select>
+        </div>
       </div>
     </div>
 
     <div class="vocab-content">
-      <div v-if="words.length === 0 && !loading" class="card">
+      <div v-if="words.length === 0 && !loading" class="empty-state">
         <p v-if="searchQuery">
           No words found matching "{{ searchQuery }}".
         </p>
@@ -24,98 +34,57 @@
       </div>
       
       <div v-else>
-        <div class="table-container" :class="{ 'loading-overlay': loading }">
+        <div class="words-list" :class="{ 'loading-overlay': loading }">
           <div v-if="loading" class="loading-overlay-content">
             <div class="loading">Loading...</div>
           </div>
-          <table class="vocab-table">
-            <thead>
-              <tr>
-                <th @click="sortBy('word_en')" class="sortable">
-                  Word
-                  <span v-if="sortField === 'word_en'" class="sort-indicator">
-                    {{ sortOrder === 'asc' ? '↑' : '↓' }}
-                  </span>
-                </th>
-                <th @click="sortBy('total_cards')" class="sortable">
-                  Cards
-                  <span v-if="sortField === 'total_cards'" class="sort-indicator">
-                    {{ sortOrder === 'asc' ? '↑' : '↓' }}
-                  </span>
-                </th>
-                <th @click="sortBy('mastery_level')" class="sortable">
-                  Mastery
-                  <span v-if="sortField === 'mastery_level'" class="sort-indicator">
-                    {{ sortOrder === 'asc' ? '↑' : '↓' }}
-                  </span>
-                </th>
-                <th @click="sortBy('total_reps')" class="sortable">
-                  Reps
-                  <span v-if="sortField === 'total_reps'" class="sort-indicator">
-                    {{ sortOrder === 'asc' ? '↑' : '↓' }}
-                  </span>
-                </th>
-                <th @click="sortBy('review_count')" class="sortable">
-                  Reviews
-                  <span v-if="sortField === 'review_count'" class="sort-indicator">
-                    {{ sortOrder === 'asc' ? '↑' : '↓' }}
-                  </span>
-                </th>
-                <th @click="sortBy('due_count')" class="sortable">
-                  Due
-                  <span v-if="sortField === 'due_count'" class="sort-indicator">
-                    {{ sortOrder === 'asc' ? '↑' : '↓' }}
-                  </span>
-                </th>
-                <th @click="sortBy('added_at')" class="sortable">
-                  Added
-                  <span v-if="sortField === 'added_at'" class="sort-indicator">
-                    {{ sortOrder === 'asc' ? '↑' : '↓' }}
-                  </span>
-                </th>
-                <th @click="sortBy('last_review')" class="sortable">
-                  Last Review
-                  <span v-if="sortField === 'last_review'" class="sort-indicator">
-                    {{ sortOrder === 'asc' ? '↑' : '↓' }}
-                  </span>
-                </th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="word in words" :key="word.word_en">
-                <td class="word-cell">{{ word.word_en }}</td>
-                <td>
-                  <button 
-                    @click="showCards(word.word_en)" 
-                    class="link-button"
-                    :title="`View ${word.total_cards} cards`"
+          
+          <template v-if="!loading">
+            <!-- Alphabetical sections when sorting by display_word -->
+            <template v-if="sortField === 'display_word' || sortField === 'display_word_desc'">
+              <div v-for="section in alphabetSections" :key="section.letter" class="alphabet-section">
+                <h2 class="section-header">{{ section.letter }}</h2>
+                <div class="words-grid">
+                  <div 
+                    v-for="word in section.words" 
+                    :key="word.word_card_id"
+                    class="word-card"
+                    @click="showCards(word.lemma)"
                   >
-                    {{ word.total_cards }}
-                  </button>
-                </td>
-                <td>
-                  <span :class="['mastery-badge', `mastery-${word.mastery_level}`]">
-                    {{ word.mastery_level }}
-                  </span>
-                </td>
-                <td>{{ word.total_reps }}</td>
-                <td>{{ word.review_count }}</td>
-                <td>{{ word.due_count }}</td>
-                <td>{{ formatDate(word.added_at) }}</td>
-                <td>{{ formatDate(word.last_review) }}</td>
-                <td>
-                  <button 
-                    @click="confirmDelete(word.word_en)" 
-                    class="btn btn-danger btn-sm"
-                    title="Delete word"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+                    <div class="word-main">
+                      <div class="word-text">
+                        <span class="word-display">{{ cleanLemma(word.lemma) }}</span>
+                      </div>
+                      <span :class="['mastery-badge', `mastery-${word.mastery_level}`]">
+                        {{ word.mastery_level }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </template>
+            
+            <!-- Regular list for other sortings -->
+            <template v-else>
+              <div class="words-grid">
+                <div 
+                  v-for="word in words" 
+                  :key="word.word_card_id"
+                  class="word-card"
+                  @click="showCards(word.lemma)"
+                >
+                  <div class="word-main">
+                    <div class="word-text">
+                      <span class="word-display">{{ cleanLemma(word.lemma) }}</span>
+                    </div>
+                    <span :class="['mastery-badge', `mastery-${word.mastery_level}`]">
+                      {{ word.mastery_level }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </template>
         </div>
 
         <div class="pagination" v-if="pagination.total_pages > 1 && !loading">
@@ -141,197 +110,77 @@
       </div>
     </div>
 
-    <!-- Delete Confirmation Modal -->
-    <div v-if="showDeleteConfirm" class="modal" @click.self="showDeleteConfirm = false">
-      <div class="modal-content">
-        <h3>Confirm Delete</h3>
-        <p>Are you sure you want to delete "{{ wordToDelete }}" from your vocabulary?</p>
-        <div class="modal-actions">
-          <button @click="deleteWord" class="btn btn-danger">Delete</button>
-          <button @click="showDeleteConfirm = false" class="btn btn-secondary">Cancel</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Cards Detail Modal -->
+    <!-- Word Details Modal (Simplified) -->
     <div v-if="showCardsModal" class="modal" @click.self="closeCardsModal">
       <div class="modal-content modal-large">
         <div class="modal-header">
-          <h3>Cards for "{{ selectedWord }}"</h3>
+          <div class="word-header-info">
+            <div class="word-title-row">
+              <h3>{{ selectedWordDisplay }}</h3>
+              <div v-if="selectedTranscription" class="transcription">{{ selectedTranscription }}</div>
+            </div>
+            <div class="word-summary">
+              <span>{{ totalCards }} cards</span>
+              <span v-if="totalDue > 0">{{ totalDue }} due</span>
+              <span v-if="lastReview">Last: {{ formatDateShort(lastReview) }}</span>
+            </div>
+          </div>
           <button @click="closeCardsModal" class="btn-close">&times;</button>
         </div>
         <div v-if="cardsLoading" class="loading">Loading cards...</div>
         <div v-else-if="cards.length === 0" class="no-cards">No cards found.</div>
-        <div v-else class="cards-list">
-          <div v-for="senseGroup in groupedCards" :key="senseGroup.sense_index" class="sense-group">
-            <div class="sense-header">
+        <div v-else class="cards-list-simple">
+          <div v-for="senseGroup in groupedCards" :key="senseGroup.sense_index" class="sense-group-simple">
+            <div class="sense-header-simple">
               <h4>
-                Sense {{ senseGroup.sense_index }}
-                <span class="word-en">{{ selectedWord }}</span>
                 <span class="word-ru">{{ senseGroup.word_ru }}</span>
+                <span v-if="senseGroup.pos" class="pos-badge">{{ senseGroup.pos }}</span>
               </h4>
-              <div v-if="isAdmin" class="sense-actions">
-                <button 
-                  @click="editCard(senseGroup)" 
-                  class="btn btn-sm btn-primary"
-                  title="Edit card"
-                >
-                  Edit
-                </button>
-                <button 
-                  @click="confirmDeleteCard(senseGroup)" 
-                  class="btn btn-sm btn-danger"
-                  title="Delete card"
-                >
-                  Delete
-                </button>
+            </div>
+            
+            <div class="sense-info-simple">
+              <div v-if="senseGroup.meaning_en" class="meaning">
+                {{ senseGroup.meaning_en }}
+              </div>
+              <div v-if="senseGroup.example_en" class="example">
+                <strong>Example:</strong> {{ senseGroup.example_en }}
               </div>
             </div>
             
-            <!-- Sense information (shown once per sense) -->
-            <div class="sense-info">
-              <div class="card-row" v-if="senseGroup.pos">
-                <span class="label">POS:</span>
-                <span>{{ senseGroup.pos }}</span>
-              </div>
-              <div class="card-row" v-if="senseGroup.meaning_en">
-                <span class="label">Meaning:</span>
-                <span>{{ senseGroup.meaning_en }}</span>
-              </div>
-              <div class="card-row" v-if="senseGroup.example_en">
-                <span class="label">Example EN:</span>
-                <span>{{ senseGroup.example_en }}</span>
-              </div>
-              <div class="card-row" v-if="senseGroup.example_ru">
-                <span class="label">Example RU:</span>
-                <span>{{ senseGroup.example_ru }}</span>
-              </div>
-              <div class="card-row" v-if="senseGroup.transcription">
-                <span class="label">Transcription:</span>
-                <span class="transcription">{{ senseGroup.transcription }}</span>
-              </div>
-            </div>
-            
-            <!-- Directions with training stats -->
-            <div class="directions-list">
-              <div v-for="directionCard in senseGroup.directions" :key="directionCard.direction" class="direction-item">
-                <div class="direction-header">
+            <div class="directions-simple">
+              <div v-for="directionCard in senseGroup.directions" :key="directionCard.direction" class="direction-item-simple">
+                <div class="direction-header-simple">
                   <span class="direction-badge" :class="`direction-${directionCard.direction}`">
                     {{ directionCard.direction === 'ru_en' ? 'RU→EN' : 'EN→RU' }}
                   </span>
+                  <span :class="['state-badge', `state-${directionCard.state}`]">{{ directionCard.state }}</span>
                 </div>
-                <div class="card-stats">
-                  <div class="stat-item">
-                    <span class="stat-label tooltip-trigger" title="Состояние карточки: new (новая), learning (изучается), review (на повторении)">State:</span>
-                    <span :class="['state-badge', `state-${directionCard.state}`]">{{ directionCard.state }}</span>
-                  </div>
-                  <div class="stat-item">
-                    <span class="stat-label tooltip-trigger" title="Количество повторений карточки">Reps:</span>
-                    <span>{{ directionCard.reps }}</span>
-                  </div>
-                  <div class="stat-item">
-                    <span class="stat-label tooltip-trigger" title="Общее количество просмотров карточки">Reviews:</span>
-                    <span>{{ directionCard.review_count }}</span>
-                  </div>
-                  <div class="stat-item">
-                    <span class="stat-label tooltip-trigger" title="Ease Factor (фактор легкости) - коэффициент, определяющий интервал повторения. Чем выше, тем реже нужно повторять">EF:</span>
-                    <span>{{ directionCard.ef.toFixed(2) }}</span>
-                  </div>
-                  <div class="stat-item">
-                    <span class="stat-label tooltip-trigger" title="Интервал до следующего повторения в днях">Interval:</span>
-                    <span>{{ directionCard.interval_days }} days</span>
-                  </div>
-                  <div class="stat-item">
-                    <span class="stat-label tooltip-trigger" title="Количество раз, когда был дан неправильный ответ">Lapses:</span>
-                    <span>{{ directionCard.lapse_count }}</span>
-                  </div>
-                  <div class="stat-item" v-if="directionCard.next_due_at">
-                    <span class="stat-label tooltip-trigger" title="Дата и время следующего запланированного повторения">Next Due:</span>
-                    <span>{{ formatDate(directionCard.next_due_at) }}</span>
-                  </div>
-                  <div class="stat-item" v-if="directionCard.last_review_at">
-                    <span class="stat-label tooltip-trigger" title="Дата и время последнего повторения карточки">Last Review:</span>
-                    <span>{{ formatDate(directionCard.last_review_at) }}</span>
-                  </div>
-                  <div class="stat-item" v-if="directionCard.last_quality !== null">
-                    <span class="stat-label tooltip-trigger" title="Оценка качества последнего ответа (0-3, где 0 - неправильный, 1 - трудно, 2 - нормально, 3 - легко)">Last Quality:</span>
-                    <span>{{ directionCard.last_quality }}</span>
-                  </div>
+                <div class="direction-stats-simple">
+                  <span v-if="directionCard.reps > 0" title="Количество успешных повторений карточки">Reps: {{ directionCard.reps }}</span>
+                  <span v-else-if="directionCard.review_count > 0" title="Общее количество просмотров карточки">Reviews: {{ directionCard.review_count }}</span>
+                  <span v-if="directionCard.next_due_at" title="Дата следующего запланированного повторения">Due: {{ formatDateShort(directionCard.next_due_at) }}</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-
-    <!-- Edit Card Modal -->
-    <div v-if="showEditCardModal && cardToEdit" class="modal" @click.self="closeEditCardModal">
-      <div class="modal-content modal-large">
-        <div class="modal-header">
-          <h3>Edit Training Card (Sense {{ cardToEdit.sense_index }})</h3>
-          <button @click="closeEditCardModal" class="btn-close">&times;</button>
-        </div>
-        <div class="modal-body">
-          <form @submit.prevent="saveCard" class="edit-form">
-            <div class="form-group">
-              <label>Word RU:</label>
-              <input v-model="editForm.word_ru" type="text" required class="form-input" />
-            </div>
-            <div class="form-group">
-              <label>Meaning EN:</label>
-              <textarea v-model="editForm.meaning_en" required class="form-textarea" rows="3"></textarea>
-            </div>
-            <div class="form-group">
-              <label>Example EN:</label>
-              <textarea v-model="editForm.example_en" class="form-textarea" rows="2"></textarea>
-            </div>
-            <div class="form-group">
-              <label>Example RU:</label>
-              <textarea v-model="editForm.example_ru" class="form-textarea" rows="2"></textarea>
-            </div>
-            <div class="form-group">
-              <label>Transcription:</label>
-              <input v-model="editForm.transcription" type="text" class="form-input" />
-            </div>
-            <div class="form-group">
-              <label>Distractors RU:</label>
-              <div class="distractors-list">
-                <input v-model="editForm.distractors_ru[0]" type="text" class="form-input" placeholder="Option 1" />
-                <input v-model="editForm.distractors_ru[1]" type="text" class="form-input" placeholder="Option 2" />
-                <input v-model="editForm.distractors_ru[2]" type="text" class="form-input" placeholder="Option 3" />
-              </div>
-            </div>
-            <div class="form-group">
-              <label>Distractors EN:</label>
-              <div class="distractors-list">
-                <input v-model="editForm.distractors_en[0]" type="text" class="form-input" placeholder="Option 1" />
-                <input v-model="editForm.distractors_en[1]" type="text" class="form-input" placeholder="Option 2" />
-                <input v-model="editForm.distractors_en[2]" type="text" class="form-input" placeholder="Option 3" />
-              </div>
-            </div>
-            <div class="form-group">
-              <label>Hint:</label>
-              <input v-model="editForm.hint" type="text" class="form-input" />
-            </div>
-            <div class="modal-actions">
-              <button type="submit" class="btn btn-primary">Save</button>
-              <button type="button" @click="closeEditCardModal" class="btn btn-secondary">Cancel</button>
-            </div>
-          </form>
+        <div class="modal-footer">
+          <button @click="confirmDelete" class="btn btn-danger">
+            Remove from training
+          </button>
         </div>
       </div>
     </div>
 
-    <!-- Delete Card Confirmation Modal -->
-    <div v-if="showDeleteCardConfirm && cardToDelete" class="modal" @click.self="closeDeleteCardConfirm">
+    <!-- Delete Confirmation Modal -->
+    <div v-if="showDeleteConfirm" class="modal" @click.self="showDeleteConfirm = false">
       <div class="modal-content">
-        <h3>Confirm Delete</h3>
-        <p>Are you sure you want to delete training card for "{{ cardToDelete.word_ru }}" (Sense {{ cardToDelete.sense_index }})?</p>
-        <p class="warning-text">This will delete the training card and all associated user cards. This action cannot be undone.</p>
+        <h3>Remove from training</h3>
+        <p>Are you sure you want to remove "{{ wordToDelete }}" from your training?</p>
+        <p class="warning-text">This will remove all cards for this word from your training. You can add it back later.</p>
         <div class="modal-actions">
-          <button @click="deleteCard" class="btn btn-danger">Delete</button>
-          <button @click="closeDeleteCardConfirm" class="btn btn-secondary">Cancel</button>
+          <button @click="deleteWord" class="btn btn-danger">Remove</button>
+          <button @click="showDeleteConfirm = false" class="btn btn-secondary">Cancel</button>
         </div>
       </div>
     </div>
@@ -342,11 +191,14 @@
 import { ref, computed, onMounted } from 'vue'
 import { apiClient } from '../api/client'
 import { useAuth } from '../composables/useAuth'
+import { showAlert } from '../composables/useDialog'
 
 const { isAdmin } = useAuth()
 
 interface VocabWord {
-  word_en: string
+  word_card_id: number
+  lemma: string
+  display_word: string
   total_cards: number
   due_count: number
   last_review: string | null
@@ -368,16 +220,9 @@ interface CardDetail {
   training_card_id: number
   direction: string
   state: string
-  ef: number
   reps: number
-  interval_days: number
-  learning_step: number
-  lapse_count: number
   next_due_at: string | null
   last_review_at: string | null
-  last_quality: number | null
-  created_at: string
-  updated_at: string
   word_ru: string
   meaning_en: string
   example_en: string
@@ -388,56 +233,28 @@ interface CardDetail {
   review_count: number
 }
 
-interface TrainingCard {
-  id: number
-  word_card_id: number
-  word_en: string
-  transcription: string
-  sense_index: number
-  word_ru: string
-  meaning_en: string
-  example_en: string
-  example_ru: string
-  distractors_ru: string
-  distractors_en: string
-  hint: string
-}
-
 const words = ref<VocabWord[]>([])
 const loading = ref(true)
 const searchQuery = ref('')
 const searchTimeout = ref<number | null>(null)
-const sortField = ref<string>('word_en')
-const sortOrder = ref<'asc' | 'desc'>('asc')
+const sortField = ref<string>('display_word')
 const pagination = ref<Pagination>({
   page: 1,
-  limit: 25,
+  limit: 100,
   total: 0,
   total_pages: 0
 })
 
 const showDeleteConfirm = ref(false)
 const wordToDelete = ref('')
+const lemmaToDelete = ref('')
 
 const showCardsModal = ref(false)
 const selectedWord = ref('')
+const selectedWordDisplay = ref('')
+const selectedTranscription = ref('')
 const cards = ref<CardDetail[]>([])
 const cardsLoading = ref(false)
-
-const showEditCardModal = ref(false)
-const showDeleteCardConfirm = ref(false)
-const cardToEdit = ref<{ training_card_id: number; sense_index: number; word_ru: string; meaning_en: string; example_en: string; example_ru: string; transcription: string } | null>(null)
-const cardToDelete = ref<{ training_card_id: number; sense_index: number; word_ru: string } | null>(null)
-const editForm = ref({
-  word_ru: '',
-  meaning_en: '',
-  example_en: '',
-  example_ru: '',
-  transcription: '',
-  distractors_ru: ['', '', ''],
-  distractors_en: ['', '', ''],
-  hint: ''
-})
 
 onMounted(async () => {
   await loadVocab()
@@ -453,27 +270,35 @@ const onSearchInput = () => {
   }, 500)
 }
 
-const sortBy = (field: string) => {
-  if (sortField.value === field) {
-    // Toggle sort order if clicking the same field
-    sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc'
-  } else {
-    // New field, default to ascending
-    sortField.value = field
-    sortOrder.value = 'asc'
-  }
-  pagination.value.page = 1
-  loadVocab()
-}
-
 const loadVocab = async () => {
   loading.value = true
   try {
+    // Map frontend sort field to backend sort_by
+    let sortBy = 'display_word'
+    let sortOrder = 'asc'
+    
+    if (sortField.value === 'display_word') {
+      sortBy = 'display_word'
+      sortOrder = 'asc'
+    } else if (sortField.value === 'display_word_desc') {
+      sortBy = 'display_word'
+      sortOrder = 'desc'
+    } else if (sortField.value === 'due_count') {
+      sortBy = 'due_count'
+      sortOrder = 'desc'
+    } else if (sortField.value === 'added_at') {
+      sortBy = 'added_at'
+      sortOrder = 'desc'
+    } else if (sortField.value === 'mastery_level') {
+      sortBy = 'mastery_level'
+      sortOrder = 'asc' // new -> learning -> mastered
+    }
+    
     const params = new URLSearchParams({
       page: pagination.value.page.toString(),
       limit: pagination.value.limit.toString(),
-      sort_by: sortField.value,
-      sort_order: sortOrder.value
+      sort_by: sortBy,
+      sort_order: sortOrder
     })
     if (searchQuery.value) {
       params.append('search', searchQuery.value)
@@ -483,7 +308,7 @@ const loadVocab = async () => {
     words.value = data.words || []
     pagination.value = data.pagination || {
       page: 1,
-      limit: 25,
+      limit: 100,
       total: 0,
       total_pages: 0
     }
@@ -492,7 +317,7 @@ const loadVocab = async () => {
     words.value = []
     pagination.value = {
       page: 1,
-      limit: 25,
+      limit: 100,
       total: 0,
       total_pages: 0
     }
@@ -508,35 +333,101 @@ const goToPage = (page: number) => {
   }
 }
 
-const confirmDelete = (word: string) => {
-  wordToDelete.value = word
+// Alphabet sections for A→Z sorting
+const cleanLemma = (lemma: string): string => {
+  // Remove "to " prefix from verbs
+  return lemma.replace(/^to\s+/i, '')
+}
+
+const alphabetSections = computed(() => {
+  if (sortField.value !== 'display_word' && sortField.value !== 'display_word_desc') {
+    return []
+  }
+  
+  const sections: { letter: string; words: VocabWord[] }[] = []
+  const letterMap = new Map<string, VocabWord[]>()
+  
+  // Group words by first letter of cleaned lemma
+  words.value.forEach(word => {
+    const cleaned = cleanLemma(word.lemma)
+    const firstLetter = cleaned.charAt(0).toUpperCase()
+    if (!letterMap.has(firstLetter)) {
+      letterMap.set(firstLetter, [])
+    }
+    letterMap.get(firstLetter)!.push(word)
+  })
+  
+  // Convert to array and sort based on sortField
+  const letters = Array.from(letterMap.keys())
+  if (sortField.value === 'display_word_desc') {
+    letters.sort((a, b) => b.localeCompare(a)) // Z→A
+  } else {
+    letters.sort((a, b) => a.localeCompare(b)) // A→Z
+  }
+  
+  letters.forEach(letter => {
+    const sectionWords = letterMap.get(letter)!
+    // Also sort words within each section by cleaned lemma
+    if (sortField.value === 'display_word_desc') {
+      sectionWords.sort((a, b) => cleanLemma(b.lemma).localeCompare(cleanLemma(a.lemma)))
+    } else {
+      sectionWords.sort((a, b) => cleanLemma(a.lemma).localeCompare(cleanLemma(b.lemma)))
+    }
+    
+    sections.push({
+      letter,
+      words: sectionWords
+    })
+  })
+  
+  return sections
+})
+
+const confirmDelete = () => {
+  wordToDelete.value = selectedWordDisplay.value
+  lemmaToDelete.value = selectedWord
   showDeleteConfirm.value = true
 }
 
 const deleteWord = async () => {
   try {
     const formData = new FormData()
-    await apiClient.requestFormData(`/app/vocab/${wordToDelete.value}/delete`, formData)
+    await apiClient.requestFormData(`/app/vocab/${lemmaToDelete.value}/delete`, formData)
     showDeleteConfirm.value = false
+    showCardsModal.value = false
     await loadVocab()
   } catch (error) {
     console.error('Failed to delete word:', error)
-    alert('Failed to delete word')
+    await showAlert('Failed to remove word from training')
   }
 }
 
-const showCards = async (word: string) => {
-  selectedWord.value = word
+const showCards = async (lemma: string) => {
+  selectedWord.value = lemma
   showCardsModal.value = true
   cardsLoading.value = true
   cards.value = []
+  selectedTranscription.value = ''
   
   try {
-    const data: { word_en: string, cards: CardDetail[] } = await apiClient.request(`/app/vocab/${word}/cards`)
-    cards.value = data.cards
+    const data: { lemma: string; word_card_id: number; cards: CardDetail[] } = await apiClient.request(`/app/vocab/${lemma}/cards`)
+    cards.value = data.cards || []
+    
+    // Find display word and transcription from first card
+    if (cards.value.length > 0) {
+      const word = words.value.find(w => w.lemma === lemma)
+      if (word) {
+        selectedWordDisplay.value = cleanLemma(word.lemma)
+      } else {
+        selectedWordDisplay.value = cleanLemma(lemma)
+      }
+      selectedTranscription.value = cards.value[0].transcription || ''
+    } else {
+      selectedWordDisplay.value = cleanLemma(lemma)
+    }
   } catch (error) {
     console.error('Failed to load cards:', error)
-    alert('Failed to load cards')
+    await showAlert('Failed to load cards')
   } finally {
     cardsLoading.value = false
   }
@@ -545,6 +436,8 @@ const showCards = async (word: string) => {
 const closeCardsModal = () => {
   showCardsModal.value = false
   selectedWord.value = ''
+  selectedWordDisplay.value = ''
+  selectedTranscription.value = ''
   cards.value = []
 }
 
@@ -595,190 +488,53 @@ const groupedCards = computed((): SenseGroup[] => {
     }))
 })
 
+const totalCards = computed(() => cards.value.length)
+const totalDue = computed(() => cards.value.filter(c => c.next_due_at && new Date(c.next_due_at) <= new Date()).length)
+const lastReview = computed(() => {
+  const reviews = cards.value
+    .map(c => c.last_review_at)
+    .filter((d): d is string => d !== null)
+    .sort()
+    .reverse()
+  return reviews.length > 0 ? reviews[0] : null
+})
+
 const formatDate = (dateStr: string | null) => {
   if (!dateStr) return '—'
   const date = new Date(dateStr)
   return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
 }
 
-const editCard = async (senseGroup: SenseGroup) => {
-  // Get training_card_id from first direction card
-  if (senseGroup.directions.length === 0) return
-  
-  const trainingCardId = senseGroup.directions[0].training_card_id
-  
-  cardToEdit.value = {
-    training_card_id: trainingCardId,
-    sense_index: senseGroup.sense_index,
-    word_ru: senseGroup.word_ru,
-    meaning_en: senseGroup.meaning_en,
-    example_en: senseGroup.example_en || '',
-    example_ru: senseGroup.example_ru || '',
-    transcription: senseGroup.transcription || ''
-  }
-  
-  // Load full card data to get distractors and hint
-  try {
-    const data: { word_en: string, cards: TrainingCard[] } = await apiClient.request(`/app/admin/training/${selectedWord.value}`)
-    const card = data.cards.find(c => c.id === trainingCardId)
-    
-    // Parse distractors from JSON arrays
-    let distractorsRU: string[] = ['', '', '']
-    let distractorsEN: string[] = ['', '', '']
-    
-    if (card?.distractors_ru) {
-      try {
-        // Handle both string and already parsed array
-        let parsed: any
-        if (typeof card.distractors_ru === 'string') {
-          parsed = JSON.parse(card.distractors_ru)
-        } else {
-          parsed = card.distractors_ru
-        }
-        if (Array.isArray(parsed)) {
-          distractorsRU = [...parsed, '', '', ''].slice(0, 3)
-        }
-      } catch (e) {
-        console.error('Failed to parse distractors_ru:', e, 'Value:', card.distractors_ru)
-      }
-    }
-    
-    if (card?.distractors_en) {
-      try {
-        // Handle both string and already parsed array
-        let parsed: any
-        if (typeof card.distractors_en === 'string') {
-          parsed = JSON.parse(card.distractors_en)
-        } else {
-          parsed = card.distractors_en
-        }
-        if (Array.isArray(parsed)) {
-          distractorsEN = [...parsed, '', '', ''].slice(0, 3)
-        }
-      } catch (e) {
-        console.error('Failed to parse distractors_en:', e, 'Value:', card.distractors_en)
-      }
-    }
-    
-    editForm.value = {
-      word_ru: senseGroup.word_ru,
-      meaning_en: senseGroup.meaning_en,
-      example_en: senseGroup.example_en || '',
-      example_ru: senseGroup.example_ru || '',
-      transcription: senseGroup.transcription || '',
-      distractors_ru: distractorsRU,
-      distractors_en: distractorsEN,
-      hint: card?.hint || ''
-    }
-  } catch (error) {
-    console.error('Failed to load card details:', error)
-    // Use basic data if loading fails
-    editForm.value = {
-      word_ru: senseGroup.word_ru,
-      meaning_en: senseGroup.meaning_en,
-      example_en: senseGroup.example_en || '',
-      example_ru: senseGroup.example_ru || '',
-      transcription: senseGroup.transcription || '',
-      distractors_ru: ['', '', ''],
-      distractors_en: ['', '', ''],
-      hint: ''
-    }
-  }
-  
-  showEditCardModal.value = true
-}
-
-const confirmDeleteCard = (senseGroup: SenseGroup) => {
-  if (senseGroup.directions.length === 0) return
-  
-  cardToDelete.value = {
-    training_card_id: senseGroup.directions[0].training_card_id,
-    sense_index: senseGroup.sense_index,
-    word_ru: senseGroup.word_ru
-  }
-  
-  showDeleteCardConfirm.value = true
-}
-
-const saveCard = async () => {
-  if (!cardToEdit.value) return
-  
-  try {
-    // Convert distractors arrays to JSON
-    const distractorsRU = JSON.stringify(editForm.value.distractors_ru.filter(v => v.trim() !== ''))
-    const distractorsEN = JSON.stringify(editForm.value.distractors_en.filter(v => v.trim() !== ''))
-    
-    const params = new URLSearchParams()
-    params.append('word_ru', editForm.value.word_ru || '')
-    params.append('meaning_en', editForm.value.meaning_en || '')
-    params.append('example_en', editForm.value.example_en || '')
-    params.append('example_ru', editForm.value.example_ru || '')
-    params.append('transcription', editForm.value.transcription || '')
-    params.append('distractors_ru', distractorsRU)
-    params.append('distractors_en', distractorsEN)
-    params.append('hint', editForm.value.hint || '')
-    
-    await apiClient.request(`/app/admin/training/card/${cardToEdit.value.training_card_id}`, { 
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: params.toString()
-    })
-    showEditCardModal.value = false
-    cardToEdit.value = null
-    await showCards(selectedWord.value) // Reload cards
-    await loadVocab() // Reload words list
-  } catch (error) {
-    console.error('Failed to save card:', error)
-    alert('Failed to save card')
-  }
-}
-
-const deleteCard = async () => {
-  if (!cardToDelete.value) return
-  
-  try {
-    await apiClient.request(`/app/admin/training/card/${cardToDelete.value.training_card_id}`, { method: 'DELETE' })
-    showDeleteCardConfirm.value = false
-    cardToDelete.value = null
-    await showCards(selectedWord.value) // Reload cards
-    await loadVocab() // Reload words list
-  } catch (error) {
-    console.error('Failed to delete card:', error)
-    alert('Failed to delete card')
-  }
-}
-
-const closeEditCardModal = () => {
-  showEditCardModal.value = false
-  cardToEdit.value = null
-}
-
-const closeDeleteCardConfirm = () => {
-  showDeleteCardConfirm.value = false
-  cardToDelete.value = null
+const formatDateShort = (dateStr: string | null) => {
+  if (!dateStr) return '—'
+  const date = new Date(dateStr)
+  return date.toLocaleDateString()
 }
 </script>
 
 <style scoped>
 .vocab {
   padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .vocab-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-  gap: 20px;
+  margin-bottom: 24px;
 }
 
-.vocab-header h1 {
-  margin: 0;
+
+.header-controls {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 .search-box {
+  flex: 1;
+  min-width: 200px;
   max-width: 400px;
-  flex-shrink: 0;
 }
 
 .search-input {
@@ -789,91 +545,135 @@ const closeDeleteCardConfirm = () => {
   font-size: 16px;
   background-color: var(--input-bg);
   color: var(--text-primary);
+  margin-bottom: 0;
 }
 
-.table-container {
-  overflow-x: auto;
-  margin-bottom: 20px;
+.sort-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.vocab-table {
-  width: 100%;
-  border-collapse: collapse;
+.sort-label {
+  font-size: 14px;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.sort-select {
+  padding: 10px;
+  border: 1px solid var(--input-border);
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-secondary);
+}
+
+.words-list {
+  position: relative;
+  min-height: 200px;
+}
+
+.loading-overlay {
+  min-height: 400px;
+}
+
+.loading-overlay-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background: var(--card-bg);
+  opacity: 0.9;
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
   border-radius: 8px;
-  overflow: hidden;
 }
 
-.vocab-table thead {
-  background-color: var(--table-header-bg, rgba(0, 0, 0, 0.1));
+.loading-overlay-content .loading {
+  font-size: 16px;
+  color: var(--text-primary);
+  padding: 20px;
 }
 
-.vocab-table th {
-  padding: 12px;
-  text-align: left;
+.alphabet-section {
+  margin-bottom: 32px;
+}
+
+.section-header {
+  font-size: 20px;
   font-weight: 600;
+  margin: 0 0 12px 0;
+  padding-bottom: 8px;
   border-bottom: 2px solid var(--table-border, rgba(0, 0, 0, 0.1));
   color: var(--text-primary);
+  position: sticky;
+  top: 0;
+  background: transparent;
+  z-index: 5;
+  padding-top: 8px;
 }
 
-.vocab-table th.sortable {
+.words-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 8px;
+}
+
+.word-card {
+  background: var(--card-bg);
+  border: 1px solid var(--table-border, rgba(0, 0, 0, 0.1));
+  border-radius: 6px;
+  padding: 10px 12px;
   cursor: pointer;
-  user-select: none;
-  position: relative;
-  padding-right: 24px;
+  transition: all 0.2s;
 }
 
-.vocab-table th.sortable:hover {
-  background-color: var(--table-row-hover, rgba(0, 0, 0, 0.05));
+.word-card:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
 }
 
-.sort-indicator {
-  position: absolute;
-  right: 8px;
-  font-size: 14px;
-  color: var(--color-primary);
+.word-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
 }
 
-.vocab-table td {
-  padding: 12px;
-  border-bottom: 1px solid var(--table-border, rgba(0, 0, 0, 0.1));
+.word-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.word-display {
+  font-size: 16px;
+  font-weight: 600;
   color: var(--text-primary);
-}
-
-.vocab-table tbody tr:hover {
-  background-color: var(--table-row-hover, rgba(0, 0, 0, 0.05));
-}
-
-.word-cell {
-  font-weight: 500;
-}
-
-.link-button {
-  background: none;
-  border: none;
-  color: var(--color-primary);
-  cursor: pointer;
-  text-decoration: underline;
-  padding: 0;
-  font-size: inherit;
-}
-
-.link-button:hover {
-  color: var(--color-primary-hover);
-}
-
-.btn-sm {
-  padding: 6px 12px;
-  font-size: 14px;
 }
 
 .mastery-badge {
   display: inline-block;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 10px;
   font-weight: 600;
   text-transform: capitalize;
+  flex-shrink: 0;
 }
 
 .mastery-mastered {
@@ -891,12 +691,13 @@ const closeDeleteCardConfirm = () => {
   color: white;
 }
 
+
 .pagination {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 20px;
-  margin-top: 20px;
+  margin-top: 24px;
 }
 
 .page-info {
@@ -928,15 +729,48 @@ const closeDeleteCardConfirm = () => {
 }
 
 .modal-large {
-  max-width: 900px;
+  max-width: 800px;
   width: 95%;
 }
 
 .modal-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 20px;
+  gap: 16px;
+}
+
+.word-header-info {
+  flex: 1;
+}
+
+.word-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.word-header-info h3 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.transcription {
+  font-family: 'Arial Unicode MS', 'Lucida Sans Unicode', 'Charis SIL', 'Doulos SIL', 'Gentium Plus', 'DejaVu Sans', Arial, sans-serif;
+  font-style: italic;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary);
+  font-size: 18px;
+}
+
+.word-summary {
+  display: flex;
+  gap: 16px;
+  font-size: 14px;
+  color: var(--text-secondary);
+  flex-wrap: wrap;
 }
 
 .btn-close {
@@ -952,6 +786,7 @@ const closeDeleteCardConfirm = () => {
   align-items: center;
   justify-content: center;
   border-radius: 4px;
+  flex-shrink: 0;
 }
 
 .btn-close:hover {
@@ -965,42 +800,10 @@ const closeDeleteCardConfirm = () => {
   justify-content: flex-end;
 }
 
-.modal-body {
-  margin-top: 20px;
-}
-
-.edit-form {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.form-group label {
-  font-weight: 600;
-  color: var(--text-primary);
-  font-size: 14px;
-}
-
-.form-input,
-.form-textarea {
-  padding: 8px 12px;
-  border: 1px solid var(--input-border);
-  border-radius: 4px;
-  font-size: 14px;
-  background-color: var(--input-bg);
-  color: var(--text-primary);
-  font-family: inherit;
-}
-
-.form-textarea {
-  resize: vertical;
-  min-height: 60px;
+.modal-footer {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--table-border, rgba(0, 0, 0, 0.1));
 }
 
 .warning-text {
@@ -1009,118 +812,84 @@ const closeDeleteCardConfirm = () => {
   margin-top: 8px;
 }
 
-.distractors-list {
+.cards-list-simple {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 20px;
 }
 
-@media (min-width: 768px) {
-  .distractors-list {
-    flex-direction: row;
-    gap: 12px;
-  }
-  
-  .distractors-list input {
-    flex: 1;
-    min-width: 0;
-  }
-}
-
-.cards-list {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.sense-group {
+.sense-group-simple {
   border: 1px solid var(--table-border, rgba(0, 0, 0, 0.1));
   border-radius: 8px;
   padding: 16px;
-  background: var(--card-bg);
+  background: var(--input-bg, rgba(0, 0, 0, 0.02));
 }
 
-.sense-header {
-  margin-bottom: 16px;
-  padding-bottom: 12px;
-  border-bottom: 2px solid var(--table-border, rgba(0, 0, 0, 0.1));
-}
-
-.sense-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-}
-
-.sense-header h4 {
-  margin: 0;
+.sense-header-simple {
+  margin-bottom: 12px;
   display: flex;
   align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-  flex: 1;
-}
-
-.sense-actions {
-  display: flex;
   gap: 8px;
+  flex-wrap: wrap;
 }
 
-.word-en {
-  font-weight: 600;
-  color: var(--text-primary);
-  font-size: 16px;
+.sense-header-simple h4 {
+  margin: 0;
+  font-size: 18px;
 }
 
 .word-ru {
   font-weight: 600;
   color: var(--color-primary);
-  font-size: 18px;
 }
 
-.sense-info {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+.pos-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  background-color: var(--color-secondary, #6b7280);
+  color: white;
+  font-weight: 600;
+  margin-left: 8px;
+}
+
+.sense-info-simple {
   margin-bottom: 16px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--table-border, rgba(0, 0, 0, 0.1));
 }
 
-.directions-list {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+.meaning {
+  font-size: 15px;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  line-height: 1.5;
 }
 
-.direction-item {
+.example {
+  font-size: 14px;
+  color: var(--text-secondary);
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.directions-simple {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.direction-item-simple {
   padding: 12px;
-  background: var(--input-bg, rgba(0, 0, 0, 0.02));
+  background: var(--card-bg);
   border-radius: 6px;
   border-left: 3px solid var(--color-primary);
 }
 
-.direction-header {
-  margin-bottom: 12px;
-}
-
-.card-item {
-  border: 1px solid var(--table-border, rgba(0, 0, 0, 0.1));
-  border-radius: 8px;
-  padding: 16px;
-  background: var(--card-bg);
-}
-
-.card-header {
-  margin-bottom: 12px;
-}
-
-.card-header h4 {
-  margin: 0;
+.direction-header-simple {
   display: flex;
-  align-items: center;
   gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
   flex-wrap: wrap;
 }
 
@@ -1139,57 +908,6 @@ const closeDeleteCardConfirm = () => {
 .direction-en_ru {
   background-color: var(--color-secondary, #6b7280);
   color: white;
-}
-
-.sense-badge {
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 11px;
-  background-color: var(--color-secondary, #6b7280);
-  color: white;
-}
-
-.card-body {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.card-row {
-  display: flex;
-  gap: 8px;
-}
-
-.card-row .label {
-  font-weight: 600;
-  min-width: 120px;
-}
-
-.card-stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 8px;
-  margin-top: 12px;
-  padding-top: 12px;
-  border-top: 1px solid var(--table-border, rgba(0, 0, 0, 0.1));
-}
-
-.stat-item {
-  display: flex;
-  gap: 8px;
-}
-
-.stat-label {
-  font-weight: 600;
-  color: var(--text-secondary);
-}
-
-.stat-label.tooltip-trigger {
-  cursor: help;
-  text-decoration: underline;
-  text-decoration-style: dotted;
-  text-underline-offset: 2px;
-  position: relative;
 }
 
 .state-badge {
@@ -1215,49 +933,110 @@ const closeDeleteCardConfirm = () => {
   color: white;
 }
 
+.direction-stats-simple {
+  display: flex;
+  gap: 16px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  flex-wrap: wrap;
+}
+
 .no-cards {
   text-align: center;
   padding: 40px;
   color: var(--text-secondary);
 }
 
-.transcription {
-  font-family: 'Arial Unicode MS', 'Lucida Sans Unicode', 'Charis SIL', 'Doulos SIL', 'Gentium Plus', 'DejaVu Sans', Arial, sans-serif;
-  font-style: italic;
-  letter-spacing: 0.5px;
-}
-
-.vocab-content {
-  position: relative;
-}
-
-.table-container {
-  position: relative;
-}
-
-.table-container.loading-overlay {
-  min-height: 200px;
-}
-
-.loading-overlay-content {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: var(--card-bg);
-  opacity: 0.9;
-  backdrop-filter: blur(2px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
-  border-radius: 8px;
-}
-
-.loading-overlay-content .loading {
-  font-size: 16px;
-  color: var(--text-primary);
+.loading {
+  text-align: center;
   padding: 20px;
+  color: var(--text-primary);
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background-color: var(--color-primary, #3b82f6);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-hover, #2563eb);
+}
+
+.btn-secondary {
+  background-color: var(--color-secondary, #6b7280);
+  color: white;
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-secondary-hover, #4b5563);
+}
+
+.btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-danger {
+  background-color: var(--color-danger, #ef4444);
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: var(--color-danger-hover, #dc2626);
+}
+
+@media (max-width: 768px) {
+  .vocab {
+    padding: 12px;
+  }
+  
+  .words-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+  
+  .header-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .search-box {
+    max-width: 100%;
+  }
+  
+  .modal-content {
+    padding: 20px;
+    width: 95%;
+  }
+  
+  .word-summary {
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .directions-simple {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+}
+
+@media (max-width: 400px) {
+  .words-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .directions-simple {
+    grid-template-columns: 1fr;
+  }
 }
 </style>

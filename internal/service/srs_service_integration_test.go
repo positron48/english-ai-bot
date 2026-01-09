@@ -182,15 +182,28 @@ func TestSRSService_GradeCard_WrongAnswer(t *testing.T) {
 		t.Fatalf("GradeCard() error = %v", err)
 	}
 
-	// Verify the card was reset to learning
+	// Verify the card uses gentle approach (stays in review, interval reduced)
 	updated, err := userCardRepo.GetUserCard(id)
 	if err != nil {
 		t.Fatalf("Failed to get updated user card: %v", err)
 	}
-	if updated.State != models.StateLearning {
-		t.Errorf("Expected State %v, got %v", models.StateLearning, updated.State)
+	// Should stay in review for first error
+	if updated.State != models.StateReview {
+		t.Errorf("Expected State %v, got %v (should stay in review for first error)", models.StateReview, updated.State)
 	}
-	if updated.LapseCount == 0 {
-		t.Error("LapseCount should be incremented after wrong answer")
+	// Interval should be reduced (10 / 2 = 5)
+	if updated.IntervalDays != 5 {
+		t.Errorf("Expected IntervalDays 5 (10/2), got %d", updated.IntervalDays)
+	}
+	// Reps should be preserved
+	if updated.Reps != 5 {
+		t.Errorf("Expected Reps 5 (preserved), got %d", updated.Reps)
+	}
+	if updated.LapseCount != 1 {
+		t.Errorf("Expected LapseCount 1, got %d", updated.LapseCount)
+	}
+	// EF should be reduced
+	if updated.EF >= 2.0 {
+		t.Errorf("Expected EF < 2.0, got %f", updated.EF)
 	}
 }

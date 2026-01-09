@@ -30,9 +30,11 @@ func parseSQLiteTime(timeStr string) (*time.Time, error) {
 	return &t, nil
 }
 	
-// VocabWord represents a word with statistics
+// VocabWord represents a word with statistics (grouped by word_card_id/lemma)
 type VocabWord struct {
-	WordEN          string     `json:"word_en"`
+	WordCardID      int64      `json:"word_card_id"`
+	Lemma           string     `json:"lemma"`            // Base form (word_cards.word)
+	DisplayWord     string     `json:"display_word"`     // Display form (prefer training_cards.display_word, fallback word_cards.display_en, fallback word_cards.word)
 	TotalCards      int        `json:"total_cards"`
 	DueCount        int        `json:"due_count"`
 	LastReview      *time.Time `json:"last_review"`
@@ -73,7 +75,7 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 	search := req.URL.Query().Get("search")
 	page := 1
 	limit := 25
-	sortBy := "word_en"
+	sortBy := "display_word"
 	sortOrder := "asc"
 	
 	if pageStr := req.URL.Query().Get("page"); pageStr != "" {
@@ -90,7 +92,8 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 		// Validate sort_by to prevent SQL injection
 		// Map frontend field names to column aliases from SELECT
 		allowedSortFields := map[string]string{
-			"word_en":       "tc.word_en",
+			"display_word":  "display_word",
+			"lemma":         "lemma",
 			"total_cards":   "total_cards",
 			"mastery_level": "mastery_level", // Special handling below
 			"total_reps":    "total_reps",
@@ -115,9 +118,17 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 	now := time.Now()
 
 	// Build query with search and pagination
+	// Group by word_card_id (lemma) instead of word_en
 	// Use substr() to extract first 19 chars (YYYY-MM-DD HH:MM:SS) from Go time.String() format
+	// Display word: prefer training_cards.display_word, fallback word_cards.display_en, fallback word_cards.word
 	baseQuery := `SELECT 
-		tc.word_en,
+		tc.word_card_id,
+		wc.word as lemma,
+		COALESCE(
+			(SELECT display_word FROM training_cards tc2 WHERE tc2.word_card_id = tc.word_card_id AND tc2.display_word IS NOT NULL AND tc2.display_word != '' LIMIT 1),
+			wc.display_en,
+			wc.word
+		) as display_word,
 		COUNT(DISTINCT uc.id) as total_cards,
 		SUM(CASE WHEN uc.next_due_at IS NULL OR uc.next_due_at <= ? THEN 1 ELSE 0 END) as due_count,
 		substr(MAX(uc.last_review_at), 1, 19) as last_review,
@@ -129,30 +140,34 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 		(SELECT COUNT(*) FROM review_events re 
 		 JOIN user_cards uc2 ON re.user_card_id = uc2.id 
 		 JOIN training_cards tc2 ON uc2.training_card_id = tc2.id 
-		 WHERE tc2.word_en = tc.word_en AND uc2.user_id = ?) as review_count
+		 WHERE tc2.word_card_id = tc.word_card_id AND uc2.user_id = ?) as review_count
 	FROM user_cards uc
 	JOIN training_cards tc ON uc.training_card_id = tc.id
+	JOIN word_cards wc ON tc.word_card_id = wc.id
 	WHERE uc.user_id = ?`
 
 	args := []interface{}{now, userID, userID}
 	if search != "" {
-		baseQuery += " AND (tc.word_en LIKE ? OR tc.word_ru LIKE ?)"
+		// Search by lemma, display_word, or word_ru
+		baseQuery += " AND (wc.word LIKE ? OR COALESCE((SELECT display_word FROM training_cards tc2 WHERE tc2.word_card_id = tc.word_card_id AND tc2.display_word IS NOT NULL AND tc2.display_word != '' LIMIT 1), wc.display_en, wc.word) LIKE ? OR tc.word_ru LIKE ?)"
 		searchPattern := "%" + search + "%"
-		args = append(args, searchPattern, searchPattern)
+		args = append(args, searchPattern, searchPattern, searchPattern)
 	}
 
-	baseQuery += " GROUP BY tc.word_en"
+	baseQuery += " GROUP BY tc.word_card_id, wc.word"
 
-	// Get total count for pagination (simpler query without subquery)
-	countQuery := `SELECT COUNT(DISTINCT tc.word_en) as total
+	// Get total count for pagination (count distinct word_card_id)
+	countQuery := `SELECT COUNT(DISTINCT tc.word_card_id) as total
 	FROM user_cards uc
 	JOIN training_cards tc ON uc.training_card_id = tc.id
+	JOIN word_cards wc ON tc.word_card_id = wc.id
 	WHERE uc.user_id = ?`
 	countArgs := []interface{}{userID}
 	if search != "" {
-		countQuery += " AND (tc.word_en LIKE ? OR tc.word_ru LIKE ?)"
+		// Search by lemma, display_word, or word_ru
+		countQuery += " AND (wc.word LIKE ? OR COALESCE((SELECT display_word FROM training_cards tc2 WHERE tc2.word_card_id = tc.word_card_id AND tc2.display_word IS NOT NULL AND tc2.display_word != '' LIMIT 1), wc.display_en, wc.word) LIKE ? OR tc.word_ru LIKE ?)"
 		searchPattern := "%" + search + "%"
-		countArgs = append(countArgs, searchPattern, searchPattern)
+		countArgs = append(countArgs, searchPattern, searchPattern, searchPattern)
 	}
 	
 	var totalCount int
@@ -192,12 +207,19 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 		var word VocabWord
 		var totalCards, dueCount, totalReps, reviewCount, reviewStateCount, learningStateCount, newStateCount int
 		var lastReview, addedAt sql.NullString
+		var displayWord sql.NullString
 
-		err := rows.Scan(&word.WordEN, &totalCards, &dueCount, &lastReview, &totalReps, &addedAt, 
+		err := rows.Scan(&word.WordCardID, &word.Lemma, &displayWord, &totalCards, &dueCount, &lastReview, &totalReps, &addedAt, 
 			&reviewStateCount, &learningStateCount, &newStateCount, &reviewCount)
 		if err != nil {
 			r.logger.Error("failed to scan word", zap.Error(err))
 			continue
+		}
+
+		if displayWord.Valid {
+			word.DisplayWord = displayWord.String
+		} else {
+			word.DisplayWord = word.Lemma
 		}
 
 		word.TotalCards = totalCards
@@ -265,7 +287,7 @@ func (r *Router) handleVocabDelete(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	// Extract word from URL path: /app/vocab/{word}/confirm_delete or /app/vocab/{word}/delete
+	// Extract lemma from URL path: /app/vocab/{lemma}/confirm_delete or /app/vocab/{lemma}/delete
 	path := req.URL.Path
 	parts := strings.Split(strings.TrimPrefix(path, "/app/vocab/"), "/")
 	if len(parts) < 1 {
@@ -273,13 +295,13 @@ func (r *Router) handleVocabDelete(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	wordEN := parts[0]
+	lemma := parts[0]
 	action := ""
 	if len(parts) > 1 {
 		action = parts[1]
 	}
 
-	if wordEN == "" {
+	if lemma == "" {
 		// Invalid path, redirect to vocab list
 		http.Redirect(w, req, "/app/vocab", http.StatusFound)
 		return
@@ -287,13 +309,36 @@ func (r *Router) handleVocabDelete(w http.ResponseWriter, req *http.Request) {
 
 	userCardRepo := repository.NewUserCardRepository(r.db, r.logger)
 
+	// Validate action first (before looking up word)
+	if action != "" && action != "confirm_delete" && action != "delete" && action != "cards" {
+		http.Error(w, "Invalid request", http.StatusBadRequest)
+		return
+	}
+
+	// Find word_card_id by lemma (only if we have a valid action or no action)
+	var wordCardID int64
+	err := r.db.QueryRow(`SELECT id FROM word_cards WHERE LOWER(word) = LOWER(?)`, lemma).Scan(&wordCardID)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusNotFound)
+			json.NewEncoder(w).Encode(map[string]interface{}{
+				"error": "Word not found",
+			})
+			return
+		}
+		r.logger.Error("failed to get word card ID", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
 	if req.Method == http.MethodGet && action == "confirm_delete" {
 		// Get word info for confirmation
 		query := `SELECT COUNT(*) FROM user_cards uc
 				  JOIN training_cards tc ON uc.training_card_id = tc.id
-				  WHERE uc.user_id = ? AND tc.word_en = ?`
+				  WHERE uc.user_id = ? AND tc.word_card_id = ?`
 		var count int
-		err := r.db.QueryRow(query, userID, wordEN).Scan(&count)
+		err := r.db.QueryRow(query, userID, wordCardID).Scan(&count)
 		if err != nil {
 			r.logger.Error("failed to get word count", zap.Error(err))
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -301,7 +346,7 @@ func (r *Router) handleVocabDelete(w http.ResponseWriter, req *http.Request) {
 		}
 
 		// If word not found or empty, return error
-		if count == 0 || wordEN == "" {
+		if count == 0 {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusNotFound)
 			json.NewEncoder(w).Encode(map[string]interface{}{
@@ -314,15 +359,16 @@ func (r *Router) handleVocabDelete(w http.ResponseWriter, req *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(map[string]interface{}{
-			"word_en": wordEN,
-			"count":   count,
+			"lemma": lemma,
+			"word_card_id": wordCardID,
+			"count": count,
 		})
 		return
 	}
 
 	if req.Method == http.MethodPost && action == "delete" {
-		// Perform deletion
-		rowsAffected, err := userCardRepo.DeleteUserCardsByWordENForUser(userID, wordEN)
+		// Perform deletion by word_card_id
+		rowsAffected, err := userCardRepo.DeleteUserCardsByWordCardIDForUser(userID, wordCardID)
 		if err != nil {
 			r.logger.Error("failed to delete user cards", zap.Error(err))
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -334,15 +380,16 @@ func (r *Router) handleVocabDelete(w http.ResponseWriter, req *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(map[string]interface{}{
 			"success":       true,
-			"word_en":       wordEN,
+			"lemma":         lemma,
+			"word_card_id":  wordCardID,
 			"rows_affected": rowsAffected,
 		})
 		return
 	}
 
 	if req.Method == http.MethodGet && action == "cards" {
-		// Get detailed card information for the word
-		r.handleVocabWordCards(w, req, userID, wordEN)
+		// Get detailed card information for the word (lemma)
+		r.handleVocabWordCards(w, req, userID, lemma)
 		return
 	}
 
@@ -375,22 +422,39 @@ type VocabCardDetail struct {
 	ReviewCount     int        `json:"review_count"` // Count of review events
 }
 
-// handleVocabWordCards returns detailed information about all cards for a word
+// handleVocabWordCards returns detailed information about all cards for a word (by lemma)
 // @Summary      Получить детальную информацию о карточках слова
-// @Description  Возвращает детальную информацию о всех карточках пользователя для указанного слова
+// @Description  Возвращает детальную информацию о всех карточках пользователя для указанного слова (лемма)
 // @Tags         Vocab
 // @Accept       json
 // @Produce      application/json
 // @Security     ApiKeyAuth
-// @Param        word  path  string  true  "Английское слово"
+// @Param        word  path  string  true  "Лемма слова (word_cards.word)"
 // @Success      200  {object}  map[string]interface{}  "Детальная информация о карточках"
 // @Failure      400  {string}  string  "Неверный запрос"
 // @Failure      401  {string}  string  "Неавторизован"
 // @Failure      404  {string}  string  "Слово не найдено"
 // @Failure      500  {string}  string  "Внутренняя ошибка сервера"
 // @Router       /app/vocab/{word}/cards [get]
-func (r *Router) handleVocabWordCards(w http.ResponseWriter, req *http.Request, userID int64, wordEN string) {
-		query := `SELECT 
+func (r *Router) handleVocabWordCards(w http.ResponseWriter, req *http.Request, userID int64, lemma string) {
+	// First, find word_card_id by lemma
+	var wordCardID int64
+	err := r.db.QueryRow(`SELECT id FROM word_cards WHERE LOWER(word) = LOWER(?)`, lemma).Scan(&wordCardID)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusNotFound)
+			json.NewEncoder(w).Encode(map[string]interface{}{
+				"error": "Word not found",
+			})
+			return
+		}
+		r.logger.Error("failed to get word card ID", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	query := `SELECT 
 		uc.id,
 		uc.training_card_id,
 		uc.direction,
@@ -415,10 +479,10 @@ func (r *Router) handleVocabWordCards(w http.ResponseWriter, req *http.Request, 
 		(SELECT COUNT(*) FROM review_events re WHERE re.user_card_id = uc.id) as review_count
 	FROM user_cards uc
 	JOIN training_cards tc ON uc.training_card_id = tc.id
-	WHERE uc.user_id = ? AND tc.word_en = ?
+	WHERE uc.user_id = ? AND tc.word_card_id = ?
 	ORDER BY tc.sense_index, uc.direction`
 
-	rows, err := r.db.Query(query, userID, wordEN)
+	rows, err := r.db.Query(query, userID, wordCardID)
 	if err != nil {
 		r.logger.Error("failed to get word cards", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -504,8 +568,9 @@ func (r *Router) handleVocabWordCards(w http.ResponseWriter, req *http.Request, 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]interface{}{
-		"word_en": wordEN,
-		"cards":   cards,
+		"lemma": lemma,
+		"word_card_id": wordCardID,
+		"cards": cards,
 	})
 }
 

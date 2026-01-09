@@ -46,6 +46,8 @@ func (s *SRSService) GradeCard(userCard *models.UserCard, attemptData models.Att
 		zap.Int("quality", int(quality)),
 		zap.String("state_before", string(before.State)),
 		zap.String("state_after", string(after.State)),
+		zap.Int("reps_before", before.Reps),
+		zap.Int("reps_after", after.Reps),
 		zap.Int("interval_before", before.IntervalDays),
 		zap.Int("interval_after", after.IntervalDays),
 	)
@@ -65,7 +67,7 @@ func (s *SRSService) updateCardState(card *models.UserCard, quality models.Quali
 	// Update last review time
 	card.LastReviewAt = &now
 	
-	// If quality < 3 (wrong answer), reset to learning
+	// If quality < 3 (wrong answer), handle lapse
 	if q < 3 {
 		s.handleLapse(card, now)
 		return
@@ -83,20 +85,67 @@ func (s *SRSService) updateCardState(card *models.UserCard, quality models.Quali
 }
 
 // handleLapse handles a failed review
+// Uses a gentler approach: reduces interval and EF instead of full reset
+// Only resets to learning if there are multiple consecutive errors
 func (s *SRSService) handleLapse(card *models.UserCard, now time.Time) {
 	card.LapseCount++
-	card.State = models.StateLearning
-	card.LearningStep = 0
-	card.Reps = 0
-	card.IntervalDays = 0
 	
 	// Reduce EF
 	card.EF = math.Max(models.MinEF, card.EF-0.2)
 	
-	// Set next due to first learning step
-	steps := models.LearningStepsDays(card.Direction)
-	nextDue := now.Add(time.Duration(steps[0]) * 24 * time.Hour)
-	card.NextDueAt = &nextDue
+	// Check if we should reset to learning (after 3+ consecutive errors)
+	// or if card is already in learning
+	if card.State == models.StateLearning {
+		// Already in learning - stay on current step
+		steps := models.LearningStepsDays(card.Direction)
+		currentStep := card.LearningStep
+		if currentStep >= len(steps) {
+			currentStep = len(steps) - 1
+		}
+		if currentStep < 0 {
+			currentStep = 0
+		}
+		nextDue := now.Add(time.Duration(steps[currentStep]) * 24 * time.Hour)
+		card.NextDueAt = &nextDue
+		return
+	}
+	
+	// For review cards: use gentle approach - reduce interval instead of full reset
+	if card.State == models.StateReview {
+		// Reduce interval by dividing by 2 (minimum 1 day)
+		// This preserves progress while still making the card appear more frequently
+		newInterval := int(math.Max(1, math.Floor(float64(card.IntervalDays)/2.0)))
+		card.IntervalDays = newInterval
+		
+		// Don't reset reps - keep the progress
+		// Don't change state - stay in review
+		
+		nextDue := now.Add(time.Duration(newInterval) * 24 * time.Hour)
+		card.NextDueAt = &nextDue
+		
+		// Only reset to learning if there are 3+ consecutive errors
+		// This handles cases where the word is genuinely forgotten
+		if card.LapseCount >= 3 {
+			// Multiple errors - reset to learning
+			card.State = models.StateLearning
+			card.LearningStep = 0
+			card.Reps = 0
+			steps := models.LearningStepsDays(card.Direction)
+			nextDue = now.Add(time.Duration(steps[0]) * 24 * time.Hour)
+			card.NextDueAt = &nextDue
+		}
+		return
+	}
+	
+	// For new cards: start learning
+	if card.State == models.StateNew {
+		card.State = models.StateLearning
+		card.LearningStep = 0
+		steps := models.LearningStepsDays(card.Direction)
+		nextDue := now.Add(time.Duration(steps[0]) * 24 * time.Hour)
+		card.NextDueAt = &nextDue
+		return
+	}
 }
 
 // handleNew handles a new card
@@ -126,6 +175,11 @@ func (s *SRSService) handleNew(card *models.UserCard, quality models.Quality, no
 // handleLearning handles a learning card
 func (s *SRSService) handleLearning(card *models.UserCard, quality models.Quality, now time.Time) {
 	steps := models.LearningStepsDays(card.Direction)
+	
+	// Reset lapse count on successful answer in learning phase
+	if quality != models.QualityWrong {
+		card.LapseCount = 0
+	}
 	
 	if quality == models.QualityHard {
 		// Repeat current step
@@ -166,6 +220,12 @@ func (s *SRSService) handleReview(card *models.UserCard, quality models.Quality,
 	// EF' = EF + (0.1 - (5-q)*(0.08 + (5-q)*0.02))
 	delta := 0.1 - float64(5-q)*(0.08+float64(5-q)*0.02)
 	card.EF = math.Max(models.MinEF, card.EF+delta)
+	
+	// Reset lapse count on successful answer (only consecutive errors count)
+	// This ensures that random errors don't accumulate
+	if card.LapseCount > 0 {
+		card.LapseCount = 0
+	}
 	
 	// Calculate new interval
 	var newInterval int
