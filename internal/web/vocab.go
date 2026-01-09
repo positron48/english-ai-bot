@@ -180,8 +180,9 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 
 	// Add ordering and pagination
 	// Handle special case for mastery_level (calculated field)
-	orderByClause := sortBy
-	if sortBy == "mastery_level" {
+	var orderByClause string
+	switch sortBy {
+	case "mastery_level":
 		// For mastery_level, we need to order by the calculated logic
 		// Use the same logic as in the SELECT to calculate mastery
 		// mastered (1) > learning (2) > new (3)
@@ -190,6 +191,33 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 			WHEN COUNT(CASE WHEN uc.state = 'review' THEN 1 END) > 0 OR COUNT(CASE WHEN uc.state = 'learning' THEN 1 END) > 0 THEN 2
 			ELSE 3
 		END`
+	case "lemma":
+		// For lemma, sort by cleaned version (without "to " prefix for verbs)
+		// Use CASE to remove "to " prefix if present (case-insensitive)
+		orderByClause = `CASE 
+			WHEN LOWER(wc.word) LIKE 'to %' THEN SUBSTR(wc.word, 4)
+			ELSE wc.word
+		END`
+	case "display_word":
+		// For display_word, apply the same logic to the COALESCE expression
+		orderByClause = `CASE 
+			WHEN LOWER(COALESCE(
+				(SELECT display_word FROM training_cards tc2 WHERE tc2.word_card_id = tc.word_card_id AND tc2.display_word IS NOT NULL AND tc2.display_word != '' LIMIT 1),
+				wc.display_en,
+				wc.word
+			)) LIKE 'to %' THEN SUBSTR(COALESCE(
+				(SELECT display_word FROM training_cards tc2 WHERE tc2.word_card_id = tc.word_card_id AND tc2.display_word IS NOT NULL AND tc2.display_word != '' LIMIT 1),
+				wc.display_en,
+				wc.word
+			), 4)
+			ELSE COALESCE(
+				(SELECT display_word FROM training_cards tc2 WHERE tc2.word_card_id = tc.word_card_id AND tc2.display_word IS NOT NULL AND tc2.display_word != '' LIMIT 1),
+				wc.display_en,
+				wc.word
+			)
+		END`
+	default:
+		orderByClause = sortBy
 	}
 	baseQuery += " ORDER BY " + orderByClause + " " + sortOrder + " LIMIT ? OFFSET ?"
 	args = append(args, limit, offset)

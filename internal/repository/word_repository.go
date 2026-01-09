@@ -469,11 +469,11 @@ func (r *WordRepository) ListWordCardsAdmin(filterUserID *int64, onlyWithErrors 
 		conditions = append(conditions, "wc.processing_error IS NOT NULL AND wc.processing_error != ''")
 	}
 
-	// Filter by search query if specified (only by word, not definition)
+	// Filter by search query if specified (by word or translation)
 	if searchQuery != "" {
-		conditions = append(conditions, "wc.word LIKE ?")
+		conditions = append(conditions, "(wc.word LIKE ? OR wc.definition_ru LIKE ?)")
 		searchPattern := "%" + searchQuery + "%"
-		args = append(args, searchPattern)
+		args = append(args, searchPattern, searchPattern)
 	}
 
 	if len(conditions) > 0 {
@@ -569,11 +569,11 @@ func (r *WordRepository) CountWordCardsAdmin(filterUserID *int64, onlyWithErrors
 		conditions = append(conditions, "wc.processing_error IS NOT NULL AND wc.processing_error != ''")
 	}
 
-	// Filter by search query if specified (only by word, not definition)
+	// Filter by search query if specified (by word or translation)
 	if searchQuery != "" {
-		conditions = append(conditions, "wc.word LIKE ?")
+		conditions = append(conditions, "(wc.word LIKE ? OR wc.definition_ru LIKE ?)")
 		searchPattern := "%" + searchQuery + "%"
-		args = append(args, searchPattern)
+		args = append(args, searchPattern, searchPattern)
 	}
 
 	if len(conditions) > 0 {
