@@ -20,10 +20,9 @@
             <router-link v-if="isAdmin" to="/admin">Admin</router-link>
           </div>
           <div class="nav-right">
-            <button @click="toggleTheme" class="theme-toggle" :title="theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'">
-              <Icon v-if="theme === 'dark'" name="sun" />
-              <Icon v-else name="moon" />
-            </button>
+            <router-link to="/settings" class="theme-toggle" title="Settings">
+              <Icon name="gear" />
+            </router-link>
             <button v-if="!isTelegramMiniApp" @click="logout" class="btn btn-secondary">Logout</button>
           </div>
         </div>
@@ -56,6 +55,10 @@
           <Icon name="chat" class="mobile-nav-icon" />
           <span class="mobile-nav-label">Chat</span>
         </router-link>
+        <router-link to="/settings" class="mobile-nav-item" title="Settings">
+          <Icon name="settings" class="mobile-nav-icon" />
+          <span class="mobile-nav-label">Settings</span>
+        </router-link>
         <button 
           v-if="hasMoreItems" 
           @click="showSidebar = !showSidebar" 
@@ -79,14 +82,14 @@
         <button @click="showSidebar = false" class="sidebar-close">×</button>
       </div>
       <div class="sidebar-content">
+        <router-link to="/settings" class="sidebar-item" @click="showSidebar = false">
+          <Icon name="settings" class="sidebar-icon" />
+          <span>Settings</span>
+        </router-link>
         <router-link v-if="isAdmin" to="/admin" class="sidebar-item" @click="showSidebar = false">
           <Icon name="settings" class="sidebar-icon" />
           <span>Admin</span>
         </router-link>
-        <button @click="handleThemeToggle" class="sidebar-item">
-          <Icon :name="theme === 'dark' ? 'sun' : 'moon'" class="sidebar-icon" />
-          <span>{{ theme === 'dark' ? 'Light' : 'Dark' }} Theme</span>
-        </button>
         <button v-if="!isTelegramMiniApp" @click="handleLogout" class="sidebar-item">
           <Icon name="logout" class="sidebar-icon" />
           <span>Logout</span>

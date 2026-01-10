@@ -61,6 +61,12 @@ const router = createRouter({
       name: 'AdminOrphanedCards',
       component: () => import('../views/AdminOrphanedCardsView.vue'),
       meta: { requiresAuth: true, requiresAdmin: true }
+    },
+    {
+      path: '/settings',
+      name: 'Settings',
+      component: () => import('../views/SettingsView.vue'),
+      meta: { requiresAuth: true }
     }
   ]
 })

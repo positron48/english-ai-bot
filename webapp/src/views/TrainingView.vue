@@ -250,6 +250,8 @@
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { apiClient } from '../api/client'
 import { showAlert } from '../composables/useDialog'
+import { useSettings } from '../composables/useSettings'
+import { useAudio } from '../composables/useAudio'
 import Icon from '../components/Icon.vue'
 
 interface Card {
@@ -307,6 +309,10 @@ const networkErrorAttempt = ref(0)
 const networkErrorMaxAttempts = ref(3)
 const animatedPercentage = ref(0)
 const percentageAnimationComplete = ref(false)
+
+// Settings
+const { settings } = useSettings()
+const { playSuccess, playFail, playVictory, playDefeat } = useAudio()
 
 const estimatedTime = computed(() => {
   const cards = stats.value.availableForTraining
@@ -638,6 +644,19 @@ watch(() => sessionComplete.value, (complete) => {
   }
 })
 
+// Play victory/defeat melodies when animations start
+watch([() => percentageAnimationComplete.value, () => accuracyPercentage.value], ([complete, percentage]) => {
+  if (!complete || !settings.value.soundsEnabled) return
+  
+  if (percentage > 90) {
+    // Victory - play when fireworks animation starts
+    playVictory(settings.value.soundTheme)
+  } else if (percentage < 10) {
+    // Defeat - play when failure animation starts
+    playDefeat(settings.value.soundTheme)
+  }
+})
+
 // Calculate progress for circular progress bar (delay timer)
 const delayCircumference = computed(() => {
   const radius = 34
@@ -964,8 +983,21 @@ const revealOptions = async (isEarly: boolean = false) => {
   }
 }
 
+// Sound functions using new audio system
+const playCorrectSound = () => {
+  if (!settings.value.soundsEnabled) return
+  playSuccess(settings.value.soundTheme)
+}
+
+const playIncorrectSound = () => {
+  if (!settings.value.soundsEnabled) return
+  playFail(settings.value.soundTheme)
+}
+
 // Haptic feedback helper function
 const triggerHapticFeedback = (isCorrect: boolean) => {
+  if (!settings.value.vibrationEnabled) return
+  
   const tg = (window as any).Telegram?.WebApp
   
   // Try Telegram Web App API first
@@ -1021,6 +1053,13 @@ const submitAnswer = async (optionIndex: number) => {
     
     // Trigger haptic feedback based on answer correctness
     triggerHapticFeedback(data.is_correct)
+    
+    // Play sound based on answer correctness
+    if (data.is_correct) {
+      playCorrectSound()
+    } else {
+      playIncorrectSound()
+    }
     
     // Generate random phrase based on answer correctness
     if (data.is_correct) {
