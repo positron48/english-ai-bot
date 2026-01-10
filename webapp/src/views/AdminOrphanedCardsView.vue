@@ -311,6 +311,12 @@ const formatDateAbsolute = (dateStr: string | null | undefined): string => {
   border-bottom: 2px solid var(--border-primary);
   overflow-x: auto;
   overflow-y: hidden;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.admin-tabs::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }
 
 .admin-tab {
@@ -489,5 +495,17 @@ const formatDateAbsolute = (dateStr: string | null | undefined): string => {
 .btn-secondary:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .admin-tab {
+    padding: 10px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-tab {
+    padding: 8px 12px;
+  }
 }
 </style>

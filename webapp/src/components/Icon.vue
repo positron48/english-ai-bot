@@ -63,12 +63,15 @@
     <svg v-else-if="name === 'play'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <polygon points="5 3 19 12 5 21 5 3"/>
     </svg>
+    <svg v-else-if="name === 'shield'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+    </svg>
   </span>
 </template>
 
 <script setup lang="ts">
 defineProps<{
-  name: 'warning' | 'sun' | 'moon' | 'book' | 'sparkles' | 'book-open' | 'refresh' | 'settings' | 'logout' | 'dashboard' | 'target' | 'chat' | 'more' | 'gear' | 'play'
+  name: 'warning' | 'sun' | 'moon' | 'book' | 'sparkles' | 'book-open' | 'refresh' | 'settings' | 'logout' | 'dashboard' | 'target' | 'chat' | 'more' | 'gear' | 'play' | 'shield'
   dark?: boolean
 }>()
 </script>

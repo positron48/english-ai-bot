@@ -55,12 +55,7 @@
           <Icon name="chat" class="mobile-nav-icon" />
           <span class="mobile-nav-label">Chat</span>
         </router-link>
-        <router-link to="/settings" class="mobile-nav-item" title="Settings">
-          <Icon name="settings" class="mobile-nav-icon" />
-          <span class="mobile-nav-label">Settings</span>
-        </router-link>
         <button 
-          v-if="hasMoreItems" 
           @click="showSidebar = !showSidebar" 
           class="mobile-nav-item mobile-nav-more"
           :class="{ active: showSidebar }"
@@ -83,11 +78,11 @@
       </div>
       <div class="sidebar-content">
         <router-link to="/settings" class="sidebar-item" @click="showSidebar = false">
-          <Icon name="settings" class="sidebar-icon" />
+          <Icon name="gear" class="sidebar-icon" />
           <span>Settings</span>
         </router-link>
         <router-link v-if="isAdmin" to="/admin" class="sidebar-item" @click="showSidebar = false">
-          <Icon name="settings" class="sidebar-icon" />
+          <Icon name="shield" class="sidebar-icon" />
           <span>Admin</span>
         </router-link>
         <button v-if="!isTelegramMiniApp" @click="handleLogout" class="sidebar-item">
@@ -196,10 +191,7 @@ const handleLogout = () => {
   showSidebar.value = false
 }
 
-// Check if we have more items to show in "More" menu
-const hasMoreItems = computed(() => {
-  return isAdmin.value || !isTelegramMiniApp.value
-})
+// Settings is always in More menu on mobile
 </script>
 
 <style scoped>

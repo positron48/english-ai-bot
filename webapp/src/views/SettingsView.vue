@@ -438,15 +438,18 @@ const previewSounds = async () => {
   }
 
   .setting-item {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: row;
+    align-items: center;
     gap: 12px;
   }
 
   .setting-control {
-    width: 100%;
-    display: flex;
-    justify-content: flex-end;
+    flex-shrink: 0;
+  }
+  
+  .sound-theme-control {
+    flex-direction: row;
+    gap: 8px;
   }
 }
 </style>

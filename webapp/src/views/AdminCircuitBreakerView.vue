@@ -144,6 +144,12 @@ const formatDate = (dateStr: string | null | undefined) => {
   border-bottom: 2px solid var(--border-primary);
   overflow-x: auto;
   overflow-y: hidden;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.admin-tabs::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }
 
 .admin-tab {
@@ -264,5 +270,17 @@ const formatDate = (dateStr: string | null | undefined) => {
   text-align: center;
   padding: 40px;
   color: var(--text-secondary);
+}
+
+@media (max-width: 768px) {
+  .admin-tab {
+    padding: 10px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-tab {
+    padding: 8px 12px;
+  }
 }
 </style>

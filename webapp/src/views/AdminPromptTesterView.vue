@@ -1395,9 +1395,7 @@ onMounted(async () => {
 
 <style scoped>
 .prompt-tester {
-  max-width: 1400px;
   margin: 0 auto;
-  padding: 10px;
 }
 
 .prompt-tester h1 {
@@ -1415,6 +1413,12 @@ onMounted(async () => {
   border-bottom: 2px solid var(--border-primary);
   overflow-x: auto;
   overflow-y: hidden;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.admin-tabs::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }
 
 .admin-tab {
@@ -1426,6 +1430,7 @@ onMounted(async () => {
   white-space: nowrap;
   position: relative;
   bottom: -2px;
+  font-size: 16px;
 }
 
 .admin-tab:hover {
@@ -2069,13 +2074,8 @@ onMounted(async () => {
     border-bottom: none;
   }
 
-  .admin-tabs {
-    gap: 0;
-  }
-
   .admin-tab {
     padding: 10px 16px;
-    font-size: 14px;
   }
 
   .card {
@@ -2092,17 +2092,12 @@ onMounted(async () => {
 }
 
 @media (max-width: 480px) {
-  .prompt-tester {
-    padding: 8px;
+  .admin-tab {
+    padding: 8px 12px;
   }
 
   .card {
     padding: 12px;
-  }
-
-  .admin-tab {
-    padding: 8px 12px;
-    font-size: 13px;
   }
 
   .toggle-option {

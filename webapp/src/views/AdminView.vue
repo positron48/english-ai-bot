@@ -63,7 +63,6 @@
                 <th class="desktop-only">ID</th>
                 <th>Word</th>
                 <th>POS</th>
-                <th>Display EN</th>
                 <th>Has Cards</th>
                 <th>Actions</th>
               </tr>
@@ -74,7 +73,6 @@
                   <td class="desktop-only">{{ word.ID }}</td>
                   <td><strong>{{ word.Word }}</strong></td>
                   <td>{{ word.POS || '—' }}</td>
-                  <td>{{ word.DisplayEN || '—' }}</td>
                   <td>
                     <span v-if="word.ProcessingError" 
                       @click.prevent="showErrorDetails(word)"
@@ -983,6 +981,7 @@ const formatDateAbsolute = (dateStr: string | null | undefined): string => {
   max-width: 1200px;
   margin: 0 auto;
   padding: 10px;
+  font-size: 16px;
 }
 
 .admin h1 {
@@ -996,6 +995,12 @@ const formatDateAbsolute = (dateStr: string | null | undefined): string => {
   border-bottom: 2px solid var(--border-primary);
   overflow-x: auto;
   overflow-y: hidden;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.admin-tabs::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }
 
 .admin-tab {
@@ -1007,6 +1012,7 @@ const formatDateAbsolute = (dateStr: string | null | undefined): string => {
   white-space: nowrap;
   position: relative;
   bottom: -2px;
+  font-size: 16px;
 }
 
 .admin-tab:hover {
@@ -1622,6 +1628,16 @@ const formatDateAbsolute = (dateStr: string | null | undefined): string => {
   .btn-sm {
     padding: 4px 8px;
     font-size: 11px;
+  }
+
+  .admin-tab {
+    padding: 10px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-tab {
+    padding: 8px 12px;
   }
 }
 </style>
