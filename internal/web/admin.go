@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"strings"
 
+	"tgbot-skeleton/internal/ai"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 
@@ -163,13 +164,14 @@ func (r *Router) handleAdminCircuitReset(w http.ResponseWriter, req *http.Reques
 
 // handleAdminTraining handles training card management
 // @Summary      Управление тренировочными карточками
-// @Description  Получение (GET), создание (POST) или удаление (POST /delete) тренировочных карточек по слову. Путь: /app/admin/training/{word} или /app/admin/training/{word}/delete или /app/admin/training/delete_all
+// @Description  Получение (GET), создание (POST), генерация через LLM (POST /generate) или удаление (POST /delete) тренировочных карточек по слову. Путь: /app/admin/training/{word} или /app/admin/training/{word}/generate или /app/admin/training/{word}/delete или /app/admin/training/delete_all
 // @Tags         Admin
 // @Accept       json,application/x-www-form-urlencoded
 // @Produce      application/json
 // @Security     ApiKeyAuth
 // @Param        word            path      string  false  "Английское слово"
-// @Param        action          path      string  false  "Действие: delete или delete_all"
+// @Param        action          path      string  false  "Действие: generate, delete или delete_all"
+// @Param        constraints     body      string  false  "Ограничения для генерации (для POST /generate, JSON: {\"constraints\": \"...\"})"
 // @Param        word_ru         formData  string  false  "Русский перевод слова (для POST)"
 // @Param        meaning_en      formData  string  false  "Английское значение (для POST)"
 // @Param        example_en      formData  string  false  "Пример на английском (для POST)"
@@ -180,7 +182,7 @@ func (r *Router) handleAdminCircuitReset(w http.ResponseWriter, req *http.Reques
 // @Param        hint            formData  string  false  "Подсказка (для POST)"
 // @Param        pos             formData  string  false  "Часть речи (для POST)"
 // @Param        display_word    formData  string  false  "Отображаемое слово (для POST)"
-// @Success      200  {object}  map[string]interface{}  "Данные карточек или результат создания/удаления"
+// @Success      200  {object}  map[string]interface{}  "Данные карточек или результат создания/удаления/генерации"
 // @Failure      400  {string}  string  "Неверный запрос"
 // @Failure      401  {string}  string  "Неавторизован"
 // @Failure      403  {string}  string  "Доступ запрещен (требуются права администратора)"
@@ -188,6 +190,7 @@ func (r *Router) handleAdminCircuitReset(w http.ResponseWriter, req *http.Reques
 // @Failure      500  {string}  string  "Внутренняя ошибка сервера"
 // @Router       /app/admin/training/{word} [get]
 // @Router       /app/admin/training/{word} [post]
+// @Router       /app/admin/training/{word}/generate [post]
 func (r *Router) handleAdminTraining(w http.ResponseWriter, req *http.Request) {
 	// Extract action and word from path: /app/admin/training/{word}/{action}
 	path := req.URL.Path
@@ -266,6 +269,98 @@ func (r *Router) handleAdminTraining(w http.ResponseWriter, req *http.Request) {
 		json.NewEncoder(w).Encode(map[string]interface{}{
 			"word_en": wordEN,
 			"cards":   cards,
+		})
+		return
+	}
+
+	if req.Method == http.MethodPost && action == "generate" {
+		// Generate additional training card with constraints
+		// Parse request body (JSON or form data)
+		contentType := req.Header.Get("Content-Type")
+		var constraints string
+
+		if strings.Contains(contentType, "application/json") {
+			var generateData map[string]interface{}
+			if err := json.NewDecoder(req.Body).Decode(&generateData); err != nil {
+				http.Error(w, "Invalid JSON data", http.StatusBadRequest)
+				return
+			}
+			if val, ok := generateData["constraints"].(string); ok {
+				constraints = val
+			}
+		} else {
+			if err := req.ParseForm(); err != nil {
+				http.Error(w, "Invalid form data", http.StatusBadRequest)
+				return
+			}
+			constraints = req.FormValue("constraints")
+		}
+
+		// Get AI service
+		var aiService *ai.Service
+		if r.aiService != nil {
+			if svc, ok := r.aiService.(*ai.Service); ok {
+				aiService = svc
+			}
+		}
+		if aiService == nil {
+			http.Error(w, "AI service not available", http.StatusInternalServerError)
+			return
+		}
+
+		// Generate training card with constraints
+		ctx := req.Context()
+		response, err := aiService.GenerateAdditionalTrainingCard(ctx, wordEN, constraints)
+		if err != nil {
+			r.logger.Error("failed to generate additional training card", zap.Error(err), zap.String("word", wordEN))
+			http.Error(w, "Failed to generate training card: "+err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		// Parse response to get the first sense
+		var trainingResp models.TrainingCardResponse
+		if err := json.Unmarshal([]byte(response), &trainingResp); err != nil {
+			r.logger.Error("failed to parse LLM response", zap.Error(err), zap.String("response", response))
+			http.Error(w, "Failed to parse LLM response: "+err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		// Check for error from LLM
+		if trainingResp.Error != "" {
+			http.Error(w, "LLM error: "+trainingResp.Error, http.StatusBadRequest)
+			return
+		}
+
+		// Get first sense (should be only one)
+		if len(trainingResp.Senses) == 0 {
+			http.Error(w, "No senses in LLM response", http.StatusInternalServerError)
+			return
+		}
+
+		sense := trainingResp.Senses[0]
+
+		// Convert distractors to JSON strings
+		distractorsRUJSON, _ := json.Marshal(sense.DistractorsRU)
+		distractorsENJSON, _ := json.Marshal(sense.DistractorsEN)
+
+		// Return generated card data (not saved to DB yet)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"success": true,
+			"card": map[string]interface{}{
+				"word_en":        trainingResp.WordEN,
+				"transcription":  trainingResp.Transcription,
+				"pos":            sense.POS,
+				"display_word":   sense.DisplayWord,
+				"word_ru":        sense.WordRU,
+				"meaning_en":     sense.MeaningEN,
+				"example_en":     sense.ExampleEN,
+				"example_ru":     sense.ExampleRU,
+				"distractors_ru": string(distractorsRUJSON),
+				"distractors_en": string(distractorsENJSON),
+				"hint":           sense.Hint,
+			},
 		})
 		return
 	}

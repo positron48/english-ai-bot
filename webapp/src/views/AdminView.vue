@@ -116,31 +116,43 @@
                   </td>
                   <td>
                     <div class="action-buttons">
-                      <button 
-                        @click="startEditWord(word)" 
+                      <button
+                        @click="startEditWord(word)"
                         class="btn btn-sm btn-primary"
+                        title="Редактировать"
                       >
-                        Edit
+                        <Icon name="edit" />
+                      </button>
+                      <button 
+                        v-if="!word.ProcessingError"
+                        @click="generateAdditionalCard(word)" 
+                        class="btn btn-sm btn-secondary"
+                        title="Генерировать доп карточку"
+                      >
+                        <Icon name="magic" />
                       </button>
                       <button 
                         v-if="!word.ProcessingError"
                         @click="createTrainingCard(word)" 
                         class="btn btn-sm btn-primary"
+                        title="Добавить карточку"
                       >
-                        Add Card
+                        <Icon name="plus" />
                       </button>
                       <button 
                         v-if="word.ProcessingError"
                         @click="resetWordError(word)" 
                         class="btn btn-sm btn-warning"
+                        title="Сбросить ошибку"
                       >
-                        Reset Error
+                        <Icon name="refresh" />
                       </button>
                       <button 
                         @click="deleteWord(word)" 
                         class="btn btn-sm btn-danger"
+                        title="Удалить"
                       >
-                        Delete
+                        <Icon name="trash" />
                       </button>
                     </div>
                   </td>
@@ -152,12 +164,22 @@
                   <div v-else class="cards-container">
                     <div class="cards-header">
                       <h4>Training Cards for "{{ word.Word }}"</h4>
-                      <button 
-                        @click="createTrainingCard(word)" 
-                        class="btn btn-sm btn-primary"
-                      >
-                        Add Card
-                      </button>
+                      <div class="cards-header-actions">
+                        <button 
+                          @click="generateAdditionalCard(word)" 
+                          class="btn btn-sm btn-secondary"
+                          title="Генерировать доп карточку"
+                        >
+                          <Icon name="magic" />
+                        </button>
+                        <button 
+                          @click="createTrainingCard(word)" 
+                          class="btn btn-sm btn-primary"
+                          title="Добавить карточку"
+                        >
+                          <Icon name="plus" />
+                        </button>
+                      </div>
                     </div>
                     <div v-if="word.cards && word.cards.length > 0">
                     <div v-for="card in word.cards" :key="card.id" class="card-item">
@@ -170,14 +192,16 @@
                           <button 
                             @click="editTrainingCard(card, word)" 
                             class="btn btn-sm btn-primary"
+                            title="Редактировать"
                           >
-                            Edit
+                            <Icon name="edit" />
                           </button>
                           <button 
                             @click="confirmDeleteTrainingCard(card, word)" 
                             class="btn btn-sm btn-danger"
+                            title="Удалить"
                           >
-                            Delete
+                            <Icon name="trash" />
                           </button>
                         </div>
                       </div>
@@ -303,6 +327,45 @@
                 <button type="button" @click="closeEditWordModal" class="btn">Cancel</button>
               </div>
             </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Generate Additional Card Modal -->
+      <div v-if="showGenerateCardModal && wordToGenerateCard" class="modal" @click.self="closeGenerateCardModal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3>Генерировать дополнительную карточку для "{{ wordToGenerateCard.Word }}"</h3>
+            <button @click="closeGenerateCardModal" class="btn-close">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label>Ограничения (опционально):</label>
+              <textarea 
+                v-model="generateCardConstraints" 
+                class="form-textarea" 
+                rows="5"
+                placeholder="Например: конкретное значение 'банк как финансовое учреждение', или часть речи 'verb', или 'значение связанное с водой'"
+              ></textarea>
+              <p class="form-hint">Опишите, какое значение или часть речи должна иметь карточка. Оставьте пустым для произвольной генерации.</p>
+            </div>
+            <div class="modal-actions">
+              <button 
+                @click="doGenerateCard" 
+                class="btn btn-primary"
+                :disabled="generatingCard"
+              >
+                {{ generatingCard ? 'Генерирую...' : 'Генерировать' }}
+              </button>
+              <button 
+                type="button" 
+                @click="closeGenerateCardModal" 
+                class="btn btn-secondary"
+                :disabled="generatingCard"
+              >
+                Отмена
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -511,6 +574,7 @@ import { ref, onMounted, computed } from 'vue'
 import { apiClient } from '../api/client'
 import { showAlert, showConfirm } from '../composables/useDialog'
 import AdminMenu from '../components/AdminMenu.vue'
+import Icon from '../components/Icon.vue'
 
 
 interface User {
@@ -594,6 +658,7 @@ const editWordForm = ref({
 
 const showEditCardModal = ref(false)
 const showCreateCardModal = ref(false)
+const showGenerateCardModal = ref(false)
 const showDeleteCardConfirm = ref(false)
 const showResetErrorConfirm = ref(false)
 const showErrorDetailsModal = ref(false)
@@ -602,6 +667,9 @@ const wordWithError = ref<WordCard | null>(null)
 const cardToEdit = ref<TrainingCard | null>(null)
 const cardToDelete = ref<{ card: TrainingCard; word: WordCard } | null>(null)
 const wordToCreateCard = ref<WordCard | null>(null)
+const wordToGenerateCard = ref<WordCard | null>(null)
+const generateCardConstraints = ref('')
+const generatingCard = ref(false)
 const editCardForm = ref({
   word_en: '',
   pos: '',
@@ -932,6 +1000,91 @@ const createTrainingCard = (word: WordCard) => {
     hint: ''
   }
   showCreateCardModal.value = true
+}
+
+const generateAdditionalCard = (word: WordCard) => {
+  wordToGenerateCard.value = word
+  generateCardConstraints.value = ''
+  showGenerateCardModal.value = true
+}
+
+const closeGenerateCardModal = () => {
+  showGenerateCardModal.value = false
+  wordToGenerateCard.value = null
+  generateCardConstraints.value = ''
+  generatingCard.value = false
+}
+
+const doGenerateCard = async () => {
+  if (!wordToGenerateCard.value || generatingCard.value) return
+  
+  generatingCard.value = true
+  try {
+    const response: any = await apiClient.request(`/app/admin/training/${wordToGenerateCard.value.Word}/generate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        constraints: generateCardConstraints.value
+      })
+    })
+    
+    if (response.success && response.card) {
+      const card = response.card
+      
+      // Parse distractors from JSON strings
+      let distractorsRU: string[] = ['', '', '']
+      let distractorsEN: string[] = ['', '', '']
+      
+      if (card.distractors_ru) {
+        try {
+          const parsed = parseJSONArray(card.distractors_ru)
+          if (parsed && Array.isArray(parsed)) {
+            distractorsRU = [...parsed, '', '', ''].slice(0, 3)
+          }
+        } catch (e) {
+          console.error('Failed to parse distractors_ru:', e)
+        }
+      }
+      
+      if (card.distractors_en) {
+        try {
+          const parsed = parseJSONArray(card.distractors_en)
+          if (parsed && Array.isArray(parsed)) {
+            distractorsEN = [...parsed, '', '', ''].slice(0, 3)
+          }
+        } catch (e) {
+          console.error('Failed to parse distractors_en:', e)
+        }
+      }
+      
+      // Fill create card form with generated data
+      wordToCreateCard.value = wordToGenerateCard.value
+      createCardForm.value = {
+        word_en: card.word_en || wordToGenerateCard.value.Word || '',
+        pos: card.pos || '',
+        display_word: card.display_word || '',
+        transcription: card.transcription || '',
+        word_ru: card.word_ru || '',
+        meaning_en: card.meaning_en || '',
+        example_en: card.example_en || '',
+        example_ru: card.example_ru || '',
+        distractors_ru: distractorsRU,
+        distractors_en: distractorsEN,
+        hint: card.hint || ''
+      }
+      
+      // Close generate modal and open create modal
+      closeGenerateCardModal()
+      showCreateCardModal.value = true
+    } else {
+      await showAlert('Не удалось сгенерировать карточку')
+    }
+  } catch (error: any) {
+    console.error('Failed to generate card:', error)
+    await showAlert(error.message || 'Не удалось сгенерировать карточку')
+  } finally {
+    generatingCard.value = false
+  }
 }
 
 const closeCreateCardModal = () => {
@@ -1492,6 +1645,22 @@ const handleSort = (column: string) => {
   flex-wrap: wrap;
 }
 
+.action-buttons .btn,
+.card-actions .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  padding: 6px 10px;
+}
+
+.action-buttons .btn .icon,
+.card-actions .btn .icon {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+}
+
 .btn-warning {
   background: var(--color-warning, #f59e0b);
   color: white;
@@ -1541,10 +1710,18 @@ const handleSort = (column: string) => {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 15px;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .cards-header h4 {
   margin: 0;
+}
+
+.cards-header-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .card-item {
@@ -1725,6 +1902,12 @@ const handleSort = (column: string) => {
 .form-textarea {
   resize: vertical;
   min-height: 60px;
+}
+
+.form-hint {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 4px;
 }
 
 .distractors-list {

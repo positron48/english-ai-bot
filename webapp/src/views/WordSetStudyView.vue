@@ -59,7 +59,7 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { apiClient } from '../api/client'
-import { showAlert, showConfirm } from '../composables/useDialog'
+import { showAlert } from '../composables/useDialog'
 import Icon from '../components/Icon.vue'
 
 interface WordInfo {
@@ -220,11 +220,8 @@ const nextWord = () => {
   }
 }
 
-const exitStudy = async () => {
-  const confirmed = await showConfirm('Are you sure you want to exit? Your progress will be saved.')
-  if (confirmed) {
-    goBack()
-  }
+const exitStudy = () => {
+  goBack()
 }
 
 const goBack = () => {

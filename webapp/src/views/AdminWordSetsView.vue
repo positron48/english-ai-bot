@@ -601,7 +601,6 @@ const saveWordSet = async () => {
     
     closeWordSetModal()
     await loadWordSets()
-    await showAlert('Word set saved successfully')
   } catch (error: any) {
     console.error('Failed to save word set:', error)
     await showAlert(error.message || 'Failed to save word set')

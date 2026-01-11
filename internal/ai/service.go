@@ -274,3 +274,120 @@ func (s *Service) GenerateTrainingCard(ctx context.Context, word string, modelOv
 
 	return response, nil
 }
+
+// GenerateAdditionalTrainingCard generates an additional training card for a word with constraints
+// constraints can specify things like specific meaning, part of speech, etc.
+func (s *Service) GenerateAdditionalTrainingCard(ctx context.Context, word string, constraints string, modelOverride ...string) (string, error) {
+	if s.trainingPrompt == "" {
+		return "", fmt.Errorf("training prompt not set")
+	}
+
+	// Build user message with word and constraints
+	var userMessage strings.Builder
+	userMessage.WriteString(s.trainingPrompt)
+	userMessage.WriteString(word)
+	
+	if constraints != "" {
+		userMessage.WriteString("\n\nAdditional constraints for this card:\n")
+		userMessage.WriteString(constraints)
+		userMessage.WriteString("\n\nGenerate ONE training card that matches these constraints. Return the same JSON format with exactly ONE sense in the senses array.")
+	}
+
+	// Prepare messages
+	messages := []Message{
+		{
+			Role:    "user",
+			Content: userMessage.String(),
+		},
+	}
+
+	// Use model override if provided, otherwise use default
+	model := s.model
+	if len(modelOverride) > 0 && modelOverride[0] != "" {
+		model = modelOverride[0]
+	}
+
+	// Create request
+	req := ChatRequest{
+		Model:       model,
+		Messages:    messages,
+		MaxTokens:   2000,
+		Temperature: 0.3, // Lower temperature for more consistent JSON output
+	}
+
+	// Marshal request
+	reqBody, err := json.Marshal(req)
+	if err != nil {
+		return "", fmt.Errorf("failed to marshal request: %w", err)
+	}
+
+	// Create HTTP request
+	httpReq, err := http.NewRequestWithContext(ctx, "POST", s.url+"/chat/completions", bytes.NewBuffer(reqBody))
+	if err != nil {
+		return "", fmt.Errorf("failed to create request: %w", err)
+	}
+
+	// Set headers
+	httpReq.Header.Set("Content-Type", "application/json")
+	httpReq.Header.Set("Authorization", "Bearer "+s.apiKey)
+
+	s.logger.Debug("sending additional training card generation request",
+		zap.String("word", word),
+		zap.String("constraints", constraints),
+		zap.String("model", model),
+	)
+
+	// Send request
+	resp, err := s.client.Do(httpReq)
+	if err != nil {
+		return "", fmt.Errorf("failed to send request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	// Read response
+	respBody, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return "", fmt.Errorf("failed to read response: %w", err)
+	}
+
+	// Check status code
+	if resp.StatusCode != http.StatusOK {
+		s.logger.Error("AI provider returned error",
+			zap.Int("status_code", resp.StatusCode),
+			zap.String("response", string(respBody)),
+		)
+		return "", fmt.Errorf("AI provider returned status %d: %s", resp.StatusCode, string(respBody))
+	}
+
+	// Parse response
+	var chatResp ChatResponse
+	if err := json.Unmarshal(respBody, &chatResp); err != nil {
+		return "", fmt.Errorf("failed to unmarshal response: %w", err)
+	}
+
+	// Check for API error
+	if chatResp.Error != nil {
+		return "", fmt.Errorf("AI provider error: %s", chatResp.Error.Message)
+	}
+
+	// Check if we have choices
+	if len(chatResp.Choices) == 0 {
+		return "", fmt.Errorf("no response choices received")
+	}
+
+	response := chatResp.Choices[0].Message.Content
+	
+	// Clean up response - remove markdown code blocks if present
+	response = strings.TrimSpace(response)
+	response = strings.TrimPrefix(response, "```json")
+	response = strings.TrimPrefix(response, "```")
+	response = strings.TrimSuffix(response, "```")
+	response = strings.TrimSpace(response)
+
+	s.logger.Debug("received additional training card response",
+		zap.String("word", word),
+		zap.Int("length", len(response)),
+	)
+
+	return response, nil
+}

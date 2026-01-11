@@ -296,7 +296,7 @@ const handleMoreLogout = () => {
   padding: 10px;
   cursor: pointer;
   font-size: inherit;
-  color: #ffffff;
+  color: var(--text-primary);
   transition: background-color 0.2s;
   text-decoration: none;
   border-radius: 4px;
@@ -340,7 +340,7 @@ const handleMoreLogout = () => {
   text-align: left;
   background: transparent;
   border: none;
-  color: #ffffff;
+  color: var(--text-primary);
   cursor: pointer;
   font-size: 14px;
   transition: background-color 0.2s;
@@ -373,7 +373,7 @@ const handleMoreLogout = () => {
   padding: 8px 12px;
   cursor: pointer;
   font-size: 18px;
-  color: #ffffff;
+  color: var(--text-primary);
   transition: all 0.2s;
   text-decoration: none;
   min-width: 44px;
@@ -388,7 +388,7 @@ const handleMoreLogout = () => {
 
 .nav-links a {
   text-decoration: none;
-  color: #ffffff;
+  color: var(--text-primary);
   padding: 10px;
   border-radius: 4px;
   transition: background-color 0.2s;
@@ -446,7 +446,7 @@ const handleMoreLogout = () => {
   gap: 2px;
   padding: 0;
   text-decoration: none;
-  color: #ffffff;
+  color: var(--text-primary);
   background: transparent;
   border: none;
   cursor: pointer;
@@ -462,7 +462,7 @@ const handleMoreLogout = () => {
 .mobile-nav-item.router-link-active,
 .mobile-nav-item.active {
   background: var(--bg-hover);
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .mobile-nav-icon {
@@ -534,13 +534,13 @@ const handleMoreLogout = () => {
 .sidebar-header h3 {
   margin: 0;
   font-size: 18px;
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .sidebar-close {
   background: transparent;
   border: none;
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 28px;
   line-height: 1;
   cursor: pointer;
@@ -573,7 +573,7 @@ const handleMoreLogout = () => {
   text-align: left;
   background: transparent;
   border: none;
-  color: #ffffff;
+  color: var(--text-primary);
   cursor: pointer;
   font-size: 16px;
   transition: background-color 0.2s;

@@ -80,12 +80,30 @@
       <line x1="18" y1="6" x2="6" y2="18"/>
       <line x1="6" y1="6" x2="18" y2="18"/>
     </svg>
+    <svg v-else-if="name === 'plus'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="12" y1="5" x2="12" y2="19"/>
+      <line x1="5" y1="12" x2="19" y2="12"/>
+    </svg>
+    <svg v-else-if="name === 'magic'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6 18L18 6"/>
+      <path d="M6 6l12 12"/>
+      <path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m9.48 9.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m0-9.48L4.93 4.93"/>
+      <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
+    </svg>
+    <svg v-else-if="name === 'edit'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+    </svg>
+    <svg v-else-if="name === 'trash'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="3 6 5 6 21 6"/>
+      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+    </svg>
   </span>
 </template>
 
 <script setup lang="ts">
 defineProps<{
-  name: 'warning' | 'sun' | 'moon' | 'book' | 'sparkles' | 'book-open' | 'refresh' | 'settings' | 'logout' | 'dashboard' | 'target' | 'chat' | 'more' | 'gear' | 'play' | 'shield' | 'arrow-left' | 'folder' | 'close' | 'chevron-down'
+  name: 'warning' | 'sun' | 'moon' | 'book' | 'sparkles' | 'book-open' | 'refresh' | 'settings' | 'logout' | 'dashboard' | 'target' | 'chat' | 'more' | 'gear' | 'play' | 'shield' | 'arrow-left' | 'folder' | 'close' | 'chevron-down' | 'plus' | 'magic' | 'edit' | 'trash'
   dark?: boolean
 }>()
 </script>
