@@ -206,6 +206,26 @@ func (r *Router) handleAdminTraining(w http.ResponseWriter, req *http.Request) {
 
 	trainingCardRepo := repository.NewTrainingCardRepository(r.db, r.logger)
 
+	// Check for delete_all first (before other POST checks)
+	if req.Method == http.MethodPost && wordEN == "delete_all" {
+		// Delete all training cards
+		rowsAffected, err := trainingCardRepo.DeleteAllTrainingCards()
+		if err != nil {
+			r.logger.Error("failed to delete all training cards", zap.Error(err))
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
+		}
+
+		// Return success response
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"success":       true,
+			"rows_affected": rowsAffected,
+		})
+		return
+	}
+
 	if req.Method == http.MethodGet && wordEN != "" && action == "" {
 		// Get training data for word
 		// Extract word from query parameter if path doesn't have it
@@ -414,25 +434,6 @@ func (r *Router) handleAdminTraining(w http.ResponseWriter, req *http.Request) {
 		json.NewEncoder(w).Encode(map[string]interface{}{
 			"success":       true,
 			"word_en":       wordEN,
-			"rows_affected": rowsAffected,
-		})
-		return
-	}
-
-	if req.Method == http.MethodPost && wordEN == "delete_all" {
-		// Delete all training cards
-		rowsAffected, err := trainingCardRepo.DeleteAllTrainingCards()
-		if err != nil {
-			r.logger.Error("failed to delete all training cards", zap.Error(err))
-			http.Error(w, "Internal server error", http.StatusInternalServerError)
-			return
-		}
-
-		// Return success response
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(map[string]interface{}{
-			"success":       true,
 			"rows_affected": rowsAffected,
 		})
 		return

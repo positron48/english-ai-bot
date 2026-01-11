@@ -464,7 +464,7 @@ const alphabetSections = computed(() => {
 
 const confirmDelete = () => {
   wordToDelete.value = selectedWordDisplay.value
-  lemmaToDelete.value = selectedWord
+  lemmaToDelete.value = selectedWord.value
   showDeleteConfirm.value = true
 }
 

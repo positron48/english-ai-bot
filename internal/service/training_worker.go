@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strings"
 	"time"
 
 	"tgbot-skeleton/internal/ai"
@@ -145,12 +146,131 @@ func (w *TrainingWorker) processCards(ctx context.Context) {
 	}
 }
 
+// hasMinimalData checks if word card has only minimal data (just word, no POS, transcription, etc.)
+func (w *TrainingWorker) hasMinimalData(wordCard *models.WordCard) bool {
+	return wordCard.POS == nil && wordCard.Transcription == nil && wordCard.DefinitionRU == nil
+}
+
+// fillWordCardData fills word card data via LLM if it has minimal data
+func (w *TrainingWorker) fillWordCardData(ctx context.Context, wordCard *models.WordCard) error {
+	if !w.hasMinimalData(wordCard) {
+		// Word card already has data, skip
+		return nil
+	}
+
+	w.logger.Info("filling word card data",
+		zap.String("word", wordCard.Word),
+		zap.Int64("word_card_id", wordCard.ID),
+	)
+
+	// Generate word card data via LLM
+	response, err := w.aiService.GenerateResponse(ctx, wordCard.Word)
+	if err != nil {
+		return fmt.Errorf("failed to get AI response: %w", err)
+	}
+
+	// Parse JSON response
+	var wordInfo models.WordInfoResponse
+	if err := json.Unmarshal([]byte(response), &wordInfo); err != nil {
+		// Not JSON, skip filling (word card will remain minimal)
+		w.logger.Warn("failed to parse AI response as JSON, skipping word card fill",
+			zap.String("word", wordCard.Word),
+			zap.Error(err),
+		)
+		return nil
+	}
+
+	// Check for error from LLM
+	if wordInfo.Error.IsTrue() {
+		// Word rejected by LLM, skip filling
+		w.logger.Info("word rejected by LLM, skipping word card fill",
+			zap.String("word", wordCard.Word),
+		)
+		return nil
+	}
+
+	// Fill word card with structured data
+	lemma := strings.ToLower(wordInfo.Lemma)
+	if lemma == "" {
+		lemma = strings.ToLower(wordCard.Word)
+	}
+
+	displayEN := lemma
+	if wordInfo.POS == "verb" && wordInfo.VerbForms != nil && wordInfo.VerbForms.V1 != "" {
+		displayEN = "to " + wordInfo.VerbForms.V1
+	}
+
+	// Marshal examples and verb forms
+	var examplesJSON *string
+	if len(wordInfo.Examples) > 0 {
+		examplesBytes, _ := json.Marshal(wordInfo.Examples)
+		examplesStr := string(examplesBytes)
+		examplesJSON = &examplesStr
+	}
+
+	var verbFormsJSON *string
+	if wordInfo.VerbForms != nil {
+		verbFormsBytes, _ := json.Marshal(wordInfo.VerbForms)
+		verbFormsStr := string(verbFormsBytes)
+		verbFormsJSON = &verbFormsStr
+	}
+
+	pos := wordInfo.POS
+	transcription := wordInfo.Transcription
+	definitionRU := wordInfo.DefinitionRU
+
+	wordCardModel := &models.WordCard{
+		ID:            wordCard.ID,
+		Word:          lemma,
+		Definition:    "", // Legacy field
+		POS:           &pos,
+		Transcription: &transcription,
+		DefinitionRU:  &definitionRU,
+		ExamplesJSON:  examplesJSON,
+		VerbFormsJSON: verbFormsJSON,
+		DisplayEN:     &displayEN,
+	}
+
+	if err := w.wordRepo.UpdateWordCard(wordCardModel); err != nil {
+		return fmt.Errorf("failed to update word card: %w", err)
+	}
+
+	w.logger.Info("filled word card data",
+		zap.String("word", wordCard.Word),
+		zap.Int64("word_card_id", wordCard.ID),
+	)
+
+	return nil
+}
+
 // processCard processes a single word card
 func (w *TrainingWorker) processCard(ctx context.Context, wordCard *models.WordCard) error {
 	w.logger.Info("generating training card",
 		zap.String("word", wordCard.Word),
 		zap.Int64("word_card_id", wordCard.ID),
 	)
+
+	// Fill word card data if it has minimal data
+	if err := w.fillWordCardData(ctx, wordCard); err != nil {
+		w.logger.Warn("failed to fill word card data, continuing anyway",
+			zap.String("word", wordCard.Word),
+			zap.Int64("word_card_id", wordCard.ID),
+			zap.Error(err),
+		)
+		// Continue anyway - training cards can still be created
+	}
+
+	// Reload word card to get updated data
+	updatedWordCard, err := w.wordRepo.GetWordCardByID(wordCard.ID)
+	if err != nil {
+		w.logger.Warn("failed to reload word card, using original",
+			zap.String("word", wordCard.Word),
+			zap.Error(err),
+		)
+		// Continue with original wordCard
+	} else if updatedWordCard != nil {
+		wordCard = updatedWordCard
+	}
 
 	// Generate training card via LLM
 	response, err := w.aiService.GenerateTrainingCard(ctx, wordCard.Word)

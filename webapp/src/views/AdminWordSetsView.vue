@@ -187,8 +187,10 @@
             <p class="form-hint">Enter words separated by commas. Words will be normalized and duplicates removed.</p>
           </div>
           <div class="modal-actions">
-            <button type="submit" class="btn btn-primary">Save</button>
-            <button type="button" @click="closeWordSetModal" class="btn btn-secondary">Cancel</button>
+            <button type="submit" class="btn btn-primary" :disabled="wordSetLoading">
+              {{ wordSetLoading ? 'Saving...' : 'Save' }}
+            </button>
+            <button type="button" @click="closeWordSetModal" class="btn btn-secondary" :disabled="wordSetLoading">Cancel</button>
           </div>
         </form>
       </div>
@@ -315,6 +317,7 @@ const itemsForm = ref({
   words: ''
 })
 const itemsLoading = ref(false)
+const wordSetLoading = ref(false)
 
 // Computed
 const categoriesTree = computed(() => {
@@ -534,6 +537,9 @@ const closeWordSetModal = () => {
 }
 
 const saveWordSet = async () => {
+  if (wordSetLoading.value) return
+  
+  wordSetLoading.value = true
   try {
     const url = editingWordSet.value
       ? `/app/admin/word-sets/${editingWordSet.value.id}`
@@ -573,6 +579,8 @@ const saveWordSet = async () => {
   } catch (error: any) {
     console.error('Failed to save word set:', error)
     await showAlert(error.message || 'Failed to save word set')
+  } finally {
+    wordSetLoading.value = false
   }
 }
 

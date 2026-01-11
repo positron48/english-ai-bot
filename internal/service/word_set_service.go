@@ -48,6 +48,44 @@ func NewWordSetService(
 	}
 }
 
+// EnsureWordCardExistsMinimal ensures a word card exists with minimal data (only word)
+// Returns the word card ID
+// This is used for fast word set creation - word cards are created without LLM call
+// Word cards will be filled asynchronously by TrainingWorker
+func (s *WordSetService) EnsureWordCardExistsMinimal(word string) (int64, error) {
+	normalizedWord := strings.TrimSpace(strings.ToLower(word))
+	
+	// Try to get existing word card
+	wordCard, err := s.wordRepo.GetWordCardByLemma(normalizedWord)
+	if err != nil {
+		return 0, fmt.Errorf("failed to get word card: %w", err)
+	}
+	
+	if wordCard != nil {
+		return wordCard.ID, nil
+	}
+	
+	// Word not found, create minimal word card (only word, no LLM call)
+	// Word card data will be filled asynchronously by TrainingWorker
+	wordCardModel := &models.WordCard{
+		Word:       normalizedWord,
+		Definition: "", // Empty - will be filled later
+		// All other fields are nil - will be filled asynchronously
+	}
+	
+	wordCardID, err := s.wordRepo.UpsertWordCardLemma(wordCardModel)
+	if err != nil {
+		return 0, fmt.Errorf("failed to create minimal word card: %w", err)
+	}
+	
+	s.logger.Debug("created minimal word card",
+		zap.String("word", normalizedWord),
+		zap.Int64("word_card_id", wordCardID),
+	)
+	
+	return wordCardID, nil
+}
+
 // EnsureWordCardExists ensures a word card exists for a word
 // Returns the word card ID
 func (s *WordSetService) EnsureWordCardExists(ctx context.Context, word string) (int64, error) {
@@ -350,7 +388,9 @@ func (s *WordSetService) MarkKnown(userID, wordCardID int64) error {
 }
 
 // ProcessWordSetItems processes a comma-separated list of words for a word set
-// Ensures word_cards and training_cards exist, then creates word_set_items
+// Creates word_cards with minimal data (only word) and creates word_set_items
+// Word card data and training cards are created asynchronously by TrainingWorker
+// This allows saving word sets quickly even with many words
 func (s *WordSetService) ProcessWordSetItems(ctx context.Context, wordSetID int64, wordsStr string) error {
 	// Split by comma and normalize
 	words := strings.Split(wordsStr, ",")
@@ -362,10 +402,11 @@ func (s *WordSetService) ProcessWordSetItems(ctx context.Context, wordSetID int6
 			continue
 		}
 		
-		// Ensure word card exists
-		wordCardID, err := s.EnsureWordCardExists(ctx, word)
+		// Ensure word card exists with minimal data (no LLM call)
+		// Word card data will be filled asynchronously by TrainingWorker
+		wordCardID, err := s.EnsureWordCardExistsMinimal(word)
 		if err != nil {
-			s.logger.Warn("failed to ensure word card exists",
+			s.logger.Warn("failed to ensure minimal word card exists",
 				zap.String("word", word),
 				zap.Error(err),
 			)
@@ -373,15 +414,8 @@ func (s *WordSetService) ProcessWordSetItems(ctx context.Context, wordSetID int6
 			continue
 		}
 		
-		// Ensure training cards exist (async, but we wait for it)
-		if err := s.EnsureTrainingCardsExist(ctx, wordCardID); err != nil {
-			s.logger.Warn("failed to ensure training cards exist",
-				zap.String("word", word),
-				zap.Int64("word_card_id", wordCardID),
-				zap.Error(err),
-			)
-			// Continue anyway - training cards might be generated later
-		}
+		// Word card data and training cards will be created asynchronously by TrainingWorker
+		// This allows saving word sets quickly even with many words
 		
 		wordCardIDs = append(wordCardIDs, wordCardID)
 	}
