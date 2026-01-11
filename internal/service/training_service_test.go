@@ -2,6 +2,7 @@ package service
 
 import (
 	"database/sql"
+	"fmt"
 	"testing"
 	"time"
 
@@ -26,8 +27,16 @@ func TestTrainingService_GetDueCount(t *testing.T) {
 	db, userCardRepo, _, _ := setupTrainingServiceTestDB(t)
 	defer db.Close()
 
-	// Create training cards
+	// Create word cards first
 	var err error
+	for i := 1; i <= 2; i++ {
+		_, err = db.Exec("INSERT INTO word_cards (id, word, definition) VALUES (?, ?, ?)", i, fmt.Sprintf("test%d", i), fmt.Sprintf("test %d", i))
+		if err != nil {
+			t.Fatalf("Failed to create word card: %v", err)
+		}
+	}
+
+	// Create training cards
 	for i := 1; i <= 2; i++ {
 		_, err = db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (?, ?, ?, ?, ?, ?, ?)",
 			i, "test", 0, "тест", "test", "noun", "test")

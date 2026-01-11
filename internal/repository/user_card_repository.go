@@ -288,27 +288,53 @@ func (r *UserCardRepository) scanUserCards(rows *sql.Rows) ([]*models.UserCard, 
 }
 
 // DeleteOrphanedUserCards deletes user_cards that reference non-existent training_cards
+// Also deletes user_cards whose training_cards reference non-existent word_cards
 func (r *UserCardRepository) DeleteOrphanedUserCards() (int64, error) {
-	query := `DELETE FROM user_cards 
-			  WHERE training_card_id NOT IN (SELECT id FROM training_cards)`
+	// Delete user_cards that reference non-existent training_cards
+	query1 := `DELETE FROM user_cards 
+			   WHERE training_card_id NOT IN (SELECT id FROM training_cards)`
 	
-	result, err := r.db.Exec(query)
+	result1, err := r.db.Exec(query1)
 	if err != nil {
 		return 0, fmt.Errorf("failed to delete orphaned user cards: %w", err)
 	}
 
-	rowsAffected, err := result.RowsAffected()
+	rowsAffected1, err := result1.RowsAffected()
 	if err != nil {
 		return 0, fmt.Errorf("failed to get rows affected: %w", err)
 	}
 
-	if rowsAffected > 0 {
+	// Delete user_cards whose training_cards reference non-existent word_cards
+	// SQLite doesn't support DELETE with JOIN, so we use a subquery
+	query2 := `DELETE FROM user_cards 
+			   WHERE training_card_id IN (
+				   SELECT tc.id 
+				   FROM training_cards tc
+				   LEFT JOIN word_cards wc ON tc.word_card_id = wc.id
+				   WHERE wc.id IS NULL
+			   )`
+	
+	result2, err := r.db.Exec(query2)
+	if err != nil {
+		return 0, fmt.Errorf("failed to delete user cards with orphaned training cards: %w", err)
+	}
+
+	rowsAffected2, err := result2.RowsAffected()
+	if err != nil {
+		return 0, fmt.Errorf("failed to get rows affected: %w", err)
+	}
+
+	totalAffected := rowsAffected1 + rowsAffected2
+
+	if totalAffected > 0 {
 		r.logger.Info("deleted orphaned user cards",
-			zap.Int64("rows_affected", rowsAffected),
+			zap.Int64("type1_deleted", rowsAffected1),
+			zap.Int64("type2_deleted", rowsAffected2),
+			zap.Int64("total_deleted", totalAffected),
 		)
 	}
 
-	return rowsAffected, nil
+	return totalAffected, nil
 }
 
 // DeleteUserCardsByWordENForUser deletes all user_cards for a specific word and user
@@ -454,6 +480,85 @@ func (r *UserCardRepository) CountOrphanedUserCards() (int, error) {
 		return 0, fmt.Errorf("failed to count orphaned user cards: %w", err)
 	}
 
+	return count, nil
+}
+
+// ListUserCardsWithOrphanedTrainingCards lists user_cards whose training_cards reference non-existent word_cards
+// These cards pass INNER JOIN but cannot be used in training because word_card is missing
+func (r *UserCardRepository) ListUserCardsWithOrphanedTrainingCards(limit, offset int) ([]*OrphanedUserCardInfo, error) {
+	query := `SELECT 
+		uc.id as user_card_id,
+		uc.user_id,
+		u.telegram_id,
+		u.telegram_username,
+		uc.training_card_id,
+		uc.direction,
+		uc.state,
+		uc.reps,
+		uc.created_at,
+		COALESCE(COUNT(re.id), 0) as review_events_count
+	FROM user_cards uc
+	INNER JOIN training_cards tc ON uc.training_card_id = tc.id
+	LEFT JOIN word_cards wc ON tc.word_card_id = wc.id
+	LEFT JOIN users u ON uc.user_id = u.id
+	LEFT JOIN review_events re ON re.user_card_id = uc.id
+	WHERE wc.id IS NULL
+	GROUP BY uc.id, uc.user_id, u.telegram_id, u.telegram_username, uc.training_card_id, uc.direction, uc.state, uc.reps, uc.created_at
+	ORDER BY uc.created_at DESC
+	LIMIT ? OFFSET ?`
+
+	rows, err := r.db.Query(query, limit, offset)
+	if err != nil {
+		return nil, fmt.Errorf("failed to list user cards with orphaned training cards: %w", err)
+	}
+	defer rows.Close()
+
+	var items []*OrphanedUserCardInfo
+	for rows.Next() {
+		var item OrphanedUserCardInfo
+		var createdAt string
+		var telegramUsername sql.NullString
+
+		err := rows.Scan(
+			&item.UserCardID,
+			&item.UserID,
+			&item.TelegramID,
+			&telegramUsername,
+			&item.TrainingCardID,
+			&item.Direction,
+			&item.State,
+			&item.Reps,
+			&createdAt,
+			&item.ReviewEventsCount,
+		)
+		if err != nil {
+			return nil, fmt.Errorf("failed to scan user card with orphaned training card: %w", err)
+		}
+
+		if telegramUsername.Valid {
+			item.TelegramUsername = &telegramUsername.String
+		}
+
+		item.CreatedAt, _ = time.Parse("2006-01-02 15:04:05", createdAt)
+		items = append(items, &item)
+	}
+
+	return items, nil
+}
+
+// CountUserCardsWithOrphanedTrainingCards counts user_cards whose training_cards reference non-existent word_cards
+func (r *UserCardRepository) CountUserCardsWithOrphanedTrainingCards() (int, error) {
+	query := `SELECT COUNT(*) 
+	FROM user_cards uc
+	INNER JOIN training_cards tc ON uc.training_card_id = tc.id
+	LEFT JOIN word_cards wc ON tc.word_card_id = wc.id
+	WHERE wc.id IS NULL`
+
+	var count int
+	err := r.db.QueryRow(query).Scan(&count)
+	if err != nil {
+		return 0, fmt.Errorf("failed to count user cards with orphaned training cards: %w", err)
+	}
 	return count, nil
 }
 

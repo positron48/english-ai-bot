@@ -14,6 +14,12 @@ func TestTrainingService_StartSession(t *testing.T) {
 	db, userCardRepo, trainingCardRepo, sessionRepo := setupTrainingServiceTestDB(t)
 	defer db.Close()
 
+	// Create word card first
+	_, err := db.Exec("INSERT INTO word_cards (id, word, definition) VALUES (?, ?, ?)", 1, "start", "to start")
+	if err != nil {
+		t.Fatalf("Failed to create word card: %v", err)
+	}
+
 	// Create a training card
 	trainingCard := &models.TrainingCard{
 		WordCardID: 1,
@@ -75,6 +81,12 @@ func TestTrainingService_StartSession_FinishOldSession(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userCardRepo, trainingCardRepo, sessionRepo := setupTrainingServiceTestDB(t)
 	defer db.Close()
+
+	// Create word card first
+	_, err := db.Exec("INSERT INTO word_cards (id, word, definition) VALUES (?, ?, ?)", 1, "finish", "to finish")
+	if err != nil {
+		t.Fatalf("Failed to create word card: %v", err)
+	}
 
 	// Create a training card
 	trainingCard := &models.TrainingCard{

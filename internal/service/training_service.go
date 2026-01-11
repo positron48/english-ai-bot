@@ -111,8 +111,14 @@ func (s *TrainingService) generateQueue(userID int64, config SessionConfig) ([]*
 	now := time.Now()
 
 	// Clean up orphaned user_cards before getting cards
-	if _, err := s.userCardRepo.DeleteOrphanedUserCards(); err != nil {
+	deletedCount, err := s.userCardRepo.DeleteOrphanedUserCards()
+	if err != nil {
 		s.logger.Warn("failed to clean up orphaned user cards", zap.Error(err))
+	} else if deletedCount > 0 {
+		s.logger.Info("cleaned up orphaned user cards",
+			zap.Int64("user_id", userID),
+			zap.Int64("deleted_count", deletedCount),
+		)
 	}
 
 	// Get due cards (learning + review)
@@ -173,14 +179,26 @@ func (s *TrainingService) generateQueue(userID int64, config SessionConfig) ([]*
 
 	// Fetch training card data
 	queue := make([]*models.UserCardWithTraining, 0, len(allCards))
+	skippedCount := 0
 	for _, userCard := range allCards {
 		trainingCard, err := s.trainingCardRepo.GetTrainingCard(userCard.TrainingCardID)
 		if err != nil {
-			s.logger.Warn("failed to get training card", zap.Error(err))
+			s.logger.Warn("failed to get training card",
+				zap.Int64("user_card_id", userCard.ID),
+				zap.Int64("training_card_id", userCard.TrainingCardID),
+				zap.String("state", string(userCard.State)),
+				zap.Error(err),
+			)
+			skippedCount++
 			continue
 		}
 		if trainingCard == nil {
-			s.logger.Warn("training card not found", zap.Int64("id", userCard.TrainingCardID))
+			s.logger.Warn("training card not found - this should not happen after INNER JOIN",
+				zap.Int64("user_card_id", userCard.ID),
+				zap.Int64("training_card_id", userCard.TrainingCardID),
+				zap.String("state", string(userCard.State)),
+			)
+			skippedCount++
 			continue
 		}
 
@@ -190,6 +208,15 @@ func (s *TrainingService) generateQueue(userID int64, config SessionConfig) ([]*
 		})
 	}
 
+	if skippedCount > 0 {
+		s.logger.Warn("skipped cards during queue generation",
+			zap.Int64("user_id", userID),
+			zap.Int("total_cards", len(allCards)),
+			zap.Int("skipped", skippedCount),
+			zap.Int("queue_size", len(queue)),
+		)
+	}
+
 	// First, shuffle all cards randomly
 	rand.Shuffle(len(queue), func(i, j int) {
 		queue[i], queue[j] = queue[j], queue[i]
@@ -197,6 +224,14 @@ func (s *TrainingService) generateQueue(userID int64, config SessionConfig) ([]*
 
 	// Then apply algorithm to prevent same words appearing close together
 	queue = s.shufflePreventDuplicates(queue)
+
+	if len(queue) == 0 && len(allCards) > 0 {
+		s.logger.Error("queue is empty but cards were fetched - all cards were skipped",
+			zap.Int64("user_id", userID),
+			zap.Int("total_cards_fetched", len(allCards)),
+			zap.Int("skipped", skippedCount),
+		)
+	}
 
 	return queue, nil
 }

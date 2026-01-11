@@ -976,19 +976,59 @@ func (r *Router) handleAdminOrphanedUserCards(w http.ResponseWriter, req *http.R
 			}
 		}
 
-		cards, err := userCardRepo.ListOrphanedUserCards(limit, offset)
+		// Get both types of orphaned user cards:
+		// 1. User cards that reference non-existent training_cards
+		// 2. User cards whose training_cards reference non-existent word_cards
+		// We need to combine them, but for pagination we'll get both types separately
+		// and combine them, then apply pagination manually
+		
+		// Get all cards of both types (we'll paginate manually)
+		allOrphanedCards1, err := userCardRepo.ListOrphanedUserCards(10000, 0) // Get all
 		if err != nil {
 			r.logger.Error("failed to list orphaned user cards", zap.Error(err))
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
 
-		total, err := userCardRepo.CountOrphanedUserCards()
+		allOrphanedCards2, err := userCardRepo.ListUserCardsWithOrphanedTrainingCards(10000, 0) // Get all
+		if err != nil {
+			r.logger.Error("failed to list user cards with orphaned training cards", zap.Error(err))
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
+		}
+
+		// Combine both lists
+		allCards := make([]*repository.OrphanedUserCardInfo, 0, len(allOrphanedCards1)+len(allOrphanedCards2))
+		allCards = append(allCards, allOrphanedCards1...)
+		allCards = append(allCards, allOrphanedCards2...)
+
+		// Get total counts
+		total1, err := userCardRepo.CountOrphanedUserCards()
 		if err != nil {
 			r.logger.Error("failed to count orphaned user cards", zap.Error(err))
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
+
+		total2, err := userCardRepo.CountUserCardsWithOrphanedTrainingCards()
+		if err != nil {
+			r.logger.Error("failed to count user cards with orphaned training cards", zap.Error(err))
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
+		}
+
+		total := total1 + total2
+
+		// Apply pagination manually
+		start := offset
+		end := offset + limit
+		if start > len(allCards) {
+			start = len(allCards)
+		}
+		if end > len(allCards) {
+			end = len(allCards)
+		}
+		cards := allCards[start:end]
 
 		totalPages := (total + limit - 1) / limit
 		if totalPages == 0 {

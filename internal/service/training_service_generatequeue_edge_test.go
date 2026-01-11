@@ -51,8 +51,14 @@ func TestTrainingService_generateQueue_MaxNewPerSession(t *testing.T) {
 	db, userCardRepo, trainingCardRepo, _ := setupTrainingServiceTestDB(t)
 	defer db.Close()
 
+	// Create word card first
+	_, err := db.Exec("INSERT INTO word_cards (id, word, definition) VALUES (?, ?, ?)", 1, "maxnew", "max new")
+	if err != nil {
+		t.Fatalf("Failed to create word card: %v", err)
+	}
+
 	// Create training card
-	_, err := db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (?, ?, ?, ?, ?, ?, ?)",
+	_, err = db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (?, ?, ?, ?, ?, ?, ?)",
 		1, "maxnew", 0, "максимум новых", "max new", "noun", "maxnew")
 	if err != nil {
 		t.Fatalf("Failed to create training card: %v", err)
@@ -103,8 +109,18 @@ func TestTrainingService_generateQueue_LearningCardsFirst(t *testing.T) {
 	db, userCardRepo, trainingCardRepo, _ := setupTrainingServiceTestDB(t)
 	defer db.Close()
 
+	// Create word cards first
+	_, err := db.Exec("INSERT INTO word_cards (id, word, definition) VALUES (?, ?, ?)", 1, "learning", "learning")
+	if err != nil {
+		t.Fatalf("Failed to create word card: %v", err)
+	}
+	_, err = db.Exec("INSERT INTO word_cards (id, word, definition) VALUES (?, ?, ?)", 2, "review", "review")
+	if err != nil {
+		t.Fatalf("Failed to create word card: %v", err)
+	}
+
 	// Create training cards
-	_, err := db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (?, ?, ?, ?, ?, ?, ?)",
+	_, err = db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (?, ?, ?, ?, ?, ?, ?)",
 		1, "learning", 0, "изучение", "learning", "noun", "learning")
 	if err != nil {
 		t.Fatalf("Failed to create training card: %v", err)

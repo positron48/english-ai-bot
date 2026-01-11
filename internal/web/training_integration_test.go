@@ -152,6 +152,12 @@ func TestHandleTrainingStart_WithCards(t *testing.T) {
 		t.Fatalf("Failed to create user: %v", err)
 	}
 
+	// Create word card first (required for training card)
+	_, err = db.Exec("INSERT INTO word_cards (id, word, definition) VALUES (?, ?, ?)", 1, "integration", "integration")
+	if err != nil {
+		t.Fatalf("Failed to create word card: %v", err)
+	}
+
 	// Create training card
 	trainingCard := &models.TrainingCard{
 		WordCardID: 1,
@@ -239,6 +245,12 @@ func TestHandleTrainingReveal_WithSession(t *testing.T) {
 	user, err := userRepo.GetOrCreateUser(444444)
 	if err != nil {
 		t.Fatalf("Failed to create user: %v", err)
+	}
+
+	// Create word card first (required for training card)
+	_, err = db.Exec("INSERT INTO word_cards (id, word, definition) VALUES (?, ?, ?)", 1, "reveal", "reveal")
+	if err != nil {
+		t.Fatalf("Failed to create word card: %v", err)
 	}
 
 	// Create training card

@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"testing"
 	"time"
 
@@ -14,8 +15,18 @@ func TestTrainingService_generateQueue_WithDueAndNewCards(t *testing.T) {
 	db, userCardRepo, trainingCardRepo, _ := setupTrainingServiceTestDB(t)
 	defer db.Close()
 
+	// Create word cards first
+	_, err := db.Exec("INSERT INTO word_cards (id, word, definition) VALUES (?, ?, ?)", 1, "queue1", "queue 1")
+	if err != nil {
+		t.Fatalf("Failed to create word card: %v", err)
+	}
+	_, err = db.Exec("INSERT INTO word_cards (id, word, definition) VALUES (?, ?, ?)", 2, "queue2", "queue 2")
+	if err != nil {
+		t.Fatalf("Failed to create word card: %v", err)
+	}
+
 	// Create training cards
-	_, err := db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (?, ?, ?, ?, ?, ?, ?)",
+	_, err = db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (?, ?, ?, ?, ?, ?, ?)",
 		1, "queue1", 0, "очередь1", "queue 1", "noun", "queue1")
 	if err != nil {
 		t.Fatalf("Failed to create training card: %v", err)
@@ -77,8 +88,16 @@ func TestTrainingService_generateQueue_OnlyDueCards(t *testing.T) {
 	db, userCardRepo, trainingCardRepo, _ := setupTrainingServiceTestDB(t)
 	defer db.Close()
 
-	// Create training cards
+	// Create word cards first
 	var err error
+	for i := 1; i <= 3; i++ {
+		_, err = db.Exec("INSERT INTO word_cards (id, word, definition) VALUES (?, ?, ?)", i, fmt.Sprintf("onlydue%d", i), fmt.Sprintf("only due %d", i))
+		if err != nil {
+			t.Fatalf("Failed to create word card: %v", err)
+		}
+	}
+
+	// Create training cards
 	for i := 1; i <= 3; i++ {
 		_, err = db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (?, ?, ?, ?, ?, ?, ?)",
 			i, "onlydue", 0, "только просроченные", "only due", "adjective", "onlydue")
