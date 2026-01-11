@@ -87,6 +87,13 @@
                         Edit
                       </button>
                       <button 
+                        v-if="!word.ProcessingError"
+                        @click="createTrainingCard(word)" 
+                        class="btn btn-sm btn-primary"
+                      >
+                        Add Card
+                      </button>
+                      <button 
                         v-if="word.ProcessingError"
                         @click="resetWordError(word)" 
                         class="btn btn-sm btn-warning"
@@ -106,8 +113,17 @@
                 <tr v-if="word && word.showingCards === true && word.HasTrainingCards" class="cards-row">
                 <td colspan="6">
                   <div v-if="word.cardsLoading" class="cards-loading">Loading cards...</div>
-                  <div v-else-if="word.cards && word.cards.length > 0" class="cards-container">
-                    <h4>Training Cards for "{{ word.Word }}"</h4>
+                  <div v-else class="cards-container">
+                    <div class="cards-header">
+                      <h4>Training Cards for "{{ word.Word }}"</h4>
+                      <button 
+                        @click="createTrainingCard(word)" 
+                        class="btn btn-sm btn-primary"
+                      >
+                        Add Card
+                      </button>
+                    </div>
+                    <div v-if="word.cards && word.cards.length > 0">
                     <div v-for="card in word.cards" :key="card.id" class="card-item">
                       <div class="card-header">
                         <div>
@@ -173,8 +189,9 @@
                         </div>
                       </div>
                     </div>
+                    </div>
+                    <div v-else class="cards-empty">No cards found</div>
                   </div>
-                  <div v-else class="cards-empty">No cards found</div>
                 </td>
               </tr>
               </template>
@@ -205,7 +222,7 @@
       </div>
 
       <!-- Edit Word Modal -->
-      <div v-if="showEditWordModal && wordToEdit" class="modal" @click.self="closeEditWordModal">
+      <div v-if="showEditWordModal && wordToEdit" class="modal">
         <div class="modal-content modal-large">
           <div class="modal-header">
             <h3>Edit Word: {{ wordToEdit.Word }}</h3>
@@ -254,8 +271,78 @@
         </div>
       </div>
 
+      <!-- Create Training Card Modal -->
+      <div v-if="showCreateCardModal && wordToCreateCard" class="modal">
+        <div class="modal-content modal-large">
+          <div class="modal-header">
+            <h3>Create Training Card for "{{ wordToCreateCard.Word }}"</h3>
+            <button @click="closeCreateCardModal" class="btn-close">&times;</button>
+          </div>
+          <div class="modal-body">
+            <form @submit.prevent="saveNewTrainingCard" class="edit-form">
+              <div class="form-group">
+                <label>Word EN:</label>
+                <input v-model="createCardForm.word_en" type="text" required class="form-input" readonly />
+              </div>
+              <div class="form-group">
+                <label>Part of Speech (POS):</label>
+                <input v-model="createCardForm.pos" type="text" class="form-input" placeholder="noun, verb, adjective, etc." />
+              </div>
+              <div class="form-group">
+                <label>Display Word:</label>
+                <input v-model="createCardForm.display_word" type="text" class="form-input" placeholder="e.g., 'spy' or 'to spy' for verbs" />
+              </div>
+              <div class="form-group">
+                <label>Transcription (IPA):</label>
+                <input v-model="createCardForm.transcription" type="text" class="form-input" />
+              </div>
+              <div class="form-group">
+                <label>Word RU:</label>
+                <input v-model="createCardForm.word_ru" type="text" required class="form-input" />
+              </div>
+              <div class="form-group">
+                <label>Meaning EN:</label>
+                <textarea v-model="createCardForm.meaning_en" required class="form-textarea" rows="3"></textarea>
+              </div>
+              <div class="form-group">
+                <label>Example EN:</label>
+                <textarea v-model="createCardForm.example_en" class="form-textarea" rows="2"></textarea>
+              </div>
+              <div class="form-group">
+                <label>Example RU:</label>
+                <textarea v-model="createCardForm.example_ru" class="form-textarea" rows="2"></textarea>
+              </div>
+              <div class="form-group">
+                <label>Distractors RU:</label>
+                <div class="distractors-list">
+                  <input v-model="createCardForm.distractors_ru[0]" type="text" class="form-input" placeholder="Option 1" />
+                  <input v-model="createCardForm.distractors_ru[1]" type="text" class="form-input" placeholder="Option 2" />
+                  <input v-model="createCardForm.distractors_ru[2]" type="text" class="form-input" placeholder="Option 3" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Distractors EN:</label>
+                <div class="distractors-list">
+                  <input v-model="createCardForm.distractors_en[0]" type="text" class="form-input" placeholder="Option 1" />
+                  <input v-model="createCardForm.distractors_en[1]" type="text" class="form-input" placeholder="Option 2" />
+                  <input v-model="createCardForm.distractors_en[2]" type="text" class="form-input" placeholder="Option 3" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Hint:</label>
+                <input v-model="createCardForm.hint" type="text" class="form-input" />
+              </div>
+              <div class="modal-actions">
+                <button type="submit" class="btn btn-primary">Create</button>
+                <button type="button" @click="closeCreateCardModal" class="btn btn-secondary">Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
       <!-- Edit Training Card Modal -->
-      <div v-if="showEditCardModal && cardToEdit" class="modal" @click.self="closeEditCardModal">
+      <div v-if="showEditCardModal && cardToEdit" class="modal">
         <div class="modal-content modal-large">
           <div class="modal-header">
             <h3>Edit Training Card (Sense {{ cardToEdit.sense_index }})</h3>
@@ -409,6 +496,8 @@ interface TrainingCard {
   distractors_ru?: string
   distractors_en?: string
   hint?: string
+  pos?: string
+  display_word?: string
   created_at?: string
 }
 
@@ -464,6 +553,7 @@ const editWordForm = ref({
 })
 
 const showEditCardModal = ref(false)
+const showCreateCardModal = ref(false)
 const showDeleteCardConfirm = ref(false)
 const showResetErrorConfirm = ref(false)
 const showErrorDetailsModal = ref(false)
@@ -471,7 +561,21 @@ const wordToResetError = ref<WordCard | null>(null)
 const wordWithError = ref<WordCard | null>(null)
 const cardToEdit = ref<TrainingCard | null>(null)
 const cardToDelete = ref<{ card: TrainingCard; word: WordCard } | null>(null)
+const wordToCreateCard = ref<WordCard | null>(null)
 const editCardForm = ref({
+  word_en: '',
+  pos: '',
+  display_word: '',
+  transcription: '',
+  word_ru: '',
+  meaning_en: '',
+  example_en: '',
+  example_ru: '',
+  distractors_ru: ['', '', ''],
+  distractors_en: ['', '', ''],
+  hint: ''
+})
+const createCardForm = ref({
   word_en: '',
   pos: '',
   display_word: '',
@@ -754,6 +858,84 @@ const deleteTrainingCard = async () => {
 const closeEditCardModal = () => {
   showEditCardModal.value = false
   cardToEdit.value = null
+}
+
+const createTrainingCard = (word: WordCard) => {
+  wordToCreateCard.value = word
+  createCardForm.value = {
+    word_en: word.Word || '',
+    pos: word.POS || '',
+    display_word: word.DisplayEN || '',
+    transcription: word.Transcription || '',
+    word_ru: '',
+    meaning_en: '',
+    example_en: '',
+    example_ru: '',
+    distractors_ru: ['', '', ''],
+    distractors_en: ['', '', ''],
+    hint: ''
+  }
+  showCreateCardModal.value = true
+}
+
+const closeCreateCardModal = () => {
+  showCreateCardModal.value = false
+  wordToCreateCard.value = null
+}
+
+const saveNewTrainingCard = async () => {
+  if (!wordToCreateCard.value) return
+  
+  try {
+    // Convert distractors arrays to JSON
+    const distractorsRU = JSON.stringify(createCardForm.value.distractors_ru.filter(v => v.trim() !== ''))
+    const distractorsEN = JSON.stringify(createCardForm.value.distractors_en.filter(v => v.trim() !== ''))
+    
+    const params = new URLSearchParams()
+    params.append('word_ru', createCardForm.value.word_ru || '')
+    params.append('meaning_en', createCardForm.value.meaning_en || '')
+    params.append('example_en', createCardForm.value.example_en || '')
+    params.append('example_ru', createCardForm.value.example_ru || '')
+    params.append('transcription', createCardForm.value.transcription || '')
+    params.append('distractors_ru', distractorsRU)
+    params.append('distractors_en', distractorsEN)
+    params.append('hint', createCardForm.value.hint || '')
+    if (createCardForm.value.pos) {
+      params.append('pos', createCardForm.value.pos)
+    }
+    if (createCardForm.value.display_word) {
+      params.append('display_word', createCardForm.value.display_word)
+    }
+    
+    await apiClient.request(`/app/admin/training/${wordToCreateCard.value.Word}`, { 
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: params.toString()
+    })
+    
+    showCreateCardModal.value = false
+    const word = wordToCreateCard.value
+    wordToCreateCard.value = null
+    
+    // Update HasTrainingCards status
+    word.HasTrainingCards = true
+    
+    // If cards are not shown, reload them
+    if (word.showingCards) {
+      await reloadWordCards(word)
+    } else {
+      // Just update status in list
+      const wordInList = words.value.find(w => w.ID === word.ID)
+      if (wordInList) {
+        wordInList.HasTrainingCards = true
+      }
+    }
+    
+    await showAlert('Card created successfully')
+  } catch (error) {
+    console.error('Failed to create card:', error)
+    await showAlert('Failed to create card')
+  }
 }
 
 const closeDeleteCardConfirm = () => {
@@ -1254,6 +1436,17 @@ const formatDateAbsolute = (dateStr: string | null | undefined): string => {
   margin: 0 0 15px 0;
   color: var(--text-primary);
   font-size: 16px;
+}
+
+.cards-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.cards-header h4 {
+  margin: 0;
 }
 
 .card-item {

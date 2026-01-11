@@ -163,20 +163,31 @@ func (r *Router) handleAdminCircuitReset(w http.ResponseWriter, req *http.Reques
 
 // handleAdminTraining handles training card management
 // @Summary      Управление тренировочными карточками
-// @Description  Получение (GET) или удаление (POST) тренировочных карточек по слову. Путь: /app/admin/training/{word} или /app/admin/training/{word}/delete или /app/admin/training/delete_all
+// @Description  Получение (GET), создание (POST) или удаление (POST /delete) тренировочных карточек по слову. Путь: /app/admin/training/{word} или /app/admin/training/{word}/delete или /app/admin/training/delete_all
 // @Tags         Admin
-// @Accept       json
+// @Accept       json,application/x-www-form-urlencoded
 // @Produce      application/json
 // @Security     ApiKeyAuth
-// @Param        word    path      string  false  "Английское слово"
-// @Param        action  path      string  false  "Действие: delete или delete_all"
-// @Param        word    query     string  false  "Английское слово (для GET запроса)"
-// @Success      200  {object}  map[string]interface{}  "Данные карточек или результат удаления"
+// @Param        word            path      string  false  "Английское слово"
+// @Param        action          path      string  false  "Действие: delete или delete_all"
+// @Param        word_ru         formData  string  false  "Русский перевод слова (для POST)"
+// @Param        meaning_en      formData  string  false  "Английское значение (для POST)"
+// @Param        example_en      formData  string  false  "Пример на английском (для POST)"
+// @Param        example_ru      formData  string  false  "Пример на русском (для POST)"
+// @Param        transcription   formData  string  false  "Транскрипция (для POST)"
+// @Param        distractors_ru  formData  string  false  "Отвлекающие варианты (RU, JSON array) (для POST)"
+// @Param        distractors_en  formData  string  false  "Отвлекающие варианты (EN, JSON array) (для POST)"
+// @Param        hint            formData  string  false  "Подсказка (для POST)"
+// @Param        pos             formData  string  false  "Часть речи (для POST)"
+// @Param        display_word    formData  string  false  "Отображаемое слово (для POST)"
+// @Success      200  {object}  map[string]interface{}  "Данные карточек или результат создания/удаления"
 // @Failure      400  {string}  string  "Неверный запрос"
 // @Failure      401  {string}  string  "Неавторизован"
 // @Failure      403  {string}  string  "Доступ запрещен (требуются права администратора)"
+// @Failure      404  {string}  string  "Слово не найдено (для POST)"
 // @Failure      500  {string}  string  "Внутренняя ошибка сервера"
 // @Router       /app/admin/training/{word} [get]
+// @Router       /app/admin/training/{word} [post]
 func (r *Router) handleAdminTraining(w http.ResponseWriter, req *http.Request) {
 	// Extract action and word from path: /app/admin/training/{word}/{action}
 	path := req.URL.Path
@@ -235,6 +246,146 @@ func (r *Router) handleAdminTraining(w http.ResponseWriter, req *http.Request) {
 		json.NewEncoder(w).Encode(map[string]interface{}{
 			"word_en": wordEN,
 			"cards":   cards,
+		})
+		return
+	}
+
+	if req.Method == http.MethodPost && action == "" {
+		// Create new training card
+		// Support both JSON and form data
+		contentType := req.Header.Get("Content-Type")
+		var wordRU, meaningEN, exampleEN, exampleRU, transcription, distractorsRU, distractorsEN, hint, pos, displayWord string
+
+		if strings.Contains(contentType, "application/json") {
+			// Parse JSON body
+			var createData map[string]interface{}
+			if err := json.NewDecoder(req.Body).Decode(&createData); err != nil {
+				http.Error(w, "Invalid JSON data", http.StatusBadRequest)
+				return
+			}
+
+			if val, ok := createData["word_ru"].(string); ok {
+				wordRU = val
+			}
+			if val, ok := createData["meaning_en"].(string); ok {
+				meaningEN = val
+			}
+			if val, ok := createData["example_en"].(string); ok {
+				exampleEN = val
+			}
+			if val, ok := createData["example_ru"].(string); ok {
+				exampleRU = val
+			}
+			if val, ok := createData["transcription"].(string); ok {
+				transcription = val
+			}
+			if val, ok := createData["distractors_ru"].(string); ok {
+				distractorsRU = val
+			}
+			if val, ok := createData["distractors_en"].(string); ok {
+				distractorsEN = val
+			}
+			if val, ok := createData["hint"].(string); ok {
+				hint = val
+			}
+			if val, ok := createData["pos"].(string); ok {
+				pos = val
+			}
+			if val, ok := createData["display_word"].(string); ok {
+				displayWord = val
+			}
+		} else {
+			// Parse form data
+			if err := req.ParseForm(); err != nil {
+				http.Error(w, "Invalid form data", http.StatusBadRequest)
+				return
+			}
+
+			wordRU = req.FormValue("word_ru")
+			meaningEN = req.FormValue("meaning_en")
+			exampleEN = req.FormValue("example_en")
+			exampleRU = req.FormValue("example_ru")
+			transcription = req.FormValue("transcription")
+			distractorsRU = req.FormValue("distractors_ru")
+			distractorsEN = req.FormValue("distractors_en")
+			hint = req.FormValue("hint")
+			pos = req.FormValue("pos")
+			displayWord = req.FormValue("display_word")
+		}
+
+		// Validate required fields
+		if wordRU == "" || meaningEN == "" {
+			http.Error(w, "word_ru and meaning_en are required", http.StatusBadRequest)
+			return
+		}
+
+		// Get word card by word_en
+		wordRepo := repository.NewWordRepository(r.db, r.logger)
+		wordCard, err := wordRepo.GetWordCard(wordEN)
+		if err != nil {
+			r.logger.Error("failed to get word card", zap.Error(err))
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
+		}
+		if wordCard == nil {
+			http.Error(w, "Word card not found", http.StatusNotFound)
+			return
+		}
+
+		// Get existing cards to determine next sense_index
+		existingCards, err := trainingCardRepo.GetTrainingCardsByWordCardID(wordCard.ID)
+		if err != nil {
+			r.logger.Error("failed to get existing training cards", zap.Error(err))
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
+		}
+
+		// Find next sense_index
+		maxSenseIndex := -1
+		for _, card := range existingCards {
+			if card.SenseIndex > maxSenseIndex {
+				maxSenseIndex = card.SenseIndex
+			}
+		}
+		nextSenseIndex := maxSenseIndex + 1
+
+		// Create training card
+		newCard := &models.TrainingCard{
+			WordCardID:    wordCard.ID,
+			WordEN:        wordEN,
+			WordRU:        wordRU,
+			MeaningEN:     meaningEN,
+			ExampleEN:     exampleEN,
+			ExampleRU:     exampleRU,
+			Transcription: transcription,
+			DistractorsRU: distractorsRU,
+			DistractorsEN: distractorsEN,
+			Hint:          hint,
+			SenseIndex:    nextSenseIndex,
+		}
+
+		if pos != "" {
+			newCard.POS = &pos
+		}
+		if displayWord != "" {
+			newCard.DisplayWord = &displayWord
+		}
+
+		cardID, err := trainingCardRepo.CreateTrainingCard(newCard)
+		if err != nil {
+			r.logger.Error("failed to create training card", zap.Error(err))
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
+		}
+
+		// Return success response
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"success": true,
+			"message": "Training card created successfully",
+			"card_id": cardID,
+			"word_en": wordEN,
 		})
 		return
 	}
