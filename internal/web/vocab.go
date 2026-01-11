@@ -51,9 +51,10 @@ type VocabWord struct {
 // @Accept       json
 // @Produce      application/json
 // @Security     ApiKeyAuth
-// @Param        search  query  string  false  "Поиск по слову"
-// @Param        page    query  int     false  "Номер страницы (начиная с 1)"
-// @Param        limit   query  int     false  "Количество элементов на странице (по умолчанию 25)"
+// @Param        search         query  string  false  "Поиск по слову"
+// @Param        mastery_level  query  string  false  "Фильтр по уровню мастерства: new, learning, mastered, known"
+// @Param        page           query  int     false  "Номер страницы (начиная с 1)"
+// @Param        limit          query  int     false  "Количество элементов на странице (по умолчанию 25)"
 // @Success      200  {object}  map[string]interface{}  "Список слов с статистикой"
 // @Failure      401  {string}  string  "Неавторизован"
 // @Failure      405  {string}  string  "Метод не разрешен"
@@ -73,6 +74,7 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 
 	// Parse query parameters
 	search := req.URL.Query().Get("search")
+	masteryLevelFilter := req.URL.Query().Get("mastery_level") // Filter by mastery level: new, learning, mastered, known
 	page := 1
 	limit := 25
 	sortBy := "display_word"
@@ -92,15 +94,16 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 		// Validate sort_by to prevent SQL injection
 		// Map frontend field names to column aliases from SELECT
 		allowedSortFields := map[string]string{
-			"display_word":  "display_word",
-			"lemma":         "lemma",
-			"total_cards":   "total_cards",
-			"mastery_level": "mastery_level", // Special handling below
-			"total_reps":    "total_reps",
-			"review_count":  "review_count",
-			"due_count":     "due_count",
-			"added_at":      "added_at",
-			"last_review":   "last_review",
+			"display_word":      "display_word",
+			"lemma":             "lemma",
+			"total_cards":       "total_cards",
+			"mastery_level":     "mastery_level", // Special handling below
+			"mastery_level_desc": "mastery_level_desc", // Special handling below - reversed order
+			"total_reps":        "total_reps",
+			"review_count":      "review_count",
+			"due_count":         "due_count",
+			"added_at":          "added_at",
+			"last_review":       "last_review",
 		}
 		if field, ok := allowedSortFields[sortByStr]; ok {
 			sortBy = field
@@ -190,75 +193,88 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 
 	queryFromCards += " GROUP BY tc.word_card_id, wc.word"
 	
-	// Combine both queries with UNION ALL
-	baseQuery := "SELECT * FROM (" + queryFromCards + " UNION ALL " + queryFromKnown + ") combined"
+	// Combine both queries with UNION ALL and calculate mastery_level
+	// Wrap in subquery to calculate mastery_level and filter by it
+	baseQuery := "SELECT * FROM (" +
+		"SELECT *, " +
+		"CASE " +
+		"WHEN is_known = 1 THEN 'known' " +
+		"WHEN review_state_count = total_cards AND total_reps > 0 THEN 'mastered' " +
+		"WHEN review_state_count > 0 OR learning_state_count > 0 THEN 'learning' " +
+		"ELSE 'new' " +
+		"END as mastery_level_calc " +
+		"FROM (" + queryFromCards + " UNION ALL " + queryFromKnown + ") combined " +
+		") with_mastery"
+	
+	// Add filter by mastery_level if specified
+	filterArgs := []interface{}{}
+	if masteryLevelFilter != "" {
+		// Validate mastery_level to prevent SQL injection
+		allowedLevels := map[string]bool{
+			"new":      true,
+			"learning": true,
+			"mastered": true,
+			"known":    true,
+		}
+		if allowedLevels[masteryLevelFilter] {
+			baseQuery += " WHERE mastery_level_calc = ?"
+			filterArgs = append(filterArgs, masteryLevelFilter)
+		}
+	}
 
-	// Get total count for pagination (count distinct word_card_id)
-	// Include both words with user_cards and known words without user_cards
-	countQuery := `SELECT COUNT(DISTINCT tc.word_card_id) as total
-	FROM user_cards uc
-	JOIN training_cards tc ON uc.training_card_id = tc.id
-	JOIN word_cards wc ON tc.word_card_id = wc.id
-	WHERE uc.user_id = ?`
-	countArgs := []interface{}{userID}
-	if search != "" {
-		// Search by lemma, display_word, or word_ru (case-insensitive)
-		searchLower := strings.ToLower(search)
-		countQuery += " AND (LOWER(wc.word) LIKE ? OR LOWER(COALESCE((SELECT display_word FROM training_cards tc2 WHERE tc2.word_card_id = tc.word_card_id AND tc2.display_word IS NOT NULL AND tc2.display_word != '' LIMIT 1), wc.display_en, wc.word)) LIKE ? OR LOWER(tc.word_ru) LIKE ?)"
-		searchPattern := "%" + searchLower + "%"
-		countArgs = append(countArgs, searchPattern, searchPattern, searchPattern)
+	// Get total count after filtering by mastery_level
+	// Use the same query structure to count filtered results
+	countQueryWithMastery := "SELECT COUNT(*) FROM (" +
+		"SELECT *, " +
+		"CASE " +
+		"WHEN is_known = 1 THEN 'known' " +
+		"WHEN review_state_count = total_cards AND total_reps > 0 THEN 'mastered' " +
+		"WHEN review_state_count > 0 OR learning_state_count > 0 THEN 'learning' " +
+		"ELSE 'new' " +
+		"END as mastery_level_calc " +
+		"FROM (" + queryFromCards + " UNION ALL " + queryFromKnown + ") combined " +
+		") with_mastery"
+	countArgsWithMastery := append(args, argsKnown...)
+	if masteryLevelFilter != "" {
+		allowedLevels := map[string]bool{
+			"new":      true,
+			"learning": true,
+			"mastered": true,
+			"known":    true,
+		}
+		if allowedLevels[masteryLevelFilter] {
+			countQueryWithMastery += " WHERE mastery_level_calc = ?"
+			countArgsWithMastery = append(countArgsWithMastery, masteryLevelFilter)
+		}
 	}
 	
-	// Add count for known words without user_cards
-	countQueryKnown := `SELECT COUNT(DISTINCT uwk.word_card_id) as total
-	FROM user_word_knowledge uwk
-	JOIN word_cards wc ON uwk.word_card_id = wc.id
-	WHERE uwk.user_id = ? AND uwk.status = 'known'
-	  AND NOT EXISTS (
-	    SELECT 1 FROM user_cards uc
-	    JOIN training_cards tc ON uc.training_card_id = tc.id
-	    WHERE uc.user_id = ? AND tc.word_card_id = uwk.word_card_id
-	  )`
-	countArgsKnown := []interface{}{userID, userID}
-	if search != "" {
-		searchLower := strings.ToLower(search)
-		countQueryKnown += " AND (LOWER(wc.word) LIKE ? OR LOWER(COALESCE((SELECT display_word FROM training_cards tc2 WHERE tc2.word_card_id = uwk.word_card_id AND tc2.display_word IS NOT NULL AND tc2.display_word != '' LIMIT 1), wc.display_en, wc.word)) LIKE ?)"
-		searchPattern := "%" + searchLower + "%"
-		countArgsKnown = append(countArgsKnown, searchPattern, searchPattern)
-	}
-	
-	var countFromCards int
-	err := r.db.QueryRow(countQuery, countArgs...).Scan(&countFromCards)
+	var totalCount int
+	err := r.db.QueryRow(countQueryWithMastery, countArgsWithMastery...).Scan(&totalCount)
 	if err != nil {
-		r.logger.Error("failed to get vocabulary count from cards", zap.Error(err))
-		countFromCards = 0
+		r.logger.Error("failed to get vocabulary count with mastery filter", zap.Error(err))
+		totalCount = 0
 	}
-	
-	var countFromKnown int
-	err = r.db.QueryRow(countQueryKnown, countArgsKnown...).Scan(&countFromKnown)
-	if err != nil {
-		r.logger.Error("failed to get vocabulary count from known", zap.Error(err))
-		countFromKnown = 0
-	}
-	
-	totalCount := countFromCards + countFromKnown
-	
-	// totalCount is already calculated above
 
 	// Add ordering and pagination
 	// Handle special case for mastery_level (calculated field)
 	var orderByClause string
 	switch sortBy {
 	case "mastery_level":
-		// For mastery_level, we need to order by the calculated logic
-		// Use the same logic as in the SELECT to calculate mastery
-		// known (0) > mastered (1) > learning (2) > new (3)
-		// Since we're now using a combined query, we reference the is_known and state counts from the subquery
+		// Use the calculated mastery_level_calc field
+		// Original order: known (0) < mastered (1) < learning (2) < new (3)
 		orderByClause = `CASE 
-			WHEN is_known = 1 THEN 0
-			WHEN review_state_count = total_cards AND total_reps > 0 THEN 1
-			WHEN review_state_count > 0 OR learning_state_count > 0 THEN 2
+			WHEN mastery_level_calc = 'known' THEN 0
+			WHEN mastery_level_calc = 'mastered' THEN 1
+			WHEN mastery_level_calc = 'learning' THEN 2
 			ELSE 3
+		END`
+	case "mastery_level_desc":
+		// Reversed order: new (0) < learning (1) < mastered (2) < known (3)
+		orderByClause = `CASE 
+			WHEN mastery_level_calc = 'known' THEN 3
+			WHEN mastery_level_calc = 'mastered' THEN 2
+			WHEN mastery_level_calc = 'learning' THEN 1
+			ELSE 0
 		END`
 	case "lemma":
 		// For lemma, sort by cleaned version (without "to " prefix for verbs)
@@ -277,8 +293,9 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 		orderByClause = sortBy
 	}
 	baseQuery += " ORDER BY " + orderByClause + " " + sortOrder + " LIMIT ? OFFSET ?"
-	// Combine args from both queries
+	// Combine args from both queries and filter
 	allArgs := append(args, argsKnown...)
+	allArgs = append(allArgs, filterArgs...)
 	allArgs = append(allArgs, limit, offset)
 
 	rows, err := r.db.Query(baseQuery, allArgs...)
@@ -295,9 +312,10 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 		var totalCards, dueCount, totalReps, reviewCount, reviewStateCount, learningStateCount, newStateCount, isKnown int
 		var lastReview, addedAt sql.NullString
 		var displayWord sql.NullString
+		var masteryLevelCalc sql.NullString // Used only for filtering, not stored
 
 		err := rows.Scan(&word.WordCardID, &word.Lemma, &displayWord, &totalCards, &dueCount, &lastReview, &totalReps, &addedAt, 
-			&reviewStateCount, &learningStateCount, &newStateCount, &reviewCount, &isKnown)
+			&reviewStateCount, &learningStateCount, &newStateCount, &reviewCount, &isKnown, &masteryLevelCalc)
 		if err != nil {
 			r.logger.Error("failed to scan word", zap.Error(err))
 			continue
@@ -399,7 +417,7 @@ func (r *Router) handleVocabDelete(w http.ResponseWriter, req *http.Request) {
 	userCardRepo := repository.NewUserCardRepository(r.db, r.logger)
 
 	// Validate action first (before looking up word)
-	if action != "" && action != "confirm_delete" && action != "delete" && action != "cards" {
+	if action != "" && action != "confirm_delete" && action != "delete" && action != "cards" && action != "mark_known" && action != "move_to_training" {
 		http.Error(w, "Invalid request", http.StatusBadRequest)
 		return
 	}
@@ -472,6 +490,60 @@ func (r *Router) handleVocabDelete(w http.ResponseWriter, req *http.Request) {
 			"lemma":         lemma,
 			"word_card_id":  wordCardID,
 			"rows_affected": rowsAffected,
+		})
+		return
+	}
+
+	if req.Method == http.MethodPost && action == "mark_known" {
+		// Mark word as known and remove user_cards
+		wordSetService := r.getWordSetService()
+		if err := wordSetService.MarkKnown(userID, wordCardID); err != nil {
+			r.logger.Error("failed to mark as known", zap.Error(err))
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"success":      true,
+			"lemma":        lemma,
+			"word_card_id": wordCardID,
+		})
+		return
+	}
+
+	if req.Method == http.MethodPost && action == "move_to_training" {
+		// Remove known status and create user_cards
+		userWordKnowledgeRepo := repository.NewUserWordKnowledgeRepository(r.db, r.logger)
+		if err := userWordKnowledgeRepo.RemoveKnown(userID, wordCardID); err != nil {
+			r.logger.Warn("failed to remove known status", zap.Error(err))
+			// Continue anyway
+		}
+
+		// Ensure training cards exist
+		wordSetService := r.getWordSetService()
+		if err := wordSetService.EnsureTrainingCardsExist(req.Context(), wordCardID); err != nil {
+			r.logger.Warn("failed to ensure training cards",
+				zap.Int64("word_card_id", wordCardID),
+				zap.Error(err),
+			)
+			// Continue anyway
+		}
+
+		// Create user_cards
+		if err := wordSetService.EnsureUserCardsForWord(userID, wordCardID); err != nil {
+			r.logger.Error("failed to create user cards", zap.Error(err))
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"success":      true,
+			"lemma":        lemma,
+			"word_card_id": wordCardID,
 		})
 		return
 	}
@@ -769,11 +841,31 @@ func (r *Router) handleVocabWordCards(w http.ResponseWriter, req *http.Request, 
 		}
 	}
 
+	// Check if word has user_cards and is marked as known
+	var hasUserCards bool
+	// Check if cards have valid user_card IDs (ID > 0 means real user_card, ID = 0 means known word without user_cards)
+	for _, card := range cards {
+		if card.ID > 0 {
+			hasUserCards = true
+			break
+		}
+	}
+	
+	var isKnown bool
+	userWordKnowledgeRepo := repository.NewUserWordKnowledgeRepository(r.db, r.logger)
+	isKnown, err = userWordKnowledgeRepo.IsKnown(userID, wordCardID)
+	if err != nil {
+		r.logger.Warn("failed to check known status", zap.Error(err))
+		isKnown = false
+	}
+
 	// Build response
 	response := map[string]interface{}{
 		"lemma": lemma,
 		"word_card_id": wordCardID,
 		"cards": cards,
+		"has_user_cards": hasUserCards,
+		"is_known": isKnown,
 	}
 	
 	// Add verb forms if present

@@ -11,6 +11,15 @@
             class="search-input"
           />
         </div>
+        <div class="filter-controls">
+          <label for="status-filter" class="filter-label">Status:</label>
+          <select id="status-filter" v-model="statusFilter" @change="onFilterChange" class="filter-select">
+            <option value="">All</option>
+            <option value="new">New</option>
+            <option value="learning">Learning</option>
+            <option value="known">Known</option>
+          </select>
+        </div>
         <div class="sort-controls">
           <label for="sort-select" class="sort-label">Sort by:</label>
           <select id="sort-select" v-model="sortField" @change="onSortChange" class="sort-select">
@@ -18,6 +27,7 @@
             <option value="display_word_desc">Z→A</option>
             <option value="added_at">Recently added</option>
             <option value="mastery_level">Mastery</option>
+            <option value="mastery_level_desc">Mastery (reversed)</option>
           </select>
         </div>
       </div>
@@ -194,9 +204,27 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button @click="confirmDelete" class="btn btn-danger">
-            Remove from training
-          </button>
+          <div class="footer-actions">
+            <button 
+              v-if="hasUserCards" 
+              @click="markKnown" 
+              class="btn btn-primary"
+              :disabled="processingAction"
+            >
+              Move to Known
+            </button>
+            <button 
+              v-if="!hasUserCards && isKnown" 
+              @click="moveToTraining" 
+              class="btn btn-primary"
+              :disabled="processingAction"
+            >
+              Move to Training
+            </button>
+            <button @click="confirmDelete" class="btn btn-danger" :disabled="processingAction">
+              Remove from Vocabulary
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -204,9 +232,9 @@
     <!-- Delete Confirmation Modal -->
     <div v-if="showDeleteConfirm" class="modal" @click.self="showDeleteConfirm = false">
       <div class="modal-content">
-        <h3>Remove from training</h3>
-        <p>Are you sure you want to remove "{{ wordToDelete }}" from your training?</p>
-        <p class="warning-text">This will remove all cards for this word from your training. You can add it back later.</p>
+        <h3>Remove from vocabulary</h3>
+        <p>Are you sure you want to remove "{{ wordToDelete }}" from your vocabulary?</p>
+        <p class="warning-text">This will remove all training data and known status for this word. You can add it back later.</p>
         <div class="modal-actions">
           <button @click="deleteWord" class="btn btn-danger">Remove</button>
           <button @click="showDeleteConfirm = false" class="btn btn-secondary">Cancel</button>
@@ -266,6 +294,7 @@ const words = ref<VocabWord[]>([])
 const loading = ref(true)
 const searchQuery = ref('')
 const searchTimeout = ref<number | null>(null)
+const statusFilter = ref<string>('')
 const sortField = ref<string>('display_word')
 const pagination = ref<Pagination>({
   page: 1,
@@ -286,6 +315,9 @@ const cards = ref<CardDetail[]>([])
 const cardsLoading = ref(false)
 const verbForms = ref<any>(null)
 const wordPOS = ref<string | null>(null)
+const hasUserCards = ref(false)
+const isKnown = ref(false)
+const processingAction = ref(false)
 
 onMounted(async () => {
   await loadVocab()
@@ -302,6 +334,11 @@ const onSearchInput = () => {
 }
 
 const onSortChange = () => {
+  pagination.value.page = 1
+  loadVocab()
+}
+
+const onFilterChange = () => {
   pagination.value.page = 1
   loadVocab()
 }
@@ -327,7 +364,10 @@ const loadVocab = async () => {
       sortOrder = 'desc'
     } else if (sortField.value === 'mastery_level') {
       sortBy = 'mastery_level'
-      sortOrder = 'asc' // new -> learning -> mastered
+      sortOrder = 'asc' // known -> mastered -> learning -> new
+    } else if (sortField.value === 'mastery_level_desc') {
+      sortBy = 'mastery_level_desc'
+      sortOrder = 'asc' // new -> learning -> mastered -> known
     }
     
     const params = new URLSearchParams({
@@ -338,6 +378,9 @@ const loadVocab = async () => {
     })
     if (searchQuery.value) {
       params.append('search', searchQuery.value)
+    }
+    if (statusFilter.value) {
+      params.append('mastery_level', statusFilter.value)
     }
     
     const data: { words: VocabWord[], pagination: Pagination } = await apiClient.request(`/app/vocab?${params.toString()}`)
@@ -446,10 +489,12 @@ const showCards = async (lemma: string) => {
   selectedTranscription.value = ''
   
   try {
-    const data: { lemma: string; word_card_id: number; cards: CardDetail[]; verb_forms?: any; pos?: string } = await apiClient.request(`/app/vocab/${lemma}/cards`)
+    const data: { lemma: string; word_card_id: number; cards: CardDetail[]; verb_forms?: any; pos?: string; has_user_cards?: boolean; is_known?: boolean } = await apiClient.request(`/app/vocab/${lemma}/cards`)
     cards.value = data.cards || []
     verbForms.value = data.verb_forms || null
     wordPOS.value = data.pos || null
+    hasUserCards.value = data.has_user_cards || false
+    isKnown.value = data.is_known || false
     
     // Find display word and transcription from first card
     if (cards.value.length > 0) {
@@ -479,6 +524,42 @@ const closeCardsModal = () => {
   cards.value = []
   verbForms.value = null
   wordPOS.value = null
+  hasUserCards.value = false
+  isKnown.value = false
+}
+
+const markKnown = async () => {
+  if (processingAction.value || !selectedWord.value) return
+  
+  processingAction.value = true
+  try {
+    const formData = new FormData()
+    await apiClient.requestFormData(`/app/vocab/${selectedWord.value}/mark_known`, formData)
+    showCardsModal.value = false
+    await loadVocab()
+  } catch (error) {
+    console.error('Failed to mark as known:', error)
+    await showAlert('Failed to mark word as known')
+  } finally {
+    processingAction.value = false
+  }
+}
+
+const moveToTraining = async () => {
+  if (processingAction.value || !selectedWord.value) return
+  
+  processingAction.value = true
+  try {
+    const formData = new FormData()
+    await apiClient.requestFormData(`/app/vocab/${selectedWord.value}/move_to_training`, formData)
+    showCardsModal.value = false
+    await loadVocab()
+  } catch (error) {
+    console.error('Failed to move to training:', error)
+    await showAlert('Failed to move word to training')
+  } finally {
+    processingAction.value = false
+  }
 }
 
 // Group cards by sense_index
@@ -666,6 +747,28 @@ const formatDateAbsolute = (dateStr: string | null): string => {
   background-color: var(--input-bg);
   color: var(--text-primary);
   margin-bottom: 0;
+}
+
+.filter-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-label {
+  font-size: 14px;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.filter-select {
+  padding: 10px;
+  border: 1px solid var(--input-border);
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+  cursor: pointer;
 }
 
 .sort-controls {
@@ -934,6 +1037,13 @@ const formatDateAbsolute = (dateStr: string | null): string => {
   margin-top: 24px;
   padding-top: 20px;
   border-top: 1px solid var(--table-border, rgba(0, 0, 0, 0.1));
+}
+
+.footer-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
 }
 
 .warning-text {

@@ -58,7 +58,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { apiClient } from '../api/client'
 import Icon from '../components/Icon.vue'
 
@@ -82,6 +82,7 @@ interface WordSet {
 }
 
 const router = useRouter()
+const route = useRoute()
 
 const loading = ref(false)
 const error = ref<string | null>(null)
@@ -95,6 +96,21 @@ const categoryHistory = ref<number[]>([]) // Track navigation history
 
 onMounted(async () => {
   categoryHistory.value = []
+  
+  // Check if category_id is in query params
+  const categoryIdParam = route.query.category_id
+  if (categoryIdParam) {
+    const categoryId = parseInt(categoryIdParam as string, 10)
+    if (!isNaN(categoryId)) {
+      // Set the category to show its word sets
+      selectedCategoryId.value = categoryId
+      // Set currentParentId to categoryId to show subcategories of this category
+      currentParentId.value = categoryId
+      // Add to history
+      categoryHistory.value.push(categoryId)
+    }
+  }
+  
   await loadCategories()
   await loadWordSets()
 })
