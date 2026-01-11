@@ -35,27 +35,37 @@ func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 	now := time.Now()
 	
 	// Get new cards count (exclude orphaned cards - those with non-existent training_cards or word_cards)
+	// Excludes words marked as "known" in user_word_knowledge (same as GetNewCards)
 	newQuery := `SELECT COUNT(*) 
 		FROM user_cards uc
 		INNER JOIN training_cards tc ON uc.training_card_id = tc.id
 		INNER JOIN word_cards wc ON tc.word_card_id = wc.id
-		WHERE uc.user_id = ? AND uc.state = 'new'`
+		WHERE uc.user_id = ? AND uc.state = 'new'
+		AND NOT EXISTS (
+			SELECT 1 FROM user_word_knowledge uwk 
+			WHERE uwk.user_id = ? AND uwk.word_card_id = tc.word_card_id AND uwk.status = 'known'
+		)`
 	var newCount int
-	err := r.db.QueryRow(newQuery, userID).Scan(&newCount)
+	err := r.db.QueryRow(newQuery, userID, userID).Scan(&newCount)
 	if err != nil {
 		r.logger.Error("failed to get new cards count", zap.Error(err))
 		newCount = 0
 	}
 
 	// Get due count (cards ready for review, excluding new cards and orphaned cards)
-	// New cards have next_due_at IS NULL, so we need to exclude them explicitly
+	// Excludes words marked as "known" in user_word_knowledge (same as GetDueCards)
+	// Note: GetDueCards doesn't filter by state != 'new', but we do here for clarity
 	dueQuery := `SELECT COUNT(*) 
 		FROM user_cards uc
 		INNER JOIN training_cards tc ON uc.training_card_id = tc.id
 		INNER JOIN word_cards wc ON tc.word_card_id = wc.id
-		WHERE uc.user_id = ? AND uc.state != 'new' AND (uc.next_due_at IS NULL OR uc.next_due_at <= ?)`
+		WHERE uc.user_id = ? AND uc.state != 'new' AND (uc.next_due_at IS NULL OR uc.next_due_at <= ?)
+		AND NOT EXISTS (
+			SELECT 1 FROM user_word_knowledge uwk 
+			WHERE uwk.user_id = ? AND uwk.word_card_id = tc.word_card_id AND uwk.status = 'known'
+		)`
 	var dueCount int
-	err = r.db.QueryRow(dueQuery, userID, now).Scan(&dueCount)
+	err = r.db.QueryRow(dueQuery, userID, now, userID).Scan(&dueCount)
 	if err != nil {
 		r.logger.Error("failed to get due count", zap.Error(err))
 		dueCount = 0
