@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+	"sync"
 	"time"
 
 	"tgbot-skeleton/internal/ai"
@@ -26,6 +27,7 @@ type TrainingWorker struct {
 	bot              *tgbotapi.BotAPI
 	adminTelegramID  int64
 	batchSize        int
+	llmWorkers       int
 	interval         time.Duration
 	logger           *zap.Logger
 	stopChan         chan struct{}
@@ -42,6 +44,7 @@ func NewTrainingWorker(
 	bot *tgbotapi.BotAPI,
 	adminTelegramID int64,
 	batchSize int,
+	llmWorkers int,
 	interval time.Duration,
 	logger *zap.Logger,
 ) *TrainingWorker {
@@ -55,6 +58,7 @@ func NewTrainingWorker(
 		bot:              bot,
 		adminTelegramID:  adminTelegramID,
 		batchSize:        batchSize,
+		llmWorkers:       llmWorkers,
 		interval:         interval,
 		logger:           logger,
 		stopChan:         make(chan struct{}),
@@ -65,6 +69,7 @@ func NewTrainingWorker(
 func (w *TrainingWorker) Start(ctx context.Context) {
 	w.logger.Info("starting training worker",
 		zap.Int("batch_size", w.batchSize),
+		zap.Int("llm_workers", w.llmWorkers),
 		zap.Duration("interval", w.interval),
 	)
 
@@ -116,13 +121,56 @@ func (w *TrainingWorker) processCards(ctx context.Context) {
 
 	w.logger.Info("processing word cards",
 		zap.Int("count", len(cards)),
+		zap.Int("workers", w.llmWorkers),
 	)
 
-	// Process each card
+	// Use worker pool for parallel processing
+	// Each worker processes cards in parallel, and for each card:
+	// 1. Fills word card data via LLM (fillWordCardData -> GenerateResponse)
+	// 2. Generates training cards via LLM (GenerateTrainingCard)
+	// Both LLM requests are parallelized across different cards
+	workers := w.llmWorkers
+	if workers <= 0 {
+		workers = 1 // Fallback to sequential if invalid
+	}
+	if workers > len(cards) {
+		workers = len(cards) // Don't create more workers than cards
+	}
+
+	// Create channels for work distribution
+	cardChan := make(chan *models.WordCard, len(cards))
+	resultChan := make(chan error, len(cards))
+
+	// Start worker goroutines
+	var wg sync.WaitGroup
+	for i := 0; i < workers; i++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			for card := range cardChan {
+				err := w.processCard(ctx, card)
+				resultChan <- err
+			}
+		}()
+	}
+
+	// Send cards to workers
 	for _, card := range cards {
-		if err := w.processCard(ctx, card); err != nil {
+		cardChan <- card
+	}
+	close(cardChan)
+
+	// Wait for all workers to finish
+	go func() {
+		wg.Wait()
+		close(resultChan)
+	}()
+
+	// Collect results
+	circuitBreakerOpened := false
+	for err := range resultChan {
+		if err != nil {
 			w.logger.Error("failed to process card",
-				zap.String("word", card.Word),
 				zap.Error(err),
 			)
 			
@@ -133,14 +181,19 @@ func (w *TrainingWorker) processCards(ctx context.Context) {
 			
 			// Check if circuit breaker opened
 			if isOpen, _ := w.cbService.IsOpen(); isOpen {
-				w.logger.Warn("circuit breaker opened, notifying admin")
-				w.notifyAdmin(err.Error())
-				return
+				if !circuitBreakerOpened {
+					w.logger.Warn("circuit breaker opened, notifying admin")
+					w.notifyAdmin(err.Error())
+					circuitBreakerOpened = true
+				}
+				// Continue collecting results but don't process more
 			}
 		} else {
-			// Record success
-			if err := w.cbService.RecordSuccess(); err != nil {
-				w.logger.Error("failed to record circuit breaker success", zap.Error(err))
+			// Record success only if circuit breaker is still closed
+			if !circuitBreakerOpened {
+				if err := w.cbService.RecordSuccess(); err != nil {
+					w.logger.Error("failed to record circuit breaker success", zap.Error(err))
+				}
 			}
 		}
 	}

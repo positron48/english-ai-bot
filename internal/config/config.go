@@ -72,6 +72,7 @@ type TrainingConfig struct {
 	WorkerEnabled           bool   `mapstructure:"worker_enabled"`
 	WorkerInterval          string `mapstructure:"worker_interval"`
 	WorkerBatchSize         int    `mapstructure:"worker_batch_size"`
+	LLMWorkers              int    `mapstructure:"llm_workers"`
 	PromptFile              string `mapstructure:"prompt_file"`
 	CircuitBreakerThreshold int    `mapstructure:"circuit_breaker_threshold"`
 	CircuitBreakerAutoReset int    `mapstructure:"circuit_breaker_auto_reset_hours"`
@@ -132,6 +133,7 @@ func Load() (*Config, error) {
 	viper.SetDefault("training.worker_enabled", true)
 	viper.SetDefault("training.worker_interval", "30s")
 	viper.SetDefault("training.worker_batch_size", 5)
+	viper.SetDefault("training.llm_workers", 4)
 	viper.SetDefault("training.prompt_file", "prompts/training-card-generator.txt")
 	viper.SetDefault("training.circuit_breaker_threshold", 5)
 	viper.SetDefault("training.circuit_breaker_auto_reset_hours", 24)
@@ -201,6 +203,7 @@ func Load() (*Config, error) {
 	_ = viper.BindEnv("training.worker_enabled", "TRAINING_WORKER_ENABLED")
 	_ = viper.BindEnv("training.worker_interval", "TRAINING_WORKER_INTERVAL")
 	_ = viper.BindEnv("training.worker_batch_size", "TRAINING_WORKER_BATCH_SIZE")
+	_ = viper.BindEnv("training.llm_workers", "TRAINING_LLM_WORKERS")
 	_ = viper.BindEnv("training.prompt_file", "TRAINING_PROMPT_FILE")
 	_ = viper.BindEnv("training.circuit_breaker_threshold", "CIRCUIT_BREAKER_THRESHOLD")
 	_ = viper.BindEnv("training.circuit_breaker_auto_reset_hours", "CIRCUIT_BREAKER_AUTO_RESET_HOURS")

@@ -23,6 +23,7 @@ func TestTrainingWorker_Stop_WithoutStart(t *testing.T) {
 		(*tgbotapi.BotAPI)(nil),
 		0,
 		10,
+		4,
 		5*time.Minute,
 		logger,
 	)

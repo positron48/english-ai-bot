@@ -30,6 +30,7 @@ func TestNewTrainingWorker(t *testing.T) {
 		bot,
 		0,
 		5,
+		4,
 		0,
 		logger,
 	)

@@ -140,6 +140,7 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 			bot,
 			cfg.Admin.TelegramID,
 			cfg.Training.WorkerBatchSize,
+			cfg.Training.LLMWorkers,
 			workerInterval,
 			log,
 		)
