@@ -25,7 +25,7 @@ func TestWordRepository_ListWordCardsAdmin(t *testing.T) {
 	repo.SaveWordCard("admin2", "definition 2")
 
 	// List word cards
-	cards, err := repo.ListWordCardsAdmin(nil, false, "", 10, 0)
+	cards, err := repo.ListWordCardsAdmin(nil, false, "", 10, 0, "", "desc")
 	if err != nil {
 		t.Fatalf("ListWordCardsAdmin() error = %v", err)
 	}
@@ -43,7 +43,7 @@ func TestWordRepository_ListWordCardsAdmin_WithSearch(t *testing.T) {
 	repo.SaveWordCard("otherword", "definition")
 
 	// List word cards with search
-	cards, err := repo.ListWordCardsAdmin(nil, false, "search", 10, 0)
+	cards, err := repo.ListWordCardsAdmin(nil, false, "search", 10, 0, "", "desc")
 	if err != nil {
 		t.Fatalf("ListWordCardsAdmin() error = %v", err)
 	}

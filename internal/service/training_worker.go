@@ -217,21 +217,24 @@ func (w *TrainingWorker) processCards(ctx context.Context) {
 	}
 }
 
-// hasMinimalData checks if word card has only minimal data (just word, no POS, transcription, etc.)
-func (w *TrainingWorker) hasMinimalData(wordCard *models.WordCard) bool {
-	return wordCard.POS == nil && wordCard.Transcription == nil && wordCard.DefinitionRU == nil
+// hasMissingData checks if word card has any missing data fields (POS, Transcription, or DefinitionRU)
+func (w *TrainingWorker) hasMissingData(wordCard *models.WordCard) bool {
+	return wordCard.POS == nil || wordCard.Transcription == nil || wordCard.DefinitionRU == nil
 }
 
-// fillWordCardData fills word card data via LLM if it has minimal data
+// fillWordCardData fills missing word card data via LLM
 func (w *TrainingWorker) fillWordCardData(ctx context.Context, wordCard *models.WordCard) error {
-	if !w.hasMinimalData(wordCard) {
-		// Word card already has data, skip
+	if !w.hasMissingData(wordCard) {
+		// Word card already has all data, skip
 		return nil
 	}
 
-	w.logger.Info("filling word card data",
+	w.logger.Info("filling missing word card data",
 		zap.String("word", wordCard.Word),
 		zap.Int64("word_card_id", wordCard.ID),
+		zap.Bool("missing_pos", wordCard.POS == nil),
+		zap.Bool("missing_transcription", wordCard.Transcription == nil),
+		zap.Bool("missing_definition_ru", wordCard.DefinitionRU == nil),
 	)
 
 	// Generate word card data via LLM
@@ -243,7 +246,7 @@ func (w *TrainingWorker) fillWordCardData(ctx context.Context, wordCard *models.
 	// Parse JSON response
 	var wordInfo models.WordInfoResponse
 	if err := json.Unmarshal([]byte(response), &wordInfo); err != nil {
-		// Not JSON, skip filling (word card will remain minimal)
+		// Not JSON, skip filling (word card will remain as is)
 		w.logger.Warn("failed to parse AI response as JSON, skipping word card fill",
 			zap.String("word", wordCard.Word),
 			zap.Error(err),
@@ -260,53 +263,72 @@ func (w *TrainingWorker) fillWordCardData(ctx context.Context, wordCard *models.
 		return nil
 	}
 
-	// Fill word card with structured data
-	lemma := strings.ToLower(wordInfo.Lemma)
-	if lemma == "" {
-		lemma = strings.ToLower(wordCard.Word)
-	}
-
-	displayEN := lemma
-	if wordInfo.POS == "verb" && wordInfo.VerbForms != nil && wordInfo.VerbForms.V1 != "" {
-		displayEN = "to " + wordInfo.VerbForms.V1
-	}
-
-	// Marshal examples and verb forms
-	var examplesJSON *string
-	if len(wordInfo.Examples) > 0 {
-		examplesBytes, _ := json.Marshal(wordInfo.Examples)
-		examplesStr := string(examplesBytes)
-		examplesJSON = &examplesStr
-	}
-
-	var verbFormsJSON *string
-	if wordInfo.VerbForms != nil {
-		verbFormsBytes, _ := json.Marshal(wordInfo.VerbForms)
-		verbFormsStr := string(verbFormsBytes)
-		verbFormsJSON = &verbFormsStr
-	}
-
-	pos := wordInfo.POS
-	transcription := wordInfo.Transcription
-	definitionRU := wordInfo.DefinitionRU
-
+	// Prepare updated word card model, preserving existing values
 	wordCardModel := &models.WordCard{
 		ID:            wordCard.ID,
-		Word:          lemma,
-		Definition:    "", // Legacy field
-		POS:           &pos,
-		Transcription: &transcription,
-		DefinitionRU:  &definitionRU,
-		ExamplesJSON:  examplesJSON,
-		VerbFormsJSON: verbFormsJSON,
-		DisplayEN:     &displayEN,
+		Word:          wordCard.Word, // Keep existing word
+		Definition:    wordCard.Definition, // Keep existing definition
+		POS:           wordCard.POS, // Will update if nil
+		Transcription: wordCard.Transcription, // Will update if nil
+		DefinitionRU:  wordCard.DefinitionRU, // Will update if nil
+		ExamplesJSON:  wordCard.ExamplesJSON, // Will update if empty
+		VerbFormsJSON: wordCard.VerbFormsJSON, // Will update if empty
+		DisplayEN:     wordCard.DisplayEN, // Will update if empty
 	}
 
+	// Fill only missing fields (preserve existing values)
+	if wordCard.POS == nil && wordInfo.POS != "" {
+		pos := wordInfo.POS
+		wordCardModel.POS = &pos
+	}
+
+	if wordCard.Transcription == nil && wordInfo.Transcription != "" {
+		transcription := wordInfo.Transcription
+		wordCardModel.Transcription = &transcription
+	}
+
+	if wordCard.DefinitionRU == nil && wordInfo.DefinitionRU != "" {
+		definitionRU := wordInfo.DefinitionRU
+		wordCardModel.DefinitionRU = &definitionRU
+	}
+
+	// Update examples if missing and new data available
+	if (wordCard.ExamplesJSON == nil || *wordCard.ExamplesJSON == "") && len(wordInfo.Examples) > 0 {
+		examplesBytes, _ := json.Marshal(wordInfo.Examples)
+		examplesStr := string(examplesBytes)
+		wordCardModel.ExamplesJSON = &examplesStr
+	}
+
+	// Update verb forms if missing and new data available
+	if (wordCard.VerbFormsJSON == nil || *wordCard.VerbFormsJSON == "") && wordInfo.VerbForms != nil {
+		verbFormsBytes, _ := json.Marshal(wordInfo.VerbForms)
+		verbFormsStr := string(verbFormsBytes)
+		wordCardModel.VerbFormsJSON = &verbFormsStr
+	}
+
+	// Update display_en if missing and new data available
+	if (wordCard.DisplayEN == nil || *wordCard.DisplayEN == "") {
+		lemma := strings.ToLower(wordInfo.Lemma)
+		if lemma == "" {
+			lemma = strings.ToLower(wordCard.Word)
+		}
+
+		displayEN := lemma
+		if wordCardModel.POS != nil && *wordCardModel.POS == "verb" && wordInfo.VerbForms != nil && wordInfo.VerbForms.V1 != "" {
+			displayEN = "to " + wordInfo.VerbForms.V1
+		} else if wordInfo.POS == "verb" && wordInfo.VerbForms != nil && wordInfo.VerbForms.V1 != "" {
+			displayEN = "to " + wordInfo.VerbForms.V1
+		}
+
+		wordCardModel.DisplayEN = &displayEN
+	}
+
+	// Update word card
 	if err := w.wordRepo.UpdateWordCard(wordCardModel); err != nil {
 		return fmt.Errorf("failed to update word card: %w", err)
 	}
 
-	w.logger.Info("filled word card data",
+	w.logger.Info("filled missing word card data",
 		zap.String("word", wordCard.Word),
 		zap.Int64("word_card_id", wordCard.ID),
 	)

@@ -45,10 +45,46 @@
           <table class="words-table">
             <thead>
               <tr>
-                <th class="desktop-only">ID</th>
-                <th>Word</th>
-                <th>POS</th>
-                <th>Has Cards</th>
+                <th 
+                  class="desktop-only sortable" 
+                  :class="{ 'sort-asc': sortColumn === 'ID' && sortDirection === 'asc', 'sort-desc': sortColumn === 'ID' && sortDirection === 'desc' }"
+                  @click="handleSort('ID')"
+                >
+                  ID
+                  <span class="sort-indicator" v-if="sortColumn === 'ID'">
+                    {{ sortDirection === 'asc' ? '↑' : '↓' }}
+                  </span>
+                </th>
+                <th 
+                  class="sortable"
+                  :class="{ 'sort-asc': sortColumn === 'Word' && sortDirection === 'asc', 'sort-desc': sortColumn === 'Word' && sortDirection === 'desc' }"
+                  @click="handleSort('Word')"
+                >
+                  Word
+                  <span class="sort-indicator" v-if="sortColumn === 'Word'">
+                    {{ sortDirection === 'asc' ? '↑' : '↓' }}
+                  </span>
+                </th>
+                <th 
+                  class="sortable"
+                  :class="{ 'sort-asc': sortColumn === 'POS' && sortDirection === 'asc', 'sort-desc': sortColumn === 'POS' && sortDirection === 'desc' }"
+                  @click="handleSort('POS')"
+                >
+                  POS
+                  <span class="sort-indicator" v-if="sortColumn === 'POS'">
+                    {{ sortDirection === 'asc' ? '↑' : '↓' }}
+                  </span>
+                </th>
+                <th 
+                  class="sortable"
+                  :class="{ 'sort-asc': sortColumn === 'HasCards' && sortDirection === 'asc', 'sort-desc': sortColumn === 'HasCards' && sortDirection === 'desc' }"
+                  @click="handleSort('HasCards')"
+                >
+                  Has Cards
+                  <span class="sort-indicator" v-if="sortColumn === 'HasCards'">
+                    {{ sortDirection === 'asc' ? '↑' : '↓' }}
+                  </span>
+                </th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -471,7 +507,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { apiClient } from '../api/client'
 import { showAlert, showConfirm } from '../composables/useDialog'
 import AdminMenu from '../components/AdminMenu.vue'
@@ -537,6 +573,10 @@ const wordsPagination = ref({
   total_pages: 0
 })
 const users = ref<User[]>([])
+
+// Sorting state
+const sortColumn = ref<string | null>(null)
+const sortDirection = ref<'asc' | 'desc'>('asc')
 
 // Training card editing
 const showEditWordModal = ref(false)
@@ -620,6 +660,22 @@ const loadWords = async () => {
     const offset = (wordsPagination.value.page - 1) * wordsPagination.value.limit
     params.append('limit', wordsPagination.value.limit.toString())
     params.append('offset', offset.toString())
+    
+    // Add sorting parameters
+    if (sortColumn.value) {
+      // Map frontend column names to backend sort_by values
+      const sortByMap: Record<string, string> = {
+        'ID': 'id',
+        'Word': 'word',
+        'POS': 'pos',
+        'HasCards': 'has_cards'
+      }
+      const backendSortBy = sortByMap[sortColumn.value]
+      if (backendSortBy) {
+        params.append('sort_by', backendSortBy)
+        params.append('sort_order', sortDirection.value)
+      }
+    }
 
     const data: { words: WordCard[]; pagination: { page: number; limit: number; total: number; total_pages: number } } = await apiClient.request(`/app/admin/words?${params.toString()}`)
     words.value = (data.words || []).map(w => ({ 
@@ -1142,6 +1198,21 @@ const formatDateAbsolute = (dateStr: string | null | undefined): string => {
   return `${day}.${month}.${year}`
 }
 
+// Sorting logic
+const handleSort = (column: string) => {
+  if (sortColumn.value === column) {
+    // Toggle direction if same column
+    sortDirection.value = sortDirection.value === 'asc' ? 'desc' : 'asc'
+  } else {
+    // New column, default to ascending
+    sortColumn.value = column
+    sortDirection.value = 'asc'
+  }
+  // Reload words with new sorting
+  wordsPagination.value.page = 1
+  loadWords()
+}
+
 </script>
 
 <style scoped>
@@ -1283,6 +1354,33 @@ const formatDateAbsolute = (dateStr: string | null | undefined): string => {
   color: var(--text-primary);
   position: sticky;
   top: 0;
+}
+
+.words-table th.sortable {
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s;
+  padding-right: 24px;
+  position: relative;
+}
+
+.words-table th.sortable:hover {
+  background-color: var(--table-row-hover, rgba(0, 0, 0, 0.1));
+}
+
+.words-table th.sortable.sort-asc,
+.words-table th.sortable.sort-desc {
+  background-color: var(--table-row-hover, rgba(0, 0, 0, 0.15));
+}
+
+.sort-indicator {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+  color: var(--color-primary);
+  font-weight: bold;
 }
 
 .words-table tbody tr:hover {

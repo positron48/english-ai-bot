@@ -669,6 +669,13 @@ func (r *Router) handleAdminWords(w http.ResponseWriter, req *http.Request) {
 
 	onlyWithErrors := req.URL.Query().Get("only_errors") == "1" || req.URL.Query().Get("only_errors") == "true"
 	searchQuery := req.URL.Query().Get("search")
+	
+	// Parse sorting parameters
+	sortBy := req.URL.Query().Get("sort_by")
+	sortOrder := req.URL.Query().Get("sort_order")
+	if sortOrder != "asc" && sortOrder != "desc" {
+		sortOrder = "desc" // default
+	}
 
 	limit := 50
 	if limitStr := req.URL.Query().Get("limit"); limitStr != "" {
@@ -684,7 +691,7 @@ func (r *Router) handleAdminWords(w http.ResponseWriter, req *http.Request) {
 		}
 	}
 
-	words, err := wordRepo.ListWordCardsAdmin(filterUserID, onlyWithErrors, searchQuery, limit, offset)
+	words, err := wordRepo.ListWordCardsAdmin(filterUserID, onlyWithErrors, searchQuery, limit, offset, sortBy, sortOrder)
 	if err != nil {
 		r.logger.Error("failed to list word cards", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)

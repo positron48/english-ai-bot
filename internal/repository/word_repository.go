@@ -219,15 +219,18 @@ func (r *WordRepository) UpsertWordCardLemma(card *models.WordCard) (int64, erro
 	}
 
 	id, err := result.LastInsertId()
-	if err != nil {
-		// If LastInsertId fails, try to get by lemma
+	// LastInsertId() can return 0 or error when ON CONFLICT triggers UPDATE instead of INSERT
+	// In that case, we need to get the ID by querying the database
+	if err != nil || id == 0 {
+		// Get ID by lemma (works for both INSERT and UPDATE cases)
 		existing, err := r.GetWordCardByLemma(card.Word)
 		if err != nil {
 			return 0, fmt.Errorf("failed to get word card ID: %w", err)
 		}
-		if existing != nil {
-			id = existing.ID
+		if existing == nil {
+			return 0, fmt.Errorf("word card not found after upsert")
 		}
+		id = existing.ID
 	}
 
 	r.logger.Debug("word card lemma upserted",
@@ -439,7 +442,7 @@ type WordCardAdminItem struct {
 }
 
 // ListWordCardsAdmin lists word cards for admin view with optional filters
-func (r *WordRepository) ListWordCardsAdmin(filterUserID *int64, onlyWithErrors bool, searchQuery string, limit, offset int) ([]*WordCardAdminItem, error) {
+func (r *WordRepository) ListWordCardsAdmin(filterUserID *int64, onlyWithErrors bool, searchQuery string, limit, offset int, sortBy string, sortOrder string) ([]*WordCardAdminItem, error) {
 	// Use LEFT JOIN with GROUP BY to check for training cards - more reliable than subquery
 	query := `SELECT wc.id, wc.word, wc.definition,
 			  COALESCE(wc.pos, '') as pos,
@@ -482,7 +485,36 @@ func (r *WordRepository) ListWordCardsAdmin(filterUserID *int64, onlyWithErrors 
 	}
 
 	query += " GROUP BY wc.id, wc.word, wc.definition, wc.pos, wc.transcription, wc.definition_ru, wc.examples_json, wc.verb_forms_json, wc.display_en, wc.processed_at, wc.processing_error, wc.created_at, wc.updated_at"
-	query += " ORDER BY wc.created_at DESC LIMIT ? OFFSET ?"
+	
+	// Build ORDER BY clause
+	orderBy := "wc.created_at"
+	
+	// Validate and set sort column
+	validSortColumns := map[string]string{
+		"id":        "wc.id",
+		"word":      "LOWER(wc.word)",
+		"pos":       "wc.pos",
+		"has_cards": "MAX(CASE WHEN tc.id IS NOT NULL THEN 1 ELSE 0 END)",
+	}
+	
+	if sortBy != "" {
+		if column, ok := validSortColumns[sortBy]; ok {
+			orderBy = column
+		}
+	}
+	
+	// Validate sort order
+	var orderDir string
+	switch sortOrder {
+	case "asc":
+		orderDir = "ASC"
+	case "desc":
+		orderDir = "DESC"
+	default:
+		orderDir = "DESC"
+	}
+	
+	query += " ORDER BY " + orderBy + " " + orderDir + " LIMIT ? OFFSET ?"
 	args = append(args, limit, offset)
 
 	rows, err := r.db.Query(query, args...)
