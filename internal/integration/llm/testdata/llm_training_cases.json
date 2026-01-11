@@ -68,5 +68,25 @@
     "word": "slender",
     "expect": "ok",
     "note": "correct word"
+  },
+  {
+    "word": "laugh",
+    "expect": "ok",
+    "note": "correct word"
+  },
+  {
+    "word": "draw",
+    "expect": "ok",
+    "note": "correct word"
+  },
+  {
+    "word": "read",
+    "expect": "ok",
+    "note": "correct word"
+  },
+  {
+    "word": "shall",
+    "expect": "ok",
+    "note": "correct word"
   }
 ]

@@ -38,8 +38,6 @@ DISTRACTORS (THIS IS THE MOST IMPORTANT PART)
 - POS rules:
   - pos=="verb": EN items are exactly "to <verb>"; RU items are infinitives.
   - pos!="verb": EN items must NOT start with "to ".
-- Deterministic rule to avoid R6 failures:
-  - If pos=="verb" AND word_ru is ONE word with length <= 7 => set distractors_ru exactly to: «читать», «спать», «плавать».
 - NO LEAKAGE (case-insensitive substring checks):
   - distractors_en MUST NOT contain lemma anywhere (forbid "outburst" when lemma="burst"; forbid any phrase containing "bank" when lemma="bank").
   - distractors_ru MUST NOT contain word_ru anywhere (forbid "учительница" when word_ru="учитель"; forbid "банкрот/банкир/банка" when word_ru="банк"; forbid "поранить" when word_ru="ранить").
@@ -48,14 +46,6 @@ DISTRACTORS (THIS IS THE MOST IMPORTANT PART)
 - STRICT FALLBACK MODE (use this to avoid validation failures):
   - If word_ru is ONE word and length <= 7: you MUST use the fallback set for the sense POS AS-IS.
   - For this case, do not substitute other words and do not include word_ru in distractors_ru.
-- Example: if pos=="verb" and word_ru=="кивать" => distractors_ru MUST be exactly «читать», «спать», «плавать».
-- Example: if pos=="adjective" and word_ru=="яркий" => distractors_ru MUST be exactly «тусклый», «тяжёлый», «узкий».
- - Example: if pos=="verb" and word_ru=="толкать" => distractors_ru MUST be exactly «читать», «спать», «плавать».
-- If you are unsure: USE THESE SAFE FALLBACKS (NOT translations of each other):
-  - noun RU: «стул», «окно», «камень» | noun EN: "cloud", "ladder", "pencil"
-  - verb RU: «читать», «спать», «плавать» | verb EN: "to draw", "to laugh", "to whisper"
-  - adj RU: «тусклый», «тяжёлый», «узкий» | adj EN: "ancient", "noisy", "empty"
-  - adv RU: «тихо», «быстро», «вчера» | adv EN: "rarely", "outside", "early"
 
 FINAL SELF-CHECK (MANDATORY): if any rule fails, replace distractors until ALL pass, then output JSON.
 
