@@ -174,7 +174,6 @@ func (s *JWTService) ValidateToken(tokenString string) (int64, error) {
 		return 0, errors.New("token expired")
 	}
 
-	s.logger.Info("JWT token validated", zap.Int64("user_id", claims.UserID))
 	return claims.UserID, nil
 }
 

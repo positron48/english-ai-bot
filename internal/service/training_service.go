@@ -110,17 +110,6 @@ func (s *TrainingService) FinishSession(sessionID int64, doneCount int) error {
 func (s *TrainingService) generateQueue(userID int64, config SessionConfig) ([]*models.UserCardWithTraining, error) {
 	now := time.Now()
 
-	// Clean up orphaned user_cards before getting cards
-	deletedCount, err := s.userCardRepo.DeleteOrphanedUserCards()
-	if err != nil {
-		s.logger.Warn("failed to clean up orphaned user cards", zap.Error(err))
-	} else if deletedCount > 0 {
-		s.logger.Info("cleaned up orphaned user cards",
-			zap.Int64("user_id", userID),
-			zap.Int64("deleted_count", deletedCount),
-		)
-	}
-
 	// Get due cards (learning + review)
 	dueCards, err := s.userCardRepo.GetDueCards(userID, now, config.MaxCardsPerSession)
 	if err != nil {
