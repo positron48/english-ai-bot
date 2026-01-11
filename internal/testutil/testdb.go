@@ -191,6 +191,7 @@ func SetupTestDB(t *testing.T) *sql.DB {
 		title TEXT NOT NULL,
 		description TEXT,
 		is_published INTEGER DEFAULT 1,
+		sort_order INTEGER DEFAULT 0,
 		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 		updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 		FOREIGN KEY (category_id) REFERENCES word_set_categories(id) ON DELETE SET NULL

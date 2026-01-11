@@ -27,8 +27,8 @@ func NewWordSetRepository(db *sql.DB, logger *zap.Logger) *WordSetRepository {
 
 // CreateWordSet creates a new word set
 func (r *WordSetRepository) CreateWordSet(wordSet *models.WordSet) (int64, error) {
-	query := `INSERT INTO word_sets (category_id, title, description, is_published, created_at, updated_at)
-			  VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`
+	query := `INSERT INTO word_sets (category_id, title, description, is_published, sort_order, created_at, updated_at)
+			  VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`
 
 	var categoryID interface{}
 	if wordSet.CategoryID != nil {
@@ -45,7 +45,7 @@ func (r *WordSetRepository) CreateWordSet(wordSet *models.WordSet) (int64, error
 		isPublished = 1
 	}
 
-	result, err := r.db.Exec(query, categoryID, wordSet.Title, description, isPublished)
+	result, err := r.db.Exec(query, categoryID, wordSet.Title, description, isPublished, wordSet.SortOrder)
 	if err != nil {
 		return 0, fmt.Errorf("failed to create word set: %w", err)
 	}
@@ -60,7 +60,7 @@ func (r *WordSetRepository) CreateWordSet(wordSet *models.WordSet) (int64, error
 
 // GetWordSet retrieves a word set by ID
 func (r *WordSetRepository) GetWordSet(id int64) (*models.WordSet, error) {
-	query := `SELECT id, category_id, title, description, is_published, created_at, updated_at
+	query := `SELECT id, category_id, title, description, is_published, sort_order, created_at, updated_at
 			  FROM word_sets WHERE id = ?`
 
 	var wordSet models.WordSet
@@ -75,6 +75,7 @@ func (r *WordSetRepository) GetWordSet(id int64) (*models.WordSet, error) {
 		&wordSet.Title,
 		&description,
 		&isPublished,
+		&wordSet.SortOrder,
 		&createdAt,
 		&updatedAt,
 	)
@@ -109,7 +110,7 @@ func (r *WordSetRepository) ListWordSets(categoryID *int64, limit, offset int, i
 		includeUnpub = includeUnpublished[0]
 	}
 
-	query := `SELECT id, category_id, title, description, is_published, created_at, updated_at
+	query := `SELECT id, category_id, title, description, is_published, sort_order, created_at, updated_at
 			  FROM word_sets WHERE 1=1`
 	args := []interface{}{}
 
@@ -126,7 +127,8 @@ func (r *WordSetRepository) ListWordSets(categoryID *int64, limit, offset int, i
 		query += " AND is_published = 1"
 	}
 
-	query += " ORDER BY title LIMIT ? OFFSET ?"
+	// Sort by sort_order within category, then by title
+	query += " ORDER BY sort_order, title LIMIT ? OFFSET ?"
 	args = append(args, limit, offset)
 
 	rows, err := r.db.Query(query, args...)
@@ -149,6 +151,7 @@ func (r *WordSetRepository) ListWordSets(categoryID *int64, limit, offset int, i
 			&wordSet.Title,
 			&description,
 			&isPublished,
+			&wordSet.SortOrder,
 			&createdAt,
 			&updatedAt,
 		)
@@ -178,7 +181,7 @@ func (r *WordSetRepository) ListWordSets(categoryID *int64, limit, offset int, i
 // UpdateWordSet updates a word set
 func (r *WordSetRepository) UpdateWordSet(wordSet *models.WordSet) error {
 	query := `UPDATE word_sets 
-			  SET category_id = ?, title = ?, description = ?, is_published = ?, updated_at = CURRENT_TIMESTAMP
+			  SET category_id = ?, title = ?, description = ?, is_published = ?, sort_order = ?, updated_at = CURRENT_TIMESTAMP
 			  WHERE id = ?`
 
 	var categoryID interface{}
@@ -196,7 +199,7 @@ func (r *WordSetRepository) UpdateWordSet(wordSet *models.WordSet) error {
 		isPublished = 1
 	}
 
-	_, err := r.db.Exec(query, categoryID, wordSet.Title, description, isPublished, wordSet.ID)
+	_, err := r.db.Exec(query, categoryID, wordSet.Title, description, isPublished, wordSet.SortOrder, wordSet.ID)
 	if err != nil {
 		return fmt.Errorf("failed to update word set: %w", err)
 	}

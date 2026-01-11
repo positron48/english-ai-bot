@@ -20,6 +20,7 @@ type WordSet struct {
 	Title       string     `json:"title"`
 	Description *string    `json:"description"`
 	IsPublished bool       `json:"is_published"`
+	SortOrder   int        `json:"sort_order"`
 	CreatedAt   time.Time  `json:"created_at"`
 	UpdatedAt   time.Time  `json:"updated_at"`
 }

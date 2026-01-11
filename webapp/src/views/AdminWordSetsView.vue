@@ -166,6 +166,11 @@
             </select>
           </div>
           <div class="form-group">
+            <label>Sort Order</label>
+            <input v-model.number="wordSetForm.sort_order" type="number" class="form-input" />
+            <p class="form-hint">Sets are sorted by this value within their category (lower numbers first)</p>
+          </div>
+          <div class="form-group">
             <label>
               <input v-model="wordSetForm.is_published" type="checkbox" />
               Published
@@ -266,6 +271,7 @@ interface WordSet {
   title: string
   description?: string | null
   is_published: boolean
+  sort_order?: number
   created_at: string
   updated_at: string
 }
@@ -299,6 +305,7 @@ const wordSetForm = ref({
   description: '',
   category_id: null as number | null,
   is_published: true,
+  sort_order: 0,
   words: ''
 })
 const showDeleteWordSetConfirm = ref(false)
@@ -488,6 +495,7 @@ const startCreateWordSet = () => {
     description: '',
     category_id: null,
     is_published: true,
+    sort_order: 0,
     words: ''
   }
   showWordSetModal.value = true
@@ -501,6 +509,7 @@ const startEditWordSet = async (wordSet: WordSet) => {
     description: wordSet.description || '',
     category_id: wordSet.category_id || null,
     is_published: wordSet.is_published,
+    sort_order: wordSet.sort_order || 0,
     words: ''
   }
   

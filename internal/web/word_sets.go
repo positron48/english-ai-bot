@@ -167,11 +167,11 @@ func (r *Router) handleLearningWordsSets(w http.ResponseWriter, req *http.Reques
 	var err error
 	if showOnlyWithoutCategory {
 		// Query sets without category directly
-		query := `SELECT id, category_id, title, description, is_published, created_at, updated_at
+		query := `SELECT id, category_id, title, description, is_published, sort_order, created_at, updated_at
 				  FROM word_sets WHERE category_id IS NULL AND is_published = 1`
 		args := []interface{}{}
 
-		query += " ORDER BY title LIMIT ? OFFSET ?"
+		query += " ORDER BY sort_order, title LIMIT ? OFFSET ?"
 		args = append(args, limit, offset)
 
 		rows, err := r.db.Query(query, args...)
@@ -188,7 +188,7 @@ func (r *Router) handleLearningWordsSets(w http.ResponseWriter, req *http.Reques
 			var categoryID sql.NullInt64
 			var createdAt, updatedAt string
 
-			err := rows.Scan(&ws.ID, &categoryID, &ws.Title, &ws.Description, &ws.IsPublished, &createdAt, &updatedAt)
+			err := rows.Scan(&ws.ID, &categoryID, &ws.Title, &ws.Description, &ws.IsPublished, &ws.SortOrder, &createdAt, &updatedAt)
 			if err != nil {
 				r.logger.Warn("failed to scan word set", zap.Error(err))
 				continue
