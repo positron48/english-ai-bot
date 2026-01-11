@@ -4,34 +4,13 @@ import (
 	"database/sql"
 	"testing"
 
-	_ "github.com/mattn/go-sqlite3"
+	"tgbot-skeleton/internal/testutil"
+
 	"go.uber.org/zap"
 )
 
 func setupTestDB(t *testing.T) *sql.DB {
-	db, err := sql.Open("sqlite3", ":memory:")
-	if err != nil {
-		t.Fatalf("Failed to open test database: %v", err)
-	}
-
-	// Create circuit_breaker_state table
-	createTable := `
-	CREATE TABLE IF NOT EXISTS circuit_breaker_state (
-		id INTEGER PRIMARY KEY,
-		is_open INTEGER NOT NULL DEFAULT 0,
-		failure_count INTEGER NOT NULL DEFAULT 0,
-		last_failure_at TEXT,
-		last_failure_message TEXT,
-		last_reset_at TEXT,
-		updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-	)`
-
-	_, err = db.Exec(createTable)
-	if err != nil {
-		t.Fatalf("Failed to create table: %v", err)
-	}
-
-	return db
+	return testutil.SetupTestDB(t)
 }
 
 func TestNewCircuitBreakerRepository(t *testing.T) {

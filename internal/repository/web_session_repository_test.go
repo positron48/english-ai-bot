@@ -5,32 +5,13 @@ import (
 	"testing"
 	"time"
 
-	_ "github.com/mattn/go-sqlite3"
+	"tgbot-skeleton/internal/testutil"
+
 	"go.uber.org/zap"
 )
 
 func setupWebSessionTestDB(t *testing.T) *sql.DB {
-	db, err := sql.Open("sqlite3", ":memory:")
-	if err != nil {
-		t.Fatalf("Failed to open test database: %v", err)
-	}
-
-	createTable := `
-	CREATE TABLE IF NOT EXISTS web_sessions (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		user_id INTEGER NOT NULL,
-		session_token TEXT UNIQUE NOT NULL,
-		expires_at TEXT NOT NULL,
-		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		last_seen_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-	)`
-
-	_, err = db.Exec(createTable)
-	if err != nil {
-		t.Fatalf("Failed to create table: %v", err)
-	}
-
-	return db
+	return testutil.SetupTestDB(t)
 }
 
 func TestNewWebSessionRepository(t *testing.T) {

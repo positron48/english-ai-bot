@@ -56,6 +56,24 @@ func setupSRSServiceTestDB(t *testing.T) (*sql.DB, *repository.UserCardRepositor
 		stats_json TEXT,
 		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
 		updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+	);
+	
+	CREATE TABLE IF NOT EXISTS word_cards (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		word TEXT UNIQUE NOT NULL,
+		definition TEXT NOT NULL,
+		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+	);
+	
+	CREATE TABLE IF NOT EXISTS user_word_knowledge (
+		user_id INTEGER NOT NULL,
+		word_card_id INTEGER NOT NULL,
+		status TEXT NOT NULL DEFAULT 'known' CHECK(status IN ('known')),
+		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+		FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+		FOREIGN KEY (word_card_id) REFERENCES word_cards(id) ON DELETE CASCADE,
+		UNIQUE(user_id, word_card_id)
 	);`
 
 	_, err = db.Exec(createTables)

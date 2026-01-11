@@ -241,6 +241,50 @@ func (db *DB) migrate() error {
 			FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 		)`,
 		
+		// Word sets tables
+		`CREATE TABLE IF NOT EXISTS word_set_categories (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			parent_id INTEGER,
+			name TEXT NOT NULL,
+			description TEXT,
+			sort_order INTEGER DEFAULT 0,
+			created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+			updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+			FOREIGN KEY (parent_id) REFERENCES word_set_categories(id) ON DELETE SET NULL
+		)`,
+		
+		`CREATE TABLE IF NOT EXISTS word_sets (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			category_id INTEGER,
+			title TEXT NOT NULL,
+			description TEXT,
+			is_published INTEGER DEFAULT 1,
+			created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+			updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+			FOREIGN KEY (category_id) REFERENCES word_set_categories(id) ON DELETE SET NULL
+		)`,
+		
+		`CREATE TABLE IF NOT EXISTS word_set_items (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			word_set_id INTEGER NOT NULL,
+			word_card_id INTEGER NOT NULL,
+			sort_order INTEGER DEFAULT 0,
+			created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+			FOREIGN KEY (word_set_id) REFERENCES word_sets(id) ON DELETE CASCADE,
+			FOREIGN KEY (word_card_id) REFERENCES word_cards(id) ON DELETE CASCADE,
+			UNIQUE(word_set_id, word_card_id)
+		)`,
+		
+		`CREATE TABLE IF NOT EXISTS user_word_knowledge (
+			user_id INTEGER NOT NULL,
+			word_card_id INTEGER NOT NULL,
+			status TEXT NOT NULL DEFAULT 'known' CHECK(status IN ('known')),
+			created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+			FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+			FOREIGN KEY (word_card_id) REFERENCES word_cards(id) ON DELETE CASCADE,
+			UNIQUE(user_id, word_card_id)
+		)`,
+		
 		// Indexes for existing tables
 		`CREATE INDEX IF NOT EXISTS idx_word_cards_word ON word_cards(word)`,
 		`CREATE INDEX IF NOT EXISTS idx_word_forms_word_card_id ON word_forms(word_card_id)`,
@@ -266,6 +310,15 @@ func (db *DB) migrate() error {
 		`CREATE INDEX IF NOT EXISTS idx_web_otps_user_id ON web_otps(user_id)`,
 		`CREATE INDEX IF NOT EXISTS idx_web_otps_code_hash ON web_otps(code_hash)`,
 		`CREATE INDEX IF NOT EXISTS idx_web_otps_expires_at ON web_otps(expires_at)`,
+		
+		// Indexes for word sets tables
+		`CREATE INDEX IF NOT EXISTS idx_word_set_categories_parent_id ON word_set_categories(parent_id)`,
+		`CREATE INDEX IF NOT EXISTS idx_word_sets_category_id ON word_sets(category_id)`,
+		`CREATE INDEX IF NOT EXISTS idx_word_sets_is_published ON word_sets(is_published)`,
+		`CREATE INDEX IF NOT EXISTS idx_word_set_items_word_set_id ON word_set_items(word_set_id)`,
+		`CREATE INDEX IF NOT EXISTS idx_word_set_items_word_card_id ON word_set_items(word_card_id)`,
+		`CREATE INDEX IF NOT EXISTS idx_user_word_knowledge_user_id ON user_word_knowledge(user_id)`,
+		`CREATE INDEX IF NOT EXISTS idx_user_word_knowledge_word_card_id ON user_word_knowledge(word_card_id)`,
 	}
 
 	for _, query := range queries {

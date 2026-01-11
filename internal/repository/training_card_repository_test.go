@@ -5,58 +5,13 @@ import (
 	"testing"
 
 	"tgbot-skeleton/internal/models"
+	"tgbot-skeleton/internal/testutil"
 
-	_ "github.com/mattn/go-sqlite3"
 	"go.uber.org/zap"
 )
 
 func setupTrainingCardTestDB(t *testing.T) *sql.DB {
-	db, err := sql.Open("sqlite3", ":memory:")
-	if err != nil {
-		t.Fatalf("Failed to open test database: %v", err)
-	}
-
-	createTables := `
-	CREATE TABLE IF NOT EXISTS word_cards (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		word TEXT UNIQUE NOT NULL,
-		definition TEXT NOT NULL,
-		pos TEXT,
-		transcription TEXT,
-		definition_ru TEXT,
-		examples_json TEXT,
-		verb_forms_json TEXT,
-		display_en TEXT,
-		processed_at TEXT,
-		processing_error TEXT,
-		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-	);
-	
-	CREATE TABLE IF NOT EXISTS training_cards (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		word_card_id INTEGER NOT NULL,
-		word_en TEXT NOT NULL,
-		transcription TEXT,
-		sense_index INTEGER NOT NULL,
-		word_ru TEXT NOT NULL,
-		meaning_en TEXT NOT NULL,
-		example_en TEXT,
-		example_ru TEXT,
-		distractors_ru TEXT,
-		distractors_en TEXT,
-		hint TEXT,
-		pos TEXT,
-		display_word TEXT,
-		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-	);`
-
-	_, err = db.Exec(createTables)
-	if err != nil {
-		t.Fatalf("Failed to create tables: %v", err)
-	}
-
-	return db
+	return testutil.SetupTestDB(t)
 }
 
 func TestNewTrainingCardRepository(t *testing.T) {

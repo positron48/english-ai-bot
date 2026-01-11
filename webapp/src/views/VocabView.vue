@@ -129,7 +129,35 @@
         </div>
         <div v-if="cardsLoading" class="loading">Loading cards...</div>
         <div v-else-if="cards.length === 0" class="no-cards">No cards found.</div>
-        <div v-else class="cards-list-simple">
+        <div v-else>
+          <!-- Verb Forms Section -->
+          <div v-if="wordPOS === 'verb' && verbForms" class="verb-forms-section">
+            <h4>Verb Forms</h4>
+            <div class="verb-forms-list">
+              <div v-if="verbForms.v1" class="verb-form-item">
+                <span class="verb-form-label">V1 (Base):</span>
+                <span class="verb-form-value">{{ verbForms.v1 }}</span>
+              </div>
+              <div v-if="verbForms.v2" class="verb-form-item">
+                <span class="verb-form-label">V2 (Past Simple):</span>
+                <span class="verb-form-value">{{ verbForms.v2 }}</span>
+              </div>
+              <div v-if="verbForms.v3" class="verb-form-item">
+                <span class="verb-form-label">V3 (Past Participle):</span>
+                <span class="verb-form-value">{{ verbForms.v3 }}</span>
+              </div>
+              <div v-if="verbForms.gerund" class="verb-form-item">
+                <span class="verb-form-label">Gerund:</span>
+                <span class="verb-form-value">{{ verbForms.gerund }}</span>
+              </div>
+              <div v-if="verbForms.third_person" class="verb-form-item">
+                <span class="verb-form-label">Third Person:</span>
+                <span class="verb-form-value">{{ verbForms.third_person }}</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="cards-list-simple">
           <div v-for="senseGroup in groupedCards" :key="senseGroup.sense_index" class="sense-group-simple">
             <div class="sense-header-simple">
               <h4>
@@ -162,6 +190,7 @@
                 </div>
               </div>
             </div>
+          </div>
           </div>
         </div>
         <div class="modal-footer">
@@ -255,6 +284,8 @@ const selectedWordDisplay = ref('')
 const selectedTranscription = ref('')
 const cards = ref<CardDetail[]>([])
 const cardsLoading = ref(false)
+const verbForms = ref<any>(null)
+const wordPOS = ref<string | null>(null)
 
 onMounted(async () => {
   await loadVocab()
@@ -415,8 +446,10 @@ const showCards = async (lemma: string) => {
   selectedTranscription.value = ''
   
   try {
-    const data: { lemma: string; word_card_id: number; cards: CardDetail[] } = await apiClient.request(`/app/vocab/${lemma}/cards`)
+    const data: { lemma: string; word_card_id: number; cards: CardDetail[]; verb_forms?: any; pos?: string } = await apiClient.request(`/app/vocab/${lemma}/cards`)
     cards.value = data.cards || []
+    verbForms.value = data.verb_forms || null
+    wordPOS.value = data.pos || null
     
     // Find display word and transcription from first card
     if (cards.value.length > 0) {
@@ -444,6 +477,8 @@ const closeCardsModal = () => {
   selectedWordDisplay.value = ''
   selectedTranscription.value = ''
   cards.value = []
+  verbForms.value = null
+  wordPOS.value = null
 }
 
 // Group cards by sense_index
@@ -766,6 +801,11 @@ const formatDateAbsolute = (dateStr: string | null): string => {
   flex-shrink: 0;
 }
 
+.mastery-known {
+  background-color: var(--color-success, #10b981);
+  color: white;
+}
+
 .mastery-mastered {
   background-color: var(--color-success, #10b981);
   color: white;
@@ -900,6 +940,45 @@ const formatDateAbsolute = (dateStr: string | null): string => {
   color: var(--color-danger, #ef4444);
   font-size: 13px;
   margin-top: 8px;
+}
+
+.verb-forms-section {
+  margin-bottom: 24px;
+  padding: 16px;
+  background: var(--input-bg, rgba(0, 0, 0, 0.02));
+  border: 1px solid var(--table-border, rgba(0, 0, 0, 0.1));
+  border-radius: 8px;
+}
+
+.verb-forms-section h4 {
+  margin: 0 0 12px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.verb-forms-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.verb-form-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+}
+
+.verb-form-label {
+  font-weight: 600;
+  color: var(--text-secondary);
+  min-width: 140px;
+}
+
+.verb-form-value {
+  color: var(--text-primary);
+  font-weight: 500;
 }
 
 .cards-list-simple {

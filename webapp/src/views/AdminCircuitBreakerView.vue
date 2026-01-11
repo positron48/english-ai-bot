@@ -1,21 +1,6 @@
 <template>
   <div class="admin">
-    <h1>Admin Panel</h1>
-    
-    <div class="admin-tabs">
-      <router-link to="/admin" class="admin-tab" :class="{ active: $route.path === '/admin' }">
-        <span>Main</span>
-      </router-link>
-      <router-link to="/admin/circuit-breaker" class="admin-tab" :class="{ active: $route.path === '/admin/circuit-breaker' }">
-        <span>Circuit Breaker</span>
-      </router-link>
-      <router-link to="/admin/prompt-tester" class="admin-tab" :class="{ active: $route.path === '/admin/prompt-tester' }">
-        <span>Prompt Tester</span>
-      </router-link>
-      <router-link to="/admin/orphaned-cards" class="admin-tab" :class="{ active: $route.path === '/admin/orphaned-cards' }">
-        <span>Orphaned Cards</span>
-      </router-link>
-    </div>
+    <AdminMenu />
     
     <div v-if="loading" class="loading">Loading...</div>
     
@@ -61,6 +46,7 @@
 import { ref, onMounted } from 'vue'
 import { apiClient } from '../api/client'
 import { showAlert } from '../composables/useDialog'
+import AdminMenu from '../components/AdminMenu.vue'
 
 interface CircuitBreaker {
   state: string
@@ -135,43 +121,6 @@ const formatDate = (dateStr: string | null | undefined) => {
 
 .admin h1 {
   margin-bottom: 24px;
-}
-
-.admin-tabs {
-  display: flex;
-  gap: 0;
-  margin-bottom: 24px;
-  border-bottom: 2px solid var(--border-primary);
-  overflow-x: auto;
-  overflow-y: hidden;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE and Edge */
-}
-
-.admin-tabs::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
-}
-
-.admin-tab {
-  padding: 12px 24px;
-  text-decoration: none;
-  color: var(--text-secondary);
-  border-bottom: 3px solid transparent;
-  transition: all 0.2s;
-  white-space: nowrap;
-  position: relative;
-  bottom: -2px;
-}
-
-.admin-tab:hover {
-  color: var(--text-primary);
-  background: var(--bg-hover);
-}
-
-.admin-tab.active {
-  color: var(--color-primary);
-  border-bottom-color: var(--color-primary);
-  font-weight: 500;
 }
 
 .admin .card h2 {

@@ -14,16 +14,40 @@
         <div class="nav-links">
           <div class="nav-left">
             <router-link to="/dashboard">Dashboard</router-link>
-            <router-link to="/vocab">Vocabulary</router-link>
+            <router-link to="/learning">Learning</router-link>
             <router-link to="/training">Training</router-link>
             <router-link to="/chat">Chat</router-link>
-            <router-link v-if="isAdmin" to="/admin">Admin</router-link>
+            <div class="nav-more-wrapper">
+              <button 
+                ref="moreButtonRef"
+                @click.stop="showMoreDropdown = !showMoreDropdown" 
+                class="nav-more-btn" 
+                title="More"
+                :class="{ active: showMoreDropdown }"
+              >
+                More
+                <Icon name="chevron-down" class="nav-more-chevron" />
+              </button>
+              <div v-if="showMoreDropdown" ref="moreDropdownRef" class="nav-more-dropdown">
+                <router-link to="/vocab" class="dropdown-item" @click="showMoreDropdown = false">
+                  <Icon name="book" class="dropdown-icon" />
+                  <span>Vocabulary</span>
+                </router-link>
+                <router-link v-if="isAdmin" to="/admin" class="dropdown-item" @click="showMoreDropdown = false">
+                  <Icon name="shield" class="dropdown-icon" />
+                  <span>Admin</span>
+                </router-link>
+                <button v-if="!isTelegramMiniApp" @click="handleMoreLogout" class="dropdown-item">
+                  <Icon name="logout" class="dropdown-icon" />
+                  <span>Logout</span>
+                </button>
+              </div>
+            </div>
           </div>
           <div class="nav-right">
-            <router-link to="/settings" class="theme-toggle" title="Settings">
+            <router-link to="/settings" class="nav-settings-btn" title="Settings">
               <Icon name="gear" />
             </router-link>
-            <button v-if="!isTelegramMiniApp" @click="logout" class="btn btn-secondary">Logout</button>
           </div>
         </div>
       </div>
@@ -43,9 +67,9 @@
           <Icon name="dashboard" class="mobile-nav-icon" />
           <span class="mobile-nav-label">Dashboard</span>
         </router-link>
-        <router-link to="/vocab" class="mobile-nav-item" title="Vocabulary">
+        <router-link to="/learning" class="mobile-nav-item" title="Learning">
           <Icon name="book" class="mobile-nav-icon" />
-          <span class="mobile-nav-label">Vocab</span>
+          <span class="mobile-nav-label">Learning</span>
         </router-link>
         <router-link to="/training" class="mobile-nav-item" title="Training">
           <Icon name="target" class="mobile-nav-icon" />
@@ -77,6 +101,10 @@
         <button @click="showSidebar = false" class="sidebar-close">×</button>
       </div>
       <div class="sidebar-content">
+        <router-link to="/vocab" class="sidebar-item" @click="showSidebar = false">
+          <Icon name="book" class="sidebar-icon" />
+          <span>Vocabulary</span>
+        </router-link>
         <router-link to="/settings" class="sidebar-item" @click="showSidebar = false">
           <Icon name="gear" class="sidebar-icon" />
           <span>Settings</span>
@@ -108,7 +136,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch, computed } from 'vue'
+import { ref, onMounted, onUnmounted, watch, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuth } from './composables/useAuth'
 import { useTheme } from './composables/useTheme'
@@ -128,18 +156,36 @@ const authError = ref<string | null>(null)
 const isTelegramMiniApp = ref(false)
 const isMobile = ref(false)
 const showSidebar = ref(false)
+const showMoreDropdown = ref(false)
+const moreDropdownRef = ref<HTMLElement | null>(null)
+const moreButtonRef = ref<HTMLElement | null>(null)
+
+// Handle click outside dropdown
+const handleClickOutside = (event: MouseEvent) => {
+  if (showMoreDropdown.value) {
+    const target = event.target as HTMLElement
+    if (moreDropdownRef.value && !moreDropdownRef.value.contains(target) &&
+        moreButtonRef.value && !moreButtonRef.value.contains(target)) {
+      showMoreDropdown.value = false
+    }
+  }
+}
+
+// Check if mobile device
+const checkMobile = () => {
+  isMobile.value = window.innerWidth <= 768
+}
 
 // Check if we're in Telegram Mini App
 onMounted(() => {
   const tg = (window as any).Telegram?.WebApp
   isTelegramMiniApp.value = !!tg
   
-  // Check if mobile device
-  const checkMobile = () => {
-    isMobile.value = window.innerWidth <= 768
-  }
   checkMobile()
   window.addEventListener('resize', checkMobile)
+  
+  // Add click outside handler
+  document.addEventListener('click', handleClickOutside)
   
   mounted.value = true
   
@@ -151,6 +197,11 @@ onMounted(() => {
       }
     }
   }, 3000)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside)
+  window.removeEventListener('resize', checkMobile)
 })
 
 // Watch route changes
@@ -191,6 +242,11 @@ const handleLogout = () => {
   showSidebar.value = false
 }
 
+const handleMoreLogout = () => {
+  logout()
+  showMoreDropdown.value = false
+}
+
 // Settings is always in More menu on mobile
 </script>
 
@@ -227,9 +283,112 @@ const handleLogout = () => {
   align-items: center;
 }
 
+.nav-more-wrapper {
+  position: relative;
+}
+
+.nav-more-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: transparent;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  font-size: inherit;
+  color: #ffffff;
+  transition: background-color 0.2s;
+  text-decoration: none;
+  border-radius: 4px;
+}
+
+.nav-more-btn:hover,
+.nav-more-btn.active {
+  background-color: var(--bg-hover);
+}
+
+.nav-more-chevron {
+  font-size: 0.8em;
+  transition: transform 0.2s;
+}
+
+.nav-more-btn.active .nav-more-chevron {
+  transform: rotate(180deg);
+}
+
+.nav-more-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px var(--navbar-shadow);
+  min-width: 180px;
+  z-index: 1002;
+  overflow: hidden;
+  animation: fadeIn 0.2s ease-out;
+  pointer-events: auto;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+  text-decoration: none;
+  pointer-events: auto;
+  position: relative;
+  z-index: 1;
+}
+
+.dropdown-item:hover {
+  background: var(--bg-hover);
+}
+
+.dropdown-icon {
+  font-size: 18px;
+  width: 20px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-settings-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid var(--border-primary);
+  border-radius: 6px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 18px;
+  color: #ffffff;
+  transition: all 0.2s;
+  text-decoration: none;
+  min-width: 44px;
+}
+
+.nav-settings-btn:hover,
+.nav-settings-btn.router-link-active {
+  background-color: var(--bg-hover);
+  border-color: var(--border-secondary);
+}
+
+
 .nav-links a {
   text-decoration: none;
-  color: var(--color-primary);
+  color: #ffffff;
   padding: 10px;
   border-radius: 4px;
   transition: background-color 0.2s;
@@ -254,7 +413,8 @@ const handleLogout = () => {
   min-width: 44px;
 }
 
-.theme-toggle:hover {
+.theme-toggle:hover,
+.theme-toggle.active {
   background-color: var(--bg-hover);
   border-color: var(--border-secondary);
 }
@@ -286,7 +446,7 @@ const handleLogout = () => {
   gap: 2px;
   padding: 0;
   text-decoration: none;
-  color: var(--color-primary);
+  color: #ffffff;
   background: transparent;
   border: none;
   cursor: pointer;
@@ -302,7 +462,7 @@ const handleLogout = () => {
 .mobile-nav-item.router-link-active,
 .mobile-nav-item.active {
   background: var(--bg-hover);
-  color: var(--color-primary);
+  color: #ffffff;
 }
 
 .mobile-nav-icon {
@@ -374,13 +534,13 @@ const handleLogout = () => {
 .sidebar-header h3 {
   margin: 0;
   font-size: 18px;
-  color: var(--color-primary);
+  color: #ffffff;
 }
 
 .sidebar-close {
   background: transparent;
   border: none;
-  color: var(--color-primary);
+  color: #ffffff;
   font-size: 28px;
   line-height: 1;
   cursor: pointer;
@@ -413,7 +573,7 @@ const handleLogout = () => {
   text-align: left;
   background: transparent;
   border: none;
-  color: var(--color-primary);
+  color: #ffffff;
   cursor: pointer;
   font-size: 16px;
   transition: background-color 0.2s;

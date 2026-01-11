@@ -12,133 +12,18 @@ import (
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/service"
+	"tgbot-skeleton/internal/testutil"
 
-	_ "github.com/mattn/go-sqlite3"
 	"go.uber.org/zap"
 )
 
 func setupTrainingHandlersTestDB(t *testing.T) (*sql.DB, *repository.UserRepository, *repository.TrainingCardRepository, *repository.UserCardRepository, *repository.SessionRepository) {
-	db, err := sql.Open("sqlite3", ":memory:")
-	if err != nil {
-		t.Fatalf("Failed to open test database: %v", err)
-	}
-
-	createTables := `
-	CREATE TABLE IF NOT EXISTS users (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		telegram_id INTEGER UNIQUE NOT NULL,
-		telegram_username TEXT,
-		username TEXT,
-		timezone TEXT DEFAULT '',
-		preferred_training_time TEXT DEFAULT '',
-		settings_json TEXT DEFAULT '',
-		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-	);
-	
-	CREATE TABLE IF NOT EXISTS word_cards (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		word TEXT UNIQUE NOT NULL,
-		definition TEXT NOT NULL,
-		pos TEXT,
-		transcription TEXT,
-		definition_ru TEXT,
-		examples_json TEXT,
-		verb_forms_json TEXT,
-		display_en TEXT,
-		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-	);
-	
-	CREATE TABLE IF NOT EXISTS word_forms (
-		form TEXT PRIMARY KEY,
-		word_card_id INTEGER NOT NULL,
-		FOREIGN KEY (word_card_id) REFERENCES word_cards(id) ON DELETE CASCADE
-	);
-	
-	CREATE TABLE IF NOT EXISTS training_cards (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		word_card_id INTEGER NOT NULL,
-		word_en TEXT NOT NULL,
-		transcription TEXT,
-		sense_index INTEGER NOT NULL,
-		word_ru TEXT NOT NULL,
-		meaning_en TEXT NOT NULL,
-		example_en TEXT,
-		example_ru TEXT,
-		distractors_ru TEXT,
-		distractors_en TEXT,
-		hint TEXT,
-		pos TEXT,
-		display_word TEXT,
-		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-	);
-	
-	CREATE TABLE IF NOT EXISTS user_cards (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		user_id INTEGER NOT NULL,
-		training_card_id INTEGER NOT NULL,
-		direction TEXT NOT NULL,
-		state TEXT NOT NULL,
-		ef REAL NOT NULL DEFAULT 2.5,
-		reps INTEGER NOT NULL DEFAULT 0,
-		interval_days INTEGER NOT NULL DEFAULT 0,
-		learning_step INTEGER NOT NULL DEFAULT 0,
-		lapse_count INTEGER NOT NULL DEFAULT 0,
-		next_due_at TEXT,
-		last_review_at TEXT,
-		last_quality INTEGER,
-		last_options_json TEXT,
-		wrong_answers_json TEXT,
-		stats_json TEXT,
-		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-	);
-	
-	CREATE TABLE IF NOT EXISTS training_sessions (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		user_id INTEGER NOT NULL,
-		started_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		ended_at TEXT,
-		source TEXT NOT NULL,
-		planned_count INTEGER NOT NULL DEFAULT 0,
-		done_count INTEGER NOT NULL DEFAULT 0,
-		session_json TEXT DEFAULT ''
-	);
-	
-	CREATE TABLE IF NOT EXISTS review_events (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		session_id INTEGER,
-		user_id INTEGER NOT NULL,
-		user_card_id INTEGER NOT NULL,
-		direction TEXT NOT NULL,
-		shown_at TEXT NOT NULL,
-		options_shown_at TEXT,
-		answered_at TEXT,
-		t_delay_ms INTEGER,
-		early_reveal INTEGER NOT NULL DEFAULT 0,
-		option_count INTEGER NOT NULL,
-		options_json TEXT,
-		chosen_option TEXT,
-		is_correct INTEGER NOT NULL DEFAULT 0,
-		quality INTEGER NOT NULL,
-		metrics_json TEXT,
-		srs_before_json TEXT,
-		srs_after_json TEXT,
-		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-	);`
-
-	_, err = db.Exec(createTables)
-	if err != nil {
-		t.Fatalf("Failed to create tables: %v", err)
-	}
-
+	db := testutil.SetupTestDB(t)
 	logger, _ := zap.NewDevelopment()
 	userRepo := repository.NewUserRepository(db, logger)
 	trainingCardRepo := repository.NewTrainingCardRepository(db, logger)
 	userCardRepo := repository.NewUserCardRepository(db, logger)
 	sessionRepo := repository.NewSessionRepository(db, logger)
-
 	return db, userRepo, trainingCardRepo, userCardRepo, sessionRepo
 }
 

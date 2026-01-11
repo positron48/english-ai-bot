@@ -88,39 +88,6 @@
         </div>
       </div>
 
-      <!-- Activity Section -->
-      <div class="activity-section">
-        <div class="activity-grid">
-          <div class="card activity-card">
-            <h2>Today</h2>
-            <div class="activity-stats">
-              <div class="activity-stat">
-                <span class="activity-label">Sessions</span>
-                <span class="activity-value">{{ stats.todaySessions }}</span>
-              </div>
-              <div class="activity-stat">
-                <span class="activity-label">Cards Completed</span>
-                <span class="activity-value">{{ stats.todayCardsCompleted }}</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="card activity-card">
-            <h2>This Week</h2>
-            <div class="activity-stats">
-              <div class="activity-stat">
-                <span class="activity-label">Sessions</span>
-                <span class="activity-value">{{ stats.weekSessions }}</span>
-              </div>
-              <div class="activity-stat">
-                <span class="activity-label">Cards Completed</span>
-                <span class="activity-value">{{ stats.weekCardsCompleted }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <!-- Weekly Chart -->
       <div class="weekly-chart-section">
         <div class="card">
@@ -185,10 +152,6 @@ interface DashboardStats {
   reviewCount: number
   totalCards: number
   availableForTraining: number
-  todaySessions: number
-  todayCardsCompleted: number
-  weekSessions: number
-  weekCardsCompleted: number
   accuracyPercent: number
   weeklyStats: WeeklyStat[]
   wordsAddedStats: WordsAddedStat[]
@@ -201,10 +164,6 @@ const stats = ref<DashboardStats>({
   reviewCount: 0,
   totalCards: 0,
   availableForTraining: 0,
-  todaySessions: 0,
-  todayCardsCompleted: 0,
-  weekSessions: 0,
-  weekCardsCompleted: 0,
   accuracyPercent: 0,
   weeklyStats: [],
   wordsAddedStats: []
@@ -260,10 +219,6 @@ const loadData = async () => {
       reviewCount: data.review_count || 0,
       totalCards: data.total_cards || 0,
       availableForTraining: data.available_for_training || 0,
-      todaySessions: data.today_sessions || 0,
-      todayCardsCompleted: data.today_cards_completed || 0,
-      weekSessions: data.week_sessions || 0,
-      weekCardsCompleted: data.week_cards_completed || 0,
       accuracyPercent: data.accuracy_percent || 0,
       weeklyStats: data.weekly_stats || [],
       wordsAddedStats: data.words_added_stats || []
@@ -886,48 +841,6 @@ onMounted(() => {
   background: var(--color-success);
 }
 
-/* Activity Section */
-.activity-section {
-  margin-top: 8px;
-}
-
-.activity-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-}
-
-.activity-card h2 {
-  margin-bottom: 20px;
-  font-size: 20px;
-}
-
-.activity-stats {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.activity-stat {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px;
-  background: var(--input-bg);
-  border-radius: 6px;
-}
-
-.activity-label {
-  font-size: 14px;
-  color: var(--text-secondary);
-}
-
-.activity-value {
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--color-primary);
-}
-
 /* Weekly Chart */
 .weekly-chart-section {
   margin-top: 8px;
@@ -1039,43 +952,6 @@ onMounted(() => {
   
   .progress-bar {
     height: 6px;
-  }
-  
-  /* Compact Activity Section */
-  .activity-section {
-    margin-top: 0;
-  }
-  
-  .activity-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 6px;
-  }
-  
-  .activity-card {
-    padding: 8px;
-  }
-  
-  .activity-card h2 {
-    font-size: 13px;
-    margin-bottom: 8px;
-    font-weight: 600;
-  }
-  
-  .activity-stats {
-    gap: 6px;
-  }
-  
-  .activity-stat {
-    padding: 8px;
-    border-radius: 4px;
-  }
-  
-  .activity-label {
-    font-size: 11px;
-  }
-  
-  .activity-value {
-    font-size: 18px;
   }
   
   /* Compact Weekly Chart */

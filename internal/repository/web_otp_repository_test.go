@@ -5,32 +5,13 @@ import (
 	"testing"
 	"time"
 
-	_ "github.com/mattn/go-sqlite3"
+	"tgbot-skeleton/internal/testutil"
+
 	"go.uber.org/zap"
 )
 
 func setupWebOTPTestDB(t *testing.T) *sql.DB {
-	db, err := sql.Open("sqlite3", ":memory:")
-	if err != nil {
-		t.Fatalf("Failed to open test database: %v", err)
-	}
-
-	createTable := `
-	CREATE TABLE IF NOT EXISTS web_otps (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		user_id INTEGER NOT NULL,
-		code_hash TEXT NOT NULL,
-		expires_at TEXT NOT NULL,
-		consumed_at TEXT,
-		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-	)`
-
-	_, err = db.Exec(createTable)
-	if err != nil {
-		t.Fatalf("Failed to create table: %v", err)
-	}
-
-	return db
+	return testutil.SetupTestDB(t)
 }
 
 func TestNewWebOTPRepository(t *testing.T) {

@@ -6,56 +6,13 @@ import (
 	"time"
 
 	"tgbot-skeleton/internal/models"
+	"tgbot-skeleton/internal/testutil"
 
-	_ "github.com/mattn/go-sqlite3"
 	"go.uber.org/zap"
 )
 
 func setupSessionAdditionalTestDB(t *testing.T) *sql.DB {
-	db, err := sql.Open("sqlite3", ":memory:")
-	if err != nil {
-		t.Fatalf("Failed to open test database: %v", err)
-	}
-
-	createTables := `
-	CREATE TABLE IF NOT EXISTS training_sessions (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		user_id INTEGER NOT NULL,
-		started_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		ended_at TEXT,
-		source TEXT NOT NULL,
-		planned_count INTEGER NOT NULL DEFAULT 0,
-		done_count INTEGER NOT NULL DEFAULT 0,
-		session_json TEXT DEFAULT ''
-	);
-	
-	CREATE TABLE IF NOT EXISTS review_events (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		session_id INTEGER,
-		user_id INTEGER NOT NULL,
-		user_card_id INTEGER NOT NULL,
-		direction TEXT NOT NULL,
-		shown_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		options_shown_at TEXT,
-		answered_at TEXT,
-		t_delay_ms INTEGER NOT NULL DEFAULT 0,
-		early_reveal INTEGER NOT NULL DEFAULT 0,
-		option_count INTEGER NOT NULL DEFAULT 0,
-		options_json TEXT,
-		chosen_option TEXT,
-		is_correct INTEGER NOT NULL DEFAULT 0,
-		quality INTEGER NOT NULL DEFAULT 0,
-		metrics_json TEXT,
-		srs_before_json TEXT,
-		srs_after_json TEXT
-	);`
-
-	_, err = db.Exec(createTables)
-	if err != nil {
-		t.Fatalf("Failed to create tables: %v", err)
-	}
-
-	return db
+	return testutil.SetupTestDB(t)
 }
 
 func TestSessionRepository_CreateReviewEvent(t *testing.T) {

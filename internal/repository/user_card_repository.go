@@ -97,20 +97,27 @@ func (r *UserCardRepository) GetUserCardByTrainingCard(userID, trainingCardID in
 }
 
 // GetDueCards gets cards that are due for review
+// Excludes words marked as "known" in user_word_knowledge
 func (r *UserCardRepository) GetDueCards(userID int64, now time.Time, limit int) ([]*models.UserCard, error) {
-	query := `SELECT id, user_id, training_card_id, direction, state, ef, reps,
-			  interval_days, learning_step, lapse_count, next_due_at, last_review_at,
-			  last_quality, COALESCE(last_options_json, ''), 
-			  COALESCE(wrong_answers_json, ''), COALESCE(stats_json, ''),
-			  created_at, updated_at
-			  FROM user_cards 
-			  WHERE user_id = ? AND (next_due_at IS NULL OR next_due_at <= ?)
+	query := `SELECT uc.id, uc.user_id, uc.training_card_id, uc.direction, uc.state, uc.ef, uc.reps,
+			  uc.interval_days, uc.learning_step, uc.lapse_count, uc.next_due_at, uc.last_review_at,
+			  uc.last_quality, COALESCE(uc.last_options_json, ''), 
+			  COALESCE(uc.wrong_answers_json, ''), COALESCE(uc.stats_json, ''),
+			  uc.created_at, uc.updated_at
+			  FROM user_cards uc
+			  INNER JOIN training_cards tc ON uc.training_card_id = tc.id
+			  WHERE uc.user_id = ? 
+			    AND (uc.next_due_at IS NULL OR uc.next_due_at <= ?)
+			    AND NOT EXISTS (
+			      SELECT 1 FROM user_word_knowledge uwk 
+			      WHERE uwk.user_id = ? AND uwk.word_card_id = tc.word_card_id AND uwk.status = 'known'
+			    )
 			  ORDER BY 
-			    CASE WHEN state = 'learning' THEN 0 ELSE 1 END,
-			    next_due_at ASC NULLS FIRST
+			    CASE WHEN uc.state = 'learning' THEN 0 ELSE 1 END,
+			    uc.next_due_at ASC NULLS FIRST
 			  LIMIT ?`
 
-	rows, err := r.db.Query(query, userID, now, limit)
+	rows, err := r.db.Query(query, userID, now, userID, limit)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get due cards: %w", err)
 	}
@@ -120,12 +127,20 @@ func (r *UserCardRepository) GetDueCards(userID int64, now time.Time, limit int)
 }
 
 // GetDueCount gets the count of due cards for a user
+// Excludes words marked as "known" in user_word_knowledge
 func (r *UserCardRepository) GetDueCount(userID int64, now time.Time) (int, error) {
-	query := `SELECT COUNT(*) FROM user_cards 
-			  WHERE user_id = ? AND (next_due_at IS NULL OR next_due_at <= ?)`
+	query := `SELECT COUNT(*) 
+			  FROM user_cards uc
+			  INNER JOIN training_cards tc ON uc.training_card_id = tc.id
+			  WHERE uc.user_id = ? 
+			    AND (uc.next_due_at IS NULL OR uc.next_due_at <= ?)
+			    AND NOT EXISTS (
+			      SELECT 1 FROM user_word_knowledge uwk 
+			      WHERE uwk.user_id = ? AND uwk.word_card_id = tc.word_card_id AND uwk.status = 'known'
+			    )`
 
 	var count int
-	err := r.db.QueryRow(query, userID, now).Scan(&count)
+	err := r.db.QueryRow(query, userID, now, userID).Scan(&count)
 	if err != nil {
 		return 0, fmt.Errorf("failed to get due count: %w", err)
 	}
@@ -133,18 +148,25 @@ func (r *UserCardRepository) GetDueCount(userID int64, now time.Time) (int, erro
 }
 
 // GetNewCards gets new cards for a user
+// Excludes words marked as "known" in user_word_knowledge
 func (r *UserCardRepository) GetNewCards(userID int64, limit int) ([]*models.UserCard, error) {
-	query := `SELECT id, user_id, training_card_id, direction, state, ef, reps,
-			  interval_days, learning_step, lapse_count, next_due_at, last_review_at,
-			  last_quality, COALESCE(last_options_json, ''), 
-			  COALESCE(wrong_answers_json, ''), COALESCE(stats_json, ''),
-			  created_at, updated_at
-			  FROM user_cards 
-			  WHERE user_id = ? AND state = 'new'
-			  ORDER BY created_at
+	query := `SELECT uc.id, uc.user_id, uc.training_card_id, uc.direction, uc.state, uc.ef, uc.reps,
+			  uc.interval_days, uc.learning_step, uc.lapse_count, uc.next_due_at, uc.last_review_at,
+			  uc.last_quality, COALESCE(uc.last_options_json, ''), 
+			  COALESCE(uc.wrong_answers_json, ''), COALESCE(uc.stats_json, ''),
+			  uc.created_at, uc.updated_at
+			  FROM user_cards uc
+			  INNER JOIN training_cards tc ON uc.training_card_id = tc.id
+			  WHERE uc.user_id = ? 
+			    AND uc.state = 'new'
+			    AND NOT EXISTS (
+			      SELECT 1 FROM user_word_knowledge uwk 
+			      WHERE uwk.user_id = ? AND uwk.word_card_id = tc.word_card_id AND uwk.status = 'known'
+			    )
+			  ORDER BY uc.created_at
 			  LIMIT ?`
 
-	rows, err := r.db.Query(query, userID, limit)
+	rows, err := r.db.Query(query, userID, userID, limit)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get new cards: %w", err)
 	}

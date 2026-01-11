@@ -274,6 +274,12 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/app/dashboard", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleDashboard)))
 	r.mux.HandleFunc("/app/vocab", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleVocab)))
 	r.mux.HandleFunc("/app/vocab/", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleVocabDelete)))
+	
+	// Learning word sets routes
+	r.mux.HandleFunc("/app/learning/words/categories", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningWordsCategories)))
+	r.mux.HandleFunc("/app/learning/words/sets", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningWordsSets)))
+	r.mux.HandleFunc("/app/learning/words/sets/", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningWordsSetDetailOrStudy)))
+	
 	r.mux.HandleFunc("/app/training/start", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTrainingStart)))
 	r.mux.HandleFunc("/app/training/current", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTrainingCurrent)))
 	r.mux.HandleFunc("/app/training/reveal", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTrainingReveal)))
@@ -294,6 +300,12 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/app/admin/orphaned-cards/", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminOrphanedCard))))
 	r.mux.HandleFunc("/app/admin/prompt-tester/default-prompts", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminPromptTesterDefaultPrompts))))
 	r.mux.HandleFunc("/app/admin/prompt-tester/run", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminPromptTesterRun))))
+	
+	// Word sets admin routes
+	r.mux.HandleFunc("/app/admin/word-set-categories", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminWordSetCategories))))
+	r.mux.HandleFunc("/app/admin/word-set-categories/", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminWordSetCategories))))
+	r.mux.HandleFunc("/app/admin/word-sets", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminWordSets))))
+	r.mux.HandleFunc("/app/admin/word-sets/", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminWordSetDetailOrSets))))
 }
 
 // corsMiddleware adds CORS headers to allow Swagger UI to make requests

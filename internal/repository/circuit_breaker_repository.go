@@ -47,15 +47,40 @@ func (r *CircuitBreakerRepository) GetState() (*models.CircuitBreakerState, erro
 	}
 
 	if lastFailureAt.Valid {
-		t, _ := time.Parse("2006-01-02 15:04:05", lastFailureAt.String)
+		t, err := time.Parse("2006-01-02 15:04:05", lastFailureAt.String)
+		if err != nil {
+			// Try alternative formats
+			if t2, err2 := time.Parse("2006-01-02T15:04:05Z", lastFailureAt.String); err2 == nil {
+				t = t2
+			} else if t3, err3 := time.Parse("2006-01-02T15:04:05", lastFailureAt.String); err3 == nil {
+				t = t3
+			}
+		}
 		state.LastFailureAt = &t
 	}
 	if lastResetAt.Valid {
-		t, _ := time.Parse("2006-01-02 15:04:05", lastResetAt.String)
+		t, err := time.Parse("2006-01-02 15:04:05", lastResetAt.String)
+		if err != nil {
+			// Try alternative formats
+			if t2, err2 := time.Parse("2006-01-02T15:04:05Z", lastResetAt.String); err2 == nil {
+				t = t2
+			} else if t3, err3 := time.Parse("2006-01-02T15:04:05", lastResetAt.String); err3 == nil {
+				t = t3
+			}
+		}
 		state.LastResetAt = &t
 	}
 	if updatedAt.Valid {
-		state.UpdatedAt, _ = time.Parse("2006-01-02 15:04:05", updatedAt.String)
+		var err error
+		state.UpdatedAt, err = time.Parse("2006-01-02 15:04:05", updatedAt.String)
+		if err != nil {
+			// Try alternative formats
+			if t2, err2 := time.Parse("2006-01-02T15:04:05Z", updatedAt.String); err2 == nil {
+				state.UpdatedAt = t2
+			} else if t3, err3 := time.Parse("2006-01-02T15:04:05", updatedAt.String); err3 == nil {
+				state.UpdatedAt = t3
+			}
+		}
 	}
 
 	return &state, nil

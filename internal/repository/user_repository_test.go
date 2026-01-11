@@ -4,34 +4,13 @@ import (
 	"database/sql"
 	"testing"
 
-	_ "github.com/mattn/go-sqlite3"
+	"tgbot-skeleton/internal/testutil"
+
 	"go.uber.org/zap"
 )
 
 func setupUserTestDB(t *testing.T) *sql.DB {
-	db, err := sql.Open("sqlite3", ":memory:")
-	if err != nil {
-		t.Fatalf("Failed to open test database: %v", err)
-	}
-
-	createTable := `
-	CREATE TABLE IF NOT EXISTS users (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		telegram_id INTEGER UNIQUE NOT NULL,
-		telegram_username TEXT,
-		timezone TEXT DEFAULT '',
-		preferred_training_time TEXT DEFAULT '',
-		settings_json TEXT DEFAULT '',
-		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-	)`
-
-	_, err = db.Exec(createTable)
-	if err != nil {
-		t.Fatalf("Failed to create table: %v", err)
-	}
-
-	return db
+	return testutil.SetupTestDB(t)
 }
 
 func TestNewUserRepository(t *testing.T) {

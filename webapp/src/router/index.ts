@@ -27,6 +27,36 @@ const router = createRouter({
       meta: { requiresAuth: true }
     },
     {
+      path: '/learning',
+      name: 'Learning',
+      component: () => import('../views/LearningView.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/learning/grammar',
+      name: 'LearningGrammar',
+      component: () => import('../views/LearningGrammarView.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/learning/words',
+      name: 'WordSets',
+      component: () => import('../views/WordSetsView.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/learning/words/:setId',
+      name: 'WordSetDetail',
+      component: () => import('../views/WordSetDetailView.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/learning/words/:setId/study',
+      name: 'WordSetStudy',
+      component: () => import('../views/WordSetStudyView.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
       path: '/training',
       name: 'Training',
       component: () => import('../views/TrainingView.vue'),
@@ -60,6 +90,12 @@ const router = createRouter({
       path: '/admin/orphaned-cards',
       name: 'AdminOrphanedCards',
       component: () => import('../views/AdminOrphanedCardsView.vue'),
+      meta: { requiresAuth: true, requiresAdmin: true }
+    },
+    {
+      path: '/admin/word-sets',
+      name: 'AdminWordSets',
+      component: () => import('../views/AdminWordSetsView.vue'),
       meta: { requiresAuth: true, requiresAdmin: true }
     },
     {

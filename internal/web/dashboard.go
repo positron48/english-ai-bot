@@ -89,34 +89,6 @@ func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 		totalCards = 0
 	}
 
-	// Get today's session count and stats
-	today := now.Format("2006-01-02")
-	var todaySessions int
-	var todayCardsCompleted int
-	todayQuery := `SELECT COUNT(*), COALESCE(SUM(done_count), 0) 
-				   FROM training_sessions 
-				   WHERE user_id = ? AND DATE(started_at) = ?`
-	err = r.db.QueryRow(todayQuery, userID, today).Scan(&todaySessions, &todayCardsCompleted)
-	if err != nil {
-		r.logger.Error("failed to get today stats", zap.Error(err))
-		todaySessions = 0
-		todayCardsCompleted = 0
-	}
-
-	// Get week stats (last 7 days)
-	weekAgo := now.AddDate(0, 0, -7)
-	var weekSessions int
-	var weekCardsCompleted int
-	weekQuery := `SELECT COUNT(*), COALESCE(SUM(done_count), 0) 
-				  FROM training_sessions 
-				  WHERE user_id = ? AND started_at >= ? AND ended_at IS NOT NULL`
-	err = r.db.QueryRow(weekQuery, userID, weekAgo).Scan(&weekSessions, &weekCardsCompleted)
-	if err != nil {
-		r.logger.Error("failed to get week stats", zap.Error(err))
-		weekSessions = 0
-		weekCardsCompleted = 0
-	}
-
 	// Get accuracy (last 30 days)
 	monthAgo := now.AddDate(0, 0, -30)
 	var totalReviews int
@@ -200,10 +172,6 @@ func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 		"review_count":          reviewCount,
 		"total_cards":           totalCards,
 		"available_for_training": availableForTraining,
-		"today_sessions":        todaySessions,
-		"today_cards_completed": todayCardsCompleted,
-		"week_sessions":         weekSessions,
-		"week_cards_completed":  weekCardsCompleted,
 		"accuracy_percent":      accuracyPercent,
 		"weekly_stats":         weeklyStats,
 		"words_added_stats":     wordsAddedStats,

@@ -66,12 +66,26 @@
     <svg v-else-if="name === 'shield'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
     </svg>
+    <svg v-else-if="name === 'arrow-left'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="19" y1="12" x2="5" y2="12"/>
+      <polyline points="12 19 5 12 12 5"/>
+    </svg>
+    <svg v-else-if="name === 'chevron-down'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="6 9 12 15 18 9"/>
+    </svg>
+    <svg v-else-if="name === 'folder'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+    </svg>
+    <svg v-else-if="name === 'close'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="18" y1="6" x2="6" y2="18"/>
+      <line x1="6" y1="6" x2="18" y2="18"/>
+    </svg>
   </span>
 </template>
 
 <script setup lang="ts">
 defineProps<{
-  name: 'warning' | 'sun' | 'moon' | 'book' | 'sparkles' | 'book-open' | 'refresh' | 'settings' | 'logout' | 'dashboard' | 'target' | 'chat' | 'more' | 'gear' | 'play' | 'shield'
+  name: 'warning' | 'sun' | 'moon' | 'book' | 'sparkles' | 'book-open' | 'refresh' | 'settings' | 'logout' | 'dashboard' | 'target' | 'chat' | 'more' | 'gear' | 'play' | 'shield' | 'arrow-left' | 'folder' | 'close' | 'chevron-down'
   dark?: boolean
 }>()
 </script>

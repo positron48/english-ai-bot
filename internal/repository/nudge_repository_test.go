@@ -5,34 +5,13 @@ import (
 	"testing"
 
 	"tgbot-skeleton/internal/models"
+	"tgbot-skeleton/internal/testutil"
 
-	_ "github.com/mattn/go-sqlite3"
 	"go.uber.org/zap"
 )
 
 func setupNudgeTestDB(t *testing.T) *sql.DB {
-	db, err := sql.Open("sqlite3", ":memory:")
-	if err != nil {
-		t.Fatalf("Failed to open test database: %v", err)
-	}
-
-	createTable := `
-	CREATE TABLE IF NOT EXISTS training_nudges (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		user_id INTEGER NOT NULL,
-		local_date TEXT NOT NULL,
-		sent_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		consumed_at TEXT,
-		due_count_at_send INTEGER NOT NULL DEFAULT 0,
-		message_id INTEGER
-	)`
-
-	_, err = db.Exec(createTable)
-	if err != nil {
-		t.Fatalf("Failed to create table: %v", err)
-	}
-
-	return db
+	return testutil.SetupTestDB(t)
 }
 
 func TestNewNudgeRepository(t *testing.T) {

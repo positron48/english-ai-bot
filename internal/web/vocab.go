@@ -118,10 +118,10 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 	now := time.Now()
 
 	// Build query with search and pagination
-	// Group by word_card_id (lemma) instead of word_en
-	// Use substr() to extract first 19 chars (YYYY-MM-DD HH:MM:SS) from Go time.String() format
+	// Include both words with user_cards and words marked as "known"
 	// Display word: prefer training_cards.display_word, fallback word_cards.display_en, fallback word_cards.word
-	baseQuery := `SELECT 
+	// Use UNION ALL to combine words from user_cards and known words without user_cards
+	queryFromCards := `SELECT 
 		tc.word_card_id,
 		wc.word as lemma,
 		COALESCE(
@@ -140,24 +140,61 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 		(SELECT COUNT(*) FROM review_events re 
 		 JOIN user_cards uc2 ON re.user_card_id = uc2.id 
 		 JOIN training_cards tc2 ON uc2.training_card_id = tc2.id 
-		 WHERE tc2.word_card_id = tc.word_card_id AND uc2.user_id = ?) as review_count
+		 WHERE tc2.word_card_id = tc.word_card_id AND uc2.user_id = ?) as review_count,
+		CASE WHEN EXISTS (SELECT 1 FROM user_word_knowledge uwk WHERE uwk.user_id = ? AND uwk.word_card_id = tc.word_card_id AND uwk.status = 'known') THEN 1 ELSE 0 END as is_known
 	FROM user_cards uc
 	JOIN training_cards tc ON uc.training_card_id = tc.id
 	JOIN word_cards wc ON tc.word_card_id = wc.id
 	WHERE uc.user_id = ?`
 
-	args := []interface{}{now, userID, userID}
+	queryFromKnown := `SELECT 
+		uwk.word_card_id,
+		wc.word as lemma,
+		COALESCE(
+			(SELECT display_word FROM training_cards tc2 WHERE tc2.word_card_id = uwk.word_card_id AND tc2.display_word IS NOT NULL AND tc2.display_word != '' LIMIT 1),
+			wc.display_en,
+			wc.word
+		) as display_word,
+		0 as total_cards,
+		0 as due_count,
+		NULL as last_review,
+		0 as total_reps,
+		substr(uwk.created_at, 1, 19) as added_at,
+		0 as review_state_count,
+		0 as learning_state_count,
+		0 as new_state_count,
+		0 as review_count,
+		1 as is_known
+	FROM user_word_knowledge uwk
+	JOIN word_cards wc ON uwk.word_card_id = wc.id
+	WHERE uwk.user_id = ? AND uwk.status = 'known'
+	  AND NOT EXISTS (
+	    SELECT 1 FROM user_cards uc
+	    JOIN training_cards tc ON uc.training_card_id = tc.id
+	    WHERE uc.user_id = ? AND tc.word_card_id = uwk.word_card_id
+	  )`
+
+	args := []interface{}{now, userID, userID, userID}
+	argsKnown := []interface{}{userID, userID}
+	
 	if search != "" {
 		// Search by lemma, display_word, or word_ru (case-insensitive)
 		searchLower := strings.ToLower(search)
-		baseQuery += " AND (LOWER(wc.word) LIKE ? OR LOWER(COALESCE((SELECT display_word FROM training_cards tc2 WHERE tc2.word_card_id = tc.word_card_id AND tc2.display_word IS NOT NULL AND tc2.display_word != '' LIMIT 1), wc.display_en, wc.word)) LIKE ? OR LOWER(tc.word_ru) LIKE ?)"
 		searchPattern := "%" + searchLower + "%"
+		queryFromCards += " AND (LOWER(wc.word) LIKE ? OR LOWER(COALESCE((SELECT display_word FROM training_cards tc2 WHERE tc2.word_card_id = tc.word_card_id AND tc2.display_word IS NOT NULL AND tc2.display_word != '' LIMIT 1), wc.display_en, wc.word)) LIKE ? OR LOWER(tc.word_ru) LIKE ?)"
 		args = append(args, searchPattern, searchPattern, searchPattern)
+		
+		queryFromKnown += " AND (LOWER(wc.word) LIKE ? OR LOWER(COALESCE((SELECT display_word FROM training_cards tc2 WHERE tc2.word_card_id = uwk.word_card_id AND tc2.display_word IS NOT NULL AND tc2.display_word != '' LIMIT 1), wc.display_en, wc.word)) LIKE ?)"
+		argsKnown = append(argsKnown, searchPattern, searchPattern)
 	}
 
-	baseQuery += " GROUP BY tc.word_card_id, wc.word"
+	queryFromCards += " GROUP BY tc.word_card_id, wc.word"
+	
+	// Combine both queries with UNION ALL
+	baseQuery := "SELECT * FROM (" + queryFromCards + " UNION ALL " + queryFromKnown + ") combined"
 
 	// Get total count for pagination (count distinct word_card_id)
+	// Include both words with user_cards and known words without user_cards
 	countQuery := `SELECT COUNT(DISTINCT tc.word_card_id) as total
 	FROM user_cards uc
 	JOIN training_cards tc ON uc.training_card_id = tc.id
@@ -172,13 +209,41 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 		countArgs = append(countArgs, searchPattern, searchPattern, searchPattern)
 	}
 	
-	var totalCount int
-	err := r.db.QueryRow(countQuery, countArgs...).Scan(&totalCount)
-	if err != nil {
-		r.logger.Error("failed to get vocabulary count", zap.Error(err))
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
-		return
+	// Add count for known words without user_cards
+	countQueryKnown := `SELECT COUNT(DISTINCT uwk.word_card_id) as total
+	FROM user_word_knowledge uwk
+	JOIN word_cards wc ON uwk.word_card_id = wc.id
+	WHERE uwk.user_id = ? AND uwk.status = 'known'
+	  AND NOT EXISTS (
+	    SELECT 1 FROM user_cards uc
+	    JOIN training_cards tc ON uc.training_card_id = tc.id
+	    WHERE uc.user_id = ? AND tc.word_card_id = uwk.word_card_id
+	  )`
+	countArgsKnown := []interface{}{userID, userID}
+	if search != "" {
+		searchLower := strings.ToLower(search)
+		countQueryKnown += " AND (LOWER(wc.word) LIKE ? OR LOWER(COALESCE((SELECT display_word FROM training_cards tc2 WHERE tc2.word_card_id = uwk.word_card_id AND tc2.display_word IS NOT NULL AND tc2.display_word != '' LIMIT 1), wc.display_en, wc.word)) LIKE ?)"
+		searchPattern := "%" + searchLower + "%"
+		countArgsKnown = append(countArgsKnown, searchPattern, searchPattern)
 	}
+	
+	var countFromCards int
+	err := r.db.QueryRow(countQuery, countArgs...).Scan(&countFromCards)
+	if err != nil {
+		r.logger.Error("failed to get vocabulary count from cards", zap.Error(err))
+		countFromCards = 0
+	}
+	
+	var countFromKnown int
+	err = r.db.QueryRow(countQueryKnown, countArgsKnown...).Scan(&countFromKnown)
+	if err != nil {
+		r.logger.Error("failed to get vocabulary count from known", zap.Error(err))
+		countFromKnown = 0
+	}
+	
+	totalCount := countFromCards + countFromKnown
+	
+	// totalCount is already calculated above
 
 	// Add ordering and pagination
 	// Handle special case for mastery_level (calculated field)
@@ -187,44 +252,36 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 	case "mastery_level":
 		// For mastery_level, we need to order by the calculated logic
 		// Use the same logic as in the SELECT to calculate mastery
-		// mastered (1) > learning (2) > new (3)
+		// known (0) > mastered (1) > learning (2) > new (3)
+		// Since we're now using a combined query, we reference the is_known and state counts from the subquery
 		orderByClause = `CASE 
-			WHEN COUNT(CASE WHEN uc.state = 'review' THEN 1 END) = COUNT(DISTINCT uc.id) AND SUM(uc.reps) > 0 THEN 1
-			WHEN COUNT(CASE WHEN uc.state = 'review' THEN 1 END) > 0 OR COUNT(CASE WHEN uc.state = 'learning' THEN 1 END) > 0 THEN 2
+			WHEN is_known = 1 THEN 0
+			WHEN review_state_count = total_cards AND total_reps > 0 THEN 1
+			WHEN review_state_count > 0 OR learning_state_count > 0 THEN 2
 			ELSE 3
 		END`
 	case "lemma":
 		// For lemma, sort by cleaned version (without "to " prefix for verbs)
 		// Use CASE to remove "to " prefix if present (case-insensitive)
 		orderByClause = `CASE 
-			WHEN LOWER(wc.word) LIKE 'to %' THEN SUBSTR(wc.word, 4)
-			ELSE wc.word
+			WHEN LOWER(lemma) LIKE 'to %' THEN SUBSTR(lemma, 4)
+			ELSE lemma
 		END`
 	case "display_word":
-		// For display_word, apply the same logic to the COALESCE expression
+		// For display_word, apply the same logic to the display_word column
 		orderByClause = `CASE 
-			WHEN LOWER(COALESCE(
-				(SELECT display_word FROM training_cards tc2 WHERE tc2.word_card_id = tc.word_card_id AND tc2.display_word IS NOT NULL AND tc2.display_word != '' LIMIT 1),
-				wc.display_en,
-				wc.word
-			)) LIKE 'to %' THEN SUBSTR(COALESCE(
-				(SELECT display_word FROM training_cards tc2 WHERE tc2.word_card_id = tc.word_card_id AND tc2.display_word IS NOT NULL AND tc2.display_word != '' LIMIT 1),
-				wc.display_en,
-				wc.word
-			), 4)
-			ELSE COALESCE(
-				(SELECT display_word FROM training_cards tc2 WHERE tc2.word_card_id = tc.word_card_id AND tc2.display_word IS NOT NULL AND tc2.display_word != '' LIMIT 1),
-				wc.display_en,
-				wc.word
-			)
+			WHEN LOWER(display_word) LIKE 'to %' THEN SUBSTR(display_word, 4)
+			ELSE display_word
 		END`
 	default:
 		orderByClause = sortBy
 	}
 	baseQuery += " ORDER BY " + orderByClause + " " + sortOrder + " LIMIT ? OFFSET ?"
-	args = append(args, limit, offset)
+	// Combine args from both queries
+	allArgs := append(args, argsKnown...)
+	allArgs = append(allArgs, limit, offset)
 
-	rows, err := r.db.Query(baseQuery, args...)
+	rows, err := r.db.Query(baseQuery, allArgs...)
 	if err != nil {
 		r.logger.Error("failed to get vocabulary", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -235,12 +292,12 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 	var words []VocabWord
 	for rows.Next() {
 		var word VocabWord
-		var totalCards, dueCount, totalReps, reviewCount, reviewStateCount, learningStateCount, newStateCount int
+		var totalCards, dueCount, totalReps, reviewCount, reviewStateCount, learningStateCount, newStateCount, isKnown int
 		var lastReview, addedAt sql.NullString
 		var displayWord sql.NullString
 
 		err := rows.Scan(&word.WordCardID, &word.Lemma, &displayWord, &totalCards, &dueCount, &lastReview, &totalReps, &addedAt, 
-			&reviewStateCount, &learningStateCount, &newStateCount, &reviewCount)
+			&reviewStateCount, &learningStateCount, &newStateCount, &reviewCount, &isKnown)
 		if err != nil {
 			r.logger.Error("failed to scan word", zap.Error(err))
 			continue
@@ -269,8 +326,10 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 			}
 		}
 
-		// Determine mastery level based on state distribution and reps
-		if reviewStateCount == totalCards && totalReps > 0 {
+		// Determine mastery level
+		if isKnown == 1 {
+			word.MasteryLevel = "known"
+		} else if reviewStateCount == totalCards && totalReps > 0 {
 			word.MasteryLevel = "mastered"
 		} else if reviewStateCount > 0 || learningStateCount > 0 {
 			word.MasteryLevel = "learning"
@@ -585,22 +644,149 @@ func (r *Router) handleVocabWordCards(w http.ResponseWriter, req *http.Request, 
 		cards = append(cards, card)
 	}
 
+	// If no user_cards found, check if word is marked as "known" and return training_cards directly
 	if len(cards) == 0 {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusNotFound)
-		json.NewEncoder(w).Encode(map[string]interface{}{
-			"error": "Word not found",
-		})
-		return
+		// Check if word is marked as known
+		var isKnown bool
+		err := r.db.QueryRow(`
+			SELECT COUNT(*) > 0 FROM user_word_knowledge 
+			WHERE user_id = ? AND word_card_id = ? AND status = 'known'
+		`, userID, wordCardID).Scan(&isKnown)
+		
+		if err != nil {
+			r.logger.Error("failed to check known status", zap.Error(err))
+		}
+		
+		if isKnown {
+			// Get training cards directly for known words without user_cards
+			trainingQuery := `SELECT 
+				tc.id,
+				tc.word_ru,
+				tc.meaning_en,
+				COALESCE(tc.example_en, '') as example_en,
+				COALESCE(tc.example_ru, '') as example_ru,
+				COALESCE(tc.transcription, '') as transcription,
+				tc.sense_index,
+				tc.pos,
+				substr(tc.created_at, 1, 19) as created_at
+			FROM training_cards tc
+			WHERE tc.word_card_id = ?
+			ORDER BY tc.sense_index`
+			
+			trainingRows, err := r.db.Query(trainingQuery, wordCardID)
+			if err != nil {
+				r.logger.Error("failed to get training cards", zap.Error(err))
+				http.Error(w, "Internal server error", http.StatusInternalServerError)
+				return
+			}
+			defer trainingRows.Close()
+			
+			for trainingRows.Next() {
+				var trainingCardID int64
+				var wordRU, meaningEN, exampleEN, exampleRU, transcription string
+				var senseIndex int
+				var pos sql.NullString
+				var createdAt string
+				
+				err := trainingRows.Scan(
+					&trainingCardID,
+					&wordRU,
+					&meaningEN,
+					&exampleEN,
+					&exampleRU,
+					&transcription,
+					&senseIndex,
+					&pos,
+					&createdAt,
+				)
+				if err != nil {
+					r.logger.Error("failed to scan training card", zap.Error(err))
+					continue
+				}
+				
+				// Create cards for both directions (ru_en and en_ru)
+				directions := []string{"ru_en", "en_ru"}
+				for _, direction := range directions {
+					card := VocabCardDetail{
+						ID:              0, // No user_card_id for known words without user_cards
+						TrainingCardID:  trainingCardID,
+						Direction:       direction,
+						State:           "new",
+						EF:              2.5,
+						Reps:            0,
+						IntervalDays:    0,
+						LearningStep:    0,
+						LapseCount:      0,
+						WordRU:          wordRU,
+						MeaningEN:        meaningEN,
+						ExampleEN:       exampleEN,
+						ExampleRU:       exampleRU,
+						Transcription:   transcription,
+						SenseIndex:      senseIndex,
+						ReviewCount:     0,
+					}
+					
+					if pos.Valid {
+						card.POS = &pos.String
+					}
+					
+					if createdAt != "" {
+						if t, err := parseSQLiteTime(createdAt); err == nil && t != nil {
+							card.CreatedAt = *t
+							card.UpdatedAt = *t
+						}
+					}
+					
+					cards = append(cards, card)
+				}
+			}
+		}
+		
+		// If still no cards found, return not found
+		if len(cards) == 0 {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusNotFound)
+			json.NewEncoder(w).Encode(map[string]interface{}{
+				"error": "Word not found",
+			})
+			return
+		}
+	}
+
+	// Get word card info (pos and verb_forms_json) for verb forms display
+	var pos sql.NullString
+	var verbFormsJSON sql.NullString
+	err = r.db.QueryRow(`SELECT pos, verb_forms_json FROM word_cards WHERE id = ?`, wordCardID).Scan(&pos, &verbFormsJSON)
+	if err != nil && err != sql.ErrNoRows {
+		r.logger.Warn("failed to get word card info for verb forms", zap.Error(err))
+	}
+
+	// Parse verb forms if present
+	var verbForms map[string]interface{}
+	if pos.Valid && pos.String == "verb" && verbFormsJSON.Valid && verbFormsJSON.String != "" {
+		if err := json.Unmarshal([]byte(verbFormsJSON.String), &verbForms); err != nil {
+			r.logger.Warn("failed to parse verb forms JSON", zap.Error(err))
+		}
+	}
+
+	// Build response
+	response := map[string]interface{}{
+		"lemma": lemma,
+		"word_card_id": wordCardID,
+		"cards": cards,
+	}
+	
+	// Add verb forms if present
+	if verbForms != nil {
+		response["verb_forms"] = verbForms
+	}
+	if pos.Valid {
+		response["pos"] = pos.String
 	}
 
 	// Return JSON response
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(map[string]interface{}{
-		"lemma": lemma,
-		"word_card_id": wordCardID,
-		"cards": cards,
-	})
+	json.NewEncoder(w).Encode(response)
 }
 

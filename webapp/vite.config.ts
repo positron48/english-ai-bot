@@ -33,6 +33,10 @@ export default defineConfig({
         target: 'http://localhost:8184',
         changeOrigin: true,
       },
+      '/app/learning': {
+        target: 'http://localhost:8184',
+        changeOrigin: true,
+      },
       '/auth': {
         target: 'http://localhost:8184',
         changeOrigin: true,
