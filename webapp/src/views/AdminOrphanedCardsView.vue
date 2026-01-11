@@ -2,19 +2,20 @@
   <div class="admin">
     <AdminMenu />
     
+    <!-- Orphaned Training Cards Block -->
     <div class="card">
       <h2>Orphaned Training Cards</h2>
       <p class="description">Training cards that reference non-existent word cards (likely left after word deletion)</p>
       
       <div class="cards-content">
-        <div v-if="error && !loading" class="empty-message">
-          <p>{{ error }}</p>
+        <div v-if="trainingCardsError && !trainingCardsLoading" class="empty-message">
+          <p>{{ trainingCardsError }}</p>
         </div>
-        <div v-else-if="cards.length === 0 && !loading" class="empty-message">
-          <p>No orphaned cards found</p>
+        <div v-else-if="trainingCards.length === 0 && !trainingCardsLoading" class="empty-message">
+          <p>No orphaned training cards found</p>
         </div>
-        <div v-else class="cards-table-container" :class="{ 'loading-overlay': loading }">
-          <div v-if="loading" class="loading-overlay-content">
+        <div v-else class="cards-table-container" :class="{ 'loading-overlay': trainingCardsLoading }">
+          <div v-if="trainingCardsLoading" class="loading-overlay-content">
             <div class="loading">Loading cards...</div>
           </div>
           <table class="cards-table">
@@ -32,7 +33,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="card in cards" :key="card.id">
+              <tr v-for="card in trainingCards" :key="card.id">
                 <td>{{ card.id }}</td>
                 <td>
                   <strong>{{ card.word_en }}</strong>
@@ -51,7 +52,7 @@
                 <td :title="formatDateAbsolute(card.created_at)">{{ formatDateRelative(card.created_at) }}</td>
                 <td>
                   <button 
-                    @click="deleteCard(card)" 
+                    @click="deleteTrainingCard(card)" 
                     class="btn btn-sm btn-danger"
                   >
                     Delete
@@ -63,21 +64,105 @@
         </div>
       </div>
       
-      <div class="pagination" v-if="pagination.total_pages > 1 && !loading">
+      <div class="pagination" v-if="trainingCardsPagination.total_pages > 1 && !trainingCardsLoading">
         <button 
-          @click="goToPage(pagination.page - 1)" 
-          :disabled="pagination.page <= 1"
+          @click="goToTrainingCardsPage(trainingCardsPagination.page - 1)" 
+          :disabled="trainingCardsPagination.page <= 1"
           class="btn btn-secondary"
         >
           Previous
         </button>
         <span class="page-info">
-          Page {{ pagination.page }} of {{ pagination.total_pages }} 
-          ({{ pagination.total }} total)
+          Page {{ trainingCardsPagination.page }} of {{ trainingCardsPagination.total_pages }} 
+          ({{ trainingCardsPagination.total }} total)
         </span>
         <button 
-          @click="goToPage(pagination.page + 1)" 
-          :disabled="pagination.page >= pagination.total_pages"
+          @click="goToTrainingCardsPage(trainingCardsPagination.page + 1)" 
+          :disabled="trainingCardsPagination.page >= trainingCardsPagination.total_pages"
+          class="btn btn-secondary"
+        >
+          Next
+        </button>
+      </div>
+    </div>
+
+    <!-- Orphaned User Cards Block -->
+    <div class="card">
+      <h2>Orphaned User Cards</h2>
+      <p class="description">User cards that reference non-existent training cards. These cards appear in dashboard but cannot be used in training.</p>
+      
+      <div class="cards-content">
+        <div v-if="userCardsError && !userCardsLoading" class="empty-message">
+          <p>{{ userCardsError }}</p>
+        </div>
+        <div v-else-if="userCards.length === 0 && !userCardsLoading" class="empty-message">
+          <p>No orphaned user cards found</p>
+        </div>
+        <div v-else class="cards-table-container" :class="{ 'loading-overlay': userCardsLoading }">
+          <div v-if="userCardsLoading" class="loading-overlay-content">
+            <div class="loading">Loading cards...</div>
+          </div>
+          <table class="cards-table">
+            <thead>
+              <tr>
+                <th>User Card ID</th>
+                <th>User ID</th>
+                <th>Telegram ID</th>
+                <th>Username</th>
+                <th>Training Card ID</th>
+                <th>Direction</th>
+                <th>State</th>
+                <th>Reps</th>
+                <th>Review Events</th>
+                <th>Created At</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="card in userCards" :key="card.user_card_id">
+                <td>{{ card.user_card_id }}</td>
+                <td>{{ card.user_id }}</td>
+                <td>{{ card.telegram_id }}</td>
+                <td>{{ card.telegram_username || '—' }}</td>
+                <td>
+                  <span class="invalid-id">{{ card.training_card_id }}</span>
+                </td>
+                <td>{{ card.direction }}</td>
+                <td>
+                  <span class="badge badge-state" :class="`badge-${card.state}`">{{ card.state }}</span>
+                </td>
+                <td>{{ card.reps }}</td>
+                <td>{{ card.review_events_count }}</td>
+                <td :title="formatDateAbsolute(card.created_at)">{{ formatDateRelative(card.created_at) }}</td>
+                <td>
+                  <button 
+                    @click="deleteUserCard(card)" 
+                    class="btn btn-sm btn-danger"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <div class="pagination" v-if="userCardsPagination.total_pages > 1 && !userCardsLoading">
+        <button 
+          @click="goToUserCardsPage(userCardsPagination.page - 1)" 
+          :disabled="userCardsPagination.page <= 1"
+          class="btn btn-secondary"
+        >
+          Previous
+        </button>
+        <span class="page-info">
+          Page {{ userCardsPagination.page }} of {{ userCardsPagination.total_pages }} 
+          ({{ userCardsPagination.total }} total)
+        </span>
+        <button 
+          @click="goToUserCardsPage(userCardsPagination.page + 1)" 
+          :disabled="userCardsPagination.page >= userCardsPagination.total_pages"
           class="btn btn-secondary"
         >
           Next
@@ -93,7 +178,7 @@ import { apiClient } from '../api/client'
 import { showAlert, showConfirm } from '../composables/useDialog'
 import AdminMenu from '../components/AdminMenu.vue'
 
-interface OrphanedCard {
+interface OrphanedTrainingCard {
   id: number
   word_card_id: number
   word_en: string
@@ -109,10 +194,35 @@ interface OrphanedCard {
   user_cards_count: number
 }
 
-const loading = ref(false)
-const error = ref<string | null>(null)
-const cards = ref<OrphanedCard[]>([])
-const pagination = ref({
+interface OrphanedUserCard {
+  user_card_id: number
+  user_id: number
+  telegram_id: number
+  telegram_username?: string | null
+  training_card_id: number
+  direction: string
+  state: string
+  reps: number
+  created_at: string
+  review_events_count: number
+}
+
+// Training cards state
+const trainingCardsLoading = ref(false)
+const trainingCardsError = ref<string | null>(null)
+const trainingCards = ref<OrphanedTrainingCard[]>([])
+const trainingCardsPagination = ref({
+  page: 1,
+  limit: 50,
+  total: 0,
+  total_pages: 0
+})
+
+// User cards state
+const userCardsLoading = ref(false)
+const userCardsError = ref<string | null>(null)
+const userCards = ref<OrphanedUserCard[]>([])
+const userCardsPagination = ref({
   page: 1,
   limit: 50,
   total: 0,
@@ -120,28 +230,28 @@ const pagination = ref({
 })
 
 onMounted(async () => {
-  await loadCards()
+  await Promise.all([loadTrainingCards(), loadUserCards()])
 })
 
-const loadCards = async () => {
-  loading.value = true
-  error.value = null
+const loadTrainingCards = async () => {
+  trainingCardsLoading.value = true
+  trainingCardsError.value = null
   try {
-    const offset = (pagination.value.page - 1) * pagination.value.limit
+    const offset = (trainingCardsPagination.value.page - 1) * trainingCardsPagination.value.limit
     const params = new URLSearchParams()
-    params.append('limit', pagination.value.limit.toString())
+    params.append('limit', trainingCardsPagination.value.limit.toString())
     params.append('offset', offset.toString())
 
     const data: { 
-      cards: OrphanedCard[]
+      cards: OrphanedTrainingCard[]
       pagination: { page: number; limit: number; total: number; total_pages: number }
     } = await apiClient.request(`/app/admin/orphaned-cards?${params.toString()}`)
     
-    cards.value = data.cards || []
+    trainingCards.value = data.cards || []
     if (data.pagination) {
-      pagination.value = data.pagination
+      trainingCardsPagination.value = data.pagination
     } else {
-      pagination.value = {
+      trainingCardsPagination.value = {
         page: 1,
         limit: 50,
         total: 0,
@@ -149,22 +259,63 @@ const loadCards = async () => {
       }
     }
   } catch (err: any) {
-    console.error('Failed to load orphaned cards:', err)
-    error.value = err.message || 'Failed to load orphaned cards'
-    cards.value = []
+    console.error('Failed to load orphaned training cards:', err)
+    trainingCardsError.value = err.message || 'Failed to load orphaned training cards'
+    trainingCards.value = []
   } finally {
-    loading.value = false
+    trainingCardsLoading.value = false
   }
 }
 
-const goToPage = (page: number) => {
-  if (page >= 1 && page <= pagination.value.total_pages) {
-    pagination.value.page = page
-    loadCards()
+const loadUserCards = async () => {
+  userCardsLoading.value = true
+  userCardsError.value = null
+  try {
+    const offset = (userCardsPagination.value.page - 1) * userCardsPagination.value.limit
+    const params = new URLSearchParams()
+    params.append('limit', userCardsPagination.value.limit.toString())
+    params.append('offset', offset.toString())
+
+    const data: { 
+      cards: OrphanedUserCard[]
+      pagination: { page: number; limit: number; total: number; total_pages: number }
+    } = await apiClient.request(`/app/admin/orphaned-user-cards?${params.toString()}`)
+    
+    userCards.value = data.cards || []
+    if (data.pagination) {
+      userCardsPagination.value = data.pagination
+    } else {
+      userCardsPagination.value = {
+        page: 1,
+        limit: 50,
+        total: 0,
+        total_pages: 0
+      }
+    }
+  } catch (err: any) {
+    console.error('Failed to load orphaned user cards:', err)
+    userCardsError.value = err.message || 'Failed to load orphaned user cards'
+    userCards.value = []
+  } finally {
+    userCardsLoading.value = false
   }
 }
 
-const deleteCard = async (card: OrphanedCard) => {
+const goToTrainingCardsPage = (page: number) => {
+  if (page >= 1 && page <= trainingCardsPagination.value.total_pages) {
+    trainingCardsPagination.value.page = page
+    loadTrainingCards()
+  }
+}
+
+const goToUserCardsPage = (page: number) => {
+  if (page >= 1 && page <= userCardsPagination.value.total_pages) {
+    userCardsPagination.value.page = page
+    loadUserCards()
+  }
+}
+
+const deleteTrainingCard = async (card: OrphanedTrainingCard) => {
   const confirmed = await showConfirm(
     `Are you sure you want to delete orphaned training card #${card.id}?\n\n` +
     `Word: ${card.word_en}\n` +
@@ -179,11 +330,36 @@ const deleteCard = async (card: OrphanedCard) => {
 
   try {
     await apiClient.request(`/app/admin/orphaned-cards/${card.id}`, { method: 'DELETE' })
-    // Reload to update pagination
-    await loadCards()
+    // Reload both lists to update pagination
+    await Promise.all([loadTrainingCards(), loadUserCards()])
   } catch (err: any) {
-    console.error('Failed to delete card:', err)
-    await showAlert(err.message || 'Failed to delete card')
+    console.error('Failed to delete training card:', err)
+    await showAlert(err.message || 'Failed to delete training card')
+  }
+}
+
+const deleteUserCard = async (card: OrphanedUserCard) => {
+  const confirmed = await showConfirm(
+    `Are you sure you want to delete orphaned user card #${card.user_card_id}?\n\n` +
+    `User ID: ${card.user_id}\n` +
+    `Training Card ID: ${card.training_card_id} (invalid)\n` +
+    `State: ${card.state}\n` +
+    `This will delete:\n` +
+    `- The user card\n` +
+    `- ${card.review_events_count} review event(s)\n\n` +
+    `This action cannot be undone!`
+  )
+  if (!confirmed) {
+    return
+  }
+
+  try {
+    await apiClient.request(`/app/admin/orphaned-user-cards/${card.user_card_id}`, { method: 'DELETE' })
+    // Reload to update pagination
+    await loadUserCards()
+  } catch (err: any) {
+    console.error('Failed to delete user card:', err)
+    await showAlert(err.message || 'Failed to delete user card')
   }
 }
 
@@ -395,6 +571,28 @@ const formatDateAbsolute = (dateStr: string | null | undefined): string => {
 .invalid-id {
   color: var(--color-danger);
   font-weight: 500;
+}
+
+.badge-state {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.badge-new {
+  background: rgba(0, 123, 255, 0.1);
+  color: #007bff;
+}
+
+.badge-learning {
+  background: rgba(255, 193, 7, 0.1);
+  color: #ffc107;
+}
+
+.badge-review {
+  background: rgba(40, 167, 69, 0.1);
+  color: #28a745;
 }
 
 .pagination {

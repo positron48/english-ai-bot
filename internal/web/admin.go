@@ -945,3 +945,137 @@ func (r *Router) handleAdminOrphanedCard(w http.ResponseWriter, req *http.Reques
 	})
 }
 
+// handleAdminOrphanedUserCards handles orphaned user cards management
+// @Summary      Получить список подвешенных user карточек
+// @Description  Возвращает список user_cards, которые ссылаются на несуществующие training_cards
+// @Tags         Admin
+// @Accept       json
+// @Produce      application/json
+// @Security     ApiKeyAuth
+// @Param        limit   query     int     false  "Лимит записей (по умолчанию 50)"
+// @Param        offset  query     int     false  "Смещение для пагинации (по умолчанию 0)"
+// @Success      200     {object}  map[string]interface{}  "Список подвешенных user карточек"
+// @Failure      401     {string}  string  "Неавторизован"
+// @Failure      403     {string}  string  "Доступ запрещен"
+// @Router       /app/admin/orphaned-user-cards [get]
+func (r *Router) handleAdminOrphanedUserCards(w http.ResponseWriter, req *http.Request) {
+	if req.Method == http.MethodGet {
+		userCardRepo := repository.NewUserCardRepository(r.db, r.logger)
+
+		limit := 50
+		if limitStr := req.URL.Query().Get("limit"); limitStr != "" {
+			if parsedLimit, err := strconv.Atoi(limitStr); err == nil && parsedLimit > 0 {
+				limit = parsedLimit
+			}
+		}
+
+		offset := 0
+		if offsetStr := req.URL.Query().Get("offset"); offsetStr != "" {
+			if parsedOffset, err := strconv.Atoi(offsetStr); err == nil && parsedOffset >= 0 {
+				offset = parsedOffset
+			}
+		}
+
+		cards, err := userCardRepo.ListOrphanedUserCards(limit, offset)
+		if err != nil {
+			r.logger.Error("failed to list orphaned user cards", zap.Error(err))
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
+		}
+
+		total, err := userCardRepo.CountOrphanedUserCards()
+		if err != nil {
+			r.logger.Error("failed to count orphaned user cards", zap.Error(err))
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
+		}
+
+		totalPages := (total + limit - 1) / limit
+		if totalPages == 0 {
+			totalPages = 1
+		}
+		currentPage := (offset / limit) + 1
+
+		// Convert to JSON-friendly format
+		cardsList := make([]map[string]interface{}, 0, len(cards))
+		for _, card := range cards {
+			cardMap := map[string]interface{}{
+				"user_card_id":        card.UserCardID,
+				"user_id":             card.UserID,
+				"telegram_id":         card.TelegramID,
+				"telegram_username":   card.TelegramUsername,
+				"training_card_id":    card.TrainingCardID,
+				"direction":           card.Direction,
+				"state":               card.State,
+				"reps":                card.Reps,
+				"created_at":          card.CreatedAt.Format("2006-01-02 15:04:05"),
+				"review_events_count": card.ReviewEventsCount,
+			}
+			cardsList = append(cardsList, cardMap)
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"cards": cardsList,
+			"pagination": map[string]interface{}{
+				"page":        currentPage,
+				"limit":       limit,
+				"total":       total,
+				"total_pages": totalPages,
+			},
+		})
+		return
+	}
+
+	http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+}
+
+// handleAdminOrphanedUserCard handles individual orphaned user card operations (delete)
+// @Summary      Удалить подвешенную user карточку
+// @Description  Удаляет user_card по ID (каскадно удаляет связанные review_events)
+// @Tags         Admin
+// @Accept       json
+// @Produce      application/json
+// @Security     ApiKeyAuth
+// @Param        id   path      int     true  "ID user карточки"
+// @Success      200  {object}  map[string]interface{}  "Успешное удаление"
+// @Failure      401  {string}  string  "Неавторизован"
+// @Failure      403  {string}  string  "Доступ запрещен"
+// @Failure      404  {string}  string  "Карточка не найдена"
+// @Router       /app/admin/orphaned-user-cards/{id} [delete]
+func (r *Router) handleAdminOrphanedUserCard(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodDelete {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// Extract ID from path
+	path := strings.TrimPrefix(req.URL.Path, "/app/admin/orphaned-user-cards/")
+	userCardID, err := strconv.ParseInt(path, 10, 64)
+	if err != nil {
+		http.Error(w, "Invalid user card ID", http.StatusBadRequest)
+		return
+	}
+
+	userCardRepo := repository.NewUserCardRepository(r.db, r.logger)
+	err = userCardRepo.DeleteUserCard(userCardID)
+	if err != nil {
+		if strings.Contains(err.Error(), "not found") {
+			http.Error(w, "User card not found", http.StatusNotFound)
+			return
+		}
+		r.logger.Error("failed to delete user card", zap.Error(err), zap.Int64("user_card_id", userCardID))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"success": true,
+		"message": "User card and all related data deleted successfully",
+		"user_card_id": userCardID,
+	})
+}
+

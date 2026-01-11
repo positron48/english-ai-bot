@@ -298,6 +298,8 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/app/admin/users", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminUsers))))
 	r.mux.HandleFunc("/app/admin/orphaned-cards", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminOrphanedCards))))
 	r.mux.HandleFunc("/app/admin/orphaned-cards/", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminOrphanedCard))))
+	r.mux.HandleFunc("/app/admin/orphaned-user-cards", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminOrphanedUserCards))))
+	r.mux.HandleFunc("/app/admin/orphaned-user-cards/", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminOrphanedUserCard))))
 	r.mux.HandleFunc("/app/admin/prompt-tester/default-prompts", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminPromptTesterDefaultPrompts))))
 	r.mux.HandleFunc("/app/admin/prompt-tester/run", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminPromptTesterRun))))
 	

@@ -34,8 +34,11 @@ func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 
 	now := time.Now()
 	
-	// Get new cards count (exclude from due count to avoid double counting)
-	newQuery := `SELECT COUNT(*) FROM user_cards WHERE user_id = ? AND state = 'new'`
+	// Get new cards count (exclude orphaned cards - those with non-existent training_cards)
+	newQuery := `SELECT COUNT(*) 
+		FROM user_cards uc
+		INNER JOIN training_cards tc ON uc.training_card_id = tc.id
+		WHERE uc.user_id = ? AND uc.state = 'new'`
 	var newCount int
 	err := r.db.QueryRow(newQuery, userID).Scan(&newCount)
 	if err != nil {
@@ -43,9 +46,12 @@ func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 		newCount = 0
 	}
 
-	// Get due count (cards ready for review, excluding new cards)
+	// Get due count (cards ready for review, excluding new cards and orphaned cards)
 	// New cards have next_due_at IS NULL, so we need to exclude them explicitly
-	dueQuery := `SELECT COUNT(*) FROM user_cards WHERE user_id = ? AND state != 'new' AND (next_due_at IS NULL OR next_due_at <= ?)`
+	dueQuery := `SELECT COUNT(*) 
+		FROM user_cards uc
+		INNER JOIN training_cards tc ON uc.training_card_id = tc.id
+		WHERE uc.user_id = ? AND uc.state != 'new' AND (uc.next_due_at IS NULL OR uc.next_due_at <= ?)`
 	var dueCount int
 	err = r.db.QueryRow(dueQuery, userID, now).Scan(&dueCount)
 	if err != nil {
@@ -53,8 +59,11 @@ func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 		dueCount = 0
 	}
 
-	// Get learning cards count
-	learningQuery := `SELECT COUNT(*) FROM user_cards WHERE user_id = ? AND state = 'learning'`
+	// Get learning cards count (exclude orphaned cards)
+	learningQuery := `SELECT COUNT(*) 
+		FROM user_cards uc
+		INNER JOIN training_cards tc ON uc.training_card_id = tc.id
+		WHERE uc.user_id = ? AND uc.state = 'learning'`
 	var learningCount int
 	err = r.db.QueryRow(learningQuery, userID).Scan(&learningCount)
 	if err != nil {
@@ -62,8 +71,11 @@ func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 		learningCount = 0
 	}
 
-	// Get review cards count
-	reviewQuery := `SELECT COUNT(*) FROM user_cards WHERE user_id = ? AND state = 'review'`
+	// Get review cards count (exclude orphaned cards)
+	reviewQuery := `SELECT COUNT(*) 
+		FROM user_cards uc
+		INNER JOIN training_cards tc ON uc.training_card_id = tc.id
+		WHERE uc.user_id = ? AND uc.state = 'review'`
 	var reviewCount int
 	err = r.db.QueryRow(reviewQuery, userID).Scan(&reviewCount)
 	if err != nil {
@@ -80,8 +92,11 @@ func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 		availableForTraining += newCount
 	}
 
-	// Get total cards count
-	totalQuery := `SELECT COUNT(*) FROM user_cards WHERE user_id = ?`
+	// Get total cards count (exclude orphaned cards)
+	totalQuery := `SELECT COUNT(*) 
+		FROM user_cards uc
+		INNER JOIN training_cards tc ON uc.training_card_id = tc.id
+		WHERE uc.user_id = ?`
 	var totalCards int
 	err = r.db.QueryRow(totalQuery, userID).Scan(&totalCards)
 	if err != nil {
@@ -138,13 +153,14 @@ func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 		}
 	}
 
-	// Get words added stats by day (last 7 days)
+	// Get words added stats by day (last 7 days, exclude orphaned cards)
 	wordsAddedStatsQuery := `SELECT 
-		DATE(created_at) as day,
+		DATE(uc.created_at) as day,
 		COUNT(*) as words_added
-		FROM user_cards
-		WHERE user_id = ? AND created_at >= ?
-		GROUP BY DATE(created_at)
+		FROM user_cards uc
+		INNER JOIN training_cards tc ON uc.training_card_id = tc.id
+		WHERE uc.user_id = ? AND uc.created_at >= ?
+		GROUP BY DATE(uc.created_at)
 		ORDER BY day ASC`
 	wordsRows, err := r.db.Query(wordsAddedStatsQuery, userID, weekAgoForDaily)
 	var wordsAddedStats []map[string]interface{}
