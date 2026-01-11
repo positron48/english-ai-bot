@@ -50,7 +50,7 @@
           <div v-if="loadingCard" class="loading">Loading card...</div>
           <div v-else-if="currentTrainingCard" class="word-card-content">
             <div class="word-display">
-              <h2>{{ currentTrainingCard.word_en || selectedWord?.display_word || selectedWord?.word }}</h2>
+              <h2>{{ currentTrainingCard.display_word || currentTrainingCard.word_en || selectedWord?.display_word || selectedWord?.word }}</h2>
               <div v-if="currentTrainingCard.transcription" class="transcription">
                 [{{ currentTrainingCard.transcription }}]
               </div>

@@ -167,7 +167,7 @@ func (r *Router) handleLearningWordsSets(w http.ResponseWriter, req *http.Reques
 	var err error
 	if showOnlyWithoutCategory {
 		// Query sets without category directly
-		query := `SELECT id, category_id, title, description, is_published, sort_order, created_at, updated_at
+		query := `SELECT id, category_id, title, description, is_published, sort_order, preferred_pos, created_at, updated_at
 				  FROM word_sets WHERE category_id IS NULL AND is_published = 1`
 		args := []interface{}{}
 
@@ -186,9 +186,10 @@ func (r *Router) handleLearningWordsSets(w http.ResponseWriter, req *http.Reques
 		for rows.Next() {
 			var ws models.WordSet
 			var categoryID sql.NullInt64
+			var preferredPOS sql.NullString
 			var createdAt, updatedAt string
 
-			err := rows.Scan(&ws.ID, &categoryID, &ws.Title, &ws.Description, &ws.IsPublished, &ws.SortOrder, &createdAt, &updatedAt)
+			err := rows.Scan(&ws.ID, &categoryID, &ws.Title, &ws.Description, &ws.IsPublished, &ws.SortOrder, &preferredPOS, &createdAt, &updatedAt)
 			if err != nil {
 				r.logger.Warn("failed to scan word set", zap.Error(err))
 				continue
@@ -196,6 +197,9 @@ func (r *Router) handleLearningWordsSets(w http.ResponseWriter, req *http.Reques
 
 			if categoryID.Valid {
 				ws.CategoryID = &categoryID.Int64
+			}
+			if preferredPOS.Valid {
+				ws.PreferredPOS = &preferredPOS.String
 			}
 
 			if createdAt != "" {
@@ -447,6 +451,18 @@ func (r *Router) handleLearningWordsSetStudy(w http.ResponseWriter, req *http.Re
 		return
 	}
 
+	// Get word set to check preferred_pos
+	wordSet, err := wordSetRepo.GetWordSet(setID)
+	if err != nil {
+		r.logger.Error("failed to get word set", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	if wordSet == nil {
+		http.Error(w, "Word set not found", http.StatusNotFound)
+		return
+	}
+
 	// Get training cards for the word
 	trainingCardRepo := repository.NewTrainingCardRepository(r.db, r.logger)
 	trainingCards, err := trainingCardRepo.GetTrainingCardsByWordCardID(wordCardID)
@@ -478,17 +494,31 @@ func (r *Router) handleLearningWordsSetStudy(w http.ResponseWriter, req *http.Re
 		}
 	}
 
-	// Return the first training card (or all if needed)
-	// For now, return the first one (sense_index = 0)
+	// Select training card based on preferred_pos if set
 	var selectedCard *models.TrainingCard
-	for _, card := range trainingCards {
-		if card.SenseIndex == 0 {
-			selectedCard = card
-			break
+	if wordSet.PreferredPOS != nil && *wordSet.PreferredPOS != "" {
+		// Try to find card with matching POS
+		for _, card := range trainingCards {
+			if card.POS != nil && *card.POS == *wordSet.PreferredPOS {
+				selectedCard = card
+				break
+			}
 		}
-	}
-	if selectedCard == nil && len(trainingCards) > 0 {
-		selectedCard = trainingCards[0]
+		// If no matching POS found, fall back to first card
+		if selectedCard == nil && len(trainingCards) > 0 {
+			selectedCard = trainingCards[0]
+		}
+	} else {
+		// No preferred_pos, return the first training card (sense_index = 0)
+		for _, card := range trainingCards {
+			if card.SenseIndex == 0 {
+				selectedCard = card
+				break
+			}
+		}
+		if selectedCard == nil && len(trainingCards) > 0 {
+			selectedCard = trainingCards[0]
+		}
 	}
 
 	if selectedCard == nil {

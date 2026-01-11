@@ -589,3 +589,32 @@ func (r *UserCardRepository) DeleteUserCard(userCardID int64) error {
 	return nil
 }
 
+// GetUserIDsByWordCardID gets all distinct user IDs who have user_cards for a specific word_card_id
+func (r *UserCardRepository) GetUserIDsByWordCardID(wordCardID int64) ([]int64, error) {
+	query := `SELECT DISTINCT uc.user_id 
+			  FROM user_cards uc
+			  INNER JOIN training_cards tc ON uc.training_card_id = tc.id
+			  WHERE tc.word_card_id = ?`
+
+	rows, err := r.db.Query(query, wordCardID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to query user IDs: %w", err)
+	}
+	defer rows.Close()
+
+	var userIDs []int64
+	for rows.Next() {
+		var userID int64
+		if err := rows.Scan(&userID); err != nil {
+			return nil, fmt.Errorf("failed to scan user ID: %w", err)
+		}
+		userIDs = append(userIDs, userID)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("error iterating rows: %w", err)
+	}
+
+	return userIDs, nil
+}
+

@@ -260,6 +260,7 @@ func (db *DB) migrate() error {
 			description TEXT,
 			is_published INTEGER DEFAULT 1,
 			sort_order INTEGER DEFAULT 0,
+			preferred_pos TEXT,
 			created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 			updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 			FOREIGN KEY (category_id) REFERENCES word_set_categories(id) ON DELETE SET NULL
@@ -348,6 +349,11 @@ func (db *DB) migrate() error {
 	// Migrate word_sets table to add sort_order if it doesn't exist
 	if err := db.migrateWordSetsTable(); err != nil {
 		return fmt.Errorf("failed to migrate word_sets table: %w", err)
+	}
+
+	// Migrate word_sets table to add preferred_pos if it doesn't exist
+	if err := db.migrateWordSetsPreferredPOS(); err != nil {
+		return fmt.Errorf("failed to migrate word_sets preferred_pos: %w", err)
 	}
 
 	db.logger.Info("database migration completed successfully")
@@ -833,6 +839,45 @@ func (db *DB) migrateWordSetsTable() error {
 			return fmt.Errorf("failed to add sort_order column: %w", err)
 		}
 		db.logger.Info("added sort_order column to word_sets table")
+	}
+
+	return nil
+}
+
+// migrateWordSetsPreferredPOS adds preferred_pos column to word_sets if it doesn't exist
+func (db *DB) migrateWordSetsPreferredPOS() error {
+	// Check if word_sets table exists
+	var tableExists int
+	err := db.conn.QueryRow(`
+		SELECT COUNT(*) FROM sqlite_master 
+		WHERE type='table' AND name='word_sets'
+	`).Scan(&tableExists)
+	if err != nil {
+		return fmt.Errorf("failed to check table existence: %w", err)
+	}
+
+	if tableExists == 0 {
+		// Table doesn't exist yet, will be created with correct schema
+		return nil
+	}
+
+	// Check if preferred_pos column exists
+	var columnExists int
+	err = db.conn.QueryRow(`
+		SELECT COUNT(*) FROM pragma_table_info('word_sets') 
+		WHERE name='preferred_pos'
+	`).Scan(&columnExists)
+	if err != nil {
+		return fmt.Errorf("failed to check column existence: %w", err)
+	}
+
+	if columnExists == 0 {
+		// Column doesn't exist, add it
+		_, err := db.conn.Exec(`ALTER TABLE word_sets ADD COLUMN preferred_pos TEXT`)
+		if err != nil {
+			return fmt.Errorf("failed to add preferred_pos column: %w", err)
+		}
+		db.logger.Info("added preferred_pos column to word_sets table")
 	}
 
 	return nil

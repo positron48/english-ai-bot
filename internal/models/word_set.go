@@ -15,14 +15,15 @@ type WordSetCategory struct {
 
 // WordSet represents a collection of words
 type WordSet struct {
-	ID          int64      `json:"id"`
-	CategoryID  *int64     `json:"category_id"`
-	Title       string     `json:"title"`
-	Description *string    `json:"description"`
-	IsPublished bool       `json:"is_published"`
-	SortOrder   int        `json:"sort_order"`
-	CreatedAt   time.Time  `json:"created_at"`
-	UpdatedAt   time.Time  `json:"updated_at"`
+	ID           int64      `json:"id"`
+	CategoryID   *int64     `json:"category_id"`
+	Title        string     `json:"title"`
+	Description  *string    `json:"description"`
+	IsPublished  bool       `json:"is_published"`
+	SortOrder    int        `json:"sort_order"`
+	PreferredPOS *string    `json:"preferred_pos,omitempty"` // Preferred part of speech (noun, verb, adjective, etc.)
+	CreatedAt    time.Time  `json:"created_at"`
+	UpdatedAt    time.Time  `json:"updated_at"`
 }
 
 // WordSetItem represents a word in a word set
@@ -62,9 +63,16 @@ const (
 )
 
 // WordSetWordInfo represents information about a word in a set
+// If preferred_pos is set and a matching training card exists, it includes data from that card
 type WordSetWordInfo struct {
-	WordCardID  int64              `json:"word_card_id"`
-	Word        string              `json:"word"`
-	DisplayWord string              `json:"display_word"`
-	Status      WordSetWordStatus   `json:"status"`
+	WordCardID   int64              `json:"word_card_id"`
+	Word         string              `json:"word"`
+	DisplayWord  string              `json:"display_word"`
+	Status       WordSetWordStatus   `json:"status"`
+	// Data from training card with preferred_pos (if available)
+	Transcription *string `json:"transcription,omitempty"`
+	WordRU        *string `json:"word_ru,omitempty"`
+	MeaningEN     *string `json:"meaning_en,omitempty"`
+	ExampleEN     *string `json:"example_en,omitempty"`
+	ExampleRU     *string `json:"example_ru,omitempty"`
 }

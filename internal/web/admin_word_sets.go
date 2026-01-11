@@ -1,7 +1,6 @@
 package web
 
 import (
-	"database/sql"
 	"encoding/json"
 	"net/http"
 	"strconv"
@@ -386,25 +385,14 @@ func (r *Router) handleAdminWordSetDetail(w http.ResponseWriter, req *http.Reque
 		return
 	}
 
-	// Get words in set
-	query := `SELECT wc.id, wc.word, 
-		COALESCE(
-			(SELECT display_word FROM training_cards tc2 WHERE tc2.word_card_id = wc.id AND tc2.display_word IS NOT NULL AND tc2.display_word != '' LIMIT 1),
-			wc.display_en,
-			wc.word
-		) as display_word
-		FROM word_set_items wsi
-		INNER JOIN word_cards wc ON wsi.word_card_id = wc.id
-		WHERE wsi.word_set_id = ?
-		ORDER BY wsi.sort_order, wc.word`
-
-	rows, err := r.db.Query(query, id)
+	// Get words in set (using repository method to respect preferred_pos filtering)
+	// For admin, we use userID = 0 (no user-specific filtering needed)
+	wordsWithStatus, err := wordSetRepo.GetWordSetWords(id, 0)
 	if err != nil {
 		r.logger.Error("failed to get word set words", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
-	defer rows.Close()
 
 	type WordInfo struct {
 		WordCardID  int64  `json:"word_card_id"`
@@ -412,23 +400,13 @@ func (r *Router) handleAdminWordSetDetail(w http.ResponseWriter, req *http.Reque
 		DisplayWord string `json:"display_word"`
 	}
 
-	var words []WordInfo
-	for rows.Next() {
-		var word WordInfo
-		var displayWord sql.NullString
-
-		if err := rows.Scan(&word.WordCardID, &word.Word, &displayWord); err != nil {
-			r.logger.Warn("failed to scan word", zap.Error(err))
-			continue
-		}
-
-		if displayWord.Valid {
-			word.DisplayWord = displayWord.String
-		} else {
-			word.DisplayWord = word.Word
-		}
-
-		words = append(words, word)
+	words := make([]WordInfo, 0, len(wordsWithStatus))
+	for _, w := range wordsWithStatus {
+		words = append(words, WordInfo{
+			WordCardID:  w.WordCardID,
+			Word:        w.Word,
+			DisplayWord: w.DisplayWord,
+		})
 	}
 
 	w.Header().Set("Content-Type", "application/json")

@@ -177,6 +177,21 @@
             </label>
           </div>
           <div class="form-group">
+            <label>Preferred Part of Speech</label>
+            <select v-model="wordSetForm.preferred_pos" class="form-select">
+              <option :value="null">Any (no filter)</option>
+              <option value="noun">Noun</option>
+              <option value="verb">Verb</option>
+              <option value="adjective">Adjective</option>
+              <option value="adverb">Adverb</option>
+              <option value="pronoun">Pronoun</option>
+              <option value="preposition">Preposition</option>
+              <option value="conjunction">Conjunction</option>
+              <option value="interjection">Interjection</option>
+            </select>
+            <p class="form-hint">If set, only words with training cards matching this part of speech will be shown in the set</p>
+          </div>
+          <div class="form-group">
             <label>
               Words (comma-separated)
               <span class="word-count">({{ wordSetWordsCount }} words)</span>
@@ -280,6 +295,7 @@ interface WordSet {
   description?: string | null
   is_published: boolean
   sort_order?: number
+  preferred_pos?: string | null
   created_at: string
   updated_at: string
 }
@@ -314,6 +330,7 @@ const wordSetForm = ref({
   category_id: null as number | null,
   is_published: true,
   sort_order: 0,
+  preferred_pos: null as string | null,
   words: ''
 })
 const showDeleteWordSetConfirm = ref(false)
@@ -525,6 +542,7 @@ const startCreateWordSet = () => {
     category_id: null,
     is_published: true,
     sort_order: 0,
+    preferred_pos: null,
     words: ''
   }
   showWordSetModal.value = true
@@ -539,6 +557,7 @@ const startEditWordSet = async (wordSet: WordSet) => {
     category_id: wordSet.category_id || null,
     is_published: wordSet.is_published,
     sort_order: wordSet.sort_order || 0,
+    preferred_pos: wordSet.preferred_pos || null,
     words: ''
   }
   

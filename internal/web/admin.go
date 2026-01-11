@@ -493,6 +493,67 @@ func (r *Router) handleAdminTraining(w http.ResponseWriter, req *http.Request) {
 			return
 		}
 
+		// Get all users who already have this word in their training
+		userCardRepo := repository.NewUserCardRepository(r.db, r.logger)
+		userIDs, err := userCardRepo.GetUserIDsByWordCardID(wordCard.ID)
+		if err != nil {
+			r.logger.Warn("failed to get users for word card", 
+				zap.Int64("word_card_id", wordCard.ID),
+				zap.Error(err),
+			)
+			// Don't fail the whole process, just log the warning
+			userIDs = []int64{}
+		}
+
+		// Create user_cards for each user who already has this word
+		createdCount := 0
+		for _, userID := range userIDs {
+			// Create ru_en card
+			ruEnCard := &models.UserCard{
+				UserID:         userID,
+				TrainingCardID: cardID,
+				Direction:      models.DirectionRUtoEN,
+				State:          models.StateNew,
+				EF:             models.InitialEF,
+			}
+			if _, err := userCardRepo.CreateUserCard(ruEnCard); err != nil {
+				r.logger.Warn("failed to create ru_en user card",
+					zap.Int64("user_id", userID),
+					zap.Int64("training_card_id", cardID),
+					zap.Error(err),
+				)
+			} else {
+				createdCount++
+			}
+
+			// Create en_ru card
+			enRuCard := &models.UserCard{
+				UserID:         userID,
+				TrainingCardID: cardID,
+				Direction:      models.DirectionENtoRU,
+				State:          models.StateNew,
+				EF:             models.InitialEF,
+			}
+			if _, err := userCardRepo.CreateUserCard(enRuCard); err != nil {
+				r.logger.Warn("failed to create en_ru user card",
+					zap.Int64("user_id", userID),
+					zap.Int64("training_card_id", cardID),
+					zap.Error(err),
+				)
+			} else {
+				createdCount++
+			}
+		}
+
+		if createdCount > 0 {
+			r.logger.Info("created user cards for existing users",
+				zap.Int64("word_card_id", wordCard.ID),
+				zap.Int64("training_card_id", cardID),
+				zap.Int("users", len(userIDs)),
+				zap.Int("user_cards_created", createdCount),
+			)
+		}
+
 		// Return success response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
@@ -501,6 +562,8 @@ func (r *Router) handleAdminTraining(w http.ResponseWriter, req *http.Request) {
 			"message": "Training card created successfully",
 			"card_id": cardID,
 			"word_en": wordEN,
+			"users_updated": len(userIDs),
+			"user_cards_created": createdCount,
 		})
 		return
 	}

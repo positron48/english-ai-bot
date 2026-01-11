@@ -127,7 +127,7 @@
                         v-if="!word.ProcessingError"
                         @click="generateAdditionalCard(word)" 
                         class="btn btn-sm btn-secondary"
-                        title="Генерировать доп карточку"
+                        title="Generate additional card"
                       >
                         <Icon name="magic" />
                       </button>
@@ -135,7 +135,7 @@
                         v-if="!word.ProcessingError"
                         @click="createTrainingCard(word)" 
                         class="btn btn-sm btn-primary"
-                        title="Добавить карточку"
+                        title="Add card"
                       >
                         <Icon name="plus" />
                       </button>
@@ -168,14 +168,14 @@
                         <button 
                           @click="generateAdditionalCard(word)" 
                           class="btn btn-sm btn-secondary"
-                          title="Генерировать доп карточку"
+                          title="Generate additional card"
                         >
                           <Icon name="magic" />
                         </button>
                         <button 
                           @click="createTrainingCard(word)" 
                           class="btn btn-sm btn-primary"
-                          title="Добавить карточку"
+                          title="Add card"
                         >
                           <Icon name="plus" />
                         </button>
@@ -335,19 +335,19 @@
       <div v-if="showGenerateCardModal && wordToGenerateCard" class="modal" @click.self="closeGenerateCardModal">
         <div class="modal-content">
           <div class="modal-header">
-            <h3>Генерировать дополнительную карточку для "{{ wordToGenerateCard.Word }}"</h3>
+            <h3>Generate Additional Card for "{{ wordToGenerateCard.Word }}"</h3>
             <button @click="closeGenerateCardModal" class="btn-close">&times;</button>
           </div>
           <div class="modal-body">
             <div class="form-group">
-              <label>Ограничения (опционально):</label>
+              <label>Constraints (optional):</label>
               <textarea 
                 v-model="generateCardConstraints" 
                 class="form-textarea" 
                 rows="5"
-                placeholder="Например: конкретное значение 'банк как финансовое учреждение', или часть речи 'verb', или 'значение связанное с водой'"
+                placeholder="For example: specific meaning 'bank as financial institution', or part of speech 'verb', or 'meaning related to water'"
               ></textarea>
-              <p class="form-hint">Опишите, какое значение или часть речи должна иметь карточка. Оставьте пустым для произвольной генерации.</p>
+              <p class="form-hint">Describe what meaning or part of speech the card should have. Leave empty for random generation.</p>
             </div>
             <div class="modal-actions">
               <button 
@@ -355,7 +355,7 @@
                 class="btn btn-primary"
                 :disabled="generatingCard"
               >
-                {{ generatingCard ? 'Генерирую...' : 'Генерировать' }}
+                {{ generatingCard ? 'Generating...' : 'Generate' }}
               </button>
               <button 
                 type="button" 
@@ -363,7 +363,7 @@
                 class="btn btn-secondary"
                 :disabled="generatingCard"
               >
-                Отмена
+                Cancel
               </button>
             </div>
           </div>
@@ -1077,11 +1077,11 @@ const doGenerateCard = async () => {
       closeGenerateCardModal()
       showCreateCardModal.value = true
     } else {
-      await showAlert('Не удалось сгенерировать карточку')
+      await showAlert('Failed to generate card')
     }
   } catch (error: any) {
     console.error('Failed to generate card:', error)
-    await showAlert(error.message || 'Не удалось сгенерировать карточку')
+    await showAlert(error.message || 'Failed to generate card')
   } finally {
     generatingCard.value = false
   }
