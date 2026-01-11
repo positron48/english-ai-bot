@@ -29,6 +29,7 @@ type TrainingWorker struct {
 	batchSize        int
 	llmWorkers       int
 	interval         time.Duration
+	modelHigh        string
 	logger           *zap.Logger
 	stopChan         chan struct{}
 }
@@ -46,6 +47,7 @@ func NewTrainingWorker(
 	batchSize int,
 	llmWorkers int,
 	interval time.Duration,
+	modelHigh string,
 	logger *zap.Logger,
 ) *TrainingWorker {
 	return &TrainingWorker{
@@ -60,6 +62,7 @@ func NewTrainingWorker(
 		batchSize:        batchSize,
 		llmWorkers:       llmWorkers,
 		interval:         interval,
+		modelHigh:        modelHigh,
 		logger:           logger,
 		stopChan:         make(chan struct{}),
 	}
@@ -108,8 +111,16 @@ func (w *TrainingWorker) processCards(ctx context.Context) {
 		return
 	}
 
+	// Determine how many cards to fetch
+	// We need at least as many cards as workers to utilize all workers
+	// But also respect batchSize as a minimum to avoid too many small batches
+	cardsToFetch := w.batchSize
+	if w.llmWorkers > 0 && w.llmWorkers > cardsToFetch {
+		cardsToFetch = w.llmWorkers
+	}
+
 	// Get pending cards
-	cards, err := w.trainingCardRepo.GetWordCardsWithoutTrainingCards(w.batchSize)
+	cards, err := w.trainingCardRepo.GetWordCardsWithoutTrainingCards(cardsToFetch)
 	if err != nil {
 		w.logger.Error("failed to get pending cards", zap.Error(err))
 		return
@@ -122,6 +133,7 @@ func (w *TrainingWorker) processCards(ctx context.Context) {
 	w.logger.Info("processing word cards",
 		zap.Int("count", len(cards)),
 		zap.Int("workers", w.llmWorkers),
+		zap.Int("cards_fetched", cardsToFetch),
 	)
 
 	// Use worker pool for parallel processing
@@ -136,6 +148,12 @@ func (w *TrainingWorker) processCards(ctx context.Context) {
 	if workers > len(cards) {
 		workers = len(cards) // Don't create more workers than cards
 	}
+
+	w.logger.Info("creating worker pool",
+		zap.Int("requested_workers", w.llmWorkers),
+		zap.Int("actual_workers", workers),
+		zap.Int("cards_to_process", len(cards)),
+	)
 
 	// Create channels for work distribution
 	cardChan := make(chan *models.WordCard, len(cards))
@@ -325,14 +343,19 @@ func (w *TrainingWorker) processCard(ctx context.Context, wordCard *models.WordC
 		wordCard = updatedWordCard
 	}
 
-	// Generate training card via LLM
-	response, err := w.aiService.GenerateTrainingCard(ctx, wordCard.Word)
+	// Try to generate training card, first with default model, then with high model if validation fails
+	var trainingResp models.TrainingCardResponse
+	var response string
+	var validationError string
+	triedHighModel := false
+
+	// First attempt with default model
+	response, err = w.aiService.GenerateTrainingCard(ctx, wordCard.Word)
 	if err != nil {
 		return fmt.Errorf("LLM generation failed: %w", err)
 	}
 
 	// Parse response
-	var trainingResp models.TrainingCardResponse
 	if err := json.Unmarshal([]byte(response), &trainingResp); err != nil {
 		// Parsing error - don't mark as processed, allow retry
 		return fmt.Errorf("failed to parse LLM response: %w", err)
@@ -367,31 +390,102 @@ func (w *TrainingWorker) processCard(ctx context.Context, wordCard *models.WordC
 	}
 
 	// Validate distractors according to rules
-	if validationError := ValidateTrainingCardResponse(wordCard, &trainingResp); validationError != "" {
-		w.logger.Warn("training card validation failed",
-			zap.String("word", wordCard.Word),
-			zap.Int64("word_card_id", wordCard.ID),
-			zap.String("error", validationError),
-		)
-		// Mark as processed with error - don't create cards, don't trigger circuit breaker
-		err := w.wordRepo.MarkWordCardProcessedError(wordCard.ID, validationError)
-		if err != nil {
-			w.logger.Error("failed to mark word card as processed with error",
-				zap.Int64("word_card_id", wordCard.ID),
-				zap.String("error", validationError),
-				zap.Error(err),
-			)
-			// Still return nil to avoid circuit breaker
-		} else {
-			w.logger.Info("word card rejected due to validation failure",
+	validationError = ValidateTrainingCardResponse(wordCard, &trainingResp)
+	if validationError != "" {
+		// Validation failed - try with high model if available
+		if w.modelHigh != "" {
+			w.logger.Info("validation failed with default model, trying with high model",
 				zap.String("word", wordCard.Word),
 				zap.String("error", validationError),
+				zap.String("high_model", w.modelHigh),
 			)
+			
+			// Try with high model
+			response, err = w.aiService.GenerateTrainingCard(ctx, wordCard.Word, w.modelHigh)
+			if err != nil {
+				w.logger.Warn("LLM generation with high model failed, using original validation error",
+					zap.String("word", wordCard.Word),
+					zap.Error(err),
+				)
+			} else {
+				// Parse response from high model
+				var highTrainingResp models.TrainingCardResponse
+				if err := json.Unmarshal([]byte(response), &highTrainingResp); err != nil {
+					w.logger.Warn("failed to parse LLM response from high model, using original validation error",
+						zap.String("word", wordCard.Word),
+						zap.Error(err),
+					)
+				} else {
+					// Check for error from LLM
+					if highTrainingResp.Error != "" {
+						w.logger.Info("word rejected by high model LLM",
+							zap.String("word", wordCard.Word),
+							zap.String("error", highTrainingResp.Error),
+						)
+						err := w.wordRepo.MarkWordCardProcessedError(wordCard.ID, highTrainingResp.Error)
+						if err != nil {
+							w.logger.Error("failed to mark word card as processed with error", zap.Error(err))
+						}
+						return nil
+					}
+
+					// Validate response from high model
+					if len(highTrainingResp.Senses) == 0 {
+						w.logger.Warn("no senses in high model LLM response, using original validation error",
+							zap.String("word", wordCard.Word),
+						)
+					} else {
+						// Validate distractors from high model
+						highValidationError := ValidateTrainingCardResponse(wordCard, &highTrainingResp)
+						if highValidationError == "" {
+							// High model validation passed - use this response
+							w.logger.Info("validation passed with high model",
+								zap.String("word", wordCard.Word),
+								zap.String("high_model", w.modelHigh),
+							)
+							trainingResp = highTrainingResp
+							validationError = ""
+							triedHighModel = true
+						} else {
+							w.logger.Warn("validation also failed with high model",
+								zap.String("word", wordCard.Word),
+								zap.String("error", highValidationError),
+							)
+							validationError = highValidationError
+						}
+					}
+				}
+			}
 		}
-		// Notify admin about validation error
-		w.notifyAdminValidationError(wordCard.Word, validationError)
-		// Return nil (not an error) to avoid triggering circuit breaker
-		return nil
+
+		// If validation still failed after trying high model (or high model not available)
+		if validationError != "" {
+			w.logger.Warn("training card validation failed",
+				zap.String("word", wordCard.Word),
+				zap.Int64("word_card_id", wordCard.ID),
+				zap.String("error", validationError),
+				zap.Bool("tried_high_model", triedHighModel),
+			)
+			// Mark as processed with error - don't create cards, don't trigger circuit breaker
+			err := w.wordRepo.MarkWordCardProcessedError(wordCard.ID, validationError)
+			if err != nil {
+				w.logger.Error("failed to mark word card as processed with error",
+					zap.Int64("word_card_id", wordCard.ID),
+					zap.String("error", validationError),
+					zap.Error(err),
+				)
+				// Still return nil to avoid circuit breaker
+			} else {
+				w.logger.Info("word card rejected due to validation failure",
+					zap.String("word", wordCard.Word),
+					zap.String("error", validationError),
+				)
+			}
+			// Notify admin about validation error
+			w.notifyAdminValidationError(wordCard.Word, validationError)
+			// Return nil (not an error) to avoid triggering circuit breaker
+			return nil
+		}
 	}
 
 	w.logger.Info("parsed training card response",

@@ -142,6 +142,7 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 			cfg.Training.WorkerBatchSize,
 			cfg.Training.LLMWorkers,
 			workerInterval,
+			cfg.AI.ModelHigh,
 			log,
 		)
 	}

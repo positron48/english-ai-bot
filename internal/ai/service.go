@@ -168,7 +168,8 @@ func (s *Service) GenerateResponse(ctx context.Context, userMessage string) (str
 }
 
 // GenerateTrainingCard generates a training card for a word using LLM
-func (s *Service) GenerateTrainingCard(ctx context.Context, word string) (string, error) {
+// If modelOverride is provided, it will be used instead of the default model
+func (s *Service) GenerateTrainingCard(ctx context.Context, word string, modelOverride ...string) (string, error) {
 	if s.trainingPrompt == "" {
 		return "", fmt.Errorf("training prompt not set")
 	}
@@ -184,9 +185,15 @@ func (s *Service) GenerateTrainingCard(ctx context.Context, word string) (string
 		},
 	}
 
+	// Use model override if provided, otherwise use default
+	model := s.model
+	if len(modelOverride) > 0 && modelOverride[0] != "" {
+		model = modelOverride[0]
+	}
+
 	// Create request
 	req := ChatRequest{
-		Model:       s.model,
+		Model:       model,
 		Messages:    messages,
 		MaxTokens:   2000,
 		Temperature: 0.3, // Lower temperature for more consistent JSON output
@@ -210,6 +217,7 @@ func (s *Service) GenerateTrainingCard(ctx context.Context, word string) (string
 
 	s.logger.Debug("sending training card generation request",
 		zap.String("word", word),
+		zap.String("model", model),
 	)
 
 	// Send request

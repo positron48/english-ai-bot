@@ -32,6 +32,7 @@ func TestNewTrainingWorker(t *testing.T) {
 		5,
 		4,
 		0,
+		"",
 		logger,
 	)
 	_ = worker // Verify worker is created

@@ -25,6 +25,7 @@ func TestTrainingWorker_Stop_WithoutStart(t *testing.T) {
 		10,
 		4,
 		5*time.Minute,
+		"",
 		logger,
 	)
 

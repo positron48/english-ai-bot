@@ -208,6 +208,29 @@ func TestValidateTrainingCardResponse_R5_DiffersByMoreThanOneCharacter(t *testin
 	}
 }
 
+func TestValidateTrainingCardResponse_R5_DiffersOnlyByFirstChar(t *testing.T) {
+	// "billion" для "million" - должно быть валидно (отличается только первый символ)
+	wordCard := &models.WordCard{
+		Word: "million",
+	}
+	resp := &models.TrainingCardResponse{
+		WordEN: "million",
+		Senses: []models.TrainingCardSense{
+			{
+				POS:           "noun",
+				WordRU:        "миллион",
+				DistractorsEN: []string{"billion", "thousand", "hundred"}, // First differs only by first character (m -> b)
+				DistractorsRU: []string{"миллиард", "тысяча", "сотня"},
+			},
+		},
+	}
+
+	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
+	if errorMsg != "" {
+		t.Errorf("Expected no validation error for R5 (distractors_en differs from lemma only by first character), got: %s", errorMsg)
+	}
+}
+
 func TestValidateTrainingCardResponse_R5_VerbDistractorExactMatch(t *testing.T) {
 	// "to be" для "be" - должно быть ошибкой (точное совпадение после удаления "to ")
 	wordCard := &models.WordCard{

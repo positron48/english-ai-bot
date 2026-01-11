@@ -48,6 +48,7 @@ type LoggingConfig struct {
 type AIConfig struct {
 	URL        string `mapstructure:"url"`
 	Model      string `mapstructure:"model"`
+	ModelHigh  string `mapstructure:"model_high"`
 	APIKey     string `mapstructure:"api_key"`
 	Prompt     string `mapstructure:"prompt"`
 	PromptFile string `mapstructure:"prompt_file"`
@@ -191,6 +192,7 @@ func Load() (*Config, error) {
 	_ = viper.BindEnv("logging.level", "LOG_LEVEL")
 	_ = viper.BindEnv("ai.url", "AI_URL")
 	_ = viper.BindEnv("ai.model", "AI_MODEL")
+	_ = viper.BindEnv("ai.model_high", "AI_MODEL_HIGH")
 	_ = viper.BindEnv("ai.api_key", "AI_API_KEY")
 	_ = viper.BindEnv("ai.prompt", "AI_PROMPT")
 	_ = viper.BindEnv("ai.prompt_file", "AI_PROMPT_FILE")

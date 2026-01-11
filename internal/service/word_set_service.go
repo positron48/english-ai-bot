@@ -22,6 +22,7 @@ type WordSetService struct {
 	userCardRepo        *repository.UserCardRepository
 	userWordKnowledgeRepo *repository.UserWordKnowledgeRepository
 	aiService           *ai.Service
+	modelHigh           string
 	logger              *zap.Logger
 }
 
@@ -34,6 +35,7 @@ func NewWordSetService(
 	userCardRepo *repository.UserCardRepository,
 	userWordKnowledgeRepo *repository.UserWordKnowledgeRepository,
 	aiService *ai.Service,
+	modelHigh string,
 	logger *zap.Logger,
 ) *WordSetService {
 	return &WordSetService{
@@ -44,6 +46,7 @@ func NewWordSetService(
 		userCardRepo:         userCardRepo,
 		userWordKnowledgeRepo: userWordKnowledgeRepo,
 		aiService:            aiService,
+		modelHigh:            modelHigh,
 		logger:               logger,
 	}
 }
@@ -227,13 +230,18 @@ func (s *WordSetService) EnsureTrainingCardsExist(ctx context.Context, wordCardI
 		return fmt.Errorf("AI service not available")
 	}
 	
-	response, err := s.aiService.GenerateTrainingCard(ctx, wordCard.Word)
+	// Try to generate training card, first with default model, then with high model if validation fails
+	var trainingResp models.TrainingCardResponse
+	var response string
+	var validationError string
+	
+	// First attempt with default model
+	response, err = s.aiService.GenerateTrainingCard(ctx, wordCard.Word)
 	if err != nil {
 		return fmt.Errorf("LLM generation failed: %w", err)
 	}
 	
 	// Parse response
-	var trainingResp models.TrainingCardResponse
 	if err := json.Unmarshal([]byte(response), &trainingResp); err != nil {
 		return fmt.Errorf("failed to parse LLM response: %w", err)
 	}
@@ -249,8 +257,70 @@ func (s *WordSetService) EnsureTrainingCardsExist(ctx context.Context, wordCardI
 	}
 	
 	// Validate distractors
-	if validationError := ValidateTrainingCardResponse(wordCard, &trainingResp); validationError != "" {
-		return fmt.Errorf("validation failed: %s", validationError)
+	validationError = ValidateTrainingCardResponse(wordCard, &trainingResp)
+	if validationError != "" {
+		// Validation failed - try with high model if available
+		if s.modelHigh != "" {
+			s.logger.Info("validation failed with default model, trying with high model",
+				zap.String("word", wordCard.Word),
+				zap.String("error", validationError),
+				zap.String("high_model", s.modelHigh),
+			)
+			
+			// Try with high model
+			response, err = s.aiService.GenerateTrainingCard(ctx, wordCard.Word, s.modelHigh)
+			if err != nil {
+				s.logger.Warn("LLM generation with high model failed, using original validation error",
+					zap.String("word", wordCard.Word),
+					zap.Error(err),
+				)
+				return fmt.Errorf("validation failed: %s", validationError)
+			}
+			
+			// Parse response from high model
+			var highTrainingResp models.TrainingCardResponse
+			if err := json.Unmarshal([]byte(response), &highTrainingResp); err != nil {
+				s.logger.Warn("failed to parse LLM response from high model, using original validation error",
+					zap.String("word", wordCard.Word),
+					zap.Error(err),
+				)
+				return fmt.Errorf("validation failed: %s", validationError)
+			}
+			
+			// Check for error from LLM
+			if highTrainingResp.Error != "" {
+				return fmt.Errorf("word rejected by high model LLM: %s", highTrainingResp.Error)
+			}
+			
+			// Validate response from high model
+			if len(highTrainingResp.Senses) == 0 {
+				s.logger.Warn("no senses in high model LLM response, using original validation error",
+					zap.String("word", wordCard.Word),
+				)
+				return fmt.Errorf("validation failed: %s", validationError)
+			}
+			
+			// Validate distractors from high model
+			highValidationError := ValidateTrainingCardResponse(wordCard, &highTrainingResp)
+			if highValidationError == "" {
+				// High model validation passed - use this response
+				s.logger.Info("validation passed with high model",
+					zap.String("word", wordCard.Word),
+					zap.String("high_model", s.modelHigh),
+				)
+				trainingResp = highTrainingResp
+				// Continue with creating training cards using high model response
+			} else {
+				s.logger.Warn("validation also failed with high model",
+					zap.String("word", wordCard.Word),
+					zap.String("error", highValidationError),
+				)
+				return fmt.Errorf("validation failed: %s", highValidationError)
+			}
+		} else {
+			// High model not available, return original validation error
+			return fmt.Errorf("validation failed: %s", validationError)
+		}
 	}
 	
 	// Create training cards

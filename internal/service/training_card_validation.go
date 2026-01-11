@@ -60,6 +60,7 @@ func ValidateTrainingCardResponse(wordCard *models.WordCard, resp *models.Traini
 		}
 
 		// R5: distractors_en не должны в точности совпадать с lemma или отличаться от него на 1 символ
+		// Исключение: если отличается только первый символ, это валидно (например, million/billion)
 		// Для глаголов отбрасываем "to " перед проверкой
 		lemmaLower := strings.ToLower(lemma)
 		for i, distractor := range sense.DistractorsEN {
@@ -76,6 +77,12 @@ func ValidateTrainingCardResponse(wordCard *models.WordCard, resp *models.Traini
 			}
 			// Проверяем, отличается ли дескриптор от леммы на 1 символ (расстояние Левенштейна = 1)
 			if levenshteinDistance(distractorLower, lemmaLower) == 1 {
+				// Проверяем, отличается ли только первый символ
+				if differsOnlyByFirstChar(distractorLower, lemmaLower) {
+					// Это валидно - отличается только первый символ (например, million/billion)
+					continue
+				}
+				// Отличается не первый символ - это невалидно
 				errors = append(errors, fmt.Sprintf("R5 sense=%d distractor_en[%d]=%q differs from lemma %q by 1 character", senseIdx, i, truncate(distractor, 50), lemma))
 			}
 		}
@@ -196,4 +203,35 @@ func min3(a, b, c int) int {
 		return b
 	}
 	return c
+}
+
+// differsOnlyByFirstChar checks if two strings differ only by the first character
+// Returns true if strings have the same length and all characters except the first are identical
+func differsOnlyByFirstChar(s1, s2 string) bool {
+	r1 := []rune(s1)
+	r2 := []rune(s2)
+	
+	// Must have same length
+	if len(r1) != len(r2) {
+		return false
+	}
+	
+	// Must have at least 2 characters (otherwise it's just one character difference)
+	if len(r1) < 2 {
+		return false
+	}
+	
+	// First characters must be different
+	if r1[0] == r2[0] {
+		return false
+	}
+	
+	// All other characters must be identical
+	for i := 1; i < len(r1); i++ {
+		if r1[i] != r2[i] {
+			return false
+		}
+	}
+	
+	return true
 }
