@@ -38,5 +38,10 @@
     "word": "Today is good day.",
     "expect": "correction",
     "note": "коррекция"
+  },
+  {
+    "word": "gulať",
+    "expect": "reject",
+    "note": "несуществующее слово"
   }
 ]

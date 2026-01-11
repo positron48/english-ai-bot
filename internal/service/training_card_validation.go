@@ -59,21 +59,39 @@ func ValidateTrainingCardResponse(wordCard *models.WordCard, resp *models.Traini
 			}
 		}
 
-		// R5: distractors_en не должны содержать lemma в своих значениях (substring, case-insensitive)
+		// R5: distractors_en не должны в точности совпадать с lemma или отличаться от него на 1 символ
+		// Для глаголов отбрасываем "to " перед проверкой
 		lemmaLower := strings.ToLower(lemma)
 		for i, distractor := range sense.DistractorsEN {
 			distractorLower := strings.ToLower(distractor)
-			if strings.Contains(distractorLower, lemmaLower) {
-				errors = append(errors, fmt.Sprintf("R5 sense=%d distractor_en[%d]=%q contains lemma %q", senseIdx, i, truncate(distractor, 50), lemma))
+			// Для глаголов удаляем "to " из начала дескриптора перед проверкой
+			if pos == "verb" {
+				distractorLower = strings.TrimPrefix(distractorLower, "to ")
+				distractorLower = strings.TrimSpace(distractorLower)
+			}
+			// Проверяем точное совпадение
+			if distractorLower == lemmaLower {
+				errors = append(errors, fmt.Sprintf("R5 sense=%d distractor_en[%d]=%q exactly matches lemma %q", senseIdx, i, truncate(distractor, 50), lemma))
+				continue
+			}
+			// Проверяем, отличается ли дескриптор от леммы на 1 символ (расстояние Левенштейна = 1)
+			if levenshteinDistance(distractorLower, lemmaLower) == 1 {
+				errors = append(errors, fmt.Sprintf("R5 sense=%d distractor_en[%d]=%q differs from lemma %q by 1 character", senseIdx, i, truncate(distractor, 50), lemma))
 			}
 		}
 
-		// R6: distractors_ru не должны содержать word_ru в своих значениях (substring, case-insensitive)
+		// R6: distractors_ru не должны в точности совпадать с word_ru или отличаться от него на 1 символ
 		wordRULower := strings.ToLower(sense.WordRU)
 		for i, distractor := range sense.DistractorsRU {
 			distractorLower := strings.ToLower(distractor)
-			if strings.Contains(distractorLower, wordRULower) {
-				errors = append(errors, fmt.Sprintf("R6 sense=%d distractor_ru[%d]=%q contains word_ru %q", senseIdx, i, truncate(distractor, 50), sense.WordRU))
+			// Проверяем точное совпадение
+			if distractorLower == wordRULower {
+				errors = append(errors, fmt.Sprintf("R6 sense=%d distractor_ru[%d]=%q exactly matches word_ru %q", senseIdx, i, truncate(distractor, 50), sense.WordRU))
+				continue
+			}
+			// Проверяем, отличается ли дескриптор от word_ru на 1 символ (расстояние Левенштейна = 1)
+			if levenshteinDistance(distractorLower, wordRULower) == 1 {
+				errors = append(errors, fmt.Sprintf("R6 sense=%d distractor_ru[%d]=%q differs from word_ru %q by 1 character", senseIdx, i, truncate(distractor, 50), sense.WordRU))
 			}
 		}
 	}
@@ -116,4 +134,66 @@ func truncate(s string, maxLen int) string {
 		return s
 	}
 	return s[:maxLen] + "..."
+}
+
+// levenshteinDistance calculates the Levenshtein distance between two strings
+// Returns the minimum number of single-character edits (insertions, deletions, or substitutions)
+// required to change one string into the other
+// Works with runes (Unicode characters), not bytes, to properly handle multi-byte characters
+func levenshteinDistance(s1, s2 string) int {
+	// Convert strings to rune slices for proper Unicode handling
+	r1 := []rune(s1)
+	r2 := []rune(s2)
+
+	if len(r1) == 0 {
+		return len(r2)
+	}
+	if len(r2) == 0 {
+		return len(r1)
+	}
+
+	// Create a 2D slice to store distances
+	dp := make([][]int, len(r1)+1)
+	for i := range dp {
+		dp[i] = make([]int, len(r2)+1)
+	}
+
+	// Initialize first row and column
+	for i := 0; i <= len(r1); i++ {
+		dp[i][0] = i
+	}
+	for j := 0; j <= len(r2); j++ {
+		dp[0][j] = j
+	}
+
+	// Fill the dp table
+	for i := 1; i <= len(r1); i++ {
+		for j := 1; j <= len(r2); j++ {
+			cost := 0
+			if r1[i-1] != r2[j-1] {
+				cost = 1
+			}
+			dp[i][j] = min3(
+				dp[i-1][j]+1,      // deletion
+				dp[i][j-1]+1,      // insertion
+				dp[i-1][j-1]+cost, // substitution
+			)
+		}
+	}
+
+	return dp[len(r1)][len(r2)]
+}
+
+// min3 returns the minimum of three integers
+func min3(a, b, c int) int {
+	if a < b {
+		if a < c {
+			return a
+		}
+		return c
+	}
+	if b < c {
+		return b
+	}
+	return c
 }

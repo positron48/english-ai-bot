@@ -177,7 +177,10 @@
             </label>
           </div>
           <div class="form-group">
-            <label>Words (comma-separated)</label>
+            <label>
+              Words (comma-separated)
+              <span class="word-count">({{ wordSetWordsCount }} words)</span>
+            </label>
             <textarea 
               v-model="wordSetForm.words" 
               class="form-textarea" 
@@ -205,7 +208,10 @@
         </div>
         <div class="modal-body">
           <div class="form-group">
-            <label>Words (comma-separated) *</label>
+            <label>
+              Words (comma-separated) *
+              <span class="word-count">({{ itemsWordsCount }} words)</span>
+            </label>
             <textarea 
               v-model="itemsForm.words" 
               class="form-textarea" 
@@ -360,6 +366,26 @@ const allCategoriesFlat = computed(() => {
     return result
   }
   return flatten(categoriesTree.value)
+})
+
+const wordSetWordsCount = computed(() => {
+  if (!wordSetForm.value.words || !wordSetForm.value.words.trim()) {
+    return 0
+  }
+  return wordSetForm.value.words
+    .split(',')
+    .map(w => w.trim())
+    .filter(w => w.length > 0).length
+})
+
+const itemsWordsCount = computed(() => {
+  if (!itemsForm.value.words || !itemsForm.value.words.trim()) {
+    return 0
+  }
+  return itemsForm.value.words
+    .split(',')
+    .map(w => w.trim())
+    .filter(w => w.length > 0).length
 })
 
 onMounted(async () => {
@@ -936,6 +962,13 @@ const deleteWordSet = async () => {
   font-size: 12px;
   color: var(--text-secondary);
   margin-top: 4px;
+}
+
+.word-count {
+  font-weight: normal;
+  color: var(--text-secondary);
+  font-size: 0.9em;
+  margin-left: 8px;
 }
 
 .modal-actions {
