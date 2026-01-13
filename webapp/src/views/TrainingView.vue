@@ -1292,6 +1292,15 @@ const resetSession = async () => {
   font-size: 24px;
   margin: 30px 0;
   text-align: center;
+  overflow-x: auto;
+  overflow-y: visible;
+}
+
+/* Prevent word and transcription from breaking into multiple lines */
+.question :deep(strong),
+.question :deep(.transcription),
+.question :deep(span.transcription) {
+  white-space: nowrap;
 }
 
 /* Style transcription in question HTML content */

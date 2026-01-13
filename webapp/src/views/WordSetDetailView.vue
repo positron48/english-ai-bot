@@ -509,12 +509,16 @@ const startStudy = () => {
 
 .word-display {
   text-align: center;
+  overflow-x: auto;
+  overflow-y: visible;
+  width: 100%;
 }
 
 .word-display h2 {
   font-size: 36px;
   margin: 0;
   color: var(--text-primary);
+  white-space: nowrap;
 }
 
 .transcription {
@@ -523,6 +527,7 @@ const startStudy = () => {
   margin-top: 8px;
   font-family: 'Arial Unicode MS', 'Lucida Sans Unicode', 'Charis SIL', 'Doulos SIL', 'Gentium Plus', 'DejaVu Sans', Arial, sans-serif;
   font-style: italic;
+  white-space: nowrap;
 }
 
 .translation {

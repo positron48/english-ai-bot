@@ -983,11 +983,17 @@ const formatDateAbsolute = (dateStr: string | null): string => {
   align-items: center;
   gap: 12px;
   margin-bottom: 8px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: visible;
+  min-width: 0;
 }
 
 .word-header-info h3 {
   margin: 0;
   font-size: 24px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .transcription {
@@ -996,6 +1002,8 @@ const formatDateAbsolute = (dateStr: string | null): string => {
   letter-spacing: 0.5px;
   color: var(--text-secondary);
   font-size: 18px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .word-summary {

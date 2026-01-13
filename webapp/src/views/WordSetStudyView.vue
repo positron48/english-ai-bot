@@ -283,18 +283,23 @@ const goBack = () => {
 
 .word-display {
   text-align: center;
+  overflow-x: auto;
+  overflow-y: visible;
+  width: 100%;
 }
 
 .word-display h2 {
   font-size: 48px;
   margin: 0;
   color: var(--text-primary);
+  white-space: nowrap;
 }
 
 .transcription {
   font-size: 18px;
   color: var(--text-secondary);
   margin-top: 8px;
+  white-space: nowrap;
 }
 
 .translation {
