@@ -71,9 +71,16 @@ func (s *OptionsService) GenerateOptions(
 	excludedMeanings := s.getOtherMeaningsOfWord(card.TrainingCard.WordCardID, card.UserCard.Direction)
 	
 	// Create a set of excluded words for fast lookup (includes correct answer and other meanings)
+	// Normalize all excluded values to ensure we catch duplicates like "make" and "to make"
 	excludedSet := make(map[string]bool)
+	normalizedCorrectAnswer := s.normalizeVerbFormat(correctAnswer, currentPOS, card.UserCard.Direction)
+	excludedSet[normalizedCorrectAnswer] = true
+	// Also add original correct answer to catch both formats
 	excludedSet[correctAnswer] = true
 	for _, meaning := range excludedMeanings {
+		normalizedMeaning := s.normalizeVerbFormat(meaning, currentPOS, card.UserCard.Direction)
+		excludedSet[normalizedMeaning] = true
+		// Also add original meaning to catch both formats
 		excludedSet[meaning] = true
 	}
 	
@@ -173,9 +180,9 @@ func (s *OptionsService) GenerateOptions(
 	// Normalize verbs for RU->EN direction (add "to " if needed)
 	for i := 0; i < cardDistractorsToUse && i < len(shuffledCardDistractors); i++ {
 		word := shuffledCardDistractors[i]
-		if !selectedDistractorsSet[word] {
-			// Normalize verb format for RU->EN direction
-			normalizedWord := s.normalizeVerbFormat(word, currentPOS, card.UserCard.Direction)
+		// Normalize verb format for RU->EN direction BEFORE checking duplicates
+		normalizedWord := s.normalizeVerbFormat(word, currentPOS, card.UserCard.Direction)
+		if !selectedDistractorsSet[normalizedWord] {
 			selectedDistractors = append(selectedDistractors, normalizedWord)
 			selectedDistractorsSet[normalizedWord] = true
 		}
@@ -203,9 +210,9 @@ func (s *OptionsService) GenerateOptions(
 	// Normalize verbs for RU->EN direction (add "to " if needed)
 	for i := 0; i < sessionWordsToUse && i < len(shuffledSessionWords) && len(selectedDistractors) < neededDistractors; i++ {
 		word := shuffledSessionWords[i]
-		if !selectedDistractorsSet[word] {
-			// Normalize verb format for RU->EN direction
-			normalizedWord := s.normalizeVerbFormat(word, currentPOS, card.UserCard.Direction)
+		// Normalize verb format for RU->EN direction BEFORE checking duplicates
+		normalizedWord := s.normalizeVerbFormat(word, currentPOS, card.UserCard.Direction)
+		if !selectedDistractorsSet[normalizedWord] {
 			selectedDistractors = append(selectedDistractors, normalizedWord)
 			selectedDistractorsSet[normalizedWord] = true
 		}
@@ -221,17 +228,19 @@ func (s *OptionsService) GenerateOptions(
 	// Exclude already added distractors and ensure no duplicates
 	// Filter by POS if current card has POS
 	for _, d := range optionsPool {
-		if !selectedDistractorsSet[d] && !excludedSet[d] && len(selectedDistractors) < neededDistractors {
+		if !excludedSet[d] && len(selectedDistractors) < neededDistractors {
 			// Check POS match if current card has POS
 			if currentPOS != "" {
 				if !s.hasMatchingPOS(d, currentPOS, card.UserCard.Direction) {
 					continue
 				}
 			}
-			// Normalize verb format for RU->EN direction
+			// Normalize verb format for RU->EN direction BEFORE checking duplicates
 			normalizedD := s.normalizeVerbFormat(d, currentPOS, card.UserCard.Direction)
-			selectedDistractors = append(selectedDistractors, normalizedD)
-			selectedDistractorsSet[normalizedD] = true
+			if !selectedDistractorsSet[normalizedD] {
+				selectedDistractors = append(selectedDistractors, normalizedD)
+				selectedDistractorsSet[normalizedD] = true
+			}
 		}
 		if len(selectedDistractors) >= neededDistractors {
 			break
@@ -247,21 +256,25 @@ func (s *OptionsService) GenerateOptions(
 		// Use fallbacks filtered by POS if current card has POS
 		fallbacks := s.getFallbackDistractors(card.UserCard.Direction, currentPOS)
 		for _, fb := range fallbacks {
-			if !selectedDistractorsSet[fb] && !excludedSet[fb] {
-				// Normalize verb format for RU->EN direction
+			if !excludedSet[fb] {
+				// Normalize verb format for RU->EN direction BEFORE checking duplicates
 				normalizedFb := s.normalizeVerbFormat(fb, currentPOS, card.UserCard.Direction)
-				selectedDistractors = append(selectedDistractors, normalizedFb)
-				selectedDistractorsSet[normalizedFb] = true
-				if len(selectedDistractors) >= neededDistractors {
-					break
+				if !selectedDistractorsSet[normalizedFb] {
+					selectedDistractors = append(selectedDistractors, normalizedFb)
+					selectedDistractorsSet[normalizedFb] = true
+					if len(selectedDistractors) >= neededDistractors {
+						break
+					}
 				}
 			}
 		}
 	}
 
 	// Build final options array with correct answer
+	// Normalize correct answer for consistency (all options should be in the same format)
+	normalizedCorrectAnswerForOptions := s.normalizeVerbFormat(correctAnswer, currentPOS, card.UserCard.Direction)
 	options := make([]string, 0, optionCount)
-	options = append(options, correctAnswer)
+	options = append(options, normalizedCorrectAnswerForOptions)
 	options = append(options, selectedDistractors...)
 
 	// Shuffle to randomize position
@@ -273,7 +286,7 @@ func (s *OptionsService) GenerateOptions(
 		return nil, "", fmt.Errorf("not enough options generated")
 	}
 
-	return options, correctAnswer, nil
+	return options, normalizedCorrectAnswerForOptions, nil
 }
 
 // getFallbackDistractors returns generic fallback distractors filtered by POS
