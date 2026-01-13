@@ -985,7 +985,7 @@ const updateUpcomingChart = () => {
     data: {
       labels: labels,
       datasets: [{
-        label: 'Карточек',
+        label: 'Cards',
         data: counts,
         backgroundColor: hexToRgba(primaryColor, isDark ? 0.7 : 0.6),
         borderColor: primaryColor,
@@ -1009,7 +1009,7 @@ const updateUpcomingChart = () => {
           callbacks: {
             label: function(context) {
               const value = context.parsed.y || 0
-              return `${value} карточек`
+              return `${value} ${value === 1 ? 'card' : 'cards'}`
             }
           }
         }
