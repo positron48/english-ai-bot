@@ -18,6 +18,9 @@
       <router-link to="/admin/word-sets" class="admin-tab" :class="{ active: $route.path === '/admin/word-sets' }">
         <span>Word Sets</span>
       </router-link>
+      <router-link to="/admin/db-schema" class="admin-tab" :class="{ active: $route.path === '/admin/db-schema' }">
+        <span>DB Schema</span>
+      </router-link>
     </div>
   </div>
 </template>

@@ -284,6 +284,7 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/app/training/current", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTrainingCurrent)))
 	r.mux.HandleFunc("/app/training/reveal", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTrainingReveal)))
 	r.mux.HandleFunc("/app/training/answer", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTrainingAnswer)))
+	r.mux.HandleFunc("/app/training/upcoming", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTrainingUpcoming)))
 	r.mux.HandleFunc("/app/chat", appChatMiddleware.Wrap(auth.RequireAuth(r.handleChat)))
 
 	// Admin routes (wrapped with admin guard and rate limiting)
@@ -296,6 +297,7 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/app/admin/words", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminWords))))
 	r.mux.HandleFunc("/app/admin/words/", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminWord))))
 	r.mux.HandleFunc("/app/admin/users", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminUsers))))
+	r.mux.HandleFunc("/app/admin/db-schema", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleDBSchema))))
 	r.mux.HandleFunc("/app/admin/orphaned-cards", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminOrphanedCards))))
 	r.mux.HandleFunc("/app/admin/orphaned-cards/", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminOrphanedCard))))
 	r.mux.HandleFunc("/app/admin/orphaned-user-cards", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminOrphanedUserCards))))

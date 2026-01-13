@@ -607,3 +607,81 @@ func (r *Router) finishTrainingSession(w http.ResponseWriter, req *http.Request,
 	})
 }
 
+// handleTrainingUpcoming gets upcoming cards count by date for the next 7 days
+// @Summary      Получить количество карточек на ближайшую неделю
+// @Description  Возвращает количество карточек, которые появятся в каждый день ближайшей недели
+// @Tags         Training
+// @Accept       json
+// @Produce      application/json
+// @Security     ApiKeyAuth
+// @Success      200  {object}  map[string]interface{}  "Карта дат и количества карточек"
+// @Failure      401  {string}  string  "Неавторизован"
+// @Failure      500  {string}  string  "Внутренняя ошибка сервера"
+// @Router       /app/training/upcoming [get]
+func (r *Router) handleTrainingUpcoming(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	userID := getUserIDFromContext(req.Context())
+	if userID == 0 {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	// Get user's timezone or use UTC
+	userRepo := repository.NewUserRepository(r.db, r.logger)
+	user, err := userRepo.GetUserByID(userID)
+	if err != nil {
+		r.logger.Error("failed to get user", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	// Get current time in user's timezone
+	now := time.Now()
+	if user != nil && user.Timezone != "" {
+		loc, err := time.LoadLocation(user.Timezone)
+		if err != nil {
+			r.logger.Warn("failed to load timezone, using UTC", zap.String("timezone", user.Timezone), zap.Error(err))
+		} else {
+			now = now.In(loc)
+		}
+	}
+
+	// Start from today at 00:00:00
+	startDate := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
+
+	// Get upcoming cards by date
+	userCardRepo := repository.NewUserCardRepository(r.db, r.logger)
+	upcomingCards, err := userCardRepo.GetUpcomingCardsByDate(userID, startDate)
+	if err != nil {
+		r.logger.Error("failed to get upcoming cards", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	// Format response with dates and labels
+	response := make(map[string]interface{})
+	
+	for i := 0; i < 7; i++ {
+		date := startDate.AddDate(0, 0, i)
+		dateStr := date.Format("2006-01-02")
+		
+		// Format date as dd.mm
+		label := date.Format("02.01")
+		
+		count := upcomingCards[dateStr]
+		response[dateStr] = map[string]interface{}{
+			"date":  dateStr,
+			"label": label,
+			"count": count,
+		}
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(response)
+}
+

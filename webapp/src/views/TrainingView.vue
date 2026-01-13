@@ -105,6 +105,18 @@
             </span>
           </div>
         </div>
+        
+        <!-- Upcoming cards chart -->
+        <div v-if="statsLoaded && upcomingCardsLoaded" class="upcoming-cards-chart">
+          <div class="chart-header">
+            <h3 class="chart-title">Upcoming Cards This Week</h3>
+            <div class="chart-subtitle">Cards scheduled to appear in the next 7 days</div>
+          </div>
+          <div class="chart-container">
+            <canvas ref="upcomingChartCanvas"></canvas>
+          </div>
+        </div>
+        
         <button v-if="statsLoaded && stats.availableForTraining > 0" @click="startTraining" class="btn btn-primary btn-start">
           Start Training
         </button>
@@ -247,12 +259,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { apiClient } from '../api/client'
 import { showAlert } from '../composables/useDialog'
 import { useSettings } from '../composables/useSettings'
 import { useAudio } from '../composables/useAudio'
+import { Chart, registerables } from 'chart.js'
 import Icon from '../components/Icon.vue'
+
+Chart.register(...registerables)
 
 interface Card {
   question: string
@@ -309,6 +324,10 @@ const networkErrorAttempt = ref(0)
 const networkErrorMaxAttempts = ref(3)
 const animatedPercentage = ref(0)
 const percentageAnimationComplete = ref(false)
+const upcomingChartCanvas = ref<HTMLCanvasElement | null>(null)
+const upcomingCardsLoaded = ref(false)
+const upcomingCardsData = ref<Record<string, { date: string; label: string; count: number }>>({})
+let upcomingChartInstance: Chart | null = null
 
 // Settings
 const { settings } = useSettings()
@@ -856,6 +875,7 @@ onMounted(async () => {
   window.addEventListener('keydown', handleKeyPress)
   
   await loadStats()
+  await loadUpcomingCards()
   await checkCurrentSession()
 })
 
@@ -872,6 +892,164 @@ const loadStats = async () => {
   }
 }
 
+const loadUpcomingCards = async () => {
+  try {
+    const data = await apiClient.request('/app/training/upcoming')
+    console.log('Upcoming cards data:', data)
+    
+    // Ensure data is in correct format
+    if (data && typeof data === 'object') {
+      upcomingCardsData.value = data
+    } else {
+      console.warn('Invalid data format:', data)
+      upcomingCardsData.value = {}
+    }
+    
+    upcomingCardsLoaded.value = true
+    await nextTick()
+    setTimeout(() => {
+      updateUpcomingChart()
+    }, 150)
+  } catch (error) {
+    console.error('Failed to load upcoming cards:', error)
+    upcomingCardsLoaded.value = true // Mark as loaded even on error
+  }
+}
+
+const updateUpcomingChart = () => {
+  if (!upcomingChartCanvas.value) {
+    setTimeout(() => {
+      if (upcomingChartCanvas.value) {
+        updateUpcomingChart()
+      }
+    }, 100)
+    return
+  }
+  
+  if (!upcomingCardsData.value || Object.keys(upcomingCardsData.value).length === 0) {
+    return
+  }
+  
+  // Destroy existing chart if it exists
+  if (upcomingChartInstance) {
+    upcomingChartInstance.destroy()
+    upcomingChartInstance = null
+  }
+  
+  // Prepare data - ensure we process dates in order
+  const dates = Object.keys(upcomingCardsData.value).sort()
+  const labels: string[] = []
+  const counts: number[] = []
+  
+  console.log('Processing upcoming cards data:', upcomingCardsData.value)
+  console.log('Sorted dates:', dates)
+  
+  dates.forEach(date => {
+    const item = upcomingCardsData.value[date]
+    console.log(`Processing date ${date}:`, item)
+    if (item && typeof item === 'object' && 'label' in item && 'count' in item) {
+      labels.push(item.label)
+      counts.push(item.count)
+      console.log(`Added: label="${item.label}", count=${item.count}`)
+    } else {
+      // Fallback if data structure is different
+      console.warn('Unexpected data structure for date:', date, item)
+      // Try to extract date part for display
+      const datePart = date.split('T')[0] || date
+      labels.push(datePart)
+      counts.push(0)
+    }
+  })
+  
+  console.log('Final chart data - labels:', labels, 'counts:', counts)
+  
+  // Get theme colors
+  const root = getComputedStyle(document.documentElement)
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark'
+  const primaryColor = root.getPropertyValue('--color-primary').trim() || '#007bff'
+  const textPrimary = root.getPropertyValue('--text-primary').trim() || '#333333'
+  const textSecondary = root.getPropertyValue('--text-secondary').trim() || '#666666'
+  const borderColor = root.getPropertyValue('--border-primary').trim() || '#dddddd'
+  
+  // Convert hex to rgba
+  const hexToRgba = (hex: string, alpha: number) => {
+    const r = parseInt(hex.slice(1, 3), 16)
+    const g = parseInt(hex.slice(3, 5), 16)
+    const b = parseInt(hex.slice(5, 7), 16)
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`
+  }
+  
+  // Create bar chart
+  upcomingChartInstance = new Chart(upcomingChartCanvas.value, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Карточек',
+        data: counts,
+        backgroundColor: hexToRgba(primaryColor, isDark ? 0.7 : 0.6),
+        borderColor: primaryColor,
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          titleColor: '#fff',
+          bodyColor: '#fff',
+          borderColor: borderColor,
+          borderWidth: 1,
+          padding: 12,
+          callbacks: {
+            label: function(context) {
+              const value = context.parsed.y || 0
+              return `${value} карточек`
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: {
+            color: isDark ? textSecondary : '#555555',
+            font: {
+              size: 11
+            }
+          },
+          grid: {
+            color: borderColor,
+            display: false
+          }
+        },
+        y: {
+          type: 'linear',
+          display: true,
+          beginAtZero: true,
+          ticks: {
+            stepSize: 1,
+            color: isDark ? textSecondary : '#555555',
+            font: {
+              size: 11
+            },
+            callback: function(value) {
+              return Number.isInteger(value) ? value : ''
+            }
+          },
+          grid: {
+            color: isDark ? borderColor : '#e0e0e0'
+          }
+        }
+      }
+    }
+  })
+}
+
 onUnmounted(() => {
   // Remove keyboard event listener
   window.removeEventListener('keydown', handleKeyPress)
@@ -883,6 +1061,12 @@ onUnmounted(() => {
   if (autoNextCardTimer) {
     clearTimeout(autoNextCardTimer)
     autoNextCardTimer = null
+  }
+  
+  // Destroy chart
+  if (upcomingChartInstance) {
+    upcomingChartInstance.destroy()
+    upcomingChartInstance = null
   }
 })
 
@@ -1268,8 +1452,9 @@ const resetSession = async () => {
   }
   cardShownAt.value = null
   
-  // Refresh stats
+  // Refresh stats and upcoming cards
   await loadStats()
+  await loadUpcomingCards()
 }
 </script>
 
@@ -1810,15 +1995,15 @@ const resetSession = async () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px;
-  max-width: 500px;
+  gap: 28px;
+  max-width: 600px;
   margin: 0 auto;
 }
 
 .start-screen-stats {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
   width: 100%;
 }
 
@@ -1826,43 +2011,108 @@ const resetSession = async () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  padding: 16px;
-  background: var(--bg-secondary, rgba(0, 0, 0, 0.05));
-  border-radius: 10px;
+  gap: 10px;
+  padding: 24px;
+  background: linear-gradient(135deg, var(--bg-secondary, rgba(0, 0, 0, 0.05)) 0%, var(--bg-secondary, rgba(0, 0, 0, 0.08)) 100%);
+  border-radius: 16px;
   border: 1px solid var(--border-primary, rgba(0, 0, 0, 0.1));
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.start-stat-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
 }
 
 .start-stat-label {
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 12px;
+  font-weight: 600;
   color: var(--text-secondary);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
+  opacity: 0.8;
 }
 
 .start-stat-value {
-  font-size: 28px;
+  font-size: 32px;
   font-weight: 700;
   color: var(--color-primary);
   display: inline-block;
+  line-height: 1.2;
 }
 
 .start-stat-value span:last-child {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 500;
   color: var(--text-secondary);
-  opacity: 0.8;
-  margin-left: 4px;
+  opacity: 0.7;
+  margin-left: 6px;
+}
+
+.upcoming-cards-chart {
+  width: 100%;
+  margin-top: 28px;
+  padding: 24px;
+  background: linear-gradient(135deg, var(--bg-secondary, rgba(0, 0, 0, 0.05)) 0%, var(--bg-secondary, rgba(0, 0, 0, 0.08)) 100%);
+  border-radius: 16px;
+  border: 1px solid var(--border-primary, rgba(0, 0, 0, 0.1));
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.upcoming-cards-chart:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.chart-header {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.chart-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 6px 0;
+  letter-spacing: -0.3px;
+}
+
+.chart-subtitle {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  opacity: 0.7;
+  margin: 0;
+}
+
+.chart-container {
+  position: relative;
+  height: 220px;
+  width: 100%;
+  margin-top: 8px;
 }
 
 .btn-start {
   width: 100%;
-  max-width: 300px;
-  padding: 14px 28px;
-  font-size: 16px;
+  max-width: 320px;
+  padding: 16px 32px;
+  font-size: 17px;
   font-weight: 600;
-  border-radius: 10px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  letter-spacing: 0.3px;
+}
+
+.btn-start:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.btn-start:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .stat-item {
@@ -2423,19 +2673,48 @@ const resetSession = async () => {
   }
   
   .start-screen {
-    padding: 30px 8px;
+    padding: 30px 12px;
   }
   
   .start-screen-content {
-    gap: 20px;
+    gap: 24px;
   }
   
   .start-stat-item {
-    padding: 14px;
+    padding: 20px;
+    border-radius: 14px;
   }
   
   .start-stat-value {
-    font-size: 24px;
+    font-size: 28px;
+  }
+  
+  .start-stat-value span:last-child {
+    font-size: 16px;
+  }
+  
+  .upcoming-cards-chart {
+    padding: 20px;
+    border-radius: 14px;
+    margin-top: 24px;
+  }
+  
+  .chart-title {
+    font-size: 16px;
+  }
+  
+  .chart-subtitle {
+    font-size: 12px;
+  }
+  
+  .chart-container {
+    height: 200px;
+  }
+  
+  .btn-start {
+    max-width: 100%;
+    padding: 14px 28px;
+    font-size: 16px;
   }
 }
 </style>

@@ -618,3 +618,105 @@ func (r *UserCardRepository) GetUserIDsByWordCardID(wordCardID int64) ([]int64, 
 	return userIDs, nil
 }
 
+// GetUpcomingCardsByDate gets the count of cards that will become due in the next 7 days
+// Returns a map where key is date string (YYYY-MM-DD) and value is the count of cards
+// Excludes words marked as "known" in user_word_knowledge
+func (r *UserCardRepository) GetUpcomingCardsByDate(userID int64, startDate time.Time) (map[string]int, error) {
+	// Calculate end date (7 days from start, at end of day)
+	endDate := startDate.AddDate(0, 0, 7)
+	
+	r.logger.Debug("getting upcoming cards by date",
+		zap.Int64("user_id", userID),
+		zap.Time("start_date", startDate),
+		zap.Time("end_date", endDate),
+	)
+	
+	// Get all cards with next_due_at in the range, then group by date in Go
+	query := `SELECT uc.next_due_at
+	FROM user_cards uc
+	INNER JOIN training_cards tc ON uc.training_card_id = tc.id
+	WHERE uc.user_id = ? 
+		AND uc.next_due_at IS NOT NULL
+		AND uc.next_due_at > ?
+		AND uc.next_due_at <= ?
+		AND NOT EXISTS (
+			SELECT 1 FROM user_word_knowledge uwk 
+			WHERE uwk.user_id = ? AND uwk.word_card_id = tc.word_card_id AND uwk.status = 'known'
+		)`
+
+	rows, err := r.db.Query(query, userID, startDate, endDate, userID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get upcoming cards by date: %w", err)
+	}
+	defer rows.Close()
+
+	result := make(map[string]int)
+	
+	// Initialize all 7 days with 0
+	for i := 0; i < 7; i++ {
+		date := startDate.AddDate(0, 0, i)
+		dateStr := date.Format("2006-01-02")
+		result[dateStr] = 0
+	}
+
+	// Group cards by date
+	cardCount := 0
+	for rows.Next() {
+		var nextDueAtStr sql.NullString
+		if err := rows.Scan(&nextDueAtStr); err != nil {
+			return nil, fmt.Errorf("failed to scan upcoming cards: %w", err)
+		}
+		if nextDueAtStr.Valid {
+			cardCount++
+			// Try multiple date formats - SQLite can return different formats
+			var dueTime time.Time
+			var err error
+			
+			// Try RFC3339 format first (ISO 8601 with timezone)
+			dueTime, err = time.Parse(time.RFC3339Nano, nextDueAtStr.String)
+			if err != nil {
+				// Try RFC3339 without nanoseconds
+				dueTime, err = time.Parse(time.RFC3339, nextDueAtStr.String)
+			}
+			if err != nil {
+				// Try standard SQLite format
+				dueTime, err = time.Parse("2006-01-02 15:04:05", nextDueAtStr.String)
+			}
+			if err != nil {
+				// Try format with timezone offset
+				dueTime, err = time.Parse("2006-01-02 15:04:05-07:00", nextDueAtStr.String)
+			}
+			if err != nil {
+				r.logger.Warn("failed to parse next_due_at", zap.String("date", nextDueAtStr.String), zap.Error(err))
+				continue
+			}
+			// Convert to same timezone as startDate
+			dueTime = dueTime.In(startDate.Location())
+			// Get date string (YYYY-MM-DD)
+			dateStr := dueTime.Format("2006-01-02")
+			// Increment count for this date
+			if _, exists := result[dateStr]; exists {
+				result[dateStr]++
+			} else {
+				// If date is outside our 7-day range, still count it but log
+				r.logger.Debug("card date outside 7-day range", zap.String("date", dateStr))
+			}
+		}
+	}
+	
+	r.logger.Debug("processed upcoming cards",
+		zap.Int("total_cards_found", cardCount),
+		zap.Any("result", result),
+	)
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("error iterating rows: %w", err)
+	}
+
+	r.logger.Debug("upcoming cards by date result",
+		zap.Any("result", result),
+	)
+
+	return result, nil
+}
+

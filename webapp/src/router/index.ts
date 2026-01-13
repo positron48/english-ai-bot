@@ -99,6 +99,12 @@ const router = createRouter({
       meta: { requiresAuth: true, requiresAdmin: true }
     },
     {
+      path: '/admin/db-schema',
+      name: 'AdminDBSchema',
+      component: () => import('../views/AdminDBSchemaView.vue'),
+      meta: { requiresAuth: true, requiresAdmin: true }
+    },
+    {
       path: '/settings',
       name: 'Settings',
       component: () => import('../views/SettingsView.vue'),
