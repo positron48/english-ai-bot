@@ -105,7 +105,7 @@ class ApiClient {
     }
   }
 
-  private loadTokens() {
+  loadTokens() {
     this.accessToken = localStorage.getItem('access_token')
     this.refreshToken = localStorage.getItem('refresh_token')
   }
@@ -163,13 +163,28 @@ class ApiClient {
 
   async request<T>(url: string, options: RequestInit = {}): Promise<T> {
     return this.retryWithBackoff(async () => {
+      // CRITICAL: Load tokens from localStorage RIGHT BEFORE creating headers
+      // This ensures tokens are always fresh, especially on direct URL access
+      this.loadTokens()
+      
       const headers: Record<string, string> = {
         'Content-Type': 'application/json',
         ...(options.headers as Record<string, string> || {}),
       }
 
-      if (this.accessToken) {
+      // Get token directly from localStorage to ensure it's current
+      // This is critical for direct URL access when components mount before tokens are loaded
+      const token = localStorage.getItem('access_token')
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`
+        // Also update instance variable for consistency
+        this.accessToken = token
+      } else if (this.accessToken) {
+        // Fallback to instance variable if localStorage is empty
         headers['Authorization'] = `Bearer ${this.accessToken}`
+      } else {
+        // Debug: log when no token is available
+        console.warn('[ApiClient] No access token available for request:', url)
       }
 
       let response: Response
@@ -189,7 +204,12 @@ class ApiClient {
       if (response.status === 401 && this.refreshToken) {
         const refreshed = await this.refreshAccessToken()
         if (refreshed) {
-          headers['Authorization'] = `Bearer ${this.accessToken}`
+          // Reload token after refresh to ensure we have the latest one
+          this.loadTokens()
+          const refreshedToken = localStorage.getItem('access_token') || this.accessToken
+          if (refreshedToken) {
+            headers['Authorization'] = `Bearer ${refreshedToken}`
+          }
           try {
             response = await fetch(`${API_BASE}${url}`, {
               ...options,
@@ -235,6 +255,10 @@ class ApiClient {
 
   async requestFormData<T>(url: string, formData: FormData): Promise<T> {
     return this.retryWithBackoff(async () => {
+      // CRITICAL: Load tokens from localStorage RIGHT BEFORE creating headers
+      // This ensures tokens are always fresh, especially on direct URL access
+      this.loadTokens()
+      
       // Convert FormData to URLSearchParams for application/x-www-form-urlencoded
       const params = new URLSearchParams()
       formData.forEach((value, key) => {
@@ -245,8 +269,19 @@ class ApiClient {
         'Content-Type': 'application/x-www-form-urlencoded',
       }
 
-      if (this.accessToken) {
+      // Get token directly from localStorage to ensure it's current
+      // This is critical for direct URL access when components mount before tokens are loaded
+      const token = localStorage.getItem('access_token')
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`
+        // Also update instance variable for consistency
+        this.accessToken = token
+      } else if (this.accessToken) {
+        // Fallback to instance variable if localStorage is empty
         headers['Authorization'] = `Bearer ${this.accessToken}`
+      } else {
+        // Debug: log when no token is available
+        console.warn('[ApiClient] No access token available for requestFormData:', url)
       }
 
       const fullUrl = `${API_BASE}${url}`
@@ -269,7 +304,12 @@ class ApiClient {
       if (response.status === 401 && this.refreshToken) {
         const refreshed = await this.refreshAccessToken()
         if (refreshed) {
-          headers['Authorization'] = `Bearer ${this.accessToken}`
+          // Reload token after refresh to ensure we have the latest one
+          this.loadTokens()
+          const refreshedToken = localStorage.getItem('access_token') || this.accessToken
+          if (refreshedToken) {
+            headers['Authorization'] = `Bearer ${refreshedToken}`
+          }
           try {
             response = await fetch(fullUrl, {
               method: 'POST',

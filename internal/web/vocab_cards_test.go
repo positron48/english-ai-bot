@@ -184,7 +184,7 @@ func TestHandleVocabDelete_Cards(t *testing.T) {
 	router.authMiddleware = authMiddleware
 
 	// Create request for cards using lemma
-	req := httptest.NewRequest("GET", "/app/vocab/cards/cards", nil)
+	req := httptest.NewRequest("GET", "/api/vocab/cards/cards", nil)
 	ctx := context.WithValue(req.Context(), userIDKey, user.ID)
 	req = req.WithContext(ctx)
 	w := httptest.NewRecorder()
@@ -239,7 +239,7 @@ func TestHandleVocabDelete_InvalidRequest(t *testing.T) {
 	router.authMiddleware = authMiddleware
 
 	// Create request with invalid action
-	req := httptest.NewRequest("GET", "/app/vocab/testword/invalid", nil)
+	req := httptest.NewRequest("GET", "/api/vocab/testword/invalid", nil)
 	ctx := context.WithValue(req.Context(), userIDKey, user.ID)
 	req = req.WithContext(ctx)
 	w := httptest.NewRecorder()

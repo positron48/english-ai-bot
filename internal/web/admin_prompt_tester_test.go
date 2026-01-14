@@ -46,7 +46,7 @@ func TestHandleAdminPromptTesterDefaultPrompts_Get(t *testing.T) {
 	router, _, cleanup := setupPromptTesterTest(t)
 	defer cleanup()
 
-	req := httptest.NewRequest(http.MethodGet, "/app/admin/prompt-tester/default-prompts", nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/prompt-tester/default-prompts", nil)
 	req = setUserIDInContextPromptTester(req, 12345)
 	rr := httptest.NewRecorder()
 
@@ -61,7 +61,7 @@ func TestHandleAdminPromptTesterDefaultPrompts_MethodNotAllowed(t *testing.T) {
 	router, _, cleanup := setupPromptTesterTest(t)
 	defer cleanup()
 
-	req := httptest.NewRequest(http.MethodPost, "/app/admin/prompt-tester/default-prompts", nil)
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/prompt-tester/default-prompts", nil)
 	req = setUserIDInContextPromptTester(req, 12345)
 	rr := httptest.NewRecorder()
 
@@ -76,7 +76,7 @@ func TestHandleAdminPromptTesterRun_MethodNotAllowed(t *testing.T) {
 	router, _, cleanup := setupPromptTesterTest(t)
 	defer cleanup()
 
-	req := httptest.NewRequest(http.MethodGet, "/app/admin/prompt-tester/run", nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/prompt-tester/run", nil)
 	req = setUserIDInContextPromptTester(req, 12345)
 	rr := httptest.NewRecorder()
 
@@ -91,7 +91,7 @@ func TestHandleAdminPromptTesterRun_InvalidBody(t *testing.T) {
 	router, _, cleanup := setupPromptTesterTest(t)
 	defer cleanup()
 
-	req := httptest.NewRequest(http.MethodPost, "/app/admin/prompt-tester/run", nil)
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/prompt-tester/run", nil)
 	req = setUserIDInContextPromptTester(req, 12345)
 	rr := httptest.NewRecorder()
 

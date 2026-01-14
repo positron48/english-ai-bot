@@ -63,7 +63,7 @@ onMounted(async () => {
 const loadAdminData = async () => {
   loading.value = true
   try {
-    const data: { circuit_breaker: CircuitBreaker } = await apiClient.request('/app/admin')
+    const data: { circuit_breaker: CircuitBreaker } = await apiClient.request('/api/admin')
     circuitBreaker.value = data.circuit_breaker
   } catch (error) {
     console.error('Failed to load admin data:', error)
@@ -74,7 +74,7 @@ const loadAdminData = async () => {
 
 const resetCircuitBreaker = async () => {
   try {
-    await apiClient.request('/app/admin/circuit/reset', { method: 'POST' })
+    await apiClient.request('/api/admin/circuit/reset', { method: 'POST' })
     await loadAdminData()
     await showAlert('Circuit breaker reset successfully')
   } catch (error) {

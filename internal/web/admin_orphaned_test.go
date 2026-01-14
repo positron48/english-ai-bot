@@ -46,7 +46,7 @@ func TestHandleAdminOrphanedCards_Get(t *testing.T) {
 	router, _, cleanup := setupOrphanedTest(t)
 	defer cleanup()
 
-	req := httptest.NewRequest(http.MethodGet, "/app/admin/orphaned-cards", nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/orphaned-cards", nil)
 	req = setUserIDInContext(req, 12345)
 	rr := httptest.NewRecorder()
 
@@ -61,7 +61,7 @@ func TestHandleAdminOrphanedCards_GetWithPagination(t *testing.T) {
 	router, _, cleanup := setupOrphanedTest(t)
 	defer cleanup()
 
-	req := httptest.NewRequest(http.MethodGet, "/app/admin/orphaned-cards?limit=10&offset=5", nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/orphaned-cards?limit=10&offset=5", nil)
 	req = setUserIDInContext(req, 12345)
 	rr := httptest.NewRecorder()
 
@@ -76,7 +76,7 @@ func TestHandleAdminOrphanedCards_MethodNotAllowed(t *testing.T) {
 	router, _, cleanup := setupOrphanedTest(t)
 	defer cleanup()
 
-	req := httptest.NewRequest(http.MethodPost, "/app/admin/orphaned-cards", nil)
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/orphaned-cards", nil)
 	req = setUserIDInContext(req, 12345)
 	rr := httptest.NewRecorder()
 
@@ -91,7 +91,7 @@ func TestHandleAdminOrphanedCard_MethodNotAllowed(t *testing.T) {
 	router, _, cleanup := setupOrphanedTest(t)
 	defer cleanup()
 
-	req := httptest.NewRequest(http.MethodGet, "/app/admin/orphaned-cards/123", nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/orphaned-cards/123", nil)
 	req = setUserIDInContext(req, 12345)
 	rr := httptest.NewRecorder()
 
@@ -106,7 +106,7 @@ func TestHandleAdminOrphanedCard_InvalidID(t *testing.T) {
 	router, _, cleanup := setupOrphanedTest(t)
 	defer cleanup()
 
-	req := httptest.NewRequest(http.MethodDelete, "/app/admin/orphaned-cards/invalid", nil)
+	req := httptest.NewRequest(http.MethodDelete, "/api/admin/orphaned-cards/invalid", nil)
 	req = setUserIDInContext(req, 12345)
 	rr := httptest.NewRecorder()
 
@@ -121,7 +121,7 @@ func TestHandleAdminOrphanedCard_NotFound(t *testing.T) {
 	router, _, cleanup := setupOrphanedTest(t)
 	defer cleanup()
 
-	req := httptest.NewRequest(http.MethodDelete, "/app/admin/orphaned-cards/99999", nil)
+	req := httptest.NewRequest(http.MethodDelete, "/api/admin/orphaned-cards/99999", nil)
 	req = setUserIDInContext(req, 12345)
 	rr := httptest.NewRecorder()
 
@@ -136,7 +136,7 @@ func TestHandleAdminOrphanedUserCards_Get(t *testing.T) {
 	router, _, cleanup := setupOrphanedTest(t)
 	defer cleanup()
 
-	req := httptest.NewRequest(http.MethodGet, "/app/admin/orphaned-user-cards", nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/orphaned-user-cards", nil)
 	req = setUserIDInContext(req, 12345)
 	rr := httptest.NewRecorder()
 
@@ -151,7 +151,7 @@ func TestHandleAdminOrphanedUserCards_GetWithPagination(t *testing.T) {
 	router, _, cleanup := setupOrphanedTest(t)
 	defer cleanup()
 
-	req := httptest.NewRequest(http.MethodGet, "/app/admin/orphaned-user-cards?limit=20&offset=10", nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/orphaned-user-cards?limit=20&offset=10", nil)
 	req = setUserIDInContext(req, 12345)
 	rr := httptest.NewRecorder()
 
@@ -166,7 +166,7 @@ func TestHandleAdminOrphanedUserCards_MethodNotAllowed(t *testing.T) {
 	router, _, cleanup := setupOrphanedTest(t)
 	defer cleanup()
 
-	req := httptest.NewRequest(http.MethodPost, "/app/admin/orphaned-user-cards", nil)
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/orphaned-user-cards", nil)
 	req = setUserIDInContext(req, 12345)
 	rr := httptest.NewRecorder()
 
@@ -181,7 +181,7 @@ func TestHandleAdminOrphanedUserCard_MethodNotAllowed(t *testing.T) {
 	router, _, cleanup := setupOrphanedTest(t)
 	defer cleanup()
 
-	req := httptest.NewRequest(http.MethodGet, "/app/admin/orphaned-user-cards/123", nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/orphaned-user-cards/123", nil)
 	req = setUserIDInContext(req, 12345)
 	rr := httptest.NewRecorder()
 
@@ -196,7 +196,7 @@ func TestHandleAdminOrphanedUserCard_InvalidID(t *testing.T) {
 	router, _, cleanup := setupOrphanedTest(t)
 	defer cleanup()
 
-	req := httptest.NewRequest(http.MethodDelete, "/app/admin/orphaned-user-cards/invalid", nil)
+	req := httptest.NewRequest(http.MethodDelete, "/api/admin/orphaned-user-cards/invalid", nil)
 	req = setUserIDInContext(req, 12345)
 	rr := httptest.NewRecorder()
 
@@ -211,7 +211,7 @@ func TestHandleAdminOrphanedUserCard_NotFound(t *testing.T) {
 	router, _, cleanup := setupOrphanedTest(t)
 	defer cleanup()
 
-	req := httptest.NewRequest(http.MethodDelete, "/app/admin/orphaned-user-cards/99999", nil)
+	req := httptest.NewRequest(http.MethodDelete, "/api/admin/orphaned-user-cards/99999", nil)
 	req = setUserIDInContext(req, 12345)
 	rr := httptest.NewRecorder()
 

@@ -46,7 +46,7 @@ func TestHandleAdminWordSetCategories_Get(t *testing.T) {
 	router, _, cleanup := setupAdminWordSetsTest(t)
 	defer cleanup()
 
-	req := httptest.NewRequest(http.MethodGet, "/app/admin/word-set-categories", nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/word-set-categories", nil)
 	req = setUserIDInContextWordSets(req, 12345)
 	rr := httptest.NewRecorder()
 
@@ -61,7 +61,7 @@ func TestHandleAdminWordSetCategories_PostInvalidBody(t *testing.T) {
 	router, _, cleanup := setupAdminWordSetsTest(t)
 	defer cleanup()
 
-	req := httptest.NewRequest(http.MethodPost, "/app/admin/word-set-categories", nil)
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/word-set-categories", nil)
 	req = setUserIDInContextWordSets(req, 12345)
 	rr := httptest.NewRecorder()
 
@@ -76,7 +76,7 @@ func TestHandleAdminWordSets_Get(t *testing.T) {
 	router, _, cleanup := setupAdminWordSetsTest(t)
 	defer cleanup()
 
-	req := httptest.NewRequest(http.MethodGet, "/app/admin/word-sets", nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/word-sets", nil)
 	req = setUserIDInContextWordSets(req, 12345)
 	rr := httptest.NewRecorder()
 
@@ -91,7 +91,7 @@ func TestHandleAdminWordSets_GetWithCategory(t *testing.T) {
 	router, _, cleanup := setupAdminWordSetsTest(t)
 	defer cleanup()
 
-	req := httptest.NewRequest(http.MethodGet, "/app/admin/word-sets?category_id=1", nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/word-sets?category_id=1", nil)
 	req = setUserIDInContextWordSets(req, 12345)
 	rr := httptest.NewRecorder()
 
@@ -106,7 +106,7 @@ func TestHandleAdminWordSets_PostInvalidBody(t *testing.T) {
 	router, _, cleanup := setupAdminWordSetsTest(t)
 	defer cleanup()
 
-	req := httptest.NewRequest(http.MethodPost, "/app/admin/word-sets", nil)
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/word-sets", nil)
 	req = setUserIDInContextWordSets(req, 12345)
 	rr := httptest.NewRecorder()
 
@@ -121,7 +121,7 @@ func TestHandleAdminWordSetDetailOrSets_ListWordSets(t *testing.T) {
 	router, _, cleanup := setupAdminWordSetsTest(t)
 	defer cleanup()
 
-	req := httptest.NewRequest(http.MethodGet, "/app/admin/word-sets/", nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/word-sets/", nil)
 	req = setUserIDInContextWordSets(req, 12345)
 	rr := httptest.NewRecorder()
 
@@ -136,7 +136,7 @@ func TestHandleAdminWordSetDetailOrSets_NotFound(t *testing.T) {
 	router, _, cleanup := setupAdminWordSetsTest(t)
 	defer cleanup()
 
-	req := httptest.NewRequest(http.MethodGet, "/app/admin/word-sets/invalid", nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/word-sets/invalid", nil)
 	req = setUserIDInContextWordSets(req, 12345)
 	rr := httptest.NewRecorder()
 
@@ -151,7 +151,7 @@ func TestHandleAdminWordSetDetail_MethodNotAllowed(t *testing.T) {
 	router, _, cleanup := setupAdminWordSetsTest(t)
 	defer cleanup()
 
-	req := httptest.NewRequest(http.MethodPost, "/app/admin/word-sets/1", nil)
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/word-sets/1", nil)
 	req = setUserIDInContextWordSets(req, 12345)
 	rr := httptest.NewRecorder()
 
@@ -166,7 +166,7 @@ func TestHandleAdminWordSetDetail_NotFound(t *testing.T) {
 	router, _, cleanup := setupAdminWordSetsTest(t)
 	defer cleanup()
 
-	req := httptest.NewRequest(http.MethodGet, "/app/admin/word-sets/99999", nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/word-sets/99999", nil)
 	req = setUserIDInContextWordSets(req, 12345)
 	rr := httptest.NewRecorder()
 

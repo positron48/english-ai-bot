@@ -125,7 +125,7 @@ const loadSchema = async () => {
   error.value = null
 
   try {
-    const response = await apiClient.request<SchemaResponse>('/app/admin/db-schema')
+    const response = await apiClient.request<SchemaResponse>('/api/admin/db-schema')
     schema.value = response
     // Wait for DOM to be ready and ensure networkContainer is available
     await nextTick()

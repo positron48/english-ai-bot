@@ -27,7 +27,7 @@ import (
 // @Success      200  {object}  map[string]interface{}  "Список категорий"
 // @Failure      401  {string}  string  "Неавторизован"
 // @Failure      500  {string}  string  "Внутренняя ошибка сервера"
-// @Router       /app/learning/words/categories [get]
+// @Router       /api/learning/words/categories [get]
 func (r *Router) handleLearningWordsCategories(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -127,7 +127,7 @@ func (r *Router) handleLearningWordsCategories(w http.ResponseWriter, req *http.
 // @Success      200  {object}  map[string]interface{}  "Список наборов с прогрессом"
 // @Failure      401  {string}  string  "Неавторизован"
 // @Failure      500  {string}  string  "Внутренняя ошибка сервера"
-// @Router       /app/learning/words/sets [get]
+// @Router       /api/learning/words/sets [get]
 func (r *Router) handleLearningWordsSets(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -265,7 +265,7 @@ func (r *Router) handleLearningWordsSets(w http.ResponseWriter, req *http.Reques
 
 // handleLearningWordsSetDetailOrStudy routes to detail or study handlers
 func (r *Router) handleLearningWordsSetDetailOrStudy(w http.ResponseWriter, req *http.Request) {
-	path := strings.TrimPrefix(req.URL.Path, "/app/learning/words/sets/")
+	path := strings.TrimPrefix(req.URL.Path, "/api/learning/words/sets/")
 	parts := strings.Split(path, "/")
 	
 	if len(parts) < 1 {
@@ -314,7 +314,7 @@ func (r *Router) handleLearningWordsSetDetailOrStudy(w http.ResponseWriter, req 
 // @Failure      401  {string}  string  "Неавторизован"
 // @Failure      404  {string}  string  "Набор не найден"
 // @Failure      500  {string}  string  "Внутренняя ошибка сервера"
-// @Router       /app/learning/words/sets/{id} [get]
+// @Router       /api/learning/words/sets/{id} [get]
 func (r *Router) handleLearningWordsSetDetail(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -328,7 +328,7 @@ func (r *Router) handleLearningWordsSetDetail(w http.ResponseWriter, req *http.R
 	}
 
 	// Extract set ID from path
-	path := strings.TrimPrefix(req.URL.Path, "/app/learning/words/sets/")
+	path := strings.TrimPrefix(req.URL.Path, "/api/learning/words/sets/")
 	parts := strings.Split(path, "/")
 	if len(parts) < 1 {
 		http.Error(w, "Invalid path", http.StatusBadRequest)
@@ -399,7 +399,7 @@ func (r *Router) handleLearningWordsSetDetail(w http.ResponseWriter, req *http.R
 // @Failure      401  {string}  string  "Неавторизован"
 // @Failure      404  {string}  string  "Слово или карточка не найдены"
 // @Failure      500  {string}  string  "Внутренняя ошибка сервера"
-// @Router       /app/learning/words/sets/{id}/study [get]
+// @Router       /api/learning/words/sets/{id}/study [get]
 func (r *Router) handleLearningWordsSetStudy(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -413,7 +413,7 @@ func (r *Router) handleLearningWordsSetStudy(w http.ResponseWriter, req *http.Re
 	}
 
 	// Extract set ID from path
-	path := strings.TrimPrefix(req.URL.Path, "/app/learning/words/sets/")
+	path := strings.TrimPrefix(req.URL.Path, "/api/learning/words/sets/")
 	parts := strings.Split(path, "/")
 	if len(parts) < 1 {
 		http.Error(w, "Invalid path", http.StatusBadRequest)
@@ -556,7 +556,7 @@ func (r *Router) handleLearningWordsSetStudy(w http.ResponseWriter, req *http.Re
 // @Failure      400  {string}  string  "Неверный запрос"
 // @Failure      401  {string}  string  "Неавторизован"
 // @Failure      500  {string}  string  "Внутренняя ошибка сервера"
-// @Router       /app/learning/words/sets/{id}/study/learn [post]
+// @Router       /api/learning/words/sets/{id}/study/learn [post]
 func (r *Router) handleLearningWordsSetStudyLearn(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -570,7 +570,7 @@ func (r *Router) handleLearningWordsSetStudyLearn(w http.ResponseWriter, req *ht
 	}
 
 	// Extract set ID from path
-	path := strings.TrimPrefix(req.URL.Path, "/app/learning/words/sets/")
+	path := strings.TrimPrefix(req.URL.Path, "/api/learning/words/sets/")
 	parts := strings.Split(path, "/")
 	if len(parts) < 1 {
 		http.Error(w, "Invalid path", http.StatusBadRequest)
@@ -658,7 +658,7 @@ func (r *Router) handleLearningWordsSetStudyLearn(w http.ResponseWriter, req *ht
 // @Failure      400  {string}  string  "Неверный запрос"
 // @Failure      401  {string}  string  "Неавторизован"
 // @Failure      500  {string}  string  "Внутренняя ошибка сервера"
-// @Router       /app/learning/words/sets/{id}/study/know [post]
+// @Router       /api/learning/words/sets/{id}/study/know [post]
 func (r *Router) handleLearningWordsSetStudyKnow(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -672,7 +672,7 @@ func (r *Router) handleLearningWordsSetStudyKnow(w http.ResponseWriter, req *htt
 	}
 
 	// Extract set ID from path
-	path := strings.TrimPrefix(req.URL.Path, "/app/learning/words/sets/")
+	path := strings.TrimPrefix(req.URL.Path, "/api/learning/words/sets/")
 	parts := strings.Split(path, "/")
 	if len(parts) < 1 {
 		http.Error(w, "Invalid path", http.StatusBadRequest)

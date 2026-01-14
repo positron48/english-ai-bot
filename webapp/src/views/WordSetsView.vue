@@ -159,7 +159,7 @@ watch(() => route.query.category_id, async (newCategoryId) => {
 const loadCategories = async () => {
   try {
     // Загружаем все категории для получения названия текущей категории
-    const allCategoriesData: { categories: Category[] } = await apiClient.request('/app/learning/words/categories?all=true')
+    const allCategoriesData: { categories: Category[] } = await apiClient.request('/api/learning/words/categories?all=true')
     allCategories.value = allCategoriesData.categories || []
     
     // Загружаем дочерние категории для текущего уровня
@@ -167,7 +167,7 @@ const loadCategories = async () => {
     if (currentParentId.value !== null) {
       params.append('parent_id', currentParentId.value.toString())
     }
-    const data: { categories: Category[] } = await apiClient.request(`/app/learning/words/categories?${params.toString()}`)
+    const data: { categories: Category[] } = await apiClient.request(`/api/learning/words/categories?${params.toString()}`)
     categories.value = data.categories || []
   } catch (error: any) {
     console.error('Failed to load categories:', error)
@@ -185,7 +185,7 @@ const loadWordSets = async () => {
       params.append('category_id', selectedCategoryId.value.toString())
     }
     
-    const data: { sets: WordSet[] } = await apiClient.request(`/app/learning/words/sets?${params.toString()}`)
+    const data: { sets: WordSet[] } = await apiClient.request(`/api/learning/words/sets?${params.toString()}`)
     wordSets.value = data.sets || []
   } catch (error: any) {
     console.error('Failed to load word sets:', error)

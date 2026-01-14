@@ -126,7 +126,7 @@ func TestHandleDashboard_Basic(t *testing.T) {
 	router.authMiddleware = authMiddleware
 
 	// Create request with user context
-	req := httptest.NewRequest("GET", "/app/dashboard", nil)
+	req := httptest.NewRequest("GET", "/api/dashboard", nil)
 	ctx := context.WithValue(req.Context(), userIDKey, user.ID)
 	req = req.WithContext(ctx)
 	w := httptest.NewRecorder()
@@ -169,7 +169,7 @@ func TestHandleDashboard_WrongMethod(t *testing.T) {
 	router.authMiddleware = authMiddleware
 
 	// Create POST request (should fail)
-	req := httptest.NewRequest("POST", "/app/dashboard", nil)
+	req := httptest.NewRequest("POST", "/api/dashboard", nil)
 	w := httptest.NewRecorder()
 
 	// Call handler
@@ -201,7 +201,7 @@ func TestHandleDashboard_Unauthorized(t *testing.T) {
 	router.authMiddleware = authMiddleware
 
 	// Create request without user context
-	req := httptest.NewRequest("GET", "/app/dashboard", nil)
+	req := httptest.NewRequest("GET", "/api/dashboard", nil)
 	w := httptest.NewRecorder()
 
 	// Call handler

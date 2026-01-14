@@ -88,7 +88,7 @@ func TestFinishTrainingSession_CompleteSession(t *testing.T) {
 	router.authMiddleware = authMiddleware
 
 	// Start a session
-	startReq := httptest.NewRequest("POST", "/app/training/start", nil)
+	startReq := httptest.NewRequest("POST", "/api/training/start", nil)
 	startCtx := context.WithValue(startReq.Context(), userIDKey, user.ID)
 	startReq = startReq.WithContext(startCtx)
 	startW := httptest.NewRecorder()
@@ -125,7 +125,7 @@ func TestFinishTrainingSession_CompleteSession(t *testing.T) {
 	}
 
 	// Reveal options
-	revealReq := httptest.NewRequest("POST", "/app/training/reveal", nil)
+	revealReq := httptest.NewRequest("POST", "/api/training/reveal", nil)
 	revealCtx := context.WithValue(revealReq.Context(), userIDKey, user.ID)
 	revealReq = revealReq.WithContext(revealCtx)
 	revealW := httptest.NewRecorder()
@@ -137,7 +137,7 @@ func TestFinishTrainingSession_CompleteSession(t *testing.T) {
 
 	// Answer the card to complete it
 	time.Sleep(10 * time.Millisecond)
-	answerReq := httptest.NewRequest("POST", "/app/training/answer", strings.NewReader(fmt.Sprintf("option_index=0&user_card_id=%d", state.Queue[0].UserCard.ID)))
+	answerReq := httptest.NewRequest("POST", "/api/training/answer", strings.NewReader(fmt.Sprintf("option_index=0&user_card_id=%d", state.Queue[0].UserCard.ID)))
 	answerReq.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	answerCtx := context.WithValue(answerReq.Context(), userIDKey, user.ID)
 	answerReq = answerReq.WithContext(answerCtx)
@@ -150,7 +150,7 @@ func TestFinishTrainingSession_CompleteSession(t *testing.T) {
 
 	// Now get the current card - this should trigger finishTrainingSession
 	// since CurrentIndex >= len(Queue) after answering
-	currentReq := httptest.NewRequest("GET", "/app/training/current", nil)
+	currentReq := httptest.NewRequest("GET", "/api/training/current", nil)
 	currentCtx := context.WithValue(currentReq.Context(), userIDKey, user.ID)
 	currentReq = currentReq.WithContext(currentCtx)
 	currentW := httptest.NewRecorder()

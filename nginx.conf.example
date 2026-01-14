@@ -28,10 +28,24 @@ server {
         proxy_set_header X-Forwarded-Port $server_port;
     }
 
-    # Web Application (Vue SPA) and API endpoints
+    # API endpoints - all API calls go to /api/*
+    location /api {
+        proxy_pass http://127.0.0.1:8184;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        
+        # Для WebSocket (если понадобится в будущем)
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+
+    # Web Application (Vue SPA)
     # The frontend is embedded in the Go binary and served at /app
-    # API endpoints are at /app/dashboard, /app/vocab, etc.
-    # UI routes use hash-based routing: /app/#/dashboard, /app/#/vocab, etc.
+    # UI routes use history mode: /app/dashboard, /app/vocab, etc.
+    # All /app/* routes are handled by the Go backend which serves index.html for SPA routing
     location /app {
         proxy_pass http://127.0.0.1:8184;
         proxy_set_header Host $host;

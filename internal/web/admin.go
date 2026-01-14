@@ -53,7 +53,7 @@ func (r *Router) RequireAdmin(next http.HandlerFunc) http.HandlerFunc {
 // @Failure      401  {string}  string  "Неавторизован"
 // @Failure      403  {string}  string  "Доступ запрещен (требуются права администратора)"
 // @Failure      405  {string}  string  "Метод не разрешен"
-// @Router       /app/admin [get]
+// @Router       /api/admin [get]
 func (r *Router) handleAdmin(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -140,7 +140,7 @@ func (r *Router) handleAdmin(w http.ResponseWriter, req *http.Request) {
 // @Failure      401  {string}  string  "Неавторизован"
 // @Failure      403  {string}  string  "Доступ запрещен (требуются права администратора)"
 // @Failure      500  {string}  string  "Внутренняя ошибка сервера"
-// @Router       /app/admin/circuit/reset [post]
+// @Router       /api/admin/circuit/reset [post]
 func (r *Router) handleAdminCircuitReset(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -164,7 +164,7 @@ func (r *Router) handleAdminCircuitReset(w http.ResponseWriter, req *http.Reques
 
 // handleAdminTraining handles training card management
 // @Summary      Управление тренировочными карточками
-// @Description  Получение (GET), создание (POST), генерация через LLM (POST /generate) или удаление (POST /delete) тренировочных карточек по слову. Путь: /app/admin/training/{word} или /app/admin/training/{word}/generate или /app/admin/training/{word}/delete или /app/admin/training/delete_all
+// @Description  Получение (GET), создание (POST), генерация через LLM (POST /generate) или удаление (POST /delete) тренировочных карточек по слову. Путь: /api/admin/training/{word} или /api/admin/training/{word}/generate или /api/admin/training/{word}/delete или /api/admin/training/delete_all
 // @Tags         Admin
 // @Accept       json,application/x-www-form-urlencoded
 // @Produce      application/json
@@ -188,13 +188,13 @@ func (r *Router) handleAdminCircuitReset(w http.ResponseWriter, req *http.Reques
 // @Failure      403  {string}  string  "Доступ запрещен (требуются права администратора)"
 // @Failure      404  {string}  string  "Слово не найдено (для POST)"
 // @Failure      500  {string}  string  "Внутренняя ошибка сервера"
-// @Router       /app/admin/training/{word} [get]
-// @Router       /app/admin/training/{word} [post]
-// @Router       /app/admin/training/{word}/generate [post]
+// @Router       /api/admin/training/{word} [get]
+// @Router       /api/admin/training/{word} [post]
+// @Router       /api/admin/training/{word}/generate [post]
 func (r *Router) handleAdminTraining(w http.ResponseWriter, req *http.Request) {
 	// Extract action and word from path: /app/admin/training/{word}/{action}
 	path := req.URL.Path
-	parts := strings.Split(strings.TrimPrefix(path, "/app/admin/training/"), "/")
+	parts := strings.Split(strings.TrimPrefix(path, "/api/admin/training/"), "/")
 	
 	if len(parts) < 1 {
 		http.Error(w, "Invalid path", http.StatusBadRequest)
@@ -622,11 +622,11 @@ func (r *Router) handleAdminTraining(w http.ResponseWriter, req *http.Request) {
 // @Failure      403  {string}  string  "Доступ запрещен (требуются права администратора)"
 // @Failure      404  {string}  string  "Карточка не найдена"
 // @Failure      500  {string}  string  "Внутренняя ошибка сервера"
-// @Router       /app/admin/training/card/{id} [put]
-// @Router       /app/admin/training/card/{id} [delete]
+// @Router       /api/admin/training/card/{id} [put]
+// @Router       /api/admin/training/card/{id} [delete]
 func (r *Router) handleAdminTrainingCard(w http.ResponseWriter, req *http.Request) {
 	path := req.URL.Path
-	parts := strings.Split(strings.TrimPrefix(path, "/app/admin/training/card/"), "/")
+	parts := strings.Split(strings.TrimPrefix(path, "/api/admin/training/card/"), "/")
 	
 	if len(parts) < 1 || parts[0] == "" {
 		http.Error(w, "Card ID is required", http.StatusBadRequest)
@@ -808,7 +808,7 @@ func (r *Router) handleAdminTrainingCard(w http.ResponseWriter, req *http.Reques
 // @Success      200  {object}  map[string]interface{}  "Список слов"
 // @Failure      401  {string}  string  "Неавторизован"
 // @Failure      403  {string}  string  "Доступ запрещен"
-// @Router       /app/admin/words [get]
+// @Router       /api/admin/words [get]
 func (r *Router) handleAdminWords(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -898,12 +898,12 @@ func (r *Router) handleAdminWords(w http.ResponseWriter, req *http.Request) {
 // @Failure      403  {string}  string  "Доступ запрещен"
 // @Failure      404  {string}  string  "Слово не найдено"
 // @Failure      500  {string}  string  "Внутренняя ошибка сервера"
-// @Router       /app/admin/words/{id} [put]
-// @Router       /app/admin/words/{id} [delete]
-// @Router       /app/admin/words/{id}/reset [post]
+// @Router       /api/admin/words/{id} [put]
+// @Router       /api/admin/words/{id} [delete]
+// @Router       /api/admin/words/{id}/reset [post]
 func (r *Router) handleAdminWord(w http.ResponseWriter, req *http.Request) {
 	path := req.URL.Path
-	parts := strings.Split(strings.TrimPrefix(path, "/app/admin/words/"), "/")
+	parts := strings.Split(strings.TrimPrefix(path, "/api/admin/words/"), "/")
 
 	if len(parts) < 1 || parts[0] == "" {
 		http.Error(w, "Word ID is required", http.StatusBadRequest)
@@ -1093,7 +1093,7 @@ func (r *Router) handleAdminWord(w http.ResponseWriter, req *http.Request) {
 // @Success      200  {object}  map[string]interface{}  "Список пользователей"
 // @Failure      401  {string}  string  "Неавторизован"
 // @Failure      403  {string}  string  "Доступ запрещен"
-// @Router       /app/admin/users [get]
+// @Router       /api/admin/users [get]
 func (r *Router) handleAdminUsers(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -1137,7 +1137,7 @@ func (r *Router) handleAdminUsers(w http.ResponseWriter, req *http.Request) {
 // @Success      200     {object}  map[string]interface{}  "Список подвешенных карточек"
 // @Failure      401     {string}  string  "Неавторизован"
 // @Failure      403     {string}  string  "Доступ запрещен"
-// @Router       /app/admin/orphaned-cards [get]
+// @Router       /api/admin/orphaned-cards [get]
 func (r *Router) handleAdminOrphanedCards(w http.ResponseWriter, req *http.Request) {
 	if req.Method == http.MethodGet {
 		trainingCardRepo := repository.NewTrainingCardRepository(r.db, r.logger)
@@ -1226,7 +1226,7 @@ func (r *Router) handleAdminOrphanedCards(w http.ResponseWriter, req *http.Reque
 // @Failure      401  {string}  string  "Неавторизован"
 // @Failure      403  {string}  string  "Доступ запрещен"
 // @Failure      404  {string}  string  "Карточка не найдена"
-// @Router       /app/admin/orphaned-cards/{id} [delete]
+// @Router       /api/admin/orphaned-cards/{id} [delete]
 func (r *Router) handleAdminOrphanedCard(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodDelete {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -1234,7 +1234,7 @@ func (r *Router) handleAdminOrphanedCard(w http.ResponseWriter, req *http.Reques
 	}
 
 	// Extract ID from path
-	path := strings.TrimPrefix(req.URL.Path, "/app/admin/orphaned-cards/")
+	path := strings.TrimPrefix(req.URL.Path, "/api/admin/orphaned-cards/")
 	trainingCardID, err := strconv.ParseInt(path, 10, 64)
 	if err != nil {
 		http.Error(w, "Invalid training card ID", http.StatusBadRequest)
@@ -1274,7 +1274,7 @@ func (r *Router) handleAdminOrphanedCard(w http.ResponseWriter, req *http.Reques
 // @Success      200     {object}  map[string]interface{}  "Список подвешенных user карточек"
 // @Failure      401     {string}  string  "Неавторизован"
 // @Failure      403     {string}  string  "Доступ запрещен"
-// @Router       /app/admin/orphaned-user-cards [get]
+// @Router       /api/admin/orphaned-user-cards [get]
 func (r *Router) handleAdminOrphanedUserCards(w http.ResponseWriter, req *http.Request) {
 	if req.Method == http.MethodGet {
 		userCardRepo := repository.NewUserCardRepository(r.db, r.logger)
@@ -1400,7 +1400,7 @@ func (r *Router) handleAdminOrphanedUserCards(w http.ResponseWriter, req *http.R
 // @Failure      401  {string}  string  "Неавторизован"
 // @Failure      403  {string}  string  "Доступ запрещен"
 // @Failure      404  {string}  string  "Карточка не найдена"
-// @Router       /app/admin/orphaned-user-cards/{id} [delete]
+// @Router       /api/admin/orphaned-user-cards/{id} [delete]
 func (r *Router) handleAdminOrphanedUserCard(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodDelete {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -1408,7 +1408,7 @@ func (r *Router) handleAdminOrphanedUserCard(w http.ResponseWriter, req *http.Re
 	}
 
 	// Extract ID from path
-	path := strings.TrimPrefix(req.URL.Path, "/app/admin/orphaned-user-cards/")
+	path := strings.TrimPrefix(req.URL.Path, "/api/admin/orphaned-user-cards/")
 	userCardID, err := strconv.ParseInt(path, 10, 64)
 	if err != nil {
 		http.Error(w, "Invalid user card ID", http.StatusBadRequest)

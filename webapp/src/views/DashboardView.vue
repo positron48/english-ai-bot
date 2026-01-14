@@ -122,6 +122,7 @@ import { ref, onMounted, watch, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { Chart, registerables } from 'chart.js'
 import { useTheme } from '../composables/useTheme'
+import { useAuth } from '../composables/useAuth'
 import { apiClient } from '../api/client'
 import Icon from '../components/Icon.vue'
 
@@ -129,6 +130,7 @@ Chart.register(...registerables)
 
 const router = useRouter()
 const { theme } = useTheme()
+const { isAuthenticated } = useAuth()
 const chartCanvas = ref<HTMLCanvasElement | null>(null)
 const wordsChartCanvas = ref<HTMLCanvasElement | null>(null)
 let chartInstance: Chart | null = null
@@ -209,9 +211,18 @@ watch(() => theme.value, async () => {
 })
 
 const loadData = async () => {
+  // Ensure tokens are loaded before making request
+  apiClient.loadTokens()
+  
+  // Don't make request if not authenticated
+  if (!isAuthenticated.value) {
+    console.warn('Not authenticated, skipping dashboard data load')
+    return
+  }
+  
   try {
     loading.value = true
-    const data = await apiClient.request('/app/dashboard')
+    const data = await apiClient.request('/api/dashboard')
     stats.value = {
       dueCount: data.due_count || 0,
       newCount: data.new_count || 0,
@@ -628,8 +639,19 @@ const updateWordsChart = () => {
   })
 }
 
+// Watch for authentication state and load data when authenticated
+watch(isAuthenticated, (authenticated) => {
+  if (authenticated) {
+    loadData()
+  }
+}, { immediate: true })
+
 onMounted(() => {
-  loadData()
+  // Also try to load on mount if already authenticated
+  // (watch will handle it, but this ensures it happens)
+  if (isAuthenticated.value) {
+    loadData()
+  }
 })
 </script>
 

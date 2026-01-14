@@ -162,7 +162,7 @@ const loadWordSet = async () => {
   error.value = null
   try {
     const data: { word_set: WordSet; words: WordInfo[] } = 
-      await apiClient.request(`/app/learning/words/sets/${setId}`)
+      await apiClient.request(`/api/learning/words/sets/${setId}`)
     wordSet.value = data.word_set
     words.value = data.words || []
   } catch (error: any) {
@@ -181,7 +181,7 @@ const openWordCard = async (word: WordInfo) => {
   
   try {
     const data: { training_card: TrainingCard } = 
-      await apiClient.request(`/app/learning/words/sets/${setId}/study?word_card_id=${word.word_card_id}`)
+      await apiClient.request(`/api/learning/words/sets/${setId}/study?word_card_id=${word.word_card_id}`)
     currentTrainingCard.value = data.training_card
   } catch (error: any) {
     console.error('Failed to load training card:', error)
@@ -202,7 +202,7 @@ const markKnown = async () => {
   
   processing.value = true
   try {
-    await apiClient.request(`/app/learning/words/sets/${setId}/study/know`, {
+    await apiClient.request(`/api/learning/words/sets/${setId}/study/know`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ word_card_id: selectedWord.value.word_card_id })
@@ -231,7 +231,7 @@ const markLearn = async () => {
   
   processing.value = true
   try {
-    await apiClient.request(`/app/learning/words/sets/${setId}/study/learn`, {
+    await apiClient.request(`/api/learning/words/sets/${setId}/study/learn`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ word_card_id: selectedWord.value.word_card_id })

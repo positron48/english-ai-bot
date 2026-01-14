@@ -181,7 +181,7 @@ func TestHandleTrainingReveal_NoSession(t *testing.T) {
 	router.authMiddleware = authMiddleware
 
 	// Create request with user context but no session
-	req := httptest.NewRequest("POST", "/app/training/reveal", nil)
+	req := httptest.NewRequest("POST", "/api/training/reveal", nil)
 	ctx := context.WithValue(req.Context(), userIDKey, user.ID)
 	req = req.WithContext(ctx)
 	w := httptest.NewRecorder()
@@ -225,7 +225,7 @@ func TestHandleTrainingAnswer_InvalidOptionIndex(t *testing.T) {
 	router.authMiddleware = authMiddleware
 
 	// Create request with invalid option_index
-	req := httptest.NewRequest("POST", "/app/training/answer", strings.NewReader("option_index=invalid&user_card_id=1"))
+	req := httptest.NewRequest("POST", "/api/training/answer", strings.NewReader("option_index=invalid&user_card_id=1"))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	ctx := context.WithValue(req.Context(), userIDKey, user.ID)
 	req = req.WithContext(ctx)
@@ -270,7 +270,7 @@ func TestHandleTrainingAnswer_InvalidUserCardID(t *testing.T) {
 	router.authMiddleware = authMiddleware
 
 	// Create request with invalid user_card_id
-	req := httptest.NewRequest("POST", "/app/training/answer", strings.NewReader("option_index=0&user_card_id=invalid"))
+	req := httptest.NewRequest("POST", "/api/training/answer", strings.NewReader("option_index=0&user_card_id=invalid"))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	ctx := context.WithValue(req.Context(), userIDKey, user.ID)
 	req = req.WithContext(ctx)
@@ -309,7 +309,7 @@ func TestHandleTrainingCurrent_WrongMethod(t *testing.T) {
 	router.authMiddleware = authMiddleware
 
 	// Create POST request (should fail, needs GET)
-	req := httptest.NewRequest("POST", "/app/training/current", nil)
+	req := httptest.NewRequest("POST", "/api/training/current", nil)
 	w := httptest.NewRecorder()
 
 	// Call handler
@@ -345,7 +345,7 @@ func TestHandleTrainingCurrent_Unauthorized(t *testing.T) {
 	router.authMiddleware = authMiddleware
 
 	// Create request without user context
-	req := httptest.NewRequest("GET", "/app/training/current", nil)
+	req := httptest.NewRequest("GET", "/api/training/current", nil)
 	w := httptest.NewRecorder()
 
 	// Call handler
@@ -381,7 +381,7 @@ func TestHandleTrainingReveal_Unauthorized(t *testing.T) {
 	router.authMiddleware = authMiddleware
 
 	// Create request without user context
-	req := httptest.NewRequest("POST", "/app/training/reveal", nil)
+	req := httptest.NewRequest("POST", "/api/training/reveal", nil)
 	w := httptest.NewRecorder()
 
 	// Call handler
@@ -417,7 +417,7 @@ func TestHandleTrainingAnswer_Unauthorized(t *testing.T) {
 	router.authMiddleware = authMiddleware
 
 	// Create request without user context
-	req := httptest.NewRequest("POST", "/app/training/answer", strings.NewReader("option_index=0&user_card_id=1"))
+	req := httptest.NewRequest("POST", "/api/training/answer", strings.NewReader("option_index=0&user_card_id=1"))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	w := httptest.NewRecorder()
 
@@ -454,7 +454,7 @@ func TestHandleTrainingStart_Unauthorized(t *testing.T) {
 	router.authMiddleware = authMiddleware
 
 	// Create request without user context
-	req := httptest.NewRequest("POST", "/app/training/start", nil)
+	req := httptest.NewRequest("POST", "/api/training/start", nil)
 	w := httptest.NewRecorder()
 
 	// Call handler

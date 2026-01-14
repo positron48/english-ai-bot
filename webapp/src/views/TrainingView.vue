@@ -909,7 +909,7 @@ onMounted(async () => {
 
 const loadStats = async () => {
   try {
-    const data: { due_count: number; total_cards?: number; available_for_training?: number } = await apiClient.request('/app/dashboard')
+    const data: { due_count: number; total_cards?: number; available_for_training?: number } = await apiClient.request('/api/dashboard')
     stats.value.dueCount = data.due_count || 0
     stats.value.totalCards = data.total_cards || 0
     stats.value.availableForTraining = data.available_for_training || data.due_count || 0
@@ -922,7 +922,7 @@ const loadStats = async () => {
 
 const loadUpcomingCards = async () => {
   try {
-    const data = await apiClient.request('/app/training/upcoming')
+    const data = await apiClient.request('/api/training/upcoming')
     console.log('Upcoming cards data:', data)
     
     // Ensure data is in correct format
@@ -1100,7 +1100,7 @@ onUnmounted(() => {
 
 const checkCurrentSession = async () => {
   try {
-    const card: Card = await apiClient.request('/app/training/current')
+    const card: Card = await apiClient.request('/api/training/current')
     sessionActive.value = true
     setupCard(card)
   } catch (error: any) {
@@ -1158,7 +1158,7 @@ const setupCard = (card: Card) => {
 const startTraining = async () => {
   loading.value = true
   try {
-    const card: Card = await apiClient.request('/app/training/start', { method: 'POST' })
+    const card: Card = await apiClient.request('/api/training/start', { method: 'POST' })
     sessionActive.value = true
     setupCard(card)
     sessionComplete.value = false
@@ -1189,7 +1189,7 @@ const revealOptions = async (isEarly: boolean = false) => {
   }
 
   try {
-    const data: OptionsResponse = await apiClient.request('/app/training/reveal', { 
+    const data: OptionsResponse = await apiClient.request('/api/training/reveal', { 
       method: 'POST',
       headers: { 'Content-Type': 'application/json' }
     })
@@ -1270,7 +1270,7 @@ const submitAnswer = async (optionIndex: number) => {
     formData.append('option_index', optionIndex.toString())
     formData.append('user_card_id', userCardId.value.toString())
     
-    const data: Feedback = await apiClient.requestFormData('/app/training/answer', formData)
+    const data: Feedback = await apiClient.requestFormData('/api/training/answer', formData)
     feedback.value = data
     
     // Trigger haptic feedback based on answer correctness
@@ -1430,7 +1430,7 @@ const nextCard = async () => {
   timerPausedRemainingMs = null
 
   try {
-    const response = await apiClient.request('/app/training/current')
+    const response = await apiClient.request('/api/training/current')
     
     // Check if training is complete (response has complete field)
     if (response && typeof response === 'object' && 'complete' in response) {
@@ -1458,7 +1458,7 @@ const nextCard = async () => {
       cardsCompleted.value = card.card_index - 1
       // Try to get stats by making another request
       try {
-        const statsResponse = await apiClient.request('/app/training/current')
+        const statsResponse = await apiClient.request('/api/training/current')
         if (statsResponse && typeof statsResponse === 'object' && 'complete' in statsResponse) {
           const statsData = statsResponse as { total_cards?: number; correct_cards?: number }
           trainingStats.value = {

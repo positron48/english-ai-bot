@@ -305,6 +305,7 @@ func (db *DB) migrate() error {
 		`CREATE INDEX IF NOT EXISTS idx_user_cards_state ON user_cards(user_id, state)`,
 		`CREATE INDEX IF NOT EXISTS idx_training_sessions_user_id ON training_sessions(user_id)`,
 		`CREATE INDEX IF NOT EXISTS idx_review_events_user_id ON review_events(user_id)`,
+		`CREATE INDEX IF NOT EXISTS idx_review_events_user_card_id ON review_events(user_card_id)`,
 		`CREATE INDEX IF NOT EXISTS idx_training_nudges_user_date ON training_nudges(user_id, local_date)`,
 		
 		// Indexes for web app tables

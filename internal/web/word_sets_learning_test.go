@@ -46,7 +46,7 @@ func TestHandleLearningWordsCategories_Get(t *testing.T) {
 	router, _, cleanup := setupWordSetsLearningTest(t)
 	defer cleanup()
 
-	req := httptest.NewRequest(http.MethodGet, "/app/learning/words/categories", nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/learning/words/categories", nil)
 	req = setWordSetsLearningUserContext(req, 12345)
 	rr := httptest.NewRecorder()
 
@@ -61,7 +61,7 @@ func TestHandleLearningWordsCategories_MethodNotAllowed(t *testing.T) {
 	router, _, cleanup := setupWordSetsLearningTest(t)
 	defer cleanup()
 
-	req := httptest.NewRequest(http.MethodPost, "/app/learning/words/categories", nil)
+	req := httptest.NewRequest(http.MethodPost, "/api/learning/words/categories", nil)
 	req = setWordSetsLearningUserContext(req, 12345)
 	rr := httptest.NewRecorder()
 
@@ -76,7 +76,7 @@ func TestHandleLearningWordsSets_Get(t *testing.T) {
 	router, _, cleanup := setupWordSetsLearningTest(t)
 	defer cleanup()
 
-	req := httptest.NewRequest(http.MethodGet, "/app/learning/words/sets", nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/learning/words/sets", nil)
 	req = setWordSetsLearningUserContext(req, 12345)
 	rr := httptest.NewRecorder()
 
@@ -91,7 +91,7 @@ func TestHandleLearningWordsSets_GetWithCategory(t *testing.T) {
 	router, _, cleanup := setupWordSetsLearningTest(t)
 	defer cleanup()
 
-	req := httptest.NewRequest(http.MethodGet, "/app/learning/words/sets?category_id=1", nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/learning/words/sets?category_id=1", nil)
 	req = setWordSetsLearningUserContext(req, 12345)
 	rr := httptest.NewRecorder()
 
@@ -106,7 +106,7 @@ func TestHandleLearningWordsSets_MethodNotAllowed(t *testing.T) {
 	router, _, cleanup := setupWordSetsLearningTest(t)
 	defer cleanup()
 
-	req := httptest.NewRequest(http.MethodPost, "/app/learning/words/sets", nil)
+	req := httptest.NewRequest(http.MethodPost, "/api/learning/words/sets", nil)
 	req = setWordSetsLearningUserContext(req, 12345)
 	rr := httptest.NewRecorder()
 
@@ -121,7 +121,7 @@ func TestHandleLearningWordsSetDetailOrStudy_InvalidID(t *testing.T) {
 	router, _, cleanup := setupWordSetsLearningTest(t)
 	defer cleanup()
 
-	req := httptest.NewRequest(http.MethodGet, "/app/learning/words/sets/invalid", nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/learning/words/sets/invalid", nil)
 	req = setWordSetsLearningUserContext(req, 12345)
 	rr := httptest.NewRecorder()
 
@@ -136,7 +136,7 @@ func TestHandleLearningWordsSetDetail_NotFound(t *testing.T) {
 	router, _, cleanup := setupWordSetsLearningTest(t)
 	defer cleanup()
 
-	req := httptest.NewRequest(http.MethodGet, "/app/learning/words/sets/99999", nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/learning/words/sets/99999", nil)
 	req = setWordSetsLearningUserContext(req, 12345)
 	rr := httptest.NewRecorder()
 
@@ -151,7 +151,7 @@ func TestHandleLearningWordsSetDetail_MethodNotAllowed(t *testing.T) {
 	router, _, cleanup := setupWordSetsLearningTest(t)
 	defer cleanup()
 
-	req := httptest.NewRequest(http.MethodDelete, "/app/learning/words/sets/1", nil)
+	req := httptest.NewRequest(http.MethodDelete, "/api/learning/words/sets/1", nil)
 	req = setWordSetsLearningUserContext(req, 12345)
 	rr := httptest.NewRecorder()
 
@@ -166,7 +166,7 @@ func TestHandleLearningWordsSetStudy_BadRequest(t *testing.T) {
 	router, _, cleanup := setupWordSetsLearningTest(t)
 	defer cleanup()
 
-	req := httptest.NewRequest(http.MethodGet, "/app/learning/words/sets/99999/study", nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/learning/words/sets/99999/study", nil)
 	req = setWordSetsLearningUserContext(req, 12345)
 	rr := httptest.NewRecorder()
 
@@ -182,7 +182,7 @@ func TestHandleLearningWordsSetStudyLearn_BadRequest(t *testing.T) {
 	router, _, cleanup := setupWordSetsLearningTest(t)
 	defer cleanup()
 
-	req := httptest.NewRequest(http.MethodPost, "/app/learning/words/sets/99999/study/learn", nil)
+	req := httptest.NewRequest(http.MethodPost, "/api/learning/words/sets/99999/study/learn", nil)
 	req = setWordSetsLearningUserContext(req, 12345)
 	rr := httptest.NewRecorder()
 
@@ -198,7 +198,7 @@ func TestHandleLearningWordsSetStudyKnow_BadRequest(t *testing.T) {
 	router, _, cleanup := setupWordSetsLearningTest(t)
 	defer cleanup()
 
-	req := httptest.NewRequest(http.MethodPost, "/app/learning/words/sets/99999/study/know", nil)
+	req := httptest.NewRequest(http.MethodPost, "/api/learning/words/sets/99999/study/know", nil)
 	req = setWordSetsLearningUserContext(req, 12345)
 	rr := httptest.NewRecorder()
 

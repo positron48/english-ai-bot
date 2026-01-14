@@ -53,7 +53,7 @@ func TestHandleTrainingUpcoming_Get(t *testing.T) {
 	userRepo := repository.NewUserRepository(db.GetConnection(), router.logger)
 	user, _ := userRepo.GetOrCreateUser(12345)
 
-	req := httptest.NewRequest(http.MethodGet, "/app/training/upcoming", nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/training/upcoming", nil)
 	req = setTrainingUpcomingUserContext(req, user.ID)
 	rr := httptest.NewRecorder()
 
@@ -79,7 +79,7 @@ func TestHandleTrainingUpcoming_MethodNotAllowed(t *testing.T) {
 	router, _, cleanup := setupTrainingUpcomingTest(t)
 	defer cleanup()
 
-	req := httptest.NewRequest(http.MethodPost, "/app/training/upcoming", nil)
+	req := httptest.NewRequest(http.MethodPost, "/api/training/upcoming", nil)
 	req = setTrainingUpcomingUserContext(req, 12345)
 	rr := httptest.NewRecorder()
 
@@ -94,7 +94,7 @@ func TestHandleTrainingUpcoming_Unauthorized(t *testing.T) {
 	router, _, cleanup := setupTrainingUpcomingTest(t)
 	defer cleanup()
 
-	req := httptest.NewRequest(http.MethodGet, "/app/training/upcoming", nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/training/upcoming", nil)
 	// No user context
 	rr := httptest.NewRecorder()
 
@@ -141,7 +141,7 @@ func TestHandleTrainingUpcoming_WithUserCards(t *testing.T) {
 	}
 	ucRepo.CreateUserCard(uc)
 
-	req := httptest.NewRequest(http.MethodGet, "/app/training/upcoming", nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/training/upcoming", nil)
 	req = setTrainingUpcomingUserContext(req, user.ID)
 	rr := httptest.NewRecorder()
 
@@ -173,7 +173,7 @@ func TestHandleTrainingUpcoming_WithTimezone(t *testing.T) {
 	tz := "America/New_York"
 	db.GetConnection().Exec("UPDATE users SET timezone = ? WHERE id = ?", tz, user.ID)
 
-	req := httptest.NewRequest(http.MethodGet, "/app/training/upcoming", nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/training/upcoming", nil)
 	req = setTrainingUpcomingUserContext(req, user.ID)
 	rr := httptest.NewRecorder()
 

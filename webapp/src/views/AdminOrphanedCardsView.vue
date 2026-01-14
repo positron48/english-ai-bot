@@ -242,7 +242,7 @@ const loadTrainingCards = async () => {
     const data: { 
       cards: OrphanedTrainingCard[]
       pagination: { page: number; limit: number; total: number; total_pages: number }
-    } = await apiClient.request(`/app/admin/orphaned-cards?${params.toString()}`)
+    } = await apiClient.request(`/api/admin/orphaned-cards?${params.toString()}`)
     
     trainingCards.value = data.cards || []
     if (data.pagination) {
@@ -276,7 +276,7 @@ const loadUserCards = async () => {
     const data: { 
       cards: OrphanedUserCard[]
       pagination: { page: number; limit: number; total: number; total_pages: number }
-    } = await apiClient.request(`/app/admin/orphaned-user-cards?${params.toString()}`)
+    } = await apiClient.request(`/api/admin/orphaned-user-cards?${params.toString()}`)
     
     userCards.value = data.cards || []
     if (data.pagination) {
@@ -326,7 +326,7 @@ const deleteTrainingCard = async (card: OrphanedTrainingCard) => {
   }
 
   try {
-    await apiClient.request(`/app/admin/orphaned-cards/${card.id}`, { method: 'DELETE' })
+    await apiClient.request(`/api/admin/orphaned-cards/${card.id}`, { method: 'DELETE' })
     // Reload both lists to update pagination
     await Promise.all([loadTrainingCards(), loadUserCards()])
   } catch (err: any) {
@@ -351,7 +351,7 @@ const deleteUserCard = async (card: OrphanedUserCard) => {
   }
 
   try {
-    await apiClient.request(`/app/admin/orphaned-user-cards/${card.user_card_id}`, { method: 'DELETE' })
+    await apiClient.request(`/api/admin/orphaned-user-cards/${card.user_card_id}`, { method: 'DELETE' })
     // Reload to update pagination
     await loadUserCards()
   } catch (err: any) {

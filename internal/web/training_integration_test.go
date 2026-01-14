@@ -211,7 +211,7 @@ func TestHandleTrainingStart_WithCards(t *testing.T) {
 	router.authMiddleware = authMiddleware
 
 	// Create request with user context
-	req := httptest.NewRequest("POST", "/app/training/start", nil)
+	req := httptest.NewRequest("POST", "/api/training/start", nil)
 	ctx := context.WithValue(req.Context(), userIDKey, user.ID)
 	req = req.WithContext(ctx)
 	w := httptest.NewRecorder()
@@ -306,7 +306,7 @@ func TestHandleTrainingReveal_WithSession(t *testing.T) {
 	router.authMiddleware = authMiddleware
 
 	// Start a session first
-	startReq := httptest.NewRequest("POST", "/app/training/start", nil)
+	startReq := httptest.NewRequest("POST", "/api/training/start", nil)
 	startCtx := context.WithValue(startReq.Context(), userIDKey, user.ID)
 	startReq = startReq.WithContext(startCtx)
 	startW := httptest.NewRecorder()
@@ -317,7 +317,7 @@ func TestHandleTrainingReveal_WithSession(t *testing.T) {
 	}
 
 	// Now test reveal
-	req := httptest.NewRequest("POST", "/app/training/reveal", nil)
+	req := httptest.NewRequest("POST", "/api/training/reveal", nil)
 	ctx := context.WithValue(req.Context(), userIDKey, user.ID)
 	req = req.WithContext(ctx)
 	w := httptest.NewRecorder()

@@ -64,7 +64,7 @@ func TestHandleTrainingStart_NoCards(t *testing.T) {
 	router.authMiddleware = authMiddleware
 
 	// Create request with user context
-	req := httptest.NewRequest("POST", "/app/training/start", nil)
+	req := httptest.NewRequest("POST", "/api/training/start", nil)
 	ctx := context.WithValue(req.Context(), userIDKey, user.ID)
 	req = req.WithContext(ctx)
 	w := httptest.NewRecorder()
@@ -111,7 +111,7 @@ func TestHandleTrainingStart_WrongMethod(t *testing.T) {
 	router.authMiddleware = authMiddleware
 
 	// Create GET request (should fail)
-	req := httptest.NewRequest("GET", "/app/training/start", nil)
+	req := httptest.NewRequest("GET", "/api/training/start", nil)
 	w := httptest.NewRecorder()
 
 	// Call handler
@@ -153,7 +153,7 @@ func TestHandleTrainingCurrent_NoSession(t *testing.T) {
 	router.authMiddleware = authMiddleware
 
 	// Create request with user context
-	req := httptest.NewRequest("GET", "/app/training/current", nil)
+	req := httptest.NewRequest("GET", "/api/training/current", nil)
 	ctx := context.WithValue(req.Context(), userIDKey, user.ID)
 	req = req.WithContext(ctx)
 	w := httptest.NewRecorder()
@@ -191,7 +191,7 @@ func TestHandleTrainingReveal_WrongMethod(t *testing.T) {
 	router.authMiddleware = authMiddleware
 
 	// Create GET request (should fail, needs POST)
-	req := httptest.NewRequest("GET", "/app/training/reveal", nil)
+	req := httptest.NewRequest("GET", "/api/training/reveal", nil)
 	w := httptest.NewRecorder()
 
 	// Call handler
@@ -227,7 +227,7 @@ func TestHandleTrainingAnswer_WrongMethod(t *testing.T) {
 	router.authMiddleware = authMiddleware
 
 	// Create GET request (should fail, needs POST)
-	req := httptest.NewRequest("GET", "/app/training/answer", nil)
+	req := httptest.NewRequest("GET", "/api/training/answer", nil)
 	w := httptest.NewRecorder()
 
 	// Call handler
@@ -269,7 +269,7 @@ func TestHandleTrainingAnswer_MissingParams(t *testing.T) {
 	router.authMiddleware = authMiddleware
 
 	// Create request without answer
-	req := httptest.NewRequest("POST", "/app/training/answer", strings.NewReader(""))
+	req := httptest.NewRequest("POST", "/api/training/answer", strings.NewReader(""))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	ctx := context.WithValue(req.Context(), userIDKey, user.ID)
 	req = req.WithContext(ctx)

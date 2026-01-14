@@ -58,7 +58,7 @@ const currentCategoryId = ref<number | null>(null)
 // Загружаем все категории для построения иерархии
 const loadCategories = async () => {
   try {
-    const categoriesData: { categories: Category[] } = await apiClient.request('/app/learning/words/categories?all=true')
+    const categoriesData: { categories: Category[] } = await apiClient.request('/api/learning/words/categories?all=true')
     wordSetInfo.value.categories = categoriesData.categories || []
   } catch (error) {
     console.error('Failed to load categories for breadcrumbs:', error)
@@ -70,7 +70,7 @@ const loadCategories = async () => {
 const loadWordSetInfo = async (setId: string) => {
   try {
     // Загружаем информацию о наборе
-    const setData: { word_set: WordSet } = await apiClient.request(`/app/learning/words/sets/${setId}`)
+    const setData: { word_set: WordSet } = await apiClient.request(`/api/learning/words/sets/${setId}`)
     wordSetInfo.value.wordSet = setData.word_set
     
     // Загружаем все категории для построения иерархии

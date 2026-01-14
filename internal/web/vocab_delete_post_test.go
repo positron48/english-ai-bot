@@ -170,7 +170,7 @@ func TestHandleVocabDelete_Delete(t *testing.T) {
 	router.authMiddleware = authMiddleware
 
 	// Create POST request for delete using lemma
-	req := httptest.NewRequest("POST", "/app/vocab/deletepost/delete", nil)
+	req := httptest.NewRequest("POST", "/api/vocab/deletepost/delete", nil)
 	ctx := context.WithValue(req.Context(), userIDKey, user.ID)
 	req = req.WithContext(ctx)
 	w := httptest.NewRecorder()
@@ -225,7 +225,7 @@ func TestHandleVocabDelete_Delete_NoCards(t *testing.T) {
 	router.authMiddleware = authMiddleware
 
 	// Create POST request for delete (word doesn't exist)
-	req := httptest.NewRequest("POST", "/app/vocab/nonexistent/delete", nil)
+	req := httptest.NewRequest("POST", "/api/vocab/nonexistent/delete", nil)
 	ctx := context.WithValue(req.Context(), userIDKey, user.ID)
 	req = req.WithContext(ctx)
 	w := httptest.NewRecorder()
@@ -322,7 +322,7 @@ func TestHandleVocabDelete_DeleteByWordCardID(t *testing.T) {
 	router.authMiddleware = authMiddleware
 
 	// Create POST request for delete using lemma
-	req := httptest.NewRequest("POST", "/app/vocab/testword/delete", nil)
+	req := httptest.NewRequest("POST", "/api/vocab/testword/delete", nil)
 	ctx := context.WithValue(req.Context(), userIDKey, user.ID)
 	req = req.WithContext(ctx)
 	w := httptest.NewRecorder()

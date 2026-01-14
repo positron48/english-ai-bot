@@ -53,7 +53,7 @@ func TestHandleAdminTraining_GetWord(t *testing.T) {
 	wordRepo := repository.NewWordRepository(db.GetConnection(), router.logger)
 	wordRepo.SaveWordCard("test", "test definition")
 
-	req := httptest.NewRequest(http.MethodGet, "/app/admin/training/test", nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/training/test", nil)
 	req = setAdminTrainingUserContext(req, 12345)
 	rr := httptest.NewRecorder()
 
@@ -77,7 +77,7 @@ func TestHandleAdminTraining_GetWord_NotFound(t *testing.T) {
 	router, _, cleanup := setupAdminTrainingTest(t)
 	defer cleanup()
 
-	req := httptest.NewRequest(http.MethodGet, "/app/admin/training/nonexistent", nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/training/nonexistent", nil)
 	req = setAdminTrainingUserContext(req, 12345)
 	rr := httptest.NewRecorder()
 
@@ -110,7 +110,7 @@ func TestHandleAdminTraining_DeleteAll_More(t *testing.T) {
 	}
 	tcRepo.CreateTrainingCard(tc)
 
-	req := httptest.NewRequest(http.MethodPost, "/app/admin/training/delete_all", nil)
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/training/delete_all", nil)
 	req = setAdminTrainingUserContext(req, 12345)
 	rr := httptest.NewRecorder()
 
@@ -148,7 +148,7 @@ func TestHandleAdminTraining_DeleteWord(t *testing.T) {
 	}
 	tcRepo.CreateTrainingCard(tc)
 
-	req := httptest.NewRequest(http.MethodPost, "/app/admin/training/testword/delete", nil)
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/training/testword/delete", nil)
 	req = setAdminTrainingUserContext(req, 12345)
 	rr := httptest.NewRecorder()
 
@@ -164,7 +164,7 @@ func TestHandleAdminTraining_Generate_NoAIService(t *testing.T) {
 	defer cleanup()
 
 	body := bytes.NewBufferString(`{"constraints": "test constraint"}`)
-	req := httptest.NewRequest(http.MethodPost, "/app/admin/training/test/generate", body)
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/training/test/generate", body)
 	req.Header.Set("Content-Type", "application/json")
 	req = setAdminTrainingUserContext(req, 12345)
 	rr := httptest.NewRecorder()
@@ -182,7 +182,7 @@ func TestHandleAdminTraining_Generate_InvalidJSON(t *testing.T) {
 	defer cleanup()
 
 	body := bytes.NewBufferString(`{invalid json}`)
-	req := httptest.NewRequest(http.MethodPost, "/app/admin/training/test/generate", body)
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/training/test/generate", body)
 	req.Header.Set("Content-Type", "application/json")
 	req = setAdminTrainingUserContext(req, 12345)
 	rr := httptest.NewRecorder()
@@ -198,7 +198,7 @@ func TestHandleAdminTraining_InvalidPath(t *testing.T) {
 	router, _, cleanup := setupAdminTrainingTest(t)
 	defer cleanup()
 
-	req := httptest.NewRequest(http.MethodGet, "/app/admin/training/", nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/training/", nil)
 	req = setAdminTrainingUserContext(req, 12345)
 	rr := httptest.NewRecorder()
 
@@ -214,7 +214,7 @@ func TestHandleAdminTraining_UnknownAction(t *testing.T) {
 	router, _, cleanup := setupAdminTrainingTest(t)
 	defer cleanup()
 
-	req := httptest.NewRequest(http.MethodPut, "/app/admin/training/test", nil)
+	req := httptest.NewRequest(http.MethodPut, "/api/admin/training/test", nil)
 	req = setAdminTrainingUserContext(req, 12345)
 	rr := httptest.NewRecorder()
 
@@ -247,7 +247,7 @@ func TestHandleAdminTrainingCard_Delete_More(t *testing.T) {
 	}
 	tcID, _ := tcRepo.CreateTrainingCard(tc)
 
-	req := httptest.NewRequest(http.MethodDelete, "/app/admin/training/card/"+string(rune(tcID+'0')), nil)
+	req := httptest.NewRequest(http.MethodDelete, "/api/admin/training/card/"+string(rune(tcID+'0')), nil)
 	req = setAdminTrainingUserContext(req, 12345)
 	rr := httptest.NewRecorder()
 
@@ -263,7 +263,7 @@ func TestHandleAdminTrainingCard_DeleteNotFound(t *testing.T) {
 	router, _, cleanup := setupAdminTrainingTest(t)
 	defer cleanup()
 
-	req := httptest.NewRequest(http.MethodDelete, "/app/admin/training/card/99999", nil)
+	req := httptest.NewRequest(http.MethodDelete, "/api/admin/training/card/99999", nil)
 	req = setAdminTrainingUserContext(req, 12345)
 	rr := httptest.NewRecorder()
 
@@ -278,7 +278,7 @@ func TestHandleAdminTrainingCard_InvalidID(t *testing.T) {
 	router, _, cleanup := setupAdminTrainingTest(t)
 	defer cleanup()
 
-	req := httptest.NewRequest(http.MethodGet, "/app/admin/training/card/invalid", nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/training/card/invalid", nil)
 	req = setAdminTrainingUserContext(req, 12345)
 	rr := httptest.NewRecorder()
 
@@ -298,7 +298,7 @@ func TestHandleAdminWords_Get_More(t *testing.T) {
 	wordRepo.SaveWordCard("apple", "a fruit")
 	wordRepo.SaveWordCard("banana", "another fruit")
 
-	req := httptest.NewRequest(http.MethodGet, "/app/admin/words", nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/words", nil)
 	req = setAdminTrainingUserContext(req, 12345)
 	rr := httptest.NewRecorder()
 
@@ -317,7 +317,7 @@ func TestHandleAdminWords_GetWithSearch(t *testing.T) {
 	wordRepo.SaveWordCard("apple", "a fruit")
 	wordRepo.SaveWordCard("banana", "another fruit")
 
-	req := httptest.NewRequest(http.MethodGet, "/app/admin/words?search=apple", nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/words?search=apple", nil)
 	req = setAdminTrainingUserContext(req, 12345)
 	rr := httptest.NewRecorder()
 
@@ -336,7 +336,7 @@ func TestHandleAdminWord_Get(t *testing.T) {
 	wordRepo.SaveWordCard("testword", "test definition")
 	wordCard, _ := wordRepo.GetWordCard("testword")
 
-	req := httptest.NewRequest(http.MethodGet, "/app/admin/words/"+string(rune(wordCard.ID+'0')), nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/words/"+string(rune(wordCard.ID+'0')), nil)
 	req = setAdminTrainingUserContext(req, 12345)
 	rr := httptest.NewRecorder()
 
@@ -352,7 +352,7 @@ func TestHandleAdminWord_NotFound(t *testing.T) {
 	router, _, cleanup := setupAdminTrainingTest(t)
 	defer cleanup()
 
-	req := httptest.NewRequest(http.MethodDelete, "/app/admin/words/99999", nil)
+	req := httptest.NewRequest(http.MethodDelete, "/api/admin/words/99999", nil)
 	req = setAdminTrainingUserContext(req, 12345)
 	rr := httptest.NewRecorder()
 
@@ -371,7 +371,7 @@ func TestHandleAdminWord_Delete_More(t *testing.T) {
 	wordRepo.SaveWordCard("testword", "test definition")
 	wordCard, _ := wordRepo.GetWordCard("testword")
 
-	req := httptest.NewRequest(http.MethodDelete, "/app/admin/words/"+string(rune(wordCard.ID+'0')), nil)
+	req := httptest.NewRequest(http.MethodDelete, "/api/admin/words/"+string(rune(wordCard.ID+'0')), nil)
 	req = setAdminTrainingUserContext(req, 12345)
 	rr := httptest.NewRecorder()
 

@@ -6,6 +6,9 @@ const isAdmin = ref(false)
 
 export function useAuth() {
   const checkAuth = () => {
+    // Reload tokens from localStorage to ensure they're current
+    // This is important when accessing the app directly via URL
+    apiClient.loadTokens()
     isAuthenticated.value = apiClient.isAuthenticated()
   }
 
@@ -16,7 +19,7 @@ export function useAuth() {
     }
 
     try {
-      await apiClient.request('/app/admin')
+      await apiClient.request('/api/admin')
       isAdmin.value = true
     } catch (error: any) {
       if (error.message?.includes('403') || error.message?.includes('Forbidden')) {
@@ -88,7 +91,8 @@ export function useAuth() {
     login,
     logout,
     tryTelegramAuth,
-    checkAdmin
+    checkAdmin,
+    checkAuth
   }
 }
 

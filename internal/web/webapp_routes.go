@@ -90,11 +90,10 @@ func (r *Router) setupWebappRoutes() {
 // isAPIEndpoint checks if the path is a known API endpoint
 func isAPIEndpoint(path string) bool {
 	apiPaths := []string{
-		"/app/dashboard",
-		"/app/vocab",
-		"/app/training/",
-		"/app/chat",
-		"/app/admin",
+		"/api/",
+		"/auth",
+		"/swagger",
+		"/health",
 	}
 
 	for _, apiPath := range apiPaths {

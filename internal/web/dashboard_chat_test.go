@@ -116,7 +116,7 @@ func TestHandleChat_SingleWord_WordInDB(t *testing.T) {
 	router.authMiddleware = authMiddleware
 
 	// Create request with single word
-	req := httptest.NewRequest("POST", "/app/chat", strings.NewReader("message=hello"))
+	req := httptest.NewRequest("POST", "/api/chat", strings.NewReader("message=hello"))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	ctx := context.WithValue(req.Context(), userIDKey, user.ID)
 	req = req.WithContext(ctx)
@@ -163,7 +163,7 @@ func TestHandleChat_MultipleWords(t *testing.T) {
 	router.authMiddleware = authMiddleware
 
 	// Create request with multiple words (should go to AI chat)
-	req := httptest.NewRequest("POST", "/app/chat", strings.NewReader("message=hello world"))
+	req := httptest.NewRequest("POST", "/api/chat", strings.NewReader("message=hello world"))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	ctx := context.WithValue(req.Context(), userIDKey, user.ID)
 	req = req.WithContext(ctx)
@@ -205,7 +205,7 @@ func TestHandleChat_MissingMessage(t *testing.T) {
 	router.authMiddleware = authMiddleware
 
 	// Create request without message
-	req := httptest.NewRequest("POST", "/app/chat", strings.NewReader(""))
+	req := httptest.NewRequest("POST", "/api/chat", strings.NewReader(""))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	ctx := context.WithValue(req.Context(), userIDKey, user.ID)
 	req = req.WithContext(ctx)
@@ -240,7 +240,7 @@ func TestHandleChat_WrongMethod(t *testing.T) {
 	router.authMiddleware = authMiddleware
 
 	// Create GET request (should fail)
-	req := httptest.NewRequest("GET", "/app/chat", nil)
+	req := httptest.NewRequest("GET", "/api/chat", nil)
 	w := httptest.NewRecorder()
 
 	// Call handler
@@ -272,7 +272,7 @@ func TestHandleChat_Unauthorized(t *testing.T) {
 	router.authMiddleware = authMiddleware
 
 	// Create request without user context
-	req := httptest.NewRequest("POST", "/app/chat", strings.NewReader("message=hello"))
+	req := httptest.NewRequest("POST", "/api/chat", strings.NewReader("message=hello"))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	w := httptest.NewRecorder()
 

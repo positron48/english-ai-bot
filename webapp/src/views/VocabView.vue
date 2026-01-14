@@ -383,7 +383,7 @@ const loadVocab = async () => {
       params.append('mastery_level', statusFilter.value)
     }
     
-    const data: { words: VocabWord[], pagination: Pagination } = await apiClient.request(`/app/vocab?${params.toString()}`)
+    const data: { words: VocabWord[], pagination: Pagination } = await apiClient.request(`/api/vocab?${params.toString()}`)
     words.value = data.words || []
     pagination.value = data.pagination || {
       page: 1,
@@ -471,7 +471,7 @@ const confirmDelete = () => {
 const deleteWord = async () => {
   try {
     const formData = new FormData()
-    await apiClient.requestFormData(`/app/vocab/${lemmaToDelete.value}/delete`, formData)
+    await apiClient.requestFormData(`/api/vocab/${lemmaToDelete.value}/delete`, formData)
     showDeleteConfirm.value = false
     showCardsModal.value = false
     await loadVocab()
@@ -489,7 +489,7 @@ const showCards = async (lemma: string) => {
   selectedTranscription.value = ''
   
   try {
-    const data: { lemma: string; word_card_id: number; cards: CardDetail[]; verb_forms?: any; pos?: string; has_user_cards?: boolean; is_known?: boolean } = await apiClient.request(`/app/vocab/${lemma}/cards`)
+    const data: { lemma: string; word_card_id: number; cards: CardDetail[]; verb_forms?: any; pos?: string; has_user_cards?: boolean; is_known?: boolean } = await apiClient.request(`/api/vocab/${lemma}/cards`)
     cards.value = data.cards || []
     verbForms.value = data.verb_forms || null
     wordPOS.value = data.pos || null
@@ -534,7 +534,7 @@ const markKnown = async () => {
   processingAction.value = true
   try {
     const formData = new FormData()
-    await apiClient.requestFormData(`/app/vocab/${selectedWord.value}/mark_known`, formData)
+    await apiClient.requestFormData(`/api/vocab/${selectedWord.value}/mark_known`, formData)
     showCardsModal.value = false
     await loadVocab()
   } catch (error) {
@@ -551,7 +551,7 @@ const moveToTraining = async () => {
   processingAction.value = true
   try {
     const formData = new FormData()
-    await apiClient.requestFormData(`/app/vocab/${selectedWord.value}/move_to_training`, formData)
+    await apiClient.requestFormData(`/api/vocab/${selectedWord.value}/move_to_training`, formData)
     showCardsModal.value = false
     await loadVocab()
   } catch (error) {

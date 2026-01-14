@@ -25,10 +25,10 @@ import (
 // @Failure      401  {string}  string  "Неавторизован"
 // @Failure      403  {string}  string  "Доступ запрещен"
 // @Failure      500  {string}  string  "Внутренняя ошибка сервера"
-// @Router       /app/admin/word-set-categories [get]
-// @Router       /app/admin/word-set-categories [post]
-// @Router       /app/admin/word-set-categories/{id} [put]
-// @Router       /app/admin/word-set-categories/{id} [delete]
+// @Router       /api/admin/word-set-categories [get]
+// @Router       /api/admin/word-set-categories [post]
+// @Router       /api/admin/word-set-categories/{id} [put]
+// @Router       /api/admin/word-set-categories/{id} [delete]
 func (r *Router) handleAdminWordSetCategories(w http.ResponseWriter, req *http.Request) {
 	categoryRepo := repository.NewWordSetCategoryRepository(r.db, r.logger)
 
@@ -82,7 +82,7 @@ func (r *Router) handleAdminWordSetCategories(w http.ResponseWriter, req *http.R
 
 	case http.MethodPut:
 		// Extract ID from path
-		path := strings.TrimPrefix(req.URL.Path, "/app/admin/word-set-categories/")
+		path := strings.TrimPrefix(req.URL.Path, "/api/admin/word-set-categories/")
 		id, err := strconv.ParseInt(path, 10, 64)
 		if err != nil {
 			http.Error(w, "Invalid category ID", http.StatusBadRequest)
@@ -118,7 +118,7 @@ func (r *Router) handleAdminWordSetCategories(w http.ResponseWriter, req *http.R
 
 	case http.MethodDelete:
 		// Extract ID from path
-		path := strings.TrimPrefix(req.URL.Path, "/app/admin/word-set-categories/")
+		path := strings.TrimPrefix(req.URL.Path, "/api/admin/word-set-categories/")
 		id, err := strconv.ParseInt(path, 10, 64)
 		if err != nil {
 			http.Error(w, "Invalid category ID", http.StatusBadRequest)
@@ -159,10 +159,10 @@ func (r *Router) handleAdminWordSetCategories(w http.ResponseWriter, req *http.R
 // @Failure      401  {string}  string  "Неавторизован"
 // @Failure      403  {string}  string  "Доступ запрещен"
 // @Failure      500  {string}  string  "Внутренняя ошибка сервера"
-// @Router       /app/admin/word-sets [get]
-// @Router       /app/admin/word-sets [post]
-// @Router       /app/admin/word-sets/{id} [put]
-// @Router       /app/admin/word-sets/{id} [delete]
+// @Router       /api/admin/word-sets [get]
+// @Router       /api/admin/word-sets [post]
+// @Router       /api/admin/word-sets/{id} [put]
+// @Router       /api/admin/word-sets/{id} [delete]
 func (r *Router) handleAdminWordSets(w http.ResponseWriter, req *http.Request) {
 	wordSetRepo := repository.NewWordSetRepository(r.db, r.logger)
 
@@ -232,7 +232,7 @@ func (r *Router) handleAdminWordSets(w http.ResponseWriter, req *http.Request) {
 
 	case http.MethodPut:
 		// Extract ID from path
-		path := strings.TrimPrefix(req.URL.Path, "/app/admin/word-sets/")
+		path := strings.TrimPrefix(req.URL.Path, "/api/admin/word-sets/")
 		parts := strings.Split(path, "/")
 		if len(parts) < 1 {
 			http.Error(w, "Invalid path", http.StatusBadRequest)
@@ -292,7 +292,7 @@ func (r *Router) handleAdminWordSets(w http.ResponseWriter, req *http.Request) {
 
 	case http.MethodDelete:
 		// Extract ID from path
-		path := strings.TrimPrefix(req.URL.Path, "/app/admin/word-sets/")
+		path := strings.TrimPrefix(req.URL.Path, "/api/admin/word-sets/")
 		id, err := strconv.ParseInt(path, 10, 64)
 		if err != nil {
 			http.Error(w, "Invalid word set ID", http.StatusBadRequest)
@@ -318,7 +318,7 @@ func (r *Router) handleAdminWordSets(w http.ResponseWriter, req *http.Request) {
 
 // handleAdminWordSetDetailOrSets routes to detail or sets handlers
 func (r *Router) handleAdminWordSetDetailOrSets(w http.ResponseWriter, req *http.Request) {
-	path := strings.TrimPrefix(req.URL.Path, "/app/admin/word-sets/")
+	path := strings.TrimPrefix(req.URL.Path, "/api/admin/word-sets/")
 	parts := strings.Split(path, "/")
 	
 	if len(parts) < 1 || parts[0] == "" {
@@ -356,7 +356,7 @@ func (r *Router) handleAdminWordSetDetailOrSets(w http.ResponseWriter, req *http
 // @Failure      403  {string}  string  "Доступ запрещен"
 // @Failure      404  {string}  string  "Набор не найден"
 // @Failure      500  {string}  string  "Внутренняя ошибка сервера"
-// @Router       /app/admin/word-sets/{id} [get]
+// @Router       /api/admin/word-sets/{id} [get]
 func (r *Router) handleAdminWordSetDetail(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -364,7 +364,7 @@ func (r *Router) handleAdminWordSetDetail(w http.ResponseWriter, req *http.Reque
 	}
 
 	// Extract ID from path
-	path := strings.TrimPrefix(req.URL.Path, "/app/admin/word-sets/")
+	path := strings.TrimPrefix(req.URL.Path, "/api/admin/word-sets/")
 	id, err := strconv.ParseInt(path, 10, 64)
 	if err != nil {
 		http.Error(w, "Invalid word set ID", http.StatusBadRequest)

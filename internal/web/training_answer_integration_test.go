@@ -88,7 +88,7 @@ func TestHandleTrainingAnswer_WithSession(t *testing.T) {
 	router.authMiddleware = authMiddleware
 
 	// Start a session first
-	startReq := httptest.NewRequest("POST", "/app/training/start", nil)
+	startReq := httptest.NewRequest("POST", "/api/training/start", nil)
 	startCtx := context.WithValue(startReq.Context(), userIDKey, user.ID)
 	startReq = startReq.WithContext(startCtx)
 	startW := httptest.NewRecorder()
@@ -109,7 +109,7 @@ func TestHandleTrainingAnswer_WithSession(t *testing.T) {
 	}
 
 	// Reveal options first
-	revealReq := httptest.NewRequest("POST", "/app/training/reveal", nil)
+	revealReq := httptest.NewRequest("POST", "/api/training/reveal", nil)
 	revealCtx := context.WithValue(revealReq.Context(), userIDKey, user.ID)
 	revealReq = revealReq.WithContext(revealCtx)
 	revealW := httptest.NewRecorder()
@@ -133,7 +133,7 @@ func TestHandleTrainingAnswer_WithSession(t *testing.T) {
 	}
 
 	// Now test answer (use first option)
-	answerReq := httptest.NewRequest("POST", "/app/training/answer", strings.NewReader(fmt.Sprintf("option_index=0&user_card_id=%.0f", userCardID)))
+	answerReq := httptest.NewRequest("POST", "/api/training/answer", strings.NewReader(fmt.Sprintf("option_index=0&user_card_id=%.0f", userCardID)))
 	answerReq.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	answerCtx := context.WithValue(answerReq.Context(), userIDKey, user.ID)
 	answerReq = answerReq.WithContext(answerCtx)

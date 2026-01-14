@@ -18,41 +18,46 @@ func TestIsAPIEndpoint(t *testing.T) {
 	}{
 		{
 			name:     "Dashboard endpoint",
-			path:     "/app/dashboard",
+			path:     "/api/dashboard",
 			expected: true,
 		},
 		{
 			name:     "Vocab endpoint",
-			path:     "/app/vocab",
+			path:     "/api/vocab",
 			expected: true,
 		},
 		{
 			name:     "Training endpoint",
-			path:     "/app/training/start",
+			path:     "/api/training/start",
 			expected: true,
 		},
 		{
 			name:     "Chat endpoint",
-			path:     "/app/chat",
+			path:     "/api/chat",
 			expected: true,
 		},
 		{
 			name:     "Admin endpoint",
-			path:     "/app/admin",
+			path:     "/api/admin",
 			expected: true,
 		},
 		{
-			name:     "Non-API path",
-			path:     "/app/some-page",
-			expected: false,
+			name:     "Any API path",
+			path:     "/api/some-page",
+			expected: true,
 		},
 		{
-			name:     "Root app path",
+			name:     "Root app path (SPA route)",
 			path:     "/app",
 			expected: false,
 		},
 		{
-			name:     "Asset path",
+			name:     "App dashboard (SPA route)",
+			path:     "/app/dashboard",
+			expected: false,
+		},
+		{
+			name:     "Asset path under /app",
 			path:     "/app/assets/main.js",
 			expected: false,
 		},
@@ -101,7 +106,7 @@ func TestHasFileExtension(t *testing.T) {
 		},
 		{
 			name:     "Single dot",
-			path:     "/app/file.",
+			path:     "/api/file.",
 			expected: false,
 		},
 		{
@@ -194,7 +199,7 @@ func TestHandleNotFound(t *testing.T) {
 
 	router := NewRouter(logger, cfg, nil, nil, nil, nil, nil)
 
-	req := httptest.NewRequest("GET", "/app/nonexistent", nil)
+	req := httptest.NewRequest("GET", "/api/nonexistent", nil)
 	w := httptest.NewRecorder()
 
 	router.handleNotFound(w, req)

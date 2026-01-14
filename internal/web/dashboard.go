@@ -19,7 +19,7 @@ import (
 // @Success      200  {object}  map[string]interface{}  "Данные дашборда"
 // @Failure      401  {string}  string  "Неавторизован"
 // @Failure      405  {string}  string  "Метод не разрешен"
-// @Router       /app/dashboard [get]
+// @Router       /api/dashboard [get]
 func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -222,7 +222,7 @@ func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 // @Failure      400  {string}  string  "Неверный запрос (отсутствует message)"
 // @Failure      401  {string}  string  "Неавторизован"
 // @Failure      500  {object}  map[string]interface{}  "Ошибка при обработке сообщения"
-// @Router       /app/chat [post]
+// @Router       /api/chat [post]
 func (r *Router) handleChat(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)

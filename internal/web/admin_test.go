@@ -145,7 +145,7 @@ func TestHandleAdmin_Get(t *testing.T) {
 	router.authMiddleware = authMiddleware
 
 	// Create request with admin user context
-	req := httptest.NewRequest("GET", "/app/admin", nil)
+	req := httptest.NewRequest("GET", "/api/admin", nil)
 	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
 	req = req.WithContext(ctx)
 	w := httptest.NewRecorder()
@@ -202,7 +202,7 @@ func TestHandleAdmin_WrongMethod(t *testing.T) {
 	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
 	router.authMiddleware = authMiddleware
 
-	req := httptest.NewRequest("POST", "/app/admin", nil)
+	req := httptest.NewRequest("POST", "/api/admin", nil)
 	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
 	req = req.WithContext(ctx)
 	w := httptest.NewRecorder()
@@ -240,7 +240,7 @@ func TestHandleAdmin_Unauthorized(t *testing.T) {
 	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
 	router.authMiddleware = authMiddleware
 
-	req := httptest.NewRequest("GET", "/app/admin", nil)
+	req := httptest.NewRequest("GET", "/api/admin", nil)
 	// No user context
 	w := httptest.NewRecorder()
 
@@ -283,7 +283,7 @@ func TestHandleAdmin_Forbidden(t *testing.T) {
 	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
 	router.authMiddleware = authMiddleware
 
-	req := httptest.NewRequest("GET", "/app/admin", nil)
+	req := httptest.NewRequest("GET", "/api/admin", nil)
 	ctx := context.WithValue(req.Context(), userIDKey, nonAdminUser.ID)
 	req = req.WithContext(ctx)
 	w := httptest.NewRecorder()
@@ -325,7 +325,7 @@ func TestHandleAdminCircuitReset_Post(t *testing.T) {
 	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
 	router.authMiddleware = authMiddleware
 
-	req := httptest.NewRequest("POST", "/app/admin/circuit/reset", nil)
+	req := httptest.NewRequest("POST", "/api/admin/circuit/reset", nil)
 	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
 	req = req.WithContext(ctx)
 	w := httptest.NewRecorder()
@@ -381,7 +381,7 @@ func TestHandleAdminCircuitReset_WrongMethod(t *testing.T) {
 	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
 	router.authMiddleware = authMiddleware
 
-	req := httptest.NewRequest("GET", "/app/admin/circuit/reset", nil)
+	req := httptest.NewRequest("GET", "/api/admin/circuit/reset", nil)
 	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
 	req = req.WithContext(ctx)
 	w := httptest.NewRecorder()
@@ -429,7 +429,7 @@ func TestHandleAdminUsers_Get(t *testing.T) {
 	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
 	router.authMiddleware = authMiddleware
 
-	req := httptest.NewRequest("GET", "/app/admin/users", nil)
+	req := httptest.NewRequest("GET", "/api/admin/users", nil)
 	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
 	req = req.WithContext(ctx)
 	w := httptest.NewRecorder()
@@ -487,7 +487,7 @@ func TestHandleAdminWords_Get(t *testing.T) {
 	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
 	router.authMiddleware = authMiddleware
 
-	req := httptest.NewRequest("GET", "/app/admin/words", nil)
+	req := httptest.NewRequest("GET", "/api/admin/words", nil)
 	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
 	req = req.WithContext(ctx)
 	w := httptest.NewRecorder()
@@ -549,7 +549,7 @@ func TestHandleAdminWord_Put(t *testing.T) {
 	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
 	router.authMiddleware = authMiddleware
 
-	req := httptest.NewRequest("PUT", fmt.Sprintf("/app/admin/words/%d", wordCardID), strings.NewReader("definition=new definition"))
+	req := httptest.NewRequest("PUT", fmt.Sprintf("/api/admin/words/%d", wordCardID), strings.NewReader("definition=new definition"))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
 	req = req.WithContext(ctx)
@@ -619,7 +619,7 @@ func TestHandleAdminWord_Put_WithJSON(t *testing.T) {
 	}
 	jsonData, _ := json.Marshal(updateData)
 
-	req := httptest.NewRequest("PUT", fmt.Sprintf("/app/admin/words/%d", wordCardID), strings.NewReader(string(jsonData)))
+	req := httptest.NewRequest("PUT", fmt.Sprintf("/api/admin/words/%d", wordCardID), strings.NewReader(string(jsonData)))
 	req.Header.Set("Content-Type", "application/json")
 	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
 	req = req.WithContext(ctx)
@@ -691,7 +691,7 @@ func TestHandleAdminWord_Delete(t *testing.T) {
 	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
 	router.authMiddleware = authMiddleware
 
-	req := httptest.NewRequest("DELETE", fmt.Sprintf("/app/admin/words/%d", wordCardID), nil)
+	req := httptest.NewRequest("DELETE", fmt.Sprintf("/api/admin/words/%d", wordCardID), nil)
 	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
 	req = req.WithContext(ctx)
 	w := httptest.NewRecorder()
@@ -767,7 +767,7 @@ func TestHandleAdminTraining_Get(t *testing.T) {
 	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
 	router.authMiddleware = authMiddleware
 
-	req := httptest.NewRequest("GET", "/app/admin/training/training", nil)
+	req := httptest.NewRequest("GET", "/api/admin/training/training", nil)
 	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
 	req = req.WithContext(ctx)
 	w := httptest.NewRecorder()
@@ -842,7 +842,7 @@ func TestHandleAdminTrainingCard_Delete(t *testing.T) {
 	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
 	router.authMiddleware = authMiddleware
 
-	req := httptest.NewRequest("DELETE", fmt.Sprintf("/app/admin/training/card/%d", trainingCardID), nil)
+	req := httptest.NewRequest("DELETE", fmt.Sprintf("/api/admin/training/card/%d", trainingCardID), nil)
 	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
 	req = req.WithContext(ctx)
 	w := httptest.NewRecorder()
@@ -916,7 +916,7 @@ func TestHandleAdminTrainingCard_Put(t *testing.T) {
 	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
 	router.authMiddleware = authMiddleware
 
-	req := httptest.NewRequest("PUT", fmt.Sprintf("/app/admin/training/card/%d", trainingCardID), strings.NewReader("word_ru=новая карта&meaning_en=new card&example_en=example"))
+	req := httptest.NewRequest("PUT", fmt.Sprintf("/api/admin/training/card/%d", trainingCardID), strings.NewReader("word_ru=новая карта&meaning_en=new card&example_en=example"))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
 	req = req.WithContext(ctx)
@@ -994,7 +994,7 @@ func TestHandleAdminTrainingCard_Put_UpdatePOS(t *testing.T) {
 	router.authMiddleware = authMiddleware
 
 	// Update POS to verb
-	req := httptest.NewRequest("PUT", fmt.Sprintf("/app/admin/training/card/%d", trainingCardID), strings.NewReader("pos=verb"))
+	req := httptest.NewRequest("PUT", fmt.Sprintf("/api/admin/training/card/%d", trainingCardID), strings.NewReader("pos=verb"))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
 	req = req.WithContext(ctx)
@@ -1017,7 +1017,7 @@ func TestHandleAdminTrainingCard_Put_UpdatePOS(t *testing.T) {
 	}
 
 	// Test clearing POS (empty string)
-	req2 := httptest.NewRequest("PUT", fmt.Sprintf("/app/admin/training/card/%d", trainingCardID), strings.NewReader("pos="))
+	req2 := httptest.NewRequest("PUT", fmt.Sprintf("/api/admin/training/card/%d", trainingCardID), strings.NewReader("pos="))
 	req2.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	ctx2 := context.WithValue(req2.Context(), userIDKey, adminUser.ID)
 	req2 = req2.WithContext(ctx2)
@@ -1091,7 +1091,7 @@ func TestHandleAdminTraining_Delete(t *testing.T) {
 	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
 	router.authMiddleware = authMiddleware
 
-	req := httptest.NewRequest("POST", "/app/admin/training/deleteword/delete", strings.NewReader("word=deleteword"))
+	req := httptest.NewRequest("POST", "/api/admin/training/deleteword/delete", strings.NewReader("word=deleteword"))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
 	req = req.WithContext(ctx)
@@ -1166,7 +1166,7 @@ func TestHandleAdminTraining_DeleteAll(t *testing.T) {
 	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
 	router.authMiddleware = authMiddleware
 
-	req := httptest.NewRequest("POST", "/app/admin/training/delete_all", nil)
+	req := httptest.NewRequest("POST", "/api/admin/training/delete_all", nil)
 	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
 	req = req.WithContext(ctx)
 	w := httptest.NewRecorder()
@@ -1227,7 +1227,7 @@ func TestHandleAdminWord_Reset(t *testing.T) {
 	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
 	router.authMiddleware = authMiddleware
 
-	req := httptest.NewRequest("POST", fmt.Sprintf("/app/admin/words/%d/reset", wordCard.ID), nil)
+	req := httptest.NewRequest("POST", fmt.Sprintf("/api/admin/words/%d/reset", wordCard.ID), nil)
 	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
 	req = req.WithContext(ctx)
 	w := httptest.NewRecorder()

@@ -168,7 +168,7 @@ func TestHandleVocabDelete_ConfirmDelete(t *testing.T) {
 	router.authMiddleware = authMiddleware
 
 	// Create request for confirm_delete
-	req := httptest.NewRequest("GET", "/app/vocab/deleteword/confirm_delete", nil)
+	req := httptest.NewRequest("GET", "/api/vocab/deleteword/confirm_delete", nil)
 	ctx := context.WithValue(req.Context(), userIDKey, user.ID)
 	req = req.WithContext(ctx)
 	w := httptest.NewRecorder()
@@ -221,7 +221,7 @@ func TestHandleVocabDelete_WordNotFound(t *testing.T) {
 	router.authMiddleware = authMiddleware
 
 	// Create request for non-existent word
-	req := httptest.NewRequest("GET", "/app/vocab/nonexistent/confirm_delete", nil)
+	req := httptest.NewRequest("GET", "/api/vocab/nonexistent/confirm_delete", nil)
 	ctx := context.WithValue(req.Context(), userIDKey, user.ID)
 	req = req.WithContext(ctx)
 	w := httptest.NewRecorder()
@@ -255,7 +255,7 @@ func TestHandleVocabDelete_Unauthorized(t *testing.T) {
 	router.authMiddleware = authMiddleware
 
 	// Create request without user context
-	req := httptest.NewRequest("GET", "/app/vocab/testword/confirm_delete", nil)
+	req := httptest.NewRequest("GET", "/api/vocab/testword/confirm_delete", nil)
 	w := httptest.NewRecorder()
 
 	// Call handler
@@ -293,7 +293,7 @@ func TestHandleVocabDelete_InvalidPath(t *testing.T) {
 	router.authMiddleware = authMiddleware
 
 	// Create request with empty word
-	req := httptest.NewRequest("GET", "/app/vocab/", nil)
+	req := httptest.NewRequest("GET", "/api/vocab/", nil)
 	ctx := context.WithValue(req.Context(), userIDKey, user.ID)
 	req = req.WithContext(ctx)
 	w := httptest.NewRecorder()

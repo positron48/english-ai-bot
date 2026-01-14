@@ -701,7 +701,7 @@ onMounted(async () => {
 
 const loadUsers = async () => {
   try {
-    const data: { users: User[] } = await apiClient.request('/app/admin/users')
+    const data: { users: User[] } = await apiClient.request('/api/admin/users')
     users.value = data.users
   } catch (error) {
     console.error('Failed to load users:', error)
@@ -742,7 +742,7 @@ const loadWords = async () => {
       }
     }
 
-    const data: { words: WordCard[]; pagination: { page: number; limit: number; total: number; total_pages: number } } = await apiClient.request(`/app/admin/words?${params.toString()}`)
+    const data: { words: WordCard[]; pagination: { page: number; limit: number; total: number; total_pages: number } } = await apiClient.request(`/api/admin/words?${params.toString()}`)
     words.value = (data.words || []).map(w => ({ 
       ...w, 
       editing: false, 
@@ -812,7 +812,7 @@ const toggleWordCards = async (word: WordCard) => {
     word.showingCards = true
     word.cardsLoading = true
     try {
-      const data: { word_en: string; cards: TrainingCard[] } = await apiClient.request(`/app/admin/training/${word.Word}`)
+      const data: { word_en: string; cards: TrainingCard[] } = await apiClient.request(`/api/admin/training/${word.Word}`)
       word.cards = data.cards || []
     } catch (error) {
       console.error('Failed to load training cards:', error)
@@ -893,7 +893,7 @@ const reloadWordCards = async (word: WordCard) => {
   
   word.cardsLoading = true
   try {
-    const data: { word_en: string; cards: TrainingCard[] } = await apiClient.request(`/app/admin/training/${word.Word}`)
+    const data: { word_en: string; cards: TrainingCard[] } = await apiClient.request(`/api/admin/training/${word.Word}`)
     word.cards = data.cards || []
   } catch (error) {
     console.error('Failed to reload training cards:', error)
@@ -921,7 +921,7 @@ const saveTrainingCard = async () => {
     params.append('distractors_en', distractorsEN)
     params.append('hint', editCardForm.value.hint || '')
     
-    await apiClient.request(`/app/admin/training/card/${cardToEdit.value.id}`, { 
+    await apiClient.request(`/api/admin/training/card/${cardToEdit.value.id}`, { 
       method: 'PUT',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: params.toString()
@@ -947,7 +947,7 @@ const deleteTrainingCard = async () => {
   if (!cardToDelete.value) return
   
   try {
-    await apiClient.request(`/app/admin/training/card/${cardToDelete.value.card.id}`, { method: 'DELETE' })
+    await apiClient.request(`/api/admin/training/card/${cardToDelete.value.card.id}`, { method: 'DELETE' })
     showDeleteCardConfirm.value = false
     
     const word = cardToDelete.value.word
@@ -1017,7 +1017,7 @@ const doGenerateCard = async () => {
   
   generatingCard.value = true
   try {
-    const response: any = await apiClient.request(`/app/admin/training/${wordToGenerateCard.value.Word}/generate`, {
+    const response: any = await apiClient.request(`/api/admin/training/${wordToGenerateCard.value.Word}/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -1113,7 +1113,7 @@ const saveNewTrainingCard = async () => {
       params.append('display_word', createCardForm.value.display_word)
     }
     
-    await apiClient.request(`/app/admin/training/${wordToCreateCard.value.Word}`, { 
+    await apiClient.request(`/api/admin/training/${wordToCreateCard.value.Word}`, { 
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: params.toString()
@@ -1173,7 +1173,7 @@ const saveWord = async () => {
   if (!wordToEdit.value) return
 
   try {
-    await apiClient.request(`/app/admin/words/${wordToEdit.value.ID}`, {
+    await apiClient.request(`/api/admin/words/${wordToEdit.value.ID}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(editWordForm.value)
@@ -1215,7 +1215,7 @@ const confirmResetError = async () => {
   if (!targetWord) return
 
   try {
-    await apiClient.request(`/app/admin/words/${targetWord.ID}/reset`, { method: 'POST' })
+    await apiClient.request(`/api/admin/words/${targetWord.ID}/reset`, { method: 'POST' })
     targetWord.ProcessingError = null
     targetWord.ProcessedAt = null
     closeResetErrorConfirm()
@@ -1234,7 +1234,7 @@ const deleteWord = async (word: WordCard) => {
   }
 
   try {
-    await apiClient.request(`/app/admin/words/${word.ID}`, { method: 'DELETE' })
+    await apiClient.request(`/api/admin/words/${word.ID}`, { method: 'DELETE' })
     // Remove word from list
     const index = words.value.findIndex(w => w.ID === word.ID)
     if (index !== -1) {

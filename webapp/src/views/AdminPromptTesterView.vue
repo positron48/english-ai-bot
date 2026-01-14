@@ -668,7 +668,7 @@ async function clearResults() {
 
 async function loadDefaultPrompts() {
   try {
-    const data: any = await apiClient.request('/app/admin/prompt-tester/default-prompts')
+    const data: any = await apiClient.request('/api/admin/prompt-tester/default-prompts')
     wordPromptDefault.value = data.word_prompt || ''
     trainingPromptDefault.value = data.training_prompt || ''
     wordPromptSource.value = data.word_prompt_source || ''
@@ -691,7 +691,7 @@ async function loadDefaultPrompts() {
 
 async function resetWordPrompt() {
   try {
-    const data: any = await apiClient.request('/app/admin/prompt-tester/default-prompts')
+    const data: any = await apiClient.request('/api/admin/prompt-tester/default-prompts')
     wordPromptDefault.value = data.word_prompt || ''
     wordPromptSource.value = data.word_prompt_source || ''
     wordPromptCurrent.value = wordPromptDefault.value
@@ -704,7 +704,7 @@ async function resetWordPrompt() {
 
 async function resetTrainingPrompt() {
   try {
-    const data: any = await apiClient.request('/app/admin/prompt-tester/default-prompts')
+    const data: any = await apiClient.request('/api/admin/prompt-tester/default-prompts')
     trainingPromptDefault.value = data.training_prompt || ''
     trainingPromptSource.value = data.training_prompt_source || ''
     trainingPromptCurrent.value = trainingPromptDefault.value
@@ -739,7 +739,7 @@ async function runTests() {
       throw new Error('Not authenticated')
     }
 
-    const response = await fetch('/app/admin/prompt-tester/run', {
+    const response = await fetch('/api/admin/prompt-tester/run', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

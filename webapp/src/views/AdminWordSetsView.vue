@@ -411,7 +411,7 @@ const loadCategories = async () => {
   categoriesLoading.value = true
   categoriesError.value = null
   try {
-    const data: any = await apiClient.request('/app/admin/word-set-categories')
+    const data: any = await apiClient.request('/api/admin/word-set-categories')
     // Handle both snake_case and PascalCase field names
     categories.value = (data.categories || []).map((cat: any) => ({
       id: cat.id || cat.ID,
@@ -437,7 +437,7 @@ const loadWordSets = async () => {
       params.append('category_id', selectedCategory.value.toString())
     }
     
-    const data: { word_sets: WordSet[] } = await apiClient.request(`/app/admin/word-sets?${params.toString()}`)
+    const data: { word_sets: WordSet[] } = await apiClient.request(`/api/admin/word-sets?${params.toString()}`)
     wordSets.value = data.word_sets || []
   } catch (error: any) {
     console.error('Failed to load word sets:', error)
@@ -484,8 +484,8 @@ const closeCategoryModal = () => {
 const saveCategory = async () => {
   try {
     const url = editingCategory.value
-      ? `/app/admin/word-set-categories/${editingCategory.value.id}`
-      : '/app/admin/word-set-categories'
+      ? `/api/admin/word-set-categories/${editingCategory.value.id}`
+      : '/api/admin/word-set-categories'
     
     const method = editingCategory.value ? 'PUT' : 'POST'
     
@@ -518,7 +518,7 @@ const deleteCategory = async () => {
   if (!categoryToDelete.value) return
   
   try {
-    await apiClient.request(`/app/admin/word-set-categories/${categoryToDelete.value.id}`, {
+    await apiClient.request(`/api/admin/word-set-categories/${categoryToDelete.value.id}`, {
       method: 'DELETE'
     })
     
@@ -560,7 +560,7 @@ const startEditWordSet = async (wordSet: WordSet) => {
   
   // Load words for editing (same as in viewWordSet)
   try {
-    const data: any = await apiClient.request(`/app/admin/word-sets/${wordSet.id}`)
+    const data: any = await apiClient.request(`/api/admin/word-sets/${wordSet.id}`)
     const words = data.words || []
     wordSetForm.value.words = Array.isArray(words) && words.length > 0 
       ? words.map((w: any) => w.word).join(', ')
@@ -584,8 +584,8 @@ const saveWordSet = async () => {
   wordSetLoading.value = true
   try {
     const url = editingWordSet.value
-      ? `/app/admin/word-sets/${editingWordSet.value.id}`
-      : '/app/admin/word-sets'
+      ? `/api/admin/word-sets/${editingWordSet.value.id}`
+      : '/api/admin/word-sets'
     
     const method = editingWordSet.value ? 'PUT' : 'POST'
     
@@ -607,7 +607,7 @@ const saveWordSet = async () => {
     // If words were provided, save them
     if (words && words.trim()) {
       if (wordSetId) {
-        await apiClient.request(`/app/admin/word-sets/${wordSetId}/items`, {
+        await apiClient.request(`/api/admin/word-sets/${wordSetId}/items`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ words: words.trim() })
@@ -627,7 +627,7 @@ const saveWordSet = async () => {
 
 const viewWordSet = async (wordSet: WordSet) => {
   try {
-    const data: any = await apiClient.request(`/app/admin/word-sets/${wordSet.id}`)
+    const data: any = await apiClient.request(`/api/admin/word-sets/${wordSet.id}`)
     
     editingWordSet.value = data.word_set
     // Handle both null and empty array cases
@@ -653,7 +653,7 @@ const saveWordSetItems = async () => {
   
   itemsLoading.value = true
   try {
-    await apiClient.request(`/app/admin/word-sets/${editingWordSet.value.id}/items`, {
+    await apiClient.request(`/api/admin/word-sets/${editingWordSet.value.id}/items`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ words: itemsForm.value.words })
@@ -683,7 +683,7 @@ const deleteWordSet = async () => {
   if (!wordSetToDelete.value) return
   
   try {
-    await apiClient.request(`/app/admin/word-sets/${wordSetToDelete.value.id}`, {
+    await apiClient.request(`/api/admin/word-sets/${wordSetToDelete.value.id}`, {
       method: 'DELETE'
     })
     

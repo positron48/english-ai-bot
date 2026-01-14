@@ -24,7 +24,7 @@ import (
 // @Success      200  {object}  map[string]interface{}  "Дефолтные промпты"
 // @Failure      401  {string}  string  "Неавторизован"
 // @Failure      403  {string}  string  "Доступ запрещен"
-// @Router       /app/admin/prompt-tester/default-prompts [get]
+// @Router       /api/admin/prompt-tester/default-prompts [get]
 func (r *Router) handleAdminPromptTesterDefaultPrompts(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -116,7 +116,7 @@ type PromptTesterEvent struct {
 // @Failure      400  {string}  string  "Неверный запрос"
 // @Failure      401  {string}  string  "Неавторизован"
 // @Failure      403  {string}  string  "Доступ запрещен"
-// @Router       /app/admin/prompt-tester/run [post]
+// @Router       /api/admin/prompt-tester/run [post]
 func (r *Router) handleAdminPromptTesterRun(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)

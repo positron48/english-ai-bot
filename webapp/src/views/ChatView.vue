@@ -114,7 +114,7 @@ const sendMessage = async () => {
     const formData = new FormData()
     formData.append('message', userMessage)
     
-    const data: { response: string } = await apiClient.requestFormData('/app/chat', formData)
+    const data: { response: string } = await apiClient.requestFormData('/api/chat', formData)
     messages.value.push({ role: 'assistant', content: data.response })
   } catch (error) {
     console.error('Failed to send message:', error)

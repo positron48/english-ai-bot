@@ -1,8 +1,8 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import { useAuth } from '../composables/useAuth'
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory('/app'),
   routes: [
     {
       path: '/',
@@ -114,9 +114,7 @@ const router = createRouter({
   ]
 })
 
-router.beforeEach((to, _from, next) => {
-  const { isAuthenticated, isAdmin } = useAuth()
-  
+router.beforeEach(async (to, _from, next) => {
   // Clean path if it contains tgWebAppData (shouldn't happen, but just in case)
   let cleanPath = to.path
   if (cleanPath.includes('tgWebAppData')) {
@@ -127,6 +125,18 @@ router.beforeEach((to, _from, next) => {
   if (cleanPath !== to.path) {
     next(cleanPath)
     return
+  }
+  
+  // Get auth state - this will check tokens from localStorage
+  const { isAuthenticated, isAdmin, checkAdmin, checkAuth } = useAuth()
+  
+  // Ensure auth state is up to date (especially important on direct URL access)
+  // Reload tokens from localStorage and update auth state
+  checkAuth()
+  
+  // For admin routes, also check admin status
+  if (to.meta.requiresAdmin) {
+    await checkAdmin()
   }
   
   if (to.meta.requiresAuth && !isAuthenticated.value) {

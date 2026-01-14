@@ -59,7 +59,7 @@ type VocabWord struct {
 // @Failure      401  {string}  string  "Неавторизован"
 // @Failure      405  {string}  string  "Метод не разрешен"
 // @Failure      500  {string}  string  "Внутренняя ошибка сервера"
-// @Router       /app/vocab [get]
+// @Router       /api/vocab [get]
 func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -124,14 +124,11 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 	// Include both words with user_cards and words marked as "known"
 	// Display word: prefer training_cards.display_word, fallback word_cards.display_en, fallback word_cards.word
 	// Use UNION ALL to combine words from user_cards and known words without user_cards
+	// Optimized: using JOINs instead of subqueries for better performance
 	queryFromCards := `SELECT 
 		tc.word_card_id,
 		wc.word as lemma,
-		COALESCE(
-			(SELECT display_word FROM training_cards tc2 WHERE tc2.word_card_id = tc.word_card_id AND tc2.display_word IS NOT NULL AND tc2.display_word != '' LIMIT 1),
-			wc.display_en,
-			wc.word
-		) as display_word,
+		COALESCE(tc_display.display_word, wc.display_en, wc.word) as display_word,
 		COUNT(DISTINCT uc.id) as total_cards,
 		SUM(CASE WHEN uc.next_due_at IS NULL OR uc.next_due_at <= ? THEN 1 ELSE 0 END) as due_count,
 		substr(MAX(uc.last_review_at), 1, 19) as last_review,
@@ -140,24 +137,36 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 		COUNT(CASE WHEN uc.state = 'review' THEN 1 END) as review_state_count,
 		COUNT(CASE WHEN uc.state = 'learning' THEN 1 END) as learning_state_count,
 		COUNT(CASE WHEN uc.state = 'new' THEN 1 END) as new_state_count,
-		(SELECT COUNT(*) FROM review_events re 
-		 JOIN user_cards uc2 ON re.user_card_id = uc2.id 
-		 JOIN training_cards tc2 ON uc2.training_card_id = tc2.id 
-		 WHERE tc2.word_card_id = tc.word_card_id AND uc2.user_id = ?) as review_count,
-		CASE WHEN EXISTS (SELECT 1 FROM user_word_knowledge uwk WHERE uwk.user_id = ? AND uwk.word_card_id = tc.word_card_id AND uwk.status = 'known') THEN 1 ELSE 0 END as is_known
+		COALESCE(review_stats.review_count, 0) as review_count,
+		CASE WHEN uwk_known.word_card_id IS NOT NULL THEN 1 ELSE 0 END as is_known
 	FROM user_cards uc
 	JOIN training_cards tc ON uc.training_card_id = tc.id
 	JOIN word_cards wc ON tc.word_card_id = wc.id
+	LEFT JOIN (
+		SELECT tc1.word_card_id, tc1.display_word
+		FROM training_cards tc1
+		INNER JOIN (
+			SELECT word_card_id, MIN(id) as min_id
+			FROM training_cards
+			WHERE display_word IS NOT NULL AND display_word != ''
+			GROUP BY word_card_id
+		) tc_min ON tc1.word_card_id = tc_min.word_card_id AND tc1.id = tc_min.min_id
+	) tc_display ON tc_display.word_card_id = tc.word_card_id
+	LEFT JOIN (
+		SELECT tc2.word_card_id, COUNT(*) as review_count
+		FROM review_events re
+		JOIN user_cards uc2 ON re.user_card_id = uc2.id
+		JOIN training_cards tc2 ON uc2.training_card_id = tc2.id
+		WHERE uc2.user_id = ?
+		GROUP BY tc2.word_card_id
+	) review_stats ON review_stats.word_card_id = tc.word_card_id
+	LEFT JOIN user_word_knowledge uwk_known ON uwk_known.user_id = ? AND uwk_known.word_card_id = tc.word_card_id AND uwk_known.status = 'known'
 	WHERE uc.user_id = ?`
 
 	queryFromKnown := `SELECT 
 		uwk.word_card_id,
 		wc.word as lemma,
-		COALESCE(
-			(SELECT display_word FROM training_cards tc2 WHERE tc2.word_card_id = uwk.word_card_id AND tc2.display_word IS NOT NULL AND tc2.display_word != '' LIMIT 1),
-			wc.display_en,
-			wc.word
-		) as display_word,
+		COALESCE(tc_display.display_word, wc.display_en, wc.word) as display_word,
 		0 as total_cards,
 		0 as due_count,
 		NULL as last_review,
@@ -170,12 +179,24 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 		1 as is_known
 	FROM user_word_knowledge uwk
 	JOIN word_cards wc ON uwk.word_card_id = wc.id
+	LEFT JOIN (
+		SELECT tc1.word_card_id, tc1.display_word
+		FROM training_cards tc1
+		INNER JOIN (
+			SELECT word_card_id, MIN(id) as min_id
+			FROM training_cards
+			WHERE display_word IS NOT NULL AND display_word != ''
+			GROUP BY word_card_id
+		) tc_min ON tc1.word_card_id = tc_min.word_card_id AND tc1.id = tc_min.min_id
+	) tc_display ON tc_display.word_card_id = uwk.word_card_id
+	LEFT JOIN (
+		SELECT DISTINCT tc.word_card_id
+		FROM user_cards uc
+		JOIN training_cards tc ON uc.training_card_id = tc.id
+		WHERE uc.user_id = ?
+	) has_user_cards ON has_user_cards.word_card_id = uwk.word_card_id
 	WHERE uwk.user_id = ? AND uwk.status = 'known'
-	  AND NOT EXISTS (
-	    SELECT 1 FROM user_cards uc
-	    JOIN training_cards tc ON uc.training_card_id = tc.id
-	    WHERE uc.user_id = ? AND tc.word_card_id = uwk.word_card_id
-	  )`
+	  AND has_user_cards.word_card_id IS NULL`
 
 	args := []interface{}{now, userID, userID, userID}
 	argsKnown := []interface{}{userID, userID}
@@ -184,10 +205,10 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 		// Search by lemma, display_word, or word_ru (case-insensitive)
 		searchLower := strings.ToLower(search)
 		searchPattern := "%" + searchLower + "%"
-		queryFromCards += " AND (LOWER(wc.word) LIKE ? OR LOWER(COALESCE((SELECT display_word FROM training_cards tc2 WHERE tc2.word_card_id = tc.word_card_id AND tc2.display_word IS NOT NULL AND tc2.display_word != '' LIMIT 1), wc.display_en, wc.word)) LIKE ? OR LOWER(tc.word_ru) LIKE ?)"
+		queryFromCards += " AND (LOWER(wc.word) LIKE ? OR LOWER(COALESCE(tc_display.display_word, wc.display_en, wc.word)) LIKE ? OR LOWER(tc.word_ru) LIKE ?)"
 		args = append(args, searchPattern, searchPattern, searchPattern)
 		
-		queryFromKnown += " AND (LOWER(wc.word) LIKE ? OR LOWER(COALESCE((SELECT display_word FROM training_cards tc2 WHERE tc2.word_card_id = uwk.word_card_id AND tc2.display_word IS NOT NULL AND tc2.display_word != '' LIMIT 1), wc.display_en, wc.word)) LIKE ?)"
+		queryFromKnown += " AND (LOWER(wc.word) LIKE ? OR LOWER(COALESCE(tc_display.display_word, wc.display_en, wc.word)) LIKE ?)"
 		argsKnown = append(argsKnown, searchPattern, searchPattern)
 	}
 
@@ -374,7 +395,7 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 
 // handleVocabDelete handles vocabulary deletion (confirm and delete)
 // @Summary      Удалить слово из словаря
-// @Description  Подтверждение удаления (GET) или удаление слова (POST) из словаря пользователя. Путь: /app/vocab/{word}/confirm_delete или /app/vocab/{word}/delete
+// @Description  Подтверждение удаления (GET) или удаление слова (POST) из словаря пользователя. Путь: /api/vocab/{word}/confirm_delete или /api/vocab/{word}/delete
 // @Tags         Vocab
 // @Accept       json
 // @Produce      application/json
@@ -386,7 +407,7 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 // @Failure      401  {string}  string  "Неавторизован"
 // @Failure      404  {object}  map[string]interface{}  "Слово не найдено"
 // @Failure      500  {string}  string  "Внутренняя ошибка сервера"
-// @Router       /app/vocab/{word} [get]
+// @Router       /api/vocab/{word} [get]
 func (r *Router) handleVocabDelete(w http.ResponseWriter, req *http.Request) {
 	userID := getUserIDFromContext(req.Context())
 	if userID == 0 {
@@ -396,7 +417,7 @@ func (r *Router) handleVocabDelete(w http.ResponseWriter, req *http.Request) {
 
 	// Extract lemma from URL path: /app/vocab/{lemma}/confirm_delete or /app/vocab/{lemma}/delete
 	path := req.URL.Path
-	parts := strings.Split(strings.TrimPrefix(path, "/app/vocab/"), "/")
+	parts := strings.Split(strings.TrimPrefix(path, "/api/vocab/"), "/")
 	if len(parts) < 1 {
 		http.Error(w, "Invalid path", http.StatusBadRequest)
 		return
@@ -409,7 +430,7 @@ func (r *Router) handleVocabDelete(w http.ResponseWriter, req *http.Request) {
 	}
 
 	if lemma == "" {
-		// Invalid path, redirect to vocab list
+		// Invalid path, redirect to vocab list (frontend route)
 		http.Redirect(w, req, "/app/vocab", http.StatusFound)
 		return
 	}
@@ -596,7 +617,7 @@ type VocabCardDetail struct {
 // @Failure      401  {string}  string  "Неавторизован"
 // @Failure      404  {string}  string  "Слово не найдено"
 // @Failure      500  {string}  string  "Внутренняя ошибка сервера"
-// @Router       /app/vocab/{word}/cards [get]
+// @Router       /api/vocab/{word}/cards [get]
 func (r *Router) handleVocabWordCards(w http.ResponseWriter, req *http.Request, userID int64, lemma string) {
 	// First, find word_card_id by lemma
 	var wordCardID int64

@@ -157,7 +157,7 @@ func TestHandleVocab_Basic(t *testing.T) {
 	router.authMiddleware = authMiddleware
 
 	// Create request with user context
-	req := httptest.NewRequest("GET", "/app/vocab", nil)
+	req := httptest.NewRequest("GET", "/api/vocab", nil)
 	ctx := context.WithValue(req.Context(), userIDKey, user.ID)
 	req = req.WithContext(ctx)
 	w := httptest.NewRecorder()
@@ -204,7 +204,7 @@ func TestHandleVocab_WrongMethod(t *testing.T) {
 	router.authMiddleware = authMiddleware
 
 	// Create POST request (should fail)
-	req := httptest.NewRequest("POST", "/app/vocab", nil)
+	req := httptest.NewRequest("POST", "/api/vocab", nil)
 	w := httptest.NewRecorder()
 
 	// Call handler
@@ -236,7 +236,7 @@ func TestHandleVocab_Unauthorized(t *testing.T) {
 	router.authMiddleware = authMiddleware
 
 	// Create request without user context
-	req := httptest.NewRequest("GET", "/app/vocab", nil)
+	req := httptest.NewRequest("GET", "/api/vocab", nil)
 	w := httptest.NewRecorder()
 
 	// Call handler
@@ -274,7 +274,7 @@ func TestHandleVocab_WithSearch(t *testing.T) {
 	router.authMiddleware = authMiddleware
 
 	// Create request with search parameter
-	req := httptest.NewRequest("GET", "/app/vocab?search=test", nil)
+	req := httptest.NewRequest("GET", "/api/vocab?search=test", nil)
 	ctx := context.WithValue(req.Context(), userIDKey, user.ID)
 	req = req.WithContext(ctx)
 	w := httptest.NewRecorder()
@@ -314,7 +314,7 @@ func TestHandleVocab_WithPagination(t *testing.T) {
 	router.authMiddleware = authMiddleware
 
 	// Create request with pagination
-	req := httptest.NewRequest("GET", "/app/vocab?page=2&limit=10", nil)
+	req := httptest.NewRequest("GET", "/api/vocab?page=2&limit=10", nil)
 	ctx := context.WithValue(req.Context(), userIDKey, user.ID)
 	req = req.WithContext(ctx)
 	w := httptest.NewRecorder()
@@ -413,7 +413,7 @@ func TestHandleVocab_GroupByLemma(t *testing.T) {
 	router.authMiddleware = authMiddleware
 
 	// Create request
-	req := httptest.NewRequest("GET", "/app/vocab", nil)
+	req := httptest.NewRequest("GET", "/api/vocab", nil)
 	ctx := context.WithValue(req.Context(), userIDKey, user.ID)
 	req = req.WithContext(ctx)
 	w := httptest.NewRecorder()
