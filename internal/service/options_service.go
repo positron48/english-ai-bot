@@ -28,10 +28,14 @@ func NewOptionsService(trainingCardRepo *repository.TrainingCardRepository, logg
 
 // GenerateOptions generates multiple choice options for a card
 // sessionWords: correct answers from other cards in the current session (to mix in as distractors)
+// sessionWordENs: set of WordEN values from all cards in the session (to exclude distractors with matching English spelling)
+// sessionWordRUs: set of WordRU values from all cards in the session (to exclude distractors with matching Russian spelling)
 func (s *OptionsService) GenerateOptions(
 	card *models.UserCardWithTraining,
 	optionCount int,
 	sessionWords []string,
+	sessionWordENs map[string]bool,
+	sessionWordRUs map[string]bool,
 ) ([]string, string, error) {
 	var correctAnswer string
 	var distractorsJSON string
@@ -84,13 +88,32 @@ func (s *OptionsService) GenerateOptions(
 		excludedSet[meaning] = true
 	}
 	
-	// Filter out other meanings of the same word and duplicates
+	// Filter out other meanings of the same word, duplicates, and distractors that match English or Russian spelling of session words
 	filteredDistractors := make([]string, 0, len(distractors))
 	seenDistractors := make(map[string]bool)
 	for _, d := range distractors {
 		if !excludedSet[d] && !seenDistractors[d] {
-			filteredDistractors = append(filteredDistractors, d)
-			seenDistractors[d] = true
+			// Check if this distractor matches English or Russian spelling of any word in the session
+			// For RU->EN direction, check if distractor (English word) matches WordEN of any session word
+			// For EN->RU direction, check if distractor (Russian word) matches WordRU of any session word
+			shouldExclude := false
+			if card.UserCard.Direction == models.DirectionRUtoEN {
+				// Remove "to " prefix for comparison if present
+				lookupWord := strings.TrimPrefix(d, "to ")
+				lookupWord = strings.TrimSpace(lookupWord)
+				if sessionWordENs[lookupWord] || sessionWordENs[d] {
+					shouldExclude = true
+				}
+			} else {
+				if sessionWordRUs[d] {
+					shouldExclude = true
+				}
+			}
+			
+			if !shouldExclude {
+				filteredDistractors = append(filteredDistractors, d)
+				seenDistractors[d] = true
+			}
 		}
 	}
 	distractors = filteredDistractors

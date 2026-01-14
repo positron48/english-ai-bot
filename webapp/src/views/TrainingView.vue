@@ -184,7 +184,16 @@
           <div v-if="feedback.hint" class="hint">{{ feedback.hint }}</div>
           <div v-if="feedback.example" class="example">{{ feedback.example }}</div>
           <div class="feedback-badge feedback-error">
-            <div v-if="waitingDelay" class="error-progress-wrapper">
+            <div 
+              v-if="waitingDelay" 
+              class="error-progress-wrapper"
+              @mousedown="handleTimerMouseDown"
+              @mouseup="handleTimerMouseUp"
+              @mouseleave="handleTimerMouseLeave"
+              @touchstart="handleTimerMouseDown"
+              @touchend="handleTimerMouseUp"
+              @touchcancel="handleTimerMouseLeave"
+            >
               <svg class="error-progress-ring" width="40" height="40">
                 <circle
                   class="error-progress-circle-bg"
@@ -226,7 +235,16 @@
         <div v-if="feedback.is_correct && feedback.example" class="example">{{ feedback.example }}</div>
         
         <!-- Circular progress for correct answers delay (if any) -->
-        <div v-if="waitingDelay && feedback.is_correct" class="waiting-progress">
+        <div 
+          v-if="waitingDelay && feedback.is_correct" 
+          class="waiting-progress"
+          @mousedown="handleTimerMouseDown"
+          @mouseup="handleTimerMouseUp"
+          @mouseleave="handleTimerMouseLeave"
+          @touchstart="handleTimerMouseDown"
+          @touchend="handleTimerMouseUp"
+          @touchcancel="handleTimerMouseLeave"
+        >
           <div class="circular-progress">
             <svg class="progress-ring" width="80" height="80">
               <circle
@@ -819,6 +837,13 @@ let autoRevealTimer: ReturnType<typeof setTimeout> | null = null
 let autoNextCardTimer: ReturnType<typeof setTimeout> | null = null
 const cardShownAt = ref<Date | null>(null)
 
+// Timer pause state
+const timerPaused = ref(false)
+let timerPauseStartTime: number | null = null
+let timerPausedRemainingMs: number | null = null
+let countdownAnimationFrameId: number | null = null
+let timerEndTime: number | null = null
+
 // Process question to wrap transcription in span if not already wrapped
 const processedQuestion = computed(() => {
   if (!currentCard.value?.question) return ''
@@ -1092,6 +1117,10 @@ const setupCard = (card: Card) => {
     clearTimeout(autoNextCardTimer)
     autoNextCardTimer = null
   }
+  if (countdownAnimationFrameId) {
+    cancelAnimationFrame(countdownAnimationFrameId)
+    countdownAnimationFrameId = null
+  }
 
   currentCard.value = card
   cardIndex.value = card.card_index
@@ -1105,6 +1134,10 @@ const setupCard = (card: Card) => {
   initialDelaySeconds.value = 0
   remainingMs.value = 0
   initialDelayMs.value = 0
+  timerPaused.value = false
+  timerPauseStartTime = null
+  timerPausedRemainingMs = null
+  timerEndTime = null
   cardShownAt.value = new Date()
 
   // Schedule automatic options reveal
@@ -1263,41 +1296,61 @@ const submitAnswer = async (optionIndex: number) => {
       remainingMs.value = delayMs
       waitingDelay.value = true
       
+      // Reset pause state
+      timerPaused.value = false
+      timerPauseStartTime = null
+      timerPausedRemainingMs = null
+      
       const startTime = Date.now()
-      const endTime = startTime + delayMs
+      timerEndTime = startTime + delayMs
       
       // Update countdown with precise timing using requestAnimationFrame
-      let animationFrameId: number
       const updateCountdown = () => {
+        if (!timerEndTime) {
+          return
+        }
+        
+        if (timerPaused.value) {
+          // Timer is paused, don't update but keep the loop running
+          countdownAnimationFrameId = requestAnimationFrame(updateCountdown)
+          return
+        }
+        
         const now = Date.now()
-        const currentRemainingMs = Math.max(0, endTime - now)
+        const currentRemainingMs = Math.max(0, timerEndTime! - now)
         const currentRemainingSeconds = Math.ceil(currentRemainingMs / 1000)
         
         remainingMs.value = currentRemainingMs
         delaySeconds.value = currentRemainingSeconds
         
         if (currentRemainingMs > 0) {
-          animationFrameId = requestAnimationFrame(updateCountdown)
+          countdownAnimationFrameId = requestAnimationFrame(updateCountdown)
         } else {
           delaySeconds.value = 0
           remainingMs.value = 0
           waitingDelay.value = false
           initialDelaySeconds.value = 0
           initialDelayMs.value = 0
-          if (animationFrameId) {
-            cancelAnimationFrame(animationFrameId)
+          timerPaused.value = false
+          timerPauseStartTime = null
+          timerPausedRemainingMs = null
+          timerEndTime = null
+          if (countdownAnimationFrameId) {
+            cancelAnimationFrame(countdownAnimationFrameId)
+            countdownAnimationFrameId = null
           }
           nextCard()
         }
       }
       
       // Start updating immediately
-      animationFrameId = requestAnimationFrame(updateCountdown)
+      countdownAnimationFrameId = requestAnimationFrame(updateCountdown)
       
       // Schedule automatic next card as backup
       autoNextCardTimer = setTimeout(() => {
-        if (animationFrameId) {
-          cancelAnimationFrame(animationFrameId)
+        if (countdownAnimationFrameId) {
+          cancelAnimationFrame(countdownAnimationFrameId)
+          countdownAnimationFrameId = null
         }
         if (waitingDelay.value) {
           waitingDelay.value = false
@@ -1305,6 +1358,10 @@ const submitAnswer = async (optionIndex: number) => {
           initialDelayMs.value = 0
           delaySeconds.value = 0
           remainingMs.value = 0
+          timerPaused.value = false
+          timerPauseStartTime = null
+          timerPausedRemainingMs = null
+          timerEndTime = null
         }
         nextCard()
       }, delayMs)
@@ -1336,6 +1393,10 @@ const nextCard = async () => {
     clearTimeout(autoNextCardTimer)
     autoNextCardTimer = null
   }
+  if (countdownAnimationFrameId) {
+    cancelAnimationFrame(countdownAnimationFrameId)
+    countdownAnimationFrameId = null
+  }
 
   feedback.value = null
   optionsShown.value = false
@@ -1347,6 +1408,9 @@ const nextCard = async () => {
   initialDelayMs.value = 0
   initialDelaySeconds.value = 0
   cardShownAt.value = null
+  timerPaused.value = false
+  timerPauseStartTime = null
+  timerPausedRemainingMs = null
 
   try {
     const response = await apiClient.request('/app/training/current')
@@ -1433,6 +1497,10 @@ const resetSession = async () => {
     clearTimeout(autoNextCardTimer)
     autoNextCardTimer = null
   }
+  if (countdownAnimationFrameId) {
+    cancelAnimationFrame(countdownAnimationFrameId)
+    countdownAnimationFrameId = null
+  }
 
   sessionActive.value = false
   currentCard.value = null
@@ -1451,10 +1519,55 @@ const resetSession = async () => {
     correctCards: 0
   }
   cardShownAt.value = null
+  timerPaused.value = false
+  timerPauseStartTime = null
+  timerPausedRemainingMs = null
+  timerEndTime = null
   
   // Refresh stats and upcoming cards
   await loadStats()
   await loadUpcomingCards()
+}
+
+// Timer pause/resume handlers
+const pauseTimer = () => {
+  if (!waitingDelay.value || timerPaused.value || !timerEndTime) return
+  
+  timerPaused.value = true
+  timerPauseStartTime = Date.now()
+  timerPausedRemainingMs = remainingMs.value
+}
+
+const resumeTimer = () => {
+  if (!waitingDelay.value || !timerPaused.value || timerPauseStartTime === null || timerPausedRemainingMs === null || !timerEndTime) return
+  
+  // Calculate how long the timer was paused
+  const pauseDuration = Date.now() - timerPauseStartTime
+  
+  // Adjust the end time by adding the pause duration
+  timerEndTime = timerEndTime + pauseDuration
+  
+  timerPaused.value = false
+  timerPauseStartTime = null
+  timerPausedRemainingMs = null
+}
+
+// Handle mouse/touch events for timer pause
+const handleTimerMouseDown = (event: MouseEvent | TouchEvent) => {
+  event.preventDefault()
+  pauseTimer()
+}
+
+const handleTimerMouseUp = (event: MouseEvent | TouchEvent) => {
+  event.preventDefault()
+  resumeTimer()
+}
+
+const handleTimerMouseLeave = () => {
+  // Resume if mouse leaves while button might be pressed
+  if (timerPaused.value) {
+    resumeTimer()
+  }
 }
 </script>
 
@@ -1894,6 +2007,11 @@ const resetSession = async () => {
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 .error-progress-ring {
@@ -1953,6 +2071,11 @@ const resetSession = async () => {
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 .circular-progress {

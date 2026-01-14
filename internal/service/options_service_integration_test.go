@@ -99,7 +99,7 @@ func TestOptionsService_GenerateOptions_Integration(t *testing.T) {
 		},
 	}
 
-	options, correctAnswer, err := service.GenerateOptions(userCard, 4, []string{})
+	options, correctAnswer, err := service.GenerateOptions(userCard, 4, []string{}, make(map[string]bool), make(map[string]bool))
 	if err != nil {
 		t.Fatalf("GenerateOptions() error = %v", err)
 	}
@@ -167,7 +167,7 @@ func TestOptionsService_GenerateOptions_UsesCardDistractors(t *testing.T) {
 	}
 
 	// Generate options without session words to ensure card distractors are used
-	options, correctAnswer, err := service.GenerateOptions(userCard, 4, []string{})
+	options, correctAnswer, err := service.GenerateOptions(userCard, 4, []string{}, make(map[string]bool), make(map[string]bool))
 	if err != nil {
 		t.Fatalf("GenerateOptions() error = %v", err)
 	}

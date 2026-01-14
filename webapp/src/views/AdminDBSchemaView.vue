@@ -1,8 +1,9 @@
 <template>
-  <div class="admin">
+  <div class="admin-layout">
     <AdminMenu />
     
-    <div class="db-schema-view">
+    <div class="admin-content">
+      <div class="db-schema-view">
       <div class="header">
         <h2>Database Schema</h2>
         <button @click="loadSchema" :disabled="loading" class="refresh-btn">
@@ -62,6 +63,7 @@
           </div>
         </div>
       </div>
+    </div>
     </div>
     </div>
   </div>
@@ -436,11 +438,41 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.admin {
+.admin-layout {
+  display: flex;
+  gap: 20px;
+  min-height: calc(100vh - 60px);
+  font-size: 16px;
+}
+
+.admin-content {
+  flex: 1;
   max-width: 100%;
   margin: 0 auto;
   padding: 10px;
-  font-size: 16px;
+  width: 100%;
+}
+
+@media (max-width: 767px) {
+  .admin-layout {
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  .admin-content {
+    padding: 10px;
+    margin-top: 60px;
+  }
+}
+
+@media (min-width: 768px) {
+  .admin-layout {
+    padding: 20px;
+  }
+  
+  .admin-content {
+    padding: 0;
+  }
 }
 
 .db-schema-view {

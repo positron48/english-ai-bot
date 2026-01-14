@@ -1,8 +1,9 @@
 <template>
-  <div class="admin-word-sets">
+  <div class="admin-layout">
     <AdminMenu />
     
-    <h2>Word Sets Management</h2>
+    <div class="admin-content">
+      <h2>Word Sets Management</h2>
     
     <div class="admin-tabs-inner">
       <button 
@@ -269,6 +270,7 @@
           <button @click="closeDeleteWordSetConfirm" class="btn btn-secondary">Cancel</button>
         </div>
       </div>
+    </div>
     </div>
   </div>
 </template>
@@ -700,13 +702,43 @@ const deleteWordSet = async () => {
 </script>
 
 <style scoped>
-.admin-word-sets {
+.admin-layout {
+  display: flex;
+  gap: 20px;
+  min-height: calc(100vh - 60px);
+  font-size: 16px;
+}
+
+.admin-content {
+  flex: 1;
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
-  overflow-x: hidden;
   width: 100%;
+  overflow-x: hidden;
   box-sizing: border-box;
+}
+
+@media (max-width: 767px) {
+  .admin-layout {
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  .admin-content {
+    padding: 10px;
+    margin-top: 60px;
+  }
+}
+
+@media (min-width: 768px) {
+  .admin-layout {
+    padding: 20px;
+  }
+  
+  .admin-content {
+    padding: 20px;
+  }
 }
 
 .admin-tabs-inner {

@@ -1,11 +1,12 @@
 <template>
-  <div class="admin">
+  <div class="admin-layout">
     <AdminMenu />
     
-    <div v-if="loading" class="loading">Loading...</div>
-    
-    <div v-else>
-      <div class="card">
+    <div class="admin-content">
+      <div v-if="loading" class="loading">Loading...</div>
+      
+      <div v-else>
+        <div class="card">
         <div class="circuit-breaker-header">
           <h2>Circuit Breaker</h2>
           <button v-if="circuitBreaker" @click="resetCircuitBreaker" class="btn btn-primary">Reset</button>
@@ -38,6 +39,7 @@
         </div>
         <p v-else>No circuit breaker data</p>
       </div>
+    </div>
     </div>
   </div>
 </template>
@@ -113,10 +115,41 @@ const formatDate = (dateStr: string | null | undefined) => {
 </script>
 
 <style scoped>
-.admin {
+.admin-layout {
+  display: flex;
+  gap: 20px;
+  min-height: calc(100vh - 60px);
+  font-size: 16px;
+}
+
+.admin-content {
+  flex: 1;
   max-width: 1200px;
   margin: 0 auto;
   padding: 10px;
+  width: 100%;
+}
+
+@media (max-width: 767px) {
+  .admin-layout {
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  .admin-content {
+    padding: 10px;
+    margin-top: 60px;
+  }
+}
+
+@media (min-width: 768px) {
+  .admin-layout {
+    padding: 20px;
+  }
+  
+  .admin-content {
+    padding: 0;
+  }
 }
 
 .admin h1 {

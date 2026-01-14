@@ -147,12 +147,27 @@ func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, stat
 	// Extract session words for distractors (filtered by POS)
 	sessionWords := r.extractSessionWords(state.Queue, state.CurrentIndex, card, state.RecentCorrectAnswers)
 	
+	// Extract WordEN and WordRU from all cards in session for distractor filtering
+	sessionWordENs := make(map[string]bool)
+	sessionWordRUs := make(map[string]bool)
+	for i, sessionCard := range state.Queue {
+		if i == state.CurrentIndex {
+			continue
+		}
+		if sessionCard.TrainingCard.WordEN != "" {
+			sessionWordENs[sessionCard.TrainingCard.WordEN] = true
+		}
+		if sessionCard.TrainingCard.WordRU != "" {
+			sessionWordRUs[sessionCard.TrainingCard.WordRU] = true
+		}
+	}
+	
 	// Update state
 	state.ShownAt = time.Now()
 	state.OptionsShownAt = nil
 	
 	// Generate options
-	options, correctAnswer, err := r.optionsService.GenerateOptions(card, models.DefaultOptionCount, sessionWords)
+	options, correctAnswer, err := r.optionsService.GenerateOptions(card, models.DefaultOptionCount, sessionWords, sessionWordENs, sessionWordRUs)
 	if err != nil {
 		r.logger.Error("failed to generate options", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -235,6 +250,16 @@ func (r *Router) extractSessionWords(queue []*models.UserCardWithTraining, curre
 			if card.TrainingCard.POS == nil || *card.TrainingCard.POS != currentPOS {
 				continue
 			}
+		}
+		
+		// Exclude words that have the same English or Russian spelling as the current card
+		// This prevents showing correct answers from other words with the same spelling
+		// (e.g., "bug" and "beetle" both mean "жук" in Russian)
+		if card.TrainingCard.WordEN == currentCard.TrainingCard.WordEN && currentCard.TrainingCard.WordEN != "" {
+			continue
+		}
+		if card.TrainingCard.WordRU == currentCard.TrainingCard.WordRU && currentCard.TrainingCard.WordRU != "" {
+			continue
 		}
 		
 		var word string

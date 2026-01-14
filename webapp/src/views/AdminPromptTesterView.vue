@@ -1,10 +1,11 @@
 <template>
-  <div class="prompt-tester">
+  <div class="admin-layout">
     <AdminMenu />
     
-    <h2>Prompt Tester</h2>
-    
-    <div class="card">
+    <div class="admin-content">
+      <h2>Prompt Tester</h2>
+      
+      <div class="card">
       <h2>Words</h2>
       <textarea
         v-model="wordsText"
@@ -224,6 +225,7 @@
           </div>
         </div>
       </div>
+    </div>
     </div>
   </div>
 </template>
@@ -1380,12 +1382,45 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.prompt-tester {
-  margin: 0 auto;
+.admin-layout {
+  display: flex;
+  gap: 20px;
+  min-height: calc(100vh - 60px);
+  font-size: 16px;
 }
 
-.prompt-tester h1 {
+.admin-content {
+  flex: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 10px;
+  width: 100%;
+}
+
+.admin-content h1 {
   margin-bottom: 24px;
+}
+
+@media (max-width: 767px) {
+  .admin-layout {
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  .admin-content {
+    padding: 10px;
+    margin-top: 60px;
+  }
+}
+
+@media (min-width: 768px) {
+  .admin-layout {
+    padding: 20px;
+  }
+  
+  .admin-content {
+    padding: 0;
+  }
 }
 
 .prompt-tester h2 {

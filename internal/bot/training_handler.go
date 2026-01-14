@@ -154,6 +154,21 @@ func (h *TrainingHandler) showCard(chatID int64) error {
 	// Exclude recent correct answers to avoid "freshness recognition"
 		sessionWords := h.extractSessionWords(state.Queue, state.CurrentIndex, card, state.RecentCorrectAnswers)
 	
+	// Extract WordEN and WordRU from all cards in session for distractor filtering
+	sessionWordENs := make(map[string]bool)
+	sessionWordRUs := make(map[string]bool)
+	for i, sessionCard := range state.Queue {
+		if i == state.CurrentIndex {
+			continue
+		}
+		if sessionCard.TrainingCard.WordEN != "" {
+			sessionWordENs[sessionCard.TrainingCard.WordEN] = true
+		}
+		if sessionCard.TrainingCard.WordRU != "" {
+			sessionWordRUs[sessionCard.TrainingCard.WordRU] = true
+		}
+	}
+	
 	// Update state
 	h.sessionsMutex.Lock()
 	state.ShownAt = time.Now()
@@ -161,7 +176,7 @@ func (h *TrainingHandler) showCard(chatID int64) error {
 	h.sessionsMutex.Unlock()
 
 	// Generate options
-	options, correctAnswer, err := h.optionsService.GenerateOptions(card, models.DefaultOptionCount, sessionWords)
+	options, correctAnswer, err := h.optionsService.GenerateOptions(card, models.DefaultOptionCount, sessionWords, sessionWordENs, sessionWordRUs)
 	if err != nil {
 		h.logger.Error("failed to generate options", zap.Error(err))
 		return h.skipCard(chatID, "Ошибка генерации вариантов")

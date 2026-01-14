@@ -1,8 +1,9 @@
 <template>
-  <div class="admin">
+  <div class="admin-layout">
     <AdminMenu />
     
-    <div class="card">
+    <div class="admin-content">
+      <div class="card">
       <h2>Words Management</h2>
       <div class="words-filters">
         <div class="search-box">
@@ -278,8 +279,8 @@
           >
             Next
           </button>
-        </div>
       </div>
+    </div>
 
       <!-- Edit Word Modal -->
       <div v-if="showEditWordModal && wordToEdit" class="modal">
@@ -567,6 +568,7 @@
         </div>
       </div>
     </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -1369,11 +1371,41 @@ const handleSort = (column: string) => {
 </script>
 
 <style scoped>
-.admin {
+.admin-layout {
+  display: flex;
+  gap: 20px;
+  min-height: calc(100vh - 60px);
+  font-size: 16px;
+}
+
+.admin-content {
+  flex: 1;
   max-width: 1200px;
   margin: 0 auto;
   padding: 10px;
-  font-size: 16px;
+  width: 100%;
+}
+
+@media (max-width: 767px) {
+  .admin-layout {
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  .admin-content {
+    padding: 10px;
+    margin-top: 60px; /* Space for mobile menu button */
+  }
+}
+
+@media (min-width: 768px) {
+  .admin-layout {
+    padding: 20px;
+  }
+  
+  .admin-content {
+    padding: 0;
+  }
 }
 
 .admin h1 {
