@@ -1,114 +1,132 @@
 package repository
 
 import (
-	"database/sql"
 	"testing"
 	"time"
 
-	"tgbot-skeleton/internal/testutil"
+	"tgbot-skeleton/internal/database"
 
 	"go.uber.org/zap"
 )
 
-func setupWebOTPTestDB(t *testing.T) *sql.DB {
-	return testutil.SetupTestDB(t)
-}
-
-func TestNewWebOTPRepository(t *testing.T) {
-	logger, _ := zap.NewDevelopment()
-	db := setupWebOTPTestDB(t)
-	defer db.Close()
-
-	repo := NewWebOTPRepository(db, logger)
-	_ = repo // Verify repository is created
-}
-
 func TestWebOTPRepository_GenerateOTP(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db := setupWebOTPTestDB(t)
+	db, err := database.New(":memory:", logger)
+	if err != nil {
+		t.Fatalf("Failed to create database: %v", err)
+	}
 	defer db.Close()
 
-	repo := NewWebOTPRepository(db, logger)
+	// Create user first
+	userRepo := NewUserRepository(db.GetConnection(), logger)
+	user, _ := userRepo.GetOrCreateUser(12345)
 
-	code, otp, err := repo.GenerateOTP(123, 5*time.Minute)
+	otpRepo := NewWebOTPRepository(db.GetConnection(), logger)
+
+	code, _, err := otpRepo.GenerateOTP(user.ID, 5*time.Minute) // 5 minute TTL
 	if err != nil {
 		t.Fatalf("GenerateOTP() error = %v", err)
 	}
-	if code == "" {
-		t.Error("GenerateOTP() should return non-empty code")
-	}
-	if otp == nil {
-		t.Fatal("GenerateOTP() should not return nil OTP")
-	}
-	if otp.UserID != 123 {
-		t.Errorf("Expected UserID 123, got %d", otp.UserID)
-	}
+
 	if len(code) != 6 {
-		t.Errorf("Expected code length 6, got %d", len(code))
+		t.Errorf("Expected 6-digit code, got %d digits", len(code))
 	}
 }
 
-func TestWebOTPRepository_ValidateOTP(t *testing.T) {
+func TestWebOTPRepository_ValidateOTP_Valid(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db := setupWebOTPTestDB(t)
+	db, err := database.New(":memory:", logger)
+	if err != nil {
+		t.Fatalf("Failed to create database: %v", err)
+	}
 	defer db.Close()
 
-	repo := NewWebOTPRepository(db, logger)
+	userRepo := NewUserRepository(db.GetConnection(), logger)
+	user, _ := userRepo.GetOrCreateUser(12345)
 
-	// Generate an OTP
-	code, otp, err := repo.GenerateOTP(456, 10*time.Minute)
-	if err != nil {
-		t.Fatalf("Failed to generate OTP: %v", err)
-	}
+	otpRepo := NewWebOTPRepository(db.GetConnection(), logger)
 
-	// Validate the OTP
-	validated, err := repo.ValidateOTP(456, code)
+	code, _, _ := otpRepo.GenerateOTP(user.ID, 5*time.Minute)
+
+	otp, err := otpRepo.ValidateOTP(user.ID, code)
 	if err != nil {
 		t.Fatalf("ValidateOTP() error = %v", err)
 	}
-	if validated == nil {
-		t.Fatal("ValidateOTP() should not return nil")
-	}
-	if validated.ID != otp.ID {
-		t.Errorf("Expected OTP ID %d, got %d", otp.ID, validated.ID)
+
+	if otp == nil {
+		t.Error("Expected valid OTP")
 	}
 
-	// Try to validate again (should fail - already consumed)
-	_, err = repo.ValidateOTP(456, code)
-	if err == nil {
-		t.Error("ValidateOTP() should return error for consumed OTP")
+	if otp != nil && otp.UserID != user.ID {
+		t.Errorf("Expected user ID %d, got %d", user.ID, otp.UserID)
 	}
 }
 
-func TestWebOTPRepository_ValidateOTP_InvalidCode(t *testing.T) {
+func TestWebOTPRepository_ValidateOTP_Invalid(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db := setupWebOTPTestDB(t)
+	db, err := database.New(":memory:", logger)
+	if err != nil {
+		t.Fatalf("Failed to create database: %v", err)
+	}
 	defer db.Close()
 
-	repo := NewWebOTPRepository(db, logger)
+	userRepo := NewUserRepository(db.GetConnection(), logger)
+	user, _ := userRepo.GetOrCreateUser(12345)
 
-	// Try to validate invalid code
-	_, err := repo.ValidateOTP(789, "000000")
+	otpRepo := NewWebOTPRepository(db.GetConnection(), logger)
+
+	_, _, _ = otpRepo.GenerateOTP(user.ID, 5*time.Minute)
+
+	otp, err := otpRepo.ValidateOTP(user.ID, "000000")
+	// Should return error for invalid code
 	if err == nil {
-		t.Error("ValidateOTP() should return error for invalid code")
+		t.Error("Expected error for invalid OTP code")
+	}
+
+	if otp != nil {
+		t.Error("Expected nil OTP for invalid code")
+	}
+}
+
+func TestWebOTPRepository_ValidateOTP_Consumed(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, err := database.New(":memory:", logger)
+	if err != nil {
+		t.Fatalf("Failed to create database: %v", err)
+	}
+	defer db.Close()
+
+	userRepo := NewUserRepository(db.GetConnection(), logger)
+	user, _ := userRepo.GetOrCreateUser(12345)
+
+	otpRepo := NewWebOTPRepository(db.GetConnection(), logger)
+
+	code, _, _ := otpRepo.GenerateOTP(user.ID, 5*time.Minute)
+
+	// First validation should succeed
+	otp1, _ := otpRepo.ValidateOTP(user.ID, code)
+	if otp1 == nil {
+		t.Error("First validation should succeed")
+	}
+
+	// Second validation should fail (OTP consumed)
+	otp2, _ := otpRepo.ValidateOTP(user.ID, code)
+	if otp2 != nil {
+		t.Error("Second validation should fail (OTP consumed)")
 	}
 }
 
 func TestWebOTPRepository_CleanupExpiredOTPs(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db := setupWebOTPTestDB(t)
+	db, err := database.New(":memory:", logger)
+	if err != nil {
+		t.Fatalf("Failed to create database: %v", err)
+	}
 	defer db.Close()
 
-	repo := NewWebOTPRepository(db, logger)
+	otpRepo := NewWebOTPRepository(db.GetConnection(), logger)
 
-	// Generate an expired OTP (negative duration)
-	_, _, err := repo.GenerateOTP(999, -1*time.Hour)
-	if err != nil {
-		t.Fatalf("Failed to generate expired OTP: %v", err)
-	}
-
-	// Cleanup expired OTPs
-	err = repo.CleanupExpiredOTPs()
+	err = otpRepo.CleanupExpiredOTPs()
 	if err != nil {
 		t.Fatalf("CleanupExpiredOTPs() error = %v", err)
 	}

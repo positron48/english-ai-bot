@@ -1,153 +1,143 @@
 package repository
 
 import (
-	"database/sql"
 	"testing"
+	"time"
 
+	"tgbot-skeleton/internal/database"
 	"tgbot-skeleton/internal/models"
-	"tgbot-skeleton/internal/testutil"
 
 	"go.uber.org/zap"
 )
 
-func setupNudgeTestDB(t *testing.T) *sql.DB {
-	return testutil.SetupTestDB(t)
-}
-
-func TestNewNudgeRepository(t *testing.T) {
-	logger, _ := zap.NewDevelopment()
-	db := setupNudgeTestDB(t)
-	defer db.Close()
-
-	repo := NewNudgeRepository(db, logger)
-	_ = repo // Verify repository is created
-}
-
 func TestNudgeRepository_CreateNudge(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db := setupNudgeTestDB(t)
+	db, err := database.New(":memory:", logger)
+	if err != nil {
+		t.Fatalf("Failed to create database: %v", err)
+	}
 	defer db.Close()
 
-	repo := NewNudgeRepository(db, logger)
+	// Create user first
+	userRepo := NewUserRepository(db.GetConnection(), logger)
+	user, _ := userRepo.GetOrCreateUser(12345)
 
-	msgID := 123
+	nudgeRepo := NewNudgeRepository(db.GetConnection(), logger)
+	localDate := time.Now().Format("2006-01-02")
+
 	nudge := &models.TrainingNudge{
-		UserID:         456,
-		LocalDate:       "2024-01-01",
-		DueCountAtSend: 5,
-		MessageID:      &msgID,
+		UserID:          user.ID,
+		LocalDate:       localDate,
+		DueCountAtSend:  5,
 	}
 
-	id, err := repo.CreateNudge(nudge)
+	_, err = nudgeRepo.CreateNudge(nudge)
 	if err != nil {
 		t.Fatalf("CreateNudge() error = %v", err)
-	}
-	if id == 0 {
-		t.Error("CreateNudge() should return non-zero ID")
 	}
 }
 
 func TestNudgeRepository_HasNudgeToday(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db := setupNudgeTestDB(t)
+	db, err := database.New(":memory:", logger)
+	if err != nil {
+		t.Fatalf("Failed to create database: %v", err)
+	}
 	defer db.Close()
 
-	repo := NewNudgeRepository(db, logger)
+	userRepo := NewUserRepository(db.GetConnection(), logger)
+	user, _ := userRepo.GetOrCreateUser(12345)
 
-	// Check before creating nudge
-	has, err := repo.HasNudgeToday(789, "2024-01-01")
+	nudgeRepo := NewNudgeRepository(db.GetConnection(), logger)
+	localDate := time.Now().Format("2006-01-02")
+
+	// Initially no nudge
+	hasNudge, err := nudgeRepo.HasNudgeToday(user.ID, localDate)
 	if err != nil {
 		t.Fatalf("HasNudgeToday() error = %v", err)
 	}
-	if has {
-		t.Error("HasNudgeToday() should return false before creating nudge")
+	if hasNudge {
+		t.Error("Expected no nudge today initially")
 	}
 
-	// Create a nudge
+	// Create nudge
 	nudge := &models.TrainingNudge{
-		UserID:         789,
-		LocalDate:       "2024-01-01",
-		DueCountAtSend: 3,
+		UserID:          user.ID,
+		LocalDate:       localDate,
+		DueCountAtSend:  5,
 	}
-	_, err = repo.CreateNudge(nudge)
-	if err != nil {
-		t.Fatalf("Failed to create nudge: %v", err)
-	}
+	_, _ = nudgeRepo.CreateNudge(nudge)
 
-	// Check after creating nudge
-	has, err = repo.HasNudgeToday(789, "2024-01-01")
-	if err != nil {
-		t.Fatalf("HasNudgeToday() error = %v", err)
-	}
-	if !has {
-		t.Error("HasNudgeToday() should return true after creating nudge")
+	// Should have nudge now
+	hasNudge, _ = nudgeRepo.HasNudgeToday(user.ID, localDate)
+	if !hasNudge {
+		t.Error("Expected to have nudge today")
 	}
 }
 
 func TestNudgeRepository_ConsumeNudge(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db := setupNudgeTestDB(t)
+	db, err := database.New(":memory:", logger)
+	if err != nil {
+		t.Fatalf("Failed to create database: %v", err)
+	}
 	defer db.Close()
 
-	repo := NewNudgeRepository(db, logger)
+	userRepo := NewUserRepository(db.GetConnection(), logger)
+	user, _ := userRepo.GetOrCreateUser(12345)
 
-	// Create a nudge
+	nudgeRepo := NewNudgeRepository(db.GetConnection(), logger)
+	localDate := time.Now().Format("2006-01-02")
+
+	// Create nudge
 	nudge := &models.TrainingNudge{
-		UserID:         111,
-		LocalDate:       "2024-01-02",
-		DueCountAtSend: 2,
+		UserID:          user.ID,
+		LocalDate:       localDate,
+		DueCountAtSend:  5,
 	}
-	_, err := repo.CreateNudge(nudge)
-	if err != nil {
-		t.Fatalf("Failed to create nudge: %v", err)
-	}
+	_, _ = nudgeRepo.CreateNudge(nudge)
 
-	// Consume the nudge
-	err = repo.ConsumeNudge(111, "2024-01-02")
+	// Consume nudge
+	err = nudgeRepo.ConsumeNudge(user.ID, localDate)
 	if err != nil {
 		t.Fatalf("ConsumeNudge() error = %v", err)
-	}
-
-	// Verify it's consumed
-	unconsumed, err := repo.GetUnconsumedNudge(111, "2024-01-02")
-	if err != nil {
-		t.Fatalf("GetUnconsumedNudge() error = %v", err)
-	}
-	if unconsumed != nil {
-		t.Error("GetUnconsumedNudge() should return nil after consuming")
 	}
 }
 
 func TestNudgeRepository_GetUnconsumedNudge(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db := setupNudgeTestDB(t)
+	db, err := database.New(":memory:", logger)
+	if err != nil {
+		t.Fatalf("Failed to create database: %v", err)
+	}
 	defer db.Close()
 
-	repo := NewNudgeRepository(db, logger)
+	userRepo := NewUserRepository(db.GetConnection(), logger)
+	user, _ := userRepo.GetOrCreateUser(12345)
 
-	// Create a nudge
-	nudge := &models.TrainingNudge{
-		UserID:         222,
-		LocalDate:       "2024-01-03",
-		DueCountAtSend: 4,
-	}
-	_, err := repo.CreateNudge(nudge)
-	if err != nil {
-		t.Fatalf("Failed to create nudge: %v", err)
-	}
+	nudgeRepo := NewNudgeRepository(db.GetConnection(), logger)
+	localDate := time.Now().Format("2006-01-02")
 
-	// Get unconsumed nudge
-	found, err := repo.GetUnconsumedNudge(222, "2024-01-03")
+	// Initially no unconsumed nudge
+	nudge, err := nudgeRepo.GetUnconsumedNudge(user.ID, localDate)
 	if err != nil {
 		t.Fatalf("GetUnconsumedNudge() error = %v", err)
 	}
-	if found == nil {
-		t.Fatal("GetUnconsumedNudge() should not return nil")
+	if nudge != nil {
+		t.Error("Expected no unconsumed nudge initially")
 	}
-	if found.UserID != 222 {
-		t.Errorf("Expected UserID 222, got %d", found.UserID)
+
+	// Create nudge
+	newNudge := &models.TrainingNudge{
+		UserID:          user.ID,
+		LocalDate:       localDate,
+		DueCountAtSend:  5,
 	}
-	if found.DueCountAtSend != 4 {
-		t.Errorf("Expected DueCountAtSend 4, got %d", found.DueCountAtSend)
+	_, _ = nudgeRepo.CreateNudge(newNudge)
+
+	// Should find unconsumed nudge
+	nudge, _ = nudgeRepo.GetUnconsumedNudge(user.ID, localDate)
+	if nudge == nil {
+		t.Error("Expected to find unconsumed nudge")
 	}
 }

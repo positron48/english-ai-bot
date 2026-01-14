@@ -88,6 +88,8 @@ func (db *DB) migrate() error {
 			examples_json TEXT,
 			verb_forms_json TEXT,
 			display_en TEXT,
+			processed_at DATETIME,
+			processing_error TEXT,
 			created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 			updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 		)`,

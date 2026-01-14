@@ -1,0 +1,478 @@
+package config
+
+import (
+	"os"
+	"path/filepath"
+	"testing"
+)
+
+func TestLoad_Defaults(t *testing.T) {
+	// Save original env vars - include all that might affect defaults
+	originalEnv := map[string]string{
+		"AI_URL":                     os.Getenv("AI_URL"),
+		"AI_API_KEY":                 os.Getenv("AI_API_KEY"),
+		"AI_PROMPT":                  os.Getenv("AI_PROMPT"),
+		"AI_PROMPT_FILE":             os.Getenv("AI_PROMPT_FILE"),
+		"AI_MODEL":                   os.Getenv("AI_MODEL"),
+		"WEBAPP_JWT_SECRET":          os.Getenv("WEBAPP_JWT_SECRET"),
+		"TELEGRAM_TOKEN":             os.Getenv("TELEGRAM_TOKEN"),
+		"TRAINING_WORKER_BATCH_SIZE": os.Getenv("TRAINING_WORKER_BATCH_SIZE"),
+		"TRAINING_LLM_WORKERS":       os.Getenv("TRAINING_LLM_WORKERS"),
+		"SERVER_ADDRESS":             os.Getenv("SERVER_ADDRESS"),
+		"LOG_LEVEL":                  os.Getenv("LOG_LEVEL"),
+		"DATABASE_PATH":              os.Getenv("DATABASE_PATH"),
+	}
+	
+	// Restore original env vars after test
+	defer func() {
+		for k, v := range originalEnv {
+			if v == "" {
+				os.Unsetenv(k)
+			} else {
+				os.Setenv(k, v)
+			}
+		}
+	}()
+	
+	// Set required env vars and clear optional ones to get defaults
+	os.Setenv("AI_URL", "http://test-ai.local")
+	os.Setenv("AI_API_KEY", "test-api-key")
+	os.Setenv("AI_PROMPT", "test prompt")
+	os.Unsetenv("AI_PROMPT_FILE")
+	os.Unsetenv("AI_MODEL")
+	os.Setenv("WEBAPP_JWT_SECRET", "test-secret")
+	os.Unsetenv("TRAINING_WORKER_BATCH_SIZE")
+	os.Unsetenv("TRAINING_LLM_WORKERS")
+	os.Unsetenv("SERVER_ADDRESS")
+	os.Unsetenv("LOG_LEVEL")
+	os.Unsetenv("DATABASE_PATH")
+	
+	cfg, err := Load()
+	if err != nil {
+		t.Fatalf("Load() error = %v", err)
+	}
+	
+	// Check defaults
+	if cfg.Server.Address != ":8184" {
+		t.Errorf("Expected default server address :8184, got %s", cfg.Server.Address)
+	}
+	
+	if cfg.Logging.Level != "info" {
+		t.Errorf("Expected default logging level info, got %s", cfg.Logging.Level)
+	}
+	
+	if cfg.AI.Model != "gpt-3.5-turbo" {
+		t.Errorf("Expected default AI model gpt-3.5-turbo, got %s", cfg.AI.Model)
+	}
+	
+	if cfg.Database.Path != "./data/words.db" {
+		t.Errorf("Expected default database path, got %s", cfg.Database.Path)
+	}
+	
+	if !cfg.Training.WorkerEnabled {
+		t.Error("Expected training worker enabled by default")
+	}
+	
+	if cfg.Training.WorkerInterval != "30s" {
+		t.Errorf("Expected default worker interval 30s, got %s", cfg.Training.WorkerInterval)
+	}
+	
+	if cfg.Training.WorkerBatchSize != 5 {
+		t.Errorf("Expected default worker batch size 5, got %d", cfg.Training.WorkerBatchSize)
+	}
+	
+	if cfg.Training.LLMWorkers != 4 {
+		t.Errorf("Expected default LLM workers 4, got %d", cfg.Training.LLMWorkers)
+	}
+	
+	if cfg.WebApp.OTPTTLSeconds != 300 {
+		t.Errorf("Expected default OTP TTL 300, got %d", cfg.WebApp.OTPTTLSeconds)
+	}
+	
+	if cfg.WebApp.SessionTTLHours != 720 {
+		t.Errorf("Expected default session TTL 720, got %d", cfg.WebApp.SessionTTLHours)
+	}
+	
+	if cfg.WebApp.JWTTTLHours != 24 {
+		t.Errorf("Expected default JWT TTL 24, got %d", cfg.WebApp.JWTTTLHours)
+	}
+}
+
+func TestLoad_MissingAIURL(t *testing.T) {
+	// Clear relevant env vars
+	originalEnv := map[string]string{
+		"AI_URL":              os.Getenv("AI_URL"),
+		"AI_API_KEY":          os.Getenv("AI_API_KEY"),
+		"AI_PROMPT":           os.Getenv("AI_PROMPT"),
+		"WEBAPP_JWT_SECRET":   os.Getenv("WEBAPP_JWT_SECRET"),
+	}
+	
+	defer func() {
+		for k, v := range originalEnv {
+			if v == "" {
+				os.Unsetenv(k)
+			} else {
+				os.Setenv(k, v)
+			}
+		}
+	}()
+	
+	os.Unsetenv("AI_URL")
+	os.Setenv("AI_API_KEY", "test-key")
+	os.Setenv("AI_PROMPT", "test prompt")
+	os.Setenv("WEBAPP_JWT_SECRET", "test-secret")
+	
+	_, err := Load()
+	if err == nil {
+		t.Error("Expected error for missing AI_URL")
+	}
+}
+
+func TestLoad_MissingAIAPIKey(t *testing.T) {
+	originalEnv := map[string]string{
+		"AI_URL":              os.Getenv("AI_URL"),
+		"AI_API_KEY":          os.Getenv("AI_API_KEY"),
+		"AI_PROMPT":           os.Getenv("AI_PROMPT"),
+		"WEBAPP_JWT_SECRET":   os.Getenv("WEBAPP_JWT_SECRET"),
+	}
+	
+	defer func() {
+		for k, v := range originalEnv {
+			if v == "" {
+				os.Unsetenv(k)
+			} else {
+				os.Setenv(k, v)
+			}
+		}
+	}()
+	
+	os.Setenv("AI_URL", "http://test.local")
+	os.Unsetenv("AI_API_KEY")
+	os.Setenv("AI_PROMPT", "test prompt")
+	os.Setenv("WEBAPP_JWT_SECRET", "test-secret")
+	
+	_, err := Load()
+	if err == nil {
+		t.Error("Expected error for missing AI_API_KEY")
+	}
+}
+
+func TestLoad_MissingAIPrompt(t *testing.T) {
+	originalEnv := map[string]string{
+		"AI_URL":              os.Getenv("AI_URL"),
+		"AI_API_KEY":          os.Getenv("AI_API_KEY"),
+		"AI_PROMPT":           os.Getenv("AI_PROMPT"),
+		"AI_PROMPT_FILE":      os.Getenv("AI_PROMPT_FILE"),
+		"WEBAPP_JWT_SECRET":   os.Getenv("WEBAPP_JWT_SECRET"),
+	}
+	
+	defer func() {
+		for k, v := range originalEnv {
+			if v == "" {
+				os.Unsetenv(k)
+			} else {
+				os.Setenv(k, v)
+			}
+		}
+	}()
+	
+	os.Setenv("AI_URL", "http://test.local")
+	os.Setenv("AI_API_KEY", "test-key")
+	os.Unsetenv("AI_PROMPT")
+	os.Unsetenv("AI_PROMPT_FILE")
+	os.Setenv("WEBAPP_JWT_SECRET", "test-secret")
+	
+	_, err := Load()
+	if err == nil {
+		t.Error("Expected error for missing AI_PROMPT")
+	}
+}
+
+func TestLoad_MissingJWTSecret(t *testing.T) {
+	originalEnv := map[string]string{
+		"AI_URL":               os.Getenv("AI_URL"),
+		"AI_API_KEY":           os.Getenv("AI_API_KEY"),
+		"AI_PROMPT":            os.Getenv("AI_PROMPT"),
+		"WEBAPP_JWT_SECRET":    os.Getenv("WEBAPP_JWT_SECRET"),
+		"WEBAPP_SESSION_SECRET": os.Getenv("WEBAPP_SESSION_SECRET"),
+	}
+	
+	defer func() {
+		for k, v := range originalEnv {
+			if v == "" {
+				os.Unsetenv(k)
+			} else {
+				os.Setenv(k, v)
+			}
+		}
+	}()
+	
+	os.Setenv("AI_URL", "http://test.local")
+	os.Setenv("AI_API_KEY", "test-key")
+	os.Setenv("AI_PROMPT", "test prompt")
+	os.Unsetenv("WEBAPP_JWT_SECRET")
+	os.Unsetenv("WEBAPP_SESSION_SECRET")
+	
+	_, err := Load()
+	if err == nil {
+		t.Error("Expected error for missing JWT secret")
+	}
+}
+
+func TestLoad_WithPromptFile(t *testing.T) {
+	originalEnv := map[string]string{
+		"AI_URL":              os.Getenv("AI_URL"),
+		"AI_API_KEY":          os.Getenv("AI_API_KEY"),
+		"AI_PROMPT":           os.Getenv("AI_PROMPT"),
+		"AI_PROMPT_FILE":      os.Getenv("AI_PROMPT_FILE"),
+		"WEBAPP_JWT_SECRET":   os.Getenv("WEBAPP_JWT_SECRET"),
+	}
+	
+	defer func() {
+		for k, v := range originalEnv {
+			if v == "" {
+				os.Unsetenv(k)
+			} else {
+				os.Setenv(k, v)
+			}
+		}
+	}()
+	
+	// Create temp prompt file
+	tmpDir := t.TempDir()
+	promptFile := filepath.Join(tmpDir, "prompt.txt")
+	promptContent := "This is a test prompt from file"
+	if err := os.WriteFile(promptFile, []byte(promptContent), 0644); err != nil {
+		t.Fatalf("Failed to create prompt file: %v", err)
+	}
+	
+	os.Setenv("AI_URL", "http://test.local")
+	os.Setenv("AI_API_KEY", "test-key")
+	os.Unsetenv("AI_PROMPT")
+	os.Setenv("AI_PROMPT_FILE", promptFile)
+	os.Setenv("WEBAPP_JWT_SECRET", "test-secret")
+	
+	cfg, err := Load()
+	if err != nil {
+		t.Fatalf("Load() error = %v", err)
+	}
+	
+	if cfg.AI.Prompt != promptContent {
+		t.Errorf("Expected prompt from file, got %s", cfg.AI.Prompt)
+	}
+}
+
+func TestLoad_InvalidPromptFile(t *testing.T) {
+	originalEnv := map[string]string{
+		"AI_URL":              os.Getenv("AI_URL"),
+		"AI_API_KEY":          os.Getenv("AI_API_KEY"),
+		"AI_PROMPT":           os.Getenv("AI_PROMPT"),
+		"AI_PROMPT_FILE":      os.Getenv("AI_PROMPT_FILE"),
+		"WEBAPP_JWT_SECRET":   os.Getenv("WEBAPP_JWT_SECRET"),
+	}
+	
+	defer func() {
+		for k, v := range originalEnv {
+			if v == "" {
+				os.Unsetenv(k)
+			} else {
+				os.Setenv(k, v)
+			}
+		}
+	}()
+	
+	os.Setenv("AI_URL", "http://test.local")
+	os.Setenv("AI_API_KEY", "test-key")
+	os.Unsetenv("AI_PROMPT")
+	os.Setenv("AI_PROMPT_FILE", "/nonexistent/path/prompt.txt")
+	os.Setenv("WEBAPP_JWT_SECRET", "test-secret")
+	
+	_, err := Load()
+	if err == nil {
+		t.Error("Expected error for invalid prompt file")
+	}
+}
+
+func TestLoad_BotMessageNewlines(t *testing.T) {
+	originalEnv := map[string]string{
+		"AI_URL":              os.Getenv("AI_URL"),
+		"AI_API_KEY":          os.Getenv("AI_API_KEY"),
+		"AI_PROMPT":           os.Getenv("AI_PROMPT"),
+		"AI_PROMPT_FILE":      os.Getenv("AI_PROMPT_FILE"),
+		"WEBAPP_JWT_SECRET":   os.Getenv("WEBAPP_JWT_SECRET"),
+		"BOT_START_MESSAGE":   os.Getenv("BOT_START_MESSAGE"),
+	}
+	
+	defer func() {
+		for k, v := range originalEnv {
+			if v == "" {
+				os.Unsetenv(k)
+			} else {
+				os.Setenv(k, v)
+			}
+		}
+	}()
+	
+	os.Setenv("AI_URL", "http://test.local")
+	os.Setenv("AI_API_KEY", "test-key")
+	os.Setenv("AI_PROMPT", "test prompt")
+	os.Unsetenv("AI_PROMPT_FILE")
+	os.Setenv("WEBAPP_JWT_SECRET", "test-secret")
+	os.Setenv("BOT_START_MESSAGE", "Hello\\nWorld")
+	
+	cfg, err := Load()
+	if err != nil {
+		t.Fatalf("Load() error = %v", err)
+	}
+	
+	if cfg.Bot.StartMessage != "Hello\nWorld" {
+		t.Errorf("Expected newlines to be processed, got %q", cfg.Bot.StartMessage)
+	}
+}
+
+func TestLoad_SessionSecretFallback(t *testing.T) {
+	originalEnv := map[string]string{
+		"AI_URL":               os.Getenv("AI_URL"),
+		"AI_API_KEY":           os.Getenv("AI_API_KEY"),
+		"AI_PROMPT":            os.Getenv("AI_PROMPT"),
+		"AI_PROMPT_FILE":       os.Getenv("AI_PROMPT_FILE"),
+		"WEBAPP_JWT_SECRET":    os.Getenv("WEBAPP_JWT_SECRET"),
+		"WEBAPP_SESSION_SECRET": os.Getenv("WEBAPP_SESSION_SECRET"),
+	}
+	
+	defer func() {
+		for k, v := range originalEnv {
+			if v == "" {
+				os.Unsetenv(k)
+			} else {
+				os.Setenv(k, v)
+			}
+		}
+	}()
+	
+	os.Setenv("AI_URL", "http://test.local")
+	os.Setenv("AI_API_KEY", "test-key")
+	os.Setenv("AI_PROMPT", "test prompt")
+	os.Unsetenv("AI_PROMPT_FILE")
+	os.Unsetenv("WEBAPP_JWT_SECRET")
+	os.Setenv("WEBAPP_SESSION_SECRET", "session-secret")
+	
+	cfg, err := Load()
+	if err != nil {
+		t.Fatalf("Load() error = %v, should allow session secret fallback", err)
+	}
+	
+	if cfg.WebApp.SessionSecret != "session-secret" {
+		t.Errorf("Expected session secret, got %s", cfg.WebApp.SessionSecret)
+	}
+}
+
+func TestLoad_CustomEnvValues(t *testing.T) {
+	originalEnv := map[string]string{
+		"AI_URL":              os.Getenv("AI_URL"),
+		"AI_API_KEY":          os.Getenv("AI_API_KEY"),
+		"AI_PROMPT":           os.Getenv("AI_PROMPT"),
+		"AI_PROMPT_FILE":      os.Getenv("AI_PROMPT_FILE"),
+		"AI_MODEL":            os.Getenv("AI_MODEL"),
+		"WEBAPP_JWT_SECRET":   os.Getenv("WEBAPP_JWT_SECRET"),
+		"SERVER_ADDRESS":      os.Getenv("SERVER_ADDRESS"),
+		"LOG_LEVEL":           os.Getenv("LOG_LEVEL"),
+		"DATABASE_PATH":       os.Getenv("DATABASE_PATH"),
+	}
+	
+	defer func() {
+		for k, v := range originalEnv {
+			if v == "" {
+				os.Unsetenv(k)
+			} else {
+				os.Setenv(k, v)
+			}
+		}
+	}()
+	
+	os.Setenv("AI_URL", "http://custom-ai.local")
+	os.Setenv("AI_API_KEY", "custom-api-key")
+	os.Setenv("AI_PROMPT", "custom prompt")
+	os.Unsetenv("AI_PROMPT_FILE")
+	os.Setenv("AI_MODEL", "gpt-4")
+	os.Setenv("WEBAPP_JWT_SECRET", "custom-jwt-secret")
+	os.Setenv("SERVER_ADDRESS", ":9000")
+	os.Setenv("LOG_LEVEL", "debug")
+	os.Setenv("DATABASE_PATH", "/custom/path/db.sqlite")
+	
+	cfg, err := Load()
+	if err != nil {
+		t.Fatalf("Load() error = %v", err)
+	}
+	
+	if cfg.AI.URL != "http://custom-ai.local" {
+		t.Errorf("Expected custom AI URL, got %s", cfg.AI.URL)
+	}
+	
+	if cfg.AI.APIKey != "custom-api-key" {
+		t.Errorf("Expected custom API key, got %s", cfg.AI.APIKey)
+	}
+	
+	if cfg.AI.Model != "gpt-4" {
+		t.Errorf("Expected custom AI model, got %s", cfg.AI.Model)
+	}
+	
+	if cfg.Server.Address != ":9000" {
+		t.Errorf("Expected custom server address, got %s", cfg.Server.Address)
+	}
+	
+	if cfg.Logging.Level != "debug" {
+		t.Errorf("Expected debug log level, got %s", cfg.Logging.Level)
+	}
+	
+	if cfg.Database.Path != "/custom/path/db.sqlite" {
+		t.Errorf("Expected custom database path, got %s", cfg.Database.Path)
+	}
+}
+
+func TestLoad_RateLimitDefaults(t *testing.T) {
+	originalEnv := map[string]string{
+		"AI_URL":              os.Getenv("AI_URL"),
+		"AI_API_KEY":          os.Getenv("AI_API_KEY"),
+		"AI_PROMPT":           os.Getenv("AI_PROMPT"),
+		"AI_PROMPT_FILE":      os.Getenv("AI_PROMPT_FILE"),
+		"WEBAPP_JWT_SECRET":   os.Getenv("WEBAPP_JWT_SECRET"),
+	}
+	
+	defer func() {
+		for k, v := range originalEnv {
+			if v == "" {
+				os.Unsetenv(k)
+			} else {
+				os.Setenv(k, v)
+			}
+		}
+	}()
+	
+	os.Setenv("AI_URL", "http://test.local")
+	os.Setenv("AI_API_KEY", "test-key")
+	os.Setenv("AI_PROMPT", "test prompt")
+	os.Unsetenv("AI_PROMPT_FILE")
+	os.Setenv("WEBAPP_JWT_SECRET", "test-secret")
+	
+	cfg, err := Load()
+	if err != nil {
+		t.Fatalf("Load() error = %v", err)
+	}
+	
+	if cfg.WebApp.RateLimitAuthRequestOTPPerIP != 10 {
+		t.Errorf("Expected rate limit 10, got %d", cfg.WebApp.RateLimitAuthRequestOTPPerIP)
+	}
+	
+	if cfg.WebApp.RateLimitAppAPIPerUser != 300 {
+		t.Errorf("Expected rate limit 300, got %d", cfg.WebApp.RateLimitAppAPIPerUser)
+	}
+	
+	if cfg.WebApp.RateLimitWindowMinutes != 1 {
+		t.Errorf("Expected window 1, got %d", cfg.WebApp.RateLimitWindowMinutes)
+	}
+	
+	if cfg.WebApp.RateLimitBurstMultiplier != 2 {
+		t.Errorf("Expected burst multiplier 2, got %d", cfg.WebApp.RateLimitBurstMultiplier)
+	}
+}
