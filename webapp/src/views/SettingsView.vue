@@ -89,19 +89,41 @@
         </div>
       </div>
     </div>
+
+    <div class="card" v-if="!isTelegramMiniApp">
+      <h2>Account</h2>
+      <div class="settings-group">
+        <div class="setting-item">
+          <div class="setting-info">
+            <label class="setting-label">Logout</label>
+            <p class="setting-description">Sign out from your account</p>
+          </div>
+          <div class="setting-control">
+            <button @click="handleLogout" class="logout-btn">
+              <Icon name="logout" class="logout-icon" />
+              <span>Logout</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
+import { useRouter } from 'vue-router'
 import { useSettings } from '../composables/useSettings'
 import { useTheme } from '../composables/useTheme'
 import { useAudio } from '../composables/useAudio'
+import { useAuth } from '../composables/useAuth'
 import Icon from '../components/Icon.vue'
 
+const router = useRouter()
 const { settings, setSoundsEnabled, setVibrationEnabled, setTheme, setSoundTheme } = useSettings()
 const { theme: currentTheme, setTheme: setThemeInTheme } = useTheme()
 const { getThemes, previewTheme } = useAudio()
+const { logout: authLogout } = useAuth()
 
 const soundsEnabled = ref(true)
 const vibrationEnabled = ref(true)
@@ -109,6 +131,7 @@ const selectedTheme = ref<'light' | 'dark'>('light')
 const selectedSoundTheme = ref('tick')
 const soundThemes = ref(getThemes())
 const previewing = ref(false)
+const isTelegramMiniApp = ref(false)
 
 onMounted(() => {
   // Load current settings
@@ -116,6 +139,10 @@ onMounted(() => {
   vibrationEnabled.value = settings.value.vibrationEnabled
   selectedTheme.value = currentTheme.value
   selectedSoundTheme.value = settings.value.soundTheme || 'tick'
+  
+  // Check if we're in Telegram Mini App
+  const tg = (window as any).Telegram?.WebApp
+  isTelegramMiniApp.value = !!tg
 })
 
 // Watch for theme changes from outside
@@ -154,6 +181,11 @@ const previewSounds = async () => {
   } finally {
     previewing.value = false
   }
+}
+
+const handleLogout = () => {
+  authLogout()
+  router.push('/login')
 }
 </script>
 
@@ -430,6 +462,30 @@ const previewSounds = async () => {
   font-size: 16px;
 }
 
+/* Logout Button */
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.logout-btn:hover {
+  background-color: var(--bg-hover);
+  border-color: var(--border-secondary);
+}
+
+.logout-icon {
+  font-size: 18px;
+}
 
 /* Mobile styles */
 @media (max-width: 768px) {
