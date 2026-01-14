@@ -1,6 +1,6 @@
 <template>
   <div class="word-sets-view">
-    <h1>Word Sets Library</h1>
+    <h1>{{ pageTitle }}</h1>
     
     <div class="content-section">
       <div v-if="loading" class="loading">Loading...</div>
@@ -57,7 +57,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { apiClient } from '../api/client'
 import Icon from '../components/Icon.vue'
@@ -91,6 +91,18 @@ const wordSets = ref<WordSet[]>([])
 const selectedCategoryId = ref<number | null>(null)
 const currentParentId = ref<number | null>(null)
 const categoryHistory = ref<number[]>([]) // Track navigation history
+const allCategories = ref<Category[]>([]) // Все категории для получения названия текущей
+
+// Computed для заголовка страницы
+const pageTitle = computed(() => {
+  if (selectedCategoryId.value && allCategories.value.length > 0) {
+    const currentCategory = allCategories.value.find(cat => cat.id === selectedCategoryId.value)
+    if (currentCategory) {
+      return currentCategory.name
+    }
+  }
+  return 'Word Sets Library'
+})
 
 // Items computed is not needed - we'll render categories and wordSets separately in template
 
@@ -115,8 +127,42 @@ onMounted(async () => {
   await loadWordSets()
 })
 
+// Отслеживаем изменения query параметра category_id
+watch(() => route.query.category_id, async (newCategoryId) => {
+  if (newCategoryId) {
+    const categoryId = typeof newCategoryId === 'string' 
+      ? parseInt(newCategoryId, 10) 
+      : Array.isArray(newCategoryId) 
+        ? parseInt(newCategoryId[0] as string, 10)
+        : null
+    
+    if (categoryId && !isNaN(categoryId) && categoryId !== selectedCategoryId.value) {
+      selectedCategoryId.value = categoryId
+      currentParentId.value = categoryId
+      // Обновляем историю, если нужно
+      if (!categoryHistory.value.includes(categoryId)) {
+        categoryHistory.value = [categoryId]
+      }
+      await loadCategories()
+      await loadWordSets()
+    }
+  } else if (selectedCategoryId.value !== null) {
+    // Если category_id удален из query, возвращаемся к корню
+    selectedCategoryId.value = null
+    currentParentId.value = null
+    categoryHistory.value = []
+    await loadCategories()
+    await loadWordSets()
+  }
+})
+
 const loadCategories = async () => {
   try {
+    // Загружаем все категории для получения названия текущей категории
+    const allCategoriesData: { categories: Category[] } = await apiClient.request('/app/learning/words/categories?all=true')
+    allCategories.value = allCategoriesData.categories || []
+    
+    // Загружаем дочерние категории для текущего уровня
     const params = new URLSearchParams()
     if (currentParentId.value !== null) {
       params.append('parent_id', currentParentId.value.toString())
@@ -126,6 +172,7 @@ const loadCategories = async () => {
   } catch (error: any) {
     console.error('Failed to load categories:', error)
     categories.value = []
+    allCategories.value = []
   }
 }
 
@@ -152,11 +199,13 @@ const selectCategory = (categoryId: number | null) => {
   if (categoryId !== null) {
     // Add to history
     categoryHistory.value.push(categoryId)
+    // Update URL with category_id query parameter
+    router.push({ path: '/learning/words', query: { category_id: categoryId.toString() } })
+  } else {
+    // Go to root
+    router.push({ path: '/learning/words' })
   }
-  selectedCategoryId.value = categoryId
-  currentParentId.value = categoryId
-  loadCategories()
-  loadWordSets()
+  // Note: watch on route.query.category_id will handle the actual loading
 }
 
 const goBack = () => {
@@ -166,19 +215,30 @@ const goBack = () => {
     const prevCategoryId = categoryHistory.value.length > 0 
       ? categoryHistory.value[categoryHistory.value.length - 1] 
       : null
-    selectedCategoryId.value = prevCategoryId
-    currentParentId.value = prevCategoryId
+    
+    if (prevCategoryId !== null) {
+      router.push({ path: '/learning/words', query: { category_id: prevCategoryId.toString() } })
+    } else {
+      router.push({ path: '/learning/words' })
+    }
+    // Note: watch on route.query.category_id will handle the actual loading
   } else {
     // Go to root
-    selectedCategoryId.value = null
-    currentParentId.value = null
+    router.push({ path: '/learning/words' })
+    // Note: watch on route.query.category_id will handle the actual loading
   }
-  loadCategories()
-  loadWordSets()
 }
 
 const viewWordSet = (setId: number) => {
-  router.push(`/learning/words/${setId}`)
+  // Передаем category_id в query параметрах, если мы находимся внутри категории
+  if (selectedCategoryId.value !== null) {
+    router.push({ 
+      path: `/learning/words/${setId}`, 
+      query: { category_id: selectedCategoryId.value.toString() } 
+    })
+  } else {
+    router.push(`/learning/words/${setId}`)
+  }
 }
 
 const getProgressClass = (percent: number): string => {

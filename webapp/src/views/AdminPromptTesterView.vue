@@ -1,8 +1,5 @@
 <template>
-  <div class="admin-layout">
-    <AdminMenu />
-    
-    <div class="admin-content">
+  <div class="admin-content">
       <h2>Prompt Tester</h2>
       
       <div class="card">
@@ -226,7 +223,6 @@
         </div>
       </div>
     </div>
-    </div>
   </div>
 </template>
 
@@ -234,7 +230,6 @@
 import { ref, computed, onMounted, h } from 'vue'
 import { apiClient } from '../api/client'
 import { showAlert, showConfirm } from '../composables/useDialog'
-import AdminMenu from '../components/AdminMenu.vue'
 // Custom character-level diff implementation
 interface DiffPart {
   value: string
@@ -1382,45 +1377,15 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.admin-layout {
-  display: flex;
-  gap: 20px;
-  min-height: calc(100vh - 60px);
-  font-size: 16px;
-}
-
 .admin-content {
-  flex: 1;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 10px;
   width: 100%;
+  font-size: 16px;
 }
 
 .admin-content h1 {
   margin-bottom: 24px;
-}
-
-@media (max-width: 767px) {
-  .admin-layout {
-    flex-direction: column;
-    gap: 0;
-  }
-  
-  .admin-content {
-    padding: 10px;
-    margin-top: 60px;
-  }
-}
-
-@media (min-width: 768px) {
-  .admin-layout {
-    padding: 20px;
-  }
-  
-  .admin-content {
-    padding: 0;
-  }
 }
 
 .prompt-tester h2 {
@@ -1996,6 +1961,10 @@ onMounted(async () => {
 
 /* Responsive styles */
 @media (max-width: 768px) {
+  .admin-content {
+    margin-top: 0 !important;
+  }
+
   .prompt-tester {
     padding: 10px;
   }

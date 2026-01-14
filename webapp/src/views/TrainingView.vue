@@ -194,6 +194,7 @@
               @touchend="handleTimerMouseUp"
               @touchcancel="handleTimerMouseLeave"
             >
+              <div class="error-progress-pulse"></div>
               <svg class="error-progress-ring" width="40" height="40">
                 <circle
                   class="error-progress-circle-bg"
@@ -843,6 +844,8 @@ let timerPauseStartTime: number | null = null
 let timerPausedRemainingMs: number | null = null
 let countdownAnimationFrameId: number | null = null
 let timerEndTime: number | null = null
+let autoNextCardTimerStartTime: number | null = null
+let autoNextCardTimerDelayMs: number | null = null
 
 // Process question to wrap transcription in span if not already wrapped
 const processedQuestion = computed(() => {
@@ -1138,6 +1141,8 @@ const setupCard = (card: Card) => {
   timerPauseStartTime = null
   timerPausedRemainingMs = null
   timerEndTime = null
+  autoNextCardTimerStartTime = null
+  autoNextCardTimerDelayMs = null
   cardShownAt.value = new Date()
 
   // Schedule automatic options reveal
@@ -1335,6 +1340,8 @@ const submitAnswer = async (optionIndex: number) => {
           timerPauseStartTime = null
           timerPausedRemainingMs = null
           timerEndTime = null
+          autoNextCardTimerStartTime = null
+          autoNextCardTimerDelayMs = null
           if (countdownAnimationFrameId) {
             cancelAnimationFrame(countdownAnimationFrameId)
             countdownAnimationFrameId = null
@@ -1347,6 +1354,8 @@ const submitAnswer = async (optionIndex: number) => {
       countdownAnimationFrameId = requestAnimationFrame(updateCountdown)
       
       // Schedule automatic next card as backup
+      autoNextCardTimerStartTime = Date.now()
+      autoNextCardTimerDelayMs = delayMs
       autoNextCardTimer = setTimeout(() => {
         if (countdownAnimationFrameId) {
           cancelAnimationFrame(countdownAnimationFrameId)
@@ -1363,11 +1372,17 @@ const submitAnswer = async (optionIndex: number) => {
           timerPausedRemainingMs = null
           timerEndTime = null
         }
+        autoNextCardTimerStartTime = null
+        autoNextCardTimerDelayMs = null
         nextCard()
       }, delayMs)
     } else {
       // No delay, go to next card immediately
+      autoNextCardTimerStartTime = Date.now()
+      autoNextCardTimerDelayMs = 1000
       autoNextCardTimer = setTimeout(() => {
+        autoNextCardTimerStartTime = null
+        autoNextCardTimerDelayMs = null
         nextCard()
       }, 1000) // Small delay to show feedback
     }
@@ -1397,6 +1412,8 @@ const nextCard = async () => {
     cancelAnimationFrame(countdownAnimationFrameId)
     countdownAnimationFrameId = null
   }
+  autoNextCardTimerStartTime = null
+  autoNextCardTimerDelayMs = null
 
   feedback.value = null
   optionsShown.value = false
@@ -1523,6 +1540,8 @@ const resetSession = async () => {
   timerPauseStartTime = null
   timerPausedRemainingMs = null
   timerEndTime = null
+  autoNextCardTimerStartTime = null
+  autoNextCardTimerDelayMs = null
   
   // Refresh stats and upcoming cards
   await loadStats()
@@ -1536,6 +1555,16 @@ const pauseTimer = () => {
   timerPaused.value = true
   timerPauseStartTime = Date.now()
   timerPausedRemainingMs = remainingMs.value
+  
+  // Pause autoNextCardTimer if it exists
+  if (autoNextCardTimer && autoNextCardTimerStartTime !== null && autoNextCardTimerDelayMs !== null) {
+    const elapsed = Date.now() - autoNextCardTimerStartTime
+    const remaining = Math.max(0, autoNextCardTimerDelayMs - elapsed)
+    clearTimeout(autoNextCardTimer)
+    autoNextCardTimer = null
+    // Update delay to remaining time
+    autoNextCardTimerDelayMs = remaining
+  }
 }
 
 const resumeTimer = () => {
@@ -1550,6 +1579,31 @@ const resumeTimer = () => {
   timerPaused.value = false
   timerPauseStartTime = null
   timerPausedRemainingMs = null
+  
+  // Resume autoNextCardTimer if it was paused
+  if (autoNextCardTimerDelayMs !== null && autoNextCardTimerDelayMs > 0) {
+    autoNextCardTimerStartTime = Date.now()
+    autoNextCardTimer = setTimeout(() => {
+      if (countdownAnimationFrameId) {
+        cancelAnimationFrame(countdownAnimationFrameId)
+        countdownAnimationFrameId = null
+      }
+      if (waitingDelay.value) {
+        waitingDelay.value = false
+        initialDelaySeconds.value = 0
+        initialDelayMs.value = 0
+        delaySeconds.value = 0
+        remainingMs.value = 0
+        timerPaused.value = false
+        timerPauseStartTime = null
+        timerPausedRemainingMs = null
+        timerEndTime = null
+      }
+      autoNextCardTimerStartTime = null
+      autoNextCardTimerDelayMs = null
+      nextCard()
+    }, autoNextCardTimerDelayMs)
+  }
 }
 
 // Handle mouse/touch events for timer pause
@@ -2012,6 +2066,34 @@ const handleTimerMouseLeave = () => {
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
+}
+
+.error-progress-pulse {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  transform: translate(-50%, -50%);
+  animation: error-progress-pulse 1s linear 0.5s forwards;
+  pointer-events: none;
+}
+
+@keyframes error-progress-pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.3);
+    opacity: 0.4;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.6);
+    opacity: 0;
+  }
 }
 
 .error-progress-ring {

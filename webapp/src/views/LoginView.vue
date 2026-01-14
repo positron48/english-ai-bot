@@ -41,15 +41,24 @@
 
         <div v-if="step === 'otp'" class="login-step">
           <p>Enter the OTP code sent to your Telegram:</p>
-          <input
-            ref="otpInput"
-            v-model="otpCode"
-            type="text"
-            placeholder="OTP Code"
-            maxlength="6"
-            @keyup.enter="verifyOTP"
-          />
-          <button @click="verifyOTP" class="btn btn-primary" :disabled="loading">
+          <div class="otp-input-container">
+            <input
+              v-for="(digit, index) in otpDigits"
+              :key="index"
+              :ref="(el) => { if (el) otpInputs[index] = el as HTMLInputElement }"
+              v-model="otpDigits[index]"
+              type="text"
+              inputmode="numeric"
+              pattern="[0-9]"
+              maxlength="1"
+              class="otp-digit"
+              @input="handleOTPInput(index, $event)"
+              @keydown="handleOTPKeydown(index, $event)"
+              @paste="handleOTPPaste($event)"
+              @focus="handleOTPFocus(index)"
+            />
+          </div>
+          <button @click="verifyOTP" class="btn btn-primary" :disabled="loading || !isOTPComplete">
             {{ loading ? 'Verifying...' : 'Verify' }}
           </button>
           <button @click="step = 'username'" class="btn btn-secondary">Back</button>
@@ -61,7 +70,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch, nextTick } from 'vue'
+import { ref, computed, onMounted, watch, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuth } from '../composables/useAuth'
 import { apiClient } from '../api/client'
@@ -71,14 +80,18 @@ const { login, tryTelegramAuth } = useAuth()
 
 const step = ref<'username' | 'otp'>('username')
 const username = ref('')
-const otpCode = ref('')
+const otpDigits = ref<string[]>(['', '', '', '', '', ''])
+const otpInputs = ref<(HTMLInputElement | null)[]>([])
 const userId = ref('')
 const loading = ref(false)
 const error = ref('')
 const isCheckingTelegramAuth = ref(false)
 
 const usernameInput = ref<HTMLInputElement | null>(null)
-const otpInput = ref<HTMLInputElement | null>(null)
+
+const isOTPComplete = computed(() => {
+  return otpDigits.value.every(digit => digit !== '')
+})
 
 onMounted(async () => {
   // Check if Telegram WebApp is available and try to authenticate
@@ -118,7 +131,11 @@ watch(step, async (newStep) => {
   if (newStep === 'username') {
     usernameInput.value?.focus()
   } else if (newStep === 'otp') {
-    otpInput.value?.focus()
+    // Reset OTP digits when switching to OTP step
+    otpDigits.value = ['', '', '', '', '', '']
+    otpInputs.value = []
+    await nextTick()
+    otpInputs.value[0]?.focus()
   }
 })
 
@@ -151,9 +168,96 @@ const requestOTP = async () => {
   }
 }
 
+const handleOTPInput = (index: number, event: Event) => {
+  const target = event.target as HTMLInputElement
+  const value = target.value
+  
+  // Only allow digits
+  if (value && !/^\d$/.test(value)) {
+    otpDigits.value[index] = ''
+    return
+  }
+  
+  otpDigits.value[index] = value
+  
+  // Move to next field if digit entered
+  if (value && index < 5) {
+    nextTick(() => {
+      otpInputs.value[index + 1]?.focus()
+    })
+  }
+  
+  // Auto-verify when last digit is entered
+  if (value && index === 5 && isOTPComplete.value) {
+    nextTick(() => {
+      verifyOTP()
+    })
+  }
+}
+
+const handleOTPKeydown = (index: number, event: KeyboardEvent) => {
+  if (event.key === 'Backspace') {
+    if (otpDigits.value[index]) {
+      // If current field has value, clear it
+      otpDigits.value[index] = ''
+    } else if (index > 0) {
+      // If current field is empty, go to previous and clear it
+      otpDigits.value[index - 1] = ''
+      nextTick(() => {
+        otpInputs.value[index - 1]?.focus()
+      })
+    }
+    event.preventDefault()
+  } else if (event.key === 'ArrowLeft' && index > 0) {
+    nextTick(() => {
+      otpInputs.value[index - 1]?.focus()
+    })
+  } else if (event.key === 'ArrowRight' && index < 5) {
+    nextTick(() => {
+      otpInputs.value[index + 1]?.focus()
+    })
+  }
+}
+
+const handleOTPPaste = (event: ClipboardEvent) => {
+  event.preventDefault()
+  const pastedData = event.clipboardData?.getData('text') || ''
+  const digits = pastedData.replace(/\D/g, '').slice(0, 6).split('')
+  
+  // Fill digits from current position
+  const startIndex = otpInputs.value.findIndex(input => input === event.target)
+  if (startIndex === -1) return
+  
+  for (let i = 0; i < digits.length && startIndex + i < 6; i++) {
+    otpDigits.value[startIndex + i] = digits[i]
+  }
+  
+  // Focus on the next empty field or last field
+  const nextIndex = Math.min(startIndex + digits.length, 5)
+  nextTick(() => {
+    otpInputs.value[nextIndex]?.focus()
+    if (isOTPComplete.value) {
+      verifyOTP()
+    }
+  })
+}
+
+const handleOTPFocus = (index: number) => {
+  // When focusing on a field, if it's in the middle and has value,
+  // we'll allow overwriting (the input handler will handle it)
+  // Just ensure we're at the right position
+  if (otpDigits.value[index]) {
+    // If field has value, select it for easy overwrite
+    nextTick(() => {
+      otpInputs.value[index]?.select()
+    })
+  }
+}
+
 const verifyOTP = async () => {
-  if (!otpCode.value.trim()) {
-    error.value = 'Please enter OTP code'
+  const code = otpDigits.value.join('')
+  if (!code || code.length !== 6) {
+    error.value = 'Please enter complete OTP code'
     return
   }
 
@@ -161,11 +265,16 @@ const verifyOTP = async () => {
   error.value = ''
 
   try {
-    const response = await apiClient.verifyOTP(userId.value, otpCode.value.trim())
+    const response = await apiClient.verifyOTP(userId.value, code)
     login(response.access_token, response.refresh_token)
     router.push('/dashboard')
   } catch (err: any) {
     error.value = err.message || 'Invalid OTP code'
+    // Clear OTP on error
+    otpDigits.value = ['', '', '', '', '', '']
+    nextTick(() => {
+      otpInputs.value[0]?.focus()
+    })
   } finally {
     loading.value = false
   }
@@ -281,6 +390,49 @@ h1 {
 [data-theme="dark"] .info-text code {
   background-color: var(--info-code-bg, rgba(100, 181, 246, 0.2));
   color: var(--info-code-text, #bbdefb);
+}
+
+.otp-input-container {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.otp-digit {
+  width: 48px;
+  height: 56px;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 600;
+  border: 2px solid var(--border-primary, #e0e0e0);
+  border-radius: 8px;
+  background-color: var(--input-bg, #fff);
+  color: var(--text-primary);
+  transition: all 0.2s;
+}
+
+.otp-digit:focus {
+  outline: none;
+  border-color: var(--color-primary, #1976d2);
+  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+}
+
+.otp-digit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 480px) {
+  .otp-digit {
+    width: 40px;
+    height: 48px;
+    font-size: 20px;
+  }
+  
+  .otp-input-container {
+    gap: 6px;
+  }
 }
 </style>
 

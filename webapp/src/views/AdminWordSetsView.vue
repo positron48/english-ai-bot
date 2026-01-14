@@ -1,8 +1,5 @@
 <template>
-  <div class="admin-layout">
-    <AdminMenu />
-    
-    <div class="admin-content">
+  <div class="admin-content">
       <h2>Word Sets Management</h2>
     
     <div class="admin-tabs-inner">
@@ -271,7 +268,6 @@
         </div>
       </div>
     </div>
-    </div>
   </div>
 </template>
 
@@ -279,7 +275,6 @@
 import { ref, computed, onMounted } from 'vue'
 import { apiClient } from '../api/client'
 import { showAlert, showConfirm } from '../composables/useDialog'
-import AdminMenu from '../components/AdminMenu.vue'
 
 interface Category {
   id: number
@@ -702,43 +697,13 @@ const deleteWordSet = async () => {
 </script>
 
 <style scoped>
-.admin-layout {
-  display: flex;
-  gap: 20px;
-  min-height: calc(100vh - 60px);
-  font-size: 16px;
-}
-
 .admin-content {
-  flex: 1;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 20px;
   width: 100%;
+  font-size: 16px;
   overflow-x: hidden;
   box-sizing: border-box;
-}
-
-@media (max-width: 767px) {
-  .admin-layout {
-    flex-direction: column;
-    gap: 0;
-  }
-  
-  .admin-content {
-    padding: 10px;
-    margin-top: 60px;
-  }
-}
-
-@media (min-width: 768px) {
-  .admin-layout {
-    padding: 20px;
-  }
-  
-  .admin-content {
-    padding: 20px;
-  }
 }
 
 .admin-tabs-inner {
@@ -1098,6 +1063,10 @@ const deleteWordSet = async () => {
 }
 
 @media (max-width: 768px) {
+  .admin-content {
+    margin-top: 0 !important;
+  }
+
   .admin-word-sets {
     padding: 12px;
   }

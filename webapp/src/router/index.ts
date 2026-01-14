@@ -70,39 +70,40 @@ const router = createRouter({
     },
     {
       path: '/admin',
-      name: 'Admin',
-      component: () => import('../views/AdminView.vue'),
-      meta: { requiresAuth: true, requiresAdmin: true }
-    },
-    {
-      path: '/admin/circuit-breaker',
-      name: 'AdminCircuitBreaker',
-      component: () => import('../views/AdminCircuitBreakerView.vue'),
-      meta: { requiresAuth: true, requiresAdmin: true }
-    },
-    {
-      path: '/admin/prompt-tester',
-      name: 'AdminPromptTester',
-      component: () => import('../views/AdminPromptTesterView.vue'),
-      meta: { requiresAuth: true, requiresAdmin: true }
-    },
-    {
-      path: '/admin/orphaned-cards',
-      name: 'AdminOrphanedCards',
-      component: () => import('../views/AdminOrphanedCardsView.vue'),
-      meta: { requiresAuth: true, requiresAdmin: true }
-    },
-    {
-      path: '/admin/word-sets',
-      name: 'AdminWordSets',
-      component: () => import('../views/AdminWordSetsView.vue'),
-      meta: { requiresAuth: true, requiresAdmin: true }
-    },
-    {
-      path: '/admin/db-schema',
-      name: 'AdminDBSchema',
-      component: () => import('../views/AdminDBSchemaView.vue'),
-      meta: { requiresAuth: true, requiresAdmin: true }
+      component: () => import('../layouts/AdminLayout.vue'),
+      meta: { requiresAuth: true, requiresAdmin: true },
+      children: [
+        {
+          path: '',
+          name: 'Admin',
+          component: () => import('../views/AdminView.vue')
+        },
+        {
+          path: 'circuit-breaker',
+          name: 'AdminCircuitBreaker',
+          component: () => import('../views/AdminCircuitBreakerView.vue')
+        },
+        {
+          path: 'prompt-tester',
+          name: 'AdminPromptTester',
+          component: () => import('../views/AdminPromptTesterView.vue')
+        },
+        {
+          path: 'orphaned-cards',
+          name: 'AdminOrphanedCards',
+          component: () => import('../views/AdminOrphanedCardsView.vue')
+        },
+        {
+          path: 'word-sets',
+          name: 'AdminWordSets',
+          component: () => import('../views/AdminWordSetsView.vue')
+        },
+        {
+          path: 'db-schema',
+          name: 'AdminDBSchema',
+          component: () => import('../views/AdminDBSchemaView.vue')
+        }
+      ]
     },
     {
       path: '/settings',

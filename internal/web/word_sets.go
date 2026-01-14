@@ -42,6 +42,9 @@ func (r *Router) handleLearningWordsCategories(w http.ResponseWriter, req *http.
 		}
 	}
 
+	// Check if we need all categories (for building hierarchy)
+	allCategoriesRequested := req.URL.Query().Get("all") == "true"
+
 	categoryRepo := repository.NewWordSetCategoryRepository(r.db, r.logger)
 	
 	// Get all categories
@@ -54,16 +57,21 @@ func (r *Router) handleLearningWordsCategories(w http.ResponseWriter, req *http.
 
 	// Filter by parent_id
 	var filteredCategories []*models.WordSetCategory
-	for _, cat := range allCategories {
-		if parentID == nil {
-			// Root level - only categories without parent
-			if cat.ParentID == nil {
-				filteredCategories = append(filteredCategories, cat)
-			}
-		} else {
-			// Specific parent - only direct children
-			if cat.ParentID != nil && *cat.ParentID == *parentID {
-				filteredCategories = append(filteredCategories, cat)
+	if allCategoriesRequested {
+		// Return all categories when all=true
+		filteredCategories = allCategories
+	} else {
+		for _, cat := range allCategories {
+			if parentID == nil {
+				// Root level - only categories without parent
+				if cat.ParentID == nil {
+					filteredCategories = append(filteredCategories, cat)
+				}
+			} else {
+				// Specific parent - only direct children
+				if cat.ParentID != nil && *cat.ParentID == *parentID {
+					filteredCategories = append(filteredCategories, cat)
+				}
 			}
 		}
 	}
@@ -83,6 +91,7 @@ func (r *Router) handleLearningWordsCategories(w http.ResponseWriter, req *http.
 		Name        string  `json:"name"`
 		Description *string `json:"description,omitempty"`
 		SortOrder   int     `json:"sort_order"`
+		ParentID    *int64  `json:"parent_id,omitempty"`
 	}
 
 	result := make([]CategoryNode, 0, len(filteredCategories))
@@ -92,6 +101,7 @@ func (r *Router) handleLearningWordsCategories(w http.ResponseWriter, req *http.
 			Name:        cat.Name,
 			Description: cat.Description,
 			SortOrder:   cat.SortOrder,
+			ParentID:    cat.ParentID,
 		})
 	}
 

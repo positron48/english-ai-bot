@@ -9,7 +9,7 @@
     </div>
     
     <!-- Desktop Navbar -->
-    <nav v-if="isAuthenticated" class="navbar navbar-desktop">
+    <nav v-if="isAuthenticated && !isAdminRoute" class="navbar navbar-desktop">
       <div class="container">
         <div class="nav-links">
           <div class="nav-left">
@@ -53,8 +53,8 @@
       </div>
     </nav>
     
-    <main class="container" :class="{ 'with-mobile-footer': isAuthenticated && isMobile, 'with-desktop-navbar': isAuthenticated && !isMobile }">
-      <Breadcrumbs v-if="isAuthenticated && mounted" />
+    <main class="container" :class="{ 'with-mobile-footer': isAuthenticated && isMobile && !isAdminRoute, 'with-desktop-navbar': isAuthenticated && !isMobile && !isAdminRoute }">
+      <Breadcrumbs v-if="isAuthenticated && mounted && !isAdminRoute" />
       <router-view v-if="mounted" />
       <div v-else style="padding: 20px; text-align: center;">
         Loading...
@@ -62,7 +62,7 @@
     </main>
     
     <!-- Mobile Footer Navigation -->
-    <nav v-if="isAuthenticated" class="navbar-mobile">
+    <nav v-if="isAuthenticated && !isAdminRoute" class="navbar-mobile">
       <div class="mobile-nav-main">
         <router-link to="/dashboard" class="mobile-nav-item" title="Dashboard">
           <Icon name="dashboard" class="mobile-nav-icon" />
@@ -96,7 +96,7 @@
     <div v-if="showSidebar" class="sidebar-overlay" @click="showSidebar = false"></div>
     
     <!-- Sidebar -->
-    <aside v-if="isAuthenticated && showSidebar" class="sidebar" :class="{ open: showSidebar }">
+    <aside v-if="isAuthenticated && showSidebar && !isAdminRoute" class="sidebar" :class="{ open: showSidebar }">
       <div class="sidebar-header">
         <h3>Menu</h3>
         <button @click="showSidebar = false" class="sidebar-close">×</button>
@@ -150,6 +150,10 @@ import Breadcrumbs from './components/Breadcrumbs.vue'
 const router = useRouter()
 const route = useRoute()
 const { isAuthenticated, isAdmin, logout: authLogout } = useAuth()
+
+const isAdminRoute = computed(() => {
+  return route.path.startsWith('/admin')
+})
 const { theme, toggleTheme } = useTheme()
 const { alertState, confirmState, closeAlert, closeConfirm } = useDialog()
 

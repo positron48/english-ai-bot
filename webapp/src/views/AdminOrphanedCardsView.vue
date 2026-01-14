@@ -1,8 +1,5 @@
 <template>
-  <div class="admin-layout">
-    <AdminMenu />
-    
-    <div class="admin-content">
+  <div class="admin-content">
       <!-- Orphaned Training Cards Block -->
       <div class="card">
       <h2>Orphaned Training Cards</h2>
@@ -170,7 +167,6 @@
         </button>
       </div>
     </div>
-    </div>
   </div>
 </template>
 
@@ -178,7 +174,6 @@
 import { ref, onMounted } from 'vue'
 import { apiClient } from '../api/client'
 import { showAlert, showConfirm } from '../composables/useDialog'
-import AdminMenu from '../components/AdminMenu.vue'
 
 interface OrphanedTrainingCard {
   id: number
@@ -458,41 +453,11 @@ const formatDateAbsolute = (dateStr: string | null | undefined): string => {
 </script>
 
 <style scoped>
-.admin-layout {
-  display: flex;
-  gap: 20px;
-  min-height: calc(100vh - 60px);
-  font-size: 16px;
-}
-
 .admin-content {
-  flex: 1;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 10px;
   width: 100%;
-}
-
-@media (max-width: 767px) {
-  .admin-layout {
-    flex-direction: column;
-    gap: 0;
-  }
-  
-  .admin-content {
-    padding: 10px;
-    margin-top: 60px;
-  }
-}
-
-@media (min-width: 768px) {
-  .admin-layout {
-    padding: 20px;
-  }
-  
-  .admin-content {
-    padding: 0;
-  }
+  font-size: 16px;
 }
 
 .admin h1 {
@@ -678,6 +643,10 @@ const formatDateAbsolute = (dateStr: string | null | undefined): string => {
 }
 
 @media (max-width: 768px) {
+  .admin-content {
+    margin-top: 0 !important;
+  }
+
   .admin-tab {
     padding: 10px 16px;
   }

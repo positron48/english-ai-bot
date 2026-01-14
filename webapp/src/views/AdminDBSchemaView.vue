@@ -1,8 +1,5 @@
 <template>
-  <div class="admin-layout">
-    <AdminMenu />
-    
-    <div class="admin-content">
+  <div class="admin-content">
       <div class="db-schema-view">
       <div class="header">
         <h2>Database Schema</h2>
@@ -65,7 +62,6 @@
       </div>
     </div>
     </div>
-    </div>
   </div>
 </template>
 
@@ -75,7 +71,6 @@ import { Network } from 'vis-network'
 import { DataSet } from 'vis-data'
 import type { Node, Edge } from 'vis-network'
 import { apiClient } from '../api/client'
-import AdminMenu from '../components/AdminMenu.vue'
 
 interface TableColumn {
   name: string
@@ -438,41 +433,11 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.admin-layout {
-  display: flex;
-  gap: 20px;
-  min-height: calc(100vh - 60px);
-  font-size: 16px;
-}
-
 .admin-content {
-  flex: 1;
   max-width: 100%;
   margin: 0 auto;
-  padding: 10px;
   width: 100%;
-}
-
-@media (max-width: 767px) {
-  .admin-layout {
-    flex-direction: column;
-    gap: 0;
-  }
-  
-  .admin-content {
-    padding: 10px;
-    margin-top: 60px;
-  }
-}
-
-@media (min-width: 768px) {
-  .admin-layout {
-    padding: 20px;
-  }
-  
-  .admin-content {
-    padding: 0;
-  }
+  font-size: 16px;
 }
 
 .db-schema-view {

@@ -1,8 +1,5 @@
 <template>
-  <div class="admin-layout">
-    <AdminMenu />
-    
-    <div class="admin-content">
+  <div class="admin-content">
       <div class="card">
       <h2>Words Management</h2>
       <div class="words-filters">
@@ -567,7 +564,6 @@
           </div>
         </div>
       </div>
-    </div>
   </div>
 </template>
 
@@ -575,7 +571,6 @@
 import { ref, onMounted, computed } from 'vue'
 import { apiClient } from '../api/client'
 import { showAlert, showConfirm } from '../composables/useDialog'
-import AdminMenu from '../components/AdminMenu.vue'
 import Icon from '../components/Icon.vue'
 
 
@@ -1371,41 +1366,11 @@ const handleSort = (column: string) => {
 </script>
 
 <style scoped>
-.admin-layout {
-  display: flex;
-  gap: 20px;
-  min-height: calc(100vh - 60px);
-  font-size: 16px;
-}
-
 .admin-content {
-  flex: 1;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 10px;
   width: 100%;
-}
-
-@media (max-width: 767px) {
-  .admin-layout {
-    flex-direction: column;
-    gap: 0;
-  }
-  
-  .admin-content {
-    padding: 10px;
-    margin-top: 60px; /* Space for mobile menu button */
-  }
-}
-
-@media (min-width: 768px) {
-  .admin-layout {
-    padding: 20px;
-  }
-  
-  .admin-content {
-    padding: 0;
-  }
+  font-size: 16px;
 }
 
 .admin h1 {
@@ -2045,6 +2010,10 @@ const handleSort = (column: string) => {
 }
 
 @media (max-width: 767px) {
+  .admin-content {
+    margin-top: 0 !important;
+  }
+
   .desktop-only {
     display: none;
   }

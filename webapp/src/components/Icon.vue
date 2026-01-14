@@ -105,12 +105,30 @@
     <svg v-else-if="name === 'chevron-right'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <polyline points="9 18 15 12 9 6"/>
     </svg>
+    <svg v-else-if="name === 'code'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="16 18 22 12 16 6"/>
+      <polyline points="8 6 2 12 8 18"/>
+    </svg>
+    <svg v-else-if="name === 'database'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <ellipse cx="12" cy="5" rx="9" ry="3"/>
+      <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
+      <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+    </svg>
+    <svg v-else-if="name === 'toggle'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="1" y="5" width="22" height="14" rx="7" ry="7"/>
+      <circle cx="8" cy="12" r="3"/>
+    </svg>
+    <svg v-else-if="name === 'menu'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="3" y1="12" x2="21" y2="12"/>
+      <line x1="3" y1="6" x2="21" y2="6"/>
+      <line x1="3" y1="18" x2="21" y2="18"/>
+    </svg>
   </span>
 </template>
 
 <script setup lang="ts">
 defineProps<{
-  name: 'warning' | 'sun' | 'moon' | 'book' | 'sparkles' | 'book-open' | 'refresh' | 'settings' | 'logout' | 'dashboard' | 'target' | 'chat' | 'more' | 'gear' | 'play' | 'shield' | 'arrow-left' | 'folder' | 'close' | 'chevron-down' | 'chevron-right' | 'plus' | 'magic' | 'edit' | 'trash' | 'home'
+  name: 'warning' | 'sun' | 'moon' | 'book' | 'sparkles' | 'book-open' | 'refresh' | 'settings' | 'logout' | 'dashboard' | 'target' | 'chat' | 'more' | 'gear' | 'play' | 'shield' | 'arrow-left' | 'folder' | 'close' | 'chevron-down' | 'chevron-right' | 'plus' | 'magic' | 'edit' | 'trash' | 'home' | 'code' | 'database' | 'toggle' | 'menu'
   dark?: boolean
 }>()
 </script>
