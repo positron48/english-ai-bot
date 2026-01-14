@@ -54,6 +54,7 @@
     </nav>
     
     <main class="container" :class="{ 'with-mobile-footer': isAuthenticated && isMobile, 'with-desktop-navbar': isAuthenticated && !isMobile }">
+      <Breadcrumbs v-if="isAuthenticated && mounted" />
       <router-view v-if="mounted" />
       <div v-else style="padding: 20px; text-align: center;">
         Loading...
@@ -144,6 +145,7 @@ import { useDialog } from './composables/useDialog'
 import Icon from './components/Icon.vue'
 import AlertModal from './components/AlertModal.vue'
 import ConfirmModal from './components/ConfirmModal.vue'
+import Breadcrumbs from './components/Breadcrumbs.vue'
 
 const router = useRouter()
 const route = useRoute()

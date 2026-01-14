@@ -95,6 +95,24 @@ func TestCalculateQuality(t *testing.T) {
 			},
 			expected: QualityGood,
 		},
+		{
+			name: "Correct but very slow (> 30 seconds) - should be average",
+			data: AttemptData{
+				Correct:      true,
+				EarlyReveal:  false,
+				AnswerTimeMS: 35000, // > VerySlowThresholdMS (30000)
+			},
+			expected: QualityGood, // Should be average, not hard
+		},
+		{
+			name: "Correct with early reveal but very slow (> 30 seconds) - should be average",
+			data: AttemptData{
+				Correct:      true,
+				EarlyReveal:  true,
+				AnswerTimeMS: 35000, // > VerySlowThresholdMS (30000)
+			},
+			expected: QualityGood, // Should be average, not hard (very slow overrides early reveal)
+		},
 	}
 
 	for _, tt := range tests {

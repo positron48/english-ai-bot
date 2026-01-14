@@ -16,6 +16,7 @@ const (
 	// Quality thresholds (in milliseconds)
 	FastThresholdMS = 2500
 	SlowThresholdMS = 8000
+	VerySlowThresholdMS = 30000 // 30 seconds - if answer time is longer, consider it as average (user was distracted)
 	
 	// Delay for showing options (in milliseconds)
 	OptionsDelayMS = 3000
@@ -86,9 +87,15 @@ func CalculateQuality(data AttemptData) Quality {
 	
 	// If correct, determine quality based on timing and early reveal
 	
+	// If answer time is very large (> 30 seconds), consider it as average (QualityGood)
+	// because the user was likely distracted and not actually thinking about the question
+	if data.AnswerTimeMS > VerySlowThresholdMS {
+		return QualityGood
+	}
+	
 	// Quality 1 (Hard) if:
 	// - User clicked "show options" early OR
-	// - Answer time was very slow
+	// - Answer time was slow (but not very slow)
 	if data.EarlyReveal || data.AnswerTimeMS > SlowThresholdMS {
 		return QualityHard
 	}
