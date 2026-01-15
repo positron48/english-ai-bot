@@ -27,7 +27,7 @@ func ValidateTrainingCardResponse(wordCard *models.WordCard, resp *models.Traini
 
 		// R1: distractors_en не должны содержать кириллицу
 		for i, distractor := range sense.DistractorsEN {
-			if containsCyrillic(distractor) {
+			if ContainsCyrillic(distractor) {
 				errors = append(errors, fmt.Sprintf("R1 sense=%d distractor_en[%d]=%q contains Cyrillic", senseIdx, i, truncate(distractor, 50)))
 			}
 		}
@@ -115,8 +115,8 @@ func ValidateTrainingCardResponse(wordCard *models.WordCard, resp *models.Traini
 	return ""
 }
 
-// containsCyrillic checks if a string contains any Cyrillic characters
-func containsCyrillic(s string) bool {
+// ContainsCyrillic checks if a string contains any Cyrillic characters
+func ContainsCyrillic(s string) bool {
 	for _, r := range s {
 		if unicode.Is(unicode.Cyrillic, r) {
 			return true

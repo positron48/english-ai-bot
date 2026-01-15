@@ -63,6 +63,15 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 	normalizedWord := s.NormalizeWord(word)
 	inputWord := word // Keep original for history
 
+	// Check if word contains Cyrillic characters - don't save to DB
+	if ContainsCyrillic(normalizedWord) {
+		s.logger.Info("word contains Cyrillic, not saving to database",
+			zap.String("word", normalizedWord),
+			zap.Int64("user_id", userID),
+		)
+		return "💡 Пожалуйста, введите слово на английском языке.", nil
+	}
+
 	// Step 1: Try to resolve word form to lemma via word_forms table
 	wordForm, err := s.wordRepo.GetWordFormMapping(normalizedWord)
 	if err != nil {
@@ -235,7 +244,23 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 		}
 	}
 
-	// Step 5: Save structured data to word_cards (lemma)
+	// Step 5: Check if we have valid data (definition_ru is required for valid word card)
+	// If no valid data, don't save to database
+	// hasDefinitionRU already declared above, just check it again
+	if !hasDefinitionRU {
+		s.logger.Info("LLM did not return valid word card (no definition_ru), not saving to database",
+			zap.String("word", normalizedWord),
+			zap.Int64("user_id", userID),
+		)
+		// Return hint if available, otherwise default message
+		hint := strings.TrimSpace(wordInfo.Hint)
+		if hint != "" {
+			return fmt.Sprintf("💡 %s", hint), nil
+		}
+		return "💡 Это слово, скорее всего, опечатка или несуществующее английское слово.", nil
+	}
+
+	// Step 6: Save structured data to word_cards (lemma)
 	lemma := strings.ToLower(wordInfo.Lemma)
 	if lemma == "" {
 		lemma = normalizedWord
@@ -275,7 +300,7 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 		return "", fmt.Errorf("failed to save word card: %w", err)
 	}
 
-	// Step 6: Create word form mappings
+	// Step 7: Create word form mappings
 	// Map input word to lemma
 	if normalizedWord != lemma {
 		if err := s.wordRepo.UpsertWordFormMapping(normalizedWord, wordCardID); err != nil {
@@ -306,12 +331,12 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 		}
 	}
 
-	// Step 7: Record request history
+	// Step 8: Record request history
 	if err := s.wordRepo.AddWordRequestHistoryWithCard(userID, inputWord, &wordCardID, nil); err != nil {
 		s.logger.Warn("failed to add word request history", zap.Error(err))
 	}
 
-	// Step 8: Render and return markdown
+	// Step 9: Render and return markdown
 	markdown := s.renderWordCardMarkdown(wordCard)
 	return markdown, nil
 }
