@@ -334,6 +334,8 @@ func (r *WordSetRepository) GetWordSetWords(wordSetID, userID int64) ([]*models.
 	args := []interface{}{userID, userID}
 
 	// If preferred_pos is set, join with training cards to get data from matching card
+	// Use LEFT JOIN to show all words, but prefer data from matching POS card
+	// Use case-insensitive comparison for POS (LOWER() for SQLite compatibility)
 	if wordSet.PreferredPOS != nil && *wordSet.PreferredPOS != "" {
 		query += `,
 			COALESCE(
@@ -351,7 +353,7 @@ func (r *WordSetRepository) GetWordSetWords(wordSetID, userID int64) ([]*models.
 		query += `
 		FROM word_set_items wsi
 		INNER JOIN word_cards wc ON wsi.word_card_id = wc.id
-		LEFT JOIN training_cards tc_pref ON wc.id = tc_pref.word_card_id AND tc_pref.pos = ?`
+		LEFT JOIN training_cards tc_pref ON wc.id = tc_pref.word_card_id AND LOWER(COALESCE(tc_pref.pos, '')) = LOWER(?)`
 		args = append(args, *wordSet.PreferredPOS)
 	} else {
 		query += `,

@@ -507,14 +507,15 @@ func (r *Router) handleLearningWordsSetStudy(w http.ResponseWriter, req *http.Re
 	// Select training card based on preferred_pos if set
 	var selectedCard *models.TrainingCard
 	if wordSet.PreferredPOS != nil && *wordSet.PreferredPOS != "" {
-		// Try to find card with matching POS
+		// Try to find card with matching POS (case-insensitive comparison)
+		preferredPOSLower := strings.ToLower(*wordSet.PreferredPOS)
 		for _, card := range trainingCards {
-			if card.POS != nil && *card.POS == *wordSet.PreferredPOS {
+			if card.POS != nil && strings.ToLower(*card.POS) == preferredPOSLower {
 				selectedCard = card
 				break
 			}
 		}
-		// If no matching POS found, fall back to first card
+		// If no matching POS found, fall back to first card (show word anyway)
 		if selectedCard == nil && len(trainingCards) > 0 {
 			selectedCard = trainingCards[0]
 		}
