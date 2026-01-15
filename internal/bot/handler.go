@@ -2,9 +2,11 @@ package bot
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"strconv"
 	"strings"
+	"time"
 
 	"tgbot-skeleton/internal/ai"
 	"tgbot-skeleton/internal/config"
@@ -29,6 +31,7 @@ type Handler struct {
 	userCardRepo       *repository.UserCardRepository
 	cbService          *service.CircuitBreakerService
 	config             *config.Config
+	db                 *sql.DB
 }
 
 // NewHandler creates a new handler
@@ -43,6 +46,7 @@ func NewHandler(
 	userCardRepo *repository.UserCardRepository,
 	cbService *service.CircuitBreakerService,
 	config *config.Config,
+	db *sql.DB,
 ) *Handler {
 	return &Handler{
 		bot:              bot,
@@ -55,6 +59,7 @@ func NewHandler(
 		userCardRepo:     userCardRepo,
 		cbService:        cbService,
 		config:           config,
+		db:               db,
 	}
 }
 
@@ -105,6 +110,8 @@ func (h *Handler) handleCommand(ctx context.Context, message *tgbotapi.Message) 
 		h.sendMessage(chatID, h.config.Bot.HelpMessage)
 	case "train":
 		h.handleTrainCommand(ctx, chatID, userID)
+	case "stats":
+		h.handleStatsCommand(ctx, chatID, userID)
 	case "get_id":
 		h.handleGetIDCommand(chatID, userID)
 	case "reset_circuit":
@@ -145,6 +152,141 @@ func (h *Handler) handleTrainCommand(ctx context.Context, chatID, userID int64) 
 			h.sendMessage(chatID, "Не удалось начать тренировку. Попробуйте позже.")
 		}
 	}
+}
+
+// handleStatsCommand handles /stats command
+func (h *Handler) handleStatsCommand(ctx context.Context, chatID, userID int64) {
+	// Ensure user exists and get internal user ID
+	user, err := h.userRepo.GetOrCreateUser(userID)
+	if err != nil {
+		h.logger.Error("failed to get/create user", zap.Error(err))
+		h.sendMessage(chatID, "Произошла ошибка. Попробуйте позже.")
+		return
+	}
+
+	internalUserID := user.ID
+	now := time.Now()
+
+	// Get new cards count (exclude orphaned cards - those with non-existent training_cards or word_cards)
+	// Excludes words marked as "known" in user_word_knowledge (same as GetNewCards)
+	newQuery := `SELECT COUNT(*) 
+		FROM user_cards uc
+		INNER JOIN training_cards tc ON uc.training_card_id = tc.id
+		INNER JOIN word_cards wc ON tc.word_card_id = wc.id
+		WHERE uc.user_id = ? AND uc.state = 'new'
+		AND NOT EXISTS (
+			SELECT 1 FROM user_word_knowledge uwk 
+			WHERE uwk.user_id = ? AND uwk.word_card_id = tc.word_card_id AND uwk.status = 'known'
+		)`
+	var newCount int
+	err = h.db.QueryRow(newQuery, internalUserID, internalUserID).Scan(&newCount)
+	if err != nil {
+		h.logger.Error("failed to get new cards count", zap.Error(err))
+		newCount = 0
+	}
+
+	// Get due count (cards ready for review, excluding new cards and orphaned cards)
+	// Excludes words marked as "known" in user_word_knowledge (same as GetDueCards)
+	dueQuery := `SELECT COUNT(*) 
+		FROM user_cards uc
+		INNER JOIN training_cards tc ON uc.training_card_id = tc.id
+		INNER JOIN word_cards wc ON tc.word_card_id = wc.id
+		WHERE uc.user_id = ? AND uc.state != 'new' AND (uc.next_due_at IS NULL OR uc.next_due_at <= ?)
+		AND NOT EXISTS (
+			SELECT 1 FROM user_word_knowledge uwk 
+			WHERE uwk.user_id = ? AND uwk.word_card_id = tc.word_card_id AND uwk.status = 'known'
+		)`
+	var dueCount int
+	err = h.db.QueryRow(dueQuery, internalUserID, now, internalUserID).Scan(&dueCount)
+	if err != nil {
+		h.logger.Error("failed to get due count", zap.Error(err))
+		dueCount = 0
+	}
+
+	// Get learning cards count (exclude orphaned cards)
+	learningQuery := `SELECT COUNT(*) 
+		FROM user_cards uc
+		INNER JOIN training_cards tc ON uc.training_card_id = tc.id
+		INNER JOIN word_cards wc ON tc.word_card_id = wc.id
+		WHERE uc.user_id = ? AND uc.state = 'learning'`
+	var learningCount int
+	err = h.db.QueryRow(learningQuery, internalUserID).Scan(&learningCount)
+	if err != nil {
+		h.logger.Error("failed to get learning count", zap.Error(err))
+		learningCount = 0
+	}
+
+	// Get review cards count (exclude orphaned cards)
+	reviewQuery := `SELECT COUNT(*) 
+		FROM user_cards uc
+		INNER JOIN training_cards tc ON uc.training_card_id = tc.id
+		INNER JOIN word_cards wc ON tc.word_card_id = wc.id
+		WHERE uc.user_id = ? AND uc.state = 'review'`
+	var reviewCount int
+	err = h.db.QueryRow(reviewQuery, internalUserID).Scan(&reviewCount)
+	if err != nil {
+		h.logger.Error("failed to get review count", zap.Error(err))
+		reviewCount = 0
+	}
+
+	// Calculate available cards for training
+	availableForTraining := dueCount
+	if newCount > 0 {
+		availableForTraining += newCount
+	}
+
+	// Get total cards count (exclude orphaned cards)
+	totalQuery := `SELECT COUNT(*) 
+		FROM user_cards uc
+		INNER JOIN training_cards tc ON uc.training_card_id = tc.id
+		INNER JOIN word_cards wc ON tc.word_card_id = wc.id
+		WHERE uc.user_id = ?`
+	var totalCards int
+	err = h.db.QueryRow(totalQuery, internalUserID).Scan(&totalCards)
+	if err != nil {
+		h.logger.Error("failed to get total cards count", zap.Error(err))
+		totalCards = 0
+	}
+
+	// Get accuracy (last 30 days)
+	monthAgo := now.AddDate(0, 0, -30)
+	var totalReviews int
+	var correctReviews int
+	accuracyQuery := `SELECT 
+		COUNT(*) as total,
+		SUM(CASE WHEN is_correct = 1 THEN 1 ELSE 0 END) as correct
+		FROM review_events 
+		WHERE user_id = ? AND answered_at >= ? AND answered_at IS NOT NULL`
+	err = h.db.QueryRow(accuracyQuery, internalUserID, monthAgo).Scan(&totalReviews, &correctReviews)
+	if err != nil {
+		h.logger.Error("failed to get accuracy", zap.Error(err))
+		totalReviews = 0
+		correctReviews = 0
+	}
+
+	var accuracyPercent float64
+	if totalReviews > 0 {
+		accuracyPercent = float64(correctReviews) / float64(totalReviews) * 100
+	}
+
+	// Format message
+	var message strings.Builder
+	message.WriteString("📊 *Статистика*\n\n")
+	message.WriteString("*Карточки:*\n")
+	message.WriteString(fmt.Sprintf("• Доступно для тренировки: *%d*\n", availableForTraining))
+	message.WriteString(fmt.Sprintf("• Новые: *%d*\n", newCount))
+	message.WriteString(fmt.Sprintf("• В изучении: *%d*\n", learningCount))
+	message.WriteString(fmt.Sprintf("• На повторении: *%d*\n", reviewCount))
+	message.WriteString(fmt.Sprintf("• Всего карточек: *%d*\n\n", totalCards))
+	message.WriteString("*Точность (30 дней):*\n")
+	if totalReviews > 0 {
+		message.WriteString(fmt.Sprintf("• Правильных ответов: *%.1f%%*\n", accuracyPercent))
+		message.WriteString(fmt.Sprintf("• Всего ответов: *%d*\n", totalReviews))
+	} else {
+		message.WriteString("• Пока нет данных\n")
+	}
+
+	h.sendMessage(chatID, message.String())
 }
 
 // handleGetIDCommand handles /get_id command

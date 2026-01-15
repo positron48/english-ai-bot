@@ -2,6 +2,7 @@ package bot
 
 import (
 	"context"
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"sync"
@@ -29,6 +30,7 @@ type TrainingHandler struct {
 	sessionsMutex          sync.RWMutex
 	optionsDelayMS         int
 	wrongAnswerDelaySeconds int
+	db                     *sql.DB
 }
 
 // SessionState holds the state of an active training session
@@ -63,6 +65,7 @@ func NewTrainingHandler(
 	logger *zap.Logger,
 	optionsDelayMS int,
 	wrongAnswerDelaySeconds int,
+	db *sql.DB,
 ) *TrainingHandler {
 	return &TrainingHandler{
 		bot:                    bot,
@@ -74,6 +77,7 @@ func NewTrainingHandler(
 		sessions:               make(map[int64]*SessionState),
 		optionsDelayMS:          optionsDelayMS,
 		wrongAnswerDelaySeconds: wrongAnswerDelaySeconds,
+		db:                     db,
 	}
 }
 
@@ -552,6 +556,52 @@ func (h *TrainingHandler) finishSession(chatID int64) error {
 		}
 	}
 
+	// Check how many cards are still available for training
+	now := time.Now()
+	var availableForTraining int
+	if h.db != nil {
+		// Get due count (cards ready for review, excluding new cards and orphaned cards)
+		// Excludes words marked as "known" in user_word_knowledge
+		dueQuery := `SELECT COUNT(*) 
+			FROM user_cards uc
+			INNER JOIN training_cards tc ON uc.training_card_id = tc.id
+			INNER JOIN word_cards wc ON tc.word_card_id = wc.id
+			WHERE uc.user_id = ? AND uc.state != 'new' AND (uc.next_due_at IS NULL OR uc.next_due_at <= ?)
+			AND NOT EXISTS (
+				SELECT 1 FROM user_word_knowledge uwk 
+				WHERE uwk.user_id = ? AND uwk.word_card_id = tc.word_card_id AND uwk.status = 'known'
+			)`
+		var dueCount int
+		err := h.db.QueryRow(dueQuery, state.UserID, now, state.UserID).Scan(&dueCount)
+		if err != nil {
+			h.logger.Error("failed to get due count", zap.Error(err))
+			dueCount = 0
+		}
+
+		// Get new cards count (exclude orphaned cards)
+		// Excludes words marked as "known" in user_word_knowledge
+		newQuery := `SELECT COUNT(*) 
+			FROM user_cards uc
+			INNER JOIN training_cards tc ON uc.training_card_id = tc.id
+			INNER JOIN word_cards wc ON tc.word_card_id = wc.id
+			WHERE uc.user_id = ? AND uc.state = 'new'
+			AND NOT EXISTS (
+				SELECT 1 FROM user_word_knowledge uwk 
+				WHERE uwk.user_id = ? AND uwk.word_card_id = tc.word_card_id AND uwk.status = 'known'
+			)`
+		var newCount int
+		err = h.db.QueryRow(newQuery, state.UserID, state.UserID).Scan(&newCount)
+		if err != nil {
+			h.logger.Error("failed to get new cards count", zap.Error(err))
+			newCount = 0
+		}
+
+		availableForTraining = dueCount
+		if newCount > 0 {
+			availableForTraining += newCount
+		}
+	}
+
 	// Send completion message with statistics
 	var message string
 	if totalCards > 0 {
@@ -561,15 +611,24 @@ func (h *TrainingHandler) finishSession(chatID int64) error {
 				"📊 Результаты:\n"+
 				"• Всего карточек: %d\n"+
 				"• Правильных ответов: %d\n"+
-				"• Точность: %d%%\n\n"+
-				"Отличная работа! До встречи завтра.",
+				"• Точность: %d%%",
 			totalCards, correctCards, accuracy,
 		)
 	} else {
 		message = fmt.Sprintf(
-			"🎉 Тренировка завершена!\n\nВы прошли %d карточек.\n\nОтличная работа! До встречи завтра.",
+			"🎉 Тренировка завершена!\n\nВы прошли %d карточек.",
 			doneCount,
 		)
+	}
+
+	// Add message about available cards or goodbye message
+	if availableForTraining > 0 {
+		message += fmt.Sprintf(
+			"\n\n💡 У вас еще %d карточек для тренировки.\n\nПродолжить тренировку? Используйте /train",
+			availableForTraining,
+		)
+	} else {
+		message += "\n\nОтличная работа! До встречи завтра."
 	}
 
 	h.sendMessage(chatID, message)

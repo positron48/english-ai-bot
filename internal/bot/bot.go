@@ -116,10 +116,10 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 	cbService := service.NewCircuitBreakerService(cbRepo, cfg.Training.CircuitBreakerThreshold, log)
 
 	// Create training handler
-	trainingHandler := NewTrainingHandler(bot, trainingService, srsService, optionsService, sessionRepo, log, cfg.Training.OptionsDelayMS, cfg.Training.WrongAnswerDelaySeconds)
+	trainingHandler := NewTrainingHandler(bot, trainingService, srsService, optionsService, sessionRepo, log, cfg.Training.OptionsDelayMS, cfg.Training.WrongAnswerDelaySeconds, conn)
 
 	// Create handler
-	handler := NewHandler(bot, log, aiService, wordService, trainingHandler, userRepo, trainingCardRepo, userCardRepo, cbService, cfg)
+	handler := NewHandler(bot, log, aiService, wordService, trainingHandler, userRepo, trainingCardRepo, userCardRepo, cbService, cfg, conn)
 
 	// Create training worker
 	var trainingWorker *service.TrainingWorker
@@ -225,6 +225,7 @@ func (b *Bot) registerCommands() {
 		{Command: "start", Description: "Начать работу с ботом"},
 		{Command: "help", Description: "Помощь"},
 		{Command: "train", Description: "Начать тренировку слов"},
+		{Command: "stats", Description: "Статистика по карточкам"},
 	}
 
 	if _, err := b.api.Request(tgbotapi.NewSetMyCommands(commands...)); err != nil {
