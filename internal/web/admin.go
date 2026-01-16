@@ -1057,6 +1057,98 @@ func (r *Router) handleAdminWord(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	if req.Method == http.MethodPost && action == "generate" {
+		// Generate word card data via LLM (AI fill)
+		// Get existing word card
+		existingCard, err := wordRepo.GetWordCardByID(wordCardID)
+		if err != nil {
+			r.logger.Error("failed to get word card", zap.Error(err), zap.Int64("word_card_id", wordCardID))
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
+		}
+		if existingCard == nil {
+			http.Error(w, "Word card not found", http.StatusNotFound)
+			return
+		}
+
+		// Get AI service
+		var aiService *ai.Service
+		if r.aiService != nil {
+			if svc, ok := r.aiService.(*ai.Service); ok {
+				aiService = svc
+			}
+		}
+		if aiService == nil {
+			http.Error(w, "AI service not available", http.StatusInternalServerError)
+			return
+		}
+
+		// Generate word card data via LLM
+		ctx := req.Context()
+		response, err := aiService.GenerateResponse(ctx, existingCard.Word)
+		if err != nil {
+			r.logger.Error("failed to generate word card data", zap.Error(err), zap.String("word", existingCard.Word))
+			http.Error(w, "Failed to generate word card data: "+err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		// Parse JSON response
+		var wordInfo models.WordInfoResponse
+		if err := json.Unmarshal([]byte(response), &wordInfo); err != nil {
+			// Not JSON, return error
+			r.logger.Error("failed to parse LLM response as JSON", zap.Error(err), zap.String("response", response))
+			http.Error(w, "Failed to parse LLM response: "+err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		// Check for error from LLM
+		if wordInfo.Error.IsTrue() {
+			http.Error(w, "LLM error: "+wordInfo.Error.Message, http.StatusBadRequest)
+			return
+		}
+
+		// Prepare examples JSON
+		var examplesJSON string
+		if len(wordInfo.Examples) > 0 {
+			examplesBytes, err := json.Marshal(wordInfo.Examples)
+			if err == nil {
+				examplesJSON = string(examplesBytes)
+			}
+		}
+
+		// Prepare verb forms JSON
+		var verbFormsJSON string
+		if wordInfo.VerbForms != nil {
+			verbFormsBytes, err := json.Marshal(wordInfo.VerbForms)
+			if err == nil {
+				verbFormsJSON = string(verbFormsBytes)
+			}
+		}
+
+		// Determine display_en
+		displayEN := wordInfo.Lemma
+		if wordInfo.POS == "verb" && wordInfo.VerbForms != nil && wordInfo.VerbForms.V1 != "" {
+			displayEN = "to " + wordInfo.VerbForms.V1
+		}
+
+		// Return generated word card data (not saved to DB yet)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"success": true,
+			"word_card": map[string]interface{}{
+				"word":             wordInfo.Lemma,
+				"pos":              wordInfo.POS,
+				"transcription":    wordInfo.Transcription,
+				"definition_ru":    wordInfo.DefinitionRU,
+				"examples_json":    examplesJSON,
+				"verb_forms_json":  verbFormsJSON,
+				"display_en":       displayEN,
+			},
+		})
+		return
+	}
+
 	if req.Method == http.MethodDelete {
 		// Delete word card (CASCADE will delete related training_cards, user_cards, and word_request_history)
 		err := wordRepo.DeleteWordCard(wordCardID)

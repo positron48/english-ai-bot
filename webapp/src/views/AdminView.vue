@@ -321,6 +321,9 @@
                 <textarea v-model="editWordForm.definition" class="form-textarea" rows="5"></textarea>
               </div>
               <div class="form-actions">
+                <button type="button" @click="generateWordCardData" class="btn btn-secondary" :disabled="generatingWordData">
+                  {{ generatingWordData ? 'Generating...' : 'AI Fill' }}
+                </button>
                 <button type="submit" class="btn btn-primary">Save</button>
                 <button type="button" @click="closeEditWordModal" class="btn">Cancel</button>
               </div>
@@ -340,6 +343,7 @@
             <div class="form-group">
               <label>Constraints (optional):</label>
               <textarea 
+                ref="generateCardConstraintsTextarea"
                 v-model="generateCardConstraints" 
                 class="form-textarea" 
                 rows="5"
@@ -568,7 +572,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch, nextTick } from 'vue'
 import { apiClient } from '../api/client'
 import { showAlert, showConfirm } from '../composables/useDialog'
 import Icon from '../components/Icon.vue'
@@ -667,6 +671,8 @@ const wordToCreateCard = ref<WordCard | null>(null)
 const wordToGenerateCard = ref<WordCard | null>(null)
 const generateCardConstraints = ref('')
 const generatingCard = ref(false)
+const generateCardConstraintsTextarea = ref<HTMLTextAreaElement | null>(null)
+const generatingWordData = ref(false)
 const editCardForm = ref({
   word_en: '',
   pos: '',
@@ -1003,6 +1009,12 @@ const generateAdditionalCard = (word: WordCard) => {
   wordToGenerateCard.value = word
   generateCardConstraints.value = ''
   showGenerateCardModal.value = true
+  // Focus textarea after modal opens
+  nextTick(() => {
+    if (generateCardConstraintsTextarea.value) {
+      generateCardConstraintsTextarea.value.focus()
+    }
+  })
 }
 
 const closeGenerateCardModal = () => {
@@ -1167,6 +1179,54 @@ const startEditWord = (word: WordCard) => {
 const closeEditWordModal = () => {
   showEditWordModal.value = false
   wordToEdit.value = null
+}
+
+const generateWordCardData = async () => {
+  if (!wordToEdit.value || generatingWordData.value) return
+  
+  generatingWordData.value = true
+  try {
+    const response: any = await apiClient.request(`/api/admin/words/${wordToEdit.value.ID}/generate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    })
+    
+    if (response.success && response.word_card) {
+      const wordCard = response.word_card
+      
+      // Fill edit form with generated data
+      if (wordCard.word) {
+        editWordForm.value.word = wordCard.word
+      }
+      if (wordCard.pos) {
+        editWordForm.value.pos = wordCard.pos
+      }
+      if (wordCard.transcription) {
+        editWordForm.value.transcription = wordCard.transcription
+      }
+      if (wordCard.definition_ru) {
+        editWordForm.value.definition_ru = wordCard.definition_ru
+      }
+      if (wordCard.display_en) {
+        editWordForm.value.display_en = wordCard.display_en
+      }
+      if (wordCard.examples_json) {
+        editWordForm.value.examples_json = wordCard.examples_json
+      }
+      if (wordCard.verb_forms_json) {
+        editWordForm.value.verb_forms_json = wordCard.verb_forms_json
+      }
+      
+      await showAlert('Word card data generated successfully')
+    } else {
+      await showAlert('Failed to generate word card data')
+    }
+  } catch (error: any) {
+    console.error('Failed to generate word card data:', error)
+    await showAlert(error.message || 'Failed to generate word card data')
+  } finally {
+    generatingWordData.value = false
+  }
 }
 
 const saveWord = async () => {
