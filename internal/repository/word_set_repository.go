@@ -334,27 +334,30 @@ func (r *WordSetRepository) GetWordSetWords(wordSetID, userID int64) ([]*models.
 	args := []interface{}{userID, userID}
 
 	// If preferred_pos is set, join with training cards to get data from matching card
-	// Use LEFT JOIN to show all words, but prefer data from matching POS card
+	// Use subqueries instead of LEFT JOIN to avoid duplicates when multiple training_cards
+	// exist for the same word_card_id with the same POS
 	// Use case-insensitive comparison for POS (LOWER() for SQLite compatibility)
 	if wordSet.PreferredPOS != nil && *wordSet.PreferredPOS != "" {
 		query += `,
 			COALESCE(
-				tc_pref.display_word,
-				tc_pref.word_en,
+				(SELECT display_word FROM training_cards tc_pref WHERE tc_pref.word_card_id = wc.id AND LOWER(COALESCE(tc_pref.pos, '')) = LOWER(?) AND tc_pref.display_word IS NOT NULL AND tc_pref.display_word != '' LIMIT 1),
+				(SELECT word_en FROM training_cards tc_pref WHERE tc_pref.word_card_id = wc.id AND LOWER(COALESCE(tc_pref.pos, '')) = LOWER(?) LIMIT 1),
 				(SELECT display_word FROM training_cards tc2 WHERE tc2.word_card_id = wc.id AND tc2.display_word IS NOT NULL AND tc2.display_word != '' LIMIT 1),
 				wc.display_en,
 				wc.word
 			) as display_word_pref,
-			tc_pref.transcription as transcription_pref,
-			tc_pref.word_ru as word_ru_pref,
-			tc_pref.meaning_en as meaning_en_pref,
-			tc_pref.example_en as example_en_pref,
-			tc_pref.example_ru as example_ru_pref`
+			(SELECT transcription FROM training_cards tc_pref WHERE tc_pref.word_card_id = wc.id AND LOWER(COALESCE(tc_pref.pos, '')) = LOWER(?) LIMIT 1) as transcription_pref,
+			(SELECT word_ru FROM training_cards tc_pref WHERE tc_pref.word_card_id = wc.id AND LOWER(COALESCE(tc_pref.pos, '')) = LOWER(?) LIMIT 1) as word_ru_pref,
+			(SELECT meaning_en FROM training_cards tc_pref WHERE tc_pref.word_card_id = wc.id AND LOWER(COALESCE(tc_pref.pos, '')) = LOWER(?) LIMIT 1) as meaning_en_pref,
+			(SELECT example_en FROM training_cards tc_pref WHERE tc_pref.word_card_id = wc.id AND LOWER(COALESCE(tc_pref.pos, '')) = LOWER(?) LIMIT 1) as example_en_pref,
+			(SELECT example_ru FROM training_cards tc_pref WHERE tc_pref.word_card_id = wc.id AND LOWER(COALESCE(tc_pref.pos, '')) = LOWER(?) LIMIT 1) as example_ru_pref`
 		query += `
 		FROM word_set_items wsi
-		INNER JOIN word_cards wc ON wsi.word_card_id = wc.id
-		LEFT JOIN training_cards tc_pref ON wc.id = tc_pref.word_card_id AND LOWER(COALESCE(tc_pref.pos, '')) = LOWER(?)`
-		args = append(args, *wordSet.PreferredPOS)
+		INNER JOIN word_cards wc ON wsi.word_card_id = wc.id`
+		// Add preferred_pos parameter multiple times (once for each subquery)
+		for i := 0; i < 6; i++ {
+			args = append(args, *wordSet.PreferredPOS)
+		}
 	} else {
 		query += `,
 			COALESCE(
