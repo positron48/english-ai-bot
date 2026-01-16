@@ -1024,6 +1024,20 @@ func (r *Router) handleAdminWord(w http.ResponseWriter, req *http.Request) {
 		err = wordRepo.UpdateWordCard(card)
 		if err != nil {
 			r.logger.Error("failed to update word card", zap.Error(err), zap.Int64("word_card_id", wordCardID))
+			
+			// Check for UNIQUE constraint violation
+			errStr := err.Error()
+			if strings.Contains(errStr, "UNIQUE constraint failed: word_cards.word") {
+				w.Header().Set("Content-Type", "application/json")
+				w.WriteHeader(http.StatusConflict)
+				json.NewEncoder(w).Encode(map[string]interface{}{
+					"success": false,
+					"error":   "Слово с таким значением уже существует",
+					"message": "Слово с таким значением уже существует. Пожалуйста, выберите другое слово.",
+				})
+				return
+			}
+			
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
