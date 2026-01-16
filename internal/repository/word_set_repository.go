@@ -355,7 +355,8 @@ func (r *WordSetRepository) GetWordSetWords(wordSetID, userID int64) ([]*models.
 		FROM word_set_items wsi
 		INNER JOIN word_cards wc ON wsi.word_card_id = wc.id`
 		// Add preferred_pos parameter multiple times (once for each subquery)
-		for i := 0; i < 6; i++ {
+		// There are 7 subqueries that use preferred_pos: lines 343, 344, 349, 350, 351, 352, 353
+		for i := 0; i < 7; i++ {
 			args = append(args, *wordSet.PreferredPOS)
 		}
 	} else {
