@@ -497,7 +497,7 @@ onUnmounted(() => {
 }
 
 .admin-sidebar-item.active {
-  color: var(--color-primary);
+  color: var(--text-primary);
   background: var(--bg-hover);
   border-left-color: var(--color-primary);
   font-weight: 500;
