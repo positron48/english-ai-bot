@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuth } from '../composables/useAuth'
+import { apiClient } from '../api/client'
 
 const router = createRouter({
   history: createWebHistory('/app'),
@@ -133,6 +134,26 @@ router.beforeEach(async (to, _from, next) => {
   // Ensure auth state is up to date (especially important on direct URL access)
   // Reload tokens from localStorage and update auth state
   checkAuth()
+  
+  // If user is trying to access login page, check if they're already authenticated
+  // by making a request to the backend
+  if (to.path === '/login' && isAuthenticated.value) {
+    try {
+      // Check authentication via backend request
+      await apiClient.request('/api/dashboard')
+      // If request succeeds, user is authenticated, redirect to dashboard
+      next('/dashboard')
+      return
+    } catch (error: any) {
+      // If request fails (401 or network error), user is not authenticated
+      // Continue to login page
+      // Clear invalid tokens if it's an auth error
+      if (error.message?.includes('401') || error.message?.includes('Unauthorized')) {
+        apiClient.clearTokens()
+        checkAuth()
+      }
+    }
+  }
   
   // For admin routes, also check admin status
   if (to.meta.requiresAdmin) {
