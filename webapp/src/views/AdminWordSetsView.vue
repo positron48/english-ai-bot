@@ -284,7 +284,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { apiClient } from '../api/client'
 import { showAlert, showConfirm } from '../composables/useDialog'
 
@@ -694,6 +694,41 @@ const closeDeleteWordSetConfirm = () => {
   showDeleteWordSetConfirm.value = false
   wordSetToDelete.value = null
 }
+
+const handleKeydown = (event: KeyboardEvent) => {
+  if (event.key === 'Escape') {
+    if (showCategoryModal.value) {
+      event.preventDefault()
+      closeCategoryModal()
+    } else if (showWordSetModal.value) {
+      event.preventDefault()
+      closeWordSetModal()
+    } else if (showItemsModal.value) {
+      event.preventDefault()
+      closeItemsModal()
+    } else if (showDeleteCategoryConfirm.value) {
+      event.preventDefault()
+      closeDeleteCategoryConfirm()
+    } else if (showDeleteWordSetConfirm.value) {
+      event.preventDefault()
+      closeDeleteWordSetConfirm()
+    }
+  }
+}
+
+watch([showCategoryModal, showWordSetModal, showItemsModal, showDeleteCategoryConfirm, showDeleteWordSetConfirm], 
+  ([catOpen, setOpen, itemsOpen, delCatOpen, delSetOpen]) => {
+    if (catOpen || setOpen || itemsOpen || delCatOpen || delSetOpen) {
+      window.addEventListener('keydown', handleKeydown)
+    } else {
+      window.removeEventListener('keydown', handleKeydown)
+    }
+  }
+)
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', handleKeydown)
+})
 
 const deleteWordSet = async () => {
   if (!wordSetToDelete.value) return

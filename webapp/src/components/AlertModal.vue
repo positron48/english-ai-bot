@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, onMounted, onUnmounted } from 'vue'
 
 const props = defineProps<{
   message: string
@@ -37,6 +37,26 @@ const handleClose = () => {
   isVisible.value = false
   emit('close')
 }
+
+const handleKeydown = (event: KeyboardEvent) => {
+  if (!isVisible.value) return
+  
+  if (event.key === 'Escape') {
+    event.preventDefault()
+    handleClose()
+  } else if (event.key === 'Enter') {
+    event.preventDefault()
+    handleClose()
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('keydown', handleKeydown)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', handleKeydown)
+})
 </script>
 
 <style scoped>

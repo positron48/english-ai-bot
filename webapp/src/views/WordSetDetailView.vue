@@ -97,7 +97,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { apiClient } from '../api/client'
 import { showAlert } from '../composables/useDialog'
@@ -196,6 +196,25 @@ const closeWordModal = () => {
   selectedWord.value = null
   currentTrainingCard.value = null
 }
+
+const handleKeydown = (event: KeyboardEvent) => {
+  if (showWordModal.value && event.key === 'Escape') {
+    event.preventDefault()
+    closeWordModal()
+  }
+}
+
+watch(showWordModal, (isOpen) => {
+  if (isOpen) {
+    window.addEventListener('keydown', handleKeydown)
+  } else {
+    window.removeEventListener('keydown', handleKeydown)
+  }
+})
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', handleKeydown)
+})
 
 const markKnown = async () => {
   if (!selectedWord.value || processing.value) return

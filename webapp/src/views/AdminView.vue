@@ -582,7 +582,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed, watch, nextTick } from 'vue'
+import { ref, onMounted, onUnmounted, computed, watch, nextTick } from 'vue'
 import { apiClient } from '../api/client'
 import { showAlert, showConfirm } from '../composables/useDialog'
 import Icon from '../components/Icon.vue'
@@ -1337,6 +1337,48 @@ const closeErrorDetailsModal = () => {
   showErrorDetailsModal.value = false
   wordWithError.value = null
 }
+
+const handleKeydown = (event: KeyboardEvent) => {
+  if (event.key === 'Escape') {
+    if (showEditWordModal.value) {
+      event.preventDefault()
+      closeEditWordModal()
+    } else if (showEditCardModal.value) {
+      event.preventDefault()
+      closeEditCardModal()
+    } else if (showCreateCardModal.value) {
+      event.preventDefault()
+      closeCreateCardModal()
+    } else if (showGenerateCardModal.value) {
+      event.preventDefault()
+      closeGenerateCardModal()
+    } else if (showDeleteCardConfirm.value) {
+      event.preventDefault()
+      closeDeleteCardConfirm()
+    } else if (showResetErrorConfirm.value) {
+      event.preventDefault()
+      closeResetErrorConfirm()
+    } else if (showErrorDetailsModal.value) {
+      event.preventDefault()
+      closeErrorDetailsModal()
+    }
+  }
+}
+
+watch([showEditWordModal, showEditCardModal, showCreateCardModal, showGenerateCardModal, 
+       showDeleteCardConfirm, showResetErrorConfirm, showErrorDetailsModal], 
+  ([editWord, editCard, createCard, generateCard, deleteCard, resetError, errorDetails]) => {
+    if (editWord || editCard || createCard || generateCard || deleteCard || resetError || errorDetails) {
+      window.addEventListener('keydown', handleKeydown)
+    } else {
+      window.removeEventListener('keydown', handleKeydown)
+    }
+  }
+)
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', handleKeydown)
+})
 
 
 const formatDateRelative = (dateStr: string | null | undefined): string => {

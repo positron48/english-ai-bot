@@ -245,7 +245,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { apiClient } from '../api/client'
 import { useAuth } from '../composables/useAuth'
 import { showAlert } from '../composables/useDialog'
@@ -527,6 +527,30 @@ const closeCardsModal = () => {
   hasUserCards.value = false
   isKnown.value = false
 }
+
+const handleKeydown = (event: KeyboardEvent) => {
+  if (event.key === 'Escape') {
+    if (showCardsModal.value) {
+      event.preventDefault()
+      closeCardsModal()
+    } else if (showDeleteConfirm.value) {
+      event.preventDefault()
+      showDeleteConfirm.value = false
+    }
+  }
+}
+
+watch([showCardsModal, showDeleteConfirm], ([cardsOpen, deleteOpen]) => {
+  if (cardsOpen || deleteOpen) {
+    window.addEventListener('keydown', handleKeydown)
+  } else {
+    window.removeEventListener('keydown', handleKeydown)
+  }
+})
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', handleKeydown)
+})
 
 const markKnown = async () => {
   if (processingAction.value || !selectedWord.value) return
