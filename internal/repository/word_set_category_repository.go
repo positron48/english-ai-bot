@@ -26,8 +26,8 @@ func NewWordSetCategoryRepository(db *sql.DB, logger *zap.Logger) *WordSetCatego
 
 // CreateCategory creates a new category
 func (r *WordSetCategoryRepository) CreateCategory(category *models.WordSetCategory) (int64, error) {
-	query := `INSERT INTO word_set_categories (parent_id, name, description, sort_order, created_at, updated_at)
-			  VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`
+	query := `INSERT INTO word_set_categories (parent_id, name, description, is_published, sort_order, created_at, updated_at)
+			  VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`
 
 	var parentID interface{}
 	if category.ParentID != nil {
@@ -39,7 +39,12 @@ func (r *WordSetCategoryRepository) CreateCategory(category *models.WordSetCateg
 		description = *category.Description
 	}
 
-	result, err := r.db.Exec(query, parentID, category.Name, description, category.SortOrder)
+	isPublished := 0
+	if category.IsPublished {
+		isPublished = 1
+	}
+
+	result, err := r.db.Exec(query, parentID, category.Name, description, isPublished, category.SortOrder)
 	if err != nil {
 		return 0, fmt.Errorf("failed to create category: %w", err)
 	}
@@ -84,7 +89,7 @@ func parseTime(timeStr string) (time.Time, error) {
 
 // GetCategory retrieves a category by ID
 func (r *WordSetCategoryRepository) GetCategory(id int64) (*models.WordSetCategory, error) {
-	query := `SELECT id, parent_id, name, description, sort_order, 
+	query := `SELECT id, parent_id, name, description, is_published, sort_order, 
 			  substr(created_at, 1, 19) as created_at, 
 			  substr(updated_at, 1, 19) as updated_at
 			  FROM word_set_categories WHERE id = ?`
@@ -93,12 +98,14 @@ func (r *WordSetCategoryRepository) GetCategory(id int64) (*models.WordSetCatego
 	var createdAt, updatedAt string
 	var parentID sql.NullInt64
 	var descText sql.NullString
+	var isPublished int
 
 	err := r.db.QueryRow(query, id).Scan(
 		&category.ID,
 		&parentID,
 		&category.Name,
 		&descText,
+		&isPublished,
 		&category.SortOrder,
 		&createdAt,
 		&updatedAt,
@@ -110,6 +117,8 @@ func (r *WordSetCategoryRepository) GetCategory(id int64) (*models.WordSetCatego
 	if err != nil {
 		return nil, fmt.Errorf("failed to get category: %w", err)
 	}
+
+	category.IsPublished = isPublished == 1
 
 	if parentID.Valid {
 		pid := int64(parentID.Int64)
@@ -135,7 +144,7 @@ func (r *WordSetCategoryRepository) GetCategory(id int64) (*models.WordSetCatego
 
 // GetAllCategories retrieves all categories
 func (r *WordSetCategoryRepository) GetAllCategories() ([]*models.WordSetCategory, error) {
-	query := `SELECT id, parent_id, name, description, sort_order, 
+	query := `SELECT id, parent_id, name, description, is_published, sort_order, 
 			  substr(created_at, 1, 19) as created_at, 
 			  substr(updated_at, 1, 19) as updated_at
 			  FROM word_set_categories ORDER BY sort_order, name`
@@ -152,12 +161,14 @@ func (r *WordSetCategoryRepository) GetAllCategories() ([]*models.WordSetCategor
 		var createdAt, updatedAt string
 		var parentID sql.NullInt64
 		var descText sql.NullString
+		var isPublished int
 
 		err := rows.Scan(
 			&category.ID,
 			&parentID,
 			&category.Name,
 			&descText,
+			&isPublished,
 			&category.SortOrder,
 			&createdAt,
 			&updatedAt,
@@ -166,6 +177,71 @@ func (r *WordSetCategoryRepository) GetAllCategories() ([]*models.WordSetCategor
 			r.logger.Warn("failed to scan category", zap.Error(err))
 			continue
 		}
+
+		category.IsPublished = isPublished == 1
+
+		if parentID.Valid {
+			pid := int64(parentID.Int64)
+			category.ParentID = &pid
+		}
+		if descText.Valid {
+			category.Description = &descText.String
+		}
+
+		if createdAt != "" {
+			if t, err := parseTime(createdAt); err == nil {
+				category.CreatedAt = t
+			}
+		}
+		if updatedAt != "" {
+			if t, err := parseTime(updatedAt); err == nil {
+				category.UpdatedAt = t
+			}
+		}
+
+		categories = append(categories, &category)
+	}
+
+	return categories, nil
+}
+
+// GetPublishedCategories retrieves only published categories
+func (r *WordSetCategoryRepository) GetPublishedCategories() ([]*models.WordSetCategory, error) {
+	query := `SELECT id, parent_id, name, description, is_published, sort_order, 
+			  substr(created_at, 1, 19) as created_at, 
+			  substr(updated_at, 1, 19) as updated_at
+			  FROM word_set_categories WHERE is_published = 1 ORDER BY sort_order, name`
+
+	rows, err := r.db.Query(query)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get published categories: %w", err)
+	}
+	defer rows.Close()
+
+	var categories []*models.WordSetCategory
+	for rows.Next() {
+		var category models.WordSetCategory
+		var createdAt, updatedAt string
+		var parentID sql.NullInt64
+		var descText sql.NullString
+		var isPublished int
+
+		err := rows.Scan(
+			&category.ID,
+			&parentID,
+			&category.Name,
+			&descText,
+			&isPublished,
+			&category.SortOrder,
+			&createdAt,
+			&updatedAt,
+		)
+		if err != nil {
+			r.logger.Warn("failed to scan category", zap.Error(err))
+			continue
+		}
+
+		category.IsPublished = isPublished == 1
 
 		if parentID.Valid {
 			pid := int64(parentID.Int64)
@@ -195,7 +271,7 @@ func (r *WordSetCategoryRepository) GetAllCategories() ([]*models.WordSetCategor
 // UpdateCategory updates a category
 func (r *WordSetCategoryRepository) UpdateCategory(category *models.WordSetCategory) error {
 	query := `UPDATE word_set_categories 
-			  SET parent_id = ?, name = ?, description = ?, sort_order = ?, updated_at = CURRENT_TIMESTAMP
+			  SET parent_id = ?, name = ?, description = ?, is_published = ?, sort_order = ?, updated_at = CURRENT_TIMESTAMP
 			  WHERE id = ?`
 
 	var parentID interface{}
@@ -208,7 +284,12 @@ func (r *WordSetCategoryRepository) UpdateCategory(category *models.WordSetCateg
 		description = *category.Description
 	}
 
-	_, err := r.db.Exec(query, parentID, category.Name, description, category.SortOrder, category.ID)
+	isPublished := 0
+	if category.IsPublished {
+		isPublished = 1
+	}
+
+	_, err := r.db.Exec(query, parentID, category.Name, description, isPublished, category.SortOrder, category.ID)
 	if err != nil {
 		return fmt.Errorf("failed to update category: %w", err)
 	}

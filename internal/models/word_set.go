@@ -8,6 +8,7 @@ type WordSetCategory struct {
 	ParentID    *int64     `json:"parent_id"`
 	Name        string     `json:"name"`
 	Description *string    `json:"description"`
+	IsPublished bool       `json:"is_published"`
 	SortOrder   int        `json:"sort_order"`
 	CreatedAt   time.Time  `json:"created_at"`
 	UpdatedAt   time.Time  `json:"updated_at"`

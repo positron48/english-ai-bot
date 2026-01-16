@@ -36,6 +36,9 @@
               <strong>{{ category.name }}</strong>
               <span v-if="category.description" class="category-desc">{{ category.description }}</span>
               <span v-if="category.parent_id" class="category-parent">Parent: {{ getCategoryName(category.parent_id) }}</span>
+              <span :class="['published-badge', category.is_published ? 'published' : 'unpublished']">
+                {{ category.is_published ? 'Published' : 'Unpublished' }}
+              </span>
             </div>
             <div class="category-actions">
               <button @click="startEditCategory(category)" class="btn btn-sm btn-primary">Edit</button>
@@ -48,6 +51,9 @@
                 <div class="category-info">
                   <strong>{{ child.name }}</strong>
                   <span v-if="child.description" class="category-desc">{{ child.description }}</span>
+                  <span :class="['published-badge', child.is_published ? 'published' : 'unpublished']">
+                    {{ child.is_published ? 'Published' : 'Unpublished' }}
+                  </span>
                 </div>
                 <div class="category-actions">
                   <button @click="startEditCategory(child)" class="btn btn-sm btn-primary">Edit</button>
@@ -129,6 +135,12 @@
           <div class="form-group">
             <label>Sort Order</label>
             <input v-model.number="categoryForm.sort_order" type="number" class="form-input" />
+          </div>
+          <div class="form-group">
+            <label>
+              <input v-model="categoryForm.is_published" type="checkbox" />
+              Published
+            </label>
           </div>
           <div class="modal-actions">
             <button type="submit" class="btn btn-primary">Save</button>
@@ -281,6 +293,7 @@ interface Category {
   parent_id?: number | null
   name: string
   description?: string | null
+  is_published: boolean
   sort_order: number
   children?: Category[]
 }
@@ -309,6 +322,7 @@ const categoryForm = ref({
   name: '',
   description: '',
   parent_id: null as number | null,
+  is_published: true,
   sort_order: 0
 })
 const showDeleteCategoryConfirm = ref(false)
@@ -460,6 +474,7 @@ const startCreateCategory = () => {
     name: '',
     description: '',
     parent_id: null,
+    is_published: true,
     sort_order: 0
   }
   showCategoryModal.value = true
@@ -471,6 +486,7 @@ const startEditCategory = (category: Category) => {
     name: category.name,
     description: category.description || '',
     parent_id: category.parent_id || null,
+    is_published: category.is_published ?? true,
     sort_order: category.sort_order
   }
   showCategoryModal.value = true

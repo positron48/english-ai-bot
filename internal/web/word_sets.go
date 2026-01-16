@@ -47,8 +47,8 @@ func (r *Router) handleLearningWordsCategories(w http.ResponseWriter, req *http.
 
 	categoryRepo := repository.NewWordSetCategoryRepository(r.db, r.logger)
 	
-	// Get all categories
-	allCategories, err := categoryRepo.GetAllCategories()
+	// Get only published categories for public API
+	allCategories, err := categoryRepo.GetPublishedCategories()
 	if err != nil {
 		r.logger.Error("failed to get categories", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)

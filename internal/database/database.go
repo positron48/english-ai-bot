@@ -249,6 +249,7 @@ func (db *DB) migrate() error {
 			parent_id INTEGER,
 			name TEXT NOT NULL,
 			description TEXT,
+			is_published INTEGER DEFAULT 1,
 			sort_order INTEGER DEFAULT 0,
 			created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 			updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -357,6 +358,11 @@ func (db *DB) migrate() error {
 	// Migrate word_sets table to add preferred_pos if it doesn't exist
 	if err := db.migrateWordSetsPreferredPOS(); err != nil {
 		return fmt.Errorf("failed to migrate word_sets preferred_pos: %w", err)
+	}
+
+	// Migrate word_set_categories table to add is_published if it doesn't exist
+	if err := db.migrateWordSetCategoriesIsPublished(); err != nil {
+		return fmt.Errorf("failed to migrate word_set_categories is_published: %w", err)
 	}
 
 	db.logger.Info("database migration completed successfully")
@@ -881,6 +887,52 @@ func (db *DB) migrateWordSetsPreferredPOS() error {
 			return fmt.Errorf("failed to add preferred_pos column: %w", err)
 		}
 		db.logger.Info("added preferred_pos column to word_sets table")
+	}
+
+	return nil
+}
+
+// migrateWordSetCategoriesIsPublished adds is_published column to word_set_categories if it doesn't exist
+func (db *DB) migrateWordSetCategoriesIsPublished() error {
+	// Check if word_set_categories table exists
+	var tableExists int
+	err := db.conn.QueryRow(`
+		SELECT COUNT(*) FROM sqlite_master 
+		WHERE type='table' AND name='word_set_categories'
+	`).Scan(&tableExists)
+	if err != nil {
+		return fmt.Errorf("failed to check table existence: %w", err)
+	}
+
+	if tableExists == 0 {
+		// Table doesn't exist yet, will be created with correct schema
+		return nil
+	}
+
+	// Check if is_published column exists
+	var columnExists int
+	err = db.conn.QueryRow(`
+		SELECT COUNT(*) FROM pragma_table_info('word_set_categories') 
+		WHERE name='is_published'
+	`).Scan(&columnExists)
+	if err != nil {
+		return fmt.Errorf("failed to check column existence: %w", err)
+	}
+
+	if columnExists == 0 {
+		// Column doesn't exist, add it with default value 1 (published)
+		_, err := db.conn.Exec(`ALTER TABLE word_set_categories ADD COLUMN is_published INTEGER DEFAULT 1`)
+		if err != nil {
+			return fmt.Errorf("failed to add is_published column: %w", err)
+		}
+		
+		// Set all existing categories as published
+		_, err = db.conn.Exec(`UPDATE word_set_categories SET is_published = 1 WHERE is_published IS NULL`)
+		if err != nil {
+			return fmt.Errorf("failed to set existing categories as published: %w", err)
+		}
+		
+		db.logger.Info("added is_published column to word_set_categories table and set all existing categories as published")
 	}
 
 	return nil

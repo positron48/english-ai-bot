@@ -179,6 +179,7 @@ func SetupTestDB(t *testing.T) *sql.DB {
 		parent_id INTEGER,
 		name TEXT NOT NULL,
 		description TEXT,
+		is_published INTEGER DEFAULT 1,
 		sort_order INTEGER DEFAULT 0,
 		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 		updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
