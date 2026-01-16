@@ -5,12 +5,22 @@
       <div class="words-filters">
         <div class="search-box">
           <input
+            ref="searchInputRef"
             type="text"
             v-model="wordsSearchQuery"
             @input="onWordsSearchInput"
             placeholder="Search words..."
             class="search-input"
           />
+          <button
+            v-if="wordsSearchQuery"
+            @click="clearSearch"
+            class="search-clear"
+            type="button"
+            title="Clear search"
+          >
+            <Icon name="close" />
+          </button>
         </div>
         <select v-model="wordsFilterUser" class="admin-select" @change="onFilterChange">
           <option :value="null">All users</option>
@@ -631,6 +641,7 @@ const wordsFilterUser = ref<number | null>(null)
 const wordsOnlyErrors = ref(false)
 const wordsSearchQuery = ref('')
 const wordsSearchTimeout = ref<number | null>(null)
+const searchInputRef = ref<HTMLInputElement | null>(null)
 const wordsPagination = ref({
   page: 1,
   limit: 50,
@@ -783,6 +794,17 @@ const onWordsSearchInput = () => {
     wordsPagination.value.page = 1
     loadWords()
   }, 200)
+}
+
+const clearSearch = () => {
+  wordsSearchQuery.value = ''
+  wordsPagination.value.page = 1
+  loadWords()
+  nextTick(() => {
+    if (searchInputRef.value) {
+      searchInputRef.value.focus()
+    }
+  })
 }
 
 const goToWordsPage = (page: number) => {
@@ -1438,7 +1460,7 @@ const handleSort = (column: string) => {
 }
 
 .admin .card h2 {
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 
@@ -1453,11 +1475,12 @@ const handleSort = (column: string) => {
   flex: 1;
   min-width: 200px;
   max-width: 400px;
+  position: relative;
 }
 
 .search-input {
   width: 100%;
-  padding: 8px 12px;
+  padding: 8px 36px 8px 12px;
   border: 1px solid var(--input-border);
   border-radius: 4px;
   font-size: 14px;
@@ -1467,6 +1490,33 @@ const handleSort = (column: string) => {
   height: 40px;
   line-height: 1.5;
   margin-bottom: 0;
+}
+
+.search-clear {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  transition: color 0.2s;
+  width: 24px;
+  height: 24px;
+}
+
+.search-clear:hover {
+  color: var(--text-primary);
+}
+
+.search-clear .icon {
+  width: 16px;
+  height: 16px;
 }
 
 .pagination {
