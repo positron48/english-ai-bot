@@ -1253,7 +1253,6 @@ const saveWord = async () => {
     }
     
     closeEditWordModal()
-    await showAlert('Word updated successfully')
   } catch (error: any) {
     console.error('Failed to update word:', error)
     const errorMessage = error.message || 'Failed to update word'
