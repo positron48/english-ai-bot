@@ -90,7 +90,7 @@
       </div>
     </div>
 
-    <div class="card" v-if="!isTelegramMiniApp">
+    <div class="card">
       <h2>Account</h2>
       <div class="settings-group">
         <div class="setting-item">
@@ -131,7 +131,6 @@ const selectedTheme = ref<'light' | 'dark'>('light')
 const selectedSoundTheme = ref('tick')
 const soundThemes = ref(getThemes())
 const previewing = ref(false)
-const isTelegramMiniApp = ref(false)
 
 onMounted(() => {
   // Load current settings
@@ -139,10 +138,6 @@ onMounted(() => {
   vibrationEnabled.value = settings.value.vibrationEnabled
   selectedTheme.value = currentTheme.value
   selectedSoundTheme.value = settings.value.soundTheme || 'tick'
-  
-  // Check if we're in Telegram Mini App
-  const tg = (window as any).Telegram?.WebApp
-  isTelegramMiniApp.value = !!tg
 })
 
 // Watch for theme changes from outside
