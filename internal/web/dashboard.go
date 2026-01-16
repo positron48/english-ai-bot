@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"time"
+	"unicode"
 
 	"go.uber.org/zap"
 )
@@ -262,29 +263,51 @@ func (r *Router) handleChat(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	// Get AI service interface for both cases
+	type AIService interface {
+		GenerateResponse(ctx context.Context, text string) (string, error)
+	}
+	aiService, ok := r.aiService.(AIService)
+	if !ok {
+		r.logger.Error("AI service does not implement GenerateResponse")
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
 	// Check if it's a single word - use word service (DB + AI, saves to DB)
+	// BUT: if single word contains Cyrillic, send to AI directly (don't save to DB)
 	if wordService.IsSingleWord(message) {
-		r.logger.Info("detected single word in chat",
-			zap.String("word", message),
-			zap.Int64("user_id", userID),
-		)
-		// Use word service which will:
-		// 1. Check if word exists in DB
-		// 2. If not, request from AI
-		// 3. Save word to DB
-		// 4. Add to word_request_history for this user
-		response, err = wordService.GetWordDefinition(ctx, userID, message)
+		// Check if word contains Cyrillic characters
+		containsCyrillic := false
+		for _, r := range message {
+			if unicode.Is(unicode.Cyrillic, r) {
+				containsCyrillic = true
+				break
+			}
+		}
+
+		if containsCyrillic {
+			// Russian word - send to AI directly, don't save to DB
+			r.logger.Info("detected single Russian word in chat, sending to AI directly",
+				zap.String("word", message),
+				zap.Int64("user_id", userID),
+			)
+			response, err = aiService.GenerateResponse(ctx, message)
+		} else {
+			// English word - use word service (DB + AI, saves to DB)
+			r.logger.Info("detected single word in chat",
+				zap.String("word", message),
+				zap.Int64("user_id", userID),
+			)
+			// Use word service which will:
+			// 1. Check if word exists in DB
+			// 2. If not, request from AI
+			// 3. Save word to DB
+			// 4. Add to word_request_history for this user
+			response, err = wordService.GetWordDefinition(ctx, userID, message)
+		}
 	} else {
 		// Regular message - use AI service directly (no DB saving)
-		type AIService interface {
-			GenerateResponse(ctx context.Context, text string) (string, error)
-		}
-		aiService, ok := r.aiService.(AIService)
-		if !ok {
-			r.logger.Error("AI service does not implement GenerateResponse")
-			http.Error(w, "Internal server error", http.StatusInternalServerError)
-			return
-		}
 		response, err = aiService.GenerateResponse(ctx, message)
 	}
 
