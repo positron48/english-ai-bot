@@ -158,6 +158,18 @@ const routeHierarchy: Record<string, Breadcrumb[]> = {
     { label: 'Admin', path: '/admin' },
     { label: 'Word Sets', path: '/admin/word-sets' }
   ],
+  '/admin/word-sets/categories': [
+    { label: 'Dashboard', path: '/dashboard' },
+    { label: 'Admin', path: '/admin' },
+    { label: 'Word Sets', path: '/admin/word-sets' },
+    { label: 'Categories', path: '/admin/word-sets/categories' }
+  ],
+  '/admin/word-sets/sets': [
+    { label: 'Dashboard', path: '/dashboard' },
+    { label: 'Admin', path: '/admin' },
+    { label: 'Word Sets', path: '/admin/word-sets' },
+    { label: 'Sets', path: '/admin/word-sets/sets' }
+  ],
   '/admin/db-schema': [
     { label: 'Dashboard', path: '/dashboard' },
     { label: 'Admin', path: '/admin' },

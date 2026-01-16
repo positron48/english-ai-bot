@@ -605,4 +605,106 @@ func TestWordSetRepository_GetWordSetWords(t *testing.T) {
 			t.Errorf("Unexpected word: %q", words[0].Word)
 		}
 	})
+
+	t.Run("Get words from set with preferred_pos - reproduces missing argument error", func(t *testing.T) {
+		// This test reproduces the bug where "missing argument with index 10" error occurred
+		// when preferred_pos was set and GetWordSetWords was called
+		// The bug was that only 6 preferred_pos parameters were added instead of 7
+
+		// Create word set with preferred_pos
+		preferredPOS := "noun"
+		wordSetWithPOS := &models.WordSet{
+			Title:        "Set with Preferred POS",
+			IsPublished:  true,
+			SortOrder:    1,
+			PreferredPOS: &preferredPOS,
+		}
+		setIDWithPOS, err := repo.CreateWordSet(wordSetWithPOS)
+		if err != nil {
+			t.Fatalf("Failed to create word set with preferred_pos: %v", err)
+		}
+
+		// Create word cards
+		wordCard1 := &models.WordCard{
+			Word:       "testword1",
+			Definition: "definition1",
+		}
+		wordCardID1, err := wordRepo.UpsertWordCardLemma(wordCard1)
+		if err != nil {
+			t.Fatalf("Failed to create word card 1: %v", err)
+		}
+
+		wordCard2 := &models.WordCard{
+			Word:       "testword2",
+			Definition: "definition2",
+		}
+		wordCardID2, err := wordRepo.UpsertWordCardLemma(wordCard2)
+		if err != nil {
+			t.Fatalf("Failed to create word card 2: %v", err)
+		}
+
+		// Create training cards with matching POS
+		trainingCardRepo := NewTrainingCardRepository(db, logger)
+		pos := "noun"
+		displayWord1 := "testword1"
+		card1 := &models.TrainingCard{
+			WordCardID:  wordCardID1,
+			WordEN:      "testword1",
+			POS:         &pos,
+			DisplayWord: &displayWord1,
+			SenseIndex:  0,
+			WordRU:      "тестовое слово 1",
+			MeaningEN:   "test word 1",
+		}
+		_, err = trainingCardRepo.CreateTrainingCard(card1)
+		if err != nil {
+			t.Fatalf("Failed to create training card 1: %v", err)
+		}
+
+		displayWord2 := "testword2"
+		card2 := &models.TrainingCard{
+			WordCardID:  wordCardID2,
+			WordEN:      "testword2",
+			POS:         &pos,
+			DisplayWord: &displayWord2,
+			SenseIndex:  0,
+			WordRU:      "тестовое слово 2",
+			MeaningEN:   "test word 2",
+		}
+		_, err = trainingCardRepo.CreateTrainingCard(card2)
+		if err != nil {
+			t.Fatalf("Failed to create training card 2: %v", err)
+		}
+
+		// Add words to set
+		err = repo.SetWordSetItems(setIDWithPOS, []int64{wordCardID1, wordCardID2})
+		if err != nil {
+			t.Fatalf("Failed to set word set items: %v", err)
+		}
+
+		// This should not fail with "missing argument with index 10" error
+		// Before the fix, it would fail because only 6 preferred_pos parameters
+		// were added instead of 7 (one for each subquery)
+		words, err := repo.GetWordSetWords(setIDWithPOS, user.ID)
+		if err != nil {
+			t.Fatalf("GetWordSetWords() error = %v (this should not fail with 'missing argument with index 10')", err)
+		}
+		if len(words) != 2 {
+			t.Errorf("Expected 2 words, got %d", len(words))
+		}
+
+		// Verify that display words are correctly retrieved from training cards
+		for _, word := range words {
+			switch word.WordCardID {
+			case wordCardID1:
+				if word.DisplayWord != displayWord1 {
+					t.Errorf("Expected display word %q for word card %d, got %q", displayWord1, wordCardID1, word.DisplayWord)
+				}
+			case wordCardID2:
+				if word.DisplayWord != displayWord2 {
+					t.Errorf("Expected display word %q for word card %d, got %q", displayWord2, wordCardID2, word.DisplayWord)
+				}
+			}
+		}
+	})
 }

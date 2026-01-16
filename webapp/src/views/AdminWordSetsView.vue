@@ -4,13 +4,13 @@
     
     <div class="admin-tabs-inner">
       <button 
-        @click="activeTab = 'categories'" 
+        @click="switchTab('categories')" 
         :class="['tab-button', { active: activeTab === 'categories' }]"
       >
         Categories
       </button>
       <button 
-        @click="activeTab = 'sets'" 
+        @click="switchTab('sets')" 
         :class="['tab-button', { active: activeTab === 'sets' }]"
       >
         Word Sets
@@ -285,8 +285,12 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { apiClient } from '../api/client'
 import { showAlert, showConfirm } from '../composables/useDialog'
+
+const route = useRoute()
+const router = useRouter()
 
 interface Category {
   id: number
@@ -310,7 +314,34 @@ interface WordSet {
   updated_at: string
 }
 
-const activeTab = ref<'categories' | 'sets'>('categories')
+// Determine active tab from route
+const getActiveTabFromRoute = (): 'categories' | 'sets' => {
+  if (route.name === 'AdminWordSetsSets') {
+    return 'sets'
+  }
+  return 'categories'
+}
+
+const activeTab = ref<'categories' | 'sets'>(getActiveTabFromRoute())
+
+// Watch route changes to update active tab
+watch(() => route.name, (newRouteName) => {
+  if (newRouteName === 'AdminWordSetsSets') {
+    activeTab.value = 'sets'
+  } else {
+    activeTab.value = 'categories'
+  }
+})
+
+// Function to switch tabs and update URL
+const switchTab = (tab: 'categories' | 'sets') => {
+  activeTab.value = tab
+  if (tab === 'sets') {
+    router.push({ name: 'AdminWordSetsSets' })
+  } else {
+    router.push({ name: 'AdminWordSetsCategories' })
+  }
+}
 
 // Categories
 const categories = ref<Category[]>([])
@@ -432,6 +463,7 @@ const loadCategories = async () => {
       parent_id: cat.parent_id !== undefined ? cat.parent_id : (cat.ParentID !== undefined ? cat.ParentID : null),
       name: cat.name || cat.Name || '',
       description: cat.description !== undefined ? cat.description : (cat.Description !== undefined ? cat.Description : null),
+      is_published: cat.is_published !== undefined ? cat.is_published : (cat.IsPublished !== undefined ? cat.IsPublished : true),
       sort_order: cat.sort_order !== undefined ? cat.sort_order : (cat.SortOrder !== undefined ? cat.SortOrder : 0)
     }))
   } catch (error: any) {

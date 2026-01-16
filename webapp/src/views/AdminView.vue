@@ -1505,6 +1505,9 @@ const handleSort = (column: string) => {
   margin-bottom: 24px;
 }
 
+.admin-content .card h2 {
+  margin-bottom: 15px;
+}
 
 .words-filters {
   display: flex;

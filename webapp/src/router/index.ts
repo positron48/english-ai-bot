@@ -96,7 +96,16 @@ const router = createRouter({
         },
         {
           path: 'word-sets',
-          name: 'AdminWordSets',
+          redirect: '/admin/word-sets/categories'
+        },
+        {
+          path: 'word-sets/categories',
+          name: 'AdminWordSetsCategories',
+          component: () => import('../views/AdminWordSetsView.vue')
+        },
+        {
+          path: 'word-sets/sets',
+          name: 'AdminWordSetsSets',
           component: () => import('../views/AdminWordSetsView.vue')
         },
         {

@@ -82,7 +82,7 @@
       <router-link 
         to="/admin/word-sets" 
         class="admin-sidebar-item" 
-        :class="{ active: $route.path === '/admin/word-sets' }"
+        :class="{ active: $route.path.startsWith('/admin/word-sets') }"
         @click="isMobile && handleCloseSidebar()"
       >
         <Icon name="book" class="admin-sidebar-icon" />
