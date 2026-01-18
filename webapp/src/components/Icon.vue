@@ -123,12 +123,18 @@
       <line x1="3" y1="6" x2="21" y2="6"/>
       <line x1="3" y1="18" x2="21" y2="18"/>
     </svg>
+    <svg v-else-if="name === 'lightbulb'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/>
+      <path d="M9 18h6"/>
+      <path d="M10 22h4"/>
+      <path d="M9 14h6"/>
+    </svg>
   </span>
 </template>
 
 <script setup lang="ts">
 defineProps<{
-  name: 'warning' | 'sun' | 'moon' | 'book' | 'sparkles' | 'book-open' | 'refresh' | 'settings' | 'logout' | 'dashboard' | 'target' | 'chat' | 'more' | 'gear' | 'play' | 'shield' | 'arrow-left' | 'folder' | 'close' | 'chevron-down' | 'chevron-right' | 'plus' | 'magic' | 'edit' | 'trash' | 'home' | 'code' | 'database' | 'toggle' | 'menu'
+  name: 'warning' | 'sun' | 'moon' | 'book' | 'sparkles' | 'book-open' | 'refresh' | 'settings' | 'logout' | 'dashboard' | 'target' | 'chat' | 'more' | 'gear' | 'play' | 'shield' | 'arrow-left' | 'folder' | 'close' | 'chevron-down' | 'chevron-right' | 'plus' | 'magic' | 'edit' | 'trash' | 'home' | 'code' | 'database' | 'toggle' | 'menu' | 'lightbulb'
   dark?: boolean
 }>()
 </script>

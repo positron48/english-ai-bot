@@ -169,6 +169,25 @@
         </button>
       </div>
 
+      <!-- Example button/display - show for English words, appears after options -->
+      <div 
+        v-if="optionsShown && showExampleButton && isEnglishWord" 
+        class="example-button-wrapper"
+        :class="{ 'example-button-visible': showExampleButtonVisible }"
+      >
+        <button 
+          v-if="!exampleUsageShown && !feedback"
+          @click="showExampleUsage" 
+          class="btn-example-icon"
+          aria-label="Показать пример"
+        >
+          <Icon name="lightbulb" class="example-icon" />
+        </button>
+        <div v-else-if="exampleUsageShown" class="example example-usage">
+          {{ currentCard?.example_en || feedback?.example || '' }}
+        </div>
+      </div>
+
       <div v-if="feedback" class="feedback-section">
         <div v-if="feedback.is_correct" class="feedback-badge feedback-success">
           <!-- Success particles -->
@@ -295,6 +314,8 @@ interface Card {
   session_id: number
   user_card_id: number
   delay_ms: number
+  direction: string
+  example_en?: string
 }
 
 interface OptionsResponse {
@@ -347,10 +368,19 @@ const upcomingChartCanvas = ref<HTMLCanvasElement | null>(null)
 const upcomingCardsLoaded = ref(false)
 const upcomingCardsData = ref<Record<string, { date: string; label: string; count: number }>>({})
 let upcomingChartInstance: Chart | null = null
+const showExampleButton = ref(false)
+const showExampleButtonVisible = ref(false)
+const exampleUsageShown = ref(false)
+let exampleButtonTimer: ReturnType<typeof setTimeout> | null = null
 
 // Settings
 const { settings } = useSettings()
 const { playSuccess, playFail, playVictory, playDefeat } = useAudio()
+
+// Check if current word is English (direction is en_ru)
+const isEnglishWord = computed(() => {
+  return currentCard.value?.direction === 'en_ru'
+})
 
 const estimatedTime = computed(() => {
   const cards = stats.value.availableForTraining
@@ -1090,6 +1120,10 @@ onUnmounted(() => {
     clearTimeout(autoNextCardTimer)
     autoNextCardTimer = null
   }
+  if (exampleButtonTimer) {
+    clearTimeout(exampleButtonTimer)
+    exampleButtonTimer = null
+  }
   
   // Destroy chart
   if (upcomingChartInstance) {
@@ -1124,6 +1158,10 @@ const setupCard = (card: Card) => {
     cancelAnimationFrame(countdownAnimationFrameId)
     countdownAnimationFrameId = null
   }
+  if (exampleButtonTimer) {
+    clearTimeout(exampleButtonTimer)
+    exampleButtonTimer = null
+  }
 
   currentCard.value = card
   cardIndex.value = card.card_index
@@ -1144,6 +1182,9 @@ const setupCard = (card: Card) => {
   autoNextCardTimerStartTime = null
   autoNextCardTimerDelayMs = null
   cardShownAt.value = new Date()
+  showExampleButton.value = false
+  showExampleButtonVisible.value = false
+  exampleUsageShown.value = false
 
   // Schedule automatic options reveal
   if (card.delay_ms > 0) {
@@ -1182,6 +1223,12 @@ const revealOptions = async (isEarly: boolean = false) => {
     clearTimeout(autoRevealTimer)
     autoRevealTimer = null
   }
+  
+  // Clear example button timer if it exists
+  if (exampleButtonTimer) {
+    clearTimeout(exampleButtonTimer)
+    exampleButtonTimer = null
+  }
 
   // If already shown, don't do anything
   if (optionsShown.value) {
@@ -1195,6 +1242,22 @@ const revealOptions = async (isEarly: boolean = false) => {
     })
     options.value = data.options
     optionsShown.value = true
+    
+    // Reset example button state
+    showExampleButton.value = false
+    showExampleButtonVisible.value = false
+    exampleUsageShown.value = false
+    
+    // Show example button after 2 seconds if word is English
+    if (isEnglishWord.value) {
+      exampleButtonTimer = setTimeout(() => {
+        showExampleButton.value = true
+        // Trigger visibility animation after a brief delay
+        setTimeout(() => {
+          showExampleButtonVisible.value = true
+        }, 50)
+      }, 2000)
+    }
   } catch (error: any) {
     console.error('Failed to reveal options:', error)
     // Network error is already handled by callback, but we should handle other errors
@@ -1202,6 +1265,15 @@ const revealOptions = async (isEarly: boolean = false) => {
       // For non-network errors, show a simple message
       await showAlert('Не удалось загрузить варианты ответов. Попробуйте обновить страницу.')
     }
+  }
+}
+
+const showExampleUsage = () => {
+  if (exampleUsageShown.value) return
+  
+  // Show example if available from current card or feedback
+  if (currentCard.value?.example_en || feedback.value?.example) {
+    exampleUsageShown.value = true
   }
 }
 
@@ -1412,6 +1484,10 @@ const nextCard = async () => {
     cancelAnimationFrame(countdownAnimationFrameId)
     countdownAnimationFrameId = null
   }
+  if (exampleButtonTimer) {
+    clearTimeout(exampleButtonTimer)
+    exampleButtonTimer = null
+  }
   autoNextCardTimerStartTime = null
   autoNextCardTimerDelayMs = null
 
@@ -1428,6 +1504,9 @@ const nextCard = async () => {
   timerPaused.value = false
   timerPauseStartTime = null
   timerPausedRemainingMs = null
+  showExampleButton.value = false
+  showExampleButtonVisible.value = false
+  exampleUsageShown.value = false
 
   try {
     const response = await apiClient.request('/api/training/current')
@@ -1693,6 +1772,19 @@ const handleTimerMouseLeave = () => {
   align-items: center;
   gap: 12px;
   padding: 12px 16px;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-primary);
+}
+
+[data-theme="dark"] .option-btn {
+  background-color: var(--bg-tertiary);
+  border-color: var(--border-secondary);
+}
+
+.option-btn:hover:not(:disabled) {
+  background-color: var(--bg-hover);
+  border-color: var(--border-focus);
 }
 
 .option-number {
@@ -1721,12 +1813,14 @@ const handleTimerMouseLeave = () => {
 .option-btn.option-disabled {
   cursor: not-allowed;
   opacity: 0.7;
+  background-color: var(--bg-secondary);
+  border-color: var(--border-primary);
 }
 
 .option-btn.option-correct {
   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: white;
-  border: 2px solid #10b981;
+  border: 1px solid #10b981;
   box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
   animation: correct-success 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
   position: relative;
@@ -1753,7 +1847,7 @@ const handleTimerMouseLeave = () => {
 .option-btn.option-incorrect {
   background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
   color: white;
-  border: 2px solid #ef4444;
+  border: 1px solid #ef4444;
   box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
   animation: incorrect-fail 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   position: relative;
@@ -2826,6 +2920,69 @@ const handleTimerMouseLeave = () => {
 .network-error-message {
   font-size: 14px;
   opacity: 0.95;
+}
+
+/* Example button styles */
+.example-button-wrapper {
+  margin-top: 16px;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.example-button-wrapper.example-button-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.btn-example-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.btn-example-icon:hover {
+  opacity: 0.8;
+  transform: scale(1.1);
+}
+
+.btn-example-icon:active {
+  transform: scale(0.95);
+}
+
+.example-icon {
+  width: 24px;
+  height: 24px;
+  color: var(--text-secondary);
+  opacity: 0.7;
+  transition: opacity 0.2s ease, color 0.2s ease;
+}
+
+.btn-example-icon:hover .example-icon {
+  opacity: 1;
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .example-icon {
+  color: var(--text-secondary);
+  opacity: 0.6;
+}
+
+[data-theme="dark"] .btn-example-icon:hover .example-icon {
+  color: var(--text-primary);
+  opacity: 0.9;
+}
+
+.example-usage {
+  margin-top: 0;
 }
 
 /* Hide option number on mobile */

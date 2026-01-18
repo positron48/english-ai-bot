@@ -195,16 +195,24 @@ func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, stat
 	}
 
 	// Return card data as JSON
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(map[string]interface{}{
+	response := map[string]interface{}{
 		"question":     questionText,
 		"card_index":    state.CurrentIndex + 1,
 		"total_cards":   len(state.Queue),
 		"session_id":    state.SessionID,
 		"user_card_id":  card.UserCard.ID,
 		"delay_ms":      r.config.Training.OptionsDelayMS,
-	})
+		"direction":     string(card.UserCard.Direction),
+	}
+	
+	// Add example_en if available (for showing example usage button)
+	if card.TrainingCard.ExampleEN != "" {
+		response["example_en"] = card.TrainingCard.ExampleEN
+	}
+	
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(response)
 }
 
 // extractSessionWords extracts words from other cards in the session for use as distractors
