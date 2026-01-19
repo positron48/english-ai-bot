@@ -16,27 +16,27 @@ func TestConvertMarkdownToTelegram(t *testing.T) {
 		{
 			name:     "Headers",
 			input:    "# Main Title\n## Subtitle\n### Section",
-			expected: "**Main Title**\n**Subtitle**\n**Section**",
+			expected: "*Main Title*\n*Subtitle*\n*Section*",
 		},
 		{
 			name:     "Headers H4",
 			input:    "#### H4 Header",
-			expected: "**H4 Header**",
+			expected: "*H4 Header*",
 		},
 		{
 			name:     "Headers H5",
 			input:    "##### H5 Header",
-			expected: "**H5 Header**",
+			expected: "*H5 Header*",
 		},
 		{
 			name:     "Headers H6",
 			input:    "###### H6 Header",
-			expected: "**# H6 Header**", // Function removes only 5 # symbols
+			expected: "*# H6 Header*", // Function removes only 5 # symbols
 		},
 		{
 			name:     "Bold text with underscores",
 			input:    "This is __bold__ text",
-			expected: "This is **bold** text",
+			expected: "This is *bold* text",
 		},
 		{
 			name:     "Italic text",
@@ -66,7 +66,7 @@ func TestConvertMarkdownToTelegram(t *testing.T) {
 		{
 			name:     "Simple mixed formatting",
 			input:    "# Title\n\nThis is __bold__ and *italic* text.\n\n- Item 1\n- Item 2",
-			expected: "**Title**\n\nThis is **bold** and _italic_ text.\n\n• Item 1\n• Item 2",
+			expected: "*Title*\n\nThis is *bold* and _italic_ text.\n\n• Item 1\n• Item 2",
 		},
 		{
 			name:     "Links",
@@ -145,6 +145,31 @@ func TestRenderWordCardMarkdown(t *testing.T) {
 	}
 
 	result := RenderWordCardMarkdown(card, examples, nil)
+	
+	// Check that translation comes first and is bold
+	// After ConvertMarkdownToTelegram, **text** becomes *text* for Telegram Markdown
+	expectedTranslation := "*" + definitionRU + "*"
+	if !strings.Contains(result, expectedTranslation) {
+		// Also check for **text** format before conversion
+		expectedTranslationBeforeConversion := "**" + definitionRU + "**"
+		if !strings.Contains(result, expectedTranslationBeforeConversion) {
+			t.Errorf("Result should contain bold translation %q or %q, got %q", expectedTranslation, expectedTranslationBeforeConversion, result)
+		}
+	}
+	
+	// Verify translation appears before the word
+	// Check both formats: *text* (after conversion) and **text** (before conversion)
+	translationIndex := strings.Index(result, expectedTranslation)
+	if translationIndex == -1 {
+		translationIndex = strings.Index(result, "**"+definitionRU+"**")
+	}
+	wordIndex := strings.Index(result, "*spy*")
+	if wordIndex == -1 {
+		wordIndex = strings.Index(result, "**spy**")
+	}
+	if translationIndex == -1 || wordIndex == -1 || translationIndex >= wordIndex {
+		t.Errorf("Translation should appear before word. Translation at %d, word at %d", translationIndex, wordIndex)
+	}
 	
 	if !strings.Contains(result, "spy") {
 		t.Error("Result should contain word 'spy'")

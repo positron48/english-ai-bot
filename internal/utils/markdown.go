@@ -18,11 +18,11 @@ func ConvertMarkdownToTelegram(text string) string {
 	// Convert lists (before italic to avoid conflicts)
 	text = convertLists(text)
 
-	// Convert bold text
-	text = convertBold(text)
-
-	// Convert italic text
+	// Convert italic text first (before bold, to avoid conflicts)
 	text = convertItalic(text)
+
+	// Convert bold text (after italic, so **text** -> *text* doesn't conflict)
+	text = convertBold(text)
 
 	// Convert links (basic support)
 	text = convertLinks(text)
@@ -41,7 +41,7 @@ func convertHeaders(text string) string {
 	for _, line := range lines {
 		trimmed := strings.TrimSpace(line)
 
-		// H1: # Header -> **Header**
+		// H1: # Header -> **Header** (will be converted to *Header* by convertBold)
 		if strings.HasPrefix(trimmed, "# ") {
 			header := strings.TrimPrefix(trimmed, "# ")
 			result = append(result, "**"+header+"**")
@@ -82,24 +82,25 @@ func convertHeaders(text string) string {
 
 // convertBold converts Markdown bold to Telegram format
 func convertBold(text string) string {
-	// Convert __text__ to **text**
+	// Convert __text__ to **text** first
 	text = strings.ReplaceAll(text, "__", "**")
+	// Convert **text** to *text* for Telegram Markdown (old format)
+	// Use regex to match **text** but not ***text*** or ****text****
+	// This runs after convertItalic, so **text** is safe to convert
+	text = regexp.MustCompile(`\*\*([^*]+)\*\*`).ReplaceAllString(text, "*$1*")
 	return text
 }
 
 // convertItalic converts Markdown italic to Telegram format
 func convertItalic(text string) string {
 	// Convert *text* to _text_ (Telegram format)
-	// Simple approach: find single asterisks that are not part of double asterisks
-	// We'll use a simple string replacement approach
-
 	// First, protect existing **bold** by replacing with a temporary marker
 	text = strings.ReplaceAll(text, "**", "___BOLD_MARKER___")
 
-	// Now convert single asterisks to underscores
+	// Now convert single asterisks to underscores (for italic)
 	text = strings.ReplaceAll(text, "*", "_")
 
-	// Restore bold markers
+	// Restore bold markers (will be converted to *text* by convertBold)
 	text = strings.ReplaceAll(text, "___BOLD_MARKER___", "**")
 
 	return text
@@ -330,13 +331,17 @@ func convertLinksToHTML(text string) string {
 func RenderWordCardMarkdown(card *models.WordCard, examples []models.WordInfoExample, verbForms *models.WordInfoVerbForms) string {
 	var parts []string
 
-	// Header
 	displayWord := card.Word
 	if card.DisplayEN != nil && *card.DisplayEN != "" {
 		displayWord = *card.DisplayEN
 	}
-	parts = append(parts, "## Vocabulary Card")
-	parts = append(parts, "")
+	
+	// Translation (DefinitionRU) first and bold
+	// Use **text** which will be converted to *text* by ConvertMarkdownToTelegram for Telegram Markdown
+	if card.DefinitionRU != nil && *card.DefinitionRU != "" {
+		parts = append(parts, "**"+*card.DefinitionRU+"**")
+		parts = append(parts, "")
+	}
 	
 	// Word with POS in parentheses on the same line
 	if card.POS != nil && *card.POS != "" {
@@ -351,12 +356,6 @@ func RenderWordCardMarkdown(card *models.WordCard, examples []models.WordInfoExa
 	}
 
 	parts = append(parts, "")
-
-	// Definition
-	if card.DefinitionRU != nil && *card.DefinitionRU != "" {
-		parts = append(parts, "**Definition:** "+*card.DefinitionRU)
-		parts = append(parts, "")
-	}
 
 	// Verb forms (if verb)
 	if verbForms != nil && verbForms.V1 != "" {
