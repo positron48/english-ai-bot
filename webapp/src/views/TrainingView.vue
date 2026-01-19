@@ -1345,6 +1345,9 @@ const submitAnswer = async (optionIndex: number) => {
     const data: Feedback = await apiClient.requestFormData('/api/training/answer', formData)
     feedback.value = data
     
+    // Hide example if it was shown before answer (to avoid duplicate display in feedback)
+    exampleUsageShown.value = false
+    
     // Trigger haptic feedback based on answer correctness
     triggerHapticFeedback(data.is_correct)
     

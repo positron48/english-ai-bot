@@ -235,7 +235,8 @@ func (s *OptionsService) GenerateOptions(
 		word := shuffledSessionWords[i]
 		// Normalize verb format for RU->EN direction BEFORE checking duplicates
 		normalizedWord := s.normalizeVerbFormat(word, currentPOS, card.UserCard.Direction)
-		if !selectedDistractorsSet[normalizedWord] {
+		// Check both that it's not already selected AND that it doesn't match the correct answer
+		if !selectedDistractorsSet[normalizedWord] && !excludedSet[normalizedWord] {
 			selectedDistractors = append(selectedDistractors, normalizedWord)
 			selectedDistractorsSet[normalizedWord] = true
 		}

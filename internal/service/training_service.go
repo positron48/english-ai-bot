@@ -250,6 +250,7 @@ func (s *TrainingService) sortCards(cards []*models.UserCard, now time.Time) {
 }
 
 // shufflePreventDuplicates shuffles cards while preventing same word appearing close together
+// Also prevents cards with the same word and direction from appearing close together
 func (s *TrainingService) shufflePreventDuplicates(queue []*models.UserCardWithTraining) []*models.UserCardWithTraining {
 	if len(queue) <= 1 {
 		return queue
@@ -318,6 +319,7 @@ func (s *TrainingService) shufflePreventDuplicates(queue []*models.UserCardWithT
 			}
 
 			// Check if we can add this word (not used in last N positions)
+			// Check both by WordCardID (same word) and by WordCardID+Direction (same word and direction)
 			canAdd := true
 			checkDistance := minDistance
 			if len(result) < checkDistance {
@@ -325,6 +327,7 @@ func (s *TrainingService) shufflePreventDuplicates(queue []*models.UserCardWithT
 			}
 			
 			for i := len(result) - checkDistance; i < len(result); i++ {
+				// Prevent same word from appearing close together
 				if result[i].TrainingCard.WordCardID == wordCardID {
 					canAdd = false
 					break
@@ -337,19 +340,44 @@ func (s *TrainingService) shufflePreventDuplicates(queue []*models.UserCardWithT
 					cards[i], cards[j] = cards[j], cards[i]
 				})
 				
-				// Find first card that hasn't been added yet
+				// Prefer cards with different direction than recent cards
+				// Check last few cards to see their directions
+				recentDirections := make(map[models.CardDirection]bool)
+				checkDirDistance := 3
+				if len(result) < checkDirDistance {
+					checkDirDistance = len(result)
+				}
+				for i := len(result) - checkDirDistance; i < len(result); i++ {
+					recentDirections[result[i].UserCard.Direction] = true
+				}
+				
+				// Find first card that hasn't been added yet, preferring different direction
 				cardAdded := false
+				preferredCardIndex := -1
 				for i, card := range cards {
 					if !seenUserCardIDs[card.UserCard.ID] {
-						result = append(result, card)
-						seenUserCardIDs[card.UserCard.ID] = true
-						// Remove this card from the group
-						wordGroups[wordCardID] = append(cards[:i], cards[i+1:]...)
-						cardAdded = true
-						added = true
-						break
+						// Prefer card with different direction than recent cards
+						if !recentDirections[card.UserCard.Direction] {
+							preferredCardIndex = i
+							break
+						}
+						// If no preferred card found yet, remember this one as fallback
+						if preferredCardIndex == -1 {
+							preferredCardIndex = i
+						}
 					}
 				}
+				
+				if preferredCardIndex >= 0 {
+					card := cards[preferredCardIndex]
+					result = append(result, card)
+					seenUserCardIDs[card.UserCard.ID] = true
+					// Remove this card from the group
+					wordGroups[wordCardID] = append(cards[:preferredCardIndex], cards[preferredCardIndex+1:]...)
+					cardAdded = true
+					added = true
+				}
+				
 				if !cardAdded {
 					// All cards in this group are already added, remove the group
 					wordGroups[wordCardID] = []*models.UserCardWithTraining{}
