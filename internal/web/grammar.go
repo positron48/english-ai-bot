@@ -46,6 +46,7 @@ func (r *Router) handleLearningGrammarCategories(w http.ResponseWriter, req *htt
 		PublishedChapters int    `json:"published_chapters"`
 		PassedChapters    int    `json:"passed_chapters"`
 		TotalChapters     int    `json:"total_chapters"`
+		ProgressPercentage int   `json:"progress_percentage"`
 	}
 
 	categories := make([]CategoryResponse, 0, len(sections))
@@ -58,6 +59,7 @@ func (r *Router) handleLearningGrammarCategories(w http.ResponseWriter, req *htt
 			PublishedChapters: section.PublishedChapters,
 			PassedChapters:    section.PassedChapters,
 			TotalChapters:     len(section.Section.ChapterIDs),
+			ProgressPercentage: section.ProgressPercentage,
 		})
 	}
 
@@ -454,5 +456,44 @@ func (r *Router) handleLearningGrammarSectionAccess(w http.ResponseWriter, req *
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]interface{}{
 		"can_access": canAccess,
+	})
+}
+
+// handleLearningGrammarStatistics returns overall grammar statistics
+// @Summary      Получить статистику грамматики
+// @Description  Возвращает подтвержденный уровень грамматики и процент завершения курса
+// @Tags         Learning
+// @Accept       json
+// @Produce      application/json
+// @Security     ApiKeyAuth
+// @Success      200  {object}  map[string]interface{}  "Статистика грамматики"
+// @Failure      401  {string}  string  "Неавторизован"
+// @Failure      500  {string}  string  "Внутренняя ошибка сервера"
+// @Router       /api/learning/grammar/statistics [get]
+func (r *Router) handleLearningGrammarStatistics(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	userID := getUserIDFromContext(req.Context())
+	if userID == 0 {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	stats, err := r.grammarService.GetGrammarStatistics(req.Context(), userID)
+	if err != nil {
+		r.logger.Error("failed to get grammar statistics", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"confirmed_level":       stats.ConfirmedLevel,
+		"course_completion_pct": stats.CourseCompletionPct,
+		"average_test_score":     stats.AverageTestScore,
 	})
 }

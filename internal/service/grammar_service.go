@@ -61,9 +61,10 @@ func (s *GrammarService) GetPublishedSections(ctx context.Context, userID int64)
 			title = *item.Name
 		}
 
-		// Count published chapters in this section
+		// Count published chapters in this section and calculate progress percentage
 		publishedChapters := 0
 		passedChapters := 0
+		totalScore := 0
 		for _, chapterID := range section.ChapterIDs {
 			chapterItem, _ := s.PublishRepo.GetPublishedItem("chapter", chapterID)
 			if chapterItem.IsPublished {
@@ -72,7 +73,15 @@ func (s *GrammarService) GetPublishedSections(ctx context.Context, userID int64)
 				if progress.Passed {
 					passedChapters++
 				}
+				// Add best_score to total for percentage calculation
+				totalScore += progress.BestScore
 			}
+		}
+
+		// Calculate average percentage (sum of chapter percentages / number of chapters)
+		progressPercentage := 0
+		if publishedChapters > 0 {
+			progressPercentage = totalScore / publishedChapters
 		}
 
 		result = append(result, &SectionWithProgress{
@@ -80,6 +89,7 @@ func (s *GrammarService) GetPublishedSections(ctx context.Context, userID int64)
 			Title:           title,
 			PublishedChapters: publishedChapters,
 			PassedChapters:  passedChapters,
+			ProgressPercentage: progressPercentage,
 		})
 	}
 
@@ -92,6 +102,7 @@ type SectionWithProgress struct {
 	Title            string
 	PublishedChapters int
 	PassedChapters   int
+	ProgressPercentage int // Average percentage based on chapter best_scores
 }
 
 // GetPublishedChapters returns published chapters for a section
@@ -190,6 +201,9 @@ func (s *GrammarService) GetChapterContent(ctx context.Context, chapterID string
 		content.Chapter = s.sanitizeChapterForDisplay(chapter)
 	}
 
+	// Filter question bank to only include questions used in inline quizzes
+	content.Chapter = s.filterQuestionBankForQuizzes(content.Chapter)
+
 	return content, nil
 }
 
@@ -204,6 +218,76 @@ func (s *GrammarService) sanitizeChapterForDisplay(chapter *repository.Chapter) 
 	// For now, return as-is for inline quizzes (they can show immediate feedback)
 	// Chapter tests will be handled separately
 	return chapter
+}
+
+// filterQuestionBankForQuizzes filters question bank to only include questions used in inline quizzes
+func (s *GrammarService) filterQuestionBankForQuizzes(chapter *repository.Chapter) *repository.Chapter {
+	// Create a copy to avoid modifying the original
+	filteredChapter := *chapter
+
+	// Collect all question IDs used in inline quizzes
+	usedQuestionIDs := make(map[string]bool)
+	
+	// Check blocks for quiz_inline types
+	blocks := chapter.Blocks
+	if blocks != nil {
+		for _, blockInterface := range blocks {
+			block, ok := blockInterface.(map[string]interface{})
+			if !ok {
+				continue
+			}
+			
+			blockType, _ := block["type"].(string)
+			if blockType == "quiz_inline" {
+				quizInline, ok := block["quiz_inline"].(map[string]interface{})
+				if !ok {
+					continue
+				}
+				
+				questionIDs, ok := quizInline["question_ids"].([]interface{})
+				if !ok {
+					continue
+				}
+				
+				for _, idInterface := range questionIDs {
+					if id, ok := idInterface.(string); ok {
+						usedQuestionIDs[id] = true
+					}
+				}
+			}
+		}
+	}
+
+	// Filter question bank if it exists
+	questionBank := filteredChapter.QuestionBank
+	if questionBank != nil {
+		if questions, ok := questionBank["questions"].([]interface{}); ok {
+			filteredQuestions := make([]interface{}, 0)
+			
+			for _, qInterface := range questions {
+				q, ok := qInterface.(map[string]interface{})
+				if !ok {
+					continue
+				}
+				
+				qID, ok := q["id"].(string)
+				if !ok {
+					continue
+				}
+				
+				// Only include questions that are used in quizzes
+				if usedQuestionIDs[qID] {
+					filteredQuestions = append(filteredQuestions, q)
+				}
+			}
+			
+			// Update question bank with filtered questions
+			questionBank["questions"] = filteredQuestions
+			filteredChapter.QuestionBank = questionBank
+		}
+	}
+
+	return &filteredChapter
 }
 
 // GenerateChapterTest generates a test from chapter's question bank
@@ -659,4 +743,118 @@ func (s *GrammarService) CanAccessSection(ctx context.Context, userID int64, sec
 	}
 
 	return true, nil
+}
+
+// GrammarStatistics represents overall grammar course statistics
+type GrammarStatistics struct {
+	ConfirmedLevel      string  `json:"confirmed_level"`       // Highest level where all chapters are passed
+	CourseCompletionPct int     `json:"course_completion_pct"` // Overall completion percentage
+	AverageTestScore    int     `json:"average_test_score"`    // Average percentage across all test attempts
+}
+
+// GetGrammarStatistics calculates overall grammar statistics for a user
+func (s *GrammarService) GetGrammarStatistics(ctx context.Context, userID int64) (*GrammarStatistics, error) {
+	sectionsData, err := s.ContentRepo.GetSections()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get sections: %w", err)
+	}
+
+	publishedItems, err := s.PublishRepo.GetPublishedItemsByType("chapter")
+	if err != nil {
+		return nil, fmt.Errorf("failed to get published items: %w", err)
+	}
+
+	// Level hierarchy for comparison
+	levelOrder := map[string]int{
+		"A0":   0,
+		"A1":   1,
+		"A2":   2,
+		"B1":   3,
+		"B2":   4,
+		"C1":   5,
+		"C2":   6,
+		"mixed": -1, // Mixed levels don't count for confirmed level
+	}
+
+	// Track confirmed level (highest level where all chapters are passed)
+	confirmedLevel := ""
+	confirmedLevelOrder := -1
+
+	// Track overall progress
+	totalScore := 0
+	totalPublishedChapters := 0
+
+	// Process each section
+	for i := range sectionsData.Sections {
+		section := &sectionsData.Sections[i]
+		
+		// Check if section is published
+		sectionItem, err := s.PublishRepo.GetPublishedItem("section", section.SectionID)
+		if err != nil || sectionItem == nil || !sectionItem.IsPublished {
+			continue
+		}
+
+		sectionLevel := section.Level
+		sectionLevelOrder, hasLevel := levelOrder[sectionLevel]
+		if !hasLevel || sectionLevelOrder < 0 {
+			continue // Skip sections without valid level
+		}
+
+		// Check all published chapters in this section
+		allChaptersPassed := true
+		sectionTotalScore := 0
+		sectionPublishedChapters := 0
+
+		for _, chapterID := range section.ChapterIDs {
+			chapterItem, exists := publishedItems[chapterID]
+			if !exists || !chapterItem.IsPublished {
+				continue // Skip unpublished chapters
+			}
+
+			sectionPublishedChapters++
+			progress, _ := s.AttemptRepo.GetChapterProgress(userID, chapterID)
+			sectionTotalScore += progress.BestScore
+
+			if !progress.Passed {
+				allChaptersPassed = false
+			}
+		}
+
+		// Update confirmed level if all chapters in this section are passed
+		if allChaptersPassed && sectionPublishedChapters > 0 && sectionLevelOrder > confirmedLevelOrder {
+			confirmedLevel = sectionLevel
+			confirmedLevelOrder = sectionLevelOrder
+		}
+
+		// Add to overall totals
+		totalScore += sectionTotalScore
+		totalPublishedChapters += sectionPublishedChapters
+	}
+
+	// Calculate overall completion percentage
+	completionPct := 0
+	if totalPublishedChapters > 0 {
+		completionPct = totalScore / totalPublishedChapters
+	}
+
+	// Get average test score across all attempts
+	averageTestScore, err := s.AttemptRepo.GetAverageTestScore(userID)
+	if err != nil {
+		s.logger.Warn("failed to get average test score", zap.Error(err))
+		averageTestScore = 0
+	}
+
+	// If no confirmed level, set to empty string or "A0" if user has any progress
+	if confirmedLevel == "" && totalPublishedChapters > 0 {
+		// Check if user has any progress at all
+		if totalScore > 0 {
+			confirmedLevel = "A0" // Starting level
+		}
+	}
+
+	return &GrammarStatistics{
+		ConfirmedLevel:      confirmedLevel,
+		CourseCompletionPct: completionPct,
+		AverageTestScore:    averageTestScore,
+	}, nil
 }

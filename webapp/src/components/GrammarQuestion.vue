@@ -58,14 +58,37 @@
     
     <!-- Fill Blank -->
     <div v-if="question.type === 'fill_blank'" class="question-input">
-      <input
-        v-model="userAnswer"
-        @input="onAnswerChange"
-        :disabled="answered"
-        type="text"
-        :placeholder="question.prompt.includes('___') ? 'Fill in the blank' : 'Your answer'"
-        class="fill-input"
-      />
+      <div class="fill-input-wrapper">
+        <input
+          v-model="userAnswer"
+          @input="onAnswerChange"
+          @keydown.enter.prevent="handleFillBlankEnter"
+          :disabled="answered"
+          :class="['fill-input', { 'correct': answered && isCorrect, 'incorrect': answered && !isCorrect }]"
+          type="text"
+          :placeholder="question.prompt.includes('___') ? 'Fill in the blank' : 'Your answer'"
+          ref="fillInputRef"
+        />
+        <button
+          v-if="showAnswers && !answered && userAnswer && userAnswer.trim()"
+          @click="handleFillBlankCheck"
+          class="check-btn"
+          :disabled="answered"
+        >
+          Check
+        </button>
+      </div>
+      <!-- Show correct/incorrect indicator for fill_blank after check -->
+      <div v-if="answered && showAnswers" class="fill-blank-feedback" :class="{ 'correct': isCorrect, 'incorrect': !isCorrect }">
+        <span v-if="isCorrect" class="feedback-icon">✓</span>
+        <span v-else class="feedback-icon">✗</span>
+        <span v-if="isCorrect" class="feedback-text">Correct!</span>
+        <span v-else class="feedback-text">Incorrect</span>
+      </div>
+      <!-- Show correct answer if incorrect -->
+      <div v-if="answered && !isCorrect && showAnswers && correctAnswer" class="correct-answer-display">
+        <strong>Правильный ответ:</strong> {{ correctAnswer }}
+      </div>
     </div>
     
     <!-- True/False -->
@@ -194,6 +217,7 @@ const emit = defineEmits<{
 const userAnswer = ref<any>(null)
 const answered = ref(false)
 const correctAnswer = ref<any>(props.question.correct_answer)
+const fillInputRef = ref<HTMLInputElement | null>(null)
 
 // Reorder-specific state
 const selectedWords = ref<string[]>([])
@@ -293,6 +317,10 @@ const selectAnswer = (answer: any) => {
   userAnswer.value = answer
   answered.value = props.showAnswers || false
   emit('answer', answer)
+  // If not showing answers (test mode), emit immediately for auto-advance
+  if (!props.showAnswers) {
+    // Answer is already emitted above
+  }
 }
 
 const toggleAnswer = (choiceId: string) => {
@@ -307,10 +335,43 @@ const toggleAnswer = (choiceId: string) => {
     userAnswer.value.push(choiceId)
   }
   emit('answer', [...userAnswer.value])
+  // For multi-choice, auto-advance happens when at least one option is selected
+  // The parent component will handle the auto-advance logic
 }
 
 const onAnswerChange = () => {
+  // Don't emit answer on every input change for fill_blank type
+  // Answer will be emitted only when user submits (Enter or Check button)
+  // This prevents sounds from playing on every keystroke
+  if (props.question.type !== 'fill_blank') {
+    emit('answer', userAnswer.value)
+  }
+}
+
+const handleFillBlankCheck = () => {
+  if (answered.value || !userAnswer.value || !userAnswer.value.trim()) {
+    return
+  }
+  // Emit answer when user submits (Check button or Enter)
   emit('answer', userAnswer.value)
+  // If showing answers (quiz mode), mark as answered to show feedback
+  if (props.showAnswers) {
+    answered.value = true
+  }
+  // In test mode (showAnswers=false), this will trigger auto-advance in parent
+}
+
+const handleFillBlankEnter = () => {
+  if (answered.value || !userAnswer.value || !userAnswer.value.trim()) {
+    return
+  }
+  // Emit answer when user submits (Enter key)
+  emit('answer', userAnswer.value)
+  // In test mode (showAnswers=false), parent will handle auto-advance
+  // In quiz mode (showAnswers=true), check the answer
+  if (props.showAnswers) {
+    handleFillBlankCheck()
+  }
 }
 
 // Reorder functions
@@ -624,8 +685,14 @@ watch(() => props.showAnswers, (newVal) => {
   margin-bottom: 16px;
 }
 
+.fill-input-wrapper {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
 .fill-input, .error-input {
-  width: 100%;
+  flex: 1;
   padding: 12px;
   border: 2px solid var(--border-primary);
   border-radius: 6px;
@@ -642,6 +709,69 @@ watch(() => props.showAnswers, (newVal) => {
 
 .fill-input:disabled, .error-input:disabled {
   opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.fill-input.correct {
+  border-color: var(--color-success);
+  background: rgba(40, 167, 69, 0.1);
+}
+
+.fill-input.incorrect {
+  border-color: var(--color-danger);
+  background: rgba(220, 53, 69, 0.1);
+}
+
+.fill-blank-feedback {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  margin-bottom: 12px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.fill-blank-feedback.correct {
+  background: rgba(40, 167, 69, 0.1);
+  color: var(--color-success);
+}
+
+.fill-blank-feedback.incorrect {
+  background: rgba(220, 53, 69, 0.1);
+  color: var(--color-danger);
+}
+
+.feedback-icon {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.feedback-text {
+  font-size: 14px;
+}
+
+.check-btn {
+  padding: 12px 20px;
+  height: calc(12px * 2 + 1.5em); /* Match input height: padding top + bottom + line height */
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+}
+
+.check-btn:hover:not(:disabled) {
+  background: var(--color-primary-hover);
+}
+
+.check-btn:disabled {
+  opacity: 0.6;
   cursor: not-allowed;
 }
 

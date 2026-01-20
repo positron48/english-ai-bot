@@ -52,12 +52,11 @@
               </div>
             </div>
             <div class="chapter-status">
-              <div v-if="chapter.passed" class="status-badge passed">
-                <Icon name="check" />
-                Passed
+              <div v-if="chapter.best_score > 0" class="status-badge" :class="{ 'passed': chapter.passed, 'attempted': !chapter.passed }">
+                {{ chapter.best_score }}%
               </div>
-              <div v-else-if="chapter.best_score > 0" class="status-badge attempted">
-                Score: {{ chapter.best_score }}%
+              <div v-else class="status-badge not-started">
+                0%
               </div>
               <Icon name="chevron-right" class="chevron" />
             </div>
@@ -311,6 +310,12 @@ onMounted(() => {
 .status-badge.attempted {
   background: var(--bg-tertiary);
   color: var(--text-secondary);
+}
+
+.status-badge.not-started {
+  background: var(--bg-tertiary);
+  color: var(--text-tertiary);
+  opacity: 0.6;
 }
 
 .chevron {

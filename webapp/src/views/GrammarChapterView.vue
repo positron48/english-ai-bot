@@ -113,10 +113,15 @@ import { useRoute, useRouter } from 'vue-router'
 import { marked } from 'marked'
 import { apiClient } from '../api/client'
 import GrammarQuestion from '../components/GrammarQuestion.vue'
+import { useSettings } from '../composables/useSettings'
+import { useAudio } from '../composables/useAudio'
 
 const route = useRoute()
 const router = useRouter()
 const chapterId = computed(() => route.params.chapterId as string)
+
+const { settings } = useSettings()
+const { playSuccess, playFail } = useAudio()
 
 const chapter = ref<any>(null)
 const chapterTitle = ref('')
@@ -153,9 +158,105 @@ const getQuestionById = (questionId: string) => {
   return questionMap.value.get(questionId) || null
 }
 
+// Helper function to compare answers
+const compareAnswers = (userAnswer: any, correctAnswer: any): boolean => {
+  if (typeof correctAnswer === 'string') {
+    return userAnswer?.trim().toLowerCase() === correctAnswer.trim().toLowerCase()
+  }
+  if (Array.isArray(correctAnswer)) {
+    if (!Array.isArray(userAnswer)) return false
+    if (userAnswer.length !== correctAnswer.length) return false
+    // Sort both arrays for comparison
+    const sortedUser = [...userAnswer].sort()
+    const sortedCorrect = [...correctAnswer].sort()
+    return sortedUser.every((val, idx) => val === sortedCorrect[idx])
+  }
+  return userAnswer === correctAnswer
+}
+
+// Haptic feedback helper function
+const triggerHapticFeedback = (isCorrect: boolean) => {
+  if (!settings.value.vibrationEnabled) return
+  
+  const tg = (window as any).Telegram?.WebApp
+  
+  // Try Telegram Web App API first
+  if (tg?.HapticFeedback) {
+    try {
+      const haptic = tg.HapticFeedback
+      if (isCorrect) {
+        if (typeof haptic.notificationOccurred === 'function') {
+          haptic.notificationOccurred('success')
+        } else if (typeof haptic.impactOccurred === 'function') {
+          haptic.impactOccurred('medium')
+        }
+      } else {
+        if (typeof haptic.notificationOccurred === 'function') {
+          haptic.notificationOccurred('error')
+        } else if (typeof haptic.impactOccurred === 'function') {
+          haptic.impactOccurred('heavy')
+        }
+      }
+      return
+    } catch (error) {
+      console.warn('Telegram haptic feedback failed:', error)
+    }
+  }
+  
+  // Fallback to native Vibration API
+  if ('vibrate' in navigator && typeof navigator.vibrate === 'function') {
+    try {
+      if (isCorrect) {
+        navigator.vibrate(50)
+      } else {
+        navigator.vibrate([100, 50, 100])
+      }
+    } catch (error) {
+      console.warn('Native vibration failed:', error)
+    }
+  }
+}
+
 const handleQuizAnswer = (questionId: string, answer: any) => {
   // For inline quizzes, we can show immediate feedback
   // Answers are already included in the chapter data
+  
+  // Only play sounds/vibration if answers are shown immediately
+  const question = getQuestionById(questionId)
+  if (!question || !question.correct_answer) {
+    return
+  }
+  
+  // Check if this quiz block shows answers immediately
+  // We need to find the block that contains this question
+  let showAnswersImmediately = false
+  if (chapter.value?.blocks) {
+    for (const block of chapter.value.blocks) {
+      if (block.type === 'quiz_inline' && block.quiz_inline?.question_ids) {
+        if (block.quiz_inline.question_ids.includes(questionId)) {
+          showAnswersImmediately = block.quiz_inline.show_answers_immediately || false
+          break
+        }
+      }
+    }
+  }
+  
+  // Only play feedback if answers are shown immediately
+  if (showAnswersImmediately) {
+    const isCorrect = compareAnswers(answer, question.correct_answer)
+    
+    // Play sound
+    if (settings.value.soundsEnabled) {
+      if (isCorrect) {
+        playSuccess(settings.value.soundTheme)
+      } else {
+        playFail(settings.value.soundTheme)
+      }
+    }
+    
+    // Trigger haptic feedback
+    triggerHapticFeedback(isCorrect)
+  }
 }
 
 const startTest = () => {

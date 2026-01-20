@@ -291,6 +291,7 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/learning/grammar/categories/", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarChapters)))
 	r.mux.HandleFunc("/api/learning/grammar/chapters/", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarChapterOrTest)))
 	r.mux.HandleFunc("/api/learning/grammar/tests/submit", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarSubmitTest)))
+	r.mux.HandleFunc("/api/learning/grammar/statistics", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarStatistics)))
 	
 	r.mux.HandleFunc("/api/training/start", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTrainingStart)))
 	r.mux.HandleFunc("/api/training/current", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTrainingCurrent)))

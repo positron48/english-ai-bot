@@ -225,6 +225,52 @@ func (r *GrammarAttemptRepository) GetBestScore(userID int64, scopeType, scopeID
 	return int(bestScore.Int64), nil
 }
 
+// GetAverageTestScore calculates average score using only the latest attempt for each chapter
+// Only counts chapters where at least one test was completed
+func (r *GrammarAttemptRepository) GetAverageTestScore(userID int64) (int, error) {
+	// Get the latest attempt score for each chapter (scope_type = 'chapter')
+	query := `SELECT score FROM (
+				SELECT scope_id, score, 
+					   ROW_NUMBER() OVER (PARTITION BY scope_id ORDER BY finished_at DESC, started_at DESC) as rn
+				FROM grammar_test_attempts
+				WHERE user_id = ? AND scope_type = 'chapter' AND finished_at IS NOT NULL
+			) ranked
+			WHERE rn = 1`
+
+	rows, err := r.db.Query(query, userID)
+	if err != nil {
+		return 0, fmt.Errorf("failed to query test scores: %w", err)
+	}
+	defer rows.Close()
+
+	var scores []int
+	for rows.Next() {
+		var score int
+		if err := rows.Scan(&score); err != nil {
+			continue
+		}
+		scores = append(scores, score)
+	}
+
+	if err := rows.Err(); err != nil {
+		return 0, fmt.Errorf("failed to scan scores: %w", err)
+	}
+
+	// If no tests were completed, return 0
+	if len(scores) == 0 {
+		return 0, nil
+	}
+
+	// Calculate average
+	sum := 0
+	for _, score := range scores {
+		sum += score
+	}
+	avg := float64(sum) / float64(len(scores))
+
+	return int(avg + 0.5), nil // Round to nearest integer
+}
+
 // ParseAnswersJSON parses answers JSON string into a map
 func ParseAnswersJSON(jsonStr string) (map[string]interface{}, error) {
 	if jsonStr == "" {
