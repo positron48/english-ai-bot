@@ -16,36 +16,68 @@
     </div>
     
     <div v-else class="categories-grid">
-      <router-link
+      <div
         v-for="category in categories"
         :key="category.section_id"
-        :to="`/learning/grammar/${category.section_id}`"
         class="category-card"
+        :class="{ 'locked': !category.can_access }"
       >
-        <div class="category-header">
-          <h2>{{ category.title }}</h2>
-          <span class="category-level">{{ category.level }}</span>
-        </div>
-        <p class="category-description">{{ category.title }}</p>
-        <div class="category-progress">
-          <div class="progress-bar">
-            <div 
-              class="progress-fill" 
-              :style="{ width: category.total_chapters > 0 ? `${(category.passed_chapters / category.total_chapters) * 100}%` : '0%' }"
-            ></div>
+        <router-link
+          v-if="category.can_access"
+          :to="`/learning/grammar/${category.section_id}`"
+          class="category-link"
+        >
+          <div class="category-header">
+            <h2>{{ category.title }}</h2>
+            <span class="category-level">{{ category.level }}</span>
           </div>
-          <span class="progress-text">
-            {{ category.passed_chapters }} / {{ category.total_chapters }} chapters
-          </span>
+          <p class="category-description">{{ category.title }}</p>
+          <div class="category-progress">
+            <div class="progress-bar">
+              <div 
+                class="progress-fill" 
+                :style="{ width: category.total_chapters > 0 ? `${(category.passed_chapters / category.total_chapters) * 100}%` : '0%' }"
+              ></div>
+            </div>
+            <span class="progress-text">
+              {{ category.passed_chapters }} / {{ category.total_chapters }} chapters
+            </span>
+          </div>
+        </router-link>
+        <div v-else class="category-link locked-link">
+          <div class="category-header">
+            <h2>{{ category.title }}</h2>
+            <span class="category-level">{{ category.level }}</span>
+          </div>
+          <p class="category-description">{{ category.title }}</p>
+          <div class="category-progress">
+            <div class="progress-bar">
+              <div 
+                class="progress-fill" 
+                :style="{ width: category.total_chapters > 0 ? `${(category.passed_chapters / category.total_chapters) * 100}%` : '0%' }"
+              ></div>
+            </div>
+            <span class="progress-text">
+              {{ category.passed_chapters }} / {{ category.total_chapters }} chapters
+            </span>
+          </div>
+          <div class="locked-overlay">
+            <Icon name="lock" />
+            <span>Complete previous chapter to unlock</span>
+          </div>
         </div>
-      </router-link>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 import { apiClient } from '../api/client'
+import Icon from '../components/Icon.vue'
+
+const route = useRoute()
 
 interface Category {
   section_id: string
@@ -55,6 +87,7 @@ interface Category {
   published_chapters: number
   passed_chapters: number
   total_chapters: number
+  can_access?: boolean
 }
 
 const categories = ref<Category[]>([])
@@ -66,7 +99,22 @@ const loadCategories = async () => {
   error.value = null
   try {
     const data: { categories: Category[] } = await apiClient.request('/api/learning/grammar/categories')
-    categories.value = data.categories || []
+    const loadedCategories = data.categories || []
+    
+    // Check access for each category
+    for (let i = 0; i < loadedCategories.length; i++) {
+      const category = loadedCategories[i]
+      // First category is always accessible
+      if (i === 0) {
+        category.can_access = true
+      } else {
+        // Category is accessible if all chapters in previous category were passed
+        const previousCategory = loadedCategories[i - 1]
+        category.can_access = previousCategory.passed_chapters === previousCategory.total_chapters && previousCategory.total_chapters > 0
+      }
+    }
+    
+    categories.value = loadedCategories
   } catch (err: any) {
     error.value = err.message || 'Failed to load categories'
     console.error('Failed to load grammar categories:', err)
@@ -114,15 +162,59 @@ onMounted(() => {
   background: var(--card-bg);
   border: 2px solid var(--border-primary);
   border-radius: 12px;
-  text-decoration: none;
   color: var(--text-primary);
   transition: all 0.3s ease;
+  position: relative;
 }
 
-.category-card:hover {
+.category-card.locked {
+  opacity: 0.6;
+}
+
+.category-link {
+  text-decoration: none;
+  color: var(--text-primary);
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.category-card:not(.locked):hover {
   border-color: var(--color-primary);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transform: translateY(-2px);
+}
+
+.category-card.locked .category-link,
+.category-card .locked-link {
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+.locked-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 12px;
+  color: white;
+  font-weight: 600;
+}
+
+.locked-overlay Icon {
+  font-size: 24px;
+  margin-bottom: -2px;
+}
+
+.locked-overlay span {
+  margin-top: -2px;
 }
 
 .category-header {

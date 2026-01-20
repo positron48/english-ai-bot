@@ -95,6 +95,13 @@ func (r *Router) handleLearningGrammarChapters(w http.ResponseWriter, req *http.
 
 	// Extract section_id from path
 	path := strings.TrimPrefix(req.URL.Path, "/api/learning/grammar/categories/")
+	
+	// Check if it's an access check request
+	if strings.HasSuffix(path, "/access") {
+		r.handleLearningGrammarSectionAccess(w, req)
+		return
+	}
+	
 	sectionID := strings.TrimSuffix(path, "/chapters")
 	sectionID = strings.Trim(sectionID, "/")
 
@@ -153,10 +160,16 @@ func (r *Router) handleLearningGrammarChapters(w http.ResponseWriter, req *http.
 	})
 }
 
-// handleLearningGrammarChapterOrTest handles both chapter content and test requests
+// handleLearningGrammarChapterOrTest handles chapter content, test, and access requests
 func (r *Router) handleLearningGrammarChapterOrTest(w http.ResponseWriter, req *http.Request) {
 	path := strings.TrimPrefix(req.URL.Path, "/api/learning/grammar/chapters/")
 	path = strings.Trim(path, "/")
+	
+	// Check if it's an access check request
+	if strings.HasSuffix(path, "/access") {
+		r.handleLearningGrammarChapterAccess(w, req)
+		return
+	}
 	
 	// Check if it's a test request
 	if strings.HasSuffix(path, "/test") {
@@ -332,5 +345,114 @@ func (r *Router) handleLearningGrammarSubmitTest(w http.ResponseWriter, req *htt
 		"correct": result.Correct,
 		"total":   result.Total,
 		"results": result.Results,
+	})
+}
+
+// handleLearningGrammarChapterAccess checks if user can access a chapter
+// @Summary      Проверить доступ к главе
+// @Description  Проверяет, может ли пользователь получить доступ к главе (предыдущая глава должна быть пройдена)
+// @Tags         Learning
+// @Accept       json
+// @Produce      application/json
+// @Security     ApiKeyAuth
+// @Param        chapter_id  path  string  true  "ID главы"
+// @Success      200  {object}  map[string]interface{}  "Результат проверки доступа"
+// @Failure      401  {string}  string  "Неавторизован"
+// @Failure      404  {string}  string  "Глава не найдена"
+// @Failure      500  {string}  string  "Внутренняя ошибка сервера"
+// @Router       /api/learning/grammar/chapters/{chapter_id}/access [get]
+func (r *Router) handleLearningGrammarChapterAccess(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	userID := getUserIDFromContext(req.Context())
+	if userID == 0 {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	// Extract chapter_id from path
+	path := strings.TrimPrefix(req.URL.Path, "/api/learning/grammar/chapters/")
+	path = strings.Trim(path, "/")
+	
+	// Remove /access suffix if present
+	chapterID := strings.TrimSuffix(path, "/access")
+	chapterID = strings.Trim(chapterID, "/")
+
+	if chapterID == "" {
+		http.Error(w, "chapter_id required", http.StatusBadRequest)
+		return
+	}
+
+	canAccess, err := r.grammarService.CanAccessChapter(req.Context(), userID, chapterID)
+	if err != nil {
+		r.logger.Error("failed to check chapter access", zap.String("chapter_id", chapterID), zap.Error(err))
+		if strings.Contains(err.Error(), "not found") {
+			http.Error(w, "Chapter not found", http.StatusNotFound)
+			return
+		}
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"can_access": canAccess,
+	})
+}
+
+// handleLearningGrammarSectionAccess checks if user can access a section
+// @Summary      Проверить доступ к категории
+// @Description  Проверяет, может ли пользователь получить доступ к категории (все главы предыдущей категории должны быть пройдены)
+// @Tags         Learning
+// @Accept       json
+// @Produce      application/json
+// @Security     ApiKeyAuth
+// @Param        section_id  path  string  true  "ID категории"
+// @Success      200  {object}  map[string]interface{}  "Результат проверки доступа"
+// @Failure      401  {string}  string  "Неавторизован"
+// @Failure      404  {string}  string  "Категория не найдена"
+// @Failure      500  {string}  string  "Внутренняя ошибка сервера"
+// @Router       /api/learning/grammar/categories/{section_id}/access [get]
+func (r *Router) handleLearningGrammarSectionAccess(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	userID := getUserIDFromContext(req.Context())
+	if userID == 0 {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	// Extract section_id from path
+	path := strings.TrimPrefix(req.URL.Path, "/api/learning/grammar/categories/")
+	sectionID := strings.TrimSuffix(path, "/access")
+	sectionID = strings.Trim(sectionID, "/")
+
+	if sectionID == "" {
+		http.Error(w, "section_id required", http.StatusBadRequest)
+		return
+	}
+
+	canAccess, err := r.grammarService.CanAccessSection(req.Context(), userID, sectionID)
+	if err != nil {
+		r.logger.Error("failed to check section access", zap.String("section_id", sectionID), zap.Error(err))
+		if strings.Contains(err.Error(), "not found") {
+			http.Error(w, "Section not found", http.StatusNotFound)
+			return
+		}
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"can_access": canAccess,
 	})
 }

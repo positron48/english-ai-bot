@@ -21,17 +21,24 @@
         </button>
       </div>
       
+      <div v-if="accessError" class="access-error">
+        <Icon name="lock" class="error-icon" />
+        <p>Complete the previous chapter with at least 50% to unlock this one.</p>
+      </div>
+      
       <div v-if="chapters.length === 0" class="empty">
         <p>No chapters available in this category.</p>
       </div>
       
       <div v-else class="chapters-list">
         <div
-          v-for="chapter in chapters"
+          v-for="(chapter, index) in chapters"
           :key="chapter.chapter_id"
           class="chapter-item"
+          :class="{ 'locked': !chapter.can_access && !chapter.passed }"
         >
           <router-link
+            v-if="chapter.can_access || chapter.passed"
             :to="`/learning/grammar/chapter/${chapter.chapter_id}`"
             class="chapter-link"
           >
@@ -55,6 +62,23 @@
               <Icon name="chevron-right" class="chevron" />
             </div>
           </router-link>
+          <div v-else class="chapter-link locked-link">
+            <div class="chapter-info">
+              <h3>{{ chapter.title }}</h3>
+              <div class="chapter-meta">
+                <span v-if="chapter.level" class="chapter-level">{{ chapter.level }}</span>
+                <span v-if="chapter.estimated_minutes" class="chapter-time">
+                  ~{{ chapter.estimated_minutes }} min
+                </span>
+              </div>
+            </div>
+            <div class="chapter-status">
+              <div class="status-badge locked">
+                <Icon name="lock" />
+                Locked
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -67,6 +91,8 @@ import { useRoute, useRouter } from 'vue-router'
 import { apiClient } from '../api/client'
 import Icon from '../components/Icon.vue'
 
+const route = useRoute()
+
 interface Chapter {
   chapter_id: string
   title: string
@@ -78,9 +104,9 @@ interface Chapter {
   best_score: number
   passed: boolean
   last_attempt_at?: string
+  can_access?: boolean
 }
 
-const route = useRoute()
 const router = useRouter()
 const sectionId = computed(() => route.params.sectionId as string)
 
@@ -88,6 +114,7 @@ const chapters = ref<Chapter[]>([])
 const categoryTitle = ref('')
 const loading = ref(true)
 const error = ref<string | null>(null)
+const accessError = ref(false)
 
 const allChaptersPassed = computed(() => {
   return chapters.value.length > 0 && chapters.value.every(ch => ch.passed)
@@ -127,6 +154,14 @@ const loadCategoryTitle = async () => {
 const loadChapters = async () => {
   loading.value = true
   error.value = null
+  accessError.value = false
+  
+  // Check if we were redirected due to access error
+  const route = useRoute()
+  if (route.query.error === 'previous_chapter_not_passed') {
+    accessError.value = true
+  }
+  
   try {
     // Load category title first
     await loadCategoryTitle()
@@ -134,7 +169,22 @@ const loadChapters = async () => {
     const data: { chapters: Chapter[] } = await apiClient.request(
       `/api/learning/grammar/categories/${sectionId.value}/chapters`
     )
-    chapters.value = data.chapters || []
+    const loadedChapters = data.chapters || []
+    
+    // Check access for each chapter
+    for (let i = 0; i < loadedChapters.length; i++) {
+      const chapter = loadedChapters[i]
+      // First chapter is always accessible
+      if (i === 0) {
+        chapter.can_access = true
+      } else {
+        // Chapter is accessible if previous chapter was passed
+        const previousChapter = loadedChapters[i - 1]
+        chapter.can_access = previousChapter.passed
+      }
+    }
+    
+    chapters.value = loadedChapters
   } catch (err: any) {
     error.value = err.message || 'Failed to load chapters'
     console.error('Failed to load grammar chapters:', err)
@@ -265,6 +315,43 @@ onMounted(() => {
 
 .chevron {
   color: var(--text-tertiary);
+}
+
+.access-error {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  margin-bottom: 24px;
+  background: var(--color-danger-light, rgba(239, 68, 68, 0.1));
+  border: 2px solid var(--color-danger);
+  border-radius: 8px;
+  color: var(--color-danger);
+}
+
+.access-error .error-icon {
+  flex-shrink: 0;
+}
+
+.access-error p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.chapter-item.locked {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.chapter-item.locked .chapter-link,
+.chapter-item .locked-link {
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+.status-badge.locked {
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
 }
 
 @media (max-width: 768px) {

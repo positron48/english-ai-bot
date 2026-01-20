@@ -540,3 +540,123 @@ func (s *GrammarService) compareAnswers(userAnswer, correctAnswer interface{}) b
 		return userAnswer == correctAnswer
 	}
 }
+
+// CanAccessChapter checks if a user can access a chapter
+// A chapter can be accessed if:
+// 1. It's the first chapter in its section, OR
+// 2. The previous chapter has been passed (score >= 50%)
+func (s *GrammarService) CanAccessChapter(ctx context.Context, userID int64, chapterID string) (bool, error) {
+	// Get the chapter to find its section
+	chapter, err := s.ContentRepo.GetChapter(chapterID)
+	if err != nil {
+		return false, fmt.Errorf("failed to get chapter: %w", err)
+	}
+
+	// Get sections to find chapter order
+	sectionsData, err := s.ContentRepo.GetSections()
+	if err != nil {
+		return false, fmt.Errorf("failed to get sections: %w", err)
+	}
+
+	// Find the section containing this chapter
+	var section *repository.Section
+	for i := range sectionsData.Sections {
+		if sectionsData.Sections[i].SectionID == chapter.SectionID {
+			section = &sectionsData.Sections[i]
+			break
+		}
+	}
+
+	if section == nil {
+		return false, fmt.Errorf("section not found for chapter: %s", chapterID)
+	}
+
+	// Find the index of this chapter in the section
+	chapterIndex := -1
+	for i, id := range section.ChapterIDs {
+		if id == chapterID {
+			chapterIndex = i
+			break
+		}
+	}
+
+	if chapterIndex == -1 {
+		return false, fmt.Errorf("chapter not found in section: %s", chapterID)
+	}
+
+	// First chapter is always accessible
+	if chapterIndex == 0 {
+		return true, nil
+	}
+
+	// Check if previous chapter has been passed
+	previousChapterID := section.ChapterIDs[chapterIndex-1]
+	progress, err := s.AttemptRepo.GetChapterProgress(userID, previousChapterID)
+	if err != nil {
+		return false, fmt.Errorf("failed to get progress for previous chapter: %w", err)
+	}
+
+	// Chapter is accessible if previous chapter was passed (score >= 50%)
+	return progress.Passed, nil
+}
+
+// CanAccessSection checks if a user can access a section (category)
+// A section can be accessed if:
+// 1. It's the first section, OR
+// 2. All chapters in the previous section have been passed
+func (s *GrammarService) CanAccessSection(ctx context.Context, userID int64, sectionID string) (bool, error) {
+	// Get sections to find section order
+	sectionsData, err := s.ContentRepo.GetSections()
+	if err != nil {
+		return false, fmt.Errorf("failed to get sections: %w", err)
+	}
+
+	// Find the section
+	var section *repository.Section
+	var sectionIndex = -1
+	for i := range sectionsData.Sections {
+		if sectionsData.Sections[i].SectionID == sectionID {
+			section = &sectionsData.Sections[i]
+			sectionIndex = i
+			break
+		}
+	}
+
+	if section == nil {
+		return false, fmt.Errorf("section not found: %s", sectionID)
+	}
+
+	// First section is always accessible
+	if sectionIndex == 0 {
+		return true, nil
+	}
+
+	// Check if all chapters in previous section have been passed
+	previousSection := sectionsData.Sections[sectionIndex-1]
+	
+	// Get published items to filter chapters
+	publishedItems, err := s.PublishRepo.GetPublishedItemsByType("chapter")
+	if err != nil {
+		return false, fmt.Errorf("failed to get published items: %w", err)
+	}
+
+	// Check each published chapter in previous section
+	for _, chapterID := range previousSection.ChapterIDs {
+		chapterItem, exists := publishedItems[chapterID]
+		if !exists || !chapterItem.IsPublished {
+			continue // Skip unpublished chapters
+		}
+
+		progress, err := s.AttemptRepo.GetChapterProgress(userID, chapterID)
+		if err != nil {
+			return false, fmt.Errorf("failed to get progress for chapter %s: %w", chapterID, err)
+		}
+
+		// If any chapter in previous section is not passed, section is not accessible
+		if !progress.Passed {
+			return false, nil
+		}
+	}
+
+	return true, nil
+}

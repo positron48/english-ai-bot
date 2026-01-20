@@ -203,6 +203,55 @@ router.beforeEach(async (to, _from, next) => {
   } else if (to.meta.requiresAdmin && !isAdmin.value) {
     next('/dashboard')
   } else {
+    // Check grammar chapter access
+    if (to.name === 'GrammarChapter' && to.params.chapterId) {
+      try {
+        const chapterId = to.params.chapterId as string
+        const response: { can_access: boolean } = await apiClient.request(
+          `/api/learning/grammar/chapters/${chapterId}/access`
+        )
+        if (!response.can_access) {
+          // Redirect to chapters list with error message
+          // Extract sectionId from chapterId (format: section.chapter)
+          const sectionMatch = chapterId.match(/^(.+)\.[^.]+$/)
+          if (sectionMatch) {
+            const sectionId = sectionMatch[1]
+            next({
+              path: `/learning/grammar/${sectionId}`,
+              query: { error: 'previous_chapter_not_passed' }
+            })
+          } else {
+            next('/learning/grammar')
+          }
+          return
+        }
+      } catch (error: any) {
+        // If access check fails, allow navigation (backend will handle it)
+        console.error('Failed to check chapter access:', error)
+      }
+    }
+    
+    // Check grammar section access
+    if (to.name === 'GrammarChapters' && to.params.sectionId) {
+      try {
+        const sectionId = to.params.sectionId as string
+        const response: { can_access: boolean } = await apiClient.request(
+          `/api/learning/grammar/categories/${sectionId}/access`
+        )
+        if (!response.can_access) {
+          // Redirect to categories list with error message
+          next({
+            path: '/learning/grammar',
+            query: { error: 'previous_section_not_complete' }
+          })
+          return
+        }
+      } catch (error: any) {
+        // If access check fails, allow navigation (backend will handle it)
+        console.error('Failed to check section access:', error)
+      }
+    }
+    
     next()
   }
 })
