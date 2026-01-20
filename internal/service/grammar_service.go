@@ -250,10 +250,14 @@ func (s *GrammarService) GenerateChapterTest(ctx context.Context, chapterID stri
 	// Select questions based on strategy
 	selectedQuestions := s.selectQuestions(poolIDs, questionMap, testConfig, numQuestions)
 
-	// Remove correct_answer from selected questions
+	// Remove correct_answer from selected questions (except for reorder type, which needs it for word display)
 	for _, q := range selectedQuestions {
 		if qMap, ok := q.(map[string]interface{}); ok {
-			delete(qMap, "correct_answer")
+			// Keep correct_answer for reorder questions - needed to split into words for UI
+			questionType, _ := qMap["type"].(string)
+			if questionType != "reorder" {
+				delete(qMap, "correct_answer")
+			}
 		}
 	}
 

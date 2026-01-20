@@ -93,22 +93,48 @@ const allChaptersPassed = computed(() => {
   return chapters.value.length > 0 && chapters.value.every(ch => ch.passed)
 })
 
+const loadCategoryTitle = async () => {
+  try {
+    const data: any = await apiClient.request('/api/learning/grammar/categories')
+    const categories = data.categories || []
+    const section = categories.find((s: any) => s.section_id === sectionId.value)
+    
+    if (section?.title) {
+      categoryTitle.value = section.title
+    } else {
+      // Fallback: format sectionId with proper capitalization
+      const formatted = sectionId.value
+        .replace(/^en\.grammar\./, '')
+        .replace(/_/g, ' ')
+        .split(' ')
+        .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ')
+      categoryTitle.value = formatted
+    }
+  } catch (error) {
+    console.error('Failed to load category title:', error)
+    // Fallback: format sectionId with proper capitalization
+    const formatted = sectionId.value
+      .replace(/^en\.grammar\./, '')
+      .replace(/_/g, ' ')
+      .split(' ')
+      .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ')
+    categoryTitle.value = formatted
+  }
+}
+
 const loadChapters = async () => {
   loading.value = true
   error.value = null
   try {
+    // Load category title first
+    await loadCategoryTitle()
+    
     const data: { chapters: Chapter[] } = await apiClient.request(
       `/api/learning/grammar/categories/${sectionId.value}/chapters`
     )
     chapters.value = data.chapters || []
-    
-    // Try to get category title from first chapter or use section ID
-    if (chapters.value.length > 0) {
-      // Extract section title from section_id or use a default
-      categoryTitle.value = sectionId.value.split('.').pop()?.replace(/_/g, ' ') || sectionId.value
-    } else {
-      categoryTitle.value = sectionId.value
-    }
   } catch (err: any) {
     error.value = err.message || 'Failed to load chapters'
     console.error('Failed to load grammar chapters:', err)

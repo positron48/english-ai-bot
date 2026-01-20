@@ -55,16 +55,18 @@
         <div class="test-progress">
           Question {{ currentQuestionIndex + 1 }} of {{ questions.length }}
         </div>
+        <button @click="exitTest" class="btn btn-secondary btn-exit">Exit Test</button>
       </div>
       
       <div class="test-questions">
         <GrammarQuestion
-          v-for="(question, index) in questions"
-          :key="question.id || index"
-          :ref="el => setQuestionRef(index, el)"
-          :question="question"
+          v-if="currentQuestion"
+          :key="currentQuestion.id || currentQuestionIndex"
+          :ref="el => setQuestionRef(currentQuestionIndex, el)"
+          :question="currentQuestion"
           :show-answers="false"
-          @answer="handleAnswer(index, $event)"
+          :initial-answer="answers.get(currentQuestionIndex)"
+          @answer="handleAnswer(currentQuestionIndex, $event)"
         />
       </div>
       
@@ -79,6 +81,7 @@
         <button 
           v-if="currentQuestionIndex < questions.length - 1"
           @click="nextQuestion"
+          :disabled="!hasAnswer(currentQuestionIndex)"
           class="btn btn-primary"
         >
           Next
@@ -86,13 +89,21 @@
         <button 
           v-else
           @click="submitTest"
-          :disabled="submitting"
+          :disabled="submitting || !hasAnswer(currentQuestionIndex)"
           class="btn btn-primary"
         >
           {{ submitting ? 'Submitting...' : 'Submit Test' }}
         </button>
       </div>
     </div>
+    
+    <!-- Exit confirmation modal -->
+    <ConfirmModal
+      :visible="showExitConfirm"
+      message="Are you sure you want to exit the test? Your progress will be lost."
+      @confirm="handleExitConfirm"
+      @cancel="showExitConfirm = false"
+    />
   </div>
 </template>
 
@@ -102,6 +113,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { marked } from 'marked'
 import { apiClient } from '../api/client'
 import GrammarQuestion from '../components/GrammarQuestion.vue'
+import ConfirmModal from '../components/ConfirmModal.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -136,11 +148,33 @@ const submitting = ref(false)
 const testSubmitted = ref(false)
 const result = ref<any>(null)
 const questionRefs = ref<any[]>([])
+const showExitConfirm = ref(false)
+
+const currentQuestion = computed(() => {
+  return questions.value[currentQuestionIndex.value] || null
+})
 
 const setQuestionRef = (index: number, el: any) => {
   if (el) {
     questionRefs.value[index] = el
   }
+}
+
+const hasAnswer = (index: number): boolean => {
+  const answer = answers.value.get(index)
+  if (answer === undefined || answer === null) {
+    return false
+  }
+  // For arrays (mcq_multi), check if at least one option is selected
+  if (Array.isArray(answer)) {
+    return answer.length > 0
+  }
+  // For strings, check if not empty
+  if (typeof answer === 'string') {
+    return answer.trim().length > 0
+  }
+  // For other types (numbers, booleans), consider them valid
+  return true
 }
 
 const loadTest = async () => {
@@ -170,26 +204,24 @@ const handleAnswer = (index: number, answer: any) => {
 }
 
 const nextQuestion = () => {
-  if (currentQuestionIndex.value < questions.value.length - 1) {
+  if (currentQuestionIndex.value < questions.value.length - 1 && hasAnswer(currentQuestionIndex.value)) {
     currentQuestionIndex.value++
-    scrollToQuestion(currentQuestionIndex.value)
   }
 }
 
 const previousQuestion = () => {
   if (currentQuestionIndex.value > 0) {
     currentQuestionIndex.value--
-    scrollToQuestion(currentQuestionIndex.value)
   }
 }
 
-const scrollToQuestion = (index: number) => {
-  setTimeout(() => {
-    const questionEl = questionRefs.value[index]?.$el
-    if (questionEl) {
-      questionEl.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    }
-  }, 100)
+const exitTest = () => {
+  showExitConfirm.value = true
+}
+
+const handleExitConfirm = () => {
+  showExitConfirm.value = false
+  goBack()
 }
 
 const submitTest = async () => {
@@ -280,6 +312,11 @@ onMounted(() => {
   margin-bottom: 32px;
   padding-bottom: 16px;
   border-bottom: 2px solid var(--border-primary);
+  gap: 16px;
+}
+
+.btn-exit {
+  flex-shrink: 0;
 }
 
 .test-header h1 {

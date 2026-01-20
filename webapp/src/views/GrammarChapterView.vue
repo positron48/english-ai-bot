@@ -58,13 +58,13 @@
                 class="mistake-item"
               >
                 <div class="mistake-wrong">
-                  <strong>Wrong:</strong> {{ mistake.wrong }}
+                  <strong>Неправильно:</strong> {{ mistake.wrong }}
                 </div>
                 <div class="mistake-right">
-                  <strong>Right:</strong> {{ mistake.right }}
+                  <strong>Правильно:</strong> {{ mistake.right }}
                 </div>
                 <div class="mistake-why">
-                  <strong>Why:</strong> {{ mistake.why }}
+                  <strong>Почему:</strong> {{ mistake.why }}
                 </div>
               </div>
             </div>

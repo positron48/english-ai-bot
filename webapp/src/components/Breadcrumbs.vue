@@ -55,6 +55,11 @@ const wordSetInfo = ref<{ wordSet: WordSet | null; categories: Category[] }>({
 
 const currentCategoryId = ref<number | null>(null)
 
+// Grammar-specific state
+const grammarSectionName = ref<string | null>(null)
+const grammarSectionId = ref<string | null>(null)
+const grammarChapterName = ref<string | null>(null)
+
 // Загружаем все категории для построения иерархии
 const loadCategories = async () => {
   try {
@@ -63,6 +68,76 @@ const loadCategories = async () => {
   } catch (error) {
     console.error('Failed to load categories for breadcrumbs:', error)
     wordSetInfo.value.categories = []
+  }
+}
+
+// Загружаем название секции грамматики
+const loadGrammarSectionName = async (sectionId: string) => {
+  try {
+    const data: any = await apiClient.request('/api/learning/grammar/categories')
+    const categories = data.categories || []
+    const section = categories.find((s: any) => s.section_id === sectionId)
+    
+    if (section?.title) {
+      grammarSectionName.value = section.title
+      grammarSectionId.value = sectionId
+    } else {
+      // Fallback: format sectionId
+      grammarSectionName.value = sectionId.replace(/^en\.grammar\./, '').replace(/_/g, ' ')
+      grammarSectionId.value = sectionId
+      console.warn('Section not found in categories, using formatted ID:', sectionId, 'Available sections:', categories.map((s: any) => s.section_id))
+    }
+  } catch (error) {
+    console.error('Failed to load grammar section name:', error, sectionId)
+    // Fallback: format sectionId
+    grammarSectionName.value = sectionId.replace(/^en\.grammar\./, '').replace(/_/g, ' ')
+    grammarSectionId.value = sectionId
+  }
+}
+
+// Загружаем название главы грамматики и секции
+const loadGrammarChapterName = async (chapterId: string) => {
+  try {
+    const data: any = await apiClient.request(`/api/learning/grammar/chapters/${chapterId}`)
+    
+    // Extract title - API returns { title: string, chapter: Chapter }
+    if (data.title) {
+      grammarChapterName.value = data.title
+    } else {
+      // Fallback: format chapterId
+      grammarChapterName.value = chapterId.replace(/^en\.grammar\./, '').replace(/_/g, ' ')
+    }
+    
+    // Extract section_id from chapter data
+    // Chapter has section_id field (json: "section_id")
+    let sectionId: string | null = null
+    if (data.chapter?.section_id) {
+      sectionId = data.chapter.section_id
+    } else {
+      // Fallback: extract section_id from chapterId
+      // Example: en.grammar.orientation_how_to_read.sentence_modes_statement_question
+      // -> en.grammar.orientation_how_to_read
+      const sectionMatch = chapterId.match(/^(.+)\.[^.]+$/)
+      if (sectionMatch) {
+        sectionId = sectionMatch[1]
+      }
+    }
+    
+    if (sectionId) {
+      grammarSectionId.value = sectionId
+      await loadGrammarSectionName(sectionId)
+    }
+  } catch (error) {
+    console.error('Failed to load grammar chapter name:', error, chapterId)
+    // Fallback: format chapterId
+    grammarChapterName.value = chapterId.replace(/^en\.grammar\./, '').replace(/_/g, ' ')
+    // Try to extract section_id from chapterId as fallback
+    const sectionMatch = chapterId.match(/^(.+)\.[^.]+$/)
+    if (sectionMatch) {
+      const extractedSectionId = sectionMatch[1]
+      grammarSectionId.value = extractedSectionId
+      await loadGrammarSectionName(extractedSectionId)
+    }
   }
 }
 
@@ -196,28 +271,49 @@ const breadcrumbs = computed(() => {
     ]
     
     // /learning/grammar/:sectionId
-    if (parts.length === 4 && parts[2] !== 'chapter') {
-      const sectionId = parts[3]
-      result.push({ label: sectionId.replace(/_/g, ' '), path: currentPath })
+    if (parts.length === 3 && parts[0] === 'learning' && parts[1] === 'grammar' && parts[2] !== 'chapter') {
+      const sectionId = parts[2]
+      const sectionLabel = grammarSectionName.value || sectionId.replace(/^en\.grammar\./, '').replace(/_/g, ' ')
+      result.push({ label: sectionLabel, path: currentPath })
     }
     // /learning/grammar/chapter/:chapterId
-    else if (parts.length === 5 && parts[2] === 'chapter') {
-      const chapterId = parts[4]
-      result.push({ label: chapterId.replace(/_/g, ' '), path: currentPath })
+    else if (parts.length === 4 && parts[0] === 'learning' && parts[1] === 'grammar' && parts[2] === 'chapter') {
+      const chapterId = parts[3]
+      // Format chapter label: remove en.grammar prefix and replace underscores
+      const chapterLabel = grammarChapterName.value || chapterId.replace(/^en\.grammar\./, '').replace(/_/g, ' ')
+      // Add section name if available
+      if (grammarSectionName.value && grammarSectionId.value) {
+        result.push({ label: grammarSectionName.value, path: `/learning/grammar/${grammarSectionId.value}` })
+      } else {
+        // Try to show section ID as fallback
+        const sectionMatch = chapterId.match(/^(.+)\.[^.]+$/)
+        if (sectionMatch) {
+          const sectionId = sectionMatch[1]
+          const sectionLabel = sectionId.replace(/^en\.grammar\./, '').replace(/_/g, ' ')
+          result.push({ label: sectionLabel, path: `/learning/grammar/${sectionId}` })
+        }
+      }
+      result.push({ label: chapterLabel, path: currentPath })
     }
     // /learning/grammar/:sectionId/test
-    else if (parts.length === 5 && parts[4] === 'test') {
-      const sectionId = parts[3]
+    else if (parts.length === 4 && parts[0] === 'learning' && parts[1] === 'grammar' && parts[3] === 'test') {
+      const sectionId = parts[2]
+      const sectionLabel = grammarSectionName.value || sectionId.replace(/^en\.grammar\./, '').replace(/_/g, ' ')
       result.push(
-        { label: sectionId.replace(/_/g, ' '), path: `/learning/grammar/${sectionId}` },
+        { label: sectionLabel, path: `/learning/grammar/${sectionId}` },
         { label: 'Test', path: currentPath }
       )
     }
     // /learning/grammar/chapter/:chapterId/test
-    else if (parts.length === 6 && parts[2] === 'chapter' && parts[5] === 'test') {
-      const chapterId = parts[4]
+    else if (parts.length === 5 && parts[0] === 'learning' && parts[1] === 'grammar' && parts[2] === 'chapter' && parts[4] === 'test') {
+      const chapterId = parts[3]
+      const chapterLabel = grammarChapterName.value || chapterId.replace(/^en\.grammar\./, '').replace(/_/g, ' ')
+      // Add section name if available
+      if (grammarSectionName.value && grammarSectionId.value) {
+        result.push({ label: grammarSectionName.value, path: `/learning/grammar/${grammarSectionId.value}` })
+      }
       result.push(
-        { label: chapterId.replace(/_/g, ' '), path: `/learning/grammar/chapter/${chapterId}` },
+        { label: chapterLabel, path: `/learning/grammar/chapter/${chapterId}` },
         { label: 'Test', path: currentPath }
       )
     }
@@ -348,9 +444,40 @@ watch(() => [route.path, route.query.category_id], ([newPath, categoryId]) => {
       currentCategoryId.value = null
     }
     wordSetInfo.value.wordSet = null
+  } else if (newPath.startsWith('/learning/grammar/')) {
+    // Загружаем названия для грамматики
+    const parts = newPath.split('/').filter(p => p)
+    // parts[0] = 'learning', parts[1] = 'grammar', parts[2] = 'chapter' or sectionId, etc.
+    if (parts.length === 3 && parts[0] === 'learning' && parts[1] === 'grammar' && parts[2] !== 'chapter') {
+      // Section page: /learning/grammar/:sectionId
+      const sectionId = parts[2]
+      grammarChapterName.value = null
+      loadGrammarSectionName(sectionId)
+    } else if (parts.length === 4 && parts[0] === 'learning' && parts[1] === 'grammar' && parts[2] === 'chapter') {
+      // Chapter page: /learning/grammar/chapter/:chapterId
+      const chapterId = parts[3]
+      // Load chapter name first, which will also load section name
+      loadGrammarChapterName(chapterId)
+    } else if (parts.length === 4 && parts[0] === 'learning' && parts[1] === 'grammar' && parts[3] === 'test') {
+      // Section test: /learning/grammar/:sectionId/test
+      const sectionId = parts[2]
+      grammarChapterName.value = null
+      loadGrammarSectionName(sectionId)
+    } else if (parts.length === 5 && parts[0] === 'learning' && parts[1] === 'grammar' && parts[2] === 'chapter' && parts[4] === 'test') {
+      // Chapter test: /learning/grammar/chapter/:chapterId/test
+      const chapterId = parts[3]
+      // Load chapter name first, which will also load section name
+      loadGrammarChapterName(chapterId)
+    } else {
+      grammarSectionName.value = null
+      grammarSectionId.value = null
+      grammarChapterName.value = null
+    }
   } else {
     wordSetInfo.value.wordSet = null
     currentCategoryId.value = null
+    grammarSectionName.value = null
+    grammarChapterName.value = null
     // Не очищаем categories, они могут понадобиться
   }
 }, { immediate: true })
@@ -359,6 +486,29 @@ onMounted(() => {
   // Всегда загружаем категории, если их еще нет, чтобы они были доступны для крошек
   if (wordSetInfo.value.categories.length === 0) {
     loadCategories()
+  }
+  
+  // Load grammar names if on grammar route (watch with immediate: true should handle this, but ensure it happens)
+  if (route.path.startsWith('/learning/grammar/')) {
+    const parts = route.path.split('/').filter(p => p)
+    // parts[0] = 'learning', parts[1] = 'grammar', parts[2] = 'chapter' or sectionId, etc.
+    if (parts.length === 3 && parts[0] === 'learning' && parts[1] === 'grammar' && parts[2] !== 'chapter') {
+      // Section page: /learning/grammar/:sectionId
+      const sectionId = parts[2]
+      loadGrammarSectionName(sectionId)
+    } else if (parts.length === 4 && parts[0] === 'learning' && parts[1] === 'grammar' && parts[2] === 'chapter') {
+      // Chapter page: /learning/grammar/chapter/:chapterId
+      const chapterId = parts[3]
+      loadGrammarChapterName(chapterId)
+    } else if (parts.length === 4 && parts[0] === 'learning' && parts[1] === 'grammar' && parts[3] === 'test') {
+      // Section test: /learning/grammar/:sectionId/test
+      const sectionId = parts[2]
+      loadGrammarSectionName(sectionId)
+    } else if (parts.length === 5 && parts[0] === 'learning' && parts[1] === 'grammar' && parts[2] === 'chapter' && parts[4] === 'test') {
+      // Chapter test: /learning/grammar/chapter/:chapterId/test
+      const chapterId = parts[3]
+      loadGrammarChapterName(chapterId)
+    }
   }
   
   const match = route.path.match(/^\/learning\/words\/(\d+)$/)

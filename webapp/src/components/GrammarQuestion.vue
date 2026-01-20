@@ -5,7 +5,7 @@
     <!-- MCQ Single -->
     <div v-if="question.type === 'mcq_single'" class="question-choices">
       <button
-        v-for="choice in question.choices"
+        v-for="choice in shuffledChoices"
         :key="choice.id"
         @click="selectAnswer(choice.id)"
         :disabled="answered"
@@ -15,15 +15,24 @@
           'incorrect': answered && userAnswer === choice.id && choice.id !== correctAnswer
         }]"
       >
-        <span v-html="renderMarkdown(choice.text)"></span>
-        <span v-if="answered && choice.id === correctAnswer" class="check-icon">✓</span>
+        <div class="choice-content">
+          <span v-html="renderMarkdown(choice.text)"></span>
+          <span v-if="answered && choice.id === correctAnswer" class="check-icon">✓</span>
+        </div>
+        <!-- Show feedback inside incorrect selected choice -->
+        <div 
+          v-if="answered && userAnswer === choice.id && choice.id !== correctAnswer && choice.feedback"
+          class="choice-feedback-inline"
+        >
+          <div v-html="renderMarkdown(choice.feedback)"></div>
+        </div>
       </button>
     </div>
     
     <!-- MCQ Multi -->
     <div v-if="question.type === 'mcq_multi'" class="question-choices">
       <button
-        v-for="choice in question.choices"
+        v-for="choice in shuffledChoices"
         :key="choice.id"
         @click="toggleAnswer(choice.id)"
         :disabled="answered"
@@ -33,8 +42,17 @@
           'incorrect': answered && Array.isArray(userAnswer) && userAnswer.includes(choice.id) && Array.isArray(correctAnswer) && !correctAnswer.includes(choice.id)
         }]"
       >
-        <span class="checkbox" :class="{ 'checked': Array.isArray(userAnswer) && userAnswer.includes(choice.id) }"></span>
-        <span v-html="renderMarkdown(choice.text)"></span>
+        <div class="choice-content">
+          <span class="checkbox" :class="{ 'checked': Array.isArray(userAnswer) && userAnswer.includes(choice.id) }"></span>
+          <span v-html="renderMarkdown(choice.text)"></span>
+        </div>
+        <!-- Show feedback inside incorrect selected choice -->
+        <div 
+          v-if="answered && Array.isArray(userAnswer) && userAnswer.includes(choice.id) && Array.isArray(correctAnswer) && !correctAnswer.includes(choice.id) && choice.feedback"
+          class="choice-feedback-inline"
+        >
+          <div v-html="renderMarkdown(choice.feedback)"></div>
+        </div>
       </button>
     </div>
     
@@ -61,7 +79,7 @@
           'incorrect': answered && userAnswer === 'true' && correctAnswer !== 'true'
         }]"
       >
-        True
+        Да
       </button>
       <button
         @click="selectAnswer('false')"
@@ -72,35 +90,72 @@
           'incorrect': answered && userAnswer === 'false' && correctAnswer !== 'false'
         }]"
       >
-        False
+        Нет
       </button>
     </div>
     
     <!-- Error Spotting -->
-    <div v-if="question.type === 'error_spotting'" class="question-input">
-      <textarea
-        v-model="userAnswer"
-        @input="onAnswerChange"
+    <div v-if="question.type === 'error_spotting'" class="question-choices">
+      <button
+        v-for="choice in shuffledChoices"
+        :key="choice.id"
+        @click="selectAnswer(choice.id)"
         :disabled="answered"
-        :placeholder="'Correct the error'"
-        class="error-input"
-        rows="3"
-      ></textarea>
+        :class="['choice-btn', { 
+          'selected': userAnswer === choice.id,
+          'correct': answered && choice.id === correctAnswer,
+          'incorrect': answered && userAnswer === choice.id && choice.id !== correctAnswer
+        }]"
+      >
+        <div class="choice-content">
+          <span v-html="renderMarkdown(choice.text)"></span>
+          <span v-if="answered && choice.id === correctAnswer" class="check-icon">✓</span>
+        </div>
+        <!-- Show feedback inside incorrect selected choice -->
+        <div 
+          v-if="answered && userAnswer === choice.id && choice.id !== correctAnswer && choice.feedback"
+          class="choice-feedback-inline"
+        >
+          <div v-html="renderMarkdown(choice.feedback)"></div>
+        </div>
+      </button>
     </div>
     
     <!-- Reorder -->
     <div v-if="question.type === 'reorder'" class="reorder-container">
-      <div class="reorder-items">
-        <div
-          v-for="(item, index) in reorderItems"
-          :key="index"
-          class="reorder-item"
-          :class="{ 'dragging': draggingIndex === index }"
-          @mousedown="startDrag(index, $event)"
-          @touchstart="startDrag(index, $event)"
+      <!-- Sentence container (where selected words go) -->
+      <div class="reorder-sentence">
+        <button
+          v-for="(word, index) in selectedWords"
+          :key="`selected-${index}`"
+          @click="moveWordToAvailable(index)"
+          :disabled="answered"
+          :class="['reorder-word-btn', 'sentence-word', {
+            'correct': answered && isCorrect,
+            'incorrect': answered && !isCorrect
+          }]"
         >
-          {{ item }}
-        </div>
+          {{ word }}
+        </button>
+        <span v-if="lastPunctuation" class="reorder-punctuation">{{ lastPunctuation }}</span>
+      </div>
+      
+      <!-- Available words container -->
+      <div class="reorder-words">
+        <button
+          v-for="(word, index) in availableWords"
+          :key="`available-${index}`"
+          @click="moveWordToSentence(index)"
+          :disabled="answered"
+          class="reorder-word-btn available-word"
+        >
+          {{ word }}
+        </button>
+      </div>
+      
+      <!-- Show correct answer if incorrect -->
+      <div v-if="answered && !isCorrect" class="correct-answer-display">
+        <strong>Правильный ответ:</strong> {{ correctAnswer }}
       </div>
     </div>
     
@@ -129,6 +184,7 @@ interface Question {
 const props = defineProps<{
   question: Question
   showAnswers?: boolean
+  initialAnswer?: any
 }>()
 
 const emit = defineEmits<{
@@ -138,22 +194,98 @@ const emit = defineEmits<{
 const userAnswer = ref<any>(null)
 const answered = ref(false)
 const correctAnswer = ref<any>(props.question.correct_answer)
-const draggingIndex = ref<number | null>(null)
-const reorderItems = ref<string[]>([])
+
+// Reorder-specific state
+const selectedWords = ref<string[]>([])
+const availableWords = ref<string[]>([])
+const lastPunctuation = ref<string>('')
+
+// Shuffled choices for MCQ questions
+const shuffledChoices = ref<Array<{ id: string; text: string; feedback?: string }>>([])
 
 const isCorrect = computed(() => {
   if (!answered.value || userAnswer.value === null) return false
   return compareAnswers(userAnswer.value, correctAnswer.value)
 })
 
-// Initialize reorder items if needed
-if (props.question.type === 'reorder' && Array.isArray(props.question.correct_answer)) {
-  reorderItems.value = [...props.question.correct_answer]
-  // Shuffle for display
-  for (let i = reorderItems.value.length - 1; i > 0; i--) {
+// Shuffle function (Fisher-Yates algorithm)
+const shuffleArray = <T>(array: T[]): T[] => {
+  const shuffled = [...array]
+  for (let i = shuffled.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [reorderItems.value[i], reorderItems.value[j]] = [reorderItems.value[j], reorderItems.value[i]]
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
   }
+  return shuffled
+}
+
+// Initialize shuffled choices for MCQ and error_spotting questions
+const initializeChoices = () => {
+  if (props.question.type === 'mcq_single' || props.question.type === 'mcq_multi' || props.question.type === 'error_spotting') {
+    if (props.question.choices && props.question.choices.length > 0) {
+      shuffledChoices.value = shuffleArray(props.question.choices)
+    } else {
+      shuffledChoices.value = []
+    }
+  }
+}
+
+// Initialize on mount
+initializeChoices()
+
+// Initialize reorder question
+const initializeReorder = () => {
+  if (!props.question || props.question.type !== 'reorder') {
+    availableWords.value = []
+    selectedWords.value = []
+    lastPunctuation.value = ''
+    return
+  }
+  
+  if (typeof props.question.correct_answer === 'string') {
+    const correctAnswerStr = props.question.correct_answer.trim()
+    
+    // Extract punctuation from the end (.!?)
+    const punctuationMatch = correctAnswerStr.match(/[.!?]$/)
+    lastPunctuation.value = punctuationMatch ? punctuationMatch[0] : ''
+    
+    // Remove punctuation for word parsing
+    let textForWords = lastPunctuation.value 
+      ? correctAnswerStr.slice(0, -1).trim() 
+      : correctAnswerStr
+    
+    // Normalize spaces around commas
+    textForWords = textForWords.replace(/\s*,\s*/g, ' , ')
+    
+    // Split into words, keeping commas as separate elements
+    const words = textForWords
+      .split(/\s+/)
+      .filter(w => w.trim().length > 0)
+    
+    // Shuffle words using Fisher-Yates algorithm
+    const shuffled = [...words]
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+    }
+    
+    availableWords.value = shuffled
+    selectedWords.value = []
+    userAnswer.value = null
+    answered.value = false
+    correctAnswer.value = props.question.correct_answer
+  } else {
+    // Reset if correct_answer is not a string
+    availableWords.value = []
+    selectedWords.value = []
+    lastPunctuation.value = ''
+  }
+}
+
+// Initialize on mount
+initializeReorder()
+// Restore answer if provided
+if (props.initialAnswer !== undefined && props.initialAnswer !== null) {
+  setTimeout(() => restoreAnswer(), 0)
 }
 
 const selectAnswer = (answer: any) => {
@@ -181,13 +313,79 @@ const onAnswerChange = () => {
   emit('answer', userAnswer.value)
 }
 
-const startDrag = (index: number, event: MouseEvent | TouchEvent) => {
+// Reorder functions
+const moveWordToSentence = (index: number) => {
   if (answered.value) return
-  draggingIndex.value = index
-  // Simple drag implementation - could be enhanced
+  
+  const word = availableWords.value[index]
+  availableWords.value.splice(index, 1)
+  selectedWords.value.push(word)
+  
+  // Check answer only when all words are selected
+  if (availableWords.value.length === 0) {
+    checkReorderAnswer()
+  }
+}
+
+const moveWordToAvailable = (index: number) => {
+  if (answered.value) return
+  
+  const word = selectedWords.value[index]
+  selectedWords.value.splice(index, 1)
+  availableWords.value.push(word)
+  
+  // Don't check answer when words are moved back - answer is incomplete
+  // Clear answer if it was set
+  if (userAnswer.value !== null) {
+    userAnswer.value = null
+    emit('answer', null)
+  }
+}
+
+const checkReorderAnswer = () => {
+  // Only check if all words are selected
+  if (availableWords.value.length > 0) {
+    return
+  }
+  
+  // Build sentence from selected words
+  let userSentence = ''
+  for (let i = 0; i < selectedWords.value.length; i++) {
+    const word = selectedWords.value[i]
+    if (word === ',') {
+      // Comma without space before it
+      userSentence += ','
+      // Space after comma (if not last element)
+      if (i < selectedWords.value.length - 1) {
+        userSentence += ' '
+      }
+    } else {
+      // Regular word: space before it (if not first element and previous is not comma)
+      if (i > 0 && selectedWords.value[i - 1] !== ',') {
+        userSentence += ' '
+      }
+      userSentence += word
+    }
+  }
+  userSentence = userSentence.trim()
+  
+  // Add punctuation
+  if (lastPunctuation.value) {
+    userSentence += lastPunctuation.value
+  }
+  
+  userAnswer.value = userSentence
+  // Mark as answered when all words are selected (for quizzes)
+  // This ensures the answer is considered given in quiz context
+  answered.value = props.showAnswers || false
+  emit('answer', userSentence)
 }
 
 const compareAnswers = (user: any, correct: any): boolean => {
+  if (typeof correct === 'string') {
+    // For reorder, compare normalized strings
+    return user?.trim().toLowerCase() === correct.trim().toLowerCase()
+  }
   if (Array.isArray(correct)) {
     if (!Array.isArray(user)) return false
     if (user.length !== correct.length) return false
@@ -204,6 +402,114 @@ const renderMarkdown = (text: string): string => {
     return text
   }
 }
+
+// Restore answer from initialAnswer prop
+const restoreAnswer = () => {
+  if (props.initialAnswer === undefined || props.initialAnswer === null) {
+    return
+  }
+  
+  if (props.question.type === 'mcq_single' || props.question.type === 'true_false' || props.question.type === 'error_spotting') {
+    userAnswer.value = props.initialAnswer
+  } else if (props.question.type === 'mcq_multi') {
+    userAnswer.value = Array.isArray(props.initialAnswer) ? [...props.initialAnswer] : [props.initialAnswer]
+  } else if (props.question.type === 'fill_blank') {
+    userAnswer.value = props.initialAnswer
+  } else if (props.question.type === 'reorder') {
+    // For reorder, we need to reconstruct the word selection from the answer string
+    if (typeof props.initialAnswer === 'string') {
+      restoreReorderAnswer(props.initialAnswer)
+    }
+  }
+}
+
+// Restore reorder answer by reconstructing word positions
+const restoreReorderAnswer = (answerStr: string) => {
+  if (!props.question.correct_answer || typeof props.question.correct_answer !== 'string') {
+    return
+  }
+  
+  // Parse the answer string back into words
+  const answerTrimmed = answerStr.trim()
+  const correctAnswerStr = props.question.correct_answer.trim()
+  
+  // Extract punctuation
+  const punctuationMatch = answerTrimmed.match(/[.!?]$/)
+  const answerPunctuation = punctuationMatch ? punctuationMatch[0] : ''
+  
+  // Remove punctuation for comparison
+  let answerWithoutPunct = answerPunctuation ? answerTrimmed.slice(0, -1).trim() : answerTrimmed
+  let correctWithoutPunct = correctAnswerStr.match(/[.!?]$/) 
+    ? correctAnswerStr.slice(0, -1).trim() 
+    : correctAnswerStr
+  
+  // Normalize spaces around commas (same as in initializeReorder)
+  answerWithoutPunct = answerWithoutPunct.replace(/\s*,\s*/g, ' , ')
+  correctWithoutPunct = correctWithoutPunct.replace(/\s*,\s*/g, ' , ')
+  
+  // Split into words
+  const answerWords = answerWithoutPunct.split(/\s+/).filter(w => w.trim().length > 0)
+  const allCorrectWords = correctWithoutPunct.split(/\s+/).filter(w => w.trim().length > 0)
+  
+  // Reconstruct selectedWords from answer
+  selectedWords.value = [...answerWords]
+  
+  // Reconstruct availableWords - words that are in correct answer but not in selected
+  // Count occurrences to handle duplicate words
+  const answerWordCounts = new Map<string, number>()
+  answerWords.forEach(word => {
+    answerWordCounts.set(word, (answerWordCounts.get(word) || 0) + 1)
+  })
+  
+  const correctWordCounts = new Map<string, number>()
+  allCorrectWords.forEach(word => {
+    correctWordCounts.set(word, (correctWordCounts.get(word) || 0) + 1)
+  })
+  
+  // Build available words list - all words from correct answer minus those used in answer
+  const available: string[] = []
+  correctWordCounts.forEach((count, word) => {
+    const usedCount = answerWordCounts.get(word) || 0
+    const remaining = count - usedCount
+    for (let i = 0; i < remaining; i++) {
+      available.push(word)
+    }
+  })
+  
+  // Shuffle available words (they should be in random order)
+  for (let i = available.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [available[i], available[j]] = [available[j], available[i]]
+  }
+  
+  availableWords.value = available
+  userAnswer.value = answerStr
+}
+
+// Watch for question changes to reinitialize
+watch(() => props.question, (newQuestion) => {
+  if (!newQuestion) return
+  
+  initializeReorder()
+  initializeChoices()
+  // Reset answer state
+  userAnswer.value = null
+  answered.value = false
+  correctAnswer.value = newQuestion.correct_answer
+  
+  // Restore answer after initialization (use nextTick to ensure initialization is complete)
+  setTimeout(() => {
+    restoreAnswer()
+  }, 0)
+}, { immediate: true, deep: true })
+
+// Watch for initialAnswer changes
+watch(() => props.initialAnswer, () => {
+  // Only restore if question is already initialized
+  if (props.question) {
+    restoreAnswer()
+  }
+}, { immediate: true })
 
 watch(() => props.showAnswers, (newVal) => {
   if (newVal && userAnswer.value !== null) {
@@ -236,8 +542,8 @@ watch(() => props.showAnswers, (newVal) => {
 
 .choice-btn {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: flex-start;
   padding: 12px 16px;
   background: var(--bg-secondary);
   border: 2px solid var(--border-primary);
@@ -246,6 +552,13 @@ watch(() => props.showAnswers, (newVal) => {
   transition: all 0.2s ease;
   text-align: left;
   color: var(--text-primary);
+}
+
+.choice-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .choice-btn:hover:not(:disabled) {
@@ -336,23 +649,82 @@ watch(() => props.showAnswers, (newVal) => {
   margin-bottom: 16px;
 }
 
-.reorder-items {
+.reorder-sentence {
+  min-height: 50px;
+  padding: 15px;
+  border: 2px dashed var(--border-primary);
+  border-radius: 8px;
+  margin-bottom: 15px;
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  flex-wrap: wrap;
+  gap: 5px;
+  align-items: center;
 }
 
-.reorder-item {
-  padding: 12px 16px;
-  background: var(--bg-secondary);
+.reorder-words {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+.reorder-word-btn {
+  padding: 8px 12px;
   border: 2px solid var(--border-primary);
   border-radius: 6px;
-  cursor: move;
-  user-select: none;
+  background: var(--bg-secondary);
+  cursor: pointer;
+  font-size: 1em;
+  transition: all 0.2s ease;
+  color: var(--text-primary);
 }
 
-.reorder-item.dragging {
-  opacity: 0.5;
+.reorder-word-btn:hover:not(:disabled) {
+  border-color: var(--color-primary);
+  transform: translateY(-2px);
+}
+
+.reorder-word-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.reorder-word-btn.sentence-word {
+  background: var(--card-bg);
+}
+
+.reorder-punctuation {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: var(--text-primary);
+  margin-left: 2px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.reorder-word-btn.correct {
+  border-color: var(--color-success);
+  background: rgba(40, 167, 69, 0.1);
+  color: var(--color-success);
+}
+
+.reorder-word-btn.incorrect {
+  border-color: var(--color-danger);
+  background: rgba(220, 53, 69, 0.1);
+  color: var(--color-danger);
+}
+
+.correct-answer-display {
+  margin-top: 12px;
+  padding: 12px;
+  background: var(--bg-tertiary);
+  border-radius: 6px;
+  color: var(--text-secondary);
+}
+
+.correct-answer-display strong {
+  color: var(--text-primary);
+  margin-right: 8px;
 }
 
 .question-explanation {
@@ -367,5 +739,30 @@ watch(() => props.showAnswers, (newVal) => {
   display: block;
   margin-bottom: 8px;
   color: var(--text-primary);
+}
+
+.choice-feedback {
+  margin-top: 12px;
+  padding: 12px;
+  background: var(--bg-tertiary);
+  border-radius: 6px;
+  border-left: 4px solid var(--color-primary);
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.choice-feedback.incorrect-feedback {
+  border-left-color: var(--color-danger);
+  background: rgba(220, 53, 69, 0.05);
+}
+
+.choice-feedback-inline {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(220, 53, 69, 0.3);
+  width: 100%;
+  color: var(--text-secondary);
+  font-size: 1em;
+  line-height: 1.5;
 }
 </style>
