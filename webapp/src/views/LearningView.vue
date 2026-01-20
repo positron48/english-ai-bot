@@ -9,7 +9,6 @@
         </div>
         <h2>Grammar</h2>
         <p>Grammar exercises and rules</p>
-        <span class="coming-soon">Coming soon</span>
       </router-link>
       
       <router-link to="/learning/words" class="learning-card words-card">
@@ -64,14 +63,6 @@ import Icon from '../components/Icon.vue'
   transform: translateY(-2px);
 }
 
-.grammar-card {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.grammar-card:hover {
-  transform: none;
-}
 
 .card-icon {
   font-size: 48px;

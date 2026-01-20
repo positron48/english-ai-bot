@@ -36,7 +36,31 @@ const router = createRouter({
     {
       path: '/learning/grammar',
       name: 'LearningGrammar',
-      component: () => import('../views/LearningGrammarView.vue'),
+      component: () => import('../views/GrammarCategoriesView.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/learning/grammar/:sectionId',
+      name: 'GrammarChapters',
+      component: () => import('../views/GrammarChaptersView.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/learning/grammar/:sectionId/test',
+      name: 'GrammarCategoryTest',
+      component: () => import('../views/GrammarTestView.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/learning/grammar/chapter/:chapterId',
+      name: 'GrammarChapter',
+      component: () => import('../views/GrammarChapterView.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/learning/grammar/chapter/:chapterId/test',
+      name: 'GrammarChapterTest',
+      component: () => import('../views/GrammarTestView.vue'),
       meta: { requiresAuth: true }
     },
     {
@@ -93,6 +117,11 @@ const router = createRouter({
           path: 'orphaned-cards',
           name: 'AdminOrphanedCards',
           component: () => import('../views/AdminOrphanedCardsView.vue')
+        },
+        {
+          path: 'grammar',
+          name: 'AdminGrammar',
+          component: () => import('../views/AdminGrammarView.vue')
         },
         {
           path: 'word-sets',

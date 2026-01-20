@@ -89,6 +89,15 @@
         <span>Word Sets</span>
       </router-link>
       <router-link 
+        to="/admin/grammar" 
+        class="admin-sidebar-item" 
+        :class="{ active: $route.path === '/admin/grammar' }"
+        @click="isMobile && handleCloseSidebar()"
+      >
+        <Icon name="book-open" class="admin-sidebar-icon" />
+        <span>Grammar</span>
+      </router-link>
+      <router-link 
         to="/admin/db-schema" 
         class="admin-sidebar-item" 
         :class="{ active: $route.path === '/admin/db-schema' }"

@@ -160,6 +160,17 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 	// Create web repositories
 	otpRepo := repository.NewWebOTPRepository(conn, log)
 
+	// Create grammar repositories and service
+	grammarContentRepo := repository.NewGrammarContentRepository(log)
+	grammarPublishRepo := repository.NewGrammarPublishRepository(conn, log)
+	grammarAttemptRepo := repository.NewGrammarAttemptRepository(conn, log)
+	grammarService := service.NewGrammarService(
+		grammarContentRepo,
+		grammarPublishRepo,
+		grammarAttemptRepo,
+		log,
+	)
+
 	// Create web router
 	webRouter := web.NewRouter(
 		log,
@@ -172,6 +183,7 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 	)
 	webRouter.SetDependencies(userRepo, wordService, aiService, bot, cfg.Telegram.Token)
 	webRouter.SetOTPRepo(otpRepo)
+	webRouter.SetGrammarService(grammarService)
 
 	return &Bot{
 		api:                 bot,

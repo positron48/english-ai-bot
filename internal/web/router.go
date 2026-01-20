@@ -67,6 +67,7 @@ type Router struct {
 	srsService      *service.SRSService
 	optionsService  *service.OptionsService
 	wordService     interface{} // Will be properly typed later
+	grammarService  *service.GrammarService
 	cbService       *service.CircuitBreakerService
 	aiService          interface{} // Will be properly typed later
 	bot                *tgbotapi.BotAPI
@@ -139,6 +140,11 @@ func (r *Router) SetDependencies(
 	
 	// Setup protected routes now that auth middleware is initialized
 	r.setupProtectedRoutes()
+}
+
+// SetGrammarService sets the grammar service
+func (r *Router) SetGrammarService(grammarService *service.GrammarService) {
+	r.grammarService = grammarService
 }
 
 // SetOTPRepo sets the OTP repository
@@ -280,6 +286,12 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/learning/words/sets", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningWordsSets)))
 	r.mux.HandleFunc("/api/learning/words/sets/", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningWordsSetDetailOrStudy)))
 	
+	// Learning grammar routes
+	r.mux.HandleFunc("/api/learning/grammar/categories", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarCategories)))
+	r.mux.HandleFunc("/api/learning/grammar/categories/", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarChapters)))
+	r.mux.HandleFunc("/api/learning/grammar/chapters/", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarChapterOrTest)))
+	r.mux.HandleFunc("/api/learning/grammar/tests/submit", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarSubmitTest)))
+	
 	r.mux.HandleFunc("/api/training/start", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTrainingStart)))
 	r.mux.HandleFunc("/api/training/current", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTrainingCurrent)))
 	r.mux.HandleFunc("/api/training/reveal", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTrainingReveal)))
@@ -310,6 +322,13 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/admin/word-set-categories/", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminWordSetCategories))))
 	r.mux.HandleFunc("/api/admin/word-sets", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminWordSets))))
 	r.mux.HandleFunc("/api/admin/word-sets/", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminWordSetDetailOrSets))))
+	
+	// Grammar admin routes
+	r.mux.HandleFunc("/api/admin/grammar/categories", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminGrammarCategories))))
+	r.mux.HandleFunc("/api/admin/grammar/categories/", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminGrammarCategoryPublish))))
+	r.mux.HandleFunc("/api/admin/grammar/chapters", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminGrammarChapters))))
+	r.mux.HandleFunc("/api/admin/grammar/chapters/", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminGrammarChapterPublish))))
+	r.mux.HandleFunc("/api/admin/grammar/items/", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminGrammarItemRename))))
 }
 
 // corsMiddleware adds CORS headers to allow Swagger UI to make requests

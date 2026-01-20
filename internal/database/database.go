@@ -290,6 +290,45 @@ func (db *DB) migrate() error {
 			UNIQUE(user_id, word_card_id)
 		)`,
 		
+		// Grammar course tables
+		`CREATE TABLE IF NOT EXISTS grammar_published_items (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			item_type TEXT NOT NULL CHECK(item_type IN ('section', 'chapter')),
+			item_id TEXT NOT NULL,
+			is_published INTEGER DEFAULT 0,
+			name TEXT,
+			updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+			updated_by_user_id INTEGER,
+			FOREIGN KEY (updated_by_user_id) REFERENCES users(id) ON DELETE SET NULL,
+			UNIQUE(item_type, item_id)
+		)`,
+		
+		`CREATE TABLE IF NOT EXISTS grammar_test_attempts (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			user_id INTEGER NOT NULL,
+			scope_type TEXT NOT NULL CHECK(scope_type IN ('chapter', 'category')),
+			scope_id TEXT NOT NULL,
+			started_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+			finished_at DATETIME,
+			score INTEGER NOT NULL CHECK(score >= 0 AND score <= 100),
+			passed INTEGER NOT NULL DEFAULT 0 CHECK(passed IN (0, 1)),
+			total_questions INTEGER NOT NULL,
+			answers_json TEXT,
+			results_json TEXT,
+			course_version TEXT,
+			FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+		)`,
+		
+		`CREATE TABLE IF NOT EXISTS grammar_progress (
+			user_id INTEGER NOT NULL,
+			chapter_id TEXT NOT NULL,
+			best_score INTEGER DEFAULT 0 CHECK(best_score >= 0 AND best_score <= 100),
+			passed_at DATETIME,
+			last_attempt_at DATETIME,
+			FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+			UNIQUE(user_id, chapter_id)
+		)`,
+		
 		// Indexes for existing tables
 		`CREATE INDEX IF NOT EXISTS idx_word_cards_word ON word_cards(word)`,
 		`CREATE INDEX IF NOT EXISTS idx_word_forms_word_card_id ON word_forms(word_card_id)`,
@@ -325,6 +364,14 @@ func (db *DB) migrate() error {
 		`CREATE INDEX IF NOT EXISTS idx_word_set_items_word_card_id ON word_set_items(word_card_id)`,
 		`CREATE INDEX IF NOT EXISTS idx_user_word_knowledge_user_id ON user_word_knowledge(user_id)`,
 		`CREATE INDEX IF NOT EXISTS idx_user_word_knowledge_word_card_id ON user_word_knowledge(word_card_id)`,
+		
+		// Indexes for grammar tables
+		`CREATE INDEX IF NOT EXISTS idx_grammar_published_items_item ON grammar_published_items(item_type, item_id)`,
+		`CREATE INDEX IF NOT EXISTS idx_grammar_published_items_published ON grammar_published_items(is_published)`,
+		`CREATE INDEX IF NOT EXISTS idx_grammar_test_attempts_user_id ON grammar_test_attempts(user_id)`,
+		`CREATE INDEX IF NOT EXISTS idx_grammar_test_attempts_scope ON grammar_test_attempts(scope_type, scope_id)`,
+		`CREATE INDEX IF NOT EXISTS idx_grammar_progress_user_id ON grammar_progress(user_id)`,
+		`CREATE INDEX IF NOT EXISTS idx_grammar_progress_chapter_id ON grammar_progress(chapter_id)`,
 	}
 
 	for _, query := range queries {

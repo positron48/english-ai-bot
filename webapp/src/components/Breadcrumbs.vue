@@ -121,6 +121,7 @@ const routeHierarchy: Record<string, Breadcrumb[]> = {
     { label: 'Learning', path: '/learning' },
     { label: 'Grammar', path: '/learning/grammar' }
   ],
+  // Dynamic grammar routes will be handled in computed
   '/learning/words': [
     { label: 'Dashboard', path: '/dashboard' },
     { label: 'Learning', path: '/learning' },
@@ -183,6 +184,45 @@ const breadcrumbs = computed(() => {
   // Страницы без крошек
   if (currentPath === '/training' || currentPath.match(/^\/learning\/words\/\d+\/study$/)) {
     return []
+  }
+  
+  // Для grammar routes
+  if (currentPath.startsWith('/learning/grammar/')) {
+    const parts = currentPath.split('/').filter(p => p)
+    const result: Breadcrumb[] = [
+      { label: 'Dashboard', path: '/dashboard' },
+      { label: 'Learning', path: '/learning' },
+      { label: 'Grammar', path: '/learning/grammar' }
+    ]
+    
+    // /learning/grammar/:sectionId
+    if (parts.length === 4 && parts[2] !== 'chapter') {
+      const sectionId = parts[3]
+      result.push({ label: sectionId.replace(/_/g, ' '), path: currentPath })
+    }
+    // /learning/grammar/chapter/:chapterId
+    else if (parts.length === 5 && parts[2] === 'chapter') {
+      const chapterId = parts[4]
+      result.push({ label: chapterId.replace(/_/g, ' '), path: currentPath })
+    }
+    // /learning/grammar/:sectionId/test
+    else if (parts.length === 5 && parts[4] === 'test') {
+      const sectionId = parts[3]
+      result.push(
+        { label: sectionId.replace(/_/g, ' '), path: `/learning/grammar/${sectionId}` },
+        { label: 'Test', path: currentPath }
+      )
+    }
+    // /learning/grammar/chapter/:chapterId/test
+    else if (parts.length === 6 && parts[2] === 'chapter' && parts[5] === 'test') {
+      const chapterId = parts[4]
+      result.push(
+        { label: chapterId.replace(/_/g, ' '), path: `/learning/grammar/chapter/${chapterId}` },
+        { label: 'Test', path: currentPath }
+      )
+    }
+    
+    return result
   }
   
   // Для динамических маршрутов типа /learning/words/:setId

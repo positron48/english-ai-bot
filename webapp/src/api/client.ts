@@ -163,6 +163,16 @@ class ApiClient {
 
   async request<T>(url: string, options: RequestInit = {}): Promise<T> {
     return this.retryWithBackoff(async () => {
+      // Handle POST/PUT/PATCH with body object
+      if (options.body && typeof options.body === 'object' && !(options.body instanceof FormData)) {
+        options.body = JSON.stringify(options.body)
+        if (!options.headers) {
+          options.headers = {}
+        }
+        if (typeof options.headers === 'object' && !(options.headers instanceof Headers)) {
+          (options.headers as Record<string, string>)['Content-Type'] = 'application/json'
+        }
+      }
       // CRITICAL: Load tokens from localStorage RIGHT BEFORE creating headers
       // This ensures tokens are always fresh, especially on direct URL access
       this.loadTokens()

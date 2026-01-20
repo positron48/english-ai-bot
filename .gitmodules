@@ -1,0 +1,3 @@
+[submodule "courses/english-grammar"]
+	path = courses/english-grammar
+	url = git@github.com:positron48/english-grammar.git
