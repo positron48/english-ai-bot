@@ -340,6 +340,15 @@ func (db *DB) migrate() error {
 			UNIQUE(user_id)
 		)`,
 		
+		// App settings table
+		`CREATE TABLE IF NOT EXISTS app_settings (
+			key TEXT PRIMARY KEY,
+			value TEXT NOT NULL,
+			updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+			updated_by_user_id INTEGER,
+			FOREIGN KEY (updated_by_user_id) REFERENCES users(id) ON DELETE SET NULL
+		)`,
+		
 		// Indexes for existing tables
 		`CREATE INDEX IF NOT EXISTS idx_word_cards_word ON word_cards(word)`,
 		`CREATE INDEX IF NOT EXISTS idx_word_forms_word_card_id ON word_forms(word_card_id)`,
@@ -384,6 +393,9 @@ func (db *DB) migrate() error {
 		`CREATE INDEX IF NOT EXISTS idx_grammar_progress_user_id ON grammar_progress(user_id)`,
 		`CREATE INDEX IF NOT EXISTS idx_grammar_progress_chapter_id ON grammar_progress(chapter_id)`,
 		`CREATE INDEX IF NOT EXISTS idx_grammar_placement_test_user_id ON grammar_placement_test(user_id)`,
+		
+		// Indexes for app settings
+		`CREATE INDEX IF NOT EXISTS idx_app_settings_key ON app_settings(key)`,
 	}
 
 	for _, query := range queries {
@@ -427,6 +439,11 @@ func (db *DB) migrate() error {
 	// grammar_test_attempts: allow scope_type='placement' (add to CHECK if missing)
 	if err := db.migrateGrammarTestAttemptsScopeType(); err != nil {
 		return fmt.Errorf("failed to migrate grammar_test_attempts scope_type: %w", err)
+	}
+
+	// Initialize default app settings
+	if err := db.initializeAppSettings(); err != nil {
+		return fmt.Errorf("failed to initialize app settings: %w", err)
 	}
 
 	db.logger.Info("database migration completed successfully")
@@ -1079,5 +1096,25 @@ func (db *DB) migrateGrammarTestAttemptsScopeType() error {
 		return fmt.Errorf("failed to commit: %w", err)
 	}
 	db.logger.Info("migrated grammar_test_attempts scope_type to include 'placement'")
+	return nil
+}
+
+// initializeAppSettings initializes default app settings if they don't exist
+func (db *DB) initializeAppSettings() error {
+	// Default settings
+	defaultSettings := map[string]string{
+		"hide_placement_test_button": "false", // false means button is visible by default
+	}
+
+	for key, defaultValue := range defaultSettings {
+		_, err := db.conn.Exec(`
+			INSERT OR IGNORE INTO app_settings (key, value) 
+			VALUES (?, ?)
+		`, key, defaultValue)
+		if err != nil {
+			return fmt.Errorf("failed to initialize app setting %s: %w", key, err)
+		}
+	}
+
 	return nil
 }

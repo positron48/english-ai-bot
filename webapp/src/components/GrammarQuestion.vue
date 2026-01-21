@@ -560,8 +560,8 @@ watch(() => props.question, (newQuestion) => {
   answered.value = false
   correctAnswer.value = newQuestion.correct_answer
   
-  // Focus input when switching to a fill_blank question (chapter test, placement test)
-  if (newQuestion.type === 'fill_blank') {
+  // Focus input when switching to a fill_blank question — only on test pages (chapter test, placement test), not on chapter quiz
+  if (newQuestion.type === 'fill_blank' && props.showAnswers === false) {
     nextTick(() => {
       fillInputRef.value?.focus()
     })

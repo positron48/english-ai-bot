@@ -147,6 +147,11 @@ const router = createRouter({
           path: 'db-schema',
           name: 'AdminDBSchema',
           component: () => import('../views/AdminDBSchemaView.vue')
+        },
+        {
+          path: 'app-settings',
+          name: 'AdminAppSettings',
+          component: () => import('../views/AdminAppSettingsView.vue')
         }
       ]
     },

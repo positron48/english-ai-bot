@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"strings"
 
+	"tgbot-skeleton/internal/repository"
+
 	"go.uber.org/zap"
 )
 
@@ -498,12 +500,22 @@ func (r *Router) handleLearningGrammarStatistics(w http.ResponseWriter, req *htt
 		return
 	}
 
+	// Get app settings for placement test button visibility
+	appSettingsRepo := repository.NewAppSettingsRepository(r.db, r.logger)
+	hidePlacementTestButton, err := appSettingsRepo.GetBoolSetting("hide_placement_test_button")
+	if err != nil {
+		r.logger.Warn("failed to get app settings for placement test button", zap.Error(err))
+		// Default to false (button visible) if error
+		hidePlacementTestButton = false
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]interface{}{
-		"confirmed_level":       stats.ConfirmedLevel,
-		"course_completion_pct": stats.CourseCompletionPct,
-		"average_test_score":     stats.AverageTestScore,
+		"confirmed_level":          stats.ConfirmedLevel,
+		"course_completion_pct":    stats.CourseCompletionPct,
+		"average_test_score":       stats.AverageTestScore,
+		"hide_placement_test_button": hidePlacementTestButton,
 	})
 }
 

@@ -2,7 +2,11 @@
   <div class="grammar-categories">
     <div class="header-section">
       <h1>Grammar Course</h1>
-      <router-link to="/learning/grammar/placement-test" class="btn btn-placement-test">
+      <router-link 
+        v-if="settingsLoaded && !hidePlacementTestButton"
+        to="/learning/grammar/placement-test" 
+        class="btn btn-placement-test"
+      >
         <Icon name="sparkles" />
         Take Placement Test
       </router-link>
@@ -213,7 +217,9 @@ interface Category {
 const categories = ref<Category[]>([])
 const loading = ref(true)
 const error = ref<string | null>(null)
-const statistics = ref<{ confirmed_level: string; course_completion_pct: number; average_test_score?: number } | null>(null)
+const statistics = ref<{ confirmed_level: string; course_completion_pct: number; average_test_score?: number; hide_placement_test_button?: boolean } | null>(null)
+const hidePlacementTestButton = ref(true) // По умолчанию скрыта, пока не загрузим данные
+const settingsLoaded = ref(false) // Флаг загрузки настроек
 
 // Computed properties for statistics
 const totalChapters = computed(() => {
@@ -285,7 +291,10 @@ const loadCategories = async () => {
     const loadedCategories = (categoriesData as { categories: Category[] }).categories || []
     // can_access comes from the API (considers placement test opened_sections + previous category passed)
     categories.value = loadedCategories
-    statistics.value = statsData as { confirmed_level: string; course_completion_pct: number; average_test_score?: number }
+    statistics.value = statsData as { confirmed_level: string; course_completion_pct: number; average_test_score?: number; hide_placement_test_button?: boolean }
+    // Устанавливаем настройку только после загрузки данных
+    hidePlacementTestButton.value = statistics.value?.hide_placement_test_button || false
+    settingsLoaded.value = true
   } catch (err: any) {
     error.value = err.message || 'Failed to load categories'
     console.error('Failed to load grammar categories:', err)

@@ -333,6 +333,9 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/admin/grammar/chapters", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminGrammarChapters))))
 	r.mux.HandleFunc("/api/admin/grammar/chapters/", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminGrammarChapterPublish))))
 	r.mux.HandleFunc("/api/admin/grammar/items/", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminGrammarItemRename))))
+	
+	// App settings admin routes
+	r.mux.HandleFunc("/api/admin/app-settings", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminAppSettings))))
 }
 
 // corsMiddleware adds CORS headers to allow Swagger UI to make requests

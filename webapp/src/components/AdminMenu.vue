@@ -106,6 +106,15 @@
         <Icon name="database" class="admin-sidebar-icon" />
         <span>DB Schema</span>
       </router-link>
+      <router-link 
+        to="/admin/app-settings" 
+        class="admin-sidebar-item" 
+        :class="{ active: $route.path === '/admin/app-settings' }"
+        @click="isMobile && handleCloseSidebar()"
+      >
+        <Icon name="gear" class="admin-sidebar-icon" />
+        <span>App Settings</span>
+      </router-link>
     </nav>
     
     <!-- Theme Settings -->

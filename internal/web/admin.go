@@ -1542,3 +1542,70 @@ func (r *Router) handleAdminOrphanedUserCard(w http.ResponseWriter, req *http.Re
 	})
 }
 
+// handleAdminAppSettings handles app settings (GET and PUT)
+// @Summary      Получить/Обновить настройки приложения
+// @Description  Возвращает или обновляет настройки приложения (только для администраторов)
+// @Tags         Admin
+// @Accept       json
+// @Produce      application/json
+// @Security     ApiKeyAuth
+// @Param        settings  body  map[string]interface{}  false  "Настройки приложения (для PUT)"
+// @Success      200  {object}  map[string]interface{}  "Настройки приложения или результат обновления"
+// @Failure      400  {string}  string  "Неверный запрос"
+// @Failure      401  {string}  string  "Неавторизован"
+// @Failure      403  {string}  string  "Доступ запрещен"
+// @Router       /api/admin/app-settings [get]
+// @Router       /api/admin/app-settings [put]
+func (r *Router) handleAdminAppSettings(w http.ResponseWriter, req *http.Request) {
+	appSettingsRepo := repository.NewAppSettingsRepository(r.db, r.logger)
+
+	if req.Method == http.MethodGet {
+		hidePlacementTestButton, err := appSettingsRepo.GetBoolSetting("hide_placement_test_button")
+		if err != nil {
+			r.logger.Error("failed to get app settings", zap.Error(err))
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"hide_placement_test_button": hidePlacementTestButton,
+		})
+		return
+	}
+
+	if req.Method == http.MethodPut {
+		userID := getUserIDFromContext(req.Context())
+		if userID == 0 {
+			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			return
+		}
+
+		var settings map[string]interface{}
+		if err := json.NewDecoder(req.Body).Decode(&settings); err != nil {
+			http.Error(w, "Invalid request body", http.StatusBadRequest)
+			return
+		}
+
+		// Update hide_placement_test_button if provided
+		if hideButton, ok := settings["hide_placement_test_button"].(bool); ok {
+			if err := appSettingsRepo.SetBoolSetting("hide_placement_test_button", hideButton, userID); err != nil {
+				r.logger.Error("failed to update app settings", zap.Error(err))
+				http.Error(w, "Internal server error", http.StatusInternalServerError)
+				return
+			}
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"success": true,
+			"message": "Settings updated successfully",
+		})
+		return
+	}
+
+	http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+}
+
