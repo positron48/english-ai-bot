@@ -230,8 +230,7 @@ func (s *GrammarService) filterQuestionBankForQuizzes(chapter *repository.Chapte
 	
 	// Check blocks for quiz_inline types
 	blocks := chapter.Blocks
-	if blocks != nil {
-		for _, blockInterface := range blocks {
+	for _, blockInterface := range blocks {
 			block, ok := blockInterface.(map[string]interface{})
 			if !ok {
 				continue
@@ -255,7 +254,6 @@ func (s *GrammarService) filterQuestionBankForQuizzes(chapter *repository.Chapte
 					}
 				}
 			}
-		}
 	}
 
 	// Filter question bank if it exists
@@ -353,8 +351,8 @@ func (s *GrammarService) GenerateChapterTest(ctx context.Context, chapterID stri
 
 // TestQuestions represents test questions
 type TestQuestions struct {
-	Questions []interface{}
-	Total     int
+	Questions []interface{} `json:"questions"`
+	Total     int           `json:"total"`
 }
 
 // selectQuestions selects questions based on strategy
@@ -687,8 +685,19 @@ func (s *GrammarService) CanAccessChapter(ctx context.Context, userID int64, cha
 // CanAccessSection checks if a user can access a section (category)
 // A section can be accessed if:
 // 1. It's the first section, OR
-// 2. All chapters in the previous section have been passed
+// 2. All chapters in the previous section have been passed, OR
+// 3. It was opened by placement test
 func (s *GrammarService) CanAccessSection(ctx context.Context, userID int64, sectionID string) (bool, error) {
+	// Get placement test result to check opened sections
+	placementResult, _ := s.AttemptRepo.GetPlacementTestResult(userID)
+	if placementResult != nil {
+		for _, openedSectionID := range placementResult.OpenedSections {
+			if openedSectionID == sectionID {
+				return true, nil // Section was opened by placement test
+			}
+		}
+	}
+
 	// Get sections to find section order
 	sectionsData, err := s.ContentRepo.GetSections()
 	if err != nil {
@@ -750,6 +759,8 @@ type GrammarStatistics struct {
 	ConfirmedLevel      string  `json:"confirmed_level"`       // Highest level where all chapters are passed
 	CourseCompletionPct int     `json:"course_completion_pct"` // Overall completion percentage
 	AverageTestScore    int     `json:"average_test_score"`    // Average percentage across all test attempts
+	PassedChapters      int     `json:"passed_chapters"`       // Number of passed chapters
+	TotalChapters       int     `json:"total_chapters"`        // Total number of published chapters
 }
 
 // GetGrammarStatistics calculates overall grammar statistics for a user
@@ -762,6 +773,15 @@ func (s *GrammarService) GetGrammarStatistics(ctx context.Context, userID int64)
 	publishedItems, err := s.PublishRepo.GetPublishedItemsByType("chapter")
 	if err != nil {
 		return nil, fmt.Errorf("failed to get published items: %w", err)
+	}
+
+	// Get placement test result to check opened sections
+	placementResult, _ := s.AttemptRepo.GetPlacementTestResult(userID)
+	openedSectionsMap := make(map[string]bool)
+	if placementResult != nil {
+		for _, sectionID := range placementResult.OpenedSections {
+			openedSectionsMap[sectionID] = true
+		}
 	}
 
 	// Level hierarchy for comparison
@@ -783,6 +803,7 @@ func (s *GrammarService) GetGrammarStatistics(ctx context.Context, userID int64)
 	// Track overall progress
 	totalScore := 0
 	totalPublishedChapters := 0
+	passedChaptersCount := 0
 
 	// Process each section
 	for i := range sectionsData.Sections {
@@ -800,6 +821,9 @@ func (s *GrammarService) GetGrammarStatistics(ctx context.Context, userID int64)
 			continue // Skip sections without valid level
 		}
 
+		// Check if section was opened by placement test
+		isOpenedByPlacement := openedSectionsMap[section.SectionID]
+
 		// Check all published chapters in this section
 		allChaptersPassed := true
 		sectionTotalScore := 0
@@ -812,12 +836,28 @@ func (s *GrammarService) GetGrammarStatistics(ctx context.Context, userID int64)
 			}
 
 			sectionPublishedChapters++
-			progress, _ := s.AttemptRepo.GetChapterProgress(userID, chapterID)
-			sectionTotalScore += progress.BestScore
+			
+			// If section was opened by placement test, count all chapters as passed (100%)
+			if isOpenedByPlacement {
+				sectionTotalScore += 100
+				passedChaptersCount++
+			} else {
+				progress, _ := s.AttemptRepo.GetChapterProgress(userID, chapterID)
+				sectionTotalScore += progress.BestScore
 
-			if !progress.Passed {
-				allChaptersPassed = false
+				if progress.Passed {
+					passedChaptersCount++
+				}
+
+				if !progress.Passed {
+					allChaptersPassed = false
+				}
 			}
+		}
+
+		// If opened by placement test, consider all chapters passed
+		if isOpenedByPlacement {
+			allChaptersPassed = true
 		}
 
 		// Update confirmed level if all chapters in this section are passed
@@ -856,5 +896,279 @@ func (s *GrammarService) GetGrammarStatistics(ctx context.Context, userID int64)
 		ConfirmedLevel:      confirmedLevel,
 		CourseCompletionPct: completionPct,
 		AverageTestScore:    averageTestScore,
+		PassedChapters:      passedChaptersCount,
+		TotalChapters:       totalPublishedChapters,
 	}, nil
+}
+
+// GeneratePlacementTest generates a placement test with 20-30 questions from all published chapters
+func (s *GrammarService) GeneratePlacementTest(ctx context.Context) (*TestQuestions, error) {
+	sectionsData, err := s.ContentRepo.GetSections()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get sections: %w", err)
+	}
+
+	publishedItems, err := s.PublishRepo.GetPublishedItemsByType("chapter")
+	if err != nil {
+		return nil, fmt.Errorf("failed to get published items: %w", err)
+	}
+
+	// Collect all questions from all published chapters
+	allQuestions := make([]interface{}, 0)
+	questionMap := make(map[string]interface{})
+
+	for _, section := range sectionsData.Sections {
+		for _, chapterID := range section.ChapterIDs {
+			chapterItem, exists := publishedItems[chapterID]
+			if !exists || !chapterItem.IsPublished {
+				continue // Skip unpublished chapters
+			}
+
+			chapter, err := s.ContentRepo.GetChapter(chapterID)
+			if err != nil {
+				s.logger.Warn("failed to load chapter for placement test", zap.String("chapter_id", chapterID), zap.Error(err))
+				continue
+			}
+
+			// Get question bank
+			questionBank, ok := chapter.QuestionBank["questions"].([]interface{})
+			if !ok {
+				continue
+			}
+
+			// Add questions to pool
+			for _, q := range questionBank {
+				qMap, ok := q.(map[string]interface{})
+				if !ok {
+					continue
+				}
+				if id, ok := qMap["id"].(string); ok {
+					// Store chapter_id with question for tracking
+					qMap["placement_chapter_id"] = chapterID
+					questionMap[id] = qMap
+					allQuestions = append(allQuestions, qMap)
+				}
+			}
+		}
+	}
+
+	// Select 20-30 questions randomly
+	var numQuestions int
+	if len(allQuestions) < 20 {
+		numQuestions = len(allQuestions)
+	} else if len(allQuestions) >= 30 {
+		// Random between 20-30
+		numQuestions = 20 + rand.Intn(11) // 20-30
+	} else {
+		numQuestions = len(allQuestions)
+	}
+
+	// Shuffle and select
+	rand.Shuffle(len(allQuestions), func(i, j int) {
+		allQuestions[i], allQuestions[j] = allQuestions[j], allQuestions[i]
+	})
+
+	selectedQuestions := allQuestions
+	if len(allQuestions) > numQuestions {
+		selectedQuestions = allQuestions[:numQuestions]
+	}
+
+	// Remove correct_answer from selected questions (except for reorder type)
+	for _, q := range selectedQuestions {
+		if qMap, ok := q.(map[string]interface{}); ok {
+			questionType, _ := qMap["type"].(string)
+			if questionType != "reorder" {
+				delete(qMap, "correct_answer")
+			}
+		}
+	}
+
+	return &TestQuestions{
+		Questions: selectedQuestions,
+		Total:     len(selectedQuestions),
+	}, nil
+}
+
+// SubmitPlacementTest submits placement test answers and determines user level
+func (s *GrammarService) SubmitPlacementTest(ctx context.Context, userID int64, answers map[string]interface{}) (*PlacementTestResult, error) {
+	sectionsData, err := s.ContentRepo.GetSections()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get sections: %w", err)
+	}
+
+	publishedItems, err := s.PublishRepo.GetPublishedItemsByType("chapter")
+	if err != nil {
+		return nil, fmt.Errorf("failed to get published items: %w", err)
+	}
+
+	// Build question map with correct answers from all published chapters
+	// Also track which chapter each question belongs to
+	questionMap := make(map[string]map[string]interface{})
+	questionChapterMap := make(map[string]string) // question_id -> chapter_id
+
+	for _, section := range sectionsData.Sections {
+		for _, chapterID := range section.ChapterIDs {
+			chapterItem, exists := publishedItems[chapterID]
+			if !exists || !chapterItem.IsPublished {
+				continue
+			}
+
+			chapter, err := s.ContentRepo.GetChapter(chapterID)
+			if err != nil {
+				continue
+			}
+
+			questionBank, ok := chapter.QuestionBank["questions"].([]interface{})
+			if !ok {
+				continue
+			}
+
+			for _, q := range questionBank {
+				qMap, ok := q.(map[string]interface{})
+				if !ok {
+					continue
+				}
+				if id, ok := qMap["id"].(string); ok {
+					questionMap[id] = qMap
+					questionChapterMap[id] = chapterID
+				}
+			}
+		}
+	}
+
+	// Check answers and calculate score per chapter
+	chapterScores := make(map[string]struct {
+		correct int
+		total   int
+	})
+
+	totalCorrect := 0
+	totalQuestions := 0
+
+	for questionID, userAnswer := range answers {
+		q, exists := questionMap[questionID]
+		if !exists {
+			continue
+		}
+
+		totalQuestions++
+		correctAnswer := q["correct_answer"]
+		isCorrect := s.compareAnswers(userAnswer, correctAnswer)
+
+		if isCorrect {
+			totalCorrect++
+		}
+
+		// Track score per chapter using questionChapterMap
+		chapterID, exists := questionChapterMap[questionID]
+		if exists {
+			if _, exists := chapterScores[chapterID]; !exists {
+				chapterScores[chapterID] = struct {
+					correct int
+					total   int
+				}{0, 0}
+			}
+			score := chapterScores[chapterID]
+			score.total++
+			if isCorrect {
+				score.correct++
+			}
+			chapterScores[chapterID] = score
+		}
+	}
+
+	// Calculate overall score
+	overallScore := 0
+	if totalQuestions > 0 {
+		overallScore = (totalCorrect * 100) / totalQuestions
+	}
+
+	// Determine which sections to open based on chapter performance
+	// A chapter is considered "passed" if user got >= 50% correct
+	openedSections := make(map[string]bool)
+
+	// Process sections in order
+	for _, section := range sectionsData.Sections {
+		// Check if all tested chapters in this section are "passed"
+		allTestedChaptersPassed := true
+		testedChaptersCount := 0
+
+		for _, chapterID := range section.ChapterIDs {
+			chapterItem, exists := publishedItems[chapterID]
+			if !exists || !chapterItem.IsPublished {
+				continue
+			}
+
+			// Only check chapters that were actually in the test
+			if score, exists := chapterScores[chapterID]; exists {
+				testedChaptersCount++
+				chapterScore := 0
+				if score.total > 0 {
+					chapterScore = (score.correct * 100) / score.total
+				}
+				if chapterScore < 50 {
+					allTestedChaptersPassed = false
+					break
+				}
+			}
+			// If chapter wasn't in test, we don't count it (it's OK to skip)
+		}
+
+		// Open section if all tested chapters passed and at least one chapter was tested
+		if allTestedChaptersPassed && testedChaptersCount > 0 {
+			openedSections[section.SectionID] = true
+		} else {
+			// Stop at first section that's not fully passed
+			break
+		}
+	}
+
+	// Convert to slice
+	openedSectionsList := make([]string, 0, len(openedSections))
+	for sectionID := range openedSections {
+		openedSectionsList = append(openedSectionsList, sectionID)
+	}
+
+	// Save result (only if better than existing)
+	err = s.AttemptRepo.SavePlacementTestResult(userID, overallScore, totalQuestions, openedSectionsList)
+	if err != nil {
+		s.logger.Error("failed to save placement test result", zap.Error(err))
+	}
+
+	// Save attempt record
+	answersJSON, _ := json.Marshal(answers)
+	resultsJSON, _ := json.Marshal([]interface{}{}) // Empty results for placement test
+
+	attempt := &repository.TestAttempt{
+		UserID:         userID,
+		ScopeType:      "placement",
+		ScopeID:        "placement",
+		StartedAt:      time.Now(),
+		FinishedAt:     &[]time.Time{time.Now()}[0],
+		Score:          overallScore,
+		Passed:         overallScore >= 50,
+		TotalQuestions: totalQuestions,
+		AnswersJSON:    string(answersJSON),
+		ResultsJSON:    string(resultsJSON),
+	}
+
+	_, err = s.AttemptRepo.CreateAttempt(attempt)
+	if err != nil {
+		s.logger.Error("failed to save placement test attempt", zap.Error(err))
+	}
+
+	return &PlacementTestResult{
+		Score:          overallScore,
+		TotalQuestions: totalQuestions,
+		Correct:        totalCorrect,
+		OpenedSections: openedSectionsList,
+	}, nil
+}
+
+// PlacementTestResult represents placement test submission result
+type PlacementTestResult struct {
+	Score          int      `json:"score"`
+	TotalQuestions int     `json:"total_questions"`
+	Correct        int      `json:"correct"`
+	OpenedSections []string `json:"opened_sections"`
 }

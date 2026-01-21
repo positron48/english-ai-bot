@@ -294,3 +294,94 @@ func ParseResultsJSON(jsonStr string) ([]interface{}, error) {
 	}
 	return results, nil
 }
+
+// PlacementTestResult represents a placement test result
+type PlacementTestResult struct {
+	UserID          int64
+	Score           int
+	TotalQuestions  int
+	OpenedSections  []string
+	CompletedAt     time.Time
+}
+
+// SavePlacementTestResult saves or updates placement test result
+// Only updates if the new score is higher (better) than existing
+func (r *GrammarAttemptRepository) SavePlacementTestResult(userID int64, score int, totalQuestions int, openedSections []string) error {
+	openedSectionsJSON, err := json.Marshal(openedSections)
+	if err != nil {
+		return fmt.Errorf("failed to marshal opened sections: %w", err)
+	}
+
+	// Check existing result
+	existingScore := 0
+	var existingOpenedSectionsJSON sql.NullString
+	checkQuery := `SELECT score, opened_sections_json FROM grammar_placement_test WHERE user_id = ?`
+	err = r.db.QueryRow(checkQuery, userID).Scan(&existingScore, &existingOpenedSectionsJSON)
+	
+	if err == sql.ErrNoRows {
+		// No existing result, insert new
+		query := `INSERT INTO grammar_placement_test (user_id, score, total_questions, opened_sections_json, completed_at)
+				  VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)`
+		_, err = r.db.Exec(query, userID, score, totalQuestions, string(openedSectionsJSON))
+		if err != nil {
+			return fmt.Errorf("failed to save placement test result: %w", err)
+		}
+		return nil
+	}
+	
+	if err != nil {
+		return fmt.Errorf("failed to check existing placement test result: %w", err)
+	}
+
+	// Only update if new score is higher (better)
+	if score > existingScore {
+		query := `UPDATE grammar_placement_test 
+				  SET score = ?, total_questions = ?, opened_sections_json = ?, completed_at = CURRENT_TIMESTAMP
+				  WHERE user_id = ?`
+		_, err = r.db.Exec(query, score, totalQuestions, string(openedSectionsJSON), userID)
+		if err != nil {
+			return fmt.Errorf("failed to update placement test result: %w", err)
+		}
+	}
+
+	return nil
+}
+
+// GetPlacementTestResult retrieves placement test result for a user
+func (r *GrammarAttemptRepository) GetPlacementTestResult(userID int64) (*PlacementTestResult, error) {
+	query := `SELECT user_id, score, total_questions, opened_sections_json, completed_at
+			  FROM grammar_placement_test
+			  WHERE user_id = ?`
+
+	var result PlacementTestResult
+	var openedSectionsJSON sql.NullString
+	var completedAt sql.NullString
+
+	err := r.db.QueryRow(query, userID).Scan(
+		&result.UserID,
+		&result.Score,
+		&result.TotalQuestions,
+		&openedSectionsJSON,
+		&completedAt,
+	)
+
+	if err == sql.ErrNoRows {
+		return nil, nil // No result found
+	}
+
+	if err != nil {
+		return nil, fmt.Errorf("failed to get placement test result: %w", err)
+	}
+
+	if openedSectionsJSON.Valid {
+		if err := json.Unmarshal([]byte(openedSectionsJSON.String), &result.OpenedSections); err != nil {
+			return nil, fmt.Errorf("failed to parse opened sections JSON: %w", err)
+		}
+	}
+
+	if completedAt.Valid {
+		result.CompletedAt, _ = time.Parse("2006-01-02 15:04:05", completedAt.String)
+	}
+
+	return &result, nil
+}

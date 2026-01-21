@@ -57,6 +57,123 @@
         </div>
       </div>
 
+      <!-- Grammar Statistics Section -->
+      <div v-if="stats.grammarStats" class="grammar-stats-section">
+        <router-link to="/learning/grammar" class="grammar-stats-link">
+          <div class="statistics-block">
+            <div class="stats-content">
+              <!-- Current Level (Left) -->
+              <div class="stat-item level-item">
+                <div class="stat-label">Level</div>
+                <div class="level-badge-compact" :class="grammarLevelBadgeClass">
+                  {{ stats.grammarStats.confirmed_level || 'Not started' }}
+                </div>
+              </div>
+              
+              <!-- Course Completion Percentage -->
+              <div class="stat-item percentage-item">
+                <div class="stat-label">Course</div>
+                <div class="percentage-wrapper">
+                  <div class="percentage-circle-small-wrapper">
+                    <svg class="percentage-circle-small" viewBox="0 0 60 60">
+                      <circle
+                        class="percentage-circle-small-bg"
+                        cx="30"
+                        cy="30"
+                        r="26"
+                        fill="none"
+                        stroke="var(--bg-tertiary)"
+                        stroke-width="4"
+                      />
+                      <circle
+                        class="percentage-circle-small-outline"
+                        cx="30"
+                        cy="30"
+                        r="26"
+                        fill="none"
+                        :stroke="getGrammarPercentageColor(stats.grammarStats.course_completion_pct || 0)"
+                        stroke-width="4"
+                        stroke-opacity="0.2"
+                      />
+                      <circle
+                        class="percentage-circle-small-fill"
+                        cx="30"
+                        cy="30"
+                        r="26"
+                        fill="none"
+                        :stroke="getGrammarPercentageColor(stats.grammarStats.course_completion_pct || 0)"
+                        stroke-width="4"
+                        stroke-linecap="round"
+                        :style="{
+                          strokeDasharray: grammarSmallCircleCircumference,
+                          strokeDashoffset: getGrammarPercentageOffset(stats.grammarStats.course_completion_pct || 0)
+                        }"
+                      />
+                    </svg>
+                    <div class="percentage-value-small">{{ stats.grammarStats.course_completion_pct || 0 }}%</div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Average Test Score -->
+              <div class="stat-item percentage-item">
+                <div class="stat-label">Tests</div>
+                <div class="percentage-wrapper">
+                  <div class="percentage-circle-small-wrapper">
+                    <svg class="percentage-circle-small" viewBox="0 0 60 60">
+                      <circle
+                        class="percentage-circle-small-bg"
+                        cx="30"
+                        cy="30"
+                        r="26"
+                        fill="none"
+                        stroke="var(--bg-tertiary)"
+                        stroke-width="4"
+                      />
+                      <circle
+                        class="percentage-circle-small-outline"
+                        cx="30"
+                        cy="30"
+                        r="26"
+                        fill="none"
+                        :stroke="getGrammarPercentageColor(stats.grammarStats.average_test_score || 0)"
+                        stroke-width="4"
+                        stroke-opacity="0.2"
+                      />
+                      <circle
+                        class="percentage-circle-small-fill"
+                        cx="30"
+                        cy="30"
+                        r="26"
+                        fill="none"
+                        :stroke="getGrammarPercentageColor(stats.grammarStats.average_test_score || 0)"
+                        stroke-width="4"
+                        stroke-linecap="round"
+                        :style="{
+                          strokeDasharray: grammarSmallCircleCircumference,
+                          strokeDashoffset: getGrammarPercentageOffset(stats.grammarStats.average_test_score || 0)
+                        }"
+                      />
+                    </svg>
+                    <div class="percentage-value-small">{{ stats.grammarStats.average_test_score || 0 }}%</div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Chapters Progress (Right) -->
+              <div class="stat-item chapters-item">
+                <div class="stat-label">Chapters</div>
+                <div class="chapters-value-compact">
+                  <span class="chapters-number">{{ stats.grammarStats.passed_chapters || 0 }}</span>
+                  <span class="chapters-separator">/</span>
+                  <span class="chapters-total">{{ stats.grammarStats.total_chapters || 0 }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </router-link>
+      </div>
+
       <!-- Progress Section -->
       <div class="progress-section">
         <div class="card">
@@ -118,7 +235,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch, nextTick } from 'vue'
+import { ref, computed, onMounted, watch, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { Chart, registerables } from 'chart.js'
 import { useTheme } from '../composables/useTheme'
@@ -232,7 +349,8 @@ const loadData = async () => {
       availableForTraining: data.available_for_training || 0,
       accuracyPercent: data.accuracy_percent || 0,
       weeklyStats: data.weekly_stats || [],
-      wordsAddedStats: data.words_added_stats || []
+      wordsAddedStats: data.words_added_stats || [],
+      grammarStats: data.grammar_stats || null
     }
     await nextTick()
     updateChart()
@@ -250,6 +368,30 @@ const refreshData = () => {
 
 const formatPercent = (value: number): string => {
   return value.toFixed(1)
+}
+
+// Grammar statistics computed properties
+const grammarLevelBadgeClass = computed(() => {
+  const level = stats.value.grammarStats?.confirmed_level || ''
+  if (level.startsWith('C')) return 'badge-c2'
+  if (level.startsWith('B')) return 'badge-b'
+  if (level.startsWith('A')) return 'badge-a'
+  return 'badge-none'
+})
+
+const grammarSmallCircleCircumference = computed(() => 2 * Math.PI * 26)
+
+const getGrammarPercentageOffset = (percent: number): number => {
+  const progress = Math.max(0, Math.min(100, percent)) / 100
+  return grammarSmallCircleCircumference.value * (1 - progress)
+}
+
+const getGrammarPercentageColor = (percent: number): string => {
+  if (percent >= 90) return '#10b981' // green
+  if (percent >= 70) return '#3b82f6' // blue
+  if (percent >= 50) return '#f59e0b' // orange
+  if (percent >= 25) return '#f97316' // orange-red
+  return '#ef4444' // red
 }
 
 const formatDate = (dateString: string): string => {
@@ -809,6 +951,171 @@ onMounted(() => {
   margin: 0;
 }
 
+/* Grammar Statistics Section */
+.grammar-stats-section {
+  margin-top: 8px;
+}
+
+.grammar-stats-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.statistics-block {
+  padding: 12px 16px;
+  background: linear-gradient(135deg, var(--card-bg) 0%, rgba(var(--color-primary-rgb, 59, 130, 246), 0.05) 100%);
+  border: 2px solid var(--border-primary);
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.grammar-stats-link:hover .statistics-block {
+  border-color: var(--color-primary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.stats-content {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  align-items: center;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+}
+
+.stat-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  min-width: 50px;
+}
+
+/* Level Item */
+.level-item {
+  justify-content: flex-start;
+}
+
+.level-badge-compact {
+  padding: 6px 12px;
+  font-size: 20px;
+  font-weight: 700;
+  border-radius: 6px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+}
+
+.level-badge-compact.badge-a {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+.level-badge-compact.badge-b {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+}
+
+.level-badge-compact.badge-c2 {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+.level-badge-compact.badge-none {
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+}
+
+/* Percentage Items */
+.percentage-item {
+  justify-content: flex-start;
+}
+
+.percentage-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.percentage-circle-small-wrapper {
+  position: relative;
+  width: 60px;
+  height: 60px;
+}
+
+.percentage-circle-small {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.percentage-circle-small-bg {
+  opacity: 0.2;
+}
+
+.percentage-circle-small-outline {
+  transition: stroke 0.3s ease;
+}
+
+.percentage-circle-small-fill {
+  transition: stroke-dashoffset 0.6s ease, stroke 0.3s ease;
+}
+
+.percentage-value-small {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
+  text-align: center;
+}
+
+/* Chapters Item */
+.chapters-item {
+  justify-content: flex-start;
+}
+
+.chapters-value-compact {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.chapters-value-compact .chapters-number {
+  color: var(--color-primary);
+}
+
+.chapters-value-compact .chapters-separator {
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+.chapters-value-compact .chapters-total {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
 /* Progress Section */
 .progress-section {
   margin-top: 8px;
@@ -943,6 +1250,43 @@ onMounted(() => {
   
   .stat-label {
     font-size: 10px;
+  }
+  
+  /* Compact Grammar Stats Section */
+  .grammar-stats-section {
+    margin-top: 0;
+  }
+  
+  .statistics-block {
+    padding: 10px 12px;
+  }
+  
+  .stats-content {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  
+  .percentage-circle-small-wrapper {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .percentage-value-small {
+    font-size: 12px;
+  }
+  
+  .chapters-value-compact {
+    font-size: 18px;
+  }
+  
+  .level-badge-compact {
+    font-size: 18px;
+    padding: 5px 10px;
+  }
+  
+  .stat-label {
+    font-size: 10px;
+    min-width: 40px;
   }
   
   /* Compact Progress Section */

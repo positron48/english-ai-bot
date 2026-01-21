@@ -195,10 +195,23 @@ func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 		}
 	}
 
+	// Get grammar statistics if grammar service is available
+	var grammarStats map[string]interface{}
+	if r.grammarService != nil {
+		stats, err := r.grammarService.GetGrammarStatistics(req.Context(), userID)
+		if err == nil {
+			grammarStats = map[string]interface{}{
+				"confirmed_level":       stats.ConfirmedLevel,
+				"course_completion_pct": stats.CourseCompletionPct,
+				"average_test_score":    stats.AverageTestScore,
+				"passed_chapters":       stats.PassedChapters,
+				"total_chapters":        stats.TotalChapters,
+			}
+		}
+	}
+
 	// Return JSON response
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(map[string]interface{}{
+	response := map[string]interface{}{
 		"due_count":             dueCount,
 		"new_count":             newCount,
 		"learning_count":        learningCount,
@@ -208,7 +221,14 @@ func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 		"accuracy_percent":      accuracyPercent,
 		"weekly_stats":         weeklyStats,
 		"words_added_stats":     wordsAddedStats,
-	})
+	}
+	if grammarStats != nil {
+		response["grammar_stats"] = grammarStats
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(response)
 }
 
 // handleChat handles AI chat requests

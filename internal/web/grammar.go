@@ -497,3 +497,81 @@ func (r *Router) handleLearningGrammarStatistics(w http.ResponseWriter, req *htt
 		"average_test_score":     stats.AverageTestScore,
 	})
 }
+
+// handleLearningGrammarPlacementTest generates a placement test
+// @Summary      Получить placement тест
+// @Description  Генерирует тест на определение уровня (20-30 вопросов из всех опубликованных категорий)
+// @Tags         Learning Grammar
+// @Accept       json
+// @Produce      application/json
+// @Security     ApiKeyAuth
+// @Success      200  {object}  service.TestQuestions  "Вопросы теста"
+// @Failure      401  {string}  string  "Неавторизован"
+// @Failure      405  {string}  string  "Метод не разрешен"
+// @Router       /api/learning/grammar/placement-test [get]
+func (r *Router) handleLearningGrammarPlacementTest(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	userID := getUserIDFromContext(req.Context())
+	if userID == 0 {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	test, err := r.grammarService.GeneratePlacementTest(req.Context())
+	if err != nil {
+		r.logger.Error("failed to generate placement test", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(test)
+}
+
+// handleLearningGrammarSubmitPlacementTest submits placement test answers
+// @Summary      Отправить ответы placement теста
+// @Description  Отправляет ответы на placement тест и определяет уровень пользователя
+// @Tags         Learning Grammar
+// @Accept       json
+// @Produce      application/json
+// @Security     ApiKeyAuth
+// @Param        request  body  map[string]interface{}  true  "Ответы на вопросы (map question_id -> answer)"
+// @Success      200  {object}  service.PlacementTestResult  "Результат теста"
+// @Failure      400  {string}  string  "Неверный запрос"
+// @Failure      401  {string}  string  "Неавторизован"
+// @Failure      405  {string}  string  "Метод не разрешен"
+// @Router       /api/learning/grammar/placement-test/submit [post]
+func (r *Router) handleLearningGrammarSubmitPlacementTest(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	userID := getUserIDFromContext(req.Context())
+	if userID == 0 {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	var answers map[string]interface{}
+	if err := json.NewDecoder(req.Body).Decode(&answers); err != nil {
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
+		return
+	}
+
+	result, err := r.grammarService.SubmitPlacementTest(req.Context(), userID, answers)
+	if err != nil {
+		r.logger.Error("failed to submit placement test", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(result)
+}

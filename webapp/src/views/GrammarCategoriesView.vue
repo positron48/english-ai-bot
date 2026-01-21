@@ -1,6 +1,12 @@
 <template>
   <div class="grammar-categories">
-    <h1>Grammar Course</h1>
+    <div class="header-section">
+      <h1>Grammar Course</h1>
+      <router-link to="/learning/grammar/placement-test" class="btn btn-placement-test">
+        <Icon name="sparkles" />
+        Take Placement Test
+      </router-link>
+    </div>
     
     <!-- Statistics Block -->
     <div v-if="!loading && !error && statistics" class="statistics-block">
@@ -313,8 +319,49 @@ onMounted(() => {
   padding: 20px;
 }
 
-.grammar-categories h1 {
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 32px;
+  gap: 16px;
+}
+
+.grammar-categories h1 {
+  margin: 0;
+}
+
+.btn-placement-test {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.btn-placement-test:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+@media (max-width: 768px) {
+  .header-section {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .btn-placement-test {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 .statistics-block {

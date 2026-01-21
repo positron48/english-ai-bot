@@ -306,7 +306,7 @@ func (db *DB) migrate() error {
 		`CREATE TABLE IF NOT EXISTS grammar_test_attempts (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			user_id INTEGER NOT NULL,
-			scope_type TEXT NOT NULL CHECK(scope_type IN ('chapter', 'category')),
+			scope_type TEXT NOT NULL CHECK(scope_type IN ('chapter', 'category', 'placement')),
 			scope_id TEXT NOT NULL,
 			started_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 			finished_at DATETIME,
@@ -327,6 +327,16 @@ func (db *DB) migrate() error {
 			last_attempt_at DATETIME,
 			FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
 			UNIQUE(user_id, chapter_id)
+		)`,
+		
+		`CREATE TABLE IF NOT EXISTS grammar_placement_test (
+			user_id INTEGER NOT NULL,
+			score INTEGER NOT NULL CHECK(score >= 0 AND score <= 100),
+			total_questions INTEGER NOT NULL,
+			opened_sections_json TEXT NOT NULL,
+			completed_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+			FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+			UNIQUE(user_id)
 		)`,
 		
 		// Indexes for existing tables
@@ -372,6 +382,7 @@ func (db *DB) migrate() error {
 		`CREATE INDEX IF NOT EXISTS idx_grammar_test_attempts_scope ON grammar_test_attempts(scope_type, scope_id)`,
 		`CREATE INDEX IF NOT EXISTS idx_grammar_progress_user_id ON grammar_progress(user_id)`,
 		`CREATE INDEX IF NOT EXISTS idx_grammar_progress_chapter_id ON grammar_progress(chapter_id)`,
+		`CREATE INDEX IF NOT EXISTS idx_grammar_placement_test_user_id ON grammar_placement_test(user_id)`,
 	}
 
 	for _, query := range queries {

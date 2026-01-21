@@ -40,6 +40,12 @@ const router = createRouter({
       meta: { requiresAuth: true }
     },
     {
+      path: '/learning/grammar/placement-test',
+      name: 'GrammarPlacementTest',
+      component: () => import('../views/GrammarPlacementTestView.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
       path: '/learning/grammar/:sectionId',
       name: 'GrammarChapters',
       component: () => import('../views/GrammarChaptersView.vue'),
