@@ -177,6 +177,13 @@ const handleMouseLeave = () => {
   padding: 20px;
   overflow-x: auto;
   width: calc(100% - 240px);
+  max-width: 100%;
+}
+
+/* Контент админ-страниц на всю ширину на десктопе (убираем max-width из дочерних .admin-content, .admin-grammar) */
+.admin-main-content :deep(.admin-content),
+.admin-main-content :deep(.admin-grammar) {
+  max-width: 100%;
 }
 
 @media (max-width: 767px) {

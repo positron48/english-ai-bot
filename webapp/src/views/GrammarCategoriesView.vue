@@ -283,20 +283,7 @@ const loadCategories = async () => {
     ])
     
     const loadedCategories = (categoriesData as { categories: Category[] }).categories || []
-    
-    // Check access for each category
-    for (let i = 0; i < loadedCategories.length; i++) {
-      const category = loadedCategories[i]
-      // First category is always accessible
-      if (i === 0) {
-        category.can_access = true
-      } else {
-        // Category is accessible if all chapters in previous category were passed
-        const previousCategory = loadedCategories[i - 1]
-        category.can_access = previousCategory.passed_chapters === previousCategory.total_chapters && previousCategory.total_chapters > 0
-      }
-    }
-    
+    // can_access comes from the API (considers placement test opened_sections + previous category passed)
     categories.value = loadedCategories
     statistics.value = statsData as { confirmed_level: string; course_completion_pct: number; average_test_score?: number }
   } catch (err: any) {

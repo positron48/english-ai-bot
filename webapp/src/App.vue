@@ -53,7 +53,14 @@
       </div>
     </nav>
     
-    <main class="container" :class="{ 'with-mobile-footer': isAuthenticated && isMobile && !isAdminRoute, 'with-desktop-navbar': isAuthenticated && !isMobile && !isAdminRoute }">
+    <main
+      class="container"
+      :class="{
+        'with-mobile-footer': isAuthenticated && isMobile && !isAdminRoute,
+        'with-desktop-navbar': isAuthenticated && !isMobile && !isAdminRoute,
+        'main-admin': isAdminRoute
+      }"
+    >
       <Breadcrumbs v-if="isAuthenticated && mounted && !isAdminRoute" />
       <router-view v-if="mounted" />
       <div v-else style="padding: 20px; text-align: center;">
@@ -597,6 +604,13 @@ const handleMoreLogout = () => {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* Admin: full width on desktop, no container constraint */
+main.main-admin {
+  max-width: none;
+  margin: 0;
+  padding: 0;
 }
 
 /* Main content padding for mobile footer */

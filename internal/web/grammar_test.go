@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"tgbot-skeleton/internal/config"
@@ -159,6 +160,11 @@ func TestHandleLearningGrammarPlacementTest_QuestionsHaveChapterTitle(t *testing
 		if title == "" {
 			t.Errorf("Question %d has placement_chapter_id but placement_chapter_title is missing or empty", i+1)
 		}
+		// IDs must be "chapterID:qid" so the same qid in different chapters does not overwrite in SubmitPlacementTest
+		id, _ := q["id"].(string)
+		if id != "" && !strings.Contains(id, ":") {
+			t.Errorf("Question %d id %q must be composite (chapterID:qid) to avoid correct_answer mix-up between chapters", i+1, id)
+		}
 	}
 }
 
@@ -262,6 +268,9 @@ func TestHandleLearningGrammarSubmitPlacementTest_ReturnsLevelAndResults(t *test
 		}
 		if m["placement_chapter_title"] == nil {
 			t.Errorf("results[%d] missing placement_chapter_title", i)
+		}
+		if _, has := m["level"]; !has {
+			t.Errorf("results[%d] missing level", i)
 		}
 	}
 }

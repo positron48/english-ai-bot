@@ -71,12 +71,12 @@
           ref="fillInputRef"
         />
         <button
-          v-if="showAnswers && !answered && userAnswer && userAnswer.trim()"
+          v-if="!answered && userAnswer && userAnswer.trim()"
           @click="handleFillBlankCheck"
           class="check-btn"
           :disabled="answered"
         >
-          Check
+          {{ showAnswers ? 'Check' : 'Confirm' }}
         </button>
       </div>
       <!-- Show correct/incorrect indicator for fill_blank after check -->
@@ -191,7 +191,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, nextTick } from 'vue'
 import { marked } from 'marked'
 
 interface Question {
@@ -559,6 +559,13 @@ watch(() => props.question, (newQuestion) => {
   userAnswer.value = null
   answered.value = false
   correctAnswer.value = newQuestion.correct_answer
+  
+  // Focus input when switching to a fill_blank question (chapter test, placement test)
+  if (newQuestion.type === 'fill_blank') {
+    nextTick(() => {
+      fillInputRef.value?.focus()
+    })
+  }
   
   // Restore answer after initialization (use nextTick to ensure initialization is complete)
   setTimeout(() => {

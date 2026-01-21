@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"math/rand"
 	"sort"
+	"strings"
 	"time"
 
 	"tgbot-skeleton/internal/repository"
@@ -152,10 +153,21 @@ func (s *GrammarService) GetPublishedChapters(ctx context.Context, sectionID str
 		progress, _ := s.AttemptRepo.GetChapterProgress(userID, chapterID)
 
 		result = append(result, &ChapterWithProgress{
-			Chapter: chapter,
-			Title:   title,
+			Chapter:  chapter,
+			Title:    title,
 			Progress: progress,
 		})
+	}
+
+	sectionAccess, _ := s.CanAccessSection(ctx, userID, sectionID)
+	for i := range result {
+		if sectionAccess {
+			result[i].CanAccess = true
+		} else if i == 0 {
+			result[i].CanAccess = true
+		} else {
+			result[i].CanAccess = result[i-1].Progress.Passed
+		}
 	}
 
 	return result, nil
@@ -163,9 +175,10 @@ func (s *GrammarService) GetPublishedChapters(ctx context.Context, sectionID str
 
 // ChapterWithProgress represents a chapter with user progress
 type ChapterWithProgress struct {
-	Chapter  *repository.Chapter
-	Title    string
-	Progress *repository.ChapterProgress
+	Chapter   *repository.Chapter
+	Title     string
+	Progress  *repository.ChapterProgress
+	CanAccess bool // true if section is unlocked (placement/previous) or first/prev passed
 }
 
 // GetChapterContent returns chapter content (without answers for tests)
@@ -516,18 +529,33 @@ func (s *GrammarService) SubmitTest(ctx context.Context, userID int64, scopeType
 
 		total++
 		correctAnswer := q["correct_answer"]
-		isCorrect := s.compareAnswers(userAnswer, correctAnswer)
+		qType, _ := q["type"].(string)
+		var isCorrect bool
+		var resultCorrect = correctAnswer
+
+		if qType == "true_false" {
+			uNorm, okU := normalizeTrueFalseValue(userAnswer)
+			cNorm, okC := normalizeTrueFalseValue(correctAnswer)
+			if okU && okC {
+				isCorrect = (uNorm == cNorm)
+				resultCorrect = cNorm
+			} else {
+				isCorrect = s.compareAnswers(userAnswer, correctAnswer)
+			}
+		} else {
+			isCorrect = s.compareAnswers(userAnswer, correctAnswer)
+		}
 
 		if isCorrect {
 			correct++
 		}
 
 		results = append(results, map[string]interface{}{
-			"question_id": questionID,
-			"correct":     isCorrect,
-			"user_answer": userAnswer,
-			"correct_answer": correctAnswer,
-			"explanation": q["explanation"],
+			"question_id":    questionID,
+			"correct":        isCorrect,
+			"user_answer":    userAnswer,
+			"correct_answer": resultCorrect,
+			"explanation":    q["explanation"],
 		})
 	}
 
@@ -584,6 +612,28 @@ type TestResult struct {
 	Results []interface{}
 }
 
+// normalizeTrueFalseValue maps Да/Нет, true/false, bool, etc. to "true" or "false"
+// so that comparison and frontend display (formatAnswer) work consistently.
+// Returns (normalized, true) when recognized; otherwise ("", false).
+func normalizeTrueFalseValue(v interface{}) (string, bool) {
+	switch val := v.(type) {
+	case bool:
+		if val {
+			return "true", true
+		}
+		return "false", true
+	case string:
+		lower := strings.TrimSpace(strings.ToLower(val))
+		switch lower {
+		case "true", "да", "yes", "1":
+			return "true", true
+		case "false", "нет", "no", "0":
+			return "false", true
+		}
+	}
+	return "", false
+}
+
 // compareAnswers compares user answer with correct answer
 func (s *GrammarService) compareAnswers(userAnswer, correctAnswer interface{}) bool {
 	// Handle different answer types
@@ -626,8 +676,9 @@ func (s *GrammarService) compareAnswers(userAnswer, correctAnswer interface{}) b
 
 // CanAccessChapter checks if a user can access a chapter
 // A chapter can be accessed if:
-// 1. It's the first chapter in its section, OR
-// 2. The previous chapter has been passed (score >= 50%)
+// 1. The user has access to the whole section (placement test or previous section passed), OR
+// 2. It's the first chapter in its section, OR
+// 3. The previous chapter has been passed (score >= 50%)
 func (s *GrammarService) CanAccessChapter(ctx context.Context, userID int64, chapterID string) (bool, error) {
 	// Get the chapter to find its section
 	chapter, err := s.ContentRepo.GetChapter(chapterID)
@@ -652,6 +703,11 @@ func (s *GrammarService) CanAccessChapter(ctx context.Context, userID int64, cha
 
 	if section == nil {
 		return false, fmt.Errorf("section not found for chapter: %s", chapterID)
+	}
+
+	// If user has access to the whole section (e.g. via placement test), any chapter is accessible
+	if canSection, _ := s.CanAccessSection(ctx, userID, section.SectionID); canSection {
+		return true, nil
 	}
 
 	// Find the index of this chapter in the section
@@ -687,25 +743,24 @@ func (s *GrammarService) CanAccessChapter(ctx context.Context, userID int64, cha
 // A section can be accessed if:
 // 1. It's the first section, OR
 // 2. All chapters in the previous section have been passed, OR
-// 3. It was opened by placement test
+// 3. It was opened by placement test (in OpenedSections), OR
+// 4. Placement "effective level": section level <= max level among OpenedSections (fixes old DB rows
+//    where OpenedSections missed sections that had no questions in the 25-question test)
 func (s *GrammarService) CanAccessSection(ctx context.Context, userID int64, sectionID string) (bool, error) {
-	// Get placement test result to check opened sections
 	placementResult, _ := s.AttemptRepo.GetPlacementTestResult(userID)
 	if placementResult != nil {
 		for _, openedSectionID := range placementResult.OpenedSections {
 			if openedSectionID == sectionID {
-				return true, nil // Section was opened by placement test
+				return true, nil
 			}
 		}
 	}
 
-	// Get sections to find section order
 	sectionsData, err := s.ContentRepo.GetSections()
 	if err != nil {
 		return false, fmt.Errorf("failed to get sections: %w", err)
 	}
 
-	// Find the section
 	var section *repository.Section
 	var sectionIndex = -1
 	for i := range sectionsData.Sections {
@@ -718,6 +773,29 @@ func (s *GrammarService) CanAccessSection(ctx context.Context, userID int64, sec
 
 	if section == nil {
 		return false, fmt.Errorf("section not found: %s", sectionID)
+	}
+
+	// Placement "effective level": if stored OpenedSections is incomplete (old bug), treat the
+	// highest level among opened sections as the placement level and open any section at or below it.
+	levelOrder := map[string]int{"A0": 0, "A1": 1, "A2": 2, "B1": 3, "B2": 4, "C1": 5, "C2": 6, "mixed": -1}
+	if placementResult != nil && len(placementResult.OpenedSections) > 0 {
+		effectiveOrder := -1
+		for _, oid := range placementResult.OpenedSections {
+			for j := range sectionsData.Sections {
+				if sectionsData.Sections[j].SectionID == oid {
+					if ord, ok := levelOrder[sectionsData.Sections[j].Level]; ok && ord >= 0 && ord > effectiveOrder {
+						effectiveOrder = ord
+					}
+					break
+				}
+			}
+		}
+		if effectiveOrder >= 0 {
+			secOrd, ok := levelOrder[section.Level]
+			if ok && secOrd >= 0 && secOrd <= effectiveOrder {
+				return true, nil
+			}
+		}
 	}
 
 	// First section is always accessible
@@ -902,7 +980,8 @@ func (s *GrammarService) GetGrammarStatistics(ctx context.Context, userID int64)
 	}, nil
 }
 
-// GeneratePlacementTest generates a placement test with 20-30 questions from all published chapters
+// GeneratePlacementTest generates a placement test with at least 1 question from each
+// published section (category), then fills up to 25. Questions are ordered by section then chapter.
 func (s *GrammarService) GeneratePlacementTest(ctx context.Context) (*TestQuestions, error) {
 	sectionsData, err := s.ContentRepo.GetSections()
 	if err != nil {
@@ -914,15 +993,15 @@ func (s *GrammarService) GeneratePlacementTest(ctx context.Context) (*TestQuesti
 		return nil, fmt.Errorf("failed to get published items: %w", err)
 	}
 
-	// Collect all questions from all published chapters
+	// Collect all questions, grouped by section; add placement_section_id, _section_order, _chapter_order
 	allQuestions := make([]interface{}, 0)
-	questionMap := make(map[string]interface{})
+	bySection := make(map[string][]interface{})
 
 	for _, section := range sectionsData.Sections {
-		for _, chapterID := range section.ChapterIDs {
+		for ci, chapterID := range section.ChapterIDs {
 			chapterItem, exists := publishedItems[chapterID]
 			if !exists || !chapterItem.IsPublished {
-				continue // Skip unpublished chapters
+				continue
 			}
 
 			chapter, err := s.ContentRepo.GetChapter(chapterID)
@@ -931,51 +1010,81 @@ func (s *GrammarService) GeneratePlacementTest(ctx context.Context) (*TestQuesti
 				continue
 			}
 
-			// Get question bank
 			questionBank, ok := chapter.QuestionBank["questions"].([]interface{})
 			if !ok {
 				continue
 			}
 
-			// Add questions to pool
 			for _, q := range questionBank {
 				qMap, ok := q.(map[string]interface{})
 				if !ok {
 					continue
 				}
-				if id, ok := qMap["id"].(string); ok {
-					// Store chapter_id and chapter title with question for display
+				if id, ok := qMap["id"].(string); ok && id != "" {
+					compID := chapterID + ":" + id
+					qMap["id"] = compID
 					qMap["placement_chapter_id"] = chapterID
 					qMap["placement_chapter_title"] = chapter.Title
-					questionMap[id] = qMap
+					qMap["placement_section_id"] = section.SectionID
+					qMap["placement_section_order"] = section.Order
+					qMap["placement_chapter_order"] = ci
 					allQuestions = append(allQuestions, qMap)
+					bySection[section.SectionID] = append(bySection[section.SectionID], qMap)
 				}
 			}
 		}
 	}
 
-	// Select 20-30 questions randomly
-	var numQuestions int
-	if len(allQuestions) < 20 {
-		numQuestions = len(allQuestions)
-	} else if len(allQuestions) >= 30 {
-		// Random between 20-30
-		numQuestions = 20 + rand.Intn(11) // 20-30
-	} else {
-		numQuestions = len(allQuestions)
+	// Phase 1: at least 1 question from each section that has questions
+	selectedIDs := make(map[string]bool)
+	selected := make([]interface{}, 0)
+	for _, section := range sectionsData.Sections {
+		list := bySection[section.SectionID]
+		if len(list) == 0 {
+			continue
+		}
+		idx := rand.Intn(len(list))
+		q := list[idx].(map[string]interface{})
+		selected = append(selected, q)
+		selectedIDs[q["id"].(string)] = true
 	}
 
-	// Shuffle and select
-	rand.Shuffle(len(allQuestions), func(i, j int) {
-		allQuestions[i], allQuestions[j] = allQuestions[j], allQuestions[i]
+	// Phase 2: fill up to 25 with random questions from the rest
+	const placementNumQuestions = 25
+	pool := make([]interface{}, 0, len(allQuestions)-len(selected))
+	for _, q := range allQuestions {
+		qMap := q.(map[string]interface{})
+		if !selectedIDs[qMap["id"].(string)] {
+			pool = append(pool, q)
+		}
+	}
+	rand.Shuffle(len(pool), func(i, j int) { pool[i], pool[j] = pool[j], pool[i] })
+	need := placementNumQuestions - len(selected)
+	if need > 0 && len(pool) > 0 {
+		n := need
+		if len(pool) < n {
+			n = len(pool)
+		}
+		for i := 0; i < n; i++ {
+			selected = append(selected, pool[i])
+		}
+	}
+
+	// Sort by section order, then chapter order
+	sort.Slice(selected, func(i, j int) bool {
+		a, b := selected[i].(map[string]interface{}), selected[j].(map[string]interface{})
+		soA, _ := a["placement_section_order"].(int)
+		soB, _ := b["placement_section_order"].(int)
+		if soA != soB {
+			return soA < soB
+		}
+		coA, _ := a["placement_chapter_order"].(int)
+		coB, _ := b["placement_chapter_order"].(int)
+		return coA < coB
 	})
 
-	selectedQuestions := allQuestions
-	if len(allQuestions) > numQuestions {
-		selectedQuestions = allQuestions[:numQuestions]
-	}
-
 	// Remove correct_answer from selected questions (except for reorder type)
+	selectedQuestions := selected
 	for _, q := range selectedQuestions {
 		if qMap, ok := q.(map[string]interface{}); ok {
 			questionType, _ := qMap["type"].(string)
@@ -1006,10 +1115,27 @@ func (s *GrammarService) SubmitPlacementTest(ctx context.Context, userID int64, 
 		return nil, fmt.Errorf("failed to get published items: %w", err)
 	}
 
-	// Build question map with correct answers; track chapter and section per question
+	// Chapter order for sorting results by course sequence (sections then chapters)
+	chapterOrder := make(map[string]int)
+	ord := 0
+	for i := range sectionsData.Sections {
+		section := &sectionsData.Sections[i]
+		for _, chapterID := range section.ChapterIDs {
+			chapterItem, exists := publishedItems[chapterID]
+			if !exists || !chapterItem.IsPublished {
+				continue
+			}
+			chapterOrder[chapterID] = ord
+			ord++
+		}
+	}
+
+	// Build question map with correct answers; track chapter, section, level per question
 	questionMap := make(map[string]map[string]interface{})
-	questionSectionMap := make(map[string]string)   // question_id -> section_id
-	questionChapterTitleMap := make(map[string]string) // question_id -> chapter title
+	questionSectionMap := make(map[string]string)
+	questionChapterTitleMap := make(map[string]string)
+	questionChapterIDMap := make(map[string]string)
+	questionLevelMap := make(map[string]string)
 
 	for i := range sectionsData.Sections {
 		section := &sectionsData.Sections[i]
@@ -1034,10 +1160,13 @@ func (s *GrammarService) SubmitPlacementTest(ctx context.Context, userID int64, 
 				if !ok {
 					continue
 				}
-				if id, ok := qMap["id"].(string); ok {
-					questionMap[id] = qMap
-					questionSectionMap[id] = section.SectionID
-					questionChapterTitleMap[id] = chapter.Title
+				if id, ok := qMap["id"].(string); ok && id != "" {
+					key := chapterID + ":" + id
+					questionMap[key] = qMap
+					questionSectionMap[key] = section.SectionID
+					questionChapterTitleMap[key] = chapter.Title
+					questionChapterIDMap[key] = chapterID
+					questionLevelMap[key] = section.Level
 				}
 			}
 		}
@@ -1049,13 +1178,27 @@ func (s *GrammarService) SubmitPlacementTest(ctx context.Context, userID int64, 
 	totalCorrect := 0
 	totalQuestions := 0
 
-	// Collect question IDs from answers for deterministic result order
+	// Collect question IDs from answers; sort by chapter order (course sequence)
 	answerQuestionIDs := make([]string, 0, len(answers))
 	for qid := range answers {
 		answerQuestionIDs = append(answerQuestionIDs, qid)
 	}
-	// Sort for stable ordering of results
-	sort.Strings(answerQuestionIDs)
+	sort.Slice(answerQuestionIDs, func(i, j int) bool {
+		ci := questionChapterIDMap[answerQuestionIDs[i]]
+		cj := questionChapterIDMap[answerQuestionIDs[j]]
+		oi, oki := chapterOrder[ci]
+		oj, okj := chapterOrder[cj]
+		if !oki {
+			oi = 999999
+		}
+		if !okj {
+			oj = 999999
+		}
+		if oi != oj {
+			return oi < oj
+		}
+		return answerQuestionIDs[i] < answerQuestionIDs[j]
+	})
 
 	// Build per-question results and section scores
 	results := make([]interface{}, 0, len(answers))
@@ -1069,7 +1212,22 @@ func (s *GrammarService) SubmitPlacementTest(ctx context.Context, userID int64, 
 
 		totalQuestions++
 		correctAnswer := q["correct_answer"]
-		isCorrect := s.compareAnswers(userAnswer, correctAnswer)
+		qType, _ := q["type"].(string)
+		var isCorrect bool
+		var resultCorrect = correctAnswer
+
+		if qType == "true_false" {
+			uNorm, okU := normalizeTrueFalseValue(userAnswer)
+			cNorm, okC := normalizeTrueFalseValue(correctAnswer)
+			if okU && okC {
+				isCorrect = (uNorm == cNorm)
+				resultCorrect = cNorm
+			} else {
+				isCorrect = s.compareAnswers(userAnswer, correctAnswer)
+			}
+		} else {
+			isCorrect = s.compareAnswers(userAnswer, correctAnswer)
+		}
 
 		if isCorrect {
 			totalCorrect++
@@ -1087,13 +1245,15 @@ func (s *GrammarService) SubmitPlacementTest(ctx context.Context, userID int64, 
 
 		explanation, _ := q["explanation"].(string)
 		chapterTitle := questionChapterTitleMap[questionID]
+		qLevel := questionLevelMap[questionID]
 		results = append(results, map[string]interface{}{
 			"question_id":             questionID,
 			"correct":                 isCorrect,
 			"user_answer":             userAnswer,
-			"correct_answer":          correctAnswer,
+			"correct_answer":          resultCorrect,
 			"explanation":             explanation,
 			"placement_chapter_title": chapterTitle,
+			"level":                   qLevel,
 		})
 	}
 
@@ -1129,6 +1289,34 @@ func (s *GrammarService) SubmitPlacementTest(ctx context.Context, userID int64, 
 			level = "—"
 		} else {
 			level = "Below A1"
+		}
+	}
+
+	// Expand opened sections: if we have a clear CEFR level, open ALL published sections
+	// at or below that level. The 25-question test only samples the course, so many
+	// sections have zero questions and were skipped above — they would stay locked
+	// otherwise even though the user's level (e.g. B1) implies they should be open.
+	levelOrder := map[string]int{
+		"A0": 0, "A1": 1, "A2": 2, "B1": 3, "B2": 4, "C1": 5, "C2": 6,
+		"mixed": -1,
+	}
+	if level != "Below A1" && level != "—" {
+		if maxOrder, ok := levelOrder[level]; ok && maxOrder >= 0 {
+			openedSectionsList = make([]string, 0)
+			for i := range sectionsData.Sections {
+				sec := &sectionsData.Sections[i]
+				sectionItem, errPub := s.PublishRepo.GetPublishedItem("section", sec.SectionID)
+				if errPub != nil || sectionItem == nil || !sectionItem.IsPublished {
+					continue
+				}
+				secOrder, has := levelOrder[sec.Level]
+				if !has || secOrder < 0 {
+					continue
+				}
+				if secOrder <= maxOrder {
+					openedSectionsList = append(openedSectionsList, sec.SectionID)
+				}
+			}
 		}
 	}
 

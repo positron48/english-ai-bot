@@ -169,20 +169,7 @@ const loadChapters = async () => {
       `/api/learning/grammar/categories/${sectionId.value}/chapters`
     )
     const loadedChapters = data.chapters || []
-    
-    // Check access for each chapter
-    for (let i = 0; i < loadedChapters.length; i++) {
-      const chapter = loadedChapters[i]
-      // First chapter is always accessible
-      if (i === 0) {
-        chapter.can_access = true
-      } else {
-        // Chapter is accessible if previous chapter was passed
-        const previousChapter = loadedChapters[i - 1]
-        chapter.can_access = previousChapter.passed
-      }
-    }
-    
+    // can_access from API: if section is unlocked (placement/previous) then all chapters; else first + after prev passed
     chapters.value = loadedChapters
   } catch (err: any) {
     error.value = err.message || 'Failed to load chapters'

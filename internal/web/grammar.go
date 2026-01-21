@@ -39,27 +39,34 @@ func (r *Router) handleLearningGrammarCategories(w http.ResponseWriter, req *htt
 	}
 
 	type CategoryResponse struct {
-		SectionID         string `json:"section_id"`
-		Title             string `json:"title"`
-		Level             string `json:"level"`
-		Order             int    `json:"order"`
-		PublishedChapters int    `json:"published_chapters"`
-		PassedChapters    int    `json:"passed_chapters"`
-		TotalChapters     int    `json:"total_chapters"`
-		ProgressPercentage int   `json:"progress_percentage"`
+		SectionID          string `json:"section_id"`
+		Title              string `json:"title"`
+		Level              string `json:"level"`
+		Order              int    `json:"order"`
+		PublishedChapters  int    `json:"published_chapters"`
+		PassedChapters     int    `json:"passed_chapters"`
+		TotalChapters      int    `json:"total_chapters"`
+		ProgressPercentage int    `json:"progress_percentage"`
+		CanAccess          bool   `json:"can_access"`
 	}
 
 	categories := make([]CategoryResponse, 0, len(sections))
 	for _, section := range sections {
+		canAccess, errAccess := r.grammarService.CanAccessSection(req.Context(), userID, section.Section.SectionID)
+		if errAccess != nil {
+			r.logger.Warn("failed to check section access, defaulting to false", zap.String("section_id", section.Section.SectionID), zap.Error(errAccess))
+			canAccess = false
+		}
 		categories = append(categories, CategoryResponse{
-			SectionID:         section.Section.SectionID,
-			Title:             section.Title,
-			Level:             section.Section.Level,
-			Order:             section.Section.Order,
-			PublishedChapters: section.PublishedChapters,
-			PassedChapters:    section.PassedChapters,
-			TotalChapters:     len(section.Section.ChapterIDs),
+			SectionID:          section.Section.SectionID,
+			Title:              section.Title,
+			Level:              section.Section.Level,
+			Order:              section.Section.Order,
+			PublishedChapters:  section.PublishedChapters,
+			PassedChapters:     section.PassedChapters,
+			TotalChapters:      len(section.Section.ChapterIDs),
 			ProgressPercentage: section.ProgressPercentage,
+			CanAccess:          canAccess,
 		})
 	}
 
@@ -124,16 +131,17 @@ func (r *Router) handleLearningGrammarChapters(w http.ResponseWriter, req *http.
 	}
 
 	type ChapterResponse struct {
-		ChapterID      string `json:"chapter_id"`
-		Title          string `json:"title"`
-		TitleShort     string `json:"title_short,omitempty"`
-		Description   string `json:"description,omitempty"`
-		Level          string `json:"level,omitempty"`
-		Order          int    `json:"order"`
-		EstimatedMinutes int `json:"estimated_minutes,omitempty"`
-		BestScore      int   `json:"best_score"`
-		Passed         bool  `json:"passed"`
-		LastAttemptAt  string `json:"last_attempt_at,omitempty"`
+		ChapterID        string `json:"chapter_id"`
+		Title            string `json:"title"`
+		TitleShort       string `json:"title_short,omitempty"`
+		Description      string `json:"description,omitempty"`
+		Level            string `json:"level,omitempty"`
+		Order            int    `json:"order"`
+		EstimatedMinutes int    `json:"estimated_minutes,omitempty"`
+		BestScore        int    `json:"best_score"`
+		Passed           bool   `json:"passed"`
+		LastAttemptAt    string `json:"last_attempt_at,omitempty"`
+		CanAccess        bool   `json:"can_access"`
 	}
 
 	chapterList := make([]ChapterResponse, 0, len(chapters))
@@ -148,6 +156,7 @@ func (r *Router) handleLearningGrammarChapters(w http.ResponseWriter, req *http.
 			EstimatedMinutes: chapter.Chapter.EstimatedMinutes,
 			BestScore:        chapter.Progress.BestScore,
 			Passed:           chapter.Progress.Passed,
+			CanAccess:        chapter.CanAccess,
 		}
 		if !chapter.Progress.LastAttemptAt.IsZero() {
 			resp.LastAttemptAt = chapter.Progress.LastAttemptAt.Format("2006-01-02T15:04:05Z")
@@ -500,7 +509,7 @@ func (r *Router) handleLearningGrammarStatistics(w http.ResponseWriter, req *htt
 
 // handleLearningGrammarPlacementTest generates a placement test
 // @Summary      Получить placement тест
-// @Description  Генерирует тест на определение уровня (20-30 вопросов из всех опубликованных категорий)
+// @Description  Генерирует тест на определение уровня (25 вопросов из всех опубликованных категорий)
 // @Tags         Learning Grammar
 // @Accept       json
 // @Produce      application/json

@@ -313,6 +313,7 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/admin/words/", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminWord))))
 	r.mux.HandleFunc("/api/admin/users", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminUsers))))
 	r.mux.HandleFunc("/api/admin/db-schema", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleDBSchema))))
+	r.mux.HandleFunc("/api/admin/db-query", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleDBQuery))))
 	r.mux.HandleFunc("/api/admin/orphaned-cards", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminOrphanedCards))))
 	r.mux.HandleFunc("/api/admin/orphaned-cards/", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminOrphanedCard))))
 	r.mux.HandleFunc("/api/admin/orphaned-user-cards", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminOrphanedUserCards))))

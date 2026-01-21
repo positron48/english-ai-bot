@@ -13,6 +13,51 @@
     </div>
 
     <div v-if="schema && !loading" class="schema-container">
+      <section v-if="schema.db_query_access" class="db-query-section">
+        <h3>SQL Query</h3>
+        <p class="db-query-hint">Only SELECT, INSERT, UPDATE, DELETE, PRAGMA. DROP, TRUNCATE, ALTER, CREATE and similar are blocked.</p>
+        <textarea
+          v-model="queryInput"
+          class="db-query-input"
+          placeholder="SELECT * FROM users LIMIT 10"
+          rows="4"
+          :disabled="queryLoading"
+        ></textarea>
+        <div class="db-query-actions">
+          <button @click="runQuery" :disabled="queryLoading || !queryInput.trim()" class="run-query-btn">
+            {{ queryLoading ? 'Running...' : 'Execute' }}
+          </button>
+        </div>
+        <div v-if="queryError" class="db-query-error">{{ queryError }}</div>
+        <div v-if="queryResult" class="db-query-result">
+          <template v-if="queryResult.rows && queryResult.rows.length > 0">
+            <div class="db-query-table-wrap">
+              <table class="db-query-table">
+                <thead>
+                  <tr>
+                    <th v-for="col in Object.keys(queryResult.rows[0])" :key="col">{{ col }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(row, i) in queryResult.rows" :key="i">
+                    <td v-for="col in Object.keys(queryResult.rows[0])" :key="col">{{ formatCell(row[col]) }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="db-query-meta">{{ queryResult.rows.length }} row(s)</div>
+          </template>
+          <template v-else-if="queryResult.rows_affected !== undefined || queryResult.last_insert_id !== undefined || queryResult.message">
+            <span v-if="queryResult.rows_affected !== undefined">Rows affected: {{ queryResult.rows_affected }}</span>
+            <span v-if="queryResult.last_insert_id !== undefined"> · Last insert ID: {{ queryResult.last_insert_id }}</span>
+            <span v-if="queryResult.message && queryResult.rows_affected === undefined && queryResult.last_insert_id === undefined">{{ queryResult.message }}</span>
+          </template>
+          <template v-else-if="queryResult.rows && queryResult.rows.length === 0">
+            0 row(s)
+          </template>
+        </div>
+      </section>
+
       <div class="controls">
         <label>
           <input type="checkbox" v-model="showColumnTypes" />
@@ -96,6 +141,14 @@ interface TableInfo {
 
 interface SchemaResponse {
   tables: TableInfo[]
+  db_query_access?: boolean
+}
+
+interface DbQueryResponse {
+  rows?: Record<string, unknown>[]
+  rows_affected?: number
+  last_insert_id?: number
+  message?: string
 }
 
 const schema = ref<SchemaResponse | null>(null)
@@ -108,6 +161,11 @@ const showPrimaryKeys = ref(true)
 const showForeignKeys = ref(true)
 const isDarkTheme = ref(false)
 
+const queryInput = ref('')
+const queryLoading = ref(false)
+const queryError = ref<string | null>(null)
+const queryResult = ref<DbQueryResponse | null>(null)
+
 // Check for dark theme
 const checkDarkTheme = () => {
   if (window.matchMedia) {
@@ -117,6 +175,31 @@ const checkDarkTheme = () => {
   const body = document.body
   if (body.classList.contains('dark') || body.getAttribute('data-theme') === 'dark') {
     isDarkTheme.value = true
+  }
+}
+
+const formatCell = (v: unknown): string => {
+  if (v == null) return 'NULL'
+  if (typeof v === 'object') return JSON.stringify(v)
+  return String(v)
+}
+
+const runQuery = async () => {
+  const q = queryInput.value.trim()
+  if (!q) return
+  queryLoading.value = true
+  queryError.value = null
+  queryResult.value = null
+  try {
+    const res = await apiClient.request<DbQueryResponse>('/api/admin/db-query', {
+      method: 'POST',
+      body: { query: q }
+    })
+    queryResult.value = res
+  } catch (err) {
+    queryError.value = err instanceof Error ? err.message : 'Unknown error'
+  } finally {
+    queryLoading.value = false
   }
 }
 
@@ -489,6 +572,107 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   gap: 20px;
+}
+
+.db-query-section {
+  padding: 16px;
+  background: var(--bg-secondary, #f9f9f9);
+  border: 1px solid var(--border-primary, #ddd);
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.db-query-section h3 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+}
+
+.db-query-hint {
+  margin: 0 0 12px 0;
+  font-size: 13px;
+  color: var(--text-secondary, #666);
+}
+
+.db-query-input {
+  width: 100%;
+  font-family: monospace;
+  font-size: 14px;
+  padding: 10px;
+  border: 1px solid var(--border-primary, #ddd);
+  border-radius: 4px;
+  resize: vertical;
+  background: var(--card-bg, #fff);
+  color: var(--text-primary, #333);
+  box-sizing: border-box;
+}
+
+.db-query-actions {
+  margin-top: 10px;
+}
+
+.run-query-btn {
+  padding: 8px 20px;
+  background: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.run-query-btn:hover:not(:disabled) {
+  background: #1976d2;
+}
+
+.run-query-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.db-query-error {
+  margin-top: 12px;
+  padding: 10px;
+  background: #ffebee;
+  color: #c62828;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.db-query-result {
+  margin-top: 12px;
+  padding: 12px;
+  background: var(--card-bg, #fff);
+  border: 1px solid var(--border-primary, #ddd);
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.db-query-table-wrap {
+  overflow-x: auto;
+  margin-bottom: 8px;
+}
+
+.db-query-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.db-query-table th,
+.db-query-table td {
+  padding: 6px 10px;
+  text-align: left;
+  border: 1px solid var(--border-primary, #ddd);
+}
+
+.db-query-table th {
+  background: var(--bg-secondary, #eee);
+  font-weight: 600;
+}
+
+.db-query-meta {
+  font-size: 12px;
+  color: var(--text-secondary, #666);
 }
 
 .controls {

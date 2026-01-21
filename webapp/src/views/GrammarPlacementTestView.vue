@@ -40,10 +40,40 @@
       </div>
       
       <div v-if="result?.results && result.results.length > 0" class="results-details">
+        <div class="results-scale" aria-label="Question overview">
+          <div class="scale-level-labels">
+            <span
+              v-for="(group, gIdx) in scaleLevelGroups"
+              :key="'l-' + gIdx"
+              class="scale-level-label"
+              :style="{ left: group.labelLeft + '%', width: group.labelWidth + '%' }"
+            >{{ group.level }}</span>
+          </div>
+          <div class="scale-line-wrap">
+            <div class="scale-line"></div>
+            <div
+              v-for="(pos, i) in scaleSeparators"
+              :key="'sep-' + i"
+              class="scale-sep"
+              :style="{ left: pos + '%' }"
+            />
+            <button
+              v-for="(item, index) in result.results"
+              :key="'dot-' + (item.question_id || index)"
+              type="button"
+              class="scale-dot"
+              :class="{ 'correct': item.correct, 'incorrect': !item.correct }"
+              :style="{ left: scaleDotPosition(index) + '%' }"
+              :title="`Question ${index + 1}${item.level ? ' · ' + item.level : ''}`"
+              @click="scrollToResult(index)"
+            />
+          </div>
+        </div>
         <h2>Detailed Results</h2>
         <div
           v-for="(item, index) in result.results"
           :key="item.question_id || index"
+          :id="`result-${index}`"
           class="result-item"
           :class="{ 'correct': item.correct, 'incorrect': !item.correct }"
         >
@@ -60,12 +90,12 @@
             <div v-html="renderMarkdown(getQuestionPrompt(item.question_id))"></div>
           </div>
           
-          <div class="result-user-answer">
+          <div class="result-user-answer" :class="{ 'result-user-answer--correct': item.correct }">
             <strong>Your Answer:</strong>
             <div class="answer-display">{{ formatAnswer(item.question_id, item.user_answer) || '(not answered)' }}</div>
           </div>
           
-          <div v-if="item.correct_answer != null" class="result-correct-answer">
+          <div v-if="!item.correct && item.correct_answer != null" class="result-correct-answer">
             <strong>Correct Answer:</strong>
             <div class="answer-display">{{ formatAnswer(item.question_id, item.correct_answer) }}</div>
           </div>
@@ -100,7 +130,7 @@
         <h1>Placement Test</h1>
         <p class="test-description">
           This test will help determine your current grammar level. 
-          Answer 20-30 questions from different topics, and we'll unlock the appropriate sections for you.
+          Answer 25 questions from different topics, and we'll unlock the appropriate sections for you.
         </p>
         <div class="test-progress">
           Question {{ currentQuestionIndex + 1 }} of {{ questions.length }}
@@ -192,6 +222,49 @@ const currentQuestion = computed(() => {
   return question
 })
 
+const scaleLevelGroups = computed(() => {
+  const res = result.value?.results
+  if (!res || !Array.isArray(res) || res.length === 0) return []
+  const total = res.length
+  const groups: { level: string; labelLeft: number; labelWidth: number }[] = []
+  let i = 0
+  while (i < total) {
+    const raw = (res[i] as any)?.level || '—'
+    const levelKey = raw.toString().toLowerCase()
+    let j = i
+    while (j < total && ((res[j] as any)?.level || '—').toString().toLowerCase() === levelKey) j++
+    const count = j - i
+    const levelDisplay = levelKey === '—' ? '—' : levelKey.toUpperCase()
+    groups.push({
+      level: levelDisplay,
+      labelLeft: (i / total) * 100,
+      labelWidth: (count / total) * 100
+    })
+    i = j
+  }
+  return groups
+})
+
+const scaleSeparators = computed(() => {
+  const res = result.value?.results
+  if (!res || res.length < 2) return []
+  const out: number[] = []
+  const total = res.length
+  for (let i = 1; i < total; i++) {
+    const prev = ((res[i - 1] as any)?.level || '').toString().toLowerCase()
+    const curr = ((res[i] as any)?.level || '').toString().toLowerCase()
+    if (prev !== curr) out.push((i / total) * 100)
+  }
+  return out
+})
+
+const scaleDotPosition = (index: number): number => {
+  const res = result.value?.results
+  if (!res || res.length === 0) return 0
+  const total = res.length
+  return total > 1 ? ((index + 0.5) / total * 100) : 50
+}
+
 const setQuestionRef = (index: number, el: any) => {
   if (el) {
     questionRefs.value[index] = el
@@ -265,6 +338,10 @@ const getSectionName = (sectionId: string): string => {
   return sectionNames.value[sectionId] || sectionId
 }
 
+const scrollToResult = (index: number) => {
+  document.getElementById(`result-${index}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
+
 const getQuestionById = (questionId: string): any => {
   return questions.value.find((q: any) => q.id === questionId) || null
 }
@@ -284,7 +361,7 @@ const formatAnswer = (questionId: string, answer: any): string => {
       const c = q.choices.find((x: any) => x.id === answer)
       if (c) return c.text
     }
-    if (t === 'true_false') return answer === 'true' ? 'Да' : 'Нет'
+    if (t === 'true_false') return (answer === 'true' || answer === true) ? 'Да' : 'Нет'
     return String(answer)
   }
   if (t === 'mcq_multi' && Array.isArray(answer)) {
@@ -320,11 +397,15 @@ const handleAnswerWithAutoNext = (index: number, answer: any) => {
   answers.value.set(index, answer)
   
   if (hasAnswer(index)) {
-    setTimeout(() => {
-      if (index < questions.value.length - 1) {
-        nextQuestion()
-      }
-    }, 300)
+    const isLast = index === questions.value.length - 1
+    const isFillBlank = questions.value[index]?.type === 'fill_blank'
+    if (isLast && isFillBlank) {
+      submitTest()
+    } else {
+      setTimeout(() => {
+        if (index < questions.value.length - 1) nextQuestion()
+      }, 300)
+    }
   }
 }
 
@@ -582,6 +663,83 @@ onMounted(() => {
   margin-bottom: 32px;
 }
 
+.results-scale {
+  width: 100%;
+  margin-bottom: 28px;
+}
+
+.scale-level-labels {
+  position: relative;
+  height: 20px;
+  margin-bottom: 6px;
+  width: 100%;
+}
+
+.scale-level-label {
+  position: absolute;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-align: center;
+  pointer-events: none;
+}
+
+.scale-line-wrap {
+  position: relative;
+  width: 100%;
+  height: 20px;
+}
+
+.scale-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  margin-top: -1px;
+  height: 2px;
+  background: var(--border-primary);
+}
+
+.scale-sep {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--text-secondary);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.scale-dot {
+  position: absolute;
+  top: 50%;
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  min-height: 16px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  padding: 0;
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.scale-dot:hover {
+  transform: translate(-50%, -50%) scale(1.25);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
+
+.scale-dot.correct {
+  background: var(--color-success);
+  border-color: var(--color-success);
+}
+
+.scale-dot.incorrect {
+  background: var(--color-danger);
+  border-color: var(--color-danger);
+}
+
 .results-details h2 {
   margin-bottom: 20px;
 }
@@ -656,9 +814,18 @@ onMounted(() => {
   border-left: 3px solid var(--color-primary);
 }
 
+.result-user-answer.result-user-answer--correct {
+  background: rgba(40, 167, 69, 0.1);
+  border-left-color: var(--color-success);
+}
+
 .result-user-answer strong {
   display: block;
   margin-bottom: 8px;
+}
+
+.result-user-answer.result-user-answer--correct strong {
+  color: var(--color-success);
 }
 
 .result-correct-answer {

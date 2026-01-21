@@ -83,7 +83,8 @@ type TrainingConfig struct {
 
 // AdminConfig holds admin configuration
 type AdminConfig struct {
-	TelegramID int64 `mapstructure:"telegram_id"`
+	TelegramID     int64 `mapstructure:"telegram_id"`
+	DBQueryAccess  bool  `mapstructure:"db_query_access"`
 }
 
 // WebAppConfig holds web app configuration
@@ -143,6 +144,7 @@ func Load() (*Config, error) {
 	
 	// Admin defaults
 	viper.SetDefault("admin.telegram_id", 0)
+	viper.SetDefault("admin.db_query_access", false)
 	
 	// WebApp defaults
 	viper.SetDefault("webapp.public_url", "")
@@ -212,6 +214,7 @@ func Load() (*Config, error) {
 	_ = viper.BindEnv("training.options_delay_ms", "TRAINING_OPTIONS_DELAY_MS")
 	_ = viper.BindEnv("training.wrong_answer_delay_seconds", "TRAINING_WRONG_ANSWER_DELAY_SECONDS")
 	_ = viper.BindEnv("admin.telegram_id", "ADMIN_TELEGRAM_ID")
+	_ = viper.BindEnv("admin.db_query_access", "DB_QUERY_ACCESS")
 	_ = viper.BindEnv("webapp.public_url", "WEBAPP_PUBLIC_URL")
 	_ = viper.BindEnv("webapp.session_secret", "WEBAPP_SESSION_SECRET")
 	_ = viper.BindEnv("webapp.jwt_secret", "WEBAPP_JWT_SECRET")

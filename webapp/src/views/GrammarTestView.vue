@@ -274,14 +274,16 @@ const handleAnswer = (index: number, answer: any) => {
 const handleAnswerWithAutoNext = (index: number, answer: any) => {
   answers.value.set(index, answer)
   
-  // Auto-advance to next question if answer is valid
   if (hasAnswer(index)) {
-    // Small delay to allow UI to update
-    setTimeout(() => {
-      if (index < questions.value.length - 1) {
-        nextQuestion()
-      }
-    }, 300)
+    const isLast = index === questions.value.length - 1
+    const isFillBlank = questions.value[index]?.type === 'fill_blank'
+    if (isLast && isFillBlank) {
+      submitTest()
+    } else {
+      setTimeout(() => {
+        if (index < questions.value.length - 1) nextQuestion()
+      }, 300)
+    }
   }
 }
 
@@ -536,7 +538,7 @@ const formatAnswer = (questionId: string, answer: any): string => {
       }
       // Fallback for true/false
       if (questionType === 'true_false') {
-        return answer === 'true' ? 'Да' : 'Нет'
+        return (answer === 'true' || answer === true) ? 'Да' : 'Нет'
       }
       return String(answer)
     
