@@ -13,9 +13,10 @@
       <div class="results-header">
         <h1>Placement Test Results</h1>
         <div class="score-display-wrapper">
-          <div class="score-display" :class="{ 'passed': result && result.score !== undefined && result.score >= 50 }">
-            <div class="score-value">{{ result && result.score !== undefined ? animatedScore : 0 }}%</div>
+          <div class="score-display" :class="{ 'passed': result && result.opened_sections && result.opened_sections.length > 0 }">
+            <div class="score-value level-value">{{ result?.level || '—' }}</div>
             <div class="score-label">Your Level</div>
+            <div class="test-score-secondary">Test score: {{ result && result.score !== undefined ? animatedScore : 0 }}%</div>
           </div>
         </div>
       </div>
@@ -23,7 +24,7 @@
       <div class="results-summary">
         <p>You answered <strong>{{ result?.correct || 0 }}</strong> out of <strong>{{ result?.total_questions || 0 }}</strong> questions correctly.</p>
         <div v-if="result && result.opened_sections && result.opened_sections.length > 0" class="opened-sections">
-          <h3>Opened Sections:</h3>
+          <h3>Opened for you:</h3>
           <ul>
             <li v-for="sectionId in result.opened_sections" :key="sectionId">
               {{ getSectionName(sectionId) }}
@@ -35,6 +36,51 @@
         </div>
         <div v-else class="no-sections-opened">
           <p>Keep practicing to unlock more sections!</p>
+        </div>
+      </div>
+      
+      <div v-if="result?.results && result.results.length > 0" class="results-details">
+        <h2>Detailed Results</h2>
+        <div
+          v-for="(item, index) in result.results"
+          :key="item.question_id || index"
+          class="result-item"
+          :class="{ 'correct': item.correct, 'incorrect': !item.correct }"
+        >
+          <div class="result-header">
+            <span class="result-number">Question {{ index + 1 }}</span>
+            <span v-if="item.placement_chapter_title" class="result-chapter">From: {{ item.placement_chapter_title }}</span>
+            <span class="result-status" :class="{ 'correct': item.correct, 'incorrect': !item.correct }">
+              {{ item.correct ? '✓ Correct' : '✗ Incorrect' }}
+            </span>
+          </div>
+          
+          <div class="result-question-prompt">
+            <strong>Question:</strong>
+            <div v-html="renderMarkdown(getQuestionPrompt(item.question_id))"></div>
+          </div>
+          
+          <div class="result-user-answer">
+            <strong>Your Answer:</strong>
+            <div class="answer-display">{{ formatAnswer(item.question_id, item.user_answer) || '(not answered)' }}</div>
+          </div>
+          
+          <div v-if="item.correct_answer != null" class="result-correct-answer">
+            <strong>Correct Answer:</strong>
+            <div class="answer-display">{{ formatAnswer(item.question_id, item.correct_answer) }}</div>
+          </div>
+          
+          <div v-if="!item.correct && getChoiceFeedback(item.question_id, item.user_answer)" class="result-hint">
+            <div class="choice-feedback">
+              <strong>Hint:</strong>
+              <div v-html="renderMarkdown(getChoiceFeedback(item.question_id, item.user_answer))"></div>
+            </div>
+          </div>
+          
+          <div v-if="item.explanation" class="result-explanation">
+            <strong>Explanation:</strong>
+            <div v-html="renderMarkdown(item.explanation)"></div>
+          </div>
         </div>
       </div>
       
@@ -70,6 +116,7 @@
           :question="currentQuestion"
           :show-answers="false"
           :initial-answer="answers.get(currentQuestionIndex)"
+          :chapter-title="currentQuestion.placement_chapter_title"
           @answer="handleAnswerWithAutoNext(currentQuestionIndex, $event)"
         />
         <div v-else class="loading">
@@ -117,6 +164,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
+import { marked } from 'marked'
 import { apiClient } from '../api/client'
 import GrammarQuestion from '../components/GrammarQuestion.vue'
 import ConfirmModal from '../components/ConfirmModal.vue'
@@ -215,6 +263,53 @@ const loadSectionNames = async () => {
 
 const getSectionName = (sectionId: string): string => {
   return sectionNames.value[sectionId] || sectionId
+}
+
+const getQuestionById = (questionId: string): any => {
+  return questions.value.find((q: any) => q.id === questionId) || null
+}
+
+const getQuestionPrompt = (questionId: string): string => {
+  const q = getQuestionById(questionId)
+  return q?.prompt || ''
+}
+
+const formatAnswer = (questionId: string, answer: any): string => {
+  if (answer === undefined || answer === null) return ''
+  const q = getQuestionById(questionId)
+  if (!q) return String(answer)
+  const t = q.type
+  if (t === 'mcq_single' || t === 'true_false' || t === 'error_spotting') {
+    if (q.choices?.length) {
+      const c = q.choices.find((x: any) => x.id === answer)
+      if (c) return c.text
+    }
+    if (t === 'true_false') return answer === 'true' ? 'Да' : 'Нет'
+    return String(answer)
+  }
+  if (t === 'mcq_multi' && Array.isArray(answer)) {
+    if (q.choices?.length) {
+      return answer.map((id: string) => q.choices.find((x: any) => x.id === id)?.text || id).filter(Boolean).join(', ')
+    }
+    return answer.join(', ')
+  }
+  return String(answer)
+}
+
+const getChoiceFeedback = (questionId: string, userAnswer: any): string => {
+  const q = getQuestionById(questionId)
+  if (!q?.choices || (q.type !== 'mcq_single' && q.type !== 'error_spotting')) return ''
+  const c = q.choices.find((x: any) => x.id === userAnswer)
+  return c?.feedback || ''
+}
+
+const renderMarkdown = (text: string): string => {
+  if (!text) return ''
+  try {
+    return marked.parse(text) as string
+  } catch {
+    return text
+  }
 }
 
 const handleAnswer = (index: number, answer: any) => {
@@ -426,6 +521,17 @@ onMounted(() => {
   color: var(--text-secondary);
 }
 
+.level-value {
+  font-size: 42px;
+  letter-spacing: 0.02em;
+}
+
+.test-score-secondary {
+  margin-top: 8px;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
 .results-summary {
   text-align: center;
   margin-bottom: 32px;
@@ -470,6 +576,133 @@ onMounted(() => {
   background: var(--bg-secondary);
   border-radius: 8px;
   color: var(--text-secondary);
+}
+
+.results-details {
+  margin-bottom: 32px;
+}
+
+.results-details h2 {
+  margin-bottom: 20px;
+}
+
+.result-item {
+  padding: 16px;
+  margin-bottom: 16px;
+  background: var(--card-bg);
+  border: 2px solid var(--border-primary);
+  border-radius: 8px;
+}
+
+.result-item.correct {
+  border-color: var(--color-success);
+  background: rgba(40, 167, 69, 0.05);
+}
+
+.result-item.incorrect {
+  border-color: var(--color-danger);
+  background: rgba(220, 53, 69, 0.05);
+}
+
+.result-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.result-number {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.result-chapter {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.result-status {
+  font-weight: 600;
+}
+
+.result-status.correct {
+  color: var(--color-success);
+}
+
+.result-status.incorrect {
+  color: var(--color-danger);
+}
+
+.result-question-prompt {
+  margin-bottom: 16px;
+  padding: 12px;
+  background: var(--bg-tertiary);
+  border-radius: 6px;
+}
+
+.result-question-prompt strong {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+}
+
+.result-user-answer {
+  margin-bottom: 12px;
+  padding: 12px;
+  background: var(--bg-secondary);
+  border-radius: 6px;
+  border-left: 3px solid var(--color-primary);
+}
+
+.result-user-answer strong {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.result-correct-answer {
+  margin-bottom: 12px;
+  padding: 12px;
+  background: rgba(40, 167, 69, 0.1);
+  border-radius: 6px;
+  border-left: 3px solid var(--color-success);
+}
+
+.result-correct-answer strong {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--color-success);
+}
+
+.result-hint {
+  margin-bottom: 12px;
+}
+
+.result-hint .choice-feedback {
+  padding: 12px;
+  background: rgba(255, 193, 7, 0.1);
+  border-radius: 6px;
+  border-left: 3px solid rgba(255, 193, 7, 0.5);
+}
+
+.result-explanation {
+  padding-top: 12px;
+  border-top: 1px solid var(--border-primary);
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.result-explanation strong {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+}
+
+.answer-display {
+  color: var(--text-primary);
+  font-weight: 500;
+  line-height: 1.6;
 }
 
 .results-actions {

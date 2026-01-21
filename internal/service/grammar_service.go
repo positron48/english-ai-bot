@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"math/rand"
+	"sort"
 	"time"
 
 	"tgbot-skeleton/internal/repository"
@@ -943,8 +944,9 @@ func (s *GrammarService) GeneratePlacementTest(ctx context.Context) (*TestQuesti
 					continue
 				}
 				if id, ok := qMap["id"].(string); ok {
-					// Store chapter_id with question for tracking
+					// Store chapter_id and chapter title with question for display
 					qMap["placement_chapter_id"] = chapterID
+					qMap["placement_chapter_title"] = chapter.Title
 					questionMap[id] = qMap
 					allQuestions = append(allQuestions, qMap)
 				}
@@ -989,7 +991,10 @@ func (s *GrammarService) GeneratePlacementTest(ctx context.Context) (*TestQuesti
 	}, nil
 }
 
-// SubmitPlacementTest submits placement test answers and determines user level
+// SubmitPlacementTest submits placement test answers and determines user level.
+// Level is determined by evaluating correctness from first section to last: we open
+// sections up to the point where the user answered confidently (>=50% on that section's
+// questions). The level is the CEFR level of the last opened section.
 func (s *GrammarService) SubmitPlacementTest(ctx context.Context, userID int64, answers map[string]interface{}) (*PlacementTestResult, error) {
 	sectionsData, err := s.ContentRepo.GetSections()
 	if err != nil {
@@ -1001,12 +1006,13 @@ func (s *GrammarService) SubmitPlacementTest(ctx context.Context, userID int64, 
 		return nil, fmt.Errorf("failed to get published items: %w", err)
 	}
 
-	// Build question map with correct answers from all published chapters
-	// Also track which chapter each question belongs to
+	// Build question map with correct answers; track chapter and section per question
 	questionMap := make(map[string]map[string]interface{})
-	questionChapterMap := make(map[string]string) // question_id -> chapter_id
+	questionSectionMap := make(map[string]string)   // question_id -> section_id
+	questionChapterTitleMap := make(map[string]string) // question_id -> chapter title
 
-	for _, section := range sectionsData.Sections {
+	for i := range sectionsData.Sections {
+		section := &sectionsData.Sections[i]
 		for _, chapterID := range section.ChapterIDs {
 			chapterItem, exists := publishedItems[chapterID]
 			if !exists || !chapterItem.IsPublished {
@@ -1030,22 +1036,32 @@ func (s *GrammarService) SubmitPlacementTest(ctx context.Context, userID int64, 
 				}
 				if id, ok := qMap["id"].(string); ok {
 					questionMap[id] = qMap
-					questionChapterMap[id] = chapterID
+					questionSectionMap[id] = section.SectionID
+					questionChapterTitleMap[id] = chapter.Title
 				}
 			}
 		}
 	}
 
-	// Check answers and calculate score per chapter
-	chapterScores := make(map[string]struct {
-		correct int
-		total   int
-	})
+	// Score per section: from first to last, we open until the first section where user scored <50%
+	sectionScores := make(map[string]struct{ correct, total int })
 
 	totalCorrect := 0
 	totalQuestions := 0
 
-	for questionID, userAnswer := range answers {
+	// Collect question IDs from answers for deterministic result order
+	answerQuestionIDs := make([]string, 0, len(answers))
+	for qid := range answers {
+		answerQuestionIDs = append(answerQuestionIDs, qid)
+	}
+	// Sort for stable ordering of results
+	sort.Strings(answerQuestionIDs)
+
+	// Build per-question results and section scores
+	results := make([]interface{}, 0, len(answers))
+
+	for _, questionID := range answerQuestionIDs {
+		userAnswer := answers[questionID]
 		q, exists := questionMap[questionID]
 		if !exists {
 			continue
@@ -1059,74 +1075,61 @@ func (s *GrammarService) SubmitPlacementTest(ctx context.Context, userID int64, 
 			totalCorrect++
 		}
 
-		// Track score per chapter using questionChapterMap
-		chapterID, exists := questionChapterMap[questionID]
-		if exists {
-			if _, exists := chapterScores[chapterID]; !exists {
-				chapterScores[chapterID] = struct {
-					correct int
-					total   int
-				}{0, 0}
-			}
-			score := chapterScores[chapterID]
-			score.total++
+		sectionID := questionSectionMap[questionID]
+		if sectionID != "" {
+			sc := sectionScores[sectionID]
+			sc.total++
 			if isCorrect {
-				score.correct++
+				sc.correct++
 			}
-			chapterScores[chapterID] = score
+			sectionScores[sectionID] = sc
 		}
+
+		explanation, _ := q["explanation"].(string)
+		chapterTitle := questionChapterTitleMap[questionID]
+		results = append(results, map[string]interface{}{
+			"question_id":             questionID,
+			"correct":                 isCorrect,
+			"user_answer":             userAnswer,
+			"correct_answer":          correctAnswer,
+			"explanation":             explanation,
+			"placement_chapter_title": chapterTitle,
+		})
 	}
 
-	// Calculate overall score
 	overallScore := 0
 	if totalQuestions > 0 {
 		overallScore = (totalCorrect * 100) / totalQuestions
 	}
 
-	// Determine which sections to open based on chapter performance
-	// A chapter is considered "passed" if user got >= 50% correct
-	openedSections := make(map[string]bool)
+	// Open sections in order: open while section has >=1 question and >=50% correct; stop at first fail
+	openedSectionsList := make([]string, 0)
+	var level string
 
-	// Process sections in order
-	for _, section := range sectionsData.Sections {
-		// Check if all tested chapters in this section are "passed"
-		allTestedChaptersPassed := true
-		testedChaptersCount := 0
-
-		for _, chapterID := range section.ChapterIDs {
-			chapterItem, exists := publishedItems[chapterID]
-			if !exists || !chapterItem.IsPublished {
-				continue
-			}
-
-			// Only check chapters that were actually in the test
-			if score, exists := chapterScores[chapterID]; exists {
-				testedChaptersCount++
-				chapterScore := 0
-				if score.total > 0 {
-					chapterScore = (score.correct * 100) / score.total
-				}
-				if chapterScore < 50 {
-					allTestedChaptersPassed = false
-					break
-				}
-			}
-			// If chapter wasn't in test, we don't count it (it's OK to skip)
+	for i := range sectionsData.Sections {
+		sec := &sectionsData.Sections[i]
+		sc := sectionScores[sec.SectionID]
+		if sc.total < 1 {
+			// No questions from this section in the test — skip, do not open, do not stop
+			continue
 		}
-
-		// Open section if all tested chapters passed and at least one chapter was tested
-		if allTestedChaptersPassed && testedChaptersCount > 0 {
-			openedSections[section.SectionID] = true
+		pct := (sc.correct * 100) / sc.total
+		if pct >= 50 {
+			openedSectionsList = append(openedSectionsList, sec.SectionID)
+			if sec.Level != "" {
+				level = sec.Level
+			}
 		} else {
-			// Stop at first section that's not fully passed
 			break
 		}
 	}
 
-	// Convert to slice
-	openedSectionsList := make([]string, 0, len(openedSections))
-	for sectionID := range openedSections {
-		openedSectionsList = append(openedSectionsList, sectionID)
+	if level == "" {
+		if len(openedSectionsList) > 0 {
+			level = "—"
+		} else {
+			level = "Below A1"
+		}
 	}
 
 	// Save result (only if better than existing)
@@ -1135,9 +1138,8 @@ func (s *GrammarService) SubmitPlacementTest(ctx context.Context, userID int64, 
 		s.logger.Error("failed to save placement test result", zap.Error(err))
 	}
 
-	// Save attempt record
+	resultsJSON, _ := json.Marshal(results)
 	answersJSON, _ := json.Marshal(answers)
-	resultsJSON, _ := json.Marshal([]interface{}{}) // Empty results for placement test
 
 	attempt := &repository.TestAttempt{
 		UserID:         userID,
@@ -1162,13 +1164,18 @@ func (s *GrammarService) SubmitPlacementTest(ctx context.Context, userID int64, 
 		TotalQuestions: totalQuestions,
 		Correct:        totalCorrect,
 		OpenedSections: openedSectionsList,
+		Level:          level,
+		Results:        results,
 	}, nil
 }
 
+
 // PlacementTestResult represents placement test submission result
 type PlacementTestResult struct {
-	Score          int      `json:"score"`
-	TotalQuestions int     `json:"total_questions"`
-	Correct        int      `json:"correct"`
-	OpenedSections []string `json:"opened_sections"`
+	Score          int           `json:"score"`
+	TotalQuestions int           `json:"total_questions"`
+	Correct        int           `json:"correct"`
+	OpenedSections []string      `json:"opened_sections"`
+	Level          string        `json:"level"`   // CEFR level of last opened section, or "Below A1" / "—"
+	Results        []interface{} `json:"results"` // per-question: question_id, correct, user_answer, correct_answer, explanation, placement_chapter_title
 }

@@ -3,6 +3,7 @@ package database
 import (
 	"database/sql"
 	"fmt"
+	"strings"
 
 	"go.uber.org/zap"
 	_ "modernc.org/sqlite"
@@ -421,6 +422,11 @@ func (db *DB) migrate() error {
 	// Migrate word_set_categories table to add is_published if it doesn't exist
 	if err := db.migrateWordSetCategoriesIsPublished(); err != nil {
 		return fmt.Errorf("failed to migrate word_set_categories is_published: %w", err)
+	}
+
+	// grammar_test_attempts: allow scope_type='placement' (add to CHECK if missing)
+	if err := db.migrateGrammarTestAttemptsScopeType(); err != nil {
+		return fmt.Errorf("failed to migrate grammar_test_attempts scope_type: %w", err)
 	}
 
 	db.logger.Info("database migration completed successfully")
@@ -993,5 +999,85 @@ func (db *DB) migrateWordSetCategoriesIsPublished() error {
 		db.logger.Info("added is_published column to word_set_categories table and set all existing categories as published")
 	}
 
+	return nil
+}
+
+// migrateGrammarTestAttemptsScopeType ensures scope_type CHECK allows 'placement'.
+// Existing DBs may have been created with only ('chapter','category'); SQLite cannot
+// ALTER CHECK, so we recreate the table.
+func (db *DB) migrateGrammarTestAttemptsScopeType() error {
+	var tableExists int
+	err := db.conn.QueryRow(`
+		SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='grammar_test_attempts'
+	`).Scan(&tableExists)
+	if err != nil {
+		return fmt.Errorf("failed to check table existence: %w", err)
+	}
+	if tableExists == 0 {
+		return nil
+	}
+
+	var createSQL string
+	err = db.conn.QueryRow(`
+		SELECT sql FROM sqlite_master WHERE type='table' AND name='grammar_test_attempts'
+	`).Scan(&createSQL)
+	if err != nil || createSQL == "" {
+		return fmt.Errorf("failed to get grammar_test_attempts definition: %w", err)
+	}
+	if strings.Contains(createSQL, "'placement'") {
+		return nil
+	}
+
+	// Recreate table with scope_type IN ('chapter','category','placement')
+	tx, err := db.conn.Begin()
+	if err != nil {
+		return fmt.Errorf("failed to begin transaction: %w", err)
+	}
+	defer tx.Rollback()
+
+	_, err = tx.Exec(`
+		CREATE TABLE grammar_test_attempts_new (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			user_id INTEGER NOT NULL,
+			scope_type TEXT NOT NULL CHECK(scope_type IN ('chapter', 'category', 'placement')),
+			scope_id TEXT NOT NULL,
+			started_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+			finished_at DATETIME,
+			score INTEGER NOT NULL CHECK(score >= 0 AND score <= 100),
+			passed INTEGER NOT NULL DEFAULT 0 CHECK(passed IN (0, 1)),
+			total_questions INTEGER NOT NULL,
+			answers_json TEXT,
+			results_json TEXT,
+			course_version TEXT,
+			FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+		)
+	`)
+	if err != nil {
+		return fmt.Errorf("failed to create grammar_test_attempts_new: %w", err)
+	}
+	_, err = tx.Exec(`
+		INSERT INTO grammar_test_attempts_new
+		(id, user_id, scope_type, scope_id, started_at, finished_at, score, passed, total_questions, answers_json, results_json, course_version)
+		SELECT id, user_id, scope_type, scope_id, started_at, finished_at, score, passed, total_questions, answers_json, results_json, course_version
+		FROM grammar_test_attempts
+	`)
+	if err != nil {
+		return fmt.Errorf("failed to copy grammar_test_attempts: %w", err)
+	}
+	_, err = tx.Exec(`DROP TABLE grammar_test_attempts`)
+	if err != nil {
+		return fmt.Errorf("failed to drop grammar_test_attempts: %w", err)
+	}
+	_, err = tx.Exec(`ALTER TABLE grammar_test_attempts_new RENAME TO grammar_test_attempts`)
+	if err != nil {
+		return fmt.Errorf("failed to rename grammar_test_attempts_new: %w", err)
+	}
+	_, _ = tx.Exec(`CREATE INDEX IF NOT EXISTS idx_grammar_test_attempts_user_id ON grammar_test_attempts(user_id)`)
+	_, _ = tx.Exec(`CREATE INDEX IF NOT EXISTS idx_grammar_test_attempts_scope ON grammar_test_attempts(scope_type, scope_id)`)
+
+	if err := tx.Commit(); err != nil {
+		return fmt.Errorf("failed to commit: %w", err)
+	}
+	db.logger.Info("migrated grammar_test_attempts scope_type to include 'placement'")
 	return nil
 }

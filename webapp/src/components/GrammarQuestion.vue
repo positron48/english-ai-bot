@@ -1,5 +1,6 @@
 <template>
   <div class="grammar-question" :class="{ 'answered': answered, 'correct': isCorrect, 'incorrect': !isCorrect && answered }">
+    <div v-if="chapterTitle" class="question-chapter">{{ chapterTitle }}</div>
     <div class="question-prompt" v-html="renderMarkdown(question.prompt)"></div>
     
     <!-- MCQ Single -->
@@ -208,6 +209,7 @@ const props = defineProps<{
   question: Question
   showAnswers?: boolean
   initialAnswer?: any
+  chapterTitle?: string
 }>()
 
 const emit = defineEmits<{
@@ -586,6 +588,13 @@ watch(() => props.showAnswers, (newVal) => {
   border-radius: 8px;
   padding: 20px;
   margin-bottom: 24px;
+}
+
+.question-chapter {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+  font-weight: 500;
 }
 
 .question-prompt {
