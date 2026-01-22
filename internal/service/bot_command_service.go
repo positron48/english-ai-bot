@@ -298,11 +298,12 @@ func (s *BotCommandService) handleNotification(telegramID int64, chatID int64, a
 
 	// Set notification frequency
 	argsLower := strings.ToLower(args)
-	if argsLower == "daily" {
+	switch argsLower {
+	case "daily":
 		settings.NotificationFrequency = "daily"
-	} else if argsLower == "never" {
+	case "never":
 		settings.NotificationFrequency = "never"
-	} else {
+	default:
 		// Try to parse as number
 		days, err := strconv.Atoi(args)
 		if err != nil || days < 1 {
@@ -334,11 +335,12 @@ func (s *BotCommandService) handleNotification(telegramID int64, chatID int64, a
 
 	// Send confirmation
 	var msgText string
-	if settings.NotificationFrequency == "daily" {
+	switch settings.NotificationFrequency {
+	case "daily":
 		msgText = "✅ Периодичность уведомлений установлена: ежедневно"
-	} else if settings.NotificationFrequency == "never" {
+	case "never":
 		msgText = "✅ Уведомления отключены"
-	} else {
+	default:
 		days, _ := strconv.Atoi(settings.NotificationFrequency)
 		dayWord := pluralizeDays(days)
 		msgText = fmt.Sprintf("✅ Периодичность уведомлений установлена: каждые %d %s", days, dayWord)
