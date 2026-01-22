@@ -165,6 +165,9 @@
             <span class="progress-text">
               {{ categoryProgressPercentage(category) }}% complete
             </span>
+            <span v-if="category.category_test_score !== undefined && category.category_test_score !== null" class="category-test-score-badge">
+              Category Test: {{ category.category_test_score }}%
+            </span>
           </div>
         </router-link>
         <div v-else class="category-link locked-link">
@@ -182,6 +185,9 @@
             </div>
             <span class="progress-text">
               {{ categoryProgressPercentage(category) }}% complete
+            </span>
+            <span v-if="category.category_test_score !== undefined && category.category_test_score !== null" class="category-test-score-badge">
+              Category Test: {{ category.category_test_score }}%
             </span>
           </div>
           <div class="locked-overlay">
@@ -212,6 +218,7 @@ interface Category {
   total_chapters: number
   progress_percentage?: number
   can_access?: boolean
+  category_test_score?: number
 }
 
 const categories = ref<Category[]>([])
@@ -660,6 +667,17 @@ onMounted(() => {
 .progress-text {
   font-size: 12px;
   color: var(--text-secondary);
+}
+
+.category-test-score-badge {
+  display: block;
+  margin-top: 8px;
+  padding: 4px 8px;
+  background: var(--color-primary-light, rgba(59, 130, 246, 0.1));
+  color: var(--color-primary);
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
 }
 
 @media (max-width: 768px) {

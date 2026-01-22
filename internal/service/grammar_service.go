@@ -160,12 +160,18 @@ func (s *GrammarService) GetPublishedChapters(ctx context.Context, sectionID str
 	}
 
 	sectionAccess, _ := s.CanAccessSection(ctx, userID, sectionID)
+	// Check if section was opened by placement test (in this case, all chapters are accessible)
+	isOpenedByPlacement, _ := s.isSectionOpenedByPlacement(ctx, userID, sectionID)
+	
 	for i := range result {
-		if sectionAccess {
+		if isOpenedByPlacement {
+			// If opened by placement test, all chapters are accessible
 			result[i].CanAccess = true
 		} else if i == 0 {
-			result[i].CanAccess = true
+			// First chapter is always accessible if section is accessible
+			result[i].CanAccess = sectionAccess
 		} else {
+			// Other chapters are accessible only if previous chapter was passed
 			result[i].CanAccess = result[i-1].Progress.Passed
 		}
 	}
@@ -363,6 +369,199 @@ func (s *GrammarService) GenerateChapterTest(ctx context.Context, chapterID stri
 	}, nil
 }
 
+// GenerateCategoryTest generates a test from all chapters in a category
+// It selects at least 2 questions from each chapter, then fills up to 20 questions randomly
+func (s *GrammarService) GenerateCategoryTest(ctx context.Context, sectionID string) (*TestQuestions, error) {
+	// Get sections to find the section
+	sectionsData, err := s.ContentRepo.GetSections()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get sections: %w", err)
+	}
+
+	// Find the section
+	var section *repository.Section
+	for i := range sectionsData.Sections {
+		if sectionsData.Sections[i].SectionID == sectionID {
+			section = &sectionsData.Sections[i]
+			break
+		}
+	}
+
+	if section == nil {
+		return nil, fmt.Errorf("section not found: %s", sectionID)
+	}
+
+	// Get published items to filter chapters
+	publishedItems, err := s.PublishRepo.GetPublishedItemsByType("chapter")
+	if err != nil {
+		return nil, fmt.Errorf("failed to get published items: %w", err)
+	}
+
+	// Collect questions from all published chapters in the section
+	type chapterQuestions struct {
+		chapterID string
+		questions []interface{}
+		questionMap map[string]interface{}
+	}
+
+	var allChapterQuestions []chapterQuestions
+	minQuestionsPerChapter := 2
+	targetTotalQuestions := 20
+
+	// Collect questions from each chapter
+	for _, chapterID := range section.ChapterIDs {
+		chapterItem, exists := publishedItems[chapterID]
+		if !exists || !chapterItem.IsPublished {
+			continue // Skip unpublished chapters
+		}
+
+		chapter, err := s.ContentRepo.GetChapter(chapterID)
+		if err != nil {
+			s.logger.Warn("failed to get chapter for category test", zap.String("chapter_id", chapterID), zap.Error(err))
+			continue
+		}
+
+		// Get question bank
+		questionBank, ok := chapter.QuestionBank["questions"].([]interface{})
+		if !ok || len(questionBank) == 0 {
+			continue // Skip chapters without questions
+		}
+
+		// Get pool_question_ids from chapter_test if available
+		var poolIDs []interface{}
+		if chapterTest, ok := chapter.ChapterTest["pool_question_ids"].([]interface{}); ok {
+			poolIDs = chapterTest
+		} else {
+			// Fallback: use all questions from question bank
+			for _, q := range questionBank {
+				if qMap, ok := q.(map[string]interface{}); ok {
+					if id, ok := qMap["id"].(string); ok {
+						poolIDs = append(poolIDs, id)
+					}
+				}
+			}
+		}
+
+		// Build question map for this chapter
+		questionMap := make(map[string]interface{})
+		for _, q := range questionBank {
+			qMap, ok := q.(map[string]interface{})
+			if !ok {
+				continue
+			}
+			if id, ok := qMap["id"].(string); ok {
+				questionMap[id] = q
+			}
+		}
+
+		// Filter poolIDs to only include questions that exist in questionMap
+		validPoolIDs := make([]interface{}, 0)
+		for _, idInterface := range poolIDs {
+			id, ok := idInterface.(string)
+			if !ok {
+				continue
+			}
+			if _, exists := questionMap[id]; exists {
+				validPoolIDs = append(validPoolIDs, id)
+			}
+		}
+
+		if len(validPoolIDs) > 0 {
+			allChapterQuestions = append(allChapterQuestions, chapterQuestions{
+				chapterID:   chapterID,
+				questions:  validPoolIDs,
+				questionMap: questionMap,
+			})
+		}
+	}
+
+	if len(allChapterQuestions) == 0 {
+		return nil, fmt.Errorf("no questions available in section: %s", sectionID)
+	}
+
+	// Select questions: at least minQuestionsPerChapter from each chapter, then fill up to targetTotalQuestions
+	selectedQuestions := make([]interface{}, 0)
+	selectedIDs := make(map[string]bool)
+
+	// First pass: select minQuestionsPerChapter from each chapter
+	for _, cq := range allChapterQuestions {
+		// Shuffle questions for this chapter
+		shuffled := make([]interface{}, len(cq.questions))
+		copy(shuffled, cq.questions)
+		rand.Shuffle(len(shuffled), func(i, j int) {
+			shuffled[i], shuffled[j] = shuffled[j], shuffled[i]
+		})
+
+		// Select up to minQuestionsPerChapter questions
+		count := 0
+		for _, idInterface := range shuffled {
+			if count >= minQuestionsPerChapter || len(selectedQuestions) >= targetTotalQuestions {
+				break
+			}
+			id, ok := idInterface.(string)
+			if !ok {
+				continue
+			}
+			if !selectedIDs[id] {
+				if q, exists := cq.questionMap[id]; exists {
+					selectedQuestions = append(selectedQuestions, q)
+					selectedIDs[id] = true
+					count++
+				}
+			}
+		}
+	}
+
+	// Second pass: fill remaining slots randomly from all chapters
+	if len(selectedQuestions) < targetTotalQuestions {
+		// Collect all remaining questions
+		allRemaining := make([]interface{}, 0)
+		for _, cq := range allChapterQuestions {
+			for _, idInterface := range cq.questions {
+				id, ok := idInterface.(string)
+				if !ok {
+					continue
+				}
+				if !selectedIDs[id] {
+					if q, exists := cq.questionMap[id]; exists {
+						allRemaining = append(allRemaining, q)
+					}
+				}
+			}
+		}
+
+		// Shuffle and select remaining
+		rand.Shuffle(len(allRemaining), func(i, j int) {
+			allRemaining[i], allRemaining[j] = allRemaining[j], allRemaining[i]
+		})
+
+		for len(selectedQuestions) < targetTotalQuestions && len(allRemaining) > 0 {
+			selectedQuestions = append(selectedQuestions, allRemaining[0])
+			if qMap, ok := allRemaining[0].(map[string]interface{}); ok {
+				if id, ok := qMap["id"].(string); ok {
+					selectedIDs[id] = true
+				}
+			}
+			allRemaining = allRemaining[1:]
+		}
+	}
+
+	// Remove correct_answer from selected questions (except for reorder type)
+	for _, q := range selectedQuestions {
+		if qMap, ok := q.(map[string]interface{}); ok {
+			questionType, _ := qMap["type"].(string)
+			if questionType != "reorder" {
+				delete(qMap, "correct_answer")
+			}
+		}
+	}
+
+	return &TestQuestions{
+		Questions: selectedQuestions,
+		Total:     len(selectedQuestions),
+	}, nil
+}
+
 // TestQuestions represents test questions
 type TestQuestions struct {
 	Questions []interface{} `json:"questions"`
@@ -485,43 +684,122 @@ func (s *GrammarService) selectRandom(poolIDs []interface{}, questionMap map[str
 }
 
 // SubmitTest checks answers and saves attempt
-func (s *GrammarService) SubmitTest(ctx context.Context, userID int64, scopeType, scopeID string, answers map[string]interface{}) (*TestResult, error) {
-	var chapter *repository.Chapter
+func (s *GrammarService) SubmitTest(ctx context.Context, userID int64, scopeType, scopeID string, answers map[string]interface{}, questionIDs []string) (*TestResult, error) {
+	var questionMap map[string]map[string]interface{}
 	var err error
 
-	if scopeType == "chapter" {
-		chapter, err = s.ContentRepo.GetChapter(scopeID)
+	switch scopeType {
+	case "chapter":
+		chapter, err := s.ContentRepo.GetChapter(scopeID)
 		if err != nil {
 			return nil, fmt.Errorf("failed to get chapter: %w", err)
 		}
-	} else {
-		return nil, fmt.Errorf("category tests not yet implemented")
-	}
 
-	// Get question bank
-	questionBank, ok := chapter.QuestionBank["questions"].([]interface{})
-	if !ok {
-		return nil, fmt.Errorf("invalid question bank")
-	}
-
-	// Build question map with correct answers
-	questionMap := make(map[string]map[string]interface{})
-	for _, q := range questionBank {
-		qMap, ok := q.(map[string]interface{})
+		// Get question bank
+		questionBank, ok := chapter.QuestionBank["questions"].([]interface{})
 		if !ok {
-			continue
+			return nil, fmt.Errorf("invalid question bank")
 		}
-		if id, ok := qMap["id"].(string); ok {
-			questionMap[id] = qMap
+
+		// Build question map with correct answers
+		questionMap = make(map[string]map[string]interface{})
+		for _, q := range questionBank {
+			qMap, ok := q.(map[string]interface{})
+			if !ok {
+				continue
+			}
+			if id, ok := qMap["id"].(string); ok {
+				questionMap[id] = qMap
+			}
 		}
+	case "category":
+		// For category tests, we need to get questions from all chapters in the section
+		sectionsData, err := s.ContentRepo.GetSections()
+		if err != nil {
+			return nil, fmt.Errorf("failed to get sections: %w", err)
+		}
+
+		// Find the section
+		var section *repository.Section
+		for i := range sectionsData.Sections {
+			if sectionsData.Sections[i].SectionID == scopeID {
+				section = &sectionsData.Sections[i]
+				break
+			}
+		}
+
+		if section == nil {
+			return nil, fmt.Errorf("section not found: %s", scopeID)
+		}
+
+		// Get published items to filter chapters
+		publishedItems, err := s.PublishRepo.GetPublishedItemsByType("chapter")
+		if err != nil {
+			return nil, fmt.Errorf("failed to get published items: %w", err)
+		}
+
+		// Build question map from all chapters in the section
+		questionMap = make(map[string]map[string]interface{})
+		for _, chapterID := range section.ChapterIDs {
+			chapterItem, exists := publishedItems[chapterID]
+			if !exists || !chapterItem.IsPublished {
+				continue // Skip unpublished chapters
+			}
+
+			chapter, err := s.ContentRepo.GetChapter(chapterID)
+			if err != nil {
+				s.logger.Warn("failed to get chapter for category test submission", zap.String("chapter_id", chapterID), zap.Error(err))
+				continue
+			}
+
+			// Get question bank
+			questionBank, ok := chapter.QuestionBank["questions"].([]interface{})
+			if !ok {
+				continue
+			}
+
+			// Add questions to map
+			for _, q := range questionBank {
+				qMap, ok := q.(map[string]interface{})
+				if !ok {
+					continue
+				}
+				if id, ok := qMap["id"].(string); ok {
+					questionMap[id] = qMap
+				}
+			}
+		}
+
+		if len(questionMap) == 0 {
+			return nil, fmt.Errorf("no questions found in section: %s", scopeID)
+		}
+	default:
+		return nil, fmt.Errorf("unsupported scope type: %s", scopeType)
 	}
 
 	// Check answers
+	// Use question order from frontend if provided, otherwise fall back to map iteration order
+	questionOrder := questionIDs
+	if len(questionOrder) == 0 {
+		// Fallback: collect question IDs from answers map
+		questionOrder = make([]string, 0, len(answers))
+		for questionID := range answers {
+			questionOrder = append(questionOrder, questionID)
+		}
+	}
+	
+	// Process answers in the order they appear in the test
 	results := make([]interface{}, 0)
 	correct := 0
 	total := 0
-
-	for questionID, userAnswer := range answers {
+	
+	// Process questions in the order from test
+	for _, questionID := range questionOrder {
+		userAnswer, exists := answers[questionID]
+		if !exists {
+			continue // Skip if no answer provided
+		}
+		
 		q, exists := questionMap[questionID]
 		if !exists {
 			continue
@@ -550,8 +828,62 @@ func (s *GrammarService) SubmitTest(ctx context.Context, userID int64, scopeType
 			correct++
 		}
 
+		// Include prompt in results to avoid confusion when displaying
+		prompt, _ := q["prompt"].(string)
 		results = append(results, map[string]interface{}{
 			"question_id":    questionID,
+			"prompt":         prompt,
+			"correct":        isCorrect,
+			"user_answer":    userAnswer,
+			"correct_answer": resultCorrect,
+			"explanation":    q["explanation"],
+		})
+	}
+	
+	// Also process any answers that weren't in the question order (shouldn't happen, but just in case)
+	processedIDs := make(map[string]bool)
+	for _, id := range questionOrder {
+		processedIDs[id] = true
+	}
+	
+	for questionID, userAnswer := range answers {
+		if processedIDs[questionID] {
+			continue // Already processed
+		}
+		
+		q, exists := questionMap[questionID]
+		if !exists {
+			continue
+		}
+
+		total++
+		correctAnswer := q["correct_answer"]
+		qType, _ := q["type"].(string)
+		var isCorrect bool
+		var resultCorrect = correctAnswer
+
+		if qType == "true_false" {
+			uNorm, okU := normalizeTrueFalseValue(userAnswer)
+			cNorm, okC := normalizeTrueFalseValue(correctAnswer)
+			if okU && okC {
+				isCorrect = (uNorm == cNorm)
+				resultCorrect = cNorm
+			} else {
+				isCorrect = s.compareAnswers(userAnswer, correctAnswer)
+			}
+		} else {
+			isCorrect = s.compareAnswers(userAnswer, correctAnswer)
+		}
+
+		if isCorrect {
+			correct++
+		}
+
+		// Include prompt in results to avoid confusion when displaying
+		prompt, _ := q["prompt"].(string)
+		results = append(results, map[string]interface{}{
+			"question_id":    questionID,
+			"prompt":         prompt,
 			"correct":        isCorrect,
 			"user_answer":    userAnswer,
 			"correct_answer": resultCorrect,
@@ -588,9 +920,16 @@ func (s *GrammarService) SubmitTest(ctx context.Context, userID int64, scopeType
 	}
 
 	// Update progress for chapter tests
-	if scopeType == "chapter" {
+	switch scopeType {
+	case "chapter":
 		if err := s.AttemptRepo.UpdateProgress(userID, scopeID, score, passed); err != nil {
 			s.logger.Error("failed to update progress", zap.Error(err))
+		}
+	case "category":
+		// For category tests, we need to save category test progress
+		// This will be used to unlock the next category
+		if err := s.AttemptRepo.UpdateCategoryTestProgress(userID, scopeID, score, passed); err != nil {
+			s.logger.Error("failed to update category test progress", zap.Error(err))
 		}
 	}
 
@@ -705,9 +1044,16 @@ func (s *GrammarService) CanAccessChapter(ctx context.Context, userID int64, cha
 		return false, fmt.Errorf("section not found for chapter: %s", chapterID)
 	}
 
-	// If user has access to the whole section (e.g. via placement test), any chapter is accessible
-	if canSection, _ := s.CanAccessSection(ctx, userID, section.SectionID); canSection {
+	// Check if section was opened by placement test (in this case, all chapters are accessible)
+	isOpenedByPlacement, _ := s.isSectionOpenedByPlacement(ctx, userID, section.SectionID)
+	if isOpenedByPlacement {
 		return true, nil
+	}
+	
+	// If section is not accessible, first chapter is not accessible either
+	canSection, _ := s.CanAccessSection(ctx, userID, section.SectionID)
+	if !canSection {
+		return false, nil
 	}
 
 	// Find the index of this chapter in the section
@@ -739,10 +1085,64 @@ func (s *GrammarService) CanAccessChapter(ctx context.Context, userID int64, cha
 	return progress.Passed, nil
 }
 
+// isSectionOpenedByPlacement checks if a section was opened by placement test
+// This is used to determine if all chapters should be accessible (placement) or only first chapter (category test)
+func (s *GrammarService) isSectionOpenedByPlacement(ctx context.Context, userID int64, sectionID string) (bool, error) {
+	placementResult, _ := s.AttemptRepo.GetPlacementTestResult(userID)
+	if placementResult == nil {
+		return false, nil
+	}
+	
+	// Check if section is in OpenedSections from placement test
+	for _, openedSectionID := range placementResult.OpenedSections {
+		if openedSectionID == sectionID {
+			return true, nil
+		}
+	}
+	
+	// Check placement "effective level" - if section level <= max level among opened sections
+	sectionsData, err := s.ContentRepo.GetSections()
+	if err != nil {
+		return false, fmt.Errorf("failed to get sections: %w", err)
+	}
+	
+	levelOrder := map[string]int{"A0": 0, "A1": 1, "A2": 2, "B1": 3, "B2": 4, "C1": 5, "C2": 6, "mixed": -1}
+	if len(placementResult.OpenedSections) > 0 {
+		effectiveOrder := -1
+		for _, oid := range placementResult.OpenedSections {
+			for j := range sectionsData.Sections {
+				if sectionsData.Sections[j].SectionID == oid {
+					if ord, ok := levelOrder[sectionsData.Sections[j].Level]; ok && ord >= 0 && ord > effectiveOrder {
+						effectiveOrder = ord
+					}
+					break
+				}
+			}
+		}
+		if effectiveOrder >= 0 {
+			var section *repository.Section
+			for i := range sectionsData.Sections {
+				if sectionsData.Sections[i].SectionID == sectionID {
+					section = &sectionsData.Sections[i]
+					break
+				}
+			}
+			if section != nil {
+				secOrd, ok := levelOrder[section.Level]
+				if ok && secOrd >= 0 && secOrd <= effectiveOrder {
+					return true, nil
+				}
+			}
+		}
+	}
+	
+	return false, nil
+}
+
 // CanAccessSection checks if a user can access a section (category)
 // A section can be accessed if:
 // 1. It's the first section, OR
-// 2. All chapters in the previous section have been passed, OR
+// 2. Category test for previous section was passed (score >= 50%), OR
 // 3. It was opened by placement test (in OpenedSections), OR
 // 4. Placement "effective level": section level <= max level among OpenedSections (fixes old DB rows
 //    where OpenedSections missed sections that had no questions in the 25-question test)
@@ -803,34 +1203,18 @@ func (s *GrammarService) CanAccessSection(ctx context.Context, userID int64, sec
 		return true, nil
 	}
 
-	// Check if all chapters in previous section have been passed
+	// Check if category test for previous section was passed (score >= 50%)
 	previousSection := sectionsData.Sections[sectionIndex-1]
 	
-	// Get published items to filter chapters
-	publishedItems, err := s.PublishRepo.GetPublishedItemsByType("chapter")
+	// Require category test to be passed (score >= 50%) to unlock next section
+	// Exception: if section was opened by placement test (checked above)
+	categoryTestPassed, err := s.AttemptRepo.GetCategoryTestProgress(userID, previousSection.SectionID)
 	if err != nil {
-		return false, fmt.Errorf("failed to get published items: %w", err)
+		return false, fmt.Errorf("failed to get category test progress: %w", err)
 	}
 
-	// Check each published chapter in previous section
-	for _, chapterID := range previousSection.ChapterIDs {
-		chapterItem, exists := publishedItems[chapterID]
-		if !exists || !chapterItem.IsPublished {
-			continue // Skip unpublished chapters
-		}
-
-		progress, err := s.AttemptRepo.GetChapterProgress(userID, chapterID)
-		if err != nil {
-			return false, fmt.Errorf("failed to get progress for chapter %s: %w", chapterID, err)
-		}
-
-		// If any chapter in previous section is not passed, section is not accessible
-		if !progress.Passed {
-			return false, nil
-		}
-	}
-
-	return true, nil
+	// Next section is only accessible if category test was passed (score >= 50%)
+	return categoryTestPassed, nil
 }
 
 // GrammarStatistics represents overall grammar course statistics

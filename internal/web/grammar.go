@@ -50,6 +50,7 @@ func (r *Router) handleLearningGrammarCategories(w http.ResponseWriter, req *htt
 		TotalChapters      int    `json:"total_chapters"`
 		ProgressPercentage int    `json:"progress_percentage"`
 		CanAccess          bool   `json:"can_access"`
+		CategoryTestScore  *int   `json:"category_test_score,omitempty"`
 	}
 
 	categories := make([]CategoryResponse, 0, len(sections))
@@ -59,6 +60,14 @@ func (r *Router) handleLearningGrammarCategories(w http.ResponseWriter, req *htt
 			r.logger.Warn("failed to check section access, defaulting to false", zap.String("section_id", section.Section.SectionID), zap.Error(errAccess))
 			canAccess = false
 		}
+		
+		// Get category test best score
+		var categoryTestScore *int
+		bestScore, errScore := r.grammarService.AttemptRepo.GetCategoryTestBestScore(userID, section.Section.SectionID)
+		if errScore == nil && bestScore > 0 {
+			categoryTestScore = &bestScore
+		}
+		
 		categories = append(categories, CategoryResponse{
 			SectionID:          section.Section.SectionID,
 			Title:              section.Title,
@@ -69,6 +78,7 @@ func (r *Router) handleLearningGrammarCategories(w http.ResponseWriter, req *htt
 			TotalChapters:      len(section.Section.ChapterIDs),
 			ProgressPercentage: section.ProgressPercentage,
 			CanAccess:          canAccess,
+			CategoryTestScore:  categoryTestScore,
 		})
 	}
 
@@ -110,6 +120,12 @@ func (r *Router) handleLearningGrammarChapters(w http.ResponseWriter, req *http.
 	// Check if it's an access check request
 	if strings.HasSuffix(path, "/access") {
 		r.handleLearningGrammarSectionAccess(w, req)
+		return
+	}
+	
+	// Check if it's a category test request
+	if strings.HasSuffix(path, "/test") {
+		r.handleLearningGrammarCategoryTest(w, req)
 		return
 	}
 	
@@ -249,6 +265,60 @@ func (r *Router) handleLearningGrammarChapter(w http.ResponseWriter, req *http.R
 	})
 }
 
+// handleLearningGrammarCategoryTest generates a category test
+// @Summary      Получить тест по категории
+// @Description  Генерирует тест из всех глав категории (минимум 2 вопроса на главу, до 20 всего)
+// @Tags         Learning
+// @Accept       json
+// @Produce      application/json
+// @Security     ApiKeyAuth
+// @Param        section_id  path  string  true  "ID категории"
+// @Success      200  {object}  map[string]interface{}  "Вопросы теста"
+// @Failure      401  {string}  string  "Неавторизован"
+// @Failure      404  {string}  string  "Категория не найдена"
+// @Failure      500  {string}  string  "Внутренняя ошибка сервера"
+// @Router       /api/learning/grammar/categories/{section_id}/test [get]
+func (r *Router) handleLearningGrammarCategoryTest(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	userID := getUserIDFromContext(req.Context())
+	if userID == 0 {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	// Extract section_id from path
+	path := strings.TrimPrefix(req.URL.Path, "/api/learning/grammar/categories/")
+	sectionID := strings.TrimSuffix(path, "/test")
+	sectionID = strings.Trim(sectionID, "/")
+
+	if sectionID == "" {
+		http.Error(w, "section_id required", http.StatusBadRequest)
+		return
+	}
+
+	test, err := r.grammarService.GenerateCategoryTest(req.Context(), sectionID)
+	if err != nil {
+		r.logger.Error("failed to generate category test", zap.String("section_id", sectionID), zap.Error(err))
+		if strings.Contains(err.Error(), "not found") {
+			http.Error(w, "Section not found", http.StatusNotFound)
+			return
+		}
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"questions": test.Questions,
+		"total":     test.Total,
+	})
+}
+
 // handleLearningGrammarChapterTest generates a chapter test
 // @Summary      Получить тест по главе
 // @Description  Генерирует тест из банка вопросов главы (без ответов)
@@ -328,9 +398,10 @@ func (r *Router) handleLearningGrammarSubmitTest(w http.ResponseWriter, req *htt
 	}
 
 	var request struct {
-		Scope   string                 `json:"scope"`   // "chapter" or "category"
-		ScopeID string                 `json:"scope_id"` // chapter_id or section_id
-		Answers map[string]interface{} `json:"answers"`
+		Scope        string                 `json:"scope"`         // "chapter" or "category"
+		ScopeID      string                 `json:"scope_id"`       // chapter_id or section_id
+		Answers      map[string]interface{} `json:"answers"`       // question_id -> answer
+		QuestionIDs  []string               `json:"question_ids"`  // order of questions in test
 	}
 
 	if err := json.NewDecoder(req.Body).Decode(&request); err != nil {
@@ -343,7 +414,7 @@ func (r *Router) handleLearningGrammarSubmitTest(w http.ResponseWriter, req *htt
 		return
 	}
 
-	result, err := r.grammarService.SubmitTest(req.Context(), userID, request.Scope, request.ScopeID, request.Answers)
+	result, err := r.grammarService.SubmitTest(req.Context(), userID, request.Scope, request.ScopeID, request.Answers, request.QuestionIDs)
 	if err != nil {
 		r.logger.Error("failed to submit test", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)

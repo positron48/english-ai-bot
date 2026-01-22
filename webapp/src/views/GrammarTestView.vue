@@ -67,7 +67,7 @@
           <!-- Question -->
           <div class="result-question-prompt">
             <strong>Question:</strong>
-            <div v-html="renderMarkdown(getQuestionPrompt(item.question_id))"></div>
+            <div v-html="renderMarkdown(item.prompt || getQuestionPrompt(item.question_id))"></div>
           </div>
           
           <!-- User Answer -->
@@ -255,9 +255,11 @@ const loadTest = async () => {
       )
       questions.value = data.questions || []
     } else {
-      // Category test - to be implemented
-      error.value = 'Category tests not yet implemented'
-      return
+      // Category test
+      const data: { questions: any[]; total: number } = await apiClient.request(
+        `/api/learning/grammar/categories/${scopeId.value}/test`
+      )
+      questions.value = data.questions || []
     }
   } catch (err: any) {
     error.value = err.message || 'Failed to load test'
@@ -333,12 +335,14 @@ const animateScore = (targetScore: number) => {
 }
 
 const submitTest = async () => {
-  // Build answers map
+  // Build answers map and preserve question order
   const answersMap: Record<string, any> = {}
+  const questionIds: string[] = []
   questions.value.forEach((q, index) => {
     const answer = answers.value.get(index)
     if (answer !== undefined && q.id) {
       answersMap[q.id] = answer
+      questionIds.push(q.id)
     }
   })
   
@@ -350,7 +354,8 @@ const submitTest = async () => {
         body: {
           scope: scope.value,
           scope_id: scopeId.value,
-          answers: answersMap
+          answers: answersMap,
+          question_ids: questionIds
         }
       })
     

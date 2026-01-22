@@ -12,12 +12,15 @@
     <div v-else>
       <div class="chapters-header">
         <h1>{{ categoryTitle }}</h1>
-        <button 
-          v-if="allChaptersPassed && chapters.length > 0"
-          @click="startCategoryTest"
-          class="btn btn-primary"
-        >
-          Category Test
+      </div>
+      
+      <div v-if="allChaptersPassed && chapters.length > 0" class="category-test-banner">
+        <p>{{ bannerMessage }}</p>
+        <div v-if="categoryTestScore !== null" class="category-test-score">
+          <span>Category Test Score: <strong>{{ categoryTestScore }}%</strong></span>
+        </div>
+        <button @click="startCategoryTest" class="btn btn-primary">
+          {{ categoryTestScore !== null ? 'Retake Category Test' : 'Start Category Test' }}
         </button>
       </div>
       
@@ -114,9 +117,18 @@ const categoryTitle = ref('')
 const loading = ref(true)
 const error = ref<string | null>(null)
 const accessError = ref(false)
+const categoryTestScore = ref<number | null>(null)
+const nextCategoryAccessible = ref(false)
 
 const allChaptersPassed = computed(() => {
   return chapters.value.length > 0 && chapters.value.every(ch => ch.passed)
+})
+
+const bannerMessage = computed(() => {
+  if (nextCategoryAccessible.value) {
+    return 'All chapters completed! You can take the category test to review your knowledge.'
+  }
+  return 'All chapters completed! Take the category test to unlock the next category.'
 })
 
 const loadCategoryTitle = async () => {
@@ -136,6 +148,20 @@ const loadCategoryTitle = async () => {
         .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ')
       categoryTitle.value = formatted
+    }
+    
+    // Check if next category is accessible
+    const currentIndex = categories.findIndex((s: any) => s.section_id === sectionId.value)
+    if (currentIndex >= 0 && currentIndex < categories.length - 1) {
+      const nextCategory = categories[currentIndex + 1]
+      nextCategoryAccessible.value = nextCategory.can_access || false
+    }
+    
+    // Load category test score from current section
+    if (section?.category_test_score !== undefined && section.category_test_score !== null) {
+      categoryTestScore.value = section.category_test_score
+    } else {
+      categoryTestScore.value = null
     }
   } catch (error) {
     console.error('Failed to load category title:', error)
@@ -162,7 +188,7 @@ const loadChapters = async () => {
   }
   
   try {
-    // Load category title first
+    // Load category title and test score first
     await loadCategoryTitle()
     
     const data: { chapters: Chapter[] } = await apiClient.request(
@@ -344,6 +370,35 @@ onMounted(() => {
 .status-badge.locked {
   background: var(--bg-tertiary);
   color: var(--text-secondary);
+}
+
+.category-test-banner {
+  padding: 20px;
+  margin-bottom: 24px;
+  background: var(--color-primary-light, rgba(59, 130, 246, 0.1));
+  border: 2px solid var(--color-primary);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.category-test-banner p {
+  margin: 0 0 16px 0;
+  color: var(--text-primary);
+  font-size: 16px;
+}
+
+.category-test-score {
+  margin-bottom: 16px;
+  padding: 8px 16px;
+  background: var(--bg-secondary);
+  border-radius: 6px;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.category-test-score strong {
+  color: var(--text-primary);
+  font-size: 16px;
 }
 
 @media (max-width: 768px) {

@@ -103,6 +103,61 @@ func (r *GrammarAttemptRepository) UpdateProgress(userID int64, chapterID string
 	return nil
 }
 
+// UpdateCategoryTestProgress updates category test progress
+// This is stored in grammar_test_attempts table with scope_type='category'
+// We check if the category test was passed to unlock the next category
+func (r *GrammarAttemptRepository) UpdateCategoryTestProgress(userID int64, sectionID string, score int, passed bool) error {
+	// The attempt is already saved in CreateAttempt, so we just need to verify it exists
+	// The CanAccessSection will check for passed category tests
+	return nil
+}
+
+// GetCategoryTestProgress checks if a category test was passed (score >= 50%)
+func (r *GrammarAttemptRepository) GetCategoryTestProgress(userID int64, sectionID string) (bool, error) {
+	query := `SELECT COUNT(*) > 0 FROM grammar_test_attempts
+			  WHERE user_id = ? AND scope_type = 'category' AND scope_id = ? AND score >= 50 AND passed = 1`
+
+	var hasPassed int
+	err := r.db.QueryRow(query, userID, sectionID).Scan(&hasPassed)
+	if err != nil {
+		return false, fmt.Errorf("failed to get category test progress: %w", err)
+	}
+
+	return hasPassed > 0, nil
+}
+
+// HasCategoryTestAttempt checks if user has any category test attempt (even if not passed)
+func (r *GrammarAttemptRepository) HasCategoryTestAttempt(userID int64, sectionID string) (bool, error) {
+	query := `SELECT COUNT(*) > 0 FROM grammar_test_attempts
+			  WHERE user_id = ? AND scope_type = 'category' AND scope_id = ?`
+
+	var hasAttempt int
+	err := r.db.QueryRow(query, userID, sectionID).Scan(&hasAttempt)
+	if err != nil {
+		return false, fmt.Errorf("failed to check category test attempt: %w", err)
+	}
+
+	return hasAttempt > 0, nil
+}
+
+// GetCategoryTestBestScore gets the best score for a category test
+func (r *GrammarAttemptRepository) GetCategoryTestBestScore(userID int64, sectionID string) (int, error) {
+	query := `SELECT MAX(score) FROM grammar_test_attempts
+			  WHERE user_id = ? AND scope_type = 'category' AND scope_id = ?`
+
+	var bestScore sql.NullInt64
+	err := r.db.QueryRow(query, userID, sectionID).Scan(&bestScore)
+	if err != nil {
+		return 0, fmt.Errorf("failed to get category test best score: %w", err)
+	}
+
+	if !bestScore.Valid {
+		return 0, nil
+	}
+
+	return int(bestScore.Int64), nil
+}
+
 // GetChapterProgress retrieves progress for a chapter
 func (r *GrammarAttemptRepository) GetChapterProgress(userID int64, chapterID string) (*ChapterProgress, error) {
 	query := `SELECT best_score, passed_at, last_attempt_at
