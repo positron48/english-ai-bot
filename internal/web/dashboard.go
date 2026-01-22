@@ -4,8 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"strconv"
+	"strings"
 	"time"
 	"unicode"
+
+	"tgbot-skeleton/internal/models"
+	"tgbot-skeleton/internal/repository"
 
 	"go.uber.org/zap"
 )
@@ -326,6 +331,160 @@ func (r *Router) handleChat(w http.ResponseWriter, req *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]interface{}{
 		"response": response,
+	})
+}
+
+// handleSettings handles GET /api/settings - get user settings
+// @Summary      Получить настройки пользователя
+// @Description  Возвращает текущие настройки пользователя
+// @Tags         Settings
+// @Accept       json
+// @Produce      application/json
+// @Security     ApiKeyAuth
+// @Success      200  {object}  map[string]interface{}  "Настройки пользователя"
+// @Failure      401  {string}  string  "Неавторизован"
+// @Router       /api/settings [get]
+func (r *Router) handleSettings(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	userID := getUserIDFromContext(req.Context())
+	if userID == 0 {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	userRepo := r.userRepo.(*repository.UserRepository)
+	user, err := userRepo.GetUserByID(userID)
+	if err != nil {
+		r.logger.Error("failed to get user", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	if user == nil {
+		http.Error(w, "User not found", http.StatusNotFound)
+		return
+	}
+
+	// Parse settings
+	var settings models.UserSettings
+	if user.SettingsJSON != "" {
+		if err := json.Unmarshal([]byte(user.SettingsJSON), &settings); err != nil {
+			r.logger.Warn("failed to parse user settings", zap.Error(err))
+		}
+	}
+
+	// Set defaults if not set
+	if settings.NotificationFrequency == "" {
+		settings.NotificationFrequency = "daily"
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"settings": settings,
+	})
+}
+
+// handleNotificationSettings handles POST /api/settings/notifications - update notification settings
+// @Summary      Обновить настройки уведомлений
+// @Description  Обновляет периодичность уведомлений пользователя
+// @Tags         Settings
+// @Accept       application/json
+// @Produce      application/json
+// @Security     ApiKeyAuth
+// @Param        frequency  body  string  true  "Периодичность: 'daily', 'never', или число дней (например, '3')"
+// @Success      200  {object}  map[string]interface{}  "Успешное обновление"
+// @Failure      400  {string}  string  "Неверный запрос"
+// @Failure      401  {string}  string  "Неавторизован"
+// @Router       /api/settings/notifications [post]
+func (r *Router) handleNotificationSettings(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	userID := getUserIDFromContext(req.Context())
+	if userID == 0 {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	var requestData struct {
+		Frequency string `json:"frequency"`
+	}
+
+	if err := json.NewDecoder(req.Body).Decode(&requestData); err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	frequency := strings.TrimSpace(requestData.Frequency)
+	if frequency == "" {
+		http.Error(w, "frequency is required", http.StatusBadRequest)
+		return
+	}
+
+	// Validate frequency
+	frequencyLower := strings.ToLower(frequency)
+	if frequencyLower != "daily" && frequencyLower != "never" {
+		// Try to parse as number
+		days, err := strconv.Atoi(frequency)
+		if err != nil || days < 1 {
+			http.Error(w, "frequency must be 'daily', 'never', or a positive number", http.StatusBadRequest)
+			return
+		}
+		frequency = strconv.Itoa(days)
+	} else {
+		frequency = frequencyLower
+	}
+
+	userRepo := r.userRepo.(*repository.UserRepository)
+	user, err := userRepo.GetUserByID(userID)
+	if err != nil {
+		r.logger.Error("failed to get user", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	if user == nil {
+		http.Error(w, "User not found", http.StatusNotFound)
+		return
+	}
+
+	// Parse current settings
+	var settings models.UserSettings
+	if user.SettingsJSON != "" {
+		if err := json.Unmarshal([]byte(user.SettingsJSON), &settings); err != nil {
+			r.logger.Warn("failed to parse user settings", zap.Error(err))
+		}
+	}
+
+	// Update notification frequency
+	settings.NotificationFrequency = frequency
+
+	// Save settings
+	settingsJSON, err := json.Marshal(settings)
+	if err != nil {
+		r.logger.Error("failed to marshal settings", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	if err := userRepo.UpdateUserSettings(user.ID, string(settingsJSON)); err != nil {
+		r.logger.Error("failed to update user settings", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"message":   "Notification settings updated successfully",
+		"frequency": frequency,
 	})
 }
 

@@ -203,7 +203,7 @@ func (b *Bot) Start(ctx context.Context) error {
 		b.logger.Info("notification service started")
 	}
 
-	// Register bot commands
+	// Register bot commands (will be updated by webRouter.SetDependencies)
 	b.registerCommands()
 
 	// Webhook mode vs long polling
@@ -226,6 +226,8 @@ func (b *Bot) registerCommands() {
 		{Command: "help", Description: "Помощь"},
 		{Command: "train", Description: "Начать тренировку слов"},
 		{Command: "stats", Description: "Статистика по карточкам"},
+		{Command: "unsubscribe", Description: "Отписаться от уведомлений"},
+		{Command: "notification", Description: "Настроить периодичность уведомлений"},
 	}
 
 	if _, err := b.api.Request(tgbotapi.NewSetMyCommands(commands...)); err != nil {

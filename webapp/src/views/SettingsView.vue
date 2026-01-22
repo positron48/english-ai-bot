@@ -91,6 +91,42 @@
     </div>
 
     <div class="card">
+      <h2>Notifications</h2>
+      <div class="settings-group">
+        <div class="setting-item">
+          <div class="setting-info">
+            <label class="setting-label">Notification Frequency</label>
+            <p class="setting-description">How often to receive training reminders</p>
+          </div>
+          <div class="setting-control">
+            <div class="notification-control">
+              <span v-if="isSaved" class="saved-indicator">saved</span>
+              <select v-model="notificationFrequency" @change="handleNotificationFrequencyChange" class="theme-select">
+                <option value="daily">Daily</option>
+                <option value="never">Never</option>
+                <option value="custom">Every X days</option>
+              </select>
+              <transition name="slide-fade">
+                <div v-if="notificationFrequency === 'custom'" class="custom-days-input">
+                  <input 
+                    type="number" 
+                    v-model.number="customDays" 
+                    min="1" 
+                    max="30"
+                    @input="handleCustomDaysChange"
+                    class="days-input"
+                    placeholder="Days"
+                  />
+                  <span class="days-label">days</span>
+                </div>
+              </transition>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
       <h2>Account</h2>
       <div class="settings-group">
         <div class="setting-item">
@@ -111,12 +147,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useSettings } from '../composables/useSettings'
 import { useTheme } from '../composables/useTheme'
 import { useAudio } from '../composables/useAudio'
 import { useAuth } from '../composables/useAuth'
+import { apiClient } from '../api/client'
 import Icon from '../components/Icon.vue'
 
 const router = useRouter()
@@ -132,13 +169,88 @@ const selectedSoundTheme = ref('tick')
 const soundThemes = ref(getThemes())
 const previewing = ref(false)
 
-onMounted(() => {
+const notificationFrequency = ref('daily')
+const customDays = ref(3)
+const isSaved = ref(false)
+
+onMounted(async () => {
   // Load current settings
   soundsEnabled.value = settings.value.soundsEnabled
   vibrationEnabled.value = settings.value.vibrationEnabled
   selectedTheme.value = currentTheme.value
   selectedSoundTheme.value = settings.value.soundTheme || 'tick'
+  
+  // Load notification settings from API
+  await loadNotificationSettings()
 })
+
+const loadNotificationSettings = async () => {
+  try {
+    const data = await apiClient.request<{ settings: { notification_frequency?: string } }>('/api/settings')
+    const freq = data.settings?.notification_frequency || 'daily'
+    
+    // If it's a custom frequency (number), set to 'custom' and extract days
+    if (freq !== 'daily' && freq !== 'never' && !isNaN(Number(freq))) {
+      notificationFrequency.value = 'custom'
+      customDays.value = Number(freq)
+    } else {
+      notificationFrequency.value = freq
+    }
+  } catch (error) {
+    console.error('Failed to load notification settings:', error)
+  }
+}
+
+const handleNotificationFrequencyChange = async () => {
+  const freq = notificationFrequency.value
+  
+  // If it's a predefined option (daily or never), save immediately
+  if (freq === 'daily' || freq === 'never') {
+    await saveNotificationFrequency(freq)
+  }
+  // If it's 'custom', save with current value (or default to 3)
+  if (freq === 'custom') {
+    if (!customDays.value || customDays.value < 1) {
+      customDays.value = 3
+    }
+    await saveNotificationFrequency(String(customDays.value))
+  }
+}
+
+const handleCustomDaysChange = async () => {
+  // Auto-save when user changes the number
+  if (customDays.value && customDays.value >= 1 && customDays.value <= 30) {
+    // Keep 'custom' selected in the dropdown
+    notificationFrequency.value = 'custom'
+    await saveNotificationFrequency(String(customDays.value))
+  }
+}
+
+const saveNotificationFrequency = async (frequency: string) => {
+  try {
+    const data = await apiClient.request<{ frequency: string }>('/api/settings/notifications', {
+      method: 'POST',
+      body: JSON.stringify({ frequency }),
+    })
+    
+    // Update frequency value
+    if (frequency === 'daily' || frequency === 'never') {
+      notificationFrequency.value = data.frequency
+    } else {
+      // For custom frequency, keep 'custom' selected
+      notificationFrequency.value = 'custom'
+      customDays.value = Number(data.frequency)
+    }
+    
+    // Show saved indicator
+    isSaved.value = true
+    setTimeout(() => {
+      isSaved.value = false
+    }, 2000) // Hide after 2 seconds
+  } catch (error) {
+    console.error('Failed to save notification settings:', error)
+  }
+}
 
 // Watch for theme changes from outside
 watch(() => currentTheme.value, (newTheme) => {
@@ -501,6 +613,88 @@ const handleLogout = () => {
   .sound-theme-control {
     flex-direction: row;
     gap: 8px;
+  }
+}
+
+/* Notification Control */
+
+.notification-control {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.custom-days-input {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* Slide-fade animation */
+.slide-fade-enter-active {
+  transition: all 0.3s ease-out;
+}
+
+.slide-fade-leave-active {
+  transition: all 0.2s ease-in;
+}
+
+.slide-fade-enter-from {
+  transform: translateX(-10px);
+  opacity: 0;
+}
+
+.slide-fade-leave-to {
+  transform: translateX(-10px);
+  opacity: 0;
+}
+
+.days-input {
+  padding: 8px 12px;
+  border: 1px solid var(--border-primary);
+  border-radius: 6px;
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+  font-size: 16px;
+  width: 80px;
+  margin-bottom: 0;
+  transition: border-color 0.2s ease, background-color 0.3s ease;
+}
+
+.days-input:focus {
+  outline: none;
+  border-color: var(--input-focus-border);
+}
+
+.days-label {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-left: 4px;
+}
+
+.saved-indicator {
+  font-size: 14px;
+  color: var(--color-primary);
+  margin-right: 8px;
+  font-weight: 500;
+  opacity: 0;
+  animation: fadeInOut 2s ease-in-out;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
   }
 }
 </style>
