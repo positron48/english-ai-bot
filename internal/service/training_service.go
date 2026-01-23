@@ -251,6 +251,7 @@ func (s *TrainingService) sortCards(cards []*models.UserCard, now time.Time) {
 
 // shufflePreventDuplicates shuffles cards while preventing same word appearing close together
 // Also prevents cards with the same word and direction from appearing close together
+// If initial shuffle has duplicates, it will try to fix them with manual permutations or re-shuffling
 func (s *TrainingService) shufflePreventDuplicates(queue []*models.UserCardWithTraining) []*models.UserCardWithTraining {
 	if len(queue) <= 1 {
 		return queue
@@ -267,6 +268,40 @@ func (s *TrainingService) shufflePreventDuplicates(queue []*models.UserCardWithT
 		return queue
 	}
 
+	// Try shuffling with a reasonable limit on attempts
+	maxAttempts := 10
+	bestResult := queue
+	bestScore := s.calculateShuffleScore(queue) // Worst possible score
+
+	for attempt := 0; attempt < maxAttempts; attempt++ {
+		result := s.shufflePreventDuplicatesAttempt(queue, wordGroups)
+		score := s.calculateShuffleScore(result)
+		
+		// If we found a perfect shuffle (no adjacent duplicates), use it immediately
+		if score == 0 {
+			return result
+		}
+		
+		// Keep track of the best result so far
+		if score < bestScore {
+			bestResult = result
+			bestScore = score
+		}
+	}
+
+	// If we still have duplicates, try manual fixes
+	if bestScore > 0 {
+		bestResult = s.fixAdjacentDuplicates(bestResult)
+	}
+
+	return bestResult
+}
+
+// shufflePreventDuplicatesAttempt performs one attempt at shuffling
+func (s *TrainingService) shufflePreventDuplicatesAttempt(
+	queue []*models.UserCardWithTraining,
+	wordGroups map[int64][]*models.UserCardWithTraining,
+) []*models.UserCardWithTraining {
 	// Build new queue spreading duplicates apart with larger minimum distance
 	result := make([]*models.UserCardWithTraining, 0, len(queue))
 	seenUserCardIDs := make(map[int64]bool) // Track UserCard.ID to prevent duplicates
@@ -289,9 +324,17 @@ func (s *TrainingService) shufflePreventDuplicates(queue []*models.UserCardWithT
 		groupKeys[i], groupKeys[j] = groupKeys[j], groupKeys[i]
 	})
 
+	// Create a copy of wordGroups for this attempt
+	attemptWordGroups := make(map[int64][]*models.UserCardWithTraining)
+	for k, v := range wordGroups {
+		cards := make([]*models.UserCardWithTraining, len(v))
+		copy(cards, v)
+		attemptWordGroups[k] = cards
+	}
+
 	// Track total cards available to prevent infinite loops
 	totalCardsAvailable := 0
-	for _, cards := range wordGroups {
+	for _, cards := range attemptWordGroups {
 		totalCardsAvailable += len(cards)
 	}
 
@@ -300,7 +343,7 @@ func (s *TrainingService) shufflePreventDuplicates(queue []*models.UserCardWithT
 		
 		// Check if we have any cards left
 		hasCardsLeft := false
-		for _, cards := range wordGroups {
+		for _, cards := range attemptWordGroups {
 			if len(cards) > 0 {
 				hasCardsLeft = true
 				break
@@ -313,13 +356,12 @@ func (s *TrainingService) shufflePreventDuplicates(queue []*models.UserCardWithT
 		
 		// Try each word group in random order
 		for _, wordCardID := range groupKeys {
-			cards := wordGroups[wordCardID]
+			cards := attemptWordGroups[wordCardID]
 			if len(cards) == 0 {
 				continue
 			}
 
 			// Check if we can add this word (not used in last N positions)
-			// Check both by WordCardID (same word) and by WordCardID+Direction (same word and direction)
 			canAdd := true
 			checkDistance := minDistance
 			if len(result) < checkDistance {
@@ -373,14 +415,14 @@ func (s *TrainingService) shufflePreventDuplicates(queue []*models.UserCardWithT
 					result = append(result, card)
 					seenUserCardIDs[card.UserCard.ID] = true
 					// Remove this card from the group
-					wordGroups[wordCardID] = append(cards[:preferredCardIndex], cards[preferredCardIndex+1:]...)
+					attemptWordGroups[wordCardID] = append(cards[:preferredCardIndex], cards[preferredCardIndex+1:]...)
 					cardAdded = true
 					added = true
 				}
 				
 				if !cardAdded {
 					// All cards in this group are already added, remove the group
-					wordGroups[wordCardID] = []*models.UserCardWithTraining{}
+					attemptWordGroups[wordCardID] = []*models.UserCardWithTraining{}
 				}
 			}
 		}
@@ -389,7 +431,7 @@ func (s *TrainingService) shufflePreventDuplicates(queue []*models.UserCardWithT
 		// This should rarely happen with proper distance
 		if !added {
 			for _, wordCardID := range groupKeys {
-				cards := wordGroups[wordCardID]
+				cards := attemptWordGroups[wordCardID]
 				if len(cards) > 0 {
 					rand.Shuffle(len(cards), func(i, j int) {
 						cards[i], cards[j] = cards[j], cards[i]
@@ -401,7 +443,7 @@ func (s *TrainingService) shufflePreventDuplicates(queue []*models.UserCardWithT
 							result = append(result, card)
 							seenUserCardIDs[card.UserCard.ID] = true
 							// Remove this card from the group
-							wordGroups[wordCardID] = append(cards[:i], cards[i+1:]...)
+							attemptWordGroups[wordCardID] = append(cards[:i], cards[i+1:]...)
 							cardAdded = true
 							break
 						}
@@ -410,7 +452,7 @@ func (s *TrainingService) shufflePreventDuplicates(queue []*models.UserCardWithT
 						break
 					} else {
 						// All cards in this group are already added, remove the group
-						wordGroups[wordCardID] = []*models.UserCardWithTraining{}
+						attemptWordGroups[wordCardID] = []*models.UserCardWithTraining{}
 					}
 				}
 			}
@@ -418,13 +460,115 @@ func (s *TrainingService) shufflePreventDuplicates(queue []*models.UserCardWithT
 
 		// Clean up empty groups
 		for i := len(groupKeys) - 1; i >= 0; i-- {
-			if len(wordGroups[groupKeys[i]]) == 0 {
+			if len(attemptWordGroups[groupKeys[i]]) == 0 {
 				groupKeys = append(groupKeys[:i], groupKeys[i+1:]...)
 			}
 		}
 	}
 
 	return result
+}
+
+// calculateShuffleScore calculates a score for shuffle quality (lower is better)
+// Returns the number of adjacent duplicates, with extra penalty for duplicates at the end
+func (s *TrainingService) calculateShuffleScore(result []*models.UserCardWithTraining) int {
+	if len(result) <= 1 {
+		return 0
+	}
+
+	score := 0
+	// Check all adjacent pairs
+	for i := 1; i < len(result); i++ {
+		if result[i].TrainingCard.WordCardID == result[i-1].TrainingCard.WordCardID {
+			// Extra penalty for duplicates at the end (last 2 positions)
+			if i >= len(result)-2 {
+				score += 3 // Higher penalty for end duplicates
+			} else {
+				score += 1
+			}
+		}
+	}
+
+	return score
+}
+
+// fixAdjacentDuplicates tries to fix adjacent duplicates by swapping cards
+func (s *TrainingService) fixAdjacentDuplicates(result []*models.UserCardWithTraining) []*models.UserCardWithTraining {
+	if len(result) <= 1 {
+		return result
+	}
+
+	// Create a copy to work with
+	fixed := make([]*models.UserCardWithTraining, len(result))
+	copy(fixed, result)
+
+	// Try to fix duplicates, starting from the end (where they're most common)
+	maxSwaps := len(fixed) * 2 // Reasonable limit
+	swaps := 0
+
+	for attempt := 0; attempt < maxSwaps && swaps < maxSwaps; attempt++ {
+		improved := false
+
+		// Check from the end backwards (prioritize fixing end duplicates)
+		for i := len(fixed) - 1; i > 0; i-- {
+			if fixed[i].TrainingCard.WordCardID == fixed[i-1].TrainingCard.WordCardID {
+				// Try to find a card to swap with that fixes the duplicate without creating new ones
+				// The duplicate is at positions i-1 and i (same WordCardID)
+				// We want to swap fixed[i] with fixed[j] to fix it
+				for j := 0; j < len(fixed); j++ {
+					if j == i || j == i-1 {
+						continue
+					}
+					
+					// After swap: fixed[i] becomes fixed[j], fixed[j] becomes fixed[i]
+					// Conditions for a valid swap:
+					// 1. fixed[j].WordCardID != fixed[i-1].WordCardID (fixes the duplicate at i-1, i)
+					// 2. fixed[j].WordCardID != fixed[j-1].WordCardID (if j > 0, no new duplicate when moved to position i)
+					// 3. fixed[j].WordCardID != fixed[j+1].WordCardID (if j < len-1, no new duplicate when moved to position i)
+					// 4. fixed[i].WordCardID != fixed[j-1].WordCardID (if j > 0, no new duplicate when moved to position j)
+					// 5. fixed[i].WordCardID != fixed[j+1].WordCardID (if j < len-1, no new duplicate when moved to position j)
+					
+					// Must fix the original duplicate
+					if fixed[j].TrainingCard.WordCardID == fixed[i-1].TrainingCard.WordCardID {
+						continue
+					}
+					
+					// Check if fixed[j] (which will be at position i after swap) would create duplicates
+					if j > 0 && fixed[j-1].TrainingCard.WordCardID == fixed[j].TrainingCard.WordCardID {
+						continue
+					}
+					if j < len(fixed)-1 && fixed[j+1].TrainingCard.WordCardID == fixed[j].TrainingCard.WordCardID {
+						continue
+					}
+					
+					// Check if fixed[i] (which will be at position j after swap) would create duplicates
+					if j > 0 && fixed[j-1].TrainingCard.WordCardID == fixed[i].TrainingCard.WordCardID {
+						continue
+					}
+					if j < len(fixed)-1 && fixed[j+1].TrainingCard.WordCardID == fixed[i].TrainingCard.WordCardID {
+						continue
+					}
+					
+					// All checks passed, swap cards
+					fixed[i], fixed[j] = fixed[j], fixed[i]
+					improved = true
+					swaps++
+					break
+				}
+				
+				if improved {
+					break
+				}
+			}
+		}
+
+		// If no improvement was made, break
+		if !improved {
+			break
+		}
+	}
+
+	return fixed
 }
 
 // GetDueCount gets the count of due cards for a user
