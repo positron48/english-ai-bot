@@ -32,6 +32,7 @@ type Handler struct {
 	cbService          *service.CircuitBreakerService
 	config             *config.Config
 	db                 *sql.DB
+	botCommandService  *service.BotCommandService
 }
 
 // NewHandler creates a new handler
@@ -48,18 +49,32 @@ func NewHandler(
 	config *config.Config,
 	db *sql.DB,
 ) *Handler {
+	// Initialize bot command service
+	var botCommandService *service.BotCommandService
+	if bot != nil {
+		botCommandService = service.NewBotCommandService(
+			bot,
+			userRepo,
+			logger,
+			config.Bot.HelpMessage,
+			config.Bot.StartMessage,
+			config.Bot.UnknownCommandMessage,
+		)
+	}
+
 	return &Handler{
-		bot:              bot,
-		logger:           logger,
-		aiService:        aiService,
-		wordService:      wordService,
-		trainingHandler:  trainingHandler,
-		userRepo:         userRepo,
-		trainingCardRepo: trainingCardRepo,
-		userCardRepo:     userCardRepo,
-		cbService:        cbService,
-		config:           config,
-		db:               db,
+		bot:               bot,
+		logger:            logger,
+		aiService:         aiService,
+		wordService:       wordService,
+		trainingHandler:   trainingHandler,
+		userRepo:          userRepo,
+		trainingCardRepo:  trainingCardRepo,
+		userCardRepo:      userCardRepo,
+		cbService:         cbService,
+		config:            config,
+		db:                db,
+		botCommandService: botCommandService,
 	}
 }
 
@@ -82,8 +97,15 @@ func (h *Handler) HandleUpdate(ctx context.Context, update tgbotapi.Update) {
 		zap.String("username", message.From.UserName),
 	)
 
-	// Handle commands
+	// Handle commands - use BotCommandService first for notification commands
 	if message.IsCommand() {
+		command := message.Command()
+		// Let BotCommandService handle notification-related commands
+		if h.botCommandService != nil && (command == "unsubscribe" || command == "notification" || command == "start" || command == "help") {
+			h.botCommandService.HandleUpdate(update)
+			return
+		}
+		// Other commands handled by existing handler
 		h.handleCommand(ctx, message)
 		return
 	}
@@ -482,16 +504,26 @@ func (h *Handler) handleCallbackQuery(ctx context.Context, query *tgbotapi.Callb
 	chatID := query.Message.Chat.ID
 	data := query.Data
 
+	h.logger.Info("handling callback query",
+		zap.Int64("chat_id", chatID),
+		zap.String("data", data),
+	)
+
+	// Let BotCommandService handle notification-related callbacks first
+	if h.botCommandService != nil && data == "notification_unsubscribe" {
+		update := tgbotapi.Update{
+			UpdateID: 0,
+			CallbackQuery: query,
+		}
+		h.botCommandService.HandleUpdate(update)
+		return
+	}
+
 	// Acknowledge callback
 	callback := tgbotapi.NewCallback(query.ID, "")
 	if _, err := h.bot.Request(callback); err != nil {
 		h.logger.Error("failed to acknowledge callback", zap.Error(err))
 	}
-
-	h.logger.Info("handling callback query",
-		zap.Int64("chat_id", chatID),
-		zap.String("data", data),
-	)
 
 	// Handle different callback types
 	if data == "train_start" {

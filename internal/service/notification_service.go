@@ -2,7 +2,9 @@ package service
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"strconv"
 	"time"
 
 	"tgbot-skeleton/internal/models"
@@ -138,6 +140,40 @@ func (s *NotificationService) checkAndSendNotifications() {
 func (s *NotificationService) sendNotificationIfNeeded(user *models.User, userNow time.Time) error {
 	localDate := userNow.Format("2006-01-02")
 
+	// Parse user settings to check notification frequency
+	var settings models.UserSettings
+	if user.SettingsJSON != "" {
+		if err := json.Unmarshal([]byte(user.SettingsJSON), &settings); err != nil {
+			s.logger.Warn("failed to parse user settings, using defaults",
+				zap.Int64("user_id", user.ID),
+				zap.Error(err),
+			)
+		}
+	}
+
+	// Check notification frequency setting
+	if settings.NotificationFrequency == "never" {
+		return nil // User disabled notifications
+	}
+
+	// Check if we should send based on frequency
+	if settings.NotificationFrequency != "" && settings.NotificationFrequency != "daily" {
+		// Custom frequency: every N days
+		days, err := strconv.Atoi(settings.NotificationFrequency)
+		if err == nil && days > 0 {
+			// Check last notification date
+			if settings.LastNotificationDate != "" {
+				lastDate, err := time.Parse("2006-01-02", settings.LastNotificationDate)
+				if err == nil {
+					daysSinceLast := int(userNow.Sub(lastDate).Hours() / 24)
+					if daysSinceLast < days {
+						return nil // Not enough days passed
+					}
+				}
+			}
+		}
+	}
+
 	// Check if already sent nudge today
 	hasNudge, err := s.nudgeRepo.HasNudgeToday(user.ID, localDate)
 	if err != nil {
@@ -180,10 +216,11 @@ func (s *NotificationService) sendNotificationIfNeeded(user *models.User, userNo
 		estimatedMinutes,
 	)
 
-	// Create inline keyboard with "Start" button
+	// Create inline keyboard with "Start" and "Отписаться" buttons
 	keyboard := tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData("Начать", "train_start"),
+			tgbotapi.NewInlineKeyboardButtonData("Отписаться", "notification_unsubscribe"),
 		),
 	)
 
@@ -214,6 +251,15 @@ func (s *NotificationService) sendNotificationIfNeeded(user *models.User, userNo
 
 	if _, err := s.nudgeRepo.CreateNudge(nudge); err != nil {
 		s.logger.Warn("failed to record nudge", zap.Error(err))
+	}
+
+	// Update last notification date in user settings
+	settings.LastNotificationDate = localDate
+	settingsJSON, err := json.Marshal(settings)
+	if err == nil {
+		if err := s.userRepo.UpdateUserSettings(user.ID, string(settingsJSON)); err != nil {
+			s.logger.Warn("failed to update last notification date", zap.Error(err))
+		}
 	}
 
 	s.logger.Info("sent training notification",

@@ -76,6 +76,7 @@ type Router struct {
 	botToken           string
 	webTrainingHandler *WebTrainingHandler
 	rateLimiter        *RateLimiter
+	botCommandService  *service.BotCommandService
 }
 
 // NewRouter creates a new web router
@@ -138,6 +139,20 @@ func (r *Router) SetDependencies(
 		botToken,
 	)
 	
+	// Initialize bot command service if bot is available
+	if bot != nil {
+		r.botCommandService = service.NewBotCommandService(
+			bot,
+			userRepo.(*repository.UserRepository),
+			r.logger,
+			r.config.Bot.HelpMessage,
+			r.config.Bot.StartMessage,
+			r.config.Bot.UnknownCommandMessage,
+		)
+		// Register bot commands
+		r.registerBotCommands()
+	}
+	
 	// Setup protected routes now that auth middleware is initialized
 	r.setupProtectedRoutes()
 }
@@ -189,6 +204,16 @@ func (r *Router) setupRoutes() {
 		w.Header().Set("Content-Type", "application/json")
 		http.ServeFile(w, req, "docs/swagger/swagger.json")
 	})
+
+	// Telegram webhook handler (always register if bot is available, webhook can be enabled later)
+	if r.bot != nil {
+		webhookPath := r.config.Telegram.WebhookPath
+		if webhookPath == "" {
+			webhookPath = "/webhook"
+		}
+		r.mux.HandleFunc(webhookPath, r.handleWebhook)
+		r.logger.Info("webhook handler registered", zap.String("path", webhookPath), zap.Bool("webhook_enabled", r.config.Telegram.WebhookEnable))
+	}
 
 	// Auth routes with rate limiting
 	// POST /auth/telegram - moderate limit per IP
@@ -301,6 +326,8 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/training/answer", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTrainingAnswer)))
 	r.mux.HandleFunc("/api/training/upcoming", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTrainingUpcoming)))
 	r.mux.HandleFunc("/api/chat", appChatMiddleware.Wrap(auth.RequireAuth(r.handleChat)))
+	r.mux.HandleFunc("/api/settings", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleSettings)))
+	r.mux.HandleFunc("/api/settings/notifications", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleNotificationSettings)))
 
 	// Admin routes (wrapped with admin guard and rate limiting)
 	adminAuth := auth.RequireAuth
@@ -870,6 +897,75 @@ func (r *Router) swaggerHandler(w http.ResponseWriter, req *http.Request) {
 	}
 	
 	swaggerHandler.ServeHTTP(w, req)
+}
+
+// registerBotCommands registers bot commands with Telegram
+func (r *Router) registerBotCommands() {
+	if r.bot == nil {
+		return
+	}
+
+	commands := []tgbotapi.BotCommand{
+		{Command: "start", Description: "Начать работу с ботом"},
+		{Command: "help", Description: "Показать справку"},
+		{Command: "unsubscribe", Description: "Отписаться от уведомлений"},
+		{Command: "notification", Description: "Настроить периодичность уведомлений"},
+	}
+
+	cmdConfig := tgbotapi.NewSetMyCommands(commands...)
+	if _, err := r.bot.Request(cmdConfig); err != nil {
+		r.logger.Error("failed to register bot commands", zap.Error(err))
+	} else {
+		r.logger.Info("bot commands registered successfully")
+	}
+}
+
+// handleWebhook handles Telegram webhook updates
+func (r *Router) handleWebhook(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	if r.botCommandService == nil {
+		r.logger.Warn("bot command service not initialized, webhook request ignored")
+		http.Error(w, "Bot command service not initialized", http.StatusInternalServerError)
+		return
+	}
+
+	var update tgbotapi.Update
+	if err := json.NewDecoder(req.Body).Decode(&update); err != nil {
+		r.logger.Error("failed to decode webhook update", zap.Error(err))
+		http.Error(w, "Invalid update", http.StatusBadRequest)
+		return
+	}
+
+	// Log update details
+	updateLog := []zap.Field{
+		zap.Int("update_id", update.UpdateID),
+		zap.Bool("has_message", update.Message != nil),
+		zap.Bool("has_callback", update.CallbackQuery != nil),
+	}
+	if update.Message != nil {
+		updateLog = append(updateLog,
+			zap.String("message_text", update.Message.Text),
+			zap.Bool("is_command", update.Message.IsCommand()),
+		)
+		if update.Message.IsCommand() {
+			updateLog = append(updateLog,
+				zap.String("command", update.Message.Command()),
+				zap.String("command_args", update.Message.CommandArguments()),
+			)
+		}
+	}
+	r.logger.Info("received webhook update", updateLog...)
+
+	// Handle update synchronously to ensure proper error handling
+	// Telegram expects quick response, but we need to process commands
+	r.botCommandService.HandleUpdate(update)
+
+	// Respond to Telegram
+	w.WriteHeader(http.StatusOK)
 }
 
 // handleNotFound handles 404 errors

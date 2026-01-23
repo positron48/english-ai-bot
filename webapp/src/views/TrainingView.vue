@@ -141,28 +141,44 @@
       </div>
     </div>
 
-    <div v-if="sessionActive && currentCard" class="card">
+    <div 
+      v-if="sessionActive && currentCard" 
+      class="card"
+      :class="{ 'card-timer-active': waitingDelay }"
+      @mousedown="waitingDelay ? handleTimerMouseDown($event) : null"
+      @mouseup="waitingDelay ? handleTimerMouseUp($event) : null"
+      @mouseleave="waitingDelay ? handleTimerMouseLeave() : null"
+      @touchstart="waitingDelay ? handleTimerMouseDown($event) : null"
+      @touchend="waitingDelay ? handleTimerMouseUp($event) : null"
+      @touchcancel="waitingDelay ? handleTimerMouseLeave() : null"
+    >
       <div class="training-progress" v-if="cardIndex > 0 && totalCards > 0">
         <p>Card {{ cardIndex }} of {{ totalCards }}</p>
       </div>
 
       <div class="question" v-html="processedQuestion"></div>
 
-      <div v-if="optionsShown" class="options">
+      <div 
+        v-if="optionsShown" 
+        class="options"
+        @mousedown="waitingDelay ? handleTimerMouseDown($event) : null"
+        @mouseup="waitingDelay ? handleTimerMouseUp($event) : null"
+        @touchstart="waitingDelay ? handleTimerMouseDown($event) : null"
+        @touchend="waitingDelay ? handleTimerMouseUp($event) : null"
+      >
         <button
           v-for="(option, index) in options"
           :key="index"
-          @click="!feedback && submitAnswer(index)"
+          @click="!feedback && !answering && submitAnswer(index)"
           :class="[
             'btn',
             'option-btn',
             {
               'option-correct': feedback && option === feedback.correct_answer,
               'option-incorrect': feedback && !feedback.is_correct && option === feedback.chosen_option,
-              'option-disabled': !!feedback
+              'option-disabled': !!feedback || answering
             }
           ]"
-          :disabled="answering || !!feedback"
         >
           <span class="option-number">{{ index + 1 }}</span>
           <span class="option-text">{{ option }}</span>
@@ -1690,12 +1706,42 @@ const resumeTimer = () => {
 
 // Handle mouse/touch events for timer pause
 const handleTimerMouseDown = (event: MouseEvent | TouchEvent) => {
-  event.preventDefault()
+  // Only handle timer pause when waitingDelay is active
+  if (!waitingDelay.value) {
+    return
+  }
+  
+  // When waitingDelay is active, all elements in the card should pause the timer
+  // This includes disabled buttons - events are caught on parent container
+  // Only prevent if it's an enabled link
+  const target = event.target as HTMLElement
+  const link = target?.closest('a')
+  if (link && !link.hasAttribute('disabled') && !link.hasAttribute('aria-disabled')) {
+    return
+  }
+  
+  // Stop propagation to prevent triggering click on disabled buttons
+  event.stopPropagation()
   pauseTimer()
 }
 
 const handleTimerMouseUp = (event: MouseEvent | TouchEvent) => {
-  event.preventDefault()
+  // Only handle timer resume when waitingDelay is active
+  if (!waitingDelay.value) {
+    return
+  }
+  
+  // When waitingDelay is active, all elements in the card should resume the timer
+  // This includes disabled buttons - events are caught on parent container
+  // Only prevent if it's an enabled link
+  const target = event.target as HTMLElement
+  const link = target?.closest('a')
+  if (link && !link.hasAttribute('disabled') && !link.hasAttribute('aria-disabled')) {
+    return
+  }
+  
+  // Stop propagation to prevent triggering click on disabled buttons
+  event.stopPropagation()
   resumeTimer()
 }
 
@@ -1722,16 +1768,37 @@ const handleTimerMouseLeave = () => {
   text-align: center;
 }
 
+.card-timer-active {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+/* Don't block pointer events - let all elements receive events for timer pause */
+/* Buttons will handle their own click events when not disabled */
+
 .question {
   font-size: 24px;
   margin: 30px 0;
   text-align: center;
-  overflow-x: auto;
+  overflow-x: visible;
   overflow-y: visible;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
 }
 
-/* Prevent word and transcription from breaking into multiple lines */
-.question :deep(strong),
+/* Make strong element start on a new line */
+.question :deep(strong) {
+  display: block;
+  margin-top: 8px;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Prevent transcription from breaking into multiple lines */
 .question :deep(.transcription),
 .question :deep(span.transcription) {
   white-space: nowrap;
@@ -1785,7 +1852,7 @@ const handleTimerMouseLeave = () => {
   border-color: var(--border-secondary);
 }
 
-.option-btn:hover:not(:disabled) {
+.option-btn:hover:not(.option-disabled) {
   background-color: var(--bg-hover);
   border-color: var(--border-focus);
 }

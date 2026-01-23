@@ -172,7 +172,7 @@ func Load() (*Config, error) {
 
 	// Bot message defaults
 	viper.SetDefault("bot.start_message", "🤖 Hello! I'm a universal AI assistant.\n\n💡 Just send me a message and I'll help you with any questions!\n\nUse /help for additional information.")
-	viper.SetDefault("bot.help_message", "📚 AI Assistant Help:\n\n💬 **Any message** → Get a smart response:\n• Answer questions\n• Help with tasks\n• Explanations and advice\n• Creative ideas\n\n🔧 **Available commands:**\n• /start - Start working with the bot\n• /help - Show this help\n\n💡 Just send text - I'll help right away!")
+	viper.SetDefault("bot.help_message", "📚 Помощь по использованию бота-преподавателя английского:\n\n🔤 **Одно слово** → Карточка слова с:\n• Частью речи\n• Транскрипцией IPA\n• Определением на русском\n• Примерами использования\n• Формами неправильных глаголов\n\n📝 **Английский текст** → Исправления:\n• Поиск ошибок (орфография, грамматика, пунктуация)\n• Подробные объяснения\n• Исправленная версия\n\n🇷🇺 **Русский текст** → Перевод:\n• Естественный перевод на английский\n• Анализ сложных фраз\n• Сохранение тона и стиля\n\n🔧 **Доступные команды:**\n• /start - Начать работу с ботом\n• /help - Показать эту справку\n• /unsubscribe - Отписаться от уведомлений\n• /notification [daily|never|N] - Настроить периодичность уведомлений\n  - daily - ежедневно\n  - never - никогда\n  - N - каждые N дней (например, /notification 3)\n\n💬 Просто отправьте текст или слово - я сразу помогу!")
 	viper.SetDefault("bot.unknown_command_message", "❓ Unknown command. Use /help to get information about bot capabilities.")
 	viper.SetDefault("bot.error_message", "Sorry, an error occurred while processing your message. Please try again.")
 	viper.SetDefault("bot.empty_message", "Please send a text message.")
