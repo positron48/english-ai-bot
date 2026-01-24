@@ -41,9 +41,25 @@ EOF
 
 **Основные связи:**
 ```
-word_cards (1) ←→ (N) training_cards (1) ←→ (2) user_cards
-                                              ↑
-                                         (ru_en, en_ru)
+users
+ ├─→ word_request_history → word_cards
+ ├─→ training_sessions → review_events → user_cards
+ ├─→ user_cards → training_cards → word_cards
+ ├─→ training_nudges
+ ├─→ web_sessions
+ ├─→ web_otps
+ └─→ user_word_knowledge → word_cards
+
+word_cards
+ ├─→ word_forms (множество словоформ)
+ ├─→ training_cards (множество значений)
+ └─→ word_set_items → word_sets → word_set_categories
+
+training_cards (1) → (2) user_cards
+                        ├─ ru_en (RU→EN)
+                        └─ en_ru (EN→RU)
+
+word_set_categories (иерархия: parent_id → self)
 ```
 
 **Слова и карточки:**
