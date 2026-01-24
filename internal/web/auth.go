@@ -76,7 +76,7 @@ func (m *AuthMiddleware) RequireAuth(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
-		userID, err := m.jwtService.ValidateToken(tokenString)
+		userID, role, err := m.jwtService.ValidateToken(tokenString)
 		if err != nil || userID == 0 {
 			m.logger.Warn("authentication failed: invalid or expired token", 
 				zap.String("path", r.URL.Path),
@@ -92,11 +92,13 @@ func (m *AuthMiddleware) RequireAuth(next http.HandlerFunc) http.HandlerFunc {
 
 		m.logger.Info("JWT authentication successful", 
 			zap.String("path", r.URL.Path),
-			zap.Int64("user_id", userID))
+			zap.Int64("user_id", userID),
+			zap.String("role", role))
 		
-		// Add user ID to request context
+		// Add user ID and role to request context
 		ctx := r.Context()
 		ctx = context.WithValue(ctx, userIDKey, userID)
+		ctx = context.WithValue(ctx, userRoleKey, role)
 		r = r.WithContext(ctx)
 		next(w, r)
 	}
@@ -186,14 +188,24 @@ func (m *AuthMiddleware) ValidateTelegramInitData(initData string) (int64, error
 	return userData.ID, nil
 }
 
+// getUserRole determines the user's role based on their Telegram ID
+func (m *AuthMiddleware) getUserRole(telegramID int64) string {
+	if telegramID == int64(m.config.Admin.TelegramID) {
+		return "admin"
+	}
+	return "user"
+}
+
 // GenerateJWTToken generates an access JWT token for a user
-func (m *AuthMiddleware) GenerateJWTToken(userID int64) (string, error) {
-	return m.jwtService.GenerateToken(userID)
+func (m *AuthMiddleware) GenerateJWTToken(userID int64, telegramID int64) (string, error) {
+	role := m.getUserRole(telegramID)
+	return m.jwtService.GenerateToken(userID, role)
 }
 
 // GenerateTokenPair generates both access and refresh tokens for a user
-func (m *AuthMiddleware) GenerateTokenPair(userID int64) (accessToken, refreshToken string, err error) {
-	accessToken, err = m.jwtService.GenerateToken(userID)
+func (m *AuthMiddleware) GenerateTokenPair(userID int64, telegramID int64) (accessToken, refreshToken string, err error) {
+	role := m.getUserRole(telegramID)
+	accessToken, err = m.jwtService.GenerateToken(userID, role)
 	if err != nil {
 		return "", "", err
 	}

@@ -24,16 +24,9 @@ func (r *Router) RequireAdmin(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
-		// Get user's telegram_id
-		userRepo := r.userRepo.(*repository.UserRepository)
-		user, err := userRepo.GetUserByID(userID)
-		if err != nil || user == nil {
-			http.Error(w, "User not found", http.StatusNotFound)
-			return
-		}
-
-		// Check if user is admin
-		if user.TelegramID != int64(r.config.Admin.TelegramID) {
+		// Check role from JWT token (stored in context by RequireAuth)
+		role := getUserRoleFromContext(req.Context())
+		if role != "admin" {
 			http.Error(w, "Forbidden", http.StatusForbidden)
 			return
 		}

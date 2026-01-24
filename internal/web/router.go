@@ -1007,7 +1007,7 @@ func (r *Router) handleAuthTelegram(w http.ResponseWriter, req *http.Request) {
 	}
 
 	// Generate JWT token pair
-	accessToken, refreshToken, err := auth.GenerateTokenPair(user.ID)
+	accessToken, refreshToken, err := auth.GenerateTokenPair(user.ID, user.TelegramID)
 	if err != nil {
 		r.logger.Error("failed to generate JWT tokens", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -1078,7 +1078,7 @@ func (r *Router) handleAuthTelegramUnsafe(w http.ResponseWriter, req *http.Reque
 
 	// Generate JWT token pair
 	auth := r.getAuthMiddleware()
-	accessToken, refreshToken, err := auth.GenerateTokenPair(user.ID)
+	accessToken, refreshToken, err := auth.GenerateTokenPair(user.ID, user.TelegramID)
 	if err != nil {
 		r.logger.Error("failed to generate JWT tokens", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)

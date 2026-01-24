@@ -147,6 +147,7 @@ func TestHandleAdmin_Get(t *testing.T) {
 	// Create request with admin user context
 	req := httptest.NewRequest("GET", "/api/admin", nil)
 	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	ctx = context.WithValue(ctx, userRoleKey, "admin")
 	req = req.WithContext(ctx)
 	w := httptest.NewRecorder()
 
@@ -204,6 +205,7 @@ func TestHandleAdmin_WrongMethod(t *testing.T) {
 
 	req := httptest.NewRequest("POST", "/api/admin", nil)
 	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	ctx = context.WithValue(ctx, userRoleKey, "admin")
 	req = req.WithContext(ctx)
 	w := httptest.NewRecorder()
 
@@ -327,6 +329,7 @@ func TestHandleAdminCircuitReset_Post(t *testing.T) {
 
 	req := httptest.NewRequest("POST", "/api/admin/circuit/reset", nil)
 	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	ctx = context.WithValue(ctx, userRoleKey, "admin")
 	req = req.WithContext(ctx)
 	w := httptest.NewRecorder()
 
@@ -383,6 +386,7 @@ func TestHandleAdminCircuitReset_WrongMethod(t *testing.T) {
 
 	req := httptest.NewRequest("GET", "/api/admin/circuit/reset", nil)
 	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	ctx = context.WithValue(ctx, userRoleKey, "admin")
 	req = req.WithContext(ctx)
 	w := httptest.NewRecorder()
 
@@ -431,6 +435,7 @@ func TestHandleAdminUsers_Get(t *testing.T) {
 
 	req := httptest.NewRequest("GET", "/api/admin/users", nil)
 	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	ctx = context.WithValue(ctx, userRoleKey, "admin")
 	req = req.WithContext(ctx)
 	w := httptest.NewRecorder()
 
@@ -489,6 +494,7 @@ func TestHandleAdminWords_Get(t *testing.T) {
 
 	req := httptest.NewRequest("GET", "/api/admin/words", nil)
 	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	ctx = context.WithValue(ctx, userRoleKey, "admin")
 	req = req.WithContext(ctx)
 	w := httptest.NewRecorder()
 
@@ -552,6 +558,7 @@ func TestHandleAdminWord_Put(t *testing.T) {
 	req := httptest.NewRequest("PUT", fmt.Sprintf("/api/admin/words/%d", wordCardID), strings.NewReader("definition=new definition"))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	ctx = context.WithValue(ctx, userRoleKey, "admin")
 	req = req.WithContext(ctx)
 	w := httptest.NewRecorder()
 
@@ -622,6 +629,7 @@ func TestHandleAdminWord_Put_WithJSON(t *testing.T) {
 	req := httptest.NewRequest("PUT", fmt.Sprintf("/api/admin/words/%d", wordCardID), strings.NewReader(string(jsonData)))
 	req.Header.Set("Content-Type", "application/json")
 	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	ctx = context.WithValue(ctx, userRoleKey, "admin")
 	req = req.WithContext(ctx)
 	w := httptest.NewRecorder()
 
@@ -693,6 +701,7 @@ func TestHandleAdminWord_Delete(t *testing.T) {
 
 	req := httptest.NewRequest("DELETE", fmt.Sprintf("/api/admin/words/%d", wordCardID), nil)
 	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	ctx = context.WithValue(ctx, userRoleKey, "admin")
 	req = req.WithContext(ctx)
 	w := httptest.NewRecorder()
 
@@ -769,6 +778,7 @@ func TestHandleAdminTraining_Get(t *testing.T) {
 
 	req := httptest.NewRequest("GET", "/api/admin/training/training", nil)
 	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	ctx = context.WithValue(ctx, userRoleKey, "admin")
 	req = req.WithContext(ctx)
 	w := httptest.NewRecorder()
 
@@ -844,6 +854,7 @@ func TestHandleAdminTrainingCard_Delete(t *testing.T) {
 
 	req := httptest.NewRequest("DELETE", fmt.Sprintf("/api/admin/training/card/%d", trainingCardID), nil)
 	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	ctx = context.WithValue(ctx, userRoleKey, "admin")
 	req = req.WithContext(ctx)
 	w := httptest.NewRecorder()
 
@@ -919,6 +930,7 @@ func TestHandleAdminTrainingCard_Put(t *testing.T) {
 	req := httptest.NewRequest("PUT", fmt.Sprintf("/api/admin/training/card/%d", trainingCardID), strings.NewReader("word_ru=новая карта&meaning_en=new card&example_en=example"))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	ctx = context.WithValue(ctx, userRoleKey, "admin")
 	req = req.WithContext(ctx)
 	w := httptest.NewRecorder()
 
@@ -997,6 +1009,7 @@ func TestHandleAdminTrainingCard_Put_UpdatePOS(t *testing.T) {
 	req := httptest.NewRequest("PUT", fmt.Sprintf("/api/admin/training/card/%d", trainingCardID), strings.NewReader("pos=verb"))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	ctx = context.WithValue(ctx, userRoleKey, "admin")
 	req = req.WithContext(ctx)
 	w := httptest.NewRecorder()
 
@@ -1020,6 +1033,7 @@ func TestHandleAdminTrainingCard_Put_UpdatePOS(t *testing.T) {
 	req2 := httptest.NewRequest("PUT", fmt.Sprintf("/api/admin/training/card/%d", trainingCardID), strings.NewReader("pos="))
 	req2.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	ctx2 := context.WithValue(req2.Context(), userIDKey, adminUser.ID)
+	ctx2 = context.WithValue(ctx2, userRoleKey, "admin")
 	req2 = req2.WithContext(ctx2)
 	w2 := httptest.NewRecorder()
 
@@ -1094,6 +1108,7 @@ func TestHandleAdminTraining_Delete(t *testing.T) {
 	req := httptest.NewRequest("POST", "/api/admin/training/deleteword/delete", strings.NewReader("word=deleteword"))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	ctx = context.WithValue(ctx, userRoleKey, "admin")
 	req = req.WithContext(ctx)
 	w := httptest.NewRecorder()
 
@@ -1168,6 +1183,7 @@ func TestHandleAdminTraining_DeleteAll(t *testing.T) {
 
 	req := httptest.NewRequest("POST", "/api/admin/training/delete_all", nil)
 	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	ctx = context.WithValue(ctx, userRoleKey, "admin")
 	req = req.WithContext(ctx)
 	w := httptest.NewRecorder()
 
@@ -1229,6 +1245,7 @@ func TestHandleAdminWord_Reset(t *testing.T) {
 
 	req := httptest.NewRequest("POST", fmt.Sprintf("/api/admin/words/%d/reset", wordCard.ID), nil)
 	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	ctx = context.WithValue(ctx, userRoleKey, "admin")
 	req = req.WithContext(ctx)
 	w := httptest.NewRecorder()
 

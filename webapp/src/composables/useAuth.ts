@@ -4,36 +4,66 @@ import { apiClient } from '../api/client'
 const isAuthenticated = ref(false)
 const isAdmin = ref(false)
 
+// Decode JWT token to extract claims
+function decodeJWT(token: string): any | null {
+  try {
+    const parts = token.split('.')
+    if (parts.length !== 3) {
+      return null
+    }
+    
+    // Decode base64url payload (second part)
+    const payload = parts[1]
+    // Replace base64url characters with base64
+    const base64 = payload.replace(/-/g, '+').replace(/_/g, '/')
+    // Add padding if needed
+    const padded = base64 + '='.repeat((4 - base64.length % 4) % 4)
+    const decoded = atob(padded)
+    return JSON.parse(decoded)
+  } catch (error) {
+    console.error('Failed to decode JWT token:', error)
+    return null
+  }
+}
+
+// Get role from JWT token
+function getRoleFromToken(token: string | null): string {
+  if (!token) {
+    return 'user'
+  }
+  
+  const claims = decodeJWT(token)
+  if (!claims || !claims.role) {
+    return 'user' // Default to user if role is not set
+  }
+  
+  return claims.role
+}
+
 export function useAuth() {
   const checkAuth = () => {
     // Reload tokens from localStorage to ensure they're current
     // This is important when accessing the app directly via URL
     apiClient.loadTokens()
     isAuthenticated.value = apiClient.isAuthenticated()
-  }
-
-  const checkAdmin = async () => {
-    if (!isAuthenticated.value) {
+    
+    // Update admin status from JWT token
+    if (isAuthenticated.value) {
+      const token = localStorage.getItem('access_token')
+      const role = getRoleFromToken(token)
+      isAdmin.value = role === 'admin'
+    } else {
       isAdmin.value = false
-      return
-    }
-
-    try {
-      await apiClient.request('/api/admin')
-      isAdmin.value = true
-    } catch (error: any) {
-      if (error.message?.includes('403') || error.message?.includes('Forbidden')) {
-        isAdmin.value = false
-      } else {
-        isAdmin.value = false
-      }
     }
   }
 
   const login = (accessToken: string, refreshToken: string) => {
     apiClient.saveTokens(accessToken, refreshToken)
     isAuthenticated.value = true
-    checkAdmin()
+    
+    // Extract role from JWT token
+    const role = getRoleFromToken(accessToken)
+    isAdmin.value = role === 'admin'
   }
 
   const logout = () => {
@@ -81,9 +111,7 @@ export function useAuth() {
   }
 
   checkAuth()
-  if (isAuthenticated.value) {
-    checkAdmin()
-  }
+  // Don't automatically check admin status - it's read from JWT token
 
   return {
     isAuthenticated: computed(() => isAuthenticated.value),
@@ -91,7 +119,6 @@ export function useAuth() {
     login,
     logout,
     tryTelegramAuth,
-    checkAdmin,
     checkAuth
   }
 }

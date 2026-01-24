@@ -138,7 +138,7 @@ router.beforeEach(async (to, _from, next) => {
   }
   
   // Get auth state - this will check tokens from localStorage
-  const { isAuthenticated, isAdmin, checkAdmin, checkAuth } = useAuth()
+  const { isAuthenticated, isAdmin, checkAuth } = useAuth()
   
   // Ensure auth state is up to date (especially important on direct URL access)
   // Reload tokens from localStorage and update auth state
@@ -164,10 +164,8 @@ router.beforeEach(async (to, _from, next) => {
     }
   }
   
-  // For admin routes, also check admin status
-  if (to.meta.requiresAdmin) {
-    await checkAdmin()
-  }
+  // Admin status is already checked from JWT token in checkAuth()
+  // No need to make additional requests
   
   if (to.meta.requiresAuth && !isAuthenticated.value) {
     next('/login')

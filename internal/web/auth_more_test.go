@@ -23,7 +23,7 @@ func TestAuthMiddleware_GenerateJWTToken(t *testing.T) {
 
 	middleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-bot-token")
 
-	token, err := middleware.GenerateJWTToken(12345)
+	token, err := middleware.GenerateJWTToken(12345, 12345)
 	if err != nil {
 		t.Fatalf("GenerateJWTToken() error = %v", err)
 	}
@@ -46,7 +46,7 @@ func TestAuthMiddleware_GenerateTokenPair(t *testing.T) {
 
 	middleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-bot-token")
 
-	accessToken, refreshToken, err := middleware.GenerateTokenPair(67890)
+	accessToken, refreshToken, err := middleware.GenerateTokenPair(67890, 67890)
 	if err != nil {
 		t.Fatalf("GenerateTokenPair() error = %v", err)
 	}

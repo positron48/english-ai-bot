@@ -131,7 +131,7 @@ func TestAuthMiddleware_RequireAuth(t *testing.T) {
 
 	// Generate a valid token
 	userID := int64(999)
-	token, err := jwtService.GenerateToken(userID)
+	token, err := jwtService.GenerateToken(userID, "user")
 	if err != nil {
 		t.Fatalf("Failed to generate token: %v", err)
 	}

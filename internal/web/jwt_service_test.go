@@ -85,7 +85,7 @@ func TestJWTService_GenerateToken(t *testing.T) {
 		t.Fatalf("Failed to create JWT service: %v", err)
 	}
 
-	token, err := service.GenerateToken(12345)
+	token, err := service.GenerateToken(12345, "user")
 	if err != nil {
 		t.Fatalf("GenerateToken() error = %v", err)
 	}
@@ -134,30 +134,34 @@ func TestJWTService_ValidateToken(t *testing.T) {
 	}
 
 	userID := int64(12345)
-	token, err := service.GenerateToken(userID)
+	role := "user"
+	token, err := service.GenerateToken(userID, role)
 	if err != nil {
 		t.Fatalf("GenerateToken() error = %v", err)
 	}
 
 	t.Run("Valid token", func(t *testing.T) {
-		validatedID, err := service.ValidateToken(token)
+		validatedID, validatedRole, err := service.ValidateToken(token)
 		if err != nil {
 			t.Fatalf("ValidateToken() error = %v", err)
 		}
 		if validatedID != userID {
 			t.Errorf("ValidateToken() = %d, want %d", validatedID, userID)
 		}
+		if validatedRole != role {
+			t.Errorf("ValidateToken() role = %s, want %s", validatedRole, role)
+		}
 	})
 
 	t.Run("Invalid token", func(t *testing.T) {
-		_, err := service.ValidateToken("invalid.token.here")
+		_, _, err := service.ValidateToken("invalid.token.here")
 		if err == nil {
 			t.Error("ValidateToken() should return error for invalid token")
 		}
 	})
 
 	t.Run("Empty token", func(t *testing.T) {
-		_, err := service.ValidateToken("")
+		_, _, err := service.ValidateToken("")
 		if err == nil {
 			t.Error("ValidateToken() should return error for empty token")
 		}
@@ -269,13 +273,13 @@ func TestJWTService_TokenExpiration(t *testing.T) {
 	}
 
 	// Generate token
-	token, err := service.GenerateToken(12345)
+	token, err := service.GenerateToken(12345, "user")
 	if err != nil {
 		t.Fatalf("GenerateToken() error = %v", err)
 	}
 
 	// Token should be valid immediately
-	_, err = service.ValidateToken(token)
+	_, _, err = service.ValidateToken(token)
 	if err != nil {
 		t.Errorf("ValidateToken() should succeed for fresh token, got error: %v", err)
 	}

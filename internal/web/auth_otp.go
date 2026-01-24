@@ -160,9 +160,18 @@ func (r *Router) handleAuthOTP(w http.ResponseWriter, req *http.Request) {
 
 	r.logger.Info("OTP validated successfully", zap.Int64("user_id", userID), zap.Int64("otp_id", otp.ID))
 
+	// Get user to retrieve telegramID for role determination
+	userRepo := r.userRepo.(*repository.UserRepository)
+	user, err := userRepo.GetUserByID(otp.UserID)
+	if err != nil || user == nil {
+		r.logger.Error("failed to get user", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
 	// Generate JWT token pair
 	auth := r.getAuthMiddleware()
-	accessToken, refreshToken, err := auth.GenerateTokenPair(otp.UserID)
+	accessToken, refreshToken, err := auth.GenerateTokenPair(user.ID, user.TelegramID)
 	if err != nil {
 		r.logger.Error("failed to generate JWT tokens", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
