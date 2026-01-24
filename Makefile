@@ -175,26 +175,25 @@ webapp-install:
 	@cd webapp && npm install
 
 webapp-dev:
-	@echo "Starting webapp dev server..."
-	@cd webapp && npm run dev
+	@echo "Building webapp..."
+	@cd webapp && npm run build
+	@echo "✅ Webapp built. Use 'make run' to start the server."
 
 webapp-build:
 	@echo "Building webapp..."
 	@cd webapp && npm run build
 
-# Development - runs both backend and frontend
-dev: tidy webapp-install
+# Development - builds and runs both backend and frontend
+dev: tidy webapp-install webapp-build grammar-bundle
+	@echo "Building Go binary..."
+	@$(GO) build -o bin/$(APP_NAME) ./cmd/bot
+	@echo "✅ Build complete: bin/$(APP_NAME)"
+	@echo ""
 	@echo "Starting development environment..."
 	@echo "Backend: http://localhost:8184"
-	@echo "Frontend: http://localhost:5173/app"
-	@echo "Note: Using test build tag - webapp files served by Vite dev server"
+	@echo "Frontend: http://localhost:8184/app"
 	@echo ""
-	@echo "=== Backend logs ==="
-	@trap 'kill 0' EXIT; \
-	$(GO) run -tags=test ./cmd/bot 2>&1 | sed 's/^/[BACKEND] /' & \
-	echo "=== Frontend logs ==="; \
-	cd webapp && npm run dev 2>&1 | sed 's/^/[FRONTEND] /' & \
-	wait 
+	./bin/$(APP_NAME) 
 
 up: run
 
