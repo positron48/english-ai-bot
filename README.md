@@ -146,6 +146,11 @@ make migrate-training-cards
 - `/help` - справка
 - `/train` - начать тренировку
 - `/get_id` - получить Telegram ID
+- `/unsubscribe` - отписаться от уведомлений
+- `/notification [daily|never|N]` - настроить периодичность уведомлений
+  - `daily` - ежедневно
+  - `never` - никогда
+  - `N` - каждые N дней (например, `/notification 3`)
 
 ### Админские
 - `/reset_circuit` - сброс circuit breaker
@@ -157,13 +162,43 @@ make migrate-training-cards
 
 Vue 3 SPA, встроенное в Go-бинарник через `go:embed`.
 
+### Функциональность
+
+**Обучение:**
+- **Словарь** (`/vocab`) - просмотр всех изученных слов с карточками
+- **Наборы слов** (`/learning/words`) - управление наборами слов для изучения
+- **Грамматика** (`/learning/grammar`) - интерактивный курс грамматики (в разработке)
+- **Тренировка** (`/training`) - система тренировок с SRS
+
+**Взаимодействие:**
+- **AI Чат** (`/chat`) - общение с AI-преподавателем
+- **Настройки** (`/settings`) - настройки профиля и уведомлений
+
+**Администрирование:**
+- Управление circuit breaker
+- Тестирование промптов
+- Управление orphaned карточками
+- Управление наборами слов
+- Просмотр схемы базы данных
+
 ### Маршруты
 - `/app` или `/app/#/login` - вход
 - `/app/#/dashboard` - дашборд
 - `/app/#/vocab` - словарь
-- `/app/#/training` - тренировка
+- `/app/#/learning` - раздел обучения
+  - `/app/#/learning/grammar` - курс грамматики (в разработке)
+  - `/app/#/learning/words` - наборы слов
+  - `/app/#/learning/words/:setId` - детали набора слов
+  - `/app/#/learning/words/:setId/study` - изучение набора слов
+- `/app/#/training` - тренировка (SRS)
 - `/app/#/chat` - AI чат
+- `/app/#/settings` - настройки
 - `/app/#/admin` - админ-панель
+  - `/app/#/admin/circuit-breaker` - управление circuit breaker
+  - `/app/#/admin/prompt-tester` - тестирование промптов
+  - `/app/#/admin/orphaned-cards` - управление orphaned карточками
+  - `/app/#/admin/word-sets` - управление наборами слов
+  - `/app/#/admin/db-schema` - схема базы данных
 
 ### Аутентификация
 
@@ -190,11 +225,18 @@ Vue 3 SPA, встроенное в Go-бинарник через `go:embed`.
 TELEGRAM_TOKEN=              # Токен бота от @BotFather
 AI_URL=                      # URL AI провайдера
 AI_API_KEY=                  # API ключ
-AI_MODEL=                    # Модель AI
+AI_MODEL=                    # Модель AI (основная)
+AI_MODEL_HIGH=               # Модель AI для сложных задач (опционально)
 AI_PROMPT=                   # Системный промпт (или AI_PROMPT_FILE)
+AI_PROMPT_FILE=              # Файл с промптом (альтернатива AI_PROMPT)
 DATABASE_PATH=               # Путь к SQLite БД
 WEBAPP_JWT_SECRET=           # Секрет для JWT (openssl rand -hex 32)
 ```
+
+**Доступные промпты:**
+- `prompts/simple-assistant.txt` - базовый помощник
+- `prompts/customer-support.txt` - специалист поддержки
+- `prompts/english-teacher.txt` - преподаватель английского (рекомендуется)
 
 ### Тренировки
 
@@ -202,19 +244,51 @@ WEBAPP_JWT_SECRET=           # Секрет для JWT (openssl rand -hex 32)
 TRAINING_WORKER_ENABLED=true              # Включить воркер
 TRAINING_WORKER_INTERVAL=30s              # Интервал обработки
 TRAINING_WORKER_BATCH_SIZE=5              # Размер батча
+TRAINING_LLM_WORKERS=4                    # Количество параллельных воркеров для LLM
 TRAINING_PROMPT_FILE=prompts/training-card-generator.txt
 CIRCUIT_BREAKER_THRESHOLD=5              # Порог для circuit breaker
+CIRCUIT_BREAKER_AUTO_RESET_HOURS=24      # Автосброс circuit breaker (часы)
 TRAINING_OPTIONS_DELAY_MS=5000           # Задержка показа вариантов
 TRAINING_WRONG_ANSWER_DELAY_SECONDS=5    # Задержка после ошибки
+ADMIN_TELEGRAM_ID=                        # ID админа для уведомлений (опционально)
 ```
 
 ### Веб-приложение
 
 ```env
 WEBAPP_JWT_TTL_HOURS=24                  # TTL access token
-WEBAPP_REFRESH_TTL_HOURS=720             # TTL refresh token
-WEBAPP_OTP_TTL_SECONDS=300              # TTL OTP кода
+WEBAPP_REFRESH_TTL_HOURS=720             # TTL refresh token (30 дней)
+WEBAPP_OTP_TTL_SECONDS=300              # TTL OTP кода (5 минут)
 WEBAPP_PUBLIC_URL=https://your-domain.com  # Публичный URL (для CORS)
+WEBAPP_VITE_DEV_SERVER_URL=http://localhost:5173  # URL Vite dev server (только для разработки)
+```
+
+### Rate Limiting (опционально)
+
+```env
+# Лимиты запросов (по умолчанию используются безопасные значения)
+WEBAPP_RATE_LIMIT_AUTH_REQUEST_OTP_PER_IP=10
+WEBAPP_RATE_LIMIT_AUTH_REQUEST_OTP_PER_IP_USER=3
+WEBAPP_RATE_LIMIT_AUTH_OTP_PER_IP=20
+WEBAPP_RATE_LIMIT_AUTH_OTP_PER_IP_USER=5
+WEBAPP_RATE_LIMIT_AUTH_TELEGRAM_UNSAFE_PER_IP=30
+WEBAPP_RATE_LIMIT_AUTH_TELEGRAM_UNSAFE_PER_IP_USER=10
+WEBAPP_RATE_LIMIT_AUTH_TELEGRAM_PER_IP=60
+WEBAPP_RATE_LIMIT_AUTH_REFRESH_PER_IP=60
+WEBAPP_RATE_LIMIT_APP_API_PER_USER=300
+WEBAPP_RATE_LIMIT_APP_CHAT_PER_USER=60
+WEBAPP_RATE_LIMIT_WINDOW_MINUTES=1       # Окно для rate limiting
+WEBAPP_RATE_LIMIT_BURST_MULTIPLIER=2     # Множитель для burst
+```
+
+### Сервер и логирование
+
+```env
+SERVER_ADDRESS=:8080                     # Адрес сервера
+SERVER_PORT=8080                         # Порт сервера
+LOG_LEVEL=info                           # Уровень логирования (debug, info, warn, error)
+TELEGRAM_DEBUG=false                     # Режим отладки Telegram API
+TELEGRAM_UPDATES_TIMEOUT=30              # Таймаут обновлений Telegram
 ```
 
 Полный список переменных см. в `env.example`.
@@ -223,33 +297,72 @@ WEBAPP_PUBLIC_URL=https://your-domain.com  # Публичный URL (для CORS
 
 ```
 english-bot/
-├── cmd/bot/              # Точка входа
+├── cmd/
+│   ├── bot/                      # Точка входа приложения
+│   └── migrate_training_cards/   # Инструмент миграции тренировочных карточек
 ├── internal/
-│   ├── ai/              # AI сервис
-│   ├── bot/             # Telegram бот
-│   ├── config/           # Конфигурация
-│   ├── database/         # Инициализация БД
-│   ├── models/           # Модели данных
-│   ├── repository/       # Репозитории (работа с БД)
-│   ├── service/          # Бизнес-логика
-│   ├── utils/            # Утилиты (Markdown)
-│   └── web/              # Веб-приложение (API + статика)
-├── webapp/               # Vue SPA исходники
+│   ├── ai/                       # AI сервис
+│   ├── bot/                      # Telegram бот
+│   ├── config/                   # Конфигурация
+│   ├── database/                 # Инициализация БД
+│   ├── integration/              # Интеграционные тесты
+│   ├── models/                   # Модели данных
+│   ├── repository/               # Репозитории (работа с БД)
+│   ├── service/                  # Бизнес-логика
+│   ├── utils/                    # Утилиты (Markdown)
+│   └── web/                      # Веб-приложение (API + статика)
+├── webapp/                       # Vue 3 SPA исходники
 │   ├── src/
-│   └── dist/             # Собранный фронтенд (embed в Go)
-├── prompts/              # Промпты для AI
-└── data/                 # SQLite БД (создается автоматически)
+│   │   ├── api/                  # API клиент
+│   │   ├── components/           # Vue компоненты
+│   │   ├── composables/          # Vue composables
+│   │   ├── layouts/              # Layouts
+│   │   ├── router/               # Vue Router
+│   │   ├── views/                # Страницы
+│   │   └── styles/               # Стили
+│   └── dist/                     # Собранный фронтенд (embed в Go)
+├── courses/                      # Курсы обучения
+│   └── english-grammar/          # Курс грамматики английского
+│       ├── admin/                # Админ-панель для просмотра курсов
+│       ├── chapters/             # Главы курса (JSON)
+│       ├── config/               # Конфигурация генерации
+│       ├── prompts/              # Промпты для генерации
+│       ├── scripts/              # Скрипты генерации
+│       └── test/                 # Тестовый веб-сервис для курса
+├── prompts/                      # Промпты для AI
+│   ├── english-teacher.txt       # Промпт преподавателя английского
+│   └── training-card-generator.txt  # Промпт генератора карточек
+├── scripts/                      # Скрипты деплоя и настройки
+├── docs/                         # Документация
+│   ├── JWT_AUTH.md               # Документация JWT аутентификации
+│   ├── nginx-ssl-setup.md       # Настройка nginx с SSL
+│   ├── training.md               # Документация системы тренировок
+│   └── swagger/                  # Swagger документация API
+└── data/                         # SQLite БД (создается автоматически)
 ```
 
 ## Разработка
 
 ```bash
-make setup      # Настройка проекта
-make build      # Сборка
-make run        # Запуск
-make dev        # Разработка
-make test       # Тесты
-make lint       # Линтинг
+make setup-local    # Настройка проекта (создает .env из env.example)
+make build          # Сборка (включает сборку webapp)
+make run            # Запуск
+make dev            # Разработка (backend + frontend одновременно)
+make test           # Тесты
+make test-verbose   # Тесты с подробным выводом
+make lint           # Линтинг
+make fmt            # Форматирование кода
+make check          # Все CI проверки (тесты, линтинг, coverage)
+make swagger        # Генерация Swagger документации
+```
+
+### Интеграционные тесты LLM
+
+```bash
+# Требуют AI_URL и AI_API_KEY
+make llm-words      # Тесты генерации карточек слов
+make llm-cards      # Тесты генерации тренировочных карточек
+make llm-all        # Все LLM тесты
 ```
 
 ### Фронтенд
@@ -263,9 +376,15 @@ npm run dev     # Vite dev server (прокси на :8184)
 ## Docker
 
 ```bash
-make docker-build
-make docker-run
+make docker-build       # Сборка Docker образа
+make docker-run         # Запуск через docker compose
+make docker-stop        # Остановка
+make docker-logs        # Просмотр логов
+make docker-clean       # Очистка (остановка + удаление образа)
+make docker-rebuild     # Пересборка (clean + build + run)
 ```
+
+Для работы с Docker необходимо создать `.env` файл с необходимыми переменными (см. `env.example`).
 
 ## База данных
 
@@ -281,9 +400,38 @@ sqlite3 ./data/words.db
 sqlite3 ./data/words.db ".backup './data/words.db.backup'"
 ```
 
+## Курсы грамматики
+
+Проект включает систему генерации и изучения курсов грамматики английского языка.
+
+### Структура курсов
+
+Курсы находятся в `courses/english-grammar/` и включают:
+- **Главы** (`chapters/`) - JSON файлы с теорией и упражнениями
+- **Конфигурация** (`config/`) - статус генерации и настройки
+- **Админ-панель** (`admin/`) - веб-интерфейс для просмотра и валидации курсов
+- **Тестовый сервис** (`test/`) - веб-сервис для изучения курсов
+
+### Генерация курсов
+
+Подробная информация о генерации курсов находится в `courses/english-grammar/README.md`.
+
+### Просмотр курсов
+
+Для просмотра сгенерированных курсов:
+1. Сгенерируйте индекс: `cd courses/english-grammar/admin && node generate-index.js`
+2. Запустите локальный сервер: `python3 -m http.server 8000`
+3. Откройте `http://localhost:8000/admin/` в браузере
+
 ## Деплой
 
 См. [DEPLOYMENT.md](DEPLOYMENT.md)
+
+Подробная документация по:
+- Настройке сервера
+- Деплою через GitHub releases
+- Настройке systemd сервиса
+- Настройке nginx с SSL
 
 ## Лицензия
 
