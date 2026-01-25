@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "last_updated": "2026-01-20T12:05:27.506486Z",
+  "last_updated": "2026-01-24T18:35:18.068301Z",
   "sections": [
     {
       "section_id": "en.grammar.orientation_how_to_read",
@@ -31,7 +31,7 @@
     },
     {
       "section_id": "en.grammar.talking_about_things_nouns",
-      "title": "Talking about \u201cthings\u201d: nouns, quantity, possession",
+      "title": "Talking about “things”: nouns, quantity, possession",
       "level": "A1",
       "order": 2,
       "chapter_ids": [
@@ -63,7 +63,7 @@
     },
     {
       "section_id": "en.grammar.now_present_continuous_contrast",
-      "title": "\u201cNow\u201d: **Present Continuous** + contrast with Present Simple",
+      "title": "“Now”: **Present Continuous** + contrast with Present Simple",
       "level": "A2",
       "order": 4,
       "chapter_ids": [
@@ -313,7 +313,7 @@
     {
       "chapter_id": "en.grammar.orientation_how_to_read.verb_forms_v1_v2",
       "section_id": "en.grammar.orientation_how_to_read",
-      "title": "Verb forms: V1 / V2 / V3 \u2014 what they are and why they matter",
+      "title": "Verb forms: V1 / V2 / V3 — what they are and why they matter",
       "level": "A0",
       "order": 2,
       "status": "generated",
@@ -337,7 +337,7 @@
     {
       "chapter_id": "en.grammar.orientation_how_to_read.sentence_modes_statement_question",
       "section_id": "en.grammar.orientation_how_to_read",
-      "title": "Sentence modes: statement \u2192 question \u2192 negative (as \"switches\" of one idea)",
+      "title": "Sentence modes: statement → question → negative (as \"switches\" of one idea)",
       "level": "A0",
       "order": 3,
       "status": "generated",
@@ -361,7 +361,7 @@
     {
       "chapter_id": "en.grammar.first_sentences_be_as.personal_pronouns_am_is",
       "section_id": "en.grammar.first_sentences_be_as",
-      "title": "Personal pronouns + am/is/are (I am, you are\u2026)",
+      "title": "Personal pronouns + am/is/are (I am, you are…)",
       "level": "A1",
       "order": 101,
       "status": "generated",
@@ -409,7 +409,7 @@
     {
       "chapter_id": "en.grammar.first_sentences_be_as.questions_with_be_are",
       "section_id": "en.grammar.first_sentences_be_as",
-      "title": "Questions with be: Are you\u2026? What is\u2026? (+ short answers)",
+      "title": "Questions with be: Are you…? What is…? (+ short answers)",
       "level": "A1",
       "order": 103,
       "status": "generated",
@@ -433,7 +433,7 @@
     {
       "chapter_id": "en.grammar.first_sentences_be_as.negatives_with_be_not",
       "section_id": "en.grammar.first_sentences_be_as",
-      "title": "Negatives with be: not, isn\u2019t/aren\u2019t",
+      "title": "Negatives with be: not, isn’t/aren’t",
       "level": "A1",
       "order": 104,
       "status": "generated",
@@ -457,7 +457,7 @@
     {
       "chapter_id": "en.grammar.first_sentences_be_as.an_as_one_of",
       "section_id": "en.grammar.first_sentences_be_as",
-      "title": "**a/an** as \u201cone of many\u201d: This is a book",
+      "title": "**a/an** as “one of many”: This is a book",
       "level": "A1",
       "order": 105,
       "status": "generated",
@@ -553,7 +553,7 @@
     {
       "chapter_id": "en.grammar.talking_about_things_nouns.singular_plural_s_basic",
       "section_id": "en.grammar.talking_about_things_nouns",
-      "title": "Singular/plural: -s + basic irregulars (children, men\u2026)",
+      "title": "Singular/plural: -s + basic irregulars (children, men…)",
       "level": "A1",
       "order": 201,
       "status": "generated",
@@ -601,7 +601,7 @@
     {
       "chapter_id": "en.grammar.talking_about_things_nouns.some_any_there_is",
       "section_id": "en.grammar.talking_about_things_nouns",
-      "title": "**some/any** (starter level): there is some\u2026, are there any\u2026?",
+      "title": "**some/any** (starter level): there is some…, are there any…?",
       "level": "A1",
       "order": 203,
       "status": "generated",
@@ -793,7 +793,7 @@
     {
       "chapter_id": "en.grammar.first_actions_present_simple.questions_with_do_does",
       "section_id": "en.grammar.first_actions_present_simple",
-      "title": "Questions with **do/does**: Do you\u2026? What do you\u2026?",
+      "title": "Questions with **do/does**: Do you…? What do you…?",
       "level": "A1",
       "order": 303,
       "status": "generated",
@@ -860,7 +860,7 @@
     {
       "chapter_id": "en.grammar.first_actions_present_simple.frequency_adverbs_always_often",
       "section_id": "en.grammar.first_actions_present_simple",
-      "title": "Frequency adverbs: always/often/sometimes/never \u2014 placement",
+      "title": "Frequency adverbs: always/often/sometimes/never — placement",
       "level": "A1",
       "order": 306,
       "status": "validated",
@@ -884,7 +884,7 @@
     {
       "chapter_id": "en.grammar.first_actions_present_simple.imperatives_open_don_t",
       "section_id": "en.grammar.first_actions_present_simple",
-      "title": "Imperatives: Open\u2026 / Don't open\u2026 + Let's\u2026",
+      "title": "Imperatives: Open… / Don't open… + Let's…",
       "level": "A1",
       "order": 307,
       "status": "validated",
@@ -908,7 +908,7 @@
     {
       "chapter_id": "en.grammar.first_actions_present_simple.build_speak_my_day",
       "section_id": "en.grammar.first_actions_present_simple",
-      "title": "Build & speak: \u201cmy day / my routine / my habits\u201d",
+      "title": "Build & speak: “my day / my routine / my habits”",
       "level": "A1",
       "order": 308,
       "status": "generated",
@@ -994,7 +994,7 @@
     {
       "chapter_id": "en.grammar.now_present_continuous_contrast.stative_verbs_know_like",
       "section_id": "en.grammar.now_present_continuous_contrast",
-      "title": "Stative verbs: know/like/believe\u2026 (+ common exceptions)",
+      "title": "Stative verbs: know/like/believe… (+ common exceptions)",
       "level": "A2",
       "order": 404,
       "status": "generated",
@@ -1133,7 +1133,7 @@
     {
       "chapter_id": "en.grammar.past_1_past_simple.questions_with_did_did",
       "section_id": "en.grammar.past_1_past_simple",
-      "title": "Questions with **did**: Did you\u2026? Where did you\u2026?",
+      "title": "Questions with **did**: Did you…? Where did you…?",
       "level": "A2",
       "order": 504,
       "status": "generated",
@@ -1157,7 +1157,7 @@
     {
       "chapter_id": "en.grammar.past_1_past_simple.negatives_didn_t_v1",
       "section_id": "en.grammar.past_1_past_simple",
-      "title": "Negatives: didn\u2019t + V1",
+      "title": "Negatives: didn’t + V1",
       "level": "A2",
       "order": 505,
       "status": "generated",
@@ -1181,7 +1181,7 @@
     {
       "chapter_id": "en.grammar.past_1_past_simple.time_markers_yesterday_last",
       "section_id": "en.grammar.past_1_past_simple",
-      "title": "Time markers: yesterday/last\u2026/\u2026ago/in 2020",
+      "title": "Time markers: yesterday/last…/…ago/in 2020",
       "level": "A2",
       "order": 506,
       "status": "generated",
@@ -1229,7 +1229,7 @@
     {
       "chapter_id": "en.grammar.past_1_past_simple.build_speak_a_short",
       "section_id": "en.grammar.past_1_past_simple",
-      "title": "Build & speak: a short story (6\u201310 sentences)",
+      "title": "Build & speak: a short story (6–10 sentences)",
       "level": "A2",
       "order": 508,
       "status": "generated",
@@ -1325,7 +1325,7 @@
     {
       "chapter_id": "en.grammar.past_2_background_process.two_parallel_actions_while",
       "section_id": "en.grammar.past_2_background_process",
-      "title": "Two parallel actions: while I was\u2026, she was\u2026",
+      "title": "Two parallel actions: while I was…, she was…",
       "level": "A2",
       "order": 604,
       "status": "generated",
@@ -1421,7 +1421,7 @@
     {
       "chapter_id": "en.grammar.future_plans.present_continuous_for_arrangements",
       "section_id": "en.grammar.future_plans",
-      "title": "Present Continuous for arrangements (I\u2019m meeting\u2026)",
+      "title": "Present Continuous for arrangements (I’m meeting…)",
       "level": "A2",
       "order": 703,
       "status": "generated",
@@ -1445,7 +1445,7 @@
     {
       "chapter_id": "en.grammar.future_plans.time_clauses_when_after",
       "section_id": "en.grammar.future_plans",
-      "title": "Time clauses: when/after/as soon as \u2014 **no will** in the time clause",
+      "title": "Time clauses: when/after/as soon as — **no will** in the time clause",
       "level": "A2",
       "order": 704,
       "status": "generated",
@@ -1493,7 +1493,7 @@
     {
       "chapter_id": "en.grammar.core_modality_ability_permission.can_can_t_ability",
       "section_id": "en.grammar.core_modality_ability_permission",
-      "title": "can/can\u2019t: ability/permission/possibility",
+      "title": "can/can’t: ability/permission/possibility",
       "level": "A2",
       "order": 801,
       "status": "generated",
@@ -1517,7 +1517,7 @@
     {
       "chapter_id": "en.grammar.core_modality_ability_permission.could_polite_requests_could",
       "section_id": "en.grammar.core_modality_ability_permission",
-      "title": "could: polite requests, \u201ccould you\u2026?\u201d",
+      "title": "could: polite requests, “could you…?”",
       "level": "A2",
       "order": 802,
       "status": "generated",
@@ -1565,7 +1565,7 @@
     {
       "chapter_id": "en.grammar.core_modality_ability_permission.mustn_t_vs_don",
       "section_id": "en.grammar.core_modality_ability_permission",
-      "title": "mustn\u2019t vs don\u2019t have to: prohibition vs \u201cnot necessary\u201d",
+      "title": "mustn’t vs don’t have to: prohibition vs “not necessary”",
       "level": "A2",
       "order": 804,
       "status": "generated",
@@ -1660,7 +1660,7 @@
     {
       "chapter_id": "en.grammar.noun_system_upgrade_countability.countable_vs_uncountable",
       "section_id": "en.grammar.noun_system_upgrade_countability",
-      "title": "Countable vs uncountable (money, advice, information\u2026)",
+      "title": "Countable vs uncountable (money, advice, information…)",
       "level": "B1",
       "order": 901,
       "status": "generated",
@@ -1708,7 +1708,7 @@
     {
       "chapter_id": "en.grammar.noun_system_upgrade_countability.some_any_in_offers",
       "section_id": "en.grammar.noun_system_upgrade_countability",
-      "title": "some/any in offers/requests (Would you like some\u2026?)",
+      "title": "some/any in offers/requests (Would you like some…?)",
       "level": "B1",
       "order": 903,
       "status": "generated",
@@ -1732,7 +1732,7 @@
     {
       "chapter_id": "en.grammar.noun_system_upgrade_countability.shared_knowledge_specific_reference",
       "section_id": "en.grammar.noun_system_upgrade_countability",
-      "title": "**the**: shared knowledge / specific reference (\u201cwe both know which one\u201d)",
+      "title": "**the**: shared knowledge / specific reference (“we both know which one”)",
       "level": "B1",
       "order": 904,
       "status": "generated",
@@ -1780,7 +1780,7 @@
     {
       "chapter_id": "en.grammar.noun_system_upgrade_countability.special_cases",
       "section_id": "en.grammar.noun_system_upgrade_countability",
-      "title": "Special cases (geography, institutions, \u201cschool vs the school\u201d)",
+      "title": "Special cases (geography, institutions, “school vs the school”)",
       "level": "B1",
       "order": 906,
       "status": "generated",
@@ -1876,7 +1876,7 @@
     {
       "chapter_id": "en.grammar.describing_precisely_adjectives_adverbs.adjective_order",
       "section_id": "en.grammar.describing_precisely_adjectives_adverbs",
-      "title": "Adjective order (simple \u2192 full rule)",
+      "title": "Adjective order (simple → full rule)",
       "level": "B1",
       "order": 1002,
       "status": "generated",
@@ -1900,7 +1900,7 @@
     {
       "chapter_id": "en.grammar.describing_precisely_adjectives_adverbs.comparatives_superlatives_irregulars",
       "section_id": "en.grammar.describing_precisely_adjectives_adverbs",
-      "title": "Comparatives/superlatives + irregulars (better/best\u2026)",
+      "title": "Comparatives/superlatives + irregulars (better/best…)",
       "level": "B1",
       "order": 1003,
       "status": "generated",
@@ -1924,7 +1924,7 @@
     {
       "chapter_id": "en.grammar.describing_precisely_adjectives_adverbs.as_as_not_as",
       "section_id": "en.grammar.describing_precisely_adjectives_adverbs",
-      "title": "as\u2026as / not as\u2026as / the\u2026the\u2026",
+      "title": "as…as / not as…as / the…the…",
       "level": "B1",
       "order": 1004,
       "status": "generated",
@@ -2116,7 +2116,7 @@
     {
       "chapter_id": "en.grammar.prepositions_verb_patterns.verb_preposition_look_for",
       "section_id": "en.grammar.prepositions_verb_patterns",
-      "title": "Verb + preposition: look for, depend on, listen to\u2026",
+      "title": "Verb + preposition: look for, depend on, listen to…",
       "level": "B1",
       "order": 1104,
       "status": "generated",
@@ -2140,7 +2140,7 @@
     {
       "chapter_id": "en.grammar.prepositions_verb_patterns.adjective_preposition_afraid_of",
       "section_id": "en.grammar.prepositions_verb_patterns",
-      "title": "Adjective + preposition: afraid of, good at, interested in\u2026",
+      "title": "Adjective + preposition: afraid of, good at, interested in…",
       "level": "B1",
       "order": 1105,
       "status": "generated",
@@ -2188,7 +2188,7 @@
     {
       "chapter_id": "en.grammar.prepositions_verb_patterns.build_speak_directions_location",
       "section_id": "en.grammar.prepositions_verb_patterns",
-      "title": "Build & speak: directions + location + what you\u2019re looking for",
+      "title": "Build & speak: directions + location + what you’re looking for",
       "level": "B1",
       "order": 1107,
       "status": "generated",
@@ -2284,7 +2284,7 @@
     {
       "chapter_id": "en.grammar.complex_sentences_1_connecting.noun_clauses_i_think",
       "section_id": "en.grammar.complex_sentences_1_connecting",
-      "title": "Noun clauses: I think (that)\u2026 / I don\u2019t know if\u2026",
+      "title": "Noun clauses: I think (that)… / I don’t know if…",
       "level": "B1",
       "order": 1204,
       "status": "generated",
@@ -2308,7 +2308,7 @@
     {
       "chapter_id": "en.grammar.complex_sentences_1_connecting.indirect_questions_could_you",
       "section_id": "en.grammar.complex_sentences_1_connecting",
-      "title": "Indirect questions: Could you tell me\u2026? (word order!)",
+      "title": "Indirect questions: Could you tell me…? (word order!)",
       "level": "B1",
       "order": 1205,
       "status": "validated",
@@ -2380,7 +2380,7 @@
     {
       "chapter_id": "en.grammar.complex_sentences_1_connecting.build_write_a_120",
       "section_id": "en.grammar.complex_sentences_1_connecting",
-      "title": "Build & write: a 120\u2013180 word text using connectors + 2 relative clauses",
+      "title": "Build & write: a 120–180 word text using connectors + 2 relative clauses",
       "level": "B1",
       "order": 1208,
       "status": "generated",
@@ -2428,7 +2428,7 @@
     {
       "chapter_id": "en.grammar.perfect_aspect_experience_result.result_i_ve_lost",
       "section_id": "en.grammar.perfect_aspect_experience_result",
-      "title": "Result: I\u2019ve lost my keys (result matters now)",
+      "title": "Result: I’ve lost my keys (result matters now)",
       "level": "B1",
       "order": 1302,
       "status": "generated",
@@ -2452,7 +2452,7 @@
     {
       "chapter_id": "en.grammar.perfect_aspect_experience_result.experience_have_you_ever",
       "section_id": "en.grammar.perfect_aspect_experience_result",
-      "title": "Experience: Have you ever\u2026? never/before; been vs gone",
+      "title": "Experience: Have you ever…? never/before; been vs gone",
       "level": "B1",
       "order": 1303,
       "status": "generated",
@@ -2476,7 +2476,7 @@
     {
       "chapter_id": "en.grammar.perfect_aspect_experience_result.duration_for_since_how",
       "section_id": "en.grammar.perfect_aspect_experience_result",
-      "title": "Duration: for/since; How long\u2026? (link to now)",
+      "title": "Duration: for/since; How long…? (link to now)",
       "level": "B1",
       "order": 1304,
       "status": "generated",
@@ -2524,7 +2524,7 @@
     {
       "chapter_id": "en.grammar.perfect_aspect_experience_result.past_perfect_past_before",
       "section_id": "en.grammar.perfect_aspect_experience_result",
-      "title": "Past Perfect: \u201cpast before another past\u201d",
+      "title": "Past Perfect: “past before another past”",
       "level": "B1",
       "order": 1306,
       "status": "generated",
@@ -2599,9 +2599,23 @@
       "title": "Passive basics: be + V3 (when and why)",
       "level": "B2",
       "order": 1401,
-      "status": "pending",
+      "status": "generated",
       "input_file": "config/chapter-templates/en.grammar.voice_focus_passive_and.passive_basics_be_v3-input.json",
-      "output_dir": "chapters/098.en.grammar.voice_focus_passive_and.passive_basics_be_v3"
+      "output_dir": "chapters/098.en.grammar.voice_focus_passive_and.passive_basics_be_v3",
+      "started_at": "2026-01-24T07:30:21.041583Z",
+      "completed_at": "2026-01-24T07:33:23.835032Z",
+      "files": {
+        "outline": "chapters/098.en.grammar.voice_focus_passive_and.passive_basics_be_v3/01-outline.json",
+        "theory_blocks": "chapters/098.en.grammar.voice_focus_passive_and.passive_basics_be_v3/02-theory-blocks/",
+        "questions": "chapters/098.en.grammar.voice_focus_passive_and.passive_basics_be_v3/03-questions.json",
+        "inline_quizzes": "chapters/098.en.grammar.voice_focus_passive_and.passive_basics_be_v3/04-inline-quizzes.json",
+        "final": "chapters/098.en.grammar.voice_focus_passive_and.passive_basics_be_v3/05-final.json",
+        "validation": "chapters/098.en.grammar.voice_focus_passive_and.passive_basics_be_v3/05-validation.json"
+      },
+      "validation": {
+        "is_valid": true,
+        "last_validated": "2026-01-24T07:33:23.835032Z"
+      }
     },
     {
       "chapter_id": "en.grammar.voice_focus_passive_and.passive_across_tenses",
@@ -2609,9 +2623,23 @@
       "title": "Passive across tenses (present/past/perfect)",
       "level": "B2",
       "order": 1402,
-      "status": "pending",
+      "status": "generated",
       "input_file": "config/chapter-templates/en.grammar.voice_focus_passive_and.passive_across_tenses-input.json",
-      "output_dir": "chapters/099.en.grammar.voice_focus_passive_and.passive_across_tenses"
+      "output_dir": "chapters/099.en.grammar.voice_focus_passive_and.passive_across_tenses",
+      "started_at": "2026-01-24T07:35:28.971685Z",
+      "completed_at": "2026-01-24T07:38:40.550768Z",
+      "files": {
+        "outline": "chapters/099.en.grammar.voice_focus_passive_and.passive_across_tenses/01-outline.json",
+        "theory_blocks": "chapters/099.en.grammar.voice_focus_passive_and.passive_across_tenses/02-theory-blocks/",
+        "questions": "chapters/099.en.grammar.voice_focus_passive_and.passive_across_tenses/03-questions.json",
+        "inline_quizzes": "chapters/099.en.grammar.voice_focus_passive_and.passive_across_tenses/04-inline-quizzes.json",
+        "final": "chapters/099.en.grammar.voice_focus_passive_and.passive_across_tenses/05-final.json",
+        "validation": "chapters/099.en.grammar.voice_focus_passive_and.passive_across_tenses/05-validation.json"
+      },
+      "validation": {
+        "is_valid": true,
+        "last_validated": "2026-01-24T07:38:40.550768Z"
+      }
     },
     {
       "chapter_id": "en.grammar.voice_focus_passive_and.by_agent_when_to",
@@ -2619,19 +2647,47 @@
       "title": "by-agent: when to include it / omit it",
       "level": "B2",
       "order": 1403,
-      "status": "pending",
+      "status": "generated",
       "input_file": "config/chapter-templates/en.grammar.voice_focus_passive_and.by_agent_when_to-input.json",
-      "output_dir": "chapters/100.en.grammar.voice_focus_passive_and.by_agent_when_to"
+      "output_dir": "chapters/100.en.grammar.voice_focus_passive_and.by_agent_when_to",
+      "started_at": "2026-01-24T07:41:43.170251Z",
+      "completed_at": "2026-01-24T07:45:36.712623Z",
+      "files": {
+        "outline": "chapters/100.en.grammar.voice_focus_passive_and.by_agent_when_to/01-outline.json",
+        "theory_blocks": "chapters/100.en.grammar.voice_focus_passive_and.by_agent_when_to/02-theory-blocks/",
+        "questions": "chapters/100.en.grammar.voice_focus_passive_and.by_agent_when_to/03-questions.json",
+        "inline_quizzes": "chapters/100.en.grammar.voice_focus_passive_and.by_agent_when_to/04-inline-quizzes.json",
+        "final": "chapters/100.en.grammar.voice_focus_passive_and.by_agent_when_to/05-final.json",
+        "validation": "chapters/100.en.grammar.voice_focus_passive_and.by_agent_when_to/05-validation.json"
+      },
+      "validation": {
+        "is_valid": true,
+        "last_validated": "2026-01-24T07:45:36.712623Z"
+      }
     },
     {
       "chapter_id": "en.grammar.voice_focus_passive_and.get_passive_it_happened",
       "section_id": "en.grammar.voice_focus_passive_and",
-      "title": "Get-passive: \u201cit happened to me\u201d nuance",
+      "title": "Get-passive: “it happened to me” nuance",
       "level": "B2",
       "order": 1404,
-      "status": "pending",
+      "status": "generated",
       "input_file": "config/chapter-templates/en.grammar.voice_focus_passive_and.get_passive_it_happened-input.json",
-      "output_dir": "chapters/101.en.grammar.voice_focus_passive_and.get_passive_it_happened"
+      "output_dir": "chapters/101.en.grammar.voice_focus_passive_and.get_passive_it_happened",
+      "started_at": "2026-01-24T07:46:17.993240Z",
+      "completed_at": "2026-01-24T07:49:53.373656Z",
+      "files": {
+        "outline": "chapters/101.en.grammar.voice_focus_passive_and.get_passive_it_happened/01-outline.json",
+        "theory_blocks": "chapters/101.en.grammar.voice_focus_passive_and.get_passive_it_happened/02-theory-blocks/",
+        "questions": "chapters/101.en.grammar.voice_focus_passive_and.get_passive_it_happened/03-questions.json",
+        "inline_quizzes": "chapters/101.en.grammar.voice_focus_passive_and.get_passive_it_happened/04-inline-quizzes.json",
+        "final": "chapters/101.en.grammar.voice_focus_passive_and.get_passive_it_happened/05-final.json",
+        "validation": "chapters/101.en.grammar.voice_focus_passive_and.get_passive_it_happened/05-validation.json"
+      },
+      "validation": {
+        "is_valid": true,
+        "last_validated": "2026-01-24T07:49:53.373656Z"
+      }
     },
     {
       "chapter_id": "en.grammar.voice_focus_passive_and.causative_have_get_something",
@@ -2639,19 +2695,47 @@
       "title": "Causative: have/get something done",
       "level": "B2",
       "order": 1405,
-      "status": "pending",
+      "status": "generated",
       "input_file": "config/chapter-templates/en.grammar.voice_focus_passive_and.causative_have_get_something-input.json",
-      "output_dir": "chapters/102.en.grammar.voice_focus_passive_and.causative_have_get_something"
+      "output_dir": "chapters/102.en.grammar.voice_focus_passive_and.causative_have_get_something",
+      "started_at": "2026-01-24T07:53:36.888667Z",
+      "completed_at": "2026-01-24T07:57:06.291706Z",
+      "files": {
+        "outline": "chapters/102.en.grammar.voice_focus_passive_and.causative_have_get_something/01-outline.json",
+        "theory_blocks": "chapters/102.en.grammar.voice_focus_passive_and.causative_have_get_something/02-theory-blocks/",
+        "questions": "chapters/102.en.grammar.voice_focus_passive_and.causative_have_get_something/03-questions.json",
+        "inline_quizzes": "chapters/102.en.grammar.voice_focus_passive_and.causative_have_get_something/04-inline-quizzes.json",
+        "final": "chapters/102.en.grammar.voice_focus_passive_and.causative_have_get_something/05-final.json",
+        "validation": "chapters/102.en.grammar.voice_focus_passive_and.causative_have_get_something/05-validation.json"
+      },
+      "validation": {
+        "is_valid": true,
+        "last_validated": "2026-01-24T07:57:06.291706Z"
+      }
     },
     {
       "chapter_id": "en.grammar.voice_focus_passive_and.impersonal_passive_it_is",
       "section_id": "en.grammar.voice_focus_passive_and",
-      "title": "Impersonal passive: It is said that\u2026 / He is believed to\u2026",
+      "title": "Impersonal passive: It is said that… / He is believed to…",
       "level": "B2",
       "order": 1406,
-      "status": "pending",
+      "status": "generated",
       "input_file": "config/chapter-templates/en.grammar.voice_focus_passive_and.impersonal_passive_it_is-input.json",
-      "output_dir": "chapters/103.en.grammar.voice_focus_passive_and.impersonal_passive_it_is"
+      "output_dir": "chapters/103.en.grammar.voice_focus_passive_and.impersonal_passive_it_is",
+      "started_at": "2026-01-24T07:59:45.276727Z",
+      "completed_at": "2026-01-24T08:03:34.961493Z",
+      "files": {
+        "outline": "chapters/103.en.grammar.voice_focus_passive_and.impersonal_passive_it_is/01-outline.json",
+        "theory_blocks": "chapters/103.en.grammar.voice_focus_passive_and.impersonal_passive_it_is/02-theory-blocks/",
+        "questions": "chapters/103.en.grammar.voice_focus_passive_and.impersonal_passive_it_is/03-questions.json",
+        "inline_quizzes": "chapters/103.en.grammar.voice_focus_passive_and.impersonal_passive_it_is/04-inline-quizzes.json",
+        "final": "chapters/103.en.grammar.voice_focus_passive_and.impersonal_passive_it_is/05-final.json",
+        "validation": "chapters/103.en.grammar.voice_focus_passive_and.impersonal_passive_it_is/05-validation.json"
+      },
+      "validation": {
+        "is_valid": true,
+        "last_validated": "2026-01-24T08:03:34.961493Z"
+      }
     },
     {
       "chapter_id": "en.grammar.voice_focus_passive_and.build_write_news_processes",
@@ -2659,9 +2743,23 @@
       "title": "Build & write: news/processes/services (passive + causative)",
       "level": "B2",
       "order": 1407,
-      "status": "pending",
+      "status": "generated",
       "input_file": "config/chapter-templates/en.grammar.voice_focus_passive_and.build_write_news_processes-input.json",
-      "output_dir": "chapters/104.en.grammar.voice_focus_passive_and.build_write_news_processes"
+      "output_dir": "chapters/104.en.grammar.voice_focus_passive_and.build_write_news_processes",
+      "started_at": "2026-01-24T08:04:49.019664Z",
+      "completed_at": "2026-01-24T08:08:01.768612Z",
+      "files": {
+        "outline": "chapters/104.en.grammar.voice_focus_passive_and.build_write_news_processes/01-outline.json",
+        "theory_blocks": "chapters/104.en.grammar.voice_focus_passive_and.build_write_news_processes/02-theory-blocks/",
+        "questions": "chapters/104.en.grammar.voice_focus_passive_and.build_write_news_processes/03-questions.json",
+        "inline_quizzes": "chapters/104.en.grammar.voice_focus_passive_and.build_write_news_processes/04-inline-quizzes.json",
+        "final": "chapters/104.en.grammar.voice_focus_passive_and.build_write_news_processes/05-final.json",
+        "validation": "chapters/104.en.grammar.voice_focus_passive_and.build_write_news_processes/05-validation.json"
+      },
+      "validation": {
+        "is_valid": true,
+        "last_validated": "2026-01-24T08:08:01.768612Z"
+      }
     },
     {
       "chapter_id": "en.grammar.conditionals_hypotheticals.zero_conditional",
@@ -2669,9 +2767,23 @@
       "title": "Zero conditional (general truths)",
       "level": "B2",
       "order": 1501,
-      "status": "pending",
+      "status": "generated",
       "input_file": "config/chapter-templates/en.grammar.conditionals_hypotheticals.zero_conditional-input.json",
-      "output_dir": "chapters/105.en.grammar.conditionals_hypotheticals.zero_conditional"
+      "output_dir": "chapters/105.en.grammar.conditionals_hypotheticals.zero_conditional",
+      "started_at": "2026-01-24T08:13:47.477238Z",
+      "completed_at": "2026-01-24T08:17:36.346664Z",
+      "files": {
+        "outline": "chapters/105.en.grammar.conditionals_hypotheticals.zero_conditional/01-outline.json",
+        "theory_blocks": "chapters/105.en.grammar.conditionals_hypotheticals.zero_conditional/02-theory-blocks/",
+        "questions": "chapters/105.en.grammar.conditionals_hypotheticals.zero_conditional/03-questions.json",
+        "inline_quizzes": "chapters/105.en.grammar.conditionals_hypotheticals.zero_conditional/04-inline-quizzes.json",
+        "final": "chapters/105.en.grammar.conditionals_hypotheticals.zero_conditional/05-final.json",
+        "validation": "chapters/105.en.grammar.conditionals_hypotheticals.zero_conditional/05-validation.json"
+      },
+      "validation": {
+        "is_valid": true,
+        "last_validated": "2026-01-24T08:17:36.346664Z"
+      }
     },
     {
       "chapter_id": "en.grammar.conditionals_hypotheticals.first_conditional",
@@ -2679,9 +2791,23 @@
       "title": "First conditional (real future)",
       "level": "B2",
       "order": 1502,
-      "status": "pending",
+      "status": "generated",
       "input_file": "config/chapter-templates/en.grammar.conditionals_hypotheticals.first_conditional-input.json",
-      "output_dir": "chapters/106.en.grammar.conditionals_hypotheticals.first_conditional"
+      "output_dir": "chapters/106.en.grammar.conditionals_hypotheticals.first_conditional",
+      "started_at": "2026-01-24T08:19:09.347817Z",
+      "completed_at": "2026-01-24T08:23:16.833082Z",
+      "files": {
+        "outline": "chapters/106.en.grammar.conditionals_hypotheticals.first_conditional/01-outline.json",
+        "theory_blocks": "chapters/106.en.grammar.conditionals_hypotheticals.first_conditional/02-theory-blocks/",
+        "questions": "chapters/106.en.grammar.conditionals_hypotheticals.first_conditional/03-questions.json",
+        "inline_quizzes": "chapters/106.en.grammar.conditionals_hypotheticals.first_conditional/04-inline-quizzes.json",
+        "final": "chapters/106.en.grammar.conditionals_hypotheticals.first_conditional/05-final.json",
+        "validation": "chapters/106.en.grammar.conditionals_hypotheticals.first_conditional/05-validation.json"
+      },
+      "validation": {
+        "is_valid": true,
+        "last_validated": "2026-01-24T08:23:16.833082Z"
+      }
     },
     {
       "chapter_id": "en.grammar.conditionals_hypotheticals.second_conditional",
@@ -2689,9 +2815,23 @@
       "title": "Second conditional (unreal present/future)",
       "level": "B2",
       "order": 1503,
-      "status": "pending",
+      "status": "generated",
       "input_file": "config/chapter-templates/en.grammar.conditionals_hypotheticals.second_conditional-input.json",
-      "output_dir": "chapters/107.en.grammar.conditionals_hypotheticals.second_conditional"
+      "output_dir": "chapters/107.en.grammar.conditionals_hypotheticals.second_conditional",
+      "started_at": "2026-01-24T08:24:14.900889Z",
+      "completed_at": "2026-01-24T08:28:42.366623Z",
+      "files": {
+        "outline": "chapters/107.en.grammar.conditionals_hypotheticals.second_conditional/01-outline.json",
+        "theory_blocks": "chapters/107.en.grammar.conditionals_hypotheticals.second_conditional/02-theory-blocks/",
+        "questions": "chapters/107.en.grammar.conditionals_hypotheticals.second_conditional/03-questions.json",
+        "inline_quizzes": "chapters/107.en.grammar.conditionals_hypotheticals.second_conditional/04-inline-quizzes.json",
+        "final": "chapters/107.en.grammar.conditionals_hypotheticals.second_conditional/05-final.json",
+        "validation": "chapters/107.en.grammar.conditionals_hypotheticals.second_conditional/05-validation.json"
+      },
+      "validation": {
+        "is_valid": true,
+        "last_validated": "2026-01-24T08:28:42.366623Z"
+      }
     },
     {
       "chapter_id": "en.grammar.conditionals_hypotheticals.third_conditional",
@@ -2699,9 +2839,23 @@
       "title": "Third conditional (unreal past)",
       "level": "B2",
       "order": 1504,
-      "status": "pending",
+      "status": "generated",
       "input_file": "config/chapter-templates/en.grammar.conditionals_hypotheticals.third_conditional-input.json",
-      "output_dir": "chapters/108.en.grammar.conditionals_hypotheticals.third_conditional"
+      "output_dir": "chapters/108.en.grammar.conditionals_hypotheticals.third_conditional",
+      "started_at": "2026-01-24T08:29:23.920770Z",
+      "completed_at": "2026-01-24T08:33:09.568790Z",
+      "files": {
+        "outline": "chapters/108.en.grammar.conditionals_hypotheticals.third_conditional/01-outline.json",
+        "theory_blocks": "chapters/108.en.grammar.conditionals_hypotheticals.third_conditional/02-theory-blocks/",
+        "questions": "chapters/108.en.grammar.conditionals_hypotheticals.third_conditional/03-questions.json",
+        "inline_quizzes": "chapters/108.en.grammar.conditionals_hypotheticals.third_conditional/04-inline-quizzes.json",
+        "final": "chapters/108.en.grammar.conditionals_hypotheticals.third_conditional/05-final.json",
+        "validation": "chapters/108.en.grammar.conditionals_hypotheticals.third_conditional/05-validation.json"
+      },
+      "validation": {
+        "is_valid": true,
+        "last_validated": "2026-01-24T08:33:09.568790Z"
+      }
     },
     {
       "chapter_id": "en.grammar.conditionals_hypotheticals.mixed_conditionals",
@@ -2709,9 +2863,23 @@
       "title": "Mixed conditionals",
       "level": "B2",
       "order": 1505,
-      "status": "pending",
+      "status": "generated",
       "input_file": "config/chapter-templates/en.grammar.conditionals_hypotheticals.mixed_conditionals-input.json",
-      "output_dir": "chapters/109.en.grammar.conditionals_hypotheticals.mixed_conditionals"
+      "output_dir": "chapters/109.en.grammar.conditionals_hypotheticals.mixed_conditionals",
+      "started_at": "2026-01-24T08:36:11.823588Z",
+      "completed_at": "2026-01-24T08:41:00.554436Z",
+      "files": {
+        "outline": "chapters/109.en.grammar.conditionals_hypotheticals.mixed_conditionals/01-outline.json",
+        "theory_blocks": "chapters/109.en.grammar.conditionals_hypotheticals.mixed_conditionals/02-theory-blocks/",
+        "questions": "chapters/109.en.grammar.conditionals_hypotheticals.mixed_conditionals/03-questions.json",
+        "inline_quizzes": "chapters/109.en.grammar.conditionals_hypotheticals.mixed_conditionals/04-inline-quizzes.json",
+        "final": "chapters/109.en.grammar.conditionals_hypotheticals.mixed_conditionals/05-final.json",
+        "validation": "chapters/109.en.grammar.conditionals_hypotheticals.mixed_conditionals/05-validation.json"
+      },
+      "validation": {
+        "is_valid": true,
+        "last_validated": "2026-01-24T08:41:00.554436Z"
+      }
     },
     {
       "chapter_id": "en.grammar.conditionals_hypotheticals.unless_provided_as_long",
@@ -2719,19 +2887,47 @@
       "title": "unless/provided/as long as",
       "level": "B2",
       "order": 1506,
-      "status": "pending",
+      "status": "generated",
       "input_file": "config/chapter-templates/en.grammar.conditionals_hypotheticals.unless_provided_as_long-input.json",
-      "output_dir": "chapters/110.en.grammar.conditionals_hypotheticals.unless_provided_as_long"
+      "output_dir": "chapters/110.en.grammar.conditionals_hypotheticals.unless_provided_as_long",
+      "started_at": "2026-01-24T08:41:56.724148Z",
+      "completed_at": "2026-01-24T08:49:18.267923Z",
+      "files": {
+        "outline": "chapters/110.en.grammar.conditionals_hypotheticals.unless_provided_as_long/01-outline.json",
+        "theory_blocks": "chapters/110.en.grammar.conditionals_hypotheticals.unless_provided_as_long/02-theory-blocks/",
+        "questions": "chapters/110.en.grammar.conditionals_hypotheticals.unless_provided_as_long/03-questions.json",
+        "inline_quizzes": "chapters/110.en.grammar.conditionals_hypotheticals.unless_provided_as_long/04-inline-quizzes.json",
+        "final": "chapters/110.en.grammar.conditionals_hypotheticals.unless_provided_as_long/05-final.json",
+        "validation": "chapters/110.en.grammar.conditionals_hypotheticals.unless_provided_as_long/05-validation.json"
+      },
+      "validation": {
+        "is_valid": true,
+        "last_validated": "2026-01-24T08:49:18.267923Z"
+      }
     },
     {
       "chapter_id": "en.grammar.conditionals_hypotheticals.wish_if_only_would",
       "section_id": "en.grammar.conditionals_hypotheticals",
-      "title": "wish / if only / would rather / it\u2019s time",
+      "title": "wish / if only / would rather / it’s time",
       "level": "B2",
       "order": 1507,
-      "status": "pending",
+      "status": "generated",
       "input_file": "config/chapter-templates/en.grammar.conditionals_hypotheticals.wish_if_only_would-input.json",
-      "output_dir": "chapters/111.en.grammar.conditionals_hypotheticals.wish_if_only_would"
+      "output_dir": "chapters/111.en.grammar.conditionals_hypotheticals.wish_if_only_would",
+      "started_at": "2026-01-24T08:49:38.937480Z",
+      "completed_at": "2026-01-24T08:52:59.528470Z",
+      "files": {
+        "outline": "chapters/111.en.grammar.conditionals_hypotheticals.wish_if_only_would/01-outline.json",
+        "theory_blocks": "chapters/111.en.grammar.conditionals_hypotheticals.wish_if_only_would/02-theory-blocks/",
+        "questions": "chapters/111.en.grammar.conditionals_hypotheticals.wish_if_only_would/03-questions.json",
+        "inline_quizzes": "chapters/111.en.grammar.conditionals_hypotheticals.wish_if_only_would/04-inline-quizzes.json",
+        "final": "chapters/111.en.grammar.conditionals_hypotheticals.wish_if_only_would/05-final.json",
+        "validation": "chapters/111.en.grammar.conditionals_hypotheticals.wish_if_only_would/05-validation.json"
+      },
+      "validation": {
+        "is_valid": true,
+        "last_validated": "2026-01-24T08:52:59.528470Z"
+      }
     },
     {
       "chapter_id": "en.grammar.conditionals_hypotheticals.build_speak_advice_regrets",
@@ -2739,9 +2935,23 @@
       "title": "Build & speak: advice + regrets + alternative scenarios",
       "level": "B2",
       "order": 1508,
-      "status": "pending",
+      "status": "generated",
       "input_file": "config/chapter-templates/en.grammar.conditionals_hypotheticals.build_speak_advice_regrets-input.json",
-      "output_dir": "chapters/112.en.grammar.conditionals_hypotheticals.build_speak_advice_regrets"
+      "output_dir": "chapters/112.en.grammar.conditionals_hypotheticals.build_speak_advice_regrets",
+      "started_at": "2026-01-24T08:53:34.497240Z",
+      "completed_at": "2026-01-24T08:57:14.416882Z",
+      "files": {
+        "outline": "chapters/112.en.grammar.conditionals_hypotheticals.build_speak_advice_regrets/01-outline.json",
+        "theory_blocks": "chapters/112.en.grammar.conditionals_hypotheticals.build_speak_advice_regrets/02-theory-blocks/",
+        "questions": "chapters/112.en.grammar.conditionals_hypotheticals.build_speak_advice_regrets/03-questions.json",
+        "inline_quizzes": "chapters/112.en.grammar.conditionals_hypotheticals.build_speak_advice_regrets/04-inline-quizzes.json",
+        "final": "chapters/112.en.grammar.conditionals_hypotheticals.build_speak_advice_regrets/05-final.json",
+        "validation": "chapters/112.en.grammar.conditionals_hypotheticals.build_speak_advice_regrets/05-validation.json"
+      },
+      "validation": {
+        "is_valid": true,
+        "last_validated": "2026-01-24T08:57:14.416882Z"
+      }
     },
     {
       "chapter_id": "en.grammar.non_finite_forms_deep.gerund_vs_infinitive_basic",
@@ -2749,9 +2959,23 @@
       "title": "Gerund vs infinitive: basic choice (like doing / want to do)",
       "level": "B2",
       "order": 1601,
-      "status": "pending",
+      "status": "generated",
       "input_file": "config/chapter-templates/en.grammar.non_finite_forms_deep.gerund_vs_infinitive_basic-input.json",
-      "output_dir": "chapters/113.en.grammar.non_finite_forms_deep.gerund_vs_infinitive_basic"
+      "output_dir": "chapters/113.en.grammar.non_finite_forms_deep.gerund_vs_infinitive_basic",
+      "started_at": "2026-01-24T08:57:37.414555Z",
+      "completed_at": "2026-01-24T09:01:05.401923Z",
+      "files": {
+        "outline": "chapters/113.en.grammar.non_finite_forms_deep.gerund_vs_infinitive_basic/01-outline.json",
+        "theory_blocks": "chapters/113.en.grammar.non_finite_forms_deep.gerund_vs_infinitive_basic/02-theory-blocks/",
+        "questions": "chapters/113.en.grammar.non_finite_forms_deep.gerund_vs_infinitive_basic/03-questions.json",
+        "inline_quizzes": "chapters/113.en.grammar.non_finite_forms_deep.gerund_vs_infinitive_basic/04-inline-quizzes.json",
+        "final": "chapters/113.en.grammar.non_finite_forms_deep.gerund_vs_infinitive_basic/05-final.json",
+        "validation": "chapters/113.en.grammar.non_finite_forms_deep.gerund_vs_infinitive_basic/05-validation.json"
+      },
+      "validation": {
+        "is_valid": true,
+        "last_validated": "2026-01-24T09:01:05.401923Z"
+      }
     },
     {
       "chapter_id": "en.grammar.non_finite_forms_deep.verb_patterns_v_ing",
@@ -2759,9 +2983,23 @@
       "title": "Verb patterns: V-ing only / to-inf only / both (meaning changes)",
       "level": "B2",
       "order": 1602,
-      "status": "pending",
+      "status": "generated",
+      "started_at": "2026-01-24T09:07:03.769391Z",
+      "completed_at": "2026-01-24T09:15:11.852636Z",
       "input_file": "config/chapter-templates/en.grammar.non_finite_forms_deep.verb_patterns_v_ing-input.json",
-      "output_dir": "chapters/114.en.grammar.non_finite_forms_deep.verb_patterns_v_ing"
+      "output_dir": "chapters/114.en.grammar.non_finite_forms_deep.verb_patterns_v_ing",
+      "files": {
+        "outline": "chapters/114.en.grammar.non_finite_forms_deep.verb_patterns_v_ing/01-outline.json",
+        "theory_blocks": "chapters/114.en.grammar.non_finite_forms_deep.verb_patterns_v_ing/02-theory-blocks/",
+        "questions": "chapters/114.en.grammar.non_finite_forms_deep.verb_patterns_v_ing/03-questions.json",
+        "inline_quizzes": "chapters/114.en.grammar.non_finite_forms_deep.verb_patterns_v_ing/04-inline-quizzes.json",
+        "final": "chapters/114.en.grammar.non_finite_forms_deep.verb_patterns_v_ing/05-final.json",
+        "validation": "chapters/114.en.grammar.non_finite_forms_deep.verb_patterns_v_ing/05-validation.json"
+      },
+      "validation": {
+        "is_valid": true,
+        "last_validated": "2026-01-24T09:15:11.852636Z"
+      }
     },
     {
       "chapter_id": "en.grammar.non_finite_forms_deep.perfect_infinitive_gerund_to",
@@ -2769,19 +3007,47 @@
       "title": "Perfect infinitive/gerund: to have done / having done",
       "level": "B2",
       "order": 1603,
-      "status": "pending",
+      "status": "generated",
+      "started_at": "2026-01-24T09:16:49.924078Z",
+      "completed_at": "2026-01-24T09:21:55.396589Z",
       "input_file": "config/chapter-templates/en.grammar.non_finite_forms_deep.perfect_infinitive_gerund_to-input.json",
-      "output_dir": "chapters/115.en.grammar.non_finite_forms_deep.perfect_infinitive_gerund_to"
+      "output_dir": "chapters/115.en.grammar.non_finite_forms_deep.perfect_infinitive_gerund_to",
+      "files": {
+        "outline": "chapters/115.en.grammar.non_finite_forms_deep.perfect_infinitive_gerund_to/01-outline.json",
+        "theory_blocks": "chapters/115.en.grammar.non_finite_forms_deep.perfect_infinitive_gerund_to/02-theory-blocks/",
+        "questions": "chapters/115.en.grammar.non_finite_forms_deep.perfect_infinitive_gerund_to/03-questions.json",
+        "inline_quizzes": "chapters/115.en.grammar.non_finite_forms_deep.perfect_infinitive_gerund_to/04-inline-quizzes.json",
+        "final": "chapters/115.en.grammar.non_finite_forms_deep.perfect_infinitive_gerund_to/05-final.json",
+        "validation": "chapters/115.en.grammar.non_finite_forms_deep.perfect_infinitive_gerund_to/05-validation.json"
+      },
+      "validation": {
+        "is_valid": true,
+        "last_validated": "2026-01-24T09:21:55.396589Z"
+      }
     },
     {
       "chapter_id": "en.grammar.non_finite_forms_deep.participle_clauses_having_finished",
       "section_id": "en.grammar.non_finite_forms_deep",
-      "title": "Participle clauses: Having finished\u2026, Seen from\u2026, Generally speaking\u2026",
+      "title": "Participle clauses: Having finished…, Seen from…, Generally speaking…",
       "level": "B2",
       "order": 1604,
-      "status": "pending",
+      "status": "generated",
+      "started_at": "2026-01-24T09:22:29.630748Z",
+      "completed_at": "2026-01-24T09:28:24.979127Z",
       "input_file": "config/chapter-templates/en.grammar.non_finite_forms_deep.participle_clauses_having_finished-input.json",
-      "output_dir": "chapters/116.en.grammar.non_finite_forms_deep.participle_clauses_having_finished"
+      "output_dir": "chapters/116.en.grammar.non_finite_forms_deep.participle_clauses_having_finished",
+      "files": {
+        "outline": "chapters/116.en.grammar.non_finite_forms_deep.participle_clauses_having_finished/01-outline.json",
+        "theory_blocks": "chapters/116.en.grammar.non_finite_forms_deep.participle_clauses_having_finished/02-theory-blocks/",
+        "questions": "chapters/116.en.grammar.non_finite_forms_deep.participle_clauses_having_finished/03-questions.json",
+        "inline_quizzes": "chapters/116.en.grammar.non_finite_forms_deep.participle_clauses_having_finished/04-inline-quizzes.json",
+        "final": "chapters/116.en.grammar.non_finite_forms_deep.participle_clauses_having_finished/05-final.json",
+        "validation": "chapters/116.en.grammar.non_finite_forms_deep.participle_clauses_having_finished/05-validation.json"
+      },
+      "validation": {
+        "is_valid": true,
+        "last_validated": "2026-01-24T09:28:24.979127Z"
+      }
     },
     {
       "chapter_id": "en.grammar.non_finite_forms_deep.dangling_participles_common_mistake",
@@ -2789,9 +3055,23 @@
       "title": "Dangling participles: common mistake + fixes",
       "level": "B2",
       "order": 1605,
-      "status": "pending",
+      "status": "generated",
+      "started_at": "2026-01-24T09:31:44.619605Z",
+      "completed_at": "2026-01-24T09:36:37.246138Z",
       "input_file": "config/chapter-templates/en.grammar.non_finite_forms_deep.dangling_participles_common_mistake-input.json",
-      "output_dir": "chapters/117.en.grammar.non_finite_forms_deep.dangling_participles_common_mistake"
+      "output_dir": "chapters/117.en.grammar.non_finite_forms_deep.dangling_participles_common_mistake",
+      "files": {
+        "outline": "chapters/117.en.grammar.non_finite_forms_deep.dangling_participles_common_mistake/01-outline.json",
+        "theory_blocks": "chapters/117.en.grammar.non_finite_forms_deep.dangling_participles_common_mistake/02-theory-blocks/",
+        "questions": "chapters/117.en.grammar.non_finite_forms_deep.dangling_participles_common_mistake/03-questions.json",
+        "inline_quizzes": "chapters/117.en.grammar.non_finite_forms_deep.dangling_participles_common_mistake/04-inline-quizzes.json",
+        "final": "chapters/117.en.grammar.non_finite_forms_deep.dangling_participles_common_mistake/05-final.json",
+        "validation": "chapters/117.en.grammar.non_finite_forms_deep.dangling_participles_common_mistake/05-validation.json"
+      },
+      "validation": {
+        "is_valid": true,
+        "last_validated": "2026-01-24T09:36:37.246138Z"
+      }
     },
     {
       "chapter_id": "en.grammar.non_finite_forms_deep.build_write_a_short",
@@ -2799,9 +3079,23 @@
       "title": "Build & write: a short formal text with 4 non-finite constructions",
       "level": "B2",
       "order": 1606,
-      "status": "pending",
+      "status": "generated",
+      "started_at": "2026-01-24T09:39:09.409326Z",
+      "completed_at": "2026-01-24T09:46:32.667921Z",
       "input_file": "config/chapter-templates/en.grammar.non_finite_forms_deep.build_write_a_short-input.json",
-      "output_dir": "chapters/118.en.grammar.non_finite_forms_deep.build_write_a_short"
+      "output_dir": "chapters/118.en.grammar.non_finite_forms_deep.build_write_a_short",
+      "files": {
+        "outline": "chapters/118.en.grammar.non_finite_forms_deep.build_write_a_short/01-outline.json",
+        "theory_blocks": "chapters/118.en.grammar.non_finite_forms_deep.build_write_a_short/02-theory-blocks/",
+        "questions": "chapters/118.en.grammar.non_finite_forms_deep.build_write_a_short/03-questions.json",
+        "inline_quizzes": "chapters/118.en.grammar.non_finite_forms_deep.build_write_a_short/04-inline-quizzes.json",
+        "final": "chapters/118.en.grammar.non_finite_forms_deep.build_write_a_short/05-final.json",
+        "validation": "chapters/118.en.grammar.non_finite_forms_deep.build_write_a_short/05-validation.json"
+      },
+      "validation": {
+        "is_valid": true,
+        "last_validated": "2026-01-24T09:46:32.667921Z"
+      }
     },
     {
       "chapter_id": "en.grammar.reported_speech_meaning_transfer.reported_statements_say_tell",
@@ -2809,9 +3103,23 @@
       "title": "Reported statements: say/tell, backshift (basics)",
       "level": "B2",
       "order": 1701,
-      "status": "pending",
+      "status": "generated",
+      "started_at": "2026-01-24T09:51:41.797247Z",
+      "completed_at": "2026-01-24T10:01:09.428794Z",
       "input_file": "config/chapter-templates/en.grammar.reported_speech_meaning_transfer.reported_statements_say_tell-input.json",
-      "output_dir": "chapters/119.en.grammar.reported_speech_meaning_transfer.reported_statements_say_tell"
+      "output_dir": "chapters/119.en.grammar.reported_speech_meaning_transfer.reported_statements_say_tell",
+      "files": {
+        "outline": "chapters/119.en.grammar.reported_speech_meaning_transfer.reported_statements_say_tell/01-outline.json",
+        "theory_blocks": "chapters/119.en.grammar.reported_speech_meaning_transfer.reported_statements_say_tell/02-theory-blocks/",
+        "questions": "chapters/119.en.grammar.reported_speech_meaning_transfer.reported_statements_say_tell/03-questions.json",
+        "inline_quizzes": "chapters/119.en.grammar.reported_speech_meaning_transfer.reported_statements_say_tell/04-inline-quizzes.json",
+        "final": "chapters/119.en.grammar.reported_speech_meaning_transfer.reported_statements_say_tell/05-final.json",
+        "validation": "chapters/119.en.grammar.reported_speech_meaning_transfer.reported_statements_say_tell/05-validation.json"
+      },
+      "validation": {
+        "is_valid": true,
+        "last_validated": "2026-01-24T10:01:09.428794Z"
+      }
     },
     {
       "chapter_id": "en.grammar.reported_speech_meaning_transfer.reported_questions_word_order",
@@ -2819,19 +3127,47 @@
       "title": "Reported questions: word order + if/whether",
       "level": "B2",
       "order": 1702,
-      "status": "pending",
+      "status": "generated",
+      "started_at": "2026-01-24T10:02:21.278856Z",
+      "completed_at": "2026-01-24T10:08:53.744647Z",
       "input_file": "config/chapter-templates/en.grammar.reported_speech_meaning_transfer.reported_questions_word_order-input.json",
-      "output_dir": "chapters/120.en.grammar.reported_speech_meaning_transfer.reported_questions_word_order"
+      "output_dir": "chapters/120.en.grammar.reported_speech_meaning_transfer.reported_questions_word_order",
+      "files": {
+        "outline": "chapters/120.en.grammar.reported_speech_meaning_transfer.reported_questions_word_order/01-outline.json",
+        "theory_blocks": "chapters/120.en.grammar.reported_speech_meaning_transfer.reported_questions_word_order/02-theory-blocks/",
+        "questions": "chapters/120.en.grammar.reported_speech_meaning_transfer.reported_questions_word_order/03-questions.json",
+        "inline_quizzes": "chapters/120.en.grammar.reported_speech_meaning_transfer.reported_questions_word_order/04-inline-quizzes.json",
+        "final": "chapters/120.en.grammar.reported_speech_meaning_transfer.reported_questions_word_order/05-final.json",
+        "validation": "chapters/120.en.grammar.reported_speech_meaning_transfer.reported_questions_word_order/05-validation.json"
+      },
+      "validation": {
+        "is_valid": true,
+        "last_validated": "2026-01-24T10:08:53.744647Z"
+      }
     },
     {
       "chapter_id": "en.grammar.reported_speech_meaning_transfer.reported_commands_requests_told",
       "section_id": "en.grammar.reported_speech_meaning_transfer",
-      "title": "Reported commands/requests: told me to\u2026, asked me to\u2026",
+      "title": "Reported commands/requests: told me to…, asked me to…",
       "level": "B2",
       "order": 1703,
-      "status": "pending",
+      "status": "generated",
+      "started_at": "2026-01-24T10:10:01.000000Z",
+      "completed_at": "2026-01-24T10:14:45.778892Z",
       "input_file": "config/chapter-templates/en.grammar.reported_speech_meaning_transfer.reported_commands_requests_told-input.json",
-      "output_dir": "chapters/121.en.grammar.reported_speech_meaning_transfer.reported_commands_requests_told"
+      "output_dir": "chapters/121.en.grammar.reported_speech_meaning_transfer.reported_commands_requests_told",
+      "files": {
+        "outline": "chapters/121.en.grammar.reported_speech_meaning_transfer.reported_commands_requests_told/01-outline.json",
+        "theory_blocks": "chapters/121.en.grammar.reported_speech_meaning_transfer.reported_commands_requests_told/02-theory-blocks/",
+        "questions": "chapters/121.en.grammar.reported_speech_meaning_transfer.reported_commands_requests_told/03-questions.json",
+        "inline_quizzes": "chapters/121.en.grammar.reported_speech_meaning_transfer.reported_commands_requests_told/04-inline-quizzes.json",
+        "final": "chapters/121.en.grammar.reported_speech_meaning_transfer.reported_commands_requests_told/05-final.json",
+        "validation": "chapters/121.en.grammar.reported_speech_meaning_transfer.reported_commands_requests_told/05-validation.json"
+      },
+      "validation": {
+        "is_valid": true,
+        "last_validated": "2026-01-24T10:14:45.778892Z"
+      }
     },
     {
       "chapter_id": "en.grammar.reported_speech_meaning_transfer.reporting_verbs_advise_suggest",
@@ -2839,9 +3175,23 @@
       "title": "Reporting verbs: advise/suggest/insist + patterns",
       "level": "B2",
       "order": 1704,
-      "status": "pending",
+      "status": "generated",
+      "started_at": "2026-01-24T10:16:00.000000Z",
+      "completed_at": "2026-01-24T10:21:07.582273Z",
       "input_file": "config/chapter-templates/en.grammar.reported_speech_meaning_transfer.reporting_verbs_advise_suggest-input.json",
-      "output_dir": "chapters/122.en.grammar.reported_speech_meaning_transfer.reporting_verbs_advise_suggest"
+      "output_dir": "chapters/122.en.grammar.reported_speech_meaning_transfer.reporting_verbs_advise_suggest",
+      "files": {
+        "outline": "chapters/122.en.grammar.reported_speech_meaning_transfer.reporting_verbs_advise_suggest/01-outline.json",
+        "theory_blocks": "chapters/122.en.grammar.reported_speech_meaning_transfer.reporting_verbs_advise_suggest/02-theory-blocks/",
+        "questions": "chapters/122.en.grammar.reported_speech_meaning_transfer.reporting_verbs_advise_suggest/03-questions.json",
+        "inline_quizzes": "chapters/122.en.grammar.reported_speech_meaning_transfer.reporting_verbs_advise_suggest/04-inline-quizzes.json",
+        "final": "chapters/122.en.grammar.reported_speech_meaning_transfer.reporting_verbs_advise_suggest/05-final.json",
+        "validation": "chapters/122.en.grammar.reported_speech_meaning_transfer.reporting_verbs_advise_suggest/05-validation.json"
+      },
+      "validation": {
+        "is_valid": true,
+        "last_validated": "2026-01-24T10:21:07.582273Z"
+      }
     },
     {
       "chapter_id": "en.grammar.reported_speech_meaning_transfer.build_write_retell_a",
@@ -2849,9 +3199,23 @@
       "title": "Build & write: retell a conversation/news/instructions",
       "level": "B2",
       "order": 1705,
-      "status": "pending",
+      "status": "generated",
+      "started_at": "2026-01-24T10:22:30.000000Z",
+      "completed_at": "2026-01-24T10:25:51.748333Z",
       "input_file": "config/chapter-templates/en.grammar.reported_speech_meaning_transfer.build_write_retell_a-input.json",
-      "output_dir": "chapters/123.en.grammar.reported_speech_meaning_transfer.build_write_retell_a"
+      "output_dir": "chapters/123.en.grammar.reported_speech_meaning_transfer.build_write_retell_a",
+      "files": {
+        "outline": "chapters/123.en.grammar.reported_speech_meaning_transfer.build_write_retell_a/01-outline.json",
+        "theory_blocks": "chapters/123.en.grammar.reported_speech_meaning_transfer.build_write_retell_a/02-theory-blocks/",
+        "questions": "chapters/123.en.grammar.reported_speech_meaning_transfer.build_write_retell_a/03-questions.json",
+        "inline_quizzes": "chapters/123.en.grammar.reported_speech_meaning_transfer.build_write_retell_a/04-inline-quizzes.json",
+        "final": "chapters/123.en.grammar.reported_speech_meaning_transfer.build_write_retell_a/05-final.json",
+        "validation": "chapters/123.en.grammar.reported_speech_meaning_transfer.build_write_retell_a/05-validation.json"
+      },
+      "validation": {
+        "is_valid": true,
+        "last_validated": "2026-01-24T10:25:51.748333Z"
+      }
     },
     {
       "chapter_id": "en.grammar.information_structure_style.emphasis_do_emphasis",
@@ -2859,29 +3223,68 @@
       "title": "Emphasis: do-emphasis (I *do* agree)",
       "level": "C1",
       "order": 1801,
-      "status": "pending",
+      "status": "generated",
       "input_file": "config/chapter-templates/en.grammar.information_structure_style.emphasis_do_emphasis-input.json",
-      "output_dir": "chapters/124.en.grammar.information_structure_style.emphasis_do_emphasis"
+      "output_dir": "chapters/124.en.grammar.information_structure_style.emphasis_do_emphasis",
+      "started_at": "2026-01-24T13:52:15.926509Z",
+      "completed_at": "2026-01-24T13:57:15.238023Z",
+      "files": {
+        "outline": "chapters/124.en.grammar.information_structure_style.emphasis_do_emphasis/01-outline.json",
+        "theory_blocks": "chapters/124.en.grammar.information_structure_style.emphasis_do_emphasis/02-theory-blocks/",
+        "questions": "chapters/124.en.grammar.information_structure_style.emphasis_do_emphasis/03-questions.json",
+        "final": "chapters/124.en.grammar.information_structure_style.emphasis_do_emphasis/05-final.json",
+        "validation": "chapters/124.en.grammar.information_structure_style.emphasis_do_emphasis/05-validation.json"
+      },
+      "validation": {
+        "is_valid": true,
+        "last_validated": "2026-01-24T13:58:58.800305Z"
+      }
     },
     {
       "chapter_id": "en.grammar.information_structure_style.inversion_never_have_i",
       "section_id": "en.grammar.information_structure_style",
-      "title": "Inversion: Never have I\u2026, Not only\u2026, Hardly\u2026when\u2026",
+      "title": "Inversion: Never have I…, Not only…, Hardly…when…",
       "level": "C1",
       "order": 1802,
-      "status": "pending",
+      "status": "generated",
       "input_file": "config/chapter-templates/en.grammar.information_structure_style.inversion_never_have_i-input.json",
-      "output_dir": "chapters/125.en.grammar.information_structure_style.inversion_never_have_i"
+      "output_dir": "chapters/125.en.grammar.information_structure_style.inversion_never_have_i",
+      "started_at": "2026-01-24T13:59:55.992986Z",
+      "completed_at": "2026-01-24T14:03:43.606240Z",
+      "files": {
+        "outline": "chapters/125.en.grammar.information_structure_style.inversion_never_have_i/01-outline.json",
+        "theory_blocks": "chapters/125.en.grammar.information_structure_style.inversion_never_have_i/02-theory-blocks/",
+        "questions": "chapters/125.en.grammar.information_structure_style.inversion_never_have_i/03-questions.json",
+        "final": "chapters/125.en.grammar.information_structure_style.inversion_never_have_i/05-final.json",
+        "validation": "chapters/125.en.grammar.information_structure_style.inversion_never_have_i/05-validation.json"
+      },
+      "validation": {
+        "is_valid": true,
+        "last_validated": "2026-01-24T14:03:43.606240Z"
+      }
     },
     {
       "chapter_id": "en.grammar.information_structure_style.cleft_sentences_it_s",
       "section_id": "en.grammar.information_structure_style",
-      "title": "Cleft sentences: It\u2019s X that\u2026, What I need is\u2026",
+      "title": "Cleft sentences: It’s X that…, What I need is…",
       "level": "C1",
       "order": 1803,
-      "status": "pending",
+      "status": "generated",
       "input_file": "config/chapter-templates/en.grammar.information_structure_style.cleft_sentences_it_s-input.json",
-      "output_dir": "chapters/126.en.grammar.information_structure_style.cleft_sentences_it_s"
+      "output_dir": "chapters/126.en.grammar.information_structure_style.cleft_sentences_it_s",
+      "started_at": "2026-01-24T14:07:37.463764Z",
+      "completed_at": "2026-01-24T14:11:05.016231Z",
+      "files": {
+        "outline": "chapters/126.en.grammar.information_structure_style.cleft_sentences_it_s/01-outline.json",
+        "theory_blocks": "chapters/126.en.grammar.information_structure_style.cleft_sentences_it_s/02-theory-blocks/",
+        "questions": "chapters/126.en.grammar.information_structure_style.cleft_sentences_it_s/03-questions.json",
+        "final": "chapters/126.en.grammar.information_structure_style.cleft_sentences_it_s/05-final.json",
+        "validation": "chapters/126.en.grammar.information_structure_style.cleft_sentences_it_s/05-validation.json"
+      },
+      "validation": {
+        "is_valid": true,
+        "last_validated": "2026-01-24T14:12:17.075640Z"
+      }
     },
     {
       "chapter_id": "en.grammar.information_structure_style.ellipsis_substitution_so_neither",
@@ -2889,19 +3292,45 @@
       "title": "Ellipsis/substitution: so/neither, do/does, one/ones",
       "level": "C1",
       "order": 1804,
-      "status": "pending",
+      "status": "generated",
       "input_file": "config/chapter-templates/en.grammar.information_structure_style.ellipsis_substitution_so_neither-input.json",
-      "output_dir": "chapters/127.en.grammar.information_structure_style.ellipsis_substitution_so_neither"
+      "output_dir": "chapters/127.en.grammar.information_structure_style.ellipsis_substitution_so_neither",
+      "started_at": "2026-01-24T14:17:24.839847Z",
+      "completed_at": "2026-01-24T14:20:27.790676Z",
+      "files": {
+        "outline": "chapters/127.en.grammar.information_structure_style.ellipsis_substitution_so_neither/01-outline.json",
+        "theory_blocks": "chapters/127.en.grammar.information_structure_style.ellipsis_substitution_so_neither/02-theory-blocks/",
+        "questions": "chapters/127.en.grammar.information_structure_style.ellipsis_substitution_so_neither/03-questions.json",
+        "final": "chapters/127.en.grammar.information_structure_style.ellipsis_substitution_so_neither/05-final.json",
+        "validation": "chapters/127.en.grammar.information_structure_style.ellipsis_substitution_so_neither/05-validation.json"
+      },
+      "validation": {
+        "is_valid": true,
+        "last_validated": "2026-01-24T14:21:54.485610Z"
+      }
     },
     {
       "chapter_id": "en.grammar.information_structure_style.hedging_stance_might_tends",
       "section_id": "en.grammar.information_structure_style",
-      "title": "Hedging & stance: might, tends to, appears to\u2026",
+      "title": "Hedging & stance: might, tends to, appears to…",
       "level": "C1",
       "order": 1805,
-      "status": "pending",
+      "status": "generated",
       "input_file": "config/chapter-templates/en.grammar.information_structure_style.hedging_stance_might_tends-input.json",
-      "output_dir": "chapters/128.en.grammar.information_structure_style.hedging_stance_might_tends"
+      "output_dir": "chapters/128.en.grammar.information_structure_style.hedging_stance_might_tends",
+      "started_at": "2026-01-24T14:24:09.502747Z",
+      "completed_at": "2026-01-24T14:27:27.684065Z",
+      "files": {
+        "outline": "chapters/128.en.grammar.information_structure_style.hedging_stance_might_tends/01-outline.json",
+        "theory_blocks": "chapters/128.en.grammar.information_structure_style.hedging_stance_might_tends/02-theory-blocks/",
+        "questions": "chapters/128.en.grammar.information_structure_style.hedging_stance_might_tends/03-questions.json",
+        "final": "chapters/128.en.grammar.information_structure_style.hedging_stance_might_tends/05-final.json",
+        "validation": "chapters/128.en.grammar.information_structure_style.hedging_stance_might_tends/05-validation.json"
+      },
+      "validation": {
+        "is_valid": true,
+        "last_validated": "2026-01-24T14:28:56.831431Z"
+      }
     },
     {
       "chapter_id": "en.grammar.information_structure_style.formal_vs_informal_contractions",
@@ -2909,29 +3338,49 @@
       "title": "Formal vs informal: contractions, linking, tone control",
       "level": "C1",
       "order": 1806,
-      "status": "pending",
+      "status": "generated",
       "input_file": "config/chapter-templates/en.grammar.information_structure_style.formal_vs_informal_contractions-input.json",
-      "output_dir": "chapters/129.en.grammar.information_structure_style.formal_vs_informal_contractions"
+      "output_dir": "chapters/129.en.grammar.information_structure_style.formal_vs_informal_contractions",
+      "started_at": "2026-01-24T14:36:49.540074Z",
+      "completed_at": "2026-01-24T14:40:32.375204Z",
+      "files": {
+        "outline": "chapters/129.en.grammar.information_structure_style.formal_vs_informal_contractions/01-outline.json",
+        "theory_blocks": "chapters/129.en.grammar.information_structure_style.formal_vs_informal_contractions/02-theory-blocks/",
+        "questions": "chapters/129.en.grammar.information_structure_style.formal_vs_informal_contractions/03-questions.json",
+        "final": "chapters/129.en.grammar.information_structure_style.formal_vs_informal_contractions/05-final.json",
+        "validation": "chapters/129.en.grammar.information_structure_style.formal_vs_informal_contractions/05-validation.json"
+      },
+      "validation": {
+        "is_valid": true,
+        "last_validated": "2026-01-24T14:40:32.375204Z"
+      }
     },
     {
       "chapter_id": "en.grammar.information_structure_style.build_write_rewrite_neutral",
       "section_id": "en.grammar.information_structure_style",
-      "title": "Build & write: rewrite neutral \u2192 formal (style transformation)",
+      "title": "Build & write: rewrite neutral → formal (style transformation)",
       "level": "C1",
       "order": 1807,
-      "status": "pending",
+      "status": "generated",
       "input_file": "config/chapter-templates/en.grammar.information_structure_style.build_write_rewrite_neutral-input.json",
-      "output_dir": "chapters/130.en.grammar.information_structure_style.build_write_rewrite_neutral"
+      "output_dir": "chapters/130.en.grammar.information_structure_style.build_write_rewrite_neutral",
+      "started_at": "2026-01-24T14:45:24.388224Z",
+      "completed_at": "2026-01-24T18:35:18.068301Z",
+      "files": {},
+      "validation": {
+        "is_valid": true,
+        "last_validated": "2026-01-24T18:35:18.068301Z"
+      }
     }
   ],
   "summary": {
     "total_sections": 19,
     "total_chapters": 130,
-    "chapters_generated": 93,
+    "chapters_generated": 126,
     "chapters_in_progress": 0,
-    "chapters_pending": 33,
+    "chapters_pending": 0,
     "chapters_failed": 0,
-    "chapters_validated": 92,
-    "last_updated": "2026-01-20T12:05:27.506486Z"
+    "chapters_validated": 125,
+    "last_updated": "2026-01-24T18:35:18.068301Z"
   }
 }

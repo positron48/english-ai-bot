@@ -420,7 +420,7 @@
         "theory_block_id": "b1_theory_experience_meaning",
         "difficulty": 2,
         "correct_answer": "ridden",
-        "explanation": "Present Perfect: has + V3 → has ridden."
+        "explanation": "Формула Present Perfect: has + V3, например: has ridden."
       },
       {
         "id": "q8",
@@ -857,28 +857,25 @@
       {
         "id": "q32",
         "type": "error_spotting",
-        "prompt": "Выберите правильный короткий ответ.",
+        "prompt": "Выберите корректный короткий ответ: \"Have they ever been to Italy?\"",
         "theory_block_id": "b3_theory_questions_short_answers",
         "difficulty": 2,
         "choices": [
           {
             "id": "a",
-            "text": "Yes, I have.",
-            "feedback": "Верный ответ."
+            "text": "Yes, they have."
           },
           {
             "id": "b",
-            "text": "Yes, I am.",
-            "feedback": "Am не относится к Present Perfect."
+            "text": "Yes, they did."
           },
           {
             "id": "c",
-            "text": "Yes, I did.",
-            "feedback": "Did — для Past Simple."
+            "text": "Yes, they are."
           }
         ],
         "correct_answer": "a",
-        "explanation": "В коротких ответах повторяем have/has."
+        "explanation": "Короткий ответ повторяет have/has: Yes, they have."
       },
       {
         "id": "q33",
@@ -1647,7 +1644,7 @@
   },
   "meta": {
     "version": "2026.01.16",
-    "updated_at": "2026-01-20T14:11:08Z",
+    "updated_at": "2026-01-21T16:15:22Z",
     "source": "llm"
   }
 }

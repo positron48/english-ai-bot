@@ -298,7 +298,7 @@
       {
         "id": "q1",
         "type": "mcq_single",
-        "prompt": "Choose the correct form: By 2027, she ___ her PhD.",
+        "prompt": "Выберите правильную форму: By 2027, she ___ her PhD.",
         "theory_block_id": "b1_theory_future_perfect_form",
         "difficulty": 2,
         "choices": [
@@ -320,23 +320,23 @@
           }
         ],
         "correct_answer": "a",
-        "explanation": "Future Perfect uses will have + V3 to show completion by a future time. The deadline is 2027, so will have finished is correct.",
+        "explanation": "Future Perfect: will have + V3 для завершённости к моменту в будущем. Дедлайн 2027 — верно will have finished.",
         "tags": []
       },
       {
         "id": "q2",
         "type": "fill_blank",
-        "prompt": "Fill in: I will have ___ the email by lunchtime. (send)",
+        "prompt": "Вставьте пропущенное: I will have ___ the email by lunchtime. (send)",
         "theory_block_id": "b1_theory_future_perfect_form",
         "difficulty": 2,
         "correct_answer": "sent",
-        "explanation": "Use will have + V3 for completion by a deadline. The past participle of send is sent.",
+        "explanation": "Для завершения к дедлайну: will have + V3. Причастие II от send — sent.",
         "tags": []
       },
       {
         "id": "q3",
         "type": "mcq_single",
-        "prompt": "Choose the correct negative: He ___ the report by 5 p.m.",
+        "prompt": "Выберите правильное отрицание: He ___ the report by 5 p.m.",
         "theory_block_id": "b1_theory_future_perfect_form",
         "difficulty": 2,
         "choices": [
@@ -358,23 +358,23 @@
           }
         ],
         "correct_answer": "a",
-        "explanation": "Negative Future Perfect is will not have + V3. The correct form is won't have completed.",
+        "explanation": "Отрицание Future Perfect: will not have + V3. Правильно: won't have completed.",
         "tags": []
       },
       {
         "id": "q4",
         "type": "true_false",
-        "prompt": "Future Perfect is formed with will have + V3.",
+        "prompt": "Future Perfect образуется с will have + V3.",
         "theory_block_id": "b1_theory_future_perfect_form",
         "difficulty": 1,
         "correct_answer": "true",
-        "explanation": "Yes. The structure is will have + past participle for all subjects.",
+        "explanation": "Да. Структура: will have + причастие II для всех подлежащих.",
         "tags": []
       },
       {
         "id": "q5",
         "type": "error_spotting",
-        "prompt": "Find the mistake and choose the corrected sentence: \"By Friday, she will have went home.\"",
+        "prompt": "Найдите ошибку и выберите исправленное предложение: \"By Friday, she will have went home.\"",
         "theory_block_id": "b1_theory_future_perfect_form",
         "difficulty": 2,
         "choices": [
@@ -392,13 +392,13 @@
           }
         ],
         "correct_answer": "a",
-        "explanation": "Future Perfect requires the past participle. The correct form is will have gone.",
+        "explanation": "В Future Perfect нужно причастие II. Правильно: will have gone.",
         "tags": []
       },
       {
         "id": "q6",
         "type": "mcq_single",
-        "prompt": "Choose the correct question form: ___ you have arrived by noon?",
+        "prompt": "Выберите правильную форму вопроса: ___ you have arrived by noon?",
         "theory_block_id": "b1_theory_future_perfect_form",
         "difficulty": 2,
         "choices": [
@@ -420,23 +420,23 @@
           }
         ],
         "correct_answer": "a",
-        "explanation": "In Future Perfect questions, will comes before the subject: Will you have arrived by noon?",
+        "explanation": "В вопросе Future Perfect will перед подлежащим: Will you have arrived by noon?",
         "tags": []
       },
       {
         "id": "q7",
         "type": "fill_blank",
-        "prompt": "Fill in: They will have ___ the tickets by Friday. (buy)",
+        "prompt": "Вставьте пропущенное: They will have ___ the tickets by Friday. (buy)",
         "theory_block_id": "b1_theory_future_perfect_form",
         "difficulty": 2,
         "correct_answer": "bought",
-        "explanation": "The deadline is Friday, so use will have + V3. The past participle of buy is bought.",
+        "explanation": "Дедлайн в пятницу — will have + V3. Причастие II от buy — bought.",
         "tags": []
       },
       {
         "id": "q8",
         "type": "mcq_single",
-        "prompt": "Choose the correct question: ___ she have finished the test by 10?",
+        "prompt": "Выберите правильный вопрос: ___ she have finished the test by 10?",
         "theory_block_id": "b1_theory_future_perfect_form",
         "difficulty": 2,
         "choices": [
@@ -458,13 +458,13 @@
           }
         ],
         "correct_answer": "a",
-        "explanation": "Future Perfect questions use will + subject + have + V3.",
+        "explanation": "Вопрос в Future Perfect: will + подлежащее + have + V3.",
         "tags": []
       },
       {
         "id": "q9",
         "type": "error_spotting",
-        "prompt": "Find the mistake and choose the corrected sentence: \"By next week, we will have finish the design.\"",
+        "prompt": "Найдите ошибку и выберите исправленное предложение: \"By next week, we will have finish the design.\"",
         "theory_block_id": "b1_theory_future_perfect_form",
         "difficulty": 2,
         "choices": [
@@ -482,23 +482,23 @@
           }
         ],
         "correct_answer": "a",
-        "explanation": "Future Perfect needs the past participle after have: have finished.",
+        "explanation": "В Future Perfect после have нужно причастие II: have finished.",
         "tags": []
       },
       {
         "id": "q10",
         "type": "fill_blank",
-        "prompt": "Fill in: By the end of the day, he will have ___ the figures. (check)",
+        "prompt": "Вставьте пропущенное: By the end of the day, he will have ___ the figures. (check)",
         "theory_block_id": "b1_theory_future_perfect_form",
         "difficulty": 2,
         "correct_answer": "checked",
-        "explanation": "By the end of the day signals a result by a deadline, so use will have + V3.",
+        "explanation": "By the end of the day указывает на результат к дедлайну — will have + V3.",
         "tags": []
       },
       {
         "id": "q11",
         "type": "mcq_single",
-        "prompt": "In Future Perfect, the auxiliary after will is ___.",
+        "prompt": "Во Future Perfect после will идёт вспомогательный глагол ___.",
         "theory_block_id": "b1_theory_future_perfect_form",
         "difficulty": 1,
         "choices": [
@@ -520,23 +520,23 @@
           }
         ],
         "correct_answer": "a",
-        "explanation": "The structure is will have + V3, so the auxiliary after will is have.",
+        "explanation": "Структура will have + V3: после will идёт have.",
         "tags": []
       },
       {
         "id": "q12",
         "type": "true_false",
-        "prompt": "In Future Perfect questions, will goes before the subject.",
+        "prompt": "В вопросах Future Perfect will стоит перед подлежащим.",
         "theory_block_id": "b1_theory_future_perfect_form",
         "difficulty": 1,
         "correct_answer": "true",
-        "explanation": "Yes. The question order is Will + subject + have + V3.",
+        "explanation": "Да. Порядок в вопросе: Will + подлежащее + have + V3.",
         "tags": []
       },
       {
         "id": "q13",
         "type": "mcq_single",
-        "prompt": "Choose the correct tense: By the time you arrive, I ___ dinner.",
+        "prompt": "Выберите правильное время: By the time you arrive, I ___ dinner.",
         "theory_block_id": "b2_theory_future_perfect_result",
         "difficulty": 2,
         "choices": [
@@ -558,33 +558,33 @@
           }
         ],
         "correct_answer": "a",
-        "explanation": "By the time sets a future deadline, so we use Future Perfect for the completed result.",
+        "explanation": "By the time задаёт дедлайн в будущем — Future Perfect для завершённого результата.",
         "tags": []
       },
       {
         "id": "q14",
         "type": "fill_blank",
-        "prompt": "Fill in: She will have ___ her shift by 6 p.m. (finish)",
+        "prompt": "Вставьте пропущенное: She will have ___ her shift by 6 p.m. (finish)",
         "theory_block_id": "b2_theory_future_perfect_result",
         "difficulty": 2,
         "correct_answer": "finished",
-        "explanation": "By 6 p.m. indicates a deadline; Future Perfect shows the result will be done.",
+        "explanation": "By 6 p.m. — дедлайн; Future Perfect показывает, что результат будет готов.",
         "tags": []
       },
       {
         "id": "q15",
         "type": "true_false",
-        "prompt": "Future Perfect emphasizes the process happening at a future moment.",
+        "prompt": "Future Perfect подчёркивает процесс, происходящий в момент в будущем.",
         "theory_block_id": "b2_theory_future_perfect_result",
         "difficulty": 1,
         "correct_answer": "false",
-        "explanation": "Future Perfect focuses on completion by a future time, not on the process.",
+        "explanation": "Future Perfect — про завершённость к моменту в будущем, а не про процесс.",
         "tags": []
       },
       {
         "id": "q16",
         "type": "mcq_single",
-        "prompt": "By 2030, the company ___ five new offices.",
+        "prompt": "Выберите правильный вариант: «By 2030, the company ___ five new offices.»",
         "theory_block_id": "b2_theory_future_perfect_result",
         "difficulty": 2,
         "choices": [
@@ -606,13 +606,13 @@
           }
         ],
         "correct_answer": "a",
-        "explanation": "The sentence sets a future deadline (2030) and focuses on the result, so use will have opened.",
+        "explanation": "Дедлайн (2030) и акцент на результат — will have opened.",
         "tags": []
       },
       {
         "id": "q17",
         "type": "error_spotting",
-        "prompt": "Find the mistake and choose the corrected sentence: \"By Monday, they will finished the contract.\"",
+        "prompt": "Найдите ошибку и выберите исправленное предложение: \"By Monday, they will finished the contract.\"",
         "theory_block_id": "b2_theory_future_perfect_result",
         "difficulty": 2,
         "choices": [
@@ -630,23 +630,23 @@
           }
         ],
         "correct_answer": "a",
-        "explanation": "After will, Future Perfect requires have + past participle. The correct form is will have finished.",
+        "explanation": "После will в Future Perfect: have + причастие II. Правильно: will have finished.",
         "tags": []
       },
       {
         "id": "q18",
         "type": "fill_blank",
-        "prompt": "Fill in: By the time the train arrives, we will have ___ the platform. (leave)",
+        "prompt": "Вставьте пропущенное: By the time the train arrives, we will have ___ the platform. (leave)",
         "theory_block_id": "b2_theory_future_perfect_result",
         "difficulty": 3,
         "correct_answer": "left",
-        "explanation": "By the time indicates a future point; the leaving is completed before it.",
+        "explanation": "By the time — момент в будущем; уход завершён до него.",
         "tags": []
       },
       {
         "id": "q19",
         "type": "mcq_single",
-        "prompt": "Choose the best meaning: \"By this time tomorrow, I will have met her parents.\"",
+        "prompt": "Выберите верное значение: \"By this time tomorrow, I will have met her parents.\"",
         "theory_block_id": "b2_theory_future_perfect_result",
         "difficulty": 2,
         "choices": [
@@ -668,13 +668,13 @@
           }
         ],
         "correct_answer": "a",
-        "explanation": "Future Perfect means the action will be completed by that future time.",
+        "explanation": "Future Perfect означает, что действие будет завершено к тому моменту.",
         "tags": []
       },
       {
         "id": "q20",
         "type": "mcq_single",
-        "prompt": "Which sentence uses Future Perfect correctly?",
+        "prompt": "Какое предложение правильно использует Future Perfect?",
         "theory_block_id": "b2_theory_future_perfect_result",
         "difficulty": 2,
         "choices": [
@@ -696,13 +696,13 @@
           }
         ],
         "correct_answer": "a",
-        "explanation": "Future Perfect is used for a result by a deadline, and sentence a matches that pattern.",
+        "explanation": "Future Perfect для результата к дедлайну; вариант a подходит.",
         "tags": []
       },
       {
         "id": "q21",
         "type": "error_spotting",
-        "prompt": "Find the mistake and choose the corrected sentence: \"By the end of the day, I will have write the summary.\"",
+        "prompt": "Найдите ошибку и выберите исправленное предложение: \"By the end of the day, I will have write the summary.\"",
         "theory_block_id": "b2_theory_future_perfect_result",
         "difficulty": 2,
         "choices": [
@@ -720,61 +720,61 @@
           }
         ],
         "correct_answer": "a",
-        "explanation": "Future Perfect needs the past participle: write becomes written.",
+        "explanation": "В Future Perfect нужно причастие II: write → written.",
         "tags": []
       },
       {
         "id": "q22",
         "type": "fill_blank",
-        "prompt": "Fill in: By next week, they will have ___ the prototypes. (test)",
+        "prompt": "Вставьте пропущенное: By next week, they will have ___ the prototypes. (test)",
         "theory_block_id": "b2_theory_future_perfect_result",
         "difficulty": 2,
         "correct_answer": "tested",
-        "explanation": "By next week sets a deadline. Use will have + V3 to show completion.",
+        "explanation": "By next week задаёт дедлайн. will have + V3 для завершённости.",
         "tags": []
       },
       {
         "id": "q23",
         "type": "mcq_single",
-        "prompt": "Choose the best response: \"The report is due at 5.\" — \"Do not worry, I ___ it by then.\"",
+        "prompt": "Выберите подходящий ответ: \"The report is due at 5.\" — \"Do not worry, I ___ it by then.\"",
         "theory_block_id": "b2_theory_future_perfect_result",
         "difficulty": 2,
         "choices": [
           {
             "id": "a",
-            "text": "will have finished"
+            "text": "will have completed"
           },
           {
             "id": "b",
-            "text": "will be finishing"
+            "text": "will be completing"
           },
           {
             "id": "c",
-            "text": "will finish"
+            "text": "will complete"
           },
           {
             "id": "d",
-            "text": "finish"
+            "text": "complete"
           }
         ],
         "correct_answer": "a",
-        "explanation": "The promise is about a result by the deadline, so Future Perfect fits.",
+        "explanation": "Результат к дедлайну: Future Perfect — will have completed.",
         "tags": []
       },
       {
         "id": "q24",
         "type": "true_false",
-        "prompt": "We often use by + time expressions with Future Perfect.",
+        "prompt": "Верно или неверно: «We often use by + time expressions with Future Perfect.»",
         "theory_block_id": "b2_theory_future_perfect_result",
         "difficulty": 1,
         "correct_answer": "true",
-        "explanation": "Yes. By + time signals a completed result by a future point.",
+        "explanation": "Да. By + время указывает на завершённый результат к моменту в будущем.",
         "tags": []
       },
       {
         "id": "q25",
         "type": "mcq_single",
-        "prompt": "Choose the correct form: At 9, he ___ on the train.",
+        "prompt": "Выберите правильную форму: At 9, he ___ on the train.",
         "theory_block_id": "b3_theory_future_continuous_form",
         "difficulty": 2,
         "choices": [
@@ -796,23 +796,23 @@
           }
         ],
         "correct_answer": "a",
-        "explanation": "At a specific future time, Future Continuous describes the action in progress: will be sleeping.",
+        "explanation": "В конкретный будущий момент Future Continuous — действие в процессе: will be sleeping.",
         "tags": []
       },
       {
         "id": "q26",
         "type": "fill_blank",
-        "prompt": "Fill in: This time tomorrow, I will be ___ in the exam. (sit)",
+        "prompt": "Вставьте пропущенное: This time tomorrow, I will be ___ in the exam. (sit)",
         "theory_block_id": "b3_theory_future_continuous_form",
         "difficulty": 2,
         "correct_answer": "sitting",
-        "explanation": "Future Continuous uses will be + V-ing for an action in progress at a future time.",
+        "explanation": "Future Continuous: will be + V-ing для действия в процессе в будущий момент.",
         "tags": []
       },
       {
         "id": "q27",
         "type": "mcq_single",
-        "prompt": "Choose the correct question: ___ you be waiting outside?",
+        "prompt": "Выберите правильный вопрос: ___ you be waiting outside?",
         "theory_block_id": "b3_theory_future_continuous_form",
         "difficulty": 2,
         "choices": [
@@ -834,23 +834,23 @@
           }
         ],
         "correct_answer": "a",
-        "explanation": "Future Continuous questions use Will + subject + be + V-ing.",
+        "explanation": "Вопрос в Future Continuous: Will + подлежащее + be + V-ing.",
         "tags": []
       },
       {
         "id": "q28",
         "type": "true_false",
-        "prompt": "Future Continuous uses will be + V-ing.",
+        "prompt": "Верно или неверно: «Future Continuous uses will be + V-ing.»",
         "theory_block_id": "b3_theory_future_continuous_form",
         "difficulty": 1,
         "correct_answer": "true",
-        "explanation": "Correct. The structure is will be + present participle.",
+        "explanation": "Верно. Структура: will be + причастие настоящего времени.",
         "tags": []
       },
       {
         "id": "q29",
         "type": "error_spotting",
-        "prompt": "Find the mistake and choose the corrected sentence: \"At 7 p.m., she will be cook dinner.\"",
+        "prompt": "Найдите ошибку и выберите исправленное предложение: \"At 7 p.m., she will be cook dinner.\"",
         "theory_block_id": "b3_theory_future_continuous_form",
         "difficulty": 2,
         "choices": [
@@ -868,23 +868,23 @@
           }
         ],
         "correct_answer": "a",
-        "explanation": "Future Continuous requires the -ing form after be: will be cooking.",
+        "explanation": "В Future Continuous после be нужна форма на -ing: will be cooking.",
         "tags": []
       },
       {
         "id": "q30",
         "type": "fill_blank",
-        "prompt": "Fill in: We will not be ___ at the office tomorrow afternoon. (work)",
+        "prompt": "Вставьте пропущенное: We will not be ___ at the office tomorrow afternoon. (work)",
         "theory_block_id": "b3_theory_future_continuous_form",
         "difficulty": 2,
         "correct_answer": "working",
-        "explanation": "Negative Future Continuous is will not be + V-ing. The correct form is will be working.",
+        "explanation": "Отрицание Future Continuous: will not be + V-ing. Правильная форма: won't be working.",
         "tags": []
       },
       {
         "id": "q31",
         "type": "mcq_single",
-        "prompt": "Select the correct negative: They ___ be using the projector.",
+        "prompt": "Выберите правильное отрицание: They ___ be using the projector.",
         "theory_block_id": "b3_theory_future_continuous_form",
         "difficulty": 2,
         "choices": [
@@ -906,13 +906,13 @@
           }
         ],
         "correct_answer": "a",
-        "explanation": "Future Continuous uses will not (won't) + be + V-ing.",
+        "explanation": "Future Continuous в отрицании: will not (won't) + be + V-ing.",
         "tags": []
       },
       {
         "id": "q32",
         "type": "mcq_single",
-        "prompt": "Which sentence is in Future Continuous?",
+        "prompt": "Какое предложение в Future Continuous?",
         "theory_block_id": "b3_theory_future_continuous_form",
         "difficulty": 2,
         "choices": [
@@ -934,13 +934,13 @@
           }
         ],
         "correct_answer": "a",
-        "explanation": "Future Continuous is will be + V-ing: will be working.",
+        "explanation": "Future Continuous: will be + V-ing, например will be working.",
         "tags": []
       },
       {
         "id": "q33",
         "type": "error_spotting",
-        "prompt": "Find the mistake and choose the corrected sentence: \"Will be they meeting the coach at 4?\"",
+        "prompt": "Найдите ошибку и выберите исправленное предложение: \"Will be they meeting the coach at 4?\"",
         "theory_block_id": "b3_theory_future_continuous_form",
         "difficulty": 2,
         "choices": [
@@ -958,23 +958,23 @@
           }
         ],
         "correct_answer": "a",
-        "explanation": "In questions, will comes first, then subject, then be + V-ing.",
+        "explanation": "В вопросе: сначала will, затем подлежащее, затем be + V-ing.",
         "tags": []
       },
       {
         "id": "q34",
         "type": "fill_blank",
-        "prompt": "Fill in: At this time next week, he will be ___ on a beach. (lie)",
+        "prompt": "Вставьте пропущенное: At this time next week, he will be ___ on a beach. (lie)",
         "theory_block_id": "b3_theory_future_continuous_form",
         "difficulty": 3,
         "correct_answer": "lying",
-        "explanation": "Future Continuous uses will be + V-ing. The -ing form of lie is lying.",
+        "explanation": "Future Continuous: will be + V-ing. Форма на -ing от lie — lying.",
         "tags": []
       },
       {
         "id": "q35",
         "type": "mcq_single",
-        "prompt": "In Future Continuous, the auxiliary after will is ___.",
+        "prompt": "Выберите правильный вариант: «In Future Continuous, the auxiliary after will is ___.»",
         "theory_block_id": "b3_theory_future_continuous_form",
         "difficulty": 1,
         "choices": [
@@ -996,23 +996,23 @@
           }
         ],
         "correct_answer": "a",
-        "explanation": "The structure is will be + V-ing, so the auxiliary after will is be.",
+        "explanation": "Структура will be + V-ing: после will идёт be.",
         "tags": []
       },
       {
         "id": "q36",
         "type": "true_false",
-        "prompt": "Future Continuous changes with he, she, or they.",
+        "prompt": "Верно или неверно: «Future Continuous changes with he, she, or they.»",
         "theory_block_id": "b3_theory_future_continuous_form",
         "difficulty": 1,
         "correct_answer": "false",
-        "explanation": "The structure does not change by subject: will be + V-ing for all persons.",
+        "explanation": "Структура не меняется: will be + V-ing для всех лиц.",
         "tags": []
       },
       {
         "id": "q37",
         "type": "mcq_single",
-        "prompt": "At 10, I ___ in the meeting when you call.",
+        "prompt": "Выберите правильный вариант: «At 10, I ___ in the meeting when you call.»",
         "theory_block_id": "b4_theory_future_continuous_process",
         "difficulty": 2,
         "choices": [
@@ -1034,33 +1034,33 @@
           }
         ],
         "correct_answer": "a",
-        "explanation": "The sentence describes an action in progress at a specific future time, so use Future Continuous.",
+        "explanation": "Предложение описывает действие в процессе в конкретный будущий момент — Future Continuous.",
         "tags": []
       },
       {
         "id": "q38",
         "type": "fill_blank",
-        "prompt": "Fill in: When you arrive, we will be ___ dinner. (have)",
+        "prompt": "Вставьте пропущенное: When you arrive, we will be ___ dinner. (have)",
         "theory_block_id": "b4_theory_future_continuous_process",
         "difficulty": 2,
         "correct_answer": "having",
-        "explanation": "The action will be in progress when you arrive, so Future Continuous is needed.",
+        "explanation": "Действие будет в процессе по вашему приходу — нужен Future Continuous.",
         "tags": []
       },
       {
         "id": "q39",
         "type": "true_false",
-        "prompt": "Future Continuous focuses on the duration of an activity at a future time.",
+        "prompt": "Верно или неверно: «Future Continuous focuses on the duration of an activity at a future time.»",
         "theory_block_id": "b4_theory_future_continuous_process",
         "difficulty": 1,
         "correct_answer": "true",
-        "explanation": "Yes. It highlights an action in progress at a future moment.",
+        "explanation": "Да. Это подчёркивает действие в процессе в будущий момент.",
         "tags": []
       },
       {
         "id": "q40",
         "type": "mcq_single",
-        "prompt": "Which sentence describes an action in progress at a future moment?",
+        "prompt": "Какое предложение описывает действие в процессе в будущий момент?",
         "theory_block_id": "b4_theory_future_continuous_process",
         "difficulty": 2,
         "choices": [
@@ -1082,13 +1082,13 @@
           }
         ],
         "correct_answer": "a",
-        "explanation": "Future Continuous expresses an action in progress at a specific future time.",
+        "explanation": "Future Continuous выражает действие в процессе в конкретный будущий момент.",
         "tags": []
       },
       {
         "id": "q41",
         "type": "error_spotting",
-        "prompt": "Find the mistake and choose the corrected sentence: \"At midnight, they will be asleeping.\"",
+        "prompt": "Найдите ошибку и выберите исправленное предложение: \"At midnight, they will be asleeping.\"",
         "theory_block_id": "b4_theory_future_continuous_process",
         "difficulty": 2,
         "choices": [
@@ -1106,23 +1106,23 @@
           }
         ],
         "correct_answer": "a",
-        "explanation": "The correct -ing form is sleeping. Future Continuous is will be + V-ing.",
+        "explanation": "Правильная форма на -ing: sleeping. Future Continuous: will be + V-ing.",
         "tags": []
       },
       {
         "id": "q42",
         "type": "fill_blank",
-        "prompt": "Fill in: This time tomorrow, she will be ___ to the conference. (travel)",
+        "prompt": "Вставьте пропущенное: This time tomorrow, she will be ___ to the conference. (travel)",
         "theory_block_id": "b4_theory_future_continuous_process",
         "difficulty": 2,
         "correct_answer": "traveling",
-        "explanation": "This time tomorrow points to a future moment, so use Future Continuous.",
+        "explanation": "This time tomorrow — момент в будущем, используется Future Continuous.",
         "tags": []
       },
       {
         "id": "q43",
         "type": "mcq_single",
-        "prompt": "Choose the best option: \"Do not call at 8. I ___ the kids to bed.\"",
+        "prompt": "Выберите лучший вариант: \"Do not call at 8. I ___ the kids to bed.\"",
         "theory_block_id": "b4_theory_future_continuous_process",
         "difficulty": 2,
         "choices": [
@@ -1144,13 +1144,13 @@
           }
         ],
         "correct_answer": "a",
-        "explanation": "At 8 the action will be in progress, so Future Continuous fits.",
+        "explanation": "В 8 действие будет в процессе — подходит Future Continuous.",
         "tags": []
       },
       {
         "id": "q44",
         "type": "error_spotting",
-        "prompt": "Find the mistake and choose the corrected sentence: \"At 6, I will be finish my shift.\"",
+        "prompt": "Найдите ошибку и выберите исправленное предложение: \"At 6, I will be finish my shift.\"",
         "theory_block_id": "b4_theory_future_continuous_process",
         "difficulty": 2,
         "choices": [
@@ -1168,23 +1168,23 @@
           }
         ],
         "correct_answer": "a",
-        "explanation": "Future Continuous requires be + V-ing: will be finishing.",
+        "explanation": "В Future Continuous нужно be + V-ing: will be finishing.",
         "tags": []
       },
       {
         "id": "q45",
         "type": "fill_blank",
-        "prompt": "Fill in: At 3 p.m., the team will be ___ a demo. (give)",
+        "prompt": "Вставьте пропущенное: At 3 p.m., the team will be ___ a demo. (give)",
         "theory_block_id": "b4_theory_future_continuous_process",
         "difficulty": 2,
         "correct_answer": "giving",
-        "explanation": "A specific future time suggests a process in progress, so use Future Continuous.",
+        "explanation": "Конкретный будущий момент — процесс в развитии, Future Continuous.",
         "tags": []
       },
       {
         "id": "q46",
         "type": "mcq_single",
-        "prompt": "Which context best fits Future Continuous?",
+        "prompt": "Какой контекст лучше подходит для Future Continuous?",
         "theory_block_id": "b4_theory_future_continuous_process",
         "difficulty": 2,
         "choices": [
@@ -1206,23 +1206,23 @@
           }
         ],
         "correct_answer": "a",
-        "explanation": "Future Continuous is for actions in progress at a specific future time.",
+        "explanation": "Future Continuous — для действий в процессе в конкретный будущий момент.",
         "tags": []
       },
       {
         "id": "q47",
         "type": "true_false",
-        "prompt": "Future Continuous often provides background for another event.",
+        "prompt": "Верно или неверно: «Future Continuous often provides background for another event.»",
         "theory_block_id": "b4_theory_future_continuous_process",
         "difficulty": 1,
         "correct_answer": "true",
-        "explanation": "Yes. It can describe an ongoing action when another future event happens.",
+        "explanation": "Да. Им можно описать действие в процессе, когда произойдёт другое будущее событие.",
         "tags": []
       },
       {
         "id": "q48",
         "type": "mcq_single",
-        "prompt": "Choose the correct form: When you get home, I ___ .",
+        "prompt": "Выберите правильную форму: When you get home, I ___ .",
         "theory_block_id": "b4_theory_future_continuous_process",
         "difficulty": 3,
         "choices": [
@@ -1244,61 +1244,61 @@
           }
         ],
         "correct_answer": "a",
-        "explanation": "The action will be in progress when you arrive, so Future Continuous is appropriate.",
+        "explanation": "Действие будет в процессе по вашему приходу — уместен Future Continuous.",
         "tags": []
       },
       {
         "id": "q49",
         "type": "mcq_single",
-        "prompt": "Choose the correct form: By 6, I ___ the slide deck.",
+        "prompt": "Выберите правильную форму: By 6, I ___ the slide deck.",
         "theory_block_id": "b5_theory_contrast_future_forms",
         "difficulty": 2,
         "choices": [
           {
             "id": "a",
-            "text": "will have finished"
+            "text": "will have prepared"
           },
           {
             "id": "b",
-            "text": "will be finishing"
+            "text": "will be preparing"
           },
           {
             "id": "c",
-            "text": "will finish"
+            "text": "will prepare"
           },
           {
             "id": "d",
-            "text": "finish"
+            "text": "prepare"
           }
         ],
         "correct_answer": "a",
-        "explanation": "By 6 sets a deadline, so we need the completed result: will have finished.",
+        "explanation": "By 6 задает дедлайн — нужен завершенный результат: will have prepared.",
         "tags": []
       },
       {
         "id": "q50",
         "type": "fill_blank",
-        "prompt": "Fill in: At 6 p.m., I will be ___ on the slide deck. (work)",
+        "prompt": "Вставьте пропущенное: At 6 p.m., I will be ___ on the slide deck. (work)",
         "theory_block_id": "b5_theory_contrast_future_forms",
         "difficulty": 2,
         "correct_answer": "working",
-        "explanation": "At a specific time we focus on the process, so use Future Continuous.",
+        "explanation": "В конкретный момент важен процесс — Future Continuous.",
         "tags": []
       },
       {
         "id": "q51",
         "type": "true_false",
-        "prompt": "By the time she calls, I will be driving means the action is finished.",
+        "prompt": "Фраза «By the time she calls, I will be driving» означает, что действие будет в процессе в тот момент.",
         "theory_block_id": "b5_theory_contrast_future_forms",
         "difficulty": 1,
         "correct_answer": "false",
-        "explanation": "Will be driving shows an action in progress when she calls, not a completed result.",
+        "explanation": "Will be driving — действие в процессе к моменту её звонка, а не завершённый результат.",
         "tags": []
       },
       {
         "id": "q52",
         "type": "error_spotting",
-        "prompt": "Find the mistake and choose the corrected sentence: \"By noon, we will be have completed the audit.\"",
+        "prompt": "Найдите ошибку и выберите исправленное предложение: \"By noon, we will be have completed the audit.\"",
         "theory_block_id": "b5_theory_contrast_future_forms",
         "difficulty": 3,
         "choices": [
@@ -1316,13 +1316,13 @@
           }
         ],
         "correct_answer": "a",
-        "explanation": "Future Perfect uses will have + V3. The extra be is incorrect.",
+        "explanation": "Future Perfect: will have + V3. Лишнее be неверно.",
         "tags": []
       },
       {
         "id": "q53",
         "type": "mcq_single",
-        "prompt": "Choose the correct form: At this time next week, they ___ the new system.",
+        "prompt": "Выберите правильную форму: At this time next week, they ___ the new system.",
         "theory_block_id": "b5_theory_contrast_future_forms",
         "difficulty": 2,
         "choices": [
@@ -1344,23 +1344,23 @@
           }
         ],
         "correct_answer": "a",
-        "explanation": "At this time next week highlights a process in a future moment, so Future Continuous is correct.",
+        "explanation": "At this time next week — процесс в будущий момент, верен Future Continuous.",
         "tags": []
       },
       {
         "id": "q54",
         "type": "fill_blank",
-        "prompt": "Fill in: By the time you wake up, I will have ___ for work. (leave)",
+        "prompt": "Вставьте пропущенное: By the time you wake up, I will have ___ for work. (leave)",
         "theory_block_id": "b5_theory_contrast_future_forms",
         "difficulty": 2,
         "correct_answer": "left",
-        "explanation": "By the time sets a deadline; the leaving will be completed before it.",
+        "explanation": "By the time задаёт дедлайн; уход будет завершён до него.",
         "tags": []
       },
       {
         "id": "q55",
         "type": "mcq_single",
-        "prompt": "Which sentence focuses on the result?",
+        "prompt": "Какое предложение описывает результат?",
         "theory_block_id": "b5_theory_contrast_future_forms",
         "difficulty": 2,
         "choices": [
@@ -1382,13 +1382,13 @@
           }
         ],
         "correct_answer": "a",
-        "explanation": "By Friday indicates a completed result by a deadline, which is Future Perfect.",
+        "explanation": "By Friday — завершённый результат к дедлайну, это Future Perfect.",
         "tags": []
       },
       {
         "id": "q56",
         "type": "error_spotting",
-        "prompt": "Find the mistake and choose the corrected sentence: \"At 5 p.m., I will have meet the client.\"",
+        "prompt": "Найдите ошибку и выберите исправленное предложение: \"At 5 p.m., I will have meet the client.\"",
         "theory_block_id": "b5_theory_contrast_future_forms",
         "difficulty": 3,
         "choices": [
@@ -1406,23 +1406,23 @@
           }
         ],
         "correct_answer": "a",
-        "explanation": "At 5 p.m. refers to a moment in time, so the process form will be meeting is most appropriate.",
+        "explanation": "At 5 p.m. — момент времени, форма процесса will be meeting наиболее уместна.",
         "tags": []
       },
       {
         "id": "q57",
         "type": "fill_blank",
-        "prompt": "Fill in: By the end of the shift, she will have ___ 30 calls. (handle)",
+        "prompt": "Вставьте пропущенное: By the end of the shift, she will have ___ 30 calls. (handle)",
         "theory_block_id": "b5_theory_contrast_future_forms",
         "difficulty": 2,
         "correct_answer": "handled",
-        "explanation": "By the end of the shift sets a deadline, so use Future Perfect.",
+        "explanation": "By the end of the shift задаёт дедлайн — Future Perfect.",
         "tags": []
       },
       {
         "id": "q58",
         "type": "mcq_single",
-        "prompt": "Select the best reply: \"Can you join the call at 4?\" — \"I cannot, I ___ a meeting then.\"",
+        "prompt": "Выберите подходящий ответ: \"Can you join the call at 4?\" — \"I cannot, I ___ a meeting then.\"",
         "theory_block_id": "b5_theory_contrast_future_forms",
         "difficulty": 2,
         "choices": [
@@ -1444,23 +1444,23 @@
           }
         ],
         "correct_answer": "a",
-        "explanation": "At a specific time (4), the action is in progress, so Future Continuous is correct.",
+        "explanation": "В конкретный момент (4) действие в процессе — верен Future Continuous.",
         "tags": []
       },
       {
         "id": "q59",
         "type": "true_false",
-        "prompt": "Future Perfect and Future Continuous can both be possible, but the meaning changes.",
+        "prompt": "Верно или неверно: «Future Perfect and Future Continuous can both be possible, but the meaning changes.»",
         "theory_block_id": "b5_theory_contrast_future_forms",
         "difficulty": 2,
         "correct_answer": "true",
-        "explanation": "Yes. Future Perfect focuses on result, while Future Continuous focuses on process.",
+        "explanation": "Да. Future Perfect — на результат, Future Continuous — на процесс.",
         "tags": []
       },
       {
         "id": "q60",
         "type": "mcq_single",
-        "prompt": "Choose the correct form: By 2035, the city ___ a new metro line.",
+        "prompt": "Выберите правильную форму: By 2035, the city ___ a new metro line.",
         "theory_block_id": "b5_theory_contrast_future_forms",
         "difficulty": 2,
         "choices": [
@@ -1482,13 +1482,13 @@
           }
         ],
         "correct_answer": "a",
-        "explanation": "By 2035 signals a deadline and a completed result, so Future Perfect is needed.",
+        "explanation": "By 2035 — дедлайн и завершённый результат, нужен Future Perfect.",
         "tags": []
       },
       {
         "id": "q61",
         "type": "mcq_single",
-        "prompt": "Choose the correct tense with by: By next month, we ___ the new site.",
+        "prompt": "Выберите правильное время с by: By next month, we ___ the new site.",
         "theory_block_id": "b6_theory_time_markers",
         "difficulty": 2,
         "choices": [
@@ -1510,33 +1510,33 @@
           }
         ],
         "correct_answer": "a",
-        "explanation": "By next month implies a completed result by a deadline, so Future Perfect fits.",
+        "explanation": "By next month — завершённый результат к дедлайну, подходит Future Perfect.",
         "tags": []
       },
       {
         "id": "q62",
         "type": "fill_blank",
-        "prompt": "Fill in: At this time tomorrow, I will be ___ for your call. (wait)",
+        "prompt": "Вставьте пропущенное: At this time tomorrow, I will be ___ for your call. (wait)",
         "theory_block_id": "b6_theory_time_markers",
         "difficulty": 2,
         "correct_answer": "waiting",
-        "explanation": "At this time tomorrow points to an action in progress at a future moment.",
+        "explanation": "At this time tomorrow — действие в процессе в будущий момент.",
         "tags": []
       },
       {
         "id": "q63",
         "type": "true_false",
-        "prompt": "By the time signals a result before a future point.",
+        "prompt": "By the time указывает на результат к определённому моменту в будущем.",
         "theory_block_id": "b6_theory_time_markers",
         "difficulty": 1,
         "correct_answer": "true",
-        "explanation": "Yes. By the time usually indicates a completed result before that point.",
+        "explanation": "Да. By the time обычно указывает на завершённый результат к тому моменту.",
         "tags": []
       },
       {
         "id": "q64",
         "type": "error_spotting",
-        "prompt": "Find the mistake and choose the corrected sentence: \"At this time next week, she will have traveling abroad.\"",
+        "prompt": "Найдите ошибку и выберите исправленное предложение: \"At this time next week, she will have traveling abroad.\"",
         "theory_block_id": "b6_theory_time_markers",
         "difficulty": 2,
         "choices": [
@@ -1554,13 +1554,13 @@
           }
         ],
         "correct_answer": "a",
-        "explanation": "At this time next week points to a process, so Future Continuous is needed.",
+        "explanation": "At this time next week — процесс, нужен Future Continuous.",
         "tags": []
       },
       {
         "id": "q65",
         "type": "mcq_single",
-        "prompt": "Which marker best fits Future Continuous?",
+        "prompt": "Какой маркер лучше подходит для Future Continuous?",
         "theory_block_id": "b6_theory_time_markers",
         "difficulty": 2,
         "choices": [
@@ -1582,13 +1582,13 @@
           }
         ],
         "correct_answer": "a",
-        "explanation": "At this time next week highlights a specific moment in the future, so it matches Future Continuous.",
+        "explanation": "At this time next week — конкретный момент в будущем, подходит Future Continuous.",
         "tags": []
       },
       {
         "id": "q66",
         "type": "mcq_single",
-        "prompt": "Which marker usually fits Future Perfect?",
+        "prompt": "Какой маркер обычно подходит для Future Perfect?",
         "theory_block_id": "b6_theory_time_markers",
         "difficulty": 2,
         "choices": [
@@ -1610,23 +1610,23 @@
           }
         ],
         "correct_answer": "a",
-        "explanation": "By the end of sets a deadline, which is typical for Future Perfect.",
+        "explanation": "By the end of задаёт дедлайн — типично для Future Perfect.",
         "tags": []
       },
       {
         "id": "q67",
         "type": "fill_blank",
-        "prompt": "Fill in: By 10 a.m., they will have ___ the setup. (complete)",
+        "prompt": "Вставьте пропущенное: By 10 a.m., they will have ___ the setup. (complete)",
         "theory_block_id": "b6_theory_time_markers",
         "difficulty": 2,
         "correct_answer": "completed",
-        "explanation": "By 10 a.m. is a deadline, so use Future Perfect for the completed result.",
+        "explanation": "By 10 a.m. — дедлайн, Future Perfect для завершённого результата.",
         "tags": []
       },
       {
         "id": "q68",
         "type": "error_spotting",
-        "prompt": "Find the mistake and choose the corrected sentence: \"By tomorrow evening, we will be finished the draft.\"",
+        "prompt": "Найдите ошибку и выберите исправленное предложение: \"By tomorrow evening, we will be finished the draft.\"",
         "theory_block_id": "b6_theory_time_markers",
         "difficulty": 2,
         "choices": [
@@ -1644,13 +1644,13 @@
           }
         ],
         "correct_answer": "a",
-        "explanation": "By tomorrow evening sets a deadline, so Future Perfect is required.",
+        "explanation": "By tomorrow evening задаёт дедлайн — требуется Future Perfect.",
         "tags": []
       },
       {
         "id": "q69",
         "type": "mcq_single",
-        "prompt": "Pick the sentence that matches an action in progress at a future moment.",
+        "prompt": "Выберите предложение, описывающее действие в процессе в будущий момент.",
         "theory_block_id": "b6_theory_time_markers",
         "difficulty": 2,
         "choices": [
@@ -1672,23 +1672,23 @@
           }
         ],
         "correct_answer": "a",
-        "explanation": "At a specific time, Future Continuous shows an action in progress: will be driving.",
+        "explanation": "В конкретный момент Future Continuous — действие в процессе: will be driving.",
         "tags": []
       },
       {
         "id": "q70",
         "type": "fill_blank",
-        "prompt": "Fill in: At 5 p.m. on Friday, he will be ___ the presentation. (give)",
+        "prompt": "Вставьте пропущенное: At 5 p.m. on Friday, he will be ___ the presentation. (give)",
         "theory_block_id": "b6_theory_time_markers",
         "difficulty": 2,
         "correct_answer": "giving",
-        "explanation": "At a specific time, Future Continuous describes the ongoing action.",
+        "explanation": "В конкретный момент Future Continuous описывает длящееся действие.",
         "tags": []
       },
       {
         "id": "q71",
         "type": "mcq_single",
-        "prompt": "Which sentence correctly combines a time clause with Future Perfect?",
+        "prompt": "Какое предложение правильно сочетает придаточное времени с Future Perfect?",
         "theory_block_id": "b6_theory_time_markers",
         "difficulty": 3,
         "choices": [
@@ -1710,17 +1710,17 @@
           }
         ],
         "correct_answer": "a",
-        "explanation": "By the time introduces a future point; Future Perfect shows the result will be completed before it.",
+        "explanation": "By the time вводит момент в будущем; Future Perfect — результат будет готов до него.",
         "tags": []
       },
       {
         "id": "q72",
         "type": "true_false",
-        "prompt": "Time markers like at 5 p.m. always require Future Perfect.",
+        "prompt": "Верно или неверно: «Time markers like at 5 p.m. always require Future Perfect.»",
         "theory_block_id": "b6_theory_time_markers",
         "difficulty": 1,
         "correct_answer": "false",
-        "explanation": "At 5 p.m. points to a moment and usually takes Future Continuous when the action is in progress.",
+        "explanation": "At 5 p.m. — момент; при действии в процессе обычно Future Continuous.",
         "tags": []
       }
     ]
@@ -1802,7 +1802,7 @@
   },
   "meta": {
     "version": "2026.01.16",
-    "updated_at": "2026-01-20T14:11:10Z",
+    "updated_at": "2026-01-21T16:44:53Z",
     "source": "llm"
   }
 }

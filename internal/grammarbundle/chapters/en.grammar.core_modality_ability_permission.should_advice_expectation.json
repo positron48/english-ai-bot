@@ -420,7 +420,7 @@
           }
         ],
         "correct_answer": "a",
-        "explanation": "Only should expresses a recommendation. The other options describe actions in time."
+        "explanation": "Только should выражает рекомендацию. Остальные варианты описывают действия во времени."
       },
       {
         "id": "q11",
@@ -1165,24 +1165,24 @@
       {
         "id": "q59",
         "type": "error_spotting",
-        "prompt": "Найдите ошибку: 'You should must wear a helmet.'",
+        "prompt": "Найдите ошибку: 'You should must slow down.'",
         "theory_block_id": "b5_should_vs_must",
         "difficulty": 2,
         "choices": [
           {
             "id": "a",
-            "text": "You must wear a helmet."
+            "text": "You should slow down."
           },
           {
             "id": "b",
-            "text": "You should wear a helmet."
+            "text": "You must slow down."
           },
           {
             "id": "c",
-            "text": "You should must wear a helmet."
+            "text": "You should must slow down."
           }
         ],
-        "correct_answer": "b",
+        "correct_answer": "a",
         "explanation": "Нельзя ставить два модальных глагола вместе. Нужно выбрать should или must."
       },
       {
@@ -1479,7 +1479,7 @@
   },
   "meta": {
     "version": "2026.01.16",
-    "updated_at": "2026-01-20T14:11:00Z",
+    "updated_at": "2026-01-21T16:06:40Z",
     "source": "llm"
   }
 }
