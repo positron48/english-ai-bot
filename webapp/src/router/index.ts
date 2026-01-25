@@ -152,6 +152,21 @@ const router = createRouter({
           path: 'app-settings',
           name: 'AdminAppSettings',
           component: () => import('../views/AdminAppSettingsView.vue')
+        },
+        {
+          path: 'access',
+          name: 'AdminAccess',
+          component: () => import('../views/AdminAccessView.vue')
+        },
+        {
+          path: 'users',
+          name: 'AdminUsers',
+          component: () => import('../views/AdminUsersView.vue')
+        },
+        {
+          path: 'stats',
+          name: 'AdminStats',
+          component: () => import('../views/AdminStatsView.vue')
         }
       ]
     },
@@ -178,11 +193,11 @@ router.beforeEach(async (to, _from, next) => {
   }
   
   // Get auth state - this will check tokens from localStorage
-  const { isAuthenticated, isAdmin, checkAdmin, checkAuth } = useAuth()
+  const { isAuthenticated, hasAnyAdminAccess, checkAuth, loadPermissions } = useAuth()
   
   // Ensure auth state is up to date (especially important on direct URL access)
   // Reload tokens from localStorage and update auth state
-  checkAuth()
+  await checkAuth()
   
   // If user is trying to access login page, check if they're already authenticated
   // by making a request to the backend
@@ -199,72 +214,76 @@ router.beforeEach(async (to, _from, next) => {
       // Clear invalid tokens if it's an auth error
       if (error.message?.includes('401') || error.message?.includes('Unauthorized')) {
         apiClient.clearTokens()
-        checkAuth()
+        await checkAuth()
       }
     }
   }
   
-  // For admin routes, also check admin status
-  if (to.meta.requiresAdmin) {
-    await checkAdmin()
-  }
-  
+  // Check authentication
   if (to.meta.requiresAuth && !isAuthenticated.value) {
     next('/login')
-  } else if (to.meta.requiresAdmin && !isAdmin.value) {
-    next('/dashboard')
-  } else {
-    // Check grammar chapter access
-    if (to.name === 'GrammarChapter' && to.params.chapterId) {
-      try {
-        const chapterId = to.params.chapterId as string
-        const response: { can_access: boolean } = await apiClient.request(
-          `/api/learning/grammar/chapters/${chapterId}/access`
-        )
-        if (!response.can_access) {
-          // Redirect to chapters list with error message
-          // Extract sectionId from chapterId (format: section.chapter)
-          const sectionMatch = chapterId.match(/^(.+)\.[^.]+$/)
-          if (sectionMatch) {
-            const sectionId = sectionMatch[1]
-            next({
-              path: `/learning/grammar/${sectionId}`,
-              query: { error: 'previous_chapter_not_passed' }
-            })
-          } else {
-            next('/learning/grammar')
-          }
-          return
-        }
-      } catch (error: any) {
-        // If access check fails, allow navigation (backend will handle it)
-        console.error('Failed to check chapter access:', error)
-      }
-    }
-    
-    // Check grammar section access
-    if (to.name === 'GrammarChapters' && to.params.sectionId) {
-      try {
-        const sectionId = to.params.sectionId as string
-        const response: { can_access: boolean } = await apiClient.request(
-          `/api/learning/grammar/categories/${sectionId}/access`
-        )
-        if (!response.can_access) {
-          // Redirect to categories list with error message
-          next({
-            path: '/learning/grammar',
-            query: { error: 'previous_section_not_complete' }
-          })
-          return
-        }
-      } catch (error: any) {
-        // If access check fails, allow navigation (backend will handle it)
-        console.error('Failed to check section access:', error)
-      }
-    }
-    
-    next()
+    return
   }
+  
+  // Check admin access (for /admin routes)
+  if (to.meta.requiresAdmin) {
+    // Load permissions if not already loaded
+    if (isAuthenticated.value) {
+      await loadPermissions()
+    }
+    
+    if (!hasAnyAdminAccess()) {
+      next('/dashboard')
+      return
+    }
+  }
+  
+  // Check grammar chapter access (guard client-side, backend will enforce too)
+  if (to.name === 'GrammarChapter' && to.params.chapterId) {
+    try {
+      const chapterId = to.params.chapterId as string
+      const response: { can_access: boolean } = await apiClient.request(
+        `/api/learning/grammar/chapters/${chapterId}/access`
+      )
+      if (!response.can_access) {
+        // Extract sectionId from chapterId (format: section.chapter)
+        const sectionMatch = chapterId.match(/^(.+)\.[^.]+$/)
+        if (sectionMatch) {
+          const sectionId = sectionMatch[1]
+          next({
+            path: `/learning/grammar/${sectionId}`,
+            query: { error: 'previous_chapter_not_passed' }
+          })
+        } else {
+          next('/learning/grammar')
+        }
+        return
+      }
+    } catch (error: any) {
+      console.error('Failed to check chapter access:', error)
+    }
+  }
+  
+  // Check grammar section access
+  if (to.name === 'GrammarChapters' && to.params.sectionId) {
+    try {
+      const sectionId = to.params.sectionId as string
+      const response: { can_access: boolean } = await apiClient.request(
+        `/api/learning/grammar/categories/${sectionId}/access`
+      )
+      if (!response.can_access) {
+        next({
+          path: '/learning/grammar',
+          query: { error: 'previous_section_not_complete' }
+        })
+        return
+      }
+    } catch (error: any) {
+      console.error('Failed to check section access:', error)
+    }
+  }
+  
+  next()
 })
 
 export default router

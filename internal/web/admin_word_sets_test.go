@@ -16,10 +16,12 @@ import (
 
 func setUserIDInContextWordSets(req *http.Request, userID int64) *http.Request {
 	ctx := context.WithValue(req.Context(), userIDKey, userID)
+	// Set empty categories for tests (user will need permissions assigned)
+	ctx = context.WithValue(ctx, userCategoriesKey, []int64{})
 	return req.WithContext(ctx)
 }
 
-func setupAdminWordSetsTest(t *testing.T) (*Router, *database.DB, func()) {
+func setupAdminWordSetsTest(t *testing.T) (*Router, *database.DB, int64, func()) {
 	logger, _ := zap.NewDevelopment()
 	db, err := database.New(":memory:", logger)
 	if err != nil {
@@ -30,24 +32,32 @@ func setupAdminWordSetsTest(t *testing.T) (*Router, *database.DB, func()) {
 	cfg.Admin.TelegramID = 12345
 	cfg.WebApp.JWTSecret = "test-secret"
 
+	// Create super admin user in DB
+	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
+	adminUser, err := userRepo.GetOrCreateUser(12345)
+	if err != nil {
+		t.Fatalf("Failed to create admin user: %v", err)
+	}
+
 	cbRepo := repository.NewCircuitBreakerRepository(db.GetConnection(), logger)
 	cbService := service.NewCircuitBreakerService(cbRepo, 5, logger)
 
 	router := NewRouter(logger, cfg, db.GetConnection(), nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
 
 	cleanup := func() {
 		db.Close()
 	}
 
-	return router, db, cleanup
+	return router, db, adminUser.ID, cleanup
 }
 
 func TestHandleAdminWordSetCategories_Get(t *testing.T) {
-	router, _, cleanup := setupAdminWordSetsTest(t)
+	router, _, adminUserID, cleanup := setupAdminWordSetsTest(t)
 	defer cleanup()
 
 	req := httptest.NewRequest(http.MethodGet, "/api/admin/word-set-categories", nil)
-	req = setUserIDInContextWordSets(req, 12345)
+	req = setUserIDInContextWordSets(req, adminUserID)
 	rr := httptest.NewRecorder()
 
 	router.handleAdminWordSetCategories(rr, req)
@@ -58,11 +68,11 @@ func TestHandleAdminWordSetCategories_Get(t *testing.T) {
 }
 
 func TestHandleAdminWordSetCategories_PostInvalidBody(t *testing.T) {
-	router, _, cleanup := setupAdminWordSetsTest(t)
+	router, _, adminUserID, cleanup := setupAdminWordSetsTest(t)
 	defer cleanup()
 
 	req := httptest.NewRequest(http.MethodPost, "/api/admin/word-set-categories", nil)
-	req = setUserIDInContextWordSets(req, 12345)
+	req = setUserIDInContextWordSets(req, adminUserID)
 	rr := httptest.NewRecorder()
 
 	router.handleAdminWordSetCategories(rr, req)
@@ -73,11 +83,11 @@ func TestHandleAdminWordSetCategories_PostInvalidBody(t *testing.T) {
 }
 
 func TestHandleAdminWordSets_Get(t *testing.T) {
-	router, _, cleanup := setupAdminWordSetsTest(t)
+	router, _, adminUserID, cleanup := setupAdminWordSetsTest(t)
 	defer cleanup()
 
 	req := httptest.NewRequest(http.MethodGet, "/api/admin/word-sets", nil)
-	req = setUserIDInContextWordSets(req, 12345)
+	req = setUserIDInContextWordSets(req, adminUserID)
 	rr := httptest.NewRecorder()
 
 	router.handleAdminWordSets(rr, req)
@@ -88,11 +98,11 @@ func TestHandleAdminWordSets_Get(t *testing.T) {
 }
 
 func TestHandleAdminWordSets_GetWithCategory(t *testing.T) {
-	router, _, cleanup := setupAdminWordSetsTest(t)
+	router, _, adminUserID, cleanup := setupAdminWordSetsTest(t)
 	defer cleanup()
 
 	req := httptest.NewRequest(http.MethodGet, "/api/admin/word-sets?category_id=1", nil)
-	req = setUserIDInContextWordSets(req, 12345)
+	req = setUserIDInContextWordSets(req, adminUserID)
 	rr := httptest.NewRecorder()
 
 	router.handleAdminWordSets(rr, req)
@@ -103,11 +113,11 @@ func TestHandleAdminWordSets_GetWithCategory(t *testing.T) {
 }
 
 func TestHandleAdminWordSets_PostInvalidBody(t *testing.T) {
-	router, _, cleanup := setupAdminWordSetsTest(t)
+	router, _, adminUserID, cleanup := setupAdminWordSetsTest(t)
 	defer cleanup()
 
 	req := httptest.NewRequest(http.MethodPost, "/api/admin/word-sets", nil)
-	req = setUserIDInContextWordSets(req, 12345)
+	req = setUserIDInContextWordSets(req, adminUserID)
 	rr := httptest.NewRecorder()
 
 	router.handleAdminWordSets(rr, req)
@@ -118,11 +128,11 @@ func TestHandleAdminWordSets_PostInvalidBody(t *testing.T) {
 }
 
 func TestHandleAdminWordSetDetailOrSets_ListWordSets(t *testing.T) {
-	router, _, cleanup := setupAdminWordSetsTest(t)
+	router, _, adminUserID, cleanup := setupAdminWordSetsTest(t)
 	defer cleanup()
 
 	req := httptest.NewRequest(http.MethodGet, "/api/admin/word-sets/", nil)
-	req = setUserIDInContextWordSets(req, 12345)
+	req = setUserIDInContextWordSets(req, adminUserID)
 	rr := httptest.NewRecorder()
 
 	router.handleAdminWordSetDetailOrSets(rr, req)
@@ -133,11 +143,11 @@ func TestHandleAdminWordSetDetailOrSets_ListWordSets(t *testing.T) {
 }
 
 func TestHandleAdminWordSetDetailOrSets_NotFound(t *testing.T) {
-	router, _, cleanup := setupAdminWordSetsTest(t)
+	router, _, adminUserID, cleanup := setupAdminWordSetsTest(t)
 	defer cleanup()
 
 	req := httptest.NewRequest(http.MethodGet, "/api/admin/word-sets/invalid", nil)
-	req = setUserIDInContextWordSets(req, 12345)
+	req = setUserIDInContextWordSets(req, adminUserID)
 	rr := httptest.NewRecorder()
 
 	router.handleAdminWordSetDetailOrSets(rr, req)
@@ -148,11 +158,11 @@ func TestHandleAdminWordSetDetailOrSets_NotFound(t *testing.T) {
 }
 
 func TestHandleAdminWordSetDetail_MethodNotAllowed(t *testing.T) {
-	router, _, cleanup := setupAdminWordSetsTest(t)
+	router, _, adminUserID, cleanup := setupAdminWordSetsTest(t)
 	defer cleanup()
 
 	req := httptest.NewRequest(http.MethodPost, "/api/admin/word-sets/1", nil)
-	req = setUserIDInContextWordSets(req, 12345)
+	req = setUserIDInContextWordSets(req, adminUserID)
 	rr := httptest.NewRecorder()
 
 	router.handleAdminWordSetDetail(rr, req)
@@ -163,11 +173,11 @@ func TestHandleAdminWordSetDetail_MethodNotAllowed(t *testing.T) {
 }
 
 func TestHandleAdminWordSetDetail_NotFound(t *testing.T) {
-	router, _, cleanup := setupAdminWordSetsTest(t)
+	router, _, adminUserID, cleanup := setupAdminWordSetsTest(t)
 	defer cleanup()
 
 	req := httptest.NewRequest(http.MethodGet, "/api/admin/word-sets/99999", nil)
-	req = setUserIDInContextWordSets(req, 12345)
+	req = setUserIDInContextWordSets(req, adminUserID)
 	rr := httptest.NewRecorder()
 
 	router.handleAdminWordSetDetail(rr, req)

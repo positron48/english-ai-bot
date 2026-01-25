@@ -15,31 +15,10 @@ import (
 	"go.uber.org/zap"
 )
 
-// RequireAdmin wraps a handler to require admin access
+// RequireAdmin wraps a handler to require admin access (legacy - use RequirePermission instead)
+// This now checks for full_access permission or super admin status
 func (r *Router) RequireAdmin(next http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, req *http.Request) {
-		userID := getUserIDFromContext(req.Context())
-		if userID == 0 {
-			http.Error(w, "Unauthorized", http.StatusUnauthorized)
-			return
-		}
-
-		// Get user's telegram_id
-		userRepo := r.userRepo.(*repository.UserRepository)
-		user, err := userRepo.GetUserByID(userID)
-		if err != nil || user == nil {
-			http.Error(w, "User not found", http.StatusNotFound)
-			return
-		}
-
-		// Check if user is admin
-		if user.TelegramID != int64(r.config.Admin.TelegramID) {
-			http.Error(w, "Forbidden", http.StatusForbidden)
-			return
-		}
-
-		next(w, req)
-	}
+	return r.RequirePermission(PermissionFullAccess)(next)
 }
 
 // handleAdmin shows the admin panel
@@ -192,6 +171,24 @@ func (r *Router) handleAdminCircuitReset(w http.ResponseWriter, req *http.Reques
 // @Router       /api/admin/training/{word} [post]
 // @Router       /api/admin/training/{word}/generate [post]
 func (r *Router) handleAdminTraining(w http.ResponseWriter, req *http.Request) {
+	// Load permissions into context (if not already loaded by RequireAnyPermission)
+	ctx := r.loadUserPermissionsIntoContext(req.Context())
+	req = req.WithContext(ctx)
+
+	// Check permissions: GET requires words.read_all, POST/PUT/DELETE require words.edit_all
+	if req.Method == http.MethodGet {
+		if !r.HasPermission(ctx, PermissionWordsReadAll) {
+			http.Error(w, "Forbidden: read permission required", http.StatusForbidden)
+			return
+		}
+	} else {
+		// POST, PUT, DELETE require edit permission
+		if !r.HasPermission(ctx, PermissionWordsEditAll) {
+			http.Error(w, "Forbidden: edit permission required", http.StatusForbidden)
+			return
+		}
+	}
+
 	// Extract action and word from path: /app/admin/training/{word}/{action}
 	path := req.URL.Path
 	parts := strings.Split(strings.TrimPrefix(path, "/api/admin/training/"), "/")
@@ -625,6 +622,10 @@ func (r *Router) handleAdminTraining(w http.ResponseWriter, req *http.Request) {
 // @Router       /api/admin/training/card/{id} [put]
 // @Router       /api/admin/training/card/{id} [delete]
 func (r *Router) handleAdminTrainingCard(w http.ResponseWriter, req *http.Request) {
+	// Load permissions into context (if not already loaded by RequireAnyPermission)
+	ctx := r.loadUserPermissionsIntoContext(req.Context())
+	req = req.WithContext(ctx)
+
 	path := req.URL.Path
 	parts := strings.Split(strings.TrimPrefix(path, "/api/admin/training/card/"), "/")
 	
@@ -634,7 +635,32 @@ func (r *Router) handleAdminTrainingCard(w http.ResponseWriter, req *http.Reques
 	}
 
 	var cardID int64
+	var cardIDValid bool
 	if _, err := fmt.Sscanf(parts[0], "%d", &cardID); err != nil {
+		cardIDValid = false
+	} else {
+		cardIDValid = true
+	}
+
+	// Check permissions: GET requires words.read_all, PUT/DELETE require words.edit_all
+	// Only check permissions if card ID is valid (to avoid checking permissions for invalid IDs)
+	if cardIDValid {
+		if req.Method == http.MethodGet {
+			if !r.HasPermission(ctx, PermissionWordsReadAll) {
+				http.Error(w, "Forbidden: read permission required", http.StatusForbidden)
+				return
+			}
+		} else {
+			// PUT, DELETE require edit permission
+			if !r.HasPermission(ctx, PermissionWordsEditAll) {
+				http.Error(w, "Forbidden: edit permission required", http.StatusForbidden)
+				return
+			}
+		}
+	}
+
+	// If card ID is invalid, return 400 Bad Request
+	if !cardIDValid {
 		http.Error(w, "Invalid card ID", http.StatusBadRequest)
 		return
 	}
@@ -1206,21 +1232,36 @@ func (r *Router) handleAdminUsers(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	userRepo := r.userRepo.(*repository.UserRepository)
-	users, err := userRepo.GetAllUsers()
+	// Return user list with id, telegram_id, telegram_username, created_at
+	// Query directly to get dates as strings, avoiding time.Time parsing issues
+	query := `SELECT id, telegram_id, COALESCE(telegram_username, ''), 
+			  COALESCE(created_at, '') as created_at
+			  FROM users ORDER BY id`
+	rows, err := r.db.Query(query)
 	if err != nil {
-		r.logger.Error("failed to get all users", zap.Error(err))
+		r.logger.Error("failed to query users", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
+	defer rows.Close()
 
-	// Return simplified user list (id, telegram_id, telegram_username)
-	userList := make([]map[string]interface{}, 0, len(users))
-	for _, user := range users {
+	userList := make([]map[string]interface{}, 0)
+	for rows.Next() {
+		var id int64
+		var telegramID int64
+		var telegramUsername string
+		var createdAt string
+
+		if err := rows.Scan(&id, &telegramID, &telegramUsername, &createdAt); err != nil {
+			r.logger.Warn("failed to scan user", zap.Error(err))
+			continue
+		}
+
 		userList = append(userList, map[string]interface{}{
-			"id":              user.ID,
-			"telegram_id":     user.TelegramID,
-			"telegram_username": user.TelegramUsername,
+			"id":               id,
+			"telegram_id":      telegramID,
+			"telegram_username": telegramUsername,
+			"created_at":       createdAt,
 		})
 	}
 

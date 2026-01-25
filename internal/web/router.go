@@ -58,17 +58,18 @@ import (
 
 // Router handles web routes
 type Router struct {
-	mux            *http.ServeMux
-	logger         *zap.Logger
-	config         *config.Config
-	db             *sql.DB
-	userRepo       interface{} // Will be properly typed later
-	trainingService *service.TrainingService
-	srsService      *service.SRSService
-	optionsService  *service.OptionsService
-	wordService     interface{} // Will be properly typed later
-	grammarService  *service.GrammarService
-	cbService       *service.CircuitBreakerService
+	mux                *http.ServeMux
+	logger             *zap.Logger
+	config             *config.Config
+	db                 *sql.DB
+	userRepo           interface{} // Will be properly typed later
+	accessCategoryRepo *repository.UserAccessCategoryRepository
+	trainingService    *service.TrainingService
+	srsService         *service.SRSService
+	optionsService     *service.OptionsService
+	wordService        interface{} // Will be properly typed later
+	grammarService     *service.GrammarService
+	cbService          *service.CircuitBreakerService
 	aiService          interface{} // Will be properly typed later
 	bot                *tgbotapi.BotAPI
 	authMiddleware     *AuthMiddleware
@@ -130,15 +131,19 @@ func (r *Router) SetDependencies(
 		r.logger.Fatal("failed to create JWT service", zap.Error(err))
 	}
 
+	// Create access category repository
+	r.accessCategoryRepo = repository.NewUserAccessCategoryRepository(r.db, r.logger)
+
 	// Create auth middleware
 	r.authMiddleware = NewAuthMiddleware(
 		userRepo.(*repository.UserRepository),
+		r.accessCategoryRepo,
 		jwtService,
 		r.logger,
 		r.config,
 		botToken,
 	)
-	
+
 	// Initialize bot command service if bot is available
 	if bot != nil {
 		r.botCommandService = service.NewBotCommandService(
@@ -152,7 +157,7 @@ func (r *Router) SetDependencies(
 		// Register bot commands
 		r.registerBotCommands()
 	}
-	
+
 	// Setup protected routes now that auth middleware is initialized
 	r.setupProtectedRoutes()
 }
@@ -270,7 +275,7 @@ func (r *Router) setupRoutes() {
 	)
 	refreshMiddleware := NewRateLimitMiddleware(r.rateLimiter, r.logger, refreshPolicy, KeyFuncIP)
 	r.mux.HandleFunc("/auth/refresh", refreshMiddleware.Wrap(r.handleAuthRefresh))
-	
+
 	// Health check
 	r.mux.HandleFunc("/health", func(w http.ResponseWriter, req *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -305,12 +310,12 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/dashboard", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleDashboard)))
 	r.mux.HandleFunc("/api/vocab", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleVocab)))
 	r.mux.HandleFunc("/api/vocab/", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleVocabDelete)))
-	
+
 	// Learning word sets routes
 	r.mux.HandleFunc("/api/learning/words/categories", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningWordsCategories)))
 	r.mux.HandleFunc("/api/learning/words/sets", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningWordsSets)))
 	r.mux.HandleFunc("/api/learning/words/sets/", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningWordsSetDetailOrStudy)))
-	
+
 	// Learning grammar routes
 	r.mux.HandleFunc("/api/learning/grammar/categories", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarCategories)))
 	r.mux.HandleFunc("/api/learning/grammar/categories/", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarChapters)))
@@ -319,7 +324,7 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/learning/grammar/statistics", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarStatistics)))
 	r.mux.HandleFunc("/api/learning/grammar/placement-test", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarPlacementTest)))
 	r.mux.HandleFunc("/api/learning/grammar/placement-test/submit", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarSubmitPlacementTest)))
-	
+
 	r.mux.HandleFunc("/api/training/start", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTrainingStart)))
 	r.mux.HandleFunc("/api/training/current", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTrainingCurrent)))
 	r.mux.HandleFunc("/api/training/reveal", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTrainingReveal)))
@@ -329,40 +334,64 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/settings", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleSettings)))
 	r.mux.HandleFunc("/api/settings/notifications", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleNotificationSettings)))
 
-	// Admin routes (wrapped with admin guard and rate limiting)
+	// Access control routes
+	r.mux.HandleFunc("/api/access/me", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleAccessMe)))
+
+	// Admin routes (wrapped with permission guards and rate limiting)
 	adminAuth := auth.RequireAuth
-	adminGuard := r.RequireAdmin
-	r.mux.HandleFunc("/api/admin", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdmin))))
-	r.mux.HandleFunc("/api/admin/circuit/reset", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminCircuitReset))))
-	r.mux.HandleFunc("/api/admin/training/", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminTraining))))
-	r.mux.HandleFunc("/api/admin/training/card/", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminTrainingCard))))
-	r.mux.HandleFunc("/api/admin/words", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminWords))))
-	r.mux.HandleFunc("/api/admin/words/", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminWord))))
-	r.mux.HandleFunc("/api/admin/users", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminUsers))))
-	r.mux.HandleFunc("/api/admin/db-schema", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleDBSchema))))
-	r.mux.HandleFunc("/api/admin/db-query", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleDBQuery))))
-	r.mux.HandleFunc("/api/admin/orphaned-cards", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminOrphanedCards))))
-	r.mux.HandleFunc("/api/admin/orphaned-cards/", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminOrphanedCard))))
-	r.mux.HandleFunc("/api/admin/orphaned-user-cards", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminOrphanedUserCards))))
-	r.mux.HandleFunc("/api/admin/orphaned-user-cards/", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminOrphanedUserCard))))
-	r.mux.HandleFunc("/api/admin/prompt-tester/default-prompts", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminPromptTesterDefaultPrompts))))
-	r.mux.HandleFunc("/api/admin/prompt-tester/run", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminPromptTesterRun))))
-	
+
+	// Words admin routes
+	// GET /api/admin/words - read all words
+	r.mux.HandleFunc("/api/admin/words", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionWordsReadAll)(r.handleAdminWords))))
+	// PUT/DELETE /api/admin/words/{id} - edit words
+	r.mux.HandleFunc("/api/admin/words/", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionWordsEditAll)(r.handleAdminWord))))
+
+	// Training admin routes (GET requires words.read_all, POST/PUT/DELETE require words.edit_all)
+	r.mux.HandleFunc("/api/admin/training/", appAPIMiddleware.Wrap(adminAuth(r.RequireAnyPermission(PermissionWordsReadAll, PermissionWordsEditAll)(r.handleAdminTraining))))
+	r.mux.HandleFunc("/api/admin/training/card/", appAPIMiddleware.Wrap(adminAuth(r.RequireAnyPermission(PermissionWordsReadAll, PermissionWordsEditAll)(r.handleAdminTrainingCard))))
+
+	// Users admin routes
+	r.mux.HandleFunc("/api/admin/users", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionUsersReadAll)(r.handleAdminUsers))))
+
 	// Word sets admin routes
-	r.mux.HandleFunc("/api/admin/word-set-categories", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminWordSetCategories))))
-	r.mux.HandleFunc("/api/admin/word-set-categories/", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminWordSetCategories))))
-	r.mux.HandleFunc("/api/admin/word-sets", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminWordSets))))
-	r.mux.HandleFunc("/api/admin/word-sets/", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminWordSetDetailOrSets))))
-	
-	// Grammar admin routes
-	r.mux.HandleFunc("/api/admin/grammar/categories", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminGrammarCategories))))
-	r.mux.HandleFunc("/api/admin/grammar/categories/", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminGrammarCategoryPublish))))
-	r.mux.HandleFunc("/api/admin/grammar/chapters", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminGrammarChapters))))
-	r.mux.HandleFunc("/api/admin/grammar/chapters/", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminGrammarChapterPublish))))
-	r.mux.HandleFunc("/api/admin/grammar/items/", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminGrammarItemRename))))
-	
-	// App settings admin routes
-	r.mux.HandleFunc("/api/admin/app-settings", appAPIMiddleware.Wrap(adminAuth(adminGuard(r.handleAdminAppSettings))))
+	// Categories: GET requires read, POST/PUT/DELETE require edit
+	r.mux.HandleFunc("/api/admin/word-set-categories", appAPIMiddleware.Wrap(adminAuth(r.RequireAnyPermission(PermissionWordSetsRead, PermissionWordSetsEdit)(r.handleAdminWordSetCategories))))
+	r.mux.HandleFunc("/api/admin/word-set-categories/", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionWordSetsEdit)(r.handleAdminWordSetCategories))))
+	// Word sets: GET requires read, POST/PUT/DELETE require edit
+	r.mux.HandleFunc("/api/admin/word-sets", appAPIMiddleware.Wrap(adminAuth(r.RequireAnyPermission(PermissionWordSetsRead, PermissionWordSetsEdit)(r.handleAdminWordSets))))
+	// Word set detail: GET requires read, PUT items requires edit
+	r.mux.HandleFunc("/api/admin/word-sets/", appAPIMiddleware.Wrap(adminAuth(r.RequireAnyPermission(PermissionWordSetsRead, PermissionWordSetsEdit)(r.handleAdminWordSetDetailOrSets))))
+
+	// Access control admin routes (require full_access)
+	r.mux.HandleFunc("/api/admin/access/available-permissions", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminAccessAvailablePermissions))))
+	r.mux.HandleFunc("/api/admin/access/categories", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminAccessCategories))))
+	r.mux.HandleFunc("/api/admin/access/categories/", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminAccessCategoryRoutes))))
+	r.mux.HandleFunc("/api/admin/access/users/", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminAccessUsers))))
+
+	// Stats admin route (require stats.read)
+	r.mux.HandleFunc("/api/admin/stats", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionStatsRead)(r.handleAdminStats))))
+
+	// Other admin routes (require full_access)
+	r.mux.HandleFunc("/api/admin", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdmin))))
+	r.mux.HandleFunc("/api/admin/circuit/reset", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminCircuitReset))))
+	r.mux.HandleFunc("/api/admin/db-schema", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleDBSchema))))
+	r.mux.HandleFunc("/api/admin/db-query", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleDBQuery))))
+	r.mux.HandleFunc("/api/admin/orphaned-cards", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminOrphanedCards))))
+	r.mux.HandleFunc("/api/admin/orphaned-cards/", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminOrphanedCard))))
+	r.mux.HandleFunc("/api/admin/orphaned-user-cards", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminOrphanedUserCards))))
+	r.mux.HandleFunc("/api/admin/orphaned-user-cards/", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminOrphanedUserCard))))
+	r.mux.HandleFunc("/api/admin/prompt-tester/default-prompts", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminPromptTesterDefaultPrompts))))
+	r.mux.HandleFunc("/api/admin/prompt-tester/run", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminPromptTesterRun))))
+
+	// Grammar admin routes (require full_access)
+	r.mux.HandleFunc("/api/admin/grammar/categories", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminGrammarCategories))))
+	r.mux.HandleFunc("/api/admin/grammar/categories/", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminGrammarCategoryPublish))))
+	r.mux.HandleFunc("/api/admin/grammar/chapters", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminGrammarChapters))))
+	r.mux.HandleFunc("/api/admin/grammar/chapters/", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminGrammarChapterPublish))))
+	r.mux.HandleFunc("/api/admin/grammar/items/", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminGrammarItemRename))))
+
+	// App settings admin routes (require full_access)
+	r.mux.HandleFunc("/api/admin/app-settings", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminAppSettings))))
 }
 
 // corsMiddleware adds CORS headers to allow Swagger UI to make requests
@@ -370,7 +399,7 @@ func (r *Router) corsMiddleware(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
 		// Set CORS headers
 		origin := req.Header.Get("Origin")
-		
+
 		// Allow requests from localhost origins (for Swagger UI)
 		allowedOrigins := []string{
 			"http://localhost:8184",
@@ -378,7 +407,7 @@ func (r *Router) corsMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			"http://localhost:8080",
 			"http://127.0.0.1:8080",
 		}
-		
+
 		if origin != "" {
 			// Check if origin is in allowed list
 			for _, allowed := range allowedOrigins {
@@ -407,15 +436,15 @@ func (r *Router) corsMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			// For requests without Origin header (same-origin), allow all
 			w.Header().Set("Access-Control-Allow-Origin", "*")
 		}
-		
+
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, PATCH")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With")
-		
+
 		// Only set credentials if we have a specific origin (not *)
 		if origin != "" && (strings.HasPrefix(origin, "http://localhost:") || strings.HasPrefix(origin, "http://127.0.0.1:")) {
 			w.Header().Set("Access-Control-Allow-Credentials", "true")
 		}
-		
+
 		w.Header().Set("Access-Control-Max-Age", "3600")
 
 		// Handle preflight requests
@@ -431,7 +460,7 @@ func (r *Router) corsMiddleware(next http.HandlerFunc) http.HandlerFunc {
 // swaggerResponseWriter wraps http.ResponseWriter to inject JavaScript for auto Bearer prefix
 type swaggerResponseWriter struct {
 	http.ResponseWriter
-	buf         []byte
+	buf           []byte
 	headerWritten bool
 	statusCode    int
 }
@@ -450,18 +479,18 @@ func (w *swaggerResponseWriter) WriteHeader(statusCode int) {
 	}
 	w.statusCode = statusCode
 	w.headerWritten = true
-	
+
 	// Process buffered content only if it's HTML
 	if len(w.buf) > 0 {
 		contentType := w.Header().Get("Content-Type")
 		content := string(w.buf)
-		
+
 		// Only modify HTML content, not JSON, CSS, JS, etc.
-		isHTML := strings.Contains(contentType, "text/html") || 
-			strings.Contains(content, "<html") || 
+		isHTML := strings.Contains(contentType, "text/html") ||
+			strings.Contains(content, "<html") ||
 			strings.Contains(content, "<!DOCTYPE") ||
 			strings.Contains(content, "swagger-ui-bundle.js")
-		
+
 		if isHTML {
 			// Inject JavaScript before closing body tag
 			js := `<script>
@@ -855,7 +884,7 @@ func (w *swaggerResponseWriter) WriteHeader(statusCode int) {
 			}
 		}
 	}
-	
+
 	// Write header and buffered content
 	w.ResponseWriter.WriteHeader(w.statusCode)
 	if len(w.buf) > 0 {
@@ -875,17 +904,17 @@ func (r *Router) swaggerHandler(w http.ResponseWriter, req *http.Request) {
 		httpSwagger.DocExpansion("none"),
 		httpSwagger.DomID("swagger-ui"),
 	)
-	
+
 	// For HTML pages only (not static files), wrap response writer to inject JavaScript
 	path := req.URL.Path
-	isHTMLPage := (path == "/swagger/" || path == "/swagger/index.html" || path == "/swagger") && 
-		!strings.Contains(path, ".") && 
-		!strings.HasSuffix(path, ".js") && 
-		!strings.HasSuffix(path, ".css") && 
+	isHTMLPage := (path == "/swagger/" || path == "/swagger/index.html" || path == "/swagger") &&
+		!strings.Contains(path, ".") &&
+		!strings.HasSuffix(path, ".js") &&
+		!strings.HasSuffix(path, ".css") &&
 		!strings.HasSuffix(path, ".json") &&
 		!strings.HasSuffix(path, ".png") &&
 		!strings.HasSuffix(path, ".ico")
-	
+
 	if isHTMLPage {
 		wrapped := &swaggerResponseWriter{ResponseWriter: w, statusCode: http.StatusOK}
 		swaggerHandler.ServeHTTP(wrapped, req)
@@ -895,7 +924,7 @@ func (r *Router) swaggerHandler(w http.ResponseWriter, req *http.Request) {
 		}
 		return
 	}
-	
+
 	swaggerHandler.ServeHTTP(w, req)
 }
 
@@ -1033,7 +1062,7 @@ func (r *Router) handleAuthTelegram(w http.ResponseWriter, req *http.Request) {
 	}
 
 	// Generate JWT token pair
-	accessToken, refreshToken, err := auth.GenerateTokenPair(user.ID)
+	accessToken, refreshToken, err := auth.GenerateTokenPair(user.ID, user.TelegramID)
 	if err != nil {
 		r.logger.Error("failed to generate JWT tokens", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -1064,11 +1093,11 @@ func (r *Router) handleAuthTelegram(w http.ResponseWriter, req *http.Request) {
 // @Failure      500  {string}  string  "Внутренняя ошибка сервера"
 // @Router       /auth/telegram_unsafe [post]
 func (r *Router) handleAuthTelegramUnsafe(w http.ResponseWriter, req *http.Request) {
-	r.logger.Info("handleAuthTelegramUnsafe called", 
+	r.logger.Info("handleAuthTelegramUnsafe called",
 		zap.String("method", req.Method),
 		zap.String("path", req.URL.Path),
 		zap.String("remote_addr", req.RemoteAddr))
-	
+
 	if req.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
@@ -1077,7 +1106,7 @@ func (r *Router) handleAuthTelegramUnsafe(w http.ResponseWriter, req *http.Reque
 	// Get user ID directly from initDataUnsafe (less secure, but works when initData is not available)
 	userIDStr := req.FormValue("user_id")
 	r.logger.Info("received user_id", zap.String("user_id", userIDStr))
-	
+
 	if userIDStr == "" {
 		r.logger.Warn("user_id is empty")
 		http.Error(w, "user_id is required", http.StatusBadRequest)
@@ -1104,7 +1133,7 @@ func (r *Router) handleAuthTelegramUnsafe(w http.ResponseWriter, req *http.Reque
 
 	// Generate JWT token pair
 	auth := r.getAuthMiddleware()
-	accessToken, refreshToken, err := auth.GenerateTokenPair(user.ID)
+	accessToken, refreshToken, err := auth.GenerateTokenPair(user.ID, user.TelegramID)
 	if err != nil {
 		r.logger.Error("failed to generate JWT tokens", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -1129,4 +1158,3 @@ func (r *Router) handleAuthTelegramUnsafe(w http.ResponseWriter, req *http.Reque
 // handleVocab and handleVocabDelete are implemented in vocab.go
 // handleTrainingStart, handleTrainingCurrent, handleTrainingReveal, handleTrainingAnswer are implemented in training.go
 // handleAdmin, handleAdminCircuitReset, handleAdminTraining are implemented in admin.go
-

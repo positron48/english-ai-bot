@@ -1,17 +1,21 @@
 package web
 
 import (
+	"database/sql"
 	"testing"
 
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/repository"
 
+	_ "github.com/mattn/go-sqlite3"
 	"go.uber.org/zap"
 )
 
 func TestAuthMiddleware_GenerateJWTToken(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	userRepo := repository.NewUserRepository(nil, logger)
+	db, _ := sql.Open("sqlite3", ":memory:")
+	defer db.Close()
+	userRepo := repository.NewUserRepository(db, logger)
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
 			JWTSecret:     "test-secret",
@@ -21,9 +25,10 @@ func TestAuthMiddleware_GenerateJWTToken(t *testing.T) {
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
 
-	middleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-bot-token")
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	middleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-bot-token")
 
-	token, err := middleware.GenerateJWTToken(12345)
+	token, err := middleware.GenerateJWTToken(12345, 12345)
 	if err != nil {
 		t.Fatalf("GenerateJWTToken() error = %v", err)
 	}
@@ -34,7 +39,9 @@ func TestAuthMiddleware_GenerateJWTToken(t *testing.T) {
 
 func TestAuthMiddleware_GenerateTokenPair(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	userRepo := repository.NewUserRepository(nil, logger)
+	db, _ := sql.Open("sqlite3", ":memory:")
+	defer db.Close()
+	userRepo := repository.NewUserRepository(db, logger)
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
 			JWTSecret:     "test-secret",
@@ -44,9 +51,10 @@ func TestAuthMiddleware_GenerateTokenPair(t *testing.T) {
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
 
-	middleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-bot-token")
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	middleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-bot-token")
 
-	accessToken, refreshToken, err := middleware.GenerateTokenPair(67890)
+	accessToken, refreshToken, err := middleware.GenerateTokenPair(67890, 67890)
 	if err != nil {
 		t.Fatalf("GenerateTokenPair() error = %v", err)
 	}

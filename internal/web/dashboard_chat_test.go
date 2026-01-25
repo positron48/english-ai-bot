@@ -106,7 +106,8 @@ func TestHandleChat_SingleWord_WordInDB(t *testing.T) {
 	}
 
 	jwtService, _ := NewJWTService(cfg, logger)
-	authMiddleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-token")
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
 
 	// Create word service with nil AI service (word is in DB, so won't need AI)
 	wordService := service.NewWordService(wordRepo, nil, nil, nil, logger)
@@ -156,7 +157,8 @@ func TestHandleChat_MultipleWords(t *testing.T) {
 	}
 
 	jwtService, _ := NewJWTService(cfg, logger)
-	authMiddleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-token")
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
 
 	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
 	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
@@ -198,7 +200,8 @@ func TestHandleChat_MissingMessage(t *testing.T) {
 	}
 
 	jwtService, _ := NewJWTService(cfg, logger)
-	authMiddleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-token")
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
 
 	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
 	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
@@ -233,7 +236,8 @@ func TestHandleChat_WrongMethod(t *testing.T) {
 	}
 
 	jwtService, _ := NewJWTService(cfg, logger)
-	authMiddleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-token")
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
 
 	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
 	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
@@ -265,7 +269,8 @@ func TestHandleChat_Unauthorized(t *testing.T) {
 	}
 
 	jwtService, _ := NewJWTService(cfg, logger)
-	authMiddleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-token")
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
 
 	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
 	router.SetDependencies(userRepo, nil, nil, nil, "test-token")

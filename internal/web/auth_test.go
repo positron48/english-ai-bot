@@ -3,6 +3,7 @@ package web
 import (
 	"crypto/hmac"
 	"crypto/sha256"
+	"database/sql"
 	"encoding/hex"
 	"encoding/json"
 	"net/http"
@@ -15,12 +16,15 @@ import (
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/repository"
 
+	_ "github.com/mattn/go-sqlite3"
 	"go.uber.org/zap"
 )
 
 func TestNewAuthMiddleware(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	userRepo := repository.NewUserRepository(nil, logger)
+	db, _ := sql.Open("sqlite3", ":memory:")
+	defer db.Close()
+	userRepo := repository.NewUserRepository(db, logger)
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
 			JWTSecret: "test-secret",
@@ -28,7 +32,8 @@ func TestNewAuthMiddleware(t *testing.T) {
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
 
-	middleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-bot-token")
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	middleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-bot-token")
 	_ = middleware // Verify middleware is created
 }
 
@@ -43,7 +48,10 @@ func TestAuthMiddleware_ValidateTelegramInitData(t *testing.T) {
 	jwtService, _ := NewJWTService(cfg, logger)
 	botToken := "test-bot-token-12345"
 
-	middleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, botToken)
+	db, _ := sql.Open("sqlite3", ":memory:")
+	defer db.Close()
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	middleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, botToken)
 
 	// Create valid initData
 	// Format: key1=value1&key2=value2&hash=...
@@ -96,7 +104,9 @@ func TestAuthMiddleware_ValidateTelegramInitData(t *testing.T) {
 
 func TestAuthMiddleware_ValidateTelegramInitData_InvalidHash(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	userRepo := repository.NewUserRepository(nil, logger)
+	db, _ := sql.Open("sqlite3", ":memory:")
+	defer db.Close()
+	userRepo := repository.NewUserRepository(db, logger)
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
 			JWTSecret: "test-secret",
@@ -104,7 +114,8 @@ func TestAuthMiddleware_ValidateTelegramInitData_InvalidHash(t *testing.T) {
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
 
-	middleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-bot-token")
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	middleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-bot-token")
 
 	// Invalid initData with wrong hash
 	initData := "auth_date=1234567890&user=%7B%22id%22%3A12345%7D&hash=invalidhash"
@@ -117,7 +128,9 @@ func TestAuthMiddleware_ValidateTelegramInitData_InvalidHash(t *testing.T) {
 
 func TestAuthMiddleware_RequireAuth(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	userRepo := repository.NewUserRepository(nil, logger)
+	db, _ := sql.Open("sqlite3", ":memory:")
+	defer db.Close()
+	userRepo := repository.NewUserRepository(db, logger)
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
 			JWTSecret:     "test-secret",
@@ -127,11 +140,12 @@ func TestAuthMiddleware_RequireAuth(t *testing.T) {
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
 
-	middleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-bot-token")
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	middleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-bot-token")
 
 	// Generate a valid token
 	userID := int64(999)
-	token, err := jwtService.GenerateToken(userID)
+	token, err := jwtService.GenerateToken(userID, []int64{})
 	if err != nil {
 		t.Fatalf("Failed to generate token: %v", err)
 	}
@@ -167,7 +181,9 @@ func TestAuthMiddleware_RequireAuth(t *testing.T) {
 
 func TestAuthMiddleware_RequireAuth_NoToken(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	userRepo := repository.NewUserRepository(nil, logger)
+	db, _ := sql.Open("sqlite3", ":memory:")
+	defer db.Close()
+	userRepo := repository.NewUserRepository(db, logger)
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
 			JWTSecret: "test-secret",
@@ -175,7 +191,8 @@ func TestAuthMiddleware_RequireAuth_NoToken(t *testing.T) {
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
 
-	middleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-bot-token")
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	middleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-bot-token")
 
 	// Create a request without token
 	req := httptest.NewRequest("GET", "/test", nil)
@@ -199,7 +216,9 @@ func TestAuthMiddleware_RequireAuth_NoToken(t *testing.T) {
 
 func TestAuthMiddleware_RequireAuth_InvalidToken(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	userRepo := repository.NewUserRepository(nil, logger)
+	db, _ := sql.Open("sqlite3", ":memory:")
+	defer db.Close()
+	userRepo := repository.NewUserRepository(db, logger)
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
 			JWTSecret: "test-secret",
@@ -207,7 +226,8 @@ func TestAuthMiddleware_RequireAuth_InvalidToken(t *testing.T) {
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
 
-	middleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-bot-token")
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	middleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-bot-token")
 
 	// Create a request with invalid token
 	req := httptest.NewRequest("GET", "/test", nil)

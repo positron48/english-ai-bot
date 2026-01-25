@@ -65,10 +65,11 @@ func TestHandleAuthRefresh_ValidToken(t *testing.T) {
 	}
 
 	jwtService, _ := NewJWTService(cfg, logger)
-	authMiddleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-token")
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
 
 	// Generate refresh token
-	_, refreshToken, err := authMiddleware.GenerateTokenPair(user.ID)
+	_, refreshToken, err := authMiddleware.GenerateTokenPair(user.ID, user.TelegramID)
 	if err != nil {
 		t.Fatalf("GenerateTokenPair() error = %v", err)
 	}

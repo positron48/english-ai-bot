@@ -85,7 +85,7 @@ func TestJWTService_GenerateToken(t *testing.T) {
 		t.Fatalf("Failed to create JWT service: %v", err)
 	}
 
-	token, err := service.GenerateToken(12345)
+	token, err := service.GenerateToken(12345, []int64{})
 	if err != nil {
 		t.Fatalf("GenerateToken() error = %v", err)
 	}
@@ -134,30 +134,39 @@ func TestJWTService_ValidateToken(t *testing.T) {
 	}
 
 	userID := int64(12345)
-	token, err := service.GenerateToken(userID)
+	categories := []int64{1, 2}
+	token, err := service.GenerateToken(userID, categories)
 	if err != nil {
 		t.Fatalf("GenerateToken() error = %v", err)
 	}
 
 	t.Run("Valid token", func(t *testing.T) {
-		validatedID, err := service.ValidateToken(token)
+		validatedID, validatedCategories, err := service.ValidateToken(token)
 		if err != nil {
 			t.Fatalf("ValidateToken() error = %v", err)
 		}
 		if validatedID != userID {
 			t.Errorf("ValidateToken() = %d, want %d", validatedID, userID)
 		}
+		if len(validatedCategories) != len(categories) {
+			t.Errorf("ValidateToken() categories length = %d, want %d", len(validatedCategories), len(categories))
+		}
+		for i, cat := range categories {
+			if i < len(validatedCategories) && validatedCategories[i] != cat {
+				t.Errorf("ValidateToken() categories[%d] = %d, want %d", i, validatedCategories[i], cat)
+			}
+		}
 	})
 
 	t.Run("Invalid token", func(t *testing.T) {
-		_, err := service.ValidateToken("invalid.token.here")
+		_, _, err := service.ValidateToken("invalid.token.here")
 		if err == nil {
 			t.Error("ValidateToken() should return error for invalid token")
 		}
 	})
 
 	t.Run("Empty token", func(t *testing.T) {
-		_, err := service.ValidateToken("")
+		_, _, err := service.ValidateToken("")
 		if err == nil {
 			t.Error("ValidateToken() should return error for empty token")
 		}
@@ -269,13 +278,13 @@ func TestJWTService_TokenExpiration(t *testing.T) {
 	}
 
 	// Generate token
-	token, err := service.GenerateToken(12345)
+	token, err := service.GenerateToken(12345, []int64{})
 	if err != nil {
 		t.Fatalf("GenerateToken() error = %v", err)
 	}
 
 	// Token should be valid immediately
-	_, err = service.ValidateToken(token)
+	_, _, err = service.ValidateToken(token)
 	if err != nil {
 		t.Errorf("ValidateToken() should succeed for fresh token, got error: %v", err)
 	}

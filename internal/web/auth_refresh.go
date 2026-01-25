@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"strings"
 
+	"tgbot-skeleton/internal/repository"
+
 	"go.uber.org/zap"
 )
 
@@ -68,8 +70,17 @@ func (r *Router) handleAuthRefresh(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	// Get user to retrieve telegramID for role determination
+	userRepo := r.userRepo.(*repository.UserRepository)
+	user, err := userRepo.GetUserByID(userID)
+	if err != nil || user == nil {
+		r.logger.Error("failed to get user", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
 	// Generate new token pair
-	accessToken, refreshToken, err := auth.GenerateTokenPair(userID)
+	accessToken, refreshToken, err := auth.GenerateTokenPair(user.ID, user.TelegramID)
 	if err != nil {
 		r.logger.Error("failed to generate new token pair", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)

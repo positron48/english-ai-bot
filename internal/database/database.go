@@ -108,7 +108,7 @@ func (db *DB) migrate() error {
 			requested_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 			FOREIGN KEY (word_card_id) REFERENCES word_cards(id) ON DELETE CASCADE
 		)`,
-		
+
 		// Training system tables
 		`CREATE TABLE IF NOT EXISTS users (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -120,7 +120,7 @@ func (db *DB) migrate() error {
 			created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 			updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 		)`,
-		
+
 		`CREATE TABLE IF NOT EXISTS training_cards (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			word_card_id INTEGER NOT NULL,
@@ -140,7 +140,7 @@ func (db *DB) migrate() error {
 			FOREIGN KEY (word_card_id) REFERENCES word_cards(id) ON DELETE CASCADE,
 			UNIQUE(word_card_id, sense_index)
 		)`,
-		
+
 		`CREATE TABLE IF NOT EXISTS user_cards (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			user_id INTEGER NOT NULL,
@@ -164,7 +164,7 @@ func (db *DB) migrate() error {
 			FOREIGN KEY (training_card_id) REFERENCES training_cards(id) ON DELETE CASCADE,
 			UNIQUE(user_id, training_card_id, direction)
 		)`,
-		
+
 		`CREATE TABLE IF NOT EXISTS training_sessions (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			user_id INTEGER NOT NULL,
@@ -176,7 +176,7 @@ func (db *DB) migrate() error {
 			session_json TEXT,
 			FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 		)`,
-		
+
 		`CREATE TABLE IF NOT EXISTS review_events (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			session_id INTEGER,
@@ -200,7 +200,7 @@ func (db *DB) migrate() error {
 			FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
 			FOREIGN KEY (user_card_id) REFERENCES user_cards(id) ON DELETE CASCADE
 		)`,
-		
+
 		`CREATE TABLE IF NOT EXISTS training_nudges (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			user_id INTEGER NOT NULL,
@@ -212,7 +212,7 @@ func (db *DB) migrate() error {
 			FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
 			UNIQUE(user_id, local_date)
 		)`,
-		
+
 		`CREATE TABLE IF NOT EXISTS circuit_breaker_state (
 			id INTEGER PRIMARY KEY CHECK(id = 1),
 			is_open INTEGER DEFAULT 0,
@@ -222,7 +222,7 @@ func (db *DB) migrate() error {
 			last_reset_at DATETIME,
 			updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 		)`,
-		
+
 		// Web app tables
 		`CREATE TABLE IF NOT EXISTS web_sessions (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -233,7 +233,7 @@ func (db *DB) migrate() error {
 			last_seen_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 			FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 		)`,
-		
+
 		`CREATE TABLE IF NOT EXISTS web_otps (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			user_id INTEGER NOT NULL,
@@ -243,7 +243,7 @@ func (db *DB) migrate() error {
 			created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 			FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 		)`,
-		
+
 		// Word sets tables
 		`CREATE TABLE IF NOT EXISTS word_set_categories (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -256,7 +256,7 @@ func (db *DB) migrate() error {
 			updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 			FOREIGN KEY (parent_id) REFERENCES word_set_categories(id) ON DELETE SET NULL
 		)`,
-		
+
 		`CREATE TABLE IF NOT EXISTS word_sets (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			category_id INTEGER,
@@ -269,7 +269,7 @@ func (db *DB) migrate() error {
 			updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 			FOREIGN KEY (category_id) REFERENCES word_set_categories(id) ON DELETE SET NULL
 		)`,
-		
+
 		`CREATE TABLE IF NOT EXISTS word_set_items (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			word_set_id INTEGER NOT NULL,
@@ -280,7 +280,7 @@ func (db *DB) migrate() error {
 			FOREIGN KEY (word_card_id) REFERENCES word_cards(id) ON DELETE CASCADE,
 			UNIQUE(word_set_id, word_card_id)
 		)`,
-		
+
 		`CREATE TABLE IF NOT EXISTS user_word_knowledge (
 			user_id INTEGER NOT NULL,
 			word_card_id INTEGER NOT NULL,
@@ -290,7 +290,7 @@ func (db *DB) migrate() error {
 			FOREIGN KEY (word_card_id) REFERENCES word_cards(id) ON DELETE CASCADE,
 			UNIQUE(user_id, word_card_id)
 		)`,
-		
+
 		// Grammar course tables
 		`CREATE TABLE IF NOT EXISTS grammar_published_items (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -303,7 +303,7 @@ func (db *DB) migrate() error {
 			FOREIGN KEY (updated_by_user_id) REFERENCES users(id) ON DELETE SET NULL,
 			UNIQUE(item_type, item_id)
 		)`,
-		
+
 		`CREATE TABLE IF NOT EXISTS grammar_test_attempts (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			user_id INTEGER NOT NULL,
@@ -319,7 +319,7 @@ func (db *DB) migrate() error {
 			course_version TEXT,
 			FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 		)`,
-		
+
 		`CREATE TABLE IF NOT EXISTS grammar_progress (
 			user_id INTEGER NOT NULL,
 			chapter_id TEXT NOT NULL,
@@ -329,7 +329,7 @@ func (db *DB) migrate() error {
 			FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
 			UNIQUE(user_id, chapter_id)
 		)`,
-		
+
 		`CREATE TABLE IF NOT EXISTS grammar_placement_test (
 			user_id INTEGER NOT NULL,
 			score INTEGER NOT NULL CHECK(score >= 0 AND score <= 100),
@@ -339,7 +339,7 @@ func (db *DB) migrate() error {
 			FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
 			UNIQUE(user_id)
 		)`,
-		
+
 		// App settings table
 		`CREATE TABLE IF NOT EXISTS app_settings (
 			key TEXT PRIMARY KEY,
@@ -348,7 +348,31 @@ func (db *DB) migrate() error {
 			updated_by_user_id INTEGER,
 			FOREIGN KEY (updated_by_user_id) REFERENCES users(id) ON DELETE SET NULL
 		)`,
-		
+
+		// User access categories tables
+		`CREATE TABLE IF NOT EXISTS user_access_categories (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			name TEXT NOT NULL UNIQUE,
+			description TEXT,
+			created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+			updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+		)`,
+
+		`CREATE TABLE IF NOT EXISTS user_access_user_categories (
+			user_id INTEGER NOT NULL,
+			category_id INTEGER NOT NULL,
+			FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+			FOREIGN KEY (category_id) REFERENCES user_access_categories(id) ON DELETE CASCADE,
+			UNIQUE(user_id, category_id)
+		)`,
+
+		`CREATE TABLE IF NOT EXISTS user_access_category_permissions (
+			category_id INTEGER NOT NULL,
+			permission TEXT NOT NULL,
+			FOREIGN KEY (category_id) REFERENCES user_access_categories(id) ON DELETE CASCADE,
+			UNIQUE(category_id, permission)
+		)`,
+
 		// Indexes for existing tables
 		`CREATE INDEX IF NOT EXISTS idx_word_cards_word ON word_cards(word)`,
 		`CREATE INDEX IF NOT EXISTS idx_word_forms_word_card_id ON word_forms(word_card_id)`,
@@ -356,7 +380,7 @@ func (db *DB) migrate() error {
 		`CREATE INDEX IF NOT EXISTS idx_word_request_history_word ON word_request_history(word)`,
 		`CREATE INDEX IF NOT EXISTS idx_word_request_history_word_card_id ON word_request_history(word_card_id)`,
 		`CREATE INDEX IF NOT EXISTS idx_word_request_history_requested_at ON word_request_history(requested_at)`,
-		
+
 		// Indexes for training tables
 		`CREATE INDEX IF NOT EXISTS idx_training_cards_word_card_id ON training_cards(word_card_id)`,
 		`CREATE INDEX IF NOT EXISTS idx_user_cards_user_id ON user_cards(user_id)`,
@@ -367,7 +391,7 @@ func (db *DB) migrate() error {
 		`CREATE INDEX IF NOT EXISTS idx_review_events_user_id ON review_events(user_id)`,
 		`CREATE INDEX IF NOT EXISTS idx_review_events_user_card_id ON review_events(user_card_id)`,
 		`CREATE INDEX IF NOT EXISTS idx_training_nudges_user_date ON training_nudges(user_id, local_date)`,
-		
+
 		// Indexes for web app tables
 		`CREATE INDEX IF NOT EXISTS idx_web_sessions_user_id ON web_sessions(user_id)`,
 		`CREATE INDEX IF NOT EXISTS idx_web_sessions_token ON web_sessions(session_token)`,
@@ -375,7 +399,7 @@ func (db *DB) migrate() error {
 		`CREATE INDEX IF NOT EXISTS idx_web_otps_user_id ON web_otps(user_id)`,
 		`CREATE INDEX IF NOT EXISTS idx_web_otps_code_hash ON web_otps(code_hash)`,
 		`CREATE INDEX IF NOT EXISTS idx_web_otps_expires_at ON web_otps(expires_at)`,
-		
+
 		// Indexes for word sets tables
 		`CREATE INDEX IF NOT EXISTS idx_word_set_categories_parent_id ON word_set_categories(parent_id)`,
 		`CREATE INDEX IF NOT EXISTS idx_word_sets_category_id ON word_sets(category_id)`,
@@ -384,7 +408,7 @@ func (db *DB) migrate() error {
 		`CREATE INDEX IF NOT EXISTS idx_word_set_items_word_card_id ON word_set_items(word_card_id)`,
 		`CREATE INDEX IF NOT EXISTS idx_user_word_knowledge_user_id ON user_word_knowledge(user_id)`,
 		`CREATE INDEX IF NOT EXISTS idx_user_word_knowledge_word_card_id ON user_word_knowledge(word_card_id)`,
-		
+
 		// Indexes for grammar tables
 		`CREATE INDEX IF NOT EXISTS idx_grammar_published_items_item ON grammar_published_items(item_type, item_id)`,
 		`CREATE INDEX IF NOT EXISTS idx_grammar_published_items_published ON grammar_published_items(is_published)`,
@@ -393,9 +417,14 @@ func (db *DB) migrate() error {
 		`CREATE INDEX IF NOT EXISTS idx_grammar_progress_user_id ON grammar_progress(user_id)`,
 		`CREATE INDEX IF NOT EXISTS idx_grammar_progress_chapter_id ON grammar_progress(chapter_id)`,
 		`CREATE INDEX IF NOT EXISTS idx_grammar_placement_test_user_id ON grammar_placement_test(user_id)`,
-		
+
 		// Indexes for app settings
 		`CREATE INDEX IF NOT EXISTS idx_app_settings_key ON app_settings(key)`,
+
+		// Indexes for user access categories tables
+		`CREATE INDEX IF NOT EXISTS idx_user_access_user_categories_user_id ON user_access_user_categories(user_id)`,
+		`CREATE INDEX IF NOT EXISTS idx_user_access_user_categories_category_id ON user_access_user_categories(category_id)`,
+		`CREATE INDEX IF NOT EXISTS idx_user_access_category_permissions_category_id ON user_access_category_permissions(category_id)`,
 	}
 
 	for _, query := range queries {
@@ -1006,13 +1035,13 @@ func (db *DB) migrateWordSetCategoriesIsPublished() error {
 		if err != nil {
 			return fmt.Errorf("failed to add is_published column: %w", err)
 		}
-		
+
 		// Set all existing categories as published
 		_, err = db.conn.Exec(`UPDATE word_set_categories SET is_published = 1 WHERE is_published IS NULL`)
 		if err != nil {
 			return fmt.Errorf("failed to set existing categories as published: %w", err)
 		}
-		
+
 		db.logger.Info("added is_published column to word_set_categories table and set all existing categories as published")
 	}
 

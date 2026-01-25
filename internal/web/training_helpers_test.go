@@ -174,7 +174,8 @@ func TestHandleTrainingReveal_NoSession(t *testing.T) {
 	}
 
 	jwtService, _ := NewJWTService(cfg, logger)
-	authMiddleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-token")
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
 
 	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
 	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
@@ -218,7 +219,8 @@ func TestHandleTrainingAnswer_InvalidOptionIndex(t *testing.T) {
 	}
 
 	jwtService, _ := NewJWTService(cfg, logger)
-	authMiddleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-token")
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
 
 	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
 	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
@@ -263,7 +265,8 @@ func TestHandleTrainingAnswer_InvalidUserCardID(t *testing.T) {
 	}
 
 	jwtService, _ := NewJWTService(cfg, logger)
-	authMiddleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-token")
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
 
 	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
 	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
@@ -302,7 +305,8 @@ func TestHandleTrainingCurrent_WrongMethod(t *testing.T) {
 	}
 
 	jwtService, _ := NewJWTService(cfg, logger)
-	authMiddleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-token")
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
 
 	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
 	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
@@ -338,7 +342,8 @@ func TestHandleTrainingCurrent_Unauthorized(t *testing.T) {
 	}
 
 	jwtService, _ := NewJWTService(cfg, logger)
-	authMiddleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-token")
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
 
 	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
 	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
@@ -374,7 +379,8 @@ func TestHandleTrainingReveal_Unauthorized(t *testing.T) {
 	}
 
 	jwtService, _ := NewJWTService(cfg, logger)
-	authMiddleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-token")
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
 
 	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
 	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
@@ -410,7 +416,8 @@ func TestHandleTrainingAnswer_Unauthorized(t *testing.T) {
 	}
 
 	jwtService, _ := NewJWTService(cfg, logger)
-	authMiddleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-token")
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
 
 	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
 	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
@@ -447,7 +454,8 @@ func TestHandleTrainingStart_Unauthorized(t *testing.T) {
 	}
 
 	jwtService, _ := NewJWTService(cfg, logger)
-	authMiddleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-token")
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
 
 	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
 	router.SetDependencies(userRepo, nil, nil, nil, "test-token")

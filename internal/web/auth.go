@@ -21,27 +21,30 @@ import (
 
 // AuthMiddleware handles authentication
 type AuthMiddleware struct {
-	userRepo   *repository.UserRepository
-	jwtService *JWTService
-	logger     *zap.Logger
-	config     *config.Config
-	botToken   string
+	userRepo          *repository.UserRepository
+	accessCategoryRepo *repository.UserAccessCategoryRepository
+	jwtService        *JWTService
+	logger            *zap.Logger
+	config            *config.Config
+	botToken          string
 }
 
 // NewAuthMiddleware creates a new auth middleware
 func NewAuthMiddleware(
 	userRepo *repository.UserRepository,
+	accessCategoryRepo *repository.UserAccessCategoryRepository,
 	jwtService *JWTService,
 	logger *zap.Logger,
 	cfg *config.Config,
 	botToken string,
 ) *AuthMiddleware {
 	return &AuthMiddleware{
-		userRepo:   userRepo,
-		jwtService: jwtService,
-		logger:     logger,
-		config:     cfg,
-		botToken:   botToken,
+		userRepo:          userRepo,
+		accessCategoryRepo: accessCategoryRepo,
+		jwtService:        jwtService,
+		logger:            logger,
+		config:            cfg,
+		botToken:          botToken,
 	}
 }
 
@@ -76,7 +79,7 @@ func (m *AuthMiddleware) RequireAuth(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
-		userID, err := m.jwtService.ValidateToken(tokenString)
+		userID, categories, err := m.jwtService.ValidateToken(tokenString)
 		if err != nil || userID == 0 {
 			m.logger.Warn("authentication failed: invalid or expired token", 
 				zap.String("path", r.URL.Path),
@@ -92,11 +95,15 @@ func (m *AuthMiddleware) RequireAuth(next http.HandlerFunc) http.HandlerFunc {
 
 		m.logger.Info("JWT authentication successful", 
 			zap.String("path", r.URL.Path),
-			zap.Int64("user_id", userID))
+			zap.Int64("user_id", userID),
+			zap.Int64s("categories", categories))
 		
-		// Add user ID to request context
+		// Add user ID and categories to request context
 		ctx := r.Context()
 		ctx = context.WithValue(ctx, userIDKey, userID)
+		ctx = context.WithValue(ctx, userCategoriesKey, categories)
+		// Keep legacy role for backward compatibility (empty for new tokens)
+		ctx = context.WithValue(ctx, userRoleKey, "")
 		r = r.WithContext(ctx)
 		next(w, r)
 	}
@@ -186,14 +193,36 @@ func (m *AuthMiddleware) ValidateTelegramInitData(initData string) (int64, error
 	return userData.ID, nil
 }
 
+// getUserCategories loads user categories from database
+func (m *AuthMiddleware) getUserCategories(userID int64) ([]int64, error) {
+	categories, err := m.accessCategoryRepo.GetUserCategories(userID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get user categories: %w", err)
+	}
+	return categories, nil
+}
+
 // GenerateJWTToken generates an access JWT token for a user
-func (m *AuthMiddleware) GenerateJWTToken(userID int64) (string, error) {
-	return m.jwtService.GenerateToken(userID)
+func (m *AuthMiddleware) GenerateJWTToken(userID int64, telegramID int64) (string, error) {
+	// Load categories from database
+	categories, err := m.getUserCategories(userID)
+	if err != nil {
+		m.logger.Warn("failed to load user categories, using empty", zap.Error(err))
+		categories = []int64{}
+	}
+	return m.jwtService.GenerateToken(userID, categories)
 }
 
 // GenerateTokenPair generates both access and refresh tokens for a user
-func (m *AuthMiddleware) GenerateTokenPair(userID int64) (accessToken, refreshToken string, err error) {
-	accessToken, err = m.jwtService.GenerateToken(userID)
+func (m *AuthMiddleware) GenerateTokenPair(userID int64, telegramID int64) (accessToken, refreshToken string, err error) {
+	// Load categories from database
+	categories, err := m.getUserCategories(userID)
+	if err != nil {
+		m.logger.Warn("failed to load user categories, using empty", zap.Error(err))
+		categories = []int64{}
+	}
+	
+	accessToken, err = m.jwtService.GenerateToken(userID, categories)
 	if err != nil {
 		return "", "", err
 	}

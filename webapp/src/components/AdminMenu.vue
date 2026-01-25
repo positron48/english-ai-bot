@@ -44,6 +44,7 @@
     
     <nav class="admin-sidebar-nav">
       <router-link 
+        v-if="can('words.read_all')"
         to="/admin" 
         class="admin-sidebar-item" 
         :class="{ active: $route.path === '/admin' }"
@@ -53,6 +54,7 @@
         <span>Words Management</span>
       </router-link>
       <router-link 
+        v-if="can('full_access')"
         to="/admin/circuit-breaker" 
         class="admin-sidebar-item" 
         :class="{ active: $route.path === '/admin/circuit-breaker' }"
@@ -62,6 +64,7 @@
         <span>Circuit Breaker</span>
       </router-link>
       <router-link 
+        v-if="can('full_access')"
         to="/admin/prompt-tester" 
         class="admin-sidebar-item" 
         :class="{ active: $route.path === '/admin/prompt-tester' }"
@@ -71,6 +74,7 @@
         <span>Prompt Tester</span>
       </router-link>
       <router-link 
+        v-if="can('full_access')"
         to="/admin/orphaned-cards" 
         class="admin-sidebar-item" 
         :class="{ active: $route.path === '/admin/orphaned-cards' }"
@@ -80,6 +84,7 @@
         <span>Orphaned Cards</span>
       </router-link>
       <router-link 
+        v-if="can('word_sets.read')"
         to="/admin/word-sets" 
         class="admin-sidebar-item" 
         :class="{ active: $route.path.startsWith('/admin/word-sets') }"
@@ -89,6 +94,7 @@
         <span>Word Sets</span>
       </router-link>
       <router-link 
+        v-if="can('full_access')"
         to="/admin/grammar" 
         class="admin-sidebar-item" 
         :class="{ active: $route.path === '/admin/grammar' }"
@@ -98,6 +104,7 @@
         <span>Grammar</span>
       </router-link>
       <router-link 
+        v-if="can('full_access')"
         to="/admin/db-schema" 
         class="admin-sidebar-item" 
         :class="{ active: $route.path === '/admin/db-schema' }"
@@ -107,6 +114,7 @@
         <span>DB Schema</span>
       </router-link>
       <router-link 
+        v-if="can('full_access')"
         to="/admin/app-settings" 
         class="admin-sidebar-item" 
         :class="{ active: $route.path === '/admin/app-settings' }"
@@ -114,6 +122,36 @@
       >
         <Icon name="gear" class="admin-sidebar-icon" />
         <span>App Settings</span>
+      </router-link>
+      <router-link 
+        v-if="can('full_access')"
+        to="/admin/access" 
+        class="admin-sidebar-item" 
+        :class="{ active: $route.path.startsWith('/admin/access') }"
+        @click="isMobile && handleCloseSidebar()"
+      >
+        <Icon name="lock" class="admin-sidebar-icon" />
+        <span>Access Control</span>
+      </router-link>
+      <router-link 
+        v-if="can('users.read_all')"
+        to="/admin/users" 
+        class="admin-sidebar-item" 
+        :class="{ active: $route.path === '/admin/users' }"
+        @click="isMobile && handleCloseSidebar()"
+      >
+        <Icon name="users" class="admin-sidebar-icon" />
+        <span>Users</span>
+      </router-link>
+      <router-link 
+        v-if="can('stats.read')"
+        to="/admin/stats" 
+        class="admin-sidebar-item" 
+        :class="{ active: $route.path === '/admin/stats' }"
+        @click="isMobile && handleCloseSidebar()"
+      >
+        <Icon name="chart" class="admin-sidebar-icon" />
+        <span>Statistics</span>
       </router-link>
     </nav>
     
@@ -143,7 +181,10 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed, watch, nextTick } from 'vue'
 import { useTheme } from '../composables/useTheme'
+import { useAuth } from '../composables/useAuth'
 import Icon from './Icon.vue'
+
+const { can, loadPermissions } = useAuth()
 
 const showSidebar = ref(false)
 const windowWidth = ref(window.innerWidth)
@@ -261,7 +302,9 @@ const handleOpenMenu = (e?: Event) => {
   }, 300)
 }
 
-onMounted(() => {
+onMounted(async () => {
+  await loadPermissions()
+  
   // Проверяем, нет ли уже другого сайдбара в DOM
   const existingSidebars = document.querySelectorAll('[data-admin-sidebar="true"]')
   if (existingSidebars.length > 1) {

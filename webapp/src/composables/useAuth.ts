@@ -3,43 +3,156 @@ import { apiClient } from '../api/client'
 
 const isAuthenticated = ref(false)
 const isAdmin = ref(false)
+const categories = ref<number[]>([])
+const permissions = ref<string[]>([])
+const permissionsLoading = ref(false)
+
+// Decode JWT token to extract claims
+function decodeJWT(token: string): any | null {
+  try {
+    const parts = token.split('.')
+    if (parts.length !== 3) {
+      return null
+    }
+    
+    // Decode base64url payload (second part)
+    const payload = parts[1]
+    // Replace base64url characters with base64
+    const base64 = payload.replace(/-/g, '+').replace(/_/g, '/')
+    // Add padding if needed
+    const padded = base64 + '='.repeat((4 - base64.length % 4) % 4)
+    const decoded = atob(padded)
+    return JSON.parse(decoded)
+  } catch (error) {
+    console.error('Failed to decode JWT token:', error)
+    return null
+  }
+}
+
+// Get categories from JWT token (new format)
+function getCategoriesFromToken(token: string | null): number[] {
+  if (!token) {
+    return []
+  }
+  
+  const claims = decodeJWT(token)
+  if (!claims || !claims.role) {
+    return []
+  }
+  
+  // Support new format: role = { categories: [...] }
+  if (typeof claims.role === 'object' && claims.role.categories) {
+    return claims.role.categories || []
+  }
+  
+  // Legacy format: role = "admin" | "user" (return empty for backward compat)
+  return []
+}
+
+// Load permissions from API
+async function loadPermissions(): Promise<void> {
+  if (!isAuthenticated.value || permissionsLoading.value) {
+    return
+  }
+  
+  permissionsLoading.value = true
+  try {
+    const data: { categories: number[]; permissions: string[] } = await apiClient.request('/api/access/me')
+    categories.value = data.categories || []
+    permissions.value = data.permissions || []
+    
+    // Update isAdmin based on permissions
+    // User is admin if they have any admin permission
+    isAdmin.value = permissions.value.includes('full_access') || 
+                   permissions.value.includes('words.read_all') ||
+                   permissions.value.includes('words.edit_all') ||
+                   permissions.value.includes('word_sets.read') ||
+                   permissions.value.includes('word_sets.edit') ||
+                   permissions.value.includes('users.read_all') ||
+                   permissions.value.includes('stats.read') ||
+                   categories.value.length > 0 // Also check categories as fallback
+  } catch (error) {
+    console.error('Failed to load permissions:', error)
+    // Don't reset isAdmin on error - keep optimistic value if categories exist
+    // Only reset if we're sure user has no access
+    if (categories.value.length === 0) {
+      isAdmin.value = false
+    }
+  } finally {
+    permissionsLoading.value = false
+  }
+}
 
 export function useAuth() {
-  const checkAuth = () => {
+  const checkAuth = async () => {
     // Reload tokens from localStorage to ensure they're current
     // This is important when accessing the app directly via URL
     apiClient.loadTokens()
     isAuthenticated.value = apiClient.isAuthenticated()
-  }
-
-  const checkAdmin = async () => {
-    if (!isAuthenticated.value) {
-      isAdmin.value = false
-      return
-    }
-
-    try {
-      await apiClient.request('/api/admin')
-      isAdmin.value = true
-    } catch (error: any) {
-      if (error.message?.includes('403') || error.message?.includes('Forbidden')) {
-        isAdmin.value = false
-      } else {
-        isAdmin.value = false
+    
+    // Update categories from JWT token
+    if (isAuthenticated.value) {
+      const token = localStorage.getItem('access_token')
+      categories.value = getCategoriesFromToken(token)
+      
+      // Temporarily set isAdmin to true if user has categories (optimistic)
+      // This ensures admin menu is visible while permissions are loading
+      // It will be updated correctly after loadPermissions() completes
+      if (categories.value.length > 0) {
+        isAdmin.value = true
       }
+      
+      // Load permissions from API
+      await loadPermissions()
+    } else {
+      categories.value = []
+      permissions.value = []
+      isAdmin.value = false
     }
   }
 
-  const login = (accessToken: string, refreshToken: string) => {
+  const login = async (accessToken: string, refreshToken: string) => {
     apiClient.saveTokens(accessToken, refreshToken)
     isAuthenticated.value = true
-    checkAdmin()
+    
+    // Extract categories from JWT token
+    categories.value = getCategoriesFromToken(accessToken)
+    
+    // Temporarily set isAdmin to true if user has categories (optimistic)
+    // This ensures admin menu is visible while permissions are loading
+    if (categories.value.length > 0) {
+      isAdmin.value = true
+    }
+    
+    // Load permissions from API
+    await loadPermissions()
   }
 
   const logout = () => {
     apiClient.clearTokens()
     isAuthenticated.value = false
     isAdmin.value = false
+    categories.value = []
+    permissions.value = []
+  }
+  
+  // Check if user has a specific permission
+  const can = (permission: string): boolean => {
+    if (!isAuthenticated.value) {
+      return false
+    }
+    
+    // full_access grants everything
+    if (permissions.value.includes('full_access')) {
+      return true
+    }
+    
+    return permissions.value.includes(permission)
+  }
+  
+  // Check if user has any admin access (any admin permission)
+  const hasAnyAdminAccess = (): boolean => {
+    return isAdmin.value
   }
 
   const tryTelegramAuth = async (): Promise<boolean> => {
@@ -81,18 +194,21 @@ export function useAuth() {
   }
 
   checkAuth()
-  if (isAuthenticated.value) {
-    checkAdmin()
-  }
+  // Permissions will be loaded asynchronously
 
   return {
     isAuthenticated: computed(() => isAuthenticated.value),
     isAdmin: computed(() => isAdmin.value),
+    categories: computed(() => categories.value),
+    permissions: computed(() => permissions.value),
+    permissionsLoading: computed(() => permissionsLoading.value),
+    can,
+    hasAnyAdminAccess,
     login,
     logout,
     tryTelegramAuth,
-    checkAdmin,
-    checkAuth
+    checkAuth,
+    loadPermissions
   }
 }
 

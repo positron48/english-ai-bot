@@ -1,6 +1,7 @@
 package web
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"time"
@@ -19,9 +20,15 @@ type JWTService struct {
 	logger       *zap.Logger
 }
 
+// RoleClaim represents the role claim structure (new format with categories)
+type RoleClaim struct {
+	Categories []int64 `json:"categories"`
+}
+
 // Claims represents JWT claims
 type Claims struct {
-	UserID int64 `json:"user_id"`
+	UserID int64           `json:"user_id"`
+	Role   json.RawMessage `json:"role"` // Can be string (legacy) or object with categories
 	jwt.RegisteredClaims
 }
 
@@ -64,13 +71,23 @@ func NewJWTService(cfg *config.Config, logger *zap.Logger) (*JWTService, error) 
 	}, nil
 }
 
-// GenerateToken generates a new access JWT token for a user
-func (s *JWTService) GenerateToken(userID int64) (string, error) {
+// GenerateToken generates a new access JWT token for a user with categories
+func (s *JWTService) GenerateToken(userID int64, categories []int64) (string, error) {
 	now := time.Now()
 	expiresAt := now.Add(time.Duration(s.ttlHours) * time.Hour)
 
+	// Create role claim with categories
+	roleClaim := RoleClaim{
+		Categories: categories,
+	}
+	roleJSON, err := json.Marshal(roleClaim)
+	if err != nil {
+		return "", fmt.Errorf("failed to marshal role claim: %w", err)
+	}
+
 	claims := &Claims{
 		UserID: userID,
+		Role:   roleJSON,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expiresAt),
 			IssuedAt:  jwt.NewNumericDate(now),
@@ -86,7 +103,7 @@ func (s *JWTService) GenerateToken(userID int64) (string, error) {
 		return "", fmt.Errorf("failed to generate token: %w", err)
 	}
 
-	s.logger.Info("JWT access token generated", zap.Int64("user_id", userID), zap.Time("expires_at", expiresAt))
+	s.logger.Info("JWT access token generated", zap.Int64("user_id", userID), zap.Int64s("categories", categories), zap.Time("expires_at", expiresAt))
 	return tokenString, nil
 }
 
@@ -147,8 +164,9 @@ func (s *JWTService) ValidateRefreshToken(tokenString string) (int64, error) {
 	return claims.UserID, nil
 }
 
-// ValidateToken validates a JWT token and returns the user ID
-func (s *JWTService) ValidateToken(tokenString string) (int64, error) {
+// ValidateToken validates a JWT token and returns the user ID and categories
+// Returns categories from the token, or empty slice if legacy token
+func (s *JWTService) ValidateToken(tokenString string) (int64, []int64, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(token *jwt.Token) (interface{}, error) {
 		// Validate signing method
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
@@ -159,22 +177,40 @@ func (s *JWTService) ValidateToken(tokenString string) (int64, error) {
 
 	if err != nil {
 		s.logger.Warn("failed to parse JWT token", zap.Error(err))
-		return 0, fmt.Errorf("invalid token: %w", err)
+		return 0, nil, fmt.Errorf("invalid token: %w", err)
 	}
 
 	claims, ok := token.Claims.(*Claims)
 	if !ok || !token.Valid {
 		s.logger.Warn("invalid JWT token claims")
-		return 0, errors.New("invalid token claims")
+		return 0, nil, errors.New("invalid token claims")
 	}
 
 	// Check expiration
 	if claims.ExpiresAt != nil && time.Now().After(claims.ExpiresAt.Time) {
 		s.logger.Warn("JWT token expired", zap.Int64("user_id", claims.UserID))
-		return 0, errors.New("token expired")
+		return 0, nil, errors.New("token expired")
 	}
 
-	return claims.UserID, nil
+	// Parse role claim - support both legacy string format and new object format
+	var categories []int64
+	if len(claims.Role) > 0 {
+		// Try to parse as object (new format)
+		var roleObj RoleClaim
+		if err := json.Unmarshal(claims.Role, &roleObj); err == nil {
+			categories = roleObj.Categories
+		} else {
+			// Try to parse as string (legacy format)
+			var roleStr string
+			if err := json.Unmarshal(claims.Role, &roleStr); err == nil {
+				// Legacy token - return empty categories (will be handled by auth layer)
+				categories = []int64{}
+				s.logger.Debug("legacy JWT token with string role", zap.String("role", roleStr))
+			}
+		}
+	}
+
+	return claims.UserID, categories, nil
 }
 
 // ExtractTokenFromHeader extracts JWT token from Authorization header
