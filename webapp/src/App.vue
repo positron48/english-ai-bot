@@ -62,7 +62,7 @@
       }"
     >
       <Breadcrumbs v-if="isAuthenticated && mounted && !isAdminRoute" />
-      <router-view v-if="mounted" />
+      <router-view v-if="mounted" :key="route.path" />
       <div v-else style="padding: 20px; text-align: center;">
         Loading...
       </div>

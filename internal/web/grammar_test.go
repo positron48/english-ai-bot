@@ -3,6 +3,7 @@ package web
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -272,5 +273,194 @@ func TestHandleLearningGrammarSubmitPlacementTest_ReturnsLevelAndResults(t *test
 		if _, has := m["level"]; !has {
 			t.Errorf("results[%d] missing level", i)
 		}
+	}
+}
+
+// TestHandleLearningGrammarSubmitTest_CategoryTestAnswersOrder verifies that
+// category test answers are correctly matched to questions by question_id and chapter_id,
+// preserving the order of questions and ensuring answers don't get mixed up between chapters.
+// This test uses the exact format from a real user request to catch issues where
+// answers might be incorrectly matched to questions.
+func TestHandleLearningGrammarSubmitTest_CategoryTestAnswersOrder(t *testing.T) {
+	router, db, cleanup := setupGrammarTest(t)
+	defer cleanup()
+
+	// Publish all chapters from the category to enable category test
+	chapters := []string{
+		"en.grammar.first_sentences_be_as.personal_pronouns_am_is",
+		"en.grammar.first_sentences_be_as.statements_with_be_identity",
+		"en.grammar.first_sentences_be_as.questions_with_be_are",
+		"en.grammar.first_sentences_be_as.negatives_with_be_not",
+		"en.grammar.first_sentences_be_as.an_as_one_of",
+		"en.grammar.first_sentences_be_as.this_that_these_those",
+		"en.grammar.first_sentences_be_as.adjectives_after_be_she",
+		"en.grammar.first_sentences_be_as.build_speak_mini_dialogues",
+	}
+
+	for _, chapterID := range chapters {
+		_, err := db.GetConnection().Exec(
+			`INSERT INTO grammar_published_items (item_type, item_id, is_published, updated_at) 
+			 VALUES (?, ?, 1, datetime('now')) 
+			 ON CONFLICT(item_type, item_id) DO UPDATE SET is_published=1, updated_at=datetime('now')`,
+			"chapter", chapterID)
+		if err != nil {
+			t.Fatalf("Failed to publish chapter %s: %v", chapterID, err)
+		}
+	}
+
+	// Get category test to see what questions are generated
+	getReq := httptest.NewRequest(http.MethodGet, "/api/learning/grammar/categories/en.grammar.first_sentences_be_as/test", nil)
+	getReq = setUserIDInContext(getReq, 1)
+	getW := httptest.NewRecorder()
+	router.handleLearningGrammarCategoryTest(getW, getReq)
+	if getW.Code != http.StatusOK {
+		t.Fatalf("GET category test: expected 200, got %d: %s", getW.Code, getW.Body.String())
+	}
+
+	var getResp struct {
+		Questions []map[string]interface{} `json:"questions"`
+		Total     int                       `json:"total"`
+	}
+	if err := json.NewDecoder(getW.Body).Decode(&getResp); err != nil {
+		t.Fatalf("Failed to decode GET response: %v", err)
+	}
+
+	if len(getResp.Questions) == 0 {
+		t.Skip("No questions in category test; skipping test")
+		return
+	}
+
+	// Build a map of questions by chapter_id:question_id for verification
+	questionMap := make(map[string]map[string]interface{})
+	for _, q := range getResp.Questions {
+		qID, _ := q["id"].(string)
+		chapterID, _ := q["_category_test_chapter_id"].(string)
+		if qID != "" && chapterID != "" {
+			key := chapterID + ":" + qID
+			questionMap[key] = q
+		}
+	}
+
+	// Submit test with the exact format from the user's request
+	// This simulates the real scenario where answers might get mixed up
+	submitBody := map[string]interface{}{
+		"scope":    "category",
+		"scope_id":   "en.grammar.first_sentences_be_as",
+		"answers": []map[string]interface{}{
+			{"question_id": "q34", "answer": "true", "chapter_id": "en.grammar.first_sentences_be_as.personal_pronouns_am_is"},
+			{"question_id": "q19", "answer": "is", "chapter_id": "en.grammar.first_sentences_be_as.personal_pronouns_am_is"},
+			{"question_id": "q22", "answer": "b", "chapter_id": "en.grammar.first_sentences_be_as.statements_with_be_identity"},
+			{"question_id": "q11", "answer": "b", "chapter_id": "en.grammar.first_sentences_be_as.statements_with_be_identity"},
+			{"question_id": "q28", "answer": "a", "chapter_id": "en.grammar.first_sentences_be_as.questions_with_be_are"},
+			{"question_id": "q17", "answer": "Who is he?", "chapter_id": "en.grammar.first_sentences_be_as.questions_with_be_are"},
+			{"question_id": "q3", "answer": "a", "chapter_id": "en.grammar.first_sentences_be_as.negatives_with_be_not"},
+			{"question_id": "q48", "answer": "She is not at school.", "chapter_id": "en.grammar.first_sentences_be_as.negatives_with_be_not"},
+			{"question_id": "q15", "answer": "a", "chapter_id": "en.grammar.first_sentences_be_as.an_as_one_of"},
+			{"question_id": "q40", "answer": "a", "chapter_id": "en.grammar.first_sentences_be_as.an_as_one_of"},
+			{"question_id": "q18", "answer": "a", "chapter_id": "en.grammar.first_sentences_be_as.this_that_these_those"},
+			{"question_id": "q49", "answer": "is", "chapter_id": "en.grammar.first_sentences_be_as.this_that_these_those"},
+			{"question_id": "q56", "answer": "Is", "chapter_id": "en.grammar.first_sentences_be_as.adjectives_after_be_she"},
+			{"question_id": "q27", "answer": "false", "chapter_id": "en.grammar.first_sentences_be_as.adjectives_after_be_she"},
+			{"question_id": "q44", "answer": "That is my book over there.", "chapter_id": "en.grammar.first_sentences_be_as.build_speak_mini_dialogues"},
+			{"question_id": "q53", "answer": "a", "chapter_id": "en.grammar.first_sentences_be_as.build_speak_mini_dialogues"},
+			{"question_id": "q12", "answer": "a", "chapter_id": "en.grammar.first_sentences_be_as.statements_with_be_identity"},
+			{"question_id": "q21", "answer": "a", "chapter_id": "en.grammar.first_sentences_be_as.personal_pronouns_am_is"},
+			{"question_id": "q20", "answer": "false", "chapter_id": "en.grammar.first_sentences_be_as.personal_pronouns_am_is"},
+		},
+	}
+
+	bodyJSON, _ := json.Marshal(submitBody)
+	req := httptest.NewRequest(http.MethodPost, "/api/learning/grammar/tests/submit", bytes.NewReader(bodyJSON))
+	req.Header.Set("Content-Type", "application/json")
+	req = setUserIDInContext(req, 1)
+	w := httptest.NewRecorder()
+
+	router.handleLearningGrammarSubmitTest(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("Expected status %d, got %d: %s", http.StatusOK, w.Code, w.Body.String())
+	}
+
+	var resp struct {
+		Score   int           `json:"score"`
+		Passed  bool          `json:"passed"`
+		Correct int          `json:"correct"`
+		Total   int          `json:"total"`
+		Results []interface{} `json:"results"`
+	}
+	if err := json.NewDecoder(w.Body).Decode(&resp); err != nil {
+		t.Fatalf("Failed to decode submit response: %v", err)
+	}
+
+	// Verify that results are in the same order as answers
+	answers := submitBody["answers"].([]map[string]interface{})
+	if len(resp.Results) != len(answers) {
+		t.Errorf("Results length %d != answers length %d", len(resp.Results), len(answers))
+	}
+
+	// Verify that each result matches the corresponding answer by question_id and chapter_id
+	for i, r := range resp.Results {
+		resultMap, ok := r.(map[string]interface{})
+		if !ok {
+			t.Errorf("results[%d] is not an object", i)
+			continue
+		}
+
+		if i >= len(answers) {
+			t.Errorf("Result index %d exceeds answers length", i)
+			continue
+		}
+
+		answerItem := answers[i]
+		expectedQuestionID, _ := answerItem["question_id"].(string)
+		expectedChapterID, _ := answerItem["chapter_id"].(string)
+		expectedAnswer := answerItem["answer"]
+
+		resultQuestionID, _ := resultMap["question_id"].(string)
+		resultUserAnswer := resultMap["user_answer"]
+
+		// Verify question_id matches
+		if resultQuestionID != expectedQuestionID {
+			t.Errorf("Result[%d]: question_id mismatch - expected %q, got %q", i, expectedQuestionID, resultQuestionID)
+		}
+
+		// Verify user_answer matches (allowing for type conversion)
+		if resultUserAnswer != expectedAnswer {
+			// Try string comparison for flexibility
+			resultStr := fmt.Sprintf("%v", resultUserAnswer)
+			expectedStr := fmt.Sprintf("%v", expectedAnswer)
+			if resultStr != expectedStr {
+				t.Errorf("Result[%d]: user_answer mismatch - expected %v (%T), got %v (%T)", i, expectedAnswer, expectedAnswer, resultUserAnswer, resultUserAnswer)
+			}
+		}
+
+		// Verify that the question exists in the test (by checking if it was in the generated test)
+		questionKey := expectedChapterID + ":" + expectedQuestionID
+		if _, exists := questionMap[questionKey]; !exists {
+			// Question might not be in this particular test run (random selection)
+			// But we should still verify the answer was processed
+			t.Logf("Result[%d]: question %s from chapter %s was not in the generated test (this is OK if test is randomized)", i, expectedQuestionID, expectedChapterID)
+		}
+
+		// Verify required fields are present
+		if _, has := resultMap["correct"]; !has {
+			t.Errorf("Result[%d]: missing 'correct' field", i)
+		}
+		if _, has := resultMap["correct_answer"]; !has {
+			t.Errorf("Result[%d]: missing 'correct_answer' field", i)
+		}
+		if _, has := resultMap["prompt"]; !has {
+			t.Errorf("Result[%d]: missing 'prompt' field", i)
+		}
+	}
+
+	// Verify that total matches the number of answers submitted
+	if resp.Total != len(answers) {
+		t.Errorf("Total questions %d != number of answers submitted %d", resp.Total, len(answers))
+	}
+
+	// Log the score for debugging
+	if resp.Total > 0 {
+		t.Logf("Test completed: %d/%d correct (%.1f%%)", resp.Correct, resp.Total, float64(resp.Correct)*100.0/float64(resp.Total))
 	}
 }

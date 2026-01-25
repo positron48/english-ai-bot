@@ -75,7 +75,13 @@
           :key="item.question_id || index"
           :id="`result-${index}`"
           class="result-item"
-          :class="{ 'correct': item.correct, 'incorrect': !item.correct }"
+          :class="{ 'correct': item.correct, 'incorrect': !item.correct, 'clickable': item.correct }"
+          role="button"
+          :tabindex="item.correct ? 0 : -1"
+          :aria-expanded="item.correct ? String(isResultExpanded(item, index)) : null"
+          @click="toggleResult(item, index)"
+          @keydown.enter.prevent="toggleResult(item, index)"
+          @keydown.space.prevent="toggleResult(item, index)"
         >
           <div class="result-header">
             <span class="result-number">Question {{ index + 1 }}</span>
@@ -83,33 +89,38 @@
             <span class="result-status" :class="{ 'correct': item.correct, 'incorrect': !item.correct }">
               {{ item.correct ? '✓ Correct' : '✗ Incorrect' }}
             </span>
+            <span v-if="item.correct" class="result-toggle" aria-hidden="true">
+              <span class="result-chevron" :class="{ 'expanded': isResultExpanded(item, index) }"></span>
+            </span>
           </div>
           
-          <div class="result-question-prompt">
-            <strong>Question:</strong>
-            <div v-html="renderMarkdown(getQuestionPrompt(item.question_id))"></div>
-          </div>
-          
-          <div class="result-user-answer" :class="{ 'result-user-answer--correct': item.correct }">
-            <strong>Your Answer:</strong>
-            <div class="answer-display">{{ formatAnswer(item.question_id, item.user_answer) || '(not answered)' }}</div>
-          </div>
-          
-          <div v-if="!item.correct && item.correct_answer != null" class="result-correct-answer">
-            <strong>Correct Answer:</strong>
-            <div class="answer-display">{{ formatAnswer(item.question_id, item.correct_answer) }}</div>
-          </div>
-          
-          <div v-if="!item.correct && getChoiceFeedback(item.question_id, item.user_answer)" class="result-hint">
-            <div class="choice-feedback">
-              <strong>Hint:</strong>
-              <div v-html="renderMarkdown(getChoiceFeedback(item.question_id, item.user_answer))"></div>
+          <div v-if="isResultExpanded(item, index)" class="result-body">
+            <div class="result-question-prompt">
+              <strong>Question:</strong>
+              <div v-html="renderMarkdown(getQuestionPrompt(item.question_id))"></div>
             </div>
-          </div>
-          
-          <div v-if="item.explanation" class="result-explanation">
-            <strong>Explanation:</strong>
-            <div v-html="renderMarkdown(item.explanation)"></div>
+            
+            <div class="result-user-answer" :class="{ 'result-user-answer--correct': item.correct }">
+              <strong>Your Answer:</strong>
+              <div class="answer-display">{{ formatAnswer(item.question_id, item.user_answer) || '(not answered)' }}</div>
+            </div>
+            
+            <div v-if="!item.correct && item.correct_answer != null" class="result-correct-answer">
+              <strong>Correct Answer:</strong>
+              <div class="answer-display">{{ formatAnswer(item.question_id, item.correct_answer) }}</div>
+            </div>
+            
+            <div v-if="!item.correct && getChoiceFeedback(item.question_id, item.user_answer)" class="result-hint">
+              <div class="choice-feedback">
+                <strong>Hint:</strong>
+                <div v-html="renderMarkdown(getChoiceFeedback(item.question_id, item.user_answer))"></div>
+              </div>
+            </div>
+            
+            <div v-if="item.explanation" class="result-explanation">
+              <strong>Explanation:</strong>
+              <div v-html="renderMarkdown(item.explanation)"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -213,6 +224,7 @@ const questionRefs = ref<any[]>([])
 const showExitConfirm = ref(false)
 const animatedScore = ref(0)
 const sectionNames = ref<Record<string, string>>({})
+const expandedCorrectResults = ref<Record<string, boolean>>({})
 
 const currentQuestion = computed(() => {
   const question = questions.value[currentQuestionIndex.value] || null
@@ -476,6 +488,7 @@ const submitTest = async () => {
     
     result.value = data
     testSubmitted.value = true
+    expandedCorrectResults.value = {}
     
     nextTick(() => {
       if (data.score !== undefined) {
@@ -502,7 +515,27 @@ const retryTest = () => {
   answers.value.clear()
   currentQuestionIndex.value = 0
   animatedScore.value = 0
+  expandedCorrectResults.value = {}
   loadTest()
+}
+
+const getResultKey = (item: any, index: number): string => {
+  return String(item?.question_id ?? index)
+}
+
+const isResultExpanded = (item: any, index: number): boolean => {
+  if (!item?.correct) return true
+  const key = getResultKey(item, index)
+  return !!expandedCorrectResults.value[key]
+}
+
+const toggleResult = (item: any, index: number) => {
+  if (!item?.correct) return
+  const key = getResultKey(item, index)
+  expandedCorrectResults.value = {
+    ...expandedCorrectResults.value,
+    [key]: !expandedCorrectResults.value[key]
+  }
 }
 
 onMounted(() => {
@@ -752,6 +785,20 @@ onMounted(() => {
   border-radius: 8px;
 }
 
+.result-item.clickable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.result-item.clickable:hover {
+  border-color: var(--color-success);
+}
+
+.result-item.clickable:focus-visible {
+  outline: 3px solid rgba(59, 130, 246, 0.45);
+  outline-offset: 2px;
+}
+
 .result-item.correct {
   border-color: var(--color-success);
   background: rgba(40, 167, 69, 0.05);
@@ -769,6 +816,30 @@ onMounted(() => {
   align-items: center;
   gap: 8px;
   margin-bottom: 12px;
+}
+
+.result-toggle {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.result-chevron {
+  width: 9px;
+  height: 9px;
+  border-right: 2px solid var(--text-secondary);
+  border-bottom: 2px solid var(--text-secondary);
+  transform: rotate(-45deg);
+  transition: transform 0.18s ease;
+}
+
+.result-chevron.expanded {
+  transform: rotate(45deg);
 }
 
 .result-number {

@@ -55,51 +55,75 @@
           v-for="(item, index) in result.results"
           :key="index"
           class="result-item"
-          :class="{ 'correct': item.correct, 'incorrect': !item.correct }"
+          :class="{ 'correct': item.correct, 'incorrect': !item.correct, 'clickable': item.correct }"
+          role="button"
+          :tabindex="item.correct ? 0 : -1"
+          :aria-expanded="item.correct ? String(isResultExpanded(item, index)) : null"
+          @click="toggleResult(item, index)"
+          @keydown.enter.prevent="toggleResult(item, index)"
+          @keydown.space.prevent="toggleResult(item, index)"
         >
           <div class="result-header">
             <span class="result-number">Question {{ index + 1 }}</span>
             <span class="result-status" :class="{ 'correct': item.correct, 'incorrect': !item.correct }">
               {{ item.correct ? '✓ Correct' : '✗ Incorrect' }}
             </span>
+            <span v-if="item.correct" class="result-toggle" aria-hidden="true">
+              <span class="result-chevron" :class="{ 'expanded': isResultExpanded(item, index) }"></span>
+            </span>
           </div>
           
-          <!-- Question -->
-          <div class="result-question-prompt">
-            <strong>Question:</strong>
-            <div v-html="renderMarkdown(item.prompt || getQuestionPrompt(item.question_id))"></div>
-          </div>
-          
-          <!-- User Answer -->
-          <div class="result-user-answer">
-            <strong>Your Answer:</strong>
-            <div class="answer-display">{{ formatAnswer(item.question_id, item.user_answer) || '(not answered)' }}</div>
-          </div>
-          
-          <!-- Correct Answer (only if incorrect) -->
-          <div v-if="!item.correct" class="result-correct-answer">
-            <strong>Correct Answer:</strong>
-            <div class="answer-display">{{ formatAnswer(item.question_id, item.correct_answer) }}</div>
-          </div>
-          
-          <!-- Hint/Feedback for incorrect answers -->
-          <div v-if="!item.correct" class="result-hint">
-            <div v-if="getChoiceFeedback(item.question_id, item.user_answer)" class="choice-feedback">
-              <strong>Hint:</strong>
-              <div v-html="renderMarkdown(getChoiceFeedback(item.question_id, item.user_answer))"></div>
+          <div v-if="isResultExpanded(item, index)" class="result-body">
+            <!-- Question -->
+            <div class="result-question-prompt">
+              <strong>Question:</strong>
+              <div v-html="renderMarkdown(item.prompt || getQuestionPrompt(item.question_id, item.chapter_id))"></div>
             </div>
-          </div>
-          
-          <!-- Explanation -->
-          <div v-if="item.explanation" class="result-explanation">
-            <strong>Explanation:</strong>
-            <div v-html="renderMarkdown(item.explanation)"></div>
+            
+            <!-- User Answer -->
+            <div class="result-user-answer">
+              <strong>Your Answer:</strong>
+              <div class="answer-display">{{ formatAnswer(item.question_id, item.user_answer, item.chapter_id) || '(not answered)' }}</div>
+            </div>
+            
+            <!-- Correct Answer (only if incorrect) -->
+            <div v-if="!item.correct" class="result-correct-answer">
+              <strong>Correct Answer:</strong>
+              <div class="answer-display">{{ formatAnswer(item.question_id, item.correct_answer, item.chapter_id) }}</div>
+            </div>
+            
+            <!-- Hint/Feedback for incorrect answers -->
+            <div v-if="!item.correct" class="result-hint">
+              <div v-if="getChoiceFeedback(item.question_id, item.user_answer, item.chapter_id)" class="choice-feedback">
+                <strong>Hint:</strong>
+                <div v-html="renderMarkdown(getChoiceFeedback(item.question_id, item.user_answer, item.chapter_id))"></div>
+              </div>
+            </div>
+            
+            <!-- Explanation -->
+            <div v-if="item.explanation" class="result-explanation">
+              <strong>Explanation:</strong>
+              <div v-html="renderMarkdown(item.explanation)"></div>
+            </div>
           </div>
         </div>
       </div>
       
       <div class="results-actions">
         <button @click="goBack" class="btn btn-secondary">Back to Chapter</button>
+        <button
+          v-if="showNextActionButton"
+          @click.stop.prevent="handleNextActionClick"
+          @mousedown.stop
+          @mouseup.stop
+          class="btn btn-primary"
+          :disabled="nextActionLoading || !nextActionKind"
+          type="button"
+          ref="nextActionButtonRef"
+          style="z-index: 9999; position: relative;"
+        >
+          {{ nextActionLoading ? 'Loading...' : nextActionLabel }}
+        </button>
         <button v-if="!result.passed" @click="retryTest" class="btn btn-primary">Retry Test</button>
       </div>
     </div>
@@ -120,7 +144,7 @@
           :ref="el => setQuestionRef(currentQuestionIndex, el)"
           :question="currentQuestion"
           :show-answers="false"
-          :initial-answer="answers.get(currentQuestionIndex)"
+          :initial-answer="currentQuestion ? answers.get(getQuestionKey(currentQuestion)) : undefined"
           @answer="handleAnswerWithAutoNext(currentQuestionIndex, $event)"
         />
       </div>
@@ -164,7 +188,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, watch, nextTick } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
 import { marked } from 'marked'
 import { apiClient } from '../api/client'
 import GrammarQuestion from '../components/GrammarQuestion.vue'
@@ -200,7 +224,9 @@ const testTitle = computed(() => {
 })
 
 const questions = ref<any[]>([])
-const answers = ref<Map<number, any>>(new Map())
+// Store answers by unique question identifier (question_id for chapter tests, chapter_id:question_id for category tests)
+// This ensures answers are always correctly matched to questions, even if user navigates back and forth
+const answers = ref<Map<string, any>>(new Map())
 const currentQuestionIndex = ref(0)
 const loading = ref(true)
 const error = ref<string | null>(null)
@@ -211,10 +237,68 @@ const questionRefs = ref<any[]>([])
 const showExitConfirm = ref(false)
 const animatedScore = ref(0)
 const percentageAnimationComplete = ref(false)
+const expandedCorrectResults = ref<Record<string, boolean>>({})
+const nextChapterId = ref<string | null>(null)
+const nextSectionId = ref<string | null>(null)
+const isLastChapterInCategory = ref(false)
+const nextActionLoading = ref(false)
+const nextActionButtonRef = ref<HTMLButtonElement | null>(null)
+
+const nextActionKind = computed<null | 'nextChapter' | 'categoryTest'>(() => {
+  if (scope.value !== 'chapter' || !result.value?.passed) return null
+  if (nextActionLoading.value) return 'nextChapter' // placeholder while loading to keep button stable
+  if (nextChapterId.value) return 'nextChapter'
+  if (isLastChapterInCategory.value && nextSectionId.value) return 'categoryTest'
+  return null
+})
+
+const nextActionLabel = computed(() => {
+  return nextActionKind.value === 'categoryTest' ? 'Category Test' : 'Next Chapter'
+})
+
+const showNextActionButton = computed(() => {
+  return scope.value === 'chapter' && !!result.value?.passed && (nextActionLoading.value || !!nextActionKind.value)
+})
 
 const currentQuestion = computed(() => {
   return questions.value[currentQuestionIndex.value] || null
 })
+
+// Get unique key for a question (for storing/retrieving answers)
+// For category tests: chapter_id:question_id (since question IDs are only unique within a chapter)
+// For chapter tests: question_id (question IDs are unique within a chapter)
+const getQuestionKey = (question: any): string => {
+  if (!question || !question.id) {
+    return ''
+  }
+  if (scope.value === 'category' && (question as any)._category_test_chapter_id) {
+    return `${(question as any)._category_test_chapter_id}:${question.id}`
+  }
+  return question.id
+}
+
+const resetTestStateForNewRoute = () => {
+  // Reset everything that is route-specific so the same component can be reused between:
+  // - chapter test -> category test
+  // - category test -> chapter test
+  // CRITICAL: Set loading FIRST and testSubmitted to false to force Vue to switch to loading block
+  testSubmitted.value = false
+  result.value = null
+  loading.value = true
+  error.value = null
+  questions.value = []
+  answers.value = new Map<string, any>()
+  currentQuestionIndex.value = 0
+  submitting.value = false
+  questionRefs.value = []
+  animatedScore.value = 0
+  percentageAnimationComplete.value = false
+  expandedCorrectResults.value = {}
+  nextChapterId.value = null
+  nextSectionId.value = null
+  isLastChapterInCategory.value = false
+  nextActionLoading.value = false
+}
 
 // Calculate accuracy percentage
 const accuracyPercentage = computed(() => {
@@ -229,7 +313,12 @@ const setQuestionRef = (index: number, el: any) => {
 }
 
 const hasAnswer = (index: number): boolean => {
-  const answer = answers.value.get(index)
+  const question = questions.value[index]
+  if (!question) {
+    return false
+  }
+  const questionKey = getQuestionKey(question)
+  const answer = answers.value.get(questionKey)
   if (answer === undefined || answer === null) {
     return false
   }
@@ -246,6 +335,9 @@ const hasAnswer = (index: number): boolean => {
 }
 
 const loadTest = async () => {
+  // CRITICAL: Reset testSubmitted FIRST to ensure Vue switches to loading block
+  testSubmitted.value = false
+  result.value = null
   loading.value = true
   error.value = null
   try {
@@ -263,18 +355,27 @@ const loadTest = async () => {
     }
   } catch (err: any) {
     error.value = err.message || 'Failed to load test'
-    console.error('Failed to load grammar test:', err)
   } finally {
     loading.value = false
   }
 }
 
 const handleAnswer = (index: number, answer: any) => {
-  answers.value.set(index, answer)
+  const question = questions.value[index]
+  if (!question) {
+    return
+  }
+  const questionKey = getQuestionKey(question)
+  answers.value.set(questionKey, answer)
 }
 
 const handleAnswerWithAutoNext = (index: number, answer: any) => {
-  answers.value.set(index, answer)
+  const question = questions.value[index]
+  if (!question) {
+    return
+  }
+  const questionKey = getQuestionKey(question)
+  answers.value.set(questionKey, answer)
   
   if (hasAnswer(index)) {
     const isLast = index === questions.value.length - 1
@@ -335,16 +436,44 @@ const animateScore = (targetScore: number) => {
 }
 
 const submitTest = async () => {
-  // Build answers map and preserve question order
-  const answersMap: Record<string, any> = {}
-  const questionIds: string[] = []
-  questions.value.forEach((q, index) => {
-    const answer = answers.value.get(index)
-    if (answer !== undefined && q.id) {
-      answersMap[q.id] = answer
-      questionIds.push(q.id)
+  // Build array of answer objects with explicit question identification
+  // Each answer is explicitly linked to its question via question_id and chapter_id (for category tests)
+  // This ensures correct matching even if questions are reordered or some are skipped
+  const answerItems: Array<{
+    question_id: string
+    chapter_id?: string
+    answer: any
+  }> = []
+  
+  // Process questions in the exact order they appear in the test
+  for (let index = 0; index < questions.value.length; index++) {
+    const q = questions.value[index]
+    if (!q || !q.id) {
+      continue // Skip invalid questions
     }
-  })
+    
+    // Get answer for this specific question by unique key
+    const questionKey = getQuestionKey(q)
+    const answer = answers.value.get(questionKey)
+    
+    // Create answer item with explicit question identification
+    const answerItem: {
+      question_id: string
+      chapter_id?: string
+      answer: any
+    } = {
+      question_id: q.id,
+      answer: answer !== undefined && answer !== null ? answer : null
+    }
+    
+    // For category tests, include chapter_id to uniquely identify questions
+    // (since question IDs are only unique within a chapter)
+    if (scope.value === 'category' && (q as any)._category_test_chapter_id) {
+      answerItem.chapter_id = (q as any)._category_test_chapter_id
+    }
+    
+    answerItems.push(answerItem)
+  }
   
   submitting.value = true
   try {
@@ -354,13 +483,21 @@ const submitTest = async () => {
         body: {
           scope: scope.value,
           scope_id: scopeId.value,
-          answers: answersMap,
-          question_ids: questionIds
+          answers: answerItems
         }
       })
     
     result.value = data
     testSubmitted.value = true
+    expandedCorrectResults.value = {}
+    nextChapterId.value = null
+    nextSectionId.value = null
+    isLastChapterInCategory.value = false
+    if (scope.value === 'chapter' && data.passed) {
+      loadNextChapterId().catch(() => {
+        // Failed to load next chapter id
+      })
+    }
     
     // Trigger haptic feedback
     triggerHapticFeedback(data.passed)
@@ -372,7 +509,7 @@ const submitTest = async () => {
     })
   } catch (err: any) {
     error.value = err.message || 'Failed to submit test'
-    console.error('Failed to submit grammar test:', err)
+    // Failed to submit grammar test
   } finally {
     submitting.value = false
   }
@@ -490,7 +627,87 @@ const retryTest = () => {
   currentQuestionIndex.value = 0
   animatedScore.value = 0
   percentageAnimationComplete.value = false
+  expandedCorrectResults.value = {}
+  nextChapterId.value = null
+  nextSectionId.value = null
+  isLastChapterInCategory.value = false
+  nextActionLoading.value = false
   loadTest()
+}
+
+const loadNextChapterId = async () => {
+  if (scope.value !== 'chapter') return
+  const chapterId = scopeId.value
+  nextActionLoading.value = true
+  try {
+    const data: { section_id: string; is_last: boolean; next_chapter_id: string } =
+      await apiClient.request(`/api/learning/grammar/chapters/${chapterId}/next`)
+
+    nextSectionId.value = data.section_id || null
+    isLastChapterInCategory.value = !!data.is_last
+    nextChapterId.value = data.next_chapter_id || null
+  } finally {
+    nextActionLoading.value = false
+  }
+}
+
+const handleNextActionClick = (event?: Event) => {
+  if (event) {
+    event.preventDefault()
+    event.stopPropagation()
+  }
+  goToNextAction()
+}
+
+const goToNextAction = async () => {
+  if (nextActionKind.value === 'nextChapter') {
+    if (!nextChapterId.value) return
+    await router.push({ name: 'GrammarChapter', params: { chapterId: nextChapterId.value } })
+    return
+  }
+  if (nextActionKind.value === 'categoryTest') {
+    if (!nextSectionId.value) return
+    const targetSectionId = nextSectionId.value
+    
+    // Use router.push with replace to navigate
+    // The key on router-view in App.vue should force component recreation
+    await router.push({ 
+      name: 'GrammarCategoryTest', 
+      params: { sectionId: targetSectionId },
+      // Add query param to force route change detection
+      query: { _t: Date.now().toString() }
+    })
+    
+    // Wait for navigation to complete
+    await nextTick()
+    await new Promise(resolve => setTimeout(resolve, 50))
+    
+    // Force state reset
+    resetTestStateForNewRoute()
+    await nextTick()
+    
+    // Load test
+    loadTest()
+  }
+}
+
+const getResultKey = (item: any, index: number): string => {
+  return String(item?.question_id ?? index)
+}
+
+const isResultExpanded = (item: any, index: number): boolean => {
+  if (!item?.correct) return true
+  const key = getResultKey(item, index)
+  return !!expandedCorrectResults.value[key]
+}
+
+const toggleResult = (item: any, index: number) => {
+  if (!item?.correct) return
+  const key = getResultKey(item, index)
+  expandedCorrectResults.value = {
+    ...expandedCorrectResults.value,
+    [key]: !expandedCorrectResults.value[key]
+  }
 }
 
 const renderMarkdown = (text: string): string => {
@@ -506,24 +723,33 @@ const renderMarkdown = (text: string): string => {
   }
 }
 
-// Helper function to get question by ID
-const getQuestionById = (questionId: string): any => {
+// Helper function to get question by ID and optionally chapter_id
+// For category tests, chapter_id is required to uniquely identify questions
+const getQuestionById = (questionId: string, chapterId?: string): any => {
+  if (scope.value === 'category' && chapterId) {
+    // For category tests, find question by both id and chapter_id
+    return questions.value.find(q => 
+      q.id === questionId && 
+      (q as any)._category_test_chapter_id === chapterId
+    ) || null
+  }
+  // For chapter tests or if chapter_id not provided, find by id only
   return questions.value.find(q => q.id === questionId) || null
 }
 
 // Helper function to get question prompt
-const getQuestionPrompt = (questionId: string): string => {
-  const question = getQuestionById(questionId)
+const getQuestionPrompt = (questionId: string, chapterId?: string): string => {
+  const question = getQuestionById(questionId, chapterId)
   return question?.prompt || ''
 }
 
 // Helper function to format answer for display
-const formatAnswer = (questionId: string, answer: any): string => {
+const formatAnswer = (questionId: string, answer: any, chapterId?: string): string => {
   if (answer === undefined || answer === null) {
     return ''
   }
   
-  const question = getQuestionById(questionId)
+  const question = getQuestionById(questionId, chapterId)
   if (!question) {
     return String(answer)
   }
@@ -573,8 +799,8 @@ const formatAnswer = (questionId: string, answer: any): string => {
 }
 
 // Helper function to get choice feedback/hint
-const getChoiceFeedback = (questionId: string, userAnswer: any): string => {
-  const question = getQuestionById(questionId)
+const getChoiceFeedback = (questionId: string, userAnswer: any, chapterId?: string): string => {
+  const question = getQuestionById(questionId, chapterId)
   if (!question || !question.choices) {
     return ''
   }
@@ -619,7 +845,7 @@ const triggerHapticFeedback = (isCorrect: boolean) => {
       }
       return
     } catch (error) {
-      console.warn('Telegram haptic feedback failed:', error)
+      // Telegram haptic feedback failed
     }
   }
   
@@ -634,14 +860,70 @@ const triggerHapticFeedback = (isCorrect: boolean) => {
         navigator.vibrate([100, 50, 100])
       }
     } catch (error) {
-      console.warn('Native vibration failed:', error)
+      // Native vibration failed
     }
   }
 }
 
 onMounted(() => {
+  // Always reset state on mount to ensure clean state
+  resetTestStateForNewRoute()
   loadTest()
 })
+
+// IMPORTANT: Vue Router may reuse the same component instance when only params change,
+// OR create a new instance when switching between different routes (chapter test -> category test).
+// We need to handle both cases.
+
+// Primary: Watch route.path directly - most reliable way to detect route changes
+watch(
+  () => route.path,
+  async (newPath, oldPath) => {
+    // Skip on initial mount
+    if (!oldPath) return
+    // Only reload if path actually changed
+    if (newPath === oldPath) return
+    // Check if this is a test route (chapter test or category test)
+    const isTestRoute = newPath.includes('/test')
+    const wasTestRoute = oldPath.includes('/test')
+    // Only reload if we're switching between test routes
+    if (!isTestRoute || !wasTestRoute) return
+    resetTestStateForNewRoute()
+    await nextTick()
+    loadTest()
+  },
+  { immediate: false }
+)
+
+// Secondary: Watch scope and scopeId - these change when switching between chapter and category tests
+watch(
+  [() => scope.value, () => scopeId.value],
+  async ([newScope, newScopeId], [oldScope, oldScopeId]) => {
+    // Skip on initial mount
+    if (oldScope === undefined) return
+    // Only reload if scope or scopeId actually changed
+    if (newScope === oldScope && newScopeId === oldScopeId) return
+    resetTestStateForNewRoute()
+    await nextTick()
+    loadTest()
+  },
+  { immediate: false }
+)
+
+// Tertiary: Use onBeforeRouteUpdate for cases where component is reused
+onBeforeRouteUpdate(async (to, from) => {
+  // Check if this is a test route (chapter test or category test)
+  const isTestRoute = to.path.includes('/test')
+  const wasTestRoute = from.path.includes('/test')
+  // Only reload if we're switching between test routes
+  if (!isTestRoute || !wasTestRoute) return
+  // Only reload if path actually changed
+  if (to.path === from.path) return
+  resetTestStateForNewRoute()
+  await nextTick()
+  loadTest()
+})
+
 </script>
 
 <style scoped>
@@ -782,6 +1064,20 @@ onMounted(() => {
   border-radius: 8px;
 }
 
+.result-item.clickable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.result-item.clickable:hover {
+  border-color: var(--color-success);
+}
+
+.result-item.clickable:focus-visible {
+  outline: 3px solid rgba(59, 130, 246, 0.45);
+  outline-offset: 2px;
+}
+
 .result-item.correct {
   border-color: var(--color-success);
   background: rgba(40, 167, 69, 0.05);
@@ -797,6 +1093,30 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
+}
+
+.result-toggle {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.result-chevron {
+  width: 9px;
+  height: 9px;
+  border-right: 2px solid var(--text-secondary);
+  border-bottom: 2px solid var(--text-secondary);
+  transform: rotate(-45deg);
+  transition: transform 0.18s ease;
+}
+
+.result-chevron.expanded {
+  transform: rotate(45deg);
 }
 
 .result-number {

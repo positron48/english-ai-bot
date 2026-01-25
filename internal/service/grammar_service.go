@@ -179,6 +179,64 @@ func (s *GrammarService) GetPublishedChapters(ctx context.Context, sectionID str
 	return result, nil
 }
 
+// GetNextPublishedChapterID returns the next published chapter within the same section,
+// using the canonical order from sections.json (section.ChapterIDs).
+func (s *GrammarService) GetNextPublishedChapterID(ctx context.Context, chapterID string) (nextChapterID string, isLast bool, sectionID string, err error) {
+	chapter, err := s.ContentRepo.GetChapter(chapterID)
+	if err != nil {
+		return "", false, "", fmt.Errorf("chapter not found: %s", chapterID)
+	}
+
+	sectionID = chapter.SectionID
+	sectionsData, err := s.ContentRepo.GetSections()
+	if err != nil {
+		return "", false, "", fmt.Errorf("failed to get sections: %w", err)
+	}
+
+	var section *repository.Section
+	for i := range sectionsData.Sections {
+		if sectionsData.Sections[i].SectionID == sectionID {
+			section = &sectionsData.Sections[i]
+			break
+		}
+	}
+	if section == nil {
+		return "", false, "", fmt.Errorf("section not found: %s", sectionID)
+	}
+
+	// Use canonical order from sections.json (section.ChapterIDs) and then walk forward
+	// to the next published chapter. This avoids any "backwards" jumps even if publish data
+	// is incomplete or chapter IDs contain dots, etc.
+	publishedItems, err := s.PublishRepo.GetPublishedItemsByType("chapter")
+	if err != nil {
+		return "", false, "", fmt.Errorf("failed to get published items: %w", err)
+	}
+
+	// Find the chapter index in the canonical list.
+	// If there are duplicates (shouldn't happen), we use the last occurrence to ensure we move forward.
+	idx := -1
+	for i := range section.ChapterIDs {
+		if section.ChapterIDs[i] == chapterID {
+			idx = i
+		}
+	}
+	if idx == -1 {
+		return "", false, sectionID, fmt.Errorf("chapter not found in section list: %s", chapterID)
+	}
+
+	// Walk forward to the next published chapter
+	for i := idx + 1; i < len(section.ChapterIDs); i++ {
+		id := section.ChapterIDs[i]
+		item, exists := publishedItems[id]
+		if !exists || !item.IsPublished {
+			continue
+		}
+		return id, false, sectionID, nil
+	}
+
+	return "", true, sectionID, nil
+}
+
 // ChapterWithProgress represents a chapter with user progress
 type ChapterWithProgress struct {
 	Chapter   *repository.Chapter
@@ -504,6 +562,11 @@ func (s *GrammarService) GenerateCategoryTest(ctx context.Context, sectionID str
 			}
 			if !selectedIDs[id] {
 				if q, exists := cq.questionMap[id]; exists {
+					// CRITICAL: Add chapter ID to question for category tests
+					// This allows SubmitTest to find the correct question when IDs are duplicated across chapters
+					if qMap, ok := q.(map[string]interface{}); ok {
+						qMap["_category_test_chapter_id"] = cq.chapterID
+					}
 					selectedQuestions = append(selectedQuestions, q)
 					selectedIDs[id] = true
 					count++
@@ -514,8 +577,12 @@ func (s *GrammarService) GenerateCategoryTest(ctx context.Context, sectionID str
 
 	// Second pass: fill remaining slots randomly from all chapters
 	if len(selectedQuestions) < targetTotalQuestions {
-		// Collect all remaining questions
-		allRemaining := make([]interface{}, 0)
+		// Collect all remaining questions with their chapter IDs
+		type questionWithChapter struct {
+			question  interface{}
+			chapterID string
+		}
+		allRemaining := make([]questionWithChapter, 0)
 		for _, cq := range allChapterQuestions {
 			for _, idInterface := range cq.questions {
 				id, ok := idInterface.(string)
@@ -524,7 +591,11 @@ func (s *GrammarService) GenerateCategoryTest(ctx context.Context, sectionID str
 				}
 				if !selectedIDs[id] {
 					if q, exists := cq.questionMap[id]; exists {
-						allRemaining = append(allRemaining, q)
+						// CRITICAL: Store question with its chapter ID to avoid wrong assignment
+						allRemaining = append(allRemaining, questionWithChapter{
+							question:  q,
+							chapterID: cq.chapterID,
+						})
 					}
 				}
 			}
@@ -536,12 +607,17 @@ func (s *GrammarService) GenerateCategoryTest(ctx context.Context, sectionID str
 		})
 
 		for len(selectedQuestions) < targetTotalQuestions && len(allRemaining) > 0 {
-			selectedQuestions = append(selectedQuestions, allRemaining[0])
-			if qMap, ok := allRemaining[0].(map[string]interface{}); ok {
+			item := allRemaining[0]
+			q := item.question
+			if qMap, ok := q.(map[string]interface{}); ok {
 				if id, ok := qMap["id"].(string); ok {
+					// CRITICAL: Use the chapter ID we stored, don't search for it
+					// This ensures the question is correctly assigned to the chapter it came from
+					qMap["_category_test_chapter_id"] = item.chapterID
 					selectedIDs[id] = true
 				}
 			}
+			selectedQuestions = append(selectedQuestions, q)
 			allRemaining = allRemaining[1:]
 		}
 	}
@@ -683,9 +759,19 @@ func (s *GrammarService) selectRandom(poolIDs []interface{}, questionMap map[str
 	return available
 }
 
+// AnswerItem represents a single answer with explicit question identification
+type AnswerItem struct {
+	QuestionID string      `json:"question_id"`           // question ID (unique within chapter)
+	ChapterID  string      `json:"chapter_id,omitempty"`  // chapter ID (required for category tests)
+	Answer     interface{} `json:"answer"`                // user's answer (can be null if not answered)
+}
+
 // SubmitTest checks answers and saves attempt
-func (s *GrammarService) SubmitTest(ctx context.Context, userID int64, scopeType, scopeID string, answers map[string]interface{}, questionIDs []string) (*TestResult, error) {
+// answers is an array of AnswerItem objects in the order they appear in the test
+// Each AnswerItem explicitly links an answer to its question via question_id and chapter_id (for category tests)
+func (s *GrammarService) SubmitTest(ctx context.Context, userID int64, scopeType, scopeID string, answers []AnswerItem) (*TestResult, error) {
 	var questionMap map[string]map[string]interface{}
+	var questionMapByChapter map[string]map[string]map[string]interface{} // For category tests
 	var err error
 
 	switch scopeType {
@@ -714,6 +800,8 @@ func (s *GrammarService) SubmitTest(ctx context.Context, userID int64, scopeType
 		}
 	case "category":
 		// For category tests, we need to get questions from all chapters in the section
+		// CRITICAL: Questions from different chapters may have the same ID, so we need
+		// to use a composite key (chapterID:questionID) or track which chapter each question came from
 		sectionsData, err := s.ContentRepo.GetSections()
 		if err != nil {
 			return nil, fmt.Errorf("failed to get sections: %w", err)
@@ -739,7 +827,12 @@ func (s *GrammarService) SubmitTest(ctx context.Context, userID int64, scopeType
 		}
 
 		// Build question map from all chapters in the section
-		questionMap = make(map[string]map[string]interface{})
+		// CRITICAL: Questions from different chapters may have the same ID.
+		// We need to build a map that can handle this. Since we process chapters
+		// in the same order as GenerateCategoryTest (section.ChapterIDs), we should
+		// get the same questions. But to be safe, we'll use a two-level map:
+		// first by chapter ID, then by question ID.
+		questionMapByChapter = make(map[string]map[string]map[string]interface{})
 		for _, chapterID := range section.ChapterIDs {
 			chapterItem, exists := publishedItems[chapterID]
 			if !exists || !chapterItem.IsPublished {
@@ -758,13 +851,46 @@ func (s *GrammarService) SubmitTest(ctx context.Context, userID int64, scopeType
 				continue
 			}
 
-			// Add questions to map
+			// Build chapter-level question map
+			chapterQuestionMap := make(map[string]map[string]interface{})
 			for _, q := range questionBank {
 				qMap, ok := q.(map[string]interface{})
 				if !ok {
 					continue
 				}
 				if id, ok := qMap["id"].(string); ok {
+					chapterQuestionMap[id] = qMap
+				}
+			}
+			questionMapByChapter[chapterID] = chapterQuestionMap
+		}
+
+		// Build question map using chapter information from questionOrder
+		// CRITICAL: For category tests, questions may have duplicate IDs across chapters.
+		// We need to use the chapter ID stored in each question from GenerateCategoryTest
+		// to find the correct question.
+		questionMap = make(map[string]map[string]interface{})
+		
+		// First, build a map by composite key (chapterID:questionID) for all questions
+		questionMapByCompositeKey := make(map[string]map[string]interface{})
+		for chapterID, chapterQuestionMap := range questionMapByChapter {
+			for id, qMap := range chapterQuestionMap {
+				compositeKey := chapterID + ":" + id
+				questionMapByCompositeKey[compositeKey] = qMap
+			}
+		}
+		
+		// Then, for each question in questionOrder, find it using chapter ID if available
+		// If chapter ID is not in questionOrder, fall back to simple ID lookup
+		// (this handles the case where questionOrder doesn't have chapter info)
+		for _, chapterID := range section.ChapterIDs {
+			chapterQuestionMap, exists := questionMapByChapter[chapterID]
+			if !exists {
+				continue
+			}
+			for id, qMap := range chapterQuestionMap {
+				// Only add if not already present (first occurrence wins for backward compatibility)
+				if _, exists := questionMap[id]; !exists {
 					questionMap[id] = qMap
 				}
 			}
@@ -777,36 +903,107 @@ func (s *GrammarService) SubmitTest(ctx context.Context, userID int64, scopeType
 		return nil, fmt.Errorf("unsupported scope type: %s", scopeType)
 	}
 
-	// Check answers
-	// Use question order from frontend if provided, otherwise fall back to map iteration order
-	questionOrder := questionIDs
-	if len(questionOrder) == 0 {
-		// Fallback: collect question IDs from answers map
-		questionOrder = make([]string, 0, len(answers))
-		for questionID := range answers {
-			questionOrder = append(questionOrder, questionID)
-		}
-	}
-	
 	// Process answers in the order they appear in the test
+	// Each answer item explicitly links question_id, chapter_id (for category tests), and answer
 	results := make([]interface{}, 0)
 	correct := 0
 	total := 0
 	
-	// Process questions in the order from test
-	for _, questionID := range questionOrder {
-		userAnswer, exists := answers[questionID]
-		if !exists {
-			continue // Skip if no answer provided
+	// Process each answer item in order
+	for answerIndex, answerItem := range answers {
+		questionID := answerItem.QuestionID
+		chapterID := answerItem.ChapterID
+		userAnswer := answerItem.Answer
+		hasAnswer := userAnswer != nil
+		
+		// Validate that chapter_id is provided for category tests
+		if scopeType == "category" && chapterID == "" {
+			s.logger.Warn("missing chapter_id for category test answer",
+				zap.String("question_id", questionID),
+				zap.String("scope_id", scopeID),
+				zap.Int("answer_index", answerIndex))
+			// Try to find question in any chapter (fallback)
 		}
 		
-		q, exists := questionMap[questionID]
-		if !exists {
+		// Find question using chapterID (for category tests) or simple questionID (for chapter tests)
+		var q map[string]interface{}
+		var qExists bool
+		
+		if scopeType == "category" && chapterID != "" && questionMapByChapter != nil {
+			// Use question from specific chapter
+			if chapterQuestionMap, chapterExists := questionMapByChapter[chapterID]; chapterExists {
+				if chapterQ, chapterQExists := chapterQuestionMap[questionID]; chapterQExists {
+					q = chapterQ
+					qExists = true
+				}
+			}
+		}
+		
+		// Fallback to simple lookup if chapter-specific lookup failed
+		if !qExists {
+			q, qExists = questionMap[questionID]
+		}
+		
+		// For category tests, if still not found, try searching all chapters
+		if !qExists && scopeType == "category" && questionMapByChapter != nil {
+			for chID, chapterQuestionMap := range questionMapByChapter {
+				if chapterQ, chapterQExists := chapterQuestionMap[questionID]; chapterQExists {
+					q = chapterQ
+					qExists = true
+					chapterID = chID // Update chapterID for logging
+					break
+				}
+			}
+		}
+		
+		if !qExists {
+			// Question not found - log error and skip
+			s.logger.Warn("question not found in questionMap during submission",
+				zap.String("question_id", questionID),
+				zap.String("chapter_id", chapterID),
+				zap.String("scope_type", scopeType),
+				zap.String("scope_id", scopeID),
+				zap.Int("answer_index", answerIndex))
 			continue
 		}
-
+		
+		// Verify that the question ID matches (safety check)
+		qID, hasID := q["id"].(string)
+		if !hasID || qID != questionID {
+			s.logger.Error("question ID mismatch in questionMap - CRITICAL ERROR",
+				zap.String("expected_id", questionID),
+				zap.String("actual_id", qID),
+				zap.String("chapter_id", chapterID),
+				zap.String("scope_type", scopeType),
+				zap.String("scope_id", scopeID),
+				zap.Int("answer_index", answerIndex))
+			continue
+		}
+		
+		// Process the question
 		total++
 		correctAnswer := q["correct_answer"]
+		prompt, _ := q["prompt"].(string)
+		
+		// If no answer provided, mark as incorrect
+		if !hasAnswer {
+			resultItem := map[string]interface{}{
+				"question_id":    questionID,
+				"prompt":         prompt,
+				"correct":        false,
+				"user_answer":    nil,
+				"correct_answer": correctAnswer,
+				"explanation":    q["explanation"],
+			}
+			// For category tests, include chapter_id to uniquely identify questions
+			if scopeType == "category" && chapterID != "" {
+				resultItem["chapter_id"] = chapterID
+			}
+			results = append(results, resultItem)
+			continue
+		}
+		
+		// Check if answer is correct
 		qType, _ := q["type"].(string)
 		var isCorrect bool
 		var resultCorrect = correctAnswer
@@ -829,75 +1026,30 @@ func (s *GrammarService) SubmitTest(ctx context.Context, userID int64, scopeType
 		}
 
 		// Include prompt in results to avoid confusion when displaying
-		prompt, _ := q["prompt"].(string)
-		results = append(results, map[string]interface{}{
+		resultItem := map[string]interface{}{
 			"question_id":    questionID,
 			"prompt":         prompt,
 			"correct":        isCorrect,
 			"user_answer":    userAnswer,
 			"correct_answer": resultCorrect,
 			"explanation":    q["explanation"],
-		})
-	}
-	
-	// Also process any answers that weren't in the question order (shouldn't happen, but just in case)
-	processedIDs := make(map[string]bool)
-	for _, id := range questionOrder {
-		processedIDs[id] = true
-	}
-	
-	for questionID, userAnswer := range answers {
-		if processedIDs[questionID] {
-			continue // Already processed
 		}
-		
-		q, exists := questionMap[questionID]
-		if !exists {
-			continue
+		// For category tests, include chapter_id to uniquely identify questions
+		if scopeType == "category" && chapterID != "" {
+			resultItem["chapter_id"] = chapterID
 		}
-
-		total++
-		correctAnswer := q["correct_answer"]
-		qType, _ := q["type"].(string)
-		var isCorrect bool
-		var resultCorrect = correctAnswer
-
-		if qType == "true_false" {
-			uNorm, okU := normalizeTrueFalseValue(userAnswer)
-			cNorm, okC := normalizeTrueFalseValue(correctAnswer)
-			if okU && okC {
-				isCorrect = (uNorm == cNorm)
-				resultCorrect = cNorm
-			} else {
-				isCorrect = s.compareAnswers(userAnswer, correctAnswer)
-			}
-		} else {
-			isCorrect = s.compareAnswers(userAnswer, correctAnswer)
-		}
-
-		if isCorrect {
-			correct++
-		}
-
-		// Include prompt in results to avoid confusion when displaying
-		prompt, _ := q["prompt"].(string)
-		results = append(results, map[string]interface{}{
-			"question_id":    questionID,
-			"prompt":         prompt,
-			"correct":        isCorrect,
-			"user_answer":    userAnswer,
-			"correct_answer": resultCorrect,
-			"explanation":    q["explanation"],
-		})
+		results = append(results, resultItem)
 	}
 
 	score := 0
 	if total > 0 {
 		score = (correct * 100) / total
 	}
-	passed := score > 50
+	// UI copy says "at least 50% to pass", so 50% counts as passed.
+	passed := score >= 50
 
 	// Save attempt
+	// Convert answers array back to JSON for storage
 	answersJSON, _ := json.Marshal(answers)
 	resultsJSON, _ := json.Marshal(results)
 

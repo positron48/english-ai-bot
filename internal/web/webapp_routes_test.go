@@ -73,7 +73,7 @@ func TestIsAPIEndpoint(t *testing.T) {
 	}
 }
 
-func TestHasFileExtension(t *testing.T) {
+func TestHasStaticAssetExtension(t *testing.T) {
 	tests := []struct {
 		name     string
 		path     string
@@ -93,6 +93,11 @@ func TestHasFileExtension(t *testing.T) {
 			name:     "Image file",
 			path:     "/app/favicon.svg",
 			expected: true,
+		},
+		{
+			name:     "SPA route param contains dots (should NOT be treated as file)",
+			path:     "/app/learning/grammar/en.grammar.first_sentences_be_as",
+			expected: false,
 		},
 		{
 			name:     "No extension",
@@ -118,9 +123,9 @@ func TestHasFileExtension(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := hasFileExtension(tt.path)
+			result := hasStaticAssetExtension(tt.path)
 			if result != tt.expected {
-				t.Errorf("hasFileExtension(%q) = %v, want %v", tt.path, result, tt.expected)
+				t.Errorf("hasStaticAssetExtension(%q) = %v, want %v", tt.path, result, tt.expected)
 			}
 		})
 	}

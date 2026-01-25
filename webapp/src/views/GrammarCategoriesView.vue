@@ -70,7 +70,7 @@
         
         <!-- Average Test Score -->
         <div class="stat-item percentage-item">
-          <div class="stat-label">Tests</div>
+          <div class="stat-label">Test (avg.)</div>
           <div class="percentage-wrapper">
             <div class="percentage-circle-small-wrapper">
               <svg class="percentage-circle-small" viewBox="0 0 60 60">

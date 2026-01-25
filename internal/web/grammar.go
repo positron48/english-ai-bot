@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"tgbot-skeleton/internal/repository"
+	"tgbot-skeleton/internal/service"
 
 	"go.uber.org/zap"
 )
@@ -194,6 +195,12 @@ func (r *Router) handleLearningGrammarChapterOrTest(w http.ResponseWriter, req *
 	path := strings.TrimPrefix(req.URL.Path, "/api/learning/grammar/chapters/")
 	path = strings.Trim(path, "/")
 	
+	// Check if it's a "next chapter" request
+	if strings.HasSuffix(path, "/next") {
+		r.handleLearningGrammarNextChapter(w, req)
+		return
+	}
+
 	// Check if it's an access check request
 	if strings.HasSuffix(path, "/access") {
 		r.handleLearningGrammarChapterAccess(w, req)
@@ -208,6 +215,61 @@ func (r *Router) handleLearningGrammarChapterOrTest(w http.ResponseWriter, req *
 	
 	// Otherwise it's a chapter content request
 	r.handleLearningGrammarChapter(w, req)
+}
+
+// handleLearningGrammarNextChapter returns the next chapter id within the same section, in UI order.
+// @Summary      Получить следующую главу
+// @Description  Возвращает следующую опубликованную главу в той же категории в порядке, как в списке глав.
+// @Tags         Learning
+// @Accept       json
+// @Produce      application/json
+// @Security     ApiKeyAuth
+// @Param        chapter_id  path  string  true  "ID главы"
+// @Success      200  {object}  map[string]interface{}  "Следующая глава или признак последней"
+// @Failure      401  {string}  string  "Неавторизован"
+// @Failure      404  {string}  string  "Глава/категория не найдена"
+// @Failure      500  {string}  string  "Внутренняя ошибка сервера"
+// @Router       /api/learning/grammar/chapters/{chapter_id}/next [get]
+func (r *Router) handleLearningGrammarNextChapter(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	userID := getUserIDFromContext(req.Context())
+	if userID == 0 {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	// Extract chapter_id from path
+	path := strings.TrimPrefix(req.URL.Path, "/api/learning/grammar/chapters/")
+	path = strings.Trim(path, "/")
+	chapterID := strings.TrimSuffix(path, "/next")
+	chapterID = strings.Trim(chapterID, "/")
+	if chapterID == "" {
+		http.Error(w, "chapter_id required", http.StatusBadRequest)
+		return
+	}
+
+	nextID, isLast, sectionID, err := r.grammarService.GetNextPublishedChapterID(req.Context(), chapterID)
+	if err != nil {
+		r.logger.Error("failed to get next chapter", zap.String("chapter_id", chapterID), zap.Error(err))
+		if strings.Contains(err.Error(), "not found") {
+			http.Error(w, "Not found", http.StatusNotFound)
+			return
+		}
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"section_id":       sectionID,
+		"is_last":          isLast,
+		"next_chapter_id":  nextID,
+	})
 }
 
 // handleLearningGrammarChapter returns chapter content
@@ -398,10 +460,9 @@ func (r *Router) handleLearningGrammarSubmitTest(w http.ResponseWriter, req *htt
 	}
 
 	var request struct {
-		Scope        string                 `json:"scope"`         // "chapter" or "category"
-		ScopeID      string                 `json:"scope_id"`       // chapter_id or section_id
-		Answers      map[string]interface{} `json:"answers"`       // question_id -> answer
-		QuestionIDs  []string               `json:"question_ids"`  // order of questions in test
+		Scope   string                `json:"scope"`     // "chapter" or "category"
+		ScopeID string                `json:"scope_id"`  // chapter_id or section_id
+		Answers []service.AnswerItem  `json:"answers"`   // array of answer objects in test order
 	}
 
 	if err := json.NewDecoder(req.Body).Decode(&request); err != nil {
@@ -414,7 +475,7 @@ func (r *Router) handleLearningGrammarSubmitTest(w http.ResponseWriter, req *htt
 		return
 	}
 
-	result, err := r.grammarService.SubmitTest(req.Context(), userID, request.Scope, request.ScopeID, request.Answers, request.QuestionIDs)
+	result, err := r.grammarService.SubmitTest(req.Context(), userID, request.Scope, request.ScopeID, request.Answers)
 	if err != nil {
 		r.logger.Error("failed to submit test", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)

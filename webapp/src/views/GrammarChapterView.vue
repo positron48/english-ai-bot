@@ -32,7 +32,6 @@
         >
           <!-- Theory Block -->
           <div v-if="block.type === 'theory'" class="theory-block">
-            <h2 v-if="block.title" class="block-title">{{ block.title }}</h2>
             <div 
               v-if="block.theory?.content_md" 
               class="theory-content markdown-content"

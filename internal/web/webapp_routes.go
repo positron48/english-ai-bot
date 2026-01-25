@@ -49,8 +49,10 @@ func (r *Router) setupWebappRoutes() {
 			return
 		}
 
-		// If it's a request for a file (has extension), try to serve it
-		if hasFileExtension(path) && path != "/app/" {
+		// If it's a request for a real static file, try to serve it.
+		// IMPORTANT: we can't treat "any dot in URL" as a file extension,
+		// because our SPA route params can contain dots (e.g. sectionId "en.grammar.first_sentences").
+		if hasStaticAssetExtension(path) && path != "/app/" {
 			// Strip /app prefix before serving
 			http.StripPrefix("/app", fileServer).ServeHTTP(w, req)
 			return
@@ -105,10 +107,29 @@ func isAPIEndpoint(path string) bool {
 	return false
 }
 
-// hasFileExtension checks if the path has a file extension
-func hasFileExtension(path string) bool {
-	ext := filepath.Ext(path)
-	return ext != "" && len(ext) > 1
+// hasStaticAssetExtension checks if the request looks like a static asset.
+// We intentionally use a whitelist of extensions because SPA routes may contain dots.
+func hasStaticAssetExtension(path string) bool {
+	if path == "" || strings.HasSuffix(path, "/") {
+		return false
+	}
+
+	// Only look at the last path segment
+	base := filepath.Base(path)
+	ext := strings.ToLower(filepath.Ext(base))
+	if ext == "" || len(ext) <= 1 {
+		return false
+	}
+
+	switch ext {
+	case ".js", ".mjs", ".css", ".map",
+		".ico", ".png", ".jpg", ".jpeg", ".gif", ".svg", ".webp",
+		".txt", ".xml", ".webmanifest", ".json",
+		".woff", ".woff2", ".ttf", ".eot":
+		return true
+	default:
+		return false
+	}
 }
 
 // setupDevProxy sets up handlers for dev mode (redirects to Vite dev server)
