@@ -119,7 +119,8 @@ func TestHandleDashboard_Basic(t *testing.T) {
 	}
 
 	jwtService, _ := NewJWTService(cfg, logger)
-	authMiddleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-token")
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
 
 	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
 	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
@@ -162,7 +163,8 @@ func TestHandleDashboard_WrongMethod(t *testing.T) {
 	}
 
 	jwtService, _ := NewJWTService(cfg, logger)
-	authMiddleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-token")
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
 
 	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
 	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
@@ -194,7 +196,8 @@ func TestHandleDashboard_Unauthorized(t *testing.T) {
 	}
 
 	jwtService, _ := NewJWTService(cfg, logger)
-	authMiddleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-token")
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
 
 	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
 	router.SetDependencies(userRepo, nil, nil, nil, "test-token")

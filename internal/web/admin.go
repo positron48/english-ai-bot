@@ -15,24 +15,10 @@ import (
 	"go.uber.org/zap"
 )
 
-// RequireAdmin wraps a handler to require admin access
+// RequireAdmin wraps a handler to require admin access (legacy - use RequirePermission instead)
+// This now checks for full_access permission or super admin status
 func (r *Router) RequireAdmin(next http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, req *http.Request) {
-		userID := getUserIDFromContext(req.Context())
-		if userID == 0 {
-			http.Error(w, "Unauthorized", http.StatusUnauthorized)
-			return
-		}
-
-		// Check role from JWT token (stored in context by RequireAuth)
-		role := getUserRoleFromContext(req.Context())
-		if role != "admin" {
-			http.Error(w, "Forbidden", http.StatusForbidden)
-			return
-		}
-
-		next(w, req)
-	}
+	return r.RequirePermission(PermissionFullAccess)(next)
 }
 
 // handleAdmin shows the admin panel
@@ -185,6 +171,24 @@ func (r *Router) handleAdminCircuitReset(w http.ResponseWriter, req *http.Reques
 // @Router       /api/admin/training/{word} [post]
 // @Router       /api/admin/training/{word}/generate [post]
 func (r *Router) handleAdminTraining(w http.ResponseWriter, req *http.Request) {
+	// Load permissions into context (if not already loaded by RequireAnyPermission)
+	ctx := r.loadUserPermissionsIntoContext(req.Context())
+	req = req.WithContext(ctx)
+
+	// Check permissions: GET requires words.read_all, POST/PUT/DELETE require words.edit_all
+	if req.Method == http.MethodGet {
+		if !r.HasPermission(ctx, PermissionWordsReadAll) {
+			http.Error(w, "Forbidden: read permission required", http.StatusForbidden)
+			return
+		}
+	} else {
+		// POST, PUT, DELETE require edit permission
+		if !r.HasPermission(ctx, PermissionWordsEditAll) {
+			http.Error(w, "Forbidden: edit permission required", http.StatusForbidden)
+			return
+		}
+	}
+
 	// Extract action and word from path: /app/admin/training/{word}/{action}
 	path := req.URL.Path
 	parts := strings.Split(strings.TrimPrefix(path, "/api/admin/training/"), "/")
@@ -618,6 +622,10 @@ func (r *Router) handleAdminTraining(w http.ResponseWriter, req *http.Request) {
 // @Router       /api/admin/training/card/{id} [put]
 // @Router       /api/admin/training/card/{id} [delete]
 func (r *Router) handleAdminTrainingCard(w http.ResponseWriter, req *http.Request) {
+	// Load permissions into context (if not already loaded by RequireAnyPermission)
+	ctx := r.loadUserPermissionsIntoContext(req.Context())
+	req = req.WithContext(ctx)
+
 	path := req.URL.Path
 	parts := strings.Split(strings.TrimPrefix(path, "/api/admin/training/card/"), "/")
 	
@@ -627,7 +635,32 @@ func (r *Router) handleAdminTrainingCard(w http.ResponseWriter, req *http.Reques
 	}
 
 	var cardID int64
+	var cardIDValid bool
 	if _, err := fmt.Sscanf(parts[0], "%d", &cardID); err != nil {
+		cardIDValid = false
+	} else {
+		cardIDValid = true
+	}
+
+	// Check permissions: GET requires words.read_all, PUT/DELETE require words.edit_all
+	// Only check permissions if card ID is valid (to avoid checking permissions for invalid IDs)
+	if cardIDValid {
+		if req.Method == http.MethodGet {
+			if !r.HasPermission(ctx, PermissionWordsReadAll) {
+				http.Error(w, "Forbidden: read permission required", http.StatusForbidden)
+				return
+			}
+		} else {
+			// PUT, DELETE require edit permission
+			if !r.HasPermission(ctx, PermissionWordsEditAll) {
+				http.Error(w, "Forbidden: edit permission required", http.StatusForbidden)
+				return
+			}
+		}
+	}
+
+	// If card ID is invalid, return 400 Bad Request
+	if !cardIDValid {
 		http.Error(w, "Invalid card ID", http.StatusBadRequest)
 		return
 	}
@@ -1207,13 +1240,14 @@ func (r *Router) handleAdminUsers(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	// Return simplified user list (id, telegram_id, telegram_username)
+	// Return user list with id, telegram_id, telegram_username, created_at
 	userList := make([]map[string]interface{}, 0, len(users))
 	for _, user := range users {
 		userList = append(userList, map[string]interface{}{
-			"id":              user.ID,
-			"telegram_id":     user.TelegramID,
+			"id":               user.ID,
+			"telegram_id":      user.TelegramID,
 			"telegram_username": user.TelegramUsername,
+			"created_at":       user.CreatedAt.Format("2006-01-02 15:04:05"),
 		})
 	}
 

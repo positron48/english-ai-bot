@@ -17,7 +17,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func setupAdminTrainingTest(t *testing.T) (*Router, *database.DB, func()) {
+func setupAdminTrainingTest(t *testing.T) (*Router, *database.DB, int64, func()) {
 	logger, _ := zap.NewDevelopment()
 	db, err := database.New(":memory:", logger)
 	if err != nil {
@@ -32,21 +32,33 @@ func setupAdminTrainingTest(t *testing.T) (*Router, *database.DB, func()) {
 	cbService := service.NewCircuitBreakerService(cbRepo, 5, logger)
 
 	router := NewRouter(logger, cfg, db.GetConnection(), nil, nil, nil, cbService)
+	
+	// Initialize dependencies for permission checks
+	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	
+	// Create admin user in DB (required for IsSuperAdmin to work)
+	adminUser, err := userRepo.GetOrCreateUser(int64(cfg.Admin.TelegramID))
+	if err != nil {
+		t.Fatalf("Failed to create admin user: %v", err)
+	}
 
 	cleanup := func() {
 		db.Close()
 	}
 
-	return router, db, cleanup
+	return router, db, adminUser.ID, cleanup
 }
 
 func setAdminTrainingUserContext(req *http.Request, userID int64) *http.Request {
 	ctx := context.WithValue(req.Context(), userIDKey, userID)
+	// Set empty categories (super admin has all permissions)
+	ctx = context.WithValue(ctx, userCategoriesKey, []int64{})
 	return req.WithContext(ctx)
 }
 
 func TestHandleAdminTraining_GetWord(t *testing.T) {
-	router, db, cleanup := setupAdminTrainingTest(t)
+	router, db, adminUserID, cleanup := setupAdminTrainingTest(t)
 	defer cleanup()
 
 	// Create word card
@@ -54,7 +66,7 @@ func TestHandleAdminTraining_GetWord(t *testing.T) {
 	wordRepo.SaveWordCard("test", "test definition")
 
 	req := httptest.NewRequest(http.MethodGet, "/api/admin/training/test", nil)
-	req = setAdminTrainingUserContext(req, 12345)
+	req = setAdminTrainingUserContext(req, adminUserID)
 	rr := httptest.NewRecorder()
 
 	router.handleAdminTraining(rr, req)
@@ -74,11 +86,11 @@ func TestHandleAdminTraining_GetWord(t *testing.T) {
 }
 
 func TestHandleAdminTraining_GetWord_NotFound(t *testing.T) {
-	router, _, cleanup := setupAdminTrainingTest(t)
+	router, _, adminUserID, cleanup := setupAdminTrainingTest(t)
 	defer cleanup()
 
 	req := httptest.NewRequest(http.MethodGet, "/api/admin/training/nonexistent", nil)
-	req = setAdminTrainingUserContext(req, 12345)
+	req = setAdminTrainingUserContext(req, adminUserID)
 	rr := httptest.NewRecorder()
 
 	router.handleAdminTraining(rr, req)
@@ -90,7 +102,7 @@ func TestHandleAdminTraining_GetWord_NotFound(t *testing.T) {
 }
 
 func TestHandleAdminTraining_DeleteAll_More(t *testing.T) {
-	router, db, cleanup := setupAdminTrainingTest(t)
+	router, db, adminUserID, cleanup := setupAdminTrainingTest(t)
 	defer cleanup()
 
 	// Create some training cards first
@@ -111,7 +123,7 @@ func TestHandleAdminTraining_DeleteAll_More(t *testing.T) {
 	tcRepo.CreateTrainingCard(tc)
 
 	req := httptest.NewRequest(http.MethodPost, "/api/admin/training/delete_all", nil)
-	req = setAdminTrainingUserContext(req, 12345)
+	req = setAdminTrainingUserContext(req, adminUserID)
 	rr := httptest.NewRecorder()
 
 	router.handleAdminTraining(rr, req)
@@ -128,7 +140,7 @@ func TestHandleAdminTraining_DeleteAll_More(t *testing.T) {
 }
 
 func TestHandleAdminTraining_DeleteWord(t *testing.T) {
-	router, db, cleanup := setupAdminTrainingTest(t)
+	router, db, adminUserID, cleanup := setupAdminTrainingTest(t)
 	defer cleanup()
 
 	// Create word and training card
@@ -149,7 +161,7 @@ func TestHandleAdminTraining_DeleteWord(t *testing.T) {
 	tcRepo.CreateTrainingCard(tc)
 
 	req := httptest.NewRequest(http.MethodPost, "/api/admin/training/testword/delete", nil)
-	req = setAdminTrainingUserContext(req, 12345)
+	req = setAdminTrainingUserContext(req, adminUserID)
 	rr := httptest.NewRecorder()
 
 	router.handleAdminTraining(rr, req)
@@ -160,13 +172,13 @@ func TestHandleAdminTraining_DeleteWord(t *testing.T) {
 }
 
 func TestHandleAdminTraining_Generate_NoAIService(t *testing.T) {
-	router, _, cleanup := setupAdminTrainingTest(t)
+	router, _, adminUserID, cleanup := setupAdminTrainingTest(t)
 	defer cleanup()
 
 	body := bytes.NewBufferString(`{"constraints": "test constraint"}`)
 	req := httptest.NewRequest(http.MethodPost, "/api/admin/training/test/generate", body)
 	req.Header.Set("Content-Type", "application/json")
-	req = setAdminTrainingUserContext(req, 12345)
+	req = setAdminTrainingUserContext(req, adminUserID)
 	rr := httptest.NewRecorder()
 
 	router.handleAdminTraining(rr, req)
@@ -178,13 +190,13 @@ func TestHandleAdminTraining_Generate_NoAIService(t *testing.T) {
 }
 
 func TestHandleAdminTraining_Generate_InvalidJSON(t *testing.T) {
-	router, _, cleanup := setupAdminTrainingTest(t)
+	router, _, adminUserID, cleanup := setupAdminTrainingTest(t)
 	defer cleanup()
 
 	body := bytes.NewBufferString(`{invalid json}`)
 	req := httptest.NewRequest(http.MethodPost, "/api/admin/training/test/generate", body)
 	req.Header.Set("Content-Type", "application/json")
-	req = setAdminTrainingUserContext(req, 12345)
+	req = setAdminTrainingUserContext(req, adminUserID)
 	rr := httptest.NewRecorder()
 
 	router.handleAdminTraining(rr, req)
@@ -195,11 +207,11 @@ func TestHandleAdminTraining_Generate_InvalidJSON(t *testing.T) {
 }
 
 func TestHandleAdminTraining_InvalidPath(t *testing.T) {
-	router, _, cleanup := setupAdminTrainingTest(t)
+	router, _, adminUserID, cleanup := setupAdminTrainingTest(t)
 	defer cleanup()
 
 	req := httptest.NewRequest(http.MethodGet, "/api/admin/training/", nil)
-	req = setAdminTrainingUserContext(req, 12345)
+	req = setAdminTrainingUserContext(req, adminUserID)
 	rr := httptest.NewRecorder()
 
 	router.handleAdminTraining(rr, req)
@@ -211,11 +223,11 @@ func TestHandleAdminTraining_InvalidPath(t *testing.T) {
 }
 
 func TestHandleAdminTraining_UnknownAction(t *testing.T) {
-	router, _, cleanup := setupAdminTrainingTest(t)
+	router, _, adminUserID, cleanup := setupAdminTrainingTest(t)
 	defer cleanup()
 
 	req := httptest.NewRequest(http.MethodPut, "/api/admin/training/test", nil)
-	req = setAdminTrainingUserContext(req, 12345)
+	req = setAdminTrainingUserContext(req, adminUserID)
 	rr := httptest.NewRecorder()
 
 	router.handleAdminTraining(rr, req)
@@ -227,7 +239,7 @@ func TestHandleAdminTraining_UnknownAction(t *testing.T) {
 }
 
 func TestHandleAdminTrainingCard_Delete_More(t *testing.T) {
-	router, db, cleanup := setupAdminTrainingTest(t)
+	router, db, adminUserID, cleanup := setupAdminTrainingTest(t)
 	defer cleanup()
 
 	// Create word and training card
@@ -248,7 +260,7 @@ func TestHandleAdminTrainingCard_Delete_More(t *testing.T) {
 	tcID, _ := tcRepo.CreateTrainingCard(tc)
 
 	req := httptest.NewRequest(http.MethodDelete, "/api/admin/training/card/"+string(rune(tcID+'0')), nil)
-	req = setAdminTrainingUserContext(req, 12345)
+	req = setAdminTrainingUserContext(req, adminUserID)
 	rr := httptest.NewRecorder()
 
 	router.handleAdminTrainingCard(rr, req)
@@ -260,11 +272,11 @@ func TestHandleAdminTrainingCard_Delete_More(t *testing.T) {
 }
 
 func TestHandleAdminTrainingCard_DeleteNotFound(t *testing.T) {
-	router, _, cleanup := setupAdminTrainingTest(t)
+	router, _, adminUserID, cleanup := setupAdminTrainingTest(t)
 	defer cleanup()
 
 	req := httptest.NewRequest(http.MethodDelete, "/api/admin/training/card/99999", nil)
-	req = setAdminTrainingUserContext(req, 12345)
+	req = setAdminTrainingUserContext(req, adminUserID)
 	rr := httptest.NewRecorder()
 
 	router.handleAdminTrainingCard(rr, req)
@@ -275,11 +287,12 @@ func TestHandleAdminTrainingCard_DeleteNotFound(t *testing.T) {
 }
 
 func TestHandleAdminTrainingCard_InvalidID(t *testing.T) {
-	router, _, cleanup := setupAdminTrainingTest(t)
+	router, _, adminUserID, cleanup := setupAdminTrainingTest(t)
 	defer cleanup()
 
-	req := httptest.NewRequest(http.MethodGet, "/api/admin/training/card/invalid", nil)
-	req = setAdminTrainingUserContext(req, 12345)
+	// Use PUT instead of GET since handleAdminTrainingCard doesn't handle GET
+	req := httptest.NewRequest(http.MethodPut, "/api/admin/training/card/invalid", nil)
+	req = setAdminTrainingUserContext(req, adminUserID)
 	rr := httptest.NewRecorder()
 
 	router.handleAdminTrainingCard(rr, req)
@@ -290,7 +303,7 @@ func TestHandleAdminTrainingCard_InvalidID(t *testing.T) {
 }
 
 func TestHandleAdminWords_Get_More(t *testing.T) {
-	router, db, cleanup := setupAdminTrainingTest(t)
+	router, db, adminUserID, cleanup := setupAdminTrainingTest(t)
 	defer cleanup()
 
 	// Create some words
@@ -299,7 +312,7 @@ func TestHandleAdminWords_Get_More(t *testing.T) {
 	wordRepo.SaveWordCard("banana", "another fruit")
 
 	req := httptest.NewRequest(http.MethodGet, "/api/admin/words", nil)
-	req = setAdminTrainingUserContext(req, 12345)
+	req = setAdminTrainingUserContext(req, adminUserID)
 	rr := httptest.NewRecorder()
 
 	router.handleAdminWords(rr, req)
@@ -310,7 +323,7 @@ func TestHandleAdminWords_Get_More(t *testing.T) {
 }
 
 func TestHandleAdminWords_GetWithSearch(t *testing.T) {
-	router, db, cleanup := setupAdminTrainingTest(t)
+	router, db, adminUserID, cleanup := setupAdminTrainingTest(t)
 	defer cleanup()
 
 	wordRepo := repository.NewWordRepository(db.GetConnection(), router.logger)
@@ -318,7 +331,7 @@ func TestHandleAdminWords_GetWithSearch(t *testing.T) {
 	wordRepo.SaveWordCard("banana", "another fruit")
 
 	req := httptest.NewRequest(http.MethodGet, "/api/admin/words?search=apple", nil)
-	req = setAdminTrainingUserContext(req, 12345)
+	req = setAdminTrainingUserContext(req, adminUserID)
 	rr := httptest.NewRecorder()
 
 	router.handleAdminWords(rr, req)
@@ -329,7 +342,7 @@ func TestHandleAdminWords_GetWithSearch(t *testing.T) {
 }
 
 func TestHandleAdminWord_Get(t *testing.T) {
-	router, db, cleanup := setupAdminTrainingTest(t)
+	router, db, adminUserID, cleanup := setupAdminTrainingTest(t)
 	defer cleanup()
 
 	wordRepo := repository.NewWordRepository(db.GetConnection(), router.logger)
@@ -337,7 +350,7 @@ func TestHandleAdminWord_Get(t *testing.T) {
 	wordCard, _ := wordRepo.GetWordCard("testword")
 
 	req := httptest.NewRequest(http.MethodGet, "/api/admin/words/"+string(rune(wordCard.ID+'0')), nil)
-	req = setAdminTrainingUserContext(req, 12345)
+	req = setAdminTrainingUserContext(req, adminUserID)
 	rr := httptest.NewRecorder()
 
 	router.handleAdminWord(rr, req)
@@ -349,11 +362,11 @@ func TestHandleAdminWord_Get(t *testing.T) {
 }
 
 func TestHandleAdminWord_NotFound(t *testing.T) {
-	router, _, cleanup := setupAdminTrainingTest(t)
+	router, _, adminUserID, cleanup := setupAdminTrainingTest(t)
 	defer cleanup()
 
 	req := httptest.NewRequest(http.MethodDelete, "/api/admin/words/99999", nil)
-	req = setAdminTrainingUserContext(req, 12345)
+	req = setAdminTrainingUserContext(req, adminUserID)
 	rr := httptest.NewRecorder()
 
 	router.handleAdminWord(rr, req)
@@ -364,7 +377,7 @@ func TestHandleAdminWord_NotFound(t *testing.T) {
 }
 
 func TestHandleAdminWord_Delete_More(t *testing.T) {
-	router, db, cleanup := setupAdminTrainingTest(t)
+	router, db, adminUserID, cleanup := setupAdminTrainingTest(t)
 	defer cleanup()
 
 	wordRepo := repository.NewWordRepository(db.GetConnection(), router.logger)
@@ -372,7 +385,7 @@ func TestHandleAdminWord_Delete_More(t *testing.T) {
 	wordCard, _ := wordRepo.GetWordCard("testword")
 
 	req := httptest.NewRequest(http.MethodDelete, "/api/admin/words/"+string(rune(wordCard.ID+'0')), nil)
-	req = setAdminTrainingUserContext(req, 12345)
+	req = setAdminTrainingUserContext(req, adminUserID)
 	rr := httptest.NewRecorder()
 
 	router.handleAdminWord(rr, req)

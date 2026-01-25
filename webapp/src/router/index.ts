@@ -112,6 +112,16 @@ const router = createRouter({
           path: 'db-schema',
           name: 'AdminDBSchema',
           component: () => import('../views/AdminDBSchemaView.vue')
+        },
+        {
+          path: 'access',
+          name: 'AdminAccess',
+          component: () => import('../views/AdminAccessView.vue')
+        },
+        {
+          path: 'users',
+          name: 'AdminUsers',
+          component: () => import('../views/AdminUsersView.vue')
         }
       ]
     },
@@ -138,11 +148,11 @@ router.beforeEach(async (to, _from, next) => {
   }
   
   // Get auth state - this will check tokens from localStorage
-  const { isAuthenticated, isAdmin, checkAuth } = useAuth()
+  const { isAuthenticated, hasAnyAdminAccess, checkAuth, loadPermissions } = useAuth()
   
   // Ensure auth state is up to date (especially important on direct URL access)
   // Reload tokens from localStorage and update auth state
-  checkAuth()
+  await checkAuth()
   
   // If user is trying to access login page, check if they're already authenticated
   // by making a request to the backend
@@ -159,21 +169,31 @@ router.beforeEach(async (to, _from, next) => {
       // Clear invalid tokens if it's an auth error
       if (error.message?.includes('401') || error.message?.includes('Unauthorized')) {
         apiClient.clearTokens()
-        checkAuth()
+        await checkAuth()
       }
     }
   }
   
-  // Admin status is already checked from JWT token in checkAuth()
-  // No need to make additional requests
-  
+  // Check authentication
   if (to.meta.requiresAuth && !isAuthenticated.value) {
     next('/login')
-  } else if (to.meta.requiresAdmin && !isAdmin.value) {
-    next('/dashboard')
-  } else {
-    next()
+    return
   }
+  
+  // Check admin access (for /admin routes)
+  if (to.meta.requiresAdmin) {
+    // Load permissions if not already loaded
+    if (isAuthenticated.value) {
+      await loadPermissions()
+    }
+    
+    if (!hasAnyAdminAccess()) {
+      next('/dashboard')
+      return
+    }
+  }
+  
+  next()
 })
 
 export default router

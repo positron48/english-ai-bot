@@ -8,6 +8,8 @@ type contextKey string
 
 const userIDKey contextKey = "user_id"
 const userRoleKey contextKey = "user_role"
+const userCategoriesKey contextKey = "user_categories"
+const userPermissionsKey contextKey = "user_permissions"
 
 // getUserIDFromContext extracts user ID from request context
 func getUserIDFromContext(ctx context.Context) int64 {
@@ -17,11 +19,19 @@ func getUserIDFromContext(ctx context.Context) int64 {
 	return 0
 }
 
-// getUserRoleFromContext extracts user role from request context
-func getUserRoleFromContext(ctx context.Context) string {
-	if role, ok := ctx.Value(userRoleKey).(string); ok {
-		return role
+// getUserCategoriesFromContext extracts user categories from request context
+func getUserCategoriesFromContext(ctx context.Context) []int64 {
+	if categories, ok := ctx.Value(userCategoriesKey).([]int64); ok {
+		return categories
 	}
-	return "user" // Default to "user" if not set
+	return []int64{}
+}
+
+// getUserPermissionsFromContext extracts user permissions from request context
+func getUserPermissionsFromContext(ctx context.Context) []string {
+	if perms, ok := ctx.Value(userPermissionsKey).([]string); ok {
+		return perms
+	}
+	return []string{}
 }
 

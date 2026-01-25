@@ -21,10 +21,13 @@
     <div v-if="activeTab === 'categories'" class="tab-content">
       <div class="section-header">
         <h2>Categories</h2>
-        <button @click="startCreateCategory" class="btn btn-primary">Create Category</button>
+        <button v-if="can('word_sets.edit')" @click="startCreateCategory" class="btn btn-primary">Create Category</button>
       </div>
       
-      <div v-if="categoriesLoading" class="loading">Loading categories...</div>
+      <div v-if="!can('word_sets.read')" class="empty-message">
+        <p>You don't have permission to view word set categories.</p>
+      </div>
+      <div v-else-if="categoriesLoading" class="loading">Loading categories...</div>
       <div v-else-if="categoriesError" class="error">{{ categoriesError }}</div>
       <div v-else-if="categoriesTree.length === 0" class="empty-message">
         <p>No categories found. Create your first category to get started.</p>
@@ -40,7 +43,7 @@
                 {{ category.is_published ? 'Published' : 'Unpublished' }}
               </span>
             </div>
-            <div class="category-actions">
+            <div v-if="can('word_sets.edit')" class="category-actions">
               <button @click="startEditCategory(category)" class="btn btn-sm btn-primary">Edit</button>
               <button @click="confirmDeleteCategory(category)" class="btn btn-sm btn-danger">Delete</button>
             </div>
@@ -55,7 +58,7 @@
                     {{ child.is_published ? 'Published' : 'Unpublished' }}
                   </span>
                 </div>
-                <div class="category-actions">
+                <div v-if="can('word_sets.edit')" class="category-actions">
                   <button @click="startEditCategory(child)" class="btn btn-sm btn-primary">Edit</button>
                   <button @click="confirmDeleteCategory(child)" class="btn btn-sm btn-danger">Delete</button>
                 </div>
@@ -70,7 +73,7 @@
     <div v-if="activeTab === 'sets'" class="tab-content">
       <div class="section-header">
         <h2>Word Sets</h2>
-        <button @click="startCreateWordSet" class="btn btn-primary">Create Word Set</button>
+        <button v-if="can('word_sets.edit')" @click="startCreateWordSet" class="btn btn-primary">Create Word Set</button>
       </div>
       
       <div class="filters">
@@ -82,7 +85,10 @@
         </select>
       </div>
       
-      <div v-if="wordSetsLoading" class="loading">Loading word sets...</div>
+      <div v-if="!can('word_sets.read')" class="empty-message">
+        <p>You don't have permission to view word sets.</p>
+      </div>
+      <div v-else-if="wordSetsLoading" class="loading">Loading word sets...</div>
       <div v-else-if="wordSetsError" class="error">{{ wordSetsError }}</div>
       <div v-else class="word-sets-list">
         <div v-for="wordSet in wordSets" :key="wordSet.id" class="word-set-item">
@@ -99,8 +105,8 @@
             </div>
             <div class="word-set-actions">
               <button @click="viewWordSet(wordSet)" class="btn btn-sm btn-secondary">View</button>
-              <button @click="startEditWordSet(wordSet)" class="btn btn-sm btn-primary">Edit</button>
-              <button @click="confirmDeleteWordSet(wordSet)" class="btn btn-sm btn-danger">Delete</button>
+              <button v-if="can('word_sets.edit')" @click="startEditWordSet(wordSet)" class="btn btn-sm btn-primary">Edit</button>
+              <button v-if="can('word_sets.edit')" @click="confirmDeleteWordSet(wordSet)" class="btn btn-sm btn-danger">Delete</button>
             </div>
           </div>
         </div>
@@ -143,7 +149,7 @@
             </label>
           </div>
           <div class="modal-actions">
-            <button type="submit" class="btn btn-primary">Save</button>
+            <button v-if="can('word_sets.edit')" type="submit" class="btn btn-primary">Save</button>
             <button type="button" @click="closeCategoryModal" class="btn btn-secondary">Cancel</button>
           </div>
         </form>
@@ -215,7 +221,7 @@
             <p class="form-hint">Enter words separated by commas. Words will be normalized and duplicates removed.</p>
           </div>
           <div class="modal-actions">
-            <button type="submit" class="btn btn-primary" :disabled="wordSetLoading">
+            <button v-if="can('word_sets.edit')" type="submit" class="btn btn-primary" :disabled="wordSetLoading">
               {{ wordSetLoading ? 'Saving...' : 'Save' }}
             </button>
             <button type="button" @click="closeWordSetModal" class="btn btn-secondary" :disabled="wordSetLoading">Cancel</button>
@@ -247,7 +253,7 @@
             <p class="form-hint">Enter words separated by commas. Words will be normalized and duplicates removed.</p>
           </div>
           <div class="modal-actions">
-            <button @click="saveWordSetItems" class="btn btn-primary" :disabled="itemsLoading">
+            <button v-if="can('word_sets.edit')" @click="saveWordSetItems" class="btn btn-primary" :disabled="itemsLoading">
               {{ itemsLoading ? 'Processing...' : 'Save Words' }}
             </button>
             <button type="button" @click="closeItemsModal" class="btn btn-secondary">Cancel</button>
@@ -263,7 +269,7 @@
         <p>Are you sure you want to delete category "{{ categoryToDelete?.name }}"?</p>
         <p class="warning-text">This action cannot be undone.</p>
         <div class="modal-actions">
-          <button @click="deleteCategory" class="btn btn-danger">Delete</button>
+          <button v-if="can('word_sets.edit')" @click="deleteCategory" class="btn btn-danger">Delete</button>
           <button @click="closeDeleteCategoryConfirm" class="btn btn-secondary">Cancel</button>
         </div>
       </div>
@@ -275,7 +281,7 @@
         <p>Are you sure you want to delete word set "{{ wordSetToDelete?.title }}"?</p>
         <p class="warning-text">This will delete the set and all its items. This action cannot be undone.</p>
         <div class="modal-actions">
-          <button @click="deleteWordSet" class="btn btn-danger">Delete</button>
+          <button v-if="can('word_sets.edit')" @click="deleteWordSet" class="btn btn-danger">Delete</button>
           <button @click="closeDeleteWordSetConfirm" class="btn btn-secondary">Cancel</button>
         </div>
       </div>
@@ -288,6 +294,9 @@ import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { apiClient } from '../api/client'
 import { showAlert, showConfirm } from '../composables/useDialog'
+import { useAuth } from '../composables/useAuth'
+
+const { can, loadPermissions } = useAuth()
 
 const route = useRoute()
 const router = useRouter()
@@ -448,11 +457,18 @@ const itemsWordsCount = computed(() => {
 })
 
 onMounted(async () => {
-  await loadCategories()
-  await loadWordSets()
+  await loadPermissions()
+  if (can('word_sets.read')) {
+    await loadCategories()
+    await loadWordSets()
+  }
 })
 
 const loadCategories = async () => {
+  if (!can('word_sets.read')) {
+    categoriesError.value = 'You don\'t have permission to view categories.'
+    return
+  }
   categoriesLoading.value = true
   categoriesError.value = null
   try {
@@ -475,6 +491,10 @@ const loadCategories = async () => {
 }
 
 const loadWordSets = async () => {
+  if (!can('word_sets.read')) {
+    wordSetsError.value = 'You don\'t have permission to view word sets.'
+    return
+  }
   wordSetsLoading.value = true
   wordSetsError.value = null
   try {
@@ -530,6 +550,10 @@ const closeCategoryModal = () => {
 }
 
 const saveCategory = async () => {
+  if (!can('word_sets.edit')) {
+    await showAlert('You don\'t have permission to edit categories.')
+    return
+  }
   try {
     const url = editingCategory.value
       ? `/api/admin/word-set-categories/${editingCategory.value.id}`
@@ -564,6 +588,10 @@ const closeDeleteCategoryConfirm = () => {
 
 const deleteCategory = async () => {
   if (!categoryToDelete.value) return
+  if (!can('word_sets.edit')) {
+    await showAlert('You don\'t have permission to delete categories.')
+    return
+  }
   
   try {
     await apiClient.request(`/api/admin/word-set-categories/${categoryToDelete.value.id}`, {
@@ -628,6 +656,10 @@ const closeWordSetModal = () => {
 
 const saveWordSet = async () => {
   if (wordSetLoading.value) return
+  if (!can('word_sets.edit')) {
+    await showAlert('You don\'t have permission to edit word sets.')
+    return
+  }
   
   wordSetLoading.value = true
   try {
@@ -698,6 +730,10 @@ const closeItemsModal = () => {
 
 const saveWordSetItems = async () => {
   if (!editingWordSet.value) return
+  if (!can('word_sets.edit')) {
+    await showAlert('You don\'t have permission to edit word sets.')
+    return
+  }
   
   itemsLoading.value = true
   try {
@@ -764,6 +800,10 @@ onUnmounted(() => {
 
 const deleteWordSet = async () => {
   if (!wordSetToDelete.value) return
+  if (!can('word_sets.edit')) {
+    await showAlert('You don\'t have permission to delete word sets.')
+    return
+  }
   
   try {
     await apiClient.request(`/api/admin/word-sets/${wordSetToDelete.value.id}`, {

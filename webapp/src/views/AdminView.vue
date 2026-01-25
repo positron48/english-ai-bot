@@ -22,7 +22,7 @@
             <Icon name="close" />
           </button>
         </div>
-        <select v-model="wordsFilterUser" class="admin-select" @change="onFilterChange">
+        <select v-if="can('users.read_all')" v-model="wordsFilterUser" class="admin-select" @change="onFilterChange">
           <option :value="null">All users</option>
           <option v-for="user in users" :key="user.id" :value="user.id">
             {{ user.telegram_username || `User #${user.telegram_id}` }} (ID: {{ user.id }})
@@ -39,7 +39,10 @@
       </div>
 
       <div class="words-content">
-        <div v-if="wordsError && !wordsLoading" class="empty-message">
+        <div v-if="!can('words.read_all')" class="empty-message">
+          <p>You don't have permission to view words.</p>
+        </div>
+        <div v-else-if="wordsError && !wordsLoading" class="empty-message">
           <p>{{ wordsError }}</p>
         </div>
         <div v-else-if="words.length === 0 && !wordsLoading" class="empty-message">
@@ -125,6 +128,7 @@
                   <td>
                     <div class="action-buttons">
                       <button
+                        v-if="can('words.edit_all')"
                         @click="startEditWord(word)"
                         class="btn btn-sm btn-primary"
                         title="Редактировать"
@@ -132,7 +136,7 @@
                         <Icon name="edit" />
                       </button>
                       <button 
-                        v-if="!word.ProcessingError"
+                        v-if="can('words.edit_all') && !word.ProcessingError"
                         @click="generateAdditionalCard(word)" 
                         class="btn btn-sm btn-secondary"
                         title="Generate additional card"
@@ -140,7 +144,7 @@
                         <Icon name="magic" />
                       </button>
                       <button 
-                        v-if="!word.ProcessingError"
+                        v-if="can('words.edit_all') && !word.ProcessingError"
                         @click="createTrainingCard(word)" 
                         class="btn btn-sm btn-primary"
                         title="Add card"
@@ -148,7 +152,7 @@
                         <Icon name="plus" />
                       </button>
                       <button 
-                        v-if="word.ProcessingError"
+                        v-if="can('words.edit_all') && word.ProcessingError"
                         @click="resetWordError(word)" 
                         class="btn btn-sm btn-warning"
                         title="Сбросить ошибку"
@@ -156,6 +160,7 @@
                         <Icon name="refresh" />
                       </button>
                       <button 
+                        v-if="can('words.edit_all')"
                         @click="deleteWord(word)" 
                         class="btn btn-sm btn-danger"
                         title="Удалить"
@@ -172,7 +177,7 @@
                   <div v-else class="cards-container">
                     <div class="cards-header">
                       <h4>Training Cards for "{{ word.Word }}"</h4>
-                      <div class="cards-header-actions">
+                      <div v-if="can('words.edit_all')" class="cards-header-actions">
                         <button 
                           @click="generateAdditionalCard(word)" 
                           class="btn btn-sm btn-secondary"
@@ -196,7 +201,7 @@
                           <strong>Card #{{ card.sense_index + 1 }}</strong>
                           <span class="card-id">ID: {{ card.id }}</span>
                         </div>
-                        <div class="card-actions">
+                        <div v-if="can('words.edit_all')" class="card-actions">
                           <button 
                             @click="editTrainingCard(card, word)" 
                             class="btn btn-sm btn-primary"
@@ -331,10 +336,10 @@
                 <textarea v-model="editWordForm.definition" class="form-textarea" rows="5"></textarea>
               </div>
               <div class="form-actions">
-                <button type="button" @click="generateWordCardData" class="btn btn-secondary" :disabled="generatingWordData">
+                <button v-if="can('words.edit_all')" type="button" @click="generateWordCardData" class="btn btn-secondary" :disabled="generatingWordData">
                   {{ generatingWordData ? 'Generating...' : 'AI Fill' }}
                 </button>
-                <button type="submit" class="btn btn-primary">Save</button>
+                <button v-if="can('words.edit_all')" type="submit" class="btn btn-primary">Save</button>
                 <button type="button" @click="closeEditWordModal" class="btn">Cancel</button>
               </div>
             </form>
@@ -363,6 +368,7 @@
             </div>
             <div class="modal-actions">
               <button 
+                v-if="can('words.edit_all')"
                 @click="doGenerateCard" 
                 class="btn btn-primary"
                 :disabled="generatingCard"
@@ -444,7 +450,7 @@
                 <input v-model="createCardForm.hint" type="text" class="form-input" />
               </div>
               <div class="modal-actions">
-                <button type="submit" class="btn btn-primary">Create</button>
+                <button v-if="can('words.edit_all')" type="submit" class="btn btn-primary">Create</button>
                 <button type="button" @click="closeCreateCardModal" class="btn btn-secondary">Cancel</button>
               </div>
             </form>
@@ -514,7 +520,7 @@
                 <input v-model="editCardForm.hint" type="text" class="form-input" />
               </div>
               <div class="modal-actions">
-                <button type="submit" class="btn btn-primary">Save</button>
+                <button v-if="can('words.edit_all')" type="submit" class="btn btn-primary">Save</button>
                 <button type="button" @click="closeEditCardModal" class="btn btn-secondary">Cancel</button>
               </div>
             </form>
@@ -534,7 +540,7 @@
             <p>This will allow the worker to process it again.</p>
           </div>
           <div class="modal-actions">
-            <button @click="confirmResetError" class="btn btn-warning">Reset Error</button>
+            <button v-if="can('words.edit_all')" @click="confirmResetError" class="btn btn-warning">Reset Error</button>
             <button @click="closeResetErrorConfirm" class="btn btn-secondary">Cancel</button>
           </div>
         </div>
@@ -547,7 +553,7 @@
           <p>Are you sure you want to delete training card #{{ cardToDelete.sense_index + 1 }} (ID: {{ cardToDelete.id }})?</p>
           <p class="warning-text">This will delete the training card and all associated user cards. This action cannot be undone.</p>
           <div class="modal-actions">
-            <button @click="deleteTrainingCard" class="btn btn-danger">Delete</button>
+            <button v-if="can('words.edit_all')" @click="deleteTrainingCard" class="btn btn-danger">Delete</button>
             <button @click="closeDeleteCardConfirm" class="btn btn-secondary">Cancel</button>
           </div>
         </div>
@@ -585,7 +591,10 @@
 import { ref, onMounted, onUnmounted, computed, watch, nextTick } from 'vue'
 import { apiClient } from '../api/client'
 import { showAlert, showConfirm } from '../composables/useDialog'
+import { useAuth } from '../composables/useAuth'
 import Icon from '../components/Icon.vue'
+
+const { can, loadPermissions } = useAuth()
 
 
 interface User {
@@ -712,11 +721,19 @@ const createCardForm = ref({
 })
 
 onMounted(async () => {
-  await loadUsers()
-  await loadWords()
+  await loadPermissions()
+  if (can('users.read_all')) {
+    await loadUsers()
+  }
+  if (can('words.read_all')) {
+    await loadWords()
+  }
 })
 
 const loadUsers = async () => {
+  if (!can('users.read_all')) {
+    return
+  }
   try {
     const data: { users: User[] } = await apiClient.request('/api/admin/users')
     users.value = data.users
@@ -726,6 +743,10 @@ const loadUsers = async () => {
 }
 
 const loadWords = async () => {
+  if (!can('words.read_all')) {
+    wordsError.value = 'You don\'t have permission to view words.'
+    return
+  }
   wordsLoading.value = true
   wordsError.value = null
   try {

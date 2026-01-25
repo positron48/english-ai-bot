@@ -131,7 +131,7 @@ func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 	var correctReviews int
 	accuracyQuery := `SELECT 
 		COUNT(*) as total,
-		SUM(CASE WHEN is_correct = 1 THEN 1 ELSE 0 END) as correct
+		COALESCE(SUM(CASE WHEN is_correct = 1 THEN 1 ELSE 0 END), 0) as correct
 		FROM review_events 
 		WHERE user_id = ? AND answered_at >= ? AND answered_at IS NOT NULL`
 	err = r.db.QueryRow(accuracyQuery, userID, monthAgo).Scan(&totalReviews, &correctReviews)

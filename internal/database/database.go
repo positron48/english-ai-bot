@@ -290,6 +290,30 @@ func (db *DB) migrate() error {
 			UNIQUE(user_id, word_card_id)
 		)`,
 		
+		// User access categories tables
+		`CREATE TABLE IF NOT EXISTS user_access_categories (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			name TEXT NOT NULL UNIQUE,
+			description TEXT,
+			created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+			updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+		)`,
+		
+		`CREATE TABLE IF NOT EXISTS user_access_user_categories (
+			user_id INTEGER NOT NULL,
+			category_id INTEGER NOT NULL,
+			FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+			FOREIGN KEY (category_id) REFERENCES user_access_categories(id) ON DELETE CASCADE,
+			UNIQUE(user_id, category_id)
+		)`,
+		
+		`CREATE TABLE IF NOT EXISTS user_access_category_permissions (
+			category_id INTEGER NOT NULL,
+			permission TEXT NOT NULL,
+			FOREIGN KEY (category_id) REFERENCES user_access_categories(id) ON DELETE CASCADE,
+			UNIQUE(category_id, permission)
+		)`,
+		
 		// Indexes for existing tables
 		`CREATE INDEX IF NOT EXISTS idx_word_cards_word ON word_cards(word)`,
 		`CREATE INDEX IF NOT EXISTS idx_word_forms_word_card_id ON word_forms(word_card_id)`,
@@ -325,6 +349,11 @@ func (db *DB) migrate() error {
 		`CREATE INDEX IF NOT EXISTS idx_word_set_items_word_card_id ON word_set_items(word_card_id)`,
 		`CREATE INDEX IF NOT EXISTS idx_user_word_knowledge_user_id ON user_word_knowledge(user_id)`,
 		`CREATE INDEX IF NOT EXISTS idx_user_word_knowledge_word_card_id ON user_word_knowledge(word_card_id)`,
+		
+		// Indexes for user access categories tables
+		`CREATE INDEX IF NOT EXISTS idx_user_access_user_categories_user_id ON user_access_user_categories(user_id)`,
+		`CREATE INDEX IF NOT EXISTS idx_user_access_user_categories_category_id ON user_access_user_categories(category_id)`,
+		`CREATE INDEX IF NOT EXISTS idx_user_access_category_permissions_category_id ON user_access_category_permissions(category_id)`,
 	}
 
 	for _, query := range queries {

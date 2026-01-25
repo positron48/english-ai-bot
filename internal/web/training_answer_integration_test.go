@@ -12,6 +12,7 @@ import (
 
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/models"
+	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/service"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -77,7 +78,8 @@ func TestHandleTrainingAnswer_WithSession(t *testing.T) {
 	}
 
 	jwtService, _ := NewJWTService(cfg, logger)
-	authMiddleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-token")
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
 
 	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, logger)
 	srsService := service.NewSRSService(userCardRepo, logger)

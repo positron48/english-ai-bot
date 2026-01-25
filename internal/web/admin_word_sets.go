@@ -48,6 +48,18 @@ func (r *Router) handleAdminWordSetCategories(w http.ResponseWriter, req *http.R
 		})
 
 	case http.MethodPost:
+		// Check edit permission for POST
+		ctx := req.Context()
+		if !r.checkPermissionInHandler(ctx, PermissionWordSetsEdit) {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusForbidden)
+			json.NewEncoder(w).Encode(map[string]interface{}{
+				"error": "Forbidden",
+				"message": "You don't have permission to create word set categories.",
+			})
+			return
+		}
+
 		var category models.WordSetCategory
 		if err := json.NewDecoder(req.Body).Decode(&category); err != nil {
 			http.Error(w, "Invalid request body", http.StatusBadRequest)
@@ -81,6 +93,18 @@ func (r *Router) handleAdminWordSetCategories(w http.ResponseWriter, req *http.R
 		})
 
 	case http.MethodPut:
+		// Check edit permission for PUT
+		ctx := req.Context()
+		if !r.checkPermissionInHandler(ctx, PermissionWordSetsEdit) {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusForbidden)
+			json.NewEncoder(w).Encode(map[string]interface{}{
+				"error": "Forbidden",
+				"message": "You don't have permission to edit word set categories.",
+			})
+			return
+		}
+
 		// Extract ID from path
 		path := strings.TrimPrefix(req.URL.Path, "/api/admin/word-set-categories/")
 		id, err := strconv.ParseInt(path, 10, 64)
@@ -117,6 +141,18 @@ func (r *Router) handleAdminWordSetCategories(w http.ResponseWriter, req *http.R
 		})
 
 	case http.MethodDelete:
+		// Check edit permission for DELETE
+		ctx := req.Context()
+		if !r.checkPermissionInHandler(ctx, PermissionWordSetsEdit) {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusForbidden)
+			json.NewEncoder(w).Encode(map[string]interface{}{
+				"error": "Forbidden",
+				"message": "You don't have permission to delete word set categories.",
+			})
+			return
+		}
+
 		// Extract ID from path
 		path := strings.TrimPrefix(req.URL.Path, "/api/admin/word-set-categories/")
 		id, err := strconv.ParseInt(path, 10, 64)
@@ -205,6 +241,18 @@ func (r *Router) handleAdminWordSets(w http.ResponseWriter, req *http.Request) {
 		})
 
 	case http.MethodPost:
+		// Check edit permission for POST
+		ctx := req.Context()
+		if !r.checkPermissionInHandler(ctx, PermissionWordSetsEdit) {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusForbidden)
+			json.NewEncoder(w).Encode(map[string]interface{}{
+				"error": "Forbidden",
+				"message": "You don't have permission to create word sets.",
+			})
+			return
+		}
+
 		var wordSet models.WordSet
 		if err := json.NewDecoder(req.Body).Decode(&wordSet); err != nil {
 			http.Error(w, "Invalid request body", http.StatusBadRequest)
@@ -231,6 +279,18 @@ func (r *Router) handleAdminWordSets(w http.ResponseWriter, req *http.Request) {
 		})
 
 	case http.MethodPut:
+		// Check edit permission for PUT
+		ctx := req.Context()
+		if !r.checkPermissionInHandler(ctx, PermissionWordSetsEdit) {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusForbidden)
+			json.NewEncoder(w).Encode(map[string]interface{}{
+				"error": "Forbidden",
+				"message": "You don't have permission to edit word sets.",
+			})
+			return
+		}
+
 		// Extract ID from path
 		path := strings.TrimPrefix(req.URL.Path, "/api/admin/word-sets/")
 		parts := strings.Split(path, "/")
@@ -291,6 +351,18 @@ func (r *Router) handleAdminWordSets(w http.ResponseWriter, req *http.Request) {
 		})
 
 	case http.MethodDelete:
+		// Check edit permission for DELETE
+		ctx := req.Context()
+		if !r.checkPermissionInHandler(ctx, PermissionWordSetsEdit) {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusForbidden)
+			json.NewEncoder(w).Encode(map[string]interface{}{
+				"error": "Forbidden",
+				"message": "You don't have permission to delete word sets.",
+			})
+			return
+		}
+
 		// Extract ID from path
 		path := strings.TrimPrefix(req.URL.Path, "/api/admin/word-sets/")
 		id, err := strconv.ParseInt(path, 10, 64)

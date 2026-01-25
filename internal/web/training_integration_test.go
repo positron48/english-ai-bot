@@ -200,7 +200,8 @@ func TestHandleTrainingStart_WithCards(t *testing.T) {
 	}
 
 	jwtService, _ := NewJWTService(cfg, logger)
-	authMiddleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-token")
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
 
 	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, logger)
 	srsService := service.NewSRSService(userCardRepo, logger)
@@ -295,7 +296,8 @@ func TestHandleTrainingReveal_WithSession(t *testing.T) {
 	}
 
 	jwtService, _ := NewJWTService(cfg, logger)
-	authMiddleware := NewAuthMiddleware(userRepo, jwtService, logger, cfg, "test-token")
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
 
 	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, logger)
 	srsService := service.NewSRSService(userCardRepo, logger)
