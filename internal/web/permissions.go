@@ -18,6 +18,9 @@ const (
 
 	// Users permissions
 	PermissionUsersReadAll Permission = "users.read_all"
+
+	// Stats permissions
+	PermissionStatsRead Permission = "stats.read"
 )
 
 // AllPermissions returns all available permissions
@@ -29,6 +32,7 @@ func AllPermissions() []Permission {
 		PermissionWordSetsRead,
 		PermissionWordSetsEdit,
 		PermissionUsersReadAll,
+		PermissionStatsRead,
 	}
 }
 

@@ -69,6 +69,7 @@ async function loadPermissions(): Promise<void> {
                    permissions.value.includes('word_sets.read') ||
                    permissions.value.includes('word_sets.edit') ||
                    permissions.value.includes('users.read_all') ||
+                   permissions.value.includes('stats.read') ||
                    categories.value.length > 0 // Also check categories as fallback
   } catch (error) {
     console.error('Failed to load permissions:', error)

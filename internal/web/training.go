@@ -301,7 +301,6 @@ func (r *Router) extractSessionWords(queue []*models.UserCardWithTraining, curre
 // @Security     ApiKeyAuth
 // @Success      200  {object}  map[string]interface{}  "Данные текущей карточки"
 // @Failure      401  {string}  string  "Неавторизован"
-// @Failure      404  {string}  string  "Нет активной сессии"
 // @Failure      405  {string}  string  "Метод не разрешен"
 // @Router       /api/training/current [get]
 func (r *Router) handleTrainingCurrent(w http.ResponseWriter, req *http.Request) {
@@ -317,7 +316,12 @@ func (r *Router) handleTrainingCurrent(w http.ResponseWriter, req *http.Request)
 	}
 
 	if r.webTrainingHandler == nil {
-		http.Error(w, "No active session", http.StatusNotFound)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"active":  false,
+			"message": "No active session",
+		})
 		return
 	}
 
@@ -326,7 +330,12 @@ func (r *Router) handleTrainingCurrent(w http.ResponseWriter, req *http.Request)
 	r.webTrainingHandler.sessionsMutex.RUnlock()
 
 	if !exists || state == nil {
-		http.Error(w, "No active session", http.StatusNotFound)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"active":  false,
+			"message": "No active session",
+		})
 		return
 	}
 

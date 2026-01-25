@@ -164,8 +164,16 @@ func TestHandleTrainingCurrent_NoSession(t *testing.T) {
 	// Call handler
 	router.handleTrainingCurrent(w, req)
 
-	if w.Code != http.StatusNotFound {
-		t.Errorf("Expected status 404, got %d", w.Code)
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d", w.Code)
+	}
+
+	var response map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
+		t.Fatalf("Failed to decode response: %v", err)
+	}
+	if response["active"] != false {
+		t.Errorf("Expected active=false, got %v", response["active"])
 	}
 }
 

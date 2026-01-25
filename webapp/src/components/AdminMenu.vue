@@ -123,6 +123,16 @@
         <Icon name="users" class="admin-sidebar-icon" />
         <span>Users</span>
       </router-link>
+      <router-link 
+        v-if="can('stats.read')"
+        to="/admin/stats" 
+        class="admin-sidebar-item" 
+        :class="{ active: $route.path === '/admin/stats' }"
+        @click="isMobile && handleCloseSidebar()"
+      >
+        <Icon name="dashboard" class="admin-sidebar-icon" />
+        <span>Statistics</span>
+      </router-link>
     </nav>
     
     <!-- Theme Settings -->

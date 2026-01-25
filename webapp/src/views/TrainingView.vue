@@ -1150,13 +1150,29 @@ onUnmounted(() => {
 
 const checkCurrentSession = async () => {
   try {
-    const card: Card = await apiClient.request('/api/training/current')
+    const response = await apiClient.request('/api/training/current')
+    
+    // No active session (HTTP 200)
+    if (response && typeof response === 'object' && 'active' in response && (response as any).active === false) {
+      sessionActive.value = false
+      currentCard.value = null
+      return
+    }
+    
+    // Training complete response (HTTP 200)
+    if (response && typeof response === 'object' && 'complete' in response) {
+      sessionComplete.value = true
+      sessionActive.value = false
+      currentCard.value = null
+      await loadStats()
+      return
+    }
+    
+    const card = response as Card
     sessionActive.value = true
     setupCard(card)
   } catch (error: any) {
-    if (!error.message?.includes('404')) {
-      console.error('Failed to check session:', error)
-    }
+    console.error('Failed to check session:', error)
   }
 }
 
@@ -1544,6 +1560,15 @@ const nextCard = async () => {
       await loadStats() // Refresh stats after completion
       return
     }
+
+    // No active session (HTTP 200)
+    if (response && typeof response === 'object' && 'active' in response && (response as any).active === false) {
+      sessionActive.value = false
+      currentCard.value = null
+      await loadStats()
+      await showAlert('Нет активной тренировки. Нажмите "Начать тренировку".')
+      return
+    }
     
     // Normal card response
     const card = response as Card
@@ -1580,24 +1605,11 @@ const nextCard = async () => {
       await loadStats() // Refresh stats after completion
     }
   } catch (error: any) {
-    if (error.message?.includes('404')) {
-      // No more cards - training completed
-      sessionComplete.value = true
-      sessionActive.value = false
-      currentCard.value = null
-      // Stats will be 0 if we can't get them
-      trainingStats.value = {
-        totalCards: cardsCompleted.value || 0,
-        correctCards: 0
-      }
-      await loadStats() // Refresh stats after completion
-    } else {
-      console.error('Failed to get next card:', error)
-      // Network error is already handled by callback
-      if (!error.isNetworkError) {
-        // For non-network errors, show a simple message
-        await showAlert('Не удалось загрузить следующую карточку. Попробуйте обновить страницу.')
-      }
+    console.error('Failed to get next card:', error)
+    // Network error is already handled by callback
+    if (!error.isNetworkError) {
+      // For non-network errors, show a simple message
+      await showAlert('Не удалось загрузить следующую карточку. Попробуйте обновить страницу.')
     }
   }
 }

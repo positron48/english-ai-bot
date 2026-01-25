@@ -353,6 +353,9 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/admin/access/categories/", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminAccessCategoryRoutes))))
 	r.mux.HandleFunc("/api/admin/access/users/", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminAccessUsers))))
 	
+	// Stats admin route (require stats.read)
+	r.mux.HandleFunc("/api/admin/stats", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionStatsRead)(r.handleAdminStats))))
+	
 	// Other admin routes (require full_access)
 	r.mux.HandleFunc("/api/admin", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdmin))))
 	r.mux.HandleFunc("/api/admin/circuit/reset", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminCircuitReset))))
