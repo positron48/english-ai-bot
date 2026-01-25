@@ -203,36 +203,40 @@ func (r *Router) handleAdminStats(w http.ResponseWriter, req *http.Request) {
 		UNION
 		SELECT DATE(answered_at) as activity_date, user_id FROM review_events WHERE answered_at >= ? AND answered_at IS NOT NULL
 	) GROUP BY DATE(activity_date)`
-	rows, err := r.db.Query(activeUsersQuery, dayNDaysAgo, dayNDaysAgo)
+	activeUsersRows, err := r.db.Query(activeUsersQuery, dayNDaysAgo, dayNDaysAgo)
 	if err == nil {
-		defer rows.Close()
-		for rows.Next() {
+		defer activeUsersRows.Close()
+		for activeUsersRows.Next() {
 			var day string
 			var count int
-			if err := rows.Scan(&day, &count); err == nil {
+			if err := activeUsersRows.Scan(&day, &count); err == nil {
 				if dayData, ok := dayMap[day]; ok {
 					dayData["active_users"] = count
 				}
 			}
 		}
+	} else {
+		r.logger.Warn("failed to get active users daily stats", zap.Error(err))
 	}
 
 	// Sessions started by day
 	sessionsQuery := `SELECT DATE(started_at) as day, COUNT(*) as count
 		FROM training_sessions WHERE started_at >= ?
 		GROUP BY DATE(started_at)`
-	rows, err = r.db.Query(sessionsQuery, dayNDaysAgo)
+	sessionsRows, err := r.db.Query(sessionsQuery, dayNDaysAgo)
 	if err == nil {
-		defer rows.Close()
-		for rows.Next() {
+		defer sessionsRows.Close()
+		for sessionsRows.Next() {
 			var day string
 			var count int
-			if err := rows.Scan(&day, &count); err == nil {
+			if err := sessionsRows.Scan(&day, &count); err == nil {
 				if dayData, ok := dayMap[day]; ok {
 					dayData["sessions_started"] = count
 				}
 			}
 		}
+	} else {
+		r.logger.Warn("failed to get sessions daily stats", zap.Error(err))
 	}
 
 	// Reviews answered by day with accuracy
@@ -243,19 +247,21 @@ func (r *Router) handleAdminStats(w http.ResponseWriter, req *http.Request) {
 		FROM review_events 
 		WHERE answered_at >= ? AND answered_at IS NOT NULL
 		GROUP BY DATE(answered_at)`
-	rows, err = r.db.Query(reviewsQuery, dayNDaysAgo)
+	reviewsRows, err := r.db.Query(reviewsQuery, dayNDaysAgo)
 	if err == nil {
-		defer rows.Close()
-		for rows.Next() {
+		defer reviewsRows.Close()
+		for reviewsRows.Next() {
 			var day string
 			var total, correct int
-			if err := rows.Scan(&day, &total, &correct); err == nil {
+			if err := reviewsRows.Scan(&day, &total, &correct); err == nil {
 				if dayData, ok := dayMap[day]; ok {
 					dayData["reviews_answered"] = total
 					dayData["accuracy_percent"] = calculateAccuracy(total, correct)
 				}
 			}
 		}
+	} else {
+		r.logger.Warn("failed to get reviews daily stats", zap.Error(err))
 	}
 
 	// Cards added by day
@@ -265,18 +271,20 @@ func (r *Router) handleAdminStats(w http.ResponseWriter, req *http.Request) {
 		INNER JOIN word_cards wc ON tc.word_card_id = wc.id
 		WHERE uc.created_at >= ?
 		GROUP BY DATE(uc.created_at)`
-	rows, err = r.db.Query(cardsAddedDailyQuery, dayNDaysAgo)
+	cardsAddedRows, err := r.db.Query(cardsAddedDailyQuery, dayNDaysAgo)
 	if err == nil {
-		defer rows.Close()
-		for rows.Next() {
+		defer cardsAddedRows.Close()
+		for cardsAddedRows.Next() {
 			var day string
 			var count int
-			if err := rows.Scan(&day, &count); err == nil {
+			if err := cardsAddedRows.Scan(&day, &count); err == nil {
 				if dayData, ok := dayMap[day]; ok {
 					dayData["cards_added"] = count
 				}
 			}
 		}
+	} else {
+		r.logger.Warn("failed to get cards added daily stats", zap.Error(err))
 	}
 
 	// Convert map to sorted slice

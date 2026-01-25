@@ -244,16 +244,6 @@
         </div>
 
         <div class="chart-card">
-          <h2>Reviews Answered ({{ selectedDays }} days)</h2>
-          <div v-if="dailyStats && dailyStats.length > 0" class="chart-container">
-            <canvas ref="reviewsChartCanvas"></canvas>
-          </div>
-          <div v-else class="chart-empty">
-            <p>No data available</p>
-          </div>
-        </div>
-
-        <div class="chart-card">
           <h2>Cards Added ({{ selectedDays }} days)</h2>
           <div v-if="dailyStats && dailyStats.length > 0" class="chart-container">
             <canvas ref="cardsAddedChartCanvas"></canvas>
@@ -288,12 +278,10 @@ const dailyStats = ref<any[]>([])
 
 const activeUsersChartCanvas = ref<HTMLCanvasElement | null>(null)
 const sessionsChartCanvas = ref<HTMLCanvasElement | null>(null)
-const reviewsChartCanvas = ref<HTMLCanvasElement | null>(null)
 const cardsAddedChartCanvas = ref<HTMLCanvasElement | null>(null)
 
 let activeUsersChart: Chart | null = null
 let sessionsChart: Chart | null = null
-let reviewsChart: Chart | null = null
 let cardsAddedChart: Chart | null = null
 
 const formatPercent = (value: number): string => {
@@ -398,35 +386,6 @@ const updateCharts = () => {
           label: 'Sessions Started',
           data: dailyStats.value.map((d: any) => d.sessions_started || 0),
           backgroundColor: colors.hexToRgba(colors.primaryColor, colors.isDark ? 0.7 : 0.6)
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: true, position: 'top' }
-        },
-        scales: {
-          x: { ticks: { color: colors.textSecondary } },
-          y: { ticks: { color: colors.textSecondary }, beginAtZero: true }
-        }
-      }
-    })
-  }
-  
-  // Reviews Chart
-  if (reviewsChartCanvas.value) {
-    if (reviewsChart) {
-      reviewsChart.destroy()
-    }
-    reviewsChart = new Chart(reviewsChartCanvas.value, {
-      type: 'bar',
-      data: {
-        labels: labels,
-        datasets: [{
-          label: 'Reviews Answered',
-          data: dailyStats.value.map((d: any) => d.reviews_answered || 0),
-          backgroundColor: colors.hexToRgba(colors.successColor, colors.isDark ? 0.7 : 0.6)
         }]
       },
       options: {

@@ -70,19 +70,37 @@ const loadUsers = async () => {
   }
 }
 
-const formatDate = (dateString: string): string => {
-  if (!dateString) return '-'
+const formatDate = (dateStr: string | null | undefined): string => {
+  if (!dateStr) return '—'
+  
+  // Handle SQL datetime format "2006-01-02 15:04:05"
+  let date: Date
   try {
-    const date = new Date(dateString)
-    return date.toLocaleString('en-US', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit'
+    // SQLite datetime format: "YYYY-MM-DD HH:MM:SS"
+    // Parse manually to ensure correct local time interpretation
+    const match = dateStr.match(/^(\d{4})-(\d{2})-(\d{2})\s+(\d{2}):(\d{2}):(\d{2})$/)
+    if (match) {
+      const [, year, month, day, hour, minute, second] = match.map(Number)
+      date = new Date(year, month - 1, day, hour, minute, second || 0)
+    } else {
+      // Fallback to standard parsing
+      date = new Date(dateStr)
+    }
+    
+    // Check if date is valid (not NaN and not epoch 0)
+    if (isNaN(date.getTime()) || date.getTime() === 0) {
+      return '—'
+    }
+    
+    // Format same way as CircuitBreakerView
+    return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { 
+      hour: '2-digit', 
+      minute: '2-digit',
+      second: '2-digit'
     })
-  } catch {
-    return dateString
+  } catch (e) {
+    console.error('Failed to parse date:', dateStr, e)
+    return '—'
   }
 }
 

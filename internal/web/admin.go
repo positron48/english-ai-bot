@@ -1232,22 +1232,36 @@ func (r *Router) handleAdminUsers(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	userRepo := r.userRepo.(*repository.UserRepository)
-	users, err := userRepo.GetAllUsers()
+	// Return user list with id, telegram_id, telegram_username, created_at
+	// Query directly to get dates as strings, avoiding time.Time parsing issues
+	query := `SELECT id, telegram_id, COALESCE(telegram_username, ''), 
+			  COALESCE(created_at, '') as created_at
+			  FROM users ORDER BY id`
+	rows, err := r.db.Query(query)
 	if err != nil {
-		r.logger.Error("failed to get all users", zap.Error(err))
+		r.logger.Error("failed to query users", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
+	defer rows.Close()
 
-	// Return user list with id, telegram_id, telegram_username, created_at
-	userList := make([]map[string]interface{}, 0, len(users))
-	for _, user := range users {
+	userList := make([]map[string]interface{}, 0)
+	for rows.Next() {
+		var id int64
+		var telegramID int64
+		var telegramUsername string
+		var createdAt string
+
+		if err := rows.Scan(&id, &telegramID, &telegramUsername, &createdAt); err != nil {
+			r.logger.Warn("failed to scan user", zap.Error(err))
+			continue
+		}
+
 		userList = append(userList, map[string]interface{}{
-			"id":               user.ID,
-			"telegram_id":      user.TelegramID,
-			"telegram_username": user.TelegramUsername,
-			"created_at":       user.CreatedAt.Format("2006-01-02 15:04:05"),
+			"id":               id,
+			"telegram_id":      telegramID,
+			"telegram_username": telegramUsername,
+			"created_at":       createdAt,
 		})
 	}
 
