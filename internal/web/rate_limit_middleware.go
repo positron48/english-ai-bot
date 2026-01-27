@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
+	"tgbot-skeleton/internal/i18n"
+
 	"go.uber.org/zap"
 )
 
@@ -62,13 +64,14 @@ func (m *RateLimitMiddleware) Wrap(next http.HandlerFunc) http.HandlerFunc {
 				zap.Int("retry_after", retryAfter),
 			)
 
+			lang := i18n.DetectLanguageFromRequest(r)
 			w.Header().Set("Content-Type", "application/json")
 			w.Header().Set("Retry-After", fmt.Sprintf("%d", retryAfter))
 			w.WriteHeader(http.StatusTooManyRequests)
 
 			response := map[string]interface{}{
 				"error":              "rate_limited",
-				"message":            "Too many requests. Please try again later.",
+				"message":            i18n.T(lang, "errors.tooManyRequests"),
 				"retry_after_seconds": retryAfter,
 			}
 

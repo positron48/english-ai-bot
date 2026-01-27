@@ -26,8 +26,11 @@
 <script setup lang="ts">
 import { computed, ref, watch, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { apiClient } from '../api/client'
 import Icon from './Icon.vue'
+
+const { t } = useI18n()
 
 interface Breadcrumb {
   label: string
@@ -178,80 +181,82 @@ const buildCategoryPath = (categoryId: number | null | undefined, allCategories:
   return path
 }
 
-// Определяем иерархию маршрутов
-const routeHierarchy: Record<string, Breadcrumb[]> = {
-  '/dashboard': [
-    { label: 'Dashboard', path: '/dashboard' }
-  ],
-  '/vocab': [
-    { label: 'Dashboard', path: '/dashboard' },
-    { label: 'Vocabulary', path: '/vocab' }
-  ],
-  '/learning': [
-    { label: 'Dashboard', path: '/dashboard' },
-    { label: 'Learning', path: '/learning' }
-  ],
-  '/learning/grammar': [
-    { label: 'Dashboard', path: '/dashboard' },
-    { label: 'Learning', path: '/learning' },
-    { label: 'Grammar', path: '/learning/grammar' }
-  ],
-  // Dynamic grammar routes will be handled in computed
-  '/learning/words': [
-    { label: 'Dashboard', path: '/dashboard' },
-    { label: 'Learning', path: '/learning' },
-    { label: 'Word Sets', path: '/learning/words' }
-  ],
-  '/chat': [
-    { label: 'Dashboard', path: '/dashboard' },
-    { label: 'Chat', path: '/chat' }
-  ],
-  '/settings': [
-    { label: 'Dashboard', path: '/dashboard' },
-    { label: 'Settings', path: '/settings' }
-  ],
-  '/admin': [
-    { label: 'Dashboard', path: '/dashboard' },
-    { label: 'Admin', path: '/admin' }
-  ],
-  '/admin/circuit-breaker': [
-    { label: 'Dashboard', path: '/dashboard' },
-    { label: 'Admin', path: '/admin' },
-    { label: 'Circuit Breaker', path: '/admin/circuit-breaker' }
-  ],
-  '/admin/prompt-tester': [
-    { label: 'Dashboard', path: '/dashboard' },
-    { label: 'Admin', path: '/admin' },
-    { label: 'Prompt Tester', path: '/admin/prompt-tester' }
-  ],
-  '/admin/orphaned-cards': [
-    { label: 'Dashboard', path: '/dashboard' },
-    { label: 'Admin', path: '/admin' },
-    { label: 'Orphaned Cards', path: '/admin/orphaned-cards' }
-  ],
-  '/admin/word-sets': [
-    { label: 'Dashboard', path: '/dashboard' },
-    { label: 'Admin', path: '/admin' },
-    { label: 'Word Sets', path: '/admin/word-sets' }
-  ],
-  '/admin/word-sets/categories': [
-    { label: 'Dashboard', path: '/dashboard' },
-    { label: 'Admin', path: '/admin' },
-    { label: 'Word Sets', path: '/admin/word-sets' },
-    { label: 'Categories', path: '/admin/word-sets/categories' }
-  ],
-  '/admin/word-sets/sets': [
-    { label: 'Dashboard', path: '/dashboard' },
-    { label: 'Admin', path: '/admin' },
-    { label: 'Word Sets', path: '/admin/word-sets' },
-    { label: 'Sets', path: '/admin/word-sets/sets' }
-  ],
-  '/admin/db-schema': [
-    { label: 'Dashboard', path: '/dashboard' },
-    { label: 'Admin', path: '/admin' },
-    { label: 'DB Schema', path: '/admin/db-schema' }
-  ]
-}
+// Определяем иерархию маршрутов (используем computed для i18n)
+const routeHierarchy = computed(() => {
+  return {
+    '/dashboard': [
+      { label: t('navigation.dashboard'), path: '/dashboard' }
+    ],
+    '/vocab': [
+      { label: t('navigation.dashboard'), path: '/dashboard' },
+      { label: t('navigation.vocab'), path: '/vocab' }
+    ],
+    '/learning': [
+      { label: t('navigation.dashboard'), path: '/dashboard' },
+      { label: t('navigation.learning'), path: '/learning' }
+    ],
+    '/learning/grammar': [
+      { label: t('navigation.dashboard'), path: '/dashboard' },
+      { label: t('navigation.learning'), path: '/learning' },
+      { label: t('learning.grammar'), path: '/learning/grammar' }
+    ],
+    // Dynamic grammar routes will be handled in computed
+    '/learning/words': [
+      { label: t('navigation.dashboard'), path: '/dashboard' },
+      { label: t('navigation.learning'), path: '/learning' },
+      { label: t('learning.words'), path: '/learning/words' }
+    ],
+    '/chat': [
+      { label: t('navigation.dashboard'), path: '/dashboard' },
+      { label: t('navigation.chat'), path: '/chat' }
+    ],
+    '/settings': [
+      { label: t('navigation.dashboard'), path: '/dashboard' },
+      { label: t('navigation.settings'), path: '/settings' }
+    ],
+    '/admin': [
+      { label: 'Dashboard', path: '/dashboard' },
+      { label: 'Admin', path: '/admin' }
+    ],
+    '/admin/circuit-breaker': [
+      { label: 'Dashboard', path: '/dashboard' },
+      { label: 'Admin', path: '/admin' },
+      { label: 'Circuit Breaker', path: '/admin/circuit-breaker' }
+    ],
+    '/admin/prompt-tester': [
+      { label: 'Dashboard', path: '/dashboard' },
+      { label: 'Admin', path: '/admin' },
+      { label: 'Prompt Tester', path: '/admin/prompt-tester' }
+    ],
+    '/admin/orphaned-cards': [
+      { label: 'Dashboard', path: '/dashboard' },
+      { label: 'Admin', path: '/admin' },
+      { label: 'Orphaned Cards', path: '/admin/orphaned-cards' }
+    ],
+    '/admin/word-sets': [
+      { label: 'Dashboard', path: '/dashboard' },
+      { label: 'Admin', path: '/admin' },
+      { label: 'Word Sets', path: '/admin/word-sets' }
+    ],
+    '/admin/word-sets/categories': [
+      { label: 'Dashboard', path: '/dashboard' },
+      { label: 'Admin', path: '/admin' },
+      { label: 'Word Sets', path: '/admin/word-sets' },
+      { label: 'Categories', path: '/admin/word-sets/categories' }
+    ],
+    '/admin/word-sets/sets': [
+      { label: 'Dashboard', path: '/dashboard' },
+      { label: 'Admin', path: '/admin' },
+      { label: 'Word Sets', path: '/admin/word-sets' },
+      { label: 'Sets', path: '/admin/word-sets/sets' }
+    ],
+    '/admin/db-schema': [
+      { label: 'Dashboard', path: '/dashboard' },
+      { label: 'Admin', path: '/admin' },
+      { label: 'DB Schema', path: '/admin/db-schema' }
+    ]
+  } as Record<string, Breadcrumb[]>
+})
 
 const breadcrumbs = computed(() => {
   const currentPath = route.path
@@ -265,9 +270,9 @@ const breadcrumbs = computed(() => {
   if (currentPath.startsWith('/learning/grammar/')) {
     const parts = currentPath.split('/').filter(p => p)
     const result: Breadcrumb[] = [
-      { label: 'Dashboard', path: '/dashboard' },
-      { label: 'Learning', path: '/learning' },
-      { label: 'Grammar', path: '/learning/grammar' }
+      { label: t('navigation.dashboard'), path: '/dashboard' },
+      { label: t('navigation.learning'), path: '/learning' },
+      { label: t('learning.grammar'), path: '/learning/grammar' }
     ]
     
     // /learning/grammar/:sectionId
@@ -301,7 +306,7 @@ const breadcrumbs = computed(() => {
       const sectionLabel = grammarSectionName.value || sectionId.replace(/^en\.grammar\./, '').replace(/_/g, ' ')
       result.push(
         { label: sectionLabel, path: `/learning/grammar/${sectionId}` },
-        { label: 'Test', path: currentPath }
+        { label: t('common.test') || 'Test', path: currentPath }
       )
     }
     // /learning/grammar/chapter/:chapterId/test
@@ -314,7 +319,7 @@ const breadcrumbs = computed(() => {
       }
       result.push(
         { label: chapterLabel, path: `/learning/grammar/chapter/${chapterId}` },
-        { label: 'Test', path: currentPath }
+        { label: t('common.test') || 'Test', path: currentPath }
       )
     }
     
@@ -325,9 +330,9 @@ const breadcrumbs = computed(() => {
   if (currentPath.match(/^\/learning\/words\/\d+$/) && !currentPath.endsWith('/study')) {
     const setId = currentPath.split('/').pop()
     const result: Breadcrumb[] = [
-      { label: 'Dashboard', path: '/dashboard' },
-      { label: 'Learning', path: '/learning' },
-      { label: 'Word Sets', path: '/learning/words' }
+      { label: t('navigation.dashboard'), path: '/dashboard' },
+      { label: t('navigation.learning'), path: '/learning' },
+      { label: t('learning.words'), path: '/learning/words' }
     ]
     
     // Определяем category_id: сначала из query параметра (если перешли из категории),
@@ -396,9 +401,9 @@ const breadcrumbs = computed(() => {
     
     if (categoryId && !isNaN(categoryId)) {
       const result: Breadcrumb[] = [
-        { label: 'Dashboard', path: '/dashboard' },
-        { label: 'Learning', path: '/learning' },
-        { label: 'Word Sets', path: '/learning/words' }
+        { label: t('navigation.dashboard'), path: '/dashboard' },
+        { label: t('navigation.learning'), path: '/learning' },
+        { label: t('learning.words'), path: '/learning/words' }
       ]
       
       // Добавляем иерархию категорий, если они загружены
@@ -417,7 +422,7 @@ const breadcrumbs = computed(() => {
   }
   
   // Для статических маршрутов
-  return routeHierarchy[currentPath] || []
+  return routeHierarchy.value[currentPath] || []
 })
 
 // Загружаем информацию о наборе при изменении маршрута

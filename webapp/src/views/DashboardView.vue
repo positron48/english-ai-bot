@@ -1,13 +1,13 @@
 <template>
   <div class="dashboard">
     <div class="dashboard-header">
-      <h1>Dashboard</h1>
+      <h1>{{ t('dashboard.title') }}</h1>
       <button @click="refreshData" class="btn-refresh" :disabled="loading" :class="{ 'rotating': loading }">
         <Icon name="refresh" />
       </button>
     </div>
     
-    <div v-if="loading" class="loading">Loading...</div>
+    <div v-if="loading" class="loading">{{ t('common.loading') }}</div>
     
     <div v-else class="dashboard-content">
       <!-- Main Stats Cards -->
@@ -15,44 +15,44 @@
         <div class="stat-card stat-card-primary stat-card-clickable" @click="goToTraining">
           <div class="stat-header">
             <Icon name="book" class="stat-icon" />
-            <h3>Available for Training</h3>
+            <h3>{{ t('dashboard.availableForTraining') }}</h3>
           </div>
           <div class="stat-value-row">
             <p class="stat-number">{{ stats.availableForTraining }}</p>
-            <p class="stat-label">Cards available</p>
+            <p class="stat-label">{{ t('dashboard.cardsAvailable') }}</p>
           </div>
         </div>
 
         <div class="stat-card stat-card-info">
           <div class="stat-header">
             <Icon name="sparkles" class="stat-icon" />
-            <h3>New Cards</h3>
+            <h3>{{ t('dashboard.newCards') }}</h3>
           </div>
           <div class="stat-value-row">
             <p class="stat-number">{{ stats.newCount }}</p>
-            <p class="stat-label">Not started</p>
+            <p class="stat-label">{{ t('dashboard.notStarted') }}</p>
           </div>
         </div>
 
         <div class="stat-card stat-card-success">
           <div class="stat-header">
             <Icon name="book-open" class="stat-icon" />
-            <h3>In Learning</h3>
+            <h3>{{ t('dashboard.inLearning') }}</h3>
           </div>
           <div class="stat-value-row">
             <p class="stat-number">{{ stats.learningCount }}</p>
-            <p class="stat-label">Being learned</p>
+            <p class="stat-label">{{ t('dashboard.beingLearned') }}</p>
           </div>
         </div>
 
         <div class="stat-card stat-card-warning">
           <div class="stat-header">
             <Icon name="refresh" class="stat-icon" />
-            <h3>In Review</h3>
+            <h3>{{ t('dashboard.inReview') }}</h3>
           </div>
           <div class="stat-value-row">
             <p class="stat-number">{{ stats.reviewCount }}</p>
-            <p class="stat-label">Mastered cards</p>
+            <p class="stat-label">{{ t('dashboard.masteredCards') }}</p>
           </div>
         </div>
       </div>
@@ -64,15 +64,15 @@
             <div class="stats-content">
               <!-- Current Level (Left) -->
               <div class="stat-item level-item">
-                <div class="stat-label">Level</div>
+                <div class="stat-label">{{ t('dashboard.level') }}</div>
                 <div class="level-badge-compact" :class="grammarLevelBadgeClass">
-                  {{ stats.grammarStats.confirmed_level || 'Not started' }}
+                  {{ stats.grammarStats.confirmed_level || t('common.notStarted') }}
                 </div>
               </div>
               
               <!-- Course Completion Percentage -->
               <div class="stat-item percentage-item">
-                <div class="stat-label">Course</div>
+                <div class="stat-label">{{ t('dashboard.course') }}</div>
                 <div class="percentage-wrapper">
                   <div class="percentage-circle-small-wrapper">
                     <svg class="percentage-circle-small" viewBox="0 0 60 60">
@@ -117,7 +117,7 @@
               
               <!-- Average Test Score -->
               <div class="stat-item percentage-item">
-                <div class="stat-label">Test (avg.)</div>
+                <div class="stat-label">{{ t('dashboard.testAvg') }}</div>
                 <div class="percentage-wrapper">
                   <div class="percentage-circle-small-wrapper">
                     <svg class="percentage-circle-small" viewBox="0 0 60 60">
@@ -162,7 +162,7 @@
               
               <!-- Chapters Progress (Right) -->
               <div class="stat-item chapters-item">
-                <div class="stat-label">Chapters</div>
+                <div class="stat-label">{{ t('dashboard.chapters') }}</div>
                 <div class="chapters-value-compact">
                   <span class="chapters-number">{{ stats.grammarStats.passed_chapters || 0 }}</span>
                   <span class="chapters-separator">/</span>
@@ -177,11 +177,11 @@
       <!-- Progress Section -->
       <div class="progress-section">
         <div class="card">
-          <h2>Your Progress</h2>
+          <h2>{{ t('dashboard.yourProgress') }}</h2>
           <div class="progress-grid">
             <div class="progress-item">
               <div class="progress-header">
-                <span>Total Cards</span>
+                <span>{{ t('dashboard.totalCards') }}</span>
                 <span class="progress-value">{{ stats.totalCards }}</span>
               </div>
               <div class="progress-bar">
@@ -191,7 +191,7 @@
 
             <div class="progress-item">
               <div class="progress-header">
-                <span>Accuracy (30 days)</span>
+                <span>{{ t('dashboard.accuracy30Days') }}</span>
                 <span class="progress-value">{{ formatPercent(stats.accuracyPercent) }}%</span>
               </div>
               <div class="progress-bar">
@@ -208,12 +208,12 @@
       <!-- Weekly Chart -->
       <div class="weekly-chart-section">
         <div class="card">
-          <h2>Weekly Activity</h2>
+          <h2>{{ t('dashboard.weeklyActivity') }}</h2>
           <div v-if="stats.weeklyStats && stats.weeklyStats.length > 0" class="chart-container">
             <canvas ref="chartCanvas"></canvas>
           </div>
           <div v-else class="chart-empty">
-            <p>No training data available for the last week</p>
+            <p>{{ t('dashboard.noTrainingData') }}</p>
           </div>
         </div>
       </div>
@@ -221,12 +221,12 @@
       <!-- Words Added Chart -->
       <div class="weekly-chart-section">
         <div class="card">
-          <h2>Cards Added (7 days)</h2>
+          <h2>{{ t('dashboard.cardsAdded7Days') }}</h2>
           <div v-if="stats.wordsAddedStats && stats.wordsAddedStats.length > 0" class="chart-container">
             <canvas ref="wordsChartCanvas"></canvas>
           </div>
           <div v-else class="chart-empty">
-            <p>No cards added in the last week</p>
+            <p>{{ t('dashboard.noCardsAdded') }}</p>
           </div>
         </div>
       </div>
@@ -237,11 +237,16 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { Chart, registerables } from 'chart.js'
 import { useTheme } from '../composables/useTheme'
 import { useAuth } from '../composables/useAuth'
+import { useLocale } from '../composables/useLocale'
 import { apiClient } from '../api/client'
 import Icon from '../components/Icon.vue'
+
+const { t } = useI18n()
+const { currentLocale } = useLocale()
 
 Chart.register(...registerables)
 
@@ -313,6 +318,22 @@ watch(() => stats.value.wordsAddedStats, async (newStats) => {
 
 // Watch for theme changes and rebuild charts
 watch(() => theme.value, async () => {
+  if (stats.value.weeklyStats && stats.value.weeklyStats.length > 0) {
+    await nextTick()
+    setTimeout(() => {
+      updateChart()
+    }, 100)
+  }
+  if (stats.value.wordsAddedStats && stats.value.wordsAddedStats.length > 0) {
+    await nextTick()
+    setTimeout(() => {
+      updateWordsChart()
+    }, 100)
+  }
+})
+
+// Watch for locale changes and rebuild charts to update labels
+watch(() => currentLocale.value, async () => {
   if (stats.value.weeklyStats && stats.value.weeklyStats.length > 0) {
     await nextTick()
     setTimeout(() => {
@@ -432,11 +453,13 @@ const formatDayLabel = (dayString: string): string => {
   const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))
   
   if (diffDays === 0) {
-    return 'Today'
+    return t('common.today')
   } else if (diffDays === 1) {
-    return 'Yesterday'
+    return t('common.yesterday')
   } else {
-    return date.toLocaleDateString('en-US', { weekday: 'short', day: 'numeric' })
+    // Use locale-aware formatting
+    const locale = currentLocale.value === 'ru' ? 'ru-RU' : 'en-US'
+    return date.toLocaleDateString(locale, { weekday: 'short', day: 'numeric' })
   }
 }
 
@@ -523,13 +546,13 @@ const updateChart = () => {
       labels: labels,
       datasets: [
         {
-          label: 'Accuracy',
+          label: t('dashboard.chartAccuracy'),
           data: cardsCorrectData,
           backgroundColor: hexToRgba(successColor, isDark ? 0.9 : 0.8),
           borderWidth: 0
         },
         {
-          label: 'Cards',
+          label: t('dashboard.chartCards'),
           data: cardsTotalData.map((total, idx) => {
             const correct = cardsCorrectData[idx] || 0
             return Math.max(0, total - correct)
@@ -573,11 +596,11 @@ const updateChart = () => {
               const value = context.parsed.y || 0
               const total = cardsTotalData[context.dataIndex] || 0
               
-              if (datasetLabel === 'Accuracy') {
+              if (datasetLabel === t('dashboard.chartAccuracy')) {
                 const percent = total > 0 ? ((value / total) * 100).toFixed(1) : '0'
-                return `Accuracy: ${percent}% (${value} correct)`
-              } else if (datasetLabel === 'Cards') {
-                return `Cards: ${total} trained`
+                return t('dashboard.chartAccuracyTooltip', { percent, correct: value })
+              } else if (datasetLabel === t('dashboard.chartCards')) {
+                return t('dashboard.chartCardsTooltip', total, { count: total })
               }
               return `${datasetLabel}: ${value}`
             },
@@ -701,7 +724,7 @@ const updateWordsChart = () => {
       labels: labels,
       datasets: [
         {
-          label: 'Cards Added',
+          label: t('dashboard.chartCardsAdded'),
           data: wordsAddedData,
           backgroundColor: hexToRgba(primaryColor, isDark ? 0.8 : 0.7),
           borderColor: primaryColor,
@@ -740,7 +763,7 @@ const updateWordsChart = () => {
           callbacks: {
             label: function(context) {
               const value = context.parsed.y || 0
-              return `Cards added: ${value}`
+              return t('dashboard.chartCardsAddedTooltip', { count: value })
             },
           }
         }

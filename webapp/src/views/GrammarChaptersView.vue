@@ -1,12 +1,12 @@
 <template>
   <div class="grammar-chapters">
     <div v-if="loading" class="loading">
-      <p>Loading chapters...</p>
+      <p>{{ t('grammar.loadingChapters') }}</p>
     </div>
     
     <div v-else-if="error" class="error">
       <p>{{ error }}</p>
-      <button @click="loadChapters" class="btn btn-primary">Retry</button>
+      <button @click="loadChapters" class="btn btn-primary">{{ t('common.retry') }}</button>
     </div>
     
     <div v-else>
@@ -17,20 +17,20 @@
       <div v-if="allChaptersPassed && chapters.length > 0" class="category-test-banner">
         <p>{{ bannerMessage }}</p>
         <div v-if="categoryTestScore !== null" class="category-test-score">
-          <span>Category Test Score: <strong>{{ categoryTestScore }}%</strong></span>
+          <span>{{ t('grammar.categoryTestScore') }}: <strong>{{ categoryTestScore }}%</strong></span>
         </div>
         <button @click="startCategoryTest" class="btn btn-primary">
-          {{ categoryTestScore !== null ? 'Retake Category Test' : 'Start Category Test' }}
+          {{ categoryTestScore !== null ? t('grammar.retakeCategoryTest') : t('grammar.startCategoryTest') }}
         </button>
       </div>
       
       <div v-if="accessError" class="access-error">
         <Icon name="lock" class="error-icon" />
-        <p>Complete the previous chapter with at least 50% to unlock this one.</p>
+        <p>{{ t('grammar.completePreviousChapterToUnlock') }}</p>
       </div>
       
       <div v-if="chapters.length === 0" class="empty">
-        <p>No chapters available in this category.</p>
+        <p>{{ t('grammar.noChaptersAvailable') }}</p>
       </div>
       
       <div v-else class="chapters-list">
@@ -50,7 +50,7 @@
               <div class="chapter-meta">
                 <span v-if="chapter.level" class="chapter-level">{{ chapter.level }}</span>
                 <span v-if="chapter.estimated_minutes" class="chapter-time">
-                  ~{{ chapter.estimated_minutes }} min
+                  ~{{ chapter.estimated_minutes }} {{ t('grammar.min') }}
                 </span>
               </div>
             </div>
@@ -70,14 +70,14 @@
               <div class="chapter-meta">
                 <span v-if="chapter.level" class="chapter-level">{{ chapter.level }}</span>
                 <span v-if="chapter.estimated_minutes" class="chapter-time">
-                  ~{{ chapter.estimated_minutes }} min
+                  ~{{ chapter.estimated_minutes }} {{ t('grammar.min') }}
                 </span>
               </div>
             </div>
             <div class="chapter-status">
               <div class="status-badge locked">
                 <Icon name="lock" />
-                Locked
+                {{ t('grammar.locked') }}
               </div>
             </div>
           </div>
@@ -89,10 +89,12 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { apiClient } from '../api/client'
 import Icon from '../components/Icon.vue'
 
+const { t } = useI18n()
 const route = useRoute()
 
 interface Chapter {
@@ -126,9 +128,9 @@ const allChaptersPassed = computed(() => {
 
 const bannerMessage = computed(() => {
   if (nextCategoryAccessible.value) {
-    return 'All chapters completed! You can take the category test to review your knowledge.'
+    return t('grammar.allChaptersCompletedCanTake')
   }
-  return 'All chapters completed! Take the category test to unlock the next category.'
+  return t('grammar.allChaptersCompletedTakeTest')
 })
 
 const loadCategoryTitle = async () => {

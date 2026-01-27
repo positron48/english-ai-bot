@@ -8,6 +8,7 @@ import (
 	"sync"
 	"time"
 
+	"tgbot-skeleton/internal/i18n"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/service"
@@ -105,15 +106,20 @@ func (r *Router) handleTrainingStart(w http.ResponseWriter, req *http.Request) {
 	session, queue, err := r.trainingService.StartSession(userID, models.SourceManual)
 	if err != nil {
 		r.logger.Error("failed to start session", zap.Error(err))
+		lang := i18n.GetLanguageFromContext(req.Context())
 		if err.Error() == "no cards available for training" {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(map[string]interface{}{
-				"error": "No cards available for training. Request some words first!",
+				"error": i18n.T(lang, "errors.noCardsAvailable"),
 			})
 			return
 		}
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"error": i18n.T(lang, "errors.internalError"),
+		})
 		return
 	}
 

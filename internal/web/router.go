@@ -333,6 +333,7 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/chat", appChatMiddleware.Wrap(auth.RequireAuth(r.handleChat)))
 	r.mux.HandleFunc("/api/settings", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleSettings)))
 	r.mux.HandleFunc("/api/settings/notifications", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleNotificationSettings)))
+	r.mux.HandleFunc("/api/settings/language", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLanguageSettings)))
 
 	// Access control routes
 	r.mux.HandleFunc("/api/access/me", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleAccessMe)))

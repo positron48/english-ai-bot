@@ -1,41 +1,41 @@
 <template>
   <div class="grammar-placement-test">
     <div v-if="loading" class="loading">
-      <p>Loading placement test...</p>
+      <p>{{ t('grammar.loadingPlacementTest') }}</p>
     </div>
     
     <div v-else-if="error" class="error">
       <p>{{ error }}</p>
-      <button @click="loadTest" class="btn btn-primary">Retry</button>
+      <button @click="loadTest" class="btn btn-primary">{{ t('common.retry') }}</button>
     </div>
     
     <div v-else-if="testSubmitted" class="test-results">
       <div class="results-header">
-        <h1>Placement Test Results</h1>
+        <h1>{{ t('grammar.placementTestResults') }}</h1>
         <div class="score-display-wrapper">
           <div class="score-display" :class="{ 'passed': result && result.opened_sections && result.opened_sections.length > 0 }">
             <div class="score-value level-value">{{ result?.level || '—' }}</div>
-            <div class="score-label">Your Level</div>
-            <div class="test-score-secondary">Test score: {{ result && result.score !== undefined ? animatedScore : 0 }}%</div>
+            <div class="score-label">{{ t('grammar.yourLevel') }}</div>
+            <div class="test-score-secondary">{{ t('grammar.testScore') }}: {{ result && result.score !== undefined ? animatedScore : 0 }}%</div>
           </div>
         </div>
       </div>
       
       <div class="results-summary">
-        <p>You answered <strong>{{ result?.correct || 0 }}</strong> out of <strong>{{ result?.total_questions || 0 }}</strong> questions correctly.</p>
+        <p>{{ t('grammar.youAnswered', { correct: result?.correct || 0, total: result?.total_questions || 0 }) }}</p>
         <div v-if="result && result.opened_sections && result.opened_sections.length > 0" class="opened-sections">
-          <h3>Opened for you:</h3>
+          <h3>{{ t('grammar.openedForYou') }}</h3>
           <ul>
             <li v-for="sectionId in result.opened_sections" :key="sectionId">
               {{ getSectionName(sectionId) }}
             </li>
           </ul>
           <p class="info-text">
-            All chapters in these sections are now available for you to study!
+            {{ t('grammar.allChaptersInSections') }}
           </p>
         </div>
         <div v-else class="no-sections-opened">
-          <p>Keep practicing to unlock more sections!</p>
+          <p>{{ t('grammar.keepPracticing') }}</p>
         </div>
       </div>
       
@@ -69,7 +69,7 @@
             />
           </div>
         </div>
-        <h2>Detailed Results</h2>
+        <h2>{{ t('grammar.detailedResults') }}</h2>
         <div
           v-for="(item, index) in result.results"
           :key="item.question_id || index"
@@ -84,10 +84,10 @@
           @keydown.space.prevent="toggleResult(item, index)"
         >
           <div class="result-header">
-            <span class="result-number">Question {{ index + 1 }}</span>
-            <span v-if="item.placement_chapter_title" class="result-chapter">From: {{ item.placement_chapter_title }}</span>
+            <span class="result-number">{{ t('grammar.question') }} {{ index + 1 }}</span>
+            <span v-if="item.placement_chapter_title" class="result-chapter">{{ t('common.from') }}: {{ item.placement_chapter_title }}</span>
             <span class="result-status" :class="{ 'correct': item.correct, 'incorrect': !item.correct }">
-              {{ item.correct ? '✓ Correct' : '✗ Incorrect' }}
+              {{ item.correct ? '✓ ' + t('grammar.correct') : '✗ ' + t('grammar.failed') }}
             </span>
             <span v-if="item.correct" class="result-toggle" aria-hidden="true">
               <span class="result-chevron" :class="{ 'expanded': isResultExpanded(item, index) }"></span>
@@ -96,29 +96,29 @@
           
           <div v-if="isResultExpanded(item, index)" class="result-body">
             <div class="result-question-prompt">
-              <strong>Question:</strong>
+              <strong>{{ t('grammar.question') }}:</strong>
               <div v-html="renderMarkdown(getQuestionPrompt(item.question_id))"></div>
             </div>
             
             <div class="result-user-answer" :class="{ 'result-user-answer--correct': item.correct }">
-              <strong>Your Answer:</strong>
-              <div class="answer-display">{{ formatAnswer(item.question_id, item.user_answer) || '(not answered)' }}</div>
+              <strong>{{ t('grammar.yourAnswer') }}:</strong>
+              <div class="answer-display">{{ formatAnswer(item.question_id, item.user_answer) || t('grammar.notAnswered') }}</div>
             </div>
             
             <div v-if="!item.correct && item.correct_answer != null" class="result-correct-answer">
-              <strong>Correct Answer:</strong>
+              <strong>{{ t('grammar.correctAnswer') }}:</strong>
               <div class="answer-display">{{ formatAnswer(item.question_id, item.correct_answer) }}</div>
             </div>
             
             <div v-if="!item.correct && getChoiceFeedback(item.question_id, item.user_answer)" class="result-hint">
               <div class="choice-feedback">
-                <strong>Hint:</strong>
+                <strong>{{ t('grammar.hint') }}:</strong>
                 <div v-html="renderMarkdown(getChoiceFeedback(item.question_id, item.user_answer))"></div>
               </div>
             </div>
             
             <div v-if="item.explanation" class="result-explanation">
-              <strong>Explanation:</strong>
+              <strong>{{ t('grammar.explanation') }}:</strong>
               <div v-html="renderMarkdown(item.explanation)"></div>
             </div>
           </div>
@@ -126,27 +126,26 @@
       </div>
       
       <div class="results-actions">
-        <button @click="goToGrammar" class="btn btn-primary">Go to Grammar Course</button>
-        <button @click="retryTest" class="btn btn-secondary">Retry Test</button>
+        <button @click="goToGrammar" class="btn btn-primary">{{ t('grammar.goToGrammarCourse') }}</button>
+        <button @click="retryTest" class="btn btn-secondary">{{ t('grammar.retryTest') }}</button>
       </div>
     </div>
     
     <div v-else-if="questions.length === 0" class="error">
-      <p>No questions available for the placement test.</p>
-      <button @click="loadTest" class="btn btn-primary">Retry</button>
+      <p>{{ t('grammar.noQuestionsAvailable') }}</p>
+      <button @click="loadTest" class="btn btn-primary">{{ t('common.retry') }}</button>
     </div>
     
     <div v-else class="test-content">
       <div class="test-header">
-        <h1>Placement Test</h1>
+        <h1>{{ t('grammar.placementTest') }}</h1>
         <p class="test-description">
-          This test will help determine your current grammar level. 
-          Answer 25 questions from different topics, and we'll unlock the appropriate sections for you.
+          {{ t('grammar.placementTestDescription') }}
         </p>
         <div class="test-progress">
-          Question {{ currentQuestionIndex + 1 }} of {{ questions.length }}
+          {{ t('grammar.questionOf', { current: currentQuestionIndex + 1, total: questions.length }) }}
         </div>
-        <button @click="exitTest" class="btn btn-secondary btn-exit">Exit Test</button>
+        <button @click="exitTest" class="btn btn-secondary btn-exit">{{ t('grammar.exitTest') }}</button>
       </div>
       
       <div class="test-questions">
@@ -161,7 +160,7 @@
           @answer="handleAnswerWithAutoNext(currentQuestionIndex, $event)"
         />
         <div v-else class="loading">
-          <p>Loading question...</p>
+          <p>{{ t('grammar.loadingQuestion') }}</p>
         </div>
       </div>
       
@@ -171,7 +170,7 @@
           @click="previousQuestion"
           class="btn btn-secondary"
         >
-          Previous
+          {{ t('grammar.previous') }}
         </button>
         <button 
           v-if="currentQuestionIndex < questions.length - 1"
@@ -179,7 +178,7 @@
           :disabled="!hasAnswer(currentQuestionIndex)"
           class="btn btn-primary"
         >
-          Next
+          {{ t('grammar.next') }}
         </button>
         <button 
           v-else
@@ -187,7 +186,7 @@
           :disabled="submitting || !hasAnswer(currentQuestionIndex)"
           class="btn btn-primary"
         >
-          {{ submitting ? 'Submitting...' : 'Submit Test' }}
+          {{ submitting ? t('grammar.submitting') : t('grammar.submitTest') }}
         </button>
       </div>
     </div>
@@ -195,7 +194,7 @@
     <!-- Exit confirmation modal -->
     <ConfirmModal
       :visible="showExitConfirm"
-      message="Are you sure you want to exit the test? Your progress will be lost."
+      :message="t('grammar.exitTestConfirm')"
       @confirm="handleExitConfirm"
       @cancel="showExitConfirm = false"
     />
@@ -204,12 +203,14 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, nextTick } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { marked } from 'marked'
 import { apiClient } from '../api/client'
 import GrammarQuestion from '../components/GrammarQuestion.vue'
 import ConfirmModal from '../components/ConfirmModal.vue'
 
+const { t } = useI18n()
 const router = useRouter()
 
 const questions = ref<any[]>([])
@@ -315,7 +316,7 @@ const loadTest = async () => {
     questions.value = data.questions || []
     
     if (questions.value.length === 0) {
-      error.value = 'No questions available for the placement test. Please try again later.'
+      error.value = t('grammar.noQuestionsAvailable')
     } else {
       console.log(`Loaded ${questions.value.length} questions for placement test`)
     }

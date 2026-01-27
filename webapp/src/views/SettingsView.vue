@@ -1,14 +1,14 @@
 <template>
   <div class="settings">
-    <h1>Settings</h1>
+    <h1>{{ t('settings.title') }}</h1>
     
     <div class="card">
-      <h2>Appearance</h2>
+      <h2>{{ t('settings.appearance') }}</h2>
       <div class="settings-group">
         <div class="setting-item">
           <div class="setting-info">
-            <label class="setting-label">Theme</label>
-            <p class="setting-description">Choose between light and dark theme</p>
+            <label class="setting-label">{{ t('settings.theme') }}</label>
+            <p class="setting-description">{{ t('settings.themeDescription') }}</p>
           </div>
           <div class="setting-control">
             <label class="theme-toggle-switch">
@@ -32,8 +32,8 @@
       <div class="settings-group">
         <div class="setting-item">
           <div class="setting-info">
-            <label class="setting-label">Vibration</label>
-            <p class="setting-description">Enable haptic feedback on mobile devices</p>
+            <label class="setting-label">{{ t('settings.vibration') }}</label>
+            <p class="setting-description">{{ t('settings.vibrationDescription') }}</p>
           </div>
           <div class="setting-control">
             <label class="toggle-switch">
@@ -49,8 +49,8 @@
         
         <div class="setting-item">
           <div class="setting-info">
-            <label class="setting-label">Sounds</label>
-            <p class="setting-description">Play sounds for correct and incorrect answers</p>
+            <label class="setting-label">{{ t('settings.sounds') }}</label>
+            <p class="setting-description">{{ t('settings.soundsDescription') }}</p>
           </div>
           <div class="setting-control">
             <label class="toggle-switch">
@@ -66,8 +66,8 @@
         
         <div class="setting-item" v-if="soundsEnabled">
           <div class="setting-info">
-            <label class="setting-label">Sound Theme</label>
-            <p class="setting-description">Choose sound theme for training</p>
+            <label class="setting-label">{{ t('settings.soundTheme') }}</label>
+            <p class="setting-description">{{ t('settings.soundThemeDescription') }}</p>
           </div>
           <div class="setting-control">
             <div class="sound-theme-control">
@@ -80,7 +80,7 @@
                 @click="previewSounds" 
                 class="preview-btn"
                 :disabled="previewing"
-                title="Preview sounds"
+                :title="t('settings.preview')"
               >
                 <Icon name="play" />
               </button>
@@ -91,20 +91,20 @@
     </div>
 
     <div class="card">
-      <h2>Notifications</h2>
+      <h2>{{ t('settings.notifications') }}</h2>
       <div class="settings-group">
         <div class="setting-item">
           <div class="setting-info">
-            <label class="setting-label">Notification Frequency</label>
-            <p class="setting-description">How often to receive training reminders</p>
+            <label class="setting-label">{{ t('settings.notificationFrequency') }}</label>
+            <p class="setting-description">{{ t('settings.notificationFrequencyDescription') }}</p>
           </div>
           <div class="setting-control">
             <div class="notification-control">
-              <span v-if="isSaved" class="saved-indicator">saved</span>
+              <span v-if="isSaved" class="saved-indicator">{{ t('common.saved') }}</span>
               <select v-model="notificationFrequency" @change="handleNotificationFrequencyChange" class="theme-select">
-                <option value="daily">Daily</option>
-                <option value="never">Never</option>
-                <option value="custom">Every X days</option>
+                <option value="daily">{{ t('settings.daily') }}</option>
+                <option value="never">{{ t('settings.never') }}</option>
+                <option value="custom">{{ t('settings.custom') }}</option>
               </select>
               <transition name="slide-fade">
                 <div v-if="notificationFrequency === 'custom'" class="custom-days-input">
@@ -115,9 +115,9 @@
                     max="30"
                     @input="handleCustomDaysChange"
                     class="days-input"
-                    placeholder="Days"
+                    :placeholder="t('settings.days')"
                   />
-                  <span class="days-label">days</span>
+                  <span class="days-label">{{ t('settings.days') }}</span>
                 </div>
               </transition>
             </div>
@@ -127,17 +127,17 @@
     </div>
 
     <div class="card">
-      <h2>Account</h2>
+      <h2>{{ t('settings.account') }}</h2>
       <div class="settings-group">
         <div class="setting-item">
           <div class="setting-info">
-            <label class="setting-label">Logout</label>
-            <p class="setting-description">Sign out from your account</p>
+            <label class="setting-label">{{ t('settings.logout') }}</label>
+            <p class="setting-description">{{ t('settings.logoutDescription') }}</p>
           </div>
           <div class="setting-control">
             <button @click="handleLogout" class="logout-btn">
               <Icon name="logout" class="logout-icon" />
-              <span>Logout</span>
+              <span>{{ t('settings.logout') }}</span>
             </button>
           </div>
         </div>
@@ -149,12 +149,15 @@
 <script setup lang="ts">
 import { ref, onMounted, watch, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useSettings } from '../composables/useSettings'
 import { useTheme } from '../composables/useTheme'
 import { useAudio } from '../composables/useAudio'
 import { useAuth } from '../composables/useAuth'
 import { apiClient } from '../api/client'
 import Icon from '../components/Icon.vue'
+
+const { t } = useI18n()
 
 const router = useRouter()
 const { settings, setSoundsEnabled, setVibrationEnabled, setTheme, setSoundTheme } = useSettings()

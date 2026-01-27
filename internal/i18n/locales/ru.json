@@ -1,0 +1,27 @@
+{
+  "errors": {
+    "unauthorized": "Неавторизован",
+    "authRequired": "Требуется авторизация. Пожалуйста, предоставьте действительный JWT токен в заголовке Authorization.",
+    "invalidAuthHeader": "Неверный формат заголовка Authorization. Ожидается: Bearer <token>",
+    "invalidToken": "Неверный или истёкший токен. Пожалуйста, авторизуйтесь снова.",
+    "userNotFound": "Пользователь не найден. Пожалуйста, убедитесь, что вы начали разговор с ботом.",
+    "otpSent": "Код OTP отправлен в ваш Telegram!",
+    "authSuccessful": "Авторизация успешна",
+    "internalError": "Внутренняя ошибка сервера",
+    "methodNotAllowed": "Метод не разрешён",
+    "invalidRequest": "Неверный запрос",
+    "invalidFormData": "Неверные данные формы",
+    "usernameRequired": "требуется username",
+    "userIdRequired": "требуются user_id и code",
+    "invalidUserId": "Неверный user_id",
+    "chatError": "Извините, произошла ошибка при обработке вашего сообщения. Пожалуйста, попробуйте снова.",
+    "tooManyRequests": "Слишком много запросов. Пожалуйста, попробуйте позже.",
+    "notFound": "Не найдено",
+    "failedToSendOTP": "Не удалось отправить OTP",
+    "otpServiceUnavailable": "Служба OTP недоступна (Telegram бот не настроен)",
+    "noCardsAvailable": "Нет карточек для тренировки. Сначала запросите слова!"
+  },
+  "messages": {
+    "notificationSettingsUpdated": "Настройки уведомлений успешно обновлены"
+  }
+}

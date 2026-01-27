@@ -1,5 +1,20 @@
 const API_BASE = ''
 
+// Get current locale for Accept-Language header
+function getCurrentLocale(): string {
+  if (typeof window === 'undefined') {
+    return 'en'
+  }
+  const stored = localStorage.getItem('locale')
+  if (stored === 'ru' || stored === 'en') {
+    return stored
+  }
+  // Detect from browser
+  const browserLang = navigator.language || (navigator as any).userLanguage || 'en'
+  const lang = browserLang.toLowerCase().split('-')[0]
+  return lang === 'ru' ? 'ru' : 'en'
+}
+
 interface AuthResponse {
   success: boolean
   message?: string
@@ -179,6 +194,7 @@ class ApiClient {
       
       const headers: Record<string, string> = {
         'Content-Type': 'application/json',
+        'Accept-Language': getCurrentLocale(),
         ...(options.headers as Record<string, string> || {}),
       }
 
@@ -277,6 +293,7 @@ class ApiClient {
 
       const headers: Record<string, string> = {
         'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept-Language': getCurrentLocale(),
       }
 
       // Get token directly from localStorage to ensure it's current

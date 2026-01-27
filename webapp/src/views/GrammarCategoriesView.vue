@@ -1,14 +1,14 @@
 <template>
   <div class="grammar-categories">
     <div class="header-section">
-      <h1>Grammar Course</h1>
+      <h1>{{ t('grammar.courseTitle') || 'Grammar Course' }}</h1>
       <router-link 
         v-if="settingsLoaded && !hidePlacementTestButton"
         to="/learning/grammar/placement-test" 
         class="btn btn-placement-test"
       >
         <Icon name="sparkles" />
-        Take Placement Test
+        {{ t('grammar.takePlacementTest') || 'Take Placement Test' }}
       </router-link>
     </div>
     
@@ -17,15 +17,15 @@
       <div class="stats-content">
         <!-- Current Level (Left) -->
         <div class="stat-item level-item">
-          <div class="stat-label">Level</div>
+          <div class="stat-label">{{ t('dashboard.level') }}</div>
           <div class="level-badge-compact" :class="levelBadgeClass">
-            {{ statistics.confirmed_level || 'Not started' }}
+            {{ statistics.confirmed_level || t('common.notStarted') }}
           </div>
         </div>
         
         <!-- Course Completion Percentage -->
         <div class="stat-item percentage-item">
-          <div class="stat-label">Course</div>
+          <div class="stat-label">{{ t('dashboard.course') }}</div>
           <div class="percentage-wrapper">
             <div class="percentage-circle-small-wrapper">
               <svg class="percentage-circle-small" viewBox="0 0 60 60">
@@ -70,7 +70,7 @@
         
         <!-- Average Test Score -->
         <div class="stat-item percentage-item">
-          <div class="stat-label">Test (avg.)</div>
+          <div class="stat-label">{{ t('dashboard.testAvg') }}</div>
           <div class="percentage-wrapper">
             <div class="percentage-circle-small-wrapper">
               <svg class="percentage-circle-small" viewBox="0 0 60 60">
@@ -115,7 +115,7 @@
         
         <!-- Chapters Progress (Right) -->
         <div class="stat-item chapters-item">
-          <div class="stat-label">Chapters</div>
+          <div class="stat-label">{{ t('dashboard.chapters') }}</div>
           <div class="chapters-value-compact">
             <span class="chapters-number">{{ passedChapters }}</span>
             <span class="chapters-separator">/</span>
@@ -126,16 +126,16 @@
     </div>
     
     <div v-if="loading" class="loading">
-      <p>Loading categories...</p>
+      <p>{{ t('common.loading') }}</p>
     </div>
     
     <div v-else-if="error" class="error">
       <p>{{ error }}</p>
-      <button @click="loadCategories" class="btn btn-primary">Retry</button>
+      <button @click="loadCategories" class="btn btn-primary">{{ t('common.retry') }}</button>
     </div>
     
     <div v-else-if="!categories || categories.length === 0" class="empty">
-      <p>No grammar categories available yet.</p>
+      <p>{{ t('grammar.noCategories') || 'No grammar categories available yet.' }}</p>
     </div>
     
     <div v-else-if="categories && categories.length > 0" class="categories-grid">
@@ -163,10 +163,10 @@
               ></div>
             </div>
             <span class="progress-text">
-              {{ categoryProgressPercentage(category) }}% complete
+              {{ categoryProgressPercentage(category) }}% {{ t('grammar.complete') || 'complete' }}
             </span>
             <span v-if="category.category_test_score !== undefined && category.category_test_score !== null" class="category-test-score-badge">
-              Category Test: {{ category.category_test_score }}%
+              {{ t('grammar.categoryTest') || 'Category Test' }}: {{ category.category_test_score }}%
             </span>
           </div>
         </router-link>
@@ -184,15 +184,15 @@
               ></div>
             </div>
             <span class="progress-text">
-              {{ categoryProgressPercentage(category) }}% complete
+              {{ categoryProgressPercentage(category) }}% {{ t('grammar.complete') || 'complete' }}
             </span>
             <span v-if="category.category_test_score !== undefined && category.category_test_score !== null" class="category-test-score-badge">
-              Category Test: {{ category.category_test_score }}%
+              {{ t('grammar.categoryTest') || 'Category Test' }}: {{ category.category_test_score }}%
             </span>
           </div>
           <div class="locked-overlay">
             <Icon name="lock" />
-            <span>Complete previous chapter to unlock</span>
+            <span>{{ t('grammar.completePreviousChapter') || 'Complete previous chapter to unlock' }}</span>
           </div>
         </div>
       </div>
@@ -203,8 +203,11 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { apiClient } from '../api/client'
 import Icon from '../components/Icon.vue'
+
+const { t } = useI18n()
 
 const route = useRoute()
 

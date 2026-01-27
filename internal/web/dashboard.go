@@ -9,6 +9,7 @@ import (
 	"time"
 	"unicode"
 
+	"tgbot-skeleton/internal/i18n"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 
@@ -338,10 +339,11 @@ func (r *Router) handleChat(w http.ResponseWriter, req *http.Request) {
 
 	if err != nil {
 		r.logger.Error("failed to generate response", zap.Error(err))
+		lang := i18n.GetLanguageFromContext(ctx)
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(map[string]interface{}{
-			"error": "Sorry, an error occurred while processing your message. Please try again.",
+			"error": i18n.T(lang, "errors.chatError"),
 		})
 		return
 	}
@@ -372,7 +374,12 @@ func (r *Router) handleSettings(w http.ResponseWriter, req *http.Request) {
 
 	userID := getUserIDFromContext(req.Context())
 	if userID == 0 {
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		lang := i18n.DetectLanguageFromRequest(req)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusUnauthorized)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"error": i18n.T(lang, "errors.unauthorized"),
+		})
 		return
 	}
 
@@ -380,12 +387,22 @@ func (r *Router) handleSettings(w http.ResponseWriter, req *http.Request) {
 	user, err := userRepo.GetUserByID(userID)
 	if err != nil {
 		r.logger.Error("failed to get user", zap.Error(err))
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		lang := i18n.DetectLanguageFromRequest(req)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"error": i18n.T(lang, "errors.internalError"),
+		})
 		return
 	}
 
 	if user == nil {
-		http.Error(w, "User not found", http.StatusNotFound)
+		lang := i18n.DetectLanguageFromRequest(req)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"error": i18n.T(lang, "errors.notFound"),
+		})
 		return
 	}
 
@@ -400,6 +417,10 @@ func (r *Router) handleSettings(w http.ResponseWriter, req *http.Request) {
 	// Set defaults if not set
 	if settings.NotificationFrequency == "" {
 		settings.NotificationFrequency = "daily"
+	}
+	// If language is not set, detect from Accept-Language header
+	if settings.Language == "" {
+		settings.Language = i18n.DetectLanguageFromRequest(req)
 	}
 
 	w.Header().Set("Content-Type", "application/json")
@@ -429,7 +450,12 @@ func (r *Router) handleNotificationSettings(w http.ResponseWriter, req *http.Req
 
 	userID := getUserIDFromContext(req.Context())
 	if userID == 0 {
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		lang := i18n.DetectLanguageFromRequest(req)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusUnauthorized)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"error": i18n.T(lang, "errors.unauthorized"),
+		})
 		return
 	}
 
@@ -437,14 +463,23 @@ func (r *Router) handleNotificationSettings(w http.ResponseWriter, req *http.Req
 		Frequency string `json:"frequency"`
 	}
 
+	lang := i18n.GetLanguageFromContext(req.Context())
 	if err := json.NewDecoder(req.Body).Decode(&requestData); err != nil {
-		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"error": i18n.T(lang, "errors.invalidRequest"),
+		})
 		return
 	}
 
 	frequency := strings.TrimSpace(requestData.Frequency)
 	if frequency == "" {
-		http.Error(w, "frequency is required", http.StatusBadRequest)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"error": i18n.T(lang, "errors.invalidRequest"),
+		})
 		return
 	}
 
@@ -454,7 +489,11 @@ func (r *Router) handleNotificationSettings(w http.ResponseWriter, req *http.Req
 		// Try to parse as number
 		days, err := strconv.Atoi(frequency)
 		if err != nil || days < 1 {
-			http.Error(w, "frequency must be 'daily', 'never', or a positive number", http.StatusBadRequest)
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(map[string]interface{}{
+				"error": i18n.T(lang, "errors.invalidRequest"),
+			})
 			return
 		}
 		frequency = strconv.Itoa(days)
@@ -466,12 +505,20 @@ func (r *Router) handleNotificationSettings(w http.ResponseWriter, req *http.Req
 	user, err := userRepo.GetUserByID(userID)
 	if err != nil {
 		r.logger.Error("failed to get user", zap.Error(err))
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"error": i18n.T(lang, "errors.internalError"),
+		})
 		return
 	}
 
 	if user == nil {
-		http.Error(w, "User not found", http.StatusNotFound)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"error": i18n.T(lang, "errors.notFound"),
+		})
 		return
 	}
 
@@ -490,21 +537,141 @@ func (r *Router) handleNotificationSettings(w http.ResponseWriter, req *http.Req
 	settingsJSON, err := json.Marshal(settings)
 	if err != nil {
 		r.logger.Error("failed to marshal settings", zap.Error(err))
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"error": i18n.T(lang, "errors.internalError"),
+		})
 		return
 	}
 
 	if err := userRepo.UpdateUserSettings(user.ID, string(settingsJSON)); err != nil {
 		r.logger.Error("failed to update user settings", zap.Error(err))
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"error": i18n.T(lang, "errors.internalError"),
+		})
 		return
 	}
-
+	
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]interface{}{
-		"message":   "Notification settings updated successfully",
+		"message":   i18n.T(lang, "messages.notificationSettingsUpdated"),
 		"frequency": frequency,
+	})
+}
+
+// handleLanguageSettings handles POST /api/settings/language - update language preference
+func (r *Router) handleLanguageSettings(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	userID := getUserIDFromContext(req.Context())
+	if userID == 0 {
+		lang := i18n.DetectLanguageFromRequest(req)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusUnauthorized)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"error": i18n.T(lang, "errors.unauthorized"),
+		})
+		return
+	}
+
+	var requestData struct {
+		Language string `json:"language"`
+	}
+
+	if err := json.NewDecoder(req.Body).Decode(&requestData); err != nil {
+		lang := i18n.DetectLanguageFromRequest(req)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"error": i18n.T(lang, "errors.invalidRequest"),
+		})
+		return
+	}
+
+	language := strings.TrimSpace(requestData.Language)
+	if language != "en" && language != "ru" {
+		lang := i18n.DetectLanguageFromRequest(req)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"error": i18n.T(lang, "errors.invalidRequest"),
+		})
+		return
+	}
+
+	userRepo := r.userRepo.(*repository.UserRepository)
+	user, err := userRepo.GetUserByID(userID)
+	if err != nil {
+		r.logger.Error("failed to get user", zap.Error(err))
+		lang := i18n.DetectLanguageFromRequest(req)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"error": i18n.T(lang, "errors.internalError"),
+		})
+		return
+	}
+
+	if user == nil {
+		lang := i18n.DetectLanguageFromRequest(req)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"error": i18n.T(lang, "errors.notFound"),
+		})
+		return
+	}
+
+	// Parse current settings
+	var settings models.UserSettings
+	if user.SettingsJSON != "" {
+		if err := json.Unmarshal([]byte(user.SettingsJSON), &settings); err != nil {
+			r.logger.Warn("failed to parse user settings", zap.Error(err))
+		}
+	}
+
+	// Update language
+	settings.Language = language
+
+	// Save settings
+	settingsJSON, err := json.Marshal(settings)
+	if err != nil {
+		r.logger.Error("failed to marshal settings", zap.Error(err))
+		lang := i18n.DetectLanguageFromRequest(req)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"error": i18n.T(lang, "errors.internalError"),
+		})
+		return
+	}
+
+	if err := userRepo.UpdateUserSettings(user.ID, string(settingsJSON)); err != nil {
+		r.logger.Error("failed to update user settings", zap.Error(err))
+		lang := i18n.DetectLanguageFromRequest(req)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"error": i18n.T(lang, "errors.internalError"),
+		})
+		return
+	}
+
+	lang := i18n.GetLanguageFromContext(req.Context())
+	
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"success":  true,
+		"language": language,
+		"message":  i18n.T(lang, "messages.notificationSettingsUpdated"),
 	})
 }
 

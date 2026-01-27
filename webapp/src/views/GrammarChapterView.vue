@@ -1,12 +1,12 @@
 <template>
   <div class="grammar-chapter">
     <div v-if="loading" class="loading">
-      <p>Loading chapter...</p>
+      <p>{{ t('grammar.loadingChapter') }}</p>
     </div>
     
     <div v-else-if="error" class="error">
       <p>{{ error }}</p>
-      <button @click="loadChapter" class="btn btn-primary">Retry</button>
+      <button @click="loadChapter" class="btn btn-primary">{{ t('common.retry') }}</button>
     </div>
     
     <div v-else-if="chapter">
@@ -15,7 +15,7 @@
         <div class="chapter-meta">
           <span v-if="chapter.level" class="meta-badge">{{ chapter.level }}</span>
           <span v-if="chapter.estimated_minutes" class="meta-badge">
-            ~{{ chapter.estimated_minutes }} min
+            ~{{ chapter.estimated_minutes }} {{ t('grammar.min') }}
           </span>
         </div>
       </div>
@@ -40,7 +40,7 @@
             
             <!-- Key Points -->
             <div v-if="block.theory?.key_points && block.theory.key_points.length > 0" class="key-points">
-              <h3>Key Points</h3>
+              <h3>{{ t('grammar.keyPoints') }}</h3>
               <ul>
                 <li v-for="(point, idx) in block.theory.key_points" :key="idx">
                   {{ point }}
@@ -50,27 +50,27 @@
             
             <!-- Common Mistakes -->
             <div v-if="block.theory?.common_mistakes && block.theory.common_mistakes.length > 0" class="common-mistakes">
-              <h3>Common Mistakes</h3>
+              <h3>{{ t('grammar.commonMistakes') }}</h3>
               <div
                 v-for="(mistake, idx) in block.theory.common_mistakes"
                 :key="idx"
                 class="mistake-item"
               >
                 <div class="mistake-wrong">
-                  <strong>Неправильно:</strong> {{ mistake.wrong }}
+                  <strong>{{ t('grammar.wrong') }}:</strong> {{ mistake.wrong }}
                 </div>
                 <div class="mistake-right">
-                  <strong>Правильно:</strong> {{ mistake.right }}
+                  <strong>{{ t('grammar.correct') }}:</strong> {{ mistake.right }}
                 </div>
                 <div class="mistake-why">
-                  <strong>Почему:</strong> {{ mistake.why }}
+                  <strong>{{ t('grammar.why') }}:</strong> {{ mistake.why }}
                 </div>
               </div>
             </div>
             
             <!-- Examples -->
             <div v-if="block.theory?.examples && block.theory.examples.length > 0" class="examples">
-              <h3>Examples</h3>
+              <h3>{{ t('grammar.examples') }}</h3>
               <div
                 v-for="example in block.theory.examples"
                 :key="example.id"
@@ -99,7 +99,7 @@
       
       <div class="chapter-footer">
         <button @click="startTest" class="btn btn-primary btn-large">
-          Start Chapter Test
+          {{ t('grammar.startChapterTest') }}
         </button>
       </div>
     </div>
@@ -108,6 +108,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { marked } from 'marked'
 import { apiClient } from '../api/client'
@@ -115,6 +116,7 @@ import GrammarQuestion from '../components/GrammarQuestion.vue'
 import { useSettings } from '../composables/useSettings'
 import { useAudio } from '../composables/useAudio'
 
+const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const chapterId = computed(() => route.params.chapterId as string)

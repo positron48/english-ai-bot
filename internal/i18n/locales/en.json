@@ -1,0 +1,27 @@
+{
+  "errors": {
+    "unauthorized": "Unauthorized",
+    "authRequired": "Authentication required. Please provide a valid JWT token in Authorization header.",
+    "invalidAuthHeader": "Invalid Authorization header format. Expected: Bearer <token>",
+    "invalidToken": "Invalid or expired token. Please authenticate again.",
+    "userNotFound": "User not found. Please make sure you've started a conversation with the bot first.",
+    "otpSent": "OTP code sent to your Telegram!",
+    "authSuccessful": "Authentication successful",
+    "internalError": "Internal server error",
+    "methodNotAllowed": "Method not allowed",
+    "invalidRequest": "Invalid request",
+    "invalidFormData": "Invalid form data",
+    "usernameRequired": "username is required",
+    "userIdRequired": "user_id and code are required",
+    "invalidUserId": "Invalid user_id",
+    "chatError": "Sorry, an error occurred while processing your message. Please try again.",
+    "tooManyRequests": "Too many requests. Please try again later.",
+    "notFound": "Not found",
+    "failedToSendOTP": "Failed to send OTP",
+    "otpServiceUnavailable": "OTP service unavailable (Telegram bot not configured)",
+    "noCardsAvailable": "No cards available for training. Request some words first!"
+  },
+  "messages": {
+    "notificationSettingsUpdated": "Notification settings updated successfully"
+  }
+}

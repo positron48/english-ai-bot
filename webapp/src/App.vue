@@ -3,7 +3,7 @@
     <!-- Auth Error Message -->
     <div v-if="authError" class="auth-error-banner">
       <div class="auth-error-content">
-        <strong><Icon name="warning" /> Ошибка авторизации:</strong> {{ authError }}
+        <strong><Icon name="warning" /> {{ t('auth.error') }}</strong> {{ authError }}
         <button @click="dismissAuthError" class="auth-error-close">×</button>
       </div>
     </div>
@@ -13,39 +13,61 @@
       <div class="container">
         <div class="nav-links">
           <div class="nav-left">
-            <router-link to="/dashboard">Dashboard</router-link>
-            <router-link to="/learning">Learning</router-link>
-            <router-link to="/training">Training</router-link>
-            <router-link to="/chat">Chat</router-link>
+            <router-link to="/dashboard">{{ t('navigation.dashboard') }}</router-link>
+            <router-link to="/learning">{{ t('navigation.learning') }}</router-link>
+            <router-link to="/training">{{ t('navigation.training') }}</router-link>
+            <router-link to="/chat">{{ t('navigation.chat') }}</router-link>
             <div class="nav-more-wrapper">
               <button 
                 ref="moreButtonRef"
                 @click.stop="showMoreDropdown = !showMoreDropdown" 
                 class="nav-more-btn" 
-                title="More"
+                :title="t('navigation.more')"
                 :class="{ active: showMoreDropdown }"
               >
-                More
+                {{ t('navigation.more') }}
                 <Icon name="chevron-down" class="nav-more-chevron" />
               </button>
               <div v-if="showMoreDropdown" ref="moreDropdownRef" class="nav-more-dropdown">
                 <router-link to="/vocab" class="dropdown-item" @click="showMoreDropdown = false">
                   <Icon name="book" class="dropdown-icon" />
-                  <span>Vocabulary</span>
+                  <span>{{ t('navigation.vocab') }}</span>
                 </router-link>
                 <router-link v-if="isAdmin" to="/admin" class="dropdown-item" @click="showMoreDropdown = false">
                   <Icon name="shield" class="dropdown-icon" />
-                  <span>Admin</span>
+                  <span>{{ t('navigation.admin') }}</span>
                 </router-link>
                 <button v-if="!isTelegramMiniApp" @click="handleMoreLogout" class="dropdown-item">
                   <Icon name="logout" class="dropdown-icon" />
-                  <span>Logout</span>
+                  <span>{{ t('navigation.logout') }}</span>
                 </button>
               </div>
             </div>
           </div>
           <div class="nav-right">
-            <router-link to="/settings" class="nav-settings-btn" title="Settings">
+            <div class="lang-switcher" @click.stop="handleLangSwitch">
+              <div 
+                class="lang-slider"
+                :class="{ 'lang-slider-ru': currentLocale === 'ru' }"
+              ></div>
+              <button
+                @click.stop="setLocale('en')"
+                class="lang-btn"
+                :class="{ active: currentLocale === 'en' }"
+                title="English"
+              >
+                EN
+              </button>
+              <button
+                @click.stop="setLocale('ru')"
+                class="lang-btn"
+                :class="{ active: currentLocale === 'ru' }"
+                title="Русский"
+              >
+                RU
+              </button>
+            </div>
+            <router-link to="/settings" class="nav-settings-btn" :title="t('navigation.settings')">
               <Icon name="gear" />
             </router-link>
           </div>
@@ -64,37 +86,37 @@
       <Breadcrumbs v-if="isAuthenticated && mounted && !isAdminRoute" />
       <router-view v-if="mounted" :key="route.path" />
       <div v-else style="padding: 20px; text-align: center;">
-        Loading...
+        {{ t('common.loading') }}
       </div>
     </main>
     
     <!-- Mobile Footer Navigation -->
     <nav v-if="isAuthenticated && !isAdminRoute" class="navbar-mobile">
       <div class="mobile-nav-main">
-        <router-link to="/dashboard" class="mobile-nav-item" title="Dashboard">
+        <router-link to="/dashboard" class="mobile-nav-item" :title="t('navigation.dashboard')">
           <Icon name="dashboard" class="mobile-nav-icon" />
-          <span class="mobile-nav-label">Dashboard</span>
+          <span class="mobile-nav-label">{{ t('navigation.dashboard') }}</span>
         </router-link>
-        <router-link to="/learning" class="mobile-nav-item" title="Learning">
+        <router-link to="/learning" class="mobile-nav-item" :title="t('navigation.learning')">
           <Icon name="book" class="mobile-nav-icon" />
-          <span class="mobile-nav-label">Learning</span>
+          <span class="mobile-nav-label">{{ t('navigation.learning') }}</span>
         </router-link>
-        <router-link to="/training" class="mobile-nav-item" title="Training">
+        <router-link to="/training" class="mobile-nav-item" :title="t('navigation.training')">
           <Icon name="target" class="mobile-nav-icon" />
-          <span class="mobile-nav-label">Training</span>
+          <span class="mobile-nav-label">{{ t('navigation.training') }}</span>
         </router-link>
-        <router-link to="/chat" class="mobile-nav-item" title="Chat">
+        <router-link to="/chat" class="mobile-nav-item" :title="t('navigation.chat')">
           <Icon name="chat" class="mobile-nav-icon" />
-          <span class="mobile-nav-label">Chat</span>
+          <span class="mobile-nav-label">{{ t('navigation.chat') }}</span>
         </router-link>
         <button 
           @click="showSidebar = !showSidebar" 
           class="mobile-nav-item mobile-nav-more"
           :class="{ active: showSidebar }"
-          title="More"
+          :title="t('navigation.more')"
         >
           <Icon name="more" class="mobile-nav-icon" />
-          <span class="mobile-nav-label">More</span>
+          <span class="mobile-nav-label">{{ t('navigation.more') }}</span>
         </button>
       </div>
     </nav>
@@ -105,25 +127,48 @@
     <!-- Sidebar -->
     <aside v-if="isAuthenticated && showSidebar && !isAdminRoute" class="sidebar" :class="{ open: showSidebar }">
       <div class="sidebar-header">
-        <h3>Menu</h3>
+        <h3>{{ t('navigation.menu') }}</h3>
         <button @click="showSidebar = false" class="sidebar-close">×</button>
       </div>
       <div class="sidebar-content">
+        <div class="sidebar-lang-switcher">
+          <span class="sidebar-lang-label">{{ t('common.language') || 'Language' }}:</span>
+          <div class="lang-switcher" @click.stop="handleLangSwitchSidebar">
+            <div 
+              class="lang-slider"
+              :class="{ 'lang-slider-ru': currentLocale === 'ru' }"
+            ></div>
+            <button
+              @click.stop="setLocale('en'); showSidebar = false"
+              class="lang-btn"
+              :class="{ active: currentLocale === 'en' }"
+            >
+              EN
+            </button>
+            <button
+              @click.stop="setLocale('ru'); showSidebar = false"
+              class="lang-btn"
+              :class="{ active: currentLocale === 'ru' }"
+            >
+              RU
+            </button>
+          </div>
+        </div>
         <router-link to="/vocab" class="sidebar-item" @click="showSidebar = false">
           <Icon name="book" class="sidebar-icon" />
-          <span>Vocabulary</span>
+          <span>{{ t('navigation.vocab') }}</span>
         </router-link>
         <router-link to="/settings" class="sidebar-item" @click="showSidebar = false">
           <Icon name="gear" class="sidebar-icon" />
-          <span>Settings</span>
+          <span>{{ t('navigation.settings') }}</span>
         </router-link>
         <router-link v-if="isAdmin" to="/admin" class="sidebar-item" @click="showSidebar = false">
           <Icon name="shield" class="sidebar-icon" />
-          <span>Admin</span>
+          <span>{{ t('navigation.admin') }}</span>
         </router-link>
         <button v-if="!isTelegramMiniApp" @click="handleLogout" class="sidebar-item">
           <Icon name="logout" class="sidebar-icon" />
-          <span>Logout</span>
+          <span>{{ t('navigation.logout') }}</span>
         </button>
       </div>
     </aside>
@@ -146,9 +191,11 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useAuth } from './composables/useAuth'
 import { useTheme } from './composables/useTheme'
 import { useDialog } from './composables/useDialog'
+import { useLocale } from './composables/useLocale'
 import Icon from './components/Icon.vue'
 import AlertModal from './components/AlertModal.vue'
 import ConfirmModal from './components/ConfirmModal.vue'
@@ -156,7 +203,9 @@ import Breadcrumbs from './components/Breadcrumbs.vue'
 
 const router = useRouter()
 const route = useRoute()
+const { t } = useI18n()
 const { isAuthenticated, isAdmin, logout: authLogout } = useAuth()
+const { currentLocale, setLocale } = useLocale()
 
 const isAdminRoute = computed(() => {
   return route.path.startsWith('/admin')
@@ -206,7 +255,7 @@ onMounted(() => {
   setTimeout(() => {
     if (!isAuthenticated.value && route.path !== '/login') {
       if (tg) {
-        authError.value = 'Авторизация через Telegram не удалась. Пожалуйста, используйте OTP вход.'
+        authError.value = t('auth.telegramAuthFailed')
       }
     }
   }, 3000)
@@ -258,6 +307,25 @@ const handleLogout = () => {
 const handleMoreLogout = () => {
   logout()
   showMoreDropdown.value = false
+}
+
+const handleLangSwitch = (event: MouseEvent) => {
+  const target = event.target as HTMLElement
+  if (target.classList.contains('lang-switcher') || target.classList.contains('lang-slider')) {
+    // Toggle language when clicking on switcher background or slider
+    const newLocale = currentLocale.value === 'en' ? 'ru' : 'en'
+    setLocale(newLocale)
+  }
+}
+
+const handleLangSwitchSidebar = (event: MouseEvent) => {
+  const target = event.target as HTMLElement
+  if (target.classList.contains('lang-switcher') || target.classList.contains('lang-slider')) {
+    // Toggle language when clicking on switcher background or slider
+    const newLocale = currentLocale.value === 'en' ? 'ru' : 'en'
+    setLocale(newLocale)
+    showSidebar.value = false
+  }
 }
 
 // Settings is always in More menu on mobile
@@ -682,6 +750,86 @@ main.with-desktop-navbar {
 
 .auth-error-close:hover {
   background: rgba(255,255,255,0.3);
+}
+
+/* Language Switcher */
+.lang-switcher {
+  position: relative;
+  display: flex;
+  gap: 0;
+  align-items: center;
+  background: var(--bg-hover);
+  border: 1px solid var(--border-primary);
+  border-radius: 6px;
+  padding: 2px;
+  margin-right: 8px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.lang-slider {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: calc(50% - 2px);
+  height: calc(100% - 4px);
+  background: var(--bg-secondary);
+  border-radius: 4px;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  pointer-events: none;
+}
+
+.lang-slider-ru {
+  transform: translateX(100%);
+}
+
+.lang-btn {
+  position: relative;
+  background: transparent;
+  border: none;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  border-radius: 4px;
+  transition: color 0.2s;
+  min-width: 40px;
+  z-index: 1;
+  flex: 1;
+  user-select: none;
+}
+
+.lang-btn:hover {
+  color: var(--text-primary);
+}
+
+.lang-btn.active {
+  color: var(--text-primary);
+}
+
+/* Sidebar Language Switcher */
+.sidebar-lang-switcher {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-primary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.sidebar-lang-label {
+  font-size: 14px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.sidebar-lang-switcher .lang-switcher {
+  margin-right: 0;
+  flex: 1;
+  max-width: 200px;
 }
 </style>
 

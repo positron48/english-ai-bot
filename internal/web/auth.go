@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	"tgbot-skeleton/internal/config"
+	"tgbot-skeleton/internal/i18n"
 	"tgbot-skeleton/internal/repository"
 
 	"go.uber.org/zap"
@@ -56,11 +57,12 @@ func (m *AuthMiddleware) RequireAuth(next http.HandlerFunc) http.HandlerFunc {
 		if authHeader == "" {
 			m.logger.Warn("authentication failed: missing Authorization header", 
 				zap.String("path", r.URL.Path))
+			lang := i18n.DetectLanguageFromRequest(r)
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusUnauthorized)
 			json.NewEncoder(w).Encode(map[string]interface{}{
-				"error": "Unauthorized",
-				"message": "Authentication required. Please provide a valid JWT token in Authorization header.",
+				"error": i18n.T(lang, "errors.unauthorized"),
+				"message": i18n.T(lang, "errors.authRequired"),
 			})
 			return
 		}
@@ -84,11 +86,12 @@ func (m *AuthMiddleware) RequireAuth(next http.HandlerFunc) http.HandlerFunc {
 			m.logger.Warn("authentication failed: invalid or expired token", 
 				zap.String("path", r.URL.Path),
 				zap.Error(err))
+			lang := i18n.DetectLanguageFromRequest(r)
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusUnauthorized)
 			json.NewEncoder(w).Encode(map[string]interface{}{
-				"error": "Unauthorized",
-				"message": "Invalid or expired token. Please authenticate again.",
+				"error": i18n.T(lang, "errors.unauthorized"),
+				"message": i18n.T(lang, "errors.invalidToken"),
 			})
 			return
 		}
@@ -104,6 +107,26 @@ func (m *AuthMiddleware) RequireAuth(next http.HandlerFunc) http.HandlerFunc {
 		ctx = context.WithValue(ctx, userCategoriesKey, categories)
 		// Keep legacy role for backward compatibility (empty for new tokens)
 		ctx = context.WithValue(ctx, userRoleKey, "")
+		
+		// Determine language: first try user settings, then Accept-Language header
+		lang := "en"
+		user, err := m.userRepo.GetUserByID(userID)
+		if err == nil && user != nil && user.SettingsJSON != "" {
+			var settings struct {
+				Language string `json:"language"`
+			}
+			if err := json.Unmarshal([]byte(user.SettingsJSON), &settings); err == nil && settings.Language != "" {
+				if settings.Language == "ru" || settings.Language == "en" {
+					lang = settings.Language
+				}
+			}
+		}
+		if lang == "en" {
+			// Fallback to Accept-Language header if no user preference
+			lang = i18n.DetectLanguageFromRequest(r)
+		}
+		ctx = i18n.WithLanguage(ctx, lang)
+		
 		r = r.WithContext(ctx)
 		next(w, r)
 	}

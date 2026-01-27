@@ -3,10 +3,10 @@
     <h1>{{ pageTitle }}</h1>
     
     <div class="content-section">
-      <div v-if="loading" class="loading">Loading...</div>
+      <div v-if="loading" class="loading">{{ t('common.loading') }}</div>
       <div v-else-if="error" class="error">{{ error }}</div>
       <div v-else-if="categories.length === 0 && wordSets.length === 0" class="empty-state">
-        <p>No items found.</p>
+        <p>{{ t('common.noItemsFound') || 'No items found.' }}</p>
       </div>
       <div v-else class="items-grid">
         <!-- Categories -->
@@ -38,9 +38,9 @@
           </div>
           <p v-if="wordSet.description" class="word-set-description">{{ wordSet.description }}</p>
           <div class="word-set-stats">
-            <span>{{ wordSet.known_words + wordSet.words_in_vocab }}/{{ wordSet.total_words }} words</span>
+            <span>{{ wordSet.known_words + wordSet.words_in_vocab }}/{{ wordSet.total_words }} {{ t('common.words') || 'words' }}</span>
             <span v-if="wordSet.unknown_words > 0" class="unknown-count">
-              {{ wordSet.unknown_words }} new
+              {{ wordSet.unknown_words }} {{ t('common.new') || 'new' }}
             </span>
           </div>
         </div>
@@ -50,7 +50,7 @@
     <div v-if="selectedCategoryId !== null" class="breadcrumb">
       <button @click="goBack" class="breadcrumb-back">
         <Icon name="arrow-left" />
-        <span>Back</span>
+        <span>{{ t('common.back') }}</span>
       </button>
     </div>
   </div>
@@ -59,8 +59,11 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { apiClient } from '../api/client'
 import Icon from '../components/Icon.vue'
+
+const { t } = useI18n()
 
 interface Category {
   id: number
@@ -95,13 +98,16 @@ const allCategories = ref<Category[]>([]) // Все категории для п
 
 // Computed для заголовка страницы
 const pageTitle = computed(() => {
+  if (selectedCategoryId.value === null) {
+    return t('learning.words')
+  }
   if (selectedCategoryId.value && allCategories.value.length > 0) {
     const currentCategory = allCategories.value.find(cat => cat.id === selectedCategoryId.value)
     if (currentCategory) {
       return currentCategory.name
     }
   }
-  return 'Word Sets Library'
+  return t('learning.words')
 })
 
 // Items computed is not needed - we'll render categories and wordSets separately in template

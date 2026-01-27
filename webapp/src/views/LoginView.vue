@@ -1,18 +1,18 @@
 <template>
   <div class="login-container">
     <div class="card" style="max-width: 400px; margin: 50px auto;">
-      <h1>English Bot Login</h1>
+      <h1>{{ t('auth.loginTitle') }}</h1>
       
       <!-- Show loading indicator while checking Telegram auth -->
       <div v-if="isCheckingTelegramAuth" class="login-loading">
         <div class="spinner"></div>
-        <p>Авторизация через Telegram...</p>
+        <p>{{ t('auth.telegramAuthInProgress') }}</p>
       </div>
       
       <!-- Show login form only after Telegram auth check is complete -->
       <template v-else>
         <div v-if="step === 'username'" class="login-step">
-          <p>Enter your Telegram username or ID:</p>
+          <p>{{ t('auth.enterUsername') }}</p>
           <div class="info-box">
             <svg class="info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="12" cy="12" r="10"/>
@@ -20,27 +20,24 @@
               <line x1="12" y1="8" x2="12.01" y2="8"/>
             </svg>
             <div class="info-content">
-              <p class="info-text">
-                Если по никнейму не находится пользователь, используйте Telegram ID. 
-                Получить ID можно командой <code>/get_id</code> в боте или через Telegram Mini App.
-              </p>
+              <p class="info-text" v-html="t('auth.usernameHint')"></p>
             </div>
           </div>
           <input
             ref="usernameInput"
             v-model="username"
             type="text"
-            placeholder="Username or Telegram ID"
+            :placeholder="t('auth.usernamePlaceholder')"
             @keyup.enter="requestOTP"
           />
           <button @click="requestOTP" class="btn btn-primary" :disabled="loading">
-            {{ loading ? 'Sending...' : 'Send OTP' }}
+            {{ loading ? t('auth.sending') : t('auth.sendOTP') }}
           </button>
           <p v-if="error" class="error">{{ error }}</p>
         </div>
 
         <div v-if="step === 'otp'" class="login-step">
-          <p>Enter the OTP code sent to your Telegram:</p>
+          <p>{{ t('auth.enterOTP') }}</p>
           <div class="otp-input-container">
             <input
               v-for="(digit, index) in otpDigits"
@@ -59,9 +56,9 @@
             />
           </div>
           <button @click="verifyOTP" class="btn btn-primary" :disabled="loading || !isOTPComplete">
-            {{ loading ? 'Verifying...' : 'Verify' }}
+            {{ loading ? t('auth.verifying') : t('auth.verify') }}
           </button>
-          <button @click="step = 'username'" class="btn btn-secondary">Back</button>
+          <button @click="step = 'username'" class="btn btn-secondary">{{ t('common.back') }}</button>
           <p v-if="error" class="error">{{ error }}</p>
         </div>
       </template>
@@ -72,8 +69,11 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useAuth } from '../composables/useAuth'
 import { apiClient } from '../api/client'
+
+const { t } = useI18n()
 
 const router = useRouter()
 const { login, tryTelegramAuth } = useAuth()
@@ -106,7 +106,7 @@ onMounted(async () => {
       }
     } catch (err: any) {
       // Silent fail - show OTP login form
-      error.value = 'Авторизация через Telegram не удалась. Пожалуйста, используйте OTP вход.'
+      error.value = t('auth.telegramAuthFailed')
     } finally {
       isCheckingTelegramAuth.value = false
     }
@@ -149,7 +149,7 @@ watch(isCheckingTelegramAuth, async (isChecking) => {
 
 const requestOTP = async () => {
   if (!username.value.trim()) {
-    error.value = 'Please enter username or Telegram ID'
+    error.value = t('auth.usernameRequired')
     return
   }
 
@@ -162,7 +162,7 @@ const requestOTP = async () => {
     step.value = 'otp'
     // Focus will be set automatically by watch on step change
   } catch (err: any) {
-    error.value = err.message || 'Failed to send OTP'
+    error.value = err.message || t('auth.otpSendFailed')
   } finally {
     loading.value = false
   }
@@ -257,7 +257,7 @@ const handleOTPFocus = (index: number) => {
 const verifyOTP = async () => {
   const code = otpDigits.value.join('')
   if (!code || code.length !== 6) {
-    error.value = 'Please enter complete OTP code'
+    error.value = t('auth.otpIncomplete')
     return
   }
 
@@ -269,7 +269,7 @@ const verifyOTP = async () => {
     login(response.access_token, response.refresh_token)
     router.push('/dashboard')
   } catch (err: any) {
-    error.value = err.message || 'Invalid OTP code'
+    error.value = err.message || t('auth.otpInvalid')
     // Clear OTP on error
     otpDigits.value = ['', '', '', '', '', '']
     nextTick(() => {

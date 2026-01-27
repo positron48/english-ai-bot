@@ -7,27 +7,27 @@
             type="text"
             v-model="searchQuery"
             @input="onSearchInput"
-            placeholder="Search words..."
+            :placeholder="t('vocab.searchWords')"
             class="search-input"
           />
         </div>
         <div class="filter-controls">
-          <label for="status-filter" class="filter-label">Status:</label>
+          <label for="status-filter" class="filter-label">{{ t('vocab.status') }}</label>
           <select id="status-filter" v-model="statusFilter" @change="onFilterChange" class="filter-select">
-            <option value="">All</option>
-            <option value="new">New</option>
-            <option value="learning">Learning</option>
-            <option value="known">Known</option>
+            <option value="">{{ t('vocab.all') }}</option>
+            <option value="new">{{ t('vocab.new') }}</option>
+            <option value="learning">{{ t('vocab.learning') }}</option>
+            <option value="known">{{ t('vocab.known') }}</option>
           </select>
         </div>
         <div class="sort-controls">
-          <label for="sort-select" class="sort-label">Sort by:</label>
+          <label for="sort-select" class="sort-label">{{ t('vocab.sortBy') }}</label>
           <select id="sort-select" v-model="sortField" @change="onSortChange" class="sort-select">
             <option value="display_word">A→Z</option>
             <option value="display_word_desc">Z→A</option>
-            <option value="added_at">Recently added</option>
-            <option value="mastery_level">Mastery</option>
-            <option value="mastery_level_desc">Mastery (reversed)</option>
+            <option value="added_at">{{ t('vocab.recentlyAdded') }}</option>
+            <option value="mastery_level">{{ t('vocab.mastery') }}</option>
+            <option value="mastery_level_desc">{{ t('vocab.masteryReversed') }}</option>
           </select>
         </div>
       </div>
@@ -36,17 +36,17 @@
     <div class="vocab-content">
       <div v-if="words.length === 0 && !loading" class="empty-state">
         <p v-if="searchQuery">
-          No words found matching "{{ searchQuery }}".
+          {{ t('vocab.noWordsFound', { query: searchQuery }) }}
         </p>
         <p v-else>
-          No words in your vocabulary yet.
+          {{ t('vocab.noWordsInVocabulary') }}
         </p>
       </div>
       
       <div v-else>
         <div class="words-list" :class="{ 'loading-overlay': loading }">
           <div v-if="loading" class="loading-overlay-content">
-            <div class="loading">Loading...</div>
+            <div class="loading">{{ t('common.loading') }}</div>
           </div>
           
           <template v-if="!loading">
@@ -103,18 +103,18 @@
             :disabled="pagination.page <= 1"
             class="btn btn-secondary"
           >
-            Previous
+            {{ t('vocab.previous') }}
           </button>
           <span class="page-info">
-            Page {{ pagination.page }} of {{ pagination.total_pages }} 
-            ({{ pagination.total }} total)
+            {{ t('vocab.page', { page: pagination.page, totalPages: pagination.total_pages }) }} 
+            {{ t('vocab.total', { total: pagination.total }) }}
           </span>
           <button 
             @click="goToPage(pagination.page + 1)" 
             :disabled="pagination.page >= pagination.total_pages"
             class="btn btn-secondary"
           >
-            Next
+            {{ t('vocab.next') }}
           </button>
         </div>
       </div>
@@ -130,38 +130,38 @@
               <div v-if="selectedTranscription" class="transcription">{{ selectedTranscription }}</div>
             </div>
             <div class="word-summary">
-              <span>{{ totalCards }} cards</span>
-              <span v-if="totalDue > 0">{{ totalDue }} due</span>
-              <span v-if="lastReview" :title="formatDateAbsolute(lastReview)">Last: {{ formatDateRelative(lastReview) }}</span>
+              <span>{{ t('vocab.cards', totalCards, { n: totalCards }) }}</span>
+              <span v-if="totalDue > 0">{{ t('vocab.due', totalDue, { n: totalDue }) }}</span>
+              <span v-if="lastReview" :title="formatDateAbsolute(lastReview)">{{ t('vocab.last') }} {{ formatDateRelative(lastReview) }}</span>
             </div>
           </div>
           <button @click="closeCardsModal" class="btn-close">&times;</button>
         </div>
-        <div v-if="cardsLoading" class="loading">Loading cards...</div>
-        <div v-else-if="cards.length === 0" class="no-cards">No cards found.</div>
+        <div v-if="cardsLoading" class="loading">{{ t('vocab.loadingCards') }}</div>
+        <div v-else-if="cards.length === 0" class="no-cards">{{ t('vocab.noCardsFound') }}</div>
         <div v-else>
           <!-- Verb Forms Section -->
           <div v-if="wordPOS === 'verb' && verbForms" class="verb-forms-section">
-            <h4>Verb Forms</h4>
+            <h4>{{ t('vocab.verbForms') }}</h4>
             <div class="verb-forms-list">
               <div v-if="verbForms.v1" class="verb-form-item">
-                <span class="verb-form-label">V1 (Base):</span>
+                <span class="verb-form-label">{{ t('vocab.v1Base') }}</span>
                 <span class="verb-form-value">{{ verbForms.v1 }}</span>
               </div>
               <div v-if="verbForms.v2" class="verb-form-item">
-                <span class="verb-form-label">V2 (Past Simple):</span>
+                <span class="verb-form-label">{{ t('vocab.v2PastSimple') }}</span>
                 <span class="verb-form-value">{{ verbForms.v2 }}</span>
               </div>
               <div v-if="verbForms.v3" class="verb-form-item">
-                <span class="verb-form-label">V3 (Past Participle):</span>
+                <span class="verb-form-label">{{ t('vocab.v3PastParticiple') }}</span>
                 <span class="verb-form-value">{{ verbForms.v3 }}</span>
               </div>
               <div v-if="verbForms.gerund" class="verb-form-item">
-                <span class="verb-form-label">Gerund:</span>
+                <span class="verb-form-label">{{ t('vocab.gerund') }}</span>
                 <span class="verb-form-value">{{ verbForms.gerund }}</span>
               </div>
               <div v-if="verbForms.third_person" class="verb-form-item">
-                <span class="verb-form-label">Third Person:</span>
+                <span class="verb-form-label">{{ t('vocab.thirdPerson') }}</span>
                 <span class="verb-form-value">{{ verbForms.third_person }}</span>
               </div>
             </div>
@@ -181,7 +181,7 @@
                 {{ senseGroup.meaning_en }}
               </div>
               <div v-if="senseGroup.example_en" class="example">
-                <strong>Example:</strong> {{ senseGroup.example_en }}
+                <strong>{{ t('vocab.example') }}:</strong> {{ senseGroup.example_en }}
               </div>
             </div>
             
@@ -194,9 +194,9 @@
                   <span :class="['state-badge', `state-${directionCard.state}`]">{{ directionCard.state }}</span>
                 </div>
                 <div class="direction-stats-simple">
-                  <span v-if="directionCard.reps > 0" title="Number of successful card repetitions">Reps: {{ directionCard.reps }}</span>
-                  <span v-else-if="directionCard.review_count > 0" title="Total number of card views">Reviews: {{ directionCard.review_count }}</span>
-                  <span v-if="directionCard.next_due_at" :title="`Next scheduled review date: ${formatDateAbsolute(directionCard.next_due_at)}`">Due: {{ formatDateRelative(directionCard.next_due_at) }}</span>
+                  <span v-if="directionCard.reps > 0" :title="t('vocab.reps')">{{ t('vocab.reps') }} {{ directionCard.reps }}</span>
+                  <span v-else-if="directionCard.review_count > 0" :title="t('vocab.reviews')">{{ t('vocab.reviews') }} {{ directionCard.review_count }}</span>
+                  <span v-if="directionCard.next_due_at" :title="`${t('vocab.due')}: ${formatDateAbsolute(directionCard.next_due_at)}`">{{ t('vocab.due') }}: {{ formatDateRelative(directionCard.next_due_at) }}</span>
                 </div>
               </div>
             </div>
@@ -211,7 +211,7 @@
               class="btn btn-primary"
               :disabled="processingAction"
             >
-              Move to Known
+              {{ t('vocab.moveToKnown') }}
             </button>
             <button 
               v-if="!hasUserCards && isKnown" 
@@ -219,10 +219,10 @@
               class="btn btn-primary"
               :disabled="processingAction"
             >
-              Move to Training
+              {{ t('vocab.moveToTraining') }}
             </button>
             <button @click="confirmDelete" class="btn btn-danger" :disabled="processingAction">
-              Remove from Vocabulary
+              {{ t('vocab.removeFromVocabulary') }}
             </button>
           </div>
         </div>
@@ -232,12 +232,12 @@
     <!-- Delete Confirmation Modal -->
     <div v-if="showDeleteConfirm" class="modal" @click.self="showDeleteConfirm = false">
       <div class="modal-content">
-        <h3>Remove from vocabulary</h3>
-        <p>Are you sure you want to remove "{{ wordToDelete }}" from your vocabulary?</p>
-        <p class="warning-text">This will remove all training data and known status for this word. You can add it back later.</p>
+        <h3>{{ t('vocab.removeFromVocabularyTitle') }}</h3>
+        <p>{{ t('vocab.removeConfirm', { word: wordToDelete }) }}</p>
+        <p class="warning-text">{{ t('vocab.removeWarning') }}</p>
         <div class="modal-actions">
-          <button @click="deleteWord" class="btn btn-danger">Remove</button>
-          <button @click="showDeleteConfirm = false" class="btn btn-secondary">Cancel</button>
+          <button @click="deleteWord" class="btn btn-danger">{{ t('vocab.remove') }}</button>
+          <button @click="showDeleteConfirm = false" class="btn btn-secondary">{{ t('common.cancel') }}</button>
         </div>
       </div>
     </div>
@@ -246,10 +246,12 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { apiClient } from '../api/client'
 import { useAuth } from '../composables/useAuth'
 import { showAlert } from '../composables/useDialog'
 
+const { t } = useI18n()
 const { isAdmin } = useAuth()
 
 interface VocabWord {
@@ -673,53 +675,53 @@ const formatDateRelative = (dateStr: string | null): string => {
   if (diffDays === 0) {
     if (diffHours === 0) {
       if (diffMinutes < 1) {
-        return 'just now'
+        return t('vocab.justNow')
       }
       if (isFuture) {
-        return `in ${diffMinutes} ${diffMinutes === 1 ? 'minute' : 'minutes'}`
+        return t('vocab.inMinutes', diffMinutes, { n: diffMinutes })
       }
-      return `${diffMinutes} ${diffMinutes === 1 ? 'minute' : 'minutes'} ago`
+      return t('vocab.minutesAgo', diffMinutes, { n: diffMinutes })
     }
     if (isFuture) {
-      return `in ${diffHours} ${diffHours === 1 ? 'hour' : 'hours'}`
+      return t('vocab.inHours', diffHours, { n: diffHours })
     }
-    return `${diffHours} ${diffHours === 1 ? 'hour' : 'hours'} ago`
+    return t('vocab.hoursAgo', diffHours, { n: diffHours })
   }
   
   // Tomorrow / Yesterday
   if (diffDays === 1) {
-    return isFuture ? 'tomorrow' : 'yesterday'
+    return isFuture ? t('vocab.tomorrow') : t('vocab.yesterday')
   }
   
   // Days
   if (diffDays < 7) {
-    return isFuture ? `in ${diffDays} days` : `${diffDays} days ago`
+    return isFuture ? t('vocab.inDays', diffDays, { n: diffDays }) : t('vocab.daysAgo', diffDays, { n: diffDays })
   }
   
   // Weeks
   const diffWeeks = Math.floor(diffDays / 7)
   if (diffWeeks < 4) {
     if (isFuture) {
-      return `in ${diffWeeks} ${diffWeeks === 1 ? 'week' : 'weeks'}`
+      return t('vocab.inWeeks', diffWeeks, { n: diffWeeks })
     }
-    return `${diffWeeks} ${diffWeeks === 1 ? 'week' : 'weeks'} ago`
+    return t('vocab.weeksAgo', diffWeeks, { n: diffWeeks })
   }
   
   // Months
   const diffMonths = Math.floor(diffDays / 30)
   if (diffMonths < 12) {
     if (isFuture) {
-      return `in ${diffMonths} ${diffMonths === 1 ? 'month' : 'months'}`
+      return t('vocab.inMonths', diffMonths, { n: diffMonths })
     }
-    return `${diffMonths} ${diffMonths === 1 ? 'month' : 'months'} ago`
+    return t('vocab.monthsAgo', diffMonths, { n: diffMonths })
   }
   
   // Years
   const diffYears = Math.floor(diffDays / 365)
   if (isFuture) {
-    return `in ${diffYears} ${diffYears === 1 ? 'year' : 'years'}`
+    return t('vocab.inYears', diffYears, { n: diffYears })
   }
-  return `${diffYears} ${diffYears === 1 ? 'year' : 'years'} ago`
+  return t('vocab.yearsAgo', diffYears, { n: diffYears })
 }
 
 const formatDateAbsolute = (dateStr: string | null): string => {

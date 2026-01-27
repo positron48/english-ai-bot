@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"tgbot-skeleton/internal/i18n"
 	"tgbot-skeleton/internal/repository"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -27,19 +28,33 @@ import (
 // @Failure      500  {string}  string  "Внутренняя ошибка сервера"
 // @Router       /auth/request_otp [post]
 func (r *Router) handleAuthRequestOTP(w http.ResponseWriter, req *http.Request) {
+	lang := i18n.DetectLanguageFromRequest(req)
+	
 	if req.Method != http.MethodPost {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"error": i18n.T(lang, "errors.methodNotAllowed"),
+		})
 		return
 	}
 
 	if err := req.ParseForm(); err != nil {
-		http.Error(w, "Invalid form data", http.StatusBadRequest)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"error": i18n.T(lang, "errors.invalidFormData"),
+		})
 		return
 	}
 
 	usernameOrID := strings.TrimSpace(req.FormValue("username"))
 	if usernameOrID == "" {
-		http.Error(w, "username is required", http.StatusBadRequest)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"error": i18n.T(lang, "errors.usernameRequired"),
+		})
 		return
 	}
 
@@ -48,7 +63,11 @@ func (r *Router) handleAuthRequestOTP(w http.ResponseWriter, req *http.Request) 
 	user, err := userRepo.GetUserByUsernameOrID(usernameOrID)
 	if err != nil {
 		r.logger.Error("failed to find user", zap.Error(err))
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"error": i18n.T(lang, "errors.internalError"),
+		})
 		return
 	}
 
@@ -57,7 +76,7 @@ func (r *Router) handleAuthRequestOTP(w http.ResponseWriter, req *http.Request) 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusNotFound)
 		json.NewEncoder(w).Encode(map[string]interface{}{
-			"error": "User not found. Please make sure you've started a conversation with the bot first.",
+			"error": i18n.T(lang, "errors.userNotFound"),
 		})
 		return
 	}
@@ -67,21 +86,33 @@ func (r *Router) handleAuthRequestOTP(w http.ResponseWriter, req *http.Request) 
 	code, _, err := r.otpRepo.GenerateOTP(user.ID, ttl)
 	if err != nil {
 		r.logger.Error("failed to generate OTP", zap.Error(err))
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"error": i18n.T(lang, "errors.internalError"),
+		})
 		return
 	}
 
 	// Send OTP via bot
 	if r.bot == nil {
 		r.logger.Error("cannot send OTP: Telegram bot not initialized")
-		http.Error(w, "OTP service unavailable (Telegram bot not configured)", http.StatusServiceUnavailable)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusServiceUnavailable)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"error": i18n.T(lang, "errors.otpServiceUnavailable"),
+		})
 		return
 	}
 
 	msg := tgbotapi.NewMessage(user.TelegramID, fmt.Sprintf("Your login code: %s\n\nValid for %d seconds.", code, r.config.WebApp.OTPTTLSeconds))
 	if _, err := r.bot.Send(msg); err != nil {
 		r.logger.Error("failed to send OTP", zap.Error(err))
-		http.Error(w, "Failed to send OTP", http.StatusInternalServerError)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"error": i18n.T(lang, "errors.failedToSendOTP"),
+		})
 		return
 	}
 
@@ -90,7 +121,7 @@ func (r *Router) handleAuthRequestOTP(w http.ResponseWriter, req *http.Request) 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]interface{}{
 		"success": true,
-		"message": "OTP code sent to your Telegram!",
+		"message": i18n.T(lang, "errors.otpSent"),
 		"user_id": user.ID,
 	})
 }
@@ -109,13 +140,23 @@ func (r *Router) handleAuthRequestOTP(w http.ResponseWriter, req *http.Request) 
 // @Failure      500  {string}  string  "Внутренняя ошибка сервера"
 // @Router       /auth/otp [post]
 func (r *Router) handleAuthOTP(w http.ResponseWriter, req *http.Request) {
+	lang := i18n.DetectLanguageFromRequest(req)
+	
 	if req.Method != http.MethodPost {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"error": i18n.T(lang, "errors.methodNotAllowed"),
+		})
 		return
 	}
 
 	if err := req.ParseForm(); err != nil {
-		http.Error(w, "Invalid form data", http.StatusBadRequest)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"error": i18n.T(lang, "errors.invalidFormData"),
+		})
 		return
 	}
 
@@ -132,14 +173,22 @@ func (r *Router) handleAuthOTP(w http.ResponseWriter, req *http.Request) {
 
 	if userIDStr == "" || code == "" {
 		r.logger.Warn("OTP validation failed: missing user_id or code")
-		http.Error(w, "user_id and code are required", http.StatusBadRequest)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"error": i18n.T(lang, "errors.userIdRequired"),
+		})
 		return
 	}
 
 	userID, err := strconv.ParseInt(userIDStr, 10, 64)
 	if err != nil {
 		r.logger.Warn("OTP validation failed: invalid user_id", zap.Error(err))
-		http.Error(w, "Invalid user_id", http.StatusBadRequest)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"error": i18n.T(lang, "errors.invalidUserId"),
+		})
 		return
 	}
 
@@ -153,7 +202,7 @@ func (r *Router) handleAuthOTP(w http.ResponseWriter, req *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusUnauthorized)
 		json.NewEncoder(w).Encode(map[string]interface{}{
-			"error": "Invalid or expired OTP code. Please try again.",
+			"error": i18n.T(lang, "errors.invalidToken"),
 		})
 		return
 	}
@@ -165,7 +214,11 @@ func (r *Router) handleAuthOTP(w http.ResponseWriter, req *http.Request) {
 	user, err := userRepo.GetUserByID(otp.UserID)
 	if err != nil || user == nil {
 		r.logger.Error("failed to get user", zap.Error(err))
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"error": i18n.T(lang, "errors.internalError"),
+		})
 		return
 	}
 
@@ -174,7 +227,11 @@ func (r *Router) handleAuthOTP(w http.ResponseWriter, req *http.Request) {
 	accessToken, refreshToken, err := auth.GenerateTokenPair(user.ID, user.TelegramID)
 	if err != nil {
 		r.logger.Error("failed to generate JWT tokens", zap.Error(err))
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"error": i18n.T(lang, "errors.internalError"),
+		})
 		return
 	}
 
@@ -183,7 +240,7 @@ func (r *Router) handleAuthOTP(w http.ResponseWriter, req *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]interface{}{
 		"success":       true,
-		"message":       "Authentication successful",
+		"message":       i18n.T(lang, "errors.authSuccessful"),
 		"access_token":  accessToken,
 		"refresh_token": refreshToken,
 		"token_type":    "Bearer",

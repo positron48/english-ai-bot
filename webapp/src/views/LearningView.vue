@@ -1,29 +1,32 @@
 <template>
   <div class="learning">
-    <h1>Learning</h1>
+    <h1>{{ t('learning.title') }}</h1>
     
     <div class="learning-sections">
       <router-link to="/learning/grammar" class="learning-card grammar-card">
         <div class="card-icon">
           <Icon name="book-open" />
         </div>
-        <h2>Grammar</h2>
-        <p>Grammar exercises and rules</p>
+        <h2>{{ t('learning.grammar') }}</h2>
+        <p>{{ t('learning.grammarDescription') }}</p>
       </router-link>
       
       <router-link to="/learning/words" class="learning-card words-card">
         <div class="card-icon">
           <Icon name="book" />
         </div>
-        <h2>Words</h2>
-        <p>Word sets and vocabulary library</p>
+        <h2>{{ t('learning.words') }}</h2>
+        <p>{{ t('learning.wordsDescription') }}</p>
       </router-link>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
 import Icon from '../components/Icon.vue'
+
+const { t } = useI18n()
 </script>
 
 <style scoped>

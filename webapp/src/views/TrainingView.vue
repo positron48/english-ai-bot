@@ -1,6 +1,6 @@
 <template>
   <div class="training">
-    <h1 v-if="!(sessionActive && currentCard)" class="training-title">Training</h1>
+    <h1 v-if="!(sessionActive && currentCard)" class="training-title">{{ t('training.title') }}</h1>
     
     <div v-if="sessionComplete && !sessionActive" class="card completion-screen">
       <!-- Animated percentage display -->
@@ -78,8 +78,8 @@
         <div class="completion-actions" v-if="statsLoaded">
           <div class="remaining-cards-info">
             <span class="remaining-text">
-              <span class="remaining-label">Available:</span>
-              {{ stats.availableForTraining }} cards
+              <span class="remaining-label">{{ t('training.available') }}</span>
+              {{ stats.availableForTraining }} {{ t('common.cards') || 'cards' }}
               <span v-if="estimatedTimeForRemaining">({{ estimatedTimeForRemaining }})</span>
             </span>
           </div>
@@ -88,7 +88,7 @@
             @click="startTraining" 
             class="btn btn-primary btn-continue"
           >
-            Continue Training
+            {{ t('training.continueTraining') || 'Continue Training' }}
           </button>
         </div>
       </div>
@@ -98,9 +98,9 @@
       <div class="start-screen-content">
         <div class="start-screen-stats" v-if="statsLoaded">
           <div class="start-stat-item">
-            <span class="start-stat-label">Available for Training</span>
+            <span class="start-stat-label">{{ t('training.availableForTraining') }}</span>
             <span class="start-stat-value">
-              {{ stats.availableForTraining }} cards
+              {{ stats.availableForTraining }} {{ t('common.cards') || 'cards' }}
               <span v-if="estimatedTime">({{ estimatedTime }})</span>
             </span>
           </div>
@@ -109,8 +109,8 @@
         <!-- Upcoming cards chart -->
         <div v-if="statsLoaded && upcomingCardsLoaded" class="upcoming-cards-chart">
           <div class="chart-header">
-            <h3 class="chart-title">Upcoming Cards This Week</h3>
-            <div class="chart-subtitle">Cards scheduled to appear in the next 7 days</div>
+            <h3 class="chart-title">{{ t('training.upcomingCards') }}</h3>
+            <div class="chart-subtitle">{{ t('training.upcomingCardsDescription') }}</div>
           </div>
           <div class="chart-container">
             <canvas ref="upcomingChartCanvas"></canvas>
@@ -118,24 +118,24 @@
         </div>
         
         <button v-if="statsLoaded && stats.availableForTraining > 0" @click="startTraining" class="btn btn-primary btn-start">
-          Start Training
+          {{ t('training.startTraining') || 'Start Training' }}
         </button>
         <p v-if="statsLoaded && stats.availableForTraining === 0" class="no-cards-message">
-          No cards available for training. Add some words to your vocabulary first!
+          {{ t('training.noCardsAvailable') }}
         </p>
       </div>
     </div>
 
-    <div v-if="loading" class="loading">Loading...</div>
+    <div v-if="loading" class="loading">{{ t('common.loading') }}</div>
 
     <!-- Network error notification -->
     <div v-if="networkError" class="network-error-notification">
       <div class="network-error-content">
         <Icon name="warning" class="network-error-icon" />
         <div class="network-error-text">
-          <div class="network-error-title">Проблемы с сетью</div>
+          <div class="network-error-title">{{ t('training.networkError') }}</div>
           <div class="network-error-message">
-            {{ networkErrorRetrying ? `Попытка восстановить связь (${networkErrorAttempt}/${networkErrorMaxAttempts})...` : 'Не удалось подключиться к серверу' }}
+            {{ networkErrorRetrying ? t('common.retrying', { attempt: networkErrorAttempt, max: networkErrorMaxAttempts }) : t('common.networkError') }}
           </div>
         </div>
       </div>
@@ -153,7 +153,7 @@
       @touchcancel="waitingDelay ? handleTimerMouseLeave() : null"
     >
       <div class="training-progress" v-if="cardIndex > 0 && totalCards > 0">
-        <p>Card {{ cardIndex }} of {{ totalCards }}</p>
+        <p>{{ t('training.cardOf', { current: cardIndex, total: totalCards }) }}</p>
       </div>
 
       <div class="question" v-html="processedQuestion"></div>
@@ -314,12 +314,17 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { apiClient } from '../api/client'
 import { showAlert } from '../composables/useDialog'
 import { useSettings } from '../composables/useSettings'
 import { useAudio } from '../composables/useAudio'
+import { useLocale } from '../composables/useLocale'
 import { Chart, registerables } from 'chart.js'
 import Icon from '../components/Icon.vue'
+
+const { t } = useI18n()
+const { currentLocale } = useLocale()
 
 Chart.register(...registerables)
 
@@ -408,11 +413,11 @@ const estimatedTime = computed(() => {
   const minutes = Math.floor(totalSeconds / 60)
   
   if (minutes < 1) {
-    return 'less than 1 minute'
+    return t('training.lessThanMinute')
   } else if (minutes === 1) {
-    return '~1 minute'
+    return t('training.oneMinute')
   } else {
-    return `~${minutes} minutes`
+    return t('training.minutes', { minutes })
   }
 })
 
@@ -426,11 +431,11 @@ const estimatedTimeForRemaining = computed(() => {
   const minutes = Math.floor(totalSeconds / 60)
   
   if (minutes < 1) {
-    return '~1 min'
+    return t('training.oneMin')
   } else if (minutes === 1) {
-    return '~1 min'
+    return t('training.oneMin')
   } else {
-    return `~${minutes} min`
+    return t('training.min', { minutes })
   }
 })
 
@@ -729,6 +734,13 @@ watch(() => sessionComplete.value, (complete) => {
 })
 
 // Play victory/defeat melodies when animations start
+// Watch for locale changes and rebuild chart to update labels
+watch(() => currentLocale.value, () => {
+  if (upcomingCardsLoaded.value && upcomingCardsData.value && Object.keys(upcomingCardsData.value).length > 0) {
+    updateUpcomingChart()
+  }
+})
+
 watch([() => percentageAnimationComplete.value, () => accuracyPercentage.value], ([complete, percentage]) => {
   if (!complete || !settings.value.soundsEnabled) return
   
@@ -1059,7 +1071,7 @@ const updateUpcomingChart = () => {
     data: {
       labels: labels,
       datasets: [{
-        label: 'Cards',
+        label: t('common.cards') || 'Cards',
         data: counts,
         backgroundColor: hexToRgba(primaryColor, isDark ? 0.7 : 0.6),
         borderColor: primaryColor,
@@ -1083,7 +1095,7 @@ const updateUpcomingChart = () => {
           callbacks: {
             label: function(context) {
               const value = context.parsed.y || 0
-              return `${value} ${value === 1 ? 'card' : 'cards'}`
+              return t('training.chartCardsTooltip', value, { count: value })
             }
           }
         }
