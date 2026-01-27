@@ -34,4 +34,3 @@ func getUserPermissionsFromContext(ctx context.Context) []string {
 	}
 	return []string{}
 }
-
