@@ -30,7 +30,7 @@ import { useI18n } from 'vue-i18n'
 import { apiClient } from '../api/client'
 import Icon from './Icon.vue'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 interface Breadcrumb {
   label: string
@@ -82,7 +82,12 @@ const loadGrammarSectionName = async (sectionId: string) => {
     const section = categories.find((s: any) => s.section_id === sectionId)
     
     if (section?.title) {
-      grammarSectionName.value = section.title
+      const currentLocale = locale.value
+      if (currentLocale && currentLocale !== 'en' && section.title_translations?.[currentLocale]) {
+        grammarSectionName.value = section.title_translations[currentLocale]
+      } else {
+        grammarSectionName.value = section.title
+      }
       grammarSectionId.value = sectionId
     } else {
       // Fallback: format sectionId
@@ -105,7 +110,13 @@ const loadGrammarChapterName = async (chapterId: string) => {
     
     // Extract title - API returns { title: string, chapter: Chapter }
     if (data.title) {
-      grammarChapterName.value = data.title
+      const currentLocale = locale.value
+      const translations = data.title_translations || data.chapter?.title_translations
+      if (currentLocale && currentLocale !== 'en' && translations?.[currentLocale]) {
+        grammarChapterName.value = translations[currentLocale]
+      } else {
+        grammarChapterName.value = data.title
+      }
     } else {
       // Fallback: format chapterId
       grammarChapterName.value = chapterId.replace(/^en\.grammar\./, '').replace(/_/g, ' ')
@@ -486,6 +497,22 @@ watch(() => [route.path, route.query.category_id], ([newPath, categoryId]) => {
     // Не очищаем categories, они могут понадобиться
   }
 }, { immediate: true })
+
+watch(() => locale.value, () => {
+  if (!route.path.startsWith('/learning/grammar/')) {
+    return
+  }
+  const parts = route.path.split('/').filter(p => p)
+  if (parts.length === 3 && parts[0] === 'learning' && parts[1] === 'grammar' && parts[2] !== 'chapter') {
+    loadGrammarSectionName(parts[2])
+  } else if (parts.length === 4 && parts[0] === 'learning' && parts[1] === 'grammar' && parts[2] === 'chapter') {
+    loadGrammarChapterName(parts[3])
+  } else if (parts.length === 4 && parts[0] === 'learning' && parts[1] === 'grammar' && parts[3] === 'test') {
+    loadGrammarSectionName(parts[2])
+  } else if (parts.length === 5 && parts[0] === 'learning' && parts[1] === 'grammar' && parts[2] === 'chapter' && parts[4] === 'test') {
+    loadGrammarChapterName(parts[3])
+  }
+})
 
 onMounted(() => {
   // Всегда загружаем категории, если их еще нет, чтобы они были доступны для крошек

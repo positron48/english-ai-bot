@@ -46,7 +46,7 @@
             class="chapter-link"
           >
             <div class="chapter-info">
-              <h3>{{ chapter.title }}</h3>
+              <h3>{{ getLocalizedTitle(chapter.title, chapter.title_translations) }}</h3>
               <div class="chapter-meta">
                 <span v-if="chapter.level" class="chapter-level">{{ chapter.level }}</span>
                 <span v-if="chapter.estimated_minutes" class="chapter-time">
@@ -66,7 +66,7 @@
           </router-link>
           <div v-else class="chapter-link locked-link">
             <div class="chapter-info">
-              <h3>{{ chapter.title }}</h3>
+              <h3>{{ getLocalizedTitle(chapter.title, chapter.title_translations) }}</h3>
               <div class="chapter-meta">
                 <span v-if="chapter.level" class="chapter-level">{{ chapter.level }}</span>
                 <span v-if="chapter.estimated_minutes" class="chapter-time">
@@ -94,12 +94,13 @@ import { useRoute, useRouter } from 'vue-router'
 import { apiClient } from '../api/client'
 import Icon from '../components/Icon.vue'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const route = useRoute()
 
 interface Chapter {
   chapter_id: string
   title: string
+  title_translations?: Record<string, string>
   title_short?: string
   description?: string
   level?: string
@@ -115,7 +116,8 @@ const router = useRouter()
 const sectionId = computed(() => route.params.sectionId as string)
 
 const chapters = ref<Chapter[]>([])
-const categoryTitle = ref('')
+const categoryTitleBase = ref('')
+const categoryTitleTranslations = ref<Record<string, string> | null>(null)
 const loading = ref(true)
 const error = ref<string | null>(null)
 const accessError = ref(false)
@@ -133,6 +135,18 @@ const bannerMessage = computed(() => {
   return t('grammar.allChaptersCompletedTakeTest')
 })
 
+const getLocalizedTitle = (title: string, titleTranslations?: Record<string, string>) => {
+  const currentLocale = locale.value
+  if (currentLocale && currentLocale !== 'en' && titleTranslations?.[currentLocale]) {
+    return titleTranslations[currentLocale]
+  }
+  return title
+}
+
+const categoryTitle = computed(() => {
+  return getLocalizedTitle(categoryTitleBase.value, categoryTitleTranslations.value || undefined)
+})
+
 const loadCategoryTitle = async () => {
   try {
     const data: any = await apiClient.request('/api/learning/grammar/categories')
@@ -140,7 +154,8 @@ const loadCategoryTitle = async () => {
     const section = categories.find((s: any) => s.section_id === sectionId.value)
     
     if (section?.title) {
-      categoryTitle.value = section.title
+      categoryTitleBase.value = section.title
+      categoryTitleTranslations.value = section.title_translations || null
     } else {
       // Fallback: format sectionId with proper capitalization
       const formatted = sectionId.value
@@ -149,7 +164,8 @@ const loadCategoryTitle = async () => {
         .split(' ')
         .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ')
-      categoryTitle.value = formatted
+      categoryTitleBase.value = formatted
+      categoryTitleTranslations.value = null
     }
     
     // Check if next category is accessible
@@ -174,7 +190,8 @@ const loadCategoryTitle = async () => {
       .split(' ')
       .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ')
-    categoryTitle.value = formatted
+    categoryTitleBase.value = formatted
+    categoryTitleTranslations.value = null
   }
 }
 

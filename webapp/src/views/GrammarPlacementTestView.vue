@@ -202,7 +202,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, nextTick } from 'vue'
+import { ref, computed, onMounted, nextTick, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { marked } from 'marked'
@@ -210,7 +210,7 @@ import { apiClient } from '../api/client'
 import GrammarQuestion from '../components/GrammarQuestion.vue'
 import ConfirmModal from '../components/ConfirmModal.vue'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const router = useRouter()
 
 const questions = ref<any[]>([])
@@ -330,14 +330,20 @@ const loadTest = async () => {
 
 const loadSectionNames = async () => {
   try {
-    const response: { categories: Array<{ section_id: string; title: string }> } = await apiClient.request(
+    const response: { categories: Array<{ section_id: string; title: string; title_translations?: Record<string, string> }> } = await apiClient.request(
       '/api/learning/grammar/categories'
     )
     const names: Record<string, string> = {}
     if (response.categories && Array.isArray(response.categories)) {
       response.categories.forEach((item: any) => {
         if (item.section_id) {
-          names[item.section_id] = item.title || item.section_id
+          const titleTranslations = item.title_translations as Record<string, string> | undefined
+          const currentLocale = locale.value
+          if (currentLocale && currentLocale !== 'en' && titleTranslations?.[currentLocale]) {
+            names[item.section_id] = titleTranslations[currentLocale]
+          } else {
+            names[item.section_id] = item.title || item.section_id
+          }
         }
       })
     }
@@ -346,6 +352,12 @@ const loadSectionNames = async () => {
     console.warn('Failed to load section names:', err)
   }
 }
+
+watch(() => locale.value, () => {
+  if (Object.keys(sectionNames.value).length > 0) {
+    loadSectionNames()
+  }
+})
 
 const getSectionName = (sectionId: string): string => {
   return sectionNames.value[sectionId] || sectionId

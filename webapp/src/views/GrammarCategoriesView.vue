@@ -151,10 +151,9 @@
           class="category-link"
         >
           <div class="category-header">
-            <h2>{{ category.title }}</h2>
+            <h2>{{ getLocalizedTitle(category.title, category.title_translations) }}</h2>
             <span class="category-level">{{ category.level }}</span>
           </div>
-          <p class="category-description">{{ category.title }}</p>
           <div class="category-progress">
             <div class="progress-bar">
               <div 
@@ -172,10 +171,9 @@
         </router-link>
         <div v-else class="category-link locked-link">
           <div class="category-header">
-            <h2>{{ category.title }}</h2>
+            <h2>{{ getLocalizedTitle(category.title, category.title_translations) }}</h2>
             <span class="category-level">{{ category.level }}</span>
           </div>
-          <p class="category-description">{{ category.title }}</p>
           <div class="category-progress">
             <div class="progress-bar">
               <div 
@@ -207,13 +205,14 @@ import { useI18n } from 'vue-i18n'
 import { apiClient } from '../api/client'
 import Icon from '../components/Icon.vue'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 const route = useRoute()
 
 interface Category {
   section_id: string
   title: string
+  title_translations?: Record<string, string>
   level: string
   order: number
   published_chapters: number
@@ -244,6 +243,13 @@ const availableCategories = computed(() => {
   return categories.value.filter(cat => cat.can_access).length
 })
 
+const getLocalizedTitle = (title: string, titleTranslations?: Record<string, string>) => {
+  const currentLocale = locale.value
+  if (currentLocale && currentLocale !== 'en' && titleTranslations?.[currentLocale]) {
+    return titleTranslations[currentLocale]
+  }
+  return title
+}
 
 const levelBadgeClass = computed(() => {
   const level = statistics.value?.confirmed_level || ''
@@ -640,12 +646,6 @@ onMounted(() => {
   border-radius: 4px;
   font-size: 12px;
   font-weight: 600;
-}
-
-.category-description {
-  color: var(--text-secondary);
-  font-size: 14px;
-  margin: 0 0 16px 0;
 }
 
 .category-progress {

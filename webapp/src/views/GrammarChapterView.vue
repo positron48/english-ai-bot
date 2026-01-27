@@ -116,7 +116,7 @@ import GrammarQuestion from '../components/GrammarQuestion.vue'
 import { useSettings } from '../composables/useSettings'
 import { useAudio } from '../composables/useAudio'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const chapterId = computed(() => route.params.chapterId as string)
@@ -125,20 +125,37 @@ const { settings } = useSettings()
 const { playSuccess, playFail } = useAudio()
 
 const chapter = ref<any>(null)
-const chapterTitle = ref('')
+const chapterTitleOverride = ref<string | null>(null)
 const loading = ref(true)
 const error = ref<string | null>(null)
 const questionMap = ref<Map<string, any>>(new Map())
+
+const getLocalizedTitle = (title: string, titleTranslations?: Record<string, string>) => {
+  const currentLocale = locale.value
+  if (currentLocale && currentLocale !== 'en' && titleTranslations?.[currentLocale]) {
+    return titleTranslations[currentLocale]
+  }
+  return title
+}
+
+const chapterTitle = computed(() => {
+  const baseTitle = chapterTitleOverride.value || chapter.value?.title || chapterId.value
+  const translations = chapter.value?.title_translations
+  return getLocalizedTitle(baseTitle, translations)
+})
 
 const loadChapter = async () => {
   loading.value = true
   error.value = null
   try {
-    const data: { chapter: any; title: string } = await apiClient.request(
+    const data: { chapter: any; title: string; title_translations?: Record<string, string> } = await apiClient.request(
       `/api/learning/grammar/chapters/${chapterId.value}`
     )
     chapter.value = data.chapter
-    chapterTitle.value = data.title || chapter.value?.title || chapterId.value
+    chapterTitleOverride.value = data.title || null
+    if (data.title_translations && chapter.value) {
+      chapter.value.title_translations = data.title_translations
+    }
     
     // Build question map for quick lookup
     if (chapter.value?.question_bank?.questions) {

@@ -27,11 +27,12 @@ func NewGrammarContentRepository(logger *zap.Logger) *GrammarContentRepository {
 
 // Section represents a grammar course section (category)
 type Section struct {
-	SectionID  string   `json:"section_id"`
-	Title      string   `json:"title"`
-	Level      string   `json:"level"`
-	Order      int      `json:"order"`
-	ChapterIDs []string `json:"chapter_ids"`
+	SectionID         string            `json:"section_id"`
+	Title             string            `json:"title"`
+	TitleTranslations map[string]string `json:"title_translations,omitempty"`
+	Level             string            `json:"level"`
+	Order             int               `json:"order"`
+	ChapterIDs        []string          `json:"chapter_ids"`
 }
 
 // SectionsData represents the sections configuration
@@ -42,23 +43,24 @@ type SectionsData struct {
 
 // Chapter represents a grammar chapter
 type Chapter struct {
-	SchemaVersion string                 `json:"schema_version"`
-	ID            string                 `json:"id"`
-	SectionID     string                 `json:"section_id"`
-	Title         string                 `json:"title"`
-	TitleShort    string                 `json:"title_short,omitempty"`
-	Description   string                 `json:"description,omitempty"`
-	UILanguage    string                 `json:"ui_language"`
-	TargetLanguage string                `json:"target_language"`
-	Level         string                 `json:"level,omitempty"`
-	Order         int                    `json:"order"`
-	Prerequisites []string               `json:"prerequisites,omitempty"`
-	LearningObjectives []string          `json:"learning_objectives,omitempty"`
-	EstimatedMinutes int                 `json:"estimated_minutes,omitempty"`
-	Blocks         []interface{}         `json:"blocks"`
-	QuestionBank   map[string]interface{} `json:"question_bank"`
-	ChapterTest   map[string]interface{} `json:"chapter_test"`
-	Meta          map[string]interface{} `json:"meta,omitempty"`
+	SchemaVersion      string                 `json:"schema_version"`
+	ID                 string                 `json:"id"`
+	SectionID          string                 `json:"section_id"`
+	Title              string                 `json:"title"`
+	TitleTranslations  map[string]string      `json:"title_translations,omitempty"`
+	TitleShort         string                 `json:"title_short,omitempty"`
+	Description        string                 `json:"description,omitempty"`
+	UILanguage         string                 `json:"ui_language"`
+	TargetLanguage     string                 `json:"target_language"`
+	Level              string                 `json:"level,omitempty"`
+	Order              int                    `json:"order"`
+	Prerequisites      []string               `json:"prerequisites,omitempty"`
+	LearningObjectives []string               `json:"learning_objectives,omitempty"`
+	EstimatedMinutes   int                    `json:"estimated_minutes,omitempty"`
+	Blocks             []interface{}          `json:"blocks"`
+	QuestionBank       map[string]interface{} `json:"question_bank"`
+	ChapterTest        map[string]interface{} `json:"chapter_test"`
+	Meta               map[string]interface{} `json:"meta,omitempty"`
 }
 
 // IndexData represents the bundle index

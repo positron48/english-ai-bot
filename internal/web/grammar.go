@@ -42,16 +42,17 @@ func (r *Router) handleLearningGrammarCategories(w http.ResponseWriter, req *htt
 	}
 
 	type CategoryResponse struct {
-		SectionID          string `json:"section_id"`
-		Title              string `json:"title"`
-		Level              string `json:"level"`
-		Order              int    `json:"order"`
-		PublishedChapters  int    `json:"published_chapters"`
-		PassedChapters     int    `json:"passed_chapters"`
-		TotalChapters      int    `json:"total_chapters"`
-		ProgressPercentage int    `json:"progress_percentage"`
-		CanAccess          bool   `json:"can_access"`
-		CategoryTestScore  *int   `json:"category_test_score,omitempty"`
+		SectionID          string            `json:"section_id"`
+		Title              string            `json:"title"`
+		TitleTranslations  map[string]string `json:"title_translations,omitempty"`
+		Level              string            `json:"level"`
+		Order              int               `json:"order"`
+		PublishedChapters  int               `json:"published_chapters"`
+		PassedChapters     int               `json:"passed_chapters"`
+		TotalChapters      int               `json:"total_chapters"`
+		ProgressPercentage int               `json:"progress_percentage"`
+		CanAccess          bool              `json:"can_access"`
+		CategoryTestScore  *int              `json:"category_test_score,omitempty"`
 	}
 
 	categories := make([]CategoryResponse, 0, len(sections))
@@ -61,17 +62,18 @@ func (r *Router) handleLearningGrammarCategories(w http.ResponseWriter, req *htt
 			r.logger.Warn("failed to check section access, defaulting to false", zap.String("section_id", section.Section.SectionID), zap.Error(errAccess))
 			canAccess = false
 		}
-		
+
 		// Get category test best score
 		var categoryTestScore *int
 		bestScore, errScore := r.grammarService.AttemptRepo.GetCategoryTestBestScore(userID, section.Section.SectionID)
 		if errScore == nil && bestScore > 0 {
 			categoryTestScore = &bestScore
 		}
-		
+
 		categories = append(categories, CategoryResponse{
 			SectionID:          section.Section.SectionID,
 			Title:              section.Title,
+			TitleTranslations:  section.Section.TitleTranslations,
 			Level:              section.Section.Level,
 			Order:              section.Section.Order,
 			PublishedChapters:  section.PublishedChapters,
@@ -117,19 +119,19 @@ func (r *Router) handleLearningGrammarChapters(w http.ResponseWriter, req *http.
 
 	// Extract section_id from path
 	path := strings.TrimPrefix(req.URL.Path, "/api/learning/grammar/categories/")
-	
+
 	// Check if it's an access check request
 	if strings.HasSuffix(path, "/access") {
 		r.handleLearningGrammarSectionAccess(w, req)
 		return
 	}
-	
+
 	// Check if it's a category test request
 	if strings.HasSuffix(path, "/test") {
 		r.handleLearningGrammarCategoryTest(w, req)
 		return
 	}
-	
+
 	sectionID := strings.TrimSuffix(path, "/chapters")
 	sectionID = strings.Trim(sectionID, "/")
 
@@ -150,32 +152,34 @@ func (r *Router) handleLearningGrammarChapters(w http.ResponseWriter, req *http.
 	}
 
 	type ChapterResponse struct {
-		ChapterID        string `json:"chapter_id"`
-		Title            string `json:"title"`
-		TitleShort       string `json:"title_short,omitempty"`
-		Description      string `json:"description,omitempty"`
-		Level            string `json:"level,omitempty"`
-		Order            int    `json:"order"`
-		EstimatedMinutes int    `json:"estimated_minutes,omitempty"`
-		BestScore        int    `json:"best_score"`
-		Passed           bool   `json:"passed"`
-		LastAttemptAt    string `json:"last_attempt_at,omitempty"`
-		CanAccess        bool   `json:"can_access"`
+		ChapterID         string            `json:"chapter_id"`
+		Title             string            `json:"title"`
+		TitleTranslations map[string]string `json:"title_translations,omitempty"`
+		TitleShort        string            `json:"title_short,omitempty"`
+		Description       string            `json:"description,omitempty"`
+		Level             string            `json:"level,omitempty"`
+		Order             int               `json:"order"`
+		EstimatedMinutes  int               `json:"estimated_minutes,omitempty"`
+		BestScore         int               `json:"best_score"`
+		Passed            bool              `json:"passed"`
+		LastAttemptAt     string            `json:"last_attempt_at,omitempty"`
+		CanAccess         bool              `json:"can_access"`
 	}
 
 	chapterList := make([]ChapterResponse, 0, len(chapters))
 	for _, chapter := range chapters {
 		resp := ChapterResponse{
-			ChapterID:        chapter.Chapter.ID,
-			Title:            chapter.Title,
-			TitleShort:       chapter.Chapter.TitleShort,
-			Description:      chapter.Chapter.Description,
-			Level:            chapter.Chapter.Level,
-			Order:            chapter.Chapter.Order,
-			EstimatedMinutes: chapter.Chapter.EstimatedMinutes,
-			BestScore:        chapter.Progress.BestScore,
-			Passed:           chapter.Progress.Passed,
-			CanAccess:        chapter.CanAccess,
+			ChapterID:         chapter.Chapter.ID,
+			Title:             chapter.Title,
+			TitleTranslations: chapter.Chapter.TitleTranslations,
+			TitleShort:        chapter.Chapter.TitleShort,
+			Description:       chapter.Chapter.Description,
+			Level:             chapter.Chapter.Level,
+			Order:             chapter.Chapter.Order,
+			EstimatedMinutes:  chapter.Chapter.EstimatedMinutes,
+			BestScore:         chapter.Progress.BestScore,
+			Passed:            chapter.Progress.Passed,
+			CanAccess:         chapter.CanAccess,
 		}
 		if !chapter.Progress.LastAttemptAt.IsZero() {
 			resp.LastAttemptAt = chapter.Progress.LastAttemptAt.Format("2006-01-02T15:04:05Z")
@@ -194,7 +198,7 @@ func (r *Router) handleLearningGrammarChapters(w http.ResponseWriter, req *http.
 func (r *Router) handleLearningGrammarChapterOrTest(w http.ResponseWriter, req *http.Request) {
 	path := strings.TrimPrefix(req.URL.Path, "/api/learning/grammar/chapters/")
 	path = strings.Trim(path, "/")
-	
+
 	// Check if it's a "next chapter" request
 	if strings.HasSuffix(path, "/next") {
 		r.handleLearningGrammarNextChapter(w, req)
@@ -206,13 +210,13 @@ func (r *Router) handleLearningGrammarChapterOrTest(w http.ResponseWriter, req *
 		r.handleLearningGrammarChapterAccess(w, req)
 		return
 	}
-	
+
 	// Check if it's a test request
 	if strings.HasSuffix(path, "/test") {
 		r.handleLearningGrammarChapterTest(w, req)
 		return
 	}
-	
+
 	// Otherwise it's a chapter content request
 	r.handleLearningGrammarChapter(w, req)
 }
@@ -266,9 +270,9 @@ func (r *Router) handleLearningGrammarNextChapter(w http.ResponseWriter, req *ht
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]interface{}{
-		"section_id":       sectionID,
-		"is_last":          isLast,
-		"next_chapter_id":  nextID,
+		"section_id":      sectionID,
+		"is_last":         isLast,
+		"next_chapter_id": nextID,
 	})
 }
 
@@ -322,8 +326,9 @@ func (r *Router) handleLearningGrammarChapter(w http.ResponseWriter, req *http.R
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]interface{}{
-		"chapter": content.Chapter,
-		"title":   content.Title,
+		"chapter":            content.Chapter,
+		"title":              content.Title,
+		"title_translations": content.Chapter.TitleTranslations,
 	})
 }
 
@@ -409,7 +414,7 @@ func (r *Router) handleLearningGrammarChapterTest(w http.ResponseWriter, req *ht
 	// Extract chapter_id from path
 	path := strings.TrimPrefix(req.URL.Path, "/api/learning/grammar/chapters/")
 	path = strings.Trim(path, "/")
-	
+
 	// Remove /test suffix if present
 	chapterID := strings.TrimSuffix(path, "/test")
 	chapterID = strings.Trim(chapterID, "/")
@@ -460,9 +465,9 @@ func (r *Router) handleLearningGrammarSubmitTest(w http.ResponseWriter, req *htt
 	}
 
 	var request struct {
-		Scope   string                `json:"scope"`     // "chapter" or "category"
-		ScopeID string                `json:"scope_id"`  // chapter_id or section_id
-		Answers []service.AnswerItem  `json:"answers"`   // array of answer objects in test order
+		Scope   string               `json:"scope"`    // "chapter" or "category"
+		ScopeID string               `json:"scope_id"` // chapter_id or section_id
+		Answers []service.AnswerItem `json:"answers"`  // array of answer objects in test order
 	}
 
 	if err := json.NewDecoder(req.Body).Decode(&request); err != nil {
@@ -521,7 +526,7 @@ func (r *Router) handleLearningGrammarChapterAccess(w http.ResponseWriter, req *
 	// Extract chapter_id from path
 	path := strings.TrimPrefix(req.URL.Path, "/api/learning/grammar/chapters/")
 	path = strings.Trim(path, "/")
-	
+
 	// Remove /access suffix if present
 	chapterID := strings.TrimSuffix(path, "/access")
 	chapterID = strings.Trim(chapterID, "/")
@@ -644,9 +649,9 @@ func (r *Router) handleLearningGrammarStatistics(w http.ResponseWriter, req *htt
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]interface{}{
-		"confirmed_level":          stats.ConfirmedLevel,
-		"course_completion_pct":    stats.CourseCompletionPct,
-		"average_test_score":       stats.AverageTestScore,
+		"confirmed_level":            stats.ConfirmedLevel,
+		"course_completion_pct":      stats.CourseCompletionPct,
+		"average_test_score":         stats.AverageTestScore,
 		"hide_placement_test_button": hidePlacementTestButton,
 	})
 }
