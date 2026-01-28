@@ -190,6 +190,15 @@ func TestRouter_HasPermission(t *testing.T) {
 		t.Fatalf("Failed to assign category to user: %v", err)
 	}
 
+	fullAccessCategoryID, err := accessCategoryRepo.CreateCategory(&models.UserAccessCategory{Name: "Full Access"})
+	if err != nil {
+		t.Fatalf("Failed to create full access category: %v", err)
+	}
+	err = accessCategoryRepo.SetCategoryPermissions(fullAccessCategoryID, []string{string(PermissionFullAccess)})
+	if err != nil {
+		t.Fatalf("Failed to set full access permissions: %v", err)
+	}
+
 	tests := []struct {
 		name       string
 		userID     int64
@@ -277,6 +286,93 @@ func TestRouter_RequirePermission(t *testing.T) {
 
 			if rr.Code != tt.expected {
 				t.Errorf("RequirePermission() status = %d, want %d", rr.Code, tt.expected)
+			}
+		})
+	}
+}
+
+func TestRouter_RequireAnyPermission(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, err := database.New(":memory:", logger)
+	if err != nil {
+		t.Fatalf("Failed to create database: %v", err)
+	}
+	defer db.Close()
+
+	cfg := &config.Config{
+		Admin: config.AdminConfig{
+			TelegramID: 12345,
+		},
+		WebApp: config.WebAppConfig{
+			JWTSecret: "test-secret",
+		},
+	}
+
+	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db.GetConnection(), logger)
+
+	router := NewRouter(logger, cfg, db.GetConnection(), nil, nil, nil, nil)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+
+	adminUser, err := userRepo.GetOrCreateUser(12345)
+	if err != nil {
+		t.Fatalf("Failed to create admin user: %v", err)
+	}
+	regularUser, err := userRepo.GetOrCreateUser(99999)
+	if err != nil {
+		t.Fatalf("Failed to create regular user: %v", err)
+	}
+
+	categoryID, err := accessCategoryRepo.CreateCategory(&models.UserAccessCategory{Name: "Any Perms"})
+	if err != nil {
+		t.Fatalf("Failed to create category: %v", err)
+	}
+	err = accessCategoryRepo.SetCategoryPermissions(categoryID, []string{"words.read_all"})
+	if err != nil {
+		t.Fatalf("Failed to set category permissions: %v", err)
+	}
+	err = accessCategoryRepo.SetUserCategories(regularUser.ID, []int64{categoryID})
+	if err != nil {
+		t.Fatalf("Failed to assign category to user: %v", err)
+	}
+
+	fullAccessCategoryID, err := accessCategoryRepo.CreateCategory(&models.UserAccessCategory{Name: "Full Access"})
+	if err != nil {
+		t.Fatalf("Failed to create full access category: %v", err)
+	}
+	err = accessCategoryRepo.SetCategoryPermissions(fullAccessCategoryID, []string{string(PermissionFullAccess)})
+	if err != nil {
+		t.Fatalf("Failed to set full access permissions: %v", err)
+	}
+
+	handler := func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	}
+
+	tests := []struct {
+		name       string
+		userID     int64
+		categories []int64
+		wantStatus int
+	}{
+		{"super admin allowed", adminUser.ID, []int64{}, http.StatusOK},
+		{"user with any permission allowed", regularUser.ID, []int64{categoryID}, http.StatusOK},
+		{"user with full access allowed", regularUser.ID, []int64{fullAccessCategoryID}, http.StatusOK},
+		{"user without permissions forbidden", regularUser.ID, []int64{}, http.StatusForbidden},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			req := httptest.NewRequest(http.MethodGet, "/test", nil)
+			ctx := context.WithValue(req.Context(), userIDKey, tt.userID)
+			ctx = context.WithValue(ctx, userCategoriesKey, tt.categories)
+			req = req.WithContext(ctx)
+			w := httptest.NewRecorder()
+
+			router.RequireAnyPermission(PermissionWordsReadAll, PermissionWordsEditAll)(handler)(w, req)
+
+			if w.Code != tt.wantStatus {
+				t.Fatalf("expected %d, got %d", tt.wantStatus, w.Code)
 			}
 		})
 	}

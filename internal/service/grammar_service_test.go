@@ -359,3 +359,101 @@ func TestGrammarService_GetChapterContent_Filtering(t *testing.T) {
 		}
 	}
 }
+
+func TestGrammarService_CanAccessSection(t *testing.T) {
+	svc, contentRepo, _, attemptRepo, cleanup := setupGrammarService(t)
+	defer cleanup()
+
+	sectionsData, err := contentRepo.GetSections()
+	if err != nil {
+		t.Fatalf("failed to get sections: %v", err)
+	}
+	if len(sectionsData.Sections) < 2 {
+		t.Fatalf("expected at least 2 sections")
+	}
+
+	firstSection := sectionsData.Sections[0]
+	secondSection := sectionsData.Sections[1]
+
+	canFirst, err := svc.CanAccessSection(context.Background(), 1, firstSection.SectionID)
+	if err != nil {
+		t.Fatalf("CanAccessSection error: %v", err)
+	}
+	if !canFirst {
+		t.Fatalf("expected first section to be accessible")
+	}
+
+	canSecond, err := svc.CanAccessSection(context.Background(), 1, secondSection.SectionID)
+	if err != nil {
+		t.Fatalf("CanAccessSection error: %v", err)
+	}
+	if canSecond {
+		t.Fatalf("expected second section to be locked without progress")
+	}
+
+	// Allow via placement result
+	if err := attemptRepo.SavePlacementTestResult(1, 10, 10, []string{secondSection.SectionID}); err != nil {
+		t.Fatalf("SavePlacementTestResult error: %v", err)
+	}
+
+	canSecond, err = svc.CanAccessSection(context.Background(), 1, secondSection.SectionID)
+	if err != nil {
+		t.Fatalf("CanAccessSection error: %v", err)
+	}
+	if !canSecond {
+		t.Fatalf("expected second section to be accessible via placement")
+	}
+}
+
+func TestGrammarService_CanAccessChapter(t *testing.T) {
+	svc, contentRepo, publishRepo, attemptRepo, cleanup := setupGrammarService(t)
+	defer cleanup()
+
+	sectionsData, err := contentRepo.GetSections()
+	if err != nil {
+		t.Fatalf("failed to get sections: %v", err)
+	}
+	section := sectionsData.Sections[0]
+	if len(section.ChapterIDs) < 2 {
+		t.Fatalf("expected at least 2 chapters")
+	}
+
+	// Publish section and first two chapters
+	if err := publishRepo.SetPublished("section", section.SectionID, true, nil); err != nil {
+		t.Fatalf("failed to publish section: %v", err)
+	}
+	if err := publishRepo.SetPublished("chapter", section.ChapterIDs[0], true, nil); err != nil {
+		t.Fatalf("failed to publish chapter: %v", err)
+	}
+	if err := publishRepo.SetPublished("chapter", section.ChapterIDs[1], true, nil); err != nil {
+		t.Fatalf("failed to publish chapter: %v", err)
+	}
+
+	canFirst, err := svc.CanAccessChapter(context.Background(), 1, section.ChapterIDs[0])
+	if err != nil {
+		t.Fatalf("CanAccessChapter error: %v", err)
+	}
+	if !canFirst {
+		t.Fatalf("expected first chapter to be accessible")
+	}
+
+	canSecond, err := svc.CanAccessChapter(context.Background(), 1, section.ChapterIDs[1])
+	if err != nil {
+		t.Fatalf("CanAccessChapter error: %v", err)
+	}
+	if canSecond {
+		t.Fatalf("expected second chapter to be locked before passing first")
+	}
+
+	if err := attemptRepo.UpdateProgress(1, section.ChapterIDs[0], 80, true); err != nil {
+		t.Fatalf("UpdateProgress error: %v", err)
+	}
+
+	canSecond, err = svc.CanAccessChapter(context.Background(), 1, section.ChapterIDs[1])
+	if err != nil {
+		t.Fatalf("CanAccessChapter error: %v", err)
+	}
+	if !canSecond {
+		t.Fatalf("expected second chapter to be accessible after passing first")
+	}
+}

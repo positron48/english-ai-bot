@@ -1,12 +1,14 @@
 package web
 
 import (
+	"bytes"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
 	"tgbot-skeleton/internal/config"
+	"tgbot-skeleton/internal/database"
 	"tgbot-skeleton/internal/testutil"
 
 	"go.uber.org/zap"
@@ -281,6 +283,88 @@ func TestRouter_getForeignKeys(t *testing.T) {
 			t.Error("getForeignKeys() should return error for invalid table name")
 		}
 	})
+}
+
+func TestHandleDBQuery_Select(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, err := database.New(":memory:", logger)
+	if err != nil {
+		t.Fatalf("failed to create database: %v", err)
+	}
+	defer db.Close()
+
+	cfg := &config.Config{}
+	cfg.Admin.DBQueryAccess = true
+
+	router := NewRouter(logger, cfg, db.GetConnection(), nil, nil, nil, nil)
+
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/db-query", bytes.NewBufferString(`{"query":"SELECT 1 as num"}`))
+	w := httptest.NewRecorder()
+	router.handleDBQuery(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected 200, got %d", w.Code)
+	}
+
+	var payload dbQueryResponse
+	if err := json.Unmarshal(w.Body.Bytes(), &payload); err != nil {
+		t.Fatalf("unmarshal error: %v", err)
+	}
+	if len(payload.Rows) != 1 || payload.Rows[0]["num"] != float64(1) {
+		t.Fatalf("expected row with num=1, got %+v", payload.Rows)
+	}
+}
+
+func TestHandleDBQuery_Exec(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, err := database.New(":memory:", logger)
+	if err != nil {
+		t.Fatalf("failed to create database: %v", err)
+	}
+	defer db.Close()
+
+	cfg := &config.Config{}
+	cfg.Admin.DBQueryAccess = true
+
+	router := NewRouter(logger, cfg, db.GetConnection(), nil, nil, nil, nil)
+
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/db-query", bytes.NewBufferString(`{"query":"INSERT INTO users (telegram_id, created_at, updated_at) VALUES (123, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)"}`))
+	w := httptest.NewRecorder()
+	router.handleDBQuery(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected 200, got %d", w.Code)
+	}
+
+	var payload dbQueryResponse
+	if err := json.Unmarshal(w.Body.Bytes(), &payload); err != nil {
+		t.Fatalf("unmarshal error: %v", err)
+	}
+	if payload.RowsAffected != 1 || payload.Message != "OK" {
+		t.Fatalf("expected rows_affected=1 and OK, got %+v", payload)
+	}
+}
+
+func TestHandleDBQuery_Disabled(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, err := database.New(":memory:", logger)
+	if err != nil {
+		t.Fatalf("failed to create database: %v", err)
+	}
+	defer db.Close()
+
+	cfg := &config.Config{}
+	cfg.Admin.DBQueryAccess = false
+
+	router := NewRouter(logger, cfg, db.GetConnection(), nil, nil, nil, nil)
+
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/db-query", bytes.NewBufferString(`{"query":"SELECT 1"}`))
+	w := httptest.NewRecorder()
+	router.handleDBQuery(w, req)
+
+	if w.Code != http.StatusForbidden {
+		t.Fatalf("expected 403, got %d", w.Code)
+	}
 }
 
 func TestRouter_isValidTableName(t *testing.T) {

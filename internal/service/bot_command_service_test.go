@@ -137,6 +137,101 @@ func TestBotCommandService_HandleUnsubscribe(t *testing.T) {
 	}
 }
 
+func TestBotCommandService_HandleStart(t *testing.T) {
+	svc, _, client, cleanup := setupBotCommandService(t)
+	defer cleanup()
+
+	msg := commandMessage("/start")
+	update := tgbotapi.Update{Message: msg}
+	svc.HandleUpdate(update)
+
+	if got := client.lastParams.Get("text"); got != "start" {
+		t.Fatalf("expected start message, got %q", got)
+	}
+}
+
+func TestBotCommandService_HandleHelp(t *testing.T) {
+	svc, _, client, cleanup := setupBotCommandService(t)
+	defer cleanup()
+
+	msg := commandMessage("/help")
+	update := tgbotapi.Update{Message: msg}
+	svc.HandleUpdate(update)
+
+	if got := client.lastParams.Get("text"); got != "help" {
+		t.Fatalf("expected help message, got %q", got)
+	}
+}
+
+func TestBotCommandService_HandleUnknown(t *testing.T) {
+	svc, _, client, cleanup := setupBotCommandService(t)
+	defer cleanup()
+
+	msg := commandMessage("/unknown")
+	update := tgbotapi.Update{Message: msg}
+	svc.HandleUpdate(update)
+
+	if got := client.lastParams.Get("text"); got != "unknown" {
+		t.Fatalf("expected unknown message, got %q", got)
+	}
+}
+
+func TestBotCommandService_HandleStartUnsubscribe(t *testing.T) {
+	svc, userRepo, client, cleanup := setupBotCommandService(t)
+	defer cleanup()
+
+	if _, err := userRepo.GetOrCreateUser(42); err != nil {
+		t.Fatalf("failed to create user: %v", err)
+	}
+
+	msg := commandMessage("/start unsubscribe")
+	update := tgbotapi.Update{Message: msg}
+	svc.HandleUpdate(update)
+
+	user, err := userRepo.GetUserByTelegramID(42)
+	if err != nil {
+		t.Fatalf("GetUserByTelegramID error: %v", err)
+	}
+	if user == nil || !strings.Contains(user.SettingsJSON, "never") {
+		t.Fatalf("expected settings to include never")
+	}
+	if client.lastParams.Get("text") == "" {
+		t.Fatalf("expected a message to be sent")
+	}
+}
+
+func TestBotCommandService_HandleCallbackUnsubscribe(t *testing.T) {
+	svc, userRepo, client, cleanup := setupBotCommandService(t)
+	defer cleanup()
+
+	if _, err := userRepo.GetOrCreateUser(42); err != nil {
+		t.Fatalf("failed to create user: %v", err)
+	}
+
+	update := tgbotapi.Update{
+		CallbackQuery: &tgbotapi.CallbackQuery{
+			ID:   "cb1",
+			Data: "notification_unsubscribe",
+			From: &tgbotapi.User{ID: 42, UserName: "tester"},
+			Message: &tgbotapi.Message{
+				Chat: &tgbotapi.Chat{ID: 10},
+			},
+		},
+	}
+	svc.HandleUpdate(update)
+
+	user, err := userRepo.GetUserByTelegramID(42)
+	if err != nil {
+		t.Fatalf("GetUserByTelegramID error: %v", err)
+	}
+	if user == nil || !strings.Contains(user.SettingsJSON, "never") {
+		t.Fatalf("expected settings to include never")
+	}
+	if client.lastPath == "" {
+		t.Fatalf("expected callback query to be answered")
+	}
+}
+
 func TestPluralizeDays(t *testing.T) {
 	cases := map[int]string{
 		1:  "день",

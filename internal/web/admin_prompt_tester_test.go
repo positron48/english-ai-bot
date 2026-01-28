@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 
 	"tgbot-skeleton/internal/config"
@@ -29,6 +30,18 @@ func setupPromptTesterTest(t *testing.T) (*Router, *database.DB, func()) {
 	cfg := &config.Config{}
 	cfg.Admin.TelegramID = 12345
 	cfg.WebApp.JWTSecret = "test-secret"
+	tempFile, err := os.CreateTemp("", "training-prompt-*.txt")
+	if err != nil {
+		t.Fatalf("Failed to create temp prompt file: %v", err)
+	}
+	if _, err := tempFile.WriteString("test training prompt"); err != nil {
+		_ = tempFile.Close()
+		t.Fatalf("Failed to write temp prompt file: %v", err)
+	}
+	if err := tempFile.Close(); err != nil {
+		t.Fatalf("Failed to close temp prompt file: %v", err)
+	}
+	cfg.Training.PromptFile = tempFile.Name()
 
 	cbRepo := repository.NewCircuitBreakerRepository(db.GetConnection(), logger)
 	cbService := service.NewCircuitBreakerService(cbRepo, 5, logger)
@@ -36,7 +49,8 @@ func setupPromptTesterTest(t *testing.T) (*Router, *database.DB, func()) {
 	router := NewRouter(logger, cfg, db.GetConnection(), nil, nil, nil, cbService)
 
 	cleanup := func() {
-		db.Close()
+		_ = db.Close()
+		_ = os.Remove(tempFile.Name())
 	}
 
 	return router, db, cleanup
