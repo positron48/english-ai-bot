@@ -1649,4 +1649,3 @@ func (r *Router) handleAdminAppSettings(w http.ResponseWriter, req *http.Request
 
 	http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 }
-
