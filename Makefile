@@ -31,9 +31,22 @@ swagger:
 	@echo "✅ Swagger documentation generated in docs/swagger/"
 
 grammar-bundle:
+	@echo "Updating grammar submodule..."
+	@git submodule update --remote
+	@echo "✅ Grammar submodule updated"
+	@echo ""
 	@echo "Generating grammar bundle..."
 	@./scripts/generate-grammar-bundle.sh
 	@echo "✅ Grammar bundle generated"
+
+tag:
+	@V=$$(git describe --tags --abbrev=0 2>/dev/null | sed -E 's/^v?//' || echo "0.0.0"); \
+	MAJOR=$$(echo $$V | cut -d. -f1); \
+	MINOR=$$(echo $$V | cut -d. -f2); \
+	PATCH=$$(echo $$V | cut -d. -f3); \
+	NEXT=$$MAJOR.$$MINOR.$$((PATCH+1)); \
+	echo "Creating tag $$NEXT"; \
+	git tag $$NEXT
 
 build: webapp-build grammar-bundle
 	@echo "Building Go binary..."
