@@ -145,7 +145,7 @@
       "quiz_inline": {
         "question_ids": [
           "q15",
-          "q16"
+          "q17"
         ],
         "show_answers_immediately": true
       }
@@ -246,8 +246,8 @@
       "title": "Проверка знаний",
       "quiz_inline": {
         "question_ids": [
-          "q43",
-          "q44"
+          "q44",
+          "q45"
         ],
         "show_answers_immediately": true
       }
@@ -469,32 +469,6 @@
         ]
       },
       {
-        "id": "q8",
-        "type": "fill_blank",
-        "prompt": "Заполните пропуск: \"Do ___ work here?\" (подлежащее)",
-        "theory_block_id": "b1_theory_word_order_basics",
-        "difficulty": 2,
-        "correct_answer": "you",
-        "explanation": "Правильный ответ: 'you'. В вопросе порядок слов: Do/Does + Подлежащее + Глагол.",
-        "tags": [
-          "basics",
-          "fill_blank"
-        ]
-      },
-      {
-        "id": "q9",
-        "type": "fill_blank",
-        "prompt": "Заполните пропуск: \"Does ___ like coffee?\" (подлежащее)",
-        "theory_block_id": "b1_theory_word_order_basics",
-        "difficulty": 2,
-        "correct_answer": "she",
-        "explanation": "Правильный ответ: 'she'. В вопросе порядок слов: Do/Does + Подлежащее + Глагол.",
-        "tags": [
-          "basics",
-          "fill_blank"
-        ]
-      },
-      {
         "id": "q10",
         "type": "reorder",
         "prompt": "Расставьте слова в правильном порядке:",
@@ -534,56 +508,6 @@
         ]
       },
       {
-        "id": "q13",
-        "type": "error_spotting",
-        "prompt": "Найдите ошибку в предложении:\n\n**You do study here?**",
-        "theory_block_id": "b1_theory_word_order_basics",
-        "difficulty": 2,
-        "choices": [
-          {
-            "id": "a",
-            "text": "Do you study here?",
-            "feedback": "Правильно! Do/Does должен стоять перед подлежащим"
-          },
-          {
-            "id": "b",
-            "text": "You do study here",
-            "feedback": "Нет, это неправильный порядок слов"
-          }
-        ],
-        "correct_answer": "a",
-        "explanation": "Ошибка: do/does должен стоять перед подлежащим. Правильный порядок: Do/Does + Подлежащее + Глагол.",
-        "tags": [
-          "basics",
-          "error"
-        ]
-      },
-      {
-        "id": "q14",
-        "type": "error_spotting",
-        "prompt": "Найдите ошибку в предложении:\n\n**She study does here?**",
-        "theory_block_id": "b1_theory_word_order_basics",
-        "difficulty": 2,
-        "choices": [
-          {
-            "id": "a",
-            "text": "Does she study here?",
-            "feedback": "Правильно! Do/Does должен стоять перед подлежащим"
-          },
-          {
-            "id": "b",
-            "text": "She study does here",
-            "feedback": "Нет, это неправильный порядок слов"
-          }
-        ],
-        "correct_answer": "a",
-        "explanation": "Ошибка: do/does должен стоять перед подлежащим. Правильный порядок: Do/Does + Подлежащее + Глагол.",
-        "tags": [
-          "basics",
-          "error"
-        ]
-      },
-      {
         "id": "q15",
         "type": "mcq_single",
         "prompt": "Где находится подлежащее в вопросе \"Do you work here?\"?",
@@ -608,35 +532,6 @@
         ],
         "correct_answer": "a",
         "explanation": "Подлежащее в вопросах всегда находится между вспомогательным глаголом do/does и смысловым глаголом.",
-        "tags": [
-          "subject_position"
-        ]
-      },
-      {
-        "id": "q16",
-        "type": "mcq_single",
-        "prompt": "В каком порядке идут слова в вопросе?",
-        "theory_block_id": "b2_theory_subject_position",
-        "difficulty": 1,
-        "choices": [
-          {
-            "id": "a",
-            "text": "После do/does",
-            "feedback": "Правильно! Подлежащее стоит между do/does и глаголом"
-          },
-          {
-            "id": "b",
-            "text": "В начале вопроса",
-            "feedback": "Нет, подлежащее не в начале вопроса"
-          },
-          {
-            "id": "c",
-            "text": "После глагола",
-            "feedback": "Нет, подлежащее перед глаголом"
-          }
-        ],
-        "correct_answer": "a",
-        "explanation": "Подлежащее в вопросах стоит между вспомогательным глаголом do/does и смысловым глаголом.",
         "tags": [
           "subject_position"
         ]
@@ -700,45 +595,6 @@
         ]
       },
       {
-        "id": "q20",
-        "type": "fill_blank",
-        "prompt": "Заполните пропуск: \"Does ___ like pizza?\" (подлежащее)",
-        "theory_block_id": "b2_theory_subject_position",
-        "difficulty": 2,
-        "correct_answer": "she",
-        "explanation": "Правильный ответ: 'she'. Подлежащее стоит между do/does и глаголом.",
-        "tags": [
-          "subject_position",
-          "fill_blank"
-        ]
-      },
-      {
-        "id": "q21",
-        "type": "fill_blank",
-        "prompt": "Заполните пропуск: \"Do ___ speak English?\" (подлежащее)",
-        "theory_block_id": "b2_theory_subject_position",
-        "difficulty": 2,
-        "correct_answer": "they",
-        "explanation": "Правильный ответ: 'they'. Подлежащее стоит между do/does и глаголом.",
-        "tags": [
-          "subject_position",
-          "fill_blank"
-        ]
-      },
-      {
-        "id": "q22",
-        "type": "fill_blank",
-        "prompt": "Заполните пропуск: \"Does ___ live there?\" (подлежащее)",
-        "theory_block_id": "b2_theory_subject_position",
-        "difficulty": 2,
-        "correct_answer": "he",
-        "explanation": "Правильный ответ: 'he'. Подлежащее стоит между do/does и глаголом.",
-        "tags": [
-          "subject_position",
-          "fill_blank"
-        ]
-      },
-      {
         "id": "q23",
         "type": "reorder",
         "prompt": "Расставьте слова в правильном порядке:",
@@ -775,56 +631,6 @@
         "tags": [
           "subject_position",
           "reorder"
-        ]
-      },
-      {
-        "id": "q27",
-        "type": "error_spotting",
-        "prompt": "Найдите ошибку в предложении:\n\n**He does work here?**",
-        "theory_block_id": "b2_theory_subject_position",
-        "difficulty": 2,
-        "choices": [
-          {
-            "id": "a",
-            "text": "Does he work here?",
-            "feedback": "Правильно! Подлежащее должно быть между do/does и глаголом"
-          },
-          {
-            "id": "b",
-            "text": "He does work here",
-            "feedback": "Нет, неправильная позиция подлежащего"
-          }
-        ],
-        "correct_answer": "a",
-        "explanation": "Ошибка: подлежащее должно стоять между do/does и глаголом, а не в начале. Правильно: Does he work here?",
-        "tags": [
-          "subject_position",
-          "error"
-        ]
-      },
-      {
-        "id": "q28",
-        "type": "error_spotting",
-        "prompt": "Найдите ошибку в предложении:\n\n**She does like coffee?**",
-        "theory_block_id": "b2_theory_subject_position",
-        "difficulty": 2,
-        "choices": [
-          {
-            "id": "a",
-            "text": "Does she like coffee?",
-            "feedback": "Правильно! Подлежащее должно быть между do/does и глаголом"
-          },
-          {
-            "id": "b",
-            "text": "She does like coffee",
-            "feedback": "Нет, неправильная позиция подлежащего"
-          }
-        ],
-        "correct_answer": "a",
-        "explanation": "Ошибка: подлежащее должно стоять между do/does и глаголом, а не в начале. Правильно: Does she like coffee?",
-        "tags": [
-          "subject_position",
-          "error"
         ]
       },
       {
@@ -1110,35 +916,6 @@
         ]
       },
       {
-        "id": "q43",
-        "type": "mcq_single",
-        "prompt": "Какая типичная ошибка в вопросе \"You do play tennis?\"?",
-        "theory_block_id": "b4_theory_common_mistakes",
-        "difficulty": 2,
-        "choices": [
-          {
-            "id": "a",
-            "text": "Do you play tennis?",
-            "feedback": "Правильно!"
-          },
-          {
-            "id": "b",
-            "text": "You do play tennis?",
-            "feedback": "Нет, это типичная ошибка"
-          },
-          {
-            "id": "c",
-            "text": "You play do tennis?",
-            "feedback": "Нет, неправильный порядок"
-          }
-        ],
-        "correct_answer": "a",
-        "explanation": "Типичная ошибка: подлежащее в начале вопроса. Правильно: Do/Does + Подлежащее + Глагол.",
-        "tags": [
-          "common_mistakes"
-        ]
-      },
-      {
         "id": "q44",
         "type": "mcq_single",
         "prompt": "Выберите правильный вариант:",
@@ -1210,7 +987,7 @@
           },
           {
             "id": "b",
-            "text": "She play does tennis?",
+            "text": "She play do tennis?",
             "feedback": "Нет, это типичная ошибка"
           },
           {
@@ -1391,35 +1168,6 @@
         ]
       },
       {
-        "id": "q60",
-        "type": "mcq_single",
-        "prompt": "Какой вопрос построен по алгоритму Do/Does + КТО + ЧТО ДЕЛАЕТ?",
-        "theory_block_id": "b5_theory_practice_tips",
-        "difficulty": 1,
-        "choices": [
-          {
-            "id": "a",
-            "text": "Do I need more?",
-            "feedback": "Правильно! Это правильный алгоритм"
-          },
-          {
-            "id": "b",
-            "text": "I do need more?",
-            "feedback": "Нет, неправильный порядок"
-          },
-          {
-            "id": "c",
-            "text": "Do need I more?",
-            "feedback": "Нет, это неправильный алгоритм"
-          }
-        ],
-        "correct_answer": "a",
-        "explanation": "Алгоритм построения вопроса: Do/Does + Подлежащее (КТО) + Глагол (ЧТО ДЕЛАЕТ).",
-        "tags": [
-          "practice_tips"
-        ]
-      },
-      {
         "id": "q61",
         "type": "mcq_single",
         "prompt": "Выберите правильный вариант:",
@@ -1501,81 +1249,6 @@
         ]
       },
       {
-        "id": "q66",
-        "type": "error_spotting",
-        "prompt": "Найдите ошибку в предложении:\n\n**What do he needs?**",
-        "theory_block_id": "b5_theory_practice_tips",
-        "difficulty": 3,
-        "choices": [
-          {
-            "id": "a",
-            "text": "What does he need?",
-            "feedback": "Правильно! С he используется does, и глагол в базовой форме"
-          },
-          {
-            "id": "b",
-            "text": "What do he needs",
-            "feedback": "Нет, это неправильный вариант"
-          }
-        ],
-        "correct_answer": "a",
-        "explanation": "Ошибка: С he используется does, и глагол в базовой форме. Правильно: What does he need?",
-        "tags": [
-          "practice_tips",
-          "error"
-        ]
-      },
-      {
-        "id": "q67",
-        "type": "error_spotting",
-        "prompt": "Найдите ошибку в предложении:\\n\\n**When do she goes?**",
-        "theory_block_id": "b5_theory_practice_tips",
-        "difficulty": 3,
-        "choices": [
-          {
-            "id": "a",
-            "text": "When does she go?",
-            "feedback": "Правильно! С she используется does, и глагол в базовой форме"
-          },
-          {
-            "id": "b",
-            "text": "When do she goes",
-            "feedback": "Нет, это неправильный вариант"
-          }
-        ],
-        "correct_answer": "a",
-        "explanation": "Ошибка: С she используется does, и глагол в базовой форме. Правильно: When does she go?",
-        "tags": [
-          "practice_tips",
-          "error"
-        ]
-      },
-      {
-        "id": "q68",
-        "type": "error_spotting",
-        "prompt": "Найдите ошибку в предложении:\\n\\n**Why do it happen?**",
-        "theory_block_id": "b5_theory_practice_tips",
-        "difficulty": 3,
-        "choices": [
-          {
-            "id": "a",
-            "text": "Why does it happen?",
-            "feedback": "Правильно! С it используется does"
-          },
-          {
-            "id": "b",
-            "text": "Why do it happen",
-            "feedback": "Нет, это неправильный вариант"
-          }
-        ],
-        "correct_answer": "a",
-        "explanation": "Ошибка: С it используется does. Правильно: Why does it happen?",
-        "tags": [
-          "practice_tips",
-          "error"
-        ]
-      },
-      {
         "id": "q70",
         "type": "fill_blank",
         "prompt": "Заполните пропуск: \"What ___ he do?\" (вспомогательный глагол)",
@@ -1597,23 +1270,13 @@
       "q4",
       "q5",
       "q6",
-      "q8",
-      "q9",
       "q10",
       "q11",
       "q12",
-      "q13",
-      "q14",
-      "q17",
       "q18",
-      "q20",
-      "q21",
-      "q22",
       "q23",
       "q24",
       "q25",
-      "q27",
-      "q28",
       "q31",
       "q32",
       "q33",
@@ -1626,7 +1289,6 @@
       "q40",
       "q41",
       "q42",
-      "q45",
       "q46",
       "q51",
       "q52",
@@ -1635,15 +1297,11 @@
       "q55",
       "q56",
       "q59",
-      "q60",
       "q61",
       "q62",
       "q63",
       "q64",
       "q65",
-      "q66",
-      "q67",
-      "q68",
       "q70"
     ],
     "selection_strategy": {
@@ -1659,7 +1317,7 @@
   },
   "meta": {
     "version": "2026.01.16",
-    "updated_at": "2026-01-27T17:24:00Z",
+    "updated_at": "2026-02-01T16:12:50Z",
     "source": "llm"
   }
 }
