@@ -424,21 +424,18 @@ const getGrammarPercentageOffset = (percent: number): number => {
 
 const grammarUnpublishedSegmentLength = computed(() => {
   const g = stats.value?.grammarStats
-  const total = g?.total_chapters_in_course
-  const published = g?.total_chapters
-  if (total == null || published == null || total <= 0) return 0
+  const total = Number(g?.total_chapters_in_course)
+  const published = Number(g?.total_chapters)
+  if (!Number.isFinite(total) || !Number.isFinite(published) || total <= 0) return 0
   const unpublishedPct = ((total - published) / total) * 100
   return (unpublishedPct / 100) * grammarSmallCircleCircumference.value
 })
 
-// Неопубликованный сегмент в конце круга: от (100 - unpublished_pct)% до 100%
+// Неопубликованный сегмент в конце круга: отрицательный offset = сегмент в конце пути (кроссбраузерно)
 const grammarUnpublishedSegmentDashOffset = computed(() => {
-  const g = stats.value?.grammarStats
-  const total = g?.total_chapters_in_course
-  const published = g?.total_chapters
-  if (total == null || published == null || total <= 0) return 0
-  const unpublishedPct = ((total - published) / total) * 100
-  return (1 - unpublishedPct / 100) * grammarSmallCircleCircumference.value
+  const len = grammarUnpublishedSegmentLength.value
+  if (len <= 0) return 0
+  return len - grammarSmallCircleCircumference.value
 })
 
 const getGrammarPercentageColor = (percent: number): string => {

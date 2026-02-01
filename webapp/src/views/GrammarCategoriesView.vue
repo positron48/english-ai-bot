@@ -308,20 +308,18 @@ const getPercentageOffset = (percent: number): number => {
 
 // Неопубликованная часть сектора (длина дуги в единицах stroke)
 const unpublishedSegmentLength = computed(() => {
-  const total = statistics.value?.total_chapters_in_course
-  const published = statistics.value?.total_chapters
-  if (total == null || published == null || total <= 0) return 0
+  const total = Number(statistics.value?.total_chapters_in_course)
+  const published = Number(statistics.value?.total_chapters)
+  if (!Number.isFinite(total) || !Number.isFinite(published) || total <= 0) return 0
   const unpublishedPct = ((total - published) / total) * 100
   return (unpublishedPct / 100) * smallCircleCircumference.value
 })
 
-// Неопубликованный сегмент в конце круга: от (100 - unpublished_pct)% до 100%
+// Неопубликованный сегмент в конце круга: отрицательный offset = сегмент в конце пути (кроссбраузерно)
 const unpublishedSegmentDashOffset = computed(() => {
-  const total = statistics.value?.total_chapters_in_course
-  const published = statistics.value?.total_chapters
-  if (total == null || published == null || total <= 0) return 0
-  const unpublishedPct = ((total - published) / total) * 100
-  return (1 - unpublishedPct / 100) * smallCircleCircumference.value
+  const len = unpublishedSegmentLength.value
+  if (len <= 0) return 0
+  return len - smallCircleCircumference.value
 })
 
 const getPercentageColor = (percent: number): string => {
