@@ -87,10 +87,11 @@ func (s *GrammarService) GetPublishedSections(ctx context.Context, userID int64)
 		}
 
 		result = append(result, &SectionWithProgress{
-			Section:         section,
-			Title:           title,
-			PublishedChapters: publishedChapters,
-			PassedChapters:  passedChapters,
+			Section:            section,
+			Title:              title,
+			IsPublished:        true,
+			PublishedChapters:  publishedChapters,
+			PassedChapters:     passedChapters,
 			ProgressPercentage: progressPercentage,
 		})
 	}
@@ -100,11 +101,77 @@ func (s *GrammarService) GetPublishedSections(ctx context.Context, userID int64)
 
 // SectionWithProgress represents a section with user progress
 type SectionWithProgress struct {
-	Section          *repository.Section
-	Title            string
+	Section           *repository.Section
+	Title             string
+	IsPublished       bool
 	PublishedChapters int
-	PassedChapters   int
+	PassedChapters    int
 	ProgressPercentage int // Average percentage based on chapter best_scores
+}
+
+// GetAllSectionsWithProgress returns all sections (published and unpublished) with progress and IsPublished flag
+func (s *GrammarService) GetAllSectionsWithProgress(ctx context.Context, userID int64) ([]*SectionWithProgress, error) {
+	sectionsData, err := s.ContentRepo.GetSections()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get sections: %w", err)
+	}
+
+	publishedItems, err := s.PublishRepo.GetPublishedItemsByType("section")
+	if err != nil {
+		return nil, fmt.Errorf("failed to get published items: %w", err)
+	}
+
+	var result []*SectionWithProgress
+	for i := range sectionsData.Sections {
+		section := &sectionsData.Sections[i]
+		item, exists := publishedItems[section.SectionID]
+		isPublished := exists && item.IsPublished
+
+		title := section.Title
+		if isPublished && item.Name != nil && *item.Name != "" {
+			title = *item.Name
+		}
+
+		publishedChapters := 0
+		passedChapters := 0
+		totalScore := 0
+		for _, chapterID := range section.ChapterIDs {
+			chapterItem, _ := s.PublishRepo.GetPublishedItem("chapter", chapterID)
+			if chapterItem.IsPublished {
+				publishedChapters++
+				progress, _ := s.AttemptRepo.GetChapterProgress(userID, chapterID)
+				if progress.Passed {
+					passedChapters++
+				}
+				totalScore += progress.BestScore
+			}
+		}
+
+		progressPercentage := 0
+		if publishedChapters > 0 {
+			progressPercentage = totalScore / publishedChapters
+		}
+
+		result = append(result, &SectionWithProgress{
+			Section:            section,
+			Title:              title,
+			IsPublished:        isPublished,
+			PublishedChapters:  publishedChapters,
+			PassedChapters:     passedChapters,
+			ProgressPercentage: progressPercentage,
+		})
+	}
+
+	return result, nil
+}
+
+// IsSectionPublished returns whether the section is published
+func (s *GrammarService) IsSectionPublished(ctx context.Context, sectionID string) (bool, error) {
+	item, err := s.PublishRepo.GetPublishedItem("section", sectionID)
+	if err != nil || item == nil {
+		return false, err
+	}
+	return item.IsPublished, nil
 }
 
 // GetPublishedChapters returns published chapters for a section
@@ -124,6 +191,11 @@ func (s *GrammarService) GetPublishedChapters(ctx context.Context, sectionID str
 
 	if section == nil {
 		return nil, fmt.Errorf("section not found: %s", sectionID)
+	}
+
+	published, _ := s.IsSectionPublished(ctx, sectionID)
+	if !published {
+		return nil, fmt.Errorf("section not published: %s", sectionID)
 	}
 
 	publishedItems, err := s.PublishRepo.GetPublishedItemsByType("chapter")
@@ -1125,13 +1197,24 @@ func normalizeTrueFalseValue(v interface{}) (string, bool) {
 	return "", false
 }
 
-// compareAnswers compares user answer with correct answer
+// normalizeAnswerString trims spaces, collapses multiple spaces to one, lowercases for comparison
+func normalizeAnswerString(str string) string {
+	s := strings.TrimSpace(str)
+	s = strings.Join(strings.Fields(s), " ")
+	return strings.ToLower(s)
+}
+
+// compareAnswers compares user answer with correct answer (case-insensitive, spaces normalized)
 func (s *GrammarService) compareAnswers(userAnswer, correctAnswer interface{}) bool {
 	// Handle different answer types
 	switch v := correctAnswer.(type) {
 	case string:
 		userStr, ok := userAnswer.(string)
-		return ok && userStr == v
+		if !ok {
+			// Allow string comparison if user sent e.g. number as string
+			userStr = fmt.Sprintf("%v", userAnswer)
+		}
+		return normalizeAnswerString(userStr) == normalizeAnswerString(v)
 	case []interface{}:
 		userArr, ok := userAnswer.([]interface{})
 		if !ok {
@@ -1371,11 +1454,13 @@ func (s *GrammarService) CanAccessSection(ctx context.Context, userID int64, sec
 
 // GrammarStatistics represents overall grammar course statistics
 type GrammarStatistics struct {
-	ConfirmedLevel      string  `json:"confirmed_level"`       // Highest level where all chapters are passed
-	CourseCompletionPct int     `json:"course_completion_pct"` // Overall completion percentage
-	AverageTestScore    int     `json:"average_test_score"`    // Average percentage across all test attempts
-	PassedChapters      int     `json:"passed_chapters"`       // Number of passed chapters
-	TotalChapters       int     `json:"total_chapters"`        // Total number of published chapters
+	ConfirmedLevel          string `json:"confirmed_level"`             // Highest level where all chapters are passed
+	CourseCompletionPct    int    `json:"course_completion_pct"`         // Completion % over published chapters only (зачётка)
+	WholeCourseCompletionPct int  `json:"whole_course_completion_pct"`   // Completion % over entire course (all chapters in bundle)
+	AverageTestScore       int    `json:"average_test_score"`            // Average percentage across all test attempts
+	PassedChapters         int    `json:"passed_chapters"`               // Number of passed (published) chapters
+	TotalChapters          int    `json:"total_chapters"`                // Total number of published chapters
+	TotalChaptersInCourse  int    `json:"total_chapters_in_course"`      // Total chapters in course (whole bundle)
 }
 
 // GetGrammarStatistics calculates overall grammar statistics for a user
@@ -1415,7 +1500,16 @@ func (s *GrammarService) GetGrammarStatistics(ctx context.Context, userID int64)
 	confirmedLevel := ""
 	confirmedLevelOrder := -1
 
-	// Track overall progress
+	// Count total chapters in course (whole bundle, all sections)
+	totalChaptersInCourse := 0
+	for i := range sectionsData.Sections {
+		totalChaptersInCourse += len(sectionsData.Sections[i].ChapterIDs)
+	}
+
+	// Total score over entire course (unpublished chapters count as 0)
+	totalScoreWholeCourse := 0
+
+	// Track overall progress (published only)
 	totalScore := 0
 	totalPublishedChapters := 0
 	passedChaptersCount := 0
@@ -1507,12 +1601,36 @@ func (s *GrammarService) GetGrammarStatistics(ctx context.Context, userID int64)
 		}
 	}
 
+	// Whole course: sum of best scores for every chapter in bundle (unpublished = 0)
+	for i := range sectionsData.Sections {
+		section := &sectionsData.Sections[i]
+		for _, chapterID := range section.ChapterIDs {
+			chapterItem, exists := publishedItems[chapterID]
+			if !exists || !chapterItem.IsPublished {
+				totalScoreWholeCourse += 0
+				continue
+			}
+			if openedSectionsMap[section.SectionID] {
+				totalScoreWholeCourse += 100
+			} else {
+				progress, _ := s.AttemptRepo.GetChapterProgress(userID, chapterID)
+				totalScoreWholeCourse += progress.BestScore
+			}
+		}
+	}
+	wholeCourseCompletionPct := 0
+	if totalChaptersInCourse > 0 {
+		wholeCourseCompletionPct = totalScoreWholeCourse / totalChaptersInCourse
+	}
+
 	return &GrammarStatistics{
-		ConfirmedLevel:      confirmedLevel,
-		CourseCompletionPct: completionPct,
-		AverageTestScore:    averageTestScore,
-		PassedChapters:      passedChaptersCount,
-		TotalChapters:       totalPublishedChapters,
+		ConfirmedLevel:          confirmedLevel,
+		CourseCompletionPct:     completionPct,
+		WholeCourseCompletionPct: wholeCourseCompletionPct,
+		AverageTestScore:       averageTestScore,
+		PassedChapters:         passedChaptersCount,
+		TotalChapters:          totalPublishedChapters,
+		TotalChaptersInCourse:   totalChaptersInCourse,
 	}, nil
 }
 

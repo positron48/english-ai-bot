@@ -34,7 +34,7 @@ func (r *Router) handleLearningGrammarCategories(w http.ResponseWriter, req *htt
 		return
 	}
 
-	sections, err := r.grammarService.GetPublishedSections(req.Context(), userID)
+	sections, err := r.grammarService.GetAllSectionsWithProgress(req.Context(), userID)
 	if err != nil {
 		r.logger.Error("failed to get grammar categories", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -42,32 +42,38 @@ func (r *Router) handleLearningGrammarCategories(w http.ResponseWriter, req *htt
 	}
 
 	type CategoryResponse struct {
-		SectionID          string            `json:"section_id"`
-		Title              string            `json:"title"`
-		TitleTranslations  map[string]string `json:"title_translations,omitempty"`
-		Level              string            `json:"level"`
-		Order              int               `json:"order"`
-		PublishedChapters  int               `json:"published_chapters"`
-		PassedChapters     int               `json:"passed_chapters"`
-		TotalChapters      int               `json:"total_chapters"`
-		ProgressPercentage int               `json:"progress_percentage"`
-		CanAccess          bool              `json:"can_access"`
-		CategoryTestScore  *int              `json:"category_test_score,omitempty"`
+		SectionID          string             `json:"section_id"`
+		Title              string             `json:"title"`
+		TitleTranslations  map[string]string  `json:"title_translations,omitempty"`
+		Level              string             `json:"level"`
+		Order              int                `json:"order"`
+		IsPublished        bool               `json:"is_published"`
+		PublishedChapters int                `json:"published_chapters"`
+		PassedChapters     int                `json:"passed_chapters"`
+		TotalChapters      int                `json:"total_chapters"`
+		ProgressPercentage int                `json:"progress_percentage"`
+		CanAccess          bool               `json:"can_access"`
+		CategoryTestScore  *int               `json:"category_test_score,omitempty"`
 	}
 
 	categories := make([]CategoryResponse, 0, len(sections))
 	for _, section := range sections {
-		canAccess, errAccess := r.grammarService.CanAccessSection(req.Context(), userID, section.Section.SectionID)
-		if errAccess != nil {
-			r.logger.Warn("failed to check section access, defaulting to false", zap.String("section_id", section.Section.SectionID), zap.Error(errAccess))
-			canAccess = false
+		canAccess := false
+		if section.IsPublished {
+			var errAccess error
+			canAccess, errAccess = r.grammarService.CanAccessSection(req.Context(), userID, section.Section.SectionID)
+			if errAccess != nil {
+				r.logger.Warn("failed to check section access, defaulting to false", zap.String("section_id", section.Section.SectionID), zap.Error(errAccess))
+				canAccess = false
+			}
 		}
 
-		// Get category test best score
 		var categoryTestScore *int
-		bestScore, errScore := r.grammarService.AttemptRepo.GetCategoryTestBestScore(userID, section.Section.SectionID)
-		if errScore == nil && bestScore > 0 {
-			categoryTestScore = &bestScore
+		if section.IsPublished {
+			bestScore, errScore := r.grammarService.AttemptRepo.GetCategoryTestBestScore(userID, section.Section.SectionID)
+			if errScore == nil && bestScore > 0 {
+				categoryTestScore = &bestScore
+			}
 		}
 
 		categories = append(categories, CategoryResponse{
@@ -76,12 +82,13 @@ func (r *Router) handleLearningGrammarCategories(w http.ResponseWriter, req *htt
 			TitleTranslations:  section.Section.TitleTranslations,
 			Level:              section.Section.Level,
 			Order:              section.Section.Order,
+			IsPublished:        section.IsPublished,
 			PublishedChapters:  section.PublishedChapters,
 			PassedChapters:     section.PassedChapters,
 			TotalChapters:      len(section.Section.ChapterIDs),
 			ProgressPercentage: section.ProgressPercentage,
 			CanAccess:          canAccess,
-			CategoryTestScore:  categoryTestScore,
+			CategoryTestScore:   categoryTestScore,
 		})
 	}
 
@@ -143,7 +150,7 @@ func (r *Router) handleLearningGrammarChapters(w http.ResponseWriter, req *http.
 	chapters, err := r.grammarService.GetPublishedChapters(req.Context(), sectionID, userID)
 	if err != nil {
 		r.logger.Error("failed to get grammar chapters", zap.String("section_id", sectionID), zap.Error(err))
-		if strings.Contains(err.Error(), "not found") {
+		if strings.Contains(err.Error(), "not found") || strings.Contains(err.Error(), "not published") {
 			http.Error(w, "Section not found", http.StatusNotFound)
 			return
 		}
@@ -649,10 +656,14 @@ func (r *Router) handleLearningGrammarStatistics(w http.ResponseWriter, req *htt
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]interface{}{
-		"confirmed_level":            stats.ConfirmedLevel,
-		"course_completion_pct":      stats.CourseCompletionPct,
-		"average_test_score":         stats.AverageTestScore,
-		"hide_placement_test_button": hidePlacementTestButton,
+		"confirmed_level":              stats.ConfirmedLevel,
+		"course_completion_pct":        stats.CourseCompletionPct,
+		"whole_course_completion_pct":  stats.WholeCourseCompletionPct,
+		"average_test_score":           stats.AverageTestScore,
+		"passed_chapters":              stats.PassedChapters,
+		"total_chapters":               stats.TotalChapters,
+		"total_chapters_in_course":     stats.TotalChaptersInCourse,
+		"hide_placement_test_button":   hidePlacementTestButton,
 	})
 }
 

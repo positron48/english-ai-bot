@@ -23,7 +23,7 @@
           </div>
         </div>
         
-        <!-- Course Completion Percentage -->
+        <!-- Course: circle = progress (цвет) + неопубликованная часть (другой цвет) -->
         <div class="stat-item percentage-item">
           <div class="stat-label">{{ t('dashboard.course') }}</div>
           <div class="percentage-wrapper">
@@ -44,9 +44,25 @@
                   cy="30"
                   r="26"
                   fill="none"
-                  :stroke="getPercentageColor(statistics.course_completion_pct)"
+                  :stroke="getPercentageColor(statistics.whole_course_completion_pct ?? 0)"
                   stroke-width="4"
                   stroke-opacity="0.2"
+                />
+                <!-- Неопубликованная часть сектора (сразу после прогресса) -->
+                <circle
+                  v-if="unpublishedSegmentLength > 0"
+                  class="percentage-circle-small-fill percentage-circle-unpublished"
+                  cx="30"
+                  cy="30"
+                  r="26"
+                  fill="none"
+                  stroke="var(--color-unpublished-segment, #94a3b8)"
+                  stroke-width="4"
+                  stroke-linecap="round"
+                  :style="{
+                    strokeDasharray: `${unpublishedSegmentLength} ${smallCircleCircumference}`,
+                    strokeDashoffset: unpublishedSegmentDashOffset
+                  }"
                 />
                 <circle
                   class="percentage-circle-small-fill"
@@ -54,16 +70,16 @@
                   cy="30"
                   r="26"
                   fill="none"
-                  :stroke="getPercentageColor(statistics.course_completion_pct)"
+                  :stroke="getPercentageColor(statistics.whole_course_completion_pct ?? 0)"
                   stroke-width="4"
                   stroke-linecap="round"
                   :style="{
                     strokeDasharray: smallCircleCircumference,
-                    strokeDashoffset: getPercentageOffset(statistics.course_completion_pct)
+                    strokeDashoffset: getPercentageOffset(statistics.whole_course_completion_pct ?? 0)
                   }"
                 />
               </svg>
-              <div class="percentage-value-small">{{ statistics.course_completion_pct }}%</div>
+              <div class="percentage-value-small">{{ statistics.whole_course_completion_pct ?? 0 }}%</div>
             </div>
           </div>
         </div>
@@ -143,10 +159,10 @@
         v-for="category in categories"
         :key="category.section_id"
         class="category-card"
-        :class="{ 'locked': !category.can_access }"
+        :class="{ 'locked': category.is_published !== false && !category.can_access, 'unpublished': category.is_published === false }"
       >
         <router-link
-          v-if="category.can_access"
+          v-if="category.is_published !== false && category.can_access"
           :to="`/learning/grammar/${category.section_id}`"
           class="category-link"
         >
@@ -188,7 +204,11 @@
               {{ t('grammar.categoryTest') || 'Category Test' }}: {{ category.category_test_score }}%
             </span>
           </div>
-          <div class="locked-overlay">
+          <div v-if="category.is_published === false" class="locked-overlay unpublished-overlay">
+            <Icon name="eye-off" />
+            <span>{{ t('grammar.unpublished') }}</span>
+          </div>
+          <div v-else class="locked-overlay">
             <Icon name="lock" />
             <span>{{ t('grammar.completePreviousChapter') || 'Complete previous chapter to unlock' }}</span>
           </div>
@@ -215,6 +235,7 @@ interface Category {
   title_translations?: Record<string, string>
   level: string
   order: number
+  is_published?: boolean
   published_chapters: number
   passed_chapters: number
   total_chapters: number
@@ -226,7 +247,16 @@ interface Category {
 const categories = ref<Category[]>([])
 const loading = ref(true)
 const error = ref<string | null>(null)
-const statistics = ref<{ confirmed_level: string; course_completion_pct: number; average_test_score?: number; hide_placement_test_button?: boolean } | null>(null)
+const statistics = ref<{
+  confirmed_level: string
+  course_completion_pct: number
+  whole_course_completion_pct?: number
+  average_test_score?: number
+  passed_chapters?: number
+  total_chapters?: number
+  total_chapters_in_course?: number
+  hide_placement_test_button?: boolean
+} | null>(null)
 const hidePlacementTestButton = ref(true) // По умолчанию скрыта, пока не загрузим данные
 const settingsLoaded = ref(false) // Флаг загрузки настроек
 
@@ -276,6 +306,24 @@ const getPercentageOffset = (percent: number): number => {
   return smallCircleCircumference.value * (1 - progress)
 }
 
+// Неопубликованная часть сектора (длина дуги в единицах stroke)
+const unpublishedSegmentLength = computed(() => {
+  const total = statistics.value?.total_chapters_in_course
+  const published = statistics.value?.total_chapters
+  if (total == null || published == null || total <= 0) return 0
+  const unpublishedPct = ((total - published) / total) * 100
+  return (unpublishedPct / 100) * smallCircleCircumference.value
+})
+
+// Неопубликованный сегмент в конце круга: от (100 - unpublished_pct)% до 100%
+const unpublishedSegmentDashOffset = computed(() => {
+  const total = statistics.value?.total_chapters_in_course
+  const published = statistics.value?.total_chapters
+  if (total == null || published == null || total <= 0) return 0
+  const unpublishedPct = ((total - published) / total) * 100
+  return (1 - unpublishedPct / 100) * smallCircleCircumference.value
+})
+
 const getPercentageColor = (percent: number): string => {
   if (percent >= 90) return '#10b981' // green
   if (percent >= 70) return '#3b82f6' // blue
@@ -307,7 +355,7 @@ const loadCategories = async () => {
     const loadedCategories = (categoriesData as { categories: Category[] }).categories || []
     // can_access comes from the API (considers placement test opened_sections + previous category passed)
     categories.value = loadedCategories
-    statistics.value = statsData as { confirmed_level: string; course_completion_pct: number; average_test_score?: number; hide_placement_test_button?: boolean }
+    statistics.value = statsData as NonNullable<typeof statistics.value>
     // Устанавливаем настройку только после загрузки данных
     hidePlacementTestButton.value = statistics.value?.hide_placement_test_button || false
     settingsLoaded.value = true
@@ -403,10 +451,6 @@ onMounted(() => {
   font-size: 11px;
   font-weight: 600;
   color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  white-space: nowrap;
-  min-width: 50px;
 }
 
 /* Level Item */
@@ -578,6 +622,14 @@ onMounted(() => {
 
 .category-card.locked {
   opacity: 0.6;
+}
+
+.category-card.unpublished {
+  opacity: 0.75;
+}
+
+.category-card.unpublished .locked-link {
+  cursor: default;
 }
 
 .category-link {

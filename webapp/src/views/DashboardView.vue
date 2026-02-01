@@ -70,7 +70,7 @@
                 </div>
               </div>
               
-              <!-- Course Completion Percentage -->
+              <!-- Course: circle = progress (цвет) + неопубликованная часть (другой цвет) -->
               <div class="stat-item percentage-item">
                 <div class="stat-label">{{ t('dashboard.course') }}</div>
                 <div class="percentage-wrapper">
@@ -91,9 +91,24 @@
                         cy="30"
                         r="26"
                         fill="none"
-                        :stroke="getGrammarPercentageColor(stats.grammarStats.course_completion_pct || 0)"
+                        :stroke="getGrammarPercentageColor(stats.grammarStats.whole_course_completion_pct ?? 0)"
                         stroke-width="4"
                         stroke-opacity="0.2"
+                      />
+                      <circle
+                        v-if="grammarUnpublishedSegmentLength > 0"
+                        class="percentage-circle-small-fill percentage-circle-unpublished"
+                        cx="30"
+                        cy="30"
+                        r="26"
+                        fill="none"
+                        stroke="var(--color-unpublished-segment, #94a3b8)"
+                        stroke-width="4"
+                        stroke-linecap="round"
+                        :style="{
+                          strokeDasharray: `${grammarUnpublishedSegmentLength} ${grammarSmallCircleCircumference}`,
+                          strokeDashoffset: grammarUnpublishedSegmentDashOffset
+                        }"
                       />
                       <circle
                         class="percentage-circle-small-fill"
@@ -101,16 +116,16 @@
                         cy="30"
                         r="26"
                         fill="none"
-                        :stroke="getGrammarPercentageColor(stats.grammarStats.course_completion_pct || 0)"
+                        :stroke="getGrammarPercentageColor(stats.grammarStats.whole_course_completion_pct ?? 0)"
                         stroke-width="4"
                         stroke-linecap="round"
                         :style="{
                           strokeDasharray: grammarSmallCircleCircumference,
-                          strokeDashoffset: getGrammarPercentageOffset(stats.grammarStats.course_completion_pct || 0)
+                          strokeDashoffset: getGrammarPercentageOffset(stats.grammarStats.whole_course_completion_pct ?? 0)
                         }"
                       />
                     </svg>
-                    <div class="percentage-value-small">{{ stats.grammarStats.course_completion_pct || 0 }}%</div>
+                    <div class="percentage-value-small">{{ stats.grammarStats.whole_course_completion_pct ?? 0 }}%</div>
                   </div>
                 </div>
               </div>
@@ -406,6 +421,25 @@ const getGrammarPercentageOffset = (percent: number): number => {
   const progress = Math.max(0, Math.min(100, percent)) / 100
   return grammarSmallCircleCircumference.value * (1 - progress)
 }
+
+const grammarUnpublishedSegmentLength = computed(() => {
+  const g = stats.value?.grammarStats
+  const total = g?.total_chapters_in_course
+  const published = g?.total_chapters
+  if (total == null || published == null || total <= 0) return 0
+  const unpublishedPct = ((total - published) / total) * 100
+  return (unpublishedPct / 100) * grammarSmallCircleCircumference.value
+})
+
+// Неопубликованный сегмент в конце круга: от (100 - unpublished_pct)% до 100%
+const grammarUnpublishedSegmentDashOffset = computed(() => {
+  const g = stats.value?.grammarStats
+  const total = g?.total_chapters_in_course
+  const published = g?.total_chapters
+  if (total == null || published == null || total <= 0) return 0
+  const unpublishedPct = ((total - published) / total) * 100
+  return (1 - unpublishedPct / 100) * grammarSmallCircleCircumference.value
+})
 
 const getGrammarPercentageColor = (percent: number): string => {
   if (percent >= 90) return '#10b981' // green

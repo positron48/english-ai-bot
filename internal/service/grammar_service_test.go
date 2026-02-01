@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"encoding/json"
+	"strings"
 	"testing"
 
 	"tgbot-skeleton/internal/database"
@@ -74,6 +75,111 @@ func TestGrammarService_GetPublishedSectionsAndChapters(t *testing.T) {
 	}
 	if len(chapters) == 0 {
 		t.Fatal("expected published chapters")
+	}
+}
+
+func TestGrammarService_GetAllSectionsWithProgress_IncludesUnpublished(t *testing.T) {
+	svc, contentRepo, publishRepo, _, cleanup := setupGrammarService(t)
+	defer cleanup()
+
+	sectionsData, err := contentRepo.GetSections()
+	if err != nil {
+		t.Fatalf("failed to get sections: %v", err)
+	}
+	if len(sectionsData.Sections) < 2 {
+		t.Fatal("need at least 2 sections")
+	}
+	// Publish first section only
+	section0 := sectionsData.Sections[0]
+	_ = publishRepo.SetPublished("section", section0.SectionID, true, nil)
+	_ = publishRepo.SetPublished("chapter", section0.ChapterIDs[0], true, nil)
+
+	all, err := svc.GetAllSectionsWithProgress(context.Background(), 1)
+	if err != nil {
+		t.Fatalf("GetAllSectionsWithProgress error: %v", err)
+	}
+	if len(all) != len(sectionsData.Sections) {
+		t.Fatalf("expected %d sections, got %d", len(sectionsData.Sections), len(all))
+	}
+	var publishedCount, unpublishedCount int
+	for _, s := range all {
+		if s.IsPublished {
+			publishedCount++
+		} else {
+			unpublishedCount++
+		}
+	}
+	if publishedCount != 1 {
+		t.Fatalf("expected 1 published section, got %d", publishedCount)
+	}
+	if unpublishedCount == 0 {
+		t.Fatal("expected at least one unpublished section")
+	}
+}
+
+func TestGrammarService_GetPublishedChapters_UnpublishedSection_Error(t *testing.T) {
+	svc, contentRepo, _, _, cleanup := setupGrammarService(t)
+	defer cleanup()
+
+	sectionsData, err := contentRepo.GetSections()
+	if err != nil {
+		t.Fatalf("failed to get sections: %v", err)
+	}
+	section := sectionsData.Sections[0]
+	// Do not publish section
+
+	_, err = svc.GetPublishedChapters(context.Background(), section.SectionID, 1)
+	if err == nil {
+		t.Fatal("expected error for unpublished section")
+	}
+	if !strings.Contains(err.Error(), "not published") {
+		t.Fatalf("expected 'not published' in error, got: %v", err)
+	}
+}
+
+func TestGrammarService_GetGrammarStatistics(t *testing.T) {
+	svc, contentRepo, publishRepo, attemptRepo, cleanup := setupGrammarService(t)
+	defer cleanup()
+
+	sectionsData, err := contentRepo.GetSections()
+	if err != nil {
+		t.Fatalf("failed to get sections: %v", err)
+	}
+	if len(sectionsData.Sections) == 0 {
+		t.Fatal("expected sections")
+	}
+	section := sectionsData.Sections[0]
+	chapterID := section.ChapterIDs[0]
+
+	if err := publishRepo.SetPublished("section", section.SectionID, true, nil); err != nil {
+		t.Fatalf("failed to publish section: %v", err)
+	}
+	if err := publishRepo.SetPublished("chapter", chapterID, true, nil); err != nil {
+		t.Fatalf("failed to publish chapter: %v", err)
+	}
+	if err := attemptRepo.UpdateProgress(1, chapterID, 80, true); err != nil {
+		t.Fatalf("failed to update progress: %v", err)
+	}
+
+	stats, err := svc.GetGrammarStatistics(context.Background(), 1)
+	if err != nil {
+		t.Fatalf("GetGrammarStatistics error: %v", err)
+	}
+	if stats.TotalChaptersInCourse <= 0 {
+		t.Fatalf("expected TotalChaptersInCourse > 0, got %d", stats.TotalChaptersInCourse)
+	}
+	if stats.TotalChapters != 1 {
+		t.Fatalf("expected TotalChapters 1, got %d", stats.TotalChapters)
+	}
+	if stats.PassedChapters != 1 {
+		t.Fatalf("expected PassedChapters 1, got %d", stats.PassedChapters)
+	}
+	if stats.CourseCompletionPct != 80 {
+		t.Fatalf("expected CourseCompletionPct 80, got %d", stats.CourseCompletionPct)
+	}
+	// Whole course: one published chapter with 80%, rest (unpublished or not attempted) count as 0
+	if stats.WholeCourseCompletionPct < 0 || stats.WholeCourseCompletionPct > 80 {
+		t.Fatalf("expected WholeCourseCompletionPct in [0, 80], got %d", stats.WholeCourseCompletionPct)
 	}
 }
 
@@ -219,6 +325,26 @@ func TestGrammarService_CompareAnswers(t *testing.T) {
 	}
 	if svc.compareAnswers("a", "b") {
 		t.Fatal("expected string comparison to fail")
+	}
+	// Case-insensitive
+	if !svc.compareAnswers("Answer", "answer") {
+		t.Fatal("expected case-insensitive match")
+	}
+	if !svc.compareAnswers("ANSWER", "answer") {
+		t.Fatal("expected case-insensitive match")
+	}
+	// Spaces: trim and collapse
+	if !svc.compareAnswers("  answer  ", "answer") {
+		t.Fatal("expected trim match")
+	}
+	if !svc.compareAnswers("two   words", "two words") {
+		t.Fatal("expected collapsed spaces match")
+	}
+	if !svc.compareAnswers("  Two  Words  ", "two words") {
+		t.Fatal("expected trim + collapse + case match")
+	}
+	if svc.compareAnswers("two words", "twowords") {
+		t.Fatal("expected different words to fail")
 	}
 	if !svc.compareAnswers([]interface{}{1, 2}, []interface{}{1, 2}) {
 		t.Fatal("expected slice comparison to match")

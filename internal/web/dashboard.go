@@ -207,11 +207,13 @@ func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 		stats, err := r.grammarService.GetGrammarStatistics(req.Context(), userID)
 		if err == nil {
 			grammarStats = map[string]interface{}{
-				"confirmed_level":       stats.ConfirmedLevel,
-				"course_completion_pct": stats.CourseCompletionPct,
-				"average_test_score":    stats.AverageTestScore,
-				"passed_chapters":       stats.PassedChapters,
-				"total_chapters":        stats.TotalChapters,
+				"confirmed_level":             stats.ConfirmedLevel,
+				"course_completion_pct":       stats.CourseCompletionPct,
+				"whole_course_completion_pct": stats.WholeCourseCompletionPct,
+				"average_test_score":          stats.AverageTestScore,
+				"passed_chapters":             stats.PassedChapters,
+				"total_chapters":              stats.TotalChapters,
+				"total_chapters_in_course":    stats.TotalChaptersInCourse,
 			}
 		}
 	}

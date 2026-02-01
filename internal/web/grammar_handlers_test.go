@@ -61,6 +61,27 @@ func TestHandleLearningGrammarChapters_OK(t *testing.T) {
 	}
 }
 
+func TestHandleLearningGrammarChapters_UnpublishedSection_404(t *testing.T) {
+	router, _, cleanup := setupGrammarTest(t)
+	defer cleanup()
+
+	sectionsData, err := router.grammarService.ContentRepo.GetSections()
+	if err != nil || len(sectionsData.Sections) == 0 {
+		t.Fatalf("failed to get sections")
+	}
+	section := sectionsData.Sections[0]
+	// Do not publish section
+
+	req := httptest.NewRequest(http.MethodGet, "/api/learning/grammar/categories/"+section.SectionID+"/chapters", nil)
+	req = setUserIDInContext(req, 1)
+	w := httptest.NewRecorder()
+	router.handleLearningGrammarChapters(w, req)
+
+	if w.Code != http.StatusNotFound {
+		t.Fatalf("expected 404 for unpublished section, got %d", w.Code)
+	}
+}
+
 func TestHandleLearningGrammarSectionAccess(t *testing.T) {
 	router, _, cleanup := setupGrammarTest(t)
 	defer cleanup()

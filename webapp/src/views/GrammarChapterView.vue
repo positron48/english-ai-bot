@@ -38,11 +38,11 @@
               v-html="renderMarkdown(block.theory.content_md)"
             ></div>
             
-            <!-- Key Points -->
-            <div v-if="block.theory?.key_points && block.theory.key_points.length > 0" class="key-points">
-              <h3>{{ t('grammar.keyPoints') }}</h3>
-              <ul>
-                <li v-for="(point, idx) in block.theory.key_points" :key="idx">
+            <!-- Key Points (callout) -->
+            <div v-if="block.theory?.key_points && block.theory.key_points.length > 0" class="key-points key-points-callout">
+              <h3 class="key-points-title">{{ t('grammar.keyPoints') }}</h3>
+              <ul class="key-points-list">
+                <li v-for="(point, idx) in block.theory.key_points" :key="idx" class="key-point-item">
                   {{ point }}
                 </li>
               </ul>
@@ -373,26 +373,58 @@ onMounted(() => {
   line-height: 1.7;
 }
 
-.key-points, .common-mistakes, .examples {
+.common-mistakes, .examples {
   margin-top: 24px;
   padding-top: 24px;
   border-top: 1px solid var(--border-primary);
 }
 
-.key-points h3, .common-mistakes h3, .examples h3 {
+.key-points-callout {
+  margin-top: 24px;
+  padding: 20px 24px;
+  background: var(--color-primary-light);
+  border-left: 4px solid var(--color-primary);
+  border-radius: 8px;
+  border-top: none;
+}
+
+.key-points-title {
+  margin: 0 0 12px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.key-points-list {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.key-point-item {
+  position: relative;
+  margin-bottom: 10px;
+  padding-left: 24px;
+  line-height: 1.6;
+}
+
+.key-point-item::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: var(--color-primary);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.key-point-item:last-child {
+  margin-bottom: 0;
+}
+
+.common-mistakes h3, .examples h3 {
   margin: 0 0 12px 0;
   font-size: 16px;
   color: var(--text-primary);
-}
-
-.key-points ul {
-  margin: 0;
-  padding-left: 20px;
-}
-
-.key-points li {
-  margin-bottom: 8px;
-  line-height: 1.6;
 }
 
 .mistake-item {
