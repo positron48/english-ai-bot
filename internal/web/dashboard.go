@@ -424,6 +424,15 @@ func (r *Router) handleSettings(w http.ResponseWriter, req *http.Request) {
 	if settings.Language == "" {
 		settings.Language = i18n.DetectLanguageFromRequest(req)
 	}
+	// Training delay defaults for API response: nil → 5
+	if settings.OptionsDelaySeconds == nil {
+		v := 5
+		settings.OptionsDelaySeconds = &v
+	}
+	if settings.WrongAnswerDelaySeconds == nil {
+		v := 5
+		settings.WrongAnswerDelaySeconds = &v
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
@@ -675,5 +684,140 @@ func (r *Router) handleLanguageSettings(w http.ResponseWriter, req *http.Request
 		"language": language,
 		"message":  i18n.T(lang, "messages.notificationSettingsUpdated"),
 	})
+}
+
+// handleTrainingSettings handles POST /api/settings/training - update training delay settings
+func (r *Router) handleTrainingSettings(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	userID := getUserIDFromContext(req.Context())
+	if userID == 0 {
+		lang := i18n.DetectLanguageFromRequest(req)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusUnauthorized)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"error": i18n.T(lang, "errors.unauthorized"),
+		})
+		return
+	}
+
+	var requestData struct {
+		OptionsDelaySeconds     *int `json:"options_delay_seconds"`
+		WrongAnswerDelaySeconds *int `json:"wrong_answer_delay_seconds"`
+	}
+
+	if err := json.NewDecoder(req.Body).Decode(&requestData); err != nil {
+		lang := i18n.GetLanguageFromContext(req.Context())
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"error": i18n.T(lang, "errors.invalidRequest"),
+		})
+		return
+	}
+
+	// Validate 0-10 if provided
+	if requestData.OptionsDelaySeconds != nil {
+		v := *requestData.OptionsDelaySeconds
+		if v < 0 || v > 10 {
+			lang := i18n.GetLanguageFromContext(req.Context())
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(map[string]interface{}{
+				"error": i18n.T(lang, "errors.invalidRequest"),
+			})
+			return
+		}
+	}
+	if requestData.WrongAnswerDelaySeconds != nil {
+		v := *requestData.WrongAnswerDelaySeconds
+		if v < 0 || v > 10 {
+			lang := i18n.GetLanguageFromContext(req.Context())
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(map[string]interface{}{
+				"error": i18n.T(lang, "errors.invalidRequest"),
+			})
+			return
+		}
+	}
+
+	userRepo := r.userRepo.(*repository.UserRepository)
+	user, err := userRepo.GetUserByID(userID)
+	if err != nil {
+		r.logger.Error("failed to get user", zap.Error(err))
+		lang := i18n.GetLanguageFromContext(req.Context())
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"error": i18n.T(lang, "errors.internalError"),
+		})
+		return
+	}
+	if user == nil {
+		lang := i18n.GetLanguageFromContext(req.Context())
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"error": i18n.T(lang, "errors.notFound"),
+		})
+		return
+	}
+
+	var settings models.UserSettings
+	if user.SettingsJSON != "" {
+		if err := json.Unmarshal([]byte(user.SettingsJSON), &settings); err != nil {
+			r.logger.Warn("failed to parse user settings", zap.Error(err))
+		}
+	}
+
+	if requestData.OptionsDelaySeconds != nil {
+		settings.OptionsDelaySeconds = requestData.OptionsDelaySeconds
+	}
+	if requestData.WrongAnswerDelaySeconds != nil {
+		settings.WrongAnswerDelaySeconds = requestData.WrongAnswerDelaySeconds
+	}
+
+	settingsJSON, err := json.Marshal(settings)
+	if err != nil {
+		r.logger.Error("failed to marshal settings", zap.Error(err))
+		lang := i18n.GetLanguageFromContext(req.Context())
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"error": i18n.T(lang, "errors.internalError"),
+		})
+		return
+	}
+	if err := userRepo.UpdateUserSettings(user.ID, string(settingsJSON)); err != nil {
+		r.logger.Error("failed to update user settings", zap.Error(err))
+		lang := i18n.GetLanguageFromContext(req.Context())
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"error": i18n.T(lang, "errors.internalError"),
+		})
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"success": true,
+		"settings": map[string]interface{}{
+			"options_delay_seconds":     defaultIntPtr(settings.OptionsDelaySeconds, 5),
+			"wrong_answer_delay_seconds": defaultIntPtr(settings.WrongAnswerDelaySeconds, 5),
+		},
+	})
+}
+
+func defaultIntPtr(p *int, d int) int {
+	if p == nil {
+		return d
+	}
+	return *p
 }
 

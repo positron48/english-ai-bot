@@ -87,6 +87,47 @@
             </div>
           </div>
         </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <label class="setting-label">{{ t('settings.optionsDelay') }}</label>
+            <p class="setting-description">{{ t('settings.optionsDelayDescription') }}</p>
+          </div>
+          <div class="setting-control delay-control">
+            <span class="saved-indicator-slot">
+              <span v-if="trainingDelaysSavedAt === 'options'" class="saved-indicator">{{ t('common.saved') }}</span>
+            </span>
+            <input
+              v-model.number="optionsDelaySeconds"
+              type="range"
+              min="0"
+              max="10"
+              class="delay-slider"
+              @change="handleOptionsDelayChange"
+            />
+            <span class="delay-value">{{ optionsDelaySeconds }} {{ t('settings.seconds') }}</span>
+          </div>
+        </div>
+        <div class="setting-item">
+          <div class="setting-info">
+            <label class="setting-label">{{ t('settings.wrongAnswerDelay') }}</label>
+            <p class="setting-description">{{ t('settings.wrongAnswerDelayDescription') }}</p>
+          </div>
+          <div class="setting-control delay-control">
+            <span class="saved-indicator-slot">
+              <span v-if="trainingDelaysSavedAt === 'wrong'" class="saved-indicator">{{ t('common.saved') }}</span>
+            </span>
+            <input
+              v-model.number="wrongAnswerDelaySeconds"
+              type="range"
+              min="0"
+              max="10"
+              class="delay-slider"
+              @change="handleWrongAnswerDelayChange"
+            />
+            <span class="delay-value">{{ wrongAnswerDelaySeconds }} {{ t('settings.seconds') }}</span>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -175,6 +216,11 @@ const previewing = ref(false)
 const notificationFrequency = ref('daily')
 const customDays = ref(3)
 const isSaved = ref(false)
+const optionsDelaySeconds = ref(5)
+const wrongAnswerDelaySeconds = ref(5)
+/** 'options' | 'wrong' - which delay control just saved (to show "saved" there) */
+const trainingDelaysSavedAt = ref<'options' | 'wrong' | null>(null)
+let trainingDelaysSavedTimeout: ReturnType<typeof setTimeout> | null = null
 
 onMounted(async () => {
   // Load current settings
@@ -185,6 +231,8 @@ onMounted(async () => {
   
   // Load notification settings from API
   await loadNotificationSettings()
+  // Load training delay settings from API
+  await loadTrainingDelaysSettings()
 })
 
 const loadNotificationSettings = async () => {
@@ -203,6 +251,58 @@ const loadNotificationSettings = async () => {
     console.error('Failed to load notification settings:', error)
   }
 }
+
+interface SettingsResponse {
+  settings?: {
+    options_delay_seconds?: number
+    wrong_answer_delay_seconds?: number
+  }
+}
+
+const loadTrainingDelaysSettings = async () => {
+  try {
+    const data = await apiClient.request<SettingsResponse>('/api/settings')
+    const s = data.settings
+    if (s?.options_delay_seconds !== undefined) {
+      optionsDelaySeconds.value = Math.max(0, Math.min(10, s.options_delay_seconds))
+    }
+    if (s?.wrong_answer_delay_seconds !== undefined) {
+      wrongAnswerDelaySeconds.value = Math.max(0, Math.min(10, s.wrong_answer_delay_seconds))
+    }
+  } catch (error) {
+    console.error('Failed to load training delay settings:', error)
+  }
+}
+
+const saveTrainingDelays = async (showSavedAt: 'options' | 'wrong') => {
+  const opts = Math.max(0, Math.min(10, optionsDelaySeconds.value))
+  const wrong = Math.max(0, Math.min(10, wrongAnswerDelaySeconds.value))
+  optionsDelaySeconds.value = opts
+  wrongAnswerDelaySeconds.value = wrong
+  try {
+    await apiClient.request<{ success: boolean }>('/api/settings/training', {
+      method: 'POST',
+      body: JSON.stringify({
+        options_delay_seconds: opts,
+        wrong_answer_delay_seconds: wrong
+      })
+    })
+    if (trainingDelaysSavedTimeout) {
+      clearTimeout(trainingDelaysSavedTimeout)
+      trainingDelaysSavedTimeout = null
+    }
+    trainingDelaysSavedAt.value = showSavedAt
+    trainingDelaysSavedTimeout = setTimeout(() => {
+      trainingDelaysSavedAt.value = null
+      trainingDelaysSavedTimeout = null
+    }, 2500)
+  } catch (error) {
+    console.error('Failed to save training delay settings:', error)
+  }
+}
+
+const handleOptionsDelayChange = () => saveTrainingDelays('options')
+const handleWrongAnswerDelayChange = () => saveTrainingDelays('wrong')
 
 const handleNotificationFrequencyChange = async () => {
   const freq = notificationFrequency.value
@@ -684,6 +784,50 @@ const handleLogout = () => {
   font-weight: 500;
   opacity: 0;
   animation: fadeInOut 2s ease-in-out;
+}
+
+.delay-control {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 10px;
+  min-width: 140px;
+}
+
+.delay-slider {
+  width: 100px;
+  height: 8px;
+  flex-shrink: 0;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+
+.delay-value {
+  font-size: 14px;
+  color: var(--text-secondary);
+  min-width: 3ch;
+}
+
+/* Фиксированная ширина под "saved", чтобы блок не сдвигался при появлении надписи */
+.saved-indicator-slot {
+  display: inline-block;
+  width: 72px;
+  min-width: 72px;
+  text-align: left;
+}
+
+.saved-indicator-slot .saved-indicator {
+  font-size: 14px;
+  color: var(--color-primary);
+  font-weight: 500;
+  animation: savedFadeInOut 2.5s ease-in-out;
+}
+
+@keyframes savedFadeInOut {
+  0% { opacity: 0; }
+  15% { opacity: 1; }
+  75% { opacity: 1; }
+  100% { opacity: 0; }
 }
 
 @keyframes fadeInOut {

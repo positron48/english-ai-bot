@@ -1230,13 +1230,20 @@ const setupCard = (card: Card) => {
   showExampleButtonVisible.value = false
   exampleUsageShown.value = false
 
-  // Schedule automatic options reveal
+  // Schedule automatic options reveal (or show immediately if delay is 0)
   if (card.delay_ms > 0) {
     autoRevealTimer = setTimeout(() => {
       if (!optionsShown.value) {
         revealOptions(false) // false = not early reveal
       }
     }, card.delay_ms)
+  } else {
+    // Delay 0: show options on next tick so card is rendered first
+    autoRevealTimer = setTimeout(() => {
+      if (!optionsShown.value) {
+        revealOptions(false)
+      }
+    }, 0)
   }
 }
 
@@ -1496,14 +1503,17 @@ const submitAnswer = async (optionIndex: number) => {
         nextCard()
       }, delayMs)
     } else {
-      // No delay, go to next card immediately
+      // No delay from server: correct answer — ~1s to see success; wrong + delay 0 — minimal pause
+      const delayWhenCorrectMs = 1000
+      const delayWhenWrongMs = 150
+      const nextDelayMs = data.is_correct ? delayWhenCorrectMs : delayWhenWrongMs
       autoNextCardTimerStartTime = Date.now()
-      autoNextCardTimerDelayMs = 1000
+      autoNextCardTimerDelayMs = nextDelayMs
       autoNextCardTimer = setTimeout(() => {
         autoNextCardTimerStartTime = null
         autoNextCardTimerDelayMs = null
         nextCard()
-      }, 1000) // Small delay to show feedback
+      }, nextDelayMs)
     }
   } catch (error: any) {
     console.error('Failed to submit answer:', error)

@@ -452,3 +452,105 @@ func TestHandleLanguageSettings_MethodNotAllowed(t *testing.T) {
 		t.Fatalf("expected 405, got %d", w.Code)
 	}
 }
+
+func TestHandleTrainingSettings_Success(t *testing.T) {
+	router, db, cleanup := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
+	defer cleanup()
+
+	_, err := db.GetConnection().Exec(`INSERT INTO users (telegram_id, created_at, updated_at, settings_json) VALUES (?,?,?,?)`, 3001, "2026-01-01 00:00:00", "2026-01-01 00:00:00", `{}`)
+	if err != nil {
+		t.Fatalf("insert user error: %v", err)
+	}
+
+	req := httptest.NewRequest(http.MethodPost, "/api/settings/training", bytes.NewBufferString(`{"options_delay_seconds":3,"wrong_answer_delay_seconds":2}`))
+	req.Header.Set("Content-Type", "application/json")
+	req = setUserIDInContext(req, 1)
+	w := httptest.NewRecorder()
+	router.handleTrainingSettings(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected 200, got %d: %s", w.Code, w.Body.String())
+	}
+	var resp map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&resp); err != nil {
+		t.Fatalf("decode response: %v", err)
+	}
+	settings, _ := resp["settings"].(map[string]interface{})
+	if settings == nil {
+		t.Fatal("expected settings in response")
+	}
+	if v, _ := settings["options_delay_seconds"].(float64); v != 3 {
+		t.Errorf("expected options_delay_seconds 3, got %v", v)
+	}
+	if v, _ := settings["wrong_answer_delay_seconds"].(float64); v != 2 {
+		t.Errorf("expected wrong_answer_delay_seconds 2, got %v", v)
+	}
+
+	// Verify GET /api/settings returns saved values
+	getReq := httptest.NewRequest(http.MethodGet, "/api/settings", nil)
+	getReq = setUserIDInContext(getReq, 1)
+	getW := httptest.NewRecorder()
+	router.handleSettings(getW, getReq)
+	if getW.Code != http.StatusOK {
+		t.Fatalf("GET settings expected 200, got %d", getW.Code)
+	}
+	var getResp struct {
+		Settings models.UserSettings `json:"settings"`
+	}
+	if err := json.NewDecoder(getW.Body).Decode(&getResp); err != nil {
+		t.Fatalf("decode GET response: %v", err)
+	}
+	if getResp.Settings.OptionsDelaySeconds == nil || *getResp.Settings.OptionsDelaySeconds != 3 {
+		t.Errorf("GET settings: expected options_delay_seconds 3, got %v", getResp.Settings.OptionsDelaySeconds)
+	}
+	if getResp.Settings.WrongAnswerDelaySeconds == nil || *getResp.Settings.WrongAnswerDelaySeconds != 2 {
+		t.Errorf("GET settings: expected wrong_answer_delay_seconds 2, got %v", getResp.Settings.WrongAnswerDelaySeconds)
+	}
+}
+
+func TestHandleTrainingSettings_InvalidValue(t *testing.T) {
+	router, db, cleanup := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
+	defer cleanup()
+
+	_, err := db.GetConnection().Exec(`INSERT INTO users (telegram_id, created_at, updated_at, settings_json) VALUES (?,?,?,?)`, 3002, "2026-01-01 00:00:00", "2026-01-01 00:00:00", `{}`)
+	if err != nil {
+		t.Fatalf("insert user error: %v", err)
+	}
+
+	req := httptest.NewRequest(http.MethodPost, "/api/settings/training", bytes.NewBufferString(`{"options_delay_seconds":11}`))
+	req.Header.Set("Content-Type", "application/json")
+	req = setUserIDInContext(req, 1)
+	w := httptest.NewRecorder()
+	router.handleTrainingSettings(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Fatalf("expected 400, got %d", w.Code)
+	}
+}
+
+func TestHandleTrainingSettings_Unauthorized(t *testing.T) {
+	router, _, cleanup := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
+	defer cleanup()
+
+	req := httptest.NewRequest(http.MethodPost, "/api/settings/training", bytes.NewBufferString(`{"options_delay_seconds":5}`))
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+	router.handleTrainingSettings(w, req)
+
+	if w.Code != http.StatusUnauthorized {
+		t.Fatalf("expected 401, got %d", w.Code)
+	}
+}
+
+func TestHandleTrainingSettings_MethodNotAllowed(t *testing.T) {
+	router, _, cleanup := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
+	defer cleanup()
+
+	req := httptest.NewRequest(http.MethodGet, "/api/settings/training", nil)
+	w := httptest.NewRecorder()
+	router.handleTrainingSettings(w, req)
+
+	if w.Code != http.StatusMethodNotAllowed {
+		t.Fatalf("expected 405, got %d", w.Code)
+	}
+}

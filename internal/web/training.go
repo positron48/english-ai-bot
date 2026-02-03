@@ -16,6 +16,34 @@ import (
 	"go.uber.org/zap"
 )
 
+// getTrainingDelaysForUser returns options delay in ms and wrong-answer delay in seconds from user settings, with config defaults when not set.
+func (r *Router) getTrainingDelaysForUser(userID int64) (optionsDelayMS int, wrongAnswerDelaySeconds int) {
+	optionsDelayMS = r.config.Training.OptionsDelayMS
+	wrongAnswerDelaySeconds = r.config.Training.WrongAnswerDelaySeconds
+	if r.userRepo == nil {
+		return optionsDelayMS, wrongAnswerDelaySeconds
+	}
+	userRepo, ok := r.userRepo.(*repository.UserRepository)
+	if !ok {
+		return optionsDelayMS, wrongAnswerDelaySeconds
+	}
+	user, err := userRepo.GetUserByID(userID)
+	if err != nil || user == nil || user.SettingsJSON == "" {
+		return optionsDelayMS, wrongAnswerDelaySeconds
+	}
+	var settings models.UserSettings
+	if err := json.Unmarshal([]byte(user.SettingsJSON), &settings); err != nil {
+		return optionsDelayMS, wrongAnswerDelaySeconds
+	}
+	if settings.OptionsDelaySeconds != nil {
+		optionsDelayMS = *settings.OptionsDelaySeconds * 1000
+	}
+	if settings.WrongAnswerDelaySeconds != nil {
+		wrongAnswerDelaySeconds = *settings.WrongAnswerDelaySeconds
+	}
+	return optionsDelayMS, wrongAnswerDelaySeconds
+}
+
 // WebTrainingState holds the state of a web training session
 type WebTrainingState struct {
 	UserID              int64
@@ -200,6 +228,7 @@ func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, stat
 		questionText = fmt.Sprintf("Что означает слово: <strong>%s</strong>%s", displayWord, transcriptionHTML)
 	}
 
+	optionsDelayMS, _ := r.getTrainingDelaysForUser(state.UserID)
 	// Return card data as JSON
 	response := map[string]interface{}{
 		"question":     questionText,
@@ -207,7 +236,7 @@ func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, stat
 		"total_cards":   len(state.Queue),
 		"session_id":    state.SessionID,
 		"user_card_id":  card.UserCard.ID,
-		"delay_ms":      r.config.Training.OptionsDelayMS,
+		"delay_ms":      optionsDelayMS,
 		"direction":     string(card.UserCard.Direction),
 	}
 	
@@ -614,7 +643,8 @@ func (r *Router) showTrainingFeedback(w http.ResponseWriter, req *http.Request, 
 		if trainingCard.ExampleEN != "" {
 			feedback["example"] = trainingCard.ExampleEN
 		}
-		feedback["delay_seconds"] = r.config.Training.WrongAnswerDelaySeconds
+		_, wrongAnswerDelaySeconds := r.getTrainingDelaysForUser(state.UserID)
+		feedback["delay_seconds"] = wrongAnswerDelaySeconds
 	}
 
 	json.NewEncoder(w).Encode(feedback)
