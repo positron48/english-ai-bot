@@ -15,14 +15,6 @@
     <!-- Statistics Block -->
     <div v-if="!loading && !error && statistics" class="statistics-block">
       <div class="stats-content">
-        <!-- Current Level (Left) -->
-        <div class="stat-item level-item">
-          <div class="stat-label">{{ t('dashboard.level') }}</div>
-          <div class="level-badge-compact" :class="levelBadgeClass">
-            {{ statistics.confirmed_level || t('common.notStarted') }}
-          </div>
-        </div>
-        
         <!-- Course: circle = progress (цвет) + неопубликованная часть (другой цвет) -->
         <div class="stat-item percentage-item">
           <div class="stat-label">{{ t('dashboard.course') }}</div>
@@ -81,6 +73,14 @@
               </svg>
               <div class="percentage-value-small">{{ statistics.whole_course_completion_pct ?? 0 }}%</div>
             </div>
+          </div>
+        </div>
+
+        <!-- Current Level -->
+        <div class="stat-item level-item">
+          <div class="stat-label">{{ t('dashboard.level') }}</div>
+          <div class="level-badge-compact" :class="levelBadgeClass">
+            {{ statistics.confirmed_level || t('common.notStarted') }}
           </div>
         </div>
         
@@ -429,6 +429,7 @@ onMounted(() => {
   border: 2px solid var(--border-primary);
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
 }
 
 .stats-content {
@@ -436,12 +437,14 @@ onMounted(() => {
   grid-template-columns: repeat(4, 1fr);
   gap: 16px;
   align-items: center;
+  justify-items: center;
 }
 
 .stat-item {
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: center;
   gap: 12px;
 }
 
@@ -449,6 +452,10 @@ onMounted(() => {
   font-size: 11px;
   font-weight: 600;
   color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  min-width: 50px;
 }
 
 /* Level Item */
@@ -567,8 +574,19 @@ onMounted(() => {
 
 @media (max-width: 768px) {
   .stats-content {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
+    justify-items: stretch;
+    padding: 0 4px;
+    max-width: 387px;
+    margin: auto;
+  }
+
+  .stat-item {
+    width: 100%;
+    min-width: 0;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
   }
   
   .percentage-circle-small-wrapper {
@@ -587,6 +605,12 @@ onMounted(() => {
   .level-badge-compact {
     font-size: 18px;
     padding: 5px 10px;
+  }
+
+  .stat-label {
+    font-size: 10px;
+    min-width: auto;
+    text-align: left;
   }
 }
 
