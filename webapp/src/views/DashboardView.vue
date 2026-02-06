@@ -62,14 +62,6 @@
         <router-link to="/learning/grammar" class="grammar-stats-link">
           <div class="statistics-block">
             <div class="stats-content">
-              <!-- Current Level (Left) -->
-              <div class="stat-item level-item">
-                <div class="stat-label">{{ t('dashboard.level') }}</div>
-                <div class="level-badge-compact" :class="grammarLevelBadgeClass">
-                  {{ stats.grammarStats.confirmed_level || t('common.notStarted') }}
-                </div>
-              </div>
-              
               <!-- Course: circle = progress (цвет) + неопубликованная часть (другой цвет) -->
               <div class="stat-item percentage-item">
                 <div class="stat-label">{{ t('dashboard.course') }}</div>
@@ -129,7 +121,15 @@
                   </div>
                 </div>
               </div>
-              
+
+              <!-- Current Level -->
+              <div class="stat-item level-item">
+                <div class="stat-label">{{ t('dashboard.level') }}</div>
+                <div class="level-badge-compact" :class="grammarLevelBadgeClass">
+                  {{ stats.grammarStats.confirmed_level || t('common.notStarted') }}
+                </div>
+              </div>
+
               <!-- Average Test Score -->
               <div class="stat-item percentage-item">
                 <div class="stat-label">{{ t('dashboard.testAvg') }}</div>
@@ -175,7 +175,7 @@
                 </div>
               </div>
               
-              <!-- Chapters Progress (Right) -->
+              <!-- Chapters Progress -->
               <div class="stat-item chapters-item">
                 <div class="stat-label">{{ t('dashboard.chapters') }}</div>
                 <div class="chapters-value-compact">
@@ -853,9 +853,10 @@ onMounted(() => {
 
 <style scoped>
 .dashboard {
-  max-width: 1200px;
+  width: min(1200px, 100%);
   margin: 0 auto;
-  padding: 20px;
+  box-sizing: border-box;
+  padding: 20px 16px;
 }
 
 .dashboard-header {
@@ -1037,12 +1038,14 @@ onMounted(() => {
   grid-template-columns: repeat(4, 1fr);
   gap: 16px;
   align-items: center;
+  justify-items: center;
 }
 
 .stat-item {
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: center;
   gap: 12px;
 }
 
@@ -1248,7 +1251,7 @@ onMounted(() => {
 
 @media (max-width: 768px) {
   .dashboard {
-    padding: 12px 8px;
+    padding: 12px;
   }
   
   .dashboard-header {
@@ -1316,8 +1319,19 @@ onMounted(() => {
   }
   
   .stats-content {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
+    justify-items: stretch;
+    padding: 0 4px;
+    max-width: 387px;
+    margin: auto;
+  }
+
+  .stat-item {
+    width: 100%;
+    min-width: 0;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
   }
   
   .percentage-circle-small-wrapper {
@@ -1340,7 +1354,8 @@ onMounted(() => {
   
   .stat-label {
     font-size: 10px;
-    min-width: 40px;
+    min-width: auto;
+    text-align: left;
   }
   
   /* Compact Progress Section */
@@ -1393,4 +1408,3 @@ onMounted(() => {
   }
 }
 </style>
-

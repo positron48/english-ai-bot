@@ -820,4 +820,3 @@ func defaultIntPtr(p *int, d int) int {
 	}
 	return *p
 }
-
