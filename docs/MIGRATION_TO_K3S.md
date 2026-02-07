@@ -1,109 +1,148 @@
-# Миграция english в k3s (qantrix.ru)
+# Миграция english: native SQLite -> k3s Postgres
 
-## 1. Что уже подготовлено
+Ниже только актуальная последовательность команд.
 
-- В `english`:
-  - добавлены `DATABASE_DRIVER`, `DATABASE_URL` в конфиг.
-  - CI: добавлена сборка/публикация Docker-образа в GHCR.
-  - удален legacy автодеплой по SSH.
-- В `devops-time-host`:
-  - добавлен `apps/english` (app + postgres + pvc + ingress).
-  - добавлен Flux image automation для `ghcr.io/positron48/english`.
-  - app включен в `clusters/prod/kustomization.yaml`.
-
-## 2. Что сделать на машине с интернетом (финализация Postgres в коде)
-
-Ниже команды для полного завершения перехода на Postgres runtime.
+## 1) Установка секретов для pod'ов (на новом сервере с k3s)
 
 ```bash
-cd /var/www/my/k3s/english
-git checkout feat/k3s-postgres-migration
+# если приложение еще не применено в кластер
+kubectl apply -k /var/www/my/k3s/devops-time-host/apps/english/prod
 
-# 1) добавить драйвер
-go get github.com/jackc/pgx/v5/stdlib@latest
+# секрет приложения
+kubectl -n english create secret generic english-secrets \
+  --from-literal=AI_URL='https://openrouter.ai/api/v1' \
+  --from-literal=AI_API_KEY='***' \
+  --from-literal=AI_MODEL='openai/gpt-5-mini' \
+  --from-literal=AI_MODEL_HIGH='openai/gpt-5-mini' \
+  --from-literal=AI_PROMPT_FILE='prompts/english-teacher.txt' \
+  --from-literal=WEBAPP_JWT_SECRET='***' \
+  --from-literal=WEBAPP_SESSION_SECRET='***' \
+  --from-literal=TELEGRAM_TOKEN='***' \
+  --from-literal=ADMIN_TELEGRAM_ID='0' \
+  --dry-run=client -o yaml | kubectl apply -f -
 
-# 2) привести зависимости в порядок
-go mod tidy
+# секрет Postgres
+kubectl -n english create secret generic english-postgres \
+  --from-literal=POSTGRES_DB='english' \
+  --from-literal=POSTGRES_USER='english' \
+  --from-literal=POSTGRES_PASSWORD='***' \
+  --dry-run=client -o yaml | kubectl apply -f -
 
-# 3) проверить сборку/тесты
-GOCACHE=/tmp/go-build-cache go test ./internal/config ./internal/database ./internal/bot ./cmd/migrate_training_cards
-GOCACHE=/tmp/go-build-cache go test ./... 
-
-# 4) локальный smoke с postgres (через docker compose)
-docker run --rm --name english-pg-smoke -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=english -e POSTGRES_USER=english -p 55432:5432 -d postgres:16-alpine
-
-export DATABASE_DRIVER=postgres
-export DATABASE_URL='postgres://english:postgres@127.0.0.1:55432/english?sslmode=disable'
-export AI_URL='https://openrouter.ai/api/v1'
-export AI_API_KEY='test'
-export AI_PROMPT='test'
-export WEBAPP_JWT_SECRET='test'
-
-# проверка запуска (должен подняться HTTP сервер)
-timeout 20s go run ./cmd/bot || true
-
-# чистим smoke-бд
-docker rm -f english-pg-smoke
+kubectl -n english get secrets
+kubectl -n english get pods
 ```
 
-Если эти шаги прошли, можно собирать и пушить образ в GHCR.
-
-## 3. Миграция SQLite -> Postgres в k3s (через pod’ы)
-
-Правильный поток:
-- backup делается нативно на старом сервере (без k3s);
-- перенос файла на новый сервер;
-- импорт в Postgres выполняется в k3s (через pod’ы).
-
-### 3.1. Найти pod’ы
+Если pod падает с ошибкой `failed to read prompt file prompts/english-teacher.txt`:
 
 ```bash
-kubectl -n english get pods -o wide
+# быстрый обходной путь: задать AI_PROMPT напрямую (без файла)
+kubectl -n english create secret generic english-secrets \
+  --from-literal=AI_URL='https://openrouter.ai/api/v1' \
+  --from-literal=AI_API_KEY='***' \
+  --from-literal=AI_MODEL='openai/gpt-5-mini' \
+  --from-literal=AI_MODEL_HIGH='openai/gpt-5-mini' \
+  --from-literal=AI_PROMPT='You are a helpful English teacher.' \
+  --from-literal=WEBAPP_JWT_SECRET='***' \
+  --from-literal=WEBAPP_SESSION_SECRET='***' \
+  --from-literal=TELEGRAM_TOKEN='***' \
+  --from-literal=ADMIN_TELEGRAM_ID='0' \
+  --dry-run=client -o yaml | kubectl apply -f -
 
-# Сохраняем имена в переменные
-APP_POD=$(kubectl -n english get pod -l app=english -o jsonpath='{.items[0].metadata.name}')
-PG_POD=$(kubectl -n english get pod -l app=english-postgres -o jsonpath='{.items[0].metadata.name}')
-echo "$APP_POD"
-echo "$PG_POD"
+kubectl -n english rollout restart deployment/english
+kubectl -n english rollout status deployment/english
 ```
 
-### 3.2. Сделать backup SQLite на старом сервере (native)
+### 1.1) Доступ к приватному GHCR-образу (image pull secret)
+
+Нужен GitHub PAT с правами минимум `read:packages` (и доступом к репозиторию, если он private).
 
 ```bash
-# старый сервер (native)
+# создать/обновить docker-registry secret для ghcr.io
+kubectl -n english create secret docker-registry ghcr-creds \
+  --docker-server=ghcr.io \
+  --docker-username='<GITHUB_USERNAME>' \
+  --docker-password='<GITHUB_PAT_WITH_read:packages>' \
+  --docker-email='<EMAIL>' \
+  --dry-run=client -o yaml | kubectl apply -f -
+
+# привязать secret к deployment
+kubectl -n english patch deployment english \
+  --type='merge' \
+  -p '{"spec":{"template":{"spec":{"imagePullSecrets":[{"name":"ghcr-creds"}]}}}}'
+
+# перезапустить pod
+kubectl -n english rollout restart deployment/english
+kubectl -n english rollout status deployment/english
+```
+
+Проверка причины, если pull снова упал:
+
+```bash
+kubectl -n english describe pod -l app=english | sed -n '/Events/,$p'
+```
+
+## 2) Дамп SQLite на старом (native) сервере + перенос на новый сервер с k3s
+
+### На старом сервере (где сервис работает нативно)
+
+```bash
 sqlite3 /path/to/words.db ".backup '/tmp/english-backup.db'"
 ls -lh /tmp/english-backup.db
 ```
 
-Скопировать backup на новый сервер (где k3s):
+### Скопировать на новый сервер (k3s)
 
 ```bash
-# выполняется со старого сервера
-scp /tmp/english-backup.db <new-server>:/tmp/english-backup.db
+scp /tmp/english-backup.db root@<NEW_SERVER_IP>:/tmp/english-backup.db
 ```
 
-### 3.3. Перенести backup в postgres pod на новом сервере
+### На новом сервере проверить файл
 
 ```bash
-# на новом сервере
-kubectl -n english cp /tmp/english-backup.db "$PG_POD":/tmp/english-backup.db
+ls -lh /tmp/english-backup.db
 ```
 
-### 3.4. Импорт в Postgres внутри pod
+## 3) Переключение на Postgres + импорт дампа в pod + миграция в Postgres
 
-Рекомендуемый путь: `pgloader` в отдельном utility pod.
+### 3.1. Остановить приложение на время импорта
 
 ```bash
-# вариант A: временно поднять utility pod и скопировать в него backup
+kubectl -n english scale deployment/english --replicas=0
+kubectl -n english get pods
+```
+
+### 3.2. Найти postgres pod
+
+```bash
+PG_POD=$(kubectl -n english get pod -l app=english-postgres -o jsonpath='{.items[0].metadata.name}')
+echo "$PG_POD"
+```
+
+### 3.3. Очистить БД перед импортом (если нужен чистый повторный накат)
+
+```bash
+kubectl -n english exec "$PG_POD" -- sh -lc "psql -U english -d english -c 'DROP SCHEMA public CASCADE; CREATE SCHEMA public;'"
+```
+
+### 3.4. Импорт SQLite -> Postgres внутри k3s
+
+```bash
+# временный pod с pgloader
 kubectl -n english run pgloader --image=dimitri/pgloader --restart=Never -- sleep 3600
 kubectl -n english wait --for=condition=Ready pod/pgloader --timeout=120s
+
+# копируем backup в pod pgloader
 kubectl -n english cp /tmp/english-backup.db pgloader:/tmp/english-backup.db
+
+# запускаем миграцию в сервис postgres внутри namespace english
 kubectl -n english exec pgloader -- \
-  pgloader /tmp/english-backup.db postgresql://english:<PASSWORD>@english-postgres:5432/english
+  pgloader /tmp/english-backup.db postgresql://english:<POSTGRES_PASSWORD>@english-postgres:5432/english
+
+# удаляем временный pod
 kubectl -n english delete pod pgloader
 ```
 
-### 3.5. Проверка после импорта
+### 3.5. Проверка данных в Postgres
 
 ```bash
 kubectl -n english exec "$PG_POD" -- sh -lc "psql -U english -d english -c 'SELECT COUNT(*) FROM users;'"
@@ -112,122 +151,12 @@ kubectl -n english exec "$PG_POD" -- sh -lc "psql -U english -d english -c 'SELE
 kubectl -n english exec "$PG_POD" -- sh -lc "psql -U english -d english -c 'SELECT COUNT(*) FROM user_cards;'"
 ```
 
-## 4. Как повторно перенакатывать базу (re-import)
-
-Когда нужно заново импортировать SQLite в Postgres:
-
-1. Остановить приложение, чтобы не писало в БД во время reload.
-
-```bash
-kubectl -n english scale deployment/english --replicas=0
-kubectl -n english rollout status deployment/english
-```
-
-2. Очистить схему в Postgres.
-
-```bash
-kubectl -n english exec "$PG_POD" -- sh -lc "psql -U english -d english -c 'DROP SCHEMA public CASCADE; CREATE SCHEMA public;'"
-```
-
-3. Повторить шаги из раздела 3:
-   - на старом сервере сделать новый native backup;
-   - скопировать его на новый сервер;
-   - загрузить в pod и выполнить import.
-
-4. Поднять приложение обратно.
+### 3.6. Поднять приложение обратно
 
 ```bash
 kubectl -n english scale deployment/english --replicas=1
 kubectl -n english rollout status deployment/english
-kubectl -n english logs deploy/english --tail=200
+kubectl -n english logs deployment/english --tail=200
 ```
 
-## 5. Полная проверка после миграции (k3s)
-
-```bash
-# 1) состояние ресурсов
-kubectl -n english get all
-kubectl -n english get ingress
-
-# 2) логи приложения и Postgres
-kubectl -n english logs deploy/english --tail=200
-kubectl -n english logs deploy/english-postgres --tail=200
-
-# 3) health приложения изнутри pod
-APP_POD=$(kubectl -n english get pod -l app=english -o jsonpath='{.items[0].metadata.name}')
-kubectl -n english exec "$APP_POD" -- sh -lc "wget -qO- http://127.0.0.1:8080/health || true"
-
-# 4) проверка, что приложение пишет в Postgres (пример: updated_at на users меняется)
-kubectl -n english exec "$PG_POD" -- sh -lc "psql -U english -d english -c 'SELECT now();'"
-```
-
-Функциональные smoke-check (в UI/API):
-
-1. login в webapp;
-2. открыть dashboard;
-3. открыть vocab;
-4. сделать 1-2 ответа в training;
-5. убедиться, что в `review_events` и/или `training_sessions` появились новые записи.
-
-## 6. Локальная миграция без k3s (`make dev`)
-
-Сценарий для локальной машины.
-
-### 6.1. Поднять локальный Postgres
-
-```bash
-docker run --rm --name english-local-pg \
-  -e POSTGRES_DB=english \
-  -e POSTGRES_USER=english \
-  -e POSTGRES_PASSWORD=english \
-  -p 5432:5432 -d postgres:16-alpine
-```
-
-### 6.2. Подготовить SQLite backup
-
-```bash
-cd /var/www/my/k3s/english
-sqlite3 ./data/words.db ".backup './data/english-backup.db'"
-```
-
-### 6.3. Импорт в локальный Postgres
-
-Через `pgloader`:
-
-```bash
-pgloader ./data/english-backup.db postgresql://english:english@127.0.0.1:5432/english
-```
-
-### 6.4. Запустить приложение в dev-режиме на Postgres
-
-```bash
-export DATABASE_DRIVER=postgres
-export DATABASE_URL='postgres://english:english@127.0.0.1:5432/english?sslmode=disable'
-
-# остальные обязательные env для сервиса
-export AI_URL='https://openrouter.ai/api/v1'
-export AI_API_KEY='***'
-export AI_PROMPT='***'
-export WEBAPP_JWT_SECRET='***'
-
-make dev
-```
-
-### 6.5. Повторный локальный re-import
-
-```bash
-# стопаем dev приложение
-# затем чистим схему
-psql 'postgresql://english:english@127.0.0.1:5432/english' -c 'DROP SCHEMA public CASCADE; CREATE SCHEMA public;'
-
-# заново импорт
-pgloader ./data/english-backup.db postgresql://english:english@127.0.0.1:5432/english
-
-# снова make dev
-```
-
-## 7. Откат
-
-- В k3s: `kubectl -n english scale deployment/english --replicas=0`.
-- Вернуть DNS/трафик на старую площадку (если применимо).
-- Использовать сохраненный SQLite backup для восстановления предыдущего состояния.
+Готово: приложение работает в k3s с Postgres и данными из старого SQLite.

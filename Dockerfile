@@ -37,6 +37,7 @@ RUN mkdir -p /app/data && chown -R appuser:appgroup /app/data
 
 # Copy binary from builder stage
 COPY --from=builder /app/main .
+COPY --from=builder /app/prompts ./prompts
 
 # Change ownership to non-root user
 RUN chown -R appuser:appgroup /app
