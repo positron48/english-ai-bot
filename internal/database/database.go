@@ -11,8 +11,8 @@ import (
 
 // DB wraps database connection
 type DB struct {
-	conn   *sql.DB
-	logger *zap.Logger
+	conn    *sql.DB
+	logger  *zap.Logger
 	dialect string
 }
 
@@ -24,8 +24,8 @@ func New(dbPath string, logger *zap.Logger) (*DB, error) {
 	}
 
 	db := &DB{
-		conn:   conn,
-		logger: logger,
+		conn:    conn,
+		logger:  logger,
 		dialect: DialectSQLite,
 	}
 	registerConnDialect(conn, DialectSQLite)
@@ -42,8 +42,24 @@ func New(dbPath string, logger *zap.Logger) (*DB, error) {
 // Supported drivers: sqlite (default), postgres.
 func NewWithConfig(driver, path, url string, logger *zap.Logger) (*DB, error) {
 	if strings.EqualFold(strings.TrimSpace(driver), DialectPostgres) {
-		_ = url
-		return nil, fmt.Errorf("postgres driver is not linked in this build; install and wire a postgres SQL driver first")
+		if strings.TrimSpace(url) == "" {
+			return nil, fmt.Errorf("DATABASE_URL is required for postgres")
+		}
+		conn, err := openPostgresDB(url)
+		if err != nil {
+			return nil, err
+		}
+		db := &DB{
+			conn:    conn,
+			logger:  logger,
+			dialect: DialectPostgres,
+		}
+		registerConnDialect(conn, DialectPostgres)
+		if err := db.migratePostgres(); err != nil {
+			conn.Close()
+			return nil, fmt.Errorf("failed to migrate postgres database: %w", err)
+		}
+		return db, nil
 	}
 
 	dbPath := strings.TrimSpace(path)

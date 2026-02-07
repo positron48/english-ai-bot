@@ -20,7 +20,7 @@ cd /var/www/my/k3s/english
 git checkout feat/k3s-postgres-migration
 
 # 1) добавить драйвер
-go get github.com/jackc/pgx/v5@latest
+go get github.com/jackc/pgx/v5/stdlib@latest
 
 # 2) привести зависимости в порядок
 go mod tidy
