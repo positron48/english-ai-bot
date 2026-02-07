@@ -16,7 +16,9 @@ AI_URL=https://openrouter.ai/api/v1
 AI_API_KEY=your_openrouter_api_key
 AI_MODEL=qwen/qwen3-coder:free
 AI_PROMPT=You are a helpful AI assistant.
+DATABASE_DRIVER=sqlite
 DATABASE_PATH=./data/words.db
+# DATABASE_URL=postgres://user:pass@host:5432/english?sslmode=disable
 WEBAPP_JWT_SECRET=$(openssl rand -hex 32)
 TRAINING_WORKER_ENABLED=true
 TRAINING_PROMPT_FILE=prompts/training-card-generator.txt
@@ -276,7 +278,9 @@ AI_MODEL=                    # Модель AI (основная)
 AI_MODEL_HIGH=               # Модель AI для сложных задач (опционально)
 AI_PROMPT=                   # Системный промпт (или AI_PROMPT_FILE)
 AI_PROMPT_FILE=              # Файл с промптом (альтернатива AI_PROMPT)
+DATABASE_DRIVER=sqlite       # sqlite | postgres
 DATABASE_PATH=               # Путь к SQLite БД
+DATABASE_URL=                # URL Postgres (если DATABASE_DRIVER=postgres)
 WEBAPP_JWT_SECRET=           # Секрет для JWT (openssl rand -hex 32)
 ```
 

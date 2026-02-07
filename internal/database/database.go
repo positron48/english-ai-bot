@@ -13,6 +13,7 @@ import (
 type DB struct {
 	conn   *sql.DB
 	logger *zap.Logger
+	dialect string
 }
 
 // New creates a new database connection
@@ -25,7 +26,9 @@ func New(dbPath string, logger *zap.Logger) (*DB, error) {
 	db := &DB{
 		conn:   conn,
 		logger: logger,
+		dialect: DialectSQLite,
 	}
+	registerConnDialect(conn, DialectSQLite)
 
 	if err := db.migrate(); err != nil {
 		conn.Close()
@@ -33,6 +36,21 @@ func New(dbPath string, logger *zap.Logger) (*DB, error) {
 	}
 
 	return db, nil
+}
+
+// NewWithConfig creates a database connection from config variables.
+// Supported drivers: sqlite (default), postgres.
+func NewWithConfig(driver, path, url string, logger *zap.Logger) (*DB, error) {
+	if strings.EqualFold(strings.TrimSpace(driver), DialectPostgres) {
+		_ = url
+		return nil, fmt.Errorf("postgres driver is not linked in this build; install and wire a postgres SQL driver first")
+	}
+
+	dbPath := strings.TrimSpace(path)
+	if dbPath == "" {
+		dbPath = "./data/words.db"
+	}
+	return New(dbPath, logger)
 }
 
 // Close closes the database connection

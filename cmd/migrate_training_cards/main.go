@@ -49,7 +49,7 @@ func main() {
 	}
 
 	// Initialize database
-	db, err := database.New(cfg.Database.Path, log)
+	db, err := database.NewWithConfig(cfg.Database.Driver, cfg.Database.Path, cfg.Database.URL, log)
 	if err != nil {
 		log.Fatal("Failed to initialize database", zap.Error(err))
 	}

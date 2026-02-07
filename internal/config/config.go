@@ -65,7 +65,9 @@ type BotConfig struct {
 
 // DatabaseConfig holds database configuration
 type DatabaseConfig struct {
-	Path string `mapstructure:"path"`
+	Driver string `mapstructure:"driver"`
+	Path   string `mapstructure:"path"`
+	URL    string `mapstructure:"url"`
 }
 
 // TrainingConfig holds training system configuration
@@ -129,6 +131,7 @@ func Load() (*Config, error) {
 	viper.SetDefault("server.address", ":8184")
 	viper.SetDefault("logging.level", "info")
 	viper.SetDefault("ai.model", "gpt-3.5-turbo")
+	viper.SetDefault("database.driver", "sqlite")
 	viper.SetDefault("database.path", "./data/words.db")
 	
 	// Training defaults
@@ -204,6 +207,8 @@ func Load() (*Config, error) {
 	_ = viper.BindEnv("bot.error_message", "BOT_ERROR_MESSAGE")
 	_ = viper.BindEnv("bot.empty_message", "BOT_EMPTY_MESSAGE")
 	_ = viper.BindEnv("database.path", "DATABASE_PATH")
+	_ = viper.BindEnv("database.driver", "DATABASE_DRIVER")
+	_ = viper.BindEnv("database.url", "DATABASE_URL")
 	_ = viper.BindEnv("training.worker_enabled", "TRAINING_WORKER_ENABLED")
 	_ = viper.BindEnv("training.worker_interval", "TRAINING_WORKER_INTERVAL")
 	_ = viper.BindEnv("training.worker_batch_size", "TRAINING_WORKER_BATCH_SIZE")
