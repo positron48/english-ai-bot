@@ -125,78 +125,9 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 	// Display word: prefer training_cards.display_word, fallback word_cards.display_en, fallback word_cards.word
 	// Use UNION ALL to combine words from user_cards and known words without user_cards
 	// Optimized: using JOINs instead of subqueries for better performance
-	queryFromCards := `SELECT 
-		tc.word_card_id,
-		wc.word as lemma,
-		COALESCE(tc_display.display_word, wc.display_en, wc.word) as display_word,
-		COUNT(DISTINCT uc.id) as total_cards,
-		SUM(CASE WHEN uc.next_due_at IS NULL OR uc.next_due_at <= ? THEN 1 ELSE 0 END) as due_count,
-		substr(CAST(MAX(uc.last_review_at) AS TEXT), 1, 19) as last_review,
-		SUM(uc.reps) as total_reps,
-		substr(CAST(MIN(uc.created_at) AS TEXT), 1, 19) as added_at,
-		COUNT(CASE WHEN uc.state = 'review' THEN 1 END) as review_state_count,
-		COUNT(CASE WHEN uc.state = 'learning' THEN 1 END) as learning_state_count,
-		COUNT(CASE WHEN uc.state = 'new' THEN 1 END) as new_state_count,
-		COALESCE(review_stats.review_count, 0) as review_count,
-		CASE WHEN uwk_known.word_card_id IS NOT NULL THEN 1 ELSE 0 END as is_known
-	FROM user_cards uc
-	JOIN training_cards tc ON uc.training_card_id = tc.id
-	JOIN word_cards wc ON tc.word_card_id = wc.id
-	LEFT JOIN (
-		SELECT tc1.word_card_id, tc1.display_word
-		FROM training_cards tc1
-		INNER JOIN (
-			SELECT word_card_id, MIN(id) as min_id
-			FROM training_cards
-			WHERE display_word IS NOT NULL AND display_word != ''
-			GROUP BY word_card_id
-		) tc_min ON tc1.word_card_id = tc_min.word_card_id AND tc1.id = tc_min.min_id
-	) tc_display ON tc_display.word_card_id = tc.word_card_id
-	LEFT JOIN (
-		SELECT tc2.word_card_id, COUNT(*) as review_count
-		FROM review_events re
-		JOIN user_cards uc2 ON re.user_card_id = uc2.id
-		JOIN training_cards tc2 ON uc2.training_card_id = tc2.id
-		WHERE uc2.user_id = ?
-		GROUP BY tc2.word_card_id
-	) review_stats ON review_stats.word_card_id = tc.word_card_id
-	LEFT JOIN user_word_knowledge uwk_known ON uwk_known.user_id = ? AND uwk_known.word_card_id = tc.word_card_id AND uwk_known.status = 'known'
-	WHERE uc.user_id = ?`
+	queryFromCards := "SELECT tc.word_card_id, wc.word as lemma, COALESCE(MAX(tc_display.display_word), MAX(wc.display_en), wc.word) as display_word, COUNT(DISTINCT uc.id) as total_cards, SUM(CASE WHEN uc.next_due_at IS NULL OR uc.next_due_at <= ? THEN 1 ELSE 0 END) as due_count, substr(CAST(MAX(uc.last_review_at) AS TEXT), 1, 19) as last_review, SUM(uc.reps) as total_reps, substr(CAST(MIN(uc.created_at) AS TEXT), 1, 19) as added_at, COUNT(CASE WHEN uc.state = 'review' THEN 1 END) as review_state_count, COUNT(CASE WHEN uc.state = 'learning' THEN 1 END) as learning_state_count, COUNT(CASE WHEN uc.state = 'new' THEN 1 END) as new_state_count, COALESCE(MAX(review_stats.review_count), 0) as review_count, MAX(CASE WHEN uwk_known.word_card_id IS NOT NULL THEN 1 ELSE 0 END) as is_known FROM user_cards uc JOIN training_cards tc ON uc.training_card_id = tc.id JOIN word_cards wc ON tc.word_card_id = wc.id LEFT JOIN (SELECT tc1.word_card_id, tc1.display_word FROM training_cards tc1 INNER JOIN (SELECT word_card_id, MIN(id) as min_id FROM training_cards WHERE display_word IS NOT NULL AND display_word != '' GROUP BY word_card_id) tc_min ON tc1.word_card_id = tc_min.word_card_id AND tc1.id = tc_min.min_id) tc_display ON tc_display.word_card_id = tc.word_card_id LEFT JOIN (SELECT tc2.word_card_id, COUNT(*) as review_count FROM review_events re JOIN user_cards uc2 ON re.user_card_id = uc2.id JOIN training_cards tc2 ON uc2.training_card_id = tc2.id WHERE uc2.user_id = ? GROUP BY tc2.word_card_id) review_stats ON review_stats.word_card_id = tc.word_card_id LEFT JOIN user_word_knowledge uwk_known ON uwk_known.user_id = ? AND uwk_known.word_card_id = tc.word_card_id AND uwk_known.status = 'known' WHERE uc.user_id = ?"
 
-	queryFromKnown := `SELECT 
-		uwk.word_card_id,
-		wc.word as lemma,
-		COALESCE(tc_display.display_word, wc.display_en, wc.word) as display_word,
-		0 as total_cards,
-		0 as due_count,
-		NULL as last_review,
-		0 as total_reps,
-		substr(CAST(uwk.created_at AS TEXT), 1, 19) as added_at,
-		0 as review_state_count,
-		0 as learning_state_count,
-		0 as new_state_count,
-		0 as review_count,
-		1 as is_known
-	FROM user_word_knowledge uwk
-	JOIN word_cards wc ON uwk.word_card_id = wc.id
-	LEFT JOIN (
-		SELECT tc1.word_card_id, tc1.display_word
-		FROM training_cards tc1
-		INNER JOIN (
-			SELECT word_card_id, MIN(id) as min_id
-			FROM training_cards
-			WHERE display_word IS NOT NULL AND display_word != ''
-			GROUP BY word_card_id
-		) tc_min ON tc1.word_card_id = tc_min.word_card_id AND tc1.id = tc_min.min_id
-	) tc_display ON tc_display.word_card_id = uwk.word_card_id
-	LEFT JOIN (
-		SELECT DISTINCT tc.word_card_id
-		FROM user_cards uc
-		JOIN training_cards tc ON uc.training_card_id = tc.id
-		WHERE uc.user_id = ?
-	) has_user_cards ON has_user_cards.word_card_id = uwk.word_card_id
-	WHERE uwk.user_id = ? AND uwk.status = 'known'
-	  AND has_user_cards.word_card_id IS NULL`
+	queryFromKnown := "SELECT uwk.word_card_id, wc.word as lemma, COALESCE(tc_display.display_word, wc.display_en, wc.word) as display_word, 0 as total_cards, 0 as due_count, NULL as last_review, 0 as total_reps, substr(CAST(uwk.created_at AS TEXT), 1, 19) as added_at, 0 as review_state_count, 0 as learning_state_count, 0 as new_state_count, 0 as review_count, 1 as is_known FROM user_word_knowledge uwk JOIN word_cards wc ON uwk.word_card_id = wc.id LEFT JOIN (SELECT tc1.word_card_id, tc1.display_word FROM training_cards tc1 INNER JOIN (SELECT word_card_id, MIN(id) as min_id FROM training_cards WHERE display_word IS NOT NULL AND display_word != '' GROUP BY word_card_id) tc_min ON tc1.word_card_id = tc_min.word_card_id AND tc1.id = tc_min.min_id) tc_display ON tc_display.word_card_id = uwk.word_card_id LEFT JOIN (SELECT DISTINCT tc.word_card_id FROM user_cards uc JOIN training_cards tc ON uc.training_card_id = tc.id WHERE uc.user_id = ?) has_user_cards ON has_user_cards.word_card_id = uwk.word_card_id WHERE uwk.user_id = ? AND uwk.status = 'known' AND has_user_cards.word_card_id IS NULL"
 
 	args := []interface{}{now, userID, userID, userID}
 	argsKnown := []interface{}{userID, userID}
