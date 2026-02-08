@@ -2,7 +2,7 @@
 FROM golang:1.24-alpine AS builder
 
 # Install build dependencies
-RUN apk add --no-cache git ca-certificates tzdata
+RUN apk add --no-cache git ca-certificates tzdata nodejs npm
 
 # Set working directory
 WORKDIR /app
@@ -13,8 +13,15 @@ COPY go.mod go.sum ./
 # Download dependencies
 RUN go mod download
 
+# Install webapp dependencies first for better Docker layer caching
+COPY webapp/package.json webapp/package-lock.json ./webapp/
+RUN cd webapp && npm ci
+
 # Copy source code
 COPY . .
+
+# Build webapp dist that is embedded into Go binary.
+RUN cd webapp && npm run build
 
 # Build the application (CGO disabled, fast incremental-compatible build)
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o main ./cmd/bot
