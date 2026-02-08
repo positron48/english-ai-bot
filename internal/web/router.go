@@ -283,6 +283,15 @@ func (r *Router) setupRoutes() {
 		fmt.Fprintf(w, `{"status": "ok"}`)
 	})
 
+	// Redirect site root to webapp entrypoint.
+	r.mux.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
+		if req.URL.Path != "/" {
+			r.handleNotFound(w, req)
+			return
+		}
+		http.Redirect(w, req, "/app", http.StatusFound)
+	})
+
 	// Webapp static files (must be registered after API routes to avoid conflicts)
 	r.setupWebappRoutes()
 }

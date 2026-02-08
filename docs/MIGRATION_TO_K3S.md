@@ -10,6 +10,7 @@ kubectl apply -k /var/www/my/k3s/devops-time-host/apps/english/prod
 
 # секрет приложения
 kubectl -n english create secret generic english-secrets \
+  --from-literal=DATABASE_URL='postgres://english:<POSTGRES_PASSWORD>@english-postgres:5432/english?sslmode=disable' \
   --from-literal=AI_URL='https://openrouter.ai/api/v1' \
   --from-literal=AI_API_KEY='***' \
   --from-literal=AI_MODEL='openai/gpt-5-mini' \
@@ -32,27 +33,59 @@ kubectl -n english get secrets
 kubectl -n english get pods
 ```
 
-Если pod падает с ошибкой `failed to read prompt file prompts/english-teacher.txt`:
+### 1.1) Важно: пароль должен совпадать в двух местах
+
+Одинаковое значение пароля нужно задать:
+- в секрете `english-postgres` (`POSTGRES_PASSWORD`);
+- в `DATABASE_URL` у приложения (секрет `english-secrets`).
+
+Пример:
 
 ```bash
-# быстрый обходной путь: задать AI_PROMPT напрямую (без файла)
+# обновить секрет postgres
+kubectl -n english create secret generic english-postgres \
+  --from-literal=POSTGRES_DB='english' \
+  --from-literal=POSTGRES_USER='english' \
+  --from-literal=POSTGRES_PASSWORD='MY_REAL_PASSWORD' \
+  --dry-run=client -o yaml | kubectl apply -f -
+
+# обновить DATABASE_URL с тем же паролем в english-secrets
 kubectl -n english create secret generic english-secrets \
+  --from-literal=DATABASE_URL='postgres://english:MY_REAL_PASSWORD@english-postgres:5432/english?sslmode=disable' \
   --from-literal=AI_URL='https://openrouter.ai/api/v1' \
   --from-literal=AI_API_KEY='***' \
   --from-literal=AI_MODEL='openai/gpt-5-mini' \
   --from-literal=AI_MODEL_HIGH='openai/gpt-5-mini' \
-  --from-literal=AI_PROMPT='You are a helpful English teacher.' \
+  --from-literal=AI_PROMPT_FILE='prompts/english-teacher.txt' \
   --from-literal=WEBAPP_JWT_SECRET='***' \
   --from-literal=WEBAPP_SESSION_SECRET='***' \
   --from-literal=TELEGRAM_TOKEN='***' \
   --from-literal=ADMIN_TELEGRAM_ID='0' \
   --dry-run=client -o yaml | kubectl apply -f -
 
+# перезапуск
+kubectl -n english rollout restart deployment/english-postgres
 kubectl -n english rollout restart deployment/english
+kubectl -n english rollout status deployment/english-postgres
 kubectl -n english rollout status deployment/english
 ```
 
-### 1.1) Доступ к приватному GHCR-образу (image pull secret)
+Если postgres уже инициализирован на PVC со старым паролем, простое обновление секрета может не помочь.
+В таком случае нужно переинициализировать postgres-данные (или вручную сменить пароль в БД), затем повторить импорт.
+
+### 1.2) Почему раньше "слетало" после restart/apply
+
+`kubectl patch` меняет только текущий объект в кластере.  
+При следующем `kubectl apply -k /var/www/my/k3s/devops-time-host/apps/english/prod`
+ресурсы снова приводятся к состоянию из манифестов, и ручной patch теряется.
+
+Чтобы настройки не слетали:
+- `imagePullSecrets` (`ghcr-creds`) уже должен быть в `deployment/english` в манифестах;
+- `DATABASE_URL` храните в `secret/english-secrets`, а не патчите `configmap`;
+- после обновления секретов делайте `rollout restart deployment/english`.
+
+
+### 1.3) Доступ к приватному GHCR-образу (image pull secret)
 
 Нужен GitHub PAT с правами минимум `read:packages` (и доступом к репозиторию, если он private).
 
@@ -64,11 +97,6 @@ kubectl -n english create secret docker-registry ghcr-creds \
   --docker-password='<GITHUB_PAT_WITH_read:packages>' \
   --docker-email='<EMAIL>' \
   --dry-run=client -o yaml | kubectl apply -f -
-
-# привязать secret к deployment
-kubectl -n english patch deployment english \
-  --type='merge' \
-  -p '{"spec":{"template":{"spec":{"imagePullSecrets":[{"name":"ghcr-creds"}]}}}}'
 
 # перезапустить pod
 kubectl -n english rollout restart deployment/english
@@ -84,6 +112,22 @@ kubectl -n english describe pod -l app=english | sed -n '/Events/,$p'
 ## 2) Дамп SQLite на старом (native) сервере + перенос на новый сервер с k3s
 
 ### На старом сервере (где сервис работает нативно)
+
+Сначала остановите сервис, чтобы во время бэкапа в SQLite не появлялись новые записи:
+
+```bash
+# подставьте фактическое имя systemd unit
+sudo systemctl stop english
+sudo systemctl status english --no-pager
+
+# дополнительно убедиться, что процесс не запущен
+ps aux | grep -i '[e]nglish'
+```
+
+Если сервис запускался не через `systemd`, остановите его тем же способом, которым он был запущен
+(например, `pm2 stop <name>` или остановка Docker-контейнера).
+
+После остановки сервиса сделайте бэкап:
 
 ```bash
 sqlite3 /path/to/words.db ".backup '/tmp/english-backup.db'"
