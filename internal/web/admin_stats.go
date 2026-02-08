@@ -198,7 +198,7 @@ func (r *Router) handleAdminStats(w http.ResponseWriter, req *http.Request) {
 	}
 
 	// Active users by day
-	activeUsersQuery := `SELECT DATE(activity_date) as day, COUNT(DISTINCT user_id) as count FROM (
+	activeUsersQuery := `SELECT CAST(DATE(activity_date) AS TEXT) as day, COUNT(DISTINCT user_id) as count FROM (
 		SELECT DATE(started_at) as activity_date, user_id FROM training_sessions WHERE started_at >= ?
 		UNION
 		SELECT DATE(answered_at) as activity_date, user_id FROM review_events WHERE answered_at >= ? AND answered_at IS NOT NULL
@@ -220,7 +220,7 @@ func (r *Router) handleAdminStats(w http.ResponseWriter, req *http.Request) {
 	}
 
 	// Sessions started by day
-	sessionsQuery := `SELECT DATE(started_at) as day, COUNT(*) as count
+	sessionsQuery := `SELECT CAST(DATE(started_at) AS TEXT) as day, COUNT(*) as count
 		FROM training_sessions WHERE started_at >= ?
 		GROUP BY DATE(started_at)`
 	sessionsRows, err := r.db.Query(sessionsQuery, dayNDaysAgo)
@@ -241,7 +241,7 @@ func (r *Router) handleAdminStats(w http.ResponseWriter, req *http.Request) {
 
 	// Reviews answered by day with accuracy
 	reviewsQuery := `SELECT 
-		DATE(answered_at) as day,
+		CAST(DATE(answered_at) AS TEXT) as day,
 		COUNT(*) as total,
 		COALESCE(SUM(CASE WHEN is_correct = 1 THEN 1 ELSE 0 END), 0) as correct
 		FROM review_events 
@@ -265,7 +265,7 @@ func (r *Router) handleAdminStats(w http.ResponseWriter, req *http.Request) {
 	}
 
 	// Cards added by day
-	cardsAddedDailyQuery := `SELECT DATE(uc.created_at) as day, COUNT(*) as count
+	cardsAddedDailyQuery := `SELECT CAST(DATE(uc.created_at) AS TEXT) as day, COUNT(*) as count
 		FROM user_cards uc
 		INNER JOIN training_cards tc ON uc.training_card_id = tc.id
 		INNER JOIN word_cards wc ON tc.word_card_id = wc.id

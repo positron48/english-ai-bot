@@ -150,7 +150,7 @@ func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 	// Get weekly stats by day (last 7 days) with correct cards count
 	weekAgoForDaily := now.AddDate(0, 0, -7)
 	weeklyStatsQuery := `SELECT 
-		DATE(ts.started_at) as day,
+		CAST(DATE(ts.started_at) AS TEXT) as day,
 		COALESCE(COUNT(DISTINCT re.id), 0) as cards_completed,
 		COALESCE(SUM(CASE WHEN re.is_correct = 1 THEN 1 ELSE 0 END), 0) as cards_correct
 		FROM training_sessions ts
@@ -177,7 +177,7 @@ func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 
 	// Get words added stats by day (last 7 days, exclude orphaned cards)
 	wordsAddedStatsQuery := `SELECT 
-		DATE(uc.created_at) as day,
+		CAST(DATE(uc.created_at) AS TEXT) as day,
 		COUNT(*) as words_added
 		FROM user_cards uc
 		INNER JOIN training_cards tc ON uc.training_card_id = tc.id

@@ -8,6 +8,8 @@ import (
 	"regexp"
 	"strings"
 
+	"tgbot-skeleton/internal/database"
+
 	"go.uber.org/zap"
 )
 
@@ -68,10 +70,40 @@ func (r *Router) handleDBSchema(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
-// getDBSchema extracts schema information from SQLite database
+// getDBSchema extracts schema information from the active database dialect.
 func (r *Router) getDBSchema() (*SchemaResponse, error) {
+	if database.GetDialect(r.db) == database.DialectPostgres {
+		return r.getDBSchemaPostgres()
+	}
+	return r.getDBSchemaSQLite()
+}
+
+// Backward-compatible wrappers used by existing tests.
+func (r *Router) getTableNames() ([]string, error) {
+	if database.GetDialect(r.db) == database.DialectPostgres {
+		return r.getTableNamesPostgres()
+	}
+	return r.getTableNamesSQLite()
+}
+
+func (r *Router) getTableColumns(tableName string) ([]TableColumn, error) {
+	if database.GetDialect(r.db) == database.DialectPostgres {
+		return r.getTableColumnsPostgres(tableName)
+	}
+	return r.getTableColumnsSQLite(tableName)
+}
+
+func (r *Router) getForeignKeys(tableName string) ([]ForeignKey, error) {
+	if database.GetDialect(r.db) == database.DialectPostgres {
+		return r.getForeignKeysPostgres(tableName)
+	}
+	return r.getForeignKeysSQLite(tableName)
+}
+
+// getDBSchemaSQLite extracts schema information from SQLite database.
+func (r *Router) getDBSchemaSQLite() (*SchemaResponse, error) {
 	// Get all table names
-	tables, err := r.getTableNames()
+	tables, err := r.getTableNamesSQLite()
 	if err != nil {
 		return nil, err
 	}
@@ -82,13 +114,13 @@ func (r *Router) getDBSchema() (*SchemaResponse, error) {
 
 	for _, tableName := range tables {
 		// Get columns for this table
-		columns, err := r.getTableColumns(tableName)
+		columns, err := r.getTableColumnsSQLite(tableName)
 		if err != nil {
 			return nil, err
 		}
 
 		// Get foreign keys for this table
-		foreignKeys, err := r.getForeignKeys(tableName)
+		foreignKeys, err := r.getForeignKeysSQLite(tableName)
 		if err != nil {
 			return nil, err
 		}
@@ -103,8 +135,40 @@ func (r *Router) getDBSchema() (*SchemaResponse, error) {
 	return schema, nil
 }
 
-// getTableNames returns all table names in the database
-func (r *Router) getTableNames() ([]string, error) {
+// getDBSchemaPostgres extracts schema information from PostgreSQL database.
+func (r *Router) getDBSchemaPostgres() (*SchemaResponse, error) {
+	tables, err := r.getTableNamesPostgres()
+	if err != nil {
+		return nil, err
+	}
+
+	schema := &SchemaResponse{
+		Tables: make([]TableInfo, 0, len(tables)),
+	}
+
+	for _, tableName := range tables {
+		columns, err := r.getTableColumnsPostgres(tableName)
+		if err != nil {
+			return nil, err
+		}
+
+		foreignKeys, err := r.getForeignKeysPostgres(tableName)
+		if err != nil {
+			return nil, err
+		}
+
+		schema.Tables = append(schema.Tables, TableInfo{
+			Name:        tableName,
+			Columns:     columns,
+			ForeignKeys: foreignKeys,
+		})
+	}
+
+	return schema, nil
+}
+
+// getTableNamesSQLite returns all table names in SQLite database.
+func (r *Router) getTableNamesSQLite() ([]string, error) {
 	query := `
 		SELECT name 
 		FROM sqlite_master 
@@ -131,8 +195,34 @@ func (r *Router) getTableNames() ([]string, error) {
 	return tables, rows.Err()
 }
 
-// getTableColumns returns column information for a table
-func (r *Router) getTableColumns(tableName string) ([]TableColumn, error) {
+// getTableNamesPostgres returns all user table names in PostgreSQL database.
+func (r *Router) getTableNamesPostgres() ([]string, error) {
+	query := `
+		SELECT table_name
+		FROM information_schema.tables
+		WHERE table_schema = 'public' AND table_type = 'BASE TABLE'
+		ORDER BY table_name
+	`
+
+	rows, err := r.db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	tables := make([]string, 0)
+	for rows.Next() {
+		var name string
+		if err := rows.Scan(&name); err != nil {
+			return nil, err
+		}
+		tables = append(tables, name)
+	}
+	return tables, rows.Err()
+}
+
+// getTableColumnsSQLite returns column information for a table in SQLite.
+func (r *Router) getTableColumnsSQLite(tableName string) ([]TableColumn, error) {
 	// Validate table name to prevent SQL injection
 	if !isValidTableName(tableName) {
 		return nil, fmt.Errorf("invalid table name: %s", tableName)
@@ -168,8 +258,55 @@ func (r *Router) getTableColumns(tableName string) ([]TableColumn, error) {
 	return columns, rows.Err()
 }
 
-// getForeignKeys returns foreign key relationships for a table
-func (r *Router) getForeignKeys(tableName string) ([]ForeignKey, error) {
+// getTableColumnsPostgres returns column information for a table in PostgreSQL.
+func (r *Router) getTableColumnsPostgres(tableName string) ([]TableColumn, error) {
+	if !isValidTableName(tableName) {
+		return nil, fmt.Errorf("invalid table name: %s", tableName)
+	}
+
+	query := `
+		SELECT
+			c.column_name,
+			c.data_type,
+			CASE WHEN c.is_nullable = 'NO' THEN 1 ELSE 0 END as not_null,
+			COALESCE(c.column_default, '') as column_default,
+			CASE WHEN tc.constraint_type = 'PRIMARY KEY' THEN 1 ELSE 0 END as is_pk
+		FROM information_schema.columns c
+		LEFT JOIN information_schema.key_column_usage kcu
+			ON c.table_schema = kcu.table_schema
+			AND c.table_name = kcu.table_name
+			AND c.column_name = kcu.column_name
+		LEFT JOIN information_schema.table_constraints tc
+			ON kcu.constraint_schema = tc.constraint_schema
+			AND kcu.constraint_name = tc.constraint_name
+			AND tc.constraint_type = 'PRIMARY KEY'
+		WHERE c.table_schema = 'public' AND c.table_name = $1
+		ORDER BY c.ordinal_position
+	`
+
+	rows, err := r.db.Query(query, tableName)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	columns := make([]TableColumn, 0)
+	for rows.Next() {
+		var col TableColumn
+		var notNull, pk int
+		if err := rows.Scan(&col.Name, &col.Type, &notNull, &col.DefaultValue, &pk); err != nil {
+			return nil, err
+		}
+		col.NotNull = notNull == 1
+		col.PrimaryKey = pk == 1
+		columns = append(columns, col)
+	}
+
+	return columns, rows.Err()
+}
+
+// getForeignKeysSQLite returns foreign key relationships for a table in SQLite.
+func (r *Router) getForeignKeysSQLite(tableName string) ([]ForeignKey, error) {
 	// Validate table name to prevent SQL injection
 	if !isValidTableName(tableName) {
 		return nil, fmt.Errorf("invalid table name: %s", tableName)
@@ -199,6 +336,53 @@ func (r *Router) getForeignKeys(tableName string) ([]ForeignKey, error) {
 		if seq == 0 {
 			foreignKeys = append(foreignKeys, fk)
 		}
+	}
+
+	return foreignKeys, rows.Err()
+}
+
+// getForeignKeysPostgres returns foreign key relationships for a table in PostgreSQL.
+func (r *Router) getForeignKeysPostgres(tableName string) ([]ForeignKey, error) {
+	if !isValidTableName(tableName) {
+		return nil, fmt.Errorf("invalid table name: %s", tableName)
+	}
+
+	query := `
+		SELECT
+			tc.table_name AS from_table,
+			kcu.column_name AS from_column,
+			ccu.table_name AS to_table,
+			ccu.column_name AS to_column,
+			rc.delete_rule AS on_delete
+		FROM information_schema.table_constraints tc
+		JOIN information_schema.key_column_usage kcu
+			ON tc.constraint_schema = kcu.constraint_schema
+			AND tc.constraint_name = kcu.constraint_name
+		JOIN information_schema.constraint_column_usage ccu
+			ON ccu.constraint_schema = tc.constraint_schema
+			AND ccu.constraint_name = tc.constraint_name
+		JOIN information_schema.referential_constraints rc
+			ON rc.constraint_schema = tc.constraint_schema
+			AND rc.constraint_name = tc.constraint_name
+		WHERE tc.constraint_type = 'FOREIGN KEY'
+			AND tc.table_schema = 'public'
+			AND tc.table_name = $1
+		ORDER BY kcu.ordinal_position
+	`
+
+	rows, err := r.db.Query(query, tableName)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	foreignKeys := make([]ForeignKey, 0)
+	for rows.Next() {
+		var fk ForeignKey
+		if err := rows.Scan(&fk.FromTable, &fk.FromColumn, &fk.ToTable, &fk.ToColumn, &fk.OnDelete); err != nil {
+			return nil, err
+		}
+		foreignKeys = append(foreignKeys, fk)
 	}
 
 	return foreignKeys, rows.Err()

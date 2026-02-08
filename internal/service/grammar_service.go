@@ -1447,9 +1447,35 @@ func (s *GrammarService) CanAccessSection(ctx context.Context, userID int64, sec
 	if err != nil {
 		return false, fmt.Errorf("failed to get category test progress: %w", err)
 	}
+	if categoryTestPassed {
+		return true, nil
+	}
+
+	// Fallback for migrated/legacy data: if category test attempt is missing,
+	// unlock next section when all published chapters in the previous section are passed.
+	publishedChapterItems, err := s.PublishRepo.GetPublishedItemsByType("chapter")
+	if err == nil {
+		allPublishedPassed := true
+		hasPublishedChapters := false
+		for _, chapterID := range previousSection.ChapterIDs {
+			item, exists := publishedChapterItems[chapterID]
+			if !exists || !item.IsPublished {
+				continue
+			}
+			hasPublishedChapters = true
+			progress, pErr := s.AttemptRepo.GetChapterProgress(userID, chapterID)
+			if pErr != nil || !progress.Passed {
+				allPublishedPassed = false
+				break
+			}
+		}
+		if hasPublishedChapters && allPublishedPassed {
+			return true, nil
+		}
+	}
 
 	// Next section is only accessible if category test was passed (score >= 50%)
-	return categoryTestPassed, nil
+	return false, nil
 }
 
 // GrammarStatistics represents overall grammar course statistics
