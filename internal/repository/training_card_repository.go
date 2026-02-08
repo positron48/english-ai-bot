@@ -200,12 +200,13 @@ func (r *TrainingCardRepository) GetTrainingCardsByWordCardID(wordCardID int64) 
 
 // GetWordCardsWithoutTrainingCards gets word cards that don't have training cards yet and haven't been processed with an error
 func (r *TrainingCardRepository) GetWordCardsWithoutTrainingCards(limit int) ([]*models.WordCard, error) {
-	query := `SELECT wc.id, wc.word, wc.definition, 
+	query := `SELECT wc.id, wc.word, wc.definition,
 			  wc.pos, wc.transcription, wc.definition_ru,
 			  wc.examples_json, wc.verb_forms_json, wc.display_en,
-			  COALESCE(wc.processed_at, '') as processed_at,
+			  COALESCE(CAST(wc.processed_at AS TEXT), '') as processed_at,
 			  COALESCE(wc.processing_error, '') as processing_error,
-			  wc.created_at, wc.updated_at
+			  CAST(wc.created_at AS TEXT) as created_at,
+			  CAST(wc.updated_at AS TEXT) as updated_at
 			  FROM word_cards wc
 			  LEFT JOIN training_cards tc ON wc.id = tc.word_card_id
 			  WHERE tc.id IS NULL AND wc.processed_at IS NULL
@@ -523,4 +524,3 @@ func (r *TrainingCardRepository) CountOrphanedTrainingCards() (int, error) {
 
 	return count, nil
 }
-

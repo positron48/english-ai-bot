@@ -8,6 +8,8 @@ import (
 	"fmt"
 	"time"
 
+	"tgbot-skeleton/internal/database"
+
 	"go.uber.org/zap"
 )
 
@@ -60,14 +62,9 @@ func (r *WebOTPRepository) GenerateOTP(userID int64, ttl time.Duration) (string,
 	// Format time as UTC string for SQLite
 	expiresAtStr := otp.ExpiresAt.Format("2006-01-02 15:04:05")
 	query := `INSERT INTO web_otps (user_id, code_hash, expires_at) VALUES (?, ?, ?)`
-	result, err := r.db.Exec(query, otp.UserID, otp.CodeHash, expiresAtStr)
+	id, err := database.InsertAndReturnID(r.db, query, otp.UserID, otp.CodeHash, expiresAtStr)
 	if err != nil {
 		return "", nil, fmt.Errorf("failed to create OTP: %w", err)
-	}
-
-	id, err := result.LastInsertId()
-	if err != nil {
-		return "", nil, fmt.Errorf("failed to get OTP ID: %w", err)
 	}
 
 	otp.ID = id
@@ -213,4 +210,3 @@ func (r *WebOTPRepository) CleanupExpiredOTPs() error {
 	}
 	return nil
 }
-
