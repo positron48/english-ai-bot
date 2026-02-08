@@ -25,6 +25,8 @@ func New(level string) (*zap.Logger, error) {
 
 	// Configure for development
 	config.Development = level == "debug"
+	// Keep log entries single-line for log collectors (Loki/Alloy).
+	config.DisableStacktrace = true
 	config.EncoderConfig.TimeKey = "timestamp"
 	config.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
 	config.EncoderConfig.EncodeLevel = zapcore.CapitalLevelEncoder

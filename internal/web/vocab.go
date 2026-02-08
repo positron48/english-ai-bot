@@ -131,9 +131,9 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 		COALESCE(tc_display.display_word, wc.display_en, wc.word) as display_word,
 		COUNT(DISTINCT uc.id) as total_cards,
 		SUM(CASE WHEN uc.next_due_at IS NULL OR uc.next_due_at <= ? THEN 1 ELSE 0 END) as due_count,
-		substr(MAX(uc.last_review_at), 1, 19) as last_review,
+		substr(CAST(MAX(uc.last_review_at) AS TEXT), 1, 19) as last_review,
 		SUM(uc.reps) as total_reps,
-		substr(MIN(uc.created_at), 1, 19) as added_at,
+		substr(CAST(MIN(uc.created_at) AS TEXT), 1, 19) as added_at,
 		COUNT(CASE WHEN uc.state = 'review' THEN 1 END) as review_state_count,
 		COUNT(CASE WHEN uc.state = 'learning' THEN 1 END) as learning_state_count,
 		COUNT(CASE WHEN uc.state = 'new' THEN 1 END) as new_state_count,
@@ -171,7 +171,7 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 		0 as due_count,
 		NULL as last_review,
 		0 as total_reps,
-		substr(uwk.created_at, 1, 19) as added_at,
+		substr(CAST(uwk.created_at AS TEXT), 1, 19) as added_at,
 		0 as review_state_count,
 		0 as learning_state_count,
 		0 as new_state_count,
@@ -646,11 +646,11 @@ func (r *Router) handleVocabWordCards(w http.ResponseWriter, req *http.Request, 
 		uc.interval_days,
 		uc.learning_step,
 		uc.lapse_count,
-		substr(uc.next_due_at, 1, 19) as next_due_at,
-		substr(uc.last_review_at, 1, 19) as last_review_at,
+		substr(CAST(uc.next_due_at AS TEXT), 1, 19) as next_due_at,
+		substr(CAST(uc.last_review_at AS TEXT), 1, 19) as last_review_at,
 		uc.last_quality,
-		substr(uc.created_at, 1, 19) as created_at,
-		substr(uc.updated_at, 1, 19) as updated_at,
+		substr(CAST(uc.created_at AS TEXT), 1, 19) as created_at,
+		substr(CAST(uc.updated_at AS TEXT), 1, 19) as updated_at,
 		tc.word_ru,
 		tc.meaning_en,
 		COALESCE(tc.example_en, '') as example_en,
@@ -761,7 +761,7 @@ func (r *Router) handleVocabWordCards(w http.ResponseWriter, req *http.Request, 
 				COALESCE(tc.transcription, '') as transcription,
 				tc.sense_index,
 				tc.pos,
-				substr(tc.created_at, 1, 19) as created_at
+				substr(CAST(tc.created_at AS TEXT), 1, 19) as created_at
 			FROM training_cards tc
 			WHERE tc.word_card_id = ?
 			ORDER BY tc.sense_index`
@@ -902,4 +902,3 @@ func (r *Router) handleVocabWordCards(w http.ResponseWriter, req *http.Request, 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
 }
-
