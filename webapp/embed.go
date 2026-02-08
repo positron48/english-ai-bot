@@ -2,5 +2,6 @@ package webapp
 
 import "embed"
 
-//go:embed dist
+// Embed full dist tree (including nested assets) into the binary.
+//go:embed all:dist
 var FS embed.FS
