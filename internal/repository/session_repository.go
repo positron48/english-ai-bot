@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"tgbot-skeleton/internal/database"
 	"tgbot-skeleton/internal/models"
 
 	"go.uber.org/zap"
@@ -30,17 +31,12 @@ func (r *SessionRepository) CreateSession(session *models.TrainingSession) (int6
 		user_id, source, planned_count, done_count, session_json
 	) VALUES (?, ?, ?, ?, ?)`
 
-	result, err := r.db.Exec(query,
+	id, err := database.InsertAndReturnID(r.db, query,
 		session.UserID, session.Source, session.PlannedCount,
 		session.DoneCount, session.SessionJSON,
 	)
 	if err != nil {
 		return 0, fmt.Errorf("failed to create session: %w", err)
-	}
-
-	id, err := result.LastInsertId()
-	if err != nil {
-		return 0, fmt.Errorf("failed to get session ID: %w", err)
 	}
 
 	r.logger.Info("created training session",
@@ -157,20 +153,24 @@ func (r *SessionRepository) CreateReviewEvent(event *models.ReviewEvent) (int64,
 		quality, metrics_json, srs_before_json, srs_after_json
 	) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
 
-	result, err := r.db.Exec(query,
+	earlyReveal := 0
+	if event.EarlyReveal {
+		earlyReveal = 1
+	}
+	isCorrect := 0
+	if event.IsCorrect {
+		isCorrect = 1
+	}
+
+	id, err := database.InsertAndReturnID(r.db, query,
 		event.SessionID, event.UserID, event.UserCardID, event.Direction,
 		event.ShownAt, event.OptionsShownAt, event.AnsweredAt,
-		event.TDelayMS, event.EarlyReveal, event.OptionCount,
-		event.OptionsJSON, event.ChosenOption, event.IsCorrect,
+		event.TDelayMS, earlyReveal, event.OptionCount,
+		event.OptionsJSON, event.ChosenOption, isCorrect,
 		event.Quality, event.MetricsJSON, event.SRSBeforeJSON, event.SRSAfterJSON,
 	)
 	if err != nil {
 		return 0, fmt.Errorf("failed to create review event: %w", err)
-	}
-
-	id, err := result.LastInsertId()
-	if err != nil {
-		return 0, fmt.Errorf("failed to get review event ID: %w", err)
 	}
 
 	return id, nil
@@ -203,4 +203,3 @@ func (r *SessionRepository) GetTodaySessionCount(userID int64, localDate string)
 	}
 	return count, nil
 }
-

@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"time"
 
+	"tgbot-skeleton/internal/database"
+
 	"go.uber.org/zap"
 )
 
@@ -55,7 +57,7 @@ func (r *GrammarAttemptRepository) CreateAttempt(attempt *TestAttempt) (int64, e
 		passed = 1
 	}
 
-	result, err := r.db.Exec(query,
+	id, err := database.InsertAndReturnID(r.db, query,
 		attempt.UserID,
 		attempt.ScopeType,
 		attempt.ScopeID,
@@ -71,11 +73,6 @@ func (r *GrammarAttemptRepository) CreateAttempt(attempt *TestAttempt) (int64, e
 
 	if err != nil {
 		return 0, fmt.Errorf("failed to create attempt: %w", err)
-	}
-
-	id, err := result.LastInsertId()
-	if err != nil {
-		return 0, fmt.Errorf("failed to get attempt ID: %w", err)
 	}
 
 	return id, nil

@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"time"
 
+	"tgbot-skeleton/internal/database"
+
 	"go.uber.org/zap"
 )
 
@@ -51,19 +53,13 @@ func (r *WebSessionRepository) CreateSession(session *WebSession) error {
 		zap.String("expires_at_str", expiresAtStr))
 	
 	query := `INSERT INTO web_sessions (user_id, session_token, expires_at) VALUES (?, ?, ?)`
-	result, err := r.db.Exec(query, session.UserID, session.Token, expiresAtStr)
+	id, err := database.InsertAndReturnID(r.db, query, session.UserID, session.Token, expiresAtStr)
 	if err != nil {
 		r.logger.Error("failed to insert session into database",
 			zap.Int64("user_id", session.UserID),
 			zap.String("token_preview", tokenPreview),
 			zap.Error(err))
 		return fmt.Errorf("failed to create session: %w", err)
-	}
-
-	id, err := result.LastInsertId()
-	if err != nil {
-		r.logger.Error("failed to get session ID", zap.Error(err))
-		return fmt.Errorf("failed to get session ID: %w", err)
 	}
 
 	session.ID = id
@@ -186,4 +182,3 @@ func (r *WebSessionRepository) CleanupExpiredSessions() error {
 	}
 	return nil
 }
-

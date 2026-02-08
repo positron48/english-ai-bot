@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"tgbot-skeleton/internal/database"
 	"tgbot-skeleton/internal/models"
 
 	"go.uber.org/zap"
@@ -91,7 +92,7 @@ func (r *TrainingCardRepository) CreateTrainingCard(card *models.TrainingCard) (
 		displayWord = *card.DisplayWord
 	}
 
-	result, err := r.db.Exec(query,
+	id, err := database.InsertAndReturnID(r.db, query,
 		card.WordCardID, card.WordEN, card.Transcription, card.SenseIndex,
 		card.WordRU, card.MeaningEN, card.ExampleEN, card.ExampleRU,
 		card.DistractorsRU, card.DistractorsEN, card.Hint,
@@ -99,11 +100,6 @@ func (r *TrainingCardRepository) CreateTrainingCard(card *models.TrainingCard) (
 	)
 	if err != nil {
 		return 0, fmt.Errorf("failed to create training card: %w", err)
-	}
-
-	id, err := result.LastInsertId()
-	if err != nil {
-		return 0, fmt.Errorf("failed to get training card ID: %w", err)
 	}
 
 	r.logger.Debug("created training card",

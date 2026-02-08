@@ -34,9 +34,10 @@ func (r *WordRepository) GetWordCard(word string) (*models.WordCard, error) {
 func (r *WordRepository) GetWordCardByID(id int64) (*models.WordCard, error) {
 	query := `SELECT id, word, definition, pos, transcription, definition_ru, 
 			  examples_json, verb_forms_json, display_en, 
-			  COALESCE(processed_at, '') as processed_at,
+			  COALESCE(CAST(processed_at AS TEXT), '') as processed_at,
 			  COALESCE(processing_error, '') as processing_error,
-			  created_at, updated_at 
+			  CAST(created_at AS TEXT) as created_at,
+			  CAST(updated_at AS TEXT) as updated_at
 			  FROM word_cards 
 			  WHERE id = ?`
 
@@ -103,9 +104,10 @@ func (r *WordRepository) GetWordCardByID(id int64) (*models.WordCard, error) {
 func (r *WordRepository) GetWordCardByLemma(lemma string) (*models.WordCard, error) {
 	query := `SELECT id, word, definition, pos, transcription, definition_ru, 
 			  examples_json, verb_forms_json, display_en,
-			  COALESCE(processed_at, '') as processed_at,
+			  COALESCE(CAST(processed_at AS TEXT), '') as processed_at,
 			  COALESCE(processing_error, '') as processing_error,
-			  created_at, updated_at 
+			  CAST(created_at AS TEXT) as created_at,
+			  CAST(updated_at AS TEXT) as updated_at
 			  FROM word_cards 
 			  WHERE LOWER(word) = LOWER(?)`
 
@@ -451,9 +453,10 @@ func (r *WordRepository) ListWordCardsAdmin(filterUserID *int64, onlyWithErrors 
 			  COALESCE(wc.examples_json, '') as examples_json,
 			  COALESCE(wc.verb_forms_json, '') as verb_forms_json,
 			  COALESCE(wc.display_en, '') as display_en,
-			  COALESCE(wc.processed_at, '') as processed_at,
+			  COALESCE(CAST(wc.processed_at AS TEXT), '') as processed_at,
 			  COALESCE(wc.processing_error, '') as processing_error,
-			  wc.created_at, wc.updated_at,
+			  CAST(wc.created_at AS TEXT) as created_at,
+			  CAST(wc.updated_at AS TEXT) as updated_at,
 			  MAX(CASE WHEN tc.id IS NOT NULL THEN 1 ELSE 0 END) as has_training_cards
 			  FROM word_cards wc
 			  LEFT JOIN training_cards tc ON tc.word_card_id = wc.id`

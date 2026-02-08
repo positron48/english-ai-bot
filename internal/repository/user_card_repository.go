@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"tgbot-skeleton/internal/database"
 	"tgbot-skeleton/internal/models"
 
 	"go.uber.org/zap"
@@ -48,7 +49,7 @@ func (r *UserCardRepository) CreateUserCard(card *models.UserCard) (int64, error
 		last_options_json, wrong_answers_json, stats_json
 	) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
 
-	result, err := r.db.Exec(query,
+	id, err := database.InsertAndReturnID(r.db, query,
 		card.UserID, card.TrainingCardID, card.Direction, card.State, card.EF,
 		card.Reps, card.IntervalDays, card.LearningStep, card.LapseCount,
 		card.NextDueAt, card.LastReviewAt, card.LastQuality,
@@ -56,11 +57,6 @@ func (r *UserCardRepository) CreateUserCard(card *models.UserCard) (int64, error
 	)
 	if err != nil {
 		return 0, fmt.Errorf("failed to create user card: %w", err)
-	}
-
-	id, err := result.LastInsertId()
-	if err != nil {
-		return 0, fmt.Errorf("failed to get user card ID: %w", err)
 	}
 
 	r.logger.Debug("created user card",
@@ -719,4 +715,3 @@ func (r *UserCardRepository) GetUpcomingCardsByDate(userID int64, startDate time
 
 	return result, nil
 }
-

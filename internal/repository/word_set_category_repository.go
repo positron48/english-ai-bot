@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"tgbot-skeleton/internal/database"
 	"tgbot-skeleton/internal/models"
 
 	"go.uber.org/zap"
@@ -44,14 +45,9 @@ func (r *WordSetCategoryRepository) CreateCategory(category *models.WordSetCateg
 		isPublished = 1
 	}
 
-	result, err := r.db.Exec(query, parentID, category.Name, description, isPublished, category.SortOrder)
+	id, err := database.InsertAndReturnID(r.db, query, parentID, category.Name, description, isPublished, category.SortOrder)
 	if err != nil {
 		return 0, fmt.Errorf("failed to create category: %w", err)
-	}
-
-	id, err := result.LastInsertId()
-	if err != nil {
-		return 0, fmt.Errorf("failed to get category ID: %w", err)
 	}
 
 	return id, nil
@@ -89,9 +85,9 @@ func parseTime(timeStr string) (time.Time, error) {
 
 // GetCategory retrieves a category by ID
 func (r *WordSetCategoryRepository) GetCategory(id int64) (*models.WordSetCategory, error) {
-	query := `SELECT id, parent_id, name, description, is_published, sort_order, 
-			  substr(created_at, 1, 19) as created_at, 
-			  substr(updated_at, 1, 19) as updated_at
+	query := `SELECT id, parent_id, name, description, is_published, sort_order,
+			  substr(CAST(created_at AS TEXT), 1, 19) as created_at,
+			  substr(CAST(updated_at AS TEXT), 1, 19) as updated_at
 			  FROM word_set_categories WHERE id = ?`
 
 	var category models.WordSetCategory
@@ -144,9 +140,9 @@ func (r *WordSetCategoryRepository) GetCategory(id int64) (*models.WordSetCatego
 
 // GetAllCategories retrieves all categories
 func (r *WordSetCategoryRepository) GetAllCategories() ([]*models.WordSetCategory, error) {
-	query := `SELECT id, parent_id, name, description, is_published, sort_order, 
-			  substr(created_at, 1, 19) as created_at, 
-			  substr(updated_at, 1, 19) as updated_at
+	query := `SELECT id, parent_id, name, description, is_published, sort_order,
+			  substr(CAST(created_at AS TEXT), 1, 19) as created_at,
+			  substr(CAST(updated_at AS TEXT), 1, 19) as updated_at
 			  FROM word_set_categories ORDER BY sort_order, name`
 
 	rows, err := r.db.Query(query)
@@ -207,9 +203,9 @@ func (r *WordSetCategoryRepository) GetAllCategories() ([]*models.WordSetCategor
 
 // GetPublishedCategories retrieves only published categories
 func (r *WordSetCategoryRepository) GetPublishedCategories() ([]*models.WordSetCategory, error) {
-	query := `SELECT id, parent_id, name, description, is_published, sort_order, 
-			  substr(created_at, 1, 19) as created_at, 
-			  substr(updated_at, 1, 19) as updated_at
+	query := `SELECT id, parent_id, name, description, is_published, sort_order,
+			  substr(CAST(created_at AS TEXT), 1, 19) as created_at,
+			  substr(CAST(updated_at AS TEXT), 1, 19) as updated_at
 			  FROM word_set_categories WHERE is_published = 1 ORDER BY sort_order, name`
 
 	rows, err := r.db.Query(query)

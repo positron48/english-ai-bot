@@ -1235,7 +1235,7 @@ func (r *Router) handleAdminUsers(w http.ResponseWriter, req *http.Request) {
 	// Return user list with id, telegram_id, telegram_username, created_at
 	// Query directly to get dates as strings, avoiding time.Time parsing issues
 	query := `SELECT id, telegram_id, COALESCE(telegram_username, ''), 
-			  COALESCE(created_at, '') as created_at
+			  COALESCE(CAST(created_at AS TEXT), '') as created_at
 			  FROM users ORDER BY id`
 	rows, err := r.db.Query(query)
 	if err != nil {

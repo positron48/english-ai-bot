@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"tgbot-skeleton/internal/database"
 	"tgbot-skeleton/internal/models"
 
 	"go.uber.org/zap"
@@ -30,16 +31,11 @@ func (r *NudgeRepository) CreateNudge(nudge *models.TrainingNudge) (int64, error
 		user_id, local_date, due_count_at_send, message_id
 	) VALUES (?, ?, ?, ?)`
 
-	result, err := r.db.Exec(query,
+	id, err := database.InsertAndReturnID(r.db, query,
 		nudge.UserID, nudge.LocalDate, nudge.DueCountAtSend, nudge.MessageID,
 	)
 	if err != nil {
 		return 0, fmt.Errorf("failed to create nudge: %w", err)
-	}
-
-	id, err := result.LastInsertId()
-	if err != nil {
-		return 0, fmt.Errorf("failed to get nudge ID: %w", err)
 	}
 
 	r.logger.Debug("created training nudge",
@@ -119,4 +115,3 @@ func (r *NudgeRepository) GetUnconsumedNudge(userID int64, localDate string) (*m
 
 	return &nudge, nil
 }
-

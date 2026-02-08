@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"tgbot-skeleton/internal/database"
 	"tgbot-skeleton/internal/models"
 
 	"go.uber.org/zap"
@@ -50,14 +51,9 @@ func (r *WordSetRepository) CreateWordSet(wordSet *models.WordSet) (int64, error
 		isPublished = 1
 	}
 
-	result, err := r.db.Exec(query, categoryID, wordSet.Title, description, isPublished, wordSet.SortOrder, preferredPOS)
+	id, err := database.InsertAndReturnID(r.db, query, categoryID, wordSet.Title, description, isPublished, wordSet.SortOrder, preferredPOS)
 	if err != nil {
 		return 0, fmt.Errorf("failed to create word set: %w", err)
-	}
-
-	id, err := result.LastInsertId()
-	if err != nil {
-		return 0, fmt.Errorf("failed to get word set ID: %w", err)
 	}
 
 	return id, nil

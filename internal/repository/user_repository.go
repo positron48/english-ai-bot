@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"tgbot-skeleton/internal/database"
 	"tgbot-skeleton/internal/models"
 
 	"go.uber.org/zap"
@@ -39,14 +40,9 @@ func (r *UserRepository) GetOrCreateUser(telegramID int64) (*models.User, error)
 
 	// Create new user
 	query := `INSERT INTO users (telegram_id) VALUES (?)`
-	result, err := r.db.Exec(query, telegramID)
+	userID, err := database.InsertAndReturnID(r.db, query, telegramID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create user: %w", err)
-	}
-
-	userID, err := result.LastInsertId()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get user ID: %w", err)
 	}
 
 	r.logger.Info("created new user",
@@ -232,4 +228,3 @@ func (r *UserRepository) GetAllUsers() ([]*models.User, error) {
 
 	return users, nil
 }
-

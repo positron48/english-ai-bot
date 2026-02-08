@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 
+	"tgbot-skeleton/internal/database"
 	"tgbot-skeleton/internal/models"
 
 	"go.uber.org/zap"
@@ -33,14 +34,9 @@ func (r *UserAccessCategoryRepository) CreateCategory(category *models.UserAcces
 		description = *category.Description
 	}
 
-	result, err := r.db.Exec(query, category.Name, description)
+	id, err := database.InsertAndReturnID(r.db, query, category.Name, description)
 	if err != nil {
 		return 0, fmt.Errorf("failed to create category: %w", err)
-	}
-
-	id, err := result.LastInsertId()
-	if err != nil {
-		return 0, fmt.Errorf("failed to get category ID: %w", err)
 	}
 
 	return id, nil
@@ -48,9 +44,9 @@ func (r *UserAccessCategoryRepository) CreateCategory(category *models.UserAcces
 
 // GetCategory retrieves a category by ID
 func (r *UserAccessCategoryRepository) GetCategory(id int64) (*models.UserAccessCategory, error) {
-	query := `SELECT id, name, description, 
-			  substr(created_at, 1, 19) as created_at, 
-			  substr(updated_at, 1, 19) as updated_at
+	query := `SELECT id, name, description,
+			  substr(CAST(created_at AS TEXT), 1, 19) as created_at,
+			  substr(CAST(updated_at AS TEXT), 1, 19) as updated_at
 			  FROM user_access_categories WHERE id = ?`
 
 	var category models.UserAccessCategory
@@ -92,9 +88,9 @@ func (r *UserAccessCategoryRepository) GetCategory(id int64) (*models.UserAccess
 
 // GetAllCategories retrieves all categories
 func (r *UserAccessCategoryRepository) GetAllCategories() ([]*models.UserAccessCategory, error) {
-	query := `SELECT id, name, description, 
-			  substr(created_at, 1, 19) as created_at, 
-			  substr(updated_at, 1, 19) as updated_at
+	query := `SELECT id, name, description,
+			  substr(CAST(created_at AS TEXT), 1, 19) as created_at,
+			  substr(CAST(updated_at AS TEXT), 1, 19) as updated_at
 			  FROM user_access_categories ORDER BY name`
 
 	rows, err := r.db.Query(query)

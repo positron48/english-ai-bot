@@ -3,6 +3,7 @@ APP_NAME := universal-ai-bot
 GO := go
 DOCKER_IMAGE := universal-ai-bot
 DOCKER_TAG := latest
+PG_TEST_PORT ?= 55433
 
 # Deployment configuration
 GITHUB_REPO ?= positron48/universal-ai-bot
@@ -12,7 +13,7 @@ SERVICE_NAME ?= ai-bot
 -include .env
 .EXPORT_ALL_VARIABLES:
 
-.PHONY: all tidy build run test lint fmt setup up clean check ci deploy update status logs docker-build docker-run docker-stop docker-logs docker-clean docker-rebuild docker-dev docker-dev-logs docker-dev-restart webapp-install webapp-dev webapp-build
+.PHONY: all tidy build run test lint fmt setup up clean check ci deploy update status logs docker-build docker-run docker-stop docker-logs docker-clean docker-rebuild docker-dev docker-dev-logs docker-dev-restart webapp-install webapp-dev webapp-build test-postgres
 
 all: build
 
@@ -61,6 +62,35 @@ test:
 
 test-verbose:
 	$(GO) test -v ./...
+
+test-postgres:
+	@echo "Starting temporary Postgres container..."
+	@docker rm -f english-test-postgres >/dev/null 2>&1 || true
+	@docker run -d --name english-test-postgres \
+		-e POSTGRES_DB=english_test \
+		-e POSTGRES_USER=english \
+		-e POSTGRES_PASSWORD=english \
+		-p $(PG_TEST_PORT):5432 \
+		postgres:16-alpine >/dev/null
+	@echo "Waiting for Postgres to become ready..."
+	@i=0; until docker exec english-test-postgres pg_isready -U english -d english_test >/dev/null 2>&1; do \
+		i=$$((i+1)); \
+		if [ $$i -gt 60 ]; then \
+			echo "Postgres did not become ready in time"; \
+			docker logs --tail=100 english-test-postgres || true; \
+			docker rm -f english-test-postgres >/dev/null 2>&1 || true; \
+			exit 1; \
+		fi; \
+		sleep 1; \
+	done
+	@echo "Running postgres smoke tests..."
+	@set -e; \
+	trap 'docker rm -f english-test-postgres >/dev/null 2>&1 || true' EXIT; \
+	GOCACHE=/tmp/go-cache \
+	DATABASE_DRIVER=postgres \
+	DATABASE_URL='postgres://english:english@127.0.0.1:$(PG_TEST_PORT)/english_test?sslmode=disable' \
+	$(GO) test -tags=postgres -v ./internal/integration/postgres/... -count=1
+	@echo "Postgres smoke tests finished."
 
 # LLM integration tests (require AI_URL, AI_API_KEY env vars)
 llm-words:
@@ -298,4 +328,3 @@ help:
 	@echo "  make update         - Update deployed binary"
 	@echo "  make status         - Check service status"
 	@echo "  make logs           - Show service logs"
-
