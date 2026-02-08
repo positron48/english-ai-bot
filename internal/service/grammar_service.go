@@ -1453,23 +1453,16 @@ func (s *GrammarService) CanAccessSection(ctx context.Context, userID int64, sec
 
 	// Fallback for migrated/legacy data: if category test attempt is missing,
 	// unlock next section when all published chapters in the previous section are passed.
-	publishedChapterItems, err := s.PublishRepo.GetPublishedItemsByType("chapter")
-	if err == nil {
+	previousPublishedChapters, chaptersErr := s.GetPublishedChapters(ctx, previousSection.SectionID, userID)
+	if chaptersErr == nil && len(previousPublishedChapters) > 0 {
 		allPublishedPassed := true
-		hasPublishedChapters := false
-		for _, chapterID := range previousSection.ChapterIDs {
-			item, exists := publishedChapterItems[chapterID]
-			if !exists || !item.IsPublished {
-				continue
-			}
-			hasPublishedChapters = true
-			progress, pErr := s.AttemptRepo.GetChapterProgress(userID, chapterID)
-			if pErr != nil || !progress.Passed {
+		for _, chapter := range previousPublishedChapters {
+			if chapter.Progress == nil || !chapter.Progress.Passed {
 				allPublishedPassed = false
 				break
 			}
 		}
-		if hasPublishedChapters && allPublishedPassed {
+		if allPublishedPassed {
 			return true, nil
 		}
 	}
