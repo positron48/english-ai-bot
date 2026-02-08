@@ -114,13 +114,13 @@ func (r *GrammarAttemptRepository) GetCategoryTestProgress(userID int64, section
 	query := `SELECT COUNT(*) > 0 FROM grammar_test_attempts
 			  WHERE user_id = ? AND scope_type = 'category' AND scope_id = ? AND score >= 50 AND passed = 1`
 
-	var hasPassed int
+	var hasPassed bool
 	err := r.db.QueryRow(query, userID, sectionID).Scan(&hasPassed)
 	if err != nil {
 		return false, fmt.Errorf("failed to get category test progress: %w", err)
 	}
 
-	return hasPassed > 0, nil
+	return hasPassed, nil
 }
 
 // HasCategoryTestAttempt checks if user has any category test attempt (even if not passed)
@@ -128,13 +128,13 @@ func (r *GrammarAttemptRepository) HasCategoryTestAttempt(userID int64, sectionI
 	query := `SELECT COUNT(*) > 0 FROM grammar_test_attempts
 			  WHERE user_id = ? AND scope_type = 'category' AND scope_id = ?`
 
-	var hasAttempt int
+	var hasAttempt bool
 	err := r.db.QueryRow(query, userID, sectionID).Scan(&hasAttempt)
 	if err != nil {
 		return false, fmt.Errorf("failed to check category test attempt: %w", err)
 	}
 
-	return hasAttempt > 0, nil
+	return hasAttempt, nil
 }
 
 // GetCategoryTestBestScore gets the best score for a category test
