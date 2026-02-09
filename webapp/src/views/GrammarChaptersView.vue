@@ -259,6 +259,8 @@ onMounted(() => {
 
 .chapters-header h1 {
   margin: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .chapters-list {
@@ -296,6 +298,8 @@ onMounted(() => {
 .chapter-info h3 {
   margin: 0 0 8px 0;
   font-size: 18px;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .chapter-meta {
@@ -425,6 +429,12 @@ onMounted(() => {
     flex-direction: column;
     align-items: flex-start;
     gap: 16px;
+  }
+
+  .chapters-header h1,
+  .chapter-info h3 {
+    line-height: 1.25;
+    hyphens: auto;
   }
   
   .chapter-link {

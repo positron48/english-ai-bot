@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
+	"strings"
 	"time"
 
 	"tgbot-skeleton/internal/models"
@@ -128,6 +129,25 @@ func (s *NotificationService) checkAndSendNotifications() {
 
 		// Check if we should send notification
 		if err := s.sendNotificationIfNeeded(user, userNow); err != nil {
+			if s.shouldDisableNotificationsOnError(err) {
+				s.logger.Warn("failed to send notification, disabling notifications for user",
+					zap.Int64("user_id", user.ID),
+					zap.Error(err),
+				)
+				if disableErr := s.disableUserNotifications(user); disableErr != nil {
+					s.logger.Info("notification unsubscribe result",
+						zap.Int64("user_id", user.ID),
+						zap.String("status", "failed"),
+						zap.Error(disableErr),
+					)
+				} else {
+					s.logger.Info("notification unsubscribe result",
+						zap.Int64("user_id", user.ID),
+						zap.String("status", "success"),
+					)
+				}
+				continue
+			}
 			s.logger.Error("failed to send notification",
 				zap.Int64("user_id", user.ID),
 				zap.Error(err),
@@ -198,8 +218,8 @@ func (s *NotificationService) sendNotificationIfNeeded(user *models.User, userNo
 		return fmt.Errorf("failed to get due count: %w", err)
 	}
 
-	if dueCount == 0 {
-		return nil // No cards due
+	if dueCount < 10 {
+		return nil // Not enough cards due for a notification
 	}
 
 	// Estimate time
@@ -271,3 +291,40 @@ func (s *NotificationService) sendNotificationIfNeeded(user *models.User, userNo
 	return nil
 }
 
+func (s *NotificationService) shouldDisableNotificationsOnError(err error) bool {
+	if err == nil {
+		return false
+	}
+
+	errText := strings.ToLower(err.Error())
+	return strings.Contains(errText, "forbidden: bot was blocked by the user") ||
+		strings.Contains(errText, "bad request: chat not found")
+}
+
+func (s *NotificationService) disableUserNotifications(user *models.User) error {
+	settings := models.UserSettings{}
+	if user.SettingsJSON != "" {
+		if err := json.Unmarshal([]byte(user.SettingsJSON), &settings); err != nil {
+			s.logger.Warn("failed to parse user settings when disabling notifications, using defaults",
+				zap.Int64("user_id", user.ID),
+				zap.Error(err),
+			)
+		}
+	}
+
+	settings.NotificationFrequency = "never"
+	settingsJSON, err := json.Marshal(settings)
+	if err != nil {
+		return fmt.Errorf("failed to marshal user settings: %w", err)
+	}
+	if err := s.userRepo.UpdateUserSettings(user.ID, string(settingsJSON)); err != nil {
+		return fmt.Errorf("failed to persist disabled notifications: %w", err)
+	}
+
+	user.SettingsJSON = string(settingsJSON)
+	s.logger.Info("disabled notifications for user after delivery failure",
+		zap.Int64("user_id", user.ID),
+	)
+
+	return nil
+}

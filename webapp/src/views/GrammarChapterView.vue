@@ -84,7 +84,7 @@
           </div>
           
           <!-- Inline Quiz Block -->
-          <div v-if="block.type === 'quiz_inline'" class="quiz-block">
+          <div v-if="block.type === 'quiz_inline' && hasQuizQuestions(block)" class="quiz-block">
             <h2 v-if="block.title" class="block-title">{{ block.title }}</h2>
             <GrammarQuestion
               v-for="questionId in block.quiz_inline?.question_ids || []"
@@ -174,6 +174,10 @@ const loadChapter = async () => {
 
 const getQuestionById = (questionId: string) => {
   return questionMap.value.get(questionId) || null
+}
+
+const hasQuizQuestions = (block: any): boolean => {
+  return Array.isArray(block?.quiz_inline?.question_ids) && block.quiz_inline.question_ids.length > 0
 }
 
 // Helper function to compare answers
@@ -322,6 +326,8 @@ onMounted(() => {
 
 .chapter-header h1 {
   margin: 0 0 12px 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .chapter-meta {
@@ -552,5 +558,12 @@ onMounted(() => {
 .markdown-content :deep(li) {
   margin-bottom: 8px;
   line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .chapter-header h1 {
+    line-height: 1.25;
+    hyphens: auto;
+  }
 }
 </style>
