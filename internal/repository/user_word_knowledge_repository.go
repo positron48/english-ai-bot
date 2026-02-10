@@ -23,8 +23,11 @@ func NewUserWordKnowledgeRepository(db *sql.DB, logger *zap.Logger) *UserWordKno
 
 // MarkKnown marks a word as known for a user
 func (r *UserWordKnowledgeRepository) MarkKnown(userID, wordCardID int64) error {
-	query := `INSERT OR REPLACE INTO user_word_knowledge (user_id, word_card_id, status, created_at)
-			  VALUES (?, ?, 'known', CURRENT_TIMESTAMP)`
+	query := `INSERT INTO user_word_knowledge (user_id, word_card_id, status, created_at)
+			  VALUES (?, ?, 'known', CURRENT_TIMESTAMP)
+			  ON CONFLICT(user_id, word_card_id) DO UPDATE SET
+			  	status = excluded.status,
+			  	created_at = CURRENT_TIMESTAMP`
 
 	_, err := r.db.Exec(query, userID, wordCardID)
 	if err != nil {

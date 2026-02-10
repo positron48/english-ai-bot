@@ -216,3 +216,73 @@ func TestPostgresSmoke_CreateFlowWithoutLastInsertID(t *testing.T) {
 	}
 }
 
+func TestPostgresSmoke_GrammarProgressUpsert(t *testing.T) {
+	db := newPostgresDB(t)
+	conn := db.GetConnection()
+	logger := zap.NewNop()
+
+	userRepo := repository.NewUserRepository(conn, logger)
+	grammarRepo := repository.NewGrammarAttemptRepository(conn, logger)
+
+	user, err := userRepo.GetOrCreateUser(900000003)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser failed: %v", err)
+	}
+
+	chapterID := "smoke.chapter.progress"
+	if err := grammarRepo.UpdateProgress(user.ID, chapterID, 40, false); err != nil {
+		t.Fatalf("UpdateProgress first attempt failed: %v", err)
+	}
+	if err := grammarRepo.UpdateProgress(user.ID, chapterID, 80, true); err != nil {
+		t.Fatalf("UpdateProgress second attempt failed: %v", err)
+	}
+
+	progress, err := grammarRepo.GetChapterProgress(user.ID, chapterID)
+	if err != nil {
+		t.Fatalf("GetChapterProgress failed: %v", err)
+	}
+	if progress.BestScore != 80 {
+		t.Fatalf("expected best score 80, got %d", progress.BestScore)
+	}
+	if !progress.Passed {
+		t.Fatal("expected chapter to be marked as passed")
+	}
+}
+
+func TestPostgresSmoke_UserWordKnowledgeMarkKnownUpsert(t *testing.T) {
+	db := newPostgresDB(t)
+	conn := db.GetConnection()
+	logger := zap.NewNop()
+
+	userRepo := repository.NewUserRepository(conn, logger)
+	wordRepo := repository.NewWordRepository(conn, logger)
+	uwkRepo := repository.NewUserWordKnowledgeRepository(conn, logger)
+
+	user, err := userRepo.GetOrCreateUser(900000004)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser failed: %v", err)
+	}
+
+	wordID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{
+		Word:       "postgres-smoke-known",
+		Definition: "known",
+	})
+	if err != nil {
+		t.Fatalf("UpsertWordCardLemma failed: %v", err)
+	}
+
+	if err := uwkRepo.MarkKnown(user.ID, wordID); err != nil {
+		t.Fatalf("MarkKnown first call failed: %v", err)
+	}
+	if err := uwkRepo.MarkKnown(user.ID, wordID); err != nil {
+		t.Fatalf("MarkKnown second call failed: %v", err)
+	}
+
+	isKnown, err := uwkRepo.IsKnown(user.ID, wordID)
+	if err != nil {
+		t.Fatalf("IsKnown failed: %v", err)
+	}
+	if !isKnown {
+		t.Fatal("expected word to remain known after second MarkKnown")
+	}
+}

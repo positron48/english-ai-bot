@@ -83,8 +83,11 @@ func (r *GrammarAttemptRepository) UpdateProgress(userID int64, chapterID string
 	query := `INSERT INTO grammar_progress (user_id, chapter_id, best_score, passed_at, last_attempt_at)
 			  VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)
 			  ON CONFLICT(user_id, chapter_id) DO UPDATE SET
-			  	best_score = MAX(best_score, excluded.best_score),
-			  	passed_at = CASE WHEN excluded.best_score >= 50 THEN COALESCE(passed_at, CURRENT_TIMESTAMP) ELSE passed_at END,
+			  	best_score = CASE
+			  		WHEN excluded.best_score > grammar_progress.best_score THEN excluded.best_score
+			  		ELSE grammar_progress.best_score
+			  	END,
+			  	passed_at = CASE WHEN excluded.best_score >= 50 THEN COALESCE(grammar_progress.passed_at, CURRENT_TIMESTAMP) ELSE grammar_progress.passed_at END,
 			  	last_attempt_at = CURRENT_TIMESTAMP`
 
 	var passedAt interface{}
