@@ -4,8 +4,4 @@
 правки по грамматике должны вноситься в рамках сервиса (vue-приложения и go). courses/ - сабмодуль, который ридонли и его править запрещено.
 отмечай статус работы над задачей в этом файле ([done] ..., [in progress] ..., etc)
 
-[done] failed to update progress: ERROR: column reference "best_score" is ambiguous (SQLSTATE 42702) - после прохождения теста главы по грамматике
-
-[done] failed to mark as known: failed to mark word as known: ERROR: syntax error at or near "OR" (SQLSTATE 42601) - при попытке пометить слово как известное в словарном наборе
-
-ERROR: syntax error at or near "PRAGMA" (SQLSTATE 42601) - - failed to enable foreign keys
+[done] Исправлена ошибка кодирования bool→int8 при SetPublished (grammar_publish_repository: передаём 0/1 вместо bool для колонки is_published INTEGER в PostgreSQL)

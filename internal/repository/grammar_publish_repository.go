@@ -35,6 +35,11 @@ type PublishedItem struct {
 
 // SetPublished sets the published status for an item
 func (r *GrammarPublishRepository) SetPublished(itemType, itemID string, isPublished bool, userID *int64) error {
+	// DB column is INTEGER; pass 0/1 for PostgreSQL compatibility (driver cannot encode bool as int8)
+	publishedInt := 0
+	if isPublished {
+		publishedInt = 1
+	}
 	query := `INSERT INTO grammar_published_items (item_type, item_id, is_published, updated_at, updated_by_user_id)
 			  VALUES (?, ?, ?, CURRENT_TIMESTAMP, ?)
 			  ON CONFLICT(item_type, item_id) DO UPDATE SET
@@ -42,7 +47,7 @@ func (r *GrammarPublishRepository) SetPublished(itemType, itemID string, isPubli
 			  	updated_at = CURRENT_TIMESTAMP,
 			  	updated_by_user_id = excluded.updated_by_user_id`
 
-	_, err := r.db.Exec(query, itemType, itemID, isPublished, userID)
+	_, err := r.db.Exec(query, itemType, itemID, publishedInt, userID)
 	if err != nil {
 		return fmt.Errorf("failed to set published status: %w", err)
 	}
@@ -178,6 +183,11 @@ func (r *GrammarPublishRepository) BulkSetPublished(itemType string, itemIDs []s
 			  	updated_at = CURRENT_TIMESTAMP,
 			  	updated_by_user_id = excluded.updated_by_user_id`
 
+	// DB column is INTEGER; pass 0/1 for PostgreSQL compatibility
+	publishedInt := 0
+	if isPublished {
+		publishedInt = 1
+	}
 	stmt, err := tx.Prepare(query)
 	if err != nil {
 		return fmt.Errorf("failed to prepare statement: %w", err)
@@ -185,7 +195,7 @@ func (r *GrammarPublishRepository) BulkSetPublished(itemType string, itemIDs []s
 	defer stmt.Close()
 
 	for _, itemID := range itemIDs {
-		if _, err := stmt.Exec(itemType, itemID, isPublished, userID); err != nil {
+		if _, err := stmt.Exec(itemType, itemID, publishedInt, userID); err != nil {
 			return fmt.Errorf("failed to set published for %s: %w", itemID, err)
 		}
 	}
