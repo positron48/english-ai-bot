@@ -291,32 +291,11 @@
       {
         "id": "q3",
         "type": "fill_blank",
-        "prompt": "Заполните пропуск: \"She ___ reading a book at 8 pm.\" (be, she)",
+        "prompt": "Заполните пропуск: \"She ___ reading a book at 8 pm.\" (be)",
         "theory_block_id": "b1_theory_pc_structure",
         "difficulty": 2,
         "correct_answer": "was",
         "explanation": "Для she используется was: she was reading."
-      },
-      {
-        "id": "q4",
-        "type": "error_spotting",
-        "prompt": "Найдите ошибку:\n\n**They were watch TV.**",
-        "theory_block_id": "b1_theory_pc_structure",
-        "difficulty": 2,
-        "choices": [
-          {
-            "id": "a",
-            "text": "They were watching TV.",
-            "feedback": "Правильно: нужна форма -ing"
-          },
-          {
-            "id": "b",
-            "text": "They were watch TV.",
-            "feedback": "Неверно: watch без -ing"
-          }
-        ],
-        "correct_answer": "a",
-        "explanation": "После was/were используется V-ing: watching."
       },
       {
         "id": "q5",
@@ -382,7 +361,7 @@
       {
         "id": "q8",
         "type": "fill_blank",
-        "prompt": "Заполните пропуск: \"They ___ playing chess.\" (be, they)",
+        "prompt": "Заполните пропуск: \"They ___ playing chess.\" (be)",
         "theory_block_id": "b1_theory_pc_structure",
         "difficulty": 2,
         "correct_answer": "were",
@@ -398,30 +377,9 @@
         "explanation": "Без was/were Past Continuous не строится."
       },
       {
-        "id": "q10",
-        "type": "error_spotting",
-        "prompt": "Найдите ошибку:\n\n**She was cook dinner.**",
-        "theory_block_id": "b1_theory_pc_structure",
-        "difficulty": 2,
-        "choices": [
-          {
-            "id": "a",
-            "text": "She was cooking dinner.",
-            "feedback": "Правильно: cooking"
-          },
-          {
-            "id": "b",
-            "text": "She was cook dinner.",
-            "feedback": "Неверно: нет -ing"
-          }
-        ],
-        "correct_answer": "a",
-        "explanation": "После was/were нужна форма V-ing."
-      },
-      {
         "id": "q11",
         "type": "mcq_single",
-        "prompt": "Выберите правильную форму was/were для it:",
+        "prompt": "Выберите правильный вариант:",
         "theory_block_id": "b2_theory_was_were_choice",
         "difficulty": 1,
         "choices": [
@@ -447,7 +405,7 @@
       {
         "id": "q12",
         "type": "fill_blank",
-        "prompt": "Заполните пропуск: \"We ___ waiting outside.\" (be, we)",
+        "prompt": "Заполните пропуск: \"We ___ waiting outside.\" (be)",
         "theory_block_id": "b2_theory_was_were_choice",
         "difficulty": 2,
         "correct_answer": "were",
@@ -461,27 +419,6 @@
         "difficulty": 1,
         "correct_answer": "false",
         "explanation": "С he/she/it используется was, не were."
-      },
-      {
-        "id": "q14",
-        "type": "error_spotting",
-        "prompt": "Найдите ошибку:\n\n**They was running.**",
-        "theory_block_id": "b2_theory_was_were_choice",
-        "difficulty": 2,
-        "choices": [
-          {
-            "id": "a",
-            "text": "They were running.",
-            "feedback": "Правильно: they → were"
-          },
-          {
-            "id": "b",
-            "text": "They was running.",
-            "feedback": "Неверно: they не сочетается с was"
-          }
-        ],
-        "correct_answer": "a",
-        "explanation": "С they используется were."
       },
       {
         "id": "q15",
@@ -512,7 +449,7 @@
       {
         "id": "q16",
         "type": "fill_blank",
-        "prompt": "Заполните пропуск: \"They ___ talking.\" (be, they)",
+        "prompt": "Заполните пропуск: \"They ___ talking.\" (be)",
         "theory_block_id": "b2_theory_was_were_choice",
         "difficulty": 1,
         "correct_answer": "were",
@@ -539,7 +476,7 @@
       {
         "id": "q19",
         "type": "mcq_single",
-        "prompt": "Выберите правильную форму was/were:",
+        "prompt": "Выберите правильную форму:",
         "theory_block_id": "b2_theory_was_were_choice",
         "difficulty": 2,
         "choices": [
@@ -561,27 +498,6 @@
         ],
         "correct_answer": "a",
         "explanation": "С it используется was."
-      },
-      {
-        "id": "q20",
-        "type": "error_spotting",
-        "prompt": "Найдите ошибку:\n\n**You was listening.**",
-        "theory_block_id": "b2_theory_was_were_choice",
-        "difficulty": 2,
-        "choices": [
-          {
-            "id": "a",
-            "text": "You were listening.",
-            "feedback": "Правильно: you → were"
-          },
-          {
-            "id": "b",
-            "text": "You was listening.",
-            "feedback": "Неверно: you не сочетается с was"
-          }
-        ],
-        "correct_answer": "a",
-        "explanation": "С you используется were."
       },
       {
         "id": "q21",
@@ -628,27 +544,6 @@
         "explanation": "После y добавляется -ing без изменений: play → playing."
       },
       {
-        "id": "q24",
-        "type": "error_spotting",
-        "prompt": "Найдите ошибку:\n\n**She was writeing a letter.**",
-        "theory_block_id": "b3_theory_ing_spelling",
-        "difficulty": 2,
-        "choices": [
-          {
-            "id": "a",
-            "text": "She was writing a letter.",
-            "feedback": "Правильно: write → writing"
-          },
-          {
-            "id": "b",
-            "text": "She was writeing a letter.",
-            "feedback": "Неверно: e убирается"
-          }
-        ],
-        "correct_answer": "a",
-        "explanation": "Write → writing, буква e исчезает."
-      },
-      {
         "id": "q25",
         "type": "mcq_single",
         "prompt": "Как правильно написать V-ing от swim?",
@@ -691,27 +586,6 @@
         "difficulty": 1,
         "correct_answer": "false",
         "explanation": "Правильно: making, буква e убирается."
-      },
-      {
-        "id": "q28",
-        "type": "error_spotting",
-        "prompt": "Найдите ошибку:\n\n**He was runing fast.**",
-        "theory_block_id": "b3_theory_ing_spelling",
-        "difficulty": 2,
-        "choices": [
-          {
-            "id": "a",
-            "text": "He was running fast.",
-            "feedback": "Правильно: running с двойной n"
-          },
-          {
-            "id": "b",
-            "text": "He was runing fast.",
-            "feedback": "Неверно: нужна двойная n"
-          }
-        ],
-        "correct_answer": "a",
-        "explanation": "Run → running, удвоение n."
       },
       {
         "id": "q29",
@@ -777,7 +651,7 @@
       {
         "id": "q32",
         "type": "fill_blank",
-        "prompt": "Заполните пропуск: \"They ___ not waiting.\" (be, they)",
+        "prompt": "Заполните пропуск: \"They ___ not waiting.\" (be)",
         "theory_block_id": "b4_theory_pc_negative_question",
         "difficulty": 2,
         "correct_answer": "were",
@@ -791,27 +665,6 @@
         "difficulty": 1,
         "correct_answer": "true",
         "explanation": "Да, это базовая схема вопросов в Past Continuous."
-      },
-      {
-        "id": "q34",
-        "type": "error_spotting",
-        "prompt": "Найдите ошибку:\n\n**Was she cook dinner?**",
-        "theory_block_id": "b4_theory_pc_negative_question",
-        "difficulty": 2,
-        "choices": [
-          {
-            "id": "a",
-            "text": "Was she cooking dinner?",
-            "feedback": "Правильно: cooking"
-          },
-          {
-            "id": "b",
-            "text": "Was she cook dinner?",
-            "feedback": "Неверно: нужна форма -ing"
-          }
-        ],
-        "correct_answer": "a",
-        "explanation": "В вопросах Past Continuous нужен V-ing."
       },
       {
         "id": "q35",
@@ -856,27 +709,6 @@
         "difficulty": 1,
         "correct_answer": "false",
         "explanation": "Отрицание строится через wasn't/weren't, а не didn't."
-      },
-      {
-        "id": "q38",
-        "type": "error_spotting",
-        "prompt": "Найдите ошибку:\n\n**They weren't played outside.**",
-        "theory_block_id": "b4_theory_pc_negative_question",
-        "difficulty": 2,
-        "choices": [
-          {
-            "id": "a",
-            "text": "They weren't playing outside.",
-            "feedback": "Правильно: V-ing"
-          },
-          {
-            "id": "b",
-            "text": "They weren't played outside.",
-            "feedback": "Неверно: played это V2"
-          }
-        ],
-        "correct_answer": "a",
-        "explanation": "После wasn't/weren't нужна форма V-ing."
       },
       {
         "id": "q39",
@@ -951,32 +783,11 @@
       {
         "id": "q43",
         "type": "fill_blank",
-        "prompt": "Заполните пропуск: \"She ___ sleeping.\" (be, she)",
+        "prompt": "Заполните пропуск: \"She ___ sleeping.\" (be)",
         "theory_block_id": "b5_theory_common_mistakes",
         "difficulty": 1,
         "correct_answer": "was",
         "explanation": "С she используется was."
-      },
-      {
-        "id": "q44",
-        "type": "error_spotting",
-        "prompt": "Найдите ошибку в форме V-ing:\n\n**He was read a book.**",
-        "theory_block_id": "b5_theory_common_mistakes",
-        "difficulty": 2,
-        "choices": [
-          {
-            "id": "a",
-            "text": "He was reading a book.",
-            "feedback": "Правильно: после was нужна форма V-ing"
-          },
-          {
-            "id": "b",
-            "text": "He was read a book.",
-            "feedback": "Неверно: нужна форма V-ing"
-          }
-        ],
-        "correct_answer": "a",
-        "explanation": "После was/were используется V-ing: reading."
       },
       {
         "id": "q45",
@@ -1003,27 +814,6 @@
         ],
         "correct_answer": "a",
         "explanation": "Past Continuous всегда включает was/were."
-      },
-      {
-        "id": "q46",
-        "type": "error_spotting",
-        "prompt": "Найдите ошибку:\n\n**He sleeping at 7 pm.**",
-        "theory_block_id": "b5_theory_common_mistakes",
-        "difficulty": 2,
-        "choices": [
-          {
-            "id": "a",
-            "text": "He was sleeping at 7 pm.",
-            "feedback": "Правильно: нужен was"
-          },
-          {
-            "id": "b",
-            "text": "He sleeping at 7 pm.",
-            "feedback": "Неверно: нет was"
-          }
-        ],
-        "correct_answer": "a",
-        "explanation": "Past Continuous требует was/were перед V-ing."
       },
       {
         "id": "q47",
@@ -1063,7 +853,7 @@
       {
         "id": "q49",
         "type": "fill_blank",
-        "prompt": "Заполните пропуск: \"They ___ not talking.\" (be, they)",
+        "prompt": "Заполните пропуск: \"They ___ not talking.\" (be)",
         "theory_block_id": "b5_theory_common_mistakes",
         "difficulty": 1,
         "correct_answer": "were",
@@ -1107,7 +897,7 @@
       {
         "id": "q52",
         "type": "fill_blank",
-        "prompt": "Заполните пропуск: \"It ___ raining heavily.\" (be, it)",
+        "prompt": "Заполните пропуск: \"It ___ raining heavily.\" (be)",
         "theory_block_id": "b1_theory_pc_structure",
         "difficulty": 1,
         "correct_answer": "was",
@@ -1184,27 +974,6 @@
         "explanation": "Вопрос Past Continuous строится через was/were + V-ing."
       },
       {
-        "id": "q57",
-        "type": "error_spotting",
-        "prompt": "Найдите ошибку:\n\n**She were dancing.**",
-        "theory_block_id": "b5_theory_common_mistakes",
-        "difficulty": 2,
-        "choices": [
-          {
-            "id": "a",
-            "text": "She was dancing.",
-            "feedback": "Правильно: she → was"
-          },
-          {
-            "id": "b",
-            "text": "She were dancing.",
-            "feedback": "Неверно: were с she"
-          }
-        ],
-        "correct_answer": "a",
-        "explanation": "С she используется was."
-      },
-      {
         "id": "q58",
         "type": "true_false",
         "prompt": "Форма *He was running* корректна.",
@@ -1216,7 +985,7 @@
       {
         "id": "q59",
         "type": "fill_blank",
-        "prompt": "Заполните пропуск: \"We ___ watching a movie.\" (be, we)",
+        "prompt": "Заполните пропуск: \"We ___ watching a movie.\" (be)",
         "theory_block_id": "b2_theory_was_were_choice",
         "difficulty": 1,
         "correct_answer": "were",
@@ -1254,41 +1023,31 @@
     "num_questions": 10,
     "pool_question_ids": [
       "q3",
-      "q4",
       "q5",
       "q6",
       "q7",
       "q8",
       "q9",
-      "q10",
       "q13",
-      "q14",
       "q15",
       "q16",
       "q17",
       "q18",
       "q19",
-      "q20",
       "q23",
-      "q24",
       "q25",
       "q26",
       "q27",
-      "q28",
       "q29",
       "q30",
       "q33",
-      "q34",
       "q35",
       "q36",
       "q37",
-      "q38",
       "q39",
       "q40",
       "q43",
-      "q44",
       "q45",
-      "q46",
       "q47",
       "q48",
       "q49",
@@ -1299,7 +1058,6 @@
       "q54",
       "q55",
       "q56",
-      "q57",
       "q58",
       "q59",
       "q60"
@@ -1317,7 +1075,7 @@
   },
   "meta": {
     "version": "2026.01.16",
-    "updated_at": "2026-01-27T17:24:03Z",
+    "updated_at": "2026-02-08T15:50:55Z",
     "source": "llm"
   }
 }
