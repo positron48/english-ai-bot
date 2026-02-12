@@ -28,6 +28,15 @@
             {{ user.telegram_username || `User #${user.telegram_id}` }} (ID: {{ user.id }})
           </option>
         </select>
+        <select v-model="wordsMissingTrainingPOS" class="admin-select" @change="onFilterChange">
+          <option value="">No filter (all words)</option>
+          <option value="noun">Missing card: noun</option>
+          <option value="verb">Missing card: verb</option>
+          <option value="adjective">Missing card: adjective</option>
+          <option value="adverb">Missing card: adverb</option>
+          <option value="pronoun">Missing card: pronoun</option>
+          <option value="preposition">Missing card: preposition</option>
+        </select>
         <button 
           @click="toggleOnlyErrors" 
           :class="['btn', 'btn-toggle', { 'btn-toggle-active': wordsOnlyErrors }]"
@@ -647,6 +656,7 @@ const words = ref<WordCard[]>([])
 const wordsLoading = ref(false)
 const wordsError = ref<string | null>(null)
 const wordsFilterUser = ref<number | null>(null)
+const wordsMissingTrainingPOS = ref('')
 const wordsOnlyErrors = ref(false)
 const wordsSearchQuery = ref('')
 const wordsSearchTimeout = ref<number | null>(null)
@@ -756,6 +766,9 @@ const loadWords = async () => {
     }
     if (wordsOnlyErrors.value) {
       params.append('only_errors', '1')
+    }
+    if (wordsMissingTrainingPOS.value) {
+      params.append('missing_training_pos', wordsMissingTrainingPOS.value)
     }
     if (wordsSearchQuery.value) {
       params.append('search', wordsSearchQuery.value)

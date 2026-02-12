@@ -341,6 +341,24 @@ func TestHandleAdminWords_GetWithSearch(t *testing.T) {
 	}
 }
 
+func TestHandleAdminWords_GetWithMissingTrainingPOS(t *testing.T) {
+	router, db, adminUserID, cleanup := setupAdminTrainingTest(t)
+	defer cleanup()
+
+	wordRepo := repository.NewWordRepository(db.GetConnection(), router.logger)
+	wordRepo.SaveWordCard("apple", "a fruit")
+
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/words?missing_training_pos=noun", nil)
+	req = setAdminTrainingUserContext(req, adminUserID)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminWords(rr, req)
+
+	if rr.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", rr.Code, rr.Body.String())
+	}
+}
+
 func TestHandleAdminWord_Get(t *testing.T) {
 	router, db, adminUserID, cleanup := setupAdminTrainingTest(t)
 	defer cleanup()

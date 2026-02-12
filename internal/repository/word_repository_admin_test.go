@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"testing"
 
+	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/testutil"
 
 	"go.uber.org/zap"
@@ -25,7 +26,7 @@ func TestWordRepository_ListWordCardsAdmin(t *testing.T) {
 	repo.SaveWordCard("admin2", "definition 2")
 
 	// List word cards
-	cards, err := repo.ListWordCardsAdmin(nil, false, "", 10, 0, "", "desc")
+	cards, err := repo.ListWordCardsAdmin(nil, false, "", "", 10, 0, "", "desc")
 	if err != nil {
 		t.Fatalf("ListWordCardsAdmin() error = %v", err)
 	}
@@ -43,7 +44,7 @@ func TestWordRepository_ListWordCardsAdmin_WithSearch(t *testing.T) {
 	repo.SaveWordCard("otherword", "definition")
 
 	// List word cards with search
-	cards, err := repo.ListWordCardsAdmin(nil, false, "search", 10, 0, "", "desc")
+	cards, err := repo.ListWordCardsAdmin(nil, false, "search", "", 10, 0, "", "desc")
 	if err != nil {
 		t.Fatalf("ListWordCardsAdmin() error = %v", err)
 	}
@@ -62,7 +63,7 @@ func TestWordRepository_CountWordCardsAdmin(t *testing.T) {
 	repo.SaveWordCard("count3", "definition 3")
 
 	// Count word cards
-	count, err := repo.CountWordCardsAdmin(nil, false, "")
+	count, err := repo.CountWordCardsAdmin(nil, false, "", "")
 	if err != nil {
 		t.Fatalf("CountWordCardsAdmin() error = %v", err)
 	}
@@ -97,7 +98,7 @@ func TestWordRepository_CountWordCardsAdmin_WithFilterUserID(t *testing.T) {
 
 	// Count word cards for user 100
 	userID := int64(100)
-	count, err := repo.CountWordCardsAdmin(&userID, false, "")
+	count, err := repo.CountWordCardsAdmin(&userID, false, "", "")
 	if err != nil {
 		t.Fatalf("CountWordCardsAdmin() error = %v", err)
 	}
@@ -124,7 +125,7 @@ func TestWordRepository_CountWordCardsAdmin_WithErrors(t *testing.T) {
 	}
 
 	// Count word cards with errors
-	count, err := repo.CountWordCardsAdmin(nil, true, "")
+	count, err := repo.CountWordCardsAdmin(nil, true, "", "")
 	if err != nil {
 		t.Fatalf("CountWordCardsAdmin() error = %v", err)
 	}
@@ -142,12 +143,65 @@ func TestWordRepository_CountWordCardsAdmin_WithSearch(t *testing.T) {
 	repo.SaveWordCard("other", "definition")
 
 	// Count word cards with search
-	count, err := repo.CountWordCardsAdmin(nil, false, "search")
+	count, err := repo.CountWordCardsAdmin(nil, false, "search", "")
 	if err != nil {
 		t.Fatalf("CountWordCardsAdmin() error = %v", err)
 	}
 	if count < 1 {
 		t.Errorf("Expected at least 1 card matching search, got %d", count)
+	}
+}
+
+func TestWordRepository_ListWordCardsAdmin_MissingTrainingPOS(t *testing.T) {
+	db, repo := setupWordAdminTestDB(t)
+	defer db.Close()
+
+	tcRepo := NewTrainingCardRepository(db, repo.logger)
+
+	// Word A: has a training card with pos=noun
+	repo.SaveWordCard("wordwithnoun", "definition")
+	cardA, _ := repo.GetWordCard("wordwithnoun")
+	noun := "noun"
+	_, err := tcRepo.CreateTrainingCard(&models.TrainingCard{
+		WordCardID: cardA.ID, WordEN: "wordwithnoun", SenseIndex: 0,
+		WordRU: "слово", MeaningEN: "meaning", POS: &noun,
+	})
+	if err != nil {
+		t.Fatalf("CreateTrainingCard: %v", err)
+	}
+
+	// Word B: no training card with pos=noun (no cards at all)
+	repo.SaveWordCard("wordwithoutnoun", "definition")
+
+	// Filter: missing card for noun -> only words that have no training card with pos=noun
+	list, err := repo.ListWordCardsAdmin(nil, false, "", "noun", 10, 0, "", "desc")
+	if err != nil {
+		t.Fatalf("ListWordCardsAdmin() error = %v", err)
+	}
+	// Should contain only wordwithoutnoun (wordwithnoun has a noun card)
+	var found bool
+	for _, w := range list {
+		if w.Word == "wordwithoutnoun" {
+			found = true
+			break
+		}
+	}
+	if !found {
+		t.Errorf("Expected to find wordwithoutnoun in list when filtering by missing_training_pos=noun, got %d words", len(list))
+	}
+	for _, w := range list {
+		if w.Word == "wordwithnoun" {
+			t.Error("wordwithnoun has a noun card and must not appear when filtering by missing_training_pos=noun")
+			break
+		}
+	}
+
+	count, err := repo.CountWordCardsAdmin(nil, false, "", "noun")
+	if err != nil {
+		t.Fatalf("CountWordCardsAdmin() error = %v", err)
+	}
+	if count < 1 {
+		t.Errorf("Expected at least 1 word without noun card, got count %d", count)
 	}
 }
 

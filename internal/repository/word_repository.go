@@ -443,8 +443,9 @@ type WordCardAdminItem struct {
 	RequestingUsers  []int64
 }
 
-// ListWordCardsAdmin lists word cards for admin view with optional filters
-func (r *WordRepository) ListWordCardsAdmin(filterUserID *int64, onlyWithErrors bool, searchQuery string, limit, offset int, sortBy string, sortOrder string) ([]*WordCardAdminItem, error) {
+// ListWordCardsAdmin lists word cards for admin view with optional filters.
+// missingTrainingPOS: when set, only words that have no training card with this part of speech are returned (e.g. "noun" => words without a noun card).
+func (r *WordRepository) ListWordCardsAdmin(filterUserID *int64, onlyWithErrors bool, searchQuery string, missingTrainingPOS string, limit, offset int, sortBy string, sortOrder string) ([]*WordCardAdminItem, error) {
 	// Use LEFT JOIN with GROUP BY to check for training cards - more reliable than subquery
 	query := `SELECT wc.id, wc.word, wc.definition,
 			  COALESCE(wc.pos, '') as pos,
@@ -473,6 +474,12 @@ func (r *WordRepository) ListWordCardsAdmin(filterUserID *int64, onlyWithErrors 
 	// Filter by errors if specified
 	if onlyWithErrors {
 		conditions = append(conditions, "wc.processing_error IS NOT NULL AND wc.processing_error != ''")
+	}
+
+	// Filter: only words that have no training card with the given part of speech
+	if missingTrainingPOS != "" {
+		conditions = append(conditions, "wc.id NOT IN (SELECT word_card_id FROM training_cards WHERE pos = ?)")
+		args = append(args, missingTrainingPOS)
 	}
 
 	// Filter by search query if specified (by word or translation) - case-insensitive
@@ -587,8 +594,9 @@ func (r *WordRepository) ListWordCardsAdmin(filterUserID *int64, onlyWithErrors 
 	return items, nil
 }
 
-// CountWordCardsAdmin counts total word cards matching filters (for pagination)
-func (r *WordRepository) CountWordCardsAdmin(filterUserID *int64, onlyWithErrors bool, searchQuery string) (int, error) {
+// CountWordCardsAdmin counts total word cards matching filters (for pagination).
+// missingTrainingPOS: when set, only words that have no training card with this part of speech are counted.
+func (r *WordRepository) CountWordCardsAdmin(filterUserID *int64, onlyWithErrors bool, searchQuery string, missingTrainingPOS string) (int, error) {
 	query := `SELECT COUNT(DISTINCT wc.id) FROM word_cards wc`
 
 	args := []interface{}{}
@@ -603,6 +611,12 @@ func (r *WordRepository) CountWordCardsAdmin(filterUserID *int64, onlyWithErrors
 	// Filter by errors if specified
 	if onlyWithErrors {
 		conditions = append(conditions, "wc.processing_error IS NOT NULL AND wc.processing_error != ''")
+	}
+
+	// Filter: only words that have no training card with the given part of speech
+	if missingTrainingPOS != "" {
+		conditions = append(conditions, "wc.id NOT IN (SELECT word_card_id FROM training_cards WHERE pos = ?)")
+		args = append(args, missingTrainingPOS)
 	}
 
 	// Filter by search query if specified (by word or translation) - case-insensitive
