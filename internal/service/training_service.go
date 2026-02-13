@@ -234,68 +234,102 @@ func (s *TrainingService) generateQueue(userID int64, config SessionConfig) ([]*
 	}
 
 	// Build queue of TrainingQueueItem (all cards first)
-	queue := make([]*models.TrainingQueueItem, 0, len(cardQueue)+1)
+	queue := make([]*models.TrainingQueueItem, 0, len(cardQueue))
 	for _, c := range cardQueue {
 		queue = append(queue, &models.TrainingQueueItem{Type: "card", Card: c})
 	}
 
-	// Randomly inject one spell challenge if enabled (words with mastering_score >= threshold)
-	if config.SpellEnabled && rand.Float32() < 0.25 {
-		threshold := config.SpellMasteringThreshold
-		if threshold < 0 {
-			threshold = 0
-		}
-		if threshold > 100 {
-			threshold = 100
-		}
-		eligible, err := s.userCardRepo.GetWordsEligibleForSpellByMastery(userID, threshold, 50)
-		if err == nil && len(eligible) > 0 {
-			w := eligible[rand.Intn(len(eligible))]
-			if w.DisplayWord != "" && len(w.DisplayWord) >= 2 {
-				letters := shuffleLetters(w.DisplayWord)
-				if len(letters) > 0 {
-					spell := &models.SpellChallenge{
-						WordCardID:      w.WordCardID,
-						DisplayWord:     w.DisplayWord,
-						WordRU:          w.WordRU,
-						ShuffledLetters: letters,
-					}
-					pos := rand.Intn(len(queue) + 1)
-					queue = append(queue, nil)
-					copy(queue[pos+1:], queue[pos:])
-					queue[pos] = &models.TrainingQueueItem{Type: "spell", Spell: spell}
-				}
-			}
-		}
+	// Per-card: by word's mastering score, replace some cards with spell or type challenge
+	spellThresh := config.SpellMasteringThreshold
+	if spellThresh < 0 {
+		spellThresh = 0
 	}
-
-	// Randomly inject one type challenge if enabled (words with mastering_score >= type threshold; no letter hints)
-	if config.TypeEnabled && rand.Float32() < 0.25 {
-		typeThreshold := config.TypeMasteringThreshold
-		if typeThreshold < 0 {
-			typeThreshold = 0
+	if spellThresh > 100 {
+		spellThresh = 100
+	}
+	typeThresh := config.TypeMasteringThreshold
+	if typeThresh < 0 {
+		typeThresh = 0
+	}
+	if typeThresh > 100 {
+		typeThresh = 100
+	}
+	for i := range queue {
+		if queue[i].Type != "card" || queue[i].Card == nil {
+			continue
 		}
-		if typeThreshold > 100 {
-			typeThreshold = 100
+		tc := &queue[i].Card.TrainingCard
+		wordCardID := tc.WordCardID
+		displayWord := tc.WordEN
+		if tc.DisplayWord != nil && *tc.DisplayWord != "" {
+			displayWord = *tc.DisplayWord
 		}
-		eligible, err := s.userCardRepo.GetWordsEligibleForSpellByMastery(userID, typeThreshold, 50)
-		if err == nil && len(eligible) > 0 {
-			w := eligible[rand.Intn(len(eligible))]
-			if w.DisplayWord != "" && len(w.DisplayWord) >= 2 {
-				typeCh := &models.TypeChallenge{
-					WordCardID:  w.WordCardID,
-					DisplayWord: w.DisplayWord,
-					WordRU:      w.WordRU,
+		if len(displayWord) < 2 {
+			continue
+		}
+		stats, err := s.userCardRepo.GetWordMasteringStats(userID, wordCardID)
+		if err != nil || stats == nil {
+			continue
+		}
+		score := computeMasteringScore(stats)
+		// Type threshold: 33% card, 33% spell, 33% type
+		if config.TypeEnabled && score >= typeThresh {
+			switch rand.Intn(3) {
+			case 0:
+				// keep card
+			case 1:
+				letters := shuffleLetters(displayWord)
+				if len(letters) > 0 {
+					queue[i] = &models.TrainingQueueItem{Type: "spell", Spell: &models.SpellChallenge{
+						WordCardID: wordCardID, DisplayWord: displayWord, WordRU: tc.WordRU, ShuffledLetters: letters,
+					}}
 				}
-				pos := rand.Intn(len(queue) + 1)
-				queue = append(queue, nil)
-				copy(queue[pos+1:], queue[pos:])
-				queue[pos] = &models.TrainingQueueItem{Type: "type", TypeChallenge: typeCh}
+			case 2:
+				queue[i] = &models.TrainingQueueItem{Type: "type", TypeChallenge: &models.TypeChallenge{
+					WordCardID: wordCardID, DisplayWord: displayWord, WordRU: tc.WordRU,
+				}}
+			}
+			continue
+		}
+		// Spell threshold: 50% card, 50% spell
+		if config.SpellEnabled && score >= spellThresh {
+			if rand.Intn(2) == 1 {
+				letters := shuffleLetters(displayWord)
+				if len(letters) > 0 {
+					queue[i] = &models.TrainingQueueItem{Type: "spell", Spell: &models.SpellChallenge{
+						WordCardID: wordCardID, DisplayWord: displayWord, WordRU: tc.WordRU, ShuffledLetters: letters,
+					}}
+				}
 			}
 		}
 	}
 
 	return queue, nil
+}
+
+// computeMasteringScore returns 0-100 using the same formula as vocab (mastering_score_calc)
+func computeMasteringScore(stats *repository.WordMasteringStats) int {
+	if stats.IsKnown {
+		return 100
+	}
+	if stats.ReviewStateCount == stats.TotalCards && stats.TotalReps > 0 {
+		cap20 := stats.TotalReps / 2
+		if cap20 > 20 {
+			cap20 = 20
+		}
+		return 75 + cap20
+	}
+	if stats.ReviewStateCount > 0 || stats.LearningStateCount > 0 {
+		if stats.TotalCards == 0 {
+			return 25
+		}
+		cap25 := (stats.ReviewStateCount + stats.LearningStateCount) * 25 / stats.TotalCards
+		if cap25 > 25 {
+			cap25 = 25
+		}
+		return 25 + cap25
+	}
+	return 0
 }
 
 // shuffleLetters returns the word's runes as separate strings, shuffled (keeps spaces for "to spy" etc.)

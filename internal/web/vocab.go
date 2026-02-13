@@ -278,7 +278,7 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 		var lastReview, addedAt sql.NullString
 		var displayWord sql.NullString
 		var masteryLevelCalc sql.NullString  // Used only for filtering, not stored
-		var masteringScoreCalc sql.NullInt64 // From SQL for sorting; we also compute in Go
+		var masteringScoreCalc sql.NullString // PostgreSQL returns numeric as string; SQLite may return int
 
 		err := rows.Scan(&word.WordCardID, &word.Lemma, &displayWord, &totalCards, &dueCount, &lastReview, &totalReps, &addedAt,
 			&reviewStateCount, &learningStateCount, &newStateCount, &reviewCount, &isKnown, &masteryLevelCalc, &masteringScoreCalc)

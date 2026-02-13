@@ -180,7 +180,7 @@ func (r *SessionRepository) CreateReviewEvent(event *models.ReviewEvent) (int64,
 func (r *SessionRepository) GetSessionStats(sessionID int64) (totalCards int, correctCards int, err error) {
 	query := `SELECT 
 		COUNT(*) as total,
-		SUM(CASE WHEN is_correct = 1 THEN 1 ELSE 0 END) as correct
+		COALESCE(SUM(CASE WHEN is_correct = 1 THEN 1 ELSE 0 END), 0) as correct
 	FROM review_events 
 	WHERE session_id = ? AND answered_at IS NOT NULL`
 	

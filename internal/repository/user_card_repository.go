@@ -171,6 +171,43 @@ func (r *UserCardRepository) GetNewCards(userID int64, limit int) ([]*models.Use
 	return r.scanUserCards(rows)
 }
 
+// WordMasteringStats holds aggregate stats for one word (word_card_id) for computing mastering score 0-100
+type WordMasteringStats struct {
+	TotalCards        int
+	ReviewStateCount  int
+	LearningStateCount int
+	NewStateCount     int
+	TotalReps         int
+	IsKnown           bool
+}
+
+// GetWordMasteringStats returns aggregate stats for the given word so the service can compute mastering score (0-100)
+func (r *UserCardRepository) GetWordMasteringStats(userID, wordCardID int64) (*WordMasteringStats, error) {
+	query := `SELECT
+		COUNT(DISTINCT uc.id) AS total_cards,
+		COALESCE(SUM(CASE WHEN uc.state = 'review' THEN 1 ELSE 0 END), 0) AS review_state_count,
+		COALESCE(SUM(CASE WHEN uc.state = 'learning' THEN 1 ELSE 0 END), 0) AS learning_state_count,
+		COALESCE(SUM(CASE WHEN uc.state = 'new' THEN 1 ELSE 0 END), 0) AS new_state_count,
+		COALESCE(SUM(uc.reps), 0) AS total_reps,
+		CASE WHEN MAX(uwk.word_card_id) IS NOT NULL THEN 1 ELSE 0 END AS is_known
+	FROM user_cards uc
+	JOIN training_cards tc ON uc.training_card_id = tc.id
+	LEFT JOIN user_word_knowledge uwk ON uwk.user_id = uc.user_id AND uwk.word_card_id = tc.word_card_id AND uwk.status = 'known'
+	WHERE uc.user_id = ? AND tc.word_card_id = ?`
+	var s WordMasteringStats
+	var isKnown int
+	err := r.db.QueryRow(query, userID, wordCardID).Scan(
+		&s.TotalCards, &s.ReviewStateCount, &s.LearningStateCount, &s.NewStateCount, &s.TotalReps, &isKnown)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+		return nil, fmt.Errorf("get word mastering stats: %w", err)
+	}
+	s.IsKnown = isKnown == 1
+	return &s, nil
+}
+
 // SpellEligibleWord is a word the user has in review state (suitable for "compose word" spell challenge)
 type SpellEligibleWord struct {
 	WordCardID  int64

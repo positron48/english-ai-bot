@@ -276,7 +276,7 @@ func (h *Handler) handleStatsCommand(ctx context.Context, chatID, userID int64) 
 	var correctReviews int
 	accuracyQuery := `SELECT 
 		COUNT(*) as total,
-		SUM(CASE WHEN is_correct = 1 THEN 1 ELSE 0 END) as correct
+		COALESCE(SUM(CASE WHEN is_correct = 1 THEN 1 ELSE 0 END), 0) as correct
 		FROM review_events 
 		WHERE user_id = ? AND answered_at >= ? AND answered_at IS NOT NULL`
 	err = h.db.QueryRow(accuracyQuery, internalUserID, monthAgo).Scan(&totalReviews, &correctReviews)
