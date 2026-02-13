@@ -184,16 +184,16 @@
         <div class="spell-answer-row">
           <span class="spell-answer-label">{{ t('training.composeWord') || 'Your word:' }}</span>
           <div class="spell-answer-letters">
-            <span v-for="(ch, i) in spellAnswerLetters" :key="`a-${i}`" class="spell-answer-char">{{ ch }}</span>
+            <button
+              v-for="(ch, i) in spellAnswerLetters"
+              :key="`a-${i}`"
+              type="button"
+              class="btn spell-letter-btn spell-answer-char-btn"
+              :disabled="!!feedback || answering"
+              @click="spellRemoveLetterAt(i)"
+            >{{ ch }}</button>
             <span v-if="spellAnswerLetters.length === 0" class="spell-answer-placeholder">...</span>
           </div>
-          <button
-            v-if="spellAnswerLetters.length > 0 && !feedback && !answering"
-            type="button"
-            class="btn btn-secondary spell-backspace"
-            @click="spellBackspace"
-            aria-label="Backspace"
-          >⌫</button>
         </div>
         <div class="spell-letters">
           <button
@@ -206,11 +206,11 @@
           >{{ ch }}</button>
         </div>
         <button
-          v-if="spellAnswerLetters.length > 0 && !feedback && !answering"
+          v-if="!feedback && !answering"
           type="button"
-          class="btn btn-primary spell-submit"
-          @click="submitSpellAnswer"
-        >{{ t('training.check') || 'Check' }}</button>
+          class="btn btn-secondary spell-skip"
+          @click="skipSpellAnswer"
+        >{{ t('training.skip') || 'Пропустить' }}</button>
       </div>
 
       <div 
@@ -1003,16 +1003,37 @@ const processedQuestion = computed(() => {
 })
 
 const handleKeyPress = (event: KeyboardEvent) => {
-  // Only handle if training is active, options are shown, no feedback, and not answering
-  if (!sessionActive.value || !optionsShown.value || feedback.value || answering.value) {
+  if (!sessionActive.value || feedback.value || answering.value) return
+
+  // Spell: only keys from available letters, or Backspace
+  if (currentCard.value?.type === 'spell' && currentCard.value?.letters?.length) {
+    const key = event.key
+    if (key === 'Backspace') {
+      if (spellAnswerLetters.value.length > 0) {
+        event.preventDefault()
+        spellRemoveLetterAt(spellAnswerLetters.value.length - 1)
+      }
+      return
+    }
+    if (key.length === 1) {
+      const avail = spellAvailableLetters.value
+      const found = avail.find(c => c.toLowerCase() === key.toLowerCase())
+      if (found) {
+        event.preventDefault()
+        spellAddLetter(found)
+      }
+    }
     return
   }
-  
-  // Handle number keys 1-4
+
+  // Type: Enter to submit (already on input)
+  if (currentCard.value?.type === 'type') return
+
+  // Options: number keys 1-4
+  if (!optionsShown.value) return
   const key = event.key
   if (key >= '1' && key <= '4') {
-    const optionIndex = parseInt(key) - 1 // Convert 1-4 to 0-3
-    // Check if option index is valid
+    const optionIndex = parseInt(key) - 1
     if (optionIndex >= 0 && optionIndex < options.value.length) {
       event.preventDefault()
       submitAnswer(optionIndex)
@@ -1480,17 +1501,30 @@ const triggerHapticFeedback = (isCorrect: boolean) => {
 
 const spellAddLetter = (ch: string) => {
   if (feedback.value || answering.value) return
-  spellAnswerLetters.value = [...spellAnswerLetters.value, ch]
+  const next = [...spellAnswerLetters.value, ch]
+  spellAnswerLetters.value = next
+  const expectedLen = (currentCard.value?.letters ?? []).length
+  if (expectedLen > 0 && next.length === expectedLen) {
+    submitSpellAnswer()
+  }
 }
 
-const spellBackspace = () => {
-  if (spellAnswerLetters.value.length === 0 || feedback.value || answering.value) return
-  spellAnswerLetters.value = spellAnswerLetters.value.slice(0, -1)
+const spellRemoveLetterAt = (index: number) => {
+  if (feedback.value || answering.value) return
+  spellAnswerLetters.value = spellAnswerLetters.value.filter((_, i) => i !== index)
 }
 
-const submitSpellAnswer = async () => {
-  if (spellAnswerLetters.value.length === 0 || feedback.value || answering.value) return
-  const answerText = spellAnswerLetters.value.join('')
+const skipSpellAnswer = () => {
+  if (feedback.value || answering.value) return
+  submitSpellAnswerAs('')
+}
+
+const submitSpellAnswer = () => {
+  submitSpellAnswerAs(spellAnswerLetters.value.join(''))
+}
+
+const submitSpellAnswerAs = async (answerText: string) => {
+  if (feedback.value || answering.value) return
   answering.value = true
   try {
     const formData = new FormData()
@@ -2051,46 +2085,51 @@ const handleTimerMouseLeave = () => {
 
 .spell-block {
   margin: 20px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 .spell-answer-row {
   display: flex;
+  flex-direction: column;
   align-items: center;
   gap: 10px;
-  flex-wrap: wrap;
   margin-bottom: 16px;
+  width: 100%;
 }
 .spell-answer-label {
   font-weight: 600;
   color: var(--text-secondary);
 }
 .spell-answer-letters {
-  flex: 1;
   min-height: 44px;
   display: flex;
   align-items: center;
-  gap: 4px;
+  justify-content: center;
+  gap: 6px;
   flex-wrap: wrap;
   padding: 8px 12px;
-  background: var(--bg-secondary, rgba(0,0,0,0.05));
-  border-radius: 8px;
+  width: 100%;
+  max-width: 360px;
 }
-.spell-answer-char {
-  font-size: 1.25rem;
+.spell-answer-char-btn {
+  min-width: 44px;
+  min-height: 44px;
+  font-size: 1.1rem;
   font-weight: 600;
-  color: var(--text-primary);
+  padding: 8px 12px;
 }
 .spell-answer-placeholder {
   color: var(--text-tertiary, #999);
   font-size: 0.95rem;
-}
-.spell-backspace {
-  flex-shrink: 0;
 }
 .spell-letters {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 16px;
+  justify-content: center;
 }
 .spell-letter-btn {
   min-width: 44px;
@@ -2099,9 +2138,8 @@ const handleTimerMouseLeave = () => {
   font-weight: 600;
   padding: 8px 12px;
 }
-.spell-submit {
-  width: 100%;
-  max-width: 200px;
+.spell-skip {
+  margin-top: 8px;
 }
 
 .type-block {

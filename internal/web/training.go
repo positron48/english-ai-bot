@@ -51,6 +51,7 @@ type WebTrainingState struct {
 	SessionID            int64
 	Queue                []*models.TrainingQueueItem
 	CurrentIndex         int
+	CorrectCount         int   // number of correct spell/type answers (cards are in review_events)
 	ShownAt              time.Time
 	OptionsShownAt       *time.Time
 	Options              []string
@@ -614,6 +615,9 @@ func (r *Router) handleTrainingSpellAnswer(w http.ResponseWriter, req *http.Requ
 	}
 	isCorrect := userNorm == correctNorm
 	correctAnswer := item.Spell.DisplayWord
+	if isCorrect {
+		state.CorrectCount++
+	}
 	state.CurrentIndex++
 	r.webTrainingHandler.sessionsMutex.Unlock()
 
@@ -657,6 +661,9 @@ func (r *Router) handleTrainingTypeAnswer(w http.ResponseWriter, req *http.Reque
 	}
 	isCorrect := userNorm == correctNorm
 	correctAnswer := item.TypeChallenge.DisplayWord
+	if isCorrect {
+		state.CorrectCount++
+	}
 	state.CurrentIndex++
 	r.webTrainingHandler.sessionsMutex.Unlock()
 
@@ -941,15 +948,15 @@ func (r *Router) finishTrainingSession(w http.ResponseWriter, req *http.Request,
 		r.logger.Error("failed to finish session", zap.Error(err))
 	}
 
-	// Get session statistics
+	// Get session statistics (cards only from review_events; spell/type tracked in state.CorrectCount)
 	sessionRepo := repository.NewSessionRepository(r.db, r.logger)
-	totalCards, correctCards, err := sessionRepo.GetSessionStats(state.SessionID)
+	_, correctCardsFromDB, err := sessionRepo.GetSessionStats(state.SessionID)
 	if err != nil {
 		r.logger.Error("failed to get session stats", zap.Error(err))
-		// Use fallback values
-		totalCards = state.CurrentIndex
-		correctCards = 0
+		correctCardsFromDB = 0
 	}
+	totalCards := state.CurrentIndex
+	correctCards := correctCardsFromDB + state.CorrectCount
 
 	// Remove from memory
 	if r.webTrainingHandler != nil {
