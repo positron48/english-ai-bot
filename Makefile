@@ -126,13 +126,13 @@ check: tidy
 	@$(GO) mod verify
 	@echo "✅ Go dependencies verified"
 	@echo ""
-	@echo "5. Running Go tests..."
-	@$(GO) test -tags=test -coverprofile=coverage.out -covermode=atomic -v ./... > .go-test-output.txt 2>&1; \
+	@echo "5. Running Go tests (no cache, GOMAXPROCS=2 like CI runners)..."
+	@GOMAXPROCS=2 $(GO) test -tags=test -count=1 -coverprofile=coverage.out -covermode=atomic -v ./... > .go-test-output.txt 2>&1; \
 	TEST_EXIT_CODE=$$?; \
 	if [ $$TEST_EXIT_CODE -ne 0 ]; then \
 		echo "❌ Go tests failed:"; \
 		echo ""; \
-		grep -E "--- FAIL|FAIL\s+tgbot" .go-test-output.txt | tail -25 || true; \
+		grep "FAIL" .go-test-output.txt | tail -25 || true; \
 		echo ""; \
 		cat .go-test-output.txt; \
 		rm -f .go-test-output.txt; \

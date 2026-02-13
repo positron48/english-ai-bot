@@ -187,6 +187,16 @@ func TestHandleTrainingStart_WithCards(t *testing.T) {
 		t.Fatalf("Failed to create user card: %v", err)
 	}
 
+	// Disable spell and type challenges so the first queue item is always a card (deterministic test)
+	settings := models.UserSettings{
+		SpellModeEnabled: ptrBool(false),
+		TypeModeEnabled:  ptrBool(false),
+	}
+	settingsJSON, _ := json.Marshal(settings)
+	if err := userRepo.UpdateUserSettings(user.ID, string(settingsJSON)); err != nil {
+		t.Fatalf("Failed to update user settings: %v", err)
+	}
+
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
 			JWTSecret:     "test-secret",
@@ -281,6 +291,16 @@ func TestHandleTrainingReveal_WithSession(t *testing.T) {
 	_, err = userCardRepo.CreateUserCard(userCard)
 	if err != nil {
 		t.Fatalf("Failed to create user card: %v", err)
+	}
+
+	// Disable spell and type challenges so the first queue item is always a card (deterministic test)
+	settings := models.UserSettings{
+		SpellModeEnabled: ptrBool(false),
+		TypeModeEnabled:  ptrBool(false),
+	}
+	settingsJSON, _ := json.Marshal(settings)
+	if err := userRepo.UpdateUserSettings(user.ID, string(settingsJSON)); err != nil {
+		t.Fatalf("Failed to update user settings: %v", err)
 	}
 
 	cfg := &config.Config{
