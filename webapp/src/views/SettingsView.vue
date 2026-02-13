@@ -128,6 +128,36 @@
             <span class="delay-value">{{ wrongAnswerDelaySeconds }} {{ t('settings.seconds') }}</span>
           </div>
         </div>
+        <div class="setting-item">
+          <div class="setting-info">
+            <label class="setting-label">{{ t('settings.spellModeEnabled') }}</label>
+            <p class="setting-description">{{ t('settings.spellModeEnabledDescription') }}</p>
+          </div>
+          <div class="setting-control">
+            <span v-if="trainingDelaysSavedAt === 'spell'" class="saved-indicator">{{ t('common.saved') }}</span>
+            <label class="toggle-label">
+              <input v-model="spellModeEnabled" type="checkbox" @change="handleSpellSettingsChange" />
+              <span class="toggle-text">{{ spellModeEnabled ? t('common.on') : t('common.off') }}</span>
+            </label>
+          </div>
+        </div>
+        <div class="setting-item" v-if="spellModeEnabled">
+          <div class="setting-info">
+            <label class="setting-label">{{ t('settings.spellMasteringThreshold') }}</label>
+            <p class="setting-description">{{ t('settings.spellMasteringThresholdDescription') }}</p>
+          </div>
+          <div class="setting-control delay-control">
+            <input
+              v-model.number="spellMasteringThreshold"
+              type="range"
+              min="0"
+              max="100"
+              class="delay-slider"
+              @change="handleSpellSettingsChange"
+            />
+            <span class="delay-value">{{ spellMasteringThreshold }}</span>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -219,7 +249,9 @@ const isSaved = ref(false)
 const optionsDelaySeconds = ref(5)
 const wrongAnswerDelaySeconds = ref(5)
 /** 'options' | 'wrong' - which delay control just saved (to show "saved" there) */
-const trainingDelaysSavedAt = ref<'options' | 'wrong' | null>(null)
+const trainingDelaysSavedAt = ref<'options' | 'wrong' | 'spell' | null>(null)
+const spellModeEnabled = ref(true)
+const spellMasteringThreshold = ref(50)
 let trainingDelaysSavedTimeout: ReturnType<typeof setTimeout> | null = null
 
 onMounted(async () => {
@@ -256,6 +288,8 @@ interface SettingsResponse {
   settings?: {
     options_delay_seconds?: number
     wrong_answer_delay_seconds?: number
+    spell_mode_enabled?: boolean
+    spell_mastering_threshold?: number
   }
 }
 
@@ -269,22 +303,32 @@ const loadTrainingDelaysSettings = async () => {
     if (s?.wrong_answer_delay_seconds !== undefined) {
       wrongAnswerDelaySeconds.value = Math.max(0, Math.min(10, s.wrong_answer_delay_seconds))
     }
+    if (s?.spell_mode_enabled !== undefined) {
+      spellModeEnabled.value = s.spell_mode_enabled
+    }
+    if (s?.spell_mastering_threshold !== undefined) {
+      spellMasteringThreshold.value = Math.max(0, Math.min(100, s.spell_mastering_threshold))
+    }
   } catch (error) {
     console.error('Failed to load training delay settings:', error)
   }
 }
 
-const saveTrainingDelays = async (showSavedAt: 'options' | 'wrong') => {
+const saveTrainingDelays = async (showSavedAt: 'options' | 'wrong' | 'spell') => {
   const opts = Math.max(0, Math.min(10, optionsDelaySeconds.value))
   const wrong = Math.max(0, Math.min(10, wrongAnswerDelaySeconds.value))
+  const threshold = Math.max(0, Math.min(100, spellMasteringThreshold.value))
   optionsDelaySeconds.value = opts
   wrongAnswerDelaySeconds.value = wrong
+  spellMasteringThreshold.value = threshold
   try {
     await apiClient.request<{ success: boolean }>('/api/settings/training', {
       method: 'POST',
       body: JSON.stringify({
         options_delay_seconds: opts,
-        wrong_answer_delay_seconds: wrong
+        wrong_answer_delay_seconds: wrong,
+        spell_mode_enabled: spellModeEnabled.value,
+        spell_mastering_threshold: threshold
       })
     })
     if (trainingDelaysSavedTimeout) {
@@ -303,6 +347,7 @@ const saveTrainingDelays = async (showSavedAt: 'options' | 'wrong') => {
 
 const handleOptionsDelayChange = () => saveTrainingDelays('options')
 const handleWrongAnswerDelayChange = () => saveTrainingDelays('wrong')
+const handleSpellSettingsChange = () => saveTrainingDelays('spell')
 
 const handleNotificationFrequencyChange = async () => {
   const freq = notificationFrequency.value

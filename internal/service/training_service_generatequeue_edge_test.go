@@ -182,11 +182,14 @@ func TestTrainingService_generateQueue_LearningCardsFirst(t *testing.T) {
 	// But we can verify both cards are in the queue
 	foundLearning := false
 	foundReview := false
-	for _, card := range queue {
-		if card.UserCard.State == models.StateLearning {
+	for _, qi := range queue {
+		if qi.Type != "card" || qi.Card == nil {
+			continue
+		}
+		if qi.Card.UserCard.State == models.StateLearning {
 			foundLearning = true
 		}
-		if card.UserCard.State == models.StateReview {
+		if qi.Card.UserCard.State == models.StateReview {
 			foundReview = true
 		}
 	}

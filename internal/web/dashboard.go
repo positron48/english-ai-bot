@@ -433,6 +433,15 @@ func (r *Router) handleSettings(w http.ResponseWriter, req *http.Request) {
 		v := 5
 		settings.WrongAnswerDelaySeconds = &v
 	}
+	// Spell mode defaults: nil → true, threshold nil → 50
+	if settings.SpellModeEnabled == nil {
+		v := true
+		settings.SpellModeEnabled = &v
+	}
+	if settings.SpellMasteringThreshold == nil {
+		v := 50
+		settings.SpellMasteringThreshold = &v
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
@@ -705,8 +714,10 @@ func (r *Router) handleTrainingSettings(w http.ResponseWriter, req *http.Request
 	}
 
 	var requestData struct {
-		OptionsDelaySeconds     *int `json:"options_delay_seconds"`
-		WrongAnswerDelaySeconds *int `json:"wrong_answer_delay_seconds"`
+		OptionsDelaySeconds      *int  `json:"options_delay_seconds"`
+		WrongAnswerDelaySeconds  *int  `json:"wrong_answer_delay_seconds"`
+		SpellModeEnabled         *bool `json:"spell_mode_enabled"`
+		SpellMasteringThreshold *int  `json:"spell_mastering_threshold"`
 	}
 
 	if err := json.NewDecoder(req.Body).Decode(&requestData); err != nil {
@@ -735,6 +746,18 @@ func (r *Router) handleTrainingSettings(w http.ResponseWriter, req *http.Request
 	if requestData.WrongAnswerDelaySeconds != nil {
 		v := *requestData.WrongAnswerDelaySeconds
 		if v < 0 || v > 10 {
+			lang := i18n.GetLanguageFromContext(req.Context())
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(map[string]interface{}{
+				"error": i18n.T(lang, "errors.invalidRequest"),
+			})
+			return
+		}
+	}
+	if requestData.SpellMasteringThreshold != nil {
+		v := *requestData.SpellMasteringThreshold
+		if v < 0 || v > 100 {
 			lang := i18n.GetLanguageFromContext(req.Context())
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusBadRequest)
@@ -780,6 +803,12 @@ func (r *Router) handleTrainingSettings(w http.ResponseWriter, req *http.Request
 	if requestData.WrongAnswerDelaySeconds != nil {
 		settings.WrongAnswerDelaySeconds = requestData.WrongAnswerDelaySeconds
 	}
+	if requestData.SpellModeEnabled != nil {
+		settings.SpellModeEnabled = requestData.SpellModeEnabled
+	}
+	if requestData.SpellMasteringThreshold != nil {
+		settings.SpellMasteringThreshold = requestData.SpellMasteringThreshold
+	}
 
 	settingsJSON, err := json.Marshal(settings)
 	if err != nil {
@@ -808,8 +837,10 @@ func (r *Router) handleTrainingSettings(w http.ResponseWriter, req *http.Request
 	json.NewEncoder(w).Encode(map[string]interface{}{
 		"success": true,
 		"settings": map[string]interface{}{
-			"options_delay_seconds":     defaultIntPtr(settings.OptionsDelaySeconds, 5),
+			"options_delay_seconds":      defaultIntPtr(settings.OptionsDelaySeconds, 5),
 			"wrong_answer_delay_seconds": defaultIntPtr(settings.WrongAnswerDelaySeconds, 5),
+			"spell_mode_enabled":         settings.SpellModeEnabled != nil && *settings.SpellModeEnabled,
+			"spell_mastering_threshold":  defaultIntPtr(settings.SpellMasteringThreshold, 50),
 		},
 	})
 }

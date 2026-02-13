@@ -35,14 +35,14 @@ type TrainingHandler struct {
 
 // SessionState holds the state of an active training session
 type SessionState struct {
-	UserID              int64
-	SessionID           int64
-	Queue               []*models.UserCardWithTraining
-	CurrentIndex        int
-	ShownAt             time.Time
-	OptionsShownAt      *time.Time
-	Options             []string
-	CorrectAnswer       string
+	UserID               int64
+	SessionID            int64
+	Queue                []*models.TrainingQueueItem
+	CurrentIndex         int
+	ShownAt              time.Time
+	OptionsShownAt       *time.Time
+	Options              []string
+	CorrectAnswer        string
 	RecentCorrectAnswers []string // Last N correct answers to exclude from distractors
 }
 
@@ -104,7 +104,7 @@ func (h *TrainingHandler) StartTraining(ctx context.Context, chatID, userID int6
 	}
 
 	// Start new session
-	session, queue, err := h.trainingService.StartSession(userID, source)
+	session, queue, err := h.trainingService.StartSession(userID, source, nil)
 	if err != nil {
 		return fmt.Errorf("failed to start session: %w", err)
 	}
@@ -152,24 +152,34 @@ func (h *TrainingHandler) showCard(chatID int64) error {
 		return h.finishSession(chatID)
 	}
 
-	card := state.Queue[state.CurrentIndex]
-	
-	// Extract session words from other cards in the queue (for mixing into distractors)
-	// Exclude recent correct answers to avoid "freshness recognition"
-		sessionWords := h.extractSessionWords(state.Queue, state.CurrentIndex, card, state.RecentCorrectAnswers)
-	
+	item := state.Queue[state.CurrentIndex]
+	// Skip spell challenges in Telegram (only web supports them)
+	if item.Type == "spell" {
+		state.CurrentIndex++
+		return h.showCard(chatID)
+	}
+	if item.Type != "card" || item.Card == nil {
+		state.CurrentIndex++
+		return h.showCard(chatID)
+	}
+	card := item.Card
+
+	// Extract session words from other card items in the queue
+	sessionWords := h.extractSessionWordsFromQueue(state.Queue, state.CurrentIndex, card, state.RecentCorrectAnswers)
+
 	// Extract WordEN and WordRU from all cards in session for distractor filtering
 	sessionWordENs := make(map[string]bool)
 	sessionWordRUs := make(map[string]bool)
-	for i, sessionCard := range state.Queue {
-		if i == state.CurrentIndex {
+	for i, qi := range state.Queue {
+		if i == state.CurrentIndex || qi.Type != "card" || qi.Card == nil {
 			continue
 		}
-		if sessionCard.TrainingCard.WordEN != "" {
-			sessionWordENs[sessionCard.TrainingCard.WordEN] = true
+		c := qi.Card
+		if c.TrainingCard.WordEN != "" {
+			sessionWordENs[c.TrainingCard.WordEN] = true
 		}
-		if sessionCard.TrainingCard.WordRU != "" {
-			sessionWordRUs[sessionCard.TrainingCard.WordRU] = true
+		if c.TrainingCard.WordRU != "" {
+			sessionWordRUs[c.TrainingCard.WordRU] = true
 		}
 	}
 	
@@ -317,7 +327,11 @@ func (h *TrainingHandler) HandleAnswer(chatID int64, optionIndex int) error {
 		return nil
 	}
 
-	card := state.Queue[state.CurrentIndex]
+	item := state.Queue[state.CurrentIndex]
+	if item.Type != "card" || item.Card == nil {
+		return nil
+	}
+	card := item.Card
 	answeredAt := time.Now()
 	shownAt := state.ShownAt
 	optionsShownAt := state.OptionsShownAt
@@ -668,76 +682,98 @@ func (h *TrainingHandler) HasActiveSession(chatID int64) bool {
 	return exists
 }
 
-// extractSessionWords extracts correct answers from other cards in the session
-// to be used as distractors (prevents guessing by word recognition)
-// recentCorrectAnswers: list of recent correct answers to exclude (to avoid "freshness recognition")
-// Excludes cards with the same WordCardID to avoid showing correct answers from other cards of the same word
-// Filters by POS to ensure only words with matching part of speech are included
-func (h *TrainingHandler) extractSessionWords(queue []*models.UserCardWithTraining, currentIndex int, currentCard *models.UserCardWithTraining, recentCorrectAnswers []string) []string {
+// extractSessionWordsFromQueue extracts correct answers from other card items in the session
+func (h *TrainingHandler) extractSessionWordsFromQueue(queue []*models.TrainingQueueItem, currentIndex int, currentCard *models.UserCardWithTraining, recentCorrectAnswers []string) []string {
 	if currentIndex >= len(queue) {
 		return []string{}
 	}
-	
 	currentWordCardID := currentCard.TrainingCard.WordCardID
 	direction := currentCard.UserCard.Direction
-	
-	// Get POS of current card for filtering
 	currentPOS := ""
 	if currentCard.TrainingCard.POS != nil && *currentCard.TrainingCard.POS != "" {
 		currentPOS = *currentCard.TrainingCard.POS
 	}
-	
 	sessionWords := make([]string, 0, len(queue))
-	
-	// Create a set of excluded words for fast lookup
 	excludedSet := make(map[string]bool)
 	for _, word := range recentCorrectAnswers {
 		excludedSet[word] = true
 	}
-	
-	// Track duplicates
 	seenWords := make(map[string]bool)
-	
-	for i, card := range queue {
-		// Skip current card
-		if i == currentIndex {
+	for i, qi := range queue {
+		if i == currentIndex || qi.Type != "card" || qi.Card == nil {
 			continue
 		}
-		
-		// Skip cards from the same word (same WordCardID)
-		// This prevents showing correct answers from other cards of the same word
+		card := qi.Card
 		if card.TrainingCard.WordCardID == currentWordCardID {
 			continue
 		}
-		
-		// Filter by POS if current card has POS
 		if currentPOS != "" {
 			if card.TrainingCard.POS == nil || *card.TrainingCard.POS != currentPOS {
 				continue
 			}
 		}
-		
-		// Extract correct answer based on direction
 		var word string
 		if direction == models.DirectionRUtoEN {
-			// For RU->EN, use DisplayWord if available (e.g., "to spy" for verbs), otherwise WordEN
 			if card.TrainingCard.DisplayWord != nil && *card.TrainingCard.DisplayWord != "" {
 				word = *card.TrainingCard.DisplayWord
 			} else {
 				word = card.TrainingCard.WordEN
 			}
 		} else {
-			// For EN->RU, collect Russian meanings
 			word = card.TrainingCard.WordRU
 		}
-		
-		// Add word if it's not in the excluded set and not a duplicate
 		if word != "" && !excludedSet[word] && !seenWords[word] {
 			sessionWords = append(sessionWords, word)
 			seenWords[word] = true
 		}
 	}
+	return sessionWords
+}
 
+// extractSessionWords extracts correct answers from other cards in the session (legacy, for UserCardWithTraining slice)
+func (h *TrainingHandler) extractSessionWords(queue []*models.UserCardWithTraining, currentIndex int, currentCard *models.UserCardWithTraining, recentCorrectAnswers []string) []string {
+	if currentIndex >= len(queue) {
+		return []string{}
+	}
+	currentWordCardID := currentCard.TrainingCard.WordCardID
+	direction := currentCard.UserCard.Direction
+	currentPOS := ""
+	if currentCard.TrainingCard.POS != nil && *currentCard.TrainingCard.POS != "" {
+		currentPOS = *currentCard.TrainingCard.POS
+	}
+	sessionWords := make([]string, 0, len(queue))
+	excludedSet := make(map[string]bool)
+	for _, word := range recentCorrectAnswers {
+		excludedSet[word] = true
+	}
+	seenWords := make(map[string]bool)
+	for i, card := range queue {
+		if i == currentIndex {
+			continue
+		}
+		if card.TrainingCard.WordCardID == currentWordCardID {
+			continue
+		}
+		if currentPOS != "" {
+			if card.TrainingCard.POS == nil || *card.TrainingCard.POS != currentPOS {
+				continue
+			}
+		}
+		var word string
+		if direction == models.DirectionRUtoEN {
+			if card.TrainingCard.DisplayWord != nil && *card.TrainingCard.DisplayWord != "" {
+				word = *card.TrainingCard.DisplayWord
+			} else {
+				word = card.TrainingCard.WordEN
+			}
+		} else {
+			word = card.TrainingCard.WordRU
+		}
+		if word != "" && !excludedSet[word] && !seenWords[word] {
+			sessionWords = append(sessionWords, word)
+			seenWords[word] = true
+		}
+	}
 	return sessionWords
 }
 
@@ -754,8 +790,10 @@ func (h *TrainingHandler) sendMessage(chatID int64, text string) {
 func (h *TrainingHandler) saveSessionState(state *SessionState) error {
 	// Extract user card IDs from queue
 	userCardIDs := make([]int64, 0, len(state.Queue))
-	for _, card := range state.Queue {
-		userCardIDs = append(userCardIDs, card.UserCard.ID)
+	for _, qi := range state.Queue {
+		if qi.Type == "card" && qi.Card != nil {
+			userCardIDs = append(userCardIDs, qi.Card.UserCard.ID)
+		}
 	}
 
 	// Create state data
@@ -834,18 +872,24 @@ func (h *TrainingHandler) restoreSession(chatID, userID int64) (bool, error) {
 		return false, fmt.Errorf("failed to unmarshal state data: %w", err)
 	}
 
-	// Restore queue from user card IDs
-	queue, err := h.trainingService.RestoreQueue(userID, stateData.UserCardIDs)
+	// Restore queue from user card IDs (returns []*UserCardWithTraining)
+	cardQueue, err := h.trainingService.RestoreQueue(userID, stateData.UserCardIDs)
 	if err != nil {
 		return false, fmt.Errorf("failed to restore queue: %w", err)
 	}
 
-	if len(queue) == 0 {
+	if len(cardQueue) == 0 {
 		// Queue is empty, finish session
 		if err := h.trainingService.FinishSession(activeSession.ID, activeSession.DoneCount); err != nil {
 			h.logger.Warn("failed to finish empty session", zap.Error(err))
 		}
 		return false, nil
+	}
+
+	// Wrap in TrainingQueueItem (restored sessions only have cards, no spell items)
+	queue := make([]*models.TrainingQueueItem, 0, len(cardQueue))
+	for _, c := range cardQueue {
+		queue = append(queue, &models.TrainingQueueItem{Type: "card", Card: c})
 	}
 
 	// Validate current index

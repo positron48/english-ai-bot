@@ -109,12 +109,15 @@ func TestFinishTrainingSession_CompleteSession(t *testing.T) {
 		t.Fatal("Session state should exist")
 	}
 
-	// Create a review event to simulate a correct answer
+	// Create a review event to simulate a correct answer (first item is a card)
+	if state.Queue[0].Type != "card" || state.Queue[0].Card == nil {
+		t.Fatal("Expected first queue item to be a card")
+	}
 	reviewEvent := &models.ReviewEvent{
 		SessionID:  &state.SessionID,
 		UserID:     user.ID,
-		UserCardID: state.Queue[0].UserCard.ID,
-		Direction:  state.Queue[0].UserCard.Direction,
+		UserCardID: state.Queue[0].Card.UserCard.ID,
+		Direction:  state.Queue[0].Card.UserCard.Direction,
 		ShownAt:    time.Now(),
 		AnsweredAt: &time.Time{},
 		IsCorrect:  true,
@@ -139,7 +142,7 @@ func TestFinishTrainingSession_CompleteSession(t *testing.T) {
 
 	// Answer the card to complete it
 	time.Sleep(10 * time.Millisecond)
-	answerReq := httptest.NewRequest("POST", "/api/training/answer", strings.NewReader(fmt.Sprintf("option_index=0&user_card_id=%d", state.Queue[0].UserCard.ID)))
+	answerReq := httptest.NewRequest("POST", "/api/training/answer", strings.NewReader(fmt.Sprintf("option_index=0&user_card_id=%d", state.Queue[0].Card.UserCard.ID)))
 	answerReq.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	answerCtx := context.WithValue(answerReq.Context(), userIDKey, user.ID)
 	answerReq = answerReq.WithContext(answerCtx)

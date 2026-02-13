@@ -506,6 +506,35 @@ func TestHandleTrainingSettings_Success(t *testing.T) {
 	if getResp.Settings.WrongAnswerDelaySeconds == nil || *getResp.Settings.WrongAnswerDelaySeconds != 2 {
 		t.Errorf("GET settings: expected wrong_answer_delay_seconds 2, got %v", getResp.Settings.WrongAnswerDelaySeconds)
 	}
+
+	// Save spell settings and verify
+	req2 := httptest.NewRequest(http.MethodPost, "/api/settings/training", bytes.NewBufferString(`{"spell_mode_enabled":false,"spell_mastering_threshold":75}`))
+	req2.Header.Set("Content-Type", "application/json")
+	req2 = setUserIDInContext(req2, 1)
+	w2 := httptest.NewRecorder()
+	router.handleTrainingSettings(w2, req2)
+	if w2.Code != http.StatusOK {
+		t.Fatalf("POST spell settings expected 200, got %d: %s", w2.Code, w2.Body.String())
+	}
+	getReq2 := httptest.NewRequest(http.MethodGet, "/api/settings", nil)
+	getReq2 = setUserIDInContext(getReq2, 1)
+	getW2 := httptest.NewRecorder()
+	router.handleSettings(getW2, getReq2)
+	if getW2.Code != http.StatusOK {
+		t.Fatalf("GET settings (spell) expected 200, got %d", getW2.Code)
+	}
+	var getResp2 struct {
+		Settings models.UserSettings `json:"settings"`
+	}
+	if err := json.NewDecoder(getW2.Body).Decode(&getResp2); err != nil {
+		t.Fatalf("decode GET response: %v", err)
+	}
+	if getResp2.Settings.SpellModeEnabled == nil || *getResp2.Settings.SpellModeEnabled != false {
+		t.Errorf("GET settings: expected spell_mode_enabled false, got %v", getResp2.Settings.SpellModeEnabled)
+	}
+	if getResp2.Settings.SpellMasteringThreshold == nil || *getResp2.Settings.SpellMasteringThreshold != 75 {
+		t.Errorf("GET settings: expected spell_mastering_threshold 75, got %v", getResp2.Settings.SpellMasteringThreshold)
+	}
 }
 
 func TestHandleTrainingSettings_InvalidValue(t *testing.T) {

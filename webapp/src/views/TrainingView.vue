@@ -158,8 +158,42 @@
 
       <div class="question" v-html="processedQuestion"></div>
 
+      <!-- Spell: compose word from letters -->
+      <div v-if="currentCard?.type === 'spell' && currentCard?.letters?.length" class="spell-block">
+        <div class="spell-answer-row">
+          <span class="spell-answer-label">{{ t('training.composeWord') || 'Your word:' }}</span>
+          <div class="spell-answer-letters">
+            <span v-for="(ch, i) in spellAnswerLetters" :key="`a-${i}`" class="spell-answer-char">{{ ch }}</span>
+            <span v-if="spellAnswerLetters.length === 0" class="spell-answer-placeholder">...</span>
+          </div>
+          <button
+            v-if="spellAnswerLetters.length > 0 && !feedback && !answering"
+            type="button"
+            class="btn btn-secondary spell-backspace"
+            @click="spellBackspace"
+            aria-label="Backspace"
+          >⌫</button>
+        </div>
+        <div class="spell-letters">
+          <button
+            v-for="(ch, i) in spellAvailableLetters"
+            :key="`${i}-${ch}`"
+            type="button"
+            class="btn spell-letter-btn"
+            :disabled="!!feedback || answering"
+            @click="spellAddLetter(ch)"
+          >{{ ch }}</button>
+        </div>
+        <button
+          v-if="spellAnswerLetters.length > 0 && !feedback && !answering"
+          type="button"
+          class="btn btn-primary spell-submit"
+          @click="submitSpellAnswer"
+        >{{ t('training.check') || 'Check' }}</button>
+      </div>
+
       <div 
-        v-if="optionsShown" 
+        v-if="optionsShown && currentCard?.type !== 'spell'" 
         class="options"
         @mousedown="waitingDelay ? handleTimerMouseDown($event) : null"
         @mouseup="waitingDelay ? handleTimerMouseUp($event) : null"
@@ -337,6 +371,11 @@ interface Card {
   delay_ms: number
   direction: string
   example_en?: string
+  /** Spell challenge: compose word from letters */
+  type?: 'card' | 'spell'
+  word_ru?: string
+  letters?: string[]
+  correct_answer?: string
 }
 
 interface OptionsResponse {
@@ -394,6 +433,9 @@ const showExampleButtonVisible = ref(false)
 const exampleUsageShown = ref(false)
 let exampleButtonTimer: ReturnType<typeof setTimeout> | null = null
 
+// Spell (compose word) state
+const spellAnswerLetters = ref<string[]>([])
+
 // Settings
 const { settings } = useSettings()
 const { playSuccess, playFail, playVictory, playDefeat } = useAudio()
@@ -401,6 +443,19 @@ const { playSuccess, playFail, playVictory, playDefeat } = useAudio()
 // Check if current word is English (direction is en_ru)
 const isEnglishWord = computed(() => {
   return currentCard.value?.direction === 'en_ru'
+})
+
+// For spell: letters still available to pick (currentCard.letters minus spellAnswerLetters)
+const spellAvailableLetters = computed(() => {
+  const letters = currentCard.value?.letters ?? []
+  const used = [...spellAnswerLetters.value]
+  const avail: string[] = []
+  for (const c of letters) {
+    const i = used.indexOf(c)
+    if (i >= 0) used.splice(i, 1)
+    else avail.push(c)
+  }
+  return avail
 })
 
 const estimatedTime = computed(() => {
@@ -1210,7 +1265,7 @@ const setupCard = (card: Card) => {
   currentCard.value = card
   cardIndex.value = card.card_index
   totalCards.value = card.total_cards
-  userCardId.value = card.user_card_id
+  userCardId.value = card.user_card_id ?? 0
   optionsShown.value = false
   options.value = []
   feedback.value = null
@@ -1229,6 +1284,13 @@ const setupCard = (card: Card) => {
   showExampleButton.value = false
   showExampleButtonVisible.value = false
   exampleUsageShown.value = false
+  spellAnswerLetters.value = []
+
+  // Spell cards: no options delay, letters shown immediately
+  if (card.type === 'spell') {
+    optionsShown.value = true
+    return
+  }
 
   // Schedule automatic options reveal (or show immediately if delay is 0)
   if (card.delay_ms > 0) {
@@ -1383,6 +1445,58 @@ const triggerHapticFeedback = (isCorrect: boolean) => {
     } catch (error) {
       console.warn('Native vibration failed:', error)
     }
+  }
+}
+
+const spellAddLetter = (ch: string) => {
+  if (feedback.value || answering.value) return
+  spellAnswerLetters.value = [...spellAnswerLetters.value, ch]
+}
+
+const spellBackspace = () => {
+  if (spellAnswerLetters.value.length === 0 || feedback.value || answering.value) return
+  spellAnswerLetters.value = spellAnswerLetters.value.slice(0, -1)
+}
+
+const submitSpellAnswer = async () => {
+  if (spellAnswerLetters.value.length === 0 || feedback.value || answering.value) return
+  const answerText = spellAnswerLetters.value.join('')
+  answering.value = true
+  try {
+    const formData = new FormData()
+    formData.append('answer_text', answerText)
+    const data: Feedback = await apiClient.requestFormData('/api/training/answer', formData)
+    feedback.value = data
+    triggerHapticFeedback(data.is_correct)
+    if (data.is_correct) {
+      playCorrectSound()
+      currentEncouragingPhrase.value = getRandomEncouragingPhrase()
+    } else {
+      playIncorrectSound()
+      currentDisappointingPhrase.value = getRandomDisappointingPhrase()
+    }
+    const nextDelayMs = data.is_correct ? 1000 : (data.delay_seconds ?? 0) * 1000
+    if (nextDelayMs > 0) {
+      waitingDelay.value = true
+      delaySeconds.value = data.delay_seconds ?? 0
+      initialDelaySeconds.value = delaySeconds.value
+      remainingMs.value = nextDelayMs
+      initialDelayMs.value = nextDelayMs
+      timerEndTime = Date.now() + nextDelayMs
+      autoNextCardTimer = setTimeout(() => {
+        waitingDelay.value = false
+        nextCard()
+      }, nextDelayMs)
+    } else {
+      autoNextCardTimer = setTimeout(() => nextCard(), data.is_correct ? 1000 : 150)
+    }
+  } catch (error: any) {
+    console.error('Failed to submit spell answer:', error)
+    if (!error.isNetworkError) {
+      await showAlert('Не удалось отправить ответ. Попробуйте еще раз.')
+    }
+  } finally {
+    answering.value = false
   }
 }
 
@@ -1564,6 +1678,7 @@ const nextCard = async () => {
   showExampleButton.value = false
   showExampleButtonVisible.value = false
   exampleUsageShown.value = false
+  spellAnswerLetters.value = []
 
   try {
     const response = await apiClient.request('/api/training/current')
@@ -1859,6 +1974,61 @@ const handleTimerMouseLeave = () => {
 /* Target text nodes after strong that contain transcription pattern */
 .question :deep(*) {
   font-family: inherit;
+}
+
+.spell-block {
+  margin: 20px 0;
+}
+.spell-answer-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.spell-answer-label {
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+.spell-answer-letters {
+  flex: 1;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+  padding: 8px 12px;
+  background: var(--bg-secondary, rgba(0,0,0,0.05));
+  border-radius: 8px;
+}
+.spell-answer-char {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.spell-answer-placeholder {
+  color: var(--text-tertiary, #999);
+  font-size: 0.95rem;
+}
+.spell-backspace {
+  flex-shrink: 0;
+}
+.spell-letters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.spell-letter-btn {
+  min-width: 44px;
+  min-height: 44px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 8px 12px;
+}
+.spell-submit {
+  width: 100%;
+  max-width: 200px;
 }
 
 .options {

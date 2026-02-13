@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 
@@ -46,14 +47,14 @@ func (r *Router) getTrainingDelaysForUser(userID int64) (optionsDelayMS int, wro
 
 // WebTrainingState holds the state of a web training session
 type WebTrainingState struct {
-	UserID              int64
-	SessionID           int64
-	Queue               []*models.UserCardWithTraining
-	CurrentIndex        int
-	ShownAt             time.Time
-	OptionsShownAt      *time.Time
-	Options             []string
-	CorrectAnswer       string
+	UserID               int64
+	SessionID            int64
+	Queue                []*models.TrainingQueueItem
+	CurrentIndex         int
+	ShownAt              time.Time
+	OptionsShownAt       *time.Time
+	Options              []string
+	CorrectAnswer        string
 	RecentCorrectAnswers []string
 }
 
@@ -130,8 +131,43 @@ func (r *Router) handleTrainingStart(w http.ResponseWriter, req *http.Request) {
 		)
 	}
 
+	// Build session config from user settings (spell mode and threshold)
+	var sessionConfig *service.SessionConfig
+	if r.userRepo != nil {
+		if userRepo, ok := r.userRepo.(*repository.UserRepository); ok {
+			user, _ := userRepo.GetUserByID(userID)
+			if user != nil && user.SettingsJSON != "" {
+				var settings models.UserSettings
+				if json.Unmarshal([]byte(user.SettingsJSON), &settings) == nil {
+					spellEnabled := true
+					if settings.SpellModeEnabled != nil {
+						spellEnabled = *settings.SpellModeEnabled
+					}
+					spellThreshold := 50
+					if settings.SpellMasteringThreshold != nil {
+						t := *settings.SpellMasteringThreshold
+						if t < 0 {
+							t = 0
+						}
+						if t > 100 {
+							t = 100
+						}
+						spellThreshold = t
+					}
+					sessionConfig = &service.SessionConfig{
+						MaxCardsPerSession:      models.DefaultMaxCardsPerSession,
+						MaxNewPerSession:       models.DefaultMaxNewPerSession,
+						AlgoVersion:            "srs_v2_delayed_mcq_sm2_autoquality",
+						SpellEnabled:            spellEnabled,
+						SpellMasteringThreshold: spellThreshold,
+					}
+				}
+			}
+		}
+	}
+
 	// Start session
-	session, queue, err := r.trainingService.StartSession(userID, models.SourceManual)
+	session, queue, err := r.trainingService.StartSession(userID, models.SourceManual, sessionConfig)
 	if err != nil {
 		r.logger.Error("failed to start session", zap.Error(err))
 		lang := i18n.GetLanguageFromContext(req.Context())
@@ -168,7 +204,7 @@ func (r *Router) handleTrainingStart(w http.ResponseWriter, req *http.Request) {
 	r.showTrainingCard(w, req, state)
 }
 
-// showTrainingCard shows the current training card
+// showTrainingCard shows the current training card or spell challenge
 func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, state *WebTrainingState) {
 	if state.CurrentIndex >= len(state.Queue) {
 		// Session finished
@@ -176,30 +212,62 @@ func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, stat
 		return
 	}
 
-	card := state.Queue[state.CurrentIndex]
-	
-	// Extract session words for distractors (filtered by POS)
-	sessionWords := r.extractSessionWords(state.Queue, state.CurrentIndex, card, state.RecentCorrectAnswers)
-	
+	item := state.Queue[state.CurrentIndex]
+
+	// Spell challenge: compose the word from letters
+	if item.Type == "spell" && item.Spell != nil {
+		state.ShownAt = time.Now()
+		state.OptionsShownAt = nil
+		response := map[string]interface{}{
+			"type":          "spell",
+			"question":      fmt.Sprintf("Составьте слово на английском: <strong>%s</strong>", item.Spell.WordRU),
+			"word_ru":       item.Spell.WordRU,
+			"letters":       item.Spell.ShuffledLetters,
+			"correct_answer": item.Spell.DisplayWord,
+			"card_index":    state.CurrentIndex + 1,
+			"total_cards":   len(state.Queue),
+			"session_id":    state.SessionID,
+			"user_card_id":  0,
+			"delay_ms":      0,
+			"direction":     "spell",
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	// Normal card
+	card := item.Card
+	if card == nil {
+		r.logger.Error("queue item is card type but Card is nil")
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	// Extract session words for distractors (only from card items)
+	sessionWords := r.extractSessionWordsFromQueue(state.Queue, state.CurrentIndex, card, state.RecentCorrectAnswers)
+
 	// Extract WordEN and WordRU from all cards in session for distractor filtering
 	sessionWordENs := make(map[string]bool)
 	sessionWordRUs := make(map[string]bool)
-	for i, sessionCard := range state.Queue {
-		if i == state.CurrentIndex {
+	for i, qi := range state.Queue {
+		if i == state.CurrentIndex || qi.Type != "card" || qi.Card == nil {
 			continue
 		}
-		if sessionCard.TrainingCard.WordEN != "" {
-			sessionWordENs[sessionCard.TrainingCard.WordEN] = true
+		c := qi.Card
+		if c.TrainingCard.WordEN != "" {
+			sessionWordENs[c.TrainingCard.WordEN] = true
 		}
-		if sessionCard.TrainingCard.WordRU != "" {
-			sessionWordRUs[sessionCard.TrainingCard.WordRU] = true
+		if c.TrainingCard.WordRU != "" {
+			sessionWordRUs[c.TrainingCard.WordRU] = true
 		}
 	}
-	
+
 	// Update state
 	state.ShownAt = time.Now()
 	state.OptionsShownAt = nil
-	
+
 	// Generate options
 	options, correctAnswer, err := r.optionsService.GenerateOptions(card, models.DefaultOptionCount, sessionWords, sessionWordENs, sessionWordRUs)
 	if err != nil {
@@ -231,7 +299,7 @@ func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, stat
 	optionsDelayMS, _ := r.getTrainingDelaysForUser(state.UserID)
 	// Return card data as JSON
 	response := map[string]interface{}{
-		"question":     questionText,
+		"question":      questionText,
 		"card_index":    state.CurrentIndex + 1,
 		"total_cards":   len(state.Queue),
 		"session_id":    state.SessionID,
@@ -239,15 +307,61 @@ func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, stat
 		"delay_ms":      optionsDelayMS,
 		"direction":     string(card.UserCard.Direction),
 	}
-	
+
 	// Add example_en if available (for showing example usage button)
 	if card.TrainingCard.ExampleEN != "" {
 		response["example_en"] = card.TrainingCard.ExampleEN
 	}
-	
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
+}
+
+// extractSessionWordsFromQueue extracts words from other card items in the session for use as distractors
+func (r *Router) extractSessionWordsFromQueue(queue []*models.TrainingQueueItem, currentIndex int, currentCard *models.UserCardWithTraining, recentCorrect []string) []string {
+	if currentIndex >= len(queue) {
+		return []string{}
+	}
+	currentWordCardID := currentCard.TrainingCard.WordCardID
+	direction := currentCard.UserCard.Direction
+	currentPOS := ""
+	if currentCard.TrainingCard.POS != nil && *currentCard.TrainingCard.POS != "" {
+		currentPOS = *currentCard.TrainingCard.POS
+	}
+	var sessionWords []string
+	excludeSet := make(map[string]bool)
+	seenWords := make(map[string]bool)
+	for _, word := range recentCorrect {
+		excludeSet[word] = true
+	}
+	for i, qi := range queue {
+		if i == currentIndex || qi.Type != "card" || qi.Card == nil {
+			continue
+		}
+		card := qi.Card
+		if card.TrainingCard.WordCardID == currentWordCardID {
+			continue
+		}
+		var word string
+		if direction == models.DirectionRUtoEN {
+			word = card.TrainingCard.WordEN
+			if card.TrainingCard.DisplayWord != nil && *card.TrainingCard.DisplayWord != "" {
+				word = *card.TrainingCard.DisplayWord
+			}
+		} else {
+			word = card.TrainingCard.WordRU
+		}
+		if word == "" || excludeSet[word] || seenWords[word] {
+			continue
+		}
+		if currentPOS != "" && (card.TrainingCard.POS == nil || *card.TrainingCard.POS != currentPOS) {
+			continue
+		}
+		seenWords[word] = true
+		sessionWords = append(sessionWords, word)
+	}
+	return sessionWords
 }
 
 // extractSessionWords extracts words from other cards in the session for use as distractors
@@ -257,20 +371,20 @@ func (r *Router) extractSessionWords(queue []*models.UserCardWithTraining, curre
 	if currentIndex >= len(queue) {
 		return []string{}
 	}
-	
+
 	currentWordCardID := currentCard.TrainingCard.WordCardID
 	direction := currentCard.UserCard.Direction
-	
+
 	// Get POS of current card for filtering
 	currentPOS := ""
 	if currentCard.TrainingCard.POS != nil && *currentCard.TrainingCard.POS != "" {
 		currentPOS = *currentCard.TrainingCard.POS
 	}
-	
+
 	var sessionWords []string
 	excludeSet := make(map[string]bool)
 	seenWords := make(map[string]bool) // Track duplicates
-	
+
 	// Add recent correct answers to exclude set
 	for _, word := range recentCorrect {
 		excludeSet[word] = true
@@ -281,7 +395,6 @@ func (r *Router) extractSessionWords(queue []*models.UserCardWithTraining, curre
 		if i == currentIndex {
 			continue
 		}
-		
 		// Skip cards from the same word (same WordCardID)
 		// This prevents showing correct answers from other cards of the same word
 		if card.TrainingCard.WordCardID == currentWordCardID {
@@ -414,6 +527,14 @@ func (r *Router) handleTrainingReveal(w http.ResponseWriter, req *http.Request) 
 		return
 	}
 
+	// Reveal only applies to card type
+	item := state.Queue[state.CurrentIndex]
+	if item.Type != "card" || item.Card == nil {
+		r.webTrainingHandler.sessionsMutex.Unlock()
+		http.Error(w, "Reveal not applicable to this card type", http.StatusBadRequest)
+		return
+	}
+
 	// Mark options as shown
 	now := time.Now()
 	state.OptionsShownAt = &now
@@ -424,8 +545,51 @@ func (r *Router) handleTrainingReveal(w http.ResponseWriter, req *http.Request) 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]interface{}{
 		"options":      state.Options,
-		"user_card_id": state.Queue[state.CurrentIndex].UserCard.ID,
+		"user_card_id": item.Card.UserCard.ID,
 	})
+}
+
+// handleTrainingSpellAnswer handles the answer for a spell (compose word) challenge
+func (r *Router) handleTrainingSpellAnswer(w http.ResponseWriter, req *http.Request, userID int64, userAnswer string) {
+	if r.webTrainingHandler == nil {
+		http.Error(w, "No active session", http.StatusNotFound)
+		return
+	}
+	r.webTrainingHandler.sessionsMutex.Lock()
+	state, exists := r.webTrainingHandler.sessions[userID]
+	if !exists || state == nil || state.CurrentIndex >= len(state.Queue) {
+		r.webTrainingHandler.sessionsMutex.Unlock()
+		http.Error(w, "No active session", http.StatusNotFound)
+		return
+	}
+	item := state.Queue[state.CurrentIndex]
+	if item.Type != "spell" || item.Spell == nil {
+		r.webTrainingHandler.sessionsMutex.Unlock()
+		http.Error(w, "Not a spell challenge", http.StatusBadRequest)
+		return
+	}
+	correctNorm := strings.TrimSpace(strings.ToLower(item.Spell.DisplayWord))
+	userNorm := userAnswer
+	if userNorm == "" {
+		userNorm = " "
+	}
+	isCorrect := userNorm == correctNorm
+	correctAnswer := item.Spell.DisplayWord
+	state.CurrentIndex++
+	r.webTrainingHandler.sessionsMutex.Unlock()
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	feedback := map[string]interface{}{
+		"is_correct":     isCorrect,
+		"chosen_option":  userAnswer,
+		"correct_answer": correctAnswer,
+	}
+	_, wrongAnswerDelaySeconds := r.getTrainingDelaysForUser(userID)
+	if !isCorrect {
+		feedback["delay_seconds"] = wrongAnswerDelaySeconds
+	}
+	json.NewEncoder(w).Encode(feedback)
 }
 
 // handleTrainingAnswer handles the user's answer
@@ -460,6 +624,13 @@ func (r *Router) handleTrainingAnswer(w http.ResponseWriter, req *http.Request) 
 		return
 	}
 
+	answerText := req.FormValue("answer_text")
+	if answerText != "" {
+		// Spell challenge answer
+		r.handleTrainingSpellAnswer(w, req, userID, strings.TrimSpace(strings.ToLower(answerText)))
+		return
+	}
+
 	optionIndexStr := req.FormValue("option_index")
 	userCardIDStr := req.FormValue("user_card_id")
 
@@ -488,7 +659,13 @@ func (r *Router) handleTrainingAnswer(w http.ResponseWriter, req *http.Request) 
 		return
 	}
 
-	card := state.Queue[state.CurrentIndex]
+	item := state.Queue[state.CurrentIndex]
+	if item.Type != "card" || item.Card == nil {
+		r.webTrainingHandler.sessionsMutex.Unlock()
+		http.Error(w, "Not a card answer", http.StatusBadRequest)
+		return
+	}
+	card := item.Card
 	if card.UserCard.ID != userCardID {
 		r.webTrainingHandler.sessionsMutex.Unlock()
 		http.Error(w, "Card mismatch", http.StatusBadRequest)

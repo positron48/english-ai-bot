@@ -50,7 +50,7 @@ func TestTrainingService_StartSession(t *testing.T) {
 	}
 
 	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, logger)
-	session, queue, err := service.StartSession(1000, models.SourceManual)
+	session, queue, err := service.StartSession(1000, models.SourceManual, nil)
 	if err != nil {
 		t.Fatalf("StartSession() error = %v", err)
 	}
@@ -71,7 +71,7 @@ func TestTrainingService_StartSession_NoCards(t *testing.T) {
 	defer db.Close()
 
 	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, logger)
-	_, _, err := service.StartSession(9999, models.SourceManual)
+	_, _, err := service.StartSession(9999, models.SourceManual, nil)
 	if err == nil {
 		t.Error("StartSession() should return error when no cards available")
 	}
@@ -120,13 +120,13 @@ func TestTrainingService_StartSession_FinishOldSession(t *testing.T) {
 	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, logger)
 
 	// Start first session
-	session1, _, err := service.StartSession(2000, models.SourceManual)
+	session1, _, err := service.StartSession(2000, models.SourceManual, nil)
 	if err != nil {
 		t.Fatalf("Failed to start first session: %v", err)
 	}
 
 	// Start second session (should finish the first one)
-	session2, _, err := service.StartSession(2000, models.SourceManual)
+	session2, _, err := service.StartSession(2000, models.SourceManual, nil)
 	if err != nil {
 		t.Fatalf("Failed to start second session: %v", err)
 	}

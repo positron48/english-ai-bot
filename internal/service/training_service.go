@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/rand"
 	"time"
+	"unicode"
 
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
@@ -37,13 +38,15 @@ func NewTrainingService(
 
 // SessionConfig holds session configuration
 type SessionConfig struct {
-	MaxCardsPerSession int
-	MaxNewPerSession   int
-	AlgoVersion        string
+	MaxCardsPerSession     int
+	MaxNewPerSession       int
+	AlgoVersion            string
+	SpellEnabled           bool // inject spell (compose word) challenges
+	SpellMasteringThreshold int // min mastering_score 0-100 for words eligible for spell
 }
 
-// StartSession starts a new training session
-func (s *TrainingService) StartSession(userID int64, source models.SessionSource) (*models.TrainingSession, []*models.UserCardWithTraining, error) {
+// StartSession starts a new training session. If config is nil, defaults are used (spell enabled, threshold 50).
+func (s *TrainingService) StartSession(userID int64, source models.SessionSource, config *SessionConfig) (*models.TrainingSession, []*models.TrainingQueueItem, error) {
 	// Check if there's already an active session
 	activeSession, err := s.sessionRepo.GetActiveSession(userID)
 	if err != nil {
@@ -57,15 +60,18 @@ func (s *TrainingService) StartSession(userID int64, source models.SessionSource
 		}
 	}
 
-	// Get session configuration
-	config := SessionConfig{
-		MaxCardsPerSession: models.DefaultMaxCardsPerSession,
-		MaxNewPerSession:   models.DefaultMaxNewPerSession,
-		AlgoVersion:        "srs_v2_delayed_mcq_sm2_autoquality",
+	if config == nil {
+		config = &SessionConfig{
+			MaxCardsPerSession:      models.DefaultMaxCardsPerSession,
+			MaxNewPerSession:        models.DefaultMaxNewPerSession,
+			AlgoVersion:             "srs_v2_delayed_mcq_sm2_autoquality",
+			SpellEnabled:            true,
+			SpellMasteringThreshold: 50,
+		}
 	}
 
-	// Generate card queue
-	queue, err := s.generateQueue(userID, config)
+	// Generate card queue (may include spell challenges if enabled)
+	queue, err := s.generateQueue(userID, *config)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to generate queue: %w", err)
 	}
@@ -106,8 +112,8 @@ func (s *TrainingService) FinishSession(sessionID int64, doneCount int) error {
 	return s.sessionRepo.FinishSession(sessionID, doneCount)
 }
 
-// generateQueue generates a queue of cards for training
-func (s *TrainingService) generateQueue(userID int64, config SessionConfig) ([]*models.UserCardWithTraining, error) {
+// generateQueue generates a queue of cards for training (and optionally one spell challenge)
+func (s *TrainingService) generateQueue(userID int64, config SessionConfig) ([]*models.TrainingQueueItem, error) {
 	now := time.Now()
 
 	// Get due cards (learning + review)
@@ -142,7 +148,7 @@ func (s *TrainingService) generateQueue(userID int64, config SessionConfig) ([]*
 	// Combine cards and remove duplicates by UserCard.ID
 	seenCardIDs := make(map[int64]bool)
 	allCards := make([]*models.UserCard, 0, len(dueCards)+len(newCards))
-	
+
 	// Add due cards, skipping duplicates
 	for _, card := range dueCards {
 		if !seenCardIDs[card.ID] {
@@ -150,7 +156,7 @@ func (s *TrainingService) generateQueue(userID int64, config SessionConfig) ([]*
 			seenCardIDs[card.ID] = true
 		}
 	}
-	
+
 	// Add new cards, skipping duplicates
 	for _, card := range newCards {
 		if !seenCardIDs[card.ID] {
@@ -167,7 +173,7 @@ func (s *TrainingService) generateQueue(userID int64, config SessionConfig) ([]*
 	s.sortCards(allCards, now)
 
 	// Fetch training card data
-	queue := make([]*models.UserCardWithTraining, 0, len(allCards))
+	cardQueue := make([]*models.UserCardWithTraining, 0, len(allCards))
 	skippedCount := 0
 	for _, userCard := range allCards {
 		trainingCard, err := s.trainingCardRepo.GetTrainingCard(userCard.TrainingCardID)
@@ -191,7 +197,7 @@ func (s *TrainingService) generateQueue(userID int64, config SessionConfig) ([]*
 			continue
 		}
 
-		queue = append(queue, &models.UserCardWithTraining{
+		cardQueue = append(cardQueue, &models.UserCardWithTraining{
 			UserCard:     *userCard,
 			TrainingCard: *trainingCard,
 		})
@@ -202,27 +208,83 @@ func (s *TrainingService) generateQueue(userID int64, config SessionConfig) ([]*
 			zap.Int64("user_id", userID),
 			zap.Int("total_cards", len(allCards)),
 			zap.Int("skipped", skippedCount),
-			zap.Int("queue_size", len(queue)),
+			zap.Int("queue_size", len(cardQueue)),
 		)
 	}
 
 	// First, shuffle all cards randomly
-	rand.Shuffle(len(queue), func(i, j int) {
-		queue[i], queue[j] = queue[j], queue[i]
+	rand.Shuffle(len(cardQueue), func(i, j int) {
+		cardQueue[i], cardQueue[j] = cardQueue[j], cardQueue[i]
 	})
 
 	// Then apply algorithm to prevent same words appearing close together
-	queue = s.shufflePreventDuplicates(queue)
+	cardQueue = s.shufflePreventDuplicates(cardQueue)
 
-	if len(queue) == 0 && len(allCards) > 0 {
+	if len(cardQueue) == 0 && len(allCards) > 0 {
 		s.logger.Error("queue is empty but cards were fetched - all cards were skipped",
 			zap.Int64("user_id", userID),
 			zap.Int("total_cards_fetched", len(allCards)),
 			zap.Int("skipped", skippedCount),
 		)
+		return nil, nil
+	}
+
+	// Build queue of TrainingQueueItem (all cards first)
+	queue := make([]*models.TrainingQueueItem, 0, len(cardQueue)+1)
+	for _, c := range cardQueue {
+		queue = append(queue, &models.TrainingQueueItem{Type: "card", Card: c})
+	}
+
+	// Randomly inject one spell challenge if enabled (words with mastering_score >= threshold)
+	if config.SpellEnabled && rand.Float32() < 0.25 {
+		threshold := config.SpellMasteringThreshold
+		if threshold < 0 {
+			threshold = 0
+		}
+		if threshold > 100 {
+			threshold = 100
+		}
+		eligible, err := s.userCardRepo.GetWordsEligibleForSpellByMastery(userID, threshold, 50)
+		if err == nil && len(eligible) > 0 {
+			w := eligible[rand.Intn(len(eligible))]
+			if w.DisplayWord != "" && len(w.DisplayWord) >= 2 {
+				letters := shuffleLetters(w.DisplayWord)
+				if len(letters) > 0 {
+					spell := &models.SpellChallenge{
+						WordCardID:      w.WordCardID,
+						DisplayWord:     w.DisplayWord,
+						WordRU:          w.WordRU,
+						ShuffledLetters: letters,
+					}
+					pos := rand.Intn(len(queue) + 1)
+					queue = append(queue, nil)
+					copy(queue[pos+1:], queue[pos:])
+					queue[pos] = &models.TrainingQueueItem{Type: "spell", Spell: spell}
+				}
+			}
+		}
 	}
 
 	return queue, nil
+}
+
+// shuffleLetters returns the word's runes as separate strings, shuffled (keeps spaces for "to spy" etc.)
+func shuffleLetters(word string) []string {
+	var runes []rune
+	for _, r := range word {
+		if unicode.IsLetter(r) || r == ' ' {
+			runes = append(runes, r)
+		}
+	}
+	if len(runes) < 2 {
+		return nil
+	}
+	rand.Shuffle(len(runes), func(i, j int) { runes[i], runes[j] = runes[j], runes[i] })
+	out := make([]string, len(runes))
+	for i, r := range runes {
+		out[i] = string(r)
+	}
+	return out
 }
 
 // sortCards sorts cards by priority
