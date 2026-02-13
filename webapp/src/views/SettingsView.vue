@@ -135,9 +135,9 @@
           </div>
           <div class="setting-control">
             <span v-if="trainingDelaysSavedAt === 'spell'" class="saved-indicator">{{ t('common.saved') }}</span>
-            <label class="toggle-label">
+            <label class="toggle-switch">
               <input v-model="spellModeEnabled" type="checkbox" @change="handleSpellSettingsChange" />
-              <span class="toggle-text">{{ spellModeEnabled ? t('common.on') : t('common.off') }}</span>
+              <span class="toggle-slider"></span>
             </label>
           </div>
         </div>
@@ -165,9 +165,9 @@
           </div>
           <div class="setting-control">
             <span v-if="trainingDelaysSavedAt === 'type'" class="saved-indicator">{{ t('common.saved') }}</span>
-            <label class="toggle-label">
+            <label class="toggle-switch">
               <input v-model="typeModeEnabled" type="checkbox" @change="handleTypeSettingsChange" />
-              <span class="toggle-text">{{ typeModeEnabled ? t('common.on') : t('common.off') }}</span>
+              <span class="toggle-slider"></span>
             </label>
           </div>
         </div>
