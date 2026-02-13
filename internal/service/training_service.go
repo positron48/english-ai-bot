@@ -258,6 +258,10 @@ func (s *TrainingService) generateQueue(userID int64, config SessionConfig) ([]*
 		if queue[i].Type != "card" || queue[i].Card == nil {
 			continue
 		}
+		// Spell and type (compose/type English word) only for RU→EN; EN→RU stays as normal options
+		if queue[i].Card.UserCard.Direction != models.DirectionRUtoEN {
+			continue
+		}
 		tc := &queue[i].Card.TrainingCard
 		wordCardID := tc.WordCardID
 		displayWord := tc.WordEN

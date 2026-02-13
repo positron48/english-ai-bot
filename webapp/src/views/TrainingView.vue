@@ -180,7 +180,11 @@
       </div>
 
       <!-- Spell: compose word from letters -->
-      <div v-if="currentCard?.type === 'spell' && currentCard?.letters?.length" class="spell-block">
+      <div
+        v-if="currentCard?.type === 'spell' && currentCard?.letters?.length"
+        class="spell-block"
+        :class="{ 'spell-long': (currentCard?.letters?.length ?? 0) > 8 }"
+      >
         <div class="spell-answer-row">
           <span class="spell-answer-label">{{ t('training.composeWord') || 'Your word:' }}</span>
           <div class="spell-answer-letters">
@@ -269,8 +273,11 @@
           <span class="feedback-text">{{ currentEncouragingPhrase }}</span>
         </div>
         
-        <!-- For incorrect answers: show hint, example, then notification with circular progress -->
+        <!-- For incorrect answers: show correct word (spell/type), hint, example, then notification with circular progress -->
         <template v-if="!feedback.is_correct">
+          <div v-if="feedback.correct_answer" class="correct-answer-hint">
+            {{ t('training.correctWord') || 'Правильно:' }} <strong>{{ feedback.correct_answer }}</strong>
+          </div>
           <div v-if="feedback.hint" class="hint">{{ feedback.hint }}</div>
           <div v-if="feedback.example" class="example">{{ feedback.example }}</div>
           <div class="feedback-badge feedback-error">
@@ -1541,14 +1548,64 @@ const submitSpellAnswerAs = async (answerText: string) => {
     }
     const nextDelayMs = data.is_correct ? 1000 : (data.delay_seconds ?? 0) * 1000
     if (nextDelayMs > 0) {
-      waitingDelay.value = true
-      delaySeconds.value = data.delay_seconds ?? 0
-      initialDelaySeconds.value = delaySeconds.value
-      remainingMs.value = nextDelayMs
+      const totalSeconds = data.is_correct ? 1 : (data.delay_seconds ?? 0)
+      initialDelaySeconds.value = totalSeconds
       initialDelayMs.value = nextDelayMs
-      timerEndTime = Date.now() + nextDelayMs
+      delaySeconds.value = totalSeconds
+      remainingMs.value = nextDelayMs
+      waitingDelay.value = true
+      timerPaused.value = false
+      timerPauseStartTime = null
+      timerPausedRemainingMs = null
+      const startTime = Date.now()
+      timerEndTime = startTime + nextDelayMs
+      const updateCountdown = () => {
+        if (!timerEndTime) return
+        if (timerPaused.value) {
+          countdownAnimationFrameId = requestAnimationFrame(updateCountdown)
+          return
+        }
+        const now = Date.now()
+        const currentRemainingMs = Math.max(0, timerEndTime - now)
+        const currentRemainingSeconds = Math.ceil(currentRemainingMs / 1000)
+        remainingMs.value = currentRemainingMs
+        delaySeconds.value = currentRemainingSeconds
+        if (currentRemainingMs > 0) {
+          countdownAnimationFrameId = requestAnimationFrame(updateCountdown)
+        } else {
+          delaySeconds.value = 0
+          remainingMs.value = 0
+          waitingDelay.value = false
+          initialDelaySeconds.value = 0
+          initialDelayMs.value = 0
+          timerPaused.value = false
+          timerPauseStartTime = null
+          timerPausedRemainingMs = null
+          timerEndTime = null
+          if (countdownAnimationFrameId) {
+            cancelAnimationFrame(countdownAnimationFrameId)
+            countdownAnimationFrameId = null
+          }
+          nextCard()
+        }
+      }
+      countdownAnimationFrameId = requestAnimationFrame(updateCountdown)
       autoNextCardTimer = setTimeout(() => {
-        waitingDelay.value = false
+        if (countdownAnimationFrameId) {
+          cancelAnimationFrame(countdownAnimationFrameId)
+          countdownAnimationFrameId = null
+        }
+        if (waitingDelay.value) {
+          waitingDelay.value = false
+          initialDelaySeconds.value = 0
+          initialDelayMs.value = 0
+          delaySeconds.value = 0
+          remainingMs.value = 0
+          timerPaused.value = false
+          timerPauseStartTime = null
+          timerPausedRemainingMs = null
+          timerEndTime = null
+        }
         nextCard()
       }, nextDelayMs)
     } else {
@@ -1583,14 +1640,64 @@ const submitTypeAnswer = async () => {
     }
     const nextDelayMs = data.is_correct ? 1000 : (data.delay_seconds ?? 0) * 1000
     if (nextDelayMs > 0) {
-      waitingDelay.value = true
-      delaySeconds.value = data.delay_seconds ?? 0
-      initialDelaySeconds.value = delaySeconds.value
-      remainingMs.value = nextDelayMs
+      const totalSeconds = data.is_correct ? 1 : (data.delay_seconds ?? 0)
+      initialDelaySeconds.value = totalSeconds
       initialDelayMs.value = nextDelayMs
-      timerEndTime = Date.now() + nextDelayMs
+      delaySeconds.value = totalSeconds
+      remainingMs.value = nextDelayMs
+      waitingDelay.value = true
+      timerPaused.value = false
+      timerPauseStartTime = null
+      timerPausedRemainingMs = null
+      const startTime = Date.now()
+      timerEndTime = startTime + nextDelayMs
+      const updateCountdown = () => {
+        if (!timerEndTime) return
+        if (timerPaused.value) {
+          countdownAnimationFrameId = requestAnimationFrame(updateCountdown)
+          return
+        }
+        const now = Date.now()
+        const currentRemainingMs = Math.max(0, timerEndTime - now)
+        const currentRemainingSeconds = Math.ceil(currentRemainingMs / 1000)
+        remainingMs.value = currentRemainingMs
+        delaySeconds.value = currentRemainingSeconds
+        if (currentRemainingMs > 0) {
+          countdownAnimationFrameId = requestAnimationFrame(updateCountdown)
+        } else {
+          delaySeconds.value = 0
+          remainingMs.value = 0
+          waitingDelay.value = false
+          initialDelaySeconds.value = 0
+          initialDelayMs.value = 0
+          timerPaused.value = false
+          timerPauseStartTime = null
+          timerPausedRemainingMs = null
+          timerEndTime = null
+          if (countdownAnimationFrameId) {
+            cancelAnimationFrame(countdownAnimationFrameId)
+            countdownAnimationFrameId = null
+          }
+          nextCard()
+        }
+      }
+      countdownAnimationFrameId = requestAnimationFrame(updateCountdown)
       autoNextCardTimer = setTimeout(() => {
-        waitingDelay.value = false
+        if (countdownAnimationFrameId) {
+          cancelAnimationFrame(countdownAnimationFrameId)
+          countdownAnimationFrameId = null
+        }
+        if (waitingDelay.value) {
+          waitingDelay.value = false
+          initialDelaySeconds.value = 0
+          initialDelayMs.value = 0
+          delaySeconds.value = 0
+          remainingMs.value = 0
+          timerPaused.value = false
+          timerPauseStartTime = null
+          timerPausedRemainingMs = null
+          timerEndTime = null
+        }
         nextCard()
       }, nextDelayMs)
     } else {
@@ -2107,11 +2214,14 @@ const handleTimerMouseLeave = () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  flex-wrap: wrap;
+  gap: 4px;
+  flex-wrap: nowrap;
   padding: 8px 12px;
   width: 100%;
-  max-width: 360px;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  flex-shrink: 0;
 }
 .spell-answer-char-btn {
   min-width: 44px;
@@ -2119,6 +2229,18 @@ const handleTimerMouseLeave = () => {
   font-size: 1.1rem;
   font-weight: 600;
   padding: 8px 12px;
+  flex-shrink: 0;
+}
+/* Long word: smaller blocks so more fit in one line */
+.spell-long .spell-answer-letters {
+  gap: 3px;
+  padding: 6px 8px;
+}
+.spell-long .spell-answer-char-btn {
+  min-width: 32px;
+  min-height: 32px;
+  font-size: 0.9rem;
+  padding: 4px 6px;
 }
 .spell-answer-placeholder {
   color: var(--text-tertiary, #999);
@@ -2127,9 +2249,10 @@ const handleTimerMouseLeave = () => {
 .spell-letters {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
   margin-bottom: 16px;
   justify-content: center;
+  max-width: 100%;
 }
 .spell-letter-btn {
   min-width: 44px;
@@ -2137,6 +2260,12 @@ const handleTimerMouseLeave = () => {
   font-size: 1.1rem;
   font-weight: 600;
   padding: 8px 12px;
+}
+.spell-long .spell-letter-btn {
+  min-width: 34px;
+  min-height: 34px;
+  font-size: 0.95rem;
+  padding: 5px 8px;
 }
 .spell-skip {
   margin-top: 8px;
@@ -2628,6 +2757,21 @@ const handleTimerMouseLeave = () => {
   z-index: 1;
   color: white;
   flex-shrink: 0;
+}
+
+.correct-answer-hint {
+  margin: 16px 0 8px 0;
+  padding: 12px 18px;
+  background: var(--example-bg, rgba(59, 130, 246, 0.1));
+  border-radius: 8px;
+  color: var(--text-primary);
+  border-left: 4px solid var(--color-primary);
+  text-align: center;
+  font-size: 1rem;
+}
+
+.correct-answer-hint strong {
+  font-weight: 700;
 }
 
 .hint {

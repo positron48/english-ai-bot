@@ -714,24 +714,25 @@ func (r *Router) handleTrainingAnswer(w http.ResponseWriter, req *http.Request) 
 	}
 
 	answerText := req.FormValue("answer_text")
-	if answerText != "" {
-		// Dispatch by current item type: spell or type
-		if r.webTrainingHandler != nil {
-			r.webTrainingHandler.sessionsMutex.Lock()
-			state, exists := r.webTrainingHandler.sessions[userID]
-			if exists && state != nil && state.CurrentIndex < len(state.Queue) {
-				item := state.Queue[state.CurrentIndex]
-				r.webTrainingHandler.sessionsMutex.Unlock()
-				if item.Type == "type" {
-					r.handleTrainingTypeAnswer(w, req, userID, strings.TrimSpace(strings.ToLower(answerText)))
-					return
-				}
-			} else {
-				r.webTrainingHandler.sessionsMutex.Unlock()
+	// answer_text present (including empty for "skip" in spell/type) → spell or type handler
+	if req.Form.Has("answer_text") && r.webTrainingHandler != nil {
+		r.webTrainingHandler.sessionsMutex.Lock()
+		state, exists := r.webTrainingHandler.sessions[userID]
+		if exists && state != nil && state.CurrentIndex < len(state.Queue) {
+			item := state.Queue[state.CurrentIndex]
+			r.webTrainingHandler.sessionsMutex.Unlock()
+			text := strings.TrimSpace(strings.ToLower(answerText))
+			if item.Type == "type" {
+				r.handleTrainingTypeAnswer(w, req, userID, text)
+				return
 			}
+			if item.Type == "spell" {
+				r.handleTrainingSpellAnswer(w, req, userID, text)
+				return
+			}
+		} else {
+			r.webTrainingHandler.sessionsMutex.Unlock()
 		}
-		r.handleTrainingSpellAnswer(w, req, userID, strings.TrimSpace(strings.ToLower(answerText)))
-		return
 	}
 
 	optionIndexStr := req.FormValue("option_index")

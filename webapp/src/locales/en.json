@@ -128,6 +128,7 @@
     "typeWord": "Enter the word:",
     "typeWordPlaceholder": "word",
     "check": "Check",
+    "correctWord": "Correct:",
     "skip": "Skip",
     "available": "Available:",
     "availableForTraining": "Available for Training",
