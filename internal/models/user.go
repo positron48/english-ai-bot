@@ -27,5 +27,7 @@ type UserSettings struct {
 	WrongAnswerDelaySeconds   *int `json:"wrong_answer_delay_seconds,omitempty"`   // 0-10, delay before next card after wrong answer; nil = default 5
 	SpellModeEnabled          *bool `json:"spell_mode_enabled,omitempty"`         // enable "compose word from letters" in training; nil = true
 	SpellMasteringThreshold   *int  `json:"spell_mastering_threshold,omitempty"`  // min mastering_score (0-100) for spell; nil = 50
+	TypeModeEnabled           *bool `json:"type_mode_enabled,omitempty"`          // enable "type the word" (no letters) in training; nil = true
+	TypeMasteringThreshold    *int  `json:"type_mastering_threshold,omitempty"`   // min mastering_score (0-100) for type challenge; nil = 70
 }
 

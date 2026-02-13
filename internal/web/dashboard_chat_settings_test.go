@@ -535,6 +535,35 @@ func TestHandleTrainingSettings_Success(t *testing.T) {
 	if getResp2.Settings.SpellMasteringThreshold == nil || *getResp2.Settings.SpellMasteringThreshold != 75 {
 		t.Errorf("GET settings: expected spell_mastering_threshold 75, got %v", getResp2.Settings.SpellMasteringThreshold)
 	}
+
+	// Save type settings and verify
+	req3 := httptest.NewRequest(http.MethodPost, "/api/settings/training", bytes.NewBufferString(`{"type_mode_enabled":false,"type_mastering_threshold":80}`))
+	req3.Header.Set("Content-Type", "application/json")
+	req3 = setUserIDInContext(req3, 1)
+	w3 := httptest.NewRecorder()
+	router.handleTrainingSettings(w3, req3)
+	if w3.Code != http.StatusOK {
+		t.Fatalf("POST type settings expected 200, got %d: %s", w3.Code, w3.Body.String())
+	}
+	getReq3 := httptest.NewRequest(http.MethodGet, "/api/settings", nil)
+	getReq3 = setUserIDInContext(getReq3, 1)
+	getW3 := httptest.NewRecorder()
+	router.handleSettings(getW3, getReq3)
+	if getW3.Code != http.StatusOK {
+		t.Fatalf("GET settings (type) expected 200, got %d", getW3.Code)
+	}
+	var getResp3 struct {
+		Settings models.UserSettings `json:"settings"`
+	}
+	if err := json.NewDecoder(getW3.Body).Decode(&getResp3); err != nil {
+		t.Fatalf("decode GET response: %v", err)
+	}
+	if getResp3.Settings.TypeModeEnabled == nil || *getResp3.Settings.TypeModeEnabled != false {
+		t.Errorf("GET settings: expected type_mode_enabled false, got %v", getResp3.Settings.TypeModeEnabled)
+	}
+	if getResp3.Settings.TypeMasteringThreshold == nil || *getResp3.Settings.TypeMasteringThreshold != 80 {
+		t.Errorf("GET settings: expected type_mastering_threshold 80, got %v", getResp3.Settings.TypeMasteringThreshold)
+	}
 }
 
 func TestHandleTrainingSettings_InvalidValue(t *testing.T) {

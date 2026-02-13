@@ -158,6 +158,27 @@
 
       <div class="question" v-html="processedQuestion"></div>
 
+      <!-- Type: type the word (no letter hints) -->
+      <div v-if="currentCard?.type === 'type'" class="type-block">
+        <div class="type-answer-row">
+          <span class="type-answer-label">{{ t('training.typeWord') || 'Enter the word:' }}</span>
+          <input
+            v-model.trim="typeAnswerText"
+            type="text"
+            class="type-input"
+            :placeholder="t('training.typeWordPlaceholder') || 'word'"
+            :disabled="!!feedback || answering"
+            @keydown.enter.prevent="submitTypeAnswer"
+          />
+        </div>
+        <button
+          type="button"
+          class="btn btn-primary type-submit"
+          :disabled="!typeAnswerText || !!feedback || answering"
+          @click="submitTypeAnswer"
+        >{{ t('training.check') || 'Check' }}</button>
+      </div>
+
       <!-- Spell: compose word from letters -->
       <div v-if="currentCard?.type === 'spell' && currentCard?.letters?.length" class="spell-block">
         <div class="spell-answer-row">
@@ -193,7 +214,7 @@
       </div>
 
       <div 
-        v-if="optionsShown && currentCard?.type !== 'spell'" 
+        v-if="optionsShown && currentCard?.type !== 'spell' && currentCard?.type !== 'type'" 
         class="options"
         @mousedown="waitingDelay ? handleTimerMouseDown($event) : null"
         @mouseup="waitingDelay ? handleTimerMouseUp($event) : null"
@@ -371,8 +392,8 @@ interface Card {
   delay_ms: number
   direction: string
   example_en?: string
-  /** Spell challenge: compose word from letters */
-  type?: 'card' | 'spell'
+  /** Spell challenge: compose word from letters; type: type-the-word (no letters) */
+  type?: 'card' | 'spell' | 'type'
   word_ru?: string
   letters?: string[]
   correct_answer?: string
@@ -435,6 +456,8 @@ let exampleButtonTimer: ReturnType<typeof setTimeout> | null = null
 
 // Spell (compose word) state
 const spellAnswerLetters = ref<string[]>([])
+// Type (type the word, no letters) state
+const typeAnswerText = ref('')
 
 // Settings
 const { settings } = useSettings()
@@ -1285,9 +1308,16 @@ const setupCard = (card: Card) => {
   showExampleButtonVisible.value = false
   exampleUsageShown.value = false
   spellAnswerLetters.value = []
+  typeAnswerText.value = ''
 
   // Spell cards: no options delay, letters shown immediately
   if (card.type === 'spell') {
+    optionsShown.value = true
+    return
+  }
+  // Type cards: no options, input shown immediately
+  if (card.type === 'type') {
+    typeAnswerText.value = ''
     optionsShown.value = true
     return
   }
@@ -1500,6 +1530,48 @@ const submitSpellAnswer = async () => {
   }
 }
 
+const submitTypeAnswer = async () => {
+  if (!typeAnswerText.value || feedback.value || answering.value) return
+  const answerText = typeAnswerText.value
+  answering.value = true
+  try {
+    const formData = new FormData()
+    formData.append('answer_text', answerText)
+    const data: Feedback = await apiClient.requestFormData('/api/training/answer', formData)
+    feedback.value = data
+    triggerHapticFeedback(data.is_correct)
+    if (data.is_correct) {
+      playCorrectSound()
+      currentEncouragingPhrase.value = getRandomEncouragingPhrase()
+    } else {
+      playIncorrectSound()
+      currentDisappointingPhrase.value = getRandomDisappointingPhrase()
+    }
+    const nextDelayMs = data.is_correct ? 1000 : (data.delay_seconds ?? 0) * 1000
+    if (nextDelayMs > 0) {
+      waitingDelay.value = true
+      delaySeconds.value = data.delay_seconds ?? 0
+      initialDelaySeconds.value = delaySeconds.value
+      remainingMs.value = nextDelayMs
+      initialDelayMs.value = nextDelayMs
+      timerEndTime = Date.now() + nextDelayMs
+      autoNextCardTimer = setTimeout(() => {
+        waitingDelay.value = false
+        nextCard()
+      }, nextDelayMs)
+    } else {
+      autoNextCardTimer = setTimeout(() => nextCard(), data.is_correct ? 1000 : 150)
+    }
+  } catch (error: any) {
+    console.error('Failed to submit type answer:', error)
+    if (!error.isNetworkError) {
+      await showAlert('Не удалось отправить ответ. Попробуйте еще раз.')
+    }
+  } finally {
+    answering.value = false
+  }
+}
+
 const submitAnswer = async (optionIndex: number) => {
   answering.value = true
   try {
@@ -1679,6 +1751,7 @@ const nextCard = async () => {
   showExampleButtonVisible.value = false
   exampleUsageShown.value = false
   spellAnswerLetters.value = []
+  typeAnswerText.value = ''
 
   try {
     const response = await apiClient.request('/api/training/current')
@@ -2027,6 +2100,38 @@ const handleTimerMouseLeave = () => {
   padding: 8px 12px;
 }
 .spell-submit {
+  width: 100%;
+  max-width: 200px;
+}
+
+.type-block {
+  margin: 20px 0;
+}
+.type-answer-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.type-answer-label {
+  font-size: 0.95rem;
+  color: var(--text-secondary, #666);
+}
+.type-input {
+  width: 100%;
+  max-width: 280px;
+  padding: 12px 16px;
+  font-size: 1.1rem;
+  border: 2px solid var(--border-color, #ddd);
+  border-radius: 8px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+.type-input:focus {
+  outline: none;
+  border-color: var(--primary, #4a90d9);
+}
+.type-submit {
   width: 100%;
   max-width: 200px;
 }

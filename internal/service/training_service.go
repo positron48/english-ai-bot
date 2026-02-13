@@ -38,11 +38,13 @@ func NewTrainingService(
 
 // SessionConfig holds session configuration
 type SessionConfig struct {
-	MaxCardsPerSession     int
-	MaxNewPerSession       int
-	AlgoVersion            string
-	SpellEnabled           bool // inject spell (compose word) challenges
-	SpellMasteringThreshold int // min mastering_score 0-100 for words eligible for spell
+	MaxCardsPerSession      int
+	MaxNewPerSession        int
+	AlgoVersion             string
+	SpellEnabled            bool // inject spell (compose word) challenges
+	SpellMasteringThreshold int  // min mastering_score 0-100 for words eligible for spell
+	TypeEnabled             bool // inject type-the-word (no letters) challenges
+	TypeMasteringThreshold  int  // min mastering_score 0-100 for words eligible for type
 }
 
 // StartSession starts a new training session. If config is nil, defaults are used (spell enabled, threshold 50).
@@ -67,6 +69,8 @@ func (s *TrainingService) StartSession(userID int64, source models.SessionSource
 			AlgoVersion:             "srs_v2_delayed_mcq_sm2_autoquality",
 			SpellEnabled:            true,
 			SpellMasteringThreshold: 50,
+			TypeEnabled:            true,
+			TypeMasteringThreshold: 70,
 		}
 	}
 
@@ -261,6 +265,32 @@ func (s *TrainingService) generateQueue(userID int64, config SessionConfig) ([]*
 					copy(queue[pos+1:], queue[pos:])
 					queue[pos] = &models.TrainingQueueItem{Type: "spell", Spell: spell}
 				}
+			}
+		}
+	}
+
+	// Randomly inject one type challenge if enabled (words with mastering_score >= type threshold; no letter hints)
+	if config.TypeEnabled && rand.Float32() < 0.25 {
+		typeThreshold := config.TypeMasteringThreshold
+		if typeThreshold < 0 {
+			typeThreshold = 0
+		}
+		if typeThreshold > 100 {
+			typeThreshold = 100
+		}
+		eligible, err := s.userCardRepo.GetWordsEligibleForSpellByMastery(userID, typeThreshold, 50)
+		if err == nil && len(eligible) > 0 {
+			w := eligible[rand.Intn(len(eligible))]
+			if w.DisplayWord != "" && len(w.DisplayWord) >= 2 {
+				typeCh := &models.TypeChallenge{
+					WordCardID:  w.WordCardID,
+					DisplayWord: w.DisplayWord,
+					WordRU:      w.WordRU,
+				}
+				pos := rand.Intn(len(queue) + 1)
+				queue = append(queue, nil)
+				copy(queue[pos+1:], queue[pos:])
+				queue[pos] = &models.TrainingQueueItem{Type: "type", TypeChallenge: typeCh}
 			}
 		}
 	}

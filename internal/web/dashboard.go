@@ -442,6 +442,15 @@ func (r *Router) handleSettings(w http.ResponseWriter, req *http.Request) {
 		v := 50
 		settings.SpellMasteringThreshold = &v
 	}
+	// Type mode defaults: nil → true, threshold nil → 70
+	if settings.TypeModeEnabled == nil {
+		v := true
+		settings.TypeModeEnabled = &v
+	}
+	if settings.TypeMasteringThreshold == nil {
+		v := 70
+		settings.TypeMasteringThreshold = &v
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
@@ -714,10 +723,12 @@ func (r *Router) handleTrainingSettings(w http.ResponseWriter, req *http.Request
 	}
 
 	var requestData struct {
-		OptionsDelaySeconds      *int  `json:"options_delay_seconds"`
-		WrongAnswerDelaySeconds  *int  `json:"wrong_answer_delay_seconds"`
+		OptionsDelaySeconds       *int  `json:"options_delay_seconds"`
+		WrongAnswerDelaySeconds   *int  `json:"wrong_answer_delay_seconds"`
 		SpellModeEnabled         *bool `json:"spell_mode_enabled"`
-		SpellMasteringThreshold *int  `json:"spell_mastering_threshold"`
+		SpellMasteringThreshold  *int  `json:"spell_mastering_threshold"`
+		TypeModeEnabled          *bool `json:"type_mode_enabled"`
+		TypeMasteringThreshold   *int  `json:"type_mastering_threshold"`
 	}
 
 	if err := json.NewDecoder(req.Body).Decode(&requestData); err != nil {
@@ -757,6 +768,18 @@ func (r *Router) handleTrainingSettings(w http.ResponseWriter, req *http.Request
 	}
 	if requestData.SpellMasteringThreshold != nil {
 		v := *requestData.SpellMasteringThreshold
+		if v < 0 || v > 100 {
+			lang := i18n.GetLanguageFromContext(req.Context())
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(map[string]interface{}{
+				"error": i18n.T(lang, "errors.invalidRequest"),
+			})
+			return
+		}
+	}
+	if requestData.TypeMasteringThreshold != nil {
+		v := *requestData.TypeMasteringThreshold
 		if v < 0 || v > 100 {
 			lang := i18n.GetLanguageFromContext(req.Context())
 			w.Header().Set("Content-Type", "application/json")
@@ -809,6 +832,12 @@ func (r *Router) handleTrainingSettings(w http.ResponseWriter, req *http.Request
 	if requestData.SpellMasteringThreshold != nil {
 		settings.SpellMasteringThreshold = requestData.SpellMasteringThreshold
 	}
+	if requestData.TypeModeEnabled != nil {
+		settings.TypeModeEnabled = requestData.TypeModeEnabled
+	}
+	if requestData.TypeMasteringThreshold != nil {
+		settings.TypeMasteringThreshold = requestData.TypeMasteringThreshold
+	}
 
 	settingsJSON, err := json.Marshal(settings)
 	if err != nil {
@@ -837,10 +866,12 @@ func (r *Router) handleTrainingSettings(w http.ResponseWriter, req *http.Request
 	json.NewEncoder(w).Encode(map[string]interface{}{
 		"success": true,
 		"settings": map[string]interface{}{
-			"options_delay_seconds":      defaultIntPtr(settings.OptionsDelaySeconds, 5),
-			"wrong_answer_delay_seconds": defaultIntPtr(settings.WrongAnswerDelaySeconds, 5),
-			"spell_mode_enabled":         settings.SpellModeEnabled != nil && *settings.SpellModeEnabled,
-			"spell_mastering_threshold":  defaultIntPtr(settings.SpellMasteringThreshold, 50),
+			"options_delay_seconds":       defaultIntPtr(settings.OptionsDelaySeconds, 5),
+			"wrong_answer_delay_seconds":  defaultIntPtr(settings.WrongAnswerDelaySeconds, 5),
+			"spell_mode_enabled":          settings.SpellModeEnabled != nil && *settings.SpellModeEnabled,
+			"spell_mastering_threshold":   defaultIntPtr(settings.SpellMasteringThreshold, 50),
+			"type_mode_enabled":           settings.TypeModeEnabled != nil && *settings.TypeModeEnabled,
+			"type_mastering_threshold":   defaultIntPtr(settings.TypeMasteringThreshold, 70),
 		},
 	})
 }

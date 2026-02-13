@@ -65,6 +65,16 @@ func TestFinishTrainingSession_CompleteSession(t *testing.T) {
 		t.Fatalf("Failed to create user card: %v", err)
 	}
 
+	// Disable spell and type challenges so the queue has only the card (deterministic test)
+	settings := models.UserSettings{
+		SpellModeEnabled: ptrBool(false),
+		TypeModeEnabled:  ptrBool(false),
+	}
+	settingsJSON, _ := json.Marshal(settings)
+	if err := userRepo.UpdateUserSettings(user.ID, string(settingsJSON)); err != nil {
+		t.Fatalf("Failed to update user settings: %v", err)
+	}
+
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
 			JWTSecret:     "test-secret",
@@ -187,4 +197,8 @@ func TestFinishTrainingSession_CompleteSession(t *testing.T) {
 	if exists {
 		t.Error("Session should be removed from memory after completion")
 	}
+}
+
+func ptrBool(b bool) *bool {
+	return &b
 }

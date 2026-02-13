@@ -160,10 +160,18 @@ type SpellChallenge struct {
 	ShuffledLetters []string // Letters (or tokens for "to spy") in random order
 }
 
-// TrainingQueueItem is one item in the training queue: either a normal card or a spell challenge
+// TypeChallenge is a "type the word" challenge for a word the user knows well (no letter hints)
+type TypeChallenge struct {
+	WordCardID  int64
+	DisplayWord string // Correct English word
+	WordRU      string // Prompt: Russian translation
+}
+
+// TrainingQueueItem is one item in the training queue: normal card, spell challenge, or type challenge
 type TrainingQueueItem struct {
-	Type  string                  // "card" or "spell"
+	Type  string                  // "card", "spell", or "type"
 	Card  *UserCardWithTraining   // Set when Type == "card"
 	Spell *SpellChallenge         // Set when Type == "spell"
+	TypeChallenge *TypeChallenge  // Set when Type == "type"
 }
 

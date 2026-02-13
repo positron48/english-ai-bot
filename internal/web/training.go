@@ -154,12 +154,29 @@ func (r *Router) handleTrainingStart(w http.ResponseWriter, req *http.Request) {
 						}
 						spellThreshold = t
 					}
+					typeEnabled := true
+					if settings.TypeModeEnabled != nil {
+						typeEnabled = *settings.TypeModeEnabled
+					}
+					typeThreshold := 70
+					if settings.TypeMasteringThreshold != nil {
+						t := *settings.TypeMasteringThreshold
+						if t < 0 {
+							t = 0
+						}
+						if t > 100 {
+							t = 100
+						}
+						typeThreshold = t
+					}
 					sessionConfig = &service.SessionConfig{
 						MaxCardsPerSession:      models.DefaultMaxCardsPerSession,
 						MaxNewPerSession:       models.DefaultMaxNewPerSession,
 						AlgoVersion:            "srs_v2_delayed_mcq_sm2_autoquality",
 						SpellEnabled:            spellEnabled,
 						SpellMasteringThreshold: spellThreshold,
+						TypeEnabled:            typeEnabled,
+						TypeMasteringThreshold: typeThreshold,
 					}
 				}
 			}
@@ -230,6 +247,28 @@ func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, stat
 			"user_card_id":  0,
 			"delay_ms":      0,
 			"direction":     "spell",
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	// Type challenge: type the word (no letter hints)
+	if item.Type == "type" && item.TypeChallenge != nil {
+		state.ShownAt = time.Now()
+		state.OptionsShownAt = nil
+		response := map[string]interface{}{
+			"type":           "type",
+			"question":      fmt.Sprintf("Введите слово на английском: <strong>%s</strong>", item.TypeChallenge.WordRU),
+			"word_ru":       item.TypeChallenge.WordRU,
+			"correct_answer": item.TypeChallenge.DisplayWord,
+			"card_index":    state.CurrentIndex + 1,
+			"total_cards":   len(state.Queue),
+			"session_id":    state.SessionID,
+			"user_card_id":  0,
+			"delay_ms":      0,
+			"direction":     "type",
 		}
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
@@ -592,6 +631,49 @@ func (r *Router) handleTrainingSpellAnswer(w http.ResponseWriter, req *http.Requ
 	json.NewEncoder(w).Encode(feedback)
 }
 
+// handleTrainingTypeAnswer handles the answer for a type-the-word challenge (no letter hints)
+func (r *Router) handleTrainingTypeAnswer(w http.ResponseWriter, req *http.Request, userID int64, userAnswer string) {
+	if r.webTrainingHandler == nil {
+		http.Error(w, "No active session", http.StatusNotFound)
+		return
+	}
+	r.webTrainingHandler.sessionsMutex.Lock()
+	state, exists := r.webTrainingHandler.sessions[userID]
+	if !exists || state == nil || state.CurrentIndex >= len(state.Queue) {
+		r.webTrainingHandler.sessionsMutex.Unlock()
+		http.Error(w, "No active session", http.StatusNotFound)
+		return
+	}
+	item := state.Queue[state.CurrentIndex]
+	if item.Type != "type" || item.TypeChallenge == nil {
+		r.webTrainingHandler.sessionsMutex.Unlock()
+		http.Error(w, "Not a type challenge", http.StatusBadRequest)
+		return
+	}
+	correctNorm := strings.TrimSpace(strings.ToLower(item.TypeChallenge.DisplayWord))
+	userNorm := userAnswer
+	if userNorm == "" {
+		userNorm = " "
+	}
+	isCorrect := userNorm == correctNorm
+	correctAnswer := item.TypeChallenge.DisplayWord
+	state.CurrentIndex++
+	r.webTrainingHandler.sessionsMutex.Unlock()
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	feedback := map[string]interface{}{
+		"is_correct":     isCorrect,
+		"chosen_option":  userAnswer,
+		"correct_answer": correctAnswer,
+	}
+	_, wrongAnswerDelaySeconds := r.getTrainingDelaysForUser(userID)
+	if !isCorrect {
+		feedback["delay_seconds"] = wrongAnswerDelaySeconds
+	}
+	json.NewEncoder(w).Encode(feedback)
+}
+
 // handleTrainingAnswer handles the user's answer
 // @Summary      Отправить ответ на карточку
 // @Description  Обрабатывает ответ пользователя на карточку, обновляет SRS состояние и возвращает обратную связь
@@ -626,7 +708,21 @@ func (r *Router) handleTrainingAnswer(w http.ResponseWriter, req *http.Request) 
 
 	answerText := req.FormValue("answer_text")
 	if answerText != "" {
-		// Spell challenge answer
+		// Dispatch by current item type: spell or type
+		if r.webTrainingHandler != nil {
+			r.webTrainingHandler.sessionsMutex.Lock()
+			state, exists := r.webTrainingHandler.sessions[userID]
+			if exists && state != nil && state.CurrentIndex < len(state.Queue) {
+				item := state.Queue[state.CurrentIndex]
+				r.webTrainingHandler.sessionsMutex.Unlock()
+				if item.Type == "type" {
+					r.handleTrainingTypeAnswer(w, req, userID, strings.TrimSpace(strings.ToLower(answerText)))
+					return
+				}
+			} else {
+				r.webTrainingHandler.sessionsMutex.Unlock()
+			}
+		}
 		r.handleTrainingSpellAnswer(w, req, userID, strings.TrimSpace(strings.ToLower(answerText)))
 		return
 	}
