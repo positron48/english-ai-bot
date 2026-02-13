@@ -573,32 +573,43 @@ func (r *Router) handleTrainingAnswer(w http.ResponseWriter, req *http.Request) 
 	}
 	metricsJSON, _ := json.Marshal(metrics)
 
-	// Create review event
+	// Create review event only if user_card still exists (it may have been deleted e.g. by admin during session)
 	optionsJSON, _ := json.Marshal(options)
 	quality := models.CalculateQuality(attemptData)
-	
-	reviewEvent := &models.ReviewEvent{
-		SessionID:      &state.SessionID,
-		UserID:         userID,
-		UserCardID:     card.UserCard.ID,
-		Direction:      card.UserCard.Direction,
-		ShownAt:        shownAt,
-		OptionsShownAt: optionsShownAt,
-		AnsweredAt:     &answeredAt,
-		TDelayMS:       tDelayMS,
-		EarlyReveal:    earlyReveal,
-		OptionCount:    len(options),
-		OptionsJSON:    string(optionsJSON),
-		ChosenOption:   chosenOption,
-		IsCorrect:      isCorrect,
-		Quality:        int(quality),
-		MetricsJSON:    string(metricsJSON),
-		SRSBeforeJSON:  string(srsBeforeJSON),
-		SRSAfterJSON:   string(srsAfterJSON),
-	}
 
-	if _, err := r.webTrainingHandler.sessionRepo.CreateReviewEvent(reviewEvent); err != nil {
-		r.logger.Error("failed to create review event", zap.Error(err))
+	userCardRepo := repository.NewUserCardRepository(r.db, r.logger)
+	existingCard, err := userCardRepo.GetUserCard(card.UserCard.ID)
+	if err != nil {
+		r.logger.Warn("failed to check user card before review event", zap.Int64("user_card_id", card.UserCard.ID), zap.Error(err))
+	} else if existingCard == nil {
+		r.logger.Warn("user card no longer exists, skipping review event (e.g. deleted during session)",
+			zap.Int64("user_card_id", card.UserCard.ID),
+			zap.Int64("user_id", userID),
+			zap.Int64("session_id", state.SessionID),
+		)
+	} else {
+		reviewEvent := &models.ReviewEvent{
+			SessionID:      &state.SessionID,
+			UserID:         userID,
+			UserCardID:     card.UserCard.ID,
+			Direction:      card.UserCard.Direction,
+			ShownAt:        shownAt,
+			OptionsShownAt: optionsShownAt,
+			AnsweredAt:     &answeredAt,
+			TDelayMS:       tDelayMS,
+			EarlyReveal:    earlyReveal,
+			OptionCount:    len(options),
+			OptionsJSON:    string(optionsJSON),
+			ChosenOption:   chosenOption,
+			IsCorrect:      isCorrect,
+			Quality:        int(quality),
+			MetricsJSON:    string(metricsJSON),
+			SRSBeforeJSON:  string(srsBeforeJSON),
+			SRSAfterJSON:   string(srsAfterJSON),
+		}
+		if _, err := r.webTrainingHandler.sessionRepo.CreateReviewEvent(reviewEvent); err != nil {
+			r.logger.Error("failed to create review event", zap.Error(err))
+		}
 	}
 
 	// Record wrong answer if incorrect
