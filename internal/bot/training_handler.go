@@ -730,53 +730,6 @@ func (h *TrainingHandler) extractSessionWordsFromQueue(queue []*models.TrainingQ
 	return sessionWords
 }
 
-// extractSessionWords extracts correct answers from other cards in the session (legacy, for UserCardWithTraining slice)
-func (h *TrainingHandler) extractSessionWords(queue []*models.UserCardWithTraining, currentIndex int, currentCard *models.UserCardWithTraining, recentCorrectAnswers []string) []string {
-	if currentIndex >= len(queue) {
-		return []string{}
-	}
-	currentWordCardID := currentCard.TrainingCard.WordCardID
-	direction := currentCard.UserCard.Direction
-	currentPOS := ""
-	if currentCard.TrainingCard.POS != nil && *currentCard.TrainingCard.POS != "" {
-		currentPOS = *currentCard.TrainingCard.POS
-	}
-	sessionWords := make([]string, 0, len(queue))
-	excludedSet := make(map[string]bool)
-	for _, word := range recentCorrectAnswers {
-		excludedSet[word] = true
-	}
-	seenWords := make(map[string]bool)
-	for i, card := range queue {
-		if i == currentIndex {
-			continue
-		}
-		if card.TrainingCard.WordCardID == currentWordCardID {
-			continue
-		}
-		if currentPOS != "" {
-			if card.TrainingCard.POS == nil || *card.TrainingCard.POS != currentPOS {
-				continue
-			}
-		}
-		var word string
-		if direction == models.DirectionRUtoEN {
-			if card.TrainingCard.DisplayWord != nil && *card.TrainingCard.DisplayWord != "" {
-				word = *card.TrainingCard.DisplayWord
-			} else {
-				word = card.TrainingCard.WordEN
-			}
-		} else {
-			word = card.TrainingCard.WordRU
-		}
-		if word != "" && !excludedSet[word] && !seenWords[word] {
-			sessionWords = append(sessionWords, word)
-			seenWords[word] = true
-		}
-	}
-	return sessionWords
-}
-
 // sendMessage is a helper to send text messages
 func (h *TrainingHandler) sendMessage(chatID int64, text string) {
 	msg := tgbotapi.NewMessage(chatID, text)

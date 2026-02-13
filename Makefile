@@ -141,6 +141,10 @@ check: tidy
 	echo "✅ Go tests passed"
 	@echo ""
 	@echo "6. Running Go linter..."
+	@if [ ! -x ./bin/golangci-lint ]; then \
+		echo "Installing golangci-lint v2.1.0 (same as CI)..."; \
+		$(MAKE) lint-install; \
+	fi
 	@$(GOLANGCI) run --timeout=3m
 	@echo "✅ Go linter passed"
 	@echo ""
