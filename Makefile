@@ -132,6 +132,8 @@ check: tidy
 	if [ $$TEST_EXIT_CODE -ne 0 ]; then \
 		echo "❌ Go tests failed:"; \
 		echo ""; \
+		grep -E "--- FAIL|FAIL\s+tgbot" .go-test-output.txt | tail -25 || true; \
+		echo ""; \
 		cat .go-test-output.txt; \
 		rm -f .go-test-output.txt; \
 		exit $$TEST_EXIT_CODE; \

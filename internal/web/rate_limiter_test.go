@@ -48,18 +48,13 @@ func TestRateLimiter_Cleanup(t *testing.T) {
 	}
 	rl.mu.Unlock()
 
-	// Wait for cleanup to run (cleanup is already started in NewRateLimiter)
-	time.Sleep(200 * time.Millisecond)
-
-	// Stop cleanup
+	// Wait for cleanup to run (interval 50ms; wait long enough on slow CI)
+	time.Sleep(300 * time.Millisecond)
 	rl.Stop()
 
-	// Check that old bucket was removed
 	rl.mu.Lock()
 	defer rl.mu.Unlock()
 	if _, exists := rl.buckets["key1"]; exists {
 		t.Error("Expected key1 bucket to be cleaned up")
 	}
-	// Verify cleanup ran (at least one bucket should be gone or both)
-	// The exact behavior depends on timing, but cleanup should have run
 }

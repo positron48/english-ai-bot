@@ -150,7 +150,10 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 	
 	// Combine both queries with UNION ALL and calculate mastery_level and mastering_score (0-100)
 	// Wrap in subquery to calculate mastery_level and filter by it
-	masteringScoreSQL := "CASE WHEN is_known = 1 THEN 100 WHEN review_state_count = total_cards AND total_reps > 0 THEN 75 + MIN(20, total_reps/2) WHEN review_state_count > 0 OR learning_state_count > 0 THEN 25 + MIN(25, (review_state_count + learning_state_count)*25/NULLIF(total_cards,0)) ELSE 0 END"
+	// Min-of-two: use CASE (PostgreSQL has no two-arg MIN(); LEAST not in older SQLite)
+	cap20 := "CASE WHEN 20 < total_reps/2 THEN 20 ELSE total_reps/2 END"
+	cap25 := "CASE WHEN 25 < (review_state_count + learning_state_count)*25/NULLIF(total_cards,0) THEN 25 ELSE (review_state_count + learning_state_count)*25/NULLIF(total_cards,0) END"
+	masteringScoreSQL := "CASE WHEN is_known = 1 THEN 100 WHEN review_state_count = total_cards AND total_reps > 0 THEN 75 + (" + cap20 + ") WHEN review_state_count > 0 OR learning_state_count > 0 THEN 25 + (" + cap25 + ") ELSE 0 END"
 	baseQuery := "SELECT * FROM (" +
 		"SELECT *, " +
 		"CASE " +
