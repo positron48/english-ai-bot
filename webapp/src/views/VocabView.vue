@@ -17,6 +17,7 @@
             <option value="">{{ t('vocab.all') }}</option>
             <option value="new">{{ t('vocab.new') }}</option>
             <option value="learning">{{ t('vocab.learning') }}</option>
+            <option value="mastered">{{ t('vocab.mastered') }}</option>
             <option value="known">{{ t('vocab.known') }}</option>
           </select>
         </div>
@@ -28,6 +29,8 @@
             <option value="added_at">{{ t('vocab.recentlyAdded') }}</option>
             <option value="mastery_level">{{ t('vocab.mastery') }}</option>
             <option value="mastery_level_desc">{{ t('vocab.masteryReversed') }}</option>
+            <option value="mastering_score">{{ t('vocab.masteringScore') }}</option>
+            <option value="mastering_score_desc">{{ t('vocab.masteringScoreDesc') }}</option>
           </select>
         </div>
       </div>
@@ -65,8 +68,13 @@
                       <div class="word-text">
                         <span class="word-display">{{ cleanLemma(word.lemma) }}</span>
                       </div>
+                      <span
+                        class="mastery-marker"
+                        :style="{ backgroundColor: masteryColor(word.mastering_score) }"
+                        :title="t(`vocab.${word.mastery_level}`)"
+                      />
                       <span :class="['mastery-badge', `mastery-${word.mastery_level}`]">
-                        {{ word.mastery_level }}
+                        {{ t(`vocab.${word.mastery_level}`) }}
                       </span>
                     </div>
                   </div>
@@ -87,8 +95,13 @@
                     <div class="word-text">
                       <span class="word-display">{{ cleanLemma(word.lemma) }}</span>
                     </div>
+                    <span
+                      class="mastery-marker"
+                      :style="{ backgroundColor: masteryColor(word.mastering_score) }"
+                      :title="t(`vocab.${word.mastery_level}`)"
+                    />
                     <span :class="['mastery-badge', `mastery-${word.mastery_level}`]">
-                      {{ word.mastery_level }}
+                      {{ t(`vocab.${word.mastery_level}`) }}
                     </span>
                   </div>
                 </div>
@@ -264,6 +277,7 @@ interface VocabWord {
   total_reps: number
   added_at: string | null
   mastery_level: string
+  mastering_score: number
   review_count: number
 }
 
@@ -370,6 +384,12 @@ const loadVocab = async () => {
     } else if (sortField.value === 'mastery_level_desc') {
       sortBy = 'mastery_level_desc'
       sortOrder = 'asc' // new -> learning -> mastered -> known
+    } else if (sortField.value === 'mastering_score') {
+      sortBy = 'mastering_score'
+      sortOrder = 'asc'
+    } else if (sortField.value === 'mastering_score_desc') {
+      sortBy = 'mastering_score_desc'
+      sortOrder = 'asc'
     }
     
     const params = new URLSearchParams({
@@ -412,6 +432,13 @@ const goToPage = (page: number) => {
     pagination.value.page = page
     loadVocab()
   }
+}
+
+// Red (0) → green (100) color for mastering score
+const masteryColor = (score: number): string => {
+  const s = Math.max(0, Math.min(100, score ?? 0))
+  const hue = (120 * s) / 100 // 0 = red, 120 = green
+  return `hsl(${hue}, 72%, 42%)`
 }
 
 // Alphabet sections for A→Z sorting
@@ -918,6 +945,14 @@ const formatDateAbsolute = (dateStr: string | null): string => {
   word-break: break-word;
   overflow-wrap: break-word;
   hyphens: auto;
+}
+
+.mastery-marker {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-right: 6px;
 }
 
 .mastery-badge {

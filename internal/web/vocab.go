@@ -40,7 +40,8 @@ type VocabWord struct {
 	LastReview      *time.Time `json:"last_review"`
 	TotalReps       int        `json:"total_reps"`        // Total number of reviews across all cards
 	AddedAt         *time.Time `json:"added_at"`         // Date when first card was added
-	MasteryLevel    string     `json:"mastery_level"`     // Calculated mastery level
+	MasteryLevel    string     `json:"mastery_level"`    // Calculated mastery level: new, learning, mastered, known
+	MasteringScore  int        `json:"mastering_score"`  // 0–100: how well the word is learned (for red–green marker)
 	ReviewCount     int        `json:"review_count"`     // Total number of review events
 }
 
@@ -97,8 +98,10 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 			"display_word":      "display_word",
 			"lemma":             "lemma",
 			"total_cards":       "total_cards",
-			"mastery_level":     "mastery_level", // Special handling below
-			"mastery_level_desc": "mastery_level_desc", // Special handling below - reversed order
+			"mastery_level":      "mastery_level",      // Special handling below
+			"mastery_level_desc":  "mastery_level_desc",  // Special handling below - reversed order
+			"mastering_score":    "mastering_score",    // Numeric 0-100
+			"mastering_score_desc": "mastering_score_desc",
 			"total_reps":        "total_reps",
 			"review_count":      "review_count",
 			"due_count":         "due_count",
@@ -145,8 +148,9 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 
 	queryFromCards += " GROUP BY tc.word_card_id, wc.word"
 	
-	// Combine both queries with UNION ALL and calculate mastery_level
+	// Combine both queries with UNION ALL and calculate mastery_level and mastering_score (0-100)
 	// Wrap in subquery to calculate mastery_level and filter by it
+	masteringScoreSQL := "CASE WHEN is_known = 1 THEN 100 WHEN review_state_count = total_cards AND total_reps > 0 THEN 75 + MIN(20, total_reps/2) WHEN review_state_count > 0 OR learning_state_count > 0 THEN 25 + MIN(25, (review_state_count + learning_state_count)*25/NULLIF(total_cards,0)) ELSE 0 END"
 	baseQuery := "SELECT * FROM (" +
 		"SELECT *, " +
 		"CASE " +
@@ -154,7 +158,8 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 		"WHEN review_state_count = total_cards AND total_reps > 0 THEN 'mastered' " +
 		"WHEN review_state_count > 0 OR learning_state_count > 0 THEN 'learning' " +
 		"ELSE 'new' " +
-		"END as mastery_level_calc " +
+		"END as mastery_level_calc, " +
+		masteringScoreSQL + " as mastering_score_calc " +
 		"FROM (" + queryFromCards + " UNION ALL " + queryFromKnown + ") combined " +
 		") with_mastery"
 	
@@ -228,6 +233,11 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 			WHEN mastery_level_calc = 'learning' THEN 1
 			ELSE 0
 		END`
+	case "mastering_score":
+		orderByClause = "mastering_score_calc"
+	case "mastering_score_desc":
+		orderByClause = "mastering_score_calc"
+		sortOrder = "desc"
 	case "lemma":
 		// For lemma, sort by cleaned version (without "to " prefix for verbs)
 		// Use CASE to remove "to " prefix if present (case-insensitive)
@@ -264,10 +274,11 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 		var totalCards, dueCount, totalReps, reviewCount, reviewStateCount, learningStateCount, newStateCount, isKnown int
 		var lastReview, addedAt sql.NullString
 		var displayWord sql.NullString
-		var masteryLevelCalc sql.NullString // Used only for filtering, not stored
+		var masteryLevelCalc sql.NullString  // Used only for filtering, not stored
+		var masteringScoreCalc sql.NullInt64 // From SQL for sorting; we also compute in Go
 
-		err := rows.Scan(&word.WordCardID, &word.Lemma, &displayWord, &totalCards, &dueCount, &lastReview, &totalReps, &addedAt, 
-			&reviewStateCount, &learningStateCount, &newStateCount, &reviewCount, &isKnown, &masteryLevelCalc)
+		err := rows.Scan(&word.WordCardID, &word.Lemma, &displayWord, &totalCards, &dueCount, &lastReview, &totalReps, &addedAt,
+			&reviewStateCount, &learningStateCount, &newStateCount, &reviewCount, &isKnown, &masteryLevelCalc, &masteringScoreCalc)
 		if err != nil {
 			r.logger.Error("failed to scan word", zap.Error(err))
 			continue
@@ -299,12 +310,30 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 		// Determine mastery level
 		if isKnown == 1 {
 			word.MasteryLevel = "known"
+			word.MasteringScore = 100
 		} else if reviewStateCount == totalCards && totalReps > 0 {
 			word.MasteryLevel = "mastered"
+			// 75–95 based on total_reps (capped)
+			bonus := totalReps / 2
+			if bonus > 20 {
+				bonus = 20
+			}
+			word.MasteringScore = 75 + bonus
 		} else if reviewStateCount > 0 || learningStateCount > 0 {
 			word.MasteryLevel = "learning"
+			// 25–50: progress within learning (share of cards that left "new")
+			if totalCards > 0 {
+				progress := (reviewStateCount + learningStateCount) * 25 / totalCards
+				if progress > 25 {
+					progress = 25
+				}
+				word.MasteringScore = 25 + progress
+			} else {
+				word.MasteringScore = 25
+			}
 		} else {
 			word.MasteryLevel = "new"
+			word.MasteringScore = 0
 		}
 
 		words = append(words, word)
