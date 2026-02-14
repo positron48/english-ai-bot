@@ -240,6 +240,7 @@ func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, stat
 			"type":          "spell",
 			"question":      fmt.Sprintf("Составьте слово на английском: <strong>%s</strong>", item.Spell.WordRU),
 			"word_ru":       item.Spell.WordRU,
+			"prefix":        item.Spell.Prefix,
 			"letters":       item.Spell.ShuffledLetters,
 			"correct_answer": item.Spell.DisplayWord,
 			"card_index":    state.CurrentIndex + 1,
@@ -259,17 +260,34 @@ func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, stat
 	if item.Type == "type" && item.TypeChallenge != nil {
 		state.ShownAt = time.Now()
 		state.OptionsShownAt = nil
+		displayWord := item.TypeChallenge.DisplayWord
+		prefix := ""
+		wordForHint := displayWord
+		if strings.HasPrefix(displayWord, "to ") && len(displayWord) > 3 {
+			prefix = "to "
+			wordForHint = displayWord[3:]
+		}
+		runes := []rune(wordForHint)
+		hintFirstLetter := ""
+		hintLength := 0
+		if len(runes) > 0 {
+			hintFirstLetter = string(runes[0])
+			hintLength = len(runes)
+		}
 		response := map[string]interface{}{
-			"type":           "type",
-			"question":      fmt.Sprintf("Введите слово на английском: <strong>%s</strong>", item.TypeChallenge.WordRU),
-			"word_ru":       item.TypeChallenge.WordRU,
-			"correct_answer": item.TypeChallenge.DisplayWord,
-			"card_index":    state.CurrentIndex + 1,
-			"total_cards":   len(state.Queue),
-			"session_id":    state.SessionID,
-			"user_card_id":  0,
-			"delay_ms":      0,
-			"direction":     "type",
+			"type":               "type",
+			"question":           fmt.Sprintf("Введите слово на английском: <strong>%s</strong>", item.TypeChallenge.WordRU),
+			"word_ru":            item.TypeChallenge.WordRU,
+			"correct_answer":     displayWord,
+			"prefix":             prefix,
+			"hint_first_letter":  hintFirstLetter,
+			"hint_length":        hintLength,
+			"card_index":         state.CurrentIndex + 1,
+			"total_cards":        len(state.Queue),
+			"session_id":         state.SessionID,
+			"user_card_id":       0,
+			"delay_ms":           0,
+			"direction":          "type",
 		}
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
@@ -589,6 +607,76 @@ func (r *Router) handleTrainingReveal(w http.ResponseWriter, req *http.Request) 
 	})
 }
 
+// gradeReplacedCardForSpellType grades the user_card that was replaced by a spell/type challenge so SRS is updated and the card won't stay due
+func (r *Router) gradeReplacedCardForSpellType(userID int64, userCardID int64, isCorrect bool, chosenOption string, shownAt time.Time, sessionID int64) {
+	userCardRepo := repository.NewUserCardRepository(r.db, r.logger)
+	userCard, err := userCardRepo.GetUserCard(userCardID)
+	if err != nil || userCard == nil {
+		r.logger.Warn("failed to load replaced user card for spell/type grade", zap.Int64("user_card_id", userCardID), zap.Error(err))
+		return
+	}
+	attemptData := models.AttemptData{
+		Correct:       isCorrect,
+		EarlyReveal:   false,
+		AnswerTimeMS:  0,
+		TDelayMS:      0,
+		OptionCount:   1,
+		ChosenOption:  chosenOption,
+	}
+	srsBefore := models.SRSState{
+		State:        userCard.State,
+		EF:           userCard.EF,
+		Reps:         userCard.Reps,
+		IntervalDays: userCard.IntervalDays,
+		LearningStep: userCard.LearningStep,
+		LapseCount:   userCard.LapseCount,
+	}
+	srsBeforeJSON, _ := json.Marshal(srsBefore)
+	if err := r.srsService.GradeCard(userCard, attemptData); err != nil {
+		r.logger.Error("failed to grade replaced card after spell/type", zap.Int64("user_card_id", userCardID), zap.Error(err))
+		return
+	}
+	srsAfter := models.SRSState{
+		State:        userCard.State,
+		EF:           userCard.EF,
+		Reps:         userCard.Reps,
+		IntervalDays: userCard.IntervalDays,
+		LearningStep: userCard.LearningStep,
+		LapseCount:   userCard.LapseCount,
+	}
+	srsAfterJSON, _ := json.Marshal(srsAfter)
+	answeredAt := time.Now()
+	quality := models.CalculateQuality(attemptData)
+	metricsJSON, _ := json.Marshal(map[string]interface{}{"spell_or_type": true})
+	reviewEvent := &models.ReviewEvent{
+		SessionID:     &sessionID,
+		UserID:        userID,
+		UserCardID:    userCardID,
+		Direction:     userCard.Direction,
+		ShownAt:       shownAt,
+		OptionsShownAt: nil,
+		AnsweredAt:    &answeredAt,
+		TDelayMS:      0,
+		EarlyReveal:   false,
+		OptionCount:   1,
+		OptionsJSON:   "[]",
+		ChosenOption:  chosenOption,
+		IsCorrect:     isCorrect,
+		Quality:       int(quality),
+		MetricsJSON:   string(metricsJSON),
+		SRSBeforeJSON: string(srsBeforeJSON),
+		SRSAfterJSON:  string(srsAfterJSON),
+	}
+	if _, err := r.webTrainingHandler.sessionRepo.CreateReviewEvent(reviewEvent); err != nil {
+		r.logger.Error("failed to create review event for spell/type", zap.Error(err))
+	}
+	if !isCorrect {
+		if err := r.srsService.RecordWrongAnswer(userCard, chosenOption); err != nil {
+			r.logger.Error("failed to record wrong answer for spell/type", zap.Error(err))
+		}
+	}
+}
+
 // handleTrainingSpellAnswer handles the answer for a spell (compose word) challenge
 func (r *Router) handleTrainingSpellAnswer(w http.ResponseWriter, req *http.Request, userID int64, userAnswer string) {
 	if r.webTrainingHandler == nil {
@@ -618,8 +706,15 @@ func (r *Router) handleTrainingSpellAnswer(w http.ResponseWriter, req *http.Requ
 	if isCorrect {
 		state.CorrectCount++
 	}
+	replacedUserCardID := item.Spell.ReplacedUserCardID
+	shownAt := state.ShownAt
 	state.CurrentIndex++
 	r.webTrainingHandler.sessionsMutex.Unlock()
+
+	// Grade the replaced user_card so it gets next_due_at updated and doesn't reappear next session
+	if replacedUserCardID != 0 {
+		r.gradeReplacedCardForSpellType(userID, replacedUserCardID, isCorrect, userAnswer, shownAt, state.SessionID)
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
@@ -664,8 +759,15 @@ func (r *Router) handleTrainingTypeAnswer(w http.ResponseWriter, req *http.Reque
 	if isCorrect {
 		state.CorrectCount++
 	}
+	replacedUserCardID := item.TypeChallenge.ReplacedUserCardID
+	shownAt := state.ShownAt
 	state.CurrentIndex++
 	r.webTrainingHandler.sessionsMutex.Unlock()
+
+	// Grade the replaced user_card so it gets next_due_at updated and doesn't reappear next session
+	if replacedUserCardID != 0 {
+		r.gradeReplacedCardForSpellType(userID, replacedUserCardID, isCorrect, userAnswer, shownAt, state.SessionID)
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)

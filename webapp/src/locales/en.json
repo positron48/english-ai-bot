@@ -130,6 +130,7 @@
     "check": "Check",
     "correctWord": "Correct:",
     "skip": "Skip",
+    "typeHint": "Show hint",
     "available": "Available:",
     "availableForTraining": "Available for Training",
     "upcomingCards": "Upcoming Cards This Week",

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"math/rand"
+	"strings"
 	"time"
 	"unicode"
 
@@ -278,19 +279,23 @@ func (s *TrainingService) generateQueue(userID int64, config SessionConfig) ([]*
 		score := computeMasteringScore(stats)
 		// Type threshold: 33% card, 33% spell, 33% type
 		if config.TypeEnabled && score >= typeThresh {
+			replacedID := queue[i].Card.UserCard.ID
 			switch rand.Intn(3) {
 			case 0:
 				// keep card
 			case 1:
-				letters := shuffleLetters(displayWord)
+				prefix, letters := spellPrefixAndLetters(displayWord)
 				if len(letters) > 0 {
 					queue[i] = &models.TrainingQueueItem{Type: "spell", Spell: &models.SpellChallenge{
-						WordCardID: wordCardID, DisplayWord: displayWord, WordRU: tc.WordRU, ShuffledLetters: letters,
+						WordCardID: wordCardID, DisplayWord: displayWord, WordRU: tc.WordRU,
+						Prefix: prefix, ShuffledLetters: letters,
+						ReplacedUserCardID: replacedID,
 					}}
 				}
 			case 2:
 				queue[i] = &models.TrainingQueueItem{Type: "type", TypeChallenge: &models.TypeChallenge{
 					WordCardID: wordCardID, DisplayWord: displayWord, WordRU: tc.WordRU,
+					ReplacedUserCardID: replacedID,
 				}}
 			}
 			continue
@@ -298,10 +303,12 @@ func (s *TrainingService) generateQueue(userID int64, config SessionConfig) ([]*
 		// Spell threshold: 50% card, 50% spell
 		if config.SpellEnabled && score >= spellThresh {
 			if rand.Intn(2) == 1 {
-				letters := shuffleLetters(displayWord)
+				prefix, letters := spellPrefixAndLetters(displayWord)
 				if len(letters) > 0 {
 					queue[i] = &models.TrainingQueueItem{Type: "spell", Spell: &models.SpellChallenge{
-						WordCardID: wordCardID, DisplayWord: displayWord, WordRU: tc.WordRU, ShuffledLetters: letters,
+						WordCardID: wordCardID, DisplayWord: displayWord, WordRU: tc.WordRU,
+						Prefix: prefix, ShuffledLetters: letters,
+						ReplacedUserCardID: queue[i].Card.UserCard.ID,
 					}}
 				}
 			}
@@ -334,6 +341,16 @@ func computeMasteringScore(stats *repository.WordMasteringStats) int {
 		return 25 + cap25
 	}
 	return 0
+}
+
+// spellPrefixAndLetters returns prefix (e.g. "to " for verbs) and shuffled letters for the rest. For "to spy" -> ("to ", ["s","p","y"]).
+func spellPrefixAndLetters(displayWord string) (prefix string, letters []string) {
+	if strings.HasPrefix(displayWord, "to ") && len(displayWord) > 3 {
+		prefix = "to "
+		letters = shuffleLetters(displayWord[3:])
+		return prefix, letters
+	}
+	return "", shuffleLetters(displayWord)
 }
 
 // shuffleLetters returns the word's runes as separate strings, shuffled (keeps spaces for "to spy" etc.)

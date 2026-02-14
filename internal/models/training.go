@@ -154,17 +154,20 @@ type UserCardWithTraining struct {
 
 // SpellChallenge is a "compose the word from letters" challenge for a word the user knows reasonably well
 type SpellChallenge struct {
-	WordCardID      int64
-	DisplayWord     string   // Correct English word (e.g. "spy" or "to spy")
-	WordRU          string   // Prompt: Russian translation
-	ShuffledLetters []string // Letters (or tokens for "to spy") in random order
+	WordCardID         int64
+	DisplayWord        string   // Correct English word (e.g. "spy" or "to spy")
+	WordRU             string   // Prompt: Russian translation
+	Prefix             string   // Non-editable prefix, e.g. "to " for verbs; user composes the rest
+	ShuffledLetters    []string // Letters to arrange (only the part after Prefix for "to X" verbs)
+	ReplacedUserCardID int64
 }
 
 // TypeChallenge is a "type the word" challenge for a word the user knows well (no letter hints)
 type TypeChallenge struct {
-	WordCardID  int64
-	DisplayWord string // Correct English word
-	WordRU      string // Prompt: Russian translation
+	WordCardID         int64
+	DisplayWord        string // Correct English word
+	WordRU             string // Prompt: Russian translation
+	ReplacedUserCardID int64  // user_card that was replaced by this challenge (for SRS/review event)
 }
 
 // TrainingQueueItem is one item in the training queue: normal card, spell challenge, or type challenge

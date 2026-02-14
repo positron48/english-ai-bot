@@ -162,21 +162,59 @@
       <div v-if="currentCard?.type === 'type'" class="type-block">
         <div class="type-answer-row">
           <span class="type-answer-label">{{ t('training.typeWord') || 'Enter the word:' }}</span>
-          <input
-            v-model.trim="typeAnswerText"
-            type="text"
-            class="type-input"
-            :placeholder="t('training.typeWordPlaceholder') || 'word'"
-            :disabled="!!feedback || answering"
-            @keydown.enter.prevent="submitTypeAnswer"
-          />
+          <div class="type-input-inline">
+            <template v-if="feedback && !feedback.is_correct && feedback.correct_answer">
+              <span class="type-input type-reveal-text">{{ typeRevealDisplayText }}</span>
+            </template>
+            <template v-else>
+              <span v-if="currentCard?.prefix" class="type-input-prefix">{{ currentCard.prefix }}</span>
+              <input
+                ref="typeInputRef"
+                v-model.trim="typeAnswerText"
+                type="text"
+                class="type-input"
+                :placeholder="t('training.typeWordPlaceholder') || 'word'"
+                :disabled="!!feedback || answering"
+                @keydown.enter.prevent="submitTypeAnswer"
+              />
+              <button
+                type="button"
+                class="type-submit-inline"
+                :disabled="!typeAnswerText || !!feedback || answering"
+                :aria-label="t('training.check') || 'Check'"
+                @click="submitTypeAnswer"
+              >
+                <Icon name="check" class="type-submit-icon" />
+              </button>
+            </template>
+          </div>
         </div>
-        <button
-          type="button"
-          class="btn btn-primary type-submit"
-          :disabled="!typeAnswerText || !!feedback || answering"
-          @click="submitTypeAnswer"
-        >{{ t('training.check') || 'Check' }}</button>
+        <div class="type-actions-row">
+          <button
+            v-if="!feedback && !answering"
+            type="button"
+            class="btn btn-secondary type-skip"
+            @click="skipTypeAnswer"
+          >{{ t('training.skip') || 'Пропустить' }}</button>
+        </div>
+        <div
+          v-if="showTypeHintButton && (currentCard?.hint_first_letter !== undefined && currentCard?.hint_length != null) && !(feedback && !feedback.is_correct)"
+          class="type-hint-button-wrapper"
+          :class="{ 'type-hint-button-visible': typeHintButtonVisible }"
+        >
+          <button
+            v-if="!typeHintShown && !feedback && !answering"
+            type="button"
+            class="btn-type-hint-icon"
+            :aria-label="t('training.typeHint') || 'Подсказка'"
+            @click="typeHintShown = true"
+          >
+            <Icon name="lightbulb" class="type-hint-icon" />
+          </button>
+          <div v-else-if="typeHintShown" class="type-hint-text">
+            {{ typeHintDisplay }}
+          </div>
+        </div>
       </div>
 
       <!-- Spell: compose word from letters -->
@@ -187,26 +225,39 @@
       >
         <div class="spell-answer-row">
           <span class="spell-answer-label">{{ t('training.composeWord') || 'Your word:' }}</span>
-          <div class="spell-answer-letters">
-            <button
-              v-for="(ch, i) in spellAnswerLetters"
-              :key="`a-${i}`"
-              type="button"
-              class="btn spell-letter-btn spell-answer-char-btn"
-              :disabled="!!feedback || answering"
-              @click="spellRemoveLetterAt(i)"
-            >{{ ch }}</button>
-            <span v-if="spellAnswerLetters.length === 0" class="spell-answer-placeholder">...</span>
+          <div class="spell-answer-letters" :class="{ 'spell-reveal-letters': feedback && !feedback.is_correct && spellRevealLetters.length }">
+            <span v-if="currentCard?.prefix" class="spell-answer-prefix">{{ currentCard.prefix }}</span>
+            <template v-if="feedback && !feedback.is_correct && spellRevealLetters.length">
+              <TransitionGroup name="spell-reorder" tag="span" class="spell-reorder-group">
+                <span
+                  v-for="item in spellRevealLetters"
+                  :key="item.key"
+                  class="spell-reveal-char"
+                >{{ item.letter }}</span>
+              </TransitionGroup>
+            </template>
+            <template v-else>
+              <button
+                v-for="(ch, i) in spellAnswerLetters"
+                :key="`a-${i}`"
+                type="button"
+                class="btn spell-letter-btn spell-answer-char-btn"
+                :disabled="!!feedback || answering"
+                @click="spellRemoveLetterAt(i)"
+              >{{ ch }}</button>
+              <span v-if="spellAnswerLetters.length === 0" class="spell-answer-placeholder">...</span>
+            </template>
           </div>
         </div>
-        <div class="spell-letters">
+        <div v-show="!feedback" class="spell-letters">
           <button
-            v-for="(ch, i) in spellAvailableLetters"
-            :key="`${i}-${ch}`"
+            v-for="(ch, i) in (currentCard?.letters ?? [])"
+            :key="i"
             type="button"
             class="btn spell-letter-btn"
-            :disabled="!!feedback || answering"
-            @click="spellAddLetter(ch)"
+            :class="{ 'spell-letter-used': spellUsedIndices.includes(i) }"
+            :disabled="spellUsedIndices.includes(i) || !!feedback || answering"
+            @click="spellAddLetterByIndex(i)"
           >{{ ch }}</button>
         </div>
         <button
@@ -273,9 +324,9 @@
           <span class="feedback-text">{{ currentEncouragingPhrase }}</span>
         </div>
         
-        <!-- For incorrect answers: show correct word (spell/type), hint, example, then notification with circular progress -->
+        <!-- For incorrect answers: spell = letters reorder in block above; type/cards = hint/example -->
         <template v-if="!feedback.is_correct">
-          <div v-if="feedback.correct_answer" class="correct-answer-hint">
+          <div v-if="currentCard?.type !== 'type' && feedback.correct_answer" class="correct-answer-hint">
             {{ t('training.correctWord') || 'Правильно:' }} <strong>{{ feedback.correct_answer }}</strong>
           </div>
           <div v-if="feedback.hint" class="hint">{{ feedback.hint }}</div>
@@ -375,7 +426,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch, nextTick, TransitionGroup } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiClient } from '../api/client'
 import { showAlert } from '../composables/useDialog'
@@ -402,8 +453,14 @@ interface Card {
   /** Spell challenge: compose word from letters; type: type-the-word (no letters) */
   type?: 'card' | 'spell' | 'type'
   word_ru?: string
+  /** Non-editable prefix for spell (e.g. "to " for verbs); user composes the rest */
+  prefix?: string
   letters?: string[]
   correct_answer?: string
+  /** Type challenge: first letter for hint (on demand) */
+  hint_first_letter?: string
+  /** Type challenge: word length for hint */
+  hint_length?: number
 }
 
 interface OptionsResponse {
@@ -463,8 +520,20 @@ let exampleButtonTimer: ReturnType<typeof setTimeout> | null = null
 
 // Spell (compose word) state
 const spellAnswerLetters = ref<string[]>([])
+/** Indices into currentCard.letters that are already used (same order as spellAnswerLetters) */
+const spellUsedIndices = ref<number[]>([])
+/** For wrong spell: letters in correct order with stable keys for reorder animation */
+const spellRevealLetters = ref<Array<{ letter: string; key: number }>>([])
 // Type (type the word, no letters) state
 const typeAnswerText = ref('')
+const typeHintShown = ref(false)
+const showTypeHintButton = ref(false)
+const typeHintButtonVisible = ref(false)
+let typeHintButtonTimer: ReturnType<typeof setTimeout> | null = null
+/** For wrong type answer: animated text (erase wrong → type correct) */
+const typeRevealDisplayText = ref('')
+let typeRevealTimeouts: ReturnType<typeof setTimeout>[] = []
+const typeInputRef = ref<HTMLInputElement | null>(null)
 
 // Settings
 const { settings } = useSettings()
@@ -475,18 +544,27 @@ const isEnglishWord = computed(() => {
   return currentCard.value?.direction === 'en_ru'
 })
 
-// For spell: letters still available to pick (currentCard.letters minus spellAnswerLetters)
-const spellAvailableLetters = computed(() => {
-  const letters = currentCard.value?.letters ?? []
-  const used = [...spellAnswerLetters.value]
-  const avail: string[] = []
-  for (const c of letters) {
-    const i = used.indexOf(c)
-    if (i >= 0) used.splice(i, 1)
-    else avail.push(c)
-  }
-  return avail
+// Type challenge hint: optional prefix + first letter + masked rest (e.g. "to s ___")
+const typeHintDisplay = computed(() => {
+  const card = currentCard.value
+  const prefix = card?.prefix ?? ''
+  const first = card?.hint_first_letter ?? ''
+  const len = card?.hint_length ?? 0
+  if (!first || len <= 0) return prefix
+  const rest = len > 1 ? ' ' + '_'.repeat(len - 1) : ''
+  return prefix + first + rest
 })
+
+// For spell keyboard: first unused index with this letter
+function spellFirstUnusedIndexForLetter(ch: string): number {
+  const letters = currentCard.value?.letters ?? []
+  const used = spellUsedIndices.value
+  for (let i = 0; i < letters.length; i++) {
+    if (used.includes(i)) continue
+    if (letters[i].toLowerCase() === ch.toLowerCase()) return i
+  }
+  return -1
+}
 
 const estimatedTime = computed(() => {
   const cards = stats.value.availableForTraining
@@ -1023,11 +1101,10 @@ const handleKeyPress = (event: KeyboardEvent) => {
       return
     }
     if (key.length === 1) {
-      const avail = spellAvailableLetters.value
-      const found = avail.find(c => c.toLowerCase() === key.toLowerCase())
-      if (found) {
+      const idx = spellFirstUnusedIndexForLetter(key)
+      if (idx >= 0) {
         event.preventDefault()
-        spellAddLetter(found)
+        spellAddLetterByIndex(idx)
       }
     }
     return
@@ -1258,6 +1335,12 @@ onUnmounted(() => {
     clearTimeout(exampleButtonTimer)
     exampleButtonTimer = null
   }
+  if (typeHintButtonTimer) {
+    clearTimeout(typeHintButtonTimer)
+    typeHintButtonTimer = null
+  }
+  typeRevealTimeouts.forEach(clearTimeout)
+  typeRevealTimeouts = []
   
   // Destroy chart
   if (upcomingChartInstance) {
@@ -1312,6 +1395,10 @@ const setupCard = (card: Card) => {
     clearTimeout(exampleButtonTimer)
     exampleButtonTimer = null
   }
+  if (typeHintButtonTimer) {
+    clearTimeout(typeHintButtonTimer)
+    typeHintButtonTimer = null
+  }
 
   currentCard.value = card
   cardIndex.value = card.card_index
@@ -1336,17 +1423,39 @@ const setupCard = (card: Card) => {
   showExampleButtonVisible.value = false
   exampleUsageShown.value = false
   spellAnswerLetters.value = []
+  spellUsedIndices.value = []
+  spellRevealLetters.value = []
   typeAnswerText.value = ''
+  typeHintShown.value = false
+  showTypeHintButton.value = false
+  typeHintButtonVisible.value = false
+  typeRevealDisplayText.value = ''
+  typeRevealTimeouts.forEach(clearTimeout)
+  typeRevealTimeouts = []
+  if (typeHintButtonTimer) {
+    clearTimeout(typeHintButtonTimer)
+    typeHintButtonTimer = null
+  }
 
   // Spell cards: no options delay, letters shown immediately
   if (card.type === 'spell') {
     optionsShown.value = true
     return
   }
-  // Type cards: no options, input shown immediately
+  // Type cards: no options, input shown immediately; hint button with delay like example
   if (card.type === 'type') {
-    typeAnswerText.value = ''
     optionsShown.value = true
+    if (currentCard.value?.hint_first_letter !== undefined && currentCard.value?.hint_length != null) {
+      typeHintButtonTimer = setTimeout(() => {
+        showTypeHintButton.value = true
+        setTimeout(() => {
+          typeHintButtonVisible.value = true
+        }, 50)
+      }, 2000)
+    }
+    nextTick(() => {
+      typeInputRef.value?.focus()
+    })
     return
   }
 
@@ -1506,19 +1615,25 @@ const triggerHapticFeedback = (isCorrect: boolean) => {
   }
 }
 
-const spellAddLetter = (ch: string) => {
+const spellAddLetterByIndex = (letterIndex: number) => {
   if (feedback.value || answering.value) return
+  if (spellUsedIndices.value.includes(letterIndex)) return
+  const letters = currentCard.value?.letters ?? []
+  if (letterIndex < 0 || letterIndex >= letters.length) return
+  const ch = letters[letterIndex]
+  spellUsedIndices.value = [...spellUsedIndices.value, letterIndex]
   const next = [...spellAnswerLetters.value, ch]
   spellAnswerLetters.value = next
-  const expectedLen = (currentCard.value?.letters ?? []).length
+  const expectedLen = letters.length
   if (expectedLen > 0 && next.length === expectedLen) {
     submitSpellAnswer()
   }
 }
 
-const spellRemoveLetterAt = (index: number) => {
+const spellRemoveLetterAt = (answerPosition: number) => {
   if (feedback.value || answering.value) return
-  spellAnswerLetters.value = spellAnswerLetters.value.filter((_, i) => i !== index)
+  spellAnswerLetters.value = spellAnswerLetters.value.filter((_, i) => i !== answerPosition)
+  spellUsedIndices.value = spellUsedIndices.value.filter((_, i) => i !== answerPosition)
 }
 
 const skipSpellAnswer = () => {
@@ -1527,7 +1642,22 @@ const skipSpellAnswer = () => {
 }
 
 const submitSpellAnswer = () => {
-  submitSpellAnswerAs(spellAnswerLetters.value.join(''))
+  const prefix = currentCard.value?.prefix ?? ''
+  submitSpellAnswerAs(prefix + spellAnswerLetters.value.join(''))
+}
+
+/** Build correct-order list with keys from wrong-order indices for TransitionGroup move */
+function buildSpellRevealLetters(correctAnswer: string, wrongOrder: string[], prefix: string): Array<{ letter: string; key: number }> {
+  const afterPrefix = prefix ? correctAnswer.slice(prefix.length) : correctAnswer
+  const correctLetters = Array.from(afterPrefix)
+  const wrong = [...wrongOrder]
+  const used = new Set<number>()
+  return correctLetters.map((letter) => {
+    const idx = wrong.findIndex((c, i) => (c === letter || c.toLowerCase() === letter.toLowerCase()) && !used.has(i))
+    if (idx >= 0) used.add(idx)
+    const key = idx >= 0 ? idx : used.size
+    return { letter, key }
+  })
 }
 
 const submitSpellAnswerAs = async (answerText: string) => {
@@ -1538,6 +1668,14 @@ const submitSpellAnswerAs = async (answerText: string) => {
     formData.append('answer_text', answerText)
     const data: Feedback = await apiClient.requestFormData('/api/training/answer', formData)
     feedback.value = data
+    if (!data.is_correct && currentCard.value?.type === 'spell' && data.correct_answer) {
+      const wrongOrder = [...spellAnswerLetters.value]
+      const prefix = currentCard.value?.prefix ?? ''
+      spellRevealLetters.value = wrongOrder.map((letter, i) => ({ letter, key: i }))
+      nextTick(() => {
+        spellRevealLetters.value = buildSpellRevealLetters(data.correct_answer, wrongOrder, prefix)
+      })
+    }
     triggerHapticFeedback(data.is_correct)
     if (data.is_correct) {
       playCorrectSound()
@@ -1547,7 +1685,11 @@ const submitSpellAnswerAs = async (answerText: string) => {
       currentDisappointingPhrase.value = getRandomDisappointingPhrase()
     }
     const nextDelayMs = data.is_correct ? 1000 : (data.delay_seconds ?? 0) * 1000
-    if (nextDelayMs > 0) {
+    const isCorrectSpell = data.is_correct && currentCard.value?.type === 'spell'
+    if (isCorrectSpell) {
+      // При правильном spell не показываем прогрессбар — просто ждём и переходим дальше
+      autoNextCardTimer = setTimeout(() => nextCard(), nextDelayMs)
+    } else if (nextDelayMs > 0) {
       const totalSeconds = data.is_correct ? 1 : (data.delay_seconds ?? 0)
       initialDelaySeconds.value = totalSeconds
       initialDelayMs.value = nextDelayMs
@@ -1621,9 +1763,8 @@ const submitSpellAnswerAs = async (answerText: string) => {
   }
 }
 
-const submitTypeAnswer = async () => {
-  if (!typeAnswerText.value || feedback.value || answering.value) return
-  const answerText = typeAnswerText.value
+const submitTypeAnswerAs = async (answerText: string) => {
+  if (feedback.value || answering.value) return
   answering.value = true
   try {
     const formData = new FormData()
@@ -1639,69 +1780,78 @@ const submitTypeAnswer = async () => {
       currentDisappointingPhrase.value = getRandomDisappointingPhrase()
     }
     const nextDelayMs = data.is_correct ? 1000 : (data.delay_seconds ?? 0) * 1000
-    if (nextDelayMs > 0) {
-      const totalSeconds = data.is_correct ? 1 : (data.delay_seconds ?? 0)
-      initialDelaySeconds.value = totalSeconds
-      initialDelayMs.value = nextDelayMs
-      delaySeconds.value = totalSeconds
-      remainingMs.value = nextDelayMs
-      waitingDelay.value = true
-      timerPaused.value = false
-      timerPauseStartTime = null
-      timerPausedRemainingMs = null
-      const startTime = Date.now()
-      timerEndTime = startTime + nextDelayMs
-      const updateCountdown = () => {
-        if (!timerEndTime) return
-        if (timerPaused.value) {
-          countdownAnimationFrameId = requestAnimationFrame(updateCountdown)
-          return
+    const startCountdownOrNext = () => {
+      if (nextDelayMs > 0) {
+        const totalSeconds = data.is_correct ? 1 : (data.delay_seconds ?? 0)
+        initialDelaySeconds.value = totalSeconds
+        initialDelayMs.value = nextDelayMs
+        delaySeconds.value = totalSeconds
+        remainingMs.value = nextDelayMs
+        waitingDelay.value = true
+        timerPaused.value = false
+        timerPauseStartTime = null
+        timerPausedRemainingMs = null
+        const startTime = Date.now()
+        timerEndTime = startTime + nextDelayMs
+        const updateCountdown = () => {
+          if (!timerEndTime) return
+          if (timerPaused.value) {
+            countdownAnimationFrameId = requestAnimationFrame(updateCountdown)
+            return
+          }
+          const now = Date.now()
+          const currentRemainingMs = Math.max(0, timerEndTime - now)
+          const currentRemainingSeconds = Math.ceil(currentRemainingMs / 1000)
+          remainingMs.value = currentRemainingMs
+          delaySeconds.value = currentRemainingSeconds
+          if (currentRemainingMs > 0) {
+            countdownAnimationFrameId = requestAnimationFrame(updateCountdown)
+          } else {
+            delaySeconds.value = 0
+            remainingMs.value = 0
+            waitingDelay.value = false
+            initialDelaySeconds.value = 0
+            initialDelayMs.value = 0
+            timerPaused.value = false
+            timerPauseStartTime = null
+            timerPausedRemainingMs = null
+            timerEndTime = null
+            if (countdownAnimationFrameId) {
+              cancelAnimationFrame(countdownAnimationFrameId)
+              countdownAnimationFrameId = null
+            }
+            nextCard()
+          }
         }
-        const now = Date.now()
-        const currentRemainingMs = Math.max(0, timerEndTime - now)
-        const currentRemainingSeconds = Math.ceil(currentRemainingMs / 1000)
-        remainingMs.value = currentRemainingMs
-        delaySeconds.value = currentRemainingSeconds
-        if (currentRemainingMs > 0) {
-          countdownAnimationFrameId = requestAnimationFrame(updateCountdown)
-        } else {
-          delaySeconds.value = 0
-          remainingMs.value = 0
-          waitingDelay.value = false
-          initialDelaySeconds.value = 0
-          initialDelayMs.value = 0
-          timerPaused.value = false
-          timerPauseStartTime = null
-          timerPausedRemainingMs = null
-          timerEndTime = null
+        countdownAnimationFrameId = requestAnimationFrame(updateCountdown)
+        autoNextCardTimer = setTimeout(() => {
           if (countdownAnimationFrameId) {
             cancelAnimationFrame(countdownAnimationFrameId)
             countdownAnimationFrameId = null
           }
+          if (waitingDelay.value) {
+            waitingDelay.value = false
+            initialDelaySeconds.value = 0
+            initialDelayMs.value = 0
+            delaySeconds.value = 0
+            remainingMs.value = 0
+            timerPaused.value = false
+            timerPauseStartTime = null
+            timerPausedRemainingMs = null
+            timerEndTime = null
+          }
           nextCard()
-        }
+        }, nextDelayMs)
+      } else {
+        autoNextCardTimer = setTimeout(() => nextCard(), data.is_correct ? 1000 : 150)
       }
-      countdownAnimationFrameId = requestAnimationFrame(updateCountdown)
-      autoNextCardTimer = setTimeout(() => {
-        if (countdownAnimationFrameId) {
-          cancelAnimationFrame(countdownAnimationFrameId)
-          countdownAnimationFrameId = null
-        }
-        if (waitingDelay.value) {
-          waitingDelay.value = false
-          initialDelaySeconds.value = 0
-          initialDelayMs.value = 0
-          delaySeconds.value = 0
-          remainingMs.value = 0
-          timerPaused.value = false
-          timerPauseStartTime = null
-          timerPausedRemainingMs = null
-          timerEndTime = null
-        }
-        nextCard()
-      }, nextDelayMs)
+    }
+    if (!data.is_correct && currentCard.value?.type === 'type' && data.correct_answer) {
+      nextTick(() => {
+        startTypeRevealAnimation(data.chosen_option ?? '', data.correct_answer, startCountdownOrNext)
+      })
     } else {
-      autoNextCardTimer = setTimeout(() => nextCard(), data.is_correct ? 1000 : 150)
+      startCountdownOrNext()
     }
   } catch (error: any) {
     console.error('Failed to submit type answer:', error)
@@ -1711,6 +1861,60 @@ const submitTypeAnswer = async () => {
   } finally {
     answering.value = false
   }
+}
+
+const submitTypeAnswer = async () => {
+  if (!typeAnswerText.value) return
+  const prefix = currentCard.value?.prefix ?? ''
+  await submitTypeAnswerAs(prefix + typeAnswerText.value)
+}
+
+const skipTypeAnswer = () => {
+  submitTypeAnswerAs('')
+}
+
+function startTypeRevealAnimation(wrongAnswer: string, correctAnswer: string, onComplete?: () => void) {
+  typeRevealTimeouts.forEach(clearTimeout)
+  typeRevealTimeouts = []
+  const wrong = wrongAnswer ?? ''
+  const correct = correctAnswer ?? ''
+  typeRevealDisplayText.value = wrong
+  if (wrong.length === 0 && correct.length === 0) {
+    onComplete?.()
+    return
+  }
+  const eraseInterval = 50
+  const typeInterval = 80
+  const pauseAfterErase = 250
+  let eraseStep = 0
+  let typeStep = 0
+  function run() {
+    if (wrong.length > 0 && eraseStep <= wrong.length) {
+      if (eraseStep === 0) {
+        eraseStep = 1
+        typeRevealTimeouts.push(setTimeout(run, eraseInterval))
+        return
+      }
+      typeRevealDisplayText.value = wrong.slice(0, wrong.length - eraseStep)
+      eraseStep++
+      if (eraseStep <= wrong.length) {
+        typeRevealTimeouts.push(setTimeout(run, eraseInterval))
+      } else {
+        typeRevealTimeouts.push(setTimeout(run, pauseAfterErase))
+      }
+      return
+    }
+    if (typeStep < correct.length) {
+      typeRevealDisplayText.value = correct.slice(0, typeStep + 1)
+      typeStep++
+      if (typeStep < correct.length) {
+        typeRevealTimeouts.push(setTimeout(run, typeInterval))
+      } else {
+        onComplete?.()
+      }
+    }
+  }
+  typeRevealTimeouts.push(setTimeout(run, wrong.length > 0 ? 400 : 200))
 }
 
 const submitAnswer = async (optionIndex: number) => {
@@ -1872,6 +2076,10 @@ const nextCard = async () => {
     clearTimeout(exampleButtonTimer)
     exampleButtonTimer = null
   }
+  if (typeHintButtonTimer) {
+    clearTimeout(typeHintButtonTimer)
+    typeHintButtonTimer = null
+  }
   autoNextCardTimerStartTime = null
   autoNextCardTimerDelayMs = null
 
@@ -1892,6 +2100,8 @@ const nextCard = async () => {
   showExampleButtonVisible.value = false
   exampleUsageShown.value = false
   spellAnswerLetters.value = []
+  spellUsedIndices.value = []
+  spellRevealLetters.value = []
   typeAnswerText.value = ''
 
   try {
@@ -2209,38 +2419,46 @@ const handleTimerMouseLeave = () => {
   font-weight: 600;
   color: var(--text-secondary);
 }
+.spell-answer-prefix {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  flex-shrink: 0;
+  padding: 0 2px;
+}
 .spell-answer-letters {
-  min-height: 44px;
+  min-height: 60px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 2px;
   flex-wrap: nowrap;
   padding: 8px 12px;
   width: 100%;
   max-width: 100%;
-  overflow-x: auto;
-  overflow-y: hidden;
-  flex-shrink: 0;
+  box-sizing: border-box;
 }
 .spell-answer-char-btn {
-  min-width: 44px;
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 2.5em;
   min-height: 44px;
   font-size: 1.1rem;
   font-weight: 600;
-  padding: 8px 12px;
-  flex-shrink: 0;
+  padding: 6px 4px;
+  box-sizing: border-box;
 }
-/* Long word: smaller blocks so more fit in one line */
+/* Long word: smaller cap so more fit before shrinking */
 .spell-long .spell-answer-letters {
-  gap: 3px;
+  min-height: 52px;
+  gap: 1px;
   padding: 6px 8px;
 }
 .spell-long .spell-answer-char-btn {
-  min-width: 32px;
-  min-height: 32px;
-  font-size: 0.9rem;
-  padding: 4px 6px;
+  min-height: 36px;
+  max-width: 2.2em;
+  font-size: 0.95rem;
+  padding: 4px 2px;
 }
 .spell-answer-placeholder {
   color: var(--text-tertiary, #999);
@@ -2261,6 +2479,9 @@ const handleTimerMouseLeave = () => {
   font-weight: 600;
   padding: 8px 12px;
 }
+.spell-letter-btn.spell-letter-used {
+  visibility: hidden;
+}
 .spell-long .spell-letter-btn {
   min-width: 34px;
   min-height: 34px;
@@ -2273,34 +2494,168 @@ const handleTimerMouseLeave = () => {
 
 .type-block {
   margin: 20px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 .type-answer-row {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 8px;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
+  width: 100%;
+}
+.type-input-inline {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 320px;
+  border: 2px solid var(--border-color, #ddd);
+  border-radius: 10px;
+  background: var(--bg-primary);
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+}
+.type-input-inline:focus-within {
+  border-color: var(--primary, #4a90d9);
+}
+.type-input-prefix {
+  flex-shrink: 0;
+  padding-left: 14px;
+  font-size: 1.1rem;
+  color: var(--text-secondary, #666);
+  user-select: none;
 }
 .type-answer-label {
   font-size: 0.95rem;
   color: var(--text-secondary, #666);
 }
 .type-input {
-  width: 100%;
-  max-width: 280px;
-  padding: 12px 16px;
+  flex: 1;
+  min-width: 0;
+  height: 44px;
+  padding: 0 12px 0 10px;
+  margin-bottom: 0;
   font-size: 1.1rem;
-  border: 2px solid var(--border-color, #ddd);
-  border-radius: 8px;
-  background: var(--bg-primary);
+  border: none;
+  background: transparent;
   color: var(--text-primary);
+  text-align: center;
+  box-sizing: border-box;
+}
+.type-input-inline:not(:has(.type-input-prefix)) .type-input {
+  padding-left: 16px;
 }
 .type-input:focus {
   outline: none;
-  border-color: var(--primary, #4a90d9);
 }
-.type-submit {
-  width: 100%;
-  max-width: 200px;
+.type-input::placeholder {
+  color: var(--text-tertiary, #999);
+}
+.type-reveal-text {
+  flex: 1;
+  min-width: 0;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+}
+.type-submit-inline {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  align-self: stretch;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: color 0.2s ease, background 0.2s ease;
+}
+.type-submit-inline:hover:not(:disabled) {
+  color: var(--primary, #4a90d9);
+  background: var(--bg-secondary, rgba(0,0,0,0.05));
+}
+.type-submit-inline:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.type-submit-icon {
+  width: 22px;
+  height: 22px;
+}
+.type-actions-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+.type-skip {
+  margin: 0;
+}
+.type-hint-button-wrapper {
+  margin-top: 16px;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+.type-hint-button-wrapper.type-hint-button-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.btn-type-hint-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.btn-type-hint-icon:hover {
+  opacity: 0.8;
+  transform: scale(1.1);
+}
+.btn-type-hint-icon:active {
+  transform: scale(0.95);
+}
+.type-hint-icon {
+  width: 24px;
+  height: 24px;
+  color: var(--text-secondary);
+  opacity: 0.7;
+  transition: opacity 0.2s ease, color 0.2s ease;
+}
+.btn-type-hint-icon:hover .type-hint-icon {
+  opacity: 1;
+  color: var(--text-primary);
+}
+[data-theme="dark"] .type-hint-icon {
+  color: var(--text-secondary);
+  opacity: 0.6;
+}
+[data-theme="dark"] .btn-type-hint-icon:hover .type-hint-icon {
+  color: var(--text-primary);
+  opacity: 0.9;
+}
+.type-hint-text {
+  margin-top: 10px;
+  font-size: 1.1rem;
+  letter-spacing: 0.15em;
+  color: var(--text-secondary, #666);
+  font-family: var(--font-mono, monospace);
 }
 
 .options {
@@ -2759,6 +3114,43 @@ const handleTimerMouseLeave = () => {
   flex-shrink: 0;
 }
 
+.spell-reveal-row {
+  margin: 16px 0 8px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.spell-reveal-row .spell-answer-label {
+  margin: 0;
+}
+.spell-reveal-letters {
+  min-height: 44px;
+}
+.spell-reorder-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: nowrap;
+}
+.spell-reveal-char {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 6px 4px;
+  background: var(--bg-secondary, rgba(0,0,0,0.08));
+  border-radius: 8px;
+  border: 1px solid var(--border-primary, rgba(0,0,0,0.12));
+  color: var(--text-primary);
+  box-sizing: border-box;
+}
+.spell-reorder-move {
+  transition: transform 0.35s ease;
+}
 .correct-answer-hint {
   margin: 16px 0 8px 0;
   padding: 12px 18px;
