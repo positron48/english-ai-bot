@@ -13,7 +13,7 @@ SERVICE_NAME ?= ai-bot
 -include .env
 .EXPORT_ALL_VARIABLES:
 
-.PHONY: all tidy build run test lint fmt setup up clean check ci deploy update status logs docker-build docker-run docker-stop docker-logs docker-clean docker-rebuild docker-dev docker-dev-logs docker-dev-restart webapp-install webapp-dev webapp-build test-postgres
+.PHONY: all tidy build run test lint fmt setup up clean check ci deploy update status logs docker-build docker-run docker-stop docker-logs docker-clean docker-rebuild docker-dev docker-dev-logs docker-dev-restart webapp-install webapp-dev webapp-build test-postgres test-integration test-integration-verbose
 
 all: build
 
@@ -92,6 +92,18 @@ test-postgres:
 	$(GO) test -tags=postgres -v ./internal/integration/postgres/... -count=1
 	@echo "Postgres smoke tests finished."
 
+# Postgres integration tests (Testcontainers, require Docker)
+# Excludes internal/integration/llm (requires AI_URL, AI_API_KEY)
+test-integration:
+	@echo "Running Postgres integration tests (Testcontainers)..."
+	@echo "⚠️  Requires: Docker daemon"
+	$(GO) test -tags=integration -v -count=1 ./internal/integration/testkit/... ./internal/integration/user_flows/... -timeout 180s
+
+test-integration-verbose:
+	@echo "Running Postgres integration tests (verbose)..."
+	@echo "⚠️  Requires: Docker daemon"
+	$(GO) test -tags=integration -v -count=3 ./internal/integration/testkit/... ./internal/integration/user_flows/... -timeout 360s
+
 # LLM integration tests (require AI_URL, AI_API_KEY env vars)
 llm-words:
 	@echo "Running LLM word cards integration tests..."
@@ -141,6 +153,9 @@ check: tidy
 	grep -E "(PASS|FAIL|RUN)" .go-test-output.txt || true; \
 	rm -f .go-test-output.txt; \
 	echo "✅ Go tests passed"
+	@echo ""
+	@echo "5b. Running integration tests (Testcontainers)..."
+	@$(MAKE) test-integration
 	@echo ""
 	@echo "6. Running Go linter..."
 	@if [ ! -x ./bin/golangci-lint ]; then \

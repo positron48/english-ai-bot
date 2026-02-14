@@ -19,6 +19,10 @@ func (db *DB) migratePostgres() error {
 			created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
 			updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 		)`,
+		`CREATE TABLE IF NOT EXISTS word_forms (
+			form TEXT PRIMARY KEY,
+			word_card_id BIGINT NOT NULL REFERENCES word_cards(id) ON DELETE CASCADE
+		)`,
 		`CREATE TABLE IF NOT EXISTS users (
 			id BIGSERIAL PRIMARY KEY,
 			telegram_id BIGINT NOT NULL UNIQUE,
@@ -28,6 +32,14 @@ func (db *DB) migratePostgres() error {
 			settings_json TEXT,
 			created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
 			updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+		)`,
+		`CREATE TABLE IF NOT EXISTS word_request_history (
+			id BIGSERIAL PRIMARY KEY,
+			user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+			word TEXT,
+			word_card_id BIGINT REFERENCES word_cards(id) ON DELETE CASCADE,
+			input_word TEXT,
+			requested_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 		)`,
 		`CREATE TABLE IF NOT EXISTS training_cards (
 			id BIGSERIAL PRIMARY KEY,
