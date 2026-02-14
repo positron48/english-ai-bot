@@ -225,10 +225,20 @@
       >
         <div class="spell-answer-row">
           <span class="spell-answer-label">{{ t('training.composeWord') || 'Your word:' }}</span>
-          <div class="spell-answer-letters" :class="{ 'spell-reveal-letters': feedback && !feedback.is_correct && spellRevealLetters.length }">
+          <div
+            class="spell-answer-letters"
+            :class="{
+              'spell-reveal-letters': feedback && !feedback.is_correct && spellRevealLetters.length,
+              'spell-autopick-active': spellSkipResultActive
+            }"
+          >
             <span v-if="currentCard?.prefix" class="spell-answer-prefix">{{ currentCard.prefix }}</span>
             <template v-if="feedback && !feedback.is_correct && spellRevealLetters.length">
-              <TransitionGroup name="spell-reorder" tag="span" class="spell-reorder-group">
+              <TransitionGroup
+                name="spell-reorder"
+                tag="span"
+                class="spell-reorder-group"
+              >
                 <span
                   v-for="item in spellRevealLetters"
                   :key="item.key"
@@ -242,21 +252,25 @@
                 :key="`a-${i}`"
                 type="button"
                 class="btn spell-letter-btn spell-answer-char-btn"
-                :disabled="!!feedback || answering"
+                :disabled="(!!feedback || answering) && !spellSkipResultActive"
                 @click="spellRemoveLetterAt(i)"
               >{{ ch }}</button>
               <span v-if="spellAnswerLetters.length === 0" class="spell-answer-placeholder">...</span>
             </template>
           </div>
         </div>
-        <div v-show="!feedback" class="spell-letters">
+        <div
+          v-show="!feedback || spellSkipAutoPickInProgress"
+          class="spell-letters"
+          :class="{ 'spell-letters-autopick': spellSkipAutoPickInProgress }"
+        >
           <button
             v-for="(ch, i) in (currentCard?.letters ?? [])"
             :key="i"
             type="button"
             class="btn spell-letter-btn"
             :class="{ 'spell-letter-used': spellUsedIndices.includes(i) }"
-            :disabled="spellUsedIndices.includes(i) || !!feedback || answering"
+            :disabled="spellUsedIndices.includes(i) || ((!!feedback || answering) && !spellSkipResultActive)"
             @click="spellAddLetterByIndex(i)"
           >{{ ch }}</button>
         </div>
@@ -326,9 +340,6 @@
         
         <!-- For incorrect answers: spell = letters reorder in block above; type/cards = hint/example -->
         <template v-if="!feedback.is_correct">
-          <div v-if="currentCard?.type !== 'type' && feedback.correct_answer" class="correct-answer-hint">
-            {{ t('training.correctWord') || 'Правильно:' }} <strong>{{ feedback.correct_answer }}</strong>
-          </div>
           <div v-if="feedback.hint" class="hint">{{ feedback.hint }}</div>
           <div v-if="feedback.example" class="example">{{ feedback.example }}</div>
           <div class="feedback-badge feedback-error">
@@ -524,6 +535,8 @@ const spellAnswerLetters = ref<string[]>([])
 const spellUsedIndices = ref<number[]>([])
 /** For wrong spell: letters in correct order with stable keys for reorder animation */
 const spellRevealLetters = ref<Array<{ letter: string; key: number }>>([])
+const spellSkipAutoPickInProgress = ref(false)
+const spellSkipResultActive = ref(false)
 // Type (type the word, no letters) state
 const typeAnswerText = ref('')
 const typeHintShown = ref(false)
@@ -1425,6 +1438,8 @@ const setupCard = (card: Card) => {
   spellAnswerLetters.value = []
   spellUsedIndices.value = []
   spellRevealLetters.value = []
+  spellSkipAutoPickInProgress.value = false
+  spellSkipResultActive.value = false
   typeAnswerText.value = ''
   typeHintShown.value = false
   showTypeHintButton.value = false
@@ -1638,7 +1653,10 @@ const spellRemoveLetterAt = (answerPosition: number) => {
 
 const skipSpellAnswer = () => {
   if (feedback.value || answering.value) return
-  submitSpellAnswerAs('')
+  spellAnswerLetters.value = []
+  spellUsedIndices.value = []
+  spellRevealLetters.value = []
+  submitSpellAnswerAs('', true)
 }
 
 const submitSpellAnswer = () => {
@@ -1660,21 +1678,47 @@ function buildSpellRevealLetters(correctAnswer: string, wrongOrder: string[], pr
   })
 }
 
-const submitSpellAnswerAs = async (answerText: string) => {
+async function animateSpellSkipAutoPick(correctAnswer: string, prefix: string) {
+  const afterPrefix = prefix ? correctAnswer.slice(prefix.length) : correctAnswer
+  const targetLetters = Array.from(afterPrefix)
+  const sourceLetters = currentCard.value?.letters ?? []
+  const usedSource = new Set<number>()
+  spellSkipAutoPickInProgress.value = true
+  spellAnswerLetters.value = []
+  spellUsedIndices.value = []
+  for (const targetLetter of targetLetters) {
+    const sourceIndex = sourceLetters.findIndex((c, idx) => (c === targetLetter || c.toLowerCase() === targetLetter.toLowerCase()) && !usedSource.has(idx))
+    if (sourceIndex >= 0) {
+      usedSource.add(sourceIndex)
+      spellUsedIndices.value = [...spellUsedIndices.value, sourceIndex]
+    }
+    spellAnswerLetters.value = [...spellAnswerLetters.value, targetLetter]
+    await new Promise((resolve) => setTimeout(resolve, 55))
+  }
+  spellSkipAutoPickInProgress.value = false
+}
+
+const submitSpellAnswerAs = async (answerText: string, isSkip = false) => {
   if (feedback.value || answering.value) return
   answering.value = true
+  spellSkipResultActive.value = isSkip
   try {
     const formData = new FormData()
     formData.append('answer_text', answerText)
     const data: Feedback = await apiClient.requestFormData('/api/training/answer', formData)
     feedback.value = data
     if (!data.is_correct && currentCard.value?.type === 'spell' && data.correct_answer) {
-      const wrongOrder = [...spellAnswerLetters.value]
       const prefix = currentCard.value?.prefix ?? ''
-      spellRevealLetters.value = wrongOrder.map((letter, i) => ({ letter, key: i }))
-      nextTick(() => {
-        spellRevealLetters.value = buildSpellRevealLetters(data.correct_answer, wrongOrder, prefix)
-      })
+      if (isSkip) {
+        spellRevealLetters.value = []
+        await animateSpellSkipAutoPick(data.correct_answer, prefix)
+      } else {
+        const wrongOrder = [...spellAnswerLetters.value]
+        spellRevealLetters.value = wrongOrder.map((letter, i) => ({ letter, key: i }))
+        nextTick(() => {
+          spellRevealLetters.value = buildSpellRevealLetters(data.correct_answer, wrongOrder, prefix)
+        })
+      }
     }
     triggerHapticFeedback(data.is_correct)
     if (data.is_correct) {
@@ -2102,6 +2146,8 @@ const nextCard = async () => {
   spellAnswerLetters.value = []
   spellUsedIndices.value = []
   spellRevealLetters.value = []
+  spellSkipAutoPickInProgress.value = false
+  spellSkipResultActive.value = false
   typeAnswerText.value = ''
 
   try {
@@ -2436,6 +2482,7 @@ const handleTimerMouseLeave = () => {
   padding: 8px 12px;
   width: 100%;
   max-width: 100%;
+  min-width: 0;
   box-sizing: border-box;
 }
 .spell-answer-char-btn {
@@ -2447,6 +2494,17 @@ const handleTimerMouseLeave = () => {
   font-weight: 600;
   padding: 6px 4px;
   box-sizing: border-box;
+}
+.spell-autopick-active .spell-answer-char-btn:disabled {
+  opacity: 1;
+  color: var(--text-primary);
+}
+.spell-letters-autopick {
+  pointer-events: none;
+}
+.spell-letters-autopick .spell-letter-btn {
+  opacity: 1;
+  color: var(--text-primary);
 }
 /* Long word: smaller cap so more fit before shrinking */
 .spell-long .spell-answer-letters {
@@ -3135,6 +3193,7 @@ const handleTimerMouseLeave = () => {
 }
 .spell-reveal-char {
   display: inline-flex;
+  flex: 0 0 auto;
   align-items: center;
   justify-content: center;
   min-width: 44px;
@@ -3151,19 +3210,11 @@ const handleTimerMouseLeave = () => {
 .spell-reorder-move {
   transition: transform 0.35s ease;
 }
-.correct-answer-hint {
-  margin: 16px 0 8px 0;
-  padding: 12px 18px;
-  background: var(--example-bg, rgba(59, 130, 246, 0.1));
-  border-radius: 8px;
-  color: var(--text-primary);
-  border-left: 4px solid var(--color-primary);
-  text-align: center;
-  font-size: 1rem;
-}
-
-.correct-answer-hint strong {
-  font-weight: 700;
+.spell-long .spell-reveal-char {
+  min-width: 34px;
+  min-height: 36px;
+  font-size: 0.95rem;
+  padding: 4px 2px;
 }
 
 .hint {
@@ -3940,6 +3991,10 @@ const handleTimerMouseLeave = () => {
 
 /* Hide option number on mobile */
 @media (max-width: 768px) {
+  .spell-answer-prefix {
+    font-size: 1rem;
+  }
+
   .option-number {
     display: none;
   }
