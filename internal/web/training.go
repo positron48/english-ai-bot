@@ -51,7 +51,7 @@ type WebTrainingState struct {
 	SessionID            int64
 	Queue                []*models.TrainingQueueItem
 	CurrentIndex         int
-	CorrectCount         int   // number of correct spell/type answers (cards are in review_events)
+	CorrectCount         int   // deprecated: stats are taken only from review_events (each mode creates one event per answer)
 	ShownAt              time.Time
 	OptionsShownAt       *time.Time
 	Options              []string
@@ -703,9 +703,6 @@ func (r *Router) handleTrainingSpellAnswer(w http.ResponseWriter, req *http.Requ
 	}
 	isCorrect := userNorm == correctNorm
 	correctAnswer := item.Spell.DisplayWord
-	if isCorrect {
-		state.CorrectCount++
-	}
 	replacedUserCardID := item.Spell.ReplacedUserCardID
 	shownAt := state.ShownAt
 	state.CurrentIndex++
@@ -756,9 +753,6 @@ func (r *Router) handleTrainingTypeAnswer(w http.ResponseWriter, req *http.Reque
 	}
 	isCorrect := userNorm == correctNorm
 	correctAnswer := item.TypeChallenge.DisplayWord
-	if isCorrect {
-		state.CorrectCount++
-	}
 	replacedUserCardID := item.TypeChallenge.ReplacedUserCardID
 	shownAt := state.ShownAt
 	state.CurrentIndex++
@@ -1051,15 +1045,14 @@ func (r *Router) finishTrainingSession(w http.ResponseWriter, req *http.Request,
 		r.logger.Error("failed to finish session", zap.Error(err))
 	}
 
-	// Get session statistics (cards only from review_events; spell/type tracked in state.CorrectCount)
+	// Session statistics: one source of truth — review_events (card, spell, type each create exactly one event per answer)
 	sessionRepo := repository.NewSessionRepository(r.db, r.logger)
-	_, correctCardsFromDB, err := sessionRepo.GetSessionStats(state.SessionID)
+	totalCards, correctCards, err := sessionRepo.GetSessionStats(state.SessionID)
 	if err != nil {
 		r.logger.Error("failed to get session stats", zap.Error(err))
-		correctCardsFromDB = 0
+		totalCards = state.CurrentIndex
+		correctCards = 0
 	}
-	totalCards := state.CurrentIndex
-	correctCards := correctCardsFromDB + state.CorrectCount
 
 	// Remove from memory
 	if r.webTrainingHandler != nil {
