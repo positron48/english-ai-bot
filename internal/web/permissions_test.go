@@ -7,7 +7,6 @@ import (
 	"testing"
 
 	"tgbot-skeleton/internal/config"
-	"tgbot-skeleton/internal/database"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/testutil"
@@ -86,7 +85,6 @@ func TestIsValidPermission(t *testing.T) {
 func TestRouter_IsSuperAdmin(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := testutil.SetupTestDB(t)
-	defer db.Close()
 
 	cfg := &config.Config{
 		Admin: config.AdminConfig{
@@ -138,11 +136,7 @@ func TestRouter_IsSuperAdmin(t *testing.T) {
 
 func TestRouter_HasPermission(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, err := database.New(":memory:", logger)
-	if err != nil {
-		t.Fatalf("Failed to create database: %v", err)
-	}
-	defer db.Close()
+	db := testutil.SetupTestDatabase(t)
 
 	cfg := &config.Config{
 		Admin: config.AdminConfig{
@@ -226,11 +220,7 @@ func TestRouter_HasPermission(t *testing.T) {
 
 func TestRouter_RequirePermission(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, err := database.New(":memory:", logger)
-	if err != nil {
-		t.Fatalf("Failed to create database: %v", err)
-	}
-	defer db.Close()
+	db := testutil.SetupTestDatabase(t)
 
 	cfg := &config.Config{
 		Admin: config.AdminConfig{
@@ -293,11 +283,7 @@ func TestRouter_RequirePermission(t *testing.T) {
 
 func TestRouter_RequireAnyPermission(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, err := database.New(":memory:", logger)
-	if err != nil {
-		t.Fatalf("Failed to create database: %v", err)
-	}
-	defer db.Close()
+	db := testutil.SetupTestDatabase(t)
 
 	cfg := &config.Config{
 		Admin: config.AdminConfig{

@@ -11,7 +11,6 @@ import (
 func TestWordRepository_UpdateWordCard(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupWordTestDB(t)
-	defer db.Close()
 
 	repo := NewWordRepository(db, logger)
 
@@ -83,7 +82,6 @@ func TestWordRepository_UpdateWordCard(t *testing.T) {
 func TestWordRepository_UpdateWordCard_PartialUpdate(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupWordTestDB(t)
-	defer db.Close()
 
 	repo := NewWordRepository(db, logger)
 

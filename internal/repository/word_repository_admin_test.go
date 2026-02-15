@@ -18,8 +18,7 @@ func setupWordAdminTestDB(t *testing.T) (*sql.DB, *WordRepository) {
 }
 
 func TestWordRepository_ListWordCardsAdmin(t *testing.T) {
-	db, repo := setupWordAdminTestDB(t)
-	defer db.Close()
+	_, repo := setupWordAdminTestDB(t)
 
 	// Create word cards
 	repo.SaveWordCard("admin1", "definition 1")
@@ -36,8 +35,7 @@ func TestWordRepository_ListWordCardsAdmin(t *testing.T) {
 }
 
 func TestWordRepository_ListWordCardsAdmin_WithSearch(t *testing.T) {
-	db, repo := setupWordAdminTestDB(t)
-	defer db.Close()
+	_, repo := setupWordAdminTestDB(t)
 
 	// Create word cards
 	repo.SaveWordCard("searchword", "definition")
@@ -54,8 +52,7 @@ func TestWordRepository_ListWordCardsAdmin_WithSearch(t *testing.T) {
 }
 
 func TestWordRepository_CountWordCardsAdmin(t *testing.T) {
-	db, repo := setupWordAdminTestDB(t)
-	defer db.Close()
+	_, repo := setupWordAdminTestDB(t)
 
 	// Create word cards
 	repo.SaveWordCard("count1", "definition 1")
@@ -73,8 +70,10 @@ func TestWordRepository_CountWordCardsAdmin(t *testing.T) {
 }
 
 func TestWordRepository_CountWordCardsAdmin_WithFilterUserID(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
 	db, repo := setupWordAdminTestDB(t)
-	defer db.Close()
+	userRepo := NewUserRepository(db, logger)
+	user, _ := userRepo.GetOrCreateUser(100)
 
 	// Create word cards first
 	repo.SaveWordCard("userword1", "definition 1")
@@ -90,14 +89,14 @@ func TestWordRepository_CountWordCardsAdmin_WithFilterUserID(t *testing.T) {
 		t.Fatalf("Failed to get word card: %v", err)
 	}
 
-	// Add request history for user 100 with word_card_id
+	// Add request history for user with word_card_id
 	word1 := "userword1"
 	word2 := "userword2"
-	repo.AddWordRequestHistoryWithCard(100, "userword1", &card1.ID, &word1)
-	repo.AddWordRequestHistoryWithCard(100, "userword2", &card2.ID, &word2)
+	repo.AddWordRequestHistoryWithCard(user.ID, "userword1", &card1.ID, &word1)
+	repo.AddWordRequestHistoryWithCard(user.ID, "userword2", &card2.ID, &word2)
 
-	// Count word cards for user 100
-	userID := int64(100)
+	// Count word cards for user
+	userID := user.ID
 	count, err := repo.CountWordCardsAdmin(&userID, false, "", "")
 	if err != nil {
 		t.Fatalf("CountWordCardsAdmin() error = %v", err)
@@ -108,8 +107,7 @@ func TestWordRepository_CountWordCardsAdmin_WithFilterUserID(t *testing.T) {
 }
 
 func TestWordRepository_CountWordCardsAdmin_WithErrors(t *testing.T) {
-	db, repo := setupWordAdminTestDB(t)
-	defer db.Close()
+	_, repo := setupWordAdminTestDB(t)
 
 	// Create word card with error
 	repo.SaveWordCard("errorword", "definition")
@@ -135,8 +133,7 @@ func TestWordRepository_CountWordCardsAdmin_WithErrors(t *testing.T) {
 }
 
 func TestWordRepository_CountWordCardsAdmin_WithSearch(t *testing.T) {
-	db, repo := setupWordAdminTestDB(t)
-	defer db.Close()
+	_, repo := setupWordAdminTestDB(t)
 
 	// Create word cards
 	repo.SaveWordCard("searchable", "definition")
@@ -154,9 +151,8 @@ func TestWordRepository_CountWordCardsAdmin_WithSearch(t *testing.T) {
 
 func TestWordRepository_ListWordCardsAdmin_MissingTrainingPOS(t *testing.T) {
 	db, repo := setupWordAdminTestDB(t)
-	defer db.Close()
-
-	tcRepo := NewTrainingCardRepository(db, repo.logger)
+	logger, _ := zap.NewDevelopment()
+	tcRepo := NewTrainingCardRepository(db, logger)
 
 	// Word A: has a training card with pos=noun
 	repo.SaveWordCard("wordwithnoun", "definition")
@@ -206,8 +202,11 @@ func TestWordRepository_ListWordCardsAdmin_MissingTrainingPOS(t *testing.T) {
 }
 
 func TestWordRepository_GetWordCardRequestingUsers(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
 	db, repo := setupWordAdminTestDB(t)
-	defer db.Close()
+	userRepo := NewUserRepository(db, logger)
+	u1, _ := userRepo.GetOrCreateUser(100)
+	u2, _ := userRepo.GetOrCreateUser(200)
 
 	// Create a word card
 	repo.SaveWordCard("requesting", "definition")
@@ -219,8 +218,8 @@ func TestWordRepository_GetWordCardRequestingUsers(t *testing.T) {
 	}
 
 	// Add request history
-	repo.AddWordRequestHistory(100, "requesting")
-	repo.AddWordRequestHistory(200, "requesting")
+	repo.AddWordRequestHistory(u1.ID, "requesting")
+	repo.AddWordRequestHistory(u2.ID, "requesting")
 
 	// Get requesting users
 	users, err := repo.GetWordCardRequestingUsers(card.ID)
@@ -233,8 +232,7 @@ func TestWordRepository_GetWordCardRequestingUsers(t *testing.T) {
 }
 
 func TestWordRepository_DeleteWordCard(t *testing.T) {
-	db, repo := setupWordAdminTestDB(t)
-	defer db.Close()
+	_, repo := setupWordAdminTestDB(t)
 
 	// Create a word card
 	repo.SaveWordCard("deletecard", "definition")

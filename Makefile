@@ -138,19 +138,22 @@ check: tidy
 	@$(GO) mod verify
 	@echo "✅ Go dependencies verified"
 	@echo ""
-	@echo "5. Running Go tests (no cache, GOMAXPROCS=2 like CI runners)..."
-	@GOMAXPROCS=2 $(GO) test -tags=test -count=1 -coverprofile=coverage.out -covermode=atomic -v ./... > .go-test-output.txt 2>&1; \
+	@echo "5. Running Go tests (no cache, GOMAXPROCS=2, 1 package at a time for Testcontainers)..."
+	@/bin/bash -c 'GOMAXPROCS=2 $(GO) test -tags=test -count=1 -p 1 -parallel 1 -timeout 30m -coverprofile=coverage.out -covermode=atomic -v ./... 2>&1 | tee .go-test-output.txt | grep -v -E "Container (created|started|ready|stopped|terminated)|Creating container|Starting container|Terminating container|Waiting for container|Waiting for Reaper|Shell not found|Reaper obtained|🐳|✅ Container|🔔 Container|⏳ Waiting|🔥 Reaper|🚫 Container|testcontainers-go -|Resolved Docker|Server Version|API Version|Operating System|Total Memory|Testcontainers for Go|Test SessionID|Test ProcessID"; exit $${PIPESTATUS[0]}'; \
 	TEST_EXIT_CODE=$$?; \
 	if [ $$TEST_EXIT_CODE -ne 0 ]; then \
-		echo "❌ Go tests failed:"; \
 		echo ""; \
-		grep "FAIL" .go-test-output.txt | tail -25 || true; \
+		echo "========== FAILED TESTS =========="; \
+		grep -E "^--- FAIL:" .go-test-output.txt || true; \
 		echo ""; \
-		cat .go-test-output.txt; \
+		echo "========== FAILURE DETAILS =========="; \
+		awk '/^--- FAIL:/{p=1} p{print} /^=== RUN |^--- PASS:|^ok  /{if(p) p=0}' .go-test-output.txt | head -500; \
 		rm -f .go-test-output.txt; \
 		exit $$TEST_EXIT_CODE; \
 	fi; \
-	grep -E "(PASS|FAIL|RUN)" .go-test-output.txt || true; \
+	echo ""; \
+	echo "========== TEST RESULTS =========="; \
+	grep -E "^(=== RUN|--- PASS:|--- FAIL:|ok  |FAIL$$)" .go-test-output.txt || true; \
 	rm -f .go-test-output.txt; \
 	echo "✅ Go tests passed"
 	@echo ""

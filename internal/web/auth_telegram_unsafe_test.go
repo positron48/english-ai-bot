@@ -12,33 +12,13 @@ import (
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/repository"
 
-	_ "github.com/mattn/go-sqlite3"
+	"tgbot-skeleton/internal/testutil"
 	"go.uber.org/zap"
 )
 
 func setupAuthTelegramUnsafeTestDB(t *testing.T) (*sql.DB, *repository.UserRepository) {
-	db, err := sql.Open("sqlite3", ":memory:")
-	if err != nil {
-		t.Fatalf("Failed to open test database: %v", err)
-	}
-
-	createTables := `
-	CREATE TABLE IF NOT EXISTS users (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		telegram_id INTEGER UNIQUE NOT NULL,
-		telegram_username TEXT,
-		username TEXT,
-		timezone TEXT DEFAULT '',
-		preferred_training_time TEXT DEFAULT '',
-		settings_json TEXT DEFAULT '',
-		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-	);`
-
-	_, err = db.Exec(createTables)
-	if err != nil {
-		t.Fatalf("Failed to create tables: %v", err)
-	}
+	t.Helper()
+	db := testutil.SetupTestDB(t)
 
 	logger, _ := zap.NewDevelopment()
 	userRepo := repository.NewUserRepository(db, logger)
@@ -49,7 +29,6 @@ func setupAuthTelegramUnsafeTestDB(t *testing.T) (*sql.DB, *repository.UserRepos
 func TestHandleAuthTelegramUnsafe_ValidUserID(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo := setupAuthTelegramUnsafeTestDB(t)
-	defer db.Close()
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
@@ -99,7 +78,6 @@ func TestHandleAuthTelegramUnsafe_ValidUserID(t *testing.T) {
 func TestHandleAuthTelegramUnsafe_MissingUserID(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo := setupAuthTelegramUnsafeTestDB(t)
-	defer db.Close()
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
@@ -126,7 +104,6 @@ func TestHandleAuthTelegramUnsafe_MissingUserID(t *testing.T) {
 func TestHandleAuthTelegramUnsafe_InvalidUserID(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo := setupAuthTelegramUnsafeTestDB(t)
-	defer db.Close()
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
@@ -153,7 +130,6 @@ func TestHandleAuthTelegramUnsafe_InvalidUserID(t *testing.T) {
 func TestHandleAuthTelegramUnsafe_WrongMethod(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo := setupAuthTelegramUnsafeTestDB(t)
-	defer db.Close()
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
@@ -179,7 +155,6 @@ func TestHandleAuthTelegramUnsafe_WrongMethod(t *testing.T) {
 func TestHandleAuthTelegramUnsafe_ExistingUser(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo := setupAuthTelegramUnsafeTestDB(t)
-	defer db.Close()
 
 	// Create a user first
 	telegramID := int64(99999)

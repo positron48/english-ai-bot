@@ -14,123 +14,14 @@ import (
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/service"
 
-	_ "github.com/mattn/go-sqlite3"
+	"tgbot-skeleton/internal/testutil"
+
 	"go.uber.org/zap"
 )
 
 func setupTrainingIntegrationTestDB(t *testing.T) (*sql.DB, *repository.UserRepository, *repository.TrainingCardRepository, *repository.UserCardRepository, *repository.SessionRepository) {
-	db, err := sql.Open("sqlite3", ":memory:")
-	if err != nil {
-		t.Fatalf("Failed to open test database: %v", err)
-	}
-
-	createTables := `
-	CREATE TABLE IF NOT EXISTS users (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		telegram_id INTEGER UNIQUE NOT NULL,
-		telegram_username TEXT,
-		username TEXT,
-		timezone TEXT DEFAULT '',
-		preferred_training_time TEXT DEFAULT '',
-		settings_json TEXT DEFAULT '',
-		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-	);
-	
-	CREATE TABLE IF NOT EXISTS word_cards (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		word TEXT UNIQUE NOT NULL,
-		definition TEXT NOT NULL,
-		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-	);
-	
-	CREATE TABLE IF NOT EXISTS training_cards (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		word_card_id INTEGER NOT NULL,
-		word_en TEXT NOT NULL,
-		transcription TEXT,
-		sense_index INTEGER NOT NULL,
-		word_ru TEXT NOT NULL,
-		meaning_en TEXT NOT NULL,
-		example_en TEXT,
-		example_ru TEXT,
-		distractors_ru TEXT,
-		distractors_en TEXT,
-		hint TEXT,
-		pos TEXT,
-		display_word TEXT,
-		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-	);
-	
-	CREATE TABLE IF NOT EXISTS user_cards (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		user_id INTEGER NOT NULL,
-		training_card_id INTEGER NOT NULL,
-		direction TEXT NOT NULL,
-		state TEXT NOT NULL,
-		ef REAL NOT NULL DEFAULT 2.5,
-		reps INTEGER NOT NULL DEFAULT 0,
-		interval_days INTEGER NOT NULL DEFAULT 0,
-		learning_step INTEGER NOT NULL DEFAULT 0,
-		lapse_count INTEGER NOT NULL DEFAULT 0,
-		next_due_at TEXT,
-		last_review_at TEXT,
-		last_quality INTEGER,
-		last_options_json TEXT,
-		wrong_answers_json TEXT,
-		stats_json TEXT,
-		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-	);
-	
-	CREATE TABLE IF NOT EXISTS training_sessions (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		user_id INTEGER NOT NULL,
-		started_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		ended_at TEXT,
-		source TEXT NOT NULL,
-		planned_count INTEGER NOT NULL DEFAULT 0,
-		done_count INTEGER NOT NULL DEFAULT 0,
-		session_json TEXT DEFAULT ''
-	);
-	
-	CREATE TABLE IF NOT EXISTS review_events (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		session_id INTEGER,
-		user_id INTEGER NOT NULL,
-		user_card_id INTEGER NOT NULL,
-		direction TEXT NOT NULL,
-		shown_at TEXT NOT NULL,
-		options_shown_at TEXT,
-		answered_at TEXT,
-		t_delay_ms INTEGER,
-		early_reveal INTEGER NOT NULL DEFAULT 0,
-		option_count INTEGER NOT NULL,
-		options_json TEXT,
-		chosen_option TEXT,
-		is_correct INTEGER NOT NULL DEFAULT 0,
-		quality INTEGER NOT NULL,
-		metrics_json TEXT,
-		srs_before_json TEXT,
-		srs_after_json TEXT,
-		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-	);
-	
-	CREATE TABLE IF NOT EXISTS user_word_knowledge (
-		user_id INTEGER NOT NULL,
-		word_card_id INTEGER NOT NULL,
-		status TEXT NOT NULL DEFAULT 'known' CHECK(status IN ('known')),
-		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-		FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-		FOREIGN KEY (word_card_id) REFERENCES word_cards(id) ON DELETE CASCADE,
-		UNIQUE(user_id, word_card_id)
-	);`
-
-	_, err = db.Exec(createTables)
-	if err != nil {
-		t.Fatalf("Failed to create tables: %v", err)
-	}
+	t.Helper()
+	db := testutil.SetupTestDB(t)
 
 	logger, _ := zap.NewDevelopment()
 	userRepo := repository.NewUserRepository(db, logger)
@@ -144,7 +35,6 @@ func setupTrainingIntegrationTestDB(t *testing.T) (*sql.DB, *repository.UserRepo
 func TestHandleTrainingStart_WithCards(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo, trainingCardRepo, userCardRepo, sessionRepo := setupTrainingIntegrationTestDB(t)
-	defer db.Close()
 
 	// Create a user
 	user, err := userRepo.GetOrCreateUser(434343)
@@ -153,14 +43,15 @@ func TestHandleTrainingStart_WithCards(t *testing.T) {
 	}
 
 	// Create word card first (required for training card)
-	_, err = db.Exec("INSERT INTO word_cards (id, word, definition) VALUES (?, ?, ?)", 1, "integration", "integration")
+	var wordCardID int64
+	err = db.QueryRow("INSERT INTO word_cards (word, definition) VALUES ($1, $2) RETURNING id", "integration", "integration").Scan(&wordCardID)
 	if err != nil {
 		t.Fatalf("Failed to create word card: %v", err)
 	}
 
 	// Create training card
 	trainingCard := &models.TrainingCard{
-		WordCardID: 1,
+		WordCardID: wordCardID,
 		WordEN:     "integration",
 		SenseIndex: 0,
 		WordRU:     "интеграция",
@@ -250,7 +141,6 @@ func TestHandleTrainingStart_WithCards(t *testing.T) {
 func TestHandleTrainingReveal_WithSession(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo, trainingCardRepo, userCardRepo, sessionRepo := setupTrainingIntegrationTestDB(t)
-	defer db.Close()
 
 	// Create a user
 	user, err := userRepo.GetOrCreateUser(444444)
@@ -259,14 +149,15 @@ func TestHandleTrainingReveal_WithSession(t *testing.T) {
 	}
 
 	// Create word card first (required for training card)
-	_, err = db.Exec("INSERT INTO word_cards (id, word, definition) VALUES (?, ?, ?)", 1, "reveal", "reveal")
+	var wordCardID int64
+	err = db.QueryRow("INSERT INTO word_cards (word, definition) VALUES ($1, $2) RETURNING id", "reveal", "reveal").Scan(&wordCardID)
 	if err != nil {
 		t.Fatalf("Failed to create word card: %v", err)
 	}
 
 	// Create training card
 	trainingCard := &models.TrainingCard{
-		WordCardID: 1,
+		WordCardID: wordCardID,
 		WordEN:     "reveal",
 		SenseIndex: 0,
 		WordRU:     "раскрыть",

@@ -21,6 +21,8 @@ func TestLoad_Defaults(t *testing.T) {
 		"SERVER_ADDRESS":             os.Getenv("SERVER_ADDRESS"),
 		"LOG_LEVEL":                  os.Getenv("LOG_LEVEL"),
 		"DATABASE_PATH":              os.Getenv("DATABASE_PATH"),
+		"DATABASE_DRIVER":            os.Getenv("DATABASE_DRIVER"),
+		"DATABASE_URL":               os.Getenv("DATABASE_URL"),
 	}
 	
 	// Restore original env vars after test
@@ -41,6 +43,8 @@ func TestLoad_Defaults(t *testing.T) {
 	os.Unsetenv("AI_PROMPT_FILE")
 	os.Unsetenv("AI_MODEL")
 	os.Setenv("WEBAPP_JWT_SECRET", "test-secret")
+	os.Setenv("DATABASE_DRIVER", "postgres")
+	os.Setenv("DATABASE_URL", "postgres://test:test@localhost/test?sslmode=disable")
 	os.Unsetenv("TRAINING_WORKER_BATCH_SIZE")
 	os.Unsetenv("TRAINING_LLM_WORKERS")
 	os.Unsetenv("SERVER_ADDRESS")
@@ -65,8 +69,8 @@ func TestLoad_Defaults(t *testing.T) {
 		t.Errorf("Expected default AI model gpt-3.5-turbo, got %s", cfg.AI.Model)
 	}
 	
-	if cfg.Database.Path != "./data/words.db" {
-		t.Errorf("Expected default database path, got %s", cfg.Database.Path)
+	if cfg.Database.Driver != "postgres" {
+		t.Errorf("Expected database driver postgres, got %s", cfg.Database.Driver)
 	}
 	
 	if !cfg.Training.WorkerEnabled {
@@ -121,6 +125,8 @@ func TestLoad_MissingAIURL(t *testing.T) {
 	os.Setenv("AI_API_KEY", "test-key")
 	os.Setenv("AI_PROMPT", "test prompt")
 	os.Setenv("WEBAPP_JWT_SECRET", "test-secret")
+	os.Setenv("DATABASE_DRIVER", "postgres")
+	os.Setenv("DATABASE_URL", "postgres://test:test@localhost/test?sslmode=disable")
 	
 	_, err := Load()
 	if err == nil {
@@ -150,6 +156,8 @@ func TestLoad_MissingAIAPIKey(t *testing.T) {
 	os.Unsetenv("AI_API_KEY")
 	os.Setenv("AI_PROMPT", "test prompt")
 	os.Setenv("WEBAPP_JWT_SECRET", "test-secret")
+	os.Setenv("DATABASE_DRIVER", "postgres")
+	os.Setenv("DATABASE_URL", "postgres://test:test@localhost/test?sslmode=disable")
 	
 	_, err := Load()
 	if err == nil {
@@ -181,6 +189,8 @@ func TestLoad_MissingAIPrompt(t *testing.T) {
 	os.Unsetenv("AI_PROMPT")
 	os.Unsetenv("AI_PROMPT_FILE")
 	os.Setenv("WEBAPP_JWT_SECRET", "test-secret")
+	os.Setenv("DATABASE_DRIVER", "postgres")
+	os.Setenv("DATABASE_URL", "postgres://test:test@localhost/test?sslmode=disable")
 	
 	_, err := Load()
 	if err == nil {
@@ -212,6 +222,8 @@ func TestLoad_MissingJWTSecret(t *testing.T) {
 	os.Setenv("AI_PROMPT", "test prompt")
 	os.Unsetenv("WEBAPP_JWT_SECRET")
 	os.Unsetenv("WEBAPP_SESSION_SECRET")
+	os.Setenv("DATABASE_DRIVER", "postgres")
+	os.Setenv("DATABASE_URL", "postgres://test:test@localhost/test?sslmode=disable")
 	
 	_, err := Load()
 	if err == nil {
@@ -251,6 +263,8 @@ func TestLoad_WithPromptFile(t *testing.T) {
 	os.Unsetenv("AI_PROMPT")
 	os.Setenv("AI_PROMPT_FILE", promptFile)
 	os.Setenv("WEBAPP_JWT_SECRET", "test-secret")
+	os.Setenv("DATABASE_DRIVER", "postgres")
+	os.Setenv("DATABASE_URL", "postgres://test:test@localhost/test?sslmode=disable")
 	
 	cfg, err := Load()
 	if err != nil {
@@ -286,6 +300,8 @@ func TestLoad_InvalidPromptFile(t *testing.T) {
 	os.Unsetenv("AI_PROMPT")
 	os.Setenv("AI_PROMPT_FILE", "/nonexistent/path/prompt.txt")
 	os.Setenv("WEBAPP_JWT_SECRET", "test-secret")
+	os.Setenv("DATABASE_DRIVER", "postgres")
+	os.Setenv("DATABASE_URL", "postgres://test:test@localhost/test?sslmode=disable")
 	
 	_, err := Load()
 	if err == nil {
@@ -318,6 +334,8 @@ func TestLoad_BotMessageNewlines(t *testing.T) {
 	os.Setenv("AI_PROMPT", "test prompt")
 	os.Unsetenv("AI_PROMPT_FILE")
 	os.Setenv("WEBAPP_JWT_SECRET", "test-secret")
+	os.Setenv("DATABASE_DRIVER", "postgres")
+	os.Setenv("DATABASE_URL", "postgres://test:test@localhost/test?sslmode=disable")
 	os.Setenv("BOT_START_MESSAGE", "Hello\\nWorld")
 	
 	cfg, err := Load()
@@ -356,6 +374,8 @@ func TestLoad_SessionSecretFallback(t *testing.T) {
 	os.Unsetenv("AI_PROMPT_FILE")
 	os.Unsetenv("WEBAPP_JWT_SECRET")
 	os.Setenv("WEBAPP_SESSION_SECRET", "session-secret")
+	os.Setenv("DATABASE_DRIVER", "postgres")
+	os.Setenv("DATABASE_URL", "postgres://test:test@localhost/test?sslmode=disable")
 	
 	cfg, err := Load()
 	if err != nil {
@@ -398,7 +418,8 @@ func TestLoad_CustomEnvValues(t *testing.T) {
 	os.Setenv("WEBAPP_JWT_SECRET", "custom-jwt-secret")
 	os.Setenv("SERVER_ADDRESS", ":9000")
 	os.Setenv("LOG_LEVEL", "debug")
-	os.Setenv("DATABASE_PATH", "/custom/path/db.sqlite")
+	os.Setenv("DATABASE_DRIVER", "postgres")
+	os.Setenv("DATABASE_URL", "postgres://custom:custom@localhost:5432/customdb?sslmode=disable")
 	
 	cfg, err := Load()
 	if err != nil {
@@ -425,8 +446,8 @@ func TestLoad_CustomEnvValues(t *testing.T) {
 		t.Errorf("Expected debug log level, got %s", cfg.Logging.Level)
 	}
 	
-	if cfg.Database.Path != "/custom/path/db.sqlite" {
-		t.Errorf("Expected custom database path, got %s", cfg.Database.Path)
+	if cfg.Database.URL != "postgres://custom:custom@localhost:5432/customdb?sslmode=disable" {
+		t.Errorf("Expected custom database URL, got %s", cfg.Database.URL)
 	}
 }
 
@@ -454,6 +475,8 @@ func TestLoad_RateLimitDefaults(t *testing.T) {
 	os.Setenv("AI_PROMPT", "test prompt")
 	os.Unsetenv("AI_PROMPT_FILE")
 	os.Setenv("WEBAPP_JWT_SECRET", "test-secret")
+	os.Setenv("DATABASE_DRIVER", "postgres")
+	os.Setenv("DATABASE_URL", "postgres://test:test@localhost/test?sslmode=disable")
 	
 	cfg, err := Load()
 	if err != nil {

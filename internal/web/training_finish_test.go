@@ -15,14 +15,12 @@ import (
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/service"
 
-	_ "github.com/mattn/go-sqlite3"
 	"go.uber.org/zap"
 )
 
 func TestFinishTrainingSession_CompleteSession(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo, trainingCardRepo, userCardRepo, sessionRepo := setupTrainingIntegrationTestDB(t)
-	defer db.Close()
 
 	// Create a user
 	user, err := userRepo.GetOrCreateUser(464646)
@@ -31,14 +29,15 @@ func TestFinishTrainingSession_CompleteSession(t *testing.T) {
 	}
 
 	// Create word card first (required for training card)
-	_, err = db.Exec("INSERT INTO word_cards (id, word, definition) VALUES (?, ?, ?)", 1, "finish", "finish")
+	var wordCardID int64
+	err = db.QueryRow("INSERT INTO word_cards (word, definition) VALUES ($1, $2) RETURNING id", "finish", "finish").Scan(&wordCardID)
 	if err != nil {
 		t.Fatalf("Failed to create word card: %v", err)
 	}
 
 	// Create training card
 	trainingCard := &models.TrainingCard{
-		WordCardID: 1,
+		WordCardID: wordCardID,
 		WordEN:     "finish",
 		SenseIndex: 0,
 		WordRU:     "завершить",

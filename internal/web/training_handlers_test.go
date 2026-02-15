@@ -30,7 +30,6 @@ func setupTrainingHandlersTestDB(t *testing.T) (*sql.DB, *repository.UserReposit
 func TestHandleTrainingStart_NoCards(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo, _, _, sessionRepo := setupTrainingHandlersTestDB(t)
-	defer db.Close()
 
 	// Create a user
 	user, err := userRepo.GetOrCreateUser(55555)
@@ -90,7 +89,6 @@ func TestHandleTrainingStart_NoCards(t *testing.T) {
 func TestHandleTrainingStart_WrongMethod(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo, _, _, _ := setupTrainingHandlersTestDB(t)
-	defer db.Close()
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
@@ -127,7 +125,6 @@ func TestHandleTrainingStart_WrongMethod(t *testing.T) {
 func TestHandleTrainingCurrent_NoSession(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo, _, _, _ := setupTrainingHandlersTestDB(t)
-	defer db.Close()
 
 	// Create a user
 	user, err := userRepo.GetOrCreateUser(66666)
@@ -180,7 +177,6 @@ func TestHandleTrainingCurrent_NoSession(t *testing.T) {
 func TestHandleTrainingReveal_WrongMethod(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo, _, _, _ := setupTrainingHandlersTestDB(t)
-	defer db.Close()
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
@@ -217,7 +213,6 @@ func TestHandleTrainingReveal_WrongMethod(t *testing.T) {
 func TestHandleTrainingAnswer_WrongMethod(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo, _, _, _ := setupTrainingHandlersTestDB(t)
-	defer db.Close()
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
@@ -254,7 +249,6 @@ func TestHandleTrainingAnswer_WrongMethod(t *testing.T) {
 func TestHandleTrainingAnswer_MissingParams(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo, _, _, _ := setupTrainingHandlersTestDB(t)
-	defer db.Close()
 
 	// Create a user
 	user, err := userRepo.GetOrCreateUser(77777)

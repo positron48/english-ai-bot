@@ -8,7 +8,6 @@ import (
 )
 
 const (
-	DialectSQLite   = "sqlite"
 	DialectPostgres = "postgres"
 )
 
@@ -23,40 +22,24 @@ func registerConnDialect(db *sql.DB, dialect string) {
 
 func GetDialect(db *sql.DB) string {
 	if db == nil {
-		return DialectSQLite
+		return DialectPostgres
 	}
 	if v, ok := connDialects.Load(db); ok {
 		if s, ok := v.(string); ok && s != "" {
 			return s
 		}
 	}
-	return DialectSQLite
-}
-
-func isPostgresDB(db *sql.DB) bool {
-	return GetDialect(db) == DialectPostgres
+	return DialectPostgres
 }
 
 func InsertAndReturnID(db *sql.DB, query string, args ...interface{}) (int64, error) {
-	if isPostgresDB(db) {
-		q := query
-		if !strings.Contains(strings.ToUpper(q), "RETURNING") {
-			q += " RETURNING id"
-		}
-		var id int64
-		if err := db.QueryRow(q, args...).Scan(&id); err != nil {
-			return 0, fmt.Errorf("failed to insert row with returning id: %w", err)
-		}
-		return id, nil
+	q := query
+	if !strings.Contains(strings.ToUpper(q), "RETURNING") {
+		q += " RETURNING id"
 	}
-
-	res, err := db.Exec(query, args...)
-	if err != nil {
-		return 0, err
-	}
-	id, err := res.LastInsertId()
-	if err != nil {
-		return 0, err
+	var id int64
+	if err := db.QueryRow(q, args...).Scan(&id); err != nil {
+		return 0, fmt.Errorf("failed to insert row with returning id: %w", err)
 	}
 	return id, nil
 }

@@ -18,13 +18,26 @@ func setupSessionAdditionalTestDB(t *testing.T) *sql.DB {
 func TestSessionRepository_CreateReviewEvent(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupSessionAdditionalTestDB(t)
-	defer db.Close()
+
+	userRepo := NewUserRepository(db, logger)
+	user, _ := userRepo.GetOrCreateUser(111)
+
+	userCardRepo := NewUserCardRepository(db, logger)
+	// Create word_card, training_card, user_card for review event
+	_, _ = db.Exec("INSERT INTO word_cards (word, definition) VALUES ($1, $2)", "evword", "def")
+	_, _ = db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (1, 'evword', 0, 'слово', 'word')")
+	now := time.Now()
+	uc := &models.UserCard{UserID: user.ID, TrainingCardID: 1, Direction: models.DirectionENtoRU, State: models.StateReview, EF: 2.0, NextDueAt: &now}
+	ucID, err := userCardRepo.CreateUserCard(uc)
+	if err != nil {
+		t.Fatalf("Failed to create user card: %v", err)
+	}
 
 	repo := NewSessionRepository(db, logger)
 
 	// Create a session first
 	session := &models.TrainingSession{
-		UserID:       111,
+		UserID:       user.ID,
 		Source:       models.SourceManual,
 		PlannedCount: 5,
 		DoneCount:    0,
@@ -36,11 +49,10 @@ func TestSessionRepository_CreateReviewEvent(t *testing.T) {
 	}
 
 	// Create a review event
-	now := time.Now()
 	event := &models.ReviewEvent{
 		SessionID:    &sessionID,
-		UserID:       111,
-		UserCardID:   1,
+		UserID:       user.ID,
+		UserCardID:   ucID,
 		Direction:    models.DirectionENtoRU,
 		ShownAt:      now,
 		AnsweredAt:   &now,
@@ -62,13 +74,24 @@ func TestSessionRepository_CreateReviewEvent(t *testing.T) {
 func TestSessionRepository_GetSessionStats(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupSessionAdditionalTestDB(t)
-	defer db.Close()
+
+	userRepo := NewUserRepository(db, logger)
+	user, _ := userRepo.GetOrCreateUser(222)
+
+	userCardRepo := NewUserCardRepository(db, logger)
+	_, _ = db.Exec("INSERT INTO word_cards (word, definition) VALUES ($1, $2)", "statword", "def")
+	_, _ = db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (1, 'statword', 0, 'слово', 'word')")
+	now := time.Now()
+	uc1 := &models.UserCard{UserID: user.ID, TrainingCardID: 1, Direction: models.DirectionENtoRU, State: models.StateReview, EF: 2.0, NextDueAt: &now}
+	uc2 := &models.UserCard{UserID: user.ID, TrainingCardID: 1, Direction: models.DirectionRUtoEN, State: models.StateReview, EF: 2.0, NextDueAt: &now}
+	uc1ID, _ := userCardRepo.CreateUserCard(uc1)
+	uc2ID, _ := userCardRepo.CreateUserCard(uc2)
 
 	repo := NewSessionRepository(db, logger)
 
 	// Create a session
 	session := &models.TrainingSession{
-		UserID:       222,
+		UserID:       user.ID,
 		Source:       models.SourceManual,
 		PlannedCount: 5,
 		DoneCount:    0,
@@ -80,11 +103,10 @@ func TestSessionRepository_GetSessionStats(t *testing.T) {
 	}
 
 	// Create review events
-	now := time.Now()
 	event1 := &models.ReviewEvent{
 		SessionID:  &sessionID,
-		UserID:     222,
-		UserCardID: 1,
+		UserID:     user.ID,
+		UserCardID: uc1ID,
 		Direction:  models.DirectionENtoRU,
 		ShownAt:    now,
 		AnsweredAt: &now,
@@ -93,8 +115,8 @@ func TestSessionRepository_GetSessionStats(t *testing.T) {
 	}
 	event2 := &models.ReviewEvent{
 		SessionID:  &sessionID,
-		UserID:     222,
-		UserCardID: 2,
+		UserID:     user.ID,
+		UserCardID: uc2ID,
 		Direction:  models.DirectionENtoRU,
 		ShownAt:    now,
 		AnsweredAt: &now,
@@ -127,16 +149,17 @@ func TestSessionRepository_GetSessionStats(t *testing.T) {
 func TestSessionRepository_GetTodaySessionCount(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupSessionAdditionalTestDB(t)
-	defer db.Close()
+
+	userRepo := NewUserRepository(db, logger)
+	user, _ := userRepo.GetOrCreateUser(333)
 
 	repo := NewSessionRepository(db, logger)
 
 	// Create sessions for today
-	// Use UTC time to match SQLite's CURRENT_TIMESTAMP which returns UTC
 	today := time.Now().UTC().Format("2006-01-02")
 	for i := 0; i < 3; i++ {
 		session := &models.TrainingSession{
-			UserID:       333,
+			UserID:       user.ID,
 			Source:       models.SourceManual,
 			PlannedCount: 5,
 			DoneCount:    0,
@@ -149,7 +172,7 @@ func TestSessionRepository_GetTodaySessionCount(t *testing.T) {
 	}
 
 	// Get today's session count
-	count, err := repo.GetTodaySessionCount(333, today)
+	count, err := repo.GetTodaySessionCount(user.ID, today)
 	if err != nil {
 		t.Fatalf("GetTodaySessionCount() error = %v", err)
 	}

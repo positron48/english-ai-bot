@@ -4,24 +4,20 @@ import (
 	"testing"
 	"time"
 
-	"tgbot-skeleton/internal/database"
+	"tgbot-skeleton/internal/testutil"
 
 	"go.uber.org/zap"
 )
 
 func TestWebOTPRepository_GenerateOTP(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, err := database.New(":memory:", logger)
-	if err != nil {
-		t.Fatalf("Failed to create database: %v", err)
-	}
-	defer db.Close()
+	conn := testutil.SetupTestDB(t)
 
 	// Create user first
-	userRepo := NewUserRepository(db.GetConnection(), logger)
+	userRepo := NewUserRepository(conn, logger)
 	user, _ := userRepo.GetOrCreateUser(12345)
 
-	otpRepo := NewWebOTPRepository(db.GetConnection(), logger)
+	otpRepo := NewWebOTPRepository(conn, logger)
 
 	code, _, err := otpRepo.GenerateOTP(user.ID, 5*time.Minute) // 5 minute TTL
 	if err != nil {
@@ -35,16 +31,12 @@ func TestWebOTPRepository_GenerateOTP(t *testing.T) {
 
 func TestWebOTPRepository_ValidateOTP_Valid(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, err := database.New(":memory:", logger)
-	if err != nil {
-		t.Fatalf("Failed to create database: %v", err)
-	}
-	defer db.Close()
+	conn := testutil.SetupTestDB(t)
 
-	userRepo := NewUserRepository(db.GetConnection(), logger)
+	userRepo := NewUserRepository(conn, logger)
 	user, _ := userRepo.GetOrCreateUser(12345)
 
-	otpRepo := NewWebOTPRepository(db.GetConnection(), logger)
+	otpRepo := NewWebOTPRepository(conn, logger)
 
 	code, _, _ := otpRepo.GenerateOTP(user.ID, 5*time.Minute)
 
@@ -64,16 +56,12 @@ func TestWebOTPRepository_ValidateOTP_Valid(t *testing.T) {
 
 func TestWebOTPRepository_ValidateOTP_Invalid(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, err := database.New(":memory:", logger)
-	if err != nil {
-		t.Fatalf("Failed to create database: %v", err)
-	}
-	defer db.Close()
+	conn := testutil.SetupTestDB(t)
 
-	userRepo := NewUserRepository(db.GetConnection(), logger)
+	userRepo := NewUserRepository(conn, logger)
 	user, _ := userRepo.GetOrCreateUser(12345)
 
-	otpRepo := NewWebOTPRepository(db.GetConnection(), logger)
+	otpRepo := NewWebOTPRepository(conn, logger)
 
 	_, _, _ = otpRepo.GenerateOTP(user.ID, 5*time.Minute)
 
@@ -90,16 +78,12 @@ func TestWebOTPRepository_ValidateOTP_Invalid(t *testing.T) {
 
 func TestWebOTPRepository_ValidateOTP_Consumed(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, err := database.New(":memory:", logger)
-	if err != nil {
-		t.Fatalf("Failed to create database: %v", err)
-	}
-	defer db.Close()
+	conn := testutil.SetupTestDB(t)
 
-	userRepo := NewUserRepository(db.GetConnection(), logger)
+	userRepo := NewUserRepository(conn, logger)
 	user, _ := userRepo.GetOrCreateUser(12345)
 
-	otpRepo := NewWebOTPRepository(db.GetConnection(), logger)
+	otpRepo := NewWebOTPRepository(conn, logger)
 
 	code, _, _ := otpRepo.GenerateOTP(user.ID, 5*time.Minute)
 
@@ -118,15 +102,11 @@ func TestWebOTPRepository_ValidateOTP_Consumed(t *testing.T) {
 
 func TestWebOTPRepository_CleanupExpiredOTPs(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, err := database.New(":memory:", logger)
-	if err != nil {
-		t.Fatalf("Failed to create database: %v", err)
-	}
-	defer db.Close()
+	conn := testutil.SetupTestDB(t)
 
-	otpRepo := NewWebOTPRepository(db.GetConnection(), logger)
+	otpRepo := NewWebOTPRepository(conn, logger)
 
-	err = otpRepo.CleanupExpiredOTPs()
+	err := otpRepo.CleanupExpiredOTPs()
 	if err != nil {
 		t.Fatalf("CleanupExpiredOTPs() error = %v", err)
 	}

@@ -422,7 +422,7 @@ func (r *UserCardRepository) DeleteOrphanedUserCards() (int64, error) {
 	}
 
 	// Delete user_cards whose training_cards reference non-existent word_cards
-	// SQLite doesn't support DELETE with JOIN, so we use a subquery
+	// Use subquery for portable DELETE
 	query2 := `DELETE FROM user_cards 
 			   WHERE training_card_id IN (
 				   SELECT tc.id 
@@ -785,7 +785,7 @@ func (r *UserCardRepository) GetUpcomingCardsByDate(userID int64, startDate time
 		}
 		if nextDueAtStr.Valid {
 			cardCount++
-			// Try multiple date formats - SQLite can return different formats
+			// Try multiple date formats (Postgres TIMESTAMPTZ can vary)
 			var dueTime time.Time
 			var err error
 			
@@ -796,7 +796,7 @@ func (r *UserCardRepository) GetUpcomingCardsByDate(userID int64, startDate time
 				dueTime, err = time.Parse(time.RFC3339, nextDueAtStr.String)
 			}
 			if err != nil {
-				// Try standard SQLite format
+				// Try standard format
 				dueTime, err = time.Parse("2006-01-02 15:04:05", nextDueAtStr.String)
 			}
 			if err != nil {

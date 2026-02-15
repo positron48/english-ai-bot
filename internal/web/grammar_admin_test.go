@@ -9,7 +9,7 @@ import (
 )
 
 func TestHandleAdminGrammarCategories(t *testing.T) {
-	router, _, cleanup := setupGrammarTest(t)
+	router, _, _, cleanup := setupGrammarTest(t)
 	defer cleanup()
 
 	req := httptest.NewRequest(http.MethodGet, "/api/admin/grammar/categories", nil)
@@ -22,7 +22,7 @@ func TestHandleAdminGrammarCategories(t *testing.T) {
 }
 
 func TestHandleAdminGrammarCategoryPublish(t *testing.T) {
-	router, _, cleanup := setupGrammarTest(t)
+	router, _, adminUserID, cleanup := setupGrammarTest(t)
 	defer cleanup()
 
 	sectionsData, err := router.grammarService.ContentRepo.GetSections()
@@ -35,7 +35,7 @@ func TestHandleAdminGrammarCategoryPublish(t *testing.T) {
 	payload, _ := json.Marshal(body)
 
 	req := httptest.NewRequest(http.MethodPost, "/api/admin/grammar/categories/"+sectionID+"/publish", bytes.NewReader(payload))
-	req = setUserIDInContext(req, 1)
+	req = setUserIDInContext(req, adminUserID)
 	w := httptest.NewRecorder()
 	router.handleAdminGrammarCategoryPublish(w, req)
 
@@ -45,7 +45,7 @@ func TestHandleAdminGrammarCategoryPublish(t *testing.T) {
 }
 
 func TestHandleAdminGrammarChapters(t *testing.T) {
-	router, _, cleanup := setupGrammarTest(t)
+	router, _, _, cleanup := setupGrammarTest(t)
 	defer cleanup()
 
 	sectionsData, err := router.grammarService.ContentRepo.GetSections()
@@ -64,7 +64,7 @@ func TestHandleAdminGrammarChapters(t *testing.T) {
 }
 
 func TestHandleAdminGrammarChapterPublish(t *testing.T) {
-	router, _, cleanup := setupGrammarTest(t)
+	router, _, adminUserID, cleanup := setupGrammarTest(t)
 	defer cleanup()
 
 	sectionsData, err := router.grammarService.ContentRepo.GetSections()
@@ -75,7 +75,7 @@ func TestHandleAdminGrammarChapterPublish(t *testing.T) {
 
 	payload, _ := json.Marshal(map[string]interface{}{"is_published": true})
 	req := httptest.NewRequest(http.MethodPost, "/api/admin/grammar/chapters/"+chapterID+"/publish", bytes.NewReader(payload))
-	req = setUserIDInContext(req, 1)
+	req = setUserIDInContext(req, adminUserID)
 	w := httptest.NewRecorder()
 	router.handleAdminGrammarChapterPublish(w, req)
 
@@ -85,7 +85,7 @@ func TestHandleAdminGrammarChapterPublish(t *testing.T) {
 }
 
 func TestHandleAdminGrammarItemRename(t *testing.T) {
-	router, _, cleanup := setupGrammarTest(t)
+	router, _, adminUserID, cleanup := setupGrammarTest(t)
 	defer cleanup()
 
 	sectionsData, err := router.grammarService.ContentRepo.GetSections()
@@ -96,7 +96,7 @@ func TestHandleAdminGrammarItemRename(t *testing.T) {
 
 	payload, _ := json.Marshal(map[string]interface{}{"name": "Custom"})
 	req := httptest.NewRequest(http.MethodPost, "/api/admin/grammar/items/section/"+sectionID+"/rename", bytes.NewReader(payload))
-	req = setUserIDInContext(req, 1)
+	req = setUserIDInContext(req, adminUserID)
 	w := httptest.NewRecorder()
 	router.handleAdminGrammarItemRename(w, req)
 
@@ -106,7 +106,7 @@ func TestHandleAdminGrammarItemRename(t *testing.T) {
 }
 
 func TestHandleAdminGrammarCategoryPublish_Unauthorized(t *testing.T) {
-	router, _, cleanup := setupGrammarTest(t)
+	router, _, _, cleanup := setupGrammarTest(t)
 	defer cleanup()
 
 	req := httptest.NewRequest(http.MethodPost, "/api/admin/grammar/categories/section/publish", nil)
@@ -119,7 +119,7 @@ func TestHandleAdminGrammarCategoryPublish_Unauthorized(t *testing.T) {
 }
 
 func TestHandleAdminGrammarChapters_MissingSection(t *testing.T) {
-	router, _, cleanup := setupGrammarTest(t)
+	router, _, _, cleanup := setupGrammarTest(t)
 	defer cleanup()
 
 	req := httptest.NewRequest(http.MethodGet, "/api/admin/grammar/chapters", nil)
@@ -132,11 +132,11 @@ func TestHandleAdminGrammarChapters_MissingSection(t *testing.T) {
 }
 
 func TestHandleAdminGrammarChapterPublish_InvalidBody(t *testing.T) {
-	router, _, cleanup := setupGrammarTest(t)
+	router, _, adminUserID, cleanup := setupGrammarTest(t)
 	defer cleanup()
 
 	req := httptest.NewRequest(http.MethodPost, "/api/admin/grammar/chapters/chapter/publish", bytes.NewBufferString("invalid"))
-	req = setUserIDInContext(req, 1)
+	req = setUserIDInContext(req, adminUserID)
 	w := httptest.NewRecorder()
 	router.handleAdminGrammarChapterPublish(w, req)
 
@@ -146,12 +146,12 @@ func TestHandleAdminGrammarChapterPublish_InvalidBody(t *testing.T) {
 }
 
 func TestHandleAdminGrammarItemRename_InvalidType(t *testing.T) {
-	router, _, cleanup := setupGrammarTest(t)
+	router, _, adminUserID, cleanup := setupGrammarTest(t)
 	defer cleanup()
 
 	payload, _ := json.Marshal(map[string]interface{}{"name": "bad"})
 	req := httptest.NewRequest(http.MethodPost, "/api/admin/grammar/items/bad/id/rename", bytes.NewReader(payload))
-	req = setUserIDInContext(req, 1)
+	req = setUserIDInContext(req, adminUserID)
 	w := httptest.NewRecorder()
 	router.handleAdminGrammarItemRename(w, req)
 
@@ -161,7 +161,7 @@ func TestHandleAdminGrammarItemRename_InvalidType(t *testing.T) {
 }
 
 func TestHandleAdminGrammarCategories_MethodNotAllowed(t *testing.T) {
-	router, _, cleanup := setupGrammarTest(t)
+	router, _, _, cleanup := setupGrammarTest(t)
 	defer cleanup()
 
 	req := httptest.NewRequest(http.MethodPost, "/api/admin/grammar/categories", nil)

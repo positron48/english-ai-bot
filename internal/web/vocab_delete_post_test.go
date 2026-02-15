@@ -12,96 +12,13 @@ import (
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 
-	_ "github.com/mattn/go-sqlite3"
+	"tgbot-skeleton/internal/testutil"
 	"go.uber.org/zap"
 )
 
 func setupVocabDeletePostTestDB(t *testing.T) (*sql.DB, *repository.UserRepository, *repository.TrainingCardRepository, *repository.UserCardRepository) {
-	db, err := sql.Open("sqlite3", ":memory:")
-	if err != nil {
-		t.Fatalf("Failed to open test database: %v", err)
-	}
-
-	createTables := `
-	CREATE TABLE IF NOT EXISTS users (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		telegram_id INTEGER UNIQUE NOT NULL,
-		telegram_username TEXT,
-		username TEXT,
-		timezone TEXT DEFAULT '',
-		preferred_training_time TEXT DEFAULT '',
-		settings_json TEXT DEFAULT '',
-		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-	);
-	
-	CREATE TABLE IF NOT EXISTS word_cards (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		word TEXT UNIQUE NOT NULL,
-		definition TEXT NOT NULL,
-		pos TEXT,
-		transcription TEXT,
-		definition_ru TEXT,
-		examples_json TEXT,
-		verb_forms_json TEXT,
-		display_en TEXT,
-		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-	);
-	
-	CREATE TABLE IF NOT EXISTS training_cards (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		word_card_id INTEGER NOT NULL,
-		word_en TEXT NOT NULL,
-		transcription TEXT,
-		sense_index INTEGER NOT NULL,
-		word_ru TEXT NOT NULL,
-		meaning_en TEXT NOT NULL,
-		example_en TEXT,
-		example_ru TEXT,
-		distractors_ru TEXT,
-		distractors_en TEXT,
-		hint TEXT,
-		pos TEXT,
-		display_word TEXT,
-		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-	);
-	
-	CREATE TABLE IF NOT EXISTS user_cards (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		user_id INTEGER NOT NULL,
-		training_card_id INTEGER NOT NULL,
-		direction TEXT NOT NULL,
-		state TEXT NOT NULL,
-		ef REAL NOT NULL DEFAULT 2.5,
-		reps INTEGER NOT NULL DEFAULT 0,
-		interval_days INTEGER NOT NULL DEFAULT 0,
-		learning_step INTEGER NOT NULL DEFAULT 0,
-		lapse_count INTEGER NOT NULL DEFAULT 0,
-		next_due_at TEXT,
-		last_review_at TEXT,
-		last_quality INTEGER,
-		last_options_json TEXT,
-		wrong_answers_json TEXT,
-		stats_json TEXT,
-		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-	);
-	
-	CREATE TABLE IF NOT EXISTS user_word_knowledge (
-		user_id INTEGER NOT NULL,
-		word_card_id INTEGER NOT NULL,
-		status TEXT NOT NULL DEFAULT 'known' CHECK(status IN ('known')),
-		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-		FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-		FOREIGN KEY (word_card_id) REFERENCES word_cards(id) ON DELETE CASCADE,
-		UNIQUE(user_id, word_card_id)
-	);`
-
-	_, err = db.Exec(createTables)
-	if err != nil {
-		t.Fatalf("Failed to create tables: %v", err)
-	}
+	t.Helper()
+	db := testutil.SetupTestDB(t)
 
 	logger, _ := zap.NewDevelopment()
 	userRepo := repository.NewUserRepository(db, logger)
@@ -114,7 +31,6 @@ func setupVocabDeletePostTestDB(t *testing.T) (*sql.DB, *repository.UserReposito
 func TestHandleVocabDelete_Delete(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo, trainingCardRepo, userCardRepo := setupVocabDeletePostTestDB(t)
-	defer db.Close()
 
 	// Create a user
 	user, err := userRepo.GetOrCreateUser(414141)
@@ -202,7 +118,6 @@ func TestHandleVocabDelete_Delete(t *testing.T) {
 func TestHandleVocabDelete_Delete_NoCards(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo, _, _ := setupVocabDeletePostTestDB(t)
-	defer db.Close()
 
 	// Create a user
 	user, err := userRepo.GetOrCreateUser(424242)
@@ -244,7 +159,6 @@ func TestHandleVocabDelete_Delete_NoCards(t *testing.T) {
 func TestHandleVocabDelete_DeleteByWordCardID(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo, trainingCardRepo, userCardRepo := setupVocabDeletePostTestDB(t)
-	defer db.Close()
 
 	// Create a user
 	user, err := userRepo.GetOrCreateUser(434343)

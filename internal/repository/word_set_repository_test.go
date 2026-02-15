@@ -17,7 +17,6 @@ func setupWordSetTestDB(t *testing.T) *sql.DB {
 func TestNewWordSetRepository(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupWordSetTestDB(t)
-	defer db.Close()
 
 	repo := NewWordSetRepository(db, logger)
 	if repo == nil {
@@ -28,7 +27,6 @@ func TestNewWordSetRepository(t *testing.T) {
 func TestWordSetRepository_CreateWordSet(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupWordSetTestDB(t)
-	defer db.Close()
 
 	repo := NewWordSetRepository(db, logger)
 
@@ -115,7 +113,6 @@ func TestWordSetRepository_CreateWordSet(t *testing.T) {
 func TestWordSetRepository_GetWordSet(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupWordSetTestDB(t)
-	defer db.Close()
 
 	repo := NewWordSetRepository(db, logger)
 
@@ -162,7 +159,6 @@ func TestWordSetRepository_GetWordSet(t *testing.T) {
 func TestWordSetRepository_ListWordSets(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupWordSetTestDB(t)
-	defer db.Close()
 
 	repo := NewWordSetRepository(db, logger)
 
@@ -263,7 +259,6 @@ func TestWordSetRepository_ListWordSets(t *testing.T) {
 func TestWordSetRepository_UpdateWordSet(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupWordSetTestDB(t)
-	defer db.Close()
 
 	repo := NewWordSetRepository(db, logger)
 
@@ -309,7 +304,6 @@ func TestWordSetRepository_UpdateWordSet(t *testing.T) {
 func TestWordSetRepository_DeleteWordSet(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupWordSetTestDB(t)
-	defer db.Close()
 
 	repo := NewWordSetRepository(db, logger)
 
@@ -343,7 +337,6 @@ func TestWordSetRepository_DeleteWordSet(t *testing.T) {
 func TestWordSetRepository_GetWordSetProgress(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupWordSetTestDB(t)
-	defer db.Close()
 
 	repo := NewWordSetRepository(db, logger)
 	userRepo := NewUserRepository(db, logger)
@@ -437,7 +430,6 @@ func TestWordSetRepository_GetWordSetProgress(t *testing.T) {
 func TestWordSetRepository_SetWordSetItems(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupWordSetTestDB(t)
-	defer db.Close()
 
 	repo := NewWordSetRepository(db, logger)
 	wordRepo := NewWordRepository(db, logger)
@@ -535,7 +527,6 @@ func TestWordSetRepository_SetWordSetItems(t *testing.T) {
 func TestWordSetRepository_GetWordSetWords(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupWordSetTestDB(t)
-	defer db.Close()
 
 	repo := NewWordSetRepository(db, logger)
 	userRepo := NewUserRepository(db, logger)

@@ -11,18 +11,20 @@ import (
 
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/database"
+	"tgbot-skeleton/internal/testutil"
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/service"
 
 	"go.uber.org/zap"
 )
 
-func setupGrammarTest(t *testing.T) (*Router, *database.DB, func()) {
+func setupGrammarTest(t *testing.T) (*Router, *database.DB, int64, func()) {
+	t.Helper()
 	logger, _ := zap.NewDevelopment()
-	db, err := database.New(":memory:", logger)
-	if err != nil {
-		t.Fatalf("Failed to create database: %v", err)
-	}
+	db := testutil.SetupTestDatabase(t)
+
+	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
+	adminUser, _ := userRepo.GetOrCreateUser(12345)
 
 	cfg := &config.Config{}
 	cfg.Admin.TelegramID = 12345
@@ -40,15 +42,13 @@ func setupGrammarTest(t *testing.T) (*Router, *database.DB, func()) {
 	grammarService := service.NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
 	router.SetGrammarService(grammarService)
 
-	cleanup := func() {
-		db.Close()
-	}
+	cleanup := func() {} // shared db, do not close
 
-	return router, db, cleanup
+	return router, db, adminUser.ID, cleanup
 }
 
 func TestHandleLearningGrammarSubmitTest_BadRequest(t *testing.T) {
-	router, _, cleanup := setupGrammarTest(t)
+	router, _, _, cleanup := setupGrammarTest(t)
 	defer cleanup()
 
 	// Invalid JSON body
@@ -65,7 +65,7 @@ func TestHandleLearningGrammarSubmitTest_BadRequest(t *testing.T) {
 }
 
 func TestHandleLearningGrammarSubmitTest_MissingFields(t *testing.T) {
-	router, _, cleanup := setupGrammarTest(t)
+	router, _, _, cleanup := setupGrammarTest(t)
 	defer cleanup()
 
 	// Missing required fields
@@ -85,7 +85,7 @@ func TestHandleLearningGrammarSubmitTest_MissingFields(t *testing.T) {
 }
 
 func TestHandleLearningGrammarChapter_MethodNotAllowed(t *testing.T) {
-	router, _, cleanup := setupGrammarTest(t)
+	router, _, _, cleanup := setupGrammarTest(t)
 	defer cleanup()
 
 	req := httptest.NewRequest(http.MethodPost, "/api/learning/grammar/chapters/test-chapter", nil)
@@ -100,7 +100,7 @@ func TestHandleLearningGrammarChapter_MethodNotAllowed(t *testing.T) {
 }
 
 func TestHandleLearningGrammarChapterTest_MethodNotAllowed(t *testing.T) {
-	router, _, cleanup := setupGrammarTest(t)
+	router, _, _, cleanup := setupGrammarTest(t)
 	defer cleanup()
 
 	req := httptest.NewRequest(http.MethodPost, "/api/learning/grammar/chapters/test-chapter/test", nil)
@@ -117,14 +117,14 @@ func TestHandleLearningGrammarChapterTest_MethodNotAllowed(t *testing.T) {
 // TestHandleLearningGrammarPlacementTest_QuestionsHaveChapterTitle verifies that
 // placement test questions include placement_chapter_title (chapter name, not theory block).
 func TestHandleLearningGrammarPlacementTest_QuestionsHaveChapterTitle(t *testing.T) {
-	router, db, cleanup := setupGrammarTest(t)
+	router, db, _, cleanup := setupGrammarTest(t)
 	defer cleanup()
 
 	// Publish one chapter so the placement test has questions to return
 	_, err := db.GetConnection().Exec(
 		`INSERT INTO grammar_published_items (item_type, item_id, is_published, updated_at) 
-		 VALUES (?, ?, 1, datetime('now')) 
-		 ON CONFLICT(item_type, item_id) DO UPDATE SET is_published=1, updated_at=datetime('now')`,
+		 VALUES (?, ?, 1, CURRENT_TIMESTAMP) 
+		 ON CONFLICT(item_type, item_id) DO UPDATE SET is_published=1, updated_at=CURRENT_TIMESTAMP`,
 		"chapter", "en.grammar.first_sentences_be_as.personal_pronouns_am_is")
 	if err != nil {
 		t.Fatalf("Failed to publish chapter: %v", err)
@@ -173,13 +173,13 @@ func TestHandleLearningGrammarPlacementTest_QuestionsHaveChapterTitle(t *testing
 // placement test submit returns level, opened_sections, and results (all questions with
 // user answer, correct answer, and placement_chapter_title).
 func TestHandleLearningGrammarSubmitPlacementTest_ReturnsLevelAndResults(t *testing.T) {
-	router, db, cleanup := setupGrammarTest(t)
+	router, db, _, cleanup := setupGrammarTest(t)
 	defer cleanup()
 
 	_, err := db.GetConnection().Exec(
 		`INSERT INTO grammar_published_items (item_type, item_id, is_published, updated_at) 
-		 VALUES (?, ?, 1, datetime('now')) 
-		 ON CONFLICT(item_type, item_id) DO UPDATE SET is_published=1, updated_at=datetime('now')`,
+		 VALUES (?, ?, 1, CURRENT_TIMESTAMP) 
+		 ON CONFLICT(item_type, item_id) DO UPDATE SET is_published=1, updated_at=CURRENT_TIMESTAMP`,
 		"chapter", "en.grammar.first_sentences_be_as.personal_pronouns_am_is")
 	if err != nil {
 		t.Fatalf("Failed to publish chapter: %v", err)
@@ -282,7 +282,7 @@ func TestHandleLearningGrammarSubmitPlacementTest_ReturnsLevelAndResults(t *test
 // This test uses the exact format from a real user request to catch issues where
 // answers might be incorrectly matched to questions.
 func TestHandleLearningGrammarSubmitTest_CategoryTestAnswersOrder(t *testing.T) {
-	router, db, cleanup := setupGrammarTest(t)
+	router, db, _, cleanup := setupGrammarTest(t)
 	defer cleanup()
 
 	// Publish all chapters from the category to enable category test
@@ -300,8 +300,8 @@ func TestHandleLearningGrammarSubmitTest_CategoryTestAnswersOrder(t *testing.T) 
 	for _, chapterID := range chapters {
 		_, err := db.GetConnection().Exec(
 			`INSERT INTO grammar_published_items (item_type, item_id, is_published, updated_at) 
-			 VALUES (?, ?, 1, datetime('now')) 
-			 ON CONFLICT(item_type, item_id) DO UPDATE SET is_published=1, updated_at=datetime('now')`,
+			 VALUES (?, ?, 1, CURRENT_TIMESTAMP) 
+			 ON CONFLICT(item_type, item_id) DO UPDATE SET is_published=1, updated_at=CURRENT_TIMESTAMP`,
 			"chapter", chapterID)
 		if err != nil {
 			t.Fatalf("Failed to publish chapter %s: %v", chapterID, err)

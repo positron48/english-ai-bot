@@ -131,8 +131,8 @@ func Load() (*Config, error) {
 	viper.SetDefault("server.address", ":8184")
 	viper.SetDefault("logging.level", "info")
 	viper.SetDefault("ai.model", "gpt-3.5-turbo")
-	viper.SetDefault("database.driver", "sqlite")
-	viper.SetDefault("database.path", "./data/words.db")
+	viper.SetDefault("database.driver", "postgres")
+	viper.SetDefault("database.path", "")
 	
 	// Training defaults
 	viper.SetDefault("training.worker_enabled", true)
@@ -277,6 +277,9 @@ func Load() (*Config, error) {
 	config.Bot.EmptyMessage = processNewlines(config.Bot.EmptyMessage)
 
 	// Validate required fields
+	if config.Database.URL == "" {
+		return nil, fmt.Errorf("DATABASE_URL is required")
+	}
 	// Note: Telegram token is optional - app can work without it (web-only mode)
 	if config.AI.URL == "" {
 		return nil, fmt.Errorf("ai url is required")

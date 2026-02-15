@@ -15,6 +15,7 @@ import (
 	"tgbot-skeleton/internal/ai"
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/database"
+	"tgbot-skeleton/internal/testutil"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/service"
@@ -87,13 +88,10 @@ func commandMessage(text string) *tgbotapi.Message {
 	}
 }
 
-func setupHandler(t *testing.T, client *mockTelegramClient) (*Handler, *database.DB, func()) {
+func setupHandler(t *testing.T, client *mockTelegramClient) (*Handler, *database.DB) {
 	t.Helper()
 	logger, _ := zap.NewDevelopment()
-	db, err := database.New(":memory:", logger)
-	if err != nil {
-		t.Fatalf("failed to create database: %v", err)
-	}
+	db := testutil.SetupTestDatabase(t)
 
 	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
 	bot := newTestBot(client)
@@ -117,20 +115,13 @@ func setupHandler(t *testing.T, client *mockTelegramClient) (*Handler, *database
 		db.GetConnection(),
 	)
 
-	cleanup := func() {
-		_ = db.Close()
-	}
-
-	return h, db, cleanup
+	return h, db
 }
 
-func setupHandlerWithRepos(t *testing.T, client *mockTelegramClient) (*Handler, *database.DB, func()) {
+func setupHandlerWithRepos(t *testing.T, client *mockTelegramClient) (*Handler, *database.DB) {
 	t.Helper()
 	logger, _ := zap.NewDevelopment()
-	db, err := database.New(":memory:", logger)
-	if err != nil {
-		t.Fatalf("failed to create database: %v", err)
-	}
+	db := testutil.SetupTestDatabase(t)
 
 	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
 	trainingCardRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
@@ -163,20 +154,13 @@ func setupHandlerWithRepos(t *testing.T, client *mockTelegramClient) (*Handler, 
 		db.GetConnection(),
 	)
 
-	cleanup := func() {
-		_ = db.Close()
-	}
-
-	return h, db, cleanup
+	return h, db
 }
 
-func setupHandlerWithAI(t *testing.T, client *mockTelegramClient, aiResponse string) (*Handler, *database.DB, func()) {
+func setupHandlerWithAI(t *testing.T, client *mockTelegramClient, aiResponse string) (*Handler, *database.DB) {
 	t.Helper()
 	logger, _ := zap.NewDevelopment()
-	db, err := database.New(":memory:", logger)
-	if err != nil {
-		t.Fatalf("failed to create database: %v", err)
-	}
+	db := testutil.SetupTestDatabase(t)
 
 	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
 	bot := newTestBot(client)
@@ -202,20 +186,13 @@ func setupHandlerWithAI(t *testing.T, client *mockTelegramClient, aiResponse str
 		db.GetConnection(),
 	)
 
-	cleanup := func() {
-		_ = db.Close()
-	}
-
-	return h, db, cleanup
+	return h, db
 }
 
-func setupHandlerWithWordService(t *testing.T, client *mockTelegramClient, aiResponse string) (*Handler, *database.DB, func()) {
+func setupHandlerWithWordService(t *testing.T, client *mockTelegramClient, aiResponse string) (*Handler, *database.DB) {
 	t.Helper()
 	logger, _ := zap.NewDevelopment()
-	db, err := database.New(":memory:", logger)
-	if err != nil {
-		t.Fatalf("failed to create database: %v", err)
-	}
+	db := testutil.SetupTestDatabase(t)
 
 	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
 	wordRepo := repository.NewWordRepository(db.GetConnection(), logger)
@@ -244,17 +221,12 @@ func setupHandlerWithWordService(t *testing.T, client *mockTelegramClient, aiRes
 		db.GetConnection(),
 	)
 
-	cleanup := func() {
-		_ = db.Close()
-	}
-
-	return h, db, cleanup
+	return h, db
 }
 
 func TestHandleUpdate_StartUsesBotCommandService(t *testing.T) {
 	client := &mockTelegramClient{}
-	h, _, cleanup := setupHandler(t, client)
-	defer cleanup()
+	h, _ := setupHandler(t, client)
 
 	update := tgbotapi.Update{Message: commandMessage("/start")}
 	h.HandleUpdate(context.Background(), update)
@@ -266,8 +238,7 @@ func TestHandleUpdate_StartUsesBotCommandService(t *testing.T) {
 
 func TestHandleUpdate_HelpUsesBotCommandService(t *testing.T) {
 	client := &mockTelegramClient{}
-	h, _, cleanup := setupHandler(t, client)
-	defer cleanup()
+	h, _ := setupHandler(t, client)
 
 	update := tgbotapi.Update{Message: commandMessage("/help")}
 	h.HandleUpdate(context.Background(), update)
@@ -279,8 +250,7 @@ func TestHandleUpdate_HelpUsesBotCommandService(t *testing.T) {
 
 func TestHandleDeleteTrainCommand_AdminFlow(t *testing.T) {
 	client := &mockTelegramClient{}
-	h, db, cleanup := setupHandler(t, client)
-	defer cleanup()
+	h, db := setupHandler(t, client)
 
 	logger, _ := zap.NewDevelopment()
 	h.trainingCardRepo = repository.NewTrainingCardRepository(db.GetConnection(), logger)
@@ -312,8 +282,7 @@ func TestHandleDeleteTrainCommand_AdminFlow(t *testing.T) {
 
 func TestHandleDeleteTrainAllCommand_AdminFlow(t *testing.T) {
 	client := &mockTelegramClient{}
-	h, db, cleanup := setupHandler(t, client)
-	defer cleanup()
+	h, db := setupHandler(t, client)
 
 	logger, _ := zap.NewDevelopment()
 	h.trainingCardRepo = repository.NewTrainingCardRepository(db.GetConnection(), logger)
@@ -345,8 +314,7 @@ func TestHandleDeleteTrainAllCommand_AdminFlow(t *testing.T) {
 
 func TestHandleGetIDCommand(t *testing.T) {
 	client := &mockTelegramClient{}
-	h, _, cleanup := setupHandler(t, client)
-	defer cleanup()
+	h, _ := setupHandler(t, client)
 
 	h.handleGetIDCommand(10, 42)
 	if got := client.lastParams.Get("text"); !strings.Contains(got, "42") {
@@ -356,8 +324,7 @@ func TestHandleGetIDCommand(t *testing.T) {
 
 func TestHandleResetCircuitCommand_Admin(t *testing.T) {
 	client := &mockTelegramClient{}
-	h, _, cleanup := setupHandler(t, client)
-	defer cleanup()
+	h, _ := setupHandler(t, client)
 
 	h.config.Admin.TelegramID = 42
 	h.handleResetCircuitCommand(10, 42)
@@ -368,8 +335,7 @@ func TestHandleResetCircuitCommand_Admin(t *testing.T) {
 
 func TestHandleResetCircuitCommand_NonAdmin(t *testing.T) {
 	client := &mockTelegramClient{}
-	h, _, cleanup := setupHandler(t, client)
-	defer cleanup()
+	h, _ := setupHandler(t, client)
 
 	h.config.Admin.TelegramID = 99
 	h.handleResetCircuitCommand(10, 42)
@@ -380,8 +346,7 @@ func TestHandleResetCircuitCommand_NonAdmin(t *testing.T) {
 
 func TestHandleStatsCommand_Basic(t *testing.T) {
 	client := &mockTelegramClient{}
-	h, db, cleanup := setupHandlerWithRepos(t, client)
-	defer cleanup()
+	h, db := setupHandlerWithRepos(t, client)
 
 	logger, _ := zap.NewDevelopment()
 	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
@@ -430,8 +395,7 @@ func TestHandleStatsCommand_Basic(t *testing.T) {
 
 func TestHandleGetTrainDataCommand_Admin(t *testing.T) {
 	client := &mockTelegramClient{}
-	h, db, cleanup := setupHandlerWithRepos(t, client)
-	defer cleanup()
+	h, db := setupHandlerWithRepos(t, client)
 
 	h.config.Admin.TelegramID = 42
 
@@ -459,8 +423,7 @@ func TestHandleGetTrainDataCommand_Admin(t *testing.T) {
 
 func TestHandleCommand_Unknown(t *testing.T) {
 	client := &mockTelegramClient{}
-	h, _, cleanup := setupHandler(t, client)
-	defer cleanup()
+	h, _ := setupHandler(t, client)
 
 	h.handleCommand(context.Background(), commandMessage("/unknown"))
 
@@ -471,8 +434,7 @@ func TestHandleCommand_Unknown(t *testing.T) {
 
 func TestHandleMessage_Empty(t *testing.T) {
 	client := &mockTelegramClient{}
-	h, _, cleanup := setupHandlerWithAI(t, client, "ignored")
-	defer cleanup()
+	h, _ := setupHandlerWithAI(t, client, "ignored")
 
 	msg := &tgbotapi.Message{
 		Text: "",
@@ -488,8 +450,7 @@ func TestHandleMessage_Empty(t *testing.T) {
 
 func TestHandleMessage_NonSingleWord_UsesAI(t *testing.T) {
 	client := &mockTelegramClient{}
-	h, _, cleanup := setupHandlerWithAI(t, client, "AI reply")
-	defer cleanup()
+	h, _ := setupHandlerWithAI(t, client, "AI reply")
 
 	msg := &tgbotapi.Message{
 		Text: "hello world",
@@ -505,8 +466,7 @@ func TestHandleMessage_NonSingleWord_UsesAI(t *testing.T) {
 
 func TestHandleMessage_SingleWord_UsesWordService(t *testing.T) {
 	client := &mockTelegramClient{}
-	h, _, cleanup := setupHandlerWithWordService(t, client, `{"lemma":"banana","pos":"noun","definition_ru":"банан"}`)
-	defer cleanup()
+	h, _ := setupHandlerWithWordService(t, client, `{"lemma":"banana","pos":"noun","definition_ru":"банан"}`)
 
 	msg := &tgbotapi.Message{
 		Text: "banana",

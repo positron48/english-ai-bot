@@ -658,15 +658,9 @@ func (r *WordRepository) GetWordCardRequestingUsers(wordCardID int64) ([]int64, 
 // DeleteWordCard deletes a word card by ID and all related data
 // Explicitly deletes training_cards and user_cards to ensure cleanup even if CASCADE doesn't work
 func (r *WordRepository) DeleteWordCard(wordCardID int64) error {
-	// Enable foreign keys to ensure CASCADE works
-	_, err := r.db.Exec("PRAGMA foreign_keys = ON")
-	if err != nil {
-		r.logger.Warn("failed to enable foreign keys", zap.Error(err))
-	}
-
 	// Get word before deletion for logging
 	var word string
-	err = r.db.QueryRow("SELECT word FROM word_cards WHERE id = ?", wordCardID).Scan(&word)
+	err := r.db.QueryRow("SELECT word FROM word_cards WHERE id = ?", wordCardID).Scan(&word)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return fmt.Errorf("word card not found")

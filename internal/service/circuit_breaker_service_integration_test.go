@@ -6,33 +6,13 @@ import (
 
 	"tgbot-skeleton/internal/repository"
 
-	_ "github.com/mattn/go-sqlite3"
+	"tgbot-skeleton/internal/testutil"
 	"go.uber.org/zap"
 )
 
 func setupCircuitBreakerServiceTestDB(t *testing.T) (*sql.DB, *repository.CircuitBreakerRepository) {
-	db, err := sql.Open("sqlite3", ":memory:")
-	if err != nil {
-		t.Fatalf("Failed to open test database: %v", err)
-	}
-
-	createTable := `
-	CREATE TABLE IF NOT EXISTS circuit_breaker_state (
-		id INTEGER PRIMARY KEY,
-		is_open INTEGER NOT NULL DEFAULT 0,
-		failure_count INTEGER NOT NULL DEFAULT 0,
-		last_failure_message TEXT,
-		last_failure_at TEXT,
-		opened_at TEXT,
-		last_reset_at TEXT,
-		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-	)`
-
-	_, err = db.Exec(createTable)
-	if err != nil {
-		t.Fatalf("Failed to create table: %v", err)
-	}
+	t.Helper()
+	db := testutil.SetupTestDB(t)
 
 	logger, _ := zap.NewDevelopment()
 	cbRepo := repository.NewCircuitBreakerRepository(db, logger)
@@ -42,8 +22,7 @@ func setupCircuitBreakerServiceTestDB(t *testing.T) (*sql.DB, *repository.Circui
 
 func TestCircuitBreakerService_IsOpen_Integration(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, cbRepo := setupCircuitBreakerServiceTestDB(t)
-	defer db.Close()
+	_, cbRepo := setupCircuitBreakerServiceTestDB(t)
 
 	service := NewCircuitBreakerService(cbRepo, 5, logger)
 
@@ -59,8 +38,7 @@ func TestCircuitBreakerService_IsOpen_Integration(t *testing.T) {
 
 func TestCircuitBreakerService_RecordSuccess_Integration(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, cbRepo := setupCircuitBreakerServiceTestDB(t)
-	defer db.Close()
+	_, cbRepo := setupCircuitBreakerServiceTestDB(t)
 
 	service := NewCircuitBreakerService(cbRepo, 5, logger)
 
@@ -73,8 +51,7 @@ func TestCircuitBreakerService_RecordSuccess_Integration(t *testing.T) {
 
 func TestCircuitBreakerService_RecordFailure_Integration(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, cbRepo := setupCircuitBreakerServiceTestDB(t)
-	defer db.Close()
+	_, cbRepo := setupCircuitBreakerServiceTestDB(t)
 
 	service := NewCircuitBreakerService(cbRepo, 3, logger) // Lower threshold for testing
 
@@ -104,8 +81,7 @@ func TestCircuitBreakerService_RecordFailure_Integration(t *testing.T) {
 
 func TestCircuitBreakerService_Reset_Integration(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, cbRepo := setupCircuitBreakerServiceTestDB(t)
-	defer db.Close()
+	_, cbRepo := setupCircuitBreakerServiceTestDB(t)
 
 	service := NewCircuitBreakerService(cbRepo, 3, logger)
 
@@ -132,8 +108,7 @@ func TestCircuitBreakerService_Reset_Integration(t *testing.T) {
 
 func TestCircuitBreakerService_GetState_Integration(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, cbRepo := setupCircuitBreakerServiceTestDB(t)
-	defer db.Close()
+	_, cbRepo := setupCircuitBreakerServiceTestDB(t)
 
 	service := NewCircuitBreakerService(cbRepo, 5, logger)
 

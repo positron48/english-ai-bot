@@ -11,118 +11,13 @@ import (
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/repository"
 
-	_ "github.com/mattn/go-sqlite3"
+	"tgbot-skeleton/internal/testutil"
 	"go.uber.org/zap"
 )
 
 func setupVocabTestDB(t *testing.T) (*sql.DB, *repository.UserRepository) {
-	db, err := sql.Open("sqlite3", ":memory:")
-	if err != nil {
-		t.Fatalf("Failed to open test database: %v", err)
-	}
-
-	createTables := `
-	CREATE TABLE IF NOT EXISTS users (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		telegram_id INTEGER UNIQUE NOT NULL,
-		telegram_username TEXT,
-		username TEXT,
-		timezone TEXT DEFAULT '',
-		preferred_training_time TEXT DEFAULT '',
-		settings_json TEXT DEFAULT '',
-		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-	);
-	
-	CREATE TABLE IF NOT EXISTS word_cards (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		word TEXT UNIQUE NOT NULL,
-		definition TEXT NOT NULL,
-		pos TEXT,
-		transcription TEXT,
-		definition_ru TEXT,
-		examples_json TEXT,
-		verb_forms_json TEXT,
-		display_en TEXT,
-		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-	);
-	
-	CREATE TABLE IF NOT EXISTS training_cards (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		word_card_id INTEGER NOT NULL,
-		word_en TEXT NOT NULL,
-		transcription TEXT,
-		sense_index INTEGER NOT NULL,
-		word_ru TEXT NOT NULL,
-		meaning_en TEXT NOT NULL,
-		example_en TEXT,
-		example_ru TEXT,
-		distractors_ru TEXT,
-		distractors_en TEXT,
-		hint TEXT,
-		pos TEXT,
-		display_word TEXT,
-		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-	);
-	
-	CREATE TABLE IF NOT EXISTS user_cards (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		user_id INTEGER NOT NULL,
-		training_card_id INTEGER NOT NULL,
-		direction TEXT NOT NULL,
-		state TEXT NOT NULL,
-		ef REAL NOT NULL DEFAULT 2.5,
-		reps INTEGER NOT NULL DEFAULT 0,
-		interval_days INTEGER NOT NULL DEFAULT 0,
-		learning_step INTEGER NOT NULL DEFAULT 0,
-		lapse_count INTEGER NOT NULL DEFAULT 0,
-		next_due_at TEXT,
-		last_review_at TEXT,
-		last_quality INTEGER,
-		last_options_json TEXT,
-		wrong_answers_json TEXT,
-		stats_json TEXT,
-		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-	);
-	
-	CREATE TABLE IF NOT EXISTS review_events (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		session_id INTEGER,
-		user_id INTEGER NOT NULL,
-		user_card_id INTEGER NOT NULL,
-		direction TEXT NOT NULL,
-		shown_at TEXT NOT NULL,
-		options_shown_at TEXT,
-		answered_at TEXT,
-		t_delay_ms INTEGER,
-		early_reveal INTEGER NOT NULL DEFAULT 0,
-		option_count INTEGER NOT NULL,
-		options_json TEXT,
-		chosen_option TEXT,
-		is_correct INTEGER NOT NULL DEFAULT 0,
-		quality INTEGER NOT NULL,
-		metrics_json TEXT,
-		srs_before_json TEXT,
-		srs_after_json TEXT,
-		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-	);
-	
-	CREATE TABLE IF NOT EXISTS user_word_knowledge (
-		user_id INTEGER NOT NULL,
-		word_card_id INTEGER NOT NULL,
-		status TEXT NOT NULL DEFAULT 'known' CHECK(status IN ('known')),
-		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-		FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-		FOREIGN KEY (word_card_id) REFERENCES word_cards(id) ON DELETE CASCADE,
-		UNIQUE(user_id, word_card_id)
-	);`
-
-	_, err = db.Exec(createTables)
-	if err != nil {
-		t.Fatalf("Failed to create tables: %v", err)
-	}
+	t.Helper()
+	db := testutil.SetupTestDB(t)
 
 	logger, _ := zap.NewDevelopment()
 	userRepo := repository.NewUserRepository(db, logger)
@@ -133,7 +28,6 @@ func setupVocabTestDB(t *testing.T) (*sql.DB, *repository.UserRepository) {
 func TestHandleVocab_Basic(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo := setupVocabTestDB(t)
-	defer db.Close()
 
 	// Create a user
 	user, err := userRepo.GetOrCreateUser(22222)
@@ -187,7 +81,6 @@ func TestHandleVocab_Basic(t *testing.T) {
 func TestHandleVocab_WrongMethod(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo := setupVocabTestDB(t)
-	defer db.Close()
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
@@ -220,7 +113,6 @@ func TestHandleVocab_WrongMethod(t *testing.T) {
 func TestHandleVocab_Unauthorized(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo := setupVocabTestDB(t)
-	defer db.Close()
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
@@ -253,7 +145,6 @@ func TestHandleVocab_Unauthorized(t *testing.T) {
 func TestHandleVocab_WithSearch(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo := setupVocabTestDB(t)
-	defer db.Close()
 
 	// Create a user
 	user, err := userRepo.GetOrCreateUser(33333)
@@ -294,7 +185,6 @@ func TestHandleVocab_WithSearch(t *testing.T) {
 func TestHandleVocab_WithPagination(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo := setupVocabTestDB(t)
-	defer db.Close()
 
 	// Create a user
 	user, err := userRepo.GetOrCreateUser(44444)
@@ -351,7 +241,6 @@ func TestHandleVocab_WithPagination(t *testing.T) {
 func TestHandleVocab_GroupByLemma(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo := setupVocabTestDB(t)
-	defer db.Close()
 
 	// Create a user
 	user, err := userRepo.GetOrCreateUser(55555)
@@ -472,7 +361,6 @@ func TestHandleVocab_GroupByLemma(t *testing.T) {
 func TestHandleVocab_MasteringScoreQuery(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo := setupVocabTestDB(t)
-	defer db.Close()
 
 	user, err := userRepo.GetOrCreateUser(77777)
 	if err != nil {

@@ -11,7 +11,7 @@ import (
 	"testing"
 	"time"
 
-	"tgbot-skeleton/internal/database"
+	"tgbot-skeleton/internal/testutil"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 
@@ -45,11 +45,7 @@ func newTestBotNS(client *mockTelegramClientNS) *tgbotapi.BotAPI {
 
 func TestNotificationService_SendNotification(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, err := database.New(":memory:", logger)
-	if err != nil {
-		t.Fatalf("failed to create database: %v", err)
-	}
-	defer db.Close()
+	db := testutil.SetupTestDatabase(t)
 
 	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
 	userCardRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
@@ -125,11 +121,7 @@ func TestNotificationService_SendNotification(t *testing.T) {
 
 func TestNotificationService_SkipsWhenDueCardsLessThanTen(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, err := database.New(":memory:", logger)
-	if err != nil {
-		t.Fatalf("failed to create database: %v", err)
-	}
-	defer db.Close()
+	db := testutil.SetupTestDatabase(t)
 
 	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
 	userCardRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
@@ -188,11 +180,7 @@ func TestNotificationService_SkipsWhenDueCardsLessThanTen(t *testing.T) {
 
 func TestNotificationService_SkipsWhenDisabled(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, err := database.New(":memory:", logger)
-	if err != nil {
-		t.Fatalf("failed to create database: %v", err)
-	}
-	defer db.Close()
+	db := testutil.SetupTestDatabase(t)
 
 	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
 	userCardRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
@@ -223,11 +211,7 @@ func TestNotificationService_SkipsWhenDisabled(t *testing.T) {
 
 func TestNotificationService_CheckAndSendNotifications(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, err := database.New(":memory:", logger)
-	if err != nil {
-		t.Fatalf("failed to create database: %v", err)
-	}
-	defer db.Close()
+	db := testutil.SetupTestDatabase(t)
 
 	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
 	userCardRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
@@ -256,11 +240,7 @@ func TestNotificationService_CheckAndSendNotifications(t *testing.T) {
 
 func TestNotificationService_DisablesNotificationsOnBlockedOrMissingChat(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, err := database.New(":memory:", logger)
-	if err != nil {
-		t.Fatalf("failed to create database: %v", err)
-	}
-	defer db.Close()
+	db := testutil.SetupTestDatabase(t)
 
 	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
 	userCardRepo := repository.NewUserCardRepository(db.GetConnection(), logger)

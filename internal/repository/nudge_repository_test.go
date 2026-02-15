@@ -4,25 +4,21 @@ import (
 	"testing"
 	"time"
 
-	"tgbot-skeleton/internal/database"
 	"tgbot-skeleton/internal/models"
+	"tgbot-skeleton/internal/testutil"
 
 	"go.uber.org/zap"
 )
 
 func TestNudgeRepository_CreateNudge(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, err := database.New(":memory:", logger)
-	if err != nil {
-		t.Fatalf("Failed to create database: %v", err)
-	}
-	defer db.Close()
+	conn := testutil.SetupTestDB(t)
 
 	// Create user first
-	userRepo := NewUserRepository(db.GetConnection(), logger)
+	userRepo := NewUserRepository(conn, logger)
 	user, _ := userRepo.GetOrCreateUser(12345)
 
-	nudgeRepo := NewNudgeRepository(db.GetConnection(), logger)
+	nudgeRepo := NewNudgeRepository(conn, logger)
 	localDate := time.Now().Format("2006-01-02")
 
 	nudge := &models.TrainingNudge{
@@ -31,7 +27,7 @@ func TestNudgeRepository_CreateNudge(t *testing.T) {
 		DueCountAtSend:  5,
 	}
 
-	_, err = nudgeRepo.CreateNudge(nudge)
+	_, err := nudgeRepo.CreateNudge(nudge)
 	if err != nil {
 		t.Fatalf("CreateNudge() error = %v", err)
 	}
@@ -39,16 +35,12 @@ func TestNudgeRepository_CreateNudge(t *testing.T) {
 
 func TestNudgeRepository_HasNudgeToday(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, err := database.New(":memory:", logger)
-	if err != nil {
-		t.Fatalf("Failed to create database: %v", err)
-	}
-	defer db.Close()
+	conn := testutil.SetupTestDB(t)
 
-	userRepo := NewUserRepository(db.GetConnection(), logger)
+	userRepo := NewUserRepository(conn, logger)
 	user, _ := userRepo.GetOrCreateUser(12345)
 
-	nudgeRepo := NewNudgeRepository(db.GetConnection(), logger)
+	nudgeRepo := NewNudgeRepository(conn, logger)
 	localDate := time.Now().Format("2006-01-02")
 
 	// Initially no nudge
@@ -77,16 +69,12 @@ func TestNudgeRepository_HasNudgeToday(t *testing.T) {
 
 func TestNudgeRepository_ConsumeNudge(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, err := database.New(":memory:", logger)
-	if err != nil {
-		t.Fatalf("Failed to create database: %v", err)
-	}
-	defer db.Close()
+	conn := testutil.SetupTestDB(t)
 
-	userRepo := NewUserRepository(db.GetConnection(), logger)
+	userRepo := NewUserRepository(conn, logger)
 	user, _ := userRepo.GetOrCreateUser(12345)
 
-	nudgeRepo := NewNudgeRepository(db.GetConnection(), logger)
+	nudgeRepo := NewNudgeRepository(conn, logger)
 	localDate := time.Now().Format("2006-01-02")
 
 	// Create nudge
@@ -98,7 +86,7 @@ func TestNudgeRepository_ConsumeNudge(t *testing.T) {
 	_, _ = nudgeRepo.CreateNudge(nudge)
 
 	// Consume nudge
-	err = nudgeRepo.ConsumeNudge(user.ID, localDate)
+	err := nudgeRepo.ConsumeNudge(user.ID, localDate)
 	if err != nil {
 		t.Fatalf("ConsumeNudge() error = %v", err)
 	}
@@ -106,16 +94,12 @@ func TestNudgeRepository_ConsumeNudge(t *testing.T) {
 
 func TestNudgeRepository_GetUnconsumedNudge(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, err := database.New(":memory:", logger)
-	if err != nil {
-		t.Fatalf("Failed to create database: %v", err)
-	}
-	defer db.Close()
+	conn := testutil.SetupTestDB(t)
 
-	userRepo := NewUserRepository(db.GetConnection(), logger)
+	userRepo := NewUserRepository(conn, logger)
 	user, _ := userRepo.GetOrCreateUser(12345)
 
-	nudgeRepo := NewNudgeRepository(db.GetConnection(), logger)
+	nudgeRepo := NewNudgeRepository(conn, logger)
 	localDate := time.Now().Format("2006-01-02")
 
 	// Initially no unconsumed nudge

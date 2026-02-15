@@ -3,7 +3,7 @@ package service
 import (
 	"testing"
 
-	"tgbot-skeleton/internal/database"
+	"tgbot-skeleton/internal/testutil"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 
@@ -12,8 +12,7 @@ import (
 
 func TestShufflePreventDuplicates_SmallList(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, _ := database.New(":memory:", logger)
-	defer db.Close()
+	db := testutil.SetupTestDatabase(t)
 
 	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
@@ -36,8 +35,7 @@ func TestShufflePreventDuplicates_SmallList(t *testing.T) {
 
 func TestShufflePreventDuplicates_LargeList(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, _ := database.New(":memory:", logger)
-	defer db.Close()
+	db := testutil.SetupTestDatabase(t)
 
 	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
@@ -73,8 +71,7 @@ func TestShufflePreventDuplicates_LargeList(t *testing.T) {
 
 func TestShufflePreventDuplicates_EmptyList(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, _ := database.New(":memory:", logger)
-	defer db.Close()
+	db := testutil.SetupTestDatabase(t)
 
 	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
@@ -91,8 +88,7 @@ func TestShufflePreventDuplicates_EmptyList(t *testing.T) {
 
 func TestShufflePreventDuplicates_SingleElement(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, _ := database.New(":memory:", logger)
-	defer db.Close()
+	db := testutil.SetupTestDatabase(t)
 
 	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
@@ -113,8 +109,7 @@ func TestShufflePreventDuplicates_SingleElement(t *testing.T) {
 
 func TestShufflePreventDuplicates_AllSameWord(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, _ := database.New(":memory:", logger)
-	defer db.Close()
+	db := testutil.SetupTestDatabase(t)
 
 	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)

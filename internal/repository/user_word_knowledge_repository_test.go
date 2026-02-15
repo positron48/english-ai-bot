@@ -17,7 +17,6 @@ func setupUserWordKnowledgeTestDB(t *testing.T) *sql.DB {
 func TestNewUserWordKnowledgeRepository(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupUserWordKnowledgeTestDB(t)
-	defer db.Close()
 
 	repo := NewUserWordKnowledgeRepository(db, logger)
 	if repo == nil {
@@ -28,7 +27,6 @@ func TestNewUserWordKnowledgeRepository(t *testing.T) {
 func TestUserWordKnowledgeRepository_MarkKnown(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupUserWordKnowledgeTestDB(t)
-	defer db.Close()
 
 	repo := NewUserWordKnowledgeRepository(db, logger)
 
@@ -84,7 +82,6 @@ func TestUserWordKnowledgeRepository_MarkKnown(t *testing.T) {
 func TestUserWordKnowledgeRepository_RemoveKnown(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupUserWordKnowledgeTestDB(t)
-	defer db.Close()
 
 	repo := NewUserWordKnowledgeRepository(db, logger)
 
@@ -139,7 +136,6 @@ func TestUserWordKnowledgeRepository_RemoveKnown(t *testing.T) {
 func TestUserWordKnowledgeRepository_IsKnown(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupUserWordKnowledgeTestDB(t)
-	defer db.Close()
 
 	repo := NewUserWordKnowledgeRepository(db, logger)
 
@@ -189,7 +185,6 @@ func TestUserWordKnowledgeRepository_IsKnown(t *testing.T) {
 func TestUserWordKnowledgeRepository_GetKnownWords(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupUserWordKnowledgeTestDB(t)
-	defer db.Close()
 
 	repo := NewUserWordKnowledgeRepository(db, logger)
 

@@ -9,19 +9,20 @@ import (
 
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/database"
+	"tgbot-skeleton/internal/testutil"
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/service"
 
 	"go.uber.org/zap"
 )
 
-func setupAdminAppSettingsRouter(t *testing.T) (*Router, *database.DB, func()) {
+func setupAdminAppSettingsRouter(t *testing.T) (*Router, *database.DB, int64, func()) {
 	t.Helper()
 	logger, _ := zap.NewDevelopment()
-	db, err := database.New(":memory:", logger)
-	if err != nil {
-		t.Fatalf("failed to create database: %v", err)
-	}
+	db := testutil.SetupTestDatabase(t)
+
+	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
+	adminUser, _ := userRepo.GetOrCreateUser(12345)
 
 	cfg := &config.Config{}
 	cbRepo := repository.NewCircuitBreakerRepository(db.GetConnection(), logger)
@@ -29,15 +30,13 @@ func setupAdminAppSettingsRouter(t *testing.T) (*Router, *database.DB, func()) {
 
 	router := NewRouter(logger, cfg, db.GetConnection(), nil, nil, nil, cbService)
 
-	cleanup := func() {
-		_ = db.Close()
-	}
+	cleanup := func() {} // shared db, do not close
 
-	return router, db, cleanup
+	return router, db, adminUser.ID, cleanup
 }
 
 func TestHandleAdminAppSettings_Get(t *testing.T) {
-	router, _, cleanup := setupAdminAppSettingsRouter(t)
+	router, _, _, cleanup := setupAdminAppSettingsRouter(t)
 	defer cleanup()
 
 	req := httptest.NewRequest(http.MethodGet, "/api/admin/app-settings", nil)
@@ -50,7 +49,7 @@ func TestHandleAdminAppSettings_Get(t *testing.T) {
 }
 
 func TestHandleAdminAppSettings_PutUnauthorized(t *testing.T) {
-	router, _, cleanup := setupAdminAppSettingsRouter(t)
+	router, _, _, cleanup := setupAdminAppSettingsRouter(t)
 	defer cleanup()
 
 	payload := []byte(`{"hide_placement_test_button": true}`)
@@ -64,11 +63,11 @@ func TestHandleAdminAppSettings_PutUnauthorized(t *testing.T) {
 }
 
 func TestHandleAdminAppSettings_PutInvalidBody(t *testing.T) {
-	router, _, cleanup := setupAdminAppSettingsRouter(t)
+	router, _, adminUserID, cleanup := setupAdminAppSettingsRouter(t)
 	defer cleanup()
 
 	req := httptest.NewRequest(http.MethodPut, "/api/admin/app-settings", bytes.NewBufferString("invalid"))
-	req = setUserIDInContext(req, 1)
+	req = setUserIDInContext(req, adminUserID)
 	w := httptest.NewRecorder()
 	router.handleAdminAppSettings(w, req)
 
@@ -78,12 +77,12 @@ func TestHandleAdminAppSettings_PutInvalidBody(t *testing.T) {
 }
 
 func TestHandleAdminAppSettings_PutSuccess(t *testing.T) {
-	router, _, cleanup := setupAdminAppSettingsRouter(t)
+	router, _, adminUserID, cleanup := setupAdminAppSettingsRouter(t)
 	defer cleanup()
 
 	payload, _ := json.Marshal(map[string]interface{}{"hide_placement_test_button": true})
 	req := httptest.NewRequest(http.MethodPut, "/api/admin/app-settings", bytes.NewReader(payload))
-	req = setUserIDInContext(req, 1)
+	req = setUserIDInContext(req, adminUserID)
 	w := httptest.NewRecorder()
 	router.handleAdminAppSettings(w, req)
 

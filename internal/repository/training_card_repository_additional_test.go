@@ -11,7 +11,6 @@ import (
 func TestTrainingCardRepository_GetTrainingCardsByWordEN(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupTrainingCardTestDB(t)
-	defer db.Close()
 
 	repo := NewTrainingCardRepository(db, logger)
 
@@ -63,7 +62,6 @@ func TestTrainingCardRepository_GetTrainingCardsByWordEN(t *testing.T) {
 func TestTrainingCardRepository_DeleteTrainingCardsByWordEN(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupTrainingCardTestDB(t)
-	defer db.Close()
 
 	repo := NewTrainingCardRepository(db, logger)
 
@@ -108,9 +106,14 @@ func TestTrainingCardRepository_DeleteTrainingCardsByWordEN(t *testing.T) {
 func TestTrainingCardRepository_UpdateTrainingCard(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupTrainingCardTestDB(t)
-	defer db.Close()
 
 	repo := NewTrainingCardRepository(db, logger)
+
+	// Create word card first
+	_, err := db.Exec("INSERT INTO word_cards (word, definition) VALUES ($1, $2)", "update", "to update")
+	if err != nil {
+		t.Fatalf("Failed to create word card: %v", err)
+	}
 
 	// Create a training card
 	card := &models.TrainingCard{
@@ -148,9 +151,14 @@ func TestTrainingCardRepository_UpdateTrainingCard(t *testing.T) {
 func TestTrainingCardRepository_DeleteTrainingCard(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupTrainingCardTestDB(t)
-	defer db.Close()
 
 	repo := NewTrainingCardRepository(db, logger)
+
+	// Create word card first
+	_, err := db.Exec("INSERT INTO word_cards (word, definition) VALUES ($1, $2)", "delete", "to delete")
+	if err != nil {
+		t.Fatalf("Failed to create word card: %v", err)
+	}
 
 	// Create a training card
 	card := &models.TrainingCard{

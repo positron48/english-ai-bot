@@ -16,7 +16,6 @@ func setupUserTestDB(t *testing.T) *sql.DB {
 func TestNewUserRepository(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupUserTestDB(t)
-	defer db.Close()
 
 	repo := NewUserRepository(db, logger)
 	if repo == nil {
@@ -27,7 +26,6 @@ func TestNewUserRepository(t *testing.T) {
 func TestUserRepository_GetOrCreateUser(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupUserTestDB(t)
-	defer db.Close()
 
 	repo := NewUserRepository(db, logger)
 
@@ -66,7 +64,6 @@ func TestUserRepository_GetOrCreateUser(t *testing.T) {
 func TestUserRepository_GetUserByID(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupUserTestDB(t)
-	defer db.Close()
 
 	repo := NewUserRepository(db, logger)
 
@@ -103,7 +100,6 @@ func TestUserRepository_GetUserByID(t *testing.T) {
 func TestUserRepository_GetUserByTelegramID(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupUserTestDB(t)
-	defer db.Close()
 
 	repo := NewUserRepository(db, logger)
 
@@ -140,7 +136,6 @@ func TestUserRepository_GetUserByTelegramID(t *testing.T) {
 func TestUserRepository_UpdateUserSettings(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupUserTestDB(t)
-	defer db.Close()
 
 	repo := NewUserRepository(db, logger)
 
@@ -168,7 +163,6 @@ func TestUserRepository_UpdateUserSettings(t *testing.T) {
 func TestUserRepository_UpdateUserPreferredTime(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupUserTestDB(t)
-	defer db.Close()
 
 	repo := NewUserRepository(db, logger)
 
@@ -196,7 +190,6 @@ func TestUserRepository_UpdateUserPreferredTime(t *testing.T) {
 func TestUserRepository_GetUserByUsernameOrID(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupUserTestDB(t)
-	defer db.Close()
 
 	repo := NewUserRepository(db, logger)
 
@@ -247,7 +240,6 @@ func TestUserRepository_GetUserByUsernameOrID(t *testing.T) {
 func TestUserRepository_UpdateUsername(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupUserTestDB(t)
-	defer db.Close()
 
 	repo := NewUserRepository(db, logger)
 
@@ -275,7 +267,6 @@ func TestUserRepository_UpdateUsername(t *testing.T) {
 func TestUserRepository_GetAllUsers(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupUserTestDB(t)
-	defer db.Close()
 
 	repo := NewUserRepository(db, logger)
 

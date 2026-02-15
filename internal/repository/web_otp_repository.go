@@ -59,7 +59,7 @@ func (r *WebOTPRepository) GenerateOTP(userID int64, ttl time.Duration) (string,
 		zap.Time("expires_at", otp.ExpiresAt),
 		zap.Duration("ttl", ttl))
 
-	// Format time as UTC string for SQLite
+	// Format time as UTC string
 	expiresAtStr := otp.ExpiresAt.Format("2006-01-02 15:04:05")
 	query := `INSERT INTO web_otps (user_id, code_hash, expires_at) VALUES (?, ?, ?)`
 	id, err := database.InsertAndReturnID(r.db, query, otp.UserID, otp.CodeHash, expiresAtStr)
@@ -118,25 +118,29 @@ func (r *WebOTPRepository) ValidateOTP(userID int64, code string) (*WebOTP, erro
 		return nil, fmt.Errorf("failed to validate OTP: %w", err)
 	}
 
-	// Parse times as UTC - SQLite stores times as strings, we store them in UTC format
-	// Parse as UTC to avoid timezone issues
+	// Parse times as UTC to avoid timezone issues
 	loc, _ := time.LoadLocation("UTC")
 	var errParse error
 	otp.ExpiresAt, errParse = time.ParseInLocation("2006-01-02 15:04:05", expiresAt, loc)
 	if errParse != nil {
-		// Try with timezone format
 		otp.ExpiresAt, errParse = time.Parse("2006-01-02T15:04:05Z", expiresAt)
+	}
+	if errParse != nil {
+		// Postgres TIMESTAMPTZ returns RFC3339 with offset (e.g. 2026-02-15T12:22:49+03:00)
+		otp.ExpiresAt, errParse = time.Parse(time.RFC3339, expiresAt)
 		if errParse != nil {
 			r.logger.Warn("failed to parse expires_at", zap.String("expires_at", expiresAt), zap.Error(errParse))
 		}
 	}
-	
+
 	otp.CreatedAt, errParse = time.ParseInLocation("2006-01-02 15:04:05", createdAt, loc)
 	if errParse != nil {
-		var errParse2 error
-		otp.CreatedAt, errParse2 = time.Parse("2006-01-02T15:04:05Z", createdAt)
-		if errParse2 != nil {
-			r.logger.Warn("failed to parse created_at", zap.String("created_at", createdAt), zap.Error(errParse2))
+		otp.CreatedAt, errParse = time.Parse("2006-01-02T15:04:05Z", createdAt)
+	}
+	if errParse != nil {
+		otp.CreatedAt, errParse = time.Parse(time.RFC3339, createdAt)
+		if errParse != nil {
+			r.logger.Warn("failed to parse created_at", zap.String("created_at", createdAt), zap.Error(errParse))
 		}
 	}
 	if consumedAt.Valid {

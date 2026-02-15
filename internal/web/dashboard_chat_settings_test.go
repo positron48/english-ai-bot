@@ -13,6 +13,7 @@ import (
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/service"
+	"tgbot-skeleton/internal/testutil"
 
 	"go.uber.org/zap"
 )
@@ -38,13 +39,10 @@ func (m *mockAIService) GenerateResponse(ctx context.Context, text string) (stri
 	return m.resp, nil
 }
 
-func setupDashboardRouterDeps(t *testing.T, ws *mockWordService, ai *mockAIService) (*Router, *database.DB, func()) {
+func setupDashboardRouterDeps(t *testing.T, ws *mockWordService, ai *mockAIService) (*Router, *database.DB) {
 	t.Helper()
 	logger, _ := zap.NewDevelopment()
-	db, err := database.New(":memory:", logger)
-	if err != nil {
-		t.Fatalf("failed to create database: %v", err)
-	}
+	db := testutil.SetupTestDatabase(t)
 
 	cfg := &config.Config{}
 	cfg.WebApp.JWTSecret = "test-secret"
@@ -54,16 +52,11 @@ func setupDashboardRouterDeps(t *testing.T, ws *mockWordService, ai *mockAIServi
 	router := NewRouter(logger, cfg, db.GetConnection(), nil, nil, nil, cbService)
 	router.SetDependencies(repository.NewUserRepository(db.GetConnection(), logger), ws, ai, nil, "")
 
-	cleanup := func() {
-		_ = db.Close()
-	}
-
-	return router, db, cleanup
+	return router, db
 }
 
 func TestHandleChatSettings_Unauthorized(t *testing.T) {
-	router, _, cleanup := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
-	defer cleanup()
+	router, _ := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
 
 	req := httptest.NewRequest(http.MethodPost, "/api/chat", bytes.NewBufferString("message=hi"))
 	w := httptest.NewRecorder()
@@ -75,8 +68,7 @@ func TestHandleChatSettings_Unauthorized(t *testing.T) {
 }
 
 func TestHandleChatSettings_SingleWordEnglish(t *testing.T) {
-	router, _, cleanup := setupDashboardRouterDeps(t, &mockWordService{isSingle: true, resp: "def"}, &mockAIService{resp: "ai"})
-	defer cleanup()
+	router, _ := setupDashboardRouterDeps(t, &mockWordService{isSingle: true, resp: "def"}, &mockAIService{resp: "ai"})
 
 	req := httptest.NewRequest(http.MethodPost, "/api/chat", bytes.NewBufferString("message=apple"))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
@@ -90,8 +82,7 @@ func TestHandleChatSettings_SingleWordEnglish(t *testing.T) {
 }
 
 func TestHandleChatSettings_SingleWordCyrillic(t *testing.T) {
-	router, _, cleanup := setupDashboardRouterDeps(t, &mockWordService{isSingle: true, resp: "def"}, &mockAIService{resp: "ai"})
-	defer cleanup()
+	router, _ := setupDashboardRouterDeps(t, &mockWordService{isSingle: true, resp: "def"}, &mockAIService{resp: "ai"})
 
 	req := httptest.NewRequest(http.MethodPost, "/api/chat", bytes.NewBufferString("message=дом"))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
@@ -105,9 +96,7 @@ func TestHandleChatSettings_SingleWordCyrillic(t *testing.T) {
 }
 
 func TestHandleChatSettings_MessageMissing(t *testing.T) {
-	router, _, cleanup := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
-	defer cleanup()
-
+	router, _ := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
 	req := httptest.NewRequest(http.MethodPost, "/api/chat", bytes.NewBufferString(""))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	req = setUserIDInContext(req, 1)
@@ -120,9 +109,7 @@ func TestHandleChatSettings_MessageMissing(t *testing.T) {
 }
 
 func TestHandleSettingsChatSettings_Get(t *testing.T) {
-	router, db, cleanup := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
-	defer cleanup()
-
+	router, db := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
 	_, err := db.GetConnection().Exec(`INSERT INTO users (telegram_id, created_at, updated_at, settings_json) VALUES (?,?,?,?)`, 999, "2026-01-01 00:00:00", "2026-01-01 00:00:00", `{}`)
 	if err != nil {
 		t.Fatalf("insert user error: %v", err)
@@ -151,9 +138,7 @@ func TestHandleSettingsChatSettings_Get(t *testing.T) {
 }
 
 func TestHandleSettingsChatSettings_Unauthorized(t *testing.T) {
-	router, _, cleanup := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
-	defer cleanup()
-
+	router, _ := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
 	req := httptest.NewRequest(http.MethodGet, "/api/settings", nil)
 	w := httptest.NewRecorder()
 	router.handleSettings(w, req)
@@ -164,9 +149,7 @@ func TestHandleSettingsChatSettings_Unauthorized(t *testing.T) {
 }
 
 func TestHandleSettingsChatSettings_UserNotFound(t *testing.T) {
-	router, _, cleanup := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
-	defer cleanup()
-
+	router, _ := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
 	req := httptest.NewRequest(http.MethodGet, "/api/settings", nil)
 	req = setUserIDInContext(req, 999)
 	w := httptest.NewRecorder()
@@ -178,9 +161,7 @@ func TestHandleSettingsChatSettings_UserNotFound(t *testing.T) {
 }
 
 func TestHandleChatSettings_MethodNotAllowed(t *testing.T) {
-	router, _, cleanup := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
-	defer cleanup()
-
+	router, _ := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
 	req := httptest.NewRequest(http.MethodGet, "/api/chat", nil)
 	w := httptest.NewRecorder()
 	router.handleChat(w, req)
@@ -191,9 +172,7 @@ func TestHandleChatSettings_MethodNotAllowed(t *testing.T) {
 }
 
 func TestHandleSettingsChatSettings_MethodNotAllowed(t *testing.T) {
-	router, _, cleanup := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
-	defer cleanup()
-
+	router, _ := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
 	req := httptest.NewRequest(http.MethodPost, "/api/settings", nil)
 	w := httptest.NewRecorder()
 	router.handleSettings(w, req)
@@ -204,9 +183,7 @@ func TestHandleSettingsChatSettings_MethodNotAllowed(t *testing.T) {
 }
 
 func TestHandleChatSettings_NonSingleWord(t *testing.T) {
-	router, _, cleanup := setupDashboardRouterDeps(t, &mockWordService{isSingle: false, resp: "def"}, &mockAIService{resp: "ai"})
-	defer cleanup()
-
+	router, _ := setupDashboardRouterDeps(t, &mockWordService{isSingle: false, resp: "def"}, &mockAIService{resp: "ai"})
 	req := httptest.NewRequest(http.MethodPost, "/api/chat", bytes.NewBufferString("message=hello world"))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	req = setUserIDInContext(req, 1)
@@ -219,9 +196,7 @@ func TestHandleChatSettings_NonSingleWord(t *testing.T) {
 }
 
 func TestHandleSettingsChatSettings_ParsesSettings(t *testing.T) {
-	router, db, cleanup := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
-	defer cleanup()
-
+	router, db := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
 	settings := models.UserSettings{NotificationFrequency: "never"}
 	payload, _ := json.Marshal(settings)
 	_, err := db.GetConnection().Exec(`INSERT INTO users (telegram_id, created_at, updated_at, settings_json) VALUES (?,?,?,?)`, 1001, "2026-01-01 00:00:00", "2026-01-01 00:00:00", string(payload))
@@ -240,9 +215,7 @@ func TestHandleSettingsChatSettings_ParsesSettings(t *testing.T) {
 }
 
 func TestHandleNotificationSettings_Success(t *testing.T) {
-	router, db, cleanup := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
-	defer cleanup()
-
+	router, db := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
 	_, err := db.GetConnection().Exec(`INSERT INTO users (telegram_id, created_at, updated_at, settings_json) VALUES (?,?,?,?)`, 2001, "2026-01-01 00:00:00", "2026-01-01 00:00:00", `{}`)
 	if err != nil {
 		t.Fatalf("insert user error: %v", err)
@@ -260,9 +233,7 @@ func TestHandleNotificationSettings_Success(t *testing.T) {
 }
 
 func TestHandleNotificationSettings_InvalidFrequency(t *testing.T) {
-	router, db, cleanup := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
-	defer cleanup()
-
+	router, db := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
 	_, err := db.GetConnection().Exec(`INSERT INTO users (telegram_id, created_at, updated_at, settings_json) VALUES (?,?,?,?)`, 2002, "2026-01-01 00:00:00", "2026-01-01 00:00:00", `{}`)
 	if err != nil {
 		t.Fatalf("insert user error: %v", err)
@@ -280,9 +251,7 @@ func TestHandleNotificationSettings_InvalidFrequency(t *testing.T) {
 }
 
 func TestHandleLanguageSettings_Success(t *testing.T) {
-	router, db, cleanup := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
-	defer cleanup()
-
+	router, db := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
 	_, err := db.GetConnection().Exec(`INSERT INTO users (telegram_id, created_at, updated_at, settings_json) VALUES (?,?,?,?)`, 2003, "2026-01-01 00:00:00", "2026-01-01 00:00:00", `{}`)
 	if err != nil {
 		t.Fatalf("insert user error: %v", err)
@@ -300,9 +269,7 @@ func TestHandleLanguageSettings_Success(t *testing.T) {
 }
 
 func TestHandleNotificationSettings_Unauthorized(t *testing.T) {
-	router, _, cleanup := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
-	defer cleanup()
-
+	router, _ := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
 	req := httptest.NewRequest(http.MethodPost, "/api/settings/notifications", bytes.NewBufferString(`{"frequency":"daily"}`))
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
@@ -314,9 +281,7 @@ func TestHandleNotificationSettings_Unauthorized(t *testing.T) {
 }
 
 func TestHandleNotificationSettings_MethodNotAllowed(t *testing.T) {
-	router, _, cleanup := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
-	defer cleanup()
-
+	router, _ := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
 	req := httptest.NewRequest(http.MethodGet, "/api/settings/notifications", nil)
 	w := httptest.NewRecorder()
 	router.handleNotificationSettings(w, req)
@@ -327,9 +292,7 @@ func TestHandleNotificationSettings_MethodNotAllowed(t *testing.T) {
 }
 
 func TestHandleNotificationSettings_UserNotFound(t *testing.T) {
-	router, _, cleanup := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
-	defer cleanup()
-
+	router, _ := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
 	req := httptest.NewRequest(http.MethodPost, "/api/settings/notifications", bytes.NewBufferString(`{"frequency":"daily"}`))
 	req.Header.Set("Content-Type", "application/json")
 	req = setUserIDInContext(req, 999)
@@ -342,9 +305,7 @@ func TestHandleNotificationSettings_UserNotFound(t *testing.T) {
 }
 
 func TestHandleNotificationSettings_InvalidJSON(t *testing.T) {
-	router, _, cleanup := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
-	defer cleanup()
-
+	router, _ := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
 	req := httptest.NewRequest(http.MethodPost, "/api/settings/notifications", bytes.NewBufferString("{"))
 	req.Header.Set("Content-Type", "application/json")
 	req = setUserIDInContext(req, 1)
@@ -357,9 +318,7 @@ func TestHandleNotificationSettings_InvalidJSON(t *testing.T) {
 }
 
 func TestHandleNotificationSettings_EmptyFrequency(t *testing.T) {
-	router, db, cleanup := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
-	defer cleanup()
-
+	router, db := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
 	_, err := db.GetConnection().Exec(`INSERT INTO users (telegram_id, created_at, updated_at, settings_json) VALUES (?,?,?,?)`, 2005, "2026-01-01 00:00:00", "2026-01-01 00:00:00", `{}`)
 	if err != nil {
 		t.Fatalf("insert user error: %v", err)
@@ -377,9 +336,7 @@ func TestHandleNotificationSettings_EmptyFrequency(t *testing.T) {
 }
 
 func TestHandleLanguageSettings_InvalidJSON(t *testing.T) {
-	router, _, cleanup := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
-	defer cleanup()
-
+	router, _ := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
 	req := httptest.NewRequest(http.MethodPost, "/api/settings/language", bytes.NewBufferString("{"))
 	req.Header.Set("Content-Type", "application/json")
 	req = setUserIDInContext(req, 1)
@@ -392,9 +349,7 @@ func TestHandleLanguageSettings_InvalidJSON(t *testing.T) {
 }
 
 func TestHandleLanguageSettings_UserNotFound(t *testing.T) {
-	router, _, cleanup := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
-	defer cleanup()
-
+	router, _ := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
 	req := httptest.NewRequest(http.MethodPost, "/api/settings/language", bytes.NewBufferString(`{"language":"en"}`))
 	req.Header.Set("Content-Type", "application/json")
 	req = setUserIDInContext(req, 999)
@@ -407,9 +362,7 @@ func TestHandleLanguageSettings_UserNotFound(t *testing.T) {
 }
 
 func TestHandleLanguageSettings_InvalidLanguage(t *testing.T) {
-	router, db, cleanup := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
-	defer cleanup()
-
+	router, db := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
 	_, err := db.GetConnection().Exec(`INSERT INTO users (telegram_id, created_at, updated_at, settings_json) VALUES (?,?,?,?)`, 2004, "2026-01-01 00:00:00", "2026-01-01 00:00:00", `{}`)
 	if err != nil {
 		t.Fatalf("insert user error: %v", err)
@@ -427,9 +380,7 @@ func TestHandleLanguageSettings_InvalidLanguage(t *testing.T) {
 }
 
 func TestHandleLanguageSettings_Unauthorized(t *testing.T) {
-	router, _, cleanup := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
-	defer cleanup()
-
+	router, _ := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
 	req := httptest.NewRequest(http.MethodPost, "/api/settings/language", bytes.NewBufferString(`{"language":"en"}`))
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
@@ -441,9 +392,7 @@ func TestHandleLanguageSettings_Unauthorized(t *testing.T) {
 }
 
 func TestHandleLanguageSettings_MethodNotAllowed(t *testing.T) {
-	router, _, cleanup := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
-	defer cleanup()
-
+	router, _ := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
 	req := httptest.NewRequest(http.MethodGet, "/api/settings/language", nil)
 	w := httptest.NewRecorder()
 	router.handleLanguageSettings(w, req)
@@ -454,9 +403,7 @@ func TestHandleLanguageSettings_MethodNotAllowed(t *testing.T) {
 }
 
 func TestHandleTrainingSettings_Success(t *testing.T) {
-	router, db, cleanup := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
-	defer cleanup()
-
+	router, db := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
 	_, err := db.GetConnection().Exec(`INSERT INTO users (telegram_id, created_at, updated_at, settings_json) VALUES (?,?,?,?)`, 3001, "2026-01-01 00:00:00", "2026-01-01 00:00:00", `{}`)
 	if err != nil {
 		t.Fatalf("insert user error: %v", err)
@@ -567,9 +514,7 @@ func TestHandleTrainingSettings_Success(t *testing.T) {
 }
 
 func TestHandleTrainingSettings_InvalidValue(t *testing.T) {
-	router, db, cleanup := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
-	defer cleanup()
-
+	router, db := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
 	_, err := db.GetConnection().Exec(`INSERT INTO users (telegram_id, created_at, updated_at, settings_json) VALUES (?,?,?,?)`, 3002, "2026-01-01 00:00:00", "2026-01-01 00:00:00", `{}`)
 	if err != nil {
 		t.Fatalf("insert user error: %v", err)
@@ -587,9 +532,7 @@ func TestHandleTrainingSettings_InvalidValue(t *testing.T) {
 }
 
 func TestHandleTrainingSettings_Unauthorized(t *testing.T) {
-	router, _, cleanup := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
-	defer cleanup()
-
+	router, _ := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
 	req := httptest.NewRequest(http.MethodPost, "/api/settings/training", bytes.NewBufferString(`{"options_delay_seconds":5}`))
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
@@ -601,9 +544,7 @@ func TestHandleTrainingSettings_Unauthorized(t *testing.T) {
 }
 
 func TestHandleTrainingSettings_MethodNotAllowed(t *testing.T) {
-	router, _, cleanup := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
-	defer cleanup()
-
+	router, _ := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
 	req := httptest.NewRequest(http.MethodGet, "/api/settings/training", nil)
 	w := httptest.NewRecorder()
 	router.handleTrainingSettings(w, req)

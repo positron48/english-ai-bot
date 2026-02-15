@@ -4,32 +4,26 @@ import (
 	"testing"
 
 	"tgbot-skeleton/internal/database"
+	"tgbot-skeleton/internal/testutil"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 
 	"go.uber.org/zap"
 )
 
-func setupOptionsServiceTest(t *testing.T) (*OptionsService, *database.DB, func()) {
+func setupOptionsServiceTest(t *testing.T) (*OptionsService, *database.DB) {
+	t.Helper()
 	logger, _ := zap.NewDevelopment()
-	db, err := database.New(":memory:", logger)
-	if err != nil {
-		t.Fatalf("Failed to create database: %v", err)
-	}
+	db := testutil.SetupTestDatabase(t)
 
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
-	service := NewOptionsService(tcRepo, logger)
+	svc := NewOptionsService(tcRepo, logger)
 
-	cleanup := func() {
-		db.Close()
-	}
-
-	return service, db, cleanup
+	return svc, db
 }
 
 func TestGetFallbackDistractors_RUtoEN_Verb(t *testing.T) {
-	service, _, cleanup := setupOptionsServiceTest(t)
-	defer cleanup()
+	service, _ := setupOptionsServiceTest(t)
 
 	distractors := service.getFallbackDistractors(models.DirectionRUtoEN, "verb")
 
@@ -54,8 +48,7 @@ func TestGetFallbackDistractors_RUtoEN_Verb(t *testing.T) {
 }
 
 func TestGetFallbackDistractors_RUtoEN_Noun(t *testing.T) {
-	service, _, cleanup := setupOptionsServiceTest(t)
-	defer cleanup()
+	service, _ := setupOptionsServiceTest(t)
 
 	distractors := service.getFallbackDistractors(models.DirectionRUtoEN, "noun")
 
@@ -80,8 +73,7 @@ func TestGetFallbackDistractors_RUtoEN_Noun(t *testing.T) {
 }
 
 func TestGetFallbackDistractors_RUtoEN_Adjective(t *testing.T) {
-	service, _, cleanup := setupOptionsServiceTest(t)
-	defer cleanup()
+	service, _ := setupOptionsServiceTest(t)
 
 	distractors := service.getFallbackDistractors(models.DirectionRUtoEN, "adjective")
 
@@ -106,8 +98,7 @@ func TestGetFallbackDistractors_RUtoEN_Adjective(t *testing.T) {
 }
 
 func TestGetFallbackDistractors_RUtoEN_Default(t *testing.T) {
-	service, _, cleanup := setupOptionsServiceTest(t)
-	defer cleanup()
+	service, _ := setupOptionsServiceTest(t)
 
 	distractors := service.getFallbackDistractors(models.DirectionRUtoEN, "unknown")
 
@@ -137,8 +128,7 @@ func TestGetFallbackDistractors_RUtoEN_Default(t *testing.T) {
 }
 
 func TestGetFallbackDistractors_ENtoRU_Verb(t *testing.T) {
-	service, _, cleanup := setupOptionsServiceTest(t)
-	defer cleanup()
+	service, _ := setupOptionsServiceTest(t)
 
 	distractors := service.getFallbackDistractors(models.DirectionENtoRU, "verb")
 
@@ -163,8 +153,7 @@ func TestGetFallbackDistractors_ENtoRU_Verb(t *testing.T) {
 }
 
 func TestGetFallbackDistractors_ENtoRU_Noun(t *testing.T) {
-	service, _, cleanup := setupOptionsServiceTest(t)
-	defer cleanup()
+	service, _ := setupOptionsServiceTest(t)
 
 	distractors := service.getFallbackDistractors(models.DirectionENtoRU, "noun")
 
@@ -189,8 +178,7 @@ func TestGetFallbackDistractors_ENtoRU_Noun(t *testing.T) {
 }
 
 func TestGetFallbackDistractors_ENtoRU_Adjective(t *testing.T) {
-	service, _, cleanup := setupOptionsServiceTest(t)
-	defer cleanup()
+	service, _ := setupOptionsServiceTest(t)
 
 	distractors := service.getFallbackDistractors(models.DirectionENtoRU, "adjective")
 
@@ -215,8 +203,7 @@ func TestGetFallbackDistractors_ENtoRU_Adjective(t *testing.T) {
 }
 
 func TestGetFallbackDistractors_ENtoRU_Default(t *testing.T) {
-	service, _, cleanup := setupOptionsServiceTest(t)
-	defer cleanup()
+	service, _ := setupOptionsServiceTest(t)
 
 	distractors := service.getFallbackDistractors(models.DirectionENtoRU, "")
 

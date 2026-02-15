@@ -12,7 +12,7 @@ import (
 	"unsafe"
 
 	"tgbot-skeleton/internal/ai"
-	"tgbot-skeleton/internal/database"
+	"tgbot-skeleton/internal/testutil"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 
@@ -69,16 +69,12 @@ func TestGetWordDefinition_Cyrillic(t *testing.T) {
 
 func TestGetWordDefinition_FoundInDB(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, err := database.New(":memory:", logger)
-	if err != nil {
-		t.Fatalf("failed to create database: %v", err)
-	}
-	defer db.Close()
+	db := testutil.SetupTestDatabase(t)
 
 	wordRepo := repository.NewWordRepository(db.GetConnection(), logger)
 	service := NewWordService(wordRepo, nil, nil, nil, logger)
 
-	_, err = wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "apple"})
+	_, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "apple"})
 	if err != nil {
 		t.Fatalf("UpsertWordCardLemma error: %v", err)
 	}
@@ -94,11 +90,7 @@ func TestGetWordDefinition_FoundInDB(t *testing.T) {
 
 func TestGetWordDefinition_AIResponse_JSON(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, err := database.New(":memory:", logger)
-	if err != nil {
-		t.Fatalf("failed to create database: %v", err)
-	}
-	defer db.Close()
+	db := testutil.SetupTestDatabase(t)
 
 	wordRepo := repository.NewWordRepository(db.GetConnection(), logger)
 	aiService := newAIServiceWithResponse(t, logger, `{"lemma":"banana","pos":"noun","transcription":"bənænə","definition_ru":"банан","examples":[{"example_en":"I ate a banana.","gloss_ru":"Я съел банан."}]}`)
@@ -123,11 +115,7 @@ func TestGetWordDefinition_AIResponse_JSON(t *testing.T) {
 
 func TestGetWordDefinition_AIResponse_ErrorHint(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, err := database.New(":memory:", logger)
-	if err != nil {
-		t.Fatalf("failed to create database: %v", err)
-	}
-	defer db.Close()
+	db := testutil.SetupTestDatabase(t)
 
 	wordRepo := repository.NewWordRepository(db.GetConnection(), logger)
 	aiService := newAIServiceWithResponse(t, logger, `{"error": true, "hint": "проверьте написание"}`)
@@ -152,11 +140,7 @@ func TestGetWordDefinition_AIResponse_ErrorHint(t *testing.T) {
 
 func TestGetWordDefinition_AIResponse_NoDefinitionRU(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, err := database.New(":memory:", logger)
-	if err != nil {
-		t.Fatalf("failed to create database: %v", err)
-	}
-	defer db.Close()
+	db := testutil.SetupTestDatabase(t)
 
 	wordRepo := repository.NewWordRepository(db.GetConnection(), logger)
 	aiService := newAIServiceWithResponse(t, logger, `{"lemma":"ghost","pos":"noun"}`)
@@ -173,11 +157,7 @@ func TestGetWordDefinition_AIResponse_NoDefinitionRU(t *testing.T) {
 
 func TestGetWordDefinition_AIResponse_InvalidJSON_Legacy(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, err := database.New(":memory:", logger)
-	if err != nil {
-		t.Fatalf("failed to create database: %v", err)
-	}
-	defer db.Close()
+	db := testutil.SetupTestDatabase(t)
 
 	wordRepo := repository.NewWordRepository(db.GetConnection(), logger)
 	aiService := newAIServiceWithResponse(t, logger, "not json")

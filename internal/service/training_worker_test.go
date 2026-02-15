@@ -12,6 +12,7 @@ import (
 
 	"tgbot-skeleton/internal/ai"
 	"tgbot-skeleton/internal/database"
+	"tgbot-skeleton/internal/testutil"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 
@@ -42,10 +43,7 @@ func setAITransportTW(service *ai.Service, transport http.RoundTripper) {
 func newTrainingWorker(t *testing.T, transport http.RoundTripper) (*TrainingWorker, *repository.WordRepository, *repository.TrainingCardRepository, *repository.UserCardRepository, *repository.UserRepository, *database.DB, func()) {
 	t.Helper()
 	logger, _ := zap.NewDevelopment()
-	db, err := database.New(":memory:", logger)
-	if err != nil {
-		t.Fatalf("failed to create database: %v", err)
-	}
+	db := testutil.SetupTestDatabase(t)
 
 	wordRepo := repository.NewWordRepository(db.GetConnection(), logger)
 	trainingCardRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
@@ -75,9 +73,7 @@ func newTrainingWorker(t *testing.T, transport http.RoundTripper) (*TrainingWork
 		logger,
 	)
 
-	cleanup := func() {
-		_ = db.Close()
-	}
+	cleanup := func() {} // shared db, do not close
 
 	return worker, wordRepo, trainingCardRepo, userCardRepo, userRepo, db, cleanup
 }

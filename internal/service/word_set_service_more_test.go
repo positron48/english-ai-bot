@@ -5,18 +5,16 @@ import (
 	"testing"
 
 	"tgbot-skeleton/internal/database"
+	"tgbot-skeleton/internal/testutil"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 
 	"go.uber.org/zap"
 )
 
-func setupWordSetServiceMoreTest(t *testing.T) (*WordSetService, *database.DB, func()) {
+func setupWordSetServiceMoreTest(t *testing.T) (*WordSetService, *database.DB, *repository.UserRepository, func()) {
 	logger, _ := zap.NewDevelopment()
-	db, err := database.New(":memory:", logger)
-	if err != nil {
-		t.Fatalf("Failed to create database: %v", err)
-	}
+	db := testutil.SetupTestDatabase(t)
 
 	wordSetRepo := repository.NewWordSetRepository(db.GetConnection(), logger)
 	wordSetCategoryRepo := repository.NewWordSetCategoryRepository(db.GetConnection(), logger)
@@ -24,26 +22,26 @@ func setupWordSetServiceMoreTest(t *testing.T) (*WordSetService, *database.DB, f
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
 	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	uwkRepo := repository.NewUserWordKnowledgeRepository(db.GetConnection(), logger)
+	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
 
 	service := NewWordSetService(wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, nil, "gpt-4", logger)
 
-	cleanup := func() {
-		db.Close()
-	}
+	cleanup := func() {} // shared db, do not close
 
-	return service, db, cleanup
+	return service, db, userRepo, cleanup
 }
 
 func TestMarkKnown(t *testing.T) {
-	service, db, cleanup := setupWordSetServiceMoreTest(t)
+	service, db, userRepo, cleanup := setupWordSetServiceMoreTest(t)
 	defer cleanup()
+
+	user, _ := userRepo.GetOrCreateUser(12345)
+	userID := user.ID
 
 	// Create a word card
 	wordRepo := repository.NewWordRepository(db.GetConnection(), service.logger)
 	wordRepo.SaveWordCard("testword", "test definition")
 	wordCard, _ := wordRepo.GetWordCard("testword")
-
-	userID := int64(12345)
 
 	// Mark as known
 	err := service.MarkKnown(userID, wordCard.ID)
@@ -63,15 +61,16 @@ func TestMarkKnown(t *testing.T) {
 }
 
 func TestMarkKnown_WithUserCards(t *testing.T) {
-	service, db, cleanup := setupWordSetServiceMoreTest(t)
+	service, db, userRepo, cleanup := setupWordSetServiceMoreTest(t)
 	defer cleanup()
+
+	user, _ := userRepo.GetOrCreateUser(12345)
+	userID := user.ID
 
 	// Create a word card
 	wordRepo := repository.NewWordRepository(db.GetConnection(), service.logger)
 	wordRepo.SaveWordCard("testword", "test definition")
 	wordCard, _ := wordRepo.GetWordCard("testword")
-
-	userID := int64(12345)
 
 	// Create a user card first
 	ucRepo := repository.NewUserCardRepository(db.GetConnection(), service.logger)
@@ -114,7 +113,7 @@ func TestMarkKnown_WithUserCards(t *testing.T) {
 }
 
 func TestProcessWordSetItems(t *testing.T) {
-	service, db, cleanup := setupWordSetServiceMoreTest(t)
+	service, db, _, cleanup := setupWordSetServiceMoreTest(t)
 	defer cleanup()
 
 	// Create a word set
@@ -149,7 +148,7 @@ func TestProcessWordSetItems(t *testing.T) {
 }
 
 func TestProcessWordSetItems_EmptyWords(t *testing.T) {
-	service, db, cleanup := setupWordSetServiceMoreTest(t)
+	service, db, _, cleanup := setupWordSetServiceMoreTest(t)
 	defer cleanup()
 
 	wordSetRepo := repository.NewWordSetRepository(db.GetConnection(), service.logger)
@@ -178,7 +177,7 @@ func TestProcessWordSetItems_EmptyWords(t *testing.T) {
 }
 
 func TestProcessWordSetItems_WithDuplicates(t *testing.T) {
-	service, db, cleanup := setupWordSetServiceMoreTest(t)
+	service, db, _, cleanup := setupWordSetServiceMoreTest(t)
 	defer cleanup()
 
 	wordSetRepo := repository.NewWordSetRepository(db.GetConnection(), service.logger)
@@ -210,7 +209,7 @@ func TestProcessWordSetItems_WithDuplicates(t *testing.T) {
 }
 
 func TestProcessWordSetItems_WithWhitespace(t *testing.T) {
-	service, db, cleanup := setupWordSetServiceMoreTest(t)
+	service, db, _, cleanup := setupWordSetServiceMoreTest(t)
 	defer cleanup()
 
 	wordSetRepo := repository.NewWordSetRepository(db.GetConnection(), service.logger)

@@ -17,7 +17,6 @@ func setupSessionTestDB(t *testing.T) *sql.DB {
 func TestNewSessionRepository(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupSessionTestDB(t)
-	defer db.Close()
 
 	repo := NewSessionRepository(db, logger)
 	if repo == nil {
@@ -28,12 +27,14 @@ func TestNewSessionRepository(t *testing.T) {
 func TestSessionRepository_CreateSession(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupSessionTestDB(t)
-	defer db.Close()
+
+	userRepo := NewUserRepository(db, logger)
+	user, _ := userRepo.GetOrCreateUser(123)
 
 	repo := NewSessionRepository(db, logger)
 
 	session := &models.TrainingSession{
-		UserID:       123,
+		UserID:       user.ID,
 		Source:       models.SourceManual,
 		PlannedCount: 10,
 		DoneCount:    0,
@@ -52,13 +53,15 @@ func TestSessionRepository_CreateSession(t *testing.T) {
 func TestSessionRepository_GetSession(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupSessionTestDB(t)
-	defer db.Close()
+
+	userRepo := NewUserRepository(db, logger)
+	user, _ := userRepo.GetOrCreateUser(456)
 
 	repo := NewSessionRepository(db, logger)
 
 	// Create a session first
 	session := &models.TrainingSession{
-		UserID:       456,
+		UserID:       user.ID,
 		Source:       models.SourceManual,
 		PlannedCount: 5,
 		DoneCount:    0,
@@ -80,21 +83,23 @@ func TestSessionRepository_GetSession(t *testing.T) {
 	if found.ID != id {
 		t.Errorf("Expected ID %d, got %d", id, found.ID)
 	}
-	if found.UserID != 456 {
-		t.Errorf("Expected UserID 456, got %d", found.UserID)
+	if found.UserID != user.ID {
+		t.Errorf("Expected UserID %d, got %d", user.ID, found.UserID)
 	}
 }
 
 func TestSessionRepository_GetActiveSession(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupSessionTestDB(t)
-	defer db.Close()
+
+	userRepo := NewUserRepository(db, logger)
+	user, _ := userRepo.GetOrCreateUser(789)
 
 	repo := NewSessionRepository(db, logger)
 
 	// Create an active session (no ended_at)
 	session := &models.TrainingSession{
-		UserID:       789,
+		UserID:       user.ID,
 		Source:       models.SourceManual,
 		PlannedCount: 3,
 		DoneCount:    0,
@@ -106,28 +111,30 @@ func TestSessionRepository_GetActiveSession(t *testing.T) {
 	}
 
 	// Get active session
-	active, err := repo.GetActiveSession(789)
+	active, err := repo.GetActiveSession(user.ID)
 	if err != nil {
 		t.Fatalf("GetActiveSession() error = %v", err)
 	}
 	if active == nil {
 		t.Fatal("GetActiveSession() should not return nil")
 	}
-	if active.UserID != 789 {
-		t.Errorf("Expected UserID 789, got %d", active.UserID)
+	if active.UserID != user.ID {
+		t.Errorf("Expected UserID %d, got %d", user.ID, active.UserID)
 	}
 }
 
 func TestSessionRepository_FinishSession(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupSessionTestDB(t)
-	defer db.Close()
+
+	userRepo := NewUserRepository(db, logger)
+	user, _ := userRepo.GetOrCreateUser(999)
 
 	repo := NewSessionRepository(db, logger)
 
 	// Create a session
 	session := &models.TrainingSession{
-		UserID:       999,
+		UserID:       user.ID,
 		Source:       models.SourceManual,
 		PlannedCount: 5,
 		DoneCount:    0,
@@ -160,13 +167,15 @@ func TestSessionRepository_FinishSession(t *testing.T) {
 func TestSessionRepository_UpdateSession(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupSessionTestDB(t)
-	defer db.Close()
+
+	userRepo := NewUserRepository(db, logger)
+	user, _ := userRepo.GetOrCreateUser(111)
 
 	repo := NewSessionRepository(db, logger)
 
 	// Create a session
 	session := &models.TrainingSession{
-		UserID:       111,
+		UserID:       user.ID,
 		Source:       models.SourceManual,
 		PlannedCount: 5,
 		DoneCount:    0,

@@ -1,14 +1,11 @@
 package web
 
 import (
-	"database/sql"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"regexp"
 	"strings"
-
-	"tgbot-skeleton/internal/database"
 
 	"go.uber.org/zap"
 )
@@ -70,133 +67,40 @@ func (r *Router) handleDBSchema(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
-// getDBSchema extracts schema information from the active database dialect.
+// getDBSchema extracts schema information from the database.
 func (r *Router) getDBSchema() (*SchemaResponse, error) {
-	if database.GetDialect(r.db) == database.DialectPostgres {
-		return r.getDBSchemaPostgres()
+	tables, err := r.getTableNames()
+	if err != nil {
+		return nil, err
 	}
-	return r.getDBSchemaSQLite()
+
+	schema := &SchemaResponse{
+		Tables: make([]TableInfo, 0, len(tables)),
+	}
+
+	for _, tableName := range tables {
+		columns, err := r.getTableColumns(tableName)
+		if err != nil {
+			return nil, err
+		}
+
+		foreignKeys, err := r.getForeignKeys(tableName)
+		if err != nil {
+			return nil, err
+		}
+
+		schema.Tables = append(schema.Tables, TableInfo{
+			Name:        tableName,
+			Columns:     columns,
+			ForeignKeys: foreignKeys,
+		})
+	}
+
+	return schema, nil
 }
 
-// Backward-compatible wrappers used by existing tests.
+// getTableNames returns all user table names.
 func (r *Router) getTableNames() ([]string, error) {
-	if database.GetDialect(r.db) == database.DialectPostgres {
-		return r.getTableNamesPostgres()
-	}
-	return r.getTableNamesSQLite()
-}
-
-func (r *Router) getTableColumns(tableName string) ([]TableColumn, error) {
-	if database.GetDialect(r.db) == database.DialectPostgres {
-		return r.getTableColumnsPostgres(tableName)
-	}
-	return r.getTableColumnsSQLite(tableName)
-}
-
-func (r *Router) getForeignKeys(tableName string) ([]ForeignKey, error) {
-	if database.GetDialect(r.db) == database.DialectPostgres {
-		return r.getForeignKeysPostgres(tableName)
-	}
-	return r.getForeignKeysSQLite(tableName)
-}
-
-// getDBSchemaSQLite extracts schema information from SQLite database.
-func (r *Router) getDBSchemaSQLite() (*SchemaResponse, error) {
-	// Get all table names
-	tables, err := r.getTableNamesSQLite()
-	if err != nil {
-		return nil, err
-	}
-
-	schema := &SchemaResponse{
-		Tables: make([]TableInfo, 0, len(tables)),
-	}
-
-	for _, tableName := range tables {
-		// Get columns for this table
-		columns, err := r.getTableColumnsSQLite(tableName)
-		if err != nil {
-			return nil, err
-		}
-
-		// Get foreign keys for this table
-		foreignKeys, err := r.getForeignKeysSQLite(tableName)
-		if err != nil {
-			return nil, err
-		}
-
-		schema.Tables = append(schema.Tables, TableInfo{
-			Name:        tableName,
-			Columns:     columns,
-			ForeignKeys: foreignKeys,
-		})
-	}
-
-	return schema, nil
-}
-
-// getDBSchemaPostgres extracts schema information from PostgreSQL database.
-func (r *Router) getDBSchemaPostgres() (*SchemaResponse, error) {
-	tables, err := r.getTableNamesPostgres()
-	if err != nil {
-		return nil, err
-	}
-
-	schema := &SchemaResponse{
-		Tables: make([]TableInfo, 0, len(tables)),
-	}
-
-	for _, tableName := range tables {
-		columns, err := r.getTableColumnsPostgres(tableName)
-		if err != nil {
-			return nil, err
-		}
-
-		foreignKeys, err := r.getForeignKeysPostgres(tableName)
-		if err != nil {
-			return nil, err
-		}
-
-		schema.Tables = append(schema.Tables, TableInfo{
-			Name:        tableName,
-			Columns:     columns,
-			ForeignKeys: foreignKeys,
-		})
-	}
-
-	return schema, nil
-}
-
-// getTableNamesSQLite returns all table names in SQLite database.
-func (r *Router) getTableNamesSQLite() ([]string, error) {
-	query := `
-		SELECT name 
-		FROM sqlite_master 
-		WHERE type='table' 
-		AND name NOT LIKE 'sqlite_%'
-		ORDER BY name
-	`
-
-	rows, err := r.db.Query(query)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	tables := make([]string, 0)
-	for rows.Next() {
-		var name string
-		if err := rows.Scan(&name); err != nil {
-			return nil, err
-		}
-		tables = append(tables, name)
-	}
-
-	return tables, rows.Err()
-}
-
-// getTableNamesPostgres returns all user table names in PostgreSQL database.
-func (r *Router) getTableNamesPostgres() ([]string, error) {
 	query := `
 		SELECT table_name
 		FROM information_schema.tables
@@ -221,45 +125,8 @@ func (r *Router) getTableNamesPostgres() ([]string, error) {
 	return tables, rows.Err()
 }
 
-// getTableColumnsSQLite returns column information for a table in SQLite.
-func (r *Router) getTableColumnsSQLite(tableName string) ([]TableColumn, error) {
-	// Validate table name to prevent SQL injection
-	if !isValidTableName(tableName) {
-		return nil, fmt.Errorf("invalid table name: %s", tableName)
-	}
-	query := `PRAGMA table_info(` + tableName + `)`
-
-	rows, err := r.db.Query(query)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	columns := make([]TableColumn, 0)
-	for rows.Next() {
-		var col TableColumn
-		var cid int
-		var notNull, pk int
-		var dfltValue sql.NullString
-
-		if err := rows.Scan(&cid, &col.Name, &col.Type, &notNull, &dfltValue, &pk); err != nil {
-			return nil, err
-		}
-
-		col.NotNull = notNull == 1
-		col.PrimaryKey = pk == 1
-		if dfltValue.Valid {
-			col.DefaultValue = dfltValue.String
-		}
-
-		columns = append(columns, col)
-	}
-
-	return columns, rows.Err()
-}
-
-// getTableColumnsPostgres returns column information for a table in PostgreSQL.
-func (r *Router) getTableColumnsPostgres(tableName string) ([]TableColumn, error) {
+// getTableColumns returns column information for a table.
+func (r *Router) getTableColumns(tableName string) ([]TableColumn, error) {
 	if !isValidTableName(tableName) {
 		return nil, fmt.Errorf("invalid table name: %s", tableName)
 	}
@@ -305,44 +172,8 @@ func (r *Router) getTableColumnsPostgres(tableName string) ([]TableColumn, error
 	return columns, rows.Err()
 }
 
-// getForeignKeysSQLite returns foreign key relationships for a table in SQLite.
-func (r *Router) getForeignKeysSQLite(tableName string) ([]ForeignKey, error) {
-	// Validate table name to prevent SQL injection
-	if !isValidTableName(tableName) {
-		return nil, fmt.Errorf("invalid table name: %s", tableName)
-	}
-	query := `PRAGMA foreign_key_list(` + tableName + `)`
-
-	rows, err := r.db.Query(query)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	foreignKeys := make([]ForeignKey, 0)
-	for rows.Next() {
-		var fk ForeignKey
-		var id, seq int
-		var onUpdate sql.NullString
-		var match sql.NullString
-
-		if err := rows.Scan(&id, &seq, &fk.ToTable, &fk.FromColumn, &fk.ToColumn, &onUpdate, &fk.OnDelete, &match); err != nil {
-			return nil, err
-		}
-
-		fk.FromTable = tableName
-
-		// Only add each foreign key once (seq 0 is the first column)
-		if seq == 0 {
-			foreignKeys = append(foreignKeys, fk)
-		}
-	}
-
-	return foreignKeys, rows.Err()
-}
-
-// getForeignKeysPostgres returns foreign key relationships for a table in PostgreSQL.
-func (r *Router) getForeignKeysPostgres(tableName string) ([]ForeignKey, error) {
+// getForeignKeys returns foreign key relationships for a table.
+func (r *Router) getForeignKeys(tableName string) ([]ForeignKey, error) {
 	if !isValidTableName(tableName) {
 		return nil, fmt.Errorf("invalid table name: %s", tableName)
 	}
@@ -388,8 +219,7 @@ func (r *Router) getForeignKeysPostgres(tableName string) ([]ForeignKey, error) 
 	return foreignKeys, rows.Err()
 }
 
-// isValidTableName validates that a table name is safe to use in SQL
-// SQLite identifiers can contain letters, digits, underscores, and must not start with a digit
+// isValidTableName validates that a table name is safe to use in SQL.
 var tableNameRegex = regexp.MustCompile(`^[a-zA-Z_][a-zA-Z0-9_]*$`)
 
 func isValidTableName(name string) bool {
@@ -461,10 +291,9 @@ func (r *Router) handleDBQuery(w http.ResponseWriter, req *http.Request) {
 
 	upper := strings.ToUpper(strings.TrimSpace(query))
 	isSelect := strings.HasPrefix(upper, "SELECT") || strings.HasPrefix(upper, "WITH")
-	isPragma := strings.HasPrefix(upper, "PRAGMA")
 
 	var resp dbQueryResponse
-	if isSelect || isPragma {
+	if isSelect {
 		rows, err := r.db.Query(query)
 		if err != nil {
 			r.logger.Warn("DB query error", zap.Error(err), zap.String("query", query))

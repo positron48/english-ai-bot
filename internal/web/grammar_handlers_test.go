@@ -7,7 +7,7 @@ import (
 )
 
 func TestHandleLearningGrammarCategories_OK(t *testing.T) {
-	router, _, cleanup := setupGrammarTest(t)
+	router, _, _, cleanup := setupGrammarTest(t)
 	defer cleanup()
 
 	sectionsData, err := router.grammarService.ContentRepo.GetSections()
@@ -27,7 +27,7 @@ func TestHandleLearningGrammarCategories_OK(t *testing.T) {
 }
 
 func TestHandleLearningGrammarCategories_Unauthorized(t *testing.T) {
-	router, _, cleanup := setupGrammarTest(t)
+	router, _, _, cleanup := setupGrammarTest(t)
 	defer cleanup()
 
 	req := httptest.NewRequest(http.MethodGet, "/api/learning/grammar/categories", nil)
@@ -40,7 +40,7 @@ func TestHandleLearningGrammarCategories_Unauthorized(t *testing.T) {
 }
 
 func TestHandleLearningGrammarChapters_OK(t *testing.T) {
-	router, _, cleanup := setupGrammarTest(t)
+	router, _, _, cleanup := setupGrammarTest(t)
 	defer cleanup()
 
 	sectionsData, err := router.grammarService.ContentRepo.GetSections()
@@ -62,7 +62,7 @@ func TestHandleLearningGrammarChapters_OK(t *testing.T) {
 }
 
 func TestHandleLearningGrammarChapters_UnpublishedSection_404(t *testing.T) {
-	router, _, cleanup := setupGrammarTest(t)
+	router, _, _, cleanup := setupGrammarTest(t)
 	defer cleanup()
 
 	sectionsData, err := router.grammarService.ContentRepo.GetSections()
@@ -83,7 +83,7 @@ func TestHandleLearningGrammarChapters_UnpublishedSection_404(t *testing.T) {
 }
 
 func TestHandleLearningGrammarSectionAccess(t *testing.T) {
-	router, _, cleanup := setupGrammarTest(t)
+	router, _, _, cleanup := setupGrammarTest(t)
 	defer cleanup()
 
 	sectionsData, err := router.grammarService.ContentRepo.GetSections()
@@ -103,7 +103,7 @@ func TestHandleLearningGrammarSectionAccess(t *testing.T) {
 }
 
 func TestHandleLearningGrammarChapterAccess(t *testing.T) {
-	router, _, cleanup := setupGrammarTest(t)
+	router, _, _, cleanup := setupGrammarTest(t)
 	defer cleanup()
 
 	sectionsData, err := router.grammarService.ContentRepo.GetSections()

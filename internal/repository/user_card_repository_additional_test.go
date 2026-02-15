@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"context"
 	"testing"
 	"time"
 
@@ -12,13 +13,24 @@ import (
 func TestUserCardRepository_GetUserCardByTrainingCard(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupUserCardTestDB(t)
-	defer db.Close()
+
+	userRepo := NewUserRepository(db, logger)
+	user, err := userRepo.GetOrCreateUser(3000)
+	if err != nil {
+		t.Fatalf("Failed to create user: %v", err)
+	}
 
 	repo := NewUserCardRepository(db, logger)
 
-	// Create a training card
-	_, err := db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (?, ?, ?, ?, ?, ?, ?)",
-		1, "bytraining", 0, "по обучению", "by training", "noun", "bytraining")
+	// Create word card first, then training card
+	var wordCardID int64
+	err = db.QueryRow("INSERT INTO word_cards (word, definition) VALUES ($1, $2) RETURNING id", "bytraining", "by training").Scan(&wordCardID)
+	if err != nil {
+		t.Fatalf("Failed to create word card: %v", err)
+	}
+	var trainingCardID int64
+	err = db.QueryRow("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id",
+		wordCardID, "bytraining", 0, "по обучению", "by training", "noun", "bytraining").Scan(&trainingCardID)
 	if err != nil {
 		t.Fatalf("Failed to create training card: %v", err)
 	}
@@ -26,8 +38,8 @@ func TestUserCardRepository_GetUserCardByTrainingCard(t *testing.T) {
 	// Create a user card
 	now := time.Now()
 	card := &models.UserCard{
-		UserID:         3000,
-		TrainingCardID: 1,
+		UserID:         user.ID,
+		TrainingCardID: trainingCardID,
 		Direction:      models.DirectionENtoRU,
 		State:          models.StateReview,
 		EF:             2.0,
@@ -39,31 +51,42 @@ func TestUserCardRepository_GetUserCardByTrainingCard(t *testing.T) {
 	}
 
 	// Get user card by training card
-	found, err := repo.GetUserCardByTrainingCard(3000, 1, models.DirectionENtoRU)
+	found, err := repo.GetUserCardByTrainingCard(user.ID, trainingCardID, models.DirectionENtoRU)
 	if err != nil {
 		t.Fatalf("GetUserCardByTrainingCard() error = %v", err)
 	}
 	if found == nil {
 		t.Fatal("GetUserCardByTrainingCard() should not return nil")
 	}
-	if found.UserID != 3000 {
-		t.Errorf("Expected UserID 3000, got %d", found.UserID)
+	if found.UserID != user.ID {
+		t.Errorf("Expected UserID %d, got %d", user.ID, found.UserID)
 	}
-	if found.TrainingCardID != 1 {
-		t.Errorf("Expected TrainingCardID 1, got %d", found.TrainingCardID)
+	if found.TrainingCardID != trainingCardID {
+		t.Errorf("Expected TrainingCardID %d, got %d", trainingCardID, found.TrainingCardID)
 	}
 }
 
 func TestUserCardRepository_DeleteOrphanedUserCards(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupUserCardTestDB(t)
-	defer db.Close()
+
+	userRepo := NewUserRepository(db, logger)
+	user, err := userRepo.GetOrCreateUser(4000)
+	if err != nil {
+		t.Fatalf("Failed to create user: %v", err)
+	}
 
 	repo := NewUserCardRepository(db, logger)
 
-	// Create a training card
-	_, err := db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (?, ?, ?, ?, ?, ?, ?)",
-		1, "orphan", 0, "сирота", "orphan", "noun", "orphan")
+	// Create word card first, then training card
+	var wordCardID int64
+	err = db.QueryRow("INSERT INTO word_cards (word, definition) VALUES ($1, $2) RETURNING id", "orphan", "orphan").Scan(&wordCardID)
+	if err != nil {
+		t.Fatalf("Failed to create word card: %v", err)
+	}
+	var trainingCardID int64
+	err = db.QueryRow("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id",
+		wordCardID, "orphan", 0, "сирота", "orphan", "noun", "orphan").Scan(&trainingCardID)
 	if err != nil {
 		t.Fatalf("Failed to create training card: %v", err)
 	}
@@ -71,8 +94,8 @@ func TestUserCardRepository_DeleteOrphanedUserCards(t *testing.T) {
 	// Create a user card
 	now := time.Now()
 	card := &models.UserCard{
-		UserID:         4000,
-		TrainingCardID: 1,
+		UserID:         user.ID,
+		TrainingCardID: trainingCardID,
 		Direction:      models.DirectionENtoRU,
 		State:          models.StateReview,
 		EF:             2.0,
@@ -83,8 +106,13 @@ func TestUserCardRepository_DeleteOrphanedUserCards(t *testing.T) {
 		t.Fatalf("Failed to create user card: %v", err)
 	}
 
-	// Delete the training card (making user card orphaned)
-	_, err = db.Exec("DELETE FROM training_cards WHERE id = 1")
+	// Disable triggers so CASCADE doesn't delete user_cards (Postgres)
+	ctx := context.Background()
+	conn, _ := db.Conn(ctx)
+	defer conn.Close()
+	_, _ = conn.ExecContext(ctx, "SET session_replication_role = replica")
+	_, err = conn.ExecContext(ctx, "DELETE FROM training_cards WHERE id = $1", trainingCardID)
+	_, _ = conn.ExecContext(ctx, "SET session_replication_role = DEFAULT")
 	if err != nil {
 		t.Fatalf("Failed to delete training card: %v", err)
 	}
@@ -102,36 +130,24 @@ func TestUserCardRepository_DeleteOrphanedUserCards(t *testing.T) {
 func TestUserCardRepository_DeleteUserCardsByWordENForUser(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupUserCardTestDB(t)
-	defer db.Close()
 
-	// Create word_cards table
-	_, err := db.Exec(`
-	CREATE TABLE IF NOT EXISTS word_cards (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		word TEXT UNIQUE NOT NULL,
-		definition TEXT NOT NULL,
-		pos TEXT,
-		transcription TEXT,
-		definition_ru TEXT,
-		examples_json TEXT,
-		verb_forms_json TEXT,
-		display_en TEXT,
-		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-	)`)
+	userRepo := NewUserRepository(db, logger)
+	user, err := userRepo.GetOrCreateUser(5000)
 	if err != nil {
-		t.Fatalf("Failed to create word_cards table: %v", err)
+		t.Fatalf("Failed to create user: %v", err)
 	}
 
 	repo := NewUserCardRepository(db, logger)
 
-	// Create word cards and training cards
-	_, err = db.Exec("INSERT INTO word_cards (id, word, definition) VALUES (?, ?, ?)", 1, "deleteword", "to delete")
+	// Create word card and training card (schema already exists from migration)
+	var wordCardID int64
+	err = db.QueryRow("INSERT INTO word_cards (word, definition) VALUES ($1, $2) RETURNING id", "deleteword", "to delete").Scan(&wordCardID)
 	if err != nil {
 		t.Fatalf("Failed to create word card: %v", err)
 	}
-	_, err = db.Exec("INSERT INTO training_cards (id, word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-		1, 1, "deleteword", 0, "удалить", "to delete", "verb", "to deleteword")
+	var trainingCardID int64
+	err = db.QueryRow("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id",
+		wordCardID, "deleteword", 0, "удалить", "to delete", "verb", "to deleteword").Scan(&trainingCardID)
 	if err != nil {
 		t.Fatalf("Failed to create training card: %v", err)
 	}
@@ -139,8 +155,8 @@ func TestUserCardRepository_DeleteUserCardsByWordENForUser(t *testing.T) {
 	// Create user cards
 	now := time.Now()
 	card1 := &models.UserCard{
-		UserID:         5000,
-		TrainingCardID: 1,
+		UserID:         user.ID,
+		TrainingCardID: trainingCardID,
 		Direction:      models.DirectionENtoRU,
 		State:          models.StateReview,
 		EF:             2.0,
@@ -152,8 +168,8 @@ func TestUserCardRepository_DeleteUserCardsByWordENForUser(t *testing.T) {
 	}
 
 	card2 := &models.UserCard{
-		UserID:         5000,
-		TrainingCardID: 1,
+		UserID:         user.ID,
+		TrainingCardID: trainingCardID,
 		Direction:      models.DirectionRUtoEN,
 		State:          models.StateReview,
 		EF:             2.0,
@@ -165,7 +181,7 @@ func TestUserCardRepository_DeleteUserCardsByWordENForUser(t *testing.T) {
 	}
 
 	// Delete user cards by word EN
-	deleted, err := repo.DeleteUserCardsByWordENForUser(5000, "deleteword")
+	deleted, err := repo.DeleteUserCardsByWordENForUser(user.ID, "deleteword")
 	if err != nil {
 		t.Fatalf("DeleteUserCardsByWordENForUser() error = %v", err)
 	}

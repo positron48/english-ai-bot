@@ -3,32 +3,21 @@ package repository
 import (
 	"testing"
 
-	"tgbot-skeleton/internal/database"
 	"tgbot-skeleton/internal/models"
+	"tgbot-skeleton/internal/testutil"
 
 	"go.uber.org/zap"
 )
 
-func setupUserAccessCategoryRepo(t *testing.T) (*UserAccessCategoryRepository, func()) {
+func setupUserAccessCategoryRepo(t *testing.T) *UserAccessCategoryRepository {
 	t.Helper()
 	logger, _ := zap.NewDevelopment()
-	db, err := database.New(":memory:", logger)
-	if err != nil {
-		t.Fatalf("failed to create database: %v", err)
-	}
-
-	repo := NewUserAccessCategoryRepository(db.GetConnection(), logger)
-
-	cleanup := func() {
-		_ = db.Close()
-	}
-
-	return repo, cleanup
+	conn := testutil.SetupTestDB(t)
+	return NewUserAccessCategoryRepository(conn, logger)
 }
 
 func TestUserAccessCategoryRepository_CRUD(t *testing.T) {
-	repo, cleanup := setupUserAccessCategoryRepo(t)
-	defer cleanup()
+	repo := setupUserAccessCategoryRepo(t)
 
 	desc := "Admins"
 	category := &models.UserAccessCategory{Name: "admin", Description: &desc}
@@ -61,8 +50,11 @@ func TestUserAccessCategoryRepository_CRUD(t *testing.T) {
 }
 
 func TestUserAccessCategoryRepository_PermissionsAndDelete(t *testing.T) {
-	repo, cleanup := setupUserAccessCategoryRepo(t)
-	defer cleanup()
+	logger, _ := zap.NewDevelopment()
+	conn := testutil.SetupTestDB(t)
+	userRepo := NewUserRepository(conn, logger)
+	user, _ := userRepo.GetOrCreateUser(100)
+	repo := NewUserAccessCategoryRepository(conn, logger)
 
 	category := &models.UserAccessCategory{Name: "reader"}
 	id, err := repo.CreateCategory(category)
@@ -70,7 +62,7 @@ func TestUserAccessCategoryRepository_PermissionsAndDelete(t *testing.T) {
 		t.Fatalf("CreateCategory error: %v", err)
 	}
 
-	if _, err := repo.db.Exec(`INSERT INTO user_access_category_permissions (category_id, permission) VALUES (?, ?)`, id, "stats:view"); err != nil {
+	if _, err := repo.db.Exec(`INSERT INTO user_access_category_permissions (category_id, permission) VALUES ($1, $2)`, id, "stats:view"); err != nil {
 		t.Fatalf("failed to insert permission: %v", err)
 	}
 
@@ -82,7 +74,7 @@ func TestUserAccessCategoryRepository_PermissionsAndDelete(t *testing.T) {
 		t.Fatalf("expected permissions")
 	}
 
-	if _, err := repo.db.Exec(`INSERT INTO user_access_user_categories (user_id, category_id) VALUES (?, ?)`, 1, id); err != nil {
+	if _, err := repo.db.Exec(`INSERT INTO user_access_user_categories (user_id, category_id) VALUES ($1, $2)`, user.ID, id); err != nil {
 		t.Fatalf("failed to insert user category: %v", err)
 	}
 
@@ -90,7 +82,7 @@ func TestUserAccessCategoryRepository_PermissionsAndDelete(t *testing.T) {
 		t.Fatalf("expected delete to fail with assigned users")
 	}
 
-	if _, err := repo.db.Exec(`DELETE FROM user_access_user_categories WHERE category_id = ?`, id); err != nil {
+	if _, err := repo.db.Exec(`DELETE FROM user_access_user_categories WHERE category_id = $1`, id); err != nil {
 		t.Fatalf("failed to clear user categories: %v", err)
 	}
 

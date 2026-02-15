@@ -53,7 +53,7 @@ func (r *WordSetCategoryRepository) CreateCategory(category *models.WordSetCateg
 	return id, nil
 }
 
-// parseTime parses SQLite datetime string with multiple format support
+// parseTime parses datetime string with multiple format support
 func parseTime(timeStr string) (time.Time, error) {
 	if timeStr == "" {
 		return time.Time{}, nil

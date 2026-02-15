@@ -16,9 +16,7 @@ AI_URL=https://openrouter.ai/api/v1
 AI_API_KEY=your_openrouter_api_key
 AI_MODEL=qwen/qwen3-coder:free
 AI_PROMPT=You are a helpful AI assistant.
-DATABASE_DRIVER=sqlite
-DATABASE_PATH=./data/words.db
-# DATABASE_URL=postgres://user:pass@host:5432/english?sslmode=disable
+DATABASE_URL=postgres://user:pass@host:5432/english?sslmode=disable
 WEBAPP_JWT_SECRET=$(openssl rand -hex 32)
 TRAINING_WORKER_ENABLED=true
 TRAINING_PROMPT_FILE=prompts/training-card-generator.txt
@@ -37,7 +35,7 @@ EOF
 - **Training System** (`internal/service/training_*.go`) - система тренировок с SRS
 - **Training Worker** (`internal/service/training_worker.go`) - фоновый воркер для генерации тренировочных карточек
 - **Web App** (`internal/web/`, `webapp/`) - Vue SPA с JWT аутентификацией
-- **Database** (`internal/database/`, `internal/repository/`) - SQLite с репозиториями
+- **Database** (`internal/database/`, `internal/repository/`) - Postgres с репозиториями
 
 ### Сущности БД
 
@@ -278,9 +276,7 @@ AI_MODEL=                    # Модель AI (основная)
 AI_MODEL_HIGH=               # Модель AI для сложных задач (опционально)
 AI_PROMPT=                   # Системный промпт (или AI_PROMPT_FILE)
 AI_PROMPT_FILE=              # Файл с промптом (альтернатива AI_PROMPT)
-DATABASE_DRIVER=sqlite       # sqlite | postgres
-DATABASE_PATH=               # Путь к SQLite БД
-DATABASE_URL=                # URL Postgres (если DATABASE_DRIVER=postgres)
+DATABASE_URL=                # URL Postgres (postgres://user:pass@host:5432/english?sslmode=disable)
 WEBAPP_JWT_SECRET=           # Секрет для JWT (openssl rand -hex 32)
 ```
 
@@ -381,7 +377,7 @@ english-bot/
 │   ├── nginx-ssl-setup.md       # Настройка nginx с SSL
 │   ├── training.md               # Документация системы тренировок
 │   └── swagger/                  # Swagger документация API
-└── data/                         # SQLite БД (создается автоматически)
+└── data/                         # Локальные данные (опционально)
 ```
 
 ## Разработка
@@ -431,17 +427,7 @@ make docker-rebuild     # Пересборка (clean + build + run)
 
 ## База данных
 
-SQLite база создается автоматически при первом запуске.
-
-**Просмотр:**
-```bash
-sqlite3 ./data/words.db
-```
-
-**Бэкап:**
-```bash
-sqlite3 ./data/words.db ".backup './data/words.db.backup'"
-```
+Используется PostgreSQL. Миграции выполняются автоматически при первом запуске. Миграция с SQLite описана в [docs/MIGRATION_TO_K3S.md](docs/MIGRATION_TO_K3S.md).
 
 ## Деплой
 

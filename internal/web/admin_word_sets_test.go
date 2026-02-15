@@ -8,6 +8,7 @@ import (
 
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/database"
+	"tgbot-skeleton/internal/testutil"
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/service"
 
@@ -23,10 +24,7 @@ func setUserIDInContextWordSets(req *http.Request, userID int64) *http.Request {
 
 func setupAdminWordSetsTest(t *testing.T) (*Router, *database.DB, int64, func()) {
 	logger, _ := zap.NewDevelopment()
-	db, err := database.New(":memory:", logger)
-	if err != nil {
-		t.Fatalf("Failed to create database: %v", err)
-	}
+	db := testutil.SetupTestDatabase(t)
 
 	cfg := &config.Config{}
 	cfg.Admin.TelegramID = 12345
@@ -45,9 +43,7 @@ func setupAdminWordSetsTest(t *testing.T) (*Router, *database.DB, int64, func())
 	router := NewRouter(logger, cfg, db.GetConnection(), nil, nil, nil, cbService)
 	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
 
-	cleanup := func() {
-		db.Close()
-	}
+	cleanup := func() {} // shared db, do not close
 
 	return router, db, adminUser.ID, cleanup
 }

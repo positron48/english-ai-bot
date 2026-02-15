@@ -10,7 +10,7 @@ import (
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 
-	_ "github.com/mattn/go-sqlite3"
+	"tgbot-skeleton/internal/testutil"
 	"go.uber.org/zap"
 )
 
@@ -19,48 +19,8 @@ func contains(s, substr string) bool {
 }
 
 func setupWordServiceTestDB(t *testing.T) (*sql.DB, *repository.WordRepository) {
-	db, err := sql.Open("sqlite3", ":memory:")
-	if err != nil {
-		t.Fatalf("Failed to open test database: %v", err)
-	}
-
-	createTables := `
-	CREATE TABLE IF NOT EXISTS word_cards (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		word TEXT UNIQUE NOT NULL,
-		definition TEXT NOT NULL,
-		pos TEXT,
-		transcription TEXT,
-		definition_ru TEXT,
-		examples_json TEXT,
-		verb_forms_json TEXT,
-		display_en TEXT,
-		processed_at TEXT,
-		processing_error TEXT,
-		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-	);
-	
-	CREATE TABLE IF NOT EXISTS word_forms (
-		form TEXT PRIMARY KEY,
-		word_card_id INTEGER NOT NULL,
-		FOREIGN KEY (word_card_id) REFERENCES word_cards(id) ON DELETE CASCADE
-	);
-	
-	CREATE TABLE IF NOT EXISTS word_request_history (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		user_id INTEGER NOT NULL,
-		word TEXT,
-		word_card_id INTEGER,
-		input_word TEXT,
-		requested_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		FOREIGN KEY (word_card_id) REFERENCES word_cards(id) ON DELETE CASCADE
-	);`
-
-	_, err = db.Exec(createTables)
-	if err != nil {
-		t.Fatalf("Failed to create tables: %v", err)
-	}
+	t.Helper()
+	db := testutil.SetupTestDB(t)
 
 	logger, _ := zap.NewDevelopment()
 	wordRepo := repository.NewWordRepository(db, logger)
@@ -68,123 +28,22 @@ func setupWordServiceTestDB(t *testing.T) (*sql.DB, *repository.WordRepository) 
 	return db, wordRepo
 }
 
-func setupWordServiceTestDBWithTraining(t *testing.T) (*sql.DB, *repository.WordRepository, *repository.TrainingCardRepository, *repository.UserCardRepository) {
-	db, err := sql.Open("sqlite3", ":memory:")
-	if err != nil {
-		t.Fatalf("Failed to open test database: %v", err)
-	}
-
-	createTables := `
-	CREATE TABLE IF NOT EXISTS word_cards (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		word TEXT UNIQUE NOT NULL,
-		definition TEXT NOT NULL,
-		pos TEXT,
-		transcription TEXT,
-		definition_ru TEXT,
-		examples_json TEXT,
-		verb_forms_json TEXT,
-		display_en TEXT,
-		processed_at TEXT,
-		processing_error TEXT,
-		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-	);
-	
-	CREATE TABLE IF NOT EXISTS word_forms (
-		form TEXT PRIMARY KEY,
-		word_card_id INTEGER NOT NULL,
-		FOREIGN KEY (word_card_id) REFERENCES word_cards(id) ON DELETE CASCADE
-	);
-	
-	CREATE TABLE IF NOT EXISTS word_request_history (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		user_id INTEGER NOT NULL,
-		word TEXT,
-		word_card_id INTEGER,
-		input_word TEXT,
-		requested_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		FOREIGN KEY (word_card_id) REFERENCES word_cards(id) ON DELETE CASCADE
-	);
-	
-	CREATE TABLE IF NOT EXISTS training_cards (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		word_card_id INTEGER NOT NULL,
-		word_en TEXT NOT NULL,
-		transcription TEXT,
-		sense_index INTEGER NOT NULL DEFAULT 0,
-		word_ru TEXT NOT NULL,
-		meaning_en TEXT NOT NULL,
-		example_en TEXT,
-		example_ru TEXT,
-		distractors_ru TEXT,
-		distractors_en TEXT,
-		hint TEXT,
-		pos TEXT,
-		display_word TEXT,
-		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		FOREIGN KEY (word_card_id) REFERENCES word_cards(id) ON DELETE CASCADE,
-		UNIQUE(word_card_id, sense_index)
-	);
-	
-	CREATE TABLE IF NOT EXISTS user_cards (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		user_id INTEGER NOT NULL,
-		training_card_id INTEGER NOT NULL,
-		direction TEXT NOT NULL CHECK(direction IN ('ru_en', 'en_ru')),
-		state TEXT DEFAULT 'new' CHECK(state IN ('new', 'learning', 'review')),
-		ef REAL DEFAULT 2.5,
-		reps INTEGER DEFAULT 0,
-		interval_days INTEGER DEFAULT 0,
-		learning_step INTEGER DEFAULT 0,
-		lapse_count INTEGER DEFAULT 0,
-		next_due_at TEXT,
-		last_review_at TEXT,
-		last_quality INTEGER,
-		last_options_json TEXT,
-		wrong_answers_json TEXT,
-		stats_json TEXT,
-		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-		FOREIGN KEY (training_card_id) REFERENCES training_cards(id) ON DELETE CASCADE,
-		UNIQUE(user_id, training_card_id, direction)
-	);
-	
-	CREATE TABLE IF NOT EXISTS users (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		telegram_id INTEGER UNIQUE NOT NULL,
-		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-	);
-	
-	CREATE TABLE IF NOT EXISTS user_word_knowledge (
-		user_id INTEGER NOT NULL,
-		word_card_id INTEGER NOT NULL,
-		status TEXT NOT NULL DEFAULT 'known' CHECK(status IN ('known')),
-		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-		FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-		FOREIGN KEY (word_card_id) REFERENCES word_cards(id) ON DELETE CASCADE,
-		UNIQUE(user_id, word_card_id)
-	);`
-
-	_, err = db.Exec(createTables)
-	if err != nil {
-		t.Fatalf("Failed to create tables: %v", err)
-	}
+func setupWordServiceTestDBWithTraining(t *testing.T) (*sql.DB, *repository.WordRepository, *repository.TrainingCardRepository, *repository.UserCardRepository, *repository.UserRepository) {
+	t.Helper()
+	db := testutil.SetupTestDB(t)
 
 	logger, _ := zap.NewDevelopment()
 	wordRepo := repository.NewWordRepository(db, logger)
 	trainingCardRepo := repository.NewTrainingCardRepository(db, logger)
 	userCardRepo := repository.NewUserCardRepository(db, logger)
+	userRepo := repository.NewUserRepository(db, logger)
 
-	return db, wordRepo, trainingCardRepo, userCardRepo
+	return db, wordRepo, trainingCardRepo, userCardRepo, userRepo
 }
 
 func TestWordService_GetWordDefinition_FromDB(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, wordRepo := setupWordServiceTestDB(t)
-	defer db.Close()
+	_, wordRepo := setupWordServiceTestDB(t)
 
 	// Save a word to database
 	err := wordRepo.SaveWordCard("testword", "a test word definition")
@@ -211,8 +70,7 @@ func TestWordService_GetWordDefinition_FromDB(t *testing.T) {
 
 func TestWordService_GetWordDefinition_FromAI(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, wordRepo := setupWordServiceTestDB(t)
-	defer db.Close()
+	_, wordRepo := setupWordServiceTestDB(t)
 
 	service := NewWordService(wordRepo, nil, nil, (*ai.Service)(nil), logger)
 	_ = service // Verify service is created
@@ -221,8 +79,7 @@ func TestWordService_GetWordDefinition_FromAI(t *testing.T) {
 
 func TestWordService_GetWordCard_Integration(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, wordRepo := setupWordServiceTestDB(t)
-	defer db.Close()
+	_, wordRepo := setupWordServiceTestDB(t)
 
 	// Save a word to database
 	err := wordRepo.SaveWordCard("getcard", "card definition")
@@ -248,11 +105,15 @@ func TestWordService_GetWordCard_Integration(t *testing.T) {
 
 func TestWordService_GetWordDefinition_CreatesUserCards(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, wordRepo, trainingCardRepo, userCardRepo := setupWordServiceTestDBWithTraining(t)
-	defer db.Close()
+	_, wordRepo, trainingCardRepo, userCardRepo, userRepo := setupWordServiceTestDBWithTraining(t)
 
 	ctx := context.Background()
-	userID := int64(123)
+	// Create user (required for FK in user_cards, word_request_history)
+	user, err := userRepo.GetOrCreateUser(123)
+	if err != nil {
+		t.Fatalf("Failed to create user: %v", err)
+	}
+	userID := user.ID
 
 	// Create a word card
 	wordCard := &models.WordCard{
@@ -345,6 +206,9 @@ func TestWordService_GetWordDefinition_CreatesUserCards(t *testing.T) {
 	ruEnCard1Again, err := userCardRepo.GetUserCardByTrainingCard(userID, trainingCardID1, models.DirectionRUtoEN)
 	if err != nil {
 		t.Fatalf("Failed to get ru_en card 1 again: %v", err)
+	}
+	if ruEnCard1Again == nil || ruEnCard1 == nil {
+		t.Fatal("Expected user cards to exist for duplicate check")
 	}
 	if ruEnCard1Again.ID != ruEnCard1.ID {
 		t.Errorf("Expected same card ID, got %d != %d", ruEnCard1Again.ID, ruEnCard1.ID)

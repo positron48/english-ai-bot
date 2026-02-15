@@ -12,13 +12,14 @@ import (
 func TestWebSessionRepository_UpdateLastSeen(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupWebSessionTestDB(t)
-	defer db.Close()
+	userRepo := NewUserRepository(db, logger)
+	user, _ := userRepo.GetOrCreateUser(111)
 
 	repo := NewWebSessionRepository(db, logger)
 
 	// Create a session
 	session := &WebSession{
-		UserID:    111,
+		UserID:    user.ID,
 		Token:     "update-last-seen-token",
 		ExpiresAt: time.Now().Add(24 * time.Hour),
 	}
@@ -45,7 +46,6 @@ func TestWebSessionRepository_UpdateLastSeen(t *testing.T) {
 func TestWebSessionRepository_UpdateLastSeen_NoCookie(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupWebSessionTestDB(t)
-	defer db.Close()
 
 	repo := NewWebSessionRepository(db, logger)
 

@@ -16,8 +16,6 @@ func setupTestDB(t *testing.T) *sql.DB {
 func TestNewCircuitBreakerRepository(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupTestDB(t)
-	defer db.Close()
-
 	repo := NewCircuitBreakerRepository(db, logger)
 	if repo == nil {
 		t.Error("NewCircuitBreakerRepository() should not return nil")
@@ -27,8 +25,6 @@ func TestNewCircuitBreakerRepository(t *testing.T) {
 func TestCircuitBreakerRepository_GetState(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupTestDB(t)
-	defer db.Close()
-
 	repo := NewCircuitBreakerRepository(db, logger)
 
 	t.Run("Get state when not exists - should initialize", func(t *testing.T) {
@@ -64,8 +60,6 @@ func TestCircuitBreakerRepository_GetState(t *testing.T) {
 func TestCircuitBreakerRepository_RecordFailure(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupTestDB(t)
-	defer db.Close()
-
 	repo := NewCircuitBreakerRepository(db, logger)
 
 	// Initialize state first
@@ -113,8 +107,6 @@ func TestCircuitBreakerRepository_RecordFailure(t *testing.T) {
 func TestCircuitBreakerRepository_Open(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupTestDB(t)
-	defer db.Close()
-
 	repo := NewCircuitBreakerRepository(db, logger)
 
 	// Initialize state first
@@ -142,8 +134,6 @@ func TestCircuitBreakerRepository_Open(t *testing.T) {
 func TestCircuitBreakerRepository_Reset(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupTestDB(t)
-	defer db.Close()
-
 	repo := NewCircuitBreakerRepository(db, logger)
 
 	// Initialize state first
@@ -182,8 +172,6 @@ func TestCircuitBreakerRepository_Reset(t *testing.T) {
 func TestCircuitBreakerRepository_InitializeState(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupTestDB(t)
-	defer db.Close()
-
 	repo := NewCircuitBreakerRepository(db, logger)
 
 	// Delete any existing state
@@ -204,8 +192,6 @@ func TestCircuitBreakerRepository_InitializeState(t *testing.T) {
 func TestCircuitBreakerRepository_StateTimestamps(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupTestDB(t)
-	defer db.Close()
-
 	repo := NewCircuitBreakerRepository(db, logger)
 
 	// Initialize state

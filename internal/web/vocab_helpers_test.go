@@ -5,10 +5,10 @@ import (
 	"time"
 )
 
-// Note: parseSQLiteTime is not exported, so we test it indirectly through handleVocab
+// Note: parseDateTime is not exported, so we test it indirectly through handleVocab
 // This test file documents the expected behavior
 
-func TestParseSQLiteTime(t *testing.T) {
+func TestParseDateTime(t *testing.T) {
 	tests := []struct {
 		name     string
 		input    string
@@ -51,9 +51,9 @@ func TestParseSQLiteTime(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result, err := parseSQLiteTime(tt.input)
+			result, err := parseDateTime(tt.input)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("parseSQLiteTime() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("parseDateTime() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if tt.checkTime != nil {

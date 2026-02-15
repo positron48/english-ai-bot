@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"tgbot-skeleton/internal/database"
+	"tgbot-skeleton/internal/testutil"
 	"tgbot-skeleton/internal/repository"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -44,10 +44,7 @@ func newTestBot(client *mockTelegramClient) *tgbotapi.BotAPI {
 func setupBotCommandService(t *testing.T) (*BotCommandService, *repository.UserRepository, *mockTelegramClient, func()) {
 	t.Helper()
 	logger, _ := zap.NewDevelopment()
-	db, err := database.New(":memory:", logger)
-	if err != nil {
-		t.Fatalf("failed to create database: %v", err)
-	}
+	db := testutil.SetupTestDatabase(t)
 
 	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
 	client := &mockTelegramClient{}
@@ -55,9 +52,7 @@ func setupBotCommandService(t *testing.T) (*BotCommandService, *repository.UserR
 
 	svc := NewBotCommandService(bot, userRepo, logger, "help", "start", "unknown")
 
-	cleanup := func() {
-		_ = db.Close()
-	}
+	cleanup := func() {} // shared db, do not close
 
 	return svc, userRepo, client, cleanup
 }

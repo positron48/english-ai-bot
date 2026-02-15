@@ -17,7 +17,6 @@ func setupWebSessionTestDB(t *testing.T) *sql.DB {
 func TestNewWebSessionRepository(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupWebSessionTestDB(t)
-	defer db.Close()
 
 	repo := NewWebSessionRepository(db, logger)
 	_ = repo // Verify repository is created
@@ -26,12 +25,13 @@ func TestNewWebSessionRepository(t *testing.T) {
 func TestWebSessionRepository_CreateSession(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupWebSessionTestDB(t)
-	defer db.Close()
+	userRepo := NewUserRepository(db, logger)
+	user, _ := userRepo.GetOrCreateUser(123)
 
 	repo := NewWebSessionRepository(db, logger)
 
 	session := &WebSession{
-		UserID:    123,
+		UserID:    user.ID,
 		Token:     "test-session-token",
 		ExpiresAt: time.Now().Add(24 * time.Hour),
 	}
@@ -48,13 +48,14 @@ func TestWebSessionRepository_CreateSession(t *testing.T) {
 func TestWebSessionRepository_GetSessionByToken(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupWebSessionTestDB(t)
-	defer db.Close()
+	userRepo := NewUserRepository(db, logger)
+	user, _ := userRepo.GetOrCreateUser(456)
 
 	repo := NewWebSessionRepository(db, logger)
 
 	// Create a session
 	session := &WebSession{
-		UserID:    456,
+		UserID:    user.ID,
 		Token:     "get-session-token",
 		ExpiresAt: time.Now().Add(24 * time.Hour),
 	}
@@ -72,8 +73,8 @@ func TestWebSessionRepository_GetSessionByToken(t *testing.T) {
 	if found == nil {
 		t.Fatal("GetSessionByToken() should not return nil")
 	}
-	if found.UserID != 456 {
-		t.Errorf("Expected UserID 456, got %d", found.UserID)
+	if found.UserID != user.ID {
+		t.Errorf("Expected UserID %d, got %d", user.ID, found.UserID)
 	}
 	if found.Token != "get-session-token" {
 		t.Errorf("Expected token 'get-session-token', got %q", found.Token)
@@ -83,13 +84,14 @@ func TestWebSessionRepository_GetSessionByToken(t *testing.T) {
 func TestWebSessionRepository_DeleteSession(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupWebSessionTestDB(t)
-	defer db.Close()
+	userRepo := NewUserRepository(db, logger)
+	user, _ := userRepo.GetOrCreateUser(789)
 
 	repo := NewWebSessionRepository(db, logger)
 
 	// Create a session
 	session := &WebSession{
-		UserID:    789,
+		UserID:    user.ID,
 		Token:     "delete-session-token",
 		ExpiresAt: time.Now().Add(24 * time.Hour),
 	}
@@ -118,13 +120,14 @@ func TestWebSessionRepository_DeleteSession(t *testing.T) {
 func TestWebSessionRepository_CleanupExpiredSessions(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupWebSessionTestDB(t)
-	defer db.Close()
+	userRepo := NewUserRepository(db, logger)
+	user, _ := userRepo.GetOrCreateUser(999)
 
 	repo := NewWebSessionRepository(db, logger)
 
 	// Create an expired session
 	session := &WebSession{
-		UserID:    999,
+		UserID:    user.ID,
 		Token:     "expired-session-token",
 		ExpiresAt: time.Now().Add(-1 * time.Hour), // Expired
 	}

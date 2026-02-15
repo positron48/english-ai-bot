@@ -57,7 +57,7 @@ func (r *Router) handleAdmin(w http.ResponseWriter, req *http.Request) {
 	var cbResponse map[string]interface{}
 	if err == sql.ErrNoRows {
 		// Initialize if not exists
-		initQuery := `INSERT OR IGNORE INTO circuit_breaker_state (id) VALUES (1)`
+		initQuery := `INSERT INTO circuit_breaker_state (id) VALUES (1) ON CONFLICT (id) DO NOTHING`
 		_, initErr := r.db.Exec(initQuery)
 		if initErr != nil {
 			r.logger.Error("failed to initialize circuit breaker state", zap.Error(initErr))

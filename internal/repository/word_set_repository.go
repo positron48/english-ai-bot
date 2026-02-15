@@ -332,7 +332,7 @@ func (r *WordSetRepository) GetWordSetWords(wordSetID, userID int64) ([]*models.
 	// If preferred_pos is set, join with training cards to get data from matching card
 	// Use subqueries instead of LEFT JOIN to avoid duplicates when multiple training_cards
 	// exist for the same word_card_id with the same POS
-	// Use case-insensitive comparison for POS (LOWER() for SQLite compatibility)
+	// Use case-insensitive comparison for POS (LOWER())
 	if wordSet.PreferredPOS != nil && *wordSet.PreferredPOS != "" {
 		query += `,
 			COALESCE(

@@ -11,7 +11,6 @@ import (
 func TestTrainingCardRepository_DeleteAllTrainingCards(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupTrainingCardTestDB(t)
-	defer db.Close()
 
 	repo := NewTrainingCardRepository(db, logger)
 

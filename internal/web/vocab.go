@@ -14,10 +14,8 @@ import (
 	"go.uber.org/zap"
 )
 
-// parseSQLiteTime parses SQLite datetime string
-// SQLite stores Go time.Time.String() format: "2006-01-02 15:04:05.999999999 -0700 MST m=+123456.789012345"
-// We use substr() in SQL to extract first 19 chars: "2006-01-02 15:04:05"
-func parseSQLiteTime(timeStr string) (*time.Time, error) {
+// parseDateTime parses datetime string in "2006-01-02 15:04:05" format
+func parseDateTime(timeStr string) (*time.Time, error) {
 	if timeStr == "" {
 		return nil, nil
 	}
@@ -150,7 +148,7 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 	
 	// Combine both queries with UNION ALL and calculate mastery_level and mastering_score (0-100)
 	// Wrap in subquery to calculate mastery_level and filter by it
-	// Min-of-two: use CASE (PostgreSQL has no two-arg MIN(); LEAST not in older SQLite)
+	// Min-of-two: use CASE (Postgres LEAST requires same types)
 	cap20 := "CASE WHEN 20 < total_reps/2 THEN 20 ELSE total_reps/2 END"
 	cap25 := "CASE WHEN 25 < (review_state_count + learning_state_count)*25/NULLIF(total_cards,0) THEN 25 ELSE (review_state_count + learning_state_count)*25/NULLIF(total_cards,0) END"
 	masteringScoreSQL := "CASE WHEN is_known = 1 THEN 100 WHEN review_state_count = total_cards AND total_reps > 0 THEN 75 + (" + cap20 + ") WHEN review_state_count > 0 OR learning_state_count > 0 THEN 25 + (" + cap25 + ") ELSE 0 END"
@@ -278,7 +276,7 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 		var lastReview, addedAt sql.NullString
 		var displayWord sql.NullString
 		var masteryLevelCalc sql.NullString  // Used only for filtering, not stored
-		var masteringScoreCalc sql.NullString // PostgreSQL returns numeric as string; SQLite may return int
+		var masteringScoreCalc sql.NullString // Postgres returns numeric as string
 
 		err := rows.Scan(&word.WordCardID, &word.Lemma, &displayWord, &totalCards, &dueCount, &lastReview, &totalReps, &addedAt,
 			&reviewStateCount, &learningStateCount, &newStateCount, &reviewCount, &isKnown, &masteryLevelCalc, &masteringScoreCalc)
@@ -299,13 +297,13 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 		word.ReviewCount = reviewCount
 
 		if lastReview.Valid && lastReview.String != "" {
-			if t, err := parseSQLiteTime(lastReview.String); err == nil && t != nil {
+			if t, err := parseDateTime(lastReview.String); err == nil && t != nil {
 				word.LastReview = t
 			}
 		}
 
 		if addedAt.Valid && addedAt.String != "" {
-			if t, err := parseSQLiteTime(addedAt.String); err == nil && t != nil {
+			if t, err := parseDateTime(addedAt.String); err == nil && t != nil {
 				word.AddedAt = t
 			}
 		}
@@ -675,20 +673,20 @@ func (r *Router) handleVocabWordCards(w http.ResponseWriter, req *http.Request, 
 			continue
 		}
 
-		if t, err := parseSQLiteTime(createdAt); err == nil && t != nil {
+		if t, err := parseDateTime(createdAt); err == nil && t != nil {
 			card.CreatedAt = *t
 		}
-		if t, err := parseSQLiteTime(updatedAt); err == nil && t != nil {
+		if t, err := parseDateTime(updatedAt); err == nil && t != nil {
 			card.UpdatedAt = *t
 		}
 
 		if nextDueAt.Valid && nextDueAt.String != "" {
-			if t, err := parseSQLiteTime(nextDueAt.String); err == nil && t != nil {
+			if t, err := parseDateTime(nextDueAt.String); err == nil && t != nil {
 				card.NextDueAt = t
 			}
 		}
 		if lastReviewAt.Valid && lastReviewAt.String != "" {
-			if t, err := parseSQLiteTime(lastReviewAt.String); err == nil && t != nil {
+			if t, err := parseDateTime(lastReviewAt.String); err == nil && t != nil {
 				card.LastReviewAt = t
 			}
 		}
@@ -787,7 +785,7 @@ func (r *Router) handleVocabWordCards(w http.ResponseWriter, req *http.Request, 
 					}
 					
 					if createdAt != "" {
-						if t, err := parseSQLiteTime(createdAt); err == nil && t != nil {
+						if t, err := parseDateTime(createdAt); err == nil && t != nil {
 							card.CreatedAt = *t
 							card.UpdatedAt = *t
 						}

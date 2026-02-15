@@ -3,7 +3,6 @@ package web
 import (
 	"crypto/hmac"
 	"crypto/sha256"
-	"database/sql"
 	"encoding/hex"
 	"encoding/json"
 	"net/http"
@@ -16,14 +15,14 @@ import (
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/repository"
 
-	_ "github.com/mattn/go-sqlite3"
+	"tgbot-skeleton/internal/testutil"
+
 	"go.uber.org/zap"
 )
 
 func TestNewAuthMiddleware(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, _ := sql.Open("sqlite3", ":memory:")
-	defer db.Close()
+	db := testutil.SetupTestDB(t)
 	userRepo := repository.NewUserRepository(db, logger)
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
@@ -48,8 +47,7 @@ func TestAuthMiddleware_ValidateTelegramInitData(t *testing.T) {
 	jwtService, _ := NewJWTService(cfg, logger)
 	botToken := "test-bot-token-12345"
 
-	db, _ := sql.Open("sqlite3", ":memory:")
-	defer db.Close()
+	db := testutil.SetupTestDB(t)
 	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
 	middleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, botToken)
 
@@ -104,8 +102,7 @@ func TestAuthMiddleware_ValidateTelegramInitData(t *testing.T) {
 
 func TestAuthMiddleware_ValidateTelegramInitData_InvalidHash(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, _ := sql.Open("sqlite3", ":memory:")
-	defer db.Close()
+	db := testutil.SetupTestDB(t)
 	userRepo := repository.NewUserRepository(db, logger)
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
@@ -128,8 +125,7 @@ func TestAuthMiddleware_ValidateTelegramInitData_InvalidHash(t *testing.T) {
 
 func TestAuthMiddleware_RequireAuth(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, _ := sql.Open("sqlite3", ":memory:")
-	defer db.Close()
+	db := testutil.SetupTestDB(t)
 	userRepo := repository.NewUserRepository(db, logger)
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
@@ -181,8 +177,7 @@ func TestAuthMiddleware_RequireAuth(t *testing.T) {
 
 func TestAuthMiddleware_RequireAuth_NoToken(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, _ := sql.Open("sqlite3", ":memory:")
-	defer db.Close()
+	db := testutil.SetupTestDB(t)
 	userRepo := repository.NewUserRepository(db, logger)
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
@@ -216,8 +211,7 @@ func TestAuthMiddleware_RequireAuth_NoToken(t *testing.T) {
 
 func TestAuthMiddleware_RequireAuth_InvalidToken(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, _ := sql.Open("sqlite3", ":memory:")
-	defer db.Close()
+	db := testutil.SetupTestDB(t)
 	userRepo := repository.NewUserRepository(db, logger)
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{

@@ -125,7 +125,6 @@ func TestTrainingWorker_Stop(t *testing.T) {
 func TestTrainingWorker_Start_ContextCancellation(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := testutil.SetupTestDB(t)
-	defer db.Close()
 
 	wordRepo := repository.NewWordRepository(db, logger)
 	trainingCardRepo := repository.NewTrainingCardRepository(db, logger)
@@ -175,7 +174,6 @@ func TestTrainingWorker_Start_ContextCancellation(t *testing.T) {
 func TestTrainingWorker_Start_StopChan(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := testutil.SetupTestDB(t)
-	defer db.Close()
 
 	wordRepo := repository.NewWordRepository(db, logger)
 	trainingCardRepo := repository.NewTrainingCardRepository(db, logger)

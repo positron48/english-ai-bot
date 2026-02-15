@@ -12,6 +12,7 @@ import (
 
 	"tgbot-skeleton/internal/ai"
 	"tgbot-skeleton/internal/database"
+	"tgbot-skeleton/internal/testutil"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 
@@ -36,10 +37,7 @@ func newJSONHTTPResponse(status int, payload any) *http.Response {
 func newWordSetService(t *testing.T, transport http.RoundTripper) (*WordSetService, *repository.WordRepository, *repository.TrainingCardRepository, *repository.UserCardRepository, *repository.UserWordKnowledgeRepository, *repository.WordSetRepository, *database.DB, func()) {
 	t.Helper()
 	logger, _ := zap.NewDevelopment()
-	db, err := database.New(":memory:", logger)
-	if err != nil {
-		t.Fatalf("failed to create database: %v", err)
-	}
+	db := testutil.SetupTestDatabase(t)
 
 	wordRepo := repository.NewWordRepository(db.GetConnection(), logger)
 	trainingCardRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
@@ -67,9 +65,7 @@ func newWordSetService(t *testing.T, transport http.RoundTripper) (*WordSetServi
 		logger,
 	)
 
-	cleanup := func() {
-		_ = db.Close()
-	}
+	cleanup := func() {} // shared db, do not close
 
 	return svc, wordRepo, trainingCardRepo, userCardRepo, userWordKnowledgeRepo, wordSetRepo, db, cleanup
 }
@@ -193,6 +189,10 @@ func TestEnsureUserCardsForWord(t *testing.T) {
 
 	svc, wordRepo, trainingCardRepo, _, _, _, db, cleanup := newWordSetService(t, transport)
 	defer cleanup()
+
+	logger, _ := zap.NewDevelopment()
+	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
+	_, _ = userRepo.GetOrCreateUser(1) // FK user_cards_user_id_fkey
 
 	pos := "noun"
 	cardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "apple", Definition: "", POS: &pos})

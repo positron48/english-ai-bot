@@ -1,20 +1,18 @@
 package web
 
 import (
-	"database/sql"
 	"testing"
 
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/repository"
 
-	_ "github.com/mattn/go-sqlite3"
+	"tgbot-skeleton/internal/testutil"
 	"go.uber.org/zap"
 )
 
 func TestAuthMiddleware_GenerateJWTToken(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, _ := sql.Open("sqlite3", ":memory:")
-	defer db.Close()
+	db := testutil.SetupTestDB(t)
 	userRepo := repository.NewUserRepository(db, logger)
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
@@ -39,8 +37,7 @@ func TestAuthMiddleware_GenerateJWTToken(t *testing.T) {
 
 func TestAuthMiddleware_GenerateTokenPair(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, _ := sql.Open("sqlite3", ":memory:")
-	defer db.Close()
+	db := testutil.SetupTestDB(t)
 	userRepo := repository.NewUserRepository(db, logger)
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{

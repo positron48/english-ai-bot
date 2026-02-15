@@ -17,7 +17,6 @@ func setupTrainingCardTestDB(t *testing.T) *sql.DB {
 func TestNewTrainingCardRepository(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupTrainingCardTestDB(t)
-	defer db.Close()
 
 	repo := NewTrainingCardRepository(db, logger)
 	_ = repo // Verify repository is created
@@ -26,7 +25,6 @@ func TestNewTrainingCardRepository(t *testing.T) {
 func TestTrainingCardRepository_CreateTrainingCard(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupTrainingCardTestDB(t)
-	defer db.Close()
 
 	repo := NewTrainingCardRepository(db, logger)
 
@@ -62,7 +60,6 @@ func TestTrainingCardRepository_CreateTrainingCard(t *testing.T) {
 func TestTrainingCardRepository_CreateTrainingCard_WithDisplayWord(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupTrainingCardTestDB(t)
-	defer db.Close()
 
 	repo := NewTrainingCardRepository(db, logger)
 
@@ -109,7 +106,6 @@ func TestTrainingCardRepository_CreateTrainingCard_WithDisplayWord(t *testing.T)
 func TestTrainingCardRepository_GetTrainingCard(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupTrainingCardTestDB(t)
-	defer db.Close()
 
 	repo := NewTrainingCardRepository(db, logger)
 
@@ -148,7 +144,6 @@ func TestTrainingCardRepository_GetTrainingCard(t *testing.T) {
 func TestTrainingCardRepository_GetTrainingCardsByWordCardID(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupTrainingCardTestDB(t)
-	defer db.Close()
 
 	repo := NewTrainingCardRepository(db, logger)
 
@@ -196,7 +191,6 @@ func TestTrainingCardRepository_GetTrainingCardsByWordCardID(t *testing.T) {
 func TestTrainingCardRepository_HasTrainingCards(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupTrainingCardTestDB(t)
-	defer db.Close()
 
 	repo := NewTrainingCardRepository(db, logger)
 
@@ -241,7 +235,6 @@ func TestTrainingCardRepository_HasTrainingCards(t *testing.T) {
 func TestTrainingCardRepository_GetWordCardsWithoutTrainingCards(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupTrainingCardTestDB(t)
-	defer db.Close()
 
 	repo := NewTrainingCardRepository(db, logger)
 

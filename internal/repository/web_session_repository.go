@@ -37,7 +37,7 @@ func NewWebSessionRepository(db *sql.DB, logger *zap.Logger) *WebSessionReposito
 
 // CreateSession creates a new web session
 func (r *WebSessionRepository) CreateSession(session *WebSession) error {
-	// Format time as UTC string for SQLite to avoid timezone issues
+	// Format time as UTC string to avoid timezone issues
 	expiresAtStr := session.ExpiresAt.UTC().Format("2006-01-02 15:04:05")
 	
 	// Log token preview for debugging
@@ -110,12 +110,12 @@ func (r *WebSessionRepository) GetSessionByToken(token string) (*WebSession, err
 	}
 
 	// Parse times as UTC to match how we store them
-	// SQLite may return times in different formats, so we try both
+	// Try multiple date formats
 	loc, _ := time.LoadLocation("UTC")
 	
 	// Helper function to parse time with multiple format attempts
 	parseTime := func(timeStr, fieldName string) time.Time {
-		// Try ISO 8601 format first (what SQLite returns)
+		// Try ISO 8601 format first
 		if t, err := time.Parse("2006-01-02T15:04:05Z", timeStr); err == nil {
 			return t.UTC()
 		}

@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"context"
 	"testing"
 	"time"
 
@@ -13,7 +14,6 @@ import (
 func TestUserCardRepository_DeleteUserCardsByWordCardIDForUser(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := testutil.SetupTestDB(t)
-	defer db.Close()
 
 	repo := NewUserCardRepository(db, logger)
 	userRepo := NewUserRepository(db, logger)
@@ -90,10 +90,11 @@ func TestUserCardRepository_DeleteUserCardsByWordCardIDForUser(t *testing.T) {
 func TestUserCardRepository_ListOrphanedUserCards(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := testutil.SetupTestDB(t)
-	defer db.Close()
 
 	repo := NewUserCardRepository(db, logger)
 	userRepo := NewUserRepository(db, logger)
+	wordRepo := NewWordRepository(db, logger)
+	trainingRepo := NewTrainingCardRepository(db, logger)
 
 	// Create user
 	user, err := userRepo.GetOrCreateUser(12352)
@@ -101,13 +102,22 @@ func TestUserCardRepository_ListOrphanedUserCards(t *testing.T) {
 		t.Fatalf("Failed to create user: %v", err)
 	}
 
-	// Create orphaned user card (training_card_id that doesn't exist)
-	_, err = db.Exec(`INSERT INTO user_cards (user_id, training_card_id, direction, state, ef, reps, interval_days, learning_step) 
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-		user.ID, 99999, "en_to_ru", "new", 2.5, 0, 0, 0)
-	if err != nil {
-		t.Fatalf("Failed to create orphaned user card: %v", err)
-	}
+	// Create word_card, training_card, user_card, then delete training_card to orphan user_card
+	wordCard := &models.WordCard{Word: "orphlist", Definition: "def"}
+	wcID, _ := wordRepo.UpsertWordCardLemma(wordCard)
+	pos := "noun"
+	displayWord := "orphlist"
+	tc := &models.TrainingCard{WordCardID: wcID, WordEN: "orphlist", SenseIndex: 0, WordRU: "сирота", MeaningEN: "orphan", POS: &pos, DisplayWord: &displayWord}
+	tcID, _ := trainingRepo.CreateTrainingCard(tc)
+	now := time.Now()
+	uc := &models.UserCard{UserID: user.ID, TrainingCardID: tcID, Direction: models.DirectionENtoRU, State: models.StateNew, EF: 2.5, NextDueAt: &now}
+	_, _ = repo.CreateUserCard(uc)
+	ctx := context.Background()
+	c, _ := db.Conn(ctx)
+	_, _ = c.ExecContext(ctx, "SET session_replication_role = replica")
+	_, _ = c.ExecContext(ctx, "DELETE FROM training_cards WHERE id = $1", tcID)
+	_, _ = c.ExecContext(ctx, "SET session_replication_role = DEFAULT")
+	c.Close()
 
 	// List orphaned user cards
 	orphaned, err := repo.ListOrphanedUserCards(10, 0)
@@ -135,10 +145,11 @@ func TestUserCardRepository_ListOrphanedUserCards(t *testing.T) {
 func TestUserCardRepository_CountOrphanedUserCards(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := testutil.SetupTestDB(t)
-	defer db.Close()
 
 	repo := NewUserCardRepository(db, logger)
 	userRepo := NewUserRepository(db, logger)
+	wordRepo := NewWordRepository(db, logger)
+	trainingRepo := NewTrainingCardRepository(db, logger)
 
 	// Create user
 	user, err := userRepo.GetOrCreateUser(12353)
@@ -146,13 +157,22 @@ func TestUserCardRepository_CountOrphanedUserCards(t *testing.T) {
 		t.Fatalf("Failed to create user: %v", err)
 	}
 
-	// Create orphaned user card
-	_, err = db.Exec(`INSERT INTO user_cards (user_id, training_card_id, direction, state, ef, reps, interval_days, learning_step) 
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-		user.ID, 99998, "en_to_ru", "new", 2.5, 0, 0, 0)
-	if err != nil {
-		t.Fatalf("Failed to create orphaned user card: %v", err)
-	}
+	// Create word_card, training_card, user_card, then delete training_card to orphan user_card
+	wordCard := &models.WordCard{Word: "orphcount", Definition: "def"}
+	wcID, _ := wordRepo.UpsertWordCardLemma(wordCard)
+	pos := "noun"
+	displayWord := "orphcount"
+	tc := &models.TrainingCard{WordCardID: wcID, WordEN: "orphcount", SenseIndex: 0, WordRU: "сирота", MeaningEN: "orphan", POS: &pos, DisplayWord: &displayWord}
+	tcID, _ := trainingRepo.CreateTrainingCard(tc)
+	now := time.Now()
+	uc := &models.UserCard{UserID: user.ID, TrainingCardID: tcID, Direction: models.DirectionENtoRU, State: models.StateNew, EF: 2.5, NextDueAt: &now}
+	_, _ = repo.CreateUserCard(uc)
+	ctx := context.Background()
+	c, _ := db.Conn(ctx)
+	_, _ = c.ExecContext(ctx, "SET session_replication_role = replica")
+	_, _ = c.ExecContext(ctx, "DELETE FROM training_cards WHERE id = $1", tcID)
+	_, _ = c.ExecContext(ctx, "SET session_replication_role = DEFAULT")
+	c.Close()
 
 	// Count orphaned user cards
 	count, err := repo.CountOrphanedUserCards()
@@ -167,7 +187,6 @@ func TestUserCardRepository_CountOrphanedUserCards(t *testing.T) {
 func TestUserCardRepository_DeleteUserCard(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := testutil.SetupTestDB(t)
-	defer db.Close()
 
 	repo := NewUserCardRepository(db, logger)
 	userRepo := NewUserRepository(db, logger)
@@ -240,7 +259,6 @@ func TestUserCardRepository_DeleteUserCard(t *testing.T) {
 func TestUserCardRepository_GetUserIDsByWordCardID(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := testutil.SetupTestDB(t)
-	defer db.Close()
 
 	repo := NewUserCardRepository(db, logger)
 	userRepo := NewUserRepository(db, logger)
@@ -334,7 +352,6 @@ func TestUserCardRepository_GetUserIDsByWordCardID(t *testing.T) {
 func TestUserCardRepository_GetUpcomingCardsByDate(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := testutil.SetupTestDB(t)
-	defer db.Close()
 
 	repo := NewUserCardRepository(db, logger)
 	userRepo := NewUserRepository(db, logger)

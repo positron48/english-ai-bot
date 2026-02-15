@@ -11,11 +11,11 @@ import (
 
 func TestTrainingService_StartSession(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, userCardRepo, trainingCardRepo, sessionRepo := setupTrainingServiceTestDB(t)
-	defer db.Close()
+	db, userRepo, userCardRepo, trainingCardRepo, sessionRepo := setupTrainingServiceTestDB(t)
+	user, _ := userRepo.GetOrCreateUser(1000)
 
 	// Create word card first
-	_, err := db.Exec("INSERT INTO word_cards (id, word, definition) VALUES (?, ?, ?)", 1, "start", "to start")
+	_, err := db.Exec("INSERT INTO word_cards (word, definition) VALUES ($1, $2)", "start", "to start")
 	if err != nil {
 		t.Fatalf("Failed to create word card: %v", err)
 	}
@@ -37,7 +37,7 @@ func TestTrainingService_StartSession(t *testing.T) {
 	now := time.Now()
 	past := now.Add(-24 * time.Hour)
 	userCard := &models.UserCard{
-		UserID:         1000,
+		UserID:         user.ID,
 		TrainingCardID: trainingCardID,
 		Direction:      models.DirectionENtoRU,
 		State:          models.StateReview,
@@ -50,7 +50,7 @@ func TestTrainingService_StartSession(t *testing.T) {
 	}
 
 	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, logger)
-	session, queue, err := service.StartSession(1000, models.SourceManual, nil)
+	session, queue, err := service.StartSession(user.ID, models.SourceManual, nil)
 	if err != nil {
 		t.Fatalf("StartSession() error = %v", err)
 	}
@@ -67,11 +67,11 @@ func TestTrainingService_StartSession(t *testing.T) {
 
 func TestTrainingService_StartSession_NoCards(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, userCardRepo, trainingCardRepo, sessionRepo := setupTrainingServiceTestDB(t)
-	defer db.Close()
+	_, userRepo, userCardRepo, trainingCardRepo, sessionRepo := setupTrainingServiceTestDB(t)
+	user, _ := userRepo.GetOrCreateUser(9999)
 
 	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, logger)
-	_, _, err := service.StartSession(9999, models.SourceManual, nil)
+	_, _, err := service.StartSession(user.ID, models.SourceManual, nil)
 	if err == nil {
 		t.Error("StartSession() should return error when no cards available")
 	}
@@ -79,11 +79,10 @@ func TestTrainingService_StartSession_NoCards(t *testing.T) {
 
 func TestTrainingService_StartSession_FinishOldSession(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, userCardRepo, trainingCardRepo, sessionRepo := setupTrainingServiceTestDB(t)
-	defer db.Close()
+	db, userRepo, userCardRepo, trainingCardRepo, sessionRepo := setupTrainingServiceTestDB(t)
+	user, _ := userRepo.GetOrCreateUser(2000)
 
-	// Create word card first
-	_, err := db.Exec("INSERT INTO word_cards (id, word, definition) VALUES (?, ?, ?)", 1, "finish", "to finish")
+	_, err := db.Exec("INSERT INTO word_cards (word, definition) VALUES ($1, $2)", "finish", "to finish")
 	if err != nil {
 		t.Fatalf("Failed to create word card: %v", err)
 	}
@@ -105,7 +104,7 @@ func TestTrainingService_StartSession_FinishOldSession(t *testing.T) {
 	now := time.Now()
 	past := now.Add(-24 * time.Hour)
 	userCard := &models.UserCard{
-		UserID:         2000,
+		UserID:         user.ID,
 		TrainingCardID: trainingCardID,
 		Direction:      models.DirectionENtoRU,
 		State:          models.StateReview,
@@ -120,13 +119,13 @@ func TestTrainingService_StartSession_FinishOldSession(t *testing.T) {
 	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, logger)
 
 	// Start first session
-	session1, _, err := service.StartSession(2000, models.SourceManual, nil)
+	session1, _, err := service.StartSession(user.ID, models.SourceManual, nil)
 	if err != nil {
 		t.Fatalf("Failed to start first session: %v", err)
 	}
 
 	// Start second session (should finish the first one)
-	session2, _, err := service.StartSession(2000, models.SourceManual, nil)
+	session2, _, err := service.StartSession(user.ID, models.SourceManual, nil)
 	if err != nil {
 		t.Fatalf("Failed to start second session: %v", err)
 	}

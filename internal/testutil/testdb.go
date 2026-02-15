@@ -1,235 +1,147 @@
 package testutil
 
 import (
+	"context"
 	"database/sql"
+	"fmt"
+	"strings"
+	"sync"
 	"testing"
+	"time"
 
-	_ "github.com/mattn/go-sqlite3"
+	"tgbot-skeleton/internal/database"
+
+	"github.com/testcontainers/testcontainers-go/modules/postgres"
+	"go.uber.org/zap"
 )
 
-// SetupTestDB creates an in-memory SQLite database with all necessary tables for testing.
-// This function creates all tables that are defined in internal/database/database.go
-// to ensure tests use the same schema as production.
-func SetupTestDB(t *testing.T) *sql.DB {
-	db, err := sql.Open("sqlite3", ":memory:")
-	if err != nil {
-		t.Fatalf("Failed to open test database: %v", err)
+// sharedPostgres holds one container per test package; reused across tests.
+// Each test gets a clean schema via TRUNCATE.
+var sharedPostgres struct {
+	once sync.Once
+	dsn  string
+	db   *database.DB
+	err  error
+}
+
+var truncateTables = []string{
+	"grammar_placement_test", "grammar_progress", "grammar_test_attempts",
+	"user_access_user_categories", "user_access_category_permissions", "user_access_categories",
+	"web_otps", "web_sessions", "review_events", "training_sessions", "user_cards",
+	"training_cards", "word_set_items", "word_sets", "word_set_categories",
+	"user_word_knowledge", "word_request_history", "word_forms", "word_cards",
+	"grammar_published_items", "training_nudges", "users",
+	"app_settings", "circuit_breaker_state",
+}
+var circuitBreakerInit = `INSERT INTO circuit_breaker_state (id) VALUES (1) ON CONFLICT (id) DO NOTHING`
+var appSettingsInit = `INSERT INTO app_settings (key, value) VALUES ('hide_placement_test_button', 'false') ON CONFLICT (key) DO NOTHING`
+
+func getSharedDB(t *testing.T) *database.DB {
+	t.Helper()
+	sharedPostgres.once.Do(func() {
+		ctx := context.Background()
+		ctr, err := postgres.Run(ctx, "postgres:16-alpine",
+			postgres.WithDatabase("english_test"),
+			postgres.WithUsername("english"),
+			postgres.WithPassword("english"),
+		)
+		if err != nil {
+			if isDockerUnavailable(err) {
+				err = fmt.Errorf("docker unavailable: %w", err)
+			}
+			sharedPostgres.err = err
+			return
+		}
+		dsn, err := ctr.ConnectionString(ctx, "sslmode=disable")
+		if err != nil {
+			_ = ctr.Terminate(ctx)
+			sharedPostgres.err = err
+			return
+		}
+		logger, _ := zap.NewDevelopment()
+		var db *database.DB
+		for attempt := 0; attempt < 10; attempt++ {
+			db, err = database.NewWithConfig("postgres", "", dsn, logger)
+			if err == nil {
+				break
+			}
+			if attempt < 9 {
+				time.Sleep(time.Duration(attempt+1) * 200 * time.Millisecond)
+			}
+		}
+		if err != nil {
+			sharedPostgres.err = err
+			return
+		}
+		sharedPostgres.dsn = dsn
+		sharedPostgres.db = db
+	})
+	if sharedPostgres.err != nil {
+		if strings.Contains(sharedPostgres.err.Error(), "docker unavailable") {
+			t.Skipf("Docker unavailable: %v", sharedPostgres.err)
+		}
+		t.Fatalf("shared postgres: %v", sharedPostgres.err)
 	}
+	return sharedPostgres.db
+}
 
-	// Create all tables matching the production schema
-	createTables := `
-	CREATE TABLE IF NOT EXISTS users (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		telegram_id INTEGER UNIQUE NOT NULL,
-		telegram_username TEXT,
-		username TEXT,
-		timezone TEXT DEFAULT '',
-		preferred_training_time TEXT DEFAULT '',
-		settings_json TEXT DEFAULT '',
-		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-	);
-	
-	CREATE TABLE IF NOT EXISTS word_cards (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		word TEXT UNIQUE NOT NULL,
-		definition TEXT NOT NULL,
-		pos TEXT,
-		transcription TEXT,
-		definition_ru TEXT,
-		examples_json TEXT,
-		verb_forms_json TEXT,
-		display_en TEXT,
-		processed_at TEXT,
-		processing_error TEXT,
-		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-	);
-	
-	CREATE TABLE IF NOT EXISTS word_forms (
-		form TEXT PRIMARY KEY,
-		word_card_id INTEGER NOT NULL,
-		FOREIGN KEY (word_card_id) REFERENCES word_cards(id) ON DELETE CASCADE
-	);
-	
-	CREATE TABLE IF NOT EXISTS word_request_history (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		user_id INTEGER NOT NULL,
-		word TEXT,
-		word_card_id INTEGER,
-		input_word TEXT,
-		requested_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		FOREIGN KEY (word_card_id) REFERENCES word_cards(id) ON DELETE CASCADE
-	);
-	
-	CREATE TABLE IF NOT EXISTS training_cards (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		word_card_id INTEGER NOT NULL,
-		word_en TEXT NOT NULL,
-		transcription TEXT,
-		sense_index INTEGER NOT NULL,
-		word_ru TEXT NOT NULL,
-		meaning_en TEXT NOT NULL,
-		example_en TEXT,
-		example_ru TEXT,
-		distractors_ru TEXT,
-		distractors_en TEXT,
-		hint TEXT,
-		pos TEXT,
-		display_word TEXT,
-		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-	);
-	
-	CREATE TABLE IF NOT EXISTS user_cards (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		user_id INTEGER NOT NULL,
-		training_card_id INTEGER NOT NULL,
-		direction TEXT NOT NULL,
-		state TEXT NOT NULL,
-		ef REAL NOT NULL DEFAULT 2.5,
-		reps INTEGER NOT NULL DEFAULT 0,
-		interval_days INTEGER NOT NULL DEFAULT 0,
-		learning_step INTEGER NOT NULL DEFAULT 0,
-		lapse_count INTEGER NOT NULL DEFAULT 0,
-		next_due_at TEXT,
-		last_review_at TEXT,
-		last_quality INTEGER,
-		last_options_json TEXT,
-		wrong_answers_json TEXT,
-		stats_json TEXT,
-		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-	);
-	
-	CREATE TABLE IF NOT EXISTS training_sessions (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		user_id INTEGER NOT NULL,
-		started_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		ended_at TEXT,
-		source TEXT NOT NULL,
-		planned_count INTEGER NOT NULL DEFAULT 0,
-		done_count INTEGER NOT NULL DEFAULT 0,
-		session_json TEXT DEFAULT ''
-	);
-	
-	CREATE TABLE IF NOT EXISTS review_events (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		session_id INTEGER,
-		user_id INTEGER NOT NULL,
-		user_card_id INTEGER NOT NULL,
-		direction TEXT NOT NULL,
-		shown_at TEXT NOT NULL,
-		options_shown_at TEXT,
-		answered_at TEXT,
-		t_delay_ms INTEGER,
-		early_reveal INTEGER NOT NULL DEFAULT 0,
-		option_count INTEGER NOT NULL,
-		options_json TEXT,
-		chosen_option TEXT,
-		is_correct INTEGER NOT NULL DEFAULT 0,
-		quality INTEGER NOT NULL,
-		metrics_json TEXT,
-		srs_before_json TEXT,
-		srs_after_json TEXT,
-		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-	);
-	
-	CREATE TABLE IF NOT EXISTS user_word_knowledge (
-		user_id INTEGER NOT NULL,
-		word_card_id INTEGER NOT NULL,
-		status TEXT NOT NULL DEFAULT 'known' CHECK(status IN ('known')),
-		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-		FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-		FOREIGN KEY (word_card_id) REFERENCES word_cards(id) ON DELETE CASCADE,
-		UNIQUE(user_id, word_card_id)
-	);
-	
-	CREATE TABLE IF NOT EXISTS circuit_breaker_state (
-		id INTEGER PRIMARY KEY CHECK(id = 1),
-		is_open INTEGER DEFAULT 0,
-		failure_count INTEGER DEFAULT 0,
-		last_failure_at DATETIME,
-		last_failure_message TEXT,
-		last_reset_at DATETIME,
-		updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-	);
-	
-	CREATE TABLE IF NOT EXISTS web_sessions (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		user_id INTEGER NOT NULL,
-		session_token TEXT NOT NULL UNIQUE,
-		expires_at DATETIME NOT NULL,
-		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-		last_seen_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-		FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-	);
-	
-	CREATE TABLE IF NOT EXISTS web_otps (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		user_id INTEGER NOT NULL,
-		code_hash TEXT NOT NULL,
-		expires_at DATETIME NOT NULL,
-		consumed_at DATETIME,
-		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-		FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-	);
-	
-	CREATE TABLE IF NOT EXISTS word_set_categories (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		parent_id INTEGER,
-		name TEXT NOT NULL,
-		description TEXT,
-		is_published INTEGER DEFAULT 1,
-		sort_order INTEGER DEFAULT 0,
-		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-		updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-		FOREIGN KEY (parent_id) REFERENCES word_set_categories(id) ON DELETE SET NULL
-	);
-	
-	CREATE TABLE IF NOT EXISTS word_sets (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		category_id INTEGER,
-		title TEXT NOT NULL,
-		description TEXT,
-		is_published INTEGER DEFAULT 1,
-		sort_order INTEGER DEFAULT 0,
-		preferred_pos TEXT,
-		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-		updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-		FOREIGN KEY (category_id) REFERENCES word_set_categories(id) ON DELETE SET NULL
-	);
-	
-	CREATE TABLE IF NOT EXISTS word_set_items (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		word_set_id INTEGER NOT NULL,
-		word_card_id INTEGER NOT NULL,
-		sort_order INTEGER DEFAULT 0,
-		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-		FOREIGN KEY (word_set_id) REFERENCES word_sets(id) ON DELETE CASCADE,
-		FOREIGN KEY (word_card_id) REFERENCES word_cards(id) ON DELETE CASCADE,
-		UNIQUE(word_set_id, word_card_id)
-	);
-	
-	CREATE TABLE IF NOT EXISTS training_nudges (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		user_id INTEGER NOT NULL,
-		local_date TEXT NOT NULL,
-		sent_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-		consumed_at DATETIME,
-		due_count_at_send INTEGER,
-		message_id INTEGER,
-		FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-		UNIQUE(user_id, local_date)
-	);
-	
-	INSERT OR IGNORE INTO circuit_breaker_state (id) VALUES (1);
-	`
-
-	_, err = db.Exec(createTables)
-	if err != nil {
-		db.Close()
-		t.Fatalf("Failed to create test tables: %v", err)
+func truncateAll(t *testing.T, conn *sql.DB) {
+	t.Helper()
+	// RESTART IDENTITY resets sequences so the next insert gets id=1
+	for _, tbl := range truncateTables {
+		_, _ = conn.Exec("TRUNCATE TABLE " + tbl + " RESTART IDENTITY CASCADE")
 	}
+	_, _ = conn.Exec(circuitBreakerInit)
+	_, _ = conn.Exec(appSettingsInit)
+}
 
+// setupPostgresDB returns *database.DB with a clean schema (truncated).
+func setupPostgresDB(t *testing.T) *database.DB {
+	t.Helper()
+	db := getSharedDB(t)
+	conn := db.GetConnection()
+	truncateAll(t, conn)
 	return db
+}
+
+// GetTestDSN returns the DSN for the shared test Postgres (e.g. for bot tests that need config).
+func GetTestDSN(t *testing.T) string {
+	t.Helper()
+	getSharedDB(t)
+	return sharedPostgres.dsn
+}
+
+// SetupTestDB creates a Postgres database with all tables migrated.
+// Uses one shared container per package; each test gets a clean schema via TRUNCATE.
+// Do NOT call Close() on the returned connection—it is shared across tests.
+func SetupTestDB(t *testing.T) *sql.DB {
+	t.Helper()
+	return setupPostgresDB(t).GetConnection()
+}
+
+// SetupTestDatabase creates a Postgres database and returns the full *database.DB.
+// Use when you need database.DB (e.g. for router tests). Call .GetConnection() for *sql.DB.
+func SetupTestDatabase(t *testing.T) *database.DB {
+	t.Helper()
+	return setupPostgresDB(t)
+}
+
+func isDockerUnavailable(err error) bool {
+	if err == nil {
+		return false
+	}
+	s := strings.ToLower(err.Error())
+	checks := []string{
+		"cannot connect to the docker daemon",
+		"could not connect to docker",
+		"docker daemon",
+		"connection refused",
+		"no such host",
+	}
+	for _, c := range checks {
+		if strings.Contains(s, c) {
+			return true
+		}
+	}
+	return false
 }

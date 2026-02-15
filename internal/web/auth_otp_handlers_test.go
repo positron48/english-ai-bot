@@ -12,42 +12,13 @@ import (
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/repository"
 
-	_ "github.com/mattn/go-sqlite3"
+	"tgbot-skeleton/internal/testutil"
 	"go.uber.org/zap"
 )
 
 func setupAuthOTPHandlersTestDB(t *testing.T) (*sql.DB, *repository.WebOTPRepository, *repository.UserRepository) {
-	db, err := sql.Open("sqlite3", ":memory:")
-	if err != nil {
-		t.Fatalf("Failed to open test database: %v", err)
-	}
-
-	createTables := `
-	CREATE TABLE IF NOT EXISTS users (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		telegram_id INTEGER UNIQUE NOT NULL,
-		telegram_username TEXT,
-		username TEXT,
-		timezone TEXT DEFAULT '',
-		preferred_training_time TEXT DEFAULT '',
-		settings_json TEXT DEFAULT '',
-		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-	);
-	
-	CREATE TABLE IF NOT EXISTS web_otps (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		user_id INTEGER NOT NULL,
-		code_hash TEXT NOT NULL,
-		expires_at TEXT NOT NULL,
-		consumed_at TEXT,
-		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-	);`
-
-	_, err = db.Exec(createTables)
-	if err != nil {
-		t.Fatalf("Failed to create tables: %v", err)
-	}
+	t.Helper()
+	db := testutil.SetupTestDB(t)
 
 	logger, _ := zap.NewDevelopment()
 	otpRepo := repository.NewWebOTPRepository(db, logger)
@@ -59,7 +30,6 @@ func setupAuthOTPHandlersTestDB(t *testing.T) (*sql.DB, *repository.WebOTPReposi
 func TestHandleAuthRequestOTP_UserNotFound(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, otpRepo, userRepo := setupAuthOTPHandlersTestDB(t)
-	defer db.Close()
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
@@ -90,7 +60,6 @@ func TestHandleAuthRequestOTP_UserNotFound(t *testing.T) {
 func TestHandleAuthOTP_ValidCode(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, otpRepo, userRepo := setupAuthOTPHandlersTestDB(t)
-	defer db.Close()
 
 	// Create a user
 	user, err := userRepo.GetOrCreateUser(99999)
@@ -137,7 +106,6 @@ func TestHandleAuthOTP_ValidCode(t *testing.T) {
 func TestHandleAuthOTP_InvalidCode(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, otpRepo, userRepo := setupAuthOTPHandlersTestDB(t)
-	defer db.Close()
 
 	// Create a user
 	user, err := userRepo.GetOrCreateUser(88888)
@@ -178,7 +146,6 @@ func TestHandleAuthOTP_InvalidCode(t *testing.T) {
 func TestHandleAuthOTP_MissingParams(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, otpRepo, userRepo := setupAuthOTPHandlersTestDB(t)
-	defer db.Close()
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
@@ -213,7 +180,6 @@ func TestHandleAuthOTP_MissingParams(t *testing.T) {
 func TestHandleAuthRequestOTP_WrongMethod(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, otpRepo, userRepo := setupAuthOTPHandlersTestDB(t)
-	defer db.Close()
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
@@ -243,7 +209,6 @@ func TestHandleAuthRequestOTP_WrongMethod(t *testing.T) {
 func TestHandleAuthOTP_WrongMethod(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, otpRepo, userRepo := setupAuthOTPHandlersTestDB(t)
-	defer db.Close()
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{

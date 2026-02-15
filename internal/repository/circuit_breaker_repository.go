@@ -72,9 +72,11 @@ func (r *CircuitBreakerRepository) GetState() (*models.CircuitBreakerState, erro
 	}
 	if updatedAt.Valid {
 		var err error
-		state.UpdatedAt, err = time.Parse("2006-01-02 15:04:05", updatedAt.String)
+		state.UpdatedAt, err = time.Parse(time.RFC3339, updatedAt.String)
 		if err != nil {
-			// Try alternative formats
+			state.UpdatedAt, err = time.Parse("2006-01-02 15:04:05", updatedAt.String)
+		}
+		if err != nil {
 			if t2, err2 := time.Parse("2006-01-02T15:04:05Z", updatedAt.String); err2 == nil {
 				state.UpdatedAt = t2
 			} else if t3, err3 := time.Parse("2006-01-02T15:04:05", updatedAt.String); err3 == nil {
@@ -140,7 +142,7 @@ func (r *CircuitBreakerRepository) Reset() error {
 
 // initializeState initializes the circuit breaker state if not exists
 func (r *CircuitBreakerRepository) initializeState() (*models.CircuitBreakerState, error) {
-	query := `INSERT OR IGNORE INTO circuit_breaker_state (id) VALUES (1)`
+	query := `INSERT INTO circuit_breaker_state (id) VALUES (1) ON CONFLICT (id) DO NOTHING`
 	_, err := r.db.Exec(query)
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize circuit breaker state: %w", err)

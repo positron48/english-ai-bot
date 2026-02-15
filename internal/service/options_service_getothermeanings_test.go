@@ -11,7 +11,6 @@ import (
 func TestOptionsService_getOtherMeaningsOfWord(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, trainingCardRepo := setupOptionsServiceTestDB(t)
-	defer db.Close()
 
 	// Create word cards
 	_, err := db.Exec("INSERT INTO word_cards (id, word, definition) VALUES (?, ?, ?)", 1, "meanings", "def")

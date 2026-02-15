@@ -17,7 +17,6 @@ func setupWordSetCategoryTestDB(t *testing.T) *sql.DB {
 func TestNewWordSetCategoryRepository(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupWordSetCategoryTestDB(t)
-	defer db.Close()
 
 	repo := NewWordSetCategoryRepository(db, logger)
 	if repo == nil {
@@ -28,7 +27,6 @@ func TestNewWordSetCategoryRepository(t *testing.T) {
 func TestWordSetCategoryRepository_CreateCategory(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupWordSetCategoryTestDB(t)
-	defer db.Close()
 
 	repo := NewWordSetCategoryRepository(db, logger)
 
@@ -94,7 +92,6 @@ func TestWordSetCategoryRepository_CreateCategory(t *testing.T) {
 func TestWordSetCategoryRepository_GetCategory(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupWordSetCategoryTestDB(t)
-	defer db.Close()
 
 	repo := NewWordSetCategoryRepository(db, logger)
 
@@ -137,7 +134,6 @@ func TestWordSetCategoryRepository_GetCategory(t *testing.T) {
 func TestWordSetCategoryRepository_GetAllCategories(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupWordSetCategoryTestDB(t)
-	defer db.Close()
 
 	repo := NewWordSetCategoryRepository(db, logger)
 
@@ -184,7 +180,6 @@ func TestWordSetCategoryRepository_GetAllCategories(t *testing.T) {
 func TestWordSetCategoryRepository_UpdateCategory(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupWordSetCategoryTestDB(t)
-	defer db.Close()
 
 	repo := NewWordSetCategoryRepository(db, logger)
 
@@ -257,7 +252,6 @@ func TestWordSetCategoryRepository_UpdateCategory(t *testing.T) {
 func TestWordSetCategoryRepository_DeleteCategory(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupWordSetCategoryTestDB(t)
-	defer db.Close()
 
 	repo := NewWordSetCategoryRepository(db, logger)
 

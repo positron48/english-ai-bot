@@ -15,96 +15,13 @@ import (
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/service"
 
-	_ "github.com/mattn/go-sqlite3"
+	"tgbot-skeleton/internal/testutil"
 	"go.uber.org/zap"
 )
 
 func setupAdminTestDB(t *testing.T) (*sql.DB, *repository.UserRepository, *service.CircuitBreakerService) {
-	db, err := sql.Open("sqlite3", ":memory:")
-	if err != nil {
-		t.Fatalf("Failed to open test database: %v", err)
-	}
-
-	createTables := `
-	CREATE TABLE IF NOT EXISTS users (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		telegram_id INTEGER UNIQUE NOT NULL,
-		telegram_username TEXT,
-		username TEXT,
-		timezone TEXT DEFAULT '',
-		preferred_training_time TEXT DEFAULT '',
-		settings_json TEXT DEFAULT '',
-		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-	);
-	
-	CREATE TABLE IF NOT EXISTS word_cards (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		word TEXT UNIQUE NOT NULL,
-		definition TEXT NOT NULL,
-		pos TEXT,
-		transcription TEXT,
-		definition_ru TEXT,
-		examples_json TEXT,
-		verb_forms_json TEXT,
-		display_en TEXT,
-		processed_at DATETIME,
-		processing_error TEXT,
-		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-	);
-	
-	CREATE TABLE IF NOT EXISTS word_forms (
-		form TEXT PRIMARY KEY,
-		word_card_id INTEGER NOT NULL,
-		FOREIGN KEY (word_card_id) REFERENCES word_cards(id) ON DELETE CASCADE
-	);
-	
-	CREATE TABLE IF NOT EXISTS word_request_history (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		user_id INTEGER NOT NULL,
-		word TEXT,
-		word_card_id INTEGER,
-		input_word TEXT,
-		requested_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		FOREIGN KEY (word_card_id) REFERENCES word_cards(id) ON DELETE CASCADE
-	);
-	
-	CREATE TABLE IF NOT EXISTS training_cards (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		word_card_id INTEGER NOT NULL,
-		word_en TEXT NOT NULL,
-		transcription TEXT,
-		sense_index INTEGER NOT NULL,
-		word_ru TEXT NOT NULL,
-		meaning_en TEXT NOT NULL,
-		example_en TEXT,
-		example_ru TEXT,
-		distractors_ru TEXT,
-		distractors_en TEXT,
-		hint TEXT,
-		pos TEXT,
-		display_word TEXT,
-		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-	);
-	
-	CREATE TABLE IF NOT EXISTS circuit_breaker_state (
-		id INTEGER PRIMARY KEY CHECK(id = 1),
-		is_open INTEGER DEFAULT 0,
-		failure_count INTEGER DEFAULT 0,
-		last_failure_at DATETIME,
-		last_failure_message TEXT,
-		last_reset_at DATETIME,
-		updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-	);
-	
-	INSERT OR IGNORE INTO circuit_breaker_state (id) VALUES (1);
-	`
-
-	_, err = db.Exec(createTables)
-	if err != nil {
-		t.Fatalf("Failed to create tables: %v", err)
-	}
+	t.Helper()
+	db := testutil.SetupTestDB(t)
 
 	logger, _ := zap.NewDevelopment()
 	userRepo := repository.NewUserRepository(db, logger)
@@ -117,7 +34,6 @@ func setupAdminTestDB(t *testing.T) (*sql.DB, *repository.UserRepository, *servi
 func TestHandleAdmin_Get(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo, cbService := setupAdminTestDB(t)
-	defer db.Close()
 
 	// Create admin user
 	adminTelegramID := int64(123456789)
@@ -178,7 +94,6 @@ func TestHandleAdmin_Get(t *testing.T) {
 func TestHandleAdmin_WrongMethod(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo, cbService := setupAdminTestDB(t)
-	defer db.Close()
 
 	adminTelegramID := int64(123456789)
 	adminUser, err := userRepo.GetOrCreateUser(adminTelegramID)
@@ -222,7 +137,6 @@ func TestHandleAdmin_WrongMethod(t *testing.T) {
 func TestHandleAdmin_Unauthorized(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo, cbService := setupAdminTestDB(t)
-	defer db.Close()
 
 	adminTelegramID := int64(123456789)
 
@@ -263,7 +177,6 @@ func TestHandleAdmin_Unauthorized(t *testing.T) {
 func TestHandleAdmin_Forbidden(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo, cbService := setupAdminTestDB(t)
-	defer db.Close()
 
 	// Create non-admin user
 	nonAdminTelegramID := int64(999999999)
@@ -308,7 +221,6 @@ func TestHandleAdmin_Forbidden(t *testing.T) {
 func TestHandleAdminCircuitReset_Post(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo, cbService := setupAdminTestDB(t)
-	defer db.Close()
 
 	adminTelegramID := int64(123456789)
 	adminUser, err := userRepo.GetOrCreateUser(adminTelegramID)
@@ -366,7 +278,6 @@ func TestHandleAdminCircuitReset_Post(t *testing.T) {
 func TestHandleAdminCircuitReset_WrongMethod(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo, cbService := setupAdminTestDB(t)
-	defer db.Close()
 
 	adminTelegramID := int64(123456789)
 	adminUser, err := userRepo.GetOrCreateUser(adminTelegramID)
@@ -410,7 +321,6 @@ func TestHandleAdminCircuitReset_WrongMethod(t *testing.T) {
 func TestHandleAdminUsers_Get(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo, cbService := setupAdminTestDB(t)
-	defer db.Close()
 
 	adminTelegramID := int64(123456789)
 	adminUser, err := userRepo.GetOrCreateUser(adminTelegramID)
@@ -469,7 +379,6 @@ func TestHandleAdminUsers_Get(t *testing.T) {
 func TestHandleAdminWords_Get(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo, cbService := setupAdminTestDB(t)
-	defer db.Close()
 
 	adminTelegramID := int64(123456789)
 	adminUser, err := userRepo.GetOrCreateUser(adminTelegramID)
@@ -529,7 +438,6 @@ func TestHandleAdminWords_Get(t *testing.T) {
 func TestHandleAdminWord_Put(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo, cbService := setupAdminTestDB(t)
-	defer db.Close()
 
 	adminTelegramID := int64(123456789)
 	adminUser, err := userRepo.GetOrCreateUser(adminTelegramID)
@@ -594,7 +502,6 @@ func TestHandleAdminWord_Put(t *testing.T) {
 func TestHandleAdminWord_Put_WithJSON(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo, cbService := setupAdminTestDB(t)
-	defer db.Close()
 
 	adminTelegramID := int64(123456789)
 	adminUser, err := userRepo.GetOrCreateUser(adminTelegramID)
@@ -675,7 +582,6 @@ func TestHandleAdminWord_Put_WithJSON(t *testing.T) {
 func TestHandleAdminWord_Delete(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo, cbService := setupAdminTestDB(t)
-	defer db.Close()
 
 	adminTelegramID := int64(123456789)
 	adminUser, err := userRepo.GetOrCreateUser(adminTelegramID)
@@ -739,7 +645,6 @@ func TestHandleAdminWord_Delete(t *testing.T) {
 func TestHandleAdminTraining_Get(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo, cbService := setupAdminTestDB(t)
-	defer db.Close()
 
 	adminTelegramID := int64(123456789)
 	adminUser, err := userRepo.GetOrCreateUser(adminTelegramID)
@@ -817,7 +722,6 @@ func TestHandleAdminTraining_Get(t *testing.T) {
 func TestHandleAdminTrainingCard_Delete(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo, cbService := setupAdminTestDB(t)
-	defer db.Close()
 
 	adminTelegramID := int64(123456789)
 	adminUser, err := userRepo.GetOrCreateUser(adminTelegramID)
@@ -894,7 +798,6 @@ func TestHandleAdminTrainingCard_Delete(t *testing.T) {
 func TestHandleAdminTrainingCard_Put(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo, cbService := setupAdminTestDB(t)
-	defer db.Close()
 
 	adminTelegramID := int64(123456789)
 	adminUser, err := userRepo.GetOrCreateUser(adminTelegramID)
@@ -971,7 +874,6 @@ func TestHandleAdminTrainingCard_Put(t *testing.T) {
 func TestHandleAdminTrainingCard_Put_UpdatePOS(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo, cbService := setupAdminTestDB(t)
-	defer db.Close()
 
 	adminTelegramID := int64(123456789)
 	adminUser, err := userRepo.GetOrCreateUser(adminTelegramID)
@@ -1074,7 +976,6 @@ func TestHandleAdminTrainingCard_Put_UpdatePOS(t *testing.T) {
 func TestHandleAdminTraining_Delete(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo, cbService := setupAdminTestDB(t)
-	defer db.Close()
 
 	adminTelegramID := int64(123456789)
 	adminUser, err := userRepo.GetOrCreateUser(adminTelegramID)
@@ -1151,7 +1052,6 @@ func TestHandleAdminTraining_Delete(t *testing.T) {
 func TestHandleAdminTraining_DeleteAll(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo, cbService := setupAdminTestDB(t)
-	defer db.Close()
 
 	adminTelegramID := int64(123456789)
 	adminUser, err := userRepo.GetOrCreateUser(adminTelegramID)
@@ -1227,7 +1127,6 @@ func TestHandleAdminTraining_DeleteAll(t *testing.T) {
 func TestHandleAdminWord_Reset(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo, cbService := setupAdminTestDB(t)
-	defer db.Close()
 
 	adminTelegramID := int64(123456789)
 	adminUser, err := userRepo.GetOrCreateUser(adminTelegramID)

@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"context"
 	"testing"
 	"time"
 
@@ -13,7 +14,6 @@ import (
 func TestUserCardRepository_ListUserCardsWithOrphanedTrainingCards(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := testutil.SetupTestDB(t)
-	defer db.Close()
 
 	repo := NewUserCardRepository(db, logger)
 	userRepo := NewUserRepository(db, logger)
@@ -67,8 +67,13 @@ func TestUserCardRepository_ListUserCardsWithOrphanedTrainingCards(t *testing.T)
 		t.Fatalf("Failed to create user card: %v", err)
 	}
 
-	// Delete word card to make training card orphaned
-	_, err = db.Exec("DELETE FROM word_cards WHERE id = ?", wordCardID)
+	// Disable triggers so CASCADE doesn't delete training_cards (Postgres)
+	ctx := context.Background()
+	conn, _ := db.Conn(ctx)
+	defer conn.Close()
+	_, _ = conn.ExecContext(ctx, "SET session_replication_role = replica")
+	_, err = conn.ExecContext(ctx, "DELETE FROM word_cards WHERE id = $1", wordCardID)
+	_, _ = conn.ExecContext(ctx, "SET session_replication_role = DEFAULT")
 	if err != nil {
 		t.Fatalf("Failed to delete word card: %v", err)
 	}
@@ -103,7 +108,6 @@ func TestUserCardRepository_ListUserCardsWithOrphanedTrainingCards(t *testing.T)
 func TestUserCardRepository_CountUserCardsWithOrphanedTrainingCards(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := testutil.SetupTestDB(t)
-	defer db.Close()
 
 	repo := NewUserCardRepository(db, logger)
 	userRepo := NewUserRepository(db, logger)
@@ -157,8 +161,13 @@ func TestUserCardRepository_CountUserCardsWithOrphanedTrainingCards(t *testing.T
 		t.Fatalf("Failed to create user card: %v", err)
 	}
 
-	// Delete word card to make training card orphaned
-	_, err = db.Exec("DELETE FROM word_cards WHERE id = ?", wordCardID)
+	// Disable triggers so CASCADE doesn't delete training_cards (Postgres)
+	ctx := context.Background()
+	conn, _ := db.Conn(ctx)
+	defer conn.Close()
+	_, _ = conn.ExecContext(ctx, "SET session_replication_role = replica")
+	_, err = conn.ExecContext(ctx, "DELETE FROM word_cards WHERE id = $1", wordCardID)
+	_, _ = conn.ExecContext(ctx, "SET session_replication_role = DEFAULT")
 	if err != nil {
 		t.Fatalf("Failed to delete word card: %v", err)
 	}

@@ -17,7 +17,6 @@ func setupWordTestDB(t *testing.T) *sql.DB {
 func TestNewWordRepository(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupWordTestDB(t)
-	defer db.Close()
 
 	repo := NewWordRepository(db, logger)
 	if repo == nil {
@@ -28,7 +27,6 @@ func TestNewWordRepository(t *testing.T) {
 func TestWordRepository_SaveWordCard(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupWordTestDB(t)
-	defer db.Close()
 
 	repo := NewWordRepository(db, logger)
 
@@ -41,7 +39,6 @@ func TestWordRepository_SaveWordCard(t *testing.T) {
 func TestWordRepository_GetWordCard(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupWordTestDB(t)
-	defer db.Close()
 
 	repo := NewWordRepository(db, logger)
 
@@ -70,11 +67,12 @@ func TestWordRepository_GetWordCard(t *testing.T) {
 func TestWordRepository_AddWordRequestHistory(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupWordTestDB(t)
-	defer db.Close()
+	userRepo := NewUserRepository(db, logger)
+	user, _ := userRepo.GetOrCreateUser(123)
 
 	repo := NewWordRepository(db, logger)
 
-	err := repo.AddWordRequestHistory(123, "testword")
+	err := repo.AddWordRequestHistory(user.ID, "testword")
 	if err != nil {
 		t.Fatalf("AddWordRequestHistory() error = %v", err)
 	}
@@ -83,7 +81,6 @@ func TestWordRepository_AddWordRequestHistory(t *testing.T) {
 func TestWordRepository_GetWordCard_NotFound(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupWordTestDB(t)
-	defer db.Close()
 
 	repo := NewWordRepository(db, logger)
 
@@ -99,7 +96,6 @@ func TestWordRepository_GetWordCard_NotFound(t *testing.T) {
 func TestWordRepository_SaveWordCard_UpdateExisting(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupWordTestDB(t)
-	defer db.Close()
 
 	repo := NewWordRepository(db, logger)
 
@@ -128,7 +124,6 @@ func TestWordRepository_SaveWordCard_UpdateExisting(t *testing.T) {
 func TestWordRepository_GetWordCardByID(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupWordTestDB(t)
-	defer db.Close()
 
 	repo := NewWordRepository(db, logger)
 
@@ -160,7 +155,6 @@ func TestWordRepository_GetWordCardByID(t *testing.T) {
 func TestWordRepository_UpsertWordCardLemma(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupWordTestDB(t)
-	defer db.Close()
 
 	repo := NewWordRepository(db, logger)
 
@@ -209,7 +203,6 @@ func TestWordRepository_UpsertWordCardLemma(t *testing.T) {
 func TestWordRepository_GetWordFormMapping(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupWordTestDB(t)
-	defer db.Close()
 
 	repo := NewWordRepository(db, logger)
 
@@ -249,7 +242,6 @@ func TestWordRepository_GetWordFormMapping(t *testing.T) {
 func TestWordRepository_UpsertWordFormMapping(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupWordTestDB(t)
-	defer db.Close()
 
 	repo := NewWordRepository(db, logger)
 
@@ -286,7 +278,6 @@ func TestWordRepository_UpsertWordFormMapping(t *testing.T) {
 func TestWordRepository_AddWordRequestHistoryWithCard(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupWordTestDB(t)
-	defer db.Close()
 
 	repo := NewWordRepository(db, logger)
 
@@ -306,23 +297,24 @@ func TestWordRepository_AddWordRequestHistoryWithCard(t *testing.T) {
 
 	wordCardID := card.ID
 	word := "test"
-	userID := int64(123)
+	userRepo := NewUserRepository(db, logger)
+	user, _ := userRepo.GetOrCreateUser(123)
 	inputWord := "test"
 
 	// Test with wordCardID and word
-	err = repo.AddWordRequestHistoryWithCard(userID, inputWord, &wordCardID, &word)
+	err = repo.AddWordRequestHistoryWithCard(user.ID, inputWord, &wordCardID, &word)
 	if err != nil {
 		t.Fatalf("AddWordRequestHistoryWithCard() error = %v", err)
 	}
 
 	// Test with nil wordCardID
-	err = repo.AddWordRequestHistoryWithCard(userID, "another", nil, &word)
+	err = repo.AddWordRequestHistoryWithCard(user.ID, "another", nil, &word)
 	if err != nil {
 		t.Fatalf("AddWordRequestHistoryWithCard() with nil wordCardID error = %v", err)
 	}
 
 	// Test with nil word
-	err = repo.AddWordRequestHistoryWithCard(userID, "yet another", &wordCardID, nil)
+	err = repo.AddWordRequestHistoryWithCard(user.ID, "yet another", &wordCardID, nil)
 	if err != nil {
 		t.Fatalf("AddWordRequestHistoryWithCard() with nil word error = %v", err)
 	}

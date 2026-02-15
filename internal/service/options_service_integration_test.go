@@ -8,47 +8,13 @@ import (
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 
-	_ "github.com/mattn/go-sqlite3"
+	"tgbot-skeleton/internal/testutil"
 	"go.uber.org/zap"
 )
 
 func setupOptionsServiceTestDB(t *testing.T) (*sql.DB, *repository.TrainingCardRepository) {
-	db, err := sql.Open("sqlite3", ":memory:")
-	if err != nil {
-		t.Fatalf("Failed to open test database: %v", err)
-	}
-
-	createTables := `
-	CREATE TABLE IF NOT EXISTS word_cards (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		word TEXT UNIQUE NOT NULL,
-		definition TEXT NOT NULL,
-		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-	);
-	
-	CREATE TABLE IF NOT EXISTS training_cards (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		word_card_id INTEGER NOT NULL,
-		word_en TEXT NOT NULL,
-		transcription TEXT,
-		sense_index INTEGER NOT NULL,
-		word_ru TEXT NOT NULL,
-		meaning_en TEXT NOT NULL,
-		example_en TEXT,
-		example_ru TEXT,
-		distractors_ru TEXT,
-		distractors_en TEXT,
-		hint TEXT,
-		pos TEXT,
-		display_word TEXT,
-		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-	);`
-
-	_, err = db.Exec(createTables)
-	if err != nil {
-		t.Fatalf("Failed to create tables: %v", err)
-	}
+	t.Helper()
+	db := testutil.SetupTestDB(t)
 
 	logger, _ := zap.NewDevelopment()
 	trainingCardRepo := repository.NewTrainingCardRepository(db, logger)
@@ -59,10 +25,9 @@ func setupOptionsServiceTestDB(t *testing.T) (*sql.DB, *repository.TrainingCardR
 func TestOptionsService_GenerateOptions_Integration(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, trainingCardRepo := setupOptionsServiceTestDB(t)
-	defer db.Close()
 
 	// Create a word card
-	_, err := db.Exec("INSERT INTO word_cards (word, definition) VALUES (?, ?)", "generate", "to generate")
+	_, err := db.Exec("INSERT INTO word_cards (word, definition) VALUES ($1, $2)", "generate", "to generate")
 	if err != nil {
 		t.Fatalf("Failed to create word card: %v", err)
 	}
@@ -125,10 +90,9 @@ func TestOptionsService_GenerateOptions_Integration(t *testing.T) {
 func TestOptionsService_GenerateOptions_UsesCardDistractors(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, trainingCardRepo := setupOptionsServiceTestDB(t)
-	defer db.Close()
 
 	// Create a word card
-	_, err := db.Exec("INSERT INTO word_cards (word, definition) VALUES (?, ?)", "spy", "to spy")
+	_, err := db.Exec("INSERT INTO word_cards (word, definition) VALUES ($1, $2)", "spy", "to spy")
 	if err != nil {
 		t.Fatalf("Failed to create word card: %v", err)
 	}

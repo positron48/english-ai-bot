@@ -7,7 +7,6 @@ import (
 	"net/url"
 	"os"
 	"os/signal"
-	"path/filepath"
 	"strings"
 	"syscall"
 	"time"
@@ -63,15 +62,6 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 	}
 
 	// Initialize database
-	if strings.EqualFold(cfg.Database.Driver, database.DialectSQLite) {
-		dbPath := cfg.Database.Path
-		if dir := filepath.Dir(dbPath); dir != "." && dir != "" {
-			if err := os.MkdirAll(dir, 0755); err != nil {
-				return nil, fmt.Errorf("failed to create database directory: %w", err)
-			}
-		}
-	}
-
 	db, err := database.NewWithConfig(cfg.Database.Driver, cfg.Database.Path, cfg.Database.URL, log)
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize database: %w", err)

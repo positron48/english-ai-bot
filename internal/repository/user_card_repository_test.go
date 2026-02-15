@@ -18,7 +18,6 @@ func setupUserCardTestDB(t *testing.T) *sql.DB {
 func TestNewUserCardRepository(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupUserCardTestDB(t)
-	defer db.Close()
 
 	repo := NewUserCardRepository(db, logger)
 	_ = repo // Verify repository is created
@@ -27,20 +26,22 @@ func TestNewUserCardRepository(t *testing.T) {
 func TestUserCardRepository_CreateUserCard(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupUserCardTestDB(t)
-	defer db.Close()
+	userRepo := NewUserRepository(db, logger)
+	user, _ := userRepo.GetOrCreateUser(123)
 
 	repo := NewUserCardRepository(db, logger)
 
-	// Create a training card first
-	_, err := db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (?, ?, ?, ?, ?, ?, ?)",
-		1, "hello", 0, "привет", "greeting", "noun", "hello")
+	// Create word_card and training card first
+	_, _ = db.Exec("INSERT INTO word_cards (word, definition) VALUES (?, ?)", "hello", "greeting")
+	_, err := db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (1, ?, ?, ?, ?, ?, ?)",
+		"hello", 0, "привет", "greeting", "noun", "hello")
 	if err != nil {
 		t.Fatalf("Failed to create training card: %v", err)
 	}
 
 	now := time.Now()
 	card := &models.UserCard{
-		UserID:         123,
+		UserID:         user.ID,
 		TrainingCardID: 1,
 		Direction:      models.DirectionENtoRU,
 		State:          models.StateNew,
@@ -64,13 +65,15 @@ func TestUserCardRepository_CreateUserCard(t *testing.T) {
 func TestUserCardRepository_GetUserCard(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupUserCardTestDB(t)
-	defer db.Close()
+	userRepo := NewUserRepository(db, logger)
+	user, _ := userRepo.GetOrCreateUser(456)
 
 	repo := NewUserCardRepository(db, logger)
 
-	// Create a training card first
-	_, err := db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (?, ?, ?, ?, ?, ?, ?)",
-		1, "world", 0, "мир", "earth", "noun", "world")
+	// Create word_card and training card first
+	_, _ = db.Exec("INSERT INTO word_cards (word, definition) VALUES (?, ?)", "world", "earth")
+	_, err := db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (1, ?, ?, ?, ?, ?, ?)",
+		"world", 0, "мир", "earth", "noun", "world")
 	if err != nil {
 		t.Fatalf("Failed to create training card: %v", err)
 	}
@@ -78,7 +81,7 @@ func TestUserCardRepository_GetUserCard(t *testing.T) {
 	// Create a user card
 	now := time.Now()
 	card := &models.UserCard{
-		UserID:         456,
+		UserID:         user.ID,
 		TrainingCardID: 1,
 		Direction:      models.DirectionRUtoEN,
 		State:          models.StateLearning,
@@ -101,8 +104,8 @@ func TestUserCardRepository_GetUserCard(t *testing.T) {
 	if found == nil {
 		t.Fatal("GetUserCard() should not return nil")
 	}
-	if found.UserID != 456 {
-		t.Errorf("Expected UserID 456, got %d", found.UserID)
+	if found.UserID != user.ID {
+		t.Errorf("Expected UserID %d, got %d", user.ID, found.UserID)
 	}
 	if found.State != models.StateLearning {
 		t.Errorf("Expected State %v, got %v", models.StateLearning, found.State)
@@ -112,13 +115,15 @@ func TestUserCardRepository_GetUserCard(t *testing.T) {
 func TestUserCardRepository_GetDueCards(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupUserCardTestDB(t)
-	defer db.Close()
+	userRepo := NewUserRepository(db, logger)
+	user, _ := userRepo.GetOrCreateUser(789)
 
 	repo := NewUserCardRepository(db, logger)
 
-	// Create a training card first
-	_, err := db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (?, ?, ?, ?, ?, ?, ?)",
-		1, "test", 0, "тест", "test", "noun", "test")
+	// Create word_card and training card first
+	_, _ = db.Exec("INSERT INTO word_cards (word, definition) VALUES (?, ?)", "test", "test")
+	_, err := db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (1, ?, ?, ?, ?, ?, ?)",
+		"test", 0, "тест", "test", "noun", "test")
 	if err != nil {
 		t.Fatalf("Failed to create training card: %v", err)
 	}
@@ -129,7 +134,7 @@ func TestUserCardRepository_GetDueCards(t *testing.T) {
 	future := now.Add(24 * time.Hour)
 
 	dueCard := &models.UserCard{
-		UserID:         789,
+		UserID:         user.ID,
 		TrainingCardID: 1,
 		Direction:      models.DirectionENtoRU,
 		State:          models.StateReview,
@@ -142,7 +147,7 @@ func TestUserCardRepository_GetDueCards(t *testing.T) {
 	}
 
 	notDueCard := &models.UserCard{
-		UserID:         789,
+		UserID:         user.ID,
 		TrainingCardID: 1,
 		Direction:      models.DirectionRUtoEN,
 		State:          models.StateReview,
@@ -155,7 +160,7 @@ func TestUserCardRepository_GetDueCards(t *testing.T) {
 	}
 
 	// Get due cards
-	dueCards, err := repo.GetDueCards(789, now, 10)
+	dueCards, err := repo.GetDueCards(user.ID, now, 10)
 	if err != nil {
 		t.Fatalf("GetDueCards() error = %v", err)
 	}
@@ -167,20 +172,22 @@ func TestUserCardRepository_GetDueCards(t *testing.T) {
 func TestUserCardRepository_GetNewCards(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupUserCardTestDB(t)
-	defer db.Close()
+	userRepo := NewUserRepository(db, logger)
+	user, _ := userRepo.GetOrCreateUser(999)
 
 	repo := NewUserCardRepository(db, logger)
 
-	// Create a training card first
-	_, err := db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (?, ?, ?, ?, ?, ?, ?)",
-		1, "new", 0, "новый", "new", "adjective", "new")
+	// Create word_card and training card first
+	_, _ = db.Exec("INSERT INTO word_cards (word, definition) VALUES (?, ?)", "new", "new")
+	_, err := db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (1, ?, ?, ?, ?, ?, ?)",
+		"new", 0, "новый", "new", "adjective", "new")
 	if err != nil {
 		t.Fatalf("Failed to create training card: %v", err)
 	}
 
 	// Create a new card
 	newCard := &models.UserCard{
-		UserID:         999,
+		UserID:         user.ID,
 		TrainingCardID: 1,
 		Direction:      models.DirectionENtoRU,
 		State:          models.StateNew,
@@ -192,7 +199,7 @@ func TestUserCardRepository_GetNewCards(t *testing.T) {
 	}
 
 	// Get new cards
-	newCards, err := repo.GetNewCards(999, 10)
+	newCards, err := repo.GetNewCards(user.ID, 10)
 	if err != nil {
 		t.Fatalf("GetNewCards() error = %v", err)
 	}
@@ -207,20 +214,22 @@ func TestUserCardRepository_GetNewCards(t *testing.T) {
 func TestUserCardRepository_UpdateUserCard(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupUserCardTestDB(t)
-	defer db.Close()
+	userRepo := NewUserRepository(db, logger)
+	user, _ := userRepo.GetOrCreateUser(111)
 
 	repo := NewUserCardRepository(db, logger)
 
-	// Create a training card first
-	_, err := db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (?, ?, ?, ?, ?, ?, ?)",
-		1, "update", 0, "обновить", "update", "verb", "to update")
+	// Create word_card and training card first
+	_, _ = db.Exec("INSERT INTO word_cards (word, definition) VALUES (?, ?)", "update", "update")
+	_, err := db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (1, ?, ?, ?, ?, ?, ?)",
+		"update", 0, "обновить", "update", "verb", "to update")
 	if err != nil {
 		t.Fatalf("Failed to create training card: %v", err)
 	}
 
 	// Create a user card
 	card := &models.UserCard{
-		UserID:         111,
+		UserID:         user.ID,
 		TrainingCardID: 1,
 		Direction:      models.DirectionENtoRU,
 		State:          models.StateNew,
@@ -259,13 +268,16 @@ func TestUserCardRepository_UpdateUserCard(t *testing.T) {
 func TestUserCardRepository_GetDueCount(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupUserCardTestDB(t)
-	defer db.Close()
+	userRepo := NewUserRepository(db, logger)
+	user, _ := userRepo.GetOrCreateUser(222)
 
 	repo := NewUserCardRepository(db, logger)
 
-	// Create training cards first
+	// Create word_cards and training cards first
 	var err error
 	for i := 1; i <= 3; i++ {
+		word := "count" + string(rune('0'+i))
+		_, _ = db.Exec("INSERT INTO word_cards (word, definition) VALUES (?, ?)", word, "count")
 		_, err = db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (?, ?, ?, ?, ?, ?, ?)",
 			i, "count", 0, "считать", "count", "verb", "to count")
 		if err != nil {
@@ -279,7 +291,7 @@ func TestUserCardRepository_GetDueCount(t *testing.T) {
 
 	for i := 1; i <= 3; i++ {
 		card := &models.UserCard{
-			UserID:         222,
+			UserID:         user.ID,
 			TrainingCardID: int64(i),
 			Direction:      models.DirectionENtoRU,
 			State:          models.StateReview,
@@ -293,7 +305,7 @@ func TestUserCardRepository_GetDueCount(t *testing.T) {
 	}
 
 	// Get due count
-	count, err := repo.GetDueCount(222, now)
+	count, err := repo.GetDueCount(user.ID, now)
 	if err != nil {
 		t.Fatalf("GetDueCount() error = %v", err)
 	}

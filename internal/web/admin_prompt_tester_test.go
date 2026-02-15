@@ -9,6 +9,7 @@ import (
 
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/database"
+	"tgbot-skeleton/internal/testutil"
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/service"
 
@@ -20,12 +21,10 @@ func setUserIDInContextPromptTester(req *http.Request, userID int64) *http.Reque
 	return req.WithContext(ctx)
 }
 
-func setupPromptTesterTest(t *testing.T) (*Router, *database.DB, func()) {
+func setupPromptTesterTest(t *testing.T) (*Router, *database.DB) {
+	t.Helper()
 	logger, _ := zap.NewDevelopment()
-	db, err := database.New(":memory:", logger)
-	if err != nil {
-		t.Fatalf("Failed to create database: %v", err)
-	}
+	db := testutil.SetupTestDatabase(t)
 
 	cfg := &config.Config{}
 	cfg.Admin.TelegramID = 12345
@@ -42,23 +41,18 @@ func setupPromptTesterTest(t *testing.T) (*Router, *database.DB, func()) {
 		t.Fatalf("Failed to close temp prompt file: %v", err)
 	}
 	cfg.Training.PromptFile = tempFile.Name()
+	t.Cleanup(func() { _ = os.Remove(tempFile.Name()) })
 
 	cbRepo := repository.NewCircuitBreakerRepository(db.GetConnection(), logger)
 	cbService := service.NewCircuitBreakerService(cbRepo, 5, logger)
 
 	router := NewRouter(logger, cfg, db.GetConnection(), nil, nil, nil, cbService)
 
-	cleanup := func() {
-		_ = db.Close()
-		_ = os.Remove(tempFile.Name())
-	}
-
-	return router, db, cleanup
+	return router, db
 }
 
 func TestHandleAdminPromptTesterDefaultPrompts_Get(t *testing.T) {
-	router, _, cleanup := setupPromptTesterTest(t)
-	defer cleanup()
+	router, _ := setupPromptTesterTest(t)
 
 	req := httptest.NewRequest(http.MethodGet, "/api/admin/prompt-tester/default-prompts", nil)
 	req = setUserIDInContextPromptTester(req, 12345)
@@ -72,8 +66,7 @@ func TestHandleAdminPromptTesterDefaultPrompts_Get(t *testing.T) {
 }
 
 func TestHandleAdminPromptTesterDefaultPrompts_MethodNotAllowed(t *testing.T) {
-	router, _, cleanup := setupPromptTesterTest(t)
-	defer cleanup()
+	router, _ := setupPromptTesterTest(t)
 
 	req := httptest.NewRequest(http.MethodPost, "/api/admin/prompt-tester/default-prompts", nil)
 	req = setUserIDInContextPromptTester(req, 12345)
@@ -87,8 +80,7 @@ func TestHandleAdminPromptTesterDefaultPrompts_MethodNotAllowed(t *testing.T) {
 }
 
 func TestHandleAdminPromptTesterRun_MethodNotAllowed(t *testing.T) {
-	router, _, cleanup := setupPromptTesterTest(t)
-	defer cleanup()
+	router, _ := setupPromptTesterTest(t)
 
 	req := httptest.NewRequest(http.MethodGet, "/api/admin/prompt-tester/run", nil)
 	req = setUserIDInContextPromptTester(req, 12345)
@@ -102,8 +94,7 @@ func TestHandleAdminPromptTesterRun_MethodNotAllowed(t *testing.T) {
 }
 
 func TestHandleAdminPromptTesterRun_InvalidBody(t *testing.T) {
-	router, _, cleanup := setupPromptTesterTest(t)
-	defer cleanup()
+	router, _ := setupPromptTesterTest(t)
 
 	req := httptest.NewRequest(http.MethodPost, "/api/admin/prompt-tester/run", nil)
 	req = setUserIDInContextPromptTester(req, 12345)

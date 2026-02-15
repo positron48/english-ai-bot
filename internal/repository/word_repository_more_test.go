@@ -9,7 +9,6 @@ import (
 func TestWordRepository_MarkWordCardProcessedError(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupWordTestDB(t)
-	defer db.Close()
 
 	repo := NewWordRepository(db, logger)
 
@@ -39,7 +38,6 @@ func TestWordRepository_MarkWordCardProcessedError(t *testing.T) {
 func TestWordRepository_ResetWordCardProcessed(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupWordTestDB(t)
-	defer db.Close()
 
 	repo := NewWordRepository(db, logger)
 
@@ -83,7 +81,6 @@ func TestWordRepository_ResetWordCardProcessed(t *testing.T) {
 func TestWordRepository_UpdateWordCardDefinition(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupWordTestDB(t)
-	defer db.Close()
 
 	repo := NewWordRepository(db, logger)
 

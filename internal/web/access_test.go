@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"tgbot-skeleton/internal/config"
-	"tgbot-skeleton/internal/database"
+	"tgbot-skeleton/internal/testutil"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 
@@ -17,11 +17,7 @@ import (
 
 func TestHandleAccessMe(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, err := database.New(":memory:", logger)
-	if err != nil {
-		t.Fatalf("Failed to create database: %v", err)
-	}
-	defer db.Close()
+	db := testutil.SetupTestDatabase(t)
 
 	cfg := &config.Config{
 		Admin: config.AdminConfig{

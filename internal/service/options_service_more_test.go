@@ -13,7 +13,6 @@ import (
 func TestOptionsService_hasMatchingPOS(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := testutil.SetupTestDB(t)
-	defer db.Close()
 
 	trainingCardRepo := repository.NewTrainingCardRepository(db, logger)
 	service := NewOptionsService(trainingCardRepo, logger)

@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"context"
 	"testing"
 
 	"tgbot-skeleton/internal/models"
@@ -12,7 +13,6 @@ import (
 func TestTrainingCardRepository_ListOrphanedTrainingCards(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := testutil.SetupTestDB(t)
-	defer db.Close()
 
 	repo := NewTrainingCardRepository(db, logger)
 	wordRepo := NewWordRepository(db, logger)
@@ -44,8 +44,13 @@ func TestTrainingCardRepository_ListOrphanedTrainingCards(t *testing.T) {
 		t.Fatalf("Failed to create training card: %v", err)
 	}
 
-	// Delete the word card to make training card orphaned
-	_, err = db.Exec("DELETE FROM word_cards WHERE id = ?", wordCardID)
+	// Disable triggers so CASCADE doesn't delete training_cards (Postgres)
+	ctx := context.Background()
+	conn, _ := db.Conn(ctx)
+	defer conn.Close()
+	_, _ = conn.ExecContext(ctx, "SET session_replication_role = replica")
+	_, err = conn.ExecContext(ctx, "DELETE FROM word_cards WHERE id = $1", wordCardID)
+	_, _ = conn.ExecContext(ctx, "SET session_replication_role = DEFAULT")
 	if err != nil {
 		t.Fatalf("Failed to delete word card: %v", err)
 	}
@@ -80,7 +85,6 @@ func TestTrainingCardRepository_ListOrphanedTrainingCards(t *testing.T) {
 func TestTrainingCardRepository_CountOrphanedTrainingCards(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := testutil.SetupTestDB(t)
-	defer db.Close()
 
 	repo := NewTrainingCardRepository(db, logger)
 	wordRepo := NewWordRepository(db, logger)
@@ -136,8 +140,13 @@ func TestTrainingCardRepository_CountOrphanedTrainingCards(t *testing.T) {
 		t.Fatalf("Failed to create training card 2: %v", err)
 	}
 
-	// Delete word cards to make training cards orphaned
-	_, err = db.Exec("DELETE FROM word_cards WHERE id IN (?, ?)", wordCardID1, wordCardID2)
+	// Disable triggers so CASCADE doesn't delete training_cards (Postgres)
+	ctx := context.Background()
+	conn, _ := db.Conn(ctx)
+	defer conn.Close()
+	_, _ = conn.ExecContext(ctx, "SET session_replication_role = replica")
+	_, err = conn.ExecContext(ctx, "DELETE FROM word_cards WHERE id IN ($1, $2)", wordCardID1, wordCardID2)
+	_, _ = conn.ExecContext(ctx, "SET session_replication_role = DEFAULT")
 	if err != nil {
 		t.Fatalf("Failed to delete word cards: %v", err)
 	}
@@ -155,7 +164,6 @@ func TestTrainingCardRepository_CountOrphanedTrainingCards(t *testing.T) {
 func TestTrainingCardRepository_ListOrphanedTrainingCards_Empty(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := testutil.SetupTestDB(t)
-	defer db.Close()
 
 	repo := NewTrainingCardRepository(db, logger)
 
@@ -172,7 +180,6 @@ func TestTrainingCardRepository_ListOrphanedTrainingCards_Empty(t *testing.T) {
 func TestTrainingCardRepository_CountOrphanedTrainingCards_Empty(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := testutil.SetupTestDB(t)
-	defer db.Close()
 
 	repo := NewTrainingCardRepository(db, logger)
 

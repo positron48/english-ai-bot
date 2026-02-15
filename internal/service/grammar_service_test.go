@@ -6,35 +6,33 @@ import (
 	"strings"
 	"testing"
 
-	"tgbot-skeleton/internal/database"
+	"tgbot-skeleton/internal/testutil"
 	"tgbot-skeleton/internal/repository"
 
 	"go.uber.org/zap"
 )
 
-func setupGrammarService(t *testing.T) (*GrammarService, *repository.GrammarContentRepository, *repository.GrammarPublishRepository, *repository.GrammarAttemptRepository, func()) {
+func setupGrammarService(t *testing.T) (*GrammarService, *repository.GrammarContentRepository, *repository.GrammarPublishRepository, *repository.GrammarAttemptRepository, *repository.UserRepository, func()) {
 	t.Helper()
 	logger, _ := zap.NewDevelopment()
-	db, err := database.New(":memory:", logger)
-	if err != nil {
-		t.Fatalf("failed to create database: %v", err)
-	}
+	db := testutil.SetupTestDatabase(t)
 
 	contentRepo := repository.NewGrammarContentRepository(logger)
 	publishRepo := repository.NewGrammarPublishRepository(db.GetConnection(), logger)
 	attemptRepo := repository.NewGrammarAttemptRepository(db.GetConnection(), logger)
+	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
+	// Create user 1 for grammar_progress, grammar_placement_test FK
+	_, _ = userRepo.GetOrCreateUser(1)
 
 	service := NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
 
-	cleanup := func() {
-		_ = db.Close()
-	}
+	cleanup := func() {} // shared db, do not close
 
-	return service, contentRepo, publishRepo, attemptRepo, cleanup
+	return service, contentRepo, publishRepo, attemptRepo, userRepo, cleanup
 }
 
 func TestGrammarService_GetPublishedSectionsAndChapters(t *testing.T) {
-	svc, contentRepo, publishRepo, attemptRepo, cleanup := setupGrammarService(t)
+	svc, contentRepo, publishRepo, attemptRepo, _, cleanup := setupGrammarService(t)
 	defer cleanup()
 
 	sectionsData, err := contentRepo.GetSections()
@@ -79,7 +77,7 @@ func TestGrammarService_GetPublishedSectionsAndChapters(t *testing.T) {
 }
 
 func TestGrammarService_GetAllSectionsWithProgress_IncludesUnpublished(t *testing.T) {
-	svc, contentRepo, publishRepo, _, cleanup := setupGrammarService(t)
+	svc, contentRepo, publishRepo, _, _, cleanup := setupGrammarService(t)
 	defer cleanup()
 
 	sectionsData, err := contentRepo.GetSections()
@@ -118,7 +116,7 @@ func TestGrammarService_GetAllSectionsWithProgress_IncludesUnpublished(t *testin
 }
 
 func TestGrammarService_GetPublishedChapters_UnpublishedSection_Error(t *testing.T) {
-	svc, contentRepo, _, _, cleanup := setupGrammarService(t)
+	svc, contentRepo, _, _, _, cleanup := setupGrammarService(t)
 	defer cleanup()
 
 	sectionsData, err := contentRepo.GetSections()
@@ -138,7 +136,7 @@ func TestGrammarService_GetPublishedChapters_UnpublishedSection_Error(t *testing
 }
 
 func TestGrammarService_GetGrammarStatistics(t *testing.T) {
-	svc, contentRepo, publishRepo, attemptRepo, cleanup := setupGrammarService(t)
+	svc, contentRepo, publishRepo, attemptRepo, _, cleanup := setupGrammarService(t)
 	defer cleanup()
 
 	sectionsData, err := contentRepo.GetSections()
@@ -184,7 +182,7 @@ func TestGrammarService_GetGrammarStatistics(t *testing.T) {
 }
 
 func TestGrammarService_GenerateChapterAndCategoryTests(t *testing.T) {
-	svc, contentRepo, publishRepo, _, cleanup := setupGrammarService(t)
+	svc, contentRepo, publishRepo, _, _, cleanup := setupGrammarService(t)
 	defer cleanup()
 
 	sectionsData, err := contentRepo.GetSections()
@@ -251,7 +249,7 @@ func TestGrammarService_GenerateChapterAndCategoryTests(t *testing.T) {
 }
 
 func TestGrammarService_SubmitTest_Chapter(t *testing.T) {
-	svc, contentRepo, publishRepo, attemptRepo, cleanup := setupGrammarService(t)
+	svc, contentRepo, publishRepo, attemptRepo, _, cleanup := setupGrammarService(t)
 	defer cleanup()
 
 	sectionsData, err := contentRepo.GetSections()
@@ -317,7 +315,7 @@ func TestGrammarService_SubmitTest_Chapter(t *testing.T) {
 }
 
 func TestGrammarService_CompareAnswers(t *testing.T) {
-	svc, _, _, _, cleanup := setupGrammarService(t)
+	svc, _, _, _, _, cleanup := setupGrammarService(t)
 	defer cleanup()
 
 	if !svc.compareAnswers("a", "a") {
@@ -386,7 +384,7 @@ func TestNormalizeTrueFalseValue(t *testing.T) {
 }
 
 func TestGrammarService_SelectQuestions_Strategies(t *testing.T) {
-	svc, _, _, _, cleanup := setupGrammarService(t)
+	svc, _, _, _, _, cleanup := setupGrammarService(t)
 	defer cleanup()
 
 	pool := []interface{}{"q1", "q2", "q3"}
@@ -409,7 +407,7 @@ func TestGrammarService_SelectQuestions_Strategies(t *testing.T) {
 }
 
 func TestGrammarService_SubmitTest_Category(t *testing.T) {
-	svc, contentRepo, publishRepo, _, cleanup := setupGrammarService(t)
+	svc, contentRepo, publishRepo, _, _, cleanup := setupGrammarService(t)
 	defer cleanup()
 
 	sectionsData, err := contentRepo.GetSections()
@@ -456,7 +454,7 @@ func TestGrammarService_SubmitTest_Category(t *testing.T) {
 }
 
 func TestGrammarService_GetChapterContent_Filtering(t *testing.T) {
-	svc, contentRepo, publishRepo, _, cleanup := setupGrammarService(t)
+	svc, contentRepo, publishRepo, _, _, cleanup := setupGrammarService(t)
 	defer cleanup()
 
 	sectionsData, err := contentRepo.GetSections()
@@ -487,7 +485,7 @@ func TestGrammarService_GetChapterContent_Filtering(t *testing.T) {
 }
 
 func TestGrammarService_CanAccessSection(t *testing.T) {
-	svc, contentRepo, _, attemptRepo, cleanup := setupGrammarService(t)
+	svc, contentRepo, _, attemptRepo, _, cleanup := setupGrammarService(t)
 	defer cleanup()
 
 	sectionsData, err := contentRepo.GetSections()
@@ -532,7 +530,7 @@ func TestGrammarService_CanAccessSection(t *testing.T) {
 }
 
 func TestGrammarService_CanAccessChapter(t *testing.T) {
-	svc, contentRepo, publishRepo, attemptRepo, cleanup := setupGrammarService(t)
+	svc, contentRepo, publishRepo, attemptRepo, _, cleanup := setupGrammarService(t)
 	defer cleanup()
 
 	sectionsData, err := contentRepo.GetSections()

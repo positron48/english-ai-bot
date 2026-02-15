@@ -9,15 +9,18 @@ import (
 func TestWordRepository_GetUserIDsByWord(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupWordTestDB(t)
-	defer db.Close()
+	userRepo := NewUserRepository(db, logger)
+	u1, _ := userRepo.GetOrCreateUser(1100)
+	u2, _ := userRepo.GetOrCreateUser(1200)
+	u3, _ := userRepo.GetOrCreateUser(1300)
 
 	repo := NewWordRepository(db, logger)
 
 	// Add word request history for multiple users
-	repo.AddWordRequestHistory(1100, "uniqueword")
-	repo.AddWordRequestHistory(1200, "uniqueword")
-	repo.AddWordRequestHistory(1300, "uniqueword")
-	repo.AddWordRequestHistory(1100, "otherword") // Same user, different word
+	repo.AddWordRequestHistory(u1.ID, "uniqueword")
+	repo.AddWordRequestHistory(u2.ID, "uniqueword")
+	repo.AddWordRequestHistory(u3.ID, "uniqueword")
+	repo.AddWordRequestHistory(u1.ID, "otherword") // Same user, different word
 
 	// Get user IDs for the word
 	userIDs, err := repo.GetUserIDsByWord("uniqueword")
@@ -32,7 +35,7 @@ func TestWordRepository_GetUserIDsByWord(t *testing.T) {
 	for _, id := range userIDs {
 		userMap[id] = true
 	}
-	if !userMap[1100] || !userMap[1200] || !userMap[1300] {
+	if !userMap[u1.ID] || !userMap[u2.ID] || !userMap[u3.ID] {
 		t.Error("Expected all three user IDs in results")
 	}
 }
@@ -40,14 +43,17 @@ func TestWordRepository_GetUserIDsByWord(t *testing.T) {
 func TestWordRepository_GetUserIDsByWord_CaseInsensitive(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupWordTestDB(t)
-	defer db.Close()
+	userRepo := NewUserRepository(db, logger)
+	u1, _ := userRepo.GetOrCreateUser(1400)
+	u2, _ := userRepo.GetOrCreateUser(1500)
+	u3, _ := userRepo.GetOrCreateUser(1600)
 
 	repo := NewWordRepository(db, logger)
 
 	// Add word request history with different cases
-	repo.AddWordRequestHistory(1400, "CaseWord")
-	repo.AddWordRequestHistory(1500, "caseword")
-	repo.AddWordRequestHistory(1600, "CASEWORD")
+	repo.AddWordRequestHistory(u1.ID, "CaseWord")
+	repo.AddWordRequestHistory(u2.ID, "caseword")
+	repo.AddWordRequestHistory(u3.ID, "CASEWORD")
 
 	// Get user IDs (should be case-insensitive)
 	userIDs, err := repo.GetUserIDsByWord("caseword")
@@ -62,7 +68,6 @@ func TestWordRepository_GetUserIDsByWord_CaseInsensitive(t *testing.T) {
 func TestWordRepository_GetUserIDsByWord_NoUsers(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupWordTestDB(t)
-	defer db.Close()
 
 	repo := NewWordRepository(db, logger)
 

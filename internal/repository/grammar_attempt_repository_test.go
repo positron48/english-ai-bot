@@ -4,35 +4,28 @@ import (
 	"testing"
 	"time"
 
-	"tgbot-skeleton/internal/database"
+	"tgbot-skeleton/internal/testutil"
 
 	"go.uber.org/zap"
 )
 
-func setupGrammarAttemptRepo(t *testing.T) (*GrammarAttemptRepository, func()) {
+func setupGrammarAttemptRepo(t *testing.T) *GrammarAttemptRepository {
 	t.Helper()
 	logger, _ := zap.NewDevelopment()
-	db, err := database.New(":memory:", logger)
-	if err != nil {
-		t.Fatalf("failed to create database: %v", err)
-	}
-
-	repo := NewGrammarAttemptRepository(db.GetConnection(), logger)
-
-	cleanup := func() {
-		_ = db.Close()
-	}
-
-	return repo, cleanup
+	conn := testutil.SetupTestDB(t)
+	return NewGrammarAttemptRepository(conn, logger)
 }
 
 func TestGrammarAttemptRepository_CreateAndProgress(t *testing.T) {
-	repo, cleanup := setupGrammarAttemptRepo(t)
-	defer cleanup()
+	repo := setupGrammarAttemptRepo(t)
+	logger, _ := zap.NewDevelopment()
+	conn := testutil.SetupTestDB(t)
+	userRepo := NewUserRepository(conn, logger)
+	user, _ := userRepo.GetOrCreateUser(1)
 
 	finished := time.Now()
 	attempt := &TestAttempt{
-		UserID:         1,
+		UserID:         user.ID,
 		ScopeType:      "chapter",
 		ScopeID:        "chapter-1",
 		StartedAt:      time.Now(),
@@ -48,11 +41,11 @@ func TestGrammarAttemptRepository_CreateAndProgress(t *testing.T) {
 		t.Fatalf("CreateAttempt error: %v", err)
 	}
 
-	if err := repo.UpdateProgress(1, "chapter-1", 80, true); err != nil {
+	if err := repo.UpdateProgress(user.ID, "chapter-1", 80, true); err != nil {
 		t.Fatalf("UpdateProgress error: %v", err)
 	}
 
-	progress, err := repo.GetChapterProgress(1, "chapter-1")
+	progress, err := repo.GetChapterProgress(user.ID, "chapter-1")
 	if err != nil {
 		t.Fatalf("GetChapterProgress error: %v", err)
 	}
@@ -62,12 +55,15 @@ func TestGrammarAttemptRepository_CreateAndProgress(t *testing.T) {
 }
 
 func TestGrammarAttemptRepository_CategoryProgress(t *testing.T) {
-	repo, cleanup := setupGrammarAttemptRepo(t)
-	defer cleanup()
+	repo := setupGrammarAttemptRepo(t)
+	logger, _ := zap.NewDevelopment()
+	conn := testutil.SetupTestDB(t)
+	userRepo := NewUserRepository(conn, logger)
+	user, _ := userRepo.GetOrCreateUser(2)
 
 	finished := time.Now()
 	attempt := &TestAttempt{
-		UserID:         1,
+		UserID:         user.ID,
 		ScopeType:      "category",
 		ScopeID:        "section-1",
 		StartedAt:      time.Now(),
@@ -83,7 +79,7 @@ func TestGrammarAttemptRepository_CategoryProgress(t *testing.T) {
 		t.Fatalf("CreateAttempt error: %v", err)
 	}
 
-	hasAttempt, err := repo.HasCategoryTestAttempt(1, "section-1")
+	hasAttempt, err := repo.HasCategoryTestAttempt(user.ID, "section-1")
 	if err != nil {
 		t.Fatalf("HasCategoryTestAttempt error: %v", err)
 	}
@@ -91,7 +87,7 @@ func TestGrammarAttemptRepository_CategoryProgress(t *testing.T) {
 		t.Fatalf("expected category attempt")
 	}
 
-	passed, err := repo.GetCategoryTestProgress(1, "section-1")
+	passed, err := repo.GetCategoryTestProgress(user.ID, "section-1")
 	if err != nil {
 		t.Fatalf("GetCategoryTestProgress error: %v", err)
 	}
@@ -99,7 +95,7 @@ func TestGrammarAttemptRepository_CategoryProgress(t *testing.T) {
 		t.Fatalf("expected category test to be passed")
 	}
 
-	bestScore, err := repo.GetCategoryTestBestScore(1, "section-1")
+	bestScore, err := repo.GetCategoryTestBestScore(user.ID, "section-1")
 	if err != nil {
 		t.Fatalf("GetCategoryTestBestScore error: %v", err)
 	}

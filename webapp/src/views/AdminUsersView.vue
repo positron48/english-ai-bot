@@ -76,7 +76,7 @@ const formatDate = (dateStr: string | null | undefined): string => {
   // Handle SQL datetime format "2006-01-02 15:04:05"
   let date: Date
   try {
-    // SQLite datetime format: "YYYY-MM-DD HH:MM:SS"
+    // Postgres datetime format: "YYYY-MM-DD HH:MM:SS"
     // Parse manually to ensure correct local time interpretation
     const match = dateStr.match(/^(\d{4})-(\d{2})-(\d{2})\s+(\d{2}):(\d{2}):(\d{2})$/)
     if (match) {

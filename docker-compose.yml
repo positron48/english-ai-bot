@@ -34,7 +34,7 @@ services:
       - AI_PROMPT_FILE=${AI_PROMPT_FILE}
       
       # Database Configuration
-      - DATABASE_DRIVER=${DATABASE_DRIVER:-sqlite}
+      - DATABASE_DRIVER=${DATABASE_DRIVER:-postgres}
       - DATABASE_PATH=/app/data/words.db
       - DATABASE_URL=${DATABASE_URL}
     

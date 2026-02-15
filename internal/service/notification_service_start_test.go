@@ -14,7 +14,6 @@ import (
 func TestNotificationService_Start_ContextCancellation(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := testutil.SetupTestDB(t)
-	defer db.Close()
 
 	userRepo := repository.NewUserRepository(db, logger)
 	userCardRepo := repository.NewUserCardRepository(db, logger)
@@ -47,7 +46,6 @@ func TestNotificationService_Start_ContextCancellation(t *testing.T) {
 func TestNotificationService_Start_StopChan(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := testutil.SetupTestDB(t)
-	defer db.Close()
 
 	userRepo := repository.NewUserRepository(db, logger)
 	userCardRepo := repository.NewUserCardRepository(db, logger)
@@ -80,7 +78,6 @@ func TestNotificationService_Start_StopChan(t *testing.T) {
 func TestNotificationService_Stop(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := testutil.SetupTestDB(t)
-	defer db.Close()
 
 	userRepo := repository.NewUserRepository(db, logger)
 	userCardRepo := repository.NewUserCardRepository(db, logger)

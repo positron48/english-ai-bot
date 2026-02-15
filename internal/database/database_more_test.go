@@ -2,16 +2,26 @@ package database
 
 import (
 	"testing"
+	"time"
 
 	"go.uber.org/zap"
 )
 
-func TestNew_InMemory_More(t *testing.T) {
+func TestNewWithConfig_More(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	
-	db, err := New(":memory:", logger)
+	dsn := startTestPostgres(t)
+
+	var db *DB
+	var err error
+	for attempt := 0; attempt < 10; attempt++ {
+		db, err = NewWithConfig("postgres", "", dsn, logger)
+		if err == nil {
+			break
+		}
+		time.Sleep(time.Duration(attempt+1) * 500 * time.Millisecond)
+	}
 	if err != nil {
-		t.Fatalf("New() error = %v", err)
+		t.Fatalf("NewWithConfig() error = %v", err)
 	}
 	defer db.Close()
 
@@ -24,67 +34,75 @@ func TestNew_InMemory_More(t *testing.T) {
 	}
 }
 
-func TestNew_MultipleInstances(t *testing.T) {
+func TestNewWithConfig_MultipleInstances(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	
-	db1, err := New(":memory:", logger)
+	dsn := startTestPostgres(t)
+
+	var db1, db2 *DB
+	var err error
+	for attempt := 0; attempt < 10; attempt++ {
+		db1, err = NewWithConfig("postgres", "", dsn, logger)
+		if err == nil {
+			break
+		}
+		time.Sleep(time.Duration(attempt+1) * 500 * time.Millisecond)
+	}
 	if err != nil {
-		t.Fatalf("New() db1 error = %v", err)
+		t.Fatalf("NewWithConfig() db1 error = %v", err)
 	}
 	defer db1.Close()
 
-	db2, err := New(":memory:", logger)
+	db2, err = NewWithConfig("postgres", "", dsn, logger)
 	if err != nil {
-		t.Fatalf("New() db2 error = %v", err)
+		t.Fatalf("NewWithConfig() db2 error = %v", err)
 	}
 	defer db2.Close()
 
-	// Each database should be independent
 	if db1.GetConnection() == db2.GetConnection() {
-		t.Error("Expected different connections for different databases")
-	}
-}
-
-func TestMigrate_IdempotentMigrations(t *testing.T) {
-	logger, _ := zap.NewDevelopment()
-	
-	db, err := New(":memory:", logger)
-	if err != nil {
-		t.Fatalf("New() error = %v", err)
-	}
-	defer db.Close()
-
-	// Run migrations again - should be idempotent
-	err = db.migrate()
-	if err != nil {
-		t.Errorf("Second migrate() should be idempotent, got error = %v", err)
+		t.Error("Expected different connection instances")
 	}
 }
 
 func TestDatabase_Close(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	
-	db, err := New(":memory:", logger)
+	dsn := startTestPostgres(t)
+
+	var db *DB
+	var err error
+	for attempt := 0; attempt < 10; attempt++ {
+		db, err = NewWithConfig("postgres", "", dsn, logger)
+		if err == nil {
+			break
+		}
+		time.Sleep(time.Duration(attempt+1) * 500 * time.Millisecond)
+	}
 	if err != nil {
-		t.Fatalf("New() error = %v", err)
+		t.Fatalf("NewWithConfig() error = %v", err)
 	}
 
-	err = db.Close()
-	if err != nil {
+	if err := db.Close(); err != nil {
 		t.Errorf("Close() error = %v", err)
 	}
 }
 
 func TestDatabase_CoreTables_Exist(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	
-	db, err := New(":memory:", logger)
+	dsn := startTestPostgres(t)
+
+	var db *DB
+	var err error
+	for attempt := 0; attempt < 10; attempt++ {
+		db, err = NewWithConfig("postgres", "", dsn, logger)
+		if err == nil {
+			break
+		}
+		time.Sleep(time.Duration(attempt+1) * 500 * time.Millisecond)
+	}
 	if err != nil {
-		t.Fatalf("New() error = %v", err)
+		t.Fatalf("NewWithConfig() error = %v", err)
 	}
 	defer db.Close()
 
-	// Only check core tables that always exist
 	tables := []string{
 		"users",
 		"word_cards",
@@ -98,65 +116,16 @@ func TestDatabase_CoreTables_Exist(t *testing.T) {
 	conn := db.GetConnection()
 	for _, table := range tables {
 		var count int
-		err := conn.QueryRow("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name=?", table).Scan(&count)
+		err := conn.QueryRow(
+			"SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='public' AND table_name=$1",
+			table,
+		).Scan(&count)
 		if err != nil {
 			t.Errorf("Failed to check table %s: %v", table, err)
 			continue
 		}
 		if count == 0 {
 			t.Errorf("Table %s does not exist", table)
-		}
-	}
-}
-
-func TestMigrate_ColumnMigrations(t *testing.T) {
-	logger, _ := zap.NewDevelopment()
-	
-	db, err := New(":memory:", logger)
-	if err != nil {
-		t.Fatalf("New() error = %v", err)
-	}
-	defer db.Close()
-
-	// Check that important columns exist in word_cards
-	conn := db.GetConnection()
-	
-	columns := []string{"processed_at", "processing_error"}
-	for _, col := range columns {
-		var count int
-		err := conn.QueryRow("SELECT COUNT(*) FROM pragma_table_info('word_cards') WHERE name=?", col).Scan(&count)
-		if err != nil {
-			t.Errorf("Failed to check column %s: %v", col, err)
-			continue
-		}
-		if count == 0 {
-			t.Errorf("Column %s does not exist in word_cards", col)
-		}
-	}
-}
-
-func TestMigrate_TrainingCardsColumns(t *testing.T) {
-	logger, _ := zap.NewDevelopment()
-	
-	db, err := New(":memory:", logger)
-	if err != nil {
-		t.Fatalf("New() error = %v", err)
-	}
-	defer db.Close()
-
-	conn := db.GetConnection()
-	
-	// Only check core columns
-	columns := []string{"word_en", "word_ru", "meaning_en"}
-	for _, col := range columns {
-		var count int
-		err := conn.QueryRow("SELECT COUNT(*) FROM pragma_table_info('training_cards') WHERE name=?", col).Scan(&count)
-		if err != nil {
-			t.Errorf("Failed to check column %s: %v", col, err)
-			continue
-		}
-		if count == 0 {
-			t.Errorf("Column %s does not exist in training_cards", col)
 		}
 	}
 }

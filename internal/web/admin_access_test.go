@@ -11,6 +11,7 @@ import (
 
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/database"
+	"tgbot-skeleton/internal/testutil"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/service"
@@ -20,10 +21,7 @@ import (
 
 func setupAdminAccessTest(t *testing.T) (*Router, *database.DB, *zap.Logger, int64, func()) {
 	logger, _ := zap.NewDevelopment()
-	db, err := database.New(":memory:", logger)
-	if err != nil {
-		t.Fatalf("Failed to create database: %v", err)
-	}
+	db := testutil.SetupTestDatabase(t)
 
 	cfg := &config.Config{
 		Admin: config.AdminConfig{
@@ -47,9 +45,7 @@ func setupAdminAccessTest(t *testing.T) (*Router, *database.DB, *zap.Logger, int
 	router := NewRouter(logger, cfg, db.GetConnection(), nil, nil, nil, cbService)
 	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
 
-	cleanup := func() {
-		db.Close()
-	}
+	cleanup := func() {} // shared db, do not close
 
 	return router, db, logger, adminUser.ID, cleanup
 }

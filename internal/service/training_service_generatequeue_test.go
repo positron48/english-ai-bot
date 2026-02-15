@@ -12,8 +12,8 @@ import (
 
 func TestTrainingService_generateQueue_WithDueAndNewCards(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, userCardRepo, trainingCardRepo, _ := setupTrainingServiceTestDB(t)
-	defer db.Close()
+	db, userRepo, userCardRepo, trainingCardRepo, _ := setupTrainingServiceTestDB(t)
+	user, _ := userRepo.GetOrCreateUser(9999)
 
 	// Create word cards first
 	_, err := db.Exec("INSERT INTO word_cards (id, word, definition) VALUES (?, ?, ?)", 1, "queue1", "queue 1")
@@ -41,7 +41,7 @@ func TestTrainingService_generateQueue_WithDueAndNewCards(t *testing.T) {
 	now := time.Now()
 	past := now.Add(-24 * time.Hour)
 	dueCard := &models.UserCard{
-		UserID:         9999,
+		UserID:         user.ID,
 		TrainingCardID: 1,
 		Direction:      models.DirectionENtoRU,
 		State:          models.StateReview,
@@ -55,7 +55,7 @@ func TestTrainingService_generateQueue_WithDueAndNewCards(t *testing.T) {
 
 	// Create new cards
 	newCard := &models.UserCard{
-		UserID:         9999,
+		UserID:         user.ID,
 		TrainingCardID: 2,
 		Direction:      models.DirectionENtoRU,
 		State:          models.StateNew,
@@ -74,7 +74,7 @@ func TestTrainingService_generateQueue_WithDueAndNewCards(t *testing.T) {
 		AlgoVersion:       "test",
 	}
 
-	queue, err := service.generateQueue(9999, config)
+	queue, err := service.generateQueue(user.ID, config)
 	if err != nil {
 		t.Fatalf("generateQueue() error = %v", err)
 	}
@@ -85,8 +85,8 @@ func TestTrainingService_generateQueue_WithDueAndNewCards(t *testing.T) {
 
 func TestTrainingService_generateQueue_OnlyDueCards(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, userCardRepo, trainingCardRepo, _ := setupTrainingServiceTestDB(t)
-	defer db.Close()
+	db, userRepo, userCardRepo, trainingCardRepo, _ := setupTrainingServiceTestDB(t)
+	user, _ := userRepo.GetOrCreateUser(8888)
 
 	// Create word cards first
 	var err error
@@ -111,7 +111,7 @@ func TestTrainingService_generateQueue_OnlyDueCards(t *testing.T) {
 	past := now.Add(-24 * time.Hour)
 	for i := 1; i <= 3; i++ {
 		card := &models.UserCard{
-			UserID:         8888,
+			UserID:         user.ID,
 			TrainingCardID: int64(i),
 			Direction:      models.DirectionENtoRU,
 			State:          models.StateReview,
@@ -132,7 +132,7 @@ func TestTrainingService_generateQueue_OnlyDueCards(t *testing.T) {
 		AlgoVersion:       "test",
 	}
 
-	queue, err := service.generateQueue(8888, config)
+	queue, err := service.generateQueue(user.ID, config)
 	if err != nil {
 		t.Fatalf("generateQueue() error = %v", err)
 	}
@@ -143,8 +143,8 @@ func TestTrainingService_generateQueue_OnlyDueCards(t *testing.T) {
 
 func TestTrainingService_generateQueue_Empty(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, userCardRepo, trainingCardRepo, _ := setupTrainingServiceTestDB(t)
-	defer db.Close()
+	_, userRepo, userCardRepo, trainingCardRepo, _ := setupTrainingServiceTestDB(t)
+	user, _ := userRepo.GetOrCreateUser(7777)
 
 	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, logger)
 
@@ -154,7 +154,7 @@ func TestTrainingService_generateQueue_Empty(t *testing.T) {
 		AlgoVersion:       "test",
 	}
 
-	queue, err := service.generateQueue(7777, config)
+	queue, err := service.generateQueue(user.ID, config)
 	if err != nil {
 		t.Fatalf("generateQueue() error = %v", err)
 	}

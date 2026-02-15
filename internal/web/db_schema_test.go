@@ -8,7 +8,6 @@ import (
 	"testing"
 
 	"tgbot-skeleton/internal/config"
-	"tgbot-skeleton/internal/database"
 	"tgbot-skeleton/internal/testutil"
 
 	"go.uber.org/zap"
@@ -17,7 +16,6 @@ import (
 func TestRouter_handleDBSchema(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := testutil.SetupTestDB(t)
-	defer db.Close()
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
@@ -75,7 +73,6 @@ func TestRouter_handleDBSchema(t *testing.T) {
 func TestRouter_getDBSchema(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := testutil.SetupTestDB(t)
-	defer db.Close()
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
@@ -122,7 +119,6 @@ func TestRouter_getDBSchema(t *testing.T) {
 func TestRouter_getTableNames(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := testutil.SetupTestDB(t)
-	defer db.Close()
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
@@ -141,14 +137,7 @@ func TestRouter_getTableNames(t *testing.T) {
 		t.Error("Expected at least one table")
 	}
 
-	// Verify that system tables are excluded
-	for _, table := range tables {
-		if table == "sqlite_sequence" || table == "sqlite_master" {
-			t.Errorf("System table %q should be excluded", table)
-		}
-	}
-
-	// Verify expected tables are present
+	// Verify expected tables are present (Postgres information_schema already excludes system tables)
 	tableMap := make(map[string]bool)
 	for _, table := range tables {
 		tableMap[table] = true
@@ -165,7 +154,6 @@ func TestRouter_getTableNames(t *testing.T) {
 func TestRouter_getTableColumns(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := testutil.SetupTestDB(t)
-	defer db.Close()
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
@@ -227,7 +215,6 @@ func TestRouter_getTableColumns(t *testing.T) {
 func TestRouter_getForeignKeys(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := testutil.SetupTestDB(t)
-	defer db.Close()
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
@@ -287,11 +274,7 @@ func TestRouter_getForeignKeys(t *testing.T) {
 
 func TestHandleDBQuery_Select(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, err := database.New(":memory:", logger)
-	if err != nil {
-		t.Fatalf("failed to create database: %v", err)
-	}
-	defer db.Close()
+	db := testutil.SetupTestDatabase(t)
 
 	cfg := &config.Config{}
 	cfg.Admin.DBQueryAccess = true
@@ -317,11 +300,7 @@ func TestHandleDBQuery_Select(t *testing.T) {
 
 func TestHandleDBQuery_Exec(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, err := database.New(":memory:", logger)
-	if err != nil {
-		t.Fatalf("failed to create database: %v", err)
-	}
-	defer db.Close()
+	db := testutil.SetupTestDatabase(t)
 
 	cfg := &config.Config{}
 	cfg.Admin.DBQueryAccess = true
@@ -347,11 +326,7 @@ func TestHandleDBQuery_Exec(t *testing.T) {
 
 func TestHandleDBQuery_Disabled(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	db, err := database.New(":memory:", logger)
-	if err != nil {
-		t.Fatalf("failed to create database: %v", err)
-	}
-	defer db.Close()
+	db := testutil.SetupTestDatabase(t)
 
 	cfg := &config.Config{}
 	cfg.Admin.DBQueryAccess = false

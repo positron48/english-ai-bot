@@ -13,65 +13,13 @@ import (
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/service"
 
-	_ "github.com/mattn/go-sqlite3"
+	"tgbot-skeleton/internal/testutil"
 	"go.uber.org/zap"
 )
 
 func setupDashboardChatTestDB(t *testing.T) (*sql.DB, *repository.UserRepository, *repository.WordRepository) {
-	db, err := sql.Open("sqlite3", ":memory:")
-	if err != nil {
-		t.Fatalf("Failed to open test database: %v", err)
-	}
-
-	createTables := `
-	CREATE TABLE IF NOT EXISTS users (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		telegram_id INTEGER UNIQUE NOT NULL,
-		telegram_username TEXT,
-		username TEXT,
-		timezone TEXT DEFAULT '',
-		preferred_training_time TEXT DEFAULT '',
-		settings_json TEXT DEFAULT '',
-		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-	);
-	
-	CREATE TABLE IF NOT EXISTS word_cards (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		word TEXT UNIQUE NOT NULL,
-		definition TEXT NOT NULL,
-		pos TEXT,
-		transcription TEXT,
-		definition_ru TEXT,
-		examples_json TEXT,
-		verb_forms_json TEXT,
-		display_en TEXT,
-		processed_at TEXT,
-		processing_error TEXT,
-		created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-	);
-	
-	CREATE TABLE IF NOT EXISTS word_forms (
-		form TEXT PRIMARY KEY,
-		word_card_id INTEGER NOT NULL,
-		FOREIGN KEY (word_card_id) REFERENCES word_cards(id) ON DELETE CASCADE
-	);
-	
-	CREATE TABLE IF NOT EXISTS word_request_history (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		user_id INTEGER NOT NULL,
-		word TEXT,
-		word_card_id INTEGER,
-		input_word TEXT,
-		requested_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		FOREIGN KEY (word_card_id) REFERENCES word_cards(id) ON DELETE CASCADE
-	);`
-
-	_, err = db.Exec(createTables)
-	if err != nil {
-		t.Fatalf("Failed to create tables: %v", err)
-	}
+	t.Helper()
+	db := testutil.SetupTestDB(t)
 
 	logger, _ := zap.NewDevelopment()
 	userRepo := repository.NewUserRepository(db, logger)
@@ -83,7 +31,6 @@ func setupDashboardChatTestDB(t *testing.T) (*sql.DB, *repository.UserRepository
 func TestHandleChat_SingleWord_WordInDB(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo, wordRepo := setupDashboardChatTestDB(t)
-	defer db.Close()
 
 	// Create a user
 	user, err := userRepo.GetOrCreateUser(121212)
@@ -140,7 +87,6 @@ func TestHandleChat_SingleWord_WordInDB(t *testing.T) {
 func TestHandleChat_MultipleWords(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo, _ := setupDashboardChatTestDB(t)
-	defer db.Close()
 
 	// Create a user
 	user, err := userRepo.GetOrCreateUser(131313)
@@ -183,7 +129,6 @@ func TestHandleChat_MultipleWords(t *testing.T) {
 func TestHandleChat_MissingMessage(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo, _ := setupDashboardChatTestDB(t)
-	defer db.Close()
 
 	// Create a user
 	user, err := userRepo.GetOrCreateUser(141414)
@@ -225,7 +170,6 @@ func TestHandleChat_MissingMessage(t *testing.T) {
 func TestHandleChat_WrongMethod(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo, _ := setupDashboardChatTestDB(t)
-	defer db.Close()
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
@@ -258,7 +202,6 @@ func TestHandleChat_WrongMethod(t *testing.T) {
 func TestHandleChat_Unauthorized(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo, _ := setupDashboardChatTestDB(t)
-	defer db.Close()
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{

@@ -29,7 +29,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o main ./cmd/bot
 # Final stage
 FROM alpine:latest
 
-# Install ca-certificates for HTTPS requests (no SQLite needed - it's compiled in)
+# Install ca-certificates for HTTPS (Postgres driver is compiled in)
 RUN apk --no-cache add ca-certificates tzdata
 
 # Create non-root user
