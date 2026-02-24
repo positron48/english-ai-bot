@@ -128,7 +128,7 @@ func setupHandlerWithRepos(t *testing.T, client *mockTelegramClient) (*Handler, 
 	userCardRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
 
-	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, logger)
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, logger)
 	srsService := service.NewSRSService(userCardRepo, logger)
 	optionsService := service.NewOptionsService(trainingCardRepo, logger)
 

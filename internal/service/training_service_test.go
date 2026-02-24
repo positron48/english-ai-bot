@@ -65,7 +65,7 @@ func TestTrainingService_GetDueCount(t *testing.T) {
 		}
 	}
 
-	service := NewTrainingService(userCardRepo, nil, nil, logger)
+	service := NewTrainingService(userCardRepo, nil, nil, nil, logger)
 	count, err := service.GetDueCount(user.ID)
 	if err != nil {
 		t.Fatalf("GetDueCount() error = %v", err)
@@ -93,7 +93,7 @@ func TestTrainingService_GetSession(t *testing.T) {
 		t.Fatalf("Failed to create session: %v", err)
 	}
 
-	service := NewTrainingService(nil, nil, sessionRepo, logger)
+	service := NewTrainingService(nil, nil, sessionRepo, nil, logger)
 	found, err := service.GetSession(id)
 	if err != nil {
 		t.Fatalf("GetSession() error = %v", err)
@@ -124,7 +124,7 @@ func TestTrainingService_GetActiveSession(t *testing.T) {
 		t.Fatalf("Failed to create session: %v", err)
 	}
 
-	service := NewTrainingService(nil, nil, sessionRepo, logger)
+	service := NewTrainingService(nil, nil, sessionRepo, nil, logger)
 	active, err := service.GetActiveSession(user.ID)
 	if err != nil {
 		t.Fatalf("GetActiveSession() error = %v", err)
@@ -155,7 +155,7 @@ func TestTrainingService_FinishSession(t *testing.T) {
 		t.Fatalf("Failed to create session: %v", err)
 	}
 
-	service := NewTrainingService(nil, nil, sessionRepo, logger)
+	service := NewTrainingService(nil, nil, sessionRepo, nil, logger)
 	err = service.FinishSession(id, 3)
 	if err != nil {
 		t.Fatalf("FinishSession() error = %v", err)
@@ -189,7 +189,7 @@ func TestTrainingService_UpdateSessionState(t *testing.T) {
 		t.Fatalf("Failed to create session: %v", err)
 	}
 
-	service := NewTrainingService(nil, nil, sessionRepo, logger)
+	service := NewTrainingService(nil, nil, sessionRepo, nil, logger)
 	err = service.UpdateSessionState(id, `{"updated": true}`)
 	if err != nil {
 		t.Fatalf("UpdateSessionState() error = %v", err)
@@ -252,7 +252,7 @@ func TestTrainingService_RestoreQueue(t *testing.T) {
 		t.Fatalf("Failed to create user card 2: %v", err)
 	}
 
-	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, logger)
 	queue, err := service.RestoreQueue(user.ID, []int64{userCardID1, userCardID2})
 	if err != nil {
 		t.Fatalf("RestoreQueue() error = %v", err)

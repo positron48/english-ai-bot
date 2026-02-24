@@ -549,6 +549,22 @@ func (r *Router) handleAdminTraining(w http.ResponseWriter, req *http.Request) {
 				zap.Int("users", len(userIDs)),
 				zap.Int("user_cards_created", createdCount),
 			)
+			masteringRepo := repository.NewUserWordMasteringRepository(r.db, r.logger)
+			entries := make([]struct {
+				UserID     int64
+				WordCardID int64
+				Score      int
+			}, 0, len(userIDs))
+			for _, userID := range userIDs {
+				entries = append(entries, struct {
+					UserID     int64
+					WordCardID int64
+					Score      int
+				}{userID, wordCard.ID, 0})
+			}
+			if err := masteringRepo.UpsertBatch(entries); err != nil {
+				r.logger.Warn("failed to upsert mastering score for users", zap.Error(err))
+			}
 		}
 
 		// Return success response

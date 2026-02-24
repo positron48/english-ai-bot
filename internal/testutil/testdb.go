@@ -29,7 +29,7 @@ var truncateTables = []string{
 	"user_access_user_categories", "user_access_category_permissions", "user_access_categories",
 	"web_otps", "web_sessions", "review_events", "training_sessions", "user_cards",
 	"training_cards", "word_set_items", "word_sets", "word_set_categories",
-	"user_word_knowledge", "word_request_history", "word_forms", "word_cards",
+	"user_word_mastering", "user_word_knowledge", "word_request_history", "word_forms", "word_cards",
 	"grammar_published_items", "training_nudges", "users",
 	"app_settings", "circuit_breaker_state",
 }

@@ -181,6 +181,13 @@ func (db *DB) migratePostgres() error {
 			created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
 			UNIQUE(user_id, word_card_id)
 		)`,
+		`CREATE TABLE IF NOT EXISTS user_word_mastering (
+			user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+			word_card_id BIGINT NOT NULL REFERENCES word_cards(id) ON DELETE CASCADE,
+			mastering_score SMALLINT NOT NULL DEFAULT 0,
+			updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+			UNIQUE(user_id, word_card_id)
+		)`,
 		`CREATE TABLE IF NOT EXISTS grammar_published_items (
 			id BIGSERIAL PRIMARY KEY,
 			item_type TEXT NOT NULL,

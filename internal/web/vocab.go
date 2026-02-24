@@ -126,9 +126,9 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 	// Display word: prefer training_cards.display_word, fallback word_cards.display_en, fallback word_cards.word
 	// Use UNION ALL to combine words from user_cards and known words without user_cards
 	// Optimized: using JOINs instead of subqueries for better performance
-	queryFromCards := "SELECT tc.word_card_id, wc.word as lemma, COALESCE(MAX(tc_display.display_word), MAX(wc.display_en), wc.word) as display_word, COUNT(DISTINCT uc.id) as total_cards, SUM(CASE WHEN uc.next_due_at IS NULL OR uc.next_due_at <= ? THEN 1 ELSE 0 END) as due_count, substr(CAST(MAX(uc.last_review_at) AS TEXT), 1, 19) as last_review, SUM(uc.reps) as total_reps, substr(CAST(MIN(uc.created_at) AS TEXT), 1, 19) as added_at, COUNT(CASE WHEN uc.state = 'review' THEN 1 END) as review_state_count, COUNT(CASE WHEN uc.state = 'learning' THEN 1 END) as learning_state_count, COUNT(CASE WHEN uc.state = 'new' THEN 1 END) as new_state_count, COALESCE(MAX(review_stats.review_count), 0) as review_count, MAX(CASE WHEN uwk_known.word_card_id IS NOT NULL THEN 1 ELSE 0 END) as is_known FROM user_cards uc JOIN training_cards tc ON uc.training_card_id = tc.id JOIN word_cards wc ON tc.word_card_id = wc.id LEFT JOIN (SELECT tc1.word_card_id, tc1.display_word FROM training_cards tc1 INNER JOIN (SELECT word_card_id, MIN(id) as min_id FROM training_cards WHERE display_word IS NOT NULL AND display_word != '' GROUP BY word_card_id) tc_min ON tc1.word_card_id = tc_min.word_card_id AND tc1.id = tc_min.min_id) tc_display ON tc_display.word_card_id = tc.word_card_id LEFT JOIN (SELECT tc2.word_card_id, COUNT(*) as review_count FROM review_events re JOIN user_cards uc2 ON re.user_card_id = uc2.id JOIN training_cards tc2 ON uc2.training_card_id = tc2.id WHERE uc2.user_id = ? GROUP BY tc2.word_card_id) review_stats ON review_stats.word_card_id = tc.word_card_id LEFT JOIN user_word_knowledge uwk_known ON uwk_known.user_id = ? AND uwk_known.word_card_id = tc.word_card_id AND uwk_known.status = 'known' WHERE uc.user_id = ?"
+	queryFromCards := "SELECT tc.word_card_id, wc.word as lemma, COALESCE(MAX(tc_display.display_word), MAX(wc.display_en), wc.word) as display_word, COUNT(DISTINCT uc.id) as total_cards, SUM(CASE WHEN uc.next_due_at IS NULL OR uc.next_due_at <= ? THEN 1 ELSE 0 END) as due_count, substr(CAST(MAX(uc.last_review_at) AS TEXT), 1, 19) as last_review, SUM(uc.reps) as total_reps, substr(CAST(MIN(uc.created_at) AS TEXT), 1, 19) as added_at, COUNT(CASE WHEN uc.state = 'review' THEN 1 END) as review_state_count, COUNT(CASE WHEN uc.state = 'learning' THEN 1 END) as learning_state_count, COUNT(CASE WHEN uc.state = 'new' THEN 1 END) as new_state_count, COALESCE(MAX(review_stats.review_count), 0) as review_count, MAX(CASE WHEN uwk_known.word_card_id IS NOT NULL THEN 1 ELSE 0 END) as is_known, COALESCE(MAX(uwm.mastering_score), 0) as mastering_score_stored FROM user_cards uc JOIN training_cards tc ON uc.training_card_id = tc.id JOIN word_cards wc ON tc.word_card_id = wc.id LEFT JOIN (SELECT tc1.word_card_id, tc1.display_word FROM training_cards tc1 INNER JOIN (SELECT word_card_id, MIN(id) as min_id FROM training_cards WHERE display_word IS NOT NULL AND display_word != '' GROUP BY word_card_id) tc_min ON tc1.word_card_id = tc_min.word_card_id AND tc1.id = tc_min.min_id) tc_display ON tc_display.word_card_id = tc.word_card_id LEFT JOIN (SELECT tc2.word_card_id, COUNT(*) as review_count FROM review_events re JOIN user_cards uc2 ON re.user_card_id = uc2.id JOIN training_cards tc2 ON uc2.training_card_id = tc2.id WHERE uc2.user_id = ? GROUP BY tc2.word_card_id) review_stats ON review_stats.word_card_id = tc.word_card_id LEFT JOIN user_word_knowledge uwk_known ON uwk_known.user_id = ? AND uwk_known.word_card_id = tc.word_card_id AND uwk_known.status = 'known' LEFT JOIN user_word_mastering uwm ON uwm.user_id = uc.user_id AND uwm.word_card_id = tc.word_card_id WHERE uc.user_id = ?"
 
-	queryFromKnown := "SELECT uwk.word_card_id, wc.word as lemma, COALESCE(tc_display.display_word, wc.display_en, wc.word) as display_word, 0 as total_cards, 0 as due_count, NULL as last_review, 0 as total_reps, substr(CAST(uwk.created_at AS TEXT), 1, 19) as added_at, 0 as review_state_count, 0 as learning_state_count, 0 as new_state_count, 0 as review_count, 1 as is_known FROM user_word_knowledge uwk JOIN word_cards wc ON uwk.word_card_id = wc.id LEFT JOIN (SELECT tc1.word_card_id, tc1.display_word FROM training_cards tc1 INNER JOIN (SELECT word_card_id, MIN(id) as min_id FROM training_cards WHERE display_word IS NOT NULL AND display_word != '' GROUP BY word_card_id) tc_min ON tc1.word_card_id = tc_min.word_card_id AND tc1.id = tc_min.min_id) tc_display ON tc_display.word_card_id = uwk.word_card_id LEFT JOIN (SELECT DISTINCT tc.word_card_id FROM user_cards uc JOIN training_cards tc ON uc.training_card_id = tc.id WHERE uc.user_id = ?) has_user_cards ON has_user_cards.word_card_id = uwk.word_card_id WHERE uwk.user_id = ? AND uwk.status = 'known' AND has_user_cards.word_card_id IS NULL"
+	queryFromKnown := "SELECT uwk.word_card_id, wc.word as lemma, COALESCE(tc_display.display_word, wc.display_en, wc.word) as display_word, 0 as total_cards, 0 as due_count, NULL as last_review, 0 as total_reps, substr(CAST(uwk.created_at AS TEXT), 1, 19) as added_at, 0 as review_state_count, 0 as learning_state_count, 0 as new_state_count, 0 as review_count, 1 as is_known, 100 as mastering_score_stored FROM user_word_knowledge uwk JOIN word_cards wc ON uwk.word_card_id = wc.id LEFT JOIN (SELECT tc1.word_card_id, tc1.display_word FROM training_cards tc1 INNER JOIN (SELECT word_card_id, MIN(id) as min_id FROM training_cards WHERE display_word IS NOT NULL AND display_word != '' GROUP BY word_card_id) tc_min ON tc1.word_card_id = tc_min.word_card_id AND tc1.id = tc_min.min_id) tc_display ON tc_display.word_card_id = uwk.word_card_id LEFT JOIN (SELECT DISTINCT tc.word_card_id FROM user_cards uc JOIN training_cards tc ON uc.training_card_id = tc.id WHERE uc.user_id = ?) has_user_cards ON has_user_cards.word_card_id = uwk.word_card_id WHERE uwk.user_id = ? AND uwk.status = 'known' AND has_user_cards.word_card_id IS NULL"
 
 	args := []interface{}{now, userID, userID, userID}
 	argsKnown := []interface{}{userID, userID}
@@ -146,12 +146,7 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 
 	queryFromCards += " GROUP BY tc.word_card_id, wc.word"
 	
-	// Combine both queries with UNION ALL and calculate mastery_level and mastering_score (0-100)
-	// Wrap in subquery to calculate mastery_level and filter by it
-	// Min-of-two: use CASE (Postgres LEAST requires same types)
-	cap20 := "CASE WHEN 20 < total_reps/2 THEN 20 ELSE total_reps/2 END"
-	cap25 := "CASE WHEN 25 < (review_state_count + learning_state_count)*25/NULLIF(total_cards,0) THEN 25 ELSE (review_state_count + learning_state_count)*25/NULLIF(total_cards,0) END"
-	masteringScoreSQL := "CASE WHEN is_known = 1 THEN 100 WHEN review_state_count = total_cards AND total_reps > 0 THEN 75 + (" + cap20 + ") WHEN review_state_count > 0 OR learning_state_count > 0 THEN 25 + (" + cap25 + ") ELSE 0 END"
+	// Combine both queries with UNION ALL; mastery_level for filter/display, mastering_score from user_word_mastering (or 100 for known)
 	baseQuery := "SELECT * FROM (" +
 		"SELECT *, " +
 		"CASE " +
@@ -160,7 +155,7 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 		"WHEN review_state_count > 0 OR learning_state_count > 0 THEN 'learning' " +
 		"ELSE 'new' " +
 		"END as mastery_level_calc, " +
-		masteringScoreSQL + " as mastering_score_calc " +
+		"mastering_score_stored as mastering_score_calc " +
 		"FROM (" + queryFromCards + " UNION ALL " + queryFromKnown + ") combined " +
 		") with_mastery"
 	
@@ -275,11 +270,12 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 		var totalCards, dueCount, totalReps, reviewCount, reviewStateCount, learningStateCount, newStateCount, isKnown int
 		var lastReview, addedAt sql.NullString
 		var displayWord sql.NullString
-		var masteryLevelCalc sql.NullString  // Used only for filtering, not stored
-		var masteringScoreCalc sql.NullString // Postgres returns numeric as string
+		var masteryLevelCalc sql.NullString
+		var masteringScoreStored sql.NullInt64
+		var discardScore sql.NullInt64 // mastering_score_calc alias (same as stored)
 
 		err := rows.Scan(&word.WordCardID, &word.Lemma, &displayWord, &totalCards, &dueCount, &lastReview, &totalReps, &addedAt,
-			&reviewStateCount, &learningStateCount, &newStateCount, &reviewCount, &isKnown, &masteryLevelCalc, &masteringScoreCalc)
+			&reviewStateCount, &learningStateCount, &newStateCount, &reviewCount, &isKnown, &masteringScoreStored, &masteryLevelCalc, &discardScore)
 		if err != nil {
 			r.logger.Error("failed to scan word", zap.Error(err))
 			continue
@@ -308,32 +304,14 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 			}
 		}
 
-		// Determine mastery level
-		if isKnown == 1 {
-			word.MasteryLevel = "known"
-			word.MasteringScore = 100
-		} else if reviewStateCount == totalCards && totalReps > 0 {
-			word.MasteryLevel = "mastered"
-			// 75–95 based on total_reps (capped)
-			bonus := totalReps / 2
-			if bonus > 20 {
-				bonus = 20
-			}
-			word.MasteringScore = 75 + bonus
-		} else if reviewStateCount > 0 || learningStateCount > 0 {
-			word.MasteryLevel = "learning"
-			// 25–50: progress within learning (share of cards that left "new")
-			if totalCards > 0 {
-				progress := (reviewStateCount + learningStateCount) * 25 / totalCards
-				if progress > 25 {
-					progress = 25
-				}
-				word.MasteringScore = 25 + progress
-			} else {
-				word.MasteringScore = 25
-			}
+		if masteryLevelCalc.Valid {
+			word.MasteryLevel = masteryLevelCalc.String
 		} else {
 			word.MasteryLevel = "new"
+		}
+		if masteringScoreStored.Valid {
+			word.MasteringScore = int(masteringScoreStored.Int64)
+		} else {
 			word.MasteringScore = 0
 		}
 

@@ -16,24 +16,27 @@ import (
 
 // TrainingService handles training session management
 type TrainingService struct {
-	userCardRepo     *repository.UserCardRepository
-	trainingCardRepo *repository.TrainingCardRepository
-	sessionRepo      *repository.SessionRepository
-	logger           *zap.Logger
+	userCardRepo          *repository.UserCardRepository
+	trainingCardRepo      *repository.TrainingCardRepository
+	sessionRepo           *repository.SessionRepository
+	userWordMasteringRepo *repository.UserWordMasteringRepository
+	logger                 *zap.Logger
 }
 
-// NewTrainingService creates a new training service
+// NewTrainingService creates a new training service (userWordMasteringRepo can be nil).
 func NewTrainingService(
 	userCardRepo *repository.UserCardRepository,
 	trainingCardRepo *repository.TrainingCardRepository,
 	sessionRepo *repository.SessionRepository,
+	userWordMasteringRepo *repository.UserWordMasteringRepository,
 	logger *zap.Logger,
 ) *TrainingService {
 	return &TrainingService{
-		userCardRepo:     userCardRepo,
-		trainingCardRepo: trainingCardRepo,
-		sessionRepo:      sessionRepo,
-		logger:           logger,
+		userCardRepo:          userCardRepo,
+		trainingCardRepo:      trainingCardRepo,
+		sessionRepo:           sessionRepo,
+		userWordMasteringRepo: userWordMasteringRepo,
+		logger:                 logger,
 	}
 }
 
@@ -112,9 +115,59 @@ func (s *TrainingService) StartSession(userID int64, source models.SessionSource
 	return session, queue, nil
 }
 
-// FinishSession finishes a training session
+// FinishSession finishes a training session and updates mastering scores for words touched in this session.
 func (s *TrainingService) FinishSession(sessionID int64, doneCount int) error {
-	return s.sessionRepo.FinishSession(sessionID, doneCount)
+	if err := s.sessionRepo.FinishSession(sessionID, doneCount); err != nil {
+		return err
+	}
+	if s.userWordMasteringRepo != nil {
+		if err := s.updateMasteringScoresForSession(sessionID); err != nil {
+			s.logger.Warn("failed to update mastering scores for session", zap.Int64("session_id", sessionID), zap.Error(err))
+		}
+	}
+	return nil
+}
+
+// updateMasteringScoresForSession recalculates and upserts mastering_score for all (user_id, word_card_id) that had review_events in this session.
+func (s *TrainingService) updateMasteringScoresForSession(sessionID int64) error {
+	pairs, err := s.userWordMasteringRepo.GetWordCardIDsBySessionID(sessionID)
+	if err != nil {
+		return err
+	}
+	if len(pairs) == 0 {
+		return nil
+	}
+	statsMap, err := s.userWordMasteringRepo.GetWordMasteringStatsBatch(pairs)
+	if err != nil {
+		return err
+	}
+	knownMap, err := s.userWordMasteringRepo.GetKnownForPairs(pairs)
+	if err != nil {
+		return err
+	}
+	entries := make([]struct {
+		UserID     int64
+		WordCardID int64
+		Score      int
+	}, 0, len(pairs))
+	for _, p := range pairs {
+		stats, hasStats := statsMap[p]
+		known := knownMap[p]
+		var total, correct, recentTotal, recentCorrect int64
+		if hasStats {
+			total = stats.Total
+			correct = stats.Correct
+			recentTotal = stats.RecentTotal
+			recentCorrect = stats.RecentCorrect
+		}
+		score := ComputeMasteringScore(total, correct, recentTotal, recentCorrect, known)
+		entries = append(entries, struct {
+			UserID     int64
+			WordCardID int64
+			Score      int
+		}{p.UserID, p.WordCardID, score})
+	}
+	return s.userWordMasteringRepo.UpsertBatch(entries)
 }
 
 // generateQueue generates a queue of cards for training (and optionally one spell challenge)
@@ -272,11 +325,16 @@ func (s *TrainingService) generateQueue(userID int64, config SessionConfig) ([]*
 		if len(displayWord) < 2 {
 			continue
 		}
-		stats, err := s.userCardRepo.GetWordMasteringStats(userID, wordCardID)
-		if err != nil || stats == nil {
-			continue
+		var score int
+		if s.userWordMasteringRepo != nil {
+			score, _ = s.userWordMasteringRepo.GetScore(userID, wordCardID)
+		} else {
+			stats, err := s.userCardRepo.GetWordMasteringStats(userID, wordCardID)
+			if err != nil || stats == nil {
+				continue
+			}
+			score = computeMasteringScore(stats)
 		}
-		score := computeMasteringScore(stats)
 		// Type threshold: 33% card, 33% spell, 33% type
 		if config.TypeEnabled && score >= typeThresh {
 			replacedID := queue[i].Card.UserCard.ID

@@ -17,7 +17,7 @@ func TestShufflePreventDuplicates_SmallList(t *testing.T) {
 	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
 	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
-	trainingService := NewTrainingService(ucRepo, tcRepo, sessionRepo, logger)
+	trainingService := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
 
 	// Create a small list of cards
 	cards := []*models.UserCardWithTraining{
@@ -40,7 +40,7 @@ func TestShufflePreventDuplicates_LargeList(t *testing.T) {
 	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
 	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
-	trainingService := NewTrainingService(ucRepo, tcRepo, sessionRepo, logger)
+	trainingService := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
 
 	// Create a larger list with some duplicate words
 	cards := []*models.UserCardWithTraining{
@@ -76,7 +76,7 @@ func TestShufflePreventDuplicates_EmptyList(t *testing.T) {
 	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
 	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
-	trainingService := NewTrainingService(ucRepo, tcRepo, sessionRepo, logger)
+	trainingService := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
 
 	var cards []*models.UserCardWithTraining
 	shuffled := trainingService.shufflePreventDuplicates(cards)
@@ -93,7 +93,7 @@ func TestShufflePreventDuplicates_SingleElement(t *testing.T) {
 	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
 	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
-	trainingService := NewTrainingService(ucRepo, tcRepo, sessionRepo, logger)
+	trainingService := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
 
 	// Create a single card
 	cards := []*models.UserCardWithTraining{
@@ -114,7 +114,7 @@ func TestShufflePreventDuplicates_AllSameWord(t *testing.T) {
 	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
 	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
-	trainingService := NewTrainingService(ucRepo, tcRepo, sessionRepo, logger)
+	trainingService := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
 
 	// All cards have the same word
 	cards := []*models.UserCardWithTraining{

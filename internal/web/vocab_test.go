@@ -356,8 +356,7 @@ func TestHandleVocab_GroupByLemma(t *testing.T) {
 	}
 }
 
-// TestHandleVocab_MasteringScoreQuery verifies the vocab query runs correctly with the mastering_score
-// formula that uses LEAST (PostgreSQL has no two-arg MIN(); LEAST is used for portability).
+// TestHandleVocab_MasteringScoreQuery verifies the vocab query returns stored mastering_score from user_word_mastering.
 func TestHandleVocab_MasteringScoreQuery(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo := setupVocabTestDB(t)
@@ -381,11 +380,16 @@ func TestHandleVocab_MasteringScoreQuery(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to get training card ID: %v", err)
 	}
-	// One card in review with reps > 0 → "mastered" branch; formula uses LEAST(20, total_reps/2)
 	_, err = db.Exec("INSERT INTO user_cards (user_id, training_card_id, direction, state, ef, reps) VALUES (?, ?, ?, ?, ?, ?)",
 		user.ID, tcID, "en_ru", "review", 2.5, 10)
 	if err != nil {
 		t.Fatalf("Failed to create user card: %v", err)
+	}
+	// Stored mastering score (vocab reads from user_word_mastering)
+	_, err = db.Exec("INSERT INTO user_word_mastering (user_id, word_card_id, mastering_score) VALUES (?, ?, ?)",
+		user.ID, 1, 85)
+	if err != nil {
+		t.Fatalf("Failed to insert mastering score: %v", err)
 	}
 
 	cfg := &config.Config{
@@ -420,12 +424,12 @@ func TestHandleVocab_MasteringScoreQuery(t *testing.T) {
 	}
 	word := words[0].(map[string]interface{})
 	if word["mastering_score"] == nil {
-		t.Error("Word should have mastering_score (query with LEAST must succeed)")
+		t.Error("Word should have mastering_score")
 		return
 	}
 	score := int(word["mastering_score"].(float64))
-	if score < 75 || score > 100 {
-		t.Errorf("mastered word mastering_score should be in [75,100], got %d", score)
+	if score != 85 {
+		t.Errorf("mastering_score should be 85 (stored), got %d", score)
 	}
 	if word["mastery_level"] != "mastered" {
 		t.Errorf("Expected mastery_level mastered, got %v", word["mastery_level"])

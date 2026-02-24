@@ -100,9 +100,10 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 	nudgeRepo := repository.NewNudgeRepository(conn, log)
 
 	// Create services
-	wordService := service.NewWordService(wordRepo, trainingCardRepo, userCardRepo, aiService, log)
+	userWordMasteringRepo := repository.NewUserWordMasteringRepository(conn, log)
+	wordService := service.NewWordServiceWithMastering(wordRepo, trainingCardRepo, userCardRepo, userWordMasteringRepo, aiService, log)
 	srsService := service.NewSRSService(userCardRepo, log)
-	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, log)
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, log)
 	optionsService := service.NewOptionsService(trainingCardRepo, log)
 	cbService := service.NewCircuitBreakerService(cbRepo, cfg.Training.CircuitBreakerThreshold, log)
 

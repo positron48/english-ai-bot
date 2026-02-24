@@ -161,11 +161,7 @@ check: tidy
 	@$(MAKE) test-integration
 	@echo ""
 	@echo "6. Running Go linter..."
-	@if [ ! -x ./bin/golangci-lint ]; then \
-		echo "Installing golangci-lint v2.1.0 (same as CI)..."; \
-		$(MAKE) lint-install; \
-	fi
-	@$(GOLANGCI) run --timeout=3m
+	@$(GO) run github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.10.1 run --timeout=3m
 	@echo "✅ Go linter passed"
 	@echo ""
 	@echo "7. Checking test coverage..."
@@ -209,6 +205,17 @@ migrate-training-cards: build-migrate-training
 	@echo "⚠️  Make sure you have a backup of your database!"
 	@echo ""
 	@echo "To run migration, execute: ./bin/migrate_training_cards"
+
+build-backfill-mastering:
+	@mkdir -p bin
+	$(GO) build -o bin/backfill_mastering ./cmd/backfill_mastering
+	@echo "✅ Backfill tool built: bin/backfill_mastering"
+
+backfill-mastering: build-backfill-mastering
+	@echo "One-time backfill of user_word_mastering from review_events."
+	@echo "Run after deploying the user_word_mastering table. DATABASE_URL must be set."
+	@echo ""
+	./bin/backfill_mastering
 
 # Alias for check
 ci: check
@@ -338,6 +345,7 @@ help:
 	@echo "  make clean          - Clean build artifacts"
 	@echo "  make migrate-words  - Migrate existing word cards to new structured format"
 	@echo "  make migrate-training-cards  - Migrate existing training cards with POS and display_word"
+	@echo "  make backfill-mastering  - One-time backfill of user_word_mastering from review_events"
 	@echo ""
 	@echo "Docker commands:"
 	@echo "  make docker-build   - Build Docker image"

@@ -16,11 +16,12 @@ import (
 
 // WordService handles word-related business logic
 type WordService struct {
-	wordRepo         *repository.WordRepository
-	trainingCardRepo *repository.TrainingCardRepository
-	userCardRepo     *repository.UserCardRepository
-	aiService        *ai.Service
-	logger           *zap.Logger
+	wordRepo              *repository.WordRepository
+	trainingCardRepo      *repository.TrainingCardRepository
+	userCardRepo          *repository.UserCardRepository
+	userWordMasteringRepo *repository.UserWordMasteringRepository
+	aiService             *ai.Service
+	logger                 *zap.Logger
 }
 
 // NewWordService creates a new word service
@@ -31,12 +32,25 @@ func NewWordService(
 	aiService *ai.Service,
 	logger *zap.Logger,
 ) *WordService {
+	return NewWordServiceWithMastering(wordRepo, trainingCardRepo, userCardRepo, nil, aiService, logger)
+}
+
+// NewWordServiceWithMastering creates a word service with optional UserWordMasteringRepository for storing mastering score on card creation.
+func NewWordServiceWithMastering(
+	wordRepo *repository.WordRepository,
+	trainingCardRepo *repository.TrainingCardRepository,
+	userCardRepo *repository.UserCardRepository,
+	userWordMasteringRepo *repository.UserWordMasteringRepository,
+	aiService *ai.Service,
+	logger *zap.Logger,
+) *WordService {
 	return &WordService{
-		wordRepo:         wordRepo,
-		trainingCardRepo: trainingCardRepo,
-		userCardRepo:     userCardRepo,
-		aiService:        aiService,
-		logger:           logger,
+		wordRepo:              wordRepo,
+		trainingCardRepo:      trainingCardRepo,
+		userCardRepo:          userCardRepo,
+		userWordMasteringRepo: userWordMasteringRepo,
+		aiService:             aiService,
+		logger:                 logger,
 	}
 }
 
@@ -439,6 +453,11 @@ func (s *WordService) ensureUserCardsForWord(userID, wordCardID int64) error {
 			zap.Int("training_cards", len(trainingCards)),
 			zap.Int("user_cards_created", createdCount),
 		)
+		if s.userWordMasteringRepo != nil {
+			if err := s.userWordMasteringRepo.Upsert(userID, wordCardID, 0); err != nil {
+				s.logger.Warn("failed to upsert initial mastering score", zap.Error(err))
+			}
+		}
 	}
 
 	return nil

@@ -98,7 +98,7 @@ func NewHarness(t *testing.T, opts ...HarnessOpt) *Harness {
 	aiService := ai.NewService(cfg.aiServiceURL, "test-model", cfg.aiAPIKey, cfg.aiPrompt, logger)
 	wordService := service.NewWordService(wordRepo, trainingCardRepo, userCardRepo, aiService, logger)
 	srsService := service.NewSRSService(userCardRepo, logger)
-	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, logger)
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, logger)
 	optionsService := service.NewOptionsService(trainingCardRepo, logger)
 	cbService := service.NewCircuitBreakerService(cbRepo, 5, logger)
 	grammarService := service.NewGrammarService(grammarContentRepo, grammarPublishRepo, grammarAttemptRepo, logger)

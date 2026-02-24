@@ -66,7 +66,7 @@ func TestTrainingService_generateQueue_WithDueAndNewCards(t *testing.T) {
 		t.Fatalf("Failed to create new card: %v", err)
 	}
 
-	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, logger)
 
 	config := SessionConfig{
 		MaxCardsPerSession: 10,
@@ -124,7 +124,7 @@ func TestTrainingService_generateQueue_OnlyDueCards(t *testing.T) {
 		}
 	}
 
-	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, logger)
 
 	config := SessionConfig{
 		MaxCardsPerSession: 10,
@@ -146,7 +146,7 @@ func TestTrainingService_generateQueue_Empty(t *testing.T) {
 	_, userRepo, userCardRepo, trainingCardRepo, _ := setupTrainingServiceTestDB(t)
 	user, _ := userRepo.GetOrCreateUser(7777)
 
-	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, logger)
 
 	config := SessionConfig{
 		MaxCardsPerSession: 10,

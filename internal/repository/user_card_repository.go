@@ -220,8 +220,7 @@ func (r *UserCardRepository) GetWordsEligibleForSpell(userID int64, limit int) (
 	return r.GetWordsEligibleForSpellByMastery(userID, 50, limit)
 }
 
-// GetWordsEligibleForSpellByMastery returns words with mastering_score >= minScore (0-100).
-// minScore 0-49: at least one card in learning or review; 50-74: at least one in review; 75+: all in review and total_reps > 0.
+// GetWordsEligibleForSpellByMastery returns words with stored mastering_score >= minScore (0-100).
 func (r *UserCardRepository) GetWordsEligibleForSpellByMastery(userID int64, minScore int, limit int) ([]*SpellEligibleWord, error) {
 	if minScore < 0 {
 		minScore = 0
@@ -229,47 +228,17 @@ func (r *UserCardRepository) GetWordsEligibleForSpellByMastery(userID int64, min
 	if minScore > 100 {
 		minScore = 100
 	}
-	var query string
-	args := []interface{}{userID}
-	if minScore >= 75 {
-		// Mastered: all cards in review and total_reps > 0
-		query = `SELECT tc.word_card_id,
-			COALESCE(MAX(CASE WHEN tc.display_word IS NOT NULL AND tc.display_word != '' THEN tc.display_word END), MAX(wc.word)) AS display_word,
-			MAX(tc.word_ru) AS word_ru
-			FROM user_cards uc
-			JOIN training_cards tc ON uc.training_card_id = tc.id
-			JOIN word_cards wc ON tc.word_card_id = wc.id
-			WHERE uc.user_id = ?
-			GROUP BY tc.word_card_id
-			HAVING COUNT(*) = SUM(CASE WHEN uc.state = 'review' THEN 1 ELSE 0 END) AND SUM(uc.reps) > 0
-			LIMIT ?`
-		args = append(args, limit)
-	} else if minScore >= 50 {
-		// At least one in review
-		query = `SELECT tc.word_card_id,
-			COALESCE(MAX(CASE WHEN tc.display_word IS NOT NULL AND tc.display_word != '' THEN tc.display_word END), MAX(wc.word)) AS display_word,
-			MAX(tc.word_ru) AS word_ru
-			FROM user_cards uc
-			JOIN training_cards tc ON uc.training_card_id = tc.id
-			JOIN word_cards wc ON tc.word_card_id = wc.id
-			WHERE uc.user_id = ? AND uc.state = 'review'
-			GROUP BY tc.word_card_id
-			LIMIT ?`
-		args = append(args, limit)
-	} else {
-		// At least one in learning or review (score >= 25)
-		query = `SELECT tc.word_card_id,
-			COALESCE(MAX(CASE WHEN tc.display_word IS NOT NULL AND tc.display_word != '' THEN tc.display_word END), MAX(wc.word)) AS display_word,
-			MAX(tc.word_ru) AS word_ru
-			FROM user_cards uc
-			JOIN training_cards tc ON uc.training_card_id = tc.id
-			JOIN word_cards wc ON tc.word_card_id = wc.id
-			WHERE uc.user_id = ? AND uc.state IN ('learning', 'review')
-			GROUP BY tc.word_card_id
-			LIMIT ?`
-		args = append(args, limit)
-	}
-	rows, err := r.db.Query(query, args...)
+	query := `SELECT tc.word_card_id,
+		COALESCE(MAX(CASE WHEN tc.display_word IS NOT NULL AND tc.display_word != '' THEN tc.display_word END), MAX(wc.word)) AS display_word,
+		MAX(tc.word_ru) AS word_ru
+		FROM user_cards uc
+		JOIN training_cards tc ON uc.training_card_id = tc.id
+		JOIN word_cards wc ON tc.word_card_id = wc.id
+		LEFT JOIN user_word_mastering uwm ON uwm.user_id = uc.user_id AND uwm.word_card_id = tc.word_card_id
+		WHERE uc.user_id = ? AND COALESCE(uwm.mastering_score, 0) >= ?
+		GROUP BY tc.word_card_id
+		LIMIT ?`
+	rows, err := r.db.Query(query, userID, minScore, limit)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get words eligible for spell: %w", err)
 	}

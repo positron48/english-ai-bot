@@ -295,15 +295,15 @@ func (h *Handler) handleStatsCommand(ctx context.Context, chatID, userID int64) 
 	var message strings.Builder
 	message.WriteString("📊 *Статистика*\n\n")
 	message.WriteString("*Карточки:*\n")
-	message.WriteString(fmt.Sprintf("• Доступно для тренировки: *%d*\n", availableForTraining))
-	message.WriteString(fmt.Sprintf("• Новые: *%d*\n", newCount))
-	message.WriteString(fmt.Sprintf("• В изучении: *%d*\n", learningCount))
-	message.WriteString(fmt.Sprintf("• На повторении: *%d*\n", reviewCount))
-	message.WriteString(fmt.Sprintf("• Всего карточек: *%d*\n\n", totalCards))
+	fmt.Fprintf(&message, "• Доступно для тренировки: *%d*\n", availableForTraining)
+	fmt.Fprintf(&message, "• Новые: *%d*\n", newCount)
+	fmt.Fprintf(&message, "• В изучении: *%d*\n", learningCount)
+	fmt.Fprintf(&message, "• На повторении: *%d*\n", reviewCount)
+	fmt.Fprintf(&message, "• Всего карточек: *%d*\n\n", totalCards)
 	message.WriteString("*Точность (30 дней):*\n")
 	if totalReviews > 0 {
-		message.WriteString(fmt.Sprintf("• Правильных ответов: *%.1f%%*\n", accuracyPercent))
-		message.WriteString(fmt.Sprintf("• Всего ответов: *%d*\n", totalReviews))
+		fmt.Fprintf(&message, "• Правильных ответов: *%.1f%%*\n", accuracyPercent)
+		fmt.Fprintf(&message, "• Всего ответов: *%d*\n", totalReviews)
 	} else {
 		message.WriteString("• Пока нет данных\n")
 	}
@@ -456,35 +456,35 @@ func (h *Handler) handleGetTrainDataCommand(chatID, userID int64, wordEN string)
 
 	// Format response
 	var message strings.Builder
-	message.WriteString(fmt.Sprintf("📊 Данные по тренировочным карточкам для слова `%s`:\n\n", wordEN))
-	message.WriteString(fmt.Sprintf("Всего карточек: %d\n\n", len(cards)))
+	fmt.Fprintf(&message, "📊 Данные по тренировочным карточкам для слова `%s`:\n\n", wordEN)
+	fmt.Fprintf(&message, "Всего карточек: %d\n\n", len(cards))
 
 	for i, card := range cards {
-		message.WriteString(fmt.Sprintf("*Карточка #%d* (ID: `%d`)\n", i+1, card.ID))
-		message.WriteString(fmt.Sprintf("• Word Card ID: `%d`\n", card.WordCardID))
-		message.WriteString(fmt.Sprintf("• Sense Index: `%d`\n", card.SenseIndex))
+		fmt.Fprintf(&message, "*Карточка #%d* (ID: `%d`)\n", i+1, card.ID)
+		fmt.Fprintf(&message, "• Word Card ID: `%d`\n", card.WordCardID)
+		fmt.Fprintf(&message, "• Sense Index: `%d`\n", card.SenseIndex)
 		if card.Transcription != "" {
-			message.WriteString(fmt.Sprintf("• Transcription: `%s`\n", card.Transcription))
+			fmt.Fprintf(&message, "• Transcription: `%s`\n", card.Transcription)
 		}
-		message.WriteString(fmt.Sprintf("• Word EN: `%s`\n", card.WordEN))
-		message.WriteString(fmt.Sprintf("• Word RU: %s\n", card.WordRU))
-		message.WriteString(fmt.Sprintf("• Meaning EN: %s\n", card.MeaningEN))
+		fmt.Fprintf(&message, "• Word EN: `%s`\n", card.WordEN)
+		fmt.Fprintf(&message, "• Word RU: %s\n", card.WordRU)
+		fmt.Fprintf(&message, "• Meaning EN: %s\n", card.MeaningEN)
 		if card.ExampleEN != "" {
-			message.WriteString(fmt.Sprintf("• Example EN: %s\n", card.ExampleEN))
+			fmt.Fprintf(&message, "• Example EN: %s\n", card.ExampleEN)
 		}
 		if card.ExampleRU != "" {
-			message.WriteString(fmt.Sprintf("• Example RU: %s\n", card.ExampleRU))
+			fmt.Fprintf(&message, "• Example RU: %s\n", card.ExampleRU)
 		}
 		if card.Hint != "" {
-			message.WriteString(fmt.Sprintf("• Hint: _%s_\n", card.Hint))
+			fmt.Fprintf(&message, "• Hint: _%s_\n", card.Hint)
 		}
 		if card.DistractorsRU != "" {
-			message.WriteString(fmt.Sprintf("• Distractors RU: `%s`\n", card.DistractorsRU))
+			fmt.Fprintf(&message, "• Distractors RU: `%s`\n", card.DistractorsRU)
 		}
 		if card.DistractorsEN != "" {
-			message.WriteString(fmt.Sprintf("• Distractors EN: `%s`\n", card.DistractorsEN))
+			fmt.Fprintf(&message, "• Distractors EN: `%s`\n", card.DistractorsEN)
 		}
-		message.WriteString(fmt.Sprintf("• Created: `%s`\n", card.CreatedAt.Format("2006-01-02 15:04:05")))
+		fmt.Fprintf(&message, "• Created: `%s`\n", card.CreatedAt.Format("2006-01-02 15:04:05"))
 		if i < len(cards)-1 {
 			message.WriteString("\n---\n\n")
 		}

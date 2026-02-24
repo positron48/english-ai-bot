@@ -741,6 +741,7 @@ func (r *Router) getWordSetService() *service.WordSetService {
 	trainingCardRepo := repository.NewTrainingCardRepository(r.db, r.logger)
 	userCardRepo := repository.NewUserCardRepository(r.db, r.logger)
 	userWordKnowledgeRepo := repository.NewUserWordKnowledgeRepository(r.db, r.logger)
+	userWordMasteringRepo := repository.NewUserWordMasteringRepository(r.db, r.logger)
 	
 	// Get AI service with type assertion
 	var aiService *ai.Service
@@ -750,13 +751,14 @@ func (r *Router) getWordSetService() *service.WordSetService {
 		}
 	}
 	
-	return service.NewWordSetService(
+	return service.NewWordSetServiceWithMastering(
 		wordSetRepo,
 		wordSetCategoryRepo,
 		wordRepo,
 		trainingCardRepo,
 		userCardRepo,
 		userWordKnowledgeRepo,
+		userWordMasteringRepo,
 		aiService,
 		r.config.AI.ModelHigh,
 		r.logger,

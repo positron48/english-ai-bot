@@ -27,7 +27,7 @@ func TestTrainingService_generateQueue_WithOrphanedCards(t *testing.T) {
 		t.Fatalf("Failed to create orphaned card: %v", err)
 	}
 
-	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, logger)
 
 	config := SessionConfig{
 		MaxCardsPerSession: 10,
@@ -81,7 +81,7 @@ func TestTrainingService_generateQueue_MaxNewPerSession(t *testing.T) {
 		}
 	}
 
-	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, logger)
 
 	config := SessionConfig{
 		MaxCardsPerSession: 10,
@@ -162,7 +162,7 @@ func TestTrainingService_generateQueue_LearningCardsFirst(t *testing.T) {
 		t.Fatalf("Failed to create review card: %v", err)
 	}
 
-	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, logger)
 
 	config := SessionConfig{
 		MaxCardsPerSession: 10,

@@ -15,15 +15,16 @@ import (
 
 // WordSetService handles word set business logic
 type WordSetService struct {
-	wordSetRepo         *repository.WordSetRepository
-	wordSetCategoryRepo *repository.WordSetCategoryRepository
-	wordRepo            *repository.WordRepository
-	trainingCardRepo    *repository.TrainingCardRepository
-	userCardRepo        *repository.UserCardRepository
-	userWordKnowledgeRepo *repository.UserWordKnowledgeRepository
-	aiService           *ai.Service
-	modelHigh           string
-	logger              *zap.Logger
+	wordSetRepo            *repository.WordSetRepository
+	wordSetCategoryRepo    *repository.WordSetCategoryRepository
+	wordRepo               *repository.WordRepository
+	trainingCardRepo       *repository.TrainingCardRepository
+	userCardRepo           *repository.UserCardRepository
+	userWordKnowledgeRepo  *repository.UserWordKnowledgeRepository
+	userWordMasteringRepo  *repository.UserWordMasteringRepository
+	aiService              *ai.Service
+	modelHigh              string
+	logger                 *zap.Logger
 }
 
 // NewWordSetService creates a new word set service
@@ -38,16 +39,33 @@ func NewWordSetService(
 	modelHigh string,
 	logger *zap.Logger,
 ) *WordSetService {
+	return NewWordSetServiceWithMastering(wordSetRepo, wordSetCategoryRepo, wordRepo, trainingCardRepo, userCardRepo, userWordKnowledgeRepo, nil, aiService, modelHigh, logger)
+}
+
+// NewWordSetServiceWithMastering creates a word set service with optional UserWordMasteringRepository for storing mastering score on card creation.
+func NewWordSetServiceWithMastering(
+	wordSetRepo *repository.WordSetRepository,
+	wordSetCategoryRepo *repository.WordSetCategoryRepository,
+	wordRepo *repository.WordRepository,
+	trainingCardRepo *repository.TrainingCardRepository,
+	userCardRepo *repository.UserCardRepository,
+	userWordKnowledgeRepo *repository.UserWordKnowledgeRepository,
+	userWordMasteringRepo *repository.UserWordMasteringRepository,
+	aiService *ai.Service,
+	modelHigh string,
+	logger *zap.Logger,
+) *WordSetService {
 	return &WordSetService{
-		wordSetRepo:          wordSetRepo,
-		wordSetCategoryRepo:  wordSetCategoryRepo,
-		wordRepo:             wordRepo,
-		trainingCardRepo:     trainingCardRepo,
-		userCardRepo:         userCardRepo,
+		wordSetRepo:           wordSetRepo,
+		wordSetCategoryRepo:   wordSetCategoryRepo,
+		wordRepo:              wordRepo,
+		trainingCardRepo:      trainingCardRepo,
+		userCardRepo:          userCardRepo,
 		userWordKnowledgeRepo: userWordKnowledgeRepo,
-		aiService:            aiService,
-		modelHigh:            modelHigh,
-		logger:               logger,
+		userWordMasteringRepo: userWordMasteringRepo,
+		aiService:             aiService,
+		modelHigh:             modelHigh,
+		logger:                logger,
 	}
 }
 
@@ -431,6 +449,11 @@ func (s *WordSetService) EnsureUserCardsForWord(userID, wordCardID int64) error 
 			zap.Int("training_cards", len(trainingCards)),
 			zap.Int("user_cards_created", createdCount),
 		)
+		if s.userWordMasteringRepo != nil {
+			if err := s.userWordMasteringRepo.Upsert(userID, wordCardID, 0); err != nil {
+				s.logger.Warn("failed to upsert initial mastering score", zap.Error(err))
+			}
+		}
 	}
 	
 	return nil
