@@ -47,14 +47,14 @@ func (r *UserWordMasteringRepository) GetWordMasteringStatsBatch(pairs []UserWor
 		return out, nil
 	}
 
-	// Build VALUES (?,?), (?,?), ... for (user_id, word_card_id)
+	// Build VALUES (?,?), (?,?), ... for (user_id, word_card_id). Cast to bigint for PostgreSQL.
 	var valParts []string
 	var args []interface{}
 	for i, p := range pairs {
 		if i > 0 {
 			valParts = append(valParts, ", ")
 		}
-		valParts = append(valParts, "(?, ?)")
+		valParts = append(valParts, "(?::bigint, ?::bigint)")
 		args = append(args, p.UserID, p.WordCardID)
 	}
 	valuesClause := strings.Join(valParts, "")
@@ -171,7 +171,7 @@ func (r *UserWordMasteringRepository) GetKnownForPairs(pairs []UserWordPair) (ma
 		if i > 0 {
 			valParts = append(valParts, ", ")
 		}
-		valParts = append(valParts, "(?, ?)")
+		valParts = append(valParts, "(?::bigint, ?::bigint)")
 		args = append(args, p.UserID, p.WordCardID)
 	}
 	query := `SELECT user_id, word_card_id FROM user_word_knowledge WHERE status = 'known' AND (user_id, word_card_id) IN (VALUES ` + strings.Join(valParts, "") + `)`
