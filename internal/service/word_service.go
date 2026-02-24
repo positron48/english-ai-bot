@@ -153,6 +153,15 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 		return "", fmt.Errorf("failed to get AI response: %w", err)
 	}
 
+	// Cyrillic input: don't save to DB, just return LLM response to chat
+	if ContainsCyrillic(normalizedWord) {
+		s.logger.Info("word contains Cyrillic, returning AI response without saving",
+			zap.String("word", normalizedWord),
+			zap.Int64("user_id", userID),
+		)
+		return response, nil
+	}
+
 	// Parse JSON response
 	var wordInfo models.WordInfoResponse
 	if err := json.Unmarshal([]byte(response), &wordInfo); err != nil {
