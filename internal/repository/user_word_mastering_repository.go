@@ -216,14 +216,14 @@ func (r *UserWordMasteringRepository) UpsertBatch(entries []struct {
 		return nil
 	}
 	// PostgreSQL: INSERT ... ON CONFLICT (user_id, word_card_id) DO UPDATE
-	// Build VALUES (?,?,?), (?,?,?), ...
+	// Build VALUES (?,?,?,CURRENT_TIMESTAMP), ...
 	var valParts []string
 	var args []interface{}
 	for i, e := range entries {
 		if i > 0 {
 			valParts = append(valParts, ", ")
 		}
-		valParts = append(valParts, "(?, ?, ?)")
+		valParts = append(valParts, "(?, ?, ?, CURRENT_TIMESTAMP)")
 		args = append(args, e.UserID, e.WordCardID, e.Score)
 	}
 	query := `INSERT INTO user_word_mastering (user_id, word_card_id, mastering_score, updated_at)
