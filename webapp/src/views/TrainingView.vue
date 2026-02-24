@@ -221,42 +221,49 @@
       <div
         v-if="currentCard?.type === 'spell' && currentCard?.letters?.length"
         class="spell-block"
-        :class="{ 'spell-long': (currentCard?.letters?.length ?? 0) > 8 }"
+        :class="{ 'spell-long': (currentCard?.letters?.length ?? 0) > 6 }"
       >
         <div class="spell-answer-row">
           <span class="spell-answer-label">{{ t('training.composeWord') || 'Your word:' }}</span>
           <div
+            ref="spellAnswerLettersContainerRef"
             class="spell-answer-letters"
             :class="{
               'spell-reveal-letters': feedback && !feedback.is_correct && spellRevealLetters.length,
               'spell-autopick-active': spellSkipResultActive
             }"
           >
-            <span v-if="currentCard?.prefix" class="spell-answer-prefix">{{ currentCard.prefix }}</span>
-            <template v-if="feedback && !feedback.is_correct && spellRevealLetters.length">
-              <TransitionGroup
-                name="spell-reorder"
-                tag="span"
-                class="spell-reorder-group"
-              >
-                <span
-                  v-for="item in spellRevealLetters"
-                  :key="item.key"
-                  class="spell-reveal-char"
-                >{{ item.letter }}</span>
-              </TransitionGroup>
-            </template>
-            <template v-else>
-              <button
-                v-for="(ch, i) in spellAnswerLetters"
-                :key="`a-${i}`"
-                type="button"
-                class="btn spell-letter-btn spell-answer-char-btn"
-                :disabled="(!!feedback || answering) && !spellSkipResultActive"
-                @click="spellRemoveLetterAt(i)"
-              >{{ ch }}</button>
-              <span v-if="spellAnswerLetters.length === 0" class="spell-answer-placeholder">...</span>
-            </template>
+            <div
+              ref="spellAnswerLettersWrapRef"
+              class="spell-answer-letters-inner"
+              :style="spellAnswerLettersWrapStyle"
+            >
+              <span v-if="currentCard?.prefix" class="spell-answer-prefix">{{ currentCard.prefix }}</span>
+              <template v-if="feedback && !feedback.is_correct && spellRevealLetters.length">
+                <TransitionGroup
+                  name="spell-reorder"
+                  tag="span"
+                  class="spell-reorder-group"
+                >
+                  <span
+                    v-for="item in spellRevealLetters"
+                    :key="item.key"
+                    class="spell-reveal-char"
+                  >{{ item.letter }}</span>
+                </TransitionGroup>
+              </template>
+              <template v-else>
+                <button
+                  v-for="(ch, i) in spellAnswerLetters"
+                  :key="`a-${i}`"
+                  type="button"
+                  class="btn spell-letter-btn spell-answer-char-btn"
+                  :disabled="(!!feedback || answering) && !spellSkipResultActive"
+                  @click="spellRemoveLetterAt(i)"
+                >{{ ch }}</button>
+                <span v-if="spellAnswerLetters.length === 0" class="spell-answer-placeholder">...</span>
+              </template>
+            </div>
           </div>
         </div>
         <div
@@ -533,8 +540,34 @@ let exampleButtonTimer: ReturnType<typeof setTimeout> | null = null
 const spellAnswerLetters = ref<string[]>([])
 /** Indices into currentCard.letters that are already used (same order as spellAnswerLetters) */
 const spellUsedIndices = ref<number[]>([])
+const spellAnswerLettersContainerRef = ref<HTMLElement | null>(null)
+const spellAnswerLettersWrapRef = ref<HTMLElement | null>(null)
+/** Scale factor so that collected letters fit container width (1 = no scaling) */
+const spellScale = ref(1)
 /** For wrong spell: letters in correct order with stable keys for reorder animation */
 const spellRevealLetters = ref<Array<{ letter: string; key: number }>>([])
+
+/** Recompute scale so spell answer letters fit container width */
+function updateSpellScale() {
+  const container = spellAnswerLettersContainerRef.value
+  const inner = spellAnswerLettersWrapRef.value
+  if (!container || !inner) {
+    spellScale.value = 1
+    return
+  }
+  const containerWidth = container.clientWidth
+  const contentWidth = inner.scrollWidth
+  if (contentWidth <= 0) {
+    spellScale.value = 1
+    return
+  }
+  const scale = containerWidth / contentWidth
+  spellScale.value = scale < 1 ? Math.max(0.35, scale) : 1
+}
+
+const spellAnswerLettersWrapStyle = computed(() => ({
+  transform: `scale(${spellScale.value})`
+}))
 const spellSkipAutoPickInProgress = ref(false)
 const spellSkipResultActive = ref(false)
 // Type (type the word, no letters) state
@@ -1080,6 +1113,7 @@ let countdownAnimationFrameId: number | null = null
 let timerEndTime: number | null = null
 let autoNextCardTimerStartTime: number | null = null
 let autoNextCardTimerDelayMs: number | null = null
+let spellAnswerLettersResizeObserver: ResizeObserver | null = null
 
 // Process question to wrap transcription in span if not already wrapped
 const processedQuestion = computed(() => {
@@ -1159,6 +1193,30 @@ onMounted(async () => {
   await loadStats()
   await loadUpcomingCards()
   await checkCurrentSession()
+
+  // Spell: scale collected letters to fit container width
+  watch(
+    () => spellAnswerLettersContainerRef.value,
+    (el) => {
+      if (spellAnswerLettersResizeObserver) {
+        spellAnswerLettersResizeObserver.disconnect()
+        spellAnswerLettersResizeObserver = null
+      }
+      if (el) {
+        spellAnswerLettersResizeObserver = new ResizeObserver(() => updateSpellScale())
+        spellAnswerLettersResizeObserver.observe(el)
+        nextTick().then(updateSpellScale)
+      }
+    },
+    { immediate: true }
+  )
+  watch(
+    () => [spellAnswerLetters.value.length, spellRevealLetters.value.length, currentCard.value?.type],
+    () => {
+      if (currentCard.value?.type === 'spell') nextTick().then(updateSpellScale)
+    },
+    { deep: true }
+  )
 })
 
 const loadStats = async () => {
@@ -1354,7 +1412,11 @@ onUnmounted(() => {
   }
   typeRevealTimeouts.forEach(clearTimeout)
   typeRevealTimeouts = []
-  
+  if (spellAnswerLettersResizeObserver) {
+    spellAnswerLettersResizeObserver.disconnect()
+    spellAnswerLettersResizeObserver = null
+  }
+
   // Destroy chart
   if (upcomingChartInstance) {
     upcomingChartInstance.destroy()
@@ -2484,6 +2546,16 @@ const handleTimerMouseLeave = () => {
   max-width: 100%;
   min-width: 0;
   box-sizing: border-box;
+  overflow: hidden;
+}
+.spell-answer-letters-inner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: inherit;
+  flex-wrap: nowrap;
+  transform-origin: center;
+  min-width: min-content;
 }
 .spell-answer-char-btn {
   flex: 0 1 auto;
