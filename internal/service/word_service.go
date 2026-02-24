@@ -77,15 +77,6 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 	normalizedWord := s.NormalizeWord(word)
 	inputWord := word // Keep original for history
 
-	// Check if word contains Cyrillic characters - don't save to DB
-	if ContainsCyrillic(normalizedWord) {
-		s.logger.Info("word contains Cyrillic, not saving to database",
-			zap.String("word", normalizedWord),
-			zap.Int64("user_id", userID),
-		)
-		return "💡 Пожалуйста, введите слово на английском языке.", nil
-	}
-
 	// Step 1: Try to resolve word form to lemma via word_forms table
 	wordForm, err := s.wordRepo.GetWordFormMapping(normalizedWord)
 	if err != nil {

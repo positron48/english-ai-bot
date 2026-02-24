@@ -54,19 +54,6 @@ func newAIServiceWithResponse(t *testing.T, logger *zap.Logger, content string) 
 	return aiService
 }
 
-func TestGetWordDefinition_Cyrillic(t *testing.T) {
-	logger, _ := zap.NewDevelopment()
-	service := NewWordService(nil, nil, nil, nil, logger)
-
-	resp, err := service.GetWordDefinition(context.Background(), 1, "дом")
-	if err != nil {
-		t.Fatalf("GetWordDefinition error: %v", err)
-	}
-	if !strings.Contains(resp, "введите слово на английском языке") {
-		t.Fatalf("expected cyrillic hint, got %q", resp)
-	}
-}
-
 func TestGetWordDefinition_FoundInDB(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := testutil.SetupTestDatabase(t)
