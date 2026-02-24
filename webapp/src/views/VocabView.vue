@@ -143,6 +143,10 @@
               <div v-if="selectedTranscription" class="transcription">{{ selectedTranscription }}</div>
             </div>
             <div class="word-summary">
+              <span v-if="selectedWordMasteringScore !== null" class="mastering-score-inline" :title="t('vocab.scoreLabel') + ' 0–100'">
+                <span class="mastery-dot-inline" :style="{ backgroundColor: masteryColor(selectedWordMasteringScore) }" />
+                {{ selectedWordMasteringScore }}
+              </span>
               <span>{{ t('vocab.cards', totalCards, { n: totalCards }) }}</span>
               <span v-if="totalDue > 0">{{ t('vocab.due', totalDue, { n: totalDue }) }}</span>
               <span v-if="lastReview" :title="formatDateAbsolute(lastReview)">{{ t('vocab.last') }} {{ formatDateRelative(lastReview) }}</span>
@@ -327,6 +331,7 @@ const showCardsModal = ref(false)
 const selectedWord = ref('')
 const selectedWordDisplay = ref('')
 const selectedTranscription = ref('')
+const selectedWordMasteringScore = ref<number | null>(null)
 const cards = ref<CardDetail[]>([])
 const cardsLoading = ref(false)
 const verbForms = ref<any>(null)
@@ -512,6 +517,8 @@ const deleteWord = async () => {
 
 const showCards = async (lemma: string) => {
   selectedWord.value = lemma
+  const wordFromList = words.value.find(w => w.lemma === lemma)
+  selectedWordMasteringScore.value = wordFromList != null ? wordFromList.mastering_score : null
   showCardsModal.value = true
   cardsLoading.value = true
   cards.value = []
@@ -550,6 +557,7 @@ const closeCardsModal = () => {
   selectedWord.value = ''
   selectedWordDisplay.value = ''
   selectedTranscription.value = ''
+  selectedWordMasteringScore.value = null
   cards.value = []
   verbForms.value = null
   wordPOS.value = null
@@ -1073,6 +1081,22 @@ const formatDateAbsolute = (dateStr: string | null): string => {
   font-size: 14px;
   color: var(--text-secondary);
   flex-wrap: wrap;
+  align-items: center;
+}
+
+.mastering-score-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.mastery-dot-inline {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
 }
 
 .btn-close {
