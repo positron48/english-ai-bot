@@ -203,3 +203,55 @@ func (r *SessionRepository) GetTodaySessionCount(userID int64, localDate string)
 	}
 	return count, nil
 }
+
+// GetTrainingStreak returns the current streak (consecutive days with at least one session, ending yesterday)
+// and whether the user trained yesterday. All dates are interpreted in the user's timezone.
+// asOfLocalDate is "today" in user's local date (YYYY-MM-DD). Streak is counted backwards from yesterday.
+func (r *SessionRepository) GetTrainingStreak(userID int64, timezone string, asOfLocalDate string) (streak int, trainedYesterday bool, err error) {
+	loc, err := time.LoadLocation(timezone)
+	if err != nil {
+		loc = time.UTC
+	}
+	asOf, err := time.ParseInLocation("2006-01-02", asOfLocalDate, loc)
+	if err != nil {
+		return 0, false, fmt.Errorf("invalid asOfLocalDate %q: %w", asOfLocalDate, err)
+	}
+	// Fetch sessions from the last 90 days (UTC window to cover any TZ)
+	sinceUTC := asOf.AddDate(0, 0, -90).UTC()
+	query := `SELECT started_at FROM training_sessions WHERE user_id = ? AND started_at >= ? ORDER BY started_at ASC`
+	rows, err := r.db.Query(query, userID, sinceUTC)
+	if err != nil {
+		return 0, false, fmt.Errorf("failed to get sessions for streak: %w", err)
+	}
+	defer rows.Close()
+
+	datesSet := make(map[string]struct{})
+	for rows.Next() {
+		var startedAt time.Time
+		if err := rows.Scan(&startedAt); err != nil {
+			return 0, false, fmt.Errorf("scan started_at: %w", err)
+		}
+		localT := startedAt.In(loc)
+		datesSet[localT.Format("2006-01-02")] = struct{}{}
+	}
+	if err := rows.Err(); err != nil {
+		return 0, false, err
+	}
+
+	yesterday := asOf.AddDate(0, 0, -1).Format("2006-01-02")
+	trainedYesterday = false
+	if _, ok := datesSet[yesterday]; ok {
+		trainedYesterday = true
+	}
+
+	// Streak: count consecutive days ending at yesterday
+	streak = 0
+	for d := asOf.AddDate(0, 0, -1); ; d = d.AddDate(0, 0, -1) {
+		key := d.Format("2006-01-02")
+		if _, ok := datesSet[key]; !ok {
+			break
+		}
+		streak++
+	}
+	return streak, trainedYesterday, nil
+}

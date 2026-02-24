@@ -143,6 +143,18 @@ func (r *UserCardRepository) GetDueCount(userID int64, now time.Time) (int, erro
 	return count, nil
 }
 
+// CountNewCardsSince returns the number of user_cards created for the user since the given time (inclusive).
+// Used for "per week" stats in training notifications (e.g. "За неделю +N слов").
+func (r *UserCardRepository) CountNewCardsSince(userID int64, since time.Time) (int, error) {
+	query := `SELECT COUNT(*) FROM user_cards WHERE user_id = ? AND created_at >= ?`
+	var count int
+	err := r.db.QueryRow(query, userID, since).Scan(&count)
+	if err != nil {
+		return 0, fmt.Errorf("failed to count new cards since: %w", err)
+	}
+	return count, nil
+}
+
 // GetNewCards gets new cards for a user
 // Excludes words marked as "known" in user_word_knowledge
 func (r *UserCardRepository) GetNewCards(userID int64, limit int) ([]*models.UserCard, error) {

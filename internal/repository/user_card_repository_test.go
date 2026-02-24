@@ -211,6 +211,52 @@ func TestUserCardRepository_GetNewCards(t *testing.T) {
 	}
 }
 
+func TestUserCardRepository_CountNewCardsSince(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := setupUserCardTestDB(t)
+	userRepo := NewUserRepository(db, logger)
+	user, _ := userRepo.GetOrCreateUser(888)
+
+	repo := NewUserCardRepository(db, logger)
+	_, _ = db.Exec("INSERT INTO word_cards (word, definition) VALUES (?, ?)", "count", "count")
+	_, _ = db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (1, ?, ?, ?, ?, ?, ?)",
+		"count", 0, "счёт", "count", "noun", "count")
+
+	now := time.Now()
+	for _, dir := range []models.CardDirection{models.DirectionENtoRU, models.DirectionRUtoEN} {
+		card := &models.UserCard{
+			UserID:         user.ID,
+			TrainingCardID: 1,
+			Direction:      dir,
+			State:          models.StateNew,
+			EF:             models.InitialEF,
+			NextDueAt:      &now,
+		}
+		_, err := repo.CreateUserCard(card)
+		if err != nil {
+			t.Fatalf("CreateUserCard: %v", err)
+		}
+	}
+
+	// Since 1 hour ago: should include both cards
+	count, err := repo.CountNewCardsSince(user.ID, now.Add(-1*time.Hour))
+	if err != nil {
+		t.Fatalf("CountNewCardsSince: %v", err)
+	}
+	if count < 2 {
+		t.Errorf("Expected at least 2 cards since 1h ago, got %d", count)
+	}
+
+	// Since in the future: 0
+	countFuture, err := repo.CountNewCardsSince(user.ID, now.Add(24*time.Hour))
+	if err != nil {
+		t.Fatalf("CountNewCardsSince future: %v", err)
+	}
+	if countFuture != 0 {
+		t.Errorf("Expected 0 cards since future, got %d", countFuture)
+	}
+}
+
 func TestUserCardRepository_UpdateUserCard(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupUserCardTestDB(t)

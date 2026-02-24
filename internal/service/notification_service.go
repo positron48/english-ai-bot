@@ -229,12 +229,26 @@ func (s *NotificationService) sendNotificationIfNeeded(user *models.User, userNo
 		estimatedMinutes = 1
 	}
 
-	// Send notification
-	message := fmt.Sprintf(
-		"К повторению: %d карточек (~%d минут). Начать тренировку?",
-		dueCount,
-		estimatedMinutes,
-	)
+	// Streak and "trained yesterday" (in user timezone)
+	streak, trainedYesterday, err := s.sessionRepo.GetTrainingStreak(user.ID, user.Timezone, localDate)
+	if err != nil {
+		s.logger.Warn("failed to get training streak, using neutral message", zap.Int64("user_id", user.ID), zap.Error(err))
+		streak, trainedYesterday = 0, false
+	}
+
+	// New cards in the last 7 days (user's local week)
+	loc, _ := time.LoadLocation(user.Timezone)
+	if loc == nil {
+		loc = time.UTC
+	}
+	weekStart := time.Date(userNow.Year(), userNow.Month(), userNow.Day(), 0, 0, 0, 0, loc).AddDate(0, 0, -7)
+	newCardsWeek, err := s.userCardRepo.CountNewCardsSince(user.ID, weekStart)
+	if err != nil {
+		s.logger.Warn("failed to count new cards for week", zap.Int64("user_id", user.ID), zap.Error(err))
+		newCardsWeek = 0
+	}
+
+	message := s.buildNotificationMessage(streak, trainedYesterday, newCardsWeek, dueCount, estimatedMinutes)
 
 	// Create inline keyboard with "Start" and "Отписаться" buttons
 	keyboard := tgbotapi.NewInlineKeyboardMarkup(
@@ -289,6 +303,52 @@ func (s *NotificationService) sendNotificationIfNeeded(user *models.User, userNo
 	)
 
 	return nil
+}
+
+// buildNotificationMessage builds an encouraging notification text from streak, weekly growth and due count.
+func (s *NotificationService) buildNotificationMessage(streak int, trainedYesterday bool, newCardsWeek, dueCount, estimatedMinutes int) string {
+	minWord := "минут"
+	if estimatedMinutes == 1 {
+		minWord = "минута"
+	} else if estimatedMinutes >= 2 && estimatedMinutes <= 4 {
+		minWord = "минуты"
+	}
+	cardsPhrase := fmt.Sprintf("К повторению: %d карточек (~%d %s). ", dueCount, estimatedMinutes, minWord)
+
+	weekLine := ""
+	if newCardsWeek > 0 {
+		weekLine = fmt.Sprintf("За неделю +%d слов в твоём словаре — каждый шаг считается. ", newCardsWeek)
+	}
+
+	// Есть серия (тренировался вчера и подряд до этого)
+	if trainedYesterday && streak >= 1 {
+		if streak >= 2 {
+			prefix := fmt.Sprintf("Уже %d дней подряд занимаешься — так держать! ", streak)
+			if newCardsWeek > 0 {
+				return prefix + fmt.Sprintf("За неделю +%d слов в словаре — здорово! ", newCardsWeek) + cardsPhrase + "Продолжим?"
+			}
+			return prefix + cardsPhrase + "Продолжим?"
+		}
+		// streak == 1
+		if newCardsWeek > 0 {
+			return "Ты уже день подряд в деле. " + weekLine + cardsPhrase + "Продолжим?"
+		}
+		return "Ты уже день подряд в деле. " + cardsPhrase + "Начать?"
+	}
+
+	// Вчера не занимался: приглашение вернуться (если была серия) или нейтральное сообщение (новый/без серии)
+	if streak > 0 {
+		// Серия прервалась — мягко приглашаем вернуться
+		if newCardsWeek > 0 {
+			return fmt.Sprintf("Сегодня отличный день, чтобы вернуться. За неделю ты уже добавил %d слов — давай не останавливаться. ", newCardsWeek) + cardsPhrase + "Начать?"
+		}
+		return "Сегодня отличный день, чтобы вернуться: " + cardsPhrase + "Начать?"
+	}
+	// Нет серии / новый пользователь
+	if newCardsWeek > 0 {
+		return weekLine + cardsPhrase + "Начать?"
+	}
+	return cardsPhrase + "Начать?"
 }
 
 func (s *NotificationService) shouldDisableNotificationsOnError(err error) bool {

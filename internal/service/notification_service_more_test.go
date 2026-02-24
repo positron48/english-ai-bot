@@ -102,6 +102,7 @@ func TestNotificationService_SendNotification(t *testing.T) {
 		t.Fatalf("expected notification message, got %q", got)
 	}
 
+	// Message should still contain core CTA
 	hasNudge, err := nudgeRepo.HasNudgeToday(user.ID, time.Now().Format("2006-01-02"))
 	if err != nil {
 		t.Fatalf("HasNudgeToday error: %v", err)
@@ -175,6 +176,66 @@ func TestNotificationService_SkipsWhenDueCardsLessThanTen(t *testing.T) {
 	}
 	if client.lastParams != nil && client.lastParams.Get("text") != "" {
 		t.Fatalf("expected no notification when due cards < 10")
+	}
+}
+
+func TestNotificationService_MessageContainsStreakWhenTrainedYesterday(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	conn := db.GetConnection()
+
+	userRepo := repository.NewUserRepository(conn, logger)
+	userCardRepo := repository.NewUserCardRepository(conn, logger)
+	trainingCardRepo := repository.NewTrainingCardRepository(conn, logger)
+	wordRepo := repository.NewWordRepository(conn, logger)
+	nudgeRepo := repository.NewNudgeRepository(conn, logger)
+	sessionRepo := repository.NewSessionRepository(conn, logger)
+
+	user, err := userRepo.GetOrCreateUser(77777)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser error: %v", err)
+	}
+	_, _ = conn.Exec("UPDATE users SET timezone = $1, preferred_training_time = $2 WHERE id = $3", "UTC", "00:00", user.ID)
+	user, _ = userRepo.GetUserByID(user.ID)
+	if user == nil {
+		t.Fatal("user not found")
+	}
+
+	wordID, _ := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "streak"})
+	for i := 0; i < 10; i++ {
+		cardID, _ := trainingCardRepo.CreateTrainingCard(&models.TrainingCard{
+			WordCardID: wordID, WordEN: "streak", WordRU: "серия", MeaningEN: "streak", SenseIndex: i,
+		})
+		dueAt := time.Now().UTC().Add(-time.Hour)
+		_, _ = userCardRepo.CreateUserCard(&models.UserCard{
+			UserID: user.ID, TrainingCardID: cardID, Direction: models.DirectionRUtoEN,
+			State: models.StateReview, EF: models.InitialEF, NextDueAt: &dueAt,
+		})
+	}
+
+	now := time.Now().UTC()
+	yesterday := now.AddDate(0, 0, -1).Format("2006-01-02") + " 12:00:00+00"
+	dayBefore := now.AddDate(0, 0, -2).Format("2006-01-02") + " 12:00:00+00"
+	_, _ = conn.Exec(`INSERT INTO training_sessions (user_id, source, planned_count, done_count, session_json, started_at)
+		VALUES ($1, $2, $3, $4, $5, $6::timestamptz), ($1, $2, $3, $4, $5, $7::timestamptz)`,
+		user.ID, "manual", 5, 0, "{}", yesterday, dayBefore)
+
+	client := &mockTelegramClientNS{}
+	bot := newTestBotNS(client)
+	svc := NewNotificationService(bot, userRepo, userCardRepo, nudgeRepo, sessionRepo, logger)
+	err = svc.sendNotificationIfNeeded(user, now)
+	if err != nil {
+		t.Fatalf("sendNotificationIfNeeded: %v", err)
+	}
+	text := client.lastParams.Get("text")
+	if text == "" {
+		t.Fatal("expected notification to be sent")
+	}
+	if !strings.Contains(text, "дней подряд") && !strings.Contains(text, "так держать") {
+		t.Errorf("expected encouraging streak phrase in message, got %q", text)
+	}
+	if !strings.Contains(text, "К повторению") {
+		t.Errorf("expected due count in message, got %q", text)
 	}
 }
 

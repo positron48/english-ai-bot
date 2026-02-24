@@ -180,3 +180,55 @@ func TestSessionRepository_GetTodaySessionCount(t *testing.T) {
 		t.Errorf("Expected at least 3 sessions, got %d", count)
 	}
 }
+
+func TestSessionRepository_GetTrainingStreak(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := setupSessionAdditionalTestDB(t)
+
+	userRepo := NewUserRepository(db, logger)
+	user, _ := userRepo.GetOrCreateUser(444)
+
+	repo := NewSessionRepository(db, logger)
+
+	// Insert sessions on specific dates (UTC). Use "as of" date 2025-02-24 so yesterday = 2025-02-23.
+	// Sessions: 2025-02-21, 2025-02-22, 2025-02-23 (three consecutive days ending yesterday)
+	for _, dateStr := range []string{"2025-02-21 12:00:00+00", "2025-02-22 12:00:00+00", "2025-02-23 14:00:00+00"} {
+		_, err := db.Exec(`INSERT INTO training_sessions (user_id, source, planned_count, done_count, session_json, started_at)
+			VALUES ($1, $2, $3, $4, $5, $6::timestamptz)`,
+			user.ID, "manual", 5, 0, "{}", dateStr)
+		if err != nil {
+			t.Fatalf("insert session: %v", err)
+		}
+	}
+
+	streak, trainedYesterday, err := repo.GetTrainingStreak(user.ID, "UTC", "2025-02-24")
+	if err != nil {
+		t.Fatalf("GetTrainingStreak() error = %v", err)
+	}
+	if streak != 3 {
+		t.Errorf("Expected streak 3, got %d", streak)
+	}
+	if !trainedYesterday {
+		t.Error("Expected trainedYesterday true")
+	}
+
+	// No session on 2025-02-23: streak 0, trainedYesterday false
+	_, _ = db.Exec("DELETE FROM training_sessions WHERE user_id = $1", user.ID)
+	_, _ = db.Exec(`INSERT INTO training_sessions (user_id, source, planned_count, done_count, session_json, started_at)
+		VALUES ($1, $2, $3, $4, $5, $6::timestamptz)`,
+		user.ID, "manual", 5, 0, "{}", "2025-02-22 12:00:00+00")
+	_, _ = db.Exec(`INSERT INTO training_sessions (user_id, source, planned_count, done_count, session_json, started_at)
+		VALUES ($1, $2, $3, $4, $5, $6::timestamptz)`,
+		user.ID, "manual", 5, 0, "{}", "2025-02-21 12:00:00+00")
+
+	streak2, trainedYesterday2, err := repo.GetTrainingStreak(user.ID, "UTC", "2025-02-24")
+	if err != nil {
+		t.Fatalf("GetTrainingStreak() second call error = %v", err)
+	}
+	if streak2 != 0 {
+		t.Errorf("Expected streak 0 when yesterday missing, got %d", streak2)
+	}
+	if trainedYesterday2 {
+		t.Error("Expected trainedYesterday false when no session on 2025-02-23")
+	}
+}
