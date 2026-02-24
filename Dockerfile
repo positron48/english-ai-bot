@@ -26,6 +26,9 @@ RUN cd webapp && npm run build
 # Build the application (CGO disabled, fast incremental-compatible build)
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o main ./cmd/bot
 
+# Build backfill tool for one-time mastering score backfill
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o backfill_mastering ./cmd/backfill_mastering
+
 # Final stage
 FROM alpine:latest
 
@@ -42,8 +45,9 @@ WORKDIR /app
 # Create data directory for database
 RUN mkdir -p /app/data && chown -R appuser:appgroup /app/data
 
-# Copy binary from builder stage
+# Copy binaries from builder stage
 COPY --from=builder /app/main .
+COPY --from=builder /app/backfill_mastering .
 COPY --from=builder /app/prompts ./prompts
 
 # Change ownership to non-root user
