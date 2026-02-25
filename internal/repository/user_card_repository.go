@@ -11,6 +11,52 @@ import (
 	"go.uber.org/zap"
 )
 
+// nullTimeScanner сканирует timestamptz из Postgres: pgx отдаёт time.Time, не строку.
+// Раньше использовали NullString + time.Parse("2006-01-02 15:04:05") — под SQLite.
+// В Postgres формат с дробными секундами и таймзоной, парс падал и next_due_at оказывался нулём/неверным.
+type nullTimeScanner struct {
+	Time  time.Time
+	Valid bool
+}
+
+func (n *nullTimeScanner) Scan(value interface{}) error {
+	if value == nil {
+		n.Valid = false
+		return nil
+	}
+	switch v := value.(type) {
+	case time.Time:
+		n.Time = v
+		n.Valid = true
+		return nil
+	case []byte:
+		return n.parseString(string(v))
+	case string:
+		return n.parseString(v)
+	default:
+		return fmt.Errorf("cannot scan %T into nullTimeScanner", value)
+	}
+}
+
+func (n *nullTimeScanner) parseString(s string) error {
+	formats := []string{
+		time.RFC3339Nano,
+		time.RFC3339,
+		"2006-01-02 15:04:05.999999-07:00",
+		"2006-01-02 15:04:05-07:00",
+		"2006-01-02 15:04:05.999999",
+		"2006-01-02 15:04:05",
+	}
+	for _, layout := range formats {
+		if t, err := time.Parse(layout, s); err == nil {
+			n.Time = t
+			n.Valid = true
+			return nil
+		}
+	}
+	return fmt.Errorf("cannot parse time %q", s)
+}
+
 // UserCardRepository handles database operations for user cards
 type UserCardRepository struct {
 	db     *sql.DB
@@ -305,7 +351,7 @@ func (r *UserCardRepository) UpdateUserCard(card *models.UserCard) error {
 func (r *UserCardRepository) scanUserCard(row *sql.Row) (*models.UserCard, error) {
 	var card models.UserCard
 	var createdAt, updatedAt string
-	var nextDueAt, lastReviewAt sql.NullString
+	var nextDueAt, lastReviewAt nullTimeScanner
 	var lastQuality sql.NullInt64
 
 	err := row.Scan(
@@ -327,11 +373,11 @@ func (r *UserCardRepository) scanUserCard(row *sql.Row) (*models.UserCard, error
 	card.UpdatedAt, _ = time.Parse("2006-01-02 15:04:05", updatedAt)
 
 	if nextDueAt.Valid {
-		t, _ := time.Parse("2006-01-02 15:04:05", nextDueAt.String)
+		t := nextDueAt.Time
 		card.NextDueAt = &t
 	}
 	if lastReviewAt.Valid {
-		t, _ := time.Parse("2006-01-02 15:04:05", lastReviewAt.String)
+		t := lastReviewAt.Time
 		card.LastReviewAt = &t
 	}
 	if lastQuality.Valid {
@@ -349,7 +395,7 @@ func (r *UserCardRepository) scanUserCards(rows *sql.Rows) ([]*models.UserCard, 
 	for rows.Next() {
 		var card models.UserCard
 		var createdAt, updatedAt string
-		var nextDueAt, lastReviewAt sql.NullString
+		var nextDueAt, lastReviewAt nullTimeScanner
 		var lastQuality sql.NullInt64
 
 		err := rows.Scan(
@@ -367,11 +413,11 @@ func (r *UserCardRepository) scanUserCards(rows *sql.Rows) ([]*models.UserCard, 
 		card.UpdatedAt, _ = time.Parse("2006-01-02 15:04:05", updatedAt)
 
 		if nextDueAt.Valid {
-			t, _ := time.Parse("2006-01-02 15:04:05", nextDueAt.String)
+			t := nextDueAt.Time
 			card.NextDueAt = &t
 		}
 		if lastReviewAt.Valid {
-			t, _ := time.Parse("2006-01-02 15:04:05", lastReviewAt.String)
+			t := lastReviewAt.Time
 			card.LastReviewAt = &t
 		}
 		if lastQuality.Valid {

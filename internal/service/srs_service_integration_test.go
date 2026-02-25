@@ -161,3 +161,62 @@ func TestSRSService_GradeCard_WrongAnswer(t *testing.T) {
 		t.Errorf("Expected EF < 2.0, got %f", updated.EF)
 	}
 }
+
+// TestSRSService_GradeCard_NextDueAtPersisted проверяет, что next_due_at после GradeCard
+// сохраняется и читается из Postgres корректно (не обнуляется и не «всегда 24h»).
+func TestSRSService_GradeCard_NextDueAtPersisted(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, userCardRepo := setupSRSServiceTestDB(t)
+	user, _ := userRepo.GetOrCreateUser(333)
+
+	_, _ = db.Exec("INSERT INTO word_cards (word, definition) VALUES ($1, $2)", "persist", "to persist")
+	_, err := db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (1, $1, $2, $3, $4)",
+		"persist", 0, "сохранять", "to persist")
+	if err != nil {
+		t.Fatalf("Failed to create training card: %v", err)
+	}
+
+	now := time.Now()
+	card := &models.UserCard{
+		UserID:         user.ID,
+		TrainingCardID: 1,
+		Direction:      models.DirectionENtoRU,
+		State:          models.StateReview,
+		EF:             2.0,
+		Reps:           2,
+		IntervalDays:   6,
+		NextDueAt:      &now,
+	}
+	id, err := userCardRepo.CreateUserCard(card)
+	if err != nil {
+		t.Fatalf("Failed to create user card: %v", err)
+	}
+
+	userCard, err := userCardRepo.GetUserCard(id)
+	if err != nil {
+		t.Fatalf("Failed to get user card: %v", err)
+	}
+
+	svc := NewSRSService(userCardRepo, logger)
+	attemptData := models.AttemptData{Correct: true, EarlyReveal: false, AnswerTimeMS: 3000}
+	if err := svc.GradeCard(userCard, attemptData); err != nil {
+		t.Fatalf("GradeCard() error = %v", err)
+	}
+
+	// Перечитываем из БД — next_due_at должен быть далёкой датой (интервал вырос), не нулём и не now+24h
+	updated, err := userCardRepo.GetUserCard(id)
+	if err != nil {
+		t.Fatalf("Failed to get updated user card: %v", err)
+	}
+	if updated.NextDueAt == nil {
+		t.Fatal("NextDueAt must be set after correct answer (persisted from Postgres)")
+	}
+	intervalHours := updated.NextDueAt.Sub(now).Hours()
+	if intervalHours < 24 {
+		t.Errorf("after correct answer next_due_at should be > 24h ahead, got %.1fh (possible Postgres read bug)", intervalHours)
+	}
+	// При Reps=3 и IntervalDays=6 новый интервал = ceil(6*EF) дней, т.е. много дней
+	if updated.IntervalDays < 2 {
+		t.Errorf("IntervalDays should grow after correct answer, got %d", updated.IntervalDays)
+	}
+}
