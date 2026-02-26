@@ -24,14 +24,15 @@ import (
 
 // Bot represents the Telegram bot
 type Bot struct {
-	api                 *tgbotapi.BotAPI
-	config              *config.Config
-	logger              *zap.Logger
-	handler             *Handler
-	db                  *database.DB
-	trainingWorker      *service.TrainingWorker
-	notificationService *service.NotificationService
-	webRouter           *web.Router
+	api                  *tgbotapi.BotAPI
+	config               *config.Config
+	logger               *zap.Logger
+	handler              *Handler
+	db                   *database.DB
+	trainingWorker       *service.TrainingWorker
+	pronunciationService *service.PronunciationService
+	notificationService  *service.NotificationService
+	webRouter            *web.Router
 }
 
 // New creates a new bot instance
@@ -102,6 +103,8 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 	// Create services
 	userWordMasteringRepo := repository.NewUserWordMasteringRepository(conn, log)
 	wordService := service.NewWordServiceWithMastering(wordRepo, trainingCardRepo, userCardRepo, userWordMasteringRepo, aiService, log)
+	pronunciationService := service.NewPronunciationService(cfg.TTS, wordRepo, log)
+	wordService.SetPronunciationService(pronunciationService)
 	srsService := service.NewSRSService(userCardRepo, log)
 	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, log)
 	optionsService := service.NewOptionsService(trainingCardRepo, log)
@@ -128,6 +131,7 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 			trainingCardRepo,
 			userCardRepo,
 			userRepo,
+			pronunciationService,
 			cbService,
 			bot,
 			cfg.Admin.TelegramID,
@@ -176,16 +180,18 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 	webRouter.SetDependencies(userRepo, wordService, aiService, bot, cfg.Telegram.Token)
 	webRouter.SetOTPRepo(otpRepo)
 	webRouter.SetGrammarService(grammarService)
+	webRouter.SetPronunciationService(pronunciationService)
 
 	return &Bot{
-		api:                 bot,
-		config:              cfg,
-		logger:              log,
-		handler:             handler,
-		db:                  db,
-		trainingWorker:      trainingWorker,
-		notificationService: notificationService,
-		webRouter:           webRouter,
+		api:                  bot,
+		config:               cfg,
+		logger:               log,
+		handler:              handler,
+		db:                   db,
+		trainingWorker:       trainingWorker,
+		pronunciationService: pronunciationService,
+		notificationService:  notificationService,
+		webRouter:            webRouter,
 	}, nil
 }
 
@@ -199,6 +205,12 @@ func (b *Bot) Start(ctx context.Context) error {
 	if b.trainingWorker != nil {
 		go b.trainingWorker.Start(ctx)
 		b.logger.Info("training worker started")
+	}
+
+	// Start pronunciation prefetch/backfill worker.
+	if b.pronunciationService != nil {
+		go b.pronunciationService.Start(ctx)
+		b.logger.Info("pronunciation service started")
 	}
 
 	// Start notification service
@@ -394,7 +406,7 @@ func (b *Bot) startWebServerOnly(ctx context.Context) error {
 	mux.Handle("/", b.webRouter)
 
 	b.logger.Info("starting HTTP server (without Telegram bot)", zap.String("address", b.config.Server.Address))
-	
+
 	// Start HTTP server
 	server := &http.Server{
 		Addr:    b.config.Server.Address,

@@ -20,8 +20,9 @@ type WordService struct {
 	trainingCardRepo      *repository.TrainingCardRepository
 	userCardRepo          *repository.UserCardRepository
 	userWordMasteringRepo *repository.UserWordMasteringRepository
+	pronunciationService  *PronunciationService
 	aiService             *ai.Service
-	logger                 *zap.Logger
+	logger                *zap.Logger
 }
 
 // NewWordService creates a new word service
@@ -50,8 +51,13 @@ func NewWordServiceWithMastering(
 		userCardRepo:          userCardRepo,
 		userWordMasteringRepo: userWordMasteringRepo,
 		aiService:             aiService,
-		logger:                 logger,
+		logger:                logger,
 	}
+}
+
+// SetPronunciationService connects background pronunciation prefetch to word creation/lookups.
+func (s *WordService) SetPronunciationService(pronunciationService *PronunciationService) {
+	s.pronunciationService = pronunciationService
 }
 
 // IsSingleWord checks if the input is a single word
@@ -135,6 +141,13 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 		}
 
 		// Render markdown from structured data
+		if s.pronunciationService != nil {
+			candidates := []string{wordCard.Word}
+			if wordCard.DisplayEN != nil && strings.TrimSpace(*wordCard.DisplayEN) != "" {
+				candidates = append(candidates, *wordCard.DisplayEN)
+			}
+			s.pronunciationService.ScheduleWords(candidates...)
+		}
 		markdown := s.renderWordCardMarkdown(wordCard)
 		return markdown, nil
 	}
@@ -170,20 +183,20 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 			zap.Error(err),
 			zap.String("response", response[:min(100, len(response))]),
 		)
-	if err := s.wordRepo.SaveWordCard(normalizedWord, response); err != nil {
+		if err := s.wordRepo.SaveWordCard(normalizedWord, response); err != nil {
 			s.logger.Warn("failed to save word card", zap.Error(err))
-	} else {
-		if err := s.wordRepo.AddWordRequestHistory(userID, normalizedWord); err != nil {
-			s.logger.Warn("failed to add word request history", zap.Error(err))
+		} else {
+			if err := s.wordRepo.AddWordRequestHistory(userID, normalizedWord); err != nil {
+				s.logger.Warn("failed to add word request history", zap.Error(err))
+			}
 		}
-	}
-	return response, nil
+		return response, nil
 	}
 
 	// Check for error from LLM
 	// If definition_ru is present, ignore error field - we have valid data
 	hasDefinitionRU := strings.TrimSpace(wordInfo.DefinitionRU) != ""
-	
+
 	// Priority 1: If error is true (bool or string "true"), check hint first
 	// BUT skip if we have definition_ru (valid data)
 	if !hasDefinitionRU && wordInfo.Error.IsTrue() {
@@ -198,28 +211,28 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 			return message, nil
 		}
 	}
-	
+
 	// Priority 3: Legacy handling for string error messages
 	// LLM sometimes puts non-error strings in error field (like "load", "master", "none", "valid English word")
 	// Skip this check if we have definition_ru (valid data)
 	if !hasDefinitionRU {
 		errorMsg := strings.TrimSpace(wordInfo.Error.Message)
 		hasValidData := wordInfo.Lemma != "" && wordInfo.POS != ""
-		
+
 		// List of known non-error strings that LLM sometimes puts in error field
 		nonErrorStrings := []string{
 			"null", "none", "false", "no",
 			"load", "master", "slave", "tor", "corm",
 			"valid english word", "valid English word",
 		}
-		
+
 		// Keywords that indicate a real error (word doesn't exist, gibberish, etc.)
 		errorKeywords := []string{
 			"gibberish", "does not exist", "not exist", "non-standard", "not a valid",
 			"not an english", "not english", "not recognized", "not a word",
 			"doesn't exist", "not found", "invalid word", "not a real",
 		}
-		
+
 		isNonErrorString := false
 		errorMsgLower := strings.ToLower(errorMsg)
 		for _, nonError := range nonErrorStrings {
@@ -228,7 +241,7 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 				break
 			}
 		}
-		
+
 		// Check if error message contains keywords indicating a real error
 		isRealError := false
 		if errorMsg != "" {
@@ -239,7 +252,7 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 				}
 			}
 		}
-		
+
 		// Treat as error if:
 		// 1. Error field contains keywords indicating real error (word doesn't exist, etc.) OR
 		// 2. Error field is not empty AND it's not a known non-error string AND we don't have valid data
@@ -290,7 +303,7 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 		Definition:    "", // Legacy field, keep empty
 		POS:           &wordInfo.POS,
 		Transcription: &wordInfo.Transcription,
-		DefinitionRU: &wordInfo.DefinitionRU,
+		DefinitionRU:  &wordInfo.DefinitionRU,
 		DisplayEN:     &displayEN,
 	}
 
@@ -351,6 +364,13 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 	}
 
 	// Step 9: Render and return markdown
+	if s.pronunciationService != nil {
+		candidates := []string{lemma}
+		if displayEN != "" {
+			candidates = append(candidates, displayEN)
+		}
+		s.pronunciationService.ScheduleWords(candidates...)
+	}
 	markdown := s.renderWordCardMarkdown(wordCard)
 	return markdown, nil
 }

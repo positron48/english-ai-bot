@@ -326,7 +326,7 @@ func (r *WordRepository) GetUserIDsByWord(word string) ([]int64, error) {
 				 WHERE LOWER(input_word) = LOWER(?) OR LOWER(word) = LOWER(?)`
 		args = []interface{}{word, word}
 	}
-	
+
 	rows, err := r.db.Query(query, args...)
 	if err != nil {
 		return nil, fmt.Errorf("failed to query user IDs: %w", err)
@@ -343,6 +343,61 @@ func (r *WordRepository) GetUserIDsByWord(word string) ([]int64, error) {
 	}
 
 	return userIDs, nil
+}
+
+// ListPronunciationCandidates returns recent distinct words suitable for pronunciation prefetch.
+// Priority is given to training card display forms, with fallback to lemma/display_en.
+func (r *WordRepository) ListPronunciationCandidates(limit int) ([]string, error) {
+	if limit <= 0 {
+		limit = 200
+	}
+	if limit > 5000 {
+		limit = 5000
+	}
+
+	query := `
+		SELECT candidate
+		FROM (
+			SELECT COALESCE(NULLIF(tc.display_word, ''), tc.word_en) AS candidate, tc.created_at
+			FROM training_cards tc
+			UNION ALL
+			SELECT COALESCE(NULLIF(wc.display_en, ''), wc.word) AS candidate, wc.created_at
+			FROM word_cards wc
+		) x
+		WHERE candidate IS NOT NULL AND candidate <> ''
+		ORDER BY created_at DESC
+		LIMIT ?
+	`
+
+	rows, err := r.db.Query(query, limit*3)
+	if err != nil {
+		return nil, fmt.Errorf("failed to list pronunciation candidates: %w", err)
+	}
+	defer rows.Close()
+
+	seen := make(map[string]struct{}, limit)
+	candidates := make([]string, 0, limit)
+	for rows.Next() {
+		var candidate string
+		if err := rows.Scan(&candidate); err != nil {
+			return nil, fmt.Errorf("failed to scan pronunciation candidate: %w", err)
+		}
+		candidate = strings.TrimSpace(candidate)
+		if candidate == "" {
+			continue
+		}
+		key := strings.ToLower(candidate)
+		if _, ok := seen[key]; ok {
+			continue
+		}
+		seen[key] = struct{}{}
+		candidates = append(candidates, candidate)
+		if len(candidates) >= limit {
+			break
+		}
+	}
+
+	return candidates, nil
 }
 
 // MarkWordCardProcessedError marks a word card as processed with an error
@@ -495,10 +550,10 @@ func (r *WordRepository) ListWordCardsAdmin(filterUserID *int64, onlyWithErrors 
 	}
 
 	query += " GROUP BY wc.id, wc.word, wc.definition, wc.pos, wc.transcription, wc.definition_ru, wc.examples_json, wc.verb_forms_json, wc.display_en, wc.processed_at, wc.processing_error, wc.created_at, wc.updated_at"
-	
+
 	// Build ORDER BY clause
 	orderBy := "wc.created_at"
-	
+
 	// Validate and set sort column
 	validSortColumns := map[string]string{
 		"id":        "wc.id",
@@ -506,13 +561,13 @@ func (r *WordRepository) ListWordCardsAdmin(filterUserID *int64, onlyWithErrors 
 		"pos":       "wc.pos",
 		"has_cards": "MAX(CASE WHEN tc.id IS NOT NULL THEN 1 ELSE 0 END)",
 	}
-	
+
 	if sortBy != "" {
 		if column, ok := validSortColumns[sortBy]; ok {
 			orderBy = column
 		}
 	}
-	
+
 	// Validate sort order
 	var orderDir string
 	switch sortOrder {
@@ -523,7 +578,7 @@ func (r *WordRepository) ListWordCardsAdmin(filterUserID *int64, onlyWithErrors 
 	default:
 		orderDir = "DESC"
 	}
-	
+
 	query += " ORDER BY " + orderBy + " " + orderDir + " LIMIT ? OFFSET ?"
 	args = append(args, limit, offset)
 

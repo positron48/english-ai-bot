@@ -51,7 +51,7 @@ type WebTrainingState struct {
 	SessionID            int64
 	Queue                []*models.TrainingQueueItem
 	CurrentIndex         int
-	CorrectCount         int   // deprecated: stats are taken only from review_events (each mode creates one event per answer)
+	CorrectCount         int // deprecated: stats are taken only from review_events (each mode creates one event per answer)
 	ShownAt              time.Time
 	OptionsShownAt       *time.Time
 	Options              []string
@@ -61,15 +61,15 @@ type WebTrainingState struct {
 
 // WebTrainingHandler handles web training sessions
 type WebTrainingHandler struct {
-	trainingService      *service.TrainingService
-	srsService           *service.SRSService
-	optionsService       *service.OptionsService
-	sessionRepo          *repository.SessionRepository
-	logger               *zap.Logger
-	optionsDelayMS       int
+	trainingService         *service.TrainingService
+	srsService              *service.SRSService
+	optionsService          *service.OptionsService
+	sessionRepo             *repository.SessionRepository
+	logger                  *zap.Logger
+	optionsDelayMS          int
 	wrongAnswerDelaySeconds int
-	sessions              map[int64]*WebTrainingState
-	sessionsMutex         sync.RWMutex
+	sessions                map[int64]*WebTrainingState
+	sessionsMutex           sync.RWMutex
 }
 
 // NewWebTrainingHandler creates a new web training handler
@@ -83,14 +83,14 @@ func NewWebTrainingHandler(
 	wrongAnswerDelaySeconds int,
 ) *WebTrainingHandler {
 	return &WebTrainingHandler{
-		trainingService:        trainingService,
-		srsService:             srsService,
-		optionsService:         optionsService,
-		sessionRepo:            sessionRepo,
-		logger:                 logger,
-		optionsDelayMS:         optionsDelayMS,
+		trainingService:         trainingService,
+		srsService:              srsService,
+		optionsService:          optionsService,
+		sessionRepo:             sessionRepo,
+		logger:                  logger,
+		optionsDelayMS:          optionsDelayMS,
 		wrongAnswerDelaySeconds: wrongAnswerDelaySeconds,
-		sessions:               make(map[int64]*WebTrainingState),
+		sessions:                make(map[int64]*WebTrainingState),
 	}
 }
 
@@ -172,12 +172,12 @@ func (r *Router) handleTrainingStart(w http.ResponseWriter, req *http.Request) {
 					}
 					sessionConfig = &service.SessionConfig{
 						MaxCardsPerSession:      models.DefaultMaxCardsPerSession,
-						MaxNewPerSession:       models.DefaultMaxNewPerSession,
-						AlgoVersion:            "srs_v2_delayed_mcq_sm2_autoquality",
+						MaxNewPerSession:        models.DefaultMaxNewPerSession,
+						AlgoVersion:             "srs_v2_delayed_mcq_sm2_autoquality",
 						SpellEnabled:            spellEnabled,
 						SpellMasteringThreshold: spellThreshold,
-						TypeEnabled:            typeEnabled,
-						TypeMasteringThreshold: typeThreshold,
+						TypeEnabled:             typeEnabled,
+						TypeMasteringThreshold:  typeThreshold,
 					}
 				}
 			}
@@ -207,10 +207,10 @@ func (r *Router) handleTrainingStart(w http.ResponseWriter, req *http.Request) {
 
 	// Create web state
 	state := &WebTrainingState{
-		UserID:              userID,
-		SessionID:           session.ID,
-		Queue:               queue,
-		CurrentIndex:        0,
+		UserID:               userID,
+		SessionID:            session.ID,
+		Queue:                queue,
+		CurrentIndex:         0,
 		RecentCorrectAnswers: make([]string, 0, 2),
 	}
 
@@ -237,18 +237,18 @@ func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, stat
 		state.ShownAt = time.Now()
 		state.OptionsShownAt = nil
 		response := map[string]interface{}{
-			"type":          "spell",
-			"question":      fmt.Sprintf("Составьте слово на английском: <strong>%s</strong>", item.Spell.WordRU),
-			"word_ru":       item.Spell.WordRU,
-			"prefix":        item.Spell.Prefix,
-			"letters":       item.Spell.ShuffledLetters,
+			"type":           "spell",
+			"question":       fmt.Sprintf("Составьте слово на английском: <strong>%s</strong>", item.Spell.WordRU),
+			"word_ru":        item.Spell.WordRU,
+			"prefix":         item.Spell.Prefix,
+			"letters":        item.Spell.ShuffledLetters,
 			"correct_answer": item.Spell.DisplayWord,
-			"card_index":    state.CurrentIndex + 1,
-			"total_cards":   len(state.Queue),
-			"session_id":    state.SessionID,
-			"user_card_id":  0,
-			"delay_ms":      0,
-			"direction":     "spell",
+			"card_index":     state.CurrentIndex + 1,
+			"total_cards":    len(state.Queue),
+			"session_id":     state.SessionID,
+			"user_card_id":   0,
+			"delay_ms":       0,
+			"direction":      "spell",
 		}
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
@@ -275,19 +275,19 @@ func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, stat
 			hintLength = len(runes)
 		}
 		response := map[string]interface{}{
-			"type":               "type",
-			"question":           fmt.Sprintf("Введите слово на английском: <strong>%s</strong>", item.TypeChallenge.WordRU),
-			"word_ru":            item.TypeChallenge.WordRU,
-			"correct_answer":     displayWord,
-			"prefix":             prefix,
-			"hint_first_letter":  hintFirstLetter,
-			"hint_length":        hintLength,
-			"card_index":         state.CurrentIndex + 1,
-			"total_cards":        len(state.Queue),
-			"session_id":         state.SessionID,
-			"user_card_id":       0,
-			"delay_ms":           0,
-			"direction":          "type",
+			"type":              "type",
+			"question":          fmt.Sprintf("Введите слово на английском: <strong>%s</strong>", item.TypeChallenge.WordRU),
+			"word_ru":           item.TypeChallenge.WordRU,
+			"correct_answer":    displayWord,
+			"prefix":            prefix,
+			"hint_first_letter": hintFirstLetter,
+			"hint_length":       hintLength,
+			"card_index":        state.CurrentIndex + 1,
+			"total_cards":       len(state.Queue),
+			"session_id":        state.SessionID,
+			"user_card_id":      0,
+			"delay_ms":          0,
+			"direction":         "type",
 		}
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
@@ -339,6 +339,10 @@ func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, stat
 
 	// Build question
 	var questionText string
+	displayWord := card.TrainingCard.WordEN
+	if card.TrainingCard.DisplayWord != nil && *card.TrainingCard.DisplayWord != "" {
+		displayWord = *card.TrainingCard.DisplayWord
+	}
 	if card.UserCard.Direction == models.DirectionRUtoEN {
 		questionText = fmt.Sprintf("Переведите на английский: <strong>%s</strong>", card.TrainingCard.WordRU)
 	} else {
@@ -346,24 +350,23 @@ func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, stat
 		if card.TrainingCard.Transcription != "" {
 			transcriptionHTML = fmt.Sprintf(` <span class="transcription">%s</span>`, card.TrainingCard.Transcription)
 		}
-		// Use display_word if available (e.g., "to spy" for verbs)
-		displayWord := card.TrainingCard.WordEN
-		if card.TrainingCard.DisplayWord != nil && *card.TrainingCard.DisplayWord != "" {
-			displayWord = *card.TrainingCard.DisplayWord
-		}
 		questionText = fmt.Sprintf("Что означает слово: <strong>%s</strong>%s", displayWord, transcriptionHTML)
 	}
 
 	optionsDelayMS, _ := r.getTrainingDelaysForUser(state.UserID)
 	// Return card data as JSON
 	response := map[string]interface{}{
-		"question":      questionText,
-		"card_index":    state.CurrentIndex + 1,
-		"total_cards":   len(state.Queue),
-		"session_id":    state.SessionID,
-		"user_card_id":  card.UserCard.ID,
-		"delay_ms":      optionsDelayMS,
-		"direction":     string(card.UserCard.Direction),
+		"question":     questionText,
+		"card_index":   state.CurrentIndex + 1,
+		"total_cards":  len(state.Queue),
+		"session_id":   state.SessionID,
+		"user_card_id": card.UserCard.ID,
+		"delay_ms":     optionsDelayMS,
+		"direction":    string(card.UserCard.Direction),
+	}
+	if card.UserCard.Direction == models.DirectionENtoRU {
+		response["display_word"] = displayWord
+		response["transcription"] = card.TrainingCard.Transcription
 	}
 
 	// Add example_en if available (for showing example usage button)
@@ -458,14 +461,14 @@ func (r *Router) extractSessionWords(queue []*models.UserCardWithTraining, curre
 		if card.TrainingCard.WordCardID == currentWordCardID {
 			continue
 		}
-		
+
 		// Filter by POS if current card has POS
 		if currentPOS != "" {
 			if card.TrainingCard.POS == nil || *card.TrainingCard.POS != currentPOS {
 				continue
 			}
 		}
-		
+
 		// Exclude words that have the same English or Russian spelling as the current card
 		// This prevents showing correct answers from other words with the same spelling
 		// (e.g., "bug" and "beetle" both mean "жук" in Russian)
@@ -475,7 +478,7 @@ func (r *Router) extractSessionWords(queue []*models.UserCardWithTraining, curre
 		if card.TrainingCard.WordRU == currentCard.TrainingCard.WordRU && currentCard.TrainingCard.WordRU != "" {
 			continue
 		}
-		
+
 		var word string
 		if direction == models.DirectionRUtoEN {
 			// For RU->EN, use DisplayWord if available (e.g., "to spy" for verbs), otherwise WordEN
@@ -487,7 +490,7 @@ func (r *Router) extractSessionWords(queue []*models.UserCardWithTraining, curre
 		} else {
 			word = card.TrainingCard.WordRU
 		}
-		
+
 		// Exclude recent correct answers and duplicates
 		if word != "" && !excludeSet[word] && !seenWords[word] {
 			sessionWords = append(sessionWords, word)
@@ -616,12 +619,12 @@ func (r *Router) gradeReplacedCardForSpellType(userID int64, userCardID int64, i
 		return
 	}
 	attemptData := models.AttemptData{
-		Correct:       isCorrect,
-		EarlyReveal:   false,
-		AnswerTimeMS:  0,
-		TDelayMS:      0,
-		OptionCount:   1,
-		ChosenOption:  chosenOption,
+		Correct:      isCorrect,
+		EarlyReveal:  false,
+		AnswerTimeMS: 0,
+		TDelayMS:     0,
+		OptionCount:  1,
+		ChosenOption: chosenOption,
 	}
 	srsBefore := models.SRSState{
 		State:        userCard.State,
@@ -649,23 +652,23 @@ func (r *Router) gradeReplacedCardForSpellType(userID int64, userCardID int64, i
 	quality := models.CalculateQuality(attemptData)
 	metricsJSON, _ := json.Marshal(map[string]interface{}{"spell_or_type": true})
 	reviewEvent := &models.ReviewEvent{
-		SessionID:     &sessionID,
-		UserID:        userID,
-		UserCardID:    userCardID,
-		Direction:     userCard.Direction,
-		ShownAt:       shownAt,
+		SessionID:      &sessionID,
+		UserID:         userID,
+		UserCardID:     userCardID,
+		Direction:      userCard.Direction,
+		ShownAt:        shownAt,
 		OptionsShownAt: nil,
-		AnsweredAt:    &answeredAt,
-		TDelayMS:      0,
-		EarlyReveal:   false,
-		OptionCount:   1,
-		OptionsJSON:   "[]",
-		ChosenOption:  chosenOption,
-		IsCorrect:     isCorrect,
-		Quality:       int(quality),
-		MetricsJSON:   string(metricsJSON),
-		SRSBeforeJSON: string(srsBeforeJSON),
-		SRSAfterJSON:  string(srsAfterJSON),
+		AnsweredAt:     &answeredAt,
+		TDelayMS:       0,
+		EarlyReveal:    false,
+		OptionCount:    1,
+		OptionsJSON:    "[]",
+		ChosenOption:   chosenOption,
+		IsCorrect:      isCorrect,
+		Quality:        int(quality),
+		MetricsJSON:    string(metricsJSON),
+		SRSBeforeJSON:  string(srsBeforeJSON),
+		SRSAfterJSON:   string(srsAfterJSON),
 	}
 	if _, err := r.webTrainingHandler.sessionRepo.CreateReviewEvent(reviewEvent); err != nil {
 		r.logger.Error("failed to create review event for spell/type", zap.Error(err))
@@ -915,7 +918,6 @@ func (r *Router) handleTrainingAnswer(w http.ResponseWriter, req *http.Request) 
 		ChosenOption: chosenOption,
 	}
 
-
 	// Capture SRS state before update
 	srsBefore := models.SRSState{
 		State:        card.UserCard.State,
@@ -1129,14 +1131,14 @@ func (r *Router) handleTrainingUpcoming(w http.ResponseWriter, req *http.Request
 
 	// Format response with dates and labels
 	response := make(map[string]interface{})
-	
+
 	for i := 0; i < 7; i++ {
 		date := startDate.AddDate(0, 0, i)
 		dateStr := date.Format("2006-01-02")
-		
+
 		// Format date as dd.mm
 		label := date.Format("02.01")
-		
+
 		count := upcomingCards[dateStr]
 		response[dateStr] = map[string]interface{}{
 			"date":  dateStr,
@@ -1149,4 +1151,3 @@ func (r *Router) handleTrainingUpcoming(w http.ResponseWriter, req *http.Request
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
 }
-

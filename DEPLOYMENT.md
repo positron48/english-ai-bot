@@ -1,5 +1,8 @@
 ## Deployment
 
+For pronunciation/TTS configuration (env keys, k3s secrets, rollout checklist), see:
+- [docs/TTS_SETUP.md](docs/TTS_SETUP.md)
+
 ### Server Setup (One-time configuration)
 
 Before deploying the bot, you need to set up the server environment. This is done once per server.

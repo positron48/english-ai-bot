@@ -42,8 +42,8 @@ RUN addgroup -g 1001 -S appgroup && \
 # Set working directory
 WORKDIR /app
 
-# Create data directory for database
-RUN mkdir -p /app/data && chown -R appuser:appgroup /app/data
+# Create data directories (DB + cached pronunciation audio)
+RUN mkdir -p /app/data/tts && chown -R appuser:appgroup /app/data
 
 # Copy binaries from builder stage
 COPY --from=builder /app/main .

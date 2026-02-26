@@ -18,20 +18,21 @@ import (
 
 // TrainingWorker handles background generation of training cards
 type TrainingWorker struct {
-	aiService        *ai.Service
-	wordRepo         *repository.WordRepository
-	trainingCardRepo *repository.TrainingCardRepository
-	userCardRepo     *repository.UserCardRepository
-	userRepo         *repository.UserRepository
-	cbService        *CircuitBreakerService
-	bot              *tgbotapi.BotAPI
-	adminTelegramID  int64
-	batchSize        int
-	llmWorkers       int
-	interval         time.Duration
-	modelHigh        string
-	logger           *zap.Logger
-	stopChan         chan struct{}
+	aiService            *ai.Service
+	wordRepo             *repository.WordRepository
+	trainingCardRepo     *repository.TrainingCardRepository
+	userCardRepo         *repository.UserCardRepository
+	userRepo             *repository.UserRepository
+	pronunciationService *PronunciationService
+	cbService            *CircuitBreakerService
+	bot                  *tgbotapi.BotAPI
+	adminTelegramID      int64
+	batchSize            int
+	llmWorkers           int
+	interval             time.Duration
+	modelHigh            string
+	logger               *zap.Logger
+	stopChan             chan struct{}
 }
 
 // NewTrainingWorker creates a new training worker
@@ -41,6 +42,7 @@ func NewTrainingWorker(
 	trainingCardRepo *repository.TrainingCardRepository,
 	userCardRepo *repository.UserCardRepository,
 	userRepo *repository.UserRepository,
+	pronunciationService *PronunciationService,
 	cbService *CircuitBreakerService,
 	bot *tgbotapi.BotAPI,
 	adminTelegramID int64,
@@ -51,20 +53,21 @@ func NewTrainingWorker(
 	logger *zap.Logger,
 ) *TrainingWorker {
 	return &TrainingWorker{
-		aiService:        aiService,
-		wordRepo:         wordRepo,
-		trainingCardRepo: trainingCardRepo,
-		userCardRepo:     userCardRepo,
-		userRepo:         userRepo,
-		cbService:        cbService,
-		bot:              bot,
-		adminTelegramID:  adminTelegramID,
-		batchSize:        batchSize,
-		llmWorkers:       llmWorkers,
-		interval:         interval,
-		modelHigh:        modelHigh,
-		logger:           logger,
-		stopChan:         make(chan struct{}),
+		aiService:            aiService,
+		wordRepo:             wordRepo,
+		trainingCardRepo:     trainingCardRepo,
+		userCardRepo:         userCardRepo,
+		userRepo:             userRepo,
+		pronunciationService: pronunciationService,
+		cbService:            cbService,
+		bot:                  bot,
+		adminTelegramID:      adminTelegramID,
+		batchSize:            batchSize,
+		llmWorkers:           llmWorkers,
+		interval:             interval,
+		modelHigh:            modelHigh,
+		logger:               logger,
+		stopChan:             make(chan struct{}),
 	}
 }
 
@@ -191,12 +194,12 @@ func (w *TrainingWorker) processCards(ctx context.Context) {
 			w.logger.Error("failed to process card",
 				zap.Error(err),
 			)
-			
+
 			// Record failure
 			if err := w.cbService.RecordFailure(err.Error()); err != nil {
 				w.logger.Error("failed to record circuit breaker failure", zap.Error(err))
 			}
-			
+
 			// Check if circuit breaker opened
 			if isOpen, _ := w.cbService.IsOpen(); isOpen {
 				if !circuitBreakerOpened {
@@ -266,14 +269,14 @@ func (w *TrainingWorker) fillWordCardData(ctx context.Context, wordCard *models.
 	// Prepare updated word card model, preserving existing values
 	wordCardModel := &models.WordCard{
 		ID:            wordCard.ID,
-		Word:          wordCard.Word, // Keep existing word
-		Definition:    wordCard.Definition, // Keep existing definition
-		POS:           wordCard.POS, // Will update if nil
+		Word:          wordCard.Word,          // Keep existing word
+		Definition:    wordCard.Definition,    // Keep existing definition
+		POS:           wordCard.POS,           // Will update if nil
 		Transcription: wordCard.Transcription, // Will update if nil
-		DefinitionRU:  wordCard.DefinitionRU, // Will update if nil
-		ExamplesJSON:  wordCard.ExamplesJSON, // Will update if empty
+		DefinitionRU:  wordCard.DefinitionRU,  // Will update if nil
+		ExamplesJSON:  wordCard.ExamplesJSON,  // Will update if empty
 		VerbFormsJSON: wordCard.VerbFormsJSON, // Will update if empty
-		DisplayEN:     wordCard.DisplayEN, // Will update if empty
+		DisplayEN:     wordCard.DisplayEN,     // Will update if empty
 	}
 
 	// Fill only missing fields (preserve existing values)
@@ -307,7 +310,7 @@ func (w *TrainingWorker) fillWordCardData(ctx context.Context, wordCard *models.
 	}
 
 	// Update display_en if missing and new data available
-	if (wordCard.DisplayEN == nil || *wordCard.DisplayEN == "") {
+	if wordCard.DisplayEN == nil || *wordCard.DisplayEN == "" {
 		lemma := strings.ToLower(wordInfo.Lemma)
 		if lemma == "" {
 			lemma = strings.ToLower(wordCard.Word)
@@ -421,7 +424,7 @@ func (w *TrainingWorker) processCard(ctx context.Context, wordCard *models.WordC
 				zap.String("error", validationError),
 				zap.String("high_model", w.modelHigh),
 			)
-			
+
 			// Try with high model
 			response, err = w.aiService.GenerateTrainingCard(ctx, wordCard.Word, w.modelHigh)
 			if err != nil {
@@ -528,7 +531,7 @@ func (w *TrainingWorker) processCard(ctx context.Context, wordCard *models.WordC
 		if sense.DisplayWord != "" {
 			displayWord = sense.DisplayWord
 		}
-		
+
 		// Get POS for this sense: use from sense, or fallback to word_card if available
 		pos := sense.POS
 		if pos == "" {
@@ -551,7 +554,7 @@ func (w *TrainingWorker) processCard(ctx context.Context, wordCard *models.WordC
 			DistractorsEN: string(distractorsEN),
 			Hint:          sense.Hint,
 		}
-		
+
 		// Set POS and display_word from sense
 		if pos != "" {
 			trainingCard.POS = &pos
@@ -563,6 +566,11 @@ func (w *TrainingWorker) processCard(ctx context.Context, wordCard *models.WordC
 		id, err := w.trainingCardRepo.CreateTrainingCard(trainingCard)
 		if err != nil {
 			return fmt.Errorf("failed to create training card: %w", err)
+		}
+
+		if w.pronunciationService != nil {
+			// Prefetch pronunciation for display form and base word in background.
+			w.pronunciationService.ScheduleWords(displayWord, trainingResp.WordEN)
 		}
 
 		trainingCardIDs = append(trainingCardIDs, id)
@@ -645,13 +653,13 @@ func (w *TrainingWorker) getUsersForWord(word string) ([]*models.User, error) {
 	// Get users by internal ID first, then fallback to telegram_id for backward compatibility
 	users := make([]*models.User, 0, len(userIDs))
 	seenUserIDs := make(map[int64]bool) // Track already added users to avoid duplicates
-	
+
 	for _, id := range userIDs {
 		// Skip if we already added this user
 		if seenUserIDs[id] {
 			continue
 		}
-		
+
 		// First, try to get user by internal ID (for web chat users)
 		user, err := w.userRepo.GetUserByID(id)
 		if err != nil {
@@ -669,7 +677,7 @@ func (w *TrainingWorker) getUsersForWord(word string) ([]*models.User, error) {
 				continue
 			}
 		}
-		
+
 		if user != nil {
 			users = append(users, user)
 			seenUserIDs[user.ID] = true
@@ -765,4 +773,3 @@ func (w *TrainingWorker) notifyAdminValidationError(word, validationError string
 		)
 	}
 }
-

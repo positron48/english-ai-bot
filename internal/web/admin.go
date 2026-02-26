@@ -46,14 +46,14 @@ func (r *Router) handleAdmin(w http.ResponseWriter, req *http.Request) {
 			  COALESCE(last_failure_message, '') as last_failure_message,
 			  COALESCE(last_reset_at, '') as last_reset_at
 			  FROM circuit_breaker_state WHERE id = 1`
-	
+
 	var cbID int64
 	var isOpen bool
 	var failureCount int
 	var lastFailureAt, lastFailureMessage, lastResetAt string
-	
+
 	err := r.db.QueryRow(query).Scan(&cbID, &isOpen, &failureCount, &lastFailureAt, &lastFailureMessage, &lastResetAt)
-	
+
 	var cbResponse map[string]interface{}
 	if err == sql.ErrNoRows {
 		// Initialize if not exists
@@ -65,19 +65,19 @@ func (r *Router) handleAdmin(w http.ResponseWriter, req *http.Request) {
 		// Retry query after initialization
 		err = r.db.QueryRow(query).Scan(&cbID, &isOpen, &failureCount, &lastFailureAt, &lastFailureMessage, &lastResetAt)
 	}
-	
+
 	if err == nil {
 		state := "closed"
 		if isOpen {
 			state = "open"
 		}
 		cbResponse = map[string]interface{}{
-			"state":             state,
-			"is_open":           isOpen,
-			"failures":          failureCount,
-			"last_failure":       nil,
-			"last_failure_at":   nil,
-			"last_reset_at":     nil,
+			"state":           state,
+			"is_open":         isOpen,
+			"failures":        failureCount,
+			"last_failure":    nil,
+			"last_failure_at": nil,
+			"last_reset_at":   nil,
 		}
 		// Return dates as strings directly from SQL (same format as dashboard sessions)
 		if lastFailureAt != "" {
@@ -93,8 +93,8 @@ func (r *Router) handleAdmin(w http.ResponseWriter, req *http.Request) {
 		r.logger.Error("failed to get circuit breaker state", zap.Error(err))
 		// Default state if error
 		cbResponse = map[string]interface{}{
-			"state":   "closed",
-			"is_open": false,
+			"state":    "closed",
+			"is_open":  false,
 			"failures": 0,
 		}
 	}
@@ -192,7 +192,7 @@ func (r *Router) handleAdminTraining(w http.ResponseWriter, req *http.Request) {
 	// Extract action and word from path: /app/admin/training/{word}/{action}
 	path := req.URL.Path
 	parts := strings.Split(strings.TrimPrefix(path, "/api/admin/training/"), "/")
-	
+
 	if len(parts) < 1 {
 		http.Error(w, "Invalid path", http.StatusBadRequest)
 		return
@@ -236,7 +236,7 @@ func (r *Router) handleAdminTraining(w http.ResponseWriter, req *http.Request) {
 			http.Error(w, "word is required", http.StatusBadRequest)
 			return
 		}
-		
+
 		// First, find word_card by word (from word_cards table)
 		wordRepo := repository.NewWordRepository(r.db, r.logger)
 		wordCard, err := wordRepo.GetWordCard(wordEN)
@@ -245,7 +245,7 @@ func (r *Router) handleAdminTraining(w http.ResponseWriter, req *http.Request) {
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
-		
+
 		var cards []*models.TrainingCard
 		if wordCard != nil {
 			// Get training cards by word_card_id (more reliable than word_en)
@@ -489,12 +489,19 @@ func (r *Router) handleAdminTraining(w http.ResponseWriter, req *http.Request) {
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
+		if r.pronunciationService != nil {
+			candidates := []string{wordEN}
+			if newCard.DisplayWord != nil && strings.TrimSpace(*newCard.DisplayWord) != "" {
+				candidates = append(candidates, *newCard.DisplayWord)
+			}
+			r.pronunciationService.ScheduleWords(candidates...)
+		}
 
 		// Get all users who already have this word in their training
 		userCardRepo := repository.NewUserCardRepository(r.db, r.logger)
 		userIDs, err := userCardRepo.GetUserIDsByWordCardID(wordCard.ID)
 		if err != nil {
-			r.logger.Warn("failed to get users for word card", 
+			r.logger.Warn("failed to get users for word card",
 				zap.Int64("word_card_id", wordCard.ID),
 				zap.Error(err),
 			)
@@ -571,11 +578,11 @@ func (r *Router) handleAdminTraining(w http.ResponseWriter, req *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(map[string]interface{}{
-			"success": true,
-			"message": "Training card created successfully",
-			"card_id": cardID,
-			"word_en": wordEN,
-			"users_updated": len(userIDs),
+			"success":            true,
+			"message":            "Training card created successfully",
+			"card_id":            cardID,
+			"word_en":            wordEN,
+			"users_updated":      len(userIDs),
 			"user_cards_created": createdCount,
 		})
 		return
@@ -591,7 +598,7 @@ func (r *Router) handleAdminTraining(w http.ResponseWriter, req *http.Request) {
 			http.Error(w, "word is required", http.StatusBadRequest)
 			return
 		}
-		
+
 		rowsAffected, err := trainingCardRepo.DeleteTrainingCardsByWordEN(wordEN)
 		if err != nil {
 			r.logger.Error("failed to delete training cards", zap.Error(err))
@@ -644,7 +651,7 @@ func (r *Router) handleAdminTrainingCard(w http.ResponseWriter, req *http.Reques
 
 	path := req.URL.Path
 	parts := strings.Split(strings.TrimPrefix(path, "/api/admin/training/card/"), "/")
-	
+
 	if len(parts) < 1 || parts[0] == "" {
 		http.Error(w, "Card ID is required", http.StatusBadRequest)
 		return
@@ -821,6 +828,13 @@ func (r *Router) handleAdminTrainingCard(w http.ResponseWriter, req *http.Reques
 			r.logger.Error("failed to update training card", zap.Error(err), zap.Int64("card_id", cardID))
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
+		}
+		if r.pronunciationService != nil {
+			candidates := []string{card.WordEN}
+			if card.DisplayWord != nil && strings.TrimSpace(*card.DisplayWord) != "" {
+				candidates = append(candidates, *card.DisplayWord)
+			}
+			r.pronunciationService.ScheduleWords(candidates...)
 		}
 
 		w.Header().Set("Content-Type", "application/json")
@@ -1038,8 +1052,8 @@ func (r *Router) handleAdminWord(w http.ResponseWriter, req *http.Request) {
 			Definition:    definition,
 			POS:           &pos,
 			Transcription: &transcription,
-			DefinitionRU: &definitionRU,
-			ExamplesJSON: &examplesJSON,
+			DefinitionRU:  &definitionRU,
+			ExamplesJSON:  &examplesJSON,
 			VerbFormsJSON: &verbFormsJSON,
 			DisplayEN:     &displayEN,
 		}
@@ -1067,7 +1081,7 @@ func (r *Router) handleAdminWord(w http.ResponseWriter, req *http.Request) {
 		err = wordRepo.UpdateWordCard(card)
 		if err != nil {
 			r.logger.Error("failed to update word card", zap.Error(err), zap.Int64("word_card_id", wordCardID))
-			
+
 			// Check for UNIQUE constraint violation
 			errStr := err.Error()
 			if strings.Contains(errStr, "UNIQUE constraint failed: word_cards.word") {
@@ -1080,7 +1094,7 @@ func (r *Router) handleAdminWord(w http.ResponseWriter, req *http.Request) {
 				})
 				return
 			}
-			
+
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
@@ -1088,8 +1102,8 @@ func (r *Router) handleAdminWord(w http.ResponseWriter, req *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(map[string]interface{}{
-			"success": true,
-			"message": "Word card updated successfully",
+			"success":      true,
+			"message":      "Word card updated successfully",
 			"word_card_id": wordCardID,
 		})
 		return
@@ -1107,8 +1121,8 @@ func (r *Router) handleAdminWord(w http.ResponseWriter, req *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(map[string]interface{}{
-			"success": true,
-			"message": "Word card processed status reset successfully",
+			"success":      true,
+			"message":      "Word card processed status reset successfully",
 			"word_card_id": wordCardID,
 		})
 		return
@@ -1194,13 +1208,13 @@ func (r *Router) handleAdminWord(w http.ResponseWriter, req *http.Request) {
 		json.NewEncoder(w).Encode(map[string]interface{}{
 			"success": true,
 			"word_card": map[string]interface{}{
-				"word":             wordInfo.Lemma,
-				"pos":              wordInfo.POS,
-				"transcription":    wordInfo.Transcription,
-				"definition_ru":    wordInfo.DefinitionRU,
-				"examples_json":    examplesJSON,
-				"verb_forms_json":  verbFormsJSON,
-				"display_en":       displayEN,
+				"word":            wordInfo.Lemma,
+				"pos":             wordInfo.POS,
+				"transcription":   wordInfo.Transcription,
+				"definition_ru":   wordInfo.DefinitionRU,
+				"examples_json":   examplesJSON,
+				"verb_forms_json": verbFormsJSON,
+				"display_en":      displayEN,
 			},
 		})
 		return
@@ -1222,8 +1236,8 @@ func (r *Router) handleAdminWord(w http.ResponseWriter, req *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(map[string]interface{}{
-			"success": true,
-			"message": "Word card and all related data deleted successfully",
+			"success":      true,
+			"message":      "Word card and all related data deleted successfully",
 			"word_card_id": wordCardID,
 		})
 		return
@@ -1275,10 +1289,10 @@ func (r *Router) handleAdminUsers(w http.ResponseWriter, req *http.Request) {
 		}
 
 		userList = append(userList, map[string]interface{}{
-			"id":               id,
-			"telegram_id":      telegramID,
+			"id":                id,
+			"telegram_id":       telegramID,
 			"telegram_username": telegramUsername,
-			"created_at":       createdAt,
+			"created_at":        createdAt,
 		})
 	}
 
@@ -1344,19 +1358,19 @@ func (r *Router) handleAdminOrphanedCards(w http.ResponseWriter, req *http.Reque
 		cardsList := make([]map[string]interface{}, 0, len(cards))
 		for _, card := range cards {
 			cardMap := map[string]interface{}{
-				"id":                card.TrainingCardID,
-				"word_card_id":      card.WordCardID,
-				"word_en":           card.WordEN,
-				"transcription":     card.Transcription,
-				"sense_index":       card.SenseIndex,
-				"word_ru":           card.WordRU,
-				"meaning_en":        card.MeaningEN,
-				"example_en":         card.ExampleEN,
-				"example_ru":         card.ExampleRU,
-				"pos":               card.POS,
-				"display_word":      card.DisplayWord,
-				"created_at":        card.CreatedAt.Format("2006-01-02 15:04:05"),
-				"user_cards_count":  card.UserCardsCount,
+				"id":               card.TrainingCardID,
+				"word_card_id":     card.WordCardID,
+				"word_en":          card.WordEN,
+				"transcription":    card.Transcription,
+				"sense_index":      card.SenseIndex,
+				"word_ru":          card.WordRU,
+				"meaning_en":       card.MeaningEN,
+				"example_en":       card.ExampleEN,
+				"example_ru":       card.ExampleRU,
+				"pos":              card.POS,
+				"display_word":     card.DisplayWord,
+				"created_at":       card.CreatedAt.Format("2006-01-02 15:04:05"),
+				"user_cards_count": card.UserCardsCount,
 			}
 			cardsList = append(cardsList, cardMap)
 		}
@@ -1420,8 +1434,8 @@ func (r *Router) handleAdminOrphanedCard(w http.ResponseWriter, req *http.Reques
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]interface{}{
-		"success": true,
-		"message": "Training card and all related data deleted successfully",
+		"success":          true,
+		"message":          "Training card and all related data deleted successfully",
 		"training_card_id": trainingCardID,
 	})
 }
@@ -1462,7 +1476,7 @@ func (r *Router) handleAdminOrphanedUserCards(w http.ResponseWriter, req *http.R
 		// 2. User cards whose training_cards reference non-existent word_cards
 		// We need to combine them, but for pagination we'll get both types separately
 		// and combine them, then apply pagination manually
-		
+
 		// Get all cards of both types (we'll paginate manually)
 		allOrphanedCards1, err := userCardRepo.ListOrphanedUserCards(10000, 0) // Get all
 		if err != nil {
@@ -1594,8 +1608,8 @@ func (r *Router) handleAdminOrphanedUserCard(w http.ResponseWriter, req *http.Re
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]interface{}{
-		"success": true,
-		"message": "User card and all related data deleted successfully",
+		"success":      true,
+		"message":      "User card and all related data deleted successfully",
 		"user_card_id": userCardID,
 	})
 }

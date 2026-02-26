@@ -15,8 +15,18 @@
       <div v-if="loadingCard" class="loading">Loading card...</div>
       <div v-else-if="currentTrainingCard" class="word-display">
         <h2>{{ currentTrainingCard.display_word || currentTrainingCard.word_en || currentWord.display_word || currentWord.word }}</h2>
-        <div v-if="currentTrainingCard.transcription" class="transcription">
-          [{{ currentTrainingCard.transcription }}]
+        <div v-if="currentTrainingCard.transcription" class="transcription-with-audio">
+          <div class="transcription">[{{ currentTrainingCard.transcription }}]</div>
+          <button
+            v-if="currentPronunciationURL"
+            class="btn-pronunciation"
+            :disabled="playingPronunciation"
+            title="Pronounce"
+            aria-label="Pronounce"
+            @click="playCurrentPronunciation"
+          >
+            <Icon name="play" />
+          </button>
         </div>
         <div v-if="currentTrainingCard.word_ru" class="translation">
           {{ currentTrainingCard.word_ru }}
@@ -61,6 +71,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { apiClient } from '../api/client'
 import { showAlert } from '../composables/useDialog'
 import Icon from '../components/Icon.vue'
+import { useAudio } from '../composables/useAudio'
 
 interface WordInfo {
   word_card_id: number
@@ -97,6 +108,9 @@ const currentIndex = ref(0)
 const processing = ref(false)
 const loadingCard = ref(false)
 const currentTrainingCard = ref<TrainingCard | null>(null)
+const currentPronunciationURL = ref<string | null>(null)
+const playingPronunciation = ref(false)
+const { getWordPronunciationURL, playWordPronunciation } = useAudio()
 
 const currentWord = computed(() => {
   if (currentIndex.value >= words.value.length) {
@@ -115,6 +129,7 @@ watch(currentWord, async (newWord) => {
     await loadTrainingCard(newWord.word_card_id)
   } else {
     currentTrainingCard.value = null
+    currentPronunciationURL.value = null
   }
 })
 
@@ -142,16 +157,45 @@ const loadWords = async () => {
 const loadTrainingCard = async (wordCardId: number) => {
   loadingCard.value = true
   currentTrainingCard.value = null
+  currentPronunciationURL.value = null
   try {
     const data: { training_card: TrainingCard } = 
       await apiClient.request(`/api/learning/words/sets/${setId}/study?word_card_id=${wordCardId}`)
     currentTrainingCard.value = data.training_card
+    if (currentTrainingCard.value?.transcription) {
+      const pronunciationWord =
+        currentTrainingCard.value.display_word ||
+        currentTrainingCard.value.word_en ||
+        currentWord.value?.display_word ||
+        currentWord.value?.word ||
+        ''
+      currentPronunciationURL.value = pronunciationWord
+        ? await getWordPronunciationURL(pronunciationWord)
+        : null
+    }
   } catch (error: any) {
     console.error('Failed to load training card:', error)
     // Don't show error to user, just continue without card
     currentTrainingCard.value = null
   } finally {
     loadingCard.value = false
+  }
+}
+
+const playCurrentPronunciation = async () => {
+  if (playingPronunciation.value || !currentTrainingCard.value) return
+  const pronunciationWord =
+    currentTrainingCard.value.display_word ||
+    currentTrainingCard.value.word_en ||
+    currentWord.value?.display_word ||
+    currentWord.value?.word ||
+    ''
+  if (!pronunciationWord) return
+  playingPronunciation.value = true
+  try {
+    await playWordPronunciation(pronunciationWord)
+  } finally {
+    playingPronunciation.value = false
   }
 }
 
@@ -300,6 +344,38 @@ const goBack = () => {
   color: var(--text-secondary);
   margin-top: 8px;
   white-space: nowrap;
+  font-family: 'Arial Unicode MS', 'Lucida Sans Unicode', 'Charis SIL', 'Doulos SIL', 'Gentium Plus', 'DejaVu Sans', Arial, sans-serif;
+  font-style: italic;
+}
+
+.transcription-with-audio {
+  margin-top: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-pronunciation {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: 0;
+}
+
+.btn-pronunciation:hover:not(:disabled) {
+  background: var(--bg-hover, rgba(0, 0, 0, 0.06));
+}
+
+.btn-pronunciation:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .translation {

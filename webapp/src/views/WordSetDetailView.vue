@@ -51,8 +51,18 @@
           <div v-else-if="currentTrainingCard" class="word-card-content">
             <div class="word-display">
               <h2>{{ currentTrainingCard.display_word || currentTrainingCard.word_en || selectedWord?.display_word || selectedWord?.word }}</h2>
-              <div v-if="currentTrainingCard.transcription" class="transcription">
-                [{{ currentTrainingCard.transcription }}]
+              <div v-if="currentTrainingCard.transcription" class="transcription-with-audio">
+                <div class="transcription">[{{ currentTrainingCard.transcription }}]</div>
+                <button
+                  v-if="currentPronunciationURL"
+                  class="btn-pronunciation"
+                  :disabled="playingPronunciation"
+                  title="Pronounce"
+                  aria-label="Pronounce"
+                  @click="playCurrentPronunciation"
+                >
+                  <Icon name="play" />
+                </button>
               </div>
               <div v-if="currentTrainingCard.word_ru" class="translation">
                 {{ currentTrainingCard.word_ru }}
@@ -101,6 +111,8 @@ import { ref, onMounted, onUnmounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { apiClient } from '../api/client'
 import { showAlert } from '../composables/useDialog'
+import { useAudio } from '../composables/useAudio'
+import Icon from '../components/Icon.vue'
 
 interface WordSet {
   id: number
@@ -152,6 +164,9 @@ const selectedWord = ref<WordInfo | null>(null)
 const currentTrainingCard = ref<TrainingCard | null>(null)
 const loadingCard = ref(false)
 const processing = ref(false)
+const currentPronunciationURL = ref<string | null>(null)
+const playingPronunciation = ref(false)
+const { getWordPronunciationURL, playWordPronunciation } = useAudio()
 
 onMounted(async () => {
   await loadWordSet()
@@ -178,11 +193,23 @@ const openWordCard = async (word: WordInfo) => {
   showWordModal.value = true
   loadingCard.value = true
   currentTrainingCard.value = null
+  currentPronunciationURL.value = null
   
   try {
     const data: { training_card: TrainingCard } = 
       await apiClient.request(`/api/learning/words/sets/${setId}/study?word_card_id=${word.word_card_id}`)
     currentTrainingCard.value = data.training_card
+    if (currentTrainingCard.value?.transcription) {
+      const pronunciationWord =
+        currentTrainingCard.value.display_word ||
+        currentTrainingCard.value.word_en ||
+        selectedWord.value?.display_word ||
+        selectedWord.value?.word ||
+        ''
+      currentPronunciationURL.value = pronunciationWord
+        ? await getWordPronunciationURL(pronunciationWord)
+        : null
+    }
   } catch (error: any) {
     console.error('Failed to load training card:', error)
     currentTrainingCard.value = null
@@ -195,6 +222,7 @@ const closeWordModal = () => {
   showWordModal.value = false
   selectedWord.value = null
   currentTrainingCard.value = null
+  currentPronunciationURL.value = null
 }
 
 const handleKeydown = (event: KeyboardEvent) => {
@@ -215,6 +243,23 @@ watch(showWordModal, (isOpen) => {
 onUnmounted(() => {
   window.removeEventListener('keydown', handleKeydown)
 })
+
+const playCurrentPronunciation = async () => {
+  if (playingPronunciation.value || !currentTrainingCard.value) return
+  const pronunciationWord =
+    currentTrainingCard.value.display_word ||
+    currentTrainingCard.value.word_en ||
+    selectedWord.value?.display_word ||
+    selectedWord.value?.word ||
+    ''
+  if (!pronunciationWord) return
+  playingPronunciation.value = true
+  try {
+    await playWordPronunciation(pronunciationWord)
+  } finally {
+    playingPronunciation.value = false
+  }
+}
 
 const markKnown = async () => {
   if (!selectedWord.value || processing.value) return
@@ -547,6 +592,36 @@ const startStudy = () => {
   font-family: 'Arial Unicode MS', 'Lucida Sans Unicode', 'Charis SIL', 'Doulos SIL', 'Gentium Plus', 'DejaVu Sans', Arial, sans-serif;
   font-style: italic;
   white-space: nowrap;
+}
+
+.transcription-with-audio {
+  margin-top: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-pronunciation {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: 0;
+}
+
+.btn-pronunciation:hover:not(:disabled) {
+  background: var(--bg-hover, rgba(0, 0, 0, 0.06));
+}
+
+.btn-pronunciation:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .translation {

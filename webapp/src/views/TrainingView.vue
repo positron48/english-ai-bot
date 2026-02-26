@@ -157,6 +157,21 @@
       </div>
 
       <div class="question" v-html="processedQuestion"></div>
+      <div
+        v-if="isEnglishWord && currentCard?.transcription"
+        class="training-pronunciation-row"
+      >
+        <button
+          v-if="currentPronunciationURL"
+          type="button"
+          class="btn-pronunciation"
+          :disabled="playingPronunciation"
+          :aria-label="t('training.listen') || 'Pronounce'"
+          @click="playCurrentPronunciation"
+        >
+          <Icon name="play" />
+        </button>
+      </div>
 
       <!-- Type: type the word (no letter hints) -->
       <div v-if="currentCard?.type === 'type'" class="type-block">
@@ -467,6 +482,8 @@ interface Card {
   user_card_id: number
   delay_ms: number
   direction: string
+  transcription?: string
+  display_word?: string
   example_en?: string
   /** Spell challenge: compose word from letters; type: type-the-word (no letters) */
   type?: 'card' | 'spell' | 'type'
@@ -580,15 +597,36 @@ let typeHintButtonTimer: ReturnType<typeof setTimeout> | null = null
 const typeRevealDisplayText = ref('')
 let typeRevealTimeouts: ReturnType<typeof setTimeout>[] = []
 const typeInputRef = ref<HTMLInputElement | null>(null)
+const currentPronunciationURL = ref<string | null>(null)
+const playingPronunciation = ref(false)
 
 // Settings
 const { settings } = useSettings()
-const { playSuccess, playFail, playVictory, playDefeat } = useAudio()
+const { playSuccess, playFail, playVictory, playDefeat, getWordPronunciationURL, playWordPronunciation } = useAudio()
 
 // Check if current word is English (direction is en_ru)
 const isEnglishWord = computed(() => {
   return currentCard.value?.direction === 'en_ru'
 })
+
+watch(currentCard, async (card) => {
+  currentPronunciationURL.value = null
+  if (!card || card.direction !== 'en_ru' || !card.transcription) return
+  const word = card.display_word || ''
+  if (!word) return
+  currentPronunciationURL.value = await getWordPronunciationURL(word)
+})
+
+const playCurrentPronunciation = async () => {
+  const word = currentCard.value?.display_word
+  if (!word || playingPronunciation.value) return
+  playingPronunciation.value = true
+  try {
+    await playWordPronunciation(word)
+  } finally {
+    playingPronunciation.value = false
+  }
+}
 
 // Type challenge hint: optional prefix + first letter + masked rest (e.g. "to s ___")
 const typeHintDisplay = computed(() => {
@@ -2508,6 +2546,36 @@ const handleTimerMouseLeave = () => {
   font-family: inherit;
 }
 
+.training-pronunciation-row {
+  margin-top: -12px;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: center;
+}
+
+.btn-pronunciation {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: 0;
+}
+
+.btn-pronunciation:hover:not(:disabled) {
+  background: var(--bg-hover, rgba(0, 0, 0, 0.06));
+}
+
+.btn-pronunciation:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .spell-block {
   margin: 20px 0;
   display: flex;
@@ -4160,4 +4228,3 @@ const handleTimerMouseLeave = () => {
   }
 }
 </style>
-

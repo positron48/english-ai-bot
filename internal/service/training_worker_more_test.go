@@ -16,7 +16,7 @@ import (
 func TestTrainingWorker_hasMissingData(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	worker := NewTrainingWorker(
-		nil, nil, nil, nil, nil, nil, nil, 0, 0, 0, 0, "", logger,
+		nil, nil, nil, nil, nil, nil, nil, nil, 0, 0, 0, 0, "", logger,
 	)
 
 	t.Run("Word card with all data", func(t *testing.T) {
@@ -24,11 +24,11 @@ func TestTrainingWorker_hasMissingData(t *testing.T) {
 		transcription := "/test/"
 		definitionRU := "тест"
 		wordCard := &models.WordCard{
-			Word:        "test",
-			Definition:  "test",
-			POS:         &pos,
+			Word:          "test",
+			Definition:    "test",
+			POS:           &pos,
 			Transcription: &transcription,
-			DefinitionRU: &definitionRU,
+			DefinitionRU:  &definitionRU,
 		}
 
 		result := worker.hasMissingData(wordCard)
@@ -41,11 +41,11 @@ func TestTrainingWorker_hasMissingData(t *testing.T) {
 		transcription := "/test/"
 		definitionRU := "тест"
 		wordCard := &models.WordCard{
-			Word:        "test",
-			Definition:  "test",
-			POS:         nil,
+			Word:          "test",
+			Definition:    "test",
+			POS:           nil,
 			Transcription: &transcription,
-			DefinitionRU: &definitionRU,
+			DefinitionRU:  &definitionRU,
 		}
 
 		result := worker.hasMissingData(wordCard)
@@ -58,11 +58,11 @@ func TestTrainingWorker_hasMissingData(t *testing.T) {
 		pos := "noun"
 		definitionRU := "тест"
 		wordCard := &models.WordCard{
-			Word:        "test",
-			Definition:  "test",
-			POS:         &pos,
+			Word:          "test",
+			Definition:    "test",
+			POS:           &pos,
 			Transcription: nil,
-			DefinitionRU: &definitionRU,
+			DefinitionRU:  &definitionRU,
 		}
 
 		result := worker.hasMissingData(wordCard)
@@ -75,11 +75,11 @@ func TestTrainingWorker_hasMissingData(t *testing.T) {
 		pos := "noun"
 		transcription := "/test/"
 		wordCard := &models.WordCard{
-			Word:        "test",
-			Definition:  "test",
-			POS:         &pos,
+			Word:          "test",
+			Definition:    "test",
+			POS:           &pos,
 			Transcription: &transcription,
-			DefinitionRU: nil,
+			DefinitionRU:  nil,
 		}
 
 		result := worker.hasMissingData(wordCard)
@@ -90,11 +90,11 @@ func TestTrainingWorker_hasMissingData(t *testing.T) {
 
 	t.Run("Word card missing all data", func(t *testing.T) {
 		wordCard := &models.WordCard{
-			Word:        "test",
-			Definition:  "test",
-			POS:         nil,
+			Word:          "test",
+			Definition:    "test",
+			POS:           nil,
 			Transcription: nil,
-			DefinitionRU: nil,
+			DefinitionRU:  nil,
 		}
 
 		result := worker.hasMissingData(wordCard)
@@ -107,12 +107,12 @@ func TestTrainingWorker_hasMissingData(t *testing.T) {
 func TestTrainingWorker_Stop(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	worker := NewTrainingWorker(
-		nil, nil, nil, nil, nil, nil, nil, 0, 0, 0, 0, "", logger,
+		nil, nil, nil, nil, nil, nil, nil, nil, 0, 0, 0, 0, "", logger,
 	)
 
 	// Stop should not panic
 	worker.Stop()
-	
+
 	// Verify stopChan is closed
 	select {
 	case <-worker.stopChan:
@@ -131,7 +131,7 @@ func TestTrainingWorker_Start_ContextCancellation(t *testing.T) {
 	userCardRepo := repository.NewUserCardRepository(db, logger)
 	userRepo := repository.NewUserRepository(db, logger)
 	cbService := NewCircuitBreakerService(repository.NewCircuitBreakerRepository(db, logger), 5, logger)
-	
+
 	aiService := ai.NewService("", "", "", "", logger)
 	worker := NewTrainingWorker(
 		aiService,
@@ -139,6 +139,7 @@ func TestTrainingWorker_Start_ContextCancellation(t *testing.T) {
 		trainingCardRepo,
 		userCardRepo,
 		userRepo,
+		nil,
 		cbService,
 		nil,
 		0,
@@ -150,7 +151,7 @@ func TestTrainingWorker_Start_ContextCancellation(t *testing.T) {
 	)
 
 	ctx, cancel := context.WithCancel(context.Background())
-	
+
 	// Start worker in goroutine
 	done := make(chan bool)
 	go func() {
@@ -180,7 +181,7 @@ func TestTrainingWorker_Start_StopChan(t *testing.T) {
 	userCardRepo := repository.NewUserCardRepository(db, logger)
 	userRepo := repository.NewUserRepository(db, logger)
 	cbService := NewCircuitBreakerService(repository.NewCircuitBreakerRepository(db, logger), 5, logger)
-	
+
 	aiService := ai.NewService("", "", "", "", logger)
 	worker := NewTrainingWorker(
 		aiService,
@@ -188,6 +189,7 @@ func TestTrainingWorker_Start_StopChan(t *testing.T) {
 		trainingCardRepo,
 		userCardRepo,
 		userRepo,
+		nil,
 		cbService,
 		nil,
 		0,
@@ -199,7 +201,7 @@ func TestTrainingWorker_Start_StopChan(t *testing.T) {
 	)
 
 	ctx := context.Background()
-	
+
 	// Start worker in goroutine
 	done := make(chan bool)
 	go func() {

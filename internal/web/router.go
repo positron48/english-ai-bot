@@ -58,26 +58,28 @@ import (
 
 // Router handles web routes
 type Router struct {
-	mux                *http.ServeMux
-	logger             *zap.Logger
-	config             *config.Config
-	db                 *sql.DB
-	userRepo           interface{} // Will be properly typed later
-	accessCategoryRepo *repository.UserAccessCategoryRepository
-	trainingService    *service.TrainingService
-	srsService         *service.SRSService
-	optionsService     *service.OptionsService
-	wordService        interface{} // Will be properly typed later
-	grammarService     *service.GrammarService
-	cbService          *service.CircuitBreakerService
-	aiService          interface{} // Will be properly typed later
-	bot                *tgbotapi.BotAPI
-	authMiddleware     *AuthMiddleware
-	otpRepo            *repository.WebOTPRepository
-	botToken           string
-	webTrainingHandler *WebTrainingHandler
-	rateLimiter        *RateLimiter
-	botCommandService  *service.BotCommandService
+	mux                               *http.ServeMux
+	logger                            *zap.Logger
+	config                            *config.Config
+	db                                *sql.DB
+	userRepo                          interface{} // Will be properly typed later
+	accessCategoryRepo                *repository.UserAccessCategoryRepository
+	trainingService                   *service.TrainingService
+	srsService                        *service.SRSService
+	optionsService                    *service.OptionsService
+	wordService                       interface{} // Will be properly typed later
+	grammarService                    *service.GrammarService
+	cbService                         *service.CircuitBreakerService
+	pronunciationService              *service.PronunciationService
+	aiService                         interface{} // Will be properly typed later
+	bot                               *tgbotapi.BotAPI
+	authMiddleware                    *AuthMiddleware
+	otpRepo                           *repository.WebOTPRepository
+	botToken                          string
+	webTrainingHandler                *WebTrainingHandler
+	rateLimiter                       *RateLimiter
+	botCommandService                 *service.BotCommandService
+	pronunciationMediaRouteRegistered bool
 }
 
 // NewRouter creates a new web router
@@ -165,6 +167,12 @@ func (r *Router) SetDependencies(
 // SetGrammarService sets the grammar service
 func (r *Router) SetGrammarService(grammarService *service.GrammarService) {
 	r.grammarService = grammarService
+}
+
+// SetPronunciationService sets pronunciation/TTS service and registers media route.
+func (r *Router) SetPronunciationService(pronunciationService *service.PronunciationService) {
+	r.pronunciationService = pronunciationService
+	r.setupPronunciationMediaRoute()
 }
 
 // SetOTPRepo sets the OTP repository
@@ -344,6 +352,7 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/settings/notifications", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleNotificationSettings)))
 	r.mux.HandleFunc("/api/settings/language", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLanguageSettings)))
 	r.mux.HandleFunc("/api/settings/training", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTrainingSettings)))
+	r.mux.HandleFunc("/api/tts/word", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTTSWord)))
 
 	// Access control routes
 	r.mux.HandleFunc("/api/access/me", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleAccessMe)))

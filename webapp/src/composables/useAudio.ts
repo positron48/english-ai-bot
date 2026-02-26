@@ -1,6 +1,12 @@
+import { apiClient } from '../api/client'
+
 // Audio engine
 let ctx: AudioContext | null = null
 let master: GainNode | null = null
+let wordAudio: HTMLAudioElement | null = null
+
+const pronunciationCache = new Map<string, string | null>()
+const pronunciationInFlight = new Map<string, Promise<string | null>>()
 
 interface AudioState {
   volume: number
@@ -139,6 +145,10 @@ function seq(steps: Array<{ fn: (t: number) => void; at: number }>) {
 
 function msToS(ms: number): number {
   return (ms / 1000) * state.speed
+}
+
+function normalizePronunciationWord(raw: string): string {
+  return raw.trim().toLowerCase().replace(/\s+/g, ' ')
 }
 
 function playMelody(
@@ -395,6 +405,56 @@ export function useAudio() {
     }
   }
 
+  const getWordPronunciationURL = async (word: string): Promise<string | null> => {
+    const normalized = normalizePronunciationWord(word)
+    if (!normalized) return null
+
+    if (pronunciationCache.has(normalized)) {
+      return pronunciationCache.get(normalized) ?? null
+    }
+
+    if (pronunciationInFlight.has(normalized)) {
+      return pronunciationInFlight.get(normalized) as Promise<string | null>
+    }
+
+    const request = (async () => {
+      try {
+        const data = await apiClient.request<{ available: boolean; url: string }>(
+          `/api/tts/word?word=${encodeURIComponent(normalized)}`
+        )
+        const url = data?.available && data?.url ? data.url : null
+        pronunciationCache.set(normalized, url)
+        return url
+      } catch {
+        pronunciationCache.set(normalized, null)
+        return null
+      } finally {
+        pronunciationInFlight.delete(normalized)
+      }
+    })()
+
+    pronunciationInFlight.set(normalized, request)
+    return request
+  }
+
+  const playWordPronunciation = async (word: string): Promise<boolean> => {
+    const url = await getWordPronunciationURL(word)
+    if (!url) return false
+
+    try {
+      if (wordAudio) {
+        wordAudio.pause()
+        wordAudio.currentTime = 0
+      }
+      wordAudio = new Audio(url)
+      wordAudio.preload = 'auto'
+      await wordAudio.play()
+      return true
+    } catch {
+      return false
+    }
+  }
+
   return {
     playSuccess,
     playFail,
@@ -402,6 +462,8 @@ export function useAudio() {
     playDefeat,
     setVolume,
     getThemes,
-    previewTheme
+    previewTheme,
+    getWordPronunciationURL,
+    playWordPronunciation
   }
 }

@@ -15,6 +15,7 @@ type Config struct {
 	Server   ServerConfig   `mapstructure:"server"`
 	Logging  LoggingConfig  `mapstructure:"logging"`
 	AI       AIConfig       `mapstructure:"ai"`
+	TTS      TTSConfig      `mapstructure:"tts"`
 	Bot      BotConfig      `mapstructure:"bot"`
 	Database DatabaseConfig `mapstructure:"database"`
 	Training TrainingConfig `mapstructure:"training"`
@@ -54,6 +55,28 @@ type AIConfig struct {
 	PromptFile string `mapstructure:"prompt_file"`
 }
 
+// TTSConfig holds text-to-speech/pronunciation audio configuration
+type TTSConfig struct {
+	Enabled           bool   `mapstructure:"enabled"`
+	Provider          string `mapstructure:"provider"` // auto | dictionary | openai
+	AudioDir          string `mapstructure:"audio_dir"`
+	PublicBasePath    string `mapstructure:"public_base_path"`
+	Model             string `mapstructure:"model"`
+	Voice             string `mapstructure:"voice"`
+	BaseURL           string `mapstructure:"base_url"`
+	APIKey            string `mapstructure:"api_key"`
+	RequestTimeout    string `mapstructure:"request_timeout"`
+	PrefetchEnabled   bool   `mapstructure:"prefetch_enabled"`
+	PrefetchWorkers   int    `mapstructure:"prefetch_workers"`
+	BackfillInterval  string `mapstructure:"backfill_interval"`
+	BackfillBatchSize int    `mapstructure:"backfill_batch_size"`
+	RetryBaseDelay    string `mapstructure:"retry_base_delay"`
+	RetryMaxDelay     string `mapstructure:"retry_max_delay"`
+	MaxRetries        int    `mapstructure:"max_retries"`
+	DictionaryBaseURL string `mapstructure:"dictionary_base_url"`
+	DictionaryEnabled bool   `mapstructure:"dictionary_enabled"`
+}
+
 // BotConfig holds bot messages and behavior configuration
 type BotConfig struct {
 	StartMessage          string `mapstructure:"start_message"`
@@ -85,34 +108,34 @@ type TrainingConfig struct {
 
 // AdminConfig holds admin configuration
 type AdminConfig struct {
-	TelegramID     int64 `mapstructure:"telegram_id"`
-	DBQueryAccess  bool  `mapstructure:"db_query_access"`
+	TelegramID    int64 `mapstructure:"telegram_id"`
+	DBQueryAccess bool  `mapstructure:"db_query_access"`
 }
 
 // WebAppConfig holds web app configuration
 type WebAppConfig struct {
-	PublicURL         string `mapstructure:"public_url"`
-	SessionSecret     string `mapstructure:"session_secret"`
-	JWTSecret         string `mapstructure:"jwt_secret"`
-	OTPTTLSeconds     int    `mapstructure:"otp_ttl_seconds"`
-	SessionTTLHours   int    `mapstructure:"session_ttl_hours"`
-	JWTTTLHours       int    `mapstructure:"jwt_ttl_hours"`
-	RefreshTTLHours   int    `mapstructure:"refresh_ttl_hours"`
-	ViteDevServerURL  string `mapstructure:"vite_dev_server_url"`
-	
+	PublicURL        string `mapstructure:"public_url"`
+	SessionSecret    string `mapstructure:"session_secret"`
+	JWTSecret        string `mapstructure:"jwt_secret"`
+	OTPTTLSeconds    int    `mapstructure:"otp_ttl_seconds"`
+	SessionTTLHours  int    `mapstructure:"session_ttl_hours"`
+	JWTTTLHours      int    `mapstructure:"jwt_ttl_hours"`
+	RefreshTTLHours  int    `mapstructure:"refresh_ttl_hours"`
+	ViteDevServerURL string `mapstructure:"vite_dev_server_url"`
+
 	// Rate limiting configuration
-	RateLimitAuthRequestOTPPerIP        int `mapstructure:"rate_limit_auth_request_otp_per_ip"`
-	RateLimitAuthRequestOTPPerIPUser    int `mapstructure:"rate_limit_auth_request_otp_per_ip_user"`
-	RateLimitAuthOTPPerIP               int `mapstructure:"rate_limit_auth_otp_per_ip"`
-	RateLimitAuthOTPPerIPUser           int `mapstructure:"rate_limit_auth_otp_per_ip_user"`
-	RateLimitAuthTelegramUnsafePerIP   int `mapstructure:"rate_limit_auth_telegram_unsafe_per_ip"`
+	RateLimitAuthRequestOTPPerIP         int `mapstructure:"rate_limit_auth_request_otp_per_ip"`
+	RateLimitAuthRequestOTPPerIPUser     int `mapstructure:"rate_limit_auth_request_otp_per_ip_user"`
+	RateLimitAuthOTPPerIP                int `mapstructure:"rate_limit_auth_otp_per_ip"`
+	RateLimitAuthOTPPerIPUser            int `mapstructure:"rate_limit_auth_otp_per_ip_user"`
+	RateLimitAuthTelegramUnsafePerIP     int `mapstructure:"rate_limit_auth_telegram_unsafe_per_ip"`
 	RateLimitAuthTelegramUnsafePerIPUser int `mapstructure:"rate_limit_auth_telegram_unsafe_per_ip_user"`
-	RateLimitAuthTelegramPerIP         int `mapstructure:"rate_limit_auth_telegram_per_ip"`
-	RateLimitAuthRefreshPerIP          int `mapstructure:"rate_limit_auth_refresh_per_ip"`
-	RateLimitAppAPIPerUser             int `mapstructure:"rate_limit_app_api_per_user"`
-	RateLimitAppChatPerUser            int `mapstructure:"rate_limit_app_chat_per_user"`
-	RateLimitWindowMinutes             int `mapstructure:"rate_limit_window_minutes"`
-	RateLimitBurstMultiplier           int `mapstructure:"rate_limit_burst_multiplier"`
+	RateLimitAuthTelegramPerIP           int `mapstructure:"rate_limit_auth_telegram_per_ip"`
+	RateLimitAuthRefreshPerIP            int `mapstructure:"rate_limit_auth_refresh_per_ip"`
+	RateLimitAppAPIPerUser               int `mapstructure:"rate_limit_app_api_per_user"`
+	RateLimitAppChatPerUser              int `mapstructure:"rate_limit_app_chat_per_user"`
+	RateLimitWindowMinutes               int `mapstructure:"rate_limit_window_minutes"`
+	RateLimitBurstMultiplier             int `mapstructure:"rate_limit_burst_multiplier"`
 }
 
 // Load loads configuration from environment variables and config file
@@ -131,9 +154,26 @@ func Load() (*Config, error) {
 	viper.SetDefault("server.address", ":8184")
 	viper.SetDefault("logging.level", "info")
 	viper.SetDefault("ai.model", "gpt-3.5-turbo")
+	viper.SetDefault("tts.enabled", true)
+	viper.SetDefault("tts.provider", "auto")
+	viper.SetDefault("tts.audio_dir", "/app/data/tts")
+	viper.SetDefault("tts.public_base_path", "/media/tts")
+	viper.SetDefault("tts.model", "gpt-4o-mini-tts")
+	viper.SetDefault("tts.voice", "alloy")
+	viper.SetDefault("tts.base_url", "https://api.openai.com/v1")
+	viper.SetDefault("tts.request_timeout", "15s")
+	viper.SetDefault("tts.prefetch_enabled", true)
+	viper.SetDefault("tts.prefetch_workers", 2)
+	viper.SetDefault("tts.backfill_interval", "10m")
+	viper.SetDefault("tts.backfill_batch_size", 200)
+	viper.SetDefault("tts.retry_base_delay", "1m")
+	viper.SetDefault("tts.retry_max_delay", "24h")
+	viper.SetDefault("tts.max_retries", 8)
+	viper.SetDefault("tts.dictionary_base_url", "https://api.dictionaryapi.dev/api/v2/entries/en")
+	viper.SetDefault("tts.dictionary_enabled", true)
 	viper.SetDefault("database.driver", "postgres")
 	viper.SetDefault("database.path", "")
-	
+
 	// Training defaults
 	viper.SetDefault("training.worker_enabled", true)
 	viper.SetDefault("training.worker_interval", "30s")
@@ -144,11 +184,11 @@ func Load() (*Config, error) {
 	viper.SetDefault("training.circuit_breaker_auto_reset_hours", 24)
 	viper.SetDefault("training.options_delay_ms", 5000)
 	viper.SetDefault("training.wrong_answer_delay_seconds", 5)
-	
+
 	// Admin defaults
 	viper.SetDefault("admin.telegram_id", 0)
 	viper.SetDefault("admin.db_query_access", false)
-	
+
 	// WebApp defaults
 	viper.SetDefault("webapp.public_url", "")
 	viper.SetDefault("webapp.session_secret", "")
@@ -158,7 +198,7 @@ func Load() (*Config, error) {
 	viper.SetDefault("webapp.jwt_ttl_hours", 24)
 	viper.SetDefault("webapp.refresh_ttl_hours", 720)
 	viper.SetDefault("webapp.vite_dev_server_url", "http://localhost:5173")
-	
+
 	// Rate limiting defaults
 	viper.SetDefault("webapp.rate_limit_auth_request_otp_per_ip", 10)
 	viper.SetDefault("webapp.rate_limit_auth_request_otp_per_ip_user", 3)
@@ -201,6 +241,24 @@ func Load() (*Config, error) {
 	_ = viper.BindEnv("ai.api_key", "AI_API_KEY")
 	_ = viper.BindEnv("ai.prompt", "AI_PROMPT")
 	_ = viper.BindEnv("ai.prompt_file", "AI_PROMPT_FILE")
+	_ = viper.BindEnv("tts.enabled", "TTS_ENABLED")
+	_ = viper.BindEnv("tts.provider", "TTS_PROVIDER")
+	_ = viper.BindEnv("tts.audio_dir", "TTS_AUDIO_DIR")
+	_ = viper.BindEnv("tts.public_base_path", "TTS_PUBLIC_BASE_PATH")
+	_ = viper.BindEnv("tts.model", "TTS_MODEL")
+	_ = viper.BindEnv("tts.voice", "TTS_VOICE")
+	_ = viper.BindEnv("tts.base_url", "TTS_BASE_URL")
+	_ = viper.BindEnv("tts.api_key", "TTS_API_KEY")
+	_ = viper.BindEnv("tts.request_timeout", "TTS_REQUEST_TIMEOUT")
+	_ = viper.BindEnv("tts.prefetch_enabled", "TTS_PREFETCH_ENABLED")
+	_ = viper.BindEnv("tts.prefetch_workers", "TTS_PREFETCH_WORKERS")
+	_ = viper.BindEnv("tts.backfill_interval", "TTS_BACKFILL_INTERVAL")
+	_ = viper.BindEnv("tts.backfill_batch_size", "TTS_BACKFILL_BATCH_SIZE")
+	_ = viper.BindEnv("tts.retry_base_delay", "TTS_RETRY_BASE_DELAY")
+	_ = viper.BindEnv("tts.retry_max_delay", "TTS_RETRY_MAX_DELAY")
+	_ = viper.BindEnv("tts.max_retries", "TTS_MAX_RETRIES")
+	_ = viper.BindEnv("tts.dictionary_base_url", "TTS_DICTIONARY_BASE_URL")
+	_ = viper.BindEnv("tts.dictionary_enabled", "TTS_DICTIONARY_ENABLED")
 	_ = viper.BindEnv("bot.start_message", "BOT_START_MESSAGE")
 	_ = viper.BindEnv("bot.help_message", "BOT_HELP_MESSAGE")
 	_ = viper.BindEnv("bot.unknown_command_message", "BOT_UNKNOWN_COMMAND_MESSAGE")
@@ -290,7 +348,7 @@ func Load() (*Config, error) {
 	if config.AI.Prompt == "" {
 		return nil, fmt.Errorf("ai prompt is required (either AI_PROMPT or AI_PROMPT_FILE must be set)")
 	}
-	
+
 	// Validate JWT secret (can use session secret as fallback)
 	if config.WebApp.JWTSecret == "" && config.WebApp.SessionSecret == "" {
 		return nil, fmt.Errorf("JWT secret is required (set WEBAPP_JWT_SECRET or WEBAPP_SESSION_SECRET)")

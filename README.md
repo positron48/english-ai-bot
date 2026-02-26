@@ -438,6 +438,7 @@ make docker-rebuild     # Пересборка (clean + build + run)
 - Деплою через GitHub releases
 - Настройке systemd сервиса
 - Настройке nginx с SSL
+- Pronunciation/TTS (dictionary primary + OpenAI fallback): [docs/TTS_SETUP.md](docs/TTS_SETUP.md)
 
 ## Лицензия
 

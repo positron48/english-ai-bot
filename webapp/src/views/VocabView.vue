@@ -140,7 +140,19 @@
           <div class="word-header-info">
             <div class="word-title-row">
               <h3>{{ selectedWordDisplay }}</h3>
-              <div v-if="selectedTranscription" class="transcription">{{ selectedTranscription }}</div>
+              <div v-if="selectedTranscription" class="transcription-with-audio">
+                <div class="transcription">{{ selectedTranscription }}</div>
+                <button
+                  v-if="selectedPronunciationURL"
+                  class="btn-pronunciation"
+                  :disabled="playingPronunciation"
+                  title="Pronounce"
+                  aria-label="Pronounce"
+                  @click="playSelectedPronunciation"
+                >
+                  <Icon name="play" />
+                </button>
+              </div>
             </div>
             <div class="word-summary">
               <span v-if="selectedWordMasteringScore !== null" class="mastering-score-inline" :title="t('vocab.scoreLabel') + ' 0–100'">
@@ -267,6 +279,8 @@ import { useI18n } from 'vue-i18n'
 import { apiClient } from '../api/client'
 import { useAuth } from '../composables/useAuth'
 import { showAlert } from '../composables/useDialog'
+import { useAudio } from '../composables/useAudio'
+import Icon from '../components/Icon.vue'
 
 const { t } = useI18n()
 const { isAdmin } = useAuth()
@@ -332,6 +346,9 @@ const selectedWord = ref('')
 const selectedWordDisplay = ref('')
 const selectedTranscription = ref('')
 const selectedWordMasteringScore = ref<number | null>(null)
+const selectedPronunciationWord = ref('')
+const selectedPronunciationURL = ref<string | null>(null)
+const playingPronunciation = ref(false)
 const cards = ref<CardDetail[]>([])
 const cardsLoading = ref(false)
 const verbForms = ref<any>(null)
@@ -339,6 +356,7 @@ const wordPOS = ref<string | null>(null)
 const hasUserCards = ref(false)
 const isKnown = ref(false)
 const processingAction = ref(false)
+const { getWordPronunciationURL, playWordPronunciation } = useAudio()
 
 onMounted(async () => {
   await loadVocab()
@@ -523,6 +541,8 @@ const showCards = async (lemma: string) => {
   cardsLoading.value = true
   cards.value = []
   selectedTranscription.value = ''
+  selectedPronunciationWord.value = ''
+  selectedPronunciationURL.value = null
   
   try {
     const data: { lemma: string; word_card_id: number; cards: CardDetail[]; verb_forms?: any; pos?: string; has_user_cards?: boolean; is_known?: boolean } = await apiClient.request(`/api/vocab/${lemma}/cards`)
@@ -537,10 +557,15 @@ const showCards = async (lemma: string) => {
       const word = words.value.find(w => w.lemma === lemma)
       if (word) {
         selectedWordDisplay.value = cleanLemma(word.lemma)
+        selectedPronunciationWord.value = word.display_word || word.lemma
       } else {
         selectedWordDisplay.value = cleanLemma(lemma)
+        selectedPronunciationWord.value = lemma
       }
       selectedTranscription.value = cards.value[0].transcription || ''
+      if (selectedTranscription.value) {
+        selectedPronunciationURL.value = await getWordPronunciationURL(selectedPronunciationWord.value)
+      }
     } else {
       selectedWordDisplay.value = cleanLemma(lemma)
     }
@@ -557,12 +582,24 @@ const closeCardsModal = () => {
   selectedWord.value = ''
   selectedWordDisplay.value = ''
   selectedTranscription.value = ''
+  selectedPronunciationWord.value = ''
+  selectedPronunciationURL.value = null
   selectedWordMasteringScore.value = null
   cards.value = []
   verbForms.value = null
   wordPOS.value = null
   hasUserCards.value = false
   isKnown.value = false
+}
+
+const playSelectedPronunciation = async () => {
+  if (!selectedPronunciationWord.value || playingPronunciation.value) return
+  playingPronunciation.value = true
+  try {
+    await playWordPronunciation(selectedPronunciationWord.value)
+  } finally {
+    playingPronunciation.value = false
+  }
 }
 
 const handleKeydown = (event: KeyboardEvent) => {
@@ -1073,6 +1110,35 @@ const formatDateAbsolute = (dateStr: string | null): string => {
   font-size: 18px;
   white-space: nowrap;
   flex-shrink: 0;
+}
+
+.transcription-with-audio {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-pronunciation {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: 0;
+}
+
+.btn-pronunciation:hover:not(:disabled) {
+  background: var(--bg-hover, rgba(0, 0, 0, 0.06));
+}
+
+.btn-pronunciation:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .word-summary {
