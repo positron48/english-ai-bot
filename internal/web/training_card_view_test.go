@@ -1,0 +1,275 @@
+package web
+
+import (
+	"encoding/json"
+	"net/http"
+	"net/http/httptest"
+	"testing"
+
+	"tgbot-skeleton/internal/config"
+	"tgbot-skeleton/internal/models"
+	"tgbot-skeleton/internal/service"
+
+	"go.uber.org/zap"
+)
+
+func strPtr(s string) *string {
+	return &s
+}
+
+func TestShowTrainingCard_SpellChallengeResponse(t *testing.T) {
+	db, _, _, _, _ := setupTrainingIntegrationTestDB(t)
+	logger, _ := zap.NewDevelopment()
+	router := NewRouter(logger, &config.Config{Training: config.TrainingConfig{OptionsDelayMS: 1500, WrongAnswerDelaySeconds: 3}}, db, nil, nil, nil, nil)
+
+	state := &WebTrainingState{
+		SessionID: 99,
+		Queue: []*models.TrainingQueueItem{{
+			Type: "spell",
+			Spell: &models.SpellChallenge{
+				WordRU:          "шпионить",
+				Prefix:          "to ",
+				ShuffledLetters: []string{"s", "p", "y"},
+				DisplayWord:     "to spy",
+			},
+		}},
+	}
+
+	req := httptest.NewRequest(http.MethodGet, "/api/training/current", nil)
+	w := httptest.NewRecorder()
+	router.showTrainingCard(w, req, state)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", w.Code)
+	}
+
+	var payload map[string]interface{}
+	if err := json.Unmarshal(w.Body.Bytes(), &payload); err != nil {
+		t.Fatalf("unmarshal response: %v", err)
+	}
+	if payload["type"] != "spell" {
+		t.Fatalf("expected type=spell, got %v", payload["type"])
+	}
+	if payload["prefix"] != "to " {
+		t.Fatalf("expected prefix=to, got %v", payload["prefix"])
+	}
+}
+
+func TestShowTrainingCard_TypeChallengeResponse(t *testing.T) {
+	db, _, _, _, _ := setupTrainingIntegrationTestDB(t)
+	logger, _ := zap.NewDevelopment()
+	router := NewRouter(logger, &config.Config{Training: config.TrainingConfig{OptionsDelayMS: 1500, WrongAnswerDelaySeconds: 3}}, db, nil, nil, nil, nil)
+
+	state := &WebTrainingState{
+		SessionID: 100,
+		Queue: []*models.TrainingQueueItem{{
+			Type: "type",
+			TypeChallenge: &models.TypeChallenge{
+				WordRU:      "говорить",
+				DisplayWord: "to speak",
+			},
+		}},
+	}
+
+	req := httptest.NewRequest(http.MethodGet, "/api/training/current", nil)
+	w := httptest.NewRecorder()
+	router.showTrainingCard(w, req, state)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", w.Code)
+	}
+
+	var payload map[string]interface{}
+	if err := json.Unmarshal(w.Body.Bytes(), &payload); err != nil {
+		t.Fatalf("unmarshal response: %v", err)
+	}
+	if payload["type"] != "type" {
+		t.Fatalf("expected type=type, got %v", payload["type"])
+	}
+	if payload["prefix"] != "to " {
+		t.Fatalf("expected prefix=to, got %v", payload["prefix"])
+	}
+	if payload["hint_first_letter"] != "s" {
+		t.Fatalf("expected first hint letter s, got %v", payload["hint_first_letter"])
+	}
+	if payload["hint_length"] != float64(5) {
+		t.Fatalf("expected hint length 5, got %v", payload["hint_length"])
+	}
+}
+
+func TestShowTrainingCard_CardTypeWithNilCard(t *testing.T) {
+	db, _, _, _, _ := setupTrainingIntegrationTestDB(t)
+	logger, _ := zap.NewDevelopment()
+	router := NewRouter(logger, &config.Config{}, db, nil, nil, nil, nil)
+
+	state := &WebTrainingState{
+		Queue: []*models.TrainingQueueItem{{Type: "card", Card: nil}},
+	}
+
+	req := httptest.NewRequest(http.MethodGet, "/api/training/current", nil)
+	w := httptest.NewRecorder()
+	router.showTrainingCard(w, req, state)
+
+	if w.Code != http.StatusInternalServerError {
+		t.Fatalf("expected status 500, got %d", w.Code)
+	}
+}
+
+func TestShowTrainingCard_NormalCardResponse(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, _, trainingCardRepo, _, _ := setupTrainingIntegrationTestDB(t)
+
+	var wordCardID int64
+	if err := db.QueryRow(
+		"INSERT INTO word_cards (word, definition) VALUES ($1, $2) RETURNING id",
+		"term",
+		"term",
+	).Scan(&wordCardID); err != nil {
+		t.Fatalf("create word card: %v", err)
+	}
+
+	if _, err := trainingCardRepo.CreateTrainingCard(&models.TrainingCard{
+		WordCardID:     wordCardID,
+		WordEN:         "term",
+		SenseIndex:     0,
+		WordRU:         "термин",
+		MeaningEN:      "term meaning",
+		Transcription:  "[t3rm]",
+		DistractorsRU:  `["значение","понятие","идея"]`,
+		DistractorsEN:  `["meaning","concept","idea"]`,
+		ExampleEN:      "Example sentence",
+		DisplayWord:    strPtr("term"),
+	}); err != nil {
+		t.Fatalf("create training card: %v", err)
+	}
+
+	optionsService := service.NewOptionsService(trainingCardRepo, logger)
+	cfg := &config.Config{Training: config.TrainingConfig{OptionsDelayMS: 1234, WrongAnswerDelaySeconds: 3}}
+	router := NewRouter(logger, cfg, db, nil, nil, optionsService, nil)
+
+	primaryCard := &models.UserCardWithTraining{
+		UserCard: models.UserCard{
+			ID:        42,
+			Direction: models.DirectionENtoRU,
+		},
+		TrainingCard: models.TrainingCard{
+			WordCardID:    wordCardID,
+			WordEN:        "term",
+			WordRU:        "термин",
+			Transcription: "[t3rm]",
+			ExampleEN:     "Example sentence",
+			DistractorsRU: `["значение","понятие","идея"]`,
+			DisplayWord:   strPtr("term"),
+		},
+	}
+	otherCard := &models.UserCardWithTraining{
+		UserCard: models.UserCard{Direction: models.DirectionENtoRU},
+		TrainingCard: models.TrainingCard{
+			WordCardID: 999,
+			WordEN:     "second",
+			WordRU:     "второй",
+		},
+	}
+
+	state := &WebTrainingState{
+		UserID:   7,
+		SessionID: 777,
+		Queue: []*models.TrainingQueueItem{
+			{Type: "card", Card: primaryCard},
+			{Type: "card", Card: otherCard},
+		},
+	}
+
+	req := httptest.NewRequest(http.MethodGet, "/api/training/current", nil)
+	w := httptest.NewRecorder()
+	router.showTrainingCard(w, req, state)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+
+	var payload map[string]interface{}
+	if err := json.Unmarshal(w.Body.Bytes(), &payload); err != nil {
+		t.Fatalf("unmarshal response: %v", err)
+	}
+
+	if payload["user_card_id"] != float64(42) {
+		t.Fatalf("expected user_card_id=42, got %v", payload["user_card_id"])
+	}
+	if payload["delay_ms"] != float64(1234) {
+		t.Fatalf("expected delay_ms=1234, got %v", payload["delay_ms"])
+	}
+	if payload["display_word"] != "term" {
+		t.Fatalf("expected display_word=term, got %v", payload["display_word"])
+	}
+	if payload["example_en"] != "Example sentence" {
+		t.Fatalf("expected example_en in response, got %v", payload["example_en"])
+	}
+
+	if len(state.Options) < 2 {
+		t.Fatalf("expected generated options to be stored in state, got %v", state.Options)
+	}
+	if state.CorrectAnswer != "термин" {
+		t.Fatalf("expected correct answer to be stored, got %q", state.CorrectAnswer)
+	}
+}
+
+func TestExtractSessionWordsFromQueue_FiltersByPOSAndRecent(t *testing.T) {
+	r := &Router{}
+	verb := "verb"
+	noun := "noun"
+
+	current := &models.UserCardWithTraining{
+		UserCard: models.UserCard{Direction: models.DirectionRUtoEN},
+		TrainingCard: models.TrainingCard{WordCardID: 1, POS: &verb},
+	}
+	queue := []*models.TrainingQueueItem{
+		{Type: "card", Card: current},
+		{Type: "card", Card: &models.UserCardWithTraining{TrainingCard: models.TrainingCard{WordCardID: 2, WordEN: "jump", POS: &verb, DisplayWord: strPtr("to jump")}}},
+		{Type: "card", Card: &models.UserCardWithTraining{TrainingCard: models.TrainingCard{WordCardID: 3, WordEN: "cat", POS: &noun}}},
+		{Type: "card", Card: &models.UserCardWithTraining{TrainingCard: models.TrainingCard{WordCardID: 4, WordEN: "jump", POS: &verb, DisplayWord: strPtr("to jump")}}},
+	}
+
+	words := r.extractSessionWordsFromQueue(queue, 0, current, []string{"to jump", "jump"})
+	if len(words) != 0 {
+		t.Fatalf("expected no words because recent answers excluded and others filtered, got %v", words)
+	}
+
+	words = r.extractSessionWordsFromQueue(queue, 0, current, nil)
+	if len(words) != 1 || words[0] != "to jump" {
+		t.Fatalf("expected one matching distractor 'to jump', got %v", words)
+	}
+}
+
+func TestExtractSessionWords_FiltersAndDeduplicates(t *testing.T) {
+	r := &Router{}
+	verb := "verb"
+
+	current := &models.UserCardWithTraining{
+		UserCard: models.UserCard{Direction: models.DirectionENtoRU},
+		TrainingCard: models.TrainingCard{
+			WordCardID: 1,
+			WordEN:     "run",
+			WordRU:     "бежать",
+			POS:        &verb,
+		},
+	}
+
+	queue := []*models.UserCardWithTraining{
+		current,
+		{TrainingCard: models.TrainingCard{WordCardID: 2, WordEN: "jump", WordRU: "прыгать", POS: &verb}},
+		{TrainingCard: models.TrainingCard{WordCardID: 3, WordEN: "race", WordRU: "бежать", POS: &verb}},
+		{TrainingCard: models.TrainingCard{WordCardID: 4, WordEN: "sprint", WordRU: "прыгать", POS: &verb}},
+		{TrainingCard: models.TrainingCard{WordCardID: 5, WordEN: "walk", WordRU: "идти", POS: strPtr("noun")}},
+	}
+
+	words := r.extractSessionWords(queue, 0, current, []string{"прыгать"})
+	if len(words) != 0 {
+		t.Fatalf("expected all candidates filtered out, got %v", words)
+	}
+
+	words = r.extractSessionWords(queue, 0, current, nil)
+	if len(words) != 1 || words[0] != "прыгать" {
+		t.Fatalf("expected one deduplicated word 'прыгать', got %v", words)
+	}
+}
