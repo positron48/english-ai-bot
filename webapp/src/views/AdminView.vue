@@ -344,6 +344,23 @@
                 <label>Definition (Legacy):</label>
                 <textarea v-model="editWordForm.definition" class="form-textarea" rows="5"></textarea>
               </div>
+              <div class="form-group">
+                <label>TTS Status:</label>
+                <div v-if="ttsStatusLoading">Loading TTS status...</div>
+                <div v-else-if="ttsStatusError" class="error-message">{{ ttsStatusError }}</div>
+                <div v-else-if="ttsStatus" class="tts-status-block">
+                  <div><strong>State:</strong> {{ ttsStatus.state || 'pending' }}</div>
+                  <div><strong>Attempts:</strong> {{ ttsStatus.attempt_count }} / {{ ttsStatus.max_attempts }}</div>
+                  <div v-if="ttsStatus.last_provider"><strong>Provider:</strong> {{ ttsStatus.last_provider }}</div>
+                  <div v-if="ttsStatus.last_error_code"><strong>Error Code:</strong> {{ ttsStatus.last_error_code }}</div>
+                  <div v-if="ttsStatus.last_error_message"><strong>Error:</strong> {{ ttsStatus.last_error_message }}</div>
+                  <div class="tts-status-actions">
+                    <button type="button" class="btn btn-secondary btn-sm" :disabled="!ttsStatus.audio_url" @click="playTTSStatus">Play</button>
+                    <button v-if="can('words.edit_all')" type="button" class="btn btn-warning btn-sm" @click="regenerateTTS">Regenerate</button>
+                    <button v-if="can('words.edit_all')" type="button" class="btn btn-secondary btn-sm" @click="recheckTTS">Recheck</button>
+                  </div>
+                </div>
+              </div>
               <div class="form-actions">
                 <button v-if="can('words.edit_all')" type="button" @click="generateWordCardData" class="btn btn-secondary" :disabled="generatingWordData">
                   {{ generatingWordData ? 'Generating...' : 'AI Fill' }}
@@ -649,6 +666,18 @@ interface WordCard {
   cardsLoading?: boolean
 }
 
+interface TTSStatus {
+  word: string
+  state: string
+  attempt_count: number
+  max_attempts: number
+  last_error_code: string
+  last_error_message: string
+  last_provider: string
+  audio_url: string
+  updated_at: string
+}
+
 const loading = ref(false)
 
 // Words management
@@ -676,6 +705,9 @@ const sortDirection = ref<'asc' | 'desc'>('asc')
 // Training card editing
 const showEditWordModal = ref(false)
 const wordToEdit = ref<WordCard | null>(null)
+const ttsStatusLoading = ref(false)
+const ttsStatusError = ref('')
+const ttsStatus = ref<TTSStatus | null>(null)
 const editWordForm = ref({
   word: '',
   pos: '',
@@ -1230,11 +1262,67 @@ const startEditWord = (word: WordCard) => {
     definition: word.Definition || ''
   }
   showEditWordModal.value = true
+  loadTTSStatus(word.Word)
 }
 
 const closeEditWordModal = () => {
   showEditWordModal.value = false
   wordToEdit.value = null
+  ttsStatus.value = null
+  ttsStatusError.value = ''
+  ttsStatusLoading.value = false
+}
+
+const loadTTSStatus = async (word: string) => {
+  ttsStatusLoading.value = true
+  ttsStatusError.value = ''
+  try {
+    const data: TTSStatus = await apiClient.request(`/api/admin/tts/${encodeURIComponent(word)}`)
+    ttsStatus.value = data
+  } catch (error: any) {
+    ttsStatusError.value = error?.message || 'Failed to load TTS status'
+    ttsStatus.value = null
+  } finally {
+    ttsStatusLoading.value = false
+  }
+}
+
+const regenerateTTS = async () => {
+  if (!wordToEdit.value) return
+  ttsStatusLoading.value = true
+  ttsStatusError.value = ''
+  try {
+    const data: TTSStatus = await apiClient.request(`/api/admin/tts/${encodeURIComponent(wordToEdit.value.Word)}/regenerate`, {
+      method: 'POST'
+    })
+    ttsStatus.value = data
+  } catch (error: any) {
+    ttsStatusError.value = error?.message || 'Failed to regenerate TTS'
+  } finally {
+    ttsStatusLoading.value = false
+  }
+}
+
+const recheckTTS = async () => {
+  if (!wordToEdit.value) return
+  ttsStatusLoading.value = true
+  ttsStatusError.value = ''
+  try {
+    const data: TTSStatus = await apiClient.request(`/api/admin/tts/${encodeURIComponent(wordToEdit.value.Word)}/recheck`, {
+      method: 'POST'
+    })
+    ttsStatus.value = data
+  } catch (error: any) {
+    ttsStatusError.value = error?.message || 'Failed to recheck TTS'
+  } finally {
+    ttsStatusLoading.value = false
+  }
+}
+
+const playTTSStatus = () => {
+  if (!ttsStatus.value?.audio_url) return
+  const audio = new Audio(ttsStatus.value.audio_url)
+  void audio.play()
 }
 
 const generateWordCardData = async () => {
@@ -2060,6 +2148,19 @@ const handleSort = (column: string) => {
   justify-content: flex-end;
 }
 
+.tts-status-block {
+  border: 1px solid var(--input-border);
+  border-radius: 6px;
+  padding: 10px;
+  background-color: var(--input-bg);
+}
+
+.tts-status-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
 .form-group {
   display: flex;
   flex-direction: column;
@@ -2253,4 +2354,3 @@ const handleSort = (column: string) => {
   }
 }
 </style>
-

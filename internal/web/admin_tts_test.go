@@ -1,0 +1,111 @@
+package web
+
+import (
+	"context"
+	"encoding/json"
+	"net/http"
+	"net/http/httptest"
+	"testing"
+
+	"tgbot-skeleton/internal/config"
+	"tgbot-skeleton/internal/models"
+	"tgbot-skeleton/internal/repository"
+	"tgbot-skeleton/internal/service"
+	"tgbot-skeleton/internal/testutil"
+
+	"go.uber.org/zap"
+)
+
+func setupAdminTTSRouter(t *testing.T) (*Router, *repository.UserRepository, *repository.UserAccessCategoryRepository) {
+	t.Helper()
+	logger := zap.NewNop()
+	db := testutil.SetupTestDB(t)
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{
+			JWTSecret: "test-secret",
+		},
+	}
+
+	userRepo := repository.NewUserRepository(db, logger)
+	accessRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	wordRepo := repository.NewWordRepository(db, logger)
+	pron := service.NewPronunciationService(config.TTSConfig{
+		Enabled:           true,
+		Provider:          "dictionary",
+		AudioDir:          t.TempDir(),
+		PublicBasePath:    "/media/tts",
+		DictionaryEnabled: true,
+		DictionaryBaseURL: "http://example.com",
+	}, wordRepo, logger)
+
+	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.pronunciationService = pron
+	return router, userRepo, accessRepo
+}
+
+func grantCategory(t *testing.T, accessRepo *repository.UserAccessCategoryRepository, userID int64, perms ...string) []int64 {
+	t.Helper()
+	catID, err := accessRepo.CreateCategory(&models.UserAccessCategory{Name: "tts-test-" + perms[0]})
+	if err != nil {
+		t.Fatalf("CreateCategory() error = %v", err)
+	}
+	if err := accessRepo.SetCategoryPermissions(catID, perms); err != nil {
+		t.Fatalf("SetCategoryPermissions() error = %v", err)
+	}
+	if err := accessRepo.SetUserCategories(userID, []int64{catID}); err != nil {
+		t.Fatalf("SetUserCategories() error = %v", err)
+	}
+	return []int64{catID}
+}
+
+func TestHandleAdminTTS_GetContract(t *testing.T) {
+	router, userRepo, accessRepo := setupAdminTTSRouter(t)
+	user, err := userRepo.GetOrCreateUser(1001)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser() error = %v", err)
+	}
+	categories := grantCategory(t, accessRepo, user.ID, string(PermissionWordsReadAll))
+
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/tts/spy", nil)
+	ctx := context.WithValue(req.Context(), userIDKey, user.ID)
+	ctx = context.WithValue(ctx, userCategoriesKey, categories)
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+
+	router.handleAdminTTS(w, req)
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected 200, got %d: %s", w.Code, w.Body.String())
+	}
+
+	var resp map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&resp); err != nil {
+		t.Fatalf("decode response: %v", err)
+	}
+	required := []string{"state", "attempt_count", "max_attempts", "last_error_code", "last_error_message", "audio_url", "updated_at"}
+	for _, key := range required {
+		if _, ok := resp[key]; !ok {
+			t.Fatalf("missing key %q in response", key)
+		}
+	}
+}
+
+func TestHandleAdminTTS_RegenerateRequiresEditPermission(t *testing.T) {
+	router, userRepo, accessRepo := setupAdminTTSRouter(t)
+	user, err := userRepo.GetOrCreateUser(1002)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser() error = %v", err)
+	}
+	categories := grantCategory(t, accessRepo, user.ID, string(PermissionWordsReadAll))
+
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/tts/spy/regenerate", nil)
+	ctx := context.WithValue(req.Context(), userIDKey, user.ID)
+	ctx = context.WithValue(ctx, userCategoriesKey, categories)
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+
+	router.handleAdminTTS(w, req)
+	if w.Code != http.StatusForbidden {
+		t.Fatalf("expected 403, got %d", w.Code)
+	}
+}

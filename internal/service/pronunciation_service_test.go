@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -14,9 +15,25 @@ import (
 	"time"
 
 	"tgbot-skeleton/internal/config"
+	"tgbot-skeleton/internal/repository"
+	"tgbot-skeleton/internal/testutil"
 
 	"go.uber.org/zap"
 )
+
+type stubPronunciationProvider struct {
+	providerName string
+	err          error
+	audio        []byte
+}
+
+func (p *stubPronunciationProvider) name() string { return p.providerName }
+func (p *stubPronunciationProvider) fetch(_ context.Context, _ string) ([]byte, error) {
+	if p.err != nil {
+		return nil, p.err
+	}
+	return p.audio, nil
+}
 
 func TestNormalizePronunciationWord(t *testing.T) {
 	tests := []struct {
@@ -129,7 +146,7 @@ func TestPronunciationServiceLookupAndCache(t *testing.T) {
 	}
 }
 
-func TestPronunciationServiceNoRetryOnNotFound(t *testing.T) {
+func TestPronunciationServiceRetryableOnNotFoundAllProviders(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 	}))
@@ -150,7 +167,9 @@ func TestPronunciationServiceNoRetryOnNotFound(t *testing.T) {
 		DictionaryBaseURL: srv.URL + "/api/v2/entries/en",
 	}
 
-	service := NewPronunciationService(cfg, nil, zap.NewNop())
+	db := testutil.SetupTestDB(t)
+	wordRepo := repository.NewWordRepository(db, zap.NewNop())
+	service := NewPronunciationService(cfg, wordRepo, zap.NewNop())
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	go service.Start(ctx)
@@ -158,11 +177,15 @@ func TestPronunciationServiceNoRetryOnNotFound(t *testing.T) {
 	_ = service.ScheduleWord("missingword")
 
 	time.Sleep(300 * time.Millisecond)
-	service.mu.Lock()
-	_, ok := service.retries["missingword"]
-	service.mu.Unlock()
-	if ok {
-		t.Fatalf("expected no retry state for not found pronunciation")
+	status, err := service.ttsRepo.GetByWord("missingword")
+	if err != nil {
+		t.Fatalf("GetByWord() error = %v", err)
+	}
+	if status == nil {
+		t.Fatal("expected status record")
+	}
+	if status.State != "failed_retryable" || status.AttemptCount != 1 {
+		t.Fatalf("unexpected status: %+v", status)
 	}
 }
 
@@ -171,11 +194,11 @@ func TestOpenRouterPronunciationProviderFetch(t *testing.T) {
 
 	var gotAuth string
 	var gotBody struct {
-		Model      string          `json:"model"`
+		Model      string                           `json:"model"`
 		Messages   []struct{ Role, Content string } `json:"messages"`
-		Modalities []string        `json:"modalities"`
-		Stream     bool            `json:"stream"`
-		MaxTokens  int             `json:"max_tokens"`
+		Modalities []string                         `json:"modalities"`
+		Stream     bool                             `json:"stream"`
+		MaxTokens  int                              `json:"max_tokens"`
 	}
 
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -200,13 +223,13 @@ func TestOpenRouterPronunciationProviderFetch(t *testing.T) {
 	defer srv.Close()
 
 	provider := &openRouterPronunciationProvider{
-		baseURL:             srv.URL,
-		model:               "openai/gpt-4o-audio-preview",
-		voice:               "alloy",
-		apiKey:              "test-key",
-		client:              &http.Client{Timeout: 3 * time.Second},
+		baseURL:              srv.URL,
+		model:                "openai/gpt-4o-audio-preview",
+		voice:                "alloy",
+		apiKey:               "test-key",
+		client:               &http.Client{Timeout: 3 * time.Second},
 		forceChatCompletions: true,
-		pcmToMp3:            func(pcm []byte) ([]byte, error) { return pcm, nil },
+		pcmToMp3:             func(pcm []byte) ([]byte, error) { return pcm, nil },
 	}
 
 	audio, err := provider.fetch(context.Background(), "spy")
@@ -261,6 +284,62 @@ func TestOpenRouterPronunciationProviderFetch_TranscriptMismatch(t *testing.T) {
 	}
 }
 
+func TestOpenRouterPronunciationProviderFetch_TranscriptPhoneticLikeAccepted(t *testing.T) {
+	audioBytes := []byte("ID3-openrouter-mp3")
+
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/event-stream")
+		b64 := base64.StdEncoding.EncodeToString(audioBytes)
+		evt := `data: {"choices":[{"delta":{"audio":{"data":"` + b64 + `"},"content":[{"type":"text","text":"kə-MOH-shun"}]}}]}` + "\n\n"
+		_, _ = w.Write([]byte(evt))
+		_, _ = w.Write([]byte("data: [DONE]\n\n"))
+	}))
+	defer srv.Close()
+
+	provider := &openRouterPronunciationProvider{
+		baseURL:              srv.URL,
+		model:                "openai/gpt-4o-audio-preview",
+		voice:                "alloy",
+		apiKey:               "test-key",
+		client:               &http.Client{Timeout: 3 * time.Second},
+		forceChatCompletions: true,
+		pcmToMp3:             func(pcm []byte) ([]byte, error) { return pcm, nil },
+	}
+
+	audio, err := provider.fetch(context.Background(), "commotion")
+	if err != nil {
+		t.Fatalf("fetch error: %v", err)
+	}
+	if string(audio) != string(audioBytes) {
+		t.Fatalf("unexpected audio payload")
+	}
+}
+
+func TestDictionaryPronunciationProviderFetch_NoAudioReason(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write([]byte(`[{"phonetics":[{"audio":""}]}]`))
+	}))
+	defer srv.Close()
+
+	p := &dictionaryPronunciationProvider{
+		baseURL: srv.URL,
+		client:  &http.Client{Timeout: 3 * time.Second},
+	}
+
+	_, err := p.fetch(context.Background(), "ethos")
+	if err == nil {
+		t.Fatal("expected not found error")
+	}
+	if !errors.Is(err, errPronunciationNotFound) {
+		t.Fatalf("expected errPronunciationNotFound, got %v", err)
+	}
+	code, retryable := classifyPronunciationError(err)
+	if code != "dictionary_no_audio" || !retryable {
+		t.Fatalf("unexpected classification: code=%s retryable=%v err=%v", code, retryable, err)
+	}
+}
+
 func TestOpenRouterPronunciationProviderFetch_MissingTranscript(t *testing.T) {
 	audioBytes := []byte("ID3-openrouter-mp3")
 
@@ -301,7 +380,7 @@ func TestParseSSEAudioStream_CollectsAudioAndTranscript(t *testing.T) {
 			`data: [DONE]` + "\n\n",
 	)
 
-	pcm, transcript, err := parseSSEAudioStream(sse)
+	pcm, transcript, _, err := parseSSEAudioStream(sse)
 	if err != nil {
 		t.Fatalf("parseSSEAudioStream error: %v", err)
 	}
@@ -340,6 +419,72 @@ func TestOpenRouterPronunciationProviderFetch_NonSSEErrorBody(t *testing.T) {
 	}
 }
 
+func TestPronunciationService_DBRetryLimitAndTerminal(t *testing.T) {
+	db := testutil.SetupTestDB(t)
+	wordRepo := repository.NewWordRepository(db, zap.NewNop())
+	svc := NewPronunciationService(config.TTSConfig{
+		Enabled:           true,
+		Provider:          "dictionary",
+		AudioDir:          t.TempDir(),
+		PublicBasePath:    "/media/tts",
+		DictionaryEnabled: true,
+		DictionaryBaseURL: "http://example.com",
+	}, wordRepo, zap.NewNop())
+	svc.providers = []pronunciationProvider{
+		&stubPronunciationProvider{providerName: "openrouter", err: fmt.Errorf("status 500: provider error")},
+	}
+
+	for i := 0; i < 4; i++ {
+		svc.processWord(context.Background(), "retryword")
+	}
+
+	status, err := svc.ttsRepo.GetByWord("retryword")
+	if err != nil {
+		t.Fatalf("GetByWord() error = %v", err)
+	}
+	if status == nil {
+		t.Fatal("expected status")
+	}
+	if status.AttemptCount != 3 {
+		t.Fatalf("expected attempt_count=3, got %d", status.AttemptCount)
+	}
+	if status.State != "failed_terminal" {
+		t.Fatalf("expected failed_terminal, got %s", status.State)
+	}
+}
+
+func TestPronunciationService_ForceRegenerateAfterTerminal(t *testing.T) {
+	db := testutil.SetupTestDB(t)
+	wordRepo := repository.NewWordRepository(db, zap.NewNop())
+	svc := NewPronunciationService(config.TTSConfig{
+		Enabled:           true,
+		Provider:          "dictionary",
+		AudioDir:          t.TempDir(),
+		PublicBasePath:    "/media/tts",
+		DictionaryEnabled: true,
+		DictionaryBaseURL: "http://example.com",
+	}, wordRepo, zap.NewNop())
+	svc.providers = []pronunciationProvider{
+		&stubPronunciationProvider{providerName: "openrouter", err: fmt.Errorf("status 500: provider error")},
+	}
+
+	for i := 0; i < 3; i++ {
+		svc.processWord(context.Background(), "terminalreset")
+	}
+	before, _ := svc.ttsRepo.GetByWord("terminalreset")
+	if before == nil || before.State != "failed_terminal" {
+		t.Fatalf("expected terminal before reset, got %+v", before)
+	}
+
+	after, err := svc.ForceRegenerate("terminalreset")
+	if err != nil {
+		t.Fatalf("ForceRegenerate() error = %v", err)
+	}
+	if after.State != "pending" || after.AttemptCount != 0 {
+		t.Fatalf("unexpected reset status: %+v", after)
+	}
+}
+
 func TestPronunciationWordFileBase(t *testing.T) {
 	tests := []struct {
 		in   string
@@ -359,7 +504,6 @@ func TestPronunciationWordFileBase(t *testing.T) {
 		}
 	}
 }
-
 
 func TestBuildPronunciationProvidersAuto_WithOpenRouter(t *testing.T) {
 	providers := buildPronunciationProviders(config.TTSConfig{

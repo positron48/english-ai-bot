@@ -234,6 +234,21 @@ func (db *DB) migratePostgres() error {
 			updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
 			updated_by_user_id BIGINT REFERENCES users(id) ON DELETE SET NULL
 		)`,
+		`CREATE TABLE IF NOT EXISTS tts_generation_status (
+			word TEXT PRIMARY KEY,
+			state TEXT NOT NULL DEFAULT 'pending',
+			attempt_count INTEGER NOT NULL DEFAULT 0,
+			max_attempts INTEGER NOT NULL DEFAULT 3,
+			last_error_code TEXT,
+			last_error_message TEXT,
+			last_provider TEXT,
+			audio_rel_path TEXT,
+			last_attempt_at TIMESTAMPTZ,
+			created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+			updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+		)`,
+		`CREATE INDEX IF NOT EXISTS idx_tts_generation_status_state ON tts_generation_status(state)`,
+		`CREATE INDEX IF NOT EXISTS idx_tts_generation_status_updated_at ON tts_generation_status(updated_at)`,
 		`CREATE TABLE IF NOT EXISTS user_access_categories (
 			id BIGSERIAL PRIMARY KEY,
 			name TEXT NOT NULL UNIQUE,

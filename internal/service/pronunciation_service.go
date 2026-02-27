@@ -22,6 +22,7 @@ import (
 	"unicode"
 
 	"tgbot-skeleton/internal/config"
+	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 
 	"go.uber.org/zap"
@@ -46,13 +47,13 @@ type pronunciationProvider interface {
 type pcmToMp3Func func(pcm []byte) ([]byte, error)
 
 type openRouterPronunciationProvider struct {
-	baseURL             string
-	model               string
-	voice               string
-	apiKey              string
-	client              *http.Client
-	pcmToMp3            pcmToMp3Func // nil = use ffmpeg
-	forceChatCompletions bool        // if true, use chat path even when baseURL is not openrouter (for tests)
+	baseURL              string
+	model                string
+	voice                string
+	apiKey               string
+	client               *http.Client
+	pcmToMp3             pcmToMp3Func // nil = use ffmpeg
+	forceChatCompletions bool         // if true, use chat path even when baseURL is not openrouter (for tests)
 }
 
 func (p *openRouterPronunciationProvider) name() string {
@@ -97,7 +98,7 @@ func (p *openRouterPronunciationProvider) fetchViaAudioSpeech(ctx context.Contex
 	defer resp.Body.Close()
 	if resp.StatusCode == http.StatusNotFound || resp.StatusCode == http.StatusBadRequest || resp.StatusCode == http.StatusUnprocessableEntity {
 		payload, _ := io.ReadAll(io.LimitReader(resp.Body, 4096))
-		return nil, fmt.Errorf("%w: openrouter endpoint/model rejected request (%d): %s", errPronunciationNotFound, resp.StatusCode, strings.TrimSpace(string(payload)))
+		return nil, fmt.Errorf("%w: openrouter_audio_speech_rejected (%d): %s", errPronunciationNotFound, resp.StatusCode, strings.TrimSpace(string(payload)))
 	}
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
 		payload, _ := io.ReadAll(io.LimitReader(resp.Body, 4096))
@@ -108,13 +109,29 @@ func (p *openRouterPronunciationProvider) fetchViaAudioSpeech(ctx context.Contex
 		return nil, fmt.Errorf("openrouter tts read body: %w", err)
 	}
 	if len(audio) == 0 {
-		return nil, errPronunciationNotFound
+		return nil, fmt.Errorf("%w: openrouter_audio_speech_empty", errPronunciationNotFound)
 	}
 	return audio, nil
 }
 
 // fetchViaChatCompletions uses POST /chat/completions with modalities audio (OpenRouter); parses SSE, collects PCM, converts to MP3.
 func (p *openRouterPronunciationProvider) fetchViaChatCompletions(ctx context.Context, word string) ([]byte, error) {
+	for attempt := 1; attempt <= 2; attempt++ {
+		audio, err := p.fetchViaChatCompletionsOnce(ctx, word)
+		if err == nil {
+			return audio, nil
+		}
+		// OpenRouter occasionally returns transcript without audio chunks; retry once.
+		if attempt == 1 && strings.Contains(strings.ToLower(err.Error()), "openrouter_no_audio") {
+			time.Sleep(200 * time.Millisecond)
+			continue
+		}
+		return nil, err
+	}
+	return nil, fmt.Errorf("%w: openrouter_no_audio", errPronunciationNotFound)
+}
+
+func (p *openRouterPronunciationProvider) fetchViaChatCompletionsOnce(ctx context.Context, word string) ([]byte, error) {
 	quotedWord := "`" + word + "`"
 	userPrompt := "You are a pronunciation machine. Say ONLY the exact word below as audio. One word, no greeting, no pause, no repetition. Word: " + quotedWord
 	payload := map[string]interface{}{
@@ -148,29 +165,39 @@ func (p *openRouterPronunciationProvider) fetchViaChatCompletions(ctx context.Co
 	if !strings.Contains(contentType, "text/event-stream") {
 		payload, _ := io.ReadAll(io.LimitReader(resp.Body, 4096))
 		if resp.StatusCode == http.StatusNotFound || resp.StatusCode == http.StatusBadRequest || resp.StatusCode == http.StatusUnprocessableEntity {
-			return nil, fmt.Errorf("%w: openrouter chat rejected (%d): %s", errPronunciationNotFound, resp.StatusCode, strings.TrimSpace(string(payload)))
+			return nil, fmt.Errorf("%w: openrouter_rejected (%d): %s", errPronunciationNotFound, resp.StatusCode, strings.TrimSpace(string(payload)))
 		}
 		return nil, fmt.Errorf("openrouter chat unexpected content-type %q (%d): %s", contentType, resp.StatusCode, strings.TrimSpace(string(payload)))
 	}
 	if resp.StatusCode != http.StatusOK {
 		payload, _ := io.ReadAll(io.LimitReader(resp.Body, 4096))
 		if resp.StatusCode == http.StatusNotFound || resp.StatusCode == http.StatusBadRequest || resp.StatusCode == http.StatusUnprocessableEntity {
-			return nil, fmt.Errorf("%w: openrouter chat rejected (%d): %s", errPronunciationNotFound, resp.StatusCode, strings.TrimSpace(string(payload)))
+			return nil, fmt.Errorf("%w: openrouter_rejected (%d): %s", errPronunciationNotFound, resp.StatusCode, strings.TrimSpace(string(payload)))
 		}
 		return nil, fmt.Errorf("openrouter chat rejected (%d): %s", resp.StatusCode, strings.TrimSpace(string(payload)))
 	}
-	pcm, transcript, err := parseSSEAudioStream(resp.Body)
+	pcm, transcript, stats, err := parseSSEAudioStream(resp.Body)
 	if err != nil {
+		if strings.Contains(strings.ToLower(err.Error()), "sse audio decode failed") {
+			return nil, fmt.Errorf("%w: openrouter_audio_decode_failed (%v)", errPronunciationNotFound, err)
+		}
 		return nil, fmt.Errorf("openrouter chat stream: %w", err)
 	}
 	if len(pcm) == 0 {
-		return nil, errPronunciationNotFound
+		trimmed := strings.TrimSpace(transcript)
+		if len(trimmed) > 120 {
+			trimmed = trimmed[:120]
+		}
+		return nil, fmt.Errorf("%w: openrouter_no_audio (transcript=%q lines=%d data_lines=%d json_chunks=%d json_errors=%d choices=%d audio_chunks=%d decode_errors=%d transcript_parts=%d first_json_error=%q first_json_sample=%q)",
+			errPronunciationNotFound, trimmed, stats.LinesTotal, stats.DataLines, stats.JSONChunks, stats.JSONErrors, stats.ChoicesChunks, stats.AudioDataChunks, stats.DecodeErrors, stats.TranscriptParts, stats.FirstJSONError, stats.FirstJSONSample)
 	}
 	if strings.TrimSpace(transcript) == "" {
 		return nil, fmt.Errorf("%w: missing transcript for validation", errPronunciationNotFound)
 	}
 	if !isPronunciationTranscriptMatch(word, transcript) {
-		return nil, fmt.Errorf("%w: transcript mismatch: expected %q got %q", errPronunciationNotFound, word, transcript)
+		if !isLikelySingleWordPronunciationTranscript(transcript) {
+			return nil, fmt.Errorf("%w: transcript mismatch: expected %q got %q", errPronunciationNotFound, word, transcript)
+		}
 	}
 	convert := p.pcmToMp3
 	if convert == nil {
@@ -204,18 +231,34 @@ func defaultPcmToMp3(pcm []byte) ([]byte, error) {
 }
 
 // parseSSEAudioStream reads SSE from r and collects all base64 delta.audio.data into raw PCM and text delta as transcript.
-func parseSSEAudioStream(r io.Reader) ([]byte, string, error) {
+type sseAudioStats struct {
+	LinesTotal      int
+	DataLines       int
+	JSONChunks      int
+	JSONErrors      int
+	FirstJSONError  string
+	FirstJSONSample string
+	ChoicesChunks   int
+	AudioDataChunks int
+	TranscriptParts int
+	DecodeErrors    int
+}
+
+func parseSSEAudioStream(r io.Reader) ([]byte, string, sseAudioStats, error) {
 	var pcm bytes.Buffer
 	var text strings.Builder
+	stats := sseAudioStats{}
 	scanner := bufio.NewScanner(r)
 	const maxLine = 1024 * 1024
 	scanner.Buffer(make([]byte, 0, 64*1024), maxLine)
 	for scanner.Scan() {
-		line := scanner.Bytes()
-		if !bytes.HasPrefix(line, []byte("data: ")) {
+		stats.LinesTotal++
+		line := bytes.TrimSpace(scanner.Bytes())
+		if !bytes.HasPrefix(line, []byte("data:")) {
 			continue
 		}
-		jsonPart := line[6:]
+		stats.DataLines++
+		jsonPart := bytes.TrimSpace(line[5:])
 		if bytes.Equal(jsonPart, []byte("[DONE]")) {
 			continue
 		}
@@ -223,45 +266,102 @@ func parseSSEAudioStream(r io.Reader) ([]byte, string, error) {
 			Choices []struct {
 				Delta struct {
 					Audio struct {
-						Data string `json:"data"`
+						Data       string `json:"data"`
 						Transcript string `json:"transcript"`
 					} `json:"audio"`
-					Content []struct {
-						Type string `json:"type"`
-						Text string `json:"text"`
-					} `json:"content"`
+					Content json.RawMessage `json:"content"`
 				} `json:"delta"`
 			} `json:"choices"`
 		}
 		if err := json.Unmarshal(jsonPart, &chunk); err != nil {
+			stats.JSONErrors++
+			if stats.FirstJSONError == "" {
+				stats.FirstJSONError = err.Error()
+				sample := string(jsonPart)
+				if len(sample) > 180 {
+					sample = sample[:180]
+				}
+				stats.FirstJSONSample = sample
+			}
 			continue
 		}
+		stats.JSONChunks++
 		if len(chunk.Choices) == 0 {
 			continue
 		}
+		stats.ChoicesChunks++
 		delta := chunk.Choices[0].Delta
 		if delta.Audio.Data != "" {
-			decoded, err := base64.StdEncoding.DecodeString(delta.Audio.Data)
-			if err == nil {
+			stats.AudioDataChunks++
+			decoded, ok := decodeAudioBase64(delta.Audio.Data)
+			if ok {
 				pcm.Write(decoded)
+			} else {
+				stats.DecodeErrors++
 			}
 		}
 		if strings.TrimSpace(delta.Audio.Transcript) != "" {
+			stats.TranscriptParts++
 			text.WriteString(delta.Audio.Transcript)
 		}
-		for _, content := range delta.Content {
-			if strings.TrimSpace(content.Text) == "" {
+		for _, contentText := range extractDeltaContentText(delta.Content) {
+			if strings.TrimSpace(contentText) == "" {
 				continue
 			}
-			if content.Type == "" || strings.EqualFold(content.Type, "text") {
-				text.WriteString(content.Text)
-			}
+			text.WriteString(contentText)
 		}
 	}
 	if err := scanner.Err(); err != nil {
-		return nil, "", err
+		return nil, "", stats, err
 	}
-	return pcm.Bytes(), text.String(), nil
+	if pcm.Len() == 0 && stats.DecodeErrors > 0 {
+		return nil, text.String(), stats, fmt.Errorf("sse audio decode failed: chunks=%d", stats.DecodeErrors)
+	}
+	return pcm.Bytes(), text.String(), stats, nil
+}
+
+func decodeAudioBase64(raw string) ([]byte, bool) {
+	s := strings.TrimSpace(raw)
+	if s == "" {
+		return nil, false
+	}
+	if decoded, err := base64.StdEncoding.DecodeString(s); err == nil {
+		return decoded, true
+	}
+	if decoded, err := base64.RawStdEncoding.DecodeString(s); err == nil {
+		return decoded, true
+	}
+	if decoded, err := base64.URLEncoding.DecodeString(s); err == nil {
+		return decoded, true
+	}
+	if decoded, err := base64.RawURLEncoding.DecodeString(s); err == nil {
+		return decoded, true
+	}
+	return nil, false
+}
+
+func extractDeltaContentText(raw json.RawMessage) []string {
+	if len(raw) == 0 || bytes.Equal(raw, []byte("null")) {
+		return nil
+	}
+	var asString string
+	if err := json.Unmarshal(raw, &asString); err == nil {
+		return []string{asString}
+	}
+	var asItems []struct {
+		Type string `json:"type"`
+		Text string `json:"text"`
+	}
+	if err := json.Unmarshal(raw, &asItems); err == nil {
+		out := make([]string, 0, len(asItems))
+		for _, item := range asItems {
+			if item.Type == "" || strings.EqualFold(item.Type, "text") {
+				out = append(out, item.Text)
+			}
+		}
+		return out
+	}
+	return nil
 }
 
 func isPronunciationTranscriptMatch(word, transcript string) bool {
@@ -284,9 +384,35 @@ func normalizePronunciationTranscript(s string) string {
 	return b.String()
 }
 
+func isLikelySingleWordPronunciationTranscript(s string) bool {
+	s = strings.TrimSpace(s)
+	if s == "" {
+		return false
+	}
+	if strings.ContainsAny(s, ".!?") {
+		return false
+	}
+	fields := strings.Fields(s)
+	// allow one lexical token, or two tiny parts produced by models; reject long phrases
+	if len(fields) > 2 {
+		return false
+	}
+	joined := strings.Join(fields, "")
+	letters := 0
+	for _, r := range joined {
+		if unicode.IsLetter(r) {
+			letters++
+		}
+	}
+	return letters >= 3
+}
+
 type dictionaryPronunciationProvider struct {
-	baseURL string
-	client  *http.Client
+	baseURL       string
+	client        *http.Client
+	throttleEvery time.Duration
+	throttleMu    sync.Mutex
+	nextAllowedAt time.Time
 }
 
 func (p *dictionaryPronunciationProvider) name() string {
@@ -297,6 +423,9 @@ func (p *dictionaryPronunciationProvider) fetch(ctx context.Context, word string
 	lookupWord := dictionaryLookupWord(word)
 	if lookupWord == "" {
 		return nil, errPronunciationNotFound
+	}
+	if err := p.waitThrottle(ctx); err != nil {
+		return nil, fmt.Errorf("dictionary throttle wait failed: %w", err)
 	}
 
 	reqURL := strings.TrimRight(p.baseURL, "/") + "/" + url.PathEscape(lookupWord)
@@ -312,7 +441,7 @@ func (p *dictionaryPronunciationProvider) fetch(ctx context.Context, word string
 	defer resp.Body.Close()
 
 	if resp.StatusCode == http.StatusNotFound {
-		return nil, errPronunciationNotFound
+		return nil, fmt.Errorf("%w: dictionary_404", errPronunciationNotFound)
 	}
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
 		payload, _ := io.ReadAll(io.LimitReader(resp.Body, 2048))
@@ -326,7 +455,7 @@ func (p *dictionaryPronunciationProvider) fetch(ctx context.Context, word string
 
 	audioURL := pickDictionaryAudioURL(entries)
 	if audioURL == "" {
-		return nil, errPronunciationNotFound
+		return nil, fmt.Errorf("%w: dictionary_no_audio", errPronunciationNotFound)
 	}
 	if strings.HasPrefix(audioURL, "//") {
 		audioURL = "https:" + audioURL
@@ -336,6 +465,9 @@ func (p *dictionaryPronunciationProvider) fetch(ctx context.Context, word string
 	if err != nil {
 		return nil, fmt.Errorf("build audio download request: %w", err)
 	}
+	if err := p.waitThrottle(ctx); err != nil {
+		return nil, fmt.Errorf("dictionary throttle wait failed: %w", err)
+	}
 	audioResp, err := p.client.Do(audioReq)
 	if err != nil {
 		return nil, fmt.Errorf("dictionary audio download failed: %w", err)
@@ -343,7 +475,7 @@ func (p *dictionaryPronunciationProvider) fetch(ctx context.Context, word string
 	defer audioResp.Body.Close()
 
 	if audioResp.StatusCode == http.StatusNotFound {
-		return nil, errPronunciationNotFound
+		return nil, fmt.Errorf("%w: dictionary_audio_404", errPronunciationNotFound)
 	}
 	if audioResp.StatusCode < 200 || audioResp.StatusCode >= 300 {
 		payload, _ := io.ReadAll(io.LimitReader(audioResp.Body, 1024))
@@ -359,6 +491,31 @@ func (p *dictionaryPronunciationProvider) fetch(ctx context.Context, word string
 	}
 
 	return audio, nil
+}
+
+func (p *dictionaryPronunciationProvider) waitThrottle(ctx context.Context) error {
+	if p.throttleEvery <= 0 {
+		return nil
+	}
+	p.throttleMu.Lock()
+	wait := time.Until(p.nextAllowedAt)
+	if wait < 0 {
+		wait = 0
+	}
+	p.nextAllowedAt = time.Now().Add(p.throttleEvery)
+	p.throttleMu.Unlock()
+
+	if wait == 0 {
+		return nil
+	}
+	timer := time.NewTimer(wait)
+	defer timer.Stop()
+	select {
+	case <-ctx.Done():
+		return ctx.Err()
+	case <-timer.C:
+		return nil
+	}
 }
 
 func dictionaryLookupWord(word string) string {
@@ -388,11 +545,6 @@ func pickDictionaryAudioURL(entries []dictEntry) string {
 	return fallback
 }
 
-type retryState struct {
-	attempt int
-	nextTry time.Time
-}
-
 // PronunciationLookupResult describes availability of cached pronunciation audio.
 type PronunciationLookupResult struct {
 	NormalizedWord string
@@ -414,11 +566,11 @@ type PronunciationService struct {
 	workers         int
 
 	wordRepo   *repository.WordRepository
+	ttsRepo    *repository.TTSStatusRepository
 	logger     *zap.Logger
 	providers  []pronunciationProvider
 	queue      chan string
 	queueState map[string]struct{}
-	retries    map[string]retryState
 	mu         sync.Mutex
 }
 
@@ -480,7 +632,9 @@ func NewPronunciationService(cfg config.TTSConfig, wordRepo *repository.WordRepo
 		logger:          logger,
 		queue:           make(chan string, 4096),
 		queueState:      make(map[string]struct{}),
-		retries:         make(map[string]retryState),
+	}
+	if wordRepo != nil && wordRepo.DB() != nil {
+		service.ttsRepo = repository.NewTTSStatusRepository(wordRepo.DB(), logger)
 	}
 
 	if service.audioDir == "" {
@@ -520,9 +674,14 @@ func buildPronunciationProviders(cfg config.TTSConfig, logger *zap.Logger) []pro
 		if baseURL == "" {
 			baseURL = "https://api.dictionaryapi.dev/api/v2/entries/en"
 		}
+		minDelay := parseDurationWithDefault(cfg.DictionaryMinDelay, 100*time.Millisecond)
+		if minDelay < 0 {
+			minDelay = 0
+		}
 		providers = append(providers, &dictionaryPronunciationProvider{
-			baseURL: baseURL,
-			client:  client,
+			baseURL:       baseURL,
+			client:        client,
+			throttleEvery: minDelay,
 		})
 	}
 	addOpenRouter := func() {
@@ -538,11 +697,11 @@ func buildPronunciationProviders(cfg config.TTSConfig, logger *zap.Logger) []pro
 			voice = "alloy"
 		}
 		providers = append(providers, &openRouterPronunciationProvider{
-			baseURL:             baseURL,
-			model:               strings.TrimSpace(cfg.Model),
-			voice:               voice,
-			apiKey:              strings.TrimSpace(cfg.APIKey),
-			client:              client,
+			baseURL:              baseURL,
+			model:                strings.TrimSpace(cfg.Model),
+			voice:                voice,
+			apiKey:               strings.TrimSpace(cfg.APIKey),
+			client:               client,
 			forceChatCompletions: isOpenRouterBaseURL(baseURL),
 		})
 	}
@@ -596,6 +755,58 @@ func (s *PronunciationService) PublicBasePath() string {
 	return s.publicBasePath
 }
 
+type TTSDebugProviderResult struct {
+	Provider string `json:"provider"`
+	Outcome  string `json:"outcome"`
+	Reason   string `json:"reason,omitempty"`
+	Error    string `json:"error,omitempty"`
+	Bytes    int    `json:"bytes,omitempty"`
+}
+
+type TTSDebugResult struct {
+	Word    string                   `json:"word"`
+	Results []TTSDebugProviderResult `json:"results"`
+}
+
+// DebugFetch runs TTS providers in the same order as runtime generation and returns step-by-step outcomes.
+func (s *PronunciationService) DebugFetch(ctx context.Context, rawWord string) (*TTSDebugResult, error) {
+	if s == nil || !s.IsEnabled() {
+		return nil, fmt.Errorf("tts is disabled")
+	}
+	word, ok := normalizePronunciationWord(rawWord)
+	if !ok {
+		return nil, fmt.Errorf("invalid word: %q", rawWord)
+	}
+	res := &TTSDebugResult{Word: word, Results: make([]TTSDebugProviderResult, 0, len(s.providers))}
+	for _, provider := range s.providers {
+		audio, err := provider.fetch(ctx, word)
+		if err != nil {
+			code, _ := classifyPronunciationError(err)
+			if code == "" {
+				code = "provider_error"
+			}
+			outcome := "error"
+			if errors.Is(err, errPronunciationNotFound) {
+				outcome = "not_found"
+			}
+			res.Results = append(res.Results, TTSDebugProviderResult{
+				Provider: provider.name(),
+				Outcome:  outcome,
+				Reason:   code,
+				Error:    err.Error(),
+			})
+			continue
+		}
+		res.Results = append(res.Results, TTSDebugProviderResult{
+			Provider: provider.name(),
+			Outcome:  "success",
+			Bytes:    len(audio),
+		})
+		return res, nil
+	}
+	return res, nil
+}
+
 // Start launches pronunciation workers and background backfill loop.
 func (s *PronunciationService) Start(ctx context.Context) {
 	if !s.IsEnabled() {
@@ -645,52 +856,125 @@ func (s *PronunciationService) processWord(ctx context.Context, word string) {
 		return
 	}
 
-	if s.cachedRelPathForWord(word) != "" {
-		s.clearRetry(word)
+	status, err := s.ensureStatusForWord(word)
+	if err != nil {
+		s.logger.Warn("failed to ensure tts status before generation", zap.String("word", word), zap.Error(err))
 		return
 	}
+	if status != nil && status.State == models.TTSStateFailedTerminal {
+		return
+	}
+	if status != nil && status.AttemptCount >= status.MaxAttempts {
+		if s.ttsRepo != nil {
+			_ = s.ttsRepo.MarkTerminal(word, "service", "max_attempts_reached", "attempt limit reached")
+		}
+		return
+	}
+	if status != nil && status.State == models.TTSStateReady {
+		if relPath := s.resolveReadyRelPath(word, status); relPath != "" {
+			return
+		}
+		if s.ttsRepo != nil {
+			_ = s.ttsRepo.UpsertPending(word)
+		}
+	}
 
-	var retriableErr error
+	var retryableErr error
+	var retryableCode string
+	var retryableProvider string
 	notFoundSeen := false
-	for _, provider := range s.providers {
+	notFoundReasons := make([]string, 0, len(s.providers))
+	for i, provider := range s.providers {
 		audio, err := provider.fetch(ctx, word)
 		if err != nil {
+			hasFallback := i < len(s.providers)-1
 			if errors.Is(err, errPronunciationNotFound) {
 				notFoundSeen = true
-				s.logger.Debug("pronunciation not found in provider", zap.String("provider", provider.name()), zap.String("word", word), zap.Error(err))
+				code, retryable := classifyPronunciationError(err)
+				if code == "" {
+					code = "not_found"
+				}
+				notFoundReasons = append(notFoundReasons, provider.name()+":"+code)
+				s.logger.Debug("pronunciation not found in provider", zap.String("provider", provider.name()), zap.String("word", word), zap.String("reason", code), zap.Error(err))
+				if retryable {
+					retryableErr = err
+					retryableCode = code
+					retryableProvider = provider.name()
+				}
+				s.logger.Info("tts provider result",
+					zap.String("word", word),
+					zap.String("provider", provider.name()),
+					zap.String("reason", code),
+					zap.String("error", err.Error()),
+					zap.String("outcome", "not_found"),
+					zap.String("decision", map[bool]string{true: "fallback_next", false: "retry_or_terminal_after_chain"}[hasFallback]),
+				)
 				continue
 			}
-			if retriableErr == nil {
-				retriableErr = err
+			code, retryable := classifyPronunciationError(err)
+			if retryable && retryableErr == nil {
+				retryableErr = err
+				retryableCode = code
+				retryableProvider = provider.name()
 			}
 			s.logger.Warn("pronunciation provider failed", zap.String("provider", provider.name()), zap.String("word", word), zap.Error(err))
+			if !retryable {
+				if s.ttsRepo != nil {
+					_ = s.ttsRepo.MarkTerminal(word, provider.name(), code, err.Error())
+				}
+				s.logTTSStatusDecision(word, "terminal_reached", provider.name(), code)
+				return
+			}
+			s.logger.Info("tts provider result",
+				zap.String("word", word),
+				zap.String("provider", provider.name()),
+				zap.String("error_code", code),
+				zap.String("error", err.Error()),
+				zap.String("outcome", "retryable_error"),
+				zap.String("decision", map[bool]string{true: "fallback_next", false: "retry_or_terminal_after_chain"}[hasFallback]),
+			)
 			continue
 		}
 		ext := ".mp3"
 		relPath := s.relativePathForWordWithExt(word, ext)
 		fullPath := filepath.Join(s.audioDir, relPath)
 		if err := writeFileAtomic(fullPath, audio, 0o644); err != nil {
-			if retriableErr == nil {
-				retriableErr = err
-			}
+			retryableErr = err
+			retryableCode = "write_failed"
+			retryableProvider = provider.name()
 			s.logger.Warn("failed to write pronunciation audio", zap.String("path", fullPath), zap.Error(err))
 			continue
 		}
-		s.clearRetry(word)
+		if s.ttsRepo != nil {
+			_ = s.ttsRepo.MarkReady(word, provider.name(), relPath)
+		}
 		s.logger.Info("pronunciation cached", zap.String("word", word), zap.String("path", relPath), zap.String("provider", provider.name()), zap.Int("bytes", len(audio)))
 		return
 	}
 
-	if retriableErr != nil {
-		s.setRetry(word, retriableErr)
+	if retryableErr != nil {
+		if s.ttsRepo != nil {
+			_ = s.ttsRepo.MarkAttempt(word, retryableProvider, retryableCode, retryableErr.Error(), true)
+		}
+		s.logTTSStatusDecision(word, "retry_or_terminal_after_attempt", retryableProvider, retryableCode)
 		return
 	}
 	if notFoundSeen {
-		s.clearRetry(word)
-		s.logger.Info("pronunciation not found in all providers, skip retry", zap.String("word", word))
+		if s.ttsRepo != nil {
+			_ = s.ttsRepo.MarkAttempt(word, "all", "not_found_all_providers", "not found in all providers", true)
+		}
+		s.logger.Info("tts chain result",
+			zap.String("word", word),
+			zap.String("outcome", "not_found_all_providers"),
+			zap.Strings("reasons", notFoundReasons),
+		)
+		s.logTTSStatusDecision(word, "retry_or_terminal_after_attempt", "all", "not_found_all_providers")
 		return
 	}
-	s.setRetry(word, errPronunciationNotFound)
+	if s.ttsRepo != nil {
+		_ = s.ttsRepo.MarkAttempt(word, "service", "unknown_generation_failure", "unknown generation failure", true)
+	}
+	s.logTTSStatusDecision(word, "retry_or_terminal_after_attempt", "service", "unknown_generation_failure")
 }
 
 func writeFileAtomic(path string, data []byte, mode os.FileMode) error {
@@ -723,47 +1007,6 @@ func writeFileAtomic(path string, data []byte, mode os.FileMode) error {
 	return nil
 }
 
-func (s *PronunciationService) setRetry(word string, lastErr error) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-
-	state := s.retries[word]
-	state.attempt++
-	if state.attempt > s.maxRetries {
-		state.attempt = s.maxRetries
-	}
-
-	backoff := s.retryBase
-	for i := 1; i < state.attempt; i++ {
-		backoff *= 2
-		if backoff >= s.retryMax {
-			backoff = s.retryMax
-			break
-		}
-	}
-	if backoff > s.retryMax {
-		backoff = s.retryMax
-	}
-
-	state.nextTry = time.Now().Add(backoff)
-	s.retries[word] = state
-
-	if lastErr != nil {
-		s.logger.Warn("pronunciation generation failed, scheduled retry",
-			zap.String("word", word),
-			zap.Int("attempt", state.attempt),
-			zap.Duration("retry_after", backoff),
-			zap.Error(lastErr),
-		)
-	}
-}
-
-func (s *PronunciationService) clearRetry(word string) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	delete(s.retries, word)
-}
-
 func (s *PronunciationService) dequeue(word string) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -775,9 +1018,6 @@ func (s *PronunciationService) canScheduleNow(word string) bool {
 	defer s.mu.Unlock()
 
 	if _, exists := s.queueState[word]; exists {
-		return false
-	}
-	if retry, exists := s.retries[word]; exists && retry.nextTry.After(time.Now()) {
 		return false
 	}
 	s.queueState[word] = struct{}{}
@@ -815,6 +1055,28 @@ func (s *PronunciationService) ScheduleWord(word string) bool {
 		return false
 	}
 
+	status, err := s.ensureStatusForWord(normalized)
+	if err != nil {
+		s.logger.Warn("failed to check tts status before schedule", zap.String("word", normalized), zap.Error(err))
+		return false
+	}
+	if status != nil && status.State == models.TTSStateFailedTerminal {
+		return false
+	}
+	if status != nil && status.AttemptCount >= status.MaxAttempts {
+		if s.ttsRepo != nil {
+			_ = s.ttsRepo.MarkTerminal(normalized, "service", "max_attempts_reached", "attempt limit reached")
+		}
+		return false
+	}
+	if status != nil && status.State == models.TTSStateReady {
+		if relPath := s.resolveReadyRelPath(normalized, status); relPath != "" {
+			return true
+		}
+		if s.ttsRepo != nil {
+			_ = s.ttsRepo.UpsertPending(normalized)
+		}
+	}
 	if s.hasCachedAudio(normalized) {
 		return true
 	}
@@ -857,15 +1119,163 @@ func (s *PronunciationService) Lookup(word string) PronunciationLookupResult {
 	}
 
 	result.NormalizedWord = normalized
+	status, err := s.ensureStatusForWord(normalized)
+	if err != nil {
+		s.logger.Warn("failed to lookup tts status", zap.String("word", normalized), zap.Error(err))
+		return result
+	}
+	if status != nil && status.State == models.TTSStateReady {
+		if rel := s.resolveReadyRelPath(normalized, status); rel != "" {
+			result.Available = true
+			result.URL = s.publicBasePath + "/" + filepath.ToSlash(rel)
+			return result
+		}
+	}
 	if s.hasCachedAudio(normalized) {
 		result.Available = true
 		result.URL = s.publicURLForWord(normalized)
+		return result
+	}
+	if status != nil && status.State == models.TTSStateFailedTerminal {
+		return result
+	}
+	if status != nil && status.AttemptCount >= status.MaxAttempts {
+		if s.ttsRepo != nil {
+			_ = s.ttsRepo.MarkTerminal(normalized, "service", "max_attempts_reached", "attempt limit reached")
+		}
 		return result
 	}
 
 	// Missing file: schedule background generation and keep UI non-blocking.
 	_ = s.ScheduleWord(normalized)
 	return result
+}
+
+type TTSStatusResult struct {
+	Word             string    `json:"word"`
+	State            string    `json:"state"`
+	AttemptCount     int       `json:"attempt_count"`
+	MaxAttempts      int       `json:"max_attempts"`
+	LastErrorCode    string    `json:"last_error_code"`
+	LastErrorMessage string    `json:"last_error_message"`
+	LastProvider     string    `json:"last_provider"`
+	AudioURL         string    `json:"audio_url"`
+	UpdatedAt        time.Time `json:"updated_at"`
+}
+
+func (s *PronunciationService) GetStatus(word string) (TTSStatusResult, error) {
+	var out TTSStatusResult
+	if s.ttsRepo == nil {
+		return out, fmt.Errorf("tts status repository is not configured")
+	}
+	normalized, ok := normalizePronunciationWord(word)
+	if !ok {
+		return out, fmt.Errorf("invalid word")
+	}
+	out.Word = normalized
+	status, err := s.ensureStatusForWord(normalized)
+	if err != nil {
+		return out, err
+	}
+	if status == nil {
+		_ = s.ttsRepo.UpsertPending(normalized)
+		status, _ = s.ttsRepo.GetByWord(normalized)
+	}
+	if status != nil {
+		out.State = status.State
+		out.AttemptCount = status.AttemptCount
+		out.MaxAttempts = status.MaxAttempts
+		if status.LastErrorCode != nil {
+			out.LastErrorCode = *status.LastErrorCode
+		}
+		if status.LastErrorMessage != nil {
+			out.LastErrorMessage = *status.LastErrorMessage
+		}
+		if status.LastProvider != nil {
+			out.LastProvider = *status.LastProvider
+		}
+		out.UpdatedAt = status.UpdatedAt
+		if rel := s.resolveReadyRelPath(normalized, status); rel != "" {
+			out.AudioURL = s.publicBasePath + "/" + filepath.ToSlash(rel)
+		}
+	}
+	return out, nil
+}
+
+func (s *PronunciationService) ForceRegenerate(word string) (TTSStatusResult, error) {
+	var out TTSStatusResult
+	if s.ttsRepo == nil {
+		return out, fmt.Errorf("tts status repository is not configured")
+	}
+	normalized, ok := normalizePronunciationWord(word)
+	if !ok {
+		return out, fmt.Errorf("invalid word")
+	}
+	if err := s.ttsRepo.ResetForForceRegenerate(normalized); err != nil {
+		return out, err
+	}
+	_ = s.ScheduleWord(normalized)
+	return s.GetStatus(normalized)
+}
+
+func (s *PronunciationService) Recheck(word string) (TTSStatusResult, error) {
+	var out TTSStatusResult
+	if s.ttsRepo == nil {
+		return out, fmt.Errorf("tts status repository is not configured")
+	}
+	normalized, ok := normalizePronunciationWord(word)
+	if !ok {
+		return out, fmt.Errorf("invalid word")
+	}
+	_, _ = s.ensureStatusForWord(normalized)
+	return s.GetStatus(normalized)
+}
+
+func (s *PronunciationService) ensureStatusForWord(word string) (*models.TTSGenerationStatus, error) {
+	if s.ttsRepo == nil {
+		return nil, nil
+	}
+	status, err := s.ttsRepo.GetByWord(word)
+	if err != nil {
+		return nil, err
+	}
+	legacyRel := s.cachedRelPathForWord(word)
+	if status == nil {
+		if legacyRel != "" {
+			if err := s.ttsRepo.MarkReady(word, "legacy_file", legacyRel); err != nil {
+				return nil, err
+			}
+			return s.ttsRepo.GetByWord(word)
+		}
+		return nil, nil
+	}
+	if status.State == models.TTSStateReady {
+		if rel := s.resolveReadyRelPath(word, status); rel == "" {
+			if err := s.ttsRepo.UpsertPending(word); err != nil {
+				return nil, err
+			}
+			return s.ttsRepo.GetByWord(word)
+		}
+	}
+	return status, nil
+}
+
+func (s *PronunciationService) resolveReadyRelPath(word string, status *models.TTSGenerationStatus) string {
+	if status != nil && status.AudioRelPath != nil && strings.TrimSpace(*status.AudioRelPath) != "" {
+		if s.audioRelPathExists(*status.AudioRelPath) {
+			return *status.AudioRelPath
+		}
+	}
+	return s.cachedRelPathForWord(word)
+}
+
+func (s *PronunciationService) audioRelPathExists(relPath string) bool {
+	clean := filepath.Clean(relPath)
+	if clean == "." || strings.HasPrefix(clean, "..") {
+		return false
+	}
+	_, err := os.Stat(filepath.Join(s.audioDir, clean))
+	return err == nil
 }
 
 func (s *PronunciationService) hasCachedAudio(word string) bool {
@@ -965,4 +1375,72 @@ func normalizePronunciationWord(raw string) (string, bool) {
 		return "", false
 	}
 	return word, true
+}
+
+func classifyPronunciationError(err error) (string, bool) {
+	if err == nil {
+		return "", true
+	}
+	msg := strings.ToLower(err.Error())
+	if errors.Is(err, errPronunciationNotFound) {
+		switch {
+		case strings.Contains(msg, "dictionary_404"):
+			return "dictionary_404", true
+		case strings.Contains(msg, "dictionary_no_audio"):
+			return "dictionary_no_audio", true
+		case strings.Contains(msg, "dictionary_audio_404"):
+			return "dictionary_audio_404", true
+		case strings.Contains(msg, "openrouter_no_audio"):
+			return "openrouter_no_audio", true
+		case strings.Contains(msg, "openrouter_rejected"):
+			return "openrouter_rejected", true
+		case strings.Contains(msg, "openrouter_audio_speech_rejected"):
+			return "openrouter_audio_speech_rejected", true
+		case strings.Contains(msg, "openrouter_audio_speech_empty"):
+			return "openrouter_audio_speech_empty", true
+		case strings.Contains(msg, "openrouter_audio_decode_failed"):
+			return "openrouter_audio_decode_failed", true
+		case strings.Contains(msg, "transcript mismatch"):
+			return "transcript_mismatch", true
+		case strings.Contains(msg, "missing transcript"):
+			return "transcript_missing", true
+		default:
+			return "not_found", true
+		}
+	}
+	switch {
+	case strings.Contains(msg, "transcript mismatch"):
+		return "transcript_mismatch", true
+	case strings.Contains(msg, "missing transcript"):
+		return "transcript_missing", true
+	case strings.Contains(msg, "unsupported_country_region_territory"):
+		return "unsupported_country_region_territory", true
+	case strings.Contains(msg, "status 429") || strings.Contains(msg, "too many requests"):
+		return "rate_limited", true
+	case strings.Contains(msg, "status 5"):
+		return "provider_5xx", true
+	case strings.Contains(msg, "timeout") || strings.Contains(msg, "connection") || strings.Contains(msg, "network"):
+		return "network_error", true
+	default:
+		return "provider_error", false
+	}
+}
+
+func (s *PronunciationService) logTTSStatusDecision(word, outcome, provider, code string) {
+	if s.ttsRepo == nil {
+		return
+	}
+	status, err := s.ttsRepo.GetByWord(word)
+	if err != nil || status == nil {
+		return
+	}
+	s.logger.Info("tts decision",
+		zap.String("word", word),
+		zap.String("provider", provider),
+		zap.String("error_code", code),
+		zap.String("outcome", outcome),
+		zap.String("state", status.State),
+		zap.Int("attempt_count", status.AttemptCount),
+		zap.Int("max_attempts", status.MaxAttempts),
+	)
 }

@@ -26,6 +26,7 @@ TTS_PUBLIC_BASE_PATH=/media/tts
 
 TTS_DICTIONARY_ENABLED=true
 TTS_DICTIONARY_BASE_URL=https://api.dictionaryapi.dev/api/v2/entries/en
+TTS_DICTIONARY_MIN_DELAY=100ms
 
 TTS_PREFETCH_ENABLED=true
 TTS_PREFETCH_WORKERS=2
@@ -66,11 +67,18 @@ TTS_AUDIO_DIR: "/app/data/tts"
 TTS_PUBLIC_BASE_PATH: "/media/tts"
 TTS_DICTIONARY_ENABLED: "true"
 TTS_DICTIONARY_BASE_URL: "https://api.dictionaryapi.dev/api/v2/entries/en"
+TTS_DICTIONARY_MIN_DELAY: "100ms"
+TTS_BASE_URL: "https://openrouter.ai/api/v1"
+TTS_MODEL: "openai/gpt-audio-mini"
+TTS_VOICE: "alloy"
 TTS_REQUEST_TIMEOUT: "15s"
 TTS_PREFETCH_ENABLED: "true"
 TTS_PREFETCH_WORKERS: "2"
 TTS_BACKFILL_INTERVAL: "10m"
 TTS_BACKFILL_BATCH_SIZE: "200"
+TTS_RETRY_BASE_DELAY: "1m"
+TTS_RETRY_MAX_DELAY: "24h"
+TTS_MAX_RETRIES: "8"
 ```
 
 ### 2.2 Secret (только чувствительные значения)
@@ -197,7 +205,7 @@ TTS_BACKFILL_BATCH_SIZE: "2000"
 ## 7) OpenRouter для fallback
 
 Fallback при `TTS_BASE_URL` с `openrouter.ai`:
-- Запрос: `POST /chat/completions`, `modalities: ["text","audio"]`, `stream: true`, `max_tokens: 150`, системный промпт «озвучить только слово».
+- Запрос: `POST /chat/completions`, `modalities: ["text","audio"]`, `stream: true`, `max_tokens: 150`, один `user` prompt (без `system`) с инструкцией «озвучить только слово».
 - Ответ: SSE-стрим; приложение собирает `choices[0].delta.audio.data` (base64 PCM 16-bit 24 kHz), декодирует, конвертирует в MP3 через **ffmpeg** и сохраняет в кэш.
 
 Рекомендованные модели (audio output): `openai/gpt-audio-mini`, `openai/gpt-4o-audio-preview`. Для стоимости и лимитов смотри [openrouter.ai/models](https://openrouter.ai/models) (фильтр output = audio).

@@ -57,24 +57,25 @@ type AIConfig struct {
 
 // TTSConfig holds text-to-speech/pronunciation audio configuration
 type TTSConfig struct {
-	Enabled           bool   `mapstructure:"enabled"`
-	Provider          string `mapstructure:"provider"` // auto | dictionary | openrouter
-	AudioDir          string `mapstructure:"audio_dir"`
-	PublicBasePath    string `mapstructure:"public_base_path"`
-	Model             string `mapstructure:"model"`
-	Voice             string `mapstructure:"voice"`
-	BaseURL           string `mapstructure:"base_url"`
-	APIKey            string `mapstructure:"api_key"`
-	RequestTimeout    string `mapstructure:"request_timeout"`
-	PrefetchEnabled   bool   `mapstructure:"prefetch_enabled"`
-	PrefetchWorkers   int    `mapstructure:"prefetch_workers"`
-	BackfillInterval  string `mapstructure:"backfill_interval"`
-	BackfillBatchSize int    `mapstructure:"backfill_batch_size"`
-	RetryBaseDelay    string `mapstructure:"retry_base_delay"`
-	RetryMaxDelay     string `mapstructure:"retry_max_delay"`
-	MaxRetries        int    `mapstructure:"max_retries"`
-	DictionaryBaseURL string `mapstructure:"dictionary_base_url"`
-	DictionaryEnabled bool   `mapstructure:"dictionary_enabled"`
+	Enabled            bool   `mapstructure:"enabled"`
+	Provider           string `mapstructure:"provider"` // auto | dictionary | openrouter
+	AudioDir           string `mapstructure:"audio_dir"`
+	PublicBasePath     string `mapstructure:"public_base_path"`
+	Model              string `mapstructure:"model"`
+	Voice              string `mapstructure:"voice"`
+	BaseURL            string `mapstructure:"base_url"`
+	APIKey             string `mapstructure:"api_key"`
+	RequestTimeout     string `mapstructure:"request_timeout"`
+	PrefetchEnabled    bool   `mapstructure:"prefetch_enabled"`
+	PrefetchWorkers    int    `mapstructure:"prefetch_workers"`
+	BackfillInterval   string `mapstructure:"backfill_interval"`
+	BackfillBatchSize  int    `mapstructure:"backfill_batch_size"`
+	RetryBaseDelay     string `mapstructure:"retry_base_delay"`
+	RetryMaxDelay      string `mapstructure:"retry_max_delay"`
+	MaxRetries         int    `mapstructure:"max_retries"`
+	DictionaryBaseURL  string `mapstructure:"dictionary_base_url"`
+	DictionaryEnabled  bool   `mapstructure:"dictionary_enabled"`
+	DictionaryMinDelay string `mapstructure:"dictionary_min_delay"`
 }
 
 // BotConfig holds bot messages and behavior configuration
@@ -171,6 +172,7 @@ func Load() (*Config, error) {
 	viper.SetDefault("tts.max_retries", 8)
 	viper.SetDefault("tts.dictionary_base_url", "https://api.dictionaryapi.dev/api/v2/entries/en")
 	viper.SetDefault("tts.dictionary_enabled", true)
+	viper.SetDefault("tts.dictionary_min_delay", "100ms")
 	viper.SetDefault("database.driver", "postgres")
 	viper.SetDefault("database.path", "")
 
@@ -258,6 +260,7 @@ func Load() (*Config, error) {
 	_ = viper.BindEnv("tts.retry_max_delay", "TTS_RETRY_MAX_DELAY")
 	_ = viper.BindEnv("tts.max_retries", "TTS_MAX_RETRIES")
 	_ = viper.BindEnv("tts.dictionary_base_url", "TTS_DICTIONARY_BASE_URL")
+	_ = viper.BindEnv("tts.dictionary_min_delay", "TTS_DICTIONARY_MIN_DELAY")
 	_ = viper.BindEnv("tts.dictionary_enabled", "TTS_DICTIONARY_ENABLED")
 	_ = viper.BindEnv("bot.start_message", "BOT_START_MESSAGE")
 	_ = viper.BindEnv("bot.help_message", "BOT_HELP_MESSAGE")

@@ -25,6 +25,10 @@ func NewWordRepository(db *sql.DB, logger *zap.Logger) *WordRepository {
 	}
 }
 
+func (r *WordRepository) DB() *sql.DB {
+	return r.db
+}
+
 // GetWordCard retrieves a word card by word (backward compatibility - searches by lemma)
 func (r *WordRepository) GetWordCard(word string) (*models.WordCard, error) {
 	return r.GetWordCardByLemma(word)

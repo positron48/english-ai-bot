@@ -365,6 +365,8 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/admin/words", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionWordsReadAll)(r.handleAdminWords))))
 	// PUT/DELETE /api/admin/words/{id} - edit words
 	r.mux.HandleFunc("/api/admin/words/", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionWordsEditAll)(r.handleAdminWord))))
+	// TTS status routes: GET requires read, POST actions require edit (checked in handler)
+	r.mux.HandleFunc("/api/admin/tts/", appAPIMiddleware.Wrap(adminAuth(r.RequireAnyPermission(PermissionWordsReadAll, PermissionWordsEditAll)(r.handleAdminTTS))))
 
 	// Training admin routes (GET requires words.read_all, POST/PUT/DELETE require words.edit_all)
 	r.mux.HandleFunc("/api/admin/training/", appAPIMiddleware.Wrap(adminAuth(r.RequireAnyPermission(PermissionWordsReadAll, PermissionWordsEditAll)(r.handleAdminTraining))))
