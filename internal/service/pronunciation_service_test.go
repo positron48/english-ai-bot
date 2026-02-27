@@ -485,6 +485,42 @@ func TestPronunciationService_ForceRegenerateAfterTerminal(t *testing.T) {
 	}
 }
 
+func TestPronunciationService_ForceRegenerate_EnqueuesEvenIfCachedFileExists(t *testing.T) {
+	db := testutil.SetupTestDB(t)
+	wordRepo := repository.NewWordRepository(db, zap.NewNop())
+	audioDir := t.TempDir()
+	svc := NewPronunciationService(config.TTSConfig{
+		Enabled:           true,
+		Provider:          "dictionary",
+		AudioDir:          audioDir,
+		PublicBasePath:    "/media/tts",
+		DictionaryEnabled: true,
+		DictionaryBaseURL: "http://example.com",
+	}, wordRepo, zap.NewNop())
+
+	word := "regencached"
+	rel := svc.relativePathForWordWithExt(word, ".mp3")
+	full := filepath.Join(audioDir, rel)
+	if err := writeFileAtomic(full, []byte("old-audio"), 0o644); err != nil {
+		t.Fatalf("writeFileAtomic() error = %v", err)
+	}
+	if err := svc.ttsRepo.MarkReady(word, "dictionary", rel); err != nil {
+		t.Fatalf("MarkReady() error = %v", err)
+	}
+
+	beforeLen := len(svc.queue)
+	after, err := svc.ForceRegenerate(word)
+	if err != nil {
+		t.Fatalf("ForceRegenerate() error = %v", err)
+	}
+	if after.State != "pending" || after.AttemptCount != 0 {
+		t.Fatalf("unexpected reset status: %+v", after)
+	}
+	if len(svc.queue) != beforeLen+1 {
+		t.Fatalf("expected queue size to increase by 1, before=%d after=%d", beforeLen, len(svc.queue))
+	}
+}
+
 func TestPronunciationWordFileBase(t *testing.T) {
 	tests := []struct {
 		in   string

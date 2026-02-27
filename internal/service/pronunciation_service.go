@@ -1074,7 +1074,7 @@ func (s *PronunciationService) ScheduleWord(word string) bool {
 			_ = s.ttsRepo.UpsertPending(normalized)
 		}
 	}
-	if s.hasCachedAudio(normalized) {
+	if s.ttsRepo == nil && s.hasCachedAudio(normalized) {
 		return true
 	}
 	if !s.canScheduleNow(normalized) {
@@ -1092,7 +1092,7 @@ func (s *PronunciationService) ScheduleWord(word string) bool {
 				s.dequeue(normalized)
 			}
 		}()
-		return false
+		return true
 	}
 }
 
@@ -1211,7 +1211,11 @@ func (s *PronunciationService) ForceRegenerate(word string) (TTSStatusResult, er
 	if err := s.ttsRepo.ResetForForceRegenerate(normalized); err != nil {
 		return out, err
 	}
-	_ = s.ScheduleWord(normalized)
+	scheduled := s.ScheduleWord(normalized)
+	s.logger.Info("tts regenerate requested",
+		zap.String("word", normalized),
+		zap.Bool("scheduled", scheduled),
+	)
 	return s.GetStatus(normalized)
 }
 
