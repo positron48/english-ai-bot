@@ -338,7 +338,6 @@ const goBack = () => {
 .transcription {
   font-size: 18px;
   color: var(--text-secondary);
-  margin-top: 8px;
   white-space: nowrap;
   font-family: 'Arial Unicode MS', 'Lucida Sans Unicode', 'Charis SIL', 'Doulos SIL', 'Gentium Plus', 'DejaVu Sans', Arial, sans-serif;
   font-style: italic;

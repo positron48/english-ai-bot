@@ -161,11 +161,11 @@
         v-if="isEnglishWord && currentCard?.transcription"
         class="training-pronunciation-row"
       >
+        <span class="training-transcription">{{ currentCard.transcription }}</span>
         <button
-          v-if="currentPronunciationURL"
           type="button"
           class="btn-pronunciation"
-          :disabled="playingPronunciation"
+          :disabled="playingPronunciation || !currentCard?.word_en"
           :aria-label="t('training.listen') || 'Pronounce'"
           @click="playCurrentPronunciation"
         >
@@ -598,7 +598,6 @@ let typeHintButtonTimer: ReturnType<typeof setTimeout> | null = null
 const typeRevealDisplayText = ref('')
 let typeRevealTimeouts: ReturnType<typeof setTimeout>[] = []
 const typeInputRef = ref<HTMLInputElement | null>(null)
-const currentPronunciationURL = ref<string | null>(null)
 const playingPronunciation = ref(false)
 
 // Settings
@@ -611,11 +610,10 @@ const isEnglishWord = computed(() => {
 })
 
 watch(currentCard, async (card) => {
-  currentPronunciationURL.value = null
   if (!card || card.direction !== 'en_ru' || !card.transcription) return
   const word = card.word_en || ''
   if (!word) return
-  currentPronunciationURL.value = await getWordPronunciationURL(word)
+  await getWordPronunciationURL(word)
 })
 
 const playCurrentPronunciation = async () => {
@@ -2522,6 +2520,7 @@ const handleTimerMouseLeave = () => {
 .question :deep(.transcription),
 .question :deep(span.transcription) {
   white-space: nowrap;
+  display: none;
 }
 
 /* Style transcription in question HTML content */
@@ -2548,10 +2547,22 @@ const handleTimerMouseLeave = () => {
 }
 
 .training-pronunciation-row {
-  margin-top: -12px;
+  margin-top: -8px;
   margin-bottom: 12px;
-  display: flex;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
   justify-content: center;
+}
+
+.training-transcription {
+  font-family: 'Arial Unicode MS', 'Lucida Sans Unicode', 'Charis SIL', 'Doulos SIL', 'Gentium Plus', 'DejaVu Sans', Arial, sans-serif;
+  font-style: italic;
+  letter-spacing: 0.5px;
+  font-size: 0.9em;
+  color: var(--text-secondary);
+  white-space: nowrap;
 }
 
 .btn-pronunciation {

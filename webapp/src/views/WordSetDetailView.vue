@@ -584,7 +584,6 @@ const startStudy = () => {
 .transcription {
   font-size: 18px;
   color: var(--text-secondary);
-  margin-top: 8px;
   font-family: 'Arial Unicode MS', 'Lucida Sans Unicode', 'Charis SIL', 'Doulos SIL', 'Gentium Plus', 'DejaVu Sans', Arial, sans-serif;
   font-style: italic;
   white-space: nowrap;
