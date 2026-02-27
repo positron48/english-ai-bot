@@ -201,9 +201,7 @@ const openWordCard = async (word: WordInfo) => {
     currentTrainingCard.value = data.training_card
     if (currentTrainingCard.value?.transcription) {
       const pronunciationWord =
-        currentTrainingCard.value.display_word ||
         currentTrainingCard.value.word_en ||
-        selectedWord.value?.display_word ||
         selectedWord.value?.word ||
         ''
       currentPronunciationURL.value = pronunciationWord
@@ -247,9 +245,7 @@ onUnmounted(() => {
 const playCurrentPronunciation = async () => {
   if (playingPronunciation.value || !currentTrainingCard.value) return
   const pronunciationWord =
-    currentTrainingCard.value.display_word ||
     currentTrainingCard.value.word_en ||
-    selectedWord.value?.display_word ||
     selectedWord.value?.word ||
     ''
   if (!pronunciationWord) return

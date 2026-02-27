@@ -1,8 +1,11 @@
 package service
 
 import (
+	"bufio"
+	"bytes"
 	"context"
 	"crypto/sha256"
+	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
@@ -11,6 +14,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"sync"
@@ -38,62 +42,246 @@ type pronunciationProvider interface {
 	fetch(ctx context.Context, word string) ([]byte, error)
 }
 
-type openAIPronunciationProvider struct {
-	baseURL string
-	model   string
-	voice   string
-	apiKey  string
-	client  *http.Client
+// pcmToMp3Func converts raw PCM (s16le 24kHz mono) to MP3. Used for OpenRouter chat/audio path; test can inject identity.
+type pcmToMp3Func func(pcm []byte) ([]byte, error)
+
+type openRouterPronunciationProvider struct {
+	baseURL             string
+	model               string
+	voice               string
+	apiKey              string
+	client              *http.Client
+	pcmToMp3            pcmToMp3Func // nil = use ffmpeg
+	forceChatCompletions bool        // if true, use chat path even when baseURL is not openrouter (for tests)
 }
 
-func (p *openAIPronunciationProvider) name() string {
-	return "openai"
+func (p *openRouterPronunciationProvider) name() string {
+	return "openrouter"
 }
 
-func (p *openAIPronunciationProvider) fetch(ctx context.Context, word string) ([]byte, error) {
-	body := map[string]string{
+func isOpenRouterBaseURL(baseURL string) bool {
+	u := strings.ToLower(strings.TrimSpace(baseURL))
+	return strings.Contains(u, "openrouter.ai")
+}
+
+func (p *openRouterPronunciationProvider) fetch(ctx context.Context, word string) ([]byte, error) {
+	if p.forceChatCompletions || isOpenRouterBaseURL(p.baseURL) {
+		return p.fetchViaChatCompletions(ctx, word)
+	}
+	return p.fetchViaAudioSpeech(ctx, word)
+}
+
+// fetchViaAudioSpeech uses POST /audio/speech (OpenAI); returns MP3 body as-is.
+func (p *openRouterPronunciationProvider) fetchViaAudioSpeech(ctx context.Context, word string) ([]byte, error) {
+	body := map[string]interface{}{
+		"input":           word,
 		"model":           p.model,
 		"voice":           p.voice,
-		"input":           word,
 		"response_format": "mp3",
 	}
 	bodyBytes, err := json.Marshal(body)
 	if err != nil {
-		return nil, fmt.Errorf("marshal openai tts payload: %w", err)
+		return nil, fmt.Errorf("marshal openrouter tts payload: %w", err)
 	}
-
 	endpoint := strings.TrimRight(p.baseURL, "/") + "/audio/speech"
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, endpoint, strings.NewReader(string(bodyBytes)))
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, endpoint, bytes.NewReader(bodyBytes))
 	if err != nil {
-		return nil, fmt.Errorf("build openai tts request: %w", err)
+		return nil, fmt.Errorf("build openrouter tts request: %w", err)
 	}
 	req.Header.Set("Authorization", "Bearer "+p.apiKey)
 	req.Header.Set("Content-Type", "application/json")
-
 	resp, err := p.client.Do(req)
 	if err != nil {
-		return nil, fmt.Errorf("openai tts request failed: %w", err)
+		return nil, fmt.Errorf("openrouter tts request failed: %w", err)
 	}
 	defer resp.Body.Close()
-
-	if resp.StatusCode == http.StatusNotFound || resp.StatusCode == http.StatusBadRequest {
-		payload, _ := io.ReadAll(io.LimitReader(resp.Body, 2048))
-		return nil, fmt.Errorf("%w: openai endpoint/model rejected request (%d): %s", errPronunciationNotFound, resp.StatusCode, strings.TrimSpace(string(payload)))
+	if resp.StatusCode == http.StatusNotFound || resp.StatusCode == http.StatusBadRequest || resp.StatusCode == http.StatusUnprocessableEntity {
+		payload, _ := io.ReadAll(io.LimitReader(resp.Body, 4096))
+		return nil, fmt.Errorf("%w: openrouter endpoint/model rejected request (%d): %s", errPronunciationNotFound, resp.StatusCode, strings.TrimSpace(string(payload)))
 	}
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		payload, _ := io.ReadAll(io.LimitReader(resp.Body, 2048))
-		return nil, fmt.Errorf("openai tts request failed with status %d: %s", resp.StatusCode, strings.TrimSpace(string(payload)))
+		payload, _ := io.ReadAll(io.LimitReader(resp.Body, 4096))
+		return nil, fmt.Errorf("openrouter tts request failed with status %d: %s", resp.StatusCode, strings.TrimSpace(string(payload)))
 	}
-
-	audio, err := io.ReadAll(io.LimitReader(resp.Body, 5*1024*1024))
+	audio, err := io.ReadAll(io.LimitReader(resp.Body, 4*1024*1024))
 	if err != nil {
-		return nil, fmt.Errorf("read openai tts response: %w", err)
+		return nil, fmt.Errorf("openrouter tts read body: %w", err)
 	}
 	if len(audio) == 0 {
-		return nil, fmt.Errorf("openai tts returned empty body")
+		return nil, errPronunciationNotFound
 	}
-
 	return audio, nil
+}
+
+// fetchViaChatCompletions uses POST /chat/completions with modalities audio (OpenRouter); parses SSE, collects PCM, converts to MP3.
+func (p *openRouterPronunciationProvider) fetchViaChatCompletions(ctx context.Context, word string) ([]byte, error) {
+	quotedWord := "`" + word + "`"
+	userPrompt := "You are a pronunciation machine. Say ONLY the exact word below as audio. One word, no greeting, no pause, no repetition. Word: " + quotedWord
+	payload := map[string]interface{}{
+		"model": p.model,
+		"messages": []map[string]string{
+			{"role": "user", "content": userPrompt},
+		},
+		"modalities": []string{"text", "audio"},
+		"audio":      map[string]string{"voice": p.voice, "format": "pcm16"},
+		"stream":     true,
+		"max_tokens": 150,
+	}
+	bodyBytes, err := json.Marshal(payload)
+	if err != nil {
+		return nil, fmt.Errorf("marshal openrouter chat payload: %w", err)
+	}
+	endpoint := strings.TrimRight(p.baseURL, "/") + "/chat/completions"
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, endpoint, bytes.NewReader(bodyBytes))
+	if err != nil {
+		return nil, fmt.Errorf("build openrouter chat request: %w", err)
+	}
+	req.Header.Set("Authorization", "Bearer "+p.apiKey)
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Accept", "text/event-stream")
+	resp, err := p.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("openrouter chat request failed: %w", err)
+	}
+	defer resp.Body.Close()
+	contentType := strings.ToLower(strings.TrimSpace(resp.Header.Get("Content-Type")))
+	if !strings.Contains(contentType, "text/event-stream") {
+		payload, _ := io.ReadAll(io.LimitReader(resp.Body, 4096))
+		if resp.StatusCode == http.StatusNotFound || resp.StatusCode == http.StatusBadRequest || resp.StatusCode == http.StatusUnprocessableEntity {
+			return nil, fmt.Errorf("%w: openrouter chat rejected (%d): %s", errPronunciationNotFound, resp.StatusCode, strings.TrimSpace(string(payload)))
+		}
+		return nil, fmt.Errorf("openrouter chat unexpected content-type %q (%d): %s", contentType, resp.StatusCode, strings.TrimSpace(string(payload)))
+	}
+	if resp.StatusCode != http.StatusOK {
+		payload, _ := io.ReadAll(io.LimitReader(resp.Body, 4096))
+		if resp.StatusCode == http.StatusNotFound || resp.StatusCode == http.StatusBadRequest || resp.StatusCode == http.StatusUnprocessableEntity {
+			return nil, fmt.Errorf("%w: openrouter chat rejected (%d): %s", errPronunciationNotFound, resp.StatusCode, strings.TrimSpace(string(payload)))
+		}
+		return nil, fmt.Errorf("openrouter chat rejected (%d): %s", resp.StatusCode, strings.TrimSpace(string(payload)))
+	}
+	pcm, transcript, err := parseSSEAudioStream(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("openrouter chat stream: %w", err)
+	}
+	if len(pcm) == 0 {
+		return nil, errPronunciationNotFound
+	}
+	if strings.TrimSpace(transcript) == "" {
+		return nil, fmt.Errorf("%w: missing transcript for validation", errPronunciationNotFound)
+	}
+	if !isPronunciationTranscriptMatch(word, transcript) {
+		return nil, fmt.Errorf("%w: transcript mismatch: expected %q got %q", errPronunciationNotFound, word, transcript)
+	}
+	convert := p.pcmToMp3
+	if convert == nil {
+		convert = defaultPcmToMp3
+	}
+	mp3, err := convert(pcm)
+	if err != nil {
+		return nil, fmt.Errorf("openrouter pcm to mp3: %w", err)
+	}
+	return mp3, nil
+}
+
+const pcmSampleRate = 24000 // gpt-4o-audio pcm16 24kHz mono
+
+func defaultPcmToMp3(pcm []byte) ([]byte, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+	trimFilter := "silenceremove=start_periods=1:start_threshold=-45dB,areverse,silenceremove=start_periods=1:start_threshold=-45dB,areverse"
+	cmd := exec.CommandContext(ctx, "ffmpeg", "-y", "-loglevel", "error",
+		"-f", "s16le", "-ar", fmt.Sprintf("%d", pcmSampleRate), "-ac", "1",
+		"-i", "pipe:0", "-af", trimFilter, "-f", "mp3", "pipe:1")
+	cmd.Stdin = bytes.NewReader(pcm)
+	var out bytes.Buffer
+	cmd.Stdout = &out
+	var errOut bytes.Buffer
+	cmd.Stderr = &errOut
+	if err := cmd.Run(); err != nil {
+		return nil, fmt.Errorf("ffmpeg: %w (stderr: %s)", err, errOut.Bytes())
+	}
+	return out.Bytes(), nil
+}
+
+// parseSSEAudioStream reads SSE from r and collects all base64 delta.audio.data into raw PCM and text delta as transcript.
+func parseSSEAudioStream(r io.Reader) ([]byte, string, error) {
+	var pcm bytes.Buffer
+	var text strings.Builder
+	scanner := bufio.NewScanner(r)
+	const maxLine = 1024 * 1024
+	scanner.Buffer(make([]byte, 0, 64*1024), maxLine)
+	for scanner.Scan() {
+		line := scanner.Bytes()
+		if !bytes.HasPrefix(line, []byte("data: ")) {
+			continue
+		}
+		jsonPart := line[6:]
+		if bytes.Equal(jsonPart, []byte("[DONE]")) {
+			continue
+		}
+		var chunk struct {
+			Choices []struct {
+				Delta struct {
+					Audio struct {
+						Data string `json:"data"`
+						Transcript string `json:"transcript"`
+					} `json:"audio"`
+					Content []struct {
+						Type string `json:"type"`
+						Text string `json:"text"`
+					} `json:"content"`
+				} `json:"delta"`
+			} `json:"choices"`
+		}
+		if err := json.Unmarshal(jsonPart, &chunk); err != nil {
+			continue
+		}
+		if len(chunk.Choices) == 0 {
+			continue
+		}
+		delta := chunk.Choices[0].Delta
+		if delta.Audio.Data != "" {
+			decoded, err := base64.StdEncoding.DecodeString(delta.Audio.Data)
+			if err == nil {
+				pcm.Write(decoded)
+			}
+		}
+		if strings.TrimSpace(delta.Audio.Transcript) != "" {
+			text.WriteString(delta.Audio.Transcript)
+		}
+		for _, content := range delta.Content {
+			if strings.TrimSpace(content.Text) == "" {
+				continue
+			}
+			if content.Type == "" || strings.EqualFold(content.Type, "text") {
+				text.WriteString(content.Text)
+			}
+		}
+	}
+	if err := scanner.Err(); err != nil {
+		return nil, "", err
+	}
+	return pcm.Bytes(), text.String(), nil
+}
+
+func isPronunciationTranscriptMatch(word, transcript string) bool {
+	return normalizePronunciationTranscript(word) == normalizePronunciationTranscript(transcript)
+}
+
+func normalizePronunciationTranscript(s string) string {
+	s = strings.TrimSpace(strings.ToLower(s))
+	s = strings.Trim(s, "'\"`")
+	var b strings.Builder
+	for _, r := range s {
+		if unicode.IsLetter(r) || unicode.IsDigit(r) {
+			b.WriteRune(r)
+			continue
+		}
+		if r == '\'' || r == '-' {
+			b.WriteRune(r)
+		}
+	}
+	return b.String()
 }
 
 type dictionaryPronunciationProvider struct {
@@ -313,7 +501,7 @@ func NewPronunciationService(cfg config.TTSConfig, wordRepo *repository.WordRepo
 }
 
 func buildPronunciationProviders(cfg config.TTSConfig, logger *zap.Logger) []pronunciationProvider {
-	timeout := parseDurationWithDefault(cfg.RequestTimeout, 15*time.Second)
+	timeout := parseDurationWithDefault(cfg.RequestTimeout, 45*time.Second)
 	client := &http.Client{Timeout: timeout}
 	provider := strings.ToLower(strings.TrimSpace(cfg.Provider))
 	if provider == "" {
@@ -322,7 +510,7 @@ func buildPronunciationProviders(cfg config.TTSConfig, logger *zap.Logger) []pro
 
 	var providers []pronunciationProvider
 	dictEnabled := cfg.DictionaryEnabled
-	openAIEnabled := strings.TrimSpace(cfg.APIKey) != "" && strings.TrimSpace(cfg.Model) != ""
+	openRouterEnabled := strings.TrimSpace(cfg.APIKey) != "" && strings.TrimSpace(cfg.Model) != ""
 
 	addDictionary := func() {
 		if !dictEnabled {
@@ -337,39 +525,40 @@ func buildPronunciationProviders(cfg config.TTSConfig, logger *zap.Logger) []pro
 			client:  client,
 		})
 	}
-	addOpenAI := func() {
-		if !openAIEnabled {
+	addOpenRouter := func() {
+		if !openRouterEnabled {
 			return
 		}
 		baseURL := strings.TrimSpace(cfg.BaseURL)
 		if baseURL == "" {
-			baseURL = "https://api.openai.com/v1"
+			baseURL = "https://openrouter.ai/api/v1"
 		}
 		voice := strings.TrimSpace(cfg.Voice)
 		if voice == "" {
 			voice = "alloy"
 		}
-		providers = append(providers, &openAIPronunciationProvider{
-			baseURL: baseURL,
-			model:   strings.TrimSpace(cfg.Model),
-			voice:   voice,
-			apiKey:  strings.TrimSpace(cfg.APIKey),
-			client:  client,
+		providers = append(providers, &openRouterPronunciationProvider{
+			baseURL:             baseURL,
+			model:               strings.TrimSpace(cfg.Model),
+			voice:               voice,
+			apiKey:              strings.TrimSpace(cfg.APIKey),
+			client:              client,
+			forceChatCompletions: isOpenRouterBaseURL(baseURL),
 		})
 	}
 
 	switch provider {
 	case "dictionary":
 		addDictionary()
-	case "openai":
-		addOpenAI()
+	case "openrouter":
+		addOpenRouter()
 	case "auto":
 		addDictionary()
-		addOpenAI()
+		addOpenRouter()
 	default:
 		logger.Warn("unknown tts provider, falling back to auto", zap.String("provider", provider))
 		addDictionary()
-		addOpenAI()
+		addOpenRouter()
 	}
 
 	return providers
@@ -456,36 +645,52 @@ func (s *PronunciationService) processWord(ctx context.Context, word string) {
 		return
 	}
 
-	relPath := s.relativePathForWord(word)
-	fullPath := filepath.Join(s.audioDir, relPath)
-	if _, err := os.Stat(fullPath); err == nil {
+	if s.cachedRelPathForWord(word) != "" {
 		s.clearRetry(word)
 		return
 	}
 
-	var lastErr error
+	var retriableErr error
+	notFoundSeen := false
 	for _, provider := range s.providers {
 		audio, err := provider.fetch(ctx, word)
 		if err != nil {
-			lastErr = err
 			if errors.Is(err, errPronunciationNotFound) {
-				s.logger.Debug("pronunciation not found in provider", zap.String("provider", provider.name()), zap.String("word", word))
+				notFoundSeen = true
+				s.logger.Debug("pronunciation not found in provider", zap.String("provider", provider.name()), zap.String("word", word), zap.Error(err))
 				continue
+			}
+			if retriableErr == nil {
+				retriableErr = err
 			}
 			s.logger.Warn("pronunciation provider failed", zap.String("provider", provider.name()), zap.String("word", word), zap.Error(err))
 			continue
 		}
+		ext := ".mp3"
+		relPath := s.relativePathForWordWithExt(word, ext)
+		fullPath := filepath.Join(s.audioDir, relPath)
 		if err := writeFileAtomic(fullPath, audio, 0o644); err != nil {
-			lastErr = err
+			if retriableErr == nil {
+				retriableErr = err
+			}
 			s.logger.Warn("failed to write pronunciation audio", zap.String("path", fullPath), zap.Error(err))
 			continue
 		}
 		s.clearRetry(word)
-		s.logger.Debug("pronunciation cached", zap.String("word", word), zap.String("path", relPath), zap.String("provider", provider.name()))
+		s.logger.Info("pronunciation cached", zap.String("word", word), zap.String("path", relPath), zap.String("provider", provider.name()), zap.Int("bytes", len(audio)))
 		return
 	}
 
-	s.setRetry(word, lastErr)
+	if retriableErr != nil {
+		s.setRetry(word, retriableErr)
+		return
+	}
+	if notFoundSeen {
+		s.clearRetry(word)
+		s.logger.Info("pronunciation not found in all providers, skip retry", zap.String("word", word))
+		return
+	}
+	s.setRetry(word, errPronunciationNotFound)
 }
 
 func writeFileAtomic(path string, data []byte, mode os.FileMode) error {
@@ -664,24 +869,71 @@ func (s *PronunciationService) Lookup(word string) PronunciationLookupResult {
 }
 
 func (s *PronunciationService) hasCachedAudio(word string) bool {
-	relPath := s.relativePathForWord(word)
-	_, err := os.Stat(filepath.Join(s.audioDir, relPath))
-	return err == nil
+	return s.cachedRelPathForWord(word) != ""
 }
 
 func (s *PronunciationService) publicURLForWord(word string) string {
-	relPath := filepath.ToSlash(s.relativePathForWord(word))
+	relPath := s.cachedRelPathForWord(word)
+	if relPath == "" {
+		relPath = filepath.ToSlash(s.relativePathForWord(word)) // fallback for URL shape before file exists
+	} else {
+		relPath = filepath.ToSlash(relPath)
+	}
 	return s.publicBasePath + "/" + relPath
+}
+
+// cachedRelPathForWord returns the relative path of the cached file (.mp3 or .wav) if it exists.
+func (s *PronunciationService) cachedRelPathForWord(word string) string {
+	key := pronunciationWordKey(word)
+	fileBase := pronunciationWordFileBase(word)
+	for _, ext := range []string{".mp3", ".wav"} {
+		relByWord := filepath.Join(key[:2], key[2:4], fileBase+ext)
+		if _, err := os.Stat(filepath.Join(s.audioDir, relByWord)); err == nil {
+			return relByWord
+		}
+	}
+	return ""
 }
 
 func (s *PronunciationService) relativePathForWord(word string) string {
 	key := pronunciationWordKey(word)
-	return filepath.Join(key[:2], key[2:4], key+".mp3")
+	return filepath.Join(key[:2], key[2:4], pronunciationWordFileBase(word)+".mp3")
+}
+
+func (s *PronunciationService) relativePathForWordWithExt(word, ext string) string {
+	key := pronunciationWordKey(word)
+	return filepath.Join(key[:2], key[2:4], pronunciationWordFileBase(word)+ext)
 }
 
 func pronunciationWordKey(word string) string {
 	sum := sha256.Sum256([]byte(word))
 	return hex.EncodeToString(sum[:])
+}
+
+func pronunciationWordFileBase(word string) string {
+	var b strings.Builder
+	for _, r := range strings.ToLower(strings.TrimSpace(word)) {
+		if (r >= 'a' && r <= 'z') || (r >= '0' && r <= '9') {
+			b.WriteRune(r)
+			continue
+		}
+		if r == '-' || r == '\'' {
+			b.WriteRune(r)
+			continue
+		}
+		if unicode.IsSpace(r) {
+			b.WriteByte('_')
+		}
+	}
+
+	name := strings.Trim(b.String(), "_")
+	for strings.Contains(name, "__") {
+		name = strings.ReplaceAll(name, "__", "_")
+	}
+	if name == "" {
+		return "word"
+	}
+	return name
 }
 
 func normalizePronunciationWord(raw string) (string, bool) {

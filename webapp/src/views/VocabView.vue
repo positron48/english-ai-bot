@@ -557,7 +557,7 @@ const showCards = async (lemma: string) => {
       const word = words.value.find(w => w.lemma === lemma)
       if (word) {
         selectedWordDisplay.value = cleanLemma(word.lemma)
-        selectedPronunciationWord.value = word.display_word || word.lemma
+        selectedPronunciationWord.value = word.lemma
       } else {
         selectedWordDisplay.value = cleanLemma(lemma)
         selectedPronunciationWord.value = lemma

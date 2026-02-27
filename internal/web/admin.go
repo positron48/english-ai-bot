@@ -490,11 +490,8 @@ func (r *Router) handleAdminTraining(w http.ResponseWriter, req *http.Request) {
 			return
 		}
 		if r.pronunciationService != nil {
-			candidates := []string{wordEN}
-			if newCard.DisplayWord != nil && strings.TrimSpace(*newCard.DisplayWord) != "" {
-				candidates = append(candidates, *newCard.DisplayWord)
-			}
-			r.pronunciationService.ScheduleWords(candidates...)
+			// Pronunciation is canonical per word (lemma), not per training-card display form.
+			r.pronunciationService.ScheduleWord(wordCard.Word)
 		}
 
 		// Get all users who already have this word in their training
@@ -830,11 +827,13 @@ func (r *Router) handleAdminTrainingCard(w http.ResponseWriter, req *http.Reques
 			return
 		}
 		if r.pronunciationService != nil {
-			candidates := []string{card.WordEN}
-			if card.DisplayWord != nil && strings.TrimSpace(*card.DisplayWord) != "" {
-				candidates = append(candidates, *card.DisplayWord)
+			// Pronunciation is canonical per word (lemma), not per training-card display form.
+			wordRepo := repository.NewWordRepository(r.db, r.logger)
+			canonicalWord := card.WordEN
+			if wc, err := wordRepo.GetWordCardByID(card.WordCardID); err == nil && wc != nil {
+				canonicalWord = wc.Word
 			}
-			r.pronunciationService.ScheduleWords(candidates...)
+			r.pronunciationService.ScheduleWord(canonicalWord)
 		}
 
 		w.Header().Set("Content-Type", "application/json")

@@ -129,16 +129,16 @@ func TestShowTrainingCard_NormalCardResponse(t *testing.T) {
 	}
 
 	if _, err := trainingCardRepo.CreateTrainingCard(&models.TrainingCard{
-		WordCardID:     wordCardID,
-		WordEN:         "term",
-		SenseIndex:     0,
-		WordRU:         "термин",
-		MeaningEN:      "term meaning",
-		Transcription:  "[t3rm]",
-		DistractorsRU:  `["значение","понятие","идея"]`,
-		DistractorsEN:  `["meaning","concept","idea"]`,
-		ExampleEN:      "Example sentence",
-		DisplayWord:    strPtr("term"),
+		WordCardID:    wordCardID,
+		WordEN:        "term",
+		SenseIndex:    0,
+		WordRU:        "термин",
+		MeaningEN:     "term meaning",
+		Transcription: "[t3rm]",
+		DistractorsRU: `["значение","понятие","идея"]`,
+		DistractorsEN: `["meaning","concept","idea"]`,
+		ExampleEN:     "Example sentence",
+		DisplayWord:   strPtr("term"),
 	}); err != nil {
 		t.Fatalf("create training card: %v", err)
 	}
@@ -172,7 +172,7 @@ func TestShowTrainingCard_NormalCardResponse(t *testing.T) {
 	}
 
 	state := &WebTrainingState{
-		UserID:   7,
+		UserID:    7,
 		SessionID: 777,
 		Queue: []*models.TrainingQueueItem{
 			{Type: "card", Card: primaryCard},
@@ -202,6 +202,9 @@ func TestShowTrainingCard_NormalCardResponse(t *testing.T) {
 	if payload["display_word"] != "term" {
 		t.Fatalf("expected display_word=term, got %v", payload["display_word"])
 	}
+	if payload["word_en"] != "term" {
+		t.Fatalf("expected word_en=term, got %v", payload["word_en"])
+	}
 	if payload["example_en"] != "Example sentence" {
 		t.Fatalf("expected example_en in response, got %v", payload["example_en"])
 	}
@@ -220,7 +223,7 @@ func TestExtractSessionWordsFromQueue_FiltersByPOSAndRecent(t *testing.T) {
 	noun := "noun"
 
 	current := &models.UserCardWithTraining{
-		UserCard: models.UserCard{Direction: models.DirectionRUtoEN},
+		UserCard:     models.UserCard{Direction: models.DirectionRUtoEN},
 		TrainingCard: models.TrainingCard{WordCardID: 1, POS: &verb},
 	}
 	queue := []*models.TrainingQueueItem{

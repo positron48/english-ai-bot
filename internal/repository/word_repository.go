@@ -345,8 +345,8 @@ func (r *WordRepository) GetUserIDsByWord(word string) ([]int64, error) {
 	return userIDs, nil
 }
 
-// ListPronunciationCandidates returns recent distinct words suitable for pronunciation prefetch.
-// Priority is given to training card display forms, with fallback to lemma/display_en.
+// ListPronunciationCandidates returns recent distinct canonical words (lemmas)
+// suitable for pronunciation prefetch.
 func (r *WordRepository) ListPronunciationCandidates(limit int) ([]string, error) {
 	if limit <= 0 {
 		limit = 200
@@ -356,16 +356,10 @@ func (r *WordRepository) ListPronunciationCandidates(limit int) ([]string, error
 	}
 
 	query := `
-		SELECT candidate
-		FROM (
-			SELECT COALESCE(NULLIF(tc.display_word, ''), tc.word_en) AS candidate, tc.created_at
-			FROM training_cards tc
-			UNION ALL
-			SELECT COALESCE(NULLIF(wc.display_en, ''), wc.word) AS candidate, wc.created_at
-			FROM word_cards wc
-		) x
-		WHERE candidate IS NOT NULL AND candidate <> ''
-		ORDER BY created_at DESC
+		SELECT wc.word AS candidate
+		FROM word_cards wc
+		WHERE wc.word IS NOT NULL AND wc.word <> ''
+		ORDER BY wc.created_at DESC
 		LIMIT ?
 	`
 

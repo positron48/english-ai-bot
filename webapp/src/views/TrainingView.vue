@@ -482,6 +482,7 @@ interface Card {
   user_card_id: number
   delay_ms: number
   direction: string
+  word_en?: string
   transcription?: string
   display_word?: string
   example_en?: string
@@ -612,13 +613,13 @@ const isEnglishWord = computed(() => {
 watch(currentCard, async (card) => {
   currentPronunciationURL.value = null
   if (!card || card.direction !== 'en_ru' || !card.transcription) return
-  const word = card.display_word || ''
+  const word = card.word_en || ''
   if (!word) return
   currentPronunciationURL.value = await getWordPronunciationURL(word)
 })
 
 const playCurrentPronunciation = async () => {
-  const word = currentCard.value?.display_word
+  const word = currentCard.value?.word_en
   if (!word || playingPronunciation.value) return
   playingPronunciation.value = true
   try {

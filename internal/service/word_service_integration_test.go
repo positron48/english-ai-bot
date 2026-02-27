@@ -7,11 +7,12 @@ import (
 	"testing"
 
 	"tgbot-skeleton/internal/ai"
+	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 
-	"tgbot-skeleton/internal/testutil"
 	"go.uber.org/zap"
+	"tgbot-skeleton/internal/testutil"
 )
 
 func contains(s, substr string) bool {
@@ -117,8 +118,8 @@ func TestWordService_GetWordDefinition_CreatesUserCards(t *testing.T) {
 
 	// Create a word card
 	wordCard := &models.WordCard{
-		Word:       "testword",
-		Definition: "test definition",
+		Word:         "testword",
+		Definition:   "test definition",
 		DefinitionRU: stringPtr("тестовое определение"),
 	}
 	wordCardID, err := wordRepo.UpsertWordCardLemma(wordCard)
@@ -215,6 +216,60 @@ func TestWordService_GetWordDefinition_CreatesUserCards(t *testing.T) {
 	}
 
 	_ = definition2 // Use the variable
+}
+
+func TestWordService_GetWordDefinition_SchedulesPronunciationByCanonicalWord(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	_, wordRepo := setupWordServiceTestDB(t)
+
+	displayEN := "to spy"
+	definitionRU := "шпионить"
+	wordCardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{
+		Word:         "spy",
+		Definition:   "to secretly collect information",
+		DisplayEN:    &displayEN,
+		DefinitionRU: &definitionRU,
+	})
+	if err != nil {
+		t.Fatalf("UpsertWordCardLemma error: %v", err)
+	}
+	if wordCardID == 0 {
+		t.Fatalf("expected non-zero wordCardID")
+	}
+
+	pronService := NewPronunciationService(config.TTSConfig{
+		Enabled:           true,
+		Provider:          "dictionary",
+		DictionaryEnabled: true,
+		DictionaryBaseURL: "http://127.0.0.1:1/api/v2/entries/en",
+		AudioDir:          t.TempDir(),
+		PublicBasePath:    "/media/tts",
+		PrefetchEnabled:   true,
+		PrefetchWorkers:   1,
+	}, nil, zap.NewNop())
+
+	service := NewWordService(wordRepo, nil, nil, nil, logger)
+	service.SetPronunciationService(pronService)
+
+	_, err = service.GetWordDefinition(context.Background(), 123, "spy")
+	if err != nil {
+		t.Fatalf("GetWordDefinition() error = %v", err)
+	}
+
+	select {
+	case scheduled := <-pronService.queue:
+		if scheduled != "spy" {
+			t.Fatalf("expected pronunciation scheduled for canonical word 'spy', got %q", scheduled)
+		}
+	default:
+		t.Fatalf("expected pronunciation scheduling for canonical word")
+	}
+
+	select {
+	case extra := <-pronService.queue:
+		t.Fatalf("expected no extra pronunciation scheduling (e.g., display form), got %q", extra)
+	default:
+	}
 }
 
 func stringPtr(s string) *string {

@@ -170,7 +170,7 @@ func TestWordRepository_UpsertWordCardLemma(t *testing.T) {
 		Definition:    "",
 		POS:           &pos,
 		Transcription: &transcription,
-		DefinitionRU: &definitionRU,
+		DefinitionRU:  &definitionRU,
 		DisplayEN:     &displayEN,
 		ExamplesJSON:  &examplesJSON,
 		VerbFormsJSON: &verbFormsJSON,
@@ -317,5 +317,55 @@ func TestWordRepository_AddWordRequestHistoryWithCard(t *testing.T) {
 	err = repo.AddWordRequestHistoryWithCard(user.ID, "yet another", &wordCardID, nil)
 	if err != nil {
 		t.Fatalf("AddWordRequestHistoryWithCard() with nil word error = %v", err)
+	}
+}
+
+func TestWordRepository_ListPronunciationCandidates_UsesCanonicalWordCardsOnly(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := setupWordTestDB(t)
+	repo := NewWordRepository(db, logger)
+
+	_, err := db.Exec(
+		"INSERT INTO word_cards (word, definition, display_en, created_at) VALUES (?, ?, ?, ?)",
+		"spy", "to secretly collect information", "to spy", "2024-01-01 00:00:00",
+	)
+	if err != nil {
+		t.Fatalf("insert word card spy: %v", err)
+	}
+	_, err = db.Exec(
+		"INSERT INTO word_cards (word, definition, display_en, created_at) VALUES (?, ?, ?, ?)",
+		"run", "to move quickly", "to run", "2024-01-02 00:00:00",
+	)
+	if err != nil {
+		t.Fatalf("insert word card run: %v", err)
+	}
+
+	var spyWordCardID int64
+	if err := db.QueryRow("SELECT id FROM word_cards WHERE word = ?", "spy").Scan(&spyWordCardID); err != nil {
+		t.Fatalf("select spy word card id: %v", err)
+	}
+	_, err = db.Exec(
+		`INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, display_word)
+		 VALUES (?, ?, ?, ?, ?, ?)`,
+		spyWordCardID, "spy", 0, "шпионить", "to spy", "to spy",
+	)
+	if err != nil {
+		t.Fatalf("insert training card: %v", err)
+	}
+
+	candidates, err := repo.ListPronunciationCandidates(10)
+	if err != nil {
+		t.Fatalf("ListPronunciationCandidates() error = %v", err)
+	}
+	if len(candidates) != 2 {
+		t.Fatalf("expected exactly 2 canonical candidates, got %d: %v", len(candidates), candidates)
+	}
+	if candidates[0] != "run" || candidates[1] != "spy" {
+		t.Fatalf("expected candidates ordered by word_cards.created_at desc [run spy], got %v", candidates)
+	}
+	for _, candidate := range candidates {
+		if candidate == "to spy" || candidate == "to run" {
+			t.Fatalf("expected no display_word/display_en forms in candidates, got %v", candidates)
+		}
 	}
 }

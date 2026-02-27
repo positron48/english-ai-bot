@@ -54,7 +54,8 @@ build: webapp-build grammar-bundle
 	$(GO) build -o bin/$(APP_NAME) ./cmd/bot
 	@echo "✅ Build complete: bin/$(APP_NAME)"
 
-run: tidy build
+run: postgres-up tidy build
+	@echo ""; echo "Web app: http://localhost:$${SERVER_PORT:-8184}/app"; echo ""
 	./bin/$(APP_NAME)
 
 test:
@@ -271,6 +272,32 @@ dev: tidy webapp-install webapp-build grammar-bundle
 
 up: run
 
+# Local development: start PostgreSQL (port 5433).
+# Prefer existing container english-postgres-local (e.g. with your data); else start from docker-compose.dev.yml.
+# In .env set: DATABASE_URL=postgres://english:english@127.0.0.1:5433/english?sslmode=disable
+postgres-up:
+	@if docker inspect english-postgres-local >/dev/null 2>&1; then \
+		echo "Starting existing Postgres (english-postgres-local)..."; \
+		docker compose -f docker-compose.dev.yml stop 2>/dev/null || true; \
+		docker start english-postgres-local; \
+		PG_CONTAINER=english-postgres-local; \
+	else \
+		echo "Starting PostgreSQL from docker-compose (port 5433)..."; \
+		docker compose -f docker-compose.dev.yml up -d; \
+		PG_CONTAINER=english-dev-postgres; \
+	fi; \
+	echo "Waiting for Postgres to be ready..."; \
+	i=0; until docker exec $$PG_CONTAINER pg_isready -U english -d english >/dev/null 2>&1; do \
+		i=$$((i+1)); \
+		if [ $$i -gt 30 ]; then echo "Postgres did not become ready"; exit 1; fi; \
+		sleep 1; \
+	done; \
+	echo "✅ Postgres is ready."
+
+postgres-down:
+	@docker stop english-postgres-local 2>/dev/null || true
+	docker compose -f docker-compose.dev.yml down
+
 # Cleanup
 clean:
 	rm -rf bin/
@@ -330,6 +357,8 @@ help:
 	@echo "  make setup          - Setup systemd service (requires sudo)"
 	@echo "  make build          - Build the application"
 	@echo "  make run            - Run the application"
+	@echo "  make postgres-up    - Start PostgreSQL for local dev (port 5433); run before make run"
+	@echo "  make postgres-down  - Stop local PostgreSQL"
 	@echo "  make dev            - Run backend + frontend in development mode"
 	@echo "  make webapp-install - Install webapp dependencies"
 	@echo "  make webapp-dev     - Run webapp dev server only"

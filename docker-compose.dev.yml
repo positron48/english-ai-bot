@@ -1,0 +1,26 @@
+# Локальная разработка: только PostgreSQL.
+# Запуск: make postgres-up
+# Остановка: make postgres-down
+# После postgres-up используйте в .env:
+#   DATABASE_URL=postgres://english:english@127.0.0.1:5433/english?sslmode=disable
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: english-dev-postgres
+    restart: unless-stopped
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: english
+      POSTGRES_USER: english
+      POSTGRES_PASSWORD: english
+    volumes:
+      - english_dev_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U english -d english"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  english_dev_pgdata:

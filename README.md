@@ -395,6 +395,14 @@ make check          # Все CI проверки (тесты, линтинг, co
 make swagger        # Генерация Swagger документации
 ```
 
+### Локальный PostgreSQL (Mac/Linux)
+
+**`make up`** поднимает Postgres в Docker (порт 5433) и запускает приложение. В `.env` задать:
+
+`DATABASE_URL=postgres://english:english@127.0.0.1:5433/english?sslmode=disable`
+
+Отдельно: `make postgres-up` — только БД; `make postgres-down` — остановить БД.
+
 ### Интеграционные тесты LLM
 
 ```bash
@@ -438,7 +446,7 @@ make docker-rebuild     # Пересборка (clean + build + run)
 - Деплою через GitHub releases
 - Настройке systemd сервиса
 - Настройке nginx с SSL
-- Pronunciation/TTS (dictionary primary + OpenAI fallback): [docs/TTS_SETUP.md](docs/TTS_SETUP.md)
+- Pronunciation/TTS (dictionary primary + OpenRouter fallback): [docs/TTS_SETUP.md](docs/TTS_SETUP.md)
 
 ## Лицензия
 

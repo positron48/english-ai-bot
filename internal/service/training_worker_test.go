@@ -11,6 +11,7 @@ import (
 	"unsafe"
 
 	"tgbot-skeleton/internal/ai"
+	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/database"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
@@ -208,5 +209,72 @@ func TestTrainingWorkerGetUsersForWord(t *testing.T) {
 	}
 	if len(users) != 1 {
 		t.Fatalf("expected 1 user, got %d", len(users))
+	}
+}
+
+func TestTrainingWorkerProcessCard_SchedulesPronunciationByCanonicalWord(t *testing.T) {
+	transport := rtFuncTW(func(req *http.Request) (*http.Response, error) {
+		resp := ai.ChatResponse{
+			Choices: []ai.Choice{{Message: ai.Message{Content: `{"word_en":"spy","lemma":"spy","transcription":"spaɪ","senses":[{"pos":"verb","display_word":"to spy","word_ru":"шпионить","meaning_en":"to secretly collect information","example_en":"They spy on competitors.","example_ru":"Они шпионят за конкурентами.","distractors_ru":["прыгать","читать"],"distractors_en":["to jump","to read"],"hint":"secretly watch"}]}`}}},
+		}
+		return newJSONHTTPResponseTW(http.StatusOK, resp), nil
+	})
+
+	worker, wordRepo, _, _, _, _, cleanup := newTrainingWorker(t, transport)
+	defer cleanup()
+
+	pronService := NewPronunciationService(config.TTSConfig{
+		Enabled:           true,
+		Provider:          "dictionary",
+		DictionaryEnabled: true,
+		DictionaryBaseURL: "http://127.0.0.1:1/api/v2/entries/en",
+		AudioDir:          t.TempDir(),
+		PublicBasePath:    "/media/tts",
+		PrefetchEnabled:   true,
+		PrefetchWorkers:   1,
+	}, nil, zap.NewNop())
+	worker.pronunciationService = pronService
+
+	pos := "verb"
+	trans := "spaɪ"
+	definitionRU := "шпионить"
+	displayEN := "to spy"
+	cardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{
+		Word:          "spy",
+		Definition:    "to secretly collect information",
+		POS:           &pos,
+		Transcription: &trans,
+		DefinitionRU:  &definitionRU,
+		DisplayEN:     &displayEN,
+	})
+	if err != nil {
+		t.Fatalf("UpsertWordCardLemma error: %v", err)
+	}
+
+	wordCard, err := wordRepo.GetWordCardByID(cardID)
+	if err != nil {
+		t.Fatalf("GetWordCardByID error: %v", err)
+	}
+	if wordCard == nil {
+		t.Fatalf("wordCard should not be nil")
+	}
+
+	if err := worker.processCard(context.Background(), wordCard); err != nil {
+		t.Fatalf("processCard error: %v", err)
+	}
+
+	select {
+	case scheduled := <-pronService.queue:
+		if scheduled != "spy" {
+			t.Fatalf("expected canonical pronunciation scheduling for 'spy', got %q", scheduled)
+		}
+	default:
+		t.Fatalf("expected pronunciation scheduling for canonical word")
+	}
+
+	select {
+	case extra := <-pronService.queue:
+		t.Fatalf("expected no extra pronunciation scheduling for display form, got %q", extra)
+	default:
 	}
 }

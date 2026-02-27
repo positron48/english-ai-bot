@@ -1,18 +1,22 @@
-# Pronunciation TTS Setup (Dictionary first, OpenAI fallback)
+# Настройка произношения TTS (основной Dictionary, fallback OpenRouter)
 
-This project uses word-level pronunciation audio with filesystem cache.
+В проекте используется генерация/кэш аудио произношения по отдельным словам.
 
-Priority order in `TTS_PROVIDER=auto`:
-1. `Free Dictionary API` (primary, free)
-2. `OpenAI /audio/speech` (fallback, only if API key + model are set)
+При `TTS_PROVIDER=auto` приоритет такой:
+1. `Free Dictionary API` (основной, бесплатный)
+2. Fallback TTS: если `TTS_BASE_URL` — **OpenRouter** (`openrouter.ai`), приложение дергает `/chat/completions` с `modalities: ["text","audio"]`, стрим, парсит `delta.audio.data` (PCM), конвертирует в MP3 через **ffmpeg** (должен быть в образе). Если базовый URL — **OpenAI** (`api.openai.com`), используется `/audio/speech` и в ответе уже MP3.
 
-If dictionary audio exists for a word, OpenAI is not called.
+Если у Dictionary есть аудио для слова, до TTS fallback запрос не дойдёт.
 
-## 1) Local `.env` setup
+Важно по доменной логике:
+- произношение кэшируется и запрашивается только для канонического `word`/lemma;
+- `training_card.display_word` (например `to spy`) не является отдельной сущностью произношения.
 
-Use `env.example` as base and set these keys.
+## 1) Локальная настройка `.env`
 
-Required for pronunciation feature:
+Возьми за основу `env.example` и задай ключи.
+
+Обязательно для фичи произношения:
 
 ```env
 TTS_ENABLED=true
@@ -32,25 +36,28 @@ TTS_RETRY_MAX_DELAY=24h
 TTS_MAX_RETRIES=8
 ```
 
-Optional (OpenAI fallback):
+Опционально для fallback TTS:
 
 ```env
-TTS_API_KEY=...
-TTS_MODEL=gpt-4o-mini-tts
-TTS_BASE_URL=https://api.openai.com/v1
+TTS_API_KEY=...          # ключ OpenRouter или OpenAI
+TTS_MODEL=openai/gpt-4o-audio-preview   # для OpenRouter; для OpenAI — tts-1, tts-1-hd, gpt-4o-mini-tts
+TTS_BASE_URL=https://openrouter.ai/api/v1   # или https://api.openai.com/v1
 TTS_VOICE=alloy
-TTS_REQUEST_TIMEOUT=15s
+TTS_REQUEST_TIMEOUT=45s
 ```
 
-Important:
-- If `TTS_API_KEY` or `TTS_MODEL` is empty, OpenAI fallback is disabled automatically.
-- English-only behavior is enforced in service normalization; non-Latin words are ignored.
+Важно:
+- **OpenRouter** (`TTS_BASE_URL` с `openrouter.ai`): приложение вызывает `/chat/completions` с жёстким промптом «только слово», стрим, собирает PCM из `delta.audio.data`, конвертирует в MP3 через **ffmpeg** (в Docker-образе ffmpeg уже добавлен).
+- **OpenAI** (`TTS_BASE_URL=https://api.openai.com/v1`): используется `/audio/speech`, в ответе сразу MP3, ffmpeg не нужен.
+- `TTS_REQUEST_TIMEOUT` — общий таймаут (по умолчанию 45s). При таймаутах увеличь до 60s.
+- Если `TTS_API_KEY` пустой, TTS fallback выключен.
+- Сервис работает только с английскими (latin) словами; не-latin отбрасываются на нормализации.
 
-## 2) k3s / Flux setup
+## 2) Настройка в k3s / Flux
 
-### 2.1 ConfigMap (non-secret)
+### 2.1 ConfigMap (не секреты)
 
-In `devops-time-host/apps/english/base/configmap.yaml` keep:
+В `devops-time-host/apps/english/base/configmap.yaml` должны быть:
 
 ```yaml
 TTS_ENABLED: "true"
@@ -66,66 +73,64 @@ TTS_BACKFILL_INTERVAL: "10m"
 TTS_BACKFILL_BATCH_SIZE: "200"
 ```
 
-### 2.2 Secret (optional fallback keys)
+### 2.2 Secret (только чувствительные значения)
 
-`english-secrets` in namespace `english`:
+В `english-secrets` (namespace `english`):
 
-- required for TTS fallback only:
-  - `TTS_API_KEY`
-  - `TTS_MODEL`
-- optional:
-  - `TTS_BASE_URL`
-  - `TTS_VOICE`
+- обязательные для старта приложения:
+  - `DATABASE_URL`
+  - `AI_API_KEY`
+  - `WEBAPP_JWT_SECRET` (или `WEBAPP_SESSION_SECRET`)
+- опциональные:
+  - `TELEGRAM_TOKEN` (если используешь Telegram-бот)
+  - `TTS_API_KEY` (если включаешь fallback OpenRouter)
 
-Dictionary-only mode does **not** require TTS secrets.
+Не-секретные параметры (`AI_URL`, `AI_MODEL`, `AI_MODEL_HIGH`, `AI_PROMPT_FILE`, а также `TTS_*` кроме ключа) задаются в GitOps ConfigMap.
 
-Example update command (safe apply):
+Пример безопасного обновления основного секрета (`create --dry-run | apply`):
 
 ```bash
 kubectl -n english create secret generic english-secrets \
   --from-literal=DATABASE_URL='postgres://english:<POSTGRES_PASSWORD>@english-postgres:5432/english?sslmode=disable' \
-  --from-literal=AI_URL='https://openrouter.ai/api/v1' \
   --from-literal=AI_API_KEY='***' \
-  --from-literal=AI_MODEL='openai/gpt-5-mini' \
-  --from-literal=AI_MODEL_HIGH='openai/gpt-5-mini' \
-  --from-literal=AI_PROMPT_FILE='prompts/english-teacher.txt' \
   --from-literal=WEBAPP_JWT_SECRET='***' \
-  --from-literal=WEBAPP_SESSION_SECRET='***' \
-  --from-literal=TELEGRAM_TOKEN='***' \
-  --from-literal=ADMIN_TELEGRAM_ID='0' \
   --dry-run=client -o yaml | kubectl apply -f -
 ```
 
-To enable OpenAI fallback, add keys:
+Если включаешь fallback OpenRouter, повтори ту же команду, добавив `TTS_API_KEY`:
 
 ```bash
 kubectl -n english create secret generic english-secrets \
+  --from-literal=DATABASE_URL='postgres://english:<POSTGRES_PASSWORD>@english-postgres:5432/english?sslmode=disable' \
+  --from-literal=AI_API_KEY='***' \
+  --from-literal=WEBAPP_JWT_SECRET='***' \
   --from-literal=TTS_API_KEY='***' \
-  --from-literal=TTS_MODEL='gpt-4o-mini-tts' \
-  --from-literal=TTS_BASE_URL='https://api.openai.com/v1' \
-  --from-literal=TTS_VOICE='alloy' \
   --dry-run=client -o yaml | kubectl apply -f -
 ```
 
-### 2.3 Persistent storage (already wired)
+Полный релизный runbook для k3s находится в GitOps-репозитории:
+`devops-time-host/apps/english/RELEASE_K3S.md`.
+
+### 2.3 Постоянное хранилище (уже подключено)
 
 - PVC: `english-tts-data`
-- Mount path in pod: `/app/data/tts`
-- Files survive pod restart/rollout.
+- Путь в контейнере: `/app/data/tts`
+- Кэш переживает restart/rollout.
 
-### 2.4 Backup (already wired)
+### 2.4 Бэкап (уже подключён)
 
-`k3s-backup` includes TTS cache archive:
+В `k3s-backup` уже включён архив кэша TTS:
 - `/app/data/tts` -> `english/tts.tar.gz`
 
-## 3) Rollout checklist
+## 3) Чеклист выката
 
-1. Commit changes in:
+1. Закоммить изменения в:
    - `english-ai-bot`
    - `devops-time-host`
-2. Push both repos.
-3. Wait for image build + Flux reconcile.
-   Optional acceleration:
+2. Запушь оба репозитория.
+3. Дождись сборки образа и Flux reconcile.
+
+Опционально ускорить:
 
 ```bash
 flux reconcile image repository english -n flux-system
@@ -134,34 +139,65 @@ flux reconcile image update flux-system -n flux-system
 flux reconcile kustomization flux-system -n flux-system --with-source
 ```
 
-4. Verify:
+4. Проверка:
 
 ```bash
 kubectl get pods -n english -l app=english
-kubectl logs -n english deploy/english --tail=200 | rg -i "tts|pronunciation|dictionary|openai"
+kubectl logs -n english deploy/english --tail=200 | rg -i "tts|pronunciation|dictionary|openrouter"
 ```
 
-5. Runtime check:
-   - Open web app, open any English card with transcription.
-   - Pronounce button appears only when file is already cached.
-   - First requests schedule background generation; button appears after cache file exists.
+5. Проверка в UI:
+- Открой карточку английского слова с транскрипцией.
+- Кнопка произношения показывается только когда файл уже есть в кэше.
+- При первом запросе файл создаётся в фоне, затем кнопка становится активной.
 
-## 4) API behavior summary
+## 4) Как заполняются уже существующие слова
+
+Есть два механизма:
+
+1. On-demand:
+- при открытии карточки/тренировки фронт вызывает `GET /api/tts/word?word=...`;
+- если файла нет, сервис ставит слово в очередь фоновой генерации.
+
+2. Периодический backfill:
+- при старте и далее раз в `TTS_BACKFILL_INTERVAL` сервис берёт кандидатов из `word_cards.word` (канонические lemma);
+- размер порции регулируется `TTS_BACKFILL_BATCH_SIZE`.
+
+Для ускоренного «прогрева» существующей базы временно выставь:
+
+```yaml
+TTS_PREFETCH_ENABLED: "true"
+TTS_PREFETCH_WORKERS: "4"
+TTS_BACKFILL_INTERVAL: "1m"
+TTS_BACKFILL_BATCH_SIZE: "2000"
+```
+
+После прогрева верни более щадящие значения (`10m`/`200`/`2`).
+
+Примечание: текущий backfill ориентирован на свежие слова (по `created_at`), поэтому при очень большом историческом объёме старые слова будут прогреваться медленнее.
+
+## 5) Поведение API
 
 - `GET /api/tts/word?word=<word>`
-  - returns `{ available, url, word }`
-  - triggers background generation when cache is missing
+  - возвращает `{ available, url, word }`
+  - если файла нет, ставит генерацию в фон
 - `GET /media/tts/...`
-  - serves cached mp3 with long immutable cache headers
+  - отдаёт кэшированный mp3 с длинными immutable cache headers
 
-## 5) Cost note for OpenAI fallback
+## 6) Backoff/ретраи
 
-Check current pricing before enabling fallback in production:
-- OpenAI pricing page: https://openai.com/api/pricing/
-- TTS model docs: https://platform.openai.com/docs/models/tts-1-hd
+При ошибках генерации применяется экспоненциальный backoff:
+- базовая задержка: `TTS_RETRY_BASE_DELAY`
+- рост: x2 на каждую попытку
+- потолок: `TTS_RETRY_MAX_DELAY`
+- максимум попыток: `TTS_MAX_RETRIES`
 
-At the time of writing, TTS docs show:
-- `TTS-1`: `$15.00` per 1M tokens
-- `TTS-1 HD`: `$30.00` per 1M tokens
+Пока не наступит `nextTry`, слово повторно в очередь не попадёт.
 
-Treat these values as subject to change and validate before rollout.
+## 7) OpenRouter для fallback
+
+Fallback при `TTS_BASE_URL` с `openrouter.ai`:
+- Запрос: `POST /chat/completions`, `modalities: ["text","audio"]`, `stream: true`, `max_tokens: 150`, системный промпт «озвучить только слово».
+- Ответ: SSE-стрим; приложение собирает `choices[0].delta.audio.data` (base64 PCM 16-bit 24 kHz), декодирует, конвертирует в MP3 через **ffmpeg** и сохраняет в кэш.
+
+Рекомендованные модели (audio output): `openai/gpt-audio-mini`, `openai/gpt-4o-audio-preview`. Для стоимости и лимитов смотри [openrouter.ai/models](https://openrouter.ai/models) (фильтр output = audio).

@@ -365,6 +365,7 @@ func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, stat
 		"direction":    string(card.UserCard.Direction),
 	}
 	if card.UserCard.Direction == models.DirectionENtoRU {
+		response["word_en"] = card.TrainingCard.WordEN
 		response["display_word"] = displayWord
 		response["transcription"] = card.TrainingCard.Transcription
 	}

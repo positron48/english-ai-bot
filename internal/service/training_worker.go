@@ -568,12 +568,12 @@ func (w *TrainingWorker) processCard(ctx context.Context, wordCard *models.WordC
 			return fmt.Errorf("failed to create training card: %w", err)
 		}
 
-		if w.pronunciationService != nil {
-			// Prefetch pronunciation for display form and base word in background.
-			w.pronunciationService.ScheduleWords(displayWord, trainingResp.WordEN)
-		}
-
 		trainingCardIDs = append(trainingCardIDs, id)
+	}
+
+	if w.pronunciationService != nil {
+		// Pronunciation is canonical per word (lemma), not per training-card display form.
+		w.pronunciationService.ScheduleWord(wordCard.Word)
 	}
 
 	// Get users who requested this word

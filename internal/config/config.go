@@ -58,7 +58,7 @@ type AIConfig struct {
 // TTSConfig holds text-to-speech/pronunciation audio configuration
 type TTSConfig struct {
 	Enabled           bool   `mapstructure:"enabled"`
-	Provider          string `mapstructure:"provider"` // auto | dictionary | openai
+	Provider          string `mapstructure:"provider"` // auto | dictionary | openrouter
 	AudioDir          string `mapstructure:"audio_dir"`
 	PublicBasePath    string `mapstructure:"public_base_path"`
 	Model             string `mapstructure:"model"`
@@ -158,10 +158,10 @@ func Load() (*Config, error) {
 	viper.SetDefault("tts.provider", "auto")
 	viper.SetDefault("tts.audio_dir", "/app/data/tts")
 	viper.SetDefault("tts.public_base_path", "/media/tts")
-	viper.SetDefault("tts.model", "gpt-4o-mini-tts")
+	viper.SetDefault("tts.model", "openai/gpt-audio-mini")
 	viper.SetDefault("tts.voice", "alloy")
-	viper.SetDefault("tts.base_url", "https://api.openai.com/v1")
-	viper.SetDefault("tts.request_timeout", "15s")
+	viper.SetDefault("tts.base_url", "https://openrouter.ai/api/v1")
+	viper.SetDefault("tts.request_timeout", "45s")
 	viper.SetDefault("tts.prefetch_enabled", true)
 	viper.SetDefault("tts.prefetch_workers", 2)
 	viper.SetDefault("tts.backfill_interval", "10m")

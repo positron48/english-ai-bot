@@ -142,11 +142,8 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 
 		// Render markdown from structured data
 		if s.pronunciationService != nil {
-			candidates := []string{wordCard.Word}
-			if wordCard.DisplayEN != nil && strings.TrimSpace(*wordCard.DisplayEN) != "" {
-				candidates = append(candidates, *wordCard.DisplayEN)
-			}
-			s.pronunciationService.ScheduleWords(candidates...)
+			// Pronunciation is canonical per word (lemma), not per training-card display form.
+			s.pronunciationService.ScheduleWord(wordCard.Word)
 		}
 		markdown := s.renderWordCardMarkdown(wordCard)
 		return markdown, nil
@@ -365,11 +362,8 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 
 	// Step 9: Render and return markdown
 	if s.pronunciationService != nil {
-		candidates := []string{lemma}
-		if displayEN != "" {
-			candidates = append(candidates, displayEN)
-		}
-		s.pronunciationService.ScheduleWords(candidates...)
+		// Pronunciation is canonical per word (lemma), not per training-card display form.
+		s.pronunciationService.ScheduleWord(lemma)
 	}
 	markdown := s.renderWordCardMarkdown(wordCard)
 	return markdown, nil

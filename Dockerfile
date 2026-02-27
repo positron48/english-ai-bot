@@ -32,8 +32,8 @@ RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o backfill_mastering ./c
 # Final stage
 FROM alpine:latest
 
-# Install ca-certificates for HTTPS (Postgres driver is compiled in)
-RUN apk --no-cache add ca-certificates tzdata
+# Install ca-certificates for HTTPS; ffmpeg for OpenRouter TTS (PCM→MP3)
+RUN apk --no-cache add ca-certificates tzdata ffmpeg
 
 # Create non-root user
 RUN addgroup -g 1001 -S appgroup && \
