@@ -2558,8 +2558,8 @@ const handleTimerMouseLeave = () => {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   border: 1px solid var(--border-color);
   background: var(--bg-secondary);
