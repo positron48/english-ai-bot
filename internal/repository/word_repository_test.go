@@ -361,7 +361,12 @@ func TestWordRepository_ListPronunciationCandidates_UsesCanonicalWordCardsOnly(t
 	}
 	_, err = db.Exec(
 		`INSERT INTO tts_generation_status (word, state, attempt_count, max_attempts, created_at, updated_at)
-		 VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
+		 VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+		 ON CONFLICT (word) DO UPDATE
+		 SET state = EXCLUDED.state,
+		     attempt_count = EXCLUDED.attempt_count,
+		     max_attempts = EXCLUDED.max_attempts,
+		     updated_at = CURRENT_TIMESTAMP`,
 		"run", "ready", 1, 3,
 	)
 	if err != nil {
@@ -369,7 +374,12 @@ func TestWordRepository_ListPronunciationCandidates_UsesCanonicalWordCardsOnly(t
 	}
 	_, err = db.Exec(
 		`INSERT INTO tts_generation_status (word, state, attempt_count, max_attempts, created_at, updated_at)
-		 VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
+		 VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+		 ON CONFLICT (word) DO UPDATE
+		 SET state = EXCLUDED.state,
+		     attempt_count = EXCLUDED.attempt_count,
+		     max_attempts = EXCLUDED.max_attempts,
+		     updated_at = CURRENT_TIMESTAMP`,
 		"spy", "failed_terminal", 3, 3,
 	)
 	if err != nil {
