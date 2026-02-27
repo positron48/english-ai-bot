@@ -355,14 +355,17 @@ func (r *WordRepository) ListPronunciationCandidates(limit int) ([]string, error
 	if limit <= 0 {
 		limit = 200
 	}
-	if limit > 5000 {
-		limit = 5000
-	}
 
 	query := `
 		SELECT wc.word AS candidate
 		FROM word_cards wc
 		WHERE wc.word IS NOT NULL AND wc.word <> ''
+		  AND NOT EXISTS (
+			SELECT 1
+			FROM tts_generation_status tgs
+			WHERE LOWER(tgs.word) = LOWER(wc.word)
+			  AND tgs.state IN ('ready', 'failed_terminal')
+		  )
 		ORDER BY wc.created_at DESC
 		LIMIT ?
 	`

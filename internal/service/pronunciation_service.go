@@ -605,9 +605,6 @@ func NewPronunciationService(cfg config.TTSConfig, wordRepo *repository.WordRepo
 	if backfillBatch <= 0 {
 		backfillBatch = 200
 	}
-	if backfillBatch > 2000 {
-		backfillBatch = 2000
-	}
 
 	maxRetries := cfg.MaxRetries
 	if maxRetries <= 0 {

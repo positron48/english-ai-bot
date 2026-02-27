@@ -339,6 +339,13 @@ func TestWordRepository_ListPronunciationCandidates_UsesCanonicalWordCardsOnly(t
 	if err != nil {
 		t.Fatalf("insert word card run: %v", err)
 	}
+	_, err = db.Exec(
+		"INSERT INTO word_cards (word, definition, display_en, created_at) VALUES (?, ?, ?, ?)",
+		"jump", "to leap", "to jump", "2024-01-03 00:00:00",
+	)
+	if err != nil {
+		t.Fatalf("insert word card jump: %v", err)
+	}
 
 	var spyWordCardID int64
 	if err := db.QueryRow("SELECT id FROM word_cards WHERE word = ?", "spy").Scan(&spyWordCardID); err != nil {
@@ -352,16 +359,32 @@ func TestWordRepository_ListPronunciationCandidates_UsesCanonicalWordCardsOnly(t
 	if err != nil {
 		t.Fatalf("insert training card: %v", err)
 	}
+	_, err = db.Exec(
+		`INSERT INTO tts_generation_status (word, state, attempt_count, max_attempts, created_at, updated_at)
+		 VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
+		"run", "ready", 1, 3,
+	)
+	if err != nil {
+		t.Fatalf("insert tts status run ready: %v", err)
+	}
+	_, err = db.Exec(
+		`INSERT INTO tts_generation_status (word, state, attempt_count, max_attempts, created_at, updated_at)
+		 VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
+		"spy", "failed_terminal", 3, 3,
+	)
+	if err != nil {
+		t.Fatalf("insert tts status spy failed_terminal: %v", err)
+	}
 
 	candidates, err := repo.ListPronunciationCandidates(10)
 	if err != nil {
 		t.Fatalf("ListPronunciationCandidates() error = %v", err)
 	}
-	if len(candidates) != 2 {
-		t.Fatalf("expected exactly 2 canonical candidates, got %d: %v", len(candidates), candidates)
+	if len(candidates) != 1 {
+		t.Fatalf("expected exactly 1 canonical candidate, got %d: %v", len(candidates), candidates)
 	}
-	if candidates[0] != "run" || candidates[1] != "spy" {
-		t.Fatalf("expected candidates ordered by word_cards.created_at desc [run spy], got %v", candidates)
+	if candidates[0] != "jump" {
+		t.Fatalf("expected candidates [jump], got %v", candidates)
 	}
 	for _, candidate := range candidates {
 		if candidate == "to spy" || candidate == "to run" {
