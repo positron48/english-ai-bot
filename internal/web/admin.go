@@ -881,6 +881,13 @@ func (r *Router) handleAdminWords(w http.ResponseWriter, req *http.Request) {
 	}
 
 	onlyWithErrors := req.URL.Query().Get("only_errors") == "1" || req.URL.Query().Get("only_errors") == "true"
+	var hasAudio *bool
+	if hasAudioStr := strings.TrimSpace(req.URL.Query().Get("has_audio")); hasAudioStr != "" {
+		v := hasAudioStr == "1" || strings.EqualFold(hasAudioStr, "true")
+		if hasAudioStr == "0" || strings.EqualFold(hasAudioStr, "false") || v {
+			hasAudio = &v
+		}
+	}
 	searchQuery := req.URL.Query().Get("search")
 	missingTrainingPOS := strings.TrimSpace(req.URL.Query().Get("missing_training_pos"))
 
@@ -905,7 +912,7 @@ func (r *Router) handleAdminWords(w http.ResponseWriter, req *http.Request) {
 		}
 	}
 
-	words, err := wordRepo.ListWordCardsAdmin(filterUserID, onlyWithErrors, searchQuery, missingTrainingPOS, limit, offset, sortBy, sortOrder)
+	words, err := wordRepo.ListWordCardsAdmin(filterUserID, onlyWithErrors, hasAudio, searchQuery, missingTrainingPOS, limit, offset, sortBy, sortOrder)
 	if err != nil {
 		r.logger.Error("failed to list word cards", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -913,7 +920,7 @@ func (r *Router) handleAdminWords(w http.ResponseWriter, req *http.Request) {
 	}
 
 	// Get total count for pagination
-	total, err := wordRepo.CountWordCardsAdmin(filterUserID, onlyWithErrors, searchQuery, missingTrainingPOS)
+	total, err := wordRepo.CountWordCardsAdmin(filterUserID, onlyWithErrors, hasAudio, searchQuery, missingTrainingPOS)
 	if err != nil {
 		r.logger.Error("failed to count word cards", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)

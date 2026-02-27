@@ -37,13 +37,12 @@
           <option value="pronoun">Missing card: pronoun</option>
           <option value="preposition">Missing card: preposition</option>
         </select>
-        <button 
-          @click="toggleOnlyErrors" 
-          :class="['btn', 'btn-toggle', { 'btn-toggle-active': wordsOnlyErrors }]"
-          type="button"
-        >
-          Only with errors
-        </button>
+        <select v-model="wordsAudioFilter" class="admin-select" @change="onFilterChange">
+          <option value="all">All words</option>
+          <option value="with_audio">Only with audio</option>
+          <option value="without_audio">Only without audio</option>
+          <option value="only_errors">Only errors</option>
+        </select>
         <button @click="loadWords" class="btn btn-primary">Refresh</button>
       </div>
 
@@ -115,14 +114,7 @@
                   <td><strong>{{ word.Word }}</strong></td>
                   <td>{{ word.POS || '—' }}</td>
                   <td>
-                    <span v-if="word.ProcessingError" 
-                      @click.prevent="showErrorDetails(word)"
-                      class="card-link card-link-error"
-                      :style="{ cursor: 'pointer' }"
-                    >
-                      Error
-                    </span>
-                    <span v-else-if="!word.HasTrainingCards" :class="{ 'badge': true, 'badge-secondary': true }">
+                    <span v-if="!word.HasTrainingCards" :class="{ 'badge': true, 'badge-secondary': true }">
                       No
                     </span>
                     <a 
@@ -167,6 +159,22 @@
                         title="Сбросить ошибку"
                       >
                         <Icon name="refresh" />
+                      </button>
+                      <button
+                        v-if="word.TTSAudioURL"
+                        @click="playWordAudio(word)"
+                        class="btn btn-sm btn-secondary"
+                        title="Listen"
+                      >
+                        <Icon name="play" />
+                      </button>
+                      <button
+                        v-if="hasWordError(word)"
+                        @click="showErrorDetails(word)"
+                        class="btn btn-sm btn-warning"
+                        title="Show error"
+                      >
+                        <Icon name="warning" />
                       </button>
                       <button 
                         v-if="can('words.edit_all')"
@@ -601,7 +609,15 @@
               </div>
               <div class="error-detail-row">
                 <span class="error-detail-label">Error:</span>
-                <span class="error-detail-value error-text-full">{{ wordWithError.ProcessingError }}</span>
+                <span class="error-detail-value error-text-full">{{ wordWithError.ProcessingError || '—' }}</span>
+              </div>
+              <div class="error-detail-row">
+                <span class="error-detail-label">TTS state:</span>
+                <span class="error-detail-value">{{ wordWithError.TTSState || '—' }}</span>
+              </div>
+              <div class="error-detail-row">
+                <span class="error-detail-label">TTS error:</span>
+                <span class="error-detail-value error-text-full">{{ wordWithError.TTSError || '—' }}</span>
               </div>
             </div>
           </div>
@@ -660,6 +676,9 @@ interface WordCard {
   ProcessedAt?: string | null
   ProcessingError?: string | null
   HasTrainingCards: boolean
+  TTSState?: string | null
+  TTSError?: string | null
+  TTSAudioURL?: string | null
   RequestingUsers?: number[]
   showingCards?: boolean
   cards?: TrainingCard[]
@@ -686,7 +705,7 @@ const wordsLoading = ref(false)
 const wordsError = ref<string | null>(null)
 const wordsFilterUser = ref<number | null>(null)
 const wordsMissingTrainingPOS = ref('')
-const wordsOnlyErrors = ref(false)
+const wordsAudioFilter = ref<'all' | 'with_audio' | 'without_audio' | 'only_errors'>('all')
 const wordsSearchQuery = ref('')
 const wordsSearchTimeout = ref<number | null>(null)
 const searchInputRef = ref<HTMLInputElement | null>(null)
@@ -796,8 +815,14 @@ const loadWords = async () => {
     if (wordsFilterUser.value !== null) {
       params.append('user_id', wordsFilterUser.value.toString())
     }
-    if (wordsOnlyErrors.value) {
+    if (wordsAudioFilter.value === 'only_errors') {
       params.append('only_errors', '1')
+    }
+    if (wordsAudioFilter.value === 'with_audio') {
+      params.append('has_audio', '1')
+    }
+    if (wordsAudioFilter.value === 'without_audio') {
+      params.append('has_audio', '0')
     }
     if (wordsMissingTrainingPOS.value) {
       params.append('missing_training_pos', wordsMissingTrainingPOS.value)
@@ -885,10 +910,14 @@ const onFilterChange = () => {
   loadWords()
 }
 
-const toggleOnlyErrors = () => {
-  wordsOnlyErrors.value = !wordsOnlyErrors.value
-  wordsPagination.value.page = 1
-  loadWords()
+const hasWordError = (word: WordCard): boolean => {
+  return Boolean(word.ProcessingError) || word.TTSState === 'failed_retryable' || word.TTSState === 'failed_terminal'
+}
+
+const playWordAudio = (word: WordCard) => {
+  if (!word.TTSAudioURL) return
+  const audio = new Audio(word.TTSAudioURL)
+  void audio.play()
 }
 
 const toggleWordCards = async (word: WordCard) => {

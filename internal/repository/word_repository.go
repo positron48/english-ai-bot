@@ -494,11 +494,14 @@ type WordCardAdminItem struct {
 	models.WordCard
 	HasTrainingCards bool
 	RequestingUsers  []int64
+	TTSState         *string
+	TTSError         *string
+	TTSAudioURL      *string
 }
 
 // ListWordCardsAdmin lists word cards for admin view with optional filters.
 // missingTrainingPOS: when set, only words that have no training card with this part of speech are returned (e.g. "noun" => words without a noun card).
-func (r *WordRepository) ListWordCardsAdmin(filterUserID *int64, onlyWithErrors bool, searchQuery string, missingTrainingPOS string, limit, offset int, sortBy string, sortOrder string) ([]*WordCardAdminItem, error) {
+func (r *WordRepository) ListWordCardsAdmin(filterUserID *int64, onlyWithErrors bool, hasAudio *bool, searchQuery string, missingTrainingPOS string, limit, offset int, sortBy string, sortOrder string) ([]*WordCardAdminItem, error) {
 	// Use LEFT JOIN with GROUP BY to check for training cards - more reliable than subquery
 	query := `SELECT wc.id, wc.word, wc.definition,
 			  COALESCE(wc.pos, '') as pos,
@@ -509,11 +512,15 @@ func (r *WordRepository) ListWordCardsAdmin(filterUserID *int64, onlyWithErrors 
 			  COALESCE(wc.display_en, '') as display_en,
 			  COALESCE(CAST(wc.processed_at AS TEXT), '') as processed_at,
 			  COALESCE(wc.processing_error, '') as processing_error,
+			  COALESCE(tts.state, '') as tts_state,
+			  COALESCE(tts.last_error_message, '') as tts_error,
+			  COALESCE(tts.audio_rel_path, '') as tts_audio_rel_path,
 			  CAST(wc.created_at AS TEXT) as created_at,
 			  CAST(wc.updated_at AS TEXT) as updated_at,
 			  MAX(CASE WHEN tc.id IS NOT NULL THEN 1 ELSE 0 END) as has_training_cards
 			  FROM word_cards wc
-			  LEFT JOIN training_cards tc ON tc.word_card_id = wc.id`
+			  LEFT JOIN training_cards tc ON tc.word_card_id = wc.id
+			  LEFT JOIN tts_generation_status tts ON LOWER(tts.word) = LOWER(wc.word)`
 
 	args := []interface{}{}
 	conditions := []string{}
@@ -526,7 +533,16 @@ func (r *WordRepository) ListWordCardsAdmin(filterUserID *int64, onlyWithErrors 
 
 	// Filter by errors if specified
 	if onlyWithErrors {
-		conditions = append(conditions, "wc.processing_error IS NOT NULL AND wc.processing_error != ''")
+		conditions = append(conditions, "((wc.processing_error IS NOT NULL AND wc.processing_error != '') OR tts.state IN ('failed_retryable','failed_terminal'))")
+	}
+
+	// Filter by audio existence if specified
+	if hasAudio != nil {
+		if *hasAudio {
+			conditions = append(conditions, "tts.audio_rel_path IS NOT NULL AND tts.audio_rel_path != ''")
+		} else {
+			conditions = append(conditions, "(tts.audio_rel_path IS NULL OR tts.audio_rel_path = '')")
+		}
 	}
 
 	// Filter: only words that have no training card with the given part of speech
@@ -547,7 +563,7 @@ func (r *WordRepository) ListWordCardsAdmin(filterUserID *int64, onlyWithErrors 
 		query += " WHERE " + strings.Join(conditions, " AND ")
 	}
 
-	query += " GROUP BY wc.id, wc.word, wc.definition, wc.pos, wc.transcription, wc.definition_ru, wc.examples_json, wc.verb_forms_json, wc.display_en, wc.processed_at, wc.processing_error, wc.created_at, wc.updated_at"
+	query += " GROUP BY wc.id, wc.word, wc.definition, wc.pos, wc.transcription, wc.definition_ru, wc.examples_json, wc.verb_forms_json, wc.display_en, wc.processed_at, wc.processing_error, tts.state, tts.last_error_message, tts.audio_rel_path, wc.created_at, wc.updated_at"
 
 	// Build ORDER BY clause
 	orderBy := "wc.created_at"
@@ -589,13 +605,14 @@ func (r *WordRepository) ListWordCardsAdmin(filterUserID *int64, onlyWithErrors 
 	var items []*WordCardAdminItem
 	for rows.Next() {
 		var item WordCardAdminItem
-		var createdAt, updatedAt, processedAtStr, processingErrorStr string
+		var createdAt, updatedAt, processedAtStr, processingErrorStr, ttsStateStr, ttsErrorStr, ttsAudioRelPath string
 		var posStr, transcriptionStr, definitionRUStr, examplesJSONStr, verbFormsJSONStr, displayENStr string
 		var hasTrainingCards int
 
 		err := rows.Scan(&item.ID, &item.Word, &item.Definition,
 			&posStr, &transcriptionStr, &definitionRUStr, &examplesJSONStr, &verbFormsJSONStr, &displayENStr,
 			&processedAtStr, &processingErrorStr,
+			&ttsStateStr, &ttsErrorStr, &ttsAudioRelPath,
 			&createdAt, &updatedAt, &hasTrainingCards)
 		if err != nil {
 			return nil, fmt.Errorf("failed to scan word card: %w", err)
@@ -632,6 +649,16 @@ func (r *WordRepository) ListWordCardsAdmin(filterUserID *int64, onlyWithErrors 
 		if processingErrorStr != "" {
 			item.ProcessingError = &processingErrorStr
 		}
+		if ttsStateStr != "" {
+			item.TTSState = &ttsStateStr
+		}
+		if ttsErrorStr != "" {
+			item.TTSError = &ttsErrorStr
+		}
+		if ttsAudioRelPath != "" {
+			audioURL := "/media/tts/" + strings.TrimLeft(ttsAudioRelPath, "/")
+			item.TTSAudioURL = &audioURL
+		}
 
 		// Get requesting users for this word
 		userIDs, err := r.GetUserIDsByWord(item.Word)
@@ -649,8 +676,9 @@ func (r *WordRepository) ListWordCardsAdmin(filterUserID *int64, onlyWithErrors 
 
 // CountWordCardsAdmin counts total word cards matching filters (for pagination).
 // missingTrainingPOS: when set, only words that have no training card with this part of speech are counted.
-func (r *WordRepository) CountWordCardsAdmin(filterUserID *int64, onlyWithErrors bool, searchQuery string, missingTrainingPOS string) (int, error) {
-	query := `SELECT COUNT(DISTINCT wc.id) FROM word_cards wc`
+func (r *WordRepository) CountWordCardsAdmin(filterUserID *int64, onlyWithErrors bool, hasAudio *bool, searchQuery string, missingTrainingPOS string) (int, error) {
+	query := `SELECT COUNT(DISTINCT wc.id) FROM word_cards wc
+			  LEFT JOIN tts_generation_status tts ON LOWER(tts.word) = LOWER(wc.word)`
 
 	args := []interface{}{}
 	conditions := []string{}
@@ -663,7 +691,16 @@ func (r *WordRepository) CountWordCardsAdmin(filterUserID *int64, onlyWithErrors
 
 	// Filter by errors if specified
 	if onlyWithErrors {
-		conditions = append(conditions, "wc.processing_error IS NOT NULL AND wc.processing_error != ''")
+		conditions = append(conditions, "((wc.processing_error IS NOT NULL AND wc.processing_error != '') OR tts.state IN ('failed_retryable','failed_terminal'))")
+	}
+
+	// Filter by audio existence if specified
+	if hasAudio != nil {
+		if *hasAudio {
+			conditions = append(conditions, "tts.audio_rel_path IS NOT NULL AND tts.audio_rel_path != ''")
+		} else {
+			conditions = append(conditions, "(tts.audio_rel_path IS NULL OR tts.audio_rel_path = '')")
+		}
 	}
 
 	// Filter: only words that have no training card with the given part of speech

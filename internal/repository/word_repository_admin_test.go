@@ -25,7 +25,7 @@ func TestWordRepository_ListWordCardsAdmin(t *testing.T) {
 	repo.SaveWordCard("admin2", "definition 2")
 
 	// List word cards
-	cards, err := repo.ListWordCardsAdmin(nil, false, "", "", 10, 0, "", "desc")
+	cards, err := repo.ListWordCardsAdmin(nil, false, nil, "", "", 10, 0, "", "desc")
 	if err != nil {
 		t.Fatalf("ListWordCardsAdmin() error = %v", err)
 	}
@@ -42,7 +42,7 @@ func TestWordRepository_ListWordCardsAdmin_WithSearch(t *testing.T) {
 	repo.SaveWordCard("otherword", "definition")
 
 	// List word cards with search
-	cards, err := repo.ListWordCardsAdmin(nil, false, "search", "", 10, 0, "", "desc")
+	cards, err := repo.ListWordCardsAdmin(nil, false, nil, "search", "", 10, 0, "", "desc")
 	if err != nil {
 		t.Fatalf("ListWordCardsAdmin() error = %v", err)
 	}
@@ -60,7 +60,7 @@ func TestWordRepository_CountWordCardsAdmin(t *testing.T) {
 	repo.SaveWordCard("count3", "definition 3")
 
 	// Count word cards
-	count, err := repo.CountWordCardsAdmin(nil, false, "", "")
+	count, err := repo.CountWordCardsAdmin(nil, false, nil, "", "")
 	if err != nil {
 		t.Fatalf("CountWordCardsAdmin() error = %v", err)
 	}
@@ -97,7 +97,7 @@ func TestWordRepository_CountWordCardsAdmin_WithFilterUserID(t *testing.T) {
 
 	// Count word cards for user
 	userID := user.ID
-	count, err := repo.CountWordCardsAdmin(&userID, false, "", "")
+	count, err := repo.CountWordCardsAdmin(&userID, false, nil, "", "")
 	if err != nil {
 		t.Fatalf("CountWordCardsAdmin() error = %v", err)
 	}
@@ -123,7 +123,7 @@ func TestWordRepository_CountWordCardsAdmin_WithErrors(t *testing.T) {
 	}
 
 	// Count word cards with errors
-	count, err := repo.CountWordCardsAdmin(nil, true, "", "")
+	count, err := repo.CountWordCardsAdmin(nil, true, nil, "", "")
 	if err != nil {
 		t.Fatalf("CountWordCardsAdmin() error = %v", err)
 	}
@@ -140,7 +140,7 @@ func TestWordRepository_CountWordCardsAdmin_WithSearch(t *testing.T) {
 	repo.SaveWordCard("other", "definition")
 
 	// Count word cards with search
-	count, err := repo.CountWordCardsAdmin(nil, false, "search", "")
+	count, err := repo.CountWordCardsAdmin(nil, false, nil, "search", "")
 	if err != nil {
 		t.Fatalf("CountWordCardsAdmin() error = %v", err)
 	}
@@ -170,7 +170,7 @@ func TestWordRepository_ListWordCardsAdmin_MissingTrainingPOS(t *testing.T) {
 	repo.SaveWordCard("wordwithoutnoun", "definition")
 
 	// Filter: missing card for noun -> only words that have no training card with pos=noun
-	list, err := repo.ListWordCardsAdmin(nil, false, "", "noun", 10, 0, "", "desc")
+	list, err := repo.ListWordCardsAdmin(nil, false, nil, "", "noun", 10, 0, "", "desc")
 	if err != nil {
 		t.Fatalf("ListWordCardsAdmin() error = %v", err)
 	}
@@ -192,7 +192,7 @@ func TestWordRepository_ListWordCardsAdmin_MissingTrainingPOS(t *testing.T) {
 		}
 	}
 
-	count, err := repo.CountWordCardsAdmin(nil, false, "", "noun")
+	count, err := repo.CountWordCardsAdmin(nil, false, nil, "", "noun")
 	if err != nil {
 		t.Fatalf("CountWordCardsAdmin() error = %v", err)
 	}

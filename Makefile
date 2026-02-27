@@ -47,7 +47,9 @@ tag:
 	PATCH=$$(echo $$V | cut -d. -f3); \
 	NEXT=$$MAJOR.$$MINOR.$$((PATCH+1)); \
 	echo "Creating tag $$NEXT"; \
-	git tag $$NEXT
+	git tag $$NEXT; \
+	echo "Pushing HEAD and tags to origin"; \
+	git push origin HEAD --tags
 
 build: webapp-build grammar-bundle
 	@echo "Building Go binary..."
