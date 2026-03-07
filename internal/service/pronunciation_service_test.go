@@ -95,6 +95,69 @@ func TestPronunciationService_ScheduleWord_InvalidWord(t *testing.T) {
 	}
 }
 
+// TestPronunciationService_ScheduleWord_FailedTerminal returns false when status is failed_terminal.
+func TestPronunciationService_ScheduleWord_FailedTerminal(t *testing.T) {
+	db := testutil.SetupTestDB(t)
+	wordRepo := repository.NewWordRepository(db, zap.NewNop())
+	audioDir := t.TempDir()
+	cfg := config.TTSConfig{
+		Enabled: true, Provider: "dictionary", AudioDir: audioDir, PublicBasePath: "/media/tts",
+		DictionaryEnabled: true, DictionaryBaseURL: "http://example.com", MaxRetries: 3,
+	}
+	svc := NewPronunciationService(cfg, wordRepo, zap.NewNop())
+	_ = svc.ttsRepo.MarkTerminal("hello", "service", "test_code", "test error")
+
+	got := svc.ScheduleWord("hello")
+	if got {
+		t.Error("ScheduleWord should return false when status is failed_terminal")
+	}
+}
+
+// TestPronunciationService_ScheduleWord_MaxAttemptsReached returns false when attempt_count >= max_attempts.
+func TestPronunciationService_ScheduleWord_MaxAttemptsReached(t *testing.T) {
+	db := testutil.SetupTestDB(t)
+	wordRepo := repository.NewWordRepository(db, zap.NewNop())
+	cfg := config.TTSConfig{
+		Enabled: true, Provider: "dictionary", AudioDir: t.TempDir(), PublicBasePath: "/media/tts",
+		DictionaryEnabled: true, DictionaryBaseURL: "http://example.com", MaxRetries: 2,
+	}
+	svc := NewPronunciationService(cfg, wordRepo, zap.NewNop())
+	for i := 0; i < 2; i++ {
+		_ = svc.ttsRepo.MarkAttempt("maxword", "dict", "not_found", "err", true)
+	}
+
+	got := svc.ScheduleWord("maxword")
+	if got {
+		t.Error("ScheduleWord should return false when attempt_count >= max_attempts")
+	}
+}
+
+// TestPronunciationService_ScheduleWord_ReadyAndFileExists returns true when status is ready and file exists.
+func TestPronunciationService_ScheduleWord_ReadyAndFileExists(t *testing.T) {
+	db := testutil.SetupTestDB(t)
+	wordRepo := repository.NewWordRepository(db, zap.NewNop())
+	audioDir := t.TempDir()
+	cfg := config.TTSConfig{
+		Enabled: true, Provider: "dictionary", AudioDir: audioDir, PublicBasePath: "/media/tts",
+		DictionaryEnabled: true, DictionaryBaseURL: "http://example.com",
+	}
+	svc := NewPronunciationService(cfg, wordRepo, zap.NewNop())
+	relPath := svc.relativePathForWordWithExt("hello", ".mp3")
+	fullPath := filepath.Join(audioDir, relPath)
+	if err := os.MkdirAll(filepath.Dir(fullPath), 0o755); err != nil {
+		t.Fatalf("mkdir: %v", err)
+	}
+	if err := os.WriteFile(fullPath, []byte("mock"), 0o644); err != nil {
+		t.Fatalf("write file: %v", err)
+	}
+	_ = svc.ttsRepo.MarkReady("hello", "dict", relPath)
+
+	got := svc.ScheduleWord("hello")
+	if !got {
+		t.Error("ScheduleWord should return true when status is ready and file exists")
+	}
+}
+
 func TestPronunciationService_ForceRegenerate_NoTTSRepo(t *testing.T) {
 	cfg := config.TTSConfig{Enabled: true, AudioDir: t.TempDir(), PublicBasePath: "/media/tts"}
 	svc := NewPronunciationService(cfg, nil, zap.NewNop())
@@ -400,6 +463,143 @@ func TestDictionaryPronunciationProviderFetch_NoAudioReason(t *testing.T) {
 	}
 }
 
+// TestDictionaryPronunciationProviderFetch_EmptyLookupWord returns errPronunciationNotFound when word yields empty lookup.
+func TestDictionaryPronunciationProviderFetch_EmptyLookupWord(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		t.Error("should not call server when lookup word is empty")
+	}))
+	defer srv.Close()
+
+	p := &dictionaryPronunciationProvider{baseURL: srv.URL, client: &http.Client{Timeout: 3 * time.Second}}
+
+	_, err := p.fetch(context.Background(), "   ")
+	if err == nil {
+		t.Fatal("expected error for empty/whitespace word")
+	}
+	if !errors.Is(err, errPronunciationNotFound) {
+		t.Fatalf("expected errPronunciationNotFound, got %v", err)
+	}
+}
+
+// TestDictionaryPronunciationProviderFetch_NotFound covers 404 response from dictionary API.
+func TestDictionaryPronunciationProviderFetch_NotFound(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusNotFound)
+	}))
+	defer srv.Close()
+
+	p := &dictionaryPronunciationProvider{baseURL: srv.URL, client: &http.Client{Timeout: 3 * time.Second}}
+
+	_, err := p.fetch(context.Background(), "nonexistentword")
+	if err == nil {
+		t.Fatal("expected error for 404")
+	}
+	if !errors.Is(err, errPronunciationNotFound) {
+		t.Fatalf("expected errPronunciationNotFound, got %v", err)
+	}
+	if !strings.Contains(err.Error(), "dictionary_404") {
+		t.Errorf("expected error to mention dictionary_404, got %q", err.Error())
+	}
+}
+
+// TestDictionaryPronunciationProviderFetch_Non2xx covers non-2xx response from dictionary API.
+func TestDictionaryPronunciationProviderFetch_Non2xx(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusInternalServerError)
+		_, _ = w.Write([]byte("server error"))
+	}))
+	defer srv.Close()
+
+	p := &dictionaryPronunciationProvider{baseURL: srv.URL, client: &http.Client{Timeout: 3 * time.Second}}
+
+	_, err := p.fetch(context.Background(), "hello")
+	if err == nil {
+		t.Fatal("expected error for 500")
+	}
+	if strings.Contains(err.Error(), "500") && !strings.Contains(err.Error(), "server error") {
+		t.Errorf("expected body in error message for 500 response, got %q", err.Error())
+	}
+}
+
+// TestDictionaryPronunciationProviderFetch_InvalidJSON covers decode error for dictionary response.
+func TestDictionaryPronunciationProviderFetch_InvalidJSON(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write([]byte("not json"))
+	}))
+	defer srv.Close()
+
+	p := &dictionaryPronunciationProvider{baseURL: srv.URL, client: &http.Client{Timeout: 3 * time.Second}}
+
+	_, err := p.fetch(context.Background(), "hello")
+	if err == nil {
+		t.Fatal("expected error for invalid JSON")
+	}
+	if !strings.Contains(err.Error(), "decode") {
+		t.Errorf("expected decode in error, got %q", err.Error())
+	}
+}
+
+// TestDictionaryPronunciationProviderFetch_SuccessWithSameServerAudioURL verifies successful fetch when
+// dictionary returns an audio URL pointing to the same server (e.g. full http URL).
+func TestDictionaryPronunciationProviderFetch_SuccessWithSameServerAudioURL(t *testing.T) {
+	audioBytes := []byte("mock-mp3")
+	var audioReqPath string
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if strings.HasSuffix(r.URL.Path, "/hello") || r.URL.Path == "/hello" {
+			_, _ = w.Write([]byte(`[{"phonetics":[{"audio":"http://` + r.Host + `/audio/hello.mp3"}]}]`))
+			return
+		}
+		if strings.Contains(r.URL.Path, "audio") {
+			audioReqPath = r.URL.Path
+			w.Header().Set("Content-Type", "audio/mpeg")
+			_, _ = w.Write(audioBytes)
+			return
+		}
+		http.NotFound(w, r)
+	}))
+	defer srv.Close()
+
+	p := &dictionaryPronunciationProvider{baseURL: srv.URL, client: &http.Client{Timeout: 3 * time.Second}}
+
+	got, err := p.fetch(context.Background(), "hello")
+	if err != nil {
+		t.Fatalf("fetch: %v", err)
+	}
+	if string(got) != string(audioBytes) {
+		t.Fatalf("unexpected audio: got %q", got)
+	}
+	if audioReqPath == "" {
+		t.Fatal("expected audio download request to be made")
+	}
+}
+
+// TestDictionaryPronunciationProviderFetch_AudioDownload404 covers 404 on audio file download.
+func TestDictionaryPronunciationProviderFetch_AudioDownload404(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if strings.HasSuffix(r.URL.Path, "/hello") || r.URL.Path == "/hello" {
+			// Use r.Host so the audio URL points to this server without capturing srv
+			_, _ = w.Write([]byte(`[{"phonetics":[{"audio":"http://` + r.Host + `/audio/hello.mp3"}]}]`))
+			return
+		}
+		w.WriteHeader(http.StatusNotFound)
+	}))
+	defer srv.Close()
+
+	p := &dictionaryPronunciationProvider{baseURL: srv.URL, client: &http.Client{Timeout: 3 * time.Second}}
+
+	_, err := p.fetch(context.Background(), "hello")
+	if err == nil {
+		t.Fatal("expected error when audio download returns 404")
+	}
+	if !errors.Is(err, errPronunciationNotFound) {
+		t.Fatalf("expected errPronunciationNotFound, got %v", err)
+	}
+	if !strings.Contains(err.Error(), "dictionary_audio_404") {
+		t.Errorf("expected dictionary_audio_404 in error, got %q", err.Error())
+	}
+}
+
 // TestPronunciationService_DictionaryNoAudioFallbackToOpenRouter verifies that when
 // the first provider returns dictionary_no_audio, the second provider (e.g. OpenRouter) is tried and can succeed.
 func TestPronunciationService_DictionaryNoAudioFallbackToOpenRouter(t *testing.T) {
@@ -464,6 +664,51 @@ func TestPronunciationService_DictionaryNoAudioFallbackToOpenRouter(t *testing.T
 		if status == nil || status.State != "ready" {
 			t.Fatalf("expected status ready in DB after fallback, got %v", status)
 		}
+	}
+}
+
+// TestPronunciationService_ProcessWord_Disabled returns early when service is disabled.
+func TestPronunciationService_ProcessWord_Disabled(t *testing.T) {
+	cfg := config.TTSConfig{Enabled: false, AudioDir: t.TempDir(), PublicBasePath: "/media/tts"}
+	svc := NewPronunciationService(cfg, nil, zap.NewNop())
+	svc.providers = []pronunciationProvider{&stubPronunciationProvider{providerName: "stub", audio: []byte("x")}}
+
+	svc.processWord(context.Background(), "hello")
+	// No panic; disabled path returns without calling providers (no file written)
+	if svc.hasCachedAudio("hello") {
+		t.Error("expected no cached audio when disabled")
+	}
+}
+
+// TestPronunciationService_ProcessWord_WriteFails continues to retry path when writeFileAtomic fails.
+func TestPronunciationService_ProcessWord_WriteFails(t *testing.T) {
+	dir := t.TempDir()
+	// Use a path that is an existing file so MkdirAll in writeFileAtomic fails
+	audioDirAsFile := filepath.Join(dir, "blocked")
+	if err := os.WriteFile(audioDirAsFile, nil, 0o644); err != nil {
+		t.Fatalf("create file: %v", err)
+	}
+	cfg := config.TTSConfig{
+		Enabled: true, Provider: "dictionary", AudioDir: audioDirAsFile, PublicBasePath: "/media/tts",
+		DictionaryEnabled: true, DictionaryBaseURL: "http://example.com", MaxRetries: 2,
+	}
+	db := testutil.SetupTestDB(t)
+	wordRepo := repository.NewWordRepository(db, zap.NewNop())
+	svc := NewPronunciationService(cfg, wordRepo, zap.NewNop())
+	svc.providers = []pronunciationProvider{&stubPronunciationProvider{providerName: "stub", audio: []byte("audio")}}
+
+	svc.processWord(context.Background(), "hello")
+
+	status, err := svc.ttsRepo.GetByWord("hello")
+	if err != nil {
+		t.Fatalf("GetByWord: %v", err)
+	}
+	if status == nil {
+		t.Fatal("expected status record after write failure")
+	}
+	// Should record retryable attempt (write_failed)
+	if status.State != models.TTSStateFailedRetryable && status.State != models.TTSStatePending {
+		t.Errorf("expected failed_retryable or pending after write failure, got state=%q", status.State)
 	}
 }
 

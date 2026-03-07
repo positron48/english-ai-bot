@@ -21,9 +21,14 @@ import (
 
 type mockTelegramClientNS struct {
 	lastParams url.Values
+	// if set, Do returns this error (e.g. "forbidden: bot was blocked by the user")
+	returnErr error
 }
 
 func (c *mockTelegramClientNS) Do(req *http.Request) (*http.Response, error) {
+	if c.returnErr != nil {
+		return nil, c.returnErr
+	}
 	body, _ := io.ReadAll(req.Body)
 	_ = req.Body.Close()
 	params, _ := url.ParseQuery(string(body))
@@ -399,5 +404,101 @@ func TestNotificationService_DoesNotDisableNotificationsOnOtherErrors(t *testing
 
 	if service.shouldDisableNotificationsOnError(errors.New("failed to send message: Too Many Requests")) {
 		t.Fatalf("expected unrelated error to not trigger notification disable")
+	}
+}
+
+// TestNotificationService_CheckAndSendNotifications_DisablesOnBlockedUser verifies that when
+// sendNotificationIfNeeded fails with "bot was blocked by the user", checkAndSendNotifications
+// calls disableUserNotifications and the user's settings are updated to "never".
+func TestNotificationService_CheckAndSendNotifications_DisablesOnBlockedUser(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+
+	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
+	userCardRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
+	nudgeRepo := repository.NewNudgeRepository(db.GetConnection(), logger)
+	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
+
+	user, err := userRepo.GetOrCreateUser(9999)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	_, _ = db.GetConnection().Exec(`UPDATE users SET timezone = ?, preferred_training_time = ? WHERE id = ?`, "UTC", "00:00", user.ID)
+	_ = userRepo.UpdateUserSettings(user.ID, `{"NotificationFrequency":"daily"}`)
+
+	wordRepo := repository.NewWordRepository(db.GetConnection(), logger)
+	trainingCardRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
+	wordID, _ := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "blocked"})
+	for i := 0; i < 10; i++ {
+		cardID, _ := trainingCardRepo.CreateTrainingCard(&models.TrainingCard{
+			WordCardID: wordID, WordEN: "blocked", WordRU: "блок", MeaningEN: "blocked", SenseIndex: i,
+		})
+		dueAt := time.Now().Add(-time.Hour)
+		_, _ = userCardRepo.CreateUserCard(&models.UserCard{
+			UserID: user.ID, TrainingCardID: cardID, Direction: models.DirectionRUtoEN,
+			State: models.StateReview, EF: models.InitialEF, NextDueAt: &dueAt,
+		})
+	}
+
+	client := &mockTelegramClientNS{returnErr: errors.New("forbidden: bot was blocked by the user")}
+	bot := newTestBotNS(client)
+	svc := NewNotificationService(bot, userRepo, userCardRepo, nudgeRepo, sessionRepo, logger)
+
+	svc.checkAndSendNotifications()
+
+	updated, err := userRepo.GetUserByID(user.ID)
+	if err != nil {
+		t.Fatalf("GetUserByID: %v", err)
+	}
+	if !strings.Contains(updated.SettingsJSON, "never") {
+		t.Errorf("expected settings to contain never after blocked-by-user error, got %q", updated.SettingsJSON)
+	}
+}
+
+// TestNotificationService_CheckAndSendNotifications_DoesNotDisableOnGenericError verifies that
+// when sendNotificationIfNeeded fails with an error that does NOT trigger shouldDisableNotificationsOnError,
+// user settings remain unchanged (e.g. still "daily").
+func TestNotificationService_CheckAndSendNotifications_DoesNotDisableOnGenericError(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+
+	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
+	userCardRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
+	nudgeRepo := repository.NewNudgeRepository(db.GetConnection(), logger)
+	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
+
+	user, err := userRepo.GetOrCreateUser(9998)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	_, _ = db.GetConnection().Exec(`UPDATE users SET timezone = ?, preferred_training_time = ? WHERE id = ?`, "UTC", "00:00", user.ID)
+	_ = userRepo.UpdateUserSettings(user.ID, `{"NotificationFrequency":"daily"}`)
+
+	wordRepo := repository.NewWordRepository(db.GetConnection(), logger)
+	trainingCardRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
+	wordID, _ := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "generic"})
+	for i := 0; i < 10; i++ {
+		cardID, _ := trainingCardRepo.CreateTrainingCard(&models.TrainingCard{
+			WordCardID: wordID, WordEN: "generic", WordRU: "общий", MeaningEN: "generic", SenseIndex: i,
+		})
+		dueAt := time.Now().Add(-time.Hour)
+		_, _ = userCardRepo.CreateUserCard(&models.UserCard{
+			UserID: user.ID, TrainingCardID: cardID, Direction: models.DirectionRUtoEN,
+			State: models.StateReview, EF: models.InitialEF, NextDueAt: &dueAt,
+		})
+	}
+
+	client := &mockTelegramClientNS{returnErr: errors.New("failed to send message: Too Many Requests")}
+	bot := newTestBotNS(client)
+	svc := NewNotificationService(bot, userRepo, userCardRepo, nudgeRepo, sessionRepo, logger)
+
+	svc.checkAndSendNotifications()
+
+	updated, err := userRepo.GetUserByID(user.ID)
+	if err != nil {
+		t.Fatalf("GetUserByID: %v", err)
+	}
+	if !strings.Contains(updated.SettingsJSON, "daily") {
+		t.Errorf("expected settings to still contain daily (no disable on generic error), got %q", updated.SettingsJSON)
 	}
 }

@@ -458,6 +458,78 @@ func TestBotCommandService_HandleUnsubscribe_InvalidSettingsJSON(t *testing.T) {
 	}
 }
 
+// TestBotCommandService_HandleUnsubscribe_TableDriven covers handleUnsubscribe branches: success with/without existing settings, user not found.
+func TestBotCommandService_HandleUnsubscribe_TableDriven(t *testing.T) {
+	tests := []struct {
+		name           string
+		setupUser      bool
+		settingsJSON   string
+		wantNever      bool
+		wantErrInText  bool
+		wantSuccessMsg bool
+	}{
+		{
+			name:           "user_not_found",
+			setupUser:      false,
+			wantNever:      false,
+			wantErrInText:  true,
+			wantSuccessMsg: false,
+		},
+		{
+			name:           "success_empty_settings",
+			setupUser:      true,
+			settingsJSON:   "",
+			wantNever:      true,
+			wantErrInText:  false,
+			wantSuccessMsg: true,
+		},
+		{
+			name:           "success_existing_daily_preserves_other",
+			setupUser:      true,
+			settingsJSON:   `{"NotificationFrequency":"daily","LastNotificationDate":"2025-01-15"}`,
+			wantNever:      true,
+			wantErrInText:  false,
+			wantSuccessMsg: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			svc, userRepo, client, cleanup := setupBotCommandService(t)
+			defer cleanup()
+
+			if tt.setupUser {
+				user, err := userRepo.GetOrCreateUser(42)
+				if err != nil {
+					t.Fatalf("GetOrCreateUser: %v", err)
+				}
+				if tt.settingsJSON != "" {
+					_ = userRepo.UpdateUserSettings(user.ID, tt.settingsJSON)
+				}
+			}
+
+			svc.handleUnsubscribe(42, 10)
+
+			text := client.lastParams.Get("text")
+			if text == "" && (tt.wantSuccessMsg || tt.wantErrInText) {
+				t.Fatal("expected some message to be sent")
+			}
+			if tt.wantErrInText && (strings.Contains(text, "отписаны") || strings.Contains(text, "Вы отписаны")) {
+				t.Errorf("expected error message, got success text: %q", text)
+			}
+			if tt.wantSuccessMsg && !strings.Contains(text, "отписаны") && !strings.Contains(text, "отключены") {
+				t.Errorf("expected success/unsubscribe confirmation, got: %q", text)
+			}
+
+			if tt.wantNever {
+				user, _ := userRepo.GetUserByTelegramID(42)
+				if user == nil || !strings.Contains(user.SettingsJSON, "never") {
+					t.Errorf("expected settings to contain never, got user=%v", user != nil)
+				}
+			}
+		})
+	}
+}
+
 func TestPluralizeDays(t *testing.T) {
 	cases := map[int]string{
 		1:  "день",

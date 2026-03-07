@@ -133,6 +133,89 @@ func TestNewHarness_AndAuthAsUser(t *testing.T) {
 	}
 }
 
+// TestAuthAsUser_TableDriven covers AuthAsUser with multiple telegram IDs (integration).
+func TestAuthAsUser_TableDriven(t *testing.T) {
+	h := NewHarness(t)
+	tests := []struct {
+		name       string
+		telegramID int64
+	}{
+		{"user_1", 90001},
+		{"user_2", 90002},
+		{"user_3", 90003},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			token := h.AuthAsUser(tt.telegramID)
+			if token == "" {
+				t.Error("AuthAsUser: expected non-empty token")
+			}
+			if len(token) < 7 || token[:7] != "Bearer " {
+				t.Errorf("AuthAsUser: expected token to start with Bearer , got %q", token)
+			}
+		})
+	}
+}
+
+// TestTrainingDeckFixture_TableDriven covers TrainingDeckFixture with different counts (integration).
+func TestTrainingDeckFixture_TableDriven(t *testing.T) {
+	h := NewHarness(t)
+	conn := h.GetConnection().GetConnection()
+	user := UserFixture(t, conn, 44001)
+	tests := []struct {
+		name  string
+		count int
+	}{
+		{"one_word", 1},
+		{"two_words", 2},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			wordCardIDs, trainingCardIDs := TrainingDeckFixture(t, conn, user.ID, tt.count)
+			if len(wordCardIDs) != tt.count {
+				t.Errorf("TrainingDeckFixture(%d): wordCardIDs len = %d, want %d", tt.count, len(wordCardIDs), tt.count)
+			}
+			if len(trainingCardIDs) != tt.count {
+				t.Errorf("TrainingDeckFixture(%d): trainingCardIDs len = %d, want %d", tt.count, len(trainingCardIDs), tt.count)
+			}
+		})
+	}
+}
+
+// TestWordFixture_TableDriven covers WordFixture with different inputs (integration).
+func TestWordFixture_TableDriven(t *testing.T) {
+	h := NewHarness(t)
+	conn := h.GetConnection().GetConnection()
+	tests := []struct {
+		name       string
+		word       string
+		definition string
+		wordRu     string
+	}{
+		{"word_1", "table-word-a", "def a", "слово а"},
+		{"word_2", "table-word-b", "def b", "слово б"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			wordCardID, trainingCardIDs := WordFixture(t, conn, tt.word, tt.definition, tt.wordRu)
+			if wordCardID == 0 {
+				t.Error("WordFixture: expected non-zero word_card_id")
+			}
+			if len(trainingCardIDs) == 0 {
+				t.Error("WordFixture: expected at least one training_card_id")
+			}
+			var wordEN string
+			err := conn.QueryRow(`SELECT word FROM word_cards WHERE id = $1`, wordCardID).Scan(&wordEN)
+			if err != nil {
+				t.Fatalf("WordFixture: word_cards row: %v", err)
+			}
+			if wordEN != tt.word {
+				t.Errorf("WordFixture: word = %q, want %q", wordEN, tt.word)
+			}
+		})
+	}
+}
+
 func TestUserFixture_CreatesOrReturnsUser(t *testing.T) {
 	h := NewHarness(t)
 	conn := h.GetConnection().GetConnection()
