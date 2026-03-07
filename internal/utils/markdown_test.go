@@ -234,6 +234,48 @@ func TestRenderWordCardMarkdown_WithVerbForms(t *testing.T) {
 	}
 }
 
+func TestRenderWordCardMarkdown_NoDefinitionNoPOSNoTranscription(t *testing.T) {
+	card := &models.WordCard{
+		Word:       "test",
+		Definition: "",
+		POS:        nil,
+		Transcription: nil,
+		DefinitionRU: nil,
+		DisplayEN:  nil,
+	}
+	result := RenderWordCardMarkdown(card, nil, nil)
+	if !strings.Contains(result, "**test**") {
+		t.Errorf("Result should contain word 'test', got %q", result)
+	}
+	if strings.Contains(result, "**Verb Forms:**") {
+		t.Error("Result should not contain Verb Forms when verbForms is nil")
+	}
+	if strings.Contains(result, "**Examples:**") {
+		t.Error("Result should not contain Examples when examples is empty")
+	}
+}
+
+func TestRenderWordCardMarkdown_VerbFormsOnlyV1(t *testing.T) {
+	pos := "verb"
+	defRU := "идти"
+	card := &models.WordCard{
+		Word:         "go",
+		POS:          &pos,
+		DefinitionRU: &defRU,
+	}
+	verbForms := &models.WordInfoVerbForms{V1: "go"}
+	result := RenderWordCardMarkdown(card, nil, verbForms)
+	if !strings.Contains(result, "Verb Forms") {
+		t.Error("Result should contain Verb Forms section")
+	}
+	if !strings.Contains(result, "V1 (Base): go") {
+		t.Error("Result should contain V1")
+	}
+	if strings.Contains(result, "V2 (Past Simple)") {
+		t.Error("Result should not contain V2 when empty")
+	}
+}
+
 func TestConvertMarkdownToHTML(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -291,6 +333,16 @@ func TestConvertMarkdownToHTML(t *testing.T) {
 			name:     "Line breaks",
 			input:    "Line 1\nLine 2",
 			contains: []string{"Line 1<br>", "Line 2"},
+		},
+		{
+			name:     "List then paragraph closes list",
+			input:    "- Item one\n- Item two\n\nParagraph after list",
+			contains: []string{"<ul>", "<li>Item one</li>", "<li>Item two</li>", "</ul>", "Paragraph after list"},
+		},
+		{
+			name:     "Ordered list then line closes list",
+			input:    "1. First\n2. Second\nNot a list item",
+			contains: []string{"<ol>", "<li>First</li>", "<li>Second</li>", "</ul>", "Not a list item"},
 		},
 	}
 

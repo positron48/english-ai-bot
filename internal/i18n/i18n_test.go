@@ -8,19 +8,27 @@ import (
 )
 
 func TestDetectLanguageFromRequest(t *testing.T) {
-	req, _ := http.NewRequest(http.MethodGet, "/", nil)
-	if lang := DetectLanguageFromRequest(req); lang != "en" {
-		t.Fatalf("expected default en, got %s", lang)
+	tests := []struct {
+		name           string
+		acceptLanguage string
+		want           string
+	}{
+		{"no header defaults to en", "", "en"},
+		{"ru preferred", "ru-RU,ru;q=0.9,en;q=0.8", "ru"},
+		{"malformed header defaults to en", "malformed", "en"},
+		{"en preferred after matcher", "en-US,en;q=0.9", "en"},
+		{"en only", "en", "en"},
 	}
-
-	req.Header.Set("Accept-Language", "ru-RU,ru;q=0.9,en;q=0.8")
-	if lang := DetectLanguageFromRequest(req); lang != "ru" {
-		t.Fatalf("expected ru, got %s", lang)
-	}
-
-	req.Header.Set("Accept-Language", "malformed")
-	if lang := DetectLanguageFromRequest(req); lang != "en" {
-		t.Fatalf("expected en for malformed header, got %s", lang)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			req, _ := http.NewRequest(http.MethodGet, "/", nil)
+			if tt.acceptLanguage != "" {
+				req.Header.Set("Accept-Language", tt.acceptLanguage)
+			}
+			if got := DetectLanguageFromRequest(req); got != tt.want {
+				t.Errorf("DetectLanguageFromRequest() = %q, want %q", got, tt.want)
+			}
+		})
 	}
 }
 
@@ -62,6 +70,8 @@ func TestT(t *testing.T) {
 		{name: "unknown lang missing key returns key", lang: "fr", key: "absent.key", wantKey: true},
 		// key that is a nested object (not a string) returns key
 		{name: "key is object not string returns key", lang: "en", key: "errors", wantKey: true},
+		// intermediate segment is string (not map) — navigation breaks, then fallback/key
+		{name: "intermediate segment not map returns key", lang: "en", key: "errors.unauthorized.extra", wantKey: true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -86,5 +96,16 @@ func TestWithLanguageContext(t *testing.T) {
 	}
 	if lang := GetLanguageFromContext(context.Background()); lang != "en" {
 		t.Fatalf("expected default en, got %s", lang)
+	}
+}
+
+// TestT_noEnglishFallback covers the branch where the requested language and "en"
+// are both missing from translations (returns key as-is).
+func TestT_noEnglishFallback(t *testing.T) {
+	old := translations
+	defer func() { translations = old }()
+	translations = map[string]map[string]interface{}{}
+	if got := T("xx", "missing.key"); got != "missing.key" {
+		t.Errorf("T(\"xx\", \"missing.key\") = %q, want \"missing.key\"", got)
 	}
 }

@@ -1045,3 +1045,134 @@ func TestHandleCallbackQuery_AnswerNoSession(t *testing.T) {
 		}
 	}
 }
+
+// TestHandleTrainCommand_GetOrCreateUserFails covers line 153: error message when userRepo.GetOrCreateUser fails.
+func TestHandleTrainCommand_GetOrCreateUserFails(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, _ := setupHandler(t, client)
+
+	dsn := testutil.SecondPostgresDSN(t)
+	dbWrap, err := database.NewWithConfig("postgres", "", dsn, h.logger)
+	if err != nil {
+		t.Skipf("second DB not available: %v", err)
+	}
+	conn := dbWrap.GetConnection()
+	failingUserRepo := repository.NewUserRepository(conn, h.logger)
+	_ = dbWrap.Close()
+
+	hv := reflect.ValueOf(h).Elem()
+	hv.FieldByName("userRepo").Set(reflect.ValueOf(failingUserRepo))
+
+	h.handleTrainCommand(context.Background(), 10, 42)
+	got := client.lastParams.Get("text")
+	if got == "" {
+		t.Fatal("expected error message when GetOrCreateUser fails")
+	}
+	if !strings.Contains(got, "Произошла ошибка") && !strings.Contains(got, "Попробуйте позже") {
+		t.Errorf("expected user error message, got %q", got)
+	}
+}
+
+// TestHandleStatsCommand_QueryError covers handler branches when DB queries fail (newCount/dueCount/learningCount etc set to 0).
+func TestHandleStatsCommand_QueryError(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, db := setupHandlerWithRepos(t, client)
+	userRepo := repository.NewUserRepository(db.GetConnection(), h.logger)
+	user, err := userRepo.GetOrCreateUser(801)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+
+	dsn := testutil.SecondPostgresDSN(t)
+	dbWrap, err := database.NewWithConfig("postgres", "", dsn, h.logger)
+	if err != nil {
+		t.Skipf("second DB not available: %v", err)
+	}
+	conn := dbWrap.GetConnection()
+	_ = dbWrap.Close()
+
+	hv := reflect.ValueOf(h).Elem()
+	hv.FieldByName("db").Set(reflect.ValueOf(conn))
+
+	h.handleStatsCommand(context.Background(), 10, user.TelegramID)
+	got := client.lastParams.Get("text")
+	if got == "" {
+		t.Fatal("expected stats message (with fallback counts)")
+	}
+	if !strings.Contains(got, "Статистика") {
+		t.Errorf("expected stats section, got %q", got)
+	}
+}
+
+// TestHandleDeleteTrainAllCommand_Admin_DeleteOrphanedFails covers the branch where DeleteOrphanedUserCards returns error (lines 403–407).
+func TestHandleDeleteTrainAllCommand_Admin_DeleteOrphanedFails(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, db := setupHandler(t, client)
+	logger, _ := zap.NewDevelopment()
+	h.config.Admin.TelegramID = 42
+	h.trainingCardRepo = repository.NewTrainingCardRepository(db.GetConnection(), logger)
+	// userCardRepo that will fail (closed DB)
+	dsn := testutil.SecondPostgresDSN(t)
+	dbWrap, err := database.NewWithConfig("postgres", "", dsn, logger)
+	if err != nil {
+		t.Skipf("second DB not available: %v", err)
+	}
+	conn := dbWrap.GetConnection()
+	failingUserCardRepo := repository.NewUserCardRepository(conn, logger)
+	_ = dbWrap.Close()
+	hv := reflect.ValueOf(h).Elem()
+	hv.FieldByName("userCardRepo").Set(reflect.ValueOf(failingUserCardRepo))
+
+	// Create at least one training card so DeleteAllTrainingCards affects rows
+	wordCardRepo := repository.NewWordRepository(db.GetConnection(), logger)
+	wordID, err := wordCardRepo.UpsertWordCardLemma(&models.WordCard{Word: "apple", Definition: ""})
+	if err != nil {
+		t.Fatalf("UpsertWordCardLemma: %v", err)
+	}
+	_, err = h.trainingCardRepo.CreateTrainingCard(&models.TrainingCard{
+		WordCardID: wordID,
+		WordEN:     "apple",
+		WordRU:     "яблоко",
+		MeaningEN:  "apple",
+		SenseIndex: 0,
+	})
+	if err != nil {
+		t.Fatalf("CreateTrainingCard: %v", err)
+	}
+
+	h.handleDeleteTrainAllCommand(10, 42)
+	got := client.lastParams.Get("text")
+	if got == "" {
+		t.Fatal("expected success message when DeleteAll succeeds and only DeleteOrphanedUserCards fails")
+	}
+	if !strings.Contains(got, "Удалено всех") {
+		t.Errorf("expected delete-all success message, got %q", got)
+	}
+}
+
+// TestHandleGetTrainDataCommand_GetTrainingCardsFails covers the branch when GetTrainingCardsByWordEN returns error (lines 441–448).
+func TestHandleGetTrainDataCommand_GetTrainingCardsFails(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, _ := setupHandlerWithRepos(t, client)
+	h.config.Admin.TelegramID = 42
+
+	dsn := testutil.SecondPostgresDSN(t)
+	dbWrap, err := database.NewWithConfig("postgres", "", dsn, h.logger)
+	if err != nil {
+		t.Skipf("second DB not available: %v", err)
+	}
+	conn := dbWrap.GetConnection()
+	failingTrainingCardRepo := repository.NewTrainingCardRepository(conn, h.logger)
+	_ = dbWrap.Close()
+	hv := reflect.ValueOf(h).Elem()
+	hv.FieldByName("trainingCardRepo").Set(reflect.ValueOf(failingTrainingCardRepo))
+
+	h.handleGetTrainDataCommand(10, 42, "word")
+	got := client.lastParams.Get("text")
+	if got == "" {
+		t.Fatal("expected error message when GetTrainingCardsByWordEN fails")
+	}
+	if !strings.Contains(got, "Ошибка") && !strings.Contains(got, "ошибка") {
+		t.Errorf("expected error message, got %q", got)
+	}
+}
