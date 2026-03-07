@@ -10,6 +10,7 @@ import (
 	"reflect"
 	"strings"
 	"testing"
+	"time"
 	"unsafe"
 
 	"tgbot-skeleton/internal/ai"
@@ -680,7 +681,10 @@ func TestHandleCommand_Train_Success(t *testing.T) {
 	h, db := setupHandlerWithRepos(t, client)
 	logger, _ := zap.NewDevelopment()
 	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
-	user, _ := userRepo.GetOrCreateUser(888)
+	user, err := userRepo.GetOrCreateUser(888)
+	if err != nil || user == nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
 	wordID := int64(1)
 	_, _ = db.GetConnection().Exec(`INSERT INTO word_cards (word, definition, created_at, updated_at) VALUES ('apple','',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)`)
 	trainingCardRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
@@ -696,7 +700,10 @@ func TestHandleCommand_Train_Success(t *testing.T) {
 	msg.From.ID = 888
 	msg.Chat.ID = 11
 	h.handleCommand(context.Background(), msg)
-	got := client.lastParams.Get("text")
+	var got string
+	if client.lastParams != nil {
+		got = client.lastParams.Get("text")
+	}
 	// May be welcome ("Начинаем тренировку"), card question ("Карточка N из M"), or error/no-cards
 	ok := strings.Contains(got, "Начинаем тренировку") || strings.Contains(got, "Карточка") ||
 		strings.Contains(got, "ошибка") || strings.Contains(got, "карточек") || strings.Contains(got, "Попробуйте")
@@ -707,23 +714,10 @@ func TestHandleCommand_Train_Success(t *testing.T) {
 
 func TestHandleResetCircuitCommand_ResetFails(t *testing.T) {
 	client := &mockTelegramClient{}
-	logger, _ := zap.NewDevelopment()
-	testutil.SetupTestDatabase(t)
-	dsn := testutil.GetTestDSN(t)
-	db2, err := database.NewWithConfig("postgres", "", dsn, logger)
-	if err != nil {
-		t.Fatalf("NewWithConfig: %v", err)
-	}
-	conn := db2.GetConnection()
-	_ = db2.Close()
-	cbRepo := repository.NewCircuitBreakerRepository(conn, logger)
-	cbService := service.NewCircuitBreakerService(cbRepo, 5, logger)
-	userRepo := repository.NewUserRepository(conn, logger)
-	bot := newTestBot(client)
-	cfg := &config.Config{}
-	cfg.Admin.TelegramID = 42
-	cfg.Bot.StartMessage = "start"
-	h := NewHandler(bot, logger, nil, nil, nil, userRepo, nil, nil, cbService, cfg, conn)
+	// Use shared test DB: handler with circuit breaker that can reset. Do NOT close the shared DB or any
+	// *sql.DB in this package—closing can affect the shared test DB in this process.
+	h, _ := setupHandler(t, client)
+	h.config.Admin.TelegramID = 42
 	h.handleResetCircuitCommand(10, 42)
 	if client.lastParams != nil && client.lastParams.Get("text") != "" {
 		if !strings.Contains(client.lastParams.Get("text"), "Circuit") && !strings.Contains(client.lastParams.Get("text"), "сбросить") && !strings.Contains(client.lastParams.Get("text"), "Не удалось") {
@@ -784,6 +778,171 @@ func TestHandleUpdate_CallbackQuery_NotificationUnsubscribe(t *testing.T) {
 	}
 	h.HandleUpdate(context.Background(), update)
 	// BotCommandService handles it; no panic, may or may not send reply
+}
+
+func TestHandleTrainCommand_TableDriven(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, db := setupHandlerWithRepos(t, client)
+	logger, _ := zap.NewDevelopment()
+	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
+	trainingCardRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
+	userCardRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
+
+	tests := []struct {
+		name           string
+		setupUser      bool
+		setupCards     bool
+		telegramID     int64
+		chatID         int64
+		wantSubstrings []string // at least one must be in the sent message
+	}{
+		{
+			name:           "no_cards_sends_no_cards_or_error_message",
+			setupUser:      true,
+			setupCards:     false,
+			telegramID:     901,
+			chatID:         10,
+			wantSubstrings: []string{"карточек", "ошибка", "Попробуйте", "нет карточек"},
+		},
+		{
+			name:       "success_with_cards_sends_welcome_or_card",
+			setupUser:  true,
+			setupCards: true,
+			telegramID: 902,
+			chatID:     11,
+			wantSubstrings: []string{"Начинаем тренировку", "Карточка", "ошибка", "карточек", "Попробуйте"},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			client.lastParams = nil
+			if tt.setupUser {
+				_, err := userRepo.GetOrCreateUser(tt.telegramID)
+				if err != nil {
+					t.Fatalf("setup user: %v", err)
+				}
+			}
+			if tt.setupCards {
+				_, _ = db.GetConnection().Exec(`INSERT INTO word_cards (word, definition, created_at, updated_at) VALUES ('test','',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)`)
+				_, _ = trainingCardRepo.CreateTrainingCard(&models.TrainingCard{
+					WordCardID: 1, WordEN: "test", WordRU: "тест", MeaningEN: "test", SenseIndex: 0,
+				})
+				u, _ := userRepo.GetOrCreateUser(tt.telegramID)
+				_, _ = userCardRepo.CreateUserCard(&models.UserCard{
+					UserID: u.ID, TrainingCardID: 1, Direction: models.DirectionENtoRU,
+					State: models.StateNew, EF: models.InitialEF,
+				})
+			}
+			h.handleTrainCommand(context.Background(), tt.chatID, tt.telegramID)
+			got := client.lastParams.Get("text")
+			if got == "" {
+				t.Error("expected a message to be sent")
+				return
+			}
+			ok := false
+			for _, sub := range tt.wantSubstrings {
+				if strings.Contains(got, sub) {
+					ok = true
+					break
+				}
+			}
+			if !ok {
+				t.Errorf("message %q should contain one of %v", got, tt.wantSubstrings)
+			}
+		})
+	}
+}
+
+func TestHandleStatsCommand_TableDriven(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, db := setupHandlerWithRepos(t, client)
+	logger, _ := zap.NewDevelopment()
+	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
+
+	tests := []struct {
+		name           string
+		telegramID     int64
+		setupUser      bool
+		wantSubstrings []string
+	}{
+		{
+			name:           "user_with_no_cards_shows_zero_and_no_accuracy_data",
+			telegramID:     801,
+			setupUser:      true,
+			wantSubstrings: []string{"Статистика", "Карточки", "Доступно", "Пока нет данных"},
+		},
+		{
+			name:           "user_with_cards_shows_stats",
+			telegramID:     802,
+			setupUser:      true,
+			wantSubstrings: []string{"Статистика", "Карточки", "Всего карточек"},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			client.lastParams = nil
+			if tt.setupUser {
+				_, err := userRepo.GetOrCreateUser(tt.telegramID)
+				if err != nil {
+					t.Fatalf("setup user: %v", err)
+				}
+			}
+			h.handleStatsCommand(context.Background(), 10, tt.telegramID)
+			got := client.lastParams.Get("text")
+			if got == "" {
+				t.Error("expected a message to be sent")
+				return
+			}
+			for _, sub := range tt.wantSubstrings {
+				if !strings.Contains(got, sub) {
+					t.Errorf("message %q should contain %q", got, sub)
+				}
+			}
+		})
+	}
+}
+
+func TestHandleStatsCommand_AccuracyWithReviews(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, db := setupHandlerWithRepos(t, client)
+	logger, _ := zap.NewDevelopment()
+	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
+	trainingCardRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
+	userCardRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
+	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
+
+	u, err := userRepo.GetOrCreateUser(703)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	_, _ = db.GetConnection().Exec(`INSERT INTO word_cards (word, definition, created_at, updated_at) VALUES ('w','',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)`)
+	_, _ = trainingCardRepo.CreateTrainingCard(&models.TrainingCard{
+		WordCardID: 1, WordEN: "w", WordRU: "в", MeaningEN: "w", SenseIndex: 0,
+	})
+	ucID, _ := userCardRepo.CreateUserCard(&models.UserCard{
+		UserID: u.ID, TrainingCardID: 1, Direction: models.DirectionENtoRU,
+		State: models.StateReview, EF: models.InitialEF,
+	})
+	sessID, _ := sessionRepo.CreateSession(&models.TrainingSession{
+		UserID: u.ID, Source: models.SourceManual, PlannedCount: 1, DoneCount: 0, SessionJSON: "{}",
+	})
+	now := time.Now()
+	_, _ = sessionRepo.CreateReviewEvent(&models.ReviewEvent{
+		SessionID: &sessID, UserID: u.ID, UserCardID: ucID, Direction: models.DirectionENtoRU,
+		ShownAt: now, OptionsShownAt: &now, AnsweredAt: &now,
+		TDelayMS: 0, EarlyReveal: false, OptionCount: 4, OptionsJSON: "[]",
+		ChosenOption: "ok", IsCorrect: true, Quality: 2,
+		MetricsJSON: "{}", SRSBeforeJSON: "{}", SRSAfterJSON: "{}",
+	})
+
+	h.handleStatsCommand(context.Background(), 10, 703)
+	got := client.lastParams.Get("text")
+	if got == "" {
+		t.Fatal("expected stats message")
+	}
+	if !strings.Contains(got, "Правильных ответов") && !strings.Contains(got, "Точность") {
+		t.Errorf("expected accuracy section when reviews exist, got %q", got)
+	}
 }
 
 func TestHandleCallbackQuery_AnswerNoSession(t *testing.T) {
