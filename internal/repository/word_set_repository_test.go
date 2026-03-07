@@ -421,6 +421,13 @@ func TestWordSetRepository_GetWordSetProgress(t *testing.T) {
 		}
 	})
 
+	t.Run("Get progress for non-existent word set returns error", func(t *testing.T) {
+		_, err := repo.GetWordSetProgress(99999, user.ID)
+		if err == nil {
+			t.Fatal("GetWordSetProgress() expected error for non-existent set")
+		}
+	})
+
 	t.Run("Get progress with words", func(t *testing.T) {
 		// Create word cards
 		wordCard1 := &models.WordCard{

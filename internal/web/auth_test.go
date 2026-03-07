@@ -243,3 +243,4 @@ func TestAuthMiddleware_RequireAuth_InvalidToken(t *testing.T) {
 		t.Errorf("Expected status 401, got %d", w.Code)
 	}
 }
+

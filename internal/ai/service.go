@@ -13,6 +13,9 @@ import (
 	"go.uber.org/zap"
 )
 
+// jsonMarshalFunc is used for request marshaling; overridable in tests for coverage.
+var jsonMarshalFunc = json.Marshal
+
 // Service handles AI provider interactions
 type Service struct {
 	client         *http.Client

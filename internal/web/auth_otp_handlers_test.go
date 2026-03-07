@@ -59,6 +59,7 @@ func TestHandleAuthRequestOTP_UserNotFound(t *testing.T) {
 	}
 }
 
+
 func TestHandleAuthOTP_ValidCode(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, otpRepo, userRepo := setupAuthOTPHandlersTestDB(t)

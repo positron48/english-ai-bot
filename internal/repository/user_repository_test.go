@@ -235,6 +235,26 @@ func TestUserRepository_GetUserByUsernameOrID(t *testing.T) {
 			t.Fatal("GetUserByUsernameOrID() should not return nil")
 		}
 	})
+
+	t.Run("Get non-existent numeric id returns nil", func(t *testing.T) {
+		found, err := repo.GetUserByUsernameOrID("999999999")
+		if err != nil {
+			t.Fatalf("GetUserByUsernameOrID() error = %v", err)
+		}
+		if found != nil {
+			t.Error("GetUserByUsernameOrID() should return nil for non-existent id")
+		}
+	})
+
+	t.Run("Get non-existent username returns nil", func(t *testing.T) {
+		found, err := repo.GetUserByUsernameOrID("nonexistentuser")
+		if err != nil {
+			t.Fatalf("GetUserByUsernameOrID() error = %v", err)
+		}
+		if found != nil {
+			t.Error("GetUserByUsernameOrID() should return nil for non-existent username")
+		}
+	})
 }
 
 func TestUserRepository_UpdateUsername(t *testing.T) {

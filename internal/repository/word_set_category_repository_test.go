@@ -351,6 +351,24 @@ func TestWordSetCategoryRepository_DeleteCategory(t *testing.T) {
 			t.Error("DeleteCategory() should fail when category has children")
 		}
 	})
+
+	t.Run("Delete category with word sets should fail", func(t *testing.T) {
+		cat := &models.WordSetCategory{Name: "Cat with sets", SortOrder: 1}
+		catID, err := repo.CreateCategory(cat)
+		if err != nil {
+			t.Fatalf("CreateCategory: %v", err)
+		}
+		wordSetRepo := NewWordSetRepository(db, logger)
+		set := &models.WordSet{Title: "Set in cat", IsPublished: true, SortOrder: 1, CategoryID: &catID}
+		_, err = wordSetRepo.CreateWordSet(set)
+		if err != nil {
+			t.Fatalf("CreateWordSet: %v", err)
+		}
+		err = repo.DeleteCategory(catID)
+		if err == nil {
+			t.Error("DeleteCategory() should fail when category has word sets")
+		}
+	})
 }
 
 // TestParseTime covers parseTime (used by GetCategory/GetAllCategories) for all supported formats.

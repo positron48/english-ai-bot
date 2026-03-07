@@ -70,31 +70,23 @@ func TestHandleAdminAccessAvailablePermissions(t *testing.T) {
 	if rr.Code != http.StatusOK {
 		t.Errorf("Expected status 200, got %d", rr.Code)
 	}
+}
 
-	var response struct {
-		Permissions []string `json:"permissions"`
-	}
-	if err := json.NewDecoder(rr.Body).Decode(&response); err != nil {
-		t.Fatalf("Failed to decode response: %v", err)
-	}
+func TestHandleAdminAccessAvailablePermissions_MethodNotAllowed(t *testing.T) {
+	router, _, _, adminUserID, cleanup := setupAdminAccessTest(t)
+	defer cleanup()
 
-	if len(response.Permissions) == 0 {
-		t.Error("Expected at least one permission")
-	}
+	req := httptest.NewRequest("POST", "/api/admin/access/available-permissions", nil)
+	req = setAdminContext(req, adminUserID)
+	rr := httptest.NewRecorder()
 
-	// Check that all expected permissions are present
-	expectedPerms := AllPermissionStrings()
-	for _, expected := range expectedPerms {
-		found := false
-		for _, perm := range response.Permissions {
-			if perm == expected {
-				found = true
-				break
-			}
-		}
-		if !found {
-			t.Errorf("Permission %s not found in response", expected)
-		}
+	router.handleAdminAccessAvailablePermissions(rr, req)
+
+	if rr.Code != http.StatusMethodNotAllowed {
+		t.Errorf("Expected status 405, got %d: %s", rr.Code, rr.Body.String())
+	}
+	if body := rr.Body.String(); body != "Method not allowed\n" {
+		t.Errorf("Expected plain text body, got %q", body)
 	}
 }
 

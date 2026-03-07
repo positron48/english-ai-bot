@@ -75,7 +75,7 @@ func (m *mockCircuitBreakerRepository) Reset() error {
 func TestNewCircuitBreakerService(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	repo := repository.NewCircuitBreakerRepository(nil, logger)
-	
+
 	service := NewCircuitBreakerService(repo, 5, logger)
 	if service.threshold != 5 {
 		t.Errorf("Expected threshold 5, got %d", service.threshold)
@@ -121,17 +121,17 @@ func TestCircuitBreakerService_IsOpen(t *testing.T) {
 				state:    tt.state,
 				getError: tt.getError,
 			}
-			
-			service := &CircuitBreakerService{
-				cbRepo:    (*repository.CircuitBreakerRepository)(nil),
-				threshold: 5,
-				logger:    logger,
+
+			service := NewCircuitBreakerService(repo, 5, logger)
+
+			gotOpen, err := service.IsOpen()
+			if (err != nil) != tt.wantError {
+				t.Errorf("IsOpen() error = %v, wantError %v", err, tt.wantError)
+				return
 			}
-			
-			// We can't easily test with the mock due to type constraints,
-			// but we can test the logic structure
-			_ = repo
-			_ = service
+			if !tt.wantError && gotOpen != tt.wantOpen {
+				t.Errorf("IsOpen() = %v, want %v", gotOpen, tt.wantOpen)
+			}
 		})
 	}
 }
@@ -174,15 +174,13 @@ func TestCircuitBreakerService_RecordSuccess(t *testing.T) {
 				getError:  tt.getError,
 				resetError: tt.resetError,
 			}
-			
-			service := &CircuitBreakerService{
-				cbRepo:    (*repository.CircuitBreakerRepository)(nil),
-				threshold: 5,
-				logger:    logger,
+
+			service := NewCircuitBreakerService(repo, 5, logger)
+
+			err := service.RecordSuccess()
+			if (err != nil) != tt.wantError {
+				t.Errorf("RecordSuccess() error = %v, wantError %v", err, tt.wantError)
 			}
-			
-			_ = repo
-			_ = service
 		})
 	}
 }
@@ -191,14 +189,15 @@ func TestCircuitBreakerService_RecordFailure(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	
 	tests := []struct {
-		name        string
-		threshold   int
-		initialFailures int
-		recordError error
-		getError    error
-		openError   error
-		wantError   bool
-		shouldOpen  bool
+		name              string
+		threshold         int
+		initialFailures   int
+		state             *models.CircuitBreakerState
+		recordError       error
+		getError          error
+		openError         error
+		wantError         bool
+		shouldOpen        bool
 	}{
 		{
 			name:        "Record failure below threshold",
@@ -226,6 +225,21 @@ func TestCircuitBreakerService_RecordFailure(t *testing.T) {
 			recordError: errors.New("database error"),
 			wantError:   true,
 		},
+		{
+			name:        "Record failure when already open - should not call Open again",
+			threshold:   5,
+			initialFailures: 10,
+			state:        &models.CircuitBreakerState{IsOpen: true, FailureCount: 10},
+			wantError:    false,
+			shouldOpen:   false,
+		},
+		{
+			name:        "GetState error after RecordFailure",
+			threshold:   5,
+			initialFailures: 0,
+			getError:    errors.New("get state error"),
+			wantError:   true,
+		},
 	}
 
 	for _, tt := range tests {
@@ -234,22 +248,30 @@ func TestCircuitBreakerService_RecordFailure(t *testing.T) {
 				IsOpen:       false,
 				FailureCount: tt.initialFailures,
 			}
-			
+			if tt.state != nil {
+				state = tt.state
+			}
+
 			repo := &mockCircuitBreakerRepository{
 				state:       state,
 				recordError: tt.recordError,
 				getError:    tt.getError,
 				openError:   tt.openError,
 			}
-			
-			service := &CircuitBreakerService{
-				cbRepo:    (*repository.CircuitBreakerRepository)(nil),
-				threshold: tt.threshold,
-				logger:    logger,
+
+			service := NewCircuitBreakerService(repo, tt.threshold, logger)
+
+			err := service.RecordFailure("test error")
+			if (err != nil) != tt.wantError {
+				t.Errorf("RecordFailure() error = %v, wantError %v", err, tt.wantError)
+				return
 			}
-			
-			_ = repo
-			_ = service
+			if tt.wantError {
+				return
+			}
+			if tt.shouldOpen && !repo.state.IsOpen {
+				t.Error("RecordFailure() should have opened circuit")
+			}
 		})
 	}
 }
@@ -278,15 +300,13 @@ func TestCircuitBreakerService_Reset(t *testing.T) {
 			repo := &mockCircuitBreakerRepository{
 				resetError: tt.resetError,
 			}
-			
-			service := &CircuitBreakerService{
-				cbRepo:    (*repository.CircuitBreakerRepository)(nil),
-				threshold: 5,
-				logger:    logger,
+
+			service := NewCircuitBreakerService(repo, 5, logger)
+
+			err := service.Reset()
+			if (err != nil) != tt.wantError {
+				t.Errorf("Reset() error = %v, wantError %v", err, tt.wantError)
 			}
-			
-			_ = repo
-			_ = service
 		})
 	}
 }
@@ -323,15 +343,20 @@ func TestCircuitBreakerService_GetState(t *testing.T) {
 				state:    tt.state,
 				getError: tt.getError,
 			}
-			
-			service := &CircuitBreakerService{
-				cbRepo:    (*repository.CircuitBreakerRepository)(nil),
-				threshold: 5,
-				logger:    logger,
+
+			service := NewCircuitBreakerService(repo, 5, logger)
+
+			gotOpen, gotCount, gotMsg, err := service.GetState()
+			if (err != nil) != tt.wantError {
+				t.Errorf("GetState() error = %v, wantError %v", err, tt.wantError)
+				return
 			}
-			
-			_ = repo
-			_ = service
+			if !tt.wantError && tt.state != nil {
+				if gotOpen != tt.state.IsOpen || gotCount != tt.state.FailureCount || gotMsg != tt.state.LastFailureMessage {
+					t.Errorf("GetState() = %v, %v, %q, want %v, %v, %q",
+						gotOpen, gotCount, gotMsg, tt.state.IsOpen, tt.state.FailureCount, tt.state.LastFailureMessage)
+				}
+			}
 		})
 	}
 }

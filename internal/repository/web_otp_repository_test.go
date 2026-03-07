@@ -111,3 +111,52 @@ func TestWebOTPRepository_CleanupExpiredOTPs(t *testing.T) {
 		t.Fatalf("CleanupExpiredOTPs() error = %v", err)
 	}
 }
+
+func TestWebOTPRepository_CleanupExpiredOTPs_RemovesExpired(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	conn := testutil.SetupTestDB(t)
+
+	userRepo := NewUserRepository(conn, logger)
+	user, _ := userRepo.GetOrCreateUser(12399)
+
+	// Insert expired OTP directly (past expires_at)
+	_, err := conn.Exec(`INSERT INTO web_otps (user_id, code_hash, expires_at) VALUES (?, ?, '2020-01-01 00:00:00')`,
+		user.ID, "dummyhash")
+	if err != nil {
+		t.Fatalf("setup: insert expired OTP: %v", err)
+	}
+
+	otpRepo := NewWebOTPRepository(conn, logger)
+	err = otpRepo.CleanupExpiredOTPs()
+	if err != nil {
+		t.Fatalf("CleanupExpiredOTPs() error = %v", err)
+	}
+
+	var count int
+	_ = conn.QueryRow(`SELECT COUNT(*) FROM web_otps WHERE user_id = ?`, user.ID).Scan(&count)
+	if count != 0 {
+		t.Errorf("expected 0 OTPs after cleanup, got %d", count)
+	}
+}
+
+func TestWebOTPRepository_GenerateOTP_CodeFormat(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	conn := testutil.SetupTestDB(t)
+	userRepo := NewUserRepository(conn, logger)
+	user, _ := userRepo.GetOrCreateUser(12398)
+	otpRepo := NewWebOTPRepository(conn, logger)
+
+	code, _, err := otpRepo.GenerateOTP(user.ID, 5*time.Minute)
+	if err != nil {
+		t.Fatalf("GenerateOTP() error = %v", err)
+	}
+	if len(code) != 6 {
+		t.Errorf("expected 6-digit code, got len %d", len(code))
+	}
+	for _, c := range code {
+		if c < '0' || c > '9' {
+			t.Errorf("expected only digits, got %q", code)
+			break
+		}
+	}
+}

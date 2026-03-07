@@ -336,3 +336,51 @@ func TestHandleAdminPromptTesterRun_Success(t *testing.T) {
 		t.Errorf("Expected at least 2 NDJSON lines (word + cards), got %d", len(lines))
 	}
 }
+
+// TestHandleAdminPromptTesterRun_NonJSONResponse covers branches when LLM returns non-JSON (Raw fallback).
+func TestHandleAdminPromptTesterRun_NonJSONResponse(t *testing.T) {
+	mockAI := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/plain")
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte("plain text response, not JSON"))
+	}))
+	defer mockAI.Close()
+
+	router, _ := setupPromptTesterTest(t)
+	router.config.AI.URL = strings.TrimSuffix(mockAI.URL, "/")
+	router.config.AI.Model = "test-model"
+	router.config.AI.APIKey = "test-key"
+
+	body := `{"words": ["x"], "word_prompt": "wp", "training_prompt": "tp"}`
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/prompt-tester/run", strings.NewReader(body))
+	req.Header.Set("Content-Type", "application/json")
+	req = setUserIDInContextPromptTester(req, 12345)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminPromptTesterRun(rr, req)
+
+	if rr.Code != http.StatusOK {
+		t.Errorf("Expected status 200 (events still streamed), got %d: %s", rr.Code, rr.Body.String())
+	}
+	lines := strings.Split(strings.TrimSpace(rr.Body.String()), "\n")
+	if len(lines) < 2 {
+		t.Errorf("Expected at least 2 NDJSON lines, got %d", len(lines))
+	}
+	// First event (word step) should have Raw set to raw response when parse fails
+	var wordEvent struct {
+		Word  string `json:"word"`
+		Step  string `json:"step"`
+		OK    bool   `json:"ok"`
+		Raw   string `json:"raw"`
+		Error string `json:"error"`
+	}
+	if err := json.Unmarshal([]byte(lines[0]), &wordEvent); err != nil {
+		t.Fatalf("unmarshal word event: %v", err)
+	}
+	if wordEvent.Step != "word" {
+		t.Errorf("expected first event step word, got %s", wordEvent.Step)
+	}
+	if wordEvent.OK && wordEvent.Raw == "" {
+		t.Error("when response is non-JSON, raw should be set to response body")
+	}
+}

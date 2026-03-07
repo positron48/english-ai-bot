@@ -227,6 +227,101 @@ func TestSRSService_updateCardState(t *testing.T) {
 				}
 			},
 		},
+		{
+			name: "handleLapse: StateLearning with step >= len(steps) clamps to last step",
+			card: &models.UserCard{
+				State:        models.StateLearning,
+				EF:           2.0,
+				LearningStep: 10,
+				Direction:    models.DirectionENtoRU,
+			},
+			quality: models.QualityWrong,
+			validate: func(t *testing.T, card *models.UserCard) {
+				if card.State != models.StateLearning {
+					t.Errorf("Expected state %v, got %v", models.StateLearning, card.State)
+				}
+				if card.NextDueAt == nil {
+					t.Error("NextDueAt should be set")
+				}
+				// ENtoRU has 3 steps; currentStep clamped to 2
+				if card.LapseCount != 1 {
+					t.Errorf("Expected LapseCount 1, got %d", card.LapseCount)
+				}
+			},
+		},
+		{
+			name: "handleLapse: StateLearning with step < 0 clamps to 0",
+			card: &models.UserCard{
+				State:        models.StateLearning,
+				EF:           2.0,
+				LearningStep: -1,
+				Direction:    models.DirectionENtoRU,
+			},
+			quality: models.QualityWrong,
+			validate: func(t *testing.T, card *models.UserCard) {
+				if card.State != models.StateLearning {
+					t.Errorf("Expected state %v, got %v", models.StateLearning, card.State)
+				}
+				if card.NextDueAt == nil {
+					t.Error("NextDueAt should be set")
+				}
+				if card.LapseCount != 1 {
+					t.Errorf("Expected LapseCount 1, got %d", card.LapseCount)
+				}
+			},
+		},
+		{
+			name: "handleLapse: StateReview with LapseCount 2 -> 3 resets to learning",
+			card: &models.UserCard{
+				State:        models.StateReview,
+				EF:           2.0,
+				Reps:         5,
+				IntervalDays: 10,
+				LapseCount:   2,
+				Direction:    models.DirectionENtoRU,
+			},
+			quality: models.QualityWrong,
+			validate: func(t *testing.T, card *models.UserCard) {
+				if card.State != models.StateLearning {
+					t.Errorf("Expected state %v after 3 lapses, got %v", models.StateLearning, card.State)
+				}
+				if card.LearningStep != 0 {
+					t.Errorf("Expected LearningStep 0, got %d", card.LearningStep)
+				}
+				if card.Reps != 0 {
+					t.Errorf("Expected Reps 0 after reset, got %d", card.Reps)
+				}
+				if card.LapseCount != 3 {
+					t.Errorf("Expected LapseCount 3, got %d", card.LapseCount)
+				}
+				if card.NextDueAt == nil {
+					t.Error("NextDueAt should be set")
+				}
+			},
+		},
+		{
+			name: "handleLapse: StateNew -> StateLearning",
+			card: &models.UserCard{
+				State:     models.StateNew,
+				EF:        models.InitialEF,
+				Direction: models.DirectionENtoRU,
+			},
+			quality: models.QualityWrong,
+			validate: func(t *testing.T, card *models.UserCard) {
+				if card.State != models.StateLearning {
+					t.Errorf("Expected state %v, got %v", models.StateLearning, card.State)
+				}
+				if card.LearningStep != 0 {
+					t.Errorf("Expected LearningStep 0, got %d", card.LearningStep)
+				}
+				if card.LapseCount != 1 {
+					t.Errorf("Expected LapseCount 1, got %d", card.LapseCount)
+				}
+				if card.NextDueAt == nil {
+					t.Error("NextDueAt should be set")
+				}
+			},
+		},
 	}
 
 	for _, tt := range tests {

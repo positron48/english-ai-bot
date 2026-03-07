@@ -2,6 +2,7 @@ package repository
 
 import (
 	"testing"
+	"testing/fstest"
 
 	"go.uber.org/zap"
 )
@@ -41,6 +42,29 @@ func TestGrammarContentRepository_GetSections(t *testing.T) {
 	}
 }
 
+func TestGrammarContentRepository_GetSections_Errors(t *testing.T) {
+	logger := zap.NewNop()
+
+	t.Run("missing sections.json returns error", func(t *testing.T) {
+		repo := &GrammarContentRepository{fs: fstest.MapFS{}, logger: logger}
+		_, err := repo.GetSections()
+		if err == nil {
+			t.Fatal("GetSections() expected error for missing file")
+		}
+	})
+
+	t.Run("invalid JSON returns error", func(t *testing.T) {
+		repo := &GrammarContentRepository{
+			fs:     fstest.MapFS{"sections.json": &fstest.MapFile{Data: []byte("not json")}},
+			logger: logger,
+		}
+		_, err := repo.GetSections()
+		if err == nil {
+			t.Fatal("GetSections() expected error for invalid JSON")
+		}
+	})
+}
+
 func TestGrammarContentRepository_GetIndex(t *testing.T) {
 	repo := setupGrammarContentRepo(t)
 	index, err := repo.GetIndex()
@@ -56,6 +80,29 @@ func TestGrammarContentRepository_GetIndex(t *testing.T) {
 	if len(index.Chapters) == 0 {
 		t.Error("index chapters should not be empty")
 	}
+}
+
+func TestGrammarContentRepository_GetIndex_Errors(t *testing.T) {
+	logger := zap.NewNop()
+
+	t.Run("missing index.json returns error", func(t *testing.T) {
+		repo := &GrammarContentRepository{fs: fstest.MapFS{}, logger: logger}
+		_, err := repo.GetIndex()
+		if err == nil {
+			t.Fatal("GetIndex() expected error for missing file")
+		}
+	})
+
+	t.Run("invalid JSON returns error", func(t *testing.T) {
+		repo := &GrammarContentRepository{
+			fs:     fstest.MapFS{"index.json": &fstest.MapFile{Data: []byte("{]")}},
+			logger: logger,
+		}
+		_, err := repo.GetIndex()
+		if err == nil {
+			t.Fatal("GetIndex() expected error for invalid JSON")
+		}
+	})
 }
 
 func TestGrammarContentRepository_GetChapter(t *testing.T) {
@@ -90,6 +137,51 @@ func TestGrammarContentRepository_GetChapter(t *testing.T) {
 		}
 		if ch != nil {
 			t.Error("GetChapter() should return nil for nonexistent chapter")
+		}
+	})
+}
+
+func TestGrammarContentRepository_GetChapter_Errors(t *testing.T) {
+	logger := zap.NewNop()
+
+	t.Run("chapter not in index returns error", func(t *testing.T) {
+		repo := &GrammarContentRepository{
+			fs: fstest.MapFS{
+				"index.json": &fstest.MapFile{Data: []byte(`{"version":"1","generated_at":"","chapters":{}}`)},
+			},
+			logger: logger,
+		}
+		_, err := repo.GetChapter("missing-chapter")
+		if err == nil {
+			t.Fatal("GetChapter() expected error when chapter not in index")
+		}
+	})
+
+	t.Run("chapter file missing returns error", func(t *testing.T) {
+		repo := &GrammarContentRepository{
+			fs: fstest.MapFS{
+				"index.json": &fstest.MapFile{Data: []byte(`{"version":"1","generated_at":"","chapters":{"ch1":"ch1.json"}}`)},
+				// chapters/ch1.json missing
+			},
+			logger: logger,
+		}
+		_, err := repo.GetChapter("ch1")
+		if err == nil {
+			t.Fatal("GetChapter() expected error when chapter file missing")
+		}
+	})
+
+	t.Run("invalid chapter JSON returns error", func(t *testing.T) {
+		repo := &GrammarContentRepository{
+			fs: fstest.MapFS{
+				"index.json":           &fstest.MapFile{Data: []byte(`{"version":"1","generated_at":"","chapters":{"ch2":"ch2.json"}}`)},
+				"chapters/ch2.json":     &fstest.MapFile{Data: []byte("invalid")},
+			},
+			logger: logger,
+		}
+		_, err := repo.GetChapter("ch2")
+		if err == nil {
+			t.Fatal("GetChapter() expected error for invalid chapter JSON")
 		}
 	})
 }

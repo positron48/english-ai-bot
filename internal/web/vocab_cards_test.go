@@ -84,7 +84,7 @@ func TestHandleVocabDelete_Cards(t *testing.T) {
 	req = req.WithContext(ctx)
 	w := httptest.NewRecorder()
 
-	// Call handler
+	// Call handler (path .../cards delegates to handleVocabWordCards)
 	router.handleVocabDelete(w, req)
 
 	if w.Code != http.StatusOK {

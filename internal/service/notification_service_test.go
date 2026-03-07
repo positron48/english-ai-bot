@@ -306,3 +306,57 @@ func TestNotificationService_DisableUserNotifications(t *testing.T) {
 		t.Errorf("expected settings to contain never, got %q", user.SettingsJSON)
 	}
 }
+
+// TestNotificationService_SendNotificationIfNeeded_InvalidSettingsJSON covers the branch where
+// user.SettingsJSON fails to unmarshal (warn path, then continues with defaults).
+func TestNotificationService_SendNotificationIfNeeded_InvalidSettingsJSON(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDB(t)
+	userRepo := repository.NewUserRepository(db, logger)
+	userCardRepo := repository.NewUserCardRepository(db, logger)
+	nudgeRepo := repository.NewNudgeRepository(db, logger)
+	sessionRepo := repository.NewSessionRepository(db, logger)
+	svc := NewNotificationService(nil, userRepo, userCardRepo, nudgeRepo, sessionRepo, logger)
+
+	user, err := userRepo.GetOrCreateUser(1006)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	_ = userRepo.UpdateUserPreferredTime(user.ID, "00:00")
+	_, _ = db.Exec("UPDATE users SET timezone = ? WHERE id = ?", "UTC", user.ID)
+	user, _ = userRepo.GetUserByTelegramID(1006)
+	// Override in memory to trigger Unmarshal error in sendNotificationIfNeeded
+	user.SettingsJSON = `{ invalid json }`
+	userNow := time.Now().UTC().Truncate(24 * time.Hour).Add(12 * time.Hour)
+
+	err = svc.sendNotificationIfNeeded(user, userNow)
+	if err != nil {
+		t.Errorf("sendNotificationIfNeeded with invalid SettingsJSON should not return error (uses defaults), got %v", err)
+	}
+}
+
+// TestNotificationService_DisableUserNotifications_InvalidSettingsJSON covers disableUserNotifications
+// when user has invalid JSON in settings (warn path, then sets never and saves).
+func TestNotificationService_DisableUserNotifications_InvalidSettingsJSON(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDB(t)
+	userRepo := repository.NewUserRepository(db, logger)
+	nudgeRepo := repository.NewNudgeRepository(db, logger)
+	svc := NewNotificationService(nil, userRepo, nil, nudgeRepo, nil, logger)
+
+	user, err := userRepo.GetOrCreateUser(1007)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	_, _ = db.Exec("UPDATE users SET settings_json = ? WHERE id = ?", `{ broken }`, user.ID)
+	user, _ = userRepo.GetUserByTelegramID(1007)
+
+	err = svc.disableUserNotifications(user)
+	if err != nil {
+		t.Fatalf("disableUserNotifications with invalid JSON should still succeed: %v", err)
+	}
+	user, _ = userRepo.GetUserByTelegramID(1007)
+	if !strings.Contains(user.SettingsJSON, "never") {
+		t.Errorf("expected settings to contain never after disable, got %q", user.SettingsJSON)
+	}
+}

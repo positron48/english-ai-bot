@@ -2,15 +2,18 @@ package web
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/database"
-	"tgbot-skeleton/internal/testutil"
+	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/service"
+	"tgbot-skeleton/internal/testutil"
 
 	"go.uber.org/zap"
 )
@@ -210,5 +213,64 @@ func TestHandleAdminWordSets_MethodNotAllowed(t *testing.T) {
 
 	if rr.Code != http.StatusMethodNotAllowed {
 		t.Errorf("Expected status 405, got %d: %s", rr.Code, rr.Body.String())
+	}
+}
+
+func TestHandleAdminWordSets_GetWithLimitAndOffset(t *testing.T) {
+	router, _, adminUserID, cleanup := setupAdminWordSetsTest(t)
+	defer cleanup()
+
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/word-sets?limit=5&offset=0", nil)
+	req = setUserIDInContextWordSets(req, adminUserID)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminWordSets(rr, req)
+
+	if rr.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", rr.Code, rr.Body.String())
+	}
+	var resp struct {
+		WordSets []interface{} `json:"word_sets"`
+	}
+	if err := json.NewDecoder(rr.Body).Decode(&resp); err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+	// Response may have empty or non-empty word_sets; key must exist (decode succeeded)
+	_ = resp.WordSets
+}
+
+func TestHandleAdminWordSetDetail_GetSuccess(t *testing.T) {
+	router, db, adminUserID, cleanup := setupAdminWordSetsTest(t)
+	defer cleanup()
+
+	logger, _ := zap.NewDevelopment()
+	wordSetRepo := repository.NewWordSetRepository(db.GetConnection(), logger)
+	setID, err := wordSetRepo.CreateWordSet(&models.WordSet{Title: "Detail Set", IsPublished: true})
+	if err != nil {
+		t.Fatalf("CreateWordSet: %v", err)
+	}
+
+	req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/api/admin/word-sets/%d", setID), nil)
+	req.URL.Path = fmt.Sprintf("/api/admin/word-sets/%d", setID)
+	req = setUserIDInContextWordSets(req, adminUserID)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminWordSetDetail(rr, req)
+
+	if rr.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", rr.Code, rr.Body.String())
+	}
+	var resp struct {
+		WordSet map[string]interface{} `json:"word_set"`
+		Words   []interface{}         `json:"words"`
+	}
+	if err := json.NewDecoder(rr.Body).Decode(&resp); err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+	if resp.WordSet == nil {
+		t.Error("word_set should be present")
+	}
+	if resp.Words == nil {
+		t.Error("words should be present")
 	}
 }

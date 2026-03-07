@@ -1088,9 +1088,10 @@ func (r *Router) handleAdminWord(w http.ResponseWriter, req *http.Request) {
 		if err != nil {
 			r.logger.Error("failed to update word card", zap.Error(err), zap.Int64("word_card_id", wordCardID))
 
-			// Check for UNIQUE constraint violation
+			// Check for UNIQUE constraint violation (SQLite or Postgres)
 			errStr := err.Error()
-			if strings.Contains(errStr, "UNIQUE constraint failed: word_cards.word") {
+			if strings.Contains(errStr, "UNIQUE constraint failed: word_cards.word") ||
+				strings.Contains(errStr, "duplicate key") && strings.Contains(strings.ToLower(errStr), "unique constraint") {
 				w.Header().Set("Content-Type", "application/json")
 				w.WriteHeader(http.StatusConflict)
 				json.NewEncoder(w).Encode(map[string]interface{}{

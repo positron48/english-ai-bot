@@ -1741,3 +1741,117 @@ func TestHandleAdminWord_MethodNotAllowed(t *testing.T) {
 		})
 	}
 }
+
+// TestHandleAdminWord_PUT_UniqueConstraint covers 409 when updating word to duplicate.
+func TestHandleAdminWord_PUT_UniqueConstraint(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	adminUser, err := userRepo.GetOrCreateUser(123456789)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	wordRepo := repository.NewWordRepository(db, logger)
+	_ = wordRepo.SaveWordCard("uniquea", "def a")
+	_ = wordRepo.SaveWordCard("uniqueb", "def b")
+	wcA, _ := wordRepo.GetWordCard("uniquea")
+	wcB, _ := wordRepo.GetWordCard("uniqueb")
+	if wcA == nil || wcB == nil {
+		t.Fatal("word cards not found")
+	}
+	cfg := &config.Config{
+		Admin: config.AdminConfig{TelegramID: 123456789},
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	// Update word A to "uniqueb" (duplicate of B) -> 409
+	body := strings.NewReader("word=uniqueb")
+	req := httptest.NewRequest(http.MethodPut, fmt.Sprintf("/api/admin/words/%d", wcA.ID), body)
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req = req.WithContext(context.WithValue(context.WithValue(req.Context(), userIDKey, adminUser.ID), userRoleKey, "admin"))
+	w := httptest.NewRecorder()
+	router.RequireAdmin(router.handleAdminWord)(w, req)
+
+	if w.Code != http.StatusConflict {
+		t.Errorf("expected status 409 for UNIQUE constraint, got %d: %s", w.Code, w.Body.String())
+	}
+	if w.Header().Get("Content-Type") == "application/json" {
+		var resp map[string]interface{}
+		if err := json.NewDecoder(w.Body).Decode(&resp); err != nil {
+			t.Fatalf("decode: %v", err)
+		}
+		if resp["success"] == true {
+			t.Error("expected success false on duplicate word")
+		}
+	}
+}
+
+// TestHandleAdminWord_POST_Generate_AIServiceNil covers 500 when AI service is not available.
+func TestHandleAdminWord_POST_Generate_AIServiceNil(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	adminUser, err := userRepo.GetOrCreateUser(123456789)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	wordRepo := repository.NewWordRepository(db, logger)
+	_ = wordRepo.SaveWordCard("genword", "def")
+	wc, _ := wordRepo.GetWordCard("genword")
+	if wc == nil {
+		t.Fatal("word card not found")
+	}
+	cfg := &config.Config{
+		Admin: config.AdminConfig{TelegramID: 123456789},
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+	// aiService is nil by default
+
+	req := httptest.NewRequest(http.MethodPost, fmt.Sprintf("/api/admin/words/%d/generate", wc.ID), nil)
+	req = req.WithContext(context.WithValue(context.WithValue(req.Context(), userIDKey, adminUser.ID), userRoleKey, "admin"))
+	w := httptest.NewRecorder()
+	router.RequireAdmin(router.handleAdminWord)(w, req)
+
+	if w.Code != http.StatusInternalServerError {
+		t.Errorf("expected status 500 when AI service nil, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleAdminWord_POST_Generate_NotFound covers 404 when word card does not exist.
+func TestHandleAdminWord_POST_Generate_NotFound(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	adminUser, err := userRepo.GetOrCreateUser(123456789)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	cfg := &config.Config{
+		Admin: config.AdminConfig{TelegramID: 123456789},
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/words/999999/generate", nil)
+	req = req.WithContext(context.WithValue(context.WithValue(req.Context(), userIDKey, adminUser.ID), userRoleKey, "admin"))
+	w := httptest.NewRecorder()
+	router.RequireAdmin(router.handleAdminWord)(w, req)
+
+	if w.Code != http.StatusNotFound {
+		t.Errorf("expected status 404 for non-existent word, got %d: %s", w.Code, w.Body.String())
+	}
+}

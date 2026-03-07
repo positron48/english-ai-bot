@@ -3,21 +3,29 @@ package service
 import (
 	"fmt"
 
-	"tgbot-skeleton/internal/repository"
+	"tgbot-skeleton/internal/models"
 
 	"go.uber.org/zap"
 )
 
+// circuitBreakerRepo abstracts circuit breaker storage for testing
+type circuitBreakerRepo interface {
+	GetState() (*models.CircuitBreakerState, error)
+	RecordFailure(errorMessage string) error
+	Open() error
+	Reset() error
+}
+
 // CircuitBreakerService manages circuit breaker for worker protection
 type CircuitBreakerService struct {
-	cbRepo    *repository.CircuitBreakerRepository
+	cbRepo    circuitBreakerRepo
 	threshold int
 	logger    *zap.Logger
 }
 
 // NewCircuitBreakerService creates a new circuit breaker service
 func NewCircuitBreakerService(
-	cbRepo *repository.CircuitBreakerRepository,
+	cbRepo circuitBreakerRepo,
 	threshold int,
 	logger *zap.Logger,
 ) *CircuitBreakerService {

@@ -404,3 +404,34 @@ func TestHandleVocabDelete_ConfirmDelete_WordNotInUserVocab(t *testing.T) {
 		t.Errorf("Expected status 404 when word not in user vocab (count=0), got %d: %s", w.Code, w.Body.String())
 	}
 }
+
+func TestHandleVocabDelete_EmptyLemmaRedirect(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo := setupVocabDeleteTestDB(t)
+	user, err := userRepo.GetOrCreateUser(88882)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("GET", "/api/vocab//confirm_delete", nil)
+	req.URL.Path = "/api/vocab//confirm_delete"
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocabDelete(w, req)
+
+	if w.Code != http.StatusFound {
+		t.Errorf("Expected status 302 redirect when lemma empty, got %d", w.Code)
+	}
+	if loc := w.Header().Get("Location"); loc != "/app/vocab" {
+		t.Errorf("Expected Location /app/vocab, got %s", loc)
+	}
+}

@@ -108,6 +108,24 @@ func TestGrammarPublishRepository_GetPublishedItem(t *testing.T) {
 			t.Errorf("expected ItemID ch-1, got %q", item.ItemID)
 		}
 	})
+
+	t.Run("existing item with UpdatedByUserID returns it", func(t *testing.T) {
+		db := testutil.SetupTestDB(t)
+		var userID int64
+		_ = db.QueryRow(`INSERT INTO users (telegram_id) VALUES (203) RETURNING id`).Scan(&userID)
+		repo2 := NewGrammarPublishRepository(db, zap.NewNop())
+		userIDPtr := &userID
+		if err := repo2.SetPublished("section", "sec-with-user", true, userIDPtr); err != nil {
+			t.Fatalf("SetPublished: %v", err)
+		}
+		item, err := repo2.GetPublishedItem("section", "sec-with-user")
+		if err != nil {
+			t.Fatalf("GetPublishedItem() error = %v", err)
+		}
+		if item.UpdatedByUserID == nil || *item.UpdatedByUserID != userID {
+			t.Errorf("expected UpdatedByUserID %d, got %v", userID, item.UpdatedByUserID)
+		}
+	})
 }
 
 func TestGrammarPublishRepository_IsPublished(t *testing.T) {

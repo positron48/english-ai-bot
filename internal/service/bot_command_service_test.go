@@ -264,6 +264,28 @@ func TestBotCommandService_HandleHelp(t *testing.T) {
 	}
 }
 
+// TestBotCommandService_HandleHelp_DefaultMessage covers handleHelp when helpMessage is empty (default text).
+func TestBotCommandService_HandleHelp_DefaultMessage(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
+	client := &mockTelegramClient{}
+	bot := newTestBot(client)
+	svc := NewBotCommandService(bot, userRepo, logger, "", "start", "unknown")
+
+	msg := commandMessage("/help")
+	update := tgbotapi.Update{Message: msg}
+	svc.HandleUpdate(update)
+
+	text := client.lastParams.Get("text")
+	if text == "" {
+		t.Fatal("expected default help message to be sent")
+	}
+	if !strings.Contains(text, "Помощь") && !strings.Contains(text, "/start") && !strings.Contains(text, "/help") {
+		t.Errorf("expected default help text (Помощь, /start, /help), got %q", text)
+	}
+}
+
 func TestBotCommandService_HandleUnknown(t *testing.T) {
 	svc, _, client, cleanup := setupBotCommandService(t)
 	defer cleanup()
