@@ -585,5 +585,28 @@ func TestValidateTrainingCardResponse_EmptySenses(t *testing.T) {
 	}
 }
 
+func TestTruncate(t *testing.T) {
+	tests := []struct {
+		name   string
+		s      string
+		maxLen int
+		want   string
+	}{
+		{"empty string", "", 5, ""},
+		{"shorter than max", "abc", 5, "abc"},
+		{"equal to max", "hello", 5, "hello"},
+		{"longer than max", "hello world", 5, "hello..."},
+		{"max zero", "abc", 0, "..."},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := truncate(tt.s, tt.maxLen)
+			if got != tt.want {
+				t.Errorf("truncate(%q, %d) = %q, want %q", tt.s, tt.maxLen, got, tt.want)
+			}
+		})
+	}
+}
+
 // Helper function - uses existing stringPtr from word_service_integration_test.go
 // For exact substring matching in error messages, we use strings.Contains directly

@@ -172,3 +172,234 @@ func TestOptionsService_GenerateOptions_UsesCardDistractors(t *testing.T) {
 		t.Errorf("Expected at least 1 card distractor to be used, found %d", cardDistractorsUsed)
 	}
 }
+
+func TestOptionsService_GenerateOptions_DirectionENtoRU(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, trainingCardRepo := setupOptionsServiceTestDB(t)
+
+	var wordCardID int64
+	err := db.QueryRow("INSERT INTO word_cards (word, definition) VALUES ($1, $2) RETURNING id", "generate", "to generate").Scan(&wordCardID)
+	if err != nil {
+		t.Fatalf("insert word_card: %v", err)
+	}
+	distractorsRU, _ := json.Marshal([]string{"создавать", "делать", "строить"})
+	card := &models.TrainingCard{
+		WordCardID:    wordCardID,
+		WordEN:        "generate",
+		SenseIndex:    0,
+		WordRU:        "генерировать",
+		MeaningEN:     "to generate",
+		DistractorsRU: string(distractorsRU),
+	}
+	cardID, err := trainingCardRepo.CreateTrainingCard(card)
+	if err != nil {
+		t.Fatalf("CreateTrainingCard: %v", err)
+	}
+
+	service := NewOptionsService(trainingCardRepo, logger)
+	userCard := &models.UserCardWithTraining{
+		UserCard:     models.UserCard{ID: 1, Direction: models.DirectionENtoRU},
+		TrainingCard: models.TrainingCard{ID: cardID, WordCardID: wordCardID, WordEN: "generate", WordRU: "генерировать", DistractorsRU: string(distractorsRU)},
+	}
+
+	options, correctAnswer, err := service.GenerateOptions(userCard, 4, []string{}, make(map[string]bool), make(map[string]bool))
+	if err != nil {
+		t.Fatalf("GenerateOptions: %v", err)
+	}
+	if correctAnswer != "генерировать" {
+		t.Errorf("expected correct answer WordRU for EN->RU, got %q", correctAnswer)
+	}
+	found := false
+	for _, o := range options {
+		if o == correctAnswer {
+			found = true
+			break
+		}
+	}
+	if !found {
+		t.Error("correct answer should be in options")
+	}
+	if len(options) < 2 {
+		t.Errorf("expected at least 2 options, got %d", len(options))
+	}
+}
+
+func TestOptionsService_GenerateOptions_InvalidDistractorsJSON(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, trainingCardRepo := setupOptionsServiceTestDB(t)
+
+	var wordCardID int64
+	err := db.QueryRow("INSERT INTO word_cards (word, definition) VALUES ($1, $2) RETURNING id", "test", "def").Scan(&wordCardID)
+	if err != nil {
+		t.Fatalf("insert word_card: %v", err)
+	}
+	card := &models.TrainingCard{
+		WordCardID:    wordCardID,
+		WordEN:        "test",
+		SenseIndex:    0,
+		WordRU:        "тест",
+		MeaningEN:     "test",
+		DistractorsEN: `{invalid json`, // triggers Warn and empty slice
+		DistractorsRU: `["другой","третий"]`,
+	}
+	cardID, err := trainingCardRepo.CreateTrainingCard(card)
+	if err != nil {
+		t.Fatalf("CreateTrainingCard: %v", err)
+	}
+
+	service := NewOptionsService(trainingCardRepo, logger)
+	userCard := &models.UserCardWithTraining{
+		UserCard:     models.UserCard{ID: 1, Direction: models.DirectionRUtoEN},
+		TrainingCard: models.TrainingCard{ID: cardID, WordCardID: wordCardID, WordEN: "test", WordRU: "тест", DistractorsEN: `{invalid json`, DistractorsRU: `["другой","третий"]`},
+	}
+
+	options, correctAnswer, err := service.GenerateOptions(userCard, 4, []string{}, make(map[string]bool), make(map[string]bool))
+	if err != nil {
+		t.Fatalf("GenerateOptions: %v", err)
+	}
+	// Fallback distractors should fill; correct answer must be present
+	if correctAnswer != "test" {
+		t.Errorf("expected correct answer 'test', got %q", correctAnswer)
+	}
+	found := false
+	for _, o := range options {
+		if o == correctAnswer {
+			found = true
+			break
+		}
+	}
+	if !found {
+		t.Error("correct answer should be in options")
+	}
+	if len(options) < 2 {
+		t.Errorf("expected at least 2 options (with fallback), got %d", len(options))
+	}
+}
+
+func TestOptionsService_GenerateOptions_DisplayWordForRUtoEN(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, trainingCardRepo := setupOptionsServiceTestDB(t)
+
+	var wordCardID int64
+	err := db.QueryRow("INSERT INTO word_cards (word, definition) VALUES ($1, $2) RETURNING id", "spy", "to spy").Scan(&wordCardID)
+	if err != nil {
+		t.Fatalf("insert word_card: %v", err)
+	}
+	displayWord := "to spy"
+	distractorsEN, _ := json.Marshal([]string{"to watch", "to see", "to look"})
+	card := &models.TrainingCard{
+		WordCardID:    wordCardID,
+		WordEN:        "spy",
+		SenseIndex:    0,
+		WordRU:        "шпионить",
+		MeaningEN:     "to spy",
+		DisplayWord:   &displayWord,
+		DistractorsEN: string(distractorsEN),
+	}
+	cardID, err := trainingCardRepo.CreateTrainingCard(card)
+	if err != nil {
+		t.Fatalf("CreateTrainingCard: %v", err)
+	}
+
+	service := NewOptionsService(trainingCardRepo, logger)
+	userCard := &models.UserCardWithTraining{
+		UserCard:     models.UserCard{ID: 1, Direction: models.DirectionRUtoEN},
+		TrainingCard: models.TrainingCard{ID: cardID, WordCardID: wordCardID, WordEN: "spy", WordRU: "шпионить", DisplayWord: &displayWord, DistractorsEN: string(distractorsEN)},
+	}
+
+	_, correctAnswer, err := service.GenerateOptions(userCard, 4, []string{}, make(map[string]bool), make(map[string]bool))
+	if err != nil {
+		t.Fatalf("GenerateOptions: %v", err)
+	}
+	if correctAnswer != "to spy" {
+		t.Errorf("expected correct answer DisplayWord 'to spy' for RU->EN, got %q", correctAnswer)
+	}
+}
+
+func TestOptionsService_GenerateOptions_SessionWordsExcluded(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, trainingCardRepo := setupOptionsServiceTestDB(t)
+
+	var wordCardID int64
+	err := db.QueryRow("INSERT INTO word_cards (word, definition) VALUES ($1, $2) RETURNING id", "apple", "fruit").Scan(&wordCardID)
+	if err != nil {
+		t.Fatalf("insert word_card: %v", err)
+	}
+	distractorsEN, _ := json.Marshal([]string{"orange", "banana", "grape"})
+	card := &models.TrainingCard{
+		WordCardID:    wordCardID,
+		WordEN:        "apple",
+		SenseIndex:    0,
+		WordRU:        "яблоко",
+		MeaningEN:     "apple",
+		DistractorsEN: string(distractorsEN),
+	}
+	cardID, err := trainingCardRepo.CreateTrainingCard(card)
+	if err != nil {
+		t.Fatalf("CreateTrainingCard: %v", err)
+	}
+
+	service := NewOptionsService(trainingCardRepo, logger)
+	userCard := &models.UserCardWithTraining{
+		UserCard:     models.UserCard{ID: 1, Direction: models.DirectionRUtoEN},
+		TrainingCard: models.TrainingCard{ID: cardID, WordCardID: wordCardID, WordEN: "apple", WordRU: "яблоко", DistractorsEN: string(distractorsEN)},
+	}
+
+	// Exclude "orange" as session word (English) so it should not appear as distractor
+	sessionWordENs := map[string]bool{"orange": true}
+	options, _, err := service.GenerateOptions(userCard, 4, []string{}, sessionWordENs, make(map[string]bool))
+	if err != nil {
+		t.Fatalf("GenerateOptions: %v", err)
+	}
+	for _, o := range options {
+		if o == "orange" {
+			t.Error("session word 'orange' should be excluded from options")
+		}
+	}
+	if len(options) < 2 {
+		t.Errorf("expected at least 2 options, got %d", len(options))
+	}
+}
+
+func TestOptionsService_GenerateOptions_WrongAnswersIncluded(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, trainingCardRepo := setupOptionsServiceTestDB(t)
+
+	var wordCardID int64
+	err := db.QueryRow("INSERT INTO word_cards (word, definition) VALUES ($1, $2) RETURNING id", "generate", "to generate").Scan(&wordCardID)
+	if err != nil {
+		t.Fatalf("insert word_card: %v", err)
+	}
+	distractorsEN, _ := json.Marshal([]string{"create", "make", "build"})
+	card := &models.TrainingCard{
+		WordCardID:    wordCardID,
+		WordEN:        "generate",
+		SenseIndex:    0,
+		WordRU:        "генерировать",
+		MeaningEN:     "to generate",
+		DistractorsEN: string(distractorsEN),
+	}
+	cardID, err := trainingCardRepo.CreateTrainingCard(card)
+	if err != nil {
+		t.Fatalf("CreateTrainingCard: %v", err)
+	}
+
+	wrongAnswersJSON := `[{"option":"produce"},{"option":"create"}]`
+	service := NewOptionsService(trainingCardRepo, logger)
+	userCard := &models.UserCardWithTraining{
+		UserCard:     models.UserCard{ID: 1, Direction: models.DirectionRUtoEN, WrongAnswersJSON: wrongAnswersJSON},
+		TrainingCard: models.TrainingCard{ID: cardID, WordCardID: wordCardID, WordEN: "generate", WordRU: "генерировать", DistractorsEN: string(distractorsEN)},
+	}
+
+	options, correctAnswer, err := service.GenerateOptions(userCard, 4, []string{}, make(map[string]bool), make(map[string]bool))
+	if err != nil {
+		t.Fatalf("GenerateOptions: %v", err)
+	}
+	if correctAnswer != "generate" {
+		t.Errorf("expected correct answer 'generate', got %q", correctAnswer)
+	}
+	// Wrong answers (produce, create) can appear in pool; at least one non-correct option expected
+	if len(options) < 2 {
+		t.Errorf("expected at least 2 options, got %d", len(options))
+	}
+}

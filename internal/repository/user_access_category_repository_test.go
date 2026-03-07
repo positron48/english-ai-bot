@@ -248,3 +248,53 @@ func TestUserAccessCategoryRepository_GetUsersByCategory(t *testing.T) {
 		t.Fatalf("expected both user IDs in result, got %v", userIDs)
 	}
 }
+
+// TestUserAccessCategoryRepository_GetCategoryPermissions_Empty verifies empty slice when category has no permissions.
+func TestUserAccessCategoryRepository_GetCategoryPermissions_Empty(t *testing.T) {
+	repo := setupUserAccessCategoryRepo(t)
+	cat := &models.UserAccessCategory{Name: "noperm"}
+	id, err := repo.CreateCategory(cat)
+	if err != nil {
+		t.Fatalf("CreateCategory error: %v", err)
+	}
+	perms, err := repo.GetCategoryPermissions(id)
+	if err != nil {
+		t.Fatalf("GetCategoryPermissions error: %v", err)
+	}
+	if len(perms) != 0 {
+		t.Fatalf("expected no permissions for new category, got %v", perms)
+	}
+}
+
+// TestUserAccessCategoryRepository_GetUserPermissions_Empty verifies empty slice when user has no categories.
+func TestUserAccessCategoryRepository_GetUserPermissions_Empty(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	conn := testutil.SetupTestDB(t)
+	userRepo := NewUserRepository(conn, logger)
+	user, _ := userRepo.GetOrCreateUser(105)
+	repo := NewUserAccessCategoryRepository(conn, logger)
+	perms, err := repo.GetUserPermissions(user.ID)
+	if err != nil {
+		t.Fatalf("GetUserPermissions error: %v", err)
+	}
+	if len(perms) != 0 {
+		t.Fatalf("expected no permissions for user with no categories, got %v", perms)
+	}
+}
+
+// TestUserAccessCategoryRepository_GetUsersByCategory_Empty verifies empty slice when category has no users.
+func TestUserAccessCategoryRepository_GetUsersByCategory_Empty(t *testing.T) {
+	repo := setupUserAccessCategoryRepo(t)
+	cat := &models.UserAccessCategory{Name: "nousers"}
+	id, err := repo.CreateCategory(cat)
+	if err != nil {
+		t.Fatalf("CreateCategory error: %v", err)
+	}
+	userIDs, err := repo.GetUsersByCategory(id)
+	if err != nil {
+		t.Fatalf("GetUsersByCategory error: %v", err)
+	}
+	if len(userIDs) != 0 {
+		t.Fatalf("expected no users for new category, got %v", userIDs)
+	}
+}

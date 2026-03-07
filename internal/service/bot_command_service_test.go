@@ -132,6 +132,35 @@ func TestBotCommandService_HandleUnsubscribe(t *testing.T) {
 	}
 }
 
+// TestBotCommandService_HandleUpdate_UnsubscribeCommand covers handleCommand("unsubscribe") -> handleUnsubscribe path.
+func TestBotCommandService_HandleUpdate_UnsubscribeCommand(t *testing.T) {
+	svc, userRepo, client, cleanup := setupBotCommandService(t)
+	defer cleanup()
+
+	if _, err := userRepo.GetOrCreateUser(42); err != nil {
+		t.Fatalf("failed to create user: %v", err)
+	}
+
+	msg := commandMessage("/unsubscribe")
+	update := tgbotapi.Update{Message: msg}
+	svc.HandleUpdate(update)
+
+	user, err := userRepo.GetUserByTelegramID(42)
+	if err != nil {
+		t.Fatalf("GetUserByTelegramID error: %v", err)
+	}
+	if user == nil || !strings.Contains(user.SettingsJSON, "never") {
+		t.Fatalf("expected settings to include never after /unsubscribe command")
+	}
+	text := client.lastParams.Get("text")
+	if text == "" {
+		t.Fatalf("expected confirmation message to be sent")
+	}
+	if !strings.Contains(text, "отписаны") && !strings.Contains(text, "отключены") {
+		t.Errorf("expected unsubscribe confirmation text, got %q", text)
+	}
+}
+
 func TestBotCommandService_HandleUnsubscribe_UserNotFound(t *testing.T) {
 	svc, _, client, cleanup := setupBotCommandService(t)
 	defer cleanup()

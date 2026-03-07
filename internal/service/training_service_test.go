@@ -3,6 +3,7 @@ package service
 import (
 	"database/sql"
 	"fmt"
+	"strings"
 	"testing"
 	"time"
 
@@ -343,5 +344,113 @@ func TestTrainingService_RestoreQueue(t *testing.T) {
 	}
 	if len(queue) != 2 {
 		t.Errorf("Expected 2 cards in queue, got %d", len(queue))
+	}
+}
+
+func TestTrainingService_RestoreQueue_EmptyInput(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	_, _, userCardRepo, trainingCardRepo, _ := setupTrainingServiceTestDB(t)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, logger)
+
+	queue, err := service.RestoreQueue(1, nil)
+	if err != nil {
+		t.Fatalf("RestoreQueue(nil) error = %v", err)
+	}
+	if queue != nil {
+		t.Errorf("Expected nil queue for nil input, got len %d", len(queue))
+	}
+
+	queue, err = service.RestoreQueue(1, []int64{})
+	if err != nil {
+		t.Fatalf("RestoreQueue(empty) error = %v", err)
+	}
+	if queue != nil {
+		t.Errorf("Expected nil queue for empty input, got len %d", len(queue))
+	}
+}
+
+func TestTrainingService_RestoreQueue_PartialSuccess(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, userCardRepo, trainingCardRepo, _ := setupTrainingServiceTestDB(t)
+	user, _ := userRepo.GetOrCreateUser(889)
+
+	_, _ = db.Exec("INSERT INTO word_cards (word, definition) VALUES ($1, $2)", "partial", "def")
+	card := &models.TrainingCard{
+		WordCardID: 1,
+		WordEN:     "partial",
+		SenseIndex: 0,
+		WordRU:     "частичный",
+		MeaningEN:  "partial",
+	}
+	trainingCardID, err := trainingCardRepo.CreateTrainingCard(card)
+	if err != nil {
+		t.Fatalf("CreateTrainingCard: %v", err)
+	}
+	userCard := &models.UserCard{
+		UserID:         user.ID,
+		TrainingCardID: trainingCardID,
+		Direction:      models.DirectionENtoRU,
+		State:          models.StateReview,
+		EF:             2.0,
+	}
+	validID, _ := userCardRepo.CreateUserCard(userCard)
+
+	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, logger)
+	// One valid ID, one non-existent
+	queue, err := service.RestoreQueue(user.ID, []int64{validID, 999999})
+	if err != nil {
+		t.Fatalf("RestoreQueue error = %v", err)
+	}
+	if len(queue) != 1 {
+		t.Errorf("Expected 1 card in queue (one invalid id skipped), got %d", len(queue))
+	}
+}
+
+func TestTrainingService_RestoreQueue_WrongUser(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, userCardRepo, trainingCardRepo, _ := setupTrainingServiceTestDB(t)
+	user1, _ := userRepo.GetOrCreateUser(890)
+	user2, _ := userRepo.GetOrCreateUser(891)
+
+	_, _ = db.Exec("INSERT INTO word_cards (word, definition) VALUES ($1, $2)", "wronguser", "def")
+	card := &models.TrainingCard{
+		WordCardID: 1,
+		WordEN:     "wronguser",
+		SenseIndex: 0,
+		WordRU:     "другой",
+		MeaningEN:  "wrong user",
+	}
+	trainingCardID, _ := trainingCardRepo.CreateTrainingCard(card)
+	userCard := &models.UserCard{
+		UserID:         user1.ID,
+		TrainingCardID: trainingCardID,
+		Direction:      models.DirectionENtoRU,
+		State:          models.StateReview,
+		EF:             2.0,
+	}
+	userCardID, _ := userCardRepo.CreateUserCard(userCard)
+
+	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, logger)
+	// Restore as user2 - card belongs to user1, so it should be skipped
+	queue, err := service.RestoreQueue(user2.ID, []int64{userCardID})
+	if err != nil {
+		t.Fatalf("RestoreQueue error = %v", err)
+	}
+	if len(queue) != 0 {
+		t.Errorf("Expected 0 cards when requesting as different user, got %d", len(queue))
+	}
+}
+
+func TestTrainingService_UpdateSessionState_SessionNotFound(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	_, _, _, _, sessionRepo := setupTrainingServiceTestDB(t)
+	service := NewTrainingService(nil, nil, sessionRepo, nil, logger)
+
+	err := service.UpdateSessionState(999999, `{"state":1}`)
+	if err == nil {
+		t.Fatal("expected error when session not found")
+	}
+	if !strings.Contains(err.Error(), "session not found") {
+		t.Errorf("expected session not found error, got: %v", err)
 	}
 }

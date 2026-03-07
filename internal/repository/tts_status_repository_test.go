@@ -189,3 +189,69 @@ func TestTTSStatusRepository_MarkReady_WithEmptyStrings(t *testing.T) {
 		t.Log("LastProvider stored as empty; nullableString may store empty as nil depending on driver")
 	}
 }
+
+// TestTTSStatusRepository_InvalidWord_NoOp verifies that invalid words (normalizeTTSWord returns false) do not error and do not insert.
+func TestTTSStatusRepository_InvalidWord_NoOp(t *testing.T) {
+	db := testutil.SetupTestDB(t)
+	repo := NewTTSStatusRepository(db, zap.NewNop(), 3)
+	// Words that normalizeTTSWord rejects: empty, digits-only, non-Latin, or invalid chars that don't trim away (e.g. mixed "a1" has no latin after trim is wrong - "a1" has 'a'). Use "" "   " "123" "слово" "aб" (cyrillic б).
+	invalidWords := []string{"", "   ", "123", "слово", "aб"}
+	for _, word := range invalidWords {
+		if err := repo.UpsertPending(word); err != nil {
+			t.Fatalf("UpsertPending(%q) error = %v", word, err)
+		}
+		if err := repo.MarkAttempt(word, "p", "code", "msg", true); err != nil {
+			t.Fatalf("MarkAttempt(%q) error = %v", word, err)
+		}
+		if err := repo.MarkReady(word, "p", "path"); err != nil {
+			t.Fatalf("MarkReady(%q) error = %v", word, err)
+		}
+		if err := repo.MarkTerminal(word, "p", "code", "msg"); err != nil {
+			t.Fatalf("MarkTerminal(%q) error = %v", word, err)
+		}
+		if err := repo.ResetForForceRegenerate(word); err != nil {
+			t.Fatalf("ResetForForceRegenerate(%q) error = %v", word, err)
+		}
+	}
+	// No row should exist for invalid words (normalize returns false, so no insert; or word is empty)
+	for _, word := range invalidWords {
+		status, err := repo.GetByWord(word)
+		if err != nil {
+			t.Fatalf("GetByWord(%q) error = %v", word, err)
+		}
+		if status != nil {
+			t.Errorf("expected nil status for invalid word %q, got %+v", word, status)
+		}
+	}
+}
+
+// TestTTSStatusRepository_UpsertPending_OnConflict updates existing row to pending (idempotent).
+func TestTTSStatusRepository_UpsertPending_OnConflict(t *testing.T) {
+	db := testutil.SetupTestDB(t)
+	repo := NewTTSStatusRepository(db, zap.NewNop(), 3)
+	word := "conflict-word"
+	if err := repo.UpsertPending(word); err != nil {
+		t.Fatalf("UpsertPending() first error = %v", err)
+	}
+	if err := repo.MarkAttempt(word, "openrouter", "rate_limited", "429", true); err != nil {
+		t.Fatalf("MarkAttempt() error = %v", err)
+	}
+	status, _ := repo.GetByWord(word)
+	if status == nil || status.State != models.TTSStateFailedRetryable {
+		t.Fatalf("expected failed_retryable after MarkAttempt, got %+v", status)
+	}
+	// Second UpsertPending should reset state to pending (ON CONFLICT DO UPDATE)
+	if err := repo.UpsertPending(word); err != nil {
+		t.Fatalf("UpsertPending() second error = %v", err)
+	}
+	status2, err := repo.GetByWord(word)
+	if err != nil {
+		t.Fatalf("GetByWord() error = %v", err)
+	}
+	if status2 == nil {
+		t.Fatal("expected status")
+	}
+	if status2.State != models.TTSStatePending {
+		t.Errorf("expected state pending after second UpsertPending, got %s", status2.State)
+	}
+}

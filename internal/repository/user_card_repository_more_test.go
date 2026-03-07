@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"strings"
 	"testing"
 	"time"
 
@@ -246,6 +247,15 @@ func TestUserCardRepository_DeleteUserCard(t *testing.T) {
 		t.Fatalf("DeleteUserCard() error = %v", err)
 	}
 
+	// DeleteUserCard with non-existent ID returns error
+	errNotFound := repo.DeleteUserCard(99999999)
+	if errNotFound == nil {
+		t.Error("DeleteUserCard(non-existent id) expected error")
+	}
+	if errNotFound != nil && !strings.Contains(errNotFound.Error(), "not found") {
+		t.Errorf("DeleteUserCard(non-existent): expected 'not found' in error, got %v", errNotFound)
+	}
+
 	// Verify deletion
 	card, err := repo.GetUserCard(userCardID)
 	if err != nil {
@@ -422,6 +432,32 @@ func TestUserCardRepository_GetUpcomingCardsByDate(t *testing.T) {
 	}
 }
 
+// TestUserCardRepository_GetUpcomingCardsByDate_EmptyResult verifies empty map when user has no upcoming cards in range.
+func TestUserCardRepository_GetUpcomingCardsByDate_EmptyResult(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDB(t)
+	repo := NewUserCardRepository(db, logger)
+	userRepo := NewUserRepository(db, logger)
+	user, _ := userRepo.GetOrCreateUser(123570)
+	// User has no user_cards; upcoming should be 0 for all 7 days.
+	startDate := time.Now()
+	upcoming, err := repo.GetUpcomingCardsByDate(user.ID, startDate)
+	if err != nil {
+		t.Fatalf("GetUpcomingCardsByDate() error = %v", err)
+	}
+	totalCount := 0
+	for _, count := range upcoming {
+		totalCount += count
+	}
+	if totalCount != 0 {
+		t.Errorf("expected 0 upcoming cards for user with no cards, got %d", totalCount)
+	}
+	// Result should still have 7 days initialized to 0
+	if len(upcoming) != 7 {
+		t.Errorf("expected 7 days in result map, got %d", len(upcoming))
+	}
+}
+
 // Test_nullTimeScanner_parseString covers the parseString method used when scanning time from string/[]byte.
 func Test_nullTimeScanner_parseString(t *testing.T) {
 	tests := []struct {
@@ -442,6 +478,39 @@ func Test_nullTimeScanner_parseString(t *testing.T) {
 			}
 			if !tt.wantErr && !n.Valid {
 				t.Fatal("expected Valid true")
+			}
+		})
+	}
+}
+
+// Test_nullTimeScanner_Scan covers Scan with nil, time.Time, []byte, string, and invalid type.
+func Test_nullTimeScanner_Scan(t *testing.T) {
+	refTime := time.Date(2006, 1, 2, 15, 4, 5, 0, time.UTC)
+	tests := []struct {
+		name      string
+		value     interface{}
+		wantValid bool
+		wantErr   bool
+	}{
+		{"nil", nil, false, false},
+		{"time.Time", refTime, true, false},
+		{"[]byte", []byte("2006-01-02 15:04:05"), true, false},
+		{"string RFC3339", "2006-01-02T15:04:05Z", true, false},
+		{"string with TZ", "2006-01-02 15:04:05-07:00", true, false},
+		{"invalid type", 42, false, true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			var n nullTimeScanner
+			err := n.Scan(tt.value)
+			if (err != nil) != tt.wantErr {
+				t.Fatalf("Scan() error = %v, wantErr %v", err, tt.wantErr)
+			}
+			if !tt.wantErr && n.Valid != tt.wantValid {
+				t.Errorf("Valid = %v, want %v", n.Valid, tt.wantValid)
+			}
+			if tt.wantValid && n.Valid && n.Time.Year() != 2006 {
+				t.Errorf("expected year 2006, got %d", n.Time.Year())
 			}
 		})
 	}
@@ -486,6 +555,69 @@ func TestUserCardRepository_GetWordMasteringStats(t *testing.T) {
 	}
 	if statsNil != nil && statsNil.TotalCards != 0 {
 		t.Errorf("expected nil or empty stats for unknown word_card_id, got TotalCards=%d", statsNil.TotalCards)
+	}
+}
+
+// TestUserCardRepository_GetWordMasteringStats_NoCardsForWord verifies stats with zeros when user has no user_cards for the word (aggregate returns one row with zeros in Postgres).
+func TestUserCardRepository_GetWordMasteringStats_NoCardsForWord(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDB(t)
+	repo := NewUserCardRepository(db, logger)
+	userRepo := NewUserRepository(db, logger)
+	wordRepo := NewWordRepository(db, logger)
+	trainingRepo := NewTrainingCardRepository(db, logger)
+
+	user, _ := userRepo.GetOrCreateUser(123580)
+	wordCard := &models.WordCard{Word: "norowword", Definition: "def"}
+	wordCardID, _ := wordRepo.UpsertWordCardLemma(wordCard)
+	pos := "noun"
+	displayWord := "norowword"
+	tc := &models.TrainingCard{WordCardID: wordCardID, WordEN: "norowword", SenseIndex: 0, WordRU: "слово", MeaningEN: "word", POS: &pos, DisplayWord: &displayWord}
+	_, _ = trainingRepo.CreateTrainingCard(tc)
+	// Do not create any user_card for this user+word. Aggregate still returns one row with zeros.
+	stats, err := repo.GetWordMasteringStats(user.ID, wordCardID)
+	if err != nil {
+		t.Fatalf("GetWordMasteringStats() error = %v", err)
+	}
+	if stats == nil {
+		t.Fatal("expected non-nil stats (aggregate returns one row with zeros)")
+	}
+	if stats.TotalCards != 0 || stats.TotalReps != 0 || stats.IsKnown {
+		t.Errorf("expected zero stats when no user_cards for word, got %+v", stats)
+	}
+}
+
+// TestUserCardRepository_GetWordMasteringStats_IsKnown verifies IsKnown is true when user has word in user_word_knowledge as 'known'.
+func TestUserCardRepository_GetWordMasteringStats_IsKnown(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDB(t)
+	repo := NewUserCardRepository(db, logger)
+	userRepo := NewUserRepository(db, logger)
+	wordRepo := NewWordRepository(db, logger)
+	trainingRepo := NewTrainingCardRepository(db, logger)
+
+	user, _ := userRepo.GetOrCreateUser(123581)
+	wordCard := &models.WordCard{Word: "knownword", Definition: "def"}
+	wordCardID, _ := wordRepo.UpsertWordCardLemma(wordCard)
+	pos := "noun"
+	displayWord := "knownword"
+	tc := &models.TrainingCard{WordCardID: wordCardID, WordEN: "knownword", SenseIndex: 0, WordRU: "известный", MeaningEN: "known", POS: &pos, DisplayWord: &displayWord}
+	tcID, _ := trainingRepo.CreateTrainingCard(tc)
+	now := time.Now()
+	_, _ = repo.CreateUserCard(&models.UserCard{UserID: user.ID, TrainingCardID: tcID, Direction: models.DirectionENtoRU, State: models.StateReview, EF: 2.5, NextDueAt: &now})
+	_, err := db.Exec("INSERT INTO user_word_knowledge (user_id, word_card_id, status) VALUES ($1, $2, 'known') ON CONFLICT (user_id, word_card_id) DO UPDATE SET status = 'known'", user.ID, wordCardID)
+	if err != nil {
+		t.Fatalf("insert user_word_knowledge: %v", err)
+	}
+	stats, err := repo.GetWordMasteringStats(user.ID, wordCardID)
+	if err != nil {
+		t.Fatalf("GetWordMasteringStats() error = %v", err)
+	}
+	if stats == nil {
+		t.Fatal("expected non-nil stats")
+	}
+	if !stats.IsKnown {
+		t.Errorf("expected IsKnown true when word in user_word_knowledge, got false")
 	}
 }
 

@@ -97,7 +97,7 @@ func TestTrainingService_RestoreQueue_NonExistentUserCard(t *testing.T) {
 	}
 }
 
-func TestTrainingService_RestoreQueue_WrongUser(t *testing.T) {
+func TestTrainingService_RestoreQueue_WrongUser_FromHelper(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo, userCardRepo, trainingCardRepo, _ := setupTrainingServiceTestDB(t)
 	u323, _ := userRepo.GetOrCreateUser(323232)

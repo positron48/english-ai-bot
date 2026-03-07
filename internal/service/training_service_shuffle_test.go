@@ -188,3 +188,38 @@ func TestFixAdjacentDuplicates_SwapFixesPair(t *testing.T) {
 	score := trainingService.calculateShuffleScore(fixed)
 	t.Logf("score after fix: %d (lower is better)", score)
 }
+
+func TestFixAdjacentDuplicates_SingleElement(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
+	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
+	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
+	trainingService := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
+
+	queue := []*models.UserCardWithTraining{
+		{UserCard: models.UserCard{ID: 1}, TrainingCard: models.TrainingCard{WordCardID: 1, WordEN: "a"}},
+	}
+	fixed := trainingService.fixAdjacentDuplicates(queue)
+	if len(fixed) != 1 {
+		t.Fatalf("expected 1 card, got %d", len(fixed))
+	}
+	if fixed[0].UserCard.ID != 1 {
+		t.Errorf("expected same card, got id %d", fixed[0].UserCard.ID)
+	}
+}
+
+func TestFixAdjacentDuplicates_EmptyReturnsAsIs(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
+	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
+	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
+	trainingService := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
+
+	var queue []*models.UserCardWithTraining
+	fixed := trainingService.fixAdjacentDuplicates(queue)
+	if len(fixed) != 0 {
+		t.Errorf("expected empty slice for empty input, got len %d", len(fixed))
+	}
+}

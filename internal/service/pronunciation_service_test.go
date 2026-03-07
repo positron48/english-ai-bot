@@ -1458,3 +1458,78 @@ func TestDefaultPcmToMp3_InvalidInput(t *testing.T) {
 	}
 	// Some ffmpeg builds may succeed with arbitrary output; either way no panic
 }
+
+// TestOpenRouterPronunciationProvider_FetchViaChatCompletions_RetryOnNoAudio verifies
+// that fetchViaChatCompletions retries once when the first attempt returns openrouter_no_audio.
+func TestOpenRouterPronunciationProvider_FetchViaChatCompletions_RetryOnNoAudio(t *testing.T) {
+	attempt := 0
+	audioBytes := []byte("ID3-retry-mp3")
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		attempt++
+		w.Header().Set("Content-Type", "text/event-stream")
+		if attempt == 1 {
+			// First attempt: SSE with transcript but no audio data -> fetchViaChatCompletionsOnce returns openrouter_no_audio
+			_, _ = w.Write([]byte(`data: {"choices":[{"delta":{"audio":{"transcript":"hello"}}}]}` + "\n\n"))
+			_, _ = w.Write([]byte("data: [DONE]\n\n"))
+			return
+		}
+		// Second attempt: valid audio
+		b64 := base64.StdEncoding.EncodeToString(audioBytes)
+		_, _ = w.Write([]byte(`data: {"choices":[{"delta":{"audio":{"data":"` + b64 + `","transcript":"hello"}}}]}` + "\n\n"))
+		_, _ = w.Write([]byte("data: [DONE]\n\n"))
+	}))
+	defer srv.Close()
+
+	provider := &openRouterPronunciationProvider{
+		baseURL:              srv.URL,
+		model:                "test-model",
+		voice:                "alloy",
+		apiKey:               "key",
+		client:               &http.Client{Timeout: 3 * time.Second},
+		forceChatCompletions: true,
+		pcmToMp3:             func(pcm []byte) ([]byte, error) { return pcm, nil },
+	}
+
+	audio, err := provider.fetchViaChatCompletions(context.Background(), "hello")
+	if err != nil {
+		t.Fatalf("fetchViaChatCompletions after retry: %v", err)
+	}
+	if string(audio) != string(audioBytes) {
+		t.Fatalf("unexpected audio: got %q", audio)
+	}
+	if attempt != 2 {
+		t.Fatalf("expected 2 attempts (first no audio, retry success), got %d", attempt)
+	}
+}
+
+// TestPronunciationService_Start_WithPrefetchEnabled ensures Start with prefetch runs backfillOnce and exits on ctx cancel.
+func TestPronunciationService_Start_WithPrefetchEnabled(t *testing.T) {
+	db := testutil.SetupTestDB(t)
+	wordRepo := repository.NewWordRepository(db, zap.NewNop())
+	cfg := config.TTSConfig{
+		Enabled:           true,
+		PrefetchEnabled:   true,
+		PrefetchWorkers:    1,
+		BackfillInterval:   "1h",
+		BackfillBatchSize:  5,
+		AudioDir:           t.TempDir(),
+		DictionaryEnabled:  true,
+		DictionaryBaseURL:  "http://example.com",
+	}
+	svc := NewPronunciationService(cfg, wordRepo, zap.NewNop())
+	svc.providers = []pronunciationProvider{&stubPronunciationProvider{providerName: "stub", audio: []byte("x")}}
+
+	ctx, cancel := context.WithCancel(context.Background())
+	done := make(chan struct{})
+	go func() {
+		svc.Start(ctx)
+		close(done)
+	}()
+	cancel()
+	select {
+	case <-done:
+		// Start returned after cancel
+	case <-time.After(5 * time.Second):
+		t.Fatal("Start did not return after context cancel")
+	}
+}
