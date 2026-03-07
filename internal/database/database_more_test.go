@@ -1,6 +1,8 @@
 package database
 
 import (
+	"database/sql"
+	"strings"
 	"testing"
 	"time"
 
@@ -127,5 +129,36 @@ func TestDatabase_CoreTables_Exist(t *testing.T) {
 		if count == 0 {
 			t.Errorf("Table %s does not exist", table)
 		}
+	}
+}
+
+// TestMigratePostgres_ErrorWhenConnClosed covers migratePostgres error branch when Exec fails (e.g. closed connection).
+func TestMigratePostgres_ErrorWhenConnClosed(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	dsn := startTestPostgres(t)
+
+	var conn *sql.DB
+	var err error
+	for attempt := 0; attempt < 10; attempt++ {
+		conn, err = openPostgresDB(dsn)
+		if err == nil {
+			break
+		}
+		time.Sleep(time.Duration(attempt+1) * 500 * time.Millisecond)
+	}
+	if err != nil {
+		t.Fatalf("openPostgresDB: %v", err)
+	}
+	if err := conn.Close(); err != nil {
+		t.Fatalf("conn.Close: %v", err)
+	}
+
+	db := &DB{conn: conn, logger: logger}
+	err = db.migratePostgres()
+	if err == nil {
+		t.Fatal("migratePostgres() expected error when conn is closed")
+	}
+	if !strings.Contains(err.Error(), "failed to execute postgres migration") {
+		t.Errorf("error should mention failed to execute postgres migration: %v", err)
 	}
 }

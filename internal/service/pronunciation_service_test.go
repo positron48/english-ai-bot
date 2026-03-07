@@ -1831,7 +1831,11 @@ func TestPronunciationService_ScheduleWord_AlreadyInQueue(t *testing.T) {
 	}
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-	go svc.Start(ctx)
+	startDone := make(chan struct{})
+	go func() {
+		svc.Start(ctx)
+		close(startDone)
+	}()
 
 	ok1 := svc.ScheduleWord("first")
 	if !ok1 {
@@ -1844,6 +1848,14 @@ func TestPronunciationService_ScheduleWord_AlreadyInQueue(t *testing.T) {
 		t.Error("second ScheduleWord(first) should return false when word already in queue")
 	}
 	close(block)
+	cancel()
+	select {
+	case <-startDone:
+	case <-time.After(5 * time.Second):
+		t.Fatal("Start did not return after context cancel")
+	}
+	// Allow workers to finish current processWord (e.g. writeFileAtomic) so no open fds under audioDir when t.TempDir() cleanup runs (macOS RemoveAll can fail if dir is in use).
+	time.Sleep(200 * time.Millisecond)
 }
 
 type blockingPronunciationProvider struct {

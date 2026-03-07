@@ -38,6 +38,47 @@ func TestTranslationFallbacks(t *testing.T) {
 	}
 }
 
+func TestT(t *testing.T) {
+	tests := []struct {
+		name     string
+		lang     string
+		key      string
+		want     string
+		wantKey  bool // if true, expect key to be returned as-is (missing key)
+	}{
+		// empty lang defaults to en
+		{name: "empty lang uses en", lang: "", key: "errors.unauthorized", want: "Unauthorized"},
+		// English
+		{name: "en nested key", lang: "en", key: "errors.unauthorized", want: "Unauthorized"},
+		{name: "en messages key", lang: "en", key: "messages.notificationSettingsUpdated", want: "Notification settings updated successfully"},
+		{name: "en missing key returns key", lang: "en", key: "missing.key", wantKey: true},
+		{name: "en missing top-level returns key", lang: "en", key: "nonexistent", wantKey: true},
+		// Russian
+		{name: "ru nested key", lang: "ru", key: "errors.unauthorized", want: "Неавторизован"},
+		{name: "ru messages key", lang: "ru", key: "messages.notificationSettingsUpdated", want: "Настройки уведомлений успешно обновлены"},
+		{name: "ru missing key returns key", lang: "ru", key: "missing.key", wantKey: true},
+		// unknown language fallback to en
+		{name: "unknown lang fallback to en", lang: "de", key: "errors.unauthorized", want: "Unauthorized"},
+		{name: "unknown lang missing key returns key", lang: "fr", key: "absent.key", wantKey: true},
+		// key that is a nested object (not a string) returns key
+		{name: "key is object not string returns key", lang: "en", key: "errors", wantKey: true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := T(tt.lang, tt.key)
+			if tt.wantKey {
+				if got != tt.key {
+					t.Errorf("T(%q, %q) = %q, want key %q", tt.lang, tt.key, got, tt.key)
+				}
+				return
+			}
+			if got != tt.want {
+				t.Errorf("T(%q, %q) = %q, want %q", tt.lang, tt.key, got, tt.want)
+			}
+		})
+	}
+}
+
 func TestWithLanguageContext(t *testing.T) {
 	ctx := WithLanguage(context.Background(), "ru")
 	if lang := GetLanguageFromContext(ctx); lang != "ru" {

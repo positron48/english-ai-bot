@@ -69,6 +69,12 @@ func TestNewWithConfig_RejectsUnsupportedDriver(t *testing.T) {
 	if err == nil {
 		t.Error("expected error for unsupported driver")
 	}
+	if err != nil && !strings.Contains(err.Error(), "only postgres") {
+		t.Errorf("error should mention only postgres: %v", err)
+	}
+	if err != nil && !strings.Contains(err.Error(), "mysql") {
+		t.Errorf("error should mention received driver: %v", err)
+	}
 }
 
 func TestNewWithConfig_EmptyURL(t *testing.T) {
@@ -101,4 +107,49 @@ func TestNewWithConfig_DriverTrimSpace_StillRequiresURL(t *testing.T) {
 	if err != nil && !strings.Contains(err.Error(), "DATABASE_URL") {
 		t.Errorf("error should mention DATABASE_URL: %v", err)
 	}
+}
+
+// TestOpenPostgresDB_InvalidDSN covers openPostgresDB error branches (open or ping failure).
+func TestOpenPostgresDB_InvalidDSN(t *testing.T) {
+	_, err := openPostgresDB("postgres://nonexistent.invalid:5432/db?connect_timeout=1")
+	if err == nil {
+		t.Fatal("expected error for invalid DSN")
+	}
+	msg := err.Error()
+	if !strings.Contains(msg, "failed to open") && !strings.Contains(msg, "failed to ping") {
+		t.Errorf("error should mention open or ping failure: %v", err)
+	}
+}
+
+func TestNewWithConfig_EmptyURL_WhitespaceOnly(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	_, err := NewWithConfig("postgres", "", "   \t  ", logger)
+	if err == nil {
+		t.Error("expected error for whitespace-only URL")
+	}
+	if err != nil && !strings.Contains(err.Error(), "DATABASE_URL") {
+		t.Errorf("error should mention DATABASE_URL: %v", err)
+	}
+}
+
+func TestNewWithConfig_DriverCaseInsensitive(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	dsn := startTestPostgres(t)
+
+	var db *DB
+	var err error
+	for attempt := 0; attempt < 10; attempt++ {
+		db, err = NewWithConfig("POSTGRES", "", dsn, logger)
+		if err == nil {
+			break
+		}
+		time.Sleep(time.Duration(attempt+1) * 500 * time.Millisecond)
+	}
+	if err != nil {
+		t.Fatalf("NewWithConfig(POSTGRES) error = %v", err)
+	}
+	if db == nil {
+		t.Fatal("NewWithConfig(POSTGRES) should succeed")
+	}
+	_ = db.Close()
 }
