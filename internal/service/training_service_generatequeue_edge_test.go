@@ -177,9 +177,7 @@ func TestTrainingService_generateQueue_LearningCardsFirst(t *testing.T) {
 	if len(queue) < 2 {
 		t.Fatalf("Expected at least 2 cards, got %d", len(queue))
 	}
-	// Learning card should come first (after shuffle, but sortCards should prioritize it)
-	// Note: shufflePreventDuplicates is called after sortCards, so we can't guarantee exact order
-	// But we can verify both cards are in the queue
+	// Both learning and review cards should appear in the queue (random selection from pool)
 	foundLearning := false
 	foundReview := false
 	for _, qi := range queue {

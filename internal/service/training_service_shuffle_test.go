@@ -116,7 +116,7 @@ func TestShufflePreventDuplicates_AllSameWord(t *testing.T) {
 	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
 	trainingService := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
 
-	// All cards have the same word
+	// All cards have the same word (WordCardID 0 by default -> one group)
 	cards := []*models.UserCardWithTraining{
 		{UserCard: models.UserCard{ID: 1}, TrainingCard: models.TrainingCard{WordEN: "apple"}},
 		{UserCard: models.UserCard{ID: 2}, TrainingCard: models.TrainingCard{WordEN: "apple"}},
@@ -128,4 +128,63 @@ func TestShufflePreventDuplicates_AllSameWord(t *testing.T) {
 	if len(shuffled) != 3 {
 		t.Errorf("Expected 3 cards, got %d", len(shuffled))
 	}
+}
+
+// TestShufflePreventDuplicates_FixAdjacentDuplicates uses many cards with same WordCardID
+// so that after attempts we still have adjacent duplicates and fixAdjacentDuplicates is called.
+func TestShufflePreventDuplicates_FixAdjacentDuplicates(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+
+	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
+	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
+	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
+	trainingService := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
+
+	wid := int64(1)
+	cards := []*models.UserCardWithTraining{
+		{UserCard: models.UserCard{ID: 1}, TrainingCard: models.TrainingCard{WordCardID: wid, WordEN: "x"}},
+		{UserCard: models.UserCard{ID: 2}, TrainingCard: models.TrainingCard{WordCardID: wid, WordEN: "x"}},
+		{UserCard: models.UserCard{ID: 3}, TrainingCard: models.TrainingCard{WordCardID: wid, WordEN: "x"}},
+		{UserCard: models.UserCard{ID: 4}, TrainingCard: models.TrainingCard{WordCardID: wid, WordEN: "x"}},
+		{UserCard: models.UserCard{ID: 5}, TrainingCard: models.TrainingCard{WordCardID: wid, WordEN: "x"}},
+		{UserCard: models.UserCard{ID: 6}, TrainingCard: models.TrainingCard{WordCardID: wid, WordEN: "x"}},
+	}
+
+	shuffled := trainingService.shufflePreventDuplicates(cards)
+	if len(shuffled) != 6 {
+		t.Errorf("expected 6 cards, got %d", len(shuffled))
+	}
+	// fixAdjacentDuplicates is invoked when bestScore > 0; we can't assert exact order
+	score := trainingService.calculateShuffleScore(shuffled)
+	if score > 0 {
+		t.Logf("note: after shuffle still have %d adjacent duplicate pairs", score)
+	}
+}
+
+// TestFixAdjacentDuplicates_SwapFixesPair calls fixAdjacentDuplicates with [A,A,B,B] so a swap can fix the pair.
+func TestFixAdjacentDuplicates_SwapFixesPair(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+
+	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
+	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
+	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
+	trainingService := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
+
+	a, b := int64(1), int64(2)
+	queue := []*models.UserCardWithTraining{
+		{UserCard: models.UserCard{ID: 1}, TrainingCard: models.TrainingCard{WordCardID: a, WordEN: "a"}},
+		{UserCard: models.UserCard{ID: 2}, TrainingCard: models.TrainingCard{WordCardID: a, WordEN: "a"}},
+		{UserCard: models.UserCard{ID: 3}, TrainingCard: models.TrainingCard{WordCardID: b, WordEN: "b"}},
+		{UserCard: models.UserCard{ID: 4}, TrainingCard: models.TrainingCard{WordCardID: b, WordEN: "b"}},
+	}
+
+	fixed := trainingService.fixAdjacentDuplicates(queue)
+	if len(fixed) != 4 {
+		t.Fatalf("expected 4 cards, got %d", len(fixed))
+	}
+	// fixAdjacentDuplicates attempts to swap; we only assert the path was executed
+	score := trainingService.calculateShuffleScore(fixed)
+	t.Logf("score after fix: %d (lower is better)", score)
 }

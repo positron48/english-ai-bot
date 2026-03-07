@@ -170,65 +170,55 @@ func (s *TrainingService) updateMasteringScoresForSession(sessionID int64) error
 	return s.userWordMasteringRepo.UpsertBatch(entries)
 }
 
-// generateQueue generates a queue of cards for training (and optionally one spell challenge)
+// generateQueue generates a queue of cards for training (and optionally one spell challenge).
+// From all cards available for training (due + new), we pick random MaxCardsPerSession; then
+// within the session we shuffle and avoid adjacent duplicates (same word).
 func (s *TrainingService) generateQueue(userID int64, config SessionConfig) ([]*models.TrainingQueueItem, error) {
 	now := time.Now()
 
-	// Get due cards (learning + review)
-	dueCards, err := s.userCardRepo.GetDueCards(userID, now, config.MaxCardsPerSession)
+	// Build pool: all due (up to limit) + new (up to MaxNewPerSession)
+	dueCards, err := s.userCardRepo.GetDueCards(userID, now, models.MaxDuePoolSize)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get due cards: %w", err)
 	}
+	newCards, err := s.userCardRepo.GetNewCards(userID, config.MaxNewPerSession)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get new cards: %w", err)
+	}
 
-	s.logger.Info("got due cards for user",
+	s.logger.Info("built training pool for user",
 		zap.Int64("user_id", userID),
 		zap.Int("due_count", len(dueCards)),
+		zap.Int("new_count", len(newCards)),
 	)
 
-	// Get new cards if we have space
-	remainingSlots := config.MaxCardsPerSession - len(dueCards)
-	var newCards []*models.UserCard
-	if remainingSlots > 0 {
-		maxNew := config.MaxNewPerSession
-		if remainingSlots < maxNew {
-			maxNew = remainingSlots
-		}
-		newCards, err = s.userCardRepo.GetNewCards(userID, maxNew)
-		if err != nil {
-			return nil, fmt.Errorf("failed to get new cards: %w", err)
-		}
-		s.logger.Info("got new cards for user",
-			zap.Int64("user_id", userID),
-			zap.Int("new_count", len(newCards)),
-		)
-	}
-
-	// Combine cards and remove duplicates by UserCard.ID
+	// Combine into pool and dedupe by UserCard.ID
 	seenCardIDs := make(map[int64]bool)
-	allCards := make([]*models.UserCard, 0, len(dueCards)+len(newCards))
-
-	// Add due cards, skipping duplicates
+	pool := make([]*models.UserCard, 0, len(dueCards)+len(newCards))
 	for _, card := range dueCards {
 		if !seenCardIDs[card.ID] {
-			allCards = append(allCards, card)
+			pool = append(pool, card)
 			seenCardIDs[card.ID] = true
 		}
 	}
-
-	// Add new cards, skipping duplicates
 	for _, card := range newCards {
 		if !seenCardIDs[card.ID] {
-			allCards = append(allCards, card)
+			pool = append(pool, card)
 			seenCardIDs[card.ID] = true
 		}
 	}
 
-	if len(allCards) == 0 {
+	if len(pool) == 0 {
 		return nil, nil
 	}
 
-	// Sort: learning first, then review, then new
-	s.sortCards(allCards, now)
+	// Random sample of size MaxCardsPerSession from pool (no priority order — mix of familiar and new)
+	allCards := pool
+	if len(pool) > config.MaxCardsPerSession {
+		rand.Shuffle(len(pool), func(i, j int) { pool[i], pool[j] = pool[j], pool[i] })
+		allCards = make([]*models.UserCard, config.MaxCardsPerSession)
+		copy(allCards, pool[:config.MaxCardsPerSession])
+	}
 
 	// Fetch training card data
 	cardQueue := make([]*models.UserCardWithTraining, 0, len(allCards))
@@ -428,30 +418,6 @@ func shuffleLetters(word string) []string {
 		out[i] = string(r)
 	}
 	return out
-}
-
-// sortCards sorts cards by priority
-func (s *TrainingService) sortCards(cards []*models.UserCard, now time.Time) {
-	// Sort: learning first, then by overdue time
-	for i := 0; i < len(cards); i++ {
-		for j := i + 1; j < len(cards); j++ {
-			// Learning cards come first
-			if cards[i].State != models.StateLearning && cards[j].State == models.StateLearning {
-				cards[i], cards[j] = cards[j], cards[i]
-				continue
-			}
-			if cards[i].State == models.StateLearning && cards[j].State != models.StateLearning {
-				continue
-			}
-
-			// For same state, sort by overdue time
-			if cards[i].NextDueAt != nil && cards[j].NextDueAt != nil {
-				if cards[i].NextDueAt.After(*cards[j].NextDueAt) {
-					cards[i], cards[j] = cards[j], cards[i]
-				}
-			}
-		}
-	}
 }
 
 // shufflePreventDuplicates shuffles cards while preventing same word appearing close together
