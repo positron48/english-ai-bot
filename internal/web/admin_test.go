@@ -1298,6 +1298,69 @@ func TestHandleAdminWord_InvalidID(t *testing.T) {
 	}
 }
 
+func TestHandleAdminWord_WordIDEmpty(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	adminTelegramID := int64(123456789)
+	adminUser, err := userRepo.GetOrCreateUser(adminTelegramID)
+	if err != nil {
+		t.Fatalf("Failed to create admin user: %v", err)
+	}
+	cfg := &config.Config{
+		Admin: config.AdminConfig{TelegramID: adminTelegramID},
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("PUT", "/api/admin/words/", nil)
+	req.URL.Path = "/api/admin/words/"
+	req = req.WithContext(context.WithValue(context.WithValue(req.Context(), userIDKey, adminUser.ID), userRoleKey, "admin"))
+	w := httptest.NewRecorder()
+	router.RequireAdmin(router.handleAdminWord)(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("Expected status 400 (word ID required), got %d", w.Code)
+	}
+}
+
+func TestHandleAdminWord_PUT_InvalidJSON(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	adminTelegramID := int64(123456789)
+	adminUser, err := userRepo.GetOrCreateUser(adminTelegramID)
+	if err != nil {
+		t.Fatalf("Failed to create admin user: %v", err)
+	}
+	wordRepo := repository.NewWordRepository(db, logger)
+	wordRepo.SaveWordCard("x", "d")
+	wc, _ := wordRepo.GetWordCard("x")
+	cfg := &config.Config{
+		Admin: config.AdminConfig{TelegramID: adminTelegramID},
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("PUT", "/api/admin/words/"+fmt.Sprint(wc.ID), strings.NewReader("not json"))
+	req.Header.Set("Content-Type", "application/json")
+	req = req.WithContext(context.WithValue(context.WithValue(req.Context(), userIDKey, adminUser.ID), userRoleKey, "admin"))
+	w := httptest.NewRecorder()
+	router.RequireAdmin(router.handleAdminWord)(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("Expected status 400 (invalid JSON), got %d", w.Code)
+	}
+}
+
 func TestHandleAdminWord_DeleteNotFound(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo, cbService := setupAdminTestDB(t)

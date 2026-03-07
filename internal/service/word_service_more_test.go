@@ -75,6 +75,40 @@ func TestGetWordDefinition_FoundInDB(t *testing.T) {
 	}
 }
 
+// TestGetWordDefinition_WordFormMapping covers resolution via word_forms (form -> lemma).
+func TestGetWordDefinition_WordFormMapping(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	conn := db.GetConnection()
+
+	userRepo := repository.NewUserRepository(conn, logger)
+	_, err := userRepo.GetOrCreateUser(1)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+
+	wordRepo := repository.NewWordRepository(conn, logger)
+	service := NewWordService(wordRepo, nil, nil, nil, logger)
+
+	cardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "run", Definition: "to move fast"})
+	if err != nil {
+		t.Fatalf("UpsertWordCardLemma: %v", err)
+	}
+	err = wordRepo.UpsertWordFormMapping("ran", cardID)
+	if err != nil {
+		t.Fatalf("UpsertWordFormMapping: %v", err)
+	}
+
+	resp, err := service.GetWordDefinition(context.Background(), 1, "ran")
+	if err != nil {
+		t.Fatalf("GetWordDefinition: %v", err)
+	}
+	// Form "ran" must resolve to lemma "run" and appear in response
+	if !strings.Contains(resp, "run") {
+		t.Errorf("expected response to resolve form 'ran' to lemma 'run', got %q", resp)
+	}
+}
+
 func TestGetWordDefinition_AIResponse_JSON(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := testutil.SetupTestDatabase(t)

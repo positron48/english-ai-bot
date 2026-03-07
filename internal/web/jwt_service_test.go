@@ -1,10 +1,14 @@
 package web
 
 import (
+	"encoding/json"
+	"strings"
 	"testing"
+	"time"
 
 	"tgbot-skeleton/internal/config"
 
+	"github.com/golang-jwt/jwt/v5"
 	"go.uber.org/zap"
 )
 
@@ -287,5 +291,93 @@ func TestJWTService_TokenExpiration(t *testing.T) {
 	_, _, err = service.ValidateToken(token)
 	if err != nil {
 		t.Errorf("ValidateToken() should succeed for fresh token, got error: %v", err)
+	}
+}
+
+func TestJWTService_ValidateToken_Expired(t *testing.T) {
+	logger := zap.NewNop()
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{
+			JWTSecret:     "test-secret-key",
+			JWTTTLHours:   24,
+			RefreshTTLHours: 720,
+		},
+	}
+	svc, err := NewJWTService(cfg, logger)
+	if err != nil {
+		t.Fatalf("NewJWTService: %v", err)
+	}
+
+	// Build a token with expiry in the past (same structure as GenerateToken)
+	roleJSON, _ := json.Marshal(RoleClaim{Categories: []int64{1}})
+	expiredAt := time.Now().Add(-time.Hour)
+	claims := &Claims{
+		UserID: 99,
+		Role:   roleJSON,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(expiredAt),
+			IssuedAt:  jwt.NewNumericDate(expiredAt.Add(-time.Hour)),
+			NotBefore: jwt.NewNumericDate(expiredAt.Add(-time.Hour)),
+			Issuer:    "english-bot",
+		},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenString, err := token.SignedString([]byte(cfg.WebApp.JWTSecret))
+	if err != nil {
+		t.Fatalf("SignedString: %v", err)
+	}
+
+	_, _, err = svc.ValidateToken(tokenString)
+	if err == nil {
+		t.Error("ValidateToken() should return error for expired token")
+	}
+	if err != nil && !strings.Contains(err.Error(), "expired") {
+		t.Errorf("ValidateToken() error should mention expired, got: %v", err)
+	}
+}
+
+func TestJWTService_ValidateToken_LegacyRoleString(t *testing.T) {
+	logger := zap.NewNop()
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{
+			JWTSecret:     "test-secret-key",
+			JWTTTLHours:   24,
+			RefreshTTLHours: 720,
+		},
+	}
+	svc, err := NewJWTService(cfg, logger)
+	if err != nil {
+		t.Fatalf("NewJWTService: %v", err)
+	}
+
+	// Legacy token: role is a JSON string (e.g. "admin") instead of object
+	roleJSON := json.RawMessage(`"admin"`)
+	expiresAt := time.Now().Add(time.Hour)
+	claims := &Claims{
+		UserID: 42,
+		Role:   roleJSON,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(expiresAt),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+			NotBefore: jwt.NewNumericDate(time.Now()),
+			Issuer:    "english-bot",
+		},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenString, err := token.SignedString([]byte(cfg.WebApp.JWTSecret))
+	if err != nil {
+		t.Fatalf("SignedString: %v", err)
+	}
+
+	userID, categories, err := svc.ValidateToken(tokenString)
+	if err != nil {
+		t.Fatalf("ValidateToken(legacy role) error: %v", err)
+	}
+	if userID != 42 {
+		t.Errorf("ValidateToken() userID = %d, want 42", userID)
+	}
+	// Legacy format should return empty categories
+	if len(categories) != 0 {
+		t.Errorf("ValidateToken() legacy role should return empty categories, got %v", categories)
 	}
 }

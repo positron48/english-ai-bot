@@ -42,10 +42,45 @@ func TestCircuitBreakerService_RecordSuccess_Integration(t *testing.T) {
 
 	service := NewCircuitBreakerService(cbRepo, 5, logger)
 
-	// Record success
+	// Record success (no prior failures — FailureCount stays 0, no reset)
 	err := service.RecordSuccess()
 	if err != nil {
 		t.Fatalf("RecordSuccess() error = %v", err)
+	}
+}
+
+// TestCircuitBreakerService_RecordSuccess_AfterFailures_Integration covers RecordSuccess when FailureCount > 0 (reset branch).
+func TestCircuitBreakerService_RecordSuccess_AfterFailures_Integration(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	_, cbRepo := setupCircuitBreakerServiceTestDB(t)
+
+	service := NewCircuitBreakerService(cbRepo, 5, logger)
+
+	// Record some failures so FailureCount > 0
+	for i := 0; i < 2; i++ {
+		if err := service.RecordFailure("test failure"); err != nil {
+			t.Fatalf("RecordFailure() error = %v", err)
+		}
+	}
+	isOpen, fc, _, err := service.GetState()
+	if err != nil {
+		t.Fatalf("GetState() error = %v", err)
+	}
+	if isOpen || fc != 2 {
+		t.Fatalf("expected closed with 2 failures, got isOpen=%v failureCount=%d", isOpen, fc)
+	}
+
+	// RecordSuccess should reset failure count
+	err = service.RecordSuccess()
+	if err != nil {
+		t.Fatalf("RecordSuccess() after failures error = %v", err)
+	}
+	_, fc2, _, err := service.GetState()
+	if err != nil {
+		t.Fatalf("GetState() after success error = %v", err)
+	}
+	if fc2 != 0 {
+		t.Errorf("expected failure count 0 after RecordSuccess, got %d", fc2)
 	}
 }
 

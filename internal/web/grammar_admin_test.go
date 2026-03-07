@@ -172,3 +172,82 @@ func TestHandleAdminGrammarCategories_MethodNotAllowed(t *testing.T) {
 		t.Fatalf("expected 405, got %d", w.Code)
 	}
 }
+
+func TestHandleAdminGrammarCategoryPublish_MethodNotAllowed(t *testing.T) {
+	router, _, adminUserID, cleanup := setupGrammarTest(t)
+	defer cleanup()
+
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/grammar/categories/section_id/publish", nil)
+	req = setUserIDInContext(req, adminUserID)
+	w := httptest.NewRecorder()
+	router.handleAdminGrammarCategoryPublish(w, req)
+
+	if w.Code != http.StatusMethodNotAllowed {
+		t.Fatalf("expected 405, got %d", w.Code)
+	}
+}
+
+func TestHandleAdminGrammarCategoryPublish_EmptySectionID(t *testing.T) {
+	router, _, adminUserID, cleanup := setupGrammarTest(t)
+	defer cleanup()
+
+	payload, _ := json.Marshal(map[string]interface{}{"is_published": true})
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/grammar/categories//publish", bytes.NewReader(payload))
+	req = setUserIDInContext(req, adminUserID)
+	w := httptest.NewRecorder()
+	router.handleAdminGrammarCategoryPublish(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Fatalf("expected 400, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+func TestHandleAdminGrammarCategoryPublish_InvalidBody(t *testing.T) {
+	router, _, adminUserID, cleanup := setupGrammarTest(t)
+	defer cleanup()
+
+	sectionsData, err := router.grammarService.ContentRepo.GetSections()
+	if err != nil || len(sectionsData.Sections) == 0 {
+		t.Fatalf("failed to get sections")
+	}
+	sectionID := sectionsData.Sections[0].SectionID
+
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/grammar/categories/"+sectionID+"/publish", bytes.NewBufferString("not json"))
+	req.Header.Set("Content-Type", "application/json")
+	req = setUserIDInContext(req, adminUserID)
+	w := httptest.NewRecorder()
+	router.handleAdminGrammarCategoryPublish(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Fatalf("expected 400, got %d", w.Code)
+	}
+}
+
+func TestHandleAdminGrammarCategoryPublish_WithCascade(t *testing.T) {
+	router, _, adminUserID, cleanup := setupGrammarTest(t)
+	defer cleanup()
+
+	sectionsData, err := router.grammarService.ContentRepo.GetSections()
+	if err != nil || len(sectionsData.Sections) == 0 {
+		t.Fatalf("failed to get sections")
+	}
+	sectionID := sectionsData.Sections[0].SectionID
+
+	body := map[string]interface{}{"is_published": true, "cascade": true}
+	payload, _ := json.Marshal(body)
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/grammar/categories/"+sectionID+"/publish", bytes.NewReader(payload))
+	req = setUserIDInContext(req, adminUserID)
+	w := httptest.NewRecorder()
+	router.handleAdminGrammarCategoryPublish(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected 200, got %d: %s", w.Code, w.Body.String())
+	}
+	var resp map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&resp); err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+	if resp["success"] != true {
+		t.Error("expected success true")
+	}
+}

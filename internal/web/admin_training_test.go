@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -283,6 +284,68 @@ func TestHandleAdminTrainingCard_InvalidID(t *testing.T) {
 
 	if rr.Code != http.StatusBadRequest {
 		t.Errorf("Expected status 400, got %d", rr.Code)
+	}
+}
+
+func TestHandleAdminTrainingCard_EmptyCardID(t *testing.T) {
+	router, _, adminUserID := setupAdminTrainingTest(t)
+
+	req := httptest.NewRequest(http.MethodPut, "/api/admin/training/card/", nil)
+	req = setAdminTrainingUserContext(req, adminUserID)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminTrainingCard(rr, req)
+
+	if rr.Code != http.StatusBadRequest {
+		t.Errorf("Expected status 400 (card ID required), got %d", rr.Code)
+	}
+}
+
+func TestHandleAdminTrainingCard_MethodNotAllowed(t *testing.T) {
+	router, db, adminUserID := setupAdminTrainingTest(t)
+
+	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), router.logger)
+	wordRepo := repository.NewWordRepository(db.GetConnection(), router.logger)
+	wordRepo.SaveWordCard("w", "d")
+	wc, _ := wordRepo.GetWordCard("w")
+	tc := &models.TrainingCard{WordCardID: wc.ID, WordEN: "w", SenseIndex: 0, WordRU: "п", MeaningEN: "m", DistractorsRU: "[]", DistractorsEN: "[]"}
+	cardID, _ := tcRepo.CreateTrainingCard(tc)
+
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/training/card/"+fmt.Sprint(cardID), nil)
+	req = setAdminTrainingUserContext(req, adminUserID)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminTrainingCard(rr, req)
+
+	if rr.Code != http.StatusMethodNotAllowed {
+		t.Errorf("Expected status 405, got %d", rr.Code)
+	}
+}
+
+func TestHandleAdminTrainingCard_PUT_JSON(t *testing.T) {
+	router, db, adminUserID := setupAdminTrainingTest(t)
+
+	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), router.logger)
+	wordRepo := repository.NewWordRepository(db.GetConnection(), router.logger)
+	wordRepo.SaveWordCard("word", "def")
+	wc, _ := wordRepo.GetWordCard("word")
+	tc := &models.TrainingCard{WordCardID: wc.ID, WordEN: "word", SenseIndex: 0, WordRU: "слово", MeaningEN: "meaning", DistractorsRU: "[]", DistractorsEN: "[]"}
+	cardID, err := tcRepo.CreateTrainingCard(tc)
+	if err != nil {
+		t.Fatalf("CreateTrainingCard: %v", err)
+	}
+
+	body := map[string]interface{}{"word_ru": "обновлено", "meaning_en": "updated meaning"}
+	payload, _ := json.Marshal(body)
+	req := httptest.NewRequest(http.MethodPut, "/api/admin/training/card/"+fmt.Sprint(cardID), bytes.NewReader(payload))
+	req.Header.Set("Content-Type", "application/json")
+	req = setAdminTrainingUserContext(req, adminUserID)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminTrainingCard(rr, req)
+
+	if rr.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", rr.Code, rr.Body.String())
 	}
 }
 

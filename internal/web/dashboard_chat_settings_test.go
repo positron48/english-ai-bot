@@ -553,3 +553,57 @@ func TestHandleTrainingSettings_MethodNotAllowed(t *testing.T) {
 		t.Fatalf("expected 405, got %d", w.Code)
 	}
 }
+
+func TestHandleTrainingSettings_InvalidSpellThreshold(t *testing.T) {
+	router, db := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
+	_, err := db.GetConnection().Exec(`INSERT INTO users (telegram_id, created_at, updated_at, settings_json) VALUES (?,?,?,?)`, 3010, "2026-01-01 00:00:00", "2026-01-01 00:00:00", `{}`)
+	if err != nil {
+		t.Fatalf("insert user: %v", err)
+	}
+
+	req := httptest.NewRequest(http.MethodPost, "/api/settings/training", bytes.NewBufferString(`{"spell_mastering_threshold":101}`))
+	req.Header.Set("Content-Type", "application/json")
+	req = setUserIDInContext(req, 1)
+	w := httptest.NewRecorder()
+	router.handleTrainingSettings(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Fatalf("expected 400 for spell_mastering_threshold > 100, got %d", w.Code)
+	}
+}
+
+func TestHandleTrainingSettings_InvalidTypeThreshold(t *testing.T) {
+	router, db := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
+	_, err := db.GetConnection().Exec(`INSERT INTO users (telegram_id, created_at, updated_at, settings_json) VALUES (?,?,?,?)`, 3011, "2026-01-01 00:00:00", "2026-01-01 00:00:00", `{}`)
+	if err != nil {
+		t.Fatalf("insert user: %v", err)
+	}
+
+	req := httptest.NewRequest(http.MethodPost, "/api/settings/training", bytes.NewBufferString(`{"type_mastering_threshold":-1}`))
+	req.Header.Set("Content-Type", "application/json")
+	req = setUserIDInContext(req, 1)
+	w := httptest.NewRecorder()
+	router.handleTrainingSettings(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Fatalf("expected 400 for type_mastering_threshold < 0, got %d", w.Code)
+	}
+}
+
+func TestHandleTrainingSettings_InvalidWrongAnswerDelay(t *testing.T) {
+	router, db := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
+	_, err := db.GetConnection().Exec(`INSERT INTO users (telegram_id, created_at, updated_at, settings_json) VALUES (?,?,?,?)`, 3012, "2026-01-01 00:00:00", "2026-01-01 00:00:00", `{}`)
+	if err != nil {
+		t.Fatalf("insert user: %v", err)
+	}
+
+	req := httptest.NewRequest(http.MethodPost, "/api/settings/training", bytes.NewBufferString(`{"wrong_answer_delay_seconds":11}`))
+	req.Header.Set("Content-Type", "application/json")
+	req = setUserIDInContext(req, 1)
+	w := httptest.NewRecorder()
+	router.handleTrainingSettings(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Fatalf("expected 400 for wrong_answer_delay_seconds > 10, got %d", w.Code)
+	}
+}

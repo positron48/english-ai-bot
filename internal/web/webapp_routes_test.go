@@ -298,3 +298,32 @@ func TestSetupDevProxy_RedirectsToVite(t *testing.T) {
 		})
 	}
 }
+
+// TestSetupDevProxy_NonAPIPathRedirects verifies that under dev proxy, non-API paths under /app
+// redirect to Vite. (API paths are registered at /api/ directly, so /app/api/... is still
+// treated as SPA path and redirects.)
+func TestSetupDevProxy_NonAPIPathRedirects(t *testing.T) {
+	logger := zap.NewNop()
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{
+			ViteDevServerURL: "http://localhost:5173",
+		},
+	}
+	router := &Router{
+		mux:    http.NewServeMux(),
+		logger: logger,
+		config: cfg,
+	}
+	router.setupDevProxy()
+
+	req := httptest.NewRequest("GET", "/app/dashboard", nil)
+	w := httptest.NewRecorder()
+	router.mux.ServeHTTP(w, req)
+
+	if w.Code != http.StatusTemporaryRedirect {
+		t.Errorf("expected 307 redirect for SPA path, got %d", w.Code)
+	}
+	if loc := w.Header().Get("Location"); loc != "http://localhost:5173/app/dashboard" {
+		t.Errorf("Location = %q, want http://localhost:5173/app/dashboard", loc)
+	}
+}

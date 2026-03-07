@@ -308,3 +308,137 @@ func TestHandleLearningWordsSetStudyKnow_Unauthorized(t *testing.T) {
 		t.Errorf("Expected status 401, got %d", w.Code)
 	}
 }
+
+func TestHandleLearningWordsSetDetail_InvalidSetID(t *testing.T) {
+	router, _, cleanup := setupWordSetsRouter(t)
+	defer cleanup()
+
+	userID, _, _ := createWordSetStudyFixture(t, router)
+	req := httptest.NewRequest(http.MethodGet, "/api/learning/words/sets/notanid", nil)
+	req = setUserIDInContext(req, userID)
+	req.URL.Path = "/api/learning/words/sets/notanid"
+	w := httptest.NewRecorder()
+	router.handleLearningWordsSetDetail(w, req)
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("Expected status 400, got %d", w.Code)
+	}
+}
+
+func TestHandleLearningWordsSetStudy_MissingWordCardID(t *testing.T) {
+	router, _, cleanup := setupWordSetsRouter(t)
+	defer cleanup()
+
+	userID, setID, _ := createWordSetStudyFixture(t, router)
+	req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/api/learning/words/sets/%d/study", setID), nil)
+	req = setUserIDInContext(req, userID)
+	w := httptest.NewRecorder()
+	router.handleLearningWordsSetStudy(w, req)
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("Expected status 400, got %d", w.Code)
+	}
+}
+
+func TestHandleLearningWordsSetStudy_WordNotInSet(t *testing.T) {
+	router, _, cleanup := setupWordSetsRouter(t)
+	defer cleanup()
+
+	userID, setID, _ := createWordSetStudyFixture(t, router)
+	// word_card_id that is not in this set (e.g. 99999)
+	req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/api/learning/words/sets/%d/study?word_card_id=99999", setID), nil)
+	req = setUserIDInContext(req, userID)
+	w := httptest.NewRecorder()
+	router.handleLearningWordsSetStudy(w, req)
+	if w.Code != http.StatusNotFound {
+		t.Errorf("Expected status 404, got %d", w.Code)
+	}
+}
+
+func TestHandleLearningWordsSetStudy_InvalidSetID(t *testing.T) {
+	router, _, cleanup := setupWordSetsRouter(t)
+	defer cleanup()
+
+	userID, _, wordCardID := createWordSetStudyFixture(t, router)
+	req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/api/learning/words/sets/badid/study?word_card_id=%d", wordCardID), nil)
+	req = setUserIDInContext(req, userID)
+	req.URL.Path = "/api/learning/words/sets/badid/study"
+	w := httptest.NewRecorder()
+	router.handleLearningWordsSetStudy(w, req)
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("Expected status 400, got %d", w.Code)
+	}
+}
+
+func TestHandleLearningWordsSetStudyLearn_MethodNotAllowed(t *testing.T) {
+	router, _, cleanup := setupWordSetsRouter(t)
+	defer cleanup()
+
+	userID, setID, _ := createWordSetStudyFixture(t, router)
+	req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/api/learning/words/sets/%d/study/learn", setID), nil)
+	req = setUserIDInContext(req, userID)
+	w := httptest.NewRecorder()
+	router.handleLearningWordsSetStudyLearn(w, req)
+	if w.Code != http.StatusMethodNotAllowed {
+		t.Errorf("Expected status 405, got %d", w.Code)
+	}
+}
+
+func TestHandleLearningWordsSetStudyLearn_InvalidBody(t *testing.T) {
+	router, _, cleanup := setupWordSetsRouter(t)
+	defer cleanup()
+
+	userID, setID, _ := createWordSetStudyFixture(t, router)
+	req := httptest.NewRequest(http.MethodPost, fmt.Sprintf("/api/learning/words/sets/%d/study/learn", setID), bytes.NewReader([]byte("invalid")))
+	req.Header.Set("Content-Type", "application/json")
+	req = setUserIDInContext(req, userID)
+	w := httptest.NewRecorder()
+	router.handleLearningWordsSetStudyLearn(w, req)
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("Expected status 400, got %d", w.Code)
+	}
+}
+
+func TestHandleLearningWordsSetStudyLearn_WordNotInSet(t *testing.T) {
+	router, _, cleanup := setupWordSetsRouter(t)
+	defer cleanup()
+
+	userID, setID, _ := createWordSetStudyFixture(t, router)
+	body := []byte(`{"word_card_id":99999}`)
+	req := httptest.NewRequest(http.MethodPost, fmt.Sprintf("/api/learning/words/sets/%d/study/learn", setID), bytes.NewReader(body))
+	req.Header.Set("Content-Type", "application/json")
+	req = setUserIDInContext(req, userID)
+	w := httptest.NewRecorder()
+	router.handleLearningWordsSetStudyLearn(w, req)
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("Expected status 400, got %d", w.Code)
+	}
+}
+
+func TestHandleLearningWordsSetStudyKnow_MethodNotAllowed(t *testing.T) {
+	router, _, cleanup := setupWordSetsRouter(t)
+	defer cleanup()
+
+	userID, setID, _ := createWordSetStudyFixture(t, router)
+	req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/api/learning/words/sets/%d/study/know", setID), nil)
+	req = setUserIDInContext(req, userID)
+	w := httptest.NewRecorder()
+	router.handleLearningWordsSetStudyKnow(w, req)
+	if w.Code != http.StatusMethodNotAllowed {
+		t.Errorf("Expected status 405, got %d", w.Code)
+	}
+}
+
+func TestHandleLearningWordsSetStudyKnow_WordNotInSet(t *testing.T) {
+	router, _, cleanup := setupWordSetsRouter(t)
+	defer cleanup()
+
+	userID, setID, _ := createWordSetStudyFixture(t, router)
+	body := []byte(`{"word_card_id":99999}`)
+	req := httptest.NewRequest(http.MethodPost, fmt.Sprintf("/api/learning/words/sets/%d/study/know", setID), bytes.NewReader(body))
+	req.Header.Set("Content-Type", "application/json")
+	req = setUserIDInContext(req, userID)
+	w := httptest.NewRecorder()
+	router.handleLearningWordsSetStudyKnow(w, req)
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("Expected status 400, got %d", w.Code)
+	}
+}

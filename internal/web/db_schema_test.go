@@ -57,6 +57,32 @@ func TestRouter_handleDBSchema(t *testing.T) {
 				t.Errorf("Expected table %q not found in schema", expectedTable)
 			}
 		}
+
+		// DBQueryAccess should reflect config (default false when not set)
+		if schema.DBQueryAccess != router.config.Admin.DBQueryAccess {
+			t.Errorf("schema.DBQueryAccess = %v, want %v", schema.DBQueryAccess, router.config.Admin.DBQueryAccess)
+		}
+	})
+
+	t.Run("GET request returns schema with DBQueryAccess true when configured", func(t *testing.T) {
+		cfg := &config.Config{
+			WebApp: config.WebAppConfig{JWTSecret: "test-secret"},
+			Admin:  config.AdminConfig{DBQueryAccess: true},
+		}
+		router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
+		req := httptest.NewRequest("GET", "/admin/db-schema", nil)
+		w := httptest.NewRecorder()
+		router.handleDBSchema(w, req)
+		if w.Code != http.StatusOK {
+			t.Fatalf("Expected status 200, got %d", w.Code)
+		}
+		var schema SchemaResponse
+		if err := json.NewDecoder(w.Body).Decode(&schema); err != nil {
+			t.Fatalf("Failed to decode response: %v", err)
+		}
+		if !schema.DBQueryAccess {
+			t.Error("Expected DBQueryAccess true when config.Admin.DBQueryAccess is true")
+		}
 	})
 
 	t.Run("POST request returns method not allowed", func(t *testing.T) {

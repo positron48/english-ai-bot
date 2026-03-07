@@ -2,14 +2,15 @@ package service
 
 import (
 	"bytes"
+	"encoding/json"
 	"io"
 	"net/http"
 	"net/url"
 	"strings"
 	"testing"
 
-	"tgbot-skeleton/internal/testutil"
 	"tgbot-skeleton/internal/repository"
+	"tgbot-skeleton/internal/testutil"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"go.uber.org/zap"
@@ -324,6 +325,136 @@ func TestBotCommandService_HandleCallbackUnsubscribe(t *testing.T) {
 	}
 	if client.lastPath == "" {
 		t.Fatalf("expected callback query to be answered")
+	}
+}
+
+// TestBotCommandService_HandleCallbackQuery_TrainStart covers handleCallbackQuery with data "train_start".
+func TestBotCommandService_HandleCallbackQuery_TrainStart(t *testing.T) {
+	svc, _, client, cleanup := setupBotCommandService(t)
+	defer cleanup()
+
+	update := tgbotapi.Update{
+		CallbackQuery: &tgbotapi.CallbackQuery{
+			ID:   "cb2",
+			Data: "train_start",
+			From: &tgbotapi.User{ID: 1},
+			Message: &tgbotapi.Message{Chat: &tgbotapi.Chat{ID: 10}},
+		},
+	}
+	svc.HandleUpdate(update)
+	if client.lastPath == "" {
+		t.Fatalf("expected callback to be answered")
+	}
+}
+
+// TestBotCommandService_HandleCallbackQuery_Unknown covers handleCallbackQuery default branch.
+func TestBotCommandService_HandleCallbackQuery_Unknown(t *testing.T) {
+	svc, _, client, cleanup := setupBotCommandService(t)
+	defer cleanup()
+
+	update := tgbotapi.Update{
+		CallbackQuery: &tgbotapi.CallbackQuery{
+			ID:   "cb3",
+			Data: "unknown_action",
+			From: &tgbotapi.User{ID: 1},
+			Message: &tgbotapi.Message{Chat: &tgbotapi.Chat{ID: 10}},
+		},
+	}
+	svc.HandleUpdate(update)
+	if client.lastPath == "" {
+		t.Fatalf("expected callback to be answered")
+	}
+}
+
+// TestBotCommandService_HandleUpdate_NoMessage covers update with no message and no callback.
+func TestBotCommandService_HandleUpdate_NoMessage(t *testing.T) {
+	svc, _, _, cleanup := setupBotCommandService(t)
+	defer cleanup()
+
+	update := tgbotapi.Update{UpdateID: 1, Message: nil, CallbackQuery: nil}
+	svc.HandleUpdate(update)
+	// Should not panic; just skips
+}
+
+// TestBotCommandService_HandleUpdate_NonCommandText covers message that is not a command.
+func TestBotCommandService_HandleUpdate_NonCommandText(t *testing.T) {
+	svc, _, _, cleanup := setupBotCommandService(t)
+	defer cleanup()
+
+	msg := &tgbotapi.Message{
+		Text: "hello world",
+		Chat: &tgbotapi.Chat{ID: 10},
+		From: &tgbotapi.User{ID: 42},
+	}
+	update := tgbotapi.Update{Message: msg}
+	svc.HandleUpdate(update)
+	// Should not panic; logs "message is not a command, skipping"
+}
+
+// TestBotCommandService_HandleNotification_UserNotFound covers handleNotification when user does not exist.
+func TestBotCommandService_HandleNotification_UserNotFound(t *testing.T) {
+	svc, _, client, cleanup := setupBotCommandService(t)
+	defer cleanup()
+	// Do not create user for telegram ID 99999
+	msg := commandMessage("/notification daily")
+	msg.From = &tgbotapi.User{ID: 99999, UserName: "nobody"}
+	update := tgbotapi.Update{Message: msg}
+	svc.HandleUpdate(update)
+	text := client.lastParams.Get("text")
+	if text == "" {
+		t.Fatalf("expected error message")
+	}
+	if !strings.Contains(text, "не найден") && !strings.Contains(text, "Пользователь") {
+		t.Errorf("expected user-not-found message, got %q", text)
+	}
+}
+
+// TestBotCommandService_HandleNotification_ShowCurrentCustomDays covers /notification with no args when frequency is N days.
+func TestBotCommandService_HandleNotification_ShowCurrentCustomDays(t *testing.T) {
+	svc, userRepo, client, cleanup := setupBotCommandService(t)
+	defer cleanup()
+
+	user, err := userRepo.GetOrCreateUser(42)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	settings := map[string]interface{}{"notification_frequency": "3"}
+	js, _ := json.Marshal(settings)
+	if err := userRepo.UpdateUserSettings(user.ID, string(js)); err != nil {
+		t.Fatalf("UpdateUserSettings: %v", err)
+	}
+
+	msg := commandMessage("/notification")
+	msg.Text = "/notification"
+	update := tgbotapi.Update{Message: msg}
+	svc.HandleUpdate(update)
+	text := client.lastParams.Get("text")
+	if text == "" {
+		t.Fatalf("expected current settings message")
+	}
+	if !strings.Contains(text, "3") && !strings.Contains(text, "дн") {
+		t.Errorf("expected period in message, got %q", text)
+	}
+}
+
+// TestBotCommandService_HandleUnsubscribe_InvalidSettingsJSON covers handleUnsubscribe when user has invalid JSON in settings.
+func TestBotCommandService_HandleUnsubscribe_InvalidSettingsJSON(t *testing.T) {
+	svc, userRepo, client, cleanup := setupBotCommandService(t)
+	defer cleanup()
+
+	user, err := userRepo.GetOrCreateUser(42)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	_ = userRepo.UpdateUserSettings(user.ID, `{invalid json`)
+
+	svc.handleUnsubscribe(42, 10)
+	user2, _ := userRepo.GetUserByTelegramID(42)
+	if user2 == nil || !strings.Contains(user2.SettingsJSON, "never") {
+		t.Fatalf("expected settings to be updated to never")
+	}
+	if client.lastParams.Get("text") == "" {
+		t.Fatalf("expected success message")
 	}
 }
 

@@ -38,6 +38,78 @@ func TestNotificationService_CheckAndSendNotifications_NoUsers(t *testing.T) {
 	service.checkAndSendNotifications()
 }
 
+// TestNotificationService_CheckAndSendNotifications_InvalidTimezone covers user with invalid timezone (uses UTC).
+func TestNotificationService_CheckAndSendNotifications_InvalidTimezone(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDB(t)
+	userRepo := repository.NewUserRepository(db, logger)
+	userCardRepo := repository.NewUserCardRepository(db, logger)
+	nudgeRepo := repository.NewNudgeRepository(db, logger)
+	sessionRepo := repository.NewSessionRepository(db, logger)
+	service := NewNotificationService(nil, userRepo, userCardRepo, nudgeRepo, sessionRepo, logger)
+
+	user, err := userRepo.GetOrCreateUser(7777)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	_, err = db.Exec("UPDATE users SET timezone = ? WHERE id = ?", "Invalid/Zone", user.ID)
+	if err != nil {
+		t.Fatalf("UPDATE timezone: %v", err)
+	}
+	_ = userRepo.UpdateUserPreferredTime(user.ID, "19:00")
+	service.checkAndSendNotifications()
+	// Should not panic; invalid timezone path uses UTC
+}
+
+// TestNotificationService_CheckAndSendNotifications_InvalidPreferredTime covers user with unparseable preferred time (uses 19:00).
+func TestNotificationService_CheckAndSendNotifications_InvalidPreferredTime(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDB(t)
+	userRepo := repository.NewUserRepository(db, logger)
+	userCardRepo := repository.NewUserCardRepository(db, logger)
+	nudgeRepo := repository.NewNudgeRepository(db, logger)
+	sessionRepo := repository.NewSessionRepository(db, logger)
+	service := NewNotificationService(nil, userRepo, userCardRepo, nudgeRepo, sessionRepo, logger)
+
+	user, err := userRepo.GetOrCreateUser(7778)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	_, _ = db.Exec("UPDATE users SET timezone = ? WHERE id = ?", "UTC", user.ID)
+	_ = userRepo.UpdateUserPreferredTime(user.ID, "25:99")
+	service.checkAndSendNotifications()
+	// Should not panic; invalid preferred time path uses 19:00
+}
+
+// TestNotificationService_SendNotificationIfNeeded_CustomFrequencyNotEnoughDays covers N-day frequency when not enough days passed.
+func TestNotificationService_SendNotificationIfNeeded_CustomFrequencyNotEnoughDays(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDB(t)
+	userRepo := repository.NewUserRepository(db, logger)
+	userCardRepo := repository.NewUserCardRepository(db, logger)
+	nudgeRepo := repository.NewNudgeRepository(db, logger)
+	sessionRepo := repository.NewSessionRepository(db, logger)
+	svc := NewNotificationService(nil, userRepo, userCardRepo, nudgeRepo, sessionRepo, logger)
+
+	user, err := userRepo.GetOrCreateUser(7779)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	settings := models.UserSettings{
+		NotificationFrequency: "5",
+		LastNotificationDate:  time.Now().UTC().AddDate(0, 0, -2).Format("2006-01-02"),
+	}
+	js, _ := json.Marshal(settings)
+	_ = userRepo.UpdateUserSettings(user.ID, string(js))
+	user, _ = userRepo.GetUserByTelegramID(7779)
+	userNow := time.Now().UTC()
+
+	err = svc.sendNotificationIfNeeded(user, userNow)
+	if err != nil {
+		t.Errorf("sendNotificationIfNeeded with custom frequency (not enough days) should return nil, got %v", err)
+	}
+}
+
 // TestBuildNotificationMessage covers all branches: minute wording, weekLine, streak/trainedYesterday, no streak.
 func TestBuildNotificationMessage(t *testing.T) {
 	logger := zap.NewNop()

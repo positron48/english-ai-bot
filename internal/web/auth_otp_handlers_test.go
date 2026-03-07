@@ -298,3 +298,41 @@ func TestHandleAuthOTP_InvalidUserID(t *testing.T) {
 		t.Errorf("Expected status 400, got %d", w.Code)
 	}
 }
+
+// TestHandleAuthRequestOTP_BotNil verifies 503 when user exists and OTP is generated but bot is not set.
+func TestHandleAuthRequestOTP_BotNil(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, otpRepo, userRepo := setupAuthOTPHandlersTestDB(t)
+
+	user, err := userRepo.GetOrCreateUser(77777)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	// GetUserByUsernameOrID accepts telegram_id as string
+	usernameOrID := strconv.FormatInt(user.TelegramID, 10)
+
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
+			RefreshTTLHours: 720,
+			OTPTTLSeconds:   300,
+		},
+	}
+
+	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.SetOTPRepo(otpRepo)
+	router.bot = nil
+
+	req := httptest.NewRequest("POST", "/auth/request_otp", strings.NewReader("username="+usernameOrID))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	w := httptest.NewRecorder()
+
+	router.handleAuthRequestOTP(w, req)
+
+	if w.Code != http.StatusServiceUnavailable {
+		t.Errorf("Expected status 503 (bot nil), got %d: %s", w.Code, w.Body.String())
+	}
+}
+
