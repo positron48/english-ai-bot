@@ -470,6 +470,120 @@ func TestPronunciationService_SkipDictionaryAfterNoAudio(t *testing.T) {
 	}
 }
 
+// TestPronunciationService_DoNotSkipDictionaryWhenLastProviderNotDictionary verifies that
+// we only skip the dictionary provider when LastProvider is "dictionary". If LastErrorCode
+// is dictionary_no_audio but LastProvider is e.g. "openrouter", we still call dictionary.
+func TestPronunciationService_DoNotSkipDictionaryWhenLastProviderNotDictionary(t *testing.T) {
+	db := testutil.SetupTestDB(t)
+	wordRepo := repository.NewWordRepository(db, zap.NewNop())
+	audioDir := t.TempDir()
+	cfg := config.TTSConfig{
+		Enabled:           true,
+		Provider:          "auto",
+		AudioDir:          audioDir,
+		PublicBasePath:    "/media/tts",
+		DictionaryEnabled: true,
+		DictionaryBaseURL: "https://example.com/dict",
+		MaxRetries:        5,
+	}
+	svc := NewPronunciationService(cfg, wordRepo, zap.NewNop())
+	dictNoAudioErr := fmt.Errorf("%w: dictionary_no_audio", errPronunciationNotFound)
+	audioBytes := []byte("ID3-openrouter-mp3")
+
+	// First run: only openrouter stub that returns dictionary_no_audio → LastProvider=openrouter, LastErrorCode=dictionary_no_audio
+	svc.providers = []pronunciationProvider{
+		&stubPronunciationProvider{providerName: "openrouter", err: dictNoAudioErr},
+	}
+	svc.processWord(context.Background(), "noskip")
+	status, _ := svc.ttsRepo.GetByWord("noskip")
+	if status == nil || status.LastProvider == nil || *status.LastProvider != "openrouter" ||
+		status.LastErrorCode == nil || *status.LastErrorCode != "dictionary_no_audio" {
+		t.Fatalf("expected status with dictionary_no_audio from openrouter after first run, got %v", status)
+	}
+
+	// Second run: dictionary + openrouter. We must NOT skip dictionary (LastProvider is openrouter, not dictionary).
+	var dictCalls, openrouterCalls int
+	svc.providers = []pronunciationProvider{
+		&countingProvider{provider: &stubPronunciationProvider{providerName: "dictionary", err: dictNoAudioErr}, count: &dictCalls},
+		&countingProvider{provider: &stubPronunciationProvider{providerName: "openrouter", audio: audioBytes}, count: &openrouterCalls},
+	}
+	svc.processWord(context.Background(), "noskip")
+
+	if dictCalls != 1 {
+		t.Fatalf("expected dictionary to be called once (no skip when LastProvider != dictionary), got %d", dictCalls)
+	}
+	if openrouterCalls != 1 {
+		t.Fatalf("expected openrouter to be called once, got %d", openrouterCalls)
+	}
+	if !svc.hasCachedAudio("noskip") {
+		t.Fatal("expected audio file after openrouter success")
+	}
+}
+
+// TestPronunciationService_MaxRetriesZeroDefaultsTo10 verifies that when cfg.MaxRetries is 0,
+// the service uses 10 as default maxAttempts (so 10 retries before terminal).
+func TestPronunciationService_MaxRetriesZeroDefaultsTo10(t *testing.T) {
+	db := testutil.SetupTestDB(t)
+	wordRepo := repository.NewWordRepository(db, zap.NewNop())
+	svc := NewPronunciationService(config.TTSConfig{
+		Enabled:           true,
+		Provider:          "auto",
+		AudioDir:          t.TempDir(),
+		PublicBasePath:    "/media/tts",
+		DictionaryEnabled: true,
+		DictionaryBaseURL: "https://example.com/dict",
+		MaxRetries:        0,
+	}, wordRepo, zap.NewNop())
+	svc.providers = []pronunciationProvider{
+		&stubPronunciationProvider{providerName: "openrouter", err: fmt.Errorf("status 429: too many requests")},
+	}
+	for i := 0; i < 10; i++ {
+		svc.processWord(context.Background(), "zeroretries")
+	}
+	status, err := svc.ttsRepo.GetByWord("zeroretries")
+	if err != nil {
+		t.Fatalf("GetByWord() error = %v", err)
+	}
+	if status == nil {
+		t.Fatal("expected status")
+	}
+	if status.AttemptCount != 10 || status.State != "failed_terminal" {
+		t.Fatalf("expected attempt_count=10 and failed_terminal (default 10 retries), got attempt_count=%d state=%s", status.AttemptCount, status.State)
+	}
+}
+
+// TestPronunciationService_MaxRetriesClampedAt20 verifies that when cfg.MaxRetries > 20,
+// the service clamps to 20, so we get terminal after 20 attempts.
+func TestPronunciationService_MaxRetriesClampedAt20(t *testing.T) {
+	db := testutil.SetupTestDB(t)
+	wordRepo := repository.NewWordRepository(db, zap.NewNop())
+	svc := NewPronunciationService(config.TTSConfig{
+		Enabled:           true,
+		Provider:          "auto",
+		AudioDir:          t.TempDir(),
+		PublicBasePath:    "/media/tts",
+		DictionaryEnabled: true,
+		DictionaryBaseURL: "https://example.com/dict",
+		MaxRetries:        25,
+	}, wordRepo, zap.NewNop())
+	svc.providers = []pronunciationProvider{
+		&stubPronunciationProvider{providerName: "openrouter", err: fmt.Errorf("status 429: too many requests")},
+	}
+	for i := 0; i < 20; i++ {
+		svc.processWord(context.Background(), "clampword")
+	}
+	status, err := svc.ttsRepo.GetByWord("clampword")
+	if err != nil {
+		t.Fatalf("GetByWord() error = %v", err)
+	}
+	if status == nil {
+		t.Fatal("expected status")
+	}
+	if status.AttemptCount != 20 || status.State != "failed_terminal" {
+		t.Fatalf("expected attempt_count=20 and failed_terminal (clamped at 20), got attempt_count=%d state=%s", status.AttemptCount, status.State)
+	}
+}
+
 // TestDictionaryNoAudioFallbackLoop simulates the processWord provider loop to ensure
 // that when the first provider returns errPronunciationNotFound (dictionary_no_audio),
 // the loop continues to the next provider and uses its audio.
