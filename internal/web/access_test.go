@@ -148,3 +148,23 @@ func TestHandleAccessMe(t *testing.T) {
 		})
 	}
 }
+
+func TestHandleAccessMe_WrongMethod(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret"},
+	}
+	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
+	router := NewRouter(logger, cfg, db.GetConnection(), nil, nil, nil, nil)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+
+	req := httptest.NewRequest("POST", "/api/access/me", nil)
+	rr := httptest.NewRecorder()
+	router.handleAccessMe(rr, req)
+
+	if rr.Code != http.StatusMethodNotAllowed {
+		t.Errorf("handleAccessMe() POST status = %d, want %d", rr.Code, http.StatusMethodNotAllowed)
+	}
+}

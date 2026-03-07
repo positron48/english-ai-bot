@@ -244,3 +244,34 @@ func TestAuthMiddleware_RequireAuth_InvalidToken(t *testing.T) {
 	}
 }
 
+func TestAuthMiddleware_RequireAuth_InvalidHeaderFormat(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDB(t)
+	userRepo := repository.NewUserRepository(db, logger)
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret"},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	middleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-bot-token")
+
+	// Header without "Bearer " prefix so ExtractTokenFromHeader returns error
+	req := httptest.NewRequest("GET", "/test", nil)
+	req.Header.Set("Authorization", "Token some-token")
+	w := httptest.NewRecorder()
+
+	handlerCalled := false
+	testHandler := func(w http.ResponseWriter, r *http.Request) {
+		handlerCalled = true
+	}
+	protectedHandler := middleware.RequireAuth(testHandler)
+	protectedHandler(w, req)
+
+	if handlerCalled {
+		t.Error("Handler should not be called with invalid header format")
+	}
+	if w.Code != http.StatusUnauthorized {
+		t.Errorf("Expected status 401, got %d", w.Code)
+	}
+}
+

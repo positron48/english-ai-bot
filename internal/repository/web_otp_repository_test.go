@@ -160,3 +160,33 @@ func TestWebOTPRepository_GenerateOTP_CodeFormat(t *testing.T) {
 		}
 	}
 }
+
+// TestWebOTPRepository_ValidateOTP_Expired covers the expired OTP path.
+func TestWebOTPRepository_ValidateOTP_Expired(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	conn := testutil.SetupTestDB(t)
+	userRepo := NewUserRepository(conn, logger)
+	user, _ := userRepo.GetOrCreateUser(12397)
+	otpRepo := NewWebOTPRepository(conn, logger)
+
+	code, _, err := otpRepo.GenerateOTP(user.ID, 1*time.Millisecond)
+	if err != nil {
+		t.Fatalf("GenerateOTP() error = %v", err)
+	}
+	// Set expires_at to the past so validation returns "OTP expired"
+	_, err = conn.Exec(`UPDATE web_otps SET expires_at = $1 WHERE user_id = $2`, time.Now().Add(-1*time.Hour).UTC().Format("2006-01-02 15:04:05"), user.ID)
+	if err != nil {
+		t.Fatalf("UPDATE expires_at: %v", err)
+	}
+	// Use the same code - row exists but is expired
+	otp, err := otpRepo.ValidateOTP(user.ID, code)
+	if err == nil {
+		t.Error("ValidateOTP() expected error for expired OTP")
+	}
+	if otp != nil {
+		t.Error("ValidateOTP() expected nil OTP when expired")
+	}
+	if err != nil && err.Error() != "OTP expired" {
+		t.Logf("expected 'OTP expired' error, got: %v", err)
+	}
+}

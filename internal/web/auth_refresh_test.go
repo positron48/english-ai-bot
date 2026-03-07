@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"testing"
 
 	"tgbot-skeleton/internal/config"
@@ -172,5 +173,52 @@ func TestHandleAuthRefresh_WrongMethod(t *testing.T) {
 
 	if w.Code != http.StatusMethodNotAllowed {
 		t.Errorf("Expected status 405, got %d", w.Code)
+	}
+}
+
+// TestHandleAuthRefresh_FormFallback sends invalid JSON body; handler falls back to ParseForm.
+// FormValue("refresh_token") is populated from URL query (ParseForm parses query + body).
+func TestHandleAuthRefresh_FormFallback(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo := setupAuthRefreshTestDB(t)
+	user, err := userRepo.GetOrCreateUser(12345)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{
+			JWTSecret:       "test-secret-key-form-fallback",
+			JWTTTLHours:     24,
+			RefreshTTLHours: 720,
+		},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	_, refreshToken, err := authMiddleware.GenerateTokenPair(user.ID, user.TelegramID)
+	if err != nil {
+		t.Fatalf("GenerateTokenPair: %v", err)
+	}
+
+	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+
+	// Invalid JSON body so Decode fails; refresh_token in query so ParseForm populates Form
+	req := httptest.NewRequest("POST", "/auth/refresh?refresh_token="+url.QueryEscape(refreshToken), bytes.NewReader([]byte("not json")))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	w := httptest.NewRecorder()
+	router.handleAuthRefresh(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200 with form fallback, got %d", w.Code)
+	}
+	var resp map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&resp); err != nil {
+		t.Fatalf("decode response: %v", err)
+	}
+	if resp["access_token"] == nil || resp["refresh_token"] == nil {
+		t.Error("Expected access_token and refresh_token in response")
 	}
 }

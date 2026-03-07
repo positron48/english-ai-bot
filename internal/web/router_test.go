@@ -3,6 +3,7 @@ package web
 import (
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 	"time"
 
@@ -74,6 +75,26 @@ func TestRouter_ServeHTTP(t *testing.T) {
 
 	if w.Code != http.StatusOK {
 		t.Errorf("Expected status 200, got %d", w.Code)
+	}
+}
+
+func TestRouter_HandleNotFound(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	cfg := &config.Config{WebApp: config.WebAppConfig{JWTSecret: "test-secret"}}
+	router := NewRouter(logger, cfg, nil, nil, nil, nil, nil)
+
+	req := httptest.NewRequest("GET", "/nonexistent", nil)
+	w := httptest.NewRecorder()
+	router.handleNotFound(w, req)
+
+	if w.Code != http.StatusNotFound {
+		t.Errorf("Expected status 404, got %d", w.Code)
+	}
+	if w.Header().Get("Content-Type") != "application/json" {
+		t.Errorf("Expected Content-Type application/json, got %s", w.Header().Get("Content-Type"))
+	}
+	if !strings.Contains(w.Body.String(), "Not Found") {
+		t.Errorf("Response body should contain 'Not Found', got %s", w.Body.String())
 	}
 }
 

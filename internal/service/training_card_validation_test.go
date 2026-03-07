@@ -608,5 +608,62 @@ func TestTruncate(t *testing.T) {
 	}
 }
 
+func TestLevenshteinDistance(t *testing.T) {
+	tests := []struct {
+		s1   string
+		s2   string
+		want int
+	}{
+		{"", "", 0},
+		{"", "a", 1},
+		{"a", "", 1},
+		{"a", "a", 0},
+		{"a", "b", 1},
+		{"ab", "ab", 0},
+		{"ab", "ac", 1},
+		{"kitten", "sitting", 3},
+		{"test", "tests", 1},
+		{"test", "tast", 1},
+		{"million", "billion", 1},
+	}
+	for _, tt := range tests {
+		t.Run(tt.s1+"_"+tt.s2, func(t *testing.T) {
+			got := levenshteinDistance(tt.s1, tt.s2)
+			if got != tt.want {
+				t.Errorf("levenshteinDistance(%q, %q) = %d, want %d", tt.s1, tt.s2, got, tt.want)
+			}
+			// Symmetry
+			gotRev := levenshteinDistance(tt.s2, tt.s1)
+			if gotRev != tt.want {
+				t.Errorf("levenshteinDistance(%q, %q) = %d, want %d", tt.s2, tt.s1, gotRev, tt.want)
+			}
+		})
+	}
+}
+
+func TestDiffersOnlyByFirstChar(t *testing.T) {
+	tests := []struct {
+		name string
+		s1   string
+		s2   string
+		want bool
+	}{
+		{"same length, first diff, rest same", "million", "billion", true},
+		{"different length", "ab", "a", false},
+		{"same first char", "abc", "abd", false},
+		{"length 1", "a", "b", false},
+		{"length 0", "", "", false},
+		{"second char differs", "abc", "axc", false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := differsOnlyByFirstChar(tt.s1, tt.s2)
+			if got != tt.want {
+				t.Errorf("differsOnlyByFirstChar(%q, %q) = %v, want %v", tt.s1, tt.s2, got, tt.want)
+			}
+		})
+	}
+}
+
 // Helper function - uses existing stringPtr from word_service_integration_test.go
 // For exact substring matching in error messages, we use strings.Contains directly

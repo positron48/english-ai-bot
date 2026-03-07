@@ -225,6 +225,70 @@ func TestTTSStatusRepository_InvalidWord_NoOp(t *testing.T) {
 	}
 }
 
+// TestTTSStatusRepository_GetByWord_InvalidWord_ReturnsNil covers GetByWord when normalizeTTSWord returns false.
+func TestTTSStatusRepository_GetByWord_InvalidWord_ReturnsNil(t *testing.T) {
+	db := testutil.SetupTestDB(t)
+	repo := NewTTSStatusRepository(db, zap.NewNop(), 3)
+	status, err := repo.GetByWord("")
+	if err != nil {
+		t.Fatalf("GetByWord() error = %v", err)
+	}
+	if status != nil {
+		t.Errorf("GetByWord(\"\") expected nil status, got %+v", status)
+	}
+	status, err = repo.GetByWord("   ")
+	if err != nil {
+		t.Fatalf("GetByWord() error = %v", err)
+	}
+	if status != nil {
+		t.Errorf("GetByWord(whitespace) expected nil, got %+v", status)
+	}
+	status, err = repo.GetByWord("кириллица")
+	if err != nil {
+		t.Fatalf("GetByWord() error = %v", err)
+	}
+	if status != nil {
+		t.Errorf("GetByWord(non-Latin) expected nil, got %+v", status)
+	}
+}
+
+// TestNormalizeTTSWord_ValidPunctuation covers words with hyphen, apostrophe, space (allowed).
+func TestNormalizeTTSWord_ValidPunctuation(t *testing.T) {
+	db := testutil.SetupTestDB(t)
+	repo := NewTTSStatusRepository(db, zap.NewNop(), 3)
+	for _, word := range []string{"well-known", "don't", "it's", "word  phrase"} {
+		if err := repo.UpsertPending(word); err != nil {
+			t.Fatalf("UpsertPending(%q) error = %v", word, err)
+		}
+		norm, ok := normalizeTTSWord(word)
+		if !ok {
+			t.Errorf("normalizeTTSWord(%q) expected ok=true", word)
+		}
+		if norm == "" {
+			t.Errorf("normalizeTTSWord(%q) expected non-empty", word)
+		}
+	}
+}
+
+// TestTTSStatusRepository_GetByWord_WithNullableFields covers GetByWord when row has all nullable fields set.
+func TestTTSStatusRepository_GetByWord_WithNullableFields(t *testing.T) {
+	db := testutil.SetupTestDB(t)
+	repo := NewTTSStatusRepository(db, zap.NewNop(), 3)
+	if err := repo.MarkAttempt("fullword", "prov", "code", "msg", true); err != nil {
+		t.Fatalf("MarkAttempt error: %v", err)
+	}
+	status, err := repo.GetByWord("fullword")
+	if err != nil {
+		t.Fatalf("GetByWord() error = %v", err)
+	}
+	if status == nil {
+		t.Fatal("expected status")
+	}
+	if status.LastErrorCode == nil || status.LastErrorMessage == nil || status.LastProvider == nil {
+		t.Errorf("expected nullable fields set: %+v", status)
+	}
+}
+
 // TestTTSStatusRepository_UpsertPending_OnConflict updates existing row to pending (idempotent).
 func TestTTSStatusRepository_UpsertPending_OnConflict(t *testing.T) {
 	db := testutil.SetupTestDB(t)

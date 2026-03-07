@@ -201,6 +201,12 @@ func TestGrammarContentRepository_ChapterExists(t *testing.T) {
 	if repo.ChapterExists("nonexistent.chapter.id") {
 		t.Error("ChapterExists(nonexistent) should be false")
 	}
+
+	// When GetIndex fails, ChapterExists returns false
+	badRepo := &GrammarContentRepository{fs: fstest.MapFS{}, logger: zap.NewNop()}
+	if badRepo.ChapterExists("any") {
+		t.Error("ChapterExists() should return false when GetIndex fails")
+	}
 }
 
 func TestGrammarContentRepository_GetAllChapterIDs(t *testing.T) {

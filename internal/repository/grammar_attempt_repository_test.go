@@ -16,6 +16,33 @@ func setupGrammarAttemptRepo(t *testing.T) *GrammarAttemptRepository {
 	return NewGrammarAttemptRepository(conn, logger)
 }
 
+func TestGrammarAttemptRepository_CreateAttempt_WithNilFinishedAt(t *testing.T) {
+	repo := setupGrammarAttemptRepo(t)
+	logger, _ := zap.NewDevelopment()
+	conn := testutil.SetupTestDB(t)
+	userRepo := NewUserRepository(conn, logger)
+	user, _ := userRepo.GetOrCreateUser(1)
+	attempt := &TestAttempt{
+		UserID:          user.ID,
+		ScopeType:       "chapter",
+		ScopeID:         "ch-nil-finished",
+		StartedAt:       time.Now(),
+		FinishedAt:      nil, // nil branch
+		Score:           50,
+		Passed:          true,
+		TotalQuestions:  5,
+		AnswersJSON:     "[]",
+		ResultsJSON:     "[]",
+	}
+	id, err := repo.CreateAttempt(attempt)
+	if err != nil {
+		t.Fatalf("CreateAttempt(nil FinishedAt) error: %v", err)
+	}
+	if id == 0 {
+		t.Error("CreateAttempt() should return non-zero ID")
+	}
+}
+
 func TestGrammarAttemptRepository_CreateAndProgress(t *testing.T) {
 	repo := setupGrammarAttemptRepo(t)
 	logger, _ := zap.NewDevelopment()
@@ -101,6 +128,15 @@ func TestGrammarAttemptRepository_CategoryProgress(t *testing.T) {
 	}
 	if bestScore != 55 {
 		t.Fatalf("expected best score 55, got %d", bestScore)
+	}
+
+	// No attempts for other section — bestScore.Valid false, returns 0
+	bestEmpty, err := repo.GetCategoryTestBestScore(user.ID, "section-none")
+	if err != nil {
+		t.Fatalf("GetCategoryTestBestScore(empty) error: %v", err)
+	}
+	if bestEmpty != 0 {
+		t.Fatalf("expected 0 for no attempts, got %d", bestEmpty)
 	}
 }
 
@@ -350,5 +386,47 @@ func TestGrammarAttemptRepository_SaveAndGetPlacementTestResult(t *testing.T) {
 	got, _ = repo.GetPlacementTestResult(user.ID)
 	if got.Score != 80 {
 		t.Fatalf("expected score unchanged 80, got %d", got.Score)
+	}
+}
+
+// TestGrammarAttemptRepository_UpdateProgress_NotPassed covers UpdateProgress when passed=false or score <= 50 (passedAt nil).
+func TestGrammarAttemptRepository_UpdateProgress_NotPassed(t *testing.T) {
+	repo := setupGrammarAttemptRepo(t)
+	logger, _ := zap.NewDevelopment()
+	conn := testutil.SetupTestDB(t)
+	userRepo := NewUserRepository(conn, logger)
+	user, _ := userRepo.GetOrCreateUser(8)
+	if err := repo.UpdateProgress(user.ID, "ch-not-passed", 40, false); err != nil {
+		t.Fatalf("UpdateProgress(40, false) error: %v", err)
+	}
+	if err := repo.UpdateProgress(user.ID, "ch-not-passed", 50, true); err != nil {
+		t.Fatalf("UpdateProgress(50, true) error: %v", err)
+	}
+	progress, err := repo.GetChapterProgress(user.ID, "ch-not-passed")
+	if err != nil {
+		t.Fatalf("GetChapterProgress error: %v", err)
+	}
+	if progress.BestScore != 50 {
+		t.Errorf("expected best score 50, got %d", progress.BestScore)
+	}
+}
+
+// TestGrammarAttemptRepository_GetPlacementTestResult_InvalidJSON covers error when opened_sections_json is invalid.
+func TestGrammarAttemptRepository_GetPlacementTestResult_InvalidJSON(t *testing.T) {
+	repo := setupGrammarAttemptRepo(t)
+	logger, _ := zap.NewDevelopment()
+	conn := testutil.SetupTestDB(t)
+	userRepo := NewUserRepository(conn, logger)
+	user, _ := userRepo.GetOrCreateUser(9)
+	_, err := conn.Exec(`INSERT INTO grammar_placement_test (user_id, score, total_questions, opened_sections_json, completed_at) VALUES ($1, 50, 10, 'invalid-json', CURRENT_TIMESTAMP)`, user.ID)
+	if err != nil {
+		t.Fatalf("INSERT placement test: %v", err)
+	}
+	got, err := repo.GetPlacementTestResult(user.ID)
+	if err == nil {
+		t.Error("GetPlacementTestResult() expected error for invalid JSON")
+	}
+	if got != nil {
+		t.Error("GetPlacementTestResult() expected nil result on error")
 	}
 }

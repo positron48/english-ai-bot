@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"database/sql"
 	"testing"
 
 	"tgbot-skeleton/internal/testutil"
@@ -132,5 +133,50 @@ func TestAppSettingsRepository_SetBoolSetting(t *testing.T) {
 	got, _ = repo.GetBoolSetting("flag_off")
 	if got {
 		t.Error("expected false after SetBoolSetting(false)")
+	}
+}
+
+// TestAppSettingsRepository_GetSetting_Error covers the error path when QueryRow fails (invalid DSN).
+func TestAppSettingsRepository_GetSetting_Error(t *testing.T) {
+	testutil.SetupTestDB(t) // ensure postgres_compat driver is registered
+	db, err := sql.Open("postgres_compat", "postgres://x:x@invalid.invalid:1/db?connect_timeout=1")
+	if err != nil {
+		t.Skip("postgres_compat driver not registered or open failed:", err)
+	}
+	defer db.Close()
+	repo := NewAppSettingsRepository(db, zap.NewNop())
+	_, err = repo.GetSetting("any")
+	if err == nil {
+		t.Error("GetSetting() expected error with invalid DSN")
+	}
+}
+
+// TestAppSettingsRepository_SetSetting_Error covers the error path when Exec fails.
+func TestAppSettingsRepository_SetSetting_Error(t *testing.T) {
+	testutil.SetupTestDB(t)
+	db, err := sql.Open("postgres_compat", "postgres://x:x@invalid.invalid:1/db?connect_timeout=1")
+	if err != nil {
+		t.Skip("postgres_compat driver not registered:", err)
+	}
+	defer db.Close()
+	repo := NewAppSettingsRepository(db, zap.NewNop())
+	err = repo.SetSetting("k", "v", 1)
+	if err == nil {
+		t.Error("SetSetting() expected error with invalid DSN")
+	}
+}
+
+// TestAppSettingsRepository_GetBoolSetting_Error covers GetBoolSetting when GetSetting returns error.
+func TestAppSettingsRepository_GetBoolSetting_Error(t *testing.T) {
+	testutil.SetupTestDB(t)
+	db, err := sql.Open("postgres_compat", "postgres://x:x@invalid.invalid:1/db?connect_timeout=1")
+	if err != nil {
+		t.Skip("postgres_compat driver not registered:", err)
+	}
+	defer db.Close()
+	repo := NewAppSettingsRepository(db, zap.NewNop())
+	_, err = repo.GetBoolSetting("any")
+	if err == nil {
+		t.Error("GetBoolSetting() expected error when GetSetting fails")
 	}
 }

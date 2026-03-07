@@ -51,6 +51,18 @@ func TestClientIP(t *testing.T) {
 			remoteAddr:     "127.0.0.1:12345",
 			expectedPrefix: "2001:db8::1",
 		},
+		{
+			name:           "invalid X-Real-IP falls back to RemoteAddr",
+			headers:        map[string]string{"X-Real-IP": "not.an.ip"},
+			remoteAddr:     "192.168.1.1:8080",
+			expectedPrefix: "192.168.1.1",
+		},
+		{
+			name:           "all invalid yields unknown",
+			headers:        map[string]string{"X-Real-IP": "x", "X-Forwarded-For": "y"},
+			remoteAddr:     "invalid",
+			expectedPrefix: "unknown",
+		},
 	}
 
 	for _, tt := range tests {
@@ -65,6 +77,30 @@ func TestClientIP(t *testing.T) {
 			ip := clientIP(req)
 			if ip != tt.expectedPrefix {
 				t.Errorf("Expected IP %s, got %s", tt.expectedPrefix, ip)
+			}
+		})
+	}
+}
+
+func TestParseIP(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    string
+		expected string
+	}{
+		{"empty", "", ""},
+		{"whitespace only", "  ", ""},
+		{"IPv4", "192.168.1.1", "192.168.1.1"},
+		{"IPv4 with port", "192.168.1.1:8080", "192.168.1.1"},
+		{"IPv6", "2001:db8::1", "2001:db8::1"},
+		{"invalid", "not.an.ip", ""},
+		{"invalid with port", "hostname:80", ""},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := parseIP(tt.input)
+			if got != tt.expected {
+				t.Errorf("parseIP(%q) = %q, want %q", tt.input, got, tt.expected)
 			}
 		})
 	}

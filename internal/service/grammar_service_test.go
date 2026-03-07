@@ -182,6 +182,40 @@ func TestGrammarService_GetGrammarStatistics(t *testing.T) {
 	}
 }
 
+func TestGrammarService_GetGrammarStatistics_WithPlacementOpenedSections(t *testing.T) {
+	svc, contentRepo, publishRepo, attemptRepo, _, cleanup := setupGrammarService(t)
+	defer cleanup()
+
+	sectionsData, err := contentRepo.GetSections()
+	if err != nil {
+		t.Fatalf("GetSections: %v", err)
+	}
+	if len(sectionsData.Sections) == 0 {
+		t.Fatal("expected sections")
+	}
+	section := sectionsData.Sections[0]
+	sectionID := section.SectionID
+	chapterID := section.ChapterIDs[0]
+
+	_ = publishRepo.SetPublished("section", sectionID, true, nil)
+	_ = publishRepo.SetPublished("chapter", chapterID, true, nil)
+	// Section opened by placement: all its chapters count as 100% and passed
+	if err := attemptRepo.SavePlacementTestResult(1, 50, 10, []string{sectionID}); err != nil {
+		t.Fatalf("SavePlacementTestResult: %v", err)
+	}
+
+	stats, err := svc.GetGrammarStatistics(context.Background(), 1)
+	if err != nil {
+		t.Fatalf("GetGrammarStatistics error: %v", err)
+	}
+	if stats.PassedChapters != 1 {
+		t.Fatalf("expected PassedChapters 1 when section opened by placement, got %d", stats.PassedChapters)
+	}
+	if stats.CourseCompletionPct != 100 {
+		t.Fatalf("expected CourseCompletionPct 100 when section opened by placement, got %d", stats.CourseCompletionPct)
+	}
+}
+
 func TestGrammarService_GenerateChapterAndCategoryTests(t *testing.T) {
 	svc, contentRepo, publishRepo, _, _, cleanup := setupGrammarService(t)
 	defer cleanup()
@@ -686,6 +720,224 @@ func TestGrammarService_CanAccessSection_DeniedWhenCategoryNotPassed(t *testing.
 	}
 	if can {
 		t.Fatal("expected second section to remain denied when category test not passed")
+	}
+}
+
+func TestGrammarService_IsSectionPublished(t *testing.T) {
+	svc, contentRepo, publishRepo, _, _, cleanup := setupGrammarService(t)
+	defer cleanup()
+
+	sectionsData, err := contentRepo.GetSections()
+	if err != nil {
+		t.Fatalf("GetSections: %v", err)
+	}
+	if len(sectionsData.Sections) == 0 {
+		t.Fatal("expected sections")
+	}
+	sectionID := sectionsData.Sections[0].SectionID
+
+	// Unpublished
+	ok, err := svc.IsSectionPublished(context.Background(), sectionID)
+	if err != nil {
+		t.Fatalf("IsSectionPublished error: %v", err)
+	}
+	if ok {
+		t.Fatal("expected false when section not published")
+	}
+
+	_ = publishRepo.SetPublished("section", sectionID, true, nil)
+	ok, err = svc.IsSectionPublished(context.Background(), sectionID)
+	if err != nil {
+		t.Fatalf("IsSectionPublished error: %v", err)
+	}
+	if !ok {
+		t.Fatal("expected true when section published")
+	}
+}
+
+func TestGrammarService_GetChapterContent_IncludeAnswers_And_Unpublished(t *testing.T) {
+	svc, contentRepo, publishRepo, _, _, cleanup := setupGrammarService(t)
+	defer cleanup()
+
+	sectionsData, err := contentRepo.GetSections()
+	if err != nil {
+		t.Fatalf("GetSections: %v", err)
+	}
+	chapterID := sectionsData.Sections[0].ChapterIDs[0]
+
+	// Unpublished chapter
+	_, err = svc.GetChapterContent(context.Background(), chapterID, true)
+	if err == nil {
+		t.Fatal("expected error for unpublished chapter")
+	}
+
+	_ = publishRepo.SetPublished("chapter", chapterID, true, nil)
+	content, err := svc.GetChapterContent(context.Background(), chapterID, true)
+	if err != nil {
+		t.Fatalf("GetChapterContent error: %v", err)
+	}
+	if content == nil {
+		t.Fatal("expected content")
+	}
+	// includeAnswers=true: chapter not sanitized, question bank still filtered
+	if content.Chapter == nil {
+		t.Fatal("expected chapter")
+	}
+}
+
+func TestGrammarService_SubmitTest_UnsupportedScopeType(t *testing.T) {
+	svc, _, _, _, _, cleanup := setupGrammarService(t)
+	defer cleanup()
+
+	_, err := svc.SubmitTest(context.Background(), 1, "invalid", "x", nil)
+	if err == nil {
+		t.Fatal("expected error for unsupported scope type")
+	}
+	if !strings.Contains(err.Error(), "unsupported") {
+		t.Errorf("expected 'unsupported' in error, got: %v", err)
+	}
+}
+
+func TestGrammarService_CompareAnswers_NonStringUserAnswer(t *testing.T) {
+	svc, _, _, _, _, cleanup := setupGrammarService(t)
+	defer cleanup()
+
+	// User answer as number, correct is string -> fmt.Sprintf
+	if !svc.compareAnswers(42, "42") {
+		t.Fatal("expected 42 and '42' to compare equal via string")
+	}
+	if svc.compareAnswers(43, "42") {
+		t.Fatal("expected 43 and '42' to differ")
+	}
+}
+
+func TestGrammarService_CompareAnswers_DefaultBranch(t *testing.T) {
+	svc, _, _, _, _, cleanup := setupGrammarService(t)
+	defer cleanup()
+
+	// Same scalar (e.g. float64)
+	if !svc.compareAnswers(3.14, 3.14) {
+		t.Fatal("expected equal scalars to match")
+	}
+	if svc.compareAnswers(3.14, 3.15) {
+		t.Fatal("expected different scalars to differ")
+	}
+}
+
+func TestGrammarService_SubmitTest_QuestionNotFound_SkipsAnswer(t *testing.T) {
+	svc, contentRepo, publishRepo, attemptRepo, _, cleanup := setupGrammarService(t)
+	defer cleanup()
+
+	sectionsData, err := contentRepo.GetSections()
+	if err != nil {
+		t.Fatalf("GetSections: %v", err)
+	}
+	section := sectionsData.Sections[0]
+	chapterID := section.ChapterIDs[0]
+	_ = publishRepo.SetPublished("chapter", chapterID, true, nil)
+
+	// Submit with a question ID that doesn't exist in the chapter
+	answers := []AnswerItem{
+		{QuestionID: "nonexistent-id", Answer: "x"},
+	}
+	result, err := svc.SubmitTest(context.Background(), 1, "chapter", chapterID, answers)
+	if err != nil {
+		t.Fatalf("SubmitTest error: %v", err)
+	}
+	if result.Total != 0 {
+		t.Fatalf("expected Total 0 when no valid questions, got %d", result.Total)
+	}
+	// Attempt may still be created with 0 questions
+	_ = attemptRepo
+}
+
+func TestGrammarService_SubmitTest_NoAnswer_MarksIncorrect(t *testing.T) {
+	svc, contentRepo, publishRepo, _, _, cleanup := setupGrammarService(t)
+	defer cleanup()
+
+	sectionsData, err := contentRepo.GetSections()
+	if err != nil {
+		t.Fatalf("GetSections: %v", err)
+	}
+	section := sectionsData.Sections[0]
+	chapterID := section.ChapterIDs[0]
+	_ = publishRepo.SetPublished("chapter", chapterID, true, nil)
+
+	chapter, _ := contentRepo.GetChapter(chapterID)
+	questionBank, _ := chapter.QuestionBank["questions"].([]interface{})
+	var firstID string
+	for _, q := range questionBank {
+		qMap, _ := q.(map[string]interface{})
+		if id, ok := qMap["id"].(string); ok && id != "" {
+			firstID = id
+			break
+		}
+	}
+	if firstID == "" {
+		t.Fatal("no question id in chapter")
+	}
+
+	// Answer with nil (no answer)
+	answers := []AnswerItem{
+		{QuestionID: firstID, Answer: nil},
+	}
+	result, err := svc.SubmitTest(context.Background(), 1, "chapter", chapterID, answers)
+	if err != nil {
+		t.Fatalf("SubmitTest error: %v", err)
+	}
+	if result.Total != 1 {
+		t.Fatalf("expected Total 1, got %d", result.Total)
+	}
+	if result.Correct != 0 {
+		t.Fatalf("expected Correct 0 for no answer, got %d", result.Correct)
+	}
+}
+
+func TestGrammarService_SubmitTest_TrueFalse_Normalization(t *testing.T) {
+	svc, contentRepo, publishRepo, _, _, cleanup := setupGrammarService(t)
+	defer cleanup()
+
+	sectionsData, err := contentRepo.GetSections()
+	if err != nil {
+		t.Fatalf("GetSections: %v", err)
+	}
+	section := sectionsData.Sections[0]
+	chapterID := section.ChapterIDs[0]
+	_ = publishRepo.SetPublished("chapter", chapterID, true, nil)
+
+	chapter, _ := contentRepo.GetChapter(chapterID)
+	questionBank, _ := chapter.QuestionBank["questions"].([]interface{})
+	var qID string
+	var correct interface{}
+	for _, q := range questionBank {
+		qMap, _ := q.(map[string]interface{})
+		if tpe, _ := qMap["type"].(string); tpe == "true_false" {
+			qID, _ = qMap["id"].(string)
+			correct = qMap["correct_answer"]
+			break
+		}
+	}
+	if qID == "" {
+		t.Skip("no true_false question in chapter")
+	}
+
+	var userAnswer interface{}
+	if correct == true || correct == "true" {
+		userAnswer = "да"
+	} else {
+		userAnswer = "нет"
+	}
+	answers := []AnswerItem{{QuestionID: qID, Answer: userAnswer}}
+	result, err := svc.SubmitTest(context.Background(), 1, "chapter", chapterID, answers)
+	if err != nil {
+		t.Fatalf("SubmitTest error: %v", err)
+	}
+	if result.Total != 1 {
+		t.Fatalf("expected Total 1, got %d", result.Total)
+	}
+	// Should match via normalizeTrueFalseValue
+	if result.Correct != 1 {
+		t.Fatalf("expected Correct 1 for normalized true_false, got %d", result.Correct)
 	}
 }
 

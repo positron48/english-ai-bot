@@ -3,6 +3,7 @@ package repository
 import (
 	"database/sql"
 	"testing"
+	"time"
 
 	"tgbot-skeleton/internal/database"
 	"tgbot-skeleton/internal/models"
@@ -86,6 +87,15 @@ func TestSessionRepository_GetSession(t *testing.T) {
 	}
 	if found.UserID != user.ID {
 		t.Errorf("Expected UserID %d, got %d", user.ID, found.UserID)
+	}
+
+	// Get non-existent session returns nil, nil
+	notFound, err := repo.GetSession(999999)
+	if err != nil {
+		t.Fatalf("GetSession(999999) error = %v", err)
+	}
+	if notFound != nil {
+		t.Error("GetSession(999999) should return nil for non-existent session")
 	}
 }
 
@@ -254,7 +264,7 @@ func TestSessionRepository_UpdateSession(t *testing.T) {
 		t.Fatalf("Failed to create session: %v", err)
 	}
 
-	// Update the session
+	// Update the session (without EndedAt)
 	session.ID = id
 	session.SessionJSON = `{"updated": true}`
 	err = repo.UpdateSession(session)
@@ -269,5 +279,18 @@ func TestSessionRepository_UpdateSession(t *testing.T) {
 	}
 	if updated.SessionJSON != `{"updated": true}` {
 		t.Errorf("Expected SessionJSON %q, got %q", `{"updated": true}`, updated.SessionJSON)
+	}
+
+	// Update with EndedAt set (covers non-nil EndedAt branch)
+	ended := time.Now()
+	session.EndedAt = &ended
+	session.DoneCount = 5
+	err = repo.UpdateSession(session)
+	if err != nil {
+		t.Fatalf("UpdateSession(EndedAt) error = %v", err)
+	}
+	updated2, _ := repo.GetSession(id)
+	if updated2.EndedAt == nil {
+		t.Error("UpdateSession with EndedAt should persist ended_at")
 	}
 }
