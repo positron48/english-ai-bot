@@ -435,3 +435,118 @@ func TestHandleVocabDelete_EmptyLemmaRedirect(t *testing.T) {
 		t.Errorf("Expected Location /app/vocab, got %s", loc)
 	}
 }
+
+// TestHandleVocabDelete_MarkKnown_Success covers POST .../mark_known: marks word as known and removes user_cards.
+func TestHandleVocabDelete_MarkKnown_Success(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo := setupVocabDeleteTestDB(t)
+
+	user, err := userRepo.GetOrCreateUser(88883)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+
+	wordCardID := int64(301)
+	_, err = db.Exec("INSERT INTO word_cards (id, word, definition) VALUES (?, ?, ?)", wordCardID, "markknown", "def")
+	if err != nil {
+		t.Fatalf("insert word_cards: %v", err)
+	}
+	_, err = db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (?, ?, ?, ?, ?)",
+		wordCardID, "markknown", 0, "отметить", "to mark")
+	if err != nil {
+		t.Fatalf("insert training_cards: %v", err)
+	}
+	var tcID int64
+	if err := db.QueryRow("SELECT id FROM training_cards WHERE word_en = ?", "markknown").Scan(&tcID); err != nil {
+		t.Fatalf("get training_card id: %v", err)
+	}
+	_, err = db.Exec("INSERT INTO user_cards (user_id, training_card_id, direction, state, ef) VALUES (?, ?, ?, ?, ?)",
+		user.ID, tcID, "en_ru", "new", 2.5)
+	if err != nil {
+		t.Fatalf("insert user_cards: %v", err)
+	}
+
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest(http.MethodPost, "/api/vocab/markknown/mark_known", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocabDelete(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+	var resp map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&resp); err != nil {
+		t.Fatalf("decode response: %v", err)
+	}
+	if resp["success"] != true {
+		t.Error("Expected success true")
+	}
+	if resp["lemma"] != "markknown" {
+		t.Errorf("Expected lemma markknown, got %v", resp["lemma"])
+	}
+}
+
+// TestHandleVocabDelete_MoveToTraining_Success covers POST .../move_to_training for a known word (no user_cards).
+func TestHandleVocabDelete_MoveToTraining_Success(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo := setupVocabDeleteTestDB(t)
+
+	user, err := userRepo.GetOrCreateUser(88884)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+
+	wordCardID := int64(302)
+	_, err = db.Exec("INSERT INTO word_cards (id, word, definition) VALUES (?, ?, ?)", wordCardID, "movetraining", "def")
+	if err != nil {
+		t.Fatalf("insert word_cards: %v", err)
+	}
+	_, err = db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (?, ?, ?, ?, ?)",
+		wordCardID, "movetraining", 0, "перевести в тренировку", "to move to training")
+	if err != nil {
+		t.Fatalf("insert training_cards: %v", err)
+	}
+	_, err = db.Exec("INSERT INTO user_word_knowledge (user_id, word_card_id, status) VALUES (?, ?, ?)", user.ID, wordCardID, "known")
+	if err != nil {
+		t.Fatalf("insert user_word_knowledge: %v", err)
+	}
+
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest(http.MethodPost, "/api/vocab/movetraining/move_to_training", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocabDelete(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+	var resp map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&resp); err != nil {
+		t.Fatalf("decode response: %v", err)
+	}
+	if resp["success"] != true {
+		t.Error("Expected success true")
+	}
+	if resp["lemma"] != "movetraining" {
+		t.Errorf("Expected lemma movetraining, got %v", resp["lemma"])
+	}
+}

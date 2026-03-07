@@ -269,6 +269,67 @@ func TestTrainingService_FinishSession_NonExistentSession(t *testing.T) {
 	}
 }
 
+// mockMasteringRepoForSession returns error from GetWordCardIDsBySessionID to trigger FinishSession Warn path.
+type mockMasteringRepoForSession struct {
+	getWordCardIDsBySessionIDFunc func(sessionID int64) ([]repository.UserWordPair, error)
+	getScoreFunc                  func(userID, wordCardID int64) (int, error)
+}
+
+func (m *mockMasteringRepoForSession) GetWordCardIDsBySessionID(sessionID int64) ([]repository.UserWordPair, error) {
+	if m.getWordCardIDsBySessionIDFunc != nil {
+		return m.getWordCardIDsBySessionIDFunc(sessionID)
+	}
+	return nil, nil
+}
+
+func (m *mockMasteringRepoForSession) GetWordMasteringStatsBatch(pairs []repository.UserWordPair) (map[repository.UserWordPair]repository.WordMasteringStatsRow, error) {
+	return nil, nil
+}
+
+func (m *mockMasteringRepoForSession) GetKnownForPairs(pairs []repository.UserWordPair) (map[repository.UserWordPair]bool, error) {
+	return nil, nil
+}
+
+func (m *mockMasteringRepoForSession) UpsertBatch(entries []struct{ UserID, WordCardID int64; Score int }) error {
+	return nil
+}
+
+func (m *mockMasteringRepoForSession) GetScore(userID, wordCardID int64) (int, error) {
+	if m.getScoreFunc != nil {
+		return m.getScoreFunc(userID, wordCardID)
+	}
+	return 0, nil
+}
+
+// TestTrainingService_FinishSession_MasteringUpdateFails verifies that when updateMasteringScoresForSession fails, FinishSession still returns nil and logs Warn.
+func TestTrainingService_FinishSession_MasteringUpdateFails(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	_, userRepo, _, _, sessionRepo := setupTrainingServiceTestDB(t)
+	user, _ := userRepo.GetOrCreateUser(777)
+	session := &models.TrainingSession{
+		UserID:       user.ID,
+		Source:       models.SourceManual,
+		PlannedCount: 2,
+		DoneCount:    1,
+		SessionJSON:  "{}",
+	}
+	sessionID, err := sessionRepo.CreateSession(session)
+	if err != nil {
+		t.Fatalf("CreateSession: %v", err)
+	}
+	mockMastering := &mockMasteringRepoForSession{
+		getWordCardIDsBySessionIDFunc: func(_ int64) ([]repository.UserWordPair, error) {
+			return nil, fmt.Errorf("mock db error")
+		},
+	}
+	service := NewTrainingService(nil, nil, sessionRepo, mockMastering, logger)
+
+	err = service.FinishSession(sessionID, 1)
+	if err != nil {
+		t.Errorf("FinishSession should return nil when only mastering update fails (Warn path), got: %v", err)
+	}
+}
+
 func TestTrainingService_UpdateSessionState(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	_, userRepo, _, _, sessionRepo := setupTrainingServiceTestDB(t)

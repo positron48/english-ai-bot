@@ -16,6 +16,14 @@ import (
 	"go.uber.org/zap"
 )
 
+// circuitBreakerForWorker is used by TrainingWorker for processCards (allows mocks in tests).
+type circuitBreakerForWorker interface {
+	IsOpen() (bool, error)
+	RecordFailure(errorMessage string) error
+	RecordSuccess() error
+	GetState() (bool, int, string, error)
+}
+
 // TrainingWorker handles background generation of training cards
 type TrainingWorker struct {
 	aiService            *ai.Service
@@ -24,7 +32,7 @@ type TrainingWorker struct {
 	userCardRepo         *repository.UserCardRepository
 	userRepo             *repository.UserRepository
 	pronunciationService *PronunciationService
-	cbService            *CircuitBreakerService
+	cbService            circuitBreakerForWorker
 	bot                  *tgbotapi.BotAPI
 	adminTelegramID      int64
 	batchSize            int
@@ -43,7 +51,7 @@ func NewTrainingWorker(
 	userCardRepo *repository.UserCardRepository,
 	userRepo *repository.UserRepository,
 	pronunciationService *PronunciationService,
-	cbService *CircuitBreakerService,
+	cbService circuitBreakerForWorker,
 	bot *tgbotapi.BotAPI,
 	adminTelegramID int64,
 	batchSize int,

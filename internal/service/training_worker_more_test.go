@@ -3,6 +3,7 @@ package service
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"io"
 	"net/http"
 	"testing"
@@ -224,6 +225,57 @@ func TestTrainingWorker_Start_StopChan(t *testing.T) {
 	case <-time.After(1 * time.Second):
 		t.Error("Worker should stop when Stop() is called")
 	}
+}
+
+// mockCircuitBreakerForWorker returns error from IsOpen to trigger processCards error path.
+type mockCircuitBreakerForWorker struct {
+	isOpenFunc func() (bool, error)
+}
+
+func (m *mockCircuitBreakerForWorker) IsOpen() (bool, error) {
+	if m.isOpenFunc != nil {
+		return m.isOpenFunc()
+	}
+	return false, nil
+}
+
+func (m *mockCircuitBreakerForWorker) RecordFailure(_ string) error { return nil }
+func (m *mockCircuitBreakerForWorker) RecordSuccess() error            { return nil }
+func (m *mockCircuitBreakerForWorker) GetState() (bool, int, string, error) {
+	return false, 0, "", nil
+}
+
+// TestTrainingWorker_processCards_CircuitBreakerIsOpenError covers processCards when IsOpen returns an error (log and return).
+func TestTrainingWorker_processCards_CircuitBreakerIsOpenError(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDB(t)
+	wordRepo := repository.NewWordRepository(db, logger)
+	trainingCardRepo := repository.NewTrainingCardRepository(db, logger)
+	userCardRepo := repository.NewUserCardRepository(db, logger)
+	userRepo := repository.NewUserRepository(db, logger)
+	mockCB := &mockCircuitBreakerForWorker{
+		isOpenFunc: func() (bool, error) {
+			return false, fmt.Errorf("mock circuit check error")
+		},
+	}
+	worker := NewTrainingWorker(
+		ai.NewService("", "", "", "", logger),
+		wordRepo,
+		trainingCardRepo,
+		userCardRepo,
+		userRepo,
+		nil,
+		mockCB,
+		nil,
+		0,
+		2,
+		1,
+		time.Hour,
+		"",
+		logger,
+	)
+	worker.processCards(context.Background())
+	// must not panic; processCards returns early after logging error
 }
 
 func TestTrainingWorker_processCards_CircuitBreakerOpen(t *testing.T) {

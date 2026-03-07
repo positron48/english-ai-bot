@@ -1858,6 +1858,66 @@ func TestPronunciationService_ScheduleWord_AlreadyInQueue(t *testing.T) {
 	time.Sleep(200 * time.Millisecond)
 }
 
+// TestPronunciationService_ScheduleWord_NoTTSRepoButHasCachedAudio covers ScheduleWord when ttsRepo is nil but hasCachedAudio returns true.
+// Service must have at least one provider so that enabled stays true (otherwise ScheduleWord returns false before the hasCachedAudio check).
+func TestPronunciationService_ScheduleWord_NoTTSRepoButHasCachedAudio(t *testing.T) {
+	audioDir := t.TempDir()
+	key := pronunciationWordKey("hello")
+	fileBase := pronunciationWordFileBase("hello")
+	relDir := filepath.Join(key[:2], key[2:4])
+	relPath := filepath.Join(relDir, fileBase+".mp3")
+	if err := os.MkdirAll(filepath.Join(audioDir, relDir), 0o755); err != nil {
+		t.Fatalf("mkdir: %v", err)
+	}
+	if err := os.WriteFile(filepath.Join(audioDir, relPath), []byte("x"), 0o644); err != nil {
+		t.Fatalf("write file: %v", err)
+	}
+	cfg := config.TTSConfig{
+		Enabled:           true,
+		AudioDir:          audioDir,
+		DictionaryEnabled: true,
+		DictionaryBaseURL: "http://example.com",
+	}
+	svc := NewPronunciationService(cfg, nil, zap.NewNop())
+	got := svc.ScheduleWord("hello")
+	if !got {
+		t.Error("ScheduleWord should return true when ttsRepo is nil but hasCachedAudio is true")
+	}
+}
+
+// TestPronunciationService_logTTSStatusDecision_NilRepo covers logTTSStatusDecision when ttsRepo is nil (early return, no panic).
+func TestPronunciationService_logTTSStatusDecision_NilRepo(t *testing.T) {
+	svc := NewPronunciationService(config.TTSConfig{Enabled: true, AudioDir: t.TempDir()}, nil, zap.NewNop())
+	svc.logTTSStatusDecision("hello", "ok", "provider", "code")
+	// must not panic
+}
+
+// TestPronunciationService_logTTSStatusDecision_NoStatus covers logTTSStatusDecision when GetByWord returns nil status (early return).
+func TestPronunciationService_logTTSStatusDecision_NoStatus(t *testing.T) {
+	db := testutil.SetupTestDB(t)
+	wordRepo := repository.NewWordRepository(db, zap.NewNop())
+	cfg := config.TTSConfig{Enabled: true, AudioDir: t.TempDir(), DictionaryEnabled: true, DictionaryBaseURL: "http://example.com"}
+	svc := NewPronunciationService(cfg, wordRepo, zap.NewNop())
+	// Word "nonexistent" has no row in tts_generation_status -> GetByWord returns (nil, nil)
+	svc.logTTSStatusDecision("nonexistent", "ok", "p", "c")
+	// must not panic
+}
+
+// TestPronunciationService_logTTSStatusDecision_WithStatus covers logTTSStatusDecision when status exists (logger.Info path).
+func TestPronunciationService_logTTSStatusDecision_WithStatus(t *testing.T) {
+	db := testutil.SetupTestDB(t)
+	wordRepo := repository.NewWordRepository(db, zap.NewNop())
+	cfg := config.TTSConfig{Enabled: true, AudioDir: t.TempDir(), DictionaryEnabled: true, DictionaryBaseURL: "http://example.com"}
+	svc := NewPronunciationService(cfg, wordRepo, zap.NewNop())
+	_ = svc.ttsRepo.UpsertPending("loggedword")
+	svc.logTTSStatusDecision("loggedword", "ready", "dict", "")
+	// must not panic; full path through logger.Info
+	status, _ := svc.ttsRepo.GetByWord("loggedword")
+	if status == nil {
+		t.Fatal("expected status to exist after UpsertPending")
+	}
+}
+
 type blockingPronunciationProvider struct {
 	block chan struct{}
 	audio []byte

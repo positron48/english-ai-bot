@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"testing"
 
 	"tgbot-skeleton/internal/database"
@@ -109,6 +110,54 @@ func TestMarkKnown_WithUserCards(t *testing.T) {
 	).Scan(&count)
 	if err == nil && count > 0 {
 		t.Error("Expected user cards to be deleted after marking as known")
+	}
+}
+
+// mockUserCardRepoForWordSet returns error from DeleteUserCardsByWordCardIDForUser to trigger MarkKnown Warn path.
+type mockUserCardRepoForWordSet struct {
+	deleteFunc func(userID, wordCardID int64) (int64, error)
+	createFunc func(card *models.UserCard) (int64, error)
+}
+
+func (m *mockUserCardRepoForWordSet) DeleteUserCardsByWordCardIDForUser(userID, wordCardID int64) (int64, error) {
+	if m.deleteFunc != nil {
+		return m.deleteFunc(userID, wordCardID)
+	}
+	return 0, nil
+}
+
+func (m *mockUserCardRepoForWordSet) CreateUserCard(card *models.UserCard) (int64, error) {
+	if m.createFunc != nil {
+		return m.createFunc(card)
+	}
+	return 0, nil
+}
+
+// TestMarkKnown_DeleteUserCardsFails verifies that when DeleteUserCardsByWordCardIDForUser fails, MarkKnown still returns nil (Warn path).
+func TestMarkKnown_DeleteUserCardsFails(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	wordSetRepo := repository.NewWordSetRepository(db.GetConnection(), logger)
+	wordSetCategoryRepo := repository.NewWordSetCategoryRepository(db.GetConnection(), logger)
+	wordRepo := repository.NewWordRepository(db.GetConnection(), logger)
+	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
+	uwkRepo := repository.NewUserWordKnowledgeRepository(db.GetConnection(), logger)
+	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
+	user, _ := userRepo.GetOrCreateUser(99999)
+	wordRepo.SaveWordCard("markknownword", "def")
+	wordCard, _ := wordRepo.GetWordCard("markknownword")
+
+	mockUC := &mockUserCardRepoForWordSet{
+		deleteFunc: func(_, _ int64) (int64, error) {
+			return 0, fmt.Errorf("mock delete error")
+		},
+	}
+	svc := NewWordSetServiceWithMastering(
+		wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, mockUC, uwkRepo, nil, nil, "gpt-4", logger,
+	)
+	err := svc.MarkKnown(user.ID, wordCard.ID)
+	if err != nil {
+		t.Errorf("MarkKnown should return nil when only delete fails (Warn path), got: %v", err)
 	}
 }
 

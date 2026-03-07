@@ -7,16 +7,21 @@ import (
 	"strings"
 
 	"tgbot-skeleton/internal/models"
-	"tgbot-skeleton/internal/repository"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"go.uber.org/zap"
 )
 
+// userRepoForCommands is used by BotCommandService for user lookup and settings update (allows mocks in tests).
+type userRepoForCommands interface {
+	GetUserByTelegramID(telegramID int64) (*models.User, error)
+	UpdateUserSettings(userID int64, settingsJSON string) error
+}
+
 // BotCommandService handles telegram bot commands
 type BotCommandService struct {
 	bot          *tgbotapi.BotAPI
-	userRepo     *repository.UserRepository
+	userRepo     userRepoForCommands
 	logger       *zap.Logger
 	helpMessage  string
 	startMessage string
@@ -26,7 +31,7 @@ type BotCommandService struct {
 // NewBotCommandService creates a new bot command service
 func NewBotCommandService(
 	bot *tgbotapi.BotAPI,
-	userRepo *repository.UserRepository,
+	userRepo userRepoForCommands,
 	logger *zap.Logger,
 	helpMessage string,
 	startMessage string,

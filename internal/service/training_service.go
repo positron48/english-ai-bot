@@ -14,12 +14,21 @@ import (
 	"go.uber.org/zap"
 )
 
+// userWordMasteringRepoForSession is used by TrainingService for FinishSession and generateQueue (allows mocks in tests).
+type userWordMasteringRepoForSession interface {
+	GetWordCardIDsBySessionID(sessionID int64) ([]repository.UserWordPair, error)
+	GetWordMasteringStatsBatch(pairs []repository.UserWordPair) (map[repository.UserWordPair]repository.WordMasteringStatsRow, error)
+	GetKnownForPairs(pairs []repository.UserWordPair) (map[repository.UserWordPair]bool, error)
+	UpsertBatch(entries []struct{ UserID, WordCardID int64; Score int }) error
+	GetScore(userID, wordCardID int64) (int, error)
+}
+
 // TrainingService handles training session management
 type TrainingService struct {
 	userCardRepo          *repository.UserCardRepository
 	trainingCardRepo      *repository.TrainingCardRepository
 	sessionRepo           *repository.SessionRepository
-	userWordMasteringRepo *repository.UserWordMasteringRepository
+	userWordMasteringRepo userWordMasteringRepoForSession // nil ok
 	logger                 *zap.Logger
 }
 
@@ -28,7 +37,7 @@ func NewTrainingService(
 	userCardRepo *repository.UserCardRepository,
 	trainingCardRepo *repository.TrainingCardRepository,
 	sessionRepo *repository.SessionRepository,
-	userWordMasteringRepo *repository.UserWordMasteringRepository,
+	userWordMasteringRepo userWordMasteringRepoForSession,
 	logger *zap.Logger,
 ) *TrainingService {
 	return &TrainingService{

@@ -13,13 +13,19 @@ import (
 	"go.uber.org/zap"
 )
 
+// userCardRepoForWordSet is used by WordSetService for MarkKnown and EnsureUserCardsForWord (allows mocks in tests).
+type userCardRepoForWordSet interface {
+	CreateUserCard(card *models.UserCard) (int64, error)
+	DeleteUserCardsByWordCardIDForUser(userID, wordCardID int64) (int64, error)
+}
+
 // WordSetService handles word set business logic
 type WordSetService struct {
 	wordSetRepo            *repository.WordSetRepository
 	wordSetCategoryRepo    *repository.WordSetCategoryRepository
 	wordRepo               *repository.WordRepository
 	trainingCardRepo       *repository.TrainingCardRepository
-	userCardRepo           *repository.UserCardRepository
+	userCardRepo           userCardRepoForWordSet
 	userWordKnowledgeRepo  *repository.UserWordKnowledgeRepository
 	userWordMasteringRepo  *repository.UserWordMasteringRepository
 	aiService              *ai.Service
@@ -33,7 +39,7 @@ func NewWordSetService(
 	wordSetCategoryRepo *repository.WordSetCategoryRepository,
 	wordRepo *repository.WordRepository,
 	trainingCardRepo *repository.TrainingCardRepository,
-	userCardRepo *repository.UserCardRepository,
+	userCardRepo userCardRepoForWordSet,
 	userWordKnowledgeRepo *repository.UserWordKnowledgeRepository,
 	aiService *ai.Service,
 	modelHigh string,
@@ -48,7 +54,7 @@ func NewWordSetServiceWithMastering(
 	wordSetCategoryRepo *repository.WordSetCategoryRepository,
 	wordRepo *repository.WordRepository,
 	trainingCardRepo *repository.TrainingCardRepository,
-	userCardRepo *repository.UserCardRepository,
+	userCardRepo userCardRepoForWordSet,
 	userWordKnowledgeRepo *repository.UserWordKnowledgeRepository,
 	userWordMasteringRepo *repository.UserWordMasteringRepository,
 	aiService *ai.Service,

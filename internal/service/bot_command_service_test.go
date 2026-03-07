@@ -3,12 +3,14 @@ package service
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"net/url"
 	"strings"
 	"testing"
 
+	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/testutil"
 
@@ -577,6 +579,74 @@ func TestBotCommandService_HandleUnknownCommand_TableDriven(t *testing.T) {
 				}
 			}
 		})
+	}
+}
+
+// mockUserRepoForCommands returns errors for testing handleUnsubscribe error paths.
+type mockUserRepoForCommands struct {
+	getUserFunc          func(telegramID int64) (*models.User, error)
+	updateSettingsFunc   func(userID int64, settingsJSON string) error
+}
+
+func (m *mockUserRepoForCommands) GetUserByTelegramID(telegramID int64) (*models.User, error) {
+	if m.getUserFunc != nil {
+		return m.getUserFunc(telegramID)
+	}
+	return nil, nil
+}
+
+func (m *mockUserRepoForCommands) UpdateUserSettings(userID int64, settingsJSON string) error {
+	if m.updateSettingsFunc != nil {
+		return m.updateSettingsFunc(userID, settingsJSON)
+	}
+	return nil
+}
+
+// TestBotCommandService_HandleUnsubscribe_GetUserByTelegramIDError covers handleUnsubscribe when GetUserByTelegramID returns error.
+func TestBotCommandService_HandleUnsubscribe_GetUserByTelegramIDError(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	client := &mockTelegramClient{}
+	bot := newTestBot(client)
+	mockRepo := &mockUserRepoForCommands{
+		getUserFunc: func(_ int64) (*models.User, error) {
+			return nil, fmt.Errorf("db connection failed")
+		},
+	}
+	svc := NewBotCommandService(bot, mockRepo, logger, "help", "start", "unknown")
+
+	svc.handleUnsubscribe(42, 10)
+
+	text := client.lastParams.Get("text")
+	if text == "" {
+		t.Fatal("expected error message to be sent")
+	}
+	if !strings.Contains(text, "ошибка") && !strings.Contains(text, "Попробуйте") {
+		t.Errorf("expected error message to user, got %q", text)
+	}
+}
+
+// TestBotCommandService_HandleUnsubscribe_UpdateUserSettingsError covers handleUnsubscribe when UpdateUserSettings returns error.
+func TestBotCommandService_HandleUnsubscribe_UpdateUserSettingsError(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	client := &mockTelegramClient{}
+	bot := newTestBot(client)
+	user := &models.User{ID: 1, TelegramID: 42, SettingsJSON: "{}"}
+	mockRepo := &mockUserRepoForCommands{
+		getUserFunc: func(_ int64) (*models.User, error) { return user, nil },
+		updateSettingsFunc: func(_ int64, _ string) error {
+			return fmt.Errorf("update failed")
+		},
+	}
+	svc := NewBotCommandService(bot, mockRepo, logger, "help", "start", "unknown")
+
+	svc.handleUnsubscribe(42, 10)
+
+	text := client.lastParams.Get("text")
+	if text == "" {
+		t.Fatal("expected error message to be sent")
+	}
+	if !strings.Contains(text, "ошибка") && !strings.Contains(text, "настроек") {
+		t.Errorf("expected settings error message, got %q", text)
 	}
 }
 
