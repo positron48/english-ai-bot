@@ -84,6 +84,49 @@ func TestHandleAdminGrammarChapterPublish(t *testing.T) {
 	}
 }
 
+func TestHandleAdminGrammarChapterPublish_MethodNotAllowed(t *testing.T) {
+	router, _, adminUserID, cleanup := setupGrammarTest(t)
+	defer cleanup()
+
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/grammar/chapters/ch1/publish", nil)
+	req = setUserIDInContext(req, adminUserID)
+	w := httptest.NewRecorder()
+	router.handleAdminGrammarChapterPublish(w, req)
+
+	if w.Code != http.StatusMethodNotAllowed {
+		t.Fatalf("expected 405, got %d", w.Code)
+	}
+}
+
+func TestHandleAdminGrammarChapterPublish_Unauthorized(t *testing.T) {
+	router, _, _, cleanup := setupGrammarTest(t)
+	defer cleanup()
+
+	payload, _ := json.Marshal(map[string]interface{}{"is_published": true})
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/grammar/chapters/ch1/publish", bytes.NewReader(payload))
+	w := httptest.NewRecorder()
+	router.handleAdminGrammarChapterPublish(w, req)
+
+	if w.Code != http.StatusUnauthorized {
+		t.Fatalf("expected 401, got %d", w.Code)
+	}
+}
+
+func TestHandleAdminGrammarChapterPublish_EmptyChapterID(t *testing.T) {
+	router, _, adminUserID, cleanup := setupGrammarTest(t)
+	defer cleanup()
+
+	payload, _ := json.Marshal(map[string]interface{}{"is_published": true})
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/grammar/chapters//publish", bytes.NewReader(payload))
+	req = setUserIDInContext(req, adminUserID)
+	w := httptest.NewRecorder()
+	router.handleAdminGrammarChapterPublish(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Fatalf("expected 400 for empty chapter_id, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
 func TestHandleAdminGrammarItemRename(t *testing.T) {
 	router, _, adminUserID, cleanup := setupGrammarTest(t)
 	defer cleanup()
@@ -157,6 +200,76 @@ func TestHandleAdminGrammarItemRename_InvalidType(t *testing.T) {
 
 	if w.Code != http.StatusBadRequest {
 		t.Fatalf("expected 400, got %d", w.Code)
+	}
+}
+
+func TestHandleAdminGrammarItemRename_MethodNotAllowed(t *testing.T) {
+	router, _, adminUserID, cleanup := setupGrammarTest(t)
+	defer cleanup()
+
+	sectionsData, err := router.grammarService.ContentRepo.GetSections()
+	if err != nil || len(sectionsData.Sections) == 0 {
+		t.Fatalf("failed to get sections")
+	}
+	sectionID := sectionsData.Sections[0].SectionID
+
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/grammar/items/section/"+sectionID+"/rename", nil)
+	req = setUserIDInContext(req, adminUserID)
+	w := httptest.NewRecorder()
+	router.handleAdminGrammarItemRename(w, req)
+
+	if w.Code != http.StatusMethodNotAllowed {
+		t.Fatalf("expected 405, got %d", w.Code)
+	}
+}
+
+func TestHandleAdminGrammarItemRename_Unauthorized(t *testing.T) {
+	router, _, _, cleanup := setupGrammarTest(t)
+	defer cleanup()
+
+	payload, _ := json.Marshal(map[string]interface{}{"name": "x"})
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/grammar/items/section/s1/rename", bytes.NewReader(payload))
+	w := httptest.NewRecorder()
+	router.handleAdminGrammarItemRename(w, req)
+
+	if w.Code != http.StatusUnauthorized {
+		t.Fatalf("expected 401, got %d", w.Code)
+	}
+}
+
+func TestHandleAdminGrammarItemRename_InvalidPath(t *testing.T) {
+	router, _, adminUserID, cleanup := setupGrammarTest(t)
+	defer cleanup()
+
+	payload, _ := json.Marshal(map[string]interface{}{"name": "x"})
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/grammar/items/section/rename", bytes.NewReader(payload))
+	req = setUserIDInContext(req, adminUserID)
+	w := httptest.NewRecorder()
+	router.handleAdminGrammarItemRename(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Fatalf("expected 400 for invalid path (single part), got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+func TestHandleAdminGrammarItemRename_InvalidBody(t *testing.T) {
+	router, _, adminUserID, cleanup := setupGrammarTest(t)
+	defer cleanup()
+
+	sectionsData, err := router.grammarService.ContentRepo.GetSections()
+	if err != nil || len(sectionsData.Sections) == 0 {
+		t.Fatalf("failed to get sections")
+	}
+	sectionID := sectionsData.Sections[0].SectionID
+
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/grammar/items/section/"+sectionID+"/rename", bytes.NewBufferString("not json"))
+	req.Header.Set("Content-Type", "application/json")
+	req = setUserIDInContext(req, adminUserID)
+	w := httptest.NewRecorder()
+	router.handleAdminGrammarItemRename(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Fatalf("expected 400 for invalid body, got %d", w.Code)
 	}
 }
 

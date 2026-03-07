@@ -268,6 +268,50 @@ func TestHandleLanguageSettings_Success(t *testing.T) {
 	}
 }
 
+func TestHandleLanguageSettings_SuccessEn(t *testing.T) {
+	router, db := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
+	_, err := db.GetConnection().Exec(`INSERT INTO users (telegram_id, created_at, updated_at, settings_json) VALUES (?,?,?,?)`, 2009, "2026-01-01 00:00:00", "2026-01-01 00:00:00", `{}`)
+	if err != nil {
+		t.Fatalf("insert user error: %v", err)
+	}
+
+	req := httptest.NewRequest(http.MethodPost, "/api/settings/language", bytes.NewBufferString(`{"language":"en"}`))
+	req.Header.Set("Content-Type", "application/json")
+	req = setUserIDInContext(req, 1)
+	w := httptest.NewRecorder()
+	router.handleLanguageSettings(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected 200, got %d", w.Code)
+	}
+	var resp map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&resp); err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+	if resp["language"] != "en" {
+		t.Errorf("expected language en, got %v", resp["language"])
+	}
+}
+
+func TestHandleLanguageSettings_InvalidSettingsJSON(t *testing.T) {
+	router, db := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
+	_, err := db.GetConnection().Exec(`INSERT INTO users (telegram_id, created_at, updated_at, settings_json) VALUES (?,?,?,?)`, 2010, "2026-01-01 00:00:00", "2026-01-01 00:00:00", `{invalid json}`)
+	if err != nil {
+		t.Fatalf("insert user error: %v", err)
+	}
+
+	req := httptest.NewRequest(http.MethodPost, "/api/settings/language", bytes.NewBufferString(`{"language":"en"}`))
+	req.Header.Set("Content-Type", "application/json")
+	req = setUserIDInContext(req, 1)
+	w := httptest.NewRecorder()
+	router.handleLanguageSettings(w, req)
+
+	// Handler parses settings with Warn on error and continues with empty settings; should still succeed
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected 200 when user has invalid settings_json (warn path), got %d: %s", w.Code, w.Body.String())
+	}
+}
+
 func TestHandleNotificationSettings_Unauthorized(t *testing.T) {
 	router, _ := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
 	req := httptest.NewRequest(http.MethodPost, "/api/settings/notifications", bytes.NewBufferString(`{"frequency":"daily"}`))
@@ -605,5 +649,38 @@ func TestHandleTrainingSettings_InvalidWrongAnswerDelay(t *testing.T) {
 
 	if w.Code != http.StatusBadRequest {
 		t.Fatalf("expected 400 for wrong_answer_delay_seconds > 10, got %d", w.Code)
+	}
+}
+
+func TestHandleTrainingSettings_UserNotFound(t *testing.T) {
+	router, _ := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
+
+	req := httptest.NewRequest(http.MethodPost, "/api/settings/training", bytes.NewBufferString(`{"options_delay_seconds":1}`))
+	req.Header.Set("Content-Type", "application/json")
+	req = setUserIDInContext(req, 999)
+	w := httptest.NewRecorder()
+	router.handleTrainingSettings(w, req)
+
+	if w.Code != http.StatusNotFound {
+		t.Fatalf("expected 404 for non-existent user, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+func TestHandleTrainingSettings_InvalidSettingsJSON(t *testing.T) {
+	router, db := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
+	_, err := db.GetConnection().Exec(`INSERT INTO users (telegram_id, created_at, updated_at, settings_json) VALUES (?,?,?,?)`, 3013, "2026-01-01 00:00:00", "2026-01-01 00:00:00", `{invalid}`)
+	if err != nil {
+		t.Fatalf("insert user: %v", err)
+	}
+
+	req := httptest.NewRequest(http.MethodPost, "/api/settings/training", bytes.NewBufferString(`{"options_delay_seconds":2}`))
+	req.Header.Set("Content-Type", "application/json")
+	req = setUserIDInContext(req, 1)
+	w := httptest.NewRecorder()
+	router.handleTrainingSettings(w, req)
+
+	// Handler warns on invalid settings_json and continues with empty settings
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected 200 when user has invalid settings_json, got %d: %s", w.Code, w.Body.String())
 	}
 }

@@ -182,3 +182,33 @@ func TestHandleAdminWordSetDetail_NotFound(t *testing.T) {
 		t.Errorf("Expected status 404, got %d: %s", rr.Code, rr.Body.String())
 	}
 }
+
+func TestHandleAdminWordSetCategories_MethodNotAllowed(t *testing.T) {
+	router, _, adminUserID, cleanup := setupAdminWordSetsTest(t)
+	defer cleanup()
+
+	req := httptest.NewRequest(http.MethodPatch, "/api/admin/word-set-categories", nil)
+	req = setUserIDInContextWordSets(req, adminUserID)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminWordSetCategories(rr, req)
+
+	if rr.Code != http.StatusMethodNotAllowed {
+		t.Errorf("Expected status 405, got %d: %s", rr.Code, rr.Body.String())
+	}
+}
+
+func TestHandleAdminWordSets_MethodNotAllowed(t *testing.T) {
+	router, _, adminUserID, cleanup := setupAdminWordSetsTest(t)
+	defer cleanup()
+
+	req := httptest.NewRequest(http.MethodPatch, "/api/admin/word-sets", nil)
+	req = setUserIDInContextWordSets(req, adminUserID)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminWordSets(rr, req)
+
+	if rr.Code != http.StatusMethodNotAllowed {
+		t.Errorf("Expected status 405, got %d: %s", rr.Code, rr.Body.String())
+	}
+}

@@ -3,6 +3,7 @@ package web
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -13,6 +14,20 @@ import (
 
 	"go.uber.org/zap"
 )
+
+// failingResponseWriter implements http.ResponseWriter and fails on Write to trigger encode error path.
+type failingResponseWriter struct {
+	http.ResponseWriter
+	writeCalls int
+}
+
+func (w *failingResponseWriter) Write(p []byte) (n int, err error) {
+	w.writeCalls++
+	if w.writeCalls > 0 {
+		return 0, errors.New("write failed")
+	}
+	return w.ResponseWriter.Write(p)
+}
 
 func TestRouter_handleDBSchema(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
@@ -93,6 +108,18 @@ func TestRouter_handleDBSchema(t *testing.T) {
 
 		if w.Code != http.StatusMethodNotAllowed {
 			t.Errorf("Expected status 405, got %d", w.Code)
+		}
+	})
+
+	t.Run("encode error returns 500", func(t *testing.T) {
+		req := httptest.NewRequest("GET", "/admin/db-schema", nil)
+		rec := httptest.NewRecorder()
+		w := &failingResponseWriter{ResponseWriter: rec}
+
+		router.handleDBSchema(w, req)
+
+		if rec.Code != http.StatusInternalServerError {
+			t.Errorf("Expected status 500 on encode failure, got %d", rec.Code)
 		}
 	})
 }

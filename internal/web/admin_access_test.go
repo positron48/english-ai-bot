@@ -385,6 +385,57 @@ func TestHandleAdminAccessCategoryByID_MethodNotAllowed(t *testing.T) {
 	}
 }
 
+func TestHandleAdminAccessCategoryByID_Delete_WithUsers(t *testing.T) {
+	router, db, logger, adminUserID, cleanup := setupAdminAccessTest(t)
+	defer cleanup()
+
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db.GetConnection(), logger)
+	categoryID, err := accessCategoryRepo.CreateCategory(&models.UserAccessCategory{Name: "CategoryWithUsers"})
+	if err != nil {
+		t.Fatalf("Create category: %v", err)
+	}
+
+	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
+	u, err := userRepo.GetOrCreateUser(88888)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	if err := accessCategoryRepo.SetUserCategories(u.ID, []int64{categoryID}); err != nil {
+		t.Fatalf("SetUserCategories: %v", err)
+	}
+
+	req := httptest.NewRequest("DELETE", "/api/admin/access/categories/"+strconv.FormatInt(categoryID, 10), nil)
+	req = setAdminContext(req, adminUserID)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminAccessCategoryByID(rr, req, categoryID)
+
+	if rr.Code != http.StatusBadRequest {
+		t.Errorf("Expected status 400 when category has users, got %d: %s", rr.Code, rr.Body.String())
+	}
+}
+
+func TestHandleAdminAccessCategoryPermissions_MethodNotAllowed(t *testing.T) {
+	router, db, logger, adminUserID, cleanup := setupAdminAccessTest(t)
+	defer cleanup()
+
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db.GetConnection(), logger)
+	categoryID, err := accessCategoryRepo.CreateCategory(&models.UserAccessCategory{Name: "PermMethodCat"})
+	if err != nil {
+		t.Fatalf("Create category: %v", err)
+	}
+
+	req := httptest.NewRequest("POST", "/api/admin/access/categories/"+strconv.FormatInt(categoryID, 10)+"/permissions", nil)
+	req = setAdminContext(req, adminUserID)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminAccessCategoryPermissions(rr, req, categoryID)
+
+	if rr.Code != http.StatusMethodNotAllowed {
+		t.Errorf("Expected status 405, got %d", rr.Code)
+	}
+}
+
 func TestHandleAdminAccessCategories_MethodNotAllowed(t *testing.T) {
 	router, _, _, adminUserID, cleanup := setupAdminAccessTest(t)
 	defer cleanup()

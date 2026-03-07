@@ -81,6 +81,134 @@ func TestHandleAdminPromptTesterDefaultPrompts_MethodNotAllowed(t *testing.T) {
 	}
 }
 
+func TestHandleAdminPromptTesterDefaultPrompts_WordPromptFromFile(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	cfg := &config.Config{}
+	cfg.Admin.TelegramID = 12345
+	cfg.WebApp.JWTSecret = "test-secret"
+
+	wordPromptFile, err := os.CreateTemp("", "word-prompt-*.txt")
+	if err != nil {
+		t.Fatalf("Failed to create temp word prompt file: %v", err)
+	}
+	wordPromptContent := "custom word prompt from file"
+	if _, err := wordPromptFile.WriteString(wordPromptContent); err != nil {
+		_ = wordPromptFile.Close()
+		t.Fatalf("Failed to write word prompt file: %v", err)
+	}
+	if err := wordPromptFile.Close(); err != nil {
+		t.Fatalf("Failed to close word prompt file: %v", err)
+	}
+	t.Cleanup(func() { _ = os.Remove(wordPromptFile.Name()) })
+	cfg.AI.PromptFile = wordPromptFile.Name()
+	cfg.AI.Prompt = "fallback env prompt"
+
+	trainingPromptFile, err := os.CreateTemp("", "training-prompt-*.txt")
+	if err != nil {
+		t.Fatalf("Failed to create temp training prompt file: %v", err)
+	}
+	if _, err := trainingPromptFile.WriteString("test training prompt"); err != nil {
+		_ = trainingPromptFile.Close()
+		t.Fatalf("Failed to write training prompt file: %v", err)
+	}
+	if err := trainingPromptFile.Close(); err != nil {
+		t.Fatalf("Failed to close training prompt file: %v", err)
+	}
+	t.Cleanup(func() { _ = os.Remove(trainingPromptFile.Name()) })
+	cfg.Training.PromptFile = trainingPromptFile.Name()
+
+	cbRepo := repository.NewCircuitBreakerRepository(db.GetConnection(), logger)
+	cbService := service.NewCircuitBreakerService(cbRepo, 5, logger)
+	router := NewRouter(logger, cfg, db.GetConnection(), nil, nil, nil, cbService)
+
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/prompt-tester/default-prompts", nil)
+	req = setUserIDInContextPromptTester(req, 12345)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminPromptTesterDefaultPrompts(rr, req)
+
+	if rr.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", rr.Code, rr.Body.String())
+	}
+	var resp map[string]interface{}
+	if err := json.NewDecoder(rr.Body).Decode(&resp); err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+	if resp["word_prompt"] != wordPromptContent {
+		t.Errorf("Expected word_prompt from file %q, got %q", wordPromptContent, resp["word_prompt"])
+	}
+	if resp["word_prompt_source"] != cfg.AI.PromptFile {
+		t.Errorf("Expected word_prompt_source %q, got %q", cfg.AI.PromptFile, resp["word_prompt_source"])
+	}
+}
+
+func TestHandleAdminPromptTesterDefaultPrompts_TrainingFileNotFound(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	cfg := &config.Config{}
+	cfg.Admin.TelegramID = 12345
+	cfg.WebApp.JWTSecret = "test-secret"
+	cfg.AI.Prompt = "env word prompt"
+	cfg.Training.PromptFile = "/nonexistent/training-prompt.txt"
+
+	cbRepo := repository.NewCircuitBreakerRepository(db.GetConnection(), logger)
+	cbService := service.NewCircuitBreakerService(cbRepo, 5, logger)
+	router := NewRouter(logger, cfg, db.GetConnection(), nil, nil, nil, cbService)
+
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/prompt-tester/default-prompts", nil)
+	req = setUserIDInContextPromptTester(req, 12345)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminPromptTesterDefaultPrompts(rr, req)
+
+	if rr.Code != http.StatusOK {
+		t.Errorf("Expected status 200 even when training file missing, got %d: %s", rr.Code, rr.Body.String())
+	}
+	var resp map[string]interface{}
+	if err := json.NewDecoder(rr.Body).Decode(&resp); err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+	if src, ok := resp["training_prompt_source"].(string); !ok || src == "" {
+		t.Errorf("Expected training_prompt_source to indicate not found, got %v", resp["training_prompt_source"])
+	}
+	if !strings.Contains(resp["training_prompt_source"].(string), "not found") {
+		t.Errorf("Expected training_prompt_source to contain 'not found', got %v", resp["training_prompt_source"])
+	}
+}
+
+func TestHandleAdminPromptTesterRun_EmptyWordSkipped(t *testing.T) {
+	mockAI := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write(openAIChoiceResponse(`{"word":"test","translation":"тест"}`))
+	}))
+	defer mockAI.Close()
+
+	router, _ := setupPromptTesterTest(t)
+	router.config.AI.URL = strings.TrimSuffix(mockAI.URL, "/")
+	router.config.AI.Model = "test-model"
+	router.config.AI.APIKey = "test-key"
+
+	// One valid word and one empty/whitespace - only one word should be processed
+	body := `{"words": ["hello", "  ", ""], "word_prompt": "word", "training_prompt": "training"}`
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/prompt-tester/run", strings.NewReader(body))
+	req.Header.Set("Content-Type", "application/json")
+	req = setUserIDInContextPromptTester(req, 12345)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminPromptTesterRun(rr, req)
+
+	if rr.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", rr.Code, rr.Body.String())
+	}
+	lines := strings.Split(strings.TrimSpace(rr.Body.String()), "\n")
+	// One word "hello" -> 2 events (word + cards). Empty strings are skipped.
+	if len(lines) < 2 {
+		t.Errorf("Expected at least 2 NDJSON lines for one word, got %d", len(lines))
+	}
+}
+
 func TestHandleAdminPromptTesterRun_MethodNotAllowed(t *testing.T) {
 	router, _ := setupPromptTesterTest(t)
 

@@ -42,9 +42,9 @@ func (r *Router) handleAdmin(w http.ResponseWriter, req *http.Request) {
 	// Get circuit breaker status directly from DB (same approach as dashboard sessions)
 	// Query directly to get dates as strings, avoiding time.Time parsing issues
 	query := `SELECT id, is_open, failure_count, 
-			  COALESCE(last_failure_at, '') as last_failure_at,
+			  COALESCE(last_failure_at::text, '') as last_failure_at,
 			  COALESCE(last_failure_message, '') as last_failure_message,
-			  COALESCE(last_reset_at, '') as last_reset_at
+			  COALESCE(last_reset_at::text, '') as last_reset_at
 			  FROM circuit_breaker_state WHERE id = 1`
 
 	var cbID int64

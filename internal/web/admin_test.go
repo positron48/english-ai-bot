@@ -91,6 +91,84 @@ func TestHandleAdmin_Get(t *testing.T) {
 	}
 }
 
+func TestHandleAdmin_Get_WithCircuitBreakerState(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+
+	adminTelegramID := int64(123456789)
+	adminUser, err := userRepo.GetOrCreateUser(adminTelegramID)
+	if err != nil {
+		t.Fatalf("Failed to create admin user: %v", err)
+	}
+
+	// Set circuit breaker state: open, message and dates (Postgres: is_open is INTEGER 0/1)
+	_, err = db.Exec(`UPDATE circuit_breaker_state SET is_open = 1, failure_count = 2,
+		last_failure_at = '2025-01-15 10:00:00+00',
+		last_failure_message = 'connection refused',
+		last_reset_at = '2025-01-14 09:00:00+00'
+		WHERE id = 1`)
+	if err != nil {
+		t.Fatalf("Failed to update circuit breaker state: %v", err)
+	}
+
+	cfg := &config.Config{
+		Admin: config.AdminConfig{
+			TelegramID: adminTelegramID,
+		},
+		WebApp: config.WebAppConfig{
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
+			RefreshTTLHours: 720,
+		},
+	}
+
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("GET", "/api/admin", nil)
+	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	ctx = context.WithValue(ctx, userRoleKey, "admin")
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+
+	adminHandler := router.RequireAdmin(router.handleAdmin)
+	adminHandler(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d", w.Code)
+	}
+
+	var response map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
+		t.Fatalf("Failed to decode response: %v", err)
+	}
+
+	cb, _ := response["circuit_breaker"].(map[string]interface{})
+	if cb == nil {
+		t.Fatal("Response should contain circuit_breaker")
+	}
+	if cb["state"] != "open" {
+		t.Errorf("Expected circuit_breaker.state open, got %v", cb["state"])
+	}
+	if cb["last_failure"] != "connection refused" {
+		t.Errorf("Expected last_failure in response when set in DB, got %v", cb["last_failure"])
+	}
+	if cb["failures"] != float64(2) {
+		t.Errorf("Expected failures 2, got %v", cb["failures"])
+	}
+	if cb["last_failure_at"] == nil {
+		t.Error("Expected last_failure_at in response when set in DB")
+	}
+	if cb["last_reset_at"] == nil {
+		t.Error("Expected last_reset_at in response when set in DB")
+	}
+}
+
 func TestHandleAdmin_WrongMethod(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo, cbService := setupAdminTestDB(t)
@@ -692,6 +770,69 @@ func TestHandleAdminWord_Delete(t *testing.T) {
 
 	if response["success"] != true {
 		t.Error("Response should indicate success")
+	}
+}
+
+func TestHandleAdminWord_Put_NotFound(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+
+	adminTelegramID := int64(123456789)
+	adminUser, err := userRepo.GetOrCreateUser(adminTelegramID)
+	if err != nil {
+		t.Fatalf("Failed to create admin user: %v", err)
+	}
+
+	cfg := &config.Config{
+		Admin: config.AdminConfig{TelegramID: adminTelegramID},
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("PUT", "/api/admin/words/999999", strings.NewReader("definition=ok"))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req = req.WithContext(context.WithValue(context.WithValue(req.Context(), userIDKey, adminUser.ID), userRoleKey, "admin"))
+	w := httptest.NewRecorder()
+	router.RequireAdmin(router.handleAdminWord)(w, req)
+
+	if w.Code != http.StatusNotFound {
+		t.Errorf("Expected status 404 for non-existent word, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+func TestHandleAdminWord_Delete_NotFound(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+
+	adminTelegramID := int64(123456789)
+	adminUser, err := userRepo.GetOrCreateUser(adminTelegramID)
+	if err != nil {
+		t.Fatalf("Failed to create admin user: %v", err)
+	}
+
+	cfg := &config.Config{
+		Admin: config.AdminConfig{TelegramID: adminTelegramID},
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("DELETE", "/api/admin/words/999999", nil)
+	req = req.WithContext(context.WithValue(context.WithValue(req.Context(), userIDKey, adminUser.ID), userRoleKey, "admin"))
+	w := httptest.NewRecorder()
+	router.RequireAdmin(router.handleAdminWord)(w, req)
+
+	if w.Code != http.StatusNotFound {
+		t.Errorf("Expected status 404 for non-existent word, got %d: %s", w.Code, w.Body.String())
 	}
 }
 

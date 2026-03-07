@@ -362,3 +362,45 @@ func TestHandleVocabDelete_GetNoAction_InvalidRequest(t *testing.T) {
 		t.Errorf("Expected status 400 for GET with no valid action, got %d: %s", w.Code, w.Body.String())
 	}
 }
+
+func TestHandleVocabDelete_ConfirmDelete_WordNotInUserVocab(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo := setupVocabDeleteTestDB(t)
+
+	user, err := userRepo.GetOrCreateUser(44444)
+	if err != nil {
+		t.Fatalf("Failed to create user: %v", err)
+	}
+
+	// Word exists in word_cards but user has no user_cards for it
+	_, err = db.Exec("INSERT INTO word_cards (id, word, definition) VALUES (?, ?, ?)", 200, "notinvocab", "def")
+	if err != nil {
+		t.Fatalf("Failed to create word card: %v", err)
+	}
+
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{
+			JWTSecret:        "test-secret",
+			JWTTTLHours:      24,
+			RefreshTTLHours:  720,
+		},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+
+	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("GET", "/api/vocab/notinvocab/confirm_delete", nil)
+	ctx := context.WithValue(req.Context(), userIDKey, user.ID)
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+
+	router.handleVocabDelete(w, req)
+
+	if w.Code != http.StatusNotFound {
+		t.Errorf("Expected status 404 when word not in user vocab (count=0), got %d: %s", w.Code, w.Body.String())
+	}
+}

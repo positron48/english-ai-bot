@@ -368,6 +368,20 @@ func TestHandleLearningWordsSetStudy_InvalidSetID(t *testing.T) {
 	}
 }
 
+func TestHandleLearningWordsSetStudy_InvalidWordCardID(t *testing.T) {
+	router, _, cleanup := setupWordSetsRouter(t)
+	defer cleanup()
+
+	userID, setID, _ := createWordSetStudyFixture(t, router)
+	req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/api/learning/words/sets/%d/study?word_card_id=nan", setID), nil)
+	req = setUserIDInContext(req, userID)
+	w := httptest.NewRecorder()
+	router.handleLearningWordsSetStudy(w, req)
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("Expected status 400 for invalid word_card_id, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
 func TestHandleLearningWordsSetStudyLearn_MethodNotAllowed(t *testing.T) {
 	router, _, cleanup := setupWordSetsRouter(t)
 	defer cleanup()

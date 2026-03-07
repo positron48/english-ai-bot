@@ -12,8 +12,9 @@ import (
 
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/repository"
-
 	"tgbot-skeleton/internal/testutil"
+
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"go.uber.org/zap"
 )
 
@@ -371,6 +372,62 @@ func TestHandleAuthRequestOTP_BotNil(t *testing.T) {
 
 	if w.Code != http.StatusServiceUnavailable {
 		t.Errorf("Expected status 503 (bot nil), got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleAuthRequestOTP_Success verifies 200 when user exists, OTP is generated, and bot Send succeeds (mock API).
+func TestHandleAuthRequestOTP_Success(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, otpRepo, userRepo := setupAuthOTPHandlersTestDB(t)
+
+	user, err := userRepo.GetOrCreateUser(88888)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	usernameOrID := strconv.FormatInt(user.TelegramID, 10)
+
+	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte(`{"ok":true,"result":{"message_id":1}}`))
+	}))
+	defer mockServer.Close()
+
+	// API endpoint format: base URL with placeholders for token and method (e.g. getMe, sendMessage)
+	endpoint := mockServer.URL + "/bot%s/%s"
+	bot, err := tgbotapi.NewBotAPIWithAPIEndpoint("test-token", endpoint)
+	if err != nil {
+		t.Fatalf("NewBotAPIWithAPIEndpoint: %v", err)
+	}
+
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
+			RefreshTTLHours: 720,
+			OTPTTLSeconds:   300,
+		},
+	}
+
+	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
+	router.SetDependencies(userRepo, nil, nil, bot, "test-token")
+	router.SetOTPRepo(otpRepo)
+
+	req := httptest.NewRequest("POST", "/auth/request_otp", strings.NewReader("username="+usernameOrID))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	w := httptest.NewRecorder()
+
+	router.handleAuthRequestOTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+	var resp map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&resp); err != nil {
+		t.Fatalf("decode response: %v", err)
+	}
+	if resp["success"] != true {
+		t.Errorf("Expected success=true, got %v", resp["success"])
 	}
 }
 

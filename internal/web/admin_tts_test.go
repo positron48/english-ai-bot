@@ -195,3 +195,59 @@ func TestHandleAdminTTS_PostWrongActionMethodNotAllowed(t *testing.T) {
 		t.Fatalf("expected 405, got %d", w.Code)
 	}
 }
+
+func TestHandleAdminTTS_PostRegenerateSuccess(t *testing.T) {
+	router, userRepo, accessRepo := setupAdminTTSRouter(t)
+	user, err := userRepo.GetOrCreateUser(1006)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser() error = %v", err)
+	}
+	categories := grantCategory(t, accessRepo, user.ID, string(PermissionWordsEditAll))
+
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/tts/hello/regenerate", nil)
+	req.URL.Path = "/api/admin/tts/hello/regenerate"
+	ctx := context.WithValue(req.Context(), userIDKey, user.ID)
+	ctx = context.WithValue(ctx, userCategoriesKey, categories)
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+
+	router.handleAdminTTS(w, req)
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected 200, got %d: %s", w.Code, w.Body.String())
+	}
+	var resp map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&resp); err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+	if _, ok := resp["state"]; !ok {
+		t.Fatalf("expected state in response")
+	}
+}
+
+func TestHandleAdminTTS_PostRecheckSuccess(t *testing.T) {
+	router, userRepo, accessRepo := setupAdminTTSRouter(t)
+	user, err := userRepo.GetOrCreateUser(1007)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser() error = %v", err)
+	}
+	categories := grantCategory(t, accessRepo, user.ID, string(PermissionWordsEditAll))
+
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/tts/hello/recheck", nil)
+	req.URL.Path = "/api/admin/tts/hello/recheck"
+	ctx := context.WithValue(req.Context(), userIDKey, user.ID)
+	ctx = context.WithValue(ctx, userCategoriesKey, categories)
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+
+	router.handleAdminTTS(w, req)
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected 200, got %d: %s", w.Code, w.Body.String())
+	}
+	var resp map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&resp); err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+	if _, ok := resp["state"]; !ok {
+		t.Fatalf("expected state in response")
+	}
+}

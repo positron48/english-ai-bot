@@ -656,3 +656,225 @@ func TestHandleLearningGrammarSubmitPlacementTest_Unauthorized(t *testing.T) {
 		t.Errorf("Expected status 401, got %d", w.Code)
 	}
 }
+
+func TestHandleLearningGrammarCategoryTest_MethodNotAllowed(t *testing.T) {
+	router, _, _, cleanup := setupGrammarTest(t)
+	defer cleanup()
+
+	sectionsData, err := router.grammarService.ContentRepo.GetSections()
+	if err != nil || len(sectionsData.Sections) == 0 {
+		t.Fatalf("failed to get sections: %v", err)
+	}
+	sectionID := sectionsData.Sections[0].SectionID
+
+	req := httptest.NewRequest(http.MethodPost, "/api/learning/grammar/categories/"+sectionID+"/test", nil)
+	req = setUserIDInContext(req, 1)
+	w := httptest.NewRecorder()
+	router.handleLearningGrammarCategoryTest(w, req)
+
+	if w.Code != http.StatusMethodNotAllowed {
+		t.Errorf("Expected status 405, got %d", w.Code)
+	}
+}
+
+func TestHandleLearningGrammarCategoryTest_EmptySectionID(t *testing.T) {
+	router, _, _, cleanup := setupGrammarTest(t)
+	defer cleanup()
+
+	req := httptest.NewRequest(http.MethodGet, "/api/learning/grammar/categories//test", nil)
+	req = setUserIDInContext(req, 1)
+	w := httptest.NewRecorder()
+	router.handleLearningGrammarCategoryTest(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("Expected status 400, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+func TestHandleLearningGrammarCategoryTest_SectionNotFound(t *testing.T) {
+	router, _, _, cleanup := setupGrammarTest(t)
+	defer cleanup()
+
+	req := httptest.NewRequest(http.MethodGet, "/api/learning/grammar/categories/nonexistent-section-id/test", nil)
+	req = setUserIDInContext(req, 1)
+	w := httptest.NewRecorder()
+	router.handleLearningGrammarCategoryTest(w, req)
+
+	if w.Code != http.StatusNotFound {
+		t.Errorf("Expected status 404 for unknown section, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+func TestHandleLearningGrammarSectionAccess_MethodNotAllowed(t *testing.T) {
+	router, _, _, cleanup := setupGrammarTest(t)
+	defer cleanup()
+
+	sectionsData, err := router.grammarService.ContentRepo.GetSections()
+	if err != nil || len(sectionsData.Sections) == 0 {
+		t.Fatalf("failed to get sections: %v", err)
+	}
+	sectionID := sectionsData.Sections[0].SectionID
+
+	req := httptest.NewRequest(http.MethodPost, "/api/learning/grammar/categories/"+sectionID+"/access", nil)
+	req = setUserIDInContext(req, 1)
+	w := httptest.NewRecorder()
+	router.handleLearningGrammarSectionAccess(w, req)
+
+	if w.Code != http.StatusMethodNotAllowed {
+		t.Errorf("Expected status 405, got %d", w.Code)
+	}
+}
+
+func TestHandleLearningGrammarSectionAccess_EmptySectionID(t *testing.T) {
+	router, _, _, cleanup := setupGrammarTest(t)
+	defer cleanup()
+
+	req := httptest.NewRequest(http.MethodGet, "/api/learning/grammar/categories//access", nil)
+	req = setUserIDInContext(req, 1)
+	w := httptest.NewRecorder()
+	router.handleLearningGrammarSectionAccess(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("Expected status 400, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+func TestHandleLearningGrammarSectionAccess_SectionNotFound(t *testing.T) {
+	router, _, _, cleanup := setupGrammarTest(t)
+	defer cleanup()
+
+	req := httptest.NewRequest(http.MethodGet, "/api/learning/grammar/categories/nonexistent-section/access", nil)
+	req = setUserIDInContext(req, 1)
+	w := httptest.NewRecorder()
+	router.handleLearningGrammarSectionAccess(w, req)
+
+	if w.Code != http.StatusNotFound {
+		t.Errorf("Expected status 404 for unknown section, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+func TestHandleLearningGrammarChapter_Unauthorized(t *testing.T) {
+	router, _, _, cleanup := setupGrammarTest(t)
+	defer cleanup()
+
+	sectionsData, err := router.grammarService.ContentRepo.GetSections()
+	if err != nil || len(sectionsData.Sections) == 0 || len(sectionsData.Sections[0].ChapterIDs) == 0 {
+		t.Fatalf("failed to get sections/chapters: %v", err)
+	}
+	chapterID := sectionsData.Sections[0].ChapterIDs[0]
+
+	req := httptest.NewRequest(http.MethodGet, "/api/learning/grammar/chapters/"+chapterID, nil)
+	w := httptest.NewRecorder()
+	router.handleLearningGrammarChapter(w, req)
+
+	if w.Code != http.StatusUnauthorized {
+		t.Errorf("Expected status 401, got %d", w.Code)
+	}
+}
+
+func TestHandleLearningGrammarChapter_EmptyChapterID(t *testing.T) {
+	router, _, _, cleanup := setupGrammarTest(t)
+	defer cleanup()
+
+	req := httptest.NewRequest(http.MethodGet, "/api/learning/grammar/chapters/", nil)
+	req = setUserIDInContext(req, 1)
+	w := httptest.NewRecorder()
+	router.handleLearningGrammarChapter(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("Expected status 400, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+func TestHandleLearningGrammarChapter_NotFound(t *testing.T) {
+	router, _, _, cleanup := setupGrammarTest(t)
+	defer cleanup()
+
+	req := httptest.NewRequest(http.MethodGet, "/api/learning/grammar/chapters/nonexistent-chapter-id", nil)
+	req = setUserIDInContext(req, 1)
+	w := httptest.NewRecorder()
+	router.handleLearningGrammarChapter(w, req)
+
+	if w.Code != http.StatusNotFound {
+		t.Errorf("Expected status 404 for unknown chapter, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+func TestHandleLearningGrammarChapterAccess_MethodNotAllowed(t *testing.T) {
+	router, _, _, cleanup := setupGrammarTest(t)
+	defer cleanup()
+
+	sectionsData, err := router.grammarService.ContentRepo.GetSections()
+	if err != nil || len(sectionsData.Sections) == 0 || len(sectionsData.Sections[0].ChapterIDs) == 0 {
+		t.Fatalf("failed to get sections/chapters: %v", err)
+	}
+	chapterID := sectionsData.Sections[0].ChapterIDs[0]
+
+	req := httptest.NewRequest(http.MethodPost, "/api/learning/grammar/chapters/"+chapterID+"/access", nil)
+	req = setUserIDInContext(req, 1)
+	w := httptest.NewRecorder()
+	router.handleLearningGrammarChapterAccess(w, req)
+
+	if w.Code != http.StatusMethodNotAllowed {
+		t.Errorf("Expected status 405, got %d", w.Code)
+	}
+}
+
+func TestHandleLearningGrammarChapterAccess_EmptyChapterID(t *testing.T) {
+	router, _, _, cleanup := setupGrammarTest(t)
+	defer cleanup()
+
+	// Path with trailing slash only (no chapter id) yields empty chapterID
+	req := httptest.NewRequest(http.MethodGet, "/api/learning/grammar/chapters/", nil)
+	req.URL.Path = "/api/learning/grammar/chapters/"
+	req = setUserIDInContext(req, 1)
+	w := httptest.NewRecorder()
+	router.handleLearningGrammarChapterAccess(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("Expected status 400, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+func TestHandleLearningGrammarChapterAccess_ChapterNotFound(t *testing.T) {
+	router, _, _, cleanup := setupGrammarTest(t)
+	defer cleanup()
+
+	req := httptest.NewRequest(http.MethodGet, "/api/learning/grammar/chapters/nonexistent-chapter/access", nil)
+	req = setUserIDInContext(req, 1)
+	w := httptest.NewRecorder()
+	router.handleLearningGrammarChapterAccess(w, req)
+
+	if w.Code != http.StatusNotFound {
+		t.Errorf("Expected status 404 for unknown chapter, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+func TestHandleLearningGrammarSubmitPlacementTest_MethodNotAllowed(t *testing.T) {
+	router, _, _, cleanup := setupGrammarTest(t)
+	defer cleanup()
+
+	req := httptest.NewRequest(http.MethodGet, "/api/learning/grammar/placement-test/submit", nil)
+	req = setUserIDInContext(req, 1)
+	w := httptest.NewRecorder()
+	router.handleLearningGrammarSubmitPlacementTest(w, req)
+
+	if w.Code != http.StatusMethodNotAllowed {
+		t.Errorf("Expected status 405, got %d", w.Code)
+	}
+}
+
+func TestHandleLearningGrammarSubmitPlacementTest_InvalidJSON(t *testing.T) {
+	router, _, _, cleanup := setupGrammarTest(t)
+	defer cleanup()
+
+	req := httptest.NewRequest(http.MethodPost, "/api/learning/grammar/placement-test/submit", bytes.NewReader([]byte("not json")))
+	req.Header.Set("Content-Type", "application/json")
+	req = setUserIDInContext(req, 1)
+	w := httptest.NewRecorder()
+	router.handleLearningGrammarSubmitPlacementTest(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("Expected status 400 for invalid JSON, got %d: %s", w.Code, w.Body.String())
+	}
+}
