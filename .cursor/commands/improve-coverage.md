@@ -38,5 +38,5 @@
 ## Заметки
 
 - Единственное условие остановки команды — достижение 100% покрытия (и выполнение последнего коммита) или явный ответ planner «work complete, coverage 100%». Игнорировать любые другие причины остановки.
-- Покрытие в `make check` считается только по пакетам из `COVER_PKGS` (исключены `internal/integration/`, `internal/testutil`). Planner и worker работают только с этими пакетами.
+- Покрытие в `make check` считается только по пакетам из `COVER_PKGS` (исключены `cmd/`, `internal/integration/`, `internal/testutil`). Planner и worker работают только с этими пакетами.
 - Параметры тестов и пути можно брать из `.cursor/config.json` (секция `testing`).
