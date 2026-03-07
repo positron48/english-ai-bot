@@ -248,6 +248,37 @@ func TestHandleLearningWordsSetDetail_Unauthorized(t *testing.T) {
 	}
 }
 
+func TestHandleLearningWordsSetDetail_Success(t *testing.T) {
+	router, _, cleanup := setupWordSetsRouter(t)
+	defer cleanup()
+
+	userID, setID, wordCardID := createWordSetStudyFixture(t, router)
+	req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/api/learning/words/sets/%d", setID), nil)
+	req = setUserIDInContext(req, userID)
+	req.URL.Path = fmt.Sprintf("/api/learning/words/sets/%d", setID)
+	w := httptest.NewRecorder()
+	router.handleLearningWordsSetDetail(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("Expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+	var payload map[string]interface{}
+	if err := json.Unmarshal(w.Body.Bytes(), &payload); err != nil {
+		t.Fatalf("unmarshal: %v", err)
+	}
+	if _, ok := payload["word_set"]; !ok {
+		t.Error("Expected word_set in response")
+	}
+	if _, ok := payload["words"]; !ok {
+		t.Error("Expected words in response")
+	}
+	words, _ := payload["words"].([]interface{})
+	if len(words) < 1 {
+		t.Errorf("Expected at least one word, got %d", len(words))
+	}
+	_ = wordCardID
+}
+
 func TestHandleLearningWordsSetStudy_Unauthorized(t *testing.T) {
 	router, _, cleanup := setupWordSetsRouter(t)
 	defer cleanup()
@@ -382,6 +413,77 @@ func TestHandleLearningWordsSetStudy_InvalidWordCardID(t *testing.T) {
 	}
 }
 
+func TestHandleLearningWordsSetStudy_Success_FirstCard(t *testing.T) {
+	router, _, cleanup := setupWordSetsRouter(t)
+	defer cleanup()
+
+	userID, setID, wordCardID := createWordSetStudyFixture(t, router)
+	trainingCardRepo := repository.NewTrainingCardRepository(router.db, router.logger)
+	if _, err := trainingCardRepo.CreateTrainingCard(&models.TrainingCard{
+		WordCardID: wordCardID,
+		WordEN:     "studyword",
+		SenseIndex: 0,
+		WordRU:     "слово",
+		MeaningEN:  "word",
+	}); err != nil {
+		t.Fatalf("create training card: %v", err)
+	}
+
+	req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/api/learning/words/sets/%d/study?word_card_id=%d", setID, wordCardID), nil)
+	req = setUserIDInContext(req, userID)
+	w := httptest.NewRecorder()
+	router.handleLearningWordsSetStudy(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("Expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+	var payload map[string]map[string]interface{}
+	if err := json.Unmarshal(w.Body.Bytes(), &payload); err != nil {
+		t.Fatalf("unmarshal: %v", err)
+	}
+	if payload["training_card"]["word_en"] != "studyword" {
+		t.Errorf("Expected training_card.word_en studyword, got %v", payload["training_card"]["word_en"])
+	}
+}
+
+func TestHandleLearningWordsSetStudy_TrainingCardNotFound(t *testing.T) {
+	router, _, cleanup := setupWordSetsRouter(t)
+	defer cleanup()
+
+	userID, setID, wordCardID := createWordSetStudyFixture(t, router)
+	// Do not create any training card for wordCardID; EnsureTrainingCardsExist may fail or not create in test
+	req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/api/learning/words/sets/%d/study?word_card_id=%d", setID, wordCardID), nil)
+	req = setUserIDInContext(req, userID)
+	w := httptest.NewRecorder()
+	router.handleLearningWordsSetStudy(w, req)
+
+	// No training cards -> 404 (or 500 if ensure fails and retry returns error)
+	if w.Code != http.StatusNotFound && w.Code != http.StatusInternalServerError {
+		t.Errorf("Expected status 404 or 500, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+func TestHandleLearningWordsSetStudy_WordSetNotFound(t *testing.T) {
+	router, _, cleanup := setupWordSetsRouter(t)
+	defer cleanup()
+
+	userID, setID, wordCardID := createWordSetStudyFixture(t, router)
+	// Delete the set so GetWordSet returns nil after we already passed GetWordSetWords
+	_, err := router.db.Exec("DELETE FROM word_sets WHERE id = $1", setID)
+	if err != nil {
+		t.Fatalf("delete word set: %v", err)
+	}
+	req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/api/learning/words/sets/%d/study?word_card_id=%d", setID, wordCardID), nil)
+	req = setUserIDInContext(req, userID)
+	w := httptest.NewRecorder()
+	router.handleLearningWordsSetStudy(w, req)
+
+	// GetWordSetWords may fail or return empty after delete; we expect error response
+	if w.Code != http.StatusNotFound && w.Code != http.StatusInternalServerError {
+		t.Errorf("Expected status 404 or 500, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
 func TestHandleLearningWordsSetStudyLearn_MethodNotAllowed(t *testing.T) {
 	router, _, cleanup := setupWordSetsRouter(t)
 	defer cleanup()
@@ -454,5 +556,76 @@ func TestHandleLearningWordsSetStudyKnow_WordNotInSet(t *testing.T) {
 	router.handleLearningWordsSetStudyKnow(w, req)
 	if w.Code != http.StatusBadRequest {
 		t.Errorf("Expected status 400, got %d", w.Code)
+	}
+}
+
+func TestHandleLearningWordsSetDetailOrStudy_EmptySetID(t *testing.T) {
+	router, _, cleanup := setupWordSetsRouter(t)
+	defer cleanup()
+
+	req := httptest.NewRequest(http.MethodGet, "/api/learning/words/sets/", nil)
+	req.URL.Path = "/api/learning/words/sets/"
+	w := httptest.NewRecorder()
+	router.handleLearningWordsSetDetailOrStudy(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("Expected status 400 for empty set ID, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+func TestHandleLearningWordsSetDetailOrStudy_RoutesToDetail(t *testing.T) {
+	router, _, cleanup := setupWordSetsRouter(t)
+	defer cleanup()
+
+	userID, setID, _ := createWordSetStudyFixture(t, router)
+	req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/api/learning/words/sets/%d", setID), nil)
+	req = setUserIDInContext(req, userID)
+	req.URL.Path = fmt.Sprintf("/api/learning/words/sets/%d", setID)
+	w := httptest.NewRecorder()
+	router.handleLearningWordsSetDetailOrStudy(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected detail route to return 200, got %d: %s", w.Code, w.Body.String())
+	}
+	var payload map[string]interface{}
+	if err := json.Unmarshal(w.Body.Bytes(), &payload); err != nil {
+		t.Fatalf("unmarshal: %v", err)
+	}
+	if _, ok := payload["word_set"]; !ok {
+		t.Error("Expected word_set in detail response")
+	}
+}
+
+func TestHandleLearningWordsSetDetailOrStudy_RoutesToStudy(t *testing.T) {
+	router, _, cleanup := setupWordSetsRouter(t)
+	defer cleanup()
+
+	userID, setID, wordCardID := createWordSetStudyFixture(t, router)
+	trainingCardRepo := repository.NewTrainingCardRepository(router.db, router.logger)
+	if _, err := trainingCardRepo.CreateTrainingCard(&models.TrainingCard{
+		WordCardID: wordCardID,
+		WordEN:     "studyword",
+		SenseIndex: 0,
+		WordRU:     "слово",
+		MeaningEN:  "word",
+	}); err != nil {
+		t.Fatalf("create training card: %v", err)
+	}
+
+	req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/api/learning/words/sets/%d/study?word_card_id=%d", setID, wordCardID), nil)
+	req = setUserIDInContext(req, userID)
+	req.URL.Path = fmt.Sprintf("/api/learning/words/sets/%d/study", setID)
+	w := httptest.NewRecorder()
+	router.handleLearningWordsSetDetailOrStudy(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected study route to return 200, got %d: %s", w.Code, w.Body.String())
+	}
+	var payload map[string]interface{}
+	if err := json.Unmarshal(w.Body.Bytes(), &payload); err != nil {
+		t.Fatalf("unmarshal: %v", err)
+	}
+	if _, ok := payload["training_card"]; !ok {
+		t.Error("Expected training_card in study response")
 	}
 }

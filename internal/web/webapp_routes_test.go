@@ -1,14 +1,19 @@
 package web
 
 import (
+	"embed"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"tgbot-skeleton/internal/config"
 
 	"go.uber.org/zap"
 )
+
+//go:embed dist/index.html
+var testWebappFS embed.FS
 
 func TestIsAPIEndpoint(t *testing.T) {
 	tests := []struct {
@@ -60,6 +65,21 @@ func TestIsAPIEndpoint(t *testing.T) {
 			name:     "Asset path under /app",
 			path:     "/app/assets/main.js",
 			expected: false,
+		},
+		{
+			name:     "Auth path",
+			path:     "/auth",
+			expected: true,
+		},
+		{
+			name:     "Swagger path",
+			path:     "/swagger",
+			expected: true,
+		},
+		{
+			name:     "Health path",
+			path:     "/health",
+			expected: true,
 		},
 	}
 
@@ -325,5 +345,71 @@ func TestSetupDevProxy_NonAPIPathRedirects(t *testing.T) {
 	}
 	if loc := w.Header().Get("Location"); loc != "http://localhost:5173/app/dashboard" {
 		t.Errorf("Location = %q, want http://localhost:5173/app/dashboard", loc)
+	}
+}
+
+// TestSetupWebappRoutes_WithEmbeddedFS tests setupWebappRoutes when dist/index.html is present:
+// GET /app and /app/ return index.html; /app/api/... returns 404; SPA routes return index.
+func TestSetupWebappRoutes_WithEmbeddedFS(t *testing.T) {
+	savedFS := webappFS
+	defer func() { webappFS = savedFS }()
+	webappFS = testWebappFS
+
+	logger := zap.NewNop()
+	cfg := &config.Config{}
+	router := &Router{
+		mux:    http.NewServeMux(),
+		logger: logger,
+		config: cfg,
+	}
+	router.setupWebappRoutes()
+
+	tests := []struct {
+		name       string
+		path       string
+		wantStatus int
+		wantBody   string // substring
+	}{
+		{"GET /app returns index", "/app", http.StatusOK, "Test"},
+		{"GET /app/ returns index", "/app/", http.StatusOK, "Test"},
+		{"GET /app/dashboard SPA returns index", "/app/dashboard", http.StatusOK, "Test"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			req := httptest.NewRequest("GET", tt.path, nil)
+			w := httptest.NewRecorder()
+			router.mux.ServeHTTP(w, req)
+			if w.Code != tt.wantStatus {
+				t.Errorf("path %s: status = %d, want %d", tt.path, w.Code, tt.wantStatus)
+			}
+			if tt.wantBody != "" && !strings.Contains(w.Body.String(), tt.wantBody) {
+				t.Errorf("path %s: body %q does not contain %q", tt.path, w.Body.String(), tt.wantBody)
+			}
+		})
+	}
+}
+
+// TestSetupWebappRoutes_WithEmbeddedFS_StaticExtension requests a path with static extension;
+// handler serves via FileServer (our test FS only has index.html, so 404).
+func TestSetupWebappRoutes_WithEmbeddedFS_StaticExtension(t *testing.T) {
+	savedFS := webappFS
+	defer func() { webappFS = savedFS }()
+	webappFS = testWebappFS
+
+	logger := zap.NewNop()
+	cfg := &config.Config{}
+	router := &Router{
+		mux:    http.NewServeMux(),
+		logger: logger,
+		config: cfg,
+	}
+	router.setupWebappRoutes()
+
+	req := httptest.NewRequest("GET", "/app/robots.txt", nil)
+	w := httptest.NewRecorder()
+	router.mux.ServeHTTP(w, req)
+	// FileServer with only index.html returns 404 for robots.txt
+	if w.Code != http.StatusNotFound {
+		t.Errorf("GET /app/robots.txt: status = %d, want 404", w.Code)
 	}
 }
