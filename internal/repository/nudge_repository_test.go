@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"database/sql"
 	"testing"
 	"time"
 
@@ -163,5 +164,107 @@ func TestNudgeRepository_GetUnconsumedNudge_WithMessageID(t *testing.T) {
 	}
 	if *found.MessageID != 12345 {
 		t.Errorf("Expected MessageID 12345, got %d", *found.MessageID)
+	}
+}
+
+func TestNewNudgeRepository(t *testing.T) {
+	logger := zap.NewNop()
+	conn := testutil.SetupTestDB(t)
+	repo := NewNudgeRepository(conn, logger)
+	if repo == nil {
+		t.Fatal("NewNudgeRepository() returned nil")
+	}
+	if repo.db != conn {
+		t.Error("repo.db should be the passed connection")
+	}
+	if repo.logger != logger {
+		t.Error("repo.logger should be the passed logger")
+	}
+}
+
+func TestNudgeRepository_CreateNudge_WithMessageID(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	conn := testutil.SetupTestDB(t)
+	userRepo := NewUserRepository(conn, logger)
+	user, _ := userRepo.GetOrCreateUser(99999)
+	nudgeRepo := NewNudgeRepository(conn, logger)
+	localDate := time.Now().Format("2006-01-02")
+	msgID := 42
+	nudge := &models.TrainingNudge{
+		UserID:          user.ID,
+		LocalDate:       localDate,
+		DueCountAtSend:  1,
+		MessageID:       &msgID,
+	}
+	id, err := nudgeRepo.CreateNudge(nudge)
+	if err != nil {
+		t.Fatalf("CreateNudge() error = %v", err)
+	}
+	if id <= 0 {
+		t.Errorf("CreateNudge() id = %d", id)
+	}
+	// Verify MessageID round-trip via GetUnconsumedNudge
+	found, err := nudgeRepo.GetUnconsumedNudge(user.ID, localDate)
+	if err != nil {
+		t.Fatalf("GetUnconsumedNudge() error = %v", err)
+	}
+	if found == nil || found.MessageID == nil || *found.MessageID != 42 {
+		t.Errorf("expected MessageID 42, got %v", found)
+	}
+}
+
+func TestNudgeRepository_CreateNudge_Error(t *testing.T) {
+	testutil.SetupTestDB(t)
+	db, err := sql.Open("postgres_compat", "postgres://x:x@invalid.invalid:1/db?connect_timeout=1")
+	if err != nil {
+		t.Skip("postgres_compat driver not registered or open failed:", err)
+	}
+	defer db.Close()
+	repo := NewNudgeRepository(db, zap.NewNop())
+	_, err = repo.CreateNudge(&models.TrainingNudge{UserID: 1, LocalDate: "2025-01-01", DueCountAtSend: 0})
+	if err == nil {
+		t.Error("CreateNudge() expected error with invalid DSN")
+	}
+}
+
+func TestNudgeRepository_HasNudgeToday_Error(t *testing.T) {
+	testutil.SetupTestDB(t)
+	db, err := sql.Open("postgres_compat", "postgres://x:x@invalid.invalid:1/db?connect_timeout=1")
+	if err != nil {
+		t.Skip("postgres_compat driver not registered or open failed:", err)
+	}
+	defer db.Close()
+	repo := NewNudgeRepository(db, zap.NewNop())
+	_, err = repo.HasNudgeToday(1, "2025-01-01")
+	if err == nil {
+		t.Error("HasNudgeToday() expected error with invalid DSN")
+	}
+}
+
+func TestNudgeRepository_ConsumeNudge_Error(t *testing.T) {
+	testutil.SetupTestDB(t)
+	db, err := sql.Open("postgres_compat", "postgres://x:x@invalid.invalid:1/db?connect_timeout=1")
+	if err != nil {
+		t.Skip("postgres_compat driver not registered or open failed:", err)
+	}
+	defer db.Close()
+	repo := NewNudgeRepository(db, zap.NewNop())
+	err = repo.ConsumeNudge(1, "2025-01-01")
+	if err == nil {
+		t.Error("ConsumeNudge() expected error with invalid DSN")
+	}
+}
+
+func TestNudgeRepository_GetUnconsumedNudge_Error(t *testing.T) {
+	testutil.SetupTestDB(t)
+	db, err := sql.Open("postgres_compat", "postgres://x:x@invalid.invalid:1/db?connect_timeout=1")
+	if err != nil {
+		t.Skip("postgres_compat driver not registered or open failed:", err)
+	}
+	defer db.Close()
+	repo := NewNudgeRepository(db, zap.NewNop())
+	_, err = repo.GetUnconsumedNudge(1, "2025-01-01")
+	if err == nil {
+		t.Error("GetUnconsumedNudge() expected error with invalid DSN")
 	}
 }

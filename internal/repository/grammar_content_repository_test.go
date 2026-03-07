@@ -174,14 +174,22 @@ func TestGrammarContentRepository_GetChapter_Errors(t *testing.T) {
 	t.Run("invalid chapter JSON returns error", func(t *testing.T) {
 		repo := &GrammarContentRepository{
 			fs: fstest.MapFS{
-				"index.json":           &fstest.MapFile{Data: []byte(`{"version":"1","generated_at":"","chapters":{"ch2":"ch2.json"}}`)},
-				"chapters/ch2.json":     &fstest.MapFile{Data: []byte("invalid")},
+				"index.json":       &fstest.MapFile{Data: []byte(`{"version":"1","generated_at":"","chapters":{"ch2":"ch2.json"}}`)},
+				"chapters/ch2.json": &fstest.MapFile{Data: []byte("invalid")},
 			},
 			logger: logger,
 		}
 		_, err := repo.GetChapter("ch2")
 		if err == nil {
 			t.Fatal("GetChapter() expected error for invalid chapter JSON")
+		}
+	})
+
+	t.Run("GetIndex fails returns error", func(t *testing.T) {
+		repo := &GrammarContentRepository{fs: fstest.MapFS{}, logger: logger}
+		_, err := repo.GetChapter("any-id")
+		if err == nil {
+			t.Fatal("GetChapter() expected error when GetIndex fails")
 		}
 	})
 }
@@ -229,4 +237,30 @@ func TestGrammarContentRepository_GetAllChapterIDs(t *testing.T) {
 			t.Errorf("id %q not in index", id)
 		}
 	}
+}
+
+func TestGrammarContentRepository_GetAllChapterIDs_Errors(t *testing.T) {
+	logger := zap.NewNop()
+
+	t.Run("GetIndex fails returns error", func(t *testing.T) {
+		repo := &GrammarContentRepository{fs: fstest.MapFS{}, logger: logger}
+		ids, err := repo.GetAllChapterIDs()
+		if err == nil {
+			t.Fatal("GetAllChapterIDs() expected error when GetIndex fails")
+		}
+		if ids != nil {
+			t.Error("GetAllChapterIDs() should return nil ids on error")
+		}
+	})
+
+	t.Run("invalid index JSON returns error", func(t *testing.T) {
+		repo := &GrammarContentRepository{
+			fs:     fstest.MapFS{"index.json": &fstest.MapFile{Data: []byte("not json")}},
+			logger: logger,
+		}
+		_, err := repo.GetAllChapterIDs()
+		if err == nil {
+			t.Fatal("GetAllChapterIDs() expected error for invalid index JSON")
+		}
+	})
 }
