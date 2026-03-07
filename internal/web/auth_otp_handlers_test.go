@@ -238,3 +238,63 @@ func TestHandleAuthOTP_WrongMethod(t *testing.T) {
 		t.Errorf("Expected status 405, got %d", w.Code)
 	}
 }
+
+func TestHandleAuthRequestOTP_EmptyUsername(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, otpRepo, userRepo := setupAuthOTPHandlersTestDB(t)
+
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
+			RefreshTTLHours: 720,
+			OTPTTLSeconds:   300,
+		},
+	}
+
+	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.SetOTPRepo(otpRepo)
+
+	req := httptest.NewRequest("POST", "/auth/request_otp", strings.NewReader("username="))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	w := httptest.NewRecorder()
+
+	router.handleAuthRequestOTP(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("Expected status 400, got %d", w.Code)
+	}
+}
+
+func TestHandleAuthOTP_InvalidUserID(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, otpRepo, userRepo := setupAuthOTPHandlersTestDB(t)
+
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{
+			JWTSecret:     "test-secret",
+			JWTTTLHours:   24,
+			RefreshTTLHours: 720,
+		},
+	}
+
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+
+	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.SetOTPRepo(otpRepo)
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("POST", "/auth/otp", strings.NewReader("user_id=notnumeric&code=123456"))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	w := httptest.NewRecorder()
+
+	router.handleAuthOTP(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("Expected status 400, got %d", w.Code)
+	}
+}

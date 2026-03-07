@@ -600,3 +600,23 @@ func TestHandleCommand_GetID(t *testing.T) {
 		t.Fatalf("expected user id in message, got %q", got)
 	}
 }
+
+func TestHandler_SendMessage(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, _ := setupHandler(t, client)
+
+	h.sendMessage(10, "test message")
+	if got := client.lastParams.Get("text"); got != "test message" {
+		t.Errorf("sendMessage: got text %q, want %q", got, "test message")
+	}
+}
+
+func TestHandler_SendTyping(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, _ := setupHandler(t, client)
+
+	h.sendTyping(10)
+	if got := client.lastParams.Get("action"); got != "typing" {
+		t.Errorf("sendTyping: got action %q, want typing", got)
+	}
+}

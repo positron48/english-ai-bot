@@ -1185,3 +1185,231 @@ func TestHandleAdminWord_Reset(t *testing.T) {
 		t.Error("Response should indicate success")
 	}
 }
+
+func TestHandleAdminWords_WrongMethod(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	adminTelegramID := int64(123456789)
+	adminUser, err := userRepo.GetOrCreateUser(adminTelegramID)
+	if err != nil {
+		t.Fatalf("Failed to create admin user: %v", err)
+	}
+	cfg := &config.Config{
+		Admin: config.AdminConfig{TelegramID: adminTelegramID},
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("POST", "/api/admin/words", nil)
+	req = req.WithContext(context.WithValue(context.WithValue(req.Context(), userIDKey, adminUser.ID), userRoleKey, "admin"))
+	w := httptest.NewRecorder()
+	router.RequirePermission(PermissionWordsReadAll)(router.handleAdminWords)(w, req)
+
+	if w.Code != http.StatusMethodNotAllowed {
+		t.Errorf("Expected status 405, got %d", w.Code)
+	}
+}
+
+func TestHandleAdminWord_InvalidID(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	adminTelegramID := int64(123456789)
+	adminUser, err := userRepo.GetOrCreateUser(adminTelegramID)
+	if err != nil {
+		t.Fatalf("Failed to create admin user: %v", err)
+	}
+	cfg := &config.Config{
+		Admin: config.AdminConfig{TelegramID: adminTelegramID},
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("PUT", "/api/admin/words/abc", strings.NewReader("definition=ok"))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req = req.WithContext(context.WithValue(context.WithValue(req.Context(), userIDKey, adminUser.ID), userRoleKey, "admin"))
+	w := httptest.NewRecorder()
+	router.RequireAdmin(router.handleAdminWord)(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("Expected status 400, got %d", w.Code)
+	}
+}
+
+func TestHandleAdminWord_DeleteNotFound(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	adminTelegramID := int64(123456789)
+	adminUser, err := userRepo.GetOrCreateUser(adminTelegramID)
+	if err != nil {
+		t.Fatalf("Failed to create admin user: %v", err)
+	}
+	cfg := &config.Config{
+		Admin: config.AdminConfig{TelegramID: adminTelegramID},
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("DELETE", "/api/admin/words/99999", nil)
+	req = req.WithContext(context.WithValue(context.WithValue(req.Context(), userIDKey, adminUser.ID), userRoleKey, "admin"))
+	w := httptest.NewRecorder()
+	router.RequireAdmin(router.handleAdminWord)(w, req)
+
+	if w.Code != http.StatusNotFound {
+		t.Errorf("Expected status 404, got %d", w.Code)
+	}
+}
+
+func TestHandleAdminUsers_WrongMethod(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	adminTelegramID := int64(123456789)
+	adminUser, err := userRepo.GetOrCreateUser(adminTelegramID)
+	if err != nil {
+		t.Fatalf("Failed to create admin user: %v", err)
+	}
+	cfg := &config.Config{
+		Admin: config.AdminConfig{TelegramID: adminTelegramID},
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("POST", "/api/admin/users", nil)
+	req = req.WithContext(context.WithValue(context.WithValue(req.Context(), userIDKey, adminUser.ID), userRoleKey, "admin"))
+	w := httptest.NewRecorder()
+	router.RequirePermission(PermissionUsersReadAll)(router.handleAdminUsers)(w, req)
+
+	if w.Code != http.StatusMethodNotAllowed {
+		t.Errorf("Expected status 405, got %d", w.Code)
+	}
+}
+
+func TestHandleAdminTraining_WordRequired(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	adminTelegramID := int64(123456789)
+	adminUser, err := userRepo.GetOrCreateUser(adminTelegramID)
+	if err != nil {
+		t.Fatalf("Failed to create admin user: %v", err)
+	}
+	cfg := &config.Config{
+		Admin: config.AdminConfig{TelegramID: adminTelegramID},
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("GET", "/api/admin/training/", nil)
+	req.URL.Path = "/api/admin/training/"
+	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	ctx = context.WithValue(ctx, userPermissionsKey, []string{string(PermissionWordsReadAll)})
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+	router.handleAdminTraining(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("Expected status 400, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+func TestHandleAdminTraining_ForbiddenNoPermission(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	nonAdmin, err := userRepo.GetOrCreateUser(999888777)
+	if err != nil {
+		t.Fatalf("Failed to create user: %v", err)
+	}
+	cfg := &config.Config{
+		Admin: config.AdminConfig{TelegramID: 123456789},
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("GET", "/api/admin/training/hello", nil)
+	ctx := context.WithValue(req.Context(), userIDKey, nonAdmin.ID)
+	ctx = context.WithValue(ctx, userPermissionsKey, []string{}) // no permissions
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+	router.handleAdminTraining(w, req)
+
+	if w.Code != http.StatusForbidden {
+		t.Errorf("Expected status 403, got %d", w.Code)
+	}
+}
+
+func TestHandleAdminTrainingCard_InvalidCardID(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	adminTelegramID := int64(123456789)
+	adminUser, err := userRepo.GetOrCreateUser(adminTelegramID)
+	if err != nil {
+		t.Fatalf("Failed to create admin user: %v", err)
+	}
+	cfg := &config.Config{
+		Admin: config.AdminConfig{TelegramID: adminTelegramID},
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("DELETE", "/api/admin/training/card/notanid", nil)
+	req.URL.Path = "/api/admin/training/card/notanid"
+	req = req.WithContext(context.WithValue(context.WithValue(req.Context(), userIDKey, adminUser.ID), userRoleKey, "admin"))
+	w := httptest.NewRecorder()
+	router.RequirePermission(PermissionWordsEditAll)(router.handleAdminTrainingCard)(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("Expected status 400, got %d", w.Code)
+	}
+}
+
+func TestHandleAdminAppSettings_MethodNotAllowed(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	_, _ = userRepo.GetOrCreateUser(12345)
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+
+	req := httptest.NewRequest("POST", "/api/admin/app-settings", nil)
+	w := httptest.NewRecorder()
+	router.handleAdminAppSettings(w, req)
+
+	if w.Code != http.StatusMethodNotAllowed {
+		t.Errorf("Expected status 405, got %d", w.Code)
+	}
+}

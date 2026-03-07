@@ -146,3 +146,39 @@ func TestHandleVocabDelete_InvalidRequest(t *testing.T) {
 		t.Errorf("Expected status 400, got %d", w.Code)
 	}
 }
+
+func TestHandleVocabWordCards_WordNotFound(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo := setupVocabCardsTestDB(t)
+
+	user, err := userRepo.GetOrCreateUser(454545)
+	if err != nil {
+		t.Fatalf("Failed to create user: %v", err)
+	}
+
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{
+			JWTSecret:       "test-secret",
+			JWTTTLHours:    24,
+			RefreshTTLHours: 720,
+		},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+
+	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("GET", "/api/vocab/nonexistentlemma123/cards", nil)
+	ctx := context.WithValue(req.Context(), userIDKey, user.ID)
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+
+	router.handleVocabDelete(w, req)
+
+	if w.Code != http.StatusNotFound {
+		t.Errorf("Expected status 404, got %d: %s", w.Code, w.Body.String())
+	}
+}

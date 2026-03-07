@@ -659,3 +659,89 @@ func TestHandleAdminAccessCategoryUsers_MethodNotAllowed(t *testing.T) {
 		t.Errorf("Expected status 405, got %d", rr.Code)
 	}
 }
+
+func TestHandleAdminAccessCategoryPermissions_Get(t *testing.T) {
+	router, db, logger, adminUserID, cleanup := setupAdminAccessTest(t)
+	defer cleanup()
+
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db.GetConnection(), logger)
+	categoryID, err := accessCategoryRepo.CreateCategory(&models.UserAccessCategory{Name: "PermCat"})
+	if err != nil {
+		t.Fatalf("CreateCategory: %v", err)
+	}
+	_ = accessCategoryRepo.SetCategoryPermissions(categoryID, []string{"words.read_all"})
+
+	req := httptest.NewRequest("GET", "/api/admin/access/categories/1/permissions", nil)
+	req = setAdminContext(req, adminUserID)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminAccessCategoryPermissions(rr, req, categoryID)
+
+	if rr.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", rr.Code, rr.Body.String())
+	}
+	var resp struct {
+		Permissions []string `json:"permissions"`
+	}
+	if err := json.NewDecoder(rr.Body).Decode(&resp); err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+	if len(resp.Permissions) == 0 {
+		t.Error("Expected permissions in response")
+	}
+}
+
+func TestHandleAdminAccessCategoryPermissions_InvalidPermission(t *testing.T) {
+	router, db, logger, adminUserID, cleanup := setupAdminAccessTest(t)
+	defer cleanup()
+
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db.GetConnection(), logger)
+	categoryID, err := accessCategoryRepo.CreateCategory(&models.UserAccessCategory{Name: "InvalidPermCat"})
+	if err != nil {
+		t.Fatalf("CreateCategory: %v", err)
+	}
+
+	body, _ := json.Marshal(map[string]interface{}{"permissions": []string{"invalid.permission"}})
+	req := httptest.NewRequest("PUT", "/api/admin/access/categories/1/permissions", bytes.NewReader(body))
+	req.Header.Set("Content-Type", "application/json")
+	req = setAdminContext(req, adminUserID)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminAccessCategoryPermissions(rr, req, categoryID)
+
+	if rr.Code != http.StatusBadRequest {
+		t.Errorf("Expected status 400, got %d: %s", rr.Code, rr.Body.String())
+	}
+}
+
+func TestHandleAdminAccessUsers_InvalidUserID(t *testing.T) {
+	router, _, _, adminUserID, cleanup := setupAdminAccessTest(t)
+	defer cleanup()
+
+	req := httptest.NewRequest("GET", "/api/admin/access/users/notanid", nil)
+	req.URL.Path = "/api/admin/access/users/notanid"
+	req = setAdminContext(req, adminUserID)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminAccessUsers(rr, req)
+
+	if rr.Code != http.StatusBadRequest {
+		t.Errorf("Expected status 400, got %d: %s", rr.Code, rr.Body.String())
+	}
+}
+
+func TestHandleAdminAccessUsers_MethodNotAllowed(t *testing.T) {
+	router, _, _, adminUserID, cleanup := setupAdminAccessTest(t)
+	defer cleanup()
+
+	req := httptest.NewRequest("POST", "/api/admin/access/users/1", nil)
+	req.URL.Path = "/api/admin/access/users/1"
+	req = setAdminContext(req, adminUserID)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminAccessUsers(rr, req)
+
+	if rr.Code != http.StatusMethodNotAllowed {
+		t.Errorf("Expected status 405, got %d", rr.Code)
+	}
+}

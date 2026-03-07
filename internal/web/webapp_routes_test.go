@@ -240,3 +240,21 @@ func TestSetupWebappRoutes_CalledFromNewRouter(t *testing.T) {
 		t.Errorf("Expected 200 or redirect, got %d", w.Code)
 	}
 }
+
+// TestSetupWebappRoutes_NoPanic verifies that setupWebappRoutes can be called directly without panicking.
+func TestSetupWebappRoutes_NoPanic(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{
+			JWTSecret:        "test-secret",
+			ViteDevServerURL: "http://localhost:5173",
+		},
+	}
+	router := &Router{
+		mux:    http.NewServeMux(),
+		logger: logger,
+		config: cfg,
+	}
+	router.setupWebappRoutes()
+	// If we get here without panic, the test passes
+}

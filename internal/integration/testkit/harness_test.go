@@ -120,3 +120,111 @@ func TestHarness_AssertReviewEventsCount_NonZero(t *testing.T) {
 	}
 	AssertReviewEventsCount(t, conn, user.ID, 1)
 }
+
+// TestNewHarness_AndAuthAsUser covers NewHarness (including StartPostgres) and AuthAsUser.
+func TestNewHarness_AndAuthAsUser(t *testing.T) {
+	h := NewHarness(t)
+	if h == nil || h.DB == nil || h.Router == nil {
+		t.Fatal("NewHarness: expected non-nil Harness, DB and Router")
+	}
+	token := h.AuthAsUser(11111)
+	if token == "" || token[:7] != "Bearer " {
+		t.Errorf("AuthAsUser: expected Bearer token, got %q", token)
+	}
+}
+
+func TestUserFixture_CreatesOrReturnsUser(t *testing.T) {
+	h := NewHarness(t)
+	conn := h.GetConnection().GetConnection()
+	u := UserFixture(t, conn, 55555)
+	if u == nil || u.ID == 0 {
+		t.Fatal("UserFixture: expected non-nil user with ID")
+	}
+	if u.TelegramID != 55555 {
+		t.Errorf("UserFixture: telegram_id want 55555, got %d", u.TelegramID)
+	}
+	// idempotent: same telegram ID returns same user
+	u2 := UserFixture(t, conn, 55555)
+	if u2.ID != u.ID {
+		t.Errorf("UserFixture: same telegram_id should return same user, got id %d vs %d", u2.ID, u.ID)
+	}
+}
+
+func TestWordFixture_CreatesWordAndTrainingCard(t *testing.T) {
+	h := NewHarness(t)
+	conn := h.GetConnection().GetConnection()
+	wordCardID, trainingCardIDs := WordFixture(t, conn, "unit-word", "unit def", "юнит-слово")
+	if wordCardID == 0 {
+		t.Fatal("WordFixture: expected non-zero word_card_id")
+	}
+	if len(trainingCardIDs) == 0 {
+		t.Fatal("WordFixture: expected at least one training_card_id")
+	}
+	var wordEN string
+	err := conn.QueryRow(`SELECT word FROM word_cards WHERE id = $1`, wordCardID).Scan(&wordEN)
+	if err != nil {
+		t.Fatalf("WordFixture: word_cards row: %v", err)
+	}
+	if wordEN != "unit-word" {
+		t.Errorf("WordFixture: word want unit-word, got %q", wordEN)
+	}
+}
+
+func TestTrainingDeckFixture_CreatesDeck(t *testing.T) {
+	h := NewHarness(t)
+	conn := h.GetConnection().GetConnection()
+	user := UserFixture(t, conn, 44444)
+	wordCardIDs, trainingCardIDs := TrainingDeckFixture(t, conn, user.ID, 3)
+	if len(wordCardIDs) != 3 || len(trainingCardIDs) != 3 {
+		t.Errorf("TrainingDeckFixture(3): want 3 word cards and 3 training cards, got %d, %d", len(wordCardIDs), len(trainingCardIDs))
+	}
+	var count int
+	err := conn.QueryRow(`SELECT COUNT(*) FROM user_cards WHERE user_id = $1`, user.ID).Scan(&count)
+	if err != nil {
+		t.Fatalf("TrainingDeckFixture: count user_cards: %v", err)
+	}
+	// 3 words × 2 directions = 6 user_cards
+	if count < 6 {
+		t.Errorf("TrainingDeckFixture: want at least 6 user_cards, got %d", count)
+	}
+}
+
+func TestGrammarPublishFixture_PublishesChapters(t *testing.T) {
+	h := NewHarness(t)
+	conn := h.GetConnection().GetConnection()
+	GrammarPublishFixture(t, conn, "sec-1", []string{"ch-a", "ch-b"})
+	var n int
+	err := conn.QueryRow(`SELECT COUNT(*) FROM grammar_published_items WHERE item_type = 'chapter' AND item_id IN ('ch-a','ch-b') AND is_published = 1`).Scan(&n)
+	if err != nil {
+		t.Fatalf("GrammarPublishFixture: query: %v", err)
+	}
+	if n != 2 {
+		t.Errorf("GrammarPublishFixture: want 2 published chapters, got %d", n)
+	}
+	err = conn.QueryRow(`SELECT COUNT(*) FROM grammar_published_items WHERE item_type = 'section' AND item_id = 'sec-1' AND is_published = 1`).Scan(&n)
+	if err != nil {
+		t.Fatalf("GrammarPublishFixture section: %v", err)
+	}
+	if n != 1 {
+		t.Errorf("GrammarPublishFixture: want 1 published section, got %d", n)
+	}
+}
+
+func TestGrammarProgressFixture_CreatesProgress(t *testing.T) {
+	h := NewHarness(t)
+	conn := h.GetConnection().GetConnection()
+	user := UserFixture(t, conn, 33333)
+	GrammarProgressFixture(t, conn, user.ID, "ch-progress", 75, true)
+	var bestScore int
+	var passedAt interface{}
+	err := conn.QueryRow(`SELECT best_score, passed_at FROM grammar_progress WHERE user_id = $1 AND chapter_id = 'ch-progress'`, user.ID).Scan(&bestScore, &passedAt)
+	if err != nil {
+		t.Fatalf("GrammarProgressFixture: query: %v", err)
+	}
+	if bestScore != 75 {
+		t.Errorf("GrammarProgressFixture: best_score want 75, got %d", bestScore)
+	}
+	if passedAt == nil {
+		t.Error("GrammarProgressFixture: passed_at should be set when passed=true")
+	}
+}

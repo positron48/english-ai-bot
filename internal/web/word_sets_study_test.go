@@ -228,3 +228,83 @@ func TestHandleLearningWordsSetStudyLearnAndKnow_Flow(t *testing.T) {
 		t.Fatalf("expected user cards to be deleted by know action, got %d", cardsAfterKnow)
 	}
 }
+
+func TestHandleLearningWordsSetDetail_Unauthorized(t *testing.T) {
+	router, _, cleanup := setupWordSetsRouter(t)
+	defer cleanup()
+
+	wordSetRepo := repository.NewWordSetRepository(router.db, router.logger)
+	setID, err := wordSetRepo.CreateWordSet(&models.WordSet{Title: "Detail Set", IsPublished: true})
+	if err != nil {
+		t.Fatalf("CreateWordSet: %v", err)
+	}
+
+	req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/api/learning/words/sets/%d", setID), nil)
+	w := httptest.NewRecorder()
+	router.handleLearningWordsSetDetail(w, req)
+
+	if w.Code != http.StatusUnauthorized {
+		t.Errorf("Expected status 401, got %d", w.Code)
+	}
+}
+
+func TestHandleLearningWordsSetStudy_Unauthorized(t *testing.T) {
+	router, _, cleanup := setupWordSetsRouter(t)
+	defer cleanup()
+
+	_, setID, wordCardID := createWordSetStudyFixture(t, router)
+	req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/api/learning/words/sets/%d/study?word_card_id=%d", setID, wordCardID), nil)
+	w := httptest.NewRecorder()
+	router.handleLearningWordsSetStudy(w, req)
+
+	if w.Code != http.StatusUnauthorized {
+		t.Errorf("Expected status 401, got %d", w.Code)
+	}
+}
+
+func TestHandleLearningWordsSetStudy_MethodNotAllowed(t *testing.T) {
+	router, _, cleanup := setupWordSetsRouter(t)
+	defer cleanup()
+
+	userID, setID, wordCardID := createWordSetStudyFixture(t, router)
+	req := httptest.NewRequest(http.MethodPost, fmt.Sprintf("/api/learning/words/sets/%d/study?word_card_id=%d", setID, wordCardID), nil)
+	req = setUserIDInContext(req, userID)
+	w := httptest.NewRecorder()
+	router.handleLearningWordsSetStudy(w, req)
+
+	if w.Code != http.StatusMethodNotAllowed {
+		t.Errorf("Expected status 405, got %d", w.Code)
+	}
+}
+
+func TestHandleLearningWordsSetStudyLearn_Unauthorized(t *testing.T) {
+	router, _, cleanup := setupWordSetsRouter(t)
+	defer cleanup()
+
+	_, setID, wordCardID := createWordSetStudyFixture(t, router)
+	body := []byte(fmt.Sprintf(`{"word_card_id":%d}`, wordCardID))
+	req := httptest.NewRequest(http.MethodPost, fmt.Sprintf("/api/learning/words/sets/%d/study/learn", setID), bytes.NewReader(body))
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+	router.handleLearningWordsSetStudyLearn(w, req)
+
+	if w.Code != http.StatusUnauthorized {
+		t.Errorf("Expected status 401, got %d", w.Code)
+	}
+}
+
+func TestHandleLearningWordsSetStudyKnow_Unauthorized(t *testing.T) {
+	router, _, cleanup := setupWordSetsRouter(t)
+	defer cleanup()
+
+	_, setID, wordCardID := createWordSetStudyFixture(t, router)
+	body := []byte(fmt.Sprintf(`{"word_card_id":%d}`, wordCardID))
+	req := httptest.NewRequest(http.MethodPost, fmt.Sprintf("/api/learning/words/sets/%d/study/know", setID), bytes.NewReader(body))
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+	router.handleLearningWordsSetStudyKnow(w, req)
+
+	if w.Code != http.StatusUnauthorized {
+		t.Errorf("Expected status 401, got %d", w.Code)
+	}
+}

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"tgbot-skeleton/internal/config"
@@ -339,6 +340,76 @@ func TestHandleDBQuery_Disabled(t *testing.T) {
 
 	if w.Code != http.StatusForbidden {
 		t.Fatalf("expected 403, got %d", w.Code)
+	}
+}
+
+func TestHandleDBQuery_MethodNotAllowed(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	cfg := &config.Config{}
+	cfg.Admin.DBQueryAccess = true
+	router := NewRouter(logger, cfg, db.GetConnection(), nil, nil, nil, nil)
+
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/db-query", nil)
+	w := httptest.NewRecorder()
+	router.handleDBQuery(w, req)
+
+	if w.Code != http.StatusMethodNotAllowed {
+		t.Fatalf("expected 405, got %d", w.Code)
+	}
+}
+
+func TestHandleDBQuery_InvalidJSON(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	cfg := &config.Config{}
+	cfg.Admin.DBQueryAccess = true
+	router := NewRouter(logger, cfg, db.GetConnection(), nil, nil, nil, nil)
+
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/db-query", bytes.NewBufferString("not json"))
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+	router.handleDBQuery(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Fatalf("expected 400, got %d", w.Code)
+	}
+}
+
+func TestHandleDBQuery_EmptyQuery(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	cfg := &config.Config{}
+	cfg.Admin.DBQueryAccess = true
+	router := NewRouter(logger, cfg, db.GetConnection(), nil, nil, nil, nil)
+
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/db-query", bytes.NewBufferString(`{"query":""}`))
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+	router.handleDBQuery(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Fatalf("expected 400, got %d", w.Code)
+	}
+}
+
+func TestHandleDBQuery_ForbiddenSQL(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	cfg := &config.Config{}
+	cfg.Admin.DBQueryAccess = true
+	router := NewRouter(logger, cfg, db.GetConnection(), nil, nil, nil, nil)
+
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/db-query", bytes.NewBufferString(`{"query":"DROP TABLE users"}`))
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+	router.handleDBQuery(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Fatalf("expected 400, got %d", w.Code)
+	}
+	if body := w.Body.String(); body != "" && !strings.Contains(body, "Forbidden") && !strings.Contains(body, "forbidden") {
+		t.Logf("response body: %s", body)
 	}
 }
 

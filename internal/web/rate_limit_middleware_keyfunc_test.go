@@ -3,6 +3,7 @@ package web
 import (
 	"context"
 	"net/http/httptest"
+	"strings"
 	"testing"
 )
 
@@ -47,6 +48,27 @@ func TestKeyFuncIPAndUsername(t *testing.T) {
 	key := KeyFuncIPAndUsername(req)
 	if key != "ip:172.16.0.1:user:testuser" {
 		t.Errorf("Expected key 'ip:172.16.0.1:user:testuser', got %q", key)
+	}
+}
+
+func TestKeyFuncIPAndUsername_NoUsername(t *testing.T) {
+	req := httptest.NewRequest("POST", "/test", nil)
+	req.RemoteAddr = "10.0.0.2:8080"
+
+	key := KeyFuncIPAndUsername(req)
+	if key != "ip:10.0.0.2" {
+		t.Errorf("Expected key 'ip:10.0.0.2', got %q", key)
+	}
+}
+
+func TestKeyFuncIPAndUsername_UsernameFromJSONBody(t *testing.T) {
+	req := httptest.NewRequest("POST", "/test", strings.NewReader(`{"username":"jsonuser"}`))
+	req.RemoteAddr = "192.168.1.10:443"
+	req.Header.Set("Content-Type", "application/json")
+
+	key := KeyFuncIPAndUsername(req)
+	if key != "ip:192.168.1.10:user:jsonuser" {
+		t.Errorf("Expected key 'ip:192.168.1.10:user:jsonuser', got %q", key)
 	}
 }
 

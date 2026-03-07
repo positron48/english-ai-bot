@@ -109,3 +109,89 @@ func TestHandleAdminTTS_RegenerateRequiresEditPermission(t *testing.T) {
 		t.Fatalf("expected 403, got %d", w.Code)
 	}
 }
+
+func TestHandleAdminTTS_ServiceUnavailable(t *testing.T) {
+	logger := zap.NewNop()
+	db := testutil.SetupTestDB(t)
+	cfg := &config.Config{WebApp: config.WebAppConfig{JWTSecret: "test-secret"}}
+	userRepo := repository.NewUserRepository(db, logger)
+	accessRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.accessCategoryRepo = accessRepo
+	// pronunciationService is nil
+
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/tts/word", nil)
+	ctx := context.WithValue(req.Context(), userIDKey, int64(1))
+	ctx = context.WithValue(ctx, userCategoriesKey, []int64{})
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+
+	router.handleAdminTTS(w, req)
+	if w.Code != http.StatusServiceUnavailable {
+		t.Fatalf("expected 503, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+func TestHandleAdminTTS_WordRequired(t *testing.T) {
+	router, userRepo, accessRepo := setupAdminTTSRouter(t)
+	user, err := userRepo.GetOrCreateUser(1003)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser() error = %v", err)
+	}
+	categories := grantCategory(t, accessRepo, user.ID, string(PermissionWordsReadAll))
+
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/tts/", nil)
+	req.URL.Path = "/api/admin/tts/"
+	ctx := context.WithValue(req.Context(), userIDKey, user.ID)
+	ctx = context.WithValue(ctx, userCategoriesKey, categories)
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+
+	router.handleAdminTTS(w, req)
+	if w.Code != http.StatusBadRequest {
+		t.Fatalf("expected 400, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+func TestHandleAdminTTS_GetWithActionMethodNotAllowed(t *testing.T) {
+	router, userRepo, accessRepo := setupAdminTTSRouter(t)
+	user, err := userRepo.GetOrCreateUser(1004)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser() error = %v", err)
+	}
+	categories := grantCategory(t, accessRepo, user.ID, string(PermissionWordsReadAll))
+
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/tts/word/recheck", nil)
+	req.URL.Path = "/api/admin/tts/word/recheck"
+	ctx := context.WithValue(req.Context(), userIDKey, user.ID)
+	ctx = context.WithValue(ctx, userCategoriesKey, categories)
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+
+	router.handleAdminTTS(w, req)
+	if w.Code != http.StatusMethodNotAllowed {
+		t.Fatalf("expected 405, got %d", w.Code)
+	}
+}
+
+func TestHandleAdminTTS_PostWrongActionMethodNotAllowed(t *testing.T) {
+	router, userRepo, accessRepo := setupAdminTTSRouter(t)
+	user, err := userRepo.GetOrCreateUser(1005)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser() error = %v", err)
+	}
+	categories := grantCategory(t, accessRepo, user.ID, string(PermissionWordsEditAll))
+
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/tts/word/unknown", nil)
+	req.URL.Path = "/api/admin/tts/word/unknown"
+	ctx := context.WithValue(req.Context(), userIDKey, user.ID)
+	ctx = context.WithValue(ctx, userCategoriesKey, categories)
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+
+	router.handleAdminTTS(w, req)
+	if w.Code != http.StatusMethodNotAllowed {
+		t.Fatalf("expected 405, got %d", w.Code)
+	}
+}
