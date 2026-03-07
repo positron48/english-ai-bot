@@ -2,12 +2,17 @@ package repository
 
 import (
 	"database/sql"
+	"fmt"
+	"strings"
 	"testing"
 
 	"tgbot-skeleton/internal/testutil"
 
+	"github.com/DATA-DOG/go-sqlmock"
 	"go.uber.org/zap"
 )
+
+const invalidDSN = "postgres://x:x@invalid.invalid:1/db?connect_timeout=1"
 
 func setupUserTestDB(t *testing.T) *sql.DB {
 	return testutil.SetupTestDB(t)
@@ -301,5 +306,184 @@ func TestUserRepository_GetAllUsers(t *testing.T) {
 	}
 	if len(users) < 3 {
 		t.Errorf("Expected at least 3 users, got %d", len(users))
+	}
+}
+
+func TestUserRepository_GetOrCreateUser_Error(t *testing.T) {
+	testutil.SetupTestDB(t)
+	db, err := sql.Open("postgres_compat", invalidDSN)
+	if err != nil {
+		t.Skip("postgres_compat driver not registered or open failed:", err)
+	}
+	defer db.Close()
+	repo := NewUserRepository(db, zap.NewNop())
+	_, err = repo.GetOrCreateUser(12345)
+	if err == nil {
+		t.Error("GetOrCreateUser() expected error with invalid DSN")
+	}
+}
+
+// TestUserRepository_GetOrCreateUser_InsertError covers the branch when GetUserByTelegramID
+// returns nil,nil but InsertAndReturnID fails.
+func TestUserRepository_GetOrCreateUser_InsertError(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("sqlmock.New: %v", err)
+	}
+	defer db.Close()
+
+	telegramID := int64(88888)
+	// GetUserByTelegramID: no existing user
+	mock.ExpectQuery("SELECT .+ FROM users WHERE telegram_id").
+		WithArgs(telegramID).
+		WillReturnError(sql.ErrNoRows)
+	// InsertAndReturnID: INSERT fails
+	mock.ExpectQuery("INSERT INTO users .+ RETURNING id").
+		WithArgs(telegramID).
+		WillReturnError(fmt.Errorf("duplicate key"))
+
+	repo := NewUserRepository(db, zap.NewNop())
+	_, err = repo.GetOrCreateUser(telegramID)
+	if err == nil {
+		t.Error("GetOrCreateUser() expected error when insert fails")
+	}
+	if err != nil && !strings.Contains(err.Error(), "failed to create user") {
+		t.Errorf("expected 'failed to create user' wrapped error, got: %v", err)
+	}
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("mock expectations: %v", err)
+	}
+}
+
+func TestUserRepository_GetUserByID_Error(t *testing.T) {
+	testutil.SetupTestDB(t)
+	db, err := sql.Open("postgres_compat", invalidDSN)
+	if err != nil {
+		t.Skip("postgres_compat driver not registered or open failed:", err)
+	}
+	defer db.Close()
+	repo := NewUserRepository(db, zap.NewNop())
+	_, err = repo.GetUserByID(1)
+	if err == nil {
+		t.Error("GetUserByID() expected error with invalid DSN")
+	}
+}
+
+func TestUserRepository_GetUserByTelegramID_Error(t *testing.T) {
+	testutil.SetupTestDB(t)
+	db, err := sql.Open("postgres_compat", invalidDSN)
+	if err != nil {
+		t.Skip("postgres_compat driver not registered or open failed:", err)
+	}
+	defer db.Close()
+	repo := NewUserRepository(db, zap.NewNop())
+	_, err = repo.GetUserByTelegramID(12345)
+	if err == nil {
+		t.Error("GetUserByTelegramID() expected error with invalid DSN")
+	}
+}
+
+func TestUserRepository_UpdateUserSettings_Error(t *testing.T) {
+	testutil.SetupTestDB(t)
+	db, err := sql.Open("postgres_compat", invalidDSN)
+	if err != nil {
+		t.Skip("postgres_compat driver not registered or open failed:", err)
+	}
+	defer db.Close()
+	repo := NewUserRepository(db, zap.NewNop())
+	err = repo.UpdateUserSettings(1, `{}`)
+	if err == nil {
+		t.Error("UpdateUserSettings() expected error with invalid DSN")
+	}
+}
+
+func TestUserRepository_UpdateUserPreferredTime_Error(t *testing.T) {
+	testutil.SetupTestDB(t)
+	db, err := sql.Open("postgres_compat", invalidDSN)
+	if err != nil {
+		t.Skip("postgres_compat driver not registered or open failed:", err)
+	}
+	defer db.Close()
+	repo := NewUserRepository(db, zap.NewNop())
+	err = repo.UpdateUserPreferredTime(1, "09:00")
+	if err == nil {
+		t.Error("UpdateUserPreferredTime() expected error with invalid DSN")
+	}
+}
+
+func TestUserRepository_GetUserByUsernameOrID_Error(t *testing.T) {
+	testutil.SetupTestDB(t)
+	db, err := sql.Open("postgres_compat", invalidDSN)
+	if err != nil {
+		t.Skip("postgres_compat driver not registered or open failed:", err)
+	}
+	defer db.Close()
+	repo := NewUserRepository(db, zap.NewNop())
+
+	t.Run("by_numeric_id", func(t *testing.T) {
+		_, err := repo.GetUserByUsernameOrID("12345")
+		if err == nil {
+			t.Error("GetUserByUsernameOrID(numeric) expected error with invalid DSN")
+		}
+	})
+	t.Run("by_username", func(t *testing.T) {
+		_, err := repo.GetUserByUsernameOrID("someuser")
+		if err == nil {
+			t.Error("GetUserByUsernameOrID(username) expected error with invalid DSN")
+		}
+	})
+}
+
+func TestUserRepository_UpdateUsername_Error(t *testing.T) {
+	testutil.SetupTestDB(t)
+	db, err := sql.Open("postgres_compat", invalidDSN)
+	if err != nil {
+		t.Skip("postgres_compat driver not registered or open failed:", err)
+	}
+	defer db.Close()
+	repo := NewUserRepository(db, zap.NewNop())
+	err = repo.UpdateUsername(12345, "user")
+	if err == nil {
+		t.Error("UpdateUsername() expected error with invalid DSN")
+	}
+}
+
+func TestUserRepository_GetAllUsers_Error(t *testing.T) {
+	testutil.SetupTestDB(t)
+	db, err := sql.Open("postgres_compat", invalidDSN)
+	if err != nil {
+		t.Skip("postgres_compat driver not registered or open failed:", err)
+	}
+	defer db.Close()
+	repo := NewUserRepository(db, zap.NewNop())
+	_, err = repo.GetAllUsers()
+	if err == nil {
+		t.Error("GetAllUsers() expected error with invalid DSN")
+	}
+}
+
+// TestUserRepository_GetAllUsers_ScanError covers the branch when rows.Scan fails.
+func TestUserRepository_GetAllUsers_ScanError(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("sqlmock.New: %v", err)
+	}
+	defer db.Close()
+
+	// Query returns rows with bad type so Scan fails (e.g. text in id column)
+	cols := []string{"id", "telegram_id", "telegram_username", "timezone", "preferred_training_time", "settings_json", "created_at", "updated_at"}
+	mock.ExpectQuery("SELECT .+ FROM users ORDER BY id").
+		WillReturnRows(sqlmock.NewRows(cols).AddRow("not_an_int", int64(1), "", "", "", "", "2024-01-01 12:00:00", "2024-01-01 12:00:00"))
+
+	repo := NewUserRepository(db, zap.NewNop())
+	_, err = repo.GetAllUsers()
+	if err == nil {
+		t.Error("GetAllUsers() expected error when scan fails")
+	}
+	if err != nil && !strings.Contains(err.Error(), "failed to scan user") {
+		t.Errorf("expected 'failed to scan user' error, got: %v", err)
+	}
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("mock expectations: %v", err)
 	}
 }

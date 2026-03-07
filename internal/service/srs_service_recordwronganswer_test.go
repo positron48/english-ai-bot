@@ -2,6 +2,7 @@ package service
 
 import (
 	"encoding/json"
+	"errors"
 	"testing"
 	"time"
 
@@ -86,6 +87,87 @@ func TestSRSService_RecordWrongAnswer_ExistingOption(t *testing.T) {
 	}
 	if wrongAnswers[0].Count != 3 {
 		t.Errorf("Expected count 3, got %d", wrongAnswers[0].Count)
+	}
+}
+
+func TestSRSService_RecordWrongAnswer_InvalidJSON_FallsBackToEmptySlice(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	service := NewSRSService(nil, logger)
+
+	card := &models.UserCard{
+		WrongAnswersJSON: `not valid json`,
+	}
+
+	err := service.RecordWrongAnswer(card, "option1")
+	if err != nil {
+		t.Fatalf("RecordWrongAnswer() error = %v", err)
+	}
+
+	var wrongAnswers []struct {
+		Option string `json:"option"`
+		Count  int    `json:"count"`
+	}
+	if err := json.Unmarshal([]byte(card.WrongAnswersJSON), &wrongAnswers); err != nil {
+		t.Fatalf("Failed to unmarshal: %v", err)
+	}
+	if len(wrongAnswers) != 1 {
+		t.Errorf("Expected 1 wrong answer after invalid JSON fallback, got %d", len(wrongAnswers))
+	}
+	if wrongAnswers[0].Option != "option1" || wrongAnswers[0].Count != 1 {
+		t.Errorf("Expected option1 count 1, got %q count %d", wrongAnswers[0].Option, wrongAnswers[0].Count)
+	}
+}
+
+func TestSRSService_RecordWrongAnswer_MarshalError(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	service := NewSRSService(nil, logger)
+	service.marshalJSONFunc = func(_ interface{}) ([]byte, error) {
+		return nil, errors.New("marshal fail")
+	}
+
+	card := &models.UserCard{WrongAnswersJSON: ""}
+	err := service.RecordWrongAnswer(card, "x")
+	if err == nil {
+		t.Fatal("Expected error when marshal fails")
+	}
+	if card.WrongAnswersJSON != "" {
+		t.Error("WrongAnswersJSON should not be set on marshal error")
+	}
+}
+
+func TestSRSService_RecordWrongAnswer_NewOptionAppendedWhenExistingOthers(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	service := NewSRSService(nil, logger)
+
+	existingJSON := `[{"option":"other","ts":"2024-01-01T00:00:00Z","count":1}]`
+	card := &models.UserCard{
+		WrongAnswersJSON: existingJSON,
+	}
+
+	err := service.RecordWrongAnswer(card, "newoption")
+	if err != nil {
+		t.Fatalf("RecordWrongAnswer() error = %v", err)
+	}
+
+	var wrongAnswers []struct {
+		Option string `json:"option"`
+		Count  int    `json:"count"`
+	}
+	if err := json.Unmarshal([]byte(card.WrongAnswersJSON), &wrongAnswers); err != nil {
+		t.Fatalf("Failed to unmarshal: %v", err)
+	}
+	if len(wrongAnswers) != 2 {
+		t.Errorf("Expected 2 wrong answers (existing + new), got %d", len(wrongAnswers))
+	}
+	var foundNew bool
+	for _, wa := range wrongAnswers {
+		if wa.Option == "newoption" && wa.Count == 1 {
+			foundNew = true
+			break
+		}
+	}
+	if !foundNew {
+		t.Error("Expected newoption with count 1 to be appended")
 	}
 }
 

@@ -14,8 +14,17 @@ import (
 
 // SRSService handles SRS algorithm and card state updates
 type SRSService struct {
-	userCardRepo *repository.UserCardRepository
-	logger       *zap.Logger
+	userCardRepo      *repository.UserCardRepository
+	logger            *zap.Logger
+	learningStepsFunc func(models.CardDirection) []int // optional; if nil, models.LearningStepsDays is used (for tests to cover single-step paths)
+	marshalJSONFunc   func(interface{}) ([]byte, error) // optional; if nil, json.Marshal is used (for tests to cover error path)
+}
+
+func (s *SRSService) learningSteps(d models.CardDirection) []int {
+	if s.learningStepsFunc != nil {
+		return s.learningStepsFunc(d)
+	}
+	return models.LearningStepsDays(d)
 }
 
 // NewSRSService creates a new SRS service
@@ -97,7 +106,7 @@ func (s *SRSService) handleLapse(card *models.UserCard, now time.Time) {
 	// or if card is already in learning
 	if card.State == models.StateLearning {
 		// Already in learning - stay on current step
-		steps := models.LearningStepsDays(card.Direction)
+		steps := s.learningSteps(card.Direction)
 		currentStep := card.LearningStep
 		if currentStep >= len(steps) {
 			currentStep = len(steps) - 1
@@ -130,7 +139,7 @@ func (s *SRSService) handleLapse(card *models.UserCard, now time.Time) {
 			card.State = models.StateLearning
 			card.LearningStep = 0
 			card.Reps = 0
-			steps := models.LearningStepsDays(card.Direction)
+			steps := s.learningSteps(card.Direction)
 			nextDue = now.Add(time.Duration(steps[0]) * 24 * time.Hour)
 			card.NextDueAt = &nextDue
 		}
@@ -141,7 +150,7 @@ func (s *SRSService) handleLapse(card *models.UserCard, now time.Time) {
 	if card.State == models.StateNew {
 		card.State = models.StateLearning
 		card.LearningStep = 0
-		steps := models.LearningStepsDays(card.Direction)
+		steps := s.learningSteps(card.Direction)
 		nextDue := now.Add(time.Duration(steps[0]) * 24 * time.Hour)
 		card.NextDueAt = &nextDue
 		return
@@ -153,7 +162,7 @@ func (s *SRSService) handleNew(card *models.UserCard, quality models.Quality, no
 	card.State = models.StateLearning
 	card.LearningStep = 0
 	
-	steps := models.LearningStepsDays(card.Direction)
+	steps := s.learningSteps(card.Direction)
 	
 	if quality == models.QualityHard {
 		// Stay on step 0
@@ -174,7 +183,7 @@ func (s *SRSService) handleNew(card *models.UserCard, quality models.Quality, no
 
 // handleLearning handles a learning card
 func (s *SRSService) handleLearning(card *models.UserCard, quality models.Quality, now time.Time) {
-	steps := models.LearningStepsDays(card.Direction)
+	steps := s.learningSteps(card.Direction)
 	
 	// Reset lapse count on successful answer in learning phase
 	if quality != models.QualityWrong {
@@ -309,8 +318,12 @@ func (s *SRSService) RecordWrongAnswer(card *models.UserCard, wrongOption string
 	if len(wrongAnswers) > 10 {
 		wrongAnswers = wrongAnswers[len(wrongAnswers)-10:]
 	}
-	
-	data, err := json.Marshal(wrongAnswers)
+
+	marshal := json.Marshal
+	if s.marshalJSONFunc != nil {
+		marshal = s.marshalJSONFunc
+	}
+	data, err := marshal(wrongAnswers)
 	if err != nil {
 		return fmt.Errorf("failed to marshal wrong answers: %w", err)
 	}

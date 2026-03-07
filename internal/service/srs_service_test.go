@@ -322,6 +322,57 @@ func TestSRSService_updateCardState(t *testing.T) {
 				}
 			},
 		},
+		{
+			name: "StateLearning with good quality advances via handleLearning",
+			card: &models.UserCard{
+				State:        models.StateLearning,
+				EF:           models.InitialEF,
+				Direction:    models.DirectionENtoRU,
+				LearningStep: 0,
+			},
+			quality: models.QualityGood,
+			validate: func(t *testing.T, card *models.UserCard) {
+				if card.State != models.StateLearning {
+					t.Errorf("Expected state %v, got %v", models.StateLearning, card.State)
+				}
+				if card.LearningStep != 1 {
+					t.Errorf("Expected LearningStep 1, got %d", card.LearningStep)
+				}
+				if card.NextDueAt == nil {
+					t.Error("NextDueAt should be set")
+				}
+			},
+		},
+		{
+			name: "handleReview resets LapseCount and uses default interval (Reps >= 2)",
+			card: &models.UserCard{
+				State:        models.StateReview,
+				EF:           2.0,
+				Reps:         2,
+				IntervalDays: 6,
+				LapseCount:   2,
+				Direction:    models.DirectionENtoRU,
+			},
+			quality: models.QualityGood,
+			validate: func(t *testing.T, card *models.UserCard) {
+				if card.State != models.StateReview {
+					t.Errorf("Expected state %v, got %v", models.StateReview, card.State)
+				}
+				if card.LapseCount != 0 {
+					t.Errorf("Expected LapseCount 0 after successful review, got %d", card.LapseCount)
+				}
+				if card.Reps != 3 {
+					t.Errorf("Expected Reps 3, got %d", card.Reps)
+				}
+				// default: ceil(6 * 2.0) = 12
+				if card.IntervalDays != 12 {
+					t.Errorf("Expected IntervalDays 12 (ceil(6*EF)), got %d", card.IntervalDays)
+				}
+				if card.NextDueAt == nil {
+					t.Error("NextDueAt should be set")
+				}
+			},
+		},
 	}
 
 	for _, tt := range tests {

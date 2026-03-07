@@ -161,6 +161,90 @@ func TestSRSService_handleLearning_QualityGood_AdvancesStep(t *testing.T) {
 	}
 }
 
+func TestSRSService_handleLearning_QualityHard_StepBeyondLength_ClampsToLastStep(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	service := NewSRSService(nil, logger)
+
+	now := time.Now()
+	// ENtoRU has 3 steps (indices 0,1,2); step 3 is beyond length
+	card := &models.UserCard{
+		State:        models.StateLearning,
+		EF:           models.InitialEF,
+		Direction:    models.DirectionENtoRU,
+		LearningStep: 3,
+	}
+
+	service.handleLearning(card, models.QualityHard, now)
+
+	if card.State != models.StateLearning {
+		t.Errorf("Expected state %v, got %v", models.StateLearning, card.State)
+	}
+	if card.LearningStep != 3 {
+		t.Errorf("Expected LearningStep 3 (unchanged), got %d", card.LearningStep)
+	}
+	if card.NextDueAt == nil {
+		t.Error("NextDueAt should be set (clamped to last step)")
+	}
+}
+
+func TestSRSService_handleNew_SingleStep_GraduatesImmediately(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	service := NewSRSService(nil, logger)
+	service.learningStepsFunc = func(_ models.CardDirection) []int { return []int{1} }
+
+	now := time.Now()
+	card := &models.UserCard{
+		State:     models.StateNew,
+		EF:        models.InitialEF,
+		Direction: models.DirectionENtoRU,
+	}
+
+	service.handleNew(card, models.QualityGood, now)
+
+	if card.State != models.StateReview {
+		t.Errorf("Expected state %v (graduate), got %v", models.StateReview, card.State)
+	}
+	if card.Reps != 0 {
+		t.Errorf("Expected Reps 0, got %d", card.Reps)
+	}
+	if card.IntervalDays != 1 {
+		t.Errorf("Expected IntervalDays 1, got %d", card.IntervalDays)
+	}
+	if card.NextDueAt == nil {
+		t.Error("NextDueAt should be set")
+	}
+}
+
+func TestSRSService_handleLearning_SingleStep_GraduatesAfterOneStep(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	service := NewSRSService(nil, logger)
+	service.learningStepsFunc = func(_ models.CardDirection) []int { return []int{1} }
+
+	now := time.Now()
+	card := &models.UserCard{
+		State:        models.StateLearning,
+		EF:           models.InitialEF,
+		Direction:    models.DirectionENtoRU,
+		LearningStep: 0,
+	}
+
+	service.handleLearning(card, models.QualityGood, now)
+
+	// LearningStep++ -> 1, 1 >= len(steps)==1, 1 < 2 -> graduate
+	if card.State != models.StateReview {
+		t.Errorf("Expected state %v (graduate), got %v", models.StateReview, card.State)
+	}
+	if card.Reps != 0 {
+		t.Errorf("Expected Reps 0, got %d", card.Reps)
+	}
+	if card.IntervalDays != 1 {
+		t.Errorf("Expected IntervalDays 1, got %d", card.IntervalDays)
+	}
+	if card.NextDueAt == nil {
+		t.Error("NextDueAt should be set")
+	}
+}
+
 func TestSRSService_handleReview_FirstRep(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	service := NewSRSService(nil, logger)

@@ -17,7 +17,7 @@
 - **1.3.** Для каждого задания от planner вызвать **mcp_task** с `subagent_type="coverage-worker"`, `prompt` = текст задания от planner (в задании уже должно быть требование достижения 100% покрытия в зоне). `description`: "Worker add tests for &lt;package&gt;" (подставить пакет). Вызовы можно делать последовательно или пачками по 2–3 параллельно.
 
 - **1.4.** Внутренний цикл (пока `make check` не пройдёт):
-  - Вызвать **mcp_task** с `subagent_type="test-runner"`, `prompt`: «Запусти make check в корне проекта. Верни: passed или failed, точное значение coverage_percent (из вывода "Total test coverage: ..."), и при failed — фрагмент лога с ошибками для fixer.» `description`: "Run make check".
+  - Вызвать **mcp_task** с `subagent_type="test-runner"`, `prompt`: «Запусти make check в корне проекта. Верни: passed или failed, точное значение coverage_percent (из вывода "Total test coverage: ..."), и при failed — фрагмент лога с ошибками для fixer.» `description`: "Run make check". **Таймаут вызова — не менее 15 минут**, так как `make check` выполняется долго.
   - Если результат **passed** — выйти из внутреннего цикла, перейти к шагу 1.5.
   - Если результат **failed** — вызвать **mcp_task** с `subagent_type="coverage-fixer"`, `prompt`: «make check завершился с ошибкой. Лог ошибок: [вставить error_excerpt от test-runner]. Исправь код/тесты в затронутых пакетах.» `description`: "Fix failing tests". Затем повторить внутренний цикл (снова test-runner). Не обращаться к пользователю.
 

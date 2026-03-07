@@ -56,6 +56,19 @@ import (
 // @tag.name Admin
 // @tag.description Административные функции
 
+// pronunciationServiceInterface is the subset of PronunciationService used by web handlers.
+// Defined in web so tests can inject mocks for full coverage of tts.go branches.
+type pronunciationServiceInterface interface {
+	IsEnabled() bool
+	PublicBasePath() string
+	AudioDir() string
+	Lookup(word string) service.PronunciationLookupResult
+	GetStatus(word string) (service.TTSStatusResult, error)
+	ForceRegenerate(word string) (service.TTSStatusResult, error)
+	Recheck(word string) (service.TTSStatusResult, error)
+	ScheduleWord(word string) bool
+}
+
 // Router handles web routes
 type Router struct {
 	mux                               *http.ServeMux
@@ -70,7 +83,7 @@ type Router struct {
 	wordService                       interface{} // Will be properly typed later
 	grammarService                    *service.GrammarService
 	cbService                         *service.CircuitBreakerService
-	pronunciationService              *service.PronunciationService
+	pronunciationService              pronunciationServiceInterface
 	aiService                         interface{} // Will be properly typed later
 	bot                               *tgbotapi.BotAPI
 	authMiddleware                    *AuthMiddleware
