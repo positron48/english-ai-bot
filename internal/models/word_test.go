@@ -133,3 +133,62 @@ func TestErrorField_IsTrue(t *testing.T) {
 		})
 	}
 }
+
+func TestWordInfoResponse_UnmarshalJSON(t *testing.T) {
+	tests := []struct {
+		name           string
+		json           string
+		wantLemma      string
+		wantError      bool
+		wantErrorMsg   string
+		wantVerbForms  bool
+		wantExamples   int
+	}{
+		{
+			name:          "success response with verb forms",
+			json:          `{"input_word":"spied","lemma":"spy","pos":"verb","transcription":"/spaɪ/","definition_ru":"шпионить","examples":[{"example_en":"He was spying on them.","gloss_ru":"Он за ними шпионил."}],"verb_forms":{"v1":"spy","v2":"spied","v3":"spied","gerund":"spying","third_person":"spies"}}`,
+			wantLemma:     "spy",
+			wantError:     false,
+			wantVerbForms: true,
+			wantExamples:  1,
+		},
+		{
+			name:         "error response with hint",
+			json:         `{"error":"Not an English word","hint":"Try a different word.","input_word":"xyz","lemma":"","pos":"","transcription":"","definition_ru":""}`,
+			wantLemma:    "",
+			wantError:    true,
+			wantErrorMsg: "Not an English word",
+		},
+		{
+			name:         "error as boolean true",
+			json:         `{"error":true,"input_word":"x","lemma":"","pos":"","transcription":"","definition_ru":""}`,
+			wantLemma:    "",
+			wantError:    true,
+			wantErrorMsg: "true",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			var resp WordInfoResponse
+			if err := json.Unmarshal([]byte(tt.json), &resp); err != nil {
+				t.Fatalf("Unmarshal() error = %v", err)
+			}
+			if resp.Lemma != tt.wantLemma {
+				t.Errorf("Lemma = %q, want %q", resp.Lemma, tt.wantLemma)
+			}
+			if resp.Error.IsError != tt.wantError {
+				t.Errorf("Error.IsError = %v, want %v", resp.Error.IsError, tt.wantError)
+			}
+			if tt.wantErrorMsg != "" && resp.Error.Message != tt.wantErrorMsg {
+				t.Errorf("Error.Message = %q, want %q", resp.Error.Message, tt.wantErrorMsg)
+			}
+			if tt.wantVerbForms && resp.VerbForms == nil {
+				t.Error("VerbForms = nil, want non-nil")
+			}
+			if tt.wantExamples > 0 && len(resp.Examples) != tt.wantExamples {
+				t.Errorf("len(Examples) = %d, want %d", len(resp.Examples), tt.wantExamples)
+			}
+		})
+	}
+}
