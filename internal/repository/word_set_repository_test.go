@@ -299,6 +299,51 @@ func TestWordSetRepository_UpdateWordSet(t *testing.T) {
 			t.Errorf("Expected sort order 2, got %d", got.SortOrder)
 		}
 	})
+
+	t.Run("Update word set with category, description, preferred_pos", func(t *testing.T) {
+		catRepo := NewWordSetCategoryRepository(db, logger)
+		cat, _ := catRepo.CreateCategory(&models.WordSetCategory{Name: "Cat for Update", SortOrder: 1})
+		wordSet := &models.WordSet{
+			Title:       "Set to Update Full",
+			IsPublished: true,
+			SortOrder:   1,
+		}
+		id, err := repo.CreateWordSet(wordSet)
+		if err != nil {
+			t.Fatalf("CreateWordSet: %v", err)
+		}
+		desc := "Updated description"
+		pos := "verb"
+		updatedSet := &models.WordSet{
+			ID:           id,
+			CategoryID:   &cat,
+			Title:        "Set Updated Full",
+			Description:  &desc,
+			PreferredPOS: &pos,
+			IsPublished:  false,
+			SortOrder:    3,
+		}
+		err = repo.UpdateWordSet(updatedSet)
+		if err != nil {
+			t.Fatalf("UpdateWordSet() error = %v", err)
+		}
+		got, err := repo.GetWordSet(id)
+		if err != nil {
+			t.Fatalf("GetWordSet: %v", err)
+		}
+		if got.Title != "Set Updated Full" || got.SortOrder != 3 {
+			t.Errorf("got title=%q sort_order=%d", got.Title, got.SortOrder)
+		}
+		if got.CategoryID == nil || *got.CategoryID != cat {
+			t.Errorf("expected category_id %d, got %v", cat, got.CategoryID)
+		}
+		if got.Description == nil || *got.Description != desc {
+			t.Errorf("expected description %q, got %v", desc, got.Description)
+		}
+		if got.PreferredPOS == nil || *got.PreferredPOS != pos {
+			t.Errorf("expected preferred_pos %q, got %v", pos, got.PreferredPOS)
+		}
+	})
 }
 
 func TestWordSetRepository_DeleteWordSet(t *testing.T) {

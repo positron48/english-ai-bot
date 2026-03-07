@@ -51,6 +51,31 @@ func TestWordRepository_ListWordCardsAdmin_WithSearch(t *testing.T) {
 	}
 }
 
+func TestWordRepository_ListWordCardsAdmin_SortByAndOrder(t *testing.T) {
+	_, repo := setupWordAdminTestDB(t)
+	repo.SaveWordCard("zword", "def")
+	repo.SaveWordCard("aword", "def")
+
+	// sortBy=word, order=asc
+	cards, err := repo.ListWordCardsAdmin(nil, false, nil, "", "", 10, 0, "word", "asc")
+	if err != nil {
+		t.Fatalf("ListWordCardsAdmin(sortBy=word, asc) error = %v", err)
+	}
+	if len(cards) < 2 {
+		t.Skip("need at least 2 cards to check order")
+	}
+	// First should be aword (lower)
+	if cards[0].Word > cards[1].Word {
+		t.Errorf("expected asc order by word, got %q then %q", cards[0].Word, cards[1].Word)
+	}
+
+	// sortBy=id
+	_, err = repo.ListWordCardsAdmin(nil, false, nil, "", "", 10, 0, "id", "desc")
+	if err != nil {
+		t.Fatalf("ListWordCardsAdmin(sortBy=id) error = %v", err)
+	}
+}
+
 func TestWordRepository_CountWordCardsAdmin(t *testing.T) {
 	_, repo := setupWordAdminTestDB(t)
 

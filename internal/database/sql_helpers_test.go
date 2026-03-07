@@ -79,6 +79,27 @@ func TestGetDialect(t *testing.T) {
 			t.Errorf("GetDialect(custom) = %q, want mysql", got)
 		}
 	})
+
+	t.Run("registerConnDialect_nil_does_not_store", func(t *testing.T) {
+		registerConnDialect(nil, "custom")
+		got := GetDialect(nil)
+		if got != DialectPostgres {
+			t.Errorf("GetDialect(nil) after registerConnDialect(nil) = %q, want %q", got, DialectPostgres)
+		}
+	})
+
+	t.Run("stored_non_string_value_returns_postgres", func(t *testing.T) {
+		conn, err := sql.Open("postgres_compat", dsn)
+		if err != nil {
+			t.Fatalf("Open: %v", err)
+		}
+		defer conn.Close()
+		connDialects.Store(conn, 42)
+		got := GetDialect(conn)
+		if got != DialectPostgres {
+			t.Errorf("GetDialect(conn with non-string stored) = %q, want %q", got, DialectPostgres)
+		}
+	})
 }
 
 func TestInsertAndReturnID(t *testing.T) {

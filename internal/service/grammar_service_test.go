@@ -529,6 +529,19 @@ func TestGrammarService_CanAccessSection(t *testing.T) {
 	}
 }
 
+func TestGrammarService_CanAccessSection_SectionNotFound(t *testing.T) {
+	svc, _, _, _, _, cleanup := setupGrammarService(t)
+	defer cleanup()
+
+	_, err := svc.CanAccessSection(context.Background(), 1, "nonexistent-section-id")
+	if err == nil {
+		t.Fatal("expected error for nonexistent section")
+	}
+	if !strings.Contains(err.Error(), "section not found") && !strings.Contains(err.Error(), "not found") {
+		t.Errorf("expected 'section not found' in error, got: %v", err)
+	}
+}
+
 func TestGrammarService_CanAccessChapter(t *testing.T) {
 	svc, contentRepo, publishRepo, attemptRepo, _, cleanup := setupGrammarService(t)
 	defer cleanup()

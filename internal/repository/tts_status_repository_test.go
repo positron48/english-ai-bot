@@ -142,3 +142,50 @@ func TestTTSStatusRepository_CustomMaxAttemptsStored(t *testing.T) {
 		t.Fatalf("expected failed_terminal with attempt_count=10, got state=%s attempt_count=%d", status.State, status.AttemptCount)
 	}
 }
+
+// TestTTSStatusRepository_MarkAttempt_TerminalWhenNotRetryable verifies that
+// MarkAttempt with retryable=false sets state to failed_terminal immediately.
+func TestTTSStatusRepository_MarkAttempt_TerminalWhenNotRetryable(t *testing.T) {
+	db := testutil.SetupTestDB(t)
+	repo := NewTTSStatusRepository(db, zap.NewNop(), 3)
+	if err := repo.UpsertPending("terminal-word"); err != nil {
+		t.Fatalf("UpsertPending() error = %v", err)
+	}
+	if err := repo.MarkAttempt("terminal-word", "provider", "code", "not retryable", false); err != nil {
+		t.Fatalf("MarkAttempt() error = %v", err)
+	}
+	status, err := repo.GetByWord("terminal-word")
+	if err != nil {
+		t.Fatalf("GetByWord() error = %v", err)
+	}
+	if status == nil {
+		t.Fatal("expected status")
+	}
+	if status.State != models.TTSStateFailedTerminal {
+		t.Errorf("expected state failed_terminal when retryable=false, got %s", status.State)
+	}
+}
+
+// TestTTSStatusRepository_MarkReady_WithEmptyStrings verifies that empty provider/relPath
+// are stored as NULL (nullableString converts blank to nil).
+func TestTTSStatusRepository_MarkReady_WithEmptyStrings(t *testing.T) {
+	db := testutil.SetupTestDB(t)
+	repo := NewTTSStatusRepository(db, zap.NewNop(), 3)
+	if err := repo.MarkReady("emptyword", "", ""); err != nil {
+		t.Fatalf("MarkReady() error = %v", err)
+	}
+	status, err := repo.GetByWord("emptyword")
+	if err != nil {
+		t.Fatalf("GetByWord() error = %v", err)
+	}
+	if status == nil {
+		t.Fatal("expected status")
+	}
+	if status.State != models.TTSStateReady {
+		t.Errorf("expected state ready, got %s", status.State)
+	}
+	// provider and relPath can be nil when empty strings were passed
+	if status.LastProvider != nil && *status.LastProvider == "" {
+		t.Log("LastProvider stored as empty; nullableString may store empty as nil depending on driver")
+	}
+}

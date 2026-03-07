@@ -76,6 +76,51 @@ func TestNormalizePronunciationWord(t *testing.T) {
 	}
 }
 
+func TestPronunciationService_ScheduleWord_Disabled(t *testing.T) {
+	cfg := config.TTSConfig{Enabled: false, AudioDir: t.TempDir(), PublicBasePath: "/media/tts"}
+	svc := NewPronunciationService(cfg, nil, zap.NewNop())
+	got := svc.ScheduleWord("hello")
+	if got {
+		t.Error("ScheduleWord should return false when service is disabled")
+	}
+}
+
+func TestPronunciationService_ScheduleWord_InvalidWord(t *testing.T) {
+	cfg := config.TTSConfig{Enabled: true, AudioDir: t.TempDir(), PublicBasePath: "/media/tts", Provider: "dictionary", DictionaryEnabled: true, DictionaryBaseURL: "http://example.com"}
+	svc := NewPronunciationService(cfg, nil, zap.NewNop())
+	// nil wordRepo => no ttsRepo => ensureStatusForWord returns nil,nil; canScheduleNow may still run
+	got := svc.ScheduleWord("привет")
+	if got {
+		t.Error("ScheduleWord should return false for invalid word (Cyrillic)")
+	}
+}
+
+func TestPronunciationService_ForceRegenerate_NoTTSRepo(t *testing.T) {
+	cfg := config.TTSConfig{Enabled: true, AudioDir: t.TempDir(), PublicBasePath: "/media/tts"}
+	svc := NewPronunciationService(cfg, nil, zap.NewNop())
+	_, err := svc.ForceRegenerate("hello")
+	if err == nil {
+		t.Fatal("ForceRegenerate should return error when tts repo is not configured")
+	}
+	if !strings.Contains(err.Error(), "not configured") && !strings.Contains(err.Error(), "repository") {
+		t.Errorf("expected error about repo not configured, got: %v", err)
+	}
+}
+
+func TestPronunciationService_ForceRegenerate_InvalidWord(t *testing.T) {
+	db := testutil.SetupTestDB(t)
+	wordRepo := repository.NewWordRepository(db, zap.NewNop())
+	cfg := config.TTSConfig{Enabled: true, AudioDir: t.TempDir(), PublicBasePath: "/media/tts", Provider: "dictionary", DictionaryEnabled: true, DictionaryBaseURL: "http://example.com"}
+	svc := NewPronunciationService(cfg, wordRepo, zap.NewNop())
+	_, err := svc.ForceRegenerate("123")
+	if err == nil {
+		t.Fatal("ForceRegenerate should return error for invalid word")
+	}
+	if !strings.Contains(err.Error(), "invalid") {
+		t.Errorf("expected 'invalid word' error, got: %v", err)
+	}
+}
+
 func TestPronunciationServiceLookupAndCache(t *testing.T) {
 	audioBytes := []byte("ID3mock-audio")
 	var lookupCalls int

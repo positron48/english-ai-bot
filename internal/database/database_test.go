@@ -78,3 +78,27 @@ func TestNewWithConfig_EmptyURL(t *testing.T) {
 		t.Error("expected error for empty URL")
 	}
 }
+
+func TestNewWithConfig_InvalidDSN(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	// Invalid DSN so openPostgresDB fails (open or ping).
+	_, err := NewWithConfig("postgres", "", "postgres://invalidhost:5432/db?connect_timeout=1", logger)
+	if err == nil {
+		t.Error("expected error for invalid DSN")
+	}
+	if err != nil && !strings.Contains(err.Error(), "failed to open") && !strings.Contains(err.Error(), "failed to ping") {
+		t.Errorf("error should mention open or ping failure: %v", err)
+	}
+}
+
+func TestNewWithConfig_DriverTrimSpace_StillRequiresURL(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	// Driver with leading/trailing space is accepted; empty URL still rejected.
+	_, err := NewWithConfig("  postgres  ", "", "", logger)
+	if err == nil {
+		t.Error("expected error for empty URL even with trimmed driver")
+	}
+	if err != nil && !strings.Contains(err.Error(), "DATABASE_URL") {
+		t.Errorf("error should mention DATABASE_URL: %v", err)
+	}
+}

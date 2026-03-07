@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"strconv"
 	"testing"
 
 	"tgbot-skeleton/internal/config"
@@ -240,6 +241,103 @@ func TestHandleAdminAccessCategory_Get(t *testing.T) {
 	}
 }
 
+func TestHandleAdminAccessCategoryByID_Put(t *testing.T) {
+	router, db, logger, adminUserID, cleanup := setupAdminAccessTest(t)
+	defer cleanup()
+
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db.GetConnection(), logger)
+	categoryID, err := accessCategoryRepo.CreateCategory(&models.UserAccessCategory{Name: "Original"})
+	if err != nil {
+		t.Fatalf("Failed to create category: %v", err)
+	}
+
+	body, _ := json.Marshal(map[string]interface{}{"name": "Updated Name", "description": ""})
+	req := httptest.NewRequest("PUT", "/api/admin/access/categories/"+strconv.FormatInt(categoryID, 10), bytes.NewReader(body))
+	req.Header.Set("Content-Type", "application/json")
+	req = setAdminContext(req, adminUserID)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminAccessCategoryByID(rr, req, categoryID)
+
+	if rr.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", rr.Code, rr.Body.String())
+	}
+	cat, _ := accessCategoryRepo.GetCategory(categoryID)
+	if cat == nil || cat.Name != "Updated Name" {
+		t.Errorf("Expected category name Updated Name, got %v", cat)
+	}
+}
+
+func TestHandleAdminAccessCategoryByID_Delete(t *testing.T) {
+	router, db, logger, adminUserID, cleanup := setupAdminAccessTest(t)
+	defer cleanup()
+
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db.GetConnection(), logger)
+	categoryID, err := accessCategoryRepo.CreateCategory(&models.UserAccessCategory{Name: "ToDelete"})
+	if err != nil {
+		t.Fatalf("Failed to create category: %v", err)
+	}
+
+	req := httptest.NewRequest("DELETE", "/api/admin/access/categories/"+strconv.FormatInt(categoryID, 10), nil)
+	req = setAdminContext(req, adminUserID)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminAccessCategoryByID(rr, req, categoryID)
+
+	if rr.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", rr.Code, rr.Body.String())
+	}
+	cat, _ := accessCategoryRepo.GetCategory(categoryID)
+	if cat != nil {
+		t.Error("Category should be deleted")
+	}
+}
+
+func TestHandleAdminAccessCategoryByID_NotFound(t *testing.T) {
+	router, _, _, adminUserID, cleanup := setupAdminAccessTest(t)
+	defer cleanup()
+
+	req := httptest.NewRequest("GET", "/api/admin/access/categories/999999", nil)
+	req = setAdminContext(req, adminUserID)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminAccessCategoryByID(rr, req, 999999)
+
+	if rr.Code != http.StatusNotFound {
+		t.Errorf("Expected status 404, got %d: %s", rr.Code, rr.Body.String())
+	}
+}
+
+func TestHandleAdminAccessCategoryByID_MethodNotAllowed(t *testing.T) {
+	router, _, _, adminUserID, cleanup := setupAdminAccessTest(t)
+	defer cleanup()
+
+	req := httptest.NewRequest("PATCH", "/api/admin/access/categories/1", nil)
+	req = setAdminContext(req, adminUserID)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminAccessCategoryByID(rr, req, 1)
+
+	if rr.Code != http.StatusMethodNotAllowed {
+		t.Errorf("Expected status 405, got %d", rr.Code)
+	}
+}
+
+func TestHandleAdminAccessCategories_MethodNotAllowed(t *testing.T) {
+	router, _, _, adminUserID, cleanup := setupAdminAccessTest(t)
+	defer cleanup()
+
+	req := httptest.NewRequest("DELETE", "/api/admin/access/categories", nil)
+	req = setAdminContext(req, adminUserID)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminAccessCategories(rr, req)
+
+	if rr.Code != http.StatusMethodNotAllowed {
+		t.Errorf("Expected status 405, got %d", rr.Code)
+	}
+}
+
 func TestHandleAdminAccessCategoryPermissions_Put(t *testing.T) {
 	router, db, logger, adminUserID, cleanup := setupAdminAccessTest(t)
 	defer cleanup()
@@ -375,5 +473,189 @@ func TestHandleAdminAccessUsers_Get(t *testing.T) {
 
 	if len(response.Categories) != 1 || response.Categories[0] != categoryID {
 		t.Errorf("Expected categories [%d], got %v", categoryID, response.Categories)
+	}
+}
+
+func TestHandleAdminAccessCategoryRoutes_InvalidPath(t *testing.T) {
+	router, _, _, adminUserID, cleanup := setupAdminAccessTest(t)
+	defer cleanup()
+
+	req := httptest.NewRequest("GET", "/api/admin/access/categories/", nil)
+	req.URL.Path = "/api/admin/access/categories/"
+	req = setAdminContext(req, adminUserID)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminAccessCategoryRoutes(rr, req)
+
+	if rr.Code != http.StatusBadRequest {
+		t.Errorf("Expected status 400, got %d: %s", rr.Code, rr.Body.String())
+	}
+}
+
+func TestHandleAdminAccessCategoryRoutes_InvalidCategoryID(t *testing.T) {
+	router, _, _, adminUserID, cleanup := setupAdminAccessTest(t)
+	defer cleanup()
+
+	req := httptest.NewRequest("GET", "/api/admin/access/categories/abc", nil)
+	req.URL.Path = "/api/admin/access/categories/abc"
+	req = setAdminContext(req, adminUserID)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminAccessCategoryRoutes(rr, req)
+
+	if rr.Code != http.StatusBadRequest {
+		t.Errorf("Expected status 400, got %d: %s", rr.Code, rr.Body.String())
+	}
+}
+
+func TestHandleAdminAccessCategoryRoutes_ByID(t *testing.T) {
+	router, db, _, adminUserID, cleanup := setupAdminAccessTest(t)
+	defer cleanup()
+
+	logger, _ := zap.NewDevelopment()
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db.GetConnection(), logger)
+	categoryID, err := accessCategoryRepo.CreateCategory(&models.UserAccessCategory{Name: "ByID Category"})
+	if err != nil {
+		t.Fatalf("Failed to create category: %v", err)
+	}
+
+	req := httptest.NewRequest("GET", "/api/admin/access/categories/"+strconv.FormatInt(categoryID, 10), nil)
+	req.URL.Path = "/api/admin/access/categories/" + strconv.FormatInt(categoryID, 10)
+	req = setAdminContext(req, adminUserID)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminAccessCategoryRoutes(rr, req)
+
+	if rr.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", rr.Code, rr.Body.String())
+	}
+}
+
+func TestHandleAdminAccessCategoryRoutes_PermissionsSubPath(t *testing.T) {
+	router, db, logger, adminUserID, cleanup := setupAdminAccessTest(t)
+	defer cleanup()
+
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db.GetConnection(), logger)
+	categoryID, err := accessCategoryRepo.CreateCategory(&models.UserAccessCategory{Name: "Perm Category"})
+	if err != nil {
+		t.Fatalf("Failed to create category: %v", err)
+	}
+	_ = accessCategoryRepo.SetCategoryPermissions(categoryID, []string{"words.read_all"})
+
+	req := httptest.NewRequest("GET", "/api/admin/access/categories/"+strconv.FormatInt(categoryID, 10)+"/permissions", nil)
+	req.URL.Path = "/api/admin/access/categories/" + strconv.FormatInt(categoryID, 10) + "/permissions"
+	req = setAdminContext(req, adminUserID)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminAccessCategoryRoutes(rr, req)
+
+	if rr.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", rr.Code, rr.Body.String())
+	}
+	var resp struct {
+		Permissions []string `json:"permissions"`
+	}
+	if err := json.NewDecoder(rr.Body).Decode(&resp); err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+	if len(resp.Permissions) == 0 {
+		t.Error("Expected permissions in response")
+	}
+}
+
+func TestHandleAdminAccessCategoryRoutes_UsersSubPath(t *testing.T) {
+	router, db, logger, adminUserID, cleanup := setupAdminAccessTest(t)
+	defer cleanup()
+
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db.GetConnection(), logger)
+	categoryID, err := accessCategoryRepo.CreateCategory(&models.UserAccessCategory{Name: "Users Category"})
+	if err != nil {
+		t.Fatalf("Failed to create category: %v", err)
+	}
+
+	req := httptest.NewRequest("GET", "/api/admin/access/categories/"+strconv.FormatInt(categoryID, 10)+"/users", nil)
+	req.URL.Path = "/api/admin/access/categories/" + strconv.FormatInt(categoryID, 10) + "/users"
+	req = setAdminContext(req, adminUserID)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminAccessCategoryRoutes(rr, req)
+
+	if rr.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", rr.Code, rr.Body.String())
+	}
+	var resp struct {
+		CategoryID int64   `json:"category_id"`
+		UserIDs    []int64 `json:"user_ids"`
+	}
+	if err := json.NewDecoder(rr.Body).Decode(&resp); err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+	if resp.CategoryID != categoryID {
+		t.Errorf("Expected category_id %d, got %d", categoryID, resp.CategoryID)
+	}
+}
+
+func TestHandleAdminAccessCategoryUsers_Get(t *testing.T) {
+	router, db, logger, adminUserID, cleanup := setupAdminAccessTest(t)
+	defer cleanup()
+
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db.GetConnection(), logger)
+	categoryID, err := accessCategoryRepo.CreateCategory(&models.UserAccessCategory{Name: "Cat"})
+	if err != nil {
+		t.Fatalf("Failed to create category: %v", err)
+	}
+	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
+	u, err := userRepo.GetOrCreateUser(88888)
+	if err != nil {
+		t.Fatalf("Failed to create user: %v", err)
+	}
+	err = accessCategoryRepo.SetUserCategories(u.ID, []int64{categoryID})
+	if err != nil {
+		t.Fatalf("Failed to set user categories: %v", err)
+	}
+
+	req := httptest.NewRequest("GET", "/api/admin/access/categories/"+strconv.FormatInt(categoryID, 10)+"/users", nil)
+	req = setAdminContext(req, adminUserID)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminAccessCategoryUsers(rr, req, categoryID)
+
+	if rr.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", rr.Code, rr.Body.String())
+	}
+	var resp struct {
+		CategoryID int64   `json:"category_id"`
+		UserIDs    []int64 `json:"user_ids"`
+	}
+	if err := json.NewDecoder(rr.Body).Decode(&resp); err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+	if resp.CategoryID != categoryID {
+		t.Errorf("Expected category_id %d, got %d", categoryID, resp.CategoryID)
+	}
+	found := false
+	for _, id := range resp.UserIDs {
+		if id == u.ID {
+			found = true
+			break
+		}
+	}
+	if !found {
+		t.Errorf("Expected user ID %d in user_ids %v", u.ID, resp.UserIDs)
+	}
+}
+
+func TestHandleAdminAccessCategoryUsers_MethodNotAllowed(t *testing.T) {
+	router, _, _, adminUserID, cleanup := setupAdminAccessTest(t)
+	defer cleanup()
+
+	req := httptest.NewRequest("POST", "/api/admin/access/categories/1/users", nil)
+	req = setAdminContext(req, adminUserID)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminAccessCategoryUsers(rr, req, 1)
+
+	if rr.Code != http.StatusMethodNotAllowed {
+		t.Errorf("Expected status 405, got %d", rr.Code)
 	}
 }

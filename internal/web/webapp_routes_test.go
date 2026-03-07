@@ -217,3 +217,26 @@ func TestHandleNotFound(t *testing.T) {
 		t.Errorf("Expected Content-Type application/json, got %s", w.Header().Get("Content-Type"))
 	}
 }
+
+// TestSetupWebappRoutes_CalledFromNewRouter verifies that setupWebappRoutes is invoked by NewRouter
+// and registers /app handlers. When webapp embed has no dist/index.html (e.g. in test), it uses setupDevProxy (redirect).
+func TestSetupWebappRoutes_CalledFromNewRouter(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{
+			JWTSecret:        "test-secret",
+			ViteDevServerURL: "http://localhost:5173",
+		},
+	}
+
+	router := NewRouter(logger, cfg, nil, nil, nil, nil, nil)
+
+	req := httptest.NewRequest("GET", "/app", nil)
+	w := httptest.NewRecorder()
+	router.mux.ServeHTTP(w, req)
+
+	// Either 200 (embed has index.html) or redirect (dev proxy)
+	if w.Code != http.StatusOK && w.Code != http.StatusTemporaryRedirect && w.Code != http.StatusFound {
+		t.Errorf("Expected 200 or redirect, got %d", w.Code)
+	}
+}

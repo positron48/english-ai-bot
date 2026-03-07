@@ -113,6 +113,54 @@ func TestSRSService_handleLearning_Graduate(t *testing.T) {
 	}
 }
 
+func TestSRSService_handleLearning_QualityHard_RepeatsStep(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	service := NewSRSService(nil, logger)
+
+	now := time.Now()
+	card := &models.UserCard{
+		State:        models.StateLearning,
+		EF:           models.InitialEF,
+		Direction:    models.DirectionENtoRU,
+		LearningStep: 1,
+	}
+
+	service.handleLearning(card, models.QualityHard, now)
+
+	// Should stay in learning, same step, NextDueAt set
+	if card.State != models.StateLearning {
+		t.Errorf("Expected State %v, got %v", models.StateLearning, card.State)
+	}
+	if card.LearningStep != 1 {
+		t.Errorf("Expected LearningStep 1 (repeat), got %d", card.LearningStep)
+	}
+	if card.NextDueAt == nil {
+		t.Error("NextDueAt should be set")
+	}
+}
+
+func TestSRSService_handleLearning_QualityGood_AdvancesStep(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	service := NewSRSService(nil, logger)
+
+	now := time.Now()
+	card := &models.UserCard{
+		State:        models.StateLearning,
+		EF:           models.InitialEF,
+		Direction:    models.DirectionENtoRU,
+		LearningStep: 0,
+	}
+
+	service.handleLearning(card, models.QualityGood, now)
+
+	if card.LearningStep != 1 {
+		t.Errorf("Expected LearningStep 1, got %d", card.LearningStep)
+	}
+	if card.NextDueAt == nil {
+		t.Error("NextDueAt should be set")
+	}
+}
+
 func TestSRSService_handleReview_FirstRep(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	service := NewSRSService(nil, logger)

@@ -166,3 +166,73 @@ func TestGetWordDefinition_AIResponse_InvalidJSON_Legacy(t *testing.T) {
 		t.Fatalf("expected legacy word card saved")
 	}
 }
+
+func TestWordService_renderWordCardMarkdown(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	service := NewWordService(nil, nil, nil, nil, logger)
+
+	examplesJSON := `[{"example_en":"I run.","gloss_ru":"Я бегу."}]`
+	verbFormsJSON := `{"v1":"run","v2":"ran","v3":"run"}`
+	card := &models.WordCard{
+		Word:           "run",
+		Definition:     "to move fast",
+		ExamplesJSON:   &examplesJSON,
+		VerbFormsJSON:  &verbFormsJSON,
+	}
+	md := service.renderWordCardMarkdown(card)
+	if md == "" {
+		t.Fatal("expected non-empty markdown")
+	}
+	if !strings.Contains(md, "run") {
+		t.Errorf("expected word in markdown, got %q", md)
+	}
+	if !strings.Contains(md, "I run") && !strings.Contains(md, "бегу") {
+		t.Errorf("expected examples in markdown, got %q", md)
+	}
+}
+
+func TestWordService_ensureUserCardsForWord(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	conn := db.GetConnection()
+
+	wordRepo := repository.NewWordRepository(conn, logger)
+	trainingCardRepo := repository.NewTrainingCardRepository(conn, logger)
+	userCardRepo := repository.NewUserCardRepository(conn, logger)
+	userRepo := repository.NewUserRepository(conn, logger)
+
+	user, _ := userRepo.GetOrCreateUser(999)
+	wordCardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "ensureword"})
+	if err != nil {
+		t.Fatalf("UpsertWordCardLemma: %v", err)
+	}
+	tcID, err := trainingCardRepo.CreateTrainingCard(&models.TrainingCard{
+		WordCardID: wordCardID,
+		WordEN:     "ensureword",
+		WordRU:     "обеспечить",
+		MeaningEN:  "ensure",
+		SenseIndex: 0,
+	})
+	if err != nil {
+		t.Fatalf("CreateTrainingCard: %v", err)
+	}
+	_ = tcID
+
+	service := NewWordService(wordRepo, trainingCardRepo, userCardRepo, nil, logger)
+	err = service.ensureUserCardsForWord(user.ID, wordCardID)
+	if err != nil {
+		t.Fatalf("ensureUserCardsForWord: %v", err)
+	}
+
+	var count int
+	err = conn.QueryRow(
+		`SELECT COUNT(*) FROM user_cards uc INNER JOIN training_cards tc ON uc.training_card_id = tc.id WHERE uc.user_id = $1 AND tc.word_card_id = $2`,
+		user.ID, wordCardID,
+	).Scan(&count)
+	if err != nil {
+		t.Fatalf("count user_cards: %v", err)
+	}
+	if count < 2 {
+		t.Errorf("expected at least 2 user_cards (both directions), got %d", count)
+	}
+}

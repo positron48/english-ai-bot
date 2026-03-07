@@ -3,6 +3,7 @@ package config
 import (
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 )
 
@@ -99,6 +100,40 @@ func TestLoad_Defaults(t *testing.T) {
 	
 	if cfg.WebApp.JWTTTLHours != 24 {
 		t.Errorf("Expected default JWT TTL 24, got %d", cfg.WebApp.JWTTTLHours)
+	}
+}
+
+func TestLoad_MissingDatabaseURL(t *testing.T) {
+	originalEnv := map[string]string{
+		"AI_URL":            os.Getenv("AI_URL"),
+		"AI_API_KEY":        os.Getenv("AI_API_KEY"),
+		"AI_PROMPT":         os.Getenv("AI_PROMPT"),
+		"DATABASE_URL":      os.Getenv("DATABASE_URL"),
+		"WEBAPP_JWT_SECRET": os.Getenv("WEBAPP_JWT_SECRET"),
+	}
+	defer func() {
+		for k, v := range originalEnv {
+			if v == "" {
+				os.Unsetenv(k)
+			} else {
+				os.Setenv(k, v)
+			}
+		}
+	}()
+
+	os.Setenv("AI_URL", "http://test.local")
+	os.Setenv("AI_API_KEY", "test-key")
+	os.Setenv("AI_PROMPT", "test prompt")
+	os.Unsetenv("DATABASE_URL")
+	os.Setenv("WEBAPP_JWT_SECRET", "test-secret")
+	os.Setenv("DATABASE_DRIVER", "postgres")
+
+	_, err := Load()
+	if err == nil {
+		t.Error("Expected error for missing DATABASE_URL")
+	}
+	if err != nil && !strings.Contains(err.Error(), "DATABASE_URL") {
+		t.Errorf("Expected error to mention DATABASE_URL, got %v", err)
 	}
 }
 
@@ -276,6 +311,54 @@ func TestLoad_WithPromptFile(t *testing.T) {
 	}
 }
 
+func TestLoad_InvalidConfigFile(t *testing.T) {
+	// Create a temp dir with invalid YAML config so ReadInConfig fails with non-ConfigFileNotFound error
+	tmpDir := t.TempDir()
+	invalidYAML := "invalid: [unclosed bracket"
+	if err := os.WriteFile(filepath.Join(tmpDir, "config.yaml"), []byte(invalidYAML), 0644); err != nil {
+		t.Fatalf("Failed to write invalid config: %v", err)
+	}
+	wd, err := os.Getwd()
+	if err != nil {
+		t.Fatalf("Getwd: %v", err)
+	}
+	if err := os.Chdir(tmpDir); err != nil {
+		t.Fatalf("Chdir: %v", err)
+	}
+	defer func() { _ = os.Chdir(wd) }()
+
+	originalEnv := map[string]string{
+		"AI_URL":            os.Getenv("AI_URL"),
+		"AI_API_KEY":        os.Getenv("AI_API_KEY"),
+		"AI_PROMPT":         os.Getenv("AI_PROMPT"),
+		"DATABASE_URL":      os.Getenv("DATABASE_URL"),
+		"WEBAPP_JWT_SECRET": os.Getenv("WEBAPP_JWT_SECRET"),
+	}
+	defer func() {
+		for k, v := range originalEnv {
+			if v == "" {
+				os.Unsetenv(k)
+			} else {
+				os.Setenv(k, v)
+			}
+		}
+	}()
+
+	os.Setenv("AI_URL", "http://test.local")
+	os.Setenv("AI_API_KEY", "test-key")
+	os.Setenv("AI_PROMPT", "test prompt")
+	os.Setenv("DATABASE_URL", "postgres://test:test@localhost/test?sslmode=disable")
+	os.Setenv("WEBAPP_JWT_SECRET", "test-secret")
+
+	_, err = Load()
+	if err == nil {
+		t.Error("Expected error when config file has invalid YAML")
+	}
+	if err != nil && !strings.Contains(err.Error(), "config file") {
+		t.Errorf("Expected error to mention config file, got %v", err)
+	}
+}
+
 func TestLoad_InvalidPromptFile(t *testing.T) {
 	originalEnv := map[string]string{
 		"AI_URL":              os.Getenv("AI_URL"),
@@ -306,6 +389,42 @@ func TestLoad_InvalidPromptFile(t *testing.T) {
 	_, err := Load()
 	if err == nil {
 		t.Error("Expected error for invalid prompt file")
+	}
+}
+
+func TestLoad_UnmarshalError(t *testing.T) {
+	originalEnv := map[string]string{
+		"AI_URL":                     os.Getenv("AI_URL"),
+		"AI_API_KEY":                 os.Getenv("AI_API_KEY"),
+		"AI_PROMPT":                  os.Getenv("AI_PROMPT"),
+		"DATABASE_URL":               os.Getenv("DATABASE_URL"),
+		"WEBAPP_JWT_SECRET":          os.Getenv("WEBAPP_JWT_SECRET"),
+		"TRAINING_WORKER_BATCH_SIZE": os.Getenv("TRAINING_WORKER_BATCH_SIZE"),
+	}
+	defer func() {
+		for k, v := range originalEnv {
+			if v == "" {
+				os.Unsetenv(k)
+			} else {
+				os.Setenv(k, v)
+			}
+		}
+	}()
+
+	os.Setenv("AI_URL", "http://test.local")
+	os.Setenv("AI_API_KEY", "test-key")
+	os.Setenv("AI_PROMPT", "test prompt")
+	os.Setenv("DATABASE_URL", "postgres://test:test@localhost/test?sslmode=disable")
+	os.Setenv("WEBAPP_JWT_SECRET", "test-secret")
+	// Invalid value for int field causes Unmarshal to fail
+	os.Setenv("TRAINING_WORKER_BATCH_SIZE", "not_a_number")
+
+	_, err := Load()
+	if err == nil {
+		t.Error("Expected error when env value cannot be unmarshaled into config")
+	}
+	if err != nil && !strings.Contains(err.Error(), "unmarshaling") {
+		t.Errorf("Expected error to mention unmarshaling, got %v", err)
 	}
 }
 

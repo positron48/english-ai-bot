@@ -132,6 +132,77 @@ func TestBotCommandService_HandleUnsubscribe(t *testing.T) {
 	}
 }
 
+func TestBotCommandService_HandleUnsubscribe_UserNotFound(t *testing.T) {
+	svc, _, client, cleanup := setupBotCommandService(t)
+	defer cleanup()
+	// Do not create user — telegram ID 999 has no user
+	svc.handleUnsubscribe(999, 10)
+	text := client.lastParams.Get("text")
+	if text == "" {
+		t.Fatalf("expected a message to be sent")
+	}
+	if !strings.Contains(text, "не найден") && !strings.Contains(text, "Пользователь") {
+		t.Errorf("expected user-not-found message, got %q", text)
+	}
+}
+
+func TestBotCommandService_HandleNotification_ShowCurrent(t *testing.T) {
+	svc, userRepo, client, cleanup := setupBotCommandService(t)
+	defer cleanup()
+	// commandMessage uses From.ID 42
+	if _, err := userRepo.GetOrCreateUser(42); err != nil {
+		t.Fatalf("failed to create user: %v", err)
+	}
+	msg := commandMessage("/notification ")
+	msg.Text = "/notification"
+	update := tgbotapi.Update{Message: msg}
+	svc.HandleUpdate(update)
+	text := client.lastParams.Get("text")
+	if text == "" {
+		t.Fatalf("expected a message with current settings")
+	}
+	if !strings.Contains(text, "Периодичность") && !strings.Contains(text, "daily") && !strings.Contains(text, "never") {
+		t.Errorf("expected current notification info, got %q", text)
+	}
+}
+
+func TestBotCommandService_HandleNotification_Never(t *testing.T) {
+	svc, userRepo, client, cleanup := setupBotCommandService(t)
+	defer cleanup()
+	if _, err := userRepo.GetOrCreateUser(42); err != nil {
+		t.Fatalf("failed to create user: %v", err)
+	}
+	msg := commandMessage("/notification never")
+	update := tgbotapi.Update{Message: msg}
+	svc.HandleUpdate(update)
+	user, _ := userRepo.GetUserByTelegramID(42)
+	if user == nil || !strings.Contains(user.SettingsJSON, "never") {
+		t.Fatalf("expected settings to include never")
+	}
+	if !strings.Contains(client.lastParams.Get("text"), "отключены") {
+		t.Errorf("expected confirmation about notifications disabled")
+	}
+}
+
+func TestBotCommandService_HandleNotification_ValidDays(t *testing.T) {
+	svc, userRepo, client, cleanup := setupBotCommandService(t)
+	defer cleanup()
+	if _, err := userRepo.GetOrCreateUser(42); err != nil {
+		t.Fatalf("failed to create user: %v", err)
+	}
+	msg := commandMessage("/notification 3")
+	update := tgbotapi.Update{Message: msg}
+	svc.HandleUpdate(update)
+	user, _ := userRepo.GetUserByTelegramID(42)
+	if user == nil || !strings.Contains(user.SettingsJSON, "3") {
+		t.Fatalf("expected settings to include 3")
+	}
+	text := client.lastParams.Get("text")
+	if !strings.Contains(text, "3") && !strings.Contains(text, "дн") {
+		t.Errorf("expected confirmation with period, got %q", text)
+	}
+}
+
 func TestBotCommandService_HandleStart(t *testing.T) {
 	svc, _, client, cleanup := setupBotCommandService(t)
 	defer cleanup()

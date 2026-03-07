@@ -94,33 +94,44 @@ func TestSessionRepository_GetActiveSession(t *testing.T) {
 
 	userRepo := NewUserRepository(db, logger)
 	user, _ := userRepo.GetOrCreateUser(789)
+	otherUser, _ := userRepo.GetOrCreateUser(790)
 
 	repo := NewSessionRepository(db, logger)
 
-	// Create an active session (no ended_at)
-	session := &models.TrainingSession{
-		UserID:       user.ID,
-		Source:       models.SourceManual,
-		PlannedCount: 3,
-		DoneCount:    0,
-		SessionJSON:  `{}`,
-	}
-	_, err := repo.CreateSession(session)
-	if err != nil {
-		t.Fatalf("Failed to create session: %v", err)
-	}
+	t.Run("no active session returns nil", func(t *testing.T) {
+		active, err := repo.GetActiveSession(otherUser.ID)
+		if err != nil {
+			t.Fatalf("GetActiveSession() error = %v", err)
+		}
+		if active != nil {
+			t.Errorf("expected nil when user has no session, got %+v", active)
+		}
+	})
 
-	// Get active session
-	active, err := repo.GetActiveSession(user.ID)
-	if err != nil {
-		t.Fatalf("GetActiveSession() error = %v", err)
-	}
-	if active == nil {
-		t.Fatal("GetActiveSession() should not return nil")
-	}
-	if active.UserID != user.ID {
-		t.Errorf("Expected UserID %d, got %d", user.ID, active.UserID)
-	}
+	t.Run("returns active session when exists", func(t *testing.T) {
+		session := &models.TrainingSession{
+			UserID:       user.ID,
+			Source:       models.SourceManual,
+			PlannedCount: 3,
+			DoneCount:    0,
+			SessionJSON:  `{}`,
+		}
+		_, err := repo.CreateSession(session)
+		if err != nil {
+			t.Fatalf("Failed to create session: %v", err)
+		}
+
+		active, err := repo.GetActiveSession(user.ID)
+		if err != nil {
+			t.Fatalf("GetActiveSession() error = %v", err)
+		}
+		if active == nil {
+			t.Fatal("GetActiveSession() should not return nil")
+		}
+		if active.UserID != user.ID {
+			t.Errorf("Expected UserID %d, got %d", user.ID, active.UserID)
+		}
+	})
 }
 
 func TestSessionRepository_FinishSession(t *testing.T) {

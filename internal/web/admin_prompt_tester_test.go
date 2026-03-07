@@ -2,9 +2,11 @@ package web
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"strings"
 	"testing"
 
 	"tgbot-skeleton/internal/config"
@@ -104,5 +106,105 @@ func TestHandleAdminPromptTesterRun_InvalidBody(t *testing.T) {
 
 	if rr.Code != http.StatusBadRequest {
 		t.Errorf("Expected status 400, got %d: %s", rr.Code, rr.Body.String())
+	}
+}
+
+func TestHandleAdminPromptTesterRun_EmptyWords(t *testing.T) {
+	router, _ := setupPromptTesterTest(t)
+
+	body := `{"words": [], "word_prompt": "p", "training_prompt": "tp"}`
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/prompt-tester/run", strings.NewReader(body))
+	req.Header.Set("Content-Type", "application/json")
+	req = setUserIDInContextPromptTester(req, 12345)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminPromptTesterRun(rr, req)
+
+	if rr.Code != http.StatusBadRequest {
+		t.Errorf("Expected status 400, got %d: %s", rr.Code, rr.Body.String())
+	}
+	if !strings.Contains(rr.Body.String(), "words") {
+		t.Errorf("Expected error to mention words, got %s", rr.Body.String())
+	}
+}
+
+func TestHandleAdminPromptTesterRun_NoWordPrompt(t *testing.T) {
+	router, _ := setupPromptTesterTest(t)
+
+	body := `{"words": ["hello"], "training_prompt": "tp"}`
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/prompt-tester/run", strings.NewReader(body))
+	req.Header.Set("Content-Type", "application/json")
+	req = setUserIDInContextPromptTester(req, 12345)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminPromptTesterRun(rr, req)
+
+	if rr.Code != http.StatusBadRequest {
+		t.Errorf("Expected status 400, got %d: %s", rr.Code, rr.Body.String())
+	}
+}
+
+func TestHandleAdminPromptTesterRun_NoTrainingPrompt(t *testing.T) {
+	router, _ := setupPromptTesterTest(t)
+
+	body := `{"words": ["hello"], "word_prompt": "wp"}`
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/prompt-tester/run", strings.NewReader(body))
+	req.Header.Set("Content-Type", "application/json")
+	req = setUserIDInContextPromptTester(req, 12345)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminPromptTesterRun(rr, req)
+
+	if rr.Code != http.StatusBadRequest {
+		t.Errorf("Expected status 400, got %d: %s", rr.Code, rr.Body.String())
+	}
+}
+
+// openAIChoiceResponse returns a minimal OpenAI-compatible chat completion response.
+func openAIChoiceResponse(content string) []byte {
+	out := map[string]interface{}{
+		"choices": []map[string]interface{}{
+			{"message": map[string]interface{}{"content": content}},
+		},
+	}
+	b, _ := json.Marshal(out)
+	return b
+}
+
+func TestHandleAdminPromptTesterRun_Success(t *testing.T) {
+	mockAI := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/chat/completions" && !strings.HasSuffix(r.URL.Path, "/chat/completions") {
+			t.Errorf("Unexpected path: %s", r.URL.Path)
+			http.NotFound(w, r)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write(openAIChoiceResponse(`{"word":"test","translation":"тест"}`))
+	}))
+	defer mockAI.Close()
+
+	router, _ := setupPromptTesterTest(t)
+	router.config.AI.URL = strings.TrimSuffix(mockAI.URL, "/")
+	router.config.AI.Model = "test-model"
+	router.config.AI.APIKey = "test-key"
+
+	body := `{"words": ["hello"], "word_prompt": "word", "training_prompt": "training"}`
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/prompt-tester/run", strings.NewReader(body))
+	req.Header.Set("Content-Type", "application/json")
+	req = setUserIDInContextPromptTester(req, 12345)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminPromptTesterRun(rr, req)
+
+	if rr.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", rr.Code, rr.Body.String())
+	}
+	if ct := rr.Header().Get("Content-Type"); ct != "application/x-ndjson" {
+		t.Errorf("Expected Content-Type application/x-ndjson, got %s", ct)
+	}
+	lines := strings.Split(strings.TrimSpace(rr.Body.String()), "\n")
+	if len(lines) < 2 {
+		t.Errorf("Expected at least 2 NDJSON lines (word + cards), got %d", len(lines))
 	}
 }

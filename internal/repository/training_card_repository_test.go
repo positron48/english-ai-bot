@@ -278,3 +278,50 @@ func TestTrainingCardRepository_GetWordCardsWithoutTrainingCards(t *testing.T) {
 		t.Error("Expected to find word2 in results")
 	}
 }
+
+func TestTrainingCardRepository_GetTrainingCardByWordCardIDAndSenseIndex(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := setupTrainingCardTestDB(t)
+	repo := NewTrainingCardRepository(db, logger)
+
+	t.Run("not found returns nil", func(t *testing.T) {
+		_, err := db.Exec("INSERT INTO word_cards (word, definition) VALUES ($1, $2)", "senseword", "def")
+		if err != nil {
+			t.Fatalf("insert word card: %v", err)
+		}
+		got, err := repo.GetTrainingCardByWordCardIDAndSenseIndex(1, 99)
+		if err != nil {
+			t.Fatalf("GetTrainingCardByWordCardIDAndSenseIndex() error = %v", err)
+		}
+		if got != nil {
+			t.Errorf("expected nil when no row, got %+v", got)
+		}
+	})
+
+	t.Run("found with pos and display_word", func(t *testing.T) {
+		_, _ = db.Exec("INSERT INTO word_cards (word, definition) VALUES ($1, $2)", "posword", "def")
+		pos := "verb"
+		displayWord := "to run"
+		_, err := db.Exec(`INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word)
+			VALUES (2, 'posword', 1, 'бежать', 'to run', $1, $2)`, pos, displayWord)
+		if err != nil {
+			t.Fatalf("insert training card: %v", err)
+		}
+		got, err := repo.GetTrainingCardByWordCardIDAndSenseIndex(2, 1)
+		if err != nil {
+			t.Fatalf("GetTrainingCardByWordCardIDAndSenseIndex() error = %v", err)
+		}
+		if got == nil {
+			t.Fatal("expected card")
+		}
+		if got.WordCardID != 2 || got.SenseIndex != 1 {
+			t.Errorf("expected word_card_id=2 sense_index=1, got %d %d", got.WordCardID, got.SenseIndex)
+		}
+		if got.POS == nil || *got.POS != pos {
+			t.Errorf("expected POS %q, got %v", pos, got.POS)
+		}
+		if got.DisplayWord == nil || *got.DisplayWord != displayWord {
+			t.Errorf("expected DisplayWord %q, got %v", displayWord, got.DisplayWord)
+		}
+	})
+}

@@ -292,6 +292,69 @@ func TestTrainingWorker_processCards_NoPendingCards(t *testing.T) {
 	worker.processCards(context.Background())
 }
 
+// TestTrainingWorker_processCards_WithPendingCards runs processCards when there is one pending word card;
+// worker uses mock AI and creates training cards.
+func TestTrainingWorker_processCards_WithPendingCards(t *testing.T) {
+	callCount := 0
+	transport := rtFuncTW(func(req *http.Request) (*http.Response, error) {
+		callCount++
+		if callCount == 1 {
+			// GenerateResponse (fillWordCardData)
+			content := `{"input_word":"processme","lemma":"processme","pos":"noun","transcription":"prəˈses","definition_ru":"обработать"}`
+			return newJSONHTTPResponseTW(http.StatusOK, ai.ChatResponse{Choices: []ai.Choice{{Message: ai.Message{Content: content}}}}), nil
+		}
+		content := `{"word_en":"processme","lemma":"processme","transcription":"","senses":[{"pos":"noun","word_ru":"тест","meaning_en":"process me","example_en":"","example_ru":"","distractors_ru":["яблоко","груша"],"distractors_en":["orange","banana"],"hint":""}]}`
+		return newJSONHTTPResponseTW(http.StatusOK, ai.ChatResponse{Choices: []ai.Choice{{Message: ai.Message{Content: content}}}}), nil
+	})
+	worker, wordRepo, trainingCardRepo, _, _, db, cleanup := newTrainingWorker(t, transport)
+	defer cleanup()
+	logger, _ := zap.NewDevelopment()
+	worker.cbService = NewCircuitBreakerService(repository.NewCircuitBreakerRepository(db.GetConnection(), logger), 5, logger)
+	cardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "processme", Definition: ""})
+	if err != nil {
+		t.Fatalf("UpsertWordCardLemma: %v", err)
+	}
+	worker.processCards(context.Background())
+	cards, err := trainingCardRepo.GetTrainingCardsByWordCardID(cardID)
+	if err != nil {
+		t.Fatalf("GetTrainingCardsByWordCardID: %v", err)
+	}
+	if len(cards) < 1 {
+		t.Errorf("expected at least 1 training card after processCards, got %d", len(cards))
+	}
+}
+
+// TestTrainingWorker_getUsersForWord_NoUsers ensures empty slice when word has no request history.
+func TestTrainingWorker_getUsersForWord_NoUsers(t *testing.T) {
+	worker, _, _, _, _, _, cleanup := newTrainingWorker(t, nil)
+	defer cleanup()
+	users, err := worker.getUsersForWord("nonexistentword123")
+	if err != nil {
+		t.Fatalf("getUsersForWord: %v", err)
+	}
+	if len(users) != 0 {
+		t.Errorf("expected 0 users for unknown word, got %d", len(users))
+	}
+}
+
+// TestTrainingWorker_getUsersForWord_MultipleUsers returns all distinct users who requested the word.
+func TestTrainingWorker_getUsersForWord_MultipleUsers(t *testing.T) {
+	worker, wordRepo, _, _, userRepo, _, cleanup := newTrainingWorker(t, nil)
+	defer cleanup()
+	u1, _ := userRepo.GetOrCreateUser(301)
+	u2, _ := userRepo.GetOrCreateUser(302)
+	word := "multiword"
+	_ = wordRepo.AddWordRequestHistoryWithCard(u1.ID, word, nil, &word)
+	_ = wordRepo.AddWordRequestHistoryWithCard(u2.ID, word, nil, &word)
+	users, err := worker.getUsersForWord(word)
+	if err != nil {
+		t.Fatalf("getUsersForWord: %v", err)
+	}
+	if len(users) != 2 {
+		t.Errorf("expected 2 users, got %d", len(users))
+	}
+}
+
 // mockTelegramClientWorker captures the last request body for assertions.
 type mockTelegramClientWorker struct {
 	lastBody []byte

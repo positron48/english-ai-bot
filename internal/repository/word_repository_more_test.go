@@ -111,3 +111,50 @@ func TestWordRepository_UpdateWordCardDefinition(t *testing.T) {
 		t.Errorf("Expected definition 'new definition', got %q", updated.Definition)
 	}
 }
+
+func TestWordRepository_GetWordCardRequestingUsers_NotFoundAndWithHistory(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := setupWordTestDB(t)
+	repo := NewWordRepository(db, logger)
+	userRepo := NewUserRepository(db, logger)
+	u1, _ := userRepo.GetOrCreateUser(901)
+	u2, _ := userRepo.GetOrCreateUser(902)
+
+	t.Run("word_card_id not found returns nil", func(t *testing.T) {
+		ids, err := repo.GetWordCardRequestingUsers(99999)
+		if err != nil {
+			t.Fatalf("GetWordCardRequestingUsers() error = %v", err)
+		}
+		if ids != nil {
+			t.Errorf("expected nil when word card not found, got %v", ids)
+		}
+	})
+
+	t.Run("returns user IDs who requested the word", func(t *testing.T) {
+		_ = repo.SaveWordCard("requestedword", "definition")
+		card, _ := repo.GetWordCard("requestedword")
+		if card == nil {
+			t.Fatal("word card not created")
+		}
+		word := "requestedword"
+		_ = repo.AddWordRequestHistoryWithCard(u1.ID, "requestedword", &card.ID, &word)
+		_ = repo.AddWordRequestHistoryWithCard(u2.ID, "requestedword", &card.ID, &word)
+		ids, err := repo.GetWordCardRequestingUsers(card.ID)
+		if err != nil {
+			t.Fatalf("GetWordCardRequestingUsers() error = %v", err)
+		}
+		if ids == nil {
+			t.Fatal("expected non-nil slice")
+		}
+		if len(ids) != 2 {
+			t.Errorf("expected 2 user IDs, got %d %v", len(ids), ids)
+		}
+		seen := make(map[int64]bool)
+		for _, id := range ids {
+			seen[id] = true
+		}
+		if !seen[u1.ID] || !seen[u2.ID] {
+			t.Errorf("expected both user IDs in result, got %v", ids)
+		}
+	})
+}

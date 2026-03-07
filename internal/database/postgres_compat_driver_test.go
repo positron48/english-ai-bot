@@ -152,6 +152,44 @@ func TestCompatConn_PrepareContext_rebindsQuestionToDollar(t *testing.T) {
 	}
 }
 
+func TestCompatConn_ExecContext_returnsErrSkipWhenUnderlyingDoesNotImplementExecerContext(t *testing.T) {
+	// mockConn does not implement driver.ExecerContext; compatConn must return driver.ErrSkip.
+	dr := &compatDriver{base: &mockDriver{}}
+	rawConn, err := dr.Open("")
+	if err != nil {
+		t.Fatalf("Open: %v", err)
+	}
+	defer rawConn.Close()
+
+	execer, ok := rawConn.(driver.ExecerContext)
+	if !ok {
+		t.Fatal("compatConn should implement driver.ExecerContext")
+	}
+	_, err = execer.ExecContext(context.Background(), "SELECT 1", nil)
+	if err != driver.ErrSkip {
+		t.Errorf("ExecContext() err = %v, want driver.ErrSkip", err)
+	}
+}
+
+func TestCompatConn_QueryContext_returnsErrSkipWhenUnderlyingDoesNotImplementQueryerContext(t *testing.T) {
+	// mockConn does not implement driver.QueryerContext; compatConn must return driver.ErrSkip.
+	dr := &compatDriver{base: &mockDriver{}}
+	rawConn, err := dr.Open("")
+	if err != nil {
+		t.Fatalf("Open: %v", err)
+	}
+	defer rawConn.Close()
+
+	queryer, ok := rawConn.(driver.QueryerContext)
+	if !ok {
+		t.Fatal("compatConn should implement driver.QueryerContext")
+	}
+	_, err = queryer.QueryContext(context.Background(), "SELECT 1", nil)
+	if err != driver.ErrSkip {
+		t.Errorf("QueryContext() err = %v, want driver.ErrSkip", err)
+	}
+}
+
 // Тесты rebindQuestionToDollar через Prepare (косвенно).
 func Test_rebindQuestionToDollar(t *testing.T) {
 	tests := []struct {
@@ -170,6 +208,7 @@ func Test_rebindQuestionToDollar(t *testing.T) {
 		{"single inside double", `SELECT "it's ?" FROM t WHERE a = ?`, `SELECT "it's ?" FROM t WHERE a = $1`},
 		{"only in string", "SELECT 'hello' FROM t", "SELECT 'hello' FROM t"},
 		{"multiple placeholders", "?, ?, ?", "$1, $2, $3"},
+		{"invalid utf8 byte as rune", "SELECT \xff WHERE a = ?", "SELECT \u00ff WHERE a = $1"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

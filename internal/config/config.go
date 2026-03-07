@@ -321,6 +321,20 @@ func Load() (*Config, error) {
 		return nil, fmt.Errorf("error unmarshaling config: %w", err)
 	}
 
+	// Validate required fields before loading prompt file so missing env yields clear errors
+	if config.Database.URL == "" {
+		return nil, fmt.Errorf("DATABASE_URL is required")
+	}
+	if config.AI.URL == "" {
+		return nil, fmt.Errorf("ai url is required")
+	}
+	if config.AI.APIKey == "" {
+		return nil, fmt.Errorf("ai api key is required")
+	}
+	if config.WebApp.JWTSecret == "" && config.WebApp.SessionSecret == "" {
+		return nil, fmt.Errorf("JWT secret is required (set WEBAPP_JWT_SECRET or WEBAPP_SESSION_SECRET)")
+	}
+
 	// Load prompt from file if specified
 	if config.AI.PromptFile != "" {
 		promptFromFile, err := loadPromptFromFile(config.AI.PromptFile)
@@ -337,24 +351,9 @@ func Load() (*Config, error) {
 	config.Bot.ErrorMessage = processNewlines(config.Bot.ErrorMessage)
 	config.Bot.EmptyMessage = processNewlines(config.Bot.EmptyMessage)
 
-	// Validate required fields
-	if config.Database.URL == "" {
-		return nil, fmt.Errorf("DATABASE_URL is required")
-	}
-	// Note: Telegram token is optional - app can work without it (web-only mode)
-	if config.AI.URL == "" {
-		return nil, fmt.Errorf("ai url is required")
-	}
-	if config.AI.APIKey == "" {
-		return nil, fmt.Errorf("ai api key is required")
-	}
+	// AI prompt required (from env or from file)
 	if config.AI.Prompt == "" {
 		return nil, fmt.Errorf("ai prompt is required (either AI_PROMPT or AI_PROMPT_FILE must be set)")
-	}
-
-	// Validate JWT secret (can use session secret as fallback)
-	if config.WebApp.JWTSecret == "" && config.WebApp.SessionSecret == "" {
-		return nil, fmt.Errorf("JWT secret is required (set WEBAPP_JWT_SECRET or WEBAPP_SESSION_SECRET)")
 	}
 
 	return &config, nil

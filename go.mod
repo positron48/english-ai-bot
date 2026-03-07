@@ -5,6 +5,7 @@ go 1.24.0
 toolchain go1.24.6
 
 require (
+	github.com/DATA-DOG/go-sqlmock v1.5.2
 	github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.5.1
 	github.com/golang-jwt/jwt/v5 v5.3.0
 	github.com/jackc/pgx/v5 v5.8.0

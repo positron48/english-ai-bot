@@ -352,3 +352,39 @@ func TestWordSetCategoryRepository_DeleteCategory(t *testing.T) {
 		}
 	})
 }
+
+// TestParseTime covers parseTime (used by GetCategory/GetAllCategories) for all supported formats.
+func TestParseTime(t *testing.T) {
+	tests := []struct {
+		name    string
+		in      string
+		wantErr bool
+	}{
+		{"empty", "", false},
+		{"standard", "2006-01-02 15:04:05", false},
+		{"RFC3339", "2024-06-15T12:30:00+03:00", false},
+		{"ISO no TZ", "2024-01-15T10:30:00", false},
+		{"ISO Z", "2024-01-15T10:30:00Z", false},
+		{"invalid", "not-a-date", true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := parseTime(tt.in)
+			if tt.wantErr {
+				if err == nil {
+					t.Error("parseTime() expected error")
+				}
+				return
+			}
+			if err != nil {
+				t.Fatalf("parseTime() error = %v", err)
+			}
+			if tt.in == "" && !got.IsZero() {
+				t.Error("parseTime(\"\") should return zero time")
+			}
+			if tt.in == "2006-01-02 15:04:05" && got.Year() != 2006 {
+				t.Errorf("parseTime(standard) year = %d", got.Year())
+			}
+		})
+	}
+}

@@ -479,3 +479,124 @@ func TestHandleMessage_SingleWord_UsesWordService(t *testing.T) {
 		t.Fatalf("expected definition in message, got %q", got)
 	}
 }
+
+func TestHandleUpdate_NilMessage(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, _ := setupHandler(t, client)
+
+	update := tgbotapi.Update{UpdateID: 1, Message: nil}
+	h.HandleUpdate(context.Background(), update)
+	// Should not panic; callback and message paths both no-op when Message is nil and no CallbackQuery
+}
+
+func TestHandleUpdate_CallbackQuery(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, _ := setupHandlerWithRepos(t, client)
+
+	update := tgbotapi.Update{
+		UpdateID: 1,
+		CallbackQuery: &tgbotapi.CallbackQuery{
+			ID:   "cb1",
+			From: &tgbotapi.User{ID: 555, UserName: "tester"},
+			Message: &tgbotapi.Message{
+				MessageID: 1,
+				Chat:      &tgbotapi.Chat{ID: 10},
+			},
+			Data: "train_start",
+		},
+	}
+	h.HandleUpdate(context.Background(), update)
+	// train_start with missing user may yield "no cards" or error message; both are acceptable (no assertion).
+}
+
+func TestHandleUpdate_CallbackQueryAnswerInvalidIndex(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, _ := setupHandlerWithRepos(t, client)
+
+	update := tgbotapi.Update{
+		UpdateID: 1,
+		CallbackQuery: &tgbotapi.CallbackQuery{
+			ID:   "cb2",
+			From: &tgbotapi.User{ID: 555, UserName: "u"},
+			Message: &tgbotapi.Message{
+				MessageID: 2,
+				Chat:      &tgbotapi.Chat{ID: 10},
+			},
+			Data: "answer_xyz",
+		},
+	}
+	h.HandleUpdate(context.Background(), update)
+	// answer_xyz: Atoi fails, handler logs and returns without sending "no active session"
+}
+
+func TestHandleCommand_Train_NoCards(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, _ := setupHandlerWithRepos(t, client)
+
+	msg := commandMessage("/train")
+	msg.Chat.ID = 10
+	msg.From.ID = 999
+	h.handleCommand(context.Background(), msg)
+
+	if got := client.lastParams.Get("text"); !strings.Contains(got, "карточек") && !strings.Contains(got, "ошибка") {
+		t.Errorf("expected no-cards or error message, got %q", got)
+	}
+}
+
+func TestHandleCommand_Stats_UserNotFound(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, db := setupHandlerWithRepos(t, client)
+	// Use a new telegram ID that will be created by GetOrCreateUser when we call handleStatsCommand
+	userRepo := repository.NewUserRepository(db.GetConnection(), h.logger)
+	_, err := userRepo.GetOrCreateUser(777)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+
+	msg := commandMessage("/stats")
+	msg.Chat.ID = 10
+	msg.From.ID = 777
+	h.handleCommand(context.Background(), msg)
+
+	if got := client.lastParams.Get("text"); !strings.Contains(got, "Статистика") && !strings.Contains(got, "Карточки") {
+		t.Errorf("expected stats text, got %q", got)
+	}
+}
+
+func TestHandleDeleteTrainCommand_EmptyWord(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, db := setupHandler(t, client)
+	logger, _ := zap.NewDevelopment()
+	h.config.Admin.TelegramID = 42
+	h.trainingCardRepo = repository.NewTrainingCardRepository(db.GetConnection(), logger)
+	h.userCardRepo = repository.NewUserCardRepository(db.GetConnection(), logger)
+
+	h.handleDeleteTrainCommand(10, 42, "   ")
+	if got := client.lastParams.Get("text"); !strings.Contains(got, "Укажите слово") {
+		t.Fatalf("expected prompt to specify word, got %q", got)
+	}
+}
+
+func TestHandleDeleteTrainCommand_WordNotFound(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, db := setupHandler(t, client)
+	logger, _ := zap.NewDevelopment()
+	h.config.Admin.TelegramID = 42
+	h.trainingCardRepo = repository.NewTrainingCardRepository(db.GetConnection(), logger)
+	h.userCardRepo = repository.NewUserCardRepository(db.GetConnection(), logger)
+
+	h.handleDeleteTrainCommand(10, 42, "nonexistent_word_xyz")
+	if got := client.lastParams.Get("text"); !strings.Contains(got, "не найдены") {
+		t.Fatalf("expected not found message, got %q", got)
+	}
+}
+
+func TestHandleCommand_GetID(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, _ := setupHandler(t, client)
+
+	h.handleCommand(context.Background(), commandMessage("/get_id"))
+	if got := client.lastParams.Get("text"); !strings.Contains(got, "42") {
+		t.Fatalf("expected user id in message, got %q", got)
+	}
+}

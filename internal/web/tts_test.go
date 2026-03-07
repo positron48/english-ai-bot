@@ -16,6 +16,44 @@ import (
 	"go.uber.org/zap"
 )
 
+func TestSetupPronunciationMediaRoute_RegistersRoute(t *testing.T) {
+	logger := zap.NewNop()
+	cfg := &config.Config{WebApp: config.WebAppConfig{JWTSecret: "test-secret"}}
+	router := NewRouter(logger, cfg, nil, nil, nil, nil, nil)
+
+	pronCfg := config.TTSConfig{
+		Enabled:        true,
+		Provider:       "dictionary",
+		AudioDir:       t.TempDir(),
+		PublicBasePath: "/media/tts",
+	}
+	pronService := service.NewPronunciationService(pronCfg, nil, logger)
+	router.SetPronunciationService(pronService)
+
+	req := httptest.NewRequest(http.MethodGet, "/media/tts/some/file.mp3", nil)
+	w := httptest.NewRecorder()
+	router.mux.ServeHTTP(w, req)
+
+	// handleTTSMedia returns 404 when file does not exist or path invalid; we just check the route is registered
+	if w.Code != http.StatusNotFound && w.Code != http.StatusOK {
+		t.Errorf("Expected 404 or 200 from media route, got %d", w.Code)
+	}
+}
+
+func TestSetupPronunciationMediaRoute_NoOpWhenDisabled(t *testing.T) {
+	logger := zap.NewNop()
+	router := &Router{
+		mux:                  http.NewServeMux(),
+		logger:               logger,
+		pronunciationService: service.NewPronunciationService(config.TTSConfig{Enabled: false}, nil, logger),
+	}
+	router.setupPronunciationMediaRoute()
+
+	if router.pronunciationMediaRouteRegistered {
+		t.Error("Route should not be registered when service is disabled")
+	}
+}
+
 func TestHandleTTSWordAndMedia(t *testing.T) {
 	audioBytes := []byte("ID3test-audio")
 

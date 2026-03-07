@@ -37,6 +37,12 @@ func newTextResponse(status int, body string) *http.Response {
 	}
 }
 
+// failingReadBody is an io.ReadCloser that fails on Read (to test "failed to read response" path).
+type failingReadBody struct{}
+
+func (failingReadBody) Read(p []byte) (n int, err error) { return 0, errors.New("read failed") }
+func (failingReadBody) Close() error                    { return nil }
+
 func TestGenerateResponse_Success(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 
@@ -327,6 +333,24 @@ func TestGenerateResponse_RequestBuildError(t *testing.T) {
 	}
 }
 
+func TestGenerateResponse_ReadBodyError(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+
+	service := NewService("http://example.com", "test-model", "test-key", "test prompt", logger)
+	service.client.Transport = roundTripperFunc(func(r *http.Request) (*http.Response, error) {
+		return &http.Response{
+			StatusCode: http.StatusOK,
+			Body:       failingReadBody{},
+			Header:     http.Header{"Content-Type": []string{"application/json"}},
+		}, nil
+	})
+
+	_, err := service.GenerateResponse(context.Background(), "Hello")
+	if err == nil {
+		t.Error("Expected error when response body read fails")
+	}
+}
+
 func TestGenerateResponse_SendError(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 
@@ -353,6 +377,115 @@ func TestGenerateTrainingCard_HTTPError(t *testing.T) {
 	_, err := service.GenerateTrainingCard(context.Background(), "test")
 	if err == nil {
 		t.Error("Expected error for HTTP 503")
+	}
+}
+
+func TestGenerateTrainingCard_ModelOverrideEmptyString(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+
+	service := NewService("http://example.com", "default-model", "test-key", "test prompt", logger)
+	service.SetTrainingPrompt("Generate: ")
+	service.client.Transport = roundTripperFunc(func(r *http.Request) (*http.Response, error) {
+		body, _ := io.ReadAll(r.Body)
+		var req ChatRequest
+		if err := json.Unmarshal(body, &req); err != nil {
+			t.Fatalf("Failed to parse request: %v", err)
+		}
+		if req.Model != "default-model" {
+			t.Errorf("Expected default model when override is empty string, got %s", req.Model)
+		}
+		resp := ChatResponse{
+			Choices: []Choice{{Message: Message{Content: `{"word": "test"}`}}},
+		}
+		return newJSONResponse(http.StatusOK, resp), nil
+	})
+
+	_, err := service.GenerateTrainingCard(context.Background(), "test", "")
+	if err != nil {
+		t.Fatalf("GenerateTrainingCard() error = %v", err)
+	}
+}
+
+func TestGenerateTrainingCard_SendError(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+
+	service := NewService("http://example.com", "test-model", "test-key", "test prompt", logger)
+	service.SetTrainingPrompt("Generate: ")
+	service.client.Transport = roundTripperFunc(func(r *http.Request) (*http.Response, error) {
+		return nil, errors.New("network down")
+	})
+
+	_, err := service.GenerateTrainingCard(context.Background(), "test")
+	if err == nil {
+		t.Error("Expected error when transport fails")
+	}
+}
+
+func TestGenerateTrainingCard_ReadBodyError(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+
+	service := NewService("http://example.com", "test-model", "test-key", "test prompt", logger)
+	service.SetTrainingPrompt("Generate: ")
+	service.client.Transport = roundTripperFunc(func(r *http.Request) (*http.Response, error) {
+		return &http.Response{
+			StatusCode: http.StatusOK,
+			Body:       failingReadBody{},
+			Header:     http.Header{"Content-Type": []string{"application/json"}},
+		}, nil
+	})
+
+	_, err := service.GenerateTrainingCard(context.Background(), "test")
+	if err == nil {
+		t.Error("Expected error when response body read fails")
+	}
+}
+
+func TestGenerateTrainingCard_InvalidJSON(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+
+	service := NewService("http://example.com", "test-model", "test-key", "test prompt", logger)
+	service.SetTrainingPrompt("Generate: ")
+	service.client.Transport = roundTripperFunc(func(r *http.Request) (*http.Response, error) {
+		return newTextResponse(http.StatusOK, "not valid json"), nil
+	})
+
+	_, err := service.GenerateTrainingCard(context.Background(), "test")
+	if err == nil {
+		t.Error("Expected error for invalid JSON response")
+	}
+}
+
+func TestGenerateTrainingCard_APIError(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+
+	service := NewService("http://example.com", "test-model", "test-key", "test prompt", logger)
+	service.SetTrainingPrompt("Generate: ")
+	service.client.Transport = roundTripperFunc(func(r *http.Request) (*http.Response, error) {
+		resp := ChatResponse{
+			Error: &Error{Message: "rate limit exceeded", Type: "rate_limit"},
+		}
+		return newJSONResponse(http.StatusOK, resp), nil
+	})
+
+	_, err := service.GenerateTrainingCard(context.Background(), "test")
+	if err == nil {
+		t.Error("Expected error for API error in response")
+	}
+}
+
+func TestGenerateTrainingCard_NoChoices(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+
+	service := NewService("http://example.com", "test-model", "test-key", "test prompt", logger)
+	service.SetTrainingPrompt("Generate: ")
+	service.client.Transport = roundTripperFunc(func(r *http.Request) (*http.Response, error) {
+		resp := ChatResponse{Choices: []Choice{}}
+		return newJSONResponse(http.StatusOK, resp), nil
+	})
+
+	_, err := service.GenerateTrainingCard(context.Background(), "test")
+	if err == nil {
+		t.Error("Expected error for empty choices")
 	}
 }
 
@@ -425,6 +558,130 @@ func TestGenerateAdditionalTrainingCard_CleansMarkdown(t *testing.T) {
 	}
 	if response != `{"word": "test"}` {
 		t.Errorf("Expected cleaned JSON, got: %s", response)
+	}
+}
+
+func TestGenerateAdditionalTrainingCard_ModelOverrideEmptyString(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+
+	service := NewService("http://example.com", "default-model", "test-key", "test prompt", logger)
+	service.SetTrainingPrompt("Generate: ")
+	service.client.Transport = roundTripperFunc(func(r *http.Request) (*http.Response, error) {
+		body, _ := io.ReadAll(r.Body)
+		var req ChatRequest
+		if err := json.Unmarshal(body, &req); err != nil {
+			t.Fatalf("Failed to parse request: %v", err)
+		}
+		if req.Model != "default-model" {
+			t.Errorf("Expected default model when override is empty string, got %s", req.Model)
+		}
+		resp := ChatResponse{
+			Choices: []Choice{{Message: Message{Content: `{"word": "test"}`}}},
+		}
+		return newJSONResponse(http.StatusOK, resp), nil
+	})
+
+	_, err := service.GenerateAdditionalTrainingCard(context.Background(), "test", "", "")
+	if err != nil {
+		t.Fatalf("GenerateAdditionalTrainingCard() error = %v", err)
+	}
+}
+
+func TestGenerateAdditionalTrainingCard_SendError(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+
+	service := NewService("http://example.com", "test-model", "test-key", "test prompt", logger)
+	service.SetTrainingPrompt("Generate: ")
+	service.client.Transport = roundTripperFunc(func(r *http.Request) (*http.Response, error) {
+		return nil, errors.New("network down")
+	})
+
+	_, err := service.GenerateAdditionalTrainingCard(context.Background(), "test", "constraints")
+	if err == nil {
+		t.Error("Expected error when transport fails")
+	}
+}
+
+func TestGenerateAdditionalTrainingCard_ReadBodyError(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+
+	service := NewService("http://example.com", "test-model", "test-key", "test prompt", logger)
+	service.SetTrainingPrompt("Generate: ")
+	service.client.Transport = roundTripperFunc(func(r *http.Request) (*http.Response, error) {
+		return &http.Response{
+			StatusCode: http.StatusOK,
+			Body:       failingReadBody{},
+			Header:     http.Header{"Content-Type": []string{"application/json"}},
+		}, nil
+	})
+
+	_, err := service.GenerateAdditionalTrainingCard(context.Background(), "test", "")
+	if err == nil {
+		t.Error("Expected error when response body read fails")
+	}
+}
+
+func TestGenerateAdditionalTrainingCard_HTTPError(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+
+	service := NewService("http://example.com", "test-model", "test-key", "test prompt", logger)
+	service.SetTrainingPrompt("Generate: ")
+	service.client.Transport = roundTripperFunc(func(r *http.Request) (*http.Response, error) {
+		return newTextResponse(http.StatusBadRequest, "Bad Request"), nil
+	})
+
+	_, err := service.GenerateAdditionalTrainingCard(context.Background(), "test", "constraints")
+	if err == nil {
+		t.Error("Expected error for HTTP 400")
+	}
+}
+
+func TestGenerateAdditionalTrainingCard_InvalidJSON(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+
+	service := NewService("http://example.com", "test-model", "test-key", "test prompt", logger)
+	service.SetTrainingPrompt("Generate: ")
+	service.client.Transport = roundTripperFunc(func(r *http.Request) (*http.Response, error) {
+		return newTextResponse(http.StatusOK, "not valid json"), nil
+	})
+
+	_, err := service.GenerateAdditionalTrainingCard(context.Background(), "test", "")
+	if err == nil {
+		t.Error("Expected error for invalid JSON response")
+	}
+}
+
+func TestGenerateAdditionalTrainingCard_APIError(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+
+	service := NewService("http://example.com", "test-model", "test-key", "test prompt", logger)
+	service.SetTrainingPrompt("Generate: ")
+	service.client.Transport = roundTripperFunc(func(r *http.Request) (*http.Response, error) {
+		resp := ChatResponse{
+			Error: &Error{Message: "quota exceeded", Type: "insufficient_quota"},
+		}
+		return newJSONResponse(http.StatusOK, resp), nil
+	})
+
+	_, err := service.GenerateAdditionalTrainingCard(context.Background(), "test", "constraints")
+	if err == nil {
+		t.Error("Expected error for API error in response")
+	}
+}
+
+func TestGenerateAdditionalTrainingCard_NoChoices(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+
+	service := NewService("http://example.com", "test-model", "test-key", "test prompt", logger)
+	service.SetTrainingPrompt("Generate: ")
+	service.client.Transport = roundTripperFunc(func(r *http.Request) (*http.Response, error) {
+		resp := ChatResponse{Choices: []Choice{}}
+		return newJSONResponse(http.StatusOK, resp), nil
+	})
+
+	_, err := service.GenerateAdditionalTrainingCard(context.Background(), "test", "")
+	if err == nil {
+		t.Error("Expected error for empty choices")
 	}
 }
 
