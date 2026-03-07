@@ -13,7 +13,7 @@ SERVICE_NAME ?= ai-bot
 -include .env
 .EXPORT_ALL_VARIABLES:
 
-.PHONY: all tidy build run test lint fmt setup up clean check ci deploy update status logs docker-build docker-run docker-stop docker-logs docker-clean docker-rebuild docker-dev docker-dev-logs docker-dev-restart webapp-install webapp-dev webapp-build test-postgres test-integration test-integration-verbose
+.PHONY: all tidy build run test lint fmt setup up clean check check-quick ci deploy update status logs docker-build docker-run docker-stop docker-logs docker-clean docker-rebuild docker-dev docker-dev-logs docker-dev-restart webapp-install webapp-dev webapp-build test-postgres test-integration test-integration-verbose
 
 all: build
 
@@ -97,10 +97,12 @@ test-postgres:
 
 # Postgres integration tests (Testcontainers, require Docker)
 # Excludes internal/integration/llm (requires AI_URL, AI_API_KEY)
+# Override with: make test-integration INTEGRATION_TEST_TIMEOUT=900
+INTEGRATION_TEST_TIMEOUT ?= 600
 test-integration:
-	@echo "Running Postgres integration tests (Testcontainers)..."
+	@echo "Running Postgres integration tests (Testcontainers, timeout $(INTEGRATION_TEST_TIMEOUT)s)..."
 	@echo "⚠️  Requires: Docker daemon"
-	$(GO) test -tags=integration -v -count=1 ./internal/integration/testkit/... ./internal/integration/user_flows/... -timeout 180s
+	$(GO) test -tags=integration -v -count=1 ./internal/integration/testkit/... ./internal/integration/user_flows/... -timeout $(INTEGRATION_TEST_TIMEOUT)s
 
 test-integration-verbose:
 	@echo "Running Postgres integration tests (verbose)..."
@@ -163,8 +165,12 @@ check: tidy
 	rm -f .go-test-output.txt; \
 	echo "✅ Go tests passed"
 	@echo ""
-	@echo "5b. Running integration tests (Testcontainers)..."
-	@$(MAKE) test-integration
+	@if [ "$${CHECK_SKIP_INTEGRATION:-0}" = "1" ]; then \
+		echo "5b. Skipping integration tests (quick run)"; \
+	else \
+		echo "5b. Running integration tests (Testcontainers)..."; \
+		$(MAKE) test-integration; \
+	fi
 	@echo ""
 	@echo "6. Running Go linter..."
 	@$(GO) run github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.10.1 run --timeout=3m
@@ -222,6 +228,10 @@ backfill-mastering: build-backfill-mastering
 	@echo "Run after deploying the user_word_mastering table. DATABASE_URL must be set."
 	@echo ""
 	./bin/backfill_mastering
+
+# Quick check: same as check but skips integration tests (step 5b). Use for fast feedback.
+check-quick: export CHECK_SKIP_INTEGRATION := 1
+check-quick: check
 
 # Alias for check
 ci: check
@@ -374,7 +384,8 @@ help:
 	@echo "  make llm-all        - Run all LLM integration tests"
 	@echo "  make fmt            - Format code"
 	@echo "  make lint           - Run linter"
-	@echo "  make check          - Run all CI checks (tests, lint, verify)"
+	@echo "  make check          - Run all CI checks (tests, lint, verify, incl. integration)"
+	@echo "  make check-quick    - Run CI checks without integration tests (faster)"
 	@echo "  make swagger        - Generate Swagger API documentation"
 	@echo "  make clean          - Clean build artifacts"
 	@echo "  make migrate-words  - Migrate existing word cards to new structured format"

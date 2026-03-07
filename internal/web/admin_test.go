@@ -1855,3 +1855,864 @@ func TestHandleAdminWord_POST_Generate_NotFound(t *testing.T) {
 		t.Errorf("expected status 404 for non-existent word, got %d: %s", w.Code, w.Body.String())
 	}
 }
+
+// TestHandleAdminTraining_Get_WordNotFound covers GET when word card does not exist (empty cards).
+func TestHandleAdminTraining_Get_WordNotFound(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	adminUser, err := userRepo.GetOrCreateUser(123456789)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	cfg := &config.Config{
+		Admin: config.AdminConfig{TelegramID: 123456789},
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("GET", "/api/admin/training/nonexistentwordxyz", nil)
+	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	ctx = context.WithValue(ctx, userPermissionsKey, []string{string(PermissionWordsReadAll)})
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+	router.handleAdminTraining(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("expected 200, got %d: %s", w.Code, w.Body.String())
+	}
+	var resp map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&resp); err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+	if resp["word_en"] != "nonexistentwordxyz" {
+		t.Errorf("expected word_en in response, got %v", resp["word_en"])
+	}
+	cards, _ := resp["cards"].([]interface{})
+	if cards == nil || len(cards) != 0 {
+		t.Errorf("expected empty cards when word not found, got %v", resp["cards"])
+	}
+}
+
+// TestHandleAdminTraining_PostCreate_JSON covers POST create training card with JSON body.
+func TestHandleAdminTraining_PostCreate_JSON(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	adminUser, err := userRepo.GetOrCreateUser(123456789)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	wordRepo := repository.NewWordRepository(db, logger)
+	_ = wordRepo.SaveWordCard("createjson", "def")
+	cfg := &config.Config{
+		Admin: config.AdminConfig{TelegramID: 123456789},
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	body := map[string]interface{}{
+		"word_ru":     "создать",
+		"meaning_en":  "to create",
+		"example_en":  "example",
+		"example_ru":  "пример",
+		"transcription": "/kriˈeɪt/",
+		"pos":         "verb",
+		"display_word": "create",
+	}
+	jsonBody, _ := json.Marshal(body)
+	req := httptest.NewRequest("POST", "/api/admin/training/createjson", strings.NewReader(string(jsonBody)))
+	req.Header.Set("Content-Type", "application/json")
+	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	ctx = context.WithValue(ctx, userPermissionsKey, []string{string(PermissionWordsEditAll)})
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+	router.handleAdminTraining(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("expected 200, got %d: %s", w.Code, w.Body.String())
+	}
+	var resp map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&resp); err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+	if resp["success"] != true {
+		t.Error("expected success true")
+	}
+}
+
+// TestHandleAdminTraining_PostCreate_ValidationRequired covers 400 when word_ru or meaning_en missing.
+func TestHandleAdminTraining_PostCreate_ValidationRequired(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	adminUser, err := userRepo.GetOrCreateUser(123456789)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	wordRepo := repository.NewWordRepository(db, logger)
+	_ = wordRepo.SaveWordCard("validword", "def")
+	cfg := &config.Config{
+		Admin: config.AdminConfig{TelegramID: 123456789},
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	body := map[string]interface{}{"word_ru": "слово"} // meaning_en missing
+	jsonBody, _ := json.Marshal(body)
+	req := httptest.NewRequest("POST", "/api/admin/training/validword", strings.NewReader(string(jsonBody)))
+	req.Header.Set("Content-Type", "application/json")
+	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	ctx = context.WithValue(ctx, userPermissionsKey, []string{string(PermissionWordsEditAll)})
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+	router.handleAdminTraining(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("expected 400, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleAdminTraining_PostCreate_WordNotFound covers 404 when word card does not exist.
+func TestHandleAdminTraining_PostCreate_WordNotFound(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	adminUser, err := userRepo.GetOrCreateUser(123456789)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	cfg := &config.Config{
+		Admin: config.AdminConfig{TelegramID: 123456789},
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	body := map[string]interface{}{"word_ru": "слово", "meaning_en": "meaning"}
+	jsonBody, _ := json.Marshal(body)
+	req := httptest.NewRequest("POST", "/api/admin/training/nonexistentword123", strings.NewReader(string(jsonBody)))
+	req.Header.Set("Content-Type", "application/json")
+	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	ctx = context.WithValue(ctx, userPermissionsKey, []string{string(PermissionWordsEditAll)})
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+	router.handleAdminTraining(w, req)
+
+	if w.Code != http.StatusNotFound {
+		t.Errorf("expected 404, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleAdminTraining_PostDelete_WordFromForm covers POST delete with word in form when path word empty.
+func TestHandleAdminTraining_PostDelete_WordFromForm(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	adminUser, err := userRepo.GetOrCreateUser(123456789)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	wordRepo := repository.NewWordRepository(db, logger)
+	_ = wordRepo.SaveWordCard("formdelete", "def")
+	trainingCardRepo := repository.NewTrainingCardRepository(db, logger)
+	wc, _ := wordRepo.GetWordCard("formdelete")
+	tc := &models.TrainingCard{WordCardID: wc.ID, WordEN: "formdelete", SenseIndex: 0, WordRU: "удалить", MeaningEN: "delete"}
+	_, _ = trainingCardRepo.CreateTrainingCard(tc)
+	cfg := &config.Config{
+		Admin: config.AdminConfig{TelegramID: 123456789},
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	// Path with word so action is "delete"; form also has word for coverage of form fallback.
+	req := httptest.NewRequest("POST", "/api/admin/training/formdelete/delete", strings.NewReader("word=formdelete"))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	ctx = context.WithValue(ctx, userPermissionsKey, []string{string(PermissionWordsEditAll)})
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+	router.handleAdminTraining(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("expected 200, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleAdminTraining_InvalidRequest covers 400 for unsupported method/path combination.
+func TestHandleAdminTraining_InvalidRequest(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	adminUser, err := userRepo.GetOrCreateUser(123456789)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	cfg := &config.Config{
+		Admin: config.AdminConfig{TelegramID: 123456789},
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("POST", "/api/admin/training/word/unknown_action", nil)
+	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	ctx = context.WithValue(ctx, userPermissionsKey, []string{string(PermissionWordsEditAll)})
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+	router.handleAdminTraining(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("expected 400, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleAdminTraining_ForbiddenEdit covers 403 when POST without edit permission.
+func TestHandleAdminTraining_ForbiddenEdit(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	// Use a user that has no edit permission (only read or none); loadUserPermissionsIntoContext will load from DB.
+	readOnlyUser, err := userRepo.GetOrCreateUser(999888777)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	cfg := &config.Config{
+		Admin: config.AdminConfig{TelegramID: 123456789},
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	body := map[string]interface{}{"word_ru": "слово", "meaning_en": "meaning"}
+	jsonBody, _ := json.Marshal(body)
+	req := httptest.NewRequest("POST", "/api/admin/training/someword", strings.NewReader(string(jsonBody)))
+	req.Header.Set("Content-Type", "application/json")
+	// Context with read-only user; loaded permissions won't include WordsEditAll
+	ctx := context.WithValue(req.Context(), userIDKey, readOnlyUser.ID)
+	ctx = context.WithValue(ctx, userPermissionsKey, []string{string(PermissionWordsReadAll)})
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+	router.handleAdminTraining(w, req)
+
+	// Handler checks edit permission first; without PermissionWordsEditAll we expect 403.
+	if w.Code != http.StatusForbidden {
+		t.Errorf("expected 403, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleAdminTrainingCard_EmptyCardID_AdminGo covers 400 when card ID is missing or empty.
+func TestHandleAdminTrainingCard_EmptyCardID_AdminGo(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	adminUser, err := userRepo.GetOrCreateUser(123456789)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	cfg := &config.Config{
+		Admin: config.AdminConfig{TelegramID: 123456789},
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("DELETE", "/api/admin/training/card/", nil)
+	req.URL.Path = "/api/admin/training/card/"
+	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	ctx = context.WithValue(ctx, userPermissionsKey, []string{string(PermissionWordsEditAll)})
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+	router.handleAdminTrainingCard(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("expected 400, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleAdminTrainingCard_Get_MethodNotAllowed covers GET returning 405.
+func TestHandleAdminTrainingCard_Get_MethodNotAllowed(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	adminUser, err := userRepo.GetOrCreateUser(123456789)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	wordRepo := repository.NewWordRepository(db, logger)
+	_ = wordRepo.SaveWordCard("getcard", "def")
+	wc, _ := wordRepo.GetWordCard("getcard")
+	trainingCardRepo := repository.NewTrainingCardRepository(db, logger)
+	tc := &models.TrainingCard{WordCardID: wc.ID, WordEN: "getcard", SenseIndex: 0, WordRU: "карта", MeaningEN: "card"}
+	cardID, _ := trainingCardRepo.CreateTrainingCard(tc)
+	cfg := &config.Config{
+		Admin: config.AdminConfig{TelegramID: 123456789},
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("GET", fmt.Sprintf("/api/admin/training/card/%d", cardID), nil)
+	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	ctx = context.WithValue(ctx, userPermissionsKey, []string{string(PermissionWordsReadAll)})
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+	router.handleAdminTrainingCard(w, req)
+
+	if w.Code != http.StatusMethodNotAllowed {
+		t.Errorf("expected 405, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleAdminTrainingCard_Delete_NotFound covers 404 when deleting non-existent card.
+func TestHandleAdminTrainingCard_Delete_NotFound(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	adminUser, err := userRepo.GetOrCreateUser(123456789)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	cfg := &config.Config{
+		Admin: config.AdminConfig{TelegramID: 123456789},
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("DELETE", "/api/admin/training/card/999999", nil)
+	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	ctx = context.WithValue(ctx, userPermissionsKey, []string{string(PermissionWordsEditAll)})
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+	router.handleAdminTrainingCard(w, req)
+
+	if w.Code != http.StatusNotFound {
+		t.Errorf("expected 404, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleAdminTrainingCard_Put_JSON covers PUT with JSON body.
+func TestHandleAdminTrainingCard_Put_JSON(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	adminUser, err := userRepo.GetOrCreateUser(123456789)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	wordRepo := repository.NewWordRepository(db, logger)
+	_ = wordRepo.SaveWordCard("putjson", "def")
+	wc, _ := wordRepo.GetWordCard("putjson")
+	trainingCardRepo := repository.NewTrainingCardRepository(db, logger)
+	tc := &models.TrainingCard{WordCardID: wc.ID, WordEN: "putjson", SenseIndex: 0, WordRU: "карта", MeaningEN: "card"}
+	cardID, _ := trainingCardRepo.CreateTrainingCard(tc)
+	cfg := &config.Config{
+		Admin: config.AdminConfig{TelegramID: 123456789},
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	body := map[string]interface{}{
+		"word_ru":    "обновлено",
+		"meaning_en": "updated",
+		"pos":        "noun",
+		"display_word": "putjson",
+	}
+	jsonBody, _ := json.Marshal(body)
+	req := httptest.NewRequest("PUT", fmt.Sprintf("/api/admin/training/card/%d", cardID), strings.NewReader(string(jsonBody)))
+	req.Header.Set("Content-Type", "application/json")
+	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	ctx = context.WithValue(ctx, userPermissionsKey, []string{string(PermissionWordsEditAll)})
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+	router.handleAdminTrainingCard(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("expected 200, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleAdminTrainingCard_Put_CardNotFound covers 404 when updating non-existent card.
+func TestHandleAdminTrainingCard_Put_CardNotFound(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	adminUser, err := userRepo.GetOrCreateUser(123456789)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	cfg := &config.Config{
+		Admin: config.AdminConfig{TelegramID: 123456789},
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	body := map[string]interface{}{"word_ru": "x", "meaning_en": "y"}
+	jsonBody, _ := json.Marshal(body)
+	req := httptest.NewRequest("PUT", "/api/admin/training/card/999999", strings.NewReader(string(jsonBody)))
+	req.Header.Set("Content-Type", "application/json")
+	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	ctx = context.WithValue(ctx, userPermissionsKey, []string{string(PermissionWordsEditAll)})
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+	router.handleAdminTrainingCard(w, req)
+
+	if w.Code != http.StatusNotFound {
+		t.Errorf("expected 404, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleAdminTrainingCard_Put_InvalidJSON covers 400 when JSON body is invalid.
+func TestHandleAdminTrainingCard_Put_InvalidJSON(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	adminUser, err := userRepo.GetOrCreateUser(123456789)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	wordRepo := repository.NewWordRepository(db, logger)
+	_ = wordRepo.SaveWordCard("invjson", "def")
+	wc, _ := wordRepo.GetWordCard("invjson")
+	trainingCardRepo := repository.NewTrainingCardRepository(db, logger)
+	tc := &models.TrainingCard{WordCardID: wc.ID, WordEN: "invjson", SenseIndex: 0, WordRU: "x", MeaningEN: "y"}
+	cardID, _ := trainingCardRepo.CreateTrainingCard(tc)
+	cfg := &config.Config{
+		Admin: config.AdminConfig{TelegramID: 123456789},
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("PUT", fmt.Sprintf("/api/admin/training/card/%d", cardID), strings.NewReader("not json"))
+	req.Header.Set("Content-Type", "application/json")
+	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	ctx = context.WithValue(ctx, userPermissionsKey, []string{string(PermissionWordsEditAll)})
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+	router.handleAdminTrainingCard(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("expected 400, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleAdminTrainingCard_Put_InvalidForm covers 400 when form body read fails (ParseForm fails).
+func TestHandleAdminTrainingCard_Put_InvalidForm(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	adminUser, err := userRepo.GetOrCreateUser(123456789)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	wordRepo := repository.NewWordRepository(db, logger)
+	_ = wordRepo.SaveWordCard("invform", "def")
+	wc, _ := wordRepo.GetWordCard("invform")
+	trainingCardRepo := repository.NewTrainingCardRepository(db, logger)
+	tc := &models.TrainingCard{WordCardID: wc.ID, WordEN: "invform", SenseIndex: 0, WordRU: "x", MeaningEN: "y"}
+	cardID, _ := trainingCardRepo.CreateTrainingCard(tc)
+	cfg := &config.Config{
+		Admin: config.AdminConfig{TelegramID: 123456789},
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("PUT", fmt.Sprintf("/api/admin/training/card/%d", cardID), errReader{})
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	ctx = context.WithValue(ctx, userPermissionsKey, []string{string(PermissionWordsEditAll)})
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+	router.handleAdminTrainingCard(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("expected 400, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleAdminTrainingCard_MethodNotAllowed_AdminGo covers 405 for non-PUT/DELETE.
+func TestHandleAdminTrainingCard_MethodNotAllowed_AdminGo(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	adminUser, err := userRepo.GetOrCreateUser(123456789)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	cfg := &config.Config{
+		Admin: config.AdminConfig{TelegramID: 123456789},
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("PATCH", "/api/admin/training/card/1", nil)
+	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	ctx = context.WithValue(ctx, userPermissionsKey, []string{string(PermissionWordsEditAll)})
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+	router.handleAdminTrainingCard(w, req)
+
+	if w.Code != http.StatusMethodNotAllowed {
+		t.Errorf("expected 405, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleAdminWords_QueryParams covers all query params: only_errors, has_audio, user_id, sort_order asc.
+func TestHandleAdminWords_QueryParams(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	adminUser, err := userRepo.GetOrCreateUser(123456789)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	_, _ = userRepo.GetOrCreateUser(999888777)
+	wordRepo := repository.NewWordRepository(db, logger)
+	_ = wordRepo.SaveWordCard("sortword", "def")
+	cfg := &config.Config{
+		Admin: config.AdminConfig{TelegramID: 123456789},
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	tests := []struct {
+		name string
+		url  string
+	}{
+		{"only_errors=true", "/api/admin/words?only_errors=true"},
+		{"only_errors=1", "/api/admin/words?only_errors=1"},
+		{"has_audio=true", "/api/admin/words?has_audio=true"},
+		{"has_audio=false", "/api/admin/words?has_audio=false"},
+		{"has_audio=1", "/api/admin/words?has_audio=1"},
+		{"has_audio=0", "/api/admin/words?has_audio=0"},
+		{"user_id", "/api/admin/words?user_id=1"},
+		{"sort_order=asc", "/api/admin/words?sort_order=asc"},
+		{"sort_by=word", "/api/admin/words?sort_by=word&sort_order=asc"},
+		{"limit and offset", "/api/admin/words?limit=5&offset=0"},
+		{"missing_training_pos", "/api/admin/words?missing_training_pos=noun"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			req := httptest.NewRequest("GET", tt.url, nil)
+			ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+			ctx = context.WithValue(ctx, userRoleKey, "admin")
+			req = req.WithContext(ctx)
+			w := httptest.NewRecorder()
+			router.RequireAdmin(router.handleAdminWords)(w, req)
+			if w.Code != http.StatusOK {
+				t.Errorf("expected 200, got %d: %s", w.Code, w.Body.String())
+			}
+		})
+	}
+}
+
+// TestHandleAdminTraining_PostCreate_InvalidForm covers 400 when form body read fails.
+func TestHandleAdminTraining_PostCreate_InvalidForm(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	adminUser, err := userRepo.GetOrCreateUser(123456789)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	wordRepo := repository.NewWordRepository(db, logger)
+	_ = wordRepo.SaveWordCard("invformcreate", "def")
+	cfg := &config.Config{
+		Admin: config.AdminConfig{TelegramID: 123456789},
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("POST", "/api/admin/training/invformcreate", errReader{})
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	ctx = context.WithValue(ctx, userPermissionsKey, []string{string(PermissionWordsEditAll)})
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+	router.handleAdminTraining(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("expected 400, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleAdminTraining_PostCreate_Form covers POST create with form data.
+func TestHandleAdminTraining_PostCreate_Form(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	adminUser, err := userRepo.GetOrCreateUser(123456789)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	wordRepo := repository.NewWordRepository(db, logger)
+	_ = wordRepo.SaveWordCard("formcreate", "def")
+	cfg := &config.Config{
+		Admin: config.AdminConfig{TelegramID: 123456789},
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	form := "word_ru=форма&meaning_en=form&example_en=ex&example_ru=пример&transcription=/fɔːm/&pos=noun&display_word=formcreate"
+	req := httptest.NewRequest("POST", "/api/admin/training/formcreate", strings.NewReader(form))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	ctx = context.WithValue(ctx, userPermissionsKey, []string{string(PermissionWordsEditAll)})
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+	router.handleAdminTraining(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("expected 200, got %d: %s", w.Code, w.Body.String())
+	}
+	var resp map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&resp); err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+	if resp["success"] != true {
+		t.Error("expected success true")
+	}
+}
+
+// TestHandleAdminTraining_InvalidPath_AdminGo covers 400 when path has no word segment.
+func TestHandleAdminTraining_InvalidPath_AdminGo(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	adminUser, err := userRepo.GetOrCreateUser(123456789)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	cfg := &config.Config{
+		Admin: config.AdminConfig{TelegramID: 123456789},
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("GET", "/api/admin/training/", nil)
+	req.URL.Path = "/api/admin/training/"
+	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	ctx = context.WithValue(ctx, userPermissionsKey, []string{string(PermissionWordsReadAll)})
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+	router.handleAdminTraining(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("expected 400 (invalid path or word required), got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleAdminTraining_PostGenerate_AIServiceNil covers 500 when AI service is nil.
+func TestHandleAdminTraining_PostGenerate_AIServiceNil(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	adminUser, err := userRepo.GetOrCreateUser(123456789)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	wordRepo := repository.NewWordRepository(db, logger)
+	_ = wordRepo.SaveWordCard("genword", "def")
+	cfg := &config.Config{
+		Admin: config.AdminConfig{TelegramID: 123456789},
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("POST", "/api/admin/training/genword/generate", strings.NewReader(`{"constraints":"short"}`))
+	req.Header.Set("Content-Type", "application/json")
+	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	ctx = context.WithValue(ctx, userPermissionsKey, []string{string(PermissionWordsEditAll)})
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+	router.handleAdminTraining(w, req)
+
+	if w.Code != http.StatusInternalServerError {
+		t.Errorf("expected 500 when AI service nil, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleAdminTraining_PostGenerate_Form covers generate with form data (constraints from form).
+func TestHandleAdminTraining_PostGenerate_Form(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	adminUser, err := userRepo.GetOrCreateUser(123456789)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	wordRepo := repository.NewWordRepository(db, logger)
+	_ = wordRepo.SaveWordCard("genform", "def")
+	cfg := &config.Config{
+		Admin: config.AdminConfig{TelegramID: 123456789},
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("POST", "/api/admin/training/genform/generate", strings.NewReader("constraints=short"))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	ctx = context.WithValue(ctx, userPermissionsKey, []string{string(PermissionWordsEditAll)})
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+	router.handleAdminTraining(w, req)
+	// No AI service -> 500
+	if w.Code != http.StatusInternalServerError {
+		t.Errorf("expected 500 when AI service nil, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleAdminTraining_PostGenerate_InvalidJSON covers 400 when JSON body is invalid.
+func TestHandleAdminTraining_PostGenerate_InvalidJSON(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	adminUser, err := userRepo.GetOrCreateUser(123456789)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	wordRepo := repository.NewWordRepository(db, logger)
+	_ = wordRepo.SaveWordCard("genword2", "def")
+	cfg := &config.Config{
+		Admin: config.AdminConfig{TelegramID: 123456789},
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("POST", "/api/admin/training/genword2/generate", strings.NewReader("not json"))
+	req.Header.Set("Content-Type", "application/json")
+	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	ctx = context.WithValue(ctx, userPermissionsKey, []string{string(PermissionWordsEditAll)})
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+	router.handleAdminTraining(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("expected 400, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleAdmin_CircuitBreakerNoRow covers handleAdmin when circuit_breaker_state has no row (init + retry).
+func TestHandleAdmin_CircuitBreakerNoRow(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	adminUser, err := userRepo.GetOrCreateUser(123456789)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	_, err = db.Exec("DELETE FROM circuit_breaker_state WHERE id = 1")
+	if err != nil {
+		t.Skipf("cannot delete circuit_breaker_state: %v", err)
+	}
+	cfg := &config.Config{
+		Admin: config.AdminConfig{TelegramID: 123456789},
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("GET", "/api/admin", nil)
+	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	ctx = context.WithValue(ctx, userRoleKey, "admin")
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+	router.RequireAdmin(router.handleAdmin)(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("expected 200 after init, got %d: %s", w.Code, w.Body.String())
+	}
+	var resp map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&resp); err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+	if resp["circuit_breaker"] == nil {
+		t.Error("expected circuit_breaker in response")
+	}
+}
