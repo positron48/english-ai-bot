@@ -283,3 +283,82 @@ func TestHandleVocabDelete_PostDelete_Success(t *testing.T) {
 		t.Errorf("Expected lemma 'todelete', got %v", response["lemma"])
 	}
 }
+
+func TestHandleVocabDelete_InvalidAction(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo := setupVocabDeleteTestDB(t)
+
+	user, err := userRepo.GetOrCreateUser(55555)
+	if err != nil {
+		t.Fatalf("Failed to create user: %v", err)
+	}
+
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{
+			JWTSecret:     "test-secret",
+			JWTTTLHours:   24,
+			RefreshTTLHours: 720,
+		},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+
+	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("GET", "/api/vocab/hello/invalid_action", nil)
+	req.URL.Path = "/api/vocab/hello/invalid_action"
+	ctx := context.WithValue(req.Context(), userIDKey, user.ID)
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+
+	router.handleVocabDelete(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("Expected status 400 for invalid action, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+func TestHandleVocabDelete_GetNoAction_InvalidRequest(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo := setupVocabDeleteTestDB(t)
+
+	user, err := userRepo.GetOrCreateUser(66666)
+	if err != nil {
+		t.Fatalf("Failed to create user: %v", err)
+	}
+
+	_, _ = db.Exec("INSERT INTO word_cards (id, word, definition) VALUES (?, ?, ?)", 50, "lemma1", "def")
+	_, _ = db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (?, ?, ?, ?, ?)",
+		50, "lemma1", 0, "лемма", "lemma")
+
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{
+			JWTSecret:     "test-secret",
+			JWTTTLHours:   24,
+			RefreshTTLHours: 720,
+		},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+
+	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	// GET /api/vocab/lemma1 with no action falls through to Invalid request
+	req := httptest.NewRequest("GET", "/api/vocab/lemma1", nil)
+	req.URL.Path = "/api/vocab/lemma1"
+	ctx := context.WithValue(req.Context(), userIDKey, user.ID)
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+
+	router.handleVocabDelete(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("Expected status 400 for GET with no valid action, got %d: %s", w.Code, w.Body.String())
+	}
+}

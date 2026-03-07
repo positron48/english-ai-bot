@@ -2,6 +2,7 @@ package web
 
 import (
 	"database/sql"
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"strconv"
@@ -296,6 +297,43 @@ func TestHandleAuthOTP_InvalidUserID(t *testing.T) {
 
 	if w.Code != http.StatusBadRequest {
 		t.Errorf("Expected status 400, got %d", w.Code)
+	}
+}
+
+// TestHandleAuthRequestOTP_InvalidFormData verifies 400 when form parsing fails.
+func TestHandleAuthRequestOTP_InvalidFormData(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, otpRepo, userRepo := setupAuthOTPHandlersTestDB(t)
+
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
+			RefreshTTLHours: 720,
+			OTPTTLSeconds:   300,
+		},
+	}
+
+	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.SetOTPRepo(otpRepo)
+
+	// Invalid multipart body without proper boundary/parts causes ParseForm to fail
+	req := httptest.NewRequest("POST", "/auth/request_otp", strings.NewReader("invalid multipart body"))
+	req.Header.Set("Content-Type", "multipart/form-data; boundary=----WebKitFormBoundary")
+	w := httptest.NewRecorder()
+
+	router.handleAuthRequestOTP(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("Expected status 400 for invalid form data, got %d: %s", w.Code, w.Body.String())
+	}
+	var resp map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&resp); err != nil {
+		t.Fatalf("decode response: %v", err)
+	}
+	if resp["error"] == nil {
+		t.Error("Expected error key in response")
 	}
 }
 

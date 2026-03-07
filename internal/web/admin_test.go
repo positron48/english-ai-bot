@@ -1529,3 +1529,74 @@ func TestHandleAdminAppSettings_MethodNotAllowed(t *testing.T) {
 		t.Errorf("Expected status 405, got %d", w.Code)
 	}
 }
+
+// TestHandleAdmin_DirectMethodNotAllowed calls handleAdmin without middleware to cover method check.
+func TestHandleAdmin_DirectMethodNotAllowed(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, _, cbService := setupAdminTestDB(t)
+	cfg := &config.Config{
+		Admin: config.AdminConfig{TelegramID: 123456789},
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+
+	req := httptest.NewRequest(http.MethodPost, "/api/admin", nil)
+	w := httptest.NewRecorder()
+	router.handleAdmin(w, req)
+
+	if w.Code != http.StatusMethodNotAllowed {
+		t.Errorf("handleAdmin POST: expected status 405, got %d", w.Code)
+	}
+	if body := w.Body.String(); body != "Method not allowed\n" {
+		t.Errorf("handleAdmin POST: expected body %q, got %q", "Method not allowed\n", body)
+	}
+}
+
+// TestHandleAdminWord_MethodNotAllowed covers GET/PATCH without valid action.
+func TestHandleAdminWord_MethodNotAllowed(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	adminUser, err := userRepo.GetOrCreateUser(123456789)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	wordRepo := repository.NewWordRepository(db, logger)
+	_ = wordRepo.SaveWordCard("methodword", "def")
+	wc, _ := wordRepo.GetWordCard("methodword")
+	if wc == nil {
+		t.Fatal("word card not found")
+	}
+	cfg := &config.Config{
+		Admin: config.AdminConfig{TelegramID: 123456789},
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	tests := []struct {
+		name   string
+		method string
+		path   string
+	}{
+		{"GET without action", http.MethodGet, fmt.Sprintf("/api/admin/words/%d", wc.ID)},
+		{"PATCH", http.MethodPatch, fmt.Sprintf("/api/admin/words/%d", wc.ID)},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			req := httptest.NewRequest(tt.method, tt.path, nil)
+			req.URL.Path = tt.path
+			ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+			ctx = context.WithValue(ctx, userRoleKey, "admin")
+			req = req.WithContext(ctx)
+			w := httptest.NewRecorder()
+			router.RequireAdmin(router.handleAdminWord)(w, req)
+			if w.Code != http.StatusMethodNotAllowed {
+				t.Errorf("expected status 405, got %d: %s", w.Code, w.Body.String())
+			}
+		})
+	}
+}

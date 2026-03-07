@@ -17,11 +17,13 @@ import (
 
 // sharedPostgres holds one container per test package; reused across tests.
 // Each test gets a clean schema via TRUNCATE.
+// containerRef keeps the Postgres container alive so it is not GC'd (which would close the DB).
 var sharedPostgres struct {
-	once sync.Once
-	dsn  string
-	db   *database.DB
-	err  error
+	once         sync.Once
+	dsn          string
+	db           *database.DB
+	err          error
+	containerRef interface{} // keep container reference so it is not garbage-collected
 }
 
 var truncateTables = []string{
@@ -75,6 +77,7 @@ func getSharedDB(t *testing.T) *database.DB {
 		}
 		sharedPostgres.dsn = dsn
 		sharedPostgres.db = db
+		sharedPostgres.containerRef = ctr // keep container alive so connection is not closed by GC
 	})
 	if sharedPostgres.err != nil {
 		if strings.Contains(sharedPostgres.err.Error(), "docker unavailable") {
@@ -111,6 +114,31 @@ func GetTestDSN(t *testing.T) string {
 	return sharedPostgres.dsn
 }
 
+// SecondPostgresDSN starts a separate Postgres container and returns its DSN.
+// Use when a test needs a connection that will be closed without affecting the shared test DB
+// (e.g. to simulate "database is closed" for error paths). The container is cleaned up by testcontainers.
+func SecondPostgresDSN(t *testing.T) string {
+	t.Helper()
+	ctx := context.Background()
+	ctr, err := postgres.Run(ctx, "postgres:16-alpine",
+		postgres.WithDatabase("english_test_second"),
+		postgres.WithUsername("english"),
+		postgres.WithPassword("english"),
+	)
+	if err != nil {
+		if isDockerUnavailable(err) {
+			t.Skipf("Docker unavailable: %v", err)
+		}
+		t.Fatalf("second postgres container: %v", err)
+	}
+	dsn, err := ctr.ConnectionString(ctx, "sslmode=disable")
+	if err != nil {
+		_ = ctr.Terminate(ctx)
+		t.Fatalf("second postgres DSN: %v", err)
+	}
+	return dsn
+}
+
 // SetupTestDB creates a Postgres database with all tables migrated.
 // Uses one shared container per package; each test gets a clean schema via TRUNCATE.
 // Do NOT call Close() on the returned connection—it is shared across tests.
@@ -121,6 +149,7 @@ func SetupTestDB(t *testing.T) *sql.DB {
 
 // SetupTestDatabase creates a Postgres database and returns the full *database.DB.
 // Use when you need database.DB (e.g. for router tests). Call .GetConnection() for *sql.DB.
+// Do NOT call Close() on the returned *database.DB—it is shared across tests in the package.
 func SetupTestDatabase(t *testing.T) *database.DB {
 	t.Helper()
 	return setupPostgresDB(t)

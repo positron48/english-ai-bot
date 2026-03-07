@@ -348,6 +348,28 @@ func TestHandleAdminAccessCategoryByID_NotFound(t *testing.T) {
 	}
 }
 
+func TestHandleAdminAccessCategoryByID_Put_InvalidJSON(t *testing.T) {
+	router, db, logger, adminUserID, cleanup := setupAdminAccessTest(t)
+	defer cleanup()
+
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db.GetConnection(), logger)
+	categoryID, err := accessCategoryRepo.CreateCategory(&models.UserAccessCategory{Name: "PutInvalidJSON"})
+	if err != nil {
+		t.Fatalf("Create category: %v", err)
+	}
+
+	req := httptest.NewRequest("PUT", "/api/admin/access/categories/"+strconv.FormatInt(categoryID, 10), bytes.NewReader([]byte("not json")))
+	req.Header.Set("Content-Type", "application/json")
+	req = setAdminContext(req, adminUserID)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminAccessCategoryByID(rr, req, categoryID)
+
+	if rr.Code != http.StatusBadRequest {
+		t.Errorf("Expected status 400 for invalid JSON, got %d: %s", rr.Code, rr.Body.String())
+	}
+}
+
 func TestHandleAdminAccessCategoryByID_MethodNotAllowed(t *testing.T) {
 	router, _, _, adminUserID, cleanup := setupAdminAccessTest(t)
 	defer cleanup()
