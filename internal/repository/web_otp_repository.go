@@ -6,12 +6,16 @@ import (
 	"database/sql"
 	"encoding/hex"
 	"fmt"
+	"io"
 	"time"
 
 	"tgbot-skeleton/internal/database"
 
 	"go.uber.org/zap"
 )
+
+// randReader is used by generateRandomCode; replaced in tests to cover error and modulo branches.
+var randReader io.Reader = rand.Reader
 
 // WebOTP represents a one-time password
 type WebOTP struct {
@@ -187,7 +191,7 @@ func generateRandomCode(length int) string {
 		// Generate random digit 0-9
 		var n [1]byte
 		for {
-			_, err := rand.Read(n[:])
+			_, err := randReader.Read(n[:])
 			if err != nil {
 				// Fallback to simple modulo
 				n[0] = byte(time.Now().UnixNano() % 10)

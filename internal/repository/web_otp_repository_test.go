@@ -1,11 +1,14 @@
 package repository
 
 import (
+	"fmt"
+	"strings"
 	"testing"
 	"time"
 
 	"tgbot-skeleton/internal/testutil"
 
+	"github.com/DATA-DOG/go-sqlmock"
 	"go.uber.org/zap"
 )
 
@@ -188,5 +191,279 @@ func TestWebOTPRepository_ValidateOTP_Expired(t *testing.T) {
 	}
 	if err != nil && err.Error() != "OTP expired" {
 		t.Logf("expected 'OTP expired' error, got: %v", err)
+	}
+}
+
+func TestNewWebOTPRepository(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	conn := testutil.SetupTestDB(t)
+	repo := NewWebOTPRepository(conn, logger)
+	if repo == nil {
+		t.Error("NewWebOTPRepository() should not return nil")
+	}
+}
+
+func TestWebOTPRepository_GenerateOTP_InsertError(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("sqlmock.New: %v", err)
+	}
+	defer db.Close()
+
+	userID := int64(1)
+	mock.ExpectQuery("INSERT INTO web_otps .+ RETURNING id").
+		WithArgs(sqlmock.AnyArg(), sqlmock.AnyArg(), sqlmock.AnyArg()).
+		WillReturnError(fmt.Errorf("insert failed"))
+
+	repo := NewWebOTPRepository(db, zap.NewNop())
+	_, _, err = repo.GenerateOTP(userID, 5*time.Minute)
+	if err == nil {
+		t.Error("GenerateOTP() expected error when insert fails")
+	}
+	if err != nil && !strings.Contains(err.Error(), "failed to create OTP") {
+		t.Errorf("expected 'failed to create OTP' wrapped error, got: %v", err)
+	}
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("mock expectations: %v", err)
+	}
+}
+
+func TestWebOTPRepository_ValidateOTP_QueryError(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("sqlmock.New: %v", err)
+	}
+	defer db.Close()
+
+	mock.ExpectQuery("(?s)SELECT .+ FROM web_otps .+ consumed_at IS NULL").
+		WithArgs(sqlmock.AnyArg(), sqlmock.AnyArg()).
+		WillReturnError(fmt.Errorf("db connection error"))
+
+	repo := NewWebOTPRepository(db, zap.NewNop())
+	_, err = repo.ValidateOTP(1, "123456")
+	if err == nil {
+		t.Error("ValidateOTP() expected error when query fails")
+	}
+	if err != nil && !strings.Contains(err.Error(), "failed to validate OTP") {
+		t.Errorf("expected 'failed to validate OTP' wrapped error, got: %v", err)
+	}
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("mock expectations: %v", err)
+	}
+}
+
+func TestWebOTPRepository_ValidateOTP_UpdateError(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("sqlmock.New: %v", err)
+	}
+	defer db.Close()
+
+	// Future expires_at so OTP is not expired
+	expiresAt := time.Now().UTC().Add(1 * time.Hour).Format("2006-01-02 15:04:05")
+	createdAt := time.Now().UTC().Format("2006-01-02 15:04:05")
+	cols := []string{"id", "user_id", "code_hash", "expires_at", "consumed_at", "created_at"}
+	mock.ExpectQuery("(?s)SELECT .+ FROM web_otps .+ consumed_at IS NULL").
+		WithArgs(sqlmock.AnyArg(), sqlmock.AnyArg()).
+		WillReturnRows(sqlmock.NewRows(cols).AddRow(1, 1, "hash", expiresAt, nil, createdAt))
+	mock.ExpectExec("UPDATE web_otps SET consumed_at").
+		WithArgs(1).
+		WillReturnError(fmt.Errorf("update failed"))
+
+	repo := NewWebOTPRepository(db, zap.NewNop())
+	_, err = repo.ValidateOTP(1, "123456")
+	if err == nil {
+		t.Error("ValidateOTP() expected error when update fails")
+	}
+	if err != nil && !strings.Contains(err.Error(), "failed to mark OTP as consumed") {
+		t.Errorf("expected 'failed to mark OTP as consumed' wrapped error, got: %v", err)
+	}
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("mock expectations: %v", err)
+	}
+}
+
+func TestWebOTPRepository_ValidateOTP_TimeParseRFC3339(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("sqlmock.New: %v", err)
+	}
+	defer db.Close()
+
+	// Use RFC3339 format so ParseInLocation fails and fallback to RFC3339 is used
+	expiresAt := time.Now().UTC().Add(1 * time.Hour).Format(time.RFC3339)
+	createdAt := time.Now().UTC().Format(time.RFC3339)
+	cols := []string{"id", "user_id", "code_hash", "expires_at", "consumed_at", "created_at"}
+	mock.ExpectQuery("(?s)SELECT .+ FROM web_otps .+ consumed_at IS NULL").
+		WithArgs(sqlmock.AnyArg(), sqlmock.AnyArg()).
+		WillReturnRows(sqlmock.NewRows(cols).AddRow(1, 1, "hash", expiresAt, nil, createdAt))
+	mock.ExpectExec("UPDATE web_otps SET consumed_at").
+		WithArgs(1).
+		WillReturnResult(sqlmock.NewResult(0, 1))
+
+	repo := NewWebOTPRepository(db, zap.NewNop())
+	otp, err := repo.ValidateOTP(1, "123456")
+	if err != nil {
+		t.Fatalf("ValidateOTP() unexpected error: %v", err)
+	}
+	if otp == nil || otp.ID != 1 {
+		t.Errorf("expected valid OTP, got: %v", otp)
+	}
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("mock expectations: %v", err)
+	}
+}
+
+func TestWebOTPRepository_ValidateOTP_ConsumedAtSet(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("sqlmock.New: %v", err)
+	}
+	defer db.Close()
+
+	expiresAt := time.Now().UTC().Add(1 * time.Hour).Format("2006-01-02 15:04:05")
+	createdAt := time.Now().UTC().Format("2006-01-02 15:04:05")
+	consumedAt := time.Now().UTC().Format("2006-01-02 15:04:05")
+	cols := []string{"id", "user_id", "code_hash", "expires_at", "consumed_at", "created_at"}
+	mock.ExpectQuery("(?s)SELECT .+ FROM web_otps .+ consumed_at IS NULL").
+		WithArgs(sqlmock.AnyArg(), sqlmock.AnyArg()).
+		WillReturnRows(sqlmock.NewRows(cols).AddRow(1, 1, "hash", expiresAt, consumedAt, createdAt))
+	mock.ExpectExec("UPDATE web_otps SET consumed_at").
+		WithArgs(1).
+		WillReturnResult(sqlmock.NewResult(0, 1))
+
+	repo := NewWebOTPRepository(db, zap.NewNop())
+	otp, err := repo.ValidateOTP(1, "123456")
+	if err != nil {
+		t.Fatalf("ValidateOTP() unexpected error: %v", err)
+	}
+	if otp == nil {
+		t.Fatal("expected non-nil OTP")
+	}
+	if otp.ConsumedAt == nil {
+		t.Error("expected ConsumedAt to be set when consumed_at was returned from DB")
+	}
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("mock expectations: %v", err)
+	}
+}
+
+func TestWebOTPRepository_ValidateOTP_TimeParseWarn(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("sqlmock.New: %v", err)
+	}
+	defer db.Close()
+
+	// Invalid date format so all parse attempts fail and Warn is logged; zero time is used, then "OTP expired" is returned
+	cols := []string{"id", "user_id", "code_hash", "expires_at", "consumed_at", "created_at"}
+	mock.ExpectQuery("(?s)SELECT .+ FROM web_otps .+ consumed_at IS NULL").
+		WithArgs(sqlmock.AnyArg(), sqlmock.AnyArg()).
+		WillReturnRows(sqlmock.NewRows(cols).AddRow(1, 1, "hash", "invalid-date", nil, "invalid-date"))
+
+	repo := NewWebOTPRepository(db, zap.NewNop())
+	_, err = repo.ValidateOTP(1, "123456")
+	if err == nil {
+		t.Error("ValidateOTP() expected error when dates are invalid (zero time → expired)")
+	}
+	if err != nil && err.Error() != "OTP expired" {
+		t.Logf("ValidateOTP with invalid dates returned: %v", err)
+	}
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("mock expectations: %v", err)
+	}
+}
+
+func TestWebOTPRepository_CleanupExpiredOTPs_Error(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("sqlmock.New: %v", err)
+	}
+	defer db.Close()
+
+	mock.ExpectExec("DELETE FROM web_otps WHERE").
+		WillReturnError(fmt.Errorf("delete failed"))
+
+	repo := NewWebOTPRepository(db, zap.NewNop())
+	err = repo.CleanupExpiredOTPs()
+	if err == nil {
+		t.Error("CleanupExpiredOTPs() expected error when delete fails")
+	}
+	if err != nil && !strings.Contains(err.Error(), "failed to cleanup expired OTPs") {
+		t.Errorf("expected 'failed to cleanup expired OTPs' wrapped error, got: %v", err)
+	}
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("mock expectations: %v", err)
+	}
+}
+
+// errReader is an io.Reader that always returns an error (used to cover generateRandomCode fallback).
+type errReader struct{}
+
+func (errReader) Read(p []byte) (n int, err error) {
+	return 0, fmt.Errorf("injected read error")
+}
+
+// highByteReader returns bytes >= 10 so generateRandomCode uses the modulo branch.
+type highByteReader struct{ byte }
+
+func (r highByteReader) Read(p []byte) (n int, err error) {
+	if len(p) == 0 {
+		return 0, nil
+	}
+	p[0] = r.byte
+	return 1, nil
+}
+
+func TestWebOTPRepository_GenerateOTP_RandFallback(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	conn := testutil.SetupTestDB(t)
+	userRepo := NewUserRepository(conn, logger)
+	user, _ := userRepo.GetOrCreateUser(99991)
+	otpRepo := NewWebOTPRepository(conn, logger)
+
+	old := randReader
+	randReader = errReader{}
+	defer func() { randReader = old }()
+
+	code, _, err := otpRepo.GenerateOTP(user.ID, 5*time.Minute)
+	if err != nil {
+		t.Fatalf("GenerateOTP() with rand fallback error = %v", err)
+	}
+	if len(code) != 6 {
+		t.Errorf("expected 6-digit code, got len %d", len(code))
+	}
+	for _, c := range code {
+		if c < '0' || c > '9' {
+			t.Errorf("expected only digits, got %q", code)
+			break
+		}
+	}
+}
+
+func TestWebOTPRepository_GenerateOTP_RandModuloBranch(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	conn := testutil.SetupTestDB(t)
+	userRepo := NewUserRepository(conn, logger)
+	user, _ := userRepo.GetOrCreateUser(99992)
+	otpRepo := NewWebOTPRepository(conn, logger)
+
+	// Reader that returns 250 (>= 10) so n[0] % 10 is used
+	old := randReader
+	randReader = highByteReader{250}
+	defer func() { randReader = old }()
+
+	code, _, err := otpRepo.GenerateOTP(user.ID, 5*time.Minute)
+	if err != nil {
+		t.Fatalf("GenerateOTP() with high-byte rand error = %v", err)
+	}
+	if len(code) != 6 {
+		t.Errorf("expected 6-digit code, got len %d", len(code))
+	}
+	for _, c := range code {
+		if c < '0' || c > '9' {
+			t.Errorf("expected only digits, got %q", code)
+			break
+		}
 	}
 }
