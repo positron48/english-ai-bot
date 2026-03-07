@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"testing"
 
+	"tgbot-skeleton/internal/database"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/testutil"
 
@@ -130,6 +131,62 @@ func TestSessionRepository_GetActiveSession(t *testing.T) {
 		}
 		if active.UserID != user.ID {
 			t.Errorf("Expected UserID %d, got %d", user.ID, active.UserID)
+		}
+	})
+
+	t.Run("returns session with all fields populated", func(t *testing.T) {
+		session := &models.TrainingSession{
+			UserID:       user.ID,
+			Source:       models.SourceManual,
+			PlannedCount: 5,
+			DoneCount:    2,
+			SessionJSON:  `{"key": "value"}`,
+		}
+		id, err := repo.CreateSession(session)
+		if err != nil {
+			t.Fatalf("CreateSession() error = %v", err)
+		}
+
+		active, err := repo.GetActiveSession(user.ID)
+		if err != nil {
+			t.Fatalf("GetActiveSession() error = %v", err)
+		}
+		if active == nil {
+			t.Fatal("GetActiveSession() should not return nil")
+		}
+		if active.ID != id {
+			t.Errorf("Expected ID %d, got %d", id, active.ID)
+		}
+		if active.Source != models.SourceManual {
+			t.Errorf("Expected Source %q, got %q", models.SourceManual, active.Source)
+		}
+		if active.PlannedCount != 5 {
+			t.Errorf("Expected PlannedCount 5, got %d", active.PlannedCount)
+		}
+		if active.DoneCount != 2 {
+			t.Errorf("Expected DoneCount 2, got %d", active.DoneCount)
+		}
+		if active.SessionJSON != `{"key": "value"}` {
+			t.Errorf("Expected SessionJSON %q, got %q", `{"key": "value"}`, active.SessionJSON)
+		}
+		if active.EndedAt != nil {
+			t.Error("EndedAt should be nil for active session")
+		}
+	})
+
+	t.Run("returns error when DB fails", func(t *testing.T) {
+		dsn := testutil.SecondPostgresDSN(t)
+		dbWrap, err := database.NewWithConfig("postgres", "", dsn, logger)
+		if err != nil {
+			t.Skipf("second DB not available (e.g. Docker): %v", err)
+		}
+		conn := dbWrap.GetConnection()
+		_ = dbWrap.Close()
+
+		badRepo := NewSessionRepository(conn, logger)
+		_, err = badRepo.GetActiveSession(user.ID)
+		if err == nil {
+			t.Error("GetActiveSession() expected error on closed DB")
 		}
 	})
 }

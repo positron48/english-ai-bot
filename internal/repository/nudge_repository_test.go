@@ -125,3 +125,43 @@ func TestNudgeRepository_GetUnconsumedNudge(t *testing.T) {
 		t.Error("Expected to find unconsumed nudge")
 	}
 }
+
+func TestNudgeRepository_GetUnconsumedNudge_WithMessageID(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	conn := testutil.SetupTestDB(t)
+
+	userRepo := NewUserRepository(conn, logger)
+	user, _ := userRepo.GetOrCreateUser(67890)
+	nudgeRepo := NewNudgeRepository(conn, logger)
+	localDate := time.Now().Format("2006-01-02")
+
+	nudge := &models.TrainingNudge{
+		UserID:         user.ID,
+		LocalDate:      localDate,
+		DueCountAtSend: 3,
+	}
+	id, err := nudgeRepo.CreateNudge(nudge)
+	if err != nil {
+		t.Fatalf("CreateNudge() error = %v", err)
+	}
+
+	// Set message_id via raw update (simulating telegram message id)
+	_, err = conn.Exec(`UPDATE training_nudges SET message_id = $1 WHERE id = $2`, 12345, id)
+	if err != nil {
+		t.Fatalf("UPDATE message_id: %v", err)
+	}
+
+	found, err := nudgeRepo.GetUnconsumedNudge(user.ID, localDate)
+	if err != nil {
+		t.Fatalf("GetUnconsumedNudge() error = %v", err)
+	}
+	if found == nil {
+		t.Fatal("Expected to find unconsumed nudge")
+	}
+	if found.MessageID == nil {
+		t.Error("MessageID should be set when stored in DB")
+	}
+	if *found.MessageID != 12345 {
+		t.Errorf("Expected MessageID 12345, got %d", *found.MessageID)
+	}
+}

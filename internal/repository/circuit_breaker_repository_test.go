@@ -234,3 +234,35 @@ func TestCircuitBreakerRepository_StateTimestamps(t *testing.T) {
 		t.Error("LastResetAt should be set after reset")
 	}
 }
+
+func TestCircuitBreakerRepository_GetState_AlternativeTimeFormats(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := setupTestDB(t)
+	repo := NewCircuitBreakerRepository(db, logger)
+
+	_, _ = repo.GetState()
+	_ = repo.RecordFailure("err")
+
+	// Force ISO-style timestamp so GetState hits alternative parse branches
+	_, err := db.Exec(`UPDATE circuit_breaker_state SET last_failure_at = '2024-06-15T14:30:00Z'::timestamptz, last_reset_at = '2024-06-14T10:00:00Z'::timestamptz, updated_at = '2024-06-15T15:00:00Z'::timestamptz WHERE id = 1`)
+	if err != nil {
+		t.Fatalf("UPDATE state: %v", err)
+	}
+
+	state, err := repo.GetState()
+	if err != nil {
+		t.Fatalf("GetState() error = %v", err)
+	}
+	if state == nil {
+		t.Fatal("GetState() should not return nil")
+	}
+	if state.LastFailureAt == nil {
+		t.Error("LastFailureAt should be parsed from alternative format")
+	}
+	if state.LastResetAt == nil {
+		t.Error("LastResetAt should be parsed from alternative format")
+	}
+	if state.UpdatedAt.IsZero() {
+		t.Error("UpdatedAt should be parsed")
+	}
+}

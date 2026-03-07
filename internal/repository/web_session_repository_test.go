@@ -79,6 +79,59 @@ func TestWebSessionRepository_GetSessionByToken(t *testing.T) {
 	if found.Token != "get-session-token" {
 		t.Errorf("Expected token 'get-session-token', got %q", found.Token)
 	}
+	if found.CreatedAt.IsZero() {
+		t.Error("CreatedAt should be set")
+	}
+	if found.LastSeenAt.IsZero() {
+		t.Error("LastSeenAt should be set")
+	}
+	if found.ExpiresAt.IsZero() {
+		t.Error("ExpiresAt should be set")
+	}
+}
+
+func TestWebSessionRepository_GetSessionByToken_UnknownToken(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := setupWebSessionTestDB(t)
+	repo := NewWebSessionRepository(db, logger)
+
+	found, err := repo.GetSessionByToken("nonexistent-token-xyz")
+	if err != nil {
+		t.Fatalf("GetSessionByToken() error = %v", err)
+	}
+	if found != nil {
+		t.Errorf("expected nil for unknown token, got %+v", found)
+	}
+}
+
+func TestWebSessionRepository_GetSessionByToken_LongToken(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := setupWebSessionTestDB(t)
+	userRepo := NewUserRepository(db, logger)
+	user, _ := userRepo.GetOrCreateUser(888)
+
+	repo := NewWebSessionRepository(db, logger)
+	longToken := "abcdefghijklmnopqrstuvwxyz012345"
+	session := &WebSession{
+		UserID:    user.ID,
+		Token:     longToken,
+		ExpiresAt: time.Now().Add(24 * time.Hour),
+	}
+	err := repo.CreateSession(session)
+	if err != nil {
+		t.Fatalf("CreateSession() error = %v", err)
+	}
+
+	found, err := repo.GetSessionByToken(longToken)
+	if err != nil {
+		t.Fatalf("GetSessionByToken() error = %v", err)
+	}
+	if found == nil {
+		t.Fatal("GetSessionByToken() should find session with long token")
+	}
+	if found.Token != longToken {
+		t.Errorf("expected token %q, got %q", longToken, found.Token)
+	}
 }
 
 func TestWebSessionRepository_DeleteSession(t *testing.T) {

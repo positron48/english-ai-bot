@@ -122,6 +122,48 @@ func TestUserWordMasteringRepository_GetWordCardIDsBySessionID(t *testing.T) {
 	}
 }
 
+func TestUserWordMasteringRepository_GetWordCardIDsBySessionID_MultiplePairs(t *testing.T) {
+	repo, db := setupUserWordMasteringRepo(t)
+	userID, wordCardID, _, _, sessionID := seedUserWordMasteringFixtures(t, db)
+
+	// Second word_card + training_card + user_card, same session
+	_, _ = db.Exec(`INSERT INTO word_cards (word, definition) VALUES ('word2', 'def2')`)
+	var wc2 int64
+	_ = db.QueryRow(`SELECT id FROM word_cards WHERE word = 'word2'`).Scan(&wc2)
+	var tc2 int64
+	_ = db.QueryRow(`INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES ($1, 'word2', 0, 'тест2', 'm2') RETURNING id`, wc2).Scan(&tc2)
+	var uc2 int64
+	_ = db.QueryRow(`INSERT INTO user_cards (user_id, training_card_id, direction, state) VALUES ($1, $2, 'en_ru', 'review') RETURNING id`, userID, tc2).Scan(&uc2)
+	_, _ = db.Exec(`INSERT INTO review_events (session_id, user_id, user_card_id, direction, answered_at, is_correct) VALUES ($1, $2, $3, 'en_ru', CURRENT_TIMESTAMP, 1)`, sessionID, userID, uc2)
+
+	pairs, err := repo.GetWordCardIDsBySessionID(sessionID)
+	if err != nil {
+		t.Fatalf("GetWordCardIDsBySessionID() error = %v", err)
+	}
+	if len(pairs) != 2 {
+		t.Fatalf("expected 2 pairs, got %d", len(pairs))
+	}
+	seen := make(map[int64]bool)
+	for _, p := range pairs {
+		if p.UserID != userID {
+			t.Errorf("expected user_id %d, got %d", userID, p.UserID)
+		}
+		seen[p.WordCardID] = true
+	}
+	if !seen[wordCardID] || !seen[wc2] {
+		t.Errorf("expected word_card_ids %d and %d, got %+v", wordCardID, wc2, pairs)
+	}
+}
+
+func TestUserWordMasteringRepository_Upsert_InvalidUserID(t *testing.T) {
+	repo, _ := setupUserWordMasteringRepo(t)
+	// Non-existent user_id causes FK violation
+	err := repo.Upsert(99999999, 1, 50)
+	if err == nil {
+		t.Error("Upsert with non-existent user_id expected to return error")
+	}
+}
+
 func TestUserWordMasteringRepository_GetKnownWordCardIDsForUser(t *testing.T) {
 	repo, db := setupUserWordMasteringRepo(t)
 	userID, wordCardID, _, _, _ := seedUserWordMasteringFixtures(t, db)

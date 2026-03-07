@@ -345,6 +345,17 @@ func TestHandleResetCircuitCommand_NonAdmin(t *testing.T) {
 	}
 }
 
+func TestHandleResetCircuitCommand_AdminIDZero(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, _ := setupHandler(t, client)
+
+	h.config.Admin.TelegramID = 0
+	h.handleResetCircuitCommand(10, 42)
+	if client.lastParams != nil && client.lastParams.Get("text") != "" {
+		t.Fatalf("expected no message when Admin.TelegramID is 0")
+	}
+}
+
 func TestHandleStatsCommand_Basic(t *testing.T) {
 	client := &mockTelegramClient{}
 	h, db := setupHandlerWithRepos(t, client)
@@ -714,8 +725,6 @@ func TestHandleCommand_Train_Success(t *testing.T) {
 
 func TestHandleResetCircuitCommand_ResetFails(t *testing.T) {
 	client := &mockTelegramClient{}
-	// Use shared test DB: handler with circuit breaker that can reset. Do NOT close the shared DB or any
-	// *sql.DB in this package—closing can affect the shared test DB in this process.
 	h, _ := setupHandler(t, client)
 	h.config.Admin.TelegramID = 42
 	h.handleResetCircuitCommand(10, 42)
@@ -733,6 +742,16 @@ func TestHandleDeleteTrainAllCommand_NonAdmin(t *testing.T) {
 	h.handleDeleteTrainAllCommand(10, 42)
 	if client.lastParams != nil && client.lastParams.Get("text") != "" {
 		t.Error("expected no message for non-admin delete_train_all")
+	}
+}
+
+func TestHandleDeleteTrainAllCommand_AdminIDZero(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, _ := setupHandler(t, client)
+	h.config.Admin.TelegramID = 0
+	h.handleDeleteTrainAllCommand(10, 42)
+	if client.lastParams != nil && client.lastParams.Get("text") != "" {
+		t.Error("expected no message when Admin.TelegramID is 0")
 	}
 }
 
