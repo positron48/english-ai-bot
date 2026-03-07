@@ -80,6 +80,8 @@ type Router struct {
 	rateLimiter                       *RateLimiter
 	botCommandService                 *service.BotCommandService
 	pronunciationMediaRouteRegistered bool
+	// generateTokenPairForRefresh if set is used in handleAuthRefresh instead of auth.GenerateTokenPair (for testing).
+	generateTokenPairForRefresh func(userID, telegramID int64) (access, refresh string, err error)
 }
 
 // NewRouter creates a new web router

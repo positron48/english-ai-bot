@@ -258,3 +258,108 @@ func TestUserWordKnowledgeRepository_GetKnownWords(t *testing.T) {
 		}
 	})
 }
+
+// TestUserWordKnowledgeRepository_MarkKnown_Error covers the error path when Exec fails.
+func TestUserWordKnowledgeRepository_MarkKnown_Error(t *testing.T) {
+	testutil.SetupTestDB(t)
+	db, err := sql.Open("postgres_compat", "postgres://x:x@invalid.invalid:1/db?connect_timeout=1")
+	if err != nil {
+		t.Skip("postgres_compat driver not registered or open failed:", err)
+	}
+	defer db.Close()
+	repo := NewUserWordKnowledgeRepository(db, zap.NewNop())
+	err = repo.MarkKnown(1, 1)
+	if err == nil {
+		t.Error("MarkKnown() expected error with invalid DSN")
+	}
+}
+
+// TestUserWordKnowledgeRepository_RemoveKnown_Error covers the error path when Exec fails.
+func TestUserWordKnowledgeRepository_RemoveKnown_Error(t *testing.T) {
+	testutil.SetupTestDB(t)
+	db, err := sql.Open("postgres_compat", "postgres://x:x@invalid.invalid:1/db?connect_timeout=1")
+	if err != nil {
+		t.Skip("postgres_compat driver not registered or open failed:", err)
+	}
+	defer db.Close()
+	repo := NewUserWordKnowledgeRepository(db, zap.NewNop())
+	err = repo.RemoveKnown(1, 1)
+	if err == nil {
+		t.Error("RemoveKnown() expected error with invalid DSN")
+	}
+}
+
+// TestUserWordKnowledgeRepository_IsKnown_Error covers the error path when QueryRow/Scan fails.
+func TestUserWordKnowledgeRepository_IsKnown_Error(t *testing.T) {
+	testutil.SetupTestDB(t)
+	db, err := sql.Open("postgres_compat", "postgres://x:x@invalid.invalid:1/db?connect_timeout=1")
+	if err != nil {
+		t.Skip("postgres_compat driver not registered or open failed:", err)
+	}
+	defer db.Close()
+	repo := NewUserWordKnowledgeRepository(db, zap.NewNop())
+	_, err = repo.IsKnown(1, 1)
+	if err == nil {
+		t.Error("IsKnown() expected error with invalid DSN")
+	}
+}
+
+// TestUserWordKnowledgeRepository_GetKnownWords_Error covers the error path when Query fails.
+func TestUserWordKnowledgeRepository_GetKnownWords_Error(t *testing.T) {
+	testutil.SetupTestDB(t)
+	db, err := sql.Open("postgres_compat", "postgres://x:x@invalid.invalid:1/db?connect_timeout=1")
+	if err != nil {
+		t.Skip("postgres_compat driver not registered or open failed:", err)
+	}
+	defer db.Close()
+	repo := NewUserWordKnowledgeRepository(db, zap.NewNop())
+	_, err = repo.GetKnownWords(1)
+	if err == nil {
+		t.Error("GetKnownWords() expected error with invalid DSN")
+	}
+}
+
+// TestUserWordKnowledgeRepository_GetKnownWords_ScanError covers the branch where rows.Scan fails (logger.Warn + continue).
+func TestUserWordKnowledgeRepository_GetKnownWords_ScanError(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := setupUserWordKnowledgeTestDB(t)
+
+	userRepo := NewUserRepository(db, logger)
+	user, err := userRepo.GetOrCreateUser(12349)
+	if err != nil {
+		t.Fatalf("create user: %v", err)
+	}
+
+	wordRepo := NewWordRepository(db, logger)
+	wordCard := &models.WordCard{Word: "scan", Definition: "scan def"}
+	wordCardID, err := wordRepo.UpsertWordCardLemma(wordCard)
+	if err != nil {
+		t.Fatalf("create word card: %v", err)
+	}
+
+	repo := NewUserWordKnowledgeRepository(db, logger)
+	if err := repo.MarkKnown(user.ID, wordCardID); err != nil {
+		t.Fatalf("mark known: %v", err)
+	}
+
+	// Allow NULL on word_card_id and insert a row that will fail Scan so the "continue" branch is covered.
+	_, _ = db.Exec("ALTER TABLE user_word_knowledge ALTER COLUMN word_card_id DROP NOT NULL")
+	defer func() {
+		_, _ = db.Exec("DELETE FROM user_word_knowledge WHERE user_id = $1 AND word_card_id IS NULL", user.ID)
+		_, _ = db.Exec("ALTER TABLE user_word_knowledge ALTER COLUMN word_card_id SET NOT NULL")
+	}()
+
+	_, err = db.Exec("INSERT INTO user_word_knowledge (user_id, word_card_id, status) VALUES ($1, NULL, 'known')", user.ID)
+	if err != nil {
+		t.Fatalf("insert null row: %v", err)
+	}
+
+	words, err := repo.GetKnownWords(user.ID)
+	if err != nil {
+		t.Fatalf("GetKnownWords() error = %v", err)
+	}
+	// One row (valid wordCardID) should be returned; the NULL row is skipped via continue.
+	if len(words) != 1 || words[0] != wordCardID {
+		t.Errorf("expected [%d], got %v", wordCardID, words)
+	}
+}

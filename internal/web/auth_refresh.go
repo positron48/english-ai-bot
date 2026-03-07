@@ -80,7 +80,12 @@ func (r *Router) handleAuthRefresh(w http.ResponseWriter, req *http.Request) {
 	}
 
 	// Generate new token pair
-	accessToken, refreshToken, err := auth.GenerateTokenPair(user.ID, user.TelegramID)
+	var accessToken, refreshToken string
+	if r.generateTokenPairForRefresh != nil {
+		accessToken, refreshToken, err = r.generateTokenPairForRefresh(user.ID, user.TelegramID)
+	} else {
+		accessToken, refreshToken, err = auth.GenerateTokenPair(user.ID, user.TelegramID)
+	}
 	if err != nil {
 		r.logger.Error("failed to generate new token pair", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)

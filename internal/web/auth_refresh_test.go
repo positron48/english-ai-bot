@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"database/sql"
 	"encoding/json"
+	"errors"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -220,5 +222,123 @@ func TestHandleAuthRefresh_FormFallback(t *testing.T) {
 	}
 	if resp["access_token"] == nil || resp["refresh_token"] == nil {
 		t.Error("Expected access_token and refresh_token in response")
+	}
+}
+
+// refreshErrReader is a body that fails on Read to trigger ParseForm error when JSON decode fails first.
+type refreshErrReader struct{}
+
+func (refreshErrReader) Read(_ []byte) (int, error) {
+	return 0, errors.New("read error")
+}
+
+func TestHandleAuthRefresh_ParseFormError(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo := setupAuthRefreshTestDB(t)
+
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
+			RefreshTTLHours: 720,
+		},
+	}
+
+	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+
+	req := httptest.NewRequest("POST", "/auth/refresh", io.NopCloser(refreshErrReader{}))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	w := httptest.NewRecorder()
+
+	router.handleAuthRefresh(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("Expected status 400 on ParseForm error, got %d", w.Code)
+	}
+	if body := w.Body.String(); body != "Invalid request data\n" {
+		t.Errorf("Expected body %q, got %q", "Invalid request data\n", body)
+	}
+}
+
+func TestHandleAuthRefresh_UserNotFound(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo := setupAuthRefreshTestDB(t)
+
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{
+			JWTSecret:       "test-secret-user-not-found",
+			JWTTTLHours:     24,
+			RefreshTTLHours: 720,
+		},
+	}
+
+	jwtService, err := NewJWTService(cfg, logger)
+	if err != nil {
+		t.Fatalf("NewJWTService: %v", err)
+	}
+	// Generate refresh token for user ID that does not exist in DB (no GetOrCreateUser for 99999)
+	refreshToken, err := jwtService.GenerateRefreshToken(99999)
+	if err != nil {
+		t.Fatalf("GenerateRefreshToken: %v", err)
+	}
+
+	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+
+	body := map[string]interface{}{"refresh_token": refreshToken}
+	bodyJSON, _ := json.Marshal(body)
+	req := httptest.NewRequest("POST", "/auth/refresh", bytes.NewReader(bodyJSON))
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+
+	router.handleAuthRefresh(w, req)
+
+	if w.Code != http.StatusInternalServerError {
+		t.Errorf("Expected status 500 when user not found, got %d", w.Code)
+	}
+}
+
+func TestHandleAuthRefresh_GenerateTokenPairError(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo := setupAuthRefreshTestDB(t)
+
+	user, err := userRepo.GetOrCreateUser(12345)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{
+			JWTSecret:       "test-secret-gen-pair-error",
+			JWTTTLHours:     24,
+			RefreshTTLHours: 720,
+		},
+	}
+
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	_, refreshToken, err := authMiddleware.GenerateTokenPair(user.ID, user.TelegramID)
+	if err != nil {
+		t.Fatalf("GenerateTokenPair: %v", err)
+	}
+
+	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.generateTokenPairForRefresh = func(_, _ int64) (string, string, error) {
+		return "", "", errors.New("injected token pair error")
+	}
+
+	body := map[string]interface{}{"refresh_token": refreshToken}
+	bodyJSON, _ := json.Marshal(body)
+	req := httptest.NewRequest("POST", "/auth/refresh", bytes.NewReader(bodyJSON))
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+
+	router.handleAuthRefresh(w, req)
+
+	if w.Code != http.StatusInternalServerError {
+		t.Errorf("Expected status 500 when GenerateTokenPair fails, got %d", w.Code)
 	}
 }
