@@ -121,6 +121,43 @@ func TestOpenPostgresDB_InvalidDSN(t *testing.T) {
 	}
 }
 
+// TestOpenPostgresDB_UnreachableHost covers "failed to ping" branch (connection fails on first use).
+func TestOpenPostgresDB_UnreachableHost(t *testing.T) {
+	_, err := openPostgresDB("postgres://user:pass@192.0.2.1:5432/db?connect_timeout=1")
+	if err == nil {
+		t.Fatal("expected error for unreachable host")
+	}
+	if !strings.Contains(err.Error(), "failed to ping") {
+		t.Errorf("error should mention failed to ping: %v", err)
+	}
+}
+
+// TestOpenPostgresDB_EmptyDSN covers "failed to open" branch when driver rejects invalid DSN.
+func TestOpenPostgresDB_EmptyDSN(t *testing.T) {
+	_, err := openPostgresDB("")
+	if err == nil {
+		t.Fatal("expected error for empty DSN")
+	}
+	if !strings.Contains(err.Error(), "failed to open") && !strings.Contains(err.Error(), "failed to ping") {
+		t.Errorf("error should mention failed to open or failed to ping: %v", err)
+	}
+}
+
+// TestOpenPostgresDB_OpenFails covers "failed to open" branch when sql.Open returns error (e.g. unknown driver).
+func TestOpenPostgresDB_OpenFails(t *testing.T) {
+	orig := openPostgresDBDriverName
+	openPostgresDBDriverName = "postgres_compat_nonexistent_driver"
+	defer func() { openPostgresDBDriverName = orig }()
+
+	_, err := openPostgresDB("postgres://localhost/db")
+	if err == nil {
+		t.Fatal("expected error when driver is not registered")
+	}
+	if !strings.Contains(err.Error(), "failed to open") {
+		t.Errorf("error should mention failed to open: %v", err)
+	}
+}
+
 func TestNewWithConfig_EmptyURL_WhitespaceOnly(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	_, err := NewWithConfig("postgres", "", "   \t  ", logger)

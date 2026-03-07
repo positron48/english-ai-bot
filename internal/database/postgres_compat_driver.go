@@ -15,6 +15,9 @@ import (
 
 var registerPostgresCompatOnce sync.Once
 
+// openPostgresDBDriverName is the driver name for openPostgresDB; overridden in tests to cover "failed to open" branch.
+var openPostgresDBDriverName = "postgres_compat"
+
 func registerPostgresCompatDriver() {
 	registerPostgresCompatOnce.Do(func() {
 		sql.Register("postgres_compat", &compatDriver{base: &stdlib.Driver{}})
@@ -108,7 +111,7 @@ func rebindQuestionToDollar(query string) string {
 
 func openPostgresDB(dsn string) (*sql.DB, error) {
 	registerPostgresCompatDriver()
-	conn, err := sql.Open("postgres_compat", dsn)
+	conn, err := sql.Open(openPostgresDBDriverName, dsn)
 	if err != nil {
 		return nil, fmt.Errorf("failed to open postgres database: %w", err)
 	}

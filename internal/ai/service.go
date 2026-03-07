@@ -103,7 +103,7 @@ func (s *Service) GenerateResponse(ctx context.Context, userMessage string) (str
 	}
 
 	// Marshal request
-	reqBody, err := json.Marshal(req)
+	reqBody, err := jsonMarshalFunc(req)
 	if err != nil {
 		return "", fmt.Errorf("failed to marshal request: %w", err)
 	}
@@ -203,7 +203,7 @@ func (s *Service) GenerateTrainingCard(ctx context.Context, word string, modelOv
 	}
 
 	// Marshal request
-	reqBody, err := json.Marshal(req)
+	reqBody, err := jsonMarshalFunc(req)
 	if err != nil {
 		return "", fmt.Errorf("failed to marshal request: %w", err)
 	}
@@ -319,7 +319,7 @@ func (s *Service) GenerateAdditionalTrainingCard(ctx context.Context, word strin
 	}
 
 	// Marshal request
-	reqBody, err := json.Marshal(req)
+	reqBody, err := jsonMarshalFunc(req)
 	if err != nil {
 		return "", fmt.Errorf("failed to marshal request: %w", err)
 	}

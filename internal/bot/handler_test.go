@@ -27,11 +27,15 @@ import (
 
 type mockTelegramClient struct {
 	lastParams url.Values
+	DoCount    int
+	LastBody   []byte
 }
 
 func (c *mockTelegramClient) Do(req *http.Request) (*http.Response, error) {
+	c.DoCount++
 	body, _ := io.ReadAll(req.Body)
 	_ = req.Body.Close()
+	c.LastBody = body
 	params, _ := url.ParseQuery(string(body))
 	c.lastParams = params
 
@@ -353,6 +357,34 @@ func TestHandleResetCircuitCommand_AdminIDZero(t *testing.T) {
 	h.handleResetCircuitCommand(10, 42)
 	if client.lastParams != nil && client.lastParams.Get("text") != "" {
 		t.Fatalf("expected no message when Admin.TelegramID is 0")
+	}
+}
+
+func TestHandleResetCircuitCommand_Admin_ResetFails(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, _ := setupHandler(t, client)
+	h.config.Admin.TelegramID = 42
+
+	dsn := testutil.SecondPostgresDSN(t)
+	dbWrap, err := database.NewWithConfig("postgres", "", dsn, h.logger)
+	if err != nil {
+		t.Skipf("second DB not available: %v", err)
+	}
+	conn := dbWrap.GetConnection()
+	cbRepo := repository.NewCircuitBreakerRepository(conn, h.logger)
+	failingCB := service.NewCircuitBreakerService(cbRepo, 5, h.logger)
+	_ = dbWrap.Close()
+
+	hv := reflect.ValueOf(h).Elem()
+	hv.FieldByName("cbService").Set(reflect.ValueOf(failingCB))
+
+	h.handleResetCircuitCommand(10, 42)
+	got := client.lastParams.Get("text")
+	if got == "" {
+		t.Fatal("expected error message when Reset fails")
+	}
+	if !strings.Contains(got, "Не удалось") && !strings.Contains(got, "сбросить") {
+		t.Errorf("expected error about reset failure, got %q", got)
 	}
 }
 
@@ -752,6 +784,36 @@ func TestHandleDeleteTrainAllCommand_AdminIDZero(t *testing.T) {
 	h.handleDeleteTrainAllCommand(10, 42)
 	if client.lastParams != nil && client.lastParams.Get("text") != "" {
 		t.Error("expected no message when Admin.TelegramID is 0")
+	}
+}
+
+func TestHandleDeleteTrainAllCommand_Admin_DeleteAllFails(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, db := setupHandler(t, client)
+	logger, _ := zap.NewDevelopment()
+	h.config.Admin.TelegramID = 42
+	h.trainingCardRepo = repository.NewTrainingCardRepository(db.GetConnection(), logger)
+	h.userCardRepo = repository.NewUserCardRepository(db.GetConnection(), logger)
+
+	dsn := testutil.SecondPostgresDSN(t)
+	dbWrap, err := database.NewWithConfig("postgres", "", dsn, logger)
+	if err != nil {
+		t.Skipf("second DB not available: %v", err)
+	}
+	conn := dbWrap.GetConnection()
+	badRepo := repository.NewTrainingCardRepository(conn, logger)
+	_ = dbWrap.Close()
+
+	hv := reflect.ValueOf(h).Elem()
+	hv.FieldByName("trainingCardRepo").Set(reflect.ValueOf(badRepo))
+
+	h.handleDeleteTrainAllCommand(10, 42)
+	got := client.lastParams.Get("text")
+	if got == "" {
+		t.Fatal("expected error message when DeleteAllTrainingCards fails")
+	}
+	if !strings.Contains(got, "Ошибка") && !strings.Contains(got, "удалении") {
+		t.Errorf("expected error about delete failure, got %q", got)
 	}
 }
 

@@ -694,3 +694,84 @@ func TestNewService_ProcessesEscapedNewlines(t *testing.T) {
 		t.Errorf("Expected processed newlines, got %q", service.prompt)
 	}
 }
+
+func TestGenerateResponse_MarshalError(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	service := NewService("http://example.com", "test-model", "test-key", "prompt", logger)
+
+	orig := jsonMarshalFunc
+	defer func() { jsonMarshalFunc = orig }()
+	jsonMarshalFunc = func(any) ([]byte, error) { return nil, errors.New("marshal fail") }
+
+	_, err := service.GenerateResponse(context.Background(), "hi")
+	if err == nil {
+		t.Fatal("Expected error when marshal fails")
+	}
+	if !strings.Contains(err.Error(), "failed to marshal request") {
+		t.Errorf("Expected marshal error message, got %q", err.Error())
+	}
+}
+
+func TestGenerateTrainingCard_RequestBuildError(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	service := NewService("://bad", "test-model", "test-key", "prompt", logger)
+	service.SetTrainingPrompt("Generate: ")
+
+	_, err := service.GenerateTrainingCard(context.Background(), "word")
+	if err == nil {
+		t.Fatal("Expected error for invalid URL")
+	}
+	if !strings.Contains(err.Error(), "failed to create request") {
+		t.Errorf("Expected create request error, got %q", err.Error())
+	}
+}
+
+func TestGenerateTrainingCard_MarshalError(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	service := NewService("http://example.com", "test-model", "test-key", "prompt", logger)
+	service.SetTrainingPrompt("Generate: ")
+
+	orig := jsonMarshalFunc
+	defer func() { jsonMarshalFunc = orig }()
+	jsonMarshalFunc = func(any) ([]byte, error) { return nil, errors.New("marshal fail") }
+
+	_, err := service.GenerateTrainingCard(context.Background(), "word")
+	if err == nil {
+		t.Fatal("Expected error when marshal fails")
+	}
+	if !strings.Contains(err.Error(), "failed to marshal request") {
+		t.Errorf("Expected marshal error message, got %q", err.Error())
+	}
+}
+
+func TestGenerateAdditionalTrainingCard_RequestBuildError(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	service := NewService("://bad", "test-model", "test-key", "prompt", logger)
+	service.SetTrainingPrompt("Generate: ")
+
+	_, err := service.GenerateAdditionalTrainingCard(context.Background(), "word", "constraints")
+	if err == nil {
+		t.Fatal("Expected error for invalid URL")
+	}
+	if !strings.Contains(err.Error(), "failed to create request") {
+		t.Errorf("Expected create request error, got %q", err.Error())
+	}
+}
+
+func TestGenerateAdditionalTrainingCard_MarshalError(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	service := NewService("http://example.com", "test-model", "test-key", "prompt", logger)
+	service.SetTrainingPrompt("Generate: ")
+
+	orig := jsonMarshalFunc
+	defer func() { jsonMarshalFunc = orig }()
+	jsonMarshalFunc = func(any) ([]byte, error) { return nil, errors.New("marshal fail") }
+
+	_, err := service.GenerateAdditionalTrainingCard(context.Background(), "word", "constraints")
+	if err == nil {
+		t.Fatal("Expected error when marshal fails")
+	}
+	if !strings.Contains(err.Error(), "failed to marshal request") {
+		t.Errorf("Expected marshal error message, got %q", err.Error())
+	}
+}

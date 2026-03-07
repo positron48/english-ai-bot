@@ -162,3 +162,37 @@ func TestMigratePostgres_ErrorWhenConnClosed(t *testing.T) {
 		t.Errorf("error should mention failed to execute postgres migration: %v", err)
 	}
 }
+
+// TestNewWithConfig_MigrateFails covers the branch where openPostgresDB succeeds but migratePostgres fails (conn.Close + return error).
+func TestNewWithConfig_MigrateFails(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	dsn := startTestPostgres(t)
+
+	var conn *sql.DB
+	var err error
+	for attempt := 0; attempt < 10; attempt++ {
+		conn, err = openPostgresDB(dsn)
+		if err == nil {
+			break
+		}
+		time.Sleep(time.Duration(attempt+1) * 500 * time.Millisecond)
+	}
+	if err != nil {
+		t.Fatalf("openPostgresDB: %v", err)
+	}
+	if err := conn.Close(); err != nil {
+		t.Fatalf("conn.Close: %v", err)
+	}
+
+	orig := openPostgresDBFunc
+	openPostgresDBFunc = func(string) (*sql.DB, error) { return conn, nil }
+	defer func() { openPostgresDBFunc = orig }()
+
+	_, err = NewWithConfig("postgres", "", dsn, logger)
+	if err == nil {
+		t.Fatal("NewWithConfig expected error when migration fails")
+	}
+	if !strings.Contains(err.Error(), "failed to migrate database") {
+		t.Errorf("error should mention failed to migrate database: %v", err)
+	}
+}
