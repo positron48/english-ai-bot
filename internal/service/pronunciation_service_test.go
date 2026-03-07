@@ -35,6 +35,20 @@ func (p *stubPronunciationProvider) fetch(_ context.Context, _ string) ([]byte, 
 	return p.audio, nil
 }
 
+// countingProvider wraps a provider and counts fetch invocations.
+type countingProvider struct {
+	provider pronunciationProvider
+	count    *int
+}
+
+func (c *countingProvider) name() string { return c.provider.name() }
+func (c *countingProvider) fetch(ctx context.Context, word string) ([]byte, error) {
+	if c.count != nil {
+		*c.count++
+	}
+	return c.provider.fetch(ctx, word)
+}
+
 func TestNormalizePronunciationWord(t *testing.T) {
 	tests := []struct {
 		in   string
@@ -340,6 +354,158 @@ func TestDictionaryPronunciationProviderFetch_NoAudioReason(t *testing.T) {
 	}
 }
 
+// TestPronunciationService_DictionaryNoAudioFallbackToOpenRouter verifies that when
+// the first provider returns dictionary_no_audio, the second provider (e.g. OpenRouter) is tried and can succeed.
+func TestPronunciationService_DictionaryNoAudioFallbackToOpenRouter(t *testing.T) {
+	audioDir := t.TempDir()
+	// DictionaryEnabled so initial build adds a provider and svc.enabled stays true when we replace providers.
+	cfg := config.TTSConfig{
+		Enabled:           true,
+		Provider:          "auto",
+		AudioDir:          audioDir,
+		PublicBasePath:    "/media/tts",
+		DictionaryEnabled: true,
+		DictionaryBaseURL: "https://example.com/dict",
+	}
+	db := testutil.SetupTestDB(t)
+	wordRepo := repository.NewWordRepository(db, zap.NewNop())
+	svc := NewPronunciationService(cfg, wordRepo, zap.NewNop())
+	dictNoAudioErr := fmt.Errorf("%w: dictionary_no_audio", errPronunciationNotFound)
+	if !errors.Is(dictNoAudioErr, errPronunciationNotFound) {
+		t.Fatal("test setup: dictNoAudioErr must wrap errPronunciationNotFound")
+	}
+	code, retryable := classifyPronunciationError(dictNoAudioErr)
+	if code != "dictionary_no_audio" || !retryable {
+		t.Fatalf("test setup: classifyPronunciationError: code=%q retryable=%v", code, retryable)
+	}
+	audioBytes := []byte("ID3-openrouter-mp3")
+	var fetchCount int
+	svc.providers = []pronunciationProvider{
+		&countingProvider{provider: &stubPronunciationProvider{providerName: "dictionary", err: dictNoAudioErr}, count: &fetchCount},
+		&countingProvider{provider: &stubPronunciationProvider{providerName: "openrouter", audio: audioBytes}, count: &fetchCount},
+	}
+	if n := len(svc.providers); n != 2 {
+		t.Fatalf("expected 2 providers, got %d", n)
+	}
+
+	svc.processWord(context.Background(), "commotion")
+
+	if fetchCount != 2 {
+		t.Fatalf("expected 2 provider fetch calls (dictionary then openrouter), got %d", fetchCount)
+	}
+
+	// Fallback succeeded if openrouter produced the file
+	if !svc.hasCachedAudio("commotion") {
+		t.Fatal("expected audio file after openrouter fallback; dictionary_no_audio should trigger next provider")
+	}
+	rel := svc.cachedRelPathForWord("commotion")
+	if rel == "" {
+		t.Fatal("expected cached rel path for commotion")
+	}
+	fullPath := filepath.Join(audioDir, rel)
+	data, err := os.ReadFile(fullPath)
+	if err != nil {
+		t.Fatalf("read cached file: %v", err)
+	}
+	if string(data) != string(audioBytes) {
+		t.Fatalf("unexpected cached audio: got %d bytes", len(data))
+	}
+	if svc.ttsRepo != nil {
+		status, err := svc.ttsRepo.GetByWord("commotion")
+		if err != nil {
+			t.Fatalf("GetByWord() error = %v", err)
+		}
+		if status == nil || status.State != "ready" {
+			t.Fatalf("expected status ready in DB after fallback, got %v", status)
+		}
+	}
+}
+
+// TestPronunciationService_SkipDictionaryAfterNoAudio verifies that when we already have
+// dictionary_no_audio for a word, the next processWord run skips the dictionary provider.
+func TestPronunciationService_SkipDictionaryAfterNoAudio(t *testing.T) {
+	db := testutil.SetupTestDB(t)
+	wordRepo := repository.NewWordRepository(db, zap.NewNop())
+	audioDir := t.TempDir()
+	cfg := config.TTSConfig{
+		Enabled:           true,
+		Provider:          "auto",
+		AudioDir:          audioDir,
+		PublicBasePath:    "/media/tts",
+		DictionaryEnabled: true,
+		DictionaryBaseURL: "https://example.com/dict",
+		MaxRetries:        5,
+	}
+	svc := NewPronunciationService(cfg, wordRepo, zap.NewNop())
+	dictNoAudioErr := fmt.Errorf("%w: dictionary_no_audio", errPronunciationNotFound)
+	audioBytes := []byte("ID3-openrouter-mp3")
+
+	// First run: only dictionary, returns no_audio → MarkAttempt(dictionary, dictionary_no_audio)
+	svc.providers = []pronunciationProvider{
+		&stubPronunciationProvider{providerName: "dictionary", err: dictNoAudioErr},
+	}
+	svc.processWord(context.Background(), "skipdict")
+	status, _ := svc.ttsRepo.GetByWord("skipdict")
+	if status == nil || status.LastErrorCode == nil || *status.LastErrorCode != "dictionary_no_audio" ||
+		status.LastProvider == nil || *status.LastProvider != "dictionary" {
+		t.Fatalf("expected status with dictionary_no_audio from dictionary after first run, got %v", status)
+	}
+
+	// Second run: skip dictionary, openrouter succeeds. Use countingProvider to ensure dictionary is not called.
+	var dictCalls, openrouterCalls int
+	svc.providers = []pronunciationProvider{
+		&countingProvider{provider: &stubPronunciationProvider{providerName: "dictionary", err: dictNoAudioErr}, count: &dictCalls},
+		&countingProvider{provider: &stubPronunciationProvider{providerName: "openrouter", audio: audioBytes}, count: &openrouterCalls},
+	}
+	svc.processWord(context.Background(), "skipdict")
+
+	if dictCalls != 0 {
+		t.Fatalf("expected dictionary to be skipped on retry (0 calls), got %d", dictCalls)
+	}
+	if openrouterCalls != 1 {
+		t.Fatalf("expected openrouter to be called once, got %d", openrouterCalls)
+	}
+	if !svc.hasCachedAudio("skipdict") {
+		t.Fatal("expected audio file after openrouter success")
+	}
+}
+
+// TestDictionaryNoAudioFallbackLoop simulates the processWord provider loop to ensure
+// that when the first provider returns errPronunciationNotFound (dictionary_no_audio),
+// the loop continues to the next provider and uses its audio.
+func TestDictionaryNoAudioFallbackLoop(t *testing.T) {
+	dictNoAudioErr := fmt.Errorf("%w: dictionary_no_audio", errPronunciationNotFound)
+	audioBytes := []byte("ID3-openrouter-mp3")
+	providers := []pronunciationProvider{
+		&stubPronunciationProvider{providerName: "dictionary", err: dictNoAudioErr},
+		&stubPronunciationProvider{providerName: "openrouter", audio: audioBytes},
+	}
+	ctx := context.Background()
+	word := "commotion"
+	var gotAudio []byte
+	for i, provider := range providers {
+		audio, err := provider.fetch(ctx, word)
+		if err != nil {
+			if errors.Is(err, errPronunciationNotFound) {
+				continue
+			}
+			_, retryable := classifyPronunciationError(err)
+			if retryable {
+				continue
+			}
+			t.Fatalf("provider %d %s failed: %v", i, provider.name(), err)
+		}
+		gotAudio = audio
+		break
+	}
+	if gotAudio == nil {
+		t.Fatal("expected audio from fallback provider")
+	}
+	if string(gotAudio) != string(audioBytes) {
+		t.Fatalf("unexpected audio: got %d bytes", len(gotAudio))
+	}
+}
+
 func TestOpenRouterPronunciationProviderFetch_MissingTranscript(t *testing.T) {
 	audioBytes := []byte("ID3-openrouter-mp3")
 
@@ -429,6 +595,7 @@ func TestPronunciationService_DBRetryLimitAndTerminal(t *testing.T) {
 		PublicBasePath:    "/media/tts",
 		DictionaryEnabled: true,
 		DictionaryBaseURL: "http://example.com",
+		MaxRetries:        3,
 	}, wordRepo, zap.NewNop())
 	svc.providers = []pronunciationProvider{
 		&stubPronunciationProvider{providerName: "openrouter", err: fmt.Errorf("status 500: provider error")},
@@ -463,6 +630,7 @@ func TestPronunciationService_ForceRegenerateAfterTerminal(t *testing.T) {
 		PublicBasePath:    "/media/tts",
 		DictionaryEnabled: true,
 		DictionaryBaseURL: "http://example.com",
+		MaxRetries:        3,
 	}, wordRepo, zap.NewNop())
 	svc.providers = []pronunciationProvider{
 		&stubPronunciationProvider{providerName: "openrouter", err: fmt.Errorf("status 500: provider error")},

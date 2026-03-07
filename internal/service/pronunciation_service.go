@@ -631,7 +631,14 @@ func NewPronunciationService(cfg config.TTSConfig, wordRepo *repository.WordRepo
 		queueState:      make(map[string]struct{}),
 	}
 	if wordRepo != nil && wordRepo.DB() != nil {
-		service.ttsRepo = repository.NewTTSStatusRepository(wordRepo.DB(), logger)
+		maxAttempts := cfg.MaxRetries
+		if maxAttempts <= 0 {
+			maxAttempts = 10
+		}
+		if maxAttempts > 20 {
+			maxAttempts = 20
+		}
+		service.ttsRepo = repository.NewTTSStatusRepository(wordRepo.DB(), logger, maxAttempts)
 	}
 
 	if service.audioDir == "" {
@@ -882,6 +889,13 @@ func (s *PronunciationService) processWord(ctx context.Context, word string) {
 	notFoundSeen := false
 	notFoundReasons := make([]string, 0, len(s.providers))
 	for i, provider := range s.providers {
+		// Do not retry dictionary if we already got dictionary_no_audio for this word.
+		if provider.name() == "dictionary" && status != nil &&
+			status.LastErrorCode != nil && *status.LastErrorCode == "dictionary_no_audio" &&
+			status.LastProvider != nil && *status.LastProvider == "dictionary" {
+			s.logger.Debug("skipping dictionary provider, already had dictionary_no_audio", zap.String("word", word))
+			continue
+		}
 		audio, err := provider.fetch(ctx, word)
 		if err != nil {
 			hasFallback := i < len(s.providers)-1

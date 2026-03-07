@@ -12,12 +12,18 @@ import (
 )
 
 type TTSStatusRepository struct {
-	db     *sql.DB
-	logger *zap.Logger
+	db          *sql.DB
+	logger      *zap.Logger
+	maxAttempts int
 }
 
-func NewTTSStatusRepository(db *sql.DB, logger *zap.Logger) *TTSStatusRepository {
-	return &TTSStatusRepository{db: db, logger: logger}
+// NewTTSStatusRepository creates a TTS status repository. maxAttempts is the default
+// for new/updated rows (retries for pronunciation generation); if <= 0, 3 is used.
+func NewTTSStatusRepository(db *sql.DB, logger *zap.Logger, maxAttempts int) *TTSStatusRepository {
+	if maxAttempts <= 0 {
+		maxAttempts = 3
+	}
+	return &TTSStatusRepository{db: db, logger: logger, maxAttempts: maxAttempts}
 }
 
 func (r *TTSStatusRepository) GetByWord(word string) (*models.TTSGenerationStatus, error) {
@@ -70,11 +76,11 @@ func (r *TTSStatusRepository) UpsertPending(word string) error {
 	}
 
 	const q = `INSERT INTO tts_generation_status (word, state, attempt_count, max_attempts, created_at, updated_at)
-		VALUES (?, ?, 0, 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+		VALUES (?, ?, 0, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 		ON CONFLICT(word) DO UPDATE SET
 			state = excluded.state,
 			updated_at = CURRENT_TIMESTAMP`
-	if _, err := r.db.Exec(q, normalized, models.TTSStatePending); err != nil {
+	if _, err := r.db.Exec(q, normalized, models.TTSStatePending, r.maxAttempts); err != nil {
 		return fmt.Errorf("upsert pending tts status: %w", err)
 	}
 	return nil
@@ -93,7 +99,7 @@ func (r *TTSStatusRepository) MarkAttempt(word, provider, errorCode, errorMessag
 
 	const upsert = `INSERT INTO tts_generation_status (
 			word, state, attempt_count, max_attempts, last_error_code, last_error_message, last_provider, last_attempt_at, created_at, updated_at
-		) VALUES (?, ?, 1, 3, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+		) VALUES (?, ?, 1, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 		ON CONFLICT(word) DO UPDATE SET
 			state = excluded.state,
 			attempt_count = tts_generation_status.attempt_count + 1,
@@ -102,7 +108,7 @@ func (r *TTSStatusRepository) MarkAttempt(word, provider, errorCode, errorMessag
 			last_provider = excluded.last_provider,
 			last_attempt_at = CURRENT_TIMESTAMP,
 			updated_at = CURRENT_TIMESTAMP`
-	if _, err := r.db.Exec(upsert, normalized, state, nullableString(errorCode), nullableString(errorMessage), nullableString(provider)); err != nil {
+	if _, err := r.db.Exec(upsert, normalized, state, r.maxAttempts, nullableString(errorCode), nullableString(errorMessage), nullableString(provider)); err != nil {
 		return fmt.Errorf("mark tts attempt: %w", err)
 	}
 
@@ -122,7 +128,7 @@ func (r *TTSStatusRepository) MarkReady(word, provider, relPath string) error {
 	}
 	const q = `INSERT INTO tts_generation_status (
 			word, state, attempt_count, max_attempts, last_provider, audio_rel_path, last_error_code, last_error_message, created_at, updated_at
-		) VALUES (?, ?, 0, 3, ?, ?, NULL, NULL, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+		) VALUES (?, ?, 0, ?, ?, ?, NULL, NULL, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 		ON CONFLICT(word) DO UPDATE SET
 			state = excluded.state,
 			audio_rel_path = excluded.audio_rel_path,
@@ -130,7 +136,7 @@ func (r *TTSStatusRepository) MarkReady(word, provider, relPath string) error {
 			last_error_code = NULL,
 			last_error_message = NULL,
 			updated_at = CURRENT_TIMESTAMP`
-	if _, err := r.db.Exec(q, normalized, models.TTSStateReady, nullableString(provider), nullableString(relPath)); err != nil {
+	if _, err := r.db.Exec(q, normalized, models.TTSStateReady, r.maxAttempts, nullableString(provider), nullableString(relPath)); err != nil {
 		return fmt.Errorf("mark tts ready: %w", err)
 	}
 	return nil
@@ -143,7 +149,7 @@ func (r *TTSStatusRepository) MarkTerminal(word, provider, errorCode, errorMessa
 	}
 	const q = `INSERT INTO tts_generation_status (
 			word, state, attempt_count, max_attempts, last_provider, last_error_code, last_error_message, last_attempt_at, created_at, updated_at
-		) VALUES (?, ?, 0, 3, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+		) VALUES (?, ?, 0, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 		ON CONFLICT(word) DO UPDATE SET
 			state = excluded.state,
 			last_provider = excluded.last_provider,
@@ -151,7 +157,7 @@ func (r *TTSStatusRepository) MarkTerminal(word, provider, errorCode, errorMessa
 			last_error_message = excluded.last_error_message,
 			last_attempt_at = CURRENT_TIMESTAMP,
 			updated_at = CURRENT_TIMESTAMP`
-	if _, err := r.db.Exec(q, normalized, models.TTSStateFailedTerminal, nullableString(provider), nullableString(errorCode), nullableString(errorMessage)); err != nil {
+	if _, err := r.db.Exec(q, normalized, models.TTSStateFailedTerminal, r.maxAttempts, nullableString(provider), nullableString(errorCode), nullableString(errorMessage)); err != nil {
 		return fmt.Errorf("mark tts terminal: %w", err)
 	}
 	return nil
@@ -164,7 +170,7 @@ func (r *TTSStatusRepository) ResetForForceRegenerate(word string) error {
 	}
 	const q = `INSERT INTO tts_generation_status (
 			word, state, attempt_count, max_attempts, last_error_code, last_error_message, last_provider, audio_rel_path, created_at, updated_at
-		) VALUES (?, ?, 0, 3, NULL, NULL, NULL, NULL, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+		) VALUES (?, ?, 0, ?, NULL, NULL, NULL, NULL, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 		ON CONFLICT(word) DO UPDATE SET
 			state = excluded.state,
 			attempt_count = 0,
@@ -174,7 +180,7 @@ func (r *TTSStatusRepository) ResetForForceRegenerate(word string) error {
 			audio_rel_path = NULL,
 			last_attempt_at = NULL,
 			updated_at = CURRENT_TIMESTAMP`
-	if _, err := r.db.Exec(q, normalized, models.TTSStatePending); err != nil {
+	if _, err := r.db.Exec(q, normalized, models.TTSStatePending, r.maxAttempts); err != nil {
 		return fmt.Errorf("reset tts status for regenerate: %w", err)
 	}
 	return nil

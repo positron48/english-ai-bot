@@ -163,6 +163,7 @@
       >
         <span class="training-transcription">{{ currentCard.transcription }}</span>
         <button
+          v-if="currentPronunciationURL"
           type="button"
           class="btn-pronunciation"
           :disabled="playingPronunciation || !currentCard?.word_en"
@@ -599,6 +600,7 @@ const typeRevealDisplayText = ref('')
 let typeRevealTimeouts: ReturnType<typeof setTimeout>[] = []
 const typeInputRef = ref<HTMLInputElement | null>(null)
 const playingPronunciation = ref(false)
+const currentPronunciationURL = ref<string | null>(null)
 
 // Settings
 const { settings } = useSettings()
@@ -610,10 +612,16 @@ const isEnglishWord = computed(() => {
 })
 
 watch(currentCard, async (card) => {
-  if (!card || card.direction !== 'en_ru' || !card.transcription) return
+  if (!card || card.direction !== 'en_ru' || !card.transcription) {
+    currentPronunciationURL.value = null
+    return
+  }
   const word = card.word_en || ''
-  if (!word) return
-  await getWordPronunciationURL(word)
+  if (!word) {
+    currentPronunciationURL.value = null
+    return
+  }
+  currentPronunciationURL.value = await getWordPronunciationURL(word)
 })
 
 const playCurrentPronunciation = async () => {

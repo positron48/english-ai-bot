@@ -169,7 +169,7 @@ func Load() (*Config, error) {
 	viper.SetDefault("tts.backfill_batch_size", 200)
 	viper.SetDefault("tts.retry_base_delay", "1m")
 	viper.SetDefault("tts.retry_max_delay", "24h")
-	viper.SetDefault("tts.max_retries", 8)
+	viper.SetDefault("tts.max_retries", 10)
 	viper.SetDefault("tts.dictionary_base_url", "https://api.dictionaryapi.dev/api/v2/entries/en")
 	viper.SetDefault("tts.dictionary_enabled", true)
 	viper.SetDefault("tts.dictionary_min_delay", "100ms")

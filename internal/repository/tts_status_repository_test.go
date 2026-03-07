@@ -11,7 +11,7 @@ import (
 
 func TestTTSStatusRepository_BasicFlow(t *testing.T) {
 	db := testutil.SetupTestDB(t)
-	repo := NewTTSStatusRepository(db, zap.NewNop())
+	repo := NewTTSStatusRepository(db, zap.NewNop(), 3)
 
 	if err := repo.UpsertPending("Spy"); err != nil {
 		t.Fatalf("UpsertPending() error = %v", err)
@@ -43,7 +43,7 @@ func TestTTSStatusRepository_BasicFlow(t *testing.T) {
 
 func TestTTSStatusRepository_MarkAttemptCapsAtTerminal(t *testing.T) {
 	db := testutil.SetupTestDB(t)
-	repo := NewTTSStatusRepository(db, zap.NewNop())
+	repo := NewTTSStatusRepository(db, zap.NewNop(), 3)
 
 	for i := 0; i < 3; i++ {
 		if err := repo.MarkAttempt("retry-word", "openrouter", "network_error", "timeout", true); err != nil {
@@ -68,7 +68,7 @@ func TestTTSStatusRepository_MarkAttemptCapsAtTerminal(t *testing.T) {
 
 func TestTTSStatusRepository_ResetForForceRegenerate(t *testing.T) {
 	db := testutil.SetupTestDB(t)
-	repo := NewTTSStatusRepository(db, zap.NewNop())
+	repo := NewTTSStatusRepository(db, zap.NewNop(), 3)
 
 	if err := repo.MarkTerminal("terminal-word", "openrouter", "provider_error", "failed"); err != nil {
 		t.Fatalf("MarkTerminal() error = %v", err)
