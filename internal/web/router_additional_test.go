@@ -6,6 +6,8 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -303,6 +305,30 @@ func TestRouter_HandleAuthTelegram_Success(t *testing.T) {
 	}
 	if resp["access_token"] == nil || resp["refresh_token"] == nil {
 		t.Error("Expected access_token and refresh_token in response")
+	}
+}
+
+// authErrReader is a body that fails on Read to trigger ParseForm error.
+type authErrReader struct{}
+
+func (authErrReader) Read(_ []byte) (int, error) {
+	return 0, errors.New("read error")
+}
+
+func TestRouter_HandleAuthTelegram_ParseFormError(t *testing.T) {
+	logger := zap.NewNop()
+	cfg := &config.Config{WebApp: config.WebAppConfig{JWTSecret: "test-secret"}}
+	router := NewRouter(logger, cfg, nil, nil, nil, nil, nil)
+	userRepo := repository.NewUserRepository(nil, logger)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+
+	req := httptest.NewRequest("POST", "/auth/telegram", io.NopCloser(authErrReader{}))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	w := httptest.NewRecorder()
+	router.handleAuthTelegram(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("Expected status 400 on ParseForm error, got %d", w.Code)
 	}
 }
 

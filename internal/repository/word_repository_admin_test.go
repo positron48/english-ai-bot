@@ -3,6 +3,7 @@ package repository
 import (
 	"database/sql"
 	"testing"
+	"time"
 
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/testutil"
@@ -73,6 +74,78 @@ func TestWordRepository_ListWordCardsAdmin_SortByAndOrder(t *testing.T) {
 	_, err = repo.ListWordCardsAdmin(nil, false, nil, "", "", 10, 0, "id", "desc")
 	if err != nil {
 		t.Fatalf("ListWordCardsAdmin(sortBy=id) error = %v", err)
+	}
+
+	// sortBy=pos and sortBy=has_cards (valid columns)
+	_, err = repo.ListWordCardsAdmin(nil, false, nil, "", "", 10, 0, "pos", "asc")
+	if err != nil {
+		t.Fatalf("ListWordCardsAdmin(sortBy=pos) error = %v", err)
+	}
+	_, err = repo.ListWordCardsAdmin(nil, false, nil, "", "", 10, 0, "has_cards", "desc")
+	if err != nil {
+		t.Fatalf("ListWordCardsAdmin(sortBy=has_cards) error = %v", err)
+	}
+}
+
+func TestWordRepository_ListWordCardsAdmin_OnlyWithErrors(t *testing.T) {
+	_, repo := setupWordAdminTestDB(t)
+	repo.SaveWordCard("errorword", "definition")
+	card, err := repo.GetWordCard("errorword")
+	if err != nil {
+		t.Fatalf("GetWordCard: %v", err)
+	}
+	if err := repo.MarkWordCardProcessedError(card.ID, "test error"); err != nil {
+		t.Fatalf("MarkWordCardProcessedError: %v", err)
+	}
+	cards, err := repo.ListWordCardsAdmin(nil, true, nil, "", "", 10, 0, "", "desc")
+	if err != nil {
+		t.Fatalf("ListWordCardsAdmin(onlyWithErrors=true) error = %v", err)
+	}
+	var found bool
+	for _, c := range cards {
+		if c.Word == "errorword" {
+			found = true
+			break
+		}
+	}
+	if !found {
+		t.Error("Expected errorword in list when onlyWithErrors=true")
+	}
+}
+
+func TestWordRepository_ListWordCardsAdmin_HasAudioFilter(t *testing.T) {
+	db, repo := setupWordAdminTestDB(t)
+	repo.SaveWordCard("withaudio", "def")
+	repo.SaveWordCard("noaudio", "def")
+	// Insert TTS row for one word so has_audio filter can match
+	_, err := db.Exec(`INSERT INTO tts_generation_status (word, state, audio_rel_path) VALUES ('withaudio', 'ready', 'ab/cd/withaudio.mp3')
+		ON CONFLICT (word) DO UPDATE SET state = 'ready', audio_rel_path = EXCLUDED.audio_rel_path`)
+	if err != nil {
+		t.Fatalf("insert tts_generation_status: %v", err)
+	}
+	hasAudioTrue := true
+	cardsWith, err := repo.ListWordCardsAdmin(nil, false, &hasAudioTrue, "", "", 10, 0, "", "desc")
+	if err != nil {
+		t.Fatalf("ListWordCardsAdmin(hasAudio=true) error = %v", err)
+	}
+	var foundWith bool
+	for _, c := range cardsWith {
+		if c.Word == "withaudio" {
+			foundWith = true
+			break
+		}
+	}
+	if !foundWith {
+		t.Error("Expected withaudio in list when hasAudio=true")
+	}
+	hasAudioFalse := false
+	cardsWithout, err := repo.ListWordCardsAdmin(nil, false, &hasAudioFalse, "", "", 10, 0, "", "desc")
+	if err != nil {
+		t.Fatalf("ListWordCardsAdmin(hasAudio=false) error = %v", err)
+	}
+	// Should include words without TTS or with empty audio
+	if len(cardsWithout) == 0 {
+		t.Error("Expected some cards when hasAudio=false")
 	}
 }
 
@@ -281,5 +354,54 @@ func TestWordRepository_DeleteWordCard(t *testing.T) {
 	}
 	if deleted != nil {
 		t.Error("GetWordCard() should return nil for deleted card")
+	}
+}
+
+func TestWordRepository_DeleteWordCard_NotFound(t *testing.T) {
+	_, repo := setupWordAdminTestDB(t)
+	err := repo.DeleteWordCard(99999)
+	if err == nil {
+		t.Fatal("DeleteWordCard(99999) expected error")
+	}
+	if err != nil && err.Error() != "word card not found" {
+		t.Errorf("DeleteWordCard() error = %v, want 'word card not found'", err)
+	}
+}
+
+func TestWordRepository_DeleteWordCard_WithTrainingAndUserCards(t *testing.T) {
+	db, repo := setupWordAdminTestDB(t)
+	logger, _ := zap.NewDevelopment()
+	userRepo := NewUserRepository(db, logger)
+	tcRepo := NewTrainingCardRepository(db, logger)
+	ucRepo := NewUserCardRepository(db, logger)
+
+	repo.SaveWordCard("cascadeword", "definition")
+	card, err := repo.GetWordCard("cascadeword")
+	if err != nil {
+		t.Fatalf("GetWordCard: %v", err)
+	}
+	user, _ := userRepo.GetOrCreateUser(200)
+	tc := &models.TrainingCard{WordCardID: card.ID, WordEN: "cascadeword", SenseIndex: 0, WordRU: "каскад", MeaningEN: "cascade"}
+	tcID, err := tcRepo.CreateTrainingCard(tc)
+	if err != nil {
+		t.Fatalf("CreateTrainingCard: %v", err)
+	}
+	now := time.Now()
+	uc := &models.UserCard{UserID: user.ID, TrainingCardID: tcID, Direction: models.DirectionENtoRU, State: models.StateNew, EF: 2.5, NextDueAt: &now}
+	_, err = ucRepo.CreateUserCard(uc)
+	if err != nil {
+		t.Fatalf("CreateUserCard: %v", err)
+	}
+
+	err = repo.DeleteWordCard(card.ID)
+	if err != nil {
+		t.Fatalf("DeleteWordCard() error = %v", err)
+	}
+	deleted, err := repo.GetWordCard("cascadeword")
+	if err != nil {
+		t.Fatalf("GetWordCard after delete: %v", err)
+	}
+	if deleted != nil {
+		t.Error("GetWordCard() should return nil after DeleteWordCard")
 	}
 }

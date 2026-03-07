@@ -96,3 +96,72 @@ func TestRateLimitMiddleware_RateLimit(t *testing.T) {
 		t.Errorf("Expected status 429, got %d", w.Code)
 	}
 }
+
+func TestRateLimitMiddleware_Wrap_OPTIONSBypass(t *testing.T) {
+	logger := zap.NewNop()
+	rl := NewRateLimiter(1*time.Minute, 1*time.Hour)
+	defer rl.Stop()
+
+	policy := RateLimitPolicy{
+		RequestsPerWindow: 1,
+		WindowDuration:    1 * time.Minute,
+		BurstSize:         1,
+	}
+
+	middleware := NewRateLimitMiddleware(rl, logger, policy, KeyFuncIP)
+
+	handlerCalled := false
+	handler := func(w http.ResponseWriter, r *http.Request) {
+		handlerCalled = true
+		w.WriteHeader(http.StatusOK)
+	}
+
+	wrapped := middleware.Wrap(handler)
+
+	req := httptest.NewRequest("OPTIONS", "/test", nil)
+	req.RemoteAddr = "127.0.0.1:99999"
+	w := httptest.NewRecorder()
+	wrapped(w, req)
+
+	if !handlerCalled {
+		t.Error("OPTIONS request should bypass rate limit and call handler")
+	}
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d", w.Code)
+	}
+}
+
+func TestRateLimitMiddleware_Wrap_EmptyKeyAllowsRequest(t *testing.T) {
+	logger := zap.NewNop()
+	rl := NewRateLimiter(1*time.Minute, 1*time.Hour)
+	defer rl.Stop()
+
+	policy := RateLimitPolicy{
+		RequestsPerWindow: 1,
+		WindowDuration:    1 * time.Minute,
+		BurstSize:         1,
+	}
+
+	// Key function that returns empty string
+	emptyKeyFn := func(r *http.Request) string { return "" }
+	middleware := NewRateLimitMiddleware(rl, logger, policy, emptyKeyFn)
+
+	handlerCalled := false
+	handler := func(w http.ResponseWriter, r *http.Request) {
+		handlerCalled = true
+		w.WriteHeader(http.StatusOK)
+	}
+
+	wrapped := middleware.Wrap(handler)
+
+	req := httptest.NewRequest("GET", "/test", nil)
+	w := httptest.NewRecorder()
+	wrapped(w, req)
+
+	if !handlerCalled {
+		t.Error("Request with empty key should be allowed and call handler")
+	}
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d", w.Code)
+	}
+}

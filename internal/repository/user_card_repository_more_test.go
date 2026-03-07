@@ -621,6 +621,72 @@ func TestUserCardRepository_GetWordMasteringStats_IsKnown(t *testing.T) {
 	}
 }
 
+// TestUserCardRepository_GetWordMasteringStats_NoTrainingCardForWord verifies that when word_card has no training_cards
+// the query returns no rows and we get nil,nil; or if the DB returns one aggregate row with zeros, stats are all zero.
+func TestUserCardRepository_GetWordMasteringStats_NoTrainingCardForWord(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDB(t)
+	repo := NewUserCardRepository(db, logger)
+	userRepo := NewUserRepository(db, logger)
+	wordRepo := NewWordRepository(db, logger)
+
+	user, _ := userRepo.GetOrCreateUser(123582)
+	wordCard := &models.WordCard{Word: "notraining", Definition: "def"}
+	wordCardID, _ := wordRepo.UpsertWordCardLemma(wordCard)
+	// Do not create any training_card for this word_card (no user_cards either)
+	stats, err := repo.GetWordMasteringStats(user.ID, wordCardID)
+	if err != nil {
+		t.Fatalf("GetWordMasteringStats() error = %v", err)
+	}
+	// Query has JOIN so with no training_cards we get 0 rows -> nil; some DBs may return one row of zeros
+	if stats != nil {
+		if stats.TotalCards != 0 || stats.TotalReps != 0 || stats.IsKnown {
+			t.Errorf("when word has no training cards expected nil or zero stats, got %+v", stats)
+		}
+	}
+}
+
+// TestUserCardRepository_GetWordMasteringStats_MultipleCardsSameWord verifies aggregates when user has multiple user_cards for same word (e.g. two senses/directions).
+func TestUserCardRepository_GetWordMasteringStats_MultipleCardsSameWord(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDB(t)
+	repo := NewUserCardRepository(db, logger)
+	userRepo := NewUserRepository(db, logger)
+	wordRepo := NewWordRepository(db, logger)
+	trainingRepo := NewTrainingCardRepository(db, logger)
+
+	user, _ := userRepo.GetOrCreateUser(123583)
+	wordCard := &models.WordCard{Word: "multicard", Definition: "def"}
+	wordCardID, _ := wordRepo.UpsertWordCardLemma(wordCard)
+	pos := "noun"
+	displayWord := "multicard"
+	tc1 := &models.TrainingCard{WordCardID: wordCardID, WordEN: "multicard", SenseIndex: 0, WordRU: "мульти", MeaningEN: "multi", POS: &pos, DisplayWord: &displayWord}
+	tc2 := &models.TrainingCard{WordCardID: wordCardID, WordEN: "multicard", SenseIndex: 1, WordRU: "ещё", MeaningEN: "more", POS: &pos, DisplayWord: &displayWord}
+	tcID1, _ := trainingRepo.CreateTrainingCard(tc1)
+	tcID2, _ := trainingRepo.CreateTrainingCard(tc2)
+
+	now := time.Now()
+	_, _ = repo.CreateUserCard(&models.UserCard{UserID: user.ID, TrainingCardID: tcID1, Direction: models.DirectionENtoRU, State: models.StateReview, EF: 2.0, Reps: 5, NextDueAt: &now})
+	_, _ = repo.CreateUserCard(&models.UserCard{UserID: user.ID, TrainingCardID: tcID2, Direction: models.DirectionRUtoEN, State: models.StateLearning, EF: 2.5, Reps: 2, NextDueAt: &now})
+
+	stats, err := repo.GetWordMasteringStats(user.ID, wordCardID)
+	if err != nil {
+		t.Fatalf("GetWordMasteringStats() error = %v", err)
+	}
+	if stats == nil {
+		t.Fatal("expected non-nil stats")
+	}
+	if stats.TotalCards != 2 {
+		t.Errorf("TotalCards = %d, want 2", stats.TotalCards)
+	}
+	if stats.TotalReps != 7 {
+		t.Errorf("TotalReps = %d, want 7", stats.TotalReps)
+	}
+	if stats.ReviewStateCount != 1 || stats.LearningStateCount != 1 {
+		t.Errorf("ReviewStateCount=%d LearningStateCount=%d, want 1 and 1", stats.ReviewStateCount, stats.LearningStateCount)
+	}
+}
+
 func TestUserCardRepository_GetWordsEligibleForSpell_GetWordsEligibleForSpellByMastery(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := testutil.SetupTestDB(t)

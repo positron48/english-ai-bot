@@ -5,9 +5,10 @@ import (
 	"encoding/json"
 	"strings"
 	"testing"
+	"time"
 
-	"tgbot-skeleton/internal/testutil"
 	"tgbot-skeleton/internal/repository"
+	"tgbot-skeleton/internal/testutil"
 
 	"go.uber.org/zap"
 )
@@ -539,6 +540,152 @@ func TestGrammarService_CanAccessSection_SectionNotFound(t *testing.T) {
 	}
 	if !strings.Contains(err.Error(), "section not found") && !strings.Contains(err.Error(), "not found") {
 		t.Errorf("expected 'section not found' in error, got: %v", err)
+	}
+}
+
+// TestGrammarService_CanAccessSection_AccessViaCategoryTestPassed covers access to next section when category test for previous section was passed (score >= 50%).
+func TestGrammarService_CanAccessSection_AccessViaCategoryTestPassed(t *testing.T) {
+	svc, contentRepo, _, attemptRepo, _, cleanup := setupGrammarService(t)
+	defer cleanup()
+
+	sectionsData, err := contentRepo.GetSections()
+	if err != nil {
+		t.Fatalf("GetSections: %v", err)
+	}
+	if len(sectionsData.Sections) < 2 {
+		t.Fatalf("need at least 2 sections")
+	}
+	firstSection := sectionsData.Sections[0]
+	secondSection := sectionsData.Sections[1]
+
+	// No placement result; second section is locked until category test for first section is passed.
+	canSecond, err := svc.CanAccessSection(context.Background(), 1, secondSection.SectionID)
+	if err != nil {
+		t.Fatalf("CanAccessSection error: %v", err)
+	}
+	if canSecond {
+		t.Fatal("expected second section to be locked without category test passed")
+	}
+
+	// Create passed category test for first section (score >= 50, passed = true)
+	now := time.Now()
+	attempt := &repository.TestAttempt{
+		UserID:         1,
+		ScopeType:      "category",
+		ScopeID:        firstSection.SectionID,
+		StartedAt:      now,
+		FinishedAt:     &now,
+		Score:          50,
+		Passed:         true,
+		TotalQuestions: 10,
+		AnswersJSON:    "[]",
+		ResultsJSON:    "{}",
+	}
+	if _, err := attemptRepo.CreateAttempt(attempt); err != nil {
+		t.Fatalf("CreateAttempt category: %v", err)
+	}
+
+	canSecond, err = svc.CanAccessSection(context.Background(), 1, secondSection.SectionID)
+	if err != nil {
+		t.Fatalf("CanAccessSection error: %v", err)
+	}
+	if !canSecond {
+		t.Fatal("expected second section to be accessible after category test passed for first section")
+	}
+}
+
+// TestGrammarService_CanAccessSection_EffectiveLevel covers access via placement effective level (section not in OpenedSections but level <= max opened level).
+func TestGrammarService_CanAccessSection_EffectiveLevel(t *testing.T) {
+	svc, contentRepo, _, attemptRepo, _, cleanup := setupGrammarService(t)
+	defer cleanup()
+
+	sections := pickSectionsWithQuestionChapters(t, contentRepo, 3)
+	if len(sections) < 3 {
+		t.Fatalf("need at least 3 sections with question chapters")
+	}
+	// Placements open a higher-level section; lower-level section should be accessible via effective level.
+	higherSection := sections[2]
+	middleSection := sections[1]
+	lowerSection := sections[0]
+
+	// Placement opened only the middle (or higher) section, not the lower one.
+	if err := attemptRepo.SavePlacementTestResult(1, 80, 10, []string{higherSection.SectionID}); err != nil {
+		t.Fatalf("SavePlacementTestResult: %v", err)
+	}
+
+	// Higher section: in OpenedSections → accessible
+	can, err := svc.CanAccessSection(context.Background(), 1, higherSection.SectionID)
+	if err != nil {
+		t.Fatalf("CanAccessSection: %v", err)
+	}
+	if !can {
+		t.Fatal("expected explicitly opened section to be accessible")
+	}
+
+	// Middle/lower section: not in OpenedSections but level <= effective → accessible via effective level
+	can, err = svc.CanAccessSection(context.Background(), 1, middleSection.SectionID)
+	if err != nil {
+		t.Fatalf("CanAccessSection: %v", err)
+	}
+	if !can {
+		t.Fatal("expected section with level <= placement effective level to be accessible")
+	}
+
+	can, err = svc.CanAccessSection(context.Background(), 1, lowerSection.SectionID)
+	if err != nil {
+		t.Fatalf("CanAccessSection: %v", err)
+	}
+	if !can {
+		t.Fatal("expected lower-level section to be accessible via effective level")
+	}
+}
+
+// TestGrammarService_CanAccessSection_DeniedWhenCategoryNotPassed covers denial when second section has no placement and category test not passed.
+func TestGrammarService_CanAccessSection_DeniedWhenCategoryNotPassed(t *testing.T) {
+	svc, contentRepo, _, attemptRepo, _, cleanup := setupGrammarService(t)
+	defer cleanup()
+
+	sectionsData, err := contentRepo.GetSections()
+	if err != nil {
+		t.Fatalf("GetSections: %v", err)
+	}
+	if len(sectionsData.Sections) < 2 {
+		t.Fatalf("need at least 2 sections")
+	}
+	secondSection := sectionsData.Sections[1]
+
+	// No placement, no category attempt for first section → second section locked
+	can, err := svc.CanAccessSection(context.Background(), 1, secondSection.SectionID)
+	if err != nil {
+		t.Fatalf("CanAccessSection: %v", err)
+	}
+	if can {
+		t.Fatal("expected second section to be denied without placement or category test passed")
+	}
+
+	// Category attempt exists but not passed (score < 50 or passed = false) → still denied
+	now := time.Now()
+	attempt := &repository.TestAttempt{
+		UserID:         1,
+		ScopeType:      "category",
+		ScopeID:        sectionsData.Sections[0].SectionID,
+		StartedAt:      now,
+		FinishedAt:     &now,
+		Score:          40,
+		Passed:         false,
+		TotalQuestions: 10,
+		AnswersJSON:    "[]",
+		ResultsJSON:    "{}",
+	}
+	if _, err := attemptRepo.CreateAttempt(attempt); err != nil {
+		t.Fatalf("CreateAttempt: %v", err)
+	}
+	can, err = svc.CanAccessSection(context.Background(), 1, secondSection.SectionID)
+	if err != nil {
+		t.Fatalf("CanAccessSection: %v", err)
+	}
+	if can {
+		t.Fatal("expected second section to remain denied when category test not passed")
 	}
 }
 

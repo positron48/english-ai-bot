@@ -19,6 +19,7 @@ import (
 type mockTelegramClient struct {
 	lastParams url.Values
 	lastPath   string
+	failNext   bool // when true, Do returns API ok:false so Send() returns error
 }
 
 func (c *mockTelegramClient) Do(req *http.Request) (*http.Response, error) {
@@ -29,6 +30,10 @@ func (c *mockTelegramClient) Do(req *http.Request) (*http.Response, error) {
 	c.lastPath = req.URL.Path
 
 	resp := `{"ok": true, "result": {}}`
+	if c.failNext {
+		c.failNext = false
+		resp = `{"ok": false, "description": "test error"}`
+	}
 	return &http.Response{
 		StatusCode: http.StatusOK,
 		Body:       io.NopCloser(bytes.NewBufferString(resp)),
@@ -272,6 +277,29 @@ func TestBotCommandService_HandleUnknown(t *testing.T) {
 	}
 }
 
+// TestBotCommandService_HandleUnknownCommand_DefaultMessage covers handleUnknownCommand when unknownCommandMessage is empty (default text).
+func TestBotCommandService_HandleUnknownCommand_DefaultMessage(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
+	client := &mockTelegramClient{}
+	bot := newTestBot(client)
+	// Empty unknown message → service uses default
+	svc := NewBotCommandService(bot, userRepo, logger, "help", "start", "")
+
+	msg := commandMessage("/someunknown")
+	update := tgbotapi.Update{Message: msg}
+	svc.HandleUpdate(update)
+
+	text := client.lastParams.Get("text")
+	if text == "" {
+		t.Fatalf("expected default unknown-command message to be sent")
+	}
+	if !strings.Contains(text, "Неизвестная команда") && !strings.Contains(text, "/help") {
+		t.Errorf("expected default unknown-command text (Неизвестная команда or /help), got %q", text)
+	}
+}
+
 func TestBotCommandService_HandleStartUnsubscribe(t *testing.T) {
 	svc, userRepo, client, cleanup := setupBotCommandService(t)
 	defer cleanup()
@@ -455,6 +483,78 @@ func TestBotCommandService_HandleUnsubscribe_InvalidSettingsJSON(t *testing.T) {
 	}
 	if client.lastParams.Get("text") == "" {
 		t.Fatalf("expected success message")
+	}
+}
+
+// TestBotCommandService_HandleUnsubscribe_SendFails covers handleUnsubscribe when bot.Send fails (no panic; settings still updated).
+func TestBotCommandService_HandleUnsubscribe_SendFails(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
+	client := &mockTelegramClient{}
+	client.failNext = true // next Do() will return API ok:false so Send returns error
+	bot := newTestBot(client)
+	svc := NewBotCommandService(bot, userRepo, logger, "help", "start", "unknown")
+
+	if _, err := userRepo.GetOrCreateUser(42); err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+
+	svc.handleUnsubscribe(42, 10)
+	// Should not panic; success path ran but Send failed
+	user, _ := userRepo.GetUserByTelegramID(42)
+	if user == nil || !strings.Contains(user.SettingsJSON, "never") {
+		t.Fatalf("expected settings to be updated to never even when Send fails")
+	}
+}
+
+// TestBotCommandService_HandleUnknownCommand_TableDriven covers handleUnknownCommand branches: default vs custom message.
+func TestBotCommandService_HandleUnknownCommand_TableDriven(t *testing.T) {
+	tests := []struct {
+		name              string
+		unknownMsg        string
+		wantContains       []string
+		wantNotContains   []string
+	}{
+		{
+			name:        "custom_message",
+			unknownMsg:  "Custom unknown text",
+			wantContains: []string{"Custom unknown text"},
+		},
+		{
+			name:            "default_message",
+			unknownMsg:      "",
+			wantContains:    []string{"Неизвестная команда", "/help"},
+			wantNotContains: []string{},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			logger, _ := zap.NewDevelopment()
+			db := testutil.SetupTestDatabase(t)
+			userRepo := repository.NewUserRepository(db.GetConnection(), logger)
+			client := &mockTelegramClient{}
+			bot := newTestBot(client)
+			svc := NewBotCommandService(bot, userRepo, logger, "h", "s", tt.unknownMsg)
+
+			msg := commandMessage("/unknowncmd")
+			svc.handleUnknownCommand(msg)
+
+			text := client.lastParams.Get("text")
+			if text == "" {
+				t.Fatal("expected a message to be sent")
+			}
+			for _, sub := range tt.wantContains {
+				if !strings.Contains(text, sub) {
+					t.Errorf("expected text to contain %q, got %q", sub, text)
+				}
+			}
+			for _, sub := range tt.wantNotContains {
+				if strings.Contains(text, sub) {
+					t.Errorf("expected text not to contain %q, got %q", sub, text)
+				}
+			}
+		})
 	}
 }
 

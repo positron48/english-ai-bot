@@ -279,6 +279,72 @@ func TestTrainingCardRepository_GetWordCardsWithoutTrainingCards(t *testing.T) {
 	}
 }
 
+func TestTrainingCardRepository_GetWordCardsWithoutTrainingCards_ExcludesProcessedAt(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := setupTrainingCardTestDB(t)
+	repo := NewTrainingCardRepository(db, logger)
+
+	// Word card with processed_at set (no training card) must not appear
+	_, err := db.Exec("INSERT INTO word_cards (word, definition, processed_at) VALUES (?, ?, CURRENT_TIMESTAMP)", "processed_word", "def")
+	if err != nil {
+		t.Fatalf("insert word card: %v", err)
+	}
+	cards, err := repo.GetWordCardsWithoutTrainingCards(10)
+	if err != nil {
+		t.Fatalf("GetWordCardsWithoutTrainingCards() error = %v", err)
+	}
+	for _, c := range cards {
+		if c.Word == "processed_word" {
+			t.Error("Expected processed_word to be excluded (processed_at is set)")
+		}
+	}
+}
+
+func TestTrainingCardRepository_GetWordCardsWithoutTrainingCards_OptionalFieldsAndLimit(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := setupTrainingCardTestDB(t)
+	repo := NewTrainingCardRepository(db, logger)
+
+	// Word card with optional fields set, no training card
+	_, err := db.Exec(`INSERT INTO word_cards (word, definition, pos, transcription, definition_ru) VALUES (?, ?, ?, ?, ?)`,
+		"optword", "def", "noun", "ˈɒpt", "определение")
+	if err != nil {
+		t.Fatalf("insert word card: %v", err)
+	}
+	cards, err := repo.GetWordCardsWithoutTrainingCards(10)
+	if err != nil {
+		t.Fatalf("GetWordCardsWithoutTrainingCards() error = %v", err)
+	}
+	var found *models.WordCard
+	for _, c := range cards {
+		if c.Word == "optword" {
+			found = c
+			break
+		}
+	}
+	if found == nil {
+		t.Fatal("Expected to find optword in results")
+	}
+	if found.POS == nil || *found.POS != "noun" {
+		t.Errorf("Expected POS noun, got %v", found.POS)
+	}
+	if found.Transcription == nil || *found.Transcription != "ˈɒpt" {
+		t.Errorf("Expected Transcription, got %v", found.Transcription)
+	}
+	if found.DefinitionRU == nil || *found.DefinitionRU != "определение" {
+		t.Errorf("Expected DefinitionRU, got %v", found.DefinitionRU)
+	}
+
+	// Limit 0 returns no rows
+	empty, err := repo.GetWordCardsWithoutTrainingCards(0)
+	if err != nil {
+		t.Fatalf("GetWordCardsWithoutTrainingCards(0) error = %v", err)
+	}
+	if len(empty) != 0 {
+		t.Errorf("Expected 0 cards for limit 0, got %d", len(empty))
+	}
+}
+
 func TestTrainingCardRepository_GetTrainingCardByWordCardIDAndSenseIndex(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupTrainingCardTestDB(t)

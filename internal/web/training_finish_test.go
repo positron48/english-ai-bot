@@ -198,6 +198,57 @@ func TestFinishTrainingSession_CompleteSession(t *testing.T) {
 	}
 }
 
+func TestFinishTrainingSession_DirectCall(t *testing.T) {
+	logger := zap.NewNop()
+	db, _, trainingCardRepo, userCardRepo, sessionRepo := setupTrainingIntegrationTestDB(t)
+
+	cfg := &config.Config{
+		Training: config.TrainingConfig{
+			OptionsDelayMS:         2000,
+			WrongAnswerDelaySeconds: 3,
+		},
+	}
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, logger)
+
+	router := NewRouter(logger, cfg, db, trainingService, nil, nil, nil)
+	router.webTrainingHandler = NewWebTrainingHandler(trainingService, nil, nil, sessionRepo, logger, 2000, 3)
+
+	state := &WebTrainingState{
+		UserID:        101,
+		SessionID:     99999,
+		Queue:         nil,
+		CurrentIndex:  2,
+	}
+	router.webTrainingHandler.sessionsMutex.Lock()
+	router.webTrainingHandler.sessions[state.UserID] = state
+	router.webTrainingHandler.sessionsMutex.Unlock()
+
+	req := httptest.NewRequest("GET", "/api/training/current", nil)
+	w := httptest.NewRecorder()
+	router.finishTrainingSession(w, req, state)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("finishTrainingSession: expected 200, got %d", w.Code)
+	}
+	var resp map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&resp); err != nil {
+		t.Fatalf("decode response: %v", err)
+	}
+	if resp["complete"] != true {
+		t.Error("expected complete: true")
+	}
+	if resp["cards_completed"] != float64(2) {
+		t.Errorf("cards_completed = %v, want 2", resp["cards_completed"])
+	}
+	// Session should be removed from memory
+	router.webTrainingHandler.sessionsMutex.Lock()
+	_, exists := router.webTrainingHandler.sessions[state.UserID]
+	router.webTrainingHandler.sessionsMutex.Unlock()
+	if exists {
+		t.Error("session should be removed from memory after finish")
+	}
+}
+
 func ptrBool(b bool) *bool {
 	return &b
 }

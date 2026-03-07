@@ -214,6 +214,90 @@ func TestJWTService_ValidateRefreshToken(t *testing.T) {
 			t.Error("ValidateRefreshToken() should return error for invalid token")
 		}
 	})
+
+	t.Run("Empty token", func(t *testing.T) {
+		_, err := service.ValidateRefreshToken("")
+		if err == nil {
+			t.Error("ValidateRefreshToken() should return error for empty token")
+		}
+	})
+}
+
+func TestJWTService_ValidateRefreshToken_Expired(t *testing.T) {
+	logger := zap.NewNop()
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{
+			JWTSecret:        "test-secret-key",
+			JWTTTLHours:      24,
+			RefreshTTLHours:  720,
+		},
+	}
+	svc, err := NewJWTService(cfg, logger)
+	if err != nil {
+		t.Fatalf("NewJWTService: %v", err)
+	}
+
+	// Build refresh token with expiry in the past
+	expiredAt := time.Now().Add(-time.Hour)
+	claims := &RefreshClaims{
+		UserID: 42,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(expiredAt),
+			IssuedAt:  jwt.NewNumericDate(expiredAt.Add(-24 * time.Hour)),
+			NotBefore: jwt.NewNumericDate(expiredAt.Add(-24 * time.Hour)),
+			Issuer:    "english-bot",
+		},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenString, err := token.SignedString([]byte(cfg.WebApp.JWTSecret))
+	if err != nil {
+		t.Fatalf("SignedString: %v", err)
+	}
+
+	_, err = svc.ValidateRefreshToken(tokenString)
+	if err == nil {
+		t.Error("ValidateRefreshToken() should return error for expired token")
+	}
+	if err != nil && !strings.Contains(err.Error(), "expired") {
+		t.Errorf("ValidateRefreshToken() error should mention expired, got: %v", err)
+	}
+}
+
+func TestJWTService_ValidateRefreshToken_WrongSigningKey(t *testing.T) {
+	logger := zap.NewNop()
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{
+			JWTSecret:        "test-secret-key",
+			JWTTTLHours:      24,
+			RefreshTTLHours:  720,
+		},
+	}
+	svc, err := NewJWTService(cfg, logger)
+	if err != nil {
+		t.Fatalf("NewJWTService: %v", err)
+	}
+
+	// Token signed with different secret
+	expiresAt := time.Now().Add(time.Hour)
+	claims := &RefreshClaims{
+		UserID: 42,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(expiresAt),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+			NotBefore: jwt.NewNumericDate(time.Now()),
+			Issuer:    "english-bot",
+		},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenString, err := token.SignedString([]byte("other-secret"))
+	if err != nil {
+		t.Fatalf("SignedString: %v", err)
+	}
+
+	_, err = svc.ValidateRefreshToken(tokenString)
+	if err == nil {
+		t.Error("ValidateRefreshToken() should return error for wrong signing key")
+	}
 }
 
 func TestExtractTokenFromHeader(t *testing.T) {

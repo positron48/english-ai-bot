@@ -131,6 +131,81 @@ func TestUserAccessCategoryRepository_SetCategoryPermissions(t *testing.T) {
 	}
 }
 
+func TestUserAccessCategoryRepository_SetCategoryPermissions_TableDriven(t *testing.T) {
+	repo := setupUserAccessCategoryRepo(t)
+	cat := &models.UserAccessCategory{Name: "perm-multi"}
+	id, err := repo.CreateCategory(cat)
+	if err != nil {
+		t.Fatalf("CreateCategory: %v", err)
+	}
+	tests := []struct {
+		name        string
+		permissions []string
+		wantCount   int
+		wantFirst   string
+	}{
+		{"three permissions", []string{"read", "write", "admin"}, 3, "admin"},
+		{"single", []string{"stats:view"}, 1, "stats:view"},
+		{"empty clears", []string{}, 0, ""},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := repo.SetCategoryPermissions(id, tt.permissions); err != nil {
+				t.Fatalf("SetCategoryPermissions: %v", err)
+			}
+			perms, err := repo.GetCategoryPermissions(id)
+			if err != nil {
+				t.Fatalf("GetCategoryPermissions: %v", err)
+			}
+			if len(perms) != tt.wantCount {
+				t.Errorf("got %d permissions, want %d: %v", len(perms), tt.wantCount, perms)
+			}
+			if tt.wantCount > 0 && len(perms) > 0 && perms[0] != tt.wantFirst {
+				t.Errorf("first permission = %q, want %q (order)", perms[0], tt.wantFirst)
+			}
+		})
+	}
+}
+
+func TestUserAccessCategoryRepository_SetUserCategories_TableDriven(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	conn := testutil.SetupTestDB(t)
+	userRepo := NewUserRepository(conn, logger)
+	user, _ := userRepo.GetOrCreateUser(106)
+	repo := NewUserAccessCategoryRepository(conn, logger)
+	c1 := &models.UserAccessCategory{Name: "tcat1"}
+	id1, _ := repo.CreateCategory(c1)
+	c2 := &models.UserAccessCategory{Name: "tcat2"}
+	id2, _ := repo.CreateCategory(c2)
+	c3 := &models.UserAccessCategory{Name: "tcat3"}
+	id3, _ := repo.CreateCategory(c3)
+
+	tests := []struct {
+		name        string
+		categoryIDs []int64
+		wantCount   int
+	}{
+		{"three categories", []int64{id1, id2, id3}, 3},
+		{"two", []int64{id1, id2}, 2},
+		{"one", []int64{id2}, 1},
+		{"empty clears", []int64{}, 0},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := repo.SetUserCategories(user.ID, tt.categoryIDs); err != nil {
+				t.Fatalf("SetUserCategories: %v", err)
+			}
+			cats, err := repo.GetUserCategories(user.ID)
+			if err != nil {
+				t.Fatalf("GetUserCategories: %v", err)
+			}
+			if len(cats) != tt.wantCount {
+				t.Errorf("got %d categories, want %d: %v", len(cats), tt.wantCount, cats)
+			}
+		})
+	}
+}
+
 func TestUserAccessCategoryRepository_GetUserCategories_SetUserCategories(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	conn := testutil.SetupTestDB(t)
