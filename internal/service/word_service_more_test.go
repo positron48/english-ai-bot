@@ -201,6 +201,122 @@ func TestGetWordDefinition_AIResponse_InvalidJSON_Legacy(t *testing.T) {
 	}
 }
 
+// TestGetWordDefinition_AINil covers word not in DB with nil AI service.
+func TestGetWordDefinition_AINil(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	wordRepo := repository.NewWordRepository(db.GetConnection(), logger)
+	service := NewWordService(wordRepo, nil, nil, nil, logger)
+
+	_, err := service.GetWordDefinition(context.Background(), 1, "newword")
+	if err == nil {
+		t.Fatal("expected error when AI service is nil")
+	}
+	if !strings.Contains(err.Error(), "AI service not available") {
+		t.Errorf("expected AI not available error, got: %v", err)
+	}
+}
+
+// TestGetWordDefinition_Cyrillic returns AI response without saving when word contains Cyrillic.
+func TestGetWordDefinition_Cyrillic(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	wordRepo := repository.NewWordRepository(db.GetConnection(), logger)
+	aiService := newAIServiceWithResponse(t, logger, `{"lemma":"тест","definition_ru":"проверка"}`)
+	service := NewWordService(wordRepo, nil, nil, aiService, logger)
+
+	resp, err := service.GetWordDefinition(context.Background(), 1, "привет")
+	if err != nil {
+		t.Fatalf("GetWordDefinition error: %v", err)
+	}
+	if !strings.Contains(resp, "проверка") && !strings.Contains(resp, "тест") {
+		t.Errorf("expected AI response returned as-is, got %q", resp)
+	}
+	card, _ := wordRepo.GetWordCardByLemma("привет")
+	if card != nil {
+		t.Error("expected no word card saved for Cyrillic input")
+	}
+}
+
+// TestGetWordDefinition_AIResponse_ErrorNoHint covers Error.IsTrue with empty hint -> default message.
+func TestGetWordDefinition_AIResponse_ErrorNoHint(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	wordRepo := repository.NewWordRepository(db.GetConnection(), logger)
+	aiService := newAIServiceWithResponse(t, logger, `{"error": true, "hint": ""}`)
+	service := NewWordService(wordRepo, nil, nil, aiService, logger)
+
+	resp, err := service.GetWordDefinition(context.Background(), 1, "xyz")
+	if err != nil {
+		t.Fatalf("GetWordDefinition error: %v", err)
+	}
+	if !strings.Contains(resp, "опечатка") && !strings.Contains(resp, "несуществующее") {
+		t.Errorf("expected default error message, got %q", resp)
+	}
+}
+
+// TestGetWordDefinition_AIResponse_ErrorKeyword covers legacy string error with keyword (e.g. gibberish).
+func TestGetWordDefinition_AIResponse_ErrorKeyword(t *testing.T) {
+	tests := []struct {
+		name     string
+		response string
+		wantHint string
+	}{
+		{
+			name:     "keyword with hint",
+			response: `{"error": "gibberish word", "hint": "проверьте слово", "lemma": ""}`,
+			wantHint: "проверьте слово",
+		},
+		{
+			name:     "keyword no hint",
+			response: `{"error": "not a valid English word", "hint": "", "lemma": ""}`,
+			wantHint: "опечатка",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			logger, _ := zap.NewDevelopment()
+			db := testutil.SetupTestDatabase(t)
+			wordRepo := repository.NewWordRepository(db.GetConnection(), logger)
+			aiService := newAIServiceWithResponse(t, logger, tt.response)
+			service := NewWordService(wordRepo, nil, nil, aiService, logger)
+
+			resp, err := service.GetWordDefinition(context.Background(), 1, "qwerty")
+			if err != nil {
+				t.Fatalf("GetWordDefinition error: %v", err)
+			}
+			if tt.wantHint != "опечатка" && !strings.Contains(resp, tt.wantHint) {
+				t.Errorf("expected response to contain %q, got %q", tt.wantHint, resp)
+			}
+			if tt.wantHint == "опечатка" && !strings.Contains(resp, "опечатка") && !strings.Contains(resp, "несуществующее") {
+				t.Errorf("expected default error message, got %q", resp)
+			}
+		})
+	}
+}
+
+// TestGetWordDefinition_FoundInDB_ByLemma covers finding by lemma and returning markdown (e.g. "Run" -> "run").
+func TestGetWordDefinition_FoundInDB_ByLemma(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	conn := db.GetConnection()
+	wordRepo := repository.NewWordRepository(conn, logger)
+	service := NewWordService(wordRepo, nil, nil, nil, logger)
+
+	_, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "run", Definition: "to move"})
+	if err != nil {
+		t.Fatalf("UpsertWordCardLemma: %v", err)
+	}
+
+	resp, err := service.GetWordDefinition(context.Background(), 1, "Run")
+	if err != nil {
+		t.Fatalf("GetWordDefinition: %v", err)
+	}
+	if !strings.Contains(resp, "run") {
+		t.Errorf("expected lemma in response, got %q", resp)
+	}
+}
+
 func TestWordService_renderWordCardMarkdown(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	service := NewWordService(nil, nil, nil, nil, logger)
@@ -268,5 +384,107 @@ func TestWordService_ensureUserCardsForWord(t *testing.T) {
 	}
 	if count < 2 {
 		t.Errorf("expected at least 2 user_cards (both directions), got %d", count)
+	}
+}
+
+// TestWordService_ensureUserCardsForWord_NoTrainingCards covers len(trainingCards)==0 -> nil.
+func TestWordService_ensureUserCardsForWord_NoTrainingCards(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	conn := db.GetConnection()
+	wordRepo := repository.NewWordRepository(conn, logger)
+	trainingCardRepo := repository.NewTrainingCardRepository(conn, logger)
+	userCardRepo := repository.NewUserCardRepository(conn, logger)
+	userRepo := repository.NewUserRepository(conn, logger)
+
+	user, _ := userRepo.GetOrCreateUser(888)
+	wordCardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "nocard"})
+	if err != nil {
+		t.Fatalf("UpsertWordCardLemma: %v", err)
+	}
+	// No training cards for this word
+
+	service := NewWordService(wordRepo, trainingCardRepo, userCardRepo, nil, logger)
+	err = service.ensureUserCardsForWord(user.ID, wordCardID)
+	if err != nil {
+		t.Fatalf("ensureUserCardsForWord: %v", err)
+	}
+}
+
+// TestWordService_ensureUserCardsForWord_SecondCallIdempotent covers CreateUserCard duplicate (warn path); second call still succeeds.
+func TestWordService_ensureUserCardsForWord_SecondCallIdempotent(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	conn := db.GetConnection()
+	wordRepo := repository.NewWordRepository(conn, logger)
+	trainingCardRepo := repository.NewTrainingCardRepository(conn, logger)
+	userCardRepo := repository.NewUserCardRepository(conn, logger)
+	userRepo := repository.NewUserRepository(conn, logger)
+
+	user, _ := userRepo.GetOrCreateUser(777)
+	wordCardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "idem"})
+	if err != nil {
+		t.Fatalf("UpsertWordCardLemma: %v", err)
+	}
+	_, err = trainingCardRepo.CreateTrainingCard(&models.TrainingCard{
+		WordCardID: wordCardID,
+		WordEN:     "idem",
+		WordRU:     "идем",
+		MeaningEN:  "go",
+		SenseIndex: 0,
+	})
+	if err != nil {
+		t.Fatalf("CreateTrainingCard: %v", err)
+	}
+
+	service := NewWordService(wordRepo, trainingCardRepo, userCardRepo, nil, logger)
+	err = service.ensureUserCardsForWord(user.ID, wordCardID)
+	if err != nil {
+		t.Fatalf("ensureUserCardsForWord first call: %v", err)
+	}
+	err = service.ensureUserCardsForWord(user.ID, wordCardID)
+	if err != nil {
+		t.Fatalf("ensureUserCardsForWord second call (idempotent): %v", err)
+	}
+}
+
+// TestWordService_ensureUserCardsForWord_WithMasteringRepo covers createdCount > 0 and userWordMasteringRepo.Upsert.
+func TestWordService_ensureUserCardsForWord_WithMasteringRepo(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	conn := db.GetConnection()
+	wordRepo := repository.NewWordRepository(conn, logger)
+	trainingCardRepo := repository.NewTrainingCardRepository(conn, logger)
+	userCardRepo := repository.NewUserCardRepository(conn, logger)
+	userWordMasteringRepo := repository.NewUserWordMasteringRepository(conn, logger)
+	userRepo := repository.NewUserRepository(conn, logger)
+
+	user, _ := userRepo.GetOrCreateUser(666)
+	wordCardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "master"})
+	if err != nil {
+		t.Fatalf("UpsertWordCardLemma: %v", err)
+	}
+	_, err = trainingCardRepo.CreateTrainingCard(&models.TrainingCard{
+		WordCardID: wordCardID,
+		WordEN:     "master",
+		WordRU:     "мастер",
+		MeaningEN:  "master",
+		SenseIndex: 0,
+	})
+	if err != nil {
+		t.Fatalf("CreateTrainingCard: %v", err)
+	}
+
+	service := NewWordServiceWithMastering(wordRepo, trainingCardRepo, userCardRepo, userWordMasteringRepo, nil, logger)
+	err = service.ensureUserCardsForWord(user.ID, wordCardID)
+	if err != nil {
+		t.Fatalf("ensureUserCardsForWord: %v", err)
+	}
+	score, err := userWordMasteringRepo.GetScore(user.ID, wordCardID)
+	if err != nil {
+		t.Fatalf("GetScore: %v", err)
+	}
+	if score != 0 {
+		t.Errorf("expected initial mastering score 0, got %d", score)
 	}
 }

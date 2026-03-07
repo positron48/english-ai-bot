@@ -112,6 +112,104 @@ func TestMarkKnown_WithUserCards(t *testing.T) {
 	}
 }
 
+// TestEnsureUserCardsForWord_NoTrainingCards covers len(trainingCards)==0 -> nil.
+func TestEnsureUserCardsForWord_NoTrainingCards(t *testing.T) {
+	service, db, userRepo, cleanup := setupWordSetServiceMoreTest(t)
+	defer cleanup()
+
+	user, _ := userRepo.GetOrCreateUser(11111)
+	wordRepo := repository.NewWordRepository(db.GetConnection(), service.logger)
+	cardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "nocard", Definition: ""})
+	if err != nil {
+		t.Fatalf("UpsertWordCardLemma: %v", err)
+	}
+
+	err = service.EnsureUserCardsForWord(user.ID, cardID)
+	if err != nil {
+		t.Fatalf("EnsureUserCardsForWord: %v", err)
+	}
+}
+
+// TestEnsureUserCardsForWord_SecondCallIdempotent covers CreateUserCard duplicate (warn path); second call still succeeds.
+func TestEnsureUserCardsForWord_SecondCallIdempotent(t *testing.T) {
+	service, db, userRepo, cleanup := setupWordSetServiceMoreTest(t)
+	defer cleanup()
+
+	user, _ := userRepo.GetOrCreateUser(22222)
+	wordRepo := repository.NewWordRepository(db.GetConnection(), service.logger)
+	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), service.logger)
+	cardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "idem", Definition: ""})
+	if err != nil {
+		t.Fatalf("UpsertWordCardLemma: %v", err)
+	}
+	_, err = tcRepo.CreateTrainingCard(&models.TrainingCard{
+		WordCardID: cardID,
+		WordEN:     "idem",
+		WordRU:     "идем",
+		MeaningEN:  "go",
+		SenseIndex:  0,
+	})
+	if err != nil {
+		t.Fatalf("CreateTrainingCard: %v", err)
+	}
+
+	err = service.EnsureUserCardsForWord(user.ID, cardID)
+	if err != nil {
+		t.Fatalf("EnsureUserCardsForWord first call: %v", err)
+	}
+	err = service.EnsureUserCardsForWord(user.ID, cardID)
+	if err != nil {
+		t.Fatalf("EnsureUserCardsForWord second call (idempotent): %v", err)
+	}
+}
+
+// TestEnsureUserCardsForWord_WithMasteringRepo covers createdCount > 0 and userWordMasteringRepo.Upsert.
+func TestEnsureUserCardsForWord_WithMasteringRepo(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	conn := db.GetConnection()
+
+	wordSetRepo := repository.NewWordSetRepository(conn, logger)
+	wordSetCategoryRepo := repository.NewWordSetCategoryRepository(conn, logger)
+	wordRepo := repository.NewWordRepository(conn, logger)
+	tcRepo := repository.NewTrainingCardRepository(conn, logger)
+	ucRepo := repository.NewUserCardRepository(conn, logger)
+	uwkRepo := repository.NewUserWordKnowledgeRepository(conn, logger)
+	masteringRepo := repository.NewUserWordMasteringRepository(conn, logger)
+	userRepo := repository.NewUserRepository(conn, logger)
+
+	service := NewWordSetServiceWithMastering(
+		wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, masteringRepo, nil, "", logger,
+	)
+	user, _ := userRepo.GetOrCreateUser(33333)
+	cardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "masterw", Definition: ""})
+	if err != nil {
+		t.Fatalf("UpsertWordCardLemma: %v", err)
+	}
+	_, err = tcRepo.CreateTrainingCard(&models.TrainingCard{
+		WordCardID: cardID,
+		WordEN:     "masterw",
+		WordRU:     "мастер",
+		MeaningEN:  "master",
+		SenseIndex: 0,
+	})
+	if err != nil {
+		t.Fatalf("CreateTrainingCard: %v", err)
+	}
+
+	err = service.EnsureUserCardsForWord(user.ID, cardID)
+	if err != nil {
+		t.Fatalf("EnsureUserCardsForWord: %v", err)
+	}
+	score, err := masteringRepo.GetScore(user.ID, cardID)
+	if err != nil {
+		t.Fatalf("GetScore: %v", err)
+	}
+	if score != 0 {
+		t.Errorf("expected initial mastering score 0, got %d", score)
+	}
+}
+
 func TestProcessWordSetItems(t *testing.T) {
 	service, db, _, cleanup := setupWordSetServiceMoreTest(t)
 	defer cleanup()

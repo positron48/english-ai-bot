@@ -4,9 +4,11 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"reflect"
+	"strings"
 	"testing"
 	"unsafe"
 
@@ -131,6 +133,35 @@ func TestTrainingWorkerFillWordCardData(t *testing.T) {
 	}
 	if updated.DisplayEN == nil || *updated.DisplayEN != "to run" {
 		t.Fatalf("expected display EN to be 'to run'")
+	}
+}
+
+// TestTrainingWorker_processCard_NoUsersForWordStillCreatesCards verifies that when no users
+// requested the word, training cards are still created and processCard returns nil (no user_cards).
+func TestTrainingWorker_processCard_NoUsersForWordStillCreatesCards(t *testing.T) {
+	transport := rtFuncTW(func(req *http.Request) (*http.Response, error) {
+		content := `{"word_en":"orphan","lemma":"orphan","transcription":"","senses":[{"pos":"noun","word_ru":"сирота","meaning_en":"orphan","example_en":"","example_ru":"","distractors_ru":["ребенок","вдова"],"distractors_en":["child","widow"],"hint":""}]}`
+		resp := ai.ChatResponse{Choices: []ai.Choice{{Message: ai.Message{Content: content}}}}
+		return newJSONHTTPResponseTW(http.StatusOK, resp), nil
+	})
+
+	worker, wordRepo, trainingCardRepo, _, _, _, cleanup := newTrainingWorker(t, transport)
+	defer cleanup()
+
+	cardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "orphan", Definition: ""})
+	if err != nil {
+		t.Fatalf("UpsertWordCardLemma: %v", err)
+	}
+	wordCard, _ := wordRepo.GetWordCardByID(cardID)
+	// Do not add any word request history — getUsersForWord will return []
+
+	err = worker.processCard(context.Background(), wordCard)
+	if err != nil {
+		t.Fatalf("processCard: %v", err)
+	}
+	cards, _ := trainingCardRepo.GetTrainingCardsByWordCardID(cardID)
+	if len(cards) != 1 {
+		t.Errorf("expected 1 training card when no users for word, got %d", len(cards))
 	}
 }
 
@@ -358,6 +389,79 @@ func TestTrainingWorkerProcessCard_ValidationFailsNoHighModel(t *testing.T) {
 	cards, _ := trainingCardRepo.GetTrainingCardsByWordCardID(cardID)
 	if len(cards) > 0 {
 		t.Errorf("expected no training cards when validation fails, got %d", len(cards))
+	}
+}
+
+func TestTrainingWorker_processCard_NoSensesReturnsError(t *testing.T) {
+	callCount := 0
+	transport := rtFuncTW(func(req *http.Request) (*http.Response, error) {
+		callCount++
+		// First call: fillWordCardData (GenerateResponse) — return valid word info
+		if callCount == 1 {
+			content := `{"input_word":"empty","lemma":"empty","pos":"noun","transcription":"","definition_ru":"пустой"}`
+			resp := ai.ChatResponse{Choices: []ai.Choice{{Message: ai.Message{Content: content}}}}
+			return newJSONHTTPResponseTW(http.StatusOK, resp), nil
+		}
+		// Second call: GenerateTrainingCard — return empty senses to trigger error
+		content := `{"word_en":"empty","lemma":"empty","transcription":"","senses":[]}`
+		resp := ai.ChatResponse{Choices: []ai.Choice{{Message: ai.Message{Content: content}}}}
+		return newJSONHTTPResponseTW(http.StatusOK, resp), nil
+	})
+
+	worker, wordRepo, _, _, _, _, cleanup := newTrainingWorker(t, transport)
+	defer cleanup()
+
+	cardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "empty", Definition: ""})
+	if err != nil {
+		t.Fatalf("UpsertWordCardLemma: %v", err)
+	}
+	wordCard, err := wordRepo.GetWordCardByID(cardID)
+	if err != nil || wordCard == nil {
+		t.Fatalf("GetWordCardByID: %v", err)
+	}
+
+	err = worker.processCard(context.Background(), wordCard)
+	if err == nil {
+		t.Fatal("processCard expected error when LLM returns no senses")
+	}
+	if !strings.Contains(err.Error(), "no senses") {
+		t.Errorf("expected 'no senses' in error, got: %v", err)
+	}
+}
+
+func TestTrainingWorker_processCard_FillWordCardDataErrorContinues(t *testing.T) {
+	callCount := 0
+	transport := rtFuncTW(func(req *http.Request) (*http.Response, error) {
+		callCount++
+		// First call: fillWordCardData (GenerateResponse) — fail
+		if callCount == 1 {
+			return nil, fmt.Errorf("AI service unavailable")
+		}
+		// Second call: GenerateTrainingCard — succeed
+		content := `{"word_en":"go","lemma":"go","transcription":"","senses":[{"pos":"verb","word_ru":"идти","meaning_en":"go","example_en":"","example_ru":"","distractors_ru":["бежать","плыть"],"distractors_en":["to run","to swim"],"hint":""}]}`
+		resp := ai.ChatResponse{Choices: []ai.Choice{{Message: ai.Message{Content: content}}}}
+		return newJSONHTTPResponseTW(http.StatusOK, resp), nil
+	})
+
+	worker, wordRepo, trainingCardRepo, _, _, _, cleanup := newTrainingWorker(t, transport)
+	defer cleanup()
+
+	cardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "go", Definition: ""})
+	if err != nil {
+		t.Fatalf("UpsertWordCardLemma: %v", err)
+	}
+	wordCard, err := wordRepo.GetWordCardByID(cardID)
+	if err != nil || wordCard == nil {
+		t.Fatalf("GetWordCardByID: %v", err)
+	}
+
+	err = worker.processCard(context.Background(), wordCard)
+	if err != nil {
+		t.Fatalf("processCard should succeed despite fillWordCardData error (continue anyway): %v", err)
+	}
+	cards, _ := trainingCardRepo.GetTrainingCardsByWordCardID(cardID)
+	if len(cards) != 1 {
+		t.Errorf("expected 1 training card created after fill error, got %d", len(cards))
 	}
 }
 

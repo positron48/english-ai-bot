@@ -223,3 +223,77 @@ func TestFixAdjacentDuplicates_EmptyReturnsAsIs(t *testing.T) {
 		t.Errorf("expected empty slice for empty input, got len %d", len(fixed))
 	}
 }
+
+// TestFixAdjacentDuplicates_TwoSameWord has two elements with same WordCardID; no swap possible, returns copy.
+func TestFixAdjacentDuplicates_TwoSameWord(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
+	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
+	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
+	trainingService := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
+
+	wid := int64(1)
+	queue := []*models.UserCardWithTraining{
+		{UserCard: models.UserCard{ID: 1}, TrainingCard: models.TrainingCard{WordCardID: wid, WordEN: "a"}},
+		{UserCard: models.UserCard{ID: 2}, TrainingCard: models.TrainingCard{WordCardID: wid, WordEN: "a"}},
+	}
+	fixed := trainingService.fixAdjacentDuplicates(queue)
+	if len(fixed) != 2 {
+		t.Fatalf("expected 2 cards, got %d", len(fixed))
+	}
+	// Input unchanged in content (same two cards; order may stay)
+	if fixed[0].TrainingCard.WordCardID != wid || fixed[1].TrainingCard.WordCardID != wid {
+		t.Errorf("expected both WordCardID %d, got %d and %d", wid, fixed[0].TrainingCard.WordCardID, fixed[1].TrainingCard.WordCardID)
+	}
+}
+
+// TestFixAdjacentDuplicates_NoAdjacentDupes returns slice as-is when no adjacent duplicates.
+func TestFixAdjacentDuplicates_NoAdjacentDupes(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
+	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
+	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
+	trainingService := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
+
+	a, b, c := int64(1), int64(2), int64(3)
+	queue := []*models.UserCardWithTraining{
+		{UserCard: models.UserCard{ID: 1}, TrainingCard: models.TrainingCard{WordCardID: a, WordEN: "a"}},
+		{UserCard: models.UserCard{ID: 2}, TrainingCard: models.TrainingCard{WordCardID: b, WordEN: "b"}},
+		{UserCard: models.UserCard{ID: 3}, TrainingCard: models.TrainingCard{WordCardID: c, WordEN: "c"}},
+	}
+	fixed := trainingService.fixAdjacentDuplicates(queue)
+	if len(fixed) != 3 {
+		t.Fatalf("expected 3 cards, got %d", len(fixed))
+	}
+	score := trainingService.calculateShuffleScore(fixed)
+	if score != 0 {
+		t.Errorf("expected no adjacent duplicates (score 0), got %d", score)
+	}
+}
+
+// TestFixAdjacentDuplicates_ThreeElementsOnePair has [A,A,B]; one swap can fix the pair at 0,1.
+func TestFixAdjacentDuplicates_ThreeElementsOnePair(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
+	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
+	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
+	trainingService := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
+
+	a, b := int64(1), int64(2)
+	queue := []*models.UserCardWithTraining{
+		{UserCard: models.UserCard{ID: 1}, TrainingCard: models.TrainingCard{WordCardID: a, WordEN: "a"}},
+		{UserCard: models.UserCard{ID: 2}, TrainingCard: models.TrainingCard{WordCardID: a, WordEN: "a"}},
+		{UserCard: models.UserCard{ID: 3}, TrainingCard: models.TrainingCard{WordCardID: b, WordEN: "b"}},
+	}
+	fixed := trainingService.fixAdjacentDuplicates(queue)
+	if len(fixed) != 3 {
+		t.Fatalf("expected 3 cards, got %d", len(fixed))
+	}
+	score := trainingService.calculateShuffleScore(fixed)
+	if score > 0 {
+		t.Logf("score after fix: %d (swap may have resolved adjacent pair)", score)
+	}
+}

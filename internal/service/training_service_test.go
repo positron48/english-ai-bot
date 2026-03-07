@@ -256,6 +256,19 @@ func TestTrainingService_FinishSession_WithMasteringRepo_NoReviewEvents(t *testi
 	}
 }
 
+// TestTrainingService_FinishSession_NonExistentSession verifies that finishing a non-existent session
+// does not return an error (UPDATE affects 0 rows but Exec succeeds).
+func TestTrainingService_FinishSession_NonExistentSession(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	_, _, _, _, sessionRepo := setupTrainingServiceTestDB(t)
+	service := NewTrainingService(nil, nil, sessionRepo, nil, logger)
+
+	err := service.FinishSession(999999, 2)
+	if err != nil {
+		t.Errorf("FinishSession(non-existent id) should not error (UPDATE succeeds), got: %v", err)
+	}
+}
+
 func TestTrainingService_UpdateSessionState(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	_, userRepo, _, _, sessionRepo := setupTrainingServiceTestDB(t)

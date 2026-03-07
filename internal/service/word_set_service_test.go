@@ -200,6 +200,24 @@ func TestEnsureWordCardExists_LLMRejectsWord(t *testing.T) {
 	}
 }
 
+func TestEnsureWordCardExists_AIError(t *testing.T) {
+	transport := rtFunc(func(req *http.Request) (*http.Response, error) {
+		return nil, context.DeadlineExceeded
+	})
+
+	svc, _, _, _, _, _, _, cleanup := newWordSetService(t, transport)
+	defer cleanup()
+
+	// Word not in DB so AI is called; transport returns error
+	_, err := svc.EnsureWordCardExists(context.Background(), "newword")
+	if err == nil {
+		t.Fatal("expected error when AI returns error")
+	}
+	if !strings.Contains(err.Error(), "failed to get AI response") && !strings.Contains(err.Error(), "AI") {
+		t.Errorf("expected AI-related error, got: %v", err)
+	}
+}
+
 func TestEnsureTrainingCardsExist(t *testing.T) {
 	transport := rtFunc(func(req *http.Request) (*http.Response, error) {
 		resp := ai.ChatResponse{

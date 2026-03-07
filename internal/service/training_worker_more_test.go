@@ -355,6 +355,27 @@ func TestTrainingWorker_getUsersForWord_MultipleUsers(t *testing.T) {
 	}
 }
 
+// TestTrainingWorker_getUsersForWord_DeduplicateSameUser ensures the same user is returned once
+// when they appear multiple times in word request history.
+func TestTrainingWorker_getUsersForWord_DeduplicateSameUser(t *testing.T) {
+	worker, wordRepo, _, _, userRepo, _, cleanup := newTrainingWorker(t, nil)
+	defer cleanup()
+	u, _ := userRepo.GetOrCreateUser(303)
+	word := "dedupeword"
+	_ = wordRepo.AddWordRequestHistoryWithCard(u.ID, word, nil, &word)
+	_ = wordRepo.AddWordRequestHistoryWithCard(u.ID, word, nil, &word)
+	users, err := worker.getUsersForWord(word)
+	if err != nil {
+		t.Fatalf("getUsersForWord: %v", err)
+	}
+	if len(users) != 1 {
+		t.Errorf("expected 1 user (deduplicated), got %d", len(users))
+	}
+	if len(users) > 0 && users[0].ID != u.ID {
+		t.Errorf("expected user ID %d, got %d", u.ID, users[0].ID)
+	}
+}
+
 // mockTelegramClientWorker captures the last request body for assertions.
 type mockTelegramClientWorker struct {
 	lastBody []byte
