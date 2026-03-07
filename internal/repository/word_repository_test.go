@@ -24,6 +24,17 @@ func TestNewWordRepository(t *testing.T) {
 	}
 }
 
+func TestWordRepository_DB(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := setupWordTestDB(t)
+	repo := NewWordRepository(db, logger)
+
+	got := repo.DB()
+	if got != db {
+		t.Error("DB() should return the same connection passed to NewWordRepository")
+	}
+}
+
 func TestWordRepository_SaveWordCard(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupWordTestDB(t)

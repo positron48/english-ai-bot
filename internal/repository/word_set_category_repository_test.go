@@ -131,6 +131,52 @@ func TestWordSetCategoryRepository_GetCategory(t *testing.T) {
 	})
 }
 
+func TestWordSetCategoryRepository_GetPublishedCategories(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := setupWordSetCategoryTestDB(t)
+
+	repo := NewWordSetCategoryRepository(db, logger)
+
+	t.Run("empty", func(t *testing.T) {
+		cats, err := repo.GetPublishedCategories()
+		if err != nil {
+			t.Fatalf("GetPublishedCategories() error = %v", err)
+		}
+		if len(cats) != 0 {
+			t.Errorf("expected 0 published categories, got %d", len(cats))
+		}
+	})
+
+	t.Run("only published", func(t *testing.T) {
+		// Create unpublished and published
+		unpub := &models.WordSetCategory{Name: "Unpublished", SortOrder: 0, IsPublished: false}
+		_, err := repo.CreateCategory(unpub)
+		if err != nil {
+			t.Fatalf("CreateCategory error: %v", err)
+		}
+		pub := &models.WordSetCategory{Name: "Published", SortOrder: 1, IsPublished: true}
+		id, err := repo.CreateCategory(pub)
+		if err != nil {
+			t.Fatalf("CreateCategory error: %v", err)
+		}
+
+		cats, err := repo.GetPublishedCategories()
+		if err != nil {
+			t.Fatalf("GetPublishedCategories() error = %v", err)
+		}
+		found := false
+		for _, c := range cats {
+			if c.ID == id && c.Name == "Published" {
+				found = true
+				break
+			}
+		}
+		if !found {
+			t.Errorf("expected published category in result, got %v", cats)
+		}
+	})
+}
+
 func TestWordSetCategoryRepository_GetAllCategories(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupWordSetCategoryTestDB(t)

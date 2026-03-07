@@ -421,3 +421,120 @@ func TestUserCardRepository_GetUpcomingCardsByDate(t *testing.T) {
 		t.Errorf("Expected at least 1 upcoming card, got %d", totalCount)
 	}
 }
+
+// Test_nullTimeScanner_parseString covers the parseString method used when scanning time from string/[]byte.
+func Test_nullTimeScanner_parseString(t *testing.T) {
+	tests := []struct {
+		name    string
+		s       string
+		wantErr bool
+	}{
+		{"RFC3339", "2006-01-02T15:04:05Z", false},
+		{"standard", "2006-01-02 15:04:05", false},
+		{"invalid", "not-a-date", true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			var n nullTimeScanner
+			err := n.parseString(tt.s)
+			if (err != nil) != tt.wantErr {
+				t.Fatalf("parseString() error = %v, wantErr %v", err, tt.wantErr)
+			}
+			if !tt.wantErr && !n.Valid {
+				t.Fatal("expected Valid true")
+			}
+		})
+	}
+}
+
+func TestUserCardRepository_GetWordMasteringStats(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDB(t)
+
+	repo := NewUserCardRepository(db, logger)
+	userRepo := NewUserRepository(db, logger)
+	wordRepo := NewWordRepository(db, logger)
+	trainingRepo := NewTrainingCardRepository(db, logger)
+
+	user, _ := userRepo.GetOrCreateUser(12358)
+	wordCard := &models.WordCard{Word: "masterword", Definition: "def"}
+	wordCardID, _ := wordRepo.UpsertWordCardLemma(wordCard)
+	pos := "noun"
+	displayWord := "masterword"
+	tc := &models.TrainingCard{WordCardID: wordCardID, WordEN: "masterword", SenseIndex: 0, WordRU: "мастер", MeaningEN: "master", POS: &pos, DisplayWord: &displayWord}
+	tcID, _ := trainingRepo.CreateTrainingCard(tc)
+
+	now := time.Now()
+	uc := &models.UserCard{UserID: user.ID, TrainingCardID: tcID, Direction: models.DirectionENtoRU, State: models.StateReview, EF: 2.5, Reps: 3, NextDueAt: &now}
+	_, _ = repo.CreateUserCard(uc)
+
+	stats, err := repo.GetWordMasteringStats(user.ID, wordCardID)
+	if err != nil {
+		t.Fatalf("GetWordMasteringStats() error = %v", err)
+	}
+	if stats == nil {
+		t.Fatal("expected non-nil stats")
+	}
+	if stats.TotalCards != 1 || stats.TotalReps != 3 {
+		t.Errorf("expected TotalCards=1 TotalReps=3, got TotalCards=%d TotalReps=%d", stats.TotalCards, stats.TotalReps)
+	}
+
+	// no cards for word -> nil (or empty stats when query returns a row with zeros)
+	statsNil, err := repo.GetWordMasteringStats(user.ID, 99999)
+	if err != nil {
+		t.Fatalf("GetWordMasteringStats(no cards) error = %v", err)
+	}
+	if statsNil != nil && statsNil.TotalCards != 0 {
+		t.Errorf("expected nil or empty stats for unknown word_card_id, got TotalCards=%d", statsNil.TotalCards)
+	}
+}
+
+func TestUserCardRepository_GetWordsEligibleForSpell_GetWordsEligibleForSpellByMastery(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDB(t)
+
+	repo := NewUserCardRepository(db, logger)
+	userRepo := NewUserRepository(db, logger)
+	wordRepo := NewWordRepository(db, logger)
+	trainingRepo := NewTrainingCardRepository(db, logger)
+
+	user, _ := userRepo.GetOrCreateUser(12359)
+	wordCard := &models.WordCard{Word: "spellword", Definition: "def"}
+	wordCardID, _ := wordRepo.UpsertWordCardLemma(wordCard)
+	pos := "verb"
+	displayWord := "spell"
+	tc := &models.TrainingCard{WordCardID: wordCardID, WordEN: "spellword", SenseIndex: 0, WordRU: "писать", MeaningEN: "to spell", POS: &pos, DisplayWord: &displayWord}
+	tcID, _ := trainingRepo.CreateTrainingCard(tc)
+
+	now := time.Now()
+	uc := &models.UserCard{UserID: user.ID, TrainingCardID: tcID, Direction: models.DirectionENtoRU, State: models.StateReview, EF: 2.5, NextDueAt: &now}
+	_, _ = repo.CreateUserCard(uc)
+
+	// Insert mastering_score so word is eligible for minScore 50
+	_, _ = db.Exec("INSERT INTO user_word_mastering (user_id, word_card_id, mastering_score) VALUES ($1, $2, $3) ON CONFLICT (user_id, word_card_id) DO UPDATE SET mastering_score = $3", user.ID, wordCardID, 60)
+
+	words, err := repo.GetWordsEligibleForSpell(user.ID, 10)
+	if err != nil {
+		t.Fatalf("GetWordsEligibleForSpell() error = %v", err)
+	}
+	if len(words) < 1 {
+		t.Errorf("expected at least 1 word eligible for spell, got %d", len(words))
+	}
+
+	wordsByMastery, err := repo.GetWordsEligibleForSpellByMastery(user.ID, 50, 10)
+	if err != nil {
+		t.Fatalf("GetWordsEligibleForSpellByMastery() error = %v", err)
+	}
+	if len(wordsByMastery) < 1 {
+		t.Errorf("expected at least 1 word with mastery >= 50, got %d", len(wordsByMastery))
+	}
+	// minScore clamping
+	_, err = repo.GetWordsEligibleForSpellByMastery(user.ID, -1, 10)
+	if err != nil {
+		t.Fatalf("GetWordsEligibleForSpellByMastery(minScore -1) error = %v", err)
+	}
+	_, err = repo.GetWordsEligibleForSpellByMastery(user.ID, 101, 10)
+	if err != nil {
+		t.Fatalf("GetWordsEligibleForSpellByMastery(minScore 101) error = %v", err)
+	}
+}
