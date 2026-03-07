@@ -6,11 +6,13 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	"tgbot-skeleton/internal/config"
-	"tgbot-skeleton/internal/testutil"
+	"tgbot-skeleton/internal/database"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
+	"tgbot-skeleton/internal/testutil"
 
 	"go.uber.org/zap"
 )
@@ -166,5 +168,77 @@ func TestHandleAccessMe_WrongMethod(t *testing.T) {
 
 	if rr.Code != http.StatusMethodNotAllowed {
 		t.Errorf("handleAccessMe() POST status = %d, want %d", rr.Code, http.StatusMethodNotAllowed)
+	}
+}
+
+// TestHandleAccessMe_PermissionsDBError covers the branch where getUserPermissionsFromDB returns an error:
+// handler still responds 200 with categories from context and empty permissions.
+func TestHandleAccessMe_PermissionsDBError(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	dsn := testutil.SecondPostgresDSN(t)
+	// Second container may need a moment to accept connections
+	time.Sleep(500 * time.Millisecond)
+	var dbWrap *database.DB
+	var err error
+	for i := 0; i < 5; i++ {
+		dbWrap, err = database.NewWithConfig("postgres", "", dsn, logger)
+		if err == nil {
+			break
+		}
+		if i < 4 {
+			time.Sleep(time.Duration(i+1) * 300 * time.Millisecond)
+		}
+	}
+	if dbWrap == nil {
+		t.Skipf("second DB not available (e.g. Docker): %v", err)
+	}
+	conn := dbWrap.GetConnection()
+
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret"},
+	}
+	userRepo := repository.NewUserRepository(conn, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(conn, logger)
+
+	router := NewRouter(logger, cfg, conn, nil, nil, nil, nil)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+
+	u, err := userRepo.GetOrCreateUser(99999)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	categoryID, err := accessCategoryRepo.CreateCategory(&models.UserAccessCategory{Name: "Cat"})
+	if err != nil {
+		t.Fatalf("CreateCategory: %v", err)
+	}
+	_ = accessCategoryRepo.SetCategoryPermissions(categoryID, []string{"words.read_all"})
+	_ = accessCategoryRepo.SetUserCategories(u.ID, []int64{categoryID})
+
+	// Close DB so GetUserPermissions fails; handler should still return 200 with empty permissions
+	_ = dbWrap.Close()
+
+	req := httptest.NewRequest(http.MethodGet, "/api/access/me", nil)
+	ctx := context.WithValue(req.Context(), userIDKey, u.ID)
+	ctx = context.WithValue(ctx, userCategoriesKey, []int64{categoryID})
+	req = req.WithContext(ctx)
+	rr := httptest.NewRecorder()
+	router.handleAccessMe(rr, req)
+
+	if rr.Code != http.StatusOK {
+		t.Errorf("handleAccessMe() status = %d, want %d", rr.Code, http.StatusOK)
+		return
+	}
+	var response struct {
+		Categories  []int64  `json:"categories"`
+		Permissions []string `json:"permissions"`
+	}
+	if err := json.NewDecoder(rr.Body).Decode(&response); err != nil {
+		t.Fatalf("decode response: %v", err)
+	}
+	if len(response.Categories) != 1 || response.Categories[0] != categoryID {
+		t.Errorf("categories = %v, want [%d]", response.Categories, categoryID)
+	}
+	if len(response.Permissions) != 0 {
+		t.Errorf("permissions = %v, want [] (empty on DB error)", response.Permissions)
 	}
 }

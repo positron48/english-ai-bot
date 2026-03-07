@@ -585,6 +585,97 @@ func TestValidateTrainingCardResponse_EmptySenses(t *testing.T) {
 	}
 }
 
+// TestValidateTrainingCardResponse_ErrorMessageTruncation ensures error message is capped at 1000 chars
+func TestValidateTrainingCardResponse_ErrorMessageTruncation(t *testing.T) {
+	distractorsEN := make([]string, 0, 30)
+	for i := 0; i < 30; i++ {
+		distractorsEN = append(distractorsEN, "кириллица") // R1: Cyrillic in each
+	}
+	wordCard := &models.WordCard{Word: "test"}
+	resp := &models.TrainingCardResponse{
+		WordEN: "test",
+		Senses: []models.TrainingCardSense{
+			{
+				POS:           "noun",
+				WordRU:        "тест",
+				DistractorsEN: distractorsEN,
+				DistractorsRU: []string{"а", "б", "в"},
+			},
+		},
+	}
+
+	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
+	if errorMsg == "" {
+		t.Fatal("Expected validation errors, got empty")
+	}
+	if len(errorMsg) > 1003 {
+		t.Errorf("Expected error message truncated to at most 1000+ellipsis, got length %d: %s", len(errorMsg), errorMsg[:80])
+	}
+	if !strings.HasPrefix(errorMsg, "validation_failed:") {
+		t.Errorf("Expected prefix validation_failed:, got: %s", errorMsg[:50])
+	}
+	if !strings.HasSuffix(errorMsg, "...") {
+		t.Errorf("Expected truncated message to end with ..., got: ...%s", errorMsg[len(errorMsg)-10:])
+	}
+}
+
+// TestValidateTrainingCardResponse_R5_VerbDiffersOnlyByFirstChar covers verb + differsOnlyByFirstChar (valid)
+func TestValidateTrainingCardResponse_R5_VerbDiffersOnlyByFirstChar(t *testing.T) {
+	wordCard := &models.WordCard{
+		Word: "million",
+		POS:  stringPtr("verb"),
+	}
+	resp := &models.TrainingCardResponse{
+		WordEN: "million",
+		Senses: []models.TrainingCardSense{
+			{
+				POS:           "verb",
+				WordRU:        "миллион",
+				DistractorsEN: []string{"to billion", "to thousand", "to hundred"},
+				DistractorsRU: []string{"миллиард", "тысяча", "сотня"},
+			},
+		},
+	}
+
+	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
+	if errorMsg != "" {
+		t.Errorf("Expected no validation error for verb distractor differing only by first char (to billion vs million), got: %s", errorMsg)
+	}
+}
+
+// TestValidateTrainingCardResponse_SecondSenseError covers senseIdx=1 in error messages
+func TestValidateTrainingCardResponse_SecondSenseError(t *testing.T) {
+	wordCard := &models.WordCard{Word: "test"}
+	resp := &models.TrainingCardResponse{
+		WordEN: "test",
+		Senses: []models.TrainingCardSense{
+			{
+				POS:           "noun",
+				WordRU:        "тест",
+				DistractorsEN: []string{"exam", "quiz", "check"},
+				DistractorsRU: []string{"экзамен", "викторина", "проверка"},
+			},
+			{
+				POS:           "noun",
+				WordRU:        "испытание",
+				DistractorsEN: []string{"test", "quiz", "check"}, // second sense: exact match with lemma
+				DistractorsRU: []string{"экзамен", "викторина", "проверка"},
+			},
+		},
+	}
+
+	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
+	if errorMsg == "" {
+		t.Fatal("Expected validation error in second sense, got empty")
+	}
+	if !strings.Contains(errorMsg, "sense=1") {
+		t.Errorf("Expected error to mention sense=1, got: %s", errorMsg)
+	}
+	if !strings.Contains(errorMsg, "R5") {
+		t.Errorf("Expected error to mention R5, got: %s", errorMsg)
+	}
+}
+
 func TestTruncate(t *testing.T) {
 	tests := []struct {
 		name   string
@@ -649,11 +740,13 @@ func TestDiffersOnlyByFirstChar(t *testing.T) {
 		want bool
 	}{
 		{"same length, first diff, rest same", "million", "billion", true},
+		{"two runes, first diff only", "ab", "cb", true},
 		{"different length", "ab", "a", false},
 		{"same first char", "abc", "abd", false},
 		{"length 1", "a", "b", false},
 		{"length 0", "", "", false},
 		{"second char differs", "abc", "axc", false},
+		{"first diff but later char differs", "abc", "xbd", false}, // first differs, third differs -> false from loop
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
