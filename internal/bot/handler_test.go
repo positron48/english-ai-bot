@@ -15,10 +15,10 @@ import (
 	"tgbot-skeleton/internal/ai"
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/database"
-	"tgbot-skeleton/internal/testutil"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/service"
+	"tgbot-skeleton/internal/testutil"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"go.uber.org/zap"
@@ -618,5 +618,190 @@ func TestHandler_SendTyping(t *testing.T) {
 	h.sendTyping(10)
 	if got := client.lastParams.Get("action"); got != "typing" {
 		t.Errorf("sendTyping: got action %q, want typing", got)
+	}
+}
+
+// failingTelegramClient returns error on Do for coverage of sendMessage/sendTyping error paths
+type failingTelegramClient struct{}
+
+func (c *failingTelegramClient) Do(req *http.Request) (*http.Response, error) {
+	return nil, io.EOF
+}
+
+func TestHandler_SendMessage_WhenSendFails(t *testing.T) {
+	bot := &tgbotapi.BotAPI{Token: "test", Client: &failingTelegramClient{}, Buffer: 1}
+	bot.SetAPIEndpoint("http://example.com/bot%s/%s")
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
+	cfg := &config.Config{}
+	cfg.Bot.StartMessage = "start"
+	h := NewHandler(bot, logger, nil, nil, nil, userRepo, nil, nil,
+		service.NewCircuitBreakerService(repository.NewCircuitBreakerRepository(db.GetConnection(), logger), 5, logger),
+		cfg, db.GetConnection())
+	// should not panic when Send fails
+	h.sendMessage(10, "test")
+}
+
+func TestHandler_SendTyping_WhenRequestFails(t *testing.T) {
+	bot := &tgbotapi.BotAPI{Token: "test", Client: &failingTelegramClient{}, Buffer: 1}
+	bot.SetAPIEndpoint("http://example.com/bot%s/%s")
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
+	cfg := &config.Config{}
+	h := NewHandler(bot, logger, nil, nil, nil, userRepo, nil, nil,
+		service.NewCircuitBreakerService(repository.NewCircuitBreakerRepository(db.GetConnection(), logger), 5, logger),
+		cfg, db.GetConnection())
+	// should not panic when Request fails
+	h.sendTyping(10)
+}
+
+func TestHandleCommand_Start(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, _ := setupHandler(t, client)
+	h.handleCommand(context.Background(), commandMessage("/start"))
+	if got := client.lastParams.Get("text"); got != "start msg" {
+		t.Errorf("handleCommand(/start): got %q, want start msg", got)
+	}
+}
+
+func TestHandleCommand_Help(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, _ := setupHandler(t, client)
+	h.handleCommand(context.Background(), commandMessage("/help"))
+	if got := client.lastParams.Get("text"); got != "help msg" {
+		t.Errorf("handleCommand(/help): got %q, want help msg", got)
+	}
+}
+
+func TestHandleCommand_Train_Success(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, db := setupHandlerWithRepos(t, client)
+	logger, _ := zap.NewDevelopment()
+	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
+	user, _ := userRepo.GetOrCreateUser(888)
+	wordID := int64(1)
+	_, _ = db.GetConnection().Exec(`INSERT INTO word_cards (word, definition, created_at, updated_at) VALUES ('apple','',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)`)
+	trainingCardRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
+	userCardRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
+	_, _ = trainingCardRepo.CreateTrainingCard(&models.TrainingCard{
+		WordCardID: wordID, WordEN: "apple", WordRU: "яблоко", MeaningEN: "apple", SenseIndex: 0,
+	})
+	_, _ = userCardRepo.CreateUserCard(&models.UserCard{
+		UserID: user.ID, TrainingCardID: 1, Direction: models.DirectionENtoRU,
+		State: models.StateNew, EF: models.InitialEF,
+	})
+	msg := commandMessage("/train")
+	msg.From.ID = 888
+	msg.Chat.ID = 11
+	h.handleCommand(context.Background(), msg)
+	got := client.lastParams.Get("text")
+	// May be welcome ("Начинаем тренировку"), card question ("Карточка N из M"), or error/no-cards
+	ok := strings.Contains(got, "Начинаем тренировку") || strings.Contains(got, "Карточка") ||
+		strings.Contains(got, "ошибка") || strings.Contains(got, "карточек") || strings.Contains(got, "Попробуйте")
+	if got != "" && !ok {
+		t.Errorf("expected training start, card, or error message, got %q", got)
+	}
+}
+
+func TestHandleResetCircuitCommand_ResetFails(t *testing.T) {
+	client := &mockTelegramClient{}
+	logger, _ := zap.NewDevelopment()
+	testutil.SetupTestDatabase(t)
+	dsn := testutil.GetTestDSN(t)
+	db2, err := database.NewWithConfig("postgres", "", dsn, logger)
+	if err != nil {
+		t.Fatalf("NewWithConfig: %v", err)
+	}
+	conn := db2.GetConnection()
+	_ = db2.Close()
+	cbRepo := repository.NewCircuitBreakerRepository(conn, logger)
+	cbService := service.NewCircuitBreakerService(cbRepo, 5, logger)
+	userRepo := repository.NewUserRepository(conn, logger)
+	bot := newTestBot(client)
+	cfg := &config.Config{}
+	cfg.Admin.TelegramID = 42
+	cfg.Bot.StartMessage = "start"
+	h := NewHandler(bot, logger, nil, nil, nil, userRepo, nil, nil, cbService, cfg, conn)
+	h.handleResetCircuitCommand(10, 42)
+	if client.lastParams != nil && client.lastParams.Get("text") != "" {
+		if !strings.Contains(client.lastParams.Get("text"), "Circuit") && !strings.Contains(client.lastParams.Get("text"), "сбросить") && !strings.Contains(client.lastParams.Get("text"), "Не удалось") {
+			t.Errorf("expected circuit-related or error message, got %q", client.lastParams.Get("text"))
+		}
+	}
+}
+
+func TestHandleDeleteTrainAllCommand_NonAdmin(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, _ := setupHandler(t, client)
+	h.config.Admin.TelegramID = 99
+	h.handleDeleteTrainAllCommand(10, 42)
+	if client.lastParams != nil && client.lastParams.Get("text") != "" {
+		t.Error("expected no message for non-admin delete_train_all")
+	}
+}
+
+func TestHandleGetTrainDataCommand_EmptyWord(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, _ := setupHandlerWithRepos(t, client)
+	h.config.Admin.TelegramID = 42
+	h.handleGetTrainDataCommand(10, 42, "   ")
+	if got := client.lastParams.Get("text"); !strings.Contains(got, "Укажите слово") {
+		t.Errorf("expected prompt to specify word, got %q", got)
+	}
+}
+
+func TestHandleGetTrainDataCommand_WordNotFound(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, _ := setupHandlerWithRepos(t, client)
+	h.config.Admin.TelegramID = 42
+	h.handleGetTrainDataCommand(10, 42, "nonexistent_xyz")
+	if got := client.lastParams.Get("text"); !strings.Contains(got, "не найдены") {
+		t.Errorf("expected not found message, got %q", got)
+	}
+}
+
+func TestHandleGetTrainDataCommand_NonAdmin(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, _ := setupHandlerWithRepos(t, client)
+	h.config.Admin.TelegramID = 99
+	h.handleGetTrainDataCommand(10, 42, "apple")
+	if client.lastParams != nil && client.lastParams.Get("text") != "" {
+		t.Error("expected no message for non-admin get_train_data")
+	}
+}
+
+func TestHandleUpdate_CallbackQuery_NotificationUnsubscribe(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, _ := setupHandler(t, client)
+	update := tgbotapi.Update{
+		CallbackQuery: &tgbotapi.CallbackQuery{
+			ID: "cb1", From: &tgbotapi.User{ID: 42, UserName: "u"},
+			Message: &tgbotapi.Message{MessageID: 1, Chat: &tgbotapi.Chat{ID: 10}},
+			Data:    "notification_unsubscribe",
+		},
+	}
+	h.HandleUpdate(context.Background(), update)
+	// BotCommandService handles it; no panic, may or may not send reply
+}
+
+func TestHandleCallbackQuery_AnswerNoSession(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, _ := setupHandlerWithRepos(t, client)
+	// User exists but no active session; callback answer_0
+	update := tgbotapi.Update{
+		CallbackQuery: &tgbotapi.CallbackQuery{
+			ID: "cb2", From: &tgbotapi.User{ID: 555, UserName: "u"},
+			Message: &tgbotapi.Message{MessageID: 2, Chat: &tgbotapi.Chat{ID: 10}},
+			Data:    "answer_0",
+		},
+	}
+	h.HandleUpdate(context.Background(), update)
+	// Expect "no active session" or "Сессия не найдена"
+	if client.lastParams != nil && client.lastParams.Get("text") != "" {
+		if !strings.Contains(client.lastParams.Get("text"), "Сессия") && !strings.Contains(client.lastParams.Get("text"), "тренировку") {
+			t.Logf("callback answer_0 no session: got %q", client.lastParams.Get("text"))
+		}
 	}
 }

@@ -238,6 +238,62 @@ func TestHandleVocab_WithPagination(t *testing.T) {
 	}
 }
 
+func TestHandleVocab_WithMasteryLevel(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo := setupVocabTestDB(t)
+	user, err := userRepo.GetOrCreateUser(55556)
+	if err != nil {
+		t.Fatalf("Failed to create user: %v", err)
+	}
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{
+			JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720,
+		},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("GET", "/api/vocab?mastery_level=learning", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocab(w, req)
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d", w.Code)
+	}
+}
+
+func TestHandleVocab_WithSortParams(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo := setupVocabTestDB(t)
+	user, err := userRepo.GetOrCreateUser(55557)
+	if err != nil {
+		t.Fatalf("Failed to create user: %v", err)
+	}
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{
+			JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720,
+		},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("GET", "/api/vocab?sort_by=last_review&sort_order=desc&limit=50", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocab(w, req)
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d", w.Code)
+	}
+}
+
 func TestHandleVocab_GroupByLemma(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo := setupVocabTestDB(t)

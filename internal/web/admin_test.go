@@ -435,6 +435,59 @@ func TestHandleAdminWords_Get(t *testing.T) {
 	}
 }
 
+func TestHandleAdminWords_WithQueryParams(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+
+	adminTelegramID := int64(123456789)
+	adminUser, err := userRepo.GetOrCreateUser(adminTelegramID)
+	if err != nil {
+		t.Fatalf("Failed to create admin user: %v", err)
+	}
+
+	wordRepo := repository.NewWordRepository(db, logger)
+	_ = wordRepo.SaveWordCard("queryword", "def")
+
+	cfg := &config.Config{
+		Admin: config.AdminConfig{TelegramID: adminTelegramID},
+		WebApp: config.WebAppConfig{
+			JWTSecret: "test-secret",
+			JWTTTLHours: 24,
+			RefreshTTLHours: 720,
+		},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("GET", "/api/admin/words?limit=10&offset=0&search=query", nil)
+	ctx := context.WithValue(req.Context(), userIDKey, adminUser.ID)
+	ctx = context.WithValue(ctx, userRoleKey, "admin")
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+
+	adminHandler := router.RequireAdmin(router.handleAdminWords)
+	adminHandler(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+	var response map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
+		t.Fatalf("Decode: %v", err)
+	}
+	if _, hasWords := response["words"]; !hasWords {
+		t.Error("Response should contain words key")
+	}
+	if _, hasPagination := response["pagination"]; !hasPagination {
+		t.Error("Response should contain pagination key")
+	}
+}
+
 func TestHandleAdminWord_Put(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo, cbService := setupAdminTestDB(t)

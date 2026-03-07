@@ -217,3 +217,62 @@ func TestHandleAdminOrphanedUserCard_NotFound(t *testing.T) {
 		t.Errorf("Expected status 404, got %d", rr.Code)
 	}
 }
+
+func TestHandleAdminOrphanedCard_DeleteSuccess(t *testing.T) {
+	router, db, cleanup := setupOrphanedTest(t)
+	defer cleanup()
+
+	conn := db.GetConnection()
+	_, err := conn.Exec(`INSERT INTO word_cards (id, word, definition) VALUES (9001, 'orphanword', 'def') ON CONFLICT (id) DO NOTHING`)
+	if err != nil {
+		t.Fatalf("Setup word_cards: %v", err)
+	}
+	_, err = conn.Exec(`INSERT INTO training_cards (id, word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (9001, 9001, 'orphanword', 0, 'слово', 'meaning') ON CONFLICT (id) DO NOTHING`)
+	if err != nil {
+		t.Fatalf("Setup training_cards: %v", err)
+	}
+
+	req := httptest.NewRequest(http.MethodDelete, "/api/admin/orphaned-cards/9001", nil)
+	req = setUserIDInContext(req, 12345)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminOrphanedCard(rr, req)
+
+	if rr.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", rr.Code, rr.Body.String())
+	}
+}
+
+func TestHandleAdminOrphanedUserCard_DeleteSuccess(t *testing.T) {
+	router, db, cleanup := setupOrphanedTest(t)
+	defer cleanup()
+
+	conn := db.GetConnection()
+	_, err := conn.Exec(`INSERT INTO word_cards (id, word, definition) VALUES (9002, 'ucword', 'def') ON CONFLICT (id) DO NOTHING`)
+	if err != nil {
+		t.Fatalf("Setup word_cards: %v", err)
+	}
+	_, err = conn.Exec(`INSERT INTO training_cards (id, word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (9002, 9002, 'ucword', 0, 'слово', 'meaning') ON CONFLICT (id) DO NOTHING`)
+	if err != nil {
+		t.Fatalf("Setup training_cards: %v", err)
+	}
+	userRepo := repository.NewUserRepository(conn, router.logger)
+	u, err := userRepo.GetOrCreateUser(12345)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	_, err = conn.Exec(`INSERT INTO user_cards (id, user_id, training_card_id, direction, state, ef) VALUES (9002, $1, 9002, 'en_ru', 'new', 2.5)`, u.ID)
+	if err != nil {
+		t.Fatalf("Setup user_cards: %v", err)
+	}
+
+	req := httptest.NewRequest(http.MethodDelete, "/api/admin/orphaned-user-cards/9002", nil)
+	req = setUserIDInContext(req, 12345)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminOrphanedUserCard(rr, req)
+
+	if rr.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", rr.Code, rr.Body.String())
+	}
+}

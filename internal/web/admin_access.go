@@ -57,7 +57,8 @@ func (r *Router) handleAdminAccessCategories(w http.ResponseWriter, req *http.Re
 		id, err := r.accessCategoryRepo.CreateCategory(&category)
 		if err != nil {
 			r.logger.Error("failed to create access category", zap.Error(err))
-			if strings.Contains(err.Error(), "UNIQUE constraint") {
+			errLower := strings.ToLower(err.Error())
+			if strings.Contains(err.Error(), "UNIQUE constraint") || strings.Contains(errLower, "unique constraint") || strings.Contains(errLower, "duplicate key") {
 				http.Error(w, "Category with this name already exists", http.StatusConflict)
 				return
 			}

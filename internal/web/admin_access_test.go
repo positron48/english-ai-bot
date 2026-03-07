@@ -193,6 +193,46 @@ func TestHandleAdminAccessCategories_Post(t *testing.T) {
 	}
 }
 
+func TestHandleAdminAccessCategories_Post_EmptyName(t *testing.T) {
+	router, _, _, adminUserID, cleanup := setupAdminAccessTest(t)
+	defer cleanup()
+
+	body, _ := json.Marshal(map[string]interface{}{"name": ""})
+	req := httptest.NewRequest("POST", "/api/admin/access/categories", bytes.NewReader(body))
+	req.Header.Set("Content-Type", "application/json")
+	req = setAdminContext(req, adminUserID)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminAccessCategories(rr, req)
+
+	if rr.Code != http.StatusBadRequest {
+		t.Errorf("Expected status 400, got %d: %s", rr.Code, rr.Body.String())
+	}
+}
+
+func TestHandleAdminAccessCategories_Post_DuplicateName(t *testing.T) {
+	router, db, logger, adminUserID, cleanup := setupAdminAccessTest(t)
+	defer cleanup()
+
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db.GetConnection(), logger)
+	_, err := accessCategoryRepo.CreateCategory(&models.UserAccessCategory{Name: "Unique Cat"})
+	if err != nil {
+		t.Fatalf("Create category: %v", err)
+	}
+
+	body, _ := json.Marshal(map[string]interface{}{"name": "Unique Cat"})
+	req := httptest.NewRequest("POST", "/api/admin/access/categories", bytes.NewReader(body))
+	req.Header.Set("Content-Type", "application/json")
+	req = setAdminContext(req, adminUserID)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminAccessCategories(rr, req)
+
+	if rr.Code != http.StatusConflict {
+		t.Errorf("Expected status 409, got %d: %s", rr.Code, rr.Body.String())
+	}
+}
+
 func TestHandleAdminAccessCategory_Get(t *testing.T) {
 	router, db, _, adminUserID, cleanup := setupAdminAccessTest(t)
 	defer cleanup()

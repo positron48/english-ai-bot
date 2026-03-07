@@ -258,3 +258,43 @@ func TestSetupWebappRoutes_NoPanic(t *testing.T) {
 	router.setupWebappRoutes()
 	// If we get here without panic, the test passes
 }
+
+// TestSetupDevProxy_RedirectsToVite verifies that /app and /app/ redirect to Vite dev server URL.
+func TestSetupDevProxy_RedirectsToVite(t *testing.T) {
+	logger := zap.NewNop()
+	viteURL := "http://localhost:5173"
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{
+			ViteDevServerURL: viteURL,
+		},
+	}
+	router := &Router{
+		mux:    http.NewServeMux(),
+		logger: logger,
+		config: cfg,
+	}
+	router.setupDevProxy()
+
+	tests := []struct {
+		path     string
+		wantLoc  string
+	}{
+		{"/app", "http://localhost:5173/app/"},
+		{"/app/", "http://localhost:5173/app/"},
+		{"/app/dashboard", "http://localhost:5173/app/dashboard"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.path, func(t *testing.T) {
+			req := httptest.NewRequest("GET", tt.path, nil)
+			w := httptest.NewRecorder()
+			router.mux.ServeHTTP(w, req)
+			if w.Code != http.StatusTemporaryRedirect {
+				t.Errorf("path %s: expected 307, got %d", tt.path, w.Code)
+			}
+			loc := w.Header().Get("Location")
+			if loc != tt.wantLoc {
+				t.Errorf("path %s: Location = %q, want %q", tt.path, loc, tt.wantLoc)
+			}
+		})
+	}
+}
