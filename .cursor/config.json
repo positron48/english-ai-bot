@@ -1,0 +1,7 @@
+{
+  "testing": {
+    "checkCommand": "make check",
+    "coverageProfile": "coverage.out",
+    "coverageMinPercent": 50
+  }
+}

@@ -278,3 +278,138 @@ func TestTrainingWorkerProcessCard_SchedulesPronunciationByCanonicalWord(t *test
 	default:
 	}
 }
+
+func TestTrainingWorkerProcessCard_LLMReturnsError(t *testing.T) {
+	transport := rtFuncTW(func(req *http.Request) (*http.Response, error) {
+		// LLM explicitly rejects the word
+		content := `{"error": "not a valid English word", "word_en": "xyz"}`
+		resp := ai.ChatResponse{
+			Choices: []ai.Choice{{Message: ai.Message{Content: content}}},
+		}
+		return newJSONHTTPResponseTW(http.StatusOK, resp), nil
+	})
+
+	worker, wordRepo, _, _, _, db, cleanup := newTrainingWorker(t, transport)
+	defer cleanup()
+
+	cardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "xyz", Definition: ""})
+	if err != nil {
+		t.Fatalf("UpsertWordCardLemma error: %v", err)
+	}
+	wordCard, err := wordRepo.GetWordCardByID(cardID)
+	if err != nil || wordCard == nil {
+		t.Fatalf("GetWordCardByID: %v", err)
+	}
+
+	err = worker.processCard(context.Background(), wordCard)
+	if err != nil {
+		t.Fatalf("processCard should return nil when LLM rejects word, got: %v", err)
+	}
+
+	var processingError string
+	err = db.GetConnection().QueryRow(
+		`SELECT COALESCE(processing_error, '') FROM word_cards WHERE id = $1`, cardID,
+	).Scan(&processingError)
+	if err != nil {
+		t.Fatalf("query processing_error: %v", err)
+	}
+	if processingError != "not a valid English word" {
+		t.Errorf("expected processing_error to be set, got %q", processingError)
+	}
+}
+
+func TestTrainingWorkerProcessCard_ValidationFailsNoHighModel(t *testing.T) {
+	// distractors_en with Cyrillic triggers R1 validation error
+	transport := rtFuncTW(func(req *http.Request) (*http.Response, error) {
+		content := `{"word_en":"run","lemma":"run","transcription":"","senses":[{"pos":"verb","word_ru":"бежать","meaning_en":"run","example_en":"","example_ru":"","distractors_ru":["идти","плыть"],"distractors_en":["бежать","to walk"],"hint":""}]}`
+		resp := ai.ChatResponse{
+			Choices: []ai.Choice{{Message: ai.Message{Content: content}}},
+		}
+		return newJSONHTTPResponseTW(http.StatusOK, resp), nil
+	})
+
+	worker, wordRepo, trainingCardRepo, _, _, db, cleanup := newTrainingWorker(t, transport)
+	defer cleanup()
+	worker.modelHigh = "" // no high model
+
+	pos := "verb"
+	cardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "run", Definition: "", POS: &pos})
+	if err != nil {
+		t.Fatalf("UpsertWordCardLemma error: %v", err)
+	}
+	wordCard, err := wordRepo.GetWordCardByID(cardID)
+	if err != nil || wordCard == nil {
+		t.Fatalf("GetWordCardByID: %v", err)
+	}
+
+	err = worker.processCard(context.Background(), wordCard)
+	if err != nil {
+		t.Fatalf("processCard should return nil on validation failure (no circuit breaker), got: %v", err)
+	}
+
+	var processingError string
+	_ = db.GetConnection().QueryRow(
+		`SELECT COALESCE(processing_error, '') FROM word_cards WHERE id = $1`, cardID,
+	).Scan(&processingError)
+	if processingError == "" {
+		t.Error("expected processing_error to be set after validation failure")
+	}
+
+	cards, _ := trainingCardRepo.GetTrainingCardsByWordCardID(cardID)
+	if len(cards) > 0 {
+		t.Errorf("expected no training cards when validation fails, got %d", len(cards))
+	}
+}
+
+func TestTrainingWorkerProcessCard_ValidationFailsHighModelSucceeds(t *testing.T) {
+	callCount := 0
+	transport := rtFuncTW(func(req *http.Request) (*http.Response, error) {
+		callCount++
+		// Call 1: fillWordCardData (GenerateResponse)
+		// Call 2: GenerateTrainingCard default model — invalid (Cyrillic in distractors_en)
+		// Call 3: GenerateTrainingCard high model — valid
+		if callCount == 1 {
+			content := `{"input_word":"jump","lemma":"jump","pos":"verb","transcription":"dʒʌmp","definition_ru":"прыгать"}`
+			resp := ai.ChatResponse{Choices: []ai.Choice{{Message: ai.Message{Content: content}}}}
+			return newJSONHTTPResponseTW(http.StatusOK, resp), nil
+		}
+		if callCount == 2 {
+			content := `{"word_en":"jump","lemma":"jump","transcription":"","senses":[{"pos":"verb","word_ru":"прыгать","meaning_en":"jump","example_en":"","example_ru":"","distractors_ru":["бежать","идти"],"distractors_en":["прыгать","to run"],"hint":""}]}`
+			resp := ai.ChatResponse{Choices: []ai.Choice{{Message: ai.Message{Content: content}}}}
+			return newJSONHTTPResponseTW(http.StatusOK, resp), nil
+		}
+		content := `{"word_en":"jump","lemma":"jump","transcription":"dʒʌmp","senses":[{"pos":"verb","display_word":"to jump","word_ru":"прыгать","meaning_en":"jump","example_en":"","example_ru":"","distractors_ru":["бежать","идти"],"distractors_en":["to run","to walk"],"hint":""}]}`
+		resp := ai.ChatResponse{Choices: []ai.Choice{{Message: ai.Message{Content: content}}}}
+		return newJSONHTTPResponseTW(http.StatusOK, resp), nil
+	})
+
+	worker, wordRepo, trainingCardRepo, _, _, _, cleanup := newTrainingWorker(t, transport)
+	defer cleanup()
+	worker.modelHigh = "high-model"
+
+	pos := "verb"
+	cardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "jump", Definition: "", POS: &pos})
+	if err != nil {
+		t.Fatalf("UpsertWordCardLemma error: %v", err)
+	}
+	wordCard, err := wordRepo.GetWordCardByID(cardID)
+	if err != nil || wordCard == nil {
+		t.Fatalf("GetWordCardByID: %v", err)
+	}
+
+	err = worker.processCard(context.Background(), wordCard)
+	if err != nil {
+		t.Fatalf("processCard error: %v", err)
+	}
+
+	if callCount != 3 {
+		t.Errorf("expected 3 LLM calls (fill + default + high model), got %d", callCount)
+	}
+	cards, err := trainingCardRepo.GetTrainingCardsByWordCardID(cardID)
+	if err != nil {
+		t.Fatalf("GetTrainingCardsByWordCardID: %v", err)
+	}
+	if len(cards) != 1 {
+		t.Errorf("expected 1 training card from high model, got %d", len(cards))
+	}
+}

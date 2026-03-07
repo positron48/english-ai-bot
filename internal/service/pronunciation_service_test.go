@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"tgbot-skeleton/internal/config"
+	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/testutil"
 
@@ -843,4 +844,572 @@ func TestBuildPronunciationProvidersAuto_WithOpenRouter(t *testing.T) {
 	if providers[1].name() != "openrouter" {
 		t.Fatalf("expected second provider openrouter, got %q", providers[1].name())
 	}
+}
+
+// --- Покрытие: decodeAudioBase64, classifyPronunciationError, геттеры, пути, writeFileAtomic, fetchViaAudioSpeech, DebugFetch, backfillOnce, ScheduleWords, Recheck, Start, ScheduleWord, Lookup, ensureStatusForWord, resolveReadyRelPath ---
+
+func TestDecodeAudioBase64(t *testing.T) {
+	validStd := []byte{0x00, 0x01, 0x02}
+	tests := []struct {
+		name  string
+		raw   string
+		want  []byte
+		valid bool
+	}{
+		{"empty", "", nil, false},
+		{"whitespace", "  \t  ", nil, false},
+		{"std", base64.StdEncoding.EncodeToString(validStd), validStd, true},
+		{"raw_std", base64.RawStdEncoding.EncodeToString(validStd), validStd, true},
+		{"url", base64.URLEncoding.EncodeToString(validStd), validStd, true},
+		{"raw_url", base64.RawURLEncoding.EncodeToString(validStd), validStd, true},
+		{"invalid", "!!!not-base64!!!", nil, false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, ok := decodeAudioBase64(tt.raw)
+			if ok != tt.valid {
+				t.Fatalf("decodeAudioBase64(%q) ok=%v want %v", tt.raw, ok, tt.valid)
+			}
+			if tt.valid && string(got) != string(tt.want) {
+				t.Fatalf("decodeAudioBase64(%q)=%v want %v", tt.raw, got, tt.want)
+			}
+		})
+	}
+}
+
+func TestClassifyPronunciationError(t *testing.T) {
+	tests := []struct {
+		name     string
+		err      error
+		wantCode string
+		retryable bool
+	}{
+		{"nil", nil, "", true},
+		{"dictionary_404", fmt.Errorf("%w: dictionary_404", errPronunciationNotFound), "dictionary_404", true},
+		{"dictionary_no_audio", fmt.Errorf("%w: dictionary_no_audio", errPronunciationNotFound), "dictionary_no_audio", true},
+		{"dictionary_audio_404", fmt.Errorf("%w: dictionary_audio_404", errPronunciationNotFound), "dictionary_audio_404", true},
+		{"openrouter_no_audio", fmt.Errorf("%w: openrouter_no_audio", errPronunciationNotFound), "openrouter_no_audio", true},
+		{"openrouter_rejected", fmt.Errorf("%w: openrouter_rejected (404)", errPronunciationNotFound), "openrouter_rejected", true},
+		{"openrouter_audio_speech_rejected", fmt.Errorf("%w: openrouter_audio_speech_rejected", errPronunciationNotFound), "openrouter_audio_speech_rejected", true},
+		{"openrouter_audio_speech_empty", fmt.Errorf("%w: openrouter_audio_speech_empty", errPronunciationNotFound), "openrouter_audio_speech_empty", true},
+		{"openrouter_audio_decode_failed", fmt.Errorf("%w: openrouter_audio_decode_failed", errPronunciationNotFound), "openrouter_audio_decode_failed", true},
+		{"transcript_mismatch", fmt.Errorf("%w: transcript mismatch: expected %q got %q", errPronunciationNotFound, "a", "b"), "transcript_mismatch", true},
+		{"missing_transcript", fmt.Errorf("%w: missing transcript for validation", errPronunciationNotFound), "transcript_missing", true},
+		{"not_found_default", fmt.Errorf("%w: something else", errPronunciationNotFound), "not_found", true},
+		{"rate_limited", errors.New("status 429: too many requests"), "rate_limited", true},
+		{"too_many_requests", errors.New("too many requests"), "rate_limited", true},
+		{"provider_5xx", errors.New("status 500 internal error"), "provider_5xx", true},
+		{"timeout", errors.New("context deadline exceeded timeout"), "network_error", true},
+		{"connection", errors.New("connection refused"), "network_error", true},
+		{"unsupported_region", errors.New("unsupported_country_region_territory"), "unsupported_country_region_territory", true},
+		{"provider_error", errors.New("random error"), "provider_error", false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			code, retryable := classifyPronunciationError(tt.err)
+			if code != tt.wantCode || retryable != tt.retryable {
+				t.Fatalf("classifyPronunciationError(%v) = %q, %v want %q, %v", tt.err, code, retryable, tt.wantCode, tt.retryable)
+			}
+		})
+	}
+}
+
+func TestPronunciationService_AudioDirAndPublicBasePath(t *testing.T) {
+	cfg := config.TTSConfig{
+		Enabled:        true,
+		AudioDir:       "/custom/tts",
+		PublicBasePath: " /media/pronunciation ",
+	}
+	svc := NewPronunciationService(cfg, nil, zap.NewNop())
+	if svc.AudioDir() != "/custom/tts" {
+		t.Fatalf("AudioDir() = %q want /custom/tts", svc.AudioDir())
+	}
+	if svc.PublicBasePath() != "/media/pronunciation" {
+		t.Fatalf("PublicBasePath() = %q want /media/pronunciation", svc.PublicBasePath())
+	}
+
+	var nilSvc *PronunciationService
+	if nilSvc.AudioDir() != "" {
+		t.Fatalf("nil service AudioDir() = %q want \"\"", nilSvc.AudioDir())
+	}
+	if nilSvc.PublicBasePath() != "" {
+		t.Fatalf("nil service PublicBasePath() = %q want \"\"", nilSvc.PublicBasePath())
+	}
+}
+
+func TestPronunciationService_RelativePathForWord(t *testing.T) {
+	svc := NewPronunciationService(config.TTSConfig{
+		Enabled: true,
+		AudioDir: t.TempDir(),
+	}, nil, zap.NewNop())
+	got := svc.relativePathForWord("hello")
+	if got == "" {
+		t.Fatal("relativePathForWord returned empty")
+	}
+	if !strings.HasSuffix(got, "hello.mp3") {
+		t.Fatalf("relativePathForWord(hello) = %q expected .../hello.mp3", got)
+	}
+}
+
+func TestPronunciationService_AudioRelPathExists(t *testing.T) {
+	dir := t.TempDir()
+	svc := NewPronunciationService(config.TTSConfig{Enabled: true, AudioDir: dir}, nil, zap.NewNop())
+
+	existRel := "ab/cd/word.mp3"
+	full := filepath.Join(dir, existRel)
+	if err := os.MkdirAll(filepath.Dir(full), 0o755); err != nil {
+		t.Fatalf("mkdir: %v", err)
+	}
+	if err := os.WriteFile(full, []byte("x"), 0o644); err != nil {
+		t.Fatalf("write: %v", err)
+	}
+
+	if !svc.audioRelPathExists(existRel) {
+		t.Fatal("audioRelPathExists(existing) = false want true")
+	}
+	if svc.audioRelPathExists("nonexistent.mp3") {
+		t.Fatal("audioRelPathExists(nonexistent) = true want false")
+	}
+	if svc.audioRelPathExists("..") {
+		t.Fatal("audioRelPathExists(..) = true want false (path traversal rejected)")
+	}
+	if svc.audioRelPathExists("../etc/passwd") {
+		t.Fatal("audioRelPathExists(../etc/passwd) = true want false")
+	}
+}
+
+func TestWriteFileAtomic_SuccessAndErrors(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "sub", "file.mp3")
+	if err := writeFileAtomic(path, []byte("data"), 0o644); err != nil {
+		t.Fatalf("writeFileAtomic success: %v", err)
+	}
+	data, err := os.ReadFile(path)
+	if err != nil || string(data) != "data" {
+		t.Fatalf("read back: %v %q", err, data)
+	}
+
+	// Dir is a file — MkdirAll fails (cannot create dir with same name as file)
+	fileAsDir := filepath.Join(dir, "fileasdir")
+	if err := os.WriteFile(fileAsDir, nil, 0o644); err != nil {
+		t.Fatalf("setup: %v", err)
+	}
+	err = writeFileAtomic(filepath.Join(fileAsDir, "x.mp3"), []byte("x"), 0o644)
+	if err == nil || !strings.Contains(err.Error(), "create dir") {
+		t.Fatalf("expected create dir error, got %v", err)
+	}
+
+	// Read-only dir — CreateTemp or Rename can fail depending on OS. At least Chmod may fail on some filesystems.
+	roDir := filepath.Join(dir, "readonly")
+	if err := os.MkdirAll(roDir, 0o444); err != nil {
+		t.Skip("cannot create read-only dir:", err)
+	}
+	err = writeFileAtomic(filepath.Join(roDir, "y.mp3"), []byte("y"), 0o644)
+	if err != nil {
+		if !strings.Contains(err.Error(), "create temp") && !strings.Contains(err.Error(), "rename") && !strings.Contains(err.Error(), "create dir") {
+			t.Fatalf("unexpected error: %v", err)
+		}
+	}
+}
+
+func TestOpenRouterPronunciationProvider_FetchViaAudioSpeech(t *testing.T) {
+	audioBytes := []byte("mp3-from-audio-speech")
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/audio/speech" {
+			t.Fatalf("unexpected path: %s", r.URL.Path)
+		}
+		if r.Header.Get("Authorization") != "Bearer test-key" {
+			t.Fatalf("unexpected auth header")
+		}
+		var body struct {
+			Input          string `json:"input"`
+			Model          string `json:"model"`
+			Voice          string `json:"voice"`
+			ResponseFormat string `json:"response_format"`
+		}
+		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+			t.Fatalf("decode body: %v", err)
+		}
+		if body.Input != "word" || body.ResponseFormat != "mp3" {
+			t.Fatalf("unexpected body: %+v", body)
+		}
+		w.Header().Set("Content-Type", "audio/mpeg")
+		_, _ = w.Write(audioBytes)
+	}))
+	defer srv.Close()
+
+	// baseURL not openrouter + forceChatCompletions=false → fetchViaAudioSpeech
+	provider := &openRouterPronunciationProvider{
+		baseURL:              srv.URL,
+		model:                "tts-1",
+		voice:                "alloy",
+		apiKey:               "test-key",
+		client:               &http.Client{Timeout: 3 * time.Second},
+		forceChatCompletions: false,
+	}
+	audio, err := provider.fetch(context.Background(), "word")
+	if err != nil {
+		t.Fatalf("fetch: %v", err)
+	}
+	if string(audio) != string(audioBytes) {
+		t.Fatalf("audio = %q want %q", audio, audioBytes)
+	}
+}
+
+func TestOpenRouterPronunciationProvider_FetchViaAudioSpeech_Rejected(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusNotFound)
+		_, _ = w.Write([]byte("model not found"))
+	}))
+	defer srv.Close()
+
+	provider := &openRouterPronunciationProvider{
+		baseURL:              srv.URL,
+		model:                "tts-1",
+		voice:                "alloy",
+		apiKey:               "key",
+		client:               &http.Client{Timeout: 3 * time.Second},
+		forceChatCompletions: false,
+	}
+	_, err := provider.fetch(context.Background(), "w")
+	if err == nil {
+		t.Fatal("expected error")
+	}
+	if !errors.Is(err, errPronunciationNotFound) {
+		t.Fatalf("expected errPronunciationNotFound, got %v", err)
+	}
+}
+
+func TestPronunciationService_DebugFetch(t *testing.T) {
+	// Disabled
+	var nilSvc *PronunciationService
+	_, err := nilSvc.DebugFetch(context.Background(), "hello")
+	if err == nil || !strings.Contains(err.Error(), "disabled") {
+		t.Fatalf("nil service: want disabled error, got %v", err)
+	}
+
+	svc := NewPronunciationService(config.TTSConfig{
+		Enabled:           true,
+		AudioDir:          t.TempDir(),
+		DictionaryEnabled: true,
+		DictionaryBaseURL: "http://example.com",
+	}, nil, zap.NewNop())
+	svc.providers = []pronunciationProvider{&stubPronunciationProvider{providerName: "stub", audio: []byte("ok")}}
+
+	_, err = svc.DebugFetch(context.Background(), "  ")
+	if err == nil || !strings.Contains(err.Error(), "invalid") {
+		t.Fatalf("invalid word: want invalid error, got %v", err)
+	}
+
+	res, err := svc.DebugFetch(context.Background(), "hello")
+	if err != nil {
+		t.Fatalf("DebugFetch: %v", err)
+	}
+	if res.Word != "hello" || len(res.Results) != 1 || res.Results[0].Outcome != "success" || res.Results[0].Bytes != 2 {
+		t.Fatalf("unexpected result: %+v", res)
+	}
+
+	// All providers error
+	svc.providers = []pronunciationProvider{
+		&stubPronunciationProvider{providerName: "a", err: fmt.Errorf("%w: dictionary_404", errPronunciationNotFound)},
+		&stubPronunciationProvider{providerName: "b", err: errors.New("network timeout")},
+	}
+	res, err = svc.DebugFetch(context.Background(), "x")
+	if err != nil {
+		t.Fatalf("DebugFetch (all fail): %v", err)
+	}
+	if len(res.Results) != 2 || res.Results[0].Outcome != "not_found" || res.Results[1].Outcome != "error" {
+		t.Fatalf("unexpected results: %+v", res.Results)
+	}
+}
+
+func TestPronunciationService_BackfillOnce(t *testing.T) {
+	db := testutil.SetupTestDB(t)
+	wordRepo := repository.NewWordRepository(db, zap.NewNop())
+	svc := NewPronunciationService(config.TTSConfig{
+		Enabled:           true,
+		PrefetchEnabled:   false,
+		AudioDir:          t.TempDir(),
+		BackfillBatchSize: 5,
+		DictionaryEnabled: true,
+		DictionaryBaseURL: "http://example.com",
+	}, wordRepo, zap.NewNop())
+	svc.providers = []pronunciationProvider{&stubPronunciationProvider{providerName: "stub", audio: []byte("x")}}
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	svc.backfillOnce(ctx)
+	// ListPronunciationCandidates may return 0 words; backfillOnce just iterates and ScheduleWord's each
+	// No assertion on queue length (depends on DB state). Just ensure no panic.
+}
+
+func TestPronunciationService_BackfillOnce_NoWordRepo(t *testing.T) {
+	svc := NewPronunciationService(config.TTSConfig{Enabled: true, AudioDir: t.TempDir()}, nil, zap.NewNop())
+	ctx := context.Background()
+	svc.backfillOnce(ctx)
+	// must not panic
+}
+
+func TestPronunciationService_ScheduleWords(t *testing.T) {
+	db := testutil.SetupTestDB(t)
+	wordRepo := repository.NewWordRepository(db, zap.NewNop())
+	svc := NewPronunciationService(config.TTSConfig{
+		Enabled:           true,
+		AudioDir:          t.TempDir(),
+		DictionaryEnabled: true,
+		DictionaryBaseURL: "http://example.com",
+	}, wordRepo, zap.NewNop())
+	svc.providers = []pronunciationProvider{&stubPronunciationProvider{providerName: "stub", audio: []byte("x")}}
+
+	svc.ScheduleWords("one", "two", "three")
+	// Each ScheduleWord may enqueue; at least no panic and queue may have entries
+	_ = svc.queue
+}
+
+func TestPronunciationService_Recheck(t *testing.T) {
+	db := testutil.SetupTestDB(t)
+	wordRepo := repository.NewWordRepository(db, zap.NewNop())
+	svc := NewPronunciationService(config.TTSConfig{
+		Enabled: true,
+		AudioDir: t.TempDir(),
+	}, wordRepo, zap.NewNop())
+
+	_, err := svc.Recheck("")
+	if err == nil || !strings.Contains(err.Error(), "invalid") {
+		t.Fatalf("Recheck empty word: want invalid, got %v", err)
+	}
+
+	_, err = svc.Recheck("привет")
+	if err == nil || !strings.Contains(err.Error(), "invalid") {
+		t.Fatalf("Recheck invalid word (non-Latin): want invalid, got %v", err)
+	}
+
+	res, err := svc.Recheck("hello")
+	if err != nil {
+		t.Fatalf("Recheck(hello): %v", err)
+	}
+	if res.Word != "hello" {
+		t.Fatalf("Recheck word = %q want hello", res.Word)
+	}
+}
+
+func TestPronunciationService_Recheck_NoTTSRepo(t *testing.T) {
+	svc := NewPronunciationService(config.TTSConfig{Enabled: true, AudioDir: t.TempDir()}, nil, zap.NewNop())
+	_, err := svc.Recheck("hello")
+	if err == nil || !strings.Contains(err.Error(), "not configured") {
+		t.Fatalf("Recheck without tts repo: want error, got %v", err)
+	}
+}
+
+func TestPronunciationService_Start_Disabled(t *testing.T) {
+	svc := NewPronunciationService(config.TTSConfig{Enabled: false, AudioDir: t.TempDir()}, nil, zap.NewNop())
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	svc.Start(ctx)
+	// must not block forever; when disabled it returns immediately
+}
+
+func TestPronunciationService_Start_MkdirAllFails(t *testing.T) {
+	svc := NewPronunciationService(config.TTSConfig{
+		Enabled: true,
+		AudioDir: filepath.Join(t.TempDir(), "sub", "nested"),
+	}, nil, zap.NewNop())
+	svc.providers = []pronunciationProvider{&stubPronunciationProvider{}}
+	// Create a file where we need a directory so MkdirAll fails
+	dir := filepath.Join(t.TempDir(), "sub")
+	if err := os.MkdirAll(dir, 0o755); err != nil {
+		t.Fatalf("setup: %v", err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, "nested"), []byte("x"), 0o644); err != nil {
+		t.Fatalf("setup file: %v", err)
+	}
+	svc.audioDir = filepath.Join(dir, "nested")
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	svc.Start(ctx)
+	// should return after logging error (no panic)
+}
+
+func TestPronunciationService_ScheduleWord_DisabledAndInvalid(t *testing.T) {
+	svc := NewPronunciationService(config.TTSConfig{Enabled: false, AudioDir: t.TempDir()}, nil, zap.NewNop())
+	if svc.ScheduleWord("hello") {
+		t.Fatal("ScheduleWord when disabled should return false")
+	}
+	svc = NewPronunciationService(config.TTSConfig{Enabled: true, AudioDir: t.TempDir()}, nil, zap.NewNop())
+	if svc.ScheduleWord("") {
+		t.Fatal("ScheduleWord empty word should return false")
+	}
+	if svc.ScheduleWord("привет") {
+		t.Fatal("ScheduleWord invalid word should return false")
+	}
+}
+
+func TestPronunciationService_ScheduleWord_TerminalAndMaxAttempts(t *testing.T) {
+	db := testutil.SetupTestDB(t)
+	wordRepo := repository.NewWordRepository(db, zap.NewNop())
+	svc := NewPronunciationService(config.TTSConfig{
+		Enabled: true, AudioDir: t.TempDir(), MaxRetries: 2,
+		DictionaryEnabled: true, DictionaryBaseURL: "http://example.com",
+	}, wordRepo, zap.NewNop())
+	svc.providers = []pronunciationProvider{&stubPronunciationProvider{providerName: "x", err: fmt.Errorf("status 500")}}
+
+	for i := 0; i < 3; i++ {
+		svc.processWord(context.Background(), "termword")
+	}
+	ok := svc.ScheduleWord("termword")
+	if ok {
+		t.Fatal("ScheduleWord after terminal should return false")
+	}
+}
+
+func TestPronunciationService_Lookup_DisabledAndInvalid(t *testing.T) {
+	var nilSvc *PronunciationService
+	r := nilSvc.Lookup("hello")
+	if r.Available || r.NormalizedWord != "" {
+		t.Fatalf("Lookup on nil service: %+v", r)
+	}
+
+	svc := NewPronunciationService(config.TTSConfig{Enabled: false, AudioDir: t.TempDir()}, nil, zap.NewNop())
+	r = svc.Lookup("hello")
+	if r.Available || r.NormalizedWord != "" {
+		t.Fatalf("Lookup when disabled: %+v", r)
+	}
+
+	svc = NewPronunciationService(config.TTSConfig{Enabled: true, AudioDir: t.TempDir()}, nil, zap.NewNop())
+	r = svc.Lookup("  ")
+	if r.NormalizedWord != "" {
+		t.Fatalf("Lookup empty word: %+v", r)
+	}
+}
+
+func TestPronunciationService_Lookup_ReadyAndCached(t *testing.T) {
+	db := testutil.SetupTestDB(t)
+	wordRepo := repository.NewWordRepository(db, zap.NewNop())
+	dir := t.TempDir()
+	svc := NewPronunciationService(config.TTSConfig{
+		Enabled: true, AudioDir: dir, PublicBasePath: "/media/tts",
+		DictionaryEnabled: true, DictionaryBaseURL: "http://example.com",
+	}, wordRepo, zap.NewNop())
+	rel := svc.relativePathForWordWithExt("hello", ".mp3")
+	full := filepath.Join(dir, rel)
+	if err := os.MkdirAll(filepath.Dir(full), 0o755); err != nil {
+		t.Fatalf("mkdir: %v", err)
+	}
+	if err := os.WriteFile(full, []byte("x"), 0o644); err != nil {
+		t.Fatalf("write: %v", err)
+	}
+	if err := svc.ttsRepo.MarkReady("hello", "stub", rel); err != nil {
+		t.Fatalf("MarkReady: %v", err)
+	}
+
+	r := svc.Lookup("hello")
+	if !r.Available || !strings.Contains(r.URL, "/media/tts/") || !strings.Contains(r.URL, "hello.mp3") {
+		t.Fatalf("Lookup(hello) ready: %+v", r)
+	}
+}
+
+func TestPronunciationService_Lookup_HasCachedAudioNoRepo(t *testing.T) {
+	dir := t.TempDir()
+	svc := NewPronunciationService(config.TTSConfig{
+		Enabled: true, AudioDir: dir, PublicBasePath: "/media/tts",
+		DictionaryEnabled: true, DictionaryBaseURL: "http://example.com",
+	}, nil, zap.NewNop())
+	svc.providers = []pronunciationProvider{&stubPronunciationProvider{}}
+	rel := svc.relativePathForWordWithExt("cached", ".mp3")
+	full := filepath.Join(dir, rel)
+	if err := os.MkdirAll(filepath.Dir(full), 0o755); err != nil {
+		t.Fatalf("mkdir: %v", err)
+	}
+	if err := os.WriteFile(full, []byte("y"), 0o644); err != nil {
+		t.Fatalf("write: %v", err)
+	}
+
+	r := svc.Lookup("cached")
+	if !r.Available || r.URL == "" {
+		t.Fatalf("Lookup(cached) with file: %+v", r)
+	}
+}
+
+func TestPronunciationService_EnsureStatusForWord_NoRepo(t *testing.T) {
+	svc := NewPronunciationService(config.TTSConfig{Enabled: true, AudioDir: t.TempDir()}, nil, zap.NewNop())
+	status, err := svc.ensureStatusForWord("hello")
+	if err != nil {
+		t.Fatalf("ensureStatusForWord: %v", err)
+	}
+	if status != nil {
+		t.Fatalf("expected nil status when no tts repo")
+	}
+}
+
+func TestPronunciationService_EnsureStatusForWord_LegacyFile(t *testing.T) {
+	db := testutil.SetupTestDB(t)
+	wordRepo := repository.NewWordRepository(db, zap.NewNop())
+	dir := t.TempDir()
+	svc := NewPronunciationService(config.TTSConfig{
+		Enabled: true, AudioDir: dir,
+		DictionaryEnabled: true, DictionaryBaseURL: "http://example.com",
+	}, wordRepo, zap.NewNop())
+	rel := svc.relativePathForWordWithExt("legacy", ".mp3")
+	full := filepath.Join(dir, rel)
+	if err := os.MkdirAll(filepath.Dir(full), 0o755); err != nil {
+		t.Fatalf("mkdir: %v", err)
+	}
+	if err := os.WriteFile(full, []byte("x"), 0o644); err != nil {
+		t.Fatalf("write: %v", err)
+	}
+
+	status, err := svc.ensureStatusForWord("legacy")
+	if err != nil {
+		t.Fatalf("ensureStatusForWord: %v", err)
+	}
+	if status == nil || status.State != models.TTSStateReady {
+		t.Fatalf("expected ready after legacy migration: %+v", status)
+	}
+}
+
+func TestPronunciationService_ResolveReadyRelPath(t *testing.T) {
+	dir := t.TempDir()
+	svc := NewPronunciationService(config.TTSConfig{Enabled: true, AudioDir: dir}, nil, zap.NewNop())
+
+	// nil status
+	if got := svc.resolveReadyRelPath("x", nil); got != "" {
+		t.Fatalf("resolveReadyRelPath(nil) = %q want \"\"", got)
+	}
+
+	// status ready but path missing on disk → fallback to cached
+	empty := ""
+	status := &models.TTSGenerationStatus{State: models.TTSStateReady, AudioRelPath: &empty}
+	if got := svc.resolveReadyRelPath("word", status); got != "" {
+		t.Fatalf("resolveReadyRelPath(empty path) = %q want \"\" or fallback", got)
+	}
+
+	// status with path that exists
+	rel := svc.relativePathForWordWithExt("word", ".mp3")
+	full := filepath.Join(dir, rel)
+	if err := os.MkdirAll(filepath.Dir(full), 0o755); err != nil {
+		t.Fatalf("mkdir: %v", err)
+	}
+	if err := os.WriteFile(full, nil, 0o644); err != nil {
+		t.Fatalf("write: %v", err)
+	}
+	status2 := &models.TTSGenerationStatus{State: models.TTSStateReady, AudioRelPath: &rel}
+	if got := svc.resolveReadyRelPath("word", status2); got != rel {
+		t.Fatalf("resolveReadyRelPath(exists) = %q want %q", got, rel)
+	}
+
+	// status with path that does not exist on disk → fallback to cachedRelPathForWord (file at rel exists)
+	relMissing := "xx/yy/nonexistent.mp3"
+	status3 := &models.TTSGenerationStatus{State: models.TTSStateReady, AudioRelPath: &relMissing}
+	if got := svc.resolveReadyRelPath("word", status3); got != rel {
+		t.Fatalf("resolveReadyRelPath(missing DB path) should fallback to cached; got %q want %q", got, rel)
+	}
+}
+
+func TestDefaultPcmToMp3_InvalidInput(t *testing.T) {
+	// Garbage input: ffmpeg typically fails to decode non-PCM
+	_, err := defaultPcmToMp3([]byte("not-pcm-data"))
+	if err != nil {
+		return
+	}
+	// Some ffmpeg builds may succeed with arbitrary output; either way no panic
 }

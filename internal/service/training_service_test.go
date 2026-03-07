@@ -171,6 +171,90 @@ func TestTrainingService_FinishSession(t *testing.T) {
 	}
 }
 
+// seedSessionWithReviewEvent creates user, word_card, training_card, user_card, session and one review_event linked to the session.
+func seedSessionWithReviewEvent(t *testing.T, db *sql.DB, sessionRepo *repository.SessionRepository) (sessionID int64, userID, wordCardID int64) {
+	t.Helper()
+	var uid int64
+	if err := db.QueryRow(`INSERT INTO users (telegram_id) VALUES (90002) RETURNING id`).Scan(&uid); err != nil {
+		t.Fatalf("insert user: %v", err)
+	}
+	var wcid int64
+	if err := db.QueryRow(`INSERT INTO word_cards (word, definition) VALUES ('finishword', 'def') RETURNING id`).Scan(&wcid); err != nil {
+		t.Fatalf("insert word_card: %v", err)
+	}
+	var tcid int64
+	if err := db.QueryRow(`INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES ($1, 'finishword', 0, 'тест', 'meaning') RETURNING id`, wcid).Scan(&tcid); err != nil {
+		t.Fatalf("insert training_card: %v", err)
+	}
+	var ucid int64
+	if err := db.QueryRow(`INSERT INTO user_cards (user_id, training_card_id, direction, state) VALUES ($1, $2, 'en_ru', 'review') RETURNING id`, uid, tcid).Scan(&ucid); err != nil {
+		t.Fatalf("insert user_card: %v", err)
+	}
+	sess := &models.TrainingSession{UserID: uid, Source: models.SourceManual, PlannedCount: 1, DoneCount: 0, SessionJSON: "{}"}
+	sid, err := sessionRepo.CreateSession(sess)
+	if err != nil {
+		t.Fatalf("create session: %v", err)
+	}
+	if _, err := db.Exec(`INSERT INTO review_events (session_id, user_id, user_card_id, direction, answered_at, is_correct) VALUES ($1, $2, $3, 'en_ru', CURRENT_TIMESTAMP, 1)`, sid, uid, ucid); err != nil {
+		t.Fatalf("insert review_event: %v", err)
+	}
+	return sid, uid, wcid
+}
+
+func TestTrainingService_FinishSession_WithMasteringRepo(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, _, _, _, sessionRepo := setupTrainingServiceTestDB(t)
+	sessionID, userID, wordCardID := seedSessionWithReviewEvent(t, db, sessionRepo)
+	masteringRepo := repository.NewUserWordMasteringRepository(db, logger)
+	service := NewTrainingService(nil, nil, sessionRepo, masteringRepo, logger)
+
+	err := service.FinishSession(sessionID, 1)
+	if err != nil {
+		t.Fatalf("FinishSession() error = %v", err)
+	}
+	finished, err := service.GetSession(sessionID)
+	if err != nil {
+		t.Fatalf("GetSession() error = %v", err)
+	}
+	if finished.EndedAt == nil {
+		t.Error("Session should have ended_at set after FinishSession")
+	}
+	// updateMasteringScoresForSession should have run: pairs from GetWordCardIDsBySessionID, then UpsertBatch
+	var score int
+	if err := db.QueryRow(`SELECT mastering_score FROM user_word_mastering WHERE user_id = $1 AND word_card_id = $2`, userID, wordCardID).Scan(&score); err != nil {
+		t.Fatalf("expected mastering row after FinishSession: %v", err)
+	}
+	if score < 0 || score > 100 {
+		t.Errorf("mastering_score should be 0-100, got %d", score)
+	}
+}
+
+func TestTrainingService_FinishSession_WithMasteringRepo_NoReviewEvents(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, _, _, sessionRepo := setupTrainingServiceTestDB(t)
+	user, _ := userRepo.GetOrCreateUser(90003)
+	sess := &models.TrainingSession{UserID: user.ID, Source: models.SourceManual, PlannedCount: 0, DoneCount: 0, SessionJSON: "{}"}
+	sessionID, err := sessionRepo.CreateSession(sess)
+	if err != nil {
+		t.Fatalf("create session: %v", err)
+	}
+	masteringRepo := repository.NewUserWordMasteringRepository(db, logger)
+	service := NewTrainingService(nil, nil, sessionRepo, masteringRepo, logger)
+
+	err = service.FinishSession(sessionID, 0)
+	if err != nil {
+		t.Fatalf("FinishSession() error = %v", err)
+	}
+	// updateMasteringScoresForSession: GetWordCardIDsBySessionID returns [], so we return early and never call UpsertBatch
+	finished, err := service.GetSession(sessionID)
+	if err != nil {
+		t.Fatalf("GetSession() error = %v", err)
+	}
+	if finished.EndedAt == nil {
+		t.Error("Session should have ended_at set after FinishSession")
+	}
+}
+
 func TestTrainingService_UpdateSessionState(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	_, userRepo, _, _, sessionRepo := setupTrainingServiceTestDB(t)
