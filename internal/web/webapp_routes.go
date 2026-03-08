@@ -1,7 +1,6 @@
 package web
 
 import (
-	"embed"
 	"io/fs"
 	"net/http"
 	"net/url"
@@ -11,8 +10,8 @@ import (
 	"go.uber.org/zap"
 )
 
-// webappFS is initialized in webapp_static.go from webappembed package
-var webappFS embed.FS
+// webappFS is initialized in webapp_static.go from webapp package (embed.FS implements fs.FS)
+var webappFS fs.FS
 
 // setupWebappRoutes configures routes for serving the embedded webapp
 func (r *Router) setupWebappRoutes() {

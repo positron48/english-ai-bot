@@ -1,19 +1,24 @@
 package web
 
 import (
-	"embed"
+	"io/fs"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"testing/fstest"
 
 	"tgbot-skeleton/internal/config"
 
 	"go.uber.org/zap"
 )
 
-//go:embed dist/index.html
-var testWebappFS embed.FS
+// testWebappFS returns a minimal fs.FS with dist/index.html for tests (no embed, no file on disk).
+func testWebappFS() fs.FS {
+	return fstest.MapFS{
+		"dist/index.html": &fstest.MapFile{Data: []byte("<!DOCTYPE html><html><body>Test</body></html>")},
+	}
+}
 
 func TestIsAPIEndpoint(t *testing.T) {
 	tests := []struct {
@@ -353,7 +358,7 @@ func TestSetupDevProxy_NonAPIPathRedirects(t *testing.T) {
 func TestSetupWebappRoutes_WithEmbeddedFS(t *testing.T) {
 	savedFS := webappFS
 	defer func() { webappFS = savedFS }()
-	webappFS = testWebappFS
+	webappFS = testWebappFS()
 
 	logger := zap.NewNop()
 	cfg := &config.Config{}
@@ -394,7 +399,7 @@ func TestSetupWebappRoutes_WithEmbeddedFS(t *testing.T) {
 func TestSetupWebappRoutes_WithEmbeddedFS_StaticExtension(t *testing.T) {
 	savedFS := webappFS
 	defer func() { webappFS = savedFS }()
-	webappFS = testWebappFS
+	webappFS = testWebappFS()
 
 	logger := zap.NewNop()
 	cfg := &config.Config{}
@@ -419,7 +424,7 @@ func TestSetupWebappRoutes_WithEmbeddedFS_StaticExtension(t *testing.T) {
 func TestSetupWebappRoutes_WithEmbeddedFS_APIPathUnderApp(t *testing.T) {
 	savedFS := webappFS
 	defer func() { webappFS = savedFS }()
-	webappFS = testWebappFS
+	webappFS = testWebappFS()
 
 	logger := zap.NewNop()
 	cfg := &config.Config{WebApp: config.WebAppConfig{JWTSecret: "x"}}
