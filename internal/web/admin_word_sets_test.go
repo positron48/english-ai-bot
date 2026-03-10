@@ -1,11 +1,13 @@
 package web
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"tgbot-skeleton/internal/config"
@@ -64,6 +66,14 @@ func TestHandleAdminWordSetCategories_Get(t *testing.T) {
 	if rr.Code != http.StatusOK {
 		t.Errorf("Expected status 200, got %d: %s", rr.Code, rr.Body.String())
 	}
+	var resp struct {
+		Categories []interface{} `json:"categories"`
+	}
+	if err := json.NewDecoder(rr.Body).Decode(&resp); err != nil {
+		t.Fatalf("decode response: %v", err)
+	}
+	// categories key is present (decode succeeded); may be nil or empty slice
+	_ = resp.Categories
 }
 
 func TestHandleAdminWordSetCategories_PostInvalidBody(t *testing.T) {
@@ -78,6 +88,24 @@ func TestHandleAdminWordSetCategories_PostInvalidBody(t *testing.T) {
 
 	if rr.Code != http.StatusBadRequest {
 		t.Errorf("Expected status 400, got %d", rr.Code)
+	}
+}
+
+func TestHandleAdminWordSetCategories_PostNameRequired(t *testing.T) {
+	router, _, adminUserID, cleanup := setupAdminWordSetsTest(t)
+	defer cleanup()
+
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/word-set-categories", bytes.NewBufferString(`{"name":""}`))
+	req = setUserIDInContextWordSets(req, adminUserID)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminWordSetCategories(rr, req)
+
+	if rr.Code != http.StatusBadRequest {
+		t.Errorf("Expected status 400, got %d: %s", rr.Code, rr.Body.String())
+	}
+	if !strings.Contains(rr.Body.String(), "Name is required") {
+		t.Errorf("Expected body to contain 'Name is required', got %s", rr.Body.String())
 	}
 }
 
@@ -183,6 +211,21 @@ func TestHandleAdminWordSetDetail_NotFound(t *testing.T) {
 
 	if rr.Code != http.StatusNotFound {
 		t.Errorf("Expected status 404, got %d: %s", rr.Code, rr.Body.String())
+	}
+}
+
+func TestHandleAdminWordSetDetail_InvalidID(t *testing.T) {
+	router, _, adminUserID, cleanup := setupAdminWordSetsTest(t)
+	defer cleanup()
+
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/word-sets/not-a-number", nil)
+	req = setUserIDInContextWordSets(req, adminUserID)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminWordSetDetail(rr, req)
+
+	if rr.Code != http.StatusBadRequest {
+		t.Errorf("Expected status 400, got %d: %s", rr.Code, rr.Body.String())
 	}
 }
 

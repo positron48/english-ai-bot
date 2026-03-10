@@ -61,6 +61,26 @@ func TestHandleAdminWordSetCategories_CRUDAndPermissions(t *testing.T) {
 	}
 	categoryID := int64(idFloat)
 
+	t.Run("put forbidden for non-admin", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodPut, "/api/admin/word-set-categories/"+strconv.FormatInt(categoryID, 10), bytes.NewBufferString(`{"name":"x"}`))
+		req = setUserIDInContextWordSets(req, nonAdminUserID)
+		rr := httptest.NewRecorder()
+		router.handleAdminWordSetCategories(rr, req)
+		if rr.Code != http.StatusForbidden {
+			t.Fatalf("expected 403, got %d", rr.Code)
+		}
+	})
+
+	t.Run("put invalid body", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodPut, "/api/admin/word-set-categories/"+strconv.FormatInt(categoryID, 10), bytes.NewBufferString(`{invalid json`))
+		req = setUserIDInContextWordSets(req, adminUserID)
+		rr := httptest.NewRecorder()
+		router.handleAdminWordSetCategories(rr, req)
+		if rr.Code != http.StatusBadRequest {
+			t.Fatalf("expected 400, got %d", rr.Code)
+		}
+	})
+
 	t.Run("put invalid id", func(t *testing.T) {
 		req := httptest.NewRequest(http.MethodPut, "/api/admin/word-set-categories/bad", bytes.NewBufferString(`{"name":"x"}`))
 		req = setUserIDInContextWordSets(req, adminUserID)
@@ -90,6 +110,26 @@ func TestHandleAdminWordSetCategories_CRUDAndPermissions(t *testing.T) {
 	if err != nil {
 		t.Fatalf("CreateCategory child error: %v", err)
 	}
+
+	t.Run("delete forbidden for non-admin", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodDelete, "/api/admin/word-set-categories/"+strconv.FormatInt(categoryID, 10), nil)
+		req = setUserIDInContextWordSets(req, nonAdminUserID)
+		rr := httptest.NewRecorder()
+		router.handleAdminWordSetCategories(rr, req)
+		if rr.Code != http.StatusForbidden {
+			t.Fatalf("expected 403, got %d", rr.Code)
+		}
+	})
+
+	t.Run("delete invalid id", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodDelete, "/api/admin/word-set-categories/xyz", nil)
+		req = setUserIDInContextWordSets(req, adminUserID)
+		rr := httptest.NewRecorder()
+		router.handleAdminWordSetCategories(rr, req)
+		if rr.Code != http.StatusBadRequest {
+			t.Fatalf("expected 400, got %d", rr.Code)
+		}
+	})
 
 	t.Run("delete with children returns bad request", func(t *testing.T) {
 		req := httptest.NewRequest(http.MethodDelete, "/api/admin/word-set-categories/"+strconv.FormatInt(categoryID, 10), nil)
@@ -157,6 +197,16 @@ func TestHandleAdminWordSets_CRUDAndItemsUpdate(t *testing.T) {
 	}
 	setID := int64(idFloat)
 
+	t.Run("put forbidden for non-admin", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodPut, "/api/admin/word-sets/"+strconv.FormatInt(setID, 10), bytes.NewBufferString(`{"title":"x"}`))
+		req = setUserIDInContextWordSets(req, nonAdminUserID)
+		rr := httptest.NewRecorder()
+		router.handleAdminWordSets(rr, req)
+		if rr.Code != http.StatusForbidden {
+			t.Fatalf("expected 403, got %d", rr.Code)
+		}
+	})
+
 	t.Run("put invalid id", func(t *testing.T) {
 		req := httptest.NewRequest(http.MethodPut, "/api/admin/word-sets/bad", bytes.NewBufferString(`{"title":"x"}`))
 		req = setUserIDInContextWordSets(req, adminUserID)
@@ -184,6 +234,26 @@ func TestHandleAdminWordSets_CRUDAndItemsUpdate(t *testing.T) {
 		router.handleAdminWordSets(rr, req)
 		if rr.Code != http.StatusOK {
 			t.Fatalf("expected 200, got %d (%s)", rr.Code, rr.Body.String())
+		}
+	})
+
+	t.Run("put items invalid body", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodPut, "/api/admin/word-sets/"+strconv.FormatInt(setID, 10)+"/items", bytes.NewBufferString(`{not json`))
+		req = setUserIDInContextWordSets(req, adminUserID)
+		rr := httptest.NewRecorder()
+		router.handleAdminWordSets(rr, req)
+		if rr.Code != http.StatusBadRequest {
+			t.Fatalf("expected 400, got %d", rr.Code)
+		}
+	})
+
+	t.Run("delete forbidden for non-admin", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodDelete, "/api/admin/word-sets/"+strconv.FormatInt(setID, 10), nil)
+		req = setUserIDInContextWordSets(req, nonAdminUserID)
+		rr := httptest.NewRecorder()
+		router.handleAdminWordSets(rr, req)
+		if rr.Code != http.StatusForbidden {
+			t.Fatalf("expected 403, got %d", rr.Code)
 		}
 	})
 

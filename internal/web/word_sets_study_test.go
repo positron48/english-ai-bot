@@ -110,6 +110,72 @@ func TestHandleLearningWordsSetStudy_PreferredPOSSelection(t *testing.T) {
 	}
 }
 
+// TestHandleLearningWordsSetStudy_PreferredPOSFallbackToFirstCard covers the branch where preferred_pos is set
+// but no card matches POS, so we fall back to the first card.
+func TestHandleLearningWordsSetStudy_PreferredPOSFallbackToFirstCard(t *testing.T) {
+	router, _, cleanup := setupWordSetsRouter(t)
+	defer cleanup()
+
+	userID, setID, wordCardID := createWordSetStudyFixture(t, router)
+	wordSetRepo := repository.NewWordSetRepository(router.db, router.logger)
+	trainingCardRepo := repository.NewTrainingCardRepository(router.db, router.logger)
+
+	preferredPOS := "adjective"
+	wordSet, err := wordSetRepo.GetWordSet(setID)
+	if err != nil {
+		t.Fatalf("get word set: %v", err)
+	}
+	wordSet.PreferredPOS = &preferredPOS
+	if err := wordSetRepo.UpdateWordSet(wordSet); err != nil {
+		t.Fatalf("update word set preferred_pos: %v", err)
+	}
+
+	noun := "noun"
+	verb := "verb"
+	if _, err := trainingCardRepo.CreateTrainingCard(&models.TrainingCard{
+		WordCardID: wordCardID,
+		WordEN:     "studyword (noun)",
+		SenseIndex: 0,
+		WordRU:     "слово",
+		MeaningEN:  "noun meaning",
+		POS:        &noun,
+	}); err != nil {
+		t.Fatalf("create noun training card: %v", err)
+	}
+	if _, err := trainingCardRepo.CreateTrainingCard(&models.TrainingCard{
+		WordCardID: wordCardID,
+		WordEN:     "studyword (verb)",
+		SenseIndex: 1,
+		WordRU:     "изучать",
+		MeaningEN:  "verb meaning",
+		POS:        &verb,
+	}); err != nil {
+		t.Fatalf("create verb training card: %v", err)
+	}
+
+	req := httptest.NewRequest(
+		http.MethodGet,
+		fmt.Sprintf("/api/learning/words/sets/%d/study?word_card_id=%d", setID, wordCardID),
+		nil,
+	)
+	req = setUserIDInContext(req, userID)
+	w := httptest.NewRecorder()
+	router.handleLearningWordsSetStudy(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+	var payload map[string]map[string]interface{}
+	if err := json.Unmarshal(w.Body.Bytes(), &payload); err != nil {
+		t.Fatalf("unmarshal response: %v", err)
+	}
+	card := payload["training_card"]
+	// No "adjective" card; should fall back to first card (noun)
+	if card["word_en"] != "studyword (noun)" {
+		t.Fatalf("expected fallback to first card (noun), got %v", card["word_en"])
+	}
+}
+
 func TestHandleLearningWordsSetStudyLearnAndKnow_Flow(t *testing.T) {
 	router, _, cleanup := setupWordSetsRouter(t)
 	defer cleanup()
