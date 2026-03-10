@@ -307,7 +307,7 @@ func TestHandleTrainingAnswer_Unauthorized(t *testing.T) {
 	}
 }
 
-func TestHandleTrainingStart_Unauthorized(t *testing.T) {
+func TestHandleTrainingStart_Unauthorized_NoContext(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo, _, _, _ := setupTrainingHelpersTestDB(t)
 

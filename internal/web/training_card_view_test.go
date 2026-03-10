@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"tgbot-skeleton/internal/config"
@@ -274,5 +275,126 @@ func TestExtractSessionWords_FiltersAndDeduplicates(t *testing.T) {
 	words = r.extractSessionWords(queue, 0, current, nil)
 	if len(words) != 1 || words[0] != "прыгать" {
 		t.Fatalf("expected one deduplicated word 'прыгать', got %v", words)
+	}
+}
+
+// extractSessionWordsFromQueue: currentIndex >= len(queue)
+func TestExtractSessionWordsFromQueue_IndexOutOfRange(t *testing.T) {
+	r := &Router{}
+	queue := []*models.TrainingQueueItem{
+		{Type: "card", Card: &models.UserCardWithTraining{TrainingCard: models.TrainingCard{WordCardID: 1, WordEN: "a", WordRU: "а"}}},
+	}
+	card := queue[0].Card
+	words := r.extractSessionWordsFromQueue(queue, 1, card, nil)
+	if len(words) != 0 {
+		t.Fatalf("expected empty when currentIndex >= len(queue), got %v", words)
+	}
+	words = r.extractSessionWordsFromQueue(queue, 10, card, nil)
+	if len(words) != 0 {
+		t.Fatalf("expected empty when currentIndex 10 >= len(queue) 1, got %v", words)
+	}
+}
+
+// showTrainingCard: CurrentIndex >= len(Queue) -> finishTrainingSession
+func TestShowTrainingCard_SessionFinished(t *testing.T) {
+	logger := zap.NewNop()
+	db, _, _, _, sessionRepo := setupTrainingIntegrationTestDB(t)
+	cfg := &config.Config{Training: config.TrainingConfig{OptionsDelayMS: 2000, WrongAnswerDelaySeconds: 3}}
+	trainingService := service.NewTrainingService(nil, nil, sessionRepo, nil, logger)
+	router := NewRouter(logger, cfg, db, trainingService, nil, nil, nil)
+	router.webTrainingHandler = NewWebTrainingHandler(trainingService, nil, nil, sessionRepo, logger, 2000, 3)
+	state := &WebTrainingState{
+		UserID:        1,
+		SessionID:    999,
+		Queue:        []*models.TrainingQueueItem{},
+		CurrentIndex: 0,
+	}
+	req := httptest.NewRequest(http.MethodGet, "/api/training/current", nil)
+	w := httptest.NewRecorder()
+	router.showTrainingCard(w, req, state)
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", w.Code)
+	}
+	var resp map[string]interface{}
+	if err := json.Unmarshal(w.Body.Bytes(), &resp); err != nil {
+		t.Fatalf("unmarshal: %v", err)
+	}
+	if resp["complete"] != true {
+		t.Fatalf("expected complete=true, got %v", resp["complete"])
+	}
+}
+
+// showTrainingCard: normal card with Direction RUtoEN (question text branch)
+func TestShowTrainingCard_NormalCardRUtoEN(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, _, trainingCardRepo, _, _ := setupTrainingIntegrationTestDB(t)
+	var wordCardID int64
+	if err := db.QueryRow("INSERT INTO word_cards (word, definition) VALUES ($1, $2) RETURNING id", "run", "run").Scan(&wordCardID); err != nil {
+		t.Fatalf("create word card: %v", err)
+	}
+	if _, err := trainingCardRepo.CreateTrainingCard(&models.TrainingCard{
+		WordCardID: wordCardID, WordEN: "run", SenseIndex: 0, WordRU: "бежать", MeaningEN: "run",
+		DistractorsRU: `[]`, DistractorsEN: `[]`, DisplayWord: strPtr("run"),
+	}); err != nil {
+		t.Fatalf("create training card: %v", err)
+	}
+	optionsService := service.NewOptionsService(trainingCardRepo, logger)
+	cfg := &config.Config{Training: config.TrainingConfig{OptionsDelayMS: 1000, WrongAnswerDelaySeconds: 3}}
+	router := NewRouter(logger, cfg, db, nil, nil, optionsService, nil)
+	card := &models.UserCardWithTraining{
+		UserCard:     models.UserCard{ID: 1, Direction: models.DirectionRUtoEN},
+		TrainingCard: models.TrainingCard{WordCardID: wordCardID, WordEN: "run", WordRU: "бежать", DisplayWord: strPtr("run"), DistractorsRU: `[]`, DistractorsEN: `[]`},
+	}
+	state := &WebTrainingState{
+		UserID: 1, SessionID: 1, CurrentIndex: 0,
+		Queue: []*models.TrainingQueueItem{{Type: "card", Card: card}},
+	}
+	req := httptest.NewRequest(http.MethodGet, "/api/training/current", nil)
+	w := httptest.NewRecorder()
+	router.showTrainingCard(w, req, state)
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+	var payload map[string]interface{}
+	if err := json.Unmarshal(w.Body.Bytes(), &payload); err != nil {
+		t.Fatalf("unmarshal: %v", err)
+	}
+	if !strings.Contains(payload["question"].(string), "Переведите на английский") {
+		t.Fatalf("expected RUtoEN question, got %v", payload["question"])
+	}
+}
+
+// showTrainingFeedback: direct call with correct and incorrect (hint, example, delay_seconds)
+func TestShowTrainingFeedback_Direct(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	_, userRepo, _, _, _ := setupTrainingHandlersTestDB(t)
+	user, _ := userRepo.GetOrCreateUser(252525)
+	cfg := &config.Config{Training: config.TrainingConfig{OptionsDelayMS: 2000, WrongAnswerDelaySeconds: 5}}
+	router := &Router{config: cfg, userRepo: userRepo, logger: logger}
+	state := &WebTrainingState{UserID: user.ID}
+	req := httptest.NewRequest(http.MethodGet, "/", nil)
+	w := httptest.NewRecorder()
+
+	// Correct answer: no delay_seconds
+	router.showTrainingFeedback(w, req, state, true, "ok", "ok", models.TrainingCard{})
+	var resp map[string]interface{}
+	if err := json.Unmarshal(w.Body.Bytes(), &resp); err != nil {
+		t.Fatalf("unmarshal: %v", err)
+	}
+	if resp["delay_seconds"] != nil {
+		t.Errorf("correct answer should not have delay_seconds, got %v", resp["delay_seconds"])
+	}
+
+	// Incorrect with hint and example
+	w = httptest.NewRecorder()
+	router.showTrainingFeedback(w, req, state, false, "wrong", "right", models.TrainingCard{Hint: "hint", ExampleEN: "example"})
+	if err := json.Unmarshal(w.Body.Bytes(), &resp); err != nil {
+		t.Fatalf("unmarshal: %v", err)
+	}
+	if resp["hint"] != "hint" || resp["example"] != "example" {
+		t.Errorf("expected hint and example, got %v", resp)
+	}
+	if resp["delay_seconds"] != float64(5) {
+		t.Errorf("expected delay_seconds=5, got %v", resp["delay_seconds"])
 	}
 }

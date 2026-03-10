@@ -158,6 +158,96 @@ func TestGetTrainingDelaysForUser_FromUserSettings(t *testing.T) {
 	}
 }
 
+// getTrainingDelaysForUser: userRepo not *repository.UserRepository
+func TestGetTrainingDelaysForUser_UserRepoWrongType(t *testing.T) {
+	cfg := &config.Config{
+		Training: config.TrainingConfig{
+			OptionsDelayMS:          1000,
+			WrongAnswerDelaySeconds: 2,
+		},
+	}
+	router := &Router{config: cfg, userRepo: struct{}{}}
+
+	optsMS, wrongSec := router.getTrainingDelaysForUser(1)
+	if optsMS != 1000 || wrongSec != 2 {
+		t.Errorf("getTrainingDelaysForUser() = (%d, %d), want (1000, 2)", optsMS, wrongSec)
+	}
+}
+
+// getTrainingDelaysForUser: user not found / nil
+func TestGetTrainingDelaysForUser_UserNotFound(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, _, _, _ := setupTrainingHandlersTestDB(t)
+	cfg := &config.Config{
+		Training: config.TrainingConfig{
+			OptionsDelayMS:          1500,
+			WrongAnswerDelaySeconds: 4,
+		},
+	}
+	router := &Router{config: cfg, userRepo: userRepo, logger: logger}
+	_ = db
+
+	optsMS, wrongSec := router.getTrainingDelaysForUser(999999999)
+	if optsMS != 1500 || wrongSec != 4 {
+		t.Errorf("getTrainingDelaysForUser() = (%d, %d), want (1500, 4)", optsMS, wrongSec)
+	}
+}
+
+// getTrainingDelaysForUser: invalid SettingsJSON
+func TestGetTrainingDelaysForUser_InvalidSettingsJSON(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	_, userRepo, _, _, _ := setupTrainingHandlersTestDB(t)
+	user, err := userRepo.GetOrCreateUser(88889)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	if err := userRepo.UpdateUserSettings(user.ID, "{invalid"); err != nil {
+		t.Fatalf("UpdateUserSettings: %v", err)
+	}
+	cfg := &config.Config{
+		Training: config.TrainingConfig{
+			OptionsDelayMS:          2000,
+			WrongAnswerDelaySeconds: 3,
+		},
+	}
+	router := &Router{config: cfg, userRepo: userRepo, logger: logger}
+
+	optsMS, wrongSec := router.getTrainingDelaysForUser(user.ID)
+	if optsMS != 2000 || wrongSec != 3 {
+		t.Errorf("getTrainingDelaysForUser() with invalid JSON = (%d, %d), want (2000, 3)", optsMS, wrongSec)
+	}
+}
+
+func TestHandleTrainingStart_Unauthorized(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, _, _, _ := setupTrainingHandlersTestDB(t)
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{
+			JWTSecret:     "test-secret",
+			JWTTTLHours:   24,
+			RefreshTTLHours: 720,
+		},
+		Training: config.TrainingConfig{
+			OptionsDelayMS:         2000,
+			WrongAnswerDelaySeconds: 3,
+		},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("POST", "/api/training/start", nil)
+	// No user in context
+	w := httptest.NewRecorder()
+	router.handleTrainingStart(w, req)
+	if w.Code != http.StatusUnauthorized {
+		t.Errorf("Expected status 401, got %d", w.Code)
+	}
+}
+
 func TestHandleTrainingStart_WrongMethod(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo, _, _, _ := setupTrainingHandlersTestDB(t)
@@ -243,6 +333,130 @@ func TestHandleTrainingCurrent_NoSession(t *testing.T) {
 	}
 	if response["active"] != false {
 		t.Errorf("Expected active=false, got %v", response["active"])
+	}
+}
+
+func TestHandleTrainingCurrent_WithSession(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, _, _, sessionRepo := setupTrainingHandlersTestDB(t)
+	user, _ := userRepo.GetOrCreateUser(232323)
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+		Training: config.TrainingConfig{OptionsDelayMS: 2000, WrongAnswerDelaySeconds: 3},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+	router.webTrainingHandler = NewWebTrainingHandler(nil, nil, nil, sessionRepo, logger, 2000, 3)
+	router.webTrainingHandler.sessionsMutex.Lock()
+	router.webTrainingHandler.sessions[user.ID] = &WebTrainingState{
+		UserID: user.ID, SessionID: 1, CurrentIndex: 0,
+		Queue: []*models.TrainingQueueItem{{Type: "spell", Spell: &models.SpellChallenge{WordRU: "тест", DisplayWord: "test"}}},
+	}
+	router.webTrainingHandler.sessionsMutex.Unlock()
+	req := httptest.NewRequest("GET", "/api/training/current", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleTrainingCurrent(w, req)
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d", w.Code)
+	}
+	var resp map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&resp); err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+	if resp["type"] != "spell" {
+		t.Errorf("Expected type=spell, got %v", resp["type"])
+	}
+}
+
+func TestHandleTrainingReveal_NoHandler(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, _, _, _ := setupTrainingHandlersTestDB(t)
+	user, _ := userRepo.GetOrCreateUser(202020)
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+		Training: config.TrainingConfig{OptionsDelayMS: 2000, WrongAnswerDelaySeconds: 3},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+	// router.webTrainingHandler is nil
+	req := httptest.NewRequest("POST", "/api/training/reveal", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleTrainingReveal(w, req)
+	if w.Code != http.StatusNotFound {
+		t.Errorf("Expected status 404 when handler is nil, got %d", w.Code)
+	}
+}
+
+func TestHandleTrainingReveal_NotCardType(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, _, _, _, sessionRepo := setupTrainingHandlersTestDB(t)
+	userRepo := repository.NewUserRepository(db, logger)
+	user, _ := userRepo.GetOrCreateUser(212121)
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+		Training: config.TrainingConfig{OptionsDelayMS: 2000, WrongAnswerDelaySeconds: 3},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+	router.webTrainingHandler = NewWebTrainingHandler(nil, nil, nil, sessionRepo, logger, 2000, 3)
+	router.webTrainingHandler.sessionsMutex.Lock()
+	router.webTrainingHandler.sessions[user.ID] = &WebTrainingState{
+		UserID: user.ID, SessionID: 1, CurrentIndex: 0,
+		Queue: []*models.TrainingQueueItem{{Type: "spell", Spell: &models.SpellChallenge{DisplayWord: "x"}}},
+	}
+	router.webTrainingHandler.sessionsMutex.Unlock()
+	req := httptest.NewRequest("POST", "/api/training/reveal", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleTrainingReveal(w, req)
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("Expected status 400 for non-card type, got %d", w.Code)
+	}
+}
+
+// handleTrainingReveal: item.Type == "card" but item.Card == nil
+func TestHandleTrainingReveal_CardTypeNilCard(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, _, _, _, sessionRepo := setupTrainingHandlersTestDB(t)
+	userRepo := repository.NewUserRepository(db, logger)
+	user, _ := userRepo.GetOrCreateUser(212122)
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+		Training: config.TrainingConfig{OptionsDelayMS: 2000, WrongAnswerDelaySeconds: 3},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+	router.webTrainingHandler = NewWebTrainingHandler(nil, nil, nil, sessionRepo, logger, 2000, 3)
+	router.webTrainingHandler.sessionsMutex.Lock()
+	router.webTrainingHandler.sessions[user.ID] = &WebTrainingState{
+		UserID: user.ID, SessionID: 1, CurrentIndex: 0,
+		Queue: []*models.TrainingQueueItem{{Type: "card", Card: nil}},
+	}
+	router.webTrainingHandler.sessionsMutex.Unlock()
+	req := httptest.NewRequest("POST", "/api/training/reveal", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleTrainingReveal(w, req)
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("Expected status 400 when card type but Card is nil, got %d", w.Code)
 	}
 }
 
@@ -405,10 +619,10 @@ func TestHandleTrainingAnswer_NoSession(t *testing.T) {
 	}
 }
 
-// errReader is a body that fails on Read (to trigger ParseForm error).
-type errReader struct{}
+// failingBodyReader is a body that fails on Read (to trigger ParseForm error).
+type failingBodyReader struct{}
 
-func (errReader) Read(_ []byte) (int, error) {
+func (failingBodyReader) Read(_ []byte) (int, error) {
 	return 0, errors.New("read error")
 }
 
@@ -441,7 +655,7 @@ func TestHandleTrainingAnswer_ParseFormError(t *testing.T) {
 	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
 	router.authMiddleware = authMiddleware
 
-	req := httptest.NewRequest("POST", "/api/training/answer", io.NopCloser(errReader{}))
+	req := httptest.NewRequest("POST", "/api/training/answer", io.NopCloser(failingBodyReader{}))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	ctx := context.WithValue(req.Context(), userIDKey, user.ID)
 	req = req.WithContext(ctx)

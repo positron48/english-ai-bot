@@ -3,7 +3,10 @@ package web
 import (
 	"bytes"
 	"context"
+	"database/sql"
 	"encoding/json"
+	"errors"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -33,13 +36,33 @@ func (m *mockWordService) GetWordDefinition(ctx context.Context, userID int64, w
 
 type mockAIService struct {
 	resp string
+	err  error
 }
 
 func (m *mockAIService) GenerateResponse(ctx context.Context, text string) (string, error) {
+	if m.err != nil {
+		return "", m.err
+	}
 	return m.resp, nil
 }
 
-func setupDashboardRouterDeps(t *testing.T, ws *mockWordService, ai *mockAIService) (*Router, *database.DB) {
+// mockWordServiceErr implements WordService and returns error from GetWordDefinition.
+type mockWordServiceErr struct {
+	isSingle bool
+}
+
+func (m *mockWordServiceErr) IsSingleWord(text string) bool { return m.isSingle }
+
+func (m *mockWordServiceErr) GetWordDefinition(ctx context.Context, userID int64, word string) (string, error) {
+	return "", errors.New("injected error")
+}
+
+// errReader makes ParseForm fail when reading body.
+type errReader struct{}
+
+func (errReader) Read([]byte) (int, error) { return 0, errors.New("read error") }
+
+func setupDashboardRouterDeps(t *testing.T, ws interface{}, ai *mockAIService) (*Router, *database.DB) {
 	t.Helper()
 	logger, _ := zap.NewDevelopment()
 	db := testutil.SetupTestDatabase(t)
@@ -151,7 +174,7 @@ func TestHandleSettingsChatSettings_Unauthorized(t *testing.T) {
 func TestHandleSettingsChatSettings_UserNotFound(t *testing.T) {
 	router, _ := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
 	req := httptest.NewRequest(http.MethodGet, "/api/settings", nil)
-	req = setUserIDInContext(req, 999)
+	req = setUserIDInContext(req, 999999) // non-existent user so GetUserByID returns nil
 	w := httptest.NewRecorder()
 	router.handleSettings(w, req)
 
@@ -682,5 +705,205 @@ func TestHandleTrainingSettings_InvalidSettingsJSON(t *testing.T) {
 	// Handler warns on invalid settings_json and continues with empty settings
 	if w.Code != http.StatusOK {
 		t.Fatalf("expected 200 when user has invalid settings_json, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleChat_ParseFormError covers ParseForm failure (invalid body read).
+func TestHandleChat_ParseFormError(t *testing.T) {
+	router, _ := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
+	req := httptest.NewRequest(http.MethodPost, "/api/chat", io.NopCloser(&errReader{}))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req = setUserIDInContext(req, 1)
+	w := httptest.NewRecorder()
+	router.handleChat(w, req)
+	if w.Code != http.StatusBadRequest {
+		t.Fatalf("expected 400 on ParseForm error, got %d", w.Code)
+	}
+}
+
+// TestHandleChat_WordServiceNotImplemented covers wordService type assert failure (500).
+func TestHandleChat_WordServiceNotImplemented(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	conn := db.GetConnection()
+	cfg := &config.Config{WebApp: config.WebAppConfig{JWTSecret: "test-secret"}}
+	cbRepo := repository.NewCircuitBreakerRepository(conn, logger)
+	cbService := service.NewCircuitBreakerService(cbRepo, 5, logger)
+	userRepo := repository.NewUserRepository(conn, logger)
+	router := NewRouter(logger, cfg, conn, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, struct{}{}, nil, nil, "")
+	req := httptest.NewRequest(http.MethodPost, "/api/chat", bytes.NewBufferString("message=hello"))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req = setUserIDInContext(req, 1)
+	w := httptest.NewRecorder()
+	router.handleChat(w, req)
+	if w.Code != http.StatusInternalServerError {
+		t.Fatalf("expected 500 when wordService does not implement interface, got %d", w.Code)
+	}
+}
+
+// TestHandleChat_AIServiceNotImplemented covers aiService type assert failure (500).
+func TestHandleChat_AIServiceNotImplemented(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	conn := db.GetConnection()
+	cfg := &config.Config{WebApp: config.WebAppConfig{JWTSecret: "test-secret"}}
+	cbRepo := repository.NewCircuitBreakerRepository(conn, logger)
+	cbService := service.NewCircuitBreakerService(cbRepo, 5, logger)
+	userRepo := repository.NewUserRepository(conn, logger)
+	router := NewRouter(logger, cfg, conn, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, &mockWordService{isSingle: false}, struct{}{}, nil, "")
+	req := httptest.NewRequest(http.MethodPost, "/api/chat", bytes.NewBufferString("message=hello world"))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req = setUserIDInContext(req, 1)
+	w := httptest.NewRecorder()
+	router.handleChat(w, req)
+	if w.Code != http.StatusInternalServerError {
+		t.Fatalf("expected 500 when aiService does not implement interface, got %d", w.Code)
+	}
+}
+
+// TestHandleChat_ServiceReturnsError covers err != nil response (500).
+func TestHandleChat_ServiceReturnsError(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	conn := db.GetConnection()
+	cfg := &config.Config{}
+	cfg.WebApp.JWTSecret = "test-secret"
+	cbRepo := repository.NewCircuitBreakerRepository(conn, logger)
+	cbService := service.NewCircuitBreakerService(cbRepo, 5, logger)
+	userRepo := repository.NewUserRepository(conn, logger)
+	router := NewRouter(logger, cfg, conn, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, &mockWordServiceErr{isSingle: true}, &mockAIService{}, nil, "")
+	req := httptest.NewRequest(http.MethodPost, "/api/chat", bytes.NewBufferString("message=word"))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req = setUserIDInContext(req, 1)
+	w := httptest.NewRecorder()
+	router.handleChat(w, req)
+	if w.Code != http.StatusInternalServerError {
+		t.Fatalf("expected 500 when word service returns error, got %d", w.Code)
+	}
+}
+
+// TestHandleNotificationSettings_FrequencyInvalidNumber covers frequency validation (not daily/never, invalid number).
+func TestHandleNotificationSettings_FrequencyInvalidNumber(t *testing.T) {
+	router, db := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
+	_, err := db.GetConnection().Exec(`INSERT INTO users (telegram_id, created_at, updated_at, settings_json) VALUES (?,?,?,?)`, 2099, "2026-01-01 00:00:00", "2026-01-01 00:00:00", `{}`)
+	if err != nil {
+		t.Fatalf("insert user: %v", err)
+	}
+	req := httptest.NewRequest(http.MethodPost, "/api/settings/notifications", bytes.NewBufferString(`{"frequency":"0"}`))
+	req.Header.Set("Content-Type", "application/json")
+	req = setUserIDInContext(req, 1)
+	w := httptest.NewRecorder()
+	router.handleNotificationSettings(w, req)
+	if w.Code != http.StatusBadRequest {
+		t.Fatalf("expected 400 for frequency 0, got %d", w.Code)
+	}
+}
+
+// setupRouterWithClosedConn creates router and userRepo with a second connection, then closes it so GetUserByID fails.
+func setupRouterWithClosedConn(t *testing.T) *Router {
+	t.Helper()
+	testutil.SetupTestDatabase(t) // ensure shared DB is up and get DSN
+	dsn := testutil.GetTestDSN(t)
+	conn2, err := sql.Open("postgres_compat", dsn)
+	if err != nil {
+		t.Skipf("second connection open: %v (postgres_compat driver may not be registered)", err)
+	}
+	logger, _ := zap.NewDevelopment()
+	cfg := &config.Config{}
+	cfg.WebApp.JWTSecret = "test-secret"
+	cbRepo := repository.NewCircuitBreakerRepository(conn2, logger)
+	cbService := service.NewCircuitBreakerService(cbRepo, 5, logger)
+	userRepo := repository.NewUserRepository(conn2, logger)
+	router := NewRouter(logger, cfg, conn2, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, &mockWordService{}, &mockAIService{}, nil, "")
+	conn2.Close()
+	return router
+}
+
+// TestHandleSettings_GetUserByIDError covers GetUserByID error path (500).
+func TestHandleSettings_GetUserByIDError(t *testing.T) {
+	router := setupRouterWithClosedConn(t)
+	req := httptest.NewRequest(http.MethodGet, "/api/settings", nil)
+	req = setUserIDInContext(req, 1)
+	w := httptest.NewRecorder()
+	router.handleSettings(w, req)
+	if w.Code != http.StatusInternalServerError {
+		t.Fatalf("expected 500 when GetUserByID fails, got %d", w.Code)
+	}
+}
+
+// TestHandleNotificationSettings_GetUserByIDError covers GetUserByID error path (500).
+func TestHandleNotificationSettings_GetUserByIDError(t *testing.T) {
+	router := setupRouterWithClosedConn(t)
+	req := httptest.NewRequest(http.MethodPost, "/api/settings/notifications", bytes.NewBufferString(`{"frequency":"daily"}`))
+	req.Header.Set("Content-Type", "application/json")
+	req = setUserIDInContext(req, 1)
+	w := httptest.NewRecorder()
+	router.handleNotificationSettings(w, req)
+	if w.Code != http.StatusInternalServerError {
+		t.Fatalf("expected 500 when GetUserByID fails, got %d", w.Code)
+	}
+}
+
+// TestHandleLanguageSettings_GetUserByIDError covers GetUserByID error path (500).
+func TestHandleLanguageSettings_GetUserByIDError(t *testing.T) {
+	router := setupRouterWithClosedConn(t)
+	req := httptest.NewRequest(http.MethodPost, "/api/settings/language", bytes.NewBufferString(`{"language":"en"}`))
+	req.Header.Set("Content-Type", "application/json")
+	req = setUserIDInContext(req, 1)
+	w := httptest.NewRecorder()
+	router.handleLanguageSettings(w, req)
+	if w.Code != http.StatusInternalServerError {
+		t.Fatalf("expected 500 when GetUserByID fails, got %d", w.Code)
+	}
+}
+
+// TestHandleTrainingSettings_GetUserByIDError covers GetUserByID error path (500).
+func TestHandleTrainingSettings_GetUserByIDError(t *testing.T) {
+	router := setupRouterWithClosedConn(t)
+	req := httptest.NewRequest(http.MethodPost, "/api/settings/training", bytes.NewBufferString(`{"options_delay_seconds":1}`))
+	req.Header.Set("Content-Type", "application/json")
+	req = setUserIDInContext(req, 1)
+	w := httptest.NewRecorder()
+	router.handleTrainingSettings(w, req)
+	if w.Code != http.StatusInternalServerError {
+		t.Fatalf("expected 500 when GetUserByID fails, got %d", w.Code)
+	}
+}
+
+// TestHandleNotificationSettings_InvalidSettingsJSON covers Warn path when parsing user settings fails.
+func TestHandleNotificationSettings_InvalidSettingsJSON(t *testing.T) {
+	router, db := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
+	_, err := db.GetConnection().Exec(`INSERT INTO users (telegram_id, created_at, updated_at, settings_json) VALUES (?,?,?,?)`, 2100, "2026-01-01 00:00:00", "2026-01-01 00:00:00", `{invalid json}`)
+	if err != nil {
+		t.Fatalf("insert user: %v", err)
+	}
+	req := httptest.NewRequest(http.MethodPost, "/api/settings/notifications", bytes.NewBufferString(`{"frequency":"daily"}`))
+	req.Header.Set("Content-Type", "application/json")
+	req = setUserIDInContext(req, 1)
+	w := httptest.NewRecorder()
+	router.handleNotificationSettings(w, req)
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected 200 (handler warns and continues), got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleTrainingSettings_InvalidJSONBody covers Decode error (400).
+func TestHandleTrainingSettings_InvalidJSONBody(t *testing.T) {
+	router, db := setupDashboardRouterDeps(t, &mockWordService{}, &mockAIService{})
+	_, err := db.GetConnection().Exec(`INSERT INTO users (telegram_id, created_at, updated_at, settings_json) VALUES (?,?,?,?)`, 3020, "2026-01-01 00:00:00", "2026-01-01 00:00:00", `{}`)
+	if err != nil {
+		t.Fatalf("insert user: %v", err)
+	}
+	req := httptest.NewRequest(http.MethodPost, "/api/settings/training", bytes.NewBufferString(`{`))
+	req.Header.Set("Content-Type", "application/json")
+	req = setUserIDInContext(req, 1)
+	w := httptest.NewRecorder()
+	router.handleTrainingSettings(w, req)
+	if w.Code != http.StatusBadRequest {
+		t.Fatalf("expected 400 for invalid JSON body, got %d", w.Code)
 	}
 }

@@ -138,6 +138,68 @@ func TestHandleTrainingStart_WithCards(t *testing.T) {
 	}
 }
 
+// TestHandleTrainingStart_WithUserThresholds covers sessionConfig built from user settings with threshold clamping.
+func TestHandleTrainingStart_WithUserThresholds(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, trainingCardRepo, userCardRepo, sessionRepo := setupTrainingIntegrationTestDB(t)
+	user, err := userRepo.GetOrCreateUser(434344)
+	if err != nil {
+		t.Fatalf("Failed to create user: %v", err)
+	}
+	var wordCardID int64
+	err = db.QueryRow("INSERT INTO word_cards (word, definition) VALUES ($1, $2) RETURNING id", "thresh", "thresh").Scan(&wordCardID)
+	if err != nil {
+		t.Fatalf("Failed to create word card: %v", err)
+	}
+	trainingCardID, err := trainingCardRepo.CreateTrainingCard(&models.TrainingCard{
+		WordCardID: wordCardID, WordEN: "thresh", SenseIndex: 0, WordRU: "порог", MeaningEN: "thresh",
+	})
+	if err != nil {
+		t.Fatalf("Failed to create training card: %v", err)
+	}
+	past := time.Now().Add(-24 * time.Hour)
+	_, err = userCardRepo.CreateUserCard(&models.UserCard{
+		UserID: user.ID, TrainingCardID: trainingCardID, Direction: models.DirectionENtoRU,
+		State: models.StateReview, EF: 2.0, NextDueAt: &past,
+	})
+	if err != nil {
+		t.Fatalf("Failed to create user card: %v", err)
+	}
+	// SpellMasteringThreshold 150 -> clamped to 100, TypeMasteringThreshold -5 -> clamped to 0
+	spellTh := 150
+	typeTh := -5
+	settings := models.UserSettings{
+		SpellModeEnabled:        ptrBool(false),
+		TypeModeEnabled:        ptrBool(false),
+		SpellMasteringThreshold: &spellTh,
+		TypeMasteringThreshold:  &typeTh,
+	}
+	settingsJSON, _ := json.Marshal(settings)
+	if err := userRepo.UpdateUserSettings(user.ID, string(settingsJSON)); err != nil {
+		t.Fatalf("UpdateUserSettings: %v", err)
+	}
+	cfg := &config.Config{
+		WebApp:   config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+		Training: config.TrainingConfig{OptionsDelayMS: 2000, WrongAnswerDelaySeconds: 3},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, logger)
+	srsService := service.NewSRSService(userCardRepo, logger)
+	optionsService := service.NewOptionsService(trainingCardRepo, logger)
+	router := NewRouter(logger, cfg, db, trainingService, srsService, optionsService, nil)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+	req := httptest.NewRequest("POST", "/api/training/start", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleTrainingStart(w, req)
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d", w.Code)
+	}
+}
+
 func TestHandleTrainingReveal_WithSession(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo, trainingCardRepo, userCardRepo, sessionRepo := setupTrainingIntegrationTestDB(t)

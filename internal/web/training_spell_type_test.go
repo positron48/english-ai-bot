@@ -184,6 +184,190 @@ func TestHandleTrainingTypeAnswer_NoActiveSession(t *testing.T) {
 	}
 }
 
+func TestHandleTrainingSpellAnswer_NoHandler(t *testing.T) {
+	db, _, _, _, _ := setupTrainingIntegrationTestDB(t)
+	router := newSpellTypeRouter(t, db)
+	router.webTrainingHandler = nil
+
+	req := httptest.NewRequest(http.MethodPost, "/api/training/answer", nil)
+	w := httptest.NewRecorder()
+	router.handleTrainingSpellAnswer(w, req, 9004, "word")
+
+	if w.Code != http.StatusNotFound {
+		t.Fatalf("expected status 404 when handler is nil, got %d", w.Code)
+	}
+}
+
+func TestHandleTrainingSpellAnswer_NoSession(t *testing.T) {
+	db, _, _, _, _ := setupTrainingIntegrationTestDB(t)
+	router := newSpellTypeRouter(t, db)
+	router.webTrainingHandler = &WebTrainingHandler{sessions: map[int64]*WebTrainingState{}}
+
+	req := httptest.NewRequest(http.MethodPost, "/api/training/answer", nil)
+	w := httptest.NewRecorder()
+	router.handleTrainingSpellAnswer(w, req, 9005, "word")
+
+	if w.Code != http.StatusNotFound {
+		t.Fatalf("expected status 404 when no session, got %d", w.Code)
+	}
+}
+
+func TestHandleTrainingSpellAnswer_WrongAnswer(t *testing.T) {
+	db, _, _, _, _ := setupTrainingIntegrationTestDB(t)
+	router := newSpellTypeRouter(t, db)
+	const userID int64 = 9006
+	router.webTrainingHandler = &WebTrainingHandler{
+		sessions: map[int64]*WebTrainingState{
+			userID: {
+				UserID: userID, SessionID: 13,
+				Queue: []*models.TrainingQueueItem{{
+					Type: "spell",
+					Spell: &models.SpellChallenge{DisplayWord: "correct"},
+				}},
+				ShownAt: time.Now().Add(-2 * time.Second),
+			},
+		},
+	}
+
+	form := url.Values{}
+	form.Set("answer_text", "wrong")
+	req := httptest.NewRequest(http.MethodPost, "/api/training/answer", strings.NewReader(form.Encode()))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req = setUserIDInContext(req, userID)
+	w := httptest.NewRecorder()
+	router.handleTrainingSpellAnswer(w, req, userID, "wrong")
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+	var payload map[string]interface{}
+	if err := json.Unmarshal(w.Body.Bytes(), &payload); err != nil {
+		t.Fatalf("unmarshal: %v", err)
+	}
+	if payload["is_correct"] != false {
+		t.Fatalf("expected is_correct=false, got %v", payload["is_correct"])
+	}
+	if payload["delay_seconds"] != float64(7) {
+		t.Fatalf("expected delay_seconds=7, got %v", payload["delay_seconds"])
+	}
+}
+
+func TestHandleTrainingTypeAnswer_NoHandler(t *testing.T) {
+	db, _, _, _, _ := setupTrainingIntegrationTestDB(t)
+	router := newSpellTypeRouter(t, db)
+	router.webTrainingHandler = nil
+
+	w := httptest.NewRecorder()
+	router.handleTrainingTypeAnswer(w, nil, 9007, "word")
+	if w.Code != http.StatusNotFound {
+		t.Fatalf("expected status 404 when handler is nil, got %d", w.Code)
+	}
+}
+
+func TestHandleTrainingTypeAnswer_NoSession(t *testing.T) {
+	db, _, _, _, _ := setupTrainingIntegrationTestDB(t)
+	router := newSpellTypeRouter(t, db)
+	router.webTrainingHandler = &WebTrainingHandler{sessions: map[int64]*WebTrainingState{}}
+
+	w := httptest.NewRecorder()
+	router.handleTrainingTypeAnswer(w, nil, 9008, "word")
+	if w.Code != http.StatusNotFound {
+		t.Fatalf("expected status 404 when no session, got %d", w.Code)
+	}
+}
+
+func TestHandleTrainingTypeAnswer_NotTypeChallenge(t *testing.T) {
+	db, _, _, _, _ := setupTrainingIntegrationTestDB(t)
+	router := newSpellTypeRouter(t, db)
+	const userID int64 = 9009
+	router.webTrainingHandler = &WebTrainingHandler{
+		sessions: map[int64]*WebTrainingState{
+			userID: {
+				Queue: []*models.TrainingQueueItem{{
+					Type: "card",
+					Card: &models.UserCardWithTraining{},
+				}},
+			},
+		},
+	}
+
+	w := httptest.NewRecorder()
+	router.handleTrainingTypeAnswer(w, nil, userID, "word")
+	if w.Code != http.StatusBadRequest {
+		t.Fatalf("expected status 400 for non-type challenge, got %d", w.Code)
+	}
+}
+
+// TestHandleTrainingSpellAnswer_WithReplacedCard calls gradeReplacedCardForSpellType from the handler when ReplacedUserCardID is set.
+func TestHandleTrainingSpellAnswer_WithReplacedCard(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, trainingCardRepo, userCardRepo, sessionRepo := setupTrainingIntegrationTestDB(t)
+	user, err := userRepo.GetOrCreateUser(505051)
+	if err != nil {
+		t.Fatalf("create user: %v", err)
+	}
+	var wordCardID int64
+	if err := db.QueryRow("INSERT INTO word_cards (word, definition) VALUES ($1, $2) RETURNING id", "spell", "spell").Scan(&wordCardID); err != nil {
+		t.Fatalf("create word card: %v", err)
+	}
+	trainingCardID, err := trainingCardRepo.CreateTrainingCard(&models.TrainingCard{
+		WordCardID: wordCardID, WordEN: "spell", SenseIndex: 0, WordRU: "орфография", MeaningEN: "spell",
+	})
+	if err != nil {
+		t.Fatalf("create training card: %v", err)
+	}
+	nextDueAt := time.Now().Add(-time.Hour)
+	userCardID, err := userCardRepo.CreateUserCard(&models.UserCard{
+		UserID: user.ID, TrainingCardID: trainingCardID, Direction: models.DirectionENtoRU,
+		State: models.StateReview, EF: 2.0, NextDueAt: &nextDueAt,
+	})
+	if err != nil {
+		t.Fatalf("create user card: %v", err)
+	}
+	sessionID, err := sessionRepo.CreateSession(&models.TrainingSession{
+		UserID: user.ID, Source: models.SourceManual, PlannedCount: 1, DoneCount: 0,
+	})
+	if err != nil {
+		t.Fatalf("create session: %v", err)
+	}
+	cfg := &config.Config{Training: config.TrainingConfig{OptionsDelayMS: 2000, WrongAnswerDelaySeconds: 3}}
+	srsService := service.NewSRSService(userCardRepo, logger)
+	router := NewRouter(logger, cfg, db, nil, srsService, nil, nil)
+	router.webTrainingHandler = &WebTrainingHandler{
+		sessionRepo: sessionRepo,
+		sessions: map[int64]*WebTrainingState{
+			user.ID: {
+				UserID: user.ID, SessionID: sessionID, CurrentIndex: 0,
+				Queue: []*models.TrainingQueueItem{{
+					Type: "spell",
+					Spell: &models.SpellChallenge{
+						DisplayWord:        "spell",
+						ReplacedUserCardID: userCardID,
+					},
+				}},
+				ShownAt: time.Now().Add(-2 * time.Second),
+			},
+		},
+	}
+	form := url.Values{}
+	form.Set("answer_text", "spell")
+	req := httptest.NewRequest(http.MethodPost, "/api/training/answer", strings.NewReader(form.Encode()))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req = setUserIDInContext(req, user.ID)
+	w := httptest.NewRecorder()
+	router.handleTrainingSpellAnswer(w, req, user.ID, "spell")
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+	var count int
+	if err := db.QueryRow("SELECT COUNT(*) FROM review_events WHERE session_id = ? AND user_card_id = ?", sessionID, userCardID).Scan(&count); err != nil {
+		t.Fatalf("count review events: %v", err)
+	}
+	if count != 1 {
+		t.Fatalf("expected 1 review event for replaced card, got %d", count)
+	}
+}
+
 func TestGradeReplacedCardForSpellType_CreatesReviewEventAndWrongAnswer(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo, trainingCardRepo, userCardRepo, sessionRepo := setupTrainingIntegrationTestDB(t)

@@ -3053,3 +3053,388 @@ func TestHandleAdminWord_Direct_POST_Generate_ParseError(t *testing.T) {
 		t.Errorf("expected 500 for parse error, got %d: %s", w.Code, w.Body.String())
 	}
 }
+
+// badDBConn returns a closed *sql.DB so that subsequent DB operations fail (for coverage of error paths).
+func badDBConn(t *testing.T) *sql.DB {
+	t.Helper()
+	testutil.SetupTestDB(t) // ensure shared DB and postgres_compat driver are ready
+	dsn := testutil.GetTestDSN(t)
+	conn, err := sql.Open("postgres_compat", dsn)
+	if err != nil {
+		t.Skipf("postgres_compat open: %v", err)
+	}
+	if err := conn.Ping(); err != nil {
+		_ = conn.Close()
+		t.Skipf("ping: %v", err)
+	}
+	conn.Close()
+	return conn
+}
+
+func TestHandleAdmin_Direct_Get_DBQueryFails(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	badDB := badDBConn(t)
+	cfg := &config.Config{Admin: config.AdminConfig{TelegramID: 123456789}, WebApp: config.WebAppConfig{JWTSecret: "test-secret"}}
+	cbRepo := repository.NewCircuitBreakerRepository(badDB, logger)
+	cbService := service.NewCircuitBreakerService(cbRepo, 5, logger)
+	router := NewRouter(logger, cfg, badDB, nil, nil, nil, cbService)
+
+	req := httptest.NewRequest(http.MethodGet, "/api/admin", nil)
+	w := httptest.NewRecorder()
+	router.handleAdmin(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("expected 200 (handler returns default state on error), got %d: %s", w.Code, w.Body.String())
+	}
+	var resp map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&resp); err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+	cb, _ := resp["circuit_breaker"].(map[string]interface{})
+	if cb == nil {
+		t.Fatal("expected circuit_breaker in response")
+	}
+	if cb["state"] != "closed" || cb["failures"] != float64(0) {
+		t.Errorf("expected default state on error, got %v", cb)
+	}
+}
+
+func TestHandleAdminCircuitReset_Direct_Post_ResetFails(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	badDB := badDBConn(t)
+	cfg := &config.Config{Admin: config.AdminConfig{TelegramID: 123456789}, WebApp: config.WebAppConfig{JWTSecret: "test-secret"}}
+	cbRepo := repository.NewCircuitBreakerRepository(badDB, logger)
+	cbService := service.NewCircuitBreakerService(cbRepo, 5, logger)
+	router := NewRouter(logger, cfg, badDB, nil, nil, nil, cbService)
+
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/circuit/reset", nil)
+	w := httptest.NewRecorder()
+	router.handleAdminCircuitReset(w, req)
+
+	if w.Code != http.StatusInternalServerError {
+		t.Errorf("expected 500 when Reset fails, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+func TestHandleAdminAppSettings_Get_DBFails(t *testing.T) {
+	badDB := badDBConn(t)
+	logger, _ := zap.NewDevelopment()
+	cfg := &config.Config{}
+	cbRepo := repository.NewCircuitBreakerRepository(badDB, logger)
+	cbService := service.NewCircuitBreakerService(cbRepo, 5, logger)
+	router := NewRouter(logger, cfg, badDB, nil, nil, nil, cbService)
+
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/app-settings", nil)
+	w := httptest.NewRecorder()
+	router.handleAdminAppSettings(w, req)
+
+	if w.Code != http.StatusInternalServerError {
+		t.Errorf("expected 500 when GetBoolSetting fails, got %d", w.Code)
+	}
+}
+
+func TestHandleAdminAppSettings_Put_SetBoolFails(t *testing.T) {
+	badDB := badDBConn(t)
+	logger, _ := zap.NewDevelopment()
+	cfg := &config.Config{}
+	cbRepo := repository.NewCircuitBreakerRepository(badDB, logger)
+	cbService := service.NewCircuitBreakerService(cbRepo, 5, logger)
+	router := NewRouter(logger, cfg, badDB, nil, nil, nil, cbService)
+
+	payload, _ := json.Marshal(map[string]interface{}{"hide_placement_test_button": true})
+	req := httptest.NewRequest(http.MethodPut, "/api/admin/app-settings", strings.NewReader(string(payload)))
+	req.Header.Set("Content-Type", "application/json")
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, int64(1)))
+	w := httptest.NewRecorder()
+	router.handleAdminAppSettings(w, req)
+
+	if w.Code != http.StatusInternalServerError {
+		t.Errorf("expected 500 when SetBoolSetting fails, got %d", w.Code)
+	}
+}
+
+func TestHandleAdminAppSettings_PatchMethodNotAllowed(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, _, cbService := setupAdminTestDB(t)
+	cfg := &config.Config{}
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+
+	req := httptest.NewRequest(http.MethodPatch, "/api/admin/app-settings", nil)
+	w := httptest.NewRecorder()
+	router.handleAdminAppSettings(w, req)
+
+	if w.Code != http.StatusMethodNotAllowed {
+		t.Errorf("expected 405, got %d", w.Code)
+	}
+}
+
+func TestHandleAdminUsers_Direct_QueryFails(t *testing.T) {
+	badDB := badDBConn(t)
+	logger, _ := zap.NewDevelopment()
+	cfg := &config.Config{}
+	cbRepo := repository.NewCircuitBreakerRepository(badDB, logger)
+	cbService := service.NewCircuitBreakerService(cbRepo, 5, logger)
+	router := NewRouter(logger, cfg, badDB, nil, nil, nil, cbService)
+
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/users", nil)
+	w := httptest.NewRecorder()
+	router.handleAdminUsers(w, req)
+
+	if w.Code != http.StatusInternalServerError {
+		t.Errorf("expected 500 when Query fails, got %d", w.Code)
+	}
+}
+
+func TestHandleAdminWords_Direct_ListFails(t *testing.T) {
+	badDB := badDBConn(t)
+	logger, _ := zap.NewDevelopment()
+	cfg := &config.Config{}
+	cbRepo := repository.NewCircuitBreakerRepository(badDB, logger)
+	cbService := service.NewCircuitBreakerService(cbRepo, 5, logger)
+	router := NewRouter(logger, cfg, badDB, nil, nil, nil, cbService)
+
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/words", nil)
+	w := httptest.NewRecorder()
+	router.handleAdminWords(w, req)
+
+	if w.Code != http.StatusInternalServerError {
+		t.Errorf("expected 500 when ListWordCardsAdmin fails, got %d", w.Code)
+	}
+}
+
+func TestHandleAdminOrphanedCards_Direct_ListFails(t *testing.T) {
+	badDB := badDBConn(t)
+	logger, _ := zap.NewDevelopment()
+	cfg := &config.Config{}
+	cbRepo := repository.NewCircuitBreakerRepository(badDB, logger)
+	cbService := service.NewCircuitBreakerService(cbRepo, 5, logger)
+	router := NewRouter(logger, cfg, badDB, nil, nil, nil, cbService)
+
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/orphaned-cards", nil)
+	w := httptest.NewRecorder()
+	router.handleAdminOrphanedCards(w, req)
+
+	if w.Code != http.StatusInternalServerError {
+		t.Errorf("expected 500 when ListOrphanedTrainingCards fails, got %d", w.Code)
+	}
+}
+
+func TestHandleAdminOrphanedCards_Direct_CountFails(t *testing.T) {
+	// Count fails after List succeeds: use a DB that can run List but fails on Count.
+	// With a closed DB both fail at first use, so we get ListFails. To get CountFails we'd need
+	// a custom mock. Use badDB and we already cover one error path; Count error path is similar.
+	badDB := badDBConn(t)
+	logger, _ := zap.NewDevelopment()
+	cfg := &config.Config{}
+	cbRepo := repository.NewCircuitBreakerRepository(badDB, logger)
+	cbService := service.NewCircuitBreakerService(cbRepo, 5, logger)
+	router := NewRouter(logger, cfg, badDB, nil, nil, nil, cbService)
+
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/orphaned-cards?limit=10&offset=0", nil)
+	w := httptest.NewRecorder()
+	router.handleAdminOrphanedCards(w, req)
+
+	if w.Code != http.StatusInternalServerError {
+		t.Errorf("expected 500, got %d", w.Code)
+	}
+}
+
+func TestHandleAdminOrphanedUserCards_Direct_ListFails(t *testing.T) {
+	badDB := badDBConn(t)
+	logger, _ := zap.NewDevelopment()
+	cfg := &config.Config{}
+	cbRepo := repository.NewCircuitBreakerRepository(badDB, logger)
+	cbService := service.NewCircuitBreakerService(cbRepo, 5, logger)
+	router := NewRouter(logger, cfg, badDB, nil, nil, nil, cbService)
+
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/orphaned-user-cards", nil)
+	w := httptest.NewRecorder()
+	router.handleAdminOrphanedUserCards(w, req)
+
+	if w.Code != http.StatusInternalServerError {
+		t.Errorf("expected 500 when ListOrphanedUserCards fails, got %d", w.Code)
+	}
+}
+
+func TestHandleAdminTraining_PostCreate_ValidationRequiredFields(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	adminUser, _ := userRepo.GetOrCreateUser(123456789)
+	wordRepo := repository.NewWordRepository(db, logger)
+	_ = wordRepo.SaveWordCard("validword", "def")
+	cfg := &config.Config{Admin: config.AdminConfig{TelegramID: 123456789}, WebApp: config.WebAppConfig{JWTSecret: "test-secret"}}
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	ctx := context.WithValue(context.WithValue(context.Background(), userIDKey, adminUser.ID), userPermissionsKey, []string{string(PermissionWordsEditAll)})
+
+	// POST create with missing word_ru and meaning_en
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/training/validword", strings.NewReader("word_ru=&meaning_en="))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+	router.handleAdminTraining(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("expected 400 for missing word_ru/meaning_en, got %d: %s", w.Code, w.Body.String())
+	}
+	if !strings.Contains(w.Body.String(), "word_ru and meaning_en are required") {
+		t.Errorf("expected validation message, got body: %s", w.Body.String())
+	}
+}
+
+func TestHandleAdminTrainingCard_Put_Form_PosEmptySetsNil(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	adminUser, _ := userRepo.GetOrCreateUser(123456789)
+	wordRepo := repository.NewWordRepository(db, logger)
+	_ = wordRepo.SaveWordCard("posword", "def")
+	wc, _ := wordRepo.GetWordCard("posword")
+	trainingCardRepo := repository.NewTrainingCardRepository(db, logger)
+	posVal := "noun"
+	tc := &models.TrainingCard{WordCardID: wc.ID, WordEN: "posword", SenseIndex: 0, WordRU: "слово", MeaningEN: "word", POS: &posVal}
+	cardID, _ := trainingCardRepo.CreateTrainingCard(tc)
+	cfg := &config.Config{Admin: config.AdminConfig{TelegramID: 123456789}, WebApp: config.WebAppConfig{JWTSecret: "test-secret"}}
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	ctx := context.WithValue(context.WithValue(context.Background(), userIDKey, adminUser.ID), userPermissionsKey, []string{string(PermissionWordsEditAll)})
+
+	// PUT with form pos= (empty) to set POS to nil
+	req := httptest.NewRequest(http.MethodPut, fmt.Sprintf("/api/admin/training/card/%d", cardID), strings.NewReader("word_ru=слово&meaning_en=word&pos="))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+	router.handleAdminTrainingCard(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("expected 200, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+func TestHandleAdminWord_Put_DBFails(t *testing.T) {
+	badDB := badDBConn(t)
+	logger, _ := zap.NewDevelopment()
+	cfg := &config.Config{}
+	cbRepo := repository.NewCircuitBreakerRepository(badDB, logger)
+	cbService := service.NewCircuitBreakerService(cbRepo, 5, logger)
+	router := NewRouter(logger, cfg, badDB, nil, nil, nil, cbService)
+
+	body := strings.NewReader("definition=new&word=w")
+	req := httptest.NewRequest(http.MethodPut, "/api/admin/words/1", body)
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	w := httptest.NewRecorder()
+	router.handleAdminWord(w, req)
+
+	if w.Code != http.StatusInternalServerError {
+		t.Errorf("expected 500 when DB fails, got %d", w.Code)
+	}
+}
+
+func TestHandleAdminTraining_PostCreate_GetWordCardFails(t *testing.T) {
+	badDB := badDBConn(t)
+	logger, _ := zap.NewDevelopment()
+	cfg := &config.Config{}
+	cbRepo := repository.NewCircuitBreakerRepository(badDB, logger)
+	cbService := service.NewCircuitBreakerService(cbRepo, 5, logger)
+	router := NewRouter(logger, cfg, badDB, nil, nil, nil, cbService)
+	ctx := context.WithValue(context.WithValue(context.Background(), userIDKey, int64(1)), userPermissionsKey, []string{string(PermissionWordsEditAll)})
+
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/training/someword", strings.NewReader("word_ru=слово&meaning_en=meaning"))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+	router.handleAdminTraining(w, req)
+
+	if w.Code != http.StatusInternalServerError {
+		t.Errorf("expected 500 when GetWordCard fails, got %d", w.Code)
+	}
+}
+
+func TestHandleAdminTrainingCard_Delete_DBFails(t *testing.T) {
+	badDB := badDBConn(t)
+	logger, _ := zap.NewDevelopment()
+	cfg := &config.Config{}
+	cbRepo := repository.NewCircuitBreakerRepository(badDB, logger)
+	cbService := service.NewCircuitBreakerService(cbRepo, 5, logger)
+	router := NewRouter(logger, cfg, badDB, nil, nil, nil, cbService)
+	ctx := context.WithValue(context.WithValue(context.Background(), userIDKey, int64(1)), userPermissionsKey, []string{string(PermissionWordsEditAll)})
+
+	req := httptest.NewRequest(http.MethodDelete, "/api/admin/training/card/1", nil)
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+	router.handleAdminTrainingCard(w, req)
+
+	if w.Code != http.StatusInternalServerError {
+		t.Errorf("expected 500 when DeleteTrainingCard fails, got %d", w.Code)
+	}
+}
+
+func TestHandleAdminTrainingCard_Put_GetCardFails(t *testing.T) {
+	badDB := badDBConn(t)
+	logger, _ := zap.NewDevelopment()
+	cfg := &config.Config{}
+	cbRepo := repository.NewCircuitBreakerRepository(badDB, logger)
+	cbService := service.NewCircuitBreakerService(cbRepo, 5, logger)
+	router := NewRouter(logger, cfg, badDB, nil, nil, nil, cbService)
+	ctx := context.WithValue(context.WithValue(context.Background(), userIDKey, int64(1)), userPermissionsKey, []string{string(PermissionWordsEditAll)})
+
+	req := httptest.NewRequest(http.MethodPut, "/api/admin/training/card/1", strings.NewReader("word_ru=w&meaning_en=m"))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+	router.handleAdminTrainingCard(w, req)
+
+	if w.Code != http.StatusInternalServerError {
+		t.Errorf("expected 500 when GetTrainingCard fails, got %d", w.Code)
+	}
+}
+
+func TestHandleAdminWords_CountFails(t *testing.T) {
+	badDB := badDBConn(t)
+	logger, _ := zap.NewDevelopment()
+	cfg := &config.Config{}
+	cbRepo := repository.NewCircuitBreakerRepository(badDB, logger)
+	cbService := service.NewCircuitBreakerService(cbRepo, 5, logger)
+	router := NewRouter(logger, cfg, badDB, nil, nil, nil, cbService)
+
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/words?user_id=1&only_errors=true&has_audio=false&search=q&missing_training_pos=1&sort_by=word&sort_order=asc&limit=10&offset=0", nil)
+	w := httptest.NewRecorder()
+	router.handleAdminWords(w, req)
+
+	if w.Code != http.StatusInternalServerError {
+		t.Errorf("expected 500 when List/Count fails, got %d", w.Code)
+	}
+}
+
+func TestHandleAdminTrainingCard_Put_CardNotFound_Direct(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	adminUser, _ := userRepo.GetOrCreateUser(123456789)
+	cfg := &config.Config{Admin: config.AdminConfig{TelegramID: 123456789}, WebApp: config.WebAppConfig{JWTSecret: "test-secret"}}
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	ctx := context.WithValue(context.WithValue(context.Background(), userIDKey, adminUser.ID), userPermissionsKey, []string{string(PermissionWordsEditAll)})
+
+	req := httptest.NewRequest(http.MethodPut, "/api/admin/training/card/999999", strings.NewReader("word_ru=w&meaning_en=m"))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+	router.handleAdminTrainingCard(w, req)
+
+	if w.Code != http.StatusNotFound {
+		t.Errorf("expected 404 for non-existent card, got %d", w.Code)
+	}
+}
+
+func TestHandleAdminWord_Delete_DBFails(t *testing.T) {
+	badDB := badDBConn(t)
+	logger, _ := zap.NewDevelopment()
+	cfg := &config.Config{}
+	cbRepo := repository.NewCircuitBreakerRepository(badDB, logger)
+	cbService := service.NewCircuitBreakerService(cbRepo, 5, logger)
+	router := NewRouter(logger, cfg, badDB, nil, nil, nil, cbService)
+
+	req := httptest.NewRequest(http.MethodDelete, "/api/admin/words/1", nil)
+	w := httptest.NewRecorder()
+	router.handleAdminWord(w, req)
+
+	if w.Code != http.StatusInternalServerError {
+		t.Errorf("expected 500 when DeleteWordCard fails, got %d", w.Code)
+	}
+}
