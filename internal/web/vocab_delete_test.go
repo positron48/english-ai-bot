@@ -550,3 +550,31 @@ func TestHandleVocabDelete_MoveToTraining_Success(t *testing.T) {
 		t.Errorf("Expected lemma movetraining, got %v", resp["lemma"])
 	}
 }
+
+func TestHandleVocabDelete_DBGetWordCardIDFails(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo := setupVocabDeleteTestDB(t)
+	user, err := userRepo.GetOrCreateUser(99998)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	badDB := badDBConn(t)
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, badDB, nil, nil, nil, nil)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("GET", "/api/vocab/someword/confirm_delete", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocabDelete(w, req)
+
+	if w.Code != http.StatusInternalServerError {
+		t.Errorf("Expected status 500 when get word card ID fails, got %d: %s", w.Code, w.Body.String())
+	}
+}

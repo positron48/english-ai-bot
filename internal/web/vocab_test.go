@@ -266,6 +266,33 @@ func TestHandleVocab_WithMasteryLevel(t *testing.T) {
 	}
 }
 
+// TestHandleVocab_InvalidMasteryLevelFilter uses an invalid mastery_level so no filter is applied.
+func TestHandleVocab_InvalidMasteryLevelFilter(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo := setupVocabTestDB(t)
+	user, err := userRepo.GetOrCreateUser(55558)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("GET", "/api/vocab?mastery_level=invalid_level", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocab(w, req)
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200 when mastery_level is invalid (no filter), got %d: %s", w.Code, w.Body.String())
+	}
+}
+
 func TestHandleVocab_WithSortParams(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo := setupVocabTestDB(t)
@@ -489,5 +516,224 @@ func TestHandleVocab_MasteringScoreQuery(t *testing.T) {
 	}
 	if word["mastery_level"] != "mastered" {
 		t.Errorf("Expected mastery_level mastered, got %v", word["mastery_level"])
+	}
+}
+
+func TestHandleVocab_DBQueryFails(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	badDB := badDBConn(t)
+	db, userRepo := setupVocabTestDB(t)
+	user, err := userRepo.GetOrCreateUser(88881)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, badDB, nil, nil, nil, nil)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("GET", "/api/vocab", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocab(w, req)
+
+	if w.Code != http.StatusInternalServerError {
+		t.Errorf("Expected status 500 when DB query fails, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+func TestHandleVocab_SortByMasteryLevel(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo := setupVocabTestDB(t)
+	user, err := userRepo.GetOrCreateUser(88885)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("GET", "/api/vocab?sort_by=mastery_level&sort_order=asc", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocab(w, req)
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+func TestHandleVocab_SortByMasteryLevelDesc(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo := setupVocabTestDB(t)
+	user, err := userRepo.GetOrCreateUser(88886)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("GET", "/api/vocab?sort_by=mastery_level_desc&sort_order=desc", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocab(w, req)
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+func TestHandleVocab_SortByMasteringScore(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo := setupVocabTestDB(t)
+	user, err := userRepo.GetOrCreateUser(88887)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("GET", "/api/vocab?sort_by=mastering_score&sort_order=desc", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocab(w, req)
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+func TestHandleVocab_SortByLemma(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo := setupVocabTestDB(t)
+	user, err := userRepo.GetOrCreateUser(88888)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("GET", "/api/vocab?sort_by=lemma&sort_order=asc", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocab(w, req)
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+func TestHandleVocab_SortByDisplayWord(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo := setupVocabTestDB(t)
+	user, err := userRepo.GetOrCreateUser(88889)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("GET", "/api/vocab?sort_by=display_word&sort_order=asc", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocab(w, req)
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleVocab_SortByTotalCards hits the default orderByClause branch (sort_by not in switch).
+func TestHandleVocab_SortByTotalCards(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo := setupVocabTestDB(t)
+	user, err := userRepo.GetOrCreateUser(88891)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("GET", "/api/vocab?sort_by=total_cards&sort_order=asc", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocab(w, req)
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+func TestHandleVocab_LimitOver1000KeepsDefault(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo := setupVocabTestDB(t)
+	user, err := userRepo.GetOrCreateUser(88890)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("GET", "/api/vocab?limit=2000", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocab(w, req)
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+	var response map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
+		t.Fatalf("Decode: %v", err)
+	}
+	pagination, _ := response["pagination"].(map[string]interface{})
+	if pagination["limit"] != float64(25) {
+		t.Errorf("Expected limit 25 when limit=2000 (cap), got %v", pagination["limit"])
 	}
 }

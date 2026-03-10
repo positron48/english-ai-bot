@@ -606,6 +606,21 @@ func TestGrammarService_SelectQuestions_Strategies(t *testing.T) {
 	if len(selectedSmall) != 2 {
 		t.Fatalf("expected 2 when available < numQuestions, got %d", len(selectedSmall))
 	}
+
+	// selectStratified: second pass fill remaining when numQuestions > sum of min per block
+	poolStrat := []interface{}{"a1", "a2", "b1", "b2", "c1"}
+	qmStrat := map[string]interface{}{
+		"a1": map[string]interface{}{"id": "a1", "theory_block_id": "blockA"},
+		"a2": map[string]interface{}{"id": "a2", "theory_block_id": "blockA"},
+		"b1": map[string]interface{}{"id": "b1", "theory_block_id": "blockB"},
+		"b2": map[string]interface{}{"id": "b2", "theory_block_id": "blockB"},
+		"c1": map[string]interface{}{"id": "c1", "theory_block_id": "blockC"},
+	}
+	configStrat := map[string]interface{}{"type": "stratified_by_theory_block", "min_per_theory_block": 1.0}
+	selectedStratFull := svc.selectQuestions(poolStrat, qmStrat, configStrat, 5)
+	if len(selectedStratFull) != 5 {
+		t.Fatalf("expected 5 from stratified with second pass fill, got %d", len(selectedStratFull))
+	}
 }
 
 func TestGrammarService_SubmitTest_Category(t *testing.T) {
@@ -999,6 +1014,34 @@ func TestGrammarService_SubmitTest_UnsupportedScopeType(t *testing.T) {
 	}
 }
 
+// TestGrammarService_SubmitTest_Chapter_ChapterNotFound covers error when chapter ID does not exist.
+func TestGrammarService_SubmitTest_Chapter_ChapterNotFound(t *testing.T) {
+	svc, _, _, _, _, cleanup := setupGrammarService(t)
+	defer cleanup()
+
+	_, err := svc.SubmitTest(context.Background(), 1, "chapter", "nonexistent-chapter-id", []AnswerItem{})
+	if err == nil {
+		t.Fatal("expected error for nonexistent chapter")
+	}
+	if !strings.Contains(err.Error(), "failed to get chapter") && !strings.Contains(err.Error(), "not found") {
+		t.Errorf("expected get chapter or not found in error, got: %v", err)
+	}
+}
+
+// TestGrammarService_SubmitTest_Category_SectionNotFound covers error when section ID does not exist for category scope.
+func TestGrammarService_SubmitTest_Category_SectionNotFound(t *testing.T) {
+	svc, _, _, _, _, cleanup := setupGrammarService(t)
+	defer cleanup()
+
+	_, err := svc.SubmitTest(context.Background(), 1, "category", "nonexistent-section-id", []AnswerItem{})
+	if err == nil {
+		t.Fatal("expected error for nonexistent section")
+	}
+	if !strings.Contains(err.Error(), "section not found") && !strings.Contains(err.Error(), "not found") {
+		t.Errorf("expected section not found in error, got: %v", err)
+	}
+}
+
 func TestGrammarService_CompareAnswers_NonStringUserAnswer(t *testing.T) {
 	svc, _, _, _, _, cleanup := setupGrammarService(t)
 	defer cleanup()
@@ -1294,6 +1337,39 @@ func TestGrammarService_GetPublishedChapters_SectionNotFound(t *testing.T) {
 	}
 }
 
+// TestGrammarService_GetPublishedChapters_GetChapterSkipsInvalid covers skipping a chapter when GetChapter fails (e.g. missing in content).
+func TestGrammarService_GetPublishedChapters_GetChapterSkipsInvalid(t *testing.T) {
+	sectionsJSON := `{"version":"1","sections":[{"section_id":"s1","title":"S1","level":"A1","order":1,"chapter_ids":["ch1","ch2"]}]}`
+	indexJSON := `{"version":"1","generated_at":"","chapters":{"ch1":"one.json"}}`
+	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":[]},"chapter_test":{}}`
+	fs := fstest.MapFS{
+		"sections.json":      {Data: []byte(sectionsJSON)},
+		"index.json":         {Data: []byte(indexJSON)},
+		"chapters/one.json":  {Data: []byte(chapterJSON)},
+	}
+	logger := zap.NewNop()
+	contentRepo := repository.NewGrammarContentRepositoryWithFS(fs, logger)
+	db := testutil.SetupTestDatabase(t)
+	publishRepo := repository.NewGrammarPublishRepository(db.GetConnection(), logger)
+	attemptRepo := repository.NewGrammarAttemptRepository(db.GetConnection(), logger)
+	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+	_ = publishRepo.SetPublished("section", "s1", true, nil)
+	_ = publishRepo.SetPublished("chapter", "ch1", true, nil)
+	_ = publishRepo.SetPublished("chapter", "ch2", true, nil)
+
+	chapters, err := svc.GetPublishedChapters(context.Background(), "s1", 1)
+	if err != nil {
+		t.Fatalf("GetPublishedChapters: %v", err)
+	}
+	// ch2 is not in content (index has only ch1), so only ch1 is returned
+	if len(chapters) != 1 {
+		t.Fatalf("expected 1 chapter (ch2 skipped), got %d", len(chapters))
+	}
+	if chapters[0].Chapter.ID != "ch1" {
+		t.Fatalf("expected chapter ch1, got %s", chapters[0].Chapter.ID)
+	}
+}
+
 // TestGrammarService_GetPublishedChapters_CanAccessWhenOpenedByPlacement covers CanAccess=true for all chapters when section opened by placement.
 func TestGrammarService_GetPublishedChapters_CanAccessWhenOpenedByPlacement(t *testing.T) {
 	svc, contentRepo, publishRepo, attemptRepo, _, cleanup := setupGrammarService(t)
@@ -1531,6 +1607,231 @@ func TestGrammarService_FilterQuestionBankForQuizzes(t *testing.T) {
 			t.Fatalf("expected 0 questions when quiz_inline is not map, got %d", len(qs))
 		}
 	})
+
+	t.Run("question bank questions not slice", func(t *testing.T) {
+		ch := &repository.Chapter{
+			Blocks: []interface{}{},
+			QuestionBank: map[string]interface{}{
+				"questions": "not-a-slice",
+			},
+		}
+		out := svc.filterQuestionBankForQuizzes(ch)
+		if out.QuestionBank == nil {
+			t.Fatal("expected non-nil question bank")
+		}
+		// questions key is not []interface{}, so inner block is skipped; bank is unchanged
+		if out.QuestionBank["questions"] != "not-a-slice" {
+			t.Fatalf("expected questions to remain unchanged when not a slice, got %v", out.QuestionBank["questions"])
+		}
+	})
+}
+
+// TestGrammarService_GenerateChapterTest_ChapterNotFound covers error when chapter ID does not exist.
+func TestGrammarService_GenerateChapterTest_ChapterNotFound(t *testing.T) {
+	svc, _, _, _, _, cleanup := setupGrammarService(t)
+	defer cleanup()
+
+	_, err := svc.GenerateChapterTest(context.Background(), "nonexistent-chapter-id")
+	if err == nil {
+		t.Fatal("expected error for nonexistent chapter")
+	}
+	if !strings.Contains(err.Error(), "failed to get chapter") && !strings.Contains(err.Error(), "not found") {
+		t.Errorf("expected get chapter or not found in error, got: %v", err)
+	}
+}
+
+// grammarServiceWithCustomChapterFS returns a service whose content repo serves a single chapter from MapFS (for error-path tests).
+func grammarServiceWithCustomChapterFS(t *testing.T, sectionsJSON, indexJSON, chapterJSON string) *GrammarService {
+	t.Helper()
+	logger := zap.NewNop()
+	fs := fstest.MapFS{
+		"sections.json": {Data: []byte(sectionsJSON)},
+		"index.json":    {Data: []byte(indexJSON)},
+		"chapters/one.json": {Data: []byte(chapterJSON)},
+	}
+	contentRepo := repository.NewGrammarContentRepositoryWithFS(fs, logger)
+	db := testutil.SetupTestDatabase(t)
+	publishRepo := repository.NewGrammarPublishRepository(db.GetConnection(), logger)
+	attemptRepo := repository.NewGrammarAttemptRepository(db.GetConnection(), logger)
+	return NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+}
+
+// TestGrammarService_GenerateChapterTest_InvalidTestConfig covers error when selection_strategy is not a map.
+func TestGrammarService_GenerateChapterTest_InvalidTestConfig(t *testing.T) {
+	sectionsJSON := `{"version":"1","sections":[{"section_id":"s1","title":"S1","level":"A1","order":1,"chapter_ids":["ch1"]}]}`
+	indexJSON := `{"version":"1","generated_at":"","chapters":{"ch1":"one.json"}}`
+	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"T","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill","correct_answer":"x"}]},"chapter_test":{"selection_strategy":"not-a-map","pool_question_ids":["q1"],"num_questions":10}}`
+	svc := grammarServiceWithCustomChapterFS(t, sectionsJSON, indexJSON, chapterJSON)
+
+	_, err := svc.GenerateChapterTest(context.Background(), "ch1")
+	if err == nil {
+		t.Fatal("expected error for invalid test config")
+	}
+	if !strings.Contains(err.Error(), "invalid test config") {
+		t.Errorf("expected 'invalid test config' in error, got: %v", err)
+	}
+}
+
+// TestGrammarService_GenerateChapterTest_InvalidPoolQuestionIDs covers error when pool_question_ids is not a slice.
+func TestGrammarService_GenerateChapterTest_InvalidPoolQuestionIDs(t *testing.T) {
+	sectionsJSON := `{"version":"1","sections":[{"section_id":"s1","title":"S1","level":"A1","order":1,"chapter_ids":["ch1"]}]}`
+	indexJSON := `{"version":"1","generated_at":"","chapters":{"ch1":"one.json"}}`
+	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"T","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill"}]},"chapter_test":{"selection_strategy":{"type":"random"},"pool_question_ids":"not-a-slice","num_questions":10}}`
+	svc := grammarServiceWithCustomChapterFS(t, sectionsJSON, indexJSON, chapterJSON)
+
+	_, err := svc.GenerateChapterTest(context.Background(), "ch1")
+	if err == nil {
+		t.Fatal("expected error for invalid pool_question_ids")
+	}
+	if !strings.Contains(err.Error(), "invalid pool_question_ids") {
+		t.Errorf("expected 'invalid pool_question_ids' in error, got: %v", err)
+	}
+}
+
+// TestGrammarService_GenerateChapterTest_InvalidQuestionBank covers error when question bank questions is not a slice.
+func TestGrammarService_GenerateChapterTest_InvalidQuestionBank(t *testing.T) {
+	sectionsJSON := `{"version":"1","sections":[{"section_id":"s1","title":"S1","level":"A1","order":1,"chapter_ids":["ch1"]}]}`
+	indexJSON := `{"version":"1","generated_at":"","chapters":{"ch1":"one.json"}}`
+	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"T","blocks":[],"question_bank":{"questions":"not-a-slice"},"chapter_test":{"selection_strategy":{"type":"random"},"pool_question_ids":["q1"],"num_questions":10}}`
+	svc := grammarServiceWithCustomChapterFS(t, sectionsJSON, indexJSON, chapterJSON)
+
+	_, err := svc.GenerateChapterTest(context.Background(), "ch1")
+	if err == nil {
+		t.Fatal("expected error for invalid question bank")
+	}
+	if !strings.Contains(err.Error(), "invalid question bank") {
+		t.Errorf("expected 'invalid question bank' in error, got: %v", err)
+	}
+}
+
+// TestGrammarService_GenerateCategoryTest_GetPublishedItemsError covers error when GetPublishedItemsByType fails.
+func TestGrammarService_GenerateCategoryTest_GetPublishedItemsError(t *testing.T) {
+	_, contentRepo, _, _, _, cleanup := setupGrammarService(t)
+	defer cleanup()
+	sectionsData, err := contentRepo.GetSections()
+	if err != nil || len(sectionsData.Sections) == 0 {
+		t.Skip("need sections from bundle")
+	}
+	sectionID := sectionsData.Sections[0].SectionID
+
+	svcClosed, cleanupClosed := grammarServiceWithClosedPublishRepo(t)
+	defer cleanupClosed()
+
+	_, err = svcClosed.GenerateCategoryTest(context.Background(), sectionID)
+	if err == nil {
+		t.Fatal("expected error when GetPublishedItemsByType fails")
+	}
+	if !strings.Contains(err.Error(), "failed to get published items") {
+		t.Errorf("expected 'failed to get published items' in error, got: %v", err)
+	}
+}
+
+// TestGrammarService_GenerateCategoryTest_NoQuestionsInSection covers error when section has no published chapters with questions.
+func TestGrammarService_GenerateCategoryTest_NoQuestionsInSection(t *testing.T) {
+	svc, contentRepo, publishRepo, _, _, cleanup := setupGrammarService(t)
+	defer cleanup()
+
+	sectionsData, err := contentRepo.GetSections()
+	if err != nil || len(sectionsData.Sections) == 0 {
+		t.Fatalf("GetSections: %v", err)
+	}
+	section := sectionsData.Sections[0]
+	// Publish section but no chapters — no questions available
+	if err := publishRepo.SetPublished("section", section.SectionID, true, nil); err != nil {
+		t.Fatalf("SetPublished section: %v", err)
+	}
+
+	_, err = svc.GenerateCategoryTest(context.Background(), section.SectionID)
+	if err == nil {
+		t.Fatal("expected error when no questions in section")
+	}
+	if !strings.Contains(err.Error(), "no questions available") {
+		t.Errorf("expected 'no questions available' in error, got: %v", err)
+	}
+}
+
+// TestGrammarService_GeneratePlacementTest_GetSectionsError covers error when GetSections fails.
+func TestGrammarService_GeneratePlacementTest_GetSectionsError(t *testing.T) {
+	logger := zap.NewNop()
+	contentRepo := repository.NewGrammarContentRepositoryWithFS(fstest.MapFS{}, logger)
+	db := testutil.SetupTestDatabase(t)
+	publishRepo := repository.NewGrammarPublishRepository(db.GetConnection(), logger)
+	attemptRepo := repository.NewGrammarAttemptRepository(db.GetConnection(), logger)
+	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+
+	_, err := svc.GeneratePlacementTest(context.Background())
+	if err == nil {
+		t.Fatal("expected error when GetSections fails")
+	}
+	if !strings.Contains(err.Error(), "failed to get sections") {
+		t.Errorf("expected 'failed to get sections' in error, got: %v", err)
+	}
+}
+
+// TestGrammarService_GeneratePlacementTest_GetPublishedItemsError covers error when GetPublishedItemsByType fails.
+func TestGrammarService_GeneratePlacementTest_GetPublishedItemsError(t *testing.T) {
+	svc, cleanup := grammarServiceWithClosedPublishRepo(t)
+	defer cleanup()
+
+	_, err := svc.GeneratePlacementTest(context.Background())
+	if err == nil {
+		t.Fatal("expected error when GetPublishedItemsByType fails")
+	}
+	if !strings.Contains(err.Error(), "failed to get published items") {
+		t.Errorf("expected 'failed to get published items' in error, got: %v", err)
+	}
+}
+
+// TestGrammarService_GetNextPublishedChapterID_GetSectionsError covers error when GetSections fails after GetChapter succeeds.
+func TestGrammarService_GetNextPublishedChapterID_GetSectionsError(t *testing.T) {
+	// MapFS with index + chapter so GetChapter works, but no sections.json so GetSections fails
+	indexJSON := `{"version":"1","generated_at":"","chapters":{"ch1":"one.json"}}`
+	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"T","blocks":[],"question_bank":{},"chapter_test":{}}`
+	fs := fstest.MapFS{
+		"index.json":       {Data: []byte(indexJSON)},
+		"chapters/one.json": {Data: []byte(chapterJSON)},
+	}
+	logger := zap.NewNop()
+	contentRepo := repository.NewGrammarContentRepositoryWithFS(fs, logger)
+	db := testutil.SetupTestDatabase(t)
+	publishRepo := repository.NewGrammarPublishRepository(db.GetConnection(), logger)
+	attemptRepo := repository.NewGrammarAttemptRepository(db.GetConnection(), logger)
+	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+
+	_, _, _, err := svc.GetNextPublishedChapterID(context.Background(), "ch1")
+	if err == nil {
+		t.Fatal("expected error when GetSections fails")
+	}
+	if !strings.Contains(err.Error(), "failed to get sections") {
+		t.Errorf("expected 'failed to get sections' in error, got: %v", err)
+	}
+}
+
+// TestGrammarService_GetNextPublishedChapterID_ChapterNotInSectionList covers error when chapter is not in section's ChapterIDs.
+func TestGrammarService_GetNextPublishedChapterID_ChapterNotInSectionList(t *testing.T) {
+	sectionsJSON := `{"version":"1","sections":[{"section_id":"s1","title":"S1","level":"A1","order":1,"chapter_ids":["ch1"]}]}`
+	indexJSON := `{"version":"1","generated_at":"","chapters":{"ch2":"two.json"}}`
+	chapterJSON := `{"schema_version":"1","id":"ch2","section_id":"s1","title":"T2","blocks":[],"question_bank":{},"chapter_test":{}}`
+	fs := fstest.MapFS{
+		"sections.json":      {Data: []byte(sectionsJSON)},
+		"index.json":         {Data: []byte(indexJSON)},
+		"chapters/two.json":  {Data: []byte(chapterJSON)},
+	}
+	logger := zap.NewNop()
+	contentRepo := repository.NewGrammarContentRepositoryWithFS(fs, logger)
+	db := testutil.SetupTestDatabase(t)
+	publishRepo := repository.NewGrammarPublishRepository(db.GetConnection(), logger)
+	attemptRepo := repository.NewGrammarAttemptRepository(db.GetConnection(), logger)
+	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+	_ = publishRepo.SetPublished("chapter", "ch2", true, nil)
+
+	_, _, _, err := svc.GetNextPublishedChapterID(context.Background(), "ch2")
+	if err == nil {
+		t.Fatal("expected error when chapter not in section list")
+	}
+	if !strings.Contains(err.Error(), "chapter not found in section list") {
+		t.Errorf("expected 'chapter not found in section list' in error, got: %v", err)
+	}
 }
 
 // TestGrammarService_GenerateCategoryTest_SectionNotFound covers error when section does not exist.
@@ -1570,6 +1871,38 @@ func TestGrammarService_SubmitTest_Category_NoQuestions(t *testing.T) {
 	}
 	if !strings.Contains(err.Error(), "no questions") {
 		t.Errorf("expected 'no questions' in error, got: %v", err)
+	}
+}
+
+// TestGrammarService_SubmitPlacementTest_GetSectionsError covers error when GetSections fails.
+func TestGrammarService_SubmitPlacementTest_GetSectionsError(t *testing.T) {
+	logger := zap.NewNop()
+	contentRepo := repository.NewGrammarContentRepositoryWithFS(fstest.MapFS{}, logger)
+	db := testutil.SetupTestDatabase(t)
+	publishRepo := repository.NewGrammarPublishRepository(db.GetConnection(), logger)
+	attemptRepo := repository.NewGrammarAttemptRepository(db.GetConnection(), logger)
+	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+
+	_, err := svc.SubmitPlacementTest(context.Background(), 1, map[string]interface{}{})
+	if err == nil {
+		t.Fatal("expected error when GetSections fails")
+	}
+	if !strings.Contains(err.Error(), "failed to get sections") {
+		t.Errorf("expected 'failed to get sections' in error, got: %v", err)
+	}
+}
+
+// TestGrammarService_SubmitPlacementTest_GetPublishedItemsError covers error when GetPublishedItemsByType fails.
+func TestGrammarService_SubmitPlacementTest_GetPublishedItemsError(t *testing.T) {
+	svc, cleanup := grammarServiceWithClosedPublishRepo(t)
+	defer cleanup()
+
+	_, err := svc.SubmitPlacementTest(context.Background(), 1, map[string]interface{}{})
+	if err == nil {
+		t.Fatal("expected error when GetPublishedItemsByType fails")
+	}
+	if !strings.Contains(err.Error(), "failed to get published items") {
+		t.Errorf("expected 'failed to get published items' in error, got: %v", err)
 	}
 }
 
@@ -1683,6 +2016,32 @@ func TestGrammarService_CanAccessChapter_NotFound(t *testing.T) {
 	}
 }
 
+// TestGrammarService_CanAccessChapter_ChapterNotInSectionList covers error when chapter is not in section's ChapterIDs.
+func TestGrammarService_CanAccessChapter_ChapterNotInSectionList(t *testing.T) {
+	sectionsJSON := `{"version":"1","sections":[{"section_id":"s1","title":"S1","level":"A1","order":1,"chapter_ids":["ch1"]}]}`
+	indexJSON := `{"version":"1","generated_at":"","chapters":{"ch2":"two.json"}}`
+	chapterJSON := `{"schema_version":"1","id":"ch2","section_id":"s1","title":"T2","blocks":[],"question_bank":{},"chapter_test":{}}`
+	fs := fstest.MapFS{
+		"sections.json":     {Data: []byte(sectionsJSON)},
+		"index.json":        {Data: []byte(indexJSON)},
+		"chapters/two.json": {Data: []byte(chapterJSON)},
+	}
+	logger := zap.NewNop()
+	contentRepo := repository.NewGrammarContentRepositoryWithFS(fs, logger)
+	db := testutil.SetupTestDatabase(t)
+	publishRepo := repository.NewGrammarPublishRepository(db.GetConnection(), logger)
+	attemptRepo := repository.NewGrammarAttemptRepository(db.GetConnection(), logger)
+	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+
+	_, err := svc.CanAccessChapter(context.Background(), 1, "ch2")
+	if err == nil {
+		t.Fatal("expected error when chapter not in section list")
+	}
+	if !strings.Contains(err.Error(), "chapter not found in section list") && !strings.Contains(err.Error(), "not found") {
+		t.Errorf("expected 'chapter not found in section list' or 'not found' in error, got: %v", err)
+	}
+}
+
 // TestGrammarService_IsSectionOpenedByPlacement_ViaEffectiveLevel covers true when section level <= placement effective level (section not in OpenedSections).
 func TestGrammarService_IsSectionOpenedByPlacement_ViaEffectiveLevel(t *testing.T) {
 	svc, contentRepo, _, attemptRepo, _, cleanup := setupGrammarService(t)
@@ -1728,6 +2087,51 @@ func TestGrammarService_IsSectionOpenedByPlacement_NoPlacement(t *testing.T) {
 	}
 	if opened {
 		t.Fatal("expected false when no placement result")
+	}
+}
+
+// TestGrammarService_IsSectionOpenedByPlacement_DirectHit returns true when section ID is in placement OpenedSections.
+func TestGrammarService_IsSectionOpenedByPlacement_DirectHit(t *testing.T) {
+	svc, contentRepo, _, attemptRepo, _, cleanup := setupGrammarService(t)
+	defer cleanup()
+
+	sectionsData, err := contentRepo.GetSections()
+	if err != nil || len(sectionsData.Sections) == 0 {
+		t.Fatalf("GetSections: %v", err)
+	}
+	sectionID := sectionsData.Sections[0].SectionID
+	if err := attemptRepo.SavePlacementTestResult(1, 50, 10, []string{sectionID}); err != nil {
+		t.Fatalf("SavePlacementTestResult: %v", err)
+	}
+
+	opened, err := svc.isSectionOpenedByPlacement(context.Background(), 1, sectionID)
+	if err != nil {
+		t.Fatalf("isSectionOpenedByPlacement: %v", err)
+	}
+	if !opened {
+		t.Fatal("expected true when section is in OpenedSections")
+	}
+}
+
+// TestGrammarService_IsSectionOpenedByPlacement_GetSectionsError covers error when effective-level path calls GetSections and it fails.
+func TestGrammarService_IsSectionOpenedByPlacement_GetSectionsError(t *testing.T) {
+	_, _, publishRepo, attemptRepo, _, cleanup := setupGrammarService(t)
+	defer cleanup()
+	if err := attemptRepo.SavePlacementTestResult(1, 50, 10, []string{"some-section"}); err != nil {
+		t.Fatalf("SavePlacementTestResult: %v", err)
+	}
+
+	logger := zap.NewNop()
+	contentRepo := repository.NewGrammarContentRepositoryWithFS(fstest.MapFS{}, logger)
+	// Use same DB so placement result is visible; only content repo fails GetSections
+	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+
+	_, err := svc.isSectionOpenedByPlacement(context.Background(), 1, "other-section")
+	if err == nil {
+		t.Fatal("expected error when GetSections fails in effective-level path")
+	}
+	if !strings.Contains(err.Error(), "failed to get sections") {
+		t.Errorf("expected 'failed to get sections' in error, got: %v", err)
 	}
 }
 
@@ -1879,6 +2283,38 @@ func TestGrammarService_GetChapterContent_ChapterNameOverride(t *testing.T) {
 	}
 	if content.Title != customTitle {
 		t.Fatalf("expected title %q, got %q", customTitle, content.Title)
+	}
+}
+
+// TestGrammarService_GetGrammarStatistics_GetSectionsError covers error when GetSections fails.
+func TestGrammarService_GetGrammarStatistics_GetSectionsError(t *testing.T) {
+	logger := zap.NewNop()
+	contentRepo := repository.NewGrammarContentRepositoryWithFS(fstest.MapFS{}, logger)
+	db := testutil.SetupTestDatabase(t)
+	publishRepo := repository.NewGrammarPublishRepository(db.GetConnection(), logger)
+	attemptRepo := repository.NewGrammarAttemptRepository(db.GetConnection(), logger)
+	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+
+	_, err := svc.GetGrammarStatistics(context.Background(), 1)
+	if err == nil {
+		t.Fatal("expected error when GetSections fails")
+	}
+	if !strings.Contains(err.Error(), "failed to get sections") {
+		t.Errorf("expected 'failed to get sections' in error, got: %v", err)
+	}
+}
+
+// TestGrammarService_GetGrammarStatistics_GetPublishedItemsError covers error when GetPublishedItemsByType fails.
+func TestGrammarService_GetGrammarStatistics_GetPublishedItemsError(t *testing.T) {
+	svc, cleanup := grammarServiceWithClosedPublishRepo(t)
+	defer cleanup()
+
+	_, err := svc.GetGrammarStatistics(context.Background(), 1)
+	if err == nil {
+		t.Fatal("expected error when GetPublishedItemsByType fails")
+	}
+	if !strings.Contains(err.Error(), "failed to get published items") {
+		t.Errorf("expected 'failed to get published items' in error, got: %v", err)
 	}
 }
 

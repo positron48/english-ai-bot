@@ -244,3 +244,191 @@ func TestHandleVocabWordCards_KnownWordWithoutUserCards(t *testing.T) {
 		t.Error("Expected is_known true")
 	}
 }
+
+// TestHandleVocabWordCards_NoUserCardsNotKnown covers word in word_cards but no user_cards and not in user_word_knowledge -> 404.
+func TestHandleVocabWordCards_NoUserCardsNotKnown(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo := setupVocabCardsTestDB(t)
+
+	user, err := userRepo.GetOrCreateUser(474747)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+
+	_, err = db.Exec("INSERT INTO word_cards (id, word, definition) VALUES (?, ?, ?)", 10, "nocards", "definition")
+	if err != nil {
+		t.Fatalf("insert word_cards: %v", err)
+	}
+	_, err = db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (?, ?, ?, ?, ?)",
+		10, "nocards", 0, "без карточек", "no cards")
+	if err != nil {
+		t.Fatalf("insert training_cards: %v", err)
+	}
+	// No user_cards, no user_word_knowledge for this user
+
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("GET", "/api/vocab/nocards/cards", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocabDelete(w, req)
+
+	if w.Code != http.StatusNotFound {
+		t.Errorf("Expected status 404 when word has no user_cards and not known, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleVocabWordCards_ResponseHasVerbFormsAndPos covers response with verb_forms and pos when word_cards has pos=verb and verb_forms_json.
+func TestHandleVocabWordCards_ResponseHasVerbFormsAndPos(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo := setupVocabCardsTestDB(t)
+
+	user, err := userRepo.GetOrCreateUser(484848)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+
+	verbFormsJSON := `{"past":"went","past_participle":"gone"}`
+	_, err = db.Exec("INSERT INTO word_cards (id, word, definition, pos, verb_forms_json) VALUES (?, ?, ?, ?, ?)",
+		11, "go", "definition", "verb", verbFormsJSON)
+	if err != nil {
+		t.Fatalf("insert word_cards: %v", err)
+	}
+	_, err = db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (?, ?, ?, ?, ?)",
+		11, "go", 0, "идти", "to go")
+	if err != nil {
+		t.Fatalf("insert training_cards: %v", err)
+	}
+	var tcID int64
+	if err := db.QueryRow("SELECT id FROM training_cards WHERE word_card_id = 11 LIMIT 1").Scan(&tcID); err != nil {
+		t.Fatalf("get training_card id: %v", err)
+	}
+	_, err = db.Exec("INSERT INTO user_cards (user_id, training_card_id, direction, state, ef) VALUES (?, ?, ?, ?, ?)",
+		user.ID, tcID, "en_ru", "new", 2.5)
+	if err != nil {
+		t.Fatalf("insert user_cards: %v", err)
+	}
+
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("GET", "/api/vocab/go/cards", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocabDelete(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+	var response map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
+		t.Fatalf("Decode: %v", err)
+	}
+	if response["verb_forms"] == nil {
+		t.Error("Expected verb_forms in response when word has verb_forms_json")
+	}
+	if response["pos"] != "verb" {
+		t.Errorf("Expected pos=verb, got %v", response["pos"])
+	}
+}
+
+// TestHandleVocabWordCards_InvalidVerbFormsJSON covers the branch where verb_forms_json fails to parse (Warn).
+func TestHandleVocabWordCards_InvalidVerbFormsJSON(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo := setupVocabCardsTestDB(t)
+
+	user, err := userRepo.GetOrCreateUser(505050)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+
+	_, err = db.Exec("INSERT INTO word_cards (id, word, definition, pos, verb_forms_json) VALUES (?, ?, ?, ?, ?)",
+		12, "badverb", "definition", "verb", "invalid json {{{")
+	if err != nil {
+		t.Fatalf("insert word_cards: %v", err)
+	}
+	_, err = db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (?, ?, ?, ?, ?)",
+		12, "badverb", 0, "глагол", "bad verb")
+	if err != nil {
+		t.Fatalf("insert training_cards: %v", err)
+	}
+	var tcID int64
+	if err := db.QueryRow("SELECT id FROM training_cards WHERE word_card_id = 12 LIMIT 1").Scan(&tcID); err != nil {
+		t.Fatalf("get training_card id: %v", err)
+	}
+	_, err = db.Exec("INSERT INTO user_cards (user_id, training_card_id, direction, state, ef) VALUES (?, ?, ?, ?, ?)",
+		user.ID, tcID, "en_ru", "new", 2.5)
+	if err != nil {
+		t.Fatalf("insert user_cards: %v", err)
+	}
+
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("GET", "/api/vocab/badverb/cards", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocabDelete(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200 (invalid verb_forms is non-fatal), got %d: %s", w.Code, w.Body.String())
+	}
+	// Response should still have cards and pos; verb_forms may be absent due to parse error
+	var response map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
+		t.Fatalf("Decode: %v", err)
+	}
+	if response["cards"] == nil {
+		t.Error("Expected cards in response")
+	}
+}
+
+func TestHandleVocabWordCards_DBGetWordCardIDFails(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo := setupVocabCardsTestDB(t)
+	user, err := userRepo.GetOrCreateUser(494949)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	badDB := badDBConn(t)
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, badDB, nil, nil, nil, nil)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("GET", "/api/vocab/anyword/cards", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocabDelete(w, req)
+
+	if w.Code != http.StatusInternalServerError {
+		t.Errorf("Expected status 500 when get word card ID fails in handleVocabWordCards, got %d: %s", w.Code, w.Body.String())
+	}
+}
