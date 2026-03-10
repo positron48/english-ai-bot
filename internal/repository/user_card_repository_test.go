@@ -430,6 +430,20 @@ func TestUserCardRepository_UpdateUserCard(t *testing.T) {
 	}
 }
 
+func TestUserCardRepository_GetUserCard_NotFound(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := setupUserCardTestDB(t)
+	repo := NewUserCardRepository(db, logger)
+
+	got, err := repo.GetUserCard(999999)
+	if err != nil {
+		t.Fatalf("GetUserCard() error = %v", err)
+	}
+	if got != nil {
+		t.Error("GetUserCard(non-existent id) should return nil")
+	}
+}
+
 func TestUserCardRepository_GetDueCount(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupUserCardTestDB(t)

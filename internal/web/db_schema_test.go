@@ -124,6 +124,33 @@ func TestRouter_handleDBSchema(t *testing.T) {
 	})
 }
 
+func TestRouter_handleDBSchema_Get_DBFails(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	badDB := badDBConn(t)
+	cfg := &config.Config{WebApp: config.WebAppConfig{JWTSecret: "test-secret"}}
+	router := NewRouter(logger, cfg, badDB, nil, nil, nil, nil)
+
+	req := httptest.NewRequest("GET", "/admin/db-schema", nil)
+	w := httptest.NewRecorder()
+	router.handleDBSchema(w, req)
+
+	if w.Code != http.StatusInternalServerError {
+		t.Errorf("Expected 500 when getDBSchema fails, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+func TestRouter_getDBSchema_DBFails(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	badDB := badDBConn(t)
+	cfg := &config.Config{WebApp: config.WebAppConfig{JWTSecret: "test-secret"}}
+	router := NewRouter(logger, cfg, badDB, nil, nil, nil, nil)
+
+	_, err := router.getDBSchema()
+	if err == nil {
+		t.Error("getDBSchema() should return error when DB fails")
+	}
+}
+
 func TestRouter_getDBSchema(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := testutil.SetupTestDB(t)
@@ -463,6 +490,123 @@ func TestHandleDBQuery_ForbiddenSQL(t *testing.T) {
 	}
 	if body := w.Body.String(); body != "" && !strings.Contains(body, "Forbidden") && !strings.Contains(body, "forbidden") {
 		t.Logf("response body: %s", body)
+	}
+}
+
+func TestHandleDBQuery_QueryTooLong(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	cfg := &config.Config{}
+	cfg.Admin.DBQueryAccess = true
+	router := NewRouter(logger, cfg, db.GetConnection(), nil, nil, nil, nil)
+
+	// maxQueryLen is 50000
+	longQuery := strings.Repeat("x", 50001)
+	body, _ := json.Marshal(map[string]string{"query": longQuery})
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/db-query", bytes.NewReader(body))
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+	router.handleDBQuery(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Fatalf("expected 400 for query too long, got %d", w.Code)
+	}
+}
+
+func TestHandleDBQuery_MultipleStatements(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	cfg := &config.Config{}
+	cfg.Admin.DBQueryAccess = true
+	router := NewRouter(logger, cfg, db.GetConnection(), nil, nil, nil, nil)
+
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/db-query", bytes.NewBufferString(`{"query":"SELECT 1; SELECT 2"}`))
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+	router.handleDBQuery(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Fatalf("expected 400 for multiple statements, got %d: %s", w.Code, w.Body.String())
+	}
+	if body := w.Body.String(); !strings.Contains(body, "single") {
+		t.Errorf("expected body to mention single statement, got %s", body)
+	}
+}
+
+func TestHandleDBQuery_SelectFails(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	badDB := badDBConn(t)
+	cfg := &config.Config{}
+	cfg.Admin.DBQueryAccess = true
+	router := NewRouter(logger, cfg, badDB, nil, nil, nil, nil)
+
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/db-query", bytes.NewBufferString(`{"query":"SELECT 1"}`))
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+	router.handleDBQuery(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Fatalf("expected 400 when query fails, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+func TestHandleDBQuery_ExecFails(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	badDB := badDBConn(t)
+	cfg := &config.Config{}
+	cfg.Admin.DBQueryAccess = true
+	router := NewRouter(logger, cfg, badDB, nil, nil, nil, nil)
+
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/db-query", bytes.NewBufferString(`{"query":"INSERT INTO users (telegram_id, created_at, updated_at) VALUES (1, NOW(), NOW())"}`))
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+	router.handleDBQuery(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Fatalf("expected 400 when exec fails, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+func TestHandleDBQuery_WithSelect(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	cfg := &config.Config{}
+	cfg.Admin.DBQueryAccess = true
+	router := NewRouter(logger, cfg, db.GetConnection(), nil, nil, nil, nil)
+
+	// WITH (CTE) is treated as SELECT
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/db-query", bytes.NewBufferString(`{"query":"WITH t AS (SELECT 1 AS n) SELECT * FROM t"}`))
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+	router.handleDBQuery(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected 200, got %d: %s", w.Code, w.Body.String())
+	}
+	var payload dbQueryResponse
+	if err := json.Unmarshal(w.Body.Bytes(), &payload); err != nil {
+		t.Fatalf("unmarshal: %v", err)
+	}
+	if len(payload.Rows) != 1 || payload.Rows[0]["n"] != float64(1) {
+		t.Fatalf("expected one row with n=1, got %+v", payload.Rows)
+	}
+}
+
+func TestHandleDBQuery_EncodeFails(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	cfg := &config.Config{}
+	cfg.Admin.DBQueryAccess = true
+	router := NewRouter(logger, cfg, db.GetConnection(), nil, nil, nil, nil)
+
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/db-query", bytes.NewBufferString(`{"query":"SELECT 1"}`))
+	req.Header.Set("Content-Type", "application/json")
+	rec := httptest.NewRecorder()
+	w := &failingResponseWriter{ResponseWriter: rec}
+	router.handleDBQuery(w, req)
+
+	if rec.Code != http.StatusInternalServerError {
+		t.Errorf("expected 500 when encode fails, got %d", rec.Code)
 	}
 }
 

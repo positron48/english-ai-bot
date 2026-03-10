@@ -389,6 +389,26 @@ func TestGrammarAttemptRepository_SaveAndGetPlacementTestResult(t *testing.T) {
 	}
 }
 
+// TestGrammarAttemptRepository_GetChapterProgress_NoRow covers GetChapterProgress when no progress row exists (ErrNoRows).
+func TestGrammarAttemptRepository_GetChapterProgress_NoRow(t *testing.T) {
+	repo := setupGrammarAttemptRepo(t)
+	logger, _ := zap.NewDevelopment()
+	conn := testutil.SetupTestDB(t)
+	userRepo := NewUserRepository(conn, logger)
+	user, _ := userRepo.GetOrCreateUser(90)
+
+	progress, err := repo.GetChapterProgress(user.ID, "chapter-no-progress")
+	if err != nil {
+		t.Fatalf("GetChapterProgress error: %v", err)
+	}
+	if progress == nil {
+		t.Fatal("GetChapterProgress(no row) should return non-nil zero progress")
+	}
+	if progress.BestScore != 0 || progress.Passed {
+		t.Errorf("expected zero progress: BestScore=%d Passed=%v", progress.BestScore, progress.Passed)
+	}
+}
+
 // TestGrammarAttemptRepository_UpdateProgress_NotPassed covers UpdateProgress when passed=false or score <= 50 (passedAt nil).
 func TestGrammarAttemptRepository_UpdateProgress_NotPassed(t *testing.T) {
 	repo := setupGrammarAttemptRepo(t)

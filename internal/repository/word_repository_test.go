@@ -132,6 +132,20 @@ func TestWordRepository_SaveWordCard_UpdateExisting(t *testing.T) {
 	}
 }
 
+func TestWordRepository_GetWordCardByID_NotFound(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := setupWordTestDB(t)
+	repo := NewWordRepository(db, logger)
+
+	card, err := repo.GetWordCardByID(999999)
+	if err != nil {
+		t.Fatalf("GetWordCardByID() error = %v", err)
+	}
+	if card != nil {
+		t.Error("GetWordCardByID(non-existent id) should return nil")
+	}
+}
+
 func TestWordRepository_GetWordCardByID(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupWordTestDB(t)
@@ -208,6 +222,20 @@ func TestWordRepository_UpsertWordCardLemma(t *testing.T) {
 	}
 	if retrieved.POS == nil || *retrieved.POS != "verb" {
 		t.Errorf("Expected POS 'verb', got %v", retrieved.POS)
+	}
+}
+
+func TestWordRepository_GetWordFormMapping_NotFound(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := setupWordTestDB(t)
+	repo := NewWordRepository(db, logger)
+
+	wf, err := repo.GetWordFormMapping("nonexistentform")
+	if err != nil {
+		t.Fatalf("GetWordFormMapping() error = %v", err)
+	}
+	if wf != nil {
+		t.Error("GetWordFormMapping(non-existent) should return nil")
 	}
 }
 

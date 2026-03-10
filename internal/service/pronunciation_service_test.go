@@ -2306,6 +2306,23 @@ func TestBuildPronunciationProviders_EmptyProvider(t *testing.T) {
 	}
 }
 
+// TestNewPronunciationService_NoProvidersDisablesService covers NewPronunciationService when buildPronunciationProviders returns empty (enabled set to false).
+func TestNewPronunciationService_NoProvidersDisablesService(t *testing.T) {
+	cfg := config.TTSConfig{
+		Enabled:            true,
+		AudioDir:           t.TempDir(),
+		PublicBasePath:     "/media/tts",
+		Provider:           "dictionary",
+		DictionaryEnabled:  false,
+		APIKey:             "",
+		Model:              "",
+	}
+	svc := NewPronunciationService(cfg, nil, zap.NewNop())
+	if svc.IsEnabled() {
+		t.Error("expected service to be disabled when no providers available")
+	}
+}
+
 // TestBuildPronunciationProviders_DictionaryMinDelayNegative clamps negative minDelay to 0.
 func TestBuildPronunciationProviders_DictionaryMinDelayNegative(t *testing.T) {
 	providers := buildPronunciationProviders(config.TTSConfig{
@@ -2515,6 +2532,33 @@ func TestOpenRouterPronunciationProvider_FetchViaChatCompletionsOnce_NonSSEOther
 	}
 }
 
+// TestOpenRouterPronunciationProvider_FetchViaChatCompletionsOnce_StatusNotOK covers status != 200 with event-stream content-type.
+func TestOpenRouterPronunciationProvider_FetchViaChatCompletionsOnce_StatusNotOK(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/event-stream")
+		w.WriteHeader(http.StatusInternalServerError)
+		_, _ = w.Write([]byte("server error"))
+	}))
+	defer srv.Close()
+
+	provider := &openRouterPronunciationProvider{
+		baseURL:              srv.URL,
+		model:                "test",
+		voice:                "alloy",
+		apiKey:               "key",
+		client:               &http.Client{Timeout: 3 * time.Second},
+		forceChatCompletions: true,
+		pcmToMp3:             func(pcm []byte) ([]byte, error) { return pcm, nil },
+	}
+	_, err := provider.fetchViaChatCompletionsOnce(context.Background(), "w")
+	if err == nil {
+		t.Fatal("expected error")
+	}
+	if !strings.Contains(err.Error(), "rejected") && !strings.Contains(err.Error(), "500") {
+		t.Errorf("expected rejected/500 in error, got %q", err.Error())
+	}
+}
+
 func TestOpenRouterPronunciationProvider_FetchViaChatCompletionsOnce_StreamError(t *testing.T) {
 	// Use a transport that returns a body which errors on Read so parseSSEAudioStream gets scanner.Err().
 	streamErr := fmt.Errorf("stream read failed")
@@ -2606,6 +2650,22 @@ func TestExtractDeltaContentText_UnmarshalFails(t *testing.T) {
 	out = extractDeltaContentText(json.RawMessage(`{"x":1}`))
 	if out != nil {
 		t.Errorf("expected nil for object, got %v", out)
+	}
+}
+
+// TestExtractDeltaContentText_AsItems covers extractDeltaContentText when raw is array of {type, text}.
+func TestExtractDeltaContentText_AsItems(t *testing.T) {
+	out := extractDeltaContentText(json.RawMessage(`[{"type":"text","text":"hello"}]`))
+	if len(out) != 1 || out[0] != "hello" {
+		t.Errorf("expected [hello], got %v", out)
+	}
+	out = extractDeltaContentText(json.RawMessage(`[{"type":"","text":"a"},{"type":"text","text":"b"}]`))
+	if len(out) != 2 || out[0] != "a" || out[1] != "b" {
+		t.Errorf("expected [a b], got %v", out)
+	}
+	out = extractDeltaContentText(json.RawMessage(`[{"type":"image","text":""}]`))
+	if len(out) != 0 {
+		t.Errorf("expected [] for non-text type, got %v", out)
 	}
 }
 

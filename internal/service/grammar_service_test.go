@@ -1704,6 +1704,22 @@ func TestGrammarService_GenerateChapterTest_InvalidQuestionBank(t *testing.T) {
 	}
 }
 
+// TestGrammarService_SubmitTest_Chapter_InvalidQuestionBank covers SubmitTest when chapter question bank is not a slice.
+func TestGrammarService_SubmitTest_Chapter_InvalidQuestionBank(t *testing.T) {
+	sectionsJSON := `{"version":"1","sections":[{"section_id":"s1","title":"S1","level":"A1","order":1,"chapter_ids":["ch1"]}]}`
+	indexJSON := `{"version":"1","generated_at":"","chapters":{"ch1":"one.json"}}`
+	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"T","blocks":[],"question_bank":{"questions":"not-a-slice"}}`
+	svc := grammarServiceWithCustomChapterFS(t, sectionsJSON, indexJSON, chapterJSON)
+
+	_, err := svc.SubmitTest(context.Background(), 1, "chapter", "ch1", []AnswerItem{})
+	if err == nil {
+		t.Fatal("expected error for invalid question bank in SubmitTest")
+	}
+	if !strings.Contains(err.Error(), "invalid question bank") {
+		t.Errorf("expected 'invalid question bank' in error, got: %v", err)
+	}
+}
+
 // TestGrammarService_GenerateCategoryTest_GetPublishedItemsError covers error when GetPublishedItemsByType fails.
 func TestGrammarService_GenerateCategoryTest_GetPublishedItemsError(t *testing.T) {
 	_, contentRepo, _, _, _, cleanup := setupGrammarService(t)

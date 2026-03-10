@@ -16,6 +16,22 @@ func setupUserAccessCategoryRepo(t *testing.T) *UserAccessCategoryRepository {
 	return NewUserAccessCategoryRepository(conn, logger)
 }
 
+func TestUserAccessCategoryRepository_CreateCategory_NilDescription(t *testing.T) {
+	repo := setupUserAccessCategoryRepo(t)
+	category := &models.UserAccessCategory{Name: "no-desc"}
+	id, err := repo.CreateCategory(category)
+	if err != nil {
+		t.Fatalf("CreateCategory(nil Description) error: %v", err)
+	}
+	if id == 0 {
+		t.Error("CreateCategory() should return non-zero ID")
+	}
+	loaded, err := repo.GetCategory(id)
+	if err != nil || loaded == nil || loaded.Name != "no-desc" {
+		t.Fatalf("expected category to load: err=%v loaded=%v", err, loaded)
+	}
+}
+
 func TestUserAccessCategoryRepository_CRUD(t *testing.T) {
 	repo := setupUserAccessCategoryRepo(t)
 
@@ -371,5 +387,24 @@ func TestUserAccessCategoryRepository_GetUsersByCategory_Empty(t *testing.T) {
 	}
 	if len(userIDs) != 0 {
 		t.Fatalf("expected no users for new category, got %v", userIDs)
+	}
+}
+
+// TestUserAccessCategoryRepository_DeleteCategory_WithUsers verifies error when deleting category that has users.
+func TestUserAccessCategoryRepository_DeleteCategory_WithUsers(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	conn := testutil.SetupTestDB(t)
+	userRepo := NewUserRepository(conn, logger)
+	user, _ := userRepo.GetOrCreateUser(107)
+	repo := NewUserAccessCategoryRepository(conn, logger)
+	cat := &models.UserAccessCategory{Name: "withusers"}
+	id, err := repo.CreateCategory(cat)
+	if err != nil {
+		t.Fatalf("CreateCategory: %v", err)
+	}
+	_, _ = conn.Exec(`INSERT INTO user_access_user_categories (user_id, category_id) VALUES ($1, $2)`, user.ID, id)
+	err = repo.DeleteCategory(id)
+	if err == nil {
+		t.Fatal("DeleteCategory(category with users) expected error")
 	}
 }

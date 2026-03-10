@@ -266,3 +266,31 @@ func TestCircuitBreakerRepository_GetState_AlternativeTimeFormats(t *testing.T) 
 		t.Error("UpdatedAt should be parsed")
 	}
 }
+
+// TestCircuitBreakerRepository_GetState_StandardTimeFormat covers GetState when DB returns
+// timestamps in "2006-01-02 15:04:05" format (first parse succeeds for lastFailureAt/lastResetAt).
+func TestCircuitBreakerRepository_GetState_StandardTimeFormat(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := setupTestDB(t)
+	repo := NewCircuitBreakerRepository(db, logger)
+
+	_, _ = repo.GetState()
+	_ = repo.RecordFailure("err")
+
+	// Some drivers return space-separated datetime; ensure we still parse correctly
+	_, err := db.Exec(`UPDATE circuit_breaker_state SET last_failure_at = '2024-06-15 14:30:00', last_reset_at = NULL, updated_at = '2024-06-15 15:00:00' WHERE id = 1`)
+	if err != nil {
+		t.Skipf("UPDATE with standard format not supported: %v", err)
+	}
+
+	state, err := repo.GetState()
+	if err != nil {
+		t.Fatalf("GetState() error = %v", err)
+	}
+	if state == nil {
+		t.Fatal("GetState() should not return nil")
+	}
+	if state.LastFailureAt == nil {
+		t.Error("LastFailureAt should be set")
+	}
+}

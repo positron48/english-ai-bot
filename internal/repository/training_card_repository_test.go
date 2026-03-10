@@ -57,6 +57,32 @@ func TestTrainingCardRepository_CreateTrainingCard(t *testing.T) {
 	}
 }
 
+func TestTrainingCardRepository_CreateTrainingCard_ReturnsExistingIDWhenDuplicate(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := setupTrainingCardTestDB(t)
+	repo := NewTrainingCardRepository(db, logger)
+
+	_, _ = db.Exec("INSERT INTO word_cards (word, definition) VALUES ($1, $2)", "dup", "def")
+	card := &models.TrainingCard{
+		WordCardID: 1,
+		WordEN:     "dup",
+		SenseIndex: 0,
+		WordRU:     "дубль",
+		MeaningEN:  "duplicate",
+	}
+	id1, err := repo.CreateTrainingCard(card)
+	if err != nil {
+		t.Fatalf("CreateTrainingCard() first error = %v", err)
+	}
+	id2, err := repo.CreateTrainingCard(card)
+	if err != nil {
+		t.Fatalf("CreateTrainingCard() second (duplicate) error = %v", err)
+	}
+	if id1 != id2 {
+		t.Errorf("duplicate CreateTrainingCard should return same ID: %d vs %d", id1, id2)
+	}
+}
+
 func TestTrainingCardRepository_CreateTrainingCard_WithDisplayWord(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupTrainingCardTestDB(t)

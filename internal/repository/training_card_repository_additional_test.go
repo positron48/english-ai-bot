@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"strings"
 	"testing"
 
 	"tgbot-skeleton/internal/models"
@@ -186,5 +187,19 @@ func TestTrainingCardRepository_DeleteTrainingCard(t *testing.T) {
 	}
 	if deleted != nil {
 		t.Error("GetTrainingCard() should return nil for deleted card")
+	}
+}
+
+func TestTrainingCardRepository_DeleteTrainingCard_NotFound(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := setupTrainingCardTestDB(t)
+	repo := NewTrainingCardRepository(db, logger)
+
+	err := repo.DeleteTrainingCard(999999)
+	if err == nil {
+		t.Fatal("DeleteTrainingCard(non-existent id) expected error")
+	}
+	if err != nil && !strings.Contains(err.Error(), "not found") {
+		t.Errorf("DeleteTrainingCard() error = %v, want 'not found'", err)
 	}
 }

@@ -850,3 +850,189 @@ func TestHandleAdminAccessUsers_MethodNotAllowed(t *testing.T) {
 		t.Errorf("Expected status 405, got %d", rr.Code)
 	}
 }
+
+// TestHandleAdminAccessCategories_Get_DBFails covers GET when GetAllCategories fails (500).
+func TestHandleAdminAccessCategories_Get_DBFails(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	goodDB := testutil.SetupTestDB(t)
+	badDB := badDBConn(t)
+
+	cfg := &config.Config{
+		Admin: config.AdminConfig{TelegramID: 12345},
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret"},
+	}
+	userRepo := repository.NewUserRepository(goodDB, logger)
+	adminUser, err := userRepo.GetOrCreateUser(12345)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	cbRepo := repository.NewCircuitBreakerRepository(goodDB, logger)
+	cbService := service.NewCircuitBreakerService(cbRepo, 5, logger)
+
+	router := NewRouter(logger, cfg, badDB, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+
+	req := httptest.NewRequest("GET", "/api/admin/access/categories", nil)
+	req = setAdminContext(req, adminUser.ID)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminAccessCategories(rr, req)
+
+	if rr.Code != http.StatusInternalServerError {
+		t.Errorf("Expected status 500 when DB fails, got %d: %s", rr.Code, rr.Body.String())
+	}
+}
+
+// TestHandleAdminAccessUsers_EmptyPath covers "User ID required" when path is empty.
+func TestHandleAdminAccessUsers_EmptyPath(t *testing.T) {
+	router, _, _, adminUserID, cleanup := setupAdminAccessTest(t)
+	defer cleanup()
+
+	req := httptest.NewRequest("GET", "/api/admin/access/users/", nil)
+	req.URL.Path = "/api/admin/access/users/"
+	req = setAdminContext(req, adminUserID)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminAccessUsers(rr, req)
+
+	if rr.Code != http.StatusBadRequest {
+		t.Errorf("Expected status 400 for empty path, got %d: %s", rr.Code, rr.Body.String())
+	}
+	if body := rr.Body.String(); body != "User ID required\n" {
+		t.Errorf("Expected body 'User ID required', got %q", body)
+	}
+}
+
+// setupAdminAccessTestWithBadDB returns a router with closed DB for error-path coverage.
+func setupAdminAccessTestWithBadDB(t *testing.T) (*Router, int64) {
+	t.Helper()
+	logger, _ := zap.NewDevelopment()
+	goodDB := testutil.SetupTestDB(t)
+	badDB := badDBConn(t)
+	cfg := &config.Config{
+		Admin:  config.AdminConfig{TelegramID: 12345},
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret"},
+	}
+	userRepo := repository.NewUserRepository(goodDB, logger)
+	adminUser, err := userRepo.GetOrCreateUser(12345)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	cbRepo := repository.NewCircuitBreakerRepository(goodDB, logger)
+	cbService := service.NewCircuitBreakerService(cbRepo, 5, logger)
+	router := NewRouter(logger, cfg, badDB, nil, nil, nil, cbService)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	return router, adminUser.ID
+}
+
+func TestHandleAdminAccessCategoryByID_Get_GetCategoryPermissionsFails(t *testing.T) {
+	router, adminUserID := setupAdminAccessTestWithBadDB(t)
+	req := httptest.NewRequest("GET", "/api/admin/access/categories/1", nil)
+	req = setAdminContext(req, adminUserID)
+	rr := httptest.NewRecorder()
+	router.handleAdminAccessCategoryByID(rr, req, 1)
+	if rr.Code != http.StatusInternalServerError && rr.Code != http.StatusNotFound {
+		t.Errorf("Expected 500 or 404 when DB fails, got %d: %s", rr.Code, rr.Body.String())
+	}
+}
+
+func TestHandleAdminAccessCategoryByID_Put_DBFails(t *testing.T) {
+	router, adminUserID := setupAdminAccessTestWithBadDB(t)
+	body, _ := json.Marshal(map[string]interface{}{"name": "Updated", "description": ""})
+	req := httptest.NewRequest("PUT", "/api/admin/access/categories/1", bytes.NewReader(body))
+	req.Header.Set("Content-Type", "application/json")
+	req = setAdminContext(req, adminUserID)
+	rr := httptest.NewRecorder()
+	router.handleAdminAccessCategoryByID(rr, req, 1)
+	if rr.Code != http.StatusInternalServerError {
+		t.Errorf("Expected 500 when UpdateCategory fails, got %d: %s", rr.Code, rr.Body.String())
+	}
+}
+
+func TestHandleAdminAccessCategoryByID_Delete_DBFails(t *testing.T) {
+	router, adminUserID := setupAdminAccessTestWithBadDB(t)
+	req := httptest.NewRequest("DELETE", "/api/admin/access/categories/1", nil)
+	req = setAdminContext(req, adminUserID)
+	rr := httptest.NewRecorder()
+	router.handleAdminAccessCategoryByID(rr, req, 1)
+	if rr.Code != http.StatusInternalServerError {
+		t.Errorf("Expected 500 when DeleteCategory fails, got %d: %s", rr.Code, rr.Body.String())
+	}
+}
+
+func TestHandleAdminAccessCategoryPermissions_Get_DBFails(t *testing.T) {
+	router, adminUserID := setupAdminAccessTestWithBadDB(t)
+	req := httptest.NewRequest("GET", "/api/admin/access/categories/1/permissions", nil)
+	req = setAdminContext(req, adminUserID)
+	rr := httptest.NewRecorder()
+	router.handleAdminAccessCategoryPermissions(rr, req, 1)
+	if rr.Code != http.StatusInternalServerError {
+		t.Errorf("Expected 500 when GetCategoryPermissions fails, got %d: %s", rr.Code, rr.Body.String())
+	}
+}
+
+func TestHandleAdminAccessCategoryPermissions_Put_DBFails(t *testing.T) {
+	router, adminUserID := setupAdminAccessTestWithBadDB(t)
+	body, _ := json.Marshal(map[string]interface{}{"permissions": []string{"words.read_all"}})
+	req := httptest.NewRequest("PUT", "/api/admin/access/categories/1/permissions", bytes.NewReader(body))
+	req.Header.Set("Content-Type", "application/json")
+	req = setAdminContext(req, adminUserID)
+	rr := httptest.NewRecorder()
+	router.handleAdminAccessCategoryPermissions(rr, req, 1)
+	if rr.Code != http.StatusInternalServerError {
+		t.Errorf("Expected 500 when SetCategoryPermissions fails, got %d: %s", rr.Code, rr.Body.String())
+	}
+}
+
+func TestHandleAdminAccessUsers_Get_DBFails(t *testing.T) {
+	router, adminUserID := setupAdminAccessTestWithBadDB(t)
+	req := httptest.NewRequest("GET", "/api/admin/access/users/1", nil)
+	req.URL.Path = "/api/admin/access/users/1"
+	req = setAdminContext(req, adminUserID)
+	rr := httptest.NewRecorder()
+	router.handleAdminAccessUsers(rr, req)
+	if rr.Code != http.StatusInternalServerError {
+		t.Errorf("Expected 500 when GetUserCategories fails, got %d: %s", rr.Code, rr.Body.String())
+	}
+}
+
+func TestHandleAdminAccessUsers_Put_InvalidJSON(t *testing.T) {
+	router, _, _, adminUserID, cleanup := setupAdminAccessTest(t)
+	defer cleanup()
+
+	req := httptest.NewRequest("PUT", "/api/admin/access/users/1", bytes.NewReader([]byte("not json")))
+	req.Header.Set("Content-Type", "application/json")
+	req.URL.Path = "/api/admin/access/users/1"
+	req = setAdminContext(req, adminUserID)
+	rr := httptest.NewRecorder()
+	router.handleAdminAccessUsers(rr, req)
+
+	if rr.Code != http.StatusBadRequest {
+		t.Errorf("Expected 400 for invalid JSON, got %d: %s", rr.Code, rr.Body.String())
+	}
+}
+
+func TestHandleAdminAccessUsers_Put_DBFails(t *testing.T) {
+	router, adminUserID := setupAdminAccessTestWithBadDB(t)
+	body, _ := json.Marshal(map[string]interface{}{"category_ids": []int64{1}})
+	req := httptest.NewRequest("PUT", "/api/admin/access/users/1", bytes.NewReader(body))
+	req.Header.Set("Content-Type", "application/json")
+	req.URL.Path = "/api/admin/access/users/1"
+	req = setAdminContext(req, adminUserID)
+	rr := httptest.NewRecorder()
+	router.handleAdminAccessUsers(rr, req)
+	if rr.Code != http.StatusInternalServerError {
+		t.Errorf("Expected 500 when SetUserCategories fails, got %d: %s", rr.Code, rr.Body.String())
+	}
+}
+
+func TestHandleAdminAccessCategoryUsers_Get_DBFails(t *testing.T) {
+	router, adminUserID := setupAdminAccessTestWithBadDB(t)
+	req := httptest.NewRequest("GET", "/api/admin/access/categories/1/users", nil)
+	req = setAdminContext(req, adminUserID)
+	rr := httptest.NewRecorder()
+	router.handleAdminAccessCategoryUsers(rr, req, 1)
+	if rr.Code != http.StatusInternalServerError {
+		t.Errorf("Expected 500 when GetUsersByCategory fails, got %d: %s", rr.Code, rr.Body.String())
+	}
+}

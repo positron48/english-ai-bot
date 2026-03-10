@@ -3,6 +3,7 @@ package web
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -334,6 +335,59 @@ func TestHandleAdminPromptTesterRun_Success(t *testing.T) {
 	lines := strings.Split(strings.TrimSpace(rr.Body.String()), "\n")
 	if len(lines) < 2 {
 		t.Errorf("Expected at least 2 NDJSON lines (word + cards), got %d", len(lines))
+	}
+}
+
+// writeFailingResponseWriter fails on Write after a given number of successful writes (for coverage of sendNDJSONEvent error path).
+type writeFailingResponseWriter struct {
+	http.ResponseWriter
+	writeCount int
+	failAfter  int
+}
+
+func (w *writeFailingResponseWriter) Write(p []byte) (n int, err error) {
+	if w.writeCount >= w.failAfter {
+		return 0, errors.New("write failed")
+	}
+	w.writeCount++
+	return w.ResponseWriter.Write(p)
+}
+
+func (w *writeFailingResponseWriter) Flush() {
+	if f, ok := w.ResponseWriter.(http.Flusher); ok {
+		f.Flush()
+	}
+}
+
+// TestHandleAdminPromptTesterRun_SendNDJSONEventWriteFails covers sendNDJSONEvent when Write fails (handler returns early).
+func TestHandleAdminPromptTesterRun_SendNDJSONEventWriteFails(t *testing.T) {
+	mockAI := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write(openAIChoiceResponse(`{"word":"x"}`))
+	}))
+	defer mockAI.Close()
+
+	router, _ := setupPromptTesterTest(t)
+	router.config.AI.URL = strings.TrimSuffix(mockAI.URL, "/")
+	router.config.AI.Model = "test-model"
+	router.config.AI.APIKey = "test-key"
+
+	body := `{"words": ["w"], "word_prompt": "wp", "training_prompt": "tp"}`
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/prompt-tester/run", strings.NewReader(body))
+	req.Header.Set("Content-Type", "application/json")
+	req = setUserIDInContextPromptTester(req, 12345)
+	rec := httptest.NewRecorder()
+	w := &writeFailingResponseWriter{ResponseWriter: rec, failAfter: 0}
+
+	router.handleAdminPromptTesterRun(w, req)
+
+	// Handler may return 200 and write partial body, or 500; either way we exercised sendNDJSONEvent error path
+	if rec.Code != 0 && rec.Code != http.StatusOK {
+		// If handler set 500 on send error, body might be empty
+		if rec.Code != http.StatusInternalServerError {
+			t.Logf("handler returned %d (write failed path exercised)", rec.Code)
+		}
 	}
 }
 

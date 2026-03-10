@@ -302,6 +302,46 @@ func TestHandleAuthOTP_InvalidUserID(t *testing.T) {
 	}
 }
 
+// TestHandleAuthOTP_InvalidFormData verifies 400 when form parsing fails for OTP verify.
+func TestHandleAuthOTP_InvalidFormData(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, otpRepo, userRepo := setupAuthOTPHandlersTestDB(t)
+
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{
+			JWTSecret:     "test-secret",
+			JWTTTLHours:   24,
+			RefreshTTLHours: 720,
+		},
+	}
+
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+
+	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.SetOTPRepo(otpRepo)
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("POST", "/auth/otp", strings.NewReader("invalid multipart body"))
+	req.Header.Set("Content-Type", "multipart/form-data; boundary=----WebKitFormBoundary")
+	w := httptest.NewRecorder()
+
+	router.handleAuthOTP(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("Expected status 400 for invalid form data, got %d: %s", w.Code, w.Body.String())
+	}
+	var resp map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&resp); err != nil {
+		t.Fatalf("decode response: %v", err)
+	}
+	if resp["error"] == nil {
+		t.Error("Expected error key in response")
+	}
+}
+
 // TestHandleAuthRequestOTP_InvalidFormData verifies 400 when form parsing fails.
 func TestHandleAuthRequestOTP_InvalidFormData(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
@@ -373,6 +413,82 @@ func TestHandleAuthRequestOTP_BotNil(t *testing.T) {
 
 	if w.Code != http.StatusServiceUnavailable {
 		t.Errorf("Expected status 503 (bot nil), got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleAuthRequestOTP_GetUserError verifies 500 when GetUserByUsernameOrID fails (e.g. DB error).
+func TestHandleAuthRequestOTP_GetUserError(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	goodDB := testutil.SetupTestDB(t)
+	badDB := badDBConn(t)
+	userRepoBad := repository.NewUserRepository(badDB, logger)
+	otpRepo := repository.NewWebOTPRepository(goodDB, logger)
+
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
+			RefreshTTLHours: 720,
+			OTPTTLSeconds:   300,
+		},
+	}
+	router := NewRouter(logger, cfg, goodDB, nil, nil, nil, nil)
+	router.SetDependencies(userRepoBad, nil, nil, nil, "test-token")
+	router.SetOTPRepo(otpRepo)
+
+	req := httptest.NewRequest("POST", "/auth/request_otp", strings.NewReader("username=12345"))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	w := httptest.NewRecorder()
+
+	router.handleAuthRequestOTP(w, req)
+
+	if w.Code != http.StatusInternalServerError {
+		t.Errorf("Expected status 500 when GetUserByUsernameOrID fails, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleAuthOTP_GetUserByIDFails verifies 500 when OTP is valid but GetUserByID fails.
+func TestHandleAuthOTP_GetUserByIDFails(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	goodDB := testutil.SetupTestDB(t)
+	badDB := badDBConn(t)
+	userRepoGood := repository.NewUserRepository(goodDB, logger)
+	userRepoBad := repository.NewUserRepository(badDB, logger)
+	otpRepo := repository.NewWebOTPRepository(goodDB, logger)
+
+	user, err := userRepoGood.GetOrCreateUser(45454)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	code, _, err := otpRepo.GenerateOTP(user.ID, 5*time.Minute)
+	if err != nil {
+		t.Fatalf("GenerateOTP: %v", err)
+	}
+
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{
+			JWTSecret:     "test-secret",
+			JWTTTLHours:   24,
+			RefreshTTLHours: 720,
+		},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(goodDB, logger)
+	authMiddleware := NewAuthMiddleware(userRepoBad, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+
+	router := NewRouter(logger, cfg, goodDB, nil, nil, nil, nil)
+	router.SetDependencies(userRepoBad, nil, nil, nil, "test-token")
+	router.SetOTPRepo(otpRepo)
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("POST", "/auth/otp", strings.NewReader("user_id="+strconv.FormatInt(user.ID, 10)+"&code="+code))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	w := httptest.NewRecorder()
+
+	router.handleAuthOTP(w, req)
+
+	if w.Code != http.StatusInternalServerError {
+		t.Errorf("Expected status 500 when GetUserByID fails after OTP valid, got %d: %s", w.Code, w.Body.String())
 	}
 }
 

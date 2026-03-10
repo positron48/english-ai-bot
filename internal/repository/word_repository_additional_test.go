@@ -3,8 +3,87 @@ package repository
 import (
 	"testing"
 
+	"tgbot-skeleton/internal/models"
+
 	"go.uber.org/zap"
 )
+
+func TestWordRepository_UpsertWordCardLemma_OnConflictUpdate(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := setupWordTestDB(t)
+	repo := NewWordRepository(db, logger)
+
+	card := &models.WordCard{Word: "upsertword", Definition: "first"}
+	id1, err := repo.UpsertWordCardLemma(card)
+	if err != nil {
+		t.Fatalf("UpsertWordCardLemma() first error = %v", err)
+	}
+	card.Definition = "updated"
+	id2, err := repo.UpsertWordCardLemma(card)
+	if err != nil {
+		t.Fatalf("UpsertWordCardLemma() second error = %v", err)
+	}
+	if id1 != id2 {
+		t.Errorf("ON CONFLICT update should return same id: %d vs %d", id1, id2)
+	}
+	got, _ := repo.GetWordCardByLemma("upsertword")
+	if got == nil || got.Definition != "updated" {
+		t.Errorf("expected definition 'updated', got %v", got)
+	}
+}
+
+func TestWordRepository_ListPronunciationCandidates_ZeroLimit(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := setupWordTestDB(t)
+	repo := NewWordRepository(db, logger)
+
+	cands, err := repo.ListPronunciationCandidates(0)
+	if err != nil {
+		t.Fatalf("ListPronunciationCandidates(0) error = %v", err)
+	}
+	if cands == nil {
+		t.Fatal("expected non-nil slice")
+	}
+}
+
+func TestWordRepository_AddWordRequestHistoryWithCard_WithCardAndWord(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := setupWordTestDB(t)
+	userRepo := NewUserRepository(db, logger)
+	user, _ := userRepo.GetOrCreateUser(2000)
+	repo := NewWordRepository(db, logger)
+
+	_ = repo.SaveWordCard("lemma", "definition")
+	card, _ := repo.GetWordCard("lemma")
+	if card == nil {
+		t.Fatal("word card not created")
+	}
+	wordCardID := card.ID
+	inputWord := "inputword"
+	word := "lemma"
+	err := repo.AddWordRequestHistoryWithCard(user.ID, inputWord, &wordCardID, &word)
+	if err != nil {
+		t.Fatalf("AddWordRequestHistoryWithCard() error = %v", err)
+	}
+}
+
+func TestWordRepository_GetUserIDsByWord_WordNotInWordCards(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := setupWordTestDB(t)
+	userRepo := NewUserRepository(db, logger)
+	user, _ := userRepo.GetOrCreateUser(2100)
+	repo := NewWordRepository(db, logger)
+
+	// Add history for word that does not exist in word_cards (only input_word/word column)
+	_ = repo.AddWordRequestHistoryWithCard(user.ID, "onlyinput", nil, nil)
+	userIDs, err := repo.GetUserIDsByWord("onlyinput")
+	if err != nil {
+		t.Fatalf("GetUserIDsByWord() error = %v", err)
+	}
+	if len(userIDs) != 1 || userIDs[0] != user.ID {
+		t.Errorf("expected [user.ID] when searching by input_word only, got %v", userIDs)
+	}
+}
 
 func TestWordRepository_GetUserIDsByWord(t *testing.T) {
 	logger, _ := zap.NewDevelopment()

@@ -232,3 +232,33 @@ func TestSessionRepository_GetTrainingStreak(t *testing.T) {
 		t.Error("Expected trainedYesterday false when no session on 2025-02-23")
 	}
 }
+
+func TestSessionRepository_GetTrainingStreak_InvalidTimezone(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := setupSessionAdditionalTestDB(t)
+	userRepo := NewUserRepository(db, logger)
+	user, _ := userRepo.GetOrCreateUser(445)
+	repo := NewSessionRepository(db, logger)
+
+	// Invalid timezone falls back to UTC
+	streak, trainedYesterday, err := repo.GetTrainingStreak(user.ID, "Invalid/Timezone", "2025-02-24")
+	if err != nil {
+		t.Fatalf("GetTrainingStreak(invalid TZ) should fallback to UTC: %v", err)
+	}
+	if streak != 0 || trainedYesterday {
+		t.Errorf("expected zero streak when no sessions: streak=%d trainedYesterday=%v", streak, trainedYesterday)
+	}
+}
+
+func TestSessionRepository_GetTrainingStreak_InvalidDate(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := setupSessionAdditionalTestDB(t)
+	userRepo := NewUserRepository(db, logger)
+	user, _ := userRepo.GetOrCreateUser(446)
+	repo := NewSessionRepository(db, logger)
+
+	_, _, err := repo.GetTrainingStreak(user.ID, "UTC", "not-a-date")
+	if err == nil {
+		t.Fatal("GetTrainingStreak(invalid date) expected error")
+	}
+}

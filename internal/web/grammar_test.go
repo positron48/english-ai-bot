@@ -642,6 +642,20 @@ func TestHandleLearningGrammarPlacementTest_Unauthorized(t *testing.T) {
 	}
 }
 
+func TestHandleLearningGrammarPlacementTest_MethodNotAllowed(t *testing.T) {
+	router, _, _, cleanup := setupGrammarTest(t)
+	defer cleanup()
+
+	req := httptest.NewRequest(http.MethodPost, "/api/learning/grammar/placement-test", nil)
+	req = setUserIDInContext(req, 1)
+	w := httptest.NewRecorder()
+	router.handleLearningGrammarPlacementTest(w, req)
+
+	if w.Code != http.StatusMethodNotAllowed {
+		t.Errorf("Expected status 405, got %d", w.Code)
+	}
+}
+
 func TestHandleLearningGrammarSubmitPlacementTest_Unauthorized(t *testing.T) {
 	router, _, _, cleanup := setupGrammarTest(t)
 	defer cleanup()

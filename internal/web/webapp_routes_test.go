@@ -1,6 +1,7 @@
 package web
 
 import (
+	"errors"
 	"io/fs"
 	"net/http"
 	"net/http/httptest"
@@ -12,6 +13,18 @@ import (
 
 	"go.uber.org/zap"
 )
+
+// subFailingFS is an fs.FS that has dist/index.html readable but fs.Sub(_, "dist") fails (Open("dist") returns error).
+type subFailingFS struct {
+	fs.FS
+}
+
+func (f subFailingFS) Open(name string) (fs.File, error) {
+	if name == "dist" {
+		return nil, errors.New("dist: Sub not allowed")
+	}
+	return f.FS.Open(name)
+}
 
 // testWebappFS returns a minimal fs.FS with dist/index.html for tests (no embed, no file on disk).
 func testWebappFS() fs.FS {
@@ -282,6 +295,23 @@ func TestSetupWebappRoutes_NoPanic(t *testing.T) {
 	}
 	router.setupWebappRoutes()
 	// If we get here without panic, the test passes
+}
+
+// TestSetupWebappRoutes_SubFails verifies that when fs.Sub(webappFS, "dist") fails, setupWebappRoutes returns without panicking (covers the fs.Sub error branch).
+func TestSetupWebappRoutes_SubFails(t *testing.T) {
+	savedFS := webappFS
+	defer func() { webappFS = savedFS }()
+	webappFS = subFailingFS{FS: testWebappFS()}
+
+	logger := zap.NewNop()
+	cfg := &config.Config{}
+	router := &Router{
+		mux:    http.NewServeMux(),
+		logger: logger,
+		config: cfg,
+	}
+	// Should not panic; Sub fails so no handlers are registered
+	router.setupWebappRoutes()
 }
 
 // TestSetupDevProxy_RedirectsToVite verifies that /app and /app/ redirect to Vite dev server URL.

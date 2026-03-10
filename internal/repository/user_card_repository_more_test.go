@@ -458,6 +458,46 @@ func TestUserCardRepository_GetUpcomingCardsByDate_EmptyResult(t *testing.T) {
 	}
 }
 
+// TestUserCardRepository_GetUpcomingCardsByDate_DateOutsideSevenDayRange covers the branch where
+// a card's next_due_at falls outside the 7-day window (e.g. exactly on endDate boundary) so result[dateStr] does not exist.
+func TestUserCardRepository_GetUpcomingCardsByDate_DateOutsideSevenDayRange(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDB(t)
+	repo := NewUserCardRepository(db, logger)
+	userRepo := NewUserRepository(db, logger)
+	wordRepo := NewWordRepository(db, logger)
+	trainingRepo := NewTrainingCardRepository(db, logger)
+
+	user, err := userRepo.GetOrCreateUser(123571)
+	if err != nil {
+		t.Fatalf("create user: %v", err)
+	}
+	wordCard := &models.WordCard{Word: "boundary", Definition: "def"}
+	wordCardID, _ := wordRepo.UpsertWordCardLemma(wordCard)
+	pos := "noun"
+	displayWord := "boundary"
+	tc := &models.TrainingCard{WordCardID: wordCardID, WordEN: "boundary", SenseIndex: 0, WordRU: "граница", MeaningEN: "boundary", POS: &pos, DisplayWord: &displayWord}
+	tcID, _ := trainingRepo.CreateTrainingCard(tc)
+
+	// Card due exactly at startDate+7 (end of query window); in some TZ this may format to a date not in the 7-day keys
+	startDate := time.Date(2026, 3, 10, 0, 0, 0, 0, time.UTC)
+	endBoundary := startDate.AddDate(0, 0, 7)
+	uc := &models.UserCard{UserID: user.ID, TrainingCardID: tcID, Direction: models.DirectionENtoRU, State: models.StateReview, EF: 2.5, NextDueAt: &endBoundary}
+	_, err = repo.CreateUserCard(uc)
+	if err != nil {
+		t.Fatalf("create user card: %v", err)
+	}
+
+	upcoming, err := repo.GetUpcomingCardsByDate(user.ID, startDate)
+	if err != nil {
+		t.Fatalf("GetUpcomingCardsByDate() error = %v", err)
+	}
+	// Result has keys for 2026-03-10..2026-03-16; 2026-03-17 may be outside and triggers the "else" branch
+	if len(upcoming) != 7 {
+		t.Errorf("expected 7 days in result, got %d", len(upcoming))
+	}
+}
+
 // Test_nullTimeScanner_parseString covers the parseString method used when scanning time from string/[]byte.
 func Test_nullTimeScanner_parseString(t *testing.T) {
 	tests := []struct {

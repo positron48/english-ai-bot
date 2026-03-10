@@ -253,6 +253,190 @@ func TestBotCommandService_HandleStart(t *testing.T) {
 	}
 }
 
+// TestBotCommandService_HandleStart_DefaultMessage covers handleStart when startMessage is empty (default text).
+func TestBotCommandService_HandleStart_DefaultMessage(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
+	client := &mockTelegramClient{}
+	bot := newTestBot(client)
+	svc := NewBotCommandService(bot, userRepo, logger, "help", "", "unknown")
+
+	msg := commandMessage("/start")
+	update := tgbotapi.Update{Message: msg}
+	svc.HandleUpdate(update)
+
+	text := client.lastParams.Get("text")
+	if text == "" {
+		t.Fatal("expected default start message to be sent")
+	}
+	if !strings.Contains(text, "Привет") && !strings.Contains(text, "английского") {
+		t.Errorf("expected default start text, got %q", text)
+	}
+}
+
+// TestBotCommandService_HandleStart_SendFails covers handleStart when bot.Send fails.
+func TestBotCommandService_HandleStart_SendFails(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
+	client := &mockTelegramClient{}
+	client.failNext = true
+	bot := newTestBot(client)
+	svc := NewBotCommandService(bot, userRepo, logger, "help", "start", "unknown")
+
+	msg := commandMessage("/start")
+	update := tgbotapi.Update{Message: msg}
+	svc.HandleUpdate(update)
+	// Should not panic; Send error is logged
+}
+
+// TestBotCommandService_HandleHelp_SendFails covers handleHelp when bot.Send fails.
+func TestBotCommandService_HandleHelp_SendFails(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
+	client := &mockTelegramClient{}
+	client.failNext = true
+	bot := newTestBot(client)
+	svc := NewBotCommandService(bot, userRepo, logger, "help", "start", "unknown")
+
+	msg := commandMessage("/help")
+	update := tgbotapi.Update{Message: msg}
+	svc.HandleUpdate(update)
+	// Should not panic
+}
+
+// TestBotCommandService_HandleUnknownCommand_SendFails covers handleUnknownCommand when bot.Send fails.
+func TestBotCommandService_HandleUnknownCommand_SendFails(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
+	client := &mockTelegramClient{}
+	client.failNext = true
+	bot := newTestBot(client)
+	svc := NewBotCommandService(bot, userRepo, logger, "help", "start", "unknown")
+
+	msg := commandMessage("/unknowncmd")
+	update := tgbotapi.Update{Message: msg}
+	svc.HandleUpdate(update)
+	// Should not panic
+}
+
+// TestBotCommandService_HandleNotification_GetUserError covers handleNotification when GetUserByTelegramID returns error.
+func TestBotCommandService_HandleNotification_GetUserError(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	client := &mockTelegramClient{}
+	bot := newTestBot(client)
+	mockRepo := &mockUserRepoForCommands{
+		getUserFunc: func(_ int64) (*models.User, error) {
+			return nil, fmt.Errorf("db connection failed")
+		},
+	}
+	svc := NewBotCommandService(bot, mockRepo, logger, "help", "start", "unknown")
+
+	msg := commandMessage("/notification daily")
+	update := tgbotapi.Update{Message: msg}
+	svc.HandleUpdate(update)
+
+	text := client.lastParams.Get("text")
+	if text == "" {
+		t.Fatal("expected error message to be sent")
+	}
+	if !strings.Contains(text, "ошибка") && !strings.Contains(text, "Попробуйте") {
+		t.Errorf("expected error message, got %q", text)
+	}
+}
+
+// TestBotCommandService_HandleNotification_UserNil covers handleNotification when GetUserByTelegramID returns (nil, nil).
+func TestBotCommandService_HandleNotification_UserNil(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	client := &mockTelegramClient{}
+	bot := newTestBot(client)
+	mockRepo := &mockUserRepoForCommands{
+		getUserFunc: func(_ int64) (*models.User, error) { return nil, nil },
+	}
+	svc := NewBotCommandService(bot, mockRepo, logger, "help", "start", "unknown")
+
+	msg := commandMessage("/notification daily")
+	update := tgbotapi.Update{Message: msg}
+	svc.HandleUpdate(update)
+
+	text := client.lastParams.Get("text")
+	if text == "" {
+		t.Fatal("expected user-not-found message")
+	}
+	if !strings.Contains(text, "не найден") && !strings.Contains(text, "Пользователь") {
+		t.Errorf("expected user-not-found text, got %q", text)
+	}
+}
+
+// TestBotCommandService_HandleNotification_UpdateSettingsError covers handleNotification when UpdateUserSettings returns error.
+func TestBotCommandService_HandleNotification_UpdateSettingsError(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	client := &mockTelegramClient{}
+	bot := newTestBot(client)
+	user := &models.User{ID: 1, TelegramID: 42, SettingsJSON: "{}"}
+	mockRepo := &mockUserRepoForCommands{
+		getUserFunc: func(_ int64) (*models.User, error) { return user, nil },
+		updateSettingsFunc: func(_ int64, _ string) error {
+			return fmt.Errorf("update failed")
+		},
+	}
+	svc := NewBotCommandService(bot, mockRepo, logger, "help", "start", "unknown")
+
+	msg := commandMessage("/notification daily")
+	update := tgbotapi.Update{Message: msg}
+	svc.HandleUpdate(update)
+
+	text := client.lastParams.Get("text")
+	if text == "" {
+		t.Fatal("expected error message")
+	}
+	if !strings.Contains(text, "ошибка") && !strings.Contains(text, "настроек") {
+		t.Errorf("expected settings error message, got %q", text)
+	}
+}
+
+// TestBotCommandService_HandleNotification_SendConfirmationFails covers handleNotification when Send after success fails.
+func TestBotCommandService_HandleNotification_SendConfirmationFails(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
+	client := &mockTelegramClient{}
+	client.failNext = true
+	bot := newTestBot(client)
+	svc := NewBotCommandService(bot, userRepo, logger, "help", "start", "unknown")
+
+	if _, err := userRepo.GetOrCreateUser(42); err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+
+	msg := commandMessage("/notification daily")
+	update := tgbotapi.Update{Message: msg}
+	svc.HandleUpdate(update)
+	// Settings should still be updated
+	user, _ := userRepo.GetUserByTelegramID(42)
+	if user == nil || !strings.Contains(user.SettingsJSON, "daily") {
+		t.Fatalf("expected settings updated to daily despite Send failure")
+	}
+}
+
+// TestBotCommandService_HandleUpdate_StartWithOtherParam covers HandleUpdate when message is "/start foo" (param not unsubscribe).
+func TestBotCommandService_HandleUpdate_StartWithOtherParam(t *testing.T) {
+	svc, _, client, cleanup := setupBotCommandService(t)
+	defer cleanup()
+
+	msg := commandMessage("/start foo")
+	msg.Text = "/start foo"
+	update := tgbotapi.Update{Message: msg}
+	svc.HandleUpdate(update)
+
+	if got := client.lastParams.Get("text"); got != "start" {
+		t.Fatalf("expected start message, got %q", got)
+	}
+}
+
 func TestBotCommandService_HandleHelp(t *testing.T) {
 	svc, _, client, cleanup := setupBotCommandService(t)
 	defer cleanup()
@@ -441,6 +625,36 @@ func TestBotCommandService_HandleUpdate_NonCommandText(t *testing.T) {
 	update := tgbotapi.Update{Message: msg}
 	svc.HandleUpdate(update)
 	// Should not panic; logs "message is not a command, skipping"
+}
+
+// TestBotCommandService_HandleUpdate_StartUnsubscribeAsText covers HandleUpdate when message text is "/start unsubscribe" but not parsed as command (e.g. no command entity).
+func TestBotCommandService_HandleUpdate_StartUnsubscribeAsText(t *testing.T) {
+	svc, userRepo, client, cleanup := setupBotCommandService(t)
+	defer cleanup()
+
+	if _, err := userRepo.GetOrCreateUser(42); err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	// Message with /start unsubscribe as plain text (no Entities for bot_command)
+	msg := &tgbotapi.Message{
+		Text: "/start unsubscribe",
+		Chat: &tgbotapi.Chat{ID: 10},
+		From: &tgbotapi.User{ID: 42},
+		// No Entities -> IsCommand() is false
+	}
+	update := tgbotapi.Update{Message: msg}
+	svc.HandleUpdate(update)
+
+	user, err := userRepo.GetUserByTelegramID(42)
+	if err != nil {
+		t.Fatalf("GetUserByTelegramID: %v", err)
+	}
+	if user == nil || !strings.Contains(user.SettingsJSON, "never") {
+		t.Fatalf("expected settings to include never after /start unsubscribe as text")
+	}
+	if client.lastParams.Get("text") == "" {
+		t.Fatalf("expected confirmation message to be sent")
+	}
 }
 
 // TestBotCommandService_HandleNotification_UserNotFound covers handleNotification when user does not exist.
