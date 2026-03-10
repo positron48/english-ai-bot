@@ -7,9 +7,11 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"strconv"
 	"strings"
 	"testing"
 
+	"tgbot-skeleton/internal/ai"
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
@@ -2714,5 +2716,340 @@ func TestHandleAdmin_CircuitBreakerNoRow(t *testing.T) {
 	}
 	if resp["circuit_breaker"] == nil {
 		t.Error("expected circuit_breaker in response")
+	}
+}
+
+// Direct handler tests (call handlers without middleware) to ensure full coverage of admin.go
+
+func TestHandleAdmin_Direct_MethodNotAllowed(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, _, cbService := setupAdminTestDB(t)
+	cfg := &config.Config{Admin: config.AdminConfig{TelegramID: 123456789}, WebApp: config.WebAppConfig{JWTSecret: "test-secret"}}
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+
+	req := httptest.NewRequest(http.MethodPost, "/api/admin", nil)
+	w := httptest.NewRecorder()
+	router.handleAdmin(w, req)
+
+	if w.Code != http.StatusMethodNotAllowed {
+		t.Errorf("expected 405, got %d", w.Code)
+	}
+}
+
+func TestHandleAdminCircuitReset_Direct_MethodNotAllowed(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, _, cbService := setupAdminTestDB(t)
+	cfg := &config.Config{Admin: config.AdminConfig{TelegramID: 123456789}, WebApp: config.WebAppConfig{JWTSecret: "test-secret"}}
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/circuit/reset", nil)
+	w := httptest.NewRecorder()
+	router.handleAdminCircuitReset(w, req)
+
+	if w.Code != http.StatusMethodNotAllowed {
+		t.Errorf("expected 405, got %d", w.Code)
+	}
+}
+
+func TestHandleAdminUsers_Direct_MethodNotAllowed(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, _, cbService := setupAdminTestDB(t)
+	cfg := &config.Config{Admin: config.AdminConfig{TelegramID: 123456789}, WebApp: config.WebAppConfig{JWTSecret: "test-secret"}}
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/users", nil)
+	w := httptest.NewRecorder()
+	router.handleAdminUsers(w, req)
+
+	if w.Code != http.StatusMethodNotAllowed {
+		t.Errorf("expected 405, got %d", w.Code)
+	}
+}
+
+func TestHandleAdminWords_Direct_MethodNotAllowed(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, _, cbService := setupAdminTestDB(t)
+	cfg := &config.Config{Admin: config.AdminConfig{TelegramID: 123456789}, WebApp: config.WebAppConfig{JWTSecret: "test-secret"}}
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/words", nil)
+	w := httptest.NewRecorder()
+	router.handleAdminWords(w, req)
+
+	if w.Code != http.StatusMethodNotAllowed {
+		t.Errorf("expected 405, got %d", w.Code)
+	}
+}
+
+func TestHandleAdmin_Direct_Get_Success(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, _, cbService := setupAdminTestDB(t)
+	cfg := &config.Config{Admin: config.AdminConfig{TelegramID: 123456789}, WebApp: config.WebAppConfig{JWTSecret: "test-secret"}}
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+
+	req := httptest.NewRequest(http.MethodGet, "/api/admin", nil)
+	w := httptest.NewRecorder()
+	router.handleAdmin(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("expected 200, got %d: %s", w.Code, w.Body.String())
+	}
+	var resp map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&resp); err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+	if resp["circuit_breaker"] == nil || resp["admin_id"] == nil {
+		t.Error("expected circuit_breaker and admin_id in response")
+	}
+}
+
+func TestHandleAdminCircuitReset_Direct_PostSuccess(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, _, cbService := setupAdminTestDB(t)
+	cfg := &config.Config{Admin: config.AdminConfig{TelegramID: 123456789}, WebApp: config.WebAppConfig{JWTSecret: "test-secret"}}
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/circuit/reset", nil)
+	w := httptest.NewRecorder()
+	router.handleAdminCircuitReset(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("expected 200, got %d: %s", w.Code, w.Body.String())
+	}
+	var resp map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&resp); err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+	if resp["success"] != true {
+		t.Error("expected success true")
+	}
+}
+
+func TestHandleAdminUsers_Direct_Get_Success(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	_, _ = userRepo.GetOrCreateUser(123456789)
+	cfg := &config.Config{Admin: config.AdminConfig{TelegramID: 123456789}, WebApp: config.WebAppConfig{JWTSecret: "test-secret"}}
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/users", nil)
+	w := httptest.NewRecorder()
+	router.handleAdminUsers(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("expected 200, got %d: %s", w.Code, w.Body.String())
+	}
+	var resp map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&resp); err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+	if resp["users"] == nil {
+		t.Error("expected users in response")
+	}
+}
+
+func TestHandleAdminWords_Direct_Get_Success(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, _, cbService := setupAdminTestDB(t)
+	cfg := &config.Config{Admin: config.AdminConfig{TelegramID: 123456789}, WebApp: config.WebAppConfig{JWTSecret: "test-secret"}}
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/words", nil)
+	w := httptest.NewRecorder()
+	router.handleAdminWords(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("expected 200, got %d: %s", w.Code, w.Body.String())
+	}
+	var resp map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&resp); err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+	if _, hasWords := resp["words"]; !hasWords {
+		t.Error("expected words key in response")
+	}
+	if _, hasPag := resp["pagination"]; !hasPag {
+		t.Error("expected pagination key in response")
+	}
+}
+
+func TestHandleAdminWords_QueryParams_HasAudioAndOnlyErrors(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, _, cbService := setupAdminTestDB(t)
+	cfg := &config.Config{Admin: config.AdminConfig{TelegramID: 123456789}, WebApp: config.WebAppConfig{JWTSecret: "test-secret"}}
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+
+	for _, q := range []string{"?only_errors=true", "?only_errors=1", "?has_audio=true", "?has_audio=false", "?has_audio=0", "?sort_order=asc", "?limit=5&offset=0"} {
+		req := httptest.NewRequest(http.MethodGet, "/api/admin/words"+q, nil)
+		w := httptest.NewRecorder()
+		router.handleAdminWords(w, req)
+		if w.Code != http.StatusOK {
+			t.Errorf("query %q: expected 200, got %d: %s", q, w.Code, w.Body.String())
+		}
+	}
+}
+
+func TestHandleAdminWord_Direct_PutSuccess(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, _, cbService := setupAdminTestDB(t)
+	wordRepo := repository.NewWordRepository(db, logger)
+	_ = wordRepo.SaveWordCard("directput", "old")
+	wc, _ := wordRepo.GetWordCard("directput")
+	cfg := &config.Config{Admin: config.AdminConfig{TelegramID: 123456789}, WebApp: config.WebAppConfig{JWTSecret: "test-secret"}}
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+
+	body := `{"definition":"new def","word":"directput"}`
+	req := httptest.NewRequest(http.MethodPut, fmt.Sprintf("/api/admin/words/%d", wc.ID), strings.NewReader(body))
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+	router.handleAdminWord(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("expected 200, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+func TestHandleAdminWord_Direct_ResetSuccess(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, _, cbService := setupAdminTestDB(t)
+	wordRepo := repository.NewWordRepository(db, logger)
+	_ = wordRepo.SaveWordCard("directreset", "def")
+	wc, _ := wordRepo.GetWordCard("directreset")
+	cfg := &config.Config{Admin: config.AdminConfig{TelegramID: 123456789}, WebApp: config.WebAppConfig{JWTSecret: "test-secret"}}
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+
+	req := httptest.NewRequest(http.MethodPost, fmt.Sprintf("/api/admin/words/%d/reset", wc.ID), nil)
+	w := httptest.NewRecorder()
+	router.handleAdminWord(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("expected 200, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+func TestHandleAdminWord_Direct_DeleteSuccess(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, _, cbService := setupAdminTestDB(t)
+	wordRepo := repository.NewWordRepository(db, logger)
+	_ = wordRepo.SaveWordCard("directdel", "def")
+	wc, _ := wordRepo.GetWordCard("directdel")
+	cfg := &config.Config{Admin: config.AdminConfig{TelegramID: 123456789}, WebApp: config.WebAppConfig{JWTSecret: "test-secret"}}
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+
+	req := httptest.NewRequest(http.MethodDelete, fmt.Sprintf("/api/admin/words/%d", wc.ID), nil)
+	w := httptest.NewRecorder()
+	router.handleAdminWord(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("expected 200, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+func TestHandleAdminWord_Direct_MethodNotAllowed(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, _, cbService := setupAdminTestDB(t)
+	wordRepo := repository.NewWordRepository(db, logger)
+	_ = wordRepo.SaveWordCard("mna", "def")
+	wc, _ := wordRepo.GetWordCard("mna")
+	cfg := &config.Config{Admin: config.AdminConfig{TelegramID: 123456789}, WebApp: config.WebAppConfig{JWTSecret: "test-secret"}}
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+
+	req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/api/admin/words/%d", wc.ID), nil)
+	w := httptest.NewRecorder()
+	router.handleAdminWord(w, req)
+
+	if w.Code != http.StatusMethodNotAllowed {
+		t.Errorf("expected 405, got %d", w.Code)
+	}
+}
+
+func TestHandleAdminWord_Direct_POST_Generate_Success(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, _, cbService := setupAdminTestDB(t)
+	wordRepo := repository.NewWordRepository(db, logger)
+	_ = wordRepo.SaveWordCard("run", "def")
+	wc, _ := wordRepo.GetWordCard("run")
+	// WordInfoResponse JSON that AI returns (as content of choices[].message.content)
+	wordInfoJSON := `{"input_word":"run","lemma":"run","pos":"verb","transcription":"rʌn","definition_ru":"бежать","examples":[],"verb_forms":{"v1":"run","v2":"ran","v3":"run"}}`
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write([]byte(`{"choices":[{"message":{"content":` + strconv.Quote(wordInfoJSON) + `}}]}`))
+	}))
+	t.Cleanup(server.Close)
+	aiSvc := ai.NewService(server.URL, "test-model", "test-key", "prompt", logger)
+
+	cfg := &config.Config{Admin: config.AdminConfig{TelegramID: 123456789}, WebApp: config.WebAppConfig{JWTSecret: "test-secret"}}
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.aiService = aiSvc
+
+	req := httptest.NewRequest(http.MethodPost, fmt.Sprintf("/api/admin/words/%d/generate", wc.ID), nil)
+	w := httptest.NewRecorder()
+	router.handleAdminWord(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("expected 200, got %d: %s", w.Code, w.Body.String())
+	}
+	var resp map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&resp); err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+	if resp["success"] != true {
+		t.Error("expected success true")
+	}
+	if _, ok := resp["word_card"]; !ok {
+		t.Error("expected word_card in response")
+	}
+}
+
+func TestHandleAdminWord_Direct_POST_Generate_LLMError(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, _, cbService := setupAdminTestDB(t)
+	wordRepo := repository.NewWordRepository(db, logger)
+	_ = wordRepo.SaveWordCard("x", "def")
+	wc, _ := wordRepo.GetWordCard("x")
+	wordInfoJSON := `{"error":true,"lemma":"","pos":"","transcription":"","definition_ru":"","examples":[]}`
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write([]byte(`{"choices":[{"message":{"content":` + strconv.Quote(wordInfoJSON) + `}}]}`))
+	}))
+	t.Cleanup(server.Close)
+	aiSvc := ai.NewService(server.URL, "test-model", "test-key", "prompt", logger)
+
+	cfg := &config.Config{Admin: config.AdminConfig{TelegramID: 123456789}, WebApp: config.WebAppConfig{JWTSecret: "test-secret"}}
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.aiService = aiSvc
+
+	req := httptest.NewRequest(http.MethodPost, fmt.Sprintf("/api/admin/words/%d/generate", wc.ID), nil)
+	w := httptest.NewRecorder()
+	router.handleAdminWord(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("expected 400 for LLM error, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+func TestHandleAdminWord_Direct_POST_Generate_ParseError(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, _, cbService := setupAdminTestDB(t)
+	wordRepo := repository.NewWordRepository(db, logger)
+	_ = wordRepo.SaveWordCard("y", "def")
+	wc, _ := wordRepo.GetWordCard("y")
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write([]byte(`{"choices":[{"message":{"content":"not valid json"}}]}`))
+	}))
+	t.Cleanup(server.Close)
+	aiSvc := ai.NewService(server.URL, "test-model", "test-key", "prompt", logger)
+
+	cfg := &config.Config{Admin: config.AdminConfig{TelegramID: 123456789}, WebApp: config.WebAppConfig{JWTSecret: "test-secret"}}
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.aiService = aiSvc
+
+	req := httptest.NewRequest(http.MethodPost, fmt.Sprintf("/api/admin/words/%d/generate", wc.ID), nil)
+	w := httptest.NewRecorder()
+	router.handleAdminWord(w, req)
+
+	if w.Code != http.StatusInternalServerError {
+		t.Errorf("expected 500 for parse error, got %d: %s", w.Code, w.Body.String())
 	}
 }

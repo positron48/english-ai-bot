@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"tgbot-skeleton/internal/config"
@@ -246,15 +247,21 @@ func TestHandleAdminTrainingCard_Delete_More(t *testing.T) {
 	}
 	tcID, _ := tcRepo.CreateTrainingCard(tc)
 
-	req := httptest.NewRequest(http.MethodDelete, "/api/admin/training/card/"+string(rune(tcID+'0')), nil)
+	req := httptest.NewRequest(http.MethodDelete, "/api/admin/training/card/"+fmt.Sprint(tcID), nil)
 	req = setAdminTrainingUserContext(req, adminUserID)
 	rr := httptest.NewRecorder()
 
 	router.handleAdminTrainingCard(rr, req)
 
-	// Either 200 or 404 depending on card existence
-	if rr.Code != http.StatusOK && rr.Code != http.StatusNotFound {
-		t.Errorf("Expected status 200 or 404, got %d: %s", rr.Code, rr.Body.String())
+	if rr.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", rr.Code, rr.Body.String())
+	}
+	var resp map[string]interface{}
+	if err := json.Unmarshal(rr.Body.Bytes(), &resp); err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+	if resp["success"] != true {
+		t.Error("expected success true")
 	}
 }
 
@@ -298,6 +305,43 @@ func TestHandleAdminTrainingCard_EmptyCardID(t *testing.T) {
 
 	if rr.Code != http.StatusBadRequest {
 		t.Errorf("Expected status 400 (card ID required), got %d", rr.Code)
+	}
+}
+
+func TestHandleAdminTraining_CreateCardForm_Success(t *testing.T) {
+	router, db, adminUserID := setupAdminTrainingTest(t)
+
+	wordRepo := repository.NewWordRepository(db.GetConnection(), router.logger)
+	if err := wordRepo.SaveWordCard("formword", "def"); err != nil {
+		t.Fatalf("SaveWordCard: %v", err)
+	}
+
+	form := "word_ru=перевод&meaning_en=meaning&example_en=ex&example_ru=пример"
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/training/formword", strings.NewReader(form))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req = setAdminTrainingUserContext(req, adminUserID)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminTraining(rr, req)
+
+	if rr.Code != http.StatusOK {
+		t.Errorf("expected 200, got %d: %s", rr.Code, rr.Body.String())
+	}
+}
+
+func TestHandleAdminTraining_Generate_FormConstraints(t *testing.T) {
+	router, _, adminUserID := setupAdminTrainingTest(t)
+	router.aiService = setupAdminAIService(t, `{"word_en":"x","transcription":"","senses":[{"pos":"n","display_word":"x","word_ru":"икс","meaning_en":"x","example_en":"","example_ru":"","distractors_ru":[],"distractors_en":[],"hint":""}]}`)
+
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/training/x/generate", strings.NewReader("constraints=verb"))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req = setAdminTrainingUserContext(req, adminUserID)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminTraining(rr, req)
+
+	if rr.Code != http.StatusOK {
+		t.Errorf("expected 200, got %d: %s", rr.Code, rr.Body.String())
 	}
 }
 
@@ -346,6 +390,54 @@ func TestHandleAdminTrainingCard_PUT_JSON(t *testing.T) {
 
 	if rr.Code != http.StatusOK {
 		t.Errorf("Expected status 200, got %d: %s", rr.Code, rr.Body.String())
+	}
+}
+
+func TestHandleAdminTrainingCard_PUT_Form(t *testing.T) {
+	router, db, adminUserID := setupAdminTrainingTest(t)
+
+	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), router.logger)
+	wordRepo := repository.NewWordRepository(db.GetConnection(), router.logger)
+	wordRepo.SaveWordCard("w2", "def")
+	wc, _ := wordRepo.GetWordCard("w2")
+	tc := &models.TrainingCard{WordCardID: wc.ID, WordEN: "w2", SenseIndex: 0, WordRU: "сл", MeaningEN: "m", DistractorsRU: "[]", DistractorsEN: "[]"}
+	cardID, _ := tcRepo.CreateTrainingCard(tc)
+
+	form := "word_ru=обновлено&meaning_en=updated"
+	req := httptest.NewRequest(http.MethodPut, "/api/admin/training/card/"+fmt.Sprint(cardID), strings.NewReader(form))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req = setAdminTrainingUserContext(req, adminUserID)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminTrainingCard(rr, req)
+
+	if rr.Code != http.StatusOK {
+		t.Errorf("expected 200, got %d: %s", rr.Code, rr.Body.String())
+	}
+}
+
+func TestHandleAdminTrainingCard_PUT_Form_PosEmptyClearsPOS(t *testing.T) {
+	router, db, adminUserID := setupAdminTrainingTest(t)
+
+	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), router.logger)
+	wordRepo := repository.NewWordRepository(db.GetConnection(), router.logger)
+	wordRepo.SaveWordCard("w3", "def")
+	wc, _ := wordRepo.GetWordCard("w3")
+	posVal := "noun"
+	tc := &models.TrainingCard{WordCardID: wc.ID, WordEN: "w3", SenseIndex: 0, WordRU: "сл", MeaningEN: "m", POS: &posVal, DistractorsRU: "[]", DistractorsEN: "[]"}
+	cardID, _ := tcRepo.CreateTrainingCard(tc)
+
+	// Form with pos= (empty) so posProvided is true and card.POS is set to nil
+	form := "word_ru=ok&meaning_en=ok&pos="
+	req := httptest.NewRequest(http.MethodPut, "/api/admin/training/card/"+fmt.Sprint(cardID), strings.NewReader(form))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req = setAdminTrainingUserContext(req, adminUserID)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminTrainingCard(rr, req)
+
+	if rr.Code != http.StatusOK {
+		t.Errorf("expected 200, got %d: %s", rr.Code, rr.Body.String())
 	}
 }
 

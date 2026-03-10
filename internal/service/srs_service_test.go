@@ -373,6 +373,57 @@ func TestSRSService_updateCardState(t *testing.T) {
 				}
 			},
 		},
+		// Direction-specific learning steps: EN-RU has [1,3,7], RU-EN has [1,3,7,14].
+		// EN-RU at last learning step (2) + Good -> graduate to review (next_due 3 days).
+		{
+			name: "EN-RU learning step 2 Good graduates to review (3 days)",
+			card: &models.UserCard{
+				State:        models.StateLearning,
+				LearningStep: 2,
+				Direction:    models.DirectionENtoRU,
+			},
+			quality: models.QualityGood,
+			validate: func(t *testing.T, card *models.UserCard) {
+				if card.State != models.StateReview {
+					t.Errorf("Expected state review after graduating, got %v", card.State)
+				}
+				if card.IntervalDays != 3 {
+					t.Errorf("Expected IntervalDays 3 after graduating from 2+ steps, got %d", card.IntervalDays)
+				}
+				if card.NextDueAt == nil {
+					t.Fatal("NextDueAt should be set")
+				}
+				dueIn := card.NextDueAt.Sub(now)
+				if dueIn < 2*24*time.Hour || dueIn > 4*24*time.Hour {
+					t.Errorf("Expected next_due ~3 days, got %v", dueIn)
+				}
+			},
+		},
+		// RU-EN at step 2 + Good -> step 3, next_due 14 days (steps[3]=14).
+		{
+			name: "RU-EN learning step 2 Good advances to step 3 (14 days)",
+			card: &models.UserCard{
+				State:        models.StateLearning,
+				LearningStep: 2,
+				Direction:    models.DirectionRUtoEN,
+			},
+			quality: models.QualityGood,
+			validate: func(t *testing.T, card *models.UserCard) {
+				if card.State != models.StateLearning {
+					t.Errorf("Expected state learning (one more step), got %v", card.State)
+				}
+				if card.LearningStep != 3 {
+					t.Errorf("Expected LearningStep 3, got %d", card.LearningStep)
+				}
+				if card.NextDueAt == nil {
+					t.Fatal("NextDueAt should be set")
+				}
+				dueIn := card.NextDueAt.Sub(now)
+				if dueIn < 13*24*time.Hour || dueIn > 15*24*time.Hour {
+					t.Errorf("Expected next_due ~14 days (RU-EN step 3), got %v", dueIn)
+				}
+			},
+		},
 	}
 
 	for _, tt := range tests {

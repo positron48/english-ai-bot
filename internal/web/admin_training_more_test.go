@@ -205,3 +205,35 @@ func TestHandleAdminTraining_ForbiddenWithoutPermissions(t *testing.T) {
 		t.Fatalf("expected POST 403, got %d", postW.Code)
 	}
 }
+
+func TestHandleAdminTraining_Generate_NoSenses(t *testing.T) {
+	router, _, adminUserID := setupAdminTrainingTest(t)
+	router.aiService = setupAdminAIService(t, `{"word_en":"x","senses":[]}`)
+
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/training/x/generate", bytes.NewBufferString(`{"constraints":"y"}`))
+	req.Header.Set("Content-Type", "application/json")
+	req = setAdminTrainingUserContext(req, adminUserID)
+	w := httptest.NewRecorder()
+
+	router.handleAdminTraining(w, req)
+
+	if w.Code != http.StatusInternalServerError {
+		t.Fatalf("expected 500 when no senses, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+func TestHandleAdminTraining_Generate_ParseError(t *testing.T) {
+	router, _, adminUserID := setupAdminTrainingTest(t)
+	router.aiService = setupAdminAIService(t, `not json at all`)
+
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/training/x/generate", bytes.NewBufferString(`{"constraints":"y"}`))
+	req.Header.Set("Content-Type", "application/json")
+	req = setAdminTrainingUserContext(req, adminUserID)
+	w := httptest.NewRecorder()
+
+	router.handleAdminTraining(w, req)
+
+	if w.Code != http.StatusInternalServerError {
+		t.Fatalf("expected 500 when parse fails, got %d: %s", w.Code, w.Body.String())
+	}
+}

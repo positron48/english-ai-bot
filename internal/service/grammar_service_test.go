@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"database/sql"
 	"encoding/json"
 	"strings"
 	"testing"
@@ -11,6 +12,7 @@ import (
 	"tgbot-skeleton/internal/testutil"
 
 	"go.uber.org/zap"
+	"testing/fstest"
 )
 
 func setupGrammarService(t *testing.T) (*GrammarService, *repository.GrammarContentRepository, *repository.GrammarPublishRepository, *repository.GrammarAttemptRepository, *repository.UserRepository, func()) {
@@ -30,6 +32,130 @@ func setupGrammarService(t *testing.T) (*GrammarService, *repository.GrammarCont
 	cleanup := func() {} // shared db, do not close
 
 	return service, contentRepo, publishRepo, attemptRepo, userRepo, cleanup
+}
+
+func TestGrammarService_GetPublishedSections_GetSectionsError(t *testing.T) {
+	logger := zap.NewNop()
+	contentRepo := repository.NewGrammarContentRepositoryWithFS(fstest.MapFS{}, logger)
+	db := testutil.SetupTestDatabase(t)
+	publishRepo := repository.NewGrammarPublishRepository(db.GetConnection(), logger)
+	attemptRepo := repository.NewGrammarAttemptRepository(db.GetConnection(), logger)
+	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+
+	_, err := svc.GetPublishedSections(context.Background(), 1)
+	if err == nil {
+		t.Fatal("expected error when GetSections fails")
+	}
+	if !strings.Contains(err.Error(), "failed to get sections") {
+		t.Errorf("expected 'failed to get sections' in error, got: %v", err)
+	}
+}
+
+func TestGrammarService_GetAllSectionsWithProgress_GetSectionsError(t *testing.T) {
+	logger := zap.NewNop()
+	contentRepo := repository.NewGrammarContentRepositoryWithFS(fstest.MapFS{}, logger)
+	db := testutil.SetupTestDatabase(t)
+	publishRepo := repository.NewGrammarPublishRepository(db.GetConnection(), logger)
+	attemptRepo := repository.NewGrammarAttemptRepository(db.GetConnection(), logger)
+	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+
+	_, err := svc.GetAllSectionsWithProgress(context.Background(), 1)
+	if err == nil {
+		t.Fatal("expected error when GetSections fails")
+	}
+	if !strings.Contains(err.Error(), "failed to get sections") {
+		t.Errorf("expected 'failed to get sections' in error, got: %v", err)
+	}
+}
+
+func TestGrammarService_GetPublishedChapters_GetSectionsError(t *testing.T) {
+	logger := zap.NewNop()
+	contentRepo := repository.NewGrammarContentRepositoryWithFS(fstest.MapFS{}, logger)
+	db := testutil.SetupTestDatabase(t)
+	publishRepo := repository.NewGrammarPublishRepository(db.GetConnection(), logger)
+	attemptRepo := repository.NewGrammarAttemptRepository(db.GetConnection(), logger)
+	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+
+	_, err := svc.GetPublishedChapters(context.Background(), "any-section", 1)
+	if err == nil {
+		t.Fatal("expected error when GetSections fails")
+	}
+	if !strings.Contains(err.Error(), "failed to get sections") {
+		t.Errorf("expected 'failed to get sections' in error, got: %v", err)
+	}
+}
+
+func grammarServiceWithClosedPublishRepo(t *testing.T) (*GrammarService, func()) {
+	t.Helper()
+	logger := zap.NewNop()
+	contentRepo := repository.NewGrammarContentRepository(logger)
+	db := testutil.SetupTestDatabase(t)
+	dsn := testutil.GetTestDSN(t)
+	closedConn, err := sql.Open("postgres_compat", dsn)
+	if err != nil {
+		t.Skip("postgres_compat driver not registered or open failed:", err)
+	}
+	closedConn.Close()
+	publishRepo := repository.NewGrammarPublishRepository(closedConn, logger)
+	attemptRepo := repository.NewGrammarAttemptRepository(db.GetConnection(), logger)
+	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+	return svc, func() {}
+}
+
+func TestGrammarService_GetPublishedSections_GetPublishedItemsError(t *testing.T) {
+	svc, cleanup := grammarServiceWithClosedPublishRepo(t)
+	defer cleanup()
+
+	_, err := svc.GetPublishedSections(context.Background(), 1)
+	if err == nil {
+		t.Fatal("expected error when GetPublishedItemsByType fails")
+	}
+	if !strings.Contains(err.Error(), "failed to get published items") {
+		t.Errorf("expected 'failed to get published items' in error, got: %v", err)
+	}
+}
+
+func TestGrammarService_GetAllSectionsWithProgress_GetPublishedItemsError(t *testing.T) {
+	svc, cleanup := grammarServiceWithClosedPublishRepo(t)
+	defer cleanup()
+
+	_, err := svc.GetAllSectionsWithProgress(context.Background(), 1)
+	if err == nil {
+		t.Fatal("expected error when GetPublishedItemsByType fails")
+	}
+	if !strings.Contains(err.Error(), "failed to get published items") {
+		t.Errorf("expected 'failed to get published items' in error, got: %v", err)
+	}
+}
+
+func TestGrammarService_IsSectionPublished_RepoError(t *testing.T) {
+	svc, cleanup := grammarServiceWithClosedPublishRepo(t)
+	defer cleanup()
+
+	_, err := svc.IsSectionPublished(context.Background(), "any-section")
+	if err == nil {
+		t.Fatal("expected error when GetPublishedItem fails")
+	}
+}
+
+func TestGrammarService_GetNextPublishedChapterID_GetPublishedItemsError(t *testing.T) {
+	svc, cleanup := grammarServiceWithClosedPublishRepo(t)
+	defer cleanup()
+
+	contentRepo := repository.NewGrammarContentRepository(zap.NewNop())
+	sectionsData, err := contentRepo.GetSections()
+	if err != nil || len(sectionsData.Sections) == 0 || len(sectionsData.Sections[0].ChapterIDs) == 0 {
+		t.Skip("need sections and chapters from bundle")
+	}
+	chapterID := sectionsData.Sections[0].ChapterIDs[0]
+
+	_, _, _, err = svc.GetNextPublishedChapterID(context.Background(), chapterID)
+	if err == nil {
+		t.Fatal("expected error when GetPublishedItemsByType fails")
+	}
+	if !strings.Contains(err.Error(), "failed to get published items") {
+		t.Errorf("expected 'failed to get published items' in error, got: %v", err)
+	}
 }
 
 func TestGrammarService_GetPublishedSectionsAndChapters(t *testing.T) {
@@ -399,6 +525,14 @@ func TestGrammarService_CompareAnswers(t *testing.T) {
 	if svc.compareAnswers([]interface{}{1, 2}, []interface{}{1, 3}) {
 		t.Fatal("expected slice with different element to fail")
 	}
+	// User answer not slice when correct is slice
+	if svc.compareAnswers("not-a-slice", []interface{}{1, 2}) {
+		t.Fatal("expected non-slice user answer to fail for slice correct")
+	}
+	// User answer not map when correct is map
+	if svc.compareAnswers("not-a-map", map[string]interface{}{"a": 1}) {
+		t.Fatal("expected non-map user answer to fail for map correct")
+	}
 }
 
 func TestNormalizeTrueFalseValue(t *testing.T) {
@@ -446,6 +580,31 @@ func TestGrammarService_SelectQuestions_Strategies(t *testing.T) {
 	selectedRandom := svc.selectQuestions(pool, questionMap, map[string]interface{}{}, 2)
 	if len(selectedRandom) != 2 {
 		t.Fatalf("expected 2 questions, got %d", len(selectedRandom))
+	}
+
+	// selectStratified: min_per_theory_block from config, theory_block_id empty -> "unknown"
+	configMin := map[string]interface{}{"type": "stratified_by_theory_block", "min_per_theory_block": 2.0}
+	pool3 := []interface{}{"q1", "q2", "q3", "q4"}
+	qm3 := map[string]interface{}{
+		"q1": map[string]interface{}{"id": "q1"},
+		"q2": map[string]interface{}{"id": "q2"},
+		"q3": map[string]interface{}{"id": "q3", "theory_block_id": "b1"},
+		"q4": map[string]interface{}{"id": "q4", "theory_block_id": "b1"},
+	}
+	selectedStrat := svc.selectQuestions(pool3, qm3, configMin, 3)
+	if len(selectedStrat) < 2 {
+		t.Fatalf("expected at least 2 from stratified, got %d", len(selectedStrat))
+	}
+
+	// selectRandom: non-string in poolIDs skipped; len(available) <= numQuestions returns all
+	poolMixed := []interface{}{"q1", 42, "q2"}
+	qmSmall := map[string]interface{}{
+		"q1": map[string]interface{}{"id": "q1"},
+		"q2": map[string]interface{}{"id": "q2"},
+	}
+	selectedSmall := svc.selectRandom(poolMixed, qmSmall, 10)
+	if len(selectedSmall) != 2 {
+		t.Fatalf("expected 2 when available < numQuestions, got %d", len(selectedSmall))
 	}
 }
 
@@ -731,6 +890,40 @@ func TestGrammarService_CanAccessSection_DeniedWhenCategoryNotPassed(t *testing.
 	}
 }
 
+// TestGrammarService_CanAccessSection_FallbackAllChaptersPassed covers access to next section when category test is missing but all published chapters of previous section are passed.
+func TestGrammarService_CanAccessSection_FallbackAllChaptersPassed(t *testing.T) {
+	svc, contentRepo, publishRepo, attemptRepo, _, cleanup := setupGrammarService(t)
+	defer cleanup()
+
+	sectionsData, err := contentRepo.GetSections()
+	if err != nil || len(sectionsData.Sections) < 2 {
+		t.Fatalf("GetSections or need 2 sections: %v", err)
+	}
+	firstSection := sectionsData.Sections[0]
+	secondSection := sectionsData.Sections[1]
+	// Publish first section and its chapters; do not create category test attempt
+	for _, chID := range firstSection.ChapterIDs {
+		_ = publishRepo.SetPublished("chapter", chID, true, nil)
+	}
+	_ = publishRepo.SetPublished("section", firstSection.SectionID, true, nil)
+	_ = publishRepo.SetPublished("section", secondSection.SectionID, true, nil)
+	if len(secondSection.ChapterIDs) > 0 {
+		_ = publishRepo.SetPublished("chapter", secondSection.ChapterIDs[0], true, nil)
+	}
+	// Pass all published chapters of first section (no category test)
+	for _, chID := range firstSection.ChapterIDs {
+		_ = attemptRepo.UpdateProgress(1, chID, 80, true)
+	}
+
+	can, err := svc.CanAccessSection(context.Background(), 1, secondSection.SectionID)
+	if err != nil {
+		t.Fatalf("CanAccessSection: %v", err)
+	}
+	if !can {
+		t.Fatal("expected second section accessible when all chapters of first section passed (fallback)")
+	}
+}
+
 func TestGrammarService_IsSectionPublished(t *testing.T) {
 	svc, contentRepo, publishRepo, _, _, cleanup := setupGrammarService(t)
 	defer cleanup()
@@ -949,6 +1142,49 @@ func TestGrammarService_SubmitTest_TrueFalse_Normalization(t *testing.T) {
 	}
 }
 
+// TestGrammarService_SubmitTest_TrueFalse_UnnormalizableUsesCompare covers true_false when user or correct does not normalize; compareAnswers is used.
+func TestGrammarService_SubmitTest_TrueFalse_UnnormalizableUsesCompare(t *testing.T) {
+	svc, contentRepo, publishRepo, _, _, cleanup := setupGrammarService(t)
+	defer cleanup()
+
+	sectionsData, err := contentRepo.GetSections()
+	if err != nil || len(sectionsData.Sections) == 0 {
+		t.Fatalf("GetSections: %v", err)
+	}
+	chapterID := sectionsData.Sections[0].ChapterIDs[0]
+	if err := publishRepo.SetPublished("chapter", chapterID, true, nil); err != nil {
+		t.Fatalf("SetPublished: %v", err)
+	}
+
+	chapter, _ := contentRepo.GetChapter(chapterID)
+	questionBank, _ := chapter.QuestionBank["questions"].([]interface{})
+	var qID string
+	for _, q := range questionBank {
+		qMap, _ := q.(map[string]interface{})
+		if tpe, _ := qMap["type"].(string); tpe == "true_false" {
+			qID, _ = qMap["id"].(string)
+			break
+		}
+	}
+	if qID == "" {
+		t.Skip("no true_false question in chapter")
+	}
+
+	// Answer with value that normalizeTrueFalseValue does not recognize; service falls back to compareAnswers
+	answers := []AnswerItem{{QuestionID: qID, Answer: 42}}
+	result, err := svc.SubmitTest(context.Background(), 1, "chapter", chapterID, answers)
+	if err != nil {
+		t.Fatalf("SubmitTest: %v", err)
+	}
+	if result.Total != 1 {
+		t.Fatalf("expected Total 1, got %d", result.Total)
+	}
+	// 42 vs correct (true/false) -> compareAnswers -> false
+	if result.Correct != 0 {
+		t.Fatalf("expected Correct 0 for unnormalizable answer, got %d", result.Correct)
+	}
+}
+
 func TestGrammarService_CanAccessChapter(t *testing.T) {
 	svc, contentRepo, publishRepo, attemptRepo, _, cleanup := setupGrammarService(t)
 	defer cleanup()
@@ -1098,6 +1334,49 @@ func TestGrammarService_GetPublishedChapters_CanAccessWhenOpenedByPlacement(t *t
 	}
 }
 
+// TestGrammarService_GetPublishedChapters_FirstAndSecondAccessByPrevPassed covers CanAccess: first chapter by section access, second by previous passed (no placement).
+func TestGrammarService_GetPublishedChapters_FirstAndSecondAccessByPrevPassed(t *testing.T) {
+	svc, contentRepo, publishRepo, attemptRepo, _, cleanup := setupGrammarService(t)
+	defer cleanup()
+
+	sectionsData, err := contentRepo.GetSections()
+	if err != nil || len(sectionsData.Sections) == 0 {
+		t.Fatalf("GetSections: %v", err)
+	}
+	section := sectionsData.Sections[0]
+	if len(section.ChapterIDs) < 2 {
+		t.Skip("need at least 2 chapters")
+	}
+	ch0, ch1 := section.ChapterIDs[0], section.ChapterIDs[1]
+	if err := publishRepo.SetPublished("section", section.SectionID, true, nil); err != nil {
+		t.Fatalf("SetPublished section: %v", err)
+	}
+	if err := publishRepo.SetPublished("chapter", ch0, true, nil); err != nil {
+		t.Fatalf("SetPublished ch0: %v", err)
+	}
+	if err := publishRepo.SetPublished("chapter", ch1, true, nil); err != nil {
+		t.Fatalf("SetPublished ch1: %v", err)
+	}
+	// First section is accessible; pass first chapter so second gets CanAccess
+	if err := attemptRepo.UpdateProgress(1, ch0, 80, true); err != nil {
+		t.Fatalf("UpdateProgress: %v", err)
+	}
+
+	chapters, err := svc.GetPublishedChapters(context.Background(), section.SectionID, 1)
+	if err != nil {
+		t.Fatalf("GetPublishedChapters: %v", err)
+	}
+	if len(chapters) < 2 {
+		t.Fatalf("expected at least 2 chapters, got %d", len(chapters))
+	}
+	if !chapters[0].CanAccess {
+		t.Fatal("expected first chapter CanAccess true (section accessible)")
+	}
+	if !chapters[1].CanAccess {
+		t.Fatal("expected second chapter CanAccess true (previous passed)")
+	}
+}
+
 // TestGrammarService_GetNextPublishedChapterID_ChapterNotFound covers error when chapter ID does not exist.
 func TestGrammarService_GetNextPublishedChapterID_ChapterNotFound(t *testing.T) {
 	svc, _, _, _, _, cleanup := setupGrammarService(t)
@@ -1231,6 +1510,25 @@ func TestGrammarService_FilterQuestionBankForQuizzes(t *testing.T) {
 		qs, _ := out.QuestionBank["questions"].([]interface{})
 		if len(qs) != 0 {
 			t.Fatalf("expected 0 questions (no valid id), got %d", len(qs))
+		}
+	})
+
+	t.Run("quiz_inline value not map", func(t *testing.T) {
+		ch := &repository.Chapter{
+			Blocks: []interface{}{
+				map[string]interface{}{
+					"type":        "quiz_inline",
+					"quiz_inline": "not-a-map",
+				},
+			},
+			QuestionBank: map[string]interface{}{
+				"questions": []interface{}{map[string]interface{}{"id": "q1"}},
+			},
+		}
+		out := svc.filterQuestionBankForQuizzes(ch)
+		qs, _ := out.QuestionBank["questions"].([]interface{})
+		if len(qs) != 0 {
+			t.Fatalf("expected 0 questions when quiz_inline is not map, got %d", len(qs))
 		}
 	})
 }
@@ -1371,6 +1669,45 @@ func TestGrammarService_CanAccessChapter_OpenedByPlacement(t *testing.T) {
 	}
 }
 
+// TestGrammarService_CanAccessChapter_NotFound covers error when chapter ID does not exist.
+func TestGrammarService_CanAccessChapter_NotFound(t *testing.T) {
+	svc, _, _, _, _, cleanup := setupGrammarService(t)
+	defer cleanup()
+
+	_, err := svc.CanAccessChapter(context.Background(), 1, "nonexistent-chapter-id")
+	if err == nil {
+		t.Fatal("expected error for nonexistent chapter")
+	}
+	if !strings.Contains(err.Error(), "not found") && !strings.Contains(err.Error(), "failed to get chapter") {
+		t.Errorf("expected not found or failed to get chapter in error, got: %v", err)
+	}
+}
+
+// TestGrammarService_IsSectionOpenedByPlacement_ViaEffectiveLevel covers true when section level <= placement effective level (section not in OpenedSections).
+func TestGrammarService_IsSectionOpenedByPlacement_ViaEffectiveLevel(t *testing.T) {
+	svc, contentRepo, _, attemptRepo, _, cleanup := setupGrammarService(t)
+	defer cleanup()
+
+	sections := pickSectionsWithQuestionChapters(t, contentRepo, 2)
+	if len(sections) < 2 {
+		t.Fatalf("need at least 2 sections")
+	}
+	higherSection := sections[1]
+	lowerSection := sections[0]
+	// Placement opened only the higher-level section; lower should be accessible via effective level
+	if err := attemptRepo.SavePlacementTestResult(1, 80, 10, []string{higherSection.SectionID}); err != nil {
+		t.Fatalf("SavePlacementTestResult: %v", err)
+	}
+
+	opened, err := svc.isSectionOpenedByPlacement(context.Background(), 1, lowerSection.SectionID)
+	if err != nil {
+		t.Fatalf("isSectionOpenedByPlacement: %v", err)
+	}
+	if !opened {
+		t.Fatal("expected true for lower-level section via effective level")
+	}
+}
+
 // TestGrammarService_IsSectionOpenedByPlacement_NoPlacement returns false when user has no placement result.
 func TestGrammarService_IsSectionOpenedByPlacement_NoPlacement(t *testing.T) {
 	svc, contentRepo, _, _, _, cleanup := setupGrammarService(t)
@@ -1391,6 +1728,157 @@ func TestGrammarService_IsSectionOpenedByPlacement_NoPlacement(t *testing.T) {
 	}
 	if opened {
 		t.Fatal("expected false when no placement result")
+	}
+}
+
+// TestGrammarService_GetAllSectionsWithProgress_OverrideName covers title override from publish item name for published sections.
+func TestGrammarService_GetAllSectionsWithProgress_OverrideName(t *testing.T) {
+	svc, contentRepo, publishRepo, _, _, cleanup := setupGrammarService(t)
+	defer cleanup()
+
+	sectionsData, err := contentRepo.GetSections()
+	if err != nil || len(sectionsData.Sections) == 0 {
+		t.Fatalf("GetSections: %v", err)
+	}
+	section := sectionsData.Sections[0]
+	chapterID := section.ChapterIDs[0]
+	customName := "All Sections Override"
+	if err := publishRepo.SetPublished("section", section.SectionID, true, nil); err != nil {
+		t.Fatalf("SetPublished section: %v", err)
+	}
+	if err := publishRepo.SetName("section", section.SectionID, &customName, nil); err != nil {
+		t.Fatalf("SetName: %v", err)
+	}
+	if err := publishRepo.SetPublished("chapter", chapterID, true, nil); err != nil {
+		t.Fatalf("SetPublished chapter: %v", err)
+	}
+
+	all, err := svc.GetAllSectionsWithProgress(context.Background(), 1)
+	if err != nil {
+		t.Fatalf("GetAllSectionsWithProgress: %v", err)
+	}
+	var found bool
+	for _, s := range all {
+		if s.Section != nil && s.Section.SectionID == section.SectionID {
+			found = true
+			if s.Title != customName {
+				t.Fatalf("expected title %q, got %q", customName, s.Title)
+			}
+			break
+		}
+	}
+	if !found {
+		t.Fatal("expected to find section in result")
+	}
+}
+
+// TestGrammarService_GetNextPublishedChapterID_NextAndIsLast covers next chapter and isLast.
+func TestGrammarService_GetNextPublishedChapterID_NextAndIsLast(t *testing.T) {
+	svc, contentRepo, publishRepo, _, _, cleanup := setupGrammarService(t)
+	defer cleanup()
+
+	sectionsData, err := contentRepo.GetSections()
+	if err != nil || len(sectionsData.Sections) == 0 {
+		t.Fatalf("GetSections: %v", err)
+	}
+	section := sectionsData.Sections[0]
+	if len(section.ChapterIDs) < 2 {
+		t.Skip("need at least 2 chapters in section")
+	}
+	ch0, ch1 := section.ChapterIDs[0], section.ChapterIDs[1]
+	for _, cid := range []string{ch0, ch1} {
+		if err := publishRepo.SetPublished("chapter", cid, true, nil); err != nil {
+			t.Fatalf("SetPublished chapter: %v", err)
+		}
+	}
+
+	nextID, isLast, secID, err := svc.GetNextPublishedChapterID(context.Background(), ch0)
+	if err != nil {
+		t.Fatalf("GetNextPublishedChapterID: %v", err)
+	}
+	if nextID != ch1 {
+		t.Fatalf("expected next chapter %q, got %q", ch1, nextID)
+	}
+	if isLast {
+		t.Fatal("expected isLast false when next chapter exists")
+	}
+	if secID != section.SectionID {
+		t.Fatalf("expected sectionID %q, got %q", section.SectionID, secID)
+	}
+
+	nextID2, isLast2, _, err := svc.GetNextPublishedChapterID(context.Background(), ch1)
+	if err != nil {
+		t.Fatalf("GetNextPublishedChapterID last: %v", err)
+	}
+	if nextID2 != "" {
+		t.Fatalf("expected empty next ID for last chapter, got %q", nextID2)
+	}
+	if !isLast2 {
+		t.Fatal("expected isLast true for last chapter")
+	}
+}
+
+// TestGrammarService_GetChapterContent_ChapterNameOverride covers chapter title override from publish item.
+func TestGrammarService_GetChapterContent_IsPublishedError(t *testing.T) {
+	svc, cleanup := grammarServiceWithClosedPublishRepo(t)
+	defer cleanup()
+
+	_, err := svc.GetChapterContent(context.Background(), "any-chapter", false)
+	if err == nil {
+		t.Fatal("expected error when IsPublished check fails")
+	}
+	if !strings.Contains(err.Error(), "failed to check published status") && !strings.Contains(err.Error(), "published") {
+		t.Errorf("expected published status error, got: %v", err)
+	}
+}
+
+func TestGrammarService_GetChapterContent_GetChapterError(t *testing.T) {
+	// Content repo has sections but no index -> GetChapter fails after IsPublished succeeds
+	logger := zap.NewNop()
+	fs := fstest.MapFS{
+		"sections.json": {Data: []byte(`{"version":"1","sections":[{"section_id":"s1","title":"S1","level":"A1","order":1,"chapter_ids":["ch1"]}]}`)},
+	}
+	contentRepo := repository.NewGrammarContentRepositoryWithFS(fs, logger)
+	db := testutil.SetupTestDatabase(t)
+	publishRepo := repository.NewGrammarPublishRepository(db.GetConnection(), logger)
+	attemptRepo := repository.NewGrammarAttemptRepository(db.GetConnection(), logger)
+	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+	if err := publishRepo.SetPublished("chapter", "ch1", true, nil); err != nil {
+		t.Fatalf("SetPublished: %v", err)
+	}
+
+	_, err := svc.GetChapterContent(context.Background(), "ch1", false)
+	if err == nil {
+		t.Fatal("expected error when GetChapter fails (no index)")
+	}
+	if !strings.Contains(err.Error(), "failed to get chapter") && !strings.Contains(err.Error(), "chapter") {
+		t.Errorf("expected get chapter error, got: %v", err)
+	}
+}
+
+func TestGrammarService_GetChapterContent_ChapterNameOverride(t *testing.T) {
+	svc, contentRepo, publishRepo, _, _, cleanup := setupGrammarService(t)
+	defer cleanup()
+
+	sectionsData, err := contentRepo.GetSections()
+	if err != nil || len(sectionsData.Sections) == 0 {
+		t.Fatalf("GetSections: %v", err)
+	}
+	chapterID := sectionsData.Sections[0].ChapterIDs[0]
+	if err := publishRepo.SetPublished("chapter", chapterID, true, nil); err != nil {
+		t.Fatalf("SetPublished: %v", err)
+	}
+	customTitle := "Custom Chapter Title"
+	if err := publishRepo.SetName("chapter", chapterID, &customTitle, nil); err != nil {
+		t.Fatalf("SetName: %v", err)
+	}
+
+	content, err := svc.GetChapterContent(context.Background(), chapterID, true)
+	if err != nil {
+		t.Fatalf("GetChapterContent: %v", err)
+	}
+	if content.Title != customTitle {
+		t.Fatalf("expected title %q, got %q", customTitle, content.Title)
 	}
 }
 

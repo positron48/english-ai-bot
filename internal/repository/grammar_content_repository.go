@@ -17,10 +17,15 @@ type GrammarContentRepository struct {
 	logger *zap.Logger
 }
 
-// NewGrammarContentRepository creates a new grammar content repository
+// NewGrammarContentRepository creates a new grammar content repository using the default embedded bundle.
 func NewGrammarContentRepository(logger *zap.Logger) *GrammarContentRepository {
+	return NewGrammarContentRepositoryWithFS(grammarbundle.FS, logger)
+}
+
+// NewGrammarContentRepositoryWithFS creates a grammar content repository with the given fs (for tests or custom bundles).
+func NewGrammarContentRepositoryWithFS(filesystem fs.FS, logger *zap.Logger) *GrammarContentRepository {
 	return &GrammarContentRepository{
-		fs:     grammarbundle.FS,
+		fs:     filesystem,
 		logger: logger,
 	}
 }
