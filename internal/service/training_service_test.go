@@ -269,10 +269,13 @@ func TestTrainingService_FinishSession_NonExistentSession(t *testing.T) {
 	}
 }
 
-// mockMasteringRepoForSession returns error from GetWordCardIDsBySessionID to trigger FinishSession Warn path.
+// mockMasteringRepoForSession returns error from GetWordCardIDsBySessionID or GetWordMasteringStatsBatch to trigger FinishSession/updateMasteringScoresForSession paths.
 type mockMasteringRepoForSession struct {
-	getWordCardIDsBySessionIDFunc func(sessionID int64) ([]repository.UserWordPair, error)
-	getScoreFunc                  func(userID, wordCardID int64) (int, error)
+	getWordCardIDsBySessionIDFunc   func(sessionID int64) ([]repository.UserWordPair, error)
+	getWordMasteringStatsBatchFunc  func(pairs []repository.UserWordPair) (map[repository.UserWordPair]repository.WordMasteringStatsRow, error)
+	getKnownForPairsFunc            func(pairs []repository.UserWordPair) (map[repository.UserWordPair]bool, error)
+	upsertBatchFunc                 func(entries []struct{ UserID, WordCardID int64; Score int }) error
+	getScoreFunc                    func(userID, wordCardID int64) (int, error)
 }
 
 func (m *mockMasteringRepoForSession) GetWordCardIDsBySessionID(sessionID int64) ([]repository.UserWordPair, error) {
@@ -283,14 +286,23 @@ func (m *mockMasteringRepoForSession) GetWordCardIDsBySessionID(sessionID int64)
 }
 
 func (m *mockMasteringRepoForSession) GetWordMasteringStatsBatch(pairs []repository.UserWordPair) (map[repository.UserWordPair]repository.WordMasteringStatsRow, error) {
+	if m.getWordMasteringStatsBatchFunc != nil {
+		return m.getWordMasteringStatsBatchFunc(pairs)
+	}
 	return nil, nil
 }
 
 func (m *mockMasteringRepoForSession) GetKnownForPairs(pairs []repository.UserWordPair) (map[repository.UserWordPair]bool, error) {
+	if m.getKnownForPairsFunc != nil {
+		return m.getKnownForPairsFunc(pairs)
+	}
 	return nil, nil
 }
 
 func (m *mockMasteringRepoForSession) UpsertBatch(entries []struct{ UserID, WordCardID int64; Score int }) error {
+	if m.upsertBatchFunc != nil {
+		return m.upsertBatchFunc(entries)
+	}
 	return nil
 }
 
@@ -327,6 +339,82 @@ func TestTrainingService_FinishSession_MasteringUpdateFails(t *testing.T) {
 	err = service.FinishSession(sessionID, 1)
 	if err != nil {
 		t.Errorf("FinishSession should return nil when only mastering update fails (Warn path), got: %v", err)
+	}
+}
+
+// TestTrainingService_FinishSession_MasteringStatsBatchFails verifies that when updateMasteringScoresForSession fails
+// due to GetWordMasteringStatsBatch error, FinishSession still returns nil and logs Warn.
+func TestTrainingService_FinishSession_MasteringStatsBatchFails(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	_, userRepo, _, _, sessionRepo := setupTrainingServiceTestDB(t)
+	user, _ := userRepo.GetOrCreateUser(778)
+	session := &models.TrainingSession{
+		UserID:       user.ID,
+		Source:       models.SourceManual,
+		PlannedCount: 2,
+		DoneCount:    1,
+		SessionJSON:  "{}",
+	}
+	sessionID, err := sessionRepo.CreateSession(session)
+	if err != nil {
+		t.Fatalf("CreateSession: %v", err)
+	}
+	mockMastering := &mockMasteringRepoForSession{
+		getWordCardIDsBySessionIDFunc: func(_ int64) ([]repository.UserWordPair, error) {
+			return []repository.UserWordPair{{UserID: user.ID, WordCardID: 1}}, nil
+		},
+		getWordMasteringStatsBatchFunc: func(_ []repository.UserWordPair) (map[repository.UserWordPair]repository.WordMasteringStatsRow, error) {
+			return nil, fmt.Errorf("mock stats batch error")
+		},
+	}
+	service := NewTrainingService(nil, nil, sessionRepo, mockMastering, logger)
+
+	err = service.FinishSession(sessionID, 1)
+	if err != nil {
+		t.Errorf("FinishSession should return nil when mastering stats batch fails (Warn path), got: %v", err)
+	}
+	// Session should still be finished
+	sess, _ := service.GetSession(sessionID)
+	if sess != nil && sess.EndedAt == nil {
+		t.Error("session should have ended_at set after FinishSession")
+	}
+}
+
+// TestTrainingService_FinishSession_GetKnownForPairsFails verifies that when updateMasteringScoresForSession fails
+// due to GetKnownForPairs error, FinishSession still returns nil and logs Warn.
+func TestTrainingService_FinishSession_GetKnownForPairsFails(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	_, userRepo, _, _, sessionRepo := setupTrainingServiceTestDB(t)
+	user, _ := userRepo.GetOrCreateUser(779)
+	session := &models.TrainingSession{
+		UserID:       user.ID,
+		Source:       models.SourceManual,
+		PlannedCount: 2,
+		DoneCount:    1,
+		SessionJSON:  "{}",
+	}
+	sessionID, err := sessionRepo.CreateSession(session)
+	if err != nil {
+		t.Fatalf("CreateSession: %v", err)
+	}
+	mockMastering := &mockMasteringRepoForSession{
+		getWordCardIDsBySessionIDFunc: func(_ int64) ([]repository.UserWordPair, error) {
+			return []repository.UserWordPair{{UserID: user.ID, WordCardID: 1}}, nil
+		},
+		getWordMasteringStatsBatchFunc: func(_ []repository.UserWordPair) (map[repository.UserWordPair]repository.WordMasteringStatsRow, error) {
+			return map[repository.UserWordPair]repository.WordMasteringStatsRow{
+				{UserID: user.ID, WordCardID: 1}: {UserID: user.ID, WordCardID: 1, Total: 10, Correct: 8, RecentTotal: 5, RecentCorrect: 4},
+			}, nil
+		},
+		getKnownForPairsFunc: func(_ []repository.UserWordPair) (map[repository.UserWordPair]bool, error) {
+			return nil, fmt.Errorf("mock get known error")
+		},
+	}
+	service := NewTrainingService(nil, nil, sessionRepo, mockMastering, logger)
+
+	err = service.FinishSession(sessionID, 1)
+	if err != nil {
+		t.Errorf("FinishSession should return nil when GetKnownForPairs fails (Warn path), got: %v", err)
 	}
 }
 
@@ -526,5 +614,172 @@ func TestTrainingService_UpdateSessionState_SessionNotFound(t *testing.T) {
 	}
 	if !strings.Contains(err.Error(), "session not found") {
 		t.Errorf("expected session not found error, got: %v", err)
+	}
+}
+
+// TestTrainingService_StartSession_Success_NoActiveSession starts a session when user has cards and no active session.
+func TestTrainingService_StartSession_Success_NoActiveSession(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, userCardRepo, trainingCardRepo, sessionRepo := setupTrainingServiceTestDB(t)
+	user, _ := userRepo.GetOrCreateUser(7001)
+
+	_, _ = db.Exec("INSERT INTO word_cards (id, word, definition) VALUES (1, 'start1', 'def1')")
+	_, _ = db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (1, 'start1', 0, 'старт', 'def1', 'noun', 'start1')")
+	past := time.Now().Add(-24 * time.Hour)
+	_, err := userCardRepo.CreateUserCard(&models.UserCard{
+		UserID:         user.ID,
+		TrainingCardID: 1,
+		Direction:      models.DirectionENtoRU,
+		State:          models.StateReview,
+		EF:             2.0,
+		NextDueAt:      &past,
+	})
+	if err != nil {
+		t.Fatalf("create user card: %v", err)
+	}
+
+	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, logger)
+	config := &SessionConfig{
+		MaxCardsPerSession: 10,
+		MaxNewPerSession:   5,
+		AlgoVersion:        "test",
+	}
+	session, queue, err := service.StartSession(user.ID, models.SourceManual, config)
+	if err != nil {
+		t.Fatalf("StartSession() error = %v", err)
+	}
+	if session == nil {
+		t.Fatal("StartSession() session should not be nil")
+	}
+	if session.ID == 0 {
+		t.Error("StartSession() session ID should be set")
+	}
+	if session.UserID != user.ID {
+		t.Errorf("session UserID = %d, want %d", session.UserID, user.ID)
+	}
+	if len(queue) == 0 {
+		t.Error("StartSession() queue should not be empty")
+	}
+	if session.PlannedCount != len(queue) {
+		t.Errorf("PlannedCount = %d, want %d", session.PlannedCount, len(queue))
+	}
+}
+
+// TestTrainingService_StartSession_Success_NilConfig uses default config when config is nil.
+func TestTrainingService_StartSession_Success_NilConfig(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, userCardRepo, trainingCardRepo, sessionRepo := setupTrainingServiceTestDB(t)
+	user, _ := userRepo.GetOrCreateUser(7002)
+
+	_, _ = db.Exec("INSERT INTO word_cards (id, word, definition) VALUES (1, 'nilcfg', 'def')")
+	_, _ = db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (1, 'nilcfg', 0, 'нил', 'def', 'noun', 'nilcfg')")
+	past := time.Now().Add(-24 * time.Hour)
+	_, _ = userCardRepo.CreateUserCard(&models.UserCard{
+		UserID:         user.ID,
+		TrainingCardID: 1,
+		Direction:      models.DirectionENtoRU,
+		State:          models.StateReview,
+		EF:             2.0,
+		NextDueAt:      &past,
+	})
+
+	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, logger)
+	session, queue, err := service.StartSession(user.ID, models.SourceManual, nil)
+	if err != nil {
+		t.Fatalf("StartSession(nil config) error = %v", err)
+	}
+	if session == nil || len(queue) == 0 {
+		t.Fatal("StartSession with nil config should succeed and return session and queue")
+	}
+}
+
+// TestTrainingService_StartSession_Success_FinishesOldSession finishes existing active session then starts new one.
+func TestTrainingService_StartSession_Success_FinishesOldSession(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, userCardRepo, trainingCardRepo, sessionRepo := setupTrainingServiceTestDB(t)
+	user, _ := userRepo.GetOrCreateUser(7003)
+
+	_, _ = db.Exec("INSERT INTO word_cards (id, word, definition) VALUES (1, 'oldnew', 'def')")
+	_, _ = db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (1, 'oldnew', 0, 'старый', 'def', 'noun', 'oldnew')")
+	past := time.Now().Add(-24 * time.Hour)
+	_, _ = userCardRepo.CreateUserCard(&models.UserCard{
+		UserID:         user.ID,
+		TrainingCardID: 1,
+		Direction:      models.DirectionENtoRU,
+		State:          models.StateReview,
+		EF:             2.0,
+		NextDueAt:      &past,
+	})
+
+	// Create an active session first
+	oldSession := &models.TrainingSession{
+		UserID:       user.ID,
+		Source:       models.SourceManual,
+		PlannedCount: 2,
+		DoneCount:    0,
+		SessionJSON:  "{}",
+	}
+	oldID, err := sessionRepo.CreateSession(oldSession)
+	if err != nil {
+		t.Fatalf("create old session: %v", err)
+	}
+
+	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, logger)
+	session, queue, err := service.StartSession(user.ID, models.SourceManual, &SessionConfig{MaxCardsPerSession: 10, MaxNewPerSession: 5, AlgoVersion: "test"})
+	if err != nil {
+		t.Fatalf("StartSession() error = %v", err)
+	}
+	if session == nil {
+		t.Fatal("StartSession() session should not be nil")
+	}
+	if session.ID == oldID {
+		t.Error("StartSession() should create new session, not reuse old ID")
+	}
+	if len(queue) == 0 {
+		t.Error("StartSession() queue should not be empty")
+	}
+	// Old session should be finished
+	old, _ := sessionRepo.GetSession(oldID)
+	if old != nil && old.EndedAt == nil {
+		t.Error("old session should have ended_at set after StartSession")
+	}
+}
+
+// TestTrainingService_StartSession_NoCardsAvailable returns error when user has no cards for training.
+func TestTrainingService_StartSession_NoCardsAvailable(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	_, userRepo, userCardRepo, trainingCardRepo, sessionRepo := setupTrainingServiceTestDB(t)
+	user, _ := userRepo.GetOrCreateUser(7004)
+	// No user_cards created
+
+	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, logger)
+	_, _, err := service.StartSession(user.ID, models.SourceManual, &SessionConfig{MaxCardsPerSession: 10, MaxNewPerSession: 5, AlgoVersion: "test"})
+	if err == nil {
+		t.Fatal("StartSession() expected error when no cards available")
+	}
+	if !strings.Contains(err.Error(), "no cards available") {
+		t.Errorf("error should mention no cards available, got: %v", err)
+	}
+}
+
+// TestTrainingService_StartSession_GetActiveSessionFails returns error when GetActiveSession fails (e.g. DB unavailable).
+func TestTrainingService_StartSession_GetActiveSessionFails(t *testing.T) {
+	testutil.SetupTestDB(t) // ensure DB is up and postgres_compat driver is registered
+	dsn := testutil.GetTestDSN(t)
+	closedConn, err := sql.Open("postgres_compat", dsn)
+	if err != nil {
+		t.Skip("postgres_compat driver not registered or open failed:", err)
+	}
+	closedConn.Close()
+	logger, _ := zap.NewDevelopment()
+	sessionRepo := repository.NewSessionRepository(closedConn, logger)
+	service := NewTrainingService(nil, nil, sessionRepo, nil, logger)
+
+	_, _, err = service.StartSession(7005, models.SourceManual, nil)
+	if err == nil {
+		t.Fatal("StartSession() expected error when GetActiveSession fails")
+	}
+	if !strings.Contains(err.Error(), "failed to check active session") {
+		t.Errorf("error should mention failed to check active session, got: %v", err)
 	}
 }

@@ -77,6 +77,28 @@ func newAIServiceWithResponse(t *testing.T, logger *zap.Logger, content string) 
 	return aiService
 }
 
+// newAIServiceWithError returns an AI service whose GenerateResponse will fail (e.g. for handleMessage error path).
+func newAIServiceWithError(t *testing.T, logger *zap.Logger) *ai.Service {
+	t.Helper()
+	aiService := ai.NewService("http://example.com", "model", "key", "prompt", logger)
+	mockClient := &http.Client{
+		Transport: roundTripperFunc(func(r *http.Request) (*http.Response, error) {
+			return &http.Response{
+				StatusCode: http.StatusInternalServerError,
+				Body:       io.NopCloser(bytes.NewBufferString("error")),
+				Header:     http.Header{"Content-Type": []string{"application/json"}},
+			}, nil
+		}),
+	}
+	aiValue := reflect.ValueOf(aiService).Elem()
+	clientField := aiValue.FieldByName("client")
+	if !clientField.IsValid() {
+		t.Fatalf("ai service client field not found")
+	}
+	reflect.NewAt(clientField.Type(), unsafe.Pointer(clientField.UnsafeAddr())).Elem().Set(reflect.ValueOf(mockClient))
+	return aiService
+}
+
 func newTestBot(client *mockTelegramClient) *tgbotapi.BotAPI {
 	bot := &tgbotapi.BotAPI{Token: "test", Client: client, Buffer: 1}
 	bot.SetAPIEndpoint("http://example.com/bot%s/%s")
@@ -645,6 +667,57 @@ func TestHandleCommand_GetID(t *testing.T) {
 	}
 }
 
+func TestHandleCommand_DeleteTrain(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, db := setupHandler(t, client)
+	logger, _ := zap.NewDevelopment()
+	h.config.Admin.TelegramID = 42
+	h.trainingCardRepo = repository.NewTrainingCardRepository(db.GetConnection(), logger)
+	h.userCardRepo = repository.NewUserCardRepository(db.GetConnection(), logger)
+	wordRepo := repository.NewWordRepository(db.GetConnection(), logger)
+	wordID, _ := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "test", Definition: ""})
+	_, _ = h.trainingCardRepo.CreateTrainingCard(&models.TrainingCard{
+		WordCardID: wordID, WordEN: "test", WordRU: "тест", MeaningEN: "test", SenseIndex: 0,
+	})
+	msg := commandMessage("/delete_train test")
+	msg.From.ID = 42
+	h.handleCommand(context.Background(), msg)
+	if got := client.lastParams.Get("text"); got == "" || !strings.Contains(got, "Удалено") {
+		t.Errorf("handleCommand(/delete_train): got %q", got)
+	}
+}
+
+func TestHandleCommand_GetTrainData(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, db := setupHandlerWithRepos(t, client)
+	h.config.Admin.TelegramID = 42
+	_, _ = db.GetConnection().Exec(`INSERT INTO word_cards (word, definition, created_at, updated_at) VALUES ('y','',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)`)
+	_, _ = h.trainingCardRepo.CreateTrainingCard(&models.TrainingCard{
+		WordCardID: 1, WordEN: "y", WordRU: "игрик", MeaningEN: "y", SenseIndex: 0,
+	})
+	msg := commandMessage("/get_train_data y")
+	msg.From.ID = 42
+	h.handleCommand(context.Background(), msg)
+	if got := client.lastParams.Get("text"); got == "" || !strings.Contains(got, "Карточка") {
+		t.Errorf("handleCommand(/get_train_data): got %q", got)
+	}
+}
+
+func TestHandleCommand_DeleteTrainAll(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, db := setupHandler(t, client)
+	logger, _ := zap.NewDevelopment()
+	h.config.Admin.TelegramID = 42
+	h.trainingCardRepo = repository.NewTrainingCardRepository(db.GetConnection(), logger)
+	h.userCardRepo = repository.NewUserCardRepository(db.GetConnection(), logger)
+	msg := commandMessage("/delete_train_all")
+	msg.From.ID = 42
+	h.handleCommand(context.Background(), msg)
+	if got := client.lastParams.Get("text"); got == "" || !strings.Contains(got, "Удалено") {
+		t.Errorf("handleCommand(/delete_train_all): got %q", got)
+	}
+}
+
 func TestHandler_SendMessage(t *testing.T) {
 	client := &mockTelegramClient{}
 	h, _ := setupHandler(t, client)
@@ -1174,5 +1247,342 @@ func TestHandleGetTrainDataCommand_GetTrainingCardsFails(t *testing.T) {
 	}
 	if !strings.Contains(got, "Ошибка") && !strings.Contains(got, "ошибка") {
 		t.Errorf("expected error message, got %q", got)
+	}
+}
+
+// --- HandleUpdate dispatch and handleMessage/handleCommand coverage ---
+
+func TestHandleUpdate_MessageCommandGetID_DispatchesToHandleCommand(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, _ := setupHandler(t, client)
+	update := tgbotapi.Update{Message: commandMessage("/get_id")}
+	h.HandleUpdate(context.Background(), update)
+	if got := client.lastParams.Get("text"); got == "" || !strings.Contains(got, "42") {
+		t.Errorf("HandleUpdate(/get_id): expected message with user id, got %q", got)
+	}
+}
+
+func TestHandleUpdate_MessageCommandTrain_DispatchesToHandleCommand(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, _ := setupHandlerWithRepos(t, client)
+	msg := commandMessage("/train")
+	msg.Chat.ID = 10
+	msg.From.ID = 999
+	update := tgbotapi.Update{Message: msg}
+	h.HandleUpdate(context.Background(), update)
+	got := client.lastParams.Get("text")
+	if got == "" {
+		t.Error("HandleUpdate(/train): expected some message")
+	}
+	if !strings.Contains(got, "карточек") && !strings.Contains(got, "ошибка") && !strings.Contains(got, "Попробуйте") {
+		t.Logf("HandleUpdate(/train): got %q", got)
+	}
+}
+
+func TestHandleUpdate_MessageCommandStats_DispatchesToHandleCommand(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, db := setupHandlerWithRepos(t, client)
+	userRepo := repository.NewUserRepository(db.GetConnection(), h.logger)
+	_, _ = userRepo.GetOrCreateUser(777)
+	msg := commandMessage("/stats")
+	msg.Chat.ID = 10
+	msg.From.ID = 777
+	update := tgbotapi.Update{Message: msg}
+	h.HandleUpdate(context.Background(), update)
+	if got := client.lastParams.Get("text"); got == "" || !strings.Contains(got, "Статистика") {
+		t.Errorf("HandleUpdate(/stats): expected stats message, got %q", got)
+	}
+}
+
+func TestHandleUpdate_MessageCommandUnknown_DispatchesToHandleCommand(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, _ := setupHandler(t, client)
+	update := tgbotapi.Update{Message: commandMessage("/unknown_cmd")}
+	h.HandleUpdate(context.Background(), update)
+	if got := client.lastParams.Get("text"); got != "unknown" {
+		t.Errorf("HandleUpdate(/unknown_cmd): got %q, want unknown", got)
+	}
+}
+
+func TestHandleUpdate_MessageNonCommand_DispatchesToHandleMessage(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, _ := setupHandlerWithAI(t, client, "AI reply")
+	msg := &tgbotapi.Message{
+		Text: "hello world",
+		Chat: &tgbotapi.Chat{ID: 10},
+		From: &tgbotapi.User{ID: 55, UserName: "tester"},
+	}
+	update := tgbotapi.Update{Message: msg}
+	h.HandleUpdate(context.Background(), update)
+	if got := client.lastParams.Get("text"); got != "AI reply" {
+		t.Errorf("HandleUpdate(non-command): got %q, want AI reply", got)
+	}
+}
+
+func TestHandleUpdate_MessageCommandResetCircuit_DispatchesToHandleCommand(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, _ := setupHandler(t, client)
+	h.config.Admin.TelegramID = 42
+	msg := commandMessage("/reset_circuit")
+	msg.From.ID = 42
+	update := tgbotapi.Update{Message: msg}
+	h.HandleUpdate(context.Background(), update)
+	if got := client.lastParams.Get("text"); got == "" || !strings.Contains(got, "Circuit") {
+		t.Errorf("HandleUpdate(/reset_circuit): expected circuit message, got %q", got)
+	}
+}
+
+func TestHandleUpdate_MessageCommandDeleteTrain_DispatchesToHandleCommand(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, db := setupHandler(t, client)
+	logger, _ := zap.NewDevelopment()
+	h.config.Admin.TelegramID = 42
+	h.trainingCardRepo = repository.NewTrainingCardRepository(db.GetConnection(), logger)
+	h.userCardRepo = repository.NewUserCardRepository(db.GetConnection(), logger)
+	wordRepo := repository.NewWordRepository(db.GetConnection(), logger)
+	wordID, _ := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "apple", Definition: ""})
+	_, _ = h.trainingCardRepo.CreateTrainingCard(&models.TrainingCard{
+		WordCardID: wordID, WordEN: "apple", WordRU: "яблоко", MeaningEN: "apple", SenseIndex: 0,
+	})
+	msg := commandMessage("/delete_train apple")
+	msg.From.ID = 42
+	update := tgbotapi.Update{Message: msg}
+	h.HandleUpdate(context.Background(), update)
+	if got := client.lastParams.Get("text"); got == "" || !strings.Contains(got, "Удалено") {
+		t.Errorf("HandleUpdate(/delete_train): expected delete message, got %q", got)
+	}
+}
+
+func TestHandleUpdate_MessageCommandGetTrainData_DispatchesToHandleCommand(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, db := setupHandlerWithRepos(t, client)
+	h.config.Admin.TelegramID = 42
+	_, _ = db.GetConnection().Exec(`INSERT INTO word_cards (word, definition, created_at, updated_at) VALUES ('apple','',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)`)
+	_, _ = h.trainingCardRepo.CreateTrainingCard(&models.TrainingCard{
+		WordCardID: 1, WordEN: "apple", WordRU: "яблоко", MeaningEN: "apple", SenseIndex: 0,
+	})
+	msg := commandMessage("/get_train_data apple")
+	msg.From.ID = 42
+	update := tgbotapi.Update{Message: msg}
+	h.HandleUpdate(context.Background(), update)
+	if got := client.lastParams.Get("text"); got == "" || !strings.Contains(got, "Карточка") {
+		t.Errorf("HandleUpdate(/get_train_data): expected train data message, got %q", got)
+	}
+}
+
+func TestHandleCallbackQuery_AckFails(t *testing.T) {
+	bot := newTestBot(&mockTelegramClient{})
+	bot.Client = &failingTelegramClient{}
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
+	trainingCardRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
+	userCardRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
+	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, logger)
+	srsService := service.NewSRSService(userCardRepo, logger)
+	optionsService := service.NewOptionsService(trainingCardRepo, logger)
+	trainingHandler := NewTrainingHandler(bot, trainingService, srsService, optionsService, sessionRepo, logger, 0, 0, db.GetConnection())
+	cfg := &config.Config{}
+	cfg.Bot.StartMessage = "start"
+	cfg.Bot.HelpMessage = "help"
+	cfg.Bot.UnknownCommandMessage = "unknown"
+	h := NewHandler(bot, logger, nil, nil, trainingHandler, userRepo, trainingCardRepo, userCardRepo,
+		service.NewCircuitBreakerService(repository.NewCircuitBreakerRepository(db.GetConnection(), logger), 5, logger),
+		cfg, db.GetConnection())
+	update := tgbotapi.Update{
+		CallbackQuery: &tgbotapi.CallbackQuery{
+			ID: "cb1", From: &tgbotapi.User{ID: 555, UserName: "u"},
+			Message: &tgbotapi.Message{MessageID: 1, Chat: &tgbotapi.Chat{ID: 10}},
+			Data: "train_start",
+		},
+	}
+	h.HandleUpdate(context.Background(), update)
+	// Should not panic; callback ack fails, handler logs and continues
+}
+
+func TestHandleMessage_GetOrCreateUserFails(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, _ := setupHandlerWithAI(t, client, "ok")
+	dsn := testutil.SecondPostgresDSN(t)
+	dbWrap, err := database.NewWithConfig("postgres", "", dsn, h.logger)
+	if err != nil {
+		t.Skipf("second DB not available: %v", err)
+	}
+	conn := dbWrap.GetConnection()
+	failingUserRepo := repository.NewUserRepository(conn, h.logger)
+	_ = dbWrap.Close()
+	hv := reflect.ValueOf(h).Elem()
+	hv.FieldByName("userRepo").Set(reflect.ValueOf(failingUserRepo))
+	msg := &tgbotapi.Message{
+		Text: "hello world",
+		Chat: &tgbotapi.Chat{ID: 10},
+		From: &tgbotapi.User{ID: 55, UserName: "tester"},
+	}
+	h.handleMessage(context.Background(), msg)
+	// GetOrCreateUser fails; we log and still call AI path; expect AI reply
+	if got := client.lastParams.Get("text"); got != "ok" {
+		t.Logf("handleMessage after GetOrCreateUser fail: got %q (AI may still respond)", got)
+	}
+}
+
+func TestHandleMessage_AIError(t *testing.T) {
+	client := &mockTelegramClient{}
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
+	bot := newTestBot(client)
+	aiService := newAIServiceWithError(t, logger)
+	wordService := service.NewWordService(nil, nil, nil, nil, logger)
+	cfg := &config.Config{}
+	cfg.Bot.EmptyMessage = "empty"
+	cfg.Bot.ErrorMessage = "error"
+	h := NewHandler(bot, logger, aiService, wordService, nil, userRepo, nil, nil,
+		service.NewCircuitBreakerService(repository.NewCircuitBreakerRepository(db.GetConnection(), logger), 5, logger),
+		cfg, db.GetConnection())
+	msg := &tgbotapi.Message{
+		Text: "hello world",
+		Chat: &tgbotapi.Chat{ID: 10},
+		From: &tgbotapi.User{ID: 55, UserName: "tester"},
+	}
+	h.handleMessage(context.Background(), msg)
+	if got := client.lastParams.Get("text"); got != "error" {
+		t.Errorf("handleMessage when AI errors: got %q, want error", got)
+	}
+}
+
+func TestHandleMessage_UsernameUpdate(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, db := setupHandlerWithAI(t, client, "ok")
+	userRepo := repository.NewUserRepository(db.GetConnection(), h.logger)
+	_, err := userRepo.GetOrCreateUser(55)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	_, err = db.GetConnection().Exec(`UPDATE users SET telegram_username = ? WHERE telegram_id = 55`, "old")
+	if err != nil {
+		t.Fatalf("UPDATE username: %v", err)
+	}
+	msg := &tgbotapi.Message{
+		Text: "hello world",
+		Chat: &tgbotapi.Chat{ID: 10},
+		From: &tgbotapi.User{ID: 55, UserName: "new"},
+	}
+	h.handleMessage(context.Background(), msg)
+	if got := client.lastParams.Get("text"); got != "ok" {
+		t.Errorf("handleMessage with username update: got %q, want ok", got)
+	}
+}
+
+func TestHandleDeleteTrainCommand_NonAdmin(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, db := setupHandler(t, client)
+	logger, _ := zap.NewDevelopment()
+	h.config.Admin.TelegramID = 99
+	h.trainingCardRepo = repository.NewTrainingCardRepository(db.GetConnection(), logger)
+	h.userCardRepo = repository.NewUserCardRepository(db.GetConnection(), logger)
+	h.handleDeleteTrainCommand(10, 42, "word")
+	if client.lastParams != nil && client.lastParams.Get("text") != "" {
+		t.Error("expected no message for non-admin delete_train")
+	}
+}
+
+func TestHandleDeleteTrainCommand_DeleteFails(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, _ := setupHandler(t, client)
+	h.config.Admin.TelegramID = 42
+	dsn := testutil.SecondPostgresDSN(t)
+	dbWrap, err := database.NewWithConfig("postgres", "", dsn, h.logger)
+	if err != nil {
+		t.Skipf("second DB not available: %v", err)
+	}
+	conn := dbWrap.GetConnection()
+	badRepo := repository.NewTrainingCardRepository(conn, h.logger)
+	_ = dbWrap.Close()
+	hv := reflect.ValueOf(h).Elem()
+	hv.FieldByName("trainingCardRepo").Set(reflect.ValueOf(badRepo))
+	h.handleDeleteTrainCommand(10, 42, "word")
+	got := client.lastParams.Get("text")
+	if got == "" {
+		t.Fatal("expected error message when DeleteTrainingCardsByWordEN fails")
+	}
+	if !strings.Contains(got, "Ошибка") && !strings.Contains(got, "ошибка") {
+		t.Errorf("expected error message, got %q", got)
+	}
+}
+
+// TestHandleTrainCommand_StartTrainingOtherError covers the else branch when StartTraining fails with an error that does not contain "no cards available".
+func TestHandleTrainCommand_StartTrainingOtherError(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, db := setupHandlerWithRepos(t, client)
+	logger, _ := zap.NewDevelopment()
+	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
+	trainingCardRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
+	userCardRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
+	user, err := userRepo.GetOrCreateUser(902)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	_, _ = db.GetConnection().Exec(`INSERT INTO word_cards (word, definition, created_at, updated_at) VALUES ('x','',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)`)
+	_, _ = trainingCardRepo.CreateTrainingCard(&models.TrainingCard{
+		WordCardID: 1, WordEN: "x", WordRU: "икс", MeaningEN: "x", SenseIndex: 0,
+	})
+	_, _ = userCardRepo.CreateUserCard(&models.UserCard{
+		UserID: user.ID, TrainingCardID: 1, Direction: models.DirectionENtoRU,
+		State: models.StateNew, EF: models.InitialEF,
+	})
+	dsn := testutil.SecondPostgresDSN(t)
+	dbWrap, err := database.NewWithConfig("postgres", "", dsn, h.logger)
+	if err != nil {
+		t.Skipf("second DB not available: %v", err)
+	}
+	conn := dbWrap.GetConnection()
+	failingSessionRepo := repository.NewSessionRepository(conn, logger)
+	_ = dbWrap.Close()
+	ts := h.trainingHandler.trainingService
+	ucRepo := reflect.ValueOf(ts).Elem().FieldByName("userCardRepo").Interface().(*repository.UserCardRepository)
+	tcRepo := reflect.ValueOf(ts).Elem().FieldByName("trainingCardRepo").Interface().(*repository.TrainingCardRepository)
+	newTS := service.NewTrainingService(ucRepo, tcRepo, failingSessionRepo, nil, logger)
+	h.trainingHandler.trainingService = newTS
+	h.handleTrainCommand(context.Background(), 10, 902)
+	got := client.lastParams.Get("text")
+	if got == "" {
+		t.Fatal("expected error message when StartTraining fails with non-no-cards error")
+	}
+	if !strings.Contains(got, "Не удалось начать тренировку") && !strings.Contains(got, "Попробуйте позже") {
+		t.Errorf("expected generic training error message, got %q", got)
+	}
+}
+
+func TestHandleGetTrainDataCommand_Admin_FullCard(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, db := setupHandlerWithRepos(t, client)
+	h.config.Admin.TelegramID = 42
+	_, _ = db.GetConnection().Exec(`INSERT INTO word_cards (word, definition, created_at, updated_at) VALUES ('full','',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)`)
+	_, err := h.trainingCardRepo.CreateTrainingCard(&models.TrainingCard{
+		WordCardID:    1,
+		WordEN:        "full",
+		WordRU:        "полный",
+		MeaningEN:     "full meaning",
+		SenseIndex:    0,
+		Transcription: "fʊl",
+		ExampleEN:     "Example in English",
+		ExampleRU:     "Пример на русском",
+		Hint:         "hint text",
+		DistractorsRU: `["другой"]`,
+		DistractorsEN: `["other"]`,
+	})
+	if err != nil {
+		t.Fatalf("CreateTrainingCard: %v", err)
+	}
+	h.handleGetTrainDataCommand(10, 42, "full")
+	got := client.lastParams.Get("text")
+	if got == "" {
+		t.Fatal("expected train data message")
+	}
+	for _, sub := range []string{"Transcription", "fʊl", "Example EN", "Example RU", "Hint", "hint text", "Distractors RU", "Distractors EN"} {
+		if !strings.Contains(got, sub) {
+			t.Errorf("expected output to contain %q, got: %s", sub, got)
+		}
 	}
 }

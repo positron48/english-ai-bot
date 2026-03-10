@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 	"testing"
 	"time"
 
@@ -229,7 +230,10 @@ func TestTrainingWorker_Start_StopChan(t *testing.T) {
 
 // mockCircuitBreakerForWorker returns error from IsOpen to trigger processCards error path.
 type mockCircuitBreakerForWorker struct {
-	isOpenFunc func() (bool, error)
+	isOpenFunc       func() (bool, error)
+	recordFailureErr error
+	recordSuccessErr error
+	getStateFunc     func() (bool, int, string, error)
 }
 
 func (m *mockCircuitBreakerForWorker) IsOpen() (bool, error) {
@@ -239,9 +243,16 @@ func (m *mockCircuitBreakerForWorker) IsOpen() (bool, error) {
 	return false, nil
 }
 
-func (m *mockCircuitBreakerForWorker) RecordFailure(_ string) error { return nil }
-func (m *mockCircuitBreakerForWorker) RecordSuccess() error            { return nil }
+func (m *mockCircuitBreakerForWorker) RecordFailure(_ string) error {
+	return m.recordFailureErr
+}
+func (m *mockCircuitBreakerForWorker) RecordSuccess() error {
+	return m.recordSuccessErr
+}
 func (m *mockCircuitBreakerForWorker) GetState() (bool, int, string, error) {
+	if m.getStateFunc != nil {
+		return m.getStateFunc()
+	}
 	return false, 0, "", nil
 }
 
@@ -344,6 +355,34 @@ func TestTrainingWorker_processCards_NoPendingCards(t *testing.T) {
 	worker.processCards(context.Background())
 }
 
+// TestTrainingWorker_processCards_ZeroWorkersFallback covers processCards when llmWorkers <= 0 (workers fallback to 1).
+func TestTrainingWorker_processCards_ZeroWorkersFallback(t *testing.T) {
+	callCount := 0
+	transport := rtFuncTW(func(req *http.Request) (*http.Response, error) {
+		callCount++
+		if callCount == 1 {
+			content := `{"input_word":"one","lemma":"one","pos":"noun","transcription":"wʌn","definition_ru":"один"}`
+			return newJSONHTTPResponseTW(http.StatusOK, ai.ChatResponse{Choices: []ai.Choice{{Message: ai.Message{Content: content}}}}), nil
+		}
+		content := `{"word_en":"one","lemma":"one","transcription":"","senses":[{"pos":"noun","word_ru":"один","meaning_en":"one","example_en":"","example_ru":"","distractors_ru":["два","три"],"distractors_en":["two","three"],"hint":""}]}`
+		return newJSONHTTPResponseTW(http.StatusOK, ai.ChatResponse{Choices: []ai.Choice{{Message: ai.Message{Content: content}}}}), nil
+	})
+	worker, wordRepo, trainingCardRepo, _, _, db, cleanup := newTrainingWorker(t, transport)
+	defer cleanup()
+	logger, _ := zap.NewDevelopment()
+	worker.cbService = NewCircuitBreakerService(repository.NewCircuitBreakerRepository(db.GetConnection(), logger), 5, logger)
+	worker.llmWorkers = 0 // triggers workers = 1 fallback
+	cardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "one", Definition: ""})
+	if err != nil {
+		t.Fatalf("UpsertWordCardLemma: %v", err)
+	}
+	worker.processCards(context.Background())
+	cards, _ := trainingCardRepo.GetTrainingCardsByWordCardID(cardID)
+	if len(cards) < 1 {
+		t.Errorf("expected 1 training card, got %d", len(cards))
+	}
+}
+
 // TestTrainingWorker_processCards_WithPendingCards runs processCards when there is one pending word card;
 // worker uses mock AI and creates training cards.
 func TestTrainingWorker_processCards_WithPendingCards(t *testing.T) {
@@ -362,6 +401,9 @@ func TestTrainingWorker_processCards_WithPendingCards(t *testing.T) {
 	defer cleanup()
 	logger, _ := zap.NewDevelopment()
 	worker.cbService = NewCircuitBreakerService(repository.NewCircuitBreakerRepository(db.GetConnection(), logger), 5, logger)
+	// Cover cardsToFetch when llmWorkers > batchSize
+	worker.batchSize = 2
+	worker.llmWorkers = 5
 	cardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "processme", Definition: ""})
 	if err != nil {
 		t.Fatalf("UpsertWordCardLemma: %v", err)
@@ -373,6 +415,134 @@ func TestTrainingWorker_processCards_WithPendingCards(t *testing.T) {
 	}
 	if len(cards) < 1 {
 		t.Errorf("expected at least 1 training card after processCards, got %d", len(cards))
+	}
+}
+
+// TestTrainingWorker_processCards_RecordFailureError covers processCards when RecordFailure returns error.
+func TestTrainingWorker_processCards_RecordFailureError(t *testing.T) {
+	callCount := 0
+	transport := rtFuncTW(func(req *http.Request) (*http.Response, error) {
+		callCount++
+		if callCount == 1 {
+			content := `{"input_word":"failcard","lemma":"failcard","pos":"noun","transcription":"","definition_ru":""}`
+			return newJSONHTTPResponseTW(http.StatusOK, ai.ChatResponse{Choices: []ai.Choice{{Message: ai.Message{Content: content}}}}), nil
+		}
+		// Invalid JSON so processCard fails
+		return newJSONHTTPResponseTW(http.StatusOK, ai.ChatResponse{Choices: []ai.Choice{{Message: ai.Message{Content: "not json"}}}}), nil
+	})
+	worker, wordRepo, _, _, _, _, cleanup := newTrainingWorker(t, transport)
+	defer cleanup()
+	worker.cbService = &mockCircuitBreakerForWorker{recordFailureErr: fmt.Errorf("record failure error")}
+	worker.interval = time.Hour
+	cardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "failcard", Definition: ""})
+	if err != nil {
+		t.Fatalf("UpsertWordCardLemma: %v", err)
+	}
+	_ = cardID
+	worker.processCards(context.Background())
+	// Must not panic; logs "failed to record circuit breaker failure"
+}
+
+// TestTrainingWorker_processCards_RecordSuccessError covers processCards when RecordSuccess returns error.
+func TestTrainingWorker_processCards_RecordSuccessError(t *testing.T) {
+	callCount := 0
+	transport := rtFuncTW(func(req *http.Request) (*http.Response, error) {
+		callCount++
+		if callCount == 1 {
+			content := `{"input_word":"ok","lemma":"ok","pos":"noun","transcription":"","definition_ru":"ок"}`
+			return newJSONHTTPResponseTW(http.StatusOK, ai.ChatResponse{Choices: []ai.Choice{{Message: ai.Message{Content: content}}}}), nil
+		}
+		content := `{"word_en":"ok","lemma":"ok","transcription":"","senses":[{"pos":"noun","word_ru":"ок","meaning_en":"ok","example_en":"","example_ru":"","distractors_ru":["да","нет"],"distractors_en":["yes","no"],"hint":""}]}`
+		return newJSONHTTPResponseTW(http.StatusOK, ai.ChatResponse{Choices: []ai.Choice{{Message: ai.Message{Content: content}}}}), nil
+	})
+	worker, wordRepo, _, _, _, _, cleanup := newTrainingWorker(t, transport)
+	defer cleanup()
+	worker.cbService = &mockCircuitBreakerForWorker{recordSuccessErr: fmt.Errorf("record success error")}
+	worker.interval = time.Hour
+	cardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "ok", Definition: ""})
+	if err != nil {
+		t.Fatalf("UpsertWordCardLemma: %v", err)
+	}
+	_ = cardID
+	worker.processCards(context.Background())
+	// Must not panic; logs "failed to record circuit breaker success"
+}
+
+// TestTrainingWorker_processCards_CardFailsCircuitOpensNotifyAdmin covers processCards when a card fails,
+// circuit opens (IsOpen returns true after failure), and notifyAdmin is called.
+func TestTrainingWorker_processCards_CardFailsCircuitOpensNotifyAdmin(t *testing.T) {
+	callCount := 0
+	transport := rtFuncTW(func(req *http.Request) (*http.Response, error) {
+		callCount++
+		if callCount == 1 {
+			content := `{"input_word":"open","lemma":"open","pos":"verb","transcription":"","definition_ru":""}`
+			return newJSONHTTPResponseTW(http.StatusOK, ai.ChatResponse{Choices: []ai.Choice{{Message: ai.Message{Content: content}}}}), nil
+		}
+		return newJSONHTTPResponseTW(http.StatusOK, ai.ChatResponse{Choices: []ai.Choice{{Message: ai.Message{Content: "invalid"}}}}), nil
+	})
+	worker, wordRepo, _, _, _, _, cleanup := newTrainingWorker(t, transport)
+	defer cleanup()
+	isOpenCallCount := 0
+	mockCB := &mockCircuitBreakerForWorker{
+		isOpenFunc: func() (bool, error) {
+			isOpenCallCount++
+			if isOpenCallCount >= 2 {
+				return true, nil
+			}
+			return false, nil
+		},
+		getStateFunc: func() (bool, int, string, error) {
+			return true, 1, "last error", nil
+		},
+	}
+	worker.cbService = mockCB
+	client := &mockTelegramClientWorker{}
+	worker.bot = newTestBotWorker(client)
+	worker.adminTelegramID = 999
+	worker.interval = time.Hour
+	cardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "open", Definition: ""})
+	if err != nil {
+		t.Fatalf("UpsertWordCardLemma: %v", err)
+	}
+	_ = cardID
+	worker.processCards(context.Background())
+	if len(client.lastBody) == 0 {
+		t.Error("expected notifyAdmin to send message when circuit opens")
+	}
+	if !bytes.Contains(client.lastBody, []byte("Circuit")) {
+		t.Errorf("expected circuit breaker message, got body: %s", client.lastBody)
+	}
+}
+
+// TestTrainingWorker_processCard_ValidationFailsNotifiesAdminWithBot covers processCard when validation fails
+// and worker has bot and admin ID set, so notifyAdminValidationError sends.
+func TestTrainingWorker_processCard_ValidationFailsNotifiesAdminWithBot(t *testing.T) {
+	transport := rtFuncTW(func(req *http.Request) (*http.Response, error) {
+		// Cyrillic in distractors_en triggers validation error
+		content := `{"word_en":"run","lemma":"run","transcription":"","senses":[{"pos":"verb","word_ru":"бежать","meaning_en":"run","example_en":"","example_ru":"","distractors_ru":["идти","плыть"],"distractors_en":["бежать","to walk"],"hint":""}]}`
+		return newJSONHTTPResponseTW(http.StatusOK, ai.ChatResponse{Choices: []ai.Choice{{Message: ai.Message{Content: content}}}}), nil
+	})
+	worker, wordRepo, _, _, _, _, cleanup := newTrainingWorker(t, transport)
+	defer cleanup()
+	worker.modelHigh = ""
+	worker.adminTelegramID = 888
+	client := &mockTelegramClientWorker{}
+	worker.bot = newTestBotWorker(client)
+	pos := "verb"
+	cardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "run", Definition: "", POS: &pos})
+	if err != nil {
+		t.Fatalf("UpsertWordCardLemma: %v", err)
+	}
+	wordCard, _ := wordRepo.GetWordCardByID(cardID)
+	err = worker.processCard(context.Background(), wordCard)
+	if err != nil {
+		t.Fatalf("processCard should return nil on validation failure: %v", err)
+	}
+	if len(client.lastBody) == 0 {
+		t.Error("expected notifyAdminValidationError to send when bot set")
+	}
+	if !bytes.Contains(client.lastBody, []byte("run")) {
+		t.Errorf("expected word in validation error notification, got: %s", client.lastBody)
 	}
 }
 
@@ -500,6 +670,39 @@ func TestTrainingWorker_notifyAdmin_SendsWhenBotSet(t *testing.T) {
 	}
 }
 
+// TestTrainingWorker_notifyAdmin_GetStateError covers notifyAdmin when GetState returns error.
+func TestTrainingWorker_notifyAdmin_GetStateError(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	mockCB := &mockCircuitBreakerForWorker{
+		getStateFunc: func() (bool, int, string, error) {
+			return false, 0, "", fmt.Errorf("get state failed")
+		},
+	}
+	worker := NewTrainingWorker(
+		nil, nil, nil, nil, nil, nil, mockCB, nil,
+		12345, 0, 0, 0, "", logger,
+	)
+	worker.notifyAdmin("some error")
+	// No panic; logs error and returns
+}
+
+// TestTrainingWorker_notifyAdmin_SendFails covers notifyAdmin when bot.Send returns error.
+func TestTrainingWorker_notifyAdmin_SendFails(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDB(t)
+	cbService := NewCircuitBreakerService(repository.NewCircuitBreakerRepository(db, logger), 5, logger)
+	_ = cbService.RecordFailure("first")
+	client := &mockTelegramClientWorkerFail{}
+	bot := &tgbotapi.BotAPI{Token: "test", Client: client, Buffer: 1}
+	bot.SetAPIEndpoint("http://example.com/bot%s/%s")
+	worker := NewTrainingWorker(
+		nil, nil, nil, nil, nil, nil, cbService, bot,
+		999, 0, 0, 0, "", logger,
+	)
+	worker.notifyAdmin("circuit open")
+	// No panic; logs "failed to send admin notification"
+}
+
 func TestTrainingWorker_notifyAdminValidationError_SkipsWhenAdminIDZero(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	worker := NewTrainingWorker(
@@ -535,4 +738,45 @@ func TestTrainingWorker_notifyAdminValidationError_SendsWhenBotSet(t *testing.T)
 	if !bytes.Contains(client.lastBody, []byte("apple")) {
 		t.Errorf("expected message to contain word, got body: %s", client.lastBody)
 	}
+}
+
+// TestTrainingWorker_notifyAdminValidationError_LongMessageTruncated covers truncation when error > 500 chars.
+func TestTrainingWorker_notifyAdminValidationError_LongMessageTruncated(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	client := &mockTelegramClientWorker{}
+	bot := newTestBotWorker(client)
+	worker := NewTrainingWorker(
+		nil, nil, nil, nil, nil, nil, nil, bot,
+		777, 0, 0, 0, "", logger,
+	)
+	longError := strings.Repeat("x", 600)
+	worker.notifyAdminValidationError("word", longError)
+	if len(client.lastBody) == 0 {
+		t.Error("expected bot.Send to be called")
+	}
+	// Message should contain truncated error (500 + "...")
+	if !bytes.Contains(client.lastBody, []byte("...")) {
+		t.Error("expected truncated validation error to end with ...")
+	}
+}
+
+// mockTelegramClientWorkerFail returns error on Do to cover Send failure path.
+type mockTelegramClientWorkerFail struct{}
+
+func (c *mockTelegramClientWorkerFail) Do(req *http.Request) (*http.Response, error) {
+	return nil, fmt.Errorf("telegram API error")
+}
+
+// TestTrainingWorker_notifyAdminValidationError_SendFails covers notifyAdminValidationError when bot.Send fails.
+func TestTrainingWorker_notifyAdminValidationError_SendFails(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	client := &mockTelegramClientWorkerFail{}
+	bot := &tgbotapi.BotAPI{Token: "test", Client: client, Buffer: 1}
+	bot.SetAPIEndpoint("http://example.com/bot%s/%s")
+	worker := NewTrainingWorker(
+		nil, nil, nil, nil, nil, nil, nil, bot,
+		666, 0, 0, 0, "", logger,
+	)
+	worker.notifyAdminValidationError("word", "validation error")
+	// No panic; logs error and returns
 }

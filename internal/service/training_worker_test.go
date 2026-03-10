@@ -10,6 +10,7 @@ import (
 	"reflect"
 	"strings"
 	"testing"
+	"time"
 	"unsafe"
 
 	"tgbot-skeleton/internal/ai"
@@ -82,6 +83,65 @@ func newTrainingWorker(t *testing.T, transport http.RoundTripper) (*TrainingWork
 	return worker, wordRepo, trainingCardRepo, userCardRepo, userRepo, db, cleanup
 }
 
+// TestTrainingWorker_Start_StopsOnContextCancel covers Start and its exit on context cancellation.
+func TestTrainingWorker_Start_StopsOnContextCancel(t *testing.T) {
+	db := testutil.SetupTestDatabase(t)
+	logger, _ := zap.NewDevelopment()
+	wordRepo := repository.NewWordRepository(db.GetConnection(), logger)
+	trainingCardRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
+	userCardRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
+	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
+	cbService := NewCircuitBreakerService(repository.NewCircuitBreakerRepository(db.GetConnection(), logger), 5, logger)
+	aiService := ai.NewService("", "", "", "", logger)
+	worker := NewTrainingWorker(
+		aiService, wordRepo, trainingCardRepo, userCardRepo, userRepo,
+		nil, cbService, nil, 0, 2, 1, 100*time.Millisecond, "", logger,
+	)
+	ctx, cancel := context.WithCancel(context.Background())
+	done := make(chan struct{})
+	go func() {
+		worker.Start(ctx)
+		close(done)
+	}()
+	time.Sleep(30 * time.Millisecond)
+	cancel()
+	select {
+	case <-done:
+	case <-time.After(time.Second):
+		t.Fatal("Start should stop when context is cancelled")
+	}
+}
+
+// TestTrainingWorker_Start_ProcessCardsOnTick covers Start when ticker fires and processCards is invoked.
+func TestTrainingWorker_Start_ProcessCardsOnTick(t *testing.T) {
+	db := testutil.SetupTestDatabase(t)
+	logger, _ := zap.NewDevelopment()
+	wordRepo := repository.NewWordRepository(db.GetConnection(), logger)
+	trainingCardRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
+	userCardRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
+	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
+	cbService := NewCircuitBreakerService(repository.NewCircuitBreakerRepository(db.GetConnection(), logger), 5, logger)
+	aiService := ai.NewService("", "", "", "", logger)
+	worker := NewTrainingWorker(
+		aiService, wordRepo, trainingCardRepo, userCardRepo, userRepo,
+		nil, cbService, nil, 0, 2, 1, 20*time.Millisecond, "", logger,
+	)
+	ctx, cancel := context.WithCancel(context.Background())
+	done := make(chan struct{})
+	go func() {
+		worker.Start(ctx)
+		close(done)
+	}()
+	// Wait for at least one tick (processCards runs, no pending cards)
+	time.Sleep(50 * time.Millisecond)
+	cancel()
+	select {
+	case <-done:
+	case <-time.After(time.Second):
+		t.Fatal("Start should stop after context cancel")
+	}
+}
+
 func TestTrainingWorkerHasMissingData(t *testing.T) {
 	worker, _, _, _, _, _, cleanup := newTrainingWorker(t, nil)
 	defer cleanup()
@@ -133,6 +193,124 @@ func TestTrainingWorkerFillWordCardData(t *testing.T) {
 	}
 	if updated.DisplayEN == nil || *updated.DisplayEN != "to run" {
 		t.Fatalf("expected display EN to be 'to run'")
+	}
+}
+
+// TestTrainingWorker_fillWordCardData_NoMissingData covers early return when word card has all data.
+func TestTrainingWorker_fillWordCardData_NoMissingData(t *testing.T) {
+	worker, _, _, _, _, _, cleanup := newTrainingWorker(t, nil)
+	defer cleanup()
+
+	pos, trans, def := "noun", "ˈæpəl", "яблоко"
+	wordCard := &models.WordCard{ID: 1, Word: "apple", POS: &pos, Transcription: &trans, DefinitionRU: &def}
+	err := worker.fillWordCardData(context.Background(), wordCard)
+	if err != nil {
+		t.Fatalf("fillWordCardData with full data should return nil: %v", err)
+	}
+}
+
+// TestTrainingWorker_fillWordCardData_NonJSONResponse covers AI response that is not valid JSON (skip fill, return nil).
+func TestTrainingWorker_fillWordCardData_NonJSONResponse(t *testing.T) {
+	transport := rtFuncTW(func(req *http.Request) (*http.Response, error) {
+		resp := ai.ChatResponse{Choices: []ai.Choice{{Message: ai.Message{Content: "not json at all"}}}}
+		return newJSONHTTPResponseTW(http.StatusOK, resp), nil
+	})
+	worker, wordRepo, _, _, _, _, cleanup := newTrainingWorker(t, transport)
+	defer cleanup()
+
+	cardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "foo", Definition: ""})
+	if err != nil {
+		t.Fatalf("UpsertWordCardLemma: %v", err)
+	}
+	wordCard, _ := wordRepo.GetWordCardByID(cardID)
+	err = worker.fillWordCardData(context.Background(), wordCard)
+	if err != nil {
+		t.Fatalf("fillWordCardData with non-JSON response should return nil: %v", err)
+	}
+}
+
+// TestTrainingWorker_fillWordCardData_WordRejectedByLLM covers wordInfo.Error.IsTrue() (skip fill, return nil).
+func TestTrainingWorker_fillWordCardData_WordRejectedByLLM(t *testing.T) {
+	transport := rtFuncTW(func(req *http.Request) (*http.Response, error) {
+		content := `{"error": true, "input_word": "xyz", "lemma": "", "pos": "", "transcription": "", "definition_ru": ""}`
+		resp := ai.ChatResponse{Choices: []ai.Choice{{Message: ai.Message{Content: content}}}}
+		return newJSONHTTPResponseTW(http.StatusOK, resp), nil
+	})
+	worker, wordRepo, _, _, _, _, cleanup := newTrainingWorker(t, transport)
+	defer cleanup()
+
+	cardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "xyz", Definition: ""})
+	if err != nil {
+		t.Fatalf("UpsertWordCardLemma: %v", err)
+	}
+	wordCard, _ := wordRepo.GetWordCardByID(cardID)
+	err = worker.fillWordCardData(context.Background(), wordCard)
+	if err != nil {
+		t.Fatalf("fillWordCardData when LLM rejects word should return nil: %v", err)
+	}
+}
+
+// TestTrainingWorker_fillWordCardData_ExamplesAndVerbForms covers filling ExamplesJSON and VerbFormsJSON and display_en from wordInfo.POS.
+func TestTrainingWorker_fillWordCardData_ExamplesAndVerbForms(t *testing.T) {
+	transport := rtFuncTW(func(req *http.Request) (*http.Response, error) {
+		content := `{"input_word":"go","lemma":"go","pos":"verb","transcription":"ɡoʊ","definition_ru":"идти","examples":[{"en":"I go home","ru":"Я иду домой"}],"verb_forms":{"v1":"go","v2":"went","v3":"gone"}}`
+		resp := ai.ChatResponse{Choices: []ai.Choice{{Message: ai.Message{Content: content}}}}
+		return newJSONHTTPResponseTW(http.StatusOK, resp), nil
+	})
+	worker, wordRepo, _, _, _, _, cleanup := newTrainingWorker(t, transport)
+	defer cleanup()
+
+	cardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "go", Definition: ""})
+	if err != nil {
+		t.Fatalf("UpsertWordCardLemma: %v", err)
+	}
+	wordCard, err := wordRepo.GetWordCardByID(cardID)
+	if err != nil {
+		t.Fatalf("GetWordCardByID: %v", err)
+	}
+	if err := worker.fillWordCardData(context.Background(), wordCard); err != nil {
+		t.Fatalf("fillWordCardData: %v", err)
+	}
+	updated, _ := wordRepo.GetWordCardByID(cardID)
+	if updated.ExamplesJSON == nil || *updated.ExamplesJSON == "" {
+		t.Error("expected ExamplesJSON to be filled")
+	}
+	if updated.VerbFormsJSON == nil || *updated.VerbFormsJSON == "" {
+		t.Error("expected VerbFormsJSON to be filled")
+	}
+	if updated.DisplayEN == nil || *updated.DisplayEN != "to go" {
+		t.Errorf("expected display_en 'to go', got %q", ptrStr(updated.DisplayEN))
+	}
+}
+
+func ptrStr(s *string) string {
+	if s == nil {
+		return "<nil>"
+	}
+	return *s
+}
+
+// TestTrainingWorker_fillWordCardData_EmptyLemma covers display_en when wordInfo.Lemma is empty (fallback to word).
+func TestTrainingWorker_fillWordCardData_EmptyLemma(t *testing.T) {
+	transport := rtFuncTW(func(req *http.Request) (*http.Response, error) {
+		// Empty lemma -> display_en falls back to strings.ToLower(wordCard.Word)
+		content := `{"input_word":"Foo","lemma":"","pos":"noun","transcription":"","definition_ru":"фу"}`
+		resp := ai.ChatResponse{Choices: []ai.Choice{{Message: ai.Message{Content: content}}}}
+		return newJSONHTTPResponseTW(http.StatusOK, resp), nil
+	})
+	worker, wordRepo, _, _, _, _, cleanup := newTrainingWorker(t, transport)
+	defer cleanup()
+	cardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "Foo", Definition: ""})
+	if err != nil {
+		t.Fatalf("UpsertWordCardLemma: %v", err)
+	}
+	wordCard, _ := wordRepo.GetWordCardByID(cardID)
+	if err := worker.fillWordCardData(context.Background(), wordCard); err != nil {
+		t.Fatalf("fillWordCardData: %v", err)
+	}
+	updated, _ := wordRepo.GetWordCardByID(cardID)
+	if updated.DisplayEN == nil || *updated.DisplayEN != "foo" {
+		t.Errorf("expected display_en 'foo' (from word), got %q", ptrStr(updated.DisplayEN))
 	}
 }
 

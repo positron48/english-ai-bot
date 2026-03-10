@@ -33,6 +33,30 @@ func TestShufflePreventDuplicates_SmallList(t *testing.T) {
 	}
 }
 
+// TestShufflePreventDuplicates_AllUniqueWordCardIDs returns queue as-is when every card has unique WordCardID (no duplicates).
+func TestShufflePreventDuplicates_AllUniqueWordCardIDs(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
+	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
+	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
+	trainingService := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
+
+	cards := []*models.UserCardWithTraining{
+		{UserCard: models.UserCard{ID: 1}, TrainingCard: models.TrainingCard{WordCardID: 1, WordEN: "a"}},
+		{UserCard: models.UserCard{ID: 2}, TrainingCard: models.TrainingCard{WordCardID: 2, WordEN: "b"}},
+		{UserCard: models.UserCard{ID: 3}, TrainingCard: models.TrainingCard{WordCardID: 3, WordEN: "c"}},
+	}
+	shuffled := trainingService.shufflePreventDuplicates(cards)
+	if len(shuffled) != 3 {
+		t.Errorf("expected 3 cards, got %d", len(shuffled))
+	}
+	// Same slice returned (no reorder when no duplicates)
+	if shuffled[0].TrainingCard.WordCardID != 1 || shuffled[1].TrainingCard.WordCardID != 2 || shuffled[2].TrainingCard.WordCardID != 3 {
+		t.Errorf("expected order 1,2,3 by WordCardID, got %d,%d,%d", shuffled[0].TrainingCard.WordCardID, shuffled[1].TrainingCard.WordCardID, shuffled[2].TrainingCard.WordCardID)
+	}
+}
+
 func TestShufflePreventDuplicates_LargeList(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := testutil.SetupTestDatabase(t)
@@ -295,5 +319,88 @@ func TestFixAdjacentDuplicates_ThreeElementsOnePair(t *testing.T) {
 	score := trainingService.calculateShuffleScore(fixed)
 	if score > 0 {
 		t.Logf("score after fix: %d (swap may have resolved adjacent pair)", score)
+	}
+}
+
+// TestCalculateShuffleScore_EmptyOrSingle returns 0 for empty or single-element slice.
+func TestCalculateShuffleScore_EmptyOrSingle(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
+	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
+	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
+	svc := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
+
+	if got := svc.calculateShuffleScore(nil); got != 0 {
+		t.Errorf("calculateShuffleScore(nil) = %d, want 0", got)
+	}
+	if got := svc.calculateShuffleScore([]*models.UserCardWithTraining{}); got != 0 {
+		t.Errorf("calculateShuffleScore(empty) = %d, want 0", got)
+	}
+	single := []*models.UserCardWithTraining{
+		{UserCard: models.UserCard{ID: 1}, TrainingCard: models.TrainingCard{WordCardID: 1, WordEN: "a"}},
+	}
+	if got := svc.calculateShuffleScore(single); got != 0 {
+		t.Errorf("calculateShuffleScore(single) = %d, want 0", got)
+	}
+}
+
+// TestCalculateShuffleScore_NoAdjacentDuplicates returns 0 when no adjacent pairs share WordCardID.
+func TestCalculateShuffleScore_NoAdjacentDuplicates(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
+	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
+	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
+	svc := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
+
+	queue := []*models.UserCardWithTraining{
+		{UserCard: models.UserCard{ID: 1}, TrainingCard: models.TrainingCard{WordCardID: 1, WordEN: "a"}},
+		{UserCard: models.UserCard{ID: 2}, TrainingCard: models.TrainingCard{WordCardID: 2, WordEN: "b"}},
+		{UserCard: models.UserCard{ID: 3}, TrainingCard: models.TrainingCard{WordCardID: 3, WordEN: "c"}},
+	}
+	if got := svc.calculateShuffleScore(queue); got != 0 {
+		t.Errorf("calculateShuffleScore(no dupe) = %d, want 0", got)
+	}
+}
+
+// TestCalculateShuffleScore_AdjacentDuplicates returns positive score; end duplicates have higher penalty.
+func TestCalculateShuffleScore_AdjacentDuplicates(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
+	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
+	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
+	svc := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
+
+	// [A, A, B] -> one adjacent duplicate at i=1; i>=len-2 so end penalty 3
+	queueMid := []*models.UserCardWithTraining{
+		{UserCard: models.UserCard{ID: 1}, TrainingCard: models.TrainingCard{WordCardID: 1, WordEN: "a"}},
+		{UserCard: models.UserCard{ID: 2}, TrainingCard: models.TrainingCard{WordCardID: 1, WordEN: "a"}},
+		{UserCard: models.UserCard{ID: 3}, TrainingCard: models.TrainingCard{WordCardID: 2, WordEN: "b"}},
+	}
+	if got := svc.calculateShuffleScore(queueMid); got != 3 {
+		t.Errorf("calculateShuffleScore(mid dupe, len=3) = %d, want 3 (end penalty)", got)
+	}
+
+	// [A, A, B, C] -> one adjacent duplicate in middle (i=1 < len-2), score 1
+	queueMidFour := []*models.UserCardWithTraining{
+		{UserCard: models.UserCard{ID: 1}, TrainingCard: models.TrainingCard{WordCardID: 1, WordEN: "a"}},
+		{UserCard: models.UserCard{ID: 2}, TrainingCard: models.TrainingCard{WordCardID: 1, WordEN: "a"}},
+		{UserCard: models.UserCard{ID: 3}, TrainingCard: models.TrainingCard{WordCardID: 2, WordEN: "b"}},
+		{UserCard: models.UserCard{ID: 4}, TrainingCard: models.TrainingCard{WordCardID: 3, WordEN: "c"}},
+	}
+	if got := svc.calculateShuffleScore(queueMidFour); got != 1 {
+		t.Errorf("calculateShuffleScore(mid dupe, len=4) = %d, want 1", got)
+	}
+
+	// [A, B, B] -> duplicate at end (last 2 positions), extra penalty 3
+	queueEnd := []*models.UserCardWithTraining{
+		{UserCard: models.UserCard{ID: 1}, TrainingCard: models.TrainingCard{WordCardID: 1, WordEN: "a"}},
+		{UserCard: models.UserCard{ID: 2}, TrainingCard: models.TrainingCard{WordCardID: 2, WordEN: "b"}},
+		{UserCard: models.UserCard{ID: 3}, TrainingCard: models.TrainingCard{WordCardID: 2, WordEN: "b"}},
+	}
+	if got := svc.calculateShuffleScore(queueEnd); got != 3 {
+		t.Errorf("calculateShuffleScore(end dupe) = %d, want 3", got)
 	}
 }

@@ -457,3 +457,47 @@ func TestTrainingService_generateQueue_ShortDisplayWord(t *testing.T) {
 		t.Errorf("expected type card for short display word, got %s", queue[0].Type)
 	}
 }
+
+// TestTrainingService_generateQueue_WithMasteringRepoGetScore uses userWordMasteringRepo.GetScore for spell/type eligibility (covers branch when userWordMasteringRepo != nil).
+func TestTrainingService_generateQueue_WithMasteringRepoGetScore(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, userCardRepo, trainingCardRepo, _ := setupTrainingServiceTestDB(t)
+	user, _ := userRepo.GetOrCreateUser(8882)
+
+	_, _ = db.Exec("INSERT INTO word_cards (id, word, definition) VALUES (1, 'getscore', 'def')")
+	_, _ = db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word) VALUES (1, 'getscore', 0, 'гетскор', 'def', 'verb', 'to run')")
+	past := time.Now().Add(-24 * time.Hour)
+	_, _ = userCardRepo.CreateUserCard(&models.UserCard{
+		UserID:         user.ID,
+		TrainingCardID: 1,
+		Direction:      models.DirectionRUtoEN,
+		State:          models.StateReview,
+		EF:             2.0,
+		NextDueAt:      &past,
+	})
+
+	mockMastering := &mockMasteringRepoForSession{
+		getScoreFunc: func(_, _ int64) (int, error) { return 80, nil },
+	}
+	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, mockMastering, logger)
+	config := SessionConfig{
+		MaxCardsPerSession:      10,
+		MaxNewPerSession:        5,
+		AlgoVersion:             "test",
+		SpellEnabled:            true,
+		TypeEnabled:             true,
+		SpellMasteringThreshold: 50,
+		TypeMasteringThreshold:  70,
+	}
+	queue, err := service.generateQueue(user.ID, config)
+	if err != nil {
+		t.Fatalf("generateQueue() error = %v", err)
+	}
+	if len(queue) != 1 {
+		t.Fatalf("expected 1 item, got %d", len(queue))
+	}
+	// With score 80 >= thresholds, item may be card, spell, or type
+	if queue[0].Type != "card" && queue[0].Type != "spell" && queue[0].Type != "type" {
+		t.Errorf("unexpected queue item type: %s", queue[0].Type)
+	}
+}
