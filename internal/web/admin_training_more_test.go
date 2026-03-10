@@ -71,6 +71,30 @@ func TestHandleAdminTraining_Generate_LLMError(t *testing.T) {
 	}
 }
 
+func TestHandleAdminTraining_Generate_FormData(t *testing.T) {
+	router, _, adminUserID := setupAdminTrainingTest(t)
+	response := `{"word_en":"run","transcription":"rʌn","senses":[{"pos":"verb","display_word":"run","word_ru":"бежать","meaning_en":"to move fast","example_en":"I run.","example_ru":"Я бегу.","distractors_ru":["идти","сидеть"],"distractors_en":["walk","sit"],"hint":""}]}`
+	router.aiService = setupAdminAIService(t, response)
+
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/training/run/generate", bytes.NewBufferString("constraints=verb+only"))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req = setAdminTrainingUserContext(req, adminUserID)
+	w := httptest.NewRecorder()
+
+	router.handleAdminTraining(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected 200 for generate with form data, got %d: %s", w.Code, w.Body.String())
+	}
+	var payload map[string]interface{}
+	if err := json.Unmarshal(w.Body.Bytes(), &payload); err != nil {
+		t.Fatalf("unmarshal failed: %v", err)
+	}
+	if payload["success"] != true {
+		t.Fatalf("expected success=true, got %v", payload["success"])
+	}
+}
+
 func TestHandleAdminTraining_CreateCardJSON_SuccessCreatesUserCards(t *testing.T) {
 	router, db, adminUserID := setupAdminTrainingTest(t)
 	wordRepo := repository.NewWordRepository(db.GetConnection(), router.logger)
@@ -235,5 +259,29 @@ func TestHandleAdminTraining_Generate_ParseError(t *testing.T) {
 
 	if w.Code != http.StatusInternalServerError {
 		t.Fatalf("expected 500 when parse fails, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+func TestHandleAdminTraining_Generate_AIError(t *testing.T) {
+	router, _, adminUserID := setupAdminTrainingTest(t)
+	// Server returns 500 so GenerateAdditionalTrainingCard returns error
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusInternalServerError)
+		_, _ = w.Write([]byte("internal error"))
+	}))
+	t.Cleanup(server.Close)
+	aiSvc := ai.NewService(server.URL, "test-model", "test-key", "PROMPT: ", zap.NewNop())
+	aiSvc.SetTrainingPrompt("PROMPT: ")
+	router.aiService = aiSvc
+
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/training/x/generate", bytes.NewBufferString(`{"constraints":"y"}`))
+	req.Header.Set("Content-Type", "application/json")
+	req = setAdminTrainingUserContext(req, adminUserID)
+	w := httptest.NewRecorder()
+
+	router.handleAdminTraining(w, req)
+
+	if w.Code != http.StatusInternalServerError {
+		t.Fatalf("expected 500 when AI returns error, got %d: %s", w.Code, w.Body.String())
 	}
 }

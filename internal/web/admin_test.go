@@ -3438,3 +3438,231 @@ func TestHandleAdminWord_Delete_DBFails(t *testing.T) {
 		t.Errorf("expected 500 when DeleteWordCard fails, got %d", w.Code)
 	}
 }
+
+// --- Additional tests for 100% coverage of admin.go ---
+
+func TestHandleAdminWord_Put_FormData(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, _, cbService := setupAdminTestDB(t)
+	wordRepo := repository.NewWordRepository(db, logger)
+	_ = wordRepo.SaveWordCard("formput", "old def")
+	wc, _ := wordRepo.GetWordCard("formput")
+	cfg := &config.Config{}
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+
+	req := httptest.NewRequest(http.MethodPut, fmt.Sprintf("/api/admin/words/%d", wc.ID), strings.NewReader("word=formput&definition=new+def&pos=noun"))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	w := httptest.NewRecorder()
+	router.handleAdminWord(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("expected 200 for PUT with form, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+func TestHandleAdminWord_InvalidWordID(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, _, cbService := setupAdminTestDB(t)
+	cfg := &config.Config{}
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+
+	req := httptest.NewRequest(http.MethodPut, "/api/admin/words/abc", nil)
+	w := httptest.NewRecorder()
+	router.handleAdminWord(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("expected 400 for invalid word ID, got %d", w.Code)
+	}
+}
+
+func TestHandleAdminWord_WordIDRequired(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, _, cbService := setupAdminTestDB(t)
+	cfg := &config.Config{}
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+
+	req := httptest.NewRequest(http.MethodPut, "/api/admin/words/", nil)
+	w := httptest.NewRecorder()
+	router.handleAdminWord(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("expected 400 when word ID missing, got %d", w.Code)
+	}
+}
+
+func TestHandleAdminTraining_Get_WordNotInDB(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	adminUser, _ := userRepo.GetOrCreateUser(123456789)
+	cfg := &config.Config{Admin: config.AdminConfig{TelegramID: 123456789}, WebApp: config.WebAppConfig{JWTSecret: "test-secret"}}
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	ctx := context.WithValue(context.WithValue(context.Background(), userIDKey, adminUser.ID), userPermissionsKey, []string{string(PermissionWordsReadAll)})
+
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/training/nonexistentword12345", nil)
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+	router.handleAdminTraining(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("expected 200 with empty cards for non-existent word, got %d: %s", w.Code, w.Body.String())
+	}
+	var resp map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&resp); err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+	if resp["word_en"] != "nonexistentword12345" {
+		t.Errorf("expected word_en in response, got %v", resp["word_en"])
+	}
+	cards, _ := resp["cards"].([]interface{})
+	if len(cards) != 0 {
+		t.Errorf("expected empty cards for non-existent word, got %d", len(cards))
+	}
+}
+
+func TestHandleAdminTraining_PostCreate_JSONWithDisplayWordAndPos(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	adminUser, _ := userRepo.GetOrCreateUser(123456789)
+	wordRepo := repository.NewWordRepository(db, logger)
+	_ = wordRepo.SaveWordCard("displayword", "def")
+	cfg := &config.Config{Admin: config.AdminConfig{TelegramID: 123456789}, WebApp: config.WebAppConfig{JWTSecret: "test-secret"}}
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	ctx := context.WithValue(context.WithValue(context.Background(), userIDKey, adminUser.ID), userPermissionsKey, []string{string(PermissionWordsEditAll)})
+
+	body := `{"word_ru":"слово","meaning_en":"meaning","pos":"noun","display_word":"to display"}`
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/training/displayword", strings.NewReader(body))
+	req.Header.Set("Content-Type", "application/json")
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+	router.handleAdminTraining(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("expected 200, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+func TestHandleAdminTrainingCard_Put_Form_DisplayWordEmptySetsNil(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	adminUser, _ := userRepo.GetOrCreateUser(123456789)
+	wordRepo := repository.NewWordRepository(db, logger)
+	_ = wordRepo.SaveWordCard("dispword", "def")
+	wc, _ := wordRepo.GetWordCard("dispword")
+	trainingCardRepo := repository.NewTrainingCardRepository(db, logger)
+	dispVal := "to disp"
+	tc := &models.TrainingCard{WordCardID: wc.ID, WordEN: "dispword", SenseIndex: 0, WordRU: "слово", MeaningEN: "word", DisplayWord: &dispVal}
+	cardID, _ := trainingCardRepo.CreateTrainingCard(tc)
+	cfg := &config.Config{Admin: config.AdminConfig{TelegramID: 123456789}, WebApp: config.WebAppConfig{JWTSecret: "test-secret"}}
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	ctx := context.WithValue(context.WithValue(context.Background(), userIDKey, adminUser.ID), userPermissionsKey, []string{string(PermissionWordsEditAll)})
+
+	// PUT with form display_word= (empty) to set DisplayWord to nil; word_en= to update word_en
+	req := httptest.NewRequest(http.MethodPut, fmt.Sprintf("/api/admin/training/card/%d", cardID), strings.NewReader("word_ru=слово&meaning_en=word&display_word=&word_en=dispword"))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+	router.handleAdminTrainingCard(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("expected 200, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+func TestHandleAdminTraining_Generate_AIServiceNil(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, cbService := setupAdminTestDB(t)
+	adminUser, _ := userRepo.GetOrCreateUser(123456789)
+	wordRepo := repository.NewWordRepository(db, logger)
+	_ = wordRepo.SaveWordCard("aiword", "def")
+	cfg := &config.Config{Admin: config.AdminConfig{TelegramID: 123456789}, WebApp: config.WebAppConfig{JWTSecret: "test-secret"}}
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	// aiService left nil
+	ctx := context.WithValue(context.WithValue(context.Background(), userIDKey, adminUser.ID), userPermissionsKey, []string{string(PermissionWordsEditAll)})
+
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/training/aiword/generate", strings.NewReader(`{"constraints":"x"}`))
+	req.Header.Set("Content-Type", "application/json")
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+	router.handleAdminTraining(w, req)
+
+	if w.Code != http.StatusInternalServerError {
+		t.Errorf("expected 500 when AI service not available, got %d: %s", w.Code, w.Body.String())
+	}
+	if !strings.Contains(w.Body.String(), "AI service not available") {
+		t.Errorf("expected AI service not available message, got %s", w.Body.String())
+	}
+}
+
+func TestHandleAdminWord_Generate_AIServiceNil(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, _, cbService := setupAdminTestDB(t)
+	wordRepo := repository.NewWordRepository(db, logger)
+	_ = wordRepo.SaveWordCard("genword", "def")
+	wc, _ := wordRepo.GetWordCard("genword")
+	cfg := &config.Config{}
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	// aiService left nil
+
+	req := httptest.NewRequest(http.MethodPost, fmt.Sprintf("/api/admin/words/%d/generate", wc.ID), nil)
+	w := httptest.NewRecorder()
+	router.handleAdminWord(w, req)
+
+	if w.Code != http.StatusInternalServerError {
+		t.Errorf("expected 500 when AI service not available, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+func TestHandleAdminTraining_Get_GetWordCardFails(t *testing.T) {
+	badDB := badDBConn(t)
+	logger, _ := zap.NewDevelopment()
+	cfg := &config.Config{}
+	cbRepo := repository.NewCircuitBreakerRepository(badDB, logger)
+	cbService := service.NewCircuitBreakerService(cbRepo, 5, logger)
+	router := NewRouter(logger, cfg, badDB, nil, nil, nil, cbService)
+	ctx := context.WithValue(context.WithValue(context.Background(), userIDKey, int64(1)), userPermissionsKey, []string{string(PermissionWordsReadAll)})
+
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/training/someword", nil)
+	req = req.WithContext(ctx)
+	w := httptest.NewRecorder()
+	router.handleAdminTraining(w, req)
+
+	if w.Code != http.StatusInternalServerError {
+		t.Errorf("expected 500 when GetWordCard fails, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+func TestHandleAdminWord_Put_WordCardNotFound(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, _, cbService := setupAdminTestDB(t)
+	cfg := &config.Config{}
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+
+	body := `{"word":"x","definition":"def"}`
+	req := httptest.NewRequest(http.MethodPut, "/api/admin/words/999999", strings.NewReader(body))
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+	router.handleAdminWord(w, req)
+
+	if w.Code != http.StatusNotFound {
+		t.Errorf("expected 404 when word card not found, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+func TestHandleAdminWord_Put_InvalidJSON(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, _, cbService := setupAdminTestDB(t)
+	wordRepo := repository.NewWordRepository(db, logger)
+	_ = wordRepo.SaveWordCard("jsonword", "def")
+	wc, _ := wordRepo.GetWordCard("jsonword")
+	cfg := &config.Config{}
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+
+	req := httptest.NewRequest(http.MethodPut, fmt.Sprintf("/api/admin/words/%d", wc.ID), strings.NewReader("not json"))
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+	router.handleAdminWord(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("expected 400 for invalid JSON, got %d: %s", w.Code, w.Body.String())
+	}
+}

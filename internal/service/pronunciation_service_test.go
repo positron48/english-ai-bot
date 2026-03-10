@@ -3208,3 +3208,243 @@ func TestWriteFileAtomic_CloseError(t *testing.T) {
 	// Chmod error: same. We already have create dir error and rename error.
 	t.Skip("making Close/Chmod fail on temp file is platform-dependent")
 }
+
+// TestNewPronunciationService_EmptyAudioDirAndPublicBasePath ensures empty config yields default paths.
+func TestNewPronunciationService_EmptyAudioDirAndPublicBasePath(t *testing.T) {
+	svc := NewPronunciationService(config.TTSConfig{
+		Enabled: true, AudioDir: "", PublicBasePath: "", Provider: "dictionary",
+		DictionaryEnabled: true, DictionaryBaseURL: "http://example.com",
+	}, nil, zap.NewNop())
+	if svc.AudioDir() != "/app/data/tts" {
+		t.Errorf("empty AudioDir should default to /app/data/tts, got %q", svc.AudioDir())
+	}
+	if svc.PublicBasePath() != "/media/tts" {
+		t.Errorf("empty PublicBasePath should default to /media/tts, got %q", svc.PublicBasePath())
+	}
+}
+
+// TestNewPronunciationService_WorkersAndBackfillClamps ensures workers clamp at 8 and backfillBatch at 200.
+func TestNewPronunciationService_WorkersAndBackfillClamps(t *testing.T) {
+	svc := NewPronunciationService(config.TTSConfig{
+		Enabled:           true,
+		AudioDir:          t.TempDir(),
+		Provider:          "dictionary",
+		DictionaryEnabled: true,
+		DictionaryBaseURL: "http://example.com",
+		PrefetchWorkers:   10,
+		BackfillBatchSize: 0,
+	}, nil, zap.NewNop())
+	if svc.workers != 8 {
+		t.Errorf("PrefetchWorkers 10 should clamp to 8, got %d", svc.workers)
+	}
+	if svc.backfillBatch != 200 {
+		t.Errorf("BackfillBatchSize 0 should default to 200, got %d", svc.backfillBatch)
+	}
+}
+
+// TestNewPronunciationService_RetryMaxLessThanBase uses retryMax < retryBase so retryMax is set to retryBase.
+func TestNewPronunciationService_RetryMaxLessThanBase(t *testing.T) {
+	svc := NewPronunciationService(config.TTSConfig{
+		Enabled:        true,
+		AudioDir:       t.TempDir(),
+		RetryBaseDelay: "2m",
+		RetryMaxDelay:  "1m",
+		Provider:       "dictionary",
+		DictionaryEnabled: true,
+		DictionaryBaseURL: "http://example.com",
+	}, nil, zap.NewNop())
+	if svc.retryMax < svc.retryBase {
+		t.Errorf("retryMax should be >= retryBase, got retryBase=%v retryMax=%v", svc.retryBase, svc.retryMax)
+	}
+}
+
+// TestDictionaryPronunciationProviderFetch_DoubleSlashAudioURL verifies "//host/path" becomes "https://host/path".
+// The code prepends "https:"; our test server is HTTP so the audio request fails, but we assert the error mentions https URL.
+func TestDictionaryPronunciationProviderFetch_DoubleSlashAudioURL(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if strings.HasSuffix(r.URL.Path, "/hello") || r.URL.Path == "/hello" {
+			_, _ = w.Write([]byte(`[{"phonetics":[{"audio":"//` + r.Host + `/audio/hello.mp3"}]}]`))
+			return
+		}
+		http.NotFound(w, r)
+	}))
+	defer srv.Close()
+
+	p := &dictionaryPronunciationProvider{baseURL: srv.URL, client: &http.Client{Timeout: 3 * time.Second}}
+	_, err := p.fetch(context.Background(), "hello")
+	if err == nil {
+		t.Fatal("expected error (audio URL becomes https:// but server is HTTP)")
+	}
+	// Code path "//" -> "https:" was taken; client then requests https://... and gets "server gave HTTP response to HTTPS client"
+	if !strings.Contains(err.Error(), "https://") && !strings.Contains(err.Error(), "HTTPS") {
+		t.Errorf("expected error to show https URL was used; got %q", err.Error())
+	}
+}
+
+// TestDictionaryPronunciationProviderFetch_EmptyAudioBody returns error when audio response body is empty.
+func TestDictionaryPronunciationProviderFetch_EmptyAudioBody(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if strings.HasSuffix(r.URL.Path, "/hello") || r.URL.Path == "/hello" {
+			_, _ = w.Write([]byte(`[{"phonetics":[{"audio":"http://` + r.Host + `/audio/hello.mp3"}]}]`))
+			return
+		}
+		w.Header().Set("Content-Type", "audio/mpeg")
+		// empty body
+	}))
+	defer srv.Close()
+
+	p := &dictionaryPronunciationProvider{baseURL: srv.URL, client: &http.Client{Timeout: 3 * time.Second}}
+	_, err := p.fetch(context.Background(), "hello")
+	if err == nil {
+		t.Fatal("expected error for empty audio body")
+	}
+	if !strings.Contains(err.Error(), "empty") {
+		t.Errorf("expected 'empty' in error, got %q", err.Error())
+	}
+}
+
+// TestDictionaryPronunciationProviderFetch_ThrottleContextCanceled verifies waitThrottle returns when ctx is canceled.
+func TestDictionaryPronunciationProviderFetch_ThrottleContextCanceled(t *testing.T) {
+	audioBytes := []byte("mp3")
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if strings.HasSuffix(r.URL.Path, "/a") || r.URL.Path == "/a" {
+			_, _ = w.Write([]byte(`[{"phonetics":[{"audio":"http://` + r.Host + `/audio/a.mp3"}]}]`))
+			return
+		}
+		if strings.HasSuffix(r.URL.Path, "/b") || r.URL.Path == "/b" {
+			_, _ = w.Write([]byte(`[{"phonetics":[{"audio":"http://` + r.Host + `/audio/b.mp3"}]}]`))
+			return
+		}
+		if strings.Contains(r.URL.Path, "audio") {
+			_, _ = w.Write(audioBytes)
+			return
+		}
+		http.NotFound(w, r)
+	}))
+	defer srv.Close()
+
+	p := &dictionaryPronunciationProvider{
+		baseURL:       srv.URL,
+		client:        &http.Client{Timeout: 3 * time.Second},
+		throttleEvery: 2 * time.Second, // second fetch will need to wait 2s
+	}
+	// First fetch sets nextAllowedAt to now + 2s.
+	_, err := p.fetch(context.Background(), "a")
+	if err != nil {
+		t.Fatalf("first fetch: %v", err)
+	}
+	// Second fetch will wait 2s in waitThrottle; cancel ctx so it returns immediately.
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+	_, err = p.fetch(ctx, "b")
+	if err == nil {
+		t.Fatal("expected error when context canceled during throttle wait")
+	}
+	if !errors.Is(err, context.Canceled) && !strings.Contains(err.Error(), "canceled") {
+		t.Errorf("expected context canceled error, got %v", err)
+	}
+}
+
+// TestPronunciationService_Lookup_FailedTerminal returns without scheduling when status is failed_terminal.
+func TestPronunciationService_Lookup_FailedTerminal(t *testing.T) {
+	db := testutil.SetupTestDB(t)
+	wordRepo := repository.NewWordRepository(db, zap.NewNop())
+	svc := NewPronunciationService(config.TTSConfig{
+		Enabled: true, AudioDir: t.TempDir(), PublicBasePath: "/media/tts",
+		DictionaryEnabled: true, DictionaryBaseURL: "http://example.com",
+	}, wordRepo, zap.NewNop())
+	_ = svc.ttsRepo.MarkTerminal("hello", "dict", "test", "error")
+
+	r := svc.Lookup("hello")
+	if r.Available {
+		t.Error("Lookup should not be available when status is failed_terminal")
+	}
+	if r.NormalizedWord != "hello" {
+		t.Errorf("NormalizedWord = %q want hello", r.NormalizedWord)
+	}
+}
+
+// TestPronunciationService_Lookup_MaxAttemptsReached returns without scheduling when attempt_count >= max_attempts.
+func TestPronunciationService_Lookup_MaxAttemptsReached(t *testing.T) {
+	db := testutil.SetupTestDB(t)
+	wordRepo := repository.NewWordRepository(db, zap.NewNop())
+	svc := NewPronunciationService(config.TTSConfig{
+		Enabled: true, AudioDir: t.TempDir(), PublicBasePath: "/media/tts", MaxRetries: 2,
+		DictionaryEnabled: true, DictionaryBaseURL: "http://example.com",
+	}, wordRepo, zap.NewNop())
+	for i := 0; i < 2; i++ {
+		_ = svc.ttsRepo.MarkAttempt("hello", "dict", "not_found", "err", true)
+	}
+
+	r := svc.Lookup("hello")
+	if r.Available {
+		t.Error("Lookup should not be available when max attempts reached")
+	}
+}
+
+// TestNormalizePronunciationWord_EmptyAndOnlySpaces covers empty and whitespace-only input.
+func TestNormalizePronunciationWord_EmptyAndOnlySpaces(t *testing.T) {
+	for _, in := range []string{"", "   ", "\t"} {
+		got, ok := normalizePronunciationWord(in)
+		if ok {
+			t.Errorf("normalizePronunciationWord(%q) ok=true want false", in)
+		}
+		if got != "" {
+			t.Errorf("normalizePronunciationWord(%q)=%q want \"\"", in, got)
+		}
+	}
+	// only punctuation/dashes, no Latin
+	got, ok := normalizePronunciationWord("---")
+	if ok {
+		t.Errorf("normalizePronunciationWord('---') ok=true want false")
+	}
+	if got != "" {
+		t.Errorf("normalizePronunciationWord('---')=%q want \"\"", got)
+	}
+}
+
+// TestOpenRouterPronunciationProvider_FetchViaChatCompletions_BothAttemptsNoAudio verifies final error when both attempts return no audio.
+func TestOpenRouterPronunciationProvider_FetchViaChatCompletions_BothAttemptsNoAudio(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/event-stream")
+		_, _ = w.Write([]byte(`data: {"choices":[{"delta":{"audio":{"transcript":"hello"}}}]}` + "\n\n"))
+		_, _ = w.Write([]byte("data: [DONE]\n\n"))
+	}))
+	defer srv.Close()
+
+	provider := &openRouterPronunciationProvider{
+		baseURL:              srv.URL,
+		model:                "test",
+		voice:                "alloy",
+		apiKey:               "key",
+		client:               &http.Client{Timeout: 3 * time.Second},
+		forceChatCompletions: true,
+		pcmToMp3:             func(pcm []byte) ([]byte, error) { return pcm, nil },
+	}
+	_, err := provider.fetch(context.Background(), "hello")
+	if err == nil {
+		t.Fatal("expected error when both attempts return no audio")
+	}
+	if !errors.Is(err, errPronunciationNotFound) {
+		t.Errorf("expected errPronunciationNotFound, got %v", err)
+	}
+	if !strings.Contains(err.Error(), "openrouter_no_audio") {
+		t.Errorf("expected openrouter_no_audio in error, got %q", err.Error())
+	}
+}
+
+// TestDefaultPcmToMp3_ValidPCM runs defaultPcmToMp3 with minimal PCM when ffmpeg is available.
+func TestDefaultPcmToMp3_ValidPCM(t *testing.T) {
+	// Minimal valid s16le 24kHz mono: a few samples
+	pcm := make([]byte, 240*2) // 10ms at 24kHz stereo... actually mono = 1 channel, so 240 samples = 10ms
+	mp3, err := defaultPcmToMp3(pcm)
+	if err != nil {
+		if strings.Contains(err.Error(), "executable file not found") || strings.Contains(err.Error(), "ffmpeg") {
+			t.Skip("ffmpeg not available, skipping defaultPcmToMp3 test")
+		}
+		t.Fatalf("defaultPcmToMp3: %v", err)
+	}
+	if len(mp3) == 0 {
+		t.Error("expected non-empty mp3 output")
+	}
+}
