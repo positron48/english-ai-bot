@@ -23,6 +23,8 @@ var (
 	testHookVocabElseMasteryLevel    bool   // if true, handleVocab uses else branch for masteryLevel (word.MasteryLevel = "new")
 	testHookVocabElseMasteringScore  bool   // if true, handleVocab uses else branch for masteringScore (word.MasteringScore = 0)
 	testHookVocabMasteryLevelInvalid  bool   // if true, handleVocab treats masteryLevelCalc as invalid so else branch (word.MasteryLevel = "new") runs
+	testHookVocabDisplayWordInvalid  bool   // if true, handleVocab treats displayWord as invalid so else branch (word.DisplayWord = word.Lemma) runs
+	testHookVocabMasteringScoreInvalid bool  // if true, handleVocab treats masteringScoreStored as invalid so else branch (word.MasteringScore = 0) runs
 	testHookVocabForceDisplayWordValid bool     // if true, handleVocab treats displayWord as valid with String "hooked" to cover displayWord.Valid branch
 	testHookVocabSetLastReview *time.Time // if set, handleVocab sets word.LastReview to this (covers parse success path)
 	testHookVocabSetAddedAt    *time.Time // if set, handleVocab sets word.AddedAt to this (covers parse success path)
@@ -317,6 +319,9 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 		if testHookVocabForceDisplayWordValid {
 			displayWord = sql.NullString{String: "hooked", Valid: true}
 		}
+		if testHookVocabDisplayWordInvalid {
+			displayWord = sql.NullString{}
+		}
 		if testHookVocabElseDisplayWord {
 			word.DisplayWord = word.Lemma
 		} else if displayWord.Valid {
@@ -363,6 +368,9 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 			word.MasteryLevel = masteryLevelCalc.String
 		} else {
 			word.MasteryLevel = "new"
+		}
+		if testHookVocabMasteringScoreInvalid {
+			masteringScoreStored = sql.NullInt64{}
 		}
 		if testHookVocabElseMasteringScore {
 			word.MasteringScore = 0

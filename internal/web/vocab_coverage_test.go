@@ -1616,7 +1616,8 @@ func TestHandleVocab_SortOrder_Desc_Coverage(t *testing.T) {
 	}
 }
 
-// TestHandleVocab_SortOrder_Asc_Coverage covers the sort_order=asc branch (line 116-118).
+// TestHandleVocab_SortOrder_Asc_Coverage covers the sort_order=asc branch (line 116-118):
+// when sort_order is present and not "desc", sortOrder is set to "asc".
 func TestHandleVocab_SortOrder_Asc_Coverage(t *testing.T) {
 	db, userRepo := setupVocabCoverageTestDB(t)
 	user, err := userRepo.GetOrCreateUser(92011)
@@ -1626,6 +1627,99 @@ func TestHandleVocab_SortOrder_Asc_Coverage(t *testing.T) {
 	router := newVocabCoverageRouter(t, db, userRepo)
 
 	req := httptest.NewRequest("GET", "/api/vocab?sort_order=asc", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocab(w, req)
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleVocab_SortOrder_NonDesc_SetsAsc covers the else branch where sort_order
+// is set but not "desc" (e.g. "asc", "ASC", "foo") — sortOrder = "asc" (line ~133).
+func TestHandleVocab_SortOrder_NonDesc_SetsAsc(t *testing.T) {
+	db, userRepo := setupVocabCoverageTestDB(t)
+	user, err := userRepo.GetOrCreateUser(92012)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	router := newVocabCoverageRouter(t, db, userRepo)
+
+	req := httptest.NewRequest("GET", "/api/vocab?sort_by=lemma&sort_order=asc", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocab(w, req)
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleVocab_MasteryLevel_Invalid_NoFilter covers the case when mastery_level
+// query param is set but not in allowedLevels (new/learning/mastered/known);
+// filter is not added (line ~371).
+func TestHandleVocab_MasteryLevel_Invalid_NoFilter(t *testing.T) {
+	db, userRepo := setupVocabCoverageTestDB(t)
+	user, err := userRepo.GetOrCreateUser(92018)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	router := newVocabCoverageRouter(t, db, userRepo)
+
+	req := httptest.NewRequest("GET", "/api/vocab?mastery_level=invalid_level", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocab(w, req)
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200 when mastery_level is invalid (no filter applied), got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleVocab_DisplayWordInvalid_ElseBranch covers the else branch when
+// displayWord is invalid (word.DisplayWord = word.Lemma), via testHookVocabDisplayWordInvalid.
+func TestHandleVocab_DisplayWordInvalid_ElseBranch(t *testing.T) {
+	db, userRepo := setupVocabCoverageTestDB(t)
+	user, err := userRepo.GetOrCreateUser(92019)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	_, _ = db.Exec("INSERT INTO word_cards (id, word, definition) VALUES (?, ?, ?)", 2, "displayinv", "def")
+	_, _ = db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (?, ?, ?, ?, ?)", 2, "displayinv", 0, "дисп", "disp")
+	var tcID int64
+	_ = db.QueryRow("SELECT id FROM training_cards WHERE word_card_id = 2 LIMIT 1").Scan(&tcID)
+	_, _ = db.Exec("INSERT INTO user_cards (user_id, training_card_id, direction, state, ef) VALUES (?, ?, ?, ?, ?)", user.ID, tcID, "en_ru", "new", 2.5)
+	router := newVocabCoverageRouter(t, db, userRepo)
+
+	testHookVocabDisplayWordInvalid = true
+	defer func() { testHookVocabDisplayWordInvalid = false }()
+
+	req := httptest.NewRequest("GET", "/api/vocab", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocab(w, req)
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleVocab_MasteringScoreInvalid_ElseBranch covers the else branch when
+// masteringScoreStored is invalid (word.MasteringScore = 0), via testHookVocabMasteringScoreInvalid.
+func TestHandleVocab_MasteringScoreInvalid_ElseBranch(t *testing.T) {
+	db, userRepo := setupVocabCoverageTestDB(t)
+	user, err := userRepo.GetOrCreateUser(92020)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	_, _ = db.Exec("INSERT INTO word_cards (id, word, definition) VALUES (?, ?, ?)", 3, "scoreinv", "def")
+	_, _ = db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (?, ?, ?, ?, ?)", 3, "scoreinv", 0, "скор", "score")
+	var tcID int64
+	_ = db.QueryRow("SELECT id FROM training_cards WHERE word_card_id = 3 LIMIT 1").Scan(&tcID)
+	_, _ = db.Exec("INSERT INTO user_cards (user_id, training_card_id, direction, state, ef) VALUES (?, ?, ?, ?, ?)", user.ID, tcID, "en_ru", "new", 2.5)
+	router := newVocabCoverageRouter(t, db, userRepo)
+
+	testHookVocabMasteringScoreInvalid = true
+	defer func() { testHookVocabMasteringScoreInvalid = false }()
+
+	req := httptest.NewRequest("GET", "/api/vocab", nil)
 	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
 	w := httptest.NewRecorder()
 	router.handleVocab(w, req)
