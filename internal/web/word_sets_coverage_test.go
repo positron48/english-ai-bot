@@ -516,6 +516,132 @@ func TestHandleLearningWordsSetStudyKnow_MarkKnownErrorViaTrigger(t *testing.T) 
 	}
 }
 
+// TestHandleLearningWordsSetStudyLearn_EnsureUserCardsWarn covers the warn path
+// when EnsureUserCardsForWord returns an error (line 588-590 in word_sets.go).
+// We use a trigger that drops training_cards when user_word_knowledge is deleted,
+// so that EnsureUserCardsForWord's GetTrainingCardsByWordCardID call fails.
+func TestHandleLearningWordsSetStudyLearn_EnsureUserCardsWarn(t *testing.T) {
+	logger := zap.NewNop()
+	dbWrap, cleanup := setupWordSetsSecondDB(t)
+	defer cleanup()
+	conn := dbWrap.GetConnection()
+
+	userRepo := repository.NewUserRepository(conn, logger)
+	user, err := userRepo.GetOrCreateUser(88820)
+	if err != nil {
+		t.Skipf("GetOrCreateUser failed: %v", err)
+	}
+
+	var wordCardID int64
+	if err := conn.QueryRow(
+		"INSERT INTO word_cards (word, definition) VALUES ('ensureword', 'ensureword') RETURNING id",
+	).Scan(&wordCardID); err != nil {
+		t.Skipf("create word card: %v", err)
+	}
+
+	wordSetRepo := repository.NewWordSetRepository(conn, logger)
+	setID, err := wordSetRepo.CreateWordSet(&models.WordSet{Title: "Ensure Cards Set", IsPublished: true})
+	if err != nil {
+		t.Skipf("CreateWordSet failed: %v", err)
+	}
+	if err := wordSetRepo.SetWordSetItems(setID, []int64{wordCardID}); err != nil {
+		t.Skipf("SetWordSetItems failed: %v", err)
+	}
+
+	// Insert a known status so RemoveKnown will fire a DELETE on user_word_knowledge.
+	if _, err := conn.Exec(
+		"INSERT INTO user_word_knowledge (user_id, word_card_id, status) VALUES ($1, $2, 'known')",
+		user.ID, wordCardID,
+	); err != nil {
+		t.Skipf("insert known status: %v", err)
+	}
+
+	// Create a trigger on user_word_knowledge BEFORE DELETE that drops training_cards.
+	// When RemoveKnown fires, training_cards is dropped, so EnsureUserCardsForWord fails.
+	if _, err := conn.Exec(`
+		CREATE OR REPLACE FUNCTION drop_training_cards_on_uwk_delete() RETURNS TRIGGER AS $$
+		BEGIN
+			DROP TABLE IF EXISTS training_cards CASCADE;
+			RETURN OLD;
+		END;
+		$$ LANGUAGE plpgsql;
+		CREATE TRIGGER drop_tc_trigger
+		BEFORE DELETE ON user_word_knowledge
+		FOR EACH ROW EXECUTE FUNCTION drop_training_cards_on_uwk_delete();
+	`); err != nil {
+		t.Skipf("create trigger: %v", err)
+	}
+
+	cfg := &config.Config{}
+	cbRepo := repository.NewCircuitBreakerRepository(conn, logger)
+	cbService := service.NewCircuitBreakerService(cbRepo, 5, logger)
+	router := NewRouter(logger, cfg, conn, nil, nil, nil, cbService)
+
+	body := []byte(fmt.Sprintf(`{"word_card_id":%d}`, wordCardID))
+	req := httptest.NewRequest(http.MethodPost,
+		fmt.Sprintf("/api/learning/words/sets/%d/study/learn", setID),
+		bytes.NewReader(body))
+	req.Header.Set("Content-Type", "application/json")
+	req = setUserIDInContext(req, user.ID)
+	w := httptest.NewRecorder()
+	router.handleLearningWordsSetStudyLearn(w, req)
+
+	// EnsureUserCardsForWord warns (training_cards dropped), response is still 200
+	if w.Code != http.StatusOK {
+		t.Errorf("expected 200 (warn path continues), got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleLearningWordsSets_ScanErrorContinue covers the scan error continue branch (line 193-195)
+// by replacing word_sets with a view that returns an array for sort_order, causing rows.Scan to fail.
+func TestHandleLearningWordsSets_ScanErrorContinue(t *testing.T) {
+	logger := zap.NewNop()
+	dbWrap, cleanup := setupWordSetsSecondDB(t)
+	defer cleanup()
+	conn := dbWrap.GetConnection()
+
+	userRepo := repository.NewUserRepository(conn, logger)
+	user, err := userRepo.GetOrCreateUser(88830)
+	if err != nil {
+		t.Skipf("GetOrCreateUser failed: %v", err)
+	}
+
+	// Insert a word set without category so the showOnlyWithoutCategory path is taken
+	wordSetRepo := repository.NewWordSetRepository(conn, logger)
+	_, err = wordSetRepo.CreateWordSet(&models.WordSet{Title: "Scan Error Set", IsPublished: true})
+	if err != nil {
+		t.Skipf("CreateWordSet failed: %v", err)
+	}
+
+	// Replace word_sets with a view that returns ARRAY[sort_order] for sort_order column.
+	// Scanning int[] into int will fail, triggering the scan error continue branch.
+	if _, err := conn.Exec(`
+		ALTER TABLE word_sets RENAME TO word_sets_orig;
+		CREATE VIEW word_sets AS
+		SELECT id, category_id, title, description, is_published,
+		       ARRAY[sort_order] AS sort_order,
+		       preferred_pos, created_at, updated_at
+		FROM word_sets_orig;
+	`); err != nil {
+		t.Skipf("cannot create view: %v", err)
+	}
+
+	cfg := &config.Config{}
+	cbRepo := repository.NewCircuitBreakerRepository(conn, logger)
+	cbService := service.NewCircuitBreakerService(cbRepo, 5, logger)
+	router := NewRouter(logger, cfg, conn, nil, nil, nil, cbService)
+
+	req := httptest.NewRequest(http.MethodGet, "/api/learning/words/sets", nil)
+	req = setUserIDInContext(req, user.ID)
+	w := httptest.NewRecorder()
+	router.handleLearningWordsSets(w, req)
+
+	// The scan error causes the row to be skipped (continue); response is 200 with empty list
+	if w.Code != http.StatusOK {
+		t.Errorf("expected 200 (scan error skips row), got %d: %s", w.Code, w.Body.String())
+	}
+}
+
 // TestHandleLearningWordsSetDetail_GetWordSetProgressAndWordsError covers:
 // - GetWordSetProgress error fallback (lines 360-370 in word_sets.go)
 // - GetWordSetWords error (lines 374-378 in word_sets.go)

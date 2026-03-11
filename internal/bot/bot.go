@@ -33,6 +33,12 @@ type Bot struct {
 	pronunciationService *service.PronunciationService
 	notificationService  *service.NotificationService
 	webRouter            *web.Router
+	// shutdownCtxFn returns the context used for http.Server.Shutdown; defaults to context.Background.
+	// Overridable in tests to exercise the shutdown-error path.
+	shutdownCtxFn func() context.Context
+	// dbCloseFn closes the database; defaults to b.db.Close.
+	// Overridable in tests to exercise the db-close-error path.
+	dbCloseFn func() error
 }
 
 // New creates a new bot instance
@@ -182,7 +188,7 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 	webRouter.SetGrammarService(grammarService)
 	webRouter.SetPronunciationService(pronunciationService)
 
-	return &Bot{
+	b := &Bot{
 		api:                  bot,
 		config:               cfg,
 		logger:               log,
@@ -192,7 +198,10 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 		pronunciationService: pronunciationService,
 		notificationService:  notificationService,
 		webRouter:            webRouter,
-	}, nil
+		shutdownCtxFn:        context.Background,
+	}
+	b.dbCloseFn = b.db.Close
+	return b, nil
 }
 
 // Start starts the bot
@@ -253,6 +262,14 @@ func (b *Bot) registerCommands() {
 	}
 }
 
+// healthHandler handles the /health HTTP endpoint.
+func (b *Bot) healthHandler(w http.ResponseWriter, _ *http.Request) {
+	w.WriteHeader(http.StatusOK)
+	if _, err := w.Write([]byte("OK")); err != nil {
+		b.logger.Error("failed to write health response", zap.Error(err))
+	}
+}
+
 // startWebhook starts the bot in webhook mode
 func (b *Bot) startWebhook(ctx context.Context) error {
 	if b.api == nil {
@@ -298,12 +315,7 @@ func (b *Bot) startWebhook(ctx context.Context) error {
 	})
 
 	// Health endpoint
-	mux.HandleFunc("/health", func(w http.ResponseWriter, _ *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		if _, err := w.Write([]byte("OK")); err != nil {
-			b.logger.Error("failed to write health response", zap.Error(err))
-		}
-	})
+	mux.HandleFunc("/health", b.healthHandler)
 
 	// Web app routes
 	mux.Handle("/", b.webRouter)
@@ -330,7 +342,7 @@ func (b *Bot) startWebhook(ctx context.Context) error {
 
 	// Close database connection
 	if b.db != nil {
-		if err := b.db.Close(); err != nil {
+		if err := b.dbCloseFn(); err != nil {
 			b.logger.Warn("failed to close database", zap.Error(err))
 		}
 	}
@@ -350,12 +362,7 @@ func (b *Bot) startLongPolling(ctx context.Context) error {
 	mux := http.NewServeMux()
 
 	// Health endpoint
-	mux.HandleFunc("/health", func(w http.ResponseWriter, _ *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		if _, err := w.Write([]byte("OK")); err != nil {
-			b.logger.Error("failed to write health response", zap.Error(err))
-		}
-	})
+	mux.HandleFunc("/health", b.healthHandler)
 
 	// Web app routes
 	mux.Handle("/", b.webRouter)
@@ -378,7 +385,7 @@ func (b *Bot) startLongPolling(ctx context.Context) error {
 			b.logger.Info("shutting down")
 			// Close database connection
 			if b.db != nil {
-				if err := b.db.Close(); err != nil {
+				if err := b.dbCloseFn(); err != nil {
 					b.logger.Warn("failed to close database", zap.Error(err))
 				}
 			}
@@ -395,12 +402,7 @@ func (b *Bot) startWebServerOnly(ctx context.Context) error {
 	mux := http.NewServeMux()
 
 	// Health endpoint
-	mux.HandleFunc("/health", func(w http.ResponseWriter, _ *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		if _, err := w.Write([]byte("OK")); err != nil {
-			b.logger.Error("failed to write health response", zap.Error(err))
-		}
-	})
+	mux.HandleFunc("/health", b.healthHandler)
 
 	// Web app routes
 	mux.Handle("/", b.webRouter)
@@ -423,13 +425,13 @@ func (b *Bot) startWebServerOnly(ctx context.Context) error {
 	<-ctx.Done()
 
 	b.logger.Info("shutting down HTTP server")
-	if err := server.Shutdown(context.Background()); err != nil {
+	if err := server.Shutdown(b.shutdownCtxFn()); err != nil {
 		b.logger.Warn("error shutting down HTTP server", zap.Error(err))
 	}
 
 	// Close database connection
 	if b.db != nil {
-		if err := b.db.Close(); err != nil {
+		if err := b.dbCloseFn(); err != nil {
 			b.logger.Warn("failed to close database", zap.Error(err))
 		}
 	}

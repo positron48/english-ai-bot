@@ -1600,3 +1600,408 @@ func TestPronunciationService_ScheduleWord_QueueTimeoutDequeue(t *testing.T) {
 	}
 	t.Error("expected dequeue to be called after queue timeout")
 }
+
+// --- mockTTSRepo: injectable ttsStatusRepo for testing error paths ---
+
+type mockTTSRepo struct {
+	getByWordFn             func(word string) (*models.TTSGenerationStatus, error)
+	upsertPendingFn         func(word string) error
+	markAttemptFn           func(word, provider, errorCode, errorMessage string, retryable bool) error
+	markReadyFn             func(word, provider, relPath string) error
+	markTerminalFn          func(word, provider, errorCode, errorMessage string) error
+	resetForForceRegenerateFn func(word string) error
+	callCount               int
+}
+
+func (m *mockTTSRepo) GetByWord(word string) (*models.TTSGenerationStatus, error) {
+	m.callCount++
+	if m.getByWordFn != nil {
+		return m.getByWordFn(word)
+	}
+	return nil, nil
+}
+func (m *mockTTSRepo) UpsertPending(word string) error {
+	if m.upsertPendingFn != nil {
+		return m.upsertPendingFn(word)
+	}
+	return nil
+}
+func (m *mockTTSRepo) MarkAttempt(word, provider, errorCode, errorMessage string, retryable bool) error {
+	if m.markAttemptFn != nil {
+		return m.markAttemptFn(word, provider, errorCode, errorMessage, retryable)
+	}
+	return nil
+}
+func (m *mockTTSRepo) MarkReady(word, provider, relPath string) error {
+	if m.markReadyFn != nil {
+		return m.markReadyFn(word, provider, relPath)
+	}
+	return nil
+}
+func (m *mockTTSRepo) MarkTerminal(word, provider, errorCode, errorMessage string) error {
+	if m.markTerminalFn != nil {
+		return m.markTerminalFn(word, provider, errorCode, errorMessage)
+	}
+	return nil
+}
+func (m *mockTTSRepo) ResetForForceRegenerate(word string) error {
+	if m.resetForForceRegenerateFn != nil {
+		return m.resetForForceRegenerateFn(word)
+	}
+	return nil
+}
+
+// --- ensureStatusForWord: MarkReady error via mock ---
+
+func TestPronunciationService_EnsureStatusForWord_MarkReadyErrorMock(t *testing.T) {
+	audioDir := t.TempDir()
+	svc := NewPronunciationService(config.TTSConfig{
+		Enabled: true, AudioDir: audioDir,
+		DictionaryEnabled: true, DictionaryBaseURL: "http://example.com",
+	}, nil, zap.NewNop())
+
+	// Create the audio file so cachedRelPathForWord returns non-empty (legacy migration path).
+	word := "legacymarkerrmock"
+	rel := svc.relativePathForWordWithExt(word, ".mp3")
+	full := filepath.Join(audioDir, rel)
+	if err := os.MkdirAll(filepath.Dir(full), 0o755); err != nil {
+		t.Fatalf("mkdir: %v", err)
+	}
+	if err := os.WriteFile(full, []byte("audio"), 0o644); err != nil {
+		t.Fatalf("write: %v", err)
+	}
+
+	markReadyErr := errors.New("mark ready failed")
+	svc.ttsRepo = &mockTTSRepo{
+		getByWordFn: func(word string) (*models.TTSGenerationStatus, error) {
+			return nil, nil // no record
+		},
+		markReadyFn: func(word, provider, relPath string) error {
+			return markReadyErr
+		},
+	}
+
+	status, err := svc.ensureStatusForWord(word)
+	if err == nil {
+		t.Fatal("expected error when MarkReady fails")
+	}
+	if !errors.Is(err, markReadyErr) {
+		t.Errorf("expected markReadyErr, got %v", err)
+	}
+	if status != nil {
+		t.Errorf("expected nil status on error")
+	}
+}
+
+// --- ensureStatusForWord: UpsertPending error via mock ---
+
+func TestPronunciationService_EnsureStatusForWord_UpsertPendingErrorMock(t *testing.T) {
+	audioDir := t.TempDir()
+	svc := NewPronunciationService(config.TTSConfig{
+		Enabled: true, AudioDir: audioDir,
+		DictionaryEnabled: true, DictionaryBaseURL: "http://example.com",
+	}, nil, zap.NewNop())
+
+	word := "upsertpendingerrmock"
+	upsertErr := errors.New("upsert pending failed")
+
+	readyStatus := &models.TTSGenerationStatus{
+		Word:  word,
+		State: models.TTSStateReady,
+		// AudioRelPath is nil -> resolveReadyRelPath will check cachedRelPathForWord which returns "" (no file)
+	}
+	svc.ttsRepo = &mockTTSRepo{
+		getByWordFn: func(w string) (*models.TTSGenerationStatus, error) {
+			return readyStatus, nil // always returns ready status
+		},
+		upsertPendingFn: func(word string) error {
+			return upsertErr
+		},
+	}
+
+	status, err := svc.ensureStatusForWord(word)
+	if err == nil {
+		t.Fatal("expected error when UpsertPending fails")
+	}
+	if !errors.Is(err, upsertErr) {
+		t.Errorf("expected upsertErr, got %v", err)
+	}
+	if status != nil {
+		t.Errorf("expected nil status on error")
+	}
+}
+
+// --- processWord: ready-but-missing with ttsRepo (lines 880-882) ---
+// ensureStatusForWord returns ready status (mock always returns ready), resolveReadyRelPath returns ""
+
+func TestPronunciationService_ProcessWord_ReadyButMissingWithTTSRepo(t *testing.T) {
+	audioDir := t.TempDir()
+	svc := NewPronunciationService(config.TTSConfig{
+		Enabled: true, AudioDir: audioDir,
+		DictionaryEnabled: true, DictionaryBaseURL: "http://example.com",
+	}, nil, zap.NewNop())
+	svc.providers = []pronunciationProvider{&stubPronunciationProvider{providerName: "x", audio: []byte("a")}}
+
+	word := "readymissingproc"
+	var upsertPendingCalled bool
+	readyStatus := &models.TTSGenerationStatus{
+		Word:        word,
+		State:       models.TTSStateReady,
+		MaxAttempts: 10, // must be > AttemptCount (0) to avoid MarkTerminal path
+		// AudioRelPath nil -> resolveReadyRelPath returns "" (no file on disk)
+	}
+	svc.ttsRepo = &mockTTSRepo{
+		getByWordFn: func(w string) (*models.TTSGenerationStatus, error) {
+			// Always return ready status so ensureStatusForWord converts to pending
+			// but then returns the same ready status (simulating a race condition)
+			return readyStatus, nil
+		},
+		upsertPendingFn: func(w string) error {
+			upsertPendingCalled = true
+			return nil
+		},
+		markReadyFn: func(word, provider, relPath string) error {
+			return nil
+		},
+		markAttemptFn: func(word, provider, errorCode, errorMessage string, retryable bool) error {
+			return nil
+		},
+	}
+
+	svc.processWord(context.Background(), word)
+
+	// UpsertPending should have been called (either in ensureStatusForWord or processWord)
+	if !upsertPendingCalled {
+		t.Error("expected UpsertPending to be called when status is ready but file is missing")
+	}
+}
+
+// --- ScheduleWord: ready-but-missing with ttsRepo (lines 1096-1098) ---
+
+func TestPronunciationService_ScheduleWord_ReadyButMissingWithTTSRepoMock(t *testing.T) {
+	audioDir := t.TempDir()
+	svc := NewPronunciationService(config.TTSConfig{
+		Enabled: true, AudioDir: audioDir,
+		DictionaryEnabled: true, DictionaryBaseURL: "http://example.com",
+	}, nil, zap.NewNop())
+	svc.providers = []pronunciationProvider{&stubPronunciationProvider{providerName: "x", audio: []byte("a")}}
+
+	word := "readymissingsched"
+	var upsertPendingCalled bool
+	readyStatus := &models.TTSGenerationStatus{
+		Word:        word,
+		State:       models.TTSStateReady,
+		MaxAttempts: 10, // must be > AttemptCount (0) to avoid MarkTerminal path
+		// AudioRelPath nil -> resolveReadyRelPath returns "" (no file on disk)
+	}
+	svc.ttsRepo = &mockTTSRepo{
+		getByWordFn: func(w string) (*models.TTSGenerationStatus, error) {
+			return readyStatus, nil
+		},
+		upsertPendingFn: func(w string) error {
+			upsertPendingCalled = true
+			return nil
+		},
+		markReadyFn: func(word, provider, relPath string) error { return nil },
+		markAttemptFn: func(word, provider, errorCode, errorMessage string, retryable bool) error {
+			return nil
+		},
+	}
+
+	svc.ScheduleWord(word)
+
+	if !upsertPendingCalled {
+		t.Error("expected UpsertPending to be called when status is ready but file is missing in ScheduleWord")
+	}
+}
+
+// --- processWord: notFoundSeen with non-retryable not-found (if notFoundSeen block) ---
+
+func TestPronunciationService_ProcessWord_NotFoundNonRetryableBlock(t *testing.T) {
+	audioDir := t.TempDir()
+	svc := NewPronunciationService(config.TTSConfig{
+		Enabled: true, AudioDir: audioDir,
+		DictionaryEnabled: true, DictionaryBaseURL: "http://example.com",
+	}, nil, zap.NewNop())
+
+	// Use a not-found error with "not_found_nonretryable" in the message
+	// classifyPronunciationError returns ("not_found_nonretryable", false) for this
+	notFoundNonRetryable := fmt.Errorf("%w: not_found_nonretryable", errPronunciationNotFound)
+	svc.providers = []pronunciationProvider{
+		&stubPronunciationProvider{providerName: "p", err: notFoundNonRetryable},
+	}
+
+	var markAttemptCalled bool
+	svc.ttsRepo = &mockTTSRepo{
+		getByWordFn: func(word string) (*models.TTSGenerationStatus, error) {
+			return nil, nil
+		},
+		markAttemptFn: func(word, provider, errorCode, errorMessage string, retryable bool) error {
+			markAttemptCalled = true
+			return nil
+		},
+		markReadyFn:   func(word, provider, relPath string) error { return nil },
+		markTerminalFn: func(word, provider, errorCode, errorMessage string) error { return nil },
+	}
+
+	svc.processWord(context.Background(), "notfoundnonretry")
+
+	// The if notFoundSeen block should be reached (retryableErr == nil, notFoundSeen == true)
+	if !markAttemptCalled {
+		t.Error("expected MarkAttempt to be called in the notFoundSeen block")
+	}
+}
+
+// --- writeFileAtomic: write error via injectable createTempFileFn ---
+
+type mockOsFile struct {
+	name      string
+	writeErr  error
+	chmodErr  error
+	closeErr  error
+	writeBuf  []byte
+}
+
+func (f *mockOsFile) Name() string { return f.name }
+func (f *mockOsFile) Write(b []byte) (int, error) {
+	if f.writeErr != nil {
+		return 0, f.writeErr
+	}
+	f.writeBuf = append(f.writeBuf, b...)
+	return len(b), nil
+}
+func (f *mockOsFile) Chmod(mode os.FileMode) error {
+	if f.chmodErr != nil {
+		return f.chmodErr
+	}
+	return nil
+}
+func (f *mockOsFile) Close() error {
+	if f.closeErr != nil {
+		return f.closeErr
+	}
+	return nil
+}
+
+func TestWriteFileAtomic_WriteErrorMock(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "test.mp3")
+
+	writeErr := errors.New("write failed")
+	// Create a real temp file for the mock to use as backing
+	realTmp, err := os.CreateTemp(dir, "tts-*.tmp")
+	if err != nil {
+		t.Fatalf("create real tmp: %v", err)
+	}
+	realTmpPath := realTmp.Name()
+	realTmp.Close()
+
+	orig := createTempFileFn
+	createTempFileFn = func(d, pattern string) (osFile, error) {
+		return &mockOsFile{name: realTmpPath, writeErr: writeErr}, nil
+	}
+	defer func() { createTempFileFn = orig }()
+
+	err = writeFileAtomic(path, []byte("data"), 0o644)
+	if err == nil {
+		t.Fatal("expected write error")
+	}
+	if !strings.Contains(err.Error(), "write temp file") {
+		t.Errorf("expected write temp file error, got %q", err.Error())
+	}
+}
+
+func TestWriteFileAtomic_ChmodErrorMock(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "test.mp3")
+
+	chmodErr := errors.New("chmod failed")
+	realTmp, err := os.CreateTemp(dir, "tts-*.tmp")
+	if err != nil {
+		t.Fatalf("create real tmp: %v", err)
+	}
+	realTmpPath := realTmp.Name()
+	realTmp.Close()
+
+	orig := createTempFileFn
+	createTempFileFn = func(d, pattern string) (osFile, error) {
+		return &mockOsFile{name: realTmpPath, chmodErr: chmodErr}, nil
+	}
+	defer func() { createTempFileFn = orig }()
+
+	err = writeFileAtomic(path, []byte("data"), 0o644)
+	if err == nil {
+		t.Fatal("expected chmod error")
+	}
+	if !strings.Contains(err.Error(), "chmod temp file") {
+		t.Errorf("expected chmod temp file error, got %q", err.Error())
+	}
+}
+
+func TestWriteFileAtomic_CloseErrorMock(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "test.mp3")
+
+	closeErr := errors.New("close failed")
+	realTmp, err := os.CreateTemp(dir, "tts-*.tmp")
+	if err != nil {
+		t.Fatalf("create real tmp: %v", err)
+	}
+	realTmpPath := realTmp.Name()
+	realTmp.Close()
+
+	orig := createTempFileFn
+	createTempFileFn = func(d, pattern string) (osFile, error) {
+		return &mockOsFile{name: realTmpPath, closeErr: closeErr}, nil
+	}
+	defer func() { createTempFileFn = orig }()
+
+	err = writeFileAtomic(path, []byte("data"), 0o644)
+	if err == nil {
+		t.Fatal("expected close error")
+	}
+	if !strings.Contains(err.Error(), "close temp file") {
+		t.Errorf("expected close temp file error, got %q", err.Error())
+	}
+}
+
+// --- fetchViaChatCompletions: both attempts return openrouter_no_audio, lastErr is returned ---
+
+func TestOpenRouterPronunciationProvider_FetchViaChatCompletions_LastErrReturned(t *testing.T) {
+	var callCount int
+	var mu sync.Mutex
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		mu.Lock()
+		callCount++
+		mu.Unlock()
+		w.Header().Set("Content-Type", "text/event-stream")
+		w.WriteHeader(http.StatusOK)
+		// Return SSE with no audio chunks -> openrouter_no_audio
+		_, _ = w.Write([]byte(`data: {"choices":[{"delta":{"content":"hello"}}]}` + "\n\n"))
+		_, _ = w.Write([]byte("data: [DONE]\n\n"))
+	}))
+	defer srv.Close()
+
+	provider := &openRouterPronunciationProvider{
+		baseURL:              srv.URL,
+		model:                "test",
+		voice:                "alloy",
+		apiKey:               "key",
+		client:               &http.Client{Timeout: 3 * time.Second},
+		forceChatCompletions: true,
+		pcmToMp3:             func(pcm []byte) ([]byte, error) { return pcm, nil },
+	}
+	_, err := provider.fetchViaChatCompletions(context.Background(), "hello")
+	if err == nil {
+		t.Fatal("expected error")
+	}
+	if !errors.Is(err, errPronunciationNotFound) {
+		t.Errorf("expected errPronunciationNotFound, got %v", err)
+	}
+	mu.Lock()
+	calls := callCount
+	mu.Unlock()
+	if calls != 2 {
+		t.Errorf("expected 2 attempts, got %d", calls)
+	}
+}

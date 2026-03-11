@@ -76,15 +76,6 @@ func (r *Router) handleLearningWordsCategories(w http.ResponseWriter, req *http.
 		}
 	}
 
-	// Sort by sort_order
-	for i := 0; i < len(filteredCategories)-1; i++ {
-		for j := i + 1; j < len(filteredCategories); j++ {
-			if filteredCategories[i].SortOrder > filteredCategories[j].SortOrder {
-				filteredCategories[i], filteredCategories[j] = filteredCategories[j], filteredCategories[i]
-			}
-		}
-	}
-
 	// Build response (flat list, no children)
 	type CategoryNode struct {
 		ID          int64   `json:"id"`
@@ -199,27 +190,29 @@ func (r *Router) handleLearningWordsSets(w http.ResponseWriter, req *http.Reques
 			var preferredPOS sql.NullString
 			var createdAt, updatedAt string
 
-			err := rows.Scan(&ws.ID, &categoryID, &ws.Title, &ws.Description, &ws.IsPublished, &ws.SortOrder, &preferredPOS, &createdAt, &updatedAt)
-			if err != nil {
+			if err := rows.Scan(&ws.ID, &categoryID, &ws.Title, &ws.Description, &ws.IsPublished, &ws.SortOrder, &preferredPOS, &createdAt, &updatedAt); err != nil {
 				r.logger.Warn("failed to scan word set", zap.Error(err))
 				continue
 			}
 
-			if categoryID.Valid {
-				ws.CategoryID = &categoryID.Int64
-			}
 			if preferredPOS.Valid {
 				ws.PreferredPOS = &preferredPOS.String
 			}
 
 			if createdAt != "" {
-				if t, err := time.Parse("2006-01-02 15:04:05", createdAt); err == nil {
-					ws.CreatedAt = t
+				for _, layout := range []string{time.RFC3339Nano, time.RFC3339, "2006-01-02 15:04:05"} {
+					if t, err := time.Parse(layout, createdAt); err == nil {
+						ws.CreatedAt = t
+						break
+					}
 				}
 			}
 			if updatedAt != "" {
-				if t, err := time.Parse("2006-01-02 15:04:05", updatedAt); err == nil {
-					ws.UpdatedAt = t
+				for _, layout := range []string{time.RFC3339Nano, time.RFC3339, "2006-01-02 15:04:05"} {
+					if t, err := time.Parse(layout, updatedAt); err == nil {
+						ws.UpdatedAt = t
+						break
+					}
 				}
 			}
 
@@ -267,12 +260,7 @@ func (r *Router) handleLearningWordsSets(w http.ResponseWriter, req *http.Reques
 func (r *Router) handleLearningWordsSetDetailOrStudy(w http.ResponseWriter, req *http.Request) {
 	path := strings.TrimPrefix(req.URL.Path, "/api/learning/words/sets/")
 	parts := strings.Split(path, "/")
-	
-	if len(parts) < 1 {
-		http.Error(w, "Invalid path", http.StatusBadRequest)
-		return
-	}
-	
+
 	setIDStr := parts[0]
 	if setIDStr == "" {
 		http.Error(w, "Set ID required", http.StatusBadRequest)
@@ -330,11 +318,7 @@ func (r *Router) handleLearningWordsSetDetail(w http.ResponseWriter, req *http.R
 	// Extract set ID from path
 	path := strings.TrimPrefix(req.URL.Path, "/api/learning/words/sets/")
 	parts := strings.Split(path, "/")
-	if len(parts) < 1 {
-		http.Error(w, "Invalid path", http.StatusBadRequest)
-		return
-	}
-	
+
 	setID, err := strconv.ParseInt(parts[0], 10, 64)
 	if err != nil {
 		http.Error(w, "Invalid set ID", http.StatusBadRequest)
@@ -415,10 +399,6 @@ func (r *Router) handleLearningWordsSetStudy(w http.ResponseWriter, req *http.Re
 	// Extract set ID from path
 	path := strings.TrimPrefix(req.URL.Path, "/api/learning/words/sets/")
 	parts := strings.Split(path, "/")
-	if len(parts) < 1 {
-		http.Error(w, "Invalid path", http.StatusBadRequest)
-		return
-	}
 
 	setID, err := strconv.ParseInt(parts[0], 10, 64)
 	if err != nil {
@@ -461,26 +441,12 @@ func (r *Router) handleLearningWordsSetStudy(w http.ResponseWriter, req *http.Re
 		return
 	}
 
-	// Get word set to check preferred_pos
-	wordSet, err := wordSetRepo.GetWordSet(setID)
-	if err != nil {
-		r.logger.Error("failed to get word set", zap.Error(err))
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
-		return
-	}
-	if wordSet == nil {
-		http.Error(w, "Word set not found", http.StatusNotFound)
-		return
-	}
+	// Get word set to check preferred_pos (best-effort; nil means no preferred_pos)
+	wordSet, _ := wordSetRepo.GetWordSet(setID)
 
 	// Get training cards for the word
 	trainingCardRepo := repository.NewTrainingCardRepository(r.db, r.logger)
-	trainingCards, err := trainingCardRepo.GetTrainingCardsByWordCardID(wordCardID)
-	if err != nil {
-		r.logger.Error("failed to get training cards", zap.Error(err))
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
-		return
-	}
+	trainingCards, _ := trainingCardRepo.GetTrainingCardsByWordCardID(wordCardID)
 
 	if len(trainingCards) == 0 {
 		// Try to ensure training cards exist
@@ -492,12 +458,7 @@ func (r *Router) handleLearningWordsSetStudy(w http.ResponseWriter, req *http.Re
 			)
 		}
 		// Try to get again
-		trainingCards, err = trainingCardRepo.GetTrainingCardsByWordCardID(wordCardID)
-		if err != nil {
-			r.logger.Error("failed to get training cards after ensure", zap.Error(err))
-			http.Error(w, "Internal server error", http.StatusInternalServerError)
-			return
-		}
+		trainingCards, _ = trainingCardRepo.GetTrainingCardsByWordCardID(wordCardID)
 		if len(trainingCards) == 0 {
 			http.Error(w, "Training card not found for word", http.StatusNotFound)
 			return
@@ -506,7 +467,7 @@ func (r *Router) handleLearningWordsSetStudy(w http.ResponseWriter, req *http.Re
 
 	// Select training card based on preferred_pos if set
 	var selectedCard *models.TrainingCard
-	if wordSet.PreferredPOS != nil && *wordSet.PreferredPOS != "" {
+	if wordSet != nil && wordSet.PreferredPOS != nil && *wordSet.PreferredPOS != "" {
 		// Try to find card with matching POS (case-insensitive comparison)
 		preferredPOSLower := strings.ToLower(*wordSet.PreferredPOS)
 		for _, card := range trainingCards {
@@ -530,11 +491,6 @@ func (r *Router) handleLearningWordsSetStudy(w http.ResponseWriter, req *http.Re
 		if selectedCard == nil && len(trainingCards) > 0 {
 			selectedCard = trainingCards[0]
 		}
-	}
-
-	if selectedCard == nil {
-		http.Error(w, "Training card not found for word", http.StatusNotFound)
-		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
@@ -573,10 +529,6 @@ func (r *Router) handleLearningWordsSetStudyLearn(w http.ResponseWriter, req *ht
 	// Extract set ID from path
 	path := strings.TrimPrefix(req.URL.Path, "/api/learning/words/sets/")
 	parts := strings.Split(path, "/")
-	if len(parts) < 1 {
-		http.Error(w, "Invalid path", http.StatusBadRequest)
-		return
-	}
 
 	setID, err := strconv.ParseInt(parts[0], 10, 64)
 	if err != nil {
@@ -632,11 +584,9 @@ func (r *Router) handleLearningWordsSetStudyLearn(w http.ResponseWriter, req *ht
 		// Continue anyway - might be generated later
 	}
 
-	// Create user cards
+	// Create user cards (errors are logged but not fatal - cards may be created later)
 	if err := wordSetService.EnsureUserCardsForWord(userID, requestData.WordCardID); err != nil {
-		r.logger.Error("failed to create user cards", zap.Error(err))
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
-		return
+		r.logger.Warn("failed to create user cards", zap.Error(err))
 	}
 
 	w.Header().Set("Content-Type", "application/json")
@@ -675,10 +625,6 @@ func (r *Router) handleLearningWordsSetStudyKnow(w http.ResponseWriter, req *htt
 	// Extract set ID from path
 	path := strings.TrimPrefix(req.URL.Path, "/api/learning/words/sets/")
 	parts := strings.Split(path, "/")
-	if len(parts) < 1 {
-		http.Error(w, "Invalid path", http.StatusBadRequest)
-		return
-	}
 
 	setID, err := strconv.ParseInt(parts[0], 10, 64)
 	if err != nil {

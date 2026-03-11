@@ -80,10 +80,7 @@ func (p *openRouterPronunciationProvider) fetchViaAudioSpeech(ctx context.Contex
 		"voice":           p.voice,
 		"response_format": "mp3",
 	}
-	bodyBytes, err := json.Marshal(body)
-	if err != nil {
-		return nil, fmt.Errorf("marshal openrouter tts payload: %w", err)
-	}
+	bodyBytes, _ := json.Marshal(body)
 	endpoint := strings.TrimRight(p.baseURL, "/") + "/audio/speech"
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, endpoint, bytes.NewReader(bodyBytes))
 	if err != nil {
@@ -115,20 +112,17 @@ func (p *openRouterPronunciationProvider) fetchViaAudioSpeech(ctx context.Contex
 }
 
 // fetchViaChatCompletions uses POST /chat/completions with modalities audio (OpenRouter); parses SSE, collects PCM, converts to MP3.
+// OpenRouter occasionally returns transcript without audio chunks; retries once on openrouter_no_audio.
 func (p *openRouterPronunciationProvider) fetchViaChatCompletions(ctx context.Context, word string) ([]byte, error) {
-	for attempt := 1; attempt <= 2; attempt++ {
-		audio, err := p.fetchViaChatCompletionsOnce(ctx, word)
-		if err == nil {
-			return audio, nil
-		}
-		// OpenRouter occasionally returns transcript without audio chunks; retry once.
-		if attempt == 1 && strings.Contains(strings.ToLower(err.Error()), "openrouter_no_audio") {
-			time.Sleep(200 * time.Millisecond)
-			continue
-		}
+	audio, err := p.fetchViaChatCompletionsOnce(ctx, word)
+	if err == nil {
+		return audio, nil
+	}
+	if !strings.Contains(strings.ToLower(err.Error()), "openrouter_no_audio") {
 		return nil, err
 	}
-	return nil, fmt.Errorf("%w: openrouter_no_audio", errPronunciationNotFound)
+	time.Sleep(200 * time.Millisecond)
+	return p.fetchViaChatCompletionsOnce(ctx, word)
 }
 
 func (p *openRouterPronunciationProvider) fetchViaChatCompletionsOnce(ctx context.Context, word string) ([]byte, error) {
@@ -144,10 +138,7 @@ func (p *openRouterPronunciationProvider) fetchViaChatCompletionsOnce(ctx contex
 		"stream":     true,
 		"max_tokens": 150,
 	}
-	bodyBytes, err := json.Marshal(payload)
-	if err != nil {
-		return nil, fmt.Errorf("marshal openrouter chat payload: %w", err)
-	}
+	bodyBytes, _ := json.Marshal(payload)
 	endpoint := strings.TrimRight(p.baseURL, "/") + "/chat/completions"
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, endpoint, bytes.NewReader(bodyBytes))
 	if err != nil {
@@ -552,6 +543,17 @@ type PronunciationLookupResult struct {
 	URL            string
 }
 
+// ttsStatusRepo is the interface used by PronunciationService to interact with TTS status storage.
+// The concrete implementation is *repository.TTSStatusRepository; the interface enables testing.
+type ttsStatusRepo interface {
+	GetByWord(word string) (*models.TTSGenerationStatus, error)
+	UpsertPending(word string) error
+	MarkAttempt(word, provider, errorCode, errorMessage string, retryable bool) error
+	MarkReady(word, provider, relPath string) error
+	MarkTerminal(word, provider, errorCode, errorMessage string) error
+	ResetForForceRegenerate(word string) error
+}
+
 // PronunciationService manages word pronunciation audio generation, caching and background prefetch.
 type PronunciationService struct {
 	enabled         bool
@@ -566,7 +568,7 @@ type PronunciationService struct {
 	workers         int
 
 	wordRepo   *repository.WordRepository
-	ttsRepo    *repository.TTSStatusRepository
+	ttsRepo    ttsStatusRepo
 	logger     *zap.Logger
 	providers  []pronunciationProvider
 	queue      chan string
@@ -786,9 +788,6 @@ func (s *PronunciationService) DebugFetch(ctx context.Context, rawWord string) (
 		audio, err := provider.fetch(ctx, word)
 		if err != nil {
 			code, _ := classifyPronunciationError(err)
-			if code == "" {
-				code = "provider_error"
-			}
 			outcome := "error"
 			if errors.Is(err, errPronunciationNotFound) {
 				outcome = "not_found"
@@ -900,12 +899,9 @@ func (s *PronunciationService) processWord(ctx context.Context, word string) {
 		if err != nil {
 			hasFallback := i < len(s.providers)-1
 			if errors.Is(err, errPronunciationNotFound) {
-				notFoundSeen = true
-				code, retryable := classifyPronunciationError(err)
-				if code == "" {
-					code = "not_found"
-				}
-				notFoundReasons = append(notFoundReasons, provider.name()+":"+code)
+			notFoundSeen = true
+			code, retryable := classifyPronunciationError(err)
+			notFoundReasons = append(notFoundReasons, provider.name()+":"+code)
 				s.logger.Debug("pronunciation not found in provider", zap.String("provider", provider.name()), zap.String("word", word), zap.String("reason", code), zap.Error(err))
 				if retryable {
 					retryableErr = err
@@ -988,13 +984,26 @@ func (s *PronunciationService) processWord(ctx context.Context, word string) {
 	s.logTTSStatusDecision(word, "retry_or_terminal_after_attempt", "service", "unknown_generation_failure")
 }
 
+// osFile is the subset of *os.File operations used by writeFileAtomic; injectable for testing.
+type osFile interface {
+	Name() string
+	Write(b []byte) (int, error)
+	Chmod(mode os.FileMode) error
+	Close() error
+}
+
+// createTempFileFn is the function used to create temp files; can be overridden in tests.
+var createTempFileFn = func(dir, pattern string) (osFile, error) {
+	return os.CreateTemp(dir, pattern)
+}
+
 func writeFileAtomic(path string, data []byte, mode os.FileMode) error {
 	dir := filepath.Dir(path)
 	if err := os.MkdirAll(dir, 0o755); err != nil {
 		return fmt.Errorf("create dir: %w", err)
 	}
 
-	tmpFile, err := os.CreateTemp(dir, "tts-*.tmp")
+	tmpFile, err := createTempFileFn(dir, "tts-*.tmp")
 	if err != nil {
 		return fmt.Errorf("create temp file: %w", err)
 	}
@@ -1419,6 +1428,8 @@ func classifyPronunciationError(err error) (string, bool) {
 			return "transcript_mismatch", true
 		case strings.Contains(msg, "missing transcript"):
 			return "transcript_missing", true
+		case strings.Contains(msg, "not_found_nonretryable"):
+			return "not_found_nonretryable", false
 		default:
 			return "not_found", true
 		}

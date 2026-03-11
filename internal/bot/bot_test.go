@@ -2,6 +2,7 @@ package bot
 
 import (
 	"context"
+	"fmt"
 	"net"
 	"net/http"
 	"net/http/httptest"
@@ -652,4 +653,259 @@ func TestStart_WithTrainingWorker(t *testing.T) {
 	if err != nil {
 		t.Errorf("Start() error = %v", err)
 	}
+}
+
+// newTestBotWithEndpoint creates a *tgbotapi.BotAPI using the mock client, pointing at the given endpoint.
+func newTestBotWithEndpoint(endpoint string) *tgbotapi.BotAPI {
+	api := &tgbotapi.BotAPI{Token: "test-token", Client: &mockTelegramClient{}, Buffer: 100}
+	api.SetAPIEndpoint(endpoint)
+	return api
+}
+
+// failingResponseWriter is an http.ResponseWriter whose Write always returns an error.
+type failingResponseWriter struct {
+	header http.Header
+	code   int
+}
+
+func (f *failingResponseWriter) Header() http.Header {
+	if f.header == nil {
+		f.header = make(http.Header)
+	}
+	return f.header
+}
+
+func (f *failingResponseWriter) WriteHeader(code int) { f.code = code }
+
+func (f *failingResponseWriter) Write(_ []byte) (int, error) {
+	return 0, fmt.Errorf("write error")
+}
+
+// TestHealthHandler_WriteError covers the b.logger.Error path inside healthHandler.
+func TestHealthHandler_WriteError(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	cfg := testBotConfig(t)
+	b, err := New(cfg, logger)
+	if err != nil {
+		t.Fatalf("New: %v", err)
+	}
+	w := &failingResponseWriter{}
+	b.healthHandler(w, httptest.NewRequest(http.MethodGet, "/health", nil))
+	if w.code != http.StatusOK {
+		t.Errorf("expected status 200, got %d", w.code)
+	}
+}
+
+// testBotWithFailingDBClose creates a Bot whose dbCloseFn returns an error,
+// to exercise the "failed to close database" warn path.
+func testBotWithFailingDBClose(t *testing.T, logger *zap.Logger) *Bot {
+	t.Helper()
+	cfg := testBotConfig(t)
+	b, err := New(cfg, logger)
+	if err != nil {
+		t.Fatalf("New: %v", err)
+	}
+	b.dbCloseFn = func() error { return fmt.Errorf("simulated db close error") }
+	return b
+}
+
+// TestStartWebhook_DbCloseError covers the db.Close() error warn path in startWebhook.
+func TestStartWebhook_DbCloseError(t *testing.T) {
+	baseURL, cleanup := startMockTelegramServer(t, http.StatusOK)
+	defer cleanup()
+
+	logger, _ := zap.NewDevelopment()
+	b := testBotWithFailingDBClose(t, logger)
+
+	b.api = newTestBotWithEndpoint(baseURL + "/bot%s/%s")
+	b.config.Telegram.WebhookURL = "https://example.com/webhook"
+	b.config.Telegram.WebhookPath = "/webhook"
+
+	ctx, cancel := context.WithCancel(context.Background())
+	go func() {
+		time.Sleep(100 * time.Millisecond)
+		cancel()
+	}()
+
+	_ = b.startWebhook(ctx)
+}
+
+// TestStartLongPolling_DbCloseError covers the db.Close() error warn path in startLongPolling.
+func TestStartLongPolling_DbCloseError(t *testing.T) {
+	baseURL, cleanup := startMockTelegramServer(t, http.StatusOK)
+	defer cleanup()
+
+	logger, _ := zap.NewDevelopment()
+	b := testBotWithFailingDBClose(t, logger)
+
+	b.api = newTestBotWithEndpoint(baseURL + "/bot%s/%s")
+
+	ctx, cancel := context.WithCancel(context.Background())
+	go func() {
+		time.Sleep(100 * time.Millisecond)
+		cancel()
+	}()
+
+	_ = b.startLongPolling(ctx)
+}
+
+// TestStartWebServerOnly_DbCloseError covers the db.Close() error warn path in startWebServerOnly.
+func TestStartWebServerOnly_DbCloseError(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	b := testBotWithFailingDBClose(t, logger)
+
+	ctx, cancel := context.WithCancel(context.Background())
+	go func() {
+		time.Sleep(100 * time.Millisecond)
+		cancel()
+	}()
+
+	_ = b.startWebServerOnly(ctx)
+}
+
+// TestStartWebServerOnly_ShutdownError covers the server.Shutdown() error warn path.
+// It uses a pre-canceled shutdown context so Shutdown returns context.Canceled
+// when there are active connections.
+func TestStartWebServerOnly_ShutdownError(t *testing.T) {
+	ln, err := net.Listen("tcp", "127.0.0.1:0")
+	if err != nil {
+		t.Fatalf("listen: %v", err)
+	}
+	addr := ln.Addr().String()
+	_ = ln.Close()
+
+	logger, _ := zap.NewDevelopment()
+	cfg := testBotConfig(t)
+	cfg.Server.Address = addr
+	b, err := New(cfg, logger)
+	if err != nil {
+		t.Fatalf("New: %v", err)
+	}
+
+	// Use a pre-canceled context for Shutdown so it returns context.Canceled
+	// when there are active (in-flight) connections.
+	canceledCtx, cancelFn := context.WithCancel(context.Background())
+	cancelFn()
+	b.shutdownCtxFn = func() context.Context { return canceledCtx }
+
+	ctx, cancel := context.WithCancel(context.Background())
+	done := make(chan struct{})
+	go func() {
+		defer close(done)
+		_ = b.startWebServerOnly(ctx)
+	}()
+
+	// Wait for server to start.
+	time.Sleep(100 * time.Millisecond)
+
+	// Send a POST with Content-Length but no body — the server will be waiting
+	// to read the body, keeping the connection in an active (non-idle) state.
+	conn, dialErr := net.Dial("tcp", addr)
+	if dialErr == nil {
+		_, _ = conn.Write([]byte("POST /health HTTP/1.1\r\nHost: localhost\r\nContent-Length: 1000\r\nConnection: keep-alive\r\n\r\n"))
+		defer conn.Close()
+	}
+
+	// Give the server a moment to accept the connection, then cancel.
+	time.Sleep(50 * time.Millisecond)
+	cancel()
+	<-done
+}
+
+// TestStartWebhook_ListenAndServeError covers the http.ListenAndServe goroutine error path
+// in startWebhook by using an address that is already bound.
+func TestStartWebhook_ListenAndServeError(t *testing.T) {
+	ln, err := net.Listen("tcp", "127.0.0.1:0")
+	if err != nil {
+		t.Fatalf("listen: %v", err)
+	}
+	defer ln.Close()
+	addr := ln.Addr().String()
+
+	baseURL, cleanup := startMockTelegramServer(t, http.StatusOK)
+	defer cleanup()
+
+	logger, _ := zap.NewDevelopment()
+	cfg := testBotConfig(t)
+	cfg.Telegram.Token = "test-token"
+	cfg.Telegram.APIBaseURL = baseURL + "/bot%s/%s"
+	cfg.Telegram.WebhookEnable = true
+	cfg.Telegram.WebhookURL = "https://example.com/webhook"
+	cfg.Telegram.WebhookPath = "/webhook"
+	cfg.Server.Address = addr
+
+	b, err := New(cfg, logger)
+	if err != nil {
+		t.Fatalf("New: %v", err)
+	}
+
+	ctx, cancel := context.WithCancel(context.Background())
+	go func() {
+		time.Sleep(200 * time.Millisecond)
+		cancel()
+	}()
+
+	_ = b.startWebhook(ctx)
+}
+
+// TestStartLongPolling_ListenAndServeError covers the http.ListenAndServe goroutine error path
+// in startLongPolling by using an address that is already bound.
+func TestStartLongPolling_ListenAndServeError(t *testing.T) {
+	ln, err := net.Listen("tcp", "127.0.0.1:0")
+	if err != nil {
+		t.Fatalf("listen: %v", err)
+	}
+	defer ln.Close()
+	addr := ln.Addr().String()
+
+	baseURL, cleanup := startMockTelegramServer(t, http.StatusOK)
+	defer cleanup()
+
+	logger, _ := zap.NewDevelopment()
+	cfg := testBotConfig(t)
+	cfg.Telegram.Token = "test-token"
+	cfg.Telegram.APIBaseURL = baseURL + "/bot%s/%s"
+	cfg.Telegram.WebhookEnable = false
+	cfg.Server.Address = addr
+
+	b, err := New(cfg, logger)
+	if err != nil {
+		t.Fatalf("New: %v", err)
+	}
+
+	ctx, cancel := context.WithCancel(context.Background())
+	go func() {
+		time.Sleep(200 * time.Millisecond)
+		cancel()
+	}()
+
+	_ = b.startLongPolling(ctx)
+}
+
+// TestStartWebServerOnly_ListenAndServeError covers the server.ListenAndServe goroutine error path
+// (err != nil && err != http.ErrServerClosed) in startWebServerOnly.
+func TestStartWebServerOnly_ListenAndServeError(t *testing.T) {
+	ln, err := net.Listen("tcp", "127.0.0.1:0")
+	if err != nil {
+		t.Fatalf("listen: %v", err)
+	}
+	defer ln.Close()
+	addr := ln.Addr().String()
+
+	logger, _ := zap.NewDevelopment()
+	cfg := testBotConfig(t)
+	cfg.Server.Address = addr
+
+	b, err := New(cfg, logger)
+	if err != nil {
+		t.Fatalf("New: %v", err)
+	}
+
+	ctx, cancel := context.WithCancel(context.Background())
+	go func() {
+		time.Sleep(200 * time.Millisecond)
+		cancel()
+	}()
+
+	_ = b.startWebServerOnly(ctx)
 }
