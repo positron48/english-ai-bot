@@ -19,6 +19,13 @@ import (
 	"go.uber.org/zap"
 )
 
+// userRepoInterface is used by Handler for user lookup and username updates (allows tests to inject mocks).
+type userRepoInterface interface {
+	GetOrCreateUser(telegramID int64) (*models.User, error)
+	UpdateUsername(telegramID int64, username string) error
+	UpdateUserSettings(userID int64, settingsJSON string) error
+}
+
 // Handler handles Telegram updates
 type Handler struct {
 	bot                *tgbotapi.BotAPI
@@ -26,7 +33,7 @@ type Handler struct {
 	aiService          *ai.Service
 	wordService        *service.WordService
 	trainingHandler    *TrainingHandler
-	userRepo           *repository.UserRepository
+	userRepo           userRepoInterface
 	trainingCardRepo   *repository.TrainingCardRepository
 	userCardRepo       *repository.UserCardRepository
 	cbService          *service.CircuitBreakerService

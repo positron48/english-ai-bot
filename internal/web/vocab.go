@@ -356,11 +356,11 @@ func (r *Router) handleVocabDelete(w http.ResponseWriter, req *http.Request) {
 
 	// Extract lemma from URL path: /app/vocab/{lemma}/confirm_delete or /app/vocab/{lemma}/delete
 	path := req.URL.Path
-	parts := strings.Split(strings.TrimPrefix(path, "/api/vocab/"), "/")
-	if len(parts) < 1 {
+	if path == "" || !strings.HasPrefix(path, "/api/vocab/") {
 		http.Error(w, "Invalid path", http.StatusBadRequest)
 		return
 	}
+	parts := strings.Split(strings.TrimPrefix(path, "/api/vocab/"), "/")
 
 	lemma := parts[0]
 	action := ""

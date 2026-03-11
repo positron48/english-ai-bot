@@ -23,10 +23,24 @@ type userWordMasteringRepoForSession interface {
 	GetScore(userID, wordCardID int64) (int, error)
 }
 
+// userCardRepoForTraining is used by TrainingService for generateQueue, GetDueCount, RestoreQueue (allows mocks in tests).
+type userCardRepoForTraining interface {
+	GetDueCards(userID int64, now time.Time, limit int) ([]*models.UserCard, error)
+	GetNewCards(userID int64, limit int) ([]*models.UserCard, error)
+	GetWordMasteringStats(userID, wordCardID int64) (*repository.WordMasteringStats, error)
+	GetUserCard(userCardID int64) (*models.UserCard, error)
+	GetDueCount(userID int64, now time.Time) (int, error)
+}
+
+// trainingCardRepoForQueue is used by TrainingService for generateQueue and RestoreQueue (allows mocks in tests).
+type trainingCardRepoForQueue interface {
+	GetTrainingCard(id int64) (*models.TrainingCard, error)
+}
+
 // TrainingService handles training session management
 type TrainingService struct {
-	userCardRepo          *repository.UserCardRepository
-	trainingCardRepo      *repository.TrainingCardRepository
+	userCardRepo          userCardRepoForTraining
+	trainingCardRepo      trainingCardRepoForQueue
 	sessionRepo           *repository.SessionRepository
 	userWordMasteringRepo userWordMasteringRepoForSession // nil ok
 	logger                 *zap.Logger
@@ -34,8 +48,8 @@ type TrainingService struct {
 
 // NewTrainingService creates a new training service (userWordMasteringRepo can be nil).
 func NewTrainingService(
-	userCardRepo *repository.UserCardRepository,
-	trainingCardRepo *repository.TrainingCardRepository,
+	userCardRepo userCardRepoForTraining,
+	trainingCardRepo trainingCardRepoForQueue,
 	sessionRepo *repository.SessionRepository,
 	userWordMasteringRepo userWordMasteringRepoForSession,
 	logger *zap.Logger,
@@ -292,7 +306,12 @@ func (s *TrainingService) generateQueue(userID int64, config SessionConfig) ([]*
 		queue = append(queue, &models.TrainingQueueItem{Type: "card", Card: c})
 	}
 
-	// Per-card: by word's mastering score, replace some cards with spell or type challenge
+	s.applySpellTypeChallenges(queue, userID, config)
+	return queue, nil
+}
+
+// applySpellTypeChallenges replaces some card items with spell or type challenge based on mastering score (mutates queue in place).
+func (s *TrainingService) applySpellTypeChallenges(queue []*models.TrainingQueueItem, userID int64, config SessionConfig) {
 	spellThresh := config.SpellMasteringThreshold
 	if spellThresh < 0 {
 		spellThresh = 0
@@ -371,8 +390,6 @@ func (s *TrainingService) generateQueue(userID int64, config SessionConfig) ([]*
 			}
 		}
 	}
-
-	return queue, nil
 }
 
 // computeMasteringScore returns 0-100 using the same formula as vocab (mastering_score_calc)

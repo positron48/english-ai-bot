@@ -1989,3 +1989,321 @@ func TestTrainingService_generateQueue_SkippedCountWarning(t *testing.T) {
 	_ = sessionRepo
 }
 
+// mockUserCardRepoForGenerateQueue implements userCardRepoForTraining for generateQueue branch coverage.
+type mockUserCardRepoForGenerateQueue struct {
+	getDueCardsFunc           func(userID int64, now time.Time, limit int) ([]*models.UserCard, error)
+	getNewCardsFunc           func(userID int64, limit int) ([]*models.UserCard, error)
+	getWordMasteringStatsFunc func(userID, wordCardID int64) (*repository.WordMasteringStats, error)
+	getUserCardFunc           func(userCardID int64) (*models.UserCard, error)
+	getDueCountFunc           func(userID int64, now time.Time) (int, error)
+}
+
+func (m *mockUserCardRepoForGenerateQueue) GetDueCards(userID int64, now time.Time, limit int) ([]*models.UserCard, error) {
+	if m.getDueCardsFunc != nil {
+		return m.getDueCardsFunc(userID, now, limit)
+	}
+	return nil, nil
+}
+func (m *mockUserCardRepoForGenerateQueue) GetNewCards(userID int64, limit int) ([]*models.UserCard, error) {
+	if m.getNewCardsFunc != nil {
+		return m.getNewCardsFunc(userID, limit)
+	}
+	return nil, nil
+}
+func (m *mockUserCardRepoForGenerateQueue) GetWordMasteringStats(userID, wordCardID int64) (*repository.WordMasteringStats, error) {
+	if m.getWordMasteringStatsFunc != nil {
+		return m.getWordMasteringStatsFunc(userID, wordCardID)
+	}
+	return nil, nil
+}
+func (m *mockUserCardRepoForGenerateQueue) GetUserCard(userCardID int64) (*models.UserCard, error) {
+	if m.getUserCardFunc != nil {
+		return m.getUserCardFunc(userCardID)
+	}
+	return nil, nil
+}
+func (m *mockUserCardRepoForGenerateQueue) GetDueCount(userID int64, now time.Time) (int, error) {
+	if m.getDueCountFunc != nil {
+		return m.getDueCountFunc(userID, now)
+	}
+	return 0, nil
+}
+
+// mockTrainingCardRepoForGenerateQueue implements trainingCardRepoForQueue for generateQueue branch coverage.
+type mockTrainingCardRepoForGenerateQueue struct {
+	getTrainingCardFunc func(id int64) (*models.TrainingCard, error)
+}
+
+func (m *mockTrainingCardRepoForGenerateQueue) GetTrainingCard(id int64) (*models.TrainingCard, error) {
+	if m.getTrainingCardFunc != nil {
+		return m.getTrainingCardFunc(id)
+	}
+	return nil, nil
+}
+
+// TestTrainingService_generateQueue_GetNewCardsFails_Mock covers the error path when GetNewCards returns an error (lines 194-196).
+func TestTrainingService_generateQueue_GetNewCardsFails_Mock(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	ucMock := &mockUserCardRepoForGenerateQueue{
+		getDueCardsFunc: func(_ int64, _ time.Time, _ int) ([]*models.UserCard, error) {
+			return []*models.UserCard{{ID: 1, UserID: 1, TrainingCardID: 1, Direction: models.DirectionENtoRU, State: models.StateReview}}, nil
+		},
+		getNewCardsFunc: func(_ int64, _ int) ([]*models.UserCard, error) {
+			return nil, fmt.Errorf("get new cards failed")
+		},
+	}
+	tcMock := &mockTrainingCardRepoForGenerateQueue{
+		getTrainingCardFunc: func(id int64) (*models.TrainingCard, error) {
+			return &models.TrainingCard{ID: id, WordCardID: 1, WordEN: "x", WordRU: "y"}, nil
+		},
+	}
+	svc := NewTrainingService(ucMock, tcMock, nil, nil, logger)
+	_, err := svc.generateQueue(1, SessionConfig{MaxCardsPerSession: 10, MaxNewPerSession: 5})
+	if err == nil {
+		t.Fatal("expected error when GetNewCards fails")
+	}
+	if !strings.Contains(err.Error(), "failed to get new cards") {
+		t.Errorf("expected 'failed to get new cards' in error, got: %v", err)
+	}
+}
+
+// TestTrainingService_generateQueue_GetTrainingCardErrAndNil_Mock covers GetTrainingCard error (237-245), trainingCard nil (247-254), skippedCount > 0 (263-270), and empty queue path (280-287).
+func TestTrainingService_generateQueue_GetTrainingCardErrAndNil_Mock(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	dueCard := &models.UserCard{ID: 1, UserID: 1, TrainingCardID: 10, Direction: models.DirectionENtoRU, State: models.StateReview}
+	ucMock := &mockUserCardRepoForGenerateQueue{
+		getDueCardsFunc: func(_ int64, _ time.Time, _ int) ([]*models.UserCard, error) {
+			return []*models.UserCard{dueCard}, nil
+		},
+		getNewCardsFunc: func(_ int64, _ int) ([]*models.UserCard, error) {
+			return nil, nil
+		},
+	}
+	callCount := 0
+	tcMock := &mockTrainingCardRepoForGenerateQueue{
+		getTrainingCardFunc: func(id int64) (*models.TrainingCard, error) {
+			callCount++
+			if callCount == 1 {
+				return nil, fmt.Errorf("get training card failed")
+			}
+			if callCount == 2 {
+				return nil, nil
+			}
+			return &models.TrainingCard{ID: id, WordCardID: 1, WordEN: "word", WordRU: "слово"}, nil
+		},
+	}
+	svc := NewTrainingService(ucMock, tcMock, nil, nil, logger)
+	// First call: one card, GetTrainingCard returns error -> skippedCount=1, cardQueue empty -> len(cardQueue)==0 && len(allCards)>0 -> return nil,nil
+	queue, err := svc.generateQueue(1, SessionConfig{MaxCardsPerSession: 10, MaxNewPerSession: 5})
+	if err != nil {
+		t.Fatalf("generateQueue error: %v", err)
+	}
+	if queue != nil {
+		t.Errorf("expected nil queue when all cards skipped, got %d items", len(queue))
+	}
+}
+
+// TestTrainingService_generateQueue_GetTrainingCardReturnsNil_Mock covers the branch trainingCard == nil (247-254).
+func TestTrainingService_generateQueue_GetTrainingCardReturnsNil_Mock(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	ucMock := &mockUserCardRepoForGenerateQueue{
+		getDueCardsFunc: func(_ int64, _ time.Time, _ int) ([]*models.UserCard, error) {
+			return []*models.UserCard{{ID: 1, UserID: 1, TrainingCardID: 1, Direction: models.DirectionENtoRU, State: models.StateReview}}, nil
+		},
+		getNewCardsFunc: func(_ int64, _ int) ([]*models.UserCard, error) {
+			return nil, nil
+		},
+	}
+	tcMock := &mockTrainingCardRepoForGenerateQueue{
+		getTrainingCardFunc: func(_ int64) (*models.TrainingCard, error) {
+			return nil, nil
+		},
+	}
+	svc := NewTrainingService(ucMock, tcMock, nil, nil, logger)
+	queue, err := svc.generateQueue(1, SessionConfig{MaxCardsPerSession: 10, MaxNewPerSession: 5})
+	if err != nil {
+		t.Fatalf("generateQueue error: %v", err)
+	}
+	if queue != nil {
+		t.Errorf("expected nil queue when GetTrainingCard returns nil, got %d items", len(queue))
+	}
+}
+
+// TestTrainingService_generateQueue_GetTrainingCardPartialSkip_Mock covers skippedCount > 0 (263-270): one card skipped, one added.
+func TestTrainingService_generateQueue_GetTrainingCardPartialSkip_Mock(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	dueCards := []*models.UserCard{
+		{ID: 1, UserID: 1, TrainingCardID: 10, Direction: models.DirectionENtoRU, State: models.StateReview},
+		{ID: 2, UserID: 1, TrainingCardID: 20, Direction: models.DirectionENtoRU, State: models.StateReview},
+	}
+	callCount := 0
+	ucMock := &mockUserCardRepoForGenerateQueue{
+		getDueCardsFunc: func(_ int64, _ time.Time, _ int) ([]*models.UserCard, error) {
+			return dueCards, nil
+		},
+		getNewCardsFunc: func(_ int64, _ int) ([]*models.UserCard, error) {
+			return nil, nil
+		},
+	}
+	tcMock := &mockTrainingCardRepoForGenerateQueue{
+		getTrainingCardFunc: func(id int64) (*models.TrainingCard, error) {
+			callCount++
+			if id == 10 {
+				return nil, fmt.Errorf("skip first")
+			}
+			return &models.TrainingCard{ID: id, WordCardID: 1, WordEN: "ok", WordRU: "ок"}, nil
+		},
+	}
+	svc := NewTrainingService(ucMock, tcMock, nil, nil, logger)
+	queue, err := svc.generateQueue(1, SessionConfig{MaxCardsPerSession: 10, MaxNewPerSession: 5})
+	if err != nil {
+		t.Fatalf("generateQueue error: %v", err)
+	}
+	if len(queue) != 1 {
+		t.Errorf("expected 1 card in queue (one skipped), got %d", len(queue))
+	}
+}
+
+// TestTrainingService_generateQueue_GetWordMasteringStatsErr_Mock covers the branch where userWordMasteringRepo is nil and GetWordMasteringStats returns error (332-333 continue).
+func TestTrainingService_generateQueue_GetWordMasteringStatsErr_Mock(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	dueCard := &models.UserCard{ID: 1, UserID: 1, TrainingCardID: 1, Direction: models.DirectionRUtoEN, State: models.StateReview}
+	ucMock := &mockUserCardRepoForGenerateQueue{
+		getDueCardsFunc: func(_ int64, _ time.Time, _ int) ([]*models.UserCard, error) {
+			return []*models.UserCard{dueCard}, nil
+		},
+		getNewCardsFunc: func(_ int64, _ int) ([]*models.UserCard, error) {
+			return nil, nil
+		},
+		getWordMasteringStatsFunc: func(_, _ int64) (*repository.WordMasteringStats, error) {
+			return nil, fmt.Errorf("stats error")
+		},
+	}
+	tcMock := &mockTrainingCardRepoForGenerateQueue{
+		getTrainingCardFunc: func(id int64) (*models.TrainingCard, error) {
+			return &models.TrainingCard{ID: id, WordCardID: 1, WordEN: "hello", WordRU: "привет"}, nil
+		},
+	}
+	svc := NewTrainingService(ucMock, tcMock, nil, nil, logger)
+	queue, err := svc.generateQueue(1, SessionConfig{
+		MaxCardsPerSession: 10, MaxNewPerSession: 5,
+		SpellEnabled: true, SpellMasteringThreshold: 0,
+		TypeEnabled: true, TypeMasteringThreshold: 0,
+	})
+	if err != nil {
+		t.Fatalf("generateQueue error: %v", err)
+	}
+	if len(queue) != 1 {
+		t.Fatalf("expected 1 item, got %d", len(queue))
+	}
+	// Item should remain "card" because GetWordMasteringStats failed -> continue -> no spell/type injection
+	if queue[0].Type != "card" {
+		t.Errorf("expected type card when GetWordMasteringStats fails, got %s", queue[0].Type)
+	}
+}
+
+// TestTrainingService_generateQueue_GetWordMasteringStatsNil_Mock covers the branch where GetWordMasteringStats returns (nil, nil) (332-333 continue).
+func TestTrainingService_generateQueue_GetWordMasteringStatsNil_Mock(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	dueCard := &models.UserCard{ID: 1, UserID: 1, TrainingCardID: 1, Direction: models.DirectionRUtoEN, State: models.StateReview}
+	ucMock := &mockUserCardRepoForGenerateQueue{
+		getDueCardsFunc: func(_ int64, _ time.Time, _ int) ([]*models.UserCard, error) {
+			return []*models.UserCard{dueCard}, nil
+		},
+		getNewCardsFunc: func(_ int64, _ int) ([]*models.UserCard, error) {
+			return nil, nil
+		},
+		getWordMasteringStatsFunc: func(_, _ int64) (*repository.WordMasteringStats, error) {
+			return nil, nil
+		},
+	}
+	tcMock := &mockTrainingCardRepoForGenerateQueue{
+		getTrainingCardFunc: func(id int64) (*models.TrainingCard, error) {
+			return &models.TrainingCard{ID: id, WordCardID: 1, WordEN: "word", WordRU: "слово"}, nil
+		},
+	}
+	svc := NewTrainingService(ucMock, tcMock, nil, nil, logger)
+	queue, err := svc.generateQueue(1, SessionConfig{
+		MaxCardsPerSession: 10, MaxNewPerSession: 5,
+		SpellEnabled: true, SpellMasteringThreshold: 0,
+		TypeEnabled: true, TypeMasteringThreshold: 0,
+	})
+	if err != nil {
+		t.Fatalf("generateQueue error: %v", err)
+	}
+	if len(queue) != 1 {
+		t.Fatalf("expected 1 item, got %d", len(queue))
+	}
+	if queue[0].Type != "card" {
+		t.Errorf("expected type card when stats nil, got %s", queue[0].Type)
+	}
+}
+
+// TestTrainingService_applySpellTypeChallenges_ItemCardNil covers the branch queue[i].Type != "card" || queue[i].Card == nil (311-312 continue).
+func TestTrainingService_applySpellTypeChallenges_ItemCardNil(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	ucMock := &mockUserCardRepoForGenerateQueue{}
+	tcMock := &mockTrainingCardRepoForGenerateQueue{}
+	svc := NewTrainingService(ucMock, tcMock, nil, nil, logger)
+	// Queue with one item that has Type "card" but Card nil -> should skip without panic
+	queue := []*models.TrainingQueueItem{
+		{Type: "card", Card: nil},
+		{Type: "card", Card: &models.UserCardWithTraining{
+			UserCard:     models.UserCard{ID: 2, Direction: models.DirectionENtoRU},
+			TrainingCard: models.TrainingCard{WordEN: "x", WordRU: "y"},
+		}},
+	}
+	svc.applySpellTypeChallenges(queue, 1, SessionConfig{})
+	if queue[0].Type != "card" || queue[0].Card != nil {
+		t.Errorf("item with Card nil should be left unchanged")
+	}
+}
+
+// TestTrainingService_computeMasteringScore_IsKnown covers the branch stats.IsKnown (return 100).
+func TestTrainingService_computeMasteringScore_IsKnown(t *testing.T) {
+	stats := &repository.WordMasteringStats{
+		TotalCards: 1, ReviewStateCount: 0, LearningStateCount: 0, TotalReps: 0, IsKnown: true,
+	}
+	got := computeMasteringScore(stats)
+	if got != 100 {
+		t.Errorf("computeMasteringScore(IsKnown=true) = %d, want 100", got)
+	}
+}
+
+// TestTrainingService_computeMasteringScore_DefaultZero covers the fallthrough return 0 (no review/learning state).
+func TestTrainingService_computeMasteringScore_DefaultZero(t *testing.T) {
+	stats := &repository.WordMasteringStats{
+		TotalCards: 2, ReviewStateCount: 0, LearningStateCount: 0, TotalReps: 0, IsKnown: false,
+	}
+	got := computeMasteringScore(stats)
+	if got != 0 {
+		t.Errorf("computeMasteringScore(no review/learning) = %d, want 0", got)
+	}
+}
+
+// TestTrainingService_calculateShuffleScore_EmptyOrSingle covers len(result) <= 1 return 0.
+func TestTrainingService_calculateShuffleScore_EmptyOrSingle(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	svc := NewTrainingService(nil, nil, nil, nil, logger)
+	if got := svc.calculateShuffleScore(nil); got != 0 {
+		t.Errorf("calculateShuffleScore(nil) = %d, want 0", got)
+	}
+	if got := svc.calculateShuffleScore([]*models.UserCardWithTraining{{}}); got != 0 {
+		t.Errorf("calculateShuffleScore(single) = %d, want 0", got)
+	}
+}
+
+// TestTrainingService_fixAdjacentDuplicates_EmptyOrSingle covers len(result) <= 1 return result.
+func TestTrainingService_fixAdjacentDuplicates_EmptyOrSingle(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	svc := NewTrainingService(nil, nil, nil, nil, logger)
+	if got := svc.fixAdjacentDuplicates(nil); got != nil {
+		t.Errorf("fixAdjacentDuplicates(nil) should return nil, got %v", got)
+	}
+	single := []*models.UserCardWithTraining{{UserCard: models.UserCard{ID: 1}, TrainingCard: models.TrainingCard{WordEN: "x"}}}
+	got := svc.fixAdjacentDuplicates(single)
+	if len(got) != 1 || got[0] != single[0] {
+		t.Errorf("fixAdjacentDuplicates(single) should return same slice, got %v", got)
+	}
+}
+

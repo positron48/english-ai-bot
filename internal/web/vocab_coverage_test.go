@@ -80,6 +80,28 @@ func newVocabCoverageRouter(t *testing.T, db *sql.DB, userRepo *repository.UserR
 	return router
 }
 
+// TestParseDateTime_EmptyString covers parseDateTime when timeStr is empty (return nil, nil).
+func TestParseDateTime_EmptyString(t *testing.T) {
+	tm, err := parseDateTime("")
+	if err != nil {
+		t.Errorf("parseDateTime(\"\"): expected no error, got %v", err)
+	}
+	if tm != nil {
+		t.Errorf("parseDateTime(\"\"): expected nil time, got %v", tm)
+	}
+}
+
+// TestParseDateTime_InvalidFormat covers parseDateTime when timeStr is invalid (return error).
+func TestParseDateTime_InvalidFormat(t *testing.T) {
+	tm, err := parseDateTime("not-a-date")
+	if err == nil {
+		t.Error("parseDateTime(\"not-a-date\"): expected error, got nil")
+	}
+	if tm != nil {
+		t.Errorf("parseDateTime(\"not-a-date\"): expected nil time, got %v", tm)
+	}
+}
+
 // TestHandleVocab_SortByMasteringScoreDesc covers the "mastering_score_desc" branch
 // which sets sortOrder = "desc" and orderByClause = "mastering_score_calc".
 func TestHandleVocab_SortByMasteringScoreDesc(t *testing.T) {
@@ -857,6 +879,111 @@ func TestHandleVocab_ZeroLimit(t *testing.T) {
 	}
 }
 
+// TestHandleVocab_LastReviewParseFail covers the branch where lastReview is valid but
+// parseDateTime(lastReview.String) returns error (lines 295-298: we do not set word.LastReview).
+// Uses second DB with last_review_at altered to varchar and value 'bad-date'.
+func TestHandleVocab_LastReviewParseFail(t *testing.T) {
+	_, conn, userRepo := setupVocabSecondDB(t)
+
+	user, err := userRepo.GetOrCreateUser(93001)
+	if err != nil {
+		t.Skipf("GetOrCreateUser: %v", err)
+	}
+
+	if _, err := conn.Exec("INSERT INTO word_cards (id, word, definition) VALUES (1, 'badreview', 'def')"); err != nil {
+		t.Skipf("insert word_cards: %v", err)
+	}
+	if _, err := conn.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (1, 'badreview', 0, 'плохо', 'bad review')"); err != nil {
+		t.Skipf("insert training_cards: %v", err)
+	}
+	var tcID int64
+	if err := conn.QueryRow("SELECT id FROM training_cards WHERE word_card_id = 1 LIMIT 1").Scan(&tcID); err != nil {
+		t.Skipf("get tcID: %v", err)
+	}
+	// Alter last_review_at to varchar so we can insert unparseable string
+	if _, err := conn.Exec("ALTER TABLE user_cards ALTER COLUMN last_review_at TYPE VARCHAR(50) USING last_review_at::TEXT"); err != nil {
+		t.Skipf("alter last_review_at: %v", err)
+	}
+	if _, err := conn.Exec("INSERT INTO user_cards (user_id, training_card_id, direction, state, ef, reps, last_review_at) VALUES ($1, $2, 'en_ru', 'review', 2.5, 1, 'bad-date')", user.ID, tcID); err != nil {
+		t.Skipf("insert user_cards: %v", err)
+	}
+
+	router := newVocabRouterWithConn(t, conn, userRepo)
+	req := httptest.NewRequest("GET", "/api/vocab", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocab(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+	// Word is returned but last_review should be nil (parse failed)
+	var response map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
+		t.Fatalf("Decode: %v", err)
+	}
+	words, _ := response["words"].([]interface{})
+	if len(words) < 1 {
+		t.Fatalf("expected at least 1 word, got %d", len(words))
+	}
+	word := words[0].(map[string]interface{})
+	if word["last_review"] != nil {
+		t.Errorf("expected last_review nil when parse fails, got %v", word["last_review"])
+	}
+}
+
+// TestHandleVocab_AddedAtParseFail covers the branch where addedAt is valid but
+// parseDateTime(addedAt.String) returns error (lines 310-312: we do not set word.AddedAt).
+// Uses second DB with created_at altered to varchar and value 'bad-date'.
+func TestHandleVocab_AddedAtParseFail(t *testing.T) {
+	_, conn, userRepo := setupVocabSecondDB(t)
+
+	user, err := userRepo.GetOrCreateUser(93002)
+	if err != nil {
+		t.Skipf("GetOrCreateUser: %v", err)
+	}
+
+	if _, err := conn.Exec("INSERT INTO word_cards (id, word, definition) VALUES (1, 'badadded', 'def')"); err != nil {
+		t.Skipf("insert word_cards: %v", err)
+	}
+	if _, err := conn.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (1, 'badadded', 0, 'добавлено', 'bad added')"); err != nil {
+		t.Skipf("insert training_cards: %v", err)
+	}
+	var tcID int64
+	if err := conn.QueryRow("SELECT id FROM training_cards WHERE word_card_id = 1 LIMIT 1").Scan(&tcID); err != nil {
+		t.Skipf("get tcID: %v", err)
+	}
+	// Alter created_at to varchar so we can insert unparseable string (vocab query uses MIN(uc.created_at))
+	if _, err := conn.Exec("ALTER TABLE user_cards ALTER COLUMN created_at TYPE VARCHAR(50) USING created_at::TEXT"); err != nil {
+		t.Skipf("alter created_at: %v", err)
+	}
+	if _, err := conn.Exec("INSERT INTO user_cards (user_id, training_card_id, direction, state, ef, created_at) VALUES ($1, $2, 'en_ru', 'new', 2.5, 'bad-date')", user.ID, tcID); err != nil {
+		t.Skipf("insert user_cards: %v", err)
+	}
+
+	router := newVocabRouterWithConn(t, conn, userRepo)
+	req := httptest.NewRequest("GET", "/api/vocab", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocab(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+	var response map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
+		t.Fatalf("Decode: %v", err)
+	}
+	words, _ := response["words"].([]interface{})
+	if len(words) < 1 {
+		t.Fatalf("expected at least 1 word, got %d", len(words))
+	}
+	word := words[0].(map[string]interface{})
+	if word["added_at"] != nil {
+		t.Errorf("expected added_at nil when parse fails, got %v", word["added_at"])
+	}
+}
+
 // TestHandleVocab_DBCountQueryFails covers the branch where the count query fails
 // (totalCount = 0 fallback). This uses badDB which fails on the count query.
 func TestHandleVocab_DBCountQueryFails(t *testing.T) {
@@ -1585,6 +1712,44 @@ func TestHandleVocabDelete_EmptyLemma(t *testing.T) {
 	// Empty lemma -> redirect to /app/vocab
 	if w.Code != http.StatusFound {
 		t.Errorf("Expected status 302 for empty lemma, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleVocabDelete_EmptyPath covers the "Invalid path" branch when path is empty (400).
+func TestHandleVocabDelete_EmptyPath(t *testing.T) {
+	db, userRepo := setupVocabCoverageTestDB(t)
+	user, err := userRepo.GetOrCreateUser(92017)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	router := newVocabCoverageRouter(t, db, userRepo)
+
+	req := httptest.NewRequest("GET", "/api/vocab/lemma/confirm_delete", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	req.URL.Path = "" // empty path triggers Invalid path
+	w := httptest.NewRecorder()
+	router.handleVocabDelete(w, req)
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("Expected status 400 for empty path, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleVocabDelete_InvalidPathPrefix covers the "Invalid path" branch when path does not start with /api/vocab/ (400).
+func TestHandleVocabDelete_InvalidPathPrefix(t *testing.T) {
+	db, userRepo := setupVocabCoverageTestDB(t)
+	user, err := userRepo.GetOrCreateUser(92018)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	router := newVocabCoverageRouter(t, db, userRepo)
+
+	req := httptest.NewRequest("GET", "/api/vocab/lemma/confirm_delete", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	req.URL.Path = "/other/path" // not under /api/vocab/
+	w := httptest.NewRecorder()
+	router.handleVocabDelete(w, req)
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("Expected status 400 for invalid path prefix, got %d: %s", w.Code, w.Body.String())
 	}
 }
 

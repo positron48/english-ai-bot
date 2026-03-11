@@ -467,3 +467,60 @@ func TestWebOTPRepository_GenerateOTP_RandModuloBranch(t *testing.T) {
 		}
 	}
 }
+
+// lowByteReader returns a single byte in 0-9 so generateRandomCode takes the "n[0] < 10" branch.
+type lowByteReader struct{ b byte }
+
+func (r lowByteReader) Read(p []byte) (n int, err error) {
+	if len(p) == 0 {
+		return 0, nil
+	}
+	p[0] = r.b
+	return 1, nil
+}
+
+func TestGenerateRandomCode_LengthZero(t *testing.T) {
+	got := generateRandomCode(0)
+	if got != "" {
+		t.Errorf("generateRandomCode(0) = %q, want %q", got, "")
+	}
+}
+
+func TestGenerateRandomCode_LowByteBranch(t *testing.T) {
+	old := randReader
+	randReader = lowByteReader{b: 7}
+	defer func() { randReader = old }()
+
+	got := generateRandomCode(3)
+	if got != "777" {
+		t.Errorf("generateRandomCode(3) with lowByteReader(7) = %q, want %q", got, "777")
+	}
+}
+
+func TestGenerateRandomCode_HighByteModuloBranch(t *testing.T) {
+	old := randReader
+	randReader = highByteReader{253} // 253 % 10 = 3
+	defer func() { randReader = old }()
+
+	got := generateRandomCode(2)
+	if got != "33" {
+		t.Errorf("generateRandomCode(2) with highByteReader(253) = %q, want %q", got, "33")
+	}
+}
+
+func TestGenerateRandomCode_ErrReaderFallback(t *testing.T) {
+	old := randReader
+	randReader = errReader{}
+	defer func() { randReader = old }()
+
+	got := generateRandomCode(4)
+	if len(got) != 4 {
+		t.Errorf("generateRandomCode(4) with errReader: len = %d, want 4", len(got))
+	}
+	for _, c := range got {
+		if c < '0' || c > '9' {
+			t.Errorf("generateRandomCode(4) with errReader: got non-digit %q", got)
+			break
+		}
+	}
+}

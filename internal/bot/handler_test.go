@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"io"
 	"net/http"
 	"net/url"
@@ -745,6 +746,24 @@ func (c *failingTelegramClient) Do(req *http.Request) (*http.Response, error) {
 	return nil, io.EOF
 }
 
+// mockUserRepoUpdateFails implements userRepoInterface: GetOrCreateUser returns the pre-set user, UpdateUsername returns error.
+// Used to cover the UpdateUsername error (Warn) branches in handleCallbackQuery and handleMessage.
+type mockUserRepoUpdateFails struct {
+	user *models.User
+}
+
+func (m *mockUserRepoUpdateFails) GetOrCreateUser(telegramID int64) (*models.User, error) {
+	return m.user, nil
+}
+
+func (m *mockUserRepoUpdateFails) UpdateUsername(telegramID int64, username string) error {
+	return errors.New("injected update username failure")
+}
+
+func (m *mockUserRepoUpdateFails) UpdateUserSettings(userID int64, settingsJSON string) error {
+	return nil
+}
+
 func TestHandler_SendMessage_WhenSendFails(t *testing.T) {
 	bot := &tgbotapi.BotAPI{Token: "test", Client: &failingTelegramClient{}, Buffer: 1}
 	bot.SetAPIEndpoint("http://example.com/bot%s/%s")
@@ -1401,6 +1420,28 @@ func TestHandleCallbackQuery_AckFails(t *testing.T) {
 	// Should not panic; callback ack fails, handler logs and continues
 }
 
+// TestHandleCallbackQuery_AckRequestFails_CoversErrorBranch calls handleCallbackQuery with a bot client that fails,
+// so h.bot.Request(callback) returns error and the "failed to acknowledge callback" branch is covered.
+func TestHandleCallbackQuery_AckRequestFails_CoversErrorBranch(t *testing.T) {
+	bot := newTestBot(&mockTelegramClient{})
+	bot.Client = &failingTelegramClient{}
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
+	cfg := &config.Config{}
+	h := NewHandler(bot, logger, nil, nil, nil, userRepo, nil, nil,
+		service.NewCircuitBreakerService(repository.NewCircuitBreakerRepository(db.GetConnection(), logger), 5, logger),
+		cfg, db.GetConnection())
+	query := &tgbotapi.CallbackQuery{
+		ID:      "cb_ack_fail",
+		From:    &tgbotapi.User{ID: 1, UserName: "u"},
+		Message: &tgbotapi.Message{MessageID: 1, Chat: &tgbotapi.Chat{ID: 10}},
+		Data:    "unknown_callback_data",
+	}
+	h.handleCallbackQuery(context.Background(), query)
+	// Request(callback) fails → logger.Error branch executed; no panic
+}
+
 func TestHandleMessage_GetOrCreateUserFails(t *testing.T) {
 	client := &mockTelegramClient{}
 	h, _ := setupHandlerWithAI(t, client, "ok")
@@ -1630,35 +1671,32 @@ func TestHandleDeleteTrainAllCommand_Admin_OrphanedCountPositive(t *testing.T) {
 		t.Fatalf("CreateUserCard: %v", err)
 	}
 
-	// Insert an orphaned user_card directly (referencing non-existent training_card_id)
-	// This simulates a user_card that would be cleaned up by DeleteOrphanedUserCards.
-	// We need to bypass FK constraints - insert a user_card with a non-existent training_card_id.
-	// Since Postgres enforces FK, we'll delete the training card first and then check orphaned cleanup.
-	// Actually, DeleteAllTrainingCards cascades to user_cards, so orphaned count would be 0.
-	// To get orphanedCount > 0, we need user_cards that exist after DeleteAllTrainingCards.
-	// This can happen if user_cards reference training_cards that were already deleted.
-	// Let's directly insert a user_card bypassing FK (using a raw query with deferred constraints).
-	// Alternatively, we can use a different approach: insert user_card, delete training_card manually.
-	_, err = db.GetConnection().Exec(
-		`INSERT INTO user_cards (user_id, training_card_id, direction, state, ef, reps, interval_days, learning_step, lapse_count, created_at, updated_at)
-		 VALUES ($1, $2, 'en_to_ru', 'new', 2.5, 0, 0, 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
-		user.ID, tcID,
-	)
-	// If this fails due to duplicate, that's ok
-	_ = err
+	// Disable FK triggers so deleting the training card does not CASCADE-delete user_cards (Postgres).
+	// Then we have an orphaned user_card; DeleteOrphanedUserCards() will return > 0.
+	ctx := context.Background()
+	conn, err := db.GetConnection().Conn(ctx)
+	if err != nil {
+		t.Fatalf("Conn: %v", err)
+	}
+	defer conn.Close()
+	_, _ = conn.ExecContext(ctx, "SET session_replication_role = replica")
+	_, err = conn.ExecContext(ctx, "DELETE FROM training_cards WHERE id = $1", tcID)
+	_, _ = conn.ExecContext(ctx, "SET session_replication_role = DEFAULT")
+	if err != nil {
+		t.Fatalf("DELETE training card: %v", err)
+	}
 
-	// Now delete the training card directly (not via DeleteAllTrainingCards) to create an orphan
-	_, _ = db.GetConnection().Exec(`DELETE FROM training_cards WHERE id = $1`, tcID)
-
-	// Now handleDeleteTrainAllCommand should find orphaned user_cards and orphanedCount > 0
 	h.handleDeleteTrainAllCommand(10, 42)
 	got := client.lastParams.Get("text")
 	if got == "" {
 		t.Fatal("expected message from handleDeleteTrainAllCommand")
 	}
-	// Either the orphaned message or the regular delete message
 	if !strings.Contains(got, "Удалено") {
 		t.Errorf("expected delete message, got %q", got)
+	}
+	// Cover orphanedCount > 0 branch: message must include the orphaned line
+	if !strings.Contains(got, "висячих") && !strings.Contains(got, "очищено") {
+		t.Errorf("expected orphaned count line when orphanedCount > 0, got %q", got)
 	}
 }
 
@@ -1744,6 +1782,31 @@ func TestHandleCallbackQuery_UsernameUpdateFails(t *testing.T) {
 	// GetOrCreateUser fails -> sends error message; no panic expected
 }
 
+// TestHandleCallbackQuery_UpdateUsernameReturnsError covers the Warn branch when UpdateUsername fails in handleCallbackQuery (lines 542-544).
+func TestHandleCallbackQuery_UpdateUsernameReturnsError(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, db := setupHandlerWithRepos(t, client)
+
+	userRepo := repository.NewUserRepository(db.GetConnection(), h.logger)
+	user, err := userRepo.GetOrCreateUser(778)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	_, _ = db.GetConnection().Exec(`UPDATE users SET telegram_username = $1 WHERE telegram_id = $2`, "old_778", user.TelegramID)
+
+	// Inject mock that returns user but fails UpdateUsername
+	h.userRepo = &mockUserRepoUpdateFails{user: user}
+
+	query := &tgbotapi.CallbackQuery{
+		ID:      "cb_upd_fail",
+		From:    &tgbotapi.User{ID: 778, UserName: "new_778"},
+		Message: &tgbotapi.Message{MessageID: 1, Chat: &tgbotapi.Chat{ID: 10}},
+		Data:    "answer_0",
+	}
+	h.handleCallbackQuery(context.Background(), query)
+	// UpdateUsername returns error → Warn branch covered; handler continues
+}
+
 // TestHandleMessage_UsernameUpdateFails covers the UpdateUsername error path in handleMessage.
 func TestHandleMessage_UsernameUpdateFails(t *testing.T) {
 	client := &mockTelegramClient{}
@@ -1805,4 +1868,30 @@ func TestHandleMessage_UsernameUpdateFails(t *testing.T) {
 	// GetOrCreateUser fails -> logs error, continues to AI; should not panic
 	got := client.lastParams.Get("text")
 	_ = got // may be "ok" from AI or empty
+}
+
+// TestHandleMessage_UpdateUsernameReturnsError covers the Warn branch when UpdateUsername fails in handleMessage (lines 595-597).
+func TestHandleMessage_UpdateUsernameReturnsError(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, db := setupHandlerWithAI(t, client, "AI reply")
+
+	userRepo := repository.NewUserRepository(db.GetConnection(), h.logger)
+	user, err := userRepo.GetOrCreateUser(779)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	_, _ = db.GetConnection().Exec(`UPDATE users SET telegram_username = $1 WHERE telegram_id = $2`, "old_779", user.TelegramID)
+
+	h.userRepo = &mockUserRepoUpdateFails{user: user}
+
+	msg := &tgbotapi.Message{
+		Text: "hello world",
+		Chat: &tgbotapi.Chat{ID: 10},
+		From: &tgbotapi.User{ID: 779, UserName: "new_779"},
+	}
+	h.handleMessage(context.Background(), msg)
+	got := client.lastParams.Get("text")
+	if got != "AI reply" {
+		t.Errorf("expected AI reply despite UpdateUsername error, got %q", got)
+	}
 }

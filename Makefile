@@ -147,6 +147,7 @@ check: tidy
 	@echo "✅ Go dependencies verified"
 	@echo ""
 	@echo "5. Running Go tests for coverage (excluding cmd, integration and testutil packages)..."
+	@rm -f coverage.out
 	@/bin/bash -c 'GOMAXPROCS=2 $(GO) test -tags=test -count=1 -p 1 -parallel 1 -timeout 30m -coverprofile=coverage.out -covermode=atomic -v $(COVER_PKGS) 2>&1 | tee .go-test-output.txt | grep -v -E "Container (created|started|ready|stopped|terminated)|Creating container|Starting container|Terminating container|Waiting for container|Waiting for Reaper|Shell not found|Reaper obtained|🐳|✅ Container|🔔 Container|⏳ Waiting|🔥 Reaper|🚫 Container|testcontainers-go -|Resolved Docker|Server Version|API Version|Operating System|Total Memory|Testcontainers for Go|Test SessionID|Test ProcessID"; exit $${PIPESTATUS[0]}'; \
 	TEST_EXIT_CODE=$$?; \
 	if [ $$TEST_EXIT_CODE -ne 0 ]; then \
