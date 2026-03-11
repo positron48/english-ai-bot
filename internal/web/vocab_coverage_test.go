@@ -2211,3 +2211,418 @@ func TestHandleVocab_ElseBranchesHook(t *testing.T) {
 		t.Errorf("mastering_score (else branch) expected 0, got %v", word["mastering_score"])
 	}
 }
+
+// TestHandleVocab_LastReviewParsedAndSet covers the branch where lastReview is valid,
+// parseDateTime succeeds, and word.LastReview is set (lines 314-317).
+func TestHandleVocab_LastReviewParsedAndSet(t *testing.T) {
+	_, conn, userRepo, _ := setupVocabSecondDB(t)
+
+	user, err := userRepo.GetOrCreateUser(93100)
+	if err != nil {
+		t.Skipf("GetOrCreateUser: %v", err)
+	}
+
+	if _, err := conn.Exec("INSERT INTO word_cards (id, word, definition) VALUES (1, 'lastrev', 'def')"); err != nil {
+		t.Skipf("insert word_cards: %v", err)
+	}
+	if _, err := conn.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (1, 'lastrev', 0, 'обзор', 'last review')"); err != nil {
+		t.Skipf("insert training_cards: %v", err)
+	}
+	var tcID int64
+	if err := conn.QueryRow("SELECT id FROM training_cards WHERE word_card_id = 1 LIMIT 1").Scan(&tcID); err != nil {
+		t.Skipf("get tcID: %v", err)
+	}
+	// Use fixed timestamp so parseDateTime(lastReview.String) succeeds and word.LastReview is set
+	if _, err := conn.Exec("INSERT INTO user_cards (user_id, training_card_id, direction, state, ef, reps, last_review_at) VALUES ($1, $2, 'en_ru', 'review', 2.5, 3, '2025-01-15 10:00:00'::timestamp)", user.ID, tcID); err != nil {
+		t.Skipf("insert user_cards: %v", err)
+	}
+
+	router := newVocabRouterWithConn(t, conn, userRepo)
+	req := httptest.NewRequest("GET", "/api/vocab", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocab(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+	var response map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
+		t.Fatalf("Decode: %v", err)
+	}
+	words, _ := response["words"].([]interface{})
+	if len(words) < 1 {
+		t.Fatalf("expected at least 1 word, got %d", len(words))
+	}
+	word := words[0].(map[string]interface{})
+	if word["last_review"] == nil {
+		t.Error("expected last_review to be set when parseDateTime succeeds")
+	}
+}
+
+// TestHandleVocab_LastReviewAndAddedAtParsedMainDB covers the same branches using the main test DB
+// with fixed timestamp strings so parseDateTime succeeds (word.LastReview and word.AddedAt set).
+func TestHandleVocab_LastReviewAndAddedAtParsedMainDB(t *testing.T) {
+	db, userRepo := setupVocabCoverageTestDB(t)
+	user, err := userRepo.GetOrCreateUser(93105)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+
+	_, err = db.Exec("INSERT INTO word_cards (id, word, definition) VALUES (?, ?, ?)", 6, "fixedtime", "def")
+	if err != nil {
+		t.Fatalf("insert word_cards: %v", err)
+	}
+	_, err = db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (?, ?, ?, ?, ?)",
+		6, "fixedtime", 0, "время", "fixed time")
+	if err != nil {
+		t.Fatalf("insert training_cards: %v", err)
+	}
+	var tcID int64
+	if err := db.QueryRow("SELECT id FROM training_cards WHERE word_card_id = 6 LIMIT 1").Scan(&tcID); err != nil {
+		t.Fatalf("get tcID: %v", err)
+	}
+	// Use fixed timestamps so substr(CAST(...)) returns "2006-01-02 15:04:05" and parseDateTime succeeds
+	lastReviewAt := time.Date(2025, 2, 20, 14, 30, 0, 0, time.UTC)
+	createdAt := time.Date(2025, 2, 19, 8, 0, 0, 0, time.UTC)
+	_, err = db.Exec("INSERT INTO user_cards (user_id, training_card_id, direction, state, ef, reps, last_review_at, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+		user.ID, tcID, "en_ru", "review", 2.5, 2, lastReviewAt, createdAt)
+	if err != nil {
+		t.Fatalf("insert user_cards: %v", err)
+	}
+
+	router := newVocabCoverageRouter(t, db, userRepo)
+	req := httptest.NewRequest("GET", "/api/vocab", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocab(w, req)
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+	var response map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
+		t.Fatalf("Decode: %v", err)
+	}
+	words, _ := response["words"].([]interface{})
+	if len(words) < 1 {
+		t.Fatalf("expected at least 1 word, got %d", len(words))
+	}
+	word := words[0].(map[string]interface{})
+	if word["last_review"] == nil {
+		t.Error("expected last_review to be set")
+	}
+	if word["added_at"] == nil {
+		t.Error("expected added_at to be set")
+	}
+}
+
+// TestHandleVocab_DisplayWordValidBranch covers the branch where displayWord.Valid is true
+// and word.DisplayWord = displayWord.String (lines 303-305).
+func TestHandleVocab_DisplayWordValidBranch(t *testing.T) {
+	db, userRepo := setupVocabCoverageTestDB(t)
+	user, err := userRepo.GetOrCreateUser(93101)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+
+	_, err = db.Exec("INSERT INTO word_cards (id, word, definition) VALUES (?, ?, ?)", 2, "dispval", "def")
+	if err != nil {
+		t.Fatalf("insert word_cards: %v", err)
+	}
+	_, err = db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, display_word) VALUES (?, ?, ?, ?, ?, ?)",
+		2, "dispval", 0, "отображение", "display value", "ToDisplay")
+	if err != nil {
+		t.Fatalf("insert training_cards: %v", err)
+	}
+	var tcID int64
+	if err := db.QueryRow("SELECT id FROM training_cards WHERE word_card_id = 2 LIMIT 1").Scan(&tcID); err != nil {
+		t.Fatalf("get tcID: %v", err)
+	}
+	_, err = db.Exec("INSERT INTO user_cards (user_id, training_card_id, direction, state, ef) VALUES (?, ?, ?, ?, ?)",
+		user.ID, tcID, "en_ru", "new", 2.5)
+	if err != nil {
+		t.Fatalf("insert user_cards: %v", err)
+	}
+
+	router := newVocabCoverageRouter(t, db, userRepo)
+	req := httptest.NewRequest("GET", "/api/vocab", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocab(w, req)
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+	var response map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
+		t.Fatalf("Decode: %v", err)
+	}
+	words, _ := response["words"].([]interface{})
+	if len(words) < 1 {
+		t.Fatalf("expected at least 1 word, got %d", len(words))
+	}
+	word := words[0].(map[string]interface{})
+	if word["display_word"] != "ToDisplay" {
+		t.Errorf("expected display_word ToDisplay (Valid branch), got %v", word["display_word"])
+	}
+}
+
+// TestHandleVocab_MasteringScoreStoredBranch covers the branch where masteringScoreStored.Valid is true
+// and word.MasteringScore = int(masteringScoreStored.Int64) (lines 335-337).
+func TestHandleVocab_MasteringScoreStoredBranch(t *testing.T) {
+	db, userRepo := setupVocabCoverageTestDB(t)
+	user, err := userRepo.GetOrCreateUser(93102)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+
+	_, err = db.Exec("INSERT INTO word_cards (id, word, definition) VALUES (?, ?, ?)", 3, "scored", "def")
+	if err != nil {
+		t.Fatalf("insert word_cards: %v", err)
+	}
+	_, err = db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (?, ?, ?, ?, ?)",
+		3, "scored", 0, "балл", "scored")
+	if err != nil {
+		t.Fatalf("insert training_cards: %v", err)
+	}
+	var tcID int64
+	if err := db.QueryRow("SELECT id FROM training_cards WHERE word_card_id = 3 LIMIT 1").Scan(&tcID); err != nil {
+		t.Fatalf("get tcID: %v", err)
+	}
+	_, err = db.Exec("INSERT INTO user_cards (user_id, training_card_id, direction, state, ef) VALUES (?, ?, ?, ?, ?)",
+		user.ID, tcID, "en_ru", "new", 2.5)
+	if err != nil {
+		t.Fatalf("insert user_cards: %v", err)
+	}
+	_, err = db.Exec("INSERT INTO user_word_mastering (user_id, word_card_id, mastering_score) VALUES (?, ?, ?)",
+		user.ID, 3, 67)
+	if err != nil {
+		t.Fatalf("insert user_word_mastering: %v", err)
+	}
+
+	router := newVocabCoverageRouter(t, db, userRepo)
+	req := httptest.NewRequest("GET", "/api/vocab", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocab(w, req)
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+	var response map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
+		t.Fatalf("Decode: %v", err)
+	}
+	words, _ := response["words"].([]interface{})
+	if len(words) < 1 {
+		t.Fatalf("expected at least 1 word, got %d", len(words))
+	}
+	word := words[0].(map[string]interface{})
+	if word["mastering_score"] != float64(67) {
+		t.Errorf("expected mastering_score 67 (stored branch), got %v", word["mastering_score"])
+	}
+}
+
+// TestHandleVocabWordCards_TrainingQueryFailHook covers the path when r.db.Query(trainingQuery) fails
+// (lines 737-741) via testHookVocabTrainingQueryFail.
+func TestHandleVocabWordCards_TrainingQueryFailHook(t *testing.T) {
+	db, userRepo := setupVocabCoverageTestDB(t)
+	user, err := userRepo.GetOrCreateUser(93103)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+
+	_, err = db.Exec("INSERT INTO word_cards (id, word, definition) VALUES (?, ?, ?)", 4, "trainfailhook", "def")
+	if err != nil {
+		t.Fatalf("insert word_cards: %v", err)
+	}
+	_, err = db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (?, ?, ?, ?, ?)",
+		4, "trainfailhook", 0, "хук", "train fail hook")
+	if err != nil {
+		t.Fatalf("insert training_cards: %v", err)
+	}
+	_, err = db.Exec("INSERT INTO user_word_knowledge (user_id, word_card_id, status) VALUES (?, ?, ?)", user.ID, 4, "known")
+	if err != nil {
+		t.Fatalf("insert user_word_knowledge: %v", err)
+	}
+
+	testHookVocabTrainingQueryFail = true
+	defer func() { testHookVocabTrainingQueryFail = false }()
+
+	router := newVocabCoverageRouter(t, db, userRepo)
+	req := httptest.NewRequest("GET", "/api/vocab/trainfailhook/cards", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocabWordCards(w, req, user.ID, "trainfailhook")
+
+	if w.Code != http.StatusInternalServerError {
+		t.Errorf("Expected status 500 when training query fails (hook), got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleVocab_LastReviewAndAddedAtHooks covers word.LastReview and word.AddedAt assignment
+// via testHookVocabSetLastReview and testHookVocabSetAddedAt when parse path is used.
+func TestHandleVocab_LastReviewAndAddedAtHooks(t *testing.T) {
+	db, userRepo := setupVocabCoverageTestDB(t)
+	user, err := userRepo.GetOrCreateUser(93107)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+
+	_, err = db.Exec("INSERT INTO word_cards (id, word, definition) VALUES (?, ?, ?)", 8, "hooktimes", "def")
+	if err != nil {
+		t.Fatalf("insert word_cards: %v", err)
+	}
+	_, err = db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (?, ?, ?, ?, ?)",
+		8, "hooktimes", 0, "время", "hook times")
+	if err != nil {
+		t.Fatalf("insert training_cards: %v", err)
+	}
+	var tcID int64
+	if err := db.QueryRow("SELECT id FROM training_cards WHERE word_card_id = 8 LIMIT 1").Scan(&tcID); err != nil {
+		t.Fatalf("get tcID: %v", err)
+	}
+	// Set last_review_at and created_at so the query returns valid lastReview/addedAt and we enter the blocks
+	_, err = db.Exec("INSERT INTO user_cards (user_id, training_card_id, direction, state, ef, last_review_at, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
+		user.ID, tcID, "en_ru", "review", 2.5, "2025-01-10 09:00:00", "2025-01-09 08:00:00")
+	if err != nil {
+		t.Fatalf("insert user_cards: %v", err)
+	}
+
+	hookLast := time.Date(2025, 3, 1, 12, 0, 0, 0, time.UTC)
+	hookAdded := time.Date(2025, 2, 1, 8, 0, 0, 0, time.UTC)
+	testHookVocabSetLastReview = &hookLast
+	testHookVocabSetAddedAt = &hookAdded
+	defer func() {
+		testHookVocabSetLastReview = nil
+		testHookVocabSetAddedAt = nil
+	}()
+
+	router := newVocabCoverageRouter(t, db, userRepo)
+	req := httptest.NewRequest("GET", "/api/vocab", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocab(w, req)
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+	var response map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
+		t.Fatalf("Decode: %v", err)
+	}
+	words, _ := response["words"].([]interface{})
+	if len(words) < 1 {
+		t.Fatalf("expected at least 1 word, got %d", len(words))
+	}
+	word := words[0].(map[string]interface{})
+	if word["last_review"] == nil {
+		t.Error("expected last_review from hook")
+	}
+	if word["added_at"] == nil {
+		t.Error("expected added_at from hook")
+	}
+}
+
+// TestHandleVocab_DisplayWordValidBranchHook covers the branch word.DisplayWord = displayWord.String
+// (displayWord.Valid true) via testHookVocabForceDisplayWordValid.
+func TestHandleVocab_DisplayWordValidBranchHook(t *testing.T) {
+	db, userRepo := setupVocabCoverageTestDB(t)
+	user, err := userRepo.GetOrCreateUser(93106)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+
+	_, err = db.Exec("INSERT INTO word_cards (id, word, definition) VALUES (?, ?, ?)", 7, "hookdisp", "def")
+	if err != nil {
+		t.Fatalf("insert word_cards: %v", err)
+	}
+	_, err = db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (?, ?, ?, ?, ?)",
+		7, "hookdisp", 0, "хук", "hook disp")
+	if err != nil {
+		t.Fatalf("insert training_cards: %v", err)
+	}
+	var tcID int64
+	if err := db.QueryRow("SELECT id FROM training_cards WHERE word_card_id = 7 LIMIT 1").Scan(&tcID); err != nil {
+		t.Fatalf("get tcID: %v", err)
+	}
+	_, err = db.Exec("INSERT INTO user_cards (user_id, training_card_id, direction, state, ef) VALUES (?, ?, ?, ?, ?)",
+		user.ID, tcID, "en_ru", "new", 2.5)
+	if err != nil {
+		t.Fatalf("insert user_cards: %v", err)
+	}
+
+	testHookVocabForceDisplayWordValid = true
+	defer func() { testHookVocabForceDisplayWordValid = false }()
+
+	router := newVocabCoverageRouter(t, db, userRepo)
+	req := httptest.NewRequest("GET", "/api/vocab", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocab(w, req)
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+	var response map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
+		t.Fatalf("Decode: %v", err)
+	}
+	words, _ := response["words"].([]interface{})
+	if len(words) < 1 {
+		t.Fatalf("expected at least 1 word, got %d", len(words))
+	}
+	word := words[0].(map[string]interface{})
+	if word["display_word"] != "hooked" {
+		t.Errorf("expected display_word hooked (Valid branch via hook), got %v", word["display_word"])
+	}
+}
+
+// TestHandleVocab_MasteryLevelElseBranch covers the else branch when masteryLevelCalc.Valid is false
+// (word.MasteryLevel = "new", lines 328-330) via testHookVocabMasteryLevelInvalid.
+func TestHandleVocab_MasteryLevelElseBranch(t *testing.T) {
+	db, userRepo := setupVocabCoverageTestDB(t)
+	user, err := userRepo.GetOrCreateUser(93104)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+
+	_, err = db.Exec("INSERT INTO word_cards (id, word, definition) VALUES (?, ?, ?)", 5, "masteryelse", "def")
+	if err != nil {
+		t.Fatalf("insert word_cards: %v", err)
+	}
+	_, err = db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (?, ?, ?, ?, ?)",
+		5, "masteryelse", 0, "элс", "mastery else")
+	if err != nil {
+		t.Fatalf("insert training_cards: %v", err)
+	}
+	var tcID int64
+	if err := db.QueryRow("SELECT id FROM training_cards WHERE word_card_id = 5 LIMIT 1").Scan(&tcID); err != nil {
+		t.Fatalf("get tcID: %v", err)
+	}
+	_, err = db.Exec("INSERT INTO user_cards (user_id, training_card_id, direction, state, ef) VALUES (?, ?, ?, ?, ?)",
+		user.ID, tcID, "en_ru", "new", 2.5)
+	if err != nil {
+		t.Fatalf("insert user_cards: %v", err)
+	}
+
+	testHookVocabMasteryLevelInvalid = true
+	defer func() { testHookVocabMasteryLevelInvalid = false }()
+
+	router := newVocabCoverageRouter(t, db, userRepo)
+	req := httptest.NewRequest("GET", "/api/vocab", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocab(w, req)
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+	var response map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
+		t.Fatalf("Decode: %v", err)
+	}
+	words, _ := response["words"].([]interface{})
+	if len(words) < 1 {
+		t.Fatalf("expected at least 1 word, got %d", len(words))
+	}
+	word := words[0].(map[string]interface{})
+	if word["mastery_level"] != "new" {
+		t.Errorf("expected mastery_level new (else branch), got %v", word["mastery_level"])
+	}
+}

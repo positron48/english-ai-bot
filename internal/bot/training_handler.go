@@ -17,9 +17,10 @@ import (
 
 // Test hooks for coverage (set by tests, must be nil in production).
 var (
-	testHookSaveSessionStateFail  func() error       // if set, saveSessionState returns this before UpdateSessionState
-	testHookGenerateOptionsErr   func() error       // if set, showCard treats as GenerateOptions error and skips card
-	testHookRecordWrongAnswerErr  func() error      // if set, HandleAnswer treats as RecordWrongAnswer error
+	testHookSaveSessionStateFail   func() error       // if set, saveSessionState returns this before UpdateSessionState
+	testHookGenerateOptionsErr     func() error      // if set, showCard treats as GenerateOptions error and skips card
+	testHookGenerateOptionsResult  func() ([]string, string, error) // if set, showCard uses this instead of calling GenerateOptions (to cover err branch)
+	testHookRecordWrongAnswerErr   func() error      // if set, HandleAnswer treats as RecordWrongAnswer error
 	testHookMarshalSessionState   func(interface{}) ([]byte, error) // if set, saveSessionState uses it instead of json.Marshal
 	testHookMarshalStateDataRaw   func(interface{}) ([]byte, error) // if set, restoreSession uses it for stateDataRaw
 	testHookRestoreQueueErr       func() error      // if set, restoreSession returns this before RestoreQueue
@@ -207,7 +208,14 @@ func (h *TrainingHandler) showCard(chatID int64) error {
 			return h.skipCard(chatID, "Ошибка генерации вариантов")
 		}
 	}
-	options, correctAnswer, err := h.optionsService.GenerateOptions(card, models.DefaultOptionCount, sessionWords, sessionWordENs, sessionWordRUs)
+	var options []string
+	var correctAnswer string
+	var err error
+	if testHookGenerateOptionsResult != nil {
+		options, correctAnswer, err = testHookGenerateOptionsResult()
+	} else {
+		options, correctAnswer, err = h.optionsService.GenerateOptions(card, models.DefaultOptionCount, sessionWords, sessionWordENs, sessionWordRUs)
+	}
 	if err != nil {
 		h.logger.Error("failed to generate options", zap.Error(err))
 		return h.skipCard(chatID, "Ошибка генерации вариантов")

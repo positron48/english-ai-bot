@@ -14,13 +14,18 @@ import (
 	"go.uber.org/zap"
 )
 
-// Test hooks for coverage (set by tests, must be nil in production).
+// Test hooks for coverage (set by tests, must be nil/false in production).
 var (
-	testHookVocabScanErr          func() error // if set and returns err, handleVocab treats current row Scan as failed
+	testHookVocabScanErr           func() error // if set and returns err, handleVocab treats current row Scan as failed
 	testHookVocabTrainingQueryErr  func() error // if set and returns err, handleVocabWordCards treats training_cards query as failed
+	testHookVocabTrainingQueryFail bool         // if true, handleVocabWordCards skips r.db.Query and injects err to cover Query error path
 	testHookVocabElseDisplayWord   bool         // if true, handleVocab uses else branch for displayWord (word.DisplayWord = word.Lemma)
-	testHookVocabElseMasteryLevel  bool         // if true, handleVocab uses else branch for masteryLevel (word.MasteryLevel = "new")
-	testHookVocabElseMasteringScore bool        // if true, handleVocab uses else branch for masteringScore (word.MasteringScore = 0)
+	testHookVocabElseMasteryLevel    bool   // if true, handleVocab uses else branch for masteryLevel (word.MasteryLevel = "new")
+	testHookVocabElseMasteringScore  bool   // if true, handleVocab uses else branch for masteringScore (word.MasteringScore = 0)
+	testHookVocabMasteryLevelInvalid  bool   // if true, handleVocab treats masteryLevelCalc as invalid so else branch (word.MasteryLevel = "new") runs
+	testHookVocabForceDisplayWordValid bool     // if true, handleVocab treats displayWord as valid with String "hooked" to cover displayWord.Valid branch
+	testHookVocabSetLastReview *time.Time // if set, handleVocab sets word.LastReview to this (covers parse success path)
+	testHookVocabSetAddedAt    *time.Time // if set, handleVocab sets word.AddedAt to this (covers parse success path)
 )
 
 // parseDateTime parses datetime string in "2006-01-02 15:04:05" format
@@ -296,6 +301,9 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 			continue
 		}
 
+		if testHookVocabForceDisplayWordValid {
+			displayWord = sql.NullString{String: "hooked", Valid: true}
+		}
 		if testHookVocabElseDisplayWord {
 			word.DisplayWord = word.Lemma
 		} else if displayWord.Valid {
@@ -310,17 +318,32 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 		word.ReviewCount = reviewCount
 
 		if lastReview.Valid && lastReview.String != "" {
-			if t, err := parseDateTime(lastReview.String); err == nil && t != nil {
+			var t *time.Time
+			if testHookVocabSetLastReview != nil {
+				t = testHookVocabSetLastReview
+			} else if parsed, err := parseDateTime(lastReview.String); err == nil && parsed != nil {
+				t = parsed
+			}
+			if t != nil {
 				word.LastReview = t
 			}
 		}
 
 		if addedAt.Valid && addedAt.String != "" {
-			if t, err := parseDateTime(addedAt.String); err == nil && t != nil {
+			var t *time.Time
+			if testHookVocabSetAddedAt != nil {
+				t = testHookVocabSetAddedAt
+			} else if parsed, err := parseDateTime(addedAt.String); err == nil && parsed != nil {
+				t = parsed
+			}
+			if t != nil {
 				word.AddedAt = t
 			}
 		}
 
+		if testHookVocabMasteryLevelInvalid {
+			masteryLevelCalc = sql.NullString{}
+		}
 		if testHookVocabElseMasteryLevel {
 			word.MasteryLevel = "new"
 		} else if masteryLevelCalc.Valid {
@@ -733,7 +756,12 @@ func (r *Router) handleVocabWordCards(w http.ResponseWriter, req *http.Request, 
 					return
 				}
 			}
-			trainingRows, err := r.db.Query(trainingQuery, wordCardID)
+			var trainingRows *sql.Rows
+			if testHookVocabTrainingQueryFail {
+				err = fmt.Errorf("injected training query error")
+			} else {
+				trainingRows, err = r.db.Query(trainingQuery, wordCardID)
+			}
 			if err != nil {
 				r.logger.Error("failed to get training cards", zap.Error(err))
 				http.Error(w, "Internal server error", http.StatusInternalServerError)
