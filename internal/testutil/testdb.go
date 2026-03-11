@@ -34,6 +34,7 @@ var truncateTables = []string{
 	"user_word_mastering", "user_word_knowledge", "word_request_history", "word_forms", "word_cards",
 	"grammar_published_items", "training_nudges", "users",
 	"app_settings", "circuit_breaker_state",
+	"tts_generation_status",
 }
 var circuitBreakerInit = `INSERT INTO circuit_breaker_state (id) VALUES (1) ON CONFLICT (id) DO NOTHING`
 var appSettingsInit = `INSERT INTO app_settings (key, value) VALUES ('hide_placement_test_button', 'false') ON CONFLICT (key) DO NOTHING`

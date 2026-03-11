@@ -193,11 +193,6 @@ func (r *Router) handleAdminTraining(w http.ResponseWriter, req *http.Request) {
 	path := req.URL.Path
 	parts := strings.Split(strings.TrimPrefix(path, "/api/admin/training/"), "/")
 
-	if len(parts) < 1 {
-		http.Error(w, "Invalid path", http.StatusBadRequest)
-		return
-	}
-
 	wordEN := parts[0]
 	action := ""
 	if len(parts) > 1 {
@@ -228,14 +223,6 @@ func (r *Router) handleAdminTraining(w http.ResponseWriter, req *http.Request) {
 
 	if req.Method == http.MethodGet && wordEN != "" && action == "" {
 		// Get training data for word
-		// Extract word from query parameter if path doesn't have it
-		if wordEN == "" {
-			wordEN = req.URL.Query().Get("word")
-		}
-		if wordEN == "" {
-			http.Error(w, "word is required", http.StatusBadRequest)
-			return
-		}
 
 		// First, find word_card by word (from word_cards table)
 		wordRepo := repository.NewWordRepository(r.db, r.logger)
