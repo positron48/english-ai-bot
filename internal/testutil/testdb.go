@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"regexp"
 	"strings"
 	"sync"
 	"testing"
@@ -76,7 +77,7 @@ func getSharedDB(t *testing.T) *database.DB {
 			sharedPostgres.err = err
 			return
 		}
-		sharedPostgres.dsn = dsn
+		sharedPostgres.dsn = normalizeDSNPort(dsn)
 		sharedPostgres.db = db
 		sharedPostgres.containerRef = ctr // keep container alive so connection is not closed by GC
 	})
@@ -137,8 +138,17 @@ func SecondPostgresDSN(t *testing.T) string {
 		_ = ctr.Terminate(ctx)
 		t.Fatalf("second postgres DSN: %v", err)
 	}
+	// Docker/testcontainers may expose port as "5432/tcp"; libpq expects numeric port only.
+	dsn = normalizeDSNPort(dsn)
 	return dsn
 }
+
+// normalizeDSNPort strips /tcp and /udp from port in DSN (e.g. port=5432/tcp -> port=5432).
+func normalizeDSNPort(dsn string) string {
+	return portProtoRegex.ReplaceAllString(dsn, "$1")
+}
+
+var portProtoRegex = regexp.MustCompile(`(\d+)/(tcp|udp)`)
 
 // SetupTestDB creates a Postgres database with all tables migrated.
 // Uses one shared container per package; each test gets a clean schema via TRUNCATE.

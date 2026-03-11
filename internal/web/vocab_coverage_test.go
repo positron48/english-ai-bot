@@ -1631,6 +1631,122 @@ func TestHandleVocab_SortOrder_Asc_Coverage(t *testing.T) {
 	}
 }
 
+// TestHandleVocab_LimitOver1000 covers the branch where limit > 1000 (line 87-90: limit stays 25).
+func TestHandleVocab_LimitOver1000(t *testing.T) {
+	db, userRepo := setupVocabCoverageTestDB(t)
+	user, err := userRepo.GetOrCreateUser(92013)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	router := newVocabCoverageRouter(t, db, userRepo)
+
+	req := httptest.NewRequest("GET", "/api/vocab?limit=1001", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocab(w, req)
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+	var response map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
+		t.Fatalf("Decode: %v", err)
+	}
+	pagination, _ := response["pagination"].(map[string]interface{})
+	if pagination["limit"] != float64(25) {
+		t.Errorf("expected limit 25 when limit=1001, got %v", pagination["limit"])
+	}
+}
+
+// TestHandleVocab_SortByTotalReps covers sort_by=total_reps (allowedSortFields branch).
+func TestHandleVocab_SortByTotalReps(t *testing.T) {
+	db, userRepo := setupVocabCoverageTestDB(t)
+	user, err := userRepo.GetOrCreateUser(92014)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	router := newVocabCoverageRouter(t, db, userRepo)
+
+	req := httptest.NewRequest("GET", "/api/vocab?sort_by=total_reps", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocab(w, req)
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleVocab_SortByReviewCount covers sort_by=review_count (allowedSortFields branch).
+func TestHandleVocab_SortByReviewCount(t *testing.T) {
+	db, userRepo := setupVocabCoverageTestDB(t)
+	user, err := userRepo.GetOrCreateUser(92015)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	router := newVocabCoverageRouter(t, db, userRepo)
+
+	req := httptest.NewRequest("GET", "/api/vocab?sort_by=review_count", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocab(w, req)
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleVocab_SortByDueCount covers sort_by=due_count (allowedSortFields branch).
+func TestHandleVocab_SortByDueCount(t *testing.T) {
+	db, userRepo := setupVocabCoverageTestDB(t)
+	user, err := userRepo.GetOrCreateUser(92016)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	router := newVocabCoverageRouter(t, db, userRepo)
+
+	req := httptest.NewRequest("GET", "/api/vocab?sort_by=due_count", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocab(w, req)
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleVocab_SortByAddedAt covers sort_by=added_at (allowedSortFields branch).
+func TestHandleVocab_SortByAddedAt(t *testing.T) {
+	db, userRepo := setupVocabCoverageTestDB(t)
+	user, err := userRepo.GetOrCreateUser(92017)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	router := newVocabCoverageRouter(t, db, userRepo)
+
+	req := httptest.NewRequest("GET", "/api/vocab?sort_by=added_at", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocab(w, req)
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleVocab_SortByLastReview covers sort_by=last_review (allowedSortFields branch).
+func TestHandleVocab_SortByLastReview(t *testing.T) {
+	db, userRepo := setupVocabCoverageTestDB(t)
+	user, err := userRepo.GetOrCreateUser(92018)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	router := newVocabCoverageRouter(t, db, userRepo)
+
+	req := httptest.NewRequest("GET", "/api/vocab?sort_by=last_review", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocab(w, req)
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
 // TestHandleVocab_MethodNotAllowed_Coverage covers the method not allowed branch (line 63-66).
 func TestHandleVocab_MethodNotAllowed_Coverage(t *testing.T) {
 	db, userRepo := setupVocabCoverageTestDB(t)
@@ -1863,6 +1979,40 @@ func TestHandleVocabWordCards_DirectCall_KnownStatusCheckFails(t *testing.T) {
 	// Known status check fails (logged), isKnown = false -> cards empty -> 404
 	if w.Code != http.StatusNotFound {
 		t.Errorf("Expected status 404 when known status check fails and no cards, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleVocabWordCards_KnownWord_TrainingScanError covers the branch where
+// trainingRows.Scan fails (line 734-736: log and continue). NULL created_at
+// causes "converting NULL to string is unsupported"; the row is skipped, so
+// no cards are appended and handler returns 404.
+func TestHandleVocabWordCards_KnownWord_TrainingScanError(t *testing.T) {
+	_, conn, userRepo := setupVocabSecondDB(t)
+
+	user, err := userRepo.GetOrCreateUser(92042)
+	if err != nil {
+		t.Skipf("GetOrCreateUser: %v", err)
+	}
+
+	if _, err := conn.Exec("INSERT INTO word_cards (id, word, definition) VALUES (1, 'emptycreated', 'def')"); err != nil {
+		t.Skipf("insert word_cards: %v", err)
+	}
+	if _, err := conn.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, created_at) VALUES (1, 'emptycreated', 0, 'пусто', 'empty created', NULL)"); err != nil {
+		t.Skipf("insert training_cards with NULL created_at: %v", err)
+	}
+	if _, err := conn.Exec("INSERT INTO user_word_knowledge (user_id, word_card_id, status) VALUES ($1, 1, 'known')", user.ID); err != nil {
+		t.Skipf("insert user_word_knowledge: %v", err)
+	}
+
+	router := newVocabRouterWithConn(t, conn, userRepo)
+	req := httptest.NewRequest("GET", "/api/vocab/emptycreated/cards", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocabWordCards(w, req, user.ID, "emptycreated")
+
+	// Scan fails for NULL created_at -> row skipped -> no cards -> 404
+	if w.Code != http.StatusNotFound {
+		t.Errorf("Expected status 404 (scan error skips row, no cards), got %d: %s", w.Code, w.Body.String())
 	}
 }
 

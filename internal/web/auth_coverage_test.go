@@ -177,6 +177,35 @@ func TestValidateTelegramInitData_UserNotFound(t *testing.T) {
 	}
 }
 
+// TestValidateTelegramInitData_QueryUnescapeFails covers the branch where url.QueryUnescape
+// returns an error (line 153-155: "use original value" when decoding fails).
+func TestValidateTelegramInitData_QueryUnescapeFails(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDB(t)
+	userRepo := repository.NewUserRepository(db, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	cfg := &config.Config{WebApp: config.WebAppConfig{JWTSecret: "test-secret"}}
+	jwtService, _ := NewJWTService(cfg, logger)
+
+	botToken := "test-bot-token-query-unescape"
+	middleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, botToken)
+
+	// Build initData with a param value that causes QueryUnescape to fail (invalid %-encoding, e.g. %Z).
+	// The hash is computed from the raw value; handler keeps original value when decode fails.
+	initData := buildInitDataWithHash(botToken, map[string]string{
+		"auth_date": "%Z",
+		"user":      `{"id":99999}`,
+	})
+
+	userID, err := middleware.ValidateTelegramInitData(initData)
+	if err != nil {
+		t.Fatalf("ValidateTelegramInitData: %v", err)
+	}
+	if userID != 99999 {
+		t.Errorf("expected userID 99999, got %d", userID)
+	}
+}
+
 // TestValidateTelegramInitData_InvalidUserJSON covers lines 212-214:
 // valid hash, "user" field present but invalid JSON.
 func TestValidateTelegramInitData_InvalidUserJSON(t *testing.T) {
