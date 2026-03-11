@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -2107,5 +2108,106 @@ func TestHandleVocabWordCards_DirectCall_IsKnownFails(t *testing.T) {
 	// IsKnown fails (Warn), isKnown = false -> response still succeeds with cards
 	if w.Code != http.StatusOK {
 		t.Errorf("Expected status 200 even when IsKnown fails, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleVocab_ScanErrorHook covers the "failed to scan word" + continue path (279-281) via test hook.
+func TestHandleVocab_ScanErrorHook(t *testing.T) {
+	db, userRepo := setupVocabCoverageTestDB(t)
+	user, err := userRepo.GetOrCreateUser(92100)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	_, _ = db.Exec("INSERT INTO word_cards (id, word, definition) VALUES (?, ?, ?)", 1, "scanhook", "def")
+	_, _ = db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (?, ?, ?, ?, ?)", 1, "scanhook", 0, "скан", "scan")
+	var tcID int64
+	_ = db.QueryRow("SELECT id FROM training_cards WHERE word_card_id = 1 LIMIT 1").Scan(&tcID)
+	_, _ = db.Exec("INSERT INTO user_cards (user_id, training_card_id, direction, state, ef) VALUES (?, ?, ?, ?, ?)", user.ID, tcID, "en_ru", "new", 2.5)
+
+	testHookVocabScanErr = func() error { return fmt.Errorf("injected scan err") }
+	defer func() { testHookVocabScanErr = nil }()
+
+	router := newVocabCoverageRouter(t, db, userRepo)
+	req := httptest.NewRequest("GET", "/api/vocab", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocab(w, req)
+	// Hook causes one row to be skipped (log + continue); response still 200 with remaining rows (possibly empty)
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleVocabWordCards_TrainingQueryErrorHook covers the "failed to get training cards" path (709-713) via test hook.
+func TestHandleVocabWordCards_TrainingQueryErrorHook(t *testing.T) {
+	db, userRepo := setupVocabCoverageTestDB(t)
+	user, err := userRepo.GetOrCreateUser(92101)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	_, _ = db.Exec("INSERT INTO word_cards (id, word, definition) VALUES (?, ?, ?)", 1, "trainqueryhook", "def")
+	_, _ = db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (?, ?, ?, ?, ?)", 1, "trainqueryhook", 0, "тренировка", "train")
+	_, _ = db.Exec("INSERT INTO user_word_knowledge (user_id, word_card_id, status) VALUES (?, ?, ?)", user.ID, 1, "known")
+
+	testHookVocabTrainingQueryErr = func() error { return fmt.Errorf("injected training query err") }
+	defer func() { testHookVocabTrainingQueryErr = nil }()
+
+	router := newVocabCoverageRouter(t, db, userRepo)
+	req := httptest.NewRequest("GET", "/api/vocab/trainqueryhook/cards", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocabWordCards(w, req, user.ID, "trainqueryhook")
+	if w.Code != http.StatusInternalServerError {
+		t.Errorf("Expected status 500 when hook returns error, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleVocab_ElseBranchesHook covers the else branches for displayWord, masteryLevel, masteringScore (286-288, 309-311, 314-316).
+func TestHandleVocab_ElseBranchesHook(t *testing.T) {
+	db, userRepo := setupVocabCoverageTestDB(t)
+	user, err := userRepo.GetOrCreateUser(92102)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	_, _ = db.Exec("INSERT INTO word_cards (id, word, definition) VALUES (?, ?, ?)", 1, "elsehook", "def")
+	_, _ = db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (?, ?, ?, ?, ?)", 1, "elsehook", 0, "элс", "else")
+	var tcID int64
+	_ = db.QueryRow("SELECT id FROM training_cards WHERE word_card_id = 1 LIMIT 1").Scan(&tcID)
+	_, _ = db.Exec("INSERT INTO user_cards (user_id, training_card_id, direction, state, ef) VALUES (?, ?, ?, ?, ?)", user.ID, tcID, "en_ru", "new", 2.5)
+
+	testHookVocabElseDisplayWord = true
+	testHookVocabElseMasteryLevel = true
+	testHookVocabElseMasteringScore = true
+	defer func() {
+		testHookVocabElseDisplayWord = false
+		testHookVocabElseMasteryLevel = false
+		testHookVocabElseMasteringScore = false
+	}()
+
+	router := newVocabCoverageRouter(t, db, userRepo)
+	req := httptest.NewRequest("GET", "/api/vocab", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocab(w, req)
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+	var response map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
+		t.Fatalf("Decode: %v", err)
+	}
+	words, _ := response["words"].([]interface{})
+	if len(words) < 1 {
+		t.Fatalf("expected at least 1 word, got %d", len(words))
+	}
+	word := words[0].(map[string]interface{})
+	if word["display_word"] != "elsehook" {
+		t.Errorf("display_word (else branch) expected elsehook, got %v", word["display_word"])
+	}
+	if word["mastery_level"] != "new" {
+		t.Errorf("mastery_level (else branch) expected new, got %v", word["mastery_level"])
+	}
+	if word["mastering_score"] != float64(0) {
+		t.Errorf("mastering_score (else branch) expected 0, got %v", word["mastering_score"])
 	}
 }

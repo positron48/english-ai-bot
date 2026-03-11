@@ -14,6 +14,15 @@ import (
 	"go.uber.org/zap"
 )
 
+// Test hooks for coverage (set by tests, must be nil in production).
+var (
+	testHookVocabScanErr          func() error // if set and returns err, handleVocab treats current row Scan as failed
+	testHookVocabTrainingQueryErr  func() error // if set and returns err, handleVocabWordCards treats training_cards query as failed
+	testHookVocabElseDisplayWord   bool         // if true, handleVocab uses else branch for displayWord (word.DisplayWord = word.Lemma)
+	testHookVocabElseMasteryLevel  bool         // if true, handleVocab uses else branch for masteryLevel (word.MasteryLevel = "new")
+	testHookVocabElseMasteringScore bool        // if true, handleVocab uses else branch for masteringScore (word.MasteringScore = 0)
+)
+
 // parseDateTime parses datetime string in "2006-01-02 15:04:05" format
 func parseDateTime(timeStr string) (*time.Time, error) {
 	if timeStr == "" {
@@ -274,6 +283,12 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 		var masteringScoreStored sql.NullInt64
 		var discardScore sql.NullInt64 // mastering_score_calc alias (same as stored)
 
+		if testHookVocabScanErr != nil {
+			if err := testHookVocabScanErr(); err != nil {
+				r.logger.Error("failed to scan word", zap.Error(err))
+				continue
+			}
+		}
 		err := rows.Scan(&word.WordCardID, &word.Lemma, &displayWord, &totalCards, &dueCount, &lastReview, &totalReps, &addedAt,
 			&reviewStateCount, &learningStateCount, &newStateCount, &reviewCount, &isKnown, &masteringScoreStored, &masteryLevelCalc, &discardScore)
 		if err != nil {
@@ -281,7 +296,9 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 			continue
 		}
 
-		if displayWord.Valid {
+		if testHookVocabElseDisplayWord {
+			word.DisplayWord = word.Lemma
+		} else if displayWord.Valid {
 			word.DisplayWord = displayWord.String
 		} else {
 			word.DisplayWord = word.Lemma
@@ -304,12 +321,16 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 			}
 		}
 
-		if masteryLevelCalc.Valid {
+		if testHookVocabElseMasteryLevel {
+			word.MasteryLevel = "new"
+		} else if masteryLevelCalc.Valid {
 			word.MasteryLevel = masteryLevelCalc.String
 		} else {
 			word.MasteryLevel = "new"
 		}
-		if masteringScoreStored.Valid {
+		if testHookVocabElseMasteringScore {
+			word.MasteringScore = 0
+		} else if masteringScoreStored.Valid {
 			word.MasteringScore = int(masteringScoreStored.Int64)
 		} else {
 			word.MasteringScore = 0
@@ -705,6 +726,13 @@ func (r *Router) handleVocabWordCards(w http.ResponseWriter, req *http.Request, 
 			WHERE tc.word_card_id = ?
 			ORDER BY tc.sense_index`
 			
+			if testHookVocabTrainingQueryErr != nil {
+				if err := testHookVocabTrainingQueryErr(); err != nil {
+					r.logger.Error("failed to get training cards", zap.Error(err))
+					http.Error(w, "Internal server error", http.StatusInternalServerError)
+					return
+				}
+			}
 			trainingRows, err := r.db.Query(trainingQuery, wordCardID)
 			if err != nil {
 				r.logger.Error("failed to get training cards", zap.Error(err))

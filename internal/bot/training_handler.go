@@ -15,6 +15,17 @@ import (
 	"go.uber.org/zap"
 )
 
+// Test hooks for coverage (set by tests, must be nil in production).
+var (
+	testHookSaveSessionStateFail  func() error       // if set, saveSessionState returns this before UpdateSessionState
+	testHookGenerateOptionsErr   func() error       // if set, showCard treats as GenerateOptions error and skips card
+	testHookRecordWrongAnswerErr  func() error      // if set, HandleAnswer treats as RecordWrongAnswer error
+	testHookMarshalSessionState   func(interface{}) ([]byte, error) // if set, saveSessionState uses it instead of json.Marshal
+	testHookMarshalStateDataRaw   func(interface{}) ([]byte, error) // if set, restoreSession uses it for stateDataRaw
+	testHookRestoreQueueErr       func() error      // if set, restoreSession returns this before RestoreQueue
+	testHookFinishSessionWarnErr  func() error      // if set, restoreSession uses it to cover FinishSession error log (empty or completed session)
+)
+
 // TrainingHandler handles training sessions
 type TrainingHandler struct {
 	bot                   *tgbotapi.BotAPI
@@ -125,7 +136,7 @@ func (h *TrainingHandler) StartTraining(ctx context.Context, chatID, userID int6
 
 	// Save state to database
 	if err := h.saveSessionState(state); err != nil {
-		h.logger.Warn("failed to save session state", zap.Error(err))
+		h.logger.Warn("failed to save session state", zap.Error(err)) // testHookSaveSessionStateFail can trigger this
 	}
 
 	// Send welcome message
@@ -190,6 +201,12 @@ func (h *TrainingHandler) showCard(chatID int64) error {
 	h.sessionsMutex.Unlock()
 
 	// Generate options
+	if testHookGenerateOptionsErr != nil {
+		if err := testHookGenerateOptionsErr(); err != nil {
+			h.logger.Error("failed to generate options", zap.Error(err))
+			return h.skipCard(chatID, "Ошибка генерации вариантов")
+		}
+	}
 	options, correctAnswer, err := h.optionsService.GenerateOptions(card, models.DefaultOptionCount, sessionWords, sessionWordENs, sessionWordRUs)
 	if err != nil {
 		h.logger.Error("failed to generate options", zap.Error(err))
@@ -457,7 +474,11 @@ func (h *TrainingHandler) HandleAnswer(chatID int64, optionIndex int) error {
 
 	// Record wrong answer if incorrect
 	if !isCorrect {
-		if err := h.srsService.RecordWrongAnswer(&card.UserCard, chosenOption); err != nil {
+		if testHookRecordWrongAnswerErr != nil {
+			if err := testHookRecordWrongAnswerErr(); err != nil {
+				h.logger.Error("failed to record wrong answer", zap.Error(err))
+			}
+		} else if err := h.srsService.RecordWrongAnswer(&card.UserCard, chosenOption); err != nil {
 			h.logger.Error("failed to record wrong answer", zap.Error(err))
 		}
 	} else {
@@ -779,11 +800,22 @@ func (h *TrainingHandler) saveSessionState(state *SessionState) error {
 	sessionData["state"] = stateData
 
 	// Serialize back to JSON
-	mergedJSON, err := json.Marshal(sessionData)
-	if err != nil {
-		return fmt.Errorf("failed to marshal merged session data: %w", err)
+	var mergedJSON []byte
+	var errMarshal error
+	if testHookMarshalSessionState != nil {
+		mergedJSON, errMarshal = testHookMarshalSessionState(sessionData)
+	} else {
+		mergedJSON, errMarshal = json.Marshal(sessionData)
+	}
+	if errMarshal != nil {
+		return fmt.Errorf("failed to marshal merged session data: %w", errMarshal)
 	}
 
+	if testHookSaveSessionStateFail != nil {
+		if err := testHookSaveSessionStateFail(); err != nil {
+			return err
+		}
+	}
 	// Update session in database
 	return h.trainingService.UpdateSessionState(state.SessionID, string(mergedJSON))
 }
@@ -815,9 +847,15 @@ func (h *TrainingHandler) restoreSession(chatID, userID int64) (bool, error) {
 		return false, nil
 	}
 
-	stateDataJSON, err := json.Marshal(stateDataRaw)
-	if err != nil {
-		return false, fmt.Errorf("failed to marshal state data: %w", err)
+	var stateDataJSON []byte
+	var errMarshalState error
+	if testHookMarshalStateDataRaw != nil {
+		stateDataJSON, errMarshalState = testHookMarshalStateDataRaw(stateDataRaw)
+	} else {
+		stateDataJSON, errMarshalState = json.Marshal(stateDataRaw)
+	}
+	if errMarshalState != nil {
+		return false, fmt.Errorf("failed to marshal state data: %w", errMarshalState)
 	}
 
 	var stateData SessionStateData
@@ -826,6 +864,11 @@ func (h *TrainingHandler) restoreSession(chatID, userID int64) (bool, error) {
 	}
 
 	// Restore queue from user card IDs (returns []*UserCardWithTraining)
+	if testHookRestoreQueueErr != nil {
+		if err := testHookRestoreQueueErr(); err != nil {
+			return false, fmt.Errorf("failed to restore queue: %w", err)
+		}
+	}
 	cardQueue, err := h.trainingService.RestoreQueue(userID, stateData.UserCardIDs)
 	if err != nil {
 		return false, fmt.Errorf("failed to restore queue: %w", err)
@@ -833,7 +876,11 @@ func (h *TrainingHandler) restoreSession(chatID, userID int64) (bool, error) {
 
 	if len(cardQueue) == 0 {
 		// Queue is empty, finish session
-		if err := h.trainingService.FinishSession(activeSession.ID, activeSession.DoneCount); err != nil {
+		if testHookFinishSessionWarnErr != nil {
+			if err := testHookFinishSessionWarnErr(); err != nil {
+				h.logger.Warn("failed to finish empty session", zap.Error(err))
+			}
+		} else if err := h.trainingService.FinishSession(activeSession.ID, activeSession.DoneCount); err != nil {
 			h.logger.Warn("failed to finish empty session", zap.Error(err))
 		}
 		return false, nil
@@ -852,7 +899,11 @@ func (h *TrainingHandler) restoreSession(chatID, userID int64) (bool, error) {
 	}
 	if currentIndex >= len(queue) {
 		// Session was already finished, mark it as such
-		if err := h.trainingService.FinishSession(activeSession.ID, len(queue)); err != nil {
+		if testHookFinishSessionWarnErr != nil {
+			if err := testHookFinishSessionWarnErr(); err != nil {
+				h.logger.Warn("failed to finish completed session", zap.Error(err))
+			}
+		} else if err := h.trainingService.FinishSession(activeSession.ID, len(queue)); err != nil {
 			h.logger.Warn("failed to finish completed session", zap.Error(err))
 		}
 		return false, nil
