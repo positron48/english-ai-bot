@@ -2626,3 +2626,197 @@ func TestHandleVocab_MasteryLevelElseBranch(t *testing.T) {
 		t.Errorf("expected mastery_level new (else branch), got %v", word["mastery_level"])
 	}
 }
+
+// TestHandleVocab_PageInvalid covers the branch where page param is invalid (err != nil or p <= 0) so page stays 1.
+func TestHandleVocab_PageInvalid(t *testing.T) {
+	db, userRepo := setupVocabCoverageTestDB(t)
+	user, err := userRepo.GetOrCreateUser(93001)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	router := newVocabCoverageRouter(t, db, userRepo)
+
+	for _, q := range []string{"?page=0", "?page=-1", "?page=abc"} {
+		req := httptest.NewRequest("GET", "/api/vocab"+q, nil)
+		req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+		w := httptest.NewRecorder()
+		router.handleVocab(w, req)
+		if w.Code != http.StatusOK {
+			t.Errorf("page=%s: expected status 200, got %d: %s", q, w.Code, w.Body.String())
+		}
+		var response map[string]interface{}
+		if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
+			t.Fatalf("Decode: %v", err)
+		}
+		pagination, _ := response["pagination"].(map[string]interface{})
+		if pagination["page"] != float64(1) {
+			t.Errorf("page=%s: expected pagination.page 1, got %v", q, pagination["page"])
+		}
+	}
+}
+
+// TestHandleVocab_LimitInvalid covers the branch where limit param is invalid (err, l <= 0, or l > 1000) so limit stays 25.
+func TestHandleVocab_LimitInvalid(t *testing.T) {
+	db, userRepo := setupVocabCoverageTestDB(t)
+	user, err := userRepo.GetOrCreateUser(93002)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	router := newVocabCoverageRouter(t, db, userRepo)
+
+	for _, q := range []string{"?limit=0", "?limit=-1", "?limit=abc", "?limit=5000"} {
+		req := httptest.NewRequest("GET", "/api/vocab"+q, nil)
+		req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+		w := httptest.NewRecorder()
+		router.handleVocab(w, req)
+		if w.Code != http.StatusOK {
+			t.Errorf("limit=%s: expected status 200, got %d: %s", q, w.Code, w.Body.String())
+		}
+		var response map[string]interface{}
+		if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
+			t.Fatalf("Decode: %v", err)
+		}
+		pagination, _ := response["pagination"].(map[string]interface{})
+		if pagination["limit"] != float64(25) {
+			t.Errorf("limit=%s: expected pagination.limit 25, got %v", q, pagination["limit"])
+		}
+	}
+}
+
+// TestHandleVocab_SortByInvalid covers the branch where sort_by is not in allowedSortFields so sortBy stays "display_word".
+func TestHandleVocab_SortByInvalid(t *testing.T) {
+	db, userRepo := setupVocabCoverageTestDB(t)
+	user, err := userRepo.GetOrCreateUser(93003)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	router := newVocabCoverageRouter(t, db, userRepo)
+
+	req := httptest.NewRequest("GET", "/api/vocab?sort_by=invalid_field", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocab(w, req)
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleVocab_MasteryLevelFilterNew covers mastery_level filter value "new".
+func TestHandleVocab_MasteryLevelFilterNew(t *testing.T) {
+	db, userRepo := setupVocabCoverageTestDB(t)
+	user, err := userRepo.GetOrCreateUser(93004)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	router := newVocabCoverageRouter(t, db, userRepo)
+
+	req := httptest.NewRequest("GET", "/api/vocab?mastery_level=new", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocab(w, req)
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleVocab_MasteryLevelFilterMastered covers mastery_level filter value "mastered".
+func TestHandleVocab_MasteryLevelFilterMastered(t *testing.T) {
+	db, userRepo := setupVocabCoverageTestDB(t)
+	user, err := userRepo.GetOrCreateUser(93005)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	router := newVocabCoverageRouter(t, db, userRepo)
+
+	req := httptest.NewRequest("GET", "/api/vocab?mastery_level=mastered", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocab(w, req)
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleVocab_RowScanErrorHook covers the "failed to scan word" + continue path (rows.Scan error) via testHookVocabRowScanErr.
+func TestHandleVocab_RowScanErrorHook(t *testing.T) {
+	db, userRepo := setupVocabCoverageTestDB(t)
+	user, err := userRepo.GetOrCreateUser(93006)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	_, _ = db.Exec("INSERT INTO word_cards (id, word, definition) VALUES (?, ?, ?)", 10, "rowscan", "def")
+	_, _ = db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (?, ?, ?, ?, ?)", 10, "rowscan", 0, "скан", "row scan")
+	var tcID int64
+	_ = db.QueryRow("SELECT id FROM training_cards WHERE word_card_id = 10 LIMIT 1").Scan(&tcID)
+	_, _ = db.Exec("INSERT INTO user_cards (user_id, training_card_id, direction, state, ef) VALUES (?, ?, ?, ?, ?)", user.ID, tcID, "en_ru", "new", 2.5)
+
+	first := true
+	testHookVocabRowScanErr = func() error {
+		if first {
+			first = false
+			return fmt.Errorf("injected row scan err")
+		}
+		return nil
+	}
+	defer func() { testHookVocabRowScanErr = nil }()
+
+	router := newVocabCoverageRouter(t, db, userRepo)
+	req := httptest.NewRequest("GET", "/api/vocab", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocab(w, req)
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+	// First row skipped by hook; response has words (possibly empty) and pagination
+	var response map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
+		t.Fatalf("Decode: %v", err)
+	}
+	if _, ok := response["words"]; !ok {
+		t.Error("response should contain words key")
+	}
+	if _, ok := response["pagination"]; !ok {
+		t.Error("response should contain pagination key")
+	}
+}
+
+// TestHandleVocab_ScanErrAfterHook covers the "if err != nil { ... continue }" path after rows.Scan via testHookVocabScanErrAfter.
+func TestHandleVocab_ScanErrAfterHook(t *testing.T) {
+	db, userRepo := setupVocabCoverageTestDB(t)
+	user, err := userRepo.GetOrCreateUser(93007)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	_, _ = db.Exec("INSERT INTO word_cards (id, word, definition) VALUES (?, ?, ?)", 11, "scanafter", "def")
+	_, _ = db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (?, ?, ?, ?, ?)", 11, "scanafter", 0, "скан", "scan after")
+	var tcID int64
+	_ = db.QueryRow("SELECT id FROM training_cards WHERE word_card_id = 11 LIMIT 1").Scan(&tcID)
+	_, _ = db.Exec("INSERT INTO user_cards (user_id, training_card_id, direction, state, ef) VALUES (?, ?, ?, ?, ?)", user.ID, tcID, "en_ru", "new", 2.5)
+
+	first := true
+	testHookVocabScanErrAfter = func() error {
+		if first {
+			first = false
+			return fmt.Errorf("injected scan err after")
+		}
+		return nil
+	}
+	defer func() { testHookVocabScanErrAfter = nil }()
+
+	router := newVocabCoverageRouter(t, db, userRepo)
+	req := httptest.NewRequest("GET", "/api/vocab", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocab(w, req)
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+	var response map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
+		t.Fatalf("Decode: %v", err)
+	}
+	if _, ok := response["words"]; !ok {
+		t.Error("response should contain words key")
+	}
+}

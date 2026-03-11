@@ -26,6 +26,8 @@ var (
 	testHookVocabForceDisplayWordValid bool     // if true, handleVocab treats displayWord as valid with String "hooked" to cover displayWord.Valid branch
 	testHookVocabSetLastReview *time.Time // if set, handleVocab sets word.LastReview to this (covers parse success path)
 	testHookVocabSetAddedAt    *time.Time // if set, handleVocab sets word.AddedAt to this (covers parse success path)
+	testHookVocabRowScanErr    func() error // if set and returns err, handleVocab skips rows.Scan and continues (covers Scan error path)
+	testHookVocabScanErrAfter  func() error // if set and returns err after Scan, handleVocab treats as scan error (covers err != nil after Scan)
 )
 
 // parseDateTime parses datetime string in "2006-01-02 15:04:05" format
@@ -294,8 +296,19 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 				continue
 			}
 		}
+		if testHookVocabRowScanErr != nil {
+			if err := testHookVocabRowScanErr(); err != nil {
+				r.logger.Error("failed to scan word", zap.Error(err))
+				continue
+			}
+		}
 		err := rows.Scan(&word.WordCardID, &word.Lemma, &displayWord, &totalCards, &dueCount, &lastReview, &totalReps, &addedAt,
 			&reviewStateCount, &learningStateCount, &newStateCount, &reviewCount, &isKnown, &masteringScoreStored, &masteryLevelCalc, &discardScore)
+		if testHookVocabScanErrAfter != nil {
+			if hookErr := testHookVocabScanErrAfter(); hookErr != nil {
+				err = hookErr
+			}
+		}
 		if err != nil {
 			r.logger.Error("failed to scan word", zap.Error(err))
 			continue
