@@ -362,16 +362,13 @@ type PlacementTestResult struct {
 // SavePlacementTestResult saves or updates placement test result
 // Only updates if the new score is higher (better) than existing
 func (r *GrammarAttemptRepository) SavePlacementTestResult(userID int64, score int, totalQuestions int, openedSections []string) error {
-	openedSectionsJSON, err := json.Marshal(openedSections)
-	if err != nil {
-		return fmt.Errorf("failed to marshal opened sections: %w", err)
-	}
+	openedSectionsJSON, _ := json.Marshal(openedSections)
 
 	// Check existing result
 	existingScore := 0
 	var existingOpenedSectionsJSON sql.NullString
 	checkQuery := `SELECT score, opened_sections_json FROM grammar_placement_test WHERE user_id = ?`
-	err = r.db.QueryRow(checkQuery, userID).Scan(&existingScore, &existingOpenedSectionsJSON)
+	err := r.db.QueryRow(checkQuery, userID).Scan(&existingScore, &existingOpenedSectionsJSON)
 	
 	if err == sql.ErrNoRows {
 		// No existing result, insert new

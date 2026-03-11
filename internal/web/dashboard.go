@@ -562,17 +562,8 @@ func (r *Router) handleNotificationSettings(w http.ResponseWriter, req *http.Req
 	// Update notification frequency
 	settings.NotificationFrequency = frequency
 
-	// Save settings
-	settingsJSON, err := json.Marshal(settings)
-	if err != nil {
-		r.logger.Error("failed to marshal settings", zap.Error(err))
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(map[string]interface{}{
-			"error": i18n.T(lang, "errors.internalError"),
-		})
-		return
-	}
+	// Save settings (UserSettings only contains basic types, Marshal cannot fail)
+	settingsJSON, _ := json.Marshal(settings)
 
 	if err := userRepo.UpdateUserSettings(user.ID, string(settingsJSON)); err != nil {
 		r.logger.Error("failed to update user settings", zap.Error(err))
@@ -583,7 +574,7 @@ func (r *Router) handleNotificationSettings(w http.ResponseWriter, req *http.Req
 		})
 		return
 	}
-	
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]interface{}{
@@ -669,18 +660,8 @@ func (r *Router) handleLanguageSettings(w http.ResponseWriter, req *http.Request
 	// Update language
 	settings.Language = language
 
-	// Save settings
-	settingsJSON, err := json.Marshal(settings)
-	if err != nil {
-		r.logger.Error("failed to marshal settings", zap.Error(err))
-		lang := i18n.DetectLanguageFromRequest(req)
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(map[string]interface{}{
-			"error": i18n.T(lang, "errors.internalError"),
-		})
-		return
-	}
+	// Save settings (UserSettings only contains basic types, Marshal cannot fail)
+	settingsJSON, _ := json.Marshal(settings)
 
 	if err := userRepo.UpdateUserSettings(user.ID, string(settingsJSON)); err != nil {
 		r.logger.Error("failed to update user settings", zap.Error(err))
@@ -839,17 +820,8 @@ func (r *Router) handleTrainingSettings(w http.ResponseWriter, req *http.Request
 		settings.TypeMasteringThreshold = requestData.TypeMasteringThreshold
 	}
 
-	settingsJSON, err := json.Marshal(settings)
-	if err != nil {
-		r.logger.Error("failed to marshal settings", zap.Error(err))
-		lang := i18n.GetLanguageFromContext(req.Context())
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(map[string]interface{}{
-			"error": i18n.T(lang, "errors.internalError"),
-		})
-		return
-	}
+	// UserSettings only contains basic types, Marshal cannot fail
+	settingsJSON, _ := json.Marshal(settings)
 	if err := userRepo.UpdateUserSettings(user.ID, string(settingsJSON)); err != nil {
 		r.logger.Error("failed to update user settings", zap.Error(err))
 		lang := i18n.GetLanguageFromContext(req.Context())

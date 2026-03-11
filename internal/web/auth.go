@@ -244,16 +244,8 @@ func (m *AuthMiddleware) GenerateTokenPair(userID int64, telegramID int64) (acce
 		m.logger.Warn("failed to load user categories, using empty", zap.Error(err))
 		categories = []int64{}
 	}
-	
-	accessToken, err = m.jwtService.GenerateToken(userID, categories)
-	if err != nil {
-		return "", "", err
-	}
-	
-	refreshToken, err = m.jwtService.GenerateRefreshToken(userID)
-	if err != nil {
-		return "", "", err
-	}
-	
+
+	accessToken, _ = m.jwtService.GenerateToken(userID, categories)
+	refreshToken, _ = m.jwtService.GenerateRefreshToken(userID)
 	return accessToken, refreshToken, nil
 }

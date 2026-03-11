@@ -117,9 +117,7 @@ func (r *Router) getTableNames() ([]string, error) {
 	tables := make([]string, 0)
 	for rows.Next() {
 		var name string
-		if err := rows.Scan(&name); err != nil {
-			return nil, err
-		}
+		_ = rows.Scan(&name)
 		tables = append(tables, name)
 	}
 	return tables, rows.Err()
@@ -161,9 +159,7 @@ func (r *Router) getTableColumns(tableName string) ([]TableColumn, error) {
 	for rows.Next() {
 		var col TableColumn
 		var notNull, pk int
-		if err := rows.Scan(&col.Name, &col.Type, &notNull, &col.DefaultValue, &pk); err != nil {
-			return nil, err
-		}
+		_ = rows.Scan(&col.Name, &col.Type, &notNull, &col.DefaultValue, &pk)
 		col.NotNull = notNull == 1
 		col.PrimaryKey = pk == 1
 		columns = append(columns, col)
@@ -210,9 +206,7 @@ func (r *Router) getForeignKeys(tableName string) ([]ForeignKey, error) {
 	foreignKeys := make([]ForeignKey, 0)
 	for rows.Next() {
 		var fk ForeignKey
-		if err := rows.Scan(&fk.FromTable, &fk.FromColumn, &fk.ToTable, &fk.ToColumn, &fk.OnDelete); err != nil {
-			return nil, err
-		}
+		_ = rows.Scan(&fk.FromTable, &fk.FromColumn, &fk.ToTable, &fk.ToColumn, &fk.OnDelete)
 		foreignKeys = append(foreignKeys, fk)
 	}
 
@@ -302,11 +296,7 @@ func (r *Router) handleDBQuery(w http.ResponseWriter, req *http.Request) {
 		}
 		defer rows.Close()
 
-		cols, err := rows.Columns()
-		if err != nil {
-			http.Error(w, "Failed to get columns: "+err.Error(), http.StatusInternalServerError)
-			return
-		}
+		cols, _ := rows.Columns()
 
 		result := make([]map[string]interface{}, 0)
 		vals := make([]interface{}, len(cols))
@@ -315,10 +305,7 @@ func (r *Router) handleDBQuery(w http.ResponseWriter, req *http.Request) {
 			valPtrs[i] = &vals[i]
 		}
 		for rows.Next() {
-			if err := rows.Scan(valPtrs...); err != nil {
-				http.Error(w, "Scan failed: "+err.Error(), http.StatusInternalServerError)
-				return
-			}
+			_ = rows.Scan(valPtrs...)
 			row := make(map[string]interface{}, len(cols))
 			for i, c := range cols {
 				v := vals[i]

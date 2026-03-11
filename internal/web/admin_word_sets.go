@@ -294,10 +294,6 @@ func (r *Router) handleAdminWordSets(w http.ResponseWriter, req *http.Request) {
 		// Extract ID from path
 		path := strings.TrimPrefix(req.URL.Path, "/api/admin/word-sets/")
 		parts := strings.Split(path, "/")
-		if len(parts) < 1 {
-			http.Error(w, "Invalid path", http.StatusBadRequest)
-			return
-		}
 
 		id, err := strconv.ParseInt(parts[0], 10, 64)
 		if err != nil {

@@ -77,9 +77,7 @@ func (r *CircuitBreakerRepository) GetState() (*models.CircuitBreakerState, erro
 			state.UpdatedAt, err = time.Parse("2006-01-02 15:04:05", updatedAt.String)
 		}
 		if err != nil {
-			if t2, err2 := time.Parse("2006-01-02T15:04:05Z", updatedAt.String); err2 == nil {
-				state.UpdatedAt = t2
-			} else if t3, err3 := time.Parse("2006-01-02T15:04:05", updatedAt.String); err3 == nil {
+			if t3, err3 := time.Parse("2006-01-02T15:04:05", updatedAt.String); err3 == nil {
 				state.UpdatedAt = t3
 			}
 		}

@@ -10,6 +10,7 @@ import (
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/testutil"
 
+	sqlmock "github.com/DATA-DOG/go-sqlmock"
 	"go.uber.org/zap"
 )
 
@@ -1518,5 +1519,141 @@ func TestGrammarService_SubmitPlacementTest_TrueFalseQuestion(t *testing.T) {
 	}
 	if result.TotalQuestions != 1 {
 		t.Fatalf("expected TotalQuestions 1, got %d", result.TotalQuestions)
+	}
+}
+
+// TestGrammarService_SubmitTest_Category_UpdateCategoryTestProgressFails_CustomFS covers line 1155-1157
+// where UpdateCategoryTestProgress fails (closed attempt repo), using custom FS to avoid bundle dependency.
+func TestGrammarService_SubmitTest_Category_UpdateCategoryTestProgressFails_CustomFS(t *testing.T) {
+	sectionsJSON := `{"version":"1","sections":[{"section_id":"s1","title":"S1","level":"A1","order":1,"chapter_ids":["ch1"]}]}`
+	indexJSON := `{"version":"1","generated_at":"","chapters":{"ch1":"one.json"}}`
+	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill","correct_answer":"ans1","prompt":"Q1"}]},"chapter_test":{"selection_strategy":{"type":"random"},"pool_question_ids":["q1"],"num_questions":10}}`
+	fs := fstest.MapFS{
+		"sections.json":     {Data: []byte(sectionsJSON)},
+		"index.json":        {Data: []byte(indexJSON)},
+		"chapters/one.json": {Data: []byte(chapterJSON)},
+	}
+	logger := zap.NewNop()
+	contentRepo := repository.NewGrammarContentRepositoryWithFS(fs, logger)
+	db := testutil.SetupTestDatabase(t)
+	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
+	_, _ = userRepo.GetOrCreateUser(1)
+	publishRepo := repository.NewGrammarPublishRepository(db.GetConnection(), logger)
+
+	dsn := testutil.GetTestDSN(t)
+	closedConn, err := sql.Open("postgres_compat", dsn)
+	if err != nil {
+		t.Skip("postgres_compat driver not registered:", err)
+	}
+	closedConn.Close()
+	attemptRepo := repository.NewGrammarAttemptRepository(closedConn, logger)
+	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+	_ = publishRepo.SetPublished("section", "s1", true, nil)
+	_ = publishRepo.SetPublished("chapter", "ch1", true, nil)
+
+	// Submit category test with correct answer; UpdateCategoryTestProgress fails (closed DB)
+	// but result is still returned (error is only logged, line 1155-1157)
+	result, err := svc.SubmitTest(context.Background(), 1, "category", "s1", []AnswerItem{
+		{QuestionID: "q1", ChapterID: "ch1", Answer: "ans1"},
+	})
+	if err != nil {
+		t.Fatalf("SubmitTest should succeed even when UpdateCategoryTestProgress fails: %v", err)
+	}
+	if result == nil {
+		t.Fatal("expected non-nil result")
+	}
+	if result.Total != 1 {
+		t.Fatalf("expected Total 1, got %d", result.Total)
+	}
+}
+
+// TestGrammarService_SubmitPlacementTest_SortBothUnknownChapters covers the !okj branch (line 1867-1869)
+// by submitting two answers with unknown chapter IDs so both i and j are unknown in the comparator.
+// With 3 elements (1 known + 2 unknown), sort.Slice will compare pairs where j is an unknown chapter.
+func TestGrammarService_SubmitPlacementTest_SortBothUnknownChapters(t *testing.T) {
+	sectionsJSON := `{"version":"1","sections":[{"section_id":"s1","title":"S1","level":"A1","order":1,"chapter_ids":["ch1"]}]}`
+	indexJSON := `{"version":"1","generated_at":"","chapters":{"ch1":"one.json"}}`
+	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill","correct_answer":"a"}]},"chapter_test":{}}`
+	fs := fstest.MapFS{
+		"sections.json":     {Data: []byte(sectionsJSON)},
+		"index.json":        {Data: []byte(indexJSON)},
+		"chapters/one.json": {Data: []byte(chapterJSON)},
+	}
+	logger := zap.NewNop()
+	contentRepo := repository.NewGrammarContentRepositoryWithFS(fs, logger)
+	db := testutil.SetupTestDatabase(t)
+	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
+	_, _ = userRepo.GetOrCreateUser(1)
+	publishRepo := repository.NewGrammarPublishRepository(db.GetConnection(), logger)
+	attemptRepo := repository.NewGrammarAttemptRepository(db.GetConnection(), logger)
+	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+	_ = publishRepo.SetPublished("chapter", "ch1", true, nil)
+
+	// Submit 3 answers: 1 known + 2 unknown. With 3 elements, sort.Slice calls the comparator
+	// multiple times. When j points to an unknown chapter, !okj branch (line 1867-1869) is hit.
+	result, err := svc.SubmitPlacementTest(context.Background(), 1, map[string]interface{}{
+		"ch1:q1":       "a",  // known chapter, valid question
+		"unknown1:x99": "x", // unknown chapter -> !oki or !okj
+		"unknown2:y99": "y", // unknown chapter -> !oki or !okj
+	})
+	if err != nil {
+		t.Fatalf("SubmitPlacementTest: %v", err)
+	}
+	if result == nil {
+		t.Fatal("expected non-nil result")
+	}
+	// Only ch1:q1 is valid; unknown answers are skipped in scoring
+	if result.TotalQuestions != 1 {
+		t.Fatalf("expected TotalQuestions 1, got %d", result.TotalQuestions)
+	}
+}
+
+// TestGrammarService_GetPublishedChapters_GetPublishedItemsByTypeChapterError covers line 203
+// (GetPublishedItemsByType("chapter") error after IsSectionPublished=true).
+// Uses sqlmock: GetPublishedItem("section", sectionID) returns published=true,
+// then GetPublishedItemsByType("chapter") fails.
+func TestGrammarService_GetPublishedChapters_GetPublishedItemsByTypeChapterError(t *testing.T) {
+	sectionsJSON := `{"version":"1","sections":[{"section_id":"s1","title":"S1","level":"A1","order":1,"chapter_ids":["ch1"]}]}`
+	indexJSON := `{"version":"1","generated_at":"","chapters":{"ch1":"one.json"}}`
+	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{},"chapter_test":{}}`
+	fs := fstest.MapFS{
+		"sections.json":     {Data: []byte(sectionsJSON)},
+		"index.json":        {Data: []byte(indexJSON)},
+		"chapters/one.json": {Data: []byte(chapterJSON)},
+	}
+	logger := zap.NewNop()
+	contentRepo := repository.NewGrammarContentRepositoryWithFS(fs, logger)
+
+	// Use sqlmock for publishRepo:
+	// - GetPublishedItem("section", "s1") returns IsPublished=true
+	// - GetPublishedItemsByType("chapter") fails
+	mockDB, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("sqlmock.New: %v", err)
+	}
+	defer mockDB.Close()
+
+	// IsSectionPublished calls GetPublishedItem("section", "s1")
+	mock.ExpectQuery(`SELECT id, item_type, item_id, is_published, name, updated_at, updated_by_user_id`).
+		WithArgs("section", "s1").
+		WillReturnRows(sqlmock.NewRows([]string{"id", "item_type", "item_id", "is_published", "name", "updated_at", "updated_by_user_id"}).
+			AddRow(1, "section", "s1", true, nil, "2024-01-01 00:00:00", nil))
+
+	// GetPublishedItemsByType("chapter") fails
+	mock.ExpectQuery(`SELECT id, item_type, item_id, is_published, name, updated_at, updated_by_user_id`).
+		WithArgs("chapter").
+		WillReturnError(sql.ErrConnDone)
+
+	publishRepo := repository.NewGrammarPublishRepository(mockDB, logger)
+	db := testutil.SetupTestDatabase(t)
+	attemptRepo := repository.NewGrammarAttemptRepository(db.GetConnection(), logger)
+	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+
+	_, err = svc.GetPublishedChapters(context.Background(), "s1", 1)
+	if err == nil {
+		t.Fatal("expected error when GetPublishedItemsByType(chapter) fails")
+	}
+	if !strings.Contains(err.Error(), "failed to get published items") {
+		t.Errorf("expected 'failed to get published items' in error, got: %v", err)
 	}
 }

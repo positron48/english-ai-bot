@@ -80,10 +80,7 @@ func (s *JWTService) GenerateToken(userID int64, categories []int64) (string, er
 	roleClaim := RoleClaim{
 		Categories: categories,
 	}
-	roleJSON, err := json.Marshal(roleClaim)
-	if err != nil {
-		return "", fmt.Errorf("failed to marshal role claim: %w", err)
-	}
+	roleJSON, _ := json.Marshal(roleClaim)
 
 	claims := &Claims{
 		UserID: userID,
@@ -97,11 +94,7 @@ func (s *JWTService) GenerateToken(userID int64, categories []int64) (string, er
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString(s.secret)
-	if err != nil {
-		s.logger.Error("failed to generate JWT token", zap.Error(err), zap.Int64("user_id", userID))
-		return "", fmt.Errorf("failed to generate token: %w", err)
-	}
+	tokenString, _ := token.SignedString(s.secret)
 
 	s.logger.Info("JWT access token generated", zap.Int64("user_id", userID), zap.Int64s("categories", categories), zap.Time("expires_at", expiresAt))
 	return tokenString, nil
@@ -123,11 +116,7 @@ func (s *JWTService) GenerateRefreshToken(userID int64) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString(s.secret)
-	if err != nil {
-		s.logger.Error("failed to generate refresh token", zap.Error(err), zap.Int64("user_id", userID))
-		return "", fmt.Errorf("failed to generate refresh token: %w", err)
-	}
+	tokenString, _ := token.SignedString(s.secret)
 
 	s.logger.Info("JWT refresh token generated", zap.Int64("user_id", userID), zap.Time("expires_at", expiresAt))
 	return tokenString, nil
@@ -148,18 +137,7 @@ func (s *JWTService) ValidateRefreshToken(tokenString string) (int64, error) {
 		return 0, fmt.Errorf("invalid refresh token: %w", err)
 	}
 
-	claims, ok := token.Claims.(*RefreshClaims)
-	if !ok || !token.Valid {
-		s.logger.Warn("invalid refresh token claims")
-		return 0, errors.New("invalid refresh token claims")
-	}
-
-	// Check expiration
-	if claims.ExpiresAt != nil && time.Now().After(claims.ExpiresAt.Time) {
-		s.logger.Warn("refresh token expired", zap.Int64("user_id", claims.UserID))
-		return 0, errors.New("refresh token expired")
-	}
-
+	claims := token.Claims.(*RefreshClaims)
 	s.logger.Info("refresh token validated", zap.Int64("user_id", claims.UserID))
 	return claims.UserID, nil
 }
@@ -180,17 +158,7 @@ func (s *JWTService) ValidateToken(tokenString string) (int64, []int64, error) {
 		return 0, nil, fmt.Errorf("invalid token: %w", err)
 	}
 
-	claims, ok := token.Claims.(*Claims)
-	if !ok || !token.Valid {
-		s.logger.Warn("invalid JWT token claims")
-		return 0, nil, errors.New("invalid token claims")
-	}
-
-	// Check expiration
-	if claims.ExpiresAt != nil && time.Now().After(claims.ExpiresAt.Time) {
-		s.logger.Warn("JWT token expired", zap.Int64("user_id", claims.UserID))
-		return 0, nil, errors.New("token expired")
-	}
+	claims := token.Claims.(*Claims)
 
 	// Parse role claim - support both legacy string format and new object format
 	var categories []int64

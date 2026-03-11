@@ -25,11 +25,7 @@ func (r *Router) setupWebappRoutes() {
 	}
 
 	// Get the embedded filesystem, stripping the dist prefix
-	webappRoot, err := fs.Sub(webappFS, "dist")
-	if err != nil {
-		r.logger.Warn("failed to create webapp filesystem sub", zap.Error(err))
-		return
-	}
+	webappRoot, _ := fs.Sub(webappFS, "dist")
 
 	fileServer := http.FileServer(http.FS(webappRoot))
 
@@ -41,12 +37,6 @@ func (r *Router) setupWebappRoutes() {
 	// Serve other static files (favicon, robots.txt, etc.)
 	r.mux.HandleFunc("/app/", func(w http.ResponseWriter, req *http.Request) {
 		path := req.URL.Path
-		
-		// Check if it's an API endpoint - if so, don't serve static files
-		if isAPIEndpoint(path) {
-			r.handleNotFound(w, req)
-			return
-		}
 
 		// If it's a request for a real static file, try to serve it.
 		// IMPORTANT: we can't treat "any dot in URL" as a file extension,
@@ -71,11 +61,6 @@ func (r *Router) setupWebappRoutes() {
 
 	// Root /app path - serve index.html
 	r.mux.HandleFunc("/app", func(w http.ResponseWriter, req *http.Request) {
-		if req.URL.Path != "/app" {
-			r.handleNotFound(w, req)
-			return
-		}
-
 		indexData, err := fs.ReadFile(webappRoot, "index.html")
 		if err != nil {
 			r.logger.Error("failed to read index.html", zap.Error(err))
@@ -156,14 +141,6 @@ func (r *Router) setupDevProxy() {
 	// API endpoints are already handled by setupProtectedRoutes
 	devHandler := http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		path := req.URL.Path
-
-		// API endpoints should be handled by backend (already registered in setupProtectedRoutes)
-		// This handler only catches non-API routes that should go to Vite
-		if isAPIEndpoint(path) {
-			// This shouldn't happen as API routes are registered first, but just in case
-			r.handleNotFound(w, req)
-			return
-		}
 
 		// Redirect to Vite dev server
 		redirectURL := viteURL.String() + path

@@ -19,11 +19,20 @@ type userCardRepoForWordSet interface {
 	DeleteUserCardsByWordCardIDForUser(userID, wordCardID int64) (int64, error)
 }
 
+// wordRepoForWordSet is used by WordSetService for word card operations (allows mocks in tests).
+type wordRepoForWordSet interface {
+	GetWordCardByLemma(lemma string) (*models.WordCard, error)
+	GetWordCardByID(id int64) (*models.WordCard, error)
+	SaveWordCard(word, content string) error
+	UpsertWordCardLemma(card *models.WordCard) (int64, error)
+	UpsertWordFormMapping(form string, wordCardID int64) error
+}
+
 // WordSetService handles word set business logic
 type WordSetService struct {
 	wordSetRepo            *repository.WordSetRepository
 	wordSetCategoryRepo    *repository.WordSetCategoryRepository
-	wordRepo               *repository.WordRepository
+	wordRepo               wordRepoForWordSet
 	trainingCardRepo       *repository.TrainingCardRepository
 	userCardRepo           userCardRepoForWordSet
 	userWordKnowledgeRepo  *repository.UserWordKnowledgeRepository
@@ -37,7 +46,7 @@ type WordSetService struct {
 func NewWordSetService(
 	wordSetRepo *repository.WordSetRepository,
 	wordSetCategoryRepo *repository.WordSetCategoryRepository,
-	wordRepo *repository.WordRepository,
+	wordRepo wordRepoForWordSet,
 	trainingCardRepo *repository.TrainingCardRepository,
 	userCardRepo userCardRepoForWordSet,
 	userWordKnowledgeRepo *repository.UserWordKnowledgeRepository,
@@ -52,7 +61,7 @@ func NewWordSetService(
 func NewWordSetServiceWithMastering(
 	wordSetRepo *repository.WordSetRepository,
 	wordSetCategoryRepo *repository.WordSetCategoryRepository,
-	wordRepo *repository.WordRepository,
+	wordRepo wordRepoForWordSet,
 	trainingCardRepo *repository.TrainingCardRepository,
 	userCardRepo userCardRepoForWordSet,
 	userWordKnowledgeRepo *repository.UserWordKnowledgeRepository,

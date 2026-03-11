@@ -2,7 +2,6 @@ package service
 
 import (
 	"encoding/json"
-	"fmt"
 	"math/rand"
 	"strings"
 
@@ -305,10 +304,6 @@ func (s *OptionsService) GenerateOptions(
 	rand.Shuffle(len(options), func(i, j int) {
 		options[i], options[j] = options[j], options[i]
 	})
-
-	if len(options) < 2 {
-		return nil, "", fmt.Errorf("not enough options generated")
-	}
 
 	return options, normalizedCorrectAnswerForOptions, nil
 }

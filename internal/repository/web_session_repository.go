@@ -127,10 +127,6 @@ func (r *WebSessionRepository) GetSessionByToken(token string) (*WebSession, err
 		if t, err := time.ParseInLocation("2006-01-02 15:04:05", timeStr, loc); err == nil {
 			return t.UTC()
 		}
-		// Try RFC3339
-		if t, err := time.Parse(time.RFC3339, timeStr); err == nil {
-			return t.UTC()
-		}
 		r.logger.Warn("failed to parse time", zap.String("field", fieldName), zap.String("value", timeStr))
 		return time.Time{}
 	}

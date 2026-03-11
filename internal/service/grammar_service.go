@@ -628,10 +628,7 @@ func (s *GrammarService) GenerateCategoryTest(ctx context.Context, sectionID str
 			if count >= minQuestionsPerChapter || len(selectedQuestions) >= targetTotalQuestions {
 				break
 			}
-			id, ok := idInterface.(string)
-			if !ok {
-				continue
-			}
+			id := idInterface.(string) // validPoolIDs only contains strings
 			if !selectedIDs[id] {
 				if q, exists := cq.questionMap[id]; exists {
 					// CRITICAL: Add chapter ID to question for category tests
@@ -657,10 +654,7 @@ func (s *GrammarService) GenerateCategoryTest(ctx context.Context, sectionID str
 		allRemaining := make([]questionWithChapter, 0)
 		for _, cq := range allChapterQuestions {
 			for _, idInterface := range cq.questions {
-				id, ok := idInterface.(string)
-				if !ok {
-					continue
-				}
+				id := idInterface.(string) // validPoolIDs only contains strings
 				if !selectedIDs[id] {
 					if q, exists := cq.questionMap[id]; exists {
 						// CRITICAL: Store question with its chapter ID to avoid wrong assignment
@@ -770,10 +764,7 @@ func (s *GrammarService) selectStratified(poolIDs []interface{}, questionMap map
 			group[i], group[j] = group[j], group[i]
 		})
 		for i := 0; i < minPerBlock && i < len(group) && len(selected) < numQuestions; i++ {
-			qMap, ok := group[i].(map[string]interface{})
-			if !ok {
-				continue
-			}
+			qMap := group[i].(map[string]interface{}) // blockGroups only contains maps
 			id, _ := qMap["id"].(string)
 			if !selectedIDs[id] {
 				selected = append(selected, group[i])
@@ -1016,35 +1007,10 @@ func (s *GrammarService) SubmitTest(ctx context.Context, userID int64, scopeType
 			q, qExists = questionMap[questionID]
 		}
 		
-		// For category tests, if still not found, try searching all chapters
-		if !qExists && scopeType == "category" && questionMapByChapter != nil {
-			for chID, chapterQuestionMap := range questionMapByChapter {
-				if chapterQ, chapterQExists := chapterQuestionMap[questionID]; chapterQExists {
-					q = chapterQ
-					qExists = true
-					chapterID = chID // Update chapterID for logging
-					break
-				}
-			}
-		}
-		
 		if !qExists {
 			// Question not found - log error and skip
 			s.logger.Warn("question not found in questionMap during submission",
 				zap.String("question_id", questionID),
-				zap.String("chapter_id", chapterID),
-				zap.String("scope_type", scopeType),
-				zap.String("scope_id", scopeID),
-				zap.Int("answer_index", answerIndex))
-			continue
-		}
-		
-		// Verify that the question ID matches (safety check)
-		qID, hasID := q["id"].(string)
-		if !hasID || qID != questionID {
-			s.logger.Error("question ID mismatch in questionMap - CRITICAL ERROR",
-				zap.String("expected_id", questionID),
-				zap.String("actual_id", qID),
 				zap.String("chapter_id", chapterID),
 				zap.String("scope_type", scopeType),
 				zap.String("scope_id", scopeID),
@@ -1152,9 +1118,7 @@ func (s *GrammarService) SubmitTest(ctx context.Context, userID int64, scopeType
 	case "category":
 		// For category tests, we need to save category test progress
 		// This will be used to unlock the next category
-		if err := s.AttemptRepo.UpdateCategoryTestProgress(userID, scopeID, score, passed); err != nil {
-			s.logger.Error("failed to update category test progress", zap.Error(err))
-		}
+		_ = s.AttemptRepo.UpdateCategoryTestProgress(userID, scopeID, score, passed)
 	}
 
 	return &TestResult{

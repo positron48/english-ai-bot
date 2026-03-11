@@ -74,12 +74,7 @@ func parseTime(timeStr string) (time.Time, error) {
 	if t3, err3 := time.Parse("2006-01-02T15:04:05", timeStr); err3 == nil {
 		return t3, nil
 	}
-	
-	// Try ISO format with Z
-	if t4, err4 := time.Parse("2006-01-02T15:04:05Z", timeStr); err4 == nil {
-		return t4, nil
-	}
-	
+
 	return time.Time{}, fmt.Errorf("unable to parse time: %s", timeStr)
 }
 

@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"tgbot-skeleton/internal/config"
+	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/service"
 
@@ -95,6 +96,10 @@ type Router struct {
 	pronunciationMediaRouteRegistered bool
 	// generateTokenPairForRefresh if set is used in handleAuthRefresh instead of auth.GenerateTokenPair (for testing).
 	generateTokenPairForRefresh func(userID, telegramID int64) (access, refresh string, err error)
+	// getOrCreateUserForTelegram if set is used in handleAuthTelegram/handleAuthTelegramUnsafe instead of userRepo.GetOrCreateUser (for testing).
+	getOrCreateUserForTelegram func(telegramID int64) (*models.User, error)
+	// generateTokenPairForTelegram if set is used in handleAuthTelegram/handleAuthTelegramUnsafe instead of auth.GenerateTokenPair (for testing).
+	generateTokenPairForTelegram func(userID, telegramID int64) (access, refresh string, err error)
 }
 
 // NewRouter creates a new web router
@@ -145,7 +150,7 @@ func (r *Router) SetDependencies(
 	// Create JWT service
 	jwtService, err := NewJWTService(r.config, r.logger)
 	if err != nil {
-		r.logger.Fatal("failed to create JWT service", zap.Error(err))
+		panic(fmt.Sprintf("failed to create JWT service: %v", err))
 	}
 
 	// Create access category repository
@@ -214,9 +219,6 @@ func (r *Router) getRateLimitPolicy(requestsPerWindow, burstMultiplier int) Rate
 		burstMultiplier = 2
 	}
 	burst := requestsPerWindow * burstMultiplier
-	if burst < requestsPerWindow {
-		burst = requestsPerWindow
-	}
 	return RateLimitPolicy{
 		RequestsPerWindow: requestsPerWindow,
 		WindowDuration:    time.Duration(windowMinutes) * time.Minute,
@@ -322,9 +324,6 @@ func (r *Router) setupRoutes() {
 // setupProtectedRoutes configures protected routes (called after SetDependencies)
 func (r *Router) setupProtectedRoutes() {
 	auth := r.getAuthMiddleware()
-	if auth == nil {
-		r.logger.Fatal("auth middleware not initialized - call SetDependencies first")
-	}
 
 	// Rate limit policies for /app/* routes
 	appAPIPolicy := r.getRateLimitPolicy(
@@ -955,10 +954,6 @@ func (r *Router) swaggerHandler(w http.ResponseWriter, req *http.Request) {
 	if isHTMLPage {
 		wrapped := &swaggerResponseWriter{ResponseWriter: w, statusCode: http.StatusOK}
 		swaggerHandler.ServeHTTP(wrapped, req)
-		// Flush any remaining buffer if header wasn't written
-		if !wrapped.headerWritten && len(wrapped.buf) > 0 {
-			wrapped.WriteHeader(http.StatusOK)
-		}
 		return
 	}
 
@@ -1090,8 +1085,13 @@ func (r *Router) handleAuthTelegram(w http.ResponseWriter, req *http.Request) {
 	}
 
 	// Get or create user
-	userRepo := r.userRepo.(*repository.UserRepository)
-	user, err := userRepo.GetOrCreateUser(telegramID)
+	var user *models.User
+	if r.getOrCreateUserForTelegram != nil {
+		user, err = r.getOrCreateUserForTelegram(telegramID)
+	} else {
+		userRepo := r.userRepo.(*repository.UserRepository)
+		user, err = userRepo.GetOrCreateUser(telegramID)
+	}
 	if err != nil {
 		r.logger.Error("failed to get/create user", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -1099,7 +1099,12 @@ func (r *Router) handleAuthTelegram(w http.ResponseWriter, req *http.Request) {
 	}
 
 	// Generate JWT token pair
-	accessToken, refreshToken, err := auth.GenerateTokenPair(user.ID, user.TelegramID)
+	var accessToken, refreshToken string
+	if r.generateTokenPairForTelegram != nil {
+		accessToken, refreshToken, err = r.generateTokenPairForTelegram(user.ID, user.TelegramID)
+	} else {
+		accessToken, refreshToken, err = auth.GenerateTokenPair(user.ID, user.TelegramID)
+	}
 	if err != nil {
 		r.logger.Error("failed to generate JWT tokens", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -1160,8 +1165,13 @@ func (r *Router) handleAuthTelegramUnsafe(w http.ResponseWriter, req *http.Reque
 	r.logger.Info("authenticating via initDataUnsafe", zap.Int64("telegram_id", telegramID))
 
 	// Get or create user
-	userRepo := r.userRepo.(*repository.UserRepository)
-	user, err := userRepo.GetOrCreateUser(telegramID)
+	var user *models.User
+	if r.getOrCreateUserForTelegram != nil {
+		user, err = r.getOrCreateUserForTelegram(telegramID)
+	} else {
+		userRepo := r.userRepo.(*repository.UserRepository)
+		user, err = userRepo.GetOrCreateUser(telegramID)
+	}
 	if err != nil {
 		r.logger.Error("failed to get/create user", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -1170,7 +1180,12 @@ func (r *Router) handleAuthTelegramUnsafe(w http.ResponseWriter, req *http.Reque
 
 	// Generate JWT token pair
 	auth := r.getAuthMiddleware()
-	accessToken, refreshToken, err := auth.GenerateTokenPair(user.ID, user.TelegramID)
+	var accessToken, refreshToken string
+	if r.generateTokenPairForTelegram != nil {
+		accessToken, refreshToken, err = r.generateTokenPairForTelegram(user.ID, user.TelegramID)
+	} else {
+		accessToken, refreshToken, err = auth.GenerateTokenPair(user.ID, user.TelegramID)
+	}
 	if err != nil {
 		r.logger.Error("failed to generate JWT tokens", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)

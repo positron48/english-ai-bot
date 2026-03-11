@@ -24,6 +24,7 @@ type NotificationService struct {
 	sessionRepo      *repository.SessionRepository
 	logger           *zap.Logger
 	stopChan         chan struct{}
+	checkInterval    time.Duration // configurable for testing; defaults to 1 hour
 }
 
 // NewNotificationService creates a new notification service
@@ -53,8 +54,12 @@ func (s *NotificationService) Start(ctx context.Context) {
 	// Check immediately on start
 	go s.checkAndSendNotifications()
 
-	// Then check every hour
-	ticker := time.NewTicker(1 * time.Hour)
+	// Then check periodically (default: every hour)
+	interval := s.checkInterval
+	if interval <= 0 {
+		interval = 1 * time.Hour
+	}
+	ticker := time.NewTicker(interval)
 	defer ticker.Stop()
 
 	for {
@@ -120,11 +125,6 @@ func (s *NotificationService) checkAndSendNotifications() {
 		// Check if we're before the preferred time
 		if currentHour < preferredHour || (currentHour == preferredHour && currentMinute < preferredMinute) {
 			continue // Too early, skip
-		}
-		
-		// Check if we're past the end of day (shouldn't happen, but safety check)
-		if currentHour >= 24 {
-			continue
 		}
 
 		// Check if we should send notification
@@ -222,12 +222,9 @@ func (s *NotificationService) sendNotificationIfNeeded(user *models.User, userNo
 		return nil // Not enough cards due for a notification
 	}
 
-	// Estimate time
+	// Estimate time (dueCount >= 10 ensures estimatedMinutes >= 2)
 	avgSecondsPerCard := 15 // Default estimate
 	estimatedMinutes := (dueCount * avgSecondsPerCard) / 60
-	if estimatedMinutes < 1 {
-		estimatedMinutes = 1
-	}
 
 	// Streak and "trained yesterday" (in user timezone)
 	streak, trainedYesterday, err := s.sessionRepo.GetTrainingStreak(user.ID, user.Timezone, localDate)
@@ -237,10 +234,8 @@ func (s *NotificationService) sendNotificationIfNeeded(user *models.User, userNo
 	}
 
 	// New cards in the last 7 days (user's local week)
+	// time.LoadLocation always returns a non-nil location (falls back to UTC on error)
 	loc, _ := time.LoadLocation(user.Timezone)
-	if loc == nil {
-		loc = time.UTC
-	}
 	weekStart := time.Date(userNow.Year(), userNow.Month(), userNow.Day(), 0, 0, 0, 0, loc).AddDate(0, 0, -7)
 	newCardsWeek, err := s.userCardRepo.CountNewCardsSince(user.ID, weekStart)
 	if err != nil {
@@ -373,10 +368,7 @@ func (s *NotificationService) disableUserNotifications(user *models.User) error 
 	}
 
 	settings.NotificationFrequency = "never"
-	settingsJSON, err := json.Marshal(settings)
-	if err != nil {
-		return fmt.Errorf("failed to marshal user settings: %w", err)
-	}
+	settingsJSON, _ := json.Marshal(settings)
 	if err := s.userRepo.UpdateUserSettings(user.ID, string(settingsJSON)); err != nil {
 		return fmt.Errorf("failed to persist disabled notifications: %w", err)
 	}

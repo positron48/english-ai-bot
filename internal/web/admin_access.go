@@ -153,7 +153,7 @@ func (r *Router) handleAdminAccessCategoryByID(w http.ResponseWriter, req *http.
 		category.ID = categoryID
 		if err := r.accessCategoryRepo.UpdateCategory(&category); err != nil {
 			r.logger.Error("failed to update category", zap.Error(err))
-			if strings.Contains(err.Error(), "UNIQUE constraint") {
+			if strings.Contains(err.Error(), "UNIQUE constraint") || strings.Contains(err.Error(), "duplicate key") {
 				http.Error(w, "Category with this name already exists", http.StatusConflict)
 				return
 			}

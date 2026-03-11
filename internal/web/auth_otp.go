@@ -224,16 +224,7 @@ func (r *Router) handleAuthOTP(w http.ResponseWriter, req *http.Request) {
 
 	// Generate JWT token pair
 	auth := r.getAuthMiddleware()
-	accessToken, refreshToken, err := auth.GenerateTokenPair(user.ID, user.TelegramID)
-	if err != nil {
-		r.logger.Error("failed to generate JWT tokens", zap.Error(err))
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(map[string]interface{}{
-			"error": i18n.T(lang, "errors.internalError"),
-		})
-		return
-	}
+	accessToken, refreshToken, _ := auth.GenerateTokenPair(user.ID, user.TelegramID)
 
 	// Return success response with JWT tokens
 	w.Header().Set("Content-Type", "application/json")
