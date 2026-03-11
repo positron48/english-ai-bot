@@ -1611,3 +1611,181 @@ func TestHandleTrainingAnswer_AnswerTextWithCardType(t *testing.T) {
 		t.Errorf("unexpected status %d", w.Code)
 	}
 }
+
+// ---- Mock implementations for interface-based testing ----
+
+// mockOptionsService is a mock that returns an error from GenerateOptions.
+type mockOptionsService struct {
+	err error
+}
+
+func (m *mockOptionsService) GenerateOptions(card *models.UserCardWithTraining, optionCount int, sessionWords []string, sessionWordENs map[string]bool, sessionWordRUs map[string]bool) ([]string, string, error) {
+	return nil, "", m.err
+}
+
+// mockSRSService is a mock that can fail GradeCard and/or RecordWrongAnswer.
+type mockSRSService struct {
+	gradeCardErr        error
+	recordWrongAnswerErr error
+}
+
+func (m *mockSRSService) GradeCard(card *models.UserCard, attempt models.AttemptData) error {
+	return m.gradeCardErr
+}
+
+func (m *mockSRSService) RecordWrongAnswer(card *models.UserCard, wrongOption string) error {
+	return m.recordWrongAnswerErr
+}
+
+// TestShowTrainingCard_GenerateOptionsError covers the GenerateOptions error path (lines 331-335).
+func TestShowTrainingCard_GenerateOptionsError(t *testing.T) {
+	logger := zap.NewNop()
+	db := testutil.SetupTestDB(t)
+	cfg := &config.Config{Training: config.TrainingConfig{OptionsDelayMS: 1000, WrongAnswerDelaySeconds: 3}}
+
+	mockOpts := &mockOptionsService{err: fmt.Errorf("options generation failed")}
+	router := NewRouter(logger, cfg, db, nil, nil, mockOpts, nil)
+
+	state := &WebTrainingState{
+		SessionID: 1, CurrentIndex: 0,
+		Queue: []*models.TrainingQueueItem{{
+			Type: "card",
+			Card: &models.UserCardWithTraining{
+				UserCard:     models.UserCard{ID: 1, Direction: models.DirectionENtoRU},
+				TrainingCard: models.TrainingCard{WordEN: "test", WordRU: "тест"},
+			},
+		}},
+	}
+
+	req := httptest.NewRequest(http.MethodGet, "/api/training/current", nil)
+	w := httptest.NewRecorder()
+	router.showTrainingCard(w, req, state)
+
+	if w.Code != http.StatusInternalServerError {
+		t.Errorf("expected 500 when GenerateOptions fails, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestGradeReplacedCardForSpellType_RecordWrongAnswerError covers the RecordWrongAnswer error path (lines 678-680).
+// GradeCard succeeds but RecordWrongAnswer fails.
+func TestGradeReplacedCardForSpellType_RecordWrongAnswerError(t *testing.T) {
+	logger := zap.NewNop()
+	db, userRepo, trainingCardRepo, userCardRepo, sessionRepo := setupTrainingIntegrationTestDB(t)
+	user, err := userRepo.GetOrCreateUser(700080)
+	if err != nil || user == nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+
+	var wordCardID int64
+	db.QueryRow("INSERT INTO word_cards (word, definition) VALUES ($1, $2) RETURNING id", "recwrong", "recwrong").Scan(&wordCardID)
+	trainingCardID, _ := trainingCardRepo.CreateTrainingCard(&models.TrainingCard{
+		WordCardID: wordCardID, WordEN: "recwrong", SenseIndex: 0, WordRU: "ошибка", MeaningEN: "recwrong",
+	})
+	past := time.Now().Add(-time.Hour)
+	userCardID, _ := userCardRepo.CreateUserCard(&models.UserCard{
+		UserID: user.ID, TrainingCardID: trainingCardID, Direction: models.DirectionENtoRU,
+		State: models.StateReview, EF: 2.0, NextDueAt: &past,
+	})
+
+	cfg := &config.Config{Training: config.TrainingConfig{OptionsDelayMS: 2000, WrongAnswerDelaySeconds: 3}}
+
+	// GradeCard succeeds, RecordWrongAnswer fails
+	mockSRS := &mockSRSService{
+		gradeCardErr:        nil,
+		recordWrongAnswerErr: fmt.Errorf("record wrong answer failed"),
+	}
+
+	router := NewRouter(logger, cfg, db, nil, mockSRS, nil, nil)
+	router.webTrainingHandler = &WebTrainingHandler{sessionRepo: sessionRepo}
+
+	// isCorrect=false triggers RecordWrongAnswer
+	router.gradeReplacedCardForSpellType(user.ID, userCardID, false, "wrong", time.Now(), 1)
+	// Should not panic, just log error
+}
+
+// TestHandleTrainingAnswer_RecordWrongAnswerError covers the RecordWrongAnswer error path (lines 997-999).
+// GradeCard succeeds, GetUserCard succeeds, CreateReviewEvent succeeds, but RecordWrongAnswer fails.
+func TestHandleTrainingAnswer_RecordWrongAnswerError(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, trainingCardRepo, userCardRepo, sessionRepo := setupTrainingIntegrationTestDB(t)
+	user, _ := userRepo.GetOrCreateUser(700081)
+
+	var wordCardID int64
+	db.QueryRow("INSERT INTO word_cards (word, definition) VALUES ($1, $2) RETURNING id", "recwrong2", "recwrong2").Scan(&wordCardID)
+	trainingCardID, _ := trainingCardRepo.CreateTrainingCard(&models.TrainingCard{
+		WordCardID: wordCardID, WordEN: "recwrong2", SenseIndex: 0, WordRU: "ошибка2", MeaningEN: "recwrong2",
+		DistractorsRU: `["а","б","в"]`,
+	})
+	past := time.Now().Add(-time.Hour)
+	userCardID, _ := userCardRepo.CreateUserCard(&models.UserCard{
+		UserID: user.ID, TrainingCardID: trainingCardID, Direction: models.DirectionENtoRU,
+		State: models.StateReview, EF: 2.0, NextDueAt: &past,
+	})
+	sessionID, _ := sessionRepo.CreateSession(&models.TrainingSession{
+		UserID: user.ID, Source: models.SourceManual, PlannedCount: 1,
+	})
+
+	cfg := &config.Config{Training: config.TrainingConfig{OptionsDelayMS: 2000, WrongAnswerDelaySeconds: 3}}
+
+	// GradeCard succeeds, RecordWrongAnswer fails
+	mockSRS := &mockSRSService{
+		gradeCardErr:        nil,
+		recordWrongAnswerErr: fmt.Errorf("record wrong answer failed"),
+	}
+
+	// Use real optionsService for generating options
+	realOptionsService := service.NewOptionsService(trainingCardRepo, logger)
+	router := NewRouter(logger, cfg, db, nil, mockSRS, realOptionsService, nil)
+
+	card := &models.UserCardWithTraining{
+		UserCard: models.UserCard{ID: userCardID, Direction: models.DirectionENtoRU},
+		TrainingCard: models.TrainingCard{
+			WordCardID: wordCardID, WordEN: "recwrong2", WordRU: "ошибка2",
+			DistractorsRU: `["а","б","в"]`,
+		},
+	}
+	options, correctAnswer, _ := realOptionsService.GenerateOptions(card, 4, nil, nil, nil)
+
+	// Find a wrong option index to trigger RecordWrongAnswer
+	wrongIdx := 0
+	for i, opt := range options {
+		if opt != correctAnswer {
+			wrongIdx = i
+			break
+		}
+	}
+
+	router.webTrainingHandler = &WebTrainingHandler{
+		sessionRepo: sessionRepo,
+		sessions: map[int64]*WebTrainingState{
+			user.ID: {
+				UserID: user.ID, SessionID: sessionID, CurrentIndex: 0,
+				Queue: []*models.TrainingQueueItem{{
+					Type: "card", Card: card,
+				}},
+				ShownAt:       time.Now().Add(-3 * time.Second),
+				Options:       options,
+				CorrectAnswer: correctAnswer,
+			},
+		},
+	}
+
+	form := url.Values{}
+	form.Set("option_index", fmt.Sprintf("%d", wrongIdx))
+	form.Set("user_card_id", fmt.Sprintf("%d", userCardID))
+	req := httptest.NewRequest(http.MethodPost, "/api/training/answer", strings.NewReader(form.Encode()))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req = ctxWithUser(req, user.ID)
+	w := httptest.NewRecorder()
+	router.handleTrainingAnswer(w, req)
+
+	// RecordWrongAnswer error is logged but not fatal, should still return 200
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected 200 even with RecordWrongAnswer error, got %d: %s", w.Code, w.Body.String())
+	}
+	var payload map[string]interface{}
+	json.Unmarshal(w.Body.Bytes(), &payload)
+	if payload["is_correct"] != false {
+		t.Errorf("expected is_correct=false, got %v", payload["is_correct"])
+	}
+}

@@ -9,10 +9,12 @@ import (
 	"reflect"
 	"strings"
 	"testing"
+	"time"
 	"unsafe"
 
 	"tgbot-skeleton/internal/ai"
 	"tgbot-skeleton/internal/config"
+	"tgbot-skeleton/internal/database"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/testutil"
@@ -1093,6 +1095,263 @@ func TestEnsureUserCardsForWord_CreateUserCardFails_RuEn(t *testing.T) {
 	err = svc.ensureUserCardsForWord(1, wordCardID)
 	if err != nil {
 		t.Fatalf("ensureUserCardsForWord should not return error: %v", err)
+	}
+}
+
+// TestGetWordDefinition_GetWordCardByID_ErrorAfterFormMapping covers line 97:
+// GetWordFormMapping succeeds (returns mapping) but GetWordCardByID fails.
+// We use the second DB: create a word form mapping, then drop word_cards table.
+func TestGetWordDefinition_GetWordCardByID_ErrorAfterFormMapping(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	dsn := testutil.SecondPostgresDSN(t)
+	time.Sleep(300 * time.Millisecond)
+	var dbWrap *database.DB
+	var err error
+	for i := 0; i < 5; i++ {
+		dbWrap, err = database.NewWithConfig("postgres", "", dsn, logger)
+		if err == nil {
+			break
+		}
+		time.Sleep(time.Duration(i+1) * 300 * time.Millisecond)
+	}
+	if dbWrap == nil {
+		t.Skipf("second DB not available: %v", err)
+	}
+	conn := dbWrap.GetConnection()
+
+	// Create a word card and form mapping
+	wordRepo := repository.NewWordRepository(conn, logger)
+	cardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "testlemma", Definition: "test"})
+	if err != nil {
+		t.Fatalf("UpsertWordCardLemma: %v", err)
+	}
+	if err := wordRepo.UpsertWordFormMapping("testform", cardID); err != nil {
+		t.Fatalf("UpsertWordFormMapping: %v", err)
+	}
+
+	// Drop word_cards table so GetWordCardByID fails
+	_, err = conn.Exec(`SET session_replication_role = replica`)
+	if err != nil {
+		t.Skipf("cannot disable FK checks: %v", err)
+	}
+	_, err = conn.Exec(`DROP TABLE word_cards CASCADE`)
+	if err != nil {
+		t.Skipf("cannot drop word_cards: %v", err)
+	}
+
+	// Create user
+	userRepo := repository.NewUserRepository(conn, logger)
+	// Can't create user (word_cards dropped cascades to other tables), use ID 1
+	_ = userRepo
+
+	// GetWordFormMapping will succeed (word_forms table still exists)
+	// GetWordCardByID will fail (word_cards table dropped)
+	// wordCard will be nil, falls through to GetWordCardByLemma which also fails
+	// Then tries AI service (nil) → returns error
+	svc := NewWordService(wordRepo, nil, nil, nil, logger)
+	_, err = svc.GetWordDefinition(context.Background(), 1, "testform")
+	// Should fail because AI service is nil (after GetWordCardByID fails)
+	if err == nil {
+		t.Fatal("expected error when AI service is nil and DB lookups fail")
+	}
+}
+
+// TestGetWordDefinition_UpsertWordFormMapping_FirstCallFails covers line 330-332:
+// First UpsertWordFormMapping call (normalizedWord != lemma) fails immediately.
+// Uses second DB with a trigger that blocks ALL INSERTs on word_forms.
+func TestGetWordDefinition_UpsertWordFormMapping_FirstCallFails(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	dsn := testutil.SecondPostgresDSN(t)
+	time.Sleep(300 * time.Millisecond)
+	var dbWrap *database.DB
+	var err error
+	for i := 0; i < 5; i++ {
+		dbWrap, err = database.NewWithConfig("postgres", "", dsn, logger)
+		if err == nil {
+			break
+		}
+		time.Sleep(time.Duration(i+1) * 300 * time.Millisecond)
+	}
+	if dbWrap == nil {
+		t.Skipf("second DB not available: %v", err)
+	}
+	conn := dbWrap.GetConnection()
+
+	// Create user
+	userRepo := repository.NewUserRepository(conn, logger)
+	_, err = userRepo.GetOrCreateUser(1)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+
+	// Add trigger that blocks ALL INSERTs on word_forms (from the very first call)
+	_, err = conn.Exec(`
+		CREATE OR REPLACE FUNCTION _test_wf_block_all() RETURNS TRIGGER AS $$
+		BEGIN
+			RAISE EXCEPTION 'All inserts blocked for testing';
+		END;
+		$$ LANGUAGE plpgsql;
+		CREATE TRIGGER block_all_word_forms_insert
+		BEFORE INSERT ON word_forms
+		FOR EACH ROW EXECUTE FUNCTION _test_wf_block_all();
+	`)
+	if err != nil {
+		t.Skipf("cannot create trigger: %v", err)
+	}
+
+	wordRepo := repository.NewWordRepository(conn, logger)
+	// AI returns a valid response with normalizedWord != lemma (to trigger form mapping creation)
+	aiResponse := `{"lemma":"walk","pos":"verb","definition_ru":"идти"}`
+	aiService := newAIServiceWithResponse(t, logger, aiResponse)
+	svc := NewWordService(wordRepo, nil, nil, aiService, logger)
+
+	// "walking" normalizes to "walking", lemma is "walk" → normalizedWord != lemma
+	// UpsertWordCardLemma succeeds (no trigger on word_cards)
+	// First UpsertWordFormMapping("walking" → wordCardID): trigger fires immediately, FAILS → warn (line 331)
+	resp, err := svc.GetWordDefinition(context.Background(), 1, "walking")
+	if err != nil {
+		t.Fatalf("GetWordDefinition should not return error (UpsertWordFormMapping failure is warn): %v", err)
+	}
+	if !strings.Contains(resp, "идти") {
+		t.Errorf("expected definition in response, got %q", resp)
+	}
+}
+
+// TestGetWordDefinition_UpsertWordFormMapping_AfterSave_Fails covers lines 336-338:
+// UpsertWordFormMapping fails after UpsertWordCardLemma and first mapping succeed.
+// Uses second DB with a trigger that blocks INSERT on word_forms after the first insert.
+func TestGetWordDefinition_UpsertWordFormMapping_AfterSave_Fails(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	dsn := testutil.SecondPostgresDSN(t)
+	time.Sleep(300 * time.Millisecond)
+	var dbWrap *database.DB
+	var err error
+	for i := 0; i < 5; i++ {
+		dbWrap, err = database.NewWithConfig("postgres", "", dsn, logger)
+		if err == nil {
+			break
+		}
+		time.Sleep(time.Duration(i+1) * 300 * time.Millisecond)
+	}
+	if dbWrap == nil {
+		t.Skipf("second DB not available: %v", err)
+	}
+	conn := dbWrap.GetConnection()
+
+	// Create user
+	userRepo := repository.NewUserRepository(conn, logger)
+	_, err = userRepo.GetOrCreateUser(1)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+
+	// Add trigger that blocks INSERT on word_forms after the first insert
+	_, err = conn.Exec(`
+		CREATE SEQUENCE IF NOT EXISTS _test_wf_seq START 1;
+		CREATE OR REPLACE FUNCTION _test_wf_fail_after_first() RETURNS TRIGGER AS $$
+		DECLARE v bigint;
+		BEGIN
+			v := nextval('_test_wf_seq');
+			IF v > 1 THEN
+				RAISE EXCEPTION 'Insert blocked after first call for testing';
+			END IF;
+			RETURN NEW;
+		END;
+		$$ LANGUAGE plpgsql;
+		CREATE TRIGGER block_word_forms_insert
+		BEFORE INSERT ON word_forms
+		FOR EACH ROW EXECUTE FUNCTION _test_wf_fail_after_first();
+	`)
+	if err != nil {
+		t.Skipf("cannot create trigger: %v", err)
+	}
+
+	wordRepo := repository.NewWordRepository(conn, logger)
+	// AI returns a valid response with normalizedWord != lemma (to trigger form mapping creation)
+	aiResponse := `{"lemma":"walk","pos":"verb","definition_ru":"идти"}`
+	aiService := newAIServiceWithResponse(t, logger, aiResponse)
+	svc := NewWordService(wordRepo, nil, nil, aiService, logger)
+
+	// "walking" normalizes to "walking", lemma is "walk" → normalizedWord != lemma
+	// UpsertWordCardLemma succeeds (no trigger on word_cards)
+	// First UpsertWordFormMapping ("walking" → wordCardID): trigger fires, nextval=1, succeeds
+	// Second UpsertWordFormMapping ("walk" → wordCardID): trigger fires, nextval=2, FAILS → warn (line 337)
+	resp, err := svc.GetWordDefinition(context.Background(), 1, "walking")
+	if err != nil {
+		t.Fatalf("GetWordDefinition should not return error (UpsertWordFormMapping failure is warn): %v", err)
+	}
+	if !strings.Contains(resp, "идти") {
+		t.Errorf("expected definition in response, got %q", resp)
+	}
+}
+
+// TestGetWordDefinition_UpsertVerbFormMapping_Fails covers line 351-353:
+// UpsertWordFormMapping fails for verb form mappings.
+// Uses second DB with a trigger that blocks INSERT on word_forms after N inserts.
+func TestGetWordDefinition_UpsertVerbFormMapping_Fails(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	dsn := testutil.SecondPostgresDSN(t)
+	time.Sleep(300 * time.Millisecond)
+	var dbWrap *database.DB
+	var err error
+	for i := 0; i < 5; i++ {
+		dbWrap, err = database.NewWithConfig("postgres", "", dsn, logger)
+		if err == nil {
+			break
+		}
+		time.Sleep(time.Duration(i+1) * 300 * time.Millisecond)
+	}
+	if dbWrap == nil {
+		t.Skipf("second DB not available: %v", err)
+	}
+	conn := dbWrap.GetConnection()
+
+	// Create user
+	userRepo := repository.NewUserRepository(conn, logger)
+	_, err = userRepo.GetOrCreateUser(1)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+
+	// Add trigger that blocks INSERT on word_forms after the 3rd insert
+	// (normalizedWord mapping, lemma mapping, then verb form mappings)
+	_, err = conn.Exec(`
+		CREATE SEQUENCE IF NOT EXISTS _test_wf2_seq START 1;
+		CREATE OR REPLACE FUNCTION _test_wf2_fail_after_second() RETURNS TRIGGER AS $$
+		DECLARE v bigint;
+		BEGIN
+			v := nextval('_test_wf2_seq');
+			IF v > 2 THEN
+				RAISE EXCEPTION 'Insert blocked after second call for testing';
+			END IF;
+			RETURN NEW;
+		END;
+		$$ LANGUAGE plpgsql;
+		CREATE TRIGGER block_word_forms_insert2
+		BEFORE INSERT ON word_forms
+		FOR EACH ROW EXECUTE FUNCTION _test_wf2_fail_after_second();
+	`)
+	if err != nil {
+		t.Skipf("cannot create trigger: %v", err)
+	}
+
+	wordRepo := repository.NewWordRepository(conn, logger)
+	// AI returns a verb with forms - this will trigger multiple UpsertWordFormMapping calls
+	aiResponse := `{"lemma":"jump","pos":"verb","definition_ru":"прыгать","verb_forms":{"v1":"jump","v2":"jumped","v3":"jumped","gerund":"jumping","third_person":"jumps"}}`
+	aiService := newAIServiceWithResponse(t, logger, aiResponse)
+	svc := NewWordService(wordRepo, nil, nil, aiService, logger)
+
+	// "jumping" normalizes to "jumping", lemma is "jump"
+	// UpsertWordCardLemma succeeds
+	// UpsertWordFormMapping("jumping", id): nextval=1, succeeds
+	// UpsertWordFormMapping("jump", id): nextval=2, succeeds
+	// UpsertWordFormMapping("jump", id) [v1]: nextval=3, FAILS → warn (line 352)
+	resp, err := svc.GetWordDefinition(context.Background(), 1, "jumping")
+	if err != nil {
+		t.Fatalf("GetWordDefinition should not return error (UpsertWordFormMapping failure is warn): %v", err)
+	}
+	if !strings.Contains(resp, "прыгать") {
+		t.Errorf("expected definition in response, got %q", resp)
 	}
 }
 

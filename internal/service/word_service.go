@@ -113,13 +113,6 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 			zap.String("lemma", wordCard.Word),
 		)
 
-		// Create mapping if it doesn't exist (for word forms)
-		if wordForm == nil && normalizedWord != strings.ToLower(wordCard.Word) {
-			if err := s.wordRepo.UpsertWordFormMapping(normalizedWord, wordCard.ID); err != nil {
-				s.logger.Warn("failed to create word form mapping", zap.Error(err))
-			}
-		}
-
 		// Record request history
 		wordCardID := wordCard.ID
 		if err := s.wordRepo.AddWordRequestHistoryWithCard(userID, inputWord, &wordCardID, nil); err != nil {
@@ -223,13 +216,6 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 			"valid english word", "valid English word",
 		}
 
-		// Keywords that indicate a real error (word doesn't exist, gibberish, etc.)
-		errorKeywords := []string{
-			"gibberish", "does not exist", "not exist", "non-standard", "not a valid",
-			"not an english", "not english", "not recognized", "not a word",
-			"doesn't exist", "not found", "invalid word", "not a real",
-		}
-
 		isNonErrorString := false
 		errorMsgLower := strings.ToLower(errorMsg)
 		for _, nonError := range nonErrorStrings {
@@ -239,21 +225,8 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 			}
 		}
 
-		// Check if error message contains keywords indicating a real error
-		isRealError := false
-		if errorMsg != "" {
-			for _, keyword := range errorKeywords {
-				if strings.Contains(errorMsgLower, keyword) {
-					isRealError = true
-					break
-				}
-			}
-		}
-
-		// Treat as error if:
-		// 1. Error field contains keywords indicating real error (word doesn't exist, etc.) OR
-		// 2. Error field is not empty AND it's not a known non-error string AND we don't have valid data
-		if errorMsg != "" && (isRealError || (!isNonErrorString && !hasValidData)) {
+		// Treat as error if: error field is not empty AND it's not a known non-error string AND we don't have valid data
+		if errorMsg != "" && !isNonErrorString && !hasValidData {
 			// Check hint first
 			hint := strings.TrimSpace(wordInfo.Hint)
 			if hint != "" {

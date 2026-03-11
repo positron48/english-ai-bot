@@ -2306,6 +2306,345 @@ func TestHandleAdminOrphanedUserCard_DeleteGenericError(t *testing.T) {
 	}
 }
 
+// TestHandleAdminWords_ListError covers admin.go:903-906 (ListWordCardsAdmin error).
+// Uses second DB: make ListWordCardsAdmin fail by dropping word_cards table.
+func TestHandleAdminWords_ListError(t *testing.T) {
+	router, dbWrap, adminUserID := setupAdminRouterWithSecondDB(t)
+
+	conn := dbWrap.GetConnection()
+	_, err := conn.Exec(`SET session_replication_role = replica`)
+	if err != nil {
+		t.Skipf("cannot disable FK checks: %v", err)
+	}
+	_, err = conn.Exec(`DROP TABLE word_cards CASCADE`)
+	if err != nil {
+		t.Skipf("cannot drop word_cards: %v", err)
+	}
+
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/words", nil)
+	ctx := context.WithValue(req.Context(), userIDKey, adminUserID)
+	ctx = context.WithValue(ctx, userCategoriesKey, []int64{})
+	req = req.WithContext(ctx)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminWords(rr, req)
+
+	if rr.Code != http.StatusInternalServerError {
+		t.Errorf("expected 500, got %d: %s", rr.Code, rr.Body.String())
+	}
+}
+
+// TestHandleAdminWords_CountError2 covers admin.go:911-914 (CountWordCardsAdmin error).
+// Uses second DB: make ListWordCardsAdmin succeed but CountWordCardsAdmin fail.
+// We do this by using a sequence-based view that fails on the second scan of word_cards.
+// A word card must exist so the view's WHERE clause is evaluated (called per row).
+func TestHandleAdminWords_CountError2(t *testing.T) {
+	router, dbWrap, adminUserID := setupAdminRouterWithSecondDB(t)
+
+	conn := dbWrap.GetConnection()
+
+	// Insert a word card so the view's WHERE clause is evaluated per row
+	_, err := conn.Exec(`INSERT INTO word_cards (word, definition) VALUES ('testword', 'test def')`)
+	if err != nil {
+		t.Skipf("cannot insert word card: %v", err)
+	}
+
+	// Create a sequence to track query calls
+	_, err = conn.Exec(`CREATE SEQUENCE IF NOT EXISTS _test_wc_seq START 1`)
+	if err != nil {
+		t.Skipf("cannot create sequence: %v", err)
+	}
+
+	// Create a function that fails after the first call
+	_, err = conn.Exec(`
+		CREATE OR REPLACE FUNCTION _test_wc_fail_after_first() RETURNS boolean AS $$
+		DECLARE v bigint;
+		BEGIN
+			v := nextval('_test_wc_seq');
+			IF v > 1 THEN
+				RAISE EXCEPTION 'blocked after first call for testing';
+			END IF;
+			RETURN true;
+		END;
+		$$ LANGUAGE plpgsql;
+	`)
+	if err != nil {
+		t.Skipf("cannot create function: %v", err)
+	}
+
+	// Rename word_cards to word_cards_real and create a view that fails on second call
+	_, err = conn.Exec(`ALTER TABLE word_cards RENAME TO word_cards_real`)
+	if err != nil {
+		t.Skipf("cannot rename word_cards: %v", err)
+	}
+
+	_, err = conn.Exec(`
+		CREATE VIEW word_cards AS
+		SELECT * FROM word_cards_real WHERE _test_wc_fail_after_first()
+	`)
+	if err != nil {
+		// Restore table name
+		_, _ = conn.Exec(`ALTER TABLE word_cards_real RENAME TO word_cards`)
+		t.Skipf("cannot create view: %v", err)
+	}
+
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/words", nil)
+	ctx := context.WithValue(req.Context(), userIDKey, adminUserID)
+	ctx = context.WithValue(ctx, userCategoriesKey, []int64{})
+	req = req.WithContext(ctx)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminWords(rr, req)
+
+	if rr.Code != http.StatusInternalServerError {
+		t.Errorf("expected 500, got %d: %s", rr.Code, rr.Body.String())
+	}
+}
+
+// TestHandleAdminOrphanedCards_CountError2 covers admin.go:1338-1342 (CountOrphanedTrainingCards error).
+// Uses second DB: make ListOrphanedTrainingCards succeed but CountOrphanedTrainingCards fail.
+// An orphaned training card must exist so the view's WHERE clause is evaluated per row.
+func TestHandleAdminOrphanedCards_CountError2(t *testing.T) {
+	router, dbWrap, adminUserID := setupAdminRouterWithSecondDB(t)
+
+	conn := dbWrap.GetConnection()
+
+	// Disable FK checks to insert orphaned training card
+	_, err := conn.Exec(`SET session_replication_role = replica`)
+	if err != nil {
+		t.Skipf("cannot disable FK checks: %v", err)
+	}
+
+	// Insert an orphaned training card (word_card_id = 99999 doesn't exist)
+	_, err = conn.Exec(`INSERT INTO training_cards (word_card_id, word_en, word_ru, meaning_en, sense_index, pos) VALUES (99999, 'orphan', 'сирота', 'orphan meaning', 0, 'noun')`)
+	if err != nil {
+		t.Skipf("cannot insert orphaned training card: %v", err)
+	}
+
+	// Create a sequence to track query calls
+	_, err = conn.Exec(`CREATE SEQUENCE IF NOT EXISTS _test_tc_seq START 1`)
+	if err != nil {
+		t.Skipf("cannot create sequence: %v", err)
+	}
+
+	// Create a function that fails after the first call
+	_, err = conn.Exec(`
+		CREATE OR REPLACE FUNCTION _test_tc_fail_after_first() RETURNS boolean AS $$
+		DECLARE v bigint;
+		BEGIN
+			v := nextval('_test_tc_seq');
+			IF v > 1 THEN
+				RAISE EXCEPTION 'blocked after first call for testing';
+			END IF;
+			RETURN true;
+		END;
+		$$ LANGUAGE plpgsql;
+	`)
+	if err != nil {
+		t.Skipf("cannot create function: %v", err)
+	}
+
+	// Rename training_cards to training_cards_real and create a view that fails on second call
+	_, err = conn.Exec(`ALTER TABLE training_cards RENAME TO training_cards_real`)
+	if err != nil {
+		t.Skipf("cannot rename training_cards: %v", err)
+	}
+
+	_, err = conn.Exec(`
+		CREATE VIEW training_cards AS
+		SELECT * FROM training_cards_real WHERE _test_tc_fail_after_first()
+	`)
+	if err != nil {
+		_, _ = conn.Exec(`ALTER TABLE training_cards_real RENAME TO training_cards`)
+		t.Skipf("cannot create view: %v", err)
+	}
+
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/orphaned-cards", nil)
+	ctx := context.WithValue(req.Context(), userIDKey, adminUserID)
+	ctx = context.WithValue(ctx, userCategoriesKey, []int64{})
+	req = req.WithContext(ctx)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminOrphanedCards(rr, req)
+
+	if rr.Code != http.StatusInternalServerError {
+		t.Errorf("expected 500, got %d: %s", rr.Code, rr.Body.String())
+	}
+}
+
+// TestHandleAdminOrphanedUserCards_CountOrphanedError covers admin.go:1495-1499 (CountOrphanedUserCards error).
+// Uses second DB: make both List calls succeed but CountOrphanedUserCards fail.
+// An orphaned user card must exist so the view's WHERE clause is evaluated per row.
+// List2 (ListUserCardsWithOrphanedTrainingCards) uses INNER JOIN so it doesn't scan user_cards rows.
+// The sequence fails on the 2nd call: List1(1 row)=1, Count1(1 row)=2→fail.
+func TestHandleAdminOrphanedUserCards_CountOrphanedError(t *testing.T) {
+	router, dbWrap, adminUserID := setupAdminRouterWithSecondDB(t)
+
+	conn := dbWrap.GetConnection()
+
+	// Disable FK checks to insert orphaned user card
+	_, err := conn.Exec(`SET session_replication_role = replica`)
+	if err != nil {
+		t.Skipf("cannot disable FK checks: %v", err)
+	}
+
+	// Insert a user so we can create a user card
+	var userID int64
+	err = conn.QueryRow(`INSERT INTO users (telegram_id) VALUES (99001) RETURNING id`).Scan(&userID)
+	if err != nil {
+		t.Skipf("cannot insert user: %v", err)
+	}
+
+	// Insert an orphaned user card (training_card_id = 99999 doesn't exist)
+	_, err = conn.Exec(`INSERT INTO user_cards (user_id, training_card_id, direction, state, reps) VALUES ($1, 99999, 'en_to_ru', 'new', 0)`, userID)
+	if err != nil {
+		t.Skipf("cannot insert orphaned user card: %v", err)
+	}
+
+	// Create a sequence to track query calls (fail on 2nd call: List1=1, Count1=2→fail)
+	// Note: List2 uses INNER JOIN so it doesn't scan user_cards rows (no matches)
+	// Count2 uses INNER JOIN so it also doesn't scan user_cards rows
+	_, err = conn.Exec(`CREATE SEQUENCE IF NOT EXISTS _test_uc_seq START 1`)
+	if err != nil {
+		t.Skipf("cannot create sequence: %v", err)
+	}
+
+	// Create a function that fails after the first call
+	_, err = conn.Exec(`
+		CREATE OR REPLACE FUNCTION _test_uc_fail_after_first() RETURNS boolean AS $$
+		DECLARE v bigint;
+		BEGIN
+			v := nextval('_test_uc_seq');
+			IF v > 1 THEN
+				RAISE EXCEPTION 'blocked after first call for testing';
+			END IF;
+			RETURN true;
+		END;
+		$$ LANGUAGE plpgsql;
+	`)
+	if err != nil {
+		t.Skipf("cannot create function: %v", err)
+	}
+
+	// Rename user_cards and create a view that fails on the 2nd call
+	_, err = conn.Exec(`ALTER TABLE user_cards RENAME TO user_cards_real`)
+	if err != nil {
+		t.Skipf("cannot rename user_cards: %v", err)
+	}
+
+	_, err = conn.Exec(`
+		CREATE VIEW user_cards AS
+		SELECT * FROM user_cards_real WHERE _test_uc_fail_after_first()
+	`)
+	if err != nil {
+		_, _ = conn.Exec(`ALTER TABLE user_cards_real RENAME TO user_cards`)
+		t.Skipf("cannot create view: %v", err)
+	}
+
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/orphaned-user-cards", nil)
+	ctx := context.WithValue(req.Context(), userIDKey, adminUserID)
+	ctx = context.WithValue(ctx, userCategoriesKey, []int64{})
+	req = req.WithContext(ctx)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminOrphanedUserCards(rr, req)
+
+	if rr.Code != http.StatusInternalServerError {
+		t.Errorf("expected 500, got %d: %s", rr.Code, rr.Body.String())
+	}
+}
+
+// TestHandleAdminOrphanedUserCards_CountWithOrphanedTCError covers admin.go:1502-1506
+// (CountUserCardsWithOrphanedTrainingCards error).
+// Uses second DB: make List1, List2, Count1 succeed but Count2 fail.
+// Strategy: create a user card whose training card exists but word card doesn't.
+// Use a sequence-based view on training_cards that fails after the 3rd call.
+// List1 uses subquery NOT IN (SELECT id FROM training_cards) → 1 scan → nextval=1.
+// List2 uses INNER JOIN training_cards → 1 scan → nextval=2.
+// Count1 uses subquery NOT IN (SELECT id FROM training_cards) → 1 scan → nextval=3.
+// Count2 uses INNER JOIN training_cards → 1 scan → nextval=4 → fails.
+func TestHandleAdminOrphanedUserCards_CountWithOrphanedTCError(t *testing.T) {
+	router, dbWrap, adminUserID := setupAdminRouterWithSecondDB(t)
+
+	conn := dbWrap.GetConnection()
+
+	// Disable FK checks to insert data with broken references
+	_, err := conn.Exec(`SET session_replication_role = replica`)
+	if err != nil {
+		t.Skipf("cannot disable FK checks: %v", err)
+	}
+
+	// Insert a user
+	var userID int64
+	err = conn.QueryRow(`INSERT INTO users (telegram_id) VALUES (99002) RETURNING id`).Scan(&userID)
+	if err != nil {
+		t.Skipf("cannot insert user: %v", err)
+	}
+
+	// Insert a training card with word_card_id = 99999 (non-existent word card)
+	var trainingCardID int64
+	err = conn.QueryRow(`INSERT INTO training_cards (word_card_id, word_en, word_ru, meaning_en, sense_index, pos) VALUES (99999, 'orphanword', 'слово', 'meaning', 0, 'noun') RETURNING id`).Scan(&trainingCardID)
+	if err != nil {
+		t.Skipf("cannot insert training card: %v", err)
+	}
+
+	// Insert a user card pointing to the training card
+	_, err = conn.Exec(`INSERT INTO user_cards (user_id, training_card_id, direction, state, reps) VALUES ($1, $2, 'en_to_ru', 'new', 0)`, userID, trainingCardID)
+	if err != nil {
+		t.Skipf("cannot insert user card: %v", err)
+	}
+
+	// Create a sequence to track calls to training_cards view
+	_, err = conn.Exec(`CREATE SEQUENCE IF NOT EXISTS _test_tc2_seq START 1`)
+	if err != nil {
+		t.Skipf("cannot create sequence: %v", err)
+	}
+
+	// Create a function that fails after the 3rd call
+	_, err = conn.Exec(`
+		CREATE OR REPLACE FUNCTION _test_tc2_fail_after_third() RETURNS boolean AS $$
+		DECLARE v bigint;
+		BEGIN
+			v := nextval('_test_tc2_seq');
+			IF v > 3 THEN
+				RAISE EXCEPTION 'blocked after third call for testing';
+			END IF;
+			RETURN true;
+		END;
+		$$ LANGUAGE plpgsql;
+	`)
+	if err != nil {
+		t.Skipf("cannot create function: %v", err)
+	}
+
+	// Rename training_cards and create a view that fails on the 4th call
+	_, err = conn.Exec(`ALTER TABLE training_cards RENAME TO training_cards_real`)
+	if err != nil {
+		t.Skipf("cannot rename training_cards: %v", err)
+	}
+
+	_, err = conn.Exec(`
+		CREATE VIEW training_cards AS
+		SELECT * FROM training_cards_real WHERE _test_tc2_fail_after_third()
+	`)
+	if err != nil {
+		_, _ = conn.Exec(`ALTER TABLE training_cards_real RENAME TO training_cards`)
+		t.Skipf("cannot create view: %v", err)
+	}
+
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/orphaned-user-cards", nil)
+	ctx := context.WithValue(req.Context(), userIDKey, adminUserID)
+	ctx = context.WithValue(ctx, userCategoriesKey, []int64{})
+	req = req.WithContext(ctx)
+	rr := httptest.NewRecorder()
+
+	router.handleAdminOrphanedUserCards(rr, req)
+
+	if rr.Code != http.StatusInternalServerError {
+		t.Errorf("expected 500, got %d: %s", rr.Code, rr.Body.String())
+	}
+}
+
 // mockNonAIService is a non-*ai.Service value used to trigger the type assertion failure
 // in handleAdminTraining and handleAdminWord generate paths.
 type mockNonAIService struct{}

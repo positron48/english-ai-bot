@@ -380,6 +380,142 @@ func TestHandleLearningWordsSets_GetWordSetProgressError(t *testing.T) {
 	}
 }
 
+// TestHandleLearningWordsSetStudyLearn_RemoveKnownWarnViaTrigger covers the RemoveKnown warn path
+// (line 621-623 in word_sets.go) by using a trigger that prevents DELETE on user_word_knowledge
+// while SELECT still works (so GetWordSetWords succeeds but RemoveKnown fails with a warning).
+func TestHandleLearningWordsSetStudyLearn_RemoveKnownWarnViaTrigger(t *testing.T) {
+	logger := zap.NewNop()
+	dbWrap, cleanup := setupWordSetsSecondDB(t)
+	defer cleanup()
+	conn := dbWrap.GetConnection()
+
+	userRepo := repository.NewUserRepository(conn, logger)
+	user, err := userRepo.GetOrCreateUser(88810)
+	if err != nil {
+		t.Skipf("GetOrCreateUser failed: %v", err)
+	}
+
+	var wordCardID int64
+	if err := conn.QueryRow(
+		"INSERT INTO word_cards (word, definition) VALUES ('triggerword', 'triggerword') RETURNING id",
+	).Scan(&wordCardID); err != nil {
+		t.Skipf("create word card: %v", err)
+	}
+
+	wordSetRepo := repository.NewWordSetRepository(conn, logger)
+	setID, err := wordSetRepo.CreateWordSet(&models.WordSet{Title: "Trigger Learn Set", IsPublished: true})
+	if err != nil {
+		t.Skipf("CreateWordSet failed: %v", err)
+	}
+	if err := wordSetRepo.SetWordSetItems(setID, []int64{wordCardID}); err != nil {
+		t.Skipf("SetWordSetItems failed: %v", err)
+	}
+
+	// Insert a known status so the DELETE trigger will fire.
+	if _, err := conn.Exec(
+		"INSERT INTO user_word_knowledge (user_id, word_card_id, status) VALUES ($1, $2, 'known')",
+		user.ID, wordCardID,
+	); err != nil {
+		t.Skipf("insert known status: %v", err)
+	}
+
+	// Create a trigger that makes DELETE on user_word_knowledge fail
+	// so RemoveKnown warns, but SELECT still works so GetWordSetWords succeeds.
+	if _, err := conn.Exec(`
+		CREATE OR REPLACE FUNCTION fail_uwk_delete() RETURNS TRIGGER AS $$
+		BEGIN RAISE EXCEPTION 'delete blocked by test trigger'; END;
+		$$ LANGUAGE plpgsql;
+		CREATE TRIGGER prevent_uwk_delete
+		BEFORE DELETE ON user_word_knowledge
+		FOR EACH ROW EXECUTE FUNCTION fail_uwk_delete();
+	`); err != nil {
+		t.Skipf("create trigger: %v", err)
+	}
+
+	cfg := &config.Config{}
+	cbRepo := repository.NewCircuitBreakerRepository(conn, logger)
+	cbService := service.NewCircuitBreakerService(cbRepo, 5, logger)
+	router := NewRouter(logger, cfg, conn, nil, nil, nil, cbService)
+
+	body := []byte(fmt.Sprintf(`{"word_card_id":%d}`, wordCardID))
+	req := httptest.NewRequest(http.MethodPost,
+		fmt.Sprintf("/api/learning/words/sets/%d/study/learn", setID),
+		bytes.NewReader(body))
+	req.Header.Set("Content-Type", "application/json")
+	req = setUserIDInContext(req, user.ID)
+	w := httptest.NewRecorder()
+	router.handleLearningWordsSetStudyLearn(w, req)
+
+	// RemoveKnown warns (trigger fires), EnsureTrainingCardsExist warns (no AI), EnsureUserCardsForWord returns nil
+	if w.Code != http.StatusOK {
+		t.Errorf("expected 200 (warn path continues), got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleLearningWordsSetStudyKnow_MarkKnownErrorViaTrigger covers the MarkKnown error path
+// (lines 723-727 in word_sets.go) by using a trigger that prevents INSERT on user_word_knowledge
+// while SELECT still works (so GetWordSetWords succeeds but MarkKnown fails with 500).
+func TestHandleLearningWordsSetStudyKnow_MarkKnownErrorViaTrigger(t *testing.T) {
+	logger := zap.NewNop()
+	dbWrap, cleanup := setupWordSetsSecondDB(t)
+	defer cleanup()
+	conn := dbWrap.GetConnection()
+
+	userRepo := repository.NewUserRepository(conn, logger)
+	user, err := userRepo.GetOrCreateUser(88811)
+	if err != nil {
+		t.Skipf("GetOrCreateUser failed: %v", err)
+	}
+
+	var wordCardID int64
+	if err := conn.QueryRow(
+		"INSERT INTO word_cards (word, definition) VALUES ('triggerknowword', 'triggerknowword') RETURNING id",
+	).Scan(&wordCardID); err != nil {
+		t.Skipf("create word card: %v", err)
+	}
+
+	wordSetRepo := repository.NewWordSetRepository(conn, logger)
+	setID, err := wordSetRepo.CreateWordSet(&models.WordSet{Title: "Trigger Know Set", IsPublished: true})
+	if err != nil {
+		t.Skipf("CreateWordSet failed: %v", err)
+	}
+	if err := wordSetRepo.SetWordSetItems(setID, []int64{wordCardID}); err != nil {
+		t.Skipf("SetWordSetItems failed: %v", err)
+	}
+
+	// Create a trigger that makes INSERT on user_word_knowledge fail
+	// so MarkKnown fails, but SELECT still works so GetWordSetWords succeeds.
+	if _, err := conn.Exec(`
+		CREATE OR REPLACE FUNCTION fail_uwk_insert() RETURNS TRIGGER AS $$
+		BEGIN RAISE EXCEPTION 'insert blocked by test trigger'; END;
+		$$ LANGUAGE plpgsql;
+		CREATE TRIGGER prevent_uwk_insert
+		BEFORE INSERT ON user_word_knowledge
+		FOR EACH ROW EXECUTE FUNCTION fail_uwk_insert();
+	`); err != nil {
+		t.Skipf("create trigger: %v", err)
+	}
+
+	cfg := &config.Config{}
+	cbRepo := repository.NewCircuitBreakerRepository(conn, logger)
+	cbService := service.NewCircuitBreakerService(cbRepo, 5, logger)
+	router := NewRouter(logger, cfg, conn, nil, nil, nil, cbService)
+
+	body := []byte(fmt.Sprintf(`{"word_card_id":%d}`, wordCardID))
+	req := httptest.NewRequest(http.MethodPost,
+		fmt.Sprintf("/api/learning/words/sets/%d/study/know", setID),
+		bytes.NewReader(body))
+	req.Header.Set("Content-Type", "application/json")
+	req = setUserIDInContext(req, user.ID)
+	w := httptest.NewRecorder()
+	router.handleLearningWordsSetStudyKnow(w, req)
+
+	// MarkKnown fails (trigger fires) → 500
+	if w.Code != http.StatusInternalServerError {
+		t.Errorf("expected 500 (MarkKnown error), got %d: %s", w.Code, w.Body.String())
+	}
+}
+
 // TestHandleLearningWordsSetDetail_GetWordSetProgressAndWordsError covers:
 // - GetWordSetProgress error fallback (lines 360-370 in word_sets.go)
 // - GetWordSetWords error (lines 374-378 in word_sets.go)

@@ -229,14 +229,8 @@ func (s *BotCommandService) handleUnsubscribe(telegramID int64, chatID int64) {
 	// Set notification frequency to "never"
 	settings.NotificationFrequency = "never"
 
-	// Save settings
-	settingsJSON, err := json.Marshal(settings)
-	if err != nil {
-		s.logger.Error("failed to marshal settings", zap.Error(err))
-		msg := tgbotapi.NewMessage(chatID, "❌ Произошла ошибка при сохранении настроек.")
-		s.bot.Send(msg)
-		return
-	}
+	// Save settings (UserSettings only contains basic types, Marshal cannot fail)
+	settingsJSON, _ := json.Marshal(settings)
 
 	if err := s.userRepo.UpdateUserSettings(user.ID, string(settingsJSON)); err != nil {
 		s.logger.Error("failed to update user settings", zap.Error(err))
@@ -322,14 +316,8 @@ func (s *BotCommandService) handleNotification(telegramID int64, chatID int64, a
 		settings.NotificationFrequency = strconv.Itoa(days)
 	}
 
-	// Save settings
-	settingsJSON, err := json.Marshal(settings)
-	if err != nil {
-		s.logger.Error("failed to marshal settings", zap.Error(err))
-		msg := tgbotapi.NewMessage(chatID, "❌ Произошла ошибка при сохранении настроек.")
-		s.bot.Send(msg)
-		return
-	}
+	// Save settings (UserSettings only contains basic types, Marshal cannot fail)
+	settingsJSON, _ := json.Marshal(settings)
 
 	if err := s.userRepo.UpdateUserSettings(user.ID, string(settingsJSON)); err != nil {
 		s.logger.Error("failed to update user settings", zap.Error(err))

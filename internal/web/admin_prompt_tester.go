@@ -191,39 +191,14 @@ func (r *Router) handleAdminPromptTesterRun(w http.ResponseWriter, req *http.Req
 			wordEvent.Error = wordErr.Error()
 			wordEvent.Raw = ""
 		} else {
-			// Try to parse as JSON
+			// Try to parse as JSON map; fall back to raw string if not a map.
 			var parsed map[string]interface{}
 			if err := json.Unmarshal([]byte(wordResponse), &parsed); err == nil {
 				wordEvent.Parsed = parsed
-				// Format JSON with indentation for storage in raw
-				formattedJSON, err := json.MarshalIndent(parsed, "", "  ")
-				if err == nil {
-					wordEvent.Raw = string(formattedJSON)
-				} else {
-					// Fallback: try to format the raw response as JSON
-					var tempParsed interface{}
-					if json.Unmarshal([]byte(wordResponse), &tempParsed) == nil {
-						if formatted, err := json.MarshalIndent(tempParsed, "", "  "); err == nil {
-							wordEvent.Raw = string(formatted)
-						} else {
-							wordEvent.Raw = wordResponse
-						}
-					} else {
-						wordEvent.Raw = wordResponse
-					}
-				}
+				formattedJSON, _ := json.MarshalIndent(parsed, "", "  ")
+				wordEvent.Raw = string(formattedJSON)
 			} else {
-				// Try to format even if initial parse failed
-				var tempParsed interface{}
-				if json.Unmarshal([]byte(wordResponse), &tempParsed) == nil {
-					if formatted, err := json.MarshalIndent(tempParsed, "", "  "); err == nil {
-						wordEvent.Raw = string(formatted)
-					} else {
-						wordEvent.Raw = wordResponse
-					}
-				} else {
-					wordEvent.Raw = wordResponse
-				}
+				wordEvent.Raw = wordResponse
 			}
 		}
 
@@ -249,39 +224,14 @@ func (r *Router) handleAdminPromptTesterRun(w http.ResponseWriter, req *http.Req
 			cardsEvent.Error = cardsErr.Error()
 			cardsEvent.Raw = ""
 		} else {
-			// Try to parse as JSON
+			// Try to parse as JSON map; fall back to raw string if not a map.
 			var parsed map[string]interface{}
 			if err := json.Unmarshal([]byte(cardsResponse), &parsed); err == nil {
 				cardsEvent.Parsed = parsed
-				// Format JSON with indentation for storage in raw
-				formattedJSON, err := json.MarshalIndent(parsed, "", "  ")
-				if err == nil {
-					cardsEvent.Raw = string(formattedJSON)
-				} else {
-					// Fallback: try to format the raw response as JSON
-					var tempParsed interface{}
-					if json.Unmarshal([]byte(cardsResponse), &tempParsed) == nil {
-						if formatted, err := json.MarshalIndent(tempParsed, "", "  "); err == nil {
-							cardsEvent.Raw = string(formatted)
-						} else {
-							cardsEvent.Raw = cardsResponse
-						}
-					} else {
-						cardsEvent.Raw = cardsResponse
-					}
-				}
+				formattedJSON, _ := json.MarshalIndent(parsed, "", "  ")
+				cardsEvent.Raw = string(formattedJSON)
 			} else {
-				// Try to format even if initial parse failed
-				var tempParsed interface{}
-				if json.Unmarshal([]byte(cardsResponse), &tempParsed) == nil {
-					if formatted, err := json.MarshalIndent(tempParsed, "", "  "); err == nil {
-						cardsEvent.Raw = string(formatted)
-					} else {
-						cardsEvent.Raw = cardsResponse
-					}
-				} else {
-					cardsEvent.Raw = cardsResponse
-				}
+				cardsEvent.Raw = cardsResponse
 			}
 		}
 

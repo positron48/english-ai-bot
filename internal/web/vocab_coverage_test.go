@@ -1260,3 +1260,484 @@ func TestHandleVocabWordCards_IsKnownFails(t *testing.T) {
 		t.Errorf("Expected status 200 even when IsKnown fails, got %d: %s", w.Code, w.Body.String())
 	}
 }
+
+// TestHandleVocabWordCards_DirectCall_WordNotFound covers handleVocabWordCards directly
+// when the word is not found (ErrNoRows path, line 565-572).
+func TestHandleVocabWordCards_DirectCall_WordNotFound(t *testing.T) {
+	db, userRepo := setupVocabCoverageTestDB(t)
+	user, err := userRepo.GetOrCreateUser(92001)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+
+	router := newVocabCoverageRouter(t, db, userRepo)
+	req := httptest.NewRequest("GET", "/api/vocab/nonexistent_direct/cards", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocabWordCards(w, req, user.ID, "nonexistent_direct")
+
+	if w.Code != http.StatusNotFound {
+		t.Errorf("Expected status 404 for non-existent word in handleVocabWordCards, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleVocabWordCards_DirectCall_DBError covers handleVocabWordCards directly
+// when the DB fails (line 573-575).
+func TestHandleVocabWordCards_DirectCall_DBError(t *testing.T) {
+	db, userRepo := setupVocabCoverageTestDB(t)
+	user, err := userRepo.GetOrCreateUser(92002)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+
+	badDB := badDBConn(t)
+	router := newVocabRouterWithConn(t, badDB, userRepo)
+	req := httptest.NewRequest("GET", "/api/vocab/someword/cards", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocabWordCards(w, req, user.ID, "someword")
+
+	if w.Code != http.StatusInternalServerError {
+		t.Errorf("Expected status 500 when DB fails in handleVocabWordCards, got %d: %s", w.Code, w.Body.String())
+	}
+	_ = db
+}
+
+// TestHandleVocabWordCards_DirectCall_MainQueryFails covers handleVocabWordCards directly
+// when the main user_cards query fails (line 607-611) using second DB.
+func TestHandleVocabWordCards_DirectCall_MainQueryFails(t *testing.T) {
+	_, conn, userRepo := setupVocabSecondDB(t)
+
+	user, err := userRepo.GetOrCreateUser(92003)
+	if err != nil {
+		t.Skipf("GetOrCreateUser: %v", err)
+	}
+
+	if _, err := conn.Exec("INSERT INTO word_cards (id, word, definition) VALUES (1, 'directmain', 'def')"); err != nil {
+		t.Skipf("insert word_cards: %v", err)
+	}
+
+	// Drop user_cards to make the main query fail
+	if _, err := conn.Exec("DROP TABLE IF EXISTS user_cards CASCADE"); err != nil {
+		t.Skipf("cannot drop user_cards: %v", err)
+	}
+
+	router := newVocabRouterWithConn(t, conn, userRepo)
+	req := httptest.NewRequest("GET", "/api/vocab/directmain/cards", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocabWordCards(w, req, user.ID, "directmain")
+
+	if w.Code != http.StatusInternalServerError {
+		t.Errorf("Expected status 500 when main query fails, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleVocabWordCards_DirectCall_TrainingCardsQueryFails covers handleVocabWordCards directly
+// when the training_cards query fails for a known word (line 709-713).
+// We alter training_cards.word_ru to BYTEA so the training_cards query fails when scanning into string,
+// while the user_cards JOIN query (which doesn't select word_ru from tc) still succeeds.
+func TestHandleVocabWordCards_DirectCall_TrainingCardsQueryFails(t *testing.T) {
+	_, conn, userRepo := setupVocabSecondDB(t)
+
+	user, err := userRepo.GetOrCreateUser(92004)
+	if err != nil {
+		t.Skipf("GetOrCreateUser: %v", err)
+	}
+
+	if _, err := conn.Exec("INSERT INTO word_cards (id, word, definition) VALUES (1, 'directtc', 'def')"); err != nil {
+		t.Skipf("insert word_cards: %v", err)
+	}
+	if _, err := conn.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (1, 'directtc', 0, 'тест', 'test')"); err != nil {
+		t.Skipf("insert training_cards: %v", err)
+	}
+	// Mark word as known (no user_cards) so we go through the training_cards query
+	if _, err := conn.Exec("INSERT INTO user_word_knowledge (user_id, word_card_id, status) VALUES ($1, 1, 'known')", user.ID); err != nil {
+		t.Skipf("insert user_word_knowledge: %v", err)
+	}
+
+	// Drop training_cards and recreate it without the word_ru column so the training_cards query
+	// (SELECT tc.id, tc.word_ru, ...) fails with "column word_ru does not exist".
+	// The user_cards JOIN query (SELECT uc.* FROM user_cards uc JOIN training_cards tc ...) doesn't
+	// select word_ru from tc, so it still succeeds.
+	// First drop FK constraint from user_cards to training_cards.
+	if _, err := conn.Exec("ALTER TABLE user_cards DROP CONSTRAINT IF EXISTS user_cards_training_card_id_fkey"); err != nil {
+		t.Skipf("cannot drop FK: %v", err)
+	}
+	if _, err := conn.Exec("ALTER TABLE training_cards DROP COLUMN IF EXISTS word_ru"); err != nil {
+		t.Skipf("cannot drop word_ru column: %v", err)
+	}
+
+	router := newVocabRouterWithConn(t, conn, userRepo)
+	req := httptest.NewRequest("GET", "/api/vocab/directtc/cards", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocabWordCards(w, req, user.ID, "directtc")
+
+	if w.Code != http.StatusInternalServerError {
+		t.Errorf("Expected status 500 when training cards query fails, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleVocabWordCards_DirectCall_ScanError covers the scan error path in handleVocabWordCards
+// (line 649-651). We alter the ef column type to TEXT and set a non-numeric value to trigger scan error.
+func TestHandleVocabWordCards_DirectCall_ScanError(t *testing.T) {
+	_, conn, userRepo := setupVocabSecondDB(t)
+
+	user, err := userRepo.GetOrCreateUser(92005)
+	if err != nil {
+		t.Skipf("GetOrCreateUser: %v", err)
+	}
+
+	if _, err := conn.Exec("INSERT INTO word_cards (id, word, definition) VALUES (1, 'scanerr', 'def')"); err != nil {
+		t.Skipf("insert word_cards: %v", err)
+	}
+	if _, err := conn.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (1, 'scanerr', 0, 'скан', 'scan error')"); err != nil {
+		t.Skipf("insert training_cards: %v", err)
+	}
+	var tcID int64
+	if err := conn.QueryRow("SELECT id FROM training_cards WHERE word_card_id = 1 LIMIT 1").Scan(&tcID); err != nil {
+		t.Skipf("get tcID: %v", err)
+	}
+	var ucID int64
+	if err := conn.QueryRow("INSERT INTO user_cards (user_id, training_card_id, direction, state, ef) VALUES ($1, $2, 'en_ru', 'new', 2.5) RETURNING id", user.ID, tcID).Scan(&ucID); err != nil {
+		t.Skipf("insert user_cards: %v", err)
+	}
+
+	// Alter ef column to TEXT and set non-numeric value to trigger scan error
+	if _, err := conn.Exec("ALTER TABLE user_cards ALTER COLUMN ef TYPE TEXT USING ef::TEXT"); err != nil {
+		t.Skipf("cannot alter column type: %v", err)
+	}
+	if _, err := conn.Exec("UPDATE user_cards SET ef = 'not-a-float' WHERE id = $1", ucID); err != nil {
+		t.Skipf("cannot update ef: %v", err)
+	}
+
+	router := newVocabRouterWithConn(t, conn, userRepo)
+	req := httptest.NewRequest("GET", "/api/vocab/scanerr/cards", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocabWordCards(w, req, user.ID, "scanerr")
+
+	// Scan error is a continue (not fatal), but since all cards fail to scan,
+	// len(cards) == 0 and the word is not known, so we get 404 "Word not found".
+	if w.Code != http.StatusNotFound {
+		t.Errorf("Expected status 404 (scan error causes empty cards → not found), got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleVocabWordCards_DirectCall_TrainingScanError covers the scan error path in training_cards loop
+// (line 734-736). We alter sense_index column to TEXT with non-numeric value to trigger scan error.
+func TestHandleVocabWordCards_DirectCall_TrainingScanError(t *testing.T) {
+	_, conn, userRepo := setupVocabSecondDB(t)
+
+	user, err := userRepo.GetOrCreateUser(92006)
+	if err != nil {
+		t.Skipf("GetOrCreateUser: %v", err)
+	}
+
+	if _, err := conn.Exec("INSERT INTO word_cards (id, word, definition) VALUES (1, 'trainscan', 'def')"); err != nil {
+		t.Skipf("insert word_cards: %v", err)
+	}
+	if _, err := conn.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (1, 'trainscan', 0, 'трейн', 'train scan')"); err != nil {
+		t.Skipf("insert training_cards: %v", err)
+	}
+	// Mark word as known (no user_cards) so we go through the training_cards query
+	if _, err := conn.Exec("INSERT INTO user_word_knowledge (user_id, word_card_id, status) VALUES ($1, 1, 'known')", user.ID); err != nil {
+		t.Skipf("insert user_word_knowledge: %v", err)
+	}
+
+	// Alter sense_index column to TEXT and set non-numeric value to trigger scan error
+	if _, err := conn.Exec("ALTER TABLE training_cards ALTER COLUMN sense_index TYPE TEXT USING sense_index::TEXT"); err != nil {
+		t.Skipf("cannot alter column type: %v", err)
+	}
+	if _, err := conn.Exec("UPDATE training_cards SET sense_index = 'not-an-int' WHERE word_card_id = 1"); err != nil {
+		t.Skipf("cannot update sense_index: %v", err)
+	}
+
+	router := newVocabRouterWithConn(t, conn, userRepo)
+	req := httptest.NewRequest("GET", "/api/vocab/trainscan/cards", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocabWordCards(w, req, user.ID, "trainscan")
+
+	// Scan error is a continue (not fatal), but since all training cards fail to scan,
+	// len(cards) == 0 after the loop. The word IS known, so the isKnown check returns true,
+	// but the training_cards loop produces no cards → len(cards) == 0 → 404 "Word not found".
+	if w.Code != http.StatusNotFound {
+		t.Errorf("Expected status 404 (scan error causes empty cards → not found), got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleVocab_SortOrder_Desc_Coverage covers the sort_order=desc branch (line 113-115).
+func TestHandleVocab_SortOrder_Desc_Coverage(t *testing.T) {
+	db, userRepo := setupVocabCoverageTestDB(t)
+	user, err := userRepo.GetOrCreateUser(92010)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	router := newVocabCoverageRouter(t, db, userRepo)
+
+	req := httptest.NewRequest("GET", "/api/vocab?sort_order=desc", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocab(w, req)
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleVocab_SortOrder_Asc_Coverage covers the sort_order=asc branch (line 116-118).
+func TestHandleVocab_SortOrder_Asc_Coverage(t *testing.T) {
+	db, userRepo := setupVocabCoverageTestDB(t)
+	user, err := userRepo.GetOrCreateUser(92011)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	router := newVocabCoverageRouter(t, db, userRepo)
+
+	req := httptest.NewRequest("GET", "/api/vocab?sort_order=asc", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocab(w, req)
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleVocab_MethodNotAllowed_Coverage covers the method not allowed branch (line 63-66).
+func TestHandleVocab_MethodNotAllowed_Coverage(t *testing.T) {
+	db, userRepo := setupVocabCoverageTestDB(t)
+	user, err := userRepo.GetOrCreateUser(92012)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	router := newVocabCoverageRouter(t, db, userRepo)
+
+	req := httptest.NewRequest("POST", "/api/vocab", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocab(w, req)
+	if w.Code != http.StatusMethodNotAllowed {
+		t.Errorf("Expected status 405, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleVocab_Unauthorized_Coverage covers the unauthorized branch (line 69-72).
+func TestHandleVocab_Unauthorized_Coverage(t *testing.T) {
+	db, userRepo := setupVocabCoverageTestDB(t)
+	router := newVocabCoverageRouter(t, db, userRepo)
+
+	req := httptest.NewRequest("GET", "/api/vocab", nil)
+	// No userID in context -> userID = 0
+	w := httptest.NewRecorder()
+	router.handleVocab(w, req)
+	if w.Code != http.StatusUnauthorized {
+		t.Errorf("Expected status 401, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleVocabDelete_Unauthorized_Coverage covers the unauthorized branch in handleVocabDelete (line 352-355).
+func TestHandleVocabDelete_Unauthorized_Coverage(t *testing.T) {
+	db, userRepo := setupVocabCoverageTestDB(t)
+	router := newVocabCoverageRouter(t, db, userRepo)
+
+	req := httptest.NewRequest("GET", "/api/vocab/someword/cards", nil)
+	// No userID in context -> userID = 0
+	w := httptest.NewRecorder()
+	router.handleVocabDelete(w, req)
+	if w.Code != http.StatusUnauthorized {
+		t.Errorf("Expected status 401, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleVocabDelete_InvalidAction_Coverage covers the invalid action branch (line 380-383).
+func TestHandleVocabDelete_InvalidAction_Coverage(t *testing.T) {
+	db, userRepo := setupVocabCoverageTestDB(t)
+	user, err := userRepo.GetOrCreateUser(92015)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	router := newVocabCoverageRouter(t, db, userRepo)
+
+	req := httptest.NewRequest("GET", "/api/vocab/someword/invalid_action", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocabDelete(w, req)
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("Expected status 400 for invalid action, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleVocabDelete_EmptyLemma covers the empty lemma redirect branch (line 371-375).
+func TestHandleVocabDelete_EmptyLemma(t *testing.T) {
+	db, userRepo := setupVocabCoverageTestDB(t)
+	user, err := userRepo.GetOrCreateUser(92016)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	router := newVocabCoverageRouter(t, db, userRepo)
+
+	// Path that results in empty lemma: /api/vocab/ (trailing slash)
+	req := httptest.NewRequest("GET", "/api/vocab/", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocabDelete(w, req)
+	// Empty lemma -> redirect to /app/vocab
+	if w.Code != http.StatusFound {
+		t.Errorf("Expected status 302 for empty lemma, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleVocabWordCards_DirectCall_VerbFormsQueryFails covers the verb_forms Warn path
+// (line 792-794) using second DB. We drop the verb_forms_json column from word_cards so the
+// query "SELECT pos, verb_forms_json FROM word_cards WHERE id = ?" fails with column not found.
+// The initial word lookup "SELECT id FROM word_cards WHERE word = ?" still succeeds.
+func TestHandleVocabWordCards_DirectCall_VerbFormsQueryFails(t *testing.T) {
+	_, conn, userRepo := setupVocabSecondDB(t)
+
+	user, err := userRepo.GetOrCreateUser(92020)
+	if err != nil {
+		t.Skipf("GetOrCreateUser: %v", err)
+	}
+
+	if _, err := conn.Exec("INSERT INTO word_cards (id, word, definition) VALUES (1, 'verbfaildir', 'def')"); err != nil {
+		t.Skipf("insert word_cards: %v", err)
+	}
+	if _, err := conn.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (1, 'verbfaildir', 0, 'глагол', 'verb fail direct')"); err != nil {
+		t.Skipf("insert training_cards: %v", err)
+	}
+	var tcID int64
+	if err := conn.QueryRow("SELECT id FROM training_cards WHERE word_card_id = 1 LIMIT 1").Scan(&tcID); err != nil {
+		t.Skipf("get tcID: %v", err)
+	}
+	if _, err := conn.Exec("INSERT INTO user_cards (user_id, training_card_id, direction, state, ef) VALUES ($1, $2, 'en_ru', 'new', 2.5)", user.ID, tcID); err != nil {
+		t.Skipf("insert user_cards: %v", err)
+	}
+
+	// Drop verb_forms_json column so the verb_forms query fails.
+	// The initial word lookup (SELECT id FROM word_cards) and user_cards query don't use this column.
+	if _, err := conn.Exec("ALTER TABLE word_cards DROP COLUMN IF EXISTS verb_forms_json"); err != nil {
+		t.Skipf("cannot drop verb_forms_json: %v", err)
+	}
+
+	router := newVocabRouterWithConn(t, conn, userRepo)
+	req := httptest.NewRequest("GET", "/api/vocab/verbfaildir/cards", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocabWordCards(w, req, user.ID, "verbfaildir")
+
+	// The verb_forms query will fail (column not found), triggering the Warn path.
+	// The handler continues and returns 200 with the cards.
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200 (verb_forms failure is non-fatal), got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleVocab_Search_WithData covers the search branch with actual data.
+func TestHandleVocab_Search_WithData(t *testing.T) {
+	db, userRepo := setupVocabCoverageTestDB(t)
+	user, err := userRepo.GetOrCreateUser(92030)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+
+	_, err = db.Exec("INSERT INTO word_cards (id, word, definition) VALUES (?, ?, ?)", 1, "searchword", "def")
+	if err != nil {
+		t.Fatalf("insert word_cards: %v", err)
+	}
+	_, err = db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (?, ?, ?, ?, ?)",
+		1, "searchword", 0, "поиск", "search word")
+	if err != nil {
+		t.Fatalf("insert training_cards: %v", err)
+	}
+	var tcID int64
+	if err := db.QueryRow("SELECT id FROM training_cards WHERE word_card_id = 1 LIMIT 1").Scan(&tcID); err != nil {
+		t.Fatalf("get tcID: %v", err)
+	}
+	_, err = db.Exec("INSERT INTO user_cards (user_id, training_card_id, direction, state, ef) VALUES (?, ?, ?, ?, ?)",
+		user.ID, tcID, "en_ru", "new", 2.5)
+	if err != nil {
+		t.Fatalf("insert user_cards: %v", err)
+	}
+
+	router := newVocabCoverageRouter(t, db, userRepo)
+	req := httptest.NewRequest("GET", "/api/vocab?search=searchword", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocab(w, req)
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleVocabWordCards_DirectCall_KnownStatusCheckFails covers the error path when
+// the known status check fails in handleVocabWordCards (line 688-690).
+func TestHandleVocabWordCards_DirectCall_KnownStatusCheckFails(t *testing.T) {
+	_, conn, userRepo := setupVocabSecondDB(t)
+
+	user, err := userRepo.GetOrCreateUser(92040)
+	if err != nil {
+		t.Skipf("GetOrCreateUser: %v", err)
+	}
+
+	if _, err := conn.Exec("INSERT INTO word_cards (id, word, definition) VALUES (1, 'directknownfail', 'def')"); err != nil {
+		t.Skipf("insert word_cards: %v", err)
+	}
+	// No user_cards for this word -> len(cards) == 0 -> check known status
+	// Drop user_word_knowledge to make the known status check fail
+	if _, err := conn.Exec("DROP TABLE IF EXISTS user_word_knowledge CASCADE"); err != nil {
+		t.Skipf("cannot drop user_word_knowledge: %v", err)
+	}
+
+	router := newVocabRouterWithConn(t, conn, userRepo)
+	req := httptest.NewRequest("GET", "/api/vocab/directknownfail/cards", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocabWordCards(w, req, user.ID, "directknownfail")
+
+	// Known status check fails (logged), isKnown = false -> cards empty -> 404
+	if w.Code != http.StatusNotFound {
+		t.Errorf("Expected status 404 when known status check fails and no cards, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleVocabWordCards_DirectCall_IsKnownFails covers the Warn path when
+// IsKnown fails in handleVocabWordCards (line 817-820).
+func TestHandleVocabWordCards_DirectCall_IsKnownFails(t *testing.T) {
+	_, conn, userRepo := setupVocabSecondDB(t)
+
+	user, err := userRepo.GetOrCreateUser(92041)
+	if err != nil {
+		t.Skipf("GetOrCreateUser: %v", err)
+	}
+
+	if _, err := conn.Exec("INSERT INTO word_cards (id, word, definition) VALUES (1, 'directisknownfail', 'def')"); err != nil {
+		t.Skipf("insert word_cards: %v", err)
+	}
+	if _, err := conn.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (1, 'directisknownfail', 0, 'известно', 'is known fail')"); err != nil {
+		t.Skipf("insert training_cards: %v", err)
+	}
+	var tcID int64
+	if err := conn.QueryRow("SELECT id FROM training_cards WHERE word_card_id = 1 LIMIT 1").Scan(&tcID); err != nil {
+		t.Skipf("get tcID: %v", err)
+	}
+	if _, err := conn.Exec("INSERT INTO user_cards (user_id, training_card_id, direction, state, ef) VALUES (?, ?, 'en_ru', 'new', 2.5)", user.ID, tcID); err != nil {
+		t.Skipf("insert user_cards: %v", err)
+	}
+
+	// Drop user_word_knowledge to make IsKnown fail (Warn path)
+	if _, err := conn.Exec("DROP TABLE IF EXISTS user_word_knowledge CASCADE"); err != nil {
+		t.Skipf("cannot drop user_word_knowledge: %v", err)
+	}
+
+	router := newVocabRouterWithConn(t, conn, userRepo)
+	req := httptest.NewRequest("GET", "/api/vocab/directisknownfail/cards", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocabWordCards(w, req, user.ID, "directisknownfail")
+
+	// IsKnown fails (Warn), isKnown = false -> response still succeeds with cards
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200 even when IsKnown fails, got %d: %s", w.Code, w.Body.String())
+	}
+}

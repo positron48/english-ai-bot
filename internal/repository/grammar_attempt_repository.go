@@ -186,15 +186,32 @@ func (r *GrammarAttemptRepository) GetChapterProgress(userID int64, chapterID st
 	}
 
 	if passedAt.Valid {
-		progress.PassedAt, _ = time.Parse("2006-01-02 15:04:05", passedAt.String)
+		progress.PassedAt = parseTimestampFlex(passedAt.String)
 		progress.Passed = true
 	}
 
 	if lastAttemptAt.Valid {
-		progress.LastAttemptAt, _ = time.Parse("2006-01-02 15:04:05", lastAttemptAt.String)
+		progress.LastAttemptAt = parseTimestampFlex(lastAttemptAt.String)
 	}
 
 	return &progress, nil
+}
+
+// parseTimestampFlex tries multiple common timestamp formats returned by PostgreSQL.
+func parseTimestampFlex(s string) time.Time {
+	formats := []string{
+		"2006-01-02 15:04:05",
+		"2006-01-02T15:04:05Z07:00",
+		"2006-01-02T15:04:05",
+		"2006-01-02T15:04:05.999999999Z07:00",
+		"2006-01-02 15:04:05.999999999-07:00",
+	}
+	for _, f := range formats {
+		if t, err := time.Parse(f, s); err == nil {
+			return t
+		}
+	}
+	return time.Time{}
 }
 
 // ChapterProgress represents user progress for a chapter
@@ -246,10 +263,10 @@ func (r *GrammarAttemptRepository) GetUserAttempts(userID int64, scopeType, scop
 
 		attempt.Passed = passed == 1
 		if startedAt.Valid {
-			attempt.StartedAt, _ = time.Parse("2006-01-02 15:04:05", startedAt.String)
+			attempt.StartedAt = parseTimestampFlex(startedAt.String)
 		}
 		if finishedAt.Valid {
-			t, _ := time.Parse("2006-01-02 15:04:05", finishedAt.String)
+			t := parseTimestampFlex(finishedAt.String)
 			attempt.FinishedAt = &t
 		}
 		if courseVersion.Valid {
@@ -432,7 +449,7 @@ func (r *GrammarAttemptRepository) GetPlacementTestResult(userID int64) (*Placem
 	}
 
 	if completedAt.Valid {
-		result.CompletedAt, _ = time.Parse("2006-01-02 15:04:05", completedAt.String)
+		result.CompletedAt = parseTimestampFlex(completedAt.String)
 	}
 
 	return &result, nil

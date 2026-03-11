@@ -70,6 +70,19 @@ type pronunciationServiceInterface interface {
 	ScheduleWord(word string) bool
 }
 
+// srsServiceInterface is the subset of SRSService used by web handlers.
+// Defined in web so tests can inject mocks for full coverage of error branches.
+type srsServiceInterface interface {
+	GradeCard(card *models.UserCard, attempt models.AttemptData) error
+	RecordWrongAnswer(card *models.UserCard, wrongOption string) error
+}
+
+// optionsServiceInterface is the subset of OptionsService used by web handlers.
+// Defined in web so tests can inject mocks for full coverage of error branches.
+type optionsServiceInterface interface {
+	GenerateOptions(card *models.UserCardWithTraining, optionCount int, sessionWords []string, sessionWordENs map[string]bool, sessionWordRUs map[string]bool) ([]string, string, error)
+}
+
 // Router handles web routes
 type Router struct {
 	mux                               *http.ServeMux
@@ -79,8 +92,8 @@ type Router struct {
 	userRepo                          interface{} // Will be properly typed later
 	accessCategoryRepo                *repository.UserAccessCategoryRepository
 	trainingService                   *service.TrainingService
-	srsService                        *service.SRSService
-	optionsService                    *service.OptionsService
+	srsService                        srsServiceInterface
+	optionsService                    optionsServiceInterface
 	wordService                       interface{} // Will be properly typed later
 	grammarService                    *service.GrammarService
 	cbService                         *service.CircuitBreakerService
@@ -108,8 +121,8 @@ func NewRouter(
 	cfg *config.Config,
 	db *sql.DB,
 	trainingService *service.TrainingService,
-	srsService *service.SRSService,
-	optionsService *service.OptionsService,
+	srsService srsServiceInterface,
+	optionsService optionsServiceInterface,
 	cbService *service.CircuitBreakerService,
 ) *Router {
 	// Initialize rate limiter (cleanup every 5 minutes, TTL 1 hour)

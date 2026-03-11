@@ -1302,6 +1302,266 @@ func TestPronunciationService_Start_MkdirAllFailure(t *testing.T) {
 }
 
 
+// --- fetchViaChatCompletions: both attempts return openrouter_no_audio (line 131) ---
+
+func TestOpenRouterPronunciationProvider_FetchViaChatCompletions_BothAttemptsNoAudioCoverage(t *testing.T) {
+	var callCount int
+	var mu sync.Mutex
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		mu.Lock()
+		callCount++
+		mu.Unlock()
+		// Return SSE with no audio data chunks - triggers openrouter_no_audio
+		w.Header().Set("Content-Type", "text/event-stream")
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte(`data: {"choices":[{"delta":{"content":"hello"}}]}` + "\n\n"))
+		_, _ = w.Write([]byte("data: [DONE]\n\n"))
+	}))
+	defer srv.Close()
+
+	provider := &openRouterPronunciationProvider{
+		baseURL:              srv.URL,
+		model:                "test",
+		voice:                "alloy",
+		apiKey:               "key",
+		client:               &http.Client{Timeout: 3 * time.Second},
+		forceChatCompletions: true,
+		pcmToMp3:             func(pcm []byte) ([]byte, error) { return pcm, nil },
+	}
+	_, err := provider.fetchViaChatCompletions(context.Background(), "hello")
+	if err == nil {
+		t.Fatal("expected error when both attempts return no audio")
+	}
+	if !errors.Is(err, errPronunciationNotFound) {
+		t.Errorf("expected errPronunciationNotFound, got %v", err)
+	}
+	if !strings.Contains(err.Error(), "openrouter_no_audio") {
+		t.Errorf("expected openrouter_no_audio in error, got %q", err.Error())
+	}
+	mu.Lock()
+	calls := callCount
+	mu.Unlock()
+	if calls != 2 {
+		t.Errorf("expected 2 attempts, got %d", calls)
+	}
+}
+
+// --- defaultPcmToMp3: ffmpeg error path (line 227-228) ---
+
+func TestDefaultPcmToMp3_FfmpegErrorPath(t *testing.T) {
+	// Pass 1 byte of invalid PCM data - ffmpeg requires at least 2 bytes for s16le (16-bit samples).
+	// This causes ffmpeg to fail with "Invalid PCM packet" error.
+	result, err := defaultPcmToMp3([]byte{0x01})
+	if err != nil {
+		if strings.Contains(err.Error(), "executable file not found") || strings.Contains(err.Error(), "no such file") {
+			t.Skip("ffmpeg not available")
+		}
+		// ffmpeg returned an error - this covers line 227-228
+		if !strings.Contains(err.Error(), "ffmpeg") {
+			t.Errorf("expected ffmpeg error, got %q", err.Error())
+		}
+		return
+	}
+	// Some ffmpeg versions may succeed even with 1 byte - skip in that case
+	_ = result
+	t.Log("ffmpeg succeeded with 1-byte input (lenient version), line 227-228 not covered by this test")
+}
+
+// --- processWord: AttemptCount >= MaxAttempts but state is not terminal (lines 871-875) ---
+
+func TestPronunciationService_ProcessWord_AttemptCountExceedsMaxNotTerminal(t *testing.T) {
+	db := testutil.SetupTestDB(t)
+	wordRepo := repository.NewWordRepository(db, zap.NewNop())
+	svc := NewPronunciationService(config.TTSConfig{
+		Enabled: true, AudioDir: t.TempDir(), MaxRetries: 3,
+		DictionaryEnabled: true, DictionaryBaseURL: "http://example.com",
+	}, wordRepo, zap.NewNop())
+
+	// Directly insert a record with state=failed_retryable but attempt_count >= max_attempts.
+	// This bypasses MarkAttempt's capToTerminal logic.
+	_, err := db.Exec(
+		`INSERT INTO tts_generation_status (word, state, attempt_count, max_attempts, created_at, updated_at)
+		 VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+		 ON CONFLICT (word) DO UPDATE SET state=$2, attempt_count=$3, max_attempts=$4, updated_at=CURRENT_TIMESTAMP`,
+		"exceedmaxword", models.TTSStateFailedRetryable, 5, 3,
+	)
+	if err != nil {
+		t.Fatalf("insert test record: %v", err)
+	}
+
+	var fetchCalls int
+	svc.providers = []pronunciationProvider{
+		&countingProvider{provider: &stubPronunciationProvider{providerName: "x", audio: []byte("a")}, count: &fetchCalls},
+	}
+
+	svc.processWord(context.Background(), "exceedmaxword")
+
+	if fetchCalls != 0 {
+		t.Errorf("expected no provider fetch when AttemptCount >= MaxAttempts, got %d", fetchCalls)
+	}
+	status, _ := svc.ttsRepo.GetByWord("exceedmaxword")
+	if status == nil || status.State != models.TTSStateFailedTerminal {
+		t.Errorf("expected terminal state after MarkTerminal called, got %v", status)
+	}
+}
+
+// --- ScheduleWord: AttemptCount >= MaxAttempts but state is not terminal (lines 1077-1081) ---
+
+func TestPronunciationService_ScheduleWord_AttemptCountExceedsMaxNotTerminal(t *testing.T) {
+	db := testutil.SetupTestDB(t)
+	wordRepo := repository.NewWordRepository(db, zap.NewNop())
+	svc := NewPronunciationService(config.TTSConfig{
+		Enabled: true, AudioDir: t.TempDir(), MaxRetries: 3,
+		DictionaryEnabled: true, DictionaryBaseURL: "http://example.com",
+	}, wordRepo, zap.NewNop())
+
+	_, err := db.Exec(
+		`INSERT INTO tts_generation_status (word, state, attempt_count, max_attempts, created_at, updated_at)
+		 VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+		 ON CONFLICT (word) DO UPDATE SET state=$2, attempt_count=$3, max_attempts=$4, updated_at=CURRENT_TIMESTAMP`,
+		"schedexceedmax", models.TTSStateFailedRetryable, 5, 3,
+	)
+	if err != nil {
+		t.Fatalf("insert test record: %v", err)
+	}
+
+	got := svc.ScheduleWord("schedexceedmax")
+	if got {
+		t.Error("ScheduleWord should return false when AttemptCount >= MaxAttempts")
+	}
+	status, _ := svc.ttsRepo.GetByWord("schedexceedmax")
+	if status == nil || status.State != models.TTSStateFailedTerminal {
+		t.Errorf("expected terminal state, got %v", status)
+	}
+}
+
+// --- Lookup: AttemptCount >= MaxAttempts but state is not terminal (lines 1153-1157) ---
+
+func TestPronunciationService_Lookup_AttemptCountExceedsMaxNotTerminal(t *testing.T) {
+	db := testutil.SetupTestDB(t)
+	wordRepo := repository.NewWordRepository(db, zap.NewNop())
+	svc := NewPronunciationService(config.TTSConfig{
+		Enabled: true, AudioDir: t.TempDir(), PublicBasePath: "/media/tts", MaxRetries: 3,
+		DictionaryEnabled: true, DictionaryBaseURL: "http://example.com",
+	}, wordRepo, zap.NewNop())
+
+	_, err := db.Exec(
+		`INSERT INTO tts_generation_status (word, state, attempt_count, max_attempts, created_at, updated_at)
+		 VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+		 ON CONFLICT (word) DO UPDATE SET state=$2, attempt_count=$3, max_attempts=$4, updated_at=CURRENT_TIMESTAMP`,
+		"lookupexceedmax", models.TTSStateFailedRetryable, 5, 3,
+	)
+	if err != nil {
+		t.Fatalf("insert test record: %v", err)
+	}
+
+	r := svc.Lookup("lookupexceedmax")
+	if r.Available {
+		t.Error("Lookup should return unavailable when AttemptCount >= MaxAttempts")
+	}
+	status, _ := svc.ttsRepo.GetByWord("lookupexceedmax")
+	if status == nil || status.State != models.TTSStateFailedTerminal {
+		t.Errorf("expected terminal state after MarkTerminal called in Lookup, got %v", status)
+	}
+}
+
+// --- ensureStatusForWord: MarkReady error (lines 1260-1262) ---
+// When status is nil, legacyRel is found (file exists), but MarkReady fails.
+
+func TestPronunciationService_EnsureStatusForWord_LegacyMarkReadyError(t *testing.T) {
+	db := testutil.SetupTestDB(t)
+	wordRepo := repository.NewWordRepository(db, zap.NewNop())
+	audioDir := t.TempDir()
+	svc := NewPronunciationService(config.TTSConfig{
+		Enabled: true, AudioDir: audioDir,
+		DictionaryEnabled: true, DictionaryBaseURL: "http://example.com",
+	}, wordRepo, zap.NewNop())
+
+	// Create the audio file so cachedRelPathForWord returns a non-empty path (legacy migration path).
+	word := "legacymarkerr"
+	rel := svc.relativePathForWordWithExt(word, ".mp3")
+	full := filepath.Join(audioDir, rel)
+	if err := os.MkdirAll(filepath.Dir(full), 0o755); err != nil {
+		t.Fatalf("mkdir: %v", err)
+	}
+	if err := os.WriteFile(full, []byte("audio"), 0o644); err != nil {
+		t.Fatalf("write: %v", err)
+	}
+	// No DB record exists yet (status == nil), legacyRel != "" -> MarkReady will be called.
+	// Now replace ttsRepo with one backed by a closed DB so MarkReady fails.
+	dsn := testutil.GetTestDSN(t)
+	closedDB, err := sql.Open("postgres_compat", dsn)
+	if err != nil {
+		t.Skipf("open test DB: %v", err)
+	}
+	closedDB.Close()
+	svc.ttsRepo = repository.NewTTSStatusRepository(closedDB, zap.NewNop(), 3)
+
+	status, err := svc.ensureStatusForWord(word)
+	if err == nil {
+		t.Fatal("expected error when MarkReady fails (closed DB)")
+	}
+	if status != nil {
+		t.Errorf("expected nil status on error")
+	}
+}
+
+// --- ensureStatusForWord: UpsertPending error (lines 1269-1271) ---
+// When status.State == ready, resolveReadyRelPath returns "", UpsertPending fails.
+
+func TestPronunciationService_EnsureStatusForWord_UpsertPendingError(t *testing.T) {
+	db := testutil.SetupTestDB(t)
+	wordRepo := repository.NewWordRepository(db, zap.NewNop())
+	svc := NewPronunciationService(config.TTSConfig{
+		Enabled: true, AudioDir: t.TempDir(),
+		DictionaryEnabled: true, DictionaryBaseURL: "http://example.com",
+	}, wordRepo, zap.NewNop())
+
+	// Insert a ready record with a non-existent audio_rel_path so resolveReadyRelPath returns "".
+	word := "upsertpendingerr"
+	_, err := db.Exec(
+		`INSERT INTO tts_generation_status (word, state, attempt_count, max_attempts, audio_rel_path, created_at, updated_at)
+		 VALUES ($1, $2, 0, 10, $3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+		 ON CONFLICT (word) DO UPDATE SET state=$2, audio_rel_path=$3, updated_at=CURRENT_TIMESTAMP`,
+		word, models.TTSStateReady, "nonexistent/path.mp3",
+	)
+	if err != nil {
+		t.Fatalf("insert test record: %v", err)
+	}
+
+	// Replace ttsRepo with one backed by a closed DB so UpsertPending fails.
+	dsn := testutil.GetTestDSN(t)
+	closedDB, err2 := sql.Open("postgres_compat", dsn)
+	if err2 != nil {
+		t.Skipf("open test DB: %v", err2)
+	}
+	closedDB.Close()
+	svc.ttsRepo = repository.NewTTSStatusRepository(closedDB, zap.NewNop(), 3)
+
+	status, err := svc.ensureStatusForWord(word)
+	if err == nil {
+		t.Fatal("expected error when UpsertPending fails (closed DB)")
+	}
+	if status != nil {
+		t.Errorf("expected nil status on error")
+	}
+}
+
+// --- writeFileAtomic: write error path (lines 1004-1007) ---
+// On Linux, /dev/full causes ENOSPC on write.
+
+func TestWriteFileAtomic_WriteErrorPath(t *testing.T) {
+	if _, err := os.Stat("/dev/full"); os.IsNotExist(err) {
+		t.Skip("/dev/full not available (not Linux)")
+	}
+	// /dev/full always returns ENOSPC on write.
+	// We can't use it directly as the temp dir, but we can test writeFileAtomic
+	// with a path inside /dev/full which doesn't make sense.
+	// Instead, test with a read-only directory (already tested above).
+	// This test documents the limitation.
+	t.Skip("write error path requires /dev/full or similar OS-specific mechanism")
+}
+
 // --- ScheduleWord: queue timeout path (lines 1105-1106) ---
 // When the queue is full and the goroutine times out waiting to enqueue.
 

@@ -936,6 +936,32 @@ func TestBotCommandService_HandleUnsubscribe_TableDriven(t *testing.T) {
 	}
 }
 
+// TestBotCommandService_HandleNotification_InvalidSettingsJSON covers handleNotification
+// when user has invalid JSON in settings (line 275: s.logger.Warn("failed to parse user settings")).
+func TestBotCommandService_HandleNotification_InvalidSettingsJSON(t *testing.T) {
+	svc, userRepo, client, cleanup := setupBotCommandService(t)
+	defer cleanup()
+
+	user, err := userRepo.GetOrCreateUser(42)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	_ = userRepo.UpdateUserSettings(user.ID, `{invalid json`)
+
+	msg := commandMessage("/notification daily")
+	update := tgbotapi.Update{Message: msg}
+	svc.HandleUpdate(update)
+
+	// Despite invalid JSON, settings should be updated (with default values)
+	user2, _ := userRepo.GetUserByTelegramID(42)
+	if user2 == nil || !strings.Contains(user2.SettingsJSON, "daily") {
+		t.Fatalf("expected settings to be updated to daily even with invalid initial JSON")
+	}
+	if client.lastParams.Get("text") == "" {
+		t.Fatalf("expected success message")
+	}
+}
+
 func TestPluralizeDays(t *testing.T) {
 	cases := map[int]string{
 		1:  "день",

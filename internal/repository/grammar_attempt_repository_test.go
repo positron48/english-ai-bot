@@ -431,6 +431,34 @@ func TestGrammarAttemptRepository_UpdateProgress_NotPassed(t *testing.T) {
 	}
 }
 
+// TestParseTimestampFlex covers all timestamp format branches in parseTimestampFlex.
+func TestParseTimestampFlex(t *testing.T) {
+	cases := []struct {
+		name  string
+		input string
+		zero  bool
+	}{
+		{"space format", "2006-01-02 15:04:05", false},
+		{"T with timezone", "2006-01-02T15:04:05+03:00", false},
+		{"T without timezone", "2006-01-02T15:04:05", false},
+		{"T with nanoseconds and timezone", "2006-01-02T15:04:05.123456789+03:00", false},
+		{"space with nanoseconds and timezone", "2006-01-02 15:04:05.123456789+03:00", false},
+		{"empty string", "", true},
+		{"invalid", "not-a-date", true},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			got := parseTimestampFlex(tc.input)
+			if tc.zero && !got.IsZero() {
+				t.Errorf("expected zero time for %q, got %v", tc.input, got)
+			}
+			if !tc.zero && got.IsZero() {
+				t.Errorf("expected non-zero time for %q, got zero", tc.input)
+			}
+		})
+	}
+}
+
 // TestGrammarAttemptRepository_GetPlacementTestResult_InvalidJSON covers error when opened_sections_json is invalid.
 func TestGrammarAttemptRepository_GetPlacementTestResult_InvalidJSON(t *testing.T) {
 	repo := setupGrammarAttemptRepo(t)

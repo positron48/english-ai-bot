@@ -1657,3 +1657,42 @@ func TestGrammarService_GetPublishedChapters_GetPublishedItemsByTypeChapterError
 		t.Errorf("expected 'failed to get published items' in error, got: %v", err)
 	}
 }
+
+// TestGrammarService_SubmitTest_Category_EmptyChapterID covers the branch where
+// chapterID is empty for a category test answer (line 983-989 in grammar_service.go).
+// This triggers the warning log path when scopeType == "category" && chapterID == "".
+func TestGrammarService_SubmitTest_Category_EmptyChapterID(t *testing.T) {
+	sectionsJSON := `{"version":"1","sections":[{"section_id":"s1","title":"S1","level":"A1","order":1,"chapter_ids":["ch1"]}]}`
+	indexJSON := `{"version":"1","generated_at":"","chapters":{"ch1":"one.json"}}`
+	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill","correct_answer":"ans1","prompt":"Q1"}]},"chapter_test":{"selection_strategy":{"type":"random"},"pool_question_ids":["q1"],"num_questions":10}}`
+	fs := fstest.MapFS{
+		"sections.json":     {Data: []byte(sectionsJSON)},
+		"index.json":        {Data: []byte(indexJSON)},
+		"chapters/one.json": {Data: []byte(chapterJSON)},
+	}
+	logger := zap.NewNop()
+	contentRepo := repository.NewGrammarContentRepositoryWithFS(fs, logger)
+	db := testutil.SetupTestDatabase(t)
+	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
+	_, _ = userRepo.GetOrCreateUser(1)
+	publishRepo := repository.NewGrammarPublishRepository(db.GetConnection(), logger)
+	attemptRepo := repository.NewGrammarAttemptRepository(db.GetConnection(), logger)
+	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+	_ = publishRepo.SetPublished("section", "s1", true, nil)
+	_ = publishRepo.SetPublished("chapter", "ch1", true, nil)
+
+	// Submit category test with empty chapterID -> triggers warning log at line 983-989
+	// The question will be found via simple questionMap lookup (fallback)
+	result, err := svc.SubmitTest(context.Background(), 1, "category", "s1", []AnswerItem{
+		{QuestionID: "q1", ChapterID: "", Answer: "ans1"},
+	})
+	if err != nil {
+		t.Fatalf("SubmitTest: %v", err)
+	}
+	if result.Total != 1 {
+		t.Fatalf("expected Total 1, got %d", result.Total)
+	}
+	if result.Correct != 1 {
+		t.Fatalf("expected Correct 1, got %d", result.Correct)
+	}
+}

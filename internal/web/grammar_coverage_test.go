@@ -2,6 +2,7 @@ package web
 
 import (
 	"bytes"
+	"database/sql"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -14,6 +15,7 @@ import (
 	"tgbot-skeleton/internal/service"
 	"tgbot-skeleton/internal/testutil"
 
+	sqlmock "github.com/DATA-DOG/go-sqlmock"
 	"go.uber.org/zap"
 )
 
@@ -221,15 +223,14 @@ func TestHandleLearningGrammarChapters_LastAttemptAt(t *testing.T) {
 	_ = router.grammarService.PublishRepo.SetPublished("section", section.SectionID, true, nil)
 	_ = router.grammarService.PublishRepo.SetPublished("chapter", chapterID, true, nil)
 
-	// Insert a chapter attempt so LastAttemptAt is not zero
-	// Use grammar_progress table which stores last_attempt_at.
-	// Use a fixed timestamp string that matches the parse format used by GetChapterProgress.
-	lastAttemptAt := "2026-01-01 12:00:00"
+	// Insert grammar_progress with last_attempt_at in the exact format expected by GetChapterProgress.
+	// GetChapterProgress uses time.Parse("2006-01-02 15:04:05", ...) so we must match this format.
+	lastAttemptAt := time.Now().Format("2006-01-02 15:04:05")
 	_, err = db.GetConnection().Exec(
-		`INSERT INTO grammar_progress (user_id, chapter_id, best_score, passed_at, last_attempt_at)
-		 VALUES ($1, $2, 70, $3, $4)
-		 ON CONFLICT (user_id, chapter_id) DO UPDATE SET best_score=70, last_attempt_at=$4`,
-		userID, chapterID, lastAttemptAt, lastAttemptAt,
+		`INSERT INTO grammar_progress (user_id, chapter_id, best_score, last_attempt_at)
+		 VALUES ($1, $2, 70, $3)
+		 ON CONFLICT (user_id, chapter_id) DO UPDATE SET best_score=70, last_attempt_at=$3`,
+		userID, chapterID, lastAttemptAt,
 	)
 	if err != nil {
 		t.Fatalf("insert grammar progress: %v", err)
@@ -253,16 +254,20 @@ func TestHandleLearningGrammarChapters_LastAttemptAt(t *testing.T) {
 		t.Fatal("expected chapters in response")
 	}
 	// Verify last_attempt_at is present for the chapter with an attempt
+	foundLastAttempt := false
 	for _, ch := range chapters {
 		chMap, ok := ch.(map[string]interface{})
 		if !ok {
 			continue
 		}
 		if chMap["chapter_id"] == chapterID {
-			if chMap["last_attempt_at"] == nil || chMap["last_attempt_at"] == "" {
-				t.Logf("last_attempt_at is empty for chapter %s (may be zero time)", chapterID)
+			if v, ok := chMap["last_attempt_at"].(string); ok && v != "" {
+				foundLastAttempt = true
 			}
 		}
+	}
+	if !foundLastAttempt {
+		t.Errorf("expected non-empty last_attempt_at for chapter %s after UpdateProgress", chapterID)
 	}
 }
 
@@ -952,5 +957,57 @@ func TestHandleLearningGrammarChapterAccess_GetChapterProgressError(t *testing.T
 	// so we get 500
 	if w.Code != http.StatusInternalServerError {
 		t.Errorf("expected 500 (GetChapterProgress fails), got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+// TestHandleLearningGrammarChapters_InternalServerError_Sqlmock covers the 500 error path (lines 157-158)
+// where GetPublishedChapters fails with a non-"not found"/"not published" error.
+// Uses sqlmock: IsSectionPublished returns true, but GetPublishedItemsByType("chapter") fails.
+func TestHandleLearningGrammarChapters_InternalServerError_Sqlmock(t *testing.T) {
+	logger := zap.NewNop()
+
+	contentRepo := repository.NewGrammarContentRepository(logger)
+	sectionsData, err := contentRepo.GetSections()
+	if err != nil || len(sectionsData.Sections) == 0 {
+		t.Fatalf("failed to get sections: %v", err)
+	}
+	sectionID := sectionsData.Sections[0].SectionID
+
+	// Use sqlmock for publishRepo:
+	// - GetPublishedItem("section", sectionID) returns IsPublished=true
+	// - GetPublishedItemsByType("chapter") fails with a DB error
+	mockDB, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("sqlmock.New: %v", err)
+	}
+	defer mockDB.Close()
+
+	// IsSectionPublished calls GetPublishedItem("section", sectionID)
+	mock.ExpectQuery(`SELECT id, item_type, item_id, is_published, name, updated_at, updated_by_user_id`).
+		WithArgs("section", sectionID).
+		WillReturnRows(sqlmock.NewRows([]string{"id", "item_type", "item_id", "is_published", "name", "updated_at", "updated_by_user_id"}).
+			AddRow(1, "section", sectionID, true, nil, "2024-01-01 00:00:00", nil))
+
+	// GetPublishedItemsByType("chapter") fails with a non-"not found" error
+	mock.ExpectQuery(`SELECT id, item_type, item_id, is_published, name, updated_at, updated_by_user_id`).
+		WithArgs("chapter").
+		WillReturnError(sql.ErrConnDone)
+
+	publishRepo := repository.NewGrammarPublishRepository(mockDB, logger)
+	db := testutil.SetupTestDatabase(t)
+	attemptRepo := repository.NewGrammarAttemptRepository(db.GetConnection(), logger)
+	grammarService := service.NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+
+	cfg := &config.Config{}
+	router := NewRouter(logger, cfg, db.GetConnection(), nil, nil, nil, nil)
+	router.SetGrammarService(grammarService)
+
+	req := httptest.NewRequest(http.MethodGet, "/api/learning/grammar/categories/"+sectionID+"/chapters", nil)
+	req = setUserIDInContext(req, 1)
+	w := httptest.NewRecorder()
+	router.handleLearningGrammarChapters(w, req)
+
+	if w.Code != http.StatusInternalServerError {
+		t.Errorf("expected 500 (GetPublishedItemsByType fails), got %d: %s", w.Code, w.Body.String())
 	}
 }

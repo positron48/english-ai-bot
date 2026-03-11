@@ -3,6 +3,7 @@ package web
 import (
 	"encoding/json"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"tgbot-skeleton/internal/config"
@@ -155,5 +156,29 @@ func TestSendNDJSONEvent_Flusher(t *testing.T) {
 	// Response should be written and flushed
 	if rr.Body.Len() == 0 {
 		t.Error("Expected response body to be written")
+	}
+}
+
+func TestSendNDJSONEvent_MarshalError(t *testing.T) {
+	router, _, cleanup := setupAdminPromptTesterHelpersTest(t)
+	defer cleanup()
+
+	rr := httptest.NewRecorder()
+
+	// Parsed with a channel value causes json.Marshal to fail.
+	event := PromptTesterEvent{
+		Word:       "test",
+		Step:       "word",
+		OK:         true,
+		Parsed:     map[string]interface{}{"ch": make(chan int)},
+		DurationMS: 10,
+	}
+
+	err := router.sendNDJSONEvent(rr, event)
+	if err == nil {
+		t.Fatal("Expected error from sendNDJSONEvent when marshal fails, got nil")
+	}
+	if !strings.Contains(err.Error(), "failed to marshal event") {
+		t.Errorf("Expected 'failed to marshal event' in error, got: %v", err)
 	}
 }

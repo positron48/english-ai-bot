@@ -121,10 +121,18 @@ func (r *Router) handleTrainingStart(w http.ResponseWriter, req *http.Request) {
 	// Create web training handler if not exists
 	if r.webTrainingHandler == nil {
 		sessionRepo := repository.NewSessionRepository(r.db, r.logger)
+		var concreteSRS *service.SRSService
+		if srs, ok := r.srsService.(*service.SRSService); ok {
+			concreteSRS = srs
+		}
+		var concreteOpts *service.OptionsService
+		if opts, ok := r.optionsService.(*service.OptionsService); ok {
+			concreteOpts = opts
+		}
 		r.webTrainingHandler = NewWebTrainingHandler(
 			r.trainingService,
-			r.srsService,
-			r.optionsService,
+			concreteSRS,
+			concreteOpts,
 			sessionRepo,
 			r.logger,
 			r.config.Training.OptionsDelayMS,
