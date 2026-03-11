@@ -18,7 +18,8 @@ import (
 )
 
 // setupVocabSecondDB creates a second Postgres container for DB error tests.
-func setupVocabSecondDB(t *testing.T) (*database.DB, *sql.DB, *repository.UserRepository) {
+// Returns (dbWrap, conn, userRepo, dsn). Use dsn to open a second connection to the same DB if needed.
+func setupVocabSecondDB(t *testing.T) (*database.DB, *sql.DB, *repository.UserRepository, string) {
 	t.Helper()
 	logger, _ := zap.NewDevelopment()
 	dsn := testutil.SecondPostgresDSN(t)
@@ -37,7 +38,7 @@ func setupVocabSecondDB(t *testing.T) (*database.DB, *sql.DB, *repository.UserRe
 	}
 	conn := dbWrap.GetConnection()
 	userRepo := repository.NewUserRepository(conn, logger)
-	return dbWrap, conn, userRepo
+	return dbWrap, conn, userRepo, dsn
 }
 
 // newVocabRouterWithConn creates a Router using the given DB connection but the real userRepo.
@@ -883,7 +884,7 @@ func TestHandleVocab_ZeroLimit(t *testing.T) {
 // parseDateTime(lastReview.String) returns error (lines 295-298: we do not set word.LastReview).
 // Uses second DB with last_review_at altered to varchar and value 'bad-date'.
 func TestHandleVocab_LastReviewParseFail(t *testing.T) {
-	_, conn, userRepo := setupVocabSecondDB(t)
+	_, conn, userRepo, _ := setupVocabSecondDB(t)
 
 	user, err := userRepo.GetOrCreateUser(93001)
 	if err != nil {
@@ -936,7 +937,7 @@ func TestHandleVocab_LastReviewParseFail(t *testing.T) {
 // parseDateTime(addedAt.String) returns error (lines 310-312: we do not set word.AddedAt).
 // Uses second DB with created_at altered to varchar and value 'bad-date'.
 func TestHandleVocab_AddedAtParseFail(t *testing.T) {
-	_, conn, userRepo := setupVocabSecondDB(t)
+	_, conn, userRepo, _ := setupVocabSecondDB(t)
 
 	user, err := userRepo.GetOrCreateUser(93002)
 	if err != nil {
@@ -1020,7 +1021,7 @@ func TestHandleVocab_DBCountQueryFails(t *testing.T) {
 // the count query in confirm_delete fails (line 409-413).
 // Uses a second DB where user_cards table is dropped after word_card lookup succeeds.
 func TestHandleVocabDelete_ConfirmDelete_CountQueryFails(t *testing.T) {
-	_, conn, userRepo := setupVocabSecondDB(t)
+	_, conn, userRepo, _ := setupVocabSecondDB(t)
 
 	user, err := userRepo.GetOrCreateUser(91001)
 	if err != nil {
@@ -1050,7 +1051,7 @@ func TestHandleVocabDelete_ConfirmDelete_CountQueryFails(t *testing.T) {
 // TestHandleVocabDelete_Delete_DBFails2 covers the error path when
 // DeleteUserCardsByWordCardIDForUser fails (line 439-443).
 func TestHandleVocabDelete_Delete_DBFails2(t *testing.T) {
-	_, conn, userRepo := setupVocabSecondDB(t)
+	_, conn, userRepo, _ := setupVocabSecondDB(t)
 
 	user, err := userRepo.GetOrCreateUser(91002)
 	if err != nil {
@@ -1080,7 +1081,7 @@ func TestHandleVocabDelete_Delete_DBFails2(t *testing.T) {
 // TestHandleVocabDelete_MarkKnown_Fails covers the error path when
 // MarkKnown fails (line 460-464).
 func TestHandleVocabDelete_MarkKnown_Fails(t *testing.T) {
-	_, conn, userRepo := setupVocabSecondDB(t)
+	_, conn, userRepo, _ := setupVocabSecondDB(t)
 
 	user, err := userRepo.GetOrCreateUser(91003)
 	if err != nil {
@@ -1110,7 +1111,7 @@ func TestHandleVocabDelete_MarkKnown_Fails(t *testing.T) {
 // TestHandleVocabDelete_MoveToTraining_RemoveKnownFails covers the Warn path when
 // RemoveKnown fails (line 479-482: continue anyway).
 func TestHandleVocabDelete_MoveToTraining_RemoveKnownFails(t *testing.T) {
-	_, conn, userRepo := setupVocabSecondDB(t)
+	_, conn, userRepo, _ := setupVocabSecondDB(t)
 
 	user, err := userRepo.GetOrCreateUser(91004)
 	if err != nil {
@@ -1144,7 +1145,7 @@ func TestHandleVocabDelete_MoveToTraining_RemoveKnownFails(t *testing.T) {
 // EnsureUserCardsForWord fails (line 495-499).
 // EnsureUserCardsForWord returns error only when GetTrainingCardsByWordCardID fails.
 func TestHandleVocabDelete_MoveToTraining_EnsureUserCardsFails2(t *testing.T) {
-	_, conn, userRepo := setupVocabSecondDB(t)
+	_, conn, userRepo, _ := setupVocabSecondDB(t)
 
 	user, err := userRepo.GetOrCreateUser(91005)
 	if err != nil {
@@ -1217,7 +1218,7 @@ func TestHandleVocabWordCards_DBError(t *testing.T) {
 // TestHandleVocabWordCards_MainQueryFails2 covers the error path when
 // the main user_cards query fails (line 607-611).
 func TestHandleVocabWordCards_MainQueryFails2(t *testing.T) {
-	_, conn, userRepo := setupVocabSecondDB(t)
+	_, conn, userRepo, _ := setupVocabSecondDB(t)
 
 	user, err := userRepo.GetOrCreateUser(91012)
 	if err != nil {
@@ -1247,7 +1248,7 @@ func TestHandleVocabWordCards_MainQueryFails2(t *testing.T) {
 // TestHandleVocabWordCards_KnownStatusCheckFails covers the error path when
 // the known status check fails (line 688-690).
 func TestHandleVocabWordCards_KnownStatusCheckFails(t *testing.T) {
-	_, conn, userRepo := setupVocabSecondDB(t)
+	_, conn, userRepo, _ := setupVocabSecondDB(t)
 
 	user, err := userRepo.GetOrCreateUser(91013)
 	if err != nil {
@@ -1277,8 +1278,10 @@ func TestHandleVocabWordCards_KnownStatusCheckFails(t *testing.T) {
 
 // TestHandleVocabWordCards_TrainingCardsQueryFails2 covers the error path when
 // the training_cards query fails for a known word (line 709-713).
+// With training_cards dropped before the request, the main query fails first (606-611);
+// to cover 709-713 would require dropping training_cards mid-request (same DB, second conn).
 func TestHandleVocabWordCards_TrainingCardsQueryFails2(t *testing.T) {
-	_, conn, userRepo := setupVocabSecondDB(t)
+	_, conn, userRepo, _ := setupVocabSecondDB(t)
 
 	user, err := userRepo.GetOrCreateUser(91014)
 	if err != nil {
@@ -1288,11 +1291,10 @@ func TestHandleVocabWordCards_TrainingCardsQueryFails2(t *testing.T) {
 	if _, err := conn.Exec("INSERT INTO word_cards (id, word, definition) VALUES (1, 'tcqueryfail2', 'def')"); err != nil {
 		t.Skipf("insert word_cards: %v", err)
 	}
-	if _, err := conn.Exec("INSERT INTO user_word_knowledge (user_id, word_card_id, status) VALUES (?, 1, 'known')", user.ID); err != nil {
+	if _, err := conn.Exec("INSERT INTO user_word_knowledge (user_id, word_card_id, status) VALUES ($1, 1, 'known')", user.ID); err != nil {
 		t.Skipf("insert user_word_knowledge: %v", err)
 	}
 
-	// Drop training_cards to make the training cards query fail
 	if _, err := conn.Exec("DROP TABLE IF EXISTS training_cards CASCADE"); err != nil {
 		t.Skipf("cannot drop training_cards: %v", err)
 	}
@@ -1311,7 +1313,7 @@ func TestHandleVocabWordCards_TrainingCardsQueryFails2(t *testing.T) {
 // TestHandleVocabWordCards_VerbFormsQueryFails covers the Warn path when
 // the verb_forms query fails (line 792-794).
 func TestHandleVocabWordCards_VerbFormsQueryFails(t *testing.T) {
-	_, conn, userRepo := setupVocabSecondDB(t)
+	_, conn, userRepo, _ := setupVocabSecondDB(t)
 
 	user, err := userRepo.GetOrCreateUser(91015)
 	if err != nil {
@@ -1350,7 +1352,7 @@ func TestHandleVocabWordCards_VerbFormsQueryFails(t *testing.T) {
 // TestHandleVocabWordCards_IsKnownFails covers the Warn path when
 // IsKnown fails (line 817-820).
 func TestHandleVocabWordCards_IsKnownFails(t *testing.T) {
-	_, conn, userRepo := setupVocabSecondDB(t)
+	_, conn, userRepo, _ := setupVocabSecondDB(t)
 
 	user, err := userRepo.GetOrCreateUser(91016)
 	if err != nil {
@@ -1433,7 +1435,7 @@ func TestHandleVocabWordCards_DirectCall_DBError(t *testing.T) {
 // TestHandleVocabWordCards_DirectCall_MainQueryFails covers handleVocabWordCards directly
 // when the main user_cards query fails (line 607-611) using second DB.
 func TestHandleVocabWordCards_DirectCall_MainQueryFails(t *testing.T) {
-	_, conn, userRepo := setupVocabSecondDB(t)
+	_, conn, userRepo, _ := setupVocabSecondDB(t)
 
 	user, err := userRepo.GetOrCreateUser(92003)
 	if err != nil {
@@ -1465,7 +1467,7 @@ func TestHandleVocabWordCards_DirectCall_MainQueryFails(t *testing.T) {
 // We alter training_cards.word_ru to BYTEA so the training_cards query fails when scanning into string,
 // while the user_cards JOIN query (which doesn't select word_ru from tc) still succeeds.
 func TestHandleVocabWordCards_DirectCall_TrainingCardsQueryFails(t *testing.T) {
-	_, conn, userRepo := setupVocabSecondDB(t)
+	_, conn, userRepo, _ := setupVocabSecondDB(t)
 
 	user, err := userRepo.GetOrCreateUser(92004)
 	if err != nil {
@@ -1509,7 +1511,7 @@ func TestHandleVocabWordCards_DirectCall_TrainingCardsQueryFails(t *testing.T) {
 // TestHandleVocabWordCards_DirectCall_ScanError covers the scan error path in handleVocabWordCards
 // (line 649-651). We alter the ef column type to TEXT and set a non-numeric value to trigger scan error.
 func TestHandleVocabWordCards_DirectCall_ScanError(t *testing.T) {
-	_, conn, userRepo := setupVocabSecondDB(t)
+	_, conn, userRepo, _ := setupVocabSecondDB(t)
 
 	user, err := userRepo.GetOrCreateUser(92005)
 	if err != nil {
@@ -1555,7 +1557,7 @@ func TestHandleVocabWordCards_DirectCall_ScanError(t *testing.T) {
 // TestHandleVocabWordCards_DirectCall_TrainingScanError covers the scan error path in training_cards loop
 // (line 734-736). We alter sense_index column to TEXT with non-numeric value to trigger scan error.
 func TestHandleVocabWordCards_DirectCall_TrainingScanError(t *testing.T) {
-	_, conn, userRepo := setupVocabSecondDB(t)
+	_, conn, userRepo, _ := setupVocabSecondDB(t)
 
 	user, err := userRepo.GetOrCreateUser(92006)
 	if err != nil {
@@ -1874,7 +1876,7 @@ func TestHandleVocabDelete_InvalidPathPrefix(t *testing.T) {
 // query "SELECT pos, verb_forms_json FROM word_cards WHERE id = ?" fails with column not found.
 // The initial word lookup "SELECT id FROM word_cards WHERE word = ?" still succeeds.
 func TestHandleVocabWordCards_DirectCall_VerbFormsQueryFails(t *testing.T) {
-	_, conn, userRepo := setupVocabSecondDB(t)
+	_, conn, userRepo, _ := setupVocabSecondDB(t)
 
 	user, err := userRepo.GetOrCreateUser(92020)
 	if err != nil {
@@ -1954,7 +1956,7 @@ func TestHandleVocab_Search_WithData(t *testing.T) {
 // TestHandleVocabWordCards_DirectCall_KnownStatusCheckFails covers the error path when
 // the known status check fails in handleVocabWordCards (line 688-690).
 func TestHandleVocabWordCards_DirectCall_KnownStatusCheckFails(t *testing.T) {
-	_, conn, userRepo := setupVocabSecondDB(t)
+	_, conn, userRepo, _ := setupVocabSecondDB(t)
 
 	user, err := userRepo.GetOrCreateUser(92040)
 	if err != nil {
@@ -1987,7 +1989,7 @@ func TestHandleVocabWordCards_DirectCall_KnownStatusCheckFails(t *testing.T) {
 // causes "converting NULL to string is unsupported"; the row is skipped, so
 // no cards are appended and handler returns 404.
 func TestHandleVocabWordCards_KnownWord_TrainingScanError(t *testing.T) {
-	_, conn, userRepo := setupVocabSecondDB(t)
+	_, conn, userRepo, _ := setupVocabSecondDB(t)
 
 	user, err := userRepo.GetOrCreateUser(92042)
 	if err != nil {
@@ -2016,10 +2018,61 @@ func TestHandleVocabWordCards_KnownWord_TrainingScanError(t *testing.T) {
 	}
 }
 
+// TestHandleVocabWordCards_DirectCall_VerbFormsAndPosInResponse covers the branches
+// where response["verb_forms"] and response["pos"] are set (lines 827-832).
+func TestHandleVocabWordCards_DirectCall_VerbFormsAndPosInResponse(t *testing.T) {
+	db, userRepo := setupVocabCoverageTestDB(t)
+	user, err := userRepo.GetOrCreateUser(92060)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+
+	verbFormsJSON := `{"past":"went","past_participle":"gone"}`
+	_, err = db.Exec("INSERT INTO word_cards (id, word, definition, pos, verb_forms_json) VALUES (?, ?, ?, ?, ?)",
+		1, "coververb", "def", "verb", verbFormsJSON)
+	if err != nil {
+		t.Fatalf("insert word_cards: %v", err)
+	}
+	_, err = db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (?, ?, ?, ?, ?)",
+		1, "coververb", 0, "глагол", "cover verb")
+	if err != nil {
+		t.Fatalf("insert training_cards: %v", err)
+	}
+	var tcID int64
+	if err := db.QueryRow("SELECT id FROM training_cards WHERE word_card_id = 1 LIMIT 1").Scan(&tcID); err != nil {
+		t.Fatalf("get tcID: %v", err)
+	}
+	_, err = db.Exec("INSERT INTO user_cards (user_id, training_card_id, direction, state, ef) VALUES (?, ?, ?, ?, ?)",
+		user.ID, tcID, "en_ru", "new", 2.5)
+	if err != nil {
+		t.Fatalf("insert user_cards: %v", err)
+	}
+
+	router := newVocabCoverageRouter(t, db, userRepo)
+	req := httptest.NewRequest("GET", "/api/vocab/coververb/cards", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocabWordCards(w, req, user.ID, "coververb")
+
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+	var response map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
+		t.Fatalf("Decode: %v", err)
+	}
+	if response["verb_forms"] == nil {
+		t.Error("expected verb_forms in response")
+	}
+	if response["pos"] != "verb" {
+		t.Errorf("expected pos=verb, got %v", response["pos"])
+	}
+}
+
 // TestHandleVocabWordCards_DirectCall_IsKnownFails covers the Warn path when
 // IsKnown fails in handleVocabWordCards (line 817-820).
 func TestHandleVocabWordCards_DirectCall_IsKnownFails(t *testing.T) {
-	_, conn, userRepo := setupVocabSecondDB(t)
+	_, conn, userRepo, _ := setupVocabSecondDB(t)
 
 	user, err := userRepo.GetOrCreateUser(92041)
 	if err != nil {
