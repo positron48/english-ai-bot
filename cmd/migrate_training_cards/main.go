@@ -49,7 +49,7 @@ type TrainingCardPOSRequest struct {
 // TrainingCardPOSResponse represents LLM response for POS determination
 type TrainingCardPOSResponse struct {
 	Error       string `json:"error,omitempty"`
-	POS         string `json:"pos"`         // Part of speech for this specific sense
+	POS         string `json:"pos"`          // Part of speech for this specific sense
 	DisplayWord string `json:"display_word"` // Display form (e.g., "spy" or "to spy")
 }
 

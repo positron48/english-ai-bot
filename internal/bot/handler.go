@@ -28,18 +28,18 @@ type userRepoInterface interface {
 
 // Handler handles Telegram updates
 type Handler struct {
-	bot                *tgbotapi.BotAPI
-	logger             *zap.Logger
-	aiService          *ai.Service
-	wordService        *service.WordService
-	trainingHandler    *TrainingHandler
-	userRepo           userRepoInterface
-	trainingCardRepo   *repository.TrainingCardRepository
-	userCardRepo       *repository.UserCardRepository
-	cbService          *service.CircuitBreakerService
-	config             *config.Config
-	db                 *sql.DB
-	botCommandService  *service.BotCommandService
+	bot               *tgbotapi.BotAPI
+	logger            *zap.Logger
+	aiService         *ai.Service
+	wordService       *service.WordService
+	trainingHandler   *TrainingHandler
+	userRepo          userRepoInterface
+	trainingCardRepo  *repository.TrainingCardRepository
+	userCardRepo      *repository.UserCardRepository
+	cbService         *service.CircuitBreakerService
+	config            *config.Config
+	db                *sql.DB
+	botCommandService *service.BotCommandService
 }
 
 // NewHandler creates a new handler
@@ -519,7 +519,7 @@ func (h *Handler) handleCallbackQuery(ctx context.Context, query *tgbotapi.Callb
 	// Let BotCommandService handle notification-related callbacks first
 	if h.botCommandService != nil && data == "notification_unsubscribe" {
 		update := tgbotapi.Update{
-			UpdateID: 0,
+			UpdateID:      0,
 			CallbackQuery: query,
 		}
 		h.botCommandService.HandleUpdate(update)

@@ -103,4 +103,3 @@ func (r *Router) handleAuthRefresh(w http.ResponseWriter, req *http.Request) {
 		"token_type":    "Bearer",
 	})
 }
-

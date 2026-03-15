@@ -23,16 +23,16 @@ func TestGrammarAttemptRepository_CreateAttempt_WithNilFinishedAt(t *testing.T) 
 	userRepo := NewUserRepository(conn, logger)
 	user, _ := userRepo.GetOrCreateUser(1)
 	attempt := &TestAttempt{
-		UserID:          user.ID,
-		ScopeType:       "chapter",
-		ScopeID:         "ch-nil-finished",
-		StartedAt:       time.Now(),
-		FinishedAt:      nil, // nil branch
-		Score:           50,
-		Passed:          true,
-		TotalQuestions:  5,
-		AnswersJSON:     "[]",
-		ResultsJSON:     "[]",
+		UserID:         user.ID,
+		ScopeType:      "chapter",
+		ScopeID:        "ch-nil-finished",
+		StartedAt:      time.Now(),
+		FinishedAt:     nil, // nil branch
+		Score:          50,
+		Passed:         true,
+		TotalQuestions: 5,
+		AnswersJSON:    "[]",
+		ResultsJSON:    "[]",
 	}
 	id, err := repo.CreateAttempt(attempt)
 	if err != nil {

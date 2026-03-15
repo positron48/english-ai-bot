@@ -294,11 +294,11 @@ func (r *WordSetRepository) GetWordSetProgress(wordSetID, userID int64) (*models
 	}
 
 	return &models.WordSetWithProgress{
-		WordSet:        *wordSet,
-		TotalWords:     totalWords,
-		KnownWords:     knownWords,
-		WordsInVocab:   wordsInVocab,
-		UnknownWords:   unknownWords,
+		WordSet:         *wordSet,
+		TotalWords:      totalWords,
+		KnownWords:      knownWords,
+		WordsInVocab:    wordsInVocab,
+		UnknownWords:    unknownWords,
 		ProgressPercent: progressPercent,
 	}, nil
 }

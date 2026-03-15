@@ -40,7 +40,7 @@ func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 	}
 
 	now := time.Now()
-	
+
 	// Get new cards count (exclude orphaned cards - those with non-existent training_cards or word_cards)
 	// Excludes words marked as "known" in user_word_knowledge (same as GetNewCards)
 	newQuery := `SELECT COUNT(*) 
@@ -141,7 +141,7 @@ func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 		totalReviews = 0
 		correctReviews = 0
 	}
-	
+
 	var accuracyPercent float64
 	if totalReviews > 0 {
 		accuracyPercent = float64(correctReviews) / float64(totalReviews) * 100
@@ -194,7 +194,7 @@ func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 			var wordsAdded int
 			if err := wordsRows.Scan(&day, &wordsAdded); err == nil {
 				wordsAddedStats = append(wordsAddedStats, map[string]interface{}{
-					"day":          day,
+					"day":         day,
 					"words_added": wordsAdded,
 				})
 			}
@@ -220,15 +220,15 @@ func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 
 	// Return JSON response
 	response := map[string]interface{}{
-		"due_count":             dueCount,
-		"new_count":             newCount,
-		"learning_count":        learningCount,
-		"review_count":          reviewCount,
-		"total_cards":           totalCards,
+		"due_count":              dueCount,
+		"new_count":              newCount,
+		"learning_count":         learningCount,
+		"review_count":           reviewCount,
+		"total_cards":            totalCards,
 		"available_for_training": availableForTraining,
-		"accuracy_percent":      accuracyPercent,
-		"weekly_stats":         weeklyStats,
-		"words_added_stats":     wordsAddedStats,
+		"accuracy_percent":       accuracyPercent,
+		"weekly_stats":           weeklyStats,
+		"words_added_stats":      wordsAddedStats,
 	}
 	if grammarStats != nil {
 		response["grammar_stats"] = grammarStats
@@ -675,7 +675,7 @@ func (r *Router) handleLanguageSettings(w http.ResponseWriter, req *http.Request
 	}
 
 	lang := i18n.GetLanguageFromContext(req.Context())
-	
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]interface{}{
@@ -704,12 +704,12 @@ func (r *Router) handleTrainingSettings(w http.ResponseWriter, req *http.Request
 	}
 
 	var requestData struct {
-		OptionsDelaySeconds       *int  `json:"options_delay_seconds"`
-		WrongAnswerDelaySeconds   *int  `json:"wrong_answer_delay_seconds"`
-		SpellModeEnabled         *bool `json:"spell_mode_enabled"`
-		SpellMasteringThreshold  *int  `json:"spell_mastering_threshold"`
-		TypeModeEnabled          *bool `json:"type_mode_enabled"`
-		TypeMasteringThreshold   *int  `json:"type_mastering_threshold"`
+		OptionsDelaySeconds     *int  `json:"options_delay_seconds"`
+		WrongAnswerDelaySeconds *int  `json:"wrong_answer_delay_seconds"`
+		SpellModeEnabled        *bool `json:"spell_mode_enabled"`
+		SpellMasteringThreshold *int  `json:"spell_mastering_threshold"`
+		TypeModeEnabled         *bool `json:"type_mode_enabled"`
+		TypeMasteringThreshold  *int  `json:"type_mastering_threshold"`
 	}
 
 	if err := json.NewDecoder(req.Body).Decode(&requestData); err != nil {
@@ -838,11 +838,11 @@ func (r *Router) handleTrainingSettings(w http.ResponseWriter, req *http.Request
 	json.NewEncoder(w).Encode(map[string]interface{}{
 		"success": true,
 		"settings": map[string]interface{}{
-			"options_delay_seconds":       defaultIntPtr(settings.OptionsDelaySeconds, 5),
-			"wrong_answer_delay_seconds":  defaultIntPtr(settings.WrongAnswerDelaySeconds, 5),
-			"spell_mode_enabled":          settings.SpellModeEnabled != nil && *settings.SpellModeEnabled,
-			"spell_mastering_threshold":   defaultIntPtr(settings.SpellMasteringThreshold, 50),
-			"type_mode_enabled":           settings.TypeModeEnabled != nil && *settings.TypeModeEnabled,
+			"options_delay_seconds":      defaultIntPtr(settings.OptionsDelaySeconds, 5),
+			"wrong_answer_delay_seconds": defaultIntPtr(settings.WrongAnswerDelaySeconds, 5),
+			"spell_mode_enabled":         settings.SpellModeEnabled != nil && *settings.SpellModeEnabled,
+			"spell_mastering_threshold":  defaultIntPtr(settings.SpellMasteringThreshold, 50),
+			"type_mode_enabled":          settings.TypeModeEnabled != nil && *settings.TypeModeEnabled,
 			"type_mastering_threshold":   defaultIntPtr(settings.TypeMasteringThreshold, 70),
 		},
 	})

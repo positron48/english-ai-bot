@@ -55,39 +55,39 @@ func TestAuthMiddleware_ValidateTelegramInitData(t *testing.T) {
 	// Format: key1=value1&key2=value2&hash=...
 	userID := int64(12345)
 	authDate := "1234567890"
-	
+
 	// Create user JSON
 	userJSON, _ := json.Marshal(map[string]int64{"id": userID})
 	userEncoded := url.QueryEscape(string(userJSON))
-	
+
 	// Build params map (without hash)
 	params := map[string]string{
 		"auth_date": authDate,
 		"user":      string(userJSON), // Not URL-encoded in data_check_string
 	}
-	
+
 	// Build data_check_string (sorted keys, not URL-encoded values)
 	var keys []string
 	for k := range params {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)
-	
+
 	var dataCheckParts []string
 	for _, k := range keys {
 		dataCheckParts = append(dataCheckParts, k+"="+params[k])
 	}
 	dataCheckString := strings.Join(dataCheckParts, "\n")
-	
+
 	// Calculate hash
 	secretKey := hmac.New(sha256.New, []byte("WebAppData"))
 	secretKey.Write([]byte(botToken))
 	secretKeyBytes := secretKey.Sum(nil)
-	
+
 	hash := hmac.New(sha256.New, secretKeyBytes)
 	hash.Write([]byte(dataCheckString))
 	hashHex := hex.EncodeToString(hash.Sum(nil))
-	
+
 	// Build initData with URL-encoded values
 	initData := "auth_date=" + url.QueryEscape(authDate) + "&user=" + userEncoded + "&hash=" + hashHex
 
@@ -129,8 +129,8 @@ func TestAuthMiddleware_RequireAuth(t *testing.T) {
 	userRepo := repository.NewUserRepository(db, logger)
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -274,4 +274,3 @@ func TestAuthMiddleware_RequireAuth_InvalidHeaderFormat(t *testing.T) {
 		t.Errorf("Expected status 401, got %d", w.Code)
 	}
 }
-

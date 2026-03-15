@@ -8,13 +8,13 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	_ "tgbot-skeleton/internal/database"
 	"tgbot-skeleton/internal/config"
+	_ "tgbot-skeleton/internal/database"
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/service"
 
-	"tgbot-skeleton/internal/testutil"
 	"go.uber.org/zap"
+	"tgbot-skeleton/internal/testutil"
 )
 
 func setupDashboardTestDB(t *testing.T) (*sql.DB, *repository.UserRepository) {
@@ -39,8 +39,8 @@ func TestHandleDashboard_Basic(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -82,8 +82,8 @@ func TestHandleDashboard_WrongMethod(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -114,8 +114,8 @@ func TestHandleDashboard_Unauthorized(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -161,9 +161,9 @@ func TestHandleDashboard_DBErrors(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:          "test-secret",
-			JWTTTLHours:        24,
-			RefreshTTLHours:     720,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
+			RefreshTTLHours: 720,
 		},
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
@@ -211,9 +211,9 @@ func TestHandleDashboard_WithGrammarStats(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:          "test-secret",
-			JWTTTLHours:        24,
-			RefreshTTLHours:     720,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
+			RefreshTTLHours: 720,
 		},
 	}
 	jwtService, _ := NewJWTService(cfg, logger)

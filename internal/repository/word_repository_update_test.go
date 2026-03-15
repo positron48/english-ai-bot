@@ -38,8 +38,8 @@ func TestWordRepository_UpdateWordCard(t *testing.T) {
 		Definition:    "updated definition",
 		POS:           &pos,
 		Transcription: &transcription,
-		DefinitionRU: &definitionRU,
-		ExamplesJSON: &examplesJSON,
+		DefinitionRU:  &definitionRU,
+		ExamplesJSON:  &examplesJSON,
 		VerbFormsJSON: &verbFormsJSON,
 		DisplayEN:     &displayEN,
 	}

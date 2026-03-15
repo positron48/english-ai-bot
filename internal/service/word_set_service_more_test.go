@@ -6,9 +6,9 @@ import (
 	"testing"
 
 	"tgbot-skeleton/internal/database"
-	"tgbot-skeleton/internal/testutil"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
+	"tgbot-skeleton/internal/testutil"
 
 	"go.uber.org/zap"
 )
@@ -88,9 +88,9 @@ func TestMarkKnown_WithUserCards(t *testing.T) {
 	tcID, _ := tcRepo.CreateTrainingCard(tc)
 
 	uc := &models.UserCard{
-		UserID:        userID,
+		UserID:         userID,
 		TrainingCardID: tcID,
-		State:         models.StateNew,
+		State:          models.StateNew,
 	}
 	ucRepo.CreateUserCard(uc)
 
@@ -196,7 +196,7 @@ func TestEnsureUserCardsForWord_SecondCallIdempotent(t *testing.T) {
 		WordEN:     "idem",
 		WordRU:     "идем",
 		MeaningEN:  "go",
-		SenseIndex:  0,
+		SenseIndex: 0,
 	})
 	if err != nil {
 		t.Fatalf("CreateTrainingCard: %v", err)
@@ -284,7 +284,7 @@ func TestProcessWordSetItems(t *testing.T) {
 	// (requires a user, so create one)
 	userRepo := repository.NewUserRepository(db.GetConnection(), service.logger)
 	user, _ := userRepo.GetOrCreateUser(12345)
-	
+
 	words, err := wordSetRepo.GetWordSetWords(wordSetID, user.ID)
 	if err != nil {
 		t.Fatalf("Failed to get word set words: %v", err)

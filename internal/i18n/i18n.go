@@ -14,7 +14,7 @@ import (
 var localesFS embed.FS
 
 var (
-	translations map[string]map[string]interface{}
+	translations  map[string]map[string]interface{}
 	supportedTags = []language.Tag{
 		language.English,
 		language.Russian,
@@ -24,7 +24,7 @@ var (
 
 func init() {
 	translations = make(map[string]map[string]interface{})
-	
+
 	// Load English translations
 	enData, err := localesFS.ReadFile("locales/en.json")
 	if err == nil {
@@ -33,7 +33,7 @@ func init() {
 			translations["en"] = enMap
 		}
 	}
-	
+
 	// Load Russian translations
 	ruData, err := localesFS.ReadFile("locales/ru.json")
 	if err == nil {
@@ -50,20 +50,20 @@ func DetectLanguageFromRequest(r *http.Request) string {
 	if acceptLang == "" {
 		return "en"
 	}
-	
+
 	// Parse Accept-Language header
 	tags, _, err := language.ParseAcceptLanguage(acceptLang)
 	if err != nil || len(tags) == 0 {
 		return "en"
 	}
-	
+
 	// Match against supported languages
 	matched, _, _ := matcher.Match(tags...)
-	
+
 	// Get base language
 	base, _ := matched.Base()
 	lang := base.String()
-	
+
 	// Map to supported languages
 	if lang == "ru" {
 		return "ru"
@@ -76,7 +76,7 @@ func T(lang string, key string) string {
 	if lang == "" {
 		lang = "en"
 	}
-	
+
 	// Get translations for language
 	langTranslations, ok := translations[lang]
 	if !ok {
@@ -86,11 +86,11 @@ func T(lang string, key string) string {
 			return key
 		}
 	}
-	
+
 	// Split key by dots (e.g., "errors.unauthorized")
 	parts := strings.Split(key, ".")
 	current := langTranslations
-	
+
 	for i, part := range parts {
 		if i == len(parts)-1 {
 			// Last part - should be the value
@@ -101,7 +101,7 @@ func T(lang string, key string) string {
 			}
 			break
 		}
-		
+
 		// Navigate nested map
 		if next, ok := current[part]; ok {
 			if nextMap, ok := next.(map[string]interface{}); ok {
@@ -113,12 +113,12 @@ func T(lang string, key string) string {
 			break
 		}
 	}
-	
+
 	// Fallback to English if not found
 	if lang != "en" {
 		return T("en", key)
 	}
-	
+
 	return key
 }
 

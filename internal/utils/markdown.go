@@ -183,28 +183,28 @@ func EscapeTelegramMarkdown(text string) string {
 func ConvertMarkdownToHTML(text string) string {
 	// Escape HTML first
 	text = escapeHTML(text)
-	
+
 	// Convert headers
 	text = convertHeadersToHTML(text)
-	
+
 	// Convert code blocks
 	text = convertCodeBlocksToHTML(text)
-	
+
 	// Convert lists
 	text = convertListsToHTML(text)
-	
+
 	// Convert bold
 	text = convertBoldToHTML(text)
-	
+
 	// Convert italic
 	text = convertItalicToHTML(text)
-	
+
 	// Convert links
 	text = convertLinksToHTML(text)
-	
+
 	// Convert line breaks
 	text = strings.ReplaceAll(text, "\n", "<br>")
-	
+
 	return text
 }
 
@@ -222,10 +222,10 @@ func escapeHTML(text string) string {
 func convertHeadersToHTML(text string) string {
 	lines := strings.Split(text, "\n")
 	var result []string
-	
+
 	for _, line := range lines {
 		trimmed := strings.TrimSpace(line)
-		
+
 		if strings.HasPrefix(trimmed, "# ") {
 			header := strings.TrimPrefix(trimmed, "# ")
 			result = append(result, "<h1>"+header+"</h1>")
@@ -241,10 +241,10 @@ func convertHeadersToHTML(text string) string {
 			result = append(result, "<h3>"+header+"</h3>")
 			continue
 		}
-		
+
 		result = append(result, line)
 	}
-	
+
 	return strings.Join(result, "\n")
 }
 
@@ -280,10 +280,10 @@ func convertListsToHTML(text string) string {
 	lines := strings.Split(text, "\n")
 	var result []string
 	inList := false
-	
+
 	for _, line := range lines {
 		trimmed := strings.TrimSpace(line)
-		
+
 		if strings.HasPrefix(trimmed, "- ") || strings.HasPrefix(trimmed, "* ") {
 			if !inList {
 				result = append(result, "<ul>")
@@ -294,7 +294,7 @@ func convertListsToHTML(text string) string {
 			result = append(result, "<li>"+item+"</li>")
 			continue
 		}
-		
+
 		if regexp.MustCompile(`^\d+\.\s`).MatchString(trimmed) {
 			if !inList {
 				result = append(result, "<ol>")
@@ -304,19 +304,19 @@ func convertListsToHTML(text string) string {
 			result = append(result, "<li>"+item+"</li>")
 			continue
 		}
-		
+
 		if inList {
 			result = append(result, "</ul>")
 			inList = false
 		}
-		
+
 		result = append(result, line)
 	}
-	
+
 	if inList {
 		result = append(result, "</ul>")
 	}
-	
+
 	return strings.Join(result, "\n")
 }
 
@@ -335,14 +335,14 @@ func RenderWordCardMarkdown(card *models.WordCard, examples []models.WordInfoExa
 	if card.DisplayEN != nil && *card.DisplayEN != "" {
 		displayWord = *card.DisplayEN
 	}
-	
+
 	// Translation (DefinitionRU) first and bold
 	// Use **text** which will be converted to *text* by ConvertMarkdownToTelegram for Telegram Markdown
 	if card.DefinitionRU != nil && *card.DefinitionRU != "" {
 		parts = append(parts, "**"+*card.DefinitionRU+"**")
 		parts = append(parts, "")
 	}
-	
+
 	// Word with POS in parentheses on the same line
 	if card.POS != nil && *card.POS != "" {
 		parts = append(parts, "**"+displayWord+"** ("+*card.POS+")")

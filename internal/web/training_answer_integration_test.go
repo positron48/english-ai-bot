@@ -76,12 +76,12 @@ func TestHandleTrainingAnswer_WithSession(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 		Training: config.TrainingConfig{
-			OptionsDelayMS:         2000,
+			OptionsDelayMS:          2000,
 			WrongAnswerDelaySeconds: 3,
 		},
 	}
@@ -149,7 +149,7 @@ func TestHandleTrainingAnswer_WithSession(t *testing.T) {
 	answerCtx := context.WithValue(answerReq.Context(), userIDKey, user.ID)
 	answerReq = answerReq.WithContext(answerCtx)
 	answerW := httptest.NewRecorder()
-	
+
 	// Small delay to ensure optionsShownAt is set
 	time.Sleep(10 * time.Millisecond)
 

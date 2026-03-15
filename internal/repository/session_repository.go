@@ -183,7 +183,7 @@ func (r *SessionRepository) GetSessionStats(sessionID int64) (totalCards int, co
 		COALESCE(SUM(CASE WHEN is_correct = 1 THEN 1 ELSE 0 END), 0) as correct
 	FROM review_events 
 	WHERE session_id = ? AND answered_at IS NOT NULL`
-	
+
 	err = r.db.QueryRow(query, sessionID).Scan(&totalCards, &correctCards)
 	if err != nil {
 		return 0, 0, fmt.Errorf("failed to get session stats: %w", err)

@@ -42,12 +42,12 @@ func TestHandleTrainingStart_NoCards(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 		Training: config.TrainingConfig{
-			OptionsDelayMS:         2000,
+			OptionsDelayMS:          2000,
 			WrongAnswerDelaySeconds: 3,
 		},
 	}
@@ -223,12 +223,12 @@ func TestHandleTrainingStart_Unauthorized(t *testing.T) {
 	db, userRepo, _, _, _ := setupTrainingHandlersTestDB(t)
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 		Training: config.TrainingConfig{
-			OptionsDelayMS:         2000,
+			OptionsDelayMS:          2000,
 			WrongAnswerDelaySeconds: 3,
 		},
 	}
@@ -254,12 +254,12 @@ func TestHandleTrainingStart_WrongMethod(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 		Training: config.TrainingConfig{
-			OptionsDelayMS:         2000,
+			OptionsDelayMS:          2000,
 			WrongAnswerDelaySeconds: 3,
 		},
 	}
@@ -296,12 +296,12 @@ func TestHandleTrainingCurrent_NoSession(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 		Training: config.TrainingConfig{
-			OptionsDelayMS:         2000,
+			OptionsDelayMS:          2000,
 			WrongAnswerDelaySeconds: 3,
 		},
 	}
@@ -341,7 +341,7 @@ func TestHandleTrainingCurrent_WithSession(t *testing.T) {
 	db, userRepo, _, _, sessionRepo := setupTrainingHandlersTestDB(t)
 	user, _ := userRepo.GetOrCreateUser(232323)
 	cfg := &config.Config{
-		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+		WebApp:   config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
 		Training: config.TrainingConfig{OptionsDelayMS: 2000, WrongAnswerDelaySeconds: 3},
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
@@ -378,7 +378,7 @@ func TestHandleTrainingReveal_NoHandler(t *testing.T) {
 	db, userRepo, _, _, _ := setupTrainingHandlersTestDB(t)
 	user, _ := userRepo.GetOrCreateUser(202020)
 	cfg := &config.Config{
-		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+		WebApp:   config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
 		Training: config.TrainingConfig{OptionsDelayMS: 2000, WrongAnswerDelaySeconds: 3},
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
@@ -403,7 +403,7 @@ func TestHandleTrainingReveal_NotCardType(t *testing.T) {
 	userRepo := repository.NewUserRepository(db, logger)
 	user, _ := userRepo.GetOrCreateUser(212121)
 	cfg := &config.Config{
-		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+		WebApp:   config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
 		Training: config.TrainingConfig{OptionsDelayMS: 2000, WrongAnswerDelaySeconds: 3},
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
@@ -435,7 +435,7 @@ func TestHandleTrainingReveal_CardTypeNilCard(t *testing.T) {
 	userRepo := repository.NewUserRepository(db, logger)
 	user, _ := userRepo.GetOrCreateUser(212122)
 	cfg := &config.Config{
-		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+		WebApp:   config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
 		Training: config.TrainingConfig{OptionsDelayMS: 2000, WrongAnswerDelaySeconds: 3},
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
@@ -466,12 +466,12 @@ func TestHandleTrainingReveal_WrongMethod(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 		Training: config.TrainingConfig{
-			OptionsDelayMS:         2000,
+			OptionsDelayMS:          2000,
 			WrongAnswerDelaySeconds: 3,
 		},
 	}
@@ -502,12 +502,12 @@ func TestHandleTrainingAnswer_WrongMethod(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 		Training: config.TrainingConfig{
-			OptionsDelayMS:         2000,
+			OptionsDelayMS:          2000,
 			WrongAnswerDelaySeconds: 3,
 		},
 	}
@@ -544,12 +544,12 @@ func TestHandleTrainingAnswer_MissingParams(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 		Training: config.TrainingConfig{
-			OptionsDelayMS:         2000,
+			OptionsDelayMS:          2000,
 			WrongAnswerDelaySeconds: 3,
 		},
 	}
@@ -588,12 +588,12 @@ func TestHandleTrainingAnswer_NoSession(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:        "test-secret",
-			JWTTTLHours:      24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 		Training: config.TrainingConfig{
-			OptionsDelayMS:         2000,
+			OptionsDelayMS:          2000,
 			WrongAnswerDelaySeconds: 3,
 		},
 	}
@@ -637,12 +637,12 @@ func TestHandleTrainingAnswer_ParseFormError(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:        "test-secret",
-			JWTTTLHours:      24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 		Training: config.TrainingConfig{
-			OptionsDelayMS:         2000,
+			OptionsDelayMS:          2000,
 			WrongAnswerDelaySeconds: 3,
 		},
 	}

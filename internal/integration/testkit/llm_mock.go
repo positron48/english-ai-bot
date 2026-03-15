@@ -10,12 +10,12 @@ import (
 
 // MockLLMResponse is the raw content (JSON) the LLM returns for word definition
 type MockLLMResponse struct {
-	Lemma        string `json:"lemma"`
-	POS          string `json:"pos"`
+	Lemma         string `json:"lemma"`
+	POS           string `json:"pos"`
 	Transcription string `json:"transcription"`
-	DefinitionRU string `json:"definition_ru"`
-	InputWord    string `json:"input_word"`
-	Examples     []struct {
+	DefinitionRU  string `json:"definition_ru"`
+	InputWord     string `json:"input_word"`
+	Examples      []struct {
 		ExampleEN string `json:"example_en"`
 		GlossRU   string `json:"gloss_ru"`
 	} `json:"examples,omitempty"`
@@ -40,7 +40,9 @@ func StartMockLLMServer(t *testing.T, wordJSON string) *httptest.Server {
 	}
 	body := openAIChatResponse{
 		Choices: []openAIChoice{
-			{Message: struct{ Content string `json:"content"` }{Content: content}},
+			{Message: struct {
+				Content string `json:"content"`
+			}{Content: content}},
 		},
 	}
 	payload, err := json.Marshal(body)

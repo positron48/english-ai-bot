@@ -7,8 +7,8 @@ import (
 
 	"tgbot-skeleton/internal/repository"
 
-	"tgbot-skeleton/internal/testutil"
 	"go.uber.org/zap"
+	"tgbot-skeleton/internal/testutil"
 )
 
 func setupAuthOTPTestDB(t *testing.T) (*sql.DB, *repository.WebOTPRepository, *repository.UserRepository) {

@@ -11,8 +11,8 @@ import (
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/repository"
 
-	"tgbot-skeleton/internal/testutil"
 	"go.uber.org/zap"
+	"tgbot-skeleton/internal/testutil"
 )
 
 func setupVocabTestDB(t *testing.T) (*sql.DB, *repository.UserRepository) {
@@ -37,8 +37,8 @@ func TestHandleVocab_Basic(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -84,8 +84,8 @@ func TestHandleVocab_WrongMethod(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -116,8 +116,8 @@ func TestHandleVocab_Unauthorized(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -154,8 +154,8 @@ func TestHandleVocab_WithSearch(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -194,8 +194,8 @@ func TestHandleVocab_WithPagination(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -376,8 +376,8 @@ func TestHandleVocab_GroupByLemma(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -477,8 +477,8 @@ func TestHandleVocab_MasteringScoreQuery(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}

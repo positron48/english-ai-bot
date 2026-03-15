@@ -326,11 +326,11 @@ func TestTrainingService_generateQueue_SpellOnly_EmptyLetters(t *testing.T) {
 // review_state_count == total_cards but total_reps == 0 (falls through to next branch).
 func TestTrainingService_computeMasteringScore_ReviewAllRepsZero(t *testing.T) {
 	stats := &repository.WordMasteringStats{
-		TotalCards:        2,
-		ReviewStateCount:  2,
+		TotalCards:         2,
+		ReviewStateCount:   2,
 		LearningStateCount: 0,
-		TotalReps:         0, // zero reps -> falls through
-		IsKnown:           false,
+		TotalReps:          0, // zero reps -> falls through
+		IsKnown:            false,
 	}
 	got := computeMasteringScore(stats)
 	// Falls through to review_state_count > 0 branch: 25 + cap25
@@ -656,11 +656,11 @@ func TestTrainingService_generateQueue_TypeThresholdOver100(t *testing.T) {
 	}
 	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, mockMastering, logger)
 	config := SessionConfig{
-		MaxCardsPerSession:      10,
-		MaxNewPerSession:        5,
-		SpellEnabled:            false,
-		TypeEnabled:             true,
-		TypeMasteringThreshold:  150, // clamped to 100; score(90) < 100 -> no type
+		MaxCardsPerSession:     10,
+		MaxNewPerSession:       5,
+		SpellEnabled:           false,
+		TypeEnabled:            true,
+		TypeMasteringThreshold: 150, // clamped to 100; score(90) < 100 -> no type
 	}
 	queue, err := service.generateQueue(user.ID, config)
 	if err != nil {
@@ -1804,7 +1804,7 @@ func TestTrainingService_generateQueue_GetNewCardsFails_Trigger(t *testing.T) {
 	// This is complex. Let's use a simpler approach: drop user_word_knowledge
 	// which is used by GetNewCards (NOT EXISTS subquery) but not by GetDueCards.
 	// Wait - GetDueCards also uses user_word_knowledge. So dropping it fails both.
-	// 
+	//
 	// The simplest approach: accept that GetNewCards error path is not testable
 	// without mocking in this architecture.
 	t.Log("GetNewCards error path: not easily testable without mocking (both GetDueCards and GetNewCards use same tables)")
@@ -1976,12 +1976,12 @@ func TestTrainingService_generateQueue_SkippedCountWarning(t *testing.T) {
 	// After dropping training_cards, GetDueCards will also fail.
 	// We need GetDueCards to succeed but GetTrainingCard to fail.
 	// GetDueCards JOINs training_cards, so we can't drop it.
-	// 
+	//
 	// Alternative: use a view that returns training_cards data for the JOIN
 	// but fails for individual GetTrainingCard queries.
 	// GetDueCards: JOIN training_cards (uses the table/view)
 	// GetTrainingCard: SELECT * FROM training_cards WHERE id = ? (uses the table/view)
-	// 
+	//
 	// We can't distinguish between these two queries with a simple view.
 	// Accept that this path requires mocking.
 	t.Log("skippedCount warning: GetTrainingCard fails after GetDueCards - not testable without mocking (both use training_cards)")
@@ -2306,4 +2306,3 @@ func TestTrainingService_fixAdjacentDuplicates_EmptyOrSingle(t *testing.T) {
 		t.Errorf("fixAdjacentDuplicates(single) should return same slice, got %v", got)
 	}
 }
-

@@ -21,12 +21,12 @@ func (r *Router) IsSuperAdmin(ctx context.Context) bool {
 	if r.userRepo == nil {
 		return false
 	}
-	
+
 	userRepo, ok := r.userRepo.(*repository.UserRepository)
 	if !ok {
 		return false
 	}
-	
+
 	user, err := userRepo.GetUserByID(userID)
 	if err != nil || user == nil {
 		return false
@@ -121,7 +121,7 @@ func (r *Router) RequirePermission(permission Permission) func(http.HandlerFunc)
 				w.Header().Set("Content-Type", "application/json")
 				w.WriteHeader(http.StatusForbidden)
 				json.NewEncoder(w).Encode(map[string]interface{}{
-					"error": "Forbidden",
+					"error":   "Forbidden",
 					"message": "You don't have permission to access this resource.",
 				})
 				return
@@ -181,7 +181,7 @@ func (r *Router) RequireAnyPermission(permissions ...Permission) func(http.Handl
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusForbidden)
 			json.NewEncoder(w).Encode(map[string]interface{}{
-				"error": "Forbidden",
+				"error":   "Forbidden",
 				"message": "You don't have permission to access this resource.",
 			})
 		}

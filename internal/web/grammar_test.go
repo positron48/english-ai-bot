@@ -11,9 +11,9 @@ import (
 
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/database"
-	"tgbot-skeleton/internal/testutil"
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/service"
+	"tgbot-skeleton/internal/testutil"
 
 	"go.uber.org/zap"
 )
@@ -142,7 +142,7 @@ func TestHandleLearningGrammarPlacementTest_QuestionsHaveChapterTitle(t *testing
 
 	var resp struct {
 		Questions []map[string]interface{} `json:"questions"`
-		Total     int                     `json:"total"`
+		Total     int                      `json:"total"`
 	}
 	if err := json.NewDecoder(w.Body).Decode(&resp); err != nil {
 		t.Fatalf("Failed to decode response: %v", err)
@@ -319,7 +319,7 @@ func TestHandleLearningGrammarSubmitTest_CategoryTestAnswersOrder(t *testing.T) 
 
 	var getResp struct {
 		Questions []map[string]interface{} `json:"questions"`
-		Total     int                       `json:"total"`
+		Total     int                      `json:"total"`
 	}
 	if err := json.NewDecoder(getW.Body).Decode(&getResp); err != nil {
 		t.Fatalf("Failed to decode GET response: %v", err)
@@ -345,7 +345,7 @@ func TestHandleLearningGrammarSubmitTest_CategoryTestAnswersOrder(t *testing.T) 
 	// This simulates the real scenario where answers might get mixed up
 	submitBody := map[string]interface{}{
 		"scope":    "category",
-		"scope_id":   "en.grammar.first_sentences_be_as",
+		"scope_id": "en.grammar.first_sentences_be_as",
 		"answers": []map[string]interface{}{
 			{"question_id": "q34", "answer": "true", "chapter_id": "en.grammar.first_sentences_be_as.personal_pronouns_am_is"},
 			{"question_id": "q19", "answer": "is", "chapter_id": "en.grammar.first_sentences_be_as.personal_pronouns_am_is"},
@@ -384,8 +384,8 @@ func TestHandleLearningGrammarSubmitTest_CategoryTestAnswersOrder(t *testing.T) 
 	var resp struct {
 		Score   int           `json:"score"`
 		Passed  bool          `json:"passed"`
-		Correct int          `json:"correct"`
-		Total   int          `json:"total"`
+		Correct int           `json:"correct"`
+		Total   int           `json:"total"`
 		Results []interface{} `json:"results"`
 	}
 	if err := json.NewDecoder(w.Body).Decode(&resp); err != nil {

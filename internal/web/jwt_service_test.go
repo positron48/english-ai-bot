@@ -14,7 +14,7 @@ import (
 
 func TestNewJWTService(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	
+
 	tests := []struct {
 		name      string
 		cfg       *config.Config
@@ -24,8 +24,8 @@ func TestNewJWTService(t *testing.T) {
 			name: "Valid config with JWT secret",
 			cfg: &config.Config{
 				WebApp: config.WebAppConfig{
-					JWTSecret:     "test-secret",
-					JWTTTLHours:   24,
+					JWTSecret:       "test-secret",
+					JWTTTLHours:     24,
 					RefreshTTLHours: 720,
 				},
 			},
@@ -35,8 +35,8 @@ func TestNewJWTService(t *testing.T) {
 			name: "Valid config with session secret fallback",
 			cfg: &config.Config{
 				WebApp: config.WebAppConfig{
-					SessionSecret: "session-secret",
-					JWTTTLHours:   24,
+					SessionSecret:   "session-secret",
+					JWTTTLHours:     24,
 					RefreshTTLHours: 720,
 				},
 			},
@@ -78,8 +78,8 @@ func TestJWTService_GenerateToken(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret-key",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret-key",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -102,8 +102,8 @@ func TestJWTService_GenerateRefreshToken(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret-key",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret-key",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -126,8 +126,8 @@ func TestJWTService_ValidateToken(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret-key",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret-key",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -181,8 +181,8 @@ func TestJWTService_ValidateRefreshToken(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret-key",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret-key",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -227,9 +227,9 @@ func TestJWTService_ValidateRefreshToken_Expired(t *testing.T) {
 	logger := zap.NewNop()
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:        "test-secret-key",
-			JWTTTLHours:      24,
-			RefreshTTLHours:  720,
+			JWTSecret:       "test-secret-key",
+			JWTTTLHours:     24,
+			RefreshTTLHours: 720,
 		},
 	}
 	svc, err := NewJWTService(cfg, logger)
@@ -267,9 +267,9 @@ func TestJWTService_ValidateRefreshToken_WrongSigningKey(t *testing.T) {
 	logger := zap.NewNop()
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:        "test-secret-key",
-			JWTTTLHours:      24,
-			RefreshTTLHours:  720,
+			JWTSecret:       "test-secret-key",
+			JWTTTLHours:     24,
+			RefreshTTLHours: 720,
 		},
 	}
 	svc, err := NewJWTService(cfg, logger)
@@ -354,8 +354,8 @@ func TestJWTService_TokenExpiration(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret-key",
-			JWTTTLHours:   1, // 1 hour
+			JWTSecret:       "test-secret-key",
+			JWTTTLHours:     1, // 1 hour
 			RefreshTTLHours: 720,
 		},
 	}
@@ -382,8 +382,8 @@ func TestJWTService_ValidateToken_Expired(t *testing.T) {
 	logger := zap.NewNop()
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret-key",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret-key",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -424,8 +424,8 @@ func TestJWTService_ValidateToken_LegacyRoleString(t *testing.T) {
 	logger := zap.NewNop()
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret-key",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret-key",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}

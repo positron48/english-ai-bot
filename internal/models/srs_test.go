@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -113,6 +114,27 @@ func TestCalculateQuality(t *testing.T) {
 			},
 			expected: QualityGood, // Should be average, not hard (very slow overrides early reveal)
 		},
+		// Time multiplier: spell/type get scaled thresholds (same real time → less likely Hard)
+		{
+			name: "Correct 25s with multiplier 1.5 (spell) - scaled slow 22.5s, so Hard",
+			data: AttemptData{
+				Correct:        true,
+				EarlyReveal:    false,
+				AnswerTimeMS:   25000,
+				TimeMultiplier: SpellTimeMultiplier,
+			},
+			expected: QualityHard,
+		},
+		{
+			name: "Correct 25s with multiplier 2 (type long word) - scaled slow 30s, so Good",
+			data: AttemptData{
+				Correct:        true,
+				EarlyReveal:    false,
+				AnswerTimeMS:   25000,
+				TimeMultiplier: 2.0,
+			},
+			expected: QualityGood,
+		},
 	}
 
 	for _, tt := range tests {
@@ -120,6 +142,31 @@ func TestCalculateQuality(t *testing.T) {
 			result := CalculateQuality(tt.data)
 			if result != tt.expected {
 				t.Errorf("CalculateQuality() = %v, want %v", result, tt.expected)
+			}
+		})
+	}
+}
+
+func TestTimeMultiplierForMode(t *testing.T) {
+	tests := []struct {
+		mode     string
+		wordLen  int
+		expected float64
+	}{
+		{"", 0, 1.0},
+		{"card", 5, 1.0},
+		{"spell", 0, SpellTimeMultiplier},
+		{"spell", 10, SpellTimeMultiplier},
+		{"type", 0, TypeTimeMultiplierBase},
+		{"type", 5, 1.6},                    // TypeTimeMultiplierBase + 5*TypeTimeMultiplierPerLetter
+		{"type", 20, TypeTimeMultiplierCap}, // capped
+	}
+	for _, tt := range tests {
+		t.Run(fmt.Sprintf("%s_len%d", tt.mode, tt.wordLen), func(t *testing.T) {
+			got := TimeMultiplierForMode(tt.mode, tt.wordLen)
+			diff := got - tt.expected
+			if diff < -1e-9 || diff > 1e-9 {
+				t.Errorf("TimeMultiplierForMode(%q, %d) = %v, want %v", tt.mode, tt.wordLen, got, tt.expected)
 			}
 		})
 	}

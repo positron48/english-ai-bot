@@ -9,8 +9,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"tgbot-skeleton/internal/service"
 	"go.uber.org/zap"
+	"tgbot-skeleton/internal/service"
 )
 
 // errPronunciationService is a mock that always returns errors from GetStatus/ForceRegenerate/Recheck.
@@ -32,7 +32,6 @@ func (m *errPronunciationService) ForceRegenerate(word string) (service.TTSStatu
 func (m *errPronunciationService) Recheck(word string) (service.TTSStatusResult, error) {
 	return service.TTSStatusResult{}, m.recheckErr
 }
-
 
 // makeTTSReqWithCategories creates a request with user ID and categories in context.
 func makeTTSReqWithCategories(method, path string, userID int64, categories []int64) *http.Request {

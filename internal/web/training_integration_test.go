@@ -90,12 +90,12 @@ func TestHandleTrainingStart_WithCards(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 		Training: config.TrainingConfig{
-			OptionsDelayMS:         2000,
+			OptionsDelayMS:          2000,
 			WrongAnswerDelaySeconds: 3,
 		},
 	}
@@ -170,7 +170,7 @@ func TestHandleTrainingStart_WithUserThresholds(t *testing.T) {
 	typeTh := -5
 	settings := models.UserSettings{
 		SpellModeEnabled:        ptrBool(false),
-		TypeModeEnabled:        ptrBool(false),
+		TypeModeEnabled:         ptrBool(false),
 		SpellMasteringThreshold: &spellTh,
 		TypeMasteringThreshold:  &typeTh,
 	}
@@ -258,12 +258,12 @@ func TestHandleTrainingReveal_WithSession(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 		Training: config.TrainingConfig{
-			OptionsDelayMS:         2000,
+			OptionsDelayMS:          2000,
 			WrongAnswerDelaySeconds: 3,
 		},
 	}

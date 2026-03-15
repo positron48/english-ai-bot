@@ -46,7 +46,7 @@ func (r *Router) handleLearningWordsCategories(w http.ResponseWriter, req *http.
 	allCategoriesRequested := req.URL.Query().Get("all") == "true"
 
 	categoryRepo := repository.NewWordSetCategoryRepository(r.db, r.logger)
-	
+
 	// Get only published categories for public API
 	allCategories, err := categoryRepo.GetPublishedCategories()
 	if err != nil {
@@ -238,11 +238,11 @@ func (r *Router) handleLearningWordsSets(w http.ResponseWriter, req *http.Reques
 			)
 			// Continue with zero progress
 			progress = &models.WordSetWithProgress{
-				WordSet:        *ws,
-				TotalWords:     0,
-				KnownWords:     0,
-				WordsInVocab:   0,
-				UnknownWords:   0,
+				WordSet:         *ws,
+				TotalWords:      0,
+				KnownWords:      0,
+				WordsInVocab:    0,
+				UnknownWords:    0,
 				ProgressPercent: 0.0,
 			}
 		}
@@ -266,7 +266,7 @@ func (r *Router) handleLearningWordsSetDetailOrStudy(w http.ResponseWriter, req 
 		http.Error(w, "Set ID required", http.StatusBadRequest)
 		return
 	}
-	
+
 	// Check if it's a study action
 	if len(parts) >= 2 && parts[1] == "study" {
 		if len(parts) >= 3 {
@@ -285,7 +285,7 @@ func (r *Router) handleLearningWordsSetDetailOrStudy(w http.ResponseWriter, req 
 			return
 		}
 	}
-	
+
 	// Default to detail view
 	r.handleLearningWordsSetDetail(w, req)
 }
@@ -344,11 +344,11 @@ func (r *Router) handleLearningWordsSetDetail(w http.ResponseWriter, req *http.R
 	if err != nil {
 		r.logger.Warn("failed to get progress", zap.Error(err))
 		progress = &models.WordSetWithProgress{
-			WordSet:        *wordSet,
-			TotalWords:     0,
-			KnownWords:     0,
-			WordsInVocab:   0,
-			UnknownWords:   0,
+			WordSet:         *wordSet,
+			TotalWords:      0,
+			KnownWords:      0,
+			WordsInVocab:    0,
+			UnknownWords:    0,
 			ProgressPercent: 0.0,
 		}
 	}
@@ -688,7 +688,7 @@ func (r *Router) getWordSetService() *service.WordSetService {
 	userCardRepo := repository.NewUserCardRepository(r.db, r.logger)
 	userWordKnowledgeRepo := repository.NewUserWordKnowledgeRepository(r.db, r.logger)
 	userWordMasteringRepo := repository.NewUserWordMasteringRepository(r.db, r.logger)
-	
+
 	// Get AI service with type assertion
 	var aiService *ai.Service
 	if r.aiService != nil {
@@ -696,7 +696,7 @@ func (r *Router) getWordSetService() *service.WordSetService {
 			aiService = svc
 		}
 	}
-	
+
 	return service.NewWordSetServiceWithMastering(
 		wordSetRepo,
 		wordSetCategoryRepo,

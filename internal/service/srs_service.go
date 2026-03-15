@@ -16,7 +16,7 @@ import (
 type SRSService struct {
 	userCardRepo      *repository.UserCardRepository
 	logger            *zap.Logger
-	learningStepsFunc func(models.CardDirection) []int // optional; if nil, models.LearningStepsDays is used (for tests to cover single-step paths)
+	learningStepsFunc func(models.CardDirection) []int  // optional; if nil, models.LearningStepsDays is used (for tests to cover single-step paths)
 	marshalJSONFunc   func(interface{}) ([]byte, error) // optional; if nil, json.Marshal is used (for tests to cover error path)
 }
 
@@ -39,16 +39,16 @@ func NewSRSService(userCardRepo *repository.UserCardRepository, logger *zap.Logg
 func (s *SRSService) GradeCard(userCard *models.UserCard, attemptData models.AttemptData) error {
 	// Calculate quality from attempt
 	quality := models.CalculateQuality(attemptData)
-	
+
 	// Store state before update
 	before := s.captureState(userCard)
-	
+
 	// Update card based on quality
 	s.updateCardState(userCard, quality, time.Now())
-	
+
 	// Store state after update
 	after := s.captureState(userCard)
-	
+
 	// Log the update
 	s.logger.Info("graded card",
 		zap.Int64("user_card_id", userCard.ID),
@@ -60,11 +60,11 @@ func (s *SRSService) GradeCard(userCard *models.UserCard, attemptData models.Att
 		zap.Int("interval_before", before.IntervalDays),
 		zap.Int("interval_after", after.IntervalDays),
 	)
-	
+
 	// Update quality
 	q := int(quality)
 	userCard.LastQuality = &q
-	
+
 	// Save to database
 	return s.userCardRepo.UpdateUserCard(userCard)
 }
@@ -72,16 +72,16 @@ func (s *SRSService) GradeCard(userCard *models.UserCard, attemptData models.Att
 // updateCardState updates card state based on quality using SM-2 algorithm
 func (s *SRSService) updateCardState(card *models.UserCard, quality models.Quality, now time.Time) {
 	q := quality.ToSM2Quality()
-	
+
 	// Update last review time
 	card.LastReviewAt = &now
-	
+
 	// If quality < 3 (wrong answer), handle lapse
 	if q < 3 {
 		s.handleLapse(card, now)
 		return
 	}
-	
+
 	// Handle based on current state
 	switch card.State {
 	case models.StateNew:
@@ -98,10 +98,10 @@ func (s *SRSService) updateCardState(card *models.UserCard, quality models.Quali
 // Only resets to learning if there are multiple consecutive errors
 func (s *SRSService) handleLapse(card *models.UserCard, now time.Time) {
 	card.LapseCount++
-	
+
 	// Reduce EF
 	card.EF = math.Max(models.MinEF, card.EF-0.2)
-	
+
 	// Check if we should reset to learning (after 3+ consecutive errors)
 	// or if card is already in learning
 	if card.State == models.StateLearning {
@@ -118,20 +118,20 @@ func (s *SRSService) handleLapse(card *models.UserCard, now time.Time) {
 		card.NextDueAt = &nextDue
 		return
 	}
-	
+
 	// For review cards: use gentle approach - reduce interval instead of full reset
 	if card.State == models.StateReview {
 		// Reduce interval by dividing by 2 (minimum 1 day)
 		// This preserves progress while still making the card appear more frequently
 		newInterval := int(math.Max(1, math.Floor(float64(card.IntervalDays)/2.0)))
 		card.IntervalDays = newInterval
-		
+
 		// Don't reset reps - keep the progress
 		// Don't change state - stay in review
-		
+
 		nextDue := now.Add(time.Duration(newInterval) * 24 * time.Hour)
 		card.NextDueAt = &nextDue
-		
+
 		// Only reset to learning if there are 3+ consecutive errors
 		// This handles cases where the word is genuinely forgotten
 		if card.LapseCount >= 3 {
@@ -145,7 +145,7 @@ func (s *SRSService) handleLapse(card *models.UserCard, now time.Time) {
 		}
 		return
 	}
-	
+
 	// For new cards: start learning
 	if card.State == models.StateNew {
 		card.State = models.StateLearning
@@ -222,16 +222,16 @@ func (s *SRSService) handleReview(card *models.UserCard, quality models.Quality,
 	// EF' = EF + (0.1 - (5-q)*(0.08 + (5-q)*0.02))
 	delta := 0.1 - float64(5-q)*(0.08+float64(5-q)*0.02)
 	card.EF = math.Max(models.MinEF, card.EF+delta)
-	
+
 	// Reset lapse count on successful answer (only consecutive errors count)
 	// This ensures that random errors don't accumulate
 	if card.LapseCount > 0 {
 		card.LapseCount = 0
 	}
-	
+
 	// Calculate new interval
 	var newInterval int
-	
+
 	switch card.Reps {
 	case 0:
 		newInterval = 1
@@ -241,10 +241,10 @@ func (s *SRSService) handleReview(card *models.UserCard, quality models.Quality,
 		// interval = previous_interval * EF
 		newInterval = int(math.Ceil(float64(card.IntervalDays) * card.EF))
 	}
-	
+
 	card.Reps++
 	card.IntervalDays = newInterval
-	
+
 	// Set next due date
 	nextDue := now.Add(time.Duration(newInterval) * 24 * time.Hour)
 	card.NextDueAt = &nextDue
@@ -255,7 +255,7 @@ func (s *SRSService) graduate(card *models.UserCard, now time.Time) {
 	card.State = models.StateReview
 	card.Reps = 0
 	card.IntervalDays = 1
-	
+
 	nextDue := now.Add(24 * time.Hour)
 	card.NextDueAt = &nextDue
 }
@@ -279,7 +279,7 @@ func (s *SRSService) RecordWrongAnswer(card *models.UserCard, wrongOption string
 		TS     time.Time `json:"ts"`
 		Count  int       `json:"count"`
 	}
-	
+
 	var wrongAnswers []WrongAnswer
 	if card.WrongAnswersJSON != "" {
 		if err := json.Unmarshal([]byte(card.WrongAnswersJSON), &wrongAnswers); err != nil {
@@ -287,7 +287,7 @@ func (s *SRSService) RecordWrongAnswer(card *models.UserCard, wrongOption string
 			wrongAnswers = []WrongAnswer{}
 		}
 	}
-	
+
 	// Check if this option already exists
 	found := false
 	for i := range wrongAnswers {
@@ -298,7 +298,7 @@ func (s *SRSService) RecordWrongAnswer(card *models.UserCard, wrongOption string
 			break
 		}
 	}
-	
+
 	if !found {
 		wrongAnswers = append(wrongAnswers, WrongAnswer{
 			Option: wrongOption,
@@ -306,7 +306,7 @@ func (s *SRSService) RecordWrongAnswer(card *models.UserCard, wrongOption string
 			Count:  1,
 		})
 	}
-	
+
 	// Keep only last 10 wrong answers
 	if len(wrongAnswers) > 10 {
 		wrongAnswers = wrongAnswers[len(wrongAnswers)-10:]
@@ -320,8 +320,7 @@ func (s *SRSService) RecordWrongAnswer(card *models.UserCard, wrongOption string
 	if err != nil {
 		return fmt.Errorf("failed to marshal wrong answers: %w", err)
 	}
-	
+
 	card.WrongAnswersJSON = string(data)
 	return nil
 }
-

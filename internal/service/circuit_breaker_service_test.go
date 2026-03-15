@@ -12,10 +12,10 @@ import (
 
 // mockCircuitBreakerRepository is a mock implementation
 type mockCircuitBreakerRepository struct {
-	state      *models.CircuitBreakerState
-	getError   error
-	openError  error
-	resetError error
+	state       *models.CircuitBreakerState
+	getError    error
+	openError   error
+	resetError  error
 	recordError error
 }
 
@@ -84,7 +84,7 @@ func TestNewCircuitBreakerService(t *testing.T) {
 
 func TestCircuitBreakerService_IsOpen(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	
+
 	tests := []struct {
 		name      string
 		state     *models.CircuitBreakerState
@@ -138,7 +138,7 @@ func TestCircuitBreakerService_IsOpen(t *testing.T) {
 
 func TestCircuitBreakerService_RecordSuccess(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	
+
 	tests := []struct {
 		name         string
 		initialState *models.CircuitBreakerState
@@ -170,8 +170,8 @@ func TestCircuitBreakerService_RecordSuccess(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			repo := &mockCircuitBreakerRepository{
-				state:     tt.initialState,
-				getError:  tt.getError,
+				state:      tt.initialState,
+				getError:   tt.getError,
 				resetError: tt.resetError,
 			}
 
@@ -187,38 +187,38 @@ func TestCircuitBreakerService_RecordSuccess(t *testing.T) {
 
 func TestCircuitBreakerService_RecordFailure(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	
+
 	tests := []struct {
-		name              string
-		threshold         int
-		initialFailures   int
-		state             *models.CircuitBreakerState
-		recordError       error
-		getError          error
-		openError         error
-		wantError         bool
-		shouldOpen        bool
+		name            string
+		threshold       int
+		initialFailures int
+		state           *models.CircuitBreakerState
+		recordError     error
+		getError        error
+		openError       error
+		wantError       bool
+		shouldOpen      bool
 	}{
 		{
-			name:        "Record failure below threshold",
-			threshold:   5,
+			name:            "Record failure below threshold",
+			threshold:       5,
 			initialFailures: 2,
-			wantError:    false,
-			shouldOpen:   false,
+			wantError:       false,
+			shouldOpen:      false,
 		},
 		{
-			name:        "Record failure at threshold - should open",
-			threshold:   5,
+			name:            "Record failure at threshold - should open",
+			threshold:       5,
 			initialFailures: 4,
-			wantError:    false,
-			shouldOpen:   true,
+			wantError:       false,
+			shouldOpen:      true,
 		},
 		{
-			name:        "Record failure above threshold - should open",
-			threshold:   5,
+			name:            "Record failure above threshold - should open",
+			threshold:       5,
 			initialFailures: 5,
-			wantError:    false,
-			shouldOpen:   true,
+			wantError:       false,
+			shouldOpen:      true,
 		},
 		{
 			name:        "RecordFailure error",
@@ -226,19 +226,19 @@ func TestCircuitBreakerService_RecordFailure(t *testing.T) {
 			wantError:   true,
 		},
 		{
-			name:        "Record failure when already open - should not call Open again",
-			threshold:   5,
+			name:            "Record failure when already open - should not call Open again",
+			threshold:       5,
 			initialFailures: 10,
-			state:        &models.CircuitBreakerState{IsOpen: true, FailureCount: 10},
-			wantError:    false,
-			shouldOpen:   false,
+			state:           &models.CircuitBreakerState{IsOpen: true, FailureCount: 10},
+			wantError:       false,
+			shouldOpen:      false,
 		},
 		{
-			name:        "GetState error after RecordFailure",
-			threshold:   5,
+			name:            "GetState error after RecordFailure",
+			threshold:       5,
 			initialFailures: 0,
-			getError:    errors.New("get state error"),
-			wantError:   true,
+			getError:        errors.New("get state error"),
+			wantError:       true,
 		},
 	}
 
@@ -278,20 +278,20 @@ func TestCircuitBreakerService_RecordFailure(t *testing.T) {
 
 func TestCircuitBreakerService_Reset(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	
+
 	tests := []struct {
-		name      string
+		name       string
 		resetError error
-		wantError bool
+		wantError  bool
 	}{
 		{
 			name:      "Successful reset",
 			wantError: false,
 		},
 		{
-			name:      "Reset error",
+			name:       "Reset error",
 			resetError: errors.New("database error"),
-			wantError: true,
+			wantError:  true,
 		},
 	}
 
@@ -313,7 +313,7 @@ func TestCircuitBreakerService_Reset(t *testing.T) {
 
 func TestCircuitBreakerService_GetState(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	
+
 	tests := []struct {
 		name      string
 		state     *models.CircuitBreakerState
@@ -323,9 +323,9 @@ func TestCircuitBreakerService_GetState(t *testing.T) {
 		{
 			name: "Get state successfully",
 			state: &models.CircuitBreakerState{
-				ID:            1,
-				IsOpen:        true,
-				FailureCount:  5,
+				ID:                 1,
+				IsOpen:             true,
+				FailureCount:       5,
 				LastFailureMessage: "test error",
 			},
 			wantError: false,

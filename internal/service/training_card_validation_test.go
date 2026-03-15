@@ -322,7 +322,7 @@ func TestValidateTrainingCardResponse_R5_ContainsWordButDiffersByMoreThanOneChar
 			{
 				POS:           "noun",
 				WordRU:        "суд",
-				DistractorsEN: []string{"courtroom", "judge", "lawyer"}, // "courtroom" содержит "court", но отличается более чем на 1 символ
+				DistractorsEN: []string{"courtroom", "judge", "lawyer"},   // "courtroom" содержит "court", но отличается более чем на 1 символ
 				DistractorsRU: []string{"судья", "заседатель", "адвокат"}, // "судья" отличается более чем на 1 символ от "суд"
 			},
 		},
@@ -512,7 +512,7 @@ func TestValidateTrainingCardResponse_MultipleErrors(t *testing.T) {
 				POS:           "noun",
 				WordRU:        "тест",
 				DistractorsEN: []string{"правильный", "to check", "tests"}, // R1, R4, R5 (tests differs by 1 char from test)
-				DistractorsRU: []string{"test", "тесты", "три"},        // R2, R6 (тесты differs by 1 char from тест)
+				DistractorsRU: []string{"test", "тесты", "три"},            // R2, R6 (тесты differs by 1 char from тест)
 			},
 		},
 	}

@@ -14,9 +14,9 @@ import (
 
 // mockWordRepository is a mock implementation
 type mockWordRepository struct {
-	getWordCardFunc func(string) (*models.WordCard, error)
+	getWordCardFunc  func(string) (*models.WordCard, error)
 	saveWordCardFunc func(string, string) error
-	addHistoryFunc func(int64, string) error
+	addHistoryFunc   func(int64, string) error
 }
 
 func (m *mockWordRepository) GetWordCard(word string) (*models.WordCard, error) {
@@ -58,7 +58,7 @@ func TestNewWordService(t *testing.T) {
 	trainingCardRepo := (*repository.TrainingCardRepository)(nil)
 	userCardRepo := (*repository.UserCardRepository)(nil)
 	aiService := (*ai.Service)(nil)
-	
+
 	service := NewWordService(wordRepo, trainingCardRepo, userCardRepo, aiService, logger)
 	_ = service // Verify service is created
 }
@@ -66,7 +66,7 @@ func TestNewWordService(t *testing.T) {
 func TestWordService_IsSingleWord(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	service := NewWordService(nil, nil, nil, nil, logger)
-	
+
 	tests := []struct {
 		name     string
 		input    string
@@ -96,7 +96,7 @@ func TestWordService_IsSingleWord(t *testing.T) {
 func TestWordService_NormalizeWord(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	service := NewWordService(nil, nil, nil, nil, logger)
-	
+
 	tests := []struct {
 		name     string
 		input    string
@@ -123,7 +123,7 @@ func TestWordService_NormalizeWord(t *testing.T) {
 func TestWordService_GetWordDefinition(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	ctx := context.Background()
-	
+
 	tests := []struct {
 		name           string
 		word           string
@@ -142,7 +142,7 @@ func TestWordService_GetWordDefinition(t *testing.T) {
 			userID: 123,
 			getWordCard: func(string) (*models.WordCard, error) {
 				return &models.WordCard{
-					Word:      "hello",
+					Word:       "hello",
 					Definition: "a greeting",
 				}, nil
 			},
@@ -194,19 +194,19 @@ func TestWordService_GetWordDefinition(t *testing.T) {
 					return tt.historyError
 				},
 			}
-			
+
 			aiService := &mockAIService{
 				generateResponseFunc: func(context.Context, string) (string, error) {
 					return tt.aiResponse, tt.aiError
 				},
 			}
-			
+
 			service := &WordService{
 				wordRepo:  (*repository.WordRepository)(nil),
 				aiService: (*ai.Service)(nil),
 				logger:    logger,
 			}
-			
+
 			_ = wordRepo
 			_ = aiService
 			_ = service
@@ -218,7 +218,7 @@ func TestWordService_GetWordDefinition(t *testing.T) {
 
 func TestWordService_GetWordCard(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	
+
 	tests := []struct {
 		name        string
 		word        string
@@ -230,7 +230,7 @@ func TestWordService_GetWordCard(t *testing.T) {
 			word: "hello",
 			getWordCard: func(string) (*models.WordCard, error) {
 				return &models.WordCard{
-					Word:      "hello",
+					Word:       "hello",
 					Definition: "a greeting",
 				}, nil
 			},
@@ -259,13 +259,13 @@ func TestWordService_GetWordCard(t *testing.T) {
 			wordRepo := &mockWordRepository{
 				getWordCardFunc: tt.getWordCard,
 			}
-			
+
 			service := &WordService{
 				wordRepo:  (*repository.WordRepository)(nil),
 				aiService: nil,
 				logger:    logger,
 			}
-			
+
 			_ = wordRepo
 			_ = service
 		})

@@ -11,8 +11,8 @@ import (
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/repository"
 
-	"tgbot-skeleton/internal/testutil"
 	"go.uber.org/zap"
+	"tgbot-skeleton/internal/testutil"
 )
 
 func setupVocabDeleteTestDB(t *testing.T) (*sql.DB, *repository.UserRepository) {
@@ -64,8 +64,8 @@ func TestHandleVocabDelete_ConfirmDelete(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -117,8 +117,8 @@ func TestHandleVocabDelete_WordNotFound(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -151,8 +151,8 @@ func TestHandleVocabDelete_Unauthorized(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -189,8 +189,8 @@ func TestHandleVocabDelete_InvalidPath(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -249,9 +249,9 @@ func TestHandleVocabDelete_PostDelete_Success(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:        "test-secret",
-			JWTTTLHours:      24,
-			RefreshTTLHours:  720,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
+			RefreshTTLHours: 720,
 		},
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
@@ -295,8 +295,8 @@ func TestHandleVocabDelete_InvalidAction(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -336,8 +336,8 @@ func TestHandleVocabDelete_GetNoAction_InvalidRequest(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -380,9 +380,9 @@ func TestHandleVocabDelete_ConfirmDelete_WordNotInUserVocab(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:        "test-secret",
-			JWTTTLHours:      24,
-			RefreshTTLHours:  720,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
+			RefreshTTLHours: 720,
 		},
 	}
 	jwtService, _ := NewJWTService(cfg, logger)

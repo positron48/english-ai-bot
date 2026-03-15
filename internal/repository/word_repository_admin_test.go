@@ -213,7 +213,7 @@ func TestWordRepository_CountWordCardsAdmin_WithErrors(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to get word card: %v", err)
 	}
-	
+
 	// Mark as processed with error
 	err = repo.MarkWordCardProcessedError(card.ID, "test error")
 	if err != nil {

@@ -22,12 +22,12 @@ import (
 
 // AuthMiddleware handles authentication
 type AuthMiddleware struct {
-	userRepo          *repository.UserRepository
+	userRepo           *repository.UserRepository
 	accessCategoryRepo *repository.UserAccessCategoryRepository
-	jwtService        *JWTService
-	logger            *zap.Logger
-	config            *config.Config
-	botToken          string
+	jwtService         *JWTService
+	logger             *zap.Logger
+	config             *config.Config
+	botToken           string
 }
 
 // NewAuthMiddleware creates a new auth middleware
@@ -40,12 +40,12 @@ func NewAuthMiddleware(
 	botToken string,
 ) *AuthMiddleware {
 	return &AuthMiddleware{
-		userRepo:          userRepo,
+		userRepo:           userRepo,
 		accessCategoryRepo: accessCategoryRepo,
-		jwtService:        jwtService,
-		logger:            logger,
-		config:            cfg,
-		botToken:          botToken,
+		jwtService:         jwtService,
+		logger:             logger,
+		config:             cfg,
+		botToken:           botToken,
 	}
 }
 
@@ -55,13 +55,13 @@ func (m *AuthMiddleware) RequireAuth(next http.HandlerFunc) http.HandlerFunc {
 		// Get token from Authorization header
 		authHeader := r.Header.Get("Authorization")
 		if authHeader == "" {
-			m.logger.Warn("authentication failed: missing Authorization header", 
+			m.logger.Warn("authentication failed: missing Authorization header",
 				zap.String("path", r.URL.Path))
 			lang := i18n.DetectLanguageFromRequest(r)
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusUnauthorized)
 			json.NewEncoder(w).Encode(map[string]interface{}{
-				"error": i18n.T(lang, "errors.unauthorized"),
+				"error":   i18n.T(lang, "errors.unauthorized"),
 				"message": i18n.T(lang, "errors.authRequired"),
 			})
 			return
@@ -69,13 +69,13 @@ func (m *AuthMiddleware) RequireAuth(next http.HandlerFunc) http.HandlerFunc {
 
 		tokenString, err := ExtractTokenFromHeader(authHeader)
 		if err != nil {
-			m.logger.Warn("authentication failed: invalid Authorization header format", 
+			m.logger.Warn("authentication failed: invalid Authorization header format",
 				zap.String("path", r.URL.Path),
 				zap.Error(err))
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusUnauthorized)
 			json.NewEncoder(w).Encode(map[string]interface{}{
-				"error": "Unauthorized",
+				"error":   "Unauthorized",
 				"message": "Invalid Authorization header format. Expected: Bearer <token>",
 			})
 			return
@@ -83,31 +83,31 @@ func (m *AuthMiddleware) RequireAuth(next http.HandlerFunc) http.HandlerFunc {
 
 		userID, categories, err := m.jwtService.ValidateToken(tokenString)
 		if err != nil || userID == 0 {
-			m.logger.Warn("authentication failed: invalid or expired token", 
+			m.logger.Warn("authentication failed: invalid or expired token",
 				zap.String("path", r.URL.Path),
 				zap.Error(err))
 			lang := i18n.DetectLanguageFromRequest(r)
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusUnauthorized)
 			json.NewEncoder(w).Encode(map[string]interface{}{
-				"error": i18n.T(lang, "errors.unauthorized"),
+				"error":   i18n.T(lang, "errors.unauthorized"),
 				"message": i18n.T(lang, "errors.invalidToken"),
 			})
 			return
 		}
 
-		m.logger.Info("JWT authentication successful", 
+		m.logger.Info("JWT authentication successful",
 			zap.String("path", r.URL.Path),
 			zap.Int64("user_id", userID),
 			zap.Int64s("categories", categories))
-		
+
 		// Add user ID and categories to request context
 		ctx := r.Context()
 		ctx = context.WithValue(ctx, userIDKey, userID)
 		ctx = context.WithValue(ctx, userCategoriesKey, categories)
 		// Keep legacy role for backward compatibility (empty for new tokens)
 		ctx = context.WithValue(ctx, userRoleKey, "")
-		
+
 		// Determine language: first try user settings, then Accept-Language header
 		lang := "en"
 		user, err := m.userRepo.GetUserByID(userID)
@@ -126,12 +126,11 @@ func (m *AuthMiddleware) RequireAuth(next http.HandlerFunc) http.HandlerFunc {
 			lang = i18n.DetectLanguageFromRequest(r)
 		}
 		ctx = i18n.WithLanguage(ctx, lang)
-		
+
 		r = r.WithContext(ctx)
 		next(w, r)
 	}
 }
-
 
 // ValidateTelegramInitData validates Telegram WebApp initData
 func (m *AuthMiddleware) ValidateTelegramInitData(initData string) (int64, error) {

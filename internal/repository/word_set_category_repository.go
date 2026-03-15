@@ -58,18 +58,18 @@ func parseTime(timeStr string) (time.Time, error) {
 	if timeStr == "" {
 		return time.Time{}, nil
 	}
-	
+
 	// Try standard format first
 	t, err := time.Parse("2006-01-02 15:04:05", timeStr)
 	if err == nil {
 		return t, nil
 	}
-	
+
 	// Try RFC3339 format
 	if t2, err2 := time.Parse(time.RFC3339, timeStr); err2 == nil {
 		return t2, nil
 	}
-	
+
 	// Try ISO format without timezone
 	if t3, err3 := time.Parse("2006-01-02T15:04:05", timeStr); err3 == nil {
 		return t3, nil

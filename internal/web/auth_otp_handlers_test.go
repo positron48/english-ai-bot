@@ -35,10 +35,10 @@ func TestHandleAuthRequestOTP_UserNotFound(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
-			OTPTTLSeconds: 300,
+			OTPTTLSeconds:   300,
 		},
 	}
 
@@ -59,7 +59,6 @@ func TestHandleAuthRequestOTP_UserNotFound(t *testing.T) {
 	}
 }
 
-
 func TestHandleAuthOTP_ValidCode(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, otpRepo, userRepo := setupAuthOTPHandlersTestDB(t)
@@ -78,8 +77,8 @@ func TestHandleAuthOTP_ValidCode(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret-key-for-otp-testing",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret-key-for-otp-testing",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -118,8 +117,8 @@ func TestHandleAuthOTP_InvalidCode(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -152,8 +151,8 @@ func TestHandleAuthOTP_MissingParams(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -186,10 +185,10 @@ func TestHandleAuthRequestOTP_WrongMethod(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
-			OTPTTLSeconds: 300,
+			OTPTTLSeconds:   300,
 		},
 	}
 
@@ -215,8 +214,8 @@ func TestHandleAuthOTP_WrongMethod(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -276,8 +275,8 @@ func TestHandleAuthOTP_InvalidUserID(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -309,8 +308,8 @@ func TestHandleAuthOTP_InvalidFormData(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -467,8 +466,8 @@ func TestHandleAuthOTP_GetUserByIDFails(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -547,4 +546,3 @@ func TestHandleAuthRequestOTP_Success(t *testing.T) {
 		t.Errorf("Expected success=true, got %v", resp["success"])
 	}
 }
-

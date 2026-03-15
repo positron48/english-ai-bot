@@ -33,9 +33,9 @@ type ForeignKey struct {
 
 // TableInfo represents information about a database table
 type TableInfo struct {
-	Name       string       `json:"name"`
-	Columns    []TableColumn `json:"columns"`
-	ForeignKeys []ForeignKey `json:"foreign_keys"`
+	Name        string        `json:"name"`
+	Columns     []TableColumn `json:"columns"`
+	ForeignKeys []ForeignKey  `json:"foreign_keys"`
 }
 
 // SchemaResponse represents the complete database schema

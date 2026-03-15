@@ -12,10 +12,10 @@ import (
 
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/database"
-	"tgbot-skeleton/internal/testutil"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/service"
+	"tgbot-skeleton/internal/testutil"
 
 	"go.uber.org/zap"
 )
@@ -569,7 +569,7 @@ func TestHandleAdminAccessUsers_Get(t *testing.T) {
 	}
 
 	var response struct {
-		UserID    int64   `json:"user_id"`
+		UserID     int64   `json:"user_id"`
 		Categories []int64 `json:"categories"`
 	}
 	if err := json.NewDecoder(rr.Body).Decode(&response); err != nil {
@@ -858,7 +858,7 @@ func TestHandleAdminAccessCategories_Get_DBFails(t *testing.T) {
 	badDB := badDBConn(t)
 
 	cfg := &config.Config{
-		Admin: config.AdminConfig{TelegramID: 12345},
+		Admin:  config.AdminConfig{TelegramID: 12345},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret"},
 	}
 	userRepo := repository.NewUserRepository(goodDB, logger)

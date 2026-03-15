@@ -8,9 +8,9 @@ import (
 
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/database"
-	"tgbot-skeleton/internal/testutil"
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/service"
+	"tgbot-skeleton/internal/testutil"
 
 	"go.uber.org/zap"
 )
@@ -107,10 +107,10 @@ func TestSendNDJSONEvent_WithParsed(t *testing.T) {
 	rr := httptest.NewRecorder()
 
 	event := PromptTesterEvent{
-		Word:   "test",
-		Step:   "cards",
-		OK:     true,
-		Parsed: map[string]interface{}{"key": "value", "number": 42},
+		Word:       "test",
+		Step:       "cards",
+		OK:         true,
+		Parsed:     map[string]interface{}{"key": "value", "number": 42},
 		DurationMS: 200,
 	}
 

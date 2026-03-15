@@ -305,7 +305,7 @@ func TestHandleAdminWordSetDetail_GetSuccess(t *testing.T) {
 	}
 	var resp struct {
 		WordSet map[string]interface{} `json:"word_set"`
-		Words   []interface{}         `json:"words"`
+		Words   []interface{}          `json:"words"`
 	}
 	if err := json.NewDecoder(rr.Body).Decode(&resp); err != nil {
 		t.Fatalf("decode: %v", err)

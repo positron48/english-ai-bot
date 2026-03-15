@@ -12,9 +12,9 @@ import (
 
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/database"
-	"tgbot-skeleton/internal/testutil"
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/service"
+	"tgbot-skeleton/internal/testutil"
 
 	"go.uber.org/zap"
 )

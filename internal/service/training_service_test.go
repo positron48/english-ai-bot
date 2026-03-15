@@ -271,11 +271,14 @@ func TestTrainingService_FinishSession_NonExistentSession(t *testing.T) {
 
 // mockMasteringRepoForSession returns error from GetWordCardIDsBySessionID or GetWordMasteringStatsBatch to trigger FinishSession/updateMasteringScoresForSession paths.
 type mockMasteringRepoForSession struct {
-	getWordCardIDsBySessionIDFunc   func(sessionID int64) ([]repository.UserWordPair, error)
-	getWordMasteringStatsBatchFunc  func(pairs []repository.UserWordPair) (map[repository.UserWordPair]repository.WordMasteringStatsRow, error)
-	getKnownForPairsFunc            func(pairs []repository.UserWordPair) (map[repository.UserWordPair]bool, error)
-	upsertBatchFunc                 func(entries []struct{ UserID, WordCardID int64; Score int }) error
-	getScoreFunc                    func(userID, wordCardID int64) (int, error)
+	getWordCardIDsBySessionIDFunc  func(sessionID int64) ([]repository.UserWordPair, error)
+	getWordMasteringStatsBatchFunc func(pairs []repository.UserWordPair) (map[repository.UserWordPair]repository.WordMasteringStatsRow, error)
+	getKnownForPairsFunc           func(pairs []repository.UserWordPair) (map[repository.UserWordPair]bool, error)
+	upsertBatchFunc                func(entries []struct {
+		UserID, WordCardID int64
+		Score              int
+	}) error
+	getScoreFunc func(userID, wordCardID int64) (int, error)
 }
 
 func (m *mockMasteringRepoForSession) GetWordCardIDsBySessionID(sessionID int64) ([]repository.UserWordPair, error) {
@@ -299,7 +302,10 @@ func (m *mockMasteringRepoForSession) GetKnownForPairs(pairs []repository.UserWo
 	return nil, nil
 }
 
-func (m *mockMasteringRepoForSession) UpsertBatch(entries []struct{ UserID, WordCardID int64; Score int }) error {
+func (m *mockMasteringRepoForSession) UpsertBatch(entries []struct {
+	UserID, WordCardID int64
+	Score              int
+}) error {
 	if m.upsertBatchFunc != nil {
 		return m.upsertBatchFunc(entries)
 	}

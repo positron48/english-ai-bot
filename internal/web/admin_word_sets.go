@@ -54,7 +54,7 @@ func (r *Router) handleAdminWordSetCategories(w http.ResponseWriter, req *http.R
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusForbidden)
 			json.NewEncoder(w).Encode(map[string]interface{}{
-				"error": "Forbidden",
+				"error":   "Forbidden",
 				"message": "You don't have permission to create word set categories.",
 			})
 			return
@@ -99,7 +99,7 @@ func (r *Router) handleAdminWordSetCategories(w http.ResponseWriter, req *http.R
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusForbidden)
 			json.NewEncoder(w).Encode(map[string]interface{}{
-				"error": "Forbidden",
+				"error":   "Forbidden",
 				"message": "You don't have permission to edit word set categories.",
 			})
 			return
@@ -147,7 +147,7 @@ func (r *Router) handleAdminWordSetCategories(w http.ResponseWriter, req *http.R
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusForbidden)
 			json.NewEncoder(w).Encode(map[string]interface{}{
-				"error": "Forbidden",
+				"error":   "Forbidden",
 				"message": "You don't have permission to delete word set categories.",
 			})
 			return
@@ -247,7 +247,7 @@ func (r *Router) handleAdminWordSets(w http.ResponseWriter, req *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusForbidden)
 			json.NewEncoder(w).Encode(map[string]interface{}{
-				"error": "Forbidden",
+				"error":   "Forbidden",
 				"message": "You don't have permission to create word sets.",
 			})
 			return
@@ -285,7 +285,7 @@ func (r *Router) handleAdminWordSets(w http.ResponseWriter, req *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusForbidden)
 			json.NewEncoder(w).Encode(map[string]interface{}{
-				"error": "Forbidden",
+				"error":   "Forbidden",
 				"message": "You don't have permission to edit word sets.",
 			})
 			return
@@ -353,7 +353,7 @@ func (r *Router) handleAdminWordSets(w http.ResponseWriter, req *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusForbidden)
 			json.NewEncoder(w).Encode(map[string]interface{}{
-				"error": "Forbidden",
+				"error":   "Forbidden",
 				"message": "You don't have permission to delete word sets.",
 			})
 			return
@@ -388,25 +388,25 @@ func (r *Router) handleAdminWordSets(w http.ResponseWriter, req *http.Request) {
 func (r *Router) handleAdminWordSetDetailOrSets(w http.ResponseWriter, req *http.Request) {
 	path := strings.TrimPrefix(req.URL.Path, "/api/admin/word-sets/")
 	parts := strings.Split(path, "/")
-	
+
 	if len(parts) < 1 || parts[0] == "" {
 		// No ID, should be handled by handleAdminWordSets
 		r.handleAdminWordSets(w, req)
 		return
 	}
-	
+
 	// PUT and DELETE requests should go to handleAdminWordSets
 	if req.Method == http.MethodPut || req.Method == http.MethodDelete {
 		r.handleAdminWordSets(w, req)
 		return
 	}
-	
+
 	// Check if it's items update
 	if len(parts) >= 2 && parts[1] == "items" {
 		r.handleAdminWordSets(w, req)
 		return
 	}
-	
+
 	// Default to detail view (GET requests)
 	r.handleAdminWordSetDetail(w, req)
 }

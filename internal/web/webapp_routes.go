@@ -124,16 +124,16 @@ func (r *Router) setupDevProxy() {
 	if viteDevServerURL == "" {
 		viteDevServerURL = "http://localhost:5173" // fallback default
 	}
-	
+
 	viteURL, err := url.Parse(viteDevServerURL)
 	if err != nil {
-		r.logger.Error("failed to parse Vite dev server URL", 
-			zap.String("url", viteDevServerURL), 
+		r.logger.Error("failed to parse Vite dev server URL",
+			zap.String("url", viteDevServerURL),
 			zap.Error(err))
 		return
 	}
-	
-	r.logger.Info("dev mode: webapp should be accessed via Vite dev server", 
+
+	r.logger.Info("dev mode: webapp should be accessed via Vite dev server",
 		zap.String("vite_url", viteDevServerURL),
 		zap.String("access_url", viteURL.String()+"/app/"))
 
@@ -155,4 +155,3 @@ func (r *Router) setupDevProxy() {
 	r.mux.HandleFunc("/app/", devHandler)
 	r.mux.HandleFunc("/app", devHandler)
 }
-

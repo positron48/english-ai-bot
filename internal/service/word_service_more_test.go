@@ -12,9 +12,9 @@ import (
 	"unsafe"
 
 	"tgbot-skeleton/internal/ai"
-	"tgbot-skeleton/internal/testutil"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
+	"tgbot-skeleton/internal/testutil"
 
 	"go.uber.org/zap"
 )
@@ -324,10 +324,10 @@ func TestWordService_renderWordCardMarkdown(t *testing.T) {
 	examplesJSON := `[{"example_en":"I run.","gloss_ru":"Я бегу."}]`
 	verbFormsJSON := `{"v1":"run","v2":"ran","v3":"run"}`
 	card := &models.WordCard{
-		Word:           "run",
-		Definition:     "to move fast",
-		ExamplesJSON:   &examplesJSON,
-		VerbFormsJSON:  &verbFormsJSON,
+		Word:          "run",
+		Definition:    "to move fast",
+		ExamplesJSON:  &examplesJSON,
+		VerbFormsJSON: &verbFormsJSON,
 	}
 	md := service.renderWordCardMarkdown(card)
 	if md == "" {

@@ -420,18 +420,18 @@ func (r *TrainingCardRepository) DeleteTrainingCard(id int64) error {
 // OrphanedTrainingCardInfo represents an orphaned training card (without word_card)
 type OrphanedTrainingCardInfo struct {
 	TrainingCardID int64
-	WordCardID      int64
-	WordEN          string
-	Transcription   string
-	SenseIndex      int
-	WordRU          string
-	MeaningEN       string
-	ExampleEN       string
-	ExampleRU       string
-	POS             *string
-	DisplayWord     *string
-	CreatedAt       time.Time
-	UserCardsCount  int64
+	WordCardID     int64
+	WordEN         string
+	Transcription  string
+	SenseIndex     int
+	WordRU         string
+	MeaningEN      string
+	ExampleEN      string
+	ExampleRU      string
+	POS            *string
+	DisplayWord    *string
+	CreatedAt      time.Time
+	UserCardsCount int64
 }
 
 // ListOrphanedTrainingCards lists training_cards that reference non-existent word_cards

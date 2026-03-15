@@ -136,13 +136,13 @@ func TestErrorField_IsTrue(t *testing.T) {
 
 func TestWordInfoResponse_UnmarshalJSON(t *testing.T) {
 	tests := []struct {
-		name           string
-		json           string
-		wantLemma      string
-		wantError      bool
-		wantErrorMsg   string
-		wantVerbForms  bool
-		wantExamples   int
+		name          string
+		json          string
+		wantLemma     string
+		wantError     bool
+		wantErrorMsg  string
+		wantVerbForms bool
+		wantExamples  int
 	}{
 		{
 			name:          "success response with verb forms",

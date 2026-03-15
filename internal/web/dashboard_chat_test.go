@@ -13,8 +13,8 @@ import (
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/service"
 
-	"tgbot-skeleton/internal/testutil"
 	"go.uber.org/zap"
+	"tgbot-skeleton/internal/testutil"
 )
 
 func setupDashboardChatTestDB(t *testing.T) (*sql.DB, *repository.UserRepository, *repository.WordRepository) {
@@ -46,8 +46,8 @@ func TestHandleChat_SingleWord_WordInDB(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -96,8 +96,8 @@ func TestHandleChat_MultipleWords(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -138,8 +138,8 @@ func TestHandleChat_MissingMessage(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -173,8 +173,8 @@ func TestHandleChat_WrongMethod(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -205,8 +205,8 @@ func TestHandleChat_Unauthorized(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}

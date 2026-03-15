@@ -8,8 +8,8 @@ import (
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 
-	"tgbot-skeleton/internal/testutil"
 	"go.uber.org/zap"
+	"tgbot-skeleton/internal/testutil"
 )
 
 func setupSRSServiceTestDB(t *testing.T) (*sql.DB, *repository.UserRepository, *repository.UserCardRepository) {
@@ -311,8 +311,8 @@ func TestSRSService_GradeCard_ReviewWithZeroReps(t *testing.T) {
 		Direction:      models.DirectionENtoRU,
 		State:          models.StateReview,
 		EF:             2.0,
-		Reps:           0,   // broken: review with 0 reps (e.g. after bad migration)
-		IntervalDays:   0,   // broken
+		Reps:           0, // broken: review with 0 reps (e.g. after bad migration)
+		IntervalDays:   0, // broken
 		NextDueAt:      &now,
 	}
 	id, err := userCardRepo.CreateUserCard(card)
@@ -345,7 +345,7 @@ func TestSRSService_GradeCard_ReviewWithZeroReps(t *testing.T) {
 	if after2.NextDueAt == nil {
 		t.Fatal("NextDueAt must be set")
 	}
-	hoursAhead := after2.NextDueAt.Sub(time.Now()).Hours()
+	hoursAhead := time.Until(*after2.NextDueAt).Hours()
 	if hoursAhead < 5*24 { // at least ~5 days (6 days - small tolerance)
 		t.Errorf("next_due_at should be ~6 days ahead, got %.1f hours", hoursAhead)
 	}

@@ -248,9 +248,9 @@ func TestRouter_HandleAuthTelegram_Success(t *testing.T) {
 	botToken := "test-bot-token-for-telegram-auth"
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:        "test-secret",
-			JWTTTLHours:      24,
-			RefreshTTLHours:  720,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
+			RefreshTTLHours: 720,
 		},
 	}
 	userRepo := repository.NewUserRepository(db, logger)

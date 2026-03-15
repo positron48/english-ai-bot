@@ -14,8 +14,8 @@ import (
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/repository"
 
-	"tgbot-skeleton/internal/testutil"
 	"go.uber.org/zap"
+	"tgbot-skeleton/internal/testutil"
 )
 
 func setupAuthRefreshTestDB(t *testing.T) (*sql.DB, *repository.UserRepository) {

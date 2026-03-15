@@ -76,12 +76,12 @@ func TestFinishTrainingSession_CompleteSession(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 		Training: config.TrainingConfig{
-			OptionsDelayMS:         2000,
+			OptionsDelayMS:          2000,
 			WrongAnswerDelaySeconds: 3,
 		},
 	}
@@ -123,14 +123,14 @@ func TestFinishTrainingSession_CompleteSession(t *testing.T) {
 		t.Fatal("Expected first queue item to be a card")
 	}
 	reviewEvent := &models.ReviewEvent{
-		SessionID:  &state.SessionID,
-		UserID:     user.ID,
-		UserCardID: state.Queue[0].Card.UserCard.ID,
-		Direction:  state.Queue[0].Card.UserCard.Direction,
-		ShownAt:    time.Now(),
-		AnsweredAt: &time.Time{},
-		IsCorrect:  true,
-		Quality:    4,
+		SessionID:   &state.SessionID,
+		UserID:      user.ID,
+		UserCardID:  state.Queue[0].Card.UserCard.ID,
+		Direction:   state.Queue[0].Card.UserCard.Direction,
+		ShownAt:     time.Now(),
+		AnsweredAt:  &time.Time{},
+		IsCorrect:   true,
+		Quality:     4,
 		OptionCount: 4,
 	}
 	_, err = sessionRepo.CreateReviewEvent(reviewEvent)
@@ -204,7 +204,7 @@ func TestFinishTrainingSession_DirectCall(t *testing.T) {
 
 	cfg := &config.Config{
 		Training: config.TrainingConfig{
-			OptionsDelayMS:         2000,
+			OptionsDelayMS:          2000,
 			WrongAnswerDelaySeconds: 3,
 		},
 	}
@@ -214,10 +214,10 @@ func TestFinishTrainingSession_DirectCall(t *testing.T) {
 	router.webTrainingHandler = NewWebTrainingHandler(trainingService, nil, nil, sessionRepo, logger, 2000, 3)
 
 	state := &WebTrainingState{
-		UserID:        101,
-		SessionID:     99999,
-		Queue:         nil,
-		CurrentIndex:  2,
+		UserID:       101,
+		SessionID:    99999,
+		Queue:        nil,
+		CurrentIndex: 2,
 	}
 	router.webTrainingHandler.sessionsMutex.Lock()
 	router.webTrainingHandler.sessions[state.UserID] = state

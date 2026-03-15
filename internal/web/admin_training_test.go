@@ -13,9 +13,9 @@ import (
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/database"
 	"tgbot-skeleton/internal/models"
-	"tgbot-skeleton/internal/testutil"
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/service"
+	"tgbot-skeleton/internal/testutil"
 
 	"go.uber.org/zap"
 )
@@ -33,11 +33,11 @@ func setupAdminTrainingTest(t *testing.T) (*Router, *database.DB, int64) {
 	cbService := service.NewCircuitBreakerService(cbRepo, 5, logger)
 
 	router := NewRouter(logger, cfg, db.GetConnection(), nil, nil, nil, cbService)
-	
+
 	// Initialize dependencies for permission checks
 	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
 	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
-	
+
 	// Create admin user in DB (required for IsSuperAdmin to work)
 	adminUser, err := userRepo.GetOrCreateUser(int64(cfg.Admin.TelegramID))
 	if err != nil {

@@ -18,7 +18,6 @@ import (
 	"go.uber.org/zap"
 )
 
-
 // ── handleSettings ────────────────────────────────────────────────────────────
 
 // TestHandleSettings_LanguageNotSet covers the path where settings.Language == ""

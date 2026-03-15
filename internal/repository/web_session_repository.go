@@ -39,7 +39,7 @@ func NewWebSessionRepository(db *sql.DB, logger *zap.Logger) *WebSessionReposito
 func (r *WebSessionRepository) CreateSession(session *WebSession) error {
 	// Format time as UTC string to avoid timezone issues
 	expiresAtStr := session.ExpiresAt.UTC().Format("2006-01-02 15:04:05")
-	
+
 	// Log token preview for debugging
 	tokenPreview := session.Token
 	if len(session.Token) > 16 {
@@ -51,7 +51,7 @@ func (r *WebSessionRepository) CreateSession(session *WebSession) error {
 		zap.String("token_length", fmt.Sprintf("%d", len(session.Token))),
 		zap.Time("expires_at", session.ExpiresAt),
 		zap.String("expires_at_str", expiresAtStr))
-	
+
 	query := `INSERT INTO web_sessions (user_id, session_token, expires_at) VALUES (?, ?, ?)`
 	id, err := database.InsertAndReturnID(r.db, query, session.UserID, session.Token, expiresAtStr)
 	if err != nil {
@@ -112,7 +112,7 @@ func (r *WebSessionRepository) GetSessionByToken(token string) (*WebSession, err
 	// Parse times as UTC to match how we store them
 	// Try multiple date formats
 	loc, _ := time.LoadLocation("UTC")
-	
+
 	// Helper function to parse time with multiple format attempts
 	parseTime := func(timeStr, fieldName string) time.Time {
 		// Try ISO 8601 format first
@@ -130,7 +130,7 @@ func (r *WebSessionRepository) GetSessionByToken(token string) (*WebSession, err
 		r.logger.Warn("failed to parse time", zap.String("field", fieldName), zap.String("value", timeStr))
 		return time.Time{}
 	}
-	
+
 	session.ExpiresAt = parseTime(expiresAt, "expires_at")
 	session.CreatedAt = parseTime(createdAt, "created_at")
 	session.LastSeenAt = parseTime(lastSeenAt, "last_seen_at")

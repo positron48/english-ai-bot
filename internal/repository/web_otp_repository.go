@@ -45,7 +45,7 @@ func NewWebOTPRepository(db *sql.DB, logger *zap.Logger) *WebOTPRepository {
 func (r *WebOTPRepository) GenerateOTP(userID int64, ttl time.Duration) (string, *WebOTP, error) {
 	// Generate random 6-digit code
 	code := generateRandomCode(6)
-	
+
 	// Hash the code
 	hash := sha256.Sum256([]byte(code))
 	codeHash := hex.EncodeToString(hash[:])
@@ -58,7 +58,7 @@ func (r *WebOTPRepository) GenerateOTP(userID int64, ttl time.Duration) (string,
 		ExpiresAt: now.Add(ttl),
 	}
 
-	r.logger.Debug("generating OTP", 
+	r.logger.Debug("generating OTP",
 		zap.Int64("user_id", userID),
 		zap.Time("expires_at", otp.ExpiresAt),
 		zap.Duration("ttl", ttl))
@@ -73,7 +73,7 @@ func (r *WebOTPRepository) GenerateOTP(userID int64, ttl time.Duration) (string,
 
 	otp.ID = id
 	r.logger.Debug("generated OTP", zap.Int64("otp_id", id), zap.Int64("user_id", userID))
-	
+
 	return code, otp, nil
 }
 
@@ -83,7 +83,7 @@ func (r *WebOTPRepository) ValidateOTP(userID int64, code string) (*WebOTP, erro
 	hash := sha256.Sum256([]byte(code))
 	codeHash := hex.EncodeToString(hash[:])
 
-	r.logger.Debug("validating OTP", 
+	r.logger.Debug("validating OTP",
 		zap.Int64("user_id", userID),
 		zap.String("code_length", fmt.Sprintf("%d", len(code))),
 		zap.String("code_hash", codeHash))
@@ -106,7 +106,7 @@ func (r *WebOTPRepository) ValidateOTP(userID int64, code string) (*WebOTP, erro
 	)
 
 	if err == sql.ErrNoRows {
-		r.logger.Debug("OTP not found in database", 
+		r.logger.Debug("OTP not found in database",
 			zap.Int64("user_id", userID),
 			zap.String("code_hash", codeHash))
 		// Check if there are any OTPs for this user (for debugging)
@@ -155,8 +155,8 @@ func (r *WebOTPRepository) ValidateOTP(userID int64, code string) (*WebOTP, erro
 	// Use UTC for comparison to match how we store times
 	now := time.Now().UTC()
 	timeUntilExpiry := otp.ExpiresAt.Sub(now)
-	
-	r.logger.Debug("OTP found", 
+
+	r.logger.Debug("OTP found",
 		zap.Int64("otp_id", otp.ID),
 		zap.Time("created_at", otp.CreatedAt),
 		zap.Time("expires_at", otp.ExpiresAt),
@@ -166,7 +166,7 @@ func (r *WebOTPRepository) ValidateOTP(userID int64, code string) (*WebOTP, erro
 
 	// Check expiration - add 5 second grace period to account for clock skew
 	if now.After(otp.ExpiresAt.Add(5 * time.Second)) {
-		r.logger.Debug("OTP expired", 
+		r.logger.Debug("OTP expired",
 			zap.Int64("otp_id", otp.ID),
 			zap.Time("expires_at", otp.ExpiresAt),
 			zap.Time("now", now),

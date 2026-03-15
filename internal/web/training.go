@@ -619,21 +619,30 @@ func (r *Router) handleTrainingReveal(w http.ResponseWriter, req *http.Request) 
 	})
 }
 
-// gradeReplacedCardForSpellType grades the user_card that was replaced by a spell/type challenge so SRS is updated and the card won't stay due
-func (r *Router) gradeReplacedCardForSpellType(userID int64, userCardID int64, isCorrect bool, chosenOption string, shownAt time.Time, sessionID int64) {
+// gradeReplacedCardForSpellType grades the user_card that was replaced by a spell/type challenge so SRS is updated and the card won't stay due.
+// mode is "spell" or "type", wordLen is the length of the word (for type: longer = higher time multiplier).
+func (r *Router) gradeReplacedCardForSpellType(userID int64, userCardID int64, isCorrect bool, chosenOption string, shownAt, answeredAt time.Time, sessionID int64, mode string, wordLen int) {
 	userCardRepo := repository.NewUserCardRepository(r.db, r.logger)
 	userCard, err := userCardRepo.GetUserCard(userCardID)
 	if err != nil || userCard == nil {
 		r.logger.Warn("failed to load replaced user card for spell/type grade", zap.Int64("user_card_id", userCardID), zap.Error(err))
 		return
 	}
+	answerTimeMS := 0
+	if !answeredAt.IsZero() {
+		answerTimeMS = int(answeredAt.Sub(shownAt).Milliseconds())
+		if answerTimeMS < 0 {
+			answerTimeMS = 0
+		}
+	}
 	attemptData := models.AttemptData{
-		Correct:      isCorrect,
-		EarlyReveal:  false,
-		AnswerTimeMS: 0,
-		TDelayMS:     0,
-		OptionCount:  1,
-		ChosenOption: chosenOption,
+		Correct:        isCorrect,
+		EarlyReveal:    false,
+		AnswerTimeMS:   answerTimeMS,
+		TDelayMS:       0,
+		OptionCount:    1,
+		ChosenOption:   chosenOption,
+		TimeMultiplier: models.TimeMultiplierForMode(mode, wordLen),
 	}
 	srsBefore := models.SRSState{
 		State:        userCard.State,
@@ -657,9 +666,14 @@ func (r *Router) gradeReplacedCardForSpellType(userID int64, userCardID int64, i
 		LapseCount:   userCard.LapseCount,
 	}
 	srsAfterJSON, _ := json.Marshal(srsAfter)
-	answeredAt := time.Now()
 	quality := models.CalculateQuality(attemptData)
-	metricsJSON, _ := json.Marshal(map[string]interface{}{"spell_or_type": true})
+	metricsJSON, _ := json.Marshal(map[string]interface{}{
+		"spell_or_type":  true,
+		"answer_time_ms": answerTimeMS,
+		"mode":           mode,
+		"word_len":       wordLen,
+	})
+	answeredAtPtr := answeredAt
 	reviewEvent := &models.ReviewEvent{
 		SessionID:      &sessionID,
 		UserID:         userID,
@@ -667,7 +681,7 @@ func (r *Router) gradeReplacedCardForSpellType(userID int64, userCardID int64, i
 		Direction:      userCard.Direction,
 		ShownAt:        shownAt,
 		OptionsShownAt: nil,
-		AnsweredAt:     &answeredAt,
+		AnsweredAt:     &answeredAtPtr,
 		TDelayMS:       0,
 		EarlyReveal:    false,
 		OptionCount:    1,
@@ -717,12 +731,15 @@ func (r *Router) handleTrainingSpellAnswer(w http.ResponseWriter, req *http.Requ
 	correctAnswer := item.Spell.DisplayWord
 	replacedUserCardID := item.Spell.ReplacedUserCardID
 	shownAt := state.ShownAt
+	sessionID := state.SessionID
+	answeredAt := time.Now()
 	state.CurrentIndex++
 	r.webTrainingHandler.sessionsMutex.Unlock()
 
 	// Grade the replaced user_card so it gets next_due_at updated and doesn't reappear next session
 	if replacedUserCardID != 0 {
-		r.gradeReplacedCardForSpellType(userID, replacedUserCardID, isCorrect, userAnswer, shownAt, state.SessionID)
+		wordLen := len(item.Spell.DisplayWord)
+		r.gradeReplacedCardForSpellType(userID, replacedUserCardID, isCorrect, userAnswer, shownAt, answeredAt, sessionID, "spell", wordLen)
 	}
 
 	w.Header().Set("Content-Type", "application/json")
@@ -767,12 +784,15 @@ func (r *Router) handleTrainingTypeAnswer(w http.ResponseWriter, req *http.Reque
 	correctAnswer := item.TypeChallenge.DisplayWord
 	replacedUserCardID := item.TypeChallenge.ReplacedUserCardID
 	shownAt := state.ShownAt
+	sessionID := state.SessionID
+	answeredAt := time.Now()
 	state.CurrentIndex++
 	r.webTrainingHandler.sessionsMutex.Unlock()
 
 	// Grade the replaced user_card so it gets next_due_at updated and doesn't reappear next session
 	if replacedUserCardID != 0 {
-		r.gradeReplacedCardForSpellType(userID, replacedUserCardID, isCorrect, userAnswer, shownAt, state.SessionID)
+		wordLen := len(item.TypeChallenge.DisplayWord)
+		r.gradeReplacedCardForSpellType(userID, replacedUserCardID, isCorrect, userAnswer, shownAt, answeredAt, sessionID, "type", wordLen)
 	}
 
 	w.Header().Set("Content-Type", "application/json")

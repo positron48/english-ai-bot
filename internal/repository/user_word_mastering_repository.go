@@ -13,7 +13,7 @@ const MasteringScoreRecentK = 20
 
 // UserWordPair identifies a user and word for mastering stats.
 type UserWordPair struct {
-	UserID    int64
+	UserID     int64
 	WordCardID int64
 }
 

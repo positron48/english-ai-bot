@@ -25,7 +25,7 @@ func TestLoad_Defaults(t *testing.T) {
 		"DATABASE_DRIVER":            os.Getenv("DATABASE_DRIVER"),
 		"DATABASE_URL":               os.Getenv("DATABASE_URL"),
 	}
-	
+
 	// Restore original env vars after test
 	defer func() {
 		for k, v := range originalEnv {
@@ -36,7 +36,7 @@ func TestLoad_Defaults(t *testing.T) {
 			}
 		}
 	}()
-	
+
 	// Set required env vars and clear optional ones to get defaults
 	os.Setenv("AI_URL", "http://test-ai.local")
 	os.Setenv("AI_API_KEY", "test-api-key")
@@ -51,53 +51,53 @@ func TestLoad_Defaults(t *testing.T) {
 	os.Unsetenv("SERVER_ADDRESS")
 	os.Unsetenv("LOG_LEVEL")
 	os.Unsetenv("DATABASE_PATH")
-	
+
 	cfg, err := Load()
 	if err != nil {
 		t.Fatalf("Load() error = %v", err)
 	}
-	
+
 	// Check defaults
 	if cfg.Server.Address != ":8184" {
 		t.Errorf("Expected default server address :8184, got %s", cfg.Server.Address)
 	}
-	
+
 	if cfg.Logging.Level != "info" {
 		t.Errorf("Expected default logging level info, got %s", cfg.Logging.Level)
 	}
-	
+
 	if cfg.AI.Model != "gpt-3.5-turbo" {
 		t.Errorf("Expected default AI model gpt-3.5-turbo, got %s", cfg.AI.Model)
 	}
-	
+
 	if cfg.Database.Driver != "postgres" {
 		t.Errorf("Expected database driver postgres, got %s", cfg.Database.Driver)
 	}
-	
+
 	if !cfg.Training.WorkerEnabled {
 		t.Error("Expected training worker enabled by default")
 	}
-	
+
 	if cfg.Training.WorkerInterval != "30s" {
 		t.Errorf("Expected default worker interval 30s, got %s", cfg.Training.WorkerInterval)
 	}
-	
+
 	if cfg.Training.WorkerBatchSize != 5 {
 		t.Errorf("Expected default worker batch size 5, got %d", cfg.Training.WorkerBatchSize)
 	}
-	
+
 	if cfg.Training.LLMWorkers != 4 {
 		t.Errorf("Expected default LLM workers 4, got %d", cfg.Training.LLMWorkers)
 	}
-	
+
 	if cfg.WebApp.OTPTTLSeconds != 300 {
 		t.Errorf("Expected default OTP TTL 300, got %d", cfg.WebApp.OTPTTLSeconds)
 	}
-	
+
 	if cfg.WebApp.SessionTTLHours != 720 {
 		t.Errorf("Expected default session TTL 720, got %d", cfg.WebApp.SessionTTLHours)
 	}
-	
+
 	if cfg.WebApp.JWTTTLHours != 24 {
 		t.Errorf("Expected default JWT TTL 24, got %d", cfg.WebApp.JWTTTLHours)
 	}
@@ -140,12 +140,12 @@ func TestLoad_MissingDatabaseURL(t *testing.T) {
 func TestLoad_MissingAIURL(t *testing.T) {
 	// Clear relevant env vars
 	originalEnv := map[string]string{
-		"AI_URL":              os.Getenv("AI_URL"),
-		"AI_API_KEY":          os.Getenv("AI_API_KEY"),
-		"AI_PROMPT":           os.Getenv("AI_PROMPT"),
-		"WEBAPP_JWT_SECRET":   os.Getenv("WEBAPP_JWT_SECRET"),
+		"AI_URL":            os.Getenv("AI_URL"),
+		"AI_API_KEY":        os.Getenv("AI_API_KEY"),
+		"AI_PROMPT":         os.Getenv("AI_PROMPT"),
+		"WEBAPP_JWT_SECRET": os.Getenv("WEBAPP_JWT_SECRET"),
 	}
-	
+
 	defer func() {
 		for k, v := range originalEnv {
 			if v == "" {
@@ -155,14 +155,14 @@ func TestLoad_MissingAIURL(t *testing.T) {
 			}
 		}
 	}()
-	
+
 	os.Unsetenv("AI_URL")
 	os.Setenv("AI_API_KEY", "test-key")
 	os.Setenv("AI_PROMPT", "test prompt")
 	os.Setenv("WEBAPP_JWT_SECRET", "test-secret")
 	os.Setenv("DATABASE_DRIVER", "postgres")
 	os.Setenv("DATABASE_URL", "postgres://test:test@localhost/test?sslmode=disable")
-	
+
 	_, err := Load()
 	if err == nil {
 		t.Error("Expected error for missing AI_URL")
@@ -171,12 +171,12 @@ func TestLoad_MissingAIURL(t *testing.T) {
 
 func TestLoad_MissingAIAPIKey(t *testing.T) {
 	originalEnv := map[string]string{
-		"AI_URL":              os.Getenv("AI_URL"),
-		"AI_API_KEY":          os.Getenv("AI_API_KEY"),
-		"AI_PROMPT":           os.Getenv("AI_PROMPT"),
-		"WEBAPP_JWT_SECRET":   os.Getenv("WEBAPP_JWT_SECRET"),
+		"AI_URL":            os.Getenv("AI_URL"),
+		"AI_API_KEY":        os.Getenv("AI_API_KEY"),
+		"AI_PROMPT":         os.Getenv("AI_PROMPT"),
+		"WEBAPP_JWT_SECRET": os.Getenv("WEBAPP_JWT_SECRET"),
 	}
-	
+
 	defer func() {
 		for k, v := range originalEnv {
 			if v == "" {
@@ -186,14 +186,14 @@ func TestLoad_MissingAIAPIKey(t *testing.T) {
 			}
 		}
 	}()
-	
+
 	os.Setenv("AI_URL", "http://test.local")
 	os.Unsetenv("AI_API_KEY")
 	os.Setenv("AI_PROMPT", "test prompt")
 	os.Setenv("WEBAPP_JWT_SECRET", "test-secret")
 	os.Setenv("DATABASE_DRIVER", "postgres")
 	os.Setenv("DATABASE_URL", "postgres://test:test@localhost/test?sslmode=disable")
-	
+
 	_, err := Load()
 	if err == nil {
 		t.Error("Expected error for missing AI_API_KEY")
@@ -202,13 +202,13 @@ func TestLoad_MissingAIAPIKey(t *testing.T) {
 
 func TestLoad_MissingAIPrompt(t *testing.T) {
 	originalEnv := map[string]string{
-		"AI_URL":              os.Getenv("AI_URL"),
-		"AI_API_KEY":          os.Getenv("AI_API_KEY"),
-		"AI_PROMPT":           os.Getenv("AI_PROMPT"),
-		"AI_PROMPT_FILE":      os.Getenv("AI_PROMPT_FILE"),
-		"WEBAPP_JWT_SECRET":   os.Getenv("WEBAPP_JWT_SECRET"),
+		"AI_URL":            os.Getenv("AI_URL"),
+		"AI_API_KEY":        os.Getenv("AI_API_KEY"),
+		"AI_PROMPT":         os.Getenv("AI_PROMPT"),
+		"AI_PROMPT_FILE":    os.Getenv("AI_PROMPT_FILE"),
+		"WEBAPP_JWT_SECRET": os.Getenv("WEBAPP_JWT_SECRET"),
 	}
-	
+
 	defer func() {
 		for k, v := range originalEnv {
 			if v == "" {
@@ -218,7 +218,7 @@ func TestLoad_MissingAIPrompt(t *testing.T) {
 			}
 		}
 	}()
-	
+
 	os.Setenv("AI_URL", "http://test.local")
 	os.Setenv("AI_API_KEY", "test-key")
 	os.Unsetenv("AI_PROMPT")
@@ -226,7 +226,7 @@ func TestLoad_MissingAIPrompt(t *testing.T) {
 	os.Setenv("WEBAPP_JWT_SECRET", "test-secret")
 	os.Setenv("DATABASE_DRIVER", "postgres")
 	os.Setenv("DATABASE_URL", "postgres://test:test@localhost/test?sslmode=disable")
-	
+
 	_, err := Load()
 	if err == nil {
 		t.Error("Expected error for missing AI_PROMPT")
@@ -235,13 +235,13 @@ func TestLoad_MissingAIPrompt(t *testing.T) {
 
 func TestLoad_MissingJWTSecret(t *testing.T) {
 	originalEnv := map[string]string{
-		"AI_URL":               os.Getenv("AI_URL"),
-		"AI_API_KEY":           os.Getenv("AI_API_KEY"),
-		"AI_PROMPT":            os.Getenv("AI_PROMPT"),
-		"WEBAPP_JWT_SECRET":    os.Getenv("WEBAPP_JWT_SECRET"),
+		"AI_URL":                os.Getenv("AI_URL"),
+		"AI_API_KEY":            os.Getenv("AI_API_KEY"),
+		"AI_PROMPT":             os.Getenv("AI_PROMPT"),
+		"WEBAPP_JWT_SECRET":     os.Getenv("WEBAPP_JWT_SECRET"),
 		"WEBAPP_SESSION_SECRET": os.Getenv("WEBAPP_SESSION_SECRET"),
 	}
-	
+
 	defer func() {
 		for k, v := range originalEnv {
 			if v == "" {
@@ -251,7 +251,7 @@ func TestLoad_MissingJWTSecret(t *testing.T) {
 			}
 		}
 	}()
-	
+
 	os.Setenv("AI_URL", "http://test.local")
 	os.Setenv("AI_API_KEY", "test-key")
 	os.Setenv("AI_PROMPT", "test prompt")
@@ -259,7 +259,7 @@ func TestLoad_MissingJWTSecret(t *testing.T) {
 	os.Unsetenv("WEBAPP_SESSION_SECRET")
 	os.Setenv("DATABASE_DRIVER", "postgres")
 	os.Setenv("DATABASE_URL", "postgres://test:test@localhost/test?sslmode=disable")
-	
+
 	_, err := Load()
 	if err == nil {
 		t.Error("Expected error for missing JWT secret")
@@ -268,13 +268,13 @@ func TestLoad_MissingJWTSecret(t *testing.T) {
 
 func TestLoad_WithPromptFile(t *testing.T) {
 	originalEnv := map[string]string{
-		"AI_URL":              os.Getenv("AI_URL"),
-		"AI_API_KEY":          os.Getenv("AI_API_KEY"),
-		"AI_PROMPT":           os.Getenv("AI_PROMPT"),
-		"AI_PROMPT_FILE":      os.Getenv("AI_PROMPT_FILE"),
-		"WEBAPP_JWT_SECRET":   os.Getenv("WEBAPP_JWT_SECRET"),
+		"AI_URL":            os.Getenv("AI_URL"),
+		"AI_API_KEY":        os.Getenv("AI_API_KEY"),
+		"AI_PROMPT":         os.Getenv("AI_PROMPT"),
+		"AI_PROMPT_FILE":    os.Getenv("AI_PROMPT_FILE"),
+		"WEBAPP_JWT_SECRET": os.Getenv("WEBAPP_JWT_SECRET"),
 	}
-	
+
 	defer func() {
 		for k, v := range originalEnv {
 			if v == "" {
@@ -284,7 +284,7 @@ func TestLoad_WithPromptFile(t *testing.T) {
 			}
 		}
 	}()
-	
+
 	// Create temp prompt file
 	tmpDir := t.TempDir()
 	promptFile := filepath.Join(tmpDir, "prompt.txt")
@@ -292,7 +292,7 @@ func TestLoad_WithPromptFile(t *testing.T) {
 	if err := os.WriteFile(promptFile, []byte(promptContent), 0644); err != nil {
 		t.Fatalf("Failed to create prompt file: %v", err)
 	}
-	
+
 	os.Setenv("AI_URL", "http://test.local")
 	os.Setenv("AI_API_KEY", "test-key")
 	os.Unsetenv("AI_PROMPT")
@@ -300,12 +300,12 @@ func TestLoad_WithPromptFile(t *testing.T) {
 	os.Setenv("WEBAPP_JWT_SECRET", "test-secret")
 	os.Setenv("DATABASE_DRIVER", "postgres")
 	os.Setenv("DATABASE_URL", "postgres://test:test@localhost/test?sslmode=disable")
-	
+
 	cfg, err := Load()
 	if err != nil {
 		t.Fatalf("Load() error = %v", err)
 	}
-	
+
 	if cfg.AI.Prompt != promptContent {
 		t.Errorf("Expected prompt from file, got %s", cfg.AI.Prompt)
 	}
@@ -361,13 +361,13 @@ func TestLoad_InvalidConfigFile(t *testing.T) {
 
 func TestLoad_InvalidPromptFile(t *testing.T) {
 	originalEnv := map[string]string{
-		"AI_URL":              os.Getenv("AI_URL"),
-		"AI_API_KEY":          os.Getenv("AI_API_KEY"),
-		"AI_PROMPT":           os.Getenv("AI_PROMPT"),
-		"AI_PROMPT_FILE":      os.Getenv("AI_PROMPT_FILE"),
-		"WEBAPP_JWT_SECRET":   os.Getenv("WEBAPP_JWT_SECRET"),
+		"AI_URL":            os.Getenv("AI_URL"),
+		"AI_API_KEY":        os.Getenv("AI_API_KEY"),
+		"AI_PROMPT":         os.Getenv("AI_PROMPT"),
+		"AI_PROMPT_FILE":    os.Getenv("AI_PROMPT_FILE"),
+		"WEBAPP_JWT_SECRET": os.Getenv("WEBAPP_JWT_SECRET"),
 	}
-	
+
 	defer func() {
 		for k, v := range originalEnv {
 			if v == "" {
@@ -377,7 +377,7 @@ func TestLoad_InvalidPromptFile(t *testing.T) {
 			}
 		}
 	}()
-	
+
 	os.Setenv("AI_URL", "http://test.local")
 	os.Setenv("AI_API_KEY", "test-key")
 	os.Unsetenv("AI_PROMPT")
@@ -385,7 +385,7 @@ func TestLoad_InvalidPromptFile(t *testing.T) {
 	os.Setenv("WEBAPP_JWT_SECRET", "test-secret")
 	os.Setenv("DATABASE_DRIVER", "postgres")
 	os.Setenv("DATABASE_URL", "postgres://test:test@localhost/test?sslmode=disable")
-	
+
 	_, err := Load()
 	if err == nil {
 		t.Error("Expected error for invalid prompt file")
@@ -430,14 +430,14 @@ func TestLoad_UnmarshalError(t *testing.T) {
 
 func TestLoad_BotMessageNewlines(t *testing.T) {
 	originalEnv := map[string]string{
-		"AI_URL":              os.Getenv("AI_URL"),
-		"AI_API_KEY":          os.Getenv("AI_API_KEY"),
-		"AI_PROMPT":           os.Getenv("AI_PROMPT"),
-		"AI_PROMPT_FILE":      os.Getenv("AI_PROMPT_FILE"),
-		"WEBAPP_JWT_SECRET":   os.Getenv("WEBAPP_JWT_SECRET"),
-		"BOT_START_MESSAGE":   os.Getenv("BOT_START_MESSAGE"),
+		"AI_URL":            os.Getenv("AI_URL"),
+		"AI_API_KEY":        os.Getenv("AI_API_KEY"),
+		"AI_PROMPT":         os.Getenv("AI_PROMPT"),
+		"AI_PROMPT_FILE":    os.Getenv("AI_PROMPT_FILE"),
+		"WEBAPP_JWT_SECRET": os.Getenv("WEBAPP_JWT_SECRET"),
+		"BOT_START_MESSAGE": os.Getenv("BOT_START_MESSAGE"),
 	}
-	
+
 	defer func() {
 		for k, v := range originalEnv {
 			if v == "" {
@@ -447,7 +447,7 @@ func TestLoad_BotMessageNewlines(t *testing.T) {
 			}
 		}
 	}()
-	
+
 	os.Setenv("AI_URL", "http://test.local")
 	os.Setenv("AI_API_KEY", "test-key")
 	os.Setenv("AI_PROMPT", "test prompt")
@@ -456,12 +456,12 @@ func TestLoad_BotMessageNewlines(t *testing.T) {
 	os.Setenv("DATABASE_DRIVER", "postgres")
 	os.Setenv("DATABASE_URL", "postgres://test:test@localhost/test?sslmode=disable")
 	os.Setenv("BOT_START_MESSAGE", "Hello\\nWorld")
-	
+
 	cfg, err := Load()
 	if err != nil {
 		t.Fatalf("Load() error = %v", err)
 	}
-	
+
 	if cfg.Bot.StartMessage != "Hello\nWorld" {
 		t.Errorf("Expected newlines to be processed, got %q", cfg.Bot.StartMessage)
 	}
@@ -469,14 +469,14 @@ func TestLoad_BotMessageNewlines(t *testing.T) {
 
 func TestLoad_SessionSecretFallback(t *testing.T) {
 	originalEnv := map[string]string{
-		"AI_URL":               os.Getenv("AI_URL"),
-		"AI_API_KEY":           os.Getenv("AI_API_KEY"),
-		"AI_PROMPT":            os.Getenv("AI_PROMPT"),
-		"AI_PROMPT_FILE":       os.Getenv("AI_PROMPT_FILE"),
-		"WEBAPP_JWT_SECRET":    os.Getenv("WEBAPP_JWT_SECRET"),
+		"AI_URL":                os.Getenv("AI_URL"),
+		"AI_API_KEY":            os.Getenv("AI_API_KEY"),
+		"AI_PROMPT":             os.Getenv("AI_PROMPT"),
+		"AI_PROMPT_FILE":        os.Getenv("AI_PROMPT_FILE"),
+		"WEBAPP_JWT_SECRET":     os.Getenv("WEBAPP_JWT_SECRET"),
 		"WEBAPP_SESSION_SECRET": os.Getenv("WEBAPP_SESSION_SECRET"),
 	}
-	
+
 	defer func() {
 		for k, v := range originalEnv {
 			if v == "" {
@@ -486,7 +486,7 @@ func TestLoad_SessionSecretFallback(t *testing.T) {
 			}
 		}
 	}()
-	
+
 	os.Setenv("AI_URL", "http://test.local")
 	os.Setenv("AI_API_KEY", "test-key")
 	os.Setenv("AI_PROMPT", "test prompt")
@@ -495,12 +495,12 @@ func TestLoad_SessionSecretFallback(t *testing.T) {
 	os.Setenv("WEBAPP_SESSION_SECRET", "session-secret")
 	os.Setenv("DATABASE_DRIVER", "postgres")
 	os.Setenv("DATABASE_URL", "postgres://test:test@localhost/test?sslmode=disable")
-	
+
 	cfg, err := Load()
 	if err != nil {
 		t.Fatalf("Load() error = %v, should allow session secret fallback", err)
 	}
-	
+
 	if cfg.WebApp.SessionSecret != "session-secret" {
 		t.Errorf("Expected session secret, got %s", cfg.WebApp.SessionSecret)
 	}
@@ -508,17 +508,17 @@ func TestLoad_SessionSecretFallback(t *testing.T) {
 
 func TestLoad_CustomEnvValues(t *testing.T) {
 	originalEnv := map[string]string{
-		"AI_URL":              os.Getenv("AI_URL"),
-		"AI_API_KEY":          os.Getenv("AI_API_KEY"),
-		"AI_PROMPT":           os.Getenv("AI_PROMPT"),
-		"AI_PROMPT_FILE":      os.Getenv("AI_PROMPT_FILE"),
-		"AI_MODEL":            os.Getenv("AI_MODEL"),
-		"WEBAPP_JWT_SECRET":   os.Getenv("WEBAPP_JWT_SECRET"),
-		"SERVER_ADDRESS":      os.Getenv("SERVER_ADDRESS"),
-		"LOG_LEVEL":           os.Getenv("LOG_LEVEL"),
-		"DATABASE_PATH":       os.Getenv("DATABASE_PATH"),
+		"AI_URL":            os.Getenv("AI_URL"),
+		"AI_API_KEY":        os.Getenv("AI_API_KEY"),
+		"AI_PROMPT":         os.Getenv("AI_PROMPT"),
+		"AI_PROMPT_FILE":    os.Getenv("AI_PROMPT_FILE"),
+		"AI_MODEL":          os.Getenv("AI_MODEL"),
+		"WEBAPP_JWT_SECRET": os.Getenv("WEBAPP_JWT_SECRET"),
+		"SERVER_ADDRESS":    os.Getenv("SERVER_ADDRESS"),
+		"LOG_LEVEL":         os.Getenv("LOG_LEVEL"),
+		"DATABASE_PATH":     os.Getenv("DATABASE_PATH"),
 	}
-	
+
 	defer func() {
 		for k, v := range originalEnv {
 			if v == "" {
@@ -528,7 +528,7 @@ func TestLoad_CustomEnvValues(t *testing.T) {
 			}
 		}
 	}()
-	
+
 	os.Setenv("AI_URL", "http://custom-ai.local")
 	os.Setenv("AI_API_KEY", "custom-api-key")
 	os.Setenv("AI_PROMPT", "custom prompt")
@@ -539,32 +539,32 @@ func TestLoad_CustomEnvValues(t *testing.T) {
 	os.Setenv("LOG_LEVEL", "debug")
 	os.Setenv("DATABASE_DRIVER", "postgres")
 	os.Setenv("DATABASE_URL", "postgres://custom:custom@localhost:5432/customdb?sslmode=disable")
-	
+
 	cfg, err := Load()
 	if err != nil {
 		t.Fatalf("Load() error = %v", err)
 	}
-	
+
 	if cfg.AI.URL != "http://custom-ai.local" {
 		t.Errorf("Expected custom AI URL, got %s", cfg.AI.URL)
 	}
-	
+
 	if cfg.AI.APIKey != "custom-api-key" {
 		t.Errorf("Expected custom API key, got %s", cfg.AI.APIKey)
 	}
-	
+
 	if cfg.AI.Model != "gpt-4" {
 		t.Errorf("Expected custom AI model, got %s", cfg.AI.Model)
 	}
-	
+
 	if cfg.Server.Address != ":9000" {
 		t.Errorf("Expected custom server address, got %s", cfg.Server.Address)
 	}
-	
+
 	if cfg.Logging.Level != "debug" {
 		t.Errorf("Expected debug log level, got %s", cfg.Logging.Level)
 	}
-	
+
 	if cfg.Database.URL != "postgres://custom:custom@localhost:5432/customdb?sslmode=disable" {
 		t.Errorf("Expected custom database URL, got %s", cfg.Database.URL)
 	}
@@ -572,13 +572,13 @@ func TestLoad_CustomEnvValues(t *testing.T) {
 
 func TestLoad_RateLimitDefaults(t *testing.T) {
 	originalEnv := map[string]string{
-		"AI_URL":              os.Getenv("AI_URL"),
-		"AI_API_KEY":          os.Getenv("AI_API_KEY"),
-		"AI_PROMPT":           os.Getenv("AI_PROMPT"),
-		"AI_PROMPT_FILE":      os.Getenv("AI_PROMPT_FILE"),
-		"WEBAPP_JWT_SECRET":   os.Getenv("WEBAPP_JWT_SECRET"),
+		"AI_URL":            os.Getenv("AI_URL"),
+		"AI_API_KEY":        os.Getenv("AI_API_KEY"),
+		"AI_PROMPT":         os.Getenv("AI_PROMPT"),
+		"AI_PROMPT_FILE":    os.Getenv("AI_PROMPT_FILE"),
+		"WEBAPP_JWT_SECRET": os.Getenv("WEBAPP_JWT_SECRET"),
 	}
-	
+
 	defer func() {
 		for k, v := range originalEnv {
 			if v == "" {
@@ -588,7 +588,7 @@ func TestLoad_RateLimitDefaults(t *testing.T) {
 			}
 		}
 	}()
-	
+
 	os.Setenv("AI_URL", "http://test.local")
 	os.Setenv("AI_API_KEY", "test-key")
 	os.Setenv("AI_PROMPT", "test prompt")
@@ -596,24 +596,24 @@ func TestLoad_RateLimitDefaults(t *testing.T) {
 	os.Setenv("WEBAPP_JWT_SECRET", "test-secret")
 	os.Setenv("DATABASE_DRIVER", "postgres")
 	os.Setenv("DATABASE_URL", "postgres://test:test@localhost/test?sslmode=disable")
-	
+
 	cfg, err := Load()
 	if err != nil {
 		t.Fatalf("Load() error = %v", err)
 	}
-	
+
 	if cfg.WebApp.RateLimitAuthRequestOTPPerIP != 10 {
 		t.Errorf("Expected rate limit 10, got %d", cfg.WebApp.RateLimitAuthRequestOTPPerIP)
 	}
-	
+
 	if cfg.WebApp.RateLimitAppAPIPerUser != 300 {
 		t.Errorf("Expected rate limit 300, got %d", cfg.WebApp.RateLimitAppAPIPerUser)
 	}
-	
+
 	if cfg.WebApp.RateLimitWindowMinutes != 1 {
 		t.Errorf("Expected window 1, got %d", cfg.WebApp.RateLimitWindowMinutes)
 	}
-	
+
 	if cfg.WebApp.RateLimitBurstMultiplier != 2 {
 		t.Errorf("Expected burst multiplier 2, got %d", cfg.WebApp.RateLimitBurstMultiplier)
 	}

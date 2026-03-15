@@ -53,4 +53,3 @@ func (db *DB) Close() error {
 func (db *DB) GetConnection() *sql.DB {
 	return db.conn
 }
-

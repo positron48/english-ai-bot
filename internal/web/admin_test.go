@@ -17,8 +17,8 @@ import (
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/service"
 
-	"tgbot-skeleton/internal/testutil"
 	"go.uber.org/zap"
+	"tgbot-skeleton/internal/testutil"
 )
 
 func setupAdminTestDB(t *testing.T) (*sql.DB, *repository.UserRepository, *service.CircuitBreakerService) {
@@ -49,8 +49,8 @@ func TestHandleAdmin_Get(t *testing.T) {
 			TelegramID: adminTelegramID,
 		},
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -186,8 +186,8 @@ func TestHandleAdmin_WrongMethod(t *testing.T) {
 			TelegramID: adminTelegramID,
 		},
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -225,8 +225,8 @@ func TestHandleAdmin_Unauthorized(t *testing.T) {
 			TelegramID: adminTelegramID,
 		},
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -271,8 +271,8 @@ func TestHandleAdmin_Forbidden(t *testing.T) {
 			TelegramID: adminTelegramID,
 		},
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -313,8 +313,8 @@ func TestHandleAdminCircuitReset_Post(t *testing.T) {
 			TelegramID: adminTelegramID,
 		},
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -370,8 +370,8 @@ func TestHandleAdminCircuitReset_WrongMethod(t *testing.T) {
 			TelegramID: adminTelegramID,
 		},
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -419,8 +419,8 @@ func TestHandleAdminUsers_Get(t *testing.T) {
 			TelegramID: adminTelegramID,
 		},
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -478,8 +478,8 @@ func TestHandleAdminWords_Get(t *testing.T) {
 			TelegramID: adminTelegramID,
 		},
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -531,8 +531,8 @@ func TestHandleAdminWords_WithQueryParams(t *testing.T) {
 	cfg := &config.Config{
 		Admin: config.AdminConfig{TelegramID: adminTelegramID},
 		WebApp: config.WebAppConfig{
-			JWTSecret: "test-secret",
-			JWTTTLHours: 24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -594,8 +594,8 @@ func TestHandleAdminWord_Put(t *testing.T) {
 			TelegramID: adminTelegramID,
 		},
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -658,8 +658,8 @@ func TestHandleAdminWord_Put_WithJSON(t *testing.T) {
 			TelegramID: adminTelegramID,
 		},
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -673,8 +673,8 @@ func TestHandleAdminWord_Put_WithJSON(t *testing.T) {
 	router.authMiddleware = authMiddleware
 
 	updateData := map[string]interface{}{
-		"definition": "new definition from JSON",
-		"pos":         "noun",
+		"definition":    "new definition from JSON",
+		"pos":           "noun",
 		"transcription": "/dɪˈfɪnɪʃən/",
 	}
 	jsonData, _ := json.Marshal(updateData)
@@ -738,8 +738,8 @@ func TestHandleAdminWord_Delete(t *testing.T) {
 			TelegramID: adminTelegramID,
 		},
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -786,7 +786,7 @@ func TestHandleAdminWord_Put_NotFound(t *testing.T) {
 	}
 
 	cfg := &config.Config{
-		Admin: config.AdminConfig{TelegramID: adminTelegramID},
+		Admin:  config.AdminConfig{TelegramID: adminTelegramID},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
@@ -818,7 +818,7 @@ func TestHandleAdminWord_Delete_NotFound(t *testing.T) {
 	}
 
 	cfg := &config.Config{
-		Admin: config.AdminConfig{TelegramID: adminTelegramID},
+		Admin:  config.AdminConfig{TelegramID: adminTelegramID},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
@@ -878,8 +878,8 @@ func TestHandleAdminTraining_Get(t *testing.T) {
 			TelegramID: adminTelegramID,
 		},
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -954,8 +954,8 @@ func TestHandleAdminTrainingCard_Delete(t *testing.T) {
 			TelegramID: adminTelegramID,
 		},
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -1029,8 +1029,8 @@ func TestHandleAdminTrainingCard_Put(t *testing.T) {
 			TelegramID: adminTelegramID,
 		},
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -1107,8 +1107,8 @@ func TestHandleAdminTrainingCard_Put_UpdatePOS(t *testing.T) {
 			TelegramID: adminTelegramID,
 		},
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -1207,8 +1207,8 @@ func TestHandleAdminTraining_Delete(t *testing.T) {
 			TelegramID: adminTelegramID,
 		},
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -1283,8 +1283,8 @@ func TestHandleAdminTraining_DeleteAll(t *testing.T) {
 			TelegramID: adminTelegramID,
 		},
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -1345,8 +1345,8 @@ func TestHandleAdminWord_Reset(t *testing.T) {
 			TelegramID: adminTelegramID,
 		},
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -1391,7 +1391,7 @@ func TestHandleAdminWords_WrongMethod(t *testing.T) {
 		t.Fatalf("Failed to create admin user: %v", err)
 	}
 	cfg := &config.Config{
-		Admin: config.AdminConfig{TelegramID: adminTelegramID},
+		Admin:  config.AdminConfig{TelegramID: adminTelegramID},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
@@ -1420,7 +1420,7 @@ func TestHandleAdminWord_InvalidID(t *testing.T) {
 		t.Fatalf("Failed to create admin user: %v", err)
 	}
 	cfg := &config.Config{
-		Admin: config.AdminConfig{TelegramID: adminTelegramID},
+		Admin:  config.AdminConfig{TelegramID: adminTelegramID},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
@@ -1450,7 +1450,7 @@ func TestHandleAdminWord_WordIDEmpty(t *testing.T) {
 		t.Fatalf("Failed to create admin user: %v", err)
 	}
 	cfg := &config.Config{
-		Admin: config.AdminConfig{TelegramID: adminTelegramID},
+		Admin:  config.AdminConfig{TelegramID: adminTelegramID},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
@@ -1483,7 +1483,7 @@ func TestHandleAdminWord_PUT_InvalidJSON(t *testing.T) {
 	wordRepo.SaveWordCard("x", "d")
 	wc, _ := wordRepo.GetWordCard("x")
 	cfg := &config.Config{
-		Admin: config.AdminConfig{TelegramID: adminTelegramID},
+		Admin:  config.AdminConfig{TelegramID: adminTelegramID},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
@@ -1513,7 +1513,7 @@ func TestHandleAdminWord_DeleteNotFound(t *testing.T) {
 		t.Fatalf("Failed to create admin user: %v", err)
 	}
 	cfg := &config.Config{
-		Admin: config.AdminConfig{TelegramID: adminTelegramID},
+		Admin:  config.AdminConfig{TelegramID: adminTelegramID},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
@@ -1542,7 +1542,7 @@ func TestHandleAdminUsers_WrongMethod(t *testing.T) {
 		t.Fatalf("Failed to create admin user: %v", err)
 	}
 	cfg := &config.Config{
-		Admin: config.AdminConfig{TelegramID: adminTelegramID},
+		Admin:  config.AdminConfig{TelegramID: adminTelegramID},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
@@ -1571,7 +1571,7 @@ func TestHandleAdminTraining_WordRequired(t *testing.T) {
 		t.Fatalf("Failed to create admin user: %v", err)
 	}
 	cfg := &config.Config{
-		Admin: config.AdminConfig{TelegramID: adminTelegramID},
+		Admin:  config.AdminConfig{TelegramID: adminTelegramID},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
@@ -1602,7 +1602,7 @@ func TestHandleAdminTraining_ForbiddenNoPermission(t *testing.T) {
 		t.Fatalf("Failed to create user: %v", err)
 	}
 	cfg := &config.Config{
-		Admin: config.AdminConfig{TelegramID: 123456789},
+		Admin:  config.AdminConfig{TelegramID: 123456789},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
@@ -1633,7 +1633,7 @@ func TestHandleAdminTrainingCard_InvalidCardID(t *testing.T) {
 		t.Fatalf("Failed to create admin user: %v", err)
 	}
 	cfg := &config.Config{
-		Admin: config.AdminConfig{TelegramID: adminTelegramID},
+		Admin:  config.AdminConfig{TelegramID: adminTelegramID},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
@@ -1678,7 +1678,7 @@ func TestHandleAdmin_DirectMethodNotAllowed(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, _, cbService := setupAdminTestDB(t)
 	cfg := &config.Config{
-		Admin: config.AdminConfig{TelegramID: 123456789},
+		Admin:  config.AdminConfig{TelegramID: 123456789},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
 	}
 	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
@@ -1710,7 +1710,7 @@ func TestHandleAdminWord_MethodNotAllowed(t *testing.T) {
 		t.Fatal("word card not found")
 	}
 	cfg := &config.Config{
-		Admin: config.AdminConfig{TelegramID: 123456789},
+		Admin:  config.AdminConfig{TelegramID: 123456789},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
@@ -1761,7 +1761,7 @@ func TestHandleAdminWord_PUT_UniqueConstraint(t *testing.T) {
 		t.Fatal("word cards not found")
 	}
 	cfg := &config.Config{
-		Admin: config.AdminConfig{TelegramID: 123456789},
+		Admin:  config.AdminConfig{TelegramID: 123456789},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
@@ -1808,7 +1808,7 @@ func TestHandleAdminWord_POST_Generate_AIServiceNil(t *testing.T) {
 		t.Fatal("word card not found")
 	}
 	cfg := &config.Config{
-		Admin: config.AdminConfig{TelegramID: 123456789},
+		Admin:  config.AdminConfig{TelegramID: 123456789},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
@@ -1838,7 +1838,7 @@ func TestHandleAdminWord_POST_Generate_NotFound(t *testing.T) {
 		t.Fatalf("GetOrCreateUser: %v", err)
 	}
 	cfg := &config.Config{
-		Admin: config.AdminConfig{TelegramID: 123456789},
+		Admin:  config.AdminConfig{TelegramID: 123456789},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
@@ -1867,7 +1867,7 @@ func TestHandleAdminTraining_Get_WordNotFound(t *testing.T) {
 		t.Fatalf("GetOrCreateUser: %v", err)
 	}
 	cfg := &config.Config{
-		Admin: config.AdminConfig{TelegramID: 123456789},
+		Admin:  config.AdminConfig{TelegramID: 123456789},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
@@ -1911,7 +1911,7 @@ func TestHandleAdminTraining_PostCreate_JSON(t *testing.T) {
 	wordRepo := repository.NewWordRepository(db, logger)
 	_ = wordRepo.SaveWordCard("createjson", "def")
 	cfg := &config.Config{
-		Admin: config.AdminConfig{TelegramID: 123456789},
+		Admin:  config.AdminConfig{TelegramID: 123456789},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
@@ -1922,13 +1922,13 @@ func TestHandleAdminTraining_PostCreate_JSON(t *testing.T) {
 	router.authMiddleware = authMiddleware
 
 	body := map[string]interface{}{
-		"word_ru":     "создать",
-		"meaning_en":  "to create",
-		"example_en":  "example",
-		"example_ru":  "пример",
+		"word_ru":       "создать",
+		"meaning_en":    "to create",
+		"example_en":    "example",
+		"example_ru":    "пример",
 		"transcription": "/kriˈeɪt/",
-		"pos":         "verb",
-		"display_word": "create",
+		"pos":           "verb",
+		"display_word":  "create",
 	}
 	jsonBody, _ := json.Marshal(body)
 	req := httptest.NewRequest("POST", "/api/admin/training/createjson", strings.NewReader(string(jsonBody)))
@@ -1962,7 +1962,7 @@ func TestHandleAdminTraining_PostCreate_ValidationRequired(t *testing.T) {
 	wordRepo := repository.NewWordRepository(db, logger)
 	_ = wordRepo.SaveWordCard("validword", "def")
 	cfg := &config.Config{
-		Admin: config.AdminConfig{TelegramID: 123456789},
+		Admin:  config.AdminConfig{TelegramID: 123456789},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
@@ -1996,7 +1996,7 @@ func TestHandleAdminTraining_PostCreate_WordNotFound(t *testing.T) {
 		t.Fatalf("GetOrCreateUser: %v", err)
 	}
 	cfg := &config.Config{
-		Admin: config.AdminConfig{TelegramID: 123456789},
+		Admin:  config.AdminConfig{TelegramID: 123456789},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
@@ -2036,7 +2036,7 @@ func TestHandleAdminTraining_PostDelete_WordFromForm(t *testing.T) {
 	tc := &models.TrainingCard{WordCardID: wc.ID, WordEN: "formdelete", SenseIndex: 0, WordRU: "удалить", MeaningEN: "delete"}
 	_, _ = trainingCardRepo.CreateTrainingCard(tc)
 	cfg := &config.Config{
-		Admin: config.AdminConfig{TelegramID: 123456789},
+		Admin:  config.AdminConfig{TelegramID: 123456789},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
@@ -2069,7 +2069,7 @@ func TestHandleAdminTraining_InvalidRequest(t *testing.T) {
 		t.Fatalf("GetOrCreateUser: %v", err)
 	}
 	cfg := &config.Config{
-		Admin: config.AdminConfig{TelegramID: 123456789},
+		Admin:  config.AdminConfig{TelegramID: 123456789},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
@@ -2101,7 +2101,7 @@ func TestHandleAdminTraining_ForbiddenEdit(t *testing.T) {
 		t.Fatalf("GetOrCreateUser: %v", err)
 	}
 	cfg := &config.Config{
-		Admin: config.AdminConfig{TelegramID: 123456789},
+		Admin:  config.AdminConfig{TelegramID: 123456789},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
@@ -2137,7 +2137,7 @@ func TestHandleAdminTrainingCard_EmptyCardID_AdminGo(t *testing.T) {
 		t.Fatalf("GetOrCreateUser: %v", err)
 	}
 	cfg := &config.Config{
-		Admin: config.AdminConfig{TelegramID: 123456789},
+		Admin:  config.AdminConfig{TelegramID: 123456789},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
@@ -2175,7 +2175,7 @@ func TestHandleAdminTrainingCard_Get_MethodNotAllowed(t *testing.T) {
 	tc := &models.TrainingCard{WordCardID: wc.ID, WordEN: "getcard", SenseIndex: 0, WordRU: "карта", MeaningEN: "card"}
 	cardID, _ := trainingCardRepo.CreateTrainingCard(tc)
 	cfg := &config.Config{
-		Admin: config.AdminConfig{TelegramID: 123456789},
+		Admin:  config.AdminConfig{TelegramID: 123456789},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
@@ -2206,7 +2206,7 @@ func TestHandleAdminTrainingCard_Delete_NotFound(t *testing.T) {
 		t.Fatalf("GetOrCreateUser: %v", err)
 	}
 	cfg := &config.Config{
-		Admin: config.AdminConfig{TelegramID: 123456789},
+		Admin:  config.AdminConfig{TelegramID: 123456789},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
@@ -2243,7 +2243,7 @@ func TestHandleAdminTrainingCard_Put_JSON(t *testing.T) {
 	tc := &models.TrainingCard{WordCardID: wc.ID, WordEN: "putjson", SenseIndex: 0, WordRU: "карта", MeaningEN: "card"}
 	cardID, _ := trainingCardRepo.CreateTrainingCard(tc)
 	cfg := &config.Config{
-		Admin: config.AdminConfig{TelegramID: 123456789},
+		Admin:  config.AdminConfig{TelegramID: 123456789},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
@@ -2254,9 +2254,9 @@ func TestHandleAdminTrainingCard_Put_JSON(t *testing.T) {
 	router.authMiddleware = authMiddleware
 
 	body := map[string]interface{}{
-		"word_ru":    "обновлено",
-		"meaning_en": "updated",
-		"pos":        "noun",
+		"word_ru":      "обновлено",
+		"meaning_en":   "updated",
+		"pos":          "noun",
 		"display_word": "putjson",
 	}
 	jsonBody, _ := json.Marshal(body)
@@ -2282,7 +2282,7 @@ func TestHandleAdminTrainingCard_Put_CardNotFound(t *testing.T) {
 		t.Fatalf("GetOrCreateUser: %v", err)
 	}
 	cfg := &config.Config{
-		Admin: config.AdminConfig{TelegramID: 123456789},
+		Admin:  config.AdminConfig{TelegramID: 123456789},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
@@ -2322,7 +2322,7 @@ func TestHandleAdminTrainingCard_Put_InvalidJSON(t *testing.T) {
 	tc := &models.TrainingCard{WordCardID: wc.ID, WordEN: "invjson", SenseIndex: 0, WordRU: "x", MeaningEN: "y"}
 	cardID, _ := trainingCardRepo.CreateTrainingCard(tc)
 	cfg := &config.Config{
-		Admin: config.AdminConfig{TelegramID: 123456789},
+		Admin:  config.AdminConfig{TelegramID: 123456789},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
@@ -2360,7 +2360,7 @@ func TestHandleAdminTrainingCard_Put_InvalidForm(t *testing.T) {
 	tc := &models.TrainingCard{WordCardID: wc.ID, WordEN: "invform", SenseIndex: 0, WordRU: "x", MeaningEN: "y"}
 	cardID, _ := trainingCardRepo.CreateTrainingCard(tc)
 	cfg := &config.Config{
-		Admin: config.AdminConfig{TelegramID: 123456789},
+		Admin:  config.AdminConfig{TelegramID: 123456789},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
@@ -2392,7 +2392,7 @@ func TestHandleAdminTrainingCard_MethodNotAllowed_AdminGo(t *testing.T) {
 		t.Fatalf("GetOrCreateUser: %v", err)
 	}
 	cfg := &config.Config{
-		Admin: config.AdminConfig{TelegramID: 123456789},
+		Admin:  config.AdminConfig{TelegramID: 123456789},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
@@ -2426,7 +2426,7 @@ func TestHandleAdminWords_QueryParams(t *testing.T) {
 	wordRepo := repository.NewWordRepository(db, logger)
 	_ = wordRepo.SaveWordCard("sortword", "def")
 	cfg := &config.Config{
-		Admin: config.AdminConfig{TelegramID: 123456789},
+		Admin:  config.AdminConfig{TelegramID: 123456789},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
@@ -2478,7 +2478,7 @@ func TestHandleAdminTraining_PostCreate_InvalidForm(t *testing.T) {
 	wordRepo := repository.NewWordRepository(db, logger)
 	_ = wordRepo.SaveWordCard("invformcreate", "def")
 	cfg := &config.Config{
-		Admin: config.AdminConfig{TelegramID: 123456789},
+		Admin:  config.AdminConfig{TelegramID: 123456789},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
@@ -2512,7 +2512,7 @@ func TestHandleAdminTraining_PostCreate_Form(t *testing.T) {
 	wordRepo := repository.NewWordRepository(db, logger)
 	_ = wordRepo.SaveWordCard("formcreate", "def")
 	cfg := &config.Config{
-		Admin: config.AdminConfig{TelegramID: 123456789},
+		Admin:  config.AdminConfig{TelegramID: 123456789},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
@@ -2552,7 +2552,7 @@ func TestHandleAdminTraining_InvalidPath_AdminGo(t *testing.T) {
 		t.Fatalf("GetOrCreateUser: %v", err)
 	}
 	cfg := &config.Config{
-		Admin: config.AdminConfig{TelegramID: 123456789},
+		Admin:  config.AdminConfig{TelegramID: 123456789},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
@@ -2586,7 +2586,7 @@ func TestHandleAdminTraining_PostGenerate_AIServiceNil(t *testing.T) {
 	wordRepo := repository.NewWordRepository(db, logger)
 	_ = wordRepo.SaveWordCard("genword", "def")
 	cfg := &config.Config{
-		Admin: config.AdminConfig{TelegramID: 123456789},
+		Admin:  config.AdminConfig{TelegramID: 123456789},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
@@ -2620,7 +2620,7 @@ func TestHandleAdminTraining_PostGenerate_Form(t *testing.T) {
 	wordRepo := repository.NewWordRepository(db, logger)
 	_ = wordRepo.SaveWordCard("genform", "def")
 	cfg := &config.Config{
-		Admin: config.AdminConfig{TelegramID: 123456789},
+		Admin:  config.AdminConfig{TelegramID: 123456789},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
@@ -2654,7 +2654,7 @@ func TestHandleAdminTraining_PostGenerate_InvalidJSON(t *testing.T) {
 	wordRepo := repository.NewWordRepository(db, logger)
 	_ = wordRepo.SaveWordCard("genword2", "def")
 	cfg := &config.Config{
-		Admin: config.AdminConfig{TelegramID: 123456789},
+		Admin:  config.AdminConfig{TelegramID: 123456789},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
 	}
 	jwtService, _ := NewJWTService(cfg, logger)
@@ -2690,7 +2690,7 @@ func TestHandleAdmin_CircuitBreakerNoRow(t *testing.T) {
 		t.Skipf("cannot delete circuit_breaker_state: %v", err)
 	}
 	cfg := &config.Config{
-		Admin: config.AdminConfig{TelegramID: 123456789},
+		Admin:  config.AdminConfig{TelegramID: 123456789},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
 	}
 	jwtService, _ := NewJWTService(cfg, logger)

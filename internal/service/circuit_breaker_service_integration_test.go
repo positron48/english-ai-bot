@@ -6,8 +6,8 @@ import (
 
 	"tgbot-skeleton/internal/repository"
 
-	"tgbot-skeleton/internal/testutil"
 	"go.uber.org/zap"
+	"tgbot-skeleton/internal/testutil"
 )
 
 func setupCircuitBreakerServiceTestDB(t *testing.T) (*sql.DB, *repository.CircuitBreakerRepository) {

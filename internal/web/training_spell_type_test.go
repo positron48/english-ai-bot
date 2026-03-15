@@ -44,8 +44,8 @@ func TestHandleTrainingAnswer_SpellAnswerText(t *testing.T) {
 	router.webTrainingHandler = &WebTrainingHandler{
 		sessions: map[int64]*WebTrainingState{
 			userID: {
-				UserID:       userID,
-				SessionID:    11,
+				UserID:    userID,
+				SessionID: 11,
 				Queue: []*models.TrainingQueueItem{{
 					Type: "spell",
 					Spell: &models.SpellChallenge{
@@ -99,8 +99,8 @@ func TestHandleTrainingAnswer_TypeAnswerTextWrong(t *testing.T) {
 	router.webTrainingHandler = &WebTrainingHandler{
 		sessions: map[int64]*WebTrainingState{
 			userID: {
-				UserID:       userID,
-				SessionID:    12,
+				UserID:    userID,
+				SessionID: 12,
 				Queue: []*models.TrainingQueueItem{{
 					Type: "type",
 					TypeChallenge: &models.TypeChallenge{
@@ -221,7 +221,7 @@ func TestHandleTrainingSpellAnswer_WrongAnswer(t *testing.T) {
 			userID: {
 				UserID: userID, SessionID: 13,
 				Queue: []*models.TrainingQueueItem{{
-					Type: "spell",
+					Type:  "spell",
 					Spell: &models.SpellChallenge{DisplayWord: "correct"},
 				}},
 				ShownAt: time.Now().Add(-2 * time.Second),
@@ -411,10 +411,10 @@ func TestGradeReplacedCardForSpellType_CreatesReviewEventAndWrongAnswer(t *testi
 	}
 
 	sessionID, err := sessionRepo.CreateSession(&models.TrainingSession{
-		UserID:      user.ID,
-		Source:      models.SourceManual,
+		UserID:       user.ID,
+		Source:       models.SourceManual,
 		PlannedCount: 1,
-		DoneCount:   0,
+		DoneCount:    0,
 	})
 	if err != nil {
 		t.Fatalf("create session: %v", err)
@@ -425,7 +425,9 @@ func TestGradeReplacedCardForSpellType_CreatesReviewEventAndWrongAnswer(t *testi
 	router := NewRouter(logger, cfg, db, nil, srsService, nil, nil)
 	router.webTrainingHandler = &WebTrainingHandler{sessionRepo: sessionRepo}
 
-	router.gradeReplacedCardForSpellType(user.ID, userCardID, false, "mistake", time.Now().Add(-2*time.Second), sessionID)
+	shownAt := time.Now().Add(-2 * time.Second)
+	answeredAt := time.Now()
+	router.gradeReplacedCardForSpellType(user.ID, userCardID, false, "mistake", shownAt, answeredAt, sessionID, "spell", 7)
 
 	var reviewEvents int
 	if err := db.QueryRow("SELECT COUNT(*) FROM review_events WHERE session_id = ? AND user_card_id = ?", sessionID, userCardID).Scan(&reviewEvents); err != nil {
@@ -461,7 +463,8 @@ func TestGradeReplacedCardForSpellType_UserCardMissing(t *testing.T) {
 	router := NewRouter(logger, cfg, db, nil, srsService, nil, nil)
 	router.webTrainingHandler = &WebTrainingHandler{sessionRepo: sessionRepo}
 
-	router.gradeReplacedCardForSpellType(1, 999999, true, "ok", time.Now(), 123)
+	now := time.Now()
+	router.gradeReplacedCardForSpellType(1, 999999, true, "ok", now, now, 123, "spell", 2)
 
 	var reviewEvents int
 	if err := db.QueryRow("SELECT COUNT(*) FROM review_events").Scan(&reviewEvents); err != nil {

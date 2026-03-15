@@ -48,11 +48,11 @@ func TestTranslationFallbacks(t *testing.T) {
 
 func TestT(t *testing.T) {
 	tests := []struct {
-		name     string
-		lang     string
-		key      string
-		want     string
-		wantKey  bool // if true, expect key to be returned as-is (missing key)
+		name    string
+		lang    string
+		key     string
+		want    string
+		wantKey bool // if true, expect key to be returned as-is (missing key)
 	}{
 		// empty lang defaults to en
 		{name: "empty lang uses en", lang: "", key: "errors.unauthorized", want: "Unauthorized"},

@@ -1301,7 +1301,6 @@ func TestPronunciationService_Start_MkdirAllFailure(t *testing.T) {
 	}
 }
 
-
 // --- fetchViaChatCompletions: both attempts return openrouter_no_audio (line 131) ---
 
 func TestOpenRouterPronunciationProvider_FetchViaChatCompletions_BothAttemptsNoAudioCoverage(t *testing.T) {
@@ -1604,13 +1603,13 @@ func TestPronunciationService_ScheduleWord_QueueTimeoutDequeue(t *testing.T) {
 // --- mockTTSRepo: injectable ttsStatusRepo for testing error paths ---
 
 type mockTTSRepo struct {
-	getByWordFn             func(word string) (*models.TTSGenerationStatus, error)
-	upsertPendingFn         func(word string) error
-	markAttemptFn           func(word, provider, errorCode, errorMessage string, retryable bool) error
-	markReadyFn             func(word, provider, relPath string) error
-	markTerminalFn          func(word, provider, errorCode, errorMessage string) error
+	getByWordFn               func(word string) (*models.TTSGenerationStatus, error)
+	upsertPendingFn           func(word string) error
+	markAttemptFn             func(word, provider, errorCode, errorMessage string, retryable bool) error
+	markReadyFn               func(word, provider, relPath string) error
+	markTerminalFn            func(word, provider, errorCode, errorMessage string) error
 	resetForForceRegenerateFn func(word string) error
-	callCount               int
+	callCount                 int
 }
 
 func (m *mockTTSRepo) GetByWord(word string) (*models.TTSGenerationStatus, error) {
@@ -1840,7 +1839,7 @@ func TestPronunciationService_ProcessWord_NotFoundNonRetryableBlock(t *testing.T
 			markAttemptCalled = true
 			return nil
 		},
-		markReadyFn:   func(word, provider, relPath string) error { return nil },
+		markReadyFn:    func(word, provider, relPath string) error { return nil },
 		markTerminalFn: func(word, provider, errorCode, errorMessage string) error { return nil },
 	}
 
@@ -1855,11 +1854,11 @@ func TestPronunciationService_ProcessWord_NotFoundNonRetryableBlock(t *testing.T
 // --- writeFileAtomic: write error via injectable createTempFileFn ---
 
 type mockOsFile struct {
-	name      string
-	writeErr  error
-	chmodErr  error
-	closeErr  error
-	writeBuf  []byte
+	name     string
+	writeErr error
+	chmodErr error
+	closeErr error
+	writeBuf []byte
 }
 
 func (f *mockOsFile) Name() string { return f.name }

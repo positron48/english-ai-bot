@@ -61,7 +61,7 @@ func (r *Router) handleAdminPromptTesterDefaultPrompts(w http.ResponseWriter, re
 		// Default fallback
 		trainingPromptFile = "prompts/training-card-generator.txt"
 	}
-	
+
 	content, err := os.ReadFile(trainingPromptFile)
 	if err != nil {
 		r.logger.Error("failed to read training prompt file",
@@ -79,9 +79,9 @@ func (r *Router) handleAdminPromptTesterDefaultPrompts(w http.ResponseWriter, re
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]interface{}{
-		"word_prompt":          wordPrompt,
-		"word_prompt_source":   wordPromptSource,
-		"training_prompt":      trainingPrompt,
+		"word_prompt":            wordPrompt,
+		"word_prompt_source":     wordPromptSource,
+		"training_prompt":        trainingPrompt,
 		"training_prompt_source": trainingPromptSource,
 	})
 }

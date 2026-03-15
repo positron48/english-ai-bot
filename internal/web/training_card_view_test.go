@@ -304,7 +304,7 @@ func TestShowTrainingCard_SessionFinished(t *testing.T) {
 	router := NewRouter(logger, cfg, db, trainingService, nil, nil, nil)
 	router.webTrainingHandler = NewWebTrainingHandler(trainingService, nil, nil, sessionRepo, logger, 2000, 3)
 	state := &WebTrainingState{
-		UserID:        1,
+		UserID:       1,
 		SessionID:    999,
 		Queue:        []*models.TrainingQueueItem{},
 		CurrentIndex: 0,

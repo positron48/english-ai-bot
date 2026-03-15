@@ -196,4 +196,3 @@ func TestWebSessionRepository_CleanupExpiredSessions(t *testing.T) {
 		t.Fatalf("CleanupExpiredSessions() error = %v", err)
 	}
 }
-

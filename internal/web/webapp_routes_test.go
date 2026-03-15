@@ -185,7 +185,7 @@ func TestSetupDevProxy(t *testing.T) {
 		logger: logger,
 		config: cfg,
 	}
-	
+
 	router.setupDevProxy()
 
 	// Test that the proxy handler is set up
@@ -207,7 +207,7 @@ func TestSetupDevProxy_InvalidURL(t *testing.T) {
 		logger: logger,
 		config: cfg,
 	}
-	
+
 	// Should handle invalid URL gracefully (logs error but doesn't panic)
 	router.setupDevProxy()
 	_ = router
@@ -226,7 +226,7 @@ func TestSetupDevProxy_EmptyURL(t *testing.T) {
 		logger: logger,
 		config: cfg,
 	}
-	
+
 	// Should use default URL
 	router.setupDevProxy()
 	_ = router
@@ -331,8 +331,8 @@ func TestSetupDevProxy_RedirectsToVite(t *testing.T) {
 	router.setupDevProxy()
 
 	tests := []struct {
-		path     string
-		wantLoc  string
+		path    string
+		wantLoc string
 	}{
 		{"/app", "http://localhost:5173/app/"},
 		{"/app/", "http://localhost:5173/app/"},

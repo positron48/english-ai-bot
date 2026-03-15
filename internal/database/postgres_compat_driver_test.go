@@ -12,8 +12,8 @@ import (
 // mockDriver и mockConn позволяют проверить, что compatConn передаёт в базовый
 // драйвер запрос после rebindQuestionToDollar (?) -> ($1, $2, ...).
 type mockDriver struct {
-	mu    sync.Mutex
-	lastPrepareQuery string
+	mu                      sync.Mutex
+	lastPrepareQuery        string
 	lastPrepareContextQuery string
 }
 
@@ -40,7 +40,7 @@ func (c *mockConn) PrepareContext(ctx context.Context, query string) (driver.Stm
 }
 
 func (c *mockConn) Close() error              { return nil }
-func (c *mockConn) Begin() (driver.Tx, error)  { return nil, nil }
+func (c *mockConn) Begin() (driver.Tx, error) { return nil, nil }
 
 // mockConnNoPrepareContext реализует только driver.Conn (без PrepareContext),
 // чтобы проверить fallback compatConn.PrepareContext -> Prepare.
@@ -56,7 +56,7 @@ func (c *mockConnNoPrepareContext) Prepare(query string) (driver.Stmt, error) {
 }
 
 func (c *mockConnNoPrepareContext) Close() error              { return nil }
-func (c *mockConnNoPrepareContext) Begin() (driver.Tx, error)  { return nil, nil }
+func (c *mockConnNoPrepareContext) Begin() (driver.Tx, error) { return nil, nil }
 
 type mockDriverNoPrepareContext struct {
 	mu               sync.Mutex
@@ -69,8 +69,8 @@ func (d *mockDriverNoPrepareContext) Open(name string) (driver.Conn, error) {
 
 type mockStmt struct{}
 
-func (s *mockStmt) Close() error   { return nil }
-func (s *mockStmt) NumInput() int   { return -1 }
+func (s *mockStmt) Close() error                               { return nil }
+func (s *mockStmt) NumInput() int                              { return -1 }
 func (s *mockStmt) Exec([]driver.Value) (driver.Result, error) { return nil, nil }
 func (s *mockStmt) Query([]driver.Value) (driver.Rows, error)  { return nil, nil }
 

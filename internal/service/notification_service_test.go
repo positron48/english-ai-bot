@@ -116,13 +116,13 @@ func TestBuildNotificationMessage(t *testing.T) {
 	svc := NewNotificationService(nil, nil, nil, nil, nil, logger)
 
 	tests := []struct {
-		name            string
-		streak          int
+		name             string
+		streak           int
 		trainedYesterday bool
-		newCardsWeek    int
-		dueCount        int
-		estimatedMin    int
-		wantContains    []string
+		newCardsWeek     int
+		dueCount         int
+		estimatedMin     int
+		wantContains     []string
 	}{
 		{"1 minute wording", 0, false, 0, 15, 1, []string{"минута", "К повторению: 15", "Начать?"}},
 		{"2-4 minutes wording", 0, false, 0, 20, 3, []string{"минуты", "К повторению: 20", "~3"}},
@@ -170,7 +170,9 @@ func TestNotificationService_ShouldDisableNotificationsOnError(t *testing.T) {
 }
 
 func assertAnError(s string) error { return &errString{s} }
+
 type errString struct{ s string }
+
 func (e *errString) Error() string { return e.s }
 
 func TestNotificationService_SendNotificationIfNeeded_Never(t *testing.T) {

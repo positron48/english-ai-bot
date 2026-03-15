@@ -32,7 +32,7 @@ func TestTrainingService_generateQueue_WithOrphanedCards(t *testing.T) {
 	config := SessionConfig{
 		MaxCardsPerSession: 10,
 		MaxNewPerSession:   5,
-		AlgoVersion:       "test",
+		AlgoVersion:        "test",
 	}
 
 	// generateQueue should skip orphaned cards
@@ -86,7 +86,7 @@ func TestTrainingService_generateQueue_MaxNewPerSession(t *testing.T) {
 	config := SessionConfig{
 		MaxCardsPerSession: 10,
 		MaxNewPerSession:   3, // Limit new cards to 3
-		AlgoVersion:       "test",
+		AlgoVersion:        "test",
 	}
 
 	queue, err := service.generateQueue(user.ID, config)
@@ -167,7 +167,7 @@ func TestTrainingService_generateQueue_LearningCardsFirst(t *testing.T) {
 	config := SessionConfig{
 		MaxCardsPerSession: 10,
 		MaxNewPerSession:   5,
-		AlgoVersion:       "test",
+		AlgoVersion:        "test",
 	}
 
 	queue, err := service.generateQueue(user.ID, config)

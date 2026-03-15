@@ -22,16 +22,18 @@ import (
 // mockPronunciationService implements pronunciationServiceInterface for tts tests
 // so we can cover branches that real service never hits (e.g. empty PublicBasePath/AudioDir).
 type mockPronunciationService struct {
-	enabled       bool
-	publicBase    string
-	audioDir      string
-	lookupResult  service.PronunciationLookupResult
+	enabled      bool
+	publicBase   string
+	audioDir     string
+	lookupResult service.PronunciationLookupResult
 }
 
-func (m *mockPronunciationService) IsEnabled() bool                                    { return m.enabled }
-func (m *mockPronunciationService) PublicBasePath() string                              { return m.publicBase }
-func (m *mockPronunciationService) AudioDir() string                                   { return m.audioDir }
-func (m *mockPronunciationService) Lookup(word string) service.PronunciationLookupResult { return m.lookupResult }
+func (m *mockPronunciationService) IsEnabled() bool        { return m.enabled }
+func (m *mockPronunciationService) PublicBasePath() string { return m.publicBase }
+func (m *mockPronunciationService) AudioDir() string       { return m.audioDir }
+func (m *mockPronunciationService) Lookup(word string) service.PronunciationLookupResult {
+	return m.lookupResult
+}
 func (m *mockPronunciationService) GetStatus(word string) (service.TTSStatusResult, error) {
 	return service.TTSStatusResult{}, nil
 }
@@ -140,7 +142,7 @@ func TestSetupPronunciationMediaRoute_AlreadyRegistered(t *testing.T) {
 	router := &Router{
 		mux:                               http.NewServeMux(),
 		logger:                            logger,
-		pronunciationService:             pronService,
+		pronunciationService:              pronService,
 		pronunciationMediaRouteRegistered: true, // already registered
 	}
 	router.setupPronunciationMediaRoute() // should return without re-registering

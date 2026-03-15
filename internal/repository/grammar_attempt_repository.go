@@ -27,17 +27,17 @@ func NewGrammarAttemptRepository(db *sql.DB, logger *zap.Logger) *GrammarAttempt
 
 // TestAttempt represents a grammar test attempt
 type TestAttempt struct {
-	ID            int64
-	UserID        int64
-	ScopeType     string // "chapter" or "category"
-	ScopeID       string
-	StartedAt     time.Time
-	FinishedAt    *time.Time
-	Score         int
-	Passed        bool
+	ID             int64
+	UserID         int64
+	ScopeType      string // "chapter" or "category"
+	ScopeID        string
+	StartedAt      time.Time
+	FinishedAt     *time.Time
+	Score          int
+	Passed         bool
 	TotalQuestions int
-	AnswersJSON   string
-	ResultsJSON   string
+	AnswersJSON    string
+	ResultsJSON    string
 	CourseVersion  *string
 }
 
@@ -369,11 +369,11 @@ func ParseResultsJSON(jsonStr string) ([]interface{}, error) {
 
 // PlacementTestResult represents a placement test result
 type PlacementTestResult struct {
-	UserID          int64
-	Score           int
-	TotalQuestions  int
-	OpenedSections  []string
-	CompletedAt     time.Time
+	UserID         int64
+	Score          int
+	TotalQuestions int
+	OpenedSections []string
+	CompletedAt    time.Time
 }
 
 // SavePlacementTestResult saves or updates placement test result
@@ -386,7 +386,7 @@ func (r *GrammarAttemptRepository) SavePlacementTestResult(userID int64, score i
 	var existingOpenedSectionsJSON sql.NullString
 	checkQuery := `SELECT score, opened_sections_json FROM grammar_placement_test WHERE user_id = ?`
 	err := r.db.QueryRow(checkQuery, userID).Scan(&existingScore, &existingOpenedSectionsJSON)
-	
+
 	if err == sql.ErrNoRows {
 		// No existing result, insert new
 		query := `INSERT INTO grammar_placement_test (user_id, score, total_questions, opened_sections_json, completed_at)
@@ -397,7 +397,7 @@ func (r *GrammarAttemptRepository) SavePlacementTestResult(userID int64, score i
 		}
 		return nil
 	}
-	
+
 	if err != nil {
 		return fmt.Errorf("failed to check existing placement test result: %w", err)
 	}

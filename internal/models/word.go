@@ -10,14 +10,14 @@ import (
 // WordCard represents a vocabulary card (lemma) stored in the database
 type WordCard struct {
 	ID              int64
-	Word            string // Lemma (base form)
-	Definition      string // Legacy field, kept for compatibility
-	POS             *string // Part of speech
-	Transcription   *string // IPA transcription
-	DefinitionRU   *string // Russian definition
-	ExamplesJSON    *string // JSON array of examples
-	VerbFormsJSON   *string // JSON object with verb forms (v1, v2, v3, etc.)
-	DisplayEN       *string // Display form (e.g., "spy" or "to spy" for verbs)
+	Word            string     // Lemma (base form)
+	Definition      string     // Legacy field, kept for compatibility
+	POS             *string    // Part of speech
+	Transcription   *string    // IPA transcription
+	DefinitionRU    *string    // Russian definition
+	ExamplesJSON    *string    // JSON array of examples
+	VerbFormsJSON   *string    // JSON object with verb forms (v1, v2, v3, etc.)
+	DisplayEN       *string    // Display form (e.g., "spy" or "to spy" for verbs)
 	ProcessedAt     *time.Time // NULL if not processed yet, set when processing completes (success or error)
 	ProcessingError *string    // NULL if no error, contains error message if processing failed
 	CreatedAt       time.Time
@@ -36,7 +36,7 @@ type WordRequestHistory struct {
 
 // WordForm represents a mapping from word form to lemma
 type WordForm struct {
-	Form      string
+	Form       string
 	WordCardID int64
 }
 
@@ -48,10 +48,10 @@ type WordInfoExample struct {
 
 // WordInfoVerbForms represents verb forms (for verbs only)
 type WordInfoVerbForms struct {
-	V1         string `json:"v1"` // Base form (infinitive)
-	V2         string `json:"v2"` // Past simple
-	V3         string `json:"v3"` // Past participle
-	Gerund     string `json:"gerund,omitempty"` // -ing form
+	V1          string `json:"v1"`                     // Base form (infinitive)
+	V2          string `json:"v2"`                     // Past simple
+	V3          string `json:"v3"`                     // Past participle
+	Gerund      string `json:"gerund,omitempty"`       // -ing form
 	ThirdPerson string `json:"third_person,omitempty"` // Third person singular
 }
 
@@ -74,7 +74,7 @@ func (e *ErrorField) UnmarshalJSON(data []byte) error {
 		}
 		return nil
 	}
-	
+
 	// Try to parse as string
 	var s string
 	if err := json.Unmarshal(data, &s); err == nil {
@@ -88,7 +88,7 @@ func (e *ErrorField) UnmarshalJSON(data []byte) error {
 		}
 		return nil
 	}
-	
+
 	// If neither bool nor string, default to false
 	e.IsError = false
 	e.Message = ""
@@ -106,13 +106,13 @@ func (e *ErrorField) IsTrue() bool {
 
 // WordInfoResponse represents LLM response for word information (JSON format)
 type WordInfoResponse struct {
-	Error         ErrorField          `json:"error,omitempty"` // Error if word is not English/proper noun/etc (can be bool or string)
-	Hint          string              `json:"hint,omitempty"` // User-friendly hint/suggestion when word is not found
-	InputWord     string              `json:"input_word"` // Word as entered by user
-	Lemma         string              `json:"lemma"` // Base form (lemma)
-	POS           string              `json:"pos"` // Part of speech
-	Transcription string              `json:"transcription"` // IPA transcription
-	DefinitionRU  string              `json:"definition_ru"` // Russian definition
-	Examples      []WordInfoExample   `json:"examples"` // 2-3 examples
+	Error         ErrorField         `json:"error,omitempty"`      // Error if word is not English/proper noun/etc (can be bool or string)
+	Hint          string             `json:"hint,omitempty"`       // User-friendly hint/suggestion when word is not found
+	InputWord     string             `json:"input_word"`           // Word as entered by user
+	Lemma         string             `json:"lemma"`                // Base form (lemma)
+	POS           string             `json:"pos"`                  // Part of speech
+	Transcription string             `json:"transcription"`        // IPA transcription
+	DefinitionRU  string             `json:"definition_ru"`        // Russian definition
+	Examples      []WordInfoExample  `json:"examples"`             // 2-3 examples
 	VerbForms     *WordInfoVerbForms `json:"verb_forms,omitempty"` // Verb forms (if verb)
 }

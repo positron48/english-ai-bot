@@ -17,14 +17,14 @@ import (
 
 // NotificationService handles daily training notifications
 type NotificationService struct {
-	bot              *tgbotapi.BotAPI
-	userRepo         *repository.UserRepository
-	userCardRepo     *repository.UserCardRepository
-	nudgeRepo        *repository.NudgeRepository
-	sessionRepo      *repository.SessionRepository
-	logger           *zap.Logger
-	stopChan         chan struct{}
-	checkInterval    time.Duration // configurable for testing; defaults to 1 hour
+	bot           *tgbotapi.BotAPI
+	userRepo      *repository.UserRepository
+	userCardRepo  *repository.UserCardRepository
+	nudgeRepo     *repository.NudgeRepository
+	sessionRepo   *repository.SessionRepository
+	logger        *zap.Logger
+	stopChan      chan struct{}
+	checkInterval time.Duration // configurable for testing; defaults to 1 hour
 }
 
 // NewNotificationService creates a new notification service
@@ -90,7 +90,7 @@ func (s *NotificationService) checkAndSendNotifications() {
 	}
 
 	now := time.Now()
-	
+
 	for _, user := range users {
 		// Parse user's timezone
 		loc, err := time.LoadLocation(user.Timezone)
@@ -104,7 +104,7 @@ func (s *NotificationService) checkAndSendNotifications() {
 
 		// Get current time in user's timezone
 		userNow := now.In(loc)
-		
+
 		// Parse preferred training time
 		preferredTime, err := time.Parse("15:04", user.PreferredTrainingTime)
 		if err != nil {
@@ -121,7 +121,7 @@ func (s *NotificationService) checkAndSendNotifications() {
 		currentMinute := userNow.Minute()
 		preferredHour := preferredTime.Hour()
 		preferredMinute := preferredTime.Minute()
-		
+
 		// Check if we're before the preferred time
 		if currentHour < preferredHour || (currentHour == preferredHour && currentMinute < preferredMinute) {
 			continue // Too early, skip

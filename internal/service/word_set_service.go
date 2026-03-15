@@ -30,16 +30,16 @@ type wordRepoForWordSet interface {
 
 // WordSetService handles word set business logic
 type WordSetService struct {
-	wordSetRepo            *repository.WordSetRepository
-	wordSetCategoryRepo    *repository.WordSetCategoryRepository
-	wordRepo               wordRepoForWordSet
-	trainingCardRepo       *repository.TrainingCardRepository
-	userCardRepo           userCardRepoForWordSet
-	userWordKnowledgeRepo  *repository.UserWordKnowledgeRepository
-	userWordMasteringRepo  *repository.UserWordMasteringRepository
-	aiService              *ai.Service
-	modelHigh              string
-	logger                 *zap.Logger
+	wordSetRepo           *repository.WordSetRepository
+	wordSetCategoryRepo   *repository.WordSetCategoryRepository
+	wordRepo              wordRepoForWordSet
+	trainingCardRepo      *repository.TrainingCardRepository
+	userCardRepo          userCardRepoForWordSet
+	userWordKnowledgeRepo *repository.UserWordKnowledgeRepository
+	userWordMasteringRepo *repository.UserWordMasteringRepository
+	aiService             *ai.Service
+	modelHigh             string
+	logger                *zap.Logger
 }
 
 // NewWordSetService creates a new word set service
@@ -90,17 +90,17 @@ func NewWordSetServiceWithMastering(
 // Word cards will be filled asynchronously by TrainingWorker
 func (s *WordSetService) EnsureWordCardExistsMinimal(word string) (int64, error) {
 	normalizedWord := strings.TrimSpace(strings.ToLower(word))
-	
+
 	// Try to get existing word card
 	wordCard, err := s.wordRepo.GetWordCardByLemma(normalizedWord)
 	if err != nil {
 		return 0, fmt.Errorf("failed to get word card: %w", err)
 	}
-	
+
 	if wordCard != nil {
 		return wordCard.ID, nil
 	}
-	
+
 	// Word not found, create minimal word card (only word, no LLM call)
 	// Word card data will be filled asynchronously by TrainingWorker
 	wordCardModel := &models.WordCard{
@@ -108,17 +108,17 @@ func (s *WordSetService) EnsureWordCardExistsMinimal(word string) (int64, error)
 		Definition: "", // Empty - will be filled later
 		// All other fields are nil - will be filled asynchronously
 	}
-	
+
 	wordCardID, err := s.wordRepo.UpsertWordCardLemma(wordCardModel)
 	if err != nil {
 		return 0, fmt.Errorf("failed to create minimal word card: %w", err)
 	}
-	
+
 	s.logger.Debug("created minimal word card",
 		zap.String("word", normalizedWord),
 		zap.Int64("word_card_id", wordCardID),
 	)
-	
+
 	return wordCardID, nil
 }
 
@@ -126,27 +126,27 @@ func (s *WordSetService) EnsureWordCardExistsMinimal(word string) (int64, error)
 // Returns the word card ID
 func (s *WordSetService) EnsureWordCardExists(ctx context.Context, word string) (int64, error) {
 	normalizedWord := strings.TrimSpace(strings.ToLower(word))
-	
+
 	// Try to get existing word card
 	wordCard, err := s.wordRepo.GetWordCardByLemma(normalizedWord)
 	if err != nil {
 		return 0, fmt.Errorf("failed to get word card: %w", err)
 	}
-	
+
 	if wordCard != nil {
 		return wordCard.ID, nil
 	}
-	
+
 	// Word not found, need to create it via AI
 	if s.aiService == nil {
 		return 0, fmt.Errorf("AI service not available")
 	}
-	
+
 	response, err := s.aiService.GenerateResponse(ctx, word)
 	if err != nil {
 		return 0, fmt.Errorf("failed to get AI response: %w", err)
 	}
-	
+
 	// Parse JSON response
 	var wordInfo models.WordInfoResponse
 	if err := json.Unmarshal([]byte(response), &wordInfo); err != nil {
@@ -164,23 +164,23 @@ func (s *WordSetService) EnsureWordCardExists(ctx context.Context, word string) 
 		}
 		return wordCard.ID, nil
 	}
-	
+
 	// Check for error from LLM
 	if wordInfo.Error.IsTrue() {
 		return 0, fmt.Errorf("word rejected by LLM: %s", wordInfo.Error.Message)
 	}
-	
+
 	// Save structured word card (same logic as WordService)
 	lemma := strings.ToLower(wordInfo.Lemma)
 	if lemma == "" {
 		lemma = normalizedWord
 	}
-	
+
 	displayEN := lemma
 	if wordInfo.POS == "verb" && wordInfo.VerbForms != nil && wordInfo.VerbForms.V1 != "" {
 		displayEN = "to " + wordInfo.VerbForms.V1
 	}
-	
+
 	// Marshal examples and verb forms
 	var examplesJSON *string
 	if len(wordInfo.Examples) > 0 {
@@ -188,34 +188,34 @@ func (s *WordSetService) EnsureWordCardExists(ctx context.Context, word string) 
 		examplesStr := string(examplesBytes)
 		examplesJSON = &examplesStr
 	}
-	
+
 	var verbFormsJSON *string
 	if wordInfo.VerbForms != nil {
 		verbFormsBytes, _ := json.Marshal(wordInfo.VerbForms)
 		verbFormsStr := string(verbFormsBytes)
 		verbFormsJSON = &verbFormsStr
 	}
-	
+
 	pos := wordInfo.POS
 	transcription := wordInfo.Transcription
 	definitionRU := wordInfo.DefinitionRU
-	
+
 	wordCardModel := &models.WordCard{
 		Word:          lemma,
 		Definition:    "", // Legacy field
 		POS:           &pos,
 		Transcription: &transcription,
 		DefinitionRU:  &definitionRU,
-		ExamplesJSON:    examplesJSON,
+		ExamplesJSON:  examplesJSON,
 		VerbFormsJSON: verbFormsJSON,
 		DisplayEN:     &displayEN,
 	}
-	
+
 	wordCardID, err := s.wordRepo.UpsertWordCardLemma(wordCardModel)
 	if err != nil {
 		return 0, fmt.Errorf("failed to save word card: %w", err)
 	}
-	
+
 	// Get the saved word card
 	wordCard, err = s.wordRepo.GetWordCardByID(wordCardID)
 	if err != nil {
@@ -224,14 +224,14 @@ func (s *WordSetService) EnsureWordCardExists(ctx context.Context, word string) 
 	if wordCard == nil {
 		return 0, fmt.Errorf("word card not found after save")
 	}
-	
+
 	// Create word form mapping if needed
 	if normalizedWord != strings.ToLower(wordCard.Word) {
 		if err := s.wordRepo.UpsertWordFormMapping(normalizedWord, wordCard.ID); err != nil {
 			s.logger.Warn("failed to create word form mapping", zap.Error(err))
 		}
 	}
-	
+
 	return wordCard.ID, nil
 }
 
@@ -243,12 +243,12 @@ func (s *WordSetService) EnsureTrainingCardsExist(ctx context.Context, wordCardI
 	if err != nil {
 		return fmt.Errorf("failed to check training cards: %w", err)
 	}
-	
+
 	if len(trainingCards) > 0 {
 		// Training cards already exist
 		return nil
 	}
-	
+
 	// Get word card
 	wordCard, err := s.wordRepo.GetWordCardByID(wordCardID)
 	if err != nil {
@@ -257,38 +257,38 @@ func (s *WordSetService) EnsureTrainingCardsExist(ctx context.Context, wordCardI
 	if wordCard == nil {
 		return fmt.Errorf("word card not found")
 	}
-	
+
 	// Generate training card via LLM
 	if s.aiService == nil {
 		return fmt.Errorf("AI service not available")
 	}
-	
+
 	// Try to generate training card, first with default model, then with high model if validation fails
 	var trainingResp models.TrainingCardResponse
 	var response string
 	var validationError string
-	
+
 	// First attempt with default model
 	response, err = s.aiService.GenerateTrainingCard(ctx, wordCard.Word)
 	if err != nil {
 		return fmt.Errorf("LLM generation failed: %w", err)
 	}
-	
+
 	// Parse response
 	if err := json.Unmarshal([]byte(response), &trainingResp); err != nil {
 		return fmt.Errorf("failed to parse LLM response: %w", err)
 	}
-	
+
 	// Check for error from LLM
 	if trainingResp.Error != "" {
 		return fmt.Errorf("word rejected by LLM: %s", trainingResp.Error)
 	}
-	
+
 	// Validate response
 	if len(trainingResp.Senses) == 0 {
 		return fmt.Errorf("no senses in LLM response")
 	}
-	
+
 	// Validate distractors
 	validationError = ValidateTrainingCardResponse(wordCard, &trainingResp)
 	if validationError != "" {
@@ -299,7 +299,7 @@ func (s *WordSetService) EnsureTrainingCardsExist(ctx context.Context, wordCardI
 				zap.String("error", validationError),
 				zap.String("high_model", s.modelHigh),
 			)
-			
+
 			// Try with high model
 			response, err = s.aiService.GenerateTrainingCard(ctx, wordCard.Word, s.modelHigh)
 			if err != nil {
@@ -309,7 +309,7 @@ func (s *WordSetService) EnsureTrainingCardsExist(ctx context.Context, wordCardI
 				)
 				return fmt.Errorf("validation failed: %s", validationError)
 			}
-			
+
 			// Parse response from high model
 			var highTrainingResp models.TrainingCardResponse
 			if err := json.Unmarshal([]byte(response), &highTrainingResp); err != nil {
@@ -319,12 +319,12 @@ func (s *WordSetService) EnsureTrainingCardsExist(ctx context.Context, wordCardI
 				)
 				return fmt.Errorf("validation failed: %s", validationError)
 			}
-			
+
 			// Check for error from LLM
 			if highTrainingResp.Error != "" {
 				return fmt.Errorf("word rejected by high model LLM: %s", highTrainingResp.Error)
 			}
-			
+
 			// Validate response from high model
 			if len(highTrainingResp.Senses) == 0 {
 				s.logger.Warn("no senses in high model LLM response, using original validation error",
@@ -332,7 +332,7 @@ func (s *WordSetService) EnsureTrainingCardsExist(ctx context.Context, wordCardI
 				)
 				return fmt.Errorf("validation failed: %s", validationError)
 			}
-			
+
 			// Validate distractors from high model
 			highValidationError := ValidateTrainingCardResponse(wordCard, &highTrainingResp)
 			if highValidationError == "" {
@@ -355,25 +355,25 @@ func (s *WordSetService) EnsureTrainingCardsExist(ctx context.Context, wordCardI
 			return fmt.Errorf("validation failed: %s", validationError)
 		}
 	}
-	
+
 	// Create training cards
 	for i, sense := range trainingResp.Senses {
 		// Marshal distractors
 		distractorsRU, _ := json.Marshal(sense.DistractorsRU)
 		distractorsEN, _ := json.Marshal(sense.DistractorsEN)
-		
+
 		// Determine display_word
 		displayWord := trainingResp.WordEN
 		if sense.DisplayWord != "" {
 			displayWord = sense.DisplayWord
 		}
-		
+
 		// Get POS
 		pos := sense.POS
 		if pos == "" && wordCard.POS != nil {
 			pos = *wordCard.POS
 		}
-		
+
 		trainingCard := &models.TrainingCard{
 			WordCardID:    wordCardID,
 			WordEN:        displayWord,
@@ -387,20 +387,20 @@ func (s *WordSetService) EnsureTrainingCardsExist(ctx context.Context, wordCardI
 			DistractorsEN: string(distractorsEN),
 			Hint:          sense.Hint,
 		}
-		
+
 		if pos != "" {
 			trainingCard.POS = &pos
 		}
 		if displayWord != "" {
 			trainingCard.DisplayWord = &displayWord
 		}
-		
+
 		_, err := s.trainingCardRepo.CreateTrainingCard(trainingCard)
 		if err != nil {
 			return fmt.Errorf("failed to create training card: %w", err)
 		}
 	}
-	
+
 	return nil
 }
 
@@ -412,11 +412,11 @@ func (s *WordSetService) EnsureUserCardsForWord(userID, wordCardID int64) error 
 	if err != nil {
 		return fmt.Errorf("failed to get training cards: %w", err)
 	}
-	
+
 	if len(trainingCards) == 0 {
 		return nil
 	}
-	
+
 	// Create user_cards for each training card (both directions)
 	createdCount := 0
 	for _, trainingCard := range trainingCards {
@@ -437,7 +437,7 @@ func (s *WordSetService) EnsureUserCardsForWord(userID, wordCardID int64) error 
 		} else {
 			createdCount++
 		}
-		
+
 		// Create en_ru card
 		enRuCard := &models.UserCard{
 			UserID:         userID,
@@ -456,7 +456,7 @@ func (s *WordSetService) EnsureUserCardsForWord(userID, wordCardID int64) error 
 			createdCount++
 		}
 	}
-	
+
 	if createdCount > 0 {
 		s.logger.Info("created user cards for word",
 			zap.Int64("user_id", userID),
@@ -470,7 +470,7 @@ func (s *WordSetService) EnsureUserCardsForWord(userID, wordCardID int64) error 
 			}
 		}
 	}
-	
+
 	return nil
 }
 
@@ -480,7 +480,7 @@ func (s *WordSetService) MarkKnown(userID, wordCardID int64) error {
 	if err := s.userWordKnowledgeRepo.MarkKnown(userID, wordCardID); err != nil {
 		return fmt.Errorf("failed to mark as known: %w", err)
 	}
-	
+
 	// Delete user_cards for this word
 	_, err := s.userCardRepo.DeleteUserCardsByWordCardIDForUser(userID, wordCardID)
 	if err != nil {
@@ -491,7 +491,7 @@ func (s *WordSetService) MarkKnown(userID, wordCardID int64) error {
 		)
 		// Don't fail if deletion fails, knowledge is already marked
 	}
-	
+
 	return nil
 }
 
@@ -503,13 +503,13 @@ func (s *WordSetService) ProcessWordSetItems(ctx context.Context, wordSetID int6
 	// Split by comma and normalize
 	words := strings.Split(wordsStr, ",")
 	var wordCardIDs []int64
-	
+
 	for _, word := range words {
 		word = strings.TrimSpace(word)
 		if word == "" {
 			continue
 		}
-		
+
 		// Ensure word card exists with minimal data (no LLM call)
 		// Word card data will be filled asynchronously by TrainingWorker
 		wordCardID, err := s.EnsureWordCardExistsMinimal(word)
@@ -521,13 +521,13 @@ func (s *WordSetService) ProcessWordSetItems(ctx context.Context, wordSetID int6
 			// Continue with other words
 			continue
 		}
-		
+
 		// Word card data and training cards will be created asynchronously by TrainingWorker
 		// This allows saving word sets quickly even with many words
-		
+
 		wordCardIDs = append(wordCardIDs, wordCardID)
 	}
-	
+
 	// Remove duplicates
 	seen := make(map[int64]bool)
 	var uniqueWordCardIDs []int64
@@ -537,11 +537,11 @@ func (s *WordSetService) ProcessWordSetItems(ctx context.Context, wordSetID int6
 			uniqueWordCardIDs = append(uniqueWordCardIDs, id)
 		}
 	}
-	
+
 	// Set word set items
 	if err := s.wordSetRepo.SetWordSetItems(wordSetID, uniqueWordCardIDs); err != nil {
 		return fmt.Errorf("failed to set word set items: %w", err)
 	}
-	
+
 	return nil
 }

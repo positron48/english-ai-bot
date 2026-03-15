@@ -11,8 +11,8 @@ import (
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/repository"
 
-	"tgbot-skeleton/internal/testutil"
 	"go.uber.org/zap"
+	"tgbot-skeleton/internal/testutil"
 )
 
 func setupVocabCardsTestDB(t *testing.T) (*sql.DB, *repository.UserRepository) {
@@ -64,8 +64,8 @@ func TestHandleVocabDelete_Cards(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -119,8 +119,8 @@ func TestHandleVocabDelete_InvalidRequest(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -159,7 +159,7 @@ func TestHandleVocabWordCards_WordNotFound(t *testing.T) {
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
 			JWTSecret:       "test-secret",
-			JWTTTLHours:    24,
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}

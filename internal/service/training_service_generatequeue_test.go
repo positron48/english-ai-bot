@@ -71,7 +71,7 @@ func TestTrainingService_generateQueue_WithDueAndNewCards(t *testing.T) {
 	config := SessionConfig{
 		MaxCardsPerSession: 10,
 		MaxNewPerSession:   5,
-		AlgoVersion:       "test",
+		AlgoVersion:        "test",
 	}
 
 	queue, err := service.generateQueue(user.ID, config)
@@ -129,7 +129,7 @@ func TestTrainingService_generateQueue_OnlyDueCards(t *testing.T) {
 	config := SessionConfig{
 		MaxCardsPerSession: 10,
 		MaxNewPerSession:   5,
-		AlgoVersion:       "test",
+		AlgoVersion:        "test",
 	}
 
 	queue, err := service.generateQueue(user.ID, config)
@@ -151,7 +151,7 @@ func TestTrainingService_generateQueue_Empty(t *testing.T) {
 	config := SessionConfig{
 		MaxCardsPerSession: 10,
 		MaxNewPerSession:   5,
-		AlgoVersion:       "test",
+		AlgoVersion:        "test",
 	}
 
 	queue, err := service.generateQueue(user.ID, config)

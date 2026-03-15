@@ -1387,9 +1387,9 @@ func TestGrammarService_GetPublishedChapters_GetChapterSkipsInvalid(t *testing.T
 	indexJSON := `{"version":"1","generated_at":"","chapters":{"ch1":"one.json"}}`
 	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":[]},"chapter_test":{}}`
 	fs := fstest.MapFS{
-		"sections.json":      {Data: []byte(sectionsJSON)},
-		"index.json":         {Data: []byte(indexJSON)},
-		"chapters/one.json":  {Data: []byte(chapterJSON)},
+		"sections.json":     {Data: []byte(sectionsJSON)},
+		"index.json":        {Data: []byte(indexJSON)},
+		"chapters/one.json": {Data: []byte(chapterJSON)},
 	}
 	logger := zap.NewNop()
 	contentRepo := repository.NewGrammarContentRepositoryWithFS(fs, logger)
@@ -1663,7 +1663,7 @@ func TestGrammarService_FilterQuestionBankForQuizzes(t *testing.T) {
 		ch := &repository.Chapter{
 			Blocks: []interface{}{
 				map[string]interface{}{
-					"type": "quiz_inline",
+					"type":        "quiz_inline",
 					"quiz_inline": map[string]interface{}{"question_ids": "not-a-slice"},
 				},
 			},
@@ -1758,8 +1758,8 @@ func grammarServiceWithCustomChapterFS(t *testing.T, sectionsJSON, indexJSON, ch
 	t.Helper()
 	logger := zap.NewNop()
 	fs := fstest.MapFS{
-		"sections.json": {Data: []byte(sectionsJSON)},
-		"index.json":    {Data: []byte(indexJSON)},
+		"sections.json":     {Data: []byte(sectionsJSON)},
+		"index.json":        {Data: []byte(indexJSON)},
 		"chapters/one.json": {Data: []byte(chapterJSON)},
 	}
 	contentRepo := repository.NewGrammarContentRepositoryWithFS(fs, logger)
@@ -1841,9 +1841,9 @@ func TestGrammarService_GenerateCategoryTest_GetChapterFailsForOneChapter(t *tes
 	indexJSON := `{"version":"1","generated_at":"","chapters":{"ch1":"one.json"}}`
 	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill","correct_answer":"a"}]},"chapter_test":{"selection_strategy":{"type":"random"},"pool_question_ids":["q1"],"num_questions":10}}`
 	fs := fstest.MapFS{
-		"sections.json":      {Data: []byte(sectionsJSON)},
-		"index.json":         {Data: []byte(indexJSON)},
-		"chapters/one.json":  {Data: []byte(chapterJSON)},
+		"sections.json":     {Data: []byte(sectionsJSON)},
+		"index.json":        {Data: []byte(indexJSON)},
+		"chapters/one.json": {Data: []byte(chapterJSON)},
 	}
 	logger := zap.NewNop()
 	contentRepo := repository.NewGrammarContentRepositoryWithFS(fs, logger)
@@ -2043,7 +2043,7 @@ func TestGrammarService_GetNextPublishedChapterID_GetSectionsError(t *testing.T)
 	indexJSON := `{"version":"1","generated_at":"","chapters":{"ch1":"one.json"}}`
 	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"T","blocks":[],"question_bank":{},"chapter_test":{}}`
 	fs := fstest.MapFS{
-		"index.json":       {Data: []byte(indexJSON)},
+		"index.json":        {Data: []byte(indexJSON)},
 		"chapters/one.json": {Data: []byte(chapterJSON)},
 	}
 	logger := zap.NewNop()
@@ -2095,9 +2095,9 @@ func TestGrammarService_GetNextPublishedChapterID_ChapterNotInSectionList(t *tes
 	indexJSON := `{"version":"1","generated_at":"","chapters":{"ch2":"two.json"}}`
 	chapterJSON := `{"schema_version":"1","id":"ch2","section_id":"s1","title":"T2","blocks":[],"question_bank":{},"chapter_test":{}}`
 	fs := fstest.MapFS{
-		"sections.json":      {Data: []byte(sectionsJSON)},
-		"index.json":         {Data: []byte(indexJSON)},
-		"chapters/two.json":  {Data: []byte(chapterJSON)},
+		"sections.json":     {Data: []byte(sectionsJSON)},
+		"index.json":        {Data: []byte(indexJSON)},
+		"chapters/two.json": {Data: []byte(chapterJSON)},
 	}
 	logger := zap.NewNop()
 	contentRepo := repository.NewGrammarContentRepositoryWithFS(fs, logger)

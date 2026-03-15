@@ -78,12 +78,11 @@ func (r *Router) handleAdminAccessCategories(w http.ResponseWriter, req *http.Re
 	}
 }
 
-
 // handleAdminAccessCategoryRoutes routes category sub-paths
 func (r *Router) handleAdminAccessCategoryRoutes(w http.ResponseWriter, req *http.Request) {
 	path := strings.TrimPrefix(req.URL.Path, "/api/admin/access/categories/")
 	parts := strings.Split(path, "/")
-	
+
 	if len(parts) < 1 || parts[0] == "" {
 		http.Error(w, "Invalid path", http.StatusBadRequest)
 		return

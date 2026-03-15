@@ -16,20 +16,20 @@ import (
 
 // Test hooks for coverage (set by tests, must be nil/false in production).
 var (
-	testHookVocabScanErr           func() error // if set and returns err, handleVocab treats current row Scan as failed
-	testHookVocabTrainingQueryErr  func() error // if set and returns err, handleVocabWordCards treats training_cards query as failed
-	testHookVocabTrainingQueryFail bool         // if true, handleVocabWordCards skips r.db.Query and injects err to cover Query error path
-	testHookVocabElseDisplayWord   bool         // if true, handleVocab uses else branch for displayWord (word.DisplayWord = word.Lemma)
-	testHookVocabElseMasteryLevel    bool   // if true, handleVocab uses else branch for masteryLevel (word.MasteryLevel = "new")
-	testHookVocabElseMasteringScore  bool   // if true, handleVocab uses else branch for masteringScore (word.MasteringScore = 0)
-	testHookVocabMasteryLevelInvalid  bool   // if true, handleVocab treats masteryLevelCalc as invalid so else branch (word.MasteryLevel = "new") runs
-	testHookVocabDisplayWordInvalid  bool   // if true, handleVocab treats displayWord as invalid so else branch (word.DisplayWord = word.Lemma) runs
-	testHookVocabMasteringScoreInvalid bool  // if true, handleVocab treats masteringScoreStored as invalid so else branch (word.MasteringScore = 0) runs
-	testHookVocabForceDisplayWordValid bool     // if true, handleVocab treats displayWord as valid with String "hooked" to cover displayWord.Valid branch
-	testHookVocabSetLastReview *time.Time // if set, handleVocab sets word.LastReview to this (covers parse success path)
-	testHookVocabSetAddedAt    *time.Time // if set, handleVocab sets word.AddedAt to this (covers parse success path)
-	testHookVocabRowScanErr    func() error // if set and returns err, handleVocab skips rows.Scan and continues (covers Scan error path)
-	testHookVocabScanErrAfter  func() error // if set and returns err after Scan, handleVocab treats as scan error (covers err != nil after Scan)
+	testHookVocabScanErr               func() error // if set and returns err, handleVocab treats current row Scan as failed
+	testHookVocabTrainingQueryErr      func() error // if set and returns err, handleVocabWordCards treats training_cards query as failed
+	testHookVocabTrainingQueryFail     bool         // if true, handleVocabWordCards skips r.db.Query and injects err to cover Query error path
+	testHookVocabElseDisplayWord       bool         // if true, handleVocab uses else branch for displayWord (word.DisplayWord = word.Lemma)
+	testHookVocabElseMasteryLevel      bool         // if true, handleVocab uses else branch for masteryLevel (word.MasteryLevel = "new")
+	testHookVocabElseMasteringScore    bool         // if true, handleVocab uses else branch for masteringScore (word.MasteringScore = 0)
+	testHookVocabMasteryLevelInvalid   bool         // if true, handleVocab treats masteryLevelCalc as invalid so else branch (word.MasteryLevel = "new") runs
+	testHookVocabDisplayWordInvalid    bool         // if true, handleVocab treats displayWord as invalid so else branch (word.DisplayWord = word.Lemma) runs
+	testHookVocabMasteringScoreInvalid bool         // if true, handleVocab treats masteringScoreStored as invalid so else branch (word.MasteringScore = 0) runs
+	testHookVocabForceDisplayWordValid bool         // if true, handleVocab treats displayWord as valid with String "hooked" to cover displayWord.Valid branch
+	testHookVocabSetLastReview         *time.Time   // if set, handleVocab sets word.LastReview to this (covers parse success path)
+	testHookVocabSetAddedAt            *time.Time   // if set, handleVocab sets word.AddedAt to this (covers parse success path)
+	testHookVocabRowScanErr            func() error // if set and returns err, handleVocab skips rows.Scan and continues (covers Scan error path)
+	testHookVocabScanErrAfter          func() error // if set and returns err after Scan, handleVocab treats as scan error (covers err != nil after Scan)
 )
 
 // parseDateTime parses datetime string in "2006-01-02 15:04:05" format
@@ -45,20 +45,20 @@ func parseDateTime(timeStr string) (*time.Time, error) {
 	}
 	return &t, nil
 }
-	
+
 // VocabWord represents a word with statistics (grouped by word_card_id/lemma)
 type VocabWord struct {
-	WordCardID      int64      `json:"word_card_id"`
-	Lemma           string     `json:"lemma"`            // Base form (word_cards.word)
-	DisplayWord     string     `json:"display_word"`     // Display form (prefer training_cards.display_word, fallback word_cards.display_en, fallback word_cards.word)
-	TotalCards      int        `json:"total_cards"`
-	DueCount        int        `json:"due_count"`
-	LastReview      *time.Time `json:"last_review"`
-	TotalReps       int        `json:"total_reps"`        // Total number of reviews across all cards
-	AddedAt         *time.Time `json:"added_at"`         // Date when first card was added
-	MasteryLevel    string     `json:"mastery_level"`    // Calculated mastery level: new, learning, mastered, known
-	MasteringScore  int        `json:"mastering_score"`  // 0–100: how well the word is learned (for red–green marker)
-	ReviewCount     int        `json:"review_count"`     // Total number of review events
+	WordCardID     int64      `json:"word_card_id"`
+	Lemma          string     `json:"lemma"`        // Base form (word_cards.word)
+	DisplayWord    string     `json:"display_word"` // Display form (prefer training_cards.display_word, fallback word_cards.display_en, fallback word_cards.word)
+	TotalCards     int        `json:"total_cards"`
+	DueCount       int        `json:"due_count"`
+	LastReview     *time.Time `json:"last_review"`
+	TotalReps      int        `json:"total_reps"`      // Total number of reviews across all cards
+	AddedAt        *time.Time `json:"added_at"`        // Date when first card was added
+	MasteryLevel   string     `json:"mastery_level"`   // Calculated mastery level: new, learning, mastered, known
+	MasteringScore int        `json:"mastering_score"` // 0–100: how well the word is learned (for red–green marker)
+	ReviewCount    int        `json:"review_count"`    // Total number of review events
 }
 
 // handleVocab shows the vocabulary list
@@ -96,7 +96,7 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 	limit := 25
 	sortBy := "display_word"
 	sortOrder := "asc"
-	
+
 	if pageStr := req.URL.Query().Get("page"); pageStr != "" {
 		if p, err := strconv.Atoi(pageStr); err == nil && p > 0 {
 			page = p
@@ -111,18 +111,18 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 		// Validate sort_by to prevent SQL injection
 		// Map frontend field names to column aliases from SELECT
 		allowedSortFields := map[string]string{
-			"display_word":      "display_word",
-			"lemma":             "lemma",
-			"total_cards":       "total_cards",
-			"mastery_level":      "mastery_level",      // Special handling below
-			"mastery_level_desc":  "mastery_level_desc",  // Special handling below - reversed order
-			"mastering_score":    "mastering_score",    // Numeric 0-100
+			"display_word":         "display_word",
+			"lemma":                "lemma",
+			"total_cards":          "total_cards",
+			"mastery_level":        "mastery_level",      // Special handling below
+			"mastery_level_desc":   "mastery_level_desc", // Special handling below - reversed order
+			"mastering_score":      "mastering_score",    // Numeric 0-100
 			"mastering_score_desc": "mastering_score_desc",
-			"total_reps":        "total_reps",
-			"review_count":      "review_count",
-			"due_count":         "due_count",
-			"added_at":          "added_at",
-			"last_review":       "last_review",
+			"total_reps":           "total_reps",
+			"review_count":         "review_count",
+			"due_count":            "due_count",
+			"added_at":             "added_at",
+			"last_review":          "last_review",
 		}
 		if field, ok := allowedSortFields[sortByStr]; ok {
 			sortBy = field
@@ -150,20 +150,20 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 
 	args := []interface{}{now, userID, userID, userID}
 	argsKnown := []interface{}{userID, userID}
-	
+
 	if search != "" {
 		// Search by lemma, display_word, or word_ru (case-insensitive)
 		searchLower := strings.ToLower(search)
 		searchPattern := "%" + searchLower + "%"
 		queryFromCards += " AND (LOWER(wc.word) LIKE ? OR LOWER(COALESCE(tc_display.display_word, wc.display_en, wc.word)) LIKE ? OR LOWER(tc.word_ru) LIKE ?)"
 		args = append(args, searchPattern, searchPattern, searchPattern)
-		
+
 		queryFromKnown += " AND (LOWER(wc.word) LIKE ? OR LOWER(COALESCE(tc_display.display_word, wc.display_en, wc.word)) LIKE ?)"
 		argsKnown = append(argsKnown, searchPattern, searchPattern)
 	}
 
 	queryFromCards += " GROUP BY tc.word_card_id, wc.word"
-	
+
 	// Combine both queries with UNION ALL; mastery_level for filter/display, mastering_score from user_word_mastering (or 100 for known)
 	baseQuery := "SELECT * FROM (" +
 		"SELECT *, " +
@@ -176,7 +176,7 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 		"mastering_score_stored as mastering_score_calc " +
 		"FROM (" + queryFromCards + " UNION ALL " + queryFromKnown + ") combined " +
 		") with_mastery"
-	
+
 	// Add filter by mastery_level if specified
 	filterArgs := []interface{}{}
 	if masteryLevelFilter != "" {
@@ -218,7 +218,7 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 			countArgsWithMastery = append(countArgsWithMastery, masteryLevelFilter)
 		}
 	}
-	
+
 	var totalCount int
 	err := r.db.QueryRow(countQueryWithMastery, countArgsWithMastery...).Scan(&totalCount)
 	if err != nil {
@@ -389,9 +389,9 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 	json.NewEncoder(w).Encode(map[string]interface{}{
 		"words": words,
 		"pagination": map[string]interface{}{
-			"page":       page,
-			"limit":      limit,
-			"total":      totalCount,
+			"page":        page,
+			"limit":       limit,
+			"total":       totalCount,
 			"total_pages": (totalCount + limit - 1) / limit,
 		},
 	})
@@ -491,9 +491,9 @@ func (r *Router) handleVocabDelete(w http.ResponseWriter, req *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(map[string]interface{}{
-			"lemma": lemma,
+			"lemma":        lemma,
 			"word_card_id": wordCardID,
-			"count": count,
+			"count":        count,
 		})
 		return
 	}
@@ -584,28 +584,28 @@ func (r *Router) handleVocabDelete(w http.ResponseWriter, req *http.Request) {
 
 // VocabCardDetail represents detailed information about a user card
 type VocabCardDetail struct {
-	ID              int64      `json:"id"`
-	TrainingCardID  int64      `json:"training_card_id"`
-	Direction       string     `json:"direction"`
-	State           string     `json:"state"`
-	EF              float64    `json:"ef"`
-	Reps            int        `json:"reps"`
-	IntervalDays    int        `json:"interval_days"`
-	LearningStep    int        `json:"learning_step"`
-	LapseCount      int        `json:"lapse_count"`
-	NextDueAt       *time.Time `json:"next_due_at"`
-	LastReviewAt    *time.Time `json:"last_review_at"`
-	LastQuality     *int       `json:"last_quality"`
-	CreatedAt       time.Time  `json:"created_at"`
-	UpdatedAt       time.Time  `json:"updated_at"`
-	WordRU          string     `json:"word_ru"`
-	MeaningEN       string     `json:"meaning_en"`
-	ExampleEN       string     `json:"example_en"`
-	ExampleRU       string     `json:"example_ru"`
-	Transcription   string     `json:"transcription"`
-	SenseIndex      int        `json:"sense_index"`
-	POS             *string    `json:"pos,omitempty"`
-	ReviewCount     int        `json:"review_count"` // Count of review events
+	ID             int64      `json:"id"`
+	TrainingCardID int64      `json:"training_card_id"`
+	Direction      string     `json:"direction"`
+	State          string     `json:"state"`
+	EF             float64    `json:"ef"`
+	Reps           int        `json:"reps"`
+	IntervalDays   int        `json:"interval_days"`
+	LearningStep   int        `json:"learning_step"`
+	LapseCount     int        `json:"lapse_count"`
+	NextDueAt      *time.Time `json:"next_due_at"`
+	LastReviewAt   *time.Time `json:"last_review_at"`
+	LastQuality    *int       `json:"last_quality"`
+	CreatedAt      time.Time  `json:"created_at"`
+	UpdatedAt      time.Time  `json:"updated_at"`
+	WordRU         string     `json:"word_ru"`
+	MeaningEN      string     `json:"meaning_en"`
+	ExampleEN      string     `json:"example_en"`
+	ExampleRU      string     `json:"example_ru"`
+	Transcription  string     `json:"transcription"`
+	SenseIndex     int        `json:"sense_index"`
+	POS            *string    `json:"pos,omitempty"`
+	ReviewCount    int        `json:"review_count"` // Count of review events
 }
 
 // handleVocabWordCards returns detailed information about all cards for a word (by lemma)
@@ -749,11 +749,11 @@ func (r *Router) handleVocabWordCards(w http.ResponseWriter, req *http.Request, 
 			SELECT COUNT(*) > 0 FROM user_word_knowledge 
 			WHERE user_id = ? AND word_card_id = ? AND status = 'known'
 		`, userID, wordCardID).Scan(&isKnown)
-		
+
 		if err != nil {
 			r.logger.Error("failed to check known status", zap.Error(err))
 		}
-		
+
 		if isKnown {
 			// Get training cards directly for known words without user_cards
 			trainingQuery := `SELECT 
@@ -769,7 +769,7 @@ func (r *Router) handleVocabWordCards(w http.ResponseWriter, req *http.Request, 
 			FROM training_cards tc
 			WHERE tc.word_card_id = ?
 			ORDER BY tc.sense_index`
-			
+
 			if testHookVocabTrainingQueryErr != nil {
 				if err := testHookVocabTrainingQueryErr(); err != nil {
 					r.logger.Error("failed to get training cards", zap.Error(err))
@@ -789,14 +789,14 @@ func (r *Router) handleVocabWordCards(w http.ResponseWriter, req *http.Request, 
 				return
 			}
 			defer trainingRows.Close()
-			
+
 			for trainingRows.Next() {
 				var trainingCardID int64
 				var wordRU, meaningEN, exampleEN, exampleRU, transcription string
 				var senseIndex int
 				var pos sql.NullString
 				var createdAt string
-				
+
 				err := trainingRows.Scan(
 					&trainingCardID,
 					&wordRU,
@@ -812,45 +812,45 @@ func (r *Router) handleVocabWordCards(w http.ResponseWriter, req *http.Request, 
 					r.logger.Error("failed to scan training card", zap.Error(err))
 					continue
 				}
-				
+
 				// Create cards for both directions (ru_en and en_ru)
 				directions := []string{"ru_en", "en_ru"}
 				for _, direction := range directions {
 					card := VocabCardDetail{
-						ID:              0, // No user_card_id for known words without user_cards
-						TrainingCardID:  trainingCardID,
-						Direction:       direction,
-						State:           "new",
-						EF:              2.5,
-						Reps:            0,
-						IntervalDays:    0,
-						LearningStep:    0,
-						LapseCount:      0,
-						WordRU:          wordRU,
-						MeaningEN:        meaningEN,
-						ExampleEN:       exampleEN,
-						ExampleRU:       exampleRU,
-						Transcription:   transcription,
-						SenseIndex:      senseIndex,
-						ReviewCount:     0,
+						ID:             0, // No user_card_id for known words without user_cards
+						TrainingCardID: trainingCardID,
+						Direction:      direction,
+						State:          "new",
+						EF:             2.5,
+						Reps:           0,
+						IntervalDays:   0,
+						LearningStep:   0,
+						LapseCount:     0,
+						WordRU:         wordRU,
+						MeaningEN:      meaningEN,
+						ExampleEN:      exampleEN,
+						ExampleRU:      exampleRU,
+						Transcription:  transcription,
+						SenseIndex:     senseIndex,
+						ReviewCount:    0,
 					}
-					
+
 					if pos.Valid {
 						card.POS = &pos.String
 					}
-					
+
 					if createdAt != "" {
 						if t, err := parseDateTime(createdAt); err == nil && t != nil {
 							card.CreatedAt = *t
 							card.UpdatedAt = *t
 						}
 					}
-					
+
 					cards = append(cards, card)
 				}
 			}
 		}
-		
+
 		// If still no cards found, return not found
 		if len(cards) == 0 {
 			w.Header().Set("Content-Type", "application/json")
@@ -887,7 +887,7 @@ func (r *Router) handleVocabWordCards(w http.ResponseWriter, req *http.Request, 
 			break
 		}
 	}
-	
+
 	var isKnown bool
 	userWordKnowledgeRepo := repository.NewUserWordKnowledgeRepository(r.db, r.logger)
 	isKnown, err = userWordKnowledgeRepo.IsKnown(userID, wordCardID)
@@ -898,13 +898,13 @@ func (r *Router) handleVocabWordCards(w http.ResponseWriter, req *http.Request, 
 
 	// Build response
 	response := map[string]interface{}{
-		"lemma": lemma,
-		"word_card_id": wordCardID,
-		"cards": cards,
+		"lemma":          lemma,
+		"word_card_id":   wordCardID,
+		"cards":          cards,
 		"has_user_cards": hasUserCards,
-		"is_known": isKnown,
+		"is_known":       isKnown,
 	}
-	
+
 	// Add verb forms if present
 	if verbForms != nil {
 		response["verb_forms"] = verbForms

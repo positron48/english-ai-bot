@@ -148,4 +148,3 @@ func (r *CircuitBreakerRepository) initializeState() (*models.CircuitBreakerStat
 
 	return r.GetState()
 }
-

@@ -978,11 +978,11 @@ func TestHandleTrainCommand_TableDriven(t *testing.T) {
 			wantSubstrings: []string{"карточек", "ошибка", "Попробуйте", "нет карточек"},
 		},
 		{
-			name:       "success_with_cards_sends_welcome_or_card",
-			setupUser:  true,
-			setupCards: true,
-			telegramID: 902,
-			chatID:     11,
+			name:           "success_with_cards_sends_welcome_or_card",
+			setupUser:      true,
+			setupCards:     true,
+			telegramID:     902,
+			chatID:         11,
 			wantSubstrings: []string{"Начинаем тренировку", "Карточка", "ошибка", "карточек", "Попробуйте"},
 		},
 	}
@@ -1413,7 +1413,7 @@ func TestHandleCallbackQuery_AckFails(t *testing.T) {
 		CallbackQuery: &tgbotapi.CallbackQuery{
 			ID: "cb1", From: &tgbotapi.User{ID: 555, UserName: "u"},
 			Message: &tgbotapi.Message{MessageID: 1, Chat: &tgbotapi.Chat{ID: 10}},
-			Data: "train_start",
+			Data:    "train_start",
 		},
 	}
 	h.HandleUpdate(context.Background(), update)
@@ -1609,7 +1609,7 @@ func TestHandleGetTrainDataCommand_Admin_FullCard(t *testing.T) {
 		Transcription: "fʊl",
 		ExampleEN:     "Example in English",
 		ExampleRU:     "Пример на русском",
-		Hint:         "hint text",
+		Hint:          "hint text",
 		DistractorsRU: `["другой"]`,
 		DistractorsEN: `["other"]`,
 	})

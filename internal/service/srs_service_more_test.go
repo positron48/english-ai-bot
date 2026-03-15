@@ -300,7 +300,7 @@ func TestSRSService_handleLapse(t *testing.T) {
 
 	now := time.Now()
 	initialEF := 2.0
-	
+
 	t.Run("First error in review - gentle approach", func(t *testing.T) {
 		card := &models.UserCard{
 			State:        models.StateReview,

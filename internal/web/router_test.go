@@ -16,7 +16,7 @@ func TestRouter_getRateLimitPolicy(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			RateLimitWindowMinutes: 5,
+			RateLimitWindowMinutes:   5,
 			RateLimitBurstMultiplier: 3,
 		},
 	}
@@ -39,7 +39,7 @@ func TestRouter_getRateLimitPolicy_Defaults(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			RateLimitWindowMinutes: 0,
+			RateLimitWindowMinutes:   0,
 			RateLimitBurstMultiplier: 0,
 		},
 	}

@@ -9,8 +9,8 @@ import (
 
 func TestDefaultWordJSON(t *testing.T) {
 	tests := []struct {
-		name        string
-		lemma       string
+		name         string
+		lemma        string
 		definitionRU string
 	}{
 		{"empty_lemma", "", ""},

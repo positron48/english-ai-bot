@@ -17,32 +17,32 @@ import (
 
 // Test hooks for coverage (set by tests, must be nil in production).
 var (
-	testHookSaveSessionStateFail   func() error       // if set, saveSessionState returns this before UpdateSessionState
-	testHookGenerateOptionsErr     func() error      // if set, showCard treats as GenerateOptions error and skips card
-	testHookGenerateOptionsResult  func() ([]string, string, error) // if set, showCard uses this instead of calling GenerateOptions (to cover err branch)
-	testHookRecordWrongAnswerErr   func() error      // if set, HandleAnswer treats as RecordWrongAnswer error
+	testHookSaveSessionStateFail  func() error                      // if set, saveSessionState returns this before UpdateSessionState
+	testHookGenerateOptionsErr    func() error                      // if set, showCard treats as GenerateOptions error and skips card
+	testHookGenerateOptionsResult func() ([]string, string, error)  // if set, showCard uses this instead of calling GenerateOptions (to cover err branch)
+	testHookRecordWrongAnswerErr  func() error                      // if set, HandleAnswer treats as RecordWrongAnswer error
 	testHookMarshalSessionState   func(interface{}) ([]byte, error) // if set, saveSessionState uses it instead of json.Marshal
 	testHookMarshalStateDataRaw   func(interface{}) ([]byte, error) // if set, restoreSession uses it for stateDataRaw
-	testHookRestoreQueueErr       func() error      // if set, restoreSession returns this before RestoreQueue
-	testHookFinishSessionWarnErr  func() error      // if set, restoreSession uses it to cover FinishSession error log (empty or completed session)
+	testHookRestoreQueueErr       func() error                      // if set, restoreSession returns this before RestoreQueue
+	testHookFinishSessionWarnErr  func() error                      // if set, restoreSession uses it to cover FinishSession error log (empty or completed session)
 )
 
 // TrainingHandler handles training sessions
 type TrainingHandler struct {
-	bot                   *tgbotapi.BotAPI
-	trainingService       *service.TrainingService
-	srsService            *service.SRSService
-	optionsService        *service.OptionsService
-	sessionRepo           interface {
+	bot             *tgbotapi.BotAPI
+	trainingService *service.TrainingService
+	srsService      *service.SRSService
+	optionsService  *service.OptionsService
+	sessionRepo     interface {
 		CreateReviewEvent(event *models.ReviewEvent) (int64, error)
 		GetSessionStats(sessionID int64) (totalCards int, correctCards int, err error)
 	}
-	logger                *zap.Logger
-	sessions              map[int64]*SessionState
-	sessionsMutex          sync.RWMutex
-	optionsDelayMS         int
+	logger                  *zap.Logger
+	sessions                map[int64]*SessionState
+	sessionsMutex           sync.RWMutex
+	optionsDelayMS          int
 	wrongAnswerDelaySeconds int
-	db                     *sql.DB
+	db                      *sql.DB
 }
 
 // SessionState holds the state of an active training session
@@ -80,16 +80,16 @@ func NewTrainingHandler(
 	db *sql.DB,
 ) *TrainingHandler {
 	return &TrainingHandler{
-		bot:                    bot,
-		trainingService:        trainingService,
-		srsService:             srsService,
-		optionsService:         optionsService,
-		sessionRepo:            sessionRepo,
-		logger:                 logger,
-		sessions:               make(map[int64]*SessionState),
+		bot:                     bot,
+		trainingService:         trainingService,
+		srsService:              srsService,
+		optionsService:          optionsService,
+		sessionRepo:             sessionRepo,
+		logger:                  logger,
+		sessions:                make(map[int64]*SessionState),
 		optionsDelayMS:          optionsDelayMS,
 		wrongAnswerDelaySeconds: wrongAnswerDelaySeconds,
-		db:                     db,
+		db:                      db,
 	}
 }
 
@@ -123,10 +123,10 @@ func (h *TrainingHandler) StartTraining(ctx context.Context, chatID, userID int6
 
 	// Create session state
 	state := &SessionState{
-		UserID:              userID,
-		SessionID:           session.ID,
-		Queue:               queue,
-		CurrentIndex:        0,
+		UserID:               userID,
+		SessionID:            session.ID,
+		Queue:                queue,
+		CurrentIndex:         0,
 		RecentCorrectAnswers: make([]string, 0, 2),
 	}
 
@@ -194,7 +194,7 @@ func (h *TrainingHandler) showCard(chatID int64) error {
 			sessionWordRUs[c.TrainingCard.WordRU] = true
 		}
 	}
-	
+
 	// Update state
 	h.sessionsMutex.Lock()
 	state.ShownAt = time.Now()
@@ -539,12 +539,12 @@ func (h *TrainingHandler) sendFeedback(chatID int64, card *models.TrainingCard, 
 	} else {
 		message = fmt.Sprintf("❌ Неправильно\n\nВы выбрали: %s\nПравильный ответ: *%s*\n\n%s — %s",
 			chosen, correct, card.WordEN, card.WordRU)
-		
+
 		// Show hint only after wrong answer
 		if card.Hint != "" {
 			message += fmt.Sprintf("\n\n💡 Подсказка: _%s_", card.Hint)
 		}
-		
+
 		// Add example only for wrong answers
 		if card.ExampleEN != "" {
 			message += fmt.Sprintf("\n\n📝 %s\n_%s_", card.ExampleEN, card.ExampleRU)
@@ -926,10 +926,10 @@ func (h *TrainingHandler) restoreSession(chatID, userID int64) (bool, error) {
 
 	// Create session state (without card state - will be set when showCard is called)
 	state := &SessionState{
-		UserID:              userID,
-		SessionID:           activeSession.ID,
-		Queue:               queue,
-		CurrentIndex:        currentIndex,
+		UserID:               userID,
+		SessionID:            activeSession.ID,
+		Queue:                queue,
+		CurrentIndex:         currentIndex,
 		RecentCorrectAnswers: make([]string, 0, 2),
 		// Options, CorrectAnswer, ShownAt, OptionsShownAt will be set when showCard is called
 	}
@@ -955,4 +955,3 @@ func (h *TrainingHandler) restoreSession(chatID, userID int64) (bool, error) {
 func (h *TrainingHandler) RestoreSession(chatID, userID int64) (bool, error) {
 	return h.restoreSession(chatID, userID)
 }
-

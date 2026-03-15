@@ -1377,7 +1377,7 @@ func TestGrammarService_SubmitPlacementTest_SortUnknownChapterOrder(t *testing.T
 	// "unknown:q99" has no chapter in chapterOrder -> !oki branch
 	// "ch1:q1" has chapter ch1 in chapterOrder -> normal branch
 	result, err := svc.SubmitPlacementTest(context.Background(), 1, map[string]interface{}{
-		"ch1:q1":     "a",
+		"ch1:q1":      "a",
 		"unknown:q99": "x", // unknown chapter -> !oki
 	})
 	if err != nil {
@@ -1592,7 +1592,7 @@ func TestGrammarService_SubmitPlacementTest_SortBothUnknownChapters(t *testing.T
 	// Submit 3 answers: 1 known + 2 unknown. With 3 elements, sort.Slice calls the comparator
 	// multiple times. When j points to an unknown chapter, !okj branch (line 1867-1869) is hit.
 	result, err := svc.SubmitPlacementTest(context.Background(), 1, map[string]interface{}{
-		"ch1:q1":       "a",  // known chapter, valid question
+		"ch1:q1":       "a", // known chapter, valid question
 		"unknown1:x99": "x", // unknown chapter -> !oki or !okj
 		"unknown2:y99": "y", // unknown chapter -> !oki or !okj
 	})

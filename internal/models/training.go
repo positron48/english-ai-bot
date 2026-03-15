@@ -16,7 +16,7 @@ type TrainingCard struct {
 	DistractorsRU string    `json:"distractors_ru"` // JSON array
 	DistractorsEN string    `json:"distractors_en"` // JSON array
 	Hint          string    `json:"hint"`
-	POS           *string   `json:"pos,omitempty"` // Part of speech
+	POS           *string   `json:"pos,omitempty"`          // Part of speech
 	DisplayWord   *string   `json:"display_word,omitempty"` // Display form (for RU→EN direction)
 	CreatedAt     time.Time `json:"created_at"`
 }
@@ -40,24 +40,24 @@ const (
 
 // UserCard represents a user's progress on a training card
 type UserCard struct {
-	ID              int64
-	UserID          int64
-	TrainingCardID  int64
-	Direction       CardDirection
-	State           CardState
-	EF              float64 // Easiness Factor
-	Reps            int     // Number of successful reviews
-	IntervalDays    int
-	LearningStep    int
-	LapseCount      int
-	NextDueAt       *time.Time
-	LastReviewAt    *time.Time
-	LastQuality     *int
-	LastOptionsJSON string // JSON array of last shown options
+	ID               int64
+	UserID           int64
+	TrainingCardID   int64
+	Direction        CardDirection
+	State            CardState
+	EF               float64 // Easiness Factor
+	Reps             int     // Number of successful reviews
+	IntervalDays     int
+	LearningStep     int
+	LapseCount       int
+	NextDueAt        *time.Time
+	LastReviewAt     *time.Time
+	LastQuality      *int
+	LastOptionsJSON  string // JSON array of last shown options
 	WrongAnswersJSON string // JSON array of wrong answers history
-	StatsJSON       string // JSON object with stats
-	CreatedAt       time.Time
-	UpdatedAt       time.Time
+	StatsJSON        string // JSON object with stats
+	CreatedAt        time.Time
+	UpdatedAt        time.Time
 }
 
 // SessionSource represents how a training session was started
@@ -126,7 +126,7 @@ type CircuitBreakerState struct {
 
 // TrainingCardSense represents one sense/meaning in LLM response
 type TrainingCardSense struct {
-	POS           string   `json:"pos"`           // Part of speech for this specific sense
+	POS           string   `json:"pos"`          // Part of speech for this specific sense
 	DisplayWord   string   `json:"display_word"` // Display form for this specific sense
 	WordRU        string   `json:"word_ru"`
 	MeaningEN     string   `json:"meaning_en"`
@@ -141,7 +141,7 @@ type TrainingCardSense struct {
 type TrainingCardResponse struct {
 	Error         string              `json:"error,omitempty"` // Error message if word is not English
 	WordEN        string              `json:"word_en"`         // Lemma/base form (for backward compatibility)
-	Lemma         string              `json:"lemma"`          // Base form (lemma)
+	Lemma         string              `json:"lemma"`           // Base form (lemma)
 	Transcription string              `json:"transcription"`
 	Senses        []TrainingCardSense `json:"senses"`
 }
@@ -172,9 +172,8 @@ type TypeChallenge struct {
 
 // TrainingQueueItem is one item in the training queue: normal card, spell challenge, or type challenge
 type TrainingQueueItem struct {
-	Type  string                  // "card", "spell", or "type"
-	Card  *UserCardWithTraining   // Set when Type == "card"
-	Spell *SpellChallenge         // Set when Type == "spell"
-	TypeChallenge *TypeChallenge  // Set when Type == "type"
+	Type          string                // "card", "spell", or "type"
+	Card          *UserCardWithTraining // Set when Type == "card"
+	Spell         *SpellChallenge       // Set when Type == "spell"
+	TypeChallenge *TypeChallenge        // Set when Type == "type"
 }
-

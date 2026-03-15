@@ -99,4 +99,3 @@ func (s *CircuitBreakerService) GetState() (bool, int, string, error) {
 	}
 	return state.IsOpen, state.FailureCount, state.LastFailureMessage, nil
 }
-

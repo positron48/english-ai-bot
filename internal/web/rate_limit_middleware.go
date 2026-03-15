@@ -70,8 +70,8 @@ func (m *RateLimitMiddleware) Wrap(next http.HandlerFunc) http.HandlerFunc {
 			w.WriteHeader(http.StatusTooManyRequests)
 
 			response := map[string]interface{}{
-				"error":              "rate_limited",
-				"message":            i18n.T(lang, "errors.tooManyRequests"),
+				"error":               "rate_limited",
+				"message":             i18n.T(lang, "errors.tooManyRequests"),
 				"retry_after_seconds": retryAfter,
 			}
 

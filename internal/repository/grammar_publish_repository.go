@@ -24,12 +24,12 @@ func NewGrammarPublishRepository(db *sql.DB, logger *zap.Logger) *GrammarPublish
 
 // PublishedItem represents a published grammar item (section or chapter)
 type PublishedItem struct {
-	ID             int64
-	ItemType       string // "section" or "chapter"
-	ItemID         string
-	IsPublished    bool
-	Name           *string // Override name (nullable)
-	UpdatedAt      time.Time
+	ID              int64
+	ItemType        string // "section" or "chapter"
+	ItemID          string
+	IsPublished     bool
+	Name            *string // Override name (nullable)
+	UpdatedAt       time.Time
 	UpdatedByUserID *int64
 }
 
@@ -96,7 +96,7 @@ func (r *GrammarPublishRepository) GetPublishedItem(itemType, itemID string) (*P
 		// Default: not published
 		return &PublishedItem{
 			ItemType:    itemType,
-			ItemID:       itemID,
+			ItemID:      itemID,
 			IsPublished: false,
 		}, nil
 	}

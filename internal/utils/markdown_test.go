@@ -129,7 +129,7 @@ func TestRenderWordCardMarkdown(t *testing.T) {
 		Definition:    "",
 		POS:           &pos,
 		Transcription: &transcription,
-		DefinitionRU: &definitionRU,
+		DefinitionRU:  &definitionRU,
 		DisplayEN:     &displayEN,
 	}
 
@@ -145,7 +145,7 @@ func TestRenderWordCardMarkdown(t *testing.T) {
 	}
 
 	result := RenderWordCardMarkdown(card, examples, nil)
-	
+
 	// Check that translation comes first and is bold
 	// After ConvertMarkdownToTelegram, **text** becomes *text* for Telegram Markdown
 	expectedTranslation := "*" + definitionRU + "*"
@@ -156,7 +156,7 @@ func TestRenderWordCardMarkdown(t *testing.T) {
 			t.Errorf("Result should contain bold translation %q or %q, got %q", expectedTranslation, expectedTranslationBeforeConversion, result)
 		}
 	}
-	
+
 	// Verify translation appears before the word
 	// Check both formats: *text* (after conversion) and **text** (before conversion)
 	translationIndex := strings.Index(result, expectedTranslation)
@@ -170,7 +170,7 @@ func TestRenderWordCardMarkdown(t *testing.T) {
 	if translationIndex == -1 || wordIndex == -1 || translationIndex >= wordIndex {
 		t.Errorf("Translation should appear before word. Translation at %d, word at %d", translationIndex, wordIndex)
 	}
-	
+
 	if !strings.Contains(result, "spy") {
 		t.Error("Result should contain word 'spy'")
 	}
@@ -196,7 +196,7 @@ func TestRenderWordCardMarkdown_WithVerbForms(t *testing.T) {
 		Definition:    "",
 		POS:           &pos,
 		Transcription: &transcription,
-		DefinitionRU: &definitionRU,
+		DefinitionRU:  &definitionRU,
 		DisplayEN:     &displayEN,
 	}
 
@@ -208,15 +208,15 @@ func TestRenderWordCardMarkdown_WithVerbForms(t *testing.T) {
 	}
 
 	verbForms := &models.WordInfoVerbForms{
-		V1:         "write",
-		V2:         "wrote",
-		V3:         "written",
-		Gerund:     "writing",
+		V1:          "write",
+		V2:          "wrote",
+		V3:          "written",
+		Gerund:      "writing",
 		ThirdPerson: "writes",
 	}
 
 	result := RenderWordCardMarkdown(card, examples, verbForms)
-	
+
 	if !strings.Contains(result, "to write") {
 		t.Error("Result should contain display word 'to write'")
 	}
@@ -236,12 +236,12 @@ func TestRenderWordCardMarkdown_WithVerbForms(t *testing.T) {
 
 func TestRenderWordCardMarkdown_NoDefinitionNoPOSNoTranscription(t *testing.T) {
 	card := &models.WordCard{
-		Word:       "test",
-		Definition: "",
-		POS:        nil,
+		Word:          "test",
+		Definition:    "",
+		POS:           nil,
 		Transcription: nil,
-		DefinitionRU: nil,
-		DisplayEN:  nil,
+		DefinitionRU:  nil,
+		DisplayEN:     nil,
 	}
 	result := RenderWordCardMarkdown(card, nil, nil)
 	if !strings.Contains(result, "**test**") {
@@ -278,9 +278,9 @@ func TestRenderWordCardMarkdown_VerbFormsOnlyV1(t *testing.T) {
 
 func TestConvertMarkdownToHTML(t *testing.T) {
 	tests := []struct {
-		name     string
-		input    string
-		contains []string // Check that result contains these strings
+		name        string
+		input       string
+		contains    []string // Check that result contains these strings
 		notContains []string // Check that result does not contain these strings
 	}{
 		{
@@ -324,9 +324,9 @@ func TestConvertMarkdownToHTML(t *testing.T) {
 			contains: []string{"<a href=\"https://google.com\">Google</a>"},
 		},
 		{
-			name:     "HTML escaping",
-			input:    "Text with <tags> and & symbols",
-			contains: []string{"&lt;tags&gt;", "&amp;"},
+			name:        "HTML escaping",
+			input:       "Text with <tags> and & symbols",
+			contains:    []string{"&lt;tags&gt;", "&amp;"},
 			notContains: []string{"<tags>", "& "},
 		},
 		{
@@ -349,13 +349,13 @@ func TestConvertMarkdownToHTML(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			result := ConvertMarkdownToHTML(tt.input)
-			
+
 			for _, expected := range tt.contains {
 				if !strings.Contains(result, expected) {
 					t.Errorf("ConvertMarkdownToHTML() should contain %q, got %q", expected, result)
 				}
 			}
-			
+
 			for _, notExpected := range tt.notContains {
 				if strings.Contains(result, notExpected) {
 					t.Errorf("ConvertMarkdownToHTML() should not contain %q, got %q", notExpected, result)

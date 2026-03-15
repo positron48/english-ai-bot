@@ -165,7 +165,6 @@ func TestHandleTrainingStart_SpellThresholdNegative(t *testing.T) {
 	}
 }
 
-
 // TestShowTrainingCard_TypeChallenge_NoPrefix covers type challenge where DisplayWord has no "to " prefix.
 func TestShowTrainingCard_TypeChallenge_NoPrefix(t *testing.T) {
 	logger := zap.NewNop()
@@ -406,7 +405,8 @@ func TestGradeReplacedCardForSpellType_GradeCardError(t *testing.T) {
 	router.webTrainingHandler = &WebTrainingHandler{sessionRepo: sessionRepo}
 
 	// Should not panic, just log error and return
-	router.gradeReplacedCardForSpellType(user.ID, userCardID, true, "graderr", time.Now(), 1)
+	now := time.Now()
+	router.gradeReplacedCardForSpellType(user.ID, userCardID, true, "graderr", now, now, 1, "spell", 7)
 }
 
 // TestGradeReplacedCardForSpellType_CreateReviewEventError covers lines 674-676 where CreateReviewEvent fails.
@@ -443,7 +443,8 @@ func TestGradeReplacedCardForSpellType_CreateReviewEventError(t *testing.T) {
 	router.webTrainingHandler = &WebTrainingHandler{sessionRepo: brokenSessionRepo}
 
 	// Should not panic, just log error
-	router.gradeReplacedCardForSpellType(user.ID, userCardID, true, "graderr2", time.Now(), 1)
+	now := time.Now()
+	router.gradeReplacedCardForSpellType(user.ID, userCardID, true, "graderr2", now, now, 1, "spell", 8)
 }
 
 // TestGradeReplacedCardForSpellType_RecordWrongAnswerError covers lines 678-680 where RecordWrongAnswer fails.
@@ -477,7 +478,8 @@ func TestGradeReplacedCardForSpellType_WrongAnswer(t *testing.T) {
 	router.webTrainingHandler = &WebTrainingHandler{sessionRepo: goodSessionRepo}
 
 	// isCorrect=false covers the !isCorrect branch (lines 677-680)
-	router.gradeReplacedCardForSpellType(user.ID, userCardID, false, "wrong", time.Now(), 1)
+	now := time.Now()
+	router.gradeReplacedCardForSpellType(user.ID, userCardID, false, "wrong", now, now, 1, "spell", 5)
 }
 
 // ---- handleTrainingSpellAnswer: empty answer (userNorm becomes " ") ----
@@ -1640,7 +1642,7 @@ func (m *mockOptionsService) GenerateOptions(card *models.UserCardWithTraining, 
 
 // mockSRSService is a mock that can fail GradeCard and/or RecordWrongAnswer.
 type mockSRSService struct {
-	gradeCardErr        error
+	gradeCardErr         error
 	recordWrongAnswerErr error
 }
 
@@ -1706,7 +1708,7 @@ func TestGradeReplacedCardForSpellType_RecordWrongAnswerError(t *testing.T) {
 
 	// GradeCard succeeds, RecordWrongAnswer fails
 	mockSRS := &mockSRSService{
-		gradeCardErr:        nil,
+		gradeCardErr:         nil,
 		recordWrongAnswerErr: fmt.Errorf("record wrong answer failed"),
 	}
 
@@ -1714,7 +1716,8 @@ func TestGradeReplacedCardForSpellType_RecordWrongAnswerError(t *testing.T) {
 	router.webTrainingHandler = &WebTrainingHandler{sessionRepo: sessionRepo}
 
 	// isCorrect=false triggers RecordWrongAnswer
-	router.gradeReplacedCardForSpellType(user.ID, userCardID, false, "wrong", time.Now(), 1)
+	now := time.Now()
+	router.gradeReplacedCardForSpellType(user.ID, userCardID, false, "wrong", now, now, 1, "spell", 5)
 	// Should not panic, just log error
 }
 
@@ -1744,7 +1747,7 @@ func TestHandleTrainingAnswer_RecordWrongAnswerError(t *testing.T) {
 
 	// GradeCard succeeds, RecordWrongAnswer fails
 	mockSRS := &mockSRSService{
-		gradeCardErr:        nil,
+		gradeCardErr:         nil,
 		recordWrongAnswerErr: fmt.Errorf("record wrong answer failed"),
 	}
 

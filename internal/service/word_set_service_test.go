@@ -13,9 +13,9 @@ import (
 
 	"tgbot-skeleton/internal/ai"
 	"tgbot-skeleton/internal/database"
-	"tgbot-skeleton/internal/testutil"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
+	"tgbot-skeleton/internal/testutil"
 
 	"go.uber.org/zap"
 )

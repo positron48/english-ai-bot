@@ -10,10 +10,10 @@ import (
 
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/database"
-	"tgbot-skeleton/internal/testutil"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/service"
+	"tgbot-skeleton/internal/testutil"
 
 	"go.uber.org/zap"
 )
@@ -130,10 +130,10 @@ func TestHandleTrainingUpcoming_WithUserCards(t *testing.T) {
 	ucRepo := repository.NewUserCardRepository(db.GetConnection(), router.logger)
 	dueDate := time.Now().AddDate(0, 0, 2) // Due in 2 days
 	uc := &models.UserCard{
-		UserID:        user.ID,
+		UserID:         user.ID,
 		TrainingCardID: tcID,
-		State:         models.StateReview,
-		NextDueAt:     &dueDate,
+		State:          models.StateReview,
+		NextDueAt:      &dueDate,
 	}
 	ucRepo.CreateUserCard(uc)
 
@@ -150,7 +150,7 @@ func TestHandleTrainingUpcoming_WithUserCards(t *testing.T) {
 	// Verify response contains upcoming cards
 	var response map[string]interface{}
 	json.Unmarshal(rr.Body.Bytes(), &response)
-	
+
 	// Should have date entries
 	if len(response) == 0 {
 		t.Error("Expected date entries in response")
@@ -164,7 +164,7 @@ func TestHandleTrainingUpcoming_WithTimezone(t *testing.T) {
 	// Create user with timezone (set via SQL since there's no direct method)
 	userRepo := repository.NewUserRepository(db.GetConnection(), router.logger)
 	user, _ := userRepo.GetOrCreateUser(12345)
-	
+
 	// Set timezone via SQL
 	tz := "America/New_York"
 	db.GetConnection().Exec("UPDATE users SET timezone = ? WHERE id = ?", tz, user.ID)

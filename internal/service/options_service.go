@@ -46,7 +46,7 @@ func (s *OptionsService) GenerateOptions(
 		if card.TrainingCard.DisplayWord != nil && *card.TrainingCard.DisplayWord != "" {
 			correctAnswer = *card.TrainingCard.DisplayWord
 		} else {
-		correctAnswer = card.TrainingCard.WordEN
+			correctAnswer = card.TrainingCard.WordEN
 		}
 		distractorsJSON = card.TrainingCard.DistractorsEN
 	} else {
@@ -72,7 +72,7 @@ func (s *OptionsService) GenerateOptions(
 
 	// Get all meanings of this word to exclude them from distractors
 	excludedMeanings := s.getOtherMeaningsOfWord(card.TrainingCard.WordCardID, card.UserCard.Direction)
-	
+
 	// Create a set of excluded words for fast lookup (includes correct answer and other meanings)
 	// Normalize all excluded values to ensure we catch duplicates like "make" and "to make"
 	excludedSet := make(map[string]bool)
@@ -86,7 +86,7 @@ func (s *OptionsService) GenerateOptions(
 		// Also add original meaning to catch both formats
 		excludedSet[meaning] = true
 	}
-	
+
 	// Filter out other meanings of the same word, duplicates, and distractors that match English or Russian spelling of session words
 	filteredDistractors := make([]string, 0, len(distractors))
 	seenDistractors := make(map[string]bool)
@@ -108,7 +108,7 @@ func (s *OptionsService) GenerateOptions(
 					shouldExclude = true
 				}
 			}
-			
+
 			if !shouldExclude {
 				filteredDistractors = append(filteredDistractors, d)
 				seenDistractors[d] = true
@@ -140,7 +140,7 @@ func (s *OptionsService) GenerateOptions(
 	// Use a map to track duplicates
 	optionsPool := make([]string, 0, len(wrongAnswers)+len(distractors))
 	optionsPoolSet := make(map[string]bool)
-	
+
 	// Add wrong answers (already deduplicated)
 	for _, wa := range wrongAnswers {
 		if !optionsPoolSet[wa] {
@@ -148,7 +148,7 @@ func (s *OptionsService) GenerateOptions(
 			optionsPoolSet[wa] = true
 		}
 	}
-	
+
 	// Add distractors that aren't already in wrong answers
 	for _, d := range distractors {
 		if !optionsPoolSet[d] && !excludedSet[d] {
@@ -327,7 +327,7 @@ func (s *OptionsService) getFallbackDistractors(direction models.CardDirection, 
 			"other", "old", "right", "big", "high", "small", "large", "next",
 			"early", "young", "important", "few", "public", "bad", "same",
 		}
-		
+
 		// Filter by POS
 		switch pos {
 		case "verb":
@@ -358,7 +358,7 @@ func (s *OptionsService) getFallbackDistractors(direction models.CardDirection, 
 		"другой", "старый", "правый", "большой", "высокий", "малый", "крупный", "следующий",
 		"ранний", "молодой", "важный", "немного", "публичный", "плохой", "тот же",
 	}
-	
+
 	// Filter by POS
 	switch pos {
 	case "verb":
@@ -408,7 +408,7 @@ func (s *OptionsService) hasMatchingPOS(word string, targetPOS string, direction
 	if targetPOS == "" {
 		return true // If no POS specified, accept all
 	}
-	
+
 	// For RU->EN direction, search by word_en or display_word
 	// For EN->RU direction, we can't easily determine POS from Russian word alone
 	// So we'll be more lenient for EN->RU
@@ -417,26 +417,26 @@ func (s *OptionsService) hasMatchingPOS(word string, targetPOS string, direction
 		// Accept it for now (could be improved by storing POS in word_cards)
 		return true
 	}
-	
+
 	// For RU->EN, try to find the word in training_cards
 	// Remove "to " prefix if present for lookup
 	lookupWord := strings.TrimPrefix(word, "to ")
 	lookupWord = strings.TrimSpace(lookupWord)
-	
+
 	cards, err := s.trainingCardRepo.GetTrainingCardsByWordEN(lookupWord)
 	if err != nil {
 		s.logger.Debug("failed to get cards for POS check", zap.String("word", lookupWord), zap.Error(err))
 		// If we can't find it, be lenient and accept it
 		return true
 	}
-	
+
 	// Check if any card has matching POS
 	for _, card := range cards {
 		if card.POS != nil && *card.POS == targetPOS {
 			return true
 		}
 	}
-	
+
 	// If no cards found or no matching POS, reject
 	return false
 }
@@ -447,12 +447,12 @@ func (s *OptionsService) normalizeVerbFormat(word string, pos string, direction 
 	if direction != models.DirectionRUtoEN || pos != "verb" {
 		return word
 	}
-	
+
 	// Check if word already starts with "to "
 	if strings.HasPrefix(word, "to ") {
 		return word
 	}
-	
+
 	// Add "to " prefix
 	return "to " + word
 }

@@ -174,7 +174,7 @@ func TestGrammarContentRepository_GetChapter_Errors(t *testing.T) {
 	t.Run("invalid chapter JSON returns error", func(t *testing.T) {
 		repo := &GrammarContentRepository{
 			fs: fstest.MapFS{
-				"index.json":       &fstest.MapFile{Data: []byte(`{"version":"1","generated_at":"","chapters":{"ch2":"ch2.json"}}`)},
+				"index.json":        &fstest.MapFile{Data: []byte(`{"version":"1","generated_at":"","chapters":{"ch2":"ch2.json"}}`)},
 				"chapters/ch2.json": &fstest.MapFile{Data: []byte("invalid")},
 			},
 			logger: logger,

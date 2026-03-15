@@ -899,9 +899,9 @@ func (s *PronunciationService) processWord(ctx context.Context, word string) {
 		if err != nil {
 			hasFallback := i < len(s.providers)-1
 			if errors.Is(err, errPronunciationNotFound) {
-			notFoundSeen = true
-			code, retryable := classifyPronunciationError(err)
-			notFoundReasons = append(notFoundReasons, provider.name()+":"+code)
+				notFoundSeen = true
+				code, retryable := classifyPronunciationError(err)
+				notFoundReasons = append(notFoundReasons, provider.name()+":"+code)
 				s.logger.Debug("pronunciation not found in provider", zap.String("provider", provider.name()), zap.String("word", word), zap.String("reason", code), zap.Error(err))
 				if retryable {
 					retryableErr = err

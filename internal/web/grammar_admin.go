@@ -43,15 +43,15 @@ func (r *Router) handleAdminGrammarCategories(w http.ResponseWriter, req *http.R
 	}
 
 	type CategoryAdminResponse struct {
-		SectionID         string `json:"section_id"`
-		Title             string `json:"title"`
-		Level             string `json:"level"`
-		Order             int    `json:"order"`
-		IsPublished       bool   `json:"is_published"`
+		SectionID         string  `json:"section_id"`
+		Title             string  `json:"title"`
+		Level             string  `json:"level"`
+		Order             int     `json:"order"`
+		IsPublished       bool    `json:"is_published"`
 		CustomName        *string `json:"custom_name,omitempty"`
-		TotalChapters     int    `json:"total_chapters"`
-		AvailableChapters int   `json:"available_chapters"`
-		PublishedChapters int   `json:"published_chapters"`
+		TotalChapters     int     `json:"total_chapters"`
+		AvailableChapters int     `json:"available_chapters"`
+		PublishedChapters int     `json:"published_chapters"`
 	}
 
 	categories := make([]CategoryAdminResponse, 0, len(sectionsData.Sections))
@@ -231,11 +231,11 @@ func (r *Router) handleAdminGrammarChapters(w http.ResponseWriter, req *http.Req
 	}
 
 	type ChapterAdminResponse struct {
-		ChapterID    string  `json:"chapter_id"`
-		Title        string  `json:"title"`
-		IsPublished  bool    `json:"is_published"`
-		CustomName   *string `json:"custom_name,omitempty"`
-		FileExists   bool    `json:"file_exists"`
+		ChapterID   string  `json:"chapter_id"`
+		Title       string  `json:"title"`
+		IsPublished bool    `json:"is_published"`
+		CustomName  *string `json:"custom_name,omitempty"`
+		FileExists  bool    `json:"file_exists"`
 	}
 
 	chapters := make([]ChapterAdminResponse, 0, len(section.ChapterIDs))

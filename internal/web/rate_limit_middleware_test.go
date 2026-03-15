@@ -183,7 +183,7 @@ func TestRateLimitMiddleware_Wrap_EncodeError(t *testing.T) {
 
 	policy := RateLimitPolicy{
 		RequestsPerWindow: 1,
-		WindowDuration:     1 * time.Minute,
+		WindowDuration:    1 * time.Minute,
 		BurstSize:         1,
 	}
 

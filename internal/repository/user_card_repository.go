@@ -231,12 +231,12 @@ func (r *UserCardRepository) GetNewCards(userID int64, limit int) ([]*models.Use
 
 // WordMasteringStats holds aggregate stats for one word (word_card_id) for computing mastering score 0-100
 type WordMasteringStats struct {
-	TotalCards        int
-	ReviewStateCount  int
+	TotalCards         int
+	ReviewStateCount   int
 	LearningStateCount int
-	NewStateCount     int
-	TotalReps         int
-	IsKnown           bool
+	NewStateCount      int
+	TotalReps          int
+	IsKnown            bool
 }
 
 // GetWordMasteringStats returns aggregate stats for the given word so the service can compute mastering score (0-100)
@@ -443,7 +443,7 @@ func (r *UserCardRepository) DeleteOrphanedUserCards() (int64, error) {
 	// Delete user_cards that reference non-existent training_cards
 	query1 := `DELETE FROM user_cards 
 			   WHERE training_card_id NOT IN (SELECT id FROM training_cards)`
-	
+
 	result1, err := r.db.Exec(query1)
 	if err != nil {
 		return 0, fmt.Errorf("failed to delete orphaned user cards: %w", err)
@@ -463,7 +463,7 @@ func (r *UserCardRepository) DeleteOrphanedUserCards() (int64, error) {
 				   LEFT JOIN word_cards wc ON tc.word_card_id = wc.id
 				   WHERE wc.id IS NULL
 			   )`
-	
+
 	result2, err := r.db.Exec(query2)
 	if err != nil {
 		return 0, fmt.Errorf("failed to delete user cards with orphaned training cards: %w", err)
@@ -496,7 +496,7 @@ func (r *UserCardRepository) DeleteUserCardsByWordENForUser(userID int64, wordEN
 			  AND training_card_id IN (
 				  SELECT id FROM training_cards WHERE word_en = ?
 			  )`
-	
+
 	result, err := r.db.Exec(query, userID, wordEN)
 	if err != nil {
 		return 0, fmt.Errorf("failed to delete user cards: %w", err)
@@ -524,7 +524,7 @@ func (r *UserCardRepository) DeleteUserCardsByWordCardIDForUser(userID int64, wo
 			  AND training_card_id IN (
 				  SELECT id FROM training_cards WHERE word_card_id = ?
 			  )`
-	
+
 	result, err := r.db.Exec(query, userID, wordCardID)
 	if err != nil {
 		return 0, fmt.Errorf("failed to delete user cards: %w", err)
@@ -546,15 +546,15 @@ func (r *UserCardRepository) DeleteUserCardsByWordCardIDForUser(userID int64, wo
 
 // OrphanedUserCardInfo represents information about an orphaned user card
 type OrphanedUserCardInfo struct {
-	UserCardID      int64
-	UserID          int64
-	TelegramID      int64
-	TelegramUsername *string
-	TrainingCardID  int64
-	Direction       string
-	State           string
-	Reps            int
-	CreatedAt       time.Time
+	UserCardID        int64
+	UserID            int64
+	TelegramID        int64
+	TelegramUsername  *string
+	TrainingCardID    int64
+	Direction         string
+	State             string
+	Reps              int
+	CreatedAt         time.Time
 	ReviewEventsCount int64
 }
 
@@ -716,7 +716,7 @@ func (r *UserCardRepository) CountUserCardsWithOrphanedTrainingCards() (int, err
 // This will cascade delete review_events due to foreign key constraint
 func (r *UserCardRepository) DeleteUserCard(userCardID int64) error {
 	query := `DELETE FROM user_cards WHERE id = ?`
-	
+
 	result, err := r.db.Exec(query, userCardID)
 	if err != nil {
 		return fmt.Errorf("failed to delete user card: %w", err)
@@ -774,13 +774,13 @@ func (r *UserCardRepository) GetUserIDsByWordCardID(wordCardID int64) ([]int64, 
 func (r *UserCardRepository) GetUpcomingCardsByDate(userID int64, startDate time.Time) (map[string]int, error) {
 	// Calculate end date (7 days from start, at end of day)
 	endDate := startDate.AddDate(0, 0, 7)
-	
+
 	r.logger.Debug("getting upcoming cards by date",
 		zap.Int64("user_id", userID),
 		zap.Time("start_date", startDate),
 		zap.Time("end_date", endDate),
 	)
-	
+
 	// Get all cards with next_due_at in the range, then group by date in Go
 	query := `SELECT uc.next_due_at
 	FROM user_cards uc
@@ -801,7 +801,7 @@ func (r *UserCardRepository) GetUpcomingCardsByDate(userID int64, startDate time
 	defer rows.Close()
 
 	result := make(map[string]int)
-	
+
 	// Initialize all 7 days with 0
 	for i := 0; i < 7; i++ {
 		date := startDate.AddDate(0, 0, i)
@@ -821,7 +821,7 @@ func (r *UserCardRepository) GetUpcomingCardsByDate(userID int64, startDate time
 			// Try multiple date formats (Postgres TIMESTAMPTZ can vary)
 			var dueTime time.Time
 			var err error
-			
+
 			// Try RFC3339 format first (ISO 8601 with timezone)
 			dueTime, err = time.Parse(time.RFC3339Nano, nextDueAtStr.String)
 			if err != nil {
@@ -853,7 +853,7 @@ func (r *UserCardRepository) GetUpcomingCardsByDate(userID int64, startDate time
 			}
 		}
 	}
-	
+
 	r.logger.Debug("processed upcoming cards",
 		zap.Int("total_cards_found", cardCount),
 		zap.Any("result", result),

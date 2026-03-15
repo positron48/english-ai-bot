@@ -571,9 +571,9 @@ func TestBotCommandService_HandleCallbackQuery_TrainStart(t *testing.T) {
 
 	update := tgbotapi.Update{
 		CallbackQuery: &tgbotapi.CallbackQuery{
-			ID:   "cb2",
-			Data: "train_start",
-			From: &tgbotapi.User{ID: 1},
+			ID:      "cb2",
+			Data:    "train_start",
+			From:    &tgbotapi.User{ID: 1},
 			Message: &tgbotapi.Message{Chat: &tgbotapi.Chat{ID: 10}},
 		},
 	}
@@ -590,9 +590,9 @@ func TestBotCommandService_HandleCallbackQuery_Unknown(t *testing.T) {
 
 	update := tgbotapi.Update{
 		CallbackQuery: &tgbotapi.CallbackQuery{
-			ID:   "cb3",
-			Data: "unknown_action",
-			From: &tgbotapi.User{ID: 1},
+			ID:      "cb3",
+			Data:    "unknown_action",
+			From:    &tgbotapi.User{ID: 1},
 			Message: &tgbotapi.Message{Chat: &tgbotapi.Chat{ID: 10}},
 		},
 	}
@@ -749,14 +749,14 @@ func TestBotCommandService_HandleUnsubscribe_SendFails(t *testing.T) {
 // TestBotCommandService_HandleUnknownCommand_TableDriven covers handleUnknownCommand branches: default vs custom message.
 func TestBotCommandService_HandleUnknownCommand_TableDriven(t *testing.T) {
 	tests := []struct {
-		name              string
-		unknownMsg        string
-		wantContains       []string
-		wantNotContains   []string
+		name            string
+		unknownMsg      string
+		wantContains    []string
+		wantNotContains []string
 	}{
 		{
-			name:        "custom_message",
-			unknownMsg:  "Custom unknown text",
+			name:         "custom_message",
+			unknownMsg:   "Custom unknown text",
 			wantContains: []string{"Custom unknown text"},
 		},
 		{
@@ -798,8 +798,8 @@ func TestBotCommandService_HandleUnknownCommand_TableDriven(t *testing.T) {
 
 // mockUserRepoForCommands returns errors for testing handleUnsubscribe error paths.
 type mockUserRepoForCommands struct {
-	getUserFunc          func(telegramID int64) (*models.User, error)
-	updateSettingsFunc   func(userID int64, settingsJSON string) error
+	getUserFunc        func(telegramID int64) (*models.User, error)
+	updateSettingsFunc func(userID int64, settingsJSON string) error
 }
 
 func (m *mockUserRepoForCommands) GetUserByTelegramID(telegramID int64) (*models.User, error) {

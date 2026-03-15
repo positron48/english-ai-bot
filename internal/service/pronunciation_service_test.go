@@ -1172,9 +1172,9 @@ func TestDecodeAudioBase64(t *testing.T) {
 
 func TestClassifyPronunciationError(t *testing.T) {
 	tests := []struct {
-		name     string
-		err      error
-		wantCode string
+		name      string
+		err       error
+		wantCode  string
 		retryable bool
 	}{
 		{"nil", nil, "", true},
@@ -1232,7 +1232,7 @@ func TestPronunciationService_AudioDirAndPublicBasePath(t *testing.T) {
 
 func TestPronunciationService_RelativePathForWord(t *testing.T) {
 	svc := NewPronunciationService(config.TTSConfig{
-		Enabled: true,
+		Enabled:  true,
 		AudioDir: t.TempDir(),
 	}, nil, zap.NewNop())
 	got := svc.relativePathForWord("hello")
@@ -1463,7 +1463,7 @@ func TestPronunciationService_Recheck(t *testing.T) {
 	db := testutil.SetupTestDB(t)
 	wordRepo := repository.NewWordRepository(db, zap.NewNop())
 	svc := NewPronunciationService(config.TTSConfig{
-		Enabled: true,
+		Enabled:  true,
 		AudioDir: t.TempDir(),
 	}, wordRepo, zap.NewNop())
 
@@ -1504,7 +1504,7 @@ func TestPronunciationService_Start_Disabled(t *testing.T) {
 
 func TestPronunciationService_Start_MkdirAllFails(t *testing.T) {
 	svc := NewPronunciationService(config.TTSConfig{
-		Enabled: true,
+		Enabled:  true,
 		AudioDir: filepath.Join(t.TempDir(), "sub", "nested"),
 	}, nil, zap.NewNop())
 	svc.providers = []pronunciationProvider{&stubPronunciationProvider{}}
@@ -1757,12 +1757,12 @@ func TestPronunciationService_Start_WithPrefetchEnabled(t *testing.T) {
 	cfg := config.TTSConfig{
 		Enabled:           true,
 		PrefetchEnabled:   true,
-		PrefetchWorkers:    1,
-		BackfillInterval:   "1h",
-		BackfillBatchSize:  5,
-		AudioDir:           t.TempDir(),
-		DictionaryEnabled:  true,
-		DictionaryBaseURL:  "http://example.com",
+		PrefetchWorkers:   1,
+		BackfillInterval:  "1h",
+		BackfillBatchSize: 5,
+		AudioDir:          t.TempDir(),
+		DictionaryEnabled: true,
+		DictionaryBaseURL: "http://example.com",
 	}
 	svc := NewPronunciationService(cfg, wordRepo, zap.NewNop())
 	svc.providers = []pronunciationProvider{&stubPronunciationProvider{providerName: "stub", audio: []byte("x")}}
@@ -2251,7 +2251,7 @@ func TestBuildPronunciationProviders_DictionaryOnly(t *testing.T) {
 	providers := buildPronunciationProviders(config.TTSConfig{
 		Provider:          "dictionary",
 		DictionaryEnabled: true,
-		DictionaryBaseURL:  "https://api.dictionaryapi.dev/api/v2/entries/en",
+		DictionaryBaseURL: "https://api.dictionaryapi.dev/api/v2/entries/en",
 	}, zap.NewNop())
 	if len(providers) != 1 {
 		t.Fatalf("expected 1 provider, got %d", len(providers))
@@ -2309,13 +2309,13 @@ func TestBuildPronunciationProviders_EmptyProvider(t *testing.T) {
 // TestNewPronunciationService_NoProvidersDisablesService covers NewPronunciationService when buildPronunciationProviders returns empty (enabled set to false).
 func TestNewPronunciationService_NoProvidersDisablesService(t *testing.T) {
 	cfg := config.TTSConfig{
-		Enabled:            true,
-		AudioDir:           t.TempDir(),
-		PublicBasePath:     "/media/tts",
-		Provider:           "dictionary",
-		DictionaryEnabled:  false,
-		APIKey:             "",
-		Model:              "",
+		Enabled:           true,
+		AudioDir:          t.TempDir(),
+		PublicBasePath:    "/media/tts",
+		Provider:          "dictionary",
+		DictionaryEnabled: false,
+		APIKey:            "",
+		Model:             "",
 	}
 	svc := NewPronunciationService(cfg, nil, zap.NewNop())
 	if svc.IsEnabled() {
@@ -2326,10 +2326,10 @@ func TestNewPronunciationService_NoProvidersDisablesService(t *testing.T) {
 // TestBuildPronunciationProviders_DictionaryMinDelayNegative clamps negative minDelay to 0.
 func TestBuildPronunciationProviders_DictionaryMinDelayNegative(t *testing.T) {
 	providers := buildPronunciationProviders(config.TTSConfig{
-		Provider:            "dictionary",
-		DictionaryEnabled:   true,
-		DictionaryBaseURL:   "https://example.com",
-		DictionaryMinDelay:  "-1s",
+		Provider:           "dictionary",
+		DictionaryEnabled:  true,
+		DictionaryBaseURL:  "https://example.com",
+		DictionaryMinDelay: "-1s",
 	}, zap.NewNop())
 	if len(providers) != 1 {
 		t.Fatalf("expected 1 provider, got %d", len(providers))
@@ -2452,7 +2452,7 @@ func (r *pronunciationRoundTripper) RoundTrip(req *http.Request) (*http.Response
 type pronunciationErrBody struct{ err error }
 
 func (e *pronunciationErrBody) Read([]byte) (int, error) { return 0, e.err }
-func (e *pronunciationErrBody) Close() error            { return nil }
+func (e *pronunciationErrBody) Close() error             { return nil }
 
 func TestOpenRouterPronunciationProvider_FetchViaAudioSpeech_ClientDoError(t *testing.T) {
 	wantErr := fmt.Errorf("client do failed")
@@ -3245,11 +3245,11 @@ func TestNewPronunciationService_WorkersAndBackfillClamps(t *testing.T) {
 // TestNewPronunciationService_RetryMaxLessThanBase uses retryMax < retryBase so retryMax is set to retryBase.
 func TestNewPronunciationService_RetryMaxLessThanBase(t *testing.T) {
 	svc := NewPronunciationService(config.TTSConfig{
-		Enabled:        true,
-		AudioDir:       t.TempDir(),
-		RetryBaseDelay: "2m",
-		RetryMaxDelay:  "1m",
-		Provider:       "dictionary",
+		Enabled:           true,
+		AudioDir:          t.TempDir(),
+		RetryBaseDelay:    "2m",
+		RetryMaxDelay:     "1m",
+		Provider:          "dictionary",
 		DictionaryEnabled: true,
 		DictionaryBaseURL: "http://example.com",
 	}, nil, zap.NewNop())

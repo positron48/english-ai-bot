@@ -265,7 +265,7 @@ func TestRouter_HasPermission_GetUserPermissionsError(t *testing.T) {
 	accessCategoryRepo := repository.NewUserAccessCategoryRepository(conn, logger)
 
 	cfg := &config.Config{
-		Admin: config.AdminConfig{TelegramID: 12345},
+		Admin:  config.AdminConfig{TelegramID: 12345},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret"},
 	}
 
@@ -347,11 +347,11 @@ func TestRouter_RequirePermission(t *testing.T) {
 	}
 
 	tests := []struct {
-		name         string
-		userID       int64
-		categories   []int64
-		cachedPerms  []string // if set, pre-fill context (covers loadUserPermissionsIntoContext cache path)
-		expected     int
+		name        string
+		userID      int64
+		categories  []int64
+		cachedPerms []string // if set, pre-fill context (covers loadUserPermissionsIntoContext cache path)
+		expected    int
 	}{
 		{"super admin allowed", adminUser.ID, []int64{}, nil, http.StatusOK},
 		{"user without permission", regularUser.ID, []int64{}, nil, http.StatusForbidden},

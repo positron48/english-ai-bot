@@ -14,7 +14,7 @@ import (
 
 func TestNewSRSService(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	
+
 	service := NewSRSService((*repository.UserCardRepository)(nil), logger)
 	_ = service // Verify service is created
 }
@@ -22,7 +22,7 @@ func TestNewSRSService(t *testing.T) {
 func TestSRSService_GradeCard(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	now := time.Now()
-	
+
 	tests := []struct {
 		name        string
 		userCard    *models.UserCard
@@ -80,13 +80,13 @@ func TestSRSService_GradeCard(t *testing.T) {
 		},
 	}
 
-		for _, tt := range tests {
+	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			service := &SRSService{
 				userCardRepo: (*repository.UserCardRepository)(nil),
 				logger:       logger,
 			}
-			
+
 			// We can't easily test the full flow without a real DB, but we can test the logic
 			// by checking that the card state is updated correctly
 			quality := models.CalculateQuality(tt.attemptData)
@@ -94,7 +94,7 @@ func TestSRSService_GradeCard(t *testing.T) {
 				initialInterval := tt.userCard.IntervalDays
 				initialReps := tt.userCard.Reps
 				service.updateCardState(tt.userCard, quality, now)
-				
+
 				// For review cards: should stay in review with reduced interval (gentle approach)
 				switch tt.userCard.State {
 				case models.StateReview:
@@ -121,7 +121,7 @@ func TestSRSService_GradeCard(t *testing.T) {
 func TestSRSService_updateCardState(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	now := time.Now()
-	
+
 	service := &SRSService{
 		userCardRepo: nil,
 		logger:       logger,
@@ -429,17 +429,17 @@ func TestSRSService_updateCardState(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			card := &models.UserCard{
-				ID:            tt.card.ID,
-				UserID:        tt.card.UserID,
-				State:         tt.card.State,
-				EF:            tt.card.EF,
-				Reps:          tt.card.Reps,
+				ID:           tt.card.ID,
+				UserID:       tt.card.UserID,
+				State:        tt.card.State,
+				EF:           tt.card.EF,
+				Reps:         tt.card.Reps,
 				IntervalDays: tt.card.IntervalDays,
-				LearningStep:  tt.card.LearningStep,
-				LapseCount:    tt.card.LapseCount,
-				Direction:     tt.card.Direction,
+				LearningStep: tt.card.LearningStep,
+				LapseCount:   tt.card.LapseCount,
+				Direction:    tt.card.Direction,
 			}
-			
+
 			service.updateCardState(card, tt.quality, now)
 			tt.validate(t, card)
 		})
@@ -462,7 +462,7 @@ func TestSRSService_RecordWrongAnswer(t *testing.T) {
 		{
 			name: "First wrong answer",
 			card: &models.UserCard{
-				ID:              1,
+				ID:               1,
 				WrongAnswersJSON: "",
 			},
 			wrongOption: "wrong1",
@@ -475,7 +475,7 @@ func TestSRSService_RecordWrongAnswer(t *testing.T) {
 		{
 			name: "Increment existing wrong answer",
 			card: &models.UserCard{
-				ID:              1,
+				ID:               1,
 				WrongAnswersJSON: `[{"option":"wrong1","ts":"2024-01-01T00:00:00Z","count":1}]`,
 			},
 			wrongOption: "wrong1",
@@ -490,15 +490,15 @@ func TestSRSService_RecordWrongAnswer(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			card := &models.UserCard{
-				ID:              tt.card.ID,
+				ID:               tt.card.ID,
 				WrongAnswersJSON: tt.card.WrongAnswersJSON,
 			}
-			
+
 			err := service.RecordWrongAnswer(card, tt.wrongOption)
 			if err != nil {
 				t.Errorf("RecordWrongAnswer() error = %v", err)
 			}
-			
+
 			tt.validateJSON(t, card.WrongAnswersJSON)
 		})
 	}

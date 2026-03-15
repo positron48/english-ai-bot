@@ -848,10 +848,10 @@ func TestUserCardRepository_GetUpcomingCardsByDate_DateParseFallbacks(t *testing
 
 	// Return rows with different date formats to cover fallback branches
 	rows := sqlmock.NewRows([]string{"next_due_at"}).
-		AddRow("2024-01-02T00:00:00Z").          // RFC3339 (no nanoseconds) - triggers second parse
-		AddRow("2024-01-03 00:00:00").            // standard format - triggers third parse
-		AddRow("2024-01-04 00:00:00+00:00").      // format with TZ offset - triggers fourth parse
-		AddRow("invalid-date-format")             // unparseable - triggers warn+continue
+		AddRow("2024-01-02T00:00:00Z").      // RFC3339 (no nanoseconds) - triggers second parse
+		AddRow("2024-01-03 00:00:00").       // standard format - triggers third parse
+		AddRow("2024-01-04 00:00:00+00:00"). // format with TZ offset - triggers fourth parse
+		AddRow("invalid-date-format")        // unparseable - triggers warn+continue
 	mock.ExpectQuery("SELECT").WillReturnRows(rows)
 
 	repo := NewUserCardRepository(db, zap.NewNop())

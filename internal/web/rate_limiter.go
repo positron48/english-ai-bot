@@ -29,7 +29,7 @@ type RateLimiter struct {
 	// Cleanup interval for stale buckets
 	cleanupInterval time.Duration
 	// TTL for buckets (if no activity, bucket is removed)
-	bucketTTL time.Duration
+	bucketTTL   time.Duration
 	stopCleanup chan struct{}
 }
 

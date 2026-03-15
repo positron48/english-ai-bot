@@ -6,8 +6,8 @@ import (
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/repository"
 
-	"tgbot-skeleton/internal/testutil"
 	"go.uber.org/zap"
+	"tgbot-skeleton/internal/testutil"
 )
 
 func TestAuthMiddleware_GenerateJWTToken(t *testing.T) {
@@ -16,8 +16,8 @@ func TestAuthMiddleware_GenerateJWTToken(t *testing.T) {
 	userRepo := repository.NewUserRepository(db, logger)
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -41,8 +41,8 @@ func TestAuthMiddleware_GenerateTokenPair(t *testing.T) {
 	userRepo := repository.NewUserRepository(db, logger)
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -73,8 +73,8 @@ func TestAuthMiddleware_GenerateJWTToken_GetUserCategoriesFails(t *testing.T) {
 	accessCategoryRepo := repository.NewUserAccessCategoryRepository(badDB, logger)
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}
@@ -100,8 +100,8 @@ func TestAuthMiddleware_GenerateTokenPair_GetUserCategoriesFails(t *testing.T) {
 	accessCategoryRepo := repository.NewUserAccessCategoryRepository(badDB, logger)
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 	}

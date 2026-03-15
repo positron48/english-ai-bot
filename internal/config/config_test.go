@@ -36,7 +36,7 @@ func TestGetEnv(t *testing.T) {
 			} else {
 				os.Unsetenv(key)
 			}
-			
+
 			result := GetEnv(key, tt.defaultValue)
 			if result != tt.expected {
 				t.Errorf("GetEnv(%q, %q) = %q, want %q", key, tt.defaultValue, result, tt.expected)
@@ -121,18 +121,18 @@ func TestLoadPromptFromFile(t *testing.T) {
 			// Create temporary file
 			tmpDir := t.TempDir()
 			tmpFile := filepath.Join(tmpDir, "test_prompt.txt")
-			
+
 			err := os.WriteFile(tmpFile, []byte(tt.content), 0644)
 			if err != nil {
 				t.Fatalf("Failed to create test file: %v", err)
 			}
-			
+
 			result, err := loadPromptFromFile(tmpFile)
 			if (err != nil) != tt.wantError {
 				t.Errorf("loadPromptFromFile() error = %v, wantError %v", err, tt.wantError)
 				return
 			}
-			
+
 			if !tt.wantError {
 				expected := tt.content
 				if tt.content != "" {
@@ -149,7 +149,7 @@ func TestLoadPromptFromFile(t *testing.T) {
 			}
 		})
 	}
-	
+
 	t.Run("Non-existent file", func(t *testing.T) {
 		_, err := loadPromptFromFile("/nonexistent/file/path.txt")
 		if err == nil {

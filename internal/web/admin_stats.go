@@ -181,7 +181,7 @@ func (r *Router) handleAdminStats(w http.ResponseWriter, req *http.Request) {
 
 	// Daily timeseries for charts
 	dailyStats := make([]map[string]interface{}, 0)
-	
+
 	// Generate all days in range
 	dayMap := make(map[string]map[string]interface{})
 	for i := 0; i < days; i++ {

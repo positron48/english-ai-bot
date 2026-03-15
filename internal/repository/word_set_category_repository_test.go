@@ -88,7 +88,6 @@ func TestWordSetCategoryRepository_CreateCategory(t *testing.T) {
 	})
 }
 
-
 func TestWordSetCategoryRepository_GetCategory(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupWordSetCategoryTestDB(t)

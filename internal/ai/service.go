@@ -262,7 +262,7 @@ func (s *Service) GenerateTrainingCard(ctx context.Context, word string, modelOv
 	}
 
 	response := chatResp.Choices[0].Message.Content
-	
+
 	// Clean up response - remove markdown code blocks if present
 	response = strings.TrimSpace(response)
 	response = strings.TrimPrefix(response, "```json")
@@ -289,7 +289,7 @@ func (s *Service) GenerateAdditionalTrainingCard(ctx context.Context, word strin
 	var userMessage strings.Builder
 	userMessage.WriteString(s.trainingPrompt)
 	userMessage.WriteString(word)
-	
+
 	if constraints != "" {
 		userMessage.WriteString("\n\nAdditional constraints for this card:\n")
 		userMessage.WriteString(constraints)
@@ -379,7 +379,7 @@ func (s *Service) GenerateAdditionalTrainingCard(ctx context.Context, word strin
 	}
 
 	response := chatResp.Choices[0].Message.Content
-	
+
 	// Clean up response - remove markdown code blocks if present
 	response = strings.TrimSpace(response)
 	response = strings.TrimPrefix(response, "```json")

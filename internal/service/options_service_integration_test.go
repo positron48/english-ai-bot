@@ -8,8 +8,8 @@ import (
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 
-	"tgbot-skeleton/internal/testutil"
 	"go.uber.org/zap"
+	"tgbot-skeleton/internal/testutil"
 )
 
 func setupOptionsServiceTestDB(t *testing.T) (*sql.DB, *repository.TrainingCardRepository) {
@@ -51,8 +51,8 @@ func TestOptionsService_GenerateOptions_Integration(t *testing.T) {
 
 	userCard := &models.UserCardWithTraining{
 		UserCard: models.UserCard{
-			ID:              1,
-			Direction:       models.DirectionRUtoEN,
+			ID:               1,
+			Direction:        models.DirectionRUtoEN,
 			WrongAnswersJSON: "",
 		},
 		TrainingCard: models.TrainingCard{
@@ -117,8 +117,8 @@ func TestOptionsService_GenerateOptions_UsesCardDistractors(t *testing.T) {
 
 	userCard := &models.UserCardWithTraining{
 		UserCard: models.UserCard{
-			ID:              1,
-			Direction:       models.DirectionRUtoEN,
+			ID:               1,
+			Direction:        models.DirectionRUtoEN,
 			WrongAnswersJSON: "",
 		},
 		TrainingCard: models.TrainingCard{

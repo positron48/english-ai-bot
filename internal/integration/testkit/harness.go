@@ -114,20 +114,20 @@ func NewHarness(t *testing.T, opts ...HarnessOpt) *Harness {
 		DB:     db,
 		Router: router,
 		Logger: logger,
-		Cfg:   appCfg,
+		Cfg:    appCfg,
 	}
 }
 
 func testConfig() *config.Config {
 	return &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:                 "test-jwt-secret-for-integration",
-			JWTTTLHours:               24,
-			RefreshTTLHours:           720,
-			RateLimitAppAPIPerUser:    2000, // high limit for integration tests (60 cards × 4 req/card)
-			RateLimitAppChatPerUser:   200,
-			RateLimitBurstMultiplier:  2,
-			RateLimitWindowMinutes:    1,
+			JWTSecret:                "test-jwt-secret-for-integration",
+			JWTTTLHours:              24,
+			RefreshTTLHours:          720,
+			RateLimitAppAPIPerUser:   2000, // high limit for integration tests (60 cards × 4 req/card)
+			RateLimitAppChatPerUser:  200,
+			RateLimitBurstMultiplier: 2,
+			RateLimitWindowMinutes:   1,
 		},
 		Admin: config.AdminConfig{TelegramID: 0},
 	}

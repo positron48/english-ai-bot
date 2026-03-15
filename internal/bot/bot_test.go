@@ -41,7 +41,7 @@ func startMockTelegramServer(t *testing.T, statusCode int) (baseURL string, clea
 // mockTelegramOpts allows customizing mock server behaviour per method.
 type mockTelegramOpts struct {
 	setWebhookStatusCode    int // 0 = use default statusCode
-	deleteWebhookStatusCode  int
+	deleteWebhookStatusCode int
 	getUpdatesFirstResponse string // empty = use default result:[]
 }
 

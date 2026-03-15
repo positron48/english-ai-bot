@@ -23,9 +23,9 @@ func TestNudgeRepository_CreateNudge(t *testing.T) {
 	localDate := time.Now().Format("2006-01-02")
 
 	nudge := &models.TrainingNudge{
-		UserID:          user.ID,
-		LocalDate:       localDate,
-		DueCountAtSend:  5,
+		UserID:         user.ID,
+		LocalDate:      localDate,
+		DueCountAtSend: 5,
 	}
 
 	_, err := nudgeRepo.CreateNudge(nudge)
@@ -55,9 +55,9 @@ func TestNudgeRepository_HasNudgeToday(t *testing.T) {
 
 	// Create nudge
 	nudge := &models.TrainingNudge{
-		UserID:          user.ID,
-		LocalDate:       localDate,
-		DueCountAtSend:  5,
+		UserID:         user.ID,
+		LocalDate:      localDate,
+		DueCountAtSend: 5,
 	}
 	_, _ = nudgeRepo.CreateNudge(nudge)
 
@@ -80,9 +80,9 @@ func TestNudgeRepository_ConsumeNudge(t *testing.T) {
 
 	// Create nudge
 	nudge := &models.TrainingNudge{
-		UserID:          user.ID,
-		LocalDate:       localDate,
-		DueCountAtSend:  5,
+		UserID:         user.ID,
+		LocalDate:      localDate,
+		DueCountAtSend: 5,
 	}
 	_, _ = nudgeRepo.CreateNudge(nudge)
 
@@ -114,9 +114,9 @@ func TestNudgeRepository_GetUnconsumedNudge(t *testing.T) {
 
 	// Create nudge
 	newNudge := &models.TrainingNudge{
-		UserID:          user.ID,
-		LocalDate:       localDate,
-		DueCountAtSend:  5,
+		UserID:         user.ID,
+		LocalDate:      localDate,
+		DueCountAtSend: 5,
 	}
 	_, _ = nudgeRepo.CreateNudge(newNudge)
 
@@ -191,10 +191,10 @@ func TestNudgeRepository_CreateNudge_WithMessageID(t *testing.T) {
 	localDate := time.Now().Format("2006-01-02")
 	msgID := 42
 	nudge := &models.TrainingNudge{
-		UserID:          user.ID,
-		LocalDate:       localDate,
-		DueCountAtSend:  1,
-		MessageID:       &msgID,
+		UserID:         user.ID,
+		LocalDate:      localDate,
+		DueCountAtSend: 1,
+		MessageID:      &msgID,
 	}
 	id, err := nudgeRepo.CreateNudge(nudge)
 	if err != nil {

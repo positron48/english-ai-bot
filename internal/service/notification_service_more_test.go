@@ -11,9 +11,9 @@ import (
 	"testing"
 	"time"
 
-	"tgbot-skeleton/internal/testutil"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
+	"tgbot-skeleton/internal/testutil"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"go.uber.org/zap"

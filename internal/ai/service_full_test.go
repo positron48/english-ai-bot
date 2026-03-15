@@ -41,7 +41,7 @@ func newTextResponse(status int, body string) *http.Response {
 type failingReadBody struct{}
 
 func (failingReadBody) Read(p []byte) (n int, err error) { return 0, errors.New("read failed") }
-func (failingReadBody) Close() error                    { return nil }
+func (failingReadBody) Close() error                     { return nil }
 
 func TestGenerateResponse_Success(t *testing.T) {
 	logger, _ := zap.NewDevelopment()

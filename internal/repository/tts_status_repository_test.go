@@ -95,7 +95,10 @@ func TestTTSStatusRepository_ResetForForceRegenerate(t *testing.T) {
 // maxAttempts <= 0, the repository uses 3 as default (for backward compatibility).
 func TestNewTTSStatusRepository_DefaultMaxAttemptsWhenZeroOrNegative(t *testing.T) {
 	db := testutil.SetupTestDB(t)
-	for _, tc := range []struct{ maxAttempts int; word string }{{0, "zeroword"}, {-1, "negword"}} {
+	for _, tc := range []struct {
+		maxAttempts int
+		word        string
+	}{{0, "zeroword"}, {-1, "negword"}} {
 		repo := NewTTSStatusRepository(db, zap.NewNop(), tc.maxAttempts)
 		if err := repo.UpsertPending(tc.word); err != nil {
 			t.Fatalf("UpsertPending() error = %v", err)

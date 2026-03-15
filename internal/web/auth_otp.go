@@ -29,7 +29,7 @@ import (
 // @Router       /auth/request_otp [post]
 func (r *Router) handleAuthRequestOTP(w http.ResponseWriter, req *http.Request) {
 	lang := i18n.DetectLanguageFromRequest(req)
-	
+
 	if req.Method != http.MethodPost {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusMethodNotAllowed)
@@ -141,7 +141,7 @@ func (r *Router) handleAuthRequestOTP(w http.ResponseWriter, req *http.Request) 
 // @Router       /auth/otp [post]
 func (r *Router) handleAuthOTP(w http.ResponseWriter, req *http.Request) {
 	lang := i18n.DetectLanguageFromRequest(req)
-	
+
 	if req.Method != http.MethodPost {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusMethodNotAllowed)
@@ -162,11 +162,11 @@ func (r *Router) handleAuthOTP(w http.ResponseWriter, req *http.Request) {
 
 	userIDStr := req.FormValue("user_id")
 	code := strings.TrimSpace(req.FormValue("code"))
-	
+
 	// Normalize code - remove all non-digit characters
 	code = normalizeOTPCode(code)
 
-	r.logger.Info("OTP validation attempt", 
+	r.logger.Info("OTP validation attempt",
 		zap.String("user_id", userIDStr),
 		zap.String("code_length", fmt.Sprintf("%d", len(code))),
 		zap.String("code_preview", maskCode(code)))
@@ -195,7 +195,7 @@ func (r *Router) handleAuthOTP(w http.ResponseWriter, req *http.Request) {
 	// Validate OTP
 	otp, err := r.otpRepo.ValidateOTP(userID, code)
 	if err != nil {
-		r.logger.Warn("OTP validation failed", 
+		r.logger.Warn("OTP validation failed",
 			zap.Int64("user_id", userID),
 			zap.String("code_length", fmt.Sprintf("%d", len(code))),
 			zap.Error(err))
@@ -259,4 +259,3 @@ func maskCode(code string) string {
 	}
 	return string(code[0]) + strings.Repeat("*", len(code)-2) + string(code[len(code)-1])
 }
-

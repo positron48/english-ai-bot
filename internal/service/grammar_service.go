@@ -16,10 +16,10 @@ import (
 
 // GrammarService handles grammar course business logic
 type GrammarService struct {
-	ContentRepo  *repository.GrammarContentRepository
-	PublishRepo  *repository.GrammarPublishRepository
-	AttemptRepo  *repository.GrammarAttemptRepository
-	logger       *zap.Logger
+	ContentRepo *repository.GrammarContentRepository
+	PublishRepo *repository.GrammarPublishRepository
+	AttemptRepo *repository.GrammarAttemptRepository
+	logger      *zap.Logger
 }
 
 // NewGrammarService creates a new grammar service
@@ -101,11 +101,11 @@ func (s *GrammarService) GetPublishedSections(ctx context.Context, userID int64)
 
 // SectionWithProgress represents a section with user progress
 type SectionWithProgress struct {
-	Section           *repository.Section
-	Title             string
-	IsPublished       bool
-	PublishedChapters int
-	PassedChapters    int
+	Section            *repository.Section
+	Title              string
+	IsPublished        bool
+	PublishedChapters  int
+	PassedChapters     int
 	ProgressPercentage int // Average percentage based on chapter best_scores
 }
 
@@ -234,7 +234,7 @@ func (s *GrammarService) GetPublishedChapters(ctx context.Context, sectionID str
 	sectionAccess, _ := s.CanAccessSection(ctx, userID, sectionID)
 	// Check if section was opened by placement test (in this case, all chapters are accessible)
 	isOpenedByPlacement, _ := s.isSectionOpenedByPlacement(ctx, userID, sectionID)
-	
+
 	for i := range result {
 		if isOpenedByPlacement {
 			// If opened by placement test, all chapters are accessible
@@ -377,33 +377,33 @@ func (s *GrammarService) filterQuestionBankForQuizzes(chapter *repository.Chapte
 
 	// Collect all question IDs used in inline quizzes
 	usedQuestionIDs := make(map[string]bool)
-	
+
 	// Check blocks for quiz_inline types
 	blocks := chapter.Blocks
 	for _, blockInterface := range blocks {
-			block, ok := blockInterface.(map[string]interface{})
+		block, ok := blockInterface.(map[string]interface{})
+		if !ok {
+			continue
+		}
+
+		blockType, _ := block["type"].(string)
+		if blockType == "quiz_inline" {
+			quizInline, ok := block["quiz_inline"].(map[string]interface{})
 			if !ok {
 				continue
 			}
-			
-			blockType, _ := block["type"].(string)
-			if blockType == "quiz_inline" {
-				quizInline, ok := block["quiz_inline"].(map[string]interface{})
-				if !ok {
-					continue
-				}
-				
-				questionIDs, ok := quizInline["question_ids"].([]interface{})
-				if !ok {
-					continue
-				}
-				
-				for _, idInterface := range questionIDs {
-					if id, ok := idInterface.(string); ok {
-						usedQuestionIDs[id] = true
-					}
+
+			questionIDs, ok := quizInline["question_ids"].([]interface{})
+			if !ok {
+				continue
+			}
+
+			for _, idInterface := range questionIDs {
+				if id, ok := idInterface.(string); ok {
+					usedQuestionIDs[id] = true
 				}
 			}
+		}
 	}
 
 	// Filter question bank if it exists
@@ -411,24 +411,24 @@ func (s *GrammarService) filterQuestionBankForQuizzes(chapter *repository.Chapte
 	if questionBank != nil {
 		if questions, ok := questionBank["questions"].([]interface{}); ok {
 			filteredQuestions := make([]interface{}, 0)
-			
+
 			for _, qInterface := range questions {
 				q, ok := qInterface.(map[string]interface{})
 				if !ok {
 					continue
 				}
-				
+
 				qID, ok := q["id"].(string)
 				if !ok {
 					continue
 				}
-				
+
 				// Only include questions that are used in quizzes
 				if usedQuestionIDs[qID] {
 					filteredQuestions = append(filteredQuestions, q)
 				}
 			}
-			
+
 			// Update question bank with filtered questions
 			questionBank["questions"] = filteredQuestions
 			filteredChapter.QuestionBank = questionBank
@@ -529,8 +529,8 @@ func (s *GrammarService) GenerateCategoryTest(ctx context.Context, sectionID str
 
 	// Collect questions from all published chapters in the section
 	type chapterQuestions struct {
-		chapterID string
-		questions []interface{}
+		chapterID   string
+		questions   []interface{}
 		questionMap map[string]interface{}
 	}
 
@@ -599,7 +599,7 @@ func (s *GrammarService) GenerateCategoryTest(ctx context.Context, sectionID str
 		if len(validPoolIDs) > 0 {
 			allChapterQuestions = append(allChapterQuestions, chapterQuestions{
 				chapterID:   chapterID,
-				questions:  validPoolIDs,
+				questions:   validPoolIDs,
 				questionMap: questionMap,
 			})
 		}
@@ -824,9 +824,9 @@ func (s *GrammarService) selectRandom(poolIDs []interface{}, questionMap map[str
 
 // AnswerItem represents a single answer with explicit question identification
 type AnswerItem struct {
-	QuestionID string      `json:"question_id"`           // question ID (unique within chapter)
-	ChapterID  string      `json:"chapter_id,omitempty"`  // chapter ID (required for category tests)
-	Answer     interface{} `json:"answer"`                // user's answer (can be null if not answered)
+	QuestionID string      `json:"question_id"`          // question ID (unique within chapter)
+	ChapterID  string      `json:"chapter_id,omitempty"` // chapter ID (required for category tests)
+	Answer     interface{} `json:"answer"`               // user's answer (can be null if not answered)
 }
 
 // SubmitTest checks answers and saves attempt
@@ -933,7 +933,7 @@ func (s *GrammarService) SubmitTest(ctx context.Context, userID int64, scopeType
 		// We need to use the chapter ID stored in each question from GenerateCategoryTest
 		// to find the correct question.
 		questionMap = make(map[string]map[string]interface{})
-		
+
 		// First, build a map by composite key (chapterID:questionID) for all questions
 		questionMapByCompositeKey := make(map[string]map[string]interface{})
 		for chapterID, chapterQuestionMap := range questionMapByChapter {
@@ -942,7 +942,7 @@ func (s *GrammarService) SubmitTest(ctx context.Context, userID int64, scopeType
 				questionMapByCompositeKey[compositeKey] = qMap
 			}
 		}
-		
+
 		// Then, for each question in questionOrder, find it using chapter ID if available
 		// If chapter ID is not in questionOrder, fall back to simple ID lookup
 		// (this handles the case where questionOrder doesn't have chapter info)
@@ -971,14 +971,14 @@ func (s *GrammarService) SubmitTest(ctx context.Context, userID int64, scopeType
 	results := make([]interface{}, 0)
 	correct := 0
 	total := 0
-	
+
 	// Process each answer item in order
 	for answerIndex, answerItem := range answers {
 		questionID := answerItem.QuestionID
 		chapterID := answerItem.ChapterID
 		userAnswer := answerItem.Answer
 		hasAnswer := userAnswer != nil
-		
+
 		// Validate that chapter_id is provided for category tests
 		if scopeType == "category" && chapterID == "" {
 			s.logger.Warn("missing chapter_id for category test answer",
@@ -987,11 +987,11 @@ func (s *GrammarService) SubmitTest(ctx context.Context, userID int64, scopeType
 				zap.Int("answer_index", answerIndex))
 			// Try to find question in any chapter (fallback)
 		}
-		
+
 		// Find question using chapterID (for category tests) or simple questionID (for chapter tests)
 		var q map[string]interface{}
 		var qExists bool
-		
+
 		if scopeType == "category" && chapterID != "" && questionMapByChapter != nil {
 			// Use question from specific chapter
 			if chapterQuestionMap, chapterExists := questionMapByChapter[chapterID]; chapterExists {
@@ -1001,12 +1001,12 @@ func (s *GrammarService) SubmitTest(ctx context.Context, userID int64, scopeType
 				}
 			}
 		}
-		
+
 		// Fallback to simple lookup if chapter-specific lookup failed
 		if !qExists {
 			q, qExists = questionMap[questionID]
 		}
-		
+
 		if !qExists {
 			// Question not found - log error and skip
 			s.logger.Warn("question not found in questionMap during submission",
@@ -1017,12 +1017,12 @@ func (s *GrammarService) SubmitTest(ctx context.Context, userID int64, scopeType
 				zap.Int("answer_index", answerIndex))
 			continue
 		}
-		
+
 		// Process the question
 		total++
 		correctAnswer := q["correct_answer"]
 		prompt, _ := q["prompt"].(string)
-		
+
 		// If no answer provided, mark as incorrect
 		if !hasAnswer {
 			resultItem := map[string]interface{}{
@@ -1040,7 +1040,7 @@ func (s *GrammarService) SubmitTest(ctx context.Context, userID int64, scopeType
 			results = append(results, resultItem)
 			continue
 		}
-		
+
 		// Check if answer is correct
 		qType, _ := q["type"].(string)
 		var isCorrect bool
@@ -1248,7 +1248,7 @@ func (s *GrammarService) CanAccessChapter(ctx context.Context, userID int64, cha
 	if isOpenedByPlacement {
 		return true, nil
 	}
-	
+
 	// If section is not accessible, first chapter is not accessible either
 	canSection, _ := s.CanAccessSection(ctx, userID, section.SectionID)
 	if !canSection {
@@ -1291,20 +1291,20 @@ func (s *GrammarService) isSectionOpenedByPlacement(ctx context.Context, userID 
 	if placementResult == nil {
 		return false, nil
 	}
-	
+
 	// Check if section is in OpenedSections from placement test
 	for _, openedSectionID := range placementResult.OpenedSections {
 		if openedSectionID == sectionID {
 			return true, nil
 		}
 	}
-	
+
 	// Check placement "effective level" - if section level <= max level among opened sections
 	sectionsData, err := s.ContentRepo.GetSections()
 	if err != nil {
 		return false, fmt.Errorf("failed to get sections: %w", err)
 	}
-	
+
 	levelOrder := map[string]int{"A0": 0, "A1": 1, "A2": 2, "B1": 3, "B2": 4, "C1": 5, "C2": 6, "mixed": -1}
 	if len(placementResult.OpenedSections) > 0 {
 		effectiveOrder := -1
@@ -1334,17 +1334,17 @@ func (s *GrammarService) isSectionOpenedByPlacement(ctx context.Context, userID 
 			}
 		}
 	}
-	
+
 	return false, nil
 }
 
 // CanAccessSection checks if a user can access a section (category)
 // A section can be accessed if:
-// 1. It's the first section, OR
-// 2. Category test for previous section was passed (score >= 50%), OR
-// 3. It was opened by placement test (in OpenedSections), OR
-// 4. Placement "effective level": section level <= max level among OpenedSections (fixes old DB rows
-//    where OpenedSections missed sections that had no questions in the 25-question test)
+//  1. It's the first section, OR
+//  2. Category test for previous section was passed (score >= 50%), OR
+//  3. It was opened by placement test (in OpenedSections), OR
+//  4. Placement "effective level": section level <= max level among OpenedSections (fixes old DB rows
+//     where OpenedSections missed sections that had no questions in the 25-question test)
 func (s *GrammarService) CanAccessSection(ctx context.Context, userID int64, sectionID string) (bool, error) {
 	placementResult, _ := s.AttemptRepo.GetPlacementTestResult(userID)
 	if placementResult != nil {
@@ -1404,7 +1404,7 @@ func (s *GrammarService) CanAccessSection(ctx context.Context, userID int64, sec
 
 	// Check if category test for previous section was passed (score >= 50%)
 	previousSection := sectionsData.Sections[sectionIndex-1]
-	
+
 	// Require category test to be passed (score >= 50%) to unlock next section
 	// Exception: if section was opened by placement test (checked above)
 	categoryTestPassed, err := s.AttemptRepo.GetCategoryTestProgress(userID, previousSection.SectionID)
@@ -1437,13 +1437,13 @@ func (s *GrammarService) CanAccessSection(ctx context.Context, userID int64, sec
 
 // GrammarStatistics represents overall grammar course statistics
 type GrammarStatistics struct {
-	ConfirmedLevel          string `json:"confirmed_level"`             // Highest level where all chapters are passed
-	CourseCompletionPct    int    `json:"course_completion_pct"`         // Completion % over published chapters only (зачётка)
-	WholeCourseCompletionPct int  `json:"whole_course_completion_pct"`   // Completion % over entire course (all chapters in bundle)
-	AverageTestScore       int    `json:"average_test_score"`            // Average percentage across all test attempts
-	PassedChapters         int    `json:"passed_chapters"`               // Number of passed (published) chapters
-	TotalChapters          int    `json:"total_chapters"`                // Total number of published chapters
-	TotalChaptersInCourse  int    `json:"total_chapters_in_course"`      // Total chapters in course (whole bundle)
+	ConfirmedLevel           string `json:"confirmed_level"`             // Highest level where all chapters are passed
+	CourseCompletionPct      int    `json:"course_completion_pct"`       // Completion % over published chapters only (зачётка)
+	WholeCourseCompletionPct int    `json:"whole_course_completion_pct"` // Completion % over entire course (all chapters in bundle)
+	AverageTestScore         int    `json:"average_test_score"`          // Average percentage across all test attempts
+	PassedChapters           int    `json:"passed_chapters"`             // Number of passed (published) chapters
+	TotalChapters            int    `json:"total_chapters"`              // Total number of published chapters
+	TotalChaptersInCourse    int    `json:"total_chapters_in_course"`    // Total chapters in course (whole bundle)
 }
 
 // GetGrammarStatistics calculates overall grammar statistics for a user
@@ -1469,13 +1469,13 @@ func (s *GrammarService) GetGrammarStatistics(ctx context.Context, userID int64)
 
 	// Level hierarchy for comparison
 	levelOrder := map[string]int{
-		"A0":   0,
-		"A1":   1,
-		"A2":   2,
-		"B1":   3,
-		"B2":   4,
-		"C1":   5,
-		"C2":   6,
+		"A0":    0,
+		"A1":    1,
+		"A2":    2,
+		"B1":    3,
+		"B2":    4,
+		"C1":    5,
+		"C2":    6,
 		"mixed": -1, // Mixed levels don't count for confirmed level
 	}
 
@@ -1500,7 +1500,7 @@ func (s *GrammarService) GetGrammarStatistics(ctx context.Context, userID int64)
 	// Process each section
 	for i := range sectionsData.Sections {
 		section := &sectionsData.Sections[i]
-		
+
 		// Check if section is published
 		sectionItem, err := s.PublishRepo.GetPublishedItem("section", section.SectionID)
 		if err != nil || sectionItem == nil || !sectionItem.IsPublished {
@@ -1528,7 +1528,7 @@ func (s *GrammarService) GetGrammarStatistics(ctx context.Context, userID int64)
 			}
 
 			sectionPublishedChapters++
-			
+
 			// If section was opened by placement test, count all chapters as passed (100%)
 			if isOpenedByPlacement {
 				sectionTotalScore += 100
@@ -1607,13 +1607,13 @@ func (s *GrammarService) GetGrammarStatistics(ctx context.Context, userID int64)
 	}
 
 	return &GrammarStatistics{
-		ConfirmedLevel:          confirmedLevel,
-		CourseCompletionPct:     completionPct,
+		ConfirmedLevel:           confirmedLevel,
+		CourseCompletionPct:      completionPct,
 		WholeCourseCompletionPct: wholeCourseCompletionPct,
-		AverageTestScore:       averageTestScore,
-		PassedChapters:         passedChaptersCount,
-		TotalChapters:          totalPublishedChapters,
-		TotalChaptersInCourse:   totalChaptersInCourse,
+		AverageTestScore:         averageTestScore,
+		PassedChapters:           passedChaptersCount,
+		TotalChapters:            totalPublishedChapters,
+		TotalChaptersInCourse:    totalChaptersInCourse,
 	}, nil
 }
 
@@ -1993,7 +1993,6 @@ func (s *GrammarService) SubmitPlacementTest(ctx context.Context, userID int64, 
 		Results:        results,
 	}, nil
 }
-
 
 // PlacementTestResult represents placement test submission result
 type PlacementTestResult struct {

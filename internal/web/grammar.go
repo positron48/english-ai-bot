@@ -42,18 +42,18 @@ func (r *Router) handleLearningGrammarCategories(w http.ResponseWriter, req *htt
 	}
 
 	type CategoryResponse struct {
-		SectionID          string             `json:"section_id"`
-		Title              string             `json:"title"`
-		TitleTranslations  map[string]string  `json:"title_translations,omitempty"`
-		Level              string             `json:"level"`
-		Order              int                `json:"order"`
-		IsPublished        bool               `json:"is_published"`
-		PublishedChapters int                `json:"published_chapters"`
-		PassedChapters     int                `json:"passed_chapters"`
-		TotalChapters      int                `json:"total_chapters"`
-		ProgressPercentage int                `json:"progress_percentage"`
-		CanAccess          bool               `json:"can_access"`
-		CategoryTestScore  *int               `json:"category_test_score,omitempty"`
+		SectionID          string            `json:"section_id"`
+		Title              string            `json:"title"`
+		TitleTranslations  map[string]string `json:"title_translations,omitempty"`
+		Level              string            `json:"level"`
+		Order              int               `json:"order"`
+		IsPublished        bool              `json:"is_published"`
+		PublishedChapters  int               `json:"published_chapters"`
+		PassedChapters     int               `json:"passed_chapters"`
+		TotalChapters      int               `json:"total_chapters"`
+		ProgressPercentage int               `json:"progress_percentage"`
+		CanAccess          bool              `json:"can_access"`
+		CategoryTestScore  *int              `json:"category_test_score,omitempty"`
 	}
 
 	categories := make([]CategoryResponse, 0, len(sections))
@@ -88,7 +88,7 @@ func (r *Router) handleLearningGrammarCategories(w http.ResponseWriter, req *htt
 			TotalChapters:      len(section.Section.ChapterIDs),
 			ProgressPercentage: section.ProgressPercentage,
 			CanAccess:          canAccess,
-			CategoryTestScore:   categoryTestScore,
+			CategoryTestScore:  categoryTestScore,
 		})
 	}
 
@@ -656,14 +656,14 @@ func (r *Router) handleLearningGrammarStatistics(w http.ResponseWriter, req *htt
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]interface{}{
-		"confirmed_level":              stats.ConfirmedLevel,
-		"course_completion_pct":        stats.CourseCompletionPct,
-		"whole_course_completion_pct":  stats.WholeCourseCompletionPct,
-		"average_test_score":           stats.AverageTestScore,
-		"passed_chapters":              stats.PassedChapters,
-		"total_chapters":               stats.TotalChapters,
-		"total_chapters_in_course":     stats.TotalChaptersInCourse,
-		"hide_placement_test_button":   hidePlacementTestButton,
+		"confirmed_level":             stats.ConfirmedLevel,
+		"course_completion_pct":       stats.CourseCompletionPct,
+		"whole_course_completion_pct": stats.WholeCourseCompletionPct,
+		"average_test_score":          stats.AverageTestScore,
+		"passed_chapters":             stats.PassedChapters,
+		"total_chapters":              stats.TotalChapters,
+		"total_chapters_in_course":    stats.TotalChaptersInCourse,
+		"hide_placement_test_button":  hidePlacementTestButton,
 	})
 }
 

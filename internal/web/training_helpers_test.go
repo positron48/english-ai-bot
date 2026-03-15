@@ -11,8 +11,8 @@ import (
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/repository"
 
-	"tgbot-skeleton/internal/testutil"
 	"go.uber.org/zap"
+	"tgbot-skeleton/internal/testutil"
 )
 
 func setupTrainingHelpersTestDB(t *testing.T) (*sql.DB, *repository.UserRepository, *repository.TrainingCardRepository, *repository.UserCardRepository, *repository.SessionRepository) {
@@ -40,12 +40,12 @@ func TestHandleTrainingReveal_NoSession(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 		Training: config.TrainingConfig{
-			OptionsDelayMS:         2000,
+			OptionsDelayMS:          2000,
 			WrongAnswerDelaySeconds: 3,
 		},
 	}
@@ -84,12 +84,12 @@ func TestHandleTrainingAnswer_InvalidOptionIndex(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 		Training: config.TrainingConfig{
-			OptionsDelayMS:         2000,
+			OptionsDelayMS:          2000,
 			WrongAnswerDelaySeconds: 3,
 		},
 	}
@@ -129,12 +129,12 @@ func TestHandleTrainingAnswer_InvalidUserCardID(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 		Training: config.TrainingConfig{
-			OptionsDelayMS:         2000,
+			OptionsDelayMS:          2000,
 			WrongAnswerDelaySeconds: 3,
 		},
 	}
@@ -168,12 +168,12 @@ func TestHandleTrainingCurrent_WrongMethod(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 		Training: config.TrainingConfig{
-			OptionsDelayMS:         2000,
+			OptionsDelayMS:          2000,
 			WrongAnswerDelaySeconds: 3,
 		},
 	}
@@ -204,12 +204,12 @@ func TestHandleTrainingCurrent_Unauthorized(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 		Training: config.TrainingConfig{
-			OptionsDelayMS:         2000,
+			OptionsDelayMS:          2000,
 			WrongAnswerDelaySeconds: 3,
 		},
 	}
@@ -240,12 +240,12 @@ func TestHandleTrainingReveal_Unauthorized(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 		Training: config.TrainingConfig{
-			OptionsDelayMS:         2000,
+			OptionsDelayMS:          2000,
 			WrongAnswerDelaySeconds: 3,
 		},
 	}
@@ -276,12 +276,12 @@ func TestHandleTrainingAnswer_Unauthorized(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 		Training: config.TrainingConfig{
-			OptionsDelayMS:         2000,
+			OptionsDelayMS:          2000,
 			WrongAnswerDelaySeconds: 3,
 		},
 	}
@@ -313,12 +313,12 @@ func TestHandleTrainingStart_Unauthorized_NoContext(t *testing.T) {
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{
-			JWTSecret:     "test-secret",
-			JWTTTLHours:   24,
+			JWTSecret:       "test-secret",
+			JWTTTLHours:     24,
 			RefreshTTLHours: 720,
 		},
 		Training: config.TrainingConfig{
-			OptionsDelayMS:         2000,
+			OptionsDelayMS:          2000,
 			WrongAnswerDelaySeconds: 3,
 		},
 	}

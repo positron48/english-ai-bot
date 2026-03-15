@@ -20,11 +20,11 @@ type userRepoForCommands interface {
 
 // BotCommandService handles telegram bot commands
 type BotCommandService struct {
-	bot          *tgbotapi.BotAPI
-	userRepo     userRepoForCommands
-	logger       *zap.Logger
-	helpMessage  string
-	startMessage string
+	bot                   *tgbotapi.BotAPI
+	userRepo              userRepoForCommands
+	logger                *zap.Logger
+	helpMessage           string
+	startMessage          string
 	unknownCommandMessage string
 }
 
@@ -362,17 +362,17 @@ func pluralizeDays(n int) string {
 	if n < 0 {
 		n = -n
 	}
-	
+
 	// Get last digit
 	lastDigit := n % 10
 	// Get last two digits
 	lastTwoDigits := n % 100
-	
+
 	// Special cases for 11-14
 	if lastTwoDigits >= 11 && lastTwoDigits <= 14 {
 		return "дней"
 	}
-	
+
 	// Cases based on last digit
 	switch lastDigit {
 	case 1:

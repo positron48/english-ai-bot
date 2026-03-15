@@ -10,9 +10,9 @@ import (
 
 func TestParseDateTime(t *testing.T) {
 	tests := []struct {
-		name     string
-		input    string
-		wantErr  bool
+		name      string
+		input     string
+		wantErr   bool
 		checkTime func(*testing.T, *time.Time)
 	}{
 		{

@@ -10,9 +10,9 @@ import (
 
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/database"
-	"tgbot-skeleton/internal/testutil"
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/service"
+	"tgbot-skeleton/internal/testutil"
 
 	"go.uber.org/zap"
 )
@@ -115,10 +115,10 @@ func TestHandleAdminStats_MethodNotAllowed(t *testing.T) {
 
 func TestHandleAdminStats_DaysParam(t *testing.T) {
 	tests := []struct {
-		name       string
-		query      string
-		wantDays   int
-		desc       string
+		name     string
+		query    string
+		wantDays int
+		desc     string
 	}{
 		{"default no param", "", 30, "default 30 days"},
 		{"invalid non-numeric", "?days=abc", 30, "invalid keeps default"},
