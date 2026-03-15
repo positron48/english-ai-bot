@@ -157,66 +157,59 @@ func (s *SRSService) handleLapse(card *models.UserCard, now time.Time) {
 	}
 }
 
-// handleNew handles a new card
+// handleNew handles a new card. Correct answer always advances (to step 1 or graduate); Hard = short interval.
 func (s *SRSService) handleNew(card *models.UserCard, quality models.Quality, now time.Time) {
 	card.State = models.StateLearning
-	card.LearningStep = 0
-	
 	steps := s.learningSteps(card.Direction)
-	
-	if quality == models.QualityHard {
-		// Stay on step 0
-		nextDue := now.Add(time.Duration(steps[0]) * 24 * time.Hour)
-		card.NextDueAt = &nextDue
-	} else {
-		// Move to step 1 or graduation
-		if len(steps) > 1 {
-			card.LearningStep = 1
-			nextDue := now.Add(time.Duration(steps[1]) * 24 * time.Hour)
+
+	if len(steps) > 1 {
+		card.LearningStep = 1 // advance from "just seen" to step 1
+		if quality == models.QualityHard {
+			nextDue := now.Add(24 * time.Hour)
 			card.NextDueAt = &nextDue
 		} else {
-			// Graduate immediately
-			s.graduate(card, now)
+			nextDue := now.Add(time.Duration(steps[1]) * 24 * time.Hour)
+			card.NextDueAt = &nextDue
 		}
+	} else {
+		// Single step: graduate immediately
+		s.graduate(card, now)
 	}
 }
 
-// handleLearning handles a learning card
+// handleLearning handles a learning card.
+// Correct answer always advances the step; quality only affects how far (interval).
+// Hard = advance but next review in 1 day; Good/Easy = advance with full step interval.
 func (s *SRSService) handleLearning(card *models.UserCard, quality models.Quality, now time.Time) {
 	steps := s.learningSteps(card.Direction)
-	
+
 	// Reset lapse count on successful answer in learning phase
 	if quality != models.QualityWrong {
 		card.LapseCount = 0
 	}
-	
-	if quality == models.QualityHard {
-		// Repeat current step
-		currentStep := card.LearningStep
-		if currentStep >= len(steps) {
-			currentStep = len(steps) - 1
-		}
-		nextDue := now.Add(time.Duration(steps[currentStep]) * 24 * time.Hour)
-		card.NextDueAt = &nextDue
-	} else {
-		// Advance to next step
-		card.LearningStep++
-		
-		if card.LearningStep >= len(steps) {
-			// Graduate to review with improved initial interval
-			// If we completed 2+ steps, use a more honest interval (3-4 days)
-			// Otherwise use standard 1 day
-			if card.LearningStep >= 2 {
-				card.State = models.StateReview
-				card.Reps = 1
-				card.IntervalDays = 3 // Start with 3 days for better progression
-				nextDue := now.Add(3 * 24 * time.Hour)
-				card.NextDueAt = &nextDue
-			} else {
-				s.graduate(card, now)
-			}
+
+	// Always advance on correct answer
+	card.LearningStep++
+
+	if card.LearningStep >= len(steps) {
+		// Graduate to review
+		if card.LearningStep >= 2 {
+			card.State = models.StateReview
+			card.Reps = 1
+			card.IntervalDays = 3
+			nextDue := now.Add(3 * 24 * time.Hour)
+			card.NextDueAt = &nextDue
 		} else {
-			// Move to next learning step
+			s.graduate(card, now)
+		}
+	} else {
+		// Still in learning: quality determines interval length
+		if quality == models.QualityHard {
+			// Advance step but short interval (1 day) — word still progresses
+			nextDue := now.Add(24 * time.Hour)
+			card.NextDueAt = &nextDue
+		} else {
+			// Good/Easy: full step interval
 			nextDue := now.Add(time.Duration(steps[card.LearningStep]) * 24 * time.Hour)
 			card.NextDueAt = &nextDue
 		}

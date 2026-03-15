@@ -285,6 +285,7 @@
         <div class="srs-tooltip-row"><span>{{ t('vocab.srsNextDueAt') }}:</span> {{ formatDateAbsolute(srsTooltipCard.next_due_at) }}</div>
         <div class="srs-tooltip-row"><span>{{ t('vocab.srsLastReviewAt') }}:</span> {{ formatDateAbsolute(srsTooltipCard.last_review_at) }}</div>
         <div class="srs-tooltip-row"><span>{{ t('vocab.srsLastQuality') }}:</span> {{ srsTooltipCard.last_quality != null ? srsTooltipCard.last_quality : '—' }}</div>
+        <div v-if="srsTooltipCard.last_quality === 0 || srsTooltipCard.last_quality === 1" class="srs-tooltip-reason">{{ t('vocab.srsQualityHardReason') }}</div>
         <div class="srs-tooltip-row"><span>{{ t('vocab.srsCreatedAt') }}:</span> {{ formatDateAbsolute(srsTooltipCard.created_at ?? null) }}</div>
         <div class="srs-tooltip-row"><span>{{ t('vocab.srsUpdatedAt') }}:</span> {{ formatDateAbsolute(srsTooltipCard.updated_at ?? null) }}</div>
       </div>
@@ -1506,6 +1507,16 @@ function getStepIntervalDays(direction: string, learningStep: number): number {
 .srs-tooltip-step {
   color: var(--color-primary);
   margin-right: 0;
+}
+
+.srs-tooltip-reason {
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px solid var(--table-border, rgba(0, 0, 0, 0.1));
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--text-secondary);
+  white-space: normal;
 }
 
 .direction-badge {

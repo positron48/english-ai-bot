@@ -227,7 +227,8 @@
     "srsStepInterval": "Step interval (learning)",
     "srsRepsNote": "Reps count only in review; in learning shows 0",
     "srsDay": "day",
-    "srsDays": "days"
+    "srsDays": "days",
+    "srsQualityHardReason": "With «Hard» (1) the step still advances; the next review is sooner (1 day). This happens if you clicked the hint before the delay or answered in over 15 seconds."
   },
   "grammar": {
     "courseTitle": "Grammar Course",

@@ -55,7 +55,7 @@ func TestCalculateQuality(t *testing.T) {
 			data: AttemptData{
 				Correct:      true,
 				EarlyReveal:  false,
-				AnswerTimeMS: 9000, // > SlowThresholdMS (8000)
+				AnswerTimeMS: 16000, // > SlowThresholdMS (15s)
 			},
 			expected: QualityHard,
 		},

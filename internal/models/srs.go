@@ -15,7 +15,7 @@ const (
 	
 	// Quality thresholds (in milliseconds)
 	FastThresholdMS = 2500
-	SlowThresholdMS = 8000
+	SlowThresholdMS = 15000 // 15 seconds - only answers longer than this count as "Hard" (was 8s)
 	VerySlowThresholdMS = 30000 // 30 seconds - if answer time is longer, consider it as average (user was distracted)
 	
 	// Delay for showing options (in milliseconds)

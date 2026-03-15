@@ -146,8 +146,8 @@ func TestSRSService_updateCardState(t *testing.T) {
 				if card.State != models.StateLearning {
 					t.Errorf("Expected state %v, got %v", models.StateLearning, card.State)
 				}
-				if card.LearningStep != 0 {
-					t.Errorf("Expected learning step 0, got %d", card.LearningStep)
+				if card.LearningStep != 1 {
+					t.Errorf("Expected learning step 1 (advance), got %d", card.LearningStep)
 				}
 				if card.NextDueAt == nil {
 					t.Error("NextDueAt should be set")

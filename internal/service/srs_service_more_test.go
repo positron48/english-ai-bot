@@ -113,7 +113,7 @@ func TestSRSService_handleLearning_Graduate(t *testing.T) {
 	}
 }
 
-func TestSRSService_handleLearning_QualityHard_RepeatsStep(t *testing.T) {
+func TestSRSService_handleLearning_QualityHard_AdvancesWithShortInterval(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	service := NewSRSService(nil, logger)
 
@@ -127,15 +127,20 @@ func TestSRSService_handleLearning_QualityHard_RepeatsStep(t *testing.T) {
 
 	service.handleLearning(card, models.QualityHard, now)
 
-	// Should stay in learning, same step, NextDueAt set
+	// Correct answer always advances: step 1 -> 2, but Hard = short interval (1 day)
 	if card.State != models.StateLearning {
 		t.Errorf("Expected State %v, got %v", models.StateLearning, card.State)
 	}
-	if card.LearningStep != 1 {
-		t.Errorf("Expected LearningStep 1 (repeat), got %d", card.LearningStep)
+	if card.LearningStep != 2 {
+		t.Errorf("Expected LearningStep 2 (advance), got %d", card.LearningStep)
 	}
 	if card.NextDueAt == nil {
 		t.Error("NextDueAt should be set")
+	}
+	// Hard: next in 1 day (not full step 7)
+	expectedMin := now.Add(23 * time.Hour)
+	if card.NextDueAt.Before(expectedMin) {
+		t.Errorf("NextDueAt should be ~1 day for Hard, got %v", card.NextDueAt)
 	}
 }
 
@@ -161,12 +166,12 @@ func TestSRSService_handleLearning_QualityGood_AdvancesStep(t *testing.T) {
 	}
 }
 
-func TestSRSService_handleLearning_QualityHard_StepBeyondLength_ClampsToLastStep(t *testing.T) {
+func TestSRSService_handleLearning_QualityHard_StepBeyondLength_Graduates(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	service := NewSRSService(nil, logger)
 
 	now := time.Now()
-	// ENtoRU has 3 steps (indices 0,1,2); step 3 is beyond length
+	// ENtoRU has 3 steps (indices 0,1,2); LearningStep 3 is already past last index
 	card := &models.UserCard{
 		State:        models.StateLearning,
 		EF:           models.InitialEF,
@@ -176,14 +181,12 @@ func TestSRSService_handleLearning_QualityHard_StepBeyondLength_ClampsToLastStep
 
 	service.handleLearning(card, models.QualityHard, now)
 
-	if card.State != models.StateLearning {
-		t.Errorf("Expected state %v, got %v", models.StateLearning, card.State)
-	}
-	if card.LearningStep != 3 {
-		t.Errorf("Expected LearningStep 3 (unchanged), got %d", card.LearningStep)
+	// Correct answer always advances: LearningStep++ -> 4, 4 >= len(steps)=3 -> graduate
+	if card.State != models.StateReview {
+		t.Errorf("Expected state %v (graduate), got %v", models.StateReview, card.State)
 	}
 	if card.NextDueAt == nil {
-		t.Error("NextDueAt should be set (clamped to last step)")
+		t.Error("NextDueAt should be set")
 	}
 }
 
