@@ -221,6 +221,23 @@
                     {{ directionCard.direction === 'ru_en' ? 'RU→EN' : 'EN→RU' }}
                   </span>
                   <span :class="['state-badge', `state-${directionCard.state}`]">{{ directionCard.state }}</span>
+                  <span class="srs-info-wrap" @click.prevent>
+                    <Icon name="info" class="srs-info-icon" />
+                    <div class="srs-tooltip">
+                      <div class="srs-tooltip-title">{{ t('vocab.srsTooltipTitle') }}</div>
+                      <div class="srs-tooltip-row"><span>{{ t('vocab.srsState') }}:</span> {{ directionCard.state }}</div>
+                      <div class="srs-tooltip-row"><span>{{ t('vocab.srsEf') }}:</span> {{ formatSrsNumber(directionCard.ef) }}</div>
+                      <div class="srs-tooltip-row"><span>{{ t('vocab.srsReps') }}:</span> {{ directionCard.reps }}</div>
+                      <div class="srs-tooltip-row"><span>{{ t('vocab.srsIntervalDays') }}:</span> {{ directionCard.interval_days }}</div>
+                      <div class="srs-tooltip-row"><span>{{ t('vocab.srsLearningStep') }}:</span> {{ directionCard.learning_step }}</div>
+                      <div class="srs-tooltip-row"><span>{{ t('vocab.srsLapseCount') }}:</span> {{ directionCard.lapse_count }}</div>
+                      <div class="srs-tooltip-row"><span>{{ t('vocab.srsNextDueAt') }}:</span> {{ formatDateAbsolute(directionCard.next_due_at) }}</div>
+                      <div class="srs-tooltip-row"><span>{{ t('vocab.srsLastReviewAt') }}:</span> {{ formatDateAbsolute(directionCard.last_review_at) }}</div>
+                      <div class="srs-tooltip-row"><span>{{ t('vocab.srsLastQuality') }}:</span> {{ directionCard.last_quality != null ? directionCard.last_quality : '—' }}</div>
+                      <div class="srs-tooltip-row"><span>{{ t('vocab.srsCreatedAt') }}:</span> {{ formatDateAbsolute(directionCard.created_at ?? null) }}</div>
+                      <div class="srs-tooltip-row"><span>{{ t('vocab.srsUpdatedAt') }}:</span> {{ formatDateAbsolute(directionCard.updated_at ?? null) }}</div>
+                    </div>
+                  </span>
                 </div>
                 <div class="direction-stats-simple">
                   <span v-if="directionCard.reps > 0" :title="t('vocab.reps')">{{ t('vocab.reps') }} {{ directionCard.reps }}</span>
@@ -311,9 +328,16 @@ interface CardDetail {
   training_card_id: number
   direction: string
   state: string
+  ef: number
   reps: number
+  interval_days: number
+  learning_step: number
+  lapse_count: number
   next_due_at: string | null
   last_review_at: string | null
+  last_quality: number | null
+  created_at?: string
+  updated_at?: string
   word_ru: string
   meaning_en: string
   example_en: string
@@ -807,6 +831,11 @@ const formatDateAbsolute = (dateStr: string | null): string => {
   const year = date.getFullYear()
   
   return `${day}.${month}.${year}`
+}
+
+const formatSrsNumber = (n: number): string => {
+  if (typeof n !== 'number' || Number.isNaN(n)) return '—'
+  return Number.isInteger(n) ? String(n) : n.toFixed(2)
 }
 
 </script>
@@ -1329,6 +1358,71 @@ const formatDateAbsolute = (dateStr: string | null): string => {
   align-items: center;
   margin-bottom: 8px;
   flex-wrap: wrap;
+}
+
+.srs-info-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  margin-left: auto;
+  cursor: help;
+}
+
+.srs-info-icon {
+  width: 16px;
+  height: 16px;
+  opacity: 0.7;
+  color: var(--text-secondary);
+}
+
+.srs-info-wrap:hover .srs-info-icon {
+  opacity: 1;
+  color: var(--color-primary);
+}
+
+.srs-tooltip {
+  display: none;
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  transform: translateX(-50%) translateY(-6px);
+  min-width: 240px;
+  max-width: 320px;
+  padding: 10px 12px;
+  background: var(--card-bg);
+  border: 1px solid var(--table-border, rgba(0, 0, 0, 0.15));
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-primary);
+  white-space: nowrap;
+  z-index: 20;
+  pointer-events: none;
+}
+
+.srs-info-wrap:hover .srs-tooltip {
+  display: block;
+}
+
+.srs-tooltip-title {
+  font-weight: 600;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--table-border, rgba(0, 0, 0, 0.1));
+}
+
+.srs-tooltip-row {
+  margin-bottom: 2px;
+}
+
+.srs-tooltip-row:last-child {
+  margin-bottom: 0;
+}
+
+.srs-tooltip-row span {
+  color: var(--text-secondary);
+  margin-right: 6px;
 }
 
 .direction-badge {

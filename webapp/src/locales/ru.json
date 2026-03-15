@@ -210,7 +210,19 @@
     "removeWarning": "Это удалит все данные тренировки и статус изученности для этого слова. Вы сможете добавить его позже.",
     "remove": "Удалить",
     "noWordsFound": "Слова, соответствующие \"{query}\", не найдены.",
-    "noWordsInVocabulary": "В вашем словаре пока нет слов."
+    "noWordsInVocabulary": "В вашем словаре пока нет слов.",
+    "srsTooltipTitle": "SRS (интервальное повторение)",
+    "srsState": "Состояние",
+    "srsEf": "EF (фактор лёгкости)",
+    "srsReps": "Повторений",
+    "srsIntervalDays": "Интервал (дней)",
+    "srsLearningStep": "Шаг обучения",
+    "srsLapseCount": "Срывов",
+    "srsNextDueAt": "След. повтор",
+    "srsLastReviewAt": "Последний повтор",
+    "srsLastQuality": "Последняя оценка (0–5)",
+    "srsCreatedAt": "Создано",
+    "srsUpdatedAt": "Обновлено"
   },
   "grammar": {
     "courseTitle": "Курс грамматики",

@@ -171,6 +171,11 @@
       <polygon points="5 4 15 12 5 20 5 4"/>
       <line x1="19" y1="5" x2="19" y2="19"/>
     </svg>
+    <svg v-else-if="name === 'info'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <line x1="12" y1="16" x2="12" y2="12"/>
+      <line x1="12" y1="8" x2="12.01" y2="8"/>
+    </svg>
   </span>
 </template>
 
@@ -216,6 +221,7 @@ defineProps<{
     | 'eye-off'
     | 'check'
     | 'forward'
+    | 'info'
   dark?: boolean
 }>()
 </script>

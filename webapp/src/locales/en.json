@@ -211,7 +211,19 @@
     "removeWarning": "This will remove all training data and known status for this word. You can add it back later.",
     "remove": "Remove",
     "noWordsFound": "No words found matching \"{query}\".",
-    "noWordsInVocabulary": "No words in your vocabulary yet."
+    "noWordsInVocabulary": "No words in your vocabulary yet.",
+    "srsTooltipTitle": "SRS (spaced repetition)",
+    "srsState": "State",
+    "srsEf": "EF (ease factor)",
+    "srsReps": "Reps",
+    "srsIntervalDays": "Interval (days)",
+    "srsLearningStep": "Learning step",
+    "srsLapseCount": "Lapse count",
+    "srsNextDueAt": "Next due",
+    "srsLastReviewAt": "Last review",
+    "srsLastQuality": "Last quality (0–5)",
+    "srsCreatedAt": "Created",
+    "srsUpdatedAt": "Updated"
   },
   "grammar": {
     "courseTitle": "Grammar Course",
