@@ -335,6 +335,12 @@ func (r *UserCardRepository) UpdateUserCard(card *models.UserCard) error {
 		card.ID,
 	)
 	if err != nil {
+		r.logger.Error("UpdateUserCard failed",
+			zap.Int64("user_card_id", card.ID),
+			zap.String("state", string(card.State)),
+			zap.Int("interval_days", card.IntervalDays),
+			zap.Error(err),
+		)
 		return fmt.Errorf("failed to update user card: %w", err)
 	}
 

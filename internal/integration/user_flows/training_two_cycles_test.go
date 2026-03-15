@@ -167,6 +167,21 @@ func TestTrainingTwoCycles_60Cards_SRSAndReviewEvents(t *testing.T) {
 	if sessionCount < 1 {
 		t.Error("expected at least one training_session")
 	}
+
+	// SRS sanity: cards that were answered (have last_review_at set) should have next_due_at set.
+	// Full interval growth is tested in service tests (TestSRSService_GradeCard_ReviewWithNonZeroData etc.)
+	// because here we don't advance time, so the same card is never due twice in two sessions.
+	var answeredWithNullDue int
+	err = conn.QueryRow(`
+		SELECT COUNT(*) FROM user_cards
+		WHERE user_id = $1 AND last_review_at IS NOT NULL AND next_due_at IS NULL
+	`, user.ID).Scan(&answeredWithNullDue)
+	if err != nil {
+		t.Fatalf("count answered with null next_due_at: %v", err)
+	}
+	if answeredWithNullDue > 0 {
+		t.Errorf("SRS: %d answered cards have next_due_at NULL (should be set after GradeCard)", answeredWithNullDue)
+	}
 }
 
 func ptrBool(b bool) *bool {

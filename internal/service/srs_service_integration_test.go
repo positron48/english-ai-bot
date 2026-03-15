@@ -220,3 +220,133 @@ func TestSRSService_GradeCard_NextDueAtPersisted(t *testing.T) {
 		t.Errorf("IntervalDays should grow after correct answer, got %d", updated.IntervalDays)
 	}
 }
+
+// TestSRSService_GradeCard_ReviewWithNonZeroData runs several correct answers on a card
+// that starts in review with non-zero interval/reps (realistic "healthy" state).
+// Asserts that interval and next_due_at grow and are persisted after each answer.
+func TestSRSService_GradeCard_ReviewWithNonZeroData(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, userCardRepo := setupSRSServiceTestDB(t)
+	user, _ := userRepo.GetOrCreateUser(444)
+
+	_, _ = db.Exec("INSERT INTO word_cards (word, definition) VALUES ($1, $2)", "grow", "to grow")
+	_, err := db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (1, $1, $2, $3, $4)",
+		"grow", 0, "расти", "to grow")
+	if err != nil {
+		t.Fatalf("create training card: %v", err)
+	}
+
+	now := time.Now()
+	card := &models.UserCard{
+		UserID:         user.ID,
+		TrainingCardID: 1,
+		Direction:      models.DirectionENtoRU,
+		State:          models.StateReview,
+		EF:             2.0,
+		Reps:           2,
+		IntervalDays:   6,
+		NextDueAt:      &now,
+	}
+	id, err := userCardRepo.CreateUserCard(card)
+	if err != nil {
+		t.Fatalf("create user card: %v", err)
+	}
+
+	svc := NewSRSService(userCardRepo, logger)
+	attempt := models.AttemptData{Correct: true, EarlyReveal: false, AnswerTimeMS: 3000}
+
+	// First correct: Reps 2->3, newInterval = ceil(6*EF) = 12, next_due = now+12d
+	uc, err := userCardRepo.GetUserCard(id)
+	if err != nil || uc == nil {
+		t.Fatalf("get user card: %v", err)
+	}
+	if err := svc.GradeCard(uc, attempt); err != nil {
+		t.Fatalf("GradeCard 1: %v", err)
+	}
+	after1, _ := userCardRepo.GetUserCard(id)
+	if after1.NextDueAt == nil {
+		t.Fatal("after first correct: NextDueAt must be set")
+	}
+	interval1 := after1.IntervalDays
+	due1 := after1.NextDueAt.Sub(now).Hours() / 24
+
+	// Second correct: newInterval = ceil(12*EF), next_due = now2 + ...
+	uc2, _ := userCardRepo.GetUserCard(id)
+	if err := svc.GradeCard(uc2, attempt); err != nil {
+		t.Fatalf("GradeCard 2: %v", err)
+	}
+	after2, _ := userCardRepo.GetUserCard(id)
+	if after2.NextDueAt == nil {
+		t.Fatal("after second correct: NextDueAt must be set")
+	}
+	interval2 := after2.IntervalDays
+
+	if interval2 <= interval1 {
+		t.Errorf("interval should grow: after1=%d after2=%d", interval1, interval2)
+	}
+	if due1 < 1 {
+		t.Errorf("after first correct next_due_at should be at least 1 day ahead, got %.2f days", due1)
+	}
+}
+
+// TestSRSService_GradeCard_ReviewWithZeroReps simulates "migrated" or broken state:
+// state=review but reps=0 (and optionally interval_days=0). After one correct we get interval 1;
+// after second correct we get reps=2 and interval = ceil(1*EF) >= 2. So interval should grow.
+func TestSRSService_GradeCard_ReviewWithZeroReps(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, userCardRepo := setupSRSServiceTestDB(t)
+	user, _ := userRepo.GetOrCreateUser(555)
+
+	_, _ = db.Exec("INSERT INTO word_cards (word, definition) VALUES ($1, $2)", "broken", "broken")
+	_, err := db.Exec("INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (1, $1, $2, $3, $4)",
+		"broken", 0, "сломан", "broken")
+	if err != nil {
+		t.Fatalf("create training card: %v", err)
+	}
+
+	now := time.Now()
+	card := &models.UserCard{
+		UserID:         user.ID,
+		TrainingCardID: 1,
+		Direction:      models.DirectionENtoRU,
+		State:          models.StateReview,
+		EF:             2.0,
+		Reps:           0,   // broken: review with 0 reps (e.g. after bad migration)
+		IntervalDays:   0,   // broken
+		NextDueAt:      &now,
+	}
+	id, err := userCardRepo.CreateUserCard(card)
+	if err != nil {
+		t.Fatalf("create user card: %v", err)
+	}
+
+	svc := NewSRSService(userCardRepo, logger)
+	attempt := models.AttemptData{Correct: true, EarlyReveal: false, AnswerTimeMS: 3000}
+
+	// First correct: Reps 0 -> 1, newInterval = 1 (handleReview Reps==0 branch), next_due = now+1d
+	uc, _ := userCardRepo.GetUserCard(id)
+	if err := svc.GradeCard(uc, attempt); err != nil {
+		t.Fatalf("GradeCard 1: %v", err)
+	}
+	after1, _ := userCardRepo.GetUserCard(id)
+	if after1.IntervalDays != 1 {
+		t.Errorf("after first correct (reps was 0): expected interval_days 1, got %d", after1.IntervalDays)
+	}
+
+	// Second correct: Reps 1 -> 2, newInterval = 6 (handleReview Reps==1 branch), next_due = now+6d
+	uc2, _ := userCardRepo.GetUserCard(id)
+	if err := svc.GradeCard(uc2, attempt); err != nil {
+		t.Fatalf("GradeCard 2: %v", err)
+	}
+	after2, _ := userCardRepo.GetUserCard(id)
+	if after2.IntervalDays != 6 {
+		t.Errorf("after second correct (reps was 1): expected interval_days 6, got %d", after2.IntervalDays)
+	}
+	if after2.NextDueAt == nil {
+		t.Fatal("NextDueAt must be set")
+	}
+	hoursAhead := after2.NextDueAt.Sub(time.Now()).Hours()
+	if hoursAhead < 5*24 { // at least ~5 days (6 days - small tolerance)
+		t.Errorf("next_due_at should be ~6 days ahead, got %.1f hours", hoursAhead)
+	}
+}

@@ -184,3 +184,52 @@ func AssertNextDueWithin(t *testing.T, conn *sql.DB, userCardID int64, from, to 
 		t.Errorf("user_card %d next_due_at %v outside [%v, %v]", userCardID, *nextDue, from, to)
 	}
 }
+
+// AssertNextDueAtLeastDaysAhead checks that next_due_at is at least minDays days after now (from DB).
+// Used to verify SRS interval growth after correct answers (e.g. not stuck at 1 day).
+func AssertNextDueAtLeastDaysAhead(t *testing.T, conn *sql.DB, userCardID int64, minDays float64) {
+	t.Helper()
+	now := time.Now()
+	var nextDue sql.NullTime
+	err := conn.QueryRow(`SELECT next_due_at FROM user_cards WHERE id = $1`, userCardID).Scan(&nextDue)
+	if err != nil {
+		t.Fatalf("AssertNextDueAtLeastDaysAhead: %v", err)
+	}
+	if !nextDue.Valid {
+		t.Errorf("user_card %d: next_due_at is nil (expected at least %.1f days ahead)", userCardID, minDays)
+		return
+	}
+	hours := nextDue.Time.Sub(now).Hours()
+	if hours < minDays*24 {
+		t.Errorf("user_card %d next_due_at %v is %.1f hours ahead, want at least %.1f days (%.0f hours)", userCardID, nextDue.Time, hours, minDays, minDays*24)
+	}
+}
+
+// AssertIntervalDaysAndNextDueConsistent checks that a user_card has interval_days > 0 and next_due_at
+// is roughly interval_days ahead of last_review_at (or now if last_review_at is nil).
+// Tolerance: at least (interval_days - 1) * 24 hours (to allow for clock skew).
+func AssertIntervalDaysAndNextDueConsistent(t *testing.T, conn *sql.DB, userCardID int64) {
+	t.Helper()
+	var intervalDays int
+	var nextDue, lastReview sql.NullTime
+	err := conn.QueryRow(
+		`SELECT interval_days, next_due_at, last_review_at FROM user_cards WHERE id = $1`,
+		userCardID,
+	).Scan(&intervalDays, &nextDue, &lastReview)
+	if err != nil {
+		t.Fatalf("AssertIntervalDaysAndNextDueConsistent: %v", err)
+	}
+	if !nextDue.Valid {
+		t.Errorf("user_card %d: next_due_at is nil", userCardID)
+		return
+	}
+	base := time.Now()
+	if lastReview.Valid {
+		base = lastReview.Time
+	}
+	hours := nextDue.Time.Sub(base).Hours()
+	minHours := float64(intervalDays-1) * 24 // allow one day tolerance
+	if intervalDays > 0 && hours < minHours {
+		t.Errorf("user_card %d: interval_days=%d but next_due_at is only %.1fh ahead of base (expected ~%d days)", userCardID, intervalDays, hours/24, intervalDays)
+	}
+}

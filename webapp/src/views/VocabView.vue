@@ -221,22 +221,13 @@
                     {{ directionCard.direction === 'ru_en' ? 'RU→EN' : 'EN→RU' }}
                   </span>
                   <span :class="['state-badge', `state-${directionCard.state}`]">{{ directionCard.state }}</span>
-                  <span class="srs-info-wrap" @click.prevent>
+                  <span
+                    class="srs-info-wrap"
+                    @click.prevent
+                    @mouseenter="(e: MouseEvent) => showSrsTooltip(e, directionCard)"
+                    @mouseleave="hideSrsTooltip"
+                  >
                     <Icon name="info" class="srs-info-icon" />
-                    <div class="srs-tooltip">
-                      <div class="srs-tooltip-title">{{ t('vocab.srsTooltipTitle') }}</div>
-                      <div class="srs-tooltip-row"><span>{{ t('vocab.srsState') }}:</span> {{ directionCard.state }}</div>
-                      <div class="srs-tooltip-row"><span>{{ t('vocab.srsEf') }}:</span> {{ formatSrsNumber(directionCard.ef) }}</div>
-                      <div class="srs-tooltip-row"><span>{{ t('vocab.srsReps') }}:</span> {{ directionCard.reps }}</div>
-                      <div class="srs-tooltip-row"><span>{{ t('vocab.srsIntervalDays') }}:</span> {{ directionCard.interval_days }}</div>
-                      <div class="srs-tooltip-row"><span>{{ t('vocab.srsLearningStep') }}:</span> {{ directionCard.learning_step }}</div>
-                      <div class="srs-tooltip-row"><span>{{ t('vocab.srsLapseCount') }}:</span> {{ directionCard.lapse_count }}</div>
-                      <div class="srs-tooltip-row"><span>{{ t('vocab.srsNextDueAt') }}:</span> {{ formatDateAbsolute(directionCard.next_due_at) }}</div>
-                      <div class="srs-tooltip-row"><span>{{ t('vocab.srsLastReviewAt') }}:</span> {{ formatDateAbsolute(directionCard.last_review_at) }}</div>
-                      <div class="srs-tooltip-row"><span>{{ t('vocab.srsLastQuality') }}:</span> {{ directionCard.last_quality != null ? directionCard.last_quality : '—' }}</div>
-                      <div class="srs-tooltip-row"><span>{{ t('vocab.srsCreatedAt') }}:</span> {{ formatDateAbsolute(directionCard.created_at ?? null) }}</div>
-                      <div class="srs-tooltip-row"><span>{{ t('vocab.srsUpdatedAt') }}:</span> {{ formatDateAbsolute(directionCard.updated_at ?? null) }}</div>
-                    </div>
                   </span>
                 </div>
                 <div class="direction-stats-simple">
@@ -274,6 +265,30 @@
         </div>
       </div>
     </div>
+
+    <!-- SRS tooltip: teleport to body so it is not clipped by modal overflow -->
+    <Teleport to="body">
+      <div
+        v-if="srsTooltipCard"
+        class="srs-tooltip srs-tooltip-fixed"
+        :style="srsTooltipStyle"
+        @mouseenter="keepSrsTooltip"
+        @mouseleave="hideSrsTooltip(true)"
+      >
+        <div class="srs-tooltip-title">{{ t('vocab.srsTooltipTitle') }}</div>
+        <div class="srs-tooltip-row"><span>{{ t('vocab.srsState') }}:</span> {{ srsTooltipCard.state }}</div>
+        <div class="srs-tooltip-row"><span>{{ t('vocab.srsEf') }}:</span> {{ formatSrsNumber(srsTooltipCard.ef) }}</div>
+        <div class="srs-tooltip-row"><span>{{ t('vocab.srsReps') }}:</span> {{ srsTooltipCard.reps }} <span v-if="srsTooltipCard.state === 'learning'" class="srs-tooltip-hint" :title="t('vocab.srsRepsNote')">(?)</span></div>
+        <div class="srs-tooltip-row"><span>{{ t('vocab.srsIntervalDays') }}:</span> {{ srsTooltipCard.interval_days }}<template v-if="srsTooltipCard.state === 'learning'"> → <span class="srs-tooltip-step">{{ t('vocab.srsStepInterval') }}: {{ getStepIntervalDays(srsTooltipCard.direction, srsTooltipCard.learning_step) }} {{ getStepIntervalDays(srsTooltipCard.direction, srsTooltipCard.learning_step) === 1 ? t('vocab.srsDay') : t('vocab.srsDays') }}</span></template></div>
+        <div class="srs-tooltip-row"><span>{{ t('vocab.srsLearningStep') }}:</span> {{ srsTooltipCard.learning_step }}</div>
+        <div class="srs-tooltip-row"><span>{{ t('vocab.srsLapseCount') }}:</span> {{ srsTooltipCard.lapse_count }}</div>
+        <div class="srs-tooltip-row"><span>{{ t('vocab.srsNextDueAt') }}:</span> {{ formatDateAbsolute(srsTooltipCard.next_due_at) }}</div>
+        <div class="srs-tooltip-row"><span>{{ t('vocab.srsLastReviewAt') }}:</span> {{ formatDateAbsolute(srsTooltipCard.last_review_at) }}</div>
+        <div class="srs-tooltip-row"><span>{{ t('vocab.srsLastQuality') }}:</span> {{ srsTooltipCard.last_quality != null ? srsTooltipCard.last_quality : '—' }}</div>
+        <div class="srs-tooltip-row"><span>{{ t('vocab.srsCreatedAt') }}:</span> {{ formatDateAbsolute(srsTooltipCard.created_at ?? null) }}</div>
+        <div class="srs-tooltip-row"><span>{{ t('vocab.srsUpdatedAt') }}:</span> {{ formatDateAbsolute(srsTooltipCard.updated_at ?? null) }}</div>
+      </div>
+    </Teleport>
 
     <!-- Delete Confirmation Modal -->
     <div v-if="showDeleteConfirm" class="modal" @click.self="showDeleteConfirm = false">
@@ -381,6 +396,59 @@ const hasUserCards = ref(false)
 const isKnown = ref(false)
 const processingAction = ref(false)
 const { getWordPronunciationURL, playWordPronunciation } = useAudio()
+
+// SRS tooltip teleported to body so it is not clipped by modal
+const srsTooltipCard = ref<CardDetail | null>(null)
+const srsTooltipPosition = ref<{ top: number; left: number } | null>(null)
+let srsTooltipHideTimeout: ReturnType<typeof setTimeout> | null = null
+
+const srsTooltipStyle = computed(() => {
+  const pos = srsTooltipPosition.value
+  if (!pos) return {}
+  return {
+    top: `${pos.top}px`,
+    left: `${pos.left}px`,
+  }
+})
+
+function showSrsTooltip(e: MouseEvent, card: CardDetail) {
+  if (srsTooltipHideTimeout) {
+    clearTimeout(srsTooltipHideTimeout)
+    srsTooltipHideTimeout = null
+  }
+  const el = e.currentTarget as HTMLElement
+  const rect = el.getBoundingClientRect()
+  srsTooltipCard.value = card
+  // Position above the icon, centered
+  srsTooltipPosition.value = {
+    top: rect.top - 8,
+    left: rect.left + rect.width / 2,
+  }
+}
+
+function keepSrsTooltip() {
+  if (srsTooltipHideTimeout) {
+    clearTimeout(srsTooltipHideTimeout)
+    srsTooltipHideTimeout = null
+  }
+}
+
+function hideSrsTooltip(immediate = false) {
+  if (immediate) {
+    if (srsTooltipHideTimeout) {
+      clearTimeout(srsTooltipHideTimeout)
+      srsTooltipHideTimeout = null
+    }
+    srsTooltipCard.value = null
+    srsTooltipPosition.value = null
+    return
+  }
+  srsTooltipHideTimeout = setTimeout(() => {
+    srsTooltipHideTimeout = null
+    srsTooltipCard.value = null
+    srsTooltipPosition.value = null
+  }, 150)
+}
 
 onMounted(async () => {
   await loadVocab()
@@ -603,6 +671,7 @@ const showCards = async (lemma: string) => {
 
 const closeCardsModal = () => {
   showCardsModal.value = false
+  hideSrsTooltip(true)
   selectedWord.value = ''
   selectedWordDisplay.value = ''
   selectedTranscription.value = ''
@@ -836,6 +905,16 @@ const formatDateAbsolute = (dateStr: string | null): string => {
 const formatSrsNumber = (n: number): string => {
   if (typeof n !== 'number' || Number.isNaN(n)) return '—'
   return Number.isInteger(n) ? String(n) : n.toFixed(2)
+}
+
+// Learning step intervals in days (must match backend models.LearningStepsDays)
+const LEARNING_STEPS_EN_RU = [1, 3, 7]      // EN→RU
+const LEARNING_STEPS_RU_EN = [1, 3, 7, 14]  // RU→EN
+
+function getStepIntervalDays(direction: string, learningStep: number): number {
+  const steps = direction === 'ru_en' ? LEARNING_STEPS_RU_EN : LEARNING_STEPS_EN_RU
+  if (learningStep < 0 || learningStep >= steps.length) return 0
+  return steps[learningStep]
 }
 
 </script>
@@ -1380,12 +1459,10 @@ const formatSrsNumber = (n: number): string => {
   color: var(--color-primary);
 }
 
-.srs-tooltip {
-  display: none;
-  position: absolute;
-  left: 50%;
-  bottom: 100%;
-  transform: translateX(-50%) translateY(-6px);
+/* Fixed tooltip (teleported to body) — not clipped by modal */
+.srs-tooltip-fixed {
+  position: fixed;
+  transform: translate(-50%, -100%);
   min-width: 240px;
   max-width: 320px;
   padding: 10px 12px;
@@ -1397,12 +1474,8 @@ const formatSrsNumber = (n: number): string => {
   line-height: 1.5;
   color: var(--text-primary);
   white-space: nowrap;
-  z-index: 20;
-  pointer-events: none;
-}
-
-.srs-info-wrap:hover .srs-tooltip {
-  display: block;
+  z-index: 1100;
+  pointer-events: auto;
 }
 
 .srs-tooltip-title {
@@ -1423,6 +1496,16 @@ const formatSrsNumber = (n: number): string => {
 .srs-tooltip-row span {
   color: var(--text-secondary);
   margin-right: 6px;
+}
+
+.srs-tooltip-hint {
+  cursor: help;
+  opacity: 0.8;
+}
+
+.srs-tooltip-step {
+  color: var(--color-primary);
+  margin-right: 0;
 }
 
 .direction-badge {

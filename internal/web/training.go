@@ -938,9 +938,24 @@ func (r *Router) handleTrainingAnswer(w http.ResponseWriter, req *http.Request) 
 	}
 	srsBeforeJSON, _ := json.Marshal(srsBefore)
 
-	// Grade card (this updates the card)
+	// Grade card (this updates the card in DB). If this fails, do not create review_event
+	// so that review_events count stays in sync with actual user_cards state.
 	if err := r.srsService.GradeCard(&card.UserCard, attemptData); err != nil {
-		r.logger.Error("failed to grade card", zap.Error(err))
+		r.logger.Error("failed to grade card, progress not saved",
+			zap.Int64("user_card_id", card.UserCard.ID),
+			zap.Int64("user_id", userID),
+			zap.Error(err),
+		)
+		r.webTrainingHandler.sessionsMutex.Unlock()
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			"error":          "failed_to_save_progress",
+			"is_correct":     isCorrect,
+			"chosen_option":  chosenOption,
+			"correct_answer": correctAnswer,
+		})
+		return
 	}
 
 	// Capture SRS state after update

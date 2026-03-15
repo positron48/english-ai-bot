@@ -426,9 +426,16 @@ func (h *TrainingHandler) HandleAnswer(chatID int64, optionIndex int) error {
 	}
 	srsBeforeJSON, _ := json.Marshal(srsBefore)
 
-	// Grade card
+	// Grade card (persists SRS state to DB). If this fails, do not create review_event
+	// so that review_events count stays in sync with user_cards state.
 	if err := h.srsService.GradeCard(&card.UserCard, attemptData); err != nil {
-		h.logger.Error("failed to grade card", zap.Error(err))
+		h.logger.Error("failed to grade card, progress not saved",
+			zap.Int64("user_card_id", card.UserCard.ID),
+			zap.Int64("user_id", state.UserID),
+			zap.Error(err),
+		)
+		h.sendMessage(chatID, "⚠️ Не удалось сохранить прогресс. Попробуйте ответить ещё раз.")
+		return h.showCard(chatID) // show same card again without advancing
 	}
 
 	// Capture SRS state after update

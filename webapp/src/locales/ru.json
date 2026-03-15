@@ -222,7 +222,11 @@
     "srsLastReviewAt": "Последний повтор",
     "srsLastQuality": "Последняя оценка (0–5)",
     "srsCreatedAt": "Создано",
-    "srsUpdatedAt": "Обновлено"
+    "srsUpdatedAt": "Обновлено",
+    "srsStepInterval": "Интервал шага (обучение)",
+    "srsRepsNote": "Reps только в review; в learning всегда 0",
+    "srsDay": "день",
+    "srsDays": "дней"
   },
   "grammar": {
     "courseTitle": "Курс грамматики",

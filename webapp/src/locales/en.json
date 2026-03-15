@@ -223,7 +223,11 @@
     "srsLastReviewAt": "Last review",
     "srsLastQuality": "Last quality (0–5)",
     "srsCreatedAt": "Created",
-    "srsUpdatedAt": "Updated"
+    "srsUpdatedAt": "Updated",
+    "srsStepInterval": "Step interval (learning)",
+    "srsRepsNote": "Reps count only in review; in learning shows 0",
+    "srsDay": "day",
+    "srsDays": "days"
   },
   "grammar": {
     "courseTitle": "Grammar Course",

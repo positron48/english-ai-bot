@@ -1180,8 +1180,8 @@ func TestHandleTrainingAnswer_ReviewEventCreateError(t *testing.T) {
 	}
 }
 
-// TestHandleTrainingAnswer_GradeCardError covers the GradeCard error branch (lines 934-936).
-// GradeCard error is just logged, execution continues.
+// TestHandleTrainingAnswer_GradeCardError covers the GradeCard error branch.
+// When GradeCard fails we return 500 and do not create review_event, so DB stays consistent.
 func TestHandleTrainingAnswer_GradeCardError(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo, trainingCardRepo, userCardRepo, sessionRepo := setupTrainingIntegrationTestDB(t)
@@ -1205,7 +1205,7 @@ func TestHandleTrainingAnswer_GradeCardError(t *testing.T) {
 	cfg := &config.Config{Training: config.TrainingConfig{OptionsDelayMS: 2000, WrongAnswerDelaySeconds: 3}}
 	optionsService := service.NewOptionsService(trainingCardRepo, logger)
 
-	// Use broken srsService so GradeCard fails (but execution continues)
+	// Use broken srsService so GradeCard (UpdateUserCard) fails
 	brokenDB := newBrokenDB(t)
 	brokenUserCardRepo := repository.NewUserCardRepository(brokenDB, logger)
 	brokenSRSService := service.NewSRSService(brokenUserCardRepo, logger)
@@ -1253,9 +1253,24 @@ func TestHandleTrainingAnswer_GradeCardError(t *testing.T) {
 	w := httptest.NewRecorder()
 	router.handleTrainingAnswer(w, req)
 
-	// GradeCard error is logged but not fatal, should still return 200
-	if w.Code != http.StatusOK {
-		t.Fatalf("expected 200 even with GradeCard error, got %d: %s", w.Code, w.Body.String())
+	// GradeCard error: return 500 and do not create review_event
+	if w.Code != http.StatusInternalServerError {
+		t.Fatalf("expected 500 when GradeCard fails, got %d: %s", w.Code, w.Body.String())
+	}
+	var body map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&body); err != nil {
+		t.Fatalf("decode response: %v", err)
+	}
+	if body["error"] != "failed_to_save_progress" {
+		t.Errorf("expected error failed_to_save_progress, got %v", body["error"])
+	}
+	// No review_event should have been created
+	var reviewCount int
+	if err := db.QueryRow("SELECT COUNT(*) FROM review_events WHERE user_card_id = $1", userCardID).Scan(&reviewCount); err != nil {
+		t.Fatalf("count review_events: %v", err)
+	}
+	if reviewCount != 0 {
+		t.Errorf("expected 0 review_events when GradeCard fails, got %d", reviewCount)
 	}
 }
 
