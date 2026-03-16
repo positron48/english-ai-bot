@@ -12,7 +12,6 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
-	"time"
 
 	"tgbot-skeleton/internal/ai"
 	"tgbot-skeleton/internal/config"
@@ -74,22 +73,14 @@ func setupAdminRouterWithSecondDB(t *testing.T) (*Router, *database.DB, int64) {
 	logger, _ := zap.NewDevelopment()
 
 	dsn := testutil.SecondPostgresDSN(t)
-	time.Sleep(500 * time.Millisecond)
 
 	var dbWrap *database.DB
 	var err error
-	for i := 0; i < 5; i++ {
-		dbWrap, err = database.NewWithConfig("postgres", "", dsn, logger)
-		if err == nil {
-			break
-		}
-		if i < 4 {
-			time.Sleep(time.Duration(i+1) * 300 * time.Millisecond)
-		}
-	}
+	dbWrap, err = database.NewWithConfig("postgres", "", dsn, logger)
 	if dbWrap == nil {
 		t.Skipf("second DB not available (e.g. Docker): %v", err)
 	}
+	_ = err
 
 	cfg := &config.Config{}
 	cfg.Admin.TelegramID = 12345

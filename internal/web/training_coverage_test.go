@@ -1519,16 +1519,10 @@ func TestHandleTrainingUpcoming_GetUpcomingCardsError(t *testing.T) {
 	// Get a second postgres DSN (separate container, safe to modify schema)
 	dsn := testutil.SecondPostgresDSN(t) // skips if docker unavailable
 
-	// Connect and migrate the second DB (retry to wait for container readiness)
+	// Connect and migrate the second DB.
 	var secondDB *database.DB
 	var err error
-	for i := 0; i < 10; i++ {
-		secondDB, err = database.NewWithConfig("postgres", "", dsn, logger)
-		if err == nil {
-			break
-		}
-		time.Sleep(time.Duration(i+1) * 300 * time.Millisecond)
-	}
+	secondDB, err = database.NewWithConfig("postgres", "", dsn, logger)
 	if err != nil {
 		t.Skipf("second postgres not available: %v", err)
 	}

@@ -127,11 +127,11 @@ llm-all: llm-words llm-cards
 COVER_PKGS := $(shell $(GO) list ./... | grep -v '/cmd/' | grep -v 'internal/integration/' | grep -v 'internal/testutil')
 
 # CI checks (same as in GitHub Actions)
-check: tidy
+check:
 	@echo "=== Running CI Checks ==="
 	@echo ""
 	@echo "1. Checking webapp dependencies..."
-	@cd webapp && npm install --prefer-offline --no-audit --no-fund > /dev/null 2>&1 || npm install --no-audit --no-fund
+	@cd webapp && npm ci --prefer-offline --no-audit --no-fund > /dev/null 2>&1 || npm install --no-audit --no-fund
 	@echo "✅ Webapp dependencies installed"
 	@echo ""
 	@echo "2. Running webapp type check..."
@@ -148,7 +148,7 @@ check: tidy
 	@echo ""
 	@echo "5. Running Go tests for coverage (excluding cmd, integration and testutil packages)..."
 	@rm -f coverage.out
-	@/bin/bash -c 'GOMAXPROCS=2 $(GO) test -tags=test -count=1 -p 1 -parallel 1 -timeout 30m -coverprofile=coverage.out -covermode=atomic -v $(COVER_PKGS) 2>&1 | tee .go-test-output.txt | grep -v -E "Container (created|started|ready|stopped|terminated)|Creating container|Starting container|Terminating container|Waiting for container|Waiting for Reaper|Shell not found|Reaper obtained|🐳|✅ Container|🔔 Container|⏳ Waiting|🔥 Reaper|🚫 Container|testcontainers-go -|Resolved Docker|Server Version|API Version|Operating System|Total Memory|Testcontainers for Go|Test SessionID|Test ProcessID"; exit $${PIPESTATUS[0]}'; \
+	@/bin/bash -c '$(GO) test -tags=test -count=1 -p 3 -timeout 30m -coverprofile=coverage.out -covermode=atomic -v $(COVER_PKGS) 2>&1 | tee .go-test-output.txt | grep -v -E "Container (created|started|ready|stopped|terminated)|Creating container|Starting container|Terminating container|Waiting for container|Waiting for Reaper|Shell not found|Reaper obtained|🐳|✅ Container|🔔 Container|⏳ Waiting|🔥 Reaper|🚫 Container|testcontainers-go -|Resolved Docker|Server Version|API Version|Operating System|Total Memory|Testcontainers for Go|Test SessionID|Test ProcessID"; exit $${PIPESTATUS[0]}'; \
 	TEST_EXIT_CODE=$$?; \
 	if [ $$TEST_EXIT_CODE -ne 0 ]; then \
 		echo ""; \
@@ -248,9 +248,9 @@ lint: fmt
 	$(GOLANGCI) run --timeout=3m
 
 lint-install:
-	@echo "Installing golangci-lint v2.1.0 into ./bin..."
+	@echo "Installing golangci-lint v2.10.1 into ./bin..."
 	@mkdir -p bin
-	@curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b ./bin v2.1.0
+	@curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b ./bin v2.10.1
 
 # Local setup
 setup-local:

@@ -26,6 +26,13 @@ import (
 	"go.uber.org/zap"
 )
 
+// setField writes val into the unexported struct field named fieldName of rv (must be Elem of a pointer).
+// Uses unsafe.Pointer so this works even when reflect.Value.Set is restricted to exported fields in Go 1.26+.
+func setField(rv reflect.Value, fieldName string, val interface{}) {
+	f := rv.FieldByName(fieldName)
+	reflect.NewAt(f.Type(), unsafe.Pointer(f.UnsafeAddr())).Elem().Set(reflect.ValueOf(val))
+}
+
 type mockTelegramClient struct {
 	lastParams url.Values
 	DoCount    int
@@ -399,7 +406,7 @@ func TestHandleResetCircuitCommand_Admin_ResetFails(t *testing.T) {
 	_ = dbWrap.Close()
 
 	hv := reflect.ValueOf(h).Elem()
-	hv.FieldByName("cbService").Set(reflect.ValueOf(failingCB))
+	setField(hv, "cbService", failingCB)
 
 	h.handleResetCircuitCommand(10, 42)
 	got := client.lastParams.Get("text")
@@ -897,7 +904,7 @@ func TestHandleDeleteTrainAllCommand_Admin_DeleteAllFails(t *testing.T) {
 	_ = dbWrap.Close()
 
 	hv := reflect.ValueOf(h).Elem()
-	hv.FieldByName("trainingCardRepo").Set(reflect.ValueOf(badRepo))
+	setField(hv, "trainingCardRepo", badRepo)
 
 	h.handleDeleteTrainAllCommand(10, 42)
 	got := client.lastParams.Get("text")
@@ -1153,7 +1160,7 @@ func TestHandleTrainCommand_GetOrCreateUserFails(t *testing.T) {
 	_ = dbWrap.Close()
 
 	hv := reflect.ValueOf(h).Elem()
-	hv.FieldByName("userRepo").Set(reflect.ValueOf(failingUserRepo))
+	setField(hv, "userRepo", failingUserRepo)
 
 	h.handleTrainCommand(context.Background(), 10, 42)
 	got := client.lastParams.Get("text")
@@ -1184,7 +1191,7 @@ func TestHandleStatsCommand_QueryError(t *testing.T) {
 	_ = dbWrap.Close()
 
 	hv := reflect.ValueOf(h).Elem()
-	hv.FieldByName("db").Set(reflect.ValueOf(conn))
+	setField(hv, "db", conn)
 
 	h.handleStatsCommand(context.Background(), 10, user.TelegramID)
 	got := client.lastParams.Get("text")
@@ -1213,7 +1220,7 @@ func TestHandleDeleteTrainAllCommand_Admin_DeleteOrphanedFails(t *testing.T) {
 	failingUserCardRepo := repository.NewUserCardRepository(conn, logger)
 	_ = dbWrap.Close()
 	hv := reflect.ValueOf(h).Elem()
-	hv.FieldByName("userCardRepo").Set(reflect.ValueOf(failingUserCardRepo))
+	setField(hv, "userCardRepo", failingUserCardRepo)
 
 	// Create at least one training card so DeleteAllTrainingCards affects rows
 	wordCardRepo := repository.NewWordRepository(db.GetConnection(), logger)
@@ -1257,7 +1264,7 @@ func TestHandleGetTrainDataCommand_GetTrainingCardsFails(t *testing.T) {
 	failingTrainingCardRepo := repository.NewTrainingCardRepository(conn, h.logger)
 	_ = dbWrap.Close()
 	hv := reflect.ValueOf(h).Elem()
-	hv.FieldByName("trainingCardRepo").Set(reflect.ValueOf(failingTrainingCardRepo))
+	setField(hv, "trainingCardRepo", failingTrainingCardRepo)
 
 	h.handleGetTrainDataCommand(10, 42, "word")
 	got := client.lastParams.Get("text")
@@ -1454,7 +1461,7 @@ func TestHandleMessage_GetOrCreateUserFails(t *testing.T) {
 	failingUserRepo := repository.NewUserRepository(conn, h.logger)
 	_ = dbWrap.Close()
 	hv := reflect.ValueOf(h).Elem()
-	hv.FieldByName("userRepo").Set(reflect.ValueOf(failingUserRepo))
+	setField(hv, "userRepo", failingUserRepo)
 	msg := &tgbotapi.Message{
 		Text: "hello world",
 		Chat: &tgbotapi.Chat{ID: 10},
@@ -1541,7 +1548,7 @@ func TestHandleDeleteTrainCommand_DeleteFails(t *testing.T) {
 	badRepo := repository.NewTrainingCardRepository(conn, h.logger)
 	_ = dbWrap.Close()
 	hv := reflect.ValueOf(h).Elem()
-	hv.FieldByName("trainingCardRepo").Set(reflect.ValueOf(badRepo))
+	setField(hv, "trainingCardRepo", badRepo)
 	h.handleDeleteTrainCommand(10, 42, "word")
 	got := client.lastParams.Get("text")
 	if got == "" {
@@ -1581,8 +1588,8 @@ func TestHandleTrainCommand_StartTrainingOtherError(t *testing.T) {
 	failingSessionRepo := repository.NewSessionRepository(conn, logger)
 	_ = dbWrap.Close()
 	ts := h.trainingHandler.trainingService
-	ucRepo := reflect.ValueOf(ts).Elem().FieldByName("userCardRepo").Interface().(*repository.UserCardRepository)
-	tcRepo := reflect.ValueOf(ts).Elem().FieldByName("trainingCardRepo").Interface().(*repository.TrainingCardRepository)
+	ucRepo := *(**repository.UserCardRepository)(unsafe.Pointer(reflect.ValueOf(ts).Elem().FieldByName("userCardRepo").UnsafeAddr()))
+	tcRepo := *(**repository.TrainingCardRepository)(unsafe.Pointer(reflect.ValueOf(ts).Elem().FieldByName("trainingCardRepo").UnsafeAddr()))
 	newTS := service.NewTrainingService(ucRepo, tcRepo, failingSessionRepo, nil, logger)
 	h.trainingHandler.trainingService = newTS
 	h.handleTrainCommand(context.Background(), 10, 902)
@@ -1765,7 +1772,7 @@ func TestHandleCallbackQuery_UsernameUpdateFails(t *testing.T) {
 	// So we need a different approach: use a custom mock that succeeds on GetOrCreateUser but fails on UpdateUsername.
 	// For simplicity, just test that the handler doesn't panic when userRepo fails.
 	hv := reflect.ValueOf(h).Elem()
-	hv.FieldByName("userRepo").Set(reflect.ValueOf(failingUserRepo))
+	setField(hv, "userRepo", failingUserRepo)
 
 	update := tgbotapi.Update{
 		CallbackQuery: &tgbotapi.CallbackQuery{
@@ -1857,7 +1864,7 @@ func TestHandleMessage_UsernameUpdateFails(t *testing.T) {
 	// GetOrCreateUser will fail, which logs error but continues to AI path
 	failingUserRepo := repository.NewUserRepository(conn, h.logger)
 	hv := reflect.ValueOf(h).Elem()
-	hv.FieldByName("userRepo").Set(reflect.ValueOf(failingUserRepo))
+	setField(hv, "userRepo", failingUserRepo)
 
 	msg := &tgbotapi.Message{
 		Text: "hello world",

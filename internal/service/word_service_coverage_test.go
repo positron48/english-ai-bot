@@ -9,7 +9,6 @@ import (
 	"reflect"
 	"strings"
 	"testing"
-	"time"
 	"unsafe"
 
 	"tgbot-skeleton/internal/ai"
@@ -1104,16 +1103,9 @@ func TestEnsureUserCardsForWord_CreateUserCardFails_RuEn(t *testing.T) {
 func TestGetWordDefinition_GetWordCardByID_ErrorAfterFormMapping(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	dsn := testutil.SecondPostgresDSN(t)
-	time.Sleep(300 * time.Millisecond)
 	var dbWrap *database.DB
 	var err error
-	for i := 0; i < 5; i++ {
-		dbWrap, err = database.NewWithConfig("postgres", "", dsn, logger)
-		if err == nil {
-			break
-		}
-		time.Sleep(time.Duration(i+1) * 300 * time.Millisecond)
-	}
+	dbWrap, err = database.NewWithConfig("postgres", "", dsn, logger)
 	if dbWrap == nil {
 		t.Skipf("second DB not available: %v", err)
 	}
@@ -1162,16 +1154,9 @@ func TestGetWordDefinition_GetWordCardByID_ErrorAfterFormMapping(t *testing.T) {
 func TestGetWordDefinition_UpsertWordFormMapping_FirstCallFails(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	dsn := testutil.SecondPostgresDSN(t)
-	time.Sleep(300 * time.Millisecond)
 	var dbWrap *database.DB
 	var err error
-	for i := 0; i < 5; i++ {
-		dbWrap, err = database.NewWithConfig("postgres", "", dsn, logger)
-		if err == nil {
-			break
-		}
-		time.Sleep(time.Duration(i+1) * 300 * time.Millisecond)
-	}
+	dbWrap, err = database.NewWithConfig("postgres", "", dsn, logger)
 	if dbWrap == nil {
 		t.Skipf("second DB not available: %v", err)
 	}
@@ -1223,16 +1208,9 @@ func TestGetWordDefinition_UpsertWordFormMapping_FirstCallFails(t *testing.T) {
 func TestGetWordDefinition_UpsertWordFormMapping_AfterSave_Fails(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	dsn := testutil.SecondPostgresDSN(t)
-	time.Sleep(300 * time.Millisecond)
 	var dbWrap *database.DB
 	var err error
-	for i := 0; i < 5; i++ {
-		dbWrap, err = database.NewWithConfig("postgres", "", dsn, logger)
-		if err == nil {
-			break
-		}
-		time.Sleep(time.Duration(i+1) * 300 * time.Millisecond)
-	}
+	dbWrap, err = database.NewWithConfig("postgres", "", dsn, logger)
 	if dbWrap == nil {
 		t.Skipf("second DB not available: %v", err)
 	}
@@ -1291,16 +1269,9 @@ func TestGetWordDefinition_UpsertWordFormMapping_AfterSave_Fails(t *testing.T) {
 func TestGetWordDefinition_UpsertVerbFormMapping_Fails(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	dsn := testutil.SecondPostgresDSN(t)
-	time.Sleep(300 * time.Millisecond)
 	var dbWrap *database.DB
 	var err error
-	for i := 0; i < 5; i++ {
-		dbWrap, err = database.NewWithConfig("postgres", "", dsn, logger)
-		if err == nil {
-			break
-		}
-		time.Sleep(time.Duration(i+1) * 300 * time.Millisecond)
-	}
+	dbWrap, err = database.NewWithConfig("postgres", "", dsn, logger)
 	if dbWrap == nil {
 		t.Skipf("second DB not available: %v", err)
 	}

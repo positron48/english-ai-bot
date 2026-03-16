@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	"time"
 
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/database"
@@ -75,17 +74,10 @@ func setupDashboardRouterWithUpdateBlocked(t *testing.T) (*Router, int64) {
 	logger, _ := zap.NewDevelopment()
 
 	dsn := testutil.SecondPostgresDSN(t)
-	time.Sleep(300 * time.Millisecond)
 
 	var dbWrap *database.DB
 	var err error
-	for i := 0; i < 5; i++ {
-		dbWrap, err = database.NewWithConfig("postgres", "", dsn, logger)
-		if err == nil {
-			break
-		}
-		time.Sleep(time.Duration(i+1) * 300 * time.Millisecond)
-	}
+	dbWrap, err = database.NewWithConfig("postgres", "", dsn, logger)
 	if dbWrap == nil {
 		t.Skipf("second DB not available: %v", err)
 	}

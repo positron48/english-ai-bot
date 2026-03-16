@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	"time"
 
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/database"
@@ -176,22 +175,13 @@ func TestHandleAccessMe_WrongMethod(t *testing.T) {
 func TestHandleAccessMe_PermissionsDBError(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	dsn := testutil.SecondPostgresDSN(t)
-	// Second container may need a moment to accept connections
-	time.Sleep(500 * time.Millisecond)
 	var dbWrap *database.DB
 	var err error
-	for i := 0; i < 5; i++ {
-		dbWrap, err = database.NewWithConfig("postgres", "", dsn, logger)
-		if err == nil {
-			break
-		}
-		if i < 4 {
-			time.Sleep(time.Duration(i+1) * 300 * time.Millisecond)
-		}
-	}
+	dbWrap, err = database.NewWithConfig("postgres", "", dsn, logger)
 	if dbWrap == nil {
 		t.Skipf("second DB not available (e.g. Docker): %v", err)
 	}
+	_ = err
 	conn := dbWrap.GetConnection()
 
 	cfg := &config.Config{

@@ -18,6 +18,7 @@ type DB struct {
 // openPostgresDBFunc is used by NewWithConfig; replaced in tests to cover migration failure path.
 var openPostgresDBFunc = openPostgresDB
 
+
 // NewWithConfig creates a database connection. Only PostgreSQL is supported.
 // Requires DATABASE_URL (e.g. postgres://user:pass@host:5432/dbname?sslmode=disable).
 func NewWithConfig(driver, path, url string, logger *zap.Logger) (*DB, error) {

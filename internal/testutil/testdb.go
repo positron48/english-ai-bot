@@ -7,11 +7,13 @@ import (
 	"regexp"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"testing"
 	"time"
 
 	"tgbot-skeleton/internal/database"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/testcontainers/testcontainers-go/modules/postgres"
 	"go.uber.org/zap"
 )
@@ -116,31 +118,104 @@ func GetTestDSN(t *testing.T) string {
 	return sharedPostgres.dsn
 }
 
-// SecondPostgresDSN starts a separate Postgres container and returns its DSN.
-// Use when a test needs a connection that will be closed without affecting the shared test DB
-// (e.g. to simulate "database is closed" for error paths). The container is cleaned up by testcontainers.
+// sharedSecondContainer holds one Postgres container reused by all SecondPostgresDSN calls.
+// Each call creates a fresh database inside this container instead of starting a new container.
+var sharedSecondContainer struct {
+	once         sync.Once
+	host         string // base DSN (pointing to init db) of the shared container
+	err          error
+	containerRef interface{}
+}
+
+// secondDBCounter is used to generate unique database names.
+var secondDBCounter atomic.Int64
+
+// SecondPostgresDSN returns a DSN for a fresh isolated Postgres database.
+// All calls share one container; each call creates a new database inside it.
+// Use when a test needs a connection that will be closed / schema that will be altered
+// without affecting the shared test DB.
 func SecondPostgresDSN(t *testing.T) string {
 	t.Helper()
-	ctx := context.Background()
-	ctr, err := postgres.Run(ctx, "postgres:16-alpine",
-		postgres.WithDatabase("english_test_second"),
-		postgres.WithUsername("english"),
-		postgres.WithPassword("english"),
-	)
-	if err != nil {
-		if isDockerUnavailable(err) {
-			t.Skipf("Docker unavailable: %v", err)
+
+	// Ensure the shared second container is started.
+	sharedSecondContainer.once.Do(func() {
+		ctx := context.Background()
+		ctr, err := postgres.Run(ctx, "postgres:16-alpine",
+			postgres.WithDatabase("english_test_second_init"),
+			postgres.WithUsername("english"),
+			postgres.WithPassword("english"),
+		)
+		if err != nil {
+			if isDockerUnavailable(err) {
+				err = fmt.Errorf("docker unavailable: %w", err)
+			}
+			sharedSecondContainer.err = err
+			return
 		}
-		t.Fatalf("second postgres container: %v", err)
+		dsn, err := ctr.ConnectionString(ctx, "sslmode=disable")
+		if err != nil {
+			_ = ctr.Terminate(ctx)
+			sharedSecondContainer.err = err
+			return
+		}
+		sharedSecondContainer.host = normalizeDSNPort(dsn)
+		sharedSecondContainer.containerRef = ctr
+	})
+
+	if sharedSecondContainer.err != nil {
+		if strings.Contains(sharedSecondContainer.err.Error(), "docker unavailable") {
+			t.Skipf("Docker unavailable: %v", sharedSecondContainer.err)
+		}
+		t.Fatalf("second postgres container: %v", sharedSecondContainer.err)
 	}
-	dsn, err := ctr.ConnectionString(ctx, "sslmode=disable")
-	if err != nil {
-		_ = ctr.Terminate(ctx)
-		t.Fatalf("second postgres DSN: %v", err)
+
+	// Create a unique database for this test inside the shared container.
+	n := secondDBCounter.Add(1)
+	dbName := fmt.Sprintf("english_test_iso_%d", n)
+
+	// Use a short-lived pgx connection for CREATE DATABASE (no migration, no Ryuk interference).
+	// Retry to handle the brief window when the container just started.
+	adminDSN := replaceDBName(sharedSecondContainer.host, "english_test_second_init")
+	var pgxErr error
+	for i := range 30 {
+		var conn *pgx.Conn
+		conn, pgxErr = pgx.Connect(context.Background(), adminDSN)
+		if pgxErr == nil {
+			_, pgxErr = conn.Exec(context.Background(), fmt.Sprintf("CREATE DATABASE %s", dbName))
+			_ = conn.Close(context.Background())
+			if pgxErr == nil {
+				break
+			}
+		}
+		sleep := time.Duration(i+1) * 100 * time.Millisecond
+		if sleep > 500*time.Millisecond {
+			sleep = 500 * time.Millisecond
+		}
+		time.Sleep(sleep)
 	}
-	// Docker/testcontainers may expose port as "5432/tcp"; libpq expects numeric port only.
-	dsn = normalizeDSNPort(dsn)
-	return dsn
+	if pgxErr != nil {
+		t.Fatalf("SecondPostgresDSN: create database %s: %v", dbName, pgxErr)
+	}
+
+	return replaceDBName(sharedSecondContainer.host, dbName)
+}
+
+// replaceDBName swaps the database name in a postgres DSN.
+// DSN format: postgres://user:pass@host:port/dbname?params
+func replaceDBName(dsn, newDB string) string {
+	// Find the last '/' before '?' and replace the db name.
+	qIdx := strings.Index(dsn, "?")
+	base := dsn
+	params := ""
+	if qIdx != -1 {
+		base = dsn[:qIdx]
+		params = dsn[qIdx:]
+	}
+	slashIdx := strings.LastIndex(base, "/")
+	if slashIdx == -1 {
+		return dsn
+	}
+	return base[:slashIdx+1] + newDB + params
 }
 
 // normalizeDSNPort strips /tcp and /udp from port in DSN (e.g. port=5432/tcp -> port=5432).

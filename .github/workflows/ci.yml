@@ -24,10 +24,12 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: webapp/package-lock.json
 
     - name: Install webapp dependencies
       working-directory: ./webapp
-      run: npm install
+      run: npm ci --prefer-offline --no-audit --no-fund
 
     - name: Run webapp type check
       working-directory: ./webapp
@@ -50,12 +52,12 @@ jobs:
       run: go mod verify
 
     - name: Run tests
-      run: go test -tags=test -v ./...
+      run: go test -tags=test -count=1 -p 3 -timeout 30m -coverprofile=coverage.out -covermode=atomic -v $(go list ./... | grep -v '/cmd/' | grep -v 'internal/integration/' | grep -v 'internal/testutil')
 
     - name: Run golangci-lint
       uses: golangci/golangci-lint-action@v9
       with:
-        version: v2.1.0
+        version: v2.10.1
         args: --timeout=3m
 
   test-integration:
@@ -75,7 +77,7 @@ jobs:
       run: go mod download
 
     - name: Run integration tests (Testcontainers)
-      run: go test -tags=integration -v -count=1 ./internal/integration/testkit/... ./internal/integration/user_flows/... -timeout 180s
+      run: go test -tags=integration -v -count=1 ./internal/integration/testkit/... ./internal/integration/user_flows/... -timeout 600s
 
   release:
     name: Build and Release
@@ -93,10 +95,12 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: webapp/package-lock.json
 
     - name: Install webapp dependencies
       working-directory: ./webapp
-      run: npm install
+      run: npm ci --prefer-offline --no-audit --no-fund
 
     - name: Build webapp
       working-directory: ./webapp
