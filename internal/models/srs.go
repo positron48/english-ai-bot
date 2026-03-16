@@ -33,11 +33,10 @@ const (
 	MaxOptionCount     = 6
 
 	// Time multipliers for quality thresholds by answer mode (harder modes get more allowed time)
-	// Card (multiple choice) = 1.0. Spell (compose from letters) and type (full word) are harder.
-	SpellTimeMultiplier         = 1.5  // compose word from letters
-	TypeTimeMultiplierBase      = 1.2  // type full word
-	TypeTimeMultiplierPerLetter = 0.08 // extra per letter (longer word = more time allowed)
-	TypeTimeMultiplierCap       = 2.5  // max multiplier for type
+	// Card (multiple choice) = 1.0. Spell and type use the same formula: base + per-letter, capped.
+	SpellTypeTimeMultiplierBase      = 1.2  // spell / type
+	SpellTypeTimeMultiplierPerLetter = 0.12 // extra per letter (longer word = more time allowed)
+	SpellTypeTimeMultiplierCap       = 2.5  // max multiplier
 )
 
 // LearningStepsDays returns the learning steps in days for a given direction
@@ -93,15 +92,13 @@ type AttemptData struct {
 }
 
 // TimeMultiplierForMode returns the time multiplier for the given answer mode and word length.
-// Spell = fixed 1.5; type = base + per-letter, capped.
+// Spell and type use the same formula: base + per-letter, capped. Card = 1.0.
 func TimeMultiplierForMode(mode string, wordLen int) float64 {
 	switch mode {
-	case "spell":
-		return SpellTimeMultiplier
-	case "type":
-		m := TypeTimeMultiplierBase + float64(wordLen)*TypeTimeMultiplierPerLetter
-		if m > TypeTimeMultiplierCap {
-			return TypeTimeMultiplierCap
+	case "spell", "type":
+		m := SpellTypeTimeMultiplierBase + float64(wordLen)*SpellTypeTimeMultiplierPerLetter
+		if m > SpellTypeTimeMultiplierCap {
+			return SpellTypeTimeMultiplierCap
 		}
 		return m
 	default:

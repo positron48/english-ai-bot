@@ -121,7 +121,7 @@ func TestCalculateQuality(t *testing.T) {
 				Correct:        true,
 				EarlyReveal:    false,
 				AnswerTimeMS:   25000,
-				TimeMultiplier: SpellTimeMultiplier,
+				TimeMultiplier: 1.5,
 			},
 			expected: QualityHard,
 		},
@@ -155,11 +155,12 @@ func TestTimeMultiplierForMode(t *testing.T) {
 	}{
 		{"", 0, 1.0},
 		{"card", 5, 1.0},
-		{"spell", 0, SpellTimeMultiplier},
-		{"spell", 10, SpellTimeMultiplier},
-		{"type", 0, TypeTimeMultiplierBase},
-		{"type", 5, 1.6},                    // TypeTimeMultiplierBase + 5*TypeTimeMultiplierPerLetter
-		{"type", 20, TypeTimeMultiplierCap}, // capped
+		{"spell", 0, SpellTypeTimeMultiplierBase},           // 1.2, same formula as type
+		{"spell", 10, 2.4},                                   // 1.2 + 10*0.12
+		{"spell", 20, SpellTypeTimeMultiplierCap},            // capped 2.5
+		{"type", 0, SpellTypeTimeMultiplierBase},
+		{"type", 5, 1.8},                                     // base + 5*0.12
+		{"type", 20, SpellTypeTimeMultiplierCap},             // capped
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%s_len%d", tt.mode, tt.wordLen), func(t *testing.T) {
