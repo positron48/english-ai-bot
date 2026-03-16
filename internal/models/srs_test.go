@@ -43,13 +43,13 @@ func TestCalculateQuality(t *testing.T) {
 			expected: QualityWrong,
 		},
 		{
-			name: "Correct with early reveal",
+			name: "Correct with early reveal (ignored) and fast answer → Easy",
 			data: AttemptData{
 				Correct:      true,
 				EarlyReveal:  true,
 				AnswerTimeMS: 1000,
 			},
-			expected: QualityHard,
+			expected: QualityEasy, // early reveal not used in quality
 		},
 		{
 			name: "Correct but slow",

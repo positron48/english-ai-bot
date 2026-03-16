@@ -13,12 +13,13 @@ const (
 	LearningStep2 = 7
 	LearningStep3 = 14 // For RU->EN direction
 
-	// Quality thresholds (in milliseconds)
-	FastThresholdMS     = 2500
-	SlowThresholdMS     = 15000 // 15 seconds - only answers longer than this count as "Hard" (was 8s)
-	VerySlowThresholdMS = 30000 // 30 seconds - if answer time is longer, consider it as average (user was distracted)
+	// Quality thresholds (in milliseconds). AnswerTimeMS = time from options shown to answer (delay before options not counted).
+	// Bands: < Fast → Easy(3), Fast..Slow → Good(2), Slow..VerySlow → Hard(1), > VerySlow → Good (distracted).
+	FastThresholdMS     = 2500  // < 2.5 s → Easy
+	SlowThresholdMS     = 15000 // > 15 s → Hard (max "slow" threshold)
+	VerySlowThresholdMS = 30000 // > 30 s → treat as Good
 
-	// Delay for showing options (in milliseconds)
+	// Delay for showing options (in milliseconds); configurable via options_delay_ms. Not used in quality.
 	OptionsDelayMS = 3000
 
 	// Session limits
@@ -77,11 +78,12 @@ func (q Quality) ToSM2Quality() int {
 	}
 }
 
-// AttemptData holds data about a user's attempt at answering a card
+// AttemptData holds data about a user's attempt at answering a card.
+// AnswerTimeMS = ms from options shown to answer; delay before options is NOT counted (only time to choose).
 type AttemptData struct {
 	Correct      bool
-	EarlyReveal  bool
-	AnswerTimeMS int
+	EarlyReveal  bool   // kept for metrics/logging only, not used in quality
+	AnswerTimeMS int    // ms from options shown to answer
 	TDelayMS     int
 	OptionCount  int
 	ChosenOption string
@@ -116,9 +118,9 @@ func effectiveThreshold(baseMS int, mult float64) int {
 }
 
 // CalculateQuality calculates the quality score from attempt data.
-// TimeMultiplier > 1 scales thresholds (harder modes: spell/type get more allowed time).
+// Only Correct and AnswerTimeMS (and TimeMultiplier) are used. EarlyReveal is not used.
+// Time bands (with multiplier 1): < 2.5s Easy, 2.5–15s Good, 15–30s Hard, > 30s Good.
 func CalculateQuality(data AttemptData) Quality {
-	// If incorrect, always quality 0
 	if !data.Correct {
 		return QualityWrong
 	}
@@ -131,21 +133,15 @@ func CalculateQuality(data AttemptData) Quality {
 	slowMS := effectiveThreshold(SlowThresholdMS, mult)
 	verySlowMS := effectiveThreshold(VerySlowThresholdMS, mult)
 
-	// If answer time is very large (scaled), consider it as average (QualityGood)
 	if data.AnswerTimeMS > verySlowMS {
 		return QualityGood
 	}
-
-	// Quality 1 (Hard) if: early reveal OR answer time was slow (scaled)
-	if data.EarlyReveal || data.AnswerTimeMS > slowMS {
+	if data.AnswerTimeMS > slowMS {
 		return QualityHard
 	}
-
-	// Quality 3 (Easy) if: no early reveal AND answer was fast (scaled)
-	if !data.EarlyReveal && data.AnswerTimeMS < fastMS {
+	if data.AnswerTimeMS < fastMS {
 		return QualityEasy
 	}
-
 	return QualityGood
 }
 

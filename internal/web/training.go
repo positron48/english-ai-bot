@@ -919,7 +919,7 @@ func (r *Router) handleTrainingAnswer(w http.ResponseWriter, req *http.Request) 
 	chosenOption := options[optionIndex]
 	isCorrect := chosenOption == correctAnswer
 
-	// Calculate timings
+	// Timings: for quality we use only time from options shown to answer (delay before options not counted).
 	var tDelayMS int
 	var earlyReveal bool
 	if optionsShownAt != nil {
@@ -929,10 +929,12 @@ func (r *Router) handleTrainingAnswer(w http.ResponseWriter, req *http.Request) 
 		tDelayMS = r.config.Training.OptionsDelayMS
 		earlyReveal = false
 	}
-
 	var answerTimeMS int
 	if optionsShownAt != nil {
 		answerTimeMS = int(answeredAt.Sub(*optionsShownAt).Milliseconds())
+		if answerTimeMS < 0 {
+			answerTimeMS = 0
+		}
 	} else {
 		answerTimeMS = 0
 	}

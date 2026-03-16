@@ -157,7 +157,7 @@ func (s *SRSService) handleLapse(card *models.UserCard, now time.Time) {
 	}
 }
 
-// handleNew handles a new card. Correct answer always advances (to step 1 or graduate); Hard = short interval.
+// handleNew handles a new card. Correct answer always advances (to step 1 or graduate); Hard = 1 day.
 func (s *SRSService) handleNew(card *models.UserCard, quality models.Quality, now time.Time) {
 	card.State = models.StateLearning
 	steps := s.learningSteps(card.Direction)
@@ -172,7 +172,6 @@ func (s *SRSService) handleNew(card *models.UserCard, quality models.Quality, no
 			card.NextDueAt = &nextDue
 		}
 	} else {
-		// Single step: graduate immediately
 		s.graduate(card, now)
 	}
 }
@@ -205,11 +204,9 @@ func (s *SRSService) handleLearning(card *models.UserCard, quality models.Qualit
 	} else {
 		// Still in learning: quality determines interval length
 		if quality == models.QualityHard {
-			// Advance step but short interval (1 day) — word still progresses
 			nextDue := now.Add(24 * time.Hour)
 			card.NextDueAt = &nextDue
 		} else {
-			// Good/Easy: full step interval
 			nextDue := now.Add(time.Duration(steps[card.LearningStep]) * 24 * time.Hour)
 			card.NextDueAt = &nextDue
 		}

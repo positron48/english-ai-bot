@@ -127,7 +127,7 @@ func TestSRSService_handleLearning_QualityHard_AdvancesWithShortInterval(t *test
 
 	service.handleLearning(card, models.QualityHard, now)
 
-	// Correct answer always advances: step 1 -> 2, but Hard = short interval (1 day)
+	// Correct answer always advances: step 1 -> 2, Hard = 1 day
 	if card.State != models.StateLearning {
 		t.Errorf("Expected State %v, got %v", models.StateLearning, card.State)
 	}
@@ -137,7 +137,6 @@ func TestSRSService_handleLearning_QualityHard_AdvancesWithShortInterval(t *test
 	if card.NextDueAt == nil {
 		t.Error("NextDueAt should be set")
 	}
-	// Hard: next in 1 day (not full step 7)
 	expectedMin := now.Add(23 * time.Hour)
 	if card.NextDueAt.Before(expectedMin) {
 		t.Errorf("NextDueAt should be ~1 day for Hard, got %v", card.NextDueAt)
