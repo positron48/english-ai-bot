@@ -54,7 +54,7 @@
     "otpIncomplete": "Пожалуйста, введите полный код OTP",
     "otpInvalid": "Неверный или истёкший код OTP. Пожалуйста, попробуйте снова.",
     "registerInBotMessage": "Регистрация доступна в боте в Telegram:",
-    "registerInBotLinkText": "@positroid_english_bot"
+    "registerInBotLinkText": "positroid_english_bot"
   },
   "settings": {
     "title": "Настройки",

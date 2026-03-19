@@ -6,7 +6,7 @@
       <!-- Registration hint when login form is shown (no Telegram WebApp or auth failed) -->
       <div v-if="!isCheckingTelegramAuth" class="register-hint">
         <p>{{ t('auth.registerInBotMessage') }}</p>
-        <a href="https://t.me/positroid_english_bot" target="_blank" rel="noopener noreferrer" class="bot-link">{{ t('auth.registerInBotLinkText') }}</a>
+        <a href="https://t.me/positroid_english_bot" target="_blank" rel="noopener noreferrer" class="bot-link">@{{ t('auth.registerInBotLinkText') }}</a>
       </div>
       
       <!-- Show loading indicator while checking Telegram auth -->
