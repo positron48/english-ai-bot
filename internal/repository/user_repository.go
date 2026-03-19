@@ -139,18 +139,20 @@ func (r *UserRepository) UpdateUserPreferredTime(userID int64, preferredTime str
 	return nil
 }
 
-// GetUserByUsernameOrID gets a user by username (without @) or telegram_id
+// GetUserByUsernameOrID gets a user by username (without @) or telegram_id.
+// Username search is case-insensitive; input is trimmed of surrounding spaces.
 func (r *UserRepository) GetUserByUsernameOrID(usernameOrID string) (*models.User, error) {
+	usernameOrID = strings.TrimSpace(usernameOrID)
 	// Try to parse as telegram_id first
 	if telegramID, err := strconv.ParseInt(usernameOrID, 10, 64); err == nil {
 		return r.GetUserByTelegramID(telegramID)
 	}
 
-	// Try to find by username (remove @ if present)
-	username := strings.TrimPrefix(usernameOrID, "@")
+	// Try to find by username (remove @ if present, trim spaces); case-insensitive
+	username := strings.TrimSpace(strings.TrimPrefix(usernameOrID, "@"))
 	query := `SELECT id, telegram_id, COALESCE(telegram_username, ''), timezone, preferred_training_time, 
 			  COALESCE(settings_json, ''), created_at, updated_at
-			  FROM users WHERE telegram_username = ?`
+			  FROM users WHERE LOWER(telegram_username) = LOWER(?)`
 
 	var user models.User
 	var createdAt, updatedAt string

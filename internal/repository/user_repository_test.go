@@ -260,6 +260,34 @@ func TestUserRepository_GetUserByUsernameOrID(t *testing.T) {
 			t.Error("GetUserByUsernameOrID() should return nil for non-existent username")
 		}
 	})
+
+	t.Run("Get by username case-insensitive", func(t *testing.T) {
+		for _, input := range []string{"TestUser", "TESTUSER", "TeStUsEr"} {
+			found, err := repo.GetUserByUsernameOrID(input)
+			if err != nil {
+				t.Fatalf("GetUserByUsernameOrID(%q) error = %v", input, err)
+			}
+			if found == nil {
+				t.Fatalf("GetUserByUsernameOrID(%q) should find user", input)
+			}
+			if found.TelegramUsername != "testuser" {
+				t.Errorf("GetUserByUsernameOrID(%q): expected username 'testuser', got %q", input, found.TelegramUsername)
+			}
+		}
+	})
+
+	t.Run("Get by username with surrounding spaces", func(t *testing.T) {
+		found, err := repo.GetUserByUsernameOrID("  testuser  ")
+		if err != nil {
+			t.Fatalf("GetUserByUsernameOrID() error = %v", err)
+		}
+		if found == nil {
+			t.Fatal("GetUserByUsernameOrID() should find user when username has spaces")
+		}
+		if found.TelegramUsername != "testuser" {
+			t.Errorf("Expected username 'testuser', got %q", found.TelegramUsername)
+		}
+	})
 }
 
 func TestUserRepository_UpdateUsername(t *testing.T) {

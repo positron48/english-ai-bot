@@ -34,6 +34,7 @@
             v-model="username"
             type="text"
             :placeholder="t('auth.usernamePlaceholder')"
+            @blur="username = username.trim()"
             @keyup.enter="requestOTP"
           />
           <button @click="requestOTP" class="btn btn-primary" :disabled="loading">
@@ -154,16 +155,18 @@ watch(isCheckingTelegramAuth, async (isChecking) => {
 })
 
 const requestOTP = async () => {
-  if (!username.value.trim()) {
+  const cleaned = username.value.trim()
+  if (!cleaned) {
     error.value = t('auth.usernameRequired')
     return
   }
+  username.value = cleaned
 
   loading.value = true
   error.value = ''
 
   try {
-    const response = await apiClient.requestOTP(username.value.trim())
+    const response = await apiClient.requestOTP(cleaned)
     userId.value = response.user_id.toString()
     step.value = 'otp'
     // Focus will be set automatically by watch on step change
