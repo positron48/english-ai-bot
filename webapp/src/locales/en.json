@@ -53,7 +53,9 @@
     "usernameRequired": "Please enter username or Telegram ID",
     "otpSendFailed": "Failed to send OTP",
     "otpIncomplete": "Please enter complete OTP code",
-    "otpInvalid": "Invalid or expired OTP code. Please try again."
+    "otpInvalid": "Invalid or expired OTP code. Please try again.",
+    "registerInBotMessage": "Registration is available in the Telegram bot:",
+    "registerInBotLinkText": "@positroid_english_bot"
   },
   "settings": {
     "title": "Settings",

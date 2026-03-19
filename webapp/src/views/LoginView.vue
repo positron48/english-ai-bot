@@ -2,6 +2,12 @@
   <div class="login-container">
     <div class="card" style="max-width: 400px; margin: 50px auto;">
       <h1>{{ t('auth.loginTitle') }}</h1>
+
+      <!-- Registration hint when login form is shown (no Telegram WebApp or auth failed) -->
+      <div v-if="!isCheckingTelegramAuth" class="register-hint">
+        <p>{{ t('auth.registerInBotMessage') }}</p>
+        <a href="https://t.me/positroid_english_bot" target="_blank" rel="noopener noreferrer" class="bot-link">{{ t('auth.registerInBotLinkText') }}</a>
+      </div>
       
       <!-- Show loading indicator while checking Telegram auth -->
       <div v-if="isCheckingTelegramAuth" class="login-loading">
@@ -373,6 +379,32 @@ h1 {
   font-size: 1em;
 }
 
+.register-hint {
+  margin-bottom: 20px;
+  padding: 12px 16px;
+  background-color: var(--info-bg, #e3f2fd);
+  border: 1px solid var(--info-border, #90caf9);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.register-hint p {
+  margin: 0 0 8px 0;
+  font-size: 0.9em;
+  color: var(--info-text, #1565c0);
+}
+
+.register-hint .bot-link {
+  display: inline-block;
+  font-weight: 600;
+  color: var(--color-primary, #1976d2);
+  text-decoration: none;
+}
+
+.register-hint .bot-link:hover {
+  text-decoration: underline;
+}
+
 /* Dark theme support */
 [data-theme="dark"] .info-box {
   background-color: var(--info-bg, rgba(25, 118, 210, 0.15));
@@ -390,6 +422,19 @@ h1 {
 [data-theme="dark"] .info-text code {
   background-color: var(--info-code-bg, rgba(100, 181, 246, 0.2));
   color: var(--info-code-text, #bbdefb);
+}
+
+[data-theme="dark"] .register-hint {
+  background-color: var(--info-bg, rgba(25, 118, 210, 0.15));
+  border-color: var(--info-border, rgba(144, 202, 249, 0.3));
+}
+
+[data-theme="dark"] .register-hint p {
+  color: var(--info-text, #90caf9);
+}
+
+[data-theme="dark"] .register-hint .bot-link {
+  color: var(--info-icon, #64b5f6);
 }
 
 .otp-input-container {

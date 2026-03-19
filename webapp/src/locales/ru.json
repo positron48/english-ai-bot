@@ -52,7 +52,9 @@
     "usernameRequired": "Пожалуйста, введите username или Telegram ID",
     "otpSendFailed": "Не удалось отправить OTP",
     "otpIncomplete": "Пожалуйста, введите полный код OTP",
-    "otpInvalid": "Неверный или истёкший код OTP. Пожалуйста, попробуйте снова."
+    "otpInvalid": "Неверный или истёкший код OTP. Пожалуйста, попробуйте снова.",
+    "registerInBotMessage": "Регистрация доступна в боте в Telegram:",
+    "registerInBotLinkText": "@positroid_english_bot"
   },
   "settings": {
     "title": "Настройки",
