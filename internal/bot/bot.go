@@ -48,11 +48,23 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 	var err error
 
 	if cfg.Telegram.Token != "" {
+		endpoint := tgbotapi.APIEndpoint
 		if cfg.Telegram.APIBaseURL != "" {
-			endpoint := normalizeAPIEndpoint(cfg.Telegram.APIBaseURL)
-			bot, err = tgbotapi.NewBotAPIWithAPIEndpoint(cfg.Telegram.Token, endpoint)
-		} else {
-			bot, err = tgbotapi.NewBotAPI(cfg.Telegram.Token)
+			endpoint = normalizeAPIEndpoint(cfg.Telegram.APIBaseURL)
+		}
+
+		var httpClient tgbotapi.HTTPClient = &http.Client{}
+		if cfg.Telegram.Socks5ProxyAddr != "" {
+			telegramClient, clientErr := newTelegramHTTPClientWithSocks5Proxy(cfg.Telegram.Socks5ProxyAddr, log)
+			if clientErr != nil {
+				err = clientErr
+			} else {
+				httpClient = telegramClient
+			}
+		}
+
+		if err == nil {
+			bot, err = tgbotapi.NewBotAPIWithClient(cfg.Telegram.Token, endpoint, httpClient)
 		}
 		if err != nil {
 			log.Warn("failed to initialize Telegram bot, continuing without it",

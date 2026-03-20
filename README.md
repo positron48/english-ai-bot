@@ -336,6 +336,7 @@ SERVER_PORT=8080                         # Порт сервера
 LOG_LEVEL=info                           # Уровень логирования (debug, info, warn, error)
 TELEGRAM_DEBUG=false                     # Режим отладки Telegram API
 TELEGRAM_UPDATES_TIMEOUT=30              # Таймаут обновлений Telegram
+TELEGRAM_SOCKS5_PROXY_ADDR=            # SOCKS5 proxy (например 51.254.98.124:1080) для исходящих запросов Telegram
 ```
 
 Полный список переменных см. в `env.example`.

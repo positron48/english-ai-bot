@@ -27,6 +27,7 @@ type Config struct {
 type TelegramConfig struct {
 	Token          string `mapstructure:"token"`
 	APIBaseURL     string `mapstructure:"api_base_url"`
+	Socks5ProxyAddr string `mapstructure:"socks5_proxy_addr"`
 	Debug          bool   `mapstructure:"debug"`
 	UpdatesTimeout int    `mapstructure:"updates_timeout"`
 	WebhookEnable  bool   `mapstructure:"webhook_enable"`
@@ -229,6 +230,7 @@ func Load() (*Config, error) {
 	// Explicitly bind environment variables to viper keys
 	_ = viper.BindEnv("telegram.token", "TELEGRAM_TOKEN")
 	_ = viper.BindEnv("telegram.api_base_url", "TELEGRAM_API_BASE_URL")
+	_ = viper.BindEnv("telegram.socks5_proxy_addr", "TELEGRAM_SOCKS5_PROXY_ADDR")
 	_ = viper.BindEnv("telegram.debug", "TELEGRAM_DEBUG")
 	_ = viper.BindEnv("telegram.updates_timeout", "TELEGRAM_UPDATES_TIMEOUT")
 	_ = viper.BindEnv("telegram.webhook_enable", "TELEGRAM_WEBHOOK_ENABLE")
