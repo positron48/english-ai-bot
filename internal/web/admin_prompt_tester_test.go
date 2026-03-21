@@ -367,7 +367,7 @@ func TestHandleAdminPromptTesterDefaultPrompts_TrainingPromptFileEmpty(t *testin
 	}
 	// Training prompt source should reference the default file path
 	src, _ := resp["training_prompt_source"].(string)
-	if !strings.Contains(src, "prompts/training-card-generator.txt") {
+	if !strings.Contains(src, "prompts/training-card-ru-en.txt") {
 		t.Errorf("Expected training_prompt_source to contain default path, got %q", src)
 	}
 }

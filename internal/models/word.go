@@ -7,6 +7,38 @@ import (
 	"time"
 )
 
+// UnmarshalJSON accepts legacy keys (definition_ru) and neutral definition_native.
+func (w *WordInfoResponse) UnmarshalJSON(data []byte) error {
+	type wire struct {
+		Error            ErrorField         `json:"error"`
+		Hint             string             `json:"hint"`
+		InputWord        string             `json:"input_word"`
+		Lemma            string             `json:"lemma"`
+		POS              string             `json:"pos"`
+		Transcription    string             `json:"transcription"`
+		DefinitionRU     string             `json:"definition_ru"`
+		DefinitionNative string             `json:"definition_native"`
+		Examples         []WordInfoExample  `json:"examples"`
+		VerbForms        *WordInfoVerbForms `json:"verb_forms"`
+	}
+	var x wire
+	if err := json.Unmarshal(data, &x); err != nil {
+		return err
+	}
+	w.Error = x.Error
+	w.Hint = x.Hint
+	w.InputWord = x.InputWord
+	w.Lemma = x.Lemma
+	w.POS = x.POS
+	w.Transcription = x.Transcription
+	w.DefinitionRU = firstNonEmpty(x.DefinitionRU, x.DefinitionNative)
+	w.DefinitionNative = firstNonEmpty(x.DefinitionNative, x.DefinitionRU)
+	w.Examples = x.Examples
+	w.VerbForms = x.VerbForms
+	SyncWordInfoResponseNeutralAliases(w)
+	return nil
+}
+
 // WordCard represents a vocabulary card (lemma) stored in the database
 type WordCard struct {
 	ID              int64

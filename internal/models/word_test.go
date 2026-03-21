@@ -166,6 +166,13 @@ func TestWordInfoResponse_UnmarshalJSON(t *testing.T) {
 			wantError:    true,
 			wantErrorMsg: "true",
 		},
+		{
+			name:         "definition_native only (neutral wire)",
+			json:         `{"input_word":"hola","lemma":"hola","pos":"interjection","transcription":"","definition_native":"привет","examples":[]}`,
+			wantLemma:    "hola",
+			wantError:    false,
+			wantExamples: 0,
+		},
 	}
 
 	for _, tt := range tests {
@@ -188,6 +195,9 @@ func TestWordInfoResponse_UnmarshalJSON(t *testing.T) {
 			}
 			if tt.wantExamples > 0 && len(resp.Examples) != tt.wantExamples {
 				t.Errorf("len(Examples) = %d, want %d", len(resp.Examples), tt.wantExamples)
+			}
+			if tt.name == "definition_native only (neutral wire)" && resp.DefinitionRU != "привет" {
+				t.Errorf("DefinitionRU = %q, want %q", resp.DefinitionRU, "привет")
 			}
 		})
 	}

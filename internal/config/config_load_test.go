@@ -376,6 +376,54 @@ func TestLoad_WithPromptFile(t *testing.T) {
 	}
 }
 
+func TestLoad_WithPromptFile_TemplateSubstitutions(t *testing.T) {
+	learningEnv := backupLearningEnv()
+	originalEnv := map[string]string{
+		"AI_URL":            os.Getenv("AI_URL"),
+		"AI_API_KEY":        os.Getenv("AI_API_KEY"),
+		"AI_PROMPT":         os.Getenv("AI_PROMPT"),
+		"AI_PROMPT_FILE":    os.Getenv("AI_PROMPT_FILE"),
+		"WEBAPP_JWT_SECRET": os.Getenv("WEBAPP_JWT_SECRET"),
+	}
+
+	defer func() {
+		restoreLearningEnv(learningEnv)
+		for k, v := range originalEnv {
+			if v == "" {
+				os.Unsetenv(k)
+			} else {
+				os.Setenv(k, v)
+			}
+		}
+	}()
+
+	tmpDir := t.TempDir()
+	promptFile := filepath.Join(tmpDir, "prompt.txt")
+	promptContent := "pair={{pair}} native={{native_lang}} target={{target_lang}}"
+	if err := os.WriteFile(promptFile, []byte(promptContent), 0644); err != nil {
+		t.Fatalf("Failed to create prompt file: %v", err)
+	}
+
+	os.Setenv("AI_URL", "http://test.local")
+	os.Setenv("AI_API_KEY", "test-key")
+	os.Unsetenv("AI_PROMPT")
+	os.Setenv("AI_PROMPT_FILE", promptFile)
+	os.Setenv("WEBAPP_JWT_SECRET", "test-secret")
+	os.Setenv("DATABASE_DRIVER", "postgres")
+	os.Setenv("DATABASE_URL", "postgres://test:test@localhost/test?sslmode=disable")
+	unsetLearningEnvForDefaults()
+
+	cfg, err := Load()
+	if err != nil {
+		t.Fatalf("Load() error = %v", err)
+	}
+
+	want := "pair=ru-en native=ru target=en"
+	if cfg.AI.Prompt != want {
+		t.Errorf("Expected rendered prompt %q, got %q", want, cfg.AI.Prompt)
+	}
+}
+
 func TestLoad_InvalidConfigFile(t *testing.T) {
 	// Create a temp dir with invalid YAML config so ReadInConfig fails with non-ConfigFileNotFound error
 	tmpDir := t.TempDir()

@@ -95,16 +95,16 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 		log,
 	)
 
-	// Load training prompt
+	// Load training prompt (same template engine as AI_PROMPT_FILE: {{native_lang}}, {{target_lang}}, {{pair}})
 	if cfg.Training.PromptFile != "" {
-		trainingPrompt, err := os.ReadFile(cfg.Training.PromptFile)
+		trainingPrompt, err := ai.LoadRenderedPromptFile(cfg.Training.PromptFile, cfg.Learning.NativeLang, cfg.Learning.TargetLang, cfg.Learning.Pair)
 		if err != nil {
 			log.Warn("failed to load training prompt file, training worker will not work",
 				zap.String("file", cfg.Training.PromptFile),
 				zap.Error(err),
 			)
 		} else {
-			aiService.SetTrainingPrompt(string(trainingPrompt))
+			aiService.SetTrainingPrompt(trainingPrompt)
 		}
 	}
 

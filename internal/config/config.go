@@ -8,6 +8,8 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/spf13/viper"
+
+	"tgbot-skeleton/internal/ai"
 )
 
 var langCodeSegment = regexp.MustCompile(`^[a-z]{2,8}$`)
@@ -250,7 +252,7 @@ func Load() (*Config, error) {
 	viper.SetDefault("training.worker_interval", "30s")
 	viper.SetDefault("training.worker_batch_size", 5)
 	viper.SetDefault("training.llm_workers", 4)
-	viper.SetDefault("training.prompt_file", "prompts/training-card-generator.txt")
+	viper.SetDefault("training.prompt_file", "prompts/training-card-ru-en.txt")
 	viper.SetDefault("training.circuit_breaker_threshold", 5)
 	viper.SetDefault("training.circuit_breaker_auto_reset_hours", 24)
 	viper.SetDefault("training.options_delay_ms", 5000)
@@ -446,6 +448,8 @@ func Load() (*Config, error) {
 	if config.AI.Prompt == "" {
 		return nil, fmt.Errorf("ai prompt is required (either AI_PROMPT or AI_PROMPT_FILE must be set)")
 	}
+
+	config.AI.Prompt = ai.PreparePrompt(config.AI.Prompt, config.Learning.NativeLang, config.Learning.TargetLang, config.Learning.Pair)
 
 	return &config, nil
 }

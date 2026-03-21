@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"os"
 	"strings"
 	"time"
 
@@ -31,21 +30,20 @@ func (r *Router) handleAdminPromptTesterDefaultPrompts(w http.ResponseWriter, re
 		return
 	}
 
-	// Get word prompt
+	// Get word prompt (rendered the same way as at startup)
 	var wordPrompt string
 	var wordPromptSource string
 	if r.config.AI.PromptFile != "" {
-		// Try to read from file
-		content, err := os.ReadFile(r.config.AI.PromptFile)
+		rendered, err := ai.LoadRenderedPromptFile(r.config.AI.PromptFile, r.config.Learning.NativeLang, r.config.Learning.TargetLang, r.config.Learning.Pair)
 		if err != nil {
-			r.logger.Warn("failed to read AI prompt file, falling back to AI_PROMPT",
+			r.logger.Warn("failed to read AI prompt file, falling back to configured AI_PROMPT",
 				zap.String("file", r.config.AI.PromptFile),
 				zap.Error(err),
 			)
 			wordPrompt = r.config.AI.Prompt
 			wordPromptSource = "env"
 		} else {
-			wordPrompt = strings.TrimSpace(string(content))
+			wordPrompt = rendered
 			wordPromptSource = r.config.AI.PromptFile
 		}
 	} else {
@@ -58,21 +56,19 @@ func (r *Router) handleAdminPromptTesterDefaultPrompts(w http.ResponseWriter, re
 	var trainingPromptSource string
 	trainingPromptFile := r.config.Training.PromptFile
 	if trainingPromptFile == "" {
-		// Default fallback
-		trainingPromptFile = "prompts/training-card-generator.txt"
+		trainingPromptFile = "prompts/training-card-ru-en.txt"
 	}
 
-	content, err := os.ReadFile(trainingPromptFile)
+	content, err := ai.LoadRenderedPromptFile(trainingPromptFile, r.config.Learning.NativeLang, r.config.Learning.TargetLang, r.config.Learning.Pair)
 	if err != nil {
 		r.logger.Error("failed to read training prompt file",
 			zap.String("file", trainingPromptFile),
 			zap.Error(err),
 		)
-		// Return error or empty string
 		trainingPrompt = ""
 		trainingPromptSource = trainingPromptFile + " (not found)"
 	} else {
-		trainingPrompt = strings.TrimSpace(string(content))
+		trainingPrompt = content
 		trainingPromptSource = trainingPromptFile
 	}
 
