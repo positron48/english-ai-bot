@@ -557,7 +557,7 @@ func TestBuildPronunciationProviders_EmptyDictionaryBaseURL(t *testing.T) {
 		Provider:          "dictionary",
 		DictionaryEnabled: true,
 		DictionaryBaseURL: "", // empty -> use default
-	}, zap.NewNop())
+	}, config.DefaultLearningConfig(), zap.NewNop())
 	if len(providers) != 1 {
 		t.Fatalf("expected 1 provider, got %d", len(providers))
 	}
@@ -578,7 +578,7 @@ func TestPronunciationService_DebugFetch_EmptyCode(t *testing.T) {
 		AudioDir:          t.TempDir(),
 		DictionaryEnabled: true,
 		DictionaryBaseURL: "http://example.com",
-	}, nil, zap.NewNop())
+	}, config.DefaultLearningConfig(), nil, zap.NewNop())
 	// Use a provider that returns an error where classifyPronunciationError returns code=""
 	// classifyPronunciationError returns ("", true) only for nil error.
 	// For non-nil errors that don't match any pattern and aren't errPronunciationNotFound: returns ("provider_error", false)
@@ -616,7 +616,7 @@ func TestPronunciationService_Start_TickerBackfill(t *testing.T) {
 		DictionaryEnabled: true,
 		DictionaryBaseURL: "http://example.com",
 	}
-	svc := NewPronunciationService(cfg, wordRepo, zap.NewNop())
+	svc := NewPronunciationService(cfg, config.DefaultLearningConfig(), wordRepo, zap.NewNop())
 	svc.providers = []pronunciationProvider{&stubPronunciationProvider{providerName: "stub", audio: []byte("x")}}
 
 	ctx, cancel := context.WithCancel(context.Background())
@@ -645,7 +645,7 @@ func TestPronunciationService_ProcessWord_ReadyAndFileExists(t *testing.T) {
 	audioDir := t.TempDir()
 	svc := NewPronunciationService(config.TTSConfig{
 		Enabled: true, AudioDir: audioDir, DictionaryEnabled: true, DictionaryBaseURL: "http://example.com",
-	}, wordRepo, zap.NewNop())
+	}, config.DefaultLearningConfig(), wordRepo, zap.NewNop())
 
 	// Create the file and mark ready
 	rel := svc.relativePathForWordWithExt("readyfileexists", ".mp3")
@@ -680,7 +680,7 @@ func TestPronunciationService_ProcessWord_NotFoundNonRetryable(t *testing.T) {
 	wordRepo := repository.NewWordRepository(db, zap.NewNop())
 	svc := NewPronunciationService(config.TTSConfig{
 		Enabled: true, AudioDir: t.TempDir(), DictionaryEnabled: true, DictionaryBaseURL: "http://example.com", MaxRetries: 5,
-	}, wordRepo, zap.NewNop())
+	}, config.DefaultLearningConfig(), wordRepo, zap.NewNop())
 
 	// errPronunciationNotFound with no specific code -> classifyPronunciationError returns ("not_found", true)
 	// which is retryable, so it won't take the non-retryable path.
@@ -713,7 +713,7 @@ func TestPronunciationService_ProcessWord_NonRetryableUnique(t *testing.T) {
 	wordRepo := repository.NewWordRepository(db, zap.NewNop())
 	svc := NewPronunciationService(config.TTSConfig{
 		Enabled: true, AudioDir: t.TempDir(), DictionaryEnabled: true, DictionaryBaseURL: "http://example.com", MaxRetries: 5,
-	}, wordRepo, zap.NewNop())
+	}, config.DefaultLearningConfig(), wordRepo, zap.NewNop())
 	nonRetryable := errors.New("random error")
 	svc.providers = []pronunciationProvider{&stubPronunciationProvider{providerName: "p", err: nonRetryable}}
 
@@ -732,7 +732,7 @@ func TestPronunciationService_ProcessWord_RetryableErrorWithFallback(t *testing.
 	wordRepo := repository.NewWordRepository(db, zap.NewNop())
 	svc := NewPronunciationService(config.TTSConfig{
 		Enabled: true, AudioDir: t.TempDir(), DictionaryEnabled: true, DictionaryBaseURL: "http://example.com", MaxRetries: 5,
-	}, wordRepo, zap.NewNop())
+	}, config.DefaultLearningConfig(), wordRepo, zap.NewNop())
 
 	retryableErr := errors.New("status 429: too many requests")
 	var calls int
@@ -759,7 +759,7 @@ func TestPronunciationService_ProcessWord_NotFoundAllProviders(t *testing.T) {
 	wordRepo := repository.NewWordRepository(db, zap.NewNop())
 	svc := NewPronunciationService(config.TTSConfig{
 		Enabled: true, AudioDir: t.TempDir(), DictionaryEnabled: true, DictionaryBaseURL: "http://example.com", MaxRetries: 5,
-	}, wordRepo, zap.NewNop())
+	}, config.DefaultLearningConfig(), wordRepo, zap.NewNop())
 
 	// Use not-found errors that are retryable (all not-found are retryable per classifyPronunciationError)
 	// but we want to test the notFoundSeen path at line 973
@@ -850,7 +850,7 @@ func TestPronunciationService_BackfillOnce_WithCandidates(t *testing.T) {
 		BackfillBatchSize: 10,
 		DictionaryEnabled: true,
 		DictionaryBaseURL: "http://example.com",
-	}, wordRepo, zap.NewNop())
+	}, config.DefaultLearningConfig(), wordRepo, zap.NewNop())
 
 	// Insert a word into word_cards so ListPronunciationCandidates returns it.
 	// word_cards requires: word TEXT NOT NULL UNIQUE, definition TEXT NOT NULL.
@@ -875,7 +875,7 @@ func TestPronunciationService_ScheduleWord_MaxAttemptsMarkTerminal(t *testing.T)
 	svc := NewPronunciationService(config.TTSConfig{
 		Enabled: true, AudioDir: t.TempDir(), MaxRetries: 2,
 		DictionaryEnabled: true, DictionaryBaseURL: "http://example.com",
-	}, wordRepo, zap.NewNop())
+	}, config.DefaultLearningConfig(), wordRepo, zap.NewNop())
 	svc.providers = []pronunciationProvider{&stubPronunciationProvider{providerName: "x", audio: []byte("a")}}
 
 	// Set attempt_count >= max_attempts
@@ -903,7 +903,7 @@ func TestPronunciationService_ScheduleWord_ReadyFileMissingUpsertPending(t *test
 	audioDir := t.TempDir()
 	svc := NewPronunciationService(config.TTSConfig{
 		Enabled: true, AudioDir: audioDir, DictionaryEnabled: true, DictionaryBaseURL: "http://example.com",
-	}, wordRepo, zap.NewNop())
+	}, config.DefaultLearningConfig(), wordRepo, zap.NewNop())
 	svc.providers = []pronunciationProvider{&stubPronunciationProvider{providerName: "x", audio: []byte("a")}}
 
 	// Mark ready with a path that doesn't exist
@@ -929,7 +929,7 @@ func TestPronunciationService_ScheduleWord_QueueFull(t *testing.T) {
 		AudioDir:          t.TempDir(),
 		DictionaryEnabled: true,
 		DictionaryBaseURL: "http://example.com",
-	}, nil, zap.NewNop())
+	}, config.DefaultLearningConfig(), nil, zap.NewNop())
 	svc.providers = []pronunciationProvider{&stubPronunciationProvider{providerName: "x", audio: []byte("a")}}
 
 	// Fill the queue completely
@@ -964,7 +964,7 @@ func TestPronunciationService_Lookup_HasCachedAudioWithTTSRepo(t *testing.T) {
 	svc := NewPronunciationService(config.TTSConfig{
 		Enabled: true, AudioDir: dir, PublicBasePath: "/media/tts",
 		DictionaryEnabled: true, DictionaryBaseURL: "http://example.com",
-	}, wordRepo, zap.NewNop())
+	}, config.DefaultLearningConfig(), wordRepo, zap.NewNop())
 	svc.providers = []pronunciationProvider{&stubPronunciationProvider{providerName: "x", audio: []byte("a")}}
 
 	// Create the audio file AND insert a pending status (not ready, no audio_rel_path)
@@ -1000,7 +1000,7 @@ func TestPronunciationService_Lookup_MaxAttemptsMarkTerminal(t *testing.T) {
 	svc := NewPronunciationService(config.TTSConfig{
 		Enabled: true, AudioDir: t.TempDir(), PublicBasePath: "/media/tts", MaxRetries: 2,
 		DictionaryEnabled: true, DictionaryBaseURL: "http://example.com",
-	}, wordRepo, zap.NewNop())
+	}, config.DefaultLearningConfig(), wordRepo, zap.NewNop())
 	svc.providers = []pronunciationProvider{&stubPronunciationProvider{providerName: "x", audio: []byte("a")}}
 
 	// Set attempt_count >= max_attempts
@@ -1033,7 +1033,7 @@ func TestPronunciationService_ForceRegenerate_ResetErrorClosedDB(t *testing.T) {
 	wordRepo := repository.NewWordRepository(closedDB, zap.NewNop())
 	svc := NewPronunciationService(config.TTSConfig{
 		Enabled: true, AudioDir: t.TempDir(), DictionaryEnabled: true, DictionaryBaseURL: "http://example.com",
-	}, wordRepo, zap.NewNop())
+	}, config.DefaultLearningConfig(), wordRepo, zap.NewNop())
 	_, err = svc.ForceRegenerate("hello")
 	if err == nil {
 		t.Fatal("expected error when ResetForForceRegenerate fails (closed DB)")
@@ -1068,7 +1068,7 @@ func TestPronunciationService_EnsureStatusForWord_MarkReadyError(t *testing.T) {
 	wordRepo := repository.NewWordRepository(workingDB, zap.NewNop())
 	svc := NewPronunciationService(config.TTSConfig{
 		Enabled: true, AudioDir: t.TempDir(), DictionaryEnabled: true, DictionaryBaseURL: "http://example.com",
-	}, wordRepo, zap.NewNop())
+	}, config.DefaultLearningConfig(), wordRepo, zap.NewNop())
 
 	// Mark ready with a non-existent path so resolveReadyRelPath returns ""
 	_ = svc.ttsRepo.MarkReady("ensuretest", "dict", "nonexistent/path.mp3")
@@ -1094,7 +1094,7 @@ func TestPronunciationService_GetStatus_WithErrorFields(t *testing.T) {
 	wordRepo := repository.NewWordRepository(db, zap.NewNop())
 	svc := NewPronunciationService(config.TTSConfig{
 		Enabled: true, AudioDir: t.TempDir(), DictionaryEnabled: true, DictionaryBaseURL: "http://example.com",
-	}, wordRepo, zap.NewNop())
+	}, config.DefaultLearningConfig(), wordRepo, zap.NewNop())
 
 	// MarkAttempt sets last_error_code, last_error_message, last_provider
 	_ = svc.ttsRepo.MarkAttempt("statuserrorword", "dict", "dictionary-404", "word not found in dictionary", true)
@@ -1121,7 +1121,7 @@ func TestPronunciationService_ProcessWord_TwoNotFoundProviders(t *testing.T) {
 	wordRepo := repository.NewWordRepository(db, zap.NewNop())
 	svc := NewPronunciationService(config.TTSConfig{
 		Enabled: true, AudioDir: t.TempDir(), DictionaryEnabled: true, DictionaryBaseURL: "http://example.com", MaxRetries: 5,
-	}, wordRepo, zap.NewNop())
+	}, config.DefaultLearningConfig(), wordRepo, zap.NewNop())
 
 	// Two providers both returning not-found (retryable)
 	notFound1 := fmt.Errorf("%w: dictionary_404", errPronunciationNotFound)
@@ -1153,7 +1153,7 @@ func TestPronunciationService_Start_NoPrefetch(t *testing.T) {
 		AudioDir:          t.TempDir(),
 		DictionaryEnabled: true,
 		DictionaryBaseURL: "http://example.com",
-	}, nil, zap.NewNop())
+	}, config.DefaultLearningConfig(), nil, zap.NewNop())
 	svc.providers = []pronunciationProvider{&stubPronunciationProvider{providerName: "x", audio: []byte("a")}}
 
 	ctx, cancel := context.WithCancel(context.Background())
@@ -1212,7 +1212,7 @@ func TestPronunciationService_Lookup_NilStatusButCachedFile(t *testing.T) {
 	svc := NewPronunciationService(config.TTSConfig{
 		Enabled: true, AudioDir: dir, PublicBasePath: "/media/tts",
 		DictionaryEnabled: true, DictionaryBaseURL: "http://example.com",
-	}, wordRepo, zap.NewNop())
+	}, config.DefaultLearningConfig(), wordRepo, zap.NewNop())
 	svc.providers = []pronunciationProvider{&stubPronunciationProvider{providerName: "x", audio: []byte("a")}}
 
 	// Create the audio file - but ensureStatusForWord will find it and call MarkReady (legacy migration)
@@ -1252,7 +1252,7 @@ func TestPronunciationService_Lookup_InvalidWord(t *testing.T) {
 	wordRepo := repository.NewWordRepository(db, zap.NewNop())
 	svc := NewPronunciationService(config.TTSConfig{
 		Enabled: true, AudioDir: t.TempDir(), DictionaryEnabled: true, DictionaryBaseURL: "http://example.com",
-	}, wordRepo, zap.NewNop())
+	}, config.DefaultLearningConfig(), wordRepo, zap.NewNop())
 	svc.providers = []pronunciationProvider{&stubPronunciationProvider{providerName: "x", audio: []byte("a")}}
 
 	// Pass a word with non-Latin characters - normalizePronunciationWord returns ok=false.
@@ -1281,7 +1281,7 @@ func TestPronunciationService_Start_MkdirAllFailure(t *testing.T) {
 
 	svc := NewPronunciationService(config.TTSConfig{
 		Enabled: true, AudioDir: audioDir, DictionaryEnabled: true, DictionaryBaseURL: "http://example.com",
-	}, nil, zap.NewNop())
+	}, config.DefaultLearningConfig(), nil, zap.NewNop())
 	svc.providers = []pronunciationProvider{&stubPronunciationProvider{providerName: "x", audio: []byte("a")}}
 
 	ctx, cancel := context.WithCancel(context.Background())
@@ -1374,7 +1374,7 @@ func TestPronunciationService_ProcessWord_AttemptCountExceedsMaxNotTerminal(t *t
 	svc := NewPronunciationService(config.TTSConfig{
 		Enabled: true, AudioDir: t.TempDir(), MaxRetries: 3,
 		DictionaryEnabled: true, DictionaryBaseURL: "http://example.com",
-	}, wordRepo, zap.NewNop())
+	}, config.DefaultLearningConfig(), wordRepo, zap.NewNop())
 
 	// Directly insert a record with state=failed_retryable but attempt_count >= max_attempts.
 	// This bypasses MarkAttempt's capToTerminal logic.
@@ -1412,7 +1412,7 @@ func TestPronunciationService_ScheduleWord_AttemptCountExceedsMaxNotTerminal(t *
 	svc := NewPronunciationService(config.TTSConfig{
 		Enabled: true, AudioDir: t.TempDir(), MaxRetries: 3,
 		DictionaryEnabled: true, DictionaryBaseURL: "http://example.com",
-	}, wordRepo, zap.NewNop())
+	}, config.DefaultLearningConfig(), wordRepo, zap.NewNop())
 
 	_, err := db.Exec(
 		`INSERT INTO tts_generation_status (word, state, attempt_count, max_attempts, created_at, updated_at)
@@ -1442,7 +1442,7 @@ func TestPronunciationService_Lookup_AttemptCountExceedsMaxNotTerminal(t *testin
 	svc := NewPronunciationService(config.TTSConfig{
 		Enabled: true, AudioDir: t.TempDir(), PublicBasePath: "/media/tts", MaxRetries: 3,
 		DictionaryEnabled: true, DictionaryBaseURL: "http://example.com",
-	}, wordRepo, zap.NewNop())
+	}, config.DefaultLearningConfig(), wordRepo, zap.NewNop())
 
 	_, err := db.Exec(
 		`INSERT INTO tts_generation_status (word, state, attempt_count, max_attempts, created_at, updated_at)
@@ -1474,7 +1474,7 @@ func TestPronunciationService_EnsureStatusForWord_LegacyMarkReadyError(t *testin
 	svc := NewPronunciationService(config.TTSConfig{
 		Enabled: true, AudioDir: audioDir,
 		DictionaryEnabled: true, DictionaryBaseURL: "http://example.com",
-	}, wordRepo, zap.NewNop())
+	}, config.DefaultLearningConfig(), wordRepo, zap.NewNop())
 
 	// Create the audio file so cachedRelPathForWord returns a non-empty path (legacy migration path).
 	word := "legacymarkerr"
@@ -1514,7 +1514,7 @@ func TestPronunciationService_EnsureStatusForWord_UpsertPendingError(t *testing.
 	svc := NewPronunciationService(config.TTSConfig{
 		Enabled: true, AudioDir: t.TempDir(),
 		DictionaryEnabled: true, DictionaryBaseURL: "http://example.com",
-	}, wordRepo, zap.NewNop())
+	}, config.DefaultLearningConfig(), wordRepo, zap.NewNop())
 
 	// Insert a ready record with a non-existent audio_rel_path so resolveReadyRelPath returns "".
 	word := "upsertpendingerr"
@@ -1570,7 +1570,7 @@ func TestPronunciationService_ScheduleWord_QueueTimeoutDequeue(t *testing.T) {
 		AudioDir:          t.TempDir(),
 		DictionaryEnabled: true,
 		DictionaryBaseURL: "http://example.com",
-	}, nil, zap.NewNop())
+	}, config.DefaultLearningConfig(), nil, zap.NewNop())
 	svc.providers = []pronunciationProvider{&stubPronunciationProvider{providerName: "x", audio: []byte("a")}}
 
 	// Fill the queue completely so the select default branch is taken.
@@ -1657,7 +1657,7 @@ func TestPronunciationService_EnsureStatusForWord_MarkReadyErrorMock(t *testing.
 	svc := NewPronunciationService(config.TTSConfig{
 		Enabled: true, AudioDir: audioDir,
 		DictionaryEnabled: true, DictionaryBaseURL: "http://example.com",
-	}, nil, zap.NewNop())
+	}, config.DefaultLearningConfig(), nil, zap.NewNop())
 
 	// Create the audio file so cachedRelPathForWord returns non-empty (legacy migration path).
 	word := "legacymarkerrmock"
@@ -1699,7 +1699,7 @@ func TestPronunciationService_EnsureStatusForWord_UpsertPendingErrorMock(t *test
 	svc := NewPronunciationService(config.TTSConfig{
 		Enabled: true, AudioDir: audioDir,
 		DictionaryEnabled: true, DictionaryBaseURL: "http://example.com",
-	}, nil, zap.NewNop())
+	}, config.DefaultLearningConfig(), nil, zap.NewNop())
 
 	word := "upsertpendingerrmock"
 	upsertErr := errors.New("upsert pending failed")
@@ -1738,7 +1738,7 @@ func TestPronunciationService_ProcessWord_ReadyButMissingWithTTSRepo(t *testing.
 	svc := NewPronunciationService(config.TTSConfig{
 		Enabled: true, AudioDir: audioDir,
 		DictionaryEnabled: true, DictionaryBaseURL: "http://example.com",
-	}, nil, zap.NewNop())
+	}, config.DefaultLearningConfig(), nil, zap.NewNop())
 	svc.providers = []pronunciationProvider{&stubPronunciationProvider{providerName: "x", audio: []byte("a")}}
 
 	word := "readymissingproc"
@@ -1782,7 +1782,7 @@ func TestPronunciationService_ScheduleWord_ReadyButMissingWithTTSRepoMock(t *tes
 	svc := NewPronunciationService(config.TTSConfig{
 		Enabled: true, AudioDir: audioDir,
 		DictionaryEnabled: true, DictionaryBaseURL: "http://example.com",
-	}, nil, zap.NewNop())
+	}, config.DefaultLearningConfig(), nil, zap.NewNop())
 	svc.providers = []pronunciationProvider{&stubPronunciationProvider{providerName: "x", audio: []byte("a")}}
 
 	word := "readymissingsched"
@@ -1821,7 +1821,7 @@ func TestPronunciationService_ProcessWord_NotFoundNonRetryableBlock(t *testing.T
 	svc := NewPronunciationService(config.TTSConfig{
 		Enabled: true, AudioDir: audioDir,
 		DictionaryEnabled: true, DictionaryBaseURL: "http://example.com",
-	}, nil, zap.NewNop())
+	}, config.DefaultLearningConfig(), nil, zap.NewNop())
 
 	// Use a not-found error with "not_found_nonretryable" in the message
 	// classifyPronunciationError returns ("not_found_nonretryable", false) for this

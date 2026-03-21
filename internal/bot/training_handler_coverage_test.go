@@ -10,6 +10,7 @@ import (
 	"time"
 	"unsafe"
 
+	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/database"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
@@ -44,8 +45,8 @@ func setupTrainingHandler(t *testing.T, client *mockTelegramClient) (*TrainingHa
 	sessionRepo := repository.NewSessionRepository(conn, logger)
 	userWordMasteringRepo := repository.NewUserWordMasteringRepository(conn, logger)
 
-	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, logger)
-	srsService := service.NewSRSService(userCardRepo, logger)
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, config.DefaultLearningConfig(), logger)
+	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
 	optionsService := service.NewOptionsService(trainingCardRepo, logger)
 
 	bot := newTestBot(client)
@@ -126,7 +127,7 @@ func TestShowCard_GenerateOptionsError(t *testing.T) {
 	trainingCardRepo := repository.NewTrainingCardRepository(conn, logger)
 	userCardRepo := repository.NewUserCardRepository(conn, logger)
 	userWordMasteringRepo := repository.NewUserWordMasteringRepository(conn, logger)
-	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, logger)
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, config.DefaultLearningConfig(), logger)
 
 	session, queue, err := trainingService.StartSession(userID, models.SourceManual, nil)
 	if err != nil {
@@ -169,7 +170,7 @@ func TestShowCard_SaveSessionStateError(t *testing.T) {
 	trainingCardRepo := repository.NewTrainingCardRepository(conn, logger)
 	userCardRepo := repository.NewUserCardRepository(conn, logger)
 	userWordMasteringRepo := repository.NewUserWordMasteringRepository(conn, logger)
-	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, logger)
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, config.DefaultLearningConfig(), logger)
 
 	session, queue, err := trainingService.StartSession(userID, models.SourceManual, nil)
 	if err != nil {
@@ -194,7 +195,7 @@ func TestShowCard_SaveSessionStateError(t *testing.T) {
 	// Replace trainingService with one using a failing sessionRepo so saveSessionState fails
 	failingConn := newFailingDB(t)
 	failingSessionRepo := repository.NewSessionRepository(failingConn, logger)
-	failingTS := service.NewTrainingService(userCardRepo, trainingCardRepo, failingSessionRepo, userWordMasteringRepo, logger)
+	failingTS := service.NewTrainingService(userCardRepo, trainingCardRepo, failingSessionRepo, userWordMasteringRepo, config.DefaultLearningConfig(), logger)
 
 	setTHField(th, "trainingService", failingTS)
 
@@ -215,7 +216,7 @@ func TestShowOptions_SaveSessionStateError(t *testing.T) {
 	trainingCardRepo := repository.NewTrainingCardRepository(conn, logger)
 	userCardRepo := repository.NewUserCardRepository(conn, logger)
 	userWordMasteringRepo := repository.NewUserWordMasteringRepository(conn, logger)
-	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, logger)
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, config.DefaultLearningConfig(), logger)
 
 	session, queue, err := trainingService.StartSession(userID, models.SourceManual, nil)
 	if err != nil {
@@ -250,7 +251,7 @@ func TestShowOptions_SaveSessionStateError(t *testing.T) {
 	// Replace trainingService with failing sessionRepo
 	failingConn := newFailingDB(t)
 	failingSessionRepo := repository.NewSessionRepository(failingConn, logger)
-	failingTS := service.NewTrainingService(userCardRepo, trainingCardRepo, failingSessionRepo, userWordMasteringRepo, logger)
+	failingTS := service.NewTrainingService(userCardRepo, trainingCardRepo, failingSessionRepo, userWordMasteringRepo, config.DefaultLearningConfig(), logger)
 
 	setTHField(th, "trainingService", failingTS)
 
@@ -271,7 +272,7 @@ func TestHandleAnswer_SaveSessionStateError(t *testing.T) {
 	trainingCardRepo := repository.NewTrainingCardRepository(conn, logger)
 	userCardRepo := repository.NewUserCardRepository(conn, logger)
 	userWordMasteringRepo := repository.NewUserWordMasteringRepository(conn, logger)
-	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, logger)
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, config.DefaultLearningConfig(), logger)
 
 	session, queue, err := trainingService.StartSession(userID, models.SourceManual, nil)
 	if err != nil {
@@ -307,7 +308,7 @@ func TestHandleAnswer_SaveSessionStateError(t *testing.T) {
 	// Replace trainingService with failing sessionRepo so saveSessionState fails
 	failingConn := newFailingDB(t)
 	failingSessionRepo := repository.NewSessionRepository(failingConn, logger)
-	failingTS := service.NewTrainingService(userCardRepo, trainingCardRepo, failingSessionRepo, userWordMasteringRepo, logger)
+	failingTS := service.NewTrainingService(userCardRepo, trainingCardRepo, failingSessionRepo, userWordMasteringRepo, config.DefaultLearningConfig(), logger)
 
 	setTHField(th, "trainingService", failingTS)
 
@@ -327,7 +328,7 @@ func TestHandleAnswer_GradeCardError(t *testing.T) {
 	trainingCardRepo := repository.NewTrainingCardRepository(conn, logger)
 	userCardRepo := repository.NewUserCardRepository(conn, logger)
 	userWordMasteringRepo := repository.NewUserWordMasteringRepository(conn, logger)
-	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, logger)
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, config.DefaultLearningConfig(), logger)
 
 	session, queue, err := trainingService.StartSession(userID, models.SourceManual, nil)
 	if err != nil {
@@ -363,7 +364,7 @@ func TestHandleAnswer_GradeCardError(t *testing.T) {
 	// Replace srsService with one using failing userCardRepo so GradeCard -> UpdateUserCard fails
 	failingConn := newFailingDB(t)
 	failingUserCardRepo := repository.NewUserCardRepository(failingConn, logger)
-	failingSRS := service.NewSRSService(failingUserCardRepo, logger)
+	failingSRS := service.NewSRSService(failingUserCardRepo, config.DefaultLearningConfig(), logger)
 	setTHField(th, "srsService", failingSRS)
 
 	_ = th.HandleAnswer(3040, 0)
@@ -382,7 +383,7 @@ func TestHandleAnswer_RecordWrongAnswerError(t *testing.T) {
 	trainingCardRepo := repository.NewTrainingCardRepository(conn, logger)
 	userCardRepo := repository.NewUserCardRepository(conn, logger)
 	userWordMasteringRepo := repository.NewUserWordMasteringRepository(conn, logger)
-	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, logger)
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, config.DefaultLearningConfig(), logger)
 
 	session, queue, err := trainingService.StartSession(userID, models.SourceManual, nil)
 	if err != nil {
@@ -566,7 +567,7 @@ func TestSaveSessionState_GetSessionError(t *testing.T) {
 	// Use a failing DB for sessionRepo so GetSession fails
 	failingConn := newFailingDB(t)
 	failingSessionRepo := repository.NewSessionRepository(failingConn, logger)
-	failingTS := service.NewTrainingService(userCardRepo, trainingCardRepo, failingSessionRepo, userWordMasteringRepo, logger)
+	failingTS := service.NewTrainingService(userCardRepo, trainingCardRepo, failingSessionRepo, userWordMasteringRepo, config.DefaultLearningConfig(), logger)
 
 	setTHField(th, "trainingService", failingTS)
 
@@ -618,7 +619,7 @@ func TestRestoreSession_RestoreQueueError(t *testing.T) {
 	// (RestoreQueue logs warn and continues, returning empty queue)
 	failingConn := newFailingDB(t)
 	failingUserCardRepo := repository.NewUserCardRepository(failingConn, logger)
-	failingTS := service.NewTrainingService(failingUserCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, logger)
+	failingTS := service.NewTrainingService(failingUserCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, config.DefaultLearningConfig(), logger)
 
 	setTHField(th, "trainingService", failingTS)
 
@@ -750,7 +751,7 @@ func TestRestoreSession_GetActiveSessionError(t *testing.T) {
 	// Replace trainingService with one using a failing sessionRepo so GetActiveSession fails
 	failingConn := newFailingDB(t)
 	failingSessionRepo := repository.NewSessionRepository(failingConn, logger)
-	failingTS := service.NewTrainingService(userCardRepo, trainingCardRepo, failingSessionRepo, userWordMasteringRepo, logger)
+	failingTS := service.NewTrainingService(userCardRepo, trainingCardRepo, failingSessionRepo, userWordMasteringRepo, config.DefaultLearningConfig(), logger)
 
 	setTHField(th, "trainingService", failingTS)
 
@@ -781,7 +782,7 @@ func TestRestoreSession_IndexBeyondQueueWithFailingDB(t *testing.T) {
 	// Replace trainingService with one using a failing sessionRepo
 	failingConn := newFailingDB(t)
 	failingSessionRepo := repository.NewSessionRepository(failingConn, logger)
-	failingTS := service.NewTrainingService(userCardRepo, trainingCardRepo, failingSessionRepo, userWordMasteringRepo, logger)
+	failingTS := service.NewTrainingService(userCardRepo, trainingCardRepo, failingSessionRepo, userWordMasteringRepo, config.DefaultLearningConfig(), logger)
 
 	setTHField(th, "trainingService", failingTS)
 
@@ -808,7 +809,7 @@ func TestStartTraining_ExistingSessionInMemory(t *testing.T) {
 	trainingCardRepo := repository.NewTrainingCardRepository(conn, logger)
 	userCardRepo := repository.NewUserCardRepository(conn, logger)
 	userWordMasteringRepo := repository.NewUserWordMasteringRepository(conn, logger)
-	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, logger)
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, config.DefaultLearningConfig(), logger)
 
 	session, queue, err := trainingService.StartSession(userID, models.SourceManual, nil)
 	if err != nil {
@@ -889,7 +890,7 @@ func TestHandleAnswer_OptionsNotShownYet(t *testing.T) {
 	trainingCardRepo := repository.NewTrainingCardRepository(conn, logger)
 	userCardRepo := repository.NewUserCardRepository(conn, logger)
 	userWordMasteringRepo := repository.NewUserWordMasteringRepository(conn, logger)
-	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, logger)
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, config.DefaultLearningConfig(), logger)
 
 	session, queue, err := trainingService.StartSession(userID, models.SourceManual, nil)
 	if err != nil {
@@ -938,7 +939,7 @@ func TestHandleAnswer_EarlyRevealTrue(t *testing.T) {
 	trainingCardRepo := repository.NewTrainingCardRepository(conn, logger)
 	userCardRepo := repository.NewUserCardRepository(conn, logger)
 	userWordMasteringRepo := repository.NewUserWordMasteringRepository(conn, logger)
-	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, logger)
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, config.DefaultLearningConfig(), logger)
 	session, queue, err := trainingService.StartSession(userID, models.SourceManual, nil)
 	if err != nil || len(queue) == 0 {
 		t.Skipf("StartSession: %v", err)
@@ -1021,7 +1022,7 @@ func TestHandleAnswer_CardNotInitialized(t *testing.T) {
 	trainingCardRepo := repository.NewTrainingCardRepository(conn, logger)
 	userCardRepo := repository.NewUserCardRepository(conn, logger)
 	userWordMasteringRepo := repository.NewUserWordMasteringRepository(conn, logger)
-	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, logger)
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, config.DefaultLearningConfig(), logger)
 
 	session, queue, err := trainingService.StartSession(userID, models.SourceManual, nil)
 	if err != nil {
@@ -1070,7 +1071,7 @@ func TestHandleAnswer_TrimRecentCorrectAnswers(t *testing.T) {
 	trainingCardRepo := repository.NewTrainingCardRepository(conn, logger)
 	userCardRepo := repository.NewUserCardRepository(conn, logger)
 	userWordMasteringRepo := repository.NewUserWordMasteringRepository(conn, logger)
-	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, logger)
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, config.DefaultLearningConfig(), logger)
 
 	session, queue, err := trainingService.StartSession(userID, models.SourceManual, nil)
 	if err != nil {
@@ -1180,7 +1181,7 @@ func TestShowCard_MultipleCardsInQueue(t *testing.T) {
 	trainingCardRepo := repository.NewTrainingCardRepository(conn, logger)
 	userCardRepo := repository.NewUserCardRepository(conn, logger)
 	userWordMasteringRepo := repository.NewUserWordMasteringRepository(conn, logger)
-	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, logger)
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, config.DefaultLearningConfig(), logger)
 
 	session, queue, err := trainingService.StartSession(userID, models.SourceManual, nil)
 	if err != nil {
@@ -1219,8 +1220,8 @@ func TestShowCard_BotSendError(t *testing.T) {
 	userCardRepo := repository.NewUserCardRepository(conn, logger)
 	sessionRepo := repository.NewSessionRepository(conn, logger)
 	userWordMasteringRepo := repository.NewUserWordMasteringRepository(conn, logger)
-	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, logger)
-	srsService := service.NewSRSService(userCardRepo, logger)
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, config.DefaultLearningConfig(), logger)
+	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
 	optionsService := service.NewOptionsService(trainingCardRepo, logger)
 
 	th := NewTrainingHandler(failingBot, trainingService, srsService, optionsService, sessionRepo, logger, 0, 0, conn)
@@ -1265,8 +1266,8 @@ func TestShowOptions_BotSendError(t *testing.T) {
 	userCardRepo := repository.NewUserCardRepository(conn, logger)
 	sessionRepo := repository.NewSessionRepository(conn, logger)
 	userWordMasteringRepo := repository.NewUserWordMasteringRepository(conn, logger)
-	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, logger)
-	srsService := service.NewSRSService(userCardRepo, logger)
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, config.DefaultLearningConfig(), logger)
+	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
 	optionsService := service.NewOptionsService(trainingCardRepo, logger)
 
 	th := NewTrainingHandler(failingBot, trainingService, srsService, optionsService, sessionRepo, logger, 0, 0, conn)
@@ -1322,7 +1323,7 @@ func TestShowOptions_EarlyRevealTrue(t *testing.T) {
 	trainingCardRepo := repository.NewTrainingCardRepository(conn, logger)
 	userCardRepo := repository.NewUserCardRepository(conn, logger)
 	userWordMasteringRepo := repository.NewUserWordMasteringRepository(conn, logger)
-	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, logger)
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, config.DefaultLearningConfig(), logger)
 
 	session, queue, err := trainingService.StartSession(userID, models.SourceManual, nil)
 	if err != nil {
@@ -1377,8 +1378,8 @@ func TestHandleAnswer_ShowCardError(t *testing.T) {
 	userCardRepo := repository.NewUserCardRepository(conn, logger)
 	sessionRepo := repository.NewSessionRepository(conn, logger)
 	userWordMasteringRepo := repository.NewUserWordMasteringRepository(conn, logger)
-	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, logger)
-	srsService := service.NewSRSService(userCardRepo, logger)
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, config.DefaultLearningConfig(), logger)
+	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
 	optionsService := service.NewOptionsService(trainingCardRepo, logger)
 
 	th := NewTrainingHandler(failingBot, trainingService, srsService, optionsService, sessionRepo, logger, 0, 0, conn)
@@ -1447,8 +1448,8 @@ func TestHandleAnswer_ShowCardFailsWhenCardNotInitialized(t *testing.T) {
 	userCardRepo := repository.NewUserCardRepository(conn, logger)
 	sessionRepo := repository.NewSessionRepository(conn, logger)
 	userWordMasteringRepo := repository.NewUserWordMasteringRepository(conn, logger)
-	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, logger)
-	srsService := service.NewSRSService(userCardRepo, logger)
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, config.DefaultLearningConfig(), logger)
+	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
 	optionsService := service.NewOptionsService(trainingCardRepo, logger)
 
 	th := NewTrainingHandler(failingBot, trainingService, srsService, optionsService, sessionRepo, logger, 0, 0, conn)
@@ -1571,7 +1572,7 @@ func TestHandleAnswer_CreateReviewEventError(t *testing.T) {
 	trainingCardRepo := repository.NewTrainingCardRepository(conn, logger)
 	userCardRepo := repository.NewUserCardRepository(conn, logger)
 	userWordMasteringRepo := repository.NewUserWordMasteringRepository(conn, logger)
-	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, logger)
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, config.DefaultLearningConfig(), logger)
 
 	session, queue, err := trainingService.StartSession(userID, models.SourceManual, nil)
 	if err != nil {
@@ -1626,7 +1627,7 @@ func TestFinishSession_GetSessionStatsError(t *testing.T) {
 	trainingCardRepo := repository.NewTrainingCardRepository(conn, logger)
 	userCardRepo := repository.NewUserCardRepository(conn, logger)
 	userWordMasteringRepo := repository.NewUserWordMasteringRepository(conn, logger)
-	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, logger)
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, config.DefaultLearningConfig(), logger)
 
 	session, queue, err := trainingService.StartSession(userID, models.SourceManual, nil)
 	if err != nil {
@@ -1681,7 +1682,7 @@ func TestFinishSession_DBQueryErrors(t *testing.T) {
 	trainingCardRepo := repository.NewTrainingCardRepository(conn, logger)
 	userCardRepo := repository.NewUserCardRepository(conn, logger)
 	userWordMasteringRepo := repository.NewUserWordMasteringRepository(conn, logger)
-	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, logger)
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, config.DefaultLearningConfig(), logger)
 
 	session, queue, err := trainingService.StartSession(userID, models.SourceManual, nil)
 	if err != nil {
@@ -1735,7 +1736,7 @@ func TestCancelSession_FinishSessionError(t *testing.T) {
 	trainingCardRepo := repository.NewTrainingCardRepository(conn, logger)
 	userCardRepo := repository.NewUserCardRepository(conn, logger)
 	userWordMasteringRepo := repository.NewUserWordMasteringRepository(conn, logger)
-	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, logger)
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, config.DefaultLearningConfig(), logger)
 
 	session, queue, err := trainingService.StartSession(userID, models.SourceManual, nil)
 	if err != nil {
@@ -1762,7 +1763,7 @@ func TestCancelSession_FinishSessionError(t *testing.T) {
 	// Replace trainingService with failing one so FinishSession fails
 	failingConn := newFailingDB(t)
 	failingSessionRepo := repository.NewSessionRepository(failingConn, logger)
-	failingTS := service.NewTrainingService(userCardRepo, trainingCardRepo, failingSessionRepo, userWordMasteringRepo, logger)
+	failingTS := service.NewTrainingService(userCardRepo, trainingCardRepo, failingSessionRepo, userWordMasteringRepo, config.DefaultLearningConfig(), logger)
 	setTHField(th, "trainingService", failingTS)
 
 	// CancelSession should log error for FinishSession but continue
@@ -1933,8 +1934,8 @@ func TestFinishSession_DBNil(t *testing.T) {
 	trainingCardRepo := repository.NewTrainingCardRepository(conn, logger)
 	userCardRepo := repository.NewUserCardRepository(conn, logger)
 	userWordMasteringRepo := repository.NewUserWordMasteringRepository(conn, logger)
-	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, logger)
-	srsService := service.NewSRSService(userCardRepo, logger)
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, config.DefaultLearningConfig(), logger)
+	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
 	optionsService := service.NewOptionsService(trainingCardRepo, logger)
 	th := NewTrainingHandler(newTestBot(&mockTelegramClient{}), trainingService, srsService, optionsService, sessionRepo, logger, 0, 0, nil)
 	th.sessionsMutex.Lock()
@@ -2013,7 +2014,7 @@ func TestShowOptions_AlreadyShown(t *testing.T) {
 	trainingCardRepo := repository.NewTrainingCardRepository(conn, logger)
 	userCardRepo := repository.NewUserCardRepository(conn, logger)
 	userWordMasteringRepo := repository.NewUserWordMasteringRepository(conn, logger)
-	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, logger)
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, config.DefaultLearningConfig(), logger)
 	session, queue, _ := trainingService.StartSession(userID, models.SourceManual, nil)
 	if len(queue) == 0 {
 		t.Skip("no cards in queue")
@@ -2050,8 +2051,8 @@ func TestAutoRevealOptions_OptionsAlreadyShown(t *testing.T) {
 	userCardRepo := repository.NewUserCardRepository(conn, logger)
 	sessionRepo := repository.NewSessionRepository(conn, logger)
 	userWordMasteringRepo := repository.NewUserWordMasteringRepository(conn, logger)
-	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, logger)
-	srsService := service.NewSRSService(userCardRepo, logger)
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, config.DefaultLearningConfig(), logger)
+	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
 	optionsService := service.NewOptionsService(trainingCardRepo, logger)
 	th := NewTrainingHandler(newTestBot(client), trainingService, srsService, optionsService, sessionRepo, logger, 50, 0, conn)
 	userID, _ := createUserWithCard(t, db, 3028)
@@ -2157,7 +2158,7 @@ func TestShowCard_SpellSkips(t *testing.T) {
 	trainingCardRepo := repository.NewTrainingCardRepository(conn, logger)
 	userCardRepo := repository.NewUserCardRepository(conn, logger)
 	userWordMasteringRepo := repository.NewUserWordMasteringRepository(conn, logger)
-	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, logger)
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, config.DefaultLearningConfig(), logger)
 	session, queue, err := trainingService.StartSession(userID, models.SourceManual, nil)
 	if err != nil || len(queue) == 0 {
 		t.Skipf("StartSession: %v", err)
@@ -2289,7 +2290,7 @@ func TestShowCard_NonCardSkips(t *testing.T) {
 	trainingCardRepo := repository.NewTrainingCardRepository(conn, logger)
 	userCardRepo := repository.NewUserCardRepository(conn, logger)
 	userWordMasteringRepo := repository.NewUserWordMasteringRepository(conn, logger)
-	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, logger)
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, config.DefaultLearningConfig(), logger)
 	session, queue, _ := trainingService.StartSession(userID, models.SourceManual, nil)
 	if len(queue) == 0 {
 		t.Skip("no cards in queue")

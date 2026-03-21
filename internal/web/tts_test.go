@@ -56,7 +56,7 @@ func TestSetupPronunciationMediaRoute_RegistersRoute(t *testing.T) {
 		AudioDir:       t.TempDir(),
 		PublicBasePath: "/media/tts",
 	}
-	pronService := service.NewPronunciationService(pronCfg, nil, logger)
+	pronService := service.NewPronunciationService(pronCfg, config.DefaultLearningConfig(), nil, logger)
 	router.SetPronunciationService(pronService)
 
 	req := httptest.NewRequest(http.MethodGet, "/media/tts/some/file.mp3", nil)
@@ -74,7 +74,7 @@ func TestSetupPronunciationMediaRoute_NoOpWhenDisabled(t *testing.T) {
 	router := &Router{
 		mux:                  http.NewServeMux(),
 		logger:               logger,
-		pronunciationService: service.NewPronunciationService(config.TTSConfig{Enabled: false}, nil, logger),
+		pronunciationService: service.NewPronunciationService(config.TTSConfig{Enabled: false}, config.DefaultLearningConfig(), nil, logger),
 	}
 	router.setupPronunciationMediaRoute()
 
@@ -111,7 +111,7 @@ func TestSetupPronunciationMediaRoute_Idempotent(t *testing.T) {
 		AudioDir:       t.TempDir(),
 		PublicBasePath: "/media/tts",
 	}
-	pronService := service.NewPronunciationService(pronCfg, nil, logger)
+	pronService := service.NewPronunciationService(pronCfg, config.DefaultLearningConfig(), nil, logger)
 	router := &Router{
 		mux:                  http.NewServeMux(),
 		logger:               logger,
@@ -138,7 +138,7 @@ func TestSetupPronunciationMediaRoute_AlreadyRegistered(t *testing.T) {
 		AudioDir:       t.TempDir(),
 		PublicBasePath: "/media/tts",
 	}
-	pronService := service.NewPronunciationService(pronCfg, nil, logger)
+	pronService := service.NewPronunciationService(pronCfg, config.DefaultLearningConfig(), nil, logger)
 	router := &Router{
 		mux:                               http.NewServeMux(),
 		logger:                            logger,
@@ -232,7 +232,7 @@ func TestHandleTTSWord_ServiceDisabled(t *testing.T) {
 	logger := zap.NewNop()
 	router := &Router{
 		logger:               logger,
-		pronunciationService: service.NewPronunciationService(config.TTSConfig{Enabled: false}, nil, logger),
+		pronunciationService: service.NewPronunciationService(config.TTSConfig{Enabled: false}, config.DefaultLearningConfig(), nil, logger),
 	}
 	req := httptest.NewRequest(http.MethodGet, "/api/tts/word?word=hello", nil)
 	w := httptest.NewRecorder()
@@ -292,7 +292,7 @@ func TestHandleTTSWordAndMedia(t *testing.T) {
 		DictionaryBaseURL: dictServer.URL + "/api/v2/entries/en",
 	}
 
-	pronService := service.NewPronunciationService(cfg, nil, zap.NewNop())
+	pronService := service.NewPronunciationService(cfg, config.DefaultLearningConfig(), nil, zap.NewNop())
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	go pronService.Start(ctx)
@@ -359,7 +359,7 @@ func TestHandleTTSMedia_MethodNotAllowed(t *testing.T) {
 		AudioDir:       t.TempDir(),
 		PublicBasePath: "/media/tts",
 	}
-	pronService := service.NewPronunciationService(pronCfg, nil, logger)
+	pronService := service.NewPronunciationService(pronCfg, config.DefaultLearningConfig(), nil, logger)
 	router.SetPronunciationService(pronService)
 
 	req := httptest.NewRequest(http.MethodPost, "/media/tts/word.mp3", nil)
@@ -375,7 +375,7 @@ func TestHandleTTSMedia_ServiceDisabled(t *testing.T) {
 	logger := zap.NewNop()
 	router := &Router{
 		logger:               logger,
-		pronunciationService: service.NewPronunciationService(config.TTSConfig{Enabled: false}, nil, logger),
+		pronunciationService: service.NewPronunciationService(config.TTSConfig{Enabled: false}, config.DefaultLearningConfig(), nil, logger),
 	}
 
 	req := httptest.NewRequest(http.MethodGet, "/media/tts/any.mp3", nil)
@@ -408,7 +408,7 @@ func TestHandleTTSMedia_EmptyPath(t *testing.T) {
 		AudioDir:       t.TempDir(),
 		PublicBasePath: "/media/tts",
 	}
-	pronService := service.NewPronunciationService(pronCfg, nil, logger)
+	pronService := service.NewPronunciationService(pronCfg, config.DefaultLearningConfig(), nil, logger)
 	router := &Router{logger: logger, pronunciationService: pronService}
 
 	// Use full URL so req.URL.Path is definitely "/media/tts/" (empty relative after prefix)
@@ -429,7 +429,7 @@ func TestHandleTTSMedia_NotMp3(t *testing.T) {
 		AudioDir:       t.TempDir(),
 		PublicBasePath: "/media/tts",
 	}
-	pronService := service.NewPronunciationService(pronCfg, nil, logger)
+	pronService := service.NewPronunciationService(pronCfg, config.DefaultLearningConfig(), nil, logger)
 	router := &Router{logger: logger, pronunciationService: pronService}
 
 	req := httptest.NewRequest(http.MethodGet, "/media/tts/word.wav", nil)
@@ -449,7 +449,7 @@ func TestHandleTTSMedia_TrailingSlash(t *testing.T) {
 		AudioDir:       t.TempDir(),
 		PublicBasePath: "/media/tts",
 	}
-	pronService := service.NewPronunciationService(pronCfg, nil, logger)
+	pronService := service.NewPronunciationService(pronCfg, config.DefaultLearningConfig(), nil, logger)
 	router := &Router{logger: logger, pronunciationService: pronService}
 
 	req := httptest.NewRequest(http.MethodGet, "/media/tts/word/", nil)
@@ -470,7 +470,7 @@ func TestHandleTTSMedia_InvalidPathCoversNotFound(t *testing.T) {
 		AudioDir:       t.TempDir(),
 		PublicBasePath: "/media/tts",
 	}
-	pronService := service.NewPronunciationService(pronCfg, nil, logger)
+	pronService := service.NewPronunciationService(pronCfg, config.DefaultLearningConfig(), nil, logger)
 	router := &Router{logger: logger, pronunciationService: pronService}
 
 	req := httptest.NewRequest(http.MethodGet, "http://localhost/", nil)
@@ -497,7 +497,7 @@ func TestHandleTTSMedia_HEADAllowed(t *testing.T) {
 		AudioDir:       dir,
 		PublicBasePath: "/media/tts",
 	}
-	pronService := service.NewPronunciationService(pronCfg, nil, logger)
+	pronService := service.NewPronunciationService(pronCfg, config.DefaultLearningConfig(), nil, logger)
 	router := &Router{logger: logger, pronunciationService: pronService}
 
 	req := httptest.NewRequest(http.MethodHead, "/media/tts/head_test.mp3", nil)

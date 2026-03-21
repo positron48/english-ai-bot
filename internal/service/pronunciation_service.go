@@ -567,6 +567,7 @@ type PronunciationService struct {
 	backfillBatch   int
 	workers         int
 
+	learning   config.LearningConfig
 	wordRepo   *repository.WordRepository
 	ttsRepo    ttsStatusRepo
 	logger     *zap.Logger
@@ -577,7 +578,7 @@ type PronunciationService struct {
 }
 
 // NewPronunciationService creates a pronunciation service from config.
-func NewPronunciationService(cfg config.TTSConfig, wordRepo *repository.WordRepository, logger *zap.Logger) *PronunciationService {
+func NewPronunciationService(cfg config.TTSConfig, learning config.LearningConfig, wordRepo *repository.WordRepository, logger *zap.Logger) *PronunciationService {
 	if logger == nil {
 		logger = zap.NewNop()
 	}
@@ -627,6 +628,7 @@ func NewPronunciationService(cfg config.TTSConfig, wordRepo *repository.WordRepo
 		backfillEvery:   backfillEvery,
 		backfillBatch:   backfillBatch,
 		workers:         workers,
+		learning:        learning,
 		wordRepo:        wordRepo,
 		logger:          logger,
 		queue:           make(chan string, 4096),
@@ -651,7 +653,7 @@ func NewPronunciationService(cfg config.TTSConfig, wordRepo *repository.WordRepo
 	}
 	service.publicBasePath = "/" + strings.Trim(service.publicBasePath, "/")
 
-	service.providers = buildPronunciationProviders(cfg, logger)
+	service.providers = buildPronunciationProviders(cfg, learning, logger)
 	if len(service.providers) == 0 {
 		service.enabled = false
 		logger.Warn("tts disabled: no pronunciation providers available")
@@ -660,7 +662,7 @@ func NewPronunciationService(cfg config.TTSConfig, wordRepo *repository.WordRepo
 	return service
 }
 
-func buildPronunciationProviders(cfg config.TTSConfig, logger *zap.Logger) []pronunciationProvider {
+func buildPronunciationProviders(cfg config.TTSConfig, learning config.LearningConfig, logger *zap.Logger) []pronunciationProvider {
 	timeout := parseDurationWithDefault(cfg.RequestTimeout, 45*time.Second)
 	client := &http.Client{Timeout: timeout}
 	provider := strings.ToLower(strings.TrimSpace(cfg.Provider))
@@ -678,7 +680,11 @@ func buildPronunciationProviders(cfg config.TTSConfig, logger *zap.Logger) []pro
 		}
 		baseURL := strings.TrimSpace(cfg.DictionaryBaseURL)
 		if baseURL == "" {
-			baseURL = "https://api.dictionaryapi.dev/api/v2/entries/en"
+			tl := strings.TrimSpace(learning.TargetLang)
+			if tl == "" {
+				tl = "en"
+			}
+			baseURL = fmt.Sprintf("https://api.dictionaryapi.dev/api/v2/entries/%s", tl)
 		}
 		minDelay := parseDurationWithDefault(cfg.DictionaryMinDelay, 100*time.Millisecond)
 		if minDelay < 0 {

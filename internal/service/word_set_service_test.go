@@ -12,6 +12,7 @@ import (
 	"unsafe"
 
 	"tgbot-skeleton/internal/ai"
+	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/database"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
@@ -62,6 +63,7 @@ func newWordSetService(t *testing.T, transport http.RoundTripper) (*WordSetServi
 		userCardRepo,
 		userWordKnowledgeRepo,
 		aiService,
+		config.DefaultLearningConfig(),
 		"",
 		logger,
 	)

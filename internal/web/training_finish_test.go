@@ -90,8 +90,8 @@ func TestFinishTrainingSession_CompleteSession(t *testing.T) {
 	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
 	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
 
-	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, logger)
-	srsService := service.NewSRSService(userCardRepo, logger)
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
+	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
 	optionsService := service.NewOptionsService(trainingCardRepo, logger)
 
 	router := NewRouter(logger, cfg, db, trainingService, srsService, optionsService, nil)
@@ -208,7 +208,7 @@ func TestFinishTrainingSession_DirectCall(t *testing.T) {
 			WrongAnswerDelaySeconds: 3,
 		},
 	}
-	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, logger)
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 
 	router := NewRouter(logger, cfg, db, trainingService, nil, nil, nil)
 	router.webTrainingHandler = NewWebTrainingHandler(trainingService, nil, nil, sessionRepo, logger, 2000, 3)

@@ -300,7 +300,7 @@ func TestShowTrainingCard_SessionFinished(t *testing.T) {
 	logger := zap.NewNop()
 	db, _, _, _, sessionRepo := setupTrainingIntegrationTestDB(t)
 	cfg := &config.Config{Training: config.TrainingConfig{OptionsDelayMS: 2000, WrongAnswerDelaySeconds: 3}}
-	trainingService := service.NewTrainingService(nil, nil, sessionRepo, nil, logger)
+	trainingService := service.NewTrainingService(nil, nil, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 	router := NewRouter(logger, cfg, db, trainingService, nil, nil, nil)
 	router.webTrainingHandler = NewWebTrainingHandler(trainingService, nil, nil, sessionRepo, logger, 2000, 3)
 	state := &WebTrainingState{

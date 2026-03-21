@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"testing"
 
+	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/database"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
@@ -25,7 +26,7 @@ func setupWordSetServiceMoreTest(t *testing.T) (*WordSetService, *database.DB, *
 	uwkRepo := repository.NewUserWordKnowledgeRepository(db.GetConnection(), logger)
 	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
 
-	service := NewWordSetService(wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, nil, "gpt-4", logger)
+	service := NewWordSetService(wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, nil, config.DefaultLearningConfig(), "gpt-4", logger)
 
 	cleanup := func() {} // shared db, do not close
 
@@ -153,7 +154,7 @@ func TestMarkKnown_DeleteUserCardsFails(t *testing.T) {
 		},
 	}
 	svc := NewWordSetServiceWithMastering(
-		wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, mockUC, uwkRepo, nil, nil, "gpt-4", logger,
+		wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, mockUC, uwkRepo, nil, nil, config.DefaultLearningConfig(), "gpt-4", logger,
 	)
 	err := svc.MarkKnown(user.ID, wordCard.ID)
 	if err != nil {
@@ -228,7 +229,7 @@ func TestEnsureUserCardsForWord_WithMasteringRepo(t *testing.T) {
 	userRepo := repository.NewUserRepository(conn, logger)
 
 	service := NewWordSetServiceWithMastering(
-		wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, masteringRepo, nil, "", logger,
+		wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, masteringRepo, nil, config.DefaultLearningConfig(), "", logger,
 	)
 	user, _ := userRepo.GetOrCreateUser(33333)
 	cardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "masterw", Definition: ""})

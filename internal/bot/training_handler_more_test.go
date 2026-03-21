@@ -8,6 +8,7 @@ import (
 	"testing"
 	"time"
 
+	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/database"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
@@ -41,8 +42,8 @@ func setupTrainingHandlerDeps(t *testing.T, client *mockTelegramClient) *trainin
 	userCardRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
 
-	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, logger)
-	srsService := service.NewSRSService(userCardRepo, logger)
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
+	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
 	optionsService := service.NewOptionsService(trainingCardRepo, logger)
 
 	handler := NewTrainingHandler(

@@ -39,7 +39,7 @@ func setupGrammarTest(t *testing.T) (*Router, *database.DB, int64, func()) {
 	contentRepo := repository.NewGrammarContentRepository(logger)
 	publishRepo := repository.NewGrammarPublishRepository(db.GetConnection(), logger)
 	attemptRepo := repository.NewGrammarAttemptRepository(db.GetConnection(), logger)
-	grammarService := service.NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+	grammarService := service.NewGrammarService(contentRepo, publishRepo, attemptRepo, config.DefaultLearningConfig(), logger)
 	router.SetGrammarService(grammarService)
 
 	cleanup := func() {} // shared db, do not close

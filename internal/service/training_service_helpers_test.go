@@ -3,6 +3,7 @@ package service
 import (
 	"testing"
 
+	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/models"
 
 	"go.uber.org/zap"
@@ -12,7 +13,7 @@ func TestTrainingService_RestoreQueue_EmptyIDs(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	_, _, userCardRepo, trainingCardRepo, _ := setupTrainingServiceTestDB(t)
 
-	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, config.DefaultLearningConfig(), logger)
 
 	// Restore queue with empty IDs
 	queue, err := service.RestoreQueue(292929, []int64{})
@@ -68,7 +69,7 @@ func TestTrainingService_RestoreQueue_ValidCards(t *testing.T) {
 		t.Fatalf("Failed to create user card: %v", err)
 	}
 
-	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, config.DefaultLearningConfig(), logger)
 
 	// Restore queue
 	queue, err := service.RestoreQueue(u.ID, []int64{userCardID1, userCardID2})
@@ -84,7 +85,7 @@ func TestTrainingService_RestoreQueue_NonExistentUserCard(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	_, _, userCardRepo, trainingCardRepo, _ := setupTrainingServiceTestDB(t)
 
-	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, config.DefaultLearningConfig(), logger)
 
 	// Restore queue with non-existent user card ID
 	queue, err := service.RestoreQueue(313131, []int64{99999})
@@ -123,7 +124,7 @@ func TestTrainingService_RestoreQueue_WrongUser_FromHelper(t *testing.T) {
 		t.Fatalf("Failed to create user card: %v", err)
 	}
 
-	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, config.DefaultLearningConfig(), logger)
 
 	u333, _ := userRepo.GetOrCreateUser(333333)
 	// Try to restore queue for different user (333333) with card from user 323232
@@ -155,7 +156,7 @@ func TestTrainingService_RestoreQueue_NonExistentTrainingCard(t *testing.T) {
 		t.Fatalf("Failed to create user card: %v", err)
 	}
 
-	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, config.DefaultLearningConfig(), logger)
 
 	// Restore queue
 	queue, err := service.RestoreQueue(343434, []int64{userCardID})

@@ -111,7 +111,7 @@ func TestRouter_SetPronunciationService(t *testing.T) {
 		PublicBasePath:    "/media/tts",
 		DictionaryEnabled: true,
 		DictionaryBaseURL: "https://api.dictionaryapi.dev/api/v2/entries/en",
-	}, nil, logger)
+	}, config.DefaultLearningConfig(), nil, logger)
 
 	router.SetPronunciationService(pronService)
 

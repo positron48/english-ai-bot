@@ -96,12 +96,12 @@ func NewHarness(t *testing.T, opts ...HarnessOpt) *Harness {
 
 	// Services
 	aiService := ai.NewService(cfg.aiServiceURL, "test-model", cfg.aiAPIKey, cfg.aiPrompt, logger)
-	wordService := service.NewWordService(wordRepo, trainingCardRepo, userCardRepo, aiService, logger)
-	srsService := service.NewSRSService(userCardRepo, logger)
-	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, logger)
+	wordService := service.NewWordService(wordRepo, trainingCardRepo, userCardRepo, aiService, config.DefaultLearningConfig(), logger)
+	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 	optionsService := service.NewOptionsService(trainingCardRepo, logger)
 	cbService := service.NewCircuitBreakerService(cbRepo, 5, logger)
-	grammarService := service.NewGrammarService(grammarContentRepo, grammarPublishRepo, grammarAttemptRepo, logger)
+	grammarService := service.NewGrammarService(grammarContentRepo, grammarPublishRepo, grammarAttemptRepo, config.DefaultLearningConfig(), logger)
 
 	appCfg := testConfig()
 	router := web.NewRouter(logger, appCfg, conn, trainingService, srsService, optionsService, cbService)
@@ -120,6 +120,7 @@ func NewHarness(t *testing.T, opts ...HarnessOpt) *Harness {
 
 func testConfig() *config.Config {
 	return &config.Config{
+		Learning: config.DefaultLearningConfig(),
 		WebApp: config.WebAppConfig{
 			JWTSecret:                "test-jwt-secret-for-integration",
 			JWTTTLHours:              24,

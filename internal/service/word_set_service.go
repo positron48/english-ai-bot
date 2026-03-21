@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"tgbot-skeleton/internal/ai"
+	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 
@@ -38,6 +39,7 @@ type WordSetService struct {
 	userWordKnowledgeRepo *repository.UserWordKnowledgeRepository
 	userWordMasteringRepo *repository.UserWordMasteringRepository
 	aiService             *ai.Service
+	learning              config.LearningConfig
 	modelHigh             string
 	logger                *zap.Logger
 }
@@ -51,10 +53,11 @@ func NewWordSetService(
 	userCardRepo userCardRepoForWordSet,
 	userWordKnowledgeRepo *repository.UserWordKnowledgeRepository,
 	aiService *ai.Service,
+	learning config.LearningConfig,
 	modelHigh string,
 	logger *zap.Logger,
 ) *WordSetService {
-	return NewWordSetServiceWithMastering(wordSetRepo, wordSetCategoryRepo, wordRepo, trainingCardRepo, userCardRepo, userWordKnowledgeRepo, nil, aiService, modelHigh, logger)
+	return NewWordSetServiceWithMastering(wordSetRepo, wordSetCategoryRepo, wordRepo, trainingCardRepo, userCardRepo, userWordKnowledgeRepo, nil, aiService, learning, modelHigh, logger)
 }
 
 // NewWordSetServiceWithMastering creates a word set service with optional UserWordMasteringRepository for storing mastering score on card creation.
@@ -67,6 +70,7 @@ func NewWordSetServiceWithMastering(
 	userWordKnowledgeRepo *repository.UserWordKnowledgeRepository,
 	userWordMasteringRepo *repository.UserWordMasteringRepository,
 	aiService *ai.Service,
+	learning config.LearningConfig,
 	modelHigh string,
 	logger *zap.Logger,
 ) *WordSetService {
@@ -79,6 +83,7 @@ func NewWordSetServiceWithMastering(
 		userWordKnowledgeRepo: userWordKnowledgeRepo,
 		userWordMasteringRepo: userWordMasteringRepo,
 		aiService:             aiService,
+		learning:              learning,
 		modelHigh:             modelHigh,
 		logger:                logger,
 	}

@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/database"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
@@ -67,7 +68,7 @@ func TestTrainingService_StartSession_FinishOldSession_FinishFails(t *testing.T)
 	}
 	oldID, _ := sessionRepo.CreateSession(oldSess)
 
-	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 	sess, queue, err := service.StartSession(user.ID, models.SourceManual, &SessionConfig{
 		MaxCardsPerSession: 10, MaxNewPerSession: 5, AlgoVersion: "test",
 	})
@@ -106,7 +107,7 @@ func TestTrainingService_generateQueue_DisplayWordOverride(t *testing.T) {
 		NextDueAt:      &past,
 	})
 
-	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, config.DefaultLearningConfig(), logger)
 	config := SessionConfig{
 		MaxCardsPerSession:      10,
 		MaxNewPerSession:        5,
@@ -151,7 +152,7 @@ func TestTrainingService_generateQueue_GetWordMasteringStatsError(t *testing.T) 
 	// Use nil userWordMasteringRepo (default path) with a card that has no review events.
 	// GetWordMasteringStats will return nil stats (no error), so score=0.
 	// With SpellEnabled=true and SpellMasteringThreshold=0, score(0) >= 0 -> spell may be injected.
-	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, config.DefaultLearningConfig(), logger)
 	config := SessionConfig{
 		MaxCardsPerSession:      10,
 		MaxNewPerSession:        5,
@@ -193,7 +194,7 @@ func TestTrainingService_generateQueue_GetWordMasteringStats_NilStats(t *testing
 
 	// With no reps, computeMasteringScore returns 50 (review_state_count > 0).
 	// With high threshold (100), score < threshold -> spell/type not injected.
-	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, config.DefaultLearningConfig(), logger)
 	config := SessionConfig{
 		MaxCardsPerSession:      10,
 		MaxNewPerSession:        5,
@@ -240,7 +241,7 @@ func TestTrainingService_generateQueue_SpellWithEmptyLetters(t *testing.T) {
 	mockMastering := &mockMasteringRepoForSession{
 		getScoreFunc: func(_, _ int64) (int, error) { return 80, nil },
 	}
-	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, mockMastering, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, mockMastering, config.DefaultLearningConfig(), logger)
 	// Force rand.Intn(3) to hit case 1 (spell) by running many times
 	// We can't control rand, but we can verify the queue is still valid
 	config := SessionConfig{
@@ -292,7 +293,7 @@ func TestTrainingService_generateQueue_SpellOnly_EmptyLetters(t *testing.T) {
 	mockMastering := &mockMasteringRepoForSession{
 		getScoreFunc: func(_, _ int64) (int, error) { return 80, nil },
 	}
-	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, mockMastering, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, mockMastering, config.DefaultLearningConfig(), logger)
 	config := SessionConfig{
 		MaxCardsPerSession:      10,
 		MaxNewPerSession:        5,
@@ -341,7 +342,7 @@ func TestTrainingService_shufflePreventDuplicatesAttempt_FallbackPath(t *testing
 	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
 	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
-	svc := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
+	svc := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 
 	// Create a queue where all cards have the same WordCardID so the fallback path is hit.
 	// With minDistance=3 and all same word, the first 3 cards block the 4th.
@@ -369,7 +370,7 @@ func TestTrainingService_shufflePreventDuplicatesAttempt_AllCardsAdded(t *testin
 	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
 	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
-	svc := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
+	svc := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 
 	// Two different words, each with 2 cards
 	wid1, wid2 := int64(1), int64(2)
@@ -397,7 +398,7 @@ func TestTrainingService_fixAdjacentDuplicates_SwapConditions(t *testing.T) {
 	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
 	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
-	svc := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
+	svc := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 
 	// [A, A, B, B, C] - two pairs of adjacent duplicates
 	a, b, c := int64(1), int64(2), int64(3)
@@ -425,7 +426,7 @@ func TestTrainingService_fixAdjacentDuplicates_NeighborChecks(t *testing.T) {
 	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
 	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
-	svc := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
+	svc := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 
 	// [A, A, B, A] - swap at i=1 with j=3 would create A,A at end -> should be rejected
 	// [A, A, B, A] -> try to fix: i=3 (end), i-1=2 (B), so no duplicate at 3. i=1, i-1=0 (A) -> duplicate
@@ -455,7 +456,7 @@ func TestTrainingService_UpdateSessionState_GetSessionFails(t *testing.T) {
 	// when DB is closed.
 	logger, _ := zap.NewDevelopment()
 	_, _, _, _, sessionRepo := setupTrainingServiceTestDB(t)
-	service := NewTrainingService(nil, nil, sessionRepo, nil, logger)
+	service := NewTrainingService(nil, nil, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 
 	// Non-existent session returns nil (not error) in current impl -> "session not found"
 	err := service.UpdateSessionState(999998, `{}`)
@@ -509,7 +510,7 @@ func TestTrainingService_generateQueue_SpellTypeRandBranches(t *testing.T) {
 	mockMastering := &mockMasteringRepoForSession{
 		getScoreFunc: func(_, _ int64) (int, error) { return 90, nil },
 	}
-	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, mockMastering, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, mockMastering, config.DefaultLearningConfig(), logger)
 	config := SessionConfig{
 		MaxCardsPerSession:      10,
 		MaxNewPerSession:        5,
@@ -560,7 +561,7 @@ func TestTrainingService_generateQueue_SpellOnlyRandBranch(t *testing.T) {
 	mockMastering := &mockMasteringRepoForSession{
 		getScoreFunc: func(_, _ int64) (int, error) { return 90, nil },
 	}
-	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, mockMastering, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, mockMastering, config.DefaultLearningConfig(), logger)
 	config := SessionConfig{
 		MaxCardsPerSession:      10,
 		MaxNewPerSession:        5,
@@ -606,7 +607,7 @@ func TestTrainingService_generateQueue_SpellThresholdNegative(t *testing.T) {
 	mockMastering := &mockMasteringRepoForSession{
 		getScoreFunc: func(_, _ int64) (int, error) { return 90, nil },
 	}
-	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, mockMastering, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, mockMastering, config.DefaultLearningConfig(), logger)
 	config := SessionConfig{
 		MaxCardsPerSession:      10,
 		MaxNewPerSession:        5,
@@ -647,7 +648,7 @@ func TestTrainingService_generateQueue_TypeThresholdOver100(t *testing.T) {
 	mockMastering := &mockMasteringRepoForSession{
 		getScoreFunc: func(_, _ int64) (int, error) { return 90, nil },
 	}
-	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, mockMastering, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, mockMastering, config.DefaultLearningConfig(), logger)
 	config := SessionConfig{
 		MaxCardsPerSession:     10,
 		MaxNewPerSession:       5,
@@ -689,7 +690,7 @@ func TestTrainingService_generateQueue_DedupedNewCards(t *testing.T) {
 		NextDueAt:      nil,
 	})
 
-	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, config.DefaultLearningConfig(), logger)
 	config := SessionConfig{MaxCardsPerSession: 10, MaxNewPerSession: 5}
 	queue, err := service.generateQueue(user.ID, config)
 	if err != nil {
@@ -709,7 +710,7 @@ func TestTrainingService_shufflePreventDuplicates_BestScoreImproved(t *testing.T
 	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
 	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
-	svc := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
+	svc := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 
 	// Create a queue where multiple attempts are needed.
 	// 3 cards with same WordCardID + 1 different -> minDistance=3, queue len=4 < 10
@@ -753,7 +754,7 @@ func TestTrainingService_generateQueue_ENtoRU_NoSpellType(t *testing.T) {
 	mockMastering := &mockMasteringRepoForSession{
 		getScoreFunc: func(_, _ int64) (int, error) { return 90, nil },
 	}
-	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, mockMastering, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, mockMastering, config.DefaultLearningConfig(), logger)
 	config := SessionConfig{
 		MaxCardsPerSession:      10,
 		MaxNewPerSession:        5,
@@ -783,7 +784,7 @@ func TestTrainingService_shufflePreventDuplicates_SmallQueueMinDistance(t *testi
 	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
 	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
-	svc := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
+	svc := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 
 	// 5 cards with 2 duplicates -> len < 10 -> minDistance = 3
 	wid1, wid2, wid3 := int64(1), int64(2), int64(3)
@@ -808,7 +809,7 @@ func TestTrainingService_shufflePreventDuplicates_MediumQueueMinDistance(t *test
 	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
 	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
-	svc := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
+	svc := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 
 	// 12 cards with some duplicates -> len >= 10 && < 20 -> minDistance = 4
 	cards := make([]*models.UserCardWithTraining, 0, 12)
@@ -833,7 +834,7 @@ func TestTrainingService_shufflePreventDuplicates_LargeQueueMinDistance(t *testi
 	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
 	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
-	svc := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
+	svc := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 
 	// 20 cards with some duplicates -> len >= 20 -> minDistance = 5
 	cards := make([]*models.UserCardWithTraining, 0, 20)
@@ -863,7 +864,7 @@ func TestTrainingService_StartSession_GetActiveSessionFails_Coverage(t *testing.
 		t.Skipf("cannot drop table: %v", err)
 	}
 
-	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 	_, _, err := service.StartSession(999, models.SourceManual, nil)
 	if err == nil {
 		t.Fatal("expected error when GetActiveSession fails")
@@ -896,7 +897,7 @@ func TestTrainingService_StartSession_FinishOldSession_WarnPath(t *testing.T) {
 	}
 	_, _ = sessionRepo.CreateSession(oldSess)
 
-	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 	sess, queue, err := service.StartSession(user.ID, models.SourceManual, &SessionConfig{
 		MaxCardsPerSession: 10, MaxNewPerSession: 5,
 	})
@@ -926,7 +927,7 @@ func TestTrainingService_StartSession_GenerateQueueFails(t *testing.T) {
 	}
 
 	userCardRepo := repository.NewUserCardRepository(conn, logger)
-	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 	_, _, err = service.StartSession(user.ID, models.SourceManual, &SessionConfig{
 		MaxCardsPerSession: 10, MaxNewPerSession: 5,
 	})
@@ -968,7 +969,7 @@ func TestTrainingService_StartSession_CreateSessionFails(t *testing.T) {
 	}
 
 	sessionRepo := repository.NewSessionRepository(conn, logger)
-	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 	_, _, err = service.StartSession(user.ID, models.SourceManual, &SessionConfig{
 		MaxCardsPerSession: 10, MaxNewPerSession: 5,
 	})
@@ -991,7 +992,7 @@ func TestTrainingService_FinishSession_RepoFails(t *testing.T) {
 
 	userCardRepo := repository.NewUserCardRepository(conn, logger)
 	sessionRepo := repository.NewSessionRepository(conn, logger)
-	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 	err := service.FinishSession(999, 0)
 	if err == nil {
 		t.Fatal("expected error when FinishSession fails")
@@ -1016,7 +1017,7 @@ func TestTrainingService_generateQueue_GetDueCardsFails(t *testing.T) {
 	}
 
 	userCardRepo := repository.NewUserCardRepository(conn, logger)
-	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 	_, err = service.generateQueue(user.ID, SessionConfig{MaxCardsPerSession: 10, MaxNewPerSession: 5})
 	if err == nil {
 		t.Fatal("expected error when GetDueCards fails")
@@ -1069,7 +1070,7 @@ func TestTrainingService_generateQueue_DedupDueCards(t *testing.T) {
 		State: models.StateReview, EF: 2.0, NextDueAt: &past,
 	})
 
-	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, config.DefaultLearningConfig(), logger)
 	queue, err := service.generateQueue(user.ID, SessionConfig{MaxCardsPerSession: 10, MaxNewPerSession: 5})
 	if err != nil {
 		t.Fatalf("generateQueue() error = %v", err)
@@ -1112,7 +1113,7 @@ func TestTrainingService_generateQueue_GetTrainingCardFails(t *testing.T) {
 	}
 
 	trainingCardRepo := repository.NewTrainingCardRepository(conn, logger)
-	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 	// generateQueue will call GetTrainingCard which fails -> skippedCount++ -> queue empty
 	queue, err := service.generateQueue(user.ID, SessionConfig{MaxCardsPerSession: 10, MaxNewPerSession: 5})
 	// When all cards are skipped due to error, generateQueue returns nil, nil (empty queue)
@@ -1138,7 +1139,7 @@ func TestTrainingService_UpdateSessionState_GetSessionFails_DBError(t *testing.T
 
 	userCardRepo := repository.NewUserCardRepository(conn, logger)
 	sessionRepo := repository.NewSessionRepository(conn, logger)
-	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 	err := service.UpdateSessionState(999, `{}`)
 	if err == nil {
 		t.Fatal("expected error when GetSession fails")
@@ -1158,7 +1159,7 @@ func TestTrainingService_RestoreQueue_GetUserCardFails(t *testing.T) {
 	}
 
 	userCardRepo := repository.NewUserCardRepository(conn, logger)
-	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 	// GetUserCard will fail -> Warn + continue -> empty result
 	result, err := service.RestoreQueue(999, []int64{1, 2, 3})
 	if err != nil {
@@ -1174,7 +1175,7 @@ func TestTrainingService_RestoreQueue_GetUserCardFails(t *testing.T) {
 func TestTrainingService_RestoreQueue_UserCardNil(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	_, _, userCardRepo, trainingCardRepo, sessionRepo := setupTrainingServiceTestDB(t)
-	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 	// Non-existent user card ID -> GetUserCard returns nil, nil -> Warn + continue
 	result, err := service.RestoreQueue(999, []int64{99999999})
 	if err != nil {
@@ -1200,7 +1201,7 @@ func TestTrainingService_RestoreQueue_WrongUser_Coverage(t *testing.T) {
 		State: models.StateReview, EF: 2.0, NextDueAt: &past,
 	})
 
-	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 	// Pass a different userID than the card's owner -> Warn + continue
 	result, err := service.RestoreQueue(user.ID+1, []int64{ucID})
 	if err != nil {
@@ -1245,7 +1246,7 @@ func TestTrainingService_RestoreQueue_GetTrainingCardFails(t *testing.T) {
 	}
 
 	trainingCardRepo := repository.NewTrainingCardRepository(conn, logger)
-	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 	result, err := service.RestoreQueue(user.ID, []int64{ucID})
 	if err != nil {
 		t.Fatalf("RestoreQueue should not return error on GetTrainingCard failure, got: %v", err)
@@ -1263,7 +1264,7 @@ func TestTrainingService_shufflePreventDuplicatesAttempt_EmptyGroup(t *testing.T
 	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
 	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
-	svc := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
+	svc := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 
 	wid1, wid2 := int64(1), int64(2)
 	cards := []*models.UserCardWithTraining{
@@ -1291,7 +1292,7 @@ func TestTrainingService_shufflePreventDuplicatesAttempt_NoCardsLeft(t *testing.
 	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
 	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
-	svc := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
+	svc := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 
 	wid := int64(1)
 	cards := []*models.UserCardWithTraining{
@@ -1317,7 +1318,7 @@ func TestTrainingService_shufflePreventDuplicatesAttempt_CardAlreadyAdded(t *tes
 	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
 	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
-	svc := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
+	svc := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 
 	wid1, wid2 := int64(1), int64(2)
 	card1 := &models.UserCardWithTraining{UserCard: models.UserCard{ID: 1}, TrainingCard: models.TrainingCard{WordCardID: wid1, WordEN: "a"}}
@@ -1349,7 +1350,7 @@ func TestTrainingService_shufflePreventDuplicatesAttempt_FallbackCardAlreadyAdde
 	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
 	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
-	svc := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
+	svc := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 
 	// All cards have same word -> minDistance blocks all -> fallback is triggered.
 	// In fallback, we iterate groups and try to add. If all cards in a group are
@@ -1385,7 +1386,7 @@ func TestTrainingService_fixAdjacentDuplicates_J1NeighborCheck(t *testing.T) {
 	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
 	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
-	svc := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
+	svc := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 
 	// Create a sequence where swapping would create a new duplicate at j+1.
 	// [A, A, B, A, A] - i=1 (duplicate with i-1=0), j=3 would place A next to A at j+1=4
@@ -1431,7 +1432,7 @@ func TestTrainingService_generateQueue_QueueItemNotCard_ViaSpellType(t *testing.
 	mockMastering := &mockMasteringRepoForSession{
 		getScoreFunc: func(_, _ int64) (int, error) { return 90, nil },
 	}
-	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, mockMastering, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, mockMastering, config.DefaultLearningConfig(), logger)
 	config := SessionConfig{
 		MaxCardsPerSession: 10, MaxNewPerSession: 5,
 		SpellEnabled: true, SpellMasteringThreshold: 0,
@@ -1492,7 +1493,7 @@ func TestTrainingService_RestoreQueue_TrainingCardNil_NoFK(t *testing.T) {
 	}
 
 	trainingCardRepo := repository.NewTrainingCardRepository(conn, logger)
-	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 	// GetUserCard succeeds (user_card still exists)
 	// GetTrainingCard returns (nil, nil) since training_card was deleted
 	result, err := service.RestoreQueue(user.ID, []int64{ucID})
@@ -1513,7 +1514,7 @@ func TestTrainingService_fixAdjacentDuplicates_J1NeighborCheck_Line728(t *testin
 	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
 	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
-	svc := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
+	svc := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 
 	// [A, A, C, B, A] - i=1 (A duplicate), j=3 (B), fixed[j+1]=A == fixed[i]=A → line 728
 	a, b, c := int64(1), int64(2), int64(3)
@@ -1602,7 +1603,7 @@ func TestTrainingService_generateQueue_NewCardNotInDueCards(t *testing.T) {
 		NextDueAt:      &future,
 	})
 
-	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, config.DefaultLearningConfig(), logger)
 	config := SessionConfig{MaxCardsPerSession: 10, MaxNewPerSession: 5}
 	queue, err := service.generateQueue(user.ID, config)
 	if err != nil {
@@ -1660,7 +1661,7 @@ func TestTrainingService_StartSession_CreateSessionFails_Trigger(t *testing.T) {
 	}
 
 	sessionRepo := repository.NewSessionRepository(conn, logger)
-	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 	_, _, err = service.StartSession(user.ID, models.SourceManual, &SessionConfig{
 		MaxCardsPerSession: 10, MaxNewPerSession: 5,
 	})
@@ -1728,7 +1729,7 @@ func TestTrainingService_StartSession_FinishOldSession_WarnPath_Trigger(t *testi
 		t.Skipf("cannot create trigger: %v", err)
 	}
 
-	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 	// StartSession should: find old session, try to FinishSession (fails -> Warn), then create new session
 	// But CreateSession also uses INSERT which is not blocked
 	sess, queue, err := service.StartSession(user.ID, models.SourceManual, &SessionConfig{
@@ -1820,7 +1821,7 @@ func TestTrainingService_shufflePreventDuplicatesAttempt_CardAddedFalse(t *testi
 	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
 	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
-	svc := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
+	svc := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 
 	// Create a card with UserCard.ID=1 that appears in two different word groups.
 	// This simulates a bug/edge case where the same user card ID is in multiple groups.
@@ -1859,7 +1860,7 @@ func TestTrainingService_shufflePreventDuplicatesAttempt_FallbackCardAddedFalse(
 	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
 	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
-	svc := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
+	svc := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 
 	// To trigger the fallback (!added) path AND !cardAdded inside it:
 	// We need a situation where canAdd is false for all groups (all words too recent),
@@ -1910,7 +1911,7 @@ func TestTrainingService_shufflePreventDuplicatesAttempt_HasNoCardsLeft(t *testi
 	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
 	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
-	svc := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
+	svc := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 
 	// To trigger !hasCardsLeft: totalCardsAvailable > 0 but all groups are empty.
 	// This happens when the same card is in multiple groups (inflating totalCardsAvailable)
@@ -2050,7 +2051,7 @@ func TestTrainingService_generateQueue_GetNewCardsFails_Mock(t *testing.T) {
 			return &models.TrainingCard{ID: id, WordCardID: 1, WordEN: "x", WordRU: "y"}, nil
 		},
 	}
-	svc := NewTrainingService(ucMock, tcMock, nil, nil, logger)
+	svc := NewTrainingService(ucMock, tcMock, nil, nil, config.DefaultLearningConfig(), logger)
 	_, err := svc.generateQueue(1, SessionConfig{MaxCardsPerSession: 10, MaxNewPerSession: 5})
 	if err == nil {
 		t.Fatal("expected error when GetNewCards fails")
@@ -2085,7 +2086,7 @@ func TestTrainingService_generateQueue_GetTrainingCardErrAndNil_Mock(t *testing.
 			return &models.TrainingCard{ID: id, WordCardID: 1, WordEN: "word", WordRU: "слово"}, nil
 		},
 	}
-	svc := NewTrainingService(ucMock, tcMock, nil, nil, logger)
+	svc := NewTrainingService(ucMock, tcMock, nil, nil, config.DefaultLearningConfig(), logger)
 	// First call: one card, GetTrainingCard returns error -> skippedCount=1, cardQueue empty -> len(cardQueue)==0 && len(allCards)>0 -> return nil,nil
 	queue, err := svc.generateQueue(1, SessionConfig{MaxCardsPerSession: 10, MaxNewPerSession: 5})
 	if err != nil {
@@ -2112,7 +2113,7 @@ func TestTrainingService_generateQueue_GetTrainingCardReturnsNil_Mock(t *testing
 			return nil, nil
 		},
 	}
-	svc := NewTrainingService(ucMock, tcMock, nil, nil, logger)
+	svc := NewTrainingService(ucMock, tcMock, nil, nil, config.DefaultLearningConfig(), logger)
 	queue, err := svc.generateQueue(1, SessionConfig{MaxCardsPerSession: 10, MaxNewPerSession: 5})
 	if err != nil {
 		t.Fatalf("generateQueue error: %v", err)
@@ -2147,7 +2148,7 @@ func TestTrainingService_generateQueue_GetTrainingCardPartialSkip_Mock(t *testin
 			return &models.TrainingCard{ID: id, WordCardID: 1, WordEN: "ok", WordRU: "ок"}, nil
 		},
 	}
-	svc := NewTrainingService(ucMock, tcMock, nil, nil, logger)
+	svc := NewTrainingService(ucMock, tcMock, nil, nil, config.DefaultLearningConfig(), logger)
 	queue, err := svc.generateQueue(1, SessionConfig{MaxCardsPerSession: 10, MaxNewPerSession: 5})
 	if err != nil {
 		t.Fatalf("generateQueue error: %v", err)
@@ -2177,7 +2178,7 @@ func TestTrainingService_generateQueue_GetWordMasteringStatsErr_Mock(t *testing.
 			return &models.TrainingCard{ID: id, WordCardID: 1, WordEN: "hello", WordRU: "привет"}, nil
 		},
 	}
-	svc := NewTrainingService(ucMock, tcMock, nil, nil, logger)
+	svc := NewTrainingService(ucMock, tcMock, nil, nil, config.DefaultLearningConfig(), logger)
 	queue, err := svc.generateQueue(1, SessionConfig{
 		MaxCardsPerSession: 10, MaxNewPerSession: 5,
 		SpellEnabled: true, SpellMasteringThreshold: 0,
@@ -2215,7 +2216,7 @@ func TestTrainingService_generateQueue_GetWordMasteringStatsNil_Mock(t *testing.
 			return &models.TrainingCard{ID: id, WordCardID: 1, WordEN: "word", WordRU: "слово"}, nil
 		},
 	}
-	svc := NewTrainingService(ucMock, tcMock, nil, nil, logger)
+	svc := NewTrainingService(ucMock, tcMock, nil, nil, config.DefaultLearningConfig(), logger)
 	queue, err := svc.generateQueue(1, SessionConfig{
 		MaxCardsPerSession: 10, MaxNewPerSession: 5,
 		SpellEnabled: true, SpellMasteringThreshold: 0,
@@ -2237,7 +2238,7 @@ func TestTrainingService_applySpellTypeChallenges_ItemCardNil(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	ucMock := &mockUserCardRepoForGenerateQueue{}
 	tcMock := &mockTrainingCardRepoForGenerateQueue{}
-	svc := NewTrainingService(ucMock, tcMock, nil, nil, logger)
+	svc := NewTrainingService(ucMock, tcMock, nil, nil, config.DefaultLearningConfig(), logger)
 	// Queue with one item that has Type "card" but Card nil -> should skip without panic
 	queue := []*models.TrainingQueueItem{
 		{Type: "card", Card: nil},
@@ -2277,7 +2278,7 @@ func TestTrainingService_computeMasteringScore_DefaultZero(t *testing.T) {
 // TestTrainingService_calculateShuffleScore_EmptyOrSingle covers len(result) <= 1 return 0.
 func TestTrainingService_calculateShuffleScore_EmptyOrSingle(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	svc := NewTrainingService(nil, nil, nil, nil, logger)
+	svc := NewTrainingService(nil, nil, nil, nil, config.DefaultLearningConfig(), logger)
 	if got := svc.calculateShuffleScore(nil); got != 0 {
 		t.Errorf("calculateShuffleScore(nil) = %d, want 0", got)
 	}
@@ -2289,7 +2290,7 @@ func TestTrainingService_calculateShuffleScore_EmptyOrSingle(t *testing.T) {
 // TestTrainingService_fixAdjacentDuplicates_EmptyOrSingle covers len(result) <= 1 return result.
 func TestTrainingService_fixAdjacentDuplicates_EmptyOrSingle(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	svc := NewTrainingService(nil, nil, nil, nil, logger)
+	svc := NewTrainingService(nil, nil, nil, nil, config.DefaultLearningConfig(), logger)
 	if got := svc.fixAdjacentDuplicates(nil); got != nil {
 		t.Errorf("fixAdjacentDuplicates(nil) should return nil, got %v", got)
 	}

@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/models"
 
 	"go.uber.org/zap"
@@ -13,7 +14,7 @@ import (
 
 func TestSRSService_RecordWrongAnswer_NewOption(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	service := NewSRSService(nil, logger)
+	service := NewSRSService(nil, config.DefaultLearningConfig(), logger)
 
 	card := &models.UserCard{
 		WrongAnswersJSON: "",
@@ -51,7 +52,7 @@ func TestSRSService_RecordWrongAnswer_NewOption(t *testing.T) {
 
 func TestSRSService_RecordWrongAnswer_ExistingOption(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	service := NewSRSService(nil, logger)
+	service := NewSRSService(nil, config.DefaultLearningConfig(), logger)
 
 	// Create card with existing wrong answer
 	existingWrongAnswers := []struct {
@@ -92,7 +93,7 @@ func TestSRSService_RecordWrongAnswer_ExistingOption(t *testing.T) {
 
 func TestSRSService_RecordWrongAnswer_InvalidJSON_FallsBackToEmptySlice(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	service := NewSRSService(nil, logger)
+	service := NewSRSService(nil, config.DefaultLearningConfig(), logger)
 
 	card := &models.UserCard{
 		WrongAnswersJSON: `not valid json`,
@@ -120,7 +121,7 @@ func TestSRSService_RecordWrongAnswer_InvalidJSON_FallsBackToEmptySlice(t *testi
 
 func TestSRSService_RecordWrongAnswer_MarshalError(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	service := NewSRSService(nil, logger)
+	service := NewSRSService(nil, config.DefaultLearningConfig(), logger)
 	service.marshalJSONFunc = func(_ interface{}) ([]byte, error) {
 		return nil, errors.New("marshal fail")
 	}
@@ -137,7 +138,7 @@ func TestSRSService_RecordWrongAnswer_MarshalError(t *testing.T) {
 
 func TestSRSService_RecordWrongAnswer_NewOptionAppendedWhenExistingOthers(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	service := NewSRSService(nil, logger)
+	service := NewSRSService(nil, config.DefaultLearningConfig(), logger)
 
 	existingJSON := `[{"option":"other","ts":"2024-01-01T00:00:00Z","count":1}]`
 	card := &models.UserCard{
@@ -173,7 +174,7 @@ func TestSRSService_RecordWrongAnswer_NewOptionAppendedWhenExistingOthers(t *tes
 
 func TestSRSService_RecordWrongAnswer_Max10(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	service := NewSRSService(nil, logger)
+	service := NewSRSService(nil, config.DefaultLearningConfig(), logger)
 
 	// Create card with 10 wrong answers
 	existingWrongAnswers := make([]struct {

@@ -56,8 +56,8 @@ func setupHandlerWithFailingUserRepo(t *testing.T) (*Handler, *mockTelegramClien
 	trainingCardRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
 	userCardRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
-	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, logger)
-	srsService := service.NewSRSService(userCardRepo, logger)
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
+	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
 	optionsService := service.NewOptionsService(trainingCardRepo, logger)
 	trainingHandler := NewTrainingHandler(bot, trainingService, srsService, optionsService, sessionRepo, logger, 0, 0, db.GetConnection())
 
@@ -186,8 +186,8 @@ func TestHandleTrainCommand_StartTrainingOtherError_NewFailingDB(t *testing.T) {
 	// Use failing sessionRepo so StartSession fails
 	failingConn := newFailingDB(t)
 	failingSessionRepo := repository.NewSessionRepository(failingConn, logger)
-	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, failingSessionRepo, nil, logger)
-	srsService := service.NewSRSService(userCardRepo, logger)
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, failingSessionRepo, nil, config.DefaultLearningConfig(), logger)
+	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
 	optionsService := service.NewOptionsService(trainingCardRepo, logger)
 	trainingHandler := NewTrainingHandler(bot, trainingService, srsService, optionsService, failingSessionRepo, logger, 0, 0, db.GetConnection())
 
@@ -484,8 +484,8 @@ func TestHandleCallbackQuery_AnswerRestoreSessionFails(t *testing.T) {
 	// Use failing sessionRepo so RestoreSession fails
 	failingConn := newFailingDB(t)
 	failingSessionRepo := repository.NewSessionRepository(failingConn, logger)
-	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, failingSessionRepo, nil, logger)
-	srsService := service.NewSRSService(userCardRepo, logger)
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, failingSessionRepo, nil, config.DefaultLearningConfig(), logger)
+	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
 	optionsService := service.NewOptionsService(trainingCardRepo, logger)
 	// Use real sessionRepo for handler's sessionRepo (not used in this path)
 	realSessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
@@ -559,7 +559,7 @@ func TestHandleMessage_GetOrCreateUserFails_NewFailingDB(t *testing.T) {
 	failingUserRepo := repository.NewUserRepository(failingConn, logger)
 
 	aiService := newAIServiceWithResponse(t, logger, "ok response")
-	wordService := service.NewWordService(nil, nil, nil, nil, logger)
+	wordService := service.NewWordService(nil, nil, nil, nil, config.DefaultLearningConfig(), logger)
 
 	cfg := &config.Config{}
 	cfg.Bot.EmptyMessage = "empty"
@@ -610,8 +610,8 @@ func TestHandleCallbackQuery_AnswerUpdateUsernameFails(t *testing.T) {
 	// Use failing sessionRepo so RestoreSession fails (but that's ok, we just need to reach UpdateUsername)
 	failingConn := newFailingDB(t)
 	failingSessionRepo := repository.NewSessionRepository(failingConn, logger)
-	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, failingSessionRepo, nil, logger)
-	srsService := service.NewSRSService(userCardRepo, logger)
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, failingSessionRepo, nil, config.DefaultLearningConfig(), logger)
+	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
 	optionsService := service.NewOptionsService(trainingCardRepo, logger)
 	realSessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
 	trainingHandler := NewTrainingHandler(bot, trainingService, srsService, optionsService, realSessionRepo, logger, 0, 0, db.GetConnection())
@@ -664,7 +664,7 @@ func TestHandleMessage_UpdateUsernameFails(t *testing.T) {
 	}
 
 	aiService := newAIServiceWithResponse(t, logger, "ok response")
-	wordService := service.NewWordService(nil, nil, nil, nil, logger)
+	wordService := service.NewWordService(nil, nil, nil, nil, config.DefaultLearningConfig(), logger)
 
 	cfg := &config.Config{}
 	cfg.Bot.EmptyMessage = "empty"

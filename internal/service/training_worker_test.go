@@ -75,6 +75,7 @@ func newTrainingWorker(t *testing.T, transport http.RoundTripper) (*TrainingWork
 		1,
 		0,
 		"",
+		config.DefaultLearningConfig(),
 		logger,
 	)
 
@@ -95,7 +96,7 @@ func TestTrainingWorker_Start_StopsOnContextCancel(t *testing.T) {
 	aiService := ai.NewService("", "", "", "", logger)
 	worker := NewTrainingWorker(
 		aiService, wordRepo, trainingCardRepo, userCardRepo, userRepo,
-		nil, cbService, nil, 0, 2, 1, 100*time.Millisecond, "", logger,
+		nil, cbService, nil, 0, 2, 1, 100*time.Millisecond, "", config.DefaultLearningConfig(), logger,
 	)
 	ctx, cancel := context.WithCancel(context.Background())
 	done := make(chan struct{})
@@ -124,7 +125,7 @@ func TestTrainingWorker_Start_ProcessCardsOnTick(t *testing.T) {
 	aiService := ai.NewService("", "", "", "", logger)
 	worker := NewTrainingWorker(
 		aiService, wordRepo, trainingCardRepo, userCardRepo, userRepo,
-		nil, cbService, nil, 0, 2, 1, 20*time.Millisecond, "", logger,
+		nil, cbService, nil, 0, 2, 1, 20*time.Millisecond, "", config.DefaultLearningConfig(), logger,
 	)
 	ctx, cancel := context.WithCancel(context.Background())
 	done := make(chan struct{})
@@ -441,7 +442,7 @@ func TestTrainingWorkerProcessCard_SchedulesPronunciationByCanonicalWord(t *test
 		PublicBasePath:    "/media/tts",
 		PrefetchEnabled:   true,
 		PrefetchWorkers:   1,
-	}, nil, zap.NewNop())
+	}, config.DefaultLearningConfig(), nil, zap.NewNop())
 	worker.pronunciationService = pronService
 
 	pos := "verb"

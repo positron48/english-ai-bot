@@ -152,3 +152,16 @@ func TestValidateLearningConfig_Errors(t *testing.T) {
 		})
 	}
 }
+
+func TestDefaultLearningConfig(t *testing.T) {
+	d := DefaultLearningConfig()
+	if err := ValidateLearningConfig(d); err != nil {
+		t.Fatalf("DefaultLearningConfig should validate: %v", err)
+	}
+	if d.Pair != "ru-en" || d.NativeLang != "ru" || d.TargetLang != "en" || d.AppCode != "english" {
+		t.Fatalf("unexpected defaults: %+v", d)
+	}
+	if d.GrammarBundleID != "en" {
+		t.Fatalf("GrammarBundleID: got %q want en", d.GrammarBundleID)
+	}
+}

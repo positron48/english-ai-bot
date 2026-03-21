@@ -207,7 +207,7 @@ func TestHandleDashboard_WithGrammarStats(t *testing.T) {
 	contentRepo := repository.NewGrammarContentRepository(logger)
 	publishRepo := repository.NewGrammarPublishRepository(conn, logger)
 	attemptRepo := repository.NewGrammarAttemptRepository(conn, logger)
-	grammarService := service.NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+	grammarService := service.NewGrammarService(contentRepo, publishRepo, attemptRepo, config.DefaultLearningConfig(), logger)
 
 	cfg := &config.Config{
 		WebApp: config.WebAppConfig{

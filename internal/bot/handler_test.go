@@ -163,8 +163,8 @@ func setupHandlerWithRepos(t *testing.T, client *mockTelegramClient) (*Handler, 
 	userCardRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
 
-	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, logger)
-	srsService := service.NewSRSService(userCardRepo, logger)
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
+	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
 	optionsService := service.NewOptionsService(trainingCardRepo, logger)
 
 	bot := newTestBot(client)
@@ -201,7 +201,7 @@ func setupHandlerWithAI(t *testing.T, client *mockTelegramClient, aiResponse str
 	bot := newTestBot(client)
 
 	aiService := newAIServiceWithResponse(t, logger, aiResponse)
-	wordService := service.NewWordService(nil, nil, nil, nil, logger)
+	wordService := service.NewWordService(nil, nil, nil, nil, config.DefaultLearningConfig(), logger)
 
 	cfg := &config.Config{}
 	cfg.Bot.EmptyMessage = "empty"
@@ -236,7 +236,7 @@ func setupHandlerWithWordService(t *testing.T, client *mockTelegramClient, aiRes
 	bot := newTestBot(client)
 
 	aiService := newAIServiceWithResponse(t, logger, aiResponse)
-	wordService := service.NewWordService(wordRepo, trainingCardRepo, userCardRepo, aiService, logger)
+	wordService := service.NewWordService(wordRepo, trainingCardRepo, userCardRepo, aiService, config.DefaultLearningConfig(), logger)
 
 	cfg := &config.Config{}
 	cfg.Bot.EmptyMessage = "empty"
@@ -1405,8 +1405,8 @@ func TestHandleCallbackQuery_AckFails(t *testing.T) {
 	trainingCardRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
 	userCardRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
-	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, logger)
-	srsService := service.NewSRSService(userCardRepo, logger)
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
+	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
 	optionsService := service.NewOptionsService(trainingCardRepo, logger)
 	trainingHandler := NewTrainingHandler(bot, trainingService, srsService, optionsService, sessionRepo, logger, 0, 0, db.GetConnection())
 	cfg := &config.Config{}
@@ -1481,7 +1481,7 @@ func TestHandleMessage_AIError(t *testing.T) {
 	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
 	bot := newTestBot(client)
 	aiService := newAIServiceWithError(t, logger)
-	wordService := service.NewWordService(nil, nil, nil, nil, logger)
+	wordService := service.NewWordService(nil, nil, nil, nil, config.DefaultLearningConfig(), logger)
 	cfg := &config.Config{}
 	cfg.Bot.EmptyMessage = "empty"
 	cfg.Bot.ErrorMessage = "error"
@@ -1590,7 +1590,7 @@ func TestHandleTrainCommand_StartTrainingOtherError(t *testing.T) {
 	ts := h.trainingHandler.trainingService
 	ucRepo := *(**repository.UserCardRepository)(unsafe.Pointer(reflect.ValueOf(ts).Elem().FieldByName("userCardRepo").UnsafeAddr()))
 	tcRepo := *(**repository.TrainingCardRepository)(unsafe.Pointer(reflect.ValueOf(ts).Elem().FieldByName("trainingCardRepo").UnsafeAddr()))
-	newTS := service.NewTrainingService(ucRepo, tcRepo, failingSessionRepo, nil, logger)
+	newTS := service.NewTrainingService(ucRepo, tcRepo, failingSessionRepo, nil, config.DefaultLearningConfig(), logger)
 	h.trainingHandler.trainingService = newTS
 	h.handleTrainCommand(context.Background(), 10, 902)
 	got := client.lastParams.Get("text")

@@ -45,7 +45,7 @@ func TestHandleLearningGrammarCategories_ServiceError(t *testing.T) {
 	badDB := badDBConn(t)
 	publishRepo := repository.NewGrammarPublishRepository(badDB, logger)
 	attemptRepo := repository.NewGrammarAttemptRepository(badDB, logger)
-	badGrammarService := service.NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+	badGrammarService := service.NewGrammarService(contentRepo, publishRepo, attemptRepo, config.DefaultLearningConfig(), logger)
 	router.SetGrammarService(badGrammarService)
 
 	req := httptest.NewRequest(http.MethodGet, "/api/learning/grammar/categories", nil)
@@ -301,7 +301,7 @@ func TestHandleLearningGrammarNextChapter_InternalServerError(t *testing.T) {
 	badDB := badDBConn(t)
 	publishRepo := repository.NewGrammarPublishRepository(badDB, logger)
 	attemptRepo := repository.NewGrammarAttemptRepository(badDB, logger)
-	badGrammarService := service.NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+	badGrammarService := service.NewGrammarService(contentRepo, publishRepo, attemptRepo, config.DefaultLearningConfig(), logger)
 	router.SetGrammarService(badGrammarService)
 
 	sectionsData, err := contentRepo.GetSections()
@@ -504,7 +504,7 @@ func TestHandleLearningGrammarChapterAccess_InternalServerError(t *testing.T) {
 	badDB := badDBConn(t)
 	publishRepo := repository.NewGrammarPublishRepository(badDB, logger)
 	attemptRepo := repository.NewGrammarAttemptRepository(badDB, logger)
-	badGrammarService := service.NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+	badGrammarService := service.NewGrammarService(contentRepo, publishRepo, attemptRepo, config.DefaultLearningConfig(), logger)
 	router.SetGrammarService(badGrammarService)
 
 	sectionsData, err := contentRepo.GetSections()
@@ -537,7 +537,7 @@ func TestHandleLearningGrammarChapters_InternalServerError(t *testing.T) {
 	badDB := badDBConn(t)
 	publishRepo := repository.NewGrammarPublishRepository(badDB, logger)
 	attemptRepo := repository.NewGrammarAttemptRepository(badDB, logger)
-	badGrammarService := service.NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+	badGrammarService := service.NewGrammarService(contentRepo, publishRepo, attemptRepo, config.DefaultLearningConfig(), logger)
 	router.SetGrammarService(badGrammarService)
 
 	sectionsData, err := contentRepo.GetSections()
@@ -569,7 +569,7 @@ func TestHandleLearningGrammarChapter_InternalServerError(t *testing.T) {
 	badDB := badDBConn(t)
 	publishRepo := repository.NewGrammarPublishRepository(badDB, logger)
 	attemptRepo := repository.NewGrammarAttemptRepository(badDB, logger)
-	badGrammarService := service.NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+	badGrammarService := service.NewGrammarService(contentRepo, publishRepo, attemptRepo, config.DefaultLearningConfig(), logger)
 	router.SetGrammarService(badGrammarService)
 
 	sectionsData, err := contentRepo.GetSections()
@@ -600,7 +600,7 @@ func TestHandleLearningGrammarCategoryTest_InternalServerError(t *testing.T) {
 	badDB := badDBConn(t)
 	publishRepo := repository.NewGrammarPublishRepository(badDB, logger)
 	attemptRepo := repository.NewGrammarAttemptRepository(badDB, logger)
-	badGrammarService := service.NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+	badGrammarService := service.NewGrammarService(contentRepo, publishRepo, attemptRepo, config.DefaultLearningConfig(), logger)
 	router.SetGrammarService(badGrammarService)
 
 	sectionsData, err := contentRepo.GetSections()
@@ -631,7 +631,7 @@ func TestHandleLearningGrammarSubmitTest_ServiceError(t *testing.T) {
 	badDB := badDBConn(t)
 	publishRepo := repository.NewGrammarPublishRepository(badDB, logger)
 	attemptRepo := repository.NewGrammarAttemptRepository(badDB, logger)
-	badGrammarService := service.NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+	badGrammarService := service.NewGrammarService(contentRepo, publishRepo, attemptRepo, config.DefaultLearningConfig(), logger)
 	router.SetGrammarService(badGrammarService)
 
 	body := map[string]interface{}{
@@ -666,7 +666,7 @@ func TestHandleLearningGrammarSectionAccess_InternalServerError(t *testing.T) {
 	badDB := badDBConn(t)
 	publishRepo := repository.NewGrammarPublishRepository(badDB, logger)
 	attemptRepo := repository.NewGrammarAttemptRepository(badDB, logger)
-	badGrammarService := service.NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+	badGrammarService := service.NewGrammarService(contentRepo, publishRepo, attemptRepo, config.DefaultLearningConfig(), logger)
 	router.SetGrammarService(badGrammarService)
 
 	sectionsData, err := contentRepo.GetSections()
@@ -698,7 +698,7 @@ func TestHandleLearningGrammarStatistics_ServiceError(t *testing.T) {
 	badDB := badDBConn(t)
 	publishRepo := repository.NewGrammarPublishRepository(badDB, logger)
 	attemptRepo := repository.NewGrammarAttemptRepository(badDB, logger)
-	badGrammarService := service.NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+	badGrammarService := service.NewGrammarService(contentRepo, publishRepo, attemptRepo, config.DefaultLearningConfig(), logger)
 	router.SetGrammarService(badGrammarService)
 
 	req := httptest.NewRequest(http.MethodGet, "/api/learning/grammar/statistics", nil)
@@ -743,7 +743,7 @@ func TestHandleLearningGrammarPlacementTest_ServiceError(t *testing.T) {
 	badDB := badDBConn(t)
 	publishRepo := repository.NewGrammarPublishRepository(badDB, logger)
 	attemptRepo := repository.NewGrammarAttemptRepository(badDB, logger)
-	badGrammarService := service.NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+	badGrammarService := service.NewGrammarService(contentRepo, publishRepo, attemptRepo, config.DefaultLearningConfig(), logger)
 	router.SetGrammarService(badGrammarService)
 
 	req := httptest.NewRequest(http.MethodGet, "/api/learning/grammar/placement-test", nil)
@@ -768,7 +768,7 @@ func TestHandleLearningGrammarSubmitPlacementTest_ServiceError(t *testing.T) {
 	badDB := badDBConn(t)
 	publishRepo := repository.NewGrammarPublishRepository(badDB, logger)
 	attemptRepo := repository.NewGrammarAttemptRepository(badDB, logger)
-	badGrammarService := service.NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+	badGrammarService := service.NewGrammarService(contentRepo, publishRepo, attemptRepo, config.DefaultLearningConfig(), logger)
 	router.SetGrammarService(badGrammarService)
 
 	body := []byte(`{"q1":"a"}`)
@@ -827,7 +827,7 @@ func TestHandleLearningGrammarStatistics_GetBoolSettingError_SecondDB(t *testing
 	contentRepo := repository.NewGrammarContentRepository(logger)
 	publishRepo := repository.NewGrammarPublishRepository(conn, logger)
 	attemptRepo := repository.NewGrammarAttemptRepository(conn, logger)
-	grammarService := service.NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+	grammarService := service.NewGrammarService(contentRepo, publishRepo, attemptRepo, config.DefaultLearningConfig(), logger)
 	router.SetGrammarService(grammarService)
 
 	req := httptest.NewRequest(http.MethodGet, "/api/learning/grammar/statistics", nil)
@@ -884,7 +884,7 @@ func TestHandleLearningGrammarCategories_CanAccessSectionError(t *testing.T) {
 	cbService := service.NewCircuitBreakerService(cbRepo, 5, logger)
 	router := NewRouter(logger, cfg, conn, nil, nil, nil, cbService)
 
-	grammarService := service.NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+	grammarService := service.NewGrammarService(contentRepo, publishRepo, attemptRepo, config.DefaultLearningConfig(), logger)
 	router.SetGrammarService(grammarService)
 
 	req := httptest.NewRequest(http.MethodGet, "/api/learning/grammar/categories", nil)
@@ -938,7 +938,7 @@ func TestHandleLearningGrammarChapterAccess_GetChapterProgressError(t *testing.T
 	cbService := service.NewCircuitBreakerService(cbRepo, 5, logger)
 	router := NewRouter(logger, cfg, conn, nil, nil, nil, cbService)
 
-	grammarService := service.NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+	grammarService := service.NewGrammarService(contentRepo, publishRepo, attemptRepo, config.DefaultLearningConfig(), logger)
 	router.SetGrammarService(grammarService)
 
 	req := httptest.NewRequest(http.MethodGet, "/api/learning/grammar/chapters/"+secondChapterID+"/access", nil)
@@ -989,7 +989,7 @@ func TestHandleLearningGrammarChapters_InternalServerError_Sqlmock(t *testing.T)
 	publishRepo := repository.NewGrammarPublishRepository(mockDB, logger)
 	db := testutil.SetupTestDatabase(t)
 	attemptRepo := repository.NewGrammarAttemptRepository(db.GetConnection(), logger)
-	grammarService := service.NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+	grammarService := service.NewGrammarService(contentRepo, publishRepo, attemptRepo, config.DefaultLearningConfig(), logger)
 
 	cfg := &config.Config{}
 	router := NewRouter(logger, cfg, db.GetConnection(), nil, nil, nil, nil)

@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"tgbot-skeleton/internal/ai"
+	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 
@@ -59,13 +60,13 @@ func TestNewWordService(t *testing.T) {
 	userCardRepo := (*repository.UserCardRepository)(nil)
 	aiService := (*ai.Service)(nil)
 
-	service := NewWordService(wordRepo, trainingCardRepo, userCardRepo, aiService, logger)
+	service := NewWordService(wordRepo, trainingCardRepo, userCardRepo, aiService, config.DefaultLearningConfig(), logger)
 	_ = service // Verify service is created
 }
 
 func TestWordService_IsSingleWord(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	service := NewWordService(nil, nil, nil, nil, logger)
+	service := NewWordService(nil, nil, nil, nil, config.DefaultLearningConfig(), logger)
 
 	tests := []struct {
 		name     string
@@ -95,7 +96,7 @@ func TestWordService_IsSingleWord(t *testing.T) {
 
 func TestWordService_NormalizeWord(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	service := NewWordService(nil, nil, nil, nil, logger)
+	service := NewWordService(nil, nil, nil, nil, config.DefaultLearningConfig(), logger)
 
 	tests := []struct {
 		name     string

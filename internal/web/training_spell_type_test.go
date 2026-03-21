@@ -331,7 +331,7 @@ func TestHandleTrainingSpellAnswer_WithReplacedCard(t *testing.T) {
 		t.Fatalf("create session: %v", err)
 	}
 	cfg := &config.Config{Training: config.TrainingConfig{OptionsDelayMS: 2000, WrongAnswerDelaySeconds: 3}}
-	srsService := service.NewSRSService(userCardRepo, logger)
+	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
 	router := NewRouter(logger, cfg, db, nil, srsService, nil, nil)
 	router.webTrainingHandler = &WebTrainingHandler{
 		sessionRepo: sessionRepo,
@@ -421,7 +421,7 @@ func TestGradeReplacedCardForSpellType_CreatesReviewEventAndWrongAnswer(t *testi
 	}
 
 	cfg := &config.Config{Training: config.TrainingConfig{OptionsDelayMS: 2000, WrongAnswerDelaySeconds: 3}}
-	srsService := service.NewSRSService(userCardRepo, logger)
+	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
 	router := NewRouter(logger, cfg, db, nil, srsService, nil, nil)
 	router.webTrainingHandler = &WebTrainingHandler{sessionRepo: sessionRepo}
 
@@ -459,7 +459,7 @@ func TestGradeReplacedCardForSpellType_UserCardMissing(t *testing.T) {
 	db, _, _, userCardRepo, sessionRepo := setupTrainingIntegrationTestDB(t)
 
 	cfg := &config.Config{Training: config.TrainingConfig{OptionsDelayMS: 2000, WrongAnswerDelaySeconds: 3}}
-	srsService := service.NewSRSService(userCardRepo, logger)
+	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
 	router := NewRouter(logger, cfg, db, nil, srsService, nil, nil)
 	router.webTrainingHandler = &WebTrainingHandler{sessionRepo: sessionRepo}
 

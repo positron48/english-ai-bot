@@ -90,8 +90,8 @@ func TestHandleTrainingAnswer_WithSession(t *testing.T) {
 	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
 	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
 
-	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, logger)
-	srsService := service.NewSRSService(userCardRepo, logger)
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
+	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
 	optionsService := service.NewOptionsService(trainingCardRepo, logger)
 
 	router := NewRouter(logger, cfg, db, trainingService, srsService, optionsService, nil)

@@ -3,6 +3,7 @@ package service
 import (
 	"testing"
 
+	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/testutil"
@@ -17,7 +18,7 @@ func TestShufflePreventDuplicates_SmallList(t *testing.T) {
 	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
 	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
-	trainingService := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
+	trainingService := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 
 	// Create a small list of cards
 	cards := []*models.UserCardWithTraining{
@@ -40,7 +41,7 @@ func TestShufflePreventDuplicates_AllUniqueWordCardIDs(t *testing.T) {
 	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
 	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
-	trainingService := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
+	trainingService := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 
 	cards := []*models.UserCardWithTraining{
 		{UserCard: models.UserCard{ID: 1}, TrainingCard: models.TrainingCard{WordCardID: 1, WordEN: "a"}},
@@ -64,7 +65,7 @@ func TestShufflePreventDuplicates_LargeList(t *testing.T) {
 	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
 	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
-	trainingService := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
+	trainingService := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 
 	// Create a larger list with some duplicate words
 	cards := []*models.UserCardWithTraining{
@@ -100,7 +101,7 @@ func TestShufflePreventDuplicates_EmptyList(t *testing.T) {
 	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
 	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
-	trainingService := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
+	trainingService := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 
 	var cards []*models.UserCardWithTraining
 	shuffled := trainingService.shufflePreventDuplicates(cards)
@@ -117,7 +118,7 @@ func TestShufflePreventDuplicates_SingleElement(t *testing.T) {
 	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
 	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
-	trainingService := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
+	trainingService := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 
 	// Create a single card
 	cards := []*models.UserCardWithTraining{
@@ -138,7 +139,7 @@ func TestShufflePreventDuplicates_AllSameWord(t *testing.T) {
 	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
 	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
-	trainingService := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
+	trainingService := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 
 	// All cards have the same word (WordCardID 0 by default -> one group)
 	cards := []*models.UserCardWithTraining{
@@ -163,7 +164,7 @@ func TestShufflePreventDuplicates_FixAdjacentDuplicates(t *testing.T) {
 	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
 	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
-	trainingService := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
+	trainingService := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 
 	wid := int64(1)
 	cards := []*models.UserCardWithTraining{
@@ -194,7 +195,7 @@ func TestFixAdjacentDuplicates_SwapFixesPair(t *testing.T) {
 	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
 	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
-	trainingService := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
+	trainingService := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 
 	a, b := int64(1), int64(2)
 	queue := []*models.UserCardWithTraining{
@@ -219,7 +220,7 @@ func TestFixAdjacentDuplicates_SingleElement(t *testing.T) {
 	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
 	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
-	trainingService := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
+	trainingService := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 
 	queue := []*models.UserCardWithTraining{
 		{UserCard: models.UserCard{ID: 1}, TrainingCard: models.TrainingCard{WordCardID: 1, WordEN: "a"}},
@@ -239,7 +240,7 @@ func TestFixAdjacentDuplicates_EmptyReturnsAsIs(t *testing.T) {
 	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
 	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
-	trainingService := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
+	trainingService := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 
 	var queue []*models.UserCardWithTraining
 	fixed := trainingService.fixAdjacentDuplicates(queue)
@@ -255,7 +256,7 @@ func TestFixAdjacentDuplicates_TwoSameWord(t *testing.T) {
 	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
 	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
-	trainingService := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
+	trainingService := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 
 	wid := int64(1)
 	queue := []*models.UserCardWithTraining{
@@ -279,7 +280,7 @@ func TestFixAdjacentDuplicates_NoAdjacentDupes(t *testing.T) {
 	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
 	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
-	trainingService := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
+	trainingService := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 
 	a, b, c := int64(1), int64(2), int64(3)
 	queue := []*models.UserCardWithTraining{
@@ -304,7 +305,7 @@ func TestFixAdjacentDuplicates_ThreeElementsOnePair(t *testing.T) {
 	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
 	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
-	trainingService := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
+	trainingService := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 
 	a, b := int64(1), int64(2)
 	queue := []*models.UserCardWithTraining{
@@ -329,7 +330,7 @@ func TestCalculateShuffleScore_EmptyOrSingle(t *testing.T) {
 	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
 	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
-	svc := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
+	svc := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 
 	if got := svc.calculateShuffleScore(nil); got != 0 {
 		t.Errorf("calculateShuffleScore(nil) = %d, want 0", got)
@@ -352,7 +353,7 @@ func TestCalculateShuffleScore_NoAdjacentDuplicates(t *testing.T) {
 	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
 	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
-	svc := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
+	svc := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 
 	queue := []*models.UserCardWithTraining{
 		{UserCard: models.UserCard{ID: 1}, TrainingCard: models.TrainingCard{WordCardID: 1, WordEN: "a"}},
@@ -371,7 +372,7 @@ func TestCalculateShuffleScore_AdjacentDuplicates(t *testing.T) {
 	ucRepo := repository.NewUserCardRepository(db.GetConnection(), logger)
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
 	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
-	svc := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, logger)
+	svc := NewTrainingService(ucRepo, tcRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 
 	// [A, A, B] -> one adjacent duplicate at i=1; i>=len-2 so end penalty 3
 	queueMid := []*models.UserCardWithTraining{

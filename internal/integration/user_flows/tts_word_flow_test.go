@@ -61,7 +61,7 @@ func TestTTSWordFlow_CacheAndServeMedia(t *testing.T) {
 		DictionaryBaseURL: dictServer.URL + "/api/v2/entries/en",
 	}
 
-	pronService := service.NewPronunciationService(pronCfg, wordRepo, zap.NewNop())
+	pronService := service.NewPronunciationService(pronCfg, config.DefaultLearningConfig(), wordRepo, zap.NewNop())
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	go pronService.Start(ctx)

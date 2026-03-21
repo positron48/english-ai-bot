@@ -63,8 +63,8 @@ func newCoverageRouter(t *testing.T) (*Router, *repository.UserRepository, *repo
 	trainingCardRepo := repository.NewTrainingCardRepository(db, logger)
 	userCardRepo := repository.NewUserCardRepository(db, logger)
 	sessionRepo := repository.NewSessionRepository(db, logger)
-	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, logger)
-	srsService := service.NewSRSService(userCardRepo, logger)
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
+	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
 	optionsService := service.NewOptionsService(trainingCardRepo, logger)
 	router := NewRouter(logger, cfg, db, trainingService, srsService, optionsService, nil)
 	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
@@ -97,8 +97,8 @@ func TestHandleTrainingStart_InternalError(t *testing.T) {
 	brokenUserCardRepo := repository.NewUserCardRepository(brokenConn, logger)
 	brokenTrainingCardRepo := repository.NewTrainingCardRepository(brokenConn, logger)
 	brokenSessionRepo := repository.NewSessionRepository(brokenConn, logger)
-	brokenTrainingService := service.NewTrainingService(brokenUserCardRepo, brokenTrainingCardRepo, brokenSessionRepo, nil, logger)
-	srsService := service.NewSRSService(brokenUserCardRepo, logger)
+	brokenTrainingService := service.NewTrainingService(brokenUserCardRepo, brokenTrainingCardRepo, brokenSessionRepo, nil, config.DefaultLearningConfig(), logger)
+	srsService := service.NewSRSService(brokenUserCardRepo, config.DefaultLearningConfig(), logger)
 	optionsService := service.NewOptionsService(brokenTrainingCardRepo, logger)
 
 	router := NewRouter(logger, cfg, db, brokenTrainingService, srsService, optionsService, nil)
@@ -149,8 +149,8 @@ func TestHandleTrainingStart_SpellThresholdNegative(t *testing.T) {
 		WebApp:   config.WebAppConfig{JWTSecret: "s", JWTTTLHours: 1, RefreshTTLHours: 720},
 		Training: config.TrainingConfig{OptionsDelayMS: 2000, WrongAnswerDelaySeconds: 3},
 	}
-	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, logger)
-	srsService := service.NewSRSService(userCardRepo, logger)
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
+	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
 	optionsService := service.NewOptionsService(trainingCardRepo, logger)
 	router := NewRouter(logger, cfg, db, trainingService, srsService, optionsService, nil)
 	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
@@ -399,7 +399,7 @@ func TestGradeReplacedCardForSpellType_GradeCardError(t *testing.T) {
 	// Use a broken db for srsService so GradeCard fails
 	brokenDB := newBrokenDB(t)
 	brokenUserCardRepo := repository.NewUserCardRepository(brokenDB, logger)
-	brokenSRSService := service.NewSRSService(brokenUserCardRepo, logger)
+	brokenSRSService := service.NewSRSService(brokenUserCardRepo, config.DefaultLearningConfig(), logger)
 
 	router := NewRouter(logger, cfg, db, nil, brokenSRSService, nil, nil)
 	router.webTrainingHandler = &WebTrainingHandler{sessionRepo: sessionRepo}
@@ -433,7 +433,7 @@ func TestGradeReplacedCardForSpellType_CreateReviewEventError(t *testing.T) {
 
 	// srsService uses good DB so GradeCard succeeds
 	goodUserCardRepo := repository.NewUserCardRepository(db, logger)
-	goodSRSService := service.NewSRSService(goodUserCardRepo, logger)
+	goodSRSService := service.NewSRSService(goodUserCardRepo, config.DefaultLearningConfig(), logger)
 
 	// sessionRepo uses broken DB so CreateReviewEvent fails
 	brokenDB := newBrokenDB(t)
@@ -471,7 +471,7 @@ func TestGradeReplacedCardForSpellType_WrongAnswer(t *testing.T) {
 	cfg := &config.Config{Training: config.TrainingConfig{OptionsDelayMS: 2000, WrongAnswerDelaySeconds: 3}}
 
 	goodUserCardRepo := repository.NewUserCardRepository(db, logger)
-	goodSRSService := service.NewSRSService(goodUserCardRepo, logger)
+	goodSRSService := service.NewSRSService(goodUserCardRepo, config.DefaultLearningConfig(), logger)
 	goodSessionRepo := repository.NewSessionRepository(db, logger)
 
 	router := NewRouter(logger, cfg, db, nil, goodSRSService, nil, nil)
@@ -570,7 +570,7 @@ func TestHandleTrainingTypeAnswer_WithReplacedCard(t *testing.T) {
 	})
 
 	cfg := &config.Config{Training: config.TrainingConfig{OptionsDelayMS: 2000, WrongAnswerDelaySeconds: 3}}
-	srsService := service.NewSRSService(userCardRepo, logger)
+	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
 	router := NewRouter(logger, cfg, db, nil, srsService, nil, nil)
 	router.webTrainingHandler = &WebTrainingHandler{
 		sessionRepo: sessionRepo,
@@ -812,7 +812,7 @@ func TestHandleTrainingAnswer_WithOptionsShownAt(t *testing.T) {
 	})
 
 	cfg := &config.Config{Training: config.TrainingConfig{OptionsDelayMS: 2000, WrongAnswerDelaySeconds: 3}}
-	srsService := service.NewSRSService(userCardRepo, logger)
+	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
 	optionsService := service.NewOptionsService(trainingCardRepo, logger)
 	router := NewRouter(logger, cfg, db, nil, srsService, optionsService, nil)
 
@@ -894,7 +894,7 @@ func TestHandleTrainingAnswer_WrongAnswerWithRecentCorrect(t *testing.T) {
 	})
 
 	cfg := &config.Config{Training: config.TrainingConfig{OptionsDelayMS: 2000, WrongAnswerDelaySeconds: 5}}
-	srsService := service.NewSRSService(userCardRepo, logger)
+	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
 	optionsService := service.NewOptionsService(trainingCardRepo, logger)
 	router := NewRouter(logger, cfg, db, nil, srsService, optionsService, nil)
 
@@ -976,7 +976,7 @@ func TestHandleTrainingAnswer_CorrectAnswer_RecentCorrectAnswersTrimmed(t *testi
 	})
 
 	cfg := &config.Config{Training: config.TrainingConfig{OptionsDelayMS: 2000, WrongAnswerDelaySeconds: 3}}
-	srsService := service.NewSRSService(userCardRepo, logger)
+	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
 	optionsService := service.NewOptionsService(trainingCardRepo, logger)
 	router := NewRouter(logger, cfg, db, nil, srsService, optionsService, nil)
 
@@ -1054,7 +1054,7 @@ func TestHandleTrainingAnswer_UserCardDeletedDuringSession(t *testing.T) {
 	})
 
 	cfg := &config.Config{Training: config.TrainingConfig{OptionsDelayMS: 2000, WrongAnswerDelaySeconds: 3}}
-	srsService := service.NewSRSService(userCardRepo, logger)
+	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
 	optionsService := service.NewOptionsService(trainingCardRepo, logger)
 	router := NewRouter(logger, cfg, db, nil, srsService, optionsService, nil)
 
@@ -1127,7 +1127,7 @@ func TestHandleTrainingAnswer_ReviewEventCreateError(t *testing.T) {
 	})
 
 	cfg := &config.Config{Training: config.TrainingConfig{OptionsDelayMS: 2000, WrongAnswerDelaySeconds: 3}}
-	srsService := service.NewSRSService(userCardRepo, logger)
+	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
 	optionsService := service.NewOptionsService(trainingCardRepo, logger)
 	router := NewRouter(logger, cfg, db, nil, srsService, optionsService, nil)
 
@@ -1210,7 +1210,7 @@ func TestHandleTrainingAnswer_GradeCardError(t *testing.T) {
 	// Use broken srsService so GradeCard (UpdateUserCard) fails
 	brokenDB := newBrokenDB(t)
 	brokenUserCardRepo := repository.NewUserCardRepository(brokenDB, logger)
-	brokenSRSService := service.NewSRSService(brokenUserCardRepo, logger)
+	brokenSRSService := service.NewSRSService(brokenUserCardRepo, config.DefaultLearningConfig(), logger)
 
 	router := NewRouter(logger, cfg, db, nil, brokenSRSService, optionsService, nil)
 
@@ -1304,7 +1304,7 @@ func TestHandleTrainingAnswer_GetUserCardError(t *testing.T) {
 	// Use broken r.db so GetUserCard fails (line 962-964)
 	// srsService uses good DB so GradeCard succeeds
 	goodUserCardRepo := repository.NewUserCardRepository(db, logger)
-	goodSRSService := service.NewSRSService(goodUserCardRepo, logger)
+	goodSRSService := service.NewSRSService(goodUserCardRepo, config.DefaultLearningConfig(), logger)
 
 	brokenDB := newBrokenDB(t)
 	router := NewRouter(logger, cfg, brokenDB, nil, goodSRSService, optionsService, nil)
@@ -1364,7 +1364,7 @@ func TestFinishTrainingSession_GetSessionStatsError(t *testing.T) {
 	db, _, _, _, sessionRepo := setupTrainingIntegrationTestDB(t)
 
 	cfg := &config.Config{Training: config.TrainingConfig{OptionsDelayMS: 2000, WrongAnswerDelaySeconds: 3}}
-	trainingService := service.NewTrainingService(nil, nil, sessionRepo, nil, logger)
+	trainingService := service.NewTrainingService(nil, nil, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 	router := NewRouter(logger, cfg, db, trainingService, nil, nil, nil)
 	router.webTrainingHandler = NewWebTrainingHandler(trainingService, nil, nil, sessionRepo, logger, 2000, 3)
 
@@ -1414,7 +1414,7 @@ func TestFinishTrainingSession_FinishSessionError(t *testing.T) {
 	// Use a broken sessionRepo for trainingService so FinishSession fails
 	brokenDB := newBrokenDB(t)
 	brokenSessionRepo := repository.NewSessionRepository(brokenDB, logger)
-	brokenTrainingService := service.NewTrainingService(nil, nil, brokenSessionRepo, nil, logger)
+	brokenTrainingService := service.NewTrainingService(nil, nil, brokenSessionRepo, nil, config.DefaultLearningConfig(), logger)
 
 	router := NewRouter(logger, cfg, db, brokenTrainingService, nil, nil, nil)
 	router.webTrainingHandler = NewWebTrainingHandler(brokenTrainingService, nil, nil, sessionRepo, logger, 2000, 3)
@@ -1444,7 +1444,7 @@ func TestFinishTrainingSession_NilWebTrainingHandler(t *testing.T) {
 	logger := zap.NewNop()
 	db, _, _, _, sessionRepo := setupTrainingIntegrationTestDB(t)
 	cfg := &config.Config{Training: config.TrainingConfig{OptionsDelayMS: 2000, WrongAnswerDelaySeconds: 3}}
-	trainingService := service.NewTrainingService(nil, nil, sessionRepo, nil, logger)
+	trainingService := service.NewTrainingService(nil, nil, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 	router := NewRouter(logger, cfg, db, trainingService, nil, nil, nil)
 	router.webTrainingHandler = nil // explicitly nil
 

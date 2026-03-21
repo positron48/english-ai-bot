@@ -8,6 +8,7 @@ import (
 	"testing"
 	"time"
 
+	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/testutil"
 
@@ -27,7 +28,7 @@ func setupGrammarService(t *testing.T) (*GrammarService, *repository.GrammarCont
 	// Create user 1 for grammar_progress, grammar_placement_test FK
 	_, _ = userRepo.GetOrCreateUser(1)
 
-	service := NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+	service := NewGrammarService(contentRepo, publishRepo, attemptRepo, config.DefaultLearningConfig(), logger)
 
 	cleanup := func() {} // shared db, do not close
 
@@ -40,7 +41,7 @@ func TestGrammarService_GetPublishedSections_GetSectionsError(t *testing.T) {
 	db := testutil.SetupTestDatabase(t)
 	publishRepo := repository.NewGrammarPublishRepository(db.GetConnection(), logger)
 	attemptRepo := repository.NewGrammarAttemptRepository(db.GetConnection(), logger)
-	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, config.DefaultLearningConfig(), logger)
 
 	_, err := svc.GetPublishedSections(context.Background(), 1)
 	if err == nil {
@@ -57,7 +58,7 @@ func TestGrammarService_GetAllSectionsWithProgress_GetSectionsError(t *testing.T
 	db := testutil.SetupTestDatabase(t)
 	publishRepo := repository.NewGrammarPublishRepository(db.GetConnection(), logger)
 	attemptRepo := repository.NewGrammarAttemptRepository(db.GetConnection(), logger)
-	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, config.DefaultLearningConfig(), logger)
 
 	_, err := svc.GetAllSectionsWithProgress(context.Background(), 1)
 	if err == nil {
@@ -74,7 +75,7 @@ func TestGrammarService_GetPublishedChapters_GetSectionsError(t *testing.T) {
 	db := testutil.SetupTestDatabase(t)
 	publishRepo := repository.NewGrammarPublishRepository(db.GetConnection(), logger)
 	attemptRepo := repository.NewGrammarAttemptRepository(db.GetConnection(), logger)
-	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, config.DefaultLearningConfig(), logger)
 
 	_, err := svc.GetPublishedChapters(context.Background(), "any-section", 1)
 	if err == nil {
@@ -98,7 +99,7 @@ func grammarServiceWithClosedPublishRepo(t *testing.T) (*GrammarService, func())
 	closedConn.Close()
 	publishRepo := repository.NewGrammarPublishRepository(closedConn, logger)
 	attemptRepo := repository.NewGrammarAttemptRepository(db.GetConnection(), logger)
-	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, config.DefaultLearningConfig(), logger)
 	return svc, func() {}
 }
 
@@ -118,7 +119,7 @@ func grammarServiceWithClosedAttemptRepo(t *testing.T) (*GrammarService, func())
 	closedConn.Close()
 	publishRepo := repository.NewGrammarPublishRepository(db.GetConnection(), logger)
 	attemptRepo := repository.NewGrammarAttemptRepository(closedConn, logger)
-	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, config.DefaultLearningConfig(), logger)
 	return svc, func() {}
 }
 
@@ -1396,7 +1397,7 @@ func TestGrammarService_GetPublishedChapters_GetChapterSkipsInvalid(t *testing.T
 	db := testutil.SetupTestDatabase(t)
 	publishRepo := repository.NewGrammarPublishRepository(db.GetConnection(), logger)
 	attemptRepo := repository.NewGrammarAttemptRepository(db.GetConnection(), logger)
-	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, config.DefaultLearningConfig(), logger)
 	_ = publishRepo.SetPublished("section", "s1", true, nil)
 	_ = publishRepo.SetPublished("chapter", "ch1", true, nil)
 	_ = publishRepo.SetPublished("chapter", "ch2", true, nil)
@@ -1766,7 +1767,7 @@ func grammarServiceWithCustomChapterFS(t *testing.T, sectionsJSON, indexJSON, ch
 	db := testutil.SetupTestDatabase(t)
 	publishRepo := repository.NewGrammarPublishRepository(db.GetConnection(), logger)
 	attemptRepo := repository.NewGrammarAttemptRepository(db.GetConnection(), logger)
-	return NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+	return NewGrammarService(contentRepo, publishRepo, attemptRepo, config.DefaultLearningConfig(), logger)
 }
 
 // TestGrammarService_GenerateChapterTest_InvalidTestConfig covers error when selection_strategy is not a map.
@@ -1850,7 +1851,7 @@ func TestGrammarService_GenerateCategoryTest_GetChapterFailsForOneChapter(t *tes
 	db := testutil.SetupTestDatabase(t)
 	publishRepo := repository.NewGrammarPublishRepository(db.GetConnection(), logger)
 	attemptRepo := repository.NewGrammarAttemptRepository(db.GetConnection(), logger)
-	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, config.DefaultLearningConfig(), logger)
 	_ = publishRepo.SetPublished("section", "s1", true, nil)
 	_ = publishRepo.SetPublished("chapter", "ch1", true, nil)
 	_ = publishRepo.SetPublished("chapter", "ch2", true, nil) // ch2 not in content; GetChapter will fail
@@ -2012,7 +2013,7 @@ func TestGrammarService_GeneratePlacementTest_GetSectionsError(t *testing.T) {
 	db := testutil.SetupTestDatabase(t)
 	publishRepo := repository.NewGrammarPublishRepository(db.GetConnection(), logger)
 	attemptRepo := repository.NewGrammarAttemptRepository(db.GetConnection(), logger)
-	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, config.DefaultLearningConfig(), logger)
 
 	_, err := svc.GeneratePlacementTest(context.Background())
 	if err == nil {
@@ -2051,7 +2052,7 @@ func TestGrammarService_GetNextPublishedChapterID_GetSectionsError(t *testing.T)
 	db := testutil.SetupTestDatabase(t)
 	publishRepo := repository.NewGrammarPublishRepository(db.GetConnection(), logger)
 	attemptRepo := repository.NewGrammarAttemptRepository(db.GetConnection(), logger)
-	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, config.DefaultLearningConfig(), logger)
 
 	_, _, _, err := svc.GetNextPublishedChapterID(context.Background(), "ch1")
 	if err == nil {
@@ -2077,7 +2078,7 @@ func TestGrammarService_GetNextPublishedChapterID_SectionNotFound(t *testing.T) 
 	db := testutil.SetupTestDatabase(t)
 	publishRepo := repository.NewGrammarPublishRepository(db.GetConnection(), logger)
 	attemptRepo := repository.NewGrammarAttemptRepository(db.GetConnection(), logger)
-	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, config.DefaultLearningConfig(), logger)
 	_ = publishRepo.SetPublished("chapter", "ch2", true, nil)
 
 	_, _, _, err := svc.GetNextPublishedChapterID(context.Background(), "ch2")
@@ -2104,7 +2105,7 @@ func TestGrammarService_GetNextPublishedChapterID_ChapterNotInSectionList(t *tes
 	db := testutil.SetupTestDatabase(t)
 	publishRepo := repository.NewGrammarPublishRepository(db.GetConnection(), logger)
 	attemptRepo := repository.NewGrammarAttemptRepository(db.GetConnection(), logger)
-	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, config.DefaultLearningConfig(), logger)
 	_ = publishRepo.SetPublished("chapter", "ch2", true, nil)
 
 	_, _, _, err := svc.GetNextPublishedChapterID(context.Background(), "ch2")
@@ -2163,7 +2164,7 @@ func TestGrammarService_SubmitPlacementTest_GetSectionsError(t *testing.T) {
 	db := testutil.SetupTestDatabase(t)
 	publishRepo := repository.NewGrammarPublishRepository(db.GetConnection(), logger)
 	attemptRepo := repository.NewGrammarAttemptRepository(db.GetConnection(), logger)
-	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, config.DefaultLearningConfig(), logger)
 
 	_, err := svc.SubmitPlacementTest(context.Background(), 1, map[string]interface{}{})
 	if err == nil {
@@ -2205,7 +2206,7 @@ func TestGrammarService_SubmitTest_Category_GetChapterFailsForOneChapter(t *test
 	_, _ = userRepo.GetOrCreateUser(1)
 	publishRepo := repository.NewGrammarPublishRepository(db.GetConnection(), logger)
 	attemptRepo := repository.NewGrammarAttemptRepository(db.GetConnection(), logger)
-	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, config.DefaultLearningConfig(), logger)
 	_ = publishRepo.SetPublished("section", "s1", true, nil)
 	_ = publishRepo.SetPublished("chapter", "ch1", true, nil)
 	_ = publishRepo.SetPublished("chapter", "ch2", true, nil) // ch2 not in content; GetChapter fails, chapter skipped
@@ -2349,7 +2350,7 @@ func TestGrammarService_CanAccessChapter_ChapterNotInSectionList(t *testing.T) {
 	db := testutil.SetupTestDatabase(t)
 	publishRepo := repository.NewGrammarPublishRepository(db.GetConnection(), logger)
 	attemptRepo := repository.NewGrammarAttemptRepository(db.GetConnection(), logger)
-	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, config.DefaultLearningConfig(), logger)
 
 	_, err := svc.CanAccessChapter(context.Background(), 1, "ch2")
 	if err == nil {
@@ -2442,7 +2443,7 @@ func TestGrammarService_IsSectionOpenedByPlacement_GetSectionsError(t *testing.T
 	logger := zap.NewNop()
 	contentRepo := repository.NewGrammarContentRepositoryWithFS(fstest.MapFS{}, logger)
 	// Use same DB so placement result is visible; only content repo fails GetSections
-	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, config.DefaultLearningConfig(), logger)
 
 	_, err := svc.isSectionOpenedByPlacement(context.Background(), 1, "other-section")
 	if err == nil {
@@ -2564,7 +2565,7 @@ func TestGrammarService_GetChapterContent_GetChapterError(t *testing.T) {
 	db := testutil.SetupTestDatabase(t)
 	publishRepo := repository.NewGrammarPublishRepository(db.GetConnection(), logger)
 	attemptRepo := repository.NewGrammarAttemptRepository(db.GetConnection(), logger)
-	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, config.DefaultLearningConfig(), logger)
 	if err := publishRepo.SetPublished("chapter", "ch1", true, nil); err != nil {
 		t.Fatalf("SetPublished: %v", err)
 	}
@@ -2611,7 +2612,7 @@ func TestGrammarService_GetGrammarStatistics_GetSectionsError(t *testing.T) {
 	db := testutil.SetupTestDatabase(t)
 	publishRepo := repository.NewGrammarPublishRepository(db.GetConnection(), logger)
 	attemptRepo := repository.NewGrammarAttemptRepository(db.GetConnection(), logger)
-	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, config.DefaultLearningConfig(), logger)
 
 	_, err := svc.GetGrammarStatistics(context.Background(), 1)
 	if err == nil {

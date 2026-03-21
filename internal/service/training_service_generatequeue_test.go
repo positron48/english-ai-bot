@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/models"
 
 	"go.uber.org/zap"
@@ -66,7 +67,7 @@ func TestTrainingService_generateQueue_WithDueAndNewCards(t *testing.T) {
 		t.Fatalf("Failed to create new card: %v", err)
 	}
 
-	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, config.DefaultLearningConfig(), logger)
 
 	config := SessionConfig{
 		MaxCardsPerSession: 10,
@@ -124,7 +125,7 @@ func TestTrainingService_generateQueue_OnlyDueCards(t *testing.T) {
 		}
 	}
 
-	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, config.DefaultLearningConfig(), logger)
 
 	config := SessionConfig{
 		MaxCardsPerSession: 10,
@@ -146,7 +147,7 @@ func TestTrainingService_generateQueue_Empty(t *testing.T) {
 	_, userRepo, userCardRepo, trainingCardRepo, _ := setupTrainingServiceTestDB(t)
 	user, _ := userRepo.GetOrCreateUser(7777)
 
-	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, config.DefaultLearningConfig(), logger)
 
 	config := SessionConfig{
 		MaxCardsPerSession: 10,
@@ -201,7 +202,7 @@ func TestTrainingService_generateQueue_RandomSampleFromLargePool(t *testing.T) {
 		}
 	}
 
-	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, config.DefaultLearningConfig(), logger)
 	config := SessionConfig{
 		MaxCardsPerSession: maxPerSession,
 		MaxNewPerSession:   5,
@@ -266,7 +267,7 @@ func TestTrainingService_generateQueue_PoolSmallerThanSession(t *testing.T) {
 		}
 	}
 
-	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, config.DefaultLearningConfig(), logger)
 	config := SessionConfig{MaxCardsPerSession: 30, MaxNewPerSession: 10, AlgoVersion: "test"}
 
 	queue, err := service.generateQueue(user.ID, config)
@@ -308,7 +309,7 @@ func TestTrainingService_generateQueue_DedupeDueAndNew(t *testing.T) {
 		t.Fatalf("create user card: %v", err)
 	}
 
-	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, config.DefaultLearningConfig(), logger)
 	config := SessionConfig{MaxCardsPerSession: 30, MaxNewPerSession: 10, AlgoVersion: "test"}
 
 	queue, err := service.generateQueue(user.ID, config)
@@ -352,7 +353,7 @@ func TestTrainingService_generateQueue_SpellTypePath(t *testing.T) {
 		t.Fatalf("create user card: %v", err)
 	}
 
-	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, config.DefaultLearningConfig(), logger)
 	config := SessionConfig{
 		MaxCardsPerSession:      30,
 		MaxNewPerSession:        10,
@@ -396,7 +397,7 @@ func TestTrainingService_generateQueue_ThresholdClamping(t *testing.T) {
 		NextDueAt:      &past,
 	})
 
-	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, config.DefaultLearningConfig(), logger)
 	config := SessionConfig{
 		MaxCardsPerSession:      30,
 		MaxNewPerSession:        10,
@@ -435,7 +436,7 @@ func TestTrainingService_generateQueue_ShortDisplayWord(t *testing.T) {
 		NextDueAt:      &past,
 	})
 
-	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, config.DefaultLearningConfig(), logger)
 	config := SessionConfig{
 		MaxCardsPerSession:      30,
 		MaxNewPerSession:        10,
@@ -479,7 +480,7 @@ func TestTrainingService_generateQueue_WithMasteringRepoGetScore(t *testing.T) {
 	mockMastering := &mockMasteringRepoForSession{
 		getScoreFunc: func(_, _ int64) (int, error) { return 80, nil },
 	}
-	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, mockMastering, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, mockMastering, config.DefaultLearningConfig(), logger)
 	config := SessionConfig{
 		MaxCardsPerSession:      10,
 		MaxNewPerSession:        5,

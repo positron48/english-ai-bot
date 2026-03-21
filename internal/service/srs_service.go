@@ -6,6 +6,7 @@ import (
 	"math"
 	"time"
 
+	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 
@@ -16,6 +17,7 @@ import (
 type SRSService struct {
 	userCardRepo      *repository.UserCardRepository
 	logger            *zap.Logger
+	learning          config.LearningConfig
 	learningStepsFunc func(models.CardDirection) []int  // optional; if nil, models.LearningStepsDays is used (for tests to cover single-step paths)
 	marshalJSONFunc   func(interface{}) ([]byte, error) // optional; if nil, json.Marshal is used (for tests to cover error path)
 }
@@ -28,9 +30,10 @@ func (s *SRSService) learningSteps(d models.CardDirection) []int {
 }
 
 // NewSRSService creates a new SRS service
-func NewSRSService(userCardRepo *repository.UserCardRepository, logger *zap.Logger) *SRSService {
+func NewSRSService(userCardRepo *repository.UserCardRepository, learning config.LearningConfig, logger *zap.Logger) *SRSService {
 	return &SRSService{
 		userCardRepo: userCardRepo,
+		learning:     learning,
 		logger:       logger,
 	}
 }
@@ -51,6 +54,7 @@ func (s *SRSService) GradeCard(userCard *models.UserCard, attemptData models.Att
 
 	// Log the update
 	s.logger.Info("graded card",
+		zap.String("learning_pair", s.learning.Pair),
 		zap.Int64("user_card_id", userCard.ID),
 		zap.Int("quality", int(quality)),
 		zap.String("state_before", string(before.State)),

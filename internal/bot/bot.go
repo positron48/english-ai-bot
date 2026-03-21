@@ -120,11 +120,11 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 
 	// Create services
 	userWordMasteringRepo := repository.NewUserWordMasteringRepository(conn, log)
-	wordService := service.NewWordServiceWithMastering(wordRepo, trainingCardRepo, userCardRepo, userWordMasteringRepo, aiService, log)
-	pronunciationService := service.NewPronunciationService(cfg.TTS, wordRepo, log)
+	wordService := service.NewWordServiceWithMastering(wordRepo, trainingCardRepo, userCardRepo, userWordMasteringRepo, aiService, cfg.Learning, log)
+	pronunciationService := service.NewPronunciationService(cfg.TTS, cfg.Learning, wordRepo, log)
 	wordService.SetPronunciationService(pronunciationService)
-	srsService := service.NewSRSService(userCardRepo, log)
-	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, log)
+	srsService := service.NewSRSService(userCardRepo, cfg.Learning, log)
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, cfg.Learning, log)
 	optionsService := service.NewOptionsService(trainingCardRepo, log)
 	cbService := service.NewCircuitBreakerService(cbRepo, cfg.Training.CircuitBreakerThreshold, log)
 
@@ -157,6 +157,7 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 			cfg.Training.LLMWorkers,
 			workerInterval,
 			cfg.AI.ModelHigh,
+			cfg.Learning,
 			log,
 		)
 	}
@@ -182,6 +183,7 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 		grammarContentRepo,
 		grammarPublishRepo,
 		grammarAttemptRepo,
+		cfg.Learning,
 		log,
 	)
 

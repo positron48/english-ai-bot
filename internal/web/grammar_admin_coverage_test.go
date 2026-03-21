@@ -10,6 +10,7 @@ import (
 	"testing/fstest"
 
 	sqlmock "github.com/DATA-DOG/go-sqlmock"
+	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/service"
 )
@@ -22,7 +23,7 @@ func makeBadGrammarRouter(t *testing.T) (*Router, int64, func()) {
 	badDB := badDBConn(t)
 	publishRepo := repository.NewGrammarPublishRepository(badDB, logger)
 	attemptRepo := repository.NewGrammarAttemptRepository(badDB, logger)
-	badGrammarService := service.NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+	badGrammarService := service.NewGrammarService(contentRepo, publishRepo, attemptRepo, config.DefaultLearningConfig(), logger)
 	router.SetGrammarService(badGrammarService)
 	return router, adminUserID, cleanup
 }
@@ -38,7 +39,7 @@ func makeBadContentGrammarRouter(t *testing.T) (*Router, int64, func()) {
 	goodDB := router.db
 	publishRepo := repository.NewGrammarPublishRepository(goodDB, logger)
 	attemptRepo := repository.NewGrammarAttemptRepository(goodDB, logger)
-	badContentService := service.NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+	badContentService := service.NewGrammarService(contentRepo, publishRepo, attemptRepo, config.DefaultLearningConfig(), logger)
 	router.SetGrammarService(badContentService)
 	return router, adminUserID, cleanup
 }
@@ -392,7 +393,7 @@ func TestHandleAdminGrammarCategoryPublish_CascadeBulkSetPublishedError(t *testi
 	contentRepo := repository.NewGrammarContentRepository(logger)
 	publishRepo := repository.NewGrammarPublishRepository(db, logger)
 	attemptRepo := repository.NewGrammarAttemptRepository(db, logger)
-	grammarService := service.NewGrammarService(contentRepo, publishRepo, attemptRepo, logger)
+	grammarService := service.NewGrammarService(contentRepo, publishRepo, attemptRepo, config.DefaultLearningConfig(), logger)
 	router.SetGrammarService(grammarService)
 
 	payload, _ := json.Marshal(map[string]interface{}{"is_published": true, "cascade": true})

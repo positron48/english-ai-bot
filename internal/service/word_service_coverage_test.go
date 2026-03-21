@@ -32,7 +32,7 @@ func newTestPronunciationService(t *testing.T) *PronunciationService {
 		PrefetchWorkers:   1,
 		AudioDir:          t.TempDir(),
 		PublicBasePath:    "/media/tts",
-	}, nil, zap.NewNop())
+	}, config.DefaultLearningConfig(), nil, zap.NewNop())
 }
 
 // TestGetWordDefinition_WordFormMapping_ResolvesToLemma covers lines 88-98:
@@ -58,7 +58,7 @@ func TestGetWordDefinition_WordFormMapping_ResolvesToLemma(t *testing.T) {
 		t.Fatalf("UpsertWordFormMapping: %v", err)
 	}
 
-	service := NewWordService(wordRepo, nil, nil, nil, logger)
+	service := NewWordService(wordRepo, nil, nil, nil, config.DefaultLearningConfig(), logger)
 	resp, err := service.GetWordDefinition(context.Background(), 1, "ran")
 	if err != nil {
 		t.Fatalf("GetWordDefinition: %v", err)
@@ -111,7 +111,7 @@ func TestGetWordDefinition_UpsertWordFormMapping_WhenLemmaNotMatchInput(t *testi
 		t.Fatalf("UpsertWordCardLemma: %v", err)
 	}
 
-	service := NewWordService(wordRepo, nil, nil, nil, logger)
+	service := NewWordService(wordRepo, nil, nil, nil, config.DefaultLearningConfig(), logger)
 	resp, err := service.GetWordDefinition(context.Background(), 1, "run")
 	if err != nil {
 		t.Fatalf("GetWordDefinition: %v", err)
@@ -153,7 +153,7 @@ func TestGetWordDefinition_EnsureUserCardsForWord_WithTrainingCards(t *testing.T
 		t.Fatalf("CreateTrainingCard: %v", err)
 	}
 
-	service := NewWordService(wordRepo, trainingCardRepo, userCardRepo, nil, logger)
+	service := NewWordService(wordRepo, trainingCardRepo, userCardRepo, nil, config.DefaultLearningConfig(), logger)
 	resp, err := service.GetWordDefinition(context.Background(), user.ID, "testensure2")
 	if err != nil {
 		t.Fatalf("GetWordDefinition: %v", err)
@@ -182,7 +182,7 @@ func TestGetWordDefinition_PronunciationService_DBWord(t *testing.T) {
 		t.Fatalf("UpsertWordCardLemma: %v", err)
 	}
 
-	service := NewWordService(wordRepo, nil, nil, nil, logger)
+	service := NewWordService(wordRepo, nil, nil, nil, config.DefaultLearningConfig(), logger)
 	pronService := newTestPronunciationService(t)
 	service.SetPronunciationService(pronService)
 
@@ -199,7 +199,7 @@ func TestGetWordDefinition_PronunciationService_DBWord(t *testing.T) {
 // ExamplesJSON is invalid -> warn and continue.
 func TestRenderWordCardMarkdown_InvalidExamplesJSON(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	service := NewWordService(nil, nil, nil, nil, logger)
+	service := NewWordService(nil, nil, nil, nil, config.DefaultLearningConfig(), logger)
 
 	invalidJSON := "not valid json"
 	card := &models.WordCard{
@@ -216,7 +216,7 @@ func TestRenderWordCardMarkdown_InvalidExamplesJSON(t *testing.T) {
 // VerbFormsJSON is invalid -> warn and continue.
 func TestRenderWordCardMarkdown_InvalidVerbFormsJSON(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	service := NewWordService(nil, nil, nil, nil, logger)
+	service := NewWordService(nil, nil, nil, nil, config.DefaultLearningConfig(), logger)
 
 	invalidJSON := "not valid json"
 	card := &models.WordCard{
@@ -244,7 +244,7 @@ func TestGetWordDefinition_AIResponse_LegacySave(t *testing.T) {
 
 	wordRepo := repository.NewWordRepository(conn, logger)
 	aiService := newAIServiceWithResponse(t, logger, "legacy text response")
-	service := NewWordService(wordRepo, nil, nil, aiService, logger)
+	service := NewWordService(wordRepo, nil, nil, aiService, config.DefaultLearningConfig(), logger)
 
 	resp, err := service.GetWordDefinition(context.Background(), 1, "legacyword2")
 	if err != nil {
@@ -270,7 +270,7 @@ func TestGetWordDefinition_AIResponse_ErrorString_NonError(t *testing.T) {
 
 	wordRepo := repository.NewWordRepository(conn, logger)
 	aiService := newAIServiceWithResponse(t, logger, `{"error":"null","lemma":"load","pos":"verb","definition_ru":"загружать"}`)
-	service := NewWordService(wordRepo, nil, nil, aiService, logger)
+	service := NewWordService(wordRepo, nil, nil, aiService, config.DefaultLearningConfig(), logger)
 
 	resp, err := service.GetWordDefinition(context.Background(), 1, "load")
 	if err != nil {
@@ -297,7 +297,7 @@ func TestGetWordDefinition_AIResponse_ErrorString_NoValidData_WithHint(t *testin
 	wordRepo := repository.NewWordRepository(conn, logger)
 	// "none" is a non-error string, no valid data, has hint -> return hint
 	aiService := newAIServiceWithResponse(t, logger, `{"error":"none","hint":"try another word"}`)
-	service := NewWordService(wordRepo, nil, nil, aiService, logger)
+	service := NewWordService(wordRepo, nil, nil, aiService, config.DefaultLearningConfig(), logger)
 
 	resp, err := service.GetWordDefinition(context.Background(), 1, "xyzzy")
 	if err != nil {
@@ -325,7 +325,7 @@ func TestGetWordDefinition_AIResponse_ErrorKeyword_WithHint(t *testing.T) {
 
 	wordRepo := repository.NewWordRepository(conn, logger)
 	aiService := newAIServiceWithResponse(t, logger, `{"error":"gibberish","hint":"check spelling","lemma":""}`)
-	service := NewWordService(wordRepo, nil, nil, aiService, logger)
+	service := NewWordService(wordRepo, nil, nil, aiService, config.DefaultLearningConfig(), logger)
 
 	resp, err := service.GetWordDefinition(context.Background(), 1, "qwerty3")
 	if err != nil {
@@ -351,7 +351,7 @@ func TestGetWordDefinition_AIResponse_ErrorKeyword_NoHint(t *testing.T) {
 
 	wordRepo := repository.NewWordRepository(conn, logger)
 	aiService := newAIServiceWithResponse(t, logger, `{"error":"not a valid English word","hint":"","lemma":""}`)
-	service := NewWordService(wordRepo, nil, nil, aiService, logger)
+	service := NewWordService(wordRepo, nil, nil, aiService, config.DefaultLearningConfig(), logger)
 
 	resp, err := service.GetWordDefinition(context.Background(), 1, "qwerty4")
 	if err != nil {
@@ -378,7 +378,7 @@ func TestGetWordDefinition_AIResponse_NoDefinitionRU_WithHint(t *testing.T) {
 	wordRepo := repository.NewWordRepository(conn, logger)
 	// No definition_ru, no error field, but has hint
 	aiService := newAIServiceWithResponse(t, logger, `{"lemma":"ghost2","pos":"noun","hint":"try another form"}`)
-	service := NewWordService(wordRepo, nil, nil, aiService, logger)
+	service := NewWordService(wordRepo, nil, nil, aiService, config.DefaultLearningConfig(), logger)
 
 	resp, err := service.GetWordDefinition(context.Background(), 1, "ghost3")
 	if err != nil {
@@ -404,7 +404,7 @@ func TestGetWordDefinition_AIResponse_LemmaEmpty(t *testing.T) {
 
 	wordRepo := repository.NewWordRepository(conn, logger)
 	aiService := newAIServiceWithResponse(t, logger, `{"lemma":"","pos":"noun","definition_ru":"тест"}`)
-	service := NewWordService(wordRepo, nil, nil, aiService, logger)
+	service := NewWordService(wordRepo, nil, nil, aiService, config.DefaultLearningConfig(), logger)
 
 	resp, err := service.GetWordDefinition(context.Background(), 1, "myword")
 	if err != nil {
@@ -431,7 +431,7 @@ func TestGetWordDefinition_AIResponse_VerbForms(t *testing.T) {
 	wordRepo := repository.NewWordRepository(conn, logger)
 	aiResponse := `{"lemma":"spy","pos":"verb","transcription":"spaɪ","definition_ru":"шпионить","verb_forms":{"v1":"spy","v2":"spied","v3":"spied","gerund":"spying","third_person":"spies"},"examples":[{"example_en":"He spies on us.","gloss_ru":"Он шпионит за нами."}]}`
 	aiService := newAIServiceWithResponse(t, logger, aiResponse)
-	service := NewWordService(wordRepo, nil, nil, aiService, logger)
+	service := NewWordService(wordRepo, nil, nil, aiService, config.DefaultLearningConfig(), logger)
 
 	resp, err := service.GetWordDefinition(context.Background(), 1, "spy")
 	if err != nil {
@@ -468,7 +468,7 @@ func TestGetWordDefinition_AIResponse_VerbForms_FormMappings(t *testing.T) {
 	wordRepo := repository.NewWordRepository(conn, logger)
 	aiResponse := `{"lemma":"run2","pos":"verb","transcription":"rʌn","definition_ru":"бежать","verb_forms":{"v1":"run2","v2":"ran2","v3":"run2","gerund":"running2","third_person":"runs2"}}`
 	aiService := newAIServiceWithResponse(t, logger, aiResponse)
-	service := NewWordService(wordRepo, nil, nil, aiService, logger)
+	service := NewWordService(wordRepo, nil, nil, aiService, config.DefaultLearningConfig(), logger)
 
 	resp, err := service.GetWordDefinition(context.Background(), 1, "running2")
 	if err != nil {
@@ -502,7 +502,7 @@ func TestGetWordDefinition_AIResponse_WithPronunciationService(t *testing.T) {
 	wordRepo := repository.NewWordRepository(conn, logger)
 	aiResponse := `{"lemma":"bird","pos":"noun","transcription":"bɜːrd","definition_ru":"птица"}`
 	aiService := newAIServiceWithResponse(t, logger, aiResponse)
-	service := NewWordService(wordRepo, nil, nil, aiService, logger)
+	service := NewWordService(wordRepo, nil, nil, aiService, config.DefaultLearningConfig(), logger)
 
 	pronService := newTestPronunciationService(t)
 	service.SetPronunciationService(pronService)
@@ -541,7 +541,7 @@ func TestGetWordDefinition_AIResponse_NormalizedWordEqualsLemma(t *testing.T) {
 	wordRepo := repository.NewWordRepository(conn, logger)
 	aiResponse := `{"lemma":"tree","pos":"noun","definition_ru":"дерево"}`
 	aiService := newAIServiceWithResponse(t, logger, aiResponse)
-	service := NewWordService(wordRepo, nil, nil, aiService, logger)
+	service := NewWordService(wordRepo, nil, nil, aiService, config.DefaultLearningConfig(), logger)
 
 	resp, err := service.GetWordDefinition(context.Background(), 1, "tree")
 	if err != nil {
@@ -568,7 +568,7 @@ func TestGetWordDefinition_AIResponse_Examples(t *testing.T) {
 	wordRepo := repository.NewWordRepository(conn, logger)
 	aiResponse := `{"lemma":"apple","pos":"noun","definition_ru":"яблоко","examples":[{"example_en":"I eat an apple.","gloss_ru":"Я ем яблоко."}]}`
 	aiService := newAIServiceWithResponse(t, logger, aiResponse)
-	service := NewWordService(wordRepo, nil, nil, aiService, logger)
+	service := NewWordService(wordRepo, nil, nil, aiService, config.DefaultLearningConfig(), logger)
 
 	resp, err := service.GetWordDefinition(context.Background(), 1, "apple2")
 	if err != nil {
@@ -607,7 +607,7 @@ func TestEnsureUserCardsForWord_CreateUserCardFails_Idempotent(t *testing.T) {
 		t.Fatalf("CreateTrainingCard: %v", err)
 	}
 
-	service := NewWordService(wordRepo, trainingCardRepo, userCardRepo, nil, logger)
+	service := NewWordService(wordRepo, trainingCardRepo, userCardRepo, nil, config.DefaultLearningConfig(), logger)
 
 	// First call creates cards
 	err = service.ensureUserCardsForWord(user.ID, wordCardID)
@@ -645,7 +645,7 @@ func TestGetWordDefinition_GetWordCardByID_Error(t *testing.T) {
 		t.Fatalf("UpsertWordFormMapping: %v", err)
 	}
 
-	service := NewWordService(wordRepo, nil, nil, nil, logger)
+	service := NewWordService(wordRepo, nil, nil, nil, config.DefaultLearningConfig(), logger)
 	resp, err := service.GetWordDefinition(context.Background(), 1, "formword2")
 	if err != nil {
 		t.Fatalf("GetWordDefinition: %v", err)
@@ -670,7 +670,7 @@ func TestGetWordDefinition_AIError(t *testing.T) {
 
 	wordRepo := repository.NewWordRepository(conn, logger)
 	aiService := newAIServiceWithError(t, logger)
-	service := NewWordService(wordRepo, nil, nil, aiService, logger)
+	service := NewWordService(wordRepo, nil, nil, aiService, config.DefaultLearningConfig(), logger)
 
 	_, err = service.GetWordDefinition(context.Background(), 1, "aiErrorWord")
 	if err == nil {
@@ -745,7 +745,7 @@ func TestGetWordDefinition_GetWordFormMapping_Error(t *testing.T) {
 	testutil.SetupTestDatabase(t)
 
 	failingWordRepo := newFailingWordRepo(t, logger)
-	svc := NewWordService(failingWordRepo, nil, nil, nil, logger)
+	svc := NewWordService(failingWordRepo, nil, nil, nil, config.DefaultLearningConfig(), logger)
 
 	// GetWordFormMapping will fail, but we should still continue (no AI service → return error)
 	_, err := svc.GetWordDefinition(context.Background(), 1, "testword")
@@ -792,7 +792,7 @@ func TestGetWordDefinition_GetWordCardByLemma_Error(t *testing.T) {
 	testutil.SetupTestDatabase(t)
 
 	failingWordRepo := newFailingWordRepo(t, logger)
-	svc := NewWordService(failingWordRepo, nil, nil, nil, logger)
+	svc := NewWordService(failingWordRepo, nil, nil, nil, config.DefaultLearningConfig(), logger)
 
 	// GetWordFormMapping fails (warn), GetWordCardByLemma fails (warn), no AI → error
 	_, err := svc.GetWordDefinition(context.Background(), 1, "testword2")
@@ -820,7 +820,7 @@ func TestGetWordDefinition_UpsertWordFormMapping_Error(t *testing.T) {
 	// Since both use the same repo, we can't easily split.
 	// Instead, test the path where normalizedWord != lemma and UpsertWordFormMapping is called.
 	// We use the real wordRepo and verify the function succeeds (UpsertWordFormMapping succeeds).
-	svc := NewWordService(wordRepo, nil, nil, nil, logger)
+	svc := NewWordService(wordRepo, nil, nil, nil, config.DefaultLearningConfig(), logger)
 
 	// "runs" normalizes to "runs", lemma is "run" → normalizedWord != lemma → UpsertWordFormMapping called
 	// But "run" is in DB, so GetWordCardByLemma succeeds
@@ -852,7 +852,7 @@ func TestGetWordDefinition_EnsureUserCardsForWord_Error(t *testing.T) {
 	// Use failing trainingCardRepo so GetTrainingCardsByWordCardID fails → ensureUserCardsForWord returns error
 	failingTrainingCardRepo := newFailingTrainingCardRepoWS(t, logger)
 	userCardRepo := repository.NewUserCardRepository(conn, logger)
-	svc := NewWordService(wordRepo, failingTrainingCardRepo, userCardRepo, nil, logger)
+	svc := NewWordService(wordRepo, failingTrainingCardRepo, userCardRepo, nil, config.DefaultLearningConfig(), logger)
 
 	// Word is in DB, ensureUserCardsForWord will fail (GetTrainingCardsByWordCardID fails → return error → warn)
 	// but GetWordDefinition still returns markdown
@@ -873,7 +873,7 @@ func TestGetWordDefinition_AIResponse_LegacySave_SaveFails(t *testing.T) {
 
 	failingWordRepo := newFailingWordRepo(t, logger)
 	aiService := newAIServiceWithResponse(t, logger, "legacy text response")
-	svc := NewWordService(failingWordRepo, nil, nil, aiService, logger)
+	svc := NewWordService(failingWordRepo, nil, nil, aiService, config.DefaultLearningConfig(), logger)
 
 	// GetWordFormMapping fails (warn), GetWordCardByLemma fails (warn), AI returns non-JSON
 	// SaveWordCard fails (warn), but function still returns the AI response
@@ -903,7 +903,7 @@ func TestGetWordDefinition_AIResponse_ErrorNull_NoDefinitionRU(t *testing.T) {
 	//   = "null" != "" && (false || (!true && false)) = true && false = false
 	// → falls through to step 5 (no definition_ru) → returns default message
 	aiService := newAIServiceWithResponse(t, logger, `{"error":"null"}`)
-	svc := NewWordService(wordRepo, nil, nil, aiService, logger)
+	svc := NewWordService(wordRepo, nil, nil, aiService, config.DefaultLearningConfig(), logger)
 
 	resp, err := svc.GetWordDefinition(context.Background(), 1, "nullerror")
 	if err != nil {
@@ -927,7 +927,7 @@ func TestGetWordDefinition_AIResponse_ErrorZero_NoHint(t *testing.T) {
 
 	wordRepo := repository.NewWordRepository(conn, logger)
 	aiService := newAIServiceWithResponse(t, logger, `{"error":"0"}`)
-	svc := NewWordService(wordRepo, nil, nil, aiService, logger)
+	svc := NewWordService(wordRepo, nil, nil, aiService, config.DefaultLearningConfig(), logger)
 
 	resp, err := svc.GetWordDefinition(context.Background(), 1, "zeroerror")
 	if err != nil {
@@ -947,7 +947,7 @@ func TestGetWordDefinition_AIResponse_ErrorZero_WithHint(t *testing.T) {
 
 	wordRepo := repository.NewWordRepository(conn, logger)
 	aiService := newAIServiceWithResponse(t, logger, `{"error":"0","hint":"try again"}`)
-	svc := NewWordService(wordRepo, nil, nil, aiService, logger)
+	svc := NewWordService(wordRepo, nil, nil, aiService, config.DefaultLearningConfig(), logger)
 
 	resp, err := svc.GetWordDefinition(context.Background(), 1, "zerohint")
 	if err != nil {
@@ -971,7 +971,7 @@ func TestGetWordDefinition_AIResponse_ErrorKeyword_NoHint_AltPath(t *testing.T) 
 	wordRepo := repository.NewWordRepository(conn, logger)
 	// "does not exist" is an error keyword → IsError=true → IsTrue()=true → early return at 199-209
 	aiService := newAIServiceWithResponse(t, logger, `{"error":"does not exist"}`)
-	svc := NewWordService(wordRepo, nil, nil, aiService, logger)
+	svc := NewWordService(wordRepo, nil, nil, aiService, config.DefaultLearningConfig(), logger)
 
 	resp, err := svc.GetWordDefinition(context.Background(), 1, "nonexistword")
 	if err != nil {
@@ -993,7 +993,7 @@ func TestGetWordDefinition_AIResponse_ErrorWithHint_AltPath(t *testing.T) {
 	wordRepo := repository.NewWordRepository(conn, logger)
 	// "does not exist" is an error keyword, hint present → early return at lines 199-204
 	aiService := newAIServiceWithResponse(t, logger, `{"error":"does not exist","hint":"check your spelling"}`)
-	svc := NewWordService(wordRepo, nil, nil, aiService, logger)
+	svc := NewWordService(wordRepo, nil, nil, aiService, config.DefaultLearningConfig(), logger)
 
 	resp, err := svc.GetWordDefinition(context.Background(), 1, "hintword")
 	if err != nil {
@@ -1012,7 +1012,7 @@ func TestGetWordDefinition_AIResponse_UpsertWordCardLemma_Fails(t *testing.T) {
 
 	failingWordRepo := newFailingWordRepo(t, logger)
 	aiService := newAIServiceWithResponse(t, logger, `{"lemma":"failsave","pos":"noun","definition_ru":"тест"}`)
-	svc := NewWordService(failingWordRepo, nil, nil, aiService, logger)
+	svc := NewWordService(failingWordRepo, nil, nil, aiService, config.DefaultLearningConfig(), logger)
 
 	_, err := svc.GetWordDefinition(context.Background(), 1, "failsave")
 	if err == nil {
@@ -1036,7 +1036,7 @@ func TestGetWordDefinition_AIResponse_UpsertWordFormMapping_NormalizedNeqLemma_F
 	// To test the fail path, we'd need a failing repo after UpsertWordCardLemma succeeds.
 	// Since we can't split, test with real repo (covers the success path of lines 329-332).
 	aiService := newAIServiceWithResponse(t, logger, `{"lemma":"run","pos":"verb","definition_ru":"бежать"}`)
-	svc := NewWordService(wordRepo, nil, nil, aiService, logger)
+	svc := NewWordService(wordRepo, nil, nil, aiService, config.DefaultLearningConfig(), logger)
 
 	resp, err := svc.GetWordDefinition(context.Background(), 1, "running")
 	if err != nil {
@@ -1054,7 +1054,7 @@ func TestEnsureUserCardsForWord_GetTrainingCardsFails(t *testing.T) {
 	testutil.SetupTestDatabase(t)
 
 	failingTrainingCardRepo := newFailingTrainingCardRepoWS(t, logger)
-	svc := NewWordService(nil, failingTrainingCardRepo, nil, nil, logger)
+	svc := NewWordService(nil, failingTrainingCardRepo, nil, nil, config.DefaultLearningConfig(), logger)
 
 	err := svc.ensureUserCardsForWord(1, 1)
 	if err == nil {
@@ -1088,7 +1088,7 @@ func TestEnsureUserCardsForWord_CreateUserCardFails_RuEn(t *testing.T) {
 
 	// Use failing userCardRepo so CreateUserCard fails
 	failingUserCardRepo := newFailingUserCardRepo(t, logger)
-	svc := NewWordService(wordRepo, trainingCardRepo, failingUserCardRepo, nil, logger)
+	svc := NewWordService(wordRepo, trainingCardRepo, failingUserCardRepo, nil, config.DefaultLearningConfig(), logger)
 
 	// ensureUserCardsForWord will warn on CreateUserCard failures but return nil
 	err = svc.ensureUserCardsForWord(1, wordCardID)
@@ -1140,7 +1140,7 @@ func TestGetWordDefinition_GetWordCardByID_ErrorAfterFormMapping(t *testing.T) {
 	// GetWordCardByID will fail (word_cards table dropped)
 	// wordCard will be nil, falls through to GetWordCardByLemma which also fails
 	// Then tries AI service (nil) → returns error
-	svc := NewWordService(wordRepo, nil, nil, nil, logger)
+	svc := NewWordService(wordRepo, nil, nil, nil, config.DefaultLearningConfig(), logger)
 	_, err = svc.GetWordDefinition(context.Background(), 1, "testform")
 	// Should fail because AI service is nil (after GetWordCardByID fails)
 	if err == nil {
@@ -1188,7 +1188,7 @@ func TestGetWordDefinition_UpsertWordFormMapping_FirstCallFails(t *testing.T) {
 	// AI returns a valid response with normalizedWord != lemma (to trigger form mapping creation)
 	aiResponse := `{"lemma":"walk","pos":"verb","definition_ru":"идти"}`
 	aiService := newAIServiceWithResponse(t, logger, aiResponse)
-	svc := NewWordService(wordRepo, nil, nil, aiService, logger)
+	svc := NewWordService(wordRepo, nil, nil, aiService, config.DefaultLearningConfig(), logger)
 
 	// "walking" normalizes to "walking", lemma is "walk" → normalizedWord != lemma
 	// UpsertWordCardLemma succeeds (no trigger on word_cards)
@@ -1248,7 +1248,7 @@ func TestGetWordDefinition_UpsertWordFormMapping_AfterSave_Fails(t *testing.T) {
 	// AI returns a valid response with normalizedWord != lemma (to trigger form mapping creation)
 	aiResponse := `{"lemma":"walk","pos":"verb","definition_ru":"идти"}`
 	aiService := newAIServiceWithResponse(t, logger, aiResponse)
-	svc := NewWordService(wordRepo, nil, nil, aiService, logger)
+	svc := NewWordService(wordRepo, nil, nil, aiService, config.DefaultLearningConfig(), logger)
 
 	// "walking" normalizes to "walking", lemma is "walk" → normalizedWord != lemma
 	// UpsertWordCardLemma succeeds (no trigger on word_cards)
@@ -1310,7 +1310,7 @@ func TestGetWordDefinition_UpsertVerbFormMapping_Fails(t *testing.T) {
 	// AI returns a verb with forms - this will trigger multiple UpsertWordFormMapping calls
 	aiResponse := `{"lemma":"jump","pos":"verb","definition_ru":"прыгать","verb_forms":{"v1":"jump","v2":"jumped","v3":"jumped","gerund":"jumping","third_person":"jumps"}}`
 	aiService := newAIServiceWithResponse(t, logger, aiResponse)
-	svc := NewWordService(wordRepo, nil, nil, aiService, logger)
+	svc := NewWordService(wordRepo, nil, nil, aiService, config.DefaultLearningConfig(), logger)
 
 	// "jumping" normalizes to "jumping", lemma is "jump"
 	// UpsertWordCardLemma succeeds
@@ -1358,7 +1358,7 @@ func TestEnsureUserCardsForWord_UserWordMasteringUpsertFails(t *testing.T) {
 	t.Cleanup(func() { _ = failingDB.Close() })
 	failingMasteringRepo := repository.NewUserWordMasteringRepository(failingDB, logger)
 
-	svc := NewWordService(wordRepo, trainingCardRepo, userCardRepo, nil, logger)
+	svc := NewWordService(wordRepo, trainingCardRepo, userCardRepo, nil, config.DefaultLearningConfig(), logger)
 	// Set the userWordMasteringRepo via reflection
 	svcValue := reflect.ValueOf(svc).Elem()
 	masteringField := svcValue.FieldByName("userWordMasteringRepo")

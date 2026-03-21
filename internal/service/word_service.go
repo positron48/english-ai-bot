@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"tgbot-skeleton/internal/ai"
+	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/utils"
@@ -22,6 +23,7 @@ type WordService struct {
 	userWordMasteringRepo *repository.UserWordMasteringRepository
 	pronunciationService  *PronunciationService
 	aiService             *ai.Service
+	learning              config.LearningConfig
 	logger                *zap.Logger
 }
 
@@ -31,9 +33,10 @@ func NewWordService(
 	trainingCardRepo *repository.TrainingCardRepository,
 	userCardRepo *repository.UserCardRepository,
 	aiService *ai.Service,
+	learning config.LearningConfig,
 	logger *zap.Logger,
 ) *WordService {
-	return NewWordServiceWithMastering(wordRepo, trainingCardRepo, userCardRepo, nil, aiService, logger)
+	return NewWordServiceWithMastering(wordRepo, trainingCardRepo, userCardRepo, nil, aiService, learning, logger)
 }
 
 // NewWordServiceWithMastering creates a word service with optional UserWordMasteringRepository for storing mastering score on card creation.
@@ -43,6 +46,7 @@ func NewWordServiceWithMastering(
 	userCardRepo *repository.UserCardRepository,
 	userWordMasteringRepo *repository.UserWordMasteringRepository,
 	aiService *ai.Service,
+	learning config.LearningConfig,
 	logger *zap.Logger,
 ) *WordService {
 	return &WordService{
@@ -51,6 +55,7 @@ func NewWordServiceWithMastering(
 		userCardRepo:          userCardRepo,
 		userWordMasteringRepo: userWordMasteringRepo,
 		aiService:             aiService,
+		learning:              learning,
 		logger:                logger,
 	}
 }
@@ -58,6 +63,13 @@ func NewWordServiceWithMastering(
 // SetPronunciationService connects background pronunciation prefetch to word creation/lookups.
 func (s *WordService) SetPronunciationService(pronunciationService *PronunciationService) {
 	s.pronunciationService = pronunciationService
+}
+
+func (s *WordService) typoOrInvalidWordMessage() string {
+	if s.learning.TargetLang == "en" {
+		return "💡 Это слово, скорее всего, опечатка или несуществующее английское слово."
+	}
+	return "💡 Это слово, скорее всего, опечатка или несуществующее слово."
 }
 
 // IsSingleWord checks if the input is a single word
@@ -199,8 +211,7 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 			return message, nil
 		} else {
 			// If hint is empty, return default error message
-			message := "💡 Это слово, скорее всего, опечатка или несуществующее английское слово."
-			return message, nil
+			return s.typoOrInvalidWordMessage(), nil
 		}
 	}
 
@@ -237,8 +248,7 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 				return message, nil
 			} else {
 				// If hint is empty, return default error message
-				message := "💡 Это слово, скорее всего, опечатка или несуществующее английское слово."
-				return message, nil
+				return s.typoOrInvalidWordMessage(), nil
 			}
 		}
 	}
@@ -256,7 +266,7 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 		if hint != "" {
 			return fmt.Sprintf("💡 %s", hint), nil
 		}
-		return "💡 Это слово, скорее всего, опечатка или несуществующее английское слово.", nil
+		return s.typoOrInvalidWordMessage(), nil
 	}
 
 	// Step 6: Save structured data to word_cards (lemma)

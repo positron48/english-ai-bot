@@ -8,6 +8,7 @@ import (
 	"time"
 	"unicode"
 
+	learncfg "tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 
@@ -46,6 +47,7 @@ type TrainingService struct {
 	trainingCardRepo      trainingCardRepoForQueue
 	sessionRepo           *repository.SessionRepository
 	userWordMasteringRepo userWordMasteringRepoForSession // nil ok
+	learning              learncfg.LearningConfig
 	logger                *zap.Logger
 }
 
@@ -55,6 +57,7 @@ func NewTrainingService(
 	trainingCardRepo trainingCardRepoForQueue,
 	sessionRepo *repository.SessionRepository,
 	userWordMasteringRepo userWordMasteringRepoForSession,
+	learning learncfg.LearningConfig,
 	logger *zap.Logger,
 ) *TrainingService {
 	return &TrainingService{
@@ -62,6 +65,7 @@ func NewTrainingService(
 		trainingCardRepo:      trainingCardRepo,
 		sessionRepo:           sessionRepo,
 		userWordMasteringRepo: userWordMasteringRepo,
+		learning:              learning,
 		logger:                logger,
 	}
 }
@@ -135,6 +139,7 @@ func (s *TrainingService) StartSession(userID int64, source models.SessionSource
 		zap.Int64("session_id", sessionID),
 		zap.Int64("user_id", userID),
 		zap.String("source", string(source)),
+		zap.String("learning_pair", s.learning.Pair),
 		zap.Int("planned_count", len(queue)),
 	)
 

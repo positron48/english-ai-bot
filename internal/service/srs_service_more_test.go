@@ -4,6 +4,7 @@ import (
 	"testing"
 	"time"
 
+	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/models"
 
 	"go.uber.org/zap"
@@ -11,7 +12,7 @@ import (
 
 func TestSRSService_graduate(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	service := NewSRSService(nil, logger)
+	service := NewSRSService(nil, config.DefaultLearningConfig(), logger)
 
 	now := time.Now()
 	card := &models.UserCard{
@@ -40,7 +41,7 @@ func TestSRSService_graduate(t *testing.T) {
 
 func TestSRSService_captureState(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	service := NewSRSService(nil, logger)
+	service := NewSRSService(nil, config.DefaultLearningConfig(), logger)
 
 	card := &models.UserCard{
 		State:        models.StateReview,
@@ -72,7 +73,7 @@ func TestSRSService_captureState(t *testing.T) {
 
 func TestSRSService_handleNew_EasyQuality(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	service := NewSRSService(nil, logger)
+	service := NewSRSService(nil, config.DefaultLearningConfig(), logger)
 
 	now := time.Now()
 	card := &models.UserCard{
@@ -95,7 +96,7 @@ func TestSRSService_handleNew_EasyQuality(t *testing.T) {
 
 func TestSRSService_handleLearning_Graduate(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	service := NewSRSService(nil, logger)
+	service := NewSRSService(nil, config.DefaultLearningConfig(), logger)
 
 	now := time.Now()
 	card := &models.UserCard{
@@ -115,7 +116,7 @@ func TestSRSService_handleLearning_Graduate(t *testing.T) {
 
 func TestSRSService_handleLearning_QualityHard_AdvancesWithShortInterval(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	service := NewSRSService(nil, logger)
+	service := NewSRSService(nil, config.DefaultLearningConfig(), logger)
 
 	now := time.Now()
 	card := &models.UserCard{
@@ -145,7 +146,7 @@ func TestSRSService_handleLearning_QualityHard_AdvancesWithShortInterval(t *test
 
 func TestSRSService_handleLearning_QualityGood_AdvancesStep(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	service := NewSRSService(nil, logger)
+	service := NewSRSService(nil, config.DefaultLearningConfig(), logger)
 
 	now := time.Now()
 	card := &models.UserCard{
@@ -167,7 +168,7 @@ func TestSRSService_handleLearning_QualityGood_AdvancesStep(t *testing.T) {
 
 func TestSRSService_handleLearning_QualityHard_StepBeyondLength_Graduates(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	service := NewSRSService(nil, logger)
+	service := NewSRSService(nil, config.DefaultLearningConfig(), logger)
 
 	now := time.Now()
 	// ENtoRU has 3 steps (indices 0,1,2); LearningStep 3 is already past last index
@@ -191,7 +192,7 @@ func TestSRSService_handleLearning_QualityHard_StepBeyondLength_Graduates(t *tes
 
 func TestSRSService_handleNew_SingleStep_GraduatesImmediately(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	service := NewSRSService(nil, logger)
+	service := NewSRSService(nil, config.DefaultLearningConfig(), logger)
 	service.learningStepsFunc = func(_ models.CardDirection) []int { return []int{1} }
 
 	now := time.Now()
@@ -219,7 +220,7 @@ func TestSRSService_handleNew_SingleStep_GraduatesImmediately(t *testing.T) {
 
 func TestSRSService_handleLearning_SingleStep_GraduatesAfterOneStep(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	service := NewSRSService(nil, logger)
+	service := NewSRSService(nil, config.DefaultLearningConfig(), logger)
 	service.learningStepsFunc = func(_ models.CardDirection) []int { return []int{1} }
 
 	now := time.Now()
@@ -249,7 +250,7 @@ func TestSRSService_handleLearning_SingleStep_GraduatesAfterOneStep(t *testing.T
 
 func TestSRSService_handleReview_FirstRep(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	service := NewSRSService(nil, logger)
+	service := NewSRSService(nil, config.DefaultLearningConfig(), logger)
 
 	now := time.Now()
 	card := &models.UserCard{
@@ -272,7 +273,7 @@ func TestSRSService_handleReview_FirstRep(t *testing.T) {
 
 func TestSRSService_handleReview_SecondRep(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	service := NewSRSService(nil, logger)
+	service := NewSRSService(nil, config.DefaultLearningConfig(), logger)
 
 	now := time.Now()
 	card := &models.UserCard{
@@ -295,7 +296,7 @@ func TestSRSService_handleReview_SecondRep(t *testing.T) {
 
 func TestSRSService_handleLapse(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	service := NewSRSService(nil, logger)
+	service := NewSRSService(nil, config.DefaultLearningConfig(), logger)
 
 	now := time.Now()
 	initialEF := 2.0

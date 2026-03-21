@@ -35,7 +35,7 @@ func main() {
 	}
 	defer log.Sync() //nolint:errcheck
 
-	tts := service.NewPronunciationService(cfg.TTS, nil, log)
+	tts := service.NewPronunciationService(cfg.TTS, cfg.Learning, nil, log)
 	for _, word := range words {
 		ctx, cancel := context.WithTimeout(context.Background(), timeout)
 		res, err := tts.DebugFetch(ctx, word)

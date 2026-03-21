@@ -4,6 +4,7 @@ import (
 	"testing"
 	"time"
 
+	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/models"
 
 	"go.uber.org/zap"
@@ -49,7 +50,7 @@ func TestTrainingService_StartSession(t *testing.T) {
 		t.Fatalf("Failed to create user card: %v", err)
 	}
 
-	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 	session, queue, err := service.StartSession(user.ID, models.SourceManual, nil)
 	if err != nil {
 		t.Fatalf("StartSession() error = %v", err)
@@ -70,7 +71,7 @@ func TestTrainingService_StartSession_NoCards(t *testing.T) {
 	_, userRepo, userCardRepo, trainingCardRepo, sessionRepo := setupTrainingServiceTestDB(t)
 	user, _ := userRepo.GetOrCreateUser(9999)
 
-	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 	_, _, err := service.StartSession(user.ID, models.SourceManual, nil)
 	if err == nil {
 		t.Error("StartSession() should return error when no cards available")
@@ -116,7 +117,7 @@ func TestTrainingService_StartSession_FinishOldSession(t *testing.T) {
 		t.Fatalf("Failed to create user card: %v", err)
 	}
 
-	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 
 	// Start first session
 	session1, _, err := service.StartSession(user.ID, models.SourceManual, nil)

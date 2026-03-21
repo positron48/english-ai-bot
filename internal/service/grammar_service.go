@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/repository"
 
 	"go.uber.org/zap"
@@ -19,6 +20,7 @@ type GrammarService struct {
 	ContentRepo *repository.GrammarContentRepository
 	PublishRepo *repository.GrammarPublishRepository
 	AttemptRepo *repository.GrammarAttemptRepository
+	learning    config.LearningConfig
 	logger      *zap.Logger
 }
 
@@ -27,12 +29,14 @@ func NewGrammarService(
 	contentRepo *repository.GrammarContentRepository,
 	publishRepo *repository.GrammarPublishRepository,
 	attemptRepo *repository.GrammarAttemptRepository,
+	learning config.LearningConfig,
 	logger *zap.Logger,
 ) *GrammarService {
 	return &GrammarService{
 		ContentRepo: contentRepo,
 		PublishRepo: publishRepo,
 		AttemptRepo: attemptRepo,
+		learning:    learning,
 		logger:      logger,
 	}
 }

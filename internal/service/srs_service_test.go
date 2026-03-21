@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 
@@ -15,7 +16,7 @@ import (
 func TestNewSRSService(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 
-	service := NewSRSService((*repository.UserCardRepository)(nil), logger)
+	service := NewSRSService((*repository.UserCardRepository)(nil), config.DefaultLearningConfig(), logger)
 	_ = service // Verify service is created
 }
 

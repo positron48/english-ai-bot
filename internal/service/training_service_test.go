@@ -7,6 +7,7 @@ import (
 	"testing"
 	"time"
 
+	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/testutil"
@@ -66,7 +67,7 @@ func TestTrainingService_GetDueCount(t *testing.T) {
 		}
 	}
 
-	service := NewTrainingService(userCardRepo, nil, nil, nil, logger)
+	service := NewTrainingService(userCardRepo, nil, nil, nil, config.DefaultLearningConfig(), logger)
 	count, err := service.GetDueCount(user.ID)
 	if err != nil {
 		t.Fatalf("GetDueCount() error = %v", err)
@@ -94,7 +95,7 @@ func TestTrainingService_GetSession(t *testing.T) {
 		t.Fatalf("Failed to create session: %v", err)
 	}
 
-	service := NewTrainingService(nil, nil, sessionRepo, nil, logger)
+	service := NewTrainingService(nil, nil, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 	found, err := service.GetSession(id)
 	if err != nil {
 		t.Fatalf("GetSession() error = %v", err)
@@ -125,7 +126,7 @@ func TestTrainingService_GetActiveSession(t *testing.T) {
 		t.Fatalf("Failed to create session: %v", err)
 	}
 
-	service := NewTrainingService(nil, nil, sessionRepo, nil, logger)
+	service := NewTrainingService(nil, nil, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 	active, err := service.GetActiveSession(user.ID)
 	if err != nil {
 		t.Fatalf("GetActiveSession() error = %v", err)
@@ -156,7 +157,7 @@ func TestTrainingService_FinishSession(t *testing.T) {
 		t.Fatalf("Failed to create session: %v", err)
 	}
 
-	service := NewTrainingService(nil, nil, sessionRepo, nil, logger)
+	service := NewTrainingService(nil, nil, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 	err = service.FinishSession(id, 3)
 	if err != nil {
 		t.Fatalf("FinishSession() error = %v", err)
@@ -207,7 +208,7 @@ func TestTrainingService_FinishSession_WithMasteringRepo(t *testing.T) {
 	db, _, _, _, sessionRepo := setupTrainingServiceTestDB(t)
 	sessionID, userID, wordCardID := seedSessionWithReviewEvent(t, db, sessionRepo)
 	masteringRepo := repository.NewUserWordMasteringRepository(db, logger)
-	service := NewTrainingService(nil, nil, sessionRepo, masteringRepo, logger)
+	service := NewTrainingService(nil, nil, sessionRepo, masteringRepo, config.DefaultLearningConfig(), logger)
 
 	err := service.FinishSession(sessionID, 1)
 	if err != nil {
@@ -240,7 +241,7 @@ func TestTrainingService_FinishSession_WithMasteringRepo_NoReviewEvents(t *testi
 		t.Fatalf("create session: %v", err)
 	}
 	masteringRepo := repository.NewUserWordMasteringRepository(db, logger)
-	service := NewTrainingService(nil, nil, sessionRepo, masteringRepo, logger)
+	service := NewTrainingService(nil, nil, sessionRepo, masteringRepo, config.DefaultLearningConfig(), logger)
 
 	err = service.FinishSession(sessionID, 0)
 	if err != nil {
@@ -261,7 +262,7 @@ func TestTrainingService_FinishSession_WithMasteringRepo_NoReviewEvents(t *testi
 func TestTrainingService_FinishSession_NonExistentSession(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	_, _, _, _, sessionRepo := setupTrainingServiceTestDB(t)
-	service := NewTrainingService(nil, nil, sessionRepo, nil, logger)
+	service := NewTrainingService(nil, nil, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 
 	err := service.FinishSession(999999, 2)
 	if err != nil {
@@ -340,7 +341,7 @@ func TestTrainingService_FinishSession_MasteringUpdateFails(t *testing.T) {
 			return nil, fmt.Errorf("mock db error")
 		},
 	}
-	service := NewTrainingService(nil, nil, sessionRepo, mockMastering, logger)
+	service := NewTrainingService(nil, nil, sessionRepo, mockMastering, config.DefaultLearningConfig(), logger)
 
 	err = service.FinishSession(sessionID, 1)
 	if err != nil {
@@ -373,7 +374,7 @@ func TestTrainingService_FinishSession_MasteringStatsBatchFails(t *testing.T) {
 			return nil, fmt.Errorf("mock stats batch error")
 		},
 	}
-	service := NewTrainingService(nil, nil, sessionRepo, mockMastering, logger)
+	service := NewTrainingService(nil, nil, sessionRepo, mockMastering, config.DefaultLearningConfig(), logger)
 
 	err = service.FinishSession(sessionID, 1)
 	if err != nil {
@@ -416,7 +417,7 @@ func TestTrainingService_FinishSession_GetKnownForPairsFails(t *testing.T) {
 			return nil, fmt.Errorf("mock get known error")
 		},
 	}
-	service := NewTrainingService(nil, nil, sessionRepo, mockMastering, logger)
+	service := NewTrainingService(nil, nil, sessionRepo, mockMastering, config.DefaultLearningConfig(), logger)
 
 	err = service.FinishSession(sessionID, 1)
 	if err != nil {
@@ -442,7 +443,7 @@ func TestTrainingService_UpdateSessionState(t *testing.T) {
 		t.Fatalf("Failed to create session: %v", err)
 	}
 
-	service := NewTrainingService(nil, nil, sessionRepo, nil, logger)
+	service := NewTrainingService(nil, nil, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 	err = service.UpdateSessionState(id, `{"updated": true}`)
 	if err != nil {
 		t.Fatalf("UpdateSessionState() error = %v", err)
@@ -505,7 +506,7 @@ func TestTrainingService_RestoreQueue(t *testing.T) {
 		t.Fatalf("Failed to create user card 2: %v", err)
 	}
 
-	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, config.DefaultLearningConfig(), logger)
 	queue, err := service.RestoreQueue(user.ID, []int64{userCardID1, userCardID2})
 	if err != nil {
 		t.Fatalf("RestoreQueue() error = %v", err)
@@ -518,7 +519,7 @@ func TestTrainingService_RestoreQueue(t *testing.T) {
 func TestTrainingService_RestoreQueue_EmptyInput(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	_, _, userCardRepo, trainingCardRepo, _ := setupTrainingServiceTestDB(t)
-	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, config.DefaultLearningConfig(), logger)
 
 	queue, err := service.RestoreQueue(1, nil)
 	if err != nil {
@@ -563,7 +564,7 @@ func TestTrainingService_RestoreQueue_PartialSuccess(t *testing.T) {
 	}
 	validID, _ := userCardRepo.CreateUserCard(userCard)
 
-	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, config.DefaultLearningConfig(), logger)
 	// One valid ID, one non-existent
 	queue, err := service.RestoreQueue(user.ID, []int64{validID, 999999})
 	if err != nil {
@@ -598,7 +599,7 @@ func TestTrainingService_RestoreQueue_WrongUser(t *testing.T) {
 	}
 	userCardID, _ := userCardRepo.CreateUserCard(userCard)
 
-	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, nil, nil, config.DefaultLearningConfig(), logger)
 	// Restore as user2 - card belongs to user1, so it should be skipped
 	queue, err := service.RestoreQueue(user2.ID, []int64{userCardID})
 	if err != nil {
@@ -612,7 +613,7 @@ func TestTrainingService_RestoreQueue_WrongUser(t *testing.T) {
 func TestTrainingService_UpdateSessionState_SessionNotFound(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	_, _, _, _, sessionRepo := setupTrainingServiceTestDB(t)
-	service := NewTrainingService(nil, nil, sessionRepo, nil, logger)
+	service := NewTrainingService(nil, nil, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 
 	err := service.UpdateSessionState(999999, `{"state":1}`)
 	if err == nil {
@@ -644,7 +645,7 @@ func TestTrainingService_StartSession_Success_NoActiveSession(t *testing.T) {
 		t.Fatalf("create user card: %v", err)
 	}
 
-	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 	config := &SessionConfig{
 		MaxCardsPerSession: 10,
 		MaxNewPerSession:   5,
@@ -689,7 +690,7 @@ func TestTrainingService_StartSession_Success_NilConfig(t *testing.T) {
 		NextDueAt:      &past,
 	})
 
-	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 	session, queue, err := service.StartSession(user.ID, models.SourceManual, nil)
 	if err != nil {
 		t.Fatalf("StartSession(nil config) error = %v", err)
@@ -730,7 +731,7 @@ func TestTrainingService_StartSession_Success_FinishesOldSession(t *testing.T) {
 		t.Fatalf("create old session: %v", err)
 	}
 
-	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 	session, queue, err := service.StartSession(user.ID, models.SourceManual, &SessionConfig{MaxCardsPerSession: 10, MaxNewPerSession: 5, AlgoVersion: "test"})
 	if err != nil {
 		t.Fatalf("StartSession() error = %v", err)
@@ -758,7 +759,7 @@ func TestTrainingService_StartSession_NoCardsAvailable(t *testing.T) {
 	user, _ := userRepo.GetOrCreateUser(7004)
 	// No user_cards created
 
-	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, logger)
+	service := NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 	_, _, err := service.StartSession(user.ID, models.SourceManual, &SessionConfig{MaxCardsPerSession: 10, MaxNewPerSession: 5, AlgoVersion: "test"})
 	if err == nil {
 		t.Fatal("StartSession() expected error when no cards available")
@@ -779,7 +780,7 @@ func TestTrainingService_StartSession_GetActiveSessionFails(t *testing.T) {
 	closedConn.Close()
 	logger, _ := zap.NewDevelopment()
 	sessionRepo := repository.NewSessionRepository(closedConn, logger)
-	service := NewTrainingService(nil, nil, sessionRepo, nil, logger)
+	service := NewTrainingService(nil, nil, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 
 	_, _, err = service.StartSession(7005, models.SourceManual, nil)
 	if err == nil {

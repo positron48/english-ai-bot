@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"tgbot-skeleton/internal/ai"
+	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 
@@ -39,6 +40,7 @@ type TrainingWorker struct {
 	llmWorkers           int
 	interval             time.Duration
 	modelHigh            string
+	learning             config.LearningConfig
 	logger               *zap.Logger
 	stopChan             chan struct{}
 }
@@ -58,6 +60,7 @@ func NewTrainingWorker(
 	llmWorkers int,
 	interval time.Duration,
 	modelHigh string,
+	learning config.LearningConfig,
 	logger *zap.Logger,
 ) *TrainingWorker {
 	return &TrainingWorker{
@@ -74,6 +77,7 @@ func NewTrainingWorker(
 		llmWorkers:           llmWorkers,
 		interval:             interval,
 		modelHigh:            modelHigh,
+		learning:             learning,
 		logger:               logger,
 		stopChan:             make(chan struct{}),
 	}
@@ -82,6 +86,8 @@ func NewTrainingWorker(
 // Start starts the worker
 func (w *TrainingWorker) Start(ctx context.Context) {
 	w.logger.Info("starting training worker",
+		zap.String("learning_pair", w.learning.Pair),
+		zap.String("learning_app_code", w.learning.AppCode),
 		zap.Int("batch_size", w.batchSize),
 		zap.Int("llm_workers", w.llmWorkers),
 		zap.Duration("interval", w.interval),

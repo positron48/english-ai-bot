@@ -706,6 +706,7 @@ func (r *Router) getWordSetService() *service.WordSetService {
 		userWordKnowledgeRepo,
 		userWordMasteringRepo,
 		aiService,
+		r.config.Learning,
 		r.config.AI.ModelHigh,
 		r.logger,
 	)

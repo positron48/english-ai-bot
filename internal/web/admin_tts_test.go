@@ -36,7 +36,7 @@ func setupAdminTTSRouter(t *testing.T) (*Router, *repository.UserRepository, *re
 		PublicBasePath:    "/media/tts",
 		DictionaryEnabled: true,
 		DictionaryBaseURL: "http://example.com",
-	}, wordRepo, logger)
+	}, config.DefaultLearningConfig(), wordRepo, logger)
 
 	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
 	router.SetDependencies(userRepo, nil, nil, nil, "test-token")

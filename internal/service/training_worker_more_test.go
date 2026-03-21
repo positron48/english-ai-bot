@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"tgbot-skeleton/internal/ai"
+	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/testutil"
@@ -22,7 +23,7 @@ import (
 func TestTrainingWorker_hasMissingData(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	worker := NewTrainingWorker(
-		nil, nil, nil, nil, nil, nil, nil, nil, 0, 0, 0, 0, "", logger,
+		nil, nil, nil, nil, nil, nil, nil, nil, 0, 0, 0, 0, "", config.DefaultLearningConfig(), logger,
 	)
 
 	t.Run("Word card with all data", func(t *testing.T) {
@@ -113,7 +114,7 @@ func TestTrainingWorker_hasMissingData(t *testing.T) {
 func TestTrainingWorker_Stop(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	worker := NewTrainingWorker(
-		nil, nil, nil, nil, nil, nil, nil, nil, 0, 0, 0, 0, "", logger,
+		nil, nil, nil, nil, nil, nil, nil, nil, 0, 0, 0, 0, "", config.DefaultLearningConfig(), logger,
 	)
 
 	// Stop should not panic
@@ -153,6 +154,7 @@ func TestTrainingWorker_Start_ContextCancellation(t *testing.T) {
 		1,
 		100*time.Millisecond,
 		"",
+		config.DefaultLearningConfig(),
 		logger,
 	)
 
@@ -203,6 +205,7 @@ func TestTrainingWorker_Start_StopChan(t *testing.T) {
 		1,
 		100*time.Millisecond,
 		"",
+		config.DefaultLearningConfig(),
 		logger,
 	)
 
@@ -283,6 +286,7 @@ func TestTrainingWorker_processCards_CircuitBreakerIsOpenError(t *testing.T) {
 		1,
 		time.Hour,
 		"",
+		config.DefaultLearningConfig(),
 		logger,
 	)
 	worker.processCards(context.Background())
@@ -316,6 +320,7 @@ func TestTrainingWorker_processCards_CircuitBreakerOpen(t *testing.T) {
 		1,
 		time.Hour,
 		"",
+		config.DefaultLearningConfig(),
 		logger,
 	)
 
@@ -348,6 +353,7 @@ func TestTrainingWorker_processCards_NoPendingCards(t *testing.T) {
 		1,
 		time.Hour,
 		"",
+		config.DefaultLearningConfig(),
 		logger,
 	)
 
@@ -627,7 +633,7 @@ func TestTrainingWorker_notifyAdmin_SkipsWhenAdminIDZero(t *testing.T) {
 	worker := NewTrainingWorker(
 		nil, nil, nil, nil, nil, nil, cbService, nil,
 		0, // adminTelegramID
-		0, 0, 0, "", logger,
+		0, 0, 0, "", config.DefaultLearningConfig(), logger,
 	)
 	worker.notifyAdmin("some error")
 	// No panic, no send (bot is nil anyway)
@@ -641,7 +647,7 @@ func TestTrainingWorker_notifyAdmin_SkipsWhenBotNil(t *testing.T) {
 	worker := NewTrainingWorker(
 		nil, nil, nil, nil, nil, nil, cbService, nil,
 		12345, // adminTelegramID set
-		0, 0, 0, "", logger,
+		0, 0, 0, "", config.DefaultLearningConfig(), logger,
 	)
 	worker.notifyAdmin("some error")
 	// No panic (bot is nil, we log and return)
@@ -657,7 +663,7 @@ func TestTrainingWorker_notifyAdmin_SendsWhenBotSet(t *testing.T) {
 
 	worker := NewTrainingWorker(
 		nil, nil, nil, nil, nil, nil, cbService, bot,
-		999, 0, 0, 0, "", logger,
+		999, 0, 0, 0, "", config.DefaultLearningConfig(), logger,
 	)
 	worker.notifyAdmin("circuit open reason")
 
@@ -680,7 +686,7 @@ func TestTrainingWorker_notifyAdmin_GetStateError(t *testing.T) {
 	}
 	worker := NewTrainingWorker(
 		nil, nil, nil, nil, nil, nil, mockCB, nil,
-		12345, 0, 0, 0, "", logger,
+		12345, 0, 0, 0, "", config.DefaultLearningConfig(), logger,
 	)
 	worker.notifyAdmin("some error")
 	// No panic; logs error and returns
@@ -697,7 +703,7 @@ func TestTrainingWorker_notifyAdmin_SendFails(t *testing.T) {
 	bot.SetAPIEndpoint("http://example.com/bot%s/%s")
 	worker := NewTrainingWorker(
 		nil, nil, nil, nil, nil, nil, cbService, bot,
-		999, 0, 0, 0, "", logger,
+		999, 0, 0, 0, "", config.DefaultLearningConfig(), logger,
 	)
 	worker.notifyAdmin("circuit open")
 	// No panic; logs "failed to send admin notification"
@@ -707,7 +713,7 @@ func TestTrainingWorker_notifyAdminValidationError_SkipsWhenAdminIDZero(t *testi
 	logger, _ := zap.NewDevelopment()
 	worker := NewTrainingWorker(
 		nil, nil, nil, nil, nil, nil, nil, nil,
-		0, 0, 0, 0, "", logger,
+		0, 0, 0, 0, "", config.DefaultLearningConfig(), logger,
 	)
 	worker.notifyAdminValidationError("word", "validation error")
 }
@@ -716,7 +722,7 @@ func TestTrainingWorker_notifyAdminValidationError_SkipsWhenBotNil(t *testing.T)
 	logger, _ := zap.NewDevelopment()
 	worker := NewTrainingWorker(
 		nil, nil, nil, nil, nil, nil, nil, nil,
-		12345, 0, 0, 0, "", logger,
+		12345, 0, 0, 0, "", config.DefaultLearningConfig(), logger,
 	)
 	worker.notifyAdminValidationError("word", "validation error")
 }
@@ -728,7 +734,7 @@ func TestTrainingWorker_notifyAdminValidationError_SendsWhenBotSet(t *testing.T)
 
 	worker := NewTrainingWorker(
 		nil, nil, nil, nil, nil, nil, nil, bot,
-		888, 0, 0, 0, "", logger,
+		888, 0, 0, 0, "", config.DefaultLearningConfig(), logger,
 	)
 	worker.notifyAdminValidationError("apple", "R1 sense=0 distractor_en[0] contains Cyrillic")
 
@@ -747,7 +753,7 @@ func TestTrainingWorker_notifyAdminValidationError_LongMessageTruncated(t *testi
 	bot := newTestBotWorker(client)
 	worker := NewTrainingWorker(
 		nil, nil, nil, nil, nil, nil, nil, bot,
-		777, 0, 0, 0, "", logger,
+		777, 0, 0, 0, "", config.DefaultLearningConfig(), logger,
 	)
 	longError := strings.Repeat("x", 600)
 	worker.notifyAdminValidationError("word", longError)
@@ -775,7 +781,7 @@ func TestTrainingWorker_notifyAdminValidationError_SendFails(t *testing.T) {
 	bot.SetAPIEndpoint("http://example.com/bot%s/%s")
 	worker := NewTrainingWorker(
 		nil, nil, nil, nil, nil, nil, nil, bot,
-		666, 0, 0, 0, "", logger,
+		666, 0, 0, 0, "", config.DefaultLearningConfig(), logger,
 	)
 	worker.notifyAdminValidationError("word", "validation error")
 	// No panic; logs error and returns

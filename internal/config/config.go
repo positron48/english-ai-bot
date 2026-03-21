@@ -36,6 +36,17 @@ type LearningConfig struct {
 	GrammarBundleID string `mapstructure:"grammar_bundle_id"`
 }
 
+// DefaultLearningConfig returns the canonical RU→EN English instance defaults (matches viper defaults in Load).
+func DefaultLearningConfig() LearningConfig {
+	return LearningConfig{
+		Pair:            "ru-en",
+		NativeLang:      "ru",
+		TargetLang:      "en",
+		AppCode:         "english",
+		GrammarBundleID: "en",
+	}
+}
+
 // ValidateLearningConfig checks LEARNING_* / GRAMMAR_BUNDLE_ID consistency.
 func ValidateLearningConfig(lc LearningConfig) error {
 	pair := strings.TrimSpace(strings.ToLower(lc.Pair))

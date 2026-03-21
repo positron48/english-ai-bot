@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"tgbot-skeleton/internal/ai"
+	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/testutil"
@@ -82,6 +83,7 @@ func TestTrainingWorker_processCards_GetCardsError(t *testing.T) {
 		1,
 		0,
 		"",
+		config.DefaultLearningConfig(),
 		logger,
 	)
 

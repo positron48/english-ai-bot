@@ -10,6 +10,7 @@ import (
 	"testing"
 
 	"tgbot-skeleton/internal/ai"
+	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/database"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
@@ -94,7 +95,7 @@ func TestEnsureWordCardExistsMinimal_GetWordCardByLemmaError(t *testing.T) {
 	ucRepo := repository.NewUserCardRepository(conn, logger)
 	uwkRepo := repository.NewUserWordKnowledgeRepository(conn, logger)
 
-	svc := NewWordSetService(wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, nil, "", logger)
+	svc := NewWordSetService(wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, nil, config.DefaultLearningConfig(), "", logger)
 
 	// Drop word_cards to make GetWordCardByLemma fail
 	_, err := conn.Exec(`SET session_replication_role = replica`)
@@ -127,7 +128,7 @@ func TestEnsureWordCardExistsMinimal_UpsertError(t *testing.T) {
 	ucRepo := repository.NewUserCardRepository(conn, logger)
 	uwkRepo := repository.NewUserWordKnowledgeRepository(conn, logger)
 
-	svc := NewWordSetService(wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, nil, "", logger)
+	svc := NewWordSetService(wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, nil, config.DefaultLearningConfig(), "", logger)
 
 	// Add trigger that blocks INSERT on word_cards
 	_, err := conn.Exec(`
@@ -178,7 +179,7 @@ func TestEnsureWordCardExists_NonJSON_SaveError(t *testing.T) {
 	aiService.SetTrainingPrompt("Generate card for: ")
 	setAITransport(aiService, transport)
 
-	svc := NewWordSetService(wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, aiService, "", logger)
+	svc := NewWordSetService(wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, aiService, config.DefaultLearningConfig(), "", logger)
 
 	// Add trigger that blocks INSERT on word_cards to make SaveWordCard fail
 	_, err := conn.Exec(`
@@ -234,7 +235,7 @@ func TestEnsureWordCardExists_NonJSON_WordCardNilAfterSave(t *testing.T) {
 	aiService.SetTrainingPrompt("Generate card for: ")
 	setAITransport(aiService, transport)
 
-	svc := NewWordSetService(wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, aiService, "", logger)
+	svc := NewWordSetService(wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, aiService, config.DefaultLearningConfig(), "", logger)
 
 	// Add trigger that deletes the row after insert (so GetWordCardByLemma returns nil)
 	_, err := conn.Exec(`
@@ -284,7 +285,7 @@ func TestEnsureWordCardExists_JSON_UpsertError(t *testing.T) {
 	aiService.SetTrainingPrompt("Generate card for: ")
 	setAITransport(aiService, transport)
 
-	svc := NewWordSetService(wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, aiService, "", logger)
+	svc := NewWordSetService(wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, aiService, config.DefaultLearningConfig(), "", logger)
 
 	// Add trigger that blocks INSERT on word_cards
 	_, err := conn.Exec(`
@@ -333,7 +334,7 @@ func TestEnsureWordCardExists_JSON_GetByIDError(t *testing.T) {
 	aiService.SetTrainingPrompt("Generate card for: ")
 	setAITransport(aiService, transport)
 
-	svc := NewWordSetService(wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, aiService, "", logger)
+	svc := NewWordSetService(wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, aiService, config.DefaultLearningConfig(), "", logger)
 
 	// Add trigger that deletes the row after insert (so GetWordCardByID returns nil)
 	_, err := conn.Exec(`
@@ -382,7 +383,7 @@ func TestEnsureWordCardExists_JSON_WithWordFormMapping(t *testing.T) {
 	aiService.SetTrainingPrompt("Generate card for: ")
 	setAITransport(aiService, transport)
 
-	svc := NewWordSetService(wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, aiService, "", logger)
+	svc := NewWordSetService(wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, aiService, config.DefaultLearningConfig(), "", logger)
 
 	id, err := svc.EnsureWordCardExists(context.Background(), "running")
 	if err != nil {
@@ -417,7 +418,7 @@ func TestEnsureWordCardExists_JSON_NoExamples(t *testing.T) {
 	aiService.SetTrainingPrompt("Generate card for: ")
 	setAITransport(aiService, transport)
 
-	svc := NewWordSetService(wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, aiService, "", logger)
+	svc := NewWordSetService(wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, aiService, config.DefaultLearningConfig(), "", logger)
 
 	id, err := svc.EnsureWordCardExists(context.Background(), "cat")
 	if err != nil {
@@ -682,7 +683,7 @@ func TestEnsureUserCardsForWord_CreateUserCardFails(t *testing.T) {
 	}
 
 	svc := NewWordSetServiceWithMastering(
-		wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, mockUC, uwkRepo, nil, nil, "", logger,
+		wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, mockUC, uwkRepo, nil, nil, config.DefaultLearningConfig(), "", logger,
 	)
 
 	// Should not return error (warn path)
@@ -707,7 +708,7 @@ func TestEnsureUserCardsForWord_GetTrainingCardsError(t *testing.T) {
 	ucRepo := repository.NewUserCardRepository(conn, logger)
 	uwkRepo := repository.NewUserWordKnowledgeRepository(conn, logger)
 
-	svc := NewWordSetService(wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, nil, "", logger)
+	svc := NewWordSetService(wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, nil, config.DefaultLearningConfig(), "", logger)
 
 	// Drop training_cards to make GetTrainingCardsByWordCardID fail
 	_, err := conn.Exec(`SET session_replication_role = replica`)
@@ -742,7 +743,7 @@ func TestMarkKnown_MarkKnownError(t *testing.T) {
 	ucRepo := repository.NewUserCardRepository(conn, logger)
 	uwkRepo := repository.NewUserWordKnowledgeRepository(conn, logger)
 
-	svc := NewWordSetService(wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, nil, "", logger)
+	svc := NewWordSetService(wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, nil, config.DefaultLearningConfig(), "", logger)
 
 	// Drop user_word_knowledge to make MarkKnown fail
 	_, err := conn.Exec(`SET session_replication_role = replica`)
@@ -777,7 +778,7 @@ func TestProcessWordSetItems_SetWordSetItemsError(t *testing.T) {
 	ucRepo := repository.NewUserCardRepository(conn, logger)
 	uwkRepo := repository.NewUserWordKnowledgeRepository(conn, logger)
 
-	svc := NewWordSetService(wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, nil, "", logger)
+	svc := NewWordSetService(wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, nil, config.DefaultLearningConfig(), "", logger)
 
 	// Create a word set first (before dropping word_set_items)
 	wordSetID, err := wordSetRepo.CreateWordSet(&models.WordSet{Title: "error set"})
@@ -816,7 +817,7 @@ func TestProcessWordSetItems_EnsureMinimalFails(t *testing.T) {
 	ucRepo := repository.NewUserCardRepository(conn, logger)
 	uwkRepo := repository.NewUserWordKnowledgeRepository(conn, logger)
 
-	svc := NewWordSetService(wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, nil, "", logger)
+	svc := NewWordSetService(wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, nil, config.DefaultLearningConfig(), "", logger)
 
 	// Create a word set first
 	wordSetID, err := wordSetRepo.CreateWordSet(&models.WordSet{Title: "minimal fail set"})
@@ -865,7 +866,7 @@ func TestEnsureWordCardExists_GetWordCardByLemmaError(t *testing.T) {
 	ucRepo := repository.NewUserCardRepository(conn, logger)
 	uwkRepo := repository.NewUserWordKnowledgeRepository(conn, logger)
 
-	svc := NewWordSetService(wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, nil, "", logger)
+	svc := NewWordSetService(wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, nil, config.DefaultLearningConfig(), "", logger)
 
 	// Drop word_cards to make GetWordCardByLemma fail
 	_, err := conn.Exec(`SET session_replication_role = replica`)
@@ -910,7 +911,7 @@ func TestEnsureWordCardExists_NonJSON_GetWordCardByLemmaError(t *testing.T) {
 	aiService.SetTrainingPrompt("Generate card for: ")
 	setAITransport(aiService, transport)
 
-	svc := NewWordSetService(wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, aiService, "", logger)
+	svc := NewWordSetService(wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, aiService, config.DefaultLearningConfig(), "", logger)
 
 	// Add trigger that drops word_cards AFTER INSERT (so SaveWordCard succeeds but GetWordCardByLemma fails)
 	_, err := conn.Exec(`
@@ -958,7 +959,7 @@ func TestEnsureWordCardExists_EmptyLemma(t *testing.T) {
 	aiService.SetTrainingPrompt("Generate card for: ")
 	setAITransport(aiService, transport)
 
-	svc := NewWordSetService(wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, aiService, "", logger)
+	svc := NewWordSetService(wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, aiService, config.DefaultLearningConfig(), "", logger)
 
 	id, err := svc.EnsureWordCardExists(context.Background(), "apple")
 	if err != nil {
@@ -993,7 +994,7 @@ func TestEnsureWordCardExists_WithExamples(t *testing.T) {
 	aiService.SetTrainingPrompt("Generate card for: ")
 	setAITransport(aiService, transport)
 
-	svc := NewWordSetService(wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, aiService, "", logger)
+	svc := NewWordSetService(wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, aiService, config.DefaultLearningConfig(), "", logger)
 
 	id, err := svc.EnsureWordCardExists(context.Background(), "dog")
 	if err != nil {
@@ -1021,7 +1022,7 @@ func TestEnsureTrainingCardsExist_GetTrainingCardsError(t *testing.T) {
 	ucRepo := repository.NewUserCardRepository(conn, logger)
 	uwkRepo := repository.NewUserWordKnowledgeRepository(conn, logger)
 
-	svc := NewWordSetService(wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, nil, "", logger)
+	svc := NewWordSetService(wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, nil, config.DefaultLearningConfig(), "", logger)
 
 	// Insert a word card first
 	cardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "errorword", Definition: ""})
@@ -1060,7 +1061,7 @@ func TestEnsureTrainingCardsExist_GetWordCardByIDError(t *testing.T) {
 	ucRepo := repository.NewUserCardRepository(conn, logger)
 	uwkRepo := repository.NewUserWordKnowledgeRepository(conn, logger)
 
-	svc := NewWordSetService(wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, nil, "", logger)
+	svc := NewWordSetService(wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, nil, config.DefaultLearningConfig(), "", logger)
 
 	// Insert a word card first
 	cardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "errorword2", Definition: ""})
@@ -1146,7 +1147,7 @@ func TestEnsureTrainingCardsExist_CreateTrainingCardError(t *testing.T) {
 	aiService.SetTrainingPrompt("Generate card for: ")
 	setAITransport(aiService, transport)
 
-	svc := NewWordSetService(wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, aiService, "", logger)
+	svc := NewWordSetService(wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, aiService, config.DefaultLearningConfig(), "", logger)
 
 	// Insert a word card
 	cardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "run_tc_err", Definition: ""})
@@ -1196,7 +1197,7 @@ func TestEnsureWordCardExists_JSON_UpsertWordFormMappingError(t *testing.T) {
 	aiService.SetTrainingPrompt("Generate card for: ")
 	setAITransport(aiService, transport)
 
-	svc := NewWordSetService(wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, aiService, "", logger)
+	svc := NewWordSetService(wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, aiService, config.DefaultLearningConfig(), "", logger)
 
 	// Drop word_forms table to make UpsertWordFormMapping fail (warn path)
 	_, err := conn.Exec(`SET session_replication_role = replica`)
@@ -1244,7 +1245,7 @@ func TestEnsureTrainingCardsExist_CreateTrainingCardErrorWithTrigger(t *testing.
 	aiService.SetTrainingPrompt("Generate card for: ")
 	setAITransport(aiService, transport)
 
-	svc := NewWordSetService(wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, aiService, "", logger)
+	svc := NewWordSetService(wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, aiService, config.DefaultLearningConfig(), "", logger)
 
 	// Insert a word card
 	cardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "run_tc_trigger", Definition: ""})
@@ -1290,7 +1291,7 @@ func TestEnsureUserCardsForWord_MasteringRepoUpsertError(t *testing.T) {
 	masteringRepo := repository.NewUserWordMasteringRepository(conn, logger)
 	userRepo := repository.NewUserRepository(conn, logger)
 
-	svc := NewWordSetServiceWithMastering(wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, masteringRepo, nil, "", logger)
+	svc := NewWordSetServiceWithMastering(wordSetRepo, wordSetCategoryRepo, wordRepo, tcRepo, ucRepo, uwkRepo, masteringRepo, nil, config.DefaultLearningConfig(), "", logger)
 
 	// Create user and word card
 	user, err := userRepo.GetOrCreateUser(77777)
@@ -1368,7 +1369,7 @@ func TestEnsureWordCardExists_NonJSON_GetWordCardByLemmaError_Mock(t *testing.T)
 	aiService.SetTrainingPrompt("Generate card for: ")
 	setAITransport(aiService, transport)
 
-	svc := NewWordSetService(nil, nil, mock, nil, nil, nil, aiService, "", logger)
+	svc := NewWordSetService(nil, nil, mock, nil, nil, nil, aiService, config.DefaultLearningConfig(), "", logger)
 
 	_, err := svc.EnsureWordCardExists(context.Background(), "testword")
 	if err == nil {
@@ -1404,7 +1405,7 @@ func TestEnsureWordCardExists_JSON_GetWordCardByIDError(t *testing.T) {
 	aiService.SetTrainingPrompt("Generate card for: ")
 	setAITransport(aiService, transport)
 
-	svc := NewWordSetService(nil, nil, mock, nil, nil, nil, aiService, "", logger)
+	svc := NewWordSetService(nil, nil, mock, nil, nil, nil, aiService, config.DefaultLearningConfig(), "", logger)
 
 	_, err := svc.EnsureWordCardExists(context.Background(), "testword")
 	if err == nil {
@@ -1440,7 +1441,7 @@ func TestEnsureWordCardExists_JSON_GetWordCardByIDNil(t *testing.T) {
 	aiService.SetTrainingPrompt("Generate card for: ")
 	setAITransport(aiService, transport)
 
-	svc := NewWordSetService(nil, nil, mock, nil, nil, nil, aiService, "", logger)
+	svc := NewWordSetService(nil, nil, mock, nil, nil, nil, aiService, config.DefaultLearningConfig(), "", logger)
 
 	_, err := svc.EnsureWordCardExists(context.Background(), "testword")
 	if err == nil {

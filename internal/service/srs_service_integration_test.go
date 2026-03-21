@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 
@@ -61,7 +62,7 @@ func TestSRSService_GradeCard_Integration(t *testing.T) {
 	}
 
 	// Create SRS service
-	service := NewSRSService(userCardRepo, logger)
+	service := NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
 
 	// Grade the card with correct answer
 	attemptData := models.AttemptData{
@@ -124,7 +125,7 @@ func TestSRSService_GradeCard_WrongAnswer(t *testing.T) {
 	}
 
 	// Create SRS service
-	service := NewSRSService(userCardRepo, logger)
+	service := NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
 
 	// Grade the card with wrong answer
 	attemptData := models.AttemptData{
@@ -197,7 +198,7 @@ func TestSRSService_GradeCard_NextDueAtPersisted(t *testing.T) {
 		t.Fatalf("Failed to get user card: %v", err)
 	}
 
-	svc := NewSRSService(userCardRepo, logger)
+	svc := NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
 	attemptData := models.AttemptData{Correct: true, EarlyReveal: false, AnswerTimeMS: 3000}
 	if err := svc.GradeCard(userCard, attemptData); err != nil {
 		t.Fatalf("GradeCard() error = %v", err)
@@ -252,7 +253,7 @@ func TestSRSService_GradeCard_ReviewWithNonZeroData(t *testing.T) {
 		t.Fatalf("create user card: %v", err)
 	}
 
-	svc := NewSRSService(userCardRepo, logger)
+	svc := NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
 	attempt := models.AttemptData{Correct: true, EarlyReveal: false, AnswerTimeMS: 3000}
 
 	// First correct: Reps 2->3, newInterval = ceil(6*EF) = 12, next_due = now+12d
@@ -320,7 +321,7 @@ func TestSRSService_GradeCard_ReviewWithZeroReps(t *testing.T) {
 		t.Fatalf("create user card: %v", err)
 	}
 
-	svc := NewSRSService(userCardRepo, logger)
+	svc := NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
 	attempt := models.AttemptData{Correct: true, EarlyReveal: false, AnswerTimeMS: 3000}
 
 	// First correct: Reps 0 -> 1, newInterval = 1 (handleReview Reps==0 branch), next_due = now+1d
@@ -348,5 +349,90 @@ func TestSRSService_GradeCard_ReviewWithZeroReps(t *testing.T) {
 	hoursAhead := time.Until(*after2.NextDueAt).Hours()
 	if hoursAhead < 5*24 { // at least ~5 days (6 days - small tolerance)
 		t.Errorf("next_due_at should be ~6 days ahead, got %.1f hours", hoursAhead)
+	}
+}
+
+// TestSRSService_GradeCard_SameAlgorithmForSpanishLearningConfig — English regression: SRS поля после GradeCard
+// совпадают для ru-en и ru-es LearningConfig (пара влияет только на логи; время может отличаться на миллисекунды).
+func TestSRSService_GradeCard_SameAlgorithmForSpanishLearningConfig(t *testing.T) {
+	logger := zap.NewNop()
+	db, userRepo, userCardRepo := setupSRSServiceTestDB(t)
+	user, _ := userRepo.GetOrCreateUser(555)
+
+	_, _ = db.Exec("INSERT INTO word_cards (word, definition) VALUES ($1, $2), ($3, $4)", "pairA", "a", "pairB", "b")
+	_, err := db.Exec(`INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES
+		(1, 'pairA', 0, 'а', 'a'),
+		(2, 'pairB', 0, 'б', 'b')`)
+	if err != nil {
+		t.Fatalf("training cards: %v", err)
+	}
+
+	now := time.Now()
+	base := models.UserCard{
+		UserID:       user.ID,
+		Direction:    models.DirectionENtoRU,
+		State:        models.StateNew,
+		EF:           models.InitialEF,
+		Reps:         0,
+		IntervalDays: 0,
+		LearningStep: 0,
+		LapseCount:   0,
+		NextDueAt:    &now,
+	}
+	base.TrainingCardID = 1
+	id1, err := userCardRepo.CreateUserCard(&base)
+	if err != nil {
+		t.Fatal(err)
+	}
+	base.TrainingCardID = 2
+	id2, err := userCardRepo.CreateUserCard(&base)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	lcES := config.LearningConfig{
+		Pair: "ru-es", NativeLang: "ru", TargetLang: "es",
+		AppCode: "spanish", GrammarBundleID: "es",
+	}
+	if err := config.ValidateLearningConfig(lcES); err != nil {
+		t.Fatal(err)
+	}
+
+	svcEN := NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
+	svcES := NewSRSService(userCardRepo, lcES, logger)
+	attempt := models.AttemptData{Correct: true, EarlyReveal: false, AnswerTimeMS: 3000}
+
+	uc1, _ := userCardRepo.GetUserCard(id1)
+	uc2, _ := userCardRepo.GetUserCard(id2)
+	if err := svcEN.GradeCard(uc1, attempt); err != nil {
+		t.Fatalf("GradeCard EN: %v", err)
+	}
+	if err := svcES.GradeCard(uc2, attempt); err != nil {
+		t.Fatalf("GradeCard ES learning config: %v", err)
+	}
+
+	after1, _ := userCardRepo.GetUserCard(id1)
+	after2, _ := userCardRepo.GetUserCard(id2)
+
+	if after1.State != after2.State || after1.EF != after2.EF || after1.Reps != after2.Reps ||
+		after1.IntervalDays != after2.IntervalDays || after1.LearningStep != after2.LearningStep ||
+		after1.LapseCount != after2.LapseCount {
+		t.Fatalf("SRS core fields differ: EN=%+v ES=%+v", after1, after2)
+	}
+	if (after1.LastQuality == nil) != (after2.LastQuality == nil) {
+		t.Fatal("LastQuality presence mismatch")
+	}
+	if after1.LastQuality != nil && *after1.LastQuality != *after2.LastQuality {
+		t.Fatalf("LastQuality: %v vs %v", *after1.LastQuality, *after2.LastQuality)
+	}
+	if after1.NextDueAt == nil || after2.NextDueAt == nil {
+		t.Fatal("NextDueAt must be set")
+	}
+	skew := after1.NextDueAt.Sub(*after2.NextDueAt)
+	if skew < 0 {
+		skew = -skew
+	}
+	if skew > 2*time.Second {
+		t.Fatalf("NextDueAt skew too large: %v vs %v (skew %v)", after1.NextDueAt, after2.NextDueAt, skew)
 	}
 }

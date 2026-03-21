@@ -57,7 +57,7 @@ func TestHandleChat_SingleWord_WordInDB(t *testing.T) {
 	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
 
 	// Create word service with nil AI service (word is in DB, so won't need AI)
-	wordService := service.NewWordService(wordRepo, nil, nil, nil, logger)
+	wordService := service.NewWordService(wordRepo, nil, nil, nil, config.DefaultLearningConfig(), logger)
 
 	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
 	router.SetDependencies(userRepo, wordService, nil, nil, "test-token")

@@ -52,7 +52,7 @@ func TestWordService_GetWordDefinition_FromDB(t *testing.T) {
 		t.Fatalf("Failed to save word card: %v", err)
 	}
 
-	service := NewWordService(wordRepo, nil, nil, (*ai.Service)(nil), logger)
+	service := NewWordService(wordRepo, nil, nil, (*ai.Service)(nil), config.DefaultLearningConfig(), logger)
 
 	ctx := context.Background()
 	definition, err := service.GetWordDefinition(ctx, 123, "testword")
@@ -73,7 +73,7 @@ func TestWordService_GetWordDefinition_FromAI(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	_, wordRepo := setupWordServiceTestDB(t)
 
-	service := NewWordService(wordRepo, nil, nil, (*ai.Service)(nil), logger)
+	service := NewWordService(wordRepo, nil, nil, (*ai.Service)(nil), config.DefaultLearningConfig(), logger)
 	_ = service // Verify service is created
 	// Note: Full test would require a real AI service
 }
@@ -88,7 +88,7 @@ func TestWordService_GetWordCard_Integration(t *testing.T) {
 		t.Fatalf("Failed to save word card: %v", err)
 	}
 
-	service := NewWordService(wordRepo, nil, nil, nil, logger)
+	service := NewWordService(wordRepo, nil, nil, nil, config.DefaultLearningConfig(), logger)
 	card, err := service.GetWordCard("getcard")
 	if err != nil {
 		t.Fatalf("GetWordCard() error = %v", err)
@@ -153,7 +153,7 @@ func TestWordService_GetWordDefinition_CreatesUserCards(t *testing.T) {
 	}
 
 	// Create service with repositories
-	service := NewWordService(wordRepo, trainingCardRepo, userCardRepo, nil, logger)
+	service := NewWordService(wordRepo, trainingCardRepo, userCardRepo, nil, config.DefaultLearningConfig(), logger)
 
 	// Request the word - this should create user_cards
 	definition, err := service.GetWordDefinition(ctx, userID, "testword")
@@ -246,9 +246,9 @@ func TestWordService_GetWordDefinition_SchedulesPronunciationByCanonicalWord(t *
 		PublicBasePath:    "/media/tts",
 		PrefetchEnabled:   true,
 		PrefetchWorkers:   1,
-	}, nil, zap.NewNop())
+	}, config.DefaultLearningConfig(), nil, zap.NewNop())
 
-	service := NewWordService(wordRepo, nil, nil, nil, logger)
+	service := NewWordService(wordRepo, nil, nil, nil, config.DefaultLearningConfig(), logger)
 	service.SetPronunciationService(pronService)
 
 	_, err = service.GetWordDefinition(context.Background(), 123, "spy")
