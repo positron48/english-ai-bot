@@ -738,6 +738,17 @@ func TestWordSetRepository_GetWordSetWords(t *testing.T) {
 
 		// Verify that display words are correctly retrieved from training cards
 		for _, word := range words {
+			// Stage B: neutral aliases mirror legacy fields on WordSetWordInfo
+			if word.WordTarget != word.Word || word.DisplayTarget != word.DisplayWord {
+				t.Errorf("neutral word/display: WordTarget=%q Word=%q DisplayTarget=%q DisplayWord=%q",
+					word.WordTarget, word.Word, word.DisplayTarget, word.DisplayWord)
+			}
+			if word.WordRU != nil && word.WordNative != word.WordRU {
+				t.Errorf("WordNative must mirror WordRU for card %d", word.WordCardID)
+			}
+			if word.MeaningEN != nil && word.MeaningTarget != word.MeaningEN {
+				t.Errorf("MeaningTarget must mirror MeaningEN for card %d", word.WordCardID)
+			}
 			switch word.WordCardID {
 			case wordCardID1:
 				if word.DisplayWord != displayWord1 {

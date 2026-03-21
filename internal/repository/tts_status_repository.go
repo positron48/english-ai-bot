@@ -66,6 +66,7 @@ func (r *TTSStatusRepository) GetByWord(word string) (*models.TTSGenerationStatu
 	if lastAttemptAt.Valid {
 		s.LastAttemptAt = &lastAttemptAt.Time
 	}
+	models.SyncTTSStatusNeutralAliases(&s)
 	return &s, nil
 }
 

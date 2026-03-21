@@ -374,6 +374,7 @@ func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, stat
 	}
 	if card.UserCard.Direction == models.DirectionENtoRU {
 		response["word_en"] = card.TrainingCard.WordEN
+		response["word_target"] = card.TrainingCard.WordTarget
 		response["display_word"] = displayWord
 		response["transcription"] = card.TrainingCard.Transcription
 	}
@@ -381,6 +382,7 @@ func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, stat
 	// Add example_en if available (for showing example usage button)
 	if card.TrainingCard.ExampleEN != "" {
 		response["example_en"] = card.TrainingCard.ExampleEN
+		response["example_target"] = card.TrainingCard.ExampleTarget
 	}
 
 	w.Header().Set("Content-Type", "application/json")

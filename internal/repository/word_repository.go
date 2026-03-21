@@ -101,6 +101,8 @@ func (r *WordRepository) GetWordCardByID(id int64) (*models.WordCard, error) {
 		card.ProcessingError = &processingErrorStr
 	}
 
+	models.SyncWordCardNeutralAliases(&card)
+
 	return &card, nil
 }
 
@@ -171,6 +173,8 @@ func (r *WordRepository) GetWordCardByLemma(lemma string) (*models.WordCard, err
 		card.ProcessingError = &processingErrorStr
 	}
 
+	models.SyncWordCardNeutralAliases(&card)
+
 	return &card, nil
 }
 
@@ -196,6 +200,8 @@ func (r *WordRepository) SaveWordCard(word, definition string) error {
 
 // UpsertWordCardLemma saves or updates a word card (lemma) with structured data
 func (r *WordRepository) UpsertWordCardLemma(card *models.WordCard) (int64, error) {
+	models.NormalizeWordCardLegacyBeforeWrite(card)
+
 	query := `INSERT INTO word_cards (
 		word, definition, pos, transcription, definition_ru, 
 		examples_json, verb_forms_json, display_en, updated_at
@@ -463,6 +469,8 @@ func (r *WordRepository) UpdateWordCardDefinition(wordCardID int64, definition s
 
 // UpdateWordCard updates all fields of a word card
 func (r *WordRepository) UpdateWordCard(card *models.WordCard) error {
+	models.NormalizeWordCardLegacyBeforeWrite(card)
+
 	query := `UPDATE word_cards 
 			  SET word = ?, definition = ?, pos = ?, transcription = ?, 
 			      definition_ru = ?, examples_json = ?, verb_forms_json = ?, 
@@ -662,6 +670,8 @@ func (r *WordRepository) ListWordCardsAdmin(filterUserID *int64, onlyWithErrors 
 			audioURL := "/media/tts/" + strings.TrimLeft(ttsAudioRelPath, "/")
 			item.TTSAudioURL = &audioURL
 		}
+
+		models.SyncWordCardNeutralAliases(&item.WordCard)
 
 		// Get requesting users for this word
 		userIDs, err := r.GetUserIDsByWord(item.Word)

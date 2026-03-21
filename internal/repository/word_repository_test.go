@@ -73,6 +73,50 @@ func TestWordRepository_GetWordCard(t *testing.T) {
 	if card.Definition != "the earth" {
 		t.Errorf("Expected definition 'the earth', got %q", card.Definition)
 	}
+	// Stage B: neutral aliases mirror legacy RU→EN fields on read
+	if card.WordTarget != card.Word {
+		t.Errorf("WordTarget %q != Word %q", card.WordTarget, card.Word)
+	}
+	if card.DefinitionNative != card.DefinitionRU {
+		t.Errorf("DefinitionNative must mirror DefinitionRU")
+	}
+	if card.DisplayTarget != card.DisplayEN {
+		t.Errorf("DisplayTarget must mirror DisplayEN")
+	}
+}
+
+// TestWordRepository_GetWordCard_NeutralAliasesMatchLegacy checks SyncWordCardNeutralAliases
+// after loading definition_ru and display_en from the DB (not only lemma/definition).
+func TestWordRepository_GetWordCard_NeutralAliasesMatchLegacy(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := setupWordTestDB(t)
+	repo := NewWordRepository(db, logger)
+
+	if err := repo.SaveWordCard("neutralwc", "def en"); err != nil {
+		t.Fatalf("SaveWordCard: %v", err)
+	}
+	if _, err := db.Exec(`UPDATE word_cards SET definition_ru = ?, display_en = ? WHERE word = ?`, "def ru", "disp en", "neutralwc"); err != nil {
+		t.Fatalf("UPDATE word_cards: %v", err)
+	}
+	card, err := repo.GetWordCard("neutralwc")
+	if err != nil || card == nil {
+		t.Fatalf("GetWordCard: err=%v card=%v", err, card)
+	}
+	if card.WordTarget != card.Word {
+		t.Errorf("WordTarget %q != Word %q", card.WordTarget, card.Word)
+	}
+	if card.DefinitionRU == nil || *card.DefinitionRU != "def ru" {
+		t.Fatalf("DefinitionRU: %+v", card.DefinitionRU)
+	}
+	if card.DefinitionNative != card.DefinitionRU {
+		t.Errorf("DefinitionNative must mirror DefinitionRU pointer")
+	}
+	if card.DisplayEN == nil || *card.DisplayEN != "disp en" {
+		t.Fatalf("DisplayEN: %+v", card.DisplayEN)
+	}
+	if card.DisplayTarget != card.DisplayEN {
+		t.Errorf("DisplayTarget must mirror DisplayEN pointer")
+	}
 }
 
 func TestWordRepository_AddWordRequestHistory(t *testing.T) {

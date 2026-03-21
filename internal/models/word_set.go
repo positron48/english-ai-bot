@@ -66,14 +66,20 @@ const (
 // WordSetWordInfo represents information about a word in a set
 // If preferred_pos is set and a matching training card exists, it includes data from that card
 type WordSetWordInfo struct {
-	WordCardID  int64             `json:"word_card_id"`
-	Word        string            `json:"word"`
-	DisplayWord string            `json:"display_word"`
-	Status      WordSetWordStatus `json:"status"`
+	WordCardID    int64             `json:"word_card_id"`
+	Word          string            `json:"word"`
+	WordTarget    string            `json:"word_target"`
+	DisplayWord   string            `json:"display_word"`
+	DisplayTarget string            `json:"display_target"`
+	Status        WordSetWordStatus `json:"status"`
 	// Data from training card with preferred_pos (if available)
 	Transcription *string `json:"transcription,omitempty"`
 	WordRU        *string `json:"word_ru,omitempty"`
+	WordNative    *string `json:"word_native,omitempty"`
 	MeaningEN     *string `json:"meaning_en,omitempty"`
+	MeaningTarget *string `json:"meaning_target,omitempty"`
 	ExampleEN     *string `json:"example_en,omitempty"`
+	ExampleTarget *string `json:"example_target,omitempty"`
 	ExampleRU     *string `json:"example_ru,omitempty"`
+	ExampleNative *string `json:"example_native,omitempty"`
 }

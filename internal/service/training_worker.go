@@ -265,6 +265,8 @@ func (w *TrainingWorker) fillWordCardData(ctx context.Context, wordCard *models.
 		return nil
 	}
 
+	models.SyncWordInfoResponseNeutralAliases(&wordInfo)
+
 	// Check for error from LLM
 	if wordInfo.Error.IsTrue() {
 		// Word rejected by LLM, skip filling
@@ -394,6 +396,8 @@ func (w *TrainingWorker) processCard(ctx context.Context, wordCard *models.WordC
 		return fmt.Errorf("failed to parse LLM response: %w", err)
 	}
 
+	models.SyncTrainingCardResponseNeutralAliases(&trainingResp)
+
 	// Check for error from LLM (e.g., word is not English, proper noun, non-existent)
 	if trainingResp.Error != "" {
 		// LLM explicitly rejected the word - mark as processed with error
@@ -449,6 +453,7 @@ func (w *TrainingWorker) processCard(ctx context.Context, wordCard *models.WordC
 						zap.Error(err),
 					)
 				} else {
+					models.SyncTrainingCardResponseNeutralAliases(&highTrainingResp)
 					// Check for error from LLM
 					if highTrainingResp.Error != "" {
 						w.logger.Info("word rejected by high model LLM",

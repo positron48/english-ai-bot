@@ -415,5 +415,29 @@ func TestTrainingCardRepository_GetTrainingCardByWordCardIDAndSenseIndex(t *test
 		if got.DisplayWord == nil || *got.DisplayWord != displayWord {
 			t.Errorf("expected DisplayWord %q, got %v", displayWord, got.DisplayWord)
 		}
+		if got.WordTarget != got.WordEN || got.WordNative != got.WordRU || got.MeaningTarget != got.MeaningEN {
+			t.Errorf("neutral aliases not synced: %+v", got)
+		}
 	})
+}
+
+func TestTrainingCardRepository_GetTrainingCard_NeutralAliasesMatchLegacy(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := setupTrainingCardTestDB(t)
+	repo := NewTrainingCardRepository(db, logger)
+
+	_, _ = db.Exec("INSERT INTO word_cards (word, definition) VALUES (?, ?)", "aliasword", "def")
+	_, err := db.Exec(`INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, example_en, example_ru)
+		VALUES (1, 'aliasword', 0, 'алиас', 'meaning', 'Ex.', 'Пример.')`)
+	if err != nil {
+		t.Fatalf("insert training card: %v", err)
+	}
+	got, err := repo.GetTrainingCard(1)
+	if err != nil || got == nil {
+		t.Fatalf("GetTrainingCard: err=%v got=%v", err, got)
+	}
+	if got.WordTarget != got.WordEN || got.WordNative != got.WordRU || got.MeaningTarget != got.MeaningEN ||
+		got.ExampleTarget != got.ExampleEN || got.ExampleNative != got.ExampleRU {
+		t.Fatalf("neutral aliases: %+v", got)
+	}
 }

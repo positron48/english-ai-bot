@@ -10,14 +10,17 @@ import (
 // WordCard represents a vocabulary card (lemma) stored in the database
 type WordCard struct {
 	ID              int64
-	Word            string     // Lemma (base form)
+	Word            string     // Lemma (base form) — DB column `word` (target language)
+	WordTarget      string     `json:"word_target"` // Neutral alias for Word (same value after SyncWordCardNeutralAliases)
 	Definition      string     // Legacy field, kept for compatibility
 	POS             *string    // Part of speech
 	Transcription   *string    // IPA transcription
-	DefinitionRU    *string    // Russian definition
+	DefinitionRU    *string    // Russian definition — DB column `definition_ru`
+	DefinitionNative *string   `json:"definition_native,omitempty"` // Neutral alias; shares pointer with DefinitionRU after sync
 	ExamplesJSON    *string    // JSON array of examples
 	VerbFormsJSON   *string    // JSON object with verb forms (v1, v2, v3, etc.)
-	DisplayEN       *string    // Display form (e.g., "spy" or "to spy" for verbs)
+	DisplayEN       *string    // Display form (e.g., "spy" or "to spy" for verbs) — DB `display_en`
+	DisplayTarget   *string    `json:"display_target,omitempty"` // Neutral alias; shares pointer with DisplayEN after sync
 	ProcessedAt     *time.Time // NULL if not processed yet, set when processing completes (success or error)
 	ProcessingError *string    // NULL if no error, contains error message if processing failed
 	CreatedAt       time.Time
@@ -42,8 +45,39 @@ type WordForm struct {
 
 // WordInfoExample represents an example sentence with translation
 type WordInfoExample struct {
-	ExampleEN string `json:"example_en"`
-	GlossRU   string `json:"gloss_ru"`
+	ExampleEN     string `json:"example_en"`
+	ExampleTarget string `json:"example_target"` // Neutral alias; not persisted on MarshalJSON (see below)
+	GlossRU       string `json:"gloss_ru"`
+	GlossNative   string `json:"gloss_native"` // Neutral alias; not persisted on MarshalJSON
+}
+
+// MarshalJSON persists only legacy keys so examples_json in DB stays stable.
+func (e WordInfoExample) MarshalJSON() ([]byte, error) {
+	type legacy struct {
+		ExampleEN string `json:"example_en"`
+		GlossRU   string `json:"gloss_ru"`
+	}
+	return json.Marshal(legacy{ExampleEN: e.ExampleEN, GlossRU: e.GlossRU})
+}
+
+// UnmarshalJSON accepts legacy and neutral keys; neutral fills legacy when missing.
+func (e *WordInfoExample) UnmarshalJSON(data []byte) error {
+	type aux struct {
+		ExampleEN     string `json:"example_en"`
+		ExampleTarget string `json:"example_target"`
+		GlossRU       string `json:"gloss_ru"`
+		GlossNative   string `json:"gloss_native"`
+	}
+	var a aux
+	if err := json.Unmarshal(data, &a); err != nil {
+		return err
+	}
+	e.ExampleEN = a.ExampleEN
+	e.ExampleTarget = a.ExampleTarget
+	e.GlossRU = a.GlossRU
+	e.GlossNative = a.GlossNative
+	SyncWordInfoExampleNeutralAliases(e)
+	return nil
 }
 
 // WordInfoVerbForms represents verb forms (for verbs only)
@@ -106,13 +140,14 @@ func (e *ErrorField) IsTrue() bool {
 
 // WordInfoResponse represents LLM response for word information (JSON format)
 type WordInfoResponse struct {
-	Error         ErrorField         `json:"error,omitempty"`      // Error if word is not English/proper noun/etc (can be bool or string)
-	Hint          string             `json:"hint,omitempty"`       // User-friendly hint/suggestion when word is not found
-	InputWord     string             `json:"input_word"`           // Word as entered by user
-	Lemma         string             `json:"lemma"`                // Base form (lemma)
-	POS           string             `json:"pos"`                  // Part of speech
-	Transcription string             `json:"transcription"`        // IPA transcription
-	DefinitionRU  string             `json:"definition_ru"`        // Russian definition
-	Examples      []WordInfoExample  `json:"examples"`             // 2-3 examples
-	VerbForms     *WordInfoVerbForms `json:"verb_forms,omitempty"` // Verb forms (if verb)
+	Error            ErrorField         `json:"error,omitempty"`      // Error if word is not English/proper noun/etc (can be bool or string)
+	Hint             string             `json:"hint,omitempty"`       // User-friendly hint/suggestion when word is not found
+	InputWord        string             `json:"input_word"`           // Word as entered by user
+	Lemma            string             `json:"lemma"`                // Base form (lemma)
+	POS              string             `json:"pos"`                  // Part of speech
+	Transcription    string             `json:"transcription"`        // IPA transcription
+	DefinitionRU     string             `json:"definition_ru"`        // Russian definition
+	DefinitionNative string             `json:"definition_native"`    // Neutral alias (filled from definition_ru when missing)
+	Examples         []WordInfoExample  `json:"examples"`             // 2-3 examples
+	VerbForms        *WordInfoVerbForms `json:"verb_forms,omitempty"` // Verb forms (if verb)
 }

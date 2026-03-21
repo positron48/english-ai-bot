@@ -436,6 +436,8 @@ func (r *WordSetRepository) GetWordSetWords(wordSetID, userID int64) ([]*models.
 			word.ExampleRU = &exampleRU.String
 		}
 
+		models.SyncWordSetWordInfoNeutralAliases(&word)
+
 		words = append(words, &word)
 	}
 

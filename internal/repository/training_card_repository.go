@@ -60,12 +60,16 @@ func (r *TrainingCardRepository) GetTrainingCardByWordCardIDAndSenseIndex(wordCa
 		card.DisplayWord = &displayWord.String
 	}
 
+	models.SyncTrainingCardNeutralAliases(&card)
+
 	return &card, nil
 }
 
 // CreateTrainingCard creates a new training card
 // If a card with the same word_card_id and sense_index already exists, returns its ID
 func (r *TrainingCardRepository) CreateTrainingCard(card *models.TrainingCard) (int64, error) {
+	models.NormalizeTrainingCardLegacyBeforeWrite(card)
+
 	// Check if training card already exists
 	existing, err := r.GetTrainingCardByWordCardIDAndSenseIndex(card.WordCardID, card.SenseIndex)
 	if err != nil {
@@ -146,6 +150,8 @@ func (r *TrainingCardRepository) GetTrainingCard(id int64) (*models.TrainingCard
 		card.DisplayWord = &displayWord.String
 	}
 
+	models.SyncTrainingCardNeutralAliases(&card)
+
 	return &card, nil
 }
 
@@ -187,6 +193,8 @@ func (r *TrainingCardRepository) GetTrainingCardsByWordCardID(wordCardID int64) 
 		if displayWord.Valid {
 			card.DisplayWord = &displayWord.String
 		}
+
+		models.SyncTrainingCardNeutralAliases(&card)
 
 		cards = append(cards, &card)
 	}
@@ -257,6 +265,8 @@ func (r *TrainingCardRepository) GetWordCardsWithoutTrainingCards(limit int) ([]
 		if processingErrorStr != "" {
 			card.ProcessingError = &processingErrorStr
 		}
+
+		models.SyncWordCardNeutralAliases(&card)
 
 		cards = append(cards, &card)
 	}
@@ -355,6 +365,8 @@ func (r *TrainingCardRepository) GetTrainingCardsByWordEN(wordEN string) ([]*mod
 			card.DisplayWord = &displayWord.String
 		}
 
+		models.SyncTrainingCardNeutralAliases(&card)
+
 		cards = append(cards, &card)
 	}
 
@@ -363,6 +375,8 @@ func (r *TrainingCardRepository) GetTrainingCardsByWordEN(wordEN string) ([]*mod
 
 // UpdateTrainingCard updates a training card
 func (r *TrainingCardRepository) UpdateTrainingCard(card *models.TrainingCard) error {
+	models.NormalizeTrainingCardLegacyBeforeWrite(card)
+
 	displayWord := card.WordEN
 	if card.DisplayWord != nil && *card.DisplayWord != "" {
 		displayWord = *card.DisplayWord
@@ -422,12 +436,17 @@ type OrphanedTrainingCardInfo struct {
 	TrainingCardID int64
 	WordCardID     int64
 	WordEN         string
+	WordTarget     string
 	Transcription  string
 	SenseIndex     int
 	WordRU         string
+	WordNative     string
 	MeaningEN      string
+	MeaningTarget  string
 	ExampleEN      string
+	ExampleTarget  string
 	ExampleRU      string
+	ExampleNative  string
 	POS            *string
 	DisplayWord    *string
 	CreatedAt      time.Time
@@ -498,6 +517,12 @@ func (r *TrainingCardRepository) ListOrphanedTrainingCards(limit, offset int) ([
 		if displayWord.Valid {
 			item.DisplayWord = &displayWord.String
 		}
+
+		item.WordTarget = item.WordEN
+		item.WordNative = item.WordRU
+		item.MeaningTarget = item.MeaningEN
+		item.ExampleTarget = item.ExampleEN
+		item.ExampleNative = item.ExampleRU
 
 		items = append(items, &item)
 	}

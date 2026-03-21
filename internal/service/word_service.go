@@ -183,6 +183,8 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 		return response, nil
 	}
 
+	models.SyncWordInfoResponseNeutralAliases(&wordInfo)
+
 	// Check for error from LLM
 	// If definition_ru is present, ignore error field - we have valid data
 	hasDefinitionRU := strings.TrimSpace(wordInfo.DefinitionRU) != ""

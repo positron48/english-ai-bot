@@ -165,6 +165,8 @@ func (s *WordSetService) EnsureWordCardExists(ctx context.Context, word string) 
 		return wordCard.ID, nil
 	}
 
+	models.SyncWordInfoResponseNeutralAliases(&wordInfo)
+
 	// Check for error from LLM
 	if wordInfo.Error.IsTrue() {
 		return 0, fmt.Errorf("word rejected by LLM: %s", wordInfo.Error.Message)
@@ -279,6 +281,8 @@ func (s *WordSetService) EnsureTrainingCardsExist(ctx context.Context, wordCardI
 		return fmt.Errorf("failed to parse LLM response: %w", err)
 	}
 
+	models.SyncTrainingCardResponseNeutralAliases(&trainingResp)
+
 	// Check for error from LLM
 	if trainingResp.Error != "" {
 		return fmt.Errorf("word rejected by LLM: %s", trainingResp.Error)
@@ -319,6 +323,8 @@ func (s *WordSetService) EnsureTrainingCardsExist(ctx context.Context, wordCardI
 				)
 				return fmt.Errorf("validation failed: %s", validationError)
 			}
+
+			models.SyncTrainingCardResponseNeutralAliases(&highTrainingResp)
 
 			// Check for error from LLM
 			if highTrainingResp.Error != "" {

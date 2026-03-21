@@ -11,6 +11,7 @@ const (
 
 type TTSGenerationStatus struct {
 	Word             string
+	WordTarget       string `json:"word_target"` // Neutral alias for Word (same value after sync)
 	State            string
 	AttemptCount     int
 	MaxAttempts      int

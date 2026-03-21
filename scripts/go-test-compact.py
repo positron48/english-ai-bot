@@ -37,6 +37,9 @@ def _is_panic(output: str) -> bool:
     return "panic:" in o or "runtime error:" in o
 
 
+PROG_WIDTH = 100
+
+
 def main() -> int:
     buf: dict[tuple[str, str], list[str]] = {}
     pkg_out: dict[str, list[str]] = {}
@@ -50,6 +53,16 @@ def main() -> int:
     failed = 0
     skipped = 0
     pkg_fail = 0
+    prog_col = 0
+
+    def prog_write(ch: str) -> None:
+        nonlocal prog_col
+        sys.stdout.write(ch)
+        prog_col += 1
+        if prog_col >= PROG_WIDTH:
+            sys.stdout.write("\n")
+            prog_col = 0
+        sys.stdout.flush()
 
     for line in sys.stdin:
         raw = line.rstrip("\n")
@@ -77,8 +90,7 @@ def main() -> int:
 
         if action == "pass" and test:
             passed += 1
-            sys.stdout.write(".")
-            sys.stdout.flush()
+            prog_write(".")
             buf.pop((pkg, test), None)
             continue
 
@@ -87,15 +99,13 @@ def main() -> int:
             pkg_with_test_fail.add(pkg)
             body = "".join(buf.pop((pkg, test), []))
             kind = "F" if _is_panic(body) else "E"
-            sys.stdout.write(kind)
-            sys.stdout.flush()
+            prog_write(kind)
             failures.append((pkg, test, kind, body))
             continue
 
         if action == "skip" and test:
             skipped += 1
-            sys.stdout.write("S")
-            sys.stdout.flush()
+            prog_write("S")
             buf.pop((pkg, test), None)
             continue
 
@@ -105,8 +115,7 @@ def main() -> int:
                 continue
             pkg_fail += 1
             body = "".join(pkg_out.pop(pkg, []))
-            sys.stdout.write("F")
-            sys.stdout.flush()
+            prog_write("F")
             failures.append((pkg, test or "(package)", "F", body))
             continue
 
@@ -114,7 +123,11 @@ def main() -> int:
             # e.g. [no test files] — skip quietly
             continue
 
-    sys.stdout.write("\n")
+    # Завершить последнюю строку прогресса; при отсутствии символов — как раньше одна пустая строка.
+    if prog_col > 0:
+        sys.stdout.write("\n")
+    elif passed + failed + skipped + pkg_fail == 0:
+        sys.stdout.write("\n")
 
     parts = [f"{passed} passed", f"{failed} failed"]
     if skipped:

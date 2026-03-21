@@ -23,6 +23,9 @@ func TestTTSStatusRepository_BasicFlow(t *testing.T) {
 	if status == nil || status.State != models.TTSStatePending {
 		t.Fatalf("expected pending status, got %+v", status)
 	}
+	if status.WordTarget != status.Word {
+		t.Errorf("WordTarget %q != Word %q (neutral alias)", status.WordTarget, status.Word)
+	}
 
 	if err := repo.MarkAttempt("spy", "openrouter", "rate_limited", "429", true); err != nil {
 		t.Fatalf("MarkAttempt() error = %v", err)
@@ -38,6 +41,9 @@ func TestTTSStatusRepository_BasicFlow(t *testing.T) {
 	status, _ = repo.GetByWord("spy")
 	if status.State != models.TTSStateReady || status.AudioRelPath == nil {
 		t.Fatalf("expected ready with audio path, got %+v", status)
+	}
+	if status.WordTarget != status.Word {
+		t.Errorf("WordTarget %q != Word %q (neutral alias)", status.WordTarget, status.Word)
 	}
 }
 

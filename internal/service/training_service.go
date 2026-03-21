@@ -366,14 +366,14 @@ func (s *TrainingService) applySpellTypeChallenges(queue []*models.TrainingQueue
 				prefix, letters := spellPrefixAndLetters(displayWord)
 				if len(letters) > 0 {
 					queue[i] = &models.TrainingQueueItem{Type: "spell", Spell: &models.SpellChallenge{
-						WordCardID: wordCardID, DisplayWord: displayWord, WordRU: tc.WordRU,
+						WordCardID: wordCardID, DisplayWord: displayWord, WordTarget: displayWord, WordRU: tc.WordRU, WordNative: tc.WordRU,
 						Prefix: prefix, ShuffledLetters: letters,
 						ReplacedUserCardID: replacedID,
 					}}
 				}
 			case 2:
 				queue[i] = &models.TrainingQueueItem{Type: "type", TypeChallenge: &models.TypeChallenge{
-					WordCardID: wordCardID, DisplayWord: displayWord, WordRU: tc.WordRU,
+					WordCardID: wordCardID, DisplayWord: displayWord, WordTarget: displayWord, WordRU: tc.WordRU, WordNative: tc.WordRU,
 					ReplacedUserCardID: replacedID,
 				}}
 			}
@@ -385,7 +385,7 @@ func (s *TrainingService) applySpellTypeChallenges(queue []*models.TrainingQueue
 				prefix, letters := spellPrefixAndLetters(displayWord)
 				if len(letters) > 0 {
 					queue[i] = &models.TrainingQueueItem{Type: "spell", Spell: &models.SpellChallenge{
-						WordCardID: wordCardID, DisplayWord: displayWord, WordRU: tc.WordRU,
+						WordCardID: wordCardID, DisplayWord: displayWord, WordTarget: displayWord, WordRU: tc.WordRU, WordNative: tc.WordRU,
 						Prefix: prefix, ShuffledLetters: letters,
 						ReplacedUserCardID: queue[i].Card.UserCard.ID,
 					}}

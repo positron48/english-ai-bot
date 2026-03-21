@@ -251,8 +251,9 @@ func (r *Router) handleAdminTraining(w http.ResponseWriter, req *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(map[string]interface{}{
-			"word_en": wordEN,
-			"cards":   cards,
+			"word_en":     wordEN,
+			"word_target": wordEN,
+			"cards":       cards,
 		})
 		return
 	}
@@ -308,6 +309,7 @@ func (r *Router) handleAdminTraining(w http.ResponseWriter, req *http.Request) {
 			http.Error(w, "Failed to parse LLM response: "+err.Error(), http.StatusInternalServerError)
 			return
 		}
+		models.SyncTrainingCardResponseNeutralAliases(&trainingResp)
 
 		// Check for error from LLM
 		if trainingResp.Error != "" {
@@ -334,13 +336,18 @@ func (r *Router) handleAdminTraining(w http.ResponseWriter, req *http.Request) {
 			"success": true,
 			"card": map[string]interface{}{
 				"word_en":        trainingResp.WordEN,
+				"word_target":    trainingResp.WordTarget,
 				"transcription":  trainingResp.Transcription,
 				"pos":            sense.POS,
 				"display_word":   sense.DisplayWord,
 				"word_ru":        sense.WordRU,
+				"word_native":    sense.WordNative,
 				"meaning_en":     sense.MeaningEN,
+				"meaning_target": sense.MeaningTarget,
 				"example_en":     sense.ExampleEN,
+				"example_target": sense.ExampleTarget,
 				"example_ru":     sense.ExampleRU,
+				"example_native": sense.ExampleNative,
 				"distractors_ru": string(distractorsRUJSON),
 				"distractors_en": string(distractorsENJSON),
 				"hint":           sense.Hint,
@@ -1165,6 +1172,7 @@ func (r *Router) handleAdminWord(w http.ResponseWriter, req *http.Request) {
 			http.Error(w, "Failed to parse LLM response: "+err.Error(), http.StatusInternalServerError)
 			return
 		}
+		models.SyncWordInfoResponseNeutralAliases(&wordInfo)
 
 		// Check for error from LLM
 		if wordInfo.Error.IsTrue() {
@@ -1202,13 +1210,16 @@ func (r *Router) handleAdminWord(w http.ResponseWriter, req *http.Request) {
 		json.NewEncoder(w).Encode(map[string]interface{}{
 			"success": true,
 			"word_card": map[string]interface{}{
-				"word":            wordInfo.Lemma,
-				"pos":             wordInfo.POS,
-				"transcription":   wordInfo.Transcription,
-				"definition_ru":   wordInfo.DefinitionRU,
-				"examples_json":   examplesJSON,
-				"verb_forms_json": verbFormsJSON,
-				"display_en":      displayEN,
+				"word":              wordInfo.Lemma,
+				"word_target":       wordInfo.Lemma,
+				"pos":               wordInfo.POS,
+				"transcription":     wordInfo.Transcription,
+				"definition_ru":     wordInfo.DefinitionRU,
+				"definition_native": wordInfo.DefinitionNative,
+				"examples_json":     examplesJSON,
+				"verb_forms_json":   verbFormsJSON,
+				"display_en":        displayEN,
+				"display_target":    displayEN,
 			},
 		})
 		return
@@ -1355,12 +1366,17 @@ func (r *Router) handleAdminOrphanedCards(w http.ResponseWriter, req *http.Reque
 				"id":               card.TrainingCardID,
 				"word_card_id":     card.WordCardID,
 				"word_en":          card.WordEN,
+				"word_target":      card.WordTarget,
 				"transcription":    card.Transcription,
 				"sense_index":      card.SenseIndex,
 				"word_ru":          card.WordRU,
+				"word_native":      card.WordNative,
 				"meaning_en":       card.MeaningEN,
+				"meaning_target":   card.MeaningTarget,
 				"example_en":       card.ExampleEN,
+				"example_target":   card.ExampleTarget,
 				"example_ru":       card.ExampleRU,
+				"example_native":   card.ExampleNative,
 				"pos":              card.POS,
 				"display_word":     card.DisplayWord,
 				"created_at":       card.CreatedAt.Format("2006-01-02 15:04:05"),
