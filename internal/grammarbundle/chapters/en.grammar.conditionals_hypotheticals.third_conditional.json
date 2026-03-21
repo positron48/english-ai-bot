@@ -147,8 +147,8 @@
       "title": "Проверка знаний",
       "quiz_inline": {
         "question_ids": [
-          "q25",
-          "q26"
+          "q26",
+          "q27"
         ],
         "show_answers_immediately": true
       }
@@ -677,34 +677,6 @@
         "tags": []
       },
       {
-        "id": "q25",
-        "type": "mcq_single",
-        "prompt": "Выберите правильный вариант: If she had the key, she ___ opened the door.",
-        "theory_block_id": "b3_theory_modals",
-        "difficulty": 2,
-        "choices": [
-          {
-            "id": "a",
-            "text": "could have"
-          },
-          {
-            "id": "b",
-            "text": "can have"
-          },
-          {
-            "id": "c",
-            "text": "could"
-          },
-          {
-            "id": "d",
-            "text": "might"
-          }
-        ],
-        "correct_answer": "a",
-        "explanation": "Could have показывает возможность в прошлом.",
-        "tags": []
-      },
-      {
         "id": "q26",
         "type": "true_false",
         "prompt": "В third conditional можно заменить would have на could have.",
@@ -798,16 +770,6 @@
         "difficulty": 1,
         "correct_answer": "true",
         "explanation": "Might have = возможность, не гарантия.",
-        "tags": []
-      },
-      {
-        "id": "q32",
-        "type": "fill_blank",
-        "prompt": "Вставьте пропущенное: If she had more time, she ___ have finished the task. (мочь)",
-        "theory_block_id": "b3_theory_modals",
-        "difficulty": 2,
-        "correct_answer": "could",
-        "explanation": "Could have = возможность.",
         "tags": []
       },
       {
@@ -1011,34 +973,6 @@
         "tags": []
       },
       {
-        "id": "q44",
-        "type": "error_spotting",
-        "prompt": "Найдите ошибку и выберите исправленное предложение: \"Had she arrived on time, she would have miss the meeting.\"",
-        "theory_block_id": "b4_theory_inversion",
-        "difficulty": 2,
-        "choices": [
-          {
-            "id": "a",
-            "text": "Had she arrived on time, she would have missed the meeting."
-          },
-          {
-            "id": "b",
-            "text": "Had she arrived on time, she would have miss the meeting."
-          },
-          {
-            "id": "c",
-            "text": "Had she arrive on time, she would have missed the meeting."
-          },
-          {
-            "id": "d",
-            "text": "Had she arrived on time, she would miss the meeting."
-          }
-        ],
-        "correct_answer": "a",
-        "explanation": "После would have нужен V3: missed.",
-        "tags": []
-      },
-      {
         "id": "q45",
         "type": "mcq_single",
         "prompt": "Выберите корректную форму без if.",
@@ -1074,16 +1008,6 @@
         "difficulty": 1,
         "correct_answer": "true",
         "explanation": "Это формальный эквивалент if-clause.",
-        "tags": []
-      },
-      {
-        "id": "q47",
-        "type": "fill_blank",
-        "prompt": "Вставьте пропущенное: Had he ___ earlier, we would have finished. (закончить)",
-        "theory_block_id": "b4_theory_inversion",
-        "difficulty": 2,
-        "correct_answer": "started",
-        "explanation": "Had + V3: had started.",
         "tags": []
       },
       {
@@ -1349,12 +1273,10 @@
       "q22",
       "q23",
       "q24",
-      "q27",
       "q28",
       "q29",
       "q30",
       "q31",
-      "q32",
       "q33",
       "q34",
       "q35",
@@ -1364,10 +1286,8 @@
       "q41",
       "q42",
       "q43",
-      "q44",
       "q45",
       "q46",
-      "q47",
       "q48",
       "q51",
       "q52",
@@ -1393,7 +1313,7 @@
   },
   "meta": {
     "version": "2026.01.16",
-    "updated_at": "2026-01-27T17:24:11Z",
+    "updated_at": "2026-03-21T08:14:12Z",
     "source": "llm"
   }
 }

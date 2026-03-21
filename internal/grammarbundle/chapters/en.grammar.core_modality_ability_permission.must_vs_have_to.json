@@ -67,7 +67,8 @@
       "title": "Проверка знаний",
       "quiz_inline": {
         "question_ids": [
-          "q1"
+          "q1",
+          "q3"
         ],
         "show_answers_immediately": true
       }
@@ -339,6 +340,15 @@
         "explanation": "Must отражает личное решение или необходимость."
       },
       {
+        "id": "q7",
+        "type": "fill_blank",
+        "prompt": "We ___ do something about this. (личная необходимость)",
+        "theory_block_id": "b1_theory_must_internal",
+        "difficulty": 1,
+        "correct_answer": "must",
+        "explanation": "Must подходит для внутренней необходимости."
+      },
+      {
         "id": "q8",
         "type": "true_false",
         "prompt": "Must используется только для внешних правил.",
@@ -392,6 +402,15 @@
         ],
         "correct_answer": "a",
         "explanation": "Must + V1 без -s и to."
+      },
+      {
+        "id": "q11",
+        "type": "fill_blank",
+        "prompt": "I ___ remember to call him. (личная необходимость)",
+        "theory_block_id": "b1_theory_must_internal",
+        "difficulty": 1,
+        "correct_answer": "must",
+        "explanation": "Must выражает внутреннюю необходимость."
       },
       {
         "id": "q12",
@@ -456,6 +475,29 @@
         "difficulty": 1,
         "correct_answer": "true",
         "explanation": "Это внешняя обязанность, заданная правилами."
+      },
+      {
+        "id": "q16",
+        "type": "error_spotting",
+        "prompt": "Найдите ошибку и выберите правильный вариант: 'She have to work on Saturday.'",
+        "theory_block_id": "b2_theory_have_to_external",
+        "difficulty": 2,
+        "choices": [
+          {
+            "id": "a",
+            "text": "She has to work on Saturday."
+          },
+          {
+            "id": "b",
+            "text": "She must to work on Saturday."
+          },
+          {
+            "id": "c",
+            "text": "She have to working on Saturday."
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "В третьем лице: has to."
       },
       {
         "id": "q17",
@@ -1055,18 +1097,17 @@
   "chapter_test": {
     "num_questions": 10,
     "pool_question_ids": [
-      "q1",
-      "q3",
       "q4",
       "q5",
       "q6",
+      "q7",
       "q8",
       "q9",
       "q10",
+      "q11",
       "q12",
-      "q13",
-      "q14",
       "q15",
+      "q16",
       "q17",
       "q18",
       "q19",
@@ -1075,8 +1116,6 @@
       "q22",
       "q23",
       "q24",
-      "q25",
-      "q26",
       "q27",
       "q28",
       "q29",
@@ -1087,8 +1126,6 @@
       "q34",
       "q35",
       "q36",
-      "q37",
-      "q38",
       "q39",
       "q41",
       "q42",
@@ -1097,8 +1134,6 @@
       "q46",
       "q47",
       "q48",
-      "q49",
-      "q50",
       "q51",
       "q52",
       "q53",
@@ -1122,7 +1157,7 @@
   },
   "meta": {
     "version": "2026.01.16",
-    "updated_at": "2026-03-20T17:33:38Z",
+    "updated_at": "2026-03-21T08:14:09Z",
     "source": "llm"
   }
 }

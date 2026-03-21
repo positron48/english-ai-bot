@@ -241,7 +241,7 @@
       "quiz_inline": {
         "question_ids": [
           "q49",
-          "q50"
+          "q51"
         ],
         "show_answers_immediately": true
       }
@@ -583,29 +583,6 @@
         ],
         "correct_answer": "a",
         "explanation": "Придаточное времени: Present Simple (comes), главная часть: will."
-      },
-      {
-        "id": "q22",
-        "type": "mcq_single",
-        "prompt": "Выберите правильный вариант: 'I'll wait when you ___ ready.'",
-        "theory_block_id": "b2_theory_when",
-        "difficulty": 1,
-        "choices": [
-          {
-            "id": "a",
-            "text": "are"
-          },
-          {
-            "id": "b",
-            "text": "will be"
-          },
-          {
-            "id": "c",
-            "text": "be"
-          }
-        ],
-        "correct_answer": "a",
-        "explanation": "После when используется Present Simple: are."
       },
       {
         "id": "q24",
@@ -987,15 +964,6 @@
         "explanation": "Если time clause стоит первым, нужна запятая после него."
       },
       {
-        "id": "q50",
-        "type": "fill_blank",
-        "prompt": "I'll call you ___ I arrive. (порядок)",
-        "theory_block_id": "b5_theory_word_order",
-        "difficulty": 1,
-        "correct_answer": "when",
-        "explanation": "Если time clause во второй части, запятая не нужна."
-      },
-      {
         "id": "q51",
         "type": "true_false",
         "prompt": "Если time clause стоит первым, запятая обязательна.",
@@ -1085,15 +1053,6 @@
         ],
         "correct_answer": "a",
         "explanation": "Если придаточное времени после главной части — запятая не ставится."
-      },
-      {
-        "id": "q60",
-        "type": "fill_blank",
-        "prompt": "I'll send it ___ I finish. (порядок)",
-        "theory_block_id": "b5_theory_word_order",
-        "difficulty": 1,
-        "correct_answer": "after",
-        "explanation": "Придаточное стоит вторым, запятая не нужна."
       },
       {
         "id": "q61",
@@ -1278,8 +1237,6 @@
   "chapter_test": {
     "num_questions": 10,
     "pool_question_ids": [
-      "q1",
-      "q2",
       "q3",
       "q5",
       "q6",
@@ -1289,8 +1246,6 @@
       "q10",
       "q11",
       "q12",
-      "q13",
-      "q14",
       "q15",
       "q16",
       "q17",
@@ -1298,10 +1253,7 @@
       "q19",
       "q20",
       "q21",
-      "q22",
       "q24",
-      "q25",
-      "q26",
       "q27",
       "q28",
       "q30",
@@ -1311,8 +1263,6 @@
       "q34",
       "q35",
       "q36",
-      "q37",
-      "q38",
       "q39",
       "q40",
       "q41",
@@ -1323,18 +1273,12 @@
       "q46",
       "q47",
       "q48",
-      "q49",
-      "q50",
-      "q51",
       "q53",
       "q54",
       "q55",
       "q56",
       "q58",
       "q59",
-      "q60",
-      "q61",
-      "q62",
       "q63",
       "q64",
       "q65",
@@ -1359,7 +1303,7 @@
   },
   "meta": {
     "version": "2026.01.16",
-    "updated_at": "2026-03-20T17:00:13Z",
+    "updated_at": "2026-03-21T08:14:09Z",
     "source": "llm"
   }
 }

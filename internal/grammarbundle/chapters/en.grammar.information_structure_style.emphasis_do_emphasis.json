@@ -117,7 +117,7 @@
       "quiz_inline": {
         "question_ids": [
           "q13",
-          "q14"
+          "q15"
         ],
         "show_answers_immediately": true
       }
@@ -221,7 +221,7 @@
       "quiz_inline": {
         "question_ids": [
           "q37",
-          "q38"
+          "q39"
         ],
         "show_answers_immediately": true
       }
@@ -529,15 +529,6 @@
         ],
         "correct_answer": "a",
         "explanation": "Для эмфазы в прошедшем используется did + V1. Сам глагол не принимает форму V2."
-      },
-      {
-        "id": "q14",
-        "type": "fill_blank",
-        "prompt": "Заполните пропуск: \"We ___ see her at the meeting.\" (do)",
-        "theory_block_id": "b2_theory_past_emphasis",
-        "difficulty": 2,
-        "correct_answer": "did",
-        "explanation": "В Past Simple эмфаза строится через did. Основной глагол остается в базовой форме: did see."
       },
       {
         "id": "q15",
@@ -967,15 +958,6 @@
         "explanation": "Наречие может стоять перед do: I really do appreciate. Do сохраняется перед смысловым глаголом."
       },
       {
-        "id": "q38",
-        "type": "fill_blank",
-        "prompt": "Заполните пропуск: \"He ___ often forgets his keys.\" (do)",
-        "theory_block_id": "b4_theory_position_limits",
-        "difficulty": 3,
-        "correct_answer": "does",
-        "explanation": "Для he используется does. Эмфатическое does ставится перед смысловым глаголом, а наречие often может идти после него."
-      },
-      {
         "id": "q39",
         "type": "error_spotting",
         "prompt": "Выберите правильный вариант предложения.",
@@ -1023,46 +1005,6 @@
         "difficulty": 2,
         "correct_answer": "They really do need more time.",
         "explanation": "Наречие может стоять перед do. Правильный порядок: They really do need."
-      },
-      {
-        "id": "q42",
-        "type": "mcq_single",
-        "prompt": "Выберите правильный вариант: \"We ___ finish tonight.\"",
-        "theory_block_id": "b4_theory_position_limits",
-        "difficulty": 3,
-        "choices": [
-          {
-            "id": "a",
-            "text": "can",
-            "feedback": "Верно: с модальными do-emphasis не используется."
-          },
-          {
-            "id": "b",
-            "text": "do",
-            "feedback": "Неверно: do не используется с модальными."
-          },
-          {
-            "id": "c",
-            "text": "does",
-            "feedback": "Does не согласуется с we и не используется с modals."
-          },
-          {
-            "id": "d",
-            "text": "did",
-            "feedback": "Did не используется с модальными в утвердительных предложениях."
-          }
-        ],
-        "correct_answer": "a",
-        "explanation": "С модальными глаголами do-emphasis не используется. Правильно: We can finish tonight."
-      },
-      {
-        "id": "q43",
-        "type": "fill_blank",
-        "prompt": "Заполните пропуск: \"I ___ never doubt your commitment.\" (делать)",
-        "theory_block_id": "b4_theory_position_limits",
-        "difficulty": 3,
-        "correct_answer": "do",
-        "explanation": "Do стоит перед смысловым глаголом doubt. Наречие never может идти после do: I do never doubt."
       },
       {
         "id": "q44",
@@ -1386,7 +1328,6 @@
       "q10",
       "q11",
       "q12",
-      "q15",
       "q16",
       "q17",
       "q18",
@@ -1406,11 +1347,8 @@
       "q34",
       "q35",
       "q36",
-      "q39",
       "q40",
       "q41",
-      "q42",
-      "q43",
       "q44",
       "q45",
       "q46",
@@ -1440,7 +1378,7 @@
   },
   "meta": {
     "version": "2026.01.16",
-    "updated_at": "2026-01-27T17:24:13Z",
+    "updated_at": "2026-03-21T08:14:12Z",
     "source": "llm"
   }
 }

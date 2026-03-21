@@ -147,7 +147,7 @@
       "quiz_inline": {
         "question_ids": [
           "q21",
-          "q22"
+          "q23"
         ],
         "show_answers_immediately": true
       }
@@ -646,16 +646,6 @@
         "tags": []
       },
       {
-        "id": "q22",
-        "type": "fill_blank",
-        "prompt": "Вставьте пропущенное: The report has been ___ yet. (approve)",
-        "theory_block_id": "b3_theory_present_perfect_passive",
-        "difficulty": 2,
-        "correct_answer": "approved",
-        "explanation": "Present Perfect passive: has been + V3. Approve → approved.",
-        "tags": []
-      },
-      {
         "id": "q23",
         "type": "true_false",
         "prompt": "Present Perfect passive строится как has/have been + V3.",
@@ -1074,34 +1064,6 @@
         "tags": []
       },
       {
-        "id": "q45",
-        "type": "mcq_single",
-        "prompt": "Выберите правильную форму: The package ___ been delivered yet.",
-        "theory_block_id": "b5_theory_time_markers",
-        "difficulty": 2,
-        "choices": [
-          {
-            "id": "a",
-            "text": "has"
-          },
-          {
-            "id": "b",
-            "text": "was"
-          },
-          {
-            "id": "c",
-            "text": "is"
-          },
-          {
-            "id": "d",
-            "text": "were"
-          }
-        ],
-        "correct_answer": "a",
-        "explanation": "Маркер yet указывает на Present Perfect passive: has been delivered.",
-        "tags": []
-      },
-      {
         "id": "q46",
         "type": "fill_blank",
         "prompt": "Вставьте пропущенное: The report has been ___ already. (finish)",
@@ -1398,7 +1360,6 @@
       "q18",
       "q19",
       "q20",
-      "q23",
       "q24",
       "q25",
       "q26",
@@ -1416,7 +1377,6 @@
       "q40",
       "q43",
       "q44",
-      "q45",
       "q46",
       "q47",
       "q48",
@@ -1446,7 +1406,7 @@
   },
   "meta": {
     "version": "2026.01.16",
-    "updated_at": "2026-01-27T17:24:10Z",
+    "updated_at": "2026-03-21T08:14:11Z",
     "source": "llm"
   }
 }

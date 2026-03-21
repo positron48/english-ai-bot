@@ -1206,15 +1206,6 @@
         "id": "q58"
       },
       {
-        "type": "true_false",
-        "prompt": "При соединении двух главных предложений and запятая может не ставиться.",
-        "theory_block_id": "b5_punctuation_comma",
-        "difficulty": 3,
-        "correct_answer": "false",
-        "explanation": "С независимыми частями запятая обычно нужна.",
-        "id": "q59"
-      },
-      {
         "type": "mcq_single",
         "prompt": "Выберите правильный вариант: He studied hard, ___ he passed the exam.",
         "theory_block_id": "b5_punctuation_comma",
@@ -1482,7 +1473,6 @@
       "q56",
       "q57",
       "q58",
-      "q59",
       "q60",
       "q63",
       "q64",
@@ -1508,7 +1498,7 @@
   },
   "meta": {
     "version": "2026.01.16",
-    "updated_at": "2026-01-27T17:24:08Z",
+    "updated_at": "2026-03-21T08:14:10Z",
     "source": "llm"
   }
 }
