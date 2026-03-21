@@ -9,6 +9,7 @@ dist/
 /bot
 migrate_words
 /backfill_mastering
+scripts/__pycache__/
 
 # Test binary, built with `go test -c`
 *.test
@@ -120,6 +121,7 @@ webapp/dist/
 tmp/
 temp/
 .go-test-output.txt
+.go-test-output.jsonl
 
 # Database
 data/

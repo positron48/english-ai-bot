@@ -52,7 +52,9 @@ jobs:
       run: go mod verify
 
     - name: Run tests
-      run: go test -tags=test -count=1 -p 3 -timeout 30m -coverprofile=coverage.out -covermode=atomic -v $(go list ./... | grep -v '/cmd/' | grep -v 'internal/integration/' | grep -v 'internal/testutil')
+      run: |
+        set -o pipefail
+        go test -tags=test -count=1 -p 3 -timeout 30m -coverprofile=coverage.out -covermode=atomic -json $(go list ./... | grep -v '/cmd/' | grep -v 'internal/integration/' | grep -v 'internal/testutil') 2>&1 | python3 scripts/go-test-compact.py
 
     - name: Run golangci-lint
       uses: golangci/golangci-lint-action@v9
@@ -77,7 +79,9 @@ jobs:
       run: go mod download
 
     - name: Run integration tests (Testcontainers)
-      run: go test -tags=integration -v -count=1 ./internal/integration/testkit/... ./internal/integration/user_flows/... -timeout 600s
+      run: |
+        set -o pipefail
+        go test -tags=integration -json -count=1 ./internal/integration/testkit/... ./internal/integration/user_flows/... -timeout 600s 2>&1 | python3 scripts/go-test-compact.py
 
   release:
     name: Build and Release

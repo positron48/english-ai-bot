@@ -92,7 +92,7 @@ test-postgres:
 	GOCACHE=/tmp/go-cache \
 	DATABASE_DRIVER=postgres \
 	DATABASE_URL='postgres://english:english@127.0.0.1:$(PG_TEST_PORT)/english_test?sslmode=disable' \
-	$(GO) test -tags=postgres -v ./internal/integration/postgres/... -count=1
+	/bin/bash -c 'set -o pipefail; $(GO) test -tags=postgres -json ./internal/integration/postgres/... -count=1 2>&1 | python3 scripts/go-test-compact.py'
 	@echo "Postgres smoke tests finished."
 
 # Postgres integration tests (Testcontainers, require Docker)
@@ -102,7 +102,7 @@ INTEGRATION_TEST_TIMEOUT ?= 600
 test-integration:
 	@echo "Running Postgres integration tests (Testcontainers, timeout $(INTEGRATION_TEST_TIMEOUT)s)..."
 	@echo "⚠️  Requires: Docker daemon"
-	$(GO) test -tags=integration -v -count=1 ./internal/integration/testkit/... ./internal/integration/user_flows/... -timeout $(INTEGRATION_TEST_TIMEOUT)s
+	@/bin/bash -c 'set -o pipefail; $(GO) test -tags=integration -json -count=1 ./internal/integration/testkit/... ./internal/integration/user_flows/... -timeout $(INTEGRATION_TEST_TIMEOUT)s 2>&1 | python3 scripts/go-test-compact.py'
 
 test-integration-verbose:
 	@echo "Running Postgres integration tests (verbose)..."
@@ -146,24 +146,17 @@ check:
 	@$(GO) mod verify
 	@echo "✅ Go dependencies verified"
 	@echo ""
-	@echo "5. Running Go tests for coverage (excluding cmd, integration and testutil packages)..."
-	@rm -f coverage.out
-	@/bin/bash -c '$(GO) test -tags=test -count=1 -p 3 -timeout 30m -coverprofile=coverage.out -covermode=atomic -v $(COVER_PKGS) 2>&1 | tee .go-test-output.txt | grep -v -E "Container (created|started|ready|stopped|terminated)|Creating container|Starting container|Terminating container|Waiting for container|Waiting for Reaper|Shell not found|Reaper obtained|🐳|✅ Container|🔔 Container|⏳ Waiting|🔥 Reaper|🚫 Container|testcontainers-go -|Resolved Docker|Server Version|API Version|Operating System|Total Memory|Testcontainers for Go|Test SessionID|Test ProcessID"; exit $${PIPESTATUS[0]}'; \
+	@echo "5. Running Go tests for coverage (compact: . ok | E fail | F panic/build | S skip)..."
+	@rm -f coverage.out .go-test-output.jsonl
+	@/bin/bash -c 'set -o pipefail; $(GO) test -tags=test -count=1 -p 3 -timeout 30m -coverprofile=coverage.out -covermode=atomic -json $(COVER_PKGS) 2>&1 | tee .go-test-output.jsonl | python3 scripts/go-test-compact.py'; \
 	TEST_EXIT_CODE=$$?; \
 	if [ $$TEST_EXIT_CODE -ne 0 ]; then \
 		echo ""; \
-		echo "========== FAILED TESTS =========="; \
-		grep -E "^--- FAIL:" .go-test-output.txt || true; \
-		echo ""; \
-		echo "========== FAILURE DETAILS =========="; \
-		awk '/^--- FAIL:/{p=1} p{print} /^=== RUN |^--- PASS:|^ok  /{if(p) p=0}' .go-test-output.txt | head -500; \
-		rm -f .go-test-output.txt; \
+		echo "ℹ️  Raw JSON stream: .go-test-output.jsonl"; \
 		exit $$TEST_EXIT_CODE; \
 	fi; \
+	rm -f .go-test-output.jsonl; \
 	echo ""; \
-	echo "========== TEST RESULTS =========="; \
-	grep -E "^(=== RUN|--- PASS:|--- FAIL:|ok  |FAIL$$)" .go-test-output.txt || true; \
-	rm -f .go-test-output.txt; \
 	echo "✅ Go tests passed"
 	@echo ""
 	@if [ "$${CHECK_SKIP_INTEGRATION:-0}" = "1" ]; then \

@@ -708,16 +708,17 @@ func TestLoad_RateLimitDefaults(t *testing.T) {
 func TestLoad_InvalidLearningPair(t *testing.T) {
 	learningEnv := backupLearningEnv()
 	originalEnv := map[string]string{
-		"AI_URL":            os.Getenv("AI_URL"),
-		"AI_API_KEY":        os.Getenv("AI_API_KEY"),
-		"AI_PROMPT":         os.Getenv("AI_PROMPT"),
-		"WEBAPP_JWT_SECRET": os.Getenv("WEBAPP_JWT_SECRET"),
-		"DATABASE_URL":      os.Getenv("DATABASE_URL"),
-		"LEARNING_PAIR":     os.Getenv("LEARNING_PAIR"),
+		"AI_URL":               os.Getenv("AI_URL"),
+		"AI_API_KEY":           os.Getenv("AI_API_KEY"),
+		"AI_PROMPT":            os.Getenv("AI_PROMPT"),
+		"AI_PROMPT_FILE":       os.Getenv("AI_PROMPT_FILE"),
+		"WEBAPP_JWT_SECRET":    os.Getenv("WEBAPP_JWT_SECRET"),
+		"DATABASE_URL":         os.Getenv("DATABASE_URL"),
+		"LEARNING_PAIR":        os.Getenv("LEARNING_PAIR"),
 		"LEARNING_NATIVE_LANG": os.Getenv("LEARNING_NATIVE_LANG"),
 		"LEARNING_TARGET_LANG": os.Getenv("LEARNING_TARGET_LANG"),
-		"LEARNING_APP_CODE": os.Getenv("LEARNING_APP_CODE"),
-		"GRAMMAR_BUNDLE_ID": os.Getenv("GRAMMAR_BUNDLE_ID"),
+		"LEARNING_APP_CODE":    os.Getenv("LEARNING_APP_CODE"),
+		"GRAMMAR_BUNDLE_ID":    os.Getenv("GRAMMAR_BUNDLE_ID"),
 	}
 	defer func() {
 		restoreLearningEnv(learningEnv)
@@ -733,6 +734,7 @@ func TestLoad_InvalidLearningPair(t *testing.T) {
 	os.Setenv("AI_URL", "http://test.local")
 	os.Setenv("AI_API_KEY", "test-key")
 	os.Setenv("AI_PROMPT", "test prompt")
+	os.Unsetenv("AI_PROMPT_FILE")
 	os.Setenv("WEBAPP_JWT_SECRET", "test-secret")
 	os.Setenv("DATABASE_DRIVER", "postgres")
 	os.Setenv("DATABASE_URL", "postgres://test:test@localhost/test?sslmode=disable")
@@ -757,6 +759,7 @@ func TestLoad_ValidSpanishLearningPair(t *testing.T) {
 		"AI_URL":               os.Getenv("AI_URL"),
 		"AI_API_KEY":           os.Getenv("AI_API_KEY"),
 		"AI_PROMPT":            os.Getenv("AI_PROMPT"),
+		"AI_PROMPT_FILE":       os.Getenv("AI_PROMPT_FILE"),
 		"WEBAPP_JWT_SECRET":    os.Getenv("WEBAPP_JWT_SECRET"),
 		"DATABASE_URL":         os.Getenv("DATABASE_URL"),
 		"LEARNING_PAIR":        os.Getenv("LEARNING_PAIR"),
@@ -779,6 +782,7 @@ func TestLoad_ValidSpanishLearningPair(t *testing.T) {
 	os.Setenv("AI_URL", "http://test.local")
 	os.Setenv("AI_API_KEY", "test-key")
 	os.Setenv("AI_PROMPT", "test prompt")
+	os.Unsetenv("AI_PROMPT_FILE")
 	os.Setenv("WEBAPP_JWT_SECRET", "test-secret")
 	os.Setenv("DATABASE_DRIVER", "postgres")
 	os.Setenv("DATABASE_URL", "postgres://test:test@localhost/test?sslmode=disable")
@@ -806,6 +810,7 @@ func TestLoad_WhitespaceOnlyGrammarBundleID(t *testing.T) {
 		"AI_URL":            os.Getenv("AI_URL"),
 		"AI_API_KEY":        os.Getenv("AI_API_KEY"),
 		"AI_PROMPT":         os.Getenv("AI_PROMPT"),
+		"AI_PROMPT_FILE":    os.Getenv("AI_PROMPT_FILE"),
 		"WEBAPP_JWT_SECRET": os.Getenv("WEBAPP_JWT_SECRET"),
 		"DATABASE_URL":      os.Getenv("DATABASE_URL"),
 		"GRAMMAR_BUNDLE_ID": os.Getenv("GRAMMAR_BUNDLE_ID"),
@@ -824,6 +829,7 @@ func TestLoad_WhitespaceOnlyGrammarBundleID(t *testing.T) {
 	os.Setenv("AI_URL", "http://test.local")
 	os.Setenv("AI_API_KEY", "test-key")
 	os.Setenv("AI_PROMPT", "test prompt")
+	os.Unsetenv("AI_PROMPT_FILE")
 	os.Setenv("WEBAPP_JWT_SECRET", "test-secret")
 	os.Setenv("DATABASE_DRIVER", "postgres")
 	os.Setenv("DATABASE_URL", "postgres://test:test@localhost/test?sslmode=disable")
