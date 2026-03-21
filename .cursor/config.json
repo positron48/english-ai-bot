@@ -3,5 +3,9 @@
     "checkCommand": "make check",
     "coverageProfile": "coverage.out",
     "coverageMinPercent": 50
+  },
+  "documentation": {
+    "multilangPlanPath": "docs/MULTILANG_SPANISH_LAUNCH_PLAN.md",
+    "spanishK3sChecklistPath": "docs/SPANISH_K3S_ROLLOUT_CHECKLIST.md"
   }
 }
