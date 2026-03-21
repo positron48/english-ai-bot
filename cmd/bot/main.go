@@ -36,6 +36,11 @@ func main() {
 		zap.String("version", version),
 		zap.String("buildTime", buildTime),
 		zap.String("commit", commit),
+		zap.String("learning_pair", cfg.Learning.Pair),
+		zap.String("learning_native_lang", cfg.Learning.NativeLang),
+		zap.String("learning_target_lang", cfg.Learning.TargetLang),
+		zap.String("learning_app_code", cfg.Learning.AppCode),
+		zap.String("grammar_bundle_id", cfg.Learning.GrammarBundleID),
 	)
 
 	// Create bot instance (Telegram bot initialization is optional)

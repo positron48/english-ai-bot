@@ -3,24 +3,81 @@ package config
 import (
 	"fmt"
 	"os"
+	"regexp"
 	"strings"
 
 	"github.com/joho/godotenv"
 	"github.com/spf13/viper"
 )
 
+var langCodeSegment = regexp.MustCompile(`^[a-z]{2,8}$`)
+
 // Config represents the application configuration
 type Config struct {
-	Telegram TelegramConfig `mapstructure:"telegram"`
-	Server   ServerConfig   `mapstructure:"server"`
-	Logging  LoggingConfig  `mapstructure:"logging"`
-	AI       AIConfig       `mapstructure:"ai"`
-	TTS      TTSConfig      `mapstructure:"tts"`
-	Bot      BotConfig      `mapstructure:"bot"`
-	Database DatabaseConfig `mapstructure:"database"`
-	Training TrainingConfig `mapstructure:"training"`
-	Admin    AdminConfig    `mapstructure:"admin"`
-	WebApp   WebAppConfig   `mapstructure:"webapp"`
+	Telegram  TelegramConfig  `mapstructure:"telegram"`
+	Server    ServerConfig    `mapstructure:"server"`
+	Logging   LoggingConfig   `mapstructure:"logging"`
+	AI        AIConfig        `mapstructure:"ai"`
+	TTS       TTSConfig       `mapstructure:"tts"`
+	Bot       BotConfig       `mapstructure:"bot"`
+	Database  DatabaseConfig  `mapstructure:"database"`
+	Training  TrainingConfig  `mapstructure:"training"`
+	Admin     AdminConfig     `mapstructure:"admin"`
+	WebApp    WebAppConfig    `mapstructure:"webapp"`
+	Learning  LearningConfig `mapstructure:"learning"`
+}
+
+// LearningConfig holds language pair and bundle identity for multilang deployments.
+type LearningConfig struct {
+	Pair            string `mapstructure:"pair"`
+	NativeLang      string `mapstructure:"native_lang"`
+	TargetLang      string `mapstructure:"target_lang"`
+	AppCode         string `mapstructure:"app_code"`
+	GrammarBundleID string `mapstructure:"grammar_bundle_id"`
+}
+
+// ValidateLearningConfig checks LEARNING_* / GRAMMAR_BUNDLE_ID consistency.
+func ValidateLearningConfig(lc LearningConfig) error {
+	pair := strings.TrimSpace(strings.ToLower(lc.Pair))
+	native := strings.TrimSpace(strings.ToLower(lc.NativeLang))
+	target := strings.TrimSpace(strings.ToLower(lc.TargetLang))
+	appCode := strings.TrimSpace(lc.AppCode)
+	bundleID := strings.TrimSpace(lc.GrammarBundleID)
+
+	if pair == "" {
+		return fmt.Errorf("LEARNING_PAIR is required (e.g. ru-en)")
+	}
+	if strings.Count(pair, "-") != 1 {
+		return fmt.Errorf("LEARNING_PAIR %q must contain exactly one hyphen between two language codes (e.g. ru-en)", lc.Pair)
+	}
+	parts := strings.SplitN(pair, "-", 2)
+	pNative, pTarget := parts[0], parts[1]
+	if !langCodeSegment.MatchString(pNative) || !langCodeSegment.MatchString(pTarget) {
+		return fmt.Errorf("LEARNING_PAIR %q: each side must be a lowercase language code (2–8 letters, e.g. ru-en)", lc.Pair)
+	}
+
+	if native == "" || target == "" {
+		return fmt.Errorf("LEARNING_NATIVE_LANG and LEARNING_TARGET_LANG are required")
+	}
+	if !langCodeSegment.MatchString(native) {
+		return fmt.Errorf("LEARNING_NATIVE_LANG %q must be a lowercase language code (2–8 letters)", lc.NativeLang)
+	}
+	if !langCodeSegment.MatchString(target) {
+		return fmt.Errorf("LEARNING_TARGET_LANG %q must be a lowercase language code (2–8 letters)", lc.TargetLang)
+	}
+
+	if pNative != native || pTarget != target {
+		return fmt.Errorf("LEARNING_PAIR %q does not match LEARNING_NATIVE_LANG=%q and LEARNING_TARGET_LANG=%q (expected %s-%s)",
+			lc.Pair, lc.NativeLang, lc.TargetLang, native, target)
+	}
+
+	if appCode == "" {
+		return fmt.Errorf("LEARNING_APP_CODE is required")
+	}
+	if bundleID == "" {
+		return fmt.Errorf("GRAMMAR_BUNDLE_ID is required")
+	}
+	return nil
 }
 
 // TelegramConfig holds Telegram bot configuration
@@ -216,6 +273,13 @@ func Load() (*Config, error) {
 	viper.SetDefault("webapp.rate_limit_window_minutes", 1)
 	viper.SetDefault("webapp.rate_limit_burst_multiplier", 2)
 
+	// Learning / language pair (defaults: RU→EN English instance)
+	viper.SetDefault("learning.pair", "ru-en")
+	viper.SetDefault("learning.native_lang", "ru")
+	viper.SetDefault("learning.target_lang", "en")
+	viper.SetDefault("learning.app_code", "english")
+	viper.SetDefault("learning.grammar_bundle_id", "en")
+
 	// Bot message defaults
 	viper.SetDefault("bot.start_message", "🇬🇧 Привет! Я ваш персональный преподаватель английского языка!\n\n📝 Что я умею:\n• Исправлять ошибки в английском тексте\n• Переводить с русского на английский\n• Создавать карточки слов с объяснениями\n\n💡 Как пользоваться:\n• Отправьте английский текст → получите исправления\n• Отправьте русский текст → получите перевод\n• Отправьте одно слово → получите карточку слова\n\nИспользуйте /help для подробной информации.")
 	viper.SetDefault("bot.help_message", "📚 Помощь по использованию бота-преподавателя английского:\n\n🔤 **Одно слово** → Карточка слова с:\n• Частью речи\n• Транскрипцией IPA\n• Определением на русском\n• Примерами использования\n• Формами неправильных глаголов\n\n📝 **Английский текст** → Исправления:\n• Поиск ошибок (орфография, грамматика, пунктуация)\n• Подробные объяснения\n• Исправленная версия\n\n🇷🇺 **Русский текст** → Перевод:\n• Естественный перевод на английский\n• Анализ сложных фраз\n• Сохранение тона и стиля\n\n🔧 **Доступные команды:**\n• /help - Показать эту справку\n• /notification [daily|never|N] - Настроить периодичность уведомлений\n💬 Просто отправьте текст или слово - я сразу помогу!")
@@ -303,6 +367,11 @@ func Load() (*Config, error) {
 	_ = viper.BindEnv("webapp.rate_limit_app_chat_per_user", "WEBAPP_RATE_LIMIT_APP_CHAT_PER_USER")
 	_ = viper.BindEnv("webapp.rate_limit_window_minutes", "WEBAPP_RATE_LIMIT_WINDOW_MINUTES")
 	_ = viper.BindEnv("webapp.rate_limit_burst_multiplier", "WEBAPP_RATE_LIMIT_BURST_MULTIPLIER")
+	_ = viper.BindEnv("learning.pair", "LEARNING_PAIR")
+	_ = viper.BindEnv("learning.native_lang", "LEARNING_NATIVE_LANG")
+	_ = viper.BindEnv("learning.target_lang", "LEARNING_TARGET_LANG")
+	_ = viper.BindEnv("learning.app_code", "LEARNING_APP_CODE")
+	_ = viper.BindEnv("learning.grammar_bundle_id", "GRAMMAR_BUNDLE_ID")
 
 	// Set config file
 	viper.SetConfigName("config")
@@ -322,6 +391,15 @@ func Load() (*Config, error) {
 	if err := viper.Unmarshal(&config); err != nil {
 		return nil, fmt.Errorf("error unmarshaling config: %w", err)
 	}
+
+	if err := ValidateLearningConfig(config.Learning); err != nil {
+		return nil, fmt.Errorf("learning config: %w", err)
+	}
+	config.Learning.Pair = strings.ToLower(strings.TrimSpace(config.Learning.Pair))
+	config.Learning.NativeLang = strings.ToLower(strings.TrimSpace(config.Learning.NativeLang))
+	config.Learning.TargetLang = strings.ToLower(strings.TrimSpace(config.Learning.TargetLang))
+	config.Learning.AppCode = strings.TrimSpace(config.Learning.AppCode)
+	config.Learning.GrammarBundleID = strings.TrimSpace(config.Learning.GrammarBundleID)
 
 	// Validate required fields before loading prompt file so missing env yields clear errors
 	if config.Database.URL == "" {

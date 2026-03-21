@@ -7,6 +7,43 @@ import (
 	"testing"
 )
 
+func backupLearningEnv() map[string]string {
+	keys := []string{
+		"LEARNING_PAIR",
+		"LEARNING_NATIVE_LANG",
+		"LEARNING_TARGET_LANG",
+		"LEARNING_APP_CODE",
+		"GRAMMAR_BUNDLE_ID",
+	}
+	m := make(map[string]string, len(keys))
+	for _, k := range keys {
+		m[k] = os.Getenv(k)
+	}
+	return m
+}
+
+func restoreLearningEnv(m map[string]string) {
+	for k, v := range m {
+		if v == "" {
+			os.Unsetenv(k)
+		} else {
+			os.Setenv(k, v)
+		}
+	}
+}
+
+func unsetLearningEnvForDefaults() {
+	for _, k := range []string{
+		"LEARNING_PAIR",
+		"LEARNING_NATIVE_LANG",
+		"LEARNING_TARGET_LANG",
+		"LEARNING_APP_CODE",
+		"GRAMMAR_BUNDLE_ID",
+	} {
+		os.Unsetenv(k)
+	}
+}
+
 func TestLoad_Defaults(t *testing.T) {
 	// Save original env vars - include all that might affect defaults
 	originalEnv := map[string]string{
@@ -26,8 +63,10 @@ func TestLoad_Defaults(t *testing.T) {
 		"DATABASE_URL":               os.Getenv("DATABASE_URL"),
 	}
 
+	learningEnv := backupLearningEnv()
 	// Restore original env vars after test
 	defer func() {
+		restoreLearningEnv(learningEnv)
 		for k, v := range originalEnv {
 			if v == "" {
 				os.Unsetenv(k)
@@ -38,6 +77,7 @@ func TestLoad_Defaults(t *testing.T) {
 	}()
 
 	// Set required env vars and clear optional ones to get defaults
+	unsetLearningEnvForDefaults()
 	os.Setenv("AI_URL", "http://test-ai.local")
 	os.Setenv("AI_API_KEY", "test-api-key")
 	os.Setenv("AI_PROMPT", "test prompt")
@@ -101,9 +141,17 @@ func TestLoad_Defaults(t *testing.T) {
 	if cfg.WebApp.JWTTTLHours != 24 {
 		t.Errorf("Expected default JWT TTL 24, got %d", cfg.WebApp.JWTTTLHours)
 	}
+
+	if cfg.Learning.Pair != "ru-en" || cfg.Learning.NativeLang != "ru" || cfg.Learning.TargetLang != "en" {
+		t.Errorf("Expected default learning ru→en, got pair=%q native=%q target=%q", cfg.Learning.Pair, cfg.Learning.NativeLang, cfg.Learning.TargetLang)
+	}
+	if cfg.Learning.AppCode != "english" || cfg.Learning.GrammarBundleID != "en" {
+		t.Errorf("Expected default app_code=english grammar_bundle_id=en, got app_code=%q grammar_bundle_id=%q", cfg.Learning.AppCode, cfg.Learning.GrammarBundleID)
+	}
 }
 
 func TestLoad_MissingDatabaseURL(t *testing.T) {
+	learningEnv := backupLearningEnv()
 	originalEnv := map[string]string{
 		"AI_URL":            os.Getenv("AI_URL"),
 		"AI_API_KEY":        os.Getenv("AI_API_KEY"),
@@ -112,6 +160,7 @@ func TestLoad_MissingDatabaseURL(t *testing.T) {
 		"WEBAPP_JWT_SECRET": os.Getenv("WEBAPP_JWT_SECRET"),
 	}
 	defer func() {
+		restoreLearningEnv(learningEnv)
 		for k, v := range originalEnv {
 			if v == "" {
 				os.Unsetenv(k)
@@ -127,6 +176,7 @@ func TestLoad_MissingDatabaseURL(t *testing.T) {
 	os.Unsetenv("DATABASE_URL")
 	os.Setenv("WEBAPP_JWT_SECRET", "test-secret")
 	os.Setenv("DATABASE_DRIVER", "postgres")
+	unsetLearningEnvForDefaults()
 
 	_, err := Load()
 	if err == nil {
@@ -139,6 +189,7 @@ func TestLoad_MissingDatabaseURL(t *testing.T) {
 
 func TestLoad_MissingAIURL(t *testing.T) {
 	// Clear relevant env vars
+	learningEnv := backupLearningEnv()
 	originalEnv := map[string]string{
 		"AI_URL":            os.Getenv("AI_URL"),
 		"AI_API_KEY":        os.Getenv("AI_API_KEY"),
@@ -147,6 +198,7 @@ func TestLoad_MissingAIURL(t *testing.T) {
 	}
 
 	defer func() {
+		restoreLearningEnv(learningEnv)
 		for k, v := range originalEnv {
 			if v == "" {
 				os.Unsetenv(k)
@@ -162,6 +214,7 @@ func TestLoad_MissingAIURL(t *testing.T) {
 	os.Setenv("WEBAPP_JWT_SECRET", "test-secret")
 	os.Setenv("DATABASE_DRIVER", "postgres")
 	os.Setenv("DATABASE_URL", "postgres://test:test@localhost/test?sslmode=disable")
+	unsetLearningEnvForDefaults()
 
 	_, err := Load()
 	if err == nil {
@@ -170,6 +223,7 @@ func TestLoad_MissingAIURL(t *testing.T) {
 }
 
 func TestLoad_MissingAIAPIKey(t *testing.T) {
+	learningEnv := backupLearningEnv()
 	originalEnv := map[string]string{
 		"AI_URL":            os.Getenv("AI_URL"),
 		"AI_API_KEY":        os.Getenv("AI_API_KEY"),
@@ -178,6 +232,7 @@ func TestLoad_MissingAIAPIKey(t *testing.T) {
 	}
 
 	defer func() {
+		restoreLearningEnv(learningEnv)
 		for k, v := range originalEnv {
 			if v == "" {
 				os.Unsetenv(k)
@@ -193,6 +248,7 @@ func TestLoad_MissingAIAPIKey(t *testing.T) {
 	os.Setenv("WEBAPP_JWT_SECRET", "test-secret")
 	os.Setenv("DATABASE_DRIVER", "postgres")
 	os.Setenv("DATABASE_URL", "postgres://test:test@localhost/test?sslmode=disable")
+	unsetLearningEnvForDefaults()
 
 	_, err := Load()
 	if err == nil {
@@ -201,6 +257,7 @@ func TestLoad_MissingAIAPIKey(t *testing.T) {
 }
 
 func TestLoad_MissingAIPrompt(t *testing.T) {
+	learningEnv := backupLearningEnv()
 	originalEnv := map[string]string{
 		"AI_URL":            os.Getenv("AI_URL"),
 		"AI_API_KEY":        os.Getenv("AI_API_KEY"),
@@ -210,6 +267,7 @@ func TestLoad_MissingAIPrompt(t *testing.T) {
 	}
 
 	defer func() {
+		restoreLearningEnv(learningEnv)
 		for k, v := range originalEnv {
 			if v == "" {
 				os.Unsetenv(k)
@@ -226,6 +284,7 @@ func TestLoad_MissingAIPrompt(t *testing.T) {
 	os.Setenv("WEBAPP_JWT_SECRET", "test-secret")
 	os.Setenv("DATABASE_DRIVER", "postgres")
 	os.Setenv("DATABASE_URL", "postgres://test:test@localhost/test?sslmode=disable")
+	unsetLearningEnvForDefaults()
 
 	_, err := Load()
 	if err == nil {
@@ -234,6 +293,7 @@ func TestLoad_MissingAIPrompt(t *testing.T) {
 }
 
 func TestLoad_MissingJWTSecret(t *testing.T) {
+	learningEnv := backupLearningEnv()
 	originalEnv := map[string]string{
 		"AI_URL":                os.Getenv("AI_URL"),
 		"AI_API_KEY":            os.Getenv("AI_API_KEY"),
@@ -243,6 +303,7 @@ func TestLoad_MissingJWTSecret(t *testing.T) {
 	}
 
 	defer func() {
+		restoreLearningEnv(learningEnv)
 		for k, v := range originalEnv {
 			if v == "" {
 				os.Unsetenv(k)
@@ -259,6 +320,7 @@ func TestLoad_MissingJWTSecret(t *testing.T) {
 	os.Unsetenv("WEBAPP_SESSION_SECRET")
 	os.Setenv("DATABASE_DRIVER", "postgres")
 	os.Setenv("DATABASE_URL", "postgres://test:test@localhost/test?sslmode=disable")
+	unsetLearningEnvForDefaults()
 
 	_, err := Load()
 	if err == nil {
@@ -267,6 +329,7 @@ func TestLoad_MissingJWTSecret(t *testing.T) {
 }
 
 func TestLoad_WithPromptFile(t *testing.T) {
+	learningEnv := backupLearningEnv()
 	originalEnv := map[string]string{
 		"AI_URL":            os.Getenv("AI_URL"),
 		"AI_API_KEY":        os.Getenv("AI_API_KEY"),
@@ -276,6 +339,7 @@ func TestLoad_WithPromptFile(t *testing.T) {
 	}
 
 	defer func() {
+		restoreLearningEnv(learningEnv)
 		for k, v := range originalEnv {
 			if v == "" {
 				os.Unsetenv(k)
@@ -300,6 +364,7 @@ func TestLoad_WithPromptFile(t *testing.T) {
 	os.Setenv("WEBAPP_JWT_SECRET", "test-secret")
 	os.Setenv("DATABASE_DRIVER", "postgres")
 	os.Setenv("DATABASE_URL", "postgres://test:test@localhost/test?sslmode=disable")
+	unsetLearningEnvForDefaults()
 
 	cfg, err := Load()
 	if err != nil {
@@ -327,6 +392,7 @@ func TestLoad_InvalidConfigFile(t *testing.T) {
 	}
 	defer func() { _ = os.Chdir(wd) }()
 
+	learningEnv := backupLearningEnv()
 	originalEnv := map[string]string{
 		"AI_URL":            os.Getenv("AI_URL"),
 		"AI_API_KEY":        os.Getenv("AI_API_KEY"),
@@ -335,6 +401,7 @@ func TestLoad_InvalidConfigFile(t *testing.T) {
 		"WEBAPP_JWT_SECRET": os.Getenv("WEBAPP_JWT_SECRET"),
 	}
 	defer func() {
+		restoreLearningEnv(learningEnv)
 		for k, v := range originalEnv {
 			if v == "" {
 				os.Unsetenv(k)
@@ -349,6 +416,7 @@ func TestLoad_InvalidConfigFile(t *testing.T) {
 	os.Setenv("AI_PROMPT", "test prompt")
 	os.Setenv("DATABASE_URL", "postgres://test:test@localhost/test?sslmode=disable")
 	os.Setenv("WEBAPP_JWT_SECRET", "test-secret")
+	unsetLearningEnvForDefaults()
 
 	_, err = Load()
 	if err == nil {
@@ -360,6 +428,7 @@ func TestLoad_InvalidConfigFile(t *testing.T) {
 }
 
 func TestLoad_InvalidPromptFile(t *testing.T) {
+	learningEnv := backupLearningEnv()
 	originalEnv := map[string]string{
 		"AI_URL":            os.Getenv("AI_URL"),
 		"AI_API_KEY":        os.Getenv("AI_API_KEY"),
@@ -369,6 +438,7 @@ func TestLoad_InvalidPromptFile(t *testing.T) {
 	}
 
 	defer func() {
+		restoreLearningEnv(learningEnv)
 		for k, v := range originalEnv {
 			if v == "" {
 				os.Unsetenv(k)
@@ -385,6 +455,7 @@ func TestLoad_InvalidPromptFile(t *testing.T) {
 	os.Setenv("WEBAPP_JWT_SECRET", "test-secret")
 	os.Setenv("DATABASE_DRIVER", "postgres")
 	os.Setenv("DATABASE_URL", "postgres://test:test@localhost/test?sslmode=disable")
+	unsetLearningEnvForDefaults()
 
 	_, err := Load()
 	if err == nil {
@@ -393,6 +464,7 @@ func TestLoad_InvalidPromptFile(t *testing.T) {
 }
 
 func TestLoad_UnmarshalError(t *testing.T) {
+	learningEnv := backupLearningEnv()
 	originalEnv := map[string]string{
 		"AI_URL":                     os.Getenv("AI_URL"),
 		"AI_API_KEY":                 os.Getenv("AI_API_KEY"),
@@ -402,6 +474,7 @@ func TestLoad_UnmarshalError(t *testing.T) {
 		"TRAINING_WORKER_BATCH_SIZE": os.Getenv("TRAINING_WORKER_BATCH_SIZE"),
 	}
 	defer func() {
+		restoreLearningEnv(learningEnv)
 		for k, v := range originalEnv {
 			if v == "" {
 				os.Unsetenv(k)
@@ -418,6 +491,7 @@ func TestLoad_UnmarshalError(t *testing.T) {
 	os.Setenv("WEBAPP_JWT_SECRET", "test-secret")
 	// Invalid value for int field causes Unmarshal to fail
 	os.Setenv("TRAINING_WORKER_BATCH_SIZE", "not_a_number")
+	unsetLearningEnvForDefaults()
 
 	_, err := Load()
 	if err == nil {
@@ -429,6 +503,7 @@ func TestLoad_UnmarshalError(t *testing.T) {
 }
 
 func TestLoad_BotMessageNewlines(t *testing.T) {
+	learningEnv := backupLearningEnv()
 	originalEnv := map[string]string{
 		"AI_URL":            os.Getenv("AI_URL"),
 		"AI_API_KEY":        os.Getenv("AI_API_KEY"),
@@ -439,6 +514,7 @@ func TestLoad_BotMessageNewlines(t *testing.T) {
 	}
 
 	defer func() {
+		restoreLearningEnv(learningEnv)
 		for k, v := range originalEnv {
 			if v == "" {
 				os.Unsetenv(k)
@@ -456,6 +532,7 @@ func TestLoad_BotMessageNewlines(t *testing.T) {
 	os.Setenv("DATABASE_DRIVER", "postgres")
 	os.Setenv("DATABASE_URL", "postgres://test:test@localhost/test?sslmode=disable")
 	os.Setenv("BOT_START_MESSAGE", "Hello\\nWorld")
+	unsetLearningEnvForDefaults()
 
 	cfg, err := Load()
 	if err != nil {
@@ -468,6 +545,7 @@ func TestLoad_BotMessageNewlines(t *testing.T) {
 }
 
 func TestLoad_SessionSecretFallback(t *testing.T) {
+	learningEnv := backupLearningEnv()
 	originalEnv := map[string]string{
 		"AI_URL":                os.Getenv("AI_URL"),
 		"AI_API_KEY":            os.Getenv("AI_API_KEY"),
@@ -478,6 +556,7 @@ func TestLoad_SessionSecretFallback(t *testing.T) {
 	}
 
 	defer func() {
+		restoreLearningEnv(learningEnv)
 		for k, v := range originalEnv {
 			if v == "" {
 				os.Unsetenv(k)
@@ -495,6 +574,7 @@ func TestLoad_SessionSecretFallback(t *testing.T) {
 	os.Setenv("WEBAPP_SESSION_SECRET", "session-secret")
 	os.Setenv("DATABASE_DRIVER", "postgres")
 	os.Setenv("DATABASE_URL", "postgres://test:test@localhost/test?sslmode=disable")
+	unsetLearningEnvForDefaults()
 
 	cfg, err := Load()
 	if err != nil {
@@ -507,6 +587,7 @@ func TestLoad_SessionSecretFallback(t *testing.T) {
 }
 
 func TestLoad_CustomEnvValues(t *testing.T) {
+	learningEnv := backupLearningEnv()
 	originalEnv := map[string]string{
 		"AI_URL":            os.Getenv("AI_URL"),
 		"AI_API_KEY":        os.Getenv("AI_API_KEY"),
@@ -520,6 +601,7 @@ func TestLoad_CustomEnvValues(t *testing.T) {
 	}
 
 	defer func() {
+		restoreLearningEnv(learningEnv)
 		for k, v := range originalEnv {
 			if v == "" {
 				os.Unsetenv(k)
@@ -539,6 +621,7 @@ func TestLoad_CustomEnvValues(t *testing.T) {
 	os.Setenv("LOG_LEVEL", "debug")
 	os.Setenv("DATABASE_DRIVER", "postgres")
 	os.Setenv("DATABASE_URL", "postgres://custom:custom@localhost:5432/customdb?sslmode=disable")
+	unsetLearningEnvForDefaults()
 
 	cfg, err := Load()
 	if err != nil {
@@ -571,6 +654,7 @@ func TestLoad_CustomEnvValues(t *testing.T) {
 }
 
 func TestLoad_RateLimitDefaults(t *testing.T) {
+	learningEnv := backupLearningEnv()
 	originalEnv := map[string]string{
 		"AI_URL":            os.Getenv("AI_URL"),
 		"AI_API_KEY":        os.Getenv("AI_API_KEY"),
@@ -580,6 +664,7 @@ func TestLoad_RateLimitDefaults(t *testing.T) {
 	}
 
 	defer func() {
+		restoreLearningEnv(learningEnv)
 		for k, v := range originalEnv {
 			if v == "" {
 				os.Unsetenv(k)
@@ -596,6 +681,7 @@ func TestLoad_RateLimitDefaults(t *testing.T) {
 	os.Setenv("WEBAPP_JWT_SECRET", "test-secret")
 	os.Setenv("DATABASE_DRIVER", "postgres")
 	os.Setenv("DATABASE_URL", "postgres://test:test@localhost/test?sslmode=disable")
+	unsetLearningEnvForDefaults()
 
 	cfg, err := Load()
 	if err != nil {
@@ -616,5 +702,141 @@ func TestLoad_RateLimitDefaults(t *testing.T) {
 
 	if cfg.WebApp.RateLimitBurstMultiplier != 2 {
 		t.Errorf("Expected burst multiplier 2, got %d", cfg.WebApp.RateLimitBurstMultiplier)
+	}
+}
+
+func TestLoad_InvalidLearningPair(t *testing.T) {
+	learningEnv := backupLearningEnv()
+	originalEnv := map[string]string{
+		"AI_URL":            os.Getenv("AI_URL"),
+		"AI_API_KEY":        os.Getenv("AI_API_KEY"),
+		"AI_PROMPT":         os.Getenv("AI_PROMPT"),
+		"WEBAPP_JWT_SECRET": os.Getenv("WEBAPP_JWT_SECRET"),
+		"DATABASE_URL":      os.Getenv("DATABASE_URL"),
+		"LEARNING_PAIR":     os.Getenv("LEARNING_PAIR"),
+		"LEARNING_NATIVE_LANG": os.Getenv("LEARNING_NATIVE_LANG"),
+		"LEARNING_TARGET_LANG": os.Getenv("LEARNING_TARGET_LANG"),
+		"LEARNING_APP_CODE": os.Getenv("LEARNING_APP_CODE"),
+		"GRAMMAR_BUNDLE_ID": os.Getenv("GRAMMAR_BUNDLE_ID"),
+	}
+	defer func() {
+		restoreLearningEnv(learningEnv)
+		for k, v := range originalEnv {
+			if v == "" {
+				os.Unsetenv(k)
+			} else {
+				os.Setenv(k, v)
+			}
+		}
+	}()
+
+	os.Setenv("AI_URL", "http://test.local")
+	os.Setenv("AI_API_KEY", "test-key")
+	os.Setenv("AI_PROMPT", "test prompt")
+	os.Setenv("WEBAPP_JWT_SECRET", "test-secret")
+	os.Setenv("DATABASE_DRIVER", "postgres")
+	os.Setenv("DATABASE_URL", "postgres://test:test@localhost/test?sslmode=disable")
+	os.Setenv("LEARNING_PAIR", "ru-es")
+	os.Setenv("LEARNING_NATIVE_LANG", "ru")
+	os.Setenv("LEARNING_TARGET_LANG", "en")
+	os.Setenv("LEARNING_APP_CODE", "english")
+	os.Setenv("GRAMMAR_BUNDLE_ID", "en")
+
+	_, err := Load()
+	if err == nil {
+		t.Fatal("expected error for inconsistent LEARNING_PAIR vs target lang")
+	}
+	if !strings.Contains(err.Error(), "learning config") || !strings.Contains(err.Error(), "does not match") {
+		t.Fatalf("expected learning pair validation error, got %v", err)
+	}
+}
+
+func TestLoad_ValidSpanishLearningPair(t *testing.T) {
+	learningEnv := backupLearningEnv()
+	originalEnv := map[string]string{
+		"AI_URL":               os.Getenv("AI_URL"),
+		"AI_API_KEY":           os.Getenv("AI_API_KEY"),
+		"AI_PROMPT":            os.Getenv("AI_PROMPT"),
+		"WEBAPP_JWT_SECRET":    os.Getenv("WEBAPP_JWT_SECRET"),
+		"DATABASE_URL":         os.Getenv("DATABASE_URL"),
+		"LEARNING_PAIR":        os.Getenv("LEARNING_PAIR"),
+		"LEARNING_NATIVE_LANG": os.Getenv("LEARNING_NATIVE_LANG"),
+		"LEARNING_TARGET_LANG": os.Getenv("LEARNING_TARGET_LANG"),
+		"LEARNING_APP_CODE":    os.Getenv("LEARNING_APP_CODE"),
+		"GRAMMAR_BUNDLE_ID":    os.Getenv("GRAMMAR_BUNDLE_ID"),
+	}
+	defer func() {
+		restoreLearningEnv(learningEnv)
+		for k, v := range originalEnv {
+			if v == "" {
+				os.Unsetenv(k)
+			} else {
+				os.Setenv(k, v)
+			}
+		}
+	}()
+
+	os.Setenv("AI_URL", "http://test.local")
+	os.Setenv("AI_API_KEY", "test-key")
+	os.Setenv("AI_PROMPT", "test prompt")
+	os.Setenv("WEBAPP_JWT_SECRET", "test-secret")
+	os.Setenv("DATABASE_DRIVER", "postgres")
+	os.Setenv("DATABASE_URL", "postgres://test:test@localhost/test?sslmode=disable")
+	os.Setenv("LEARNING_PAIR", "ru-es")
+	os.Setenv("LEARNING_NATIVE_LANG", "ru")
+	os.Setenv("LEARNING_TARGET_LANG", "es")
+	os.Setenv("LEARNING_APP_CODE", "spanish")
+	os.Setenv("GRAMMAR_BUNDLE_ID", "es")
+
+	cfg, err := Load()
+	if err != nil {
+		t.Fatalf("Load() error = %v", err)
+	}
+	if cfg.Learning.Pair != "ru-es" || cfg.Learning.NativeLang != "ru" || cfg.Learning.TargetLang != "es" {
+		t.Fatalf("learning pair: got pair=%q native=%q target=%q", cfg.Learning.Pair, cfg.Learning.NativeLang, cfg.Learning.TargetLang)
+	}
+	if cfg.Learning.AppCode != "spanish" || cfg.Learning.GrammarBundleID != "es" {
+		t.Fatalf("learning app: got app_code=%q grammar_bundle_id=%q", cfg.Learning.AppCode, cfg.Learning.GrammarBundleID)
+	}
+}
+
+func TestLoad_WhitespaceOnlyGrammarBundleID(t *testing.T) {
+	learningEnv := backupLearningEnv()
+	originalEnv := map[string]string{
+		"AI_URL":            os.Getenv("AI_URL"),
+		"AI_API_KEY":        os.Getenv("AI_API_KEY"),
+		"AI_PROMPT":         os.Getenv("AI_PROMPT"),
+		"WEBAPP_JWT_SECRET": os.Getenv("WEBAPP_JWT_SECRET"),
+		"DATABASE_URL":      os.Getenv("DATABASE_URL"),
+		"GRAMMAR_BUNDLE_ID": os.Getenv("GRAMMAR_BUNDLE_ID"),
+	}
+	defer func() {
+		restoreLearningEnv(learningEnv)
+		for k, v := range originalEnv {
+			if v == "" {
+				os.Unsetenv(k)
+			} else {
+				os.Setenv(k, v)
+			}
+		}
+	}()
+
+	os.Setenv("AI_URL", "http://test.local")
+	os.Setenv("AI_API_KEY", "test-key")
+	os.Setenv("AI_PROMPT", "test prompt")
+	os.Setenv("WEBAPP_JWT_SECRET", "test-secret")
+	os.Setenv("DATABASE_DRIVER", "postgres")
+	os.Setenv("DATABASE_URL", "postgres://test:test@localhost/test?sslmode=disable")
+	unsetLearningEnvForDefaults()
+	// Viper keeps numeric defaults when env is unset; empty string may not override.
+	// Whitespace-only still binds and trims to empty in ValidateLearningConfig.
+	os.Setenv("GRAMMAR_BUNDLE_ID", "   ")
+
+	_, err := Load()
+	if err == nil {
+		t.Fatal("expected error for whitespace-only GRAMMAR_BUNDLE_ID")
+	}
+	if !strings.Contains(err.Error(), "learning config") || !strings.Contains(err.Error(), "GRAMMAR_BUNDLE_ID") {
+		t.Fatalf("expected GRAMMAR_BUNDLE_ID validation error, got %v", err)
 	}
 }
