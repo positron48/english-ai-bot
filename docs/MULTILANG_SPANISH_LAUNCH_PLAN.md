@@ -30,7 +30,6 @@
 - `LEARNING_TARGET_LANG=es` (изучаемый язык)
 - `LEARNING_NATIVE_LANG=ru` (язык объяснений/переводов)
 - `LEARNING_PAIR=ru-es` (служебный идентификатор пары)
-- `LEARNING_PROFILE=spanish` (ID профиля/инстанса)
 - `GRAMMAR_BUNDLE_DIR` или `GRAMMAR_BUNDLE_ID` (какой bundle подключить)
 - `TTS_DICTIONARY_BASE_URL` под target language (для ES другой endpoint/провайдер)
 - `AI_PROMPT_FILE` и `TRAINING_PROMPT_FILE` профильно-зависимые
@@ -38,36 +37,17 @@
 Принцип:
 - Код не знает «английский/испанский» напрямую.
 - Код работает с `native_lang` и `target_lang` из runtime config.
-- Данные и уникальные ключи учитывают `language_profile_id`.
+- Изоляция данных обеспечивается отдельной БД на каждый сервис.
 
-## 3. Модель данных: где нужен language dimension
+## 3. Модель данных при отдельной БД на сервис
 
-### 3.1 Таблицы, где language dimension обязателен
+### 3.1 Базовый подход
 
-Добавить `language_profile_id` (FK) в:
-- `word_cards`
-- `word_forms`
-- `word_request_history`
-- `training_cards`
-- `word_set_categories`
-- `word_sets`
-- `word_set_items`
-- `grammar_published_items`
-- `grammar_progress`
-- `grammar_test_attempts`
-- `grammar_placement_test`
-- `tts_generation_status`
+1. Не расширяем таблицы дополнительным tenant-измерением, так как сервисы разделены по БД.
+2. Оставляем `direction` как рабочий механизм направления карточек.
+3. Нейтрализуем терминологию через DTO/mapper, без обязательного SQL rename в первом этапе.
 
-### 3.2 Таблицы, где можно оставить без language dimension
-
-Если Spanish будет отдельным инстансом/ботом (рекомендуется на старте):
-- `users`, `web_sessions`, `web_otps`, `training_sessions`, `review_events`, `training_nudges`, `circuit_breaker_state`, `app_settings`, `user_access_*`.
-
-Если в будущем делать shared schema для нескольких языков в одном инстансе, тогда:
-- `app_settings` сделать profile-scoped (`(language_profile_id, key)` unique).
-- `grammar_placement_test` менять с `UNIQUE(user_id)` на `UNIQUE(user_id, language_profile_id)`.
-
-### 3.3 Нормализация схемы (после стабилизации)
+### 3.2 Нормализация схемы (после стабилизации)
 
 Текущие EN/RU колонки оставить на переходный период, но в коде перейти на нейтральные alias:
 - `word_en` -> `word_target`
@@ -90,35 +70,18 @@
 2. Ввести SQL-файлы миграций (`internal/database/migrations/*.sql`) и runner.
 3. `migratePostgres()` оставить как bootstrap только для новых пустых БД (или удалить после стабилизации).
 
-### 4.2 Первая миграция multi-language
+### 4.2 Первая migration wave
 
-1. Создать таблицу:
-- `language_profiles(id, code, name, native_lang, target_lang, is_default, created_at)`
-
-2. Вставить дефолтный профиль для текущего English:
-- `code='english-ru-en'`, `native_lang='ru'`, `target_lang='en'`, `is_default=true`.
-
-3. Добавить nullable `language_profile_id` в таблицы из раздела 3.1.
-
-4. Backfill существующих данных:
-- `UPDATE ... SET language_profile_id = <default_profile_id> WHERE language_profile_id IS NULL`.
-
-5. Добавить NOT NULL + индексы.
-
-6. Пересобрать уникальности:
-- `word_cards`: `UNIQUE(language_profile_id, lower(word))`
-- `word_forms`: `UNIQUE(language_profile_id, lower(form))`
-- `training_cards`: `UNIQUE(language_profile_id, word_card_id, sense_index)`
-- `word_sets`: title uniqueness (если нужна) тоже scope по profile
-- `tts_generation_status`: заменить PK `word` на surrogate `id` + `UNIQUE(language_profile_id, word)`.
-
-7. Добавить FK `language_profile_id -> language_profiles(id)`.
+1. Ввести `schema_migrations`.
+2. Зафиксировать baseline текущей схемы.
+3. Добавлять только миграции, нужные для language-agnostic поведения в архитектуре с отдельной БД:
+- индексы и ограничения целостности;
+- техдолг по качеству данных;
+- точечные нейтральные поля при необходимости.
 
 ### 4.3 Обратная совместимость кода
 
-- На переходе все repository-методы получают `languageProfileID` параметр.
-- Внешние handler/service получают profile из config (single-profile режим).
-- Для старых мест временно оставить wrapper-методы без profile, внутри подставлять default profile.
+- Для внешнего API поддерживать legacy-поля и нейтральные alias параллельно на переходном этапе.
 
 ## 5. Стратегия изоляции данных: отдельная БД vs shared schema
 
@@ -131,56 +94,58 @@
 - проще rollback;
 - проще операционно (секреты, backup, SLO).
 
-### Когда переходить к shared schema
-
-Только если появится явная бизнес-потребность в одном инстансе с множеством языков и общими аккаунтами/аналитикой.
-
 ## 6. Кодовые доработки (декомпозиция по этапам)
 
-### Этап A. Конфигурация языкового профиля
+### Этап A. Конфигурация языковой пары
 
 1. Добавить в [`internal/config/config.go`](/Users/antonfilatov/www/my/k3s/english-ai-bot/internal/config/config.go) секцию `LearningConfig`:
-- `Profile`, `Pair`, `NativeLang`, `TargetLang`, `LanguageProfileCode`.
+- `Pair`, `NativeLang`, `TargetLang`, `AppCode`, `GrammarBundleID`.
 
 2. Добавить в `env.example` новые переменные и значения для RU->EN как дефолт.
 
-3. В startup (`cmd/bot/main.go`) загрузить/резолвить активный `language_profile_id`.
+3. В startup (`cmd/bot/main.go`) валидировать `LEARNING_PAIR` и передавать пару в сервисы.
+
+4. Покрыть изменения тестами (конфиг/валидация старта) и прогнать `make check`.
 
 Готовность:
-- приложение стартует при явном profile;
-- при отсутствии profile использует default из БД.
+- приложение стартует при корректной языковой паре;
+- при некорректной паре завершает старт с понятной ошибкой;
+- `make check` проходит полностью.
 
 ### Этап B. Репозитории и модели
 
-1. Добавить `LanguageProfileID` в модели:
+1. Добавить нейтральные alias-поля на уровне моделей/DTO и мэпперов:
 - [`internal/models/word.go`](/Users/antonfilatov/www/my/k3s/english-ai-bot/internal/models/word.go)
 - [`internal/models/training.go`](/Users/antonfilatov/www/my/k3s/english-ai-bot/internal/models/training.go)
-- [`internal/models/word_set.go`](/Users/antonfilatov/www/my/k3s/english-ai-bot/internal/models/word_set.go)
-- модели grammar progress/attempt.
+- `internal/web/*` (DTO/response mapping).
 
 2. Обновить SQL в репозиториях:
 - `word_repository`, `training_card_repository`, `word_set_*`, `grammar_*`, `tts_status_repository`.
 
-3. Везде в SELECT/INSERT/UPDATE добавить фильтрацию по `language_profile_id`.
+3. Проверить SQL-запросы на корректную работу в рамках одной БД сервиса.
+
+4. Добавить/обновить unit + integration тесты для репозиториев и прогнать `make check`.
 
 Готовность:
 - тесты репозиториев проходят;
-- невозможно прочитать чужой профиль без явного profile_id.
+- данные English и Spanish изолированы на уровне отдельных БД;
+- `make check` проходит полностью.
 
 ### Этап C. Сервисный слой и SRS
 
-1. Протащить `languageProfileID` через сервисы:
+1. Протащить `LearningConfig` через сервисы:
 - `WordService`, `TrainingService`, `WordSetService`, `GrammarService`, `PronunciationService`.
 
 2. Сохранить текущую SRS механику без изменения алгоритма; меняется только scope данных.
 
-3. Для TTS-кеша в БД и файловой системе добавить профилирование:
-- БД: `language_profile_id`;
-- файлы: подпапка `/app/data/tts/<profile>/...`.
+3. Для TTS-кеша оставить изоляцию на уровне отдельного PVC/namespace сервиса.
+
+4. Добавить/обновить unit + integration + regression тесты сервисного слоя и прогнать `make check`.
 
 Готовность:
 - SRS поведение на English не меняется;
-- Spanish не видит английский кэш/карточки.
+- Spanish не видит английский кэш/карточки;
+- `make check` проходит полностью.
 
 ### Этап D. AI prompt abstraction
 
@@ -197,8 +162,11 @@
 - логические ключи нейтральные (`word_target`, `word_native`) в коде;
 - на wire можно временно поддерживать старые alias для совместимости.
 
+4. Добавить тесты парсинга/валидации ответов LLM для RU->EN и RU->ES, затем прогнать `make check`.
+
 Готовность:
-- один и тот же движок генерирует карточки и для EN, и для ES.
+- один и тот же движок генерирует карточки и для EN, и для ES;
+- `make check` проходит полностью.
 
 ### Этап E. Grammar bundle routing
 
@@ -206,50 +174,38 @@
 - `internal/grammarbundle/en/...`
 - `internal/grammarbundle/es/...`
 
-2. В `GrammarContentRepository` добавить загрузку bundle по profile/config.
+2. В `GrammarContentRepository` добавить загрузку bundle по `GRAMMAR_BUNDLE_ID`/config.
 
 3. Создать пустой/частичный испанский курс с тем же API-форматом chapter schema.
 
+4. Добавить тесты выбора bundle/контента и прогнать `make check`.
+
 Готовность:
 - English продолжает читать старый bundle;
-- Spanish читает свой bundle (пусть даже сначала неполный).
+- Spanish читает свой bundle (пусть даже сначала неполный);
+- `make check` проходит полностью.
 
 ### Этап F. API/UI контракт
 
 1. Во внутренних DTO перейти на neutral naming.
 2. В webapp оставить обратную совместимость на период миграции.
 3. В отображении названий и подсказок использовать `target_lang` (не hardcoded English).
+4. Добавить/обновить unit + e2e/web regression тесты и прогнать `make check`.
+
+Готовность:
+- API сохраняет backward compatibility;
+- UI корректно отображает целевой язык;
+- `make check` проходит полностью.
 
 ## 7. Загрузка испанских наборов слов и грамматики
 
-### 7.1 Наборы слов (top lists)
-
-Рекомендуемая структура источников в git:
-- `data/wordsets/es/nouns_top_2000.txt`
-- `data/wordsets/es/verbs_top_500.txt`
-- `data/wordsets/es/adjectives_top_500.txt`
-- `data/wordsets/es/adverbs_top_500.txt`
-- `data/wordsets/es/pronouns_top_500.txt`
-
-Добавить CLI импортер (`cmd/import_word_sets`) с параметрами:
-- `--profile spanish`
-- `--category "Nouns"`
-- `--set "Top 2000 Nouns"`
-- `--file data/wordsets/es/nouns_top_2000.txt`
-- `--preferred-pos noun`
-
-Импортер должен:
-1. создать/обновить category;
-2. создать/обновить word set;
-3. загрузить слова через `ProcessWordSetItems`;
-4. опционально запустить prewarm training cards.
-
-### 7.2 Грамматика
+### 7.1 Грамматика
 
 1. Создать `courses/spanish-grammar` по аналогии с `courses/english-grammar`.
 2. Сохранить schema-формат chapter JSON.
 3. Добавить скрипт сборки bundle для `es`.
 4. Публикацию разделов/глав оставить через существующий админ publish-механизм.
+5. Сам курс пока в демо режиме создать с 2-3 главами
 
 ## 8. CI/CD и репозиторий (одна кодовая база)
 
@@ -278,9 +234,9 @@
 - PVC имена с префиксом `spanish-*`
 3. В `apps/spanish/base/configmap.yaml` задать:
 - `WEBAPP_PUBLIC_URL=https://<spanish-domain>`
-- `LEARNING_PROFILE=spanish`
 - `LEARNING_NATIVE_LANG=ru`
 - `LEARNING_TARGET_LANG=es`
+- `LEARNING_PAIR=ru-es`
 - `AI_PROMPT_FILE=prompts/teacher-ru-es.txt`
 - `TRAINING_PROMPT_FILE=prompts/training-card-ru-es.txt`
 - `TTS_DICTIONARY_BASE_URL` для испанского словаря/источника.
@@ -347,25 +303,24 @@ Smoke checks:
 
 Обязательно:
 - `make check` в `english-ai-bot`.
-- интеграционные тесты для profile-scoped SQL (изоляция EN и ES).
+- интеграционные тесты для изоляции EN и ES через отдельные БД/окружения.
 - regression тесты SRS на English (идентичные метрики до/после).
 - contract тесты LLM JSON parser для RU->ES.
 - e2e smoke в отдельном namespace.
 
 ## 11. Порядок внедрения (рекомендуемый roadmap)
 
-1. Ветка 1: `feature/multilang-config-and-profile`.
-2. Ветка 2: `feature/db-profile-migrations`.
-3. Ветка 3: `feature/repository-profile-scope`.
-4. Ветка 4: `feature/prompts-ru-es-and-grammar-routing`.
-5. Ветка 5: `feature/devops-spanish-app`.
+1. Ветка 1: `feature/multilang-config-and-pair`.
+2. Ветка 2: `feature/domain-dto-neutralization`.
+3. Ветка 3: `feature/prompts-ru-es-and-grammar-routing`.
+4. Ветка 4: `feature/devops-spanish-app`.
 6. Staging rollout Spanish.
 7. Prod rollout Spanish (canary 1 день, потом full).
 
 ## 12. Риски и меры
 
 - Риск: смешивание EN/ES данных.
-  - Мера: обязательный `language_profile_id` + composite uniques + integration tests.
+  - Мера: отдельные БД/namespace/secrets + integration tests на изоляцию окружений.
 
 - Риск: просадка качества карточек для ES.
   - Мера: отдельные prompt templates и golden tests на 100-200 слов.
@@ -385,9 +340,9 @@ Smoke checks:
 
 ## 14. Краткий executable checklist
 
-1. Добавить `LearningConfig` и profile resolution.
-2. Внедрить SQL migration runner + `language_profiles`.
-3. Протащить `language_profile_id` по репозиториям/сервисам.
+1. Добавить `LearningConfig` и pair resolution.
+2. Внедрить SQL migration runner.
+3. Протащить `LearningConfig` по репозиториям/сервисам.
 4. Вынести prompt templates под RU->ES.
 5. Добавить Spanish word sets import pipeline.
 6. Подготовить Spanish grammar bundle routing.
