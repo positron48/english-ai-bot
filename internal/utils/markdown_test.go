@@ -255,6 +255,29 @@ func TestRenderWordCardMarkdown_NoDefinitionNoPOSNoTranscription(t *testing.T) {
 	}
 }
 
+func TestRenderWordCardMarkdownForTarget_SpanishVerbLabels(t *testing.T) {
+	pos := "verb"
+	defRU := "говорить"
+	hablar := "hablar"
+	card := &models.WordCard{
+		Word:         "hablar",
+		POS:          &pos,
+		DefinitionRU: &defRU,
+		DisplayEN:    &hablar,
+	}
+	vf := &models.WordInfoVerbForms{
+		V1: "hablar", V2: "hablé", V3: "hablado",
+		Gerund: "hablando", ThirdPerson: "habla",
+	}
+	result := RenderWordCardMarkdownForTarget(card, nil, vf, "es")
+	if !strings.Contains(result, "Формы глагола") {
+		t.Errorf("expected Spanish section header, got %q", result)
+	}
+	if !strings.Contains(result, "Инфинитив: hablar") || !strings.Contains(result, "Gerundio: hablando") {
+		t.Errorf("expected Spanish labels: %q", result)
+	}
+}
+
 func TestRenderWordCardMarkdown_VerbFormsOnlyV1(t *testing.T) {
 	pos := "verb"
 	defRU := "идти"

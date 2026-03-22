@@ -36,6 +36,7 @@ type harnessConfig struct {
 	aiServiceURL string
 	aiAPIKey     string
 	aiPrompt     string
+	learning     config.LearningConfig
 }
 
 // WithAIService sets AI service URL (for mock or real). If empty, a no-op mock is used.
@@ -47,6 +48,13 @@ func WithAIService(baseURL, apiKey, prompt string) HarnessOpt {
 	}
 }
 
+// WithLearning sets LEARNING_* / grammar bundle profile for the harness (default: RU→EN / bundle en).
+func WithLearning(lc config.LearningConfig) HarnessOpt {
+	return func(c *harnessConfig) {
+		c.learning = lc
+	}
+}
+
 // NewHarness creates a test harness with Postgres and full app router
 func NewHarness(t *testing.T, opts ...HarnessOpt) *Harness {
 	t.Helper()
@@ -55,13 +63,14 @@ func NewHarness(t *testing.T, opts ...HarnessOpt) *Harness {
 	t.Cleanup(cleanup)
 
 	logger := zap.NewNop()
-	cfg := &harnessConfig{
+	hc := &harnessConfig{
 		aiServiceURL: "http://localhost:9999", // placeholder, won't be called if wordService not used
 		aiAPIKey:     "test-key",
 		aiPrompt:     "You are a test assistant.",
+		learning:     config.DefaultLearningConfig(),
 	}
 	for _, o := range opts {
-		o(cfg)
+		o(hc)
 	}
 
 	var db *database.DB
@@ -90,7 +99,7 @@ func NewHarness(t *testing.T, opts ...HarnessOpt) *Harness {
 	sessionRepo := repository.NewSessionRepository(conn, logger)
 	cbRepo := repository.NewCircuitBreakerRepository(conn, logger)
 	otpRepo := repository.NewWebOTPRepository(conn, logger)
-	grammarContentRepo, err := repository.NewGrammarContentRepositoryForLearning(config.DefaultLearningConfig(), logger)
+	grammarContentRepo, err := repository.NewGrammarContentRepositoryForLearning(hc.learning, logger)
 	if err != nil {
 		t.Fatalf("grammar content repo: %v", err)
 	}
@@ -98,15 +107,16 @@ func NewHarness(t *testing.T, opts ...HarnessOpt) *Harness {
 	grammarAttemptRepo := repository.NewGrammarAttemptRepository(conn, logger)
 
 	// Services
-	aiService := ai.NewService(cfg.aiServiceURL, "test-model", cfg.aiAPIKey, cfg.aiPrompt, logger)
-	wordService := service.NewWordService(wordRepo, trainingCardRepo, userCardRepo, aiService, config.DefaultLearningConfig(), logger)
-	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
-	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
+	aiService := ai.NewService(hc.aiServiceURL, "test-model", hc.aiAPIKey, hc.aiPrompt, logger)
+	wordService := service.NewWordService(wordRepo, trainingCardRepo, userCardRepo, aiService, hc.learning, logger)
+	srsService := service.NewSRSService(userCardRepo, hc.learning, logger)
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, hc.learning, logger)
 	optionsService := service.NewOptionsService(trainingCardRepo, logger)
 	cbService := service.NewCircuitBreakerService(cbRepo, 5, logger)
-	grammarService := service.NewGrammarService(grammarContentRepo, grammarPublishRepo, grammarAttemptRepo, config.DefaultLearningConfig(), logger)
+	grammarService := service.NewGrammarService(grammarContentRepo, grammarPublishRepo, grammarAttemptRepo, hc.learning, logger)
 
 	appCfg := testConfig()
+	appCfg.Learning = hc.learning
 	router := web.NewRouter(logger, appCfg, conn, trainingService, srsService, optionsService, cbService)
 	router.SetDependencies(userRepo, wordService, aiService, nil, "test-bot-token")
 	router.SetOTPRepo(otpRepo)

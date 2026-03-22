@@ -39,10 +39,10 @@ Return ONLY this JSON object (no markdown, no comments):
   "lemma": string,
   "pos": string,
   "transcription": string,
-  "definition_ru": string,
+  "definition_native": string,
   "examples": [
-    { "example_en": string, "gloss_ru": string },
-    { "example_en": string, "gloss_ru": string }
+    { "example_target": string, "gloss_native": string },
+    { "example_target": string, "gloss_native": string }
   ],
   "verb_forms": {
     "v1": string,
@@ -53,6 +53,9 @@ Return ONLY this JSON object (no markdown, no comments):
   }
 }
 
+(The server also accepts legacy keys: "definition_ru" instead of "definition_native";
+"example_en" / "gloss_ru" instead of "example_target" / "gloss_native" inside each example.)
+
 -------------------------------------------------
 Dictionary logic
 -------------------------------------------------
@@ -62,7 +65,7 @@ Dictionary logic
 Critical consistency rule (MUST FOLLOW):
 - If you can provide ANY plausible definition/translation (even a very general one), then the word is NOT nonsense for this task:
   - You MUST set "error" = false
-  - You MUST fill the required fields (lemma/pos/transcription/definition_ru/examples)
+  - You MUST fill the required fields (lemma/pos/transcription/definition_native/examples)
 - NEVER set "error" = true while also saying in "hint" that the word likely exists or giving a plausible translation/meaning.
 
 Short-word safeguard (IMPORTANT):
@@ -84,7 +87,7 @@ Set error = true only if:
 - and token looks non-English or random.
 
 When error = false:
-- lemma/pos/transcription/definition_ru → non-empty.
+- lemma/pos/transcription/definition_native → non-empty.
 - examples → 2 or 3 items.
 - hint = "".
 - include verb_forms only if pos = verb.
@@ -107,8 +110,8 @@ Special morphological fallback examples
 - Word length is NEVER a reason to set error=true. Short English words are common.
 
 When error = false:
-- The following fields MUST be NON-EMPTY strings: lemma, pos, transcription, definition_ru.
-- "examples" MUST contain 2–3 items (2 is acceptable), each with non-empty example_en and gloss_ru.
+- The following fields MUST be NON-EMPTY strings: lemma, pos, transcription, definition_native.
+- "examples" MUST contain 2–3 items (2 is acceptable), each with non-empty example_target (English sentence) and gloss_native (Russian gloss).
 - "hint" MUST be an empty string "".
 - If pos is NOT "verb": you MAY omit "verb_forms" entirely, OR you MAY output an EMPTY object: "verb_forms": {}.
   - If you output "verb_forms" for a non-verb, it MUST be {} (no v1/v2/v3/etc).
@@ -120,10 +123,10 @@ When error = true:
 - Suggest a correction ONLY if it is an obvious typo (1–2 letters difference and very similar).
 - "examples" MUST be an empty array [].
 - Omit "verb_forms" entirely.
-- You may leave lemma/pos/transcription/definition_ru as empty strings when error=true.
+- You may leave lemma/pos/transcription/definition_native as empty strings when error=true.
 
 JSON validation (must run internally before output):
-- If error=false, you MUST NOT output any empty required fields (lemma/pos/transcription/definition_ru) or an empty examples array.
+- If error=false, you MUST NOT output any empty required fields (lemma/pos/transcription/definition_native) or an empty examples array.
 - If validation fails, redo PASS 1 with a simpler, more general definition and clearer examples.
 - Never “fallback” to error=true just because validation failed.
 

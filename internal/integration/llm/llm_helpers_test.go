@@ -152,8 +152,10 @@ func validateWordResponseOK(t *testing.T, word string, resp map[string]interface
 	if transcription, ok := resp["transcription"].(string); !ok || transcription == "" {
 		errors = append(errors, "transcription is missing or empty")
 	}
-	if definitionRU, ok := resp["definition_ru"].(string); !ok || definitionRU == "" {
-		errors = append(errors, "definition_ru is missing or empty")
+	defRU, _ := resp["definition_ru"].(string)
+	defNat, _ := resp["definition_native"].(string)
+	if strings.TrimSpace(defRU) == "" && strings.TrimSpace(defNat) == "" {
+		errors = append(errors, "definition_ru or definition_native is missing or empty")
 	}
 
 	// Check hint is empty
@@ -183,11 +185,19 @@ func validateWordResponseOK(t *testing.T, word string, resp map[string]interface
 				errors = append(errors, fmt.Sprintf("examples[%d] is not an object", i))
 				continue
 			}
-			if exampleEN, ok := exMap["example_en"].(string); !ok || exampleEN == "" {
-				errors = append(errors, fmt.Sprintf("examples[%d].example_en is missing or empty", i))
+			exText, _ := exMap["example_target"].(string)
+			if strings.TrimSpace(exText) == "" {
+				exText, _ = exMap["example_en"].(string)
 			}
-			if glossRU, ok := exMap["gloss_ru"].(string); !ok || glossRU == "" {
-				errors = append(errors, fmt.Sprintf("examples[%d].gloss_ru is missing or empty", i))
+			if strings.TrimSpace(exText) == "" {
+				errors = append(errors, fmt.Sprintf("examples[%d].example_target (or legacy example_en) is missing or empty", i))
+			}
+			gloss, _ := exMap["gloss_native"].(string)
+			if strings.TrimSpace(gloss) == "" {
+				gloss, _ = exMap["gloss_ru"].(string)
+			}
+			if strings.TrimSpace(gloss) == "" {
+				errors = append(errors, fmt.Sprintf("examples[%d].gloss_native (or legacy gloss_ru) is missing or empty", i))
 			}
 		}
 	}

@@ -2,8 +2,7 @@ Generate ONE training card from ONE {{target_lang}} word (pair {{pair}}: {{nativ
 
 OUTPUT (STRICT)
 - Output ONLY valid JSON, nothing else.
-- Always output keys: word_target, lemma, transcription, senses, error.
-- Legacy aliases word_en, word_ru, meaning_en, example_en, example_ru are also accepted by the server.
+- Always output keys: word_target, lemma, transcription, senses, error — use only the names from SCHEMA below (neutral keys).
 - If accepted: error="".
 - If rejected: senses=[] and error is non-empty.
 
@@ -15,7 +14,7 @@ REJECTION
 SCHEMA (MUST MATCH)
 {
  "word_target":"", "lemma":"", "transcription":"",
- "senses":[{"pos":"","display_word":"","word_native":"","meaning_target":"","example_target":"","example_native":"","distractors_ru":["","",""],"distractors_en":["","",""],"hint":""}],
+ "senses":[{"pos":"","display_word":"","word_native":"","meaning_target":"","example_target":"","example_native":"","distractors_ru":["","",""],"distractors_target":["","",""],"hint":""}],
  "error":""
 }
 
@@ -29,10 +28,10 @@ CARD
   - noun => noun (not a verb/adjective form)
 
 DISTRACTORS (THIS IS THE MOST IMPORTANT PART)
-- Exactly 3 Russian + 3 Spanish (JSON keys remain distractors_ru and distractors_en for compatibility).
-- distractors_ru: Cyrillic only. distractors_en: Spanish (Latin script, Spanish letters only), no Cyrillic.
+- Exactly 3 Russian + 3 Spanish items in distractors_target.
+- distractors_ru: Cyrillic only. distractors_target: Spanish (Latin script, Spanish letters only), no Cyrillic.
 - The two lists are INDEPENDENT (no index pairing).
-- NO LEAKAGE: distractors_en MUST NOT give away lemma; distractors_ru MUST NOT contain word_native as substring or exact duplicate.
+- NO LEAKAGE: distractors_target MUST NOT give away lemma; distractors_ru MUST NOT contain word_native as substring or exact duplicate.
 - Uniqueness: no duplicates in each list.
 
 FINAL SELF-CHECK (MANDATORY): if any rule fails, replace distractors until ALL pass, then output JSON.

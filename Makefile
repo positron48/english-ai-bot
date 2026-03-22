@@ -36,9 +36,9 @@ grammar-bundle:
 	@git submodule update --remote
 	@echo "✅ Grammar submodule updated"
 	@echo ""
-	@echo "Generating grammar bundle..."
-	@./scripts/generate-grammar-bundle.sh
-	@echo "✅ Grammar bundle generated"
+	@echo "Generating grammar bundles (en + es)..."
+	@./scripts/generate-grammar-bundle.sh all
+	@echo "✅ Grammar bundles generated"
 
 tag:
 	@V=$$(git describe --tags --abbrev=0 2>/dev/null | sed -E 's/^v?//' || echo "0.0.0"); \

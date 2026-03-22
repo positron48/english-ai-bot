@@ -20,7 +20,7 @@
   - `tts_generation_status.word` как PK без языкового измерения.
 - Логика word/training ориентирована на англ. леммы и RU<->EN направления: [`internal/models/word.go`](/Users/antonfilatov/www/my/k3s/english-ai-bot/internal/models/word.go), [`internal/models/training.go`](/Users/antonfilatov/www/my/k3s/english-ai-bot/internal/models/training.go), [`internal/repository/word_repository.go`](/Users/antonfilatov/www/my/k3s/english-ai-bot/internal/repository/word_repository.go), [`internal/repository/training_card_repository.go`](/Users/antonfilatov/www/my/k3s/english-ai-bot/internal/repository/training_card_repository.go).
 - Word sets уже управляются через админку/API и текстовый список слов (не hardcoded seed): [`internal/web/admin_word_sets.go`](/Users/antonfilatov/www/my/k3s/english-ai-bot/internal/web/admin_word_sets.go), [`internal/service/word_set_service.go`](/Users/antonfilatov/www/my/k3s/english-ai-bot/internal/service/word_set_service.go).
-- Грамматика уже частично универсальна на уровне контента (`ui_language`, `target_language`), но bundle в проекте сейчас английский: [`internal/repository/grammar_content_repository.go`](/Users/antonfilatov/www/my/k3s/english-ai-bot/internal/repository/grammar_content_repository.go), [`internal/grammarbundle/index.json`](/Users/antonfilatov/www/my/k3s/english-ai-bot/internal/grammarbundle/index.json).
+- Грамматика универсальна на уровне контента (`ui_language`, `target_language`); встроенные bundle лежат по языкам: [`internal/grammarbundle/en/`](/Users/antonfilatov/www/my/k3s/english-ai-bot/internal/grammarbundle/en/), [`internal/grammarbundle/es/`](/Users/antonfilatov/www/my/k3s/english-ai-bot/internal/grammarbundle/es/); выбор через `GRAMMAR_BUNDLE_ID` / [`GrammarContentRepository`](/Users/antonfilatov/www/my/k3s/english-ai-bot/internal/repository/grammar_content_repository.go).
 - В k3s уже есть рабочий паттерн для `english`: [`devops-time-host/apps/english/base/deployment.yaml`](/Users/antonfilatov/www/my/k3s/devops-time-host/apps/english/base/deployment.yaml), [`devops-time-host/clusters/prod/infra/image-automation/english-image.yaml`](/Users/antonfilatov/www/my/k3s/devops-time-host/clusters/prod/infra/image-automation/english-image.yaml).
 
 ## 2. Архитектурное решение для multi-language
@@ -62,7 +62,7 @@
 
 ## 4. Стратегия миграций (backward-compatible)
 
-Так как сейчас миграции в `migratePostgres()` (idempotent `CREATE TABLE IF NOT EXISTS`), нужно перейти к versioned SQL migration runner.
+Базовая схема по-прежнему поднимается в `migratePostgres()` (idempotent `CREATE TABLE IF NOT EXISTS`); поверх этого включён versioned SQL migration runner (таблица `schema_migrations`, файлы `internal/database/migrations/*.sql`). Дальнейшие DDL — отдельными пронумерованными SQL-файлами.
 
 ### 4.1 Шаги внедрения мигратора
 
@@ -164,6 +164,8 @@
 
 4. Добавить тесты парсинга/валидации ответов LLM для RU->EN и RU->ES, затем прогнать `make check`.
 
+Промпты `prompts/teacher-*.txt` и `prompts/training-card-*.txt` задают **нейтральные** ключи в JSON (`definition_native`, `example_target`, `gloss_native`, `distractors_target` и т.д.); сервер по-прежнему принимает старые имена (`definition_ru`, `example_en`, `distractors_en`) как alias.
+
 Готовность:
 - один и тот же движок генерирует карточки и для EN, и для ES;
 - `make check` проходит полностью.
@@ -201,24 +203,21 @@
 
 ### 7.1 Грамматика
 
-1. Создать `courses/spanish-grammar` по аналогии с `courses/english-grammar`.
-2. Сохранить schema-формат chapter JSON.
-3. Добавить скрипт сборки bundle для `es`.
-4. Публикацию разделов/глав оставить через существующий админ publish-механизм.
-5. Сам курс пока в демо режиме создать с 2-3 главами
+1. Конвейер авторинга: [`courses/spanish-grammar/`](/Users/antonfilatov/www/my/k3s/english-ai-bot/courses/spanish-grammar/) (Makefile, `scripts/`, `chapters/`, `config/generation-status.json`) — зеркально english-grammar. Сборка во встроенный bundle: из корня репо `./scripts/generate-grammar-bundle.sh es` или `... all` (обновляет `internal/grammarbundle/es/`).
+2. Сохранить schema-формат chapter JSON (общий `02-chapter-schema.json`).
+3. Публикацию разделов/глав — через существующий админ publish-механизм.
+4. Расширять контент: новые главы в `courses/spanish-grammar/chapters/`, затем `generate-grammar-bundle.sh es`.
 
 ## 8. CI/CD и репозиторий (одна кодовая база)
 
 Текущий workflow: [`english-ai-bot/.github/workflows/ci.yml`](/Users/antonfilatov/www/my/k3s/english-ai-bot/.github/workflows/ci.yml).
 
-Что сделать:
-1. Перейти с жесткого `IMAGE_NAME=.../english` на matrix/parameterized image target:
-- `ghcr.io/<owner>/english`
-- `ghcr.io/<owner>/spanish`
+В репозитории `english-ai-bot`: job сборки Docker-образа в [`.github/workflows/ci.yml`](/Users/antonfilatov/www/my/k3s/english-ai-bot/.github/workflows/ci.yml) использует **matrix** `english` / `spanish` (один Dockerfile, два имени образа в GHCR на push tag).
 
-2. Для Spanish использовать тот же Dockerfile, но разные runtime env в k8s.
+Дальше по инфраструктуре:
+1. Для Spanish использовать тот же образ, но разные runtime env в k8s.
 
-3. Для Flux image automation добавить отдельные ресурсы `spanish-image.yaml`.
+2. Для Flux image automation в `devops-time-host` добавить отдельные ресурсы `spanish-image.yaml` (см. §9.2).
 
 ## 9. Пошаговый план запуска Spanish в k3s
 
@@ -314,8 +313,8 @@ Smoke checks:
 2. Ветка 2: `feature/domain-dto-neutralization`.
 3. Ветка 3: `feature/prompts-ru-es-and-grammar-routing`.
 4. Ветка 4: `feature/devops-spanish-app`.
-6. Staging rollout Spanish.
-7. Prod rollout Spanish (canary 1 день, потом full).
+5. Staging rollout Spanish.
+6. Prod rollout Spanish (canary 1 день, потом full).
 
 ## 12. Риски и меры
 
@@ -340,13 +339,17 @@ Smoke checks:
 
 ## 14. Краткий executable checklist
 
-1. Добавить `LearningConfig` и pair resolution.
-2. Внедрить SQL migration runner.
-3. Протащить `LearningConfig` по репозиториям/сервисам.
-4. Вынести prompt templates под RU->ES.
-5. Добавить Spanish word sets import pipeline.
-6. Подготовить Spanish grammar bundle routing.
-7. Настроить CI image targets (`english` + `spanish`).
+Состояние на уровне **кода в `english-ai-bot`** (без k3s): пункты 1–4, 6–7 ниже закрыты в репозитории; пункт 5 (отдельный import pipeline для испанских word sets) и расширение контента §7 — по необходимости продуктом.
+
+Остаётся **инфраструктура** (обычно `devops-time-host`): п. 8–10, плюс Flux/секреты из §8–9.
+
+1. Добавить `LearningConfig` и pair resolution. — **сделано**
+2. Внедрить SQL migration runner (baseline + `migrations/*.sql`). — **сделано**
+3. Протащить `LearningConfig` по репозиториям/сервисам. — **сделано**
+4. Вынести prompt templates под RU->ES (и нейтральные JSON-ключи). — **сделано**
+5. Добавить Spanish word sets import pipeline (при необходимости массового импорта).
+6. Подготовить Spanish grammar bundle routing (`internal/grammarbundle/es`). — **сделано** (MVP; полный конвейер `courses/spanish-grammar` — см. §7)
+7. Настроить CI image targets (`english` + `spanish`). — **сделано** (matrix в CI репозитория)
 8. Создать `apps/spanish` + `spanish-image.yaml` в GitOps.
 9. Применить k8s secrets для Spanish.
 10. Выполнить rollout + smoke + наблюдение.

@@ -277,7 +277,12 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 
 	displayEN := lemma
 	if wordInfo.POS == "verb" && wordInfo.VerbForms != nil && wordInfo.VerbForms.V1 != "" {
-		displayEN = "to " + wordInfo.VerbForms.V1
+		if strings.EqualFold(s.learning.TargetLang, "en") {
+			displayEN = "to " + wordInfo.VerbForms.V1
+		} else {
+			// Spanish and other targets: infinitive without English "to " prefix
+			displayEN = wordInfo.VerbForms.V1
+		}
 	}
 
 	wordCard = &models.WordCard{
@@ -376,7 +381,7 @@ func (s *WordService) renderWordCardMarkdown(card *models.WordCard) string {
 		}
 	}
 
-	return utils.RenderWordCardMarkdown(card, examples, verbForms)
+	return utils.RenderWordCardMarkdownForTarget(card, examples, verbForms, s.learning.TargetLang)
 }
 
 func min(a, b int) int {

@@ -327,8 +327,19 @@ func convertLinksToHTML(text string) string {
 	return text
 }
 
-// RenderWordCardMarkdown renders a markdown vocabulary card from structured WordCard data
+// RenderWordCardMarkdown renders a markdown vocabulary card for English target (legacy default).
 func RenderWordCardMarkdown(card *models.WordCard, examples []models.WordInfoExample, verbForms *models.WordInfoVerbForms) string {
+	return RenderWordCardMarkdownForTarget(card, examples, verbForms, "en")
+}
+
+// RenderWordCardMarkdownForTarget renders a vocabulary card; targetLang drives verb-form labels (e.g. es vs en).
+// JSON keys in WordInfoVerbForms stay the same for all languages; semantics for Spanish are documented in prompts/teacher-ru-es.txt.
+func RenderWordCardMarkdownForTarget(card *models.WordCard, examples []models.WordInfoExample, verbForms *models.WordInfoVerbForms, targetLang string) string {
+	tl := strings.ToLower(strings.TrimSpace(targetLang))
+	if tl == "" {
+		tl = "en"
+	}
+
 	var parts []string
 
 	displayWord := card.Word
@@ -357,30 +368,56 @@ func RenderWordCardMarkdown(card *models.WordCard, examples []models.WordInfoExa
 
 	parts = append(parts, "")
 
-	// Verb forms (if verb)
+	// Verb forms (if verb): same JSON slots as English; labels depend on targetLang
 	if verbForms != nil && verbForms.V1 != "" {
-		parts = append(parts, "**Verb Forms:**")
-		parts = append(parts, "- V1 (Base): "+verbForms.V1)
-		if verbForms.V2 != "" {
-			parts = append(parts, "- V2 (Past Simple): "+verbForms.V2)
-		}
-		if verbForms.V3 != "" {
-			parts = append(parts, "- V3 (Past Participle): "+verbForms.V3)
-		}
-		if verbForms.Gerund != "" {
-			parts = append(parts, "- Gerund: "+verbForms.Gerund)
-		}
-		if verbForms.ThirdPerson != "" {
-			parts = append(parts, "- Third Person: "+verbForms.ThirdPerson)
+		switch tl {
+		case "es":
+			parts = append(parts, "**Формы глагола:**")
+			parts = append(parts, "- Инфинитив: "+verbForms.V1)
+			if verbForms.V2 != "" {
+				parts = append(parts, "- Pretérito: "+verbForms.V2)
+			}
+			if verbForms.V3 != "" {
+				parts = append(parts, "- Participio pasado: "+verbForms.V3)
+			}
+			if verbForms.Gerund != "" {
+				parts = append(parts, "- Gerundio: "+verbForms.Gerund)
+			}
+			if verbForms.ThirdPerson != "" {
+				parts = append(parts, "- Presente (3-е лицо ед.): "+verbForms.ThirdPerson)
+			}
+		default:
+			parts = append(parts, "**Verb Forms:**")
+			parts = append(parts, "- V1 (Base): "+verbForms.V1)
+			if verbForms.V2 != "" {
+				parts = append(parts, "- V2 (Past Simple): "+verbForms.V2)
+			}
+			if verbForms.V3 != "" {
+				parts = append(parts, "- V3 (Past Participle): "+verbForms.V3)
+			}
+			if verbForms.Gerund != "" {
+				parts = append(parts, "- Gerund: "+verbForms.Gerund)
+			}
+			if verbForms.ThirdPerson != "" {
+				parts = append(parts, "- Third Person: "+verbForms.ThirdPerson)
+			}
 		}
 		parts = append(parts, "")
 	}
 
-	// Examples
+	// Examples (ExampleEN holds target-language sentence after sync)
 	if len(examples) > 0 {
 		parts = append(parts, "**Examples:**")
 		for _, ex := range examples {
-			parts = append(parts, "- "+ex.ExampleEN+" ("+ex.GlossRU+")")
+			sent := ex.ExampleEN
+			if ex.ExampleTarget != "" {
+				sent = ex.ExampleTarget
+			}
+			gl := ex.GlossRU
+			if ex.GlossNative != "" {
+				gl = ex.GlossNative
+			}
+			parts = append(parts, "- "+sent+" ("+gl+")")
 		}
 		parts = append(parts, "")
 	}

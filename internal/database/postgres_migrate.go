@@ -249,6 +249,10 @@ func (db *DB) migratePostgres() error {
 		)`,
 		`CREATE INDEX IF NOT EXISTS idx_tts_generation_status_state ON tts_generation_status(state)`,
 		`CREATE INDEX IF NOT EXISTS idx_tts_generation_status_updated_at ON tts_generation_status(updated_at)`,
+		`CREATE TABLE IF NOT EXISTS schema_migrations (
+			version TEXT PRIMARY KEY,
+			applied_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+		)`,
 		`CREATE TABLE IF NOT EXISTS user_access_categories (
 			id BIGSERIAL PRIMARY KEY,
 			name TEXT NOT NULL UNIQUE,
@@ -274,6 +278,10 @@ func (db *DB) migratePostgres() error {
 		if _, err := db.conn.Exec(query); err != nil {
 			return fmt.Errorf("failed to execute postgres migration: %w", err)
 		}
+	}
+
+	if err := runEmbeddedSQLMigrations(db); err != nil {
+		return fmt.Errorf("failed to run sql file migrations: %w", err)
 	}
 
 	db.logger.Info("postgres database migration completed successfully")

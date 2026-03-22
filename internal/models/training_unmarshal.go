@@ -39,21 +39,23 @@ func (r *TrainingCardResponse) UnmarshalJSON(data []byte) error {
 }
 
 // UnmarshalJSON accepts neutral keys and legacy wire aliases for one training-card sense.
+// distractors_target fills the same slice as distractors_en (target-language distractors); if both are present, distractors_target wins.
 func (s *TrainingCardSense) UnmarshalJSON(data []byte) error {
 	type wire struct {
-		POS           string   `json:"pos"`
-		DisplayWord   string   `json:"display_word"`
-		WordRU        string   `json:"word_ru"`
-		WordNative    string   `json:"word_native"`
-		MeaningEN     string   `json:"meaning_en"`
-		MeaningTarget string   `json:"meaning_target"`
-		ExampleEN     string   `json:"example_en"`
-		ExampleTarget string   `json:"example_target"`
-		ExampleRU     string   `json:"example_ru"`
-		ExampleNative string   `json:"example_native"`
-		DistractorsRU []string `json:"distractors_ru"`
-		DistractorsEN []string `json:"distractors_en"`
-		Hint          string   `json:"hint"`
+		POS               string   `json:"pos"`
+		DisplayWord       string   `json:"display_word"`
+		WordRU            string   `json:"word_ru"`
+		WordNative        string   `json:"word_native"`
+		MeaningEN         string   `json:"meaning_en"`
+		MeaningTarget     string   `json:"meaning_target"`
+		ExampleEN         string   `json:"example_en"`
+		ExampleTarget     string   `json:"example_target"`
+		ExampleRU         string   `json:"example_ru"`
+		ExampleNative     string   `json:"example_native"`
+		DistractorsRU     []string `json:"distractors_ru"`
+		DistractorsEN     []string `json:"distractors_en"`
+		DistractorsTarget []string `json:"distractors_target"`
+		Hint              string   `json:"hint"`
 	}
 	var w wire
 	if err := json.Unmarshal(data, &w); err != nil {
@@ -70,7 +72,11 @@ func (s *TrainingCardSense) UnmarshalJSON(data []byte) error {
 	s.ExampleRU = firstNonEmpty(w.ExampleRU, w.ExampleNative)
 	s.ExampleNative = firstNonEmpty(w.ExampleNative, w.ExampleRU)
 	s.DistractorsRU = w.DistractorsRU
-	s.DistractorsEN = w.DistractorsEN
+	if len(w.DistractorsTarget) > 0 {
+		s.DistractorsEN = w.DistractorsTarget
+	} else {
+		s.DistractorsEN = w.DistractorsEN
+	}
 	s.Hint = w.Hint
 	SyncTrainingCardSenseNeutralAliases(s)
 	return nil

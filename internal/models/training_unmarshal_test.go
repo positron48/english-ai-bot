@@ -49,3 +49,18 @@ func TestTrainingCardResponse_UnmarshalJSON_legacyOnly(t *testing.T) {
 		t.Fatalf("WordTarget=%q", r.WordTarget)
 	}
 }
+
+func TestTrainingCardResponse_UnmarshalJSON_distractorsTarget(t *testing.T) {
+	const payload = `{"word_target":"casa","lemma":"casa","transcription":"","senses":[{"pos":"noun","word_native":"дом","meaning_target":"house","example_target":"","example_native":"","distractors_ru":["а","б","в"],"distractors_target":["mesa","agua","luz"],"hint":""}],"error":""}`
+	var r TrainingCardResponse
+	if err := json.Unmarshal([]byte(payload), &r); err != nil {
+		t.Fatalf("unmarshal: %v", err)
+	}
+	if len(r.Senses) != 1 {
+		t.Fatalf("senses: %d", len(r.Senses))
+	}
+	got := r.Senses[0].DistractorsEN
+	if len(got) != 3 || got[0] != "mesa" {
+		t.Fatalf("DistractorsEN from distractors_target: %#v", got)
+	}
+}

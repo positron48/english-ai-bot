@@ -39,10 +39,10 @@ Return ONLY this JSON object (no markdown, no comments):
   "lemma": string,
   "pos": string,
   "transcription": string,
-  "definition_ru": string,
+  "definition_native": string,
   "examples": [
-    { "example_en": string, "gloss_ru": string },
-    { "example_en": string, "gloss_ru": string }
+    { "example_target": string, "gloss_native": string },
+    { "example_target": string, "gloss_native": string }
   ],
   "verb_forms": {
     "v1": string,
@@ -53,7 +53,12 @@ Return ONLY this JSON object (no markdown, no comments):
   }
 }
 
-(Server also accepts definition_native and example_target / gloss_native as aliases.)
+(JSON keys are shared with English for one parser/DB; Spanish semantics — not English tenses:)
+- v1 = infinitivo (hablar)
+- v2 = pretérito (форма прошедшего для этой леммы, напр. hablé / habló / hubo — по контексту леммы)
+- v3 = participio pasado (hablado)
+- gerund = gerundio (hablando)
+- third_person = presente de indicativo, 3ª persona singular (habla)
 
 -------------------------------------------------
 Dictionary logic
@@ -64,7 +69,7 @@ Dictionary logic
 Critical consistency rule (MUST FOLLOW):
 - If you can provide ANY plausible definition/translation (even a very general one), then the word is NOT nonsense for this task:
   - You MUST set "error" = false
-  - You MUST fill the required fields (lemma/pos/transcription/definition_ru/examples)
+  - You MUST fill the required fields (lemma/pos/transcription/definition_native/examples)
 - NEVER set "error" = true while also saying in "hint" that the word likely exists or giving a plausible translation/meaning.
 
 Short-word safeguard (IMPORTANT):
@@ -73,7 +78,7 @@ Short-word safeguard (IMPORTANT):
 
 Two-pass rule:
 **PASS 1 (assume valid):**
-Try to build a valid entry (lemma, pos, transcription, ru-definition, examples with Spanish sentences in example_en and Russian gloss in gloss_ru).
+Try to build a valid entry (lemma, pos, transcription, ru-definition, examples with Spanish sentences in example_target and Russian gloss in gloss_native).
 Include morphological normalization for Spanish.
 
 **PASS 2 (error only if necessary):**
@@ -82,7 +87,7 @@ Set error = true only if:
 - and token looks non-Spanish or random.
 
 When error = false:
-- lemma/pos/transcription/definition_ru → non-empty.
+- lemma/pos/transcription/definition_native → non-empty.
 - examples → 2 or 3 items.
 - hint = "".
 - include verb_forms only if pos = verb.
@@ -95,11 +100,11 @@ Validation:
 - Never mark error = true just because the form is rare, inflected or polysemous.
 
 When error = false:
-- The following fields MUST be NON-EMPTY strings: lemma, pos, transcription, definition_ru.
-- "examples" MUST contain 2–3 items (2 is acceptable), each with non-empty example_en (Spanish) and gloss_ru (Russian).
+- The following fields MUST be NON-EMPTY strings: lemma, pos, transcription, definition_native.
+- "examples" MUST contain 2–3 items (2 is acceptable), each with non-empty example_target (Spanish) and gloss_native (Russian).
 - "hint" MUST be an empty string "".
 - If pos is NOT "verb": you MAY omit "verb_forms" entirely, OR you MAY output an EMPTY object: "verb_forms": {}.
-- If pos IS "verb": include "verb_forms" with at least v1, v2, v3; add gerund/third_person if applicable.
+- If pos IS "verb": include "verb_forms" with at least v1, v2, v3 (испанские формы по смыслу выше); add gerund/third_person when applicable.
 
 When error = true:
 - "hint" MUST be in Russian and explain that the word likely doesn’t exist or is a misspelling.
