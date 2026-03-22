@@ -176,7 +176,10 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 	otpRepo := repository.NewWebOTPRepository(conn, log)
 
 	// Create grammar repositories and service
-	grammarContentRepo := repository.NewGrammarContentRepository(log)
+	grammarContentRepo, err := repository.NewGrammarContentRepositoryForLearning(cfg.Learning, log)
+	if err != nil {
+		return nil, fmt.Errorf("grammar content repository: %w", err)
+	}
 	grammarPublishRepo := repository.NewGrammarPublishRepository(conn, log)
 	grammarAttemptRepo := repository.NewGrammarAttemptRepository(conn, log)
 	grammarService := service.NewGrammarService(

@@ -14,6 +14,7 @@ func backupLearningEnv() map[string]string {
 		"LEARNING_TARGET_LANG",
 		"LEARNING_APP_CODE",
 		"GRAMMAR_BUNDLE_ID",
+		"GRAMMAR_BUNDLE_DIR",
 	}
 	m := make(map[string]string, len(keys))
 	for _, k := range keys {
@@ -39,6 +40,7 @@ func unsetLearningEnvForDefaults() {
 		"LEARNING_TARGET_LANG",
 		"LEARNING_APP_CODE",
 		"GRAMMAR_BUNDLE_ID",
+		"GRAMMAR_BUNDLE_DIR",
 	} {
 		os.Unsetenv(k)
 	}
@@ -892,5 +894,90 @@ func TestLoad_WhitespaceOnlyGrammarBundleID(t *testing.T) {
 	}
 	if !strings.Contains(err.Error(), "learning config") || !strings.Contains(err.Error(), "GRAMMAR_BUNDLE_ID") {
 		t.Fatalf("expected GRAMMAR_BUNDLE_ID validation error, got %v", err)
+	}
+}
+
+func TestLoad_InvalidEmbeddedGrammarBundleID(t *testing.T) {
+	learningEnv := backupLearningEnv()
+	originalEnv := map[string]string{
+		"AI_URL":               os.Getenv("AI_URL"),
+		"AI_API_KEY":           os.Getenv("AI_API_KEY"),
+		"AI_PROMPT":            os.Getenv("AI_PROMPT"),
+		"AI_PROMPT_FILE":       os.Getenv("AI_PROMPT_FILE"),
+		"WEBAPP_JWT_SECRET":    os.Getenv("WEBAPP_JWT_SECRET"),
+		"DATABASE_URL":         os.Getenv("DATABASE_URL"),
+		"GRAMMAR_BUNDLE_ID":    os.Getenv("GRAMMAR_BUNDLE_ID"),
+		"GRAMMAR_BUNDLE_DIR":   os.Getenv("GRAMMAR_BUNDLE_DIR"),
+	}
+	defer func() {
+		restoreLearningEnv(learningEnv)
+		for k, v := range originalEnv {
+			if v == "" {
+				os.Unsetenv(k)
+			} else {
+				os.Setenv(k, v)
+			}
+		}
+	}()
+
+	os.Setenv("AI_URL", "http://test.local")
+	os.Setenv("AI_API_KEY", "test-key")
+	os.Setenv("AI_PROMPT", "test prompt")
+	os.Unsetenv("AI_PROMPT_FILE")
+	os.Setenv("WEBAPP_JWT_SECRET", "test-secret")
+	os.Setenv("DATABASE_DRIVER", "postgres")
+	os.Setenv("DATABASE_URL", "postgres://test:test@localhost/test?sslmode=disable")
+	unsetLearningEnvForDefaults()
+	os.Unsetenv("GRAMMAR_BUNDLE_DIR")
+	os.Setenv("GRAMMAR_BUNDLE_ID", "fr")
+
+	_, err := Load()
+	if err == nil {
+		t.Fatal("expected error for unknown embedded GRAMMAR_BUNDLE_ID")
+	}
+	if !strings.Contains(err.Error(), "learning config") {
+		t.Fatalf("expected learning config error, got %v", err)
+	}
+}
+
+func TestLoad_GrammarBundleDir_MissingSections(t *testing.T) {
+	learningEnv := backupLearningEnv()
+	originalEnv := map[string]string{
+		"AI_URL":             os.Getenv("AI_URL"),
+		"AI_API_KEY":         os.Getenv("AI_API_KEY"),
+		"AI_PROMPT":          os.Getenv("AI_PROMPT"),
+		"AI_PROMPT_FILE":     os.Getenv("AI_PROMPT_FILE"),
+		"WEBAPP_JWT_SECRET":  os.Getenv("WEBAPP_JWT_SECRET"),
+		"DATABASE_URL":       os.Getenv("DATABASE_URL"),
+		"GRAMMAR_BUNDLE_DIR": os.Getenv("GRAMMAR_BUNDLE_DIR"),
+	}
+	defer func() {
+		restoreLearningEnv(learningEnv)
+		for k, v := range originalEnv {
+			if v == "" {
+				os.Unsetenv(k)
+			} else {
+				os.Setenv(k, v)
+			}
+		}
+	}()
+
+	tmp := t.TempDir()
+	os.Setenv("AI_URL", "http://test.local")
+	os.Setenv("AI_API_KEY", "test-key")
+	os.Setenv("AI_PROMPT", "test prompt")
+	os.Unsetenv("AI_PROMPT_FILE")
+	os.Setenv("WEBAPP_JWT_SECRET", "test-secret")
+	os.Setenv("DATABASE_DRIVER", "postgres")
+	os.Setenv("DATABASE_URL", "postgres://test:test@localhost/test?sslmode=disable")
+	unsetLearningEnvForDefaults()
+	os.Setenv("GRAMMAR_BUNDLE_DIR", tmp)
+
+	_, err := Load()
+	if err == nil {
+		t.Fatal("expected error for GRAMMAR_BUNDLE_DIR without sections.json")
+	}
+	if !strings.Contains(err.Error(), "sections.json") {
+		t.Fatalf("expected sections.json error, got %v", err)
 	}
 }

@@ -32,7 +32,7 @@ func main() {
 	}
 	defer log.Sync() //nolint:errcheck
 
-	log.Info("starting application",
+	logFields := []zap.Field{
 		zap.String("version", version),
 		zap.String("buildTime", buildTime),
 		zap.String("commit", commit),
@@ -41,7 +41,11 @@ func main() {
 		zap.String("learning_target_lang", cfg.Learning.TargetLang),
 		zap.String("learning_app_code", cfg.Learning.AppCode),
 		zap.String("grammar_bundle_id", cfg.Learning.GrammarBundleID),
-	)
+	}
+	if cfg.Learning.GrammarBundleDir != "" {
+		logFields = append(logFields, zap.String("grammar_bundle_dir", cfg.Learning.GrammarBundleDir))
+	}
+	log.Info("starting application", logFields...)
 
 	// Create bot instance (Telegram bot initialization is optional)
 	telegramBot, err := bot.New(cfg, log)

@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
 
@@ -10,6 +11,7 @@ import (
 	"github.com/spf13/viper"
 
 	"tgbot-skeleton/internal/ai"
+	"tgbot-skeleton/internal/grammarbundle"
 )
 
 var langCodeSegment = regexp.MustCompile(`^[a-z]{2,8}$`)
@@ -31,21 +33,23 @@ type Config struct {
 
 // LearningConfig holds language pair and bundle identity for multilang deployments.
 type LearningConfig struct {
-	Pair            string `mapstructure:"pair"`
-	NativeLang      string `mapstructure:"native_lang"`
-	TargetLang      string `mapstructure:"target_lang"`
-	AppCode         string `mapstructure:"app_code"`
-	GrammarBundleID string `mapstructure:"grammar_bundle_id"`
+	Pair             string `mapstructure:"pair"`
+	NativeLang       string `mapstructure:"native_lang"`
+	TargetLang       string `mapstructure:"target_lang"`
+	AppCode          string `mapstructure:"app_code"`
+	GrammarBundleID  string `mapstructure:"grammar_bundle_id"`
+	GrammarBundleDir string `mapstructure:"grammar_bundle_dir"` // optional: filesystem root with sections.json (overrides embedded bundle)
 }
 
 // DefaultLearningConfig returns the canonical RU→EN English instance defaults (matches viper defaults in Load).
 func DefaultLearningConfig() LearningConfig {
 	return LearningConfig{
-		Pair:            "ru-en",
-		NativeLang:      "ru",
-		TargetLang:      "en",
-		AppCode:         "english",
-		GrammarBundleID: "en",
+		Pair:             "ru-en",
+		NativeLang:       "ru",
+		TargetLang:       "en",
+		AppCode:          "english",
+		GrammarBundleID:  "en",
+		GrammarBundleDir: "",
 	}
 }
 
@@ -385,6 +389,7 @@ func Load() (*Config, error) {
 	_ = viper.BindEnv("learning.target_lang", "LEARNING_TARGET_LANG")
 	_ = viper.BindEnv("learning.app_code", "LEARNING_APP_CODE")
 	_ = viper.BindEnv("learning.grammar_bundle_id", "GRAMMAR_BUNDLE_ID")
+	_ = viper.BindEnv("learning.grammar_bundle_dir", "GRAMMAR_BUNDLE_DIR")
 
 	// Set config file
 	viper.SetConfigName("config")
@@ -413,6 +418,15 @@ func Load() (*Config, error) {
 	config.Learning.TargetLang = strings.ToLower(strings.TrimSpace(config.Learning.TargetLang))
 	config.Learning.AppCode = strings.TrimSpace(config.Learning.AppCode)
 	config.Learning.GrammarBundleID = strings.TrimSpace(config.Learning.GrammarBundleID)
+	config.Learning.GrammarBundleDir = strings.TrimSpace(config.Learning.GrammarBundleDir)
+
+	if config.Learning.GrammarBundleDir != "" {
+		if err := validateGrammarBundleDir(config.Learning.GrammarBundleDir); err != nil {
+			return nil, fmt.Errorf("learning config: %w", err)
+		}
+	} else if err := grammarbundle.ValidateEmbeddedBundleID(config.Learning.GrammarBundleID); err != nil {
+		return nil, fmt.Errorf("learning config: %w", err)
+	}
 
 	// Validate required fields before loading prompt file so missing env yields clear errors
 	if config.Database.URL == "" {
@@ -461,6 +475,21 @@ func loadPromptFromFile(filePath string) (string, error) {
 		return "", fmt.Errorf("failed to read prompt file %s: %w", filePath, err)
 	}
 	return strings.TrimSpace(string(content)), nil
+}
+
+func validateGrammarBundleDir(dir string) error {
+	abs, err := filepath.Abs(dir)
+	if err != nil {
+		return fmt.Errorf("GRAMMAR_BUNDLE_DIR: %w", err)
+	}
+	st, err := os.Stat(filepath.Join(abs, "sections.json"))
+	if err != nil {
+		return fmt.Errorf("GRAMMAR_BUNDLE_DIR %q: %w", abs, err)
+	}
+	if st.IsDir() {
+		return fmt.Errorf("GRAMMAR_BUNDLE_DIR %q: sections.json is not a file", abs)
+	}
+	return nil
 }
 
 // GetEnv returns environment variable value or default

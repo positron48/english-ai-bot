@@ -90,7 +90,10 @@ func NewHarness(t *testing.T, opts ...HarnessOpt) *Harness {
 	sessionRepo := repository.NewSessionRepository(conn, logger)
 	cbRepo := repository.NewCircuitBreakerRepository(conn, logger)
 	otpRepo := repository.NewWebOTPRepository(conn, logger)
-	grammarContentRepo := repository.NewGrammarContentRepository(logger)
+	grammarContentRepo, err := repository.NewGrammarContentRepositoryForLearning(config.DefaultLearningConfig(), logger)
+	if err != nil {
+		t.Fatalf("grammar content repo: %v", err)
+	}
 	grammarPublishRepo := repository.NewGrammarPublishRepository(conn, logger)
 	grammarAttemptRepo := repository.NewGrammarAttemptRepository(conn, logger)
 

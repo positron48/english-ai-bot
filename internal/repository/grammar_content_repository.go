@@ -4,8 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/fs"
+	"os"
 	"path/filepath"
+	"strings"
 
+	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/grammarbundle"
 
 	"go.uber.org/zap"
@@ -17,9 +20,30 @@ type GrammarContentRepository struct {
 	logger *zap.Logger
 }
 
-// NewGrammarContentRepository creates a new grammar content repository using the default embedded bundle.
+// NewGrammarContentRepository creates a new grammar content repository using the default embedded English bundle.
 func NewGrammarContentRepository(logger *zap.Logger) *GrammarContentRepository {
 	return NewGrammarContentRepositoryWithFS(grammarbundle.FS, logger)
+}
+
+// NewGrammarContentRepositoryForLearning selects embedded bundle by GRAMMAR_BUNDLE_ID or an on-disk tree via GRAMMAR_BUNDLE_DIR.
+func NewGrammarContentRepositoryForLearning(lc config.LearningConfig, logger *zap.Logger) (*GrammarContentRepository, error) {
+	fsys, err := grammarFSForLearning(lc)
+	if err != nil {
+		return nil, err
+	}
+	return NewGrammarContentRepositoryWithFS(fsys, logger), nil
+}
+
+func grammarFSForLearning(lc config.LearningConfig) (fs.FS, error) {
+	dir := strings.TrimSpace(lc.GrammarBundleDir)
+	if dir != "" {
+		abs, err := filepath.Abs(dir)
+		if err != nil {
+			return nil, fmt.Errorf("grammar bundle dir: %w", err)
+		}
+		return os.DirFS(abs), nil
+	}
+	return grammarbundle.BundleFS(lc.GrammarBundleID)
 }
 
 // NewGrammarContentRepositoryWithFS creates a grammar content repository with the given fs (for tests or custom bundles).
