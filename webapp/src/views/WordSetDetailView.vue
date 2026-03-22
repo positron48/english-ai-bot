@@ -50,7 +50,7 @@
           <div v-if="loadingCard" class="loading">Loading card...</div>
           <div v-else-if="currentTrainingCard" class="word-card-content">
             <div class="word-display">
-              <h2>{{ currentTrainingCard.display_word || currentTrainingCard.word_en || selectedWord?.display_word || selectedWord?.word }}</h2>
+              <h2>{{ currentTrainingCard.display_target || currentTrainingCard.display_word || currentTrainingCard.word_target || currentTrainingCard.word_en || selectedWord?.display_target || selectedWord?.display_word || selectedWord?.word }}</h2>
               <div v-if="currentTrainingCard.transcription" class="transcription-with-audio">
                 <div class="transcription">[{{ currentTrainingCard.transcription }}]</div>
                 <button
@@ -64,17 +64,17 @@
                   <Icon name="play" />
                 </button>
               </div>
-              <div v-if="currentTrainingCard.word_ru" class="translation">
-                {{ currentTrainingCard.word_ru }}
+              <div v-if="currentTrainingCard.word_native || currentTrainingCard.word_ru" class="translation">
+                {{ currentTrainingCard.word_native || currentTrainingCard.word_ru }}
               </div>
-              <div v-if="currentTrainingCard.meaning_en" class="meaning">
-                {{ currentTrainingCard.meaning_en }}
+              <div v-if="currentTrainingCard.meaning_target || currentTrainingCard.meaning_en" class="meaning">
+                {{ currentTrainingCard.meaning_target || currentTrainingCard.meaning_en }}
               </div>
-              <div v-if="currentTrainingCard.example_en" class="example">
-                <strong>Example:</strong> {{ currentTrainingCard.example_en }}
+              <div v-if="currentTrainingCard.example_target || currentTrainingCard.example_en" class="example">
+                <strong>Example:</strong> {{ currentTrainingCard.example_target || currentTrainingCard.example_en }}
               </div>
-              <div v-if="currentTrainingCard.example_ru" class="example-ru">
-                {{ currentTrainingCard.example_ru }}
+              <div v-if="currentTrainingCard.example_native || currentTrainingCard.example_ru" class="example-ru">
+                {{ currentTrainingCard.example_native || currentTrainingCard.example_ru }}
               </div>
             </div>
             
@@ -130,6 +130,7 @@ interface WordInfo {
   word_card_id: number
   word: string
   display_word: string
+  display_target?: string
   status: 'unknown' | 'in_vocab' | 'known'
 }
 
@@ -137,12 +138,19 @@ interface TrainingCard {
   id: number
   word_card_id: number
   word_en: string
+  word_target?: string
   transcription?: string
   sense_index: number
   word_ru?: string
+  word_native?: string
   meaning_en?: string
+  meaning_target?: string
   example_en?: string
+  example_target?: string
   example_ru?: string
+  example_native?: string
+  display_word?: string
+  display_target?: string
   distractors_ru?: string
   distractors_en?: string
   hint?: string
@@ -201,6 +209,7 @@ const openWordCard = async (word: WordInfo) => {
     currentTrainingCard.value = data.training_card
     if (currentTrainingCard.value?.transcription) {
       const pronunciationWord =
+        currentTrainingCard.value.word_target ||
         currentTrainingCard.value.word_en ||
         selectedWord.value?.word ||
         ''
@@ -245,6 +254,7 @@ onUnmounted(() => {
 const playCurrentPronunciation = async () => {
   if (playingPronunciation.value || !currentTrainingCard.value) return
   const pronunciationWord =
+    currentTrainingCard.value.word_target ||
     currentTrainingCard.value.word_en ||
     selectedWord.value?.word ||
     ''

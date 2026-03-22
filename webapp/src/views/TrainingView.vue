@@ -158,7 +158,7 @@
 
       <div class="question" v-html="processedQuestion"></div>
       <div
-        v-if="isEnglishWord && currentCard?.transcription"
+        v-if="isTargetLangSide && currentCard?.transcription"
         class="training-pronunciation-row"
       >
         <span class="training-transcription">{{ currentCard.transcription }}</span>
@@ -166,7 +166,7 @@
           v-if="currentPronunciationURL"
           type="button"
           class="btn-pronunciation"
-          :disabled="playingPronunciation || !currentCard?.word_en"
+          :disabled="playingPronunciation || !(currentCard?.word_target || currentCard?.word_en)"
           :aria-label="t('training.listen') || 'Pronounce'"
           @click="playCurrentPronunciation"
         >
@@ -334,7 +334,7 @@
 
       <!-- Example button/display - show for English words, appears after options -->
       <div 
-        v-if="optionsShown && showExampleButton && isEnglishWord" 
+        v-if="optionsShown && showExampleButton && isTargetLangSide" 
         class="example-button-wrapper"
         :class="{ 'example-button-visible': showExampleButtonVisible }"
       >
@@ -347,7 +347,7 @@
           <Icon name="lightbulb" class="example-icon" />
         </button>
         <div v-else-if="exampleUsageShown" class="example example-usage">
-          {{ currentCard?.example_en || feedback?.example || '' }}
+          {{ currentCard?.example_target || currentCard?.example_en || feedback?.example_target || feedback?.example || '' }}
         </div>
       </div>
 
@@ -484,9 +484,12 @@ interface Card {
   delay_ms: number
   direction: string
   word_en?: string
+  word_target?: string
   transcription?: string
   display_word?: string
+  display_target?: string
   example_en?: string
+  example_target?: string
   /** Spell challenge: compose word from letters; type: type-the-word (no letters) */
   type?: 'card' | 'spell' | 'type'
   word_ru?: string
@@ -511,6 +514,7 @@ interface Feedback {
   correct_answer: string
   hint?: string
   example?: string
+  example_target?: string
   delay_seconds?: number
 }
 
@@ -606,8 +610,8 @@ const currentPronunciationURL = ref<string | null>(null)
 const { settings } = useSettings()
 const { playSuccess, playFail, playVictory, playDefeat, getWordPronunciationURL, playWordPronunciation } = useAudio()
 
-// Check if current word is English (direction is en_ru)
-const isEnglishWord = computed(() => {
+// Target-language side of the card (e.g. EN in RU→EN when direction is en_ru)
+const isTargetLangSide = computed(() => {
   return currentCard.value?.direction === 'en_ru'
 })
 
@@ -616,7 +620,7 @@ watch(currentCard, async (card) => {
     currentPronunciationURL.value = null
     return
   }
-  const word = card.word_en || ''
+  const word = card.word_target || card.word_en || ''
   if (!word) {
     currentPronunciationURL.value = null
     return
@@ -625,7 +629,7 @@ watch(currentCard, async (card) => {
 })
 
 const playCurrentPronunciation = async () => {
-  const word = currentCard.value?.word_en
+  const word = currentCard.value?.word_target || currentCard.value?.word_en
   if (!word || playingPronunciation.value) return
   playingPronunciation.value = true
   try {
@@ -1651,7 +1655,7 @@ const revealOptions = async (isEarly: boolean = false) => {
     exampleUsageShown.value = false
     
     // Show example button after 2 seconds if word is English
-    if (isEnglishWord.value) {
+    if (isTargetLangSide.value) {
       exampleButtonTimer = setTimeout(() => {
         showExampleButton.value = true
         // Trigger visibility animation after a brief delay
@@ -1674,7 +1678,7 @@ const showExampleUsage = () => {
   if (exampleUsageShown.value) return
   
   // Show example if available from current card or feedback
-  if (currentCard.value?.example_en || feedback.value?.example) {
+  if (currentCard.value?.example_target || currentCard.value?.example_en || feedback.value?.example_target || feedback.value?.example) {
     exampleUsageShown.value = true
   }
 }

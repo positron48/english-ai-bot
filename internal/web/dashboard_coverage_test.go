@@ -4,6 +4,7 @@ package web
 
 import (
 	"bytes"
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -18,6 +19,45 @@ import (
 )
 
 // ── handleSettings ────────────────────────────────────────────────────────────
+
+// TestHandleSettings_LearningPayload verifies GET /api/settings includes learning metadata (dual contract with user settings).
+func TestHandleSettings_LearningPayload(t *testing.T) {
+	t.Helper()
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	cfg := &config.Config{}
+	cfg.Learning = config.DefaultLearningConfig()
+	cfg.WebApp.JWTSecret = "test-secret"
+	cbRepo := repository.NewCircuitBreakerRepository(db.GetConnection(), logger)
+	cbService := service.NewCircuitBreakerService(cbRepo, 5, logger)
+	router := NewRouter(logger, cfg, db.GetConnection(), nil, nil, nil, cbService)
+	router.SetDependencies(repository.NewUserRepository(db.GetConnection(), logger), &mockWordService{}, &mockAIService{}, nil, "")
+
+	_, err := db.GetConnection().Exec(`INSERT INTO users (telegram_id, created_at, updated_at, settings_json) VALUES (?,?,?,?)`, 91001, "2026-01-01 00:00:00", "2026-01-01 00:00:00", `{}`)
+	if err != nil {
+		t.Fatalf("insert user: %v", err)
+	}
+
+	req := httptest.NewRequest(http.MethodGet, "/api/settings", nil)
+	req = setUserIDInContext(req, 1)
+	w := httptest.NewRecorder()
+	router.handleSettings(w, req)
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected 200, got %d: %s", w.Code, w.Body.String())
+	}
+	var body struct {
+		Learning map[string]string `json:"learning"`
+	}
+	if err := json.Unmarshal(w.Body.Bytes(), &body); err != nil {
+		t.Fatal(err)
+	}
+	if body.Learning["target_lang"] != "en" {
+		t.Fatalf("learning.target_lang = %q", body.Learning["target_lang"])
+	}
+	if body.Learning["target_lang_name_ru"] != "английский" || body.Learning["target_lang_name_en"] != "English" {
+		t.Fatalf("unexpected names: %#v", body.Learning)
+	}
+}
 
 // TestHandleSettings_LanguageNotSet covers the path where settings.Language == ""
 // (detect from Accept-Language header).

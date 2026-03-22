@@ -66,7 +66,7 @@
                   >
                     <div class="word-main">
                       <div class="word-text">
-                        <span class="word-display">{{ cleanLemma(word.lemma) }}</span>
+                        <span class="word-display">{{ word.display_target || word.display_word || cleanLemma(word.lemma) }}</span>
                       </div>
                       <span
                         class="mastery-marker"
@@ -93,7 +93,7 @@
                 >
                   <div class="word-main">
                     <div class="word-text">
-                      <span class="word-display">{{ cleanLemma(word.lemma) }}</span>
+                      <span class="word-display">{{ word.display_target || word.display_word || cleanLemma(word.lemma) }}</span>
                     </div>
                     <span
                       class="mastery-marker"
@@ -200,17 +200,17 @@
           <div v-for="senseGroup in groupedCards" :key="senseGroup.sense_index" class="sense-group-simple">
             <div class="sense-header-simple">
               <h4>
-                <span class="word-ru">{{ senseGroup.word_ru }}</span>
+                <span class="word-ru">{{ senseGroup.word_native || senseGroup.word_ru }}</span>
                 <span v-if="senseGroup.pos" class="pos-badge">{{ senseGroup.pos }}</span>
               </h4>
             </div>
             
             <div class="sense-info-simple">
-              <div v-if="senseGroup.meaning_en" class="meaning">
-                {{ senseGroup.meaning_en }}
+              <div v-if="senseGroup.meaning_target || senseGroup.meaning_en" class="meaning">
+                {{ senseGroup.meaning_target || senseGroup.meaning_en }}
               </div>
-              <div v-if="senseGroup.example_en" class="example">
-                <strong>{{ t('vocab.example') }}:</strong> {{ senseGroup.example_en }}
+              <div v-if="senseGroup.example_target || senseGroup.example_en" class="example">
+                <strong>{{ t('vocab.example') }}:</strong> {{ senseGroup.example_target || senseGroup.example_en }}
               </div>
             </div>
             
@@ -322,6 +322,7 @@ interface VocabWord {
   word_card_id: number
   lemma: string
   display_word: string
+  display_target?: string
   total_cards: number
   due_count: number
   last_review: string | null
@@ -355,9 +356,13 @@ interface CardDetail {
   created_at?: string
   updated_at?: string
   word_ru: string
+  word_native?: string
   meaning_en: string
+  meaning_target?: string
   example_en: string
+  example_target?: string
   example_ru: string
+  example_native?: string
   transcription: string
   sense_index: number
   pos?: string
@@ -758,9 +763,13 @@ const moveToTraining = async () => {
 interface SenseGroup {
   sense_index: number
   word_ru: string
+  word_native?: string
   meaning_en: string
+  meaning_target?: string
   example_en: string
+  example_target?: string
   example_ru: string
+  example_native?: string
   transcription: string
   pos?: string
   directions: CardDetail[]
@@ -774,9 +783,13 @@ const groupedCards = computed((): SenseGroup[] => {
       groups.set(card.sense_index, {
         sense_index: card.sense_index,
         word_ru: card.word_ru,
+        word_native: card.word_native,
         meaning_en: card.meaning_en,
+        meaning_target: card.meaning_target,
         example_en: card.example_en,
+        example_target: card.example_target,
         example_ru: card.example_ru,
+        example_native: card.example_native,
         transcription: card.transcription,
         pos: card.pos,
         directions: []

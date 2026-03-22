@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"tgbot-skeleton/internal/i18n"
+	"tgbot-skeleton/internal/learning"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/service"
@@ -244,10 +245,13 @@ func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, stat
 	if item.Type == "spell" && item.Spell != nil {
 		state.ShownAt = time.Now()
 		state.OptionsShownAt = nil
+		tl := learning.TargetLangNameRUPrepositional(r.config.Learning.TargetLang)
 		response := map[string]interface{}{
 			"type":           "spell",
-			"question":       fmt.Sprintf("Составьте слово на английском: <strong>%s</strong>", item.Spell.WordRU),
+			"question":       fmt.Sprintf("Составьте слово на %s: <strong>%s</strong>", tl, item.Spell.WordRU),
 			"word_ru":        item.Spell.WordRU,
+			"word_native":    item.Spell.WordNative,
+			"word_target":    item.Spell.WordTarget,
 			"prefix":         item.Spell.Prefix,
 			"letters":        item.Spell.ShuffledLetters,
 			"correct_answer": item.Spell.DisplayWord,
@@ -282,10 +286,13 @@ func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, stat
 			hintFirstLetter = string(runes[0])
 			hintLength = len(runes)
 		}
+		tl := learning.TargetLangNameRUPrepositional(r.config.Learning.TargetLang)
 		response := map[string]interface{}{
 			"type":              "type",
-			"question":          fmt.Sprintf("Введите слово на английском: <strong>%s</strong>", item.TypeChallenge.WordRU),
+			"question":          fmt.Sprintf("Введите слово на %s: <strong>%s</strong>", tl, item.TypeChallenge.WordRU),
 			"word_ru":           item.TypeChallenge.WordRU,
+			"word_native":       item.TypeChallenge.WordNative,
+			"word_target":       item.TypeChallenge.WordTarget,
 			"correct_answer":    displayWord,
 			"prefix":            prefix,
 			"hint_first_letter": hintFirstLetter,
@@ -351,8 +358,9 @@ func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, stat
 	if card.TrainingCard.DisplayWord != nil && *card.TrainingCard.DisplayWord != "" {
 		displayWord = *card.TrainingCard.DisplayWord
 	}
+	tl := learning.TargetLangNameRUAccusative(r.config.Learning.TargetLang)
 	if card.UserCard.Direction == models.DirectionRUtoEN {
-		questionText = fmt.Sprintf("Переведите на английский: <strong>%s</strong>", card.TrainingCard.WordRU)
+		questionText = fmt.Sprintf("Переведите на %s: <strong>%s</strong>", tl, card.TrainingCard.WordRU)
 	} else {
 		transcriptionHTML := ""
 		if card.TrainingCard.Transcription != "" {
@@ -376,7 +384,12 @@ func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, stat
 		response["word_en"] = card.TrainingCard.WordEN
 		response["word_target"] = card.TrainingCard.WordTarget
 		response["display_word"] = displayWord
+		response["display_target"] = displayWord
 		response["transcription"] = card.TrainingCard.Transcription
+	}
+	if card.UserCard.Direction == models.DirectionRUtoEN {
+		response["word_ru"] = card.TrainingCard.WordRU
+		response["word_native"] = card.TrainingCard.WordNative
 	}
 
 	// Add example_en if available (for showing example usage button)
@@ -1080,6 +1093,7 @@ func (r *Router) showTrainingFeedback(w http.ResponseWriter, req *http.Request, 
 		}
 		if trainingCard.ExampleEN != "" {
 			feedback["example"] = trainingCard.ExampleEN
+			feedback["example_target"] = trainingCard.ExampleTarget
 		}
 		_, wrongAnswerDelaySeconds := r.getTrainingDelaysForUser(state.UserID)
 		feedback["delay_seconds"] = wrongAnswerDelaySeconds

@@ -131,7 +131,7 @@
         <div class="setting-item">
           <div class="setting-info">
             <label class="setting-label">{{ t('settings.spellModeEnabled') }}</label>
-            <p class="setting-description">{{ t('settings.spellModeEnabledDescription') }}</p>
+            <p class="setting-description">{{ t('settings.spellModeEnabledDescription', { targetLang: targetLangDisplay }) }}</p>
           </div>
           <div class="setting-control">
             <span v-if="trainingDelaysSavedAt === 'spell'" class="saved-indicator">{{ t('common.saved') }}</span>
@@ -161,7 +161,7 @@
         <div class="setting-item">
           <div class="setting-info">
             <label class="setting-label">{{ t('settings.typeModeEnabled') }}</label>
-            <p class="setting-description">{{ t('settings.typeModeEnabledDescription') }}</p>
+            <p class="setting-description">{{ t('settings.typeModeEnabledDescription', { targetLang: targetLangDisplay }) }}</p>
           </div>
           <div class="setting-control">
             <span v-if="trainingDelaysSavedAt === 'type'" class="saved-indicator">{{ t('common.saved') }}</span>
@@ -255,6 +255,7 @@ import { useSettings } from '../composables/useSettings'
 import { useTheme } from '../composables/useTheme'
 import { useAudio } from '../composables/useAudio'
 import { useAuth } from '../composables/useAuth'
+import { useLearningConfig } from '../composables/useLearningConfig'
 import { apiClient } from '../api/client'
 import Icon from '../components/Icon.vue'
 
@@ -265,6 +266,7 @@ const { settings, setSoundsEnabled, setVibrationEnabled, setTheme, setSoundTheme
 const { theme: currentTheme, setTheme: setThemeInTheme } = useTheme()
 const { getThemes, previewTheme } = useAudio()
 const { logout: authLogout } = useAuth()
+const { targetLangDisplay, ensureLearningLoaded } = useLearningConfig()
 
 const soundsEnabled = ref(true)
 const vibrationEnabled = ref(true)
@@ -287,6 +289,7 @@ const typeMasteringThreshold = ref(70)
 let trainingDelaysSavedTimeout: ReturnType<typeof setTimeout> | null = null
 
 onMounted(async () => {
+  await ensureLearningLoaded()
   // Load current settings
   soundsEnabled.value = settings.value.soundsEnabled
   vibrationEnabled.value = settings.value.vibrationEnabled

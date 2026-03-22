@@ -80,16 +80,19 @@ type WordInfoExample struct {
 	ExampleEN     string `json:"example_en"`
 	ExampleTarget string `json:"example_target"` // Neutral alias; not persisted on MarshalJSON (see below)
 	GlossRU       string `json:"gloss_ru"`
-	GlossNative   string `json:"gloss_native"` // Neutral alias; not persisted on MarshalJSON
+	GlossNative   string `json:"gloss_native"` // Neutral alias; emitted alongside gloss_ru in JSON
 }
 
-// MarshalJSON persists only legacy keys so examples_json in DB stays stable.
+// MarshalJSON emits legacy keys and neutral aliases (API dual contract). DB rows may store either shape; Unmarshal accepts both.
 func (e WordInfoExample) MarshalJSON() ([]byte, error) {
-	type legacy struct {
-		ExampleEN string `json:"example_en"`
-		GlossRU   string `json:"gloss_ru"`
-	}
-	return json.Marshal(legacy{ExampleEN: e.ExampleEN, GlossRU: e.GlossRU})
+	ex := e
+	SyncWordInfoExampleNeutralAliases(&ex)
+	return json.Marshal(map[string]string{
+		"example_en":     ex.ExampleEN,
+		"example_target": ex.ExampleTarget,
+		"gloss_ru":       ex.GlossRU,
+		"gloss_native":   ex.GlossNative,
+	})
 }
 
 // UnmarshalJSON accepts legacy and neutral keys; neutral fills legacy when missing.

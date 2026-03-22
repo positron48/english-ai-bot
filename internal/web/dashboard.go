@@ -10,6 +10,7 @@ import (
 	"unicode"
 
 	"tgbot-skeleton/internal/i18n"
+	"tgbot-skeleton/internal/learning"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 
@@ -360,7 +361,7 @@ func (r *Router) handleChat(w http.ResponseWriter, req *http.Request) {
 
 // handleSettings handles GET /api/settings - get user settings
 // @Summary      Получить настройки пользователя
-// @Description  Возвращает текущие настройки пользователя
+// @Description  Возвращает текущие настройки пользователя и блок learning (pair, native_lang, target_lang, имена целевого языка) для мультиязычного UI
 // @Tags         Settings
 // @Accept       json
 // @Produce      application/json
@@ -452,10 +453,20 @@ func (r *Router) handleSettings(w http.ResponseWriter, req *http.Request) {
 		settings.TypeMasteringThreshold = &v
 	}
 
+	lc := r.config.Learning
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]interface{}{
 		"settings": settings,
+		"learning": map[string]interface{}{
+			"pair":                 lc.Pair,
+			"native_lang":          lc.NativeLang,
+			"target_lang":          lc.TargetLang,
+			"app_code":             lc.AppCode,
+			"grammar_bundle_id":    lc.GrammarBundleID,
+			"target_lang_name_ru":  learning.TargetLangNameRUAccusative(lc.TargetLang),
+			"target_lang_name_en":  learning.TargetLangNameEN(lc.TargetLang),
+		},
 	})
 }
 

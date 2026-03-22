@@ -202,3 +202,21 @@ func TestWordInfoResponse_UnmarshalJSON(t *testing.T) {
 		})
 	}
 }
+
+func TestWordInfoExample_MarshalJSON_DualContract(t *testing.T) {
+	e := WordInfoExample{ExampleEN: "Hello.", GlossRU: "Привет."}
+	b, err := json.Marshal(e)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var m map[string]string
+	if err := json.Unmarshal(b, &m); err != nil {
+		t.Fatal(err)
+	}
+	if m["example_en"] != "Hello." || m["gloss_ru"] != "Привет." {
+		t.Fatalf("legacy keys: %v", m)
+	}
+	if m["example_target"] != "Hello." || m["gloss_native"] != "Привет." {
+		t.Fatalf("neutral keys: %v", m)
+	}
+}

@@ -51,6 +51,7 @@ type VocabWord struct {
 	WordCardID     int64      `json:"word_card_id"`
 	Lemma          string     `json:"lemma"`        // Base form (word_cards.word)
 	DisplayWord    string     `json:"display_word"` // Display form (prefer training_cards.display_word, fallback word_cards.display_en, fallback word_cards.word)
+	DisplayTarget  string     `json:"display_target"`
 	TotalCards     int        `json:"total_cards"`
 	DueCount       int        `json:"due_count"`
 	LastReview     *time.Time `json:"last_review"`
@@ -329,6 +330,7 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 		} else {
 			word.DisplayWord = word.Lemma
 		}
+		word.DisplayTarget = word.DisplayWord
 
 		word.TotalCards = totalCards
 		word.DueCount = dueCount
@@ -599,13 +601,27 @@ type VocabCardDetail struct {
 	CreatedAt      time.Time  `json:"created_at"`
 	UpdatedAt      time.Time  `json:"updated_at"`
 	WordRU         string     `json:"word_ru"`
+	WordNative     string     `json:"word_native"`
 	MeaningEN      string     `json:"meaning_en"`
+	MeaningTarget  string     `json:"meaning_target"`
 	ExampleEN      string     `json:"example_en"`
+	ExampleTarget  string     `json:"example_target"`
 	ExampleRU      string     `json:"example_ru"`
+	ExampleNative  string     `json:"example_native"`
 	Transcription  string     `json:"transcription"`
 	SenseIndex     int        `json:"sense_index"`
 	POS            *string    `json:"pos,omitempty"`
 	ReviewCount    int        `json:"review_count"` // Count of review events
+}
+
+func fillVocabCardDetailNeutralAliases(c *VocabCardDetail) {
+	if c == nil {
+		return
+	}
+	c.WordNative = c.WordRU
+	c.MeaningTarget = c.MeaningEN
+	c.ExampleTarget = c.ExampleEN
+	c.ExampleNative = c.ExampleRU
 }
 
 // handleVocabWordCards returns detailed information about all cards for a word (by lemma)
@@ -738,6 +754,7 @@ func (r *Router) handleVocabWordCards(w http.ResponseWriter, req *http.Request, 
 			card.LastQuality = &q
 		}
 
+		fillVocabCardDetailNeutralAliases(&card)
 		cards = append(cards, card)
 	}
 
@@ -846,6 +863,7 @@ func (r *Router) handleVocabWordCards(w http.ResponseWriter, req *http.Request, 
 						}
 					}
 
+					fillVocabCardDetailNeutralAliases(&card)
 					cards = append(cards, card)
 				}
 			}

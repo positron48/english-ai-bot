@@ -1,10 +1,50 @@
 basePath: /
 definitions:
+  internal_web.PromptTesterRunRequest:
+    properties:
+      training_prompt:
+        type: string
+      word_prompt:
+        type: string
+      words:
+        items:
+          type: string
+        type: array
+    type: object
   internal_web.RefreshTokenRequest:
     properties:
       refresh_token:
         example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
         type: string
+    type: object
+  tgbot-skeleton_internal_service.PlacementTestResult:
+    properties:
+      correct:
+        type: integer
+      level:
+        description: CEFR level of last opened section, or "Below A1" / "—"
+        type: string
+      opened_sections:
+        items:
+          type: string
+        type: array
+      results:
+        description: 'per-question: question_id, correct, user_answer, correct_answer,
+          explanation, placement_chapter_title'
+        items: {}
+        type: array
+      score:
+        type: integer
+      total_questions:
+        type: integer
+    type: object
+  tgbot-skeleton_internal_service.TestQuestions:
+    properties:
+      questions:
+        items: {}
+        type: array
+      total:
+        type: integer
     type: object
 host: localhost:8184
 info:
@@ -21,7 +61,30 @@ info:
   title: English Bot API
   version: "1.0"
 paths:
-  /app/admin:
+  /api/access/me:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает список категорий пользователя и эффективные права доступа
+        (вычисленные из категорий)
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Категории и права пользователя
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Получить мои права доступа
+      tags:
+      - Access
+  /api/admin:
     get:
       consumes:
       - application/json
@@ -52,7 +115,80 @@ paths:
       summary: Получить данные админ-панели
       tags:
       - Admin
-  /app/admin/circuit/reset:
+  /api/admin/app-settings:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает или обновляет настройки приложения (только для администраторов)
+      parameters:
+      - description: Настройки приложения (для PUT)
+        in: body
+        name: settings
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Настройки приложения или результат обновления
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Неверный запрос
+          schema:
+            type: string
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "403":
+          description: Доступ запрещен
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Получить/Обновить настройки приложения
+      tags:
+      - Admin
+    put:
+      consumes:
+      - application/json
+      description: Возвращает или обновляет настройки приложения (только для администраторов)
+      parameters:
+      - description: Настройки приложения (для PUT)
+        in: body
+        name: settings
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Настройки приложения или результат обновления
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Неверный запрос
+          schema:
+            type: string
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "403":
+          description: Доступ запрещен
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Получить/Обновить настройки приложения
+      tags:
+      - Admin
+  /api/admin/circuit/reset:
     post:
       consumes:
       - application/json
@@ -82,31 +218,515 @@ paths:
       summary: Сбросить circuit breaker
       tags:
       - Admin
-  /app/admin/training/{word}:
+  /api/admin/grammar/categories:
     get:
       consumes:
       - application/json
-      description: 'Получение (GET) или удаление (POST) тренировочных карточек по
-        слову. Путь: /app/admin/training/{word} или /app/admin/training/{word}/delete
-        или /app/admin/training/delete_all'
+      description: Возвращает полный список категорий с информацией о публикации
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список категорий
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "403":
+          description: Доступ запрещен
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Получить все категории грамматики (админ)
+      tags:
+      - Admin
+  /api/admin/grammar/categories/{section_id}/publish:
+    post:
+      consumes:
+      - application/json
+      description: Включает/выключает публикацию категории, опционально каскадно для
+        глав
       parameters:
-      - description: Английское слово
+      - description: ID категории
         in: path
-        name: word
+        name: section_id
+        required: true
         type: string
-      - description: 'Действие: delete или delete_all'
-        in: path
-        name: action
-        type: string
-      - description: Английское слово (для GET запроса)
+      - description: Данные публикации
+        in: body
+        name: request
+        required: true
+        schema:
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Результат
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "403":
+          description: Доступ запрещен
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Установить статус публикации категории
+      tags:
+      - Admin
+  /api/admin/grammar/chapters:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает список глав категории с информацией о публикации
+      parameters:
+      - description: ID категории
         in: query
-        name: word
+        name: section_id
+        required: true
         type: string
       produces:
       - application/json
       responses:
         "200":
-          description: Данные карточек или результат удаления
+          description: Список глав
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "403":
+          description: Доступ запрещен
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Получить главы категории (админ)
+      tags:
+      - Admin
+  /api/admin/grammar/chapters/{chapter_id}/publish:
+    post:
+      consumes:
+      - application/json
+      description: Включает/выключает публикацию главы
+      parameters:
+      - description: ID главы
+        in: path
+        name: chapter_id
+        required: true
+        type: string
+      - description: Данные публикации
+        in: body
+        name: request
+        required: true
+        schema:
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Результат
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "403":
+          description: Доступ запрещен
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Установить статус публикации главы
+      tags:
+      - Admin
+  /api/admin/grammar/items/{item_type}/{item_id}/rename:
+    post:
+      consumes:
+      - application/json
+      description: Устанавливает кастомное имя для категории или главы
+      parameters:
+      - description: Тип элемента (section/chapter)
+        in: path
+        name: item_type
+        required: true
+        type: string
+      - description: ID элемента
+        in: path
+        name: item_id
+        required: true
+        type: string
+      - description: Данные переименования
+        in: body
+        name: request
+        required: true
+        schema:
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Результат
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "403":
+          description: Доступ запрещен
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Переименовать категорию/главу
+      tags:
+      - Admin
+  /api/admin/orphaned-cards:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает список training_cards, которые ссылаются на несуществующие
+        word_cards
+      parameters:
+      - default: 50
+        description: Лимит записей
+        in: query
+        name: limit
+        type: integer
+      - default: 0
+        description: Смещение
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список подвешенных карточек
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "403":
+          description: Доступ запрещен
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Получить список подвешенных тренировочных карточек
+      tags:
+      - Admin
+  /api/admin/orphaned-cards/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Удаляет training_card по ID (каскадно удаляет связанные user_cards
+        и review_events)
+      parameters:
+      - description: ID тренировочной карточки
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное удаление
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "403":
+          description: Доступ запрещен
+          schema:
+            type: string
+        "404":
+          description: Карточка не найдена
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Удалить подвешенную тренировочную карточку
+      tags:
+      - Admin
+  /api/admin/orphaned-user-cards:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает список user_cards, которые ссылаются на несуществующие
+        training_cards
+      parameters:
+      - description: Лимит записей (по умолчанию 50)
+        in: query
+        name: limit
+        type: integer
+      - description: Смещение для пагинации (по умолчанию 0)
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список подвешенных user карточек
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "403":
+          description: Доступ запрещен
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Получить список подвешенных user карточек
+      tags:
+      - Admin
+  /api/admin/orphaned-user-cards/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Удаляет user_card по ID (каскадно удаляет связанные review_events)
+      parameters:
+      - description: ID user карточки
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное удаление
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "403":
+          description: Доступ запрещен
+          schema:
+            type: string
+        "404":
+          description: Карточка не найдена
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Удалить подвешенную user карточку
+      tags:
+      - Admin
+  /api/admin/prompt-tester/default-prompts:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает дефолтные промпты для word data и training cards из
+        конфигурации
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Дефолтные промпты
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "403":
+          description: Доступ запрещен
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Получить дефолтные промпты
+      tags:
+      - Admin
+  /api/admin/prompt-tester/run:
+    post:
+      consumes:
+      - application/json
+      description: Прогоняет список слов через LLM с указанными промптами и возвращает
+        результаты в формате NDJSON stream
+      parameters:
+      - description: Запрос с словами и промптами
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_web.PromptTesterRunRequest'
+      produces:
+      - application/x-ndjson
+      responses:
+        "200":
+          description: NDJSON stream событий
+          schema:
+            type: string
+        "400":
+          description: Неверный запрос
+          schema:
+            type: string
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "403":
+          description: Доступ запрещен
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Запустить тестирование промптов
+      tags:
+      - Admin
+  /api/admin/stats:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает метрики по пользователям, активности, тренировкам и
+        карточкам
+      parameters:
+      - description: Количество дней для daily timeseries (по умолчанию 30)
+        in: query
+        name: days
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Статистика системы
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "403":
+          description: Доступ запрещен
+          schema:
+            type: string
+        "405":
+          description: Метод не разрешен
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Получить статистику системы
+      tags:
+      - Admin
+  /api/admin/training/{word}:
+    get:
+      consumes:
+      - application/json
+      - application/x-www-form-urlencoded
+      description: 'Получение (GET), создание (POST), генерация через LLM (POST /generate)
+        или удаление (POST /delete) тренировочных карточек по слову. Путь: /api/admin/training/{word}
+        или /api/admin/training/{word}/generate или /api/admin/training/{word}/delete
+        или /api/admin/training/delete_all'
+      parameters:
+      - description: Английское слово
+        in: path
+        name: word
+        type: string
+      - description: 'Ограничения для генерации (для POST /generate, JSON: {\'
+        in: body
+        name: constraints
+        schema:
+          type: string
+      - description: Русский перевод слова (для POST)
+        in: formData
+        name: word_ru
+        type: string
+      - description: Английское значение (для POST)
+        in: formData
+        name: meaning_en
+        type: string
+      - description: Пример на английском (для POST)
+        in: formData
+        name: example_en
+        type: string
+      - description: Пример на русском (для POST)
+        in: formData
+        name: example_ru
+        type: string
+      - description: Транскрипция (для POST)
+        in: formData
+        name: transcription
+        type: string
+      - description: Отвлекающие варианты (RU, JSON array) (для POST)
+        in: formData
+        name: distractors_ru
+        type: string
+      - description: Отвлекающие варианты (EN, JSON array) (для POST)
+        in: formData
+        name: distractors_en
+        type: string
+      - description: Подсказка (для POST)
+        in: formData
+        name: hint
+        type: string
+      - description: Часть речи (для POST)
+        in: formData
+        name: pos
+        type: string
+      - description: Отображаемое слово (для POST)
+        in: formData
+        name: display_word
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Данные карточек или результат создания/удаления/генерации
           schema:
             additionalProperties: true
             type: object
@@ -122,6 +742,10 @@ paths:
           description: Доступ запрещен (требуются права администратора)
           schema:
             type: string
+        "404":
+          description: Слово не найдено (для POST)
+          schema:
+            type: string
         "500":
           description: Внутренняя ошибка сервера
           schema:
@@ -131,7 +755,190 @@ paths:
       summary: Управление тренировочными карточками
       tags:
       - Admin
-  /app/admin/training/card/{id}:
+    post:
+      consumes:
+      - application/json
+      - application/x-www-form-urlencoded
+      description: 'Получение (GET), создание (POST), генерация через LLM (POST /generate)
+        или удаление (POST /delete) тренировочных карточек по слову. Путь: /api/admin/training/{word}
+        или /api/admin/training/{word}/generate или /api/admin/training/{word}/delete
+        или /api/admin/training/delete_all'
+      parameters:
+      - description: Английское слово
+        in: path
+        name: word
+        type: string
+      - description: 'Ограничения для генерации (для POST /generate, JSON: {\'
+        in: body
+        name: constraints
+        schema:
+          type: string
+      - description: Русский перевод слова (для POST)
+        in: formData
+        name: word_ru
+        type: string
+      - description: Английское значение (для POST)
+        in: formData
+        name: meaning_en
+        type: string
+      - description: Пример на английском (для POST)
+        in: formData
+        name: example_en
+        type: string
+      - description: Пример на русском (для POST)
+        in: formData
+        name: example_ru
+        type: string
+      - description: Транскрипция (для POST)
+        in: formData
+        name: transcription
+        type: string
+      - description: Отвлекающие варианты (RU, JSON array) (для POST)
+        in: formData
+        name: distractors_ru
+        type: string
+      - description: Отвлекающие варианты (EN, JSON array) (для POST)
+        in: formData
+        name: distractors_en
+        type: string
+      - description: Подсказка (для POST)
+        in: formData
+        name: hint
+        type: string
+      - description: Часть речи (для POST)
+        in: formData
+        name: pos
+        type: string
+      - description: Отображаемое слово (для POST)
+        in: formData
+        name: display_word
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Данные карточек или результат создания/удаления/генерации
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Неверный запрос
+          schema:
+            type: string
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "403":
+          description: Доступ запрещен (требуются права администратора)
+          schema:
+            type: string
+        "404":
+          description: Слово не найдено (для POST)
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Управление тренировочными карточками
+      tags:
+      - Admin
+  /api/admin/training/{word}/generate:
+    post:
+      consumes:
+      - application/json
+      - application/x-www-form-urlencoded
+      description: 'Получение (GET), создание (POST), генерация через LLM (POST /generate)
+        или удаление (POST /delete) тренировочных карточек по слову. Путь: /api/admin/training/{word}
+        или /api/admin/training/{word}/generate или /api/admin/training/{word}/delete
+        или /api/admin/training/delete_all'
+      parameters:
+      - description: Английское слово
+        in: path
+        name: word
+        type: string
+      - description: 'Ограничения для генерации (для POST /generate, JSON: {\'
+        in: body
+        name: constraints
+        schema:
+          type: string
+      - description: Русский перевод слова (для POST)
+        in: formData
+        name: word_ru
+        type: string
+      - description: Английское значение (для POST)
+        in: formData
+        name: meaning_en
+        type: string
+      - description: Пример на английском (для POST)
+        in: formData
+        name: example_en
+        type: string
+      - description: Пример на русском (для POST)
+        in: formData
+        name: example_ru
+        type: string
+      - description: Транскрипция (для POST)
+        in: formData
+        name: transcription
+        type: string
+      - description: Отвлекающие варианты (RU, JSON array) (для POST)
+        in: formData
+        name: distractors_ru
+        type: string
+      - description: Отвлекающие варианты (EN, JSON array) (для POST)
+        in: formData
+        name: distractors_en
+        type: string
+      - description: Подсказка (для POST)
+        in: formData
+        name: hint
+        type: string
+      - description: Часть речи (для POST)
+        in: formData
+        name: pos
+        type: string
+      - description: Отображаемое слово (для POST)
+        in: formData
+        name: display_word
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Данные карточек или результат создания/удаления/генерации
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Неверный запрос
+          schema:
+            type: string
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "403":
+          description: Доступ запрещен (требуются права администратора)
+          schema:
+            type: string
+        "404":
+          description: Слово не найдено (для POST)
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Управление тренировочными карточками
+      tags:
+      - Admin
+  /api/admin/training/card/{id}:
     delete:
       consumes:
       - application/json
@@ -288,7 +1095,565 @@ paths:
       summary: Управление отдельной тренировочной карточкой
       tags:
       - Admin
-  /app/chat:
+  /api/admin/users:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает список всех пользователей для фильтрации в админке
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список пользователей
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "403":
+          description: Доступ запрещен
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Получить список пользователей
+      tags:
+      - Admin
+  /api/admin/word-set-categories:
+    get:
+      consumes:
+      - application/json
+      description: CRUD операции для категорий наборов слов (GET список, POST создать,
+        PUT обновить, DELETE удалить)
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список категорий или результат операции
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Неверный запрос
+          schema:
+            type: string
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "403":
+          description: Доступ запрещен
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Управление категориями наборов слов
+      tags:
+      - Admin
+    post:
+      consumes:
+      - application/json
+      description: CRUD операции для категорий наборов слов (GET список, POST создать,
+        PUT обновить, DELETE удалить)
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список категорий или результат операции
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Неверный запрос
+          schema:
+            type: string
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "403":
+          description: Доступ запрещен
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Управление категориями наборов слов
+      tags:
+      - Admin
+  /api/admin/word-set-categories/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: CRUD операции для категорий наборов слов (GET список, POST создать,
+        PUT обновить, DELETE удалить)
+      parameters:
+      - description: ID категории (для PUT/DELETE)
+        in: path
+        name: id
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список категорий или результат операции
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Неверный запрос
+          schema:
+            type: string
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "403":
+          description: Доступ запрещен
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Управление категориями наборов слов
+      tags:
+      - Admin
+    put:
+      consumes:
+      - application/json
+      description: CRUD операции для категорий наборов слов (GET список, POST создать,
+        PUT обновить, DELETE удалить)
+      parameters:
+      - description: ID категории (для PUT/DELETE)
+        in: path
+        name: id
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список категорий или результат операции
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Неверный запрос
+          schema:
+            type: string
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "403":
+          description: Доступ запрещен
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Управление категориями наборов слов
+      tags:
+      - Admin
+  /api/admin/word-sets:
+    get:
+      consumes:
+      - application/json
+      description: CRUD операции для наборов слов (GET список, POST создать, PUT обновить,
+        DELETE удалить)
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список наборов или результат операции
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Неверный запрос
+          schema:
+            type: string
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "403":
+          description: Доступ запрещен
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Управление наборами слов
+      tags:
+      - Admin
+    post:
+      consumes:
+      - application/json
+      description: CRUD операции для наборов слов (GET список, POST создать, PUT обновить,
+        DELETE удалить)
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список наборов или результат операции
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Неверный запрос
+          schema:
+            type: string
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "403":
+          description: Доступ запрещен
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Управление наборами слов
+      tags:
+      - Admin
+  /api/admin/word-sets/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: CRUD операции для наборов слов (GET список, POST создать, PUT обновить,
+        DELETE удалить)
+      parameters:
+      - description: ID набора (для PUT/DELETE)
+        in: path
+        name: id
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список наборов или результат операции
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Неверный запрос
+          schema:
+            type: string
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "403":
+          description: Доступ запрещен
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Управление наборами слов
+      tags:
+      - Admin
+    get:
+      consumes:
+      - application/json
+      description: Возвращает детальную информацию о наборе слов для админа
+      parameters:
+      - description: ID набора слов
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Детали набора
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "403":
+          description: Доступ запрещен
+          schema:
+            type: string
+        "404":
+          description: Набор не найден
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Получить детали набора слов (админ)
+      tags:
+      - Admin
+    put:
+      consumes:
+      - application/json
+      description: CRUD операции для наборов слов (GET список, POST создать, PUT обновить,
+        DELETE удалить)
+      parameters:
+      - description: ID набора (для PUT/DELETE)
+        in: path
+        name: id
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список наборов или результат операции
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Неверный запрос
+          schema:
+            type: string
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "403":
+          description: Доступ запрещен
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Управление наборами слов
+      tags:
+      - Admin
+  /api/admin/words:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает список слов с возможностью фильтрации по пользователю
+        и ошибкам
+      parameters:
+      - description: Фильтр по ID пользователя
+        format: int64
+        in: query
+        name: user_id
+        type: integer
+      - description: Показать только слова с ошибками
+        in: query
+        name: only_errors
+        type: boolean
+      - description: Лимит записей (по умолчанию 50)
+        in: query
+        name: limit
+        type: integer
+      - description: Смещение (по умолчанию 0)
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список слов
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "403":
+          description: Доступ запрещен
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Получить список слов
+      tags:
+      - Admin
+  /api/admin/words/{id}:
+    delete:
+      consumes:
+      - application/json
+      - application/x-www-form-urlencoded
+      description: Редактирование определения (PUT), сброс ошибки обработки (POST
+        /reset) или удаление слова (DELETE)
+      parameters:
+      - description: ID слова
+        format: int64
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Новое определение
+        in: formData
+        name: definition
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешная операция
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Неверный запрос
+          schema:
+            type: string
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "403":
+          description: Доступ запрещен
+          schema:
+            type: string
+        "404":
+          description: Слово не найдено
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Управление отдельным словом
+      tags:
+      - Admin
+    put:
+      consumes:
+      - application/json
+      - application/x-www-form-urlencoded
+      description: Редактирование определения (PUT), сброс ошибки обработки (POST
+        /reset) или удаление слова (DELETE)
+      parameters:
+      - description: ID слова
+        format: int64
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Новое определение
+        in: formData
+        name: definition
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешная операция
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Неверный запрос
+          schema:
+            type: string
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "403":
+          description: Доступ запрещен
+          schema:
+            type: string
+        "404":
+          description: Слово не найдено
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Управление отдельным словом
+      tags:
+      - Admin
+  /api/admin/words/{id}/reset:
+    post:
+      consumes:
+      - application/json
+      - application/x-www-form-urlencoded
+      description: Редактирование определения (PUT), сброс ошибки обработки (POST
+        /reset) или удаление слова (DELETE)
+      parameters:
+      - description: ID слова
+        format: int64
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Новое определение
+        in: formData
+        name: definition
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешная операция
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Неверный запрос
+          schema:
+            type: string
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "403":
+          description: Доступ запрещен
+          schema:
+            type: string
+        "404":
+          description: Слово не найдено
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Управление отдельным словом
+      tags:
+      - Admin
+  /api/chat:
     post:
       consumes:
       - application/x-www-form-urlencoded
@@ -327,7 +1692,7 @@ paths:
       summary: Отправить сообщение в AI чат
       tags:
       - Chat
-  /app/dashboard:
+  /api/dashboard:
     get:
       consumes:
       - application/json
@@ -353,7 +1718,712 @@ paths:
       summary: Получить данные дашборда
       tags:
       - Dashboard
-  /app/training/answer:
+  /api/learning/grammar/categories:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает список опубликованных категорий с прогрессом пользователя
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список категорий
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Получить опубликованные категории грамматики
+      tags:
+      - Learning
+  /api/learning/grammar/categories/{section_id}/access:
+    get:
+      consumes:
+      - application/json
+      description: Проверяет, может ли пользователь получить доступ к категории (все
+        главы предыдущей категории должны быть пройдены)
+      parameters:
+      - description: ID категории
+        in: path
+        name: section_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Результат проверки доступа
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "404":
+          description: Категория не найдена
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Проверить доступ к категории
+      tags:
+      - Learning
+  /api/learning/grammar/categories/{section_id}/chapters:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает список опубликованных глав категории с прогрессом пользователя
+      parameters:
+      - description: ID категории
+        in: path
+        name: section_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список глав
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "404":
+          description: Категория не найдена
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Получить опубликованные главы категории
+      tags:
+      - Learning
+  /api/learning/grammar/categories/{section_id}/test:
+    get:
+      consumes:
+      - application/json
+      description: Генерирует тест из всех глав категории (минимум 2 вопроса на главу,
+        до 20 всего)
+      parameters:
+      - description: ID категории
+        in: path
+        name: section_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Вопросы теста
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "404":
+          description: Категория не найдена
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Получить тест по категории
+      tags:
+      - Learning
+  /api/learning/grammar/chapters/{chapter_id}:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает контент главы (без ответов для тестов)
+      parameters:
+      - description: ID главы
+        in: path
+        name: chapter_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Контент главы
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "404":
+          description: Глава не найдена
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Получить контент главы
+      tags:
+      - Learning
+  /api/learning/grammar/chapters/{chapter_id}/access:
+    get:
+      consumes:
+      - application/json
+      description: Проверяет, может ли пользователь получить доступ к главе (предыдущая
+        глава должна быть пройдена)
+      parameters:
+      - description: ID главы
+        in: path
+        name: chapter_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Результат проверки доступа
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "404":
+          description: Глава не найдена
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Проверить доступ к главе
+      tags:
+      - Learning
+  /api/learning/grammar/chapters/{chapter_id}/next:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает следующую опубликованную главу в той же категории в
+        порядке, как в списке глав.
+      parameters:
+      - description: ID главы
+        in: path
+        name: chapter_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Следующая глава или признак последней
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "404":
+          description: Глава/категория не найдена
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Получить следующую главу
+      tags:
+      - Learning
+  /api/learning/grammar/chapters/{chapter_id}/test:
+    get:
+      consumes:
+      - application/json
+      description: Генерирует тест из банка вопросов главы (без ответов)
+      parameters:
+      - description: ID главы
+        in: path
+        name: chapter_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Вопросы теста
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "404":
+          description: Глава не найдена
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Получить тест по главе
+      tags:
+      - Learning
+  /api/learning/grammar/placement-test:
+    get:
+      consumes:
+      - application/json
+      description: Генерирует тест на определение уровня (25 вопросов из всех опубликованных
+        категорий)
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Вопросы теста
+          schema:
+            $ref: '#/definitions/tgbot-skeleton_internal_service.TestQuestions'
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "405":
+          description: Метод не разрешен
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Получить placement тест
+      tags:
+      - Learning Grammar
+  /api/learning/grammar/placement-test/submit:
+    post:
+      consumes:
+      - application/json
+      description: Отправляет ответы на placement тест и определяет уровень пользователя
+      parameters:
+      - description: Ответы на вопросы (map question_id -> answer)
+        in: body
+        name: request
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Результат теста
+          schema:
+            $ref: '#/definitions/tgbot-skeleton_internal_service.PlacementTestResult'
+        "400":
+          description: Неверный запрос
+          schema:
+            type: string
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "405":
+          description: Метод не разрешен
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Отправить ответы placement теста
+      tags:
+      - Learning Grammar
+  /api/learning/grammar/statistics:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает подтвержденный уровень грамматики и процент завершения
+        курса
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Статистика грамматики
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Получить статистику грамматики
+      tags:
+      - Learning
+  /api/learning/grammar/tests/submit:
+    post:
+      consumes:
+      - application/json
+      description: Проверяет ответы и сохраняет результат теста
+      parameters:
+      - description: Данные теста
+        in: body
+        name: request
+        required: true
+        schema:
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Результат теста
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Неверный запрос
+          schema:
+            type: string
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Отправить ответы на тест
+      tags:
+      - Learning
+  /api/learning/words/categories:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает категории для указанного родителя (parent_id). Если
+        parent_id не указан или null, возвращает корневые категории
+      parameters:
+      - description: ID родительской категории (null для корневых)
+        in: query
+        name: parent_id
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список категорий
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Получить категории по уровню
+      tags:
+      - Learning
+  /api/learning/words/sets:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает список наборов слов с прогрессом пользователя, с возможностью
+        фильтрации
+      parameters:
+      - description: ID категории
+        in: query
+        name: category_id
+        type: integer
+      - description: Лимит (по умолчанию 50)
+        in: query
+        name: limit
+        type: integer
+      - description: Смещение (по умолчанию 0)
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список наборов с прогрессом
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Получить список наборов слов
+      tags:
+      - Learning
+  /api/learning/words/sets/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает детальную информацию о наборе слов, включая список слов
+        со статусом для пользователя
+      parameters:
+      - description: ID набора слов
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Детали набора с словами
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "404":
+          description: Набор не найден
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Получить детали набора слов
+      tags:
+      - Learning
+  /api/learning/words/sets/{id}/study:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает training card для указанного слова из набора слов
+      parameters:
+      - description: ID набора слов
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: ID слова (word_card_id)
+        in: query
+        name: word_card_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Training card для слова
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Неверный запрос
+          schema:
+            type: string
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "404":
+          description: Слово или карточка не найдены
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Получить словарную карточку для слова из набора
+      tags:
+      - Learning
+  /api/learning/words/sets/{id}/study/know:
+    post:
+      consumes:
+      - application/json
+      description: Отмечает слово как известное и удаляет user_cards, чтобы оно не
+        попадало в тренировки
+      parameters:
+      - description: ID набора слов
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: ID слова (word_card_id)
+        in: body
+        name: word_card_id
+        required: true
+        schema:
+          type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное действие
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Неверный запрос
+          schema:
+            type: string
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Отметить слово как известное
+      tags:
+      - Learning
+  /api/learning/words/sets/{id}/study/learn:
+    post:
+      consumes:
+      - application/json
+      description: Добавляет слово в тренировку (создает user_cards) и убирает статус
+        "known" если был
+      parameters:
+      - description: ID набора слов
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: ID слова (word_card_id)
+        in: body
+        name: word_card_id
+        required: true
+        schema:
+          type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное добавление
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Неверный запрос
+          schema:
+            type: string
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Добавить слово в тренировку
+      tags:
+      - Learning
+  /api/settings:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает текущие настройки пользователя
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Настройки пользователя
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Получить настройки пользователя
+      tags:
+      - Settings
+  /api/settings/notifications:
+    post:
+      consumes:
+      - application/json
+      description: Обновляет периодичность уведомлений пользователя
+      parameters:
+      - description: 'Периодичность: ''daily'', ''never'', или число дней (например,
+          ''3'')'
+        in: body
+        name: frequency
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное обновление
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Неверный запрос
+          schema:
+            type: string
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Обновить настройки уведомлений
+      tags:
+      - Settings
+  /api/training/answer:
     post:
       consumes:
       - application/x-www-form-urlencoded
@@ -400,7 +2470,7 @@ paths:
       summary: Отправить ответ на карточку
       tags:
       - Training
-  /app/training/current:
+  /api/training/current:
     get:
       consumes:
       - application/json
@@ -418,10 +2488,6 @@ paths:
           description: Неавторизован
           schema:
             type: string
-        "404":
-          description: Нет активной сессии
-          schema:
-            type: string
         "405":
           description: Метод не разрешен
           schema:
@@ -431,7 +2497,7 @@ paths:
       summary: Получить текущую карточку
       tags:
       - Training
-  /app/training/reveal:
+  /api/training/reveal:
     post:
       consumes:
       - application/json
@@ -461,7 +2527,7 @@ paths:
       summary: Показать варианты ответов
       tags:
       - Training
-  /app/training/start:
+  /api/training/start:
     post:
       consumes:
       - application/json
@@ -493,7 +2559,34 @@ paths:
       summary: Начать тренировку
       tags:
       - Training
-  /app/vocab:
+  /api/training/upcoming:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает количество карточек, которые появятся в каждый день
+        ближайшей недели
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Карта дат и количества карточек
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Получить количество карточек на ближайшую неделю
+      tags:
+      - Training
+  /api/vocab:
     get:
       consumes:
       - application/json
@@ -504,6 +2597,10 @@ paths:
       - description: Поиск по слову
         in: query
         name: search
+        type: string
+      - description: 'Фильтр по уровню мастерства: new, learning, mastered, known'
+        in: query
+        name: mastery_level
         type: string
       - description: Номер страницы (начиная с 1)
         in: query
@@ -538,12 +2635,12 @@ paths:
       summary: Получить список слов
       tags:
       - Vocab
-  /app/vocab/{word}:
+  /api/vocab/{word}:
     get:
       consumes:
       - application/json
       description: 'Подтверждение удаления (GET) или удаление слова (POST) из словаря
-        пользователя. Путь: /app/vocab/{word}/confirm_delete или /app/vocab/{word}/delete'
+        пользователя. Путь: /api/vocab/{word}/confirm_delete или /api/vocab/{word}/delete'
       parameters:
       - description: Английское слово для удаления
         in: path
@@ -584,14 +2681,14 @@ paths:
       summary: Удалить слово из словаря
       tags:
       - Vocab
-  /app/vocab/{word}/cards:
+  /api/vocab/{word}/cards:
     get:
       consumes:
       - application/json
       description: Возвращает детальную информацию о всех карточках пользователя для
-        указанного слова
+        указанного слова (лемма)
       parameters:
-      - description: Английское слово
+      - description: Лемма слова (word_cards.word)
         in: path
         name: word
         required: true
