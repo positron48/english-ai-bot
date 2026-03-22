@@ -47,13 +47,14 @@ type pronunciationProvider interface {
 type pcmToMp3Func func(pcm []byte) ([]byte, error)
 
 type openRouterPronunciationProvider struct {
-	baseURL              string
-	model                string
-	voice                string
-	apiKey               string
-	client               *http.Client
-	pcmToMp3             pcmToMp3Func // nil = use ffmpeg
-	forceChatCompletions bool         // if true, use chat path even when baseURL is not openrouter (for tests)
+	baseURL                string
+	model                  string
+	voice                  string
+	apiKey                 string
+	chatUserPromptTemplate string // from TTS_CHAT_PRONUNCIATION_PROMPT; {word} → word in backticks; empty = default EN prompt
+	client                 *http.Client
+	pcmToMp3               pcmToMp3Func // nil = use ffmpeg
+	forceChatCompletions   bool         // if true, use chat path even when baseURL is not openrouter (for tests)
 }
 
 func (p *openRouterPronunciationProvider) name() string {
@@ -125,9 +126,24 @@ func (p *openRouterPronunciationProvider) fetchViaChatCompletions(ctx context.Co
 	return p.fetchViaChatCompletionsOnce(ctx, word)
 }
 
+// buildOpenRouterChatUserPrompt builds the user message for chat+audio pronunciation. Template comes from
+// TTS_CHAT_PRONUNCIATION_PROMPT; placeholder {word} is replaced with the word wrapped in backticks (same as the historical default).
+// If template is empty, a generic English instruction is used. If template is non-empty but has no {word}, the quoted word is appended.
+func buildOpenRouterChatUserPrompt(template, word string) string {
+	quoted := "`" + word + "`"
+	def := "You are a pronunciation machine. Say ONLY the exact word below as audio. One word, no greeting, no pause, no repetition. Word: " + quoted
+	t := strings.TrimSpace(template)
+	if t == "" {
+		return def
+	}
+	if strings.Contains(t, "{word}") {
+		return strings.ReplaceAll(t, "{word}", quoted)
+	}
+	return strings.TrimRight(t, " \t\n") + " " + quoted
+}
+
 func (p *openRouterPronunciationProvider) fetchViaChatCompletionsOnce(ctx context.Context, word string) ([]byte, error) {
-	quotedWord := "`" + word + "`"
-	userPrompt := "You are a pronunciation machine. Say ONLY the exact word below as audio. One word, no greeting, no pause, no repetition. Word: " + quotedWord
+	userPrompt := buildOpenRouterChatUserPrompt(p.chatUserPromptTemplate, word)
 	payload := map[string]interface{}{
 		"model": p.model,
 		"messages": []map[string]string{
@@ -684,7 +700,7 @@ func buildPronunciationProviders(cfg config.TTSConfig, learning config.LearningC
 			if tl == "" {
 				tl = "en"
 			}
-			baseURL = fmt.Sprintf("https://api.dictionaryapi.dev/api/v2/entries/%s", tl)
+			baseURL = fmt.Sprintf("https://api.dictionaryapi.dev/api/v2/entries/%s", strings.ToLower(tl))
 		}
 		minDelay := parseDurationWithDefault(cfg.DictionaryMinDelay, 100*time.Millisecond)
 		if minDelay < 0 {
@@ -709,12 +725,13 @@ func buildPronunciationProviders(cfg config.TTSConfig, learning config.LearningC
 			voice = "alloy"
 		}
 		providers = append(providers, &openRouterPronunciationProvider{
-			baseURL:              baseURL,
-			model:                strings.TrimSpace(cfg.Model),
-			voice:                voice,
-			apiKey:               strings.TrimSpace(cfg.APIKey),
-			client:               client,
-			forceChatCompletions: isOpenRouterBaseURL(baseURL),
+			baseURL:                baseURL,
+			model:                  strings.TrimSpace(cfg.Model),
+			voice:                  voice,
+			apiKey:                 strings.TrimSpace(cfg.APIKey),
+			chatUserPromptTemplate: strings.TrimSpace(cfg.ChatPronunciationPrompt),
+			client:                 client,
+			forceChatCompletions:   isOpenRouterBaseURL(baseURL),
 		})
 	}
 

@@ -28,6 +28,8 @@ go.work
 .env
 .env.local
 .env.*.local
+.env.en
+.env.es
 
 # IDE files
 .vscode/

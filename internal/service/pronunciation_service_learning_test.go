@@ -35,7 +35,7 @@ func TestBuildPronunciationProviders_DictionaryBaseURLRespectsTargetLang(t *test
 		}
 	})
 
-	t.Run("default URL uses TargetLang es for Spanish profile", func(t *testing.T) {
+	t.Run("default URL uses TargetLang es segment", func(t *testing.T) {
 		lc := config.LearningConfig{
 			Pair: "ru-es", NativeLang: "ru", TargetLang: "es",
 			AppCode: "spanish", GrammarBundleID: "es",
@@ -68,6 +68,29 @@ func TestBuildPronunciationProviders_DictionaryBaseURLRespectsTargetLang(t *test
 		dp := provs[0].(*dictionaryPronunciationProvider)
 		if dp.baseURL != "https://example.com/dict/api" {
 			t.Fatalf("baseURL=%q", dp.baseURL)
+		}
+	})
+}
+
+func TestBuildOpenRouterChatUserPrompt(t *testing.T) {
+	t.Run("empty uses default", func(t *testing.T) {
+		got := buildOpenRouterChatUserPrompt("", "hello")
+		if !strings.Contains(got, "`hello`") || !strings.Contains(got, "pronunciation machine") {
+			t.Fatalf("unexpected: %q", got)
+		}
+	})
+	t.Run("{word} replacement", func(t *testing.T) {
+		got := buildOpenRouterChatUserPrompt("Say in Spanish: {word}", "casa")
+		want := "Say in Spanish: `casa`"
+		if got != want {
+			t.Fatalf("got %q want %q", got, want)
+		}
+	})
+	t.Run("no placeholder appends quoted word", func(t *testing.T) {
+		got := buildOpenRouterChatUserPrompt("Spanish only.", "sol")
+		want := "Spanish only. `sol`"
+		if got != want {
+			t.Fatalf("got %q want %q", got, want)
 		}
 	})
 }

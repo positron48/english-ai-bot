@@ -13,7 +13,7 @@ SERVICE_NAME ?= ai-bot
 -include .env
 .EXPORT_ALL_VARIABLES:
 
-.PHONY: all tidy build run test lint fmt setup up clean check check-quick ci deploy update status logs docker-build docker-run docker-stop docker-logs docker-clean docker-rebuild docker-dev docker-dev-logs docker-dev-restart webapp-install webapp-dev webapp-build test-postgres test-integration test-integration-verbose
+.PHONY: all tidy build run test lint fmt setup up up-en up-es clean check check-quick ci deploy update status logs docker-build docker-run docker-stop docker-logs docker-clean docker-rebuild docker-dev docker-dev-logs docker-dev-restart webapp-install webapp-dev webapp-build test-postgres test-integration test-integration-verbose grammar-bundle grammar-bundle-list postgres-dev-init-dbs
 
 all: build
 
@@ -31,14 +31,18 @@ swagger:
 		2>&1 | grep -vE "(warning: failed to get package name|warning: failed to evaluate const)" || true
 	@echo "✅ Swagger documentation generated in docs/swagger/"
 
+# Regenerate internal/grammarbundle/* from every courses/*/ that has bundle.target + config/generation-status.json
 grammar-bundle:
-	@echo "Updating grammar submodule..."
-	@git submodule update --remote
-	@echo "✅ Grammar submodule updated"
+	@echo "Initializing / updating grammar submodules..."
+	@git submodule update --init --recursive 2>/dev/null || true
+	@-git submodule update --remote 2>/dev/null || true
 	@echo ""
-	@echo "Generating grammar bundles (en + es)..."
-	@./scripts/generate-grammar-bundle.sh all
+	@echo "Generating embedded grammar bundles (see: ./scripts/generate-grammar-bundle.sh list)..."
+	@./scripts/generate-grammar-bundle.sh
 	@echo "✅ Grammar bundles generated"
+
+grammar-bundle-list:
+	@./scripts/generate-grammar-bundle.sh list
 
 tag:
 	@V=$$(git describe --tags --abbrev=0 2>/dev/null | sed -E 's/^v?//' || echo "0.0.0"); \
@@ -307,6 +311,34 @@ postgres-down:
 	@docker stop english-postgres-local 2>/dev/null || true
 	docker compose -f docker-compose.dev.yml down
 
+# Second DB on the same local Postgres (port 5433) for running Spanish instance alongside English.
+postgres-dev-init-dbs:
+	@set -e; \
+	for c in english-dev-postgres english-postgres-local; do \
+	  if docker inspect $$c >/dev/null 2>&1; then \
+	    docker exec $$c psql -U english -d postgres -tc "SELECT 1 FROM pg_database WHERE datname='spanish'" 2>/dev/null | grep -q 1 \
+	      || docker exec $$c psql -U english -d postgres -c "CREATE DATABASE spanish;"; \
+	    echo "✅ Database 'spanish' ready (container $$c)"; \
+	    exit 0; \
+	  fi; \
+	done; \
+	echo "⚠️  Local postgres container not found — start with: make postgres-up"; \
+	exit 0
+
+# Local RU→EN: copy env.example.en → .env.en (and optionally merge secrets from .env)
+up-en: postgres-up build
+	@test -f .env.en || (echo "Нет .env.en — скопируйте env.example.en в .env.en и заполните секреты"; exit 1)
+	@set -e; \
+	set -a; [ -f .env ] && . ./.env; set +a; \
+	set -a && . ./.env.en && set +a && exec ./bin/$(APP_NAME)
+
+# Local RU→ES: отдельный порт HTTP и БД spanish (make postgres-dev-init-dbs после первого postgres-up)
+up-es: postgres-up postgres-dev-init-dbs build
+	@test -f .env.es || (echo "Нет .env.es — скопируйте env.example.es в .env.es и заполните секреты"; exit 1)
+	@set -e; \
+	set -a; [ -f .env ] && . ./.env; set +a; \
+	set -a && . ./.env.es && set +a && exec ./bin/$(APP_NAME)
+
 # Cleanup
 clean:
 	rm -rf bin/
@@ -367,7 +399,12 @@ help:
 	@echo "  make build          - Build the application"
 	@echo "  make run            - Run the application"
 	@echo "  make postgres-up    - Start PostgreSQL for local dev (port 5433); run before make run"
+	@echo "  make postgres-dev-init-dbs - CREATE DATABASE spanish on local Postgres (for make up-es)"
 	@echo "  make postgres-down  - Stop local PostgreSQL"
+	@echo "  make grammar-bundle - Regenerate internal/grammarbundle/* from all courses/*/bundle.target"
+	@echo "  make grammar-bundle-list - List course dirs -> bundle ids"
+	@echo "  make up-en          - Run bot+web with .env.en (+ optional .env), http :8184, DB english"
+	@echo "  make up-es          - Run second instance with .env.es (+ optional .env), http :8284, DB spanish"
 	@echo "  make dev            - Run backend + frontend in development mode"
 	@echo "  make webapp-install - Install webapp dependencies"
 	@echo "  make webapp-dev     - Run webapp dev server only"

@@ -18,17 +18,17 @@ var langCodeSegment = regexp.MustCompile(`^[a-z]{2,8}$`)
 
 // Config represents the application configuration
 type Config struct {
-	Telegram  TelegramConfig  `mapstructure:"telegram"`
-	Server    ServerConfig    `mapstructure:"server"`
-	Logging   LoggingConfig   `mapstructure:"logging"`
-	AI        AIConfig        `mapstructure:"ai"`
-	TTS       TTSConfig       `mapstructure:"tts"`
-	Bot       BotConfig       `mapstructure:"bot"`
-	Database  DatabaseConfig  `mapstructure:"database"`
-	Training  TrainingConfig  `mapstructure:"training"`
-	Admin     AdminConfig     `mapstructure:"admin"`
-	WebApp    WebAppConfig    `mapstructure:"webapp"`
-	Learning  LearningConfig `mapstructure:"learning"`
+	Telegram TelegramConfig `mapstructure:"telegram"`
+	Server   ServerConfig   `mapstructure:"server"`
+	Logging  LoggingConfig  `mapstructure:"logging"`
+	AI       AIConfig       `mapstructure:"ai"`
+	TTS      TTSConfig      `mapstructure:"tts"`
+	Bot      BotConfig      `mapstructure:"bot"`
+	Database DatabaseConfig `mapstructure:"database"`
+	Training TrainingConfig `mapstructure:"training"`
+	Admin    AdminConfig    `mapstructure:"admin"`
+	WebApp   WebAppConfig   `mapstructure:"webapp"`
+	Learning LearningConfig `mapstructure:"learning"`
 }
 
 // LearningConfig holds language pair and bundle identity for multilang deployments.
@@ -99,15 +99,15 @@ func ValidateLearningConfig(lc LearningConfig) error {
 
 // TelegramConfig holds Telegram bot configuration
 type TelegramConfig struct {
-	Token          string `mapstructure:"token"`
-	APIBaseURL     string `mapstructure:"api_base_url"`
+	Token           string `mapstructure:"token"`
+	APIBaseURL      string `mapstructure:"api_base_url"`
 	Socks5ProxyAddr string `mapstructure:"socks5_proxy_addr"`
-	Debug          bool   `mapstructure:"debug"`
-	UpdatesTimeout int    `mapstructure:"updates_timeout"`
-	WebhookEnable  bool   `mapstructure:"webhook_enable"`
-	WebhookURL     string `mapstructure:"webhook_url"`
-	WebhookDomain  string `mapstructure:"webhook_domain"`
-	WebhookPath    string `mapstructure:"webhook_path"`
+	Debug           bool   `mapstructure:"debug"`
+	UpdatesTimeout  int    `mapstructure:"updates_timeout"`
+	WebhookEnable   bool   `mapstructure:"webhook_enable"`
+	WebhookURL      string `mapstructure:"webhook_url"`
+	WebhookDomain   string `mapstructure:"webhook_domain"`
+	WebhookPath     string `mapstructure:"webhook_path"`
 }
 
 // ServerConfig holds server configuration
@@ -151,6 +151,8 @@ type TTSConfig struct {
 	DictionaryBaseURL  string `mapstructure:"dictionary_base_url"`
 	DictionaryEnabled  bool   `mapstructure:"dictionary_enabled"`
 	DictionaryMinDelay string `mapstructure:"dictionary_min_delay"`
+	// ChatPronunciationPrompt is the user message for OpenRouter chat+audio TTS. Use {word} — replaced with the word in backticks. Empty = built-in English default.
+	ChatPronunciationPrompt string `mapstructure:"chat_pronunciation_prompt"`
 }
 
 // BotConfig holds bot messages and behavior configuration
@@ -248,6 +250,7 @@ func Load() (*Config, error) {
 	viper.SetDefault("tts.dictionary_base_url", "https://api.dictionaryapi.dev/api/v2/entries/en")
 	viper.SetDefault("tts.dictionary_enabled", true)
 	viper.SetDefault("tts.dictionary_min_delay", "100ms")
+	viper.SetDefault("tts.chat_pronunciation_prompt", "")
 	viper.SetDefault("database.driver", "postgres")
 	viper.SetDefault("database.path", "")
 
@@ -345,6 +348,7 @@ func Load() (*Config, error) {
 	_ = viper.BindEnv("tts.dictionary_base_url", "TTS_DICTIONARY_BASE_URL")
 	_ = viper.BindEnv("tts.dictionary_min_delay", "TTS_DICTIONARY_MIN_DELAY")
 	_ = viper.BindEnv("tts.dictionary_enabled", "TTS_DICTIONARY_ENABLED")
+	_ = viper.BindEnv("tts.chat_pronunciation_prompt", "TTS_CHAT_PRONUNCIATION_PROMPT")
 	_ = viper.BindEnv("bot.start_message", "BOT_START_MESSAGE")
 	_ = viper.BindEnv("bot.help_message", "BOT_HELP_MESSAGE")
 	_ = viper.BindEnv("bot.unknown_command_message", "BOT_UNKNOWN_COMMAND_MESSAGE")
