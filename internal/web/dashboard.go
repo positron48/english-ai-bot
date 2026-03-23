@@ -627,7 +627,7 @@ func (r *Router) handleLanguageSettings(w http.ResponseWriter, req *http.Request
 	}
 
 	language := strings.TrimSpace(requestData.Language)
-	if language != "en" && language != "ru" {
+	if language != "en" && language != "ru" && language != "es" {
 		lang := i18n.DetectLanguageFromRequest(req)
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)

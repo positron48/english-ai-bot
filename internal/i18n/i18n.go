@@ -18,6 +18,7 @@ var (
 	supportedTags = []language.Tag{
 		language.English,
 		language.Russian,
+		language.Spanish,
 	}
 	matcher = language.NewMatcher(supportedTags)
 )
@@ -40,6 +41,14 @@ func init() {
 		var ruMap map[string]interface{}
 		if err := json.Unmarshal(ruData, &ruMap); err == nil {
 			translations["ru"] = ruMap
+		}
+	}
+	// Load Spanish translations
+	esData, err := localesFS.ReadFile("locales/es.json")
+	if err == nil {
+		var esMap map[string]interface{}
+		if err := json.Unmarshal(esData, &esMap); err == nil {
+			translations["es"] = esMap
 		}
 	}
 }
@@ -67,6 +76,9 @@ func DetectLanguageFromRequest(r *http.Request) string {
 	// Map to supported languages
 	if lang == "ru" {
 		return "ru"
+	}
+	if lang == "es" {
+		return "es"
 	}
 	return "en"
 }

@@ -1,12 +1,14 @@
 import { createI18n } from 'vue-i18n'
 import en from './locales/en.json'
 import ru from './locales/ru.json'
+import es from './locales/es.json'
 
-export type SupportedLocale = 'en' | 'ru'
+export type SupportedLocale = 'en' | 'ru' | 'es'
 
 const messages = {
   en,
   ru,
+  es,
 }
 
 // Detect browser locale
@@ -21,6 +23,9 @@ export function detectBrowserLocale(): SupportedLocale {
   if (lang === 'ru') {
     return 'ru'
   }
+  if (lang === 'es') {
+    return 'es'
+  }
 
   return 'en'
 }
@@ -32,7 +37,7 @@ export function getInitialLocale(): SupportedLocale {
   }
 
   const stored = localStorage.getItem('locale') as SupportedLocale | null
-  if (stored === 'en' || stored === 'ru') {
+  if (stored === 'en' || stored === 'ru' || stored === 'es') {
     return stored
   }
 

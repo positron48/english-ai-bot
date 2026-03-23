@@ -6,13 +6,15 @@ function getCurrentLocale(): string {
     return 'en'
   }
   const stored = localStorage.getItem('locale')
-  if (stored === 'ru' || stored === 'en') {
+  if (stored === 'ru' || stored === 'en' || stored === 'es') {
     return stored
   }
   // Detect from browser
   const browserLang = navigator.language || (navigator as any).userLanguage || 'en'
   const lang = browserLang.toLowerCase().split('-')[0]
-  return lang === 'ru' ? 'ru' : 'en'
+  if (lang === 'ru') return 'ru'
+  if (lang === 'es') return 'es'
+  return 'en'
 }
 
 interface AuthResponse {

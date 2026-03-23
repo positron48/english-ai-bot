@@ -753,6 +753,35 @@ func (c *failingTelegramClient) Do(req *http.Request) (*http.Response, error) {
 	return nil, io.EOF
 }
 
+type parseEntitiesThenOKClient struct {
+	DoCount    int
+	lastParams url.Values
+}
+
+func (c *parseEntitiesThenOKClient) Do(req *http.Request) (*http.Response, error) {
+	c.DoCount++
+	body, _ := io.ReadAll(req.Body)
+	_ = req.Body.Close()
+	params, _ := url.ParseQuery(string(body))
+	c.lastParams = params
+
+	if c.DoCount == 1 {
+		resp := `{"ok": false, "error_code": 400, "description": "Bad Request: can't parse entities: Can't find end of the entity"}`
+		return &http.Response{
+			StatusCode: http.StatusOK,
+			Body:       io.NopCloser(bytes.NewBufferString(resp)),
+			Header:     http.Header{"Content-Type": []string{"application/json"}},
+		}, nil
+	}
+
+	resp := `{"ok": true, "result": {}}`
+	return &http.Response{
+		StatusCode: http.StatusOK,
+		Body:       io.NopCloser(bytes.NewBufferString(resp)),
+		Header:     http.Header{"Content-Type": []string{"application/json"}},
+	}, nil
+}
+
 // mockUserRepoUpdateFails implements userRepoInterface: GetOrCreateUser returns the pre-set user, UpdateUsername returns error.
 // Used to cover the UpdateUsername error (Warn) branches in handleCallbackQuery and handleMessage.
 type mockUserRepoUpdateFails struct {
@@ -784,6 +813,31 @@ func TestHandler_SendMessage_WhenSendFails(t *testing.T) {
 		cfg, db.GetConnection())
 	// should not panic when Send fails
 	h.sendMessage(10, "test")
+}
+
+func TestHandler_SendMessage_ParseEntitiesFallbackToPlain(t *testing.T) {
+	client := &parseEntitiesThenOKClient{}
+	bot := &tgbotapi.BotAPI{Token: "test", Client: client, Buffer: 1}
+	bot.SetAPIEndpoint("http://example.com/bot%s/%s")
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
+	cfg := &config.Config{}
+	h := NewHandler(bot, logger, nil, nil, nil, userRepo, nil, nil,
+		service.NewCircuitBreakerService(repository.NewCircuitBreakerRepository(db.GetConnection(), logger), 5, logger),
+		cfg, db.GetConnection())
+
+	h.sendMessage(10, "a*b")
+
+	if client.DoCount != 2 {
+		t.Fatalf("expected 2 send attempts, got %d", client.DoCount)
+	}
+	if got := client.lastParams.Get("text"); got != "a*b" {
+		t.Fatalf("fallback sent wrong text: %q", got)
+	}
+	if got := client.lastParams.Get("parse_mode"); got != "" {
+		t.Fatalf("fallback should be plain text without parse_mode, got %q", got)
+	}
 }
 
 func TestHandler_SendTyping_WhenRequestFails(t *testing.T) {

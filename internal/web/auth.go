@@ -116,7 +116,7 @@ func (m *AuthMiddleware) RequireAuth(next http.HandlerFunc) http.HandlerFunc {
 				Language string `json:"language"`
 			}
 			if err := json.Unmarshal([]byte(user.SettingsJSON), &settings); err == nil && settings.Language != "" {
-				if settings.Language == "ru" || settings.Language == "en" {
+				if settings.Language == "ru" || settings.Language == "en" || settings.Language == "es" {
 					lang = settings.Language
 				}
 			}

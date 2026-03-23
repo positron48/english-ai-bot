@@ -435,7 +435,7 @@ func TestHandleLanguageSettings_InvalidLanguage(t *testing.T) {
 		t.Fatalf("insert user error: %v", err)
 	}
 
-	req := httptest.NewRequest(http.MethodPost, "/api/settings/language", bytes.NewBufferString(`{"language":"es"}`))
+	req := httptest.NewRequest(http.MethodPost, "/api/settings/language", bytes.NewBufferString(`{"language":"fr"}`))
 	req.Header.Set("Content-Type", "application/json")
 	req = setUserIDInContext(req, 1)
 	w := httptest.NewRecorder()

@@ -644,8 +644,26 @@ func (h *Handler) sendMessage(chatID int64, text string) {
 	msg.ParseMode = tgbotapi.ModeMarkdown
 
 	if _, err := h.bot.Send(msg); err != nil {
+		if isTelegramParseEntitiesError(err) {
+			// Fallback to plain text when Markdown entities are malformed in LLM output.
+			plain := tgbotapi.NewMessage(chatID, text)
+			if _, fallbackErr := h.bot.Send(plain); fallbackErr != nil {
+				h.logger.Error("failed to send message", zap.Error(fallbackErr))
+				return
+			}
+			h.logger.Warn("markdown send failed, sent plain text fallback", zap.Error(err))
+			return
+		}
 		h.logger.Error("failed to send message", zap.Error(err))
 	}
+}
+
+func isTelegramParseEntitiesError(err error) bool {
+	if err == nil {
+		return false
+	}
+	s := strings.ToLower(err.Error())
+	return strings.Contains(s, "can't parse entities") || strings.Contains(s, "cant parse entities")
 }
 
 // sendTyping sends a typing indicator to the specified chat

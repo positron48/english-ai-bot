@@ -34,7 +34,7 @@ export function useLocale() {
 
   // Sync locale changes to reactive ref
   watch(() => locale.value, (newLocale) => {
-    if (newLocale === 'en' || newLocale === 'ru') {
+    if (newLocale === 'en' || newLocale === 'ru' || newLocale === 'es') {
       currentLocale.value = newLocale
       saveLocale(newLocale)
     }

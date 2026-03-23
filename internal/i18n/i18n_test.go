@@ -15,6 +15,7 @@ func TestDetectLanguageFromRequest(t *testing.T) {
 	}{
 		{"no header defaults to en", "", "en"},
 		{"ru preferred", "ru-RU,ru;q=0.9,en;q=0.8", "ru"},
+		{"es preferred", "es-ES,es;q=0.9,en;q=0.8", "es"},
 		{"malformed header defaults to en", "malformed", "en"},
 		{"en preferred after matcher", "en-US,en;q=0.9", "en"},
 		{"en only", "en", "en"},
@@ -65,6 +66,9 @@ func TestT(t *testing.T) {
 		{name: "ru nested key", lang: "ru", key: "errors.unauthorized", want: "Неавторизован"},
 		{name: "ru messages key", lang: "ru", key: "messages.notificationSettingsUpdated", want: "Настройки уведомлений успешно обновлены"},
 		{name: "ru missing key returns key", lang: "ru", key: "missing.key", wantKey: true},
+		// Spanish
+		{name: "es nested key", lang: "es", key: "errors.unauthorized", want: "No autorizado"},
+		{name: "es messages key", lang: "es", key: "messages.notificationSettingsUpdated", want: "Configuración de notificaciones actualizada correctamente"},
 		// unknown language fallback to en
 		{name: "unknown lang fallback to en", lang: "de", key: "errors.unauthorized", want: "Unauthorized"},
 		{name: "unknown lang missing key returns key", lang: "fr", key: "absent.key", wantKey: true},

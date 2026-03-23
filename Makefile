@@ -330,14 +330,36 @@ up-en: postgres-up build
 	@test -f .env.en || (echo "Нет .env.en — скопируйте env.example.en в .env.en и заполните секреты"; exit 1)
 	@set -e; \
 	set -a; [ -f .env ] && . ./.env; set +a; \
-	set -a && . ./.env.en && set +a && exec ./bin/$(APP_NAME)
+	set -a && . ./.env.en && set +a; \
+	PORT=$${SERVER_PORT:-}; \
+	ADDR=$${SERVER_ADDRESS:-}; \
+	if [ -n "$$PORT" ]; then APP_URL="http://localhost:$$PORT"; \
+	elif [ -n "$$ADDR" ]; then APP_URL="http://localhost$${ADDR}"; \
+	else APP_URL="http://localhost:8184"; fi; \
+	echo ""; \
+	echo "========================================"; \
+	echo "🚀 APP URL (EN): $$APP_URL"; \
+	echo "========================================"; \
+	echo ""; \
+	exec ./bin/$(APP_NAME)
 
 # Local RU→ES: отдельный порт HTTP и БД spanish (make postgres-dev-init-dbs после первого postgres-up)
 up-es: postgres-up postgres-dev-init-dbs build
 	@test -f .env.es || (echo "Нет .env.es — скопируйте env.example.es в .env.es и заполните секреты"; exit 1)
 	@set -e; \
 	set -a; [ -f .env ] && . ./.env; set +a; \
-	set -a && . ./.env.es && set +a && exec ./bin/$(APP_NAME)
+	set -a && . ./.env.es && set +a; \
+	PORT=$${SERVER_PORT:-}; \
+	ADDR=$${SERVER_ADDRESS:-}; \
+	if [ -n "$$PORT" ]; then APP_URL="http://localhost:$$PORT"; \
+	elif [ -n "$$ADDR" ]; then APP_URL="http://localhost$${ADDR}"; \
+	else APP_URL="http://localhost:8284"; fi; \
+	echo ""; \
+	echo "========================================"; \
+	echo "🚀 APP URL (ES): $$APP_URL"; \
+	echo "========================================"; \
+	echo ""; \
+	exec ./bin/$(APP_NAME)
 
 # Cleanup
 clean:

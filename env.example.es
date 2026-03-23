@@ -24,26 +24,16 @@ LOG_LEVEL=info
 DATABASE_DRIVER=postgres
 DATABASE_URL=postgres://english:english@127.0.0.1:5433/spanish?sslmode=disable
 
-AI_URL=https://openrouter.ai/api/v1
-AI_MODEL=qwen/qwen3-coder:free
-AI_MODEL_HIGH=openai/gpt-5-mini
-AI_API_KEY=your_openrouter_api_key_here
-
+# В общем .env должны быть AI_URL, AI_API_KEY, AI_MODEL (и при желании TTS_* — см. env.example)
 AI_PROMPT_FILE=prompts/teacher-ru-es.txt
 TRAINING_PROMPT_FILE=prompts/training-card-ru-es.txt
 
 TTS_ENABLED=true
-# Только OpenRouter (ключ обычно в .env: TTS_API_KEY / TTS_MODEL / TTS_BASE_URL)
 TTS_PROVIDER=openrouter
-TTS_BASE_URL=https://openrouter.ai/api/v1
-TTS_API_KEY=your_openrouter_key_same_as_ai_ok
-TTS_MODEL=openai/gpt-audio-mini
-TTS_VOICE=alloy
 TTS_AUDIO_DIR=./data/tts-es
-TTS_PUBLIC_BASE_PATH=/media/tts
 TTS_DICTIONARY_ENABLED=false
 # Промпт для chat+audio: {word} → слово в обратных кавычках (как раньше в коде)
-TTS_CHAT_PRONUNCIATION_PROMPT=You are a pronunciation machine. Say ONLY the exact Spanish word below as audio, with natural Spanish pronunciation. One word, no greeting, no pause, no repetition. Word: {word}
+TTS_CHAT_PRONUNCIATION_PROMPT="You are a pronunciation machine. Say ONLY the exact Spanish word below as audio, with natural Spanish pronunciation. One word, no greeting, no pause, no repetition. Word: {word}"
 
 TRAINING_WORKER_ENABLED=true
 TRAINING_WORKER_INTERVAL=30s

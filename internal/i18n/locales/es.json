@@ -1,0 +1,27 @@
+{
+  "errors": {
+    "unauthorized": "No autorizado",
+    "authRequired": "Se requiere autenticación. Proporcione un token JWT válido en el encabezado Authorization.",
+    "invalidAuthHeader": "Formato de encabezado Authorization no válido. Se espera: Bearer <token>",
+    "invalidToken": "Token no válido o expirado. Por favor, autentíquese de nuevo.",
+    "userNotFound": "Usuario no encontrado. Asegúrese de haber iniciado una conversación con el bot primero.",
+    "otpSent": "¡El código OTP fue enviado a su Telegram!",
+    "authSuccessful": "Autenticación exitosa",
+    "internalError": "Error interno del servidor",
+    "methodNotAllowed": "Método no permitido",
+    "invalidRequest": "Solicitud no válida",
+    "invalidFormData": "Datos de formulario no válidos",
+    "usernameRequired": "se requiere username",
+    "userIdRequired": "se requieren user_id y code",
+    "invalidUserId": "user_id no válido",
+    "chatError": "Lo sentimos, ocurrió un error al procesar su mensaje. Inténtelo de nuevo.",
+    "tooManyRequests": "Demasiadas solicitudes. Inténtelo más tarde.",
+    "notFound": "No encontrado",
+    "failedToSendOTP": "No se pudo enviar OTP",
+    "otpServiceUnavailable": "Servicio OTP no disponible (el bot de Telegram no está configurado)",
+    "noCardsAvailable": "No hay tarjetas disponibles para entrenar. Primero solicita algunas palabras."
+  },
+  "messages": {
+    "notificationSettingsUpdated": "Configuración de notificaciones actualizada correctamente"
+  }
+}

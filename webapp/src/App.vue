@@ -51,12 +51,12 @@
                 :class="{ 'lang-slider-ru': currentLocale === 'ru' }"
               ></div>
               <button
-                @click.stop="setLocale('en')"
+                @click.stop="setLocale(targetLocale)"
                 class="lang-btn"
-                :class="{ active: currentLocale === 'en' }"
-                title="English"
+                :class="{ active: currentLocale === targetLocale }"
+                :title="targetLocaleLabel"
               >
-                EN
+                {{ targetLocaleLabel }}
               </button>
               <button
                 @click.stop="setLocale('ru')"
@@ -139,11 +139,11 @@
               :class="{ 'lang-slider-ru': currentLocale === 'ru' }"
             ></div>
             <button
-              @click.stop="setLocale('en'); showSidebar = false"
+              @click.stop="setLocale(targetLocale); showSidebar = false"
               class="lang-btn"
-              :class="{ active: currentLocale === 'en' }"
+              :class="{ active: currentLocale === targetLocale }"
             >
-              EN
+              {{ targetLocaleLabel }}
             </button>
             <button
               @click.stop="setLocale('ru'); showSidebar = false"
@@ -196,6 +196,7 @@ import { useAuth } from './composables/useAuth'
 import { useTheme } from './composables/useTheme'
 import { useDialog } from './composables/useDialog'
 import { useLocale } from './composables/useLocale'
+import { useLearningConfig } from './composables/useLearningConfig'
 import Icon from './components/Icon.vue'
 import AlertModal from './components/AlertModal.vue'
 import ConfirmModal from './components/ConfirmModal.vue'
@@ -206,6 +207,11 @@ const route = useRoute()
 const { t } = useI18n()
 const { isAuthenticated, isAdmin, logout: authLogout } = useAuth()
 const { currentLocale, setLocale } = useLocale()
+const { learning, ensureLearningLoaded } = useLearningConfig()
+const targetLocale = computed<'en' | 'es'>(() => {
+  return learning.value?.target_lang === 'es' ? 'es' : 'en'
+})
+const targetLocaleLabel = computed(() => targetLocale.value.toUpperCase())
 
 const isAdminRoute = computed(() => {
   return route.path.startsWith('/admin')
@@ -240,6 +246,7 @@ const checkMobile = () => {
 
 // Check if we're in Telegram Mini App
 onMounted(() => {
+  ensureLearningLoaded()
   const tg = (window as any).Telegram?.WebApp
   isTelegramMiniApp.value = !!tg
   
@@ -313,7 +320,7 @@ const handleLangSwitch = (event: MouseEvent) => {
   const target = event.target as HTMLElement
   if (target.classList.contains('lang-switcher') || target.classList.contains('lang-slider')) {
     // Toggle language when clicking on switcher background or slider
-    const newLocale = currentLocale.value === 'en' ? 'ru' : 'en'
+    const newLocale = currentLocale.value === targetLocale.value ? 'ru' : targetLocale.value
     setLocale(newLocale)
   }
 }
@@ -322,7 +329,7 @@ const handleLangSwitchSidebar = (event: MouseEvent) => {
   const target = event.target as HTMLElement
   if (target.classList.contains('lang-switcher') || target.classList.contains('lang-slider')) {
     // Toggle language when clicking on switcher background or slider
-    const newLocale = currentLocale.value === 'en' ? 'ru' : 'en'
+    const newLocale = currentLocale.value === targetLocale.value ? 'ru' : targetLocale.value
     setLocale(newLocale)
     showSidebar.value = false
   }
