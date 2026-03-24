@@ -11,7 +11,25 @@ import (
 	"golang.org/x/net/proxy"
 )
 
-func newTelegramHTTPClientWithSocks5Proxy(proxyAddr string, log *zap.Logger) (*http.Client, error) {
+// telegramLongPollHTTPTimeouts returns timeouts for Telegram Bot API long polling (getUpdates).
+// The server may not send response headers until the long-poll window ends or an update arrives,
+// so ResponseHeaderTimeout and Client.Timeout must exceed the configured poll period.
+func telegramLongPollHTTPTimeouts(updatesTimeoutSec int) (responseHeader time.Duration, clientTimeout time.Duration) {
+	pollSec := updatesTimeoutSec
+	if pollSec <= 0 {
+		pollSec = 30
+	}
+	// https://core.telegram.org/bots/api#getupdates — timeout is optional, typical range 1–50s.
+	if pollSec > 50 {
+		pollSec = 50
+	}
+	const margin = 25 * time.Second
+	responseHeader = time.Duration(pollSec)*time.Second + margin
+	clientTimeout = responseHeader + 20*time.Second
+	return responseHeader, clientTimeout
+}
+
+func newTelegramHTTPClientWithSocks5Proxy(proxyAddr string, updatesTimeoutSec int, log *zap.Logger) (*http.Client, error) {
 	if proxyAddr == "" {
 		return &http.Client{}, nil
 	}
@@ -23,22 +41,22 @@ func newTelegramHTTPClientWithSocks5Proxy(proxyAddr string, log *zap.Logger) (*h
 
 	log.Info("Telegram SOCKS5 proxy enabled", zap.String("addr", proxyAddr))
 
+	headerTO, clientTO := telegramLongPollHTTPTimeouts(updatesTimeoutSec)
+
 	transport := &http.Transport{
 		Proxy: nil, // ensure we don't try to use proxy env vars in addition
 		DialContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
 			return dialer.Dial(network, addr)
 		},
-		// Reasonable timeouts to avoid goroutine leaks when proxy is misconfigured.
 		TLSHandshakeTimeout:   10 * time.Second,
-		ResponseHeaderTimeout: 20 * time.Second,
+		ResponseHeaderTimeout: headerTO,
 		ExpectContinueTimeout: 1 * time.Second,
-		IdleConnTimeout:       30 * time.Second,
+		IdleConnTimeout:       90 * time.Second,
 		MaxIdleConns:          10,
 	}
 
 	return &http.Client{
 		Transport: transport,
-		Timeout:   30 * time.Second,
+		Timeout:   clientTO,
 	}, nil
 }
-

@@ -6,7 +6,26 @@
       <!-- Registration hint when login form is shown (no Telegram WebApp or auth failed) -->
       <div v-if="!isCheckingTelegramAuth" class="register-hint">
         <p>{{ t('auth.registerInBotMessage') }}</p>
-        <a href="https://t.me/positroid_english_bot" target="_blank" rel="noopener noreferrer" class="bot-link">@{{ t('auth.registerInBotLinkText') }}</a>
+        <div class="register-bot-lines">
+          <div class="register-bot-line">
+            <span class="register-bot-label">{{ t('auth.registerEnglishBotLabel') }}</span>
+            <a
+              :href="telegramBotUrls.english"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="bot-link"
+            >@{{ telegramBotHandles.english }}</a>
+          </div>
+          <div class="register-bot-line">
+            <span class="register-bot-label">{{ t('auth.registerSpanishBotLabel') }}</span>
+            <a
+              :href="telegramBotUrls.spanish"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="bot-link"
+            >@{{ telegramBotHandles.spanish }}</a>
+          </div>
+        </div>
       </div>
       
       <!-- Show loading indicator while checking Telegram auth -->
@@ -81,6 +100,16 @@ import { useAuth } from '../composables/useAuth'
 import { apiClient } from '../api/client'
 
 const { t } = useI18n()
+
+/** Registration / OTP is tied to the correct bot instance; handles are stable across UI languages. */
+const telegramBotHandles = {
+  english: 'positroid_english_bot',
+  spanish: 'qantrix_spanish_bot',
+} as const
+const telegramBotUrls = {
+  english: `https://t.me/${telegramBotHandles.english}`,
+  spanish: `https://t.me/${telegramBotHandles.spanish}`,
+} as const
 
 const router = useRouter()
 const { login, tryTelegramAuth } = useAuth()
@@ -394,6 +423,26 @@ h1 {
 .register-hint p {
   margin: 0 0 8px 0;
   font-size: 0.9em;
+  color: var(--info-text, #1565c0);
+}
+
+.register-bot-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.register-bot-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  align-items: baseline;
+  font-size: 0.9em;
+}
+
+.register-bot-label {
   color: var(--info-text, #1565c0);
 }
 

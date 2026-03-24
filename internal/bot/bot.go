@@ -55,7 +55,7 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 
 		var httpClient tgbotapi.HTTPClient = &http.Client{}
 		if cfg.Telegram.Socks5ProxyAddr != "" {
-			telegramClient, clientErr := newTelegramHTTPClientWithSocks5Proxy(cfg.Telegram.Socks5ProxyAddr, log)
+			telegramClient, clientErr := newTelegramHTTPClientWithSocks5Proxy(cfg.Telegram.Socks5ProxyAddr, cfg.Telegram.UpdatesTimeout, log)
 			if clientErr != nil {
 				err = clientErr
 			} else {
