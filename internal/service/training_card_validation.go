@@ -18,7 +18,16 @@ func ValidateTrainingCardResponse(wordCard *models.WordCard, resp *models.Traini
 	lemma := strings.ToLower(wordCard.Word)
 	var errors []string
 
+	// R0: top-level word/display fields must not contain comma-separated forms
+	if strings.Contains(resp.WordEN, ",") {
+		errors = append(errors, fmt.Sprintf("R0 word_target=%q should not contain comma-separated values", truncate(resp.WordEN, 50)))
+	}
+
 	for senseIdx, sense := range resp.Senses {
+		if strings.Contains(sense.DisplayWord, ",") {
+			errors = append(errors, fmt.Sprintf("R0 sense=%d display_word=%q should not contain comma-separated values", senseIdx, truncate(sense.DisplayWord, 50)))
+		}
+
 		// Get POS for this sense: use from sense, or fallback to word_card if available
 		pos := sense.POS
 		if pos == "" && wordCard.POS != nil {
@@ -87,18 +96,26 @@ func ValidateTrainingCardResponse(wordCard *models.WordCard, resp *models.Traini
 			}
 		}
 
-		// R6: distractors_ru не должны в точности совпадать с word_ru или отличаться от него на 1 символ
+		// R6: distractors_ru не должны в точности совпадать с word_ru
 		wordRULower := strings.ToLower(sense.WordRU)
 		for i, distractor := range sense.DistractorsRU {
 			distractorLower := strings.ToLower(distractor)
 			// Проверяем точное совпадение
 			if distractorLower == wordRULower {
 				errors = append(errors, fmt.Sprintf("R6 sense=%d distractor_ru[%d]=%q exactly matches word_ru %q", senseIdx, i, truncate(distractor, 50), sense.WordRU))
-				continue
 			}
-			// Проверяем, отличается ли дескриптор от word_ru на 1 символ (расстояние Левенштейна = 1)
-			if levenshteinDistance(distractorLower, wordRULower) == 1 {
-				errors = append(errors, fmt.Sprintf("R6 sense=%d distractor_ru[%d]=%q differs from word_ru %q by 1 character", senseIdx, i, truncate(distractor, 50), sense.WordRU))
+		}
+
+		// R7: meaning_target should not trivially mirror lemma.
+		// Generic anti-hallucination check (no hardcoded words):
+		// reject if meaning_target is the same as lemma or differs by one character.
+		meaningTargetLower := strings.ToLower(strings.TrimSpace(sense.MeaningEN))
+		lemmaNormalized := strings.ToLower(strings.TrimSpace(lemma))
+		if meaningTargetLower != "" && lemmaNormalized != "" {
+			if meaningTargetLower == lemmaNormalized {
+				errors = append(errors, fmt.Sprintf("R7 sense=%d meaning_target=%q exactly matches lemma %q", senseIdx, truncate(sense.MeaningEN, 50), lemma))
+			} else if levenshteinDistance(meaningTargetLower, lemmaNormalized) == 1 {
+				errors = append(errors, fmt.Sprintf("R7 sense=%d meaning_target=%q differs from lemma %q by 1 character", senseIdx, truncate(sense.MeaningEN, 50), lemma))
 			}
 		}
 	}

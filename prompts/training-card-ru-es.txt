@@ -11,6 +11,16 @@ REJECTION
 - Reject nonsense: if the input contains ANY digits (0-9) => reject.
 - Otherwise ACCEPT (do NOT reject for uncertainty).
 
+If rejected by rules above, return this exact shape:
+{
+ "word_target":"<input>",
+ "lemma":"<input>",
+ "transcription":"",
+ "senses":[],
+ "error":"rejected_by_policy"
+}
+Do not generate senses for rejected inputs.
+
 SCHEMA (MUST MATCH)
 {
  "word_target":"", "lemma":"", "transcription":"",
@@ -20,6 +30,7 @@ SCHEMA (MUST MATCH)
 
 CARD
 - 1–3 senses.
+- word_target, lemma and every display_word MUST represent exactly ONE lexical item (no comma-separated variants like "conjunto, conjunta").
 - display_word: Spanish verb infinitive form as appropriate; use clear Spanish display conventions.
 - word_native must match pos:
   - verb => Russian infinitive

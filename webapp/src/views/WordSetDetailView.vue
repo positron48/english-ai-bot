@@ -2,27 +2,27 @@
   <div class="word-set-detail">
     <div class="detail-header">
       <button @click="goBack" class="btn-back">
-        ← Back
+        {{ t('wordSets.back') }}
       </button>
       <h1>{{ wordSet?.title }}</h1>
     </div>
     
-    <div v-if="loading" class="loading">Loading...</div>
+    <div v-if="loading" class="loading">{{ t('wordSets.loading') }}</div>
     <div v-else-if="error" class="error">{{ error }}</div>
     <div v-else-if="wordSet">
       <div class="word-set-info">
         <p v-if="wordSet.description" class="description">{{ wordSet.description }}</p>
         <div class="word-set-meta">
-          <span class="total-words">{{ wordSet.total_words }} words</span>
+          <span class="total-words">{{ t('wordSets.totalWords', { n: wordSet.total_words }) }}</span>
           <span class="progress-info">
-            Progress: {{ Math.round(wordSet.progress_percent) }}%
+            {{ t('wordSets.progress') }}: {{ Math.round(wordSet.progress_percent) }}%
             ({{ wordSet.known_words + wordSet.words_in_vocab }}/{{ wordSet.total_words }})
           </span>
         </div>
       </div>
       
       <div class="words-section">
-        <h2>Words</h2>
+        <h2>{{ t('wordSets.words') }}</h2>
         <div class="words-list">
           <div 
             v-for="word in words" 
@@ -33,7 +33,7 @@
           >
             <span class="word-text">{{ word.display_word || word.word }}</span>
             <span class="status-badge" :class="`badge-${word.status}`">
-              {{ word.status === 'known' ? 'Known' : word.status === 'in_vocab' ? 'In Vocab' : 'New' }}
+              {{ word.status === 'known' ? t('wordSets.statusKnown') : word.status === 'in_vocab' ? t('wordSets.statusInVocab') : t('wordSets.statusNew') }}
             </span>
           </div>
         </div>
@@ -43,11 +43,11 @@
       <div v-if="showWordModal" class="modal" @click.self="closeWordModal">
         <div class="modal-content modal-word-card">
           <div class="modal-header">
-            <h3>Word Card</h3>
+            <h3>{{ t('wordSets.wordCard') }}</h3>
             <button @click="closeWordModal" class="btn-close">&times;</button>
           </div>
           
-          <div v-if="loadingCard" class="loading">Loading card...</div>
+          <div v-if="loadingCard" class="loading">{{ t('wordSets.loadingCard') }}</div>
           <div v-else-if="currentTrainingCard" class="word-card-content">
             <div class="word-display">
               <h2>{{ currentTrainingCard.display_target || currentTrainingCard.display_word || currentTrainingCard.word_target || currentTrainingCard.word_en || selectedWord?.display_target || selectedWord?.display_word || selectedWord?.word }}</h2>
@@ -57,8 +57,8 @@
                   v-if="currentPronunciationURL"
                   class="btn-pronunciation"
                   :disabled="playingPronunciation"
-                  title="Pronounce"
-                  aria-label="Pronounce"
+                  :title="t('wordSets.pronounceAria')"
+                  :aria-label="t('wordSets.pronounceAria')"
                   @click="playCurrentPronunciation"
                 >
                   <Icon name="play" />
@@ -71,7 +71,7 @@
                 {{ currentTrainingCard.meaning_target || currentTrainingCard.meaning_en }}
               </div>
               <div v-if="currentTrainingCard.example_target || currentTrainingCard.example_en" class="example">
-                <strong>Example:</strong> {{ currentTrainingCard.example_target || currentTrainingCard.example_en }}
+                <strong>{{ t('wordSets.example') }}:</strong> {{ currentTrainingCard.example_target || currentTrainingCard.example_en }}
               </div>
               <div v-if="currentTrainingCard.example_native || currentTrainingCard.example_ru" class="example-ru">
                 {{ currentTrainingCard.example_native || currentTrainingCard.example_ru }}
@@ -80,27 +80,27 @@
             
             <div class="study-actions">
               <button @click="markKnown" class="btn btn-know" :disabled="processing">
-                Know
+                {{ t('wordSets.know') }}
               </button>
               <button @click="markLearn" class="btn btn-learn" :disabled="processing">
-                Learn
+                {{ t('wordSets.learn') }}
               </button>
               <button @click="closeWordModal" class="btn btn-skip" :disabled="processing">
-                Close
+                {{ t('wordSets.close') }}
               </button>
             </div>
           </div>
-          <div v-else class="error">Failed to load word card</div>
+          <div v-else class="error">{{ t('wordSets.failedLoadCard') }}</div>
         </div>
       </div>
       
       <div class="actions-section" v-if="wordSet.unknown_words > 0">
         <button @click="startStudy" class="btn btn-primary btn-large">
-          Start Learning ({{ wordSet.unknown_words }} new words)
+          {{ t('wordSets.startLearning', { n: wordSet.unknown_words }) }}
         </button>
       </div>
       <div v-else class="complete-message">
-        <p>All words in this set are already in your vocabulary!</p>
+        <p>{{ t('wordSets.allInVocab') }}</p>
       </div>
     </div>
   </div>
@@ -109,6 +109,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { apiClient } from '../api/client'
 import { showAlert } from '../composables/useDialog'
 import { useAudio } from '../composables/useAudio'
@@ -160,6 +161,7 @@ interface TrainingCard {
 
 const route = useRoute()
 const router = useRouter()
+const { t } = useI18n()
 const setId = route.params.setId as string
 
 const loading = ref(true)
@@ -190,7 +192,7 @@ const loadWordSet = async () => {
     words.value = data.words || []
   } catch (error: any) {
     console.error('Failed to load word set:', error)
-    error.value = error.message || 'Failed to load word set'
+    error.value = error.message || t('wordSets.loadFailed')
   } finally {
     loading.value = false
   }
@@ -290,7 +292,7 @@ const markKnown = async () => {
     closeWordModal()
   } catch (error: any) {
     console.error('Failed to mark as known:', error)
-    await showAlert(error.message || 'Failed to mark as known')
+    await showAlert(error.message || t('wordSets.markKnownFailed'))
   } finally {
     processing.value = false
   }
@@ -319,7 +321,7 @@ const markLearn = async () => {
     closeWordModal()
   } catch (error: any) {
     console.error('Failed to add to learning:', error)
-    await showAlert(error.message || 'Failed to add to learning')
+    await showAlert(error.message || t('wordSets.addLearningFailed'))
   } finally {
     processing.value = false
   }

@@ -28,7 +28,7 @@
     </div>
 
     <div class="card">
-      <h2>Training</h2>
+      <h2>{{ t('settings.training') }}</h2>
       <div class="settings-group">
         <div class="setting-item">
           <div class="setting-info">

@@ -374,11 +374,15 @@ func validateTrainingResponseOK(t *testing.T, word string, resp map[string]inter
 			if displayWord, ok := senseMap["display_word"].(string); !ok || displayWord == "" {
 				errors = append(errors, fmt.Sprintf("senses[%d].display_word is missing or empty", i))
 			}
-			if wordRU, ok := senseMap["word_ru"].(string); !ok || wordRU == "" {
-				errors = append(errors, fmt.Sprintf("senses[%d].word_ru is missing or empty", i))
+			wordNative, _ := senseMap["word_native"].(string)
+			wordRU, _ := senseMap["word_ru"].(string)
+			if strings.TrimSpace(wordNative) == "" && strings.TrimSpace(wordRU) == "" {
+				errors = append(errors, fmt.Sprintf("senses[%d].word_native (or legacy word_ru) is missing or empty", i))
 			}
-			if meaningEN, ok := senseMap["meaning_en"].(string); !ok || meaningEN == "" {
-				errors = append(errors, fmt.Sprintf("senses[%d].meaning_en is missing or empty", i))
+			meaningTarget, _ := senseMap["meaning_target"].(string)
+			meaningEN, _ := senseMap["meaning_en"].(string)
+			if strings.TrimSpace(meaningTarget) == "" && strings.TrimSpace(meaningEN) == "" {
+				errors = append(errors, fmt.Sprintf("senses[%d].meaning_target (or legacy meaning_en) is missing or empty", i))
 			}
 
 			// Check distractors
@@ -389,11 +393,18 @@ func validateTrainingResponseOK(t *testing.T, word string, resp map[string]inter
 				errors = append(errors, fmt.Sprintf("senses[%d].distractors_ru should have exactly 3 items, got %d", i, len(distractorsRU)))
 			}
 
-			distractorsEN, ok := senseMap["distractors_en"].([]interface{})
-			if !ok {
-				errors = append(errors, fmt.Sprintf("senses[%d].distractors_en is missing or not an array", i))
-			} else if len(distractorsEN) != 3 {
-				errors = append(errors, fmt.Sprintf("senses[%d].distractors_en should have exactly 3 items, got %d", i, len(distractorsEN)))
+			distractorsTarget, okTarget := senseMap["distractors_target"].([]interface{})
+			distractorsEN, okLegacy := senseMap["distractors_en"].([]interface{})
+			if !okTarget && !okLegacy {
+				errors = append(errors, fmt.Sprintf("senses[%d].distractors_target (or legacy distractors_en) is missing or not an array", i))
+			} else {
+				list := distractorsTarget
+				if !okTarget {
+					list = distractorsEN
+				}
+				if len(list) != 3 {
+					errors = append(errors, fmt.Sprintf("senses[%d].distractors_target (or legacy distractors_en) should have exactly 3 items, got %d", i, len(list)))
+				}
 			}
 		}
 	}

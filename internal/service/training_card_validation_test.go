@@ -32,6 +32,84 @@ func TestValidateTrainingCardResponse_R1_CyrillicInDistractorsEN(t *testing.T) {
 	}
 }
 
+func TestValidateTrainingCardResponse_R0_CommaInWordTarget(t *testing.T) {
+	wordCard := &models.WordCard{
+		Word: "conjunta",
+	}
+	resp := &models.TrainingCardResponse{
+		WordEN: "conjunto, conjunta",
+		Senses: []models.TrainingCardSense{
+			{
+				POS:           "adjective",
+				WordRU:        "совместная",
+				DistractorsEN: []string{"individual", "separada", "única"},
+				DistractorsRU: []string{"отдельная", "личная", "индивидуальная"},
+			},
+		},
+	}
+
+	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
+	if errorMsg == "" {
+		t.Fatal("Expected validation error for R0 (comma in word_target), got empty")
+	}
+	if !strings.Contains(errorMsg, "R0") {
+		t.Errorf("Expected error message to contain 'R0', got: %s", errorMsg)
+	}
+}
+
+func TestValidateTrainingCardResponse_R0_CommaInDisplayWord(t *testing.T) {
+	wordCard := &models.WordCard{
+		Word: "conjunta",
+	}
+	resp := &models.TrainingCardResponse{
+		WordEN: "conjunta",
+		Senses: []models.TrainingCardSense{
+			{
+				POS:           "adjective",
+				DisplayWord:   "conjunto, conjunta",
+				WordRU:        "совместная",
+				DistractorsEN: []string{"individual", "separada", "única"},
+				DistractorsRU: []string{"отдельная", "личная", "индивидуальная"},
+			},
+		},
+	}
+
+	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
+	if errorMsg == "" {
+		t.Fatal("Expected validation error for R0 (comma in display_word), got empty")
+	}
+	if !strings.Contains(errorMsg, "R0") {
+		t.Errorf("Expected error message to contain 'R0', got: %s", errorMsg)
+	}
+}
+
+func TestValidateTrainingCardResponse_R7_MeaningTargetDiffersByOneCharFromLemma(t *testing.T) {
+	wordCard := &models.WordCard{
+		Word: "mes",
+	}
+	resp := &models.TrainingCardResponse{
+		WordEN: "mes",
+		Senses: []models.TrainingCardSense{
+			{
+				POS:           "noun",
+				DisplayWord:   "mes",
+				WordRU:        "месяц",
+				MeaningEN:     "mesa",
+				DistractorsEN: []string{"año", "semana", "día"},
+				DistractorsRU: []string{"год", "неделя", "день"},
+			},
+		},
+	}
+
+	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
+	if errorMsg == "" {
+		t.Fatal("Expected validation error for R7 (meaning_target too close to lemma), got empty")
+	}
+	if !strings.Contains(errorMsg, "R7") {
+		t.Errorf("Expected error message to contain 'R7', got: %s", errorMsg)
+	}
+}
+
 func TestValidateTrainingCardResponse_R2_LatinInDistractorsRU(t *testing.T) {
 	wordCard := &models.WordCard{
 		Word: "test",
@@ -384,7 +462,7 @@ func TestValidateTrainingCardResponse_R6_ExactMatch(t *testing.T) {
 }
 
 func TestValidateTrainingCardResponse_R6_DiffersByOneCharacter(t *testing.T) {
-	// "тес" для "тест" - должно быть ошибкой (отличается на 1 символ - удаление)
+	// "тес" для "тест" - теперь валидно (проверяем только точное совпадение)
 	wordCard := &models.WordCard{
 		Word: "test",
 	}
@@ -401,11 +479,8 @@ func TestValidateTrainingCardResponse_R6_DiffersByOneCharacter(t *testing.T) {
 	}
 
 	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
-	if errorMsg == "" {
-		t.Error("Expected validation error for R6 (distractors_ru differs from word_ru by 1 character), got empty")
-	}
-	if !strings.Contains(errorMsg, "R6") {
-		t.Errorf("Expected error message to contain 'R6', got: %s", errorMsg)
+	if errorMsg != "" {
+		t.Errorf("Expected no validation error for R6 (distractors_ru may differ by 1 character), got: %s", errorMsg)
 	}
 }
 
@@ -512,7 +587,7 @@ func TestValidateTrainingCardResponse_MultipleErrors(t *testing.T) {
 				POS:           "noun",
 				WordRU:        "тест",
 				DistractorsEN: []string{"правильный", "to check", "tests"}, // R1, R4, R5 (tests differs by 1 char from test)
-				DistractorsRU: []string{"test", "тесты", "три"},            // R2, R6 (тесты differs by 1 char from тест)
+				DistractorsRU: []string{"test", "тесты", "три"},            // R2 (R6 now checks only exact match)
 			},
 		},
 	}
@@ -533,9 +608,6 @@ func TestValidateTrainingCardResponse_MultipleErrors(t *testing.T) {
 		ruleCount++
 	}
 	if strings.Contains(errorMsg, "R5") {
-		ruleCount++
-	}
-	if strings.Contains(errorMsg, "R6") {
 		ruleCount++
 	}
 	if ruleCount < 3 {

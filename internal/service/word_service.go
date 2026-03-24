@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+	"unicode"
 
 	"tgbot-skeleton/internal/ai"
 	"tgbot-skeleton/internal/config"
@@ -81,7 +82,104 @@ func (s *WordService) IsSingleWord(text string) bool {
 
 	// Check if it's a single word (no spaces)
 	parts := strings.Fields(trimmed)
-	return len(parts) == 1 && len(trimmed) > 0
+	if len(parts) != 1 || len(trimmed) == 0 {
+		return false
+	}
+
+	// Single-word dictionary lookup is only for target-language tokens in Latin script.
+	// Cyrillic words should go through normal translation/correction routing.
+	hasLatin := false
+	for _, r := range trimmed {
+		if unicode.IsDigit(r) {
+			return false
+		}
+		if unicode.Is(unicode.Cyrillic, r) {
+			return false
+		}
+		if unicode.Is(unicode.Latin, r) {
+			hasLatin = true
+		}
+	}
+	return hasLatin
+}
+
+func buildForcedSingleWordLookupPrompt(word string) string {
+	return fmt.Sprintf(`SINGLE-WORD LOOKUP ONLY.
+Return ONLY valid JSON object (no markdown, no explanations, no prose).
+Use this exact schema and fill all required fields for a valid existing word:
+{
+  "error": false,
+  "hint": "",
+  "input_word": "%s",
+  "lemma": "",
+  "pos": "",
+  "transcription": "",
+  "definition_native": "",
+  "examples": [
+    { "example_target": "", "gloss_native": "" },
+    { "example_target": "", "gloss_native": "" }
+  ]
+}
+If the token is clearly nonsense, return:
+{"error": true, "hint": "..." , "input_word":"%s", "lemma":"", "pos":"", "transcription":"", "definition_native":"", "examples":[]}
+Word: %s`, word, word, word)
+}
+
+func buildForcedNativeLanguagePrompt(word, nativeLang, targetLang, pair string) string {
+	return fmt.Sprintf(`SINGLE-WORD LOOKUP ONLY for pair %s (%s -> %s).
+Return ONLY valid JSON object (no markdown, no prose).
+Critical language constraint:
+- definition_native MUST be in %s.
+- every gloss_native in examples MUST be in %s.
+- example_target MUST stay in %s.
+Word: %s`, pair, nativeLang, targetLang, nativeLang, nativeLang, targetLang, word)
+}
+
+func (s *WordService) nativeLanguageRequiresCyrillic() bool {
+	// Keep strict native-language guard for Spanish deployment where drift was observed.
+	// Do not enforce globally for all pairs to preserve legacy EN tests/data behavior.
+	return strings.EqualFold(s.learning.NativeLang, "ru") && strings.EqualFold(s.learning.TargetLang, "es")
+}
+
+func hasCyrillicText(text string) bool {
+	return ContainsCyrillic(strings.TrimSpace(text))
+}
+
+func nativeFieldsLookValidForConfig(definitionNative string, examples []models.WordInfoExample, requireCyrillic bool) bool {
+	if !requireCyrillic {
+		return true
+	}
+	if !hasCyrillicText(definitionNative) {
+		return false
+	}
+	for _, ex := range examples {
+		gloss := strings.TrimSpace(ex.GlossNative)
+		if gloss == "" {
+			gloss = strings.TrimSpace(ex.GlossRU)
+		}
+		if gloss != "" && !hasCyrillicText(gloss) {
+			return false
+		}
+	}
+	return true
+}
+
+func (s *WordService) wordCardNativeFieldsLookValid(card *models.WordCard) bool {
+	if card == nil {
+		return false
+	}
+	definition := ""
+	if card.DefinitionNative != nil {
+		definition = strings.TrimSpace(*card.DefinitionNative)
+	}
+	if definition == "" && card.DefinitionRU != nil {
+		definition = strings.TrimSpace(*card.DefinitionRU)
+	}
+	var examples []models.WordInfoExample
+	if card.ExamplesJSON != nil && strings.TrimSpace(*card.ExamplesJSON) != "" {
+		_ = json.Unmarshal([]byte(*card.ExamplesJSON), &examples)
+	}
+	return nativeFieldsLookValidForConfig(definition, examples, s.nativeLanguageRequiresCyrillic())
 }
 
 // NormalizeWord normalizes a word for storage/lookup
@@ -119,6 +217,16 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 	}
 
 	// Step 3: If found in DB, render markdown and return
+	if wordCard != nil {
+		if !s.wordCardNativeFieldsLookValid(wordCard) {
+			s.logger.Warn("word card from database has invalid native-language fields, forcing refresh from AI",
+				zap.String("word", wordCard.Word),
+				zap.Int64("word_card_id", wordCard.ID),
+				zap.String("native_lang", s.learning.NativeLang),
+			)
+			wordCard = nil
+		}
+	}
 	if wordCard != nil {
 		s.logger.Info("word found in database",
 			zap.String("input", inputWord),
@@ -180,6 +288,26 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 	// Parse JSON response
 	var wordInfo models.WordInfoResponse
 	if err := json.Unmarshal([]byte(response), &wordInfo); err != nil {
+		// LLM can occasionally return correction text for single-word lookup.
+		// Retry once with a strict JSON-only lookup instruction.
+		forcedPrompt := buildForcedSingleWordLookupPrompt(word)
+		forcedResponse, forcedErr := s.aiService.GenerateResponse(ctx, forcedPrompt)
+		if forcedErr == nil {
+			if retryErr := json.Unmarshal([]byte(forcedResponse), &wordInfo); retryErr == nil {
+				response = forcedResponse
+			} else {
+				// Not JSON after retry, keep legacy fallback below.
+				s.logger.Warn("forced single-word lookup response is not JSON",
+					zap.Error(retryErr),
+				)
+			}
+		} else {
+			s.logger.Warn("forced single-word lookup retry failed",
+				zap.Error(forcedErr),
+			)
+		}
+	}
+	if err := json.Unmarshal([]byte(response), &wordInfo); err != nil {
 		// Not JSON, might be old format - try to save as-is for backward compatibility
 		s.logger.Warn("failed to parse AI response as JSON, saving as legacy format",
 			zap.Error(err),
@@ -196,6 +324,29 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 	}
 
 	models.SyncWordInfoResponseNeutralAliases(&wordInfo)
+
+	requireNativeCyrillic := s.nativeLanguageRequiresCyrillic()
+	if !nativeFieldsLookValidForConfig(wordInfo.DefinitionNative, wordInfo.Examples, requireNativeCyrillic) {
+		forcedPrompt := buildForcedNativeLanguagePrompt(word, s.learning.NativeLang, s.learning.TargetLang, s.learning.Pair)
+		forcedResponse, forcedErr := s.aiService.GenerateResponse(ctx, forcedPrompt)
+		if forcedErr == nil {
+			var forcedInfo models.WordInfoResponse
+			if err := json.Unmarshal([]byte(forcedResponse), &forcedInfo); err == nil {
+				models.SyncWordInfoResponseNeutralAliases(&forcedInfo)
+				if nativeFieldsLookValidForConfig(forcedInfo.DefinitionNative, forcedInfo.Examples, requireNativeCyrillic) {
+					wordInfo = forcedInfo
+				}
+			}
+		}
+	}
+	if !nativeFieldsLookValidForConfig(wordInfo.DefinitionNative, wordInfo.Examples, requireNativeCyrillic) {
+		s.logger.Warn("LLM response rejected: native fields are not in expected language",
+			zap.String("word", normalizedWord),
+			zap.String("native_lang", s.learning.NativeLang),
+			zap.String("target_lang", s.learning.TargetLang),
+		)
+		return "⚠️ Не удалось получить карточку со значением на русском. Попробуйте ещё раз.", nil
+	}
 
 	// Check for error from LLM
 	// If definition_ru is present, ignore error field - we have valid data
@@ -272,6 +423,13 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 	// Step 6: Save structured data to word_cards (lemma)
 	lemma := strings.ToLower(wordInfo.Lemma)
 	if lemma == "" {
+		lemma = normalizedWord
+	}
+	if strings.Contains(lemma, ",") {
+		s.logger.Warn("lemma contains comma-separated values, using normalized input word",
+			zap.String("lemma", lemma),
+			zap.String("input", normalizedWord),
+		)
 		lemma = normalizedWord
 	}
 

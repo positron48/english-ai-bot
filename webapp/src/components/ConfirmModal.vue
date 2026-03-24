@@ -7,8 +7,8 @@
             <p>{{ message }}</p>
           </div>
           <div class="modal-footer">
-            <button class="btn btn-secondary" @click="handleCancel">Cancel</button>
-            <button class="btn btn-primary" @click="handleConfirm">OK</button>
+            <button class="btn btn-secondary" @click="handleCancel">{{ t('common.cancel') }}</button>
+            <button class="btn btn-primary" @click="handleConfirm">{{ t('common.ok') }}</button>
           </div>
         </div>
       </div>
@@ -18,6 +18,9 @@
 
 <script setup lang="ts">
 import { ref, watch, onMounted, onUnmounted } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const props = defineProps<{
   message: string

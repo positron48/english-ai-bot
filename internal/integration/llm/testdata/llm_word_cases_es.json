@@ -1,0 +1,43 @@
+[
+  {
+    "word": "mesa",
+    "expect": "ok",
+    "note": "Базовое испанское слово: карточка должна быть JSON и definition_native на русском"
+  },
+  {
+    "word": "meso",
+    "expect": "ok",
+    "note": "Нестабильный кейс: definition_native иногда уезжал в испанский"
+  },
+  {
+    "word": "aloha",
+    "expect": "ok",
+    "note": "Нестабильный кейс: LLM иногда отдавал definition_native на испанском"
+  },
+  {
+    "word": "conjunta",
+    "expect": "ok",
+    "note": "Нестабильный кейс: проверяем, что ответ валиден как single-word lookup"
+  },
+  {
+    "word": "стол",
+    "expect": "translate",
+    "note": "Кириллица должна идти в режим перевода, а не JSON word-card"
+  },
+  {
+    "word": "Precisión",
+    "expect": "ok",
+    "note": "Одиночное испанское слово должно уходить в lookup JSON, не в correction-текст"
+  },
+  {
+    "word": "Hoy es un buen día.",
+    "expect": "correction",
+    "note": "Испанский текст должен идти в correction mode (plain text, не JSON)"
+  },
+  {
+    "word": "xyzqwerty123",
+    "expect": "reject",
+    "note": "Явный мусор должен отвергаться"
+  }
+]
+

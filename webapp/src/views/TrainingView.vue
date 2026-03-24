@@ -470,7 +470,25 @@ import { useLocale } from '../composables/useLocale'
 import { Chart, registerables } from 'chart.js'
 import Icon from '../components/Icon.vue'
 
-const { t } = useI18n()
+const { t, tm, locale } = useI18n()
+
+function phraseList(key: string): string[] {
+  const raw = tm(key) as unknown
+  if (!Array.isArray(raw)) return []
+  return raw.filter((x): x is string => typeof x === 'string' && x.length > 0)
+}
+
+const encouragingPhrasesList = computed(() => phraseList('trainingFeedback.encouragingPhrases'))
+const disappointingPhrasesList = computed(() => phraseList('trainingFeedback.disappointingPhrases'))
+
+const motivationalBuckets = computed(() => ({
+  excellent: phraseList('trainingFeedback.motivational.excellent'),
+  great: phraseList('trainingFeedback.motivational.great'),
+  good: phraseList('trainingFeedback.motivational.good'),
+  okay: phraseList('trainingFeedback.motivational.okay'),
+  needsWork: phraseList('trainingFeedback.motivational.needsWork'),
+  poor: phraseList('trainingFeedback.motivational.poor'),
+}))
 const { currentLocale } = useLocale()
 
 Chart.register(...registerables)
@@ -524,8 +542,8 @@ const currentCard = ref<Card | null>(null)
 const optionsShown = ref(false)
 const options = ref<string[]>([])
 const feedback = ref<Feedback | null>(null)
-const currentEncouragingPhrase = ref('Great job!')
-const currentDisappointingPhrase = ref('Not quite')
+const currentEncouragingPhrase = ref('')
+const currentDisappointingPhrase = ref('')
 const answering = ref(false)
 const waitingDelay = ref(false)
 const delaySeconds = ref(0)
@@ -724,121 +742,47 @@ const percentageColor = computed(() => {
   return '#ef4444' // red
 })
 
-// Motivational messages with multiple variants
-const motivationalMessages = {
-  excellent: [
-    'Outstanding work! You\'re a true master!',
-    'Perfect score! You\'re absolutely brilliant!',
-    'Incredible performance! You\'ve mastered this!',
-    'Flawless execution! You\'re a champion!',
-    'Exceptional results! You\'re unstoppable!',
-    'Perfect mastery! You\'re a true expert!',
-    'Outstanding achievement! You\'re incredible!',
-    'Brilliant work! You\'re a natural!',
-    'Perfect performance! You\'re amazing!',
-    'Exceptional skill! You\'re a pro!'
-  ],
-  great: [
-    'Excellent! You\'re doing amazing! Keep it up!',
-    'Fantastic work! You\'re on fire!',
-    'Wonderful progress! You\'re crushing it!',
-    'Superb results! You\'re doing great!',
-    'Impressive performance! Keep going!',
-    'Terrific work! You\'re making great strides!',
-    'Awesome job! You\'re on the right path!',
-    'Brilliant effort! You\'re improving fast!',
-    'Splendid work! You\'re doing fantastic!',
-    'Marvelous results! You\'re getting better!'
-  ],
-  good: [
-    'Great job! You\'re making excellent progress!',
-    'Well done! You\'re improving steadily!',
-    'Nice work! You\'re on the right track!',
-    'Good progress! Keep up the momentum!',
-    'Solid effort! You\'re doing well!',
-    'Decent results! You\'re moving forward!',
-    'Not bad at all! You\'re getting there!',
-    'Good going! You\'re making progress!',
-    'Keep it up! You\'re doing fine!',
-    'Steady progress! You\'re on track!'
-  ],
-  okay: [
-    'Good work! You\'re on the right track!',
-    'Not bad! Keep practicing and you\'ll improve!',
-    'You\'re getting there! Don\'t give up!',
-    'Keep going! Practice makes perfect!',
-    'You\'re improving! Stay focused!',
-    'Good effort! Every attempt counts!',
-    'Keep trying! You\'re making progress!',
-    'Don\'t stop! You\'re learning!',
-    'Stay motivated! You can do better!',
-    'Keep pushing! Improvement is coming!'
-  ],
-  needsWork: [
-    'Keep practicing! Every mistake is a learning opportunity!',
-    'Don\'t give up! Every attempt makes you stronger!',
-    'Stay focused! Practice will improve your results!',
-    'Keep trying! You\'re building your skills!',
-    'Don\'t lose heart! Learning takes time!',
-    'Stay persistent! You\'ll get better!',
-    'Keep going! Every session helps!',
-    'Don\'t quit! Progress comes with practice!',
-    'Stay determined! You can improve!',
-    'Keep learning! Mistakes teach us!'
-  ],
-  poor: [
-    'Time to review! Let\'s go over the basics again.',
-    'Back to basics! Review will help you improve.',
-    'Let\'s practice more! Focus on the fundamentals.',
-    'Review time! Understanding comes with repetition.',
-    'Study harder! The basics are important.',
-    'More practice needed! Review the material.',
-    'Focus on learning! Review helps retention.',
-    'Time to study! Practice the fundamentals.',
-    'Review and practice! You\'ll improve.',
-    'Back to studying! Master the basics first.'
-  ]
-}
-
 // Generate weights for motivational messages (first 30%, last 1%)
 const generateMessageWeights = (count: number) => {
+  if (count <= 0) return []
+  if (count === 1) return [100]
   const weights: number[] = []
   const maxWeight = 30 // 30%
   const minWeight = 1 // 1%
-  
-  // Exponential decay: weight = maxWeight * (minWeight/maxWeight)^((i)/(n-1))
+
   for (let i = 0; i < count; i++) {
     const ratio = i / (count - 1)
     const weight = maxWeight * Math.pow(minWeight / maxWeight, ratio)
     weights.push(weight)
   }
-  
-  // Normalize to sum to 100
+
   const sum = weights.reduce((a, b) => a + b, 0)
   return weights.map(w => w * 100 / sum)
 }
 
+const pickNonEmpty = (preferred: string[], fallback: string[]): string[] =>
+  preferred.length > 0 ? preferred : fallback
+
 const motivationalMessage = computed(() => {
   const percent = accuracyPercentage.value
+  const b = motivationalBuckets.value
   let messages: string[]
-  
+
   if (percent >= 95) {
-    messages = motivationalMessages.excellent
+    messages = pickNonEmpty(b.excellent, b.great)
   } else if (percent >= 90) {
-    messages = motivationalMessages.great
+    messages = pickNonEmpty(b.great, b.good)
   } else if (percent >= 80) {
-    messages = motivationalMessages.good
+    messages = pickNonEmpty(b.good, b.okay)
   } else if (percent >= 70) {
-    messages = motivationalMessages.okay
+    messages = pickNonEmpty(b.okay, b.needsWork)
   } else if (percent >= 50) {
-    messages = motivationalMessages.needsWork
-  } else if (percent >= 10) {
-    messages = motivationalMessages.poor
+    messages = pickNonEmpty(b.needsWork, b.poor)
   } else {
-    messages = motivationalMessages.poor
+    messages = pickNonEmpty(b.poor, b.needsWork)
   }
-  
-  // Weighted random selection (first 30%, last 1%)
+
+  if (!messages.length) return ''
   return getWeightedMessage(messages)
 })
 
@@ -1045,51 +989,21 @@ const cardIndex = ref(0)
 const totalCards = ref(0)
 const userCardId = ref(0)
 
-// Encouraging phrases with weighted distribution
-// First phrase has 30% probability, last has 0.01%
-const encouragingPhrases = [
-  'Perfect!', 'Excellent!', 'Well done!', 'Great job!', 'Awesome!',
-  'Fantastic!', 'Brilliant!', 'Outstanding!', 'Superb!', 'Terrific!',
-  'Amazing!', 'Wonderful!', 'Impressive!', 'Splendid!', 'Marvelous!',
-  'Bravo!', 'Nice work!', 'Keep it up!', 'You got it!', 'Spot on!',
-  'Right on!', 'Exactly!', 'Precisely!', 'Correct!', 'That\'s it!',
-  'You nailed it!', 'Way to go!', 'Good thinking!', 'Smart!', 'Clever!',
-  'Genius!', 'Incredible!', 'Phenomenal!', 'Exceptional!', 'Remarkable!',
-  'Stellar!', 'Magnificent!', 'Fabulous!', 'Sensational!', 'Triumphant!',
-  'Victorious!', 'Champion!', 'Masterful!', 'Skillful!', 'Proficient!',
-  'Admirable!', 'Commendable!', 'Praiseworthy!', 'Laudable!', 'Notable!'
-]
-
-// Disappointing phrases with weighted distribution
-// First phrase has 30% probability, last has 0.01%
-const disappointingPhrases = [
-  'Not quite', 'Almost there', 'Close!', 'Try again', 'Not quite right',
-  'Almost!', 'Close, but...', 'Not exactly', 'Almost correct', 'Nearly there',
-  'So close!', 'Almost got it', 'Close one!', 'Almost right', 'Nearly correct',
-  'Just missed', 'Almost perfect', 'Close call', 'Nearly there!', 'Almost!',
-  'Not quite yet', 'Keep trying', 'Almost had it', 'Close attempt', 'Nearly!',
-  'Almost correct!', 'Close, try again', 'Not quite right', 'Almost there!', 'Nearly got it',
-  'Close but no', 'Almost perfect!', 'Not exactly right', 'Close one!', 'Almost!',
-  'Nearly correct!', 'Close attempt!', 'Almost there!', 'Not quite yet!', 'Keep going!',
-  'Almost had it!', 'Close call!', 'Nearly there!', 'Almost correct!', 'Keep trying!',
-  'Not quite right!', 'Almost!', 'Close!', 'Nearly!', 'Try again!'
-]
-
 // Generate weights helper function
 const generateWeights = (phrases: string[]) => {
-  const weights: number[] = []
   const n = phrases.length
+  if (n <= 0) return []
+  if (n === 1) return [100]
+  const weights: number[] = []
   const maxWeight = 30 // 30%
   const minWeight = 0.01 // 0.01%
-  
-  // Exponential decay: weight = maxWeight * (minWeight/maxWeight)^((i)/(n-1))
+
   for (let i = 0; i < n; i++) {
     const ratio = i / (n - 1)
     const weight = maxWeight * Math.pow(minWeight / maxWeight, ratio)
     weights.push(weight)
   }
-  
-  // Normalize to sum to 100
+
   const sum = weights.reduce((a, b) => a + b, 0)
   return weights.map(w => w * 100 / sum)
 }
@@ -1107,46 +1021,60 @@ const generateCumulativeWeights = (weights: number[]) => {
 
 // Get weighted random message for motivational messages
 const getWeightedMessage = (messages: string[]): string => {
+  if (!messages.length) return ''
+  if (messages.length === 1) return messages[0]
   const weights = generateMessageWeights(messages.length)
   const cumulative = generateCumulativeWeights(weights)
-  
+
   const random = Math.random() * 100
   for (let i = 0; i < cumulative.length; i++) {
     if (random <= cumulative[i]) {
       return messages[i]
     }
   }
-  return messages[0] // Fallback
+  return messages[0]
 }
-
-// Generate weights and cumulative distributions
-const encouragingWeights = generateWeights(encouragingPhrases)
-const encouragingCumulative = generateCumulativeWeights(encouragingWeights)
-
-const disappointingWeights = generateWeights(disappointingPhrases)
-const disappointingCumulative = generateCumulativeWeights(disappointingWeights)
 
 // Get random encouraging phrase based on weighted distribution
 const getRandomEncouragingPhrase = (): string => {
+  const phrases = encouragingPhrasesList.value
+  if (!phrases.length) return ''
+  if (phrases.length === 1) return phrases[0]
+  const weights = generateWeights(phrases)
+  const cumulative = generateCumulativeWeights(weights)
   const random = Math.random() * 100
-  for (let i = 0; i < encouragingCumulative.length; i++) {
-    if (random <= encouragingCumulative[i]) {
-      return encouragingPhrases[i]
+  for (let i = 0; i < cumulative.length; i++) {
+    if (random <= cumulative[i]) {
+      return phrases[i]
     }
   }
-  return encouragingPhrases[0] // Fallback
+  return phrases[0]
 }
 
 // Get random disappointing phrase based on weighted distribution
 const getRandomDisappointingPhrase = (): string => {
+  const phrases = disappointingPhrasesList.value
+  if (!phrases.length) return ''
+  if (phrases.length === 1) return phrases[0]
+  const weights = generateWeights(phrases)
+  const cumulative = generateCumulativeWeights(weights)
   const random = Math.random() * 100
-  for (let i = 0; i < disappointingCumulative.length; i++) {
-    if (random <= disappointingCumulative[i]) {
-      return disappointingPhrases[i]
+  for (let i = 0; i < cumulative.length; i++) {
+    if (random <= cumulative[i]) {
+      return phrases[i]
     }
   }
-  return disappointingPhrases[0] // Fallback
+  return phrases[0]
 }
+
+watch(
+  [encouragingPhrasesList, disappointingPhrasesList, locale],
+  () => {
+    currentEncouragingPhrase.value = getRandomEncouragingPhrase()
+    currentDisappointingPhrase.value = getRandomDisappointingPhrase()
+  },
+  { immediate: true }
+)
 
 // Timer for automatic options reveal
 let autoRevealTimer: ReturnType<typeof setTimeout> | null = null
@@ -1613,10 +1541,10 @@ const startTraining = async () => {
     await loadStats()
   } catch (error: any) {
     if (error.message?.includes('No cards available')) {
-      await showAlert('No cards available for training. Request some words first!')
+      await showAlert(t('training.noCardsAvailable'))
     } else {
       console.error('Failed to start training:', error)
-      await showAlert('Failed to start training')
+      await showAlert(t('training.failedStartTraining'))
     }
   } finally {
     loading.value = false
@@ -1669,7 +1597,7 @@ const revealOptions = async (isEarly: boolean = false) => {
     // Network error is already handled by callback, but we should handle other errors
     if (!error.isNetworkError) {
       // For non-network errors, show a simple message
-      await showAlert('Не удалось загрузить варианты ответов. Попробуйте обновить страницу.')
+      await showAlert(t('training.failedLoadOptions'))
     }
   }
 }
@@ -1911,7 +1839,7 @@ const submitSpellAnswerAs = async (answerText: string, isSkip = false) => {
   } catch (error: any) {
     console.error('Failed to submit spell answer:', error)
     if (!error.isNetworkError) {
-      await showAlert('Не удалось отправить ответ. Попробуйте еще раз.')
+      await showAlert(t('training.failedSubmitAnswer'))
     }
   } finally {
     answering.value = false
@@ -2011,7 +1939,7 @@ const submitTypeAnswerAs = async (answerText: string) => {
   } catch (error: any) {
     console.error('Failed to submit type answer:', error)
     if (!error.isNetworkError) {
-      await showAlert('Не удалось отправить ответ. Попробуйте еще раз.')
+      await showAlert(t('training.failedSubmitAnswer'))
     }
   } finally {
     answering.value = false
@@ -2206,7 +2134,7 @@ const submitAnswer = async (optionIndex: number) => {
     // Network error is already handled by callback
     if (!error.isNetworkError) {
       // For non-network errors, show a simple message
-      await showAlert('Не удалось отправить ответ. Попробуйте еще раз.')
+      await showAlert(t('training.failedSubmitAnswer'))
     }
   } finally {
     answering.value = false
@@ -2284,7 +2212,7 @@ const nextCard = async () => {
       sessionActive.value = false
       currentCard.value = null
       await loadStats()
-      await showAlert('Нет активной тренировки. Нажмите "Начать тренировку".')
+      await showAlert(t('training.noActiveSession'))
       return
     }
     
@@ -2327,7 +2255,7 @@ const nextCard = async () => {
     // Network error is already handled by callback
     if (!error.isNetworkError) {
       // For non-network errors, show a simple message
-      await showAlert('Не удалось загрузить следующую карточку. Попробуйте обновить страницу.')
+      await showAlert(t('training.failedNextCard'))
     }
   }
 }

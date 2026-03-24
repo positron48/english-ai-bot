@@ -127,6 +127,19 @@ llm-cards:
 llm-all: llm-words llm-cards
 	@echo "✅ All LLM integration tests completed"
 
+llm-words-es:
+	@echo "Running Spanish LLM word cards integration tests..."
+	@echo "⚠️  Requires: AI_URL, AI_API_KEY environment variables"
+	$(GO) test -tags=integration -v -run '^TestLLM_WordCards_ES$$' -count=1 ./internal/integration/llm/...
+
+llm-cards-es:
+	@echo "Running Spanish LLM training cards integration tests..."
+	@echo "⚠️  Requires: AI_URL, AI_API_KEY environment variables"
+	$(GO) test -tags=integration -v -run '^TestLLM_TrainingCards_ES$$' -count=1 ./internal/integration/llm/...
+
+llm-es: llm-words-es llm-cards-es
+	@echo "✅ Spanish LLM prompt regression tests completed"
+
 # Packages included in coverage (exclude cmd, integration tests and test-only helpers)
 COVER_PKGS := $(shell $(GO) list ./... | grep -v '/cmd/' | grep -v 'internal/integration/' | grep -v 'internal/testutil')
 

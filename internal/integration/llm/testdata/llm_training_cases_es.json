@@ -1,0 +1,33 @@
+[
+  {
+    "word": "mesa",
+    "expect": "ok",
+    "note": "Базовый noun для испанского training prompt"
+  },
+  {
+    "word": "conjunta",
+    "expect": "ok",
+    "note": "Нестабильный кейс: не должно быть comma-separated форм в word_target/display_word"
+  },
+  {
+    "word": "mes",
+    "expect": "ok",
+    "note": "Регрессия: не должно уезжать в 'mesa/стол', ожидается значение месяца"
+  },
+  {
+    "word": "prado",
+    "expect": "reject",
+    "note": "В hard reject списке prompt"
+  },
+  {
+    "word": "microsoft",
+    "expect": "reject",
+    "note": "В hard reject списке prompt"
+  },
+  {
+    "word": "abc123",
+    "expect": "reject",
+    "note": "Цифры должны приводить к reject"
+  }
+]
+

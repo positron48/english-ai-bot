@@ -5,6 +5,7 @@
     "success": "Success",
     "save": "Save",
     "cancel": "Cancel",
+    "ok": "OK",
     "back": "Back",
     "retry": "Retry",
     "close": "Close",
@@ -42,7 +43,6 @@
     "telegramAuthInProgress": "Authorizing via Telegram...",
     "loginTitle": "English Bot Login",
     "enterUsername": "Enter your Telegram username or ID:",
-    "usernameHint": "If the user is not found by nickname, use Telegram ID. You can get the ID with the /get_id command in the bot or via Telegram Mini App.",
     "usernamePlaceholder": "Username or Telegram ID",
     "usernameHint": "If the user is not found by nickname, use Telegram ID. You can get the ID with the <code>/get_id</code> command in the bot or via Telegram Mini App.",
     "sendOTP": "Send OTP",
@@ -148,7 +148,12 @@
     "oneMinute": "~1 minute",
     "minutes": "~{minutes} minutes",
     "oneMin": "~1 min",
-    "min": "~{minutes} min"
+    "min": "~{minutes} min",
+    "failedStartTraining": "Failed to start training",
+    "failedLoadOptions": "Could not load answer options. Try refreshing the page.",
+    "failedSubmitAnswer": "Could not submit your answer. Please try again.",
+    "noActiveSession": "No active session. Tap \"Start training\" first.",
+    "failedNextCard": "Could not load the next card. Try refreshing the page."
   },
   "learning": {
     "title": "Learning",
@@ -156,6 +161,117 @@
     "grammarDescription": "Grammar exercises and rules",
     "words": "Words",
     "wordsDescription": "Word sets and vocabulary library"
+  },
+  "wordSets": {
+    "back": "← Back",
+    "loading": "Loading...",
+    "loadingWords": "Loading words...",
+    "loadingCard": "Loading card...",
+    "words": "Words",
+    "progress": "Progress",
+    "statusKnown": "Known",
+    "statusInVocab": "In vocab",
+    "statusNew": "New",
+    "wordCard": "Word card",
+    "example": "Example",
+    "pronounceAria": "Pronounce",
+    "know": "Know",
+    "learn": "Learn",
+    "close": "Close",
+    "skip": "Skip",
+    "failedLoadCard": "Failed to load word card",
+    "startLearning": "Start learning ({n} new words)",
+    "allInVocab": "All words in this set are already in your vocabulary!",
+    "loadFailed": "Failed to load word set",
+    "markKnownFailed": "Failed to mark word as known",
+    "addLearningFailed": "Failed to add word to training",
+    "totalWords": "{n} words",
+    "studyComplete": "Study complete!",
+    "studyCompleteDesc": "You've reviewed all words in this set.",
+    "backToSet": "Back to set",
+    "loadWordsFailed": "Failed to load words"
+  },
+  "chat": {
+    "welcome": {
+      "en": {
+        "title": "Hi! I'm your personal English coach!",
+        "intro": "I can help you:",
+        "bullets": [
+          "Create vocabulary flashcards",
+          "Translate from Russian into English",
+          "Correct and polish English text"
+        ],
+        "closing": "Just send me a message!"
+      },
+      "es": {
+        "title": "Hi! I'm your personal Spanish coach!",
+        "intro": "I can help you:",
+        "bullets": [
+          "Create vocabulary flashcards",
+          "Translate from Russian into Spanish",
+          "Correct and polish Spanish text"
+        ],
+        "closing": "Just send me a message!"
+      }
+    },
+    "placeholder": "Type your message...",
+    "send": "Send",
+    "sending": "Sending...",
+    "errorSend": "Sorry, an error occurred. Please try again."
+  },
+  "trainingFeedback": {
+    "encouragingPhrases": [
+      "Perfect!", "Excellent!", "Well done!", "Great job!", "Awesome!",
+      "Fantastic!", "Brilliant!", "Outstanding!", "Superb!", "Terrific!"
+    ],
+    "disappointingPhrases": [
+      "Not quite", "Almost there", "Close!", "Try again", "Not quite right",
+      "Almost!", "Close, but...", "Not exactly", "Nearly there", "So close!"
+    ],
+    "motivational": {
+      "excellent": [
+        "Outstanding work! You're a true master!",
+        "Perfect score! You're absolutely brilliant!",
+        "Incredible performance! You've mastered this!",
+        "Flawless execution! You're a champion!",
+        "Exceptional results! You're unstoppable!"
+      ],
+      "great": [
+        "Excellent! You're doing amazing!",
+        "Fantastic work! You're on fire!",
+        "Wonderful progress!",
+        "Superb results! You're doing great!",
+        "Impressive performance! Keep going!"
+      ],
+      "good": [
+        "Great job! You're making excellent progress!",
+        "Well done! You're improving steadily!",
+        "Nice work! You're on the right track!",
+        "Good progress! Keep up the momentum!",
+        "Solid effort! You're doing well!"
+      ],
+      "okay": [
+        "Good work! You're on the right track!",
+        "Not bad! Keep practicing and you'll improve!",
+        "You're getting there! Don't give up!",
+        "Keep going! Practice makes perfect!",
+        "Good effort! Every attempt counts!"
+      ],
+      "needsWork": [
+        "Keep practicing! Every mistake is a learning opportunity!",
+        "Don't give up! Every attempt makes you stronger!",
+        "Stay focused! Practice will improve your results!",
+        "Keep trying! You're building your skills!",
+        "Stay persistent! You'll get better!"
+      ],
+      "poor": [
+        "Time to review! Let's go over the basics again.",
+        "Back to basics! Review will help you improve.",
+        "Review time! Understanding comes with repetition.",
+        "More practice needed! Review the material.",
+        "Review and practice! You'll improve."
+      ]
+    }
   },
   "vocab": {
     "searchWords": "Search words...",
@@ -230,7 +346,11 @@
     "srsRepsNote": "Reps count only in review; in learning shows 0",
     "srsDay": "day",
     "srsDays": "days",
-    "srsQualityHardReason": "With «Hard» (1) the step still advances; the next review is sooner (1 day). This happens if you clicked the hint before the delay or answered in over 15 seconds."
+    "srsQualityHardReason": "With «Hard» (1) the step still advances; the next review is sooner (1 day). This happens if you clicked the hint before the delay or answered in over 15 seconds.",
+    "alertRemoveFailed": "Failed to remove word from training",
+    "alertLoadCardsFailed": "Failed to load cards",
+    "alertMarkKnownFailed": "Failed to mark word as known",
+    "alertMoveTrainingFailed": "Failed to move word to training"
   },
   "grammar": {
     "courseTitle": "Grammar Course",

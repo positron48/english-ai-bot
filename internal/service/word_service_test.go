@@ -82,6 +82,8 @@ func TestWordService_IsSingleWord(t *testing.T) {
 		{"Word with trailing comma", "hello,", true},
 		{"Word with parentheses", "(hello)", true},
 		{"Multiple words with punctuation", "hello, world", false},
+		{"Cyrillic single word should not trigger lookup", "стол", false},
+		{"Digits should not trigger lookup", "hola2", false},
 	}
 
 	for _, tt := range tests {

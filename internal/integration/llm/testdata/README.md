@@ -6,6 +6,8 @@ This directory contains test cases for LLM prompt integration tests.
 
 - `llm_word_cases.json` - Test cases for word card generation (vocabulary cards)
 - `llm_training_cases.json` - Test cases for training card generation
+- `llm_word_cases_es.json` - Spanish (RU→ES) word-prompt regression cases
+- `llm_training_cases_es.json` - Spanish (RU→ES) training-prompt regression cases
 
 ## Format
 
@@ -46,6 +48,9 @@ make llm-training
 
 # Run all LLM tests
 make llm-all
+
+# Run Spanish prompt regressions
+make llm-es
 
 # Or directly with go test
 go test -tags=integration -v -run '^TestLLM_WordCards$' ./internal/integration/llm/...

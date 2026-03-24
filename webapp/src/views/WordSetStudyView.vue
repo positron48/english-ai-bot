@@ -9,10 +9,10 @@
       </div>
     </div>
     
-    <div v-if="loading" class="loading">Loading words...</div>
+    <div v-if="loading" class="loading">{{ t('wordSets.loadingWords') }}</div>
     <div v-else-if="error" class="error">{{ error }}</div>
     <div v-else-if="currentWord" class="study-card">
-      <div v-if="loadingCard" class="loading">Loading card...</div>
+      <div v-if="loadingCard" class="loading">{{ t('wordSets.loadingCard') }}</div>
       <div v-else-if="currentTrainingCard" class="word-display">
         <h2>{{ currentTrainingCard.display_target || currentTrainingCard.display_word || currentTrainingCard.word_target || currentTrainingCard.word_en || currentWord.display_target || currentWord.display_word || currentWord.word }}</h2>
         <div v-if="currentTrainingCard.transcription" class="transcription-with-audio">
@@ -21,8 +21,8 @@
             v-if="currentPronunciationURL"
             class="btn-pronunciation"
             :disabled="playingPronunciation"
-            title="Pronounce"
-            aria-label="Pronounce"
+            :title="t('wordSets.pronounceAria')"
+            :aria-label="t('wordSets.pronounceAria')"
             @click="playCurrentPronunciation"
           >
             <Icon name="play" />
@@ -35,7 +35,7 @@
           {{ currentTrainingCard.meaning_target || currentTrainingCard.meaning_en }}
         </div>
         <div v-if="currentTrainingCard.example_target || currentTrainingCard.example_en" class="example">
-          <strong>Example:</strong> {{ currentTrainingCard.example_target || currentTrainingCard.example_en }}
+          <strong>{{ t('wordSets.example') }}:</strong> {{ currentTrainingCard.example_target || currentTrainingCard.example_en }}
         </div>
         <div v-if="currentTrainingCard.example_native || currentTrainingCard.example_ru" class="example-ru">
           {{ currentTrainingCard.example_native || currentTrainingCard.example_ru }}
@@ -47,20 +47,20 @@
       
       <div class="study-actions">
         <button @click="markKnown" class="btn btn-know" :disabled="processing">
-          Know
+          {{ t('wordSets.know') }}
         </button>
         <button @click="markLearn" class="btn btn-learn" :disabled="processing">
-          Learn
+          {{ t('wordSets.learn') }}
         </button>
         <button @click="skipWord" class="btn btn-skip" :disabled="processing">
-          Skip
+          {{ t('wordSets.skip') }}
         </button>
       </div>
     </div>
     <div v-else class="complete-message">
-      <h2>Study Complete!</h2>
-      <p>You've reviewed all words in this set.</p>
-      <button @click="goBack" class="btn btn-primary">Back to Set</button>
+      <h2>{{ t('wordSets.studyComplete') }}</h2>
+      <p>{{ t('wordSets.studyCompleteDesc') }}</p>
+      <button @click="goBack" class="btn btn-primary">{{ t('wordSets.backToSet') }}</button>
     </div>
   </div>
 </template>
@@ -68,6 +68,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { apiClient } from '../api/client'
 import { showAlert } from '../composables/useDialog'
 import Icon from '../components/Icon.vue'
@@ -106,6 +107,7 @@ interface TrainingCard {
 
 const route = useRoute()
 const router = useRouter()
+const { t } = useI18n()
 const setId = route.params.setId as string
 
 const loading = ref(true)
@@ -155,7 +157,7 @@ const loadWords = async () => {
     currentIndex.value = 0
   } catch (error: any) {
     console.error('Failed to load words:', error)
-    error.value = error.message || 'Failed to load words'
+    error.value = error.message || t('wordSets.loadWordsFailed')
   } finally {
     loading.value = false
   }
@@ -224,7 +226,7 @@ const markKnown = async () => {
     }
   } catch (error: any) {
     console.error('Failed to mark as known:', error)
-    await showAlert(error.message || 'Failed to mark as known')
+    await showAlert(error.message || t('wordSets.markKnownFailed'))
   } finally {
     processing.value = false
   }
@@ -250,7 +252,7 @@ const markLearn = async () => {
     }
   } catch (error: any) {
     console.error('Failed to add to learning:', error)
-    await showAlert(error.message || 'Failed to add to learning')
+    await showAlert(error.message || t('wordSets.addLearningFailed'))
   } finally {
     processing.value = false
   }

@@ -3,6 +3,7 @@ package bot
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"strconv"
 	"strings"
@@ -625,6 +626,18 @@ func (h *Handler) handleMessage(ctx context.Context, message *tgbotapi.Message) 
 	} else {
 		// Regular message - use AI service directly
 		response, err = h.aiService.GenerateResponse(ctx, text)
+		if err == nil && looksLikeWordInfoJSON(response) {
+			rendered, converted := renderWordInfoJSONAsMarkdown(response, h.config.Learning.TargetLang)
+			if converted {
+				h.logger.Info("converted JSON word-card response to markdown",
+					zap.String("input", text),
+					zap.String("target_lang", h.config.Learning.TargetLang),
+				)
+				response = rendered
+			} else {
+				h.logger.Warn("detected JSON word-card response but failed to convert; sending raw response")
+			}
+		}
 	}
 
 	if err != nil {
@@ -664,6 +677,55 @@ func isTelegramParseEntitiesError(err error) bool {
 	}
 	s := strings.ToLower(err.Error())
 	return strings.Contains(s, "can't parse entities") || strings.Contains(s, "cant parse entities")
+}
+
+func looksLikeWordInfoJSON(s string) bool {
+	trimmed := strings.TrimSpace(s)
+	if trimmed == "" || !strings.HasPrefix(trimmed, "{") || !strings.HasSuffix(trimmed, "}") {
+		return false
+	}
+	var obj map[string]any
+	if err := json.Unmarshal([]byte(trimmed), &obj); err != nil {
+		return false
+	}
+	_, hasLemma := obj["lemma"]
+	_, hasPOS := obj["pos"]
+	_, hasExamples := obj["examples"]
+	return hasLemma && hasPOS && hasExamples
+}
+
+func renderWordInfoJSONAsMarkdown(raw, targetLang string) (string, bool) {
+	var info models.WordInfoResponse
+	if err := json.Unmarshal([]byte(strings.TrimSpace(raw)), &info); err != nil {
+		return "", false
+	}
+	models.SyncWordInfoResponseNeutralAliases(&info)
+
+	definition := info.DefinitionNative
+	if definition == "" {
+		definition = info.DefinitionRU
+	}
+	pos := info.POS
+	transcription := info.Transcription
+	display := info.Lemma
+	if display == "" {
+		display = info.InputWord
+	}
+	card := &models.WordCard{
+		Word:          info.Lemma,
+		POS:           &pos,
+		Transcription: &transcription,
+		DefinitionRU:  &definition,
+		DisplayEN:     &display,
+	}
+	if card.Word == "" {
+		card.Word = strings.TrimSpace(info.InputWord)
+	}
+	if card.Word == "" || strings.TrimSpace(definition) == "" {
+		return "", false
+	}
+
+	return utils.RenderWordCardMarkdownForTarget(card, info.Examples, info.VerbForms, targetLang), true
 }
 
 // sendTyping sends a typing indicator to the specified chat

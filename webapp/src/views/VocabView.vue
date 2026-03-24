@@ -627,7 +627,7 @@ const deleteWord = async () => {
     await loadVocab()
   } catch (error) {
     console.error('Failed to delete word:', error)
-    await showAlert('Failed to remove word from training')
+    await showAlert(t('vocab.alertRemoveFailed'))
   }
 }
 
@@ -669,7 +669,7 @@ const showCards = async (lemma: string) => {
     }
   } catch (error) {
     console.error('Failed to load cards:', error)
-    await showAlert('Failed to load cards')
+    await showAlert(t('vocab.alertLoadCardsFailed'))
   } finally {
     cardsLoading.value = false
   }
@@ -736,7 +736,7 @@ const markKnown = async () => {
     await loadVocab()
   } catch (error) {
     console.error('Failed to mark as known:', error)
-    await showAlert('Failed to mark word as known')
+    await showAlert(t('vocab.alertMarkKnownFailed'))
   } finally {
     processingAction.value = false
   }
@@ -753,7 +753,7 @@ const moveToTraining = async () => {
     await loadVocab()
   } catch (error) {
     console.error('Failed to move to training:', error)
-    await showAlert('Failed to move word to training')
+    await showAlert(t('vocab.alertMoveTrainingFailed'))
   } finally {
     processingAction.value = false
   }

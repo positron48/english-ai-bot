@@ -3,19 +3,13 @@
     <div class="card chat-container">
       <div class="chat-messages" ref="messagesContainer">
         <div v-if="messages.length === 0" class="welcome-message">
-          <div class="welcome-icon">🇬🇧</div>
-          <h2 class="welcome-title">Привет! Я ваш персональный тренер английского языка!</h2>
-          <p class="welcome-text">
-            Если вам нужно:
-          </p>
+          <div class="welcome-icon">{{ targetLangFlag }}</div>
+          <h2 class="welcome-title">{{ chatWelcome.title }}</h2>
+          <p class="welcome-text">{{ chatWelcome.intro }}</p>
           <ul class="welcome-list">
-            <li>Создать словарные карточки для изучения слов</li>
-            <li>Переводить тексты с русского на английский</li>
-            <li>Корректировать и исправлять английский текст</li>
+            <li v-for="(line, idx) in chatWelcome.bullets" :key="idx">{{ line }}</li>
           </ul>
-          <p class="welcome-text">
-            Просто напишите мне!
-          </p>
+          <p class="welcome-text">{{ chatWelcome.closing }}</p>
         </div>
         <div
           v-for="(msg, index) in messages"
@@ -43,12 +37,12 @@
             <textarea
               ref="textareaRef"
               v-model="inputMessage"
-              placeholder="Type your message..."
+              :placeholder="t('chat.placeholder')"
               @keyup.enter.ctrl="sendMessage"
               @input="autoResize"
             ></textarea>
             <button @click="sendMessage" class="btn btn-primary" :disabled="sending">
-              {{ sending ? 'Sending...' : 'Send' }}
+              {{ sending ? t('chat.sending') : t('chat.send') }}
             </button>
           </div>
         </div>
@@ -58,15 +52,20 @@
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick, onMounted, watch, onActivated } from 'vue'
+import { ref, computed, nextTick, onMounted, watch, onActivated } from 'vue'
 import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { marked } from 'marked'
 import { apiClient } from '../api/client'
+import { useLearningConfig } from '../composables/useLearningConfig'
 
 interface Message {
   role: 'user' | 'assistant'
   content: string
 }
+
+const { t, tm } = useI18n()
+const { learning, ensureLearningLoaded } = useLearningConfig()
 
 const messages = ref<Message[]>([])
 const inputMessage = ref('')
@@ -74,6 +73,26 @@ const sending = ref(false)
 const messagesContainer = ref<HTMLElement | null>(null)
 const textareaRef = ref<HTMLTextAreaElement | null>(null)
 const route = useRoute()
+
+const targetLangFlag = computed(() =>
+  learning.value?.target_lang === 'es' ? '🇪🇸' : '🇬🇧'
+)
+
+const chatWelcome = computed(() => {
+  const target = learning.value?.target_lang === 'es' ? 'es' : 'en'
+  const w = tm(`chat.welcome.${target}`) as {
+    title?: string
+    intro?: string
+    bullets?: string[]
+    closing?: string
+  }
+  return {
+    title: w?.title ?? '',
+    intro: w?.intro ?? '',
+    bullets: Array.isArray(w?.bullets) ? w.bullets : [],
+    closing: w?.closing ?? '',
+  }
+})
 
 const scrollToBottom = async () => {
   await nextTick()
@@ -118,7 +137,7 @@ const sendMessage = async () => {
     messages.value.push({ role: 'assistant', content: data.response })
   } catch (error) {
     console.error('Failed to send message:', error)
-    messages.value.push({ role: 'assistant', content: 'Sorry, an error occurred. Please try again.' })
+    messages.value.push({ role: 'assistant', content: t('chat.errorSend') })
   } finally {
     sending.value = false
     await scrollToBottom()
@@ -155,6 +174,7 @@ const focusInput = async () => {
 
 // Focus input when component is mounted
 onMounted(() => {
+  void ensureLearningLoaded()
   scrollToBottom()
   autoResize() // Set initial height
   focusInput()
