@@ -370,7 +370,7 @@ func TestTrainingWorker_processCards_ZeroWorkersFallback(t *testing.T) {
 			content := `{"input_word":"one","lemma":"one","pos":"noun","transcription":"wʌn","definition_ru":"один"}`
 			return newJSONHTTPResponseTW(http.StatusOK, ai.ChatResponse{Choices: []ai.Choice{{Message: ai.Message{Content: content}}}}), nil
 		}
-		content := `{"word_en":"one","lemma":"one","transcription":"","senses":[{"pos":"noun","word_ru":"один","meaning_en":"one","example_en":"","example_ru":"","distractors_ru":["два","три"],"distractors_en":["two","three"],"hint":""}]}`
+		content := `{"word_en":"one","lemma":"one","transcription":"","senses":[{"pos":"noun","word_ru":"один","meaning_en":"single unit","example_en":"","example_ru":"","distractors_ru":["два","три"],"distractors_en":["two","three"],"hint":""}]}`
 		return newJSONHTTPResponseTW(http.StatusOK, ai.ChatResponse{Choices: []ai.Choice{{Message: ai.Message{Content: content}}}}), nil
 	})
 	worker, wordRepo, trainingCardRepo, _, _, db, cleanup := newTrainingWorker(t, transport)
@@ -400,7 +400,7 @@ func TestTrainingWorker_processCards_WithPendingCards(t *testing.T) {
 			content := `{"input_word":"processme","lemma":"processme","pos":"noun","transcription":"prəˈses","definition_ru":"обработать"}`
 			return newJSONHTTPResponseTW(http.StatusOK, ai.ChatResponse{Choices: []ai.Choice{{Message: ai.Message{Content: content}}}}), nil
 		}
-		content := `{"word_en":"processme","lemma":"processme","transcription":"","senses":[{"pos":"noun","word_ru":"тест","meaning_en":"process me","example_en":"","example_ru":"","distractors_ru":["яблоко","груша"],"distractors_en":["orange","banana"],"hint":""}]}`
+		content := `{"word_en":"processme","lemma":"processme","transcription":"","senses":[{"pos":"noun","word_ru":"тест","meaning_en":"handle or treat data","example_en":"","example_ru":"","distractors_ru":["яблоко","груша"],"distractors_en":["orange","banana"],"hint":""}]}`
 		return newJSONHTTPResponseTW(http.StatusOK, ai.ChatResponse{Choices: []ai.Choice{{Message: ai.Message{Content: content}}}}), nil
 	})
 	worker, wordRepo, trainingCardRepo, _, _, db, cleanup := newTrainingWorker(t, transport)
@@ -458,7 +458,7 @@ func TestTrainingWorker_processCards_RecordSuccessError(t *testing.T) {
 			content := `{"input_word":"ok","lemma":"ok","pos":"noun","transcription":"","definition_ru":"ок"}`
 			return newJSONHTTPResponseTW(http.StatusOK, ai.ChatResponse{Choices: []ai.Choice{{Message: ai.Message{Content: content}}}}), nil
 		}
-		content := `{"word_en":"ok","lemma":"ok","transcription":"","senses":[{"pos":"noun","word_ru":"ок","meaning_en":"ok","example_en":"","example_ru":"","distractors_ru":["да","нет"],"distractors_en":["yes","no"],"hint":""}]}`
+		content := `{"word_en":"ok","lemma":"ok","transcription":"","senses":[{"pos":"noun","word_ru":"ок","meaning_en":"all right","example_en":"","example_ru":"","distractors_ru":["да","нет"],"distractors_en":["yes","no"],"hint":""}]}`
 		return newJSONHTTPResponseTW(http.StatusOK, ai.ChatResponse{Choices: []ai.Choice{{Message: ai.Message{Content: content}}}}), nil
 	})
 	worker, wordRepo, _, _, _, _, cleanup := newTrainingWorker(t, transport)
@@ -525,7 +525,7 @@ func TestTrainingWorker_processCards_CardFailsCircuitOpensNotifyAdmin(t *testing
 func TestTrainingWorker_processCard_ValidationFailsNotifiesAdminWithBot(t *testing.T) {
 	transport := rtFuncTW(func(req *http.Request) (*http.Response, error) {
 		// Cyrillic in distractors_en triggers validation error
-		content := `{"word_en":"run","lemma":"run","transcription":"","senses":[{"pos":"verb","word_ru":"бежать","meaning_en":"run","example_en":"","example_ru":"","distractors_ru":["идти","плыть"],"distractors_en":["бежать","to walk"],"hint":""}]}`
+		content := `{"word_en":"run","lemma":"run","transcription":"","senses":[{"pos":"verb","word_ru":"бежать","meaning_en":"move fast on foot","example_en":"","example_ru":"","distractors_ru":["идти","плыть"],"distractors_en":["бежать","to walk"],"hint":""}]}`
 		return newJSONHTTPResponseTW(http.StatusOK, ai.ChatResponse{Choices: []ai.Choice{{Message: ai.Message{Content: content}}}}), nil
 	})
 	worker, wordRepo, _, _, _, _, cleanup := newTrainingWorker(t, transport)

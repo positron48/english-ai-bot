@@ -319,7 +319,7 @@ func TestTrainingWorker_fillWordCardData_EmptyLemma(t *testing.T) {
 // requested the word, training cards are still created and processCard returns nil (no user_cards).
 func TestTrainingWorker_processCard_NoUsersForWordStillCreatesCards(t *testing.T) {
 	transport := rtFuncTW(func(req *http.Request) (*http.Response, error) {
-		content := `{"word_en":"orphan","lemma":"orphan","transcription":"","senses":[{"pos":"noun","word_ru":"сирота","meaning_en":"orphan","example_en":"","example_ru":"","distractors_ru":["ребенок","вдова"],"distractors_en":["child","widow"],"hint":""}]}`
+		content := `{"word_en":"orphan","lemma":"orphan","transcription":"","senses":[{"pos":"noun","word_ru":"сирота","meaning_en":"child without parents","example_en":"","example_ru":"","distractors_ru":["ребенок","вдова"],"distractors_en":["child","widow"],"hint":""}]}`
 		resp := ai.ChatResponse{Choices: []ai.Choice{{Message: ai.Message{Content: content}}}}
 		return newJSONHTTPResponseTW(http.StatusOK, resp), nil
 	})
@@ -347,7 +347,7 @@ func TestTrainingWorker_processCard_NoUsersForWordStillCreatesCards(t *testing.T
 func TestTrainingWorkerProcessCardCreatesCards(t *testing.T) {
 	transport := rtFuncTW(func(req *http.Request) (*http.Response, error) {
 		resp := ai.ChatResponse{
-			Choices: []ai.Choice{{Message: ai.Message{Content: `{"word_en":"apple","lemma":"apple","transcription":"","senses":[{"pos":"noun","word_ru":"яблоко","meaning_en":"apple","example_en":"","example_ru":"","distractors_ru":["груша","слива"],"distractors_en":["orange","banana"],"hint":""}]}`}}},
+			Choices: []ai.Choice{{Message: ai.Message{Content: `{"word_en":"apple","lemma":"apple","transcription":"","senses":[{"pos":"noun","word_ru":"яблоко","meaning_en":"round fruit","example_en":"","example_ru":"","distractors_ru":["груша","слива"],"distractors_en":["orange","banana"],"hint":""}]}`}}},
 		}
 		return newJSONHTTPResponseTW(http.StatusOK, resp), nil
 	})
@@ -531,7 +531,7 @@ func TestTrainingWorkerProcessCard_LLMReturnsError(t *testing.T) {
 func TestTrainingWorkerProcessCard_ValidationFailsNoHighModel(t *testing.T) {
 	// distractors_en with Cyrillic triggers R1 validation error
 	transport := rtFuncTW(func(req *http.Request) (*http.Response, error) {
-		content := `{"word_en":"run","lemma":"run","transcription":"","senses":[{"pos":"verb","word_ru":"бежать","meaning_en":"run","example_en":"","example_ru":"","distractors_ru":["идти","плыть"],"distractors_en":["бежать","to walk"],"hint":""}]}`
+		content := `{"word_en":"run","lemma":"run","transcription":"","senses":[{"pos":"verb","word_ru":"бежать","meaning_en":"move fast on foot","example_en":"","example_ru":"","distractors_ru":["идти","плыть"],"distractors_en":["бежать","to walk"],"hint":""}]}`
 		resp := ai.ChatResponse{
 			Choices: []ai.Choice{{Message: ai.Message{Content: content}}},
 		}
@@ -617,7 +617,7 @@ func TestTrainingWorker_processCard_FillWordCardDataErrorContinues(t *testing.T)
 			return nil, fmt.Errorf("AI service unavailable")
 		}
 		// Second call: GenerateTrainingCard — succeed
-		content := `{"word_en":"go","lemma":"go","transcription":"","senses":[{"pos":"verb","word_ru":"идти","meaning_en":"go","example_en":"","example_ru":"","distractors_ru":["бежать","плыть"],"distractors_en":["to run","to swim"],"hint":""}]}`
+		content := `{"word_en":"go","lemma":"go","transcription":"","senses":[{"pos":"verb","word_ru":"идти","meaning_en":"move or travel","example_en":"","example_ru":"","distractors_ru":["бежать","плыть"],"distractors_en":["to run","to swim"],"hint":""}]}`
 		resp := ai.ChatResponse{Choices: []ai.Choice{{Message: ai.Message{Content: content}}}}
 		return newJSONHTTPResponseTW(http.StatusOK, resp), nil
 	})
@@ -657,11 +657,11 @@ func TestTrainingWorkerProcessCard_ValidationFailsHighModelSucceeds(t *testing.T
 			return newJSONHTTPResponseTW(http.StatusOK, resp), nil
 		}
 		if callCount == 2 {
-			content := `{"word_en":"jump","lemma":"jump","transcription":"","senses":[{"pos":"verb","word_ru":"прыгать","meaning_en":"jump","example_en":"","example_ru":"","distractors_ru":["бежать","идти"],"distractors_en":["прыгать","to run"],"hint":""}]}`
+			content := `{"word_en":"jump","lemma":"jump","transcription":"","senses":[{"pos":"verb","word_ru":"прыгать","meaning_en":"bad","example_en":"","example_ru":"","distractors_ru":["бежать","идти"],"distractors_en":["прыгать","to run"],"hint":""}]}`
 			resp := ai.ChatResponse{Choices: []ai.Choice{{Message: ai.Message{Content: content}}}}
 			return newJSONHTTPResponseTW(http.StatusOK, resp), nil
 		}
-		content := `{"word_en":"jump","lemma":"jump","transcription":"dʒʌmp","senses":[{"pos":"verb","display_word":"to jump","word_ru":"прыгать","meaning_en":"jump","example_en":"","example_ru":"","distractors_ru":["бежать","идти"],"distractors_en":["to run","to walk"],"hint":""}]}`
+		content := `{"word_en":"jump","lemma":"jump","transcription":"dʒʌmp","senses":[{"pos":"verb","display_word":"to jump","word_ru":"прыгать","meaning_en":"leap upward","example_en":"","example_ru":"","distractors_ru":["бежать","идти"],"distractors_en":["to run","to walk"],"hint":""}]}`
 		resp := ai.ChatResponse{Choices: []ai.Choice{{Message: ai.Message{Content: content}}}}
 		return newJSONHTTPResponseTW(http.StatusOK, resp), nil
 	})

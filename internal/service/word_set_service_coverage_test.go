@@ -440,7 +440,7 @@ func TestEnsureTrainingCardsExist_ValidationFail_HighModel_AIError(t *testing.T)
 		if callCount == 1 {
 			// First call: default model returns invalid (Cyrillic in distractors_en)
 			return newJSONHTTPResponse(http.StatusOK, ai.ChatResponse{
-				Choices: []ai.Choice{{Message: ai.Message{Content: `{"word_en":"run","lemma":"run","transcription":"","senses":[{"pos":"verb","word_ru":"бежать","meaning_en":"run","example_en":"","example_ru":"","distractors_ru":["идти","плыть"],"distractors_en":["бежать","to walk"],"hint":""}]}`}}},
+				Choices: []ai.Choice{{Message: ai.Message{Content: `{"word_en":"run","lemma":"run","transcription":"","senses":[{"pos":"verb","word_ru":"бежать","meaning_en":"move fast on foot","example_en":"","example_ru":"","distractors_ru":["идти","плыть"],"distractors_en":["бежать","to walk"],"hint":""}]}`}}},
 			}), nil
 		}
 		// Second call: high model returns error
@@ -472,7 +472,7 @@ func TestEnsureTrainingCardsExist_ValidationFail_HighModel_ParseError(t *testing
 		if callCount == 1 {
 			// First call: default model returns invalid (Cyrillic in distractors_en)
 			return newJSONHTTPResponse(http.StatusOK, ai.ChatResponse{
-				Choices: []ai.Choice{{Message: ai.Message{Content: `{"word_en":"run","lemma":"run","transcription":"","senses":[{"pos":"verb","word_ru":"бежать","meaning_en":"run","example_en":"","example_ru":"","distractors_ru":["идти","плыть"],"distractors_en":["бежать","to walk"],"hint":""}]}`}}},
+				Choices: []ai.Choice{{Message: ai.Message{Content: `{"word_en":"run","lemma":"run","transcription":"","senses":[{"pos":"verb","word_ru":"бежать","meaning_en":"move fast on foot","example_en":"","example_ru":"","distractors_ru":["идти","плыть"],"distractors_en":["бежать","to walk"],"hint":""}]}`}}},
 			}), nil
 		}
 		// Second call: high model returns invalid JSON
@@ -506,7 +506,7 @@ func TestEnsureTrainingCardsExist_ValidationFail_HighModel_LLMError(t *testing.T
 		if callCount == 1 {
 			// First call: default model returns invalid (Cyrillic in distractors_en)
 			return newJSONHTTPResponse(http.StatusOK, ai.ChatResponse{
-				Choices: []ai.Choice{{Message: ai.Message{Content: `{"word_en":"run","lemma":"run","transcription":"","senses":[{"pos":"verb","word_ru":"бежать","meaning_en":"run","example_en":"","example_ru":"","distractors_ru":["идти","плыть"],"distractors_en":["бежать","to walk"],"hint":""}]}`}}},
+				Choices: []ai.Choice{{Message: ai.Message{Content: `{"word_en":"run","lemma":"run","transcription":"","senses":[{"pos":"verb","word_ru":"бежать","meaning_en":"move fast on foot","example_en":"","example_ru":"","distractors_ru":["идти","плыть"],"distractors_en":["бежать","to walk"],"hint":""}]}`}}},
 			}), nil
 		}
 		// Second call: high model returns LLM error
@@ -540,7 +540,7 @@ func TestEnsureTrainingCardsExist_ValidationFail_HighModel_NoSenses(t *testing.T
 		if callCount == 1 {
 			// First call: default model returns invalid (Cyrillic in distractors_en)
 			return newJSONHTTPResponse(http.StatusOK, ai.ChatResponse{
-				Choices: []ai.Choice{{Message: ai.Message{Content: `{"word_en":"run","lemma":"run","transcription":"","senses":[{"pos":"verb","word_ru":"бежать","meaning_en":"run","example_en":"","example_ru":"","distractors_ru":["идти","плыть"],"distractors_en":["бежать","to walk"],"hint":""}]}`}}},
+				Choices: []ai.Choice{{Message: ai.Message{Content: `{"word_en":"run","lemma":"run","transcription":"","senses":[{"pos":"verb","word_ru":"бежать","meaning_en":"move fast on foot","example_en":"","example_ru":"","distractors_ru":["идти","плыть"],"distractors_en":["бежать","to walk"],"hint":""}]}`}}},
 			}), nil
 		}
 		// Second call: high model returns empty senses
@@ -614,7 +614,7 @@ func TestEnsureTrainingCardsExist_ParseError(t *testing.T) {
 func TestEnsureTrainingCardsExist_WithDisplayWordAndPOS(t *testing.T) {
 	transport := rtFunc(func(req *http.Request) (*http.Response, error) {
 		return newJSONHTTPResponse(http.StatusOK, ai.ChatResponse{
-			Choices: []ai.Choice{{Message: ai.Message{Content: `{"word_en":"run","transcription":"rʌn","senses":[{"pos":"verb","display_word":"to run","word_ru":"бежать","meaning_en":"run","example_en":"I run","example_ru":"Я бегу","distractors_ru":["идти","плыть"],"distractors_en":["to walk","to swim"],"hint":"motion"}]}`}}},
+			Choices: []ai.Choice{{Message: ai.Message{Content: `{"word_en":"run","transcription":"rʌn","senses":[{"pos":"verb","display_word":"to run","word_ru":"бежать","meaning_en":"move fast on foot","example_en":"I run","example_ru":"Я бегу","distractors_ru":["идти","плыть"],"distractors_en":["to walk","to swim"],"hint":"motion"}]}`}}},
 		}), nil
 	})
 

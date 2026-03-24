@@ -170,7 +170,7 @@ func TestTrainingWorker_processCard_ReloadError(t *testing.T) {
 			return nil, fmt.Errorf("AI unavailable")
 		}
 		// GenerateTrainingCard
-		content := `{"word_en":"reloadw","lemma":"reloadw","transcription":"","senses":[{"pos":"noun","word_ru":"перезагрузка","meaning_en":"reload","example_en":"","example_ru":"","distractors_ru":["загрузка","выгрузка"],"distractors_en":["load","unload"],"hint":""}]}`
+		content := `{"word_en":"reloadw","lemma":"reloadw","transcription":"","senses":[{"pos":"noun","word_ru":"перезагрузка","meaning_en":"load again","example_en":"","example_ru":"","distractors_ru":["загрузка","выгрузка"],"distractors_en":["load","unload"],"hint":""}]}`
 		resp := ai.ChatResponse{Choices: []ai.Choice{{Message: ai.Message{Content: content}}}}
 		return newJSONHTTPResponseTW(http.StatusOK, resp), nil
 	})
@@ -277,7 +277,7 @@ func TestTrainingWorker_processCard_HighModelParseError(t *testing.T) {
 		}
 		if callCount == 2 {
 			// Default model: invalid (Cyrillic in distractors_en)
-			content := `{"word_en":"jump3","lemma":"jump3","transcription":"","senses":[{"pos":"verb","word_ru":"прыгать","meaning_en":"jump","example_en":"","example_ru":"","distractors_ru":["бежать","идти"],"distractors_en":["прыгать","to run"],"hint":""}]}`
+			content := `{"word_en":"jump3","lemma":"jump3","transcription":"","senses":[{"pos":"verb","word_ru":"прыгать","meaning_en":"leap upward","example_en":"","example_ru":"","distractors_ru":["бежать","идти"],"distractors_en":["прыгать","to run"],"hint":""}]}`
 			resp := ai.ChatResponse{Choices: []ai.Choice{{Message: ai.Message{Content: content}}}}
 			return newJSONHTTPResponseTW(http.StatusOK, resp), nil
 		}
@@ -318,7 +318,7 @@ func TestTrainingWorker_processCard_HighModelLLMError(t *testing.T) {
 		}
 		if callCount == 2 {
 			// Default model: invalid
-			content := `{"word_en":"swim2","lemma":"swim2","transcription":"","senses":[{"pos":"verb","word_ru":"плыть","meaning_en":"swim","example_en":"","example_ru":"","distractors_ru":["бежать","идти"],"distractors_en":["плыть","to run"],"hint":""}]}`
+			content := `{"word_en":"swim2","lemma":"swim2","transcription":"","senses":[{"pos":"verb","word_ru":"плыть","meaning_en":"move through water","example_en":"","example_ru":"","distractors_ru":["бежать","идти"],"distractors_en":["плыть","to run"],"hint":""}]}`
 			resp := ai.ChatResponse{Choices: []ai.Choice{{Message: ai.Message{Content: content}}}}
 			return newJSONHTTPResponseTW(http.StatusOK, resp), nil
 		}

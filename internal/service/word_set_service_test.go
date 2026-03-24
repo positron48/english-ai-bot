@@ -223,7 +223,7 @@ func TestEnsureWordCardExists_AIError(t *testing.T) {
 func TestEnsureTrainingCardsExist(t *testing.T) {
 	transport := rtFunc(func(req *http.Request) (*http.Response, error) {
 		resp := ai.ChatResponse{
-			Choices: []ai.Choice{{Message: ai.Message{Content: `{"word_en":"apple","lemma":"apple","transcription":"","senses":[{"pos":"noun","word_ru":"яблоко","meaning_en":"apple","example_en":"","example_ru":"","distractors_ru":["груша","слива"],"distractors_en":["orange","banana"],"hint":""}]}`}}},
+			Choices: []ai.Choice{{Message: ai.Message{Content: `{"word_en":"apple","lemma":"apple","transcription":"","senses":[{"pos":"noun","word_ru":"яблоко","meaning_en":"round fruit","example_en":"","example_ru":"","distractors_ru":["груша","слива"],"distractors_en":["orange","banana"],"hint":""}]}`}}},
 		}
 		return newJSONHTTPResponse(http.StatusOK, resp), nil
 	})
@@ -343,7 +343,7 @@ func TestEnsureTrainingCardsExist_ValidationFailNoHighModel(t *testing.T) {
 	// distractors_en with Cyrillic triggers validation error; no modelHigh so return original error
 	transport := rtFunc(func(req *http.Request) (*http.Response, error) {
 		resp := ai.ChatResponse{
-			Choices: []ai.Choice{{Message: ai.Message{Content: `{"word_en":"run","lemma":"run","transcription":"","senses":[{"pos":"verb","word_ru":"бежать","meaning_en":"run","example_en":"","example_ru":"","distractors_ru":["идти","плыть"],"distractors_en":["бежать","to walk"],"hint":""}]}`}}},
+			Choices: []ai.Choice{{Message: ai.Message{Content: `{"word_en":"run","lemma":"run","transcription":"","senses":[{"pos":"verb","word_ru":"бежать","meaning_en":"move fast on foot","example_en":"","example_ru":"","distractors_ru":["идти","плыть"],"distractors_en":["бежать","to walk"],"hint":""}]}`}}},
 		}
 		return newJSONHTTPResponse(http.StatusOK, resp), nil
 	})
@@ -373,12 +373,12 @@ func TestEnsureTrainingCardsExist_ValidationFailHighModelSucceeds(t *testing.T) 
 		if callCount == 1 {
 			// First call: default model returns invalid (Cyrillic in distractors_en)
 			return newJSONHTTPResponse(http.StatusOK, ai.ChatResponse{
-				Choices: []ai.Choice{{Message: ai.Message{Content: `{"word_en":"jump","lemma":"jump","transcription":"","senses":[{"pos":"verb","word_ru":"прыгать","meaning_en":"jump","example_en":"","example_ru":"","distractors_ru":["бежать","идти"],"distractors_en":["прыгать","to run"],"hint":""}]}`}}},
+				Choices: []ai.Choice{{Message: ai.Message{Content: `{"word_en":"jump","lemma":"jump","transcription":"","senses":[{"pos":"verb","word_ru":"прыгать","meaning_en":"bad","example_en":"","example_ru":"","distractors_ru":["бежать","идти"],"distractors_en":["прыгать","to run"],"hint":""}]}`}}},
 			}), nil
 		}
 		// Second call: high model returns valid
 		return newJSONHTTPResponse(http.StatusOK, ai.ChatResponse{
-			Choices: []ai.Choice{{Message: ai.Message{Content: `{"word_en":"jump","lemma":"jump","transcription":"dʒʌmp","senses":[{"pos":"verb","display_word":"to jump","word_ru":"прыгать","meaning_en":"jump","example_en":"","example_ru":"","distractors_ru":["бежать","идти"],"distractors_en":["to run","to walk"],"hint":""}]}`}}},
+			Choices: []ai.Choice{{Message: ai.Message{Content: `{"word_en":"jump","lemma":"jump","transcription":"dʒʌmp","senses":[{"pos":"verb","display_word":"to jump","word_ru":"прыгать","meaning_en":"leap upward","example_en":"","example_ru":"","distractors_ru":["бежать","идти"],"distractors_en":["to run","to walk"],"hint":""}]}`}}},
 		}), nil
 	})
 
@@ -409,7 +409,7 @@ func TestEnsureTrainingCardsExist_ValidationFailHighModelSucceeds(t *testing.T) 
 func TestEnsureTrainingCardsExist_ValidationFailHighModelAlsoFails(t *testing.T) {
 	transport := rtFunc(func(req *http.Request) (*http.Response, error) {
 		// Both calls return invalid (Cyrillic in distractors_en)
-		content := `{"word_en":"run","lemma":"run","transcription":"","senses":[{"pos":"verb","word_ru":"бежать","meaning_en":"run","example_en":"","example_ru":"","distractors_ru":["идти","плыть"],"distractors_en":["бежать","to walk"],"hint":""}]}`
+		content := `{"word_en":"run","lemma":"run","transcription":"","senses":[{"pos":"verb","word_ru":"бежать","meaning_en":"move fast on foot","example_en":"","example_ru":"","distractors_ru":["идти","плыть"],"distractors_en":["бежать","to walk"],"hint":""}]}`
 		return newJSONHTTPResponse(http.StatusOK, ai.ChatResponse{
 			Choices: []ai.Choice{{Message: ai.Message{Content: content}}},
 		}), nil
@@ -437,7 +437,7 @@ func TestEnsureTrainingCardsExist_ValidationFailHighModelAlsoFails(t *testing.T)
 func TestEnsureUserCardsForWord(t *testing.T) {
 	transport := rtFunc(func(req *http.Request) (*http.Response, error) {
 		resp := ai.ChatResponse{
-			Choices: []ai.Choice{{Message: ai.Message{Content: `{"word_en":"apple","lemma":"apple","transcription":"","senses":[{"pos":"noun","word_ru":"яблоко","meaning_en":"apple","example_en":"","example_ru":"","distractors_ru":["груша","слива"],"distractors_en":["orange","banana"],"hint":""}]}`}}},
+			Choices: []ai.Choice{{Message: ai.Message{Content: `{"word_en":"apple","lemma":"apple","transcription":"","senses":[{"pos":"noun","word_ru":"яблоко","meaning_en":"round fruit","example_en":"","example_ru":"","distractors_ru":["груша","слива"],"distractors_en":["orange","banana"],"hint":""}]}`}}},
 		}
 		return newJSONHTTPResponse(http.StatusOK, resp), nil
 	})
