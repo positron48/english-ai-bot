@@ -10,6 +10,7 @@
 
 Отдельный быстрый инфраструктурный чеклист к этапу запуска:
 - [`SPANISH_K3S_ROLLOUT_CHECKLIST.md`](/Users/antonfilatov/www/my/k3s/english-ai-bot/docs/SPANISH_K3S_ROLLOUT_CHECKLIST.md)
+- Пошаговый runbook (push репозиториев, tag, секреты, Flux): [`SPANISH_K3S_ROLLOUT_RUNBOOK.md`](/Users/antonfilatov/www/my/k3s/english-ai-bot/docs/SPANISH_K3S_ROLLOUT_RUNBOOK.md)
 
 ## 1. Текущее состояние (что уже есть)
 

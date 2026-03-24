@@ -1,13 +1,7 @@
 # Spanish k3s rollout checklist
 
-## A. GitOps files
-1. Create `apps/spanish/base/*` from `apps/english/base/*` with full rename:
-   - namespace/resources `english` -> `spanish`
-   - postgres service `spanish-postgres`
-   - secrets/configmap names `spanish-*`
-2. Create `apps/spanish/prod/kustomization.yaml`.
-3. Add `../../apps/spanish/prod` to `clusters/prod/kustomization.yaml`.
-4. Add `clusters/prod/infra/image-automation/spanish-image.yaml` and include it in `.../kustomization.yaml`.
+## A. GitOps files (в дереве `devops-time-host`)
+Готово: `apps/spanish/base/*`, `apps/spanish/prod`, подключение в `clusters/prod/kustomization.yaml`, `clusters/prod/infra/image-automation/spanish-image.yaml`, бэкап/Alloy/Grafana — см. `docs/SPANISH_K3S_ROLLOUT_RUNBOOK.md`.
 
 ## B. Server secrets
 ```bash
@@ -54,11 +48,8 @@ kubectl logs -n spanish deploy/spanish --tail=200
 kubectl logs -n spanish deploy/spanish-postgres --tail=200
 ```
 
-## F. Backup/observability additions
-1. `apps/k3s-backup/base/configmap.yaml`: add spanish postgres + spanish tts dump blocks.
-2. `apps/k3s-backup/base/cronjob.yaml`: add `SPANISH_NAMESPACE=spanish`.
-3. `clusters/prod/infra/observability/alloy-config.yaml`: include `spanish` in namespace regex.
-4. `clusters/prod/infra/observability/grafana.yaml`: add `Postgres Spanish` datasource via `grafana-db-datasources` secret.
+## F. Backup/observability
+Сделано в `devops-time-host`: k3s-backup (postgres + TTS для `spanish`), `SPANISH_NAMESPACE` в cronjob, Alloy regex, datasource Postgres Spanish в `grafana.yaml` (на сервере добавить `SPANISH_POSTGRES_*` в секрет `grafana-db-datasources`).
 
 ## G. Rollback
 ```bash
