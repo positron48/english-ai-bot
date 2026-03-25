@@ -299,7 +299,7 @@ func (s *WordSetService) EnsureTrainingCardsExist(ctx context.Context, wordCardI
 	}
 
 	// Validate distractors
-	validationError = ValidateTrainingCardResponse(wordCard, &trainingResp)
+	validationError = ValidateTrainingCardResponse(s.learning.TargetLang, wordCard, &trainingResp)
 	if validationError != "" {
 		// Validation failed - try with high model if available
 		if s.modelHigh != "" {
@@ -345,7 +345,7 @@ func (s *WordSetService) EnsureTrainingCardsExist(ctx context.Context, wordCardI
 			}
 
 			// Validate distractors from high model
-			highValidationError := ValidateTrainingCardResponse(wordCard, &highTrainingResp)
+			highValidationError := ValidateTrainingCardResponse(s.learning.TargetLang, wordCard, &highTrainingResp)
 			if highValidationError == "" {
 				// High model validation passed - use this response
 				s.logger.Info("validation passed with high model",

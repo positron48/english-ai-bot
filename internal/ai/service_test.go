@@ -6,6 +6,25 @@ import (
 	"go.uber.org/zap"
 )
 
+func TestStripLLMJSONFences(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		in, want string
+	}{
+		{`{"a":1}`, `{"a":1}`},
+		{"  {\"a\":1}  ", `{"a":1}`},
+		{"```json\n{\"a\":1}\n```", `{"a":1}`},
+		{"```JSON\n{\"a\":1}\n```", `{"a":1}`},
+		{"```\n{\"a\":1}\n```", `{"a":1}`},
+	}
+	for _, tt := range tests {
+		got := stripLLMJSONFences(tt.in)
+		if got != tt.want {
+			t.Errorf("stripLLMJSONFences(%q) = %q, want %q", tt.in, got, tt.want)
+		}
+	}
+}
+
 func TestNewService(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 

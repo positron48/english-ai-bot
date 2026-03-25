@@ -16,6 +16,16 @@ import (
 // jsonMarshalFunc is used for request marshaling; overridable in tests for coverage.
 var jsonMarshalFunc = json.Marshal
 
+// stripLLMJSONFences removes markdown code fences often wrapped around JSON chat output.
+func stripLLMJSONFences(s string) string {
+	s = strings.TrimSpace(s)
+	s = strings.TrimPrefix(s, "```json")
+	s = strings.TrimPrefix(s, "```JSON")
+	s = strings.TrimPrefix(s, "```")
+	s = strings.TrimSuffix(s, "```")
+	return strings.TrimSpace(s)
+}
+
 // Service handles AI provider interactions
 type Service struct {
 	client         *http.Client
@@ -94,12 +104,12 @@ func (s *Service) GenerateResponse(ctx context.Context, userMessage string) (str
 		},
 	}
 
-	// Create request
+	// Create request (word cards need spacious JSON; 1000 tokens often truncates mid-object)
 	req := ChatRequest{
 		Model:       s.model,
 		Messages:    messages,
-		MaxTokens:   1000,
-		Temperature: 0.7,
+		MaxTokens:   2000,
+		Temperature: 0.5,
 	}
 
 	// Marshal request
@@ -162,7 +172,7 @@ func (s *Service) GenerateResponse(ctx context.Context, userMessage string) (str
 		return "", fmt.Errorf("no response choices received")
 	}
 
-	response := chatResp.Choices[0].Message.Content
+	response := stripLLMJSONFences(chatResp.Choices[0].Message.Content)
 	s.logger.Debug("received response from AI provider",
 		zap.String("response", response),
 	)
@@ -261,14 +271,7 @@ func (s *Service) GenerateTrainingCard(ctx context.Context, word string, modelOv
 		return "", fmt.Errorf("no response choices received")
 	}
 
-	response := chatResp.Choices[0].Message.Content
-
-	// Clean up response - remove markdown code blocks if present
-	response = strings.TrimSpace(response)
-	response = strings.TrimPrefix(response, "```json")
-	response = strings.TrimPrefix(response, "```")
-	response = strings.TrimSuffix(response, "```")
-	response = strings.TrimSpace(response)
+	response := stripLLMJSONFences(chatResp.Choices[0].Message.Content)
 
 	s.logger.Debug("received training card response",
 		zap.String("word", word),
@@ -378,14 +381,7 @@ func (s *Service) GenerateAdditionalTrainingCard(ctx context.Context, word strin
 		return "", fmt.Errorf("no response choices received")
 	}
 
-	response := chatResp.Choices[0].Message.Content
-
-	// Clean up response - remove markdown code blocks if present
-	response = strings.TrimSpace(response)
-	response = strings.TrimPrefix(response, "```json")
-	response = strings.TrimPrefix(response, "```")
-	response = strings.TrimSuffix(response, "```")
-	response = strings.TrimSpace(response)
+	response := stripLLMJSONFences(chatResp.Choices[0].Message.Content)
 
 	s.logger.Debug("received additional training card response",
 		zap.String("word", word),

@@ -25,6 +25,10 @@
     "yesterday": "Yesterday",
     "from": "From"
   },
+  "app": {
+    "titleEnInstance": "English Bot",
+    "titleEsInstance": "Spanish Bot"
+  },
   "navigation": {
     "dashboard": "Dashboard",
     "learning": "Learning",

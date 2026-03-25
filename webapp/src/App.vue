@@ -213,6 +213,18 @@ const targetLocale = computed<'en' | 'es'>(() => {
 })
 const targetLocaleLabel = computed(() => targetLocale.value.toUpperCase())
 
+// On RU→ES instance we intentionally don't offer English UI in the switcher.
+// If browser/system locale (or stale localStorage) is "en", default to "ru".
+watch(
+  learning,
+  (l) => {
+    if (l?.target_lang === 'es' && currentLocale.value === 'en') {
+      void setLocale('ru')
+    }
+  },
+  { deep: true, immediate: true },
+)
+
 const isAdminRoute = computed(() => {
   return route.path.startsWith('/admin')
 })
@@ -227,6 +239,13 @@ const showSidebar = ref(false)
 const showMoreDropdown = ref(false)
 const moreDropdownRef = ref<HTMLElement | null>(null)
 const moreButtonRef = ref<HTMLElement | null>(null)
+
+const updateDocumentTitle = () => {
+  const tl = learning.value?.target_lang ?? 'en'
+  document.title = t(tl === 'es' ? 'app.titleEsInstance' : 'app.titleEnInstance')
+}
+
+watch([learning, currentLocale], updateDocumentTitle, { deep: true, immediate: true })
 
 // Handle click outside dropdown
 const handleClickOutside = (event: MouseEvent) => {

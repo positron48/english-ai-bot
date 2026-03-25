@@ -8,9 +8,16 @@ import (
 	"tgbot-skeleton/internal/models"
 )
 
+// englishTargetUsesToInfinitive is true when the learned (target) language is English — verb
+// distractors are expected as "to …". For Spanish, French, etc. this rule does not apply.
+func englishTargetUsesToInfinitive(targetLang string) bool {
+	return strings.EqualFold(strings.TrimSpace(targetLang), "en")
+}
+
 // ValidateTrainingCardResponse validates the LLM response for training card generation
-// Returns an error message if validation fails, empty string if valid
-func ValidateTrainingCardResponse(wordCard *models.WordCard, resp *models.TrainingCardResponse) string {
+// Returns an error message if validation fails, empty string if valid.
+// targetLang is the LEARNING_TARGET_LANG code (e.g. en, es); English-specific "to " checks apply only when targetLang is en.
+func ValidateTrainingCardResponse(targetLang string, wordCard *models.WordCard, resp *models.TrainingCardResponse) string {
 	if len(resp.Senses) == 0 {
 		return "" // This is handled separately
 	}
@@ -48,8 +55,10 @@ func ValidateTrainingCardResponse(wordCard *models.WordCard, resp *models.Traini
 			}
 		}
 
-		// R3: distractors_en, если pos == "verb" - должны начинаться на "to "
-		if pos == "verb" {
+		enInfinitive := englishTargetUsesToInfinitive(targetLang)
+
+		// R3: distractors_en, если pos == "verb" — для английского должны начинаться на "to "
+		if enInfinitive && pos == "verb" {
 			for i, distractor := range sense.DistractorsEN {
 				trimmed := strings.TrimSpace(distractor)
 				if !strings.HasPrefix(trimmed, "to ") {
@@ -58,8 +67,8 @@ func ValidateTrainingCardResponse(wordCard *models.WordCard, resp *models.Traini
 			}
 		}
 
-		// R4: distractors_en, если pos != "verb" - не должны начинаться на "to "
-		if pos != "verb" && pos != "" {
+		// R4: distractors_en, если pos != "verb" — для английского не должны начинаться на "to "
+		if enInfinitive && pos != "verb" && pos != "" {
 			for i, distractor := range sense.DistractorsEN {
 				trimmed := strings.TrimSpace(distractor)
 				if strings.HasPrefix(trimmed, "to ") {
@@ -74,8 +83,8 @@ func ValidateTrainingCardResponse(wordCard *models.WordCard, resp *models.Traini
 		lemmaLower := strings.ToLower(lemma)
 		for i, distractor := range sense.DistractorsEN {
 			distractorLower := strings.ToLower(distractor)
-			// Для глаголов удаляем "to " из начала дескриптора перед проверкой
-			if pos == "verb" {
+			// Для английских глаголов удаляем "to " из начала дескриптора перед проверкой
+			if enInfinitive && pos == "verb" {
 				distractorLower = strings.TrimPrefix(distractorLower, "to ")
 				distractorLower = strings.TrimSpace(distractorLower)
 			}

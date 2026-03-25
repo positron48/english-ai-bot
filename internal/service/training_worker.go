@@ -433,7 +433,7 @@ func (w *TrainingWorker) processCard(ctx context.Context, wordCard *models.WordC
 	}
 
 	// Validate distractors according to rules
-	validationError = ValidateTrainingCardResponse(wordCard, &trainingResp)
+	validationError = ValidateTrainingCardResponse(w.learning.TargetLang, wordCard, &trainingResp)
 	if validationError != "" {
 		// Validation failed - try with high model if available
 		if w.modelHigh != "" {
@@ -480,7 +480,7 @@ func (w *TrainingWorker) processCard(ctx context.Context, wordCard *models.WordC
 						)
 					} else {
 						// Validate distractors from high model
-						highValidationError := ValidateTrainingCardResponse(wordCard, &highTrainingResp)
+						highValidationError := ValidateTrainingCardResponse(w.learning.TargetLang, wordCard, &highTrainingResp)
 						if highValidationError == "" {
 							// High model validation passed - use this response
 							w.logger.Info("validation passed with high model",

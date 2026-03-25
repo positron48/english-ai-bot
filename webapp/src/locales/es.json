@@ -25,6 +25,10 @@
     "yesterday": "Ayer",
     "from": "De"
   },
+  "app": {
+    "titleEnInstance": "Bot de inglés",
+    "titleEsInstance": "Bot de español"
+  },
   "navigation": {
     "dashboard": "Panel",
     "learning": "Aprendizaje",

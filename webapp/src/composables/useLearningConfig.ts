@@ -25,16 +25,46 @@ const defaultLearning = (): LearningPayload => ({
   target_lang_name_en: 'English',
 })
 
-/** Loads learning metadata from GET /api/settings (cached). Safe to call multiple times. */
+function learningFromHealthPayload(raw: unknown): LearningPayload | null {
+  if (!raw || typeof raw !== 'object') return null
+  const l = raw as Record<string, unknown>
+  if (typeof l.target_lang !== 'string' || typeof l.native_lang !== 'string') return null
+  const d = defaultLearning()
+  return {
+    pair: typeof l.pair === 'string' ? l.pair : d.pair,
+    native_lang: l.native_lang,
+    target_lang: l.target_lang,
+    app_code: typeof l.app_code === 'string' ? l.app_code : d.app_code,
+    grammar_bundle_id: typeof l.grammar_bundle_id === 'string' ? l.grammar_bundle_id : d.grammar_bundle_id,
+    target_lang_name_ru: typeof l.target_lang_name_ru === 'string' ? l.target_lang_name_ru : d.target_lang_name_ru,
+    target_lang_name_en: typeof l.target_lang_name_en === 'string' ? l.target_lang_name_en : d.target_lang_name_en,
+  }
+}
+
+/** Loads learning metadata from GET /health (no auth) then GET /api/settings (cached). Safe to call multiple times. */
 export async function ensureLearningLoaded(): Promise<void> {
   if (learning.value) return
   if (loadPromise) return loadPromise
   loadPromise = (async () => {
     try {
-      const data = await apiClient.request<{ learning?: LearningPayload }>('/api/settings')
-      learning.value = data.learning ?? defaultLearning()
+      const hr = await fetch('/health')
+      if (hr.ok) {
+        const hj = await hr.json()
+        const pub = learningFromHealthPayload(hj?.learning)
+        if (pub) {
+          learning.value = pub
+        }
+      }
     } catch {
-      learning.value = defaultLearning()
+      /* ignore */
+    }
+    try {
+      const data = await apiClient.request<{ learning?: LearningPayload }>('/api/settings')
+      learning.value = data.learning ?? learning.value ?? defaultLearning()
+    } catch {
+      if (!learning.value) {
+        learning.value = defaultLearning()
+      }
     }
   })()
   return loadPromise

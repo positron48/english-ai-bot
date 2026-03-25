@@ -25,6 +25,10 @@
     "yesterday": "Вчера",
     "from": "Из"
   },
+  "app": {
+    "titleEnInstance": "Английский — бот",
+    "titleEsInstance": "Испанский — бот"
+  },
   "navigation": {
     "dashboard": "Дашборд",
     "learning": "Обучение",

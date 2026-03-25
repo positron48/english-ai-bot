@@ -92,7 +92,7 @@ func runTrainingTestCaseWithBusinessValidation(ctx context.Context, t *testing.T
 			}
 
 			// Run business validation (this is the same validation used in production)
-			validationError := service.ValidateTrainingCardResponse(wordCard, &trainingResp)
+			validationError := service.ValidateTrainingCardResponse("en", wordCard, &trainingResp)
 			if validationError != "" {
 				validationErrors = append(validationErrors, "business_validation: "+validationError)
 			}

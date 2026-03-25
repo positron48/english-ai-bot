@@ -23,7 +23,7 @@ func TestValidateTrainingCardResponse_R1_CyrillicInDistractorsEN(t *testing.T) {
 		},
 	}
 
-	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
+	errorMsg := ValidateTrainingCardResponse("en", wordCard, resp)
 	if errorMsg == "" {
 		t.Error("Expected validation error for R1 (Cyrillic in distractors_en), got empty")
 	}
@@ -48,7 +48,7 @@ func TestValidateTrainingCardResponse_R0_CommaInWordTarget(t *testing.T) {
 		},
 	}
 
-	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
+	errorMsg := ValidateTrainingCardResponse("en", wordCard, resp)
 	if errorMsg == "" {
 		t.Fatal("Expected validation error for R0 (comma in word_target), got empty")
 	}
@@ -74,7 +74,7 @@ func TestValidateTrainingCardResponse_R0_CommaInDisplayWord(t *testing.T) {
 		},
 	}
 
-	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
+	errorMsg := ValidateTrainingCardResponse("en", wordCard, resp)
 	if errorMsg == "" {
 		t.Fatal("Expected validation error for R0 (comma in display_word), got empty")
 	}
@@ -101,7 +101,7 @@ func TestValidateTrainingCardResponse_R7_MeaningTargetDiffersByOneCharFromLemma(
 		},
 	}
 
-	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
+	errorMsg := ValidateTrainingCardResponse("en", wordCard, resp)
 	if errorMsg == "" {
 		t.Fatal("Expected validation error for R7 (meaning_target too close to lemma), got empty")
 	}
@@ -126,7 +126,7 @@ func TestValidateTrainingCardResponse_R2_LatinInDistractorsRU(t *testing.T) {
 		},
 	}
 
-	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
+	errorMsg := ValidateTrainingCardResponse("en", wordCard, resp)
 	if errorMsg == "" {
 		t.Error("Expected validation error for R2 (Latin in distractors_ru), got empty")
 	}
@@ -151,7 +151,7 @@ func TestValidateTrainingCardResponse_R3_VerbWithoutToPrefix(t *testing.T) {
 		},
 	}
 
-	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
+	errorMsg := ValidateTrainingCardResponse("en", wordCard, resp)
 	if errorMsg == "" {
 		t.Error("Expected validation error for R3 (verb distractors_en without 'to ' prefix), got empty")
 	}
@@ -176,7 +176,7 @@ func TestValidateTrainingCardResponse_R4_NonVerbWithToPrefix(t *testing.T) {
 		},
 	}
 
-	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
+	errorMsg := ValidateTrainingCardResponse("en", wordCard, resp)
 	if errorMsg == "" {
 		t.Error("Expected validation error for R4 (non-verb distractors_en with 'to ' prefix), got empty")
 	}
@@ -202,7 +202,7 @@ func TestValidateTrainingCardResponse_R5_ExactMatch(t *testing.T) {
 		},
 	}
 
-	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
+	errorMsg := ValidateTrainingCardResponse("en", wordCard, resp)
 	if errorMsg == "" {
 		t.Error("Expected validation error for R5 (distractors_en exactly matches lemma), got empty")
 	}
@@ -228,7 +228,7 @@ func TestValidateTrainingCardResponse_R5_DiffersByOneCharacter(t *testing.T) {
 		},
 	}
 
-	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
+	errorMsg := ValidateTrainingCardResponse("en", wordCard, resp)
 	if errorMsg == "" {
 		t.Error("Expected validation error for R5 (distractors_en differs from lemma by 1 character), got empty")
 	}
@@ -254,7 +254,7 @@ func TestValidateTrainingCardResponse_R5_DiffersByOneCharacterSubstitution(t *te
 		},
 	}
 
-	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
+	errorMsg := ValidateTrainingCardResponse("en", wordCard, resp)
 	if errorMsg == "" {
 		t.Error("Expected validation error for R5 (distractors_en differs from lemma by 1 character), got empty")
 	}
@@ -280,7 +280,7 @@ func TestValidateTrainingCardResponse_R5_DiffersByMoreThanOneCharacter(t *testin
 		},
 	}
 
-	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
+	errorMsg := ValidateTrainingCardResponse("en", wordCard, resp)
 	if errorMsg != "" {
 		t.Errorf("Expected no validation error for R5 (distractors_en differs from lemma by more than 1 character), got: %s", errorMsg)
 	}
@@ -303,7 +303,7 @@ func TestValidateTrainingCardResponse_R5_DiffersOnlyByFirstChar(t *testing.T) {
 		},
 	}
 
-	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
+	errorMsg := ValidateTrainingCardResponse("en", wordCard, resp)
 	if errorMsg != "" {
 		t.Errorf("Expected no validation error for R5 (distractors_en differs from lemma only by first character), got: %s", errorMsg)
 	}
@@ -327,7 +327,7 @@ func TestValidateTrainingCardResponse_R5_VerbDistractorExactMatch(t *testing.T) 
 		},
 	}
 
-	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
+	errorMsg := ValidateTrainingCardResponse("en", wordCard, resp)
 	if errorMsg == "" {
 		t.Error("Expected validation error for R5 (verb distractor exactly matches lemma after 'to '), got empty")
 	}
@@ -354,7 +354,7 @@ func TestValidateTrainingCardResponse_R5_VerbDistractorDiffersByOneCharacter(t *
 		},
 	}
 
-	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
+	errorMsg := ValidateTrainingCardResponse("en", wordCard, resp)
 	if errorMsg == "" {
 		t.Error("Expected validation error for R5 (verb distractor differs from lemma by 1 character after 'to '), got empty")
 	}
@@ -381,7 +381,7 @@ func TestValidateTrainingCardResponse_R5_VerbDistractorDiffersByMoreThanOneChara
 		},
 	}
 
-	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
+	errorMsg := ValidateTrainingCardResponse("en", wordCard, resp)
 	if errorMsg != "" {
 		t.Errorf("Expected no validation error for R5 (verb distractor differs from lemma by more than 1 character after 'to '), got: %s", errorMsg)
 	}
@@ -406,7 +406,7 @@ func TestValidateTrainingCardResponse_R5_ContainsWordButDiffersByMoreThanOneChar
 		},
 	}
 
-	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
+	errorMsg := ValidateTrainingCardResponse("en", wordCard, resp)
 	if errorMsg != "" {
 		t.Errorf("Expected no validation error for R5 (distractor contains word but differs by more than 1 character), got: %s", errorMsg)
 	}
@@ -429,7 +429,7 @@ func TestValidateTrainingCardResponse_R5_ReactionForAction(t *testing.T) {
 		},
 	}
 
-	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
+	errorMsg := ValidateTrainingCardResponse("en", wordCard, resp)
 	if errorMsg != "" {
 		t.Errorf("Expected no validation error for R5 (reaction for action - differs by more than 1 character), got: %s", errorMsg)
 	}
@@ -452,7 +452,7 @@ func TestValidateTrainingCardResponse_R6_ExactMatch(t *testing.T) {
 		},
 	}
 
-	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
+	errorMsg := ValidateTrainingCardResponse("en", wordCard, resp)
 	if errorMsg == "" {
 		t.Error("Expected validation error for R6 (distractors_ru exactly matches word_ru), got empty")
 	}
@@ -478,7 +478,7 @@ func TestValidateTrainingCardResponse_R6_DiffersByOneCharacter(t *testing.T) {
 		},
 	}
 
-	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
+	errorMsg := ValidateTrainingCardResponse("en", wordCard, resp)
 	if errorMsg != "" {
 		t.Errorf("Expected no validation error for R6 (distractors_ru may differ by 1 character), got: %s", errorMsg)
 	}
@@ -501,7 +501,7 @@ func TestValidateTrainingCardResponse_R6_DiffersByMoreThanOneCharacter(t *testin
 		},
 	}
 
-	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
+	errorMsg := ValidateTrainingCardResponse("en", wordCard, resp)
 	if errorMsg != "" {
 		t.Errorf("Expected no validation error for R6 (distractors_ru differs from word_ru by more than 1 character), got: %s", errorMsg)
 	}
@@ -524,7 +524,7 @@ func TestValidateTrainingCardResponse_R6_ContainsWordButDiffersByMoreThanOneChar
 		},
 	}
 
-	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
+	errorMsg := ValidateTrainingCardResponse("en", wordCard, resp)
 	if errorMsg != "" {
 		t.Errorf("Expected no validation error for R6 (distractor contains word but differs by more than 1 character), got: %s", errorMsg)
 	}
@@ -547,7 +547,7 @@ func TestValidateTrainingCardResponse_HappyPath(t *testing.T) {
 		},
 	}
 
-	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
+	errorMsg := ValidateTrainingCardResponse("en", wordCard, resp)
 	if errorMsg != "" {
 		t.Errorf("Expected no validation error for valid response, got: %s", errorMsg)
 	}
@@ -570,7 +570,7 @@ func TestValidateTrainingCardResponse_HappyPath_NonVerb(t *testing.T) {
 		},
 	}
 
-	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
+	errorMsg := ValidateTrainingCardResponse("en", wordCard, resp)
 	if errorMsg != "" {
 		t.Errorf("Expected no validation error for valid response, got: %s", errorMsg)
 	}
@@ -592,7 +592,7 @@ func TestValidateTrainingCardResponse_MultipleErrors(t *testing.T) {
 		},
 	}
 
-	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
+	errorMsg := ValidateTrainingCardResponse("en", wordCard, resp)
 	if errorMsg == "" {
 		t.Error("Expected validation error for multiple rule violations, got empty")
 	}
@@ -633,7 +633,7 @@ func TestValidateTrainingCardResponse_POSFromWordCard(t *testing.T) {
 		},
 	}
 
-	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
+	errorMsg := ValidateTrainingCardResponse("en", wordCard, resp)
 	if errorMsg == "" {
 		t.Error("Expected validation error for R3 (verb without 'to '), got empty")
 	}
@@ -651,7 +651,7 @@ func TestValidateTrainingCardResponse_EmptySenses(t *testing.T) {
 		Senses: []models.TrainingCardSense{},
 	}
 
-	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
+	errorMsg := ValidateTrainingCardResponse("en", wordCard, resp)
 	if errorMsg != "" {
 		t.Errorf("Expected empty error message for empty senses (handled separately), got: %s", errorMsg)
 	}
@@ -676,7 +676,7 @@ func TestValidateTrainingCardResponse_ErrorMessageTruncation(t *testing.T) {
 		},
 	}
 
-	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
+	errorMsg := ValidateTrainingCardResponse("en", wordCard, resp)
 	if errorMsg == "" {
 		t.Fatal("Expected validation errors, got empty")
 	}
@@ -709,7 +709,7 @@ func TestValidateTrainingCardResponse_R5_VerbDiffersOnlyByFirstChar(t *testing.T
 		},
 	}
 
-	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
+	errorMsg := ValidateTrainingCardResponse("en", wordCard, resp)
 	if errorMsg != "" {
 		t.Errorf("Expected no validation error for verb distractor differing only by first char (to billion vs million), got: %s", errorMsg)
 	}
@@ -736,7 +736,7 @@ func TestValidateTrainingCardResponse_SecondSenseError(t *testing.T) {
 		},
 	}
 
-	errorMsg := ValidateTrainingCardResponse(wordCard, resp)
+	errorMsg := ValidateTrainingCardResponse("en", wordCard, resp)
 	if errorMsg == "" {
 		t.Fatal("Expected validation error in second sense, got empty")
 	}

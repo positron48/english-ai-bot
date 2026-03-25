@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"tgbot-skeleton/internal/config"
+	"tgbot-skeleton/internal/learning"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/service"
@@ -239,6 +240,27 @@ func (r *Router) getRateLimitPolicy(requestsPerWindow, burstMultiplier int) Rate
 	}
 }
 
+func (r *Router) handleHealth(w http.ResponseWriter, req *http.Request) {
+	lc := r.config.Learning
+	if lc.TargetLang == "" {
+		lc = config.DefaultLearningConfig()
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	_ = json.NewEncoder(w).Encode(map[string]interface{}{
+		"status": "ok",
+		"learning": map[string]interface{}{
+			"pair":                lc.Pair,
+			"native_lang":         lc.NativeLang,
+			"target_lang":         lc.TargetLang,
+			"app_code":            lc.AppCode,
+			"grammar_bundle_id":   lc.GrammarBundleID,
+			"target_lang_name_ru": learning.TargetLangNameRUAccusative(lc.TargetLang),
+			"target_lang_name_en": learning.TargetLangNameEN(lc.TargetLang),
+		},
+	})
+}
+
 // setupRoutes configures all routes
 func (r *Router) setupRoutes() {
 	// Swagger documentation with custom UI that auto-adds "Bearer " prefix
@@ -314,12 +336,8 @@ func (r *Router) setupRoutes() {
 	refreshMiddleware := NewRateLimitMiddleware(r.rateLimiter, r.logger, refreshPolicy, KeyFuncIP)
 	r.mux.HandleFunc("/auth/refresh", refreshMiddleware.Wrap(r.handleAuthRefresh))
 
-	// Health check
-	r.mux.HandleFunc("/health", func(w http.ResponseWriter, req *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		fmt.Fprintf(w, `{"status": "ok"}`)
-	})
+	// Health check (includes public learning metadata for webapp title / UI before auth)
+	r.mux.HandleFunc("/health", r.handleHealth)
 
 	// Redirect site root to webapp entrypoint.
 	r.mux.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
