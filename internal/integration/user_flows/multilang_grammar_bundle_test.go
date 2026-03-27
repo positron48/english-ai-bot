@@ -46,14 +46,15 @@ func TestSpanishGrammarBundle_Sections(t *testing.T) {
 	if err := json.NewDecoder(w.Body).Decode(&resp); err != nil {
 		t.Fatalf("decode: %v", err)
 	}
+	wantSection := "es.grammar.orientation_alphabet_sounds"
 	var found bool
 	for _, c := range resp.Categories {
-		if c.SectionID == "es.grammar.mvp_orientation" {
+		if c.SectionID == wantSection {
 			found = true
 			break
 		}
 	}
 	if !found {
-		t.Fatalf("expected section es.grammar.mvp_orientation in categories, got %+v", resp.Categories)
+		t.Fatalf("expected section %s in categories, got %+v", wantSection, resp.Categories)
 	}
 }

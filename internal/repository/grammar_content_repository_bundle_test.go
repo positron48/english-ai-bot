@@ -13,6 +13,9 @@ import (
 // Stable EN chapter id used to assert ES bundle routing does not accidentally serve the English course.
 const sampleENChapterID = "en.grammar.first_sentences_be_as.personal_pronouns_am_is"
 
+// First published ES chapter (replaces retired demo placeholder es.grammar.mvp_orientation.intro_placeholder).
+const sampleESChapterID = "es.grammar.orientation_alphabet_sounds.spanish_alphabet_letter_names"
+
 func TestNewGrammarContentRepositoryForLearning_DefaultENMatchesEmbeddedAlias(t *testing.T) {
 	rFor, err := NewGrammarContentRepositoryForLearning(config.DefaultLearningConfig(), zap.NewNop())
 	if err != nil {
@@ -65,7 +68,7 @@ func TestNewGrammarContentRepositoryForLearning_ESMVPChapter(t *testing.T) {
 	if r.ChapterExists(sampleENChapterID) {
 		t.Fatalf("ES bundle must not expose EN chapter %q", sampleENChapterID)
 	}
-	ch, err := r.GetChapter("es.grammar.mvp_orientation.intro_placeholder")
+	ch, err := r.GetChapter(sampleESChapterID)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -76,8 +79,8 @@ func TestNewGrammarContentRepositoryForLearning_ESMVPChapter(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(sec.Sections) != 1 {
-		t.Fatalf("expected 1 MVP section, got %d", len(sec.Sections))
+	if len(sec.Sections) == 0 {
+		t.Fatal("expected ES grammar sections")
 	}
 }
 
