@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "last_updated": "2026-03-27T23:45:00Z",
+  "last_updated": "2026-03-28T00:05:00Z",
   "sections": [
     {
       "section_id": "es.grammar.orientation_alphabet_sounds",
@@ -1022,7 +1022,7 @@
       "title": "Present questions: where the subject and adverbs go",
       "level": "A1",
       "order": 30,
-      "status": "pending",
+      "status": "validated",
       "input_file": "config/chapter-templates/es.grammar.present_regular_actions.present_questions_where_subject_adverbs_go-input.json",
       "output_dir": "chapters/030.es.grammar.present_regular_actions.present_questions_where_subject_adverbs_go",
       "files": {
@@ -3605,9 +3605,9 @@
     "total_chapters": 152,
     "chapters_generated": 0,
     "chapters_in_progress": 0,
-    "chapters_pending": 125,
+    "chapters_pending": 124,
     "chapters_failed": 0,
-    "chapters_validated": 27,
-    "last_updated": "2026-03-27T23:45:00Z"
+    "chapters_validated": 28,
+    "last_updated": "2026-03-28T00:05:00Z"
   }
 }
