@@ -174,7 +174,7 @@
         </button>
       </div>
 
-      <!-- Type: type the word (no letter hints) -->
+      <!-- Type: type the word; lightbulb shows first letter + underscores -->
       <div v-if="currentCard?.type === 'type'" class="type-block">
         <div class="type-answer-row">
           <span class="type-answer-label">{{ t('training.typeWord') || 'Enter the word:' }}</span>
@@ -303,6 +303,24 @@
           class="btn btn-secondary spell-skip"
           @click="skipSpellAnswer"
         >{{ t('training.skip') || 'Пропустить' }}</button>
+        <div
+          v-if="showSpellHintButton && spellHintEligible && !(feedback && !feedback.is_correct)"
+          class="type-hint-button-wrapper spell-hint-button-wrapper"
+          :class="{ 'type-hint-button-visible': spellHintButtonVisible }"
+        >
+          <button
+            v-if="!spellHintShown && !feedback && !answering"
+            type="button"
+            class="btn-type-hint-icon"
+            :aria-label="t('training.typeHint') || 'Подсказка'"
+            @click="spellHintShown = true"
+          >
+            <Icon name="lightbulb" class="type-hint-icon" />
+          </button>
+          <div v-else-if="spellHintShown" class="type-hint-text">
+            {{ spellHintDisplay }}
+          </div>
+        </div>
       </div>
 
       <div 
@@ -611,6 +629,10 @@ const spellAnswerLettersWrapStyle = computed(() => ({
 }))
 const spellSkipAutoPickInProgress = ref(false)
 const spellSkipResultActive = ref(false)
+const spellHintShown = ref(false)
+const showSpellHintButton = ref(false)
+const spellHintButtonVisible = ref(false)
+let spellHintButtonTimer: ReturnType<typeof setTimeout> | null = null
 // Type (type the word, no letters) state
 const typeAnswerText = ref('')
 const typeHintShown = ref(false)
@@ -657,15 +679,43 @@ const playCurrentPronunciation = async () => {
   }
 }
 
+// Same mask as type: prefix + first letter of stem + underscores (stem = answer after prefix)
+function typeChallengeStemFromAnswer(fullAnswer: string | undefined, prefix: string | undefined): string {
+  const full = (fullAnswer ?? '').trim()
+  const pre = prefix ?? ''
+  if (pre && full.startsWith(pre)) return full.slice(pre.length)
+  return full
+}
+
+function maskedFirstLetterHint(prefix: string, firstLetter: string, stemRuneCount: number): string {
+  if (!firstLetter || stemRuneCount <= 0) return prefix
+  const rest = stemRuneCount > 1 ? ' ' + '_'.repeat(stemRuneCount - 1) : ''
+  return prefix + firstLetter + rest
+}
+
 // Type challenge hint: optional prefix + first letter + masked rest (e.g. "to s ___")
 const typeHintDisplay = computed(() => {
   const card = currentCard.value
   const prefix = card?.prefix ?? ''
   const first = card?.hint_first_letter ?? ''
   const len = card?.hint_length ?? 0
-  if (!first || len <= 0) return prefix
-  const rest = len > 1 ? ' ' + '_'.repeat(len - 1) : ''
-  return prefix + first + rest
+  return maskedFirstLetterHint(prefix, first, len)
+})
+
+const spellHintEligible = computed(() => {
+  const card = currentCard.value
+  if (card?.type !== 'spell' || !card.correct_answer?.trim()) return false
+  const stem = typeChallengeStemFromAnswer(card.correct_answer, card.prefix)
+  return [...stem].length > 0
+})
+
+const spellHintDisplay = computed(() => {
+  const card = currentCard.value
+  const prefix = card?.prefix ?? ''
+  const stem = typeChallengeStemFromAnswer(card?.correct_answer, card?.prefix)
+  const runes = [...stem]
+  if (runes.length === 0) return prefix
+  return maskedFirstLetterHint(prefix, runes[0], runes.length)
 })
 
 // For spell keyboard: first unused index with this letter
@@ -1387,6 +1437,10 @@ onUnmounted(() => {
     clearTimeout(typeHintButtonTimer)
     typeHintButtonTimer = null
   }
+  if (spellHintButtonTimer) {
+    clearTimeout(spellHintButtonTimer)
+    spellHintButtonTimer = null
+  }
   typeRevealTimeouts.forEach(clearTimeout)
   typeRevealTimeouts = []
   if (spellAnswerLettersResizeObserver) {
@@ -1451,6 +1505,10 @@ const setupCard = (card: Card) => {
     clearTimeout(typeHintButtonTimer)
     typeHintButtonTimer = null
   }
+  if (spellHintButtonTimer) {
+    clearTimeout(spellHintButtonTimer)
+    spellHintButtonTimer = null
+  }
 
   currentCard.value = card
   cardIndex.value = card.card_index
@@ -1479,6 +1537,9 @@ const setupCard = (card: Card) => {
   spellRevealLetters.value = []
   spellSkipAutoPickInProgress.value = false
   spellSkipResultActive.value = false
+  spellHintShown.value = false
+  showSpellHintButton.value = false
+  spellHintButtonVisible.value = false
   typeAnswerText.value = ''
   typeHintShown.value = false
   showTypeHintButton.value = false
@@ -1486,14 +1547,19 @@ const setupCard = (card: Card) => {
   typeRevealDisplayText.value = ''
   typeRevealTimeouts.forEach(clearTimeout)
   typeRevealTimeouts = []
-  if (typeHintButtonTimer) {
-    clearTimeout(typeHintButtonTimer)
-    typeHintButtonTimer = null
-  }
 
   // Spell cards: no options delay, letters shown immediately
   if (card.type === 'spell') {
     optionsShown.value = true
+    const stem = typeChallengeStemFromAnswer(card.correct_answer, card.prefix)
+    if ([...stem].length > 0) {
+      spellHintButtonTimer = setTimeout(() => {
+        showSpellHintButton.value = true
+        setTimeout(() => {
+          spellHintButtonVisible.value = true
+        }, 50)
+      }, 2000)
+    }
     return
   }
   // Type cards: no options, input shown immediately; hint button with delay like example
@@ -2163,6 +2229,10 @@ const nextCard = async () => {
     clearTimeout(typeHintButtonTimer)
     typeHintButtonTimer = null
   }
+  if (spellHintButtonTimer) {
+    clearTimeout(spellHintButtonTimer)
+    spellHintButtonTimer = null
+  }
   autoNextCardTimerStartTime = null
   autoNextCardTimerDelayMs = null
 
@@ -2640,6 +2710,9 @@ const handleTimerMouseLeave = () => {
 }
 .spell-skip {
   margin-top: 8px;
+}
+.spell-hint-button-wrapper {
+  margin-top: 10px;
 }
 
 .type-block {
