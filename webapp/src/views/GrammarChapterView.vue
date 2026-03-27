@@ -560,6 +560,33 @@ onMounted(() => {
   line-height: 1.6;
 }
 
+.markdown-content :deep(table) {
+  width: max-content;
+  min-width: 100%;
+  max-width: 100%;
+  display: block;
+  overflow-x: auto;
+  border-collapse: collapse;
+  margin: 16px 0;
+  background: var(--card-bg);
+}
+
+.markdown-content :deep(thead) {
+  background: var(--bg-tertiary);
+}
+
+.markdown-content :deep(th),
+.markdown-content :deep(td) {
+  border: 1px solid var(--border-primary);
+  padding: 8px 10px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.markdown-content :deep(th) {
+  font-weight: 600;
+}
+
 @media (max-width: 768px) {
   .chapter-header h1 {
     line-height: 1.25;
