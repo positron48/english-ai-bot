@@ -990,30 +990,12 @@
       },
       {
         "id": "q25",
-        "type": "mcq_single",
-        "prompt": "Выберите ряд, где все слова соответствуют правилу: перед `e` звук /ке/ обычно пишется через сочетание `qu`.",
+        "type": "true_false",
+        "prompt": "Верно ли утверждение?\n\n**В обычном слове по правилам этой главы для слога с [k] перед гласной e достаточно написать *qe* (буква q и сразу e, без u между ними).**",
         "theory_block_id": "b3_theory_core_consonant_names",
         "difficulty": 2,
-        "choices": [
-          {
-            "id": "a",
-            "text": "queso, quince, quemar"
-          },
-          {
-            "id": "b",
-            "text": "keso, kilo, kemar"
-          },
-          {
-            "id": "c",
-            "text": "ceso, cince, cemar"
-          },
-          {
-            "id": "d",
-            "text": "qeso, qince, qemar"
-          }
-        ],
-        "correct_answer": "a",
-        "explanation": "В базовом шаблоне этой главы перед `e` звук /ке/ обычно передается сочетанием `qu`: `queso`, `quince`, `quemar`. Остальные ряды нарушают это правило."
+        "correct_answer": "false",
+        "explanation": "Нет. Для [k] перед **e** в базовой орфографии главы пишут **que**: между **q** и **e** стоит **u** как часть связки **qu**, а не «голое» **qe**."
       },
       {
         "id": "q26",
@@ -1883,7 +1865,7 @@
   },
   "meta": {
     "version": "2026.01.16",
-    "updated_at": "2026-03-28T08:24:14Z",
+    "updated_at": "2026-03-28T08:47:49Z",
     "source": "llm"
   }
 }
