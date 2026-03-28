@@ -684,20 +684,36 @@ onMounted(() => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 8px;
+  padding: 16px;
+  box-sizing: border-box;
+  text-align: center;
   background: rgba(0, 0, 0, 0.7);
   border-radius: 12px;
   color: white;
   font-weight: 600;
 }
 
-.locked-overlay Icon {
-  font-size: 24px;
-  margin-bottom: -2px;
+.locked-overlay :deep(.icon) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
-.locked-overlay span {
-  margin-top: -2px;
+.locked-overlay :deep(.icon svg) {
+  width: 28px;
+  height: 28px;
+}
+
+/* Текстовая подпись под иконкой (второй прямой потомок оверлея) */
+.locked-overlay > span:not(.icon) {
+  display: block;
+  max-width: min(100%, 22rem);
+  margin: 0;
+  line-height: 1.35;
+  text-align: center;
+  text-wrap: balance;
 }
 
 .category-header {
