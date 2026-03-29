@@ -419,6 +419,7 @@ func (r *Router) setupProtectedRoutes() {
 
 	// Users admin routes
 	r.mux.HandleFunc("/api/admin/users", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionUsersReadAll)(r.handleAdminUsers))))
+	r.mux.HandleFunc("/api/admin/users/", appAPIMiddleware.Wrap(adminAuth(r.RequireAnyPermission(PermissionFullAccess, PermissionUsersReadAll)(r.handleAdminUserSubroutes))))
 
 	// Word sets admin routes
 	// Categories: GET requires read, POST/PUT/DELETE require edit

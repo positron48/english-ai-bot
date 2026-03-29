@@ -1,6 +1,7 @@
 package web
 
 import (
+	"context"
 	"database/sql"
 	"encoding/json"
 	"fmt"
@@ -1268,11 +1269,15 @@ func (r *Router) handleAdminUsers(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	// Return user list with id, telegram_id, telegram_username, created_at
-	// Query directly to get dates as strings, avoiding time.Time parsing issues
-	query := `SELECT id, telegram_id, COALESCE(telegram_username, ''), 
-			  COALESCE(CAST(created_at AS TEXT), '') as created_at
-			  FROM users ORDER BY id`
+	// Return user list with id, telegram_id, telegram_username, created_at, grammar placement summary
+	query := `SELECT u.id, u.telegram_id, COALESCE(u.telegram_username, ''), 
+			  COALESCE(CAST(u.created_at AS TEXT), '') as created_at,
+			  gpt.score, gpt.total_questions, gpt.opened_sections_json,
+			  COALESCE(CAST(gpt.completed_at AS TEXT), ''),
+			  COALESCE(gpt.admin_override, false)
+			  FROM users u
+			  LEFT JOIN grammar_placement_test gpt ON gpt.user_id::text = u.id::text
+			  ORDER BY u.id`
 	rows, err := r.db.Query(query)
 	if err != nil {
 		r.logger.Error("failed to query users", zap.Error(err))
@@ -1287,18 +1292,50 @@ func (r *Router) handleAdminUsers(w http.ResponseWriter, req *http.Request) {
 		var telegramID int64
 		var telegramUsername string
 		var createdAt string
+		var gptScore sql.NullInt64
+		var gptTotal sql.NullInt64
+		var gptOpenedJSON sql.NullString
+		var gptCompleted sql.NullString
+		var gptAdminOverride sql.NullBool
 
-		if err := rows.Scan(&id, &telegramID, &telegramUsername, &createdAt); err != nil {
+		if err := rows.Scan(&id, &telegramID, &telegramUsername, &createdAt,
+			&gptScore, &gptTotal, &gptOpenedJSON, &gptCompleted, &gptAdminOverride); err != nil {
 			r.logger.Warn("failed to scan user", zap.Error(err))
 			continue
 		}
 
-		userList = append(userList, map[string]interface{}{
+		row := map[string]interface{}{
 			"id":                id,
 			"telegram_id":       telegramID,
 			"telegram_username": telegramUsername,
 			"created_at":        createdAt,
-		})
+		}
+
+		if gptScore.Valid {
+			var opened []string
+			if gptOpenedJSON.Valid && gptOpenedJSON.String != "" {
+				if err := json.Unmarshal([]byte(gptOpenedJSON.String), &opened); err != nil {
+					r.logger.Warn("failed to parse placement opened_sections", zap.Error(err), zap.Int64("user_id", id))
+					opened = nil
+				}
+			}
+			levelLabel := ""
+			if r.grammarService != nil {
+				levelLabel = r.grammarService.FormatPlacementLevelDisplay(opened, true)
+			}
+			adminSet := gptAdminOverride.Valid && gptAdminOverride.Bool
+			row["grammar_placement"] = map[string]interface{}{
+				"level":           levelLabel,
+				"score":           int(gptScore.Int64),
+				"total_questions": int(gptTotal.Int64),
+				"completed_at":    gptCompleted.String,
+				"admin_set":       adminSet,
+			}
+		} else {
+			row["grammar_placement"] = nil
+		}
+
+		userList = append(userList, row)
 	}
 
 	w.Header().Set("Content-Type", "application/json")
@@ -1306,6 +1343,72 @@ func (r *Router) handleAdminUsers(w http.ResponseWriter, req *http.Request) {
 	json.NewEncoder(w).Encode(map[string]interface{}{
 		"users": userList,
 	})
+}
+
+// handleAdminUserSubroutes handles /api/admin/users/{id}/...
+func (r *Router) handleAdminUserSubroutes(w http.ResponseWriter, req *http.Request) {
+	path := strings.TrimPrefix(req.URL.Path, "/api/admin/users/")
+	path = strings.Trim(path, "/")
+	parts := strings.Split(path, "/")
+	if len(parts) != 2 {
+		http.NotFound(w, req)
+		return
+	}
+	userID, err := strconv.ParseInt(parts[0], 10, 64)
+	if err != nil || userID < 1 {
+		http.Error(w, "Invalid user id", http.StatusBadRequest)
+		return
+	}
+	switch parts[1] {
+	case "grammar-placement":
+		r.handleAdminUserGrammarPlacement(w, req, userID)
+	default:
+		http.NotFound(w, req)
+	}
+}
+
+func (r *Router) handleAdminUserGrammarPlacement(w http.ResponseWriter, req *http.Request, userID int64) {
+	if req.Method != http.MethodPut {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	if r.grammarService == nil {
+		http.Error(w, "Grammar service not configured", http.StatusServiceUnavailable)
+		return
+	}
+
+	var body struct {
+		Level string `json:"level"`
+	}
+	if err := json.NewDecoder(req.Body).Decode(&body); err != nil {
+		http.Error(w, "Invalid JSON body", http.StatusBadRequest)
+		return
+	}
+
+	var exists int
+	if err := r.db.QueryRow(`SELECT 1 FROM users WHERE id = ?`, userID).Scan(&exists); err != nil {
+		if err == sql.ErrNoRows {
+			http.Error(w, "User not found", http.StatusNotFound)
+			return
+		}
+		r.logger.Error("failed to look up user", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	if err := r.grammarService.AdminSetGrammarPlacementLevel(context.Background(), userID, body.Level); err != nil {
+		if strings.Contains(err.Error(), "invalid grammar level") || strings.Contains(err.Error(), "unknown grammar level") {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		r.logger.Error("admin set grammar placement failed", zap.Error(err), zap.Int64("user_id", userID))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	_ = json.NewEncoder(w).Encode(map[string]interface{}{"success": true})
 }
 
 // handleAdminOrphanedCards handles orphaned training cards management

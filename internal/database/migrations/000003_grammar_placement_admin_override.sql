@@ -1,0 +1,2 @@
+ALTER TABLE grammar_placement_test
+	ADD COLUMN IF NOT EXISTS admin_override BOOLEAN NOT NULL DEFAULT FALSE;

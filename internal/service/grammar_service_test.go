@@ -2681,3 +2681,60 @@ func TestGrammarService_GetGrammarStatistics_PartialProgress(t *testing.T) {
 		t.Fatalf("expected ConfirmedLevel A0 with partial progress, got %q", stats.ConfirmedLevel)
 	}
 }
+
+func TestGrammarAttemptRepository_SavePlacement_ReplacesWhenAdminOverride(t *testing.T) {
+	db := testutil.SetupTestDatabase(t)
+	conn := db.GetConnection()
+	attemptRepo := repository.NewGrammarAttemptRepository(conn, zap.NewNop())
+	userRepo := repository.NewUserRepository(conn, zap.NewNop())
+	u, err := userRepo.GetOrCreateUser(990001)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := attemptRepo.UpsertPlacementByAdmin(u.ID, 0, 0, []string{"sec-x"}); err != nil {
+		t.Fatal(err)
+	}
+	if err := attemptRepo.SavePlacementTestResult(u.ID, 30, 5, []string{"sec-y"}); err != nil {
+		t.Fatal(err)
+	}
+	res, err := attemptRepo.GetPlacementTestResult(u.ID)
+	if err != nil || res == nil {
+		t.Fatalf("GetPlacementTestResult: %v, %v", res, err)
+	}
+	if res.Score != 30 {
+		t.Fatalf("score want 30 got %d", res.Score)
+	}
+	if len(res.OpenedSections) != 1 || res.OpenedSections[0] != "sec-y" {
+		t.Fatalf("opened sections: %+v", res.OpenedSections)
+	}
+	if res.AdminOverride {
+		t.Fatal("admin_override should be false after user placement save")
+	}
+}
+
+func TestGrammarAttemptRepository_SavePlacement_KeepsHigherScoreWithoutAdmin(t *testing.T) {
+	db := testutil.SetupTestDatabase(t)
+	conn := db.GetConnection()
+	attemptRepo := repository.NewGrammarAttemptRepository(conn, zap.NewNop())
+	userRepo := repository.NewUserRepository(conn, zap.NewNop())
+	u, err := userRepo.GetOrCreateUser(990002)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := attemptRepo.SavePlacementTestResult(u.ID, 80, 10, []string{"a"}); err != nil {
+		t.Fatal(err)
+	}
+	if err := attemptRepo.SavePlacementTestResult(u.ID, 50, 10, []string{"b"}); err != nil {
+		t.Fatal(err)
+	}
+	res, err := attemptRepo.GetPlacementTestResult(u.ID)
+	if err != nil || res == nil {
+		t.Fatal(err)
+	}
+	if res.Score != 80 {
+		t.Fatalf("score want 80 got %d", res.Score)
+	}
+	if len(res.OpenedSections) != 1 || res.OpenedSections[0] != "a" {
+		t.Fatalf("opened: %+v", res.OpenedSections)
+	}
+}

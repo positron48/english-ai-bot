@@ -1998,6 +1998,100 @@ func (s *GrammarService) SubmitPlacementTest(ctx context.Context, userID int64, 
 	}, nil
 }
 
+func grammarLevelOrderMap() map[string]int {
+	return map[string]int{"A0": 0, "A1": 1, "A2": 2, "B1": 3, "B2": 4, "C1": 5, "C2": 6, "mixed": -1}
+}
+
+// OpenPublishedSectionsThroughLevel returns published section IDs with CEFR level <= targetLevel (same expansion as placement submit).
+func (s *GrammarService) OpenPublishedSectionsThroughLevel(targetLevel string) ([]string, error) {
+	targetLevel = strings.TrimSpace(targetLevel)
+	levelOrder := grammarLevelOrderMap()
+	maxOrder, ok := levelOrder[targetLevel]
+	if !ok || maxOrder < 0 {
+		return nil, fmt.Errorf("unknown grammar level %q", targetLevel)
+	}
+	sectionsData, err := s.ContentRepo.GetSections()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get sections: %w", err)
+	}
+	opened := make([]string, 0)
+	for i := range sectionsData.Sections {
+		sec := &sectionsData.Sections[i]
+		sectionItem, errPub := s.PublishRepo.GetPublishedItem("section", sec.SectionID)
+		if errPub != nil || sectionItem == nil || !sectionItem.IsPublished {
+			continue
+		}
+		secOrder, has := levelOrder[sec.Level]
+		if !has || secOrder < 0 {
+			continue
+		}
+		if secOrder <= maxOrder {
+			opened = append(opened, sec.SectionID)
+		}
+	}
+	return opened, nil
+}
+
+// AdminSetGrammarPlacementLevel sets or clears placement-based grammar unlocks (admin). Empty level deletes the placement row.
+// Level values: A0..C2, "below_a1" / "below a1" / "Below A1" for no sections opened.
+func (s *GrammarService) AdminSetGrammarPlacementLevel(_ context.Context, userID int64, levelInput string) error {
+	levelInput = strings.TrimSpace(levelInput)
+	if levelInput == "" {
+		return s.AttemptRepo.DeletePlacementTestResult(userID)
+	}
+	normSpace := strings.ToLower(strings.ReplaceAll(levelInput, "_", " "))
+	if normSpace == "below a1" {
+		return s.AttemptRepo.UpsertPlacementByAdmin(userID, 0, 0, []string{})
+	}
+	norm := strings.ToUpper(strings.TrimSpace(levelInput))
+	valid := map[string]struct{}{
+		"A0": {}, "A1": {}, "A2": {}, "B1": {}, "B2": {}, "C1": {}, "C2": {},
+	}
+	if _, ok := valid[norm]; !ok {
+		return fmt.Errorf("invalid grammar level %q", levelInput)
+	}
+	opened, err := s.OpenPublishedSectionsThroughLevel(norm)
+	if err != nil {
+		return err
+	}
+	return s.AttemptRepo.UpsertPlacementByAdmin(userID, 0, 0, opened)
+}
+
+// FormatPlacementLevelDisplay returns a short CEFR label for admin UI (empty if no placement row).
+func (s *GrammarService) FormatPlacementLevelDisplay(opened []string, hasPlacementRow bool) string {
+	if !hasPlacementRow {
+		return ""
+	}
+	if len(opened) == 0 {
+		return "Below A1"
+	}
+	sectionsData, err := s.ContentRepo.GetSections()
+	if err != nil {
+		return "—"
+	}
+	levelOrder := grammarLevelOrderMap()
+	maxOrd := -1
+	for _, oid := range opened {
+		for j := range sectionsData.Sections {
+			if sectionsData.Sections[j].SectionID != oid {
+				continue
+			}
+			if ord, ok := levelOrder[sectionsData.Sections[j].Level]; ok && ord >= 0 && ord > maxOrd {
+				maxOrd = ord
+			}
+			break
+		}
+	}
+	if maxOrd < 0 {
+		return "—"
+	}
+	labels := []string{"A0", "A1", "A2", "B1", "B2", "C1", "C2"}
+	if maxOrd >= len(labels) {
+		return "—"
+	}
+	return labels[maxOrd]
+}
+
 // PlacementTestResult represents placement test submission result
 type PlacementTestResult struct {
 	Score          int           `json:"score"`

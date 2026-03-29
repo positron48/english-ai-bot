@@ -374,23 +374,26 @@ type PlacementTestResult struct {
 	TotalQuestions int
 	OpenedSections []string
 	CompletedAt    time.Time
+	AdminOverride  bool
 }
 
 // SavePlacementTestResult saves or updates placement test result
-// Only updates if the new score is higher (better) than existing
+// Only updates if the new score is higher (better) than existing, unless the existing row was set by an admin override
+// (then the user's attempt always replaces it).
 func (r *GrammarAttemptRepository) SavePlacementTestResult(userID int64, score int, totalQuestions int, openedSections []string) error {
 	openedSectionsJSON, _ := json.Marshal(openedSections)
 
 	// Check existing result
 	existingScore := 0
 	var existingOpenedSectionsJSON sql.NullString
-	checkQuery := `SELECT score, opened_sections_json FROM grammar_placement_test WHERE user_id = ?`
-	err := r.db.QueryRow(checkQuery, userID).Scan(&existingScore, &existingOpenedSectionsJSON)
+	var existingAdminOverride bool
+	checkQuery := `SELECT score, opened_sections_json, COALESCE(admin_override, false) FROM grammar_placement_test WHERE user_id = ?`
+	err := r.db.QueryRow(checkQuery, userID).Scan(&existingScore, &existingOpenedSectionsJSON, &existingAdminOverride)
 
 	if err == sql.ErrNoRows {
 		// No existing result, insert new
-		query := `INSERT INTO grammar_placement_test (user_id, score, total_questions, opened_sections_json, completed_at)
-				  VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)`
+		query := `INSERT INTO grammar_placement_test (user_id, score, total_questions, opened_sections_json, completed_at, admin_override)
+				  VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, false)`
 		_, err = r.db.Exec(query, userID, score, totalQuestions, string(openedSectionsJSON))
 		if err != nil {
 			return fmt.Errorf("failed to save placement test result: %w", err)
@@ -402,23 +405,54 @@ func (r *GrammarAttemptRepository) SavePlacementTestResult(userID int64, score i
 		return fmt.Errorf("failed to check existing placement test result: %w", err)
 	}
 
-	// Only update if new score is higher (better)
-	if score > existingScore {
-		query := `UPDATE grammar_placement_test 
-				  SET score = ?, total_questions = ?, opened_sections_json = ?, completed_at = CURRENT_TIMESTAMP
-				  WHERE user_id = ?`
-		_, err = r.db.Exec(query, score, totalQuestions, string(openedSectionsJSON), userID)
-		if err != nil {
-			return fmt.Errorf("failed to update placement test result: %w", err)
-		}
+	if !existingAdminOverride && score <= existingScore {
+		return nil
+	}
+
+	query := `UPDATE grammar_placement_test 
+			  SET score = ?, total_questions = ?, opened_sections_json = ?, completed_at = CURRENT_TIMESTAMP, admin_override = false
+			  WHERE user_id = ?`
+	_, err = r.db.Exec(query, score, totalQuestions, string(openedSectionsJSON), userID)
+	if err != nil {
+		return fmt.Errorf("failed to update placement test result: %w", err)
 	}
 
 	return nil
 }
 
+// UpsertPlacementByAdmin overwrites placement (opened sections / level) regardless of score; marks admin_override.
+func (r *GrammarAttemptRepository) UpsertPlacementByAdmin(userID int64, score int, totalQuestions int, openedSections []string) error {
+	openedSectionsJSON, err := json.Marshal(openedSections)
+	if err != nil {
+		return fmt.Errorf("failed to marshal opened sections: %w", err)
+	}
+	q := `INSERT INTO grammar_placement_test (user_id, score, total_questions, opened_sections_json, completed_at, admin_override)
+		VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, true)
+		ON CONFLICT (user_id) DO UPDATE SET
+			score = EXCLUDED.score,
+			total_questions = EXCLUDED.total_questions,
+			opened_sections_json = EXCLUDED.opened_sections_json,
+			completed_at = CURRENT_TIMESTAMP,
+			admin_override = true`
+	_, err = r.db.Exec(q, userID, score, totalQuestions, string(openedSectionsJSON))
+	if err != nil {
+		return fmt.Errorf("failed to upsert admin placement: %w", err)
+	}
+	return nil
+}
+
+// DeletePlacementTestResult removes placement row for a user (full reset of placement-based unlocks).
+func (r *GrammarAttemptRepository) DeletePlacementTestResult(userID int64) error {
+	_, err := r.db.Exec(`DELETE FROM grammar_placement_test WHERE user_id = ?`, userID)
+	if err != nil {
+		return fmt.Errorf("failed to delete placement test result: %w", err)
+	}
+	return nil
+}
+
 // GetPlacementTestResult retrieves placement test result for a user
 func (r *GrammarAttemptRepository) GetPlacementTestResult(userID int64) (*PlacementTestResult, error) {
-	query := `SELECT user_id, score, total_questions, opened_sections_json, completed_at
+	query := `SELECT user_id, score, total_questions, opened_sections_json, completed_at, COALESCE(admin_override, false)
 			  FROM grammar_placement_test
 			  WHERE user_id = ?`
 
@@ -432,6 +466,7 @@ func (r *GrammarAttemptRepository) GetPlacementTestResult(userID int64) (*Placem
 		&result.TotalQuestions,
 		&openedSectionsJSON,
 		&completedAt,
+		&result.AdminOverride,
 	)
 
 	if err == sql.ErrNoRows {
