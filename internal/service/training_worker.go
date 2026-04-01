@@ -729,44 +729,8 @@ func (w *TrainingWorker) getUsersForWord(word string) ([]*models.User, error) {
 
 // notifyAdmin sends a notification to the admin about circuit breaker
 func (w *TrainingWorker) notifyAdmin(errorMessage string) {
-	if w.adminTelegramID == 0 {
-		w.logger.Debug("admin telegram ID not set, skipping notification")
-		return
-	}
-
-	_, failureCount, lastError, err := w.cbService.GetState()
-	if err != nil {
-		w.logger.Error("failed to get circuit breaker state", zap.Error(err))
-		return
-	}
-
-	message := fmt.Sprintf(
-		"⚠️ Circuit Breaker ОТКРЫТ\n\n"+
-			"Воркер генерации карточек остановлен.\n"+
-			"Причина: %d последовательных ошибок LLM.\n\n"+
-			"Последняя ошибка: %s\n"+
-			"Время: %s\n\n"+
-			"Для сброса используйте /reset_circuit",
-		failureCount,
-		lastError,
-		time.Now().Format("2006-01-02 15:04:05"),
-	)
-
-	if w.bot == nil {
-		w.logger.Warn("cannot send admin notification: Telegram bot not initialized",
-			zap.Int64("admin_id", w.adminTelegramID),
-		)
-		return
-	}
-
-	msg := tgbotapi.NewMessage(w.adminTelegramID, message)
-	if _, err := w.bot.Send(msg); err != nil {
-		w.logger.Error("failed to send admin notification", zap.Error(err))
-	} else {
-		w.logger.Info("sent circuit breaker notification to admin",
-			zap.Int64("admin_id", w.adminTelegramID),
-		)
-	}
+	_ = errorMessage // kept for backward compatibility with callers
+	NotifyCircuitBreakerOpened(w.bot, w.adminTelegramID, w.cbService, w.logger)
 }
 
 // notifyAdminValidationError sends a notification to the admin about validation error

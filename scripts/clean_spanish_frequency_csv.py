@@ -6,7 +6,7 @@ from pathlib import Path
 
 
 SPANISH_LEMMA_RE = re.compile(r"^[a-záéíóúüñ]+(?:-[a-záéíóúüñ]+)*$")
-BLOCKED_LEMMAS = {"&", "a", "an", "the"}
+BLOCKED_LEMMAS = {"&", "a", "an", "the", "and", "km", "george", "ugt", "wahid"}
 
 
 def is_valid_lemma(lemma: str) -> bool:

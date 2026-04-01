@@ -2751,6 +2751,21 @@ func TestHandleAdminCircuitReset_Direct_MethodNotAllowed(t *testing.T) {
 	}
 }
 
+func TestHandleAdminCircuitOpen_Direct_MethodNotAllowed(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, _, cbService := setupAdminTestDB(t)
+	cfg := &config.Config{Admin: config.AdminConfig{TelegramID: 123456789}, WebApp: config.WebAppConfig{JWTSecret: "test-secret"}}
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/circuit/open", nil)
+	w := httptest.NewRecorder()
+	router.handleAdminCircuitOpen(w, req)
+
+	if w.Code != http.StatusMethodNotAllowed {
+		t.Errorf("expected 405, got %d", w.Code)
+	}
+}
+
 func TestHandleAdminUsers_Direct_MethodNotAllowed(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, _, cbService := setupAdminTestDB(t)
@@ -2812,6 +2827,28 @@ func TestHandleAdminCircuitReset_Direct_PostSuccess(t *testing.T) {
 	req := httptest.NewRequest(http.MethodPost, "/api/admin/circuit/reset", nil)
 	w := httptest.NewRecorder()
 	router.handleAdminCircuitReset(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("expected 200, got %d: %s", w.Code, w.Body.String())
+	}
+	var resp map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&resp); err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+	if resp["success"] != true {
+		t.Error("expected success true")
+	}
+}
+
+func TestHandleAdminCircuitOpen_Direct_PostSuccess(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, _, cbService := setupAdminTestDB(t)
+	cfg := &config.Config{Admin: config.AdminConfig{TelegramID: 123456789}, WebApp: config.WebAppConfig{JWTSecret: "test-secret"}}
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/circuit/open", nil)
+	w := httptest.NewRecorder()
+	router.handleAdminCircuitOpen(w, req)
 
 	if w.Code != http.StatusOK {
 		t.Errorf("expected 200, got %d: %s", w.Code, w.Body.String())

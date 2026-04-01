@@ -6,7 +6,10 @@
         <div class="card">
         <div class="circuit-breaker-header">
           <h2>Circuit Breaker</h2>
-          <button v-if="circuitBreaker" @click="resetCircuitBreaker" class="btn btn-primary">Reset</button>
+          <div v-if="circuitBreaker" class="header-actions">
+            <button @click="openCircuitBreaker" class="btn btn-danger">Open</button>
+            <button @click="resetCircuitBreaker" class="btn btn-primary">Reset</button>
+          </div>
         </div>
         <div v-if="circuitBreaker" class="circuit-breaker-content">
           <div class="circuit-breaker-info">
@@ -83,6 +86,17 @@ const resetCircuitBreaker = async () => {
   }
 }
 
+const openCircuitBreaker = async () => {
+  try {
+    await apiClient.request('/api/admin/circuit/open', { method: 'POST' })
+    await loadAdminData()
+    await showAlert('Circuit breaker opened successfully')
+  } catch (error) {
+    console.error('Failed to open circuit breaker:', error)
+    await showAlert('Failed to open circuit breaker')
+  }
+}
+
 const formatDate = (dateStr: string | null | undefined) => {
   if (!dateStr) return '—'
   
@@ -134,6 +148,11 @@ const formatDate = (dateStr: string | null | undefined) => {
 
 .circuit-breaker-header h2 {
   margin: 0;
+}
+
+.header-actions {
+  display: flex;
+  gap: 8px;
 }
 
 .circuit-breaker-content {
@@ -210,6 +229,15 @@ const formatDate = (dateStr: string | null | undefined) => {
 }
 
 .btn-primary:hover {
+  opacity: 0.9;
+}
+
+.btn-danger {
+  background: var(--color-danger);
+  color: white;
+}
+
+.btn-danger:hover {
   opacity: 0.9;
 }
 

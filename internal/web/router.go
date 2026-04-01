@@ -442,6 +442,7 @@ func (r *Router) setupProtectedRoutes() {
 	// Other admin routes (require full_access)
 	r.mux.HandleFunc("/api/admin", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdmin))))
 	r.mux.HandleFunc("/api/admin/circuit/reset", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminCircuitReset))))
+	r.mux.HandleFunc("/api/admin/circuit/open", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminCircuitOpen))))
 	r.mux.HandleFunc("/api/admin/db-schema", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleDBSchema))))
 	r.mux.HandleFunc("/api/admin/db-query", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleDBQuery))))
 	r.mux.HandleFunc("/api/admin/orphaned-cards", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminOrphanedCards))))

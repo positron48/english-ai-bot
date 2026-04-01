@@ -91,6 +91,12 @@ func (s *CircuitBreakerService) Reset() error {
 	return s.cbRepo.Reset()
 }
 
+// Open manually opens the circuit breaker
+func (s *CircuitBreakerService) Open() error {
+	s.logger.Warn("manually opening circuit breaker")
+	return s.cbRepo.Open()
+}
+
 // GetState gets the current state
 func (s *CircuitBreakerService) GetState() (bool, int, string, error) {
 	state, err := s.cbRepo.GetState()

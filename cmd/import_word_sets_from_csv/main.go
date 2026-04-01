@@ -33,6 +33,11 @@ var blockedLemmas = map[string]struct{}{
 	"a":   {},
 	"an":  {},
 	"the": {},
+	"and": {},
+	"km":  {},
+	"george": {},
+	"ugt": {},
+	"wahid": {},
 }
 
 func main() {

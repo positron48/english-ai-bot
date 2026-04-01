@@ -12,6 +12,7 @@ import (
 	"tgbot-skeleton/internal/ai"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
+	"tgbot-skeleton/internal/service"
 
 	"go.uber.org/zap"
 )
@@ -139,6 +140,29 @@ func (r *Router) handleAdminCircuitReset(w http.ResponseWriter, req *http.Reques
 	json.NewEncoder(w).Encode(map[string]interface{}{
 		"success": true,
 		"message": "Circuit breaker reset successfully",
+	})
+}
+
+// handleAdminCircuitOpen opens the circuit breaker manually.
+func (r *Router) handleAdminCircuitOpen(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	if err := r.cbService.Open(); err != nil {
+		r.logger.Error("failed to open circuit breaker", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	service.NotifyCircuitBreakerOpened(r.bot, r.config.Admin.TelegramID, r.cbService, r.logger)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"success": true,
+		"message": "Circuit breaker opened successfully",
 	})
 }
 
