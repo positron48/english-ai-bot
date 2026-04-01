@@ -218,10 +218,18 @@ type WebAppConfig struct {
 
 // Load loads configuration from environment variables and config file
 func Load() (*Config, error) {
-	// Load .env file if it exists
-	if err := godotenv.Load(); err != nil {
-		// .env file is optional, ignore error
-		_ = err
+	// Load .env chain:
+	// 1) .env (base)
+	// 2) .env.<learning target lang> (language overrides)
+	// Do not override variables that were already present in the process environment.
+	initialEnv := envKeysSnapshot()
+	if err := godotenv.Load(".env"); err != nil {
+		_ = err // optional
+	}
+	// Target lang can be provided by shell env or loaded from .env.
+	targetLangHint := strings.ToLower(strings.TrimSpace(os.Getenv("LEARNING_TARGET_LANG")))
+	if targetLangHint != "" && langCodeSegment.MatchString(targetLangHint) {
+		_ = loadDotEnvFileWithoutOverridingInitialEnv(".env."+targetLangHint, initialEnv)
 	}
 
 	// Set default values
@@ -259,7 +267,7 @@ func Load() (*Config, error) {
 	viper.SetDefault("training.worker_interval", "30s")
 	viper.SetDefault("training.worker_batch_size", 5)
 	viper.SetDefault("training.llm_workers", 4)
-	viper.SetDefault("training.prompt_file", "prompts/training-card-ru-en.txt")
+	viper.SetDefault("training.prompt_file", "")
 	viper.SetDefault("training.circuit_breaker_threshold", 5)
 	viper.SetDefault("training.circuit_breaker_auto_reset_hours", 24)
 	viper.SetDefault("training.options_delay_ms", 5000)
@@ -432,6 +440,10 @@ func Load() (*Config, error) {
 		return nil, fmt.Errorf("learning config: %w", err)
 	}
 
+	if strings.TrimSpace(config.Training.PromptFile) == "" {
+		config.Training.PromptFile = defaultTrainingPromptFile(config.Learning.TargetLang)
+	}
+
 	// Validate required fields before loading prompt file so missing env yields clear errors
 	if config.Database.URL == "" {
 		return nil, fmt.Errorf("DATABASE_URL is required")
@@ -507,4 +519,39 @@ func GetEnv(key, defaultValue string) string {
 // processNewlines converts \n to actual newlines in bot messages
 func processNewlines(text string) string {
 	return strings.ReplaceAll(text, "\\n", "\n")
+}
+
+func defaultTrainingPromptFile(targetLang string) string {
+	if strings.EqualFold(strings.TrimSpace(targetLang), "es") {
+		return "prompts/training-card-ru-es.txt"
+	}
+	return "prompts/training-card-ru-en.txt"
+}
+
+func envKeysSnapshot() map[string]struct{} {
+	out := make(map[string]struct{})
+	for _, kv := range os.Environ() {
+		if eq := strings.IndexByte(kv, '='); eq > 0 {
+			out[kv[:eq]] = struct{}{}
+		}
+	}
+	return out
+}
+
+// loadDotEnvFileWithoutOverridingInitialEnv loads dotenv file values and applies them
+// only for keys that were not present in the process environment at startup.
+// It allows language-specific .env.<lang> to override base .env values while respecting
+// explicit shell/CI environment variables.
+func loadDotEnvFileWithoutOverridingInitialEnv(path string, initialEnv map[string]struct{}) error {
+	values, err := godotenv.Read(path)
+	if err != nil {
+		return err
+	}
+	for k, v := range values {
+		if _, hadInitially := initialEnv[k]; hadInitially {
+			continue
+		}
+		_ = os.Setenv(k, v)
+	}
+	return nil
 }

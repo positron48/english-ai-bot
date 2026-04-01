@@ -53,9 +53,6 @@ Return ONLY this JSON object (no markdown, no comments):
   }
 }
 
-(The server also accepts legacy keys: "definition_ru" instead of "definition_native";
-"example_en" / "gloss_ru" instead of "example_target" / "gloss_native" inside each example.)
-
 -------------------------------------------------
 Dictionary logic
 -------------------------------------------------

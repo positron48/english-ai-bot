@@ -981,3 +981,137 @@ func TestLoad_GrammarBundleDir_MissingSections(t *testing.T) {
 		t.Fatalf("expected sections.json error, got %v", err)
 	}
 }
+
+func TestLoad_LoadsLanguageSpecificDotenvOverridesBase(t *testing.T) {
+	learningEnv := backupLearningEnv()
+	keys := []string{
+		"AI_URL", "AI_API_KEY", "AI_PROMPT", "AI_PROMPT_FILE",
+		"WEBAPP_JWT_SECRET", "DATABASE_DRIVER", "DATABASE_URL",
+		"LEARNING_PAIR", "LEARNING_NATIVE_LANG", "LEARNING_TARGET_LANG",
+		"LEARNING_APP_CODE", "GRAMMAR_BUNDLE_ID",
+	}
+	original := make(map[string]string, len(keys))
+	for _, k := range keys {
+		original[k] = os.Getenv(k)
+	}
+	defer func() {
+		restoreLearningEnv(learningEnv)
+		for k, v := range original {
+			if v == "" {
+				os.Unsetenv(k)
+			} else {
+				os.Setenv(k, v)
+			}
+		}
+	}()
+
+	tmp := t.TempDir()
+	wd, err := os.Getwd()
+	if err != nil {
+		t.Fatalf("Getwd: %v", err)
+	}
+	if err := os.Chdir(tmp); err != nil {
+		t.Fatalf("Chdir: %v", err)
+	}
+	defer func() { _ = os.Chdir(wd) }()
+
+	baseEnv := strings.Join([]string{
+		"DATABASE_URL=postgres://base/base",
+		"AI_URL=http://base.local",
+		"AI_API_KEY=base-key",
+		"AI_PROMPT=base prompt",
+		"WEBAPP_JWT_SECRET=base-secret",
+		"LEARNING_PAIR=ru-es",
+		"LEARNING_NATIVE_LANG=ru",
+		"LEARNING_TARGET_LANG=es",
+		"LEARNING_APP_CODE=spanish",
+		"GRAMMAR_BUNDLE_ID=es",
+	}, "\n") + "\n"
+	if err := os.WriteFile(filepath.Join(tmp, ".env"), []byte(baseEnv), 0644); err != nil {
+		t.Fatalf("write .env: %v", err)
+	}
+	langEnv := "DATABASE_URL=postgres://es/es\n"
+	if err := os.WriteFile(filepath.Join(tmp, ".env.es"), []byte(langEnv), 0644); err != nil {
+		t.Fatalf("write .env.es: %v", err)
+	}
+
+	for _, k := range keys {
+		os.Unsetenv(k)
+	}
+
+	cfg, err := Load()
+	if err != nil {
+		t.Fatalf("Load() error = %v", err)
+	}
+	if cfg.Database.URL != "postgres://es/es" {
+		t.Fatalf("expected DATABASE_URL from .env.es, got %q", cfg.Database.URL)
+	}
+}
+
+func TestLoad_DotenvDoesNotOverrideInitialShellEnv(t *testing.T) {
+	learningEnv := backupLearningEnv()
+	keys := []string{
+		"AI_URL", "AI_API_KEY", "AI_PROMPT", "AI_PROMPT_FILE",
+		"WEBAPP_JWT_SECRET", "DATABASE_DRIVER", "DATABASE_URL",
+		"LEARNING_PAIR", "LEARNING_NATIVE_LANG", "LEARNING_TARGET_LANG",
+		"LEARNING_APP_CODE", "GRAMMAR_BUNDLE_ID",
+	}
+	original := make(map[string]string, len(keys))
+	for _, k := range keys {
+		original[k] = os.Getenv(k)
+	}
+	defer func() {
+		restoreLearningEnv(learningEnv)
+		for k, v := range original {
+			if v == "" {
+				os.Unsetenv(k)
+			} else {
+				os.Setenv(k, v)
+			}
+		}
+	}()
+
+	tmp := t.TempDir()
+	wd, err := os.Getwd()
+	if err != nil {
+		t.Fatalf("Getwd: %v", err)
+	}
+	if err := os.Chdir(tmp); err != nil {
+		t.Fatalf("Chdir: %v", err)
+	}
+	defer func() { _ = os.Chdir(wd) }()
+
+	baseEnv := strings.Join([]string{
+		"DATABASE_URL=postgres://base/base",
+		"AI_URL=http://base.local",
+		"AI_API_KEY=base-key",
+		"AI_PROMPT=base prompt",
+		"WEBAPP_JWT_SECRET=base-secret",
+		"LEARNING_PAIR=ru-es",
+		"LEARNING_NATIVE_LANG=ru",
+		"LEARNING_TARGET_LANG=es",
+		"LEARNING_APP_CODE=spanish",
+		"GRAMMAR_BUNDLE_ID=es",
+	}, "\n") + "\n"
+	if err := os.WriteFile(filepath.Join(tmp, ".env"), []byte(baseEnv), 0644); err != nil {
+		t.Fatalf("write .env: %v", err)
+	}
+	if err := os.WriteFile(filepath.Join(tmp, ".env.es"), []byte("DATABASE_URL=postgres://es/es\n"), 0644); err != nil {
+		t.Fatalf("write .env.es: %v", err)
+	}
+
+	for _, k := range keys {
+		os.Unsetenv(k)
+	}
+	// Simulate shell/CI explicit value; must win over dotenv files.
+	os.Setenv("DATABASE_URL", "postgres://shell/shell")
+
+	cfg, err := Load()
+	if err != nil {
+		t.Fatalf("Load() error = %v", err)
+	}
+	if cfg.Database.URL != "postgres://shell/shell" {
+		t.Fatalf("expected shell DATABASE_URL to win, got %q", cfg.Database.URL)
+	}
+}
+

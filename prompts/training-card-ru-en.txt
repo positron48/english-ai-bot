@@ -21,6 +21,8 @@ SCHEMA (MUST MATCH)
 CARD
 - 1–3 senses.
 - display_word: verb => "to <lemma>", else => "<lemma>".
+- meaning_target MUST be in English.
+- example_target MUST be in English.
 - word_native must match pos:
   - verb => Russian infinitive
   - adjective => masculine singular adjective

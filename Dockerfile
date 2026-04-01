@@ -29,6 +29,10 @@ RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o main ./cmd/bot
 # Build backfill tool for one-time mastering score backfill
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o backfill_mastering ./cmd/backfill_mastering
 
+# Build word-sets import tooling for one-time/k3s maintenance runs
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o import_word_sets_from_csv ./cmd/import_word_sets_from_csv
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o fill_missing_set_pos_cards ./cmd/fill_missing_set_pos_cards
+
 # Final stage
 FROM alpine:latest
 
@@ -48,7 +52,11 @@ RUN mkdir -p /app/data/tts && chown -R appuser:appgroup /app/data
 # Copy binaries from builder stage
 COPY --from=builder /app/main .
 COPY --from=builder /app/backfill_mastering .
+COPY --from=builder /app/import_word_sets_from_csv .
+COPY --from=builder /app/fill_missing_set_pos_cards .
 COPY --from=builder /app/prompts ./prompts
+# Ship static Spanish frequency CSV for in-cluster imports (independent from grammar submodule).
+COPY --from=builder /app/resources/wordsets/spanish_word_freq_pos_ud_top6000.csv ./data/spanish_word_freq_pos_ud_top6000.csv
 
 # Change ownership to non-root user
 RUN chown -R appuser:appgroup /app

@@ -20,9 +20,9 @@
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Word EN</th>
-                <th>Word RU</th>
-                <th>Meaning EN</th>
+                <th>Word {{ targetLangCode }}</th>
+                <th>Word {{ nativeLangCode }}</th>
+                <th>Meaning {{ targetLangCode }}</th>
                 <th>Sense</th>
                 <th>Word Card ID</th>
                 <th>User Cards</th>
@@ -174,6 +174,11 @@
 import { ref, onMounted } from 'vue'
 import { apiClient } from '../api/client'
 import { showAlert, showConfirm } from '../composables/useDialog'
+import { useLearningConfig } from '../composables/useLearningConfig'
+
+const { learning, ensureLearningLoaded } = useLearningConfig()
+const targetLangCode = ref('EN')
+const nativeLangCode = ref('RU')
 
 interface OrphanedTrainingCard {
   id: number
@@ -227,6 +232,9 @@ const userCardsPagination = ref({
 })
 
 onMounted(async () => {
+  await ensureLearningLoaded()
+  targetLangCode.value = (learning.value?.target_lang || 'en').toUpperCase()
+  nativeLangCode.value = (learning.value?.native_lang || 'ru').toUpperCase()
   await Promise.all([loadTrainingCards(), loadUserCards()])
 })
 

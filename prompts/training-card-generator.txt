@@ -3,7 +3,7 @@ Generate ONE training card from ONE {{target_lang}} word (pair {{pair}}: {{nativ
 OUTPUT (STRICT)
 - Output ONLY valid JSON, nothing else.
 - Always output keys: word_target, lemma, transcription, senses, error.
-- Legacy aliases word_en, word_ru, meaning_en, example_en, example_ru are also accepted by the server.
+- Use only neutral keys from SCHEMA.
 - If accepted: error="".
 - If rejected: senses=[] and error is non-empty.
 
@@ -15,13 +15,18 @@ REJECTION
 SCHEMA (MUST MATCH)
 {
  "word_target":"", "lemma":"", "transcription":"",
- "senses":[{"pos":"","display_word":"","word_native":"","meaning_target":"","example_target":"","example_native":"","distractors_ru":["","",""],"distractors_en":["","",""],"hint":""}],
+ "senses":[{"pos":"","display_word":"","word_native":"","meaning_target":"","example_target":"","example_native":"","distractors_ru":["","",""],"distractors_target":["","",""],"hint":""}],
  "error":""
 }
 
 CARD
 - 1–3 senses.
-- display_word: verb => "to <lemma>", else => "<lemma>".
+- display_word:
+  - if pos=="verb" and target language is English => "to <lemma>"
+  - if pos=="verb" and target language is not English => "<lemma>" (bare infinitive, without "to ")
+  - if pos!="verb" => "<lemma>"
+- meaning_target MUST be in target language (never in English unless target language is English).
+- example_target MUST be in target language (never in English unless target language is English).
 - word_native must match pos:
   - verb => Russian infinitive
   - adjective => masculine singular adjective
@@ -30,17 +35,18 @@ CARD
   - Example: for "nod" with pos=="verb" => word_native MUST be «кивать» (NOT «кивок»).
 
 DISTRACTORS (THIS IS THE MOST IMPORTANT PART)
-- Exactly 3 RU + 3 EN.
-- RU: Cyrillic only. EN: English only.
-- RU and EN distractors are INDEPENDENT:
-  - Do NOT translate distractors_en into Russian.
+- Exactly 3 RU + 3 target-language items in distractors_target.
+- RU: Cyrillic only. Target list: target language only.
+- RU and target-language distractors are INDEPENDENT:
+  - Do NOT translate distractors_target into Russian.
   - Do NOT translate distractors_ru into English.
-  - Do NOT create “paired” lists by index (ru[i] is NOT a translation of en[i]).
+  - Do NOT create paired lists by index (ru[i] is NOT a translation of target[i]).
 - POS rules:
-  - pos=="verb": EN items are exactly "to <verb>"; RU items are infinitives.
-  - pos!="verb": EN items must NOT start with "to ".
+  - pos=="verb" and target language is English: target items are exactly "to <verb>"; RU items are infinitives.
+  - pos=="verb" and target language is not English: target items are bare infinitives without "to ".
+  - pos!="verb": target items must NOT start with "to ".
 - NO LEAKAGE (case-insensitive substring checks):
-  - distractors_en MUST NOT contain lemma anywhere (forbid "outburst" when lemma="burst"; forbid any phrase containing "bank" when lemma="bank").
+  - distractors_target MUST NOT contain lemma anywhere (forbid "outburst" when lemma="burst"; forbid any phrase containing "bank" when lemma="bank").
   - distractors_ru MUST NOT contain word_native anywhere (forbid "учительница" when word_native="учитель"; forbid "банкрот/банкир/банка" when word_native="банк"; forbid "поранить" when word_native="ранить").
   - Also: distractors_ru MUST NOT equal word_native exactly. NEVER include the correct word_native as a distractor (0 tolerance).
 - Uniqueness: no duplicates in each list.

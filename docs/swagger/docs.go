@@ -985,13 +985,13 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Английское значение",
+                        "description": "Значение на изучаемом языке (target)",
                         "name": "meaning_en",
                         "in": "formData"
                     },
                     {
                         "type": "string",
-                        "description": "Пример на английском",
+                        "description": "Пример на изучаемом языке (target)",
                         "name": "example_en",
                         "in": "formData"
                     },
@@ -1015,7 +1015,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Отвлекающие варианты (EN, JSON array)",
+                        "description": "Отвлекающие варианты на изучаемом языке (target, JSON array)",
                         "name": "distractors_en",
                         "in": "formData"
                     },
@@ -1101,13 +1101,13 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Английское значение",
+                        "description": "Значение на изучаемом языке (target)",
                         "name": "meaning_en",
                         "in": "formData"
                     },
                     {
                         "type": "string",
-                        "description": "Пример на английском",
+                        "description": "Пример на изучаемом языке (target)",
                         "name": "example_en",
                         "in": "formData"
                     },
@@ -1131,7 +1131,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Отвлекающие варианты (EN, JSON array)",
+                        "description": "Отвлекающие варианты на изучаемом языке (target, JSON array)",
                         "name": "distractors_en",
                         "in": "formData"
                     },
@@ -1225,13 +1225,13 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Английское значение (для POST)",
+                        "description": "Значение на изучаемом языке (target) (для POST)",
                         "name": "meaning_en",
                         "in": "formData"
                     },
                     {
                         "type": "string",
-                        "description": "Пример на английском (для POST)",
+                        "description": "Пример на изучаемом языке (target) (для POST)",
                         "name": "example_en",
                         "in": "formData"
                     },
@@ -1255,7 +1255,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Отвлекающие варианты (EN, JSON array) (для POST)",
+                        "description": "Отвлекающие варианты на изучаемом языке (target, JSON array) (для POST)",
                         "name": "distractors_en",
                         "in": "formData"
                     },
@@ -1359,13 +1359,13 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Английское значение (для POST)",
+                        "description": "Значение на изучаемом языке (target) (для POST)",
                         "name": "meaning_en",
                         "in": "formData"
                     },
                     {
                         "type": "string",
-                        "description": "Пример на английском (для POST)",
+                        "description": "Пример на изучаемом языке (target) (для POST)",
                         "name": "example_en",
                         "in": "formData"
                     },
@@ -1389,7 +1389,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Отвлекающие варианты (EN, JSON array) (для POST)",
+                        "description": "Отвлекающие варианты на изучаемом языке (target, JSON array) (для POST)",
                         "name": "distractors_en",
                         "in": "formData"
                     },
@@ -1495,13 +1495,13 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Английское значение (для POST)",
+                        "description": "Значение на изучаемом языке (target) (для POST)",
                         "name": "meaning_en",
                         "in": "formData"
                     },
                     {
                         "type": "string",
-                        "description": "Пример на английском (для POST)",
+                        "description": "Пример на изучаемом языке (target) (для POST)",
                         "name": "example_en",
                         "in": "formData"
                     },
@@ -1525,7 +1525,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Отвлекающие варианты (EN, JSON array) (для POST)",
+                        "description": "Отвлекающие варианты на изучаемом языке (target, JSON array) (для POST)",
                         "name": "distractors_en",
                         "in": "formData"
                     },

@@ -185,7 +185,11 @@ func (s *WordSetService) EnsureWordCardExists(ctx context.Context, word string) 
 
 	displayEN := lemma
 	if wordInfo.POS == "verb" && wordInfo.VerbForms != nil && wordInfo.VerbForms.V1 != "" {
-		displayEN = "to " + wordInfo.VerbForms.V1
+		if strings.EqualFold(s.learning.TargetLang, "en") {
+			displayEN = "to " + wordInfo.VerbForms.V1
+		} else {
+			displayEN = wordInfo.VerbForms.V1
+		}
 	}
 
 	// Marshal examples and verb forms

@@ -334,9 +334,17 @@ func (w *TrainingWorker) fillWordCardData(ctx context.Context, wordCard *models.
 
 		displayEN := lemma
 		if wordCardModel.POS != nil && *wordCardModel.POS == "verb" && wordInfo.VerbForms != nil && wordInfo.VerbForms.V1 != "" {
-			displayEN = "to " + wordInfo.VerbForms.V1
+			if strings.EqualFold(w.learning.TargetLang, "en") {
+				displayEN = "to " + wordInfo.VerbForms.V1
+			} else {
+				displayEN = wordInfo.VerbForms.V1
+			}
 		} else if wordInfo.POS == "verb" && wordInfo.VerbForms != nil && wordInfo.VerbForms.V1 != "" {
-			displayEN = "to " + wordInfo.VerbForms.V1
+			if strings.EqualFold(w.learning.TargetLang, "en") {
+				displayEN = "to " + wordInfo.VerbForms.V1
+			} else {
+				displayEN = wordInfo.VerbForms.V1
+			}
 		}
 
 		wordCardModel.DisplayEN = &displayEN

@@ -686,11 +686,11 @@ paths:
         in: formData
         name: word_ru
         type: string
-      - description: Английское значение (для POST)
+      - description: Значение на изучаемом языке (target) (для POST)
         in: formData
         name: meaning_en
         type: string
-      - description: Пример на английском (для POST)
+      - description: Пример на изучаемом языке (target) (для POST)
         in: formData
         name: example_en
         type: string
@@ -706,7 +706,7 @@ paths:
         in: formData
         name: distractors_ru
         type: string
-      - description: Отвлекающие варианты (EN, JSON array) (для POST)
+      - description: Отвлекающие варианты на изучаемом языке (target, JSON array) (для POST)
         in: formData
         name: distractors_en
         type: string
@@ -777,11 +777,11 @@ paths:
         in: formData
         name: word_ru
         type: string
-      - description: Английское значение (для POST)
+      - description: Значение на изучаемом языке (target) (для POST)
         in: formData
         name: meaning_en
         type: string
-      - description: Пример на английском (для POST)
+      - description: Пример на изучаемом языке (target) (для POST)
         in: formData
         name: example_en
         type: string
@@ -797,7 +797,7 @@ paths:
         in: formData
         name: distractors_ru
         type: string
-      - description: Отвлекающие варианты (EN, JSON array) (для POST)
+      - description: Отвлекающие варианты на изучаемом языке (target, JSON array) (для POST)
         in: formData
         name: distractors_en
         type: string
@@ -869,11 +869,11 @@ paths:
         in: formData
         name: word_ru
         type: string
-      - description: Английское значение (для POST)
+      - description: Значение на изучаемом языке (target) (для POST)
         in: formData
         name: meaning_en
         type: string
-      - description: Пример на английском (для POST)
+      - description: Пример на изучаемом языке (target) (для POST)
         in: formData
         name: example_en
         type: string
@@ -889,7 +889,7 @@ paths:
         in: formData
         name: distractors_ru
         type: string
-      - description: Отвлекающие варианты (EN, JSON array) (для POST)
+      - description: Отвлекающие варианты на изучаемом языке (target, JSON array) (для POST)
         in: formData
         name: distractors_en
         type: string
@@ -956,11 +956,11 @@ paths:
         in: formData
         name: word_ru
         type: string
-      - description: Английское значение
+      - description: Значение на изучаемом языке (target)
         in: formData
         name: meaning_en
         type: string
-      - description: Пример на английском
+      - description: Пример на изучаемом языке (target)
         in: formData
         name: example_en
         type: string
@@ -976,7 +976,7 @@ paths:
         in: formData
         name: distractors_ru
         type: string
-      - description: Отвлекающие варианты (EN, JSON array)
+      - description: Отвлекающие варианты на изучаемом языке (target, JSON array)
         in: formData
         name: distractors_en
         type: string
@@ -1034,11 +1034,11 @@ paths:
         in: formData
         name: word_ru
         type: string
-      - description: Английское значение
+      - description: Значение на изучаемом языке (target)
         in: formData
         name: meaning_en
         type: string
-      - description: Пример на английском
+      - description: Пример на изучаемом языке (target)
         in: formData
         name: example_en
         type: string
@@ -1054,7 +1054,7 @@ paths:
         in: formData
         name: distractors_ru
         type: string
-      - description: Отвлекающие варианты (EN, JSON array)
+      - description: Отвлекающие варианты на изучаемом языке (target, JSON array)
         in: formData
         name: distractors_en
         type: string

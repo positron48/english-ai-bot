@@ -237,7 +237,7 @@
                       </div>
                       <div class="card-content">
                         <div class="card-field">
-                          <span class="field-label">Word EN:</span>
+                          <span class="field-label">Word {{ targetLangCode }}:</span>
                           <span class="field-value">{{ card.word_en }}</span>
                           <span v-if="card.transcription" class="transcription">{{ card.transcription }}</span>
                         </div>
@@ -250,19 +250,19 @@
                           <span class="field-value">{{ card.display_word }}</span>
                         </div>
                         <div class="card-field">
-                          <span class="field-label">Word RU:</span>
+                          <span class="field-label">Word {{ nativeLangCode }}:</span>
                           <span class="field-value">{{ card.word_ru }}</span>
                         </div>
                         <div class="card-field">
-                          <span class="field-label">Meaning EN:</span>
+                          <span class="field-label">Meaning {{ targetLangCode }}:</span>
                           <span class="field-value">{{ card.meaning_en }}</span>
                         </div>
                         <div v-if="card.example_en" class="card-field">
-                          <span class="field-label">Example EN:</span>
+                          <span class="field-label">Example {{ targetLangCode }}:</span>
                           <span class="field-value">{{ card.example_en }}</span>
                         </div>
                         <div v-if="card.example_ru" class="card-field">
-                          <span class="field-label">Example RU:</span>
+                          <span class="field-label">Example {{ nativeLangCode }}:</span>
                           <span class="field-value">{{ card.example_ru }}</span>
                         </div>
                         <div v-if="card.hint" class="card-field">
@@ -270,11 +270,11 @@
                           <span class="field-value">{{ card.hint }}</span>
                         </div>
                         <div v-if="card.distractors_ru" class="card-field">
-                          <span class="field-label">Distractors RU:</span>
+                          <span class="field-label">Distractors {{ nativeLangCode }}:</span>
                           <span class="field-value">{{ parseJSONArray(card.distractors_ru)?.join(', ') || card.distractors_ru }}</span>
                         </div>
                         <div v-if="card.distractors_en" class="card-field">
-                          <span class="field-label">Distractors EN:</span>
+                          <span class="field-label">Distractors {{ targetLangCode }}:</span>
                           <span class="field-value">{{ parseJSONArray(card.distractors_en)?.join(', ') || card.distractors_en }}</span>
                         </div>
                       </div>
@@ -333,11 +333,11 @@
                 <input v-model="editWordForm.transcription" type="text" class="form-input" />
               </div>
               <div class="form-group">
-                <label>Definition RU:</label>
+                <label>Definition {{ nativeLangCode }}:</label>
                 <textarea v-model="editWordForm.definition_ru" class="form-textarea" rows="3"></textarea>
               </div>
               <div class="form-group">
-                <label>Display EN:</label>
+                <label>Display {{ targetLangCode }}:</label>
                 <input v-model="editWordForm.display_en" type="text" class="form-input" placeholder="e.g., 'spy' or 'to spy' for verbs" />
               </div>
               <div class="form-group">
@@ -432,7 +432,7 @@
           <div class="modal-body">
             <form @submit.prevent="saveNewTrainingCard" class="edit-form">
               <div class="form-group">
-                <label>Word EN:</label>
+                <label>Word {{ targetLangCode }}:</label>
                 <input v-model="createCardForm.word_en" type="text" required class="form-input" readonly />
               </div>
               <div class="form-group">
@@ -448,23 +448,23 @@
                 <input v-model="createCardForm.transcription" type="text" class="form-input" />
               </div>
               <div class="form-group">
-                <label>Word RU:</label>
+                <label>Word {{ nativeLangCode }}:</label>
                 <input v-model="createCardForm.word_ru" type="text" required class="form-input" />
               </div>
               <div class="form-group">
-                <label>Meaning EN:</label>
+                <label>Meaning {{ targetLangCode }}:</label>
                 <textarea v-model="createCardForm.meaning_en" required class="form-textarea" rows="3"></textarea>
               </div>
               <div class="form-group">
-                <label>Example EN:</label>
+                <label>Example {{ targetLangCode }}:</label>
                 <textarea v-model="createCardForm.example_en" class="form-textarea" rows="2"></textarea>
               </div>
               <div class="form-group">
-                <label>Example RU:</label>
+                <label>Example {{ nativeLangCode }}:</label>
                 <textarea v-model="createCardForm.example_ru" class="form-textarea" rows="2"></textarea>
               </div>
               <div class="form-group">
-                <label>Distractors RU:</label>
+                <label>Distractors {{ nativeLangCode }}:</label>
                 <div class="distractors-list">
                   <input v-model="createCardForm.distractors_ru[0]" type="text" class="form-input" placeholder="Option 1" />
                   <input v-model="createCardForm.distractors_ru[1]" type="text" class="form-input" placeholder="Option 2" />
@@ -472,7 +472,7 @@
                 </div>
               </div>
               <div class="form-group">
-                <label>Distractors EN:</label>
+                <label>Distractors {{ targetLangCode }}:</label>
                 <div class="distractors-list">
                   <input v-model="createCardForm.distractors_en[0]" type="text" class="form-input" placeholder="Option 1" />
                   <input v-model="createCardForm.distractors_en[1]" type="text" class="form-input" placeholder="Option 2" />
@@ -502,7 +502,7 @@
           <div class="modal-body">
             <form @submit.prevent="saveTrainingCard" class="edit-form">
               <div class="form-group">
-                <label>Word EN:</label>
+                <label>Word {{ targetLangCode }}:</label>
                 <input v-model="editCardForm.word_en" type="text" required class="form-input" />
               </div>
               <div class="form-group">
@@ -518,23 +518,23 @@
                 <input v-model="editCardForm.transcription" type="text" class="form-input" />
               </div>
               <div class="form-group">
-                <label>Word RU:</label>
+                <label>Word {{ nativeLangCode }}:</label>
                 <input v-model="editCardForm.word_ru" type="text" required class="form-input" />
               </div>
               <div class="form-group">
-                <label>Meaning EN:</label>
+                <label>Meaning {{ targetLangCode }}:</label>
                 <textarea v-model="editCardForm.meaning_en" required class="form-textarea" rows="3"></textarea>
               </div>
               <div class="form-group">
-                <label>Example EN:</label>
+                <label>Example {{ targetLangCode }}:</label>
                 <textarea v-model="editCardForm.example_en" class="form-textarea" rows="2"></textarea>
               </div>
               <div class="form-group">
-                <label>Example RU:</label>
+                <label>Example {{ nativeLangCode }}:</label>
                 <textarea v-model="editCardForm.example_ru" class="form-textarea" rows="2"></textarea>
               </div>
               <div class="form-group">
-                <label>Distractors RU:</label>
+                <label>Distractors {{ nativeLangCode }}:</label>
                 <div class="distractors-list">
                   <input v-model="editCardForm.distractors_ru[0]" type="text" class="form-input" placeholder="Option 1" />
                   <input v-model="editCardForm.distractors_ru[1]" type="text" class="form-input" placeholder="Option 2" />
@@ -542,7 +542,7 @@
                 </div>
               </div>
               <div class="form-group">
-                <label>Distractors EN:</label>
+                <label>Distractors {{ targetLangCode }}:</label>
                 <div class="distractors-list">
                   <input v-model="editCardForm.distractors_en[0]" type="text" class="form-input" placeholder="Option 1" />
                   <input v-model="editCardForm.distractors_en[1]" type="text" class="form-input" placeholder="Option 2" />
@@ -634,9 +634,11 @@ import { ref, onMounted, onUnmounted, computed, watch, nextTick } from 'vue'
 import { apiClient } from '../api/client'
 import { showAlert, showConfirm } from '../composables/useDialog'
 import { useAuth } from '../composables/useAuth'
+import { useLearningConfig } from '../composables/useLearningConfig'
 import Icon from '../components/Icon.vue'
 
 const { can, loadPermissions } = useAuth()
+const { learning, ensureLearningLoaded } = useLearningConfig()
 
 
 interface User {
@@ -782,6 +784,7 @@ const createCardForm = ref({
 })
 
 onMounted(async () => {
+  await ensureLearningLoaded()
   await loadPermissions()
   if (can('users.read_all')) {
     await loadUsers()
@@ -790,6 +793,9 @@ onMounted(async () => {
     await loadWords()
   }
 })
+
+const targetLangCode = computed(() => (learning.value?.target_lang || 'en').toUpperCase())
+const nativeLangCode = computed(() => (learning.value?.native_lang || 'ru').toUpperCase())
 
 const loadUsers = async () => {
   if (!can('users.read_all')) {

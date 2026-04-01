@@ -827,9 +827,12 @@ func TestHandleAdminWord_Generate_WithExamplesAndVerbForms(t *testing.T) {
 	if wc2 == nil {
 		t.Fatal("expected word_card in response")
 	}
-	// display_en should be "to run" for verb with v1
-	if wc2["display_en"] != "to run" {
-		t.Errorf("expected display_en 'to run', got %v", wc2["display_en"])
+	expectedDisplay := "run"
+	if router.config != nil && strings.EqualFold(router.config.Learning.TargetLang, "en") {
+		expectedDisplay = "to run"
+	}
+	if wc2["display_en"] != expectedDisplay {
+		t.Errorf("expected display_en %q, got %v", expectedDisplay, wc2["display_en"])
 	}
 }
 

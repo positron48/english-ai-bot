@@ -32,6 +32,8 @@ CARD
 - 1–3 senses.
 - word_target, lemma and every display_word MUST represent exactly ONE lexical item (no comma-separated variants like "conjunto, conjunta").
 - display_word: Spanish verb infinitive form as appropriate; use clear Spanish display conventions.
+- meaning_target MUST be in Spanish (not in English).
+- example_target MUST be in Spanish (not in English).
 - word_native must match pos:
   - verb => Russian infinitive
   - adjective => masculine singular adjective

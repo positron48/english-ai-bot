@@ -153,12 +153,12 @@ func (r *Router) handleAdminCircuitReset(w http.ResponseWriter, req *http.Reques
 // @Param        action          path      string  false  "Действие: generate, delete или delete_all"
 // @Param        constraints     body      string  false  "Ограничения для генерации (для POST /generate, JSON: {\"constraints\": \"...\"})"
 // @Param        word_ru         formData  string  false  "Русский перевод слова (для POST)"
-// @Param        meaning_en      formData  string  false  "Английское значение (для POST)"
-// @Param        example_en      formData  string  false  "Пример на английском (для POST)"
+// @Param        meaning_en      formData  string  false  "Значение на изучаемом языке (target) (для POST)"
+// @Param        example_en      formData  string  false  "Пример на изучаемом языке (target) (для POST)"
 // @Param        example_ru      formData  string  false  "Пример на русском (для POST)"
 // @Param        transcription   formData  string  false  "Транскрипция (для POST)"
 // @Param        distractors_ru  formData  string  false  "Отвлекающие варианты (RU, JSON array) (для POST)"
-// @Param        distractors_en  formData  string  false  "Отвлекающие варианты (EN, JSON array) (для POST)"
+// @Param        distractors_en  formData  string  false  "Отвлекающие варианты на изучаемом языке (target, JSON array) (для POST)"
 // @Param        hint            formData  string  false  "Подсказка (для POST)"
 // @Param        pos             formData  string  false  "Часть речи (для POST)"
 // @Param        display_word    formData  string  false  "Отображаемое слово (для POST)"
@@ -621,12 +621,12 @@ func (r *Router) handleAdminTraining(w http.ResponseWriter, req *http.Request) {
 // @Security     ApiKeyAuth
 // @Param        id  path  int64  true  "ID тренировочной карточки"
 // @Param        word_ru  formData  string  false  "Русский перевод слова"
-// @Param        meaning_en  formData  string  false  "Английское значение"
-// @Param        example_en  formData  string  false  "Пример на английском"
+// @Param        meaning_en  formData  string  false  "Значение на изучаемом языке (target)"
+// @Param        example_en  formData  string  false  "Пример на изучаемом языке (target)"
 // @Param        example_ru  formData  string  false  "Пример на русском"
 // @Param        transcription  formData  string  false  "Транскрипция"
 // @Param        distractors_ru  formData  string  false  "Отвлекающие варианты (RU, JSON array)"
-// @Param        distractors_en  formData  string  false  "Отвлекающие варианты (EN, JSON array)"
+// @Param        distractors_en  formData  string  false  "Отвлекающие варианты на изучаемом языке (target, JSON array)"
 // @Param        hint  formData  string  false  "Подсказка"
 // @Success      200  {object}  map[string]interface{}  "Успешная операция"
 // @Failure      400  {string}  string  "Неверный запрос"
@@ -1199,10 +1199,14 @@ func (r *Router) handleAdminWord(w http.ResponseWriter, req *http.Request) {
 			}
 		}
 
-		// Determine display_en
+		// Determine display_en (English verbs use "to ...", other targets keep bare infinitive)
 		displayEN := wordInfo.Lemma
 		if wordInfo.POS == "verb" && wordInfo.VerbForms != nil && wordInfo.VerbForms.V1 != "" {
-			displayEN = "to " + wordInfo.VerbForms.V1
+			if strings.EqualFold(r.config.Learning.TargetLang, "en") {
+				displayEN = "to " + wordInfo.VerbForms.V1
+			} else {
+				displayEN = wordInfo.VerbForms.V1
+			}
 		}
 
 		// Return generated word card data (not saved to DB yet)
