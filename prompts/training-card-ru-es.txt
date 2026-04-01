@@ -10,6 +10,11 @@ REJECTION
 - Hard reject list (any casing): "microsoft", "prado", "jonas".
 - Reject nonsense: if the input contains ANY digits (0-9) => reject.
 - Otherwise ACCEPT (do NOT reject for uncertainty).
+- Mandatory pre-check order:
+  1) First evaluate hard reject list and digits before any lexical analysis.
+  2) If input matches any reject rule, return rejected JSON immediately.
+  3) Never generate senses/examples/distractors for rejected input.
+  4) Even if the token is a valid Spanish word (e.g., "prado"), hard reject list has absolute priority.
 
 If rejected by rules above, return this exact shape:
 {
@@ -42,8 +47,10 @@ CARD
 
 DISTRACTORS (THIS IS THE MOST IMPORTANT PART)
 - Exactly 3 Russian + 3 Spanish items in distractors_target.
-- distractors_ru: Cyrillic only. distractors_target: Spanish (Latin script, Spanish letters only), no Cyrillic.
+- distractors_ru: ONLY real Russian words in Cyrillic (letters А-Яа-яЁё, spaces, hyphen only). Never output Latin transliteration or Spanish words here.
+- distractors_target: Spanish (Latin script, Spanish letters only), no Cyrillic.
 - The two lists are INDEPENDENT (no index pairing).
+- For verb senses, distractors_ru must be Russian infinitives in Cyrillic only (forbidden examples in RU list: "describir", "imaginar", "proteger").
 - NO LEAKAGE: distractors_target MUST NOT give away lemma; distractors_ru MUST NOT contain word_native as substring or exact duplicate.
 - Uniqueness: no duplicates in each list.
 

@@ -11,6 +11,13 @@ REJECTION
 - Hard reject list (any casing): "microsoft", "prado", "jonas".
 - Reject nonsense: if the input contains ANY digits (0-9) => reject.
 - Otherwise ACCEPT (do NOT reject for uncertainty). Always ACCEPT "tor" and "bank".
+- Mandatory pre-check order:
+  1) First evaluate hard reject list and digits.
+  2) If rejected, STOP and return:
+     - "error": non-empty reject reason
+     - "senses": []
+     - still keep required top-level keys valid JSON
+  3) Never generate senses/examples/distractors for rejected input.
 
 SCHEMA (MUST MATCH)
 {
@@ -37,6 +44,7 @@ CARD
 DISTRACTORS (THIS IS THE MOST IMPORTANT PART)
 - Exactly 3 RU + 3 target-language items in distractors_target.
 - RU: Cyrillic only. Target list: target language only.
+- RU list must be REAL Russian words in Cyrillic script only (letters А-Яа-яЁё, spaces, hyphen). Never output Latin transliteration or target-language words in RU list.
 - RU and target-language distractors are INDEPENDENT:
   - Do NOT translate distractors_target into Russian.
   - Do NOT translate distractors_ru into English.
@@ -44,6 +52,7 @@ DISTRACTORS (THIS IS THE MOST IMPORTANT PART)
 - POS rules:
   - pos=="verb" and target language is English: target items are exactly "to <verb>"; RU items are infinitives.
   - pos=="verb" and target language is not English: target items are bare infinitives without "to ".
+  - For pos=="verb", RU items must still be Russian infinitives in Cyrillic (examples of forbidden RU items: "describir", "imaginar", "proteger").
   - pos!="verb": target items must NOT start with "to ".
 - NO LEAKAGE (case-insensitive substring checks):
   - distractors_target MUST NOT contain lemma anywhere (forbid "outburst" when lemma="burst"; forbid any phrase containing "bank" when lemma="bank").

@@ -172,6 +172,10 @@ func (s *WordSetService) EnsureWordCardExists(ctx context.Context, word string) 
 
 	models.SyncWordInfoResponseNeutralAliases(&wordInfo)
 
+	if !validDefinitionNativeForLearning(wordInfo.DefinitionRU, s.learning) {
+		return 0, fmt.Errorf("word rejected by LLM: definition_native is not in expected language")
+	}
+
 	// Check for error from LLM
 	if wordInfo.Error.IsTrue() {
 		return 0, fmt.Errorf("word rejected by LLM: %s", wordInfo.Error.Message)

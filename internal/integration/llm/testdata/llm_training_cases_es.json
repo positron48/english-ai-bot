@@ -15,6 +15,26 @@
     "note": "Регрессия: не должно уезжать в 'mesa/стол', ожидается значение месяца"
   },
   {
+    "word": "demostrar",
+    "expect": "ok",
+    "note": "Регрессия: distractors_ru должны быть только кириллицей (без describe-подобных латинских слов)"
+  },
+  {
+    "word": "manifestar",
+    "expect": "ok",
+    "note": "Регрессия: distractors_ru должны быть только кириллицей (без imaginar/proteger на латинице)"
+  },
+  {
+    "word": "apoyar",
+    "expect": "ok",
+    "note": "Регрессия: distractors_ru не должны содержать латиницу (ignorar/abandonar/criticar запрещены)"
+  },
+  {
+    "word": "referir",
+    "expect": "ok",
+    "note": "Регрессия: distractors_ru не должны содержать латиницу (suponer/guardar запрещены)"
+  },
+  {
     "word": "prado",
     "expect": "reject",
     "note": "В hard reject списке prompt"

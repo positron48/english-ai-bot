@@ -212,7 +212,7 @@ func TestValidateTrainingCardResponse_R5_ExactMatch(t *testing.T) {
 }
 
 func TestValidateTrainingCardResponse_R5_DiffersByOneCharacter(t *testing.T) {
-	// "tests" для "test" - должно быть ошибкой (отличается на 1 символ)
+	// "tests" для "test" - теперь валидно (проверяем только точное совпадение)
 	wordCard := &models.WordCard{
 		Word: "test",
 	}
@@ -229,16 +229,13 @@ func TestValidateTrainingCardResponse_R5_DiffersByOneCharacter(t *testing.T) {
 	}
 
 	errorMsg := ValidateTrainingCardResponse("en", wordCard, resp)
-	if errorMsg == "" {
-		t.Error("Expected validation error for R5 (distractors_en differs from lemma by 1 character), got empty")
-	}
-	if !strings.Contains(errorMsg, "R5") {
-		t.Errorf("Expected error message to contain 'R5', got: %s", errorMsg)
+	if errorMsg != "" {
+		t.Errorf("Expected no validation error for R5 (distractors_en may differ from lemma by 1 character), got: %s", errorMsg)
 	}
 }
 
 func TestValidateTrainingCardResponse_R5_DiffersByOneCharacterSubstitution(t *testing.T) {
-	// "tast" для "test" - должно быть ошибкой (отличается на 1 символ - замена)
+	// "tast" для "test" - теперь валидно (проверяем только точное совпадение)
 	wordCard := &models.WordCard{
 		Word: "test",
 	}
@@ -255,11 +252,8 @@ func TestValidateTrainingCardResponse_R5_DiffersByOneCharacterSubstitution(t *te
 	}
 
 	errorMsg := ValidateTrainingCardResponse("en", wordCard, resp)
-	if errorMsg == "" {
-		t.Error("Expected validation error for R5 (distractors_en differs from lemma by 1 character), got empty")
-	}
-	if !strings.Contains(errorMsg, "R5") {
-		t.Errorf("Expected error message to contain 'R5', got: %s", errorMsg)
+	if errorMsg != "" {
+		t.Errorf("Expected no validation error for R5 (distractors_en may differ from lemma by 1 character), got: %s", errorMsg)
 	}
 }
 
@@ -322,7 +316,7 @@ func TestValidateTrainingCardResponse_R5_VerbDistractorExactMatch(t *testing.T) 
 				POS:           "verb",
 				WordRU:        "быть",
 				DistractorsEN: []string{"to be", "to have", "to do"}, // "to be" после "to " точно совпадает с "be"
-				DistractorsRU: []string{"быть", "иметь", "делать"},
+				DistractorsRU: []string{"существовать", "иметь", "делать"},
 			},
 		},
 	}
@@ -337,7 +331,7 @@ func TestValidateTrainingCardResponse_R5_VerbDistractorExactMatch(t *testing.T) 
 }
 
 func TestValidateTrainingCardResponse_R5_VerbDistractorDiffersByOneCharacter(t *testing.T) {
-	// "to bes" для "be" - должно быть ошибкой (отличается на 1 символ после удаления "to ")
+	// "to bes" для "be" - теперь валидно (проверяем только точное совпадение после удаления "to ")
 	wordCard := &models.WordCard{
 		Word: "be",
 		POS:  stringPtr("verb"),
@@ -349,17 +343,14 @@ func TestValidateTrainingCardResponse_R5_VerbDistractorDiffersByOneCharacter(t *
 				POS:           "verb",
 				WordRU:        "быть",
 				DistractorsEN: []string{"to bes", "to have", "to do"}, // "to bes" после "to " отличается на 1 символ от "be"
-				DistractorsRU: []string{"быть", "иметь", "делать"},
+				DistractorsRU: []string{"существовать", "иметь", "делать"},
 			},
 		},
 	}
 
 	errorMsg := ValidateTrainingCardResponse("en", wordCard, resp)
-	if errorMsg == "" {
-		t.Error("Expected validation error for R5 (verb distractor differs from lemma by 1 character after 'to '), got empty")
-	}
-	if !strings.Contains(errorMsg, "R5") {
-		t.Errorf("Expected error message to contain 'R5', got: %s", errorMsg)
+	if errorMsg != "" {
+		t.Errorf("Expected no validation error for R5 (verb distractor may differ from lemma by 1 character after 'to '), got: %s", errorMsg)
 	}
 }
 
@@ -586,7 +577,7 @@ func TestValidateTrainingCardResponse_MultipleErrors(t *testing.T) {
 			{
 				POS:           "noun",
 				WordRU:        "тест",
-				DistractorsEN: []string{"правильный", "to check", "tests"}, // R1, R4, R5 (tests differs by 1 char from test)
+				DistractorsEN: []string{"правильный", "to check", "tests"}, // R1, R4
 				DistractorsRU: []string{"test", "тесты", "три"},            // R2 (R6 now checks only exact match)
 			},
 		},
@@ -605,9 +596,6 @@ func TestValidateTrainingCardResponse_MultipleErrors(t *testing.T) {
 		ruleCount++
 	}
 	if strings.Contains(errorMsg, "R4") {
-		ruleCount++
-	}
-	if strings.Contains(errorMsg, "R5") {
 		ruleCount++
 	}
 	if ruleCount < 3 {

@@ -273,6 +273,15 @@ func (w *TrainingWorker) fillWordCardData(ctx context.Context, wordCard *models.
 
 	models.SyncWordInfoResponseNeutralAliases(&wordInfo)
 
+	if !validDefinitionNativeForLearning(wordInfo.DefinitionRU, w.learning) {
+		w.logger.Warn("LLM returned definition_native in unexpected language, skipping word card fill",
+			zap.String("word", wordCard.Word),
+			zap.String("native_lang", w.learning.NativeLang),
+			zap.String("target_lang", w.learning.TargetLang),
+		)
+		return nil
+	}
+
 	// Check for error from LLM
 	if wordInfo.Error.IsTrue() {
 		// Word rejected by LLM, skip filling

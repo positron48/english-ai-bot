@@ -77,8 +77,7 @@ func ValidateTrainingCardResponse(targetLang string, wordCard *models.WordCard, 
 			}
 		}
 
-		// R5: distractors_en не должны в точности совпадать с lemma или отличаться от него на 1 символ
-		// Исключение: если отличается только первый символ, это валидно (например, million/billion)
+		// R5: distractors_en не должны в точности совпадать с lemma
 		// Для глаголов отбрасываем "to " перед проверкой
 		lemmaLower := strings.ToLower(lemma)
 		for i, distractor := range sense.DistractorsEN {
@@ -91,17 +90,6 @@ func ValidateTrainingCardResponse(targetLang string, wordCard *models.WordCard, 
 			// Проверяем точное совпадение
 			if distractorLower == lemmaLower {
 				errors = append(errors, fmt.Sprintf("R5 sense=%d distractor_en[%d]=%q exactly matches lemma %q", senseIdx, i, truncate(distractor, 50), lemma))
-				continue
-			}
-			// Проверяем, отличается ли дескриптор от леммы на 1 символ (расстояние Левенштейна = 1)
-			if levenshteinDistance(distractorLower, lemmaLower) == 1 {
-				// Проверяем, отличается ли только первый символ
-				if differsOnlyByFirstChar(distractorLower, lemmaLower) {
-					// Это валидно - отличается только первый символ (например, million/billion)
-					continue
-				}
-				// Отличается не первый символ - это невалидно
-				errors = append(errors, fmt.Sprintf("R5 sense=%d distractor_en[%d]=%q differs from lemma %q by 1 character", senseIdx, i, truncate(distractor, 50), lemma))
 			}
 		}
 

@@ -490,12 +490,15 @@ const loadCategories = async () => {
   }
 }
 
-const loadWordSets = async () => {
+const loadWordSets = async (options?: { silent?: boolean }) => {
   if (!can('word_sets.read')) {
     wordSetsError.value = 'You don\'t have permission to view word sets.'
     return
   }
-  wordSetsLoading.value = true
+  const silent = options?.silent === true
+  if (!silent) {
+    wordSetsLoading.value = true
+  }
   wordSetsError.value = null
   try {
     const params = new URLSearchParams()
@@ -509,7 +512,9 @@ const loadWordSets = async () => {
     console.error('Failed to load word sets:', error)
     wordSetsError.value = error.message || 'Failed to load word sets'
   } finally {
-    wordSetsLoading.value = false
+    if (!silent) {
+      wordSetsLoading.value = false
+    }
   }
 }
 
@@ -696,7 +701,7 @@ const saveWordSet = async () => {
     }
     
     closeWordSetModal()
-    await loadWordSets()
+    await loadWordSets({ silent: true })
   } catch (error: any) {
     console.error('Failed to save word set:', error)
     await showAlert(error.message || 'Failed to save word set')
@@ -811,7 +816,7 @@ const deleteWordSet = async () => {
     })
     
     closeDeleteWordSetConfirm()
-    await loadWordSets()
+    await loadWordSets({ silent: true })
   } catch (error: any) {
     console.error('Failed to delete word set:', error)
     await showAlert(error.message || 'Failed to delete word set')

@@ -13,7 +13,7 @@ SERVICE_NAME ?= ai-bot
 -include .env
 .EXPORT_ALL_VARIABLES:
 
-.PHONY: all tidy build run test lint fmt setup up up-en up-es clean check check-quick ci deploy update status logs docker-build docker-run docker-stop docker-logs docker-clean docker-rebuild docker-dev docker-dev-logs docker-dev-restart webapp-install webapp-dev webapp-build test-postgres test-integration test-integration-verbose grammar-bundle grammar-bundle-list postgres-dev-init-dbs
+.PHONY: all tidy build run test lint fmt setup up up-en up-es clean check check-quick ci deploy update status logs docker-build docker-run docker-stop docker-logs docker-clean docker-rebuild docker-dev docker-dev-logs docker-dev-restart webapp-install webapp-dev webapp-build test-postgres test-integration test-integration-verbose grammar-bundle grammar-bundle-list postgres-dev-init-dbs clean-spanish-csv sync-spanish-word-sets
 
 all: build
 
@@ -373,6 +373,24 @@ up-es: postgres-up postgres-dev-init-dbs build
 	echo "========================================"; \
 	echo ""; \
 	exec ./bin/$(APP_NAME)
+
+clean-spanish-csv:
+	@python3 scripts/clean_spanish_frequency_csv.py \
+		resources/wordsets/spanish_word_freq_pos_ud_top6000.csv \
+		courses/spanish-grammar/spanish_word_freq_pos_ud_top6000.csv
+
+sync-spanish-word-sets:
+	@set -e; \
+	set -a; [ -f .env ] && . ./.env; set +a; \
+	set -a && . ./.env.es && set +a; \
+	LEARNING_PAIR=ru-es \
+	LEARNING_NATIVE_LANG=ru \
+	LEARNING_TARGET_LANG=es \
+	LEARNING_APP_CODE=spanish \
+	GRAMMAR_BUNDLE_ID=es \
+	go run ./cmd/import_word_sets_from_csv \
+		--csv "resources/wordsets/spanish_word_freq_pos_ud_top6000.csv" \
+		--commit
 
 # Cleanup
 clean:

@@ -26,6 +26,14 @@ type csvWord struct {
 }
 
 var ranksRe = regexp.MustCompile(`(?i)ranks\s+(\d+)\s*[–-]\s*(\d+)`)
+var spanishLemmaRe = regexp.MustCompile(`^[a-záéíóúüñ]+(?:-[a-záéíóúüñ]+)*$`)
+
+var blockedLemmas = map[string]struct{}{
+	"&":   {},
+	"a":   {},
+	"an":  {},
+	"the": {},
+}
 
 func main() {
 	os.Exit(runCLI())
@@ -254,6 +262,9 @@ func loadWordsByTrainingPOS(path string) (map[string][]csvWord, error) {
 		if lemma == "" || udPOS == "" || popStr == "" {
 			continue
 		}
+		if !isValidSpanishLemma(lemma) {
+			continue
+		}
 		pop, err := strconv.Atoi(popStr)
 		if err != nil {
 			continue
@@ -287,7 +298,7 @@ func loadWordsByTrainingPOS(path string) (map[string][]csvWord, error) {
 
 func mapUDToTrainingPOS(udPOS string) (string, bool) {
 	switch udPOS {
-	case "NOUN", "PROPN":
+	case "NOUN":
 		return "noun", true
 	case "VERB", "AUX":
 		return "verb", true
@@ -298,5 +309,12 @@ func mapUDToTrainingPOS(udPOS string) (string, bool) {
 	default:
 		return "", false
 	}
+}
+
+func isValidSpanishLemma(lemma string) bool {
+	if _, blocked := blockedLemmas[lemma]; blocked {
+		return false
+	}
+	return spanishLemmaRe.MatchString(lemma)
 }
 
