@@ -47,6 +47,10 @@ func TestLLM_TrainingCards(t *testing.T) {
 
 // runTrainingTestCaseWithBusinessValidation runs a training test case and also validates using business logic
 func runTrainingTestCaseWithBusinessValidation(ctx context.Context, t *testing.T, aiService *ai.Service, tc TestCase) {
+	runTrainingTestCaseWithBusinessValidationForTarget(ctx, t, aiService, tc, "en")
+}
+
+func runTrainingTestCaseWithBusinessValidationForTarget(ctx context.Context, t *testing.T, aiService *ai.Service, tc TestCase, targetLang string) {
 	t.Run(tc.Word, func(t *testing.T) {
 		// Generate response
 		response, err := aiService.GenerateTrainingCard(ctx, tc.Word)
@@ -92,7 +96,7 @@ func runTrainingTestCaseWithBusinessValidation(ctx context.Context, t *testing.T
 			}
 
 			// Run business validation (this is the same validation used in production)
-			validationError := service.ValidateTrainingCardResponse("en", wordCard, &trainingResp)
+			validationError := service.ValidateTrainingCardResponse(targetLang, wordCard, &trainingResp)
 			if validationError != "" {
 				validationErrors = append(validationErrors, "business_validation: "+validationError)
 			}

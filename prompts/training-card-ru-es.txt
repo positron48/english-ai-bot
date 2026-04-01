@@ -53,6 +53,19 @@ DISTRACTORS (THIS IS THE MOST IMPORTANT PART)
 - For verb senses, distractors_ru must be Russian infinitives in Cyrillic only (forbidden examples in RU list: "describir", "imaginar", "proteger").
 - NO LEAKAGE: distractors_target MUST NOT give away lemma; distractors_ru MUST NOT contain word_native as substring or exact duplicate.
 - Uniqueness: no duplicates in each list.
+- HARD PER-SENSE CONSTRAINTS (zero tolerance):
+  - For EACH sense and EACH item in distractors_ru:
+    1) must contain NO Latin letters at all;
+    2) must NOT be exactly equal to word_native (case-insensitive);
+    3) must NOT contain word_native as substring.
+  - For EACH sense and EACH item in distractors_target:
+    1) must contain NO Cyrillic;
+    2) must NOT be equal to lemma and must NOT contain lemma as substring.
+- If any of the checks above fails for a sense, REWRITE distractors for that sense before output.
+- Safe fallback (use only if needed to satisfy checks):
+  - verbs: distractors_ru = ["думать","читать","строить"], distractors_target = ["pensar","leer","construir"]
+  - nouns: distractors_ru = ["город","страна","вопрос"], distractors_target = ["ciudad","país","pregunta"]
+  - adjectives/adverbs: distractors_ru = ["быстрый","медленный","редко"], distractors_target = ["rápido","lento","raramente"]
 
 FINAL SELF-CHECK (MANDATORY): if any rule fails, replace distractors until ALL pass, then output JSON.
 

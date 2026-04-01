@@ -95,6 +95,51 @@
     "note": "Регрессия: distractors_ru не должны содержать латиницу (imaginar/calcular/suponer запрещены)"
   },
   {
+    "word": "suceder",
+    "expect": "ok",
+    "note": "Регрессия: distractors_ru не должны содержать латиницу (aparecer запрещен)"
+  },
+  {
+    "word": "sostener",
+    "expect": "ok",
+    "note": "Регрессия: distractors_ru не должны содержать латиницу (levantar/mover/cerrar и др. запрещены)"
+  },
+  {
+    "word": "asistir",
+    "expect": "ok",
+    "note": "Регрессия: distractors_ru не должны содержать латиницу (acudir/presenciar/participar запрещены)"
+  },
+  {
+    "word": "cubrir",
+    "expect": "ok",
+    "note": "Регрессия: distractors_ru не должны содержать латиницу (abrir/descubrir/llenar и др. запрещены)"
+  },
+  {
+    "word": "limitar",
+    "expect": "ok",
+    "note": "Регрессия: distractors_ru не должны содержать латиницу (aumentar запрещен)"
+  },
+  {
+    "word": "interpretar",
+    "expect": "ok",
+    "note": "Регрессия: distractors_ru не должны содержать латиницу (analizar/explicar/imaginar и др. запрещены)"
+  },
+  {
+    "word": "disfrutar",
+    "expect": "ok",
+    "note": "Регрессия: distractors_ru не должны содержать латиницу (desear/soportar/evitar запрещены)"
+  },
+  {
+    "word": "atender",
+    "expect": "ok",
+    "note": "Регрессия: distractors_ru не должны содержать латиницу (describir/imaginar/proteger и др. запрещены)"
+  },
+  {
+    "word": "seguir",
+    "expect": "ok",
+    "note": "Регрессия: нестабильный кейс, проверка R2 и leakage по глаголу seguir"
+  },
+  {
     "word": "prado",
     "expect": "reject",
     "note": "В hard reject списке prompt"

@@ -25,7 +25,7 @@ func TestLLM_TrainingCards_ES(t *testing.T) {
 
 	ctx := context.Background()
 	for _, tc := range cases {
-		runTrainingTestCase(ctx, t, aiService, tc)
+		runTrainingTestCaseWithBusinessValidationForTarget(ctx, t, aiService, tc, "es")
 	}
 }
 
