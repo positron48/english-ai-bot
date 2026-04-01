@@ -90,6 +90,11 @@
     "note": "Регрессия: distractors_ru не должны содержать латиницу (destruir/cerrar/abandonar запрещены)"
   },
   {
+    "word": "prever",
+    "expect": "ok",
+    "note": "Регрессия: distractors_ru не должны содержать латиницу (imaginar/calcular/suponer запрещены)"
+  },
+  {
     "word": "prado",
     "expect": "reject",
     "note": "В hard reject списке prompt"

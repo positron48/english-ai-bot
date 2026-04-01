@@ -297,10 +297,41 @@
           >
             Previous
           </button>
+          <div class="pagination-pages">
+            <button
+              v-for="item in wordsPaginationItems"
+              :key="`page-${item.key}`"
+              type="button"
+              class="btn btn-secondary btn-page"
+              :class="{ 'btn-page-active': item.type === 'page' && item.value === wordsPagination.page, 'btn-page-ellipsis': item.type === 'ellipsis' }"
+              :disabled="item.type === 'ellipsis' || item.value === wordsPagination.page"
+              @click="item.type === 'page' && goToWordsPage(item.value)"
+            >
+              {{ item.type === 'page' ? item.value : '…' }}
+            </button>
+          </div>
           <span class="page-info">
             Page {{ wordsPagination.page }} of {{ wordsPagination.total_pages }} 
             ({{ wordsPagination.total }} total)
           </span>
+          <div class="pagination-jump">
+            <input
+              v-model="wordsPageInput"
+              type="number"
+              min="1"
+              :max="Math.max(1, wordsPagination.total_pages)"
+              class="pagination-jump-input"
+              placeholder="Page"
+              @keyup.enter="goToCustomWordsPage"
+            />
+            <button
+              type="button"
+              class="btn btn-secondary"
+              @click="goToCustomWordsPage"
+            >
+              Go
+            </button>
+          </div>
           <button 
             @click="goToWordsPage(wordsPagination.page + 1)" 
             :disabled="wordsPagination.page >= wordsPagination.total_pages"
@@ -717,6 +748,7 @@ const wordsPagination = ref({
   total: 0,
   total_pages: 0
 })
+const wordsPageInput = ref('1')
 const users = ref<User[]>([])
 
 // Sorting state
@@ -907,12 +939,58 @@ const clearSearch = () => {
 const goToWordsPage = (page: number) => {
   if (page >= 1 && page <= wordsPagination.value.total_pages) {
     wordsPagination.value.page = page
+    wordsPageInput.value = String(page)
     loadWords()
+  }
+}
+
+type WordsPaginationItem = {
+  type: 'page' | 'ellipsis'
+  value: number
+  key: string
+}
+
+const wordsPaginationItems = computed<WordsPaginationItem[]>(() => {
+  const totalPages = wordsPagination.value.total_pages
+  const currentPage = wordsPagination.value.page
+  if (totalPages <= 0) {
+    return []
+  }
+
+  const firstPages = [1, 2, 3].filter(p => p <= totalPages)
+  const middlePages = [currentPage - 1, currentPage, currentPage + 1].filter(p => p >= 1 && p <= totalPages)
+  const lastPages = [totalPages - 2, totalPages - 1, totalPages].filter(p => p >= 1)
+  const allPages = Array.from(new Set([...firstPages, ...middlePages, ...lastPages])).sort((a, b) => a - b)
+
+  const items: WordsPaginationItem[] = []
+  let prev: number | null = null
+  for (const page of allPages) {
+    if (prev !== null && page - prev > 1) {
+      items.push({ type: 'ellipsis', value: -1, key: `ellipsis-${prev}-${page}` })
+    }
+    items.push({ type: 'page', value: page, key: `page-${page}` })
+    prev = page
+  }
+  return items
+})
+
+const goToCustomWordsPage = () => {
+  const parsed = Number.parseInt(wordsPageInput.value, 10)
+  if (!Number.isFinite(parsed)) {
+    wordsPageInput.value = String(wordsPagination.value.page)
+    return
+  }
+  const maxPage = Math.max(1, wordsPagination.value.total_pages)
+  const normalizedPage = Math.min(Math.max(parsed, 1), maxPage)
+  wordsPageInput.value = String(normalizedPage)
+  if (normalizedPage !== wordsPagination.value.page) {
+    goToWordsPage(normalizedPage)
   }
 }
 
 const onFilterChange = () => {
   wordsPagination.value.page = 1
+  wordsPageInput.value = '1'
   loadWords()
 }
 
@@ -1520,6 +1598,18 @@ const handleKeydown = (event: KeyboardEvent) => {
       closeErrorDetailsModal()
     }
   }
+
+  if (
+    event.key === 'Enter' &&
+    showResetErrorConfirm.value &&
+    !event.shiftKey &&
+    !event.ctrlKey &&
+    !event.altKey &&
+    !event.metaKey
+  ) {
+    event.preventDefault()
+    void confirmResetError()
+  }
 }
 
 watch([showEditWordModal, showEditCardModal, showCreateCardModal, showGenerateCardModal, 
@@ -1641,8 +1731,16 @@ const handleSort = (column: string) => {
   }
   // Reload words with new sorting
   wordsPagination.value.page = 1
+  wordsPageInput.value = '1'
   loadWords()
 }
+
+watch(
+  () => wordsPagination.value.page,
+  (page) => {
+    wordsPageInput.value = String(page)
+  }
+)
 
 </script>
 
@@ -1725,12 +1823,50 @@ const handleSort = (column: string) => {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
   margin-top: 20px;
 }
 
 .page-info {
   color: var(--text-secondary);
+}
+
+.pagination-pages {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.btn-page {
+  min-width: 40px;
+  padding: 6px 10px;
+}
+
+.btn-page-active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
+}
+
+.btn-page-ellipsis {
+  cursor: default;
+}
+
+.pagination-jump {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pagination-jump-input {
+  width: 90px;
+  padding: 6px 8px;
+  border: 1px solid var(--input-border);
+  border-radius: 4px;
+  background: var(--input-bg);
+  color: var(--text-primary);
 }
 
 .admin-select {
