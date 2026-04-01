@@ -25,7 +25,7 @@ type csvWord struct {
 	PopularityCount int
 }
 
-var ranksRe = regexp.MustCompile(`(?i)(?:ranks|rangos)\s+(\d+)\s*[–-]\s*(\d+)`)
+var ranksRe = regexp.MustCompile(`(?i)(?:ranks?|rangos?)\s+(\d+)\s*[\p{Pd}-]\s*(\d+)`)
 var spanishLemmaRe = regexp.MustCompile(`^[a-záéíóúüñ]+(?:-[a-záéíóúüñ]+)*$`)
 
 var blockedLemmas = map[string]struct{}{
@@ -118,9 +118,9 @@ func runCLI() int {
 			continue
 		}
 		pos := strings.ToLower(strings.TrimSpace(*ws.PreferredPOS))
-		rankStart, rankEnd, ok := extractRankRange(ws.Title)
+		rankStart, rankEnd, ok := extractRankRangeFromSet(ws)
 		if !ok {
-			fmt.Printf("SKIP set_id=%d title=%q: no rank range in title\n", ws.ID, ws.Title)
+			fmt.Printf("SKIP set_id=%d title=%q: no rank range in title/description\n", ws.ID, ws.Title)
 			continue
 		}
 
@@ -178,7 +178,7 @@ func selectRankedSets(all []*models.WordSet, only map[string]struct{}) []*models
 		if ws == nil {
 			continue
 		}
-		if _, _, ok := extractRankRange(ws.Title); !ok {
+		if _, _, ok := extractRankRangeFromSet(ws); !ok {
 			continue
 		}
 		if len(only) > 0 {
@@ -208,6 +208,21 @@ func extractRankRange(title string) (start int, end int, ok bool) {
 		return 0, 0, false
 	}
 	return s, e, true
+}
+
+func extractRankRangeFromSet(ws *models.WordSet) (start int, end int, ok bool) {
+	if ws == nil {
+		return 0, 0, false
+	}
+	if s, e, ok := extractRankRange(ws.Title); ok {
+		return s, e, true
+	}
+	if ws.Description != nil {
+		if s, e, ok := extractRankRange(*ws.Description); ok {
+			return s, e, true
+		}
+	}
+	return 0, 0, false
 }
 
 func loadWordsByTrainingPOS(path string) (map[string][]csvWord, error) {
