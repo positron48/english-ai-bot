@@ -35,6 +35,61 @@
     "note": "Регрессия: distractors_ru не должны содержать латиницу (suponer/guardar запрещены)"
   },
   {
+    "word": "residir",
+    "expect": "ok",
+    "note": "Регрессия: distractors_ru не должны содержать латиницу (viajar/trabajar/permanecer и т.п. запрещены)"
+  },
+  {
+    "word": "trasladar",
+    "expect": "ok",
+    "note": "Регрессия: distractors_ru не должны содержать латиницу (mover/cambiar/llevar запрещены)"
+  },
+  {
+    "word": "crecer",
+    "expect": "ok",
+    "note": "Регрессия: distractors_ru не должны содержать латиницу (disminuir/avanzar/cambiar запрещены)"
+  },
+  {
+    "word": "estudiar",
+    "expect": "ok",
+    "note": "Регрессия: distractors_ru не должны содержать латиницу (leer/practicar/enseñar и т.п. запрещены)"
+  },
+  {
+    "word": "acompañar",
+    "expect": "ok",
+    "note": "Регрессия: distractors_ru не должны содержать латиницу (despedir/observar/regresar и т.п. запрещены)"
+  },
+  {
+    "word": "entender",
+    "expect": "ok",
+    "note": "Регрессия: distractors_ru не должны содержать латиницу (olvidar/explicar/aprender и т.п. запрещены)"
+  },
+  {
+    "word": "acudir",
+    "expect": "ok",
+    "note": "Регрессия: distractors_ru не должны содержать латиницу (в т.ч. для sense=1)"
+  },
+  {
+    "word": "apuntar",
+    "expect": "ok",
+    "note": "Регрессия: distractors_ru не должны содержать латиницу (olvidar/borrar/callar и т.п. запрещены)"
+  },
+  {
+    "word": "preguntar",
+    "expect": "ok",
+    "note": "Регрессия: distractors_ru не должны содержать латиницу (responder/contestar/explicar запрещены)"
+  },
+  {
+    "word": "insistir",
+    "expect": "ok",
+    "note": "Регрессия: distractors_ru не должны содержать латиницу (ceder/dudar/callar запрещены)"
+  },
+  {
+    "word": "fundar",
+    "expect": "ok",
+    "note": "Регрессия: distractors_ru не должны содержать латиницу (destruir/cerrar/abandonar запрещены)"
+  },
+  {
     "word": "prado",
     "expect": "reject",
     "note": "В hard reject списке prompt"

@@ -25,7 +25,7 @@ type csvWord struct {
 	PopularityCount int
 }
 
-var ranksRe = regexp.MustCompile(`(?i)ranks\s+(\d+)\s*[–-]\s*(\d+)`)
+var ranksRe = regexp.MustCompile(`(?i)(?:ranks|rangos)\s+(\d+)\s*[–-]\s*(\d+)`)
 var spanishLemmaRe = regexp.MustCompile(`^[a-záéíóúüñ]+(?:-[a-záéíóúüñ]+)*$`)
 
 var blockedLemmas = map[string]struct{}{
