@@ -1,52 +1,23 @@
 rank,lemma,pos,popularity_count,pos_majority_ratio
-1,el,DET,106025,0.999991
-2,de,ADP,73777,0.999702
-3,en,ADP,26519,0.999774
-4,que,SCONJ,24281,0.588155
-6,y,CCONJ,22087,0.999909
-7,él,PRON,20181,0.99995
-8,uno,DET,18633,0.924328
 9,ser,AUX,14210,0.926601
-10,por,ADP,9169,0.999237
-11,su,DET,8916,0.995065
-12,con,ADP,8206,0.999756
 13,haber,AUX,7126,0.842127
-14,para,ADP,6256,0.94837
 15,no,ADV,5570,0.969838
-16,este,DET,4492,0.808771
-17,como,SCONJ,4026,0.500745
 18,más,ADV,3345,0.997608
 19,tener,VERB,3198,0.999687
 20,estar,AUX,2934,0.746762
 21,poder,AUX,2496,0.882612
 22,año,NOUN,2444,0.997954
 23,hacer,VERB,2278,0.994732
-24,todo,DET,2175,0.691954
-25,o,CCONJ,2051,0.990249
 26,mucho,ADV,2011,0.635505
-27,pero,CCONJ,1991,0.997991
-28,otro,DET,1989,0.723982
-29,yo,PRON,1873,1.0
 30,primero,ADJ,1568,0.935587
 31,también,ADV,1567,0.984684
-32,entre,ADP,1560,0.995513
-33,dos,NUM,1558,0.991656
-34,ese,DET,1480,0.760811
-35,sobre,ADP,1401,0.99429
 36,decir,VERB,1362,0.959618
 37,ya,ADV,1234,0.997569
-38,desde,ADP,1203,0.983375
-39,sin,ADP,1203,0.999169
-40,hasta,ADP,1157,0.934313
 41,nuevo,ADJ,1147,0.958152
 42,dar,VERB,1136,0.985915
-43,si,SCONJ,1116,0.953405
-44,cuando,SCONJ,1047,0.854823
 45,país,NOUN,1032,0.976744
-46,según,ADP,996,0.815261
 47,hoy,ADV,958,0.975992
 48,parte,NOUN,948,0.995781
-49,durante,ADP,937,0.997866
 50,ir,VERB,918,0.970588
 51,mismo,ADJ,915,0.439344
 52,deber,AUX,905,0.772376
@@ -55,7 +26,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 55,día,NOUN,890,0.983146
 56,donde,ADV,882,0.989796
 57,encontrar,VERB,870,1.0
-58,alguno,DET,868,0.713134
 59,sólo,ADV,864,0.996528
 60,presidente,NOUN,844,1.0
 61,equipo,NOUN,835,0.997605
@@ -65,43 +35,32 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 65,después,ADV,766,0.967363
 66,ver,VERB,751,0.973369
 67,llegar,VERB,748,1.0
-68,porque,SCONJ,739,0.99594
-69,aunque,SCONJ,736,0.970109
 70,persona,NOUN,719,0.997218
-71,tras,ADP,715,0.998601
-72,contra,ADP,703,0.87909
-73,tres,NUM,692,0.991329
 74,además,ADV,681,1.0
 75,ayer,ADV,674,0.989614
 76,grupo,NOUN,666,0.966967
-77,quien,PRON,659,1.0
 78,así,ADV,655,0.99542
 79,ciudad,NOUN,652,0.941718
 80,español,ADJ,651,0.814132
 81,llevar,VERB,646,0.996904
 82,pasado,ADJ,622,0.853698
-83,ante,ADP,612,0.998366
 84,segundo,ADJ,609,0.845649
 86,gran,ADJ,598,0.921405
 87,querer,VERB,598,0.964883
 88,medio,NOUN,589,0.511036
 89,seguir,VERB,583,0.996569
-90,e,CCONJ,578,0.974048
 91,poco,ADV,576,0.376736
 92,mes,NOUN,570,0.994737
 93,tiempo,NOUN,563,0.987567
 94,mayor,ADJ,560,0.955357
 95,estado,NOUN,555,0.859459
 96,empresa,NOUN,553,0.996383
-97,mientras,CCONJ,553,0.428571
 98,poner,VERB,551,0.994555
 99,ahora,ADV,544,1.0
 100,bien,ADV,543,0.860037
-101,ni,CCONJ,540,0.877778
 102,mejor,ADJ,533,0.795497
 103,pasar,VERB,531,0.996234
 104,población,NOUN,530,1.0
-105,ciento,NUM,526,0.971483
 106,caso,NOUN,516,0.988372
 107,forma,NOUN,501,1.0
 108,próximo,ADJ,492,0.971545
@@ -111,8 +70,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 112,antes,ADV,486,0.99177
 113,ganar,VERB,486,0.997942
 114,punto,NOUN,482,1.0
-115,cual,PRON,478,0.949791
-116,cada,DET,476,0.985294
 117,buen,ADJ,473,0.983087
 118,vida,NOUN,470,0.976596
 119,conocer,VERB,467,0.972163
@@ -124,7 +81,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 125,saber,VERB,448,0.924107
 126,presentar,VERB,446,1.0
 127,considerar,VERB,446,0.997758
-129,varios,DET,443,0.941309
 130,hora,NOUN,441,0.997732
 131,volver,VERB,440,0.997727
 132,familia,NOUN,438,0.986301
@@ -132,13 +88,10 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 134,momento,NOUN,436,0.997706
 135,realizar,VERB,435,1.0
 136,asegurar,VERB,431,1.0
-137,tú,PRON,430,1.0
 138,política,NOUN,430,0.588372
 139,permitir,VERB,418,0.997608
 140,propio,ADJ,418,0.717703
 141,jugar,VERB,417,0.997602
-142,nuestro,DET,413,0.953995
-143,bajo,ADP,408,0.67402
 144,contar,VERB,408,0.970588
 145,ministro,NOUN,405,0.992593
 146,jugador,NOUN,402,0.987562
@@ -146,8 +99,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 148,recibir,VERB,398,1.0
 149,zona,NOUN,397,0.987406
 150,semana,NOUN,397,0.989924
-151,cuatro,NUM,396,0.989899
-152,mi,DET,396,0.962121
 153,pedir,VERB,393,1.0
 154,servicio,NOUN,391,0.98977
 155,nombre,NOUN,386,0.992228
@@ -176,7 +127,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 178,número,NOUN,354,0.983051
 179,nacional,ADJ,353,0.753541
 180,club,NOUN,350,0.848571
-181,sino,CCONJ,349,0.968481
 182,hombre,NOUN,349,0.985673
 183,importante,ADJ,345,0.985507
 184,internacional,ADJ,345,0.895652
@@ -189,15 +139,11 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 191,frente,NOUN,336,0.77381
 192,político,ADJ,336,0.776786
 193,fin,NOUN,335,1.0
-194,cinco,NUM,335,0.98209
-195,ninguno,DET,334,0.793413
 196,guerra,NOUN,334,0.793413
 197,creer,VERB,330,0.990909
 198,precio,NOUN,329,1.0
 199,total,ADJ,329,0.632219
 200,estadounidense,ADJ,328,0.871951
-202,nada,PRON,326,0.855828
-203,hacia,ADP,322,0.990683
 204,agua,NOUN,320,0.984375
 205,perder,VERB,319,1.0
 206,peseta,NOUN,319,1.0
@@ -208,7 +154,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 211,llamar,VERB,315,1.0
 213,casi,ADV,312,0.987179
 214,tipo,NOUN,312,0.996795
-215,cualquiera,DET,311,0.900322
 216,historia,NOUN,310,0.941935
 217,mostrar,VERB,310,0.990323
 218,económico,ADJ,309,0.996764
@@ -226,7 +171,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 230,señalar,VERB,292,1.0
 231,resultado,NOUN,290,0.996552
 232,compañía,NOUN,290,0.965517
-233,qué,PRON,290,0.7
 234,posible,ADJ,289,0.989619
 235,proyecto,NOUN,288,0.989583
 236,pueblo,NOUN,287,0.986063
@@ -239,12 +183,9 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 244,hecho,NOUN,285,0.810526
 245,actual,ADJ,284,1.0
 246,destacar,VERB,283,0.996466
-247,algo,PRON,283,0.890459
 248,sector,NOUN,282,1.0
-249,ambos,NUM,278,0.582734
 250,hijo,NOUN,276,0.996377
 251,región,NOUN,276,0.985507
-252,aquel,DET,275,0.683636
 253,anunciar,VERB,275,1.0
 254,esperar,VERB,275,0.996364
 255,formar,VERB,274,0.99635
@@ -266,7 +207,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 272,social,ADJ,254,0.972441
 273,dentro,ADV,254,0.992126
 274,fuente,NOUN,254,0.964567
-275,cuyo,DET,254,0.992126
 276,participar,VERB,253,0.992095
 277,luego,ADV,253,1.0
 278,futuro,NOUN,253,0.679842
@@ -330,9 +270,7 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 347,mañana,NOUN,221,0.506787
 348,alemán,ADJ,220,0.695455
 349,victoria,NOUN,219,0.931507
-350,seis,NUM,219,0.995434
 351,orden,NOUN,218,0.940367
-352,pues,SCONJ,218,0.798165
 353,suponer,VERB,217,1.0
 354,banda,NOUN,217,0.986175
 355,entrar,VERB,217,0.995392
@@ -375,7 +313,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 399,fuerte,ADJ,200,0.88
 400,anterior,ADJ,200,0.95
 401,río,NOUN,199,0.80402
-402,cierto,DET,199,0.512563
 403,abrir,VERB,199,0.994975
 405,autoridad,NOUN,197,0.989848
 406,fondo,NOUN,197,0.954315
@@ -396,7 +333,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 423,venta,NOUN,188,0.978723
 424,cerca,ADV,188,1.0
 425,manera,NOUN,187,1.0
-426,cómo,PRON,187,0.636364
 427,base,NOUN,186,0.983871
 428,interés,NOUN,186,1.0
 429,defensa,NOUN,186,0.935484
@@ -433,7 +369,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 465,desarrollar,VERB,176,1.0
 466,condición,NOUN,175,0.994286
 467,publicar,VERB,175,1.0
-468,nadie,PRON,175,0.982857
 469,ocurrir,VERB,174,1.0
 470,pertenecer,VERB,174,1.0
 471,palabra,NOUN,173,0.982659
@@ -444,12 +379,10 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 477,seguridad,NOUN,170,0.976471
 478,jornada,NOUN,170,1.0
 479,allí,ADV,169,0.994083
-480,mil,NUM,169,0.757396
 481,argentino,ADJ,169,0.674556
 482,necesidad,NOUN,168,1.0
 483,lado,NOUN,166,1.0
 484,razón,NOUN,166,0.975904
-486,al,ADP,165,0.878788
 488,difícil,ADJ,165,1.0
 489,prueba,NOUN,165,1.0
 490,imagen,NOUN,164,1.0
@@ -478,7 +411,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 517,condado,NOUN,157,0.980892
 518,aumentar,VERB,156,0.99359
 520,densidad,NOUN,156,1.0
-521,diverso,DET,156,0.564103
 522,ayuda,NOUN,156,0.955128
 523,todavía,ADV,156,0.967949
 524,italiano,ADJ,156,0.737179
@@ -488,7 +420,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 529,realidad,NOUN,155,1.0
 530,espacio,NOUN,155,0.974194
 531,falta,NOUN,155,1.0
-532,siete,NUM,155,0.974194
 533,capacidad,NOUN,154,1.0
 534,departamento,NOUN,154,0.967532
 535,superar,VERB,154,1.0
@@ -525,7 +456,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 571,cuarto,ADJ,146,0.664384
 572,corresponder,VERB,146,1.0
 573,ciudadano,NOUN,146,0.89726
-574,sí,INTJ,145,0.765517
 575,reducir,VERB,144,1.0
 576,efecto,NOUN,144,1.0
 577,vuelta,NOUN,144,0.986111
@@ -549,7 +479,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 597,inversión,NOUN,142,0.985915
 598,música,NOUN,141,0.978723
 599,kilómetro,NOUN,141,1.0
-600,dicho,DET,141,0.609929
 601,color,NOUN,141,0.992908
 602,comercial,ADJ,141,0.921986
 603,titular,NOUN,141,0.588652
@@ -597,7 +526,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 652,contrato,NOUN,130,0.992308
 653,cantidad,NOUN,130,0.992308
 654,consecuencia,NOUN,130,1.0
-655,diez,NUM,130,0.984615
 656,disponer,VERB,130,0.984615
 657,campeón,NOUN,130,0.984615
 661,necesitar,VERB,129,1.0
@@ -633,7 +561,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 693,crisis,NOUN,125,0.992
 694,referir,VERB,124,1.0
 695,disco,NOUN,124,1.0
-697,mediante,ADP,124,1.0
 698,torneo,NOUN,124,1.0
 699,gustar,VERB,124,1.0
 700,bastante,ADV,124,0.491935
@@ -641,7 +568,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 702,duda,NOUN,124,0.991935
 703,autor,NOUN,123,1.0
 704,superficie,NOUN,123,1.0
-705,i,NUM,123,0.430894
 706,modo,NOUN,123,0.99187
 707,abandonar,VERB,123,1.0
 708,entrada,NOUN,123,1.0
@@ -669,7 +595,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 733,institución,NOUN,119,1.0
 734,enfrentar,VERB,118,1.0
 736,duro,ADJ,118,0.915254
-738,ocho,NUM,118,0.923729
 739,barrio,NOUN,117,0.948718
 740,carácter,NOUN,117,1.0
 741,salida,NOUN,117,0.991453
@@ -882,7 +807,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 982,lengua,NOUN,91,0.956044
 983,correr,VERB,91,1.0
 984,resolver,VERB,91,1.0
-985,demás,PRON,91,0.505495
 986,intención,NOUN,91,1.0
 987,vicepresidente,NOUN,91,1.0
 988,obstante,NOUN,91,0.637363
@@ -893,7 +817,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 994,causar,VERB,90,0.988889
 995,descubrir,VERB,90,0.966667
 996,depender,VERB,90,1.0
-997,del,ADP,90,0.988889
 998,asumir,VERB,90,1.0
 999,luchar,VERB,90,1.0
 1000,novela,NOUN,90,1.0
@@ -923,7 +846,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 1027,constituir,VERB,87,1.0
 1028,sostener,VERB,87,1.0
 1029,documento,NOUN,87,1.0
-1032,quién,PRON,87,1.0
 1033,noticia,NOUN,87,1.0
 1034,atacar,VERB,87,1.0
 1035,comunicado,NOUN,87,0.965517
@@ -931,7 +853,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 1039,criticar,VERB,86,1.0
 1040,rojo,ADJ,86,0.686047
 1041,intervención,NOUN,86,0.988372
-1042,nueve,NUM,86,0.953488
 1043,altura,NOUN,86,0.988372
 1044,positivo,ADJ,86,1.0
 1045,cubrir,VERB,86,0.906977
@@ -1006,7 +927,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 1127,texto,NOUN,79,1.0
 1128,consumo,NOUN,79,1.0
 1129,colectivo,ADJ,79,0.506329
-1130,ii,NUM,79,0.886076
 1131,honor,NOUN,79,0.936709
 1132,periodo,NOUN,79,1.0
 1133,regional,ADJ,79,0.962025
@@ -1114,7 +1034,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 1251,cobrar,VERB,71,1.0
 1252,judicial,ADJ,71,0.971831
 1253,generación,NOUN,71,0.985915
-1254,alguien,PRON,71,0.957746
 1255,reciente,ADJ,71,0.985915
 1256,ejecutivo,NOUN,71,0.492958
 1257,canal,NOUN,71,0.788732
@@ -1124,7 +1043,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 1261,torno,NOUN,71,1.0
 1262,lejos,ADV,71,0.985915
 1263,contribuir,VERB,70,1.0
-1264,tu,DET,70,0.914286
 1265,escuchar,VERB,70,0.985714
 1266,comunicar,VERB,70,0.985714
 1267,ampliar,VERB,70,1.0
@@ -1181,7 +1099,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 1329,destruir,VERB,67,0.985075
 1330,llegada,NOUN,67,1.0
 1331,respetar,VERB,67,0.985075
-1332,suyo,DET,67,0.522388
 1333,acercar,VERB,67,1.0
 1334,sanción,NOUN,67,1.0
 1338,surgir,VERB,66,1.0
@@ -1219,7 +1136,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 1375,distancia,NOUN,65,1.0
 1376,extender,VERB,65,1.0
 1377,ordenar,VERB,65,1.0
-1378,es,NOUN,65,0.907692
 1380,pez,NOUN,64,1.0
 1381,ingresar,VERB,64,1.0
 1382,izquierdo,ADJ,64,0.921875
@@ -1243,7 +1159,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 1403,derecha,NOUN,64,0.984375
 1404,realmente,ADV,64,1.0
 1405,estrenar,VERB,64,1.0
-1407,de,ADP,64,1.0
 1408,plano,NOUN,63,0.603175
 1409,protagonizar,VERB,63,1.0
 1410,hogar,NOUN,63,0.984127
@@ -1304,7 +1219,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 1476,hoja,NOUN,60,1.0
 1477,maestro,NOUN,60,0.783333
 1478,conversación,NOUN,60,1.0
-1479,web,NOUN,60,0.883333
 1480,directamente,ADV,60,1.0
 1481,funcionario,NOUN,60,0.983333
 1482,marchar,VERB,60,0.983333
@@ -1313,7 +1227,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 1485,precisamente,ADV,60,1.0
 1486,gas,NOUN,60,0.966667
 1487,desaparecer,VERB,60,0.95
-1488,cuál,PRON,60,0.95
 1489,apertura,NOUN,60,0.966667
 1491,cuadro,NOUN,59,1.0
 1492,gira,NOUN,59,0.932203
@@ -1390,7 +1303,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 1577,jurídico,ADJ,56,0.982143
 1578,siquiera,NOUN,56,0.607143
 1580,boca,NOUN,56,0.821429
-1581,doce,NUM,56,0.982143
 1582,otorgar,VERB,56,1.0
 1583,distribución,NOUN,56,1.0
 1584,presupuesto,NOUN,56,1.0
@@ -1456,7 +1368,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 1651,pensión,NOUN,54,1.0
 1652,prisión,NOUN,54,1.0
 1653,fabricar,VERB,54,0.981481
-1654,quince,NUM,54,0.907407
 1657,prestar,VERB,53,1.0
 1659,hermana,NOUN,53,0.981132
 1660,licencia,NOUN,53,0.981132
@@ -1487,9 +1398,7 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 1690,huir,VERB,52,0.980769
 1691,carne,NOUN,52,0.980769
 1692,violento,ADJ,52,1.0
-1693,u,CCONJ,52,0.980769
 1694,tradición,NOUN,52,1.0
-1695,rock,NOUN,52,0.596154
 1696,sonido,NOUN,52,1.0
 1697,caja,NOUN,52,0.846154
 1698,permanente,ADJ,52,0.961538
@@ -1557,7 +1466,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 1766,descenso,NOUN,50,1.0
 1767,financiación,NOUN,50,1.0
 1772,paciente,NOUN,49,0.959184
-1774,cien,NUM,49,1.0
 1775,pasajero,NOUN,49,0.959184
 1776,plata,NOUN,49,0.673469
 1777,sol,NOUN,49,0.795918
@@ -1626,7 +1534,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 1847,fundador,NOUN,47,0.851064
 1848,desempleo,NOUN,47,1.0
 1849,prohibir,VERB,47,1.0
-1850,once,NUM,47,0.893617
 1851,legislatura,NOUN,47,0.957447
 1852,pelea,NOUN,47,1.0
 1853,meter,VERB,47,1.0
@@ -1805,7 +1712,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 2067,postura,NOUN,41,0.97561
 2068,transmitir,VERB,41,1.0
 2069,fabricante,NOUN,41,0.926829
-2070,salvo,ADP,41,0.658537
 2071,detenido,ADJ,41,0.560976
 2072,argumentar,VERB,41,1.0
 2073,detectar,VERB,41,1.0
@@ -1910,7 +1816,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 2190,sindical,ADJ,38,0.973684
 2191,cultivo,NOUN,38,1.0
 2192,regalo,NOUN,38,0.973684
-2193,per,ADP,38,1.0
 2194,experimentar,VERB,38,1.0
 2195,atraer,VERB,38,0.973684
 2196,petróleo,NOUN,38,0.947368
@@ -1928,7 +1833,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 2210,conclusión,NOUN,38,1.0
 2211,octavo,ADJ,38,0.657895
 2212,mandato,NOUN,38,1.0
-2218,iii,NUM,37,0.837838
 2219,señora,NOUN,37,0.72973
 2220,respectivo,ADJ,37,0.972973
 2221,caber,VERB,37,1.0
@@ -1968,7 +1872,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 2258,australiano,ADJ,37,0.675676
 2264,análisis,NOUN,36,0.972222
 2265,recinto,NOUN,36,1.0
-2266,veinte,NUM,36,0.972222
 2267,sujeto,NOUN,36,0.527778
 2268,duración,NOUN,36,1.0
 2269,literatura,NOUN,36,0.944444
@@ -2106,7 +2009,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 2436,eliminatoria,NOUN,33,1.0
 2437,jugada,NOUN,33,1.0
 2438,sabor,NOUN,33,0.969697
-2439,cm,NOUN,33,1.0
 2441,originalmente,ADV,33,1.0
 2442,renovar,VERB,33,1.0
 2443,múltiple,ADJ,33,0.969697
@@ -2244,7 +2146,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 2603,veces,NOUN,31,1.0
 2610,humanidad,NOUN,30,0.966667
 2611,favorable,ADJ,30,1.0
-2613,show,NOUN,30,0.8
 2614,ratificar,VERB,30,1.0
 2615,restante,ADJ,30,0.866667
 2616,curioso,ADJ,30,0.833333
@@ -2266,14 +2167,12 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 2633,lectura,NOUN,30,1.0
 2634,pierna,NOUN,30,1.0
 2635,quizás,ADV,30,1.0
-2636,xx,NUM,30,1.0
 2637,operador,NOUN,30,1.0
 2639,aceite,NOUN,30,1.0
 2640,diente,NOUN,30,1.0
 2641,aparte,ADV,30,0.766667
 2642,provisional,ADJ,30,0.9
 2643,fiel,ADJ,30,0.766667
-2644,xix,NUM,30,1.0
 2645,seco,ADJ,30,0.833333
 2646,destrucción,NOUN,30,1.0
 2647,posesión,NOUN,30,1.0
@@ -2319,7 +2218,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 2698,sello,NOUN,29,1.0
 2700,documentación,NOUN,29,1.0
 2701,abajo,ADV,29,0.758621
-2702,m,NOUN,29,0.862069
 2703,solar,NOUN,29,0.586207
 2704,encantar,VERB,29,1.0
 2706,estrecho,ADJ,29,0.517241
@@ -2345,7 +2243,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 2729,fijo,ADJ,29,0.965517
 2730,triple,NOUN,29,0.62069
 2731,cena,NOUN,29,0.862069
-2733,terrible,ADJ,29,0.931034
 2734,juvenil,ADJ,29,0.827586
 2735,contratar,VERB,29,1.0
 2736,aspirante,NOUN,29,0.965517
@@ -2431,7 +2328,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 2842,llama,NOUN,27,0.888889
 2843,creciente,ADJ,27,0.962963
 2844,enlace,NOUN,27,0.962963
-2845,in,ADP,27,0.518519
 2846,nazi,ADJ,27,0.555556
 2847,africano,ADJ,27,0.666667
 2848,capturar,VERB,27,1.0
@@ -2479,7 +2375,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 2896,guía,NOUN,27,0.962963
 2897,universal,ADJ,27,0.814815
 2899,agresivo,ADJ,27,1.0
-2900,trece,NUM,27,1.0
 2901,bronce,NOUN,27,0.888889
 2902,comercializar,VERB,27,1.0
 2903,planteamiento,NOUN,27,1.0
@@ -2490,9 +2385,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 2908,expediente,NOUN,27,1.0
 2909,entrevistar,VERB,27,1.0
 2910,informativo,ADJ,27,0.666667
-2914,ii,NUM,27,1.0
-2918,nou,NUM,27,1.0
-2927,v,NUM,26,0.923077
 2928,formal,ADJ,26,1.0
 2929,condenado,ADJ,26,0.769231
 2930,discográfico,ADJ,26,0.692308
@@ -2553,7 +2445,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 2990,encargado,ADJ,26,0.730769
 2991,recomendación,NOUN,26,1.0
 2992,seno,NOUN,26,1.0
-2993,cuarenta,NUM,26,0.961538
 2994,lenguaje,NOUN,26,1.0
 2995,profesión,NOUN,26,1.0
 2996,pactar,VERB,26,1.0
@@ -2580,7 +2471,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 3035,piscina,NOUN,25,1.0
 3036,tragedia,NOUN,25,1.0
 3037,confundir,VERB,25,1.0
-3038,iv,NUM,25,1.0
 3039,ambiental,ADJ,25,1.0
 3040,genial,ADJ,25,1.0
 3041,solicitud,NOUN,25,1.0
@@ -2649,7 +2539,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 3119,barcelonista,ADJ,25,0.64
 3128,variante,NOUN,24,1.0
 3129,hotelero,ADJ,24,0.875
-3130,pop,NOUN,24,0.708333
 3132,realización,NOUN,24,1.0
 3133,documental,NOUN,24,0.666667
 3134,primavera,NOUN,24,0.875
@@ -2666,7 +2555,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 3145,dependencia,NOUN,24,0.958333
 3146,precisión,NOUN,24,1.0
 3147,regulación,NOUN,24,1.0
-3148,mm,NOUN,24,0.958333
 3149,hambre,NOUN,24,0.958333
 3150,útil,ADJ,24,1.0
 3151,fotografía,NOUN,24,1.0
@@ -2749,7 +2637,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 3250,pesca,NOUN,23,0.956522
 3251,tercio,NOUN,23,1.0
 3252,ajustar,VERB,23,1.0
-3253,muchísimo,PRON,23,0.304348
 3254,desvelar,VERB,23,1.0
 3255,infancia,NOUN,23,0.956522
 3256,cerebro,NOUN,23,0.956522
@@ -2772,7 +2659,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 3275,criminal,ADJ,23,0.521739
 3276,otoño,NOUN,23,1.0
 3277,tropical,ADJ,23,0.913043
-3278,cincuenta,NUM,23,0.913043
 3279,coronel,NOUN,23,0.826087
 3280,fortaleza,NOUN,23,0.913043
 3281,provenir,VERB,23,1.0
@@ -2872,7 +2758,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 3409,penalti,NOUN,22,1.0
 3410,optimista,ADJ,22,1.0
 3411,exhibición,NOUN,22,1.0
-3412,excepto,ADP,22,0.863636
 3413,hueso,NOUN,22,1.0
 3414,creencia,NOUN,22,1.0
 3415,desgracia,NOUN,22,1.0
@@ -2893,7 +2778,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 3441,inteligente,ADJ,21,1.0
 3442,franja,NOUN,21,0.952381
 3443,aceptor,ADJ,21,0.666667
-3444,xviii,NUM,21,1.0
 3445,maravilloso,ADJ,21,0.904762
 3446,graduar,VERB,21,1.0
 3448,cerro,NOUN,21,0.666667
@@ -3093,7 +2977,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 3716,vincular,VERB,19,1.0
 3718,remitir,VERB,19,1.0
 3719,relevante,ADJ,19,1.0
-3720,xvi,NUM,19,1.0
 3724,gravedad,NOUN,19,1.0
 3725,desayuno,NOUN,19,1.0
 3726,característico,ADJ,19,0.894737
@@ -3153,7 +3036,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 3791,divino,ADJ,19,0.789474
 3792,constantemente,ADV,19,1.0
 3794,inscripción,NOUN,19,1.0
-3795,n,NOUN,19,0.526316
 3796,economista,NOUN,19,1.0
 3798,aparentemente,ADV,19,1.0
 3799,activar,VERB,19,1.0
@@ -3186,7 +3068,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 3831,ciudadanía,NOUN,19,1.0
 3832,innovación,NOUN,19,0.947368
 3833,paralelamente,ADV,19,1.0
-3834,bueno,INTJ,19,0.526316
 3835,conveniente,ADJ,19,0.947368
 3836,vial,ADJ,19,0.631579
 3837,orientar,VERB,19,1.0
@@ -3234,7 +3115,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 3916,semestre,NOUN,18,1.0
 3917,sonoro,ADJ,18,1.0
 3919,descendiente,NOUN,18,0.833333
-3920,x,NUM,18,0.555556
 3921,fronterizo,ADJ,18,1.0
 3922,romántico,ADJ,18,0.888889
 3923,deterioro,NOUN,18,1.0
@@ -3316,11 +3196,9 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 4021,globalización,NOUN,18,1.0
 4025,nuevo,ADJ,18,1.0
 4028,anunciado,ADJ,18,1.0
-4031,un,NUM,18,0.944444
 4034,sufragio,NOUN,18,1.0
 4037,yen,NOUN,18,1.0
 4044,febrero,NOUN,18,1.0
-4046,je,INTJ,18,1.0
 4047,élite,NOUN,17,1.0
 4049,exitoso,ADJ,17,1.0
 4051,catedrático,NOUN,17,0.941176
@@ -3416,7 +3294,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 4159,convicción,NOUN,17,1.0
 4161,humanitario,ADJ,17,0.941176
 4162,prevención,NOUN,17,1.0
-4163,treinta,NUM,17,1.0
 4164,indefinido,ADJ,17,0.823529
 4165,pívot,NOUN,17,1.0
 4166,retorno,NOUN,17,1.0
@@ -3499,7 +3376,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 4282,pájaro,NOUN,16,0.9375
 4283,castigo,NOUN,16,1.0
 4285,desfile,NOUN,16,1.0
-4287,sesenta,NUM,16,0.875
 4288,muralla,NOUN,16,0.9375
 4289,comisaría,NOUN,16,1.0
 4290,referéndum,NOUN,16,0.9375
@@ -3550,7 +3426,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 4341,incurrir,VERB,16,1.0
 4342,cometido,ADJ,16,0.625
 4343,adopción,NOUN,16,1.0
-4344,cuánto,PRON,16,0.5
 4345,panorama,NOUN,16,1.0
 4346,satélite,NOUN,16,0.875
 4347,desprender,VERB,16,1.0
@@ -3567,7 +3442,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 4359,molestar,VERB,16,1.0
 4360,multar,VERB,16,1.0
 4361,callejero,ADJ,16,1.0
-4362,sendos,DET,16,1.0
 4363,herencia,NOUN,16,1.0
 4364,enmienda,NOUN,16,1.0
 4365,reformista,ADJ,16,0.6875
@@ -3592,7 +3466,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 4417,apariencia,NOUN,15,1.0
 4418,nominar,VERB,15,1.0
 4420,confuso,ADJ,15,1.0
-4422,von,ADP,15,0.933333
 4424,repercusión,NOUN,15,1.0
 4425,pulso,NOUN,15,1.0
 4426,transferir,VERB,15,1.0
@@ -3618,10 +3491,8 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 4454,sal,NOUN,15,1.0
 4455,delincuente,NOUN,15,0.933333
 4456,doctrina,NOUN,15,1.0
-4457,viii,NUM,15,0.866667
 4458,singular,ADJ,15,1.0
 4459,pata,NOUN,15,1.0
-4460,vi,NUM,15,0.866667
 4461,pabellón,NOUN,15,0.933333
 4463,risa,NOUN,15,1.0
 4464,ligar,VERB,15,0.933333
@@ -3735,7 +3606,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 4620,referendo,NOUN,15,1.0
 4624,mayo,NOUN,15,0.6
 4625,baix,ADJ,15,1.0
-4626,xv,NUM,14,1.0
 4628,terror,NOUN,14,0.928571
 4632,soberano,ADJ,14,0.642857
 4635,dragón,NOUN,14,0.642857
@@ -3845,7 +3715,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 4762,instalado,ADJ,14,1.0
 4763,polaco,ADJ,14,0.785714
 4764,maduro,ADJ,14,0.928571
-4765,i,CCONJ,14,0.642857
 4766,muchacho,NOUN,14,1.0
 4767,discreto,ADJ,14,1.0
 4768,paralizado,ADJ,14,1.0
@@ -3892,7 +3761,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 4820,tomado,ADJ,14,1.0
 4821,era,NOUN,14,0.928571
 4829,canalizar,VERB,14,1.0
-4843,xi,NUM,13,0.923077
 4845,incumplir,VERB,13,1.0
 4846,oral,ADJ,13,1.0
 4847,prestigioso,ADJ,13,1.0
@@ -3928,7 +3796,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 4886,horizonte,NOUN,13,1.0
 4888,maravilla,NOUN,13,0.923077
 4889,proximidad,NOUN,13,1.0
-4890,spa,NOUN,13,0.615385
 4891,crucero,NOUN,13,1.0
 4892,aprendizaje,NOUN,13,1.0
 4893,césped,NOUN,13,1.0
@@ -4006,7 +3873,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 4980,insultar,VERB,13,1.0
 4981,colonial,ADJ,13,0.846154
 4982,táctico,ADJ,13,0.923077
-4983,catorce,NUM,13,1.0
 4984,embajada,NOUN,13,0.846154
 4985,aparcamiento,NOUN,13,1.0
 4986,pirata,NOUN,13,0.846154
@@ -4103,7 +3969,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 5083,reprochar,VERB,13,1.0
 5089,adoptado,ADJ,13,0.923077
 5091,apostillar,VERB,13,1.0
-5094,xx,NUM,13,1.0
 5095,soldador,NOUN,13,1.0
 5100,ciclismo,NOUN,13,1.0
 5102,diseñado,ADJ,13,1.0
@@ -4132,7 +3997,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 5172,dinámica,NOUN,12,0.833333
 5173,vecina,NOUN,12,0.75
 5174,archipiélago,NOUN,12,1.0
-5175,mío,DET,12,0.416667
 5176,salarial,ADJ,12,1.0
 5177,avería,NOUN,12,1.0
 5178,divertir,VERB,12,1.0
@@ -4224,7 +4088,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 5285,legión,NOUN,12,0.75
 5286,cansado,ADJ,12,1.0
 5288,eficiencia,NOUN,12,1.0
-5290,dicha,DET,12,0.75
 5291,amparo,NOUN,12,0.75
 5292,veterinario,NOUN,12,0.666667
 5293,atar,VERB,12,1.0
@@ -4325,7 +4188,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 5403,pecado,NOUN,12,1.0
 5404,cargado,ADJ,12,1.0
 5405,firmante,NOUN,12,0.583333
-5406,le,DET,12,1.0
 5407,flujo,NOUN,12,1.0
 5408,reportaje,NOUN,12,1.0
 5409,concedido,ADJ,12,0.916667
@@ -4400,15 +4262,11 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 5553,libremente,ADV,11,1.0
 5554,habilitar,VERB,11,0.909091
 5555,predecir,VERB,11,1.0
-5556,jazz,NOUN,11,0.636364
-5558,xvii,NUM,11,1.0
-5559,ó,CCONJ,11,0.818182
 5560,encadenar,VERB,11,1.0
 5561,políticamente,ADV,11,1.0
 5563,procesión,NOUN,11,1.0
 5564,preservar,VERB,11,1.0
 5565,diferir,VERB,11,1.0
-5566,cd,NOUN,11,0.727273
 5568,adelanto,NOUN,11,1.0
 5571,seriedad,NOUN,11,1.0
 5572,vacuna,NOUN,11,0.909091
@@ -4586,9 +4444,7 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 5828,cocinar,VERB,10,0.9
 5829,excelencia,NOUN,10,0.9
 5830,forzoso,ADJ,10,1.0
-5833,suite,NOUN,10,0.8
 5834,luminoso,ADJ,10,1.0
-5835,rally,NOUN,10,0.7
 5836,emplazamiento,NOUN,10,1.0
 5837,indígeno,ADJ,10,1.0
 5838,procedencia,NOUN,10,1.0
@@ -4669,7 +4525,6 @@ rank,lemma,pos,popularity_count,pos_majority_ratio
 5936,cívico,ADJ,10,0.9
 5937,mentir,VERB,10,1.0
 5938,montón,NOUN,10,1.0
-5939,blues,NOUN,10,0.7
 5941,alarde,NOUN,10,1.0
 5942,psiquiatra,NOUN,10,1.0
 5943,barro,NOUN,10,1.0

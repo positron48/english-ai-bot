@@ -1,0 +1,62 @@
+# Spanish frequency CSV: lemmas to drop (noise, abbreviations, loans, mis-tagged names).
+# One lemma per line (lowercase). Lines starting with # are ignored.
+# Also drops: non-training POS, single-character lemmas, and [a-z]{2,5} with no vowels (see clean script).
+
+# English articles / typos in corpus
+&
+a
+an
+the
+and
+
+# Reported names / mis-tags / vocalic abbreviations
+nba
+miami
+kostunica
+iu
+gómez
+maria
+maría
+michael
+microsoft
+mccain
+opep
+opec
+eeuu
+usa
+ue
+otan
+nato
+onu
+unesco
+psc
+gmt
+utc
+washington
+sánchez
+sanchez
+sant
+george
+ugt
+wahid
+km
+
+# Single-letter tagging garbage
+m
+n
+
+# Anglicisms / genre & infra loans (optional for learner lists)
+rock
+pop
+show
+web
+jazz
+blues
+spa
+rally
+suite
+terrible
+blog
+
+# "es" as NOUN — tagging noise
+es

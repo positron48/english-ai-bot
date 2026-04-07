@@ -10,6 +10,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"unicode/utf8"
 
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/database"
@@ -17,6 +18,7 @@ import (
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/service"
+	"tgbot-skeleton/resources/wordsets"
 )
 
 type csvWord struct {
@@ -27,18 +29,6 @@ type csvWord struct {
 
 var ranksRe = regexp.MustCompile(`(?i)(?:ranks?|rangos?)\s+(\d+)\s*[\p{Pd}-]\s*(\d+)`)
 var spanishLemmaRe = regexp.MustCompile(`^[a-záéíóúüñ]+(?:-[a-záéíóúüñ]+)*$`)
-
-var blockedLemmas = map[string]struct{}{
-	"&":   {},
-	"a":   {},
-	"an":  {},
-	"the": {},
-	"and": {},
-	"km":  {},
-	"george": {},
-	"ugt": {},
-	"wahid": {},
-}
 
 func main() {
 	os.Exit(runCLI())
@@ -276,7 +266,7 @@ func loadWordsByTrainingPOS(path string) (map[string][]csvWord, error) {
 		if idxLemma >= len(row) || idxPOS >= len(row) || idxPop >= len(row) {
 			continue
 		}
-		lemma := strings.TrimSpace(strings.ToLower(row[idxLemma]))
+		lemma := wordsets.NormalizeLemmaImport(strings.TrimSpace(row[idxLemma]))
 		udPOS := strings.TrimSpace(strings.ToUpper(row[idxPOS]))
 		popStr := strings.TrimSpace(row[idxPop])
 		if lemma == "" || udPOS == "" || popStr == "" {
@@ -332,7 +322,13 @@ func mapUDToTrainingPOS(udPOS string) (string, bool) {
 }
 
 func isValidSpanishLemma(lemma string) bool {
-	if _, blocked := blockedLemmas[lemma]; blocked {
+	if lemma == "" || utf8.RuneCountInString(lemma) == 1 {
+		return false
+	}
+	if wordsets.IsLemmaBlocked(lemma) {
+		return false
+	}
+	if wordsets.IsVowellessAbbrevASCII(lemma) {
 		return false
 	}
 	return spanishLemmaRe.MatchString(lemma)
