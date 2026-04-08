@@ -14,6 +14,8 @@ REJECTION
 - Reject nonsense: if the input contains ANY digits (0-9) => reject.
 - Otherwise ACCEPT (do NOT reject for uncertainty).
 - Always ACCEPT "castro" (must not be rejected as proper noun by uncertainty).
+- General acceptance rule: if token looks like a plausible Spanish lexical item (including common loans, demonyms, adjectives/nouns, regional variants), ACCEPT it.
+- Never use rejected_by_policy for uncertainty, rarity, polysemy, or "possibly proper noun" guesses.
 - Mandatory pre-check order:
   1) First evaluate hard reject list and digits before any lexical analysis.
   2) If input matches any reject rule, return rejected JSON immediately.

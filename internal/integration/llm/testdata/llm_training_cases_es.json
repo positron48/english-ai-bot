@@ -210,9 +210,79 @@
     "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
   },
   {
+    "word": "torno",
+    "expect": "ok",
+    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
+  },
+  {
+    "word": "marco",
+    "expect": "ok",
+    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
+  },
+  {
+    "word": "conjunto",
+    "expect": "ok",
+    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
+  },
+  {
+    "word": "plan",
+    "expect": "ok",
+    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
+  },
+  {
+    "word": "través",
+    "expect": "ok",
+    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
+  },
+  {
+    "word": "puesto",
+    "expect": "ok",
+    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
+  },
+  {
+    "word": "sur",
+    "expect": "ok",
+    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
+  },
+  {
+    "word": "industrial",
+    "expect": "ok",
+    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
+  },
+  {
+    "word": "original",
+    "expect": "ok",
+    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
+  },
+  {
     "word": "virus",
     "expect": "ok",
     "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
+  },
+  {
+    "word": "kilo",
+    "expect": "ok",
+    "note": "Регрессия: не должен уходить в rejected_by_policy"
+  },
+  {
+    "word": "debut",
+    "expect": "ok",
+    "note": "Регрессия: не должен уходить в rejected_by_policy"
+  },
+  {
+    "word": "monte",
+    "expect": "ok",
+    "note": "Регрессия: не должен уходить в rejected_by_policy"
+  },
+  {
+    "word": "portugués",
+    "expect": "ok",
+    "note": "Регрессия: не должен уходить в rejected_by_policy"
+  },
+  {
+    "word": "latino",
+    "expect": "ok",
+    "note": "Регрессия: не должен уходить в rejected_by_policy"
   },
   {
     "word": "prado",

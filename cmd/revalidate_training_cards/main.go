@@ -40,6 +40,11 @@ type group struct {
 	resp     models.TrainingCardResponse
 }
 
+type invalidGroup struct {
+	g      group
+	reason string
+}
+
 func main() {
 	os.Exit(runCLI())
 }
@@ -74,19 +79,32 @@ func runCLI() int {
 		return 1
 	}
 
-	invalid := make([]group, 0)
+	invalid := make([]invalidGroup, 0)
 	for _, g := range groups {
 		if !isNativeDefinitionValid(g.wordCard, cfg.Learning) {
-			invalid = append(invalid, g)
+			invalid = append(invalid, invalidGroup{
+				g:      g,
+				reason: "definition_ru_not_cyrillic",
+			})
 			continue
 		}
 		if errMsg := service.ValidateTrainingCardResponse(cfg.Learning.TargetLang, &g.wordCard, &g.resp); errMsg != "" {
-			invalid = append(invalid, g)
+			invalid = append(invalid, invalidGroup{
+				g:      g,
+				reason: errMsg,
+			})
+			continue
+		}
+		if dupErr := duplicateSenseError(g.resp); dupErr != "" {
+			invalid = append(invalid, invalidGroup{
+				g:      g,
+				reason: dupErr,
+			})
 		}
 	}
 
 	sort.Slice(invalid, func(i, j int) bool {
-		return invalid[i].wordCard.ID < invalid[j].wordCard.ID
+		return invalid[i].g.wordCard.ID < invalid[j].g.wordCard.ID
 	})
 	if *limit > 0 && len(invalid) > *limit {
 		invalid = invalid[:*limit]
@@ -98,7 +116,7 @@ func runCLI() int {
 	}
 	fmt.Printf("[%s] total_word_cards=%d invalid=%d\n", mode, len(groups), len(invalid))
 	for _, g := range invalid {
-		fmt.Printf("INVALID word_card_id=%d lemma=%q senses=%d\n", g.wordCard.ID, g.wordCard.Word, len(g.resp.Senses))
+		fmt.Printf("INVALID word_card_id=%d lemma=%q senses=%d reason=%q\n", g.g.wordCard.ID, g.g.wordCard.Word, len(g.g.resp.Senses), g.reason)
 	}
 
 	if !*commit || len(invalid) == 0 {
@@ -107,8 +125,8 @@ func runCLI() int {
 
 	requeued := 0
 	for _, g := range invalid {
-		if err := requeueWordCard(ctx, db.GetConnection(), g.wordCard.ID, shouldNullDefinitionRU(g.wordCard, cfg.Learning)); err != nil {
-			fmt.Printf("ERROR requeue word_card_id=%d lemma=%q: %v\n", g.wordCard.ID, g.wordCard.Word, err)
+		if err := requeueWordCard(ctx, db.GetConnection(), g.g.wordCard.ID, shouldNullDefinitionRU(g.g.wordCard, cfg.Learning)); err != nil {
+			fmt.Printf("ERROR requeue word_card_id=%d lemma=%q: %v\n", g.g.wordCard.ID, g.g.wordCard.Word, err)
 			continue
 		}
 		requeued++
@@ -249,5 +267,26 @@ func requeueWordCard(ctx context.Context, conn *sql.DB, wordCardID int64, nullDe
 	}
 
 	return tx.Commit()
+}
+
+func duplicateSenseError(resp models.TrainingCardResponse) string {
+	seen := make(map[string]int, len(resp.Senses))
+	for i, s := range resp.Senses {
+		key := strings.Join([]string{
+			normalizeDupField(s.POS),
+			normalizeDupField(s.DisplayWord),
+			normalizeDupField(s.WordRU),
+			normalizeDupField(s.MeaningEN),
+		}, "|")
+		if prevIdx, ok := seen[key]; ok {
+			return fmt.Sprintf("duplicate_training_sense sense=%d duplicates sense=%d", i, prevIdx)
+		}
+		seen[key] = i
+	}
+	return ""
+}
+
+func normalizeDupField(v string) string {
+	return strings.ToLower(strings.Join(strings.Fields(strings.TrimSpace(v)), " "))
 }
 

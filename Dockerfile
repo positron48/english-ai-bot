@@ -60,10 +60,13 @@ COPY --from=builder /app/fill_missing_set_pos_cards .
 COPY --from=builder /app/revalidate_training_cards .
 COPY --from=builder /app/backfill_noun_gender .
 COPY --from=builder /app/normalize_word_pos .
+COPY --from=builder /app/scripts/requeue_invalid_training_cards.sh ./scripts/requeue_invalid_training_cards.sh
 COPY --from=builder /app/prompts ./prompts
 # Ship static Spanish frequency CSV for in-cluster imports (independent from grammar submodule).
 COPY --from=builder /app/resources/wordsets/spanish_word_freq_pos_ud_top6000.csv ./data/spanish_word_freq_pos_ud_top6000.csv
 COPY --from=builder /app/resources/wordsets/spanish_gender_lexicon.tsv ./data/spanish_gender_lexicon.tsv
+
+RUN chmod +x /app/scripts/requeue_invalid_training_cards.sh
 
 # Change ownership to non-root user
 RUN chown -R appuser:appgroup /app

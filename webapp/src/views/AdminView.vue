@@ -180,6 +180,15 @@
                       >
                         <Icon name="warning" />
                       </button>
+                      <button
+                        v-if="can('words.edit_all') && hasTTSError(word)"
+                        @click="regenerateWordTTSFromList(word)"
+                        class="btn btn-sm btn-warning"
+                        :disabled="Boolean(word.ttsActionLoading)"
+                        :title="word.ttsActionLoading ? 'Regenerating audio...' : 'Regenerate audio'"
+                      >
+                        <Icon name="refresh" />
+                      </button>
                       <button 
                         v-if="can('words.edit_all')"
                         @click="deleteWord(word)" 
@@ -730,6 +739,7 @@ interface WordCard {
   showingCards?: boolean
   cards?: TrainingCard[]
   cardsLoading?: boolean
+  ttsActionLoading?: boolean
 }
 
 interface TTSStatus {
@@ -1038,6 +1048,28 @@ const onFilterChange = () => {
 
 const hasWordError = (word: WordCard): boolean => {
   return Boolean(word.ProcessingError) || word.TTSState === 'failed_retryable' || word.TTSState === 'failed_terminal'
+}
+
+const hasTTSError = (word: WordCard): boolean => {
+  return word.TTSState === 'failed_retryable' || word.TTSState === 'failed_terminal'
+}
+
+const regenerateWordTTSFromList = async (word: WordCard) => {
+  if (word.ttsActionLoading) return
+  word.ttsActionLoading = true
+  try {
+    const data: TTSStatus = await apiClient.request(`/api/admin/tts/${encodeURIComponent(word.Word)}/regenerate`, {
+      method: 'POST'
+    })
+    word.TTSState = data.state || null
+    word.TTSError = data.last_error_message || null
+    word.TTSAudioURL = data.audio_url || null
+  } catch (error: any) {
+    console.error('Failed to regenerate TTS from list:', error)
+    await showAlert(error?.message || 'Failed to regenerate audio')
+  } finally {
+    word.ttsActionLoading = false
+  }
 }
 
 const playWordAudio = (word: WordCard) => {

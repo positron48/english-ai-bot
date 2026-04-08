@@ -13,7 +13,7 @@ SERVICE_NAME ?= ai-bot
 -include .env
 .EXPORT_ALL_VARIABLES:
 
-.PHONY: all tidy build run test lint fmt setup up up-en up-es clean check check-quick ci deploy update status logs docker-build docker-run docker-stop docker-logs docker-clean docker-rebuild docker-dev docker-dev-logs docker-dev-restart webapp-install webapp-dev webapp-build test-postgres test-integration test-integration-verbose grammar-bundle grammar-bundle-list postgres-dev-init-dbs clean-spanish-csv sync-spanish-word-sets
+.PHONY: all tidy build run test lint fmt setup up up-en up-es clean check check-quick ci deploy update status logs docker-build docker-run docker-stop docker-logs docker-clean docker-rebuild docker-dev docker-dev-logs docker-dev-restart webapp-install webapp-dev webapp-build test-postgres test-integration test-integration-verbose grammar-bundle grammar-bundle-list postgres-dev-init-dbs clean-spanish-csv sync-spanish-word-sets requeue-invalid-cards-es-dry requeue-invalid-cards-es
 
 all: build
 
@@ -444,6 +444,12 @@ sync-spanish-word-sets:
 	go run ./cmd/import_word_sets_from_csv \
 		--csv "resources/wordsets/spanish_word_freq_pos_ud_top6000.csv" \
 		--commit
+
+requeue-invalid-cards-es-dry:
+	@bash scripts/requeue_invalid_training_cards.sh --target-lang es
+
+requeue-invalid-cards-es:
+	@bash scripts/requeue_invalid_training_cards.sh --target-lang es --commit
 
 build-spanish-gender-lexicon:
 	@python3 scripts/build_spanish_gender_lexicon.py --download
