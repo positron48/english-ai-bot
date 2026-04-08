@@ -14,6 +14,7 @@ import (
 	"strings"
 	"unicode"
 
+	"tgbot-skeleton/internal/ai"
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/database"
 	"tgbot-skeleton/internal/logger"
@@ -52,6 +53,11 @@ type invalidGroup struct {
 	reason string
 }
 
+type definitionRegenerationResult struct {
+	Lemma        string
+	DefinitionRU string
+}
+
 type duplicateGroup struct {
 	WordCardID int64
 	Lemma      string
@@ -63,6 +69,8 @@ type invalidTTS struct {
 	Word   string
 	Reason string
 }
+
+const invalidReasonDefinitionRUNotCyrillic = "definition_ru_not_cyrillic"
 
 func main() {
 	os.Exit(runCLI())
@@ -105,7 +113,7 @@ func runCLI() int {
 		if !isNativeDefinitionValid(g.wordCard, cfg.Learning) {
 			invalid = append(invalid, invalidGroup{
 				g:      g,
-				reason: "definition_ru_not_cyrillic",
+				reason: invalidReasonDefinitionRUNotCyrillic,
 			})
 			continue
 		}
@@ -181,8 +189,24 @@ func runCLI() int {
 		}
 	}
 
+	wordRepo := repository.NewWordRepository(db.GetConnection(), log)
+	aiService := ai.NewService(cfg.AI.URL, cfg.AI.Model, cfg.AI.APIKey, cfg.AI.Prompt, log)
+
 	requeued := 0
+	regeneratedDefinition := 0
+	regeneratedDefinitionFailed := 0
 	for _, g := range invalid {
+		if g.reason == invalidReasonDefinitionRUNotCyrillic {
+			result, err := regenerateWordCardDefinition(ctx, db.GetConnection(), wordRepo, aiService, cfg.Learning, g.g.wordCard.ID)
+			if err != nil {
+				fmt.Printf("ERROR regenerate definition_ru word_card_id=%d lemma=%q: %v\n", g.g.wordCard.ID, g.g.wordCard.Word, err)
+				regeneratedDefinitionFailed++
+				continue
+			}
+			fmt.Printf("REGENERATED_DEFINITION word_card_id=%d lemma=%q definition_ru=%q\n", g.g.wordCard.ID, result.Lemma, result.DefinitionRU)
+			regeneratedDefinition++
+			continue
+		}
 		if err := requeueWordCard(ctx, db.GetConnection(), g.g.wordCard.ID, shouldNullDefinitionRU(g.g.wordCard, cfg.Learning)); err != nil {
 			fmt.Printf("ERROR requeue word_card_id=%d lemma=%q: %v\n", g.g.wordCard.ID, g.g.wordCard.Word, err)
 			continue
@@ -201,7 +225,7 @@ func runCLI() int {
 			resetTTS++
 		}
 	}
-	fmt.Printf("Done. requeued_word_cards=%d deleted_duplicate_training_cards=%d reset_tts=%d\n", requeued, deletedDuplicates, resetTTS)
+	fmt.Printf("Done. requeued_word_cards=%d regenerated_definition=%d regen_definition_failed=%d deleted_duplicate_training_cards=%d reset_tts=%d\n", requeued, regeneratedDefinition, regeneratedDefinitionFailed, deletedDuplicates, resetTTS)
 	return 0
 }
 
@@ -357,6 +381,53 @@ func deleteTrainingCardByID(ctx context.Context, conn *sql.DB, trainingCardID in
 	return err
 }
 
+func regenerateWordCardDefinition(
+	ctx context.Context,
+	conn *sql.DB,
+	wordRepo *repository.WordRepository,
+	aiService *ai.Service,
+	learning config.LearningConfig,
+	wordCardID int64,
+) (definitionRegenerationResult, error) {
+	out := definitionRegenerationResult{}
+	wordCard, err := wordRepo.GetWordCardByID(wordCardID)
+	if err != nil {
+		return out, fmt.Errorf("load word card: %w", err)
+	}
+	if wordCard == nil {
+		return out, fmt.Errorf("word card not found")
+	}
+
+	response, err := aiService.GenerateResponse(ctx, wordCard.Word)
+	if err != nil {
+		return out, fmt.Errorf("llm generate response: %w", err)
+	}
+
+	var wordInfo models.WordInfoResponse
+	if err := json.Unmarshal([]byte(response), &wordInfo); err != nil {
+		return out, fmt.Errorf("parse llm json: %w", err)
+	}
+	models.SyncWordInfoResponseNeutralAliases(&wordInfo)
+	if wordInfo.Error.IsTrue() {
+		return out, fmt.Errorf("llm returned error: %s", wordInfo.Error.Message)
+	}
+
+	definitionRU := strings.TrimSpace(wordInfo.DefinitionRU)
+	if !isDefinitionForLearningValid(definitionRU, learning) {
+		return out, fmt.Errorf("llm returned invalid definition_native for pair %s", learning.Pair)
+	}
+
+	if _, err := conn.ExecContext(ctx, `UPDATE word_cards
+		SET definition_ru = ?, updated_at = CURRENT_TIMESTAMP
+		WHERE id = ?`, definitionRU, wordCardID); err != nil {
+		return out, fmt.Errorf("update definition_ru: %w", err)
+	}
+
+	out.Lemma = wordCard.Word
+	out.DefinitionRU = definitionRU
+	return out, nil
+}
+
 func duplicateTrainingCardIDs(g group) ([]int64, string) {
 	seen := make(map[string]int, len(g.resp.Senses))
 	deleteIDs := make([]int64, 0)
@@ -384,6 +455,17 @@ func duplicateTrainingCardIDs(g group) ([]int64, string) {
 
 func normalizeDupField(v string) string {
 	return strings.ToLower(strings.Join(strings.Fields(strings.TrimSpace(v)), " "))
+}
+
+func isDefinitionForLearningValid(definition string, learning config.LearningConfig) bool {
+	definition = strings.TrimSpace(definition)
+	if definition == "" {
+		return false
+	}
+	if strings.EqualFold(learning.NativeLang, "ru") && strings.EqualFold(learning.TargetLang, "es") {
+		return service.ContainsCyrillic(definition)
+	}
+	return true
 }
 
 func loadInvalidTTS(conn *sql.DB, audioDir, onlyWord string) ([]invalidTTS, error) {
