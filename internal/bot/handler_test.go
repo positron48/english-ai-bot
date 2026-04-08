@@ -1044,7 +1044,7 @@ func TestHandleTrainCommand_TableDriven(t *testing.T) {
 			setupCards:     true,
 			telegramID:     902,
 			chatID:         11,
-			wantSubstrings: []string{"Начинаем тренировку", "Карточка", "ошибка", "карточек", "Попробуйте"},
+			wantSubstrings: []string{"Начинаем тренировку", "Карточка", "Выберите правильный вариант", "ошибка", "карточек", "Попробуйте"},
 		},
 	}
 	for _, tt := range tests {

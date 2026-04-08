@@ -181,7 +181,7 @@
                         <Icon name="warning" />
                       </button>
                       <button
-                        v-if="can('words.edit_all') && hasTTSError(word)"
+                        v-if="can('words.edit_all') && hasWordError(word)"
                         @click="regenerateWordTTSFromList(word)"
                         class="btn btn-sm btn-warning"
                         :disabled="Boolean(word.ttsActionLoading)"
@@ -1048,10 +1048,6 @@ const onFilterChange = () => {
 
 const hasWordError = (word: WordCard): boolean => {
   return Boolean(word.ProcessingError) || word.TTSState === 'failed_retryable' || word.TTSState === 'failed_terminal'
-}
-
-const hasTTSError = (word: WordCard): boolean => {
-  return word.TTSState === 'failed_retryable' || word.TTSState === 'failed_terminal'
 }
 
 const regenerateWordTTSFromList = async (word: WordCard) => {
