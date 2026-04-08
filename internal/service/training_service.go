@@ -439,7 +439,9 @@ func spellPrefixAndLetters(displayWord string) (prefix string, letters []string)
 func shuffleLetters(word string) []string {
 	var runes []rune
 	for _, r := range word {
-		if unicode.IsLetter(r) || r == ' ' {
+		// Keep only characters user can compose in spell mode.
+		// Hyphens are part of many words ("so-called"), and must be typeable as a separate tile.
+		if unicode.IsLetter(r) || r == ' ' || r == '-' {
 			runes = append(runes, r)
 		}
 	}

@@ -117,3 +117,26 @@ func Test_shuffleLetters(t *testing.T) {
 		t.Errorf("shuffleLetters(\"\") = %v, want nil", got)
 	}
 }
+
+func Test_shuffleLetters_keepsHyphen(t *testing.T) {
+	// Hyphenated words must be spellable in spell mode.
+	word := "so-called"
+	letters := shuffleLetters(word)
+	if len(letters) != 9 { // 8 letters + 1 hyphen
+		t.Fatalf("shuffleLetters(%q) len = %d, want 9", word, len(letters))
+	}
+	counts := make(map[rune]int)
+	for _, r := range word {
+		counts[r]++
+	}
+	for _, s := range letters {
+		for _, r := range s {
+			counts[r]--
+		}
+	}
+	for r, c := range counts {
+		if c != 0 {
+			t.Fatalf("shuffleLetters(%q): rune %q count diff %d", word, r, c)
+		}
+	}
+}
