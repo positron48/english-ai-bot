@@ -43,6 +43,8 @@ Return ONLY this JSON object (no markdown, no comments):
   "input_word": string,
   "lemma": string,
   "pos": string,
+  "noun_gender": string,
+  "opposite_gender_word": string,
   "transcription": string,
   "definition_native": string,
   "examples": [
@@ -93,6 +95,13 @@ Set error = true only if:
 
 When error = false:
 - lemma/pos/transcription/definition_native → non-empty.
+- noun_gender:
+  - for pos="noun": MUST be one of "m", "f", "mf", "n";
+  - for non-nouns: return empty string "".
+- opposite_gender_word:
+  - for Spanish nouns: return opposite-gender form if it exists (e.g., hermano -> hermana);
+  - if no natural opposite form exists, return empty string "";
+  - for non-nouns: return empty string "".
 - examples → 2 or 3 items.
 - hint = "".
 - include verb_forms only if pos = verb.

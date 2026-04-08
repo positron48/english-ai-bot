@@ -4,26 +4,27 @@ import "time"
 
 // TrainingCard represents a training card with one sense of a word
 type TrainingCard struct {
-	ID            int64     `json:"id"`
-	WordCardID    int64     `json:"word_card_id"`
-	WordEN        string    `json:"word_en"` // DB column `word_en` (target language lemma for this sense)
-	WordTarget    string    `json:"word_target"`
-	Transcription string    `json:"transcription"`
-	SenseIndex    int       `json:"sense_index"`
-	WordRU        string    `json:"word_ru"`
-	WordNative    string    `json:"word_native"`
-	MeaningEN     string    `json:"meaning_en"`
-	MeaningTarget string    `json:"meaning_target"`
-	ExampleEN     string    `json:"example_en"`
-	ExampleTarget string    `json:"example_target"`
-	ExampleRU     string    `json:"example_ru"`
-	ExampleNative string    `json:"example_native"`
-	DistractorsRU string    `json:"distractors_ru"` // JSON array
-	DistractorsEN string    `json:"distractors_en"` // JSON array
-	Hint          string    `json:"hint"`
-	POS           *string   `json:"pos,omitempty"`          // Part of speech
-	DisplayWord   *string   `json:"display_word,omitempty"` // Display form (for RU→EN direction)
-	CreatedAt     time.Time `json:"created_at"`
+	ID            int64          `json:"id"`
+	WordCardID    int64          `json:"word_card_id"`
+	WordEN        string         `json:"word_en"` // DB column `word_en` (target language lemma for this sense)
+	WordTarget    string         `json:"word_target"`
+	Transcription string         `json:"transcription"`
+	SenseIndex    int            `json:"sense_index"`
+	WordRU        string         `json:"word_ru"`
+	WordNative    string         `json:"word_native"`
+	MeaningEN     string         `json:"meaning_en"`
+	MeaningTarget string         `json:"meaning_target"`
+	ExampleEN     string         `json:"example_en"`
+	ExampleTarget string         `json:"example_target"`
+	ExampleRU     string         `json:"example_ru"`
+	ExampleNative string         `json:"example_native"`
+	DistractorsRU string         `json:"distractors_ru"` // JSON array
+	DistractorsEN string         `json:"distractors_en"` // JSON array
+	Hint          string         `json:"hint"`
+	POS           *string        `json:"pos,omitempty"`          // Part of speech
+	DisplayWord   *string        `json:"display_word,omitempty"` // Display form (for RU→EN direction)
+	Morph         *WordMorphInfo `json:"morph,omitempty"`        // Compact morphology payload (noun gender/article, verb forms)
+	CreatedAt     time.Time      `json:"created_at"`
 }
 
 // CardDirection represents the direction of a card (RU→EN or EN→RU)
@@ -151,7 +152,7 @@ type TrainingCardResponse struct {
 	Error         string              `json:"error,omitempty"` // Error message if word is not English
 	WordEN        string              `json:"word_en"`         // Lemma/base form (for backward compatibility)
 	WordTarget    string              `json:"word_target"`
-	Lemma         string              `json:"lemma"`           // Base form (lemma)
+	Lemma         string              `json:"lemma"` // Base form (lemma)
 	Transcription string              `json:"transcription"`
 	Senses        []TrainingCardSense `json:"senses"`
 }
@@ -165,11 +166,11 @@ type UserCardWithTraining struct {
 // SpellChallenge is a "compose the word from letters" challenge for a word the user knows reasonably well
 type SpellChallenge struct {
 	WordCardID         int64
-	DisplayWord        string // Correct target-language word (e.g. "spy" or "to spy")
-	WordTarget         string // Neutral alias for DisplayWord (same value after sync)
-	WordRU             string // Prompt: native-language translation
-	WordNative         string // Neutral alias for WordRU (same value after sync)
-	Prefix             string // Non-editable prefix, e.g. "to " for verbs; user composes the rest
+	DisplayWord        string   // Correct target-language word (e.g. "spy" or "to spy")
+	WordTarget         string   // Neutral alias for DisplayWord (same value after sync)
+	WordRU             string   // Prompt: native-language translation
+	WordNative         string   // Neutral alias for WordRU (same value after sync)
+	Prefix             string   // Non-editable prefix, e.g. "to " for verbs; user composes the rest
 	ShuffledLetters    []string // Letters to arrange (only the part after Prefix for "to X" verbs)
 	ReplacedUserCardID int64
 }

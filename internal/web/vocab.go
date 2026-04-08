@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 
 	"go.uber.org/zap"
@@ -880,21 +881,38 @@ func (r *Router) handleVocabWordCards(w http.ResponseWriter, req *http.Request, 
 		}
 	}
 
-	// Get word card info (pos and verb_forms_json) for verb forms display
+	// Get word card info (pos, noun_gender, opposite_gender_word, verb_forms_json) for morphology display
 	var pos sql.NullString
+	var nounGender sql.NullString
+	var oppositeGenderWord sql.NullString
 	var verbFormsJSON sql.NullString
-	err = r.db.QueryRow(`SELECT pos, verb_forms_json FROM word_cards WHERE id = ?`, wordCardID).Scan(&pos, &verbFormsJSON)
+	err = r.db.QueryRow(`SELECT pos, noun_gender, opposite_gender_word, verb_forms_json FROM word_cards WHERE id = ?`, wordCardID).Scan(&pos, &nounGender, &oppositeGenderWord, &verbFormsJSON)
 	if err != nil && err != sql.ErrNoRows {
 		r.logger.Warn("failed to get word card info for verb forms", zap.Error(err))
 	}
 
 	// Parse verb forms if present
 	var verbForms map[string]interface{}
-	if pos.Valid && pos.String == "verb" && verbFormsJSON.Valid && verbFormsJSON.String != "" {
+	if pos.Valid && models.IsVerbPOS(pos.String) && verbFormsJSON.Valid && verbFormsJSON.String != "" {
 		if err := json.Unmarshal([]byte(verbFormsJSON.String), &verbForms); err != nil {
 			r.logger.Warn("failed to parse verb forms JSON", zap.Error(err))
 		}
 	}
+	// Build compact morph object for UI cards/training.
+	var wc models.WordCard
+	if pos.Valid {
+		wc.POS = &pos.String
+	}
+	if nounGender.Valid {
+		wc.NounGender = &nounGender.String
+	}
+	if oppositeGenderWord.Valid {
+		wc.OppositeGenderWord = &oppositeGenderWord.String
+	}
+	if verbFormsJSON.Valid {
+		wc.VerbFormsJSON = &verbFormsJSON.String
+	}
+	morph := buildCompactMorphFromWordCard(r.config.Learning.TargetLang, &wc, wc.POS)
 
 	// Check if word has user_cards and is marked as known
 	var hasUserCards bool
@@ -929,6 +947,15 @@ func (r *Router) handleVocabWordCards(w http.ResponseWriter, req *http.Request, 
 	}
 	if pos.Valid {
 		response["pos"] = pos.String
+	}
+	if nounGender.Valid {
+		response["noun_gender"] = nounGender.String
+	}
+	if oppositeGenderWord.Valid {
+		response["opposite_gender_word"] = oppositeGenderWord.String
+	}
+	if morph != nil {
+		response["morph"] = morph
 	}
 
 	// Return JSON response

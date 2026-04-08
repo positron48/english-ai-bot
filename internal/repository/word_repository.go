@@ -36,7 +36,7 @@ func (r *WordRepository) GetWordCard(word string) (*models.WordCard, error) {
 
 // GetWordCardByID retrieves a word card by ID
 func (r *WordRepository) GetWordCardByID(id int64) (*models.WordCard, error) {
-	query := `SELECT id, word, definition, pos, transcription, definition_ru, 
+	query := `SELECT id, word, definition, pos, noun_gender, opposite_gender_word, transcription, definition_ru, 
 			  examples_json, verb_forms_json, display_en, 
 			  COALESCE(CAST(processed_at AS TEXT), '') as processed_at,
 			  COALESCE(processing_error, '') as processing_error,
@@ -47,13 +47,15 @@ func (r *WordRepository) GetWordCardByID(id int64) (*models.WordCard, error) {
 
 	var card models.WordCard
 	var createdAt, updatedAt, processedAtStr, processingErrorStr string
-	var pos, transcription, definitionRU, examplesJSON, verbFormsJSON, displayEN sql.NullString
+	var pos, nounGender, oppositeGenderWord, transcription, definitionRU, examplesJSON, verbFormsJSON, displayEN sql.NullString
 
 	err := r.db.QueryRow(query, id).Scan(
 		&card.ID,
 		&card.Word,
 		&card.Definition,
 		&pos,
+		&nounGender,
+		&oppositeGenderWord,
 		&transcription,
 		&definitionRU,
 		&examplesJSON,
@@ -77,6 +79,12 @@ func (r *WordRepository) GetWordCardByID(id int64) (*models.WordCard, error) {
 
 	if pos.Valid {
 		card.POS = &pos.String
+	}
+	if nounGender.Valid {
+		card.NounGender = &nounGender.String
+	}
+	if oppositeGenderWord.Valid {
+		card.OppositeGenderWord = &oppositeGenderWord.String
 	}
 	if transcription.Valid {
 		card.Transcription = &transcription.String
@@ -108,7 +116,7 @@ func (r *WordRepository) GetWordCardByID(id int64) (*models.WordCard, error) {
 
 // GetWordCardByLemma retrieves a word card by lemma (base form)
 func (r *WordRepository) GetWordCardByLemma(lemma string) (*models.WordCard, error) {
-	query := `SELECT id, word, definition, pos, transcription, definition_ru, 
+	query := `SELECT id, word, definition, pos, noun_gender, opposite_gender_word, transcription, definition_ru, 
 			  examples_json, verb_forms_json, display_en,
 			  COALESCE(CAST(processed_at AS TEXT), '') as processed_at,
 			  COALESCE(processing_error, '') as processing_error,
@@ -119,13 +127,15 @@ func (r *WordRepository) GetWordCardByLemma(lemma string) (*models.WordCard, err
 
 	var card models.WordCard
 	var createdAt, updatedAt, processedAtStr, processingErrorStr string
-	var pos, transcription, definitionRU, examplesJSON, verbFormsJSON, displayEN sql.NullString
+	var pos, nounGender, oppositeGenderWord, transcription, definitionRU, examplesJSON, verbFormsJSON, displayEN sql.NullString
 
 	err := r.db.QueryRow(query, lemma).Scan(
 		&card.ID,
 		&card.Word,
 		&card.Definition,
 		&pos,
+		&nounGender,
+		&oppositeGenderWord,
 		&transcription,
 		&definitionRU,
 		&examplesJSON,
@@ -149,6 +159,12 @@ func (r *WordRepository) GetWordCardByLemma(lemma string) (*models.WordCard, err
 
 	if pos.Valid {
 		card.POS = &pos.String
+	}
+	if nounGender.Valid {
+		card.NounGender = &nounGender.String
+	}
+	if oppositeGenderWord.Valid {
+		card.OppositeGenderWord = &oppositeGenderWord.String
 	}
 	if transcription.Valid {
 		card.Transcription = &transcription.String
@@ -203,12 +219,14 @@ func (r *WordRepository) UpsertWordCardLemma(card *models.WordCard) (int64, erro
 	models.NormalizeWordCardLegacyBeforeWrite(card)
 
 	query := `INSERT INTO word_cards (
-		word, definition, pos, transcription, definition_ru, 
+		word, definition, pos, noun_gender, opposite_gender_word, transcription, definition_ru, 
 		examples_json, verb_forms_json, display_en, updated_at
-	) VALUES (?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+	) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
 	ON CONFLICT(word) DO UPDATE SET 
 		definition = COALESCE(excluded.definition, word_cards.definition),
 		pos = COALESCE(excluded.pos, word_cards.pos),
+		noun_gender = COALESCE(excluded.noun_gender, word_cards.noun_gender),
+		opposite_gender_word = COALESCE(excluded.opposite_gender_word, word_cards.opposite_gender_word),
 		transcription = COALESCE(excluded.transcription, word_cards.transcription),
 		definition_ru = COALESCE(excluded.definition_ru, word_cards.definition_ru),
 		examples_json = COALESCE(excluded.examples_json, word_cards.examples_json),
@@ -220,6 +238,8 @@ func (r *WordRepository) UpsertWordCardLemma(card *models.WordCard) (int64, erro
 		card.Word,
 		card.Definition,
 		card.POS,
+		card.NounGender,
+		card.OppositeGenderWord,
 		card.Transcription,
 		card.DefinitionRU,
 		card.ExamplesJSON,
@@ -473,7 +493,7 @@ func (r *WordRepository) UpdateWordCard(card *models.WordCard) error {
 
 	query := `UPDATE word_cards 
 			  SET word = ?, definition = ?, pos = ?, transcription = ?, 
-			      definition_ru = ?, examples_json = ?, verb_forms_json = ?, 
+			      noun_gender = ?, opposite_gender_word = ?, definition_ru = ?, examples_json = ?, verb_forms_json = ?, 
 			      display_en = ?, updated_at = CURRENT_TIMESTAMP
 			  WHERE id = ?`
 
@@ -482,6 +502,8 @@ func (r *WordRepository) UpdateWordCard(card *models.WordCard) error {
 		card.Definition,
 		card.POS,
 		card.Transcription,
+		card.NounGender,
+		card.OppositeGenderWord,
 		card.DefinitionRU,
 		card.ExamplesJSON,
 		card.VerbFormsJSON,
@@ -516,6 +538,8 @@ func (r *WordRepository) ListWordCardsAdmin(filterUserID *int64, onlyWithErrors 
 	// Use LEFT JOIN with GROUP BY to check for training cards - more reliable than subquery
 	query := `SELECT wc.id, wc.word, wc.definition,
 			  COALESCE(wc.pos, '') as pos,
+			  COALESCE(wc.noun_gender, '') as noun_gender,
+			  COALESCE(wc.opposite_gender_word, '') as opposite_gender_word,
 			  COALESCE(wc.transcription, '') as transcription,
 			  COALESCE(wc.definition_ru, '') as definition_ru,
 			  COALESCE(wc.examples_json, '') as examples_json,
@@ -574,7 +598,7 @@ func (r *WordRepository) ListWordCardsAdmin(filterUserID *int64, onlyWithErrors 
 		query += " WHERE " + strings.Join(conditions, " AND ")
 	}
 
-	query += " GROUP BY wc.id, wc.word, wc.definition, wc.pos, wc.transcription, wc.definition_ru, wc.examples_json, wc.verb_forms_json, wc.display_en, wc.processed_at, wc.processing_error, tts.state, tts.last_error_message, tts.audio_rel_path, wc.created_at, wc.updated_at"
+	query += " GROUP BY wc.id, wc.word, wc.definition, wc.pos, wc.noun_gender, wc.opposite_gender_word, wc.transcription, wc.definition_ru, wc.examples_json, wc.verb_forms_json, wc.display_en, wc.processed_at, wc.processing_error, tts.state, tts.last_error_message, tts.audio_rel_path, wc.created_at, wc.updated_at"
 
 	// Build ORDER BY clause
 	orderBy := "wc.created_at"
@@ -617,11 +641,11 @@ func (r *WordRepository) ListWordCardsAdmin(filterUserID *int64, onlyWithErrors 
 	for rows.Next() {
 		var item WordCardAdminItem
 		var createdAt, updatedAt, processedAtStr, processingErrorStr, ttsStateStr, ttsErrorStr, ttsAudioRelPath string
-		var posStr, transcriptionStr, definitionRUStr, examplesJSONStr, verbFormsJSONStr, displayENStr string
+		var posStr, nounGenderStr, oppositeGenderWordStr, transcriptionStr, definitionRUStr, examplesJSONStr, verbFormsJSONStr, displayENStr string
 		var hasTrainingCards int
 
 		err := rows.Scan(&item.ID, &item.Word, &item.Definition,
-			&posStr, &transcriptionStr, &definitionRUStr, &examplesJSONStr, &verbFormsJSONStr, &displayENStr,
+			&posStr, &nounGenderStr, &oppositeGenderWordStr, &transcriptionStr, &definitionRUStr, &examplesJSONStr, &verbFormsJSONStr, &displayENStr,
 			&processedAtStr, &processingErrorStr,
 			&ttsStateStr, &ttsErrorStr, &ttsAudioRelPath,
 			&createdAt, &updatedAt, &hasTrainingCards)
@@ -632,6 +656,12 @@ func (r *WordRepository) ListWordCardsAdmin(filterUserID *int64, onlyWithErrors 
 		// Set optional fields
 		if posStr != "" {
 			item.POS = &posStr
+		}
+		if nounGenderStr != "" {
+			item.NounGender = &nounGenderStr
+		}
+		if oppositeGenderWordStr != "" {
+			item.OppositeGenderWord = &oppositeGenderWordStr
 		}
 		if transcriptionStr != "" {
 			item.Transcription = &transcriptionStr

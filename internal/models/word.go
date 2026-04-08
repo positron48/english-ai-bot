@@ -15,6 +15,8 @@ func (w *WordInfoResponse) UnmarshalJSON(data []byte) error {
 		InputWord        string             `json:"input_word"`
 		Lemma            string             `json:"lemma"`
 		POS              string             `json:"pos"`
+		NounGender       string             `json:"noun_gender"`
+		OppositeGender   string             `json:"opposite_gender_word"`
 		Transcription    string             `json:"transcription"`
 		DefinitionRU     string             `json:"definition_ru"`
 		DefinitionNative string             `json:"definition_native"`
@@ -30,6 +32,8 @@ func (w *WordInfoResponse) UnmarshalJSON(data []byte) error {
 	w.InputWord = x.InputWord
 	w.Lemma = x.Lemma
 	w.POS = x.POS
+	w.NounGender = x.NounGender
+	w.OppositeGenderWord = x.OppositeGender
 	w.Transcription = x.Transcription
 	w.DefinitionRU = firstNonEmpty(x.DefinitionRU, x.DefinitionNative)
 	w.DefinitionNative = firstNonEmpty(x.DefinitionNative, x.DefinitionRU)
@@ -41,22 +45,24 @@ func (w *WordInfoResponse) UnmarshalJSON(data []byte) error {
 
 // WordCard represents a vocabulary card (lemma) stored in the database
 type WordCard struct {
-	ID              int64
-	Word            string     // Lemma (base form) — DB column `word` (target language)
-	WordTarget      string     `json:"word_target"` // Neutral alias for Word (same value after SyncWordCardNeutralAliases)
-	Definition      string     // Legacy field, kept for compatibility
-	POS             *string    // Part of speech
-	Transcription   *string    // IPA transcription
-	DefinitionRU    *string    // Russian definition — DB column `definition_ru`
-	DefinitionNative *string   `json:"definition_native,omitempty"` // Neutral alias; shares pointer with DefinitionRU after sync
-	ExamplesJSON    *string    // JSON array of examples
-	VerbFormsJSON   *string    // JSON object with verb forms (v1, v2, v3, etc.)
-	DisplayEN       *string    // Display form (e.g., "spy" or "to spy" for verbs) — DB `display_en`
-	DisplayTarget   *string    `json:"display_target,omitempty"` // Neutral alias; shares pointer with DisplayEN after sync
-	ProcessedAt     *time.Time // NULL if not processed yet, set when processing completes (success or error)
-	ProcessingError *string    // NULL if no error, contains error message if processing failed
-	CreatedAt       time.Time
-	UpdatedAt       time.Time
+	ID                 int64
+	Word               string     // Lemma (base form) — DB column `word` (target language)
+	WordTarget         string     `json:"word_target"` // Neutral alias for Word (same value after SyncWordCardNeutralAliases)
+	Definition         string     // Legacy field, kept for compatibility
+	POS                *string    // Part of speech
+	NounGender         *string    `json:"noun_gender,omitempty"`          // Noun gender (mainly for Spanish nouns): m|f|mf|n
+	OppositeGenderWord *string    `json:"opposite_gender_word,omitempty"` // Opposite-gender noun form (e.g. hermano -> hermana), if exists
+	Transcription      *string    // IPA transcription
+	DefinitionRU       *string    // Russian definition — DB column `definition_ru`
+	DefinitionNative   *string    `json:"definition_native,omitempty"` // Neutral alias; shares pointer with DefinitionRU after sync
+	ExamplesJSON       *string    // JSON array of examples
+	VerbFormsJSON      *string    // JSON object with verb forms (v1, v2, v3, etc.)
+	DisplayEN          *string    // Display form (e.g., "spy" or "to spy" for verbs) — DB `display_en`
+	DisplayTarget      *string    `json:"display_target,omitempty"` // Neutral alias; shares pointer with DisplayEN after sync
+	ProcessedAt        *time.Time // NULL if not processed yet, set when processing completes (success or error)
+	ProcessingError    *string    // NULL if no error, contains error message if processing failed
+	CreatedAt          time.Time
+	UpdatedAt          time.Time
 }
 
 // WordRequestHistory represents a history entry of word requests
@@ -124,6 +130,15 @@ type WordInfoVerbForms struct {
 	ThirdPerson string `json:"third_person,omitempty"` // Third person singular
 }
 
+// WordMorphInfo is a compact morphology payload for UI cards/training.
+type WordMorphInfo struct {
+	POS                string             `json:"pos,omitempty"`
+	NounGender         string             `json:"noun_gender,omitempty"`
+	Article            string             `json:"article,omitempty"`
+	OppositeGenderWord string             `json:"opposite_gender_word,omitempty"`
+	VerbForms          *WordInfoVerbForms `json:"verb_forms,omitempty"`
+}
+
 // ErrorField represents error field that can be either bool or string
 // This allows parsing both "error": true and "error": "some message"
 type ErrorField struct {
@@ -175,14 +190,16 @@ func (e *ErrorField) IsTrue() bool {
 
 // WordInfoResponse represents LLM response for word information (JSON format)
 type WordInfoResponse struct {
-	Error            ErrorField         `json:"error,omitempty"`      // Error if word is not English/proper noun/etc (can be bool or string)
-	Hint             string             `json:"hint,omitempty"`       // User-friendly hint/suggestion when word is not found
-	InputWord        string             `json:"input_word"`           // Word as entered by user
-	Lemma            string             `json:"lemma"`                // Base form (lemma)
-	POS              string             `json:"pos"`                  // Part of speech
-	Transcription    string             `json:"transcription"`        // IPA transcription
-	DefinitionRU     string             `json:"definition_ru"`        // Russian definition
-	DefinitionNative string             `json:"definition_native"`    // Neutral alias (filled from definition_ru when missing)
-	Examples         []WordInfoExample  `json:"examples"`             // 2-3 examples
-	VerbForms        *WordInfoVerbForms `json:"verb_forms,omitempty"` // Verb forms (if verb)
+	Error              ErrorField         `json:"error,omitempty"`                // Error if word is not English/proper noun/etc (can be bool or string)
+	Hint               string             `json:"hint,omitempty"`                 // User-friendly hint/suggestion when word is not found
+	InputWord          string             `json:"input_word"`                     // Word as entered by user
+	Lemma              string             `json:"lemma"`                          // Base form (lemma)
+	POS                string             `json:"pos"`                            // Part of speech
+	NounGender         string             `json:"noun_gender,omitempty"`          // Noun gender (mainly for Spanish nouns)
+	OppositeGenderWord string             `json:"opposite_gender_word,omitempty"` // Opposite-gender noun form (if exists)
+	Transcription      string             `json:"transcription"`                  // IPA transcription
+	DefinitionRU       string             `json:"definition_ru"`                  // Russian definition
+	DefinitionNative   string             `json:"definition_native"`              // Neutral alias (filled from definition_ru when missing)
+	Examples           []WordInfoExample  `json:"examples"`                       // 2-3 examples
+	VerbForms          *WordInfoVerbForms `json:"verb_forms,omitempty"`           // Verb forms (if verb)
 }

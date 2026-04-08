@@ -155,6 +155,7 @@
               </div>
             </div>
             <div class="word-summary">
+              <span v-if="selectedMorphText">{{ selectedMorphText }}</span>
               <span v-if="selectedWordMasteringScore !== null" class="mastering-score-inline" :title="t('vocab.scoreLabel') + ' 0–100'">
                 <span class="mastery-dot-inline" :style="{ backgroundColor: masteryColor(selectedWordMasteringScore) }" />
                 {{ selectedWordMasteringScore }}
@@ -369,6 +370,20 @@ interface CardDetail {
   review_count: number
 }
 
+interface MorphVerbForms {
+  v1?: string
+  v2?: string
+  v3?: string
+}
+
+interface MorphInfo {
+  pos?: string
+  noun_gender?: string
+  article?: string
+  opposite_gender_word?: string
+  verb_forms?: MorphVerbForms
+}
+
 const words = ref<VocabWord[]>([])
 const loading = ref(true)
 const searchQuery = ref('')
@@ -398,6 +413,8 @@ const cards = ref<CardDetail[]>([])
 const cardsLoading = ref(false)
 const verbForms = ref<any>(null)
 const wordPOS = ref<string | null>(null)
+const nounGender = ref<string | null>(null)
+const wordMorph = ref<MorphInfo | null>(null)
 const hasUserCards = ref(false)
 const isKnown = ref(false)
 const processingAction = ref(false)
@@ -643,10 +660,12 @@ const showCards = async (lemma: string) => {
   selectedPronunciationURL.value = null
   
   try {
-    const data: { lemma: string; word_card_id: number; cards: CardDetail[]; verb_forms?: any; pos?: string; has_user_cards?: boolean; is_known?: boolean } = await apiClient.request(`/api/vocab/${lemma}/cards`)
+    const data: { lemma: string; word_card_id: number; cards: CardDetail[]; verb_forms?: any; pos?: string; noun_gender?: string; opposite_gender_word?: string; morph?: MorphInfo; has_user_cards?: boolean; is_known?: boolean } = await apiClient.request(`/api/vocab/${lemma}/cards`)
     cards.value = data.cards || []
     verbForms.value = data.verb_forms || null
     wordPOS.value = data.pos || null
+    nounGender.value = data.noun_gender || null
+    wordMorph.value = data.morph || null
     hasUserCards.value = data.has_user_cards || false
     isKnown.value = data.is_known || false
     
@@ -687,6 +706,8 @@ const closeCardsModal = () => {
   cards.value = []
   verbForms.value = null
   wordPOS.value = null
+  nounGender.value = null
+  wordMorph.value = null
   hasUserCards.value = false
   isKnown.value = false
 }
@@ -812,6 +833,24 @@ const groupedCards = computed((): SenseGroup[] => {
         return 0
       })
     }))
+})
+
+const selectedMorphText = computed(() => {
+  if (wordMorph.value) {
+    const m = wordMorph.value
+    if (m.pos === 'noun' && m.noun_gender) {
+      const core = m.article ? `${m.article} • ${m.noun_gender}` : m.noun_gender
+      return m.opposite_gender_word ? `${core} (${m.opposite_gender_word})` : core
+    }
+    if (m.pos === 'verb' && m.verb_forms) {
+      const forms = [m.verb_forms.v1, m.verb_forms.v2, m.verb_forms.v3].filter(Boolean)
+      if (forms.length > 0) return forms.join(', ')
+    }
+  }
+  if (wordPOS.value === 'noun' && nounGender.value) {
+    return nounGender.value
+  }
+  return ''
 })
 
 const totalCards = computed(() => cards.value.length)

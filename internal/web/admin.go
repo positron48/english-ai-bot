@@ -1008,7 +1008,7 @@ func (r *Router) handleAdminWord(w http.ResponseWriter, req *http.Request) {
 	if req.Method == http.MethodPut {
 		// Update word card with all fields
 		contentType := req.Header.Get("Content-Type")
-		var word, definition, pos, transcription, definitionRU, examplesJSON, verbFormsJSON, displayEN string
+		var word, definition, pos, nounGender, oppositeGenderWord, transcription, definitionRU, examplesJSON, verbFormsJSON, displayEN string
 
 		if strings.Contains(contentType, "application/json") {
 			var updateData map[string]interface{}
@@ -1024,6 +1024,12 @@ func (r *Router) handleAdminWord(w http.ResponseWriter, req *http.Request) {
 			}
 			if val, ok := updateData["pos"].(string); ok {
 				pos = val
+			}
+			if val, ok := updateData["noun_gender"].(string); ok {
+				nounGender = val
+			}
+			if val, ok := updateData["opposite_gender_word"].(string); ok {
+				oppositeGenderWord = val
 			}
 			if val, ok := updateData["transcription"].(string); ok {
 				transcription = val
@@ -1048,6 +1054,8 @@ func (r *Router) handleAdminWord(w http.ResponseWriter, req *http.Request) {
 			word = req.FormValue("word")
 			definition = req.FormValue("definition")
 			pos = req.FormValue("pos")
+			nounGender = req.FormValue("noun_gender")
+			oppositeGenderWord = req.FormValue("opposite_gender_word")
 			transcription = req.FormValue("transcription")
 			definitionRU = req.FormValue("definition_ru")
 			examplesJSON = req.FormValue("examples_json")
@@ -1072,15 +1080,17 @@ func (r *Router) handleAdminWord(w http.ResponseWriter, req *http.Request) {
 			word = existingCard.Word
 		}
 		card := &models.WordCard{
-			ID:            wordCardID,
-			Word:          word,
-			Definition:    definition,
-			POS:           &pos,
-			Transcription: &transcription,
-			DefinitionRU:  &definitionRU,
-			ExamplesJSON:  &examplesJSON,
-			VerbFormsJSON: &verbFormsJSON,
-			DisplayEN:     &displayEN,
+			ID:                 wordCardID,
+			Word:               word,
+			Definition:         definition,
+			POS:                &pos,
+			NounGender:         &nounGender,
+			OppositeGenderWord: &oppositeGenderWord,
+			Transcription:      &transcription,
+			DefinitionRU:       &definitionRU,
+			ExamplesJSON:       &examplesJSON,
+			VerbFormsJSON:      &verbFormsJSON,
+			DisplayEN:          &displayEN,
 		}
 
 		// Set to nil if empty strings
@@ -1089,6 +1099,12 @@ func (r *Router) handleAdminWord(w http.ResponseWriter, req *http.Request) {
 		}
 		if transcription == "" {
 			card.Transcription = nil
+		}
+		if nounGender == "" {
+			card.NounGender = nil
+		}
+		if oppositeGenderWord == "" {
+			card.OppositeGenderWord = nil
 		}
 		if definitionRU == "" {
 			card.DefinitionRU = nil
@@ -1225,7 +1241,7 @@ func (r *Router) handleAdminWord(w http.ResponseWriter, req *http.Request) {
 
 		// Determine display_en (English verbs use "to ...", other targets keep bare infinitive)
 		displayEN := wordInfo.Lemma
-		if wordInfo.POS == "verb" && wordInfo.VerbForms != nil && wordInfo.VerbForms.V1 != "" {
+		if models.IsVerbPOS(wordInfo.POS) && wordInfo.VerbForms != nil && wordInfo.VerbForms.V1 != "" {
 			if strings.EqualFold(r.config.Learning.TargetLang, "en") {
 				displayEN = "to " + wordInfo.VerbForms.V1
 			} else {
@@ -1239,16 +1255,18 @@ func (r *Router) handleAdminWord(w http.ResponseWriter, req *http.Request) {
 		json.NewEncoder(w).Encode(map[string]interface{}{
 			"success": true,
 			"word_card": map[string]interface{}{
-				"word":              wordInfo.Lemma,
-				"word_target":       wordInfo.Lemma,
-				"pos":               wordInfo.POS,
-				"transcription":     wordInfo.Transcription,
-				"definition_ru":     wordInfo.DefinitionRU,
-				"definition_native": wordInfo.DefinitionNative,
-				"examples_json":     examplesJSON,
-				"verb_forms_json":   verbFormsJSON,
-				"display_en":        displayEN,
-				"display_target":    displayEN,
+				"word":                 wordInfo.Lemma,
+				"word_target":          wordInfo.Lemma,
+				"pos":                  wordInfo.POS,
+				"noun_gender":          wordInfo.NounGender,
+				"opposite_gender_word": wordInfo.OppositeGenderWord,
+				"transcription":        wordInfo.Transcription,
+				"definition_ru":        wordInfo.DefinitionRU,
+				"definition_native":    wordInfo.DefinitionNative,
+				"examples_json":        examplesJSON,
+				"verb_forms_json":      verbFormsJSON,
+				"display_en":           displayEN,
+				"display_target":       displayEN,
 			},
 		})
 		return

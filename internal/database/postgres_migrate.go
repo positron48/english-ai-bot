@@ -9,6 +9,8 @@ func (db *DB) migratePostgres() error {
 			word TEXT NOT NULL UNIQUE,
 			definition TEXT NOT NULL,
 			pos TEXT,
+			noun_gender TEXT,
+			opposite_gender_word TEXT,
 			transcription TEXT,
 			definition_ru TEXT,
 			examples_json TEXT,
@@ -270,6 +272,8 @@ func (db *DB) migratePostgres() error {
 			permission TEXT NOT NULL,
 			UNIQUE(category_id, permission)
 		)`,
+		`ALTER TABLE word_cards ADD COLUMN IF NOT EXISTS noun_gender TEXT`,
+		`ALTER TABLE word_cards ADD COLUMN IF NOT EXISTS opposite_gender_word TEXT`,
 		`INSERT INTO circuit_breaker_state (id) VALUES (1) ON CONFLICT (id) DO NOTHING`,
 		`INSERT INTO app_settings (key, value) VALUES ('hide_placement_test_button', 'false') ON CONFLICT (key) DO NOTHING`,
 	}

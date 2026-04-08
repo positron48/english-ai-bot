@@ -240,6 +240,59 @@ backfill-mastering: build-backfill-mastering
 	@echo ""
 	./bin/backfill_mastering
 
+build-backfill-noun-gender:
+	@mkdir -p bin
+	$(GO) build -o bin/backfill_noun_gender ./cmd/backfill_noun_gender
+	@echo "✅ Backfill tool built: bin/backfill_noun_gender"
+
+build-normalize-word-pos:
+	@mkdir -p bin
+	$(GO) build -o bin/normalize_word_pos ./cmd/normalize_word_pos
+	@echo "✅ POS normalization tool built: bin/normalize_word_pos"
+
+# Local Spanish profile backfill for noun_gender.
+# Imports vars from optional .env, then required .env.es.
+# Tunables: BATCH (default 100), LIMIT (default 0 = all).
+backfill-noun-gender-es-dry: build-backfill-noun-gender
+	@test -f .env.es || (echo "Нет .env.es — скопируйте env.example.es в .env.es и заполните секреты"; exit 1)
+	@set -e; \
+	set -a; [ -f .env ] && . ./.env; set +a; \
+	set -a && . ./.env.es && set +a; \
+	BATCH="$${BATCH:-100}"; \
+	LIMIT="$${LIMIT:-0}"; \
+	echo "Running DRY backfill_noun_gender with BATCH=$$BATCH LIMIT=$$LIMIT"; \
+	./bin/backfill_noun_gender -dry-run=true -batch "$$BATCH" -limit "$$LIMIT"
+
+backfill-noun-gender-es: build-backfill-noun-gender
+	@test -f .env.es || (echo "Нет .env.es — скопируйте env.example.es в .env.es и заполните секреты"; exit 1)
+	@set -e; \
+	set -a; [ -f .env ] && . ./.env; set +a; \
+	set -a && . ./.env.es && set +a; \
+	BATCH="$${BATCH:-100}"; \
+	LIMIT="$${LIMIT:-0}"; \
+	echo "Running WRITE backfill_noun_gender with BATCH=$$BATCH LIMIT=$$LIMIT"; \
+	./bin/backfill_noun_gender -dry-run=false -batch "$$BATCH" -limit "$$LIMIT"
+
+normalize-word-pos-es-dry: build-normalize-word-pos
+	@test -f .env.es || (echo "Нет .env.es — скопируйте env.example.es в .env.es и заполните секреты"; exit 1)
+	@set -e; \
+	set -a; [ -f .env ] && . ./.env; set +a; \
+	set -a && . ./.env.es && set +a; \
+	BATCH="$${BATCH:-200}"; \
+	LIMIT="$${LIMIT:-0}"; \
+	echo "Running DRY normalize_word_pos with BATCH=$$BATCH LIMIT=$$LIMIT"; \
+	./bin/normalize_word_pos -dry-run=true -batch "$$BATCH" -limit "$$LIMIT"
+
+normalize-word-pos-es: build-normalize-word-pos
+	@test -f .env.es || (echo "Нет .env.es — скопируйте env.example.es в .env.es и заполните секреты"; exit 1)
+	@set -e; \
+	set -a; [ -f .env ] && . ./.env; set +a; \
+	set -a && . ./.env.es && set +a; \
+	BATCH="$${BATCH:-200}"; \
+	LIMIT="$${LIMIT:-0}"; \
+	echo "Running WRITE normalize_word_pos with BATCH=$$BATCH LIMIT=$$LIMIT"; \
+	./bin/normalize_word_pos -dry-run=false -batch "$$BATCH" -limit "$$LIMIT"
+
 # Quick check: same as check but skips integration tests (step 5b). Use for fast feedback.
 check-quick: export CHECK_SKIP_INTEGRATION := 1
 check-quick: check
@@ -392,6 +445,9 @@ sync-spanish-word-sets:
 		--csv "resources/wordsets/spanish_word_freq_pos_ud_top6000.csv" \
 		--commit
 
+build-spanish-gender-lexicon:
+	@python3 scripts/build_spanish_gender_lexicon.py --download
+
 # Cleanup
 clean:
 	rm -rf bin/
@@ -458,6 +514,7 @@ help:
 	@echo "  make grammar-bundle-list - List course dirs -> bundle ids"
 	@echo "  make up-en          - Run bot+web with .env.en (+ optional .env), http :8184, DB english"
 	@echo "  make up-es          - Run second instance with .env.es (+ optional .env), http :8284, DB spanish"
+	@echo "  make build-spanish-gender-lexicon - Rebuild resources/wordsets/spanish_gender_lexicon.tsv from online source"
 	@echo "  make dev            - Run backend + frontend in development mode"
 	@echo "  make webapp-install - Install webapp dependencies"
 	@echo "  make webapp-dev     - Run webapp dev server only"
@@ -475,6 +532,10 @@ help:
 	@echo "  make migrate-words  - Migrate existing word cards to new structured format"
 	@echo "  make migrate-training-cards  - Migrate existing training cards with POS and display_word"
 	@echo "  make backfill-mastering  - One-time backfill of user_word_mastering from review_events"
+	@echo "  make backfill-noun-gender-es-dry - Dry-run noun_gender backfill with .env.es (+ optional .env)"
+	@echo "  make backfill-noun-gender-es - Write noun_gender backfill with .env.es (+ optional .env)"
+	@echo "  make normalize-word-pos-es-dry - Dry-run POS normalization with .env.es (+ optional .env)"
+	@echo "  make normalize-word-pos-es - Write POS normalization with .env.es (+ optional .env)"
 	@echo ""
 	@echo "Docker commands:"
 	@echo "  make docker-build   - Build Docker image"

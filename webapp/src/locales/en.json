@@ -87,6 +87,8 @@
     "typeModeEnabledDescription": "During training, sometimes show a task to type the {targetLang} word in a field (for words you know well).",
     "typeMasteringThreshold": "Min. mastery for type-the-word",
     "typeMasteringThresholdDescription": "Only words with this mastery level or higher can appear in the type-the-word task (e.g. 70 = well known).",
+    "hideMorphInTraining": "Hide extra forms in training",
+    "hideMorphInTrainingDescription": "Hide compact word-form hints (noun gender / verb forms) on training cards.",
     "seconds": "s",
     "notifications": "Notifications",
     "notificationFrequency": "Notification Frequency",

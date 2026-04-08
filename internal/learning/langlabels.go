@@ -69,3 +69,23 @@ func TargetLangNameEN(code string) string {
 		return strings.ToLower(normalizeTargetLangCode(code))
 	}
 }
+
+// TargetLangNameES returns a Spanish name for common language codes (for UI text in Spanish).
+func TargetLangNameES(code string) string {
+	switch normalizeTargetLangCode(code) {
+	case "en":
+		return "inglés"
+	case "es":
+		return "español"
+	case "de":
+		return "alemán"
+	case "fr":
+		return "francés"
+	case "it":
+		return "italiano"
+	case "pt":
+		return "portugués"
+	default:
+		return strings.ToLower(normalizeTargetLangCode(code))
+	}
+}

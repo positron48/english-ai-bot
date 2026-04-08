@@ -73,13 +73,14 @@ type WordSetWordInfo struct {
 	DisplayTarget string            `json:"display_target"`
 	Status        WordSetWordStatus `json:"status"`
 	// Data from training card with preferred_pos (if available)
-	Transcription *string `json:"transcription,omitempty"`
-	WordRU        *string `json:"word_ru,omitempty"`
-	WordNative    *string `json:"word_native,omitempty"`
-	MeaningEN     *string `json:"meaning_en,omitempty"`
-	MeaningTarget *string `json:"meaning_target,omitempty"`
-	ExampleEN     *string `json:"example_en,omitempty"`
-	ExampleTarget *string `json:"example_target,omitempty"`
-	ExampleRU     *string `json:"example_ru,omitempty"`
-	ExampleNative *string `json:"example_native,omitempty"`
+	Transcription *string        `json:"transcription,omitempty"`
+	WordRU        *string        `json:"word_ru,omitempty"`
+	WordNative    *string        `json:"word_native,omitempty"`
+	MeaningEN     *string        `json:"meaning_en,omitempty"`
+	MeaningTarget *string        `json:"meaning_target,omitempty"`
+	ExampleEN     *string        `json:"example_en,omitempty"`
+	ExampleTarget *string        `json:"example_target,omitempty"`
+	ExampleRU     *string        `json:"example_ru,omitempty"`
+	ExampleNative *string        `json:"example_native,omitempty"`
+	Morph         *WordMorphInfo `json:"morph,omitempty"` // Compact morphology payload
 }

@@ -87,6 +87,8 @@
     "typeModeEnabledDescription": "В тренировке иногда показывать задание ввести слово изучаемого языка в поле ({targetLang}, для хорошо изученных слов).",
     "typeMasteringThreshold": "Порог освоения для ввода слова",
     "typeMasteringThresholdDescription": "Только слова с таким уровнем освоения и выше могут попасть в задание «введите слово» (например 70 = хорошо известные).",
+    "hideMorphInTraining": "Скрывать доп. формы в тренировке",
+    "hideMorphInTrainingDescription": "Скрывать компактные подсказки по форме слова (род/формы глагола) на карточке тренировки.",
     "seconds": "сек",
     "notifications": "Уведомления",
     "notificationFrequency": "Частота уведомлений",

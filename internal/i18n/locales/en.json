@@ -23,5 +23,9 @@
   },
   "messages": {
     "notificationSettingsUpdated": "Notification settings updated successfully"
+  },
+  "training": {
+    "translateTo": "Translate to %s: <strong>%s</strong>",
+    "whatMeansWord": "What does the word mean: <strong>%s</strong>%s"
   }
 }

@@ -25,6 +25,7 @@ type WordService struct {
 	pronunciationService  *PronunciationService
 	aiService             *ai.Service
 	learning              config.LearningConfig
+	spanishGenderLexicon  map[string]models.SpanishGenderLexiconEntry
 	logger                *zap.Logger
 }
 
@@ -50,6 +51,20 @@ func NewWordServiceWithMastering(
 	learning config.LearningConfig,
 	logger *zap.Logger,
 ) *WordService {
+	var spanishLex map[string]models.SpanishGenderLexiconEntry
+	if strings.EqualFold(learning.TargetLang, "es") {
+		lex, lexPath, err := models.LoadSpanishGenderLexiconDefault()
+		if err != nil {
+			if logger != nil {
+				logger.Warn("spanish gender lexicon unavailable; fallback to LLM only", zap.Error(err))
+			}
+		} else {
+			spanishLex = lex
+			if logger != nil {
+				logger.Info("spanish gender lexicon loaded", zap.String("path", lexPath), zap.Int("entries", len(lex)))
+			}
+		}
+	}
 	return &WordService{
 		wordRepo:              wordRepo,
 		trainingCardRepo:      trainingCardRepo,
@@ -57,6 +72,7 @@ func NewWordServiceWithMastering(
 		userWordMasteringRepo: userWordMasteringRepo,
 		aiService:             aiService,
 		learning:              learning,
+		spanishGenderLexicon:  spanishLex,
 		logger:                logger,
 	}
 }
@@ -113,6 +129,8 @@ Use this exact schema and fill all required fields for a valid existing word:
   "input_word": "%s",
   "lemma": "",
   "pos": "",
+  "noun_gender": "",
+  "opposite_gender_word": "",
   "transcription": "",
   "definition_native": "",
   "examples": [
@@ -121,7 +139,7 @@ Use this exact schema and fill all required fields for a valid existing word:
   ]
 }
 If the token is clearly nonsense, return:
-{"error": true, "hint": "..." , "input_word":"%s", "lemma":"", "pos":"", "transcription":"", "definition_native":"", "examples":[]}
+{"error": true, "hint": "..." , "input_word":"%s", "lemma":"", "pos":"", "noun_gender":"", "opposite_gender_word":"", "transcription":"", "definition_native":"", "examples":[]}
 Word: %s`, word, word, word)
 }
 
@@ -143,6 +161,69 @@ func (s *WordService) nativeLanguageRequiresCyrillic() bool {
 
 func hasCyrillicText(text string) bool {
 	return ContainsCyrillic(strings.TrimSpace(text))
+}
+
+func normalizeNounGender(pos, nounGenderRaw string) *string {
+	if !models.IsNounPOS(pos) {
+		return nil
+	}
+	if g := models.NormalizeNounGenderValue(nounGenderRaw); g != "" {
+		return &g
+	}
+	if inferred := models.InferNounGenderFromPOSText(pos); inferred != "" {
+		return &inferred
+	}
+	return nil
+}
+
+func canonicalPOSValue(raw string) string {
+	c := models.CanonicalWordPOS(raw)
+	if c != "" {
+		return c
+	}
+	return strings.ToLower(strings.TrimSpace(raw))
+}
+
+func (s *WordService) applySpanishGenderLexicon(lemma string, wi *models.WordInfoResponse) {
+	if wi == nil || len(s.spanishGenderLexicon) == 0 {
+		return
+	}
+	key := strings.ToLower(strings.TrimSpace(lemma))
+	if key == "" {
+		return
+	}
+	entry, ok := s.spanishGenderLexicon[key]
+	if !ok {
+		return
+	}
+	if wi.POS == "" || models.IsNounPOS(wi.POS) {
+		wi.POS = "noun"
+		wi.NounGender = entry.Gender
+		wi.OppositeGenderWord = entry.OppositeGenderWord
+	}
+}
+
+func (s *WordService) normalizeOppositeGenderWord(pos, raw, lemma, targetLang string) *string {
+	if strings.ToLower(strings.TrimSpace(targetLang)) != "es" {
+		return nil
+	}
+	if !models.IsNounPOS(pos) {
+		return nil
+	}
+	v := strings.ToLower(strings.TrimSpace(raw))
+	if v == "" {
+		return nil
+	}
+	lemmaNorm := strings.ToLower(strings.TrimSpace(lemma))
+	if lemmaNorm != "" && v == lemmaNorm {
+		return nil
+	}
+	if !models.IsLikelySimpleSpanishGenderPair(lemmaNorm, v) {
+		if entry, ok := s.spanishGenderLexicon[lemmaNorm]; !ok || entry.OppositeGenderWord != v {
+			return nil
+		}
+	}
+	return &v
 }
 
 func nativeFieldsLookValidForConfig(definitionNative string, examples []models.WordInfoExample, requireCyrillic bool) bool {
@@ -434,7 +515,9 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 	}
 
 	displayEN := lemma
-	if wordInfo.POS == "verb" && wordInfo.VerbForms != nil && wordInfo.VerbForms.V1 != "" {
+	wordInfo.POS = canonicalPOSValue(wordInfo.POS)
+	s.applySpanishGenderLexicon(lemma, &wordInfo)
+	if models.IsVerbPOS(wordInfo.POS) && wordInfo.VerbForms != nil && wordInfo.VerbForms.V1 != "" {
 		if strings.EqualFold(s.learning.TargetLang, "en") {
 			displayEN = "to " + wordInfo.VerbForms.V1
 		} else {
@@ -444,12 +527,14 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 	}
 
 	wordCard = &models.WordCard{
-		Word:          lemma,
-		Definition:    "", // Legacy field, keep empty
-		POS:           &wordInfo.POS,
-		Transcription: &wordInfo.Transcription,
-		DefinitionRU:  &wordInfo.DefinitionRU,
-		DisplayEN:     &displayEN,
+		Word:               lemma,
+		Definition:         "", // Legacy field, keep empty
+		POS:                &wordInfo.POS,
+		NounGender:         normalizeNounGender(wordInfo.POS, wordInfo.NounGender),
+		OppositeGenderWord: s.normalizeOppositeGenderWord(wordInfo.POS, wordInfo.OppositeGenderWord, lemma, s.learning.TargetLang),
+		Transcription:      &wordInfo.Transcription,
+		DefinitionRU:       &wordInfo.DefinitionRU,
+		DisplayEN:          &displayEN,
 	}
 
 	// Serialize examples

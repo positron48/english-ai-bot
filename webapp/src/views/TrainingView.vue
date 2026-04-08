@@ -156,10 +156,41 @@
         <p>{{ t('training.cardOf', { current: cardIndex, total: totalCards }) }}</p>
       </div>
 
-      <div class="question" v-html="processedQuestion"></div>
+      <div class="question">
+        <div v-html="processedQuestion"></div>
+        <div v-if="showQuestionMetaRow" class="question-meta-row">
+          <div v-if="showMorphInTraining && isTargetLangSide && morphCompactText" class="question-morph-inline">
+            <template v-if="morphDisplay.kind === 'noun'">
+              <div v-if="nounOppositeWord" class="morph-opposite-line">
+                <span class="morph-opposite" :class="morphOppositeGenderClass">({{ nounOppositeWord }})</span>
+              </div>
+            </template>
+            <template v-else>
+              {{ morphCompactText }}
+            </template>
+          </div>
+
+          <div
+            v-if="isTargetLangSide && currentCard?.transcription"
+            class="training-pronunciation-row"
+          >
+            <span class="training-transcription">{{ currentCard.transcription }}</span>
+            <button
+              v-if="currentPronunciationURL"
+              type="button"
+              class="btn-pronunciation"
+              :disabled="playingPronunciation || !(currentCard?.word_target || currentCard?.word_en)"
+              :aria-label="t('training.listen') || 'Pronounce'"
+              @click="playCurrentPronunciation"
+            >
+              <Icon name="play" />
+            </button>
+          </div>
+        </div>
+      </div>
       <div
-        v-if="isTargetLangSide && currentCard?.transcription"
-        class="training-pronunciation-row"
+        v-if="!showQuestionMetaRow && isTargetLangSide && currentCard?.transcription"
+        class="training-pronunciation-row training-pronunciation-row-standalone"
       >
         <span class="training-transcription">{{ currentCard.transcription }}</span>
         <button
@@ -173,7 +204,6 @@
           <Icon name="play" />
         </button>
       </div>
-
       <!-- Type: type the word; lightbulb shows first letter + underscores -->
       <div v-if="currentCard?.type === 'type'" class="type-block">
         <div class="type-answer-row">
@@ -537,6 +567,21 @@ interface Card {
   hint_first_letter?: string
   /** Type challenge: word length for hint */
   hint_length?: number
+  morph?: MorphInfo
+}
+
+interface MorphVerbForms {
+  v1?: string
+  v2?: string
+  v3?: string
+}
+
+interface MorphInfo {
+  pos?: string
+  noun_gender?: string
+  article?: string
+  opposite_gender_word?: string
+  verb_forms?: MorphVerbForms
 }
 
 interface OptionsResponse {
@@ -653,6 +698,66 @@ const { playSuccess, playFail, playVictory, playDefeat, getWordPronunciationURL,
 // Target-language side of the card (e.g. EN in RU→EN when direction is en_ru)
 const isTargetLangSide = computed(() => {
   return currentCard.value?.direction === 'en_ru'
+})
+
+const showMorphInTraining = computed(() => !settings.value.hideMorphInTraining)
+
+const morphDisplay = computed(() => {
+  const morph = currentCard.value?.morph
+  const nounWord = currentCard.value?.word_target || currentCard.value?.display_target || currentCard.value?.word_en || ''
+  if (!morph) return { kind: 'none' as const, article: '', gender: '', opposite: '', word: '' }
+  if (morph.pos === 'noun' && morph.noun_gender) {
+    return {
+      kind: 'noun' as const,
+      article: morph.article || '',
+      gender: morph.noun_gender,
+      opposite: morph.opposite_gender_word || '',
+      word: nounWord
+    }
+  }
+  return { kind: 'other' as const, article: '', gender: '', opposite: '', word: '' }
+})
+
+const morphGenderClass = computed(() => {
+  const g = (morphDisplay.value.gender || '').trim().toLowerCase()
+  if (g === 'm' || g === 'masculine' || g === 'masculino') return 'morph-gender-m'
+  if (g === 'f' || g === 'feminine' || g === 'femenino') return 'morph-gender-f'
+  return ''
+})
+
+const morphOppositeGenderClass = computed(() => {
+  const g = (morphDisplay.value.gender || '').trim().toLowerCase()
+  if (g === 'm' || g === 'masculine' || g === 'masculino') return 'morph-gender-f'
+  if (g === 'f' || g === 'feminine' || g === 'femenino') return 'morph-gender-m'
+  return ''
+})
+
+const nounOppositeWord = computed(() => {
+  if (morphDisplay.value.kind !== 'noun') return ''
+  const opposite = (morphDisplay.value.opposite || '').trim()
+  if (!opposite) return ''
+  const currentWord = (morphDisplay.value.word || '').trim().toLowerCase()
+  if (opposite.toLowerCase() === currentWord) return ''
+  return opposite
+})
+
+const morphCompactText = computed(() => {
+  const morph = currentCard.value?.morph
+  if (!morph) return ''
+  if (morph.pos === 'noun' && morph.noun_gender) {
+    return nounOppositeWord.value ? `(${nounOppositeWord.value})` : ''
+  }
+  if (morph.pos === 'verb' && morph.verb_forms) {
+    const forms = [morph.verb_forms.v1, morph.verb_forms.v2, morph.verb_forms.v3].filter(Boolean)
+    if (forms.length > 0) return forms.join(', ')
+  }
+  return ''
+})
+
+const showQuestionMetaRow = computed(() => {
+  const hasPron = isTargetLangSide.value && !!currentCard.value?.transcription
+  const hasMorph = showMorphInTraining.value && isTargetLangSide.value && morphCompactText.value.length > 0
+  return hasPron || hasMorph
 })
 
 watch(currentCard, async (card) => {
@@ -1148,15 +1253,28 @@ const processedQuestion = computed(() => {
   
   let question = currentCard.value.question
   
-  // Check if transcription is already wrapped
-  if (question.includes('<span class="transcription">')) {
-    return question
-  }
-  
   // Pattern to match transcription: /.../ after </strong>
   // Match: </strong> /.../
-  const transcriptionPattern = /(<\/strong>)\s*(\/[^\/]+\/)/g
-  question = question.replace(transcriptionPattern, '$1 <span class="transcription">$2</span>')
+  if (!question.includes('<span class="transcription">')) {
+    const transcriptionPattern = /(<\/strong>)\s*(\/[^\/]+\/)/g
+    question = question.replace(transcriptionPattern, '$1 <span class="transcription">$2</span>')
+  }
+
+  if (
+    showMorphInTraining.value &&
+    isTargetLangSide.value &&
+    morphDisplay.value.kind === 'noun' &&
+    morphDisplay.value.article
+  ) {
+    const article = morphDisplay.value.article.trim()
+    question = question.replace(/<strong>(.*?)<\/strong>/, (_, inner: string) => {
+      const raw = (inner || '').trim()
+      if (!raw) return `<strong>${article}</strong>`
+      const lower = raw.toLowerCase()
+      if (lower.startsWith(`${article.toLowerCase()} `)) return `<strong>${raw}</strong>`
+      return `<strong>${article} ${raw}</strong>`
+    })
+  }
   
   return question
 })
@@ -2556,14 +2674,30 @@ const handleTimerMouseLeave = () => {
   font-family: inherit;
 }
 
+.question-meta-row {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: 13px;
+}
+
 .training-pronunciation-row {
-  margin-top: -8px;
-  margin-bottom: 12px;
+  margin-top: 0;
+  margin-bottom: 0;
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  width: 100%;
   justify-content: center;
+  line-height: 1;
+}
+
+.training-pronunciation-row-standalone {
+  margin-top: -8px;
+  margin-bottom: 12px;
+  width: 100%;
 }
 
 .training-transcription {
@@ -2573,6 +2707,44 @@ const handleTimerMouseLeave = () => {
   font-size: 0.9em;
   color: var(--text-secondary);
   white-space: nowrap;
+}
+
+.question-meta-row .training-transcription {
+  font-size: inherit;
+  line-height: 1;
+}
+
+.question-morph-inline {
+  margin-top: 0;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: inherit;
+  line-height: 1;
+}
+
+.morph-opposite-line {
+  margin-top: 0;
+  line-height: 1;
+}
+
+.morph-opposite {
+  color: var(--text-muted, var(--text-secondary));
+}
+
+.morph-gender-m {
+  color: #4f7fb5;
+}
+
+.morph-gender-f {
+  color: #ad5f88;
+}
+
+[data-theme="dark"] .morph-gender-m {
+  color: #8ab7ee;
+}
+
+[data-theme="dark"] .morph-gender-f {
+  color: #df9fc2;
 }
 
 .btn-pronunciation {

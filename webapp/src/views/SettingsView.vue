@@ -188,6 +188,19 @@
             <span class="delay-value">{{ typeMasteringThreshold }}</span>
           </div>
         </div>
+        <div class="setting-item">
+          <div class="setting-info">
+            <label class="setting-label">{{ t('settings.hideMorphInTraining') }}</label>
+            <p class="setting-description">{{ t('settings.hideMorphInTrainingDescription') }}</p>
+          </div>
+          <div class="setting-control">
+            <span v-if="trainingDelaysSavedAt === 'morph'" class="saved-indicator">{{ t('common.saved') }}</span>
+            <label class="toggle-switch">
+              <input v-model="hideMorphInTraining" type="checkbox" @change="handleMorphVisibilityChange" />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -262,7 +275,7 @@ import Icon from '../components/Icon.vue'
 const { t } = useI18n()
 
 const router = useRouter()
-const { settings, setSoundsEnabled, setVibrationEnabled, setTheme, setSoundTheme } = useSettings()
+const { settings, setSoundsEnabled, setVibrationEnabled, setTheme, setSoundTheme, setHideMorphInTraining } = useSettings()
 const { theme: currentTheme, setTheme: setThemeInTheme } = useTheme()
 const { getThemes, previewTheme } = useAudio()
 const { logout: authLogout } = useAuth()
@@ -281,11 +294,12 @@ const isSaved = ref(false)
 const optionsDelaySeconds = ref(5)
 const wrongAnswerDelaySeconds = ref(5)
 /** 'options' | 'wrong' - which delay control just saved (to show "saved" there) */
-const trainingDelaysSavedAt = ref<'options' | 'wrong' | 'spell' | 'type' | null>(null)
+const trainingDelaysSavedAt = ref<'options' | 'wrong' | 'spell' | 'type' | 'morph' | null>(null)
 const spellModeEnabled = ref(true)
 const spellMasteringThreshold = ref(50)
 const typeModeEnabled = ref(true)
 const typeMasteringThreshold = ref(70)
+const hideMorphInTraining = ref(false)
 let trainingDelaysSavedTimeout: ReturnType<typeof setTimeout> | null = null
 
 onMounted(async () => {
@@ -327,6 +341,7 @@ interface SettingsResponse {
     spell_mastering_threshold?: number
     type_mode_enabled?: boolean
     type_mastering_threshold?: number
+    hide_morph_in_training?: boolean
   }
 }
 
@@ -352,12 +367,16 @@ const loadTrainingDelaysSettings = async () => {
     if (s?.type_mastering_threshold !== undefined) {
       typeMasteringThreshold.value = Math.max(0, Math.min(100, s.type_mastering_threshold))
     }
+    if (s?.hide_morph_in_training !== undefined) {
+      hideMorphInTraining.value = s.hide_morph_in_training
+      setHideMorphInTraining(hideMorphInTraining.value)
+    }
   } catch (error) {
     console.error('Failed to load training delay settings:', error)
   }
 }
 
-const saveTrainingDelays = async (showSavedAt: 'options' | 'wrong' | 'spell' | 'type') => {
+const saveTrainingDelays = async (showSavedAt: 'options' | 'wrong' | 'spell' | 'type' | 'morph') => {
   const opts = Math.max(0, Math.min(10, optionsDelaySeconds.value))
   const wrong = Math.max(0, Math.min(10, wrongAnswerDelaySeconds.value))
   const spellThreshold = Math.max(0, Math.min(100, spellMasteringThreshold.value))
@@ -375,9 +394,11 @@ const saveTrainingDelays = async (showSavedAt: 'options' | 'wrong' | 'spell' | '
         spell_mode_enabled: spellModeEnabled.value,
         spell_mastering_threshold: spellThreshold,
         type_mode_enabled: typeModeEnabled.value,
-        type_mastering_threshold: typeThreshold
+        type_mastering_threshold: typeThreshold,
+        hide_morph_in_training: hideMorphInTraining.value
       })
     })
+    setHideMorphInTraining(hideMorphInTraining.value)
     if (trainingDelaysSavedTimeout) {
       clearTimeout(trainingDelaysSavedTimeout)
       trainingDelaysSavedTimeout = null
@@ -396,6 +417,7 @@ const handleOptionsDelayChange = () => saveTrainingDelays('options')
 const handleWrongAnswerDelayChange = () => saveTrainingDelays('wrong')
 const handleSpellSettingsChange = () => saveTrainingDelays('spell')
 const handleTypeSettingsChange = () => saveTrainingDelays('type')
+const handleMorphVisibilityChange = () => saveTrainingDelays('morph')
 
 const handleNotificationFrequencyChange = async () => {
   const freq = notificationFrequency.value

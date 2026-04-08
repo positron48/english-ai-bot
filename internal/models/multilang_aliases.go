@@ -15,6 +15,30 @@ func NormalizeWordCardLegacyBeforeWrite(c *WordCard) {
 	if c == nil {
 		return
 	}
+	rawPOS := ""
+	if c.POS != nil {
+		rawPOS = *c.POS
+	}
+	if c.NounGender == nil {
+		if inferred := InferNounGenderFromPOSText(rawPOS); inferred != "" {
+			c.NounGender = &inferred
+		}
+	}
+	if c.NounGender != nil {
+		if normalized := NormalizeNounGenderValue(*c.NounGender); normalized != "" {
+			c.NounGender = &normalized
+		} else {
+			c.NounGender = nil
+		}
+	}
+	if c.POS != nil {
+		canonical := CanonicalWordPOS(rawPOS)
+		if canonical != "" {
+			c.POS = &canonical
+		} else {
+			c.POS = nil
+		}
+	}
 	if c.Word == "" && c.WordTarget != "" {
 		c.Word = c.WordTarget
 	}

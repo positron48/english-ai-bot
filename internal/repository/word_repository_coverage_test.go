@@ -909,10 +909,10 @@ func TestWordRepository_ListWordCardsAdmin_GetUserIDsByWordError(t *testing.T) {
 
 	// Main query returns one row
 	rows := sqlmock.NewRows([]string{"id", "word", "definition",
-		"pos", "transcription", "definition_ru", "examples_json", "verb_forms_json", "display_en",
+		"pos", "noun_gender", "opposite_gender_word", "transcription", "definition_ru", "examples_json", "verb_forms_json", "display_en",
 		"processed_at", "processing_error", "tts_state", "tts_error", "tts_audio_rel_path",
 		"created_at", "updated_at", "has_training_cards"}).
-		AddRow(1, "testword", "def", "", "", "", "", "", "", "", "", "", "", "", "2024-01-01 00:00:00", "2024-01-01 00:00:00", 0)
+		AddRow(1, "testword", "def", "", "", "", "", "", "", "", "", "", "", "", "", "", "2024-01-01 00:00:00", "2024-01-01 00:00:00", 0)
 	mock.ExpectQuery("SELECT wc.id").WillReturnRows(rows)
 	// GetUserIDsByWord (GetWordCardByLemma) fails
 	mock.ExpectQuery("SELECT .+ FROM word_cards").WillReturnError(fmt.Errorf("get word error"))

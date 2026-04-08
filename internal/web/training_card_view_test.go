@@ -359,7 +359,7 @@ func TestShowTrainingCard_NormalCardRUtoEN(t *testing.T) {
 	if err := json.Unmarshal(w.Body.Bytes(), &payload); err != nil {
 		t.Fatalf("unmarshal: %v", err)
 	}
-	if !strings.Contains(payload["question"].(string), "Переведите на английский") {
+	if !strings.Contains(payload["question"].(string), "Translate to English") {
 		t.Fatalf("expected RUtoEN question, got %v", payload["question"])
 	}
 }

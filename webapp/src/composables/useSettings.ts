@@ -7,13 +7,15 @@ interface Settings {
   vibrationEnabled: boolean
   theme: 'light' | 'dark'
   soundTheme: string
+  hideMorphInTraining: boolean
 }
 
 const defaultSettings: Settings = {
   soundsEnabled: true,
   vibrationEnabled: true,
   theme: 'light',
-  soundTheme: 'tick'
+  soundTheme: 'tick',
+  hideMorphInTraining: false
 }
 
 const currentSettings = ref<Settings>({ ...defaultSettings })
@@ -30,7 +32,8 @@ const loadSettings = () => {
         soundsEnabled: parsed.soundsEnabled !== undefined ? parsed.soundsEnabled : defaultSettings.soundsEnabled,
         vibrationEnabled: parsed.vibrationEnabled !== undefined ? parsed.vibrationEnabled : defaultSettings.vibrationEnabled,
         theme: parsed.theme || defaultSettings.theme,
-        soundTheme: parsed.soundTheme || defaultSettings.soundTheme
+        soundTheme: parsed.soundTheme || defaultSettings.soundTheme,
+        hideMorphInTraining: parsed.hideMorphInTraining !== undefined ? parsed.hideMorphInTraining : defaultSettings.hideMorphInTraining
       }
     } else {
       // If no saved settings, try to get theme from useTheme's storage
@@ -85,12 +88,17 @@ export function useSettings() {
     currentSettings.value.soundTheme = theme
   }
 
+  const setHideMorphInTraining = (hide: boolean) => {
+    currentSettings.value.hideMorphInTraining = hide
+  }
+
   return {
     settings: currentSettings,
     setSoundsEnabled,
     setVibrationEnabled,
     setTheme,
     setSoundTheme,
+    setHideMorphInTraining,
     loadSettings,
     saveSettings
   }

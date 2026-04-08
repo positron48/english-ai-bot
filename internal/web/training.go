@@ -354,22 +354,36 @@ func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, stat
 
 	// Build question
 	var questionText string
+	lang := i18n.GetLanguageFromContext(req.Context())
 	displayWord := card.TrainingCard.WordEN
 	if card.TrainingCard.DisplayWord != nil && *card.TrainingCard.DisplayWord != "" {
 		displayWord = *card.TrainingCard.DisplayWord
 	}
-	tl := learning.TargetLangNameRUAccusative(r.config.Learning.TargetLang)
+	var tl string
+	switch lang {
+	case "ru":
+		tl = learning.TargetLangNameRUAccusative(r.config.Learning.TargetLang)
+	case "es":
+		tl = learning.TargetLangNameES(r.config.Learning.TargetLang)
+	default:
+		tl = learning.TargetLangNameEN(r.config.Learning.TargetLang)
+	}
 	if card.UserCard.Direction == models.DirectionRUtoEN {
-		questionText = fmt.Sprintf("Переведите на %s: <strong>%s</strong>", tl, card.TrainingCard.WordRU)
+		questionText = fmt.Sprintf(i18n.T(lang, "training.translateTo"), tl, card.TrainingCard.WordRU)
 	} else {
 		transcriptionHTML := ""
 		if card.TrainingCard.Transcription != "" {
 			transcriptionHTML = fmt.Sprintf(` <span class="transcription">%s</span>`, card.TrainingCard.Transcription)
 		}
-		questionText = fmt.Sprintf("Что означает слово: <strong>%s</strong>%s", displayWord, transcriptionHTML)
+		questionText = fmt.Sprintf(i18n.T(lang, "training.whatMeansWord"), displayWord, transcriptionHTML)
 	}
 
 	optionsDelayMS, _ := r.getTrainingDelaysForUser(state.UserID)
+	var morph *models.WordMorphInfo
+	wordRepo := repository.NewWordRepository(r.db, r.logger)
+	if wordCard, err := wordRepo.GetWordCardByID(card.TrainingCard.WordCardID); err == nil {
+		morph = buildCompactMorphFromWordCard(r.config.Learning.TargetLang, wordCard, card.TrainingCard.POS)
+	}
 	// Return card data as JSON
 	response := map[string]interface{}{
 		"question":     questionText,
@@ -379,6 +393,9 @@ func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, stat
 		"user_card_id": card.UserCard.ID,
 		"delay_ms":     optionsDelayMS,
 		"direction":    string(card.UserCard.Direction),
+	}
+	if morph != nil {
+		response["morph"] = morph
 	}
 	if card.UserCard.Direction == models.DirectionENtoRU {
 		response["word_en"] = card.TrainingCard.WordEN

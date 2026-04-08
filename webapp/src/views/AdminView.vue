@@ -94,6 +94,8 @@
                     {{ sortDirection === 'asc' ? '↑' : '↓' }}
                   </span>
                 </th>
+                <th>Gender</th>
+                <th>Opposite</th>
                 <th 
                   class="sortable"
                   :class="{ 'sort-asc': sortColumn === 'HasCards' && sortDirection === 'asc', 'sort-desc': sortColumn === 'HasCards' && sortDirection === 'desc' }"
@@ -112,7 +114,9 @@
                 <tr :class="{ 'has-error': word.ProcessingError }">
                   <td class="desktop-only">{{ word.ID }}</td>
                   <td><strong>{{ word.Word }}</strong></td>
-                  <td>{{ word.POS || '—' }}</td>
+                  <td>{{ formatPOS(word.POS) }}</td>
+                  <td>{{ formatNounGender(word) }}</td>
+                  <td>{{ word.opposite_gender_word || '—' }}</td>
                   <td>
                     <span v-if="!word.HasTrainingCards" :class="{ 'badge': true, 'badge-secondary': true }">
                       No
@@ -358,6 +362,14 @@
               <div class="form-group">
                 <label>Part of Speech (POS):</label>
                 <input v-model="editWordForm.pos" type="text" class="form-input" placeholder="noun, verb, adjective, etc." />
+              </div>
+              <div class="form-group">
+                <label>Noun Gender:</label>
+                <input v-model="editWordForm.noun_gender" type="text" class="form-input" placeholder="m, f, mf, n" />
+              </div>
+              <div class="form-group">
+                <label>Opposite Gender Word:</label>
+                <input v-model="editWordForm.opposite_gender_word" type="text" class="form-input" placeholder="e.g. hermana" />
               </div>
               <div class="form-group">
                 <label>Transcription (IPA):</label>
@@ -701,6 +713,8 @@ interface WordCard {
   Word: string
   Definition: string
   POS?: string | null
+  noun_gender?: string | null
+  opposite_gender_word?: string | null
   Transcription?: string | null
   DefinitionRU?: string | null
   ExamplesJSON?: string | null
@@ -764,6 +778,8 @@ const ttsStatus = ref<TTSStatus | null>(null)
 const editWordForm = ref({
   word: '',
   pos: '',
+  noun_gender: '',
+  opposite_gender_word: '',
   transcription: '',
   definition_ru: '',
   display_en: '',
@@ -788,6 +804,32 @@ const generateCardConstraints = ref('')
 const generatingCard = ref(false)
 const generateCardConstraintsTextarea = ref<HTMLTextAreaElement | null>(null)
 const generatingWordData = ref(false)
+
+const articleByGender = (gender: string): string => {
+  const g = (gender || '').trim().toLowerCase()
+  if (g === 'm') return 'el'
+  if (g === 'f') return 'la'
+  if (g === 'mf') return 'el/la'
+  return ''
+}
+
+const formatNounGender = (word: WordCard): string => {
+  const g = (word.noun_gender || '').trim().toLowerCase()
+  if (!g) return '—'
+  const article = articleByGender(g)
+  return article ? `${article} • ${g}` : g
+}
+const formatPOS = (pos?: string | null): string => {
+  const p = (pos || '').trim().toLowerCase()
+  if (!p) return '—'
+  if ((learning.value?.target_lang || '').toLowerCase() === 'es') {
+    if (p === 'noun') return 'sustantivo'
+    if (p === 'verb') return 'verbo'
+    if (p === 'adjective') return 'adjetivo'
+    if (p === 'adverb') return 'adverbio'
+  }
+  return p
+}
 const editCardForm = ref({
   word_en: '',
   pos: '',
@@ -1367,6 +1409,8 @@ const startEditWord = (word: WordCard) => {
   editWordForm.value = {
     word: word.Word || '',
     pos: word.POS || '',
+    noun_gender: word.noun_gender || '',
+    opposite_gender_word: word.opposite_gender_word || '',
     transcription: word.Transcription || '',
     definition_ru: word.DefinitionRU || '',
     display_en: word.DisplayEN || '',
@@ -1458,6 +1502,12 @@ const generateWordCardData = async () => {
       if (wordCard.pos) {
         editWordForm.value.pos = wordCard.pos
       }
+      if (wordCard.noun_gender) {
+        editWordForm.value.noun_gender = wordCard.noun_gender
+      }
+      if (wordCard.opposite_gender_word) {
+        editWordForm.value.opposite_gender_word = wordCard.opposite_gender_word
+      }
       if (wordCard.transcription) {
         editWordForm.value.transcription = wordCard.transcription
       }
@@ -1501,6 +1551,8 @@ const saveWord = async () => {
     if (word) {
       word.Word = editWordForm.value.word
       word.POS = editWordForm.value.pos || null
+      word.noun_gender = editWordForm.value.noun_gender || null
+      word.opposite_gender_word = editWordForm.value.opposite_gender_word || null
       word.Transcription = editWordForm.value.transcription || null
       word.DefinitionRU = editWordForm.value.definition_ru || null
       word.DisplayEN = editWordForm.value.display_en || null

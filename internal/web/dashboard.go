@@ -452,6 +452,11 @@ func (r *Router) handleSettings(w http.ResponseWriter, req *http.Request) {
 		v := 70
 		settings.TypeMasteringThreshold = &v
 	}
+	// Morph hints in training: nil → false (show by default)
+	if settings.HideMorphInTraining == nil {
+		v := false
+		settings.HideMorphInTraining = &v
+	}
 
 	lc := r.config.Learning
 	w.Header().Set("Content-Type", "application/json")
@@ -721,6 +726,7 @@ func (r *Router) handleTrainingSettings(w http.ResponseWriter, req *http.Request
 		SpellMasteringThreshold *int  `json:"spell_mastering_threshold"`
 		TypeModeEnabled         *bool `json:"type_mode_enabled"`
 		TypeMasteringThreshold  *int  `json:"type_mastering_threshold"`
+		HideMorphInTraining     *bool `json:"hide_morph_in_training"`
 	}
 
 	if err := json.NewDecoder(req.Body).Decode(&requestData); err != nil {
@@ -830,6 +836,9 @@ func (r *Router) handleTrainingSettings(w http.ResponseWriter, req *http.Request
 	if requestData.TypeMasteringThreshold != nil {
 		settings.TypeMasteringThreshold = requestData.TypeMasteringThreshold
 	}
+	if requestData.HideMorphInTraining != nil {
+		settings.HideMorphInTraining = requestData.HideMorphInTraining
+	}
 
 	// UserSettings only contains basic types, Marshal cannot fail
 	settingsJSON, _ := json.Marshal(settings)
@@ -855,6 +864,7 @@ func (r *Router) handleTrainingSettings(w http.ResponseWriter, req *http.Request
 			"spell_mastering_threshold":  defaultIntPtr(settings.SpellMasteringThreshold, 50),
 			"type_mode_enabled":          settings.TypeModeEnabled != nil && *settings.TypeModeEnabled,
 			"type_mastering_threshold":   defaultIntPtr(settings.TypeMasteringThreshold, 70),
+			"hide_morph_in_training":     settings.HideMorphInTraining != nil && *settings.HideMorphInTraining,
 		},
 	})
 }

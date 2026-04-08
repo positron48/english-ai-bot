@@ -64,6 +64,9 @@
                   <Icon name="play" />
                 </button>
               </div>
+              <div v-if="formatMorph(currentTrainingCard.morph)" class="morph">
+                {{ formatMorph(currentTrainingCard.morph) }}
+              </div>
               <div v-if="currentTrainingCard.word_native || currentTrainingCard.word_ru" class="translation">
                 {{ currentTrainingCard.word_native || currentTrainingCard.word_ru }}
               </div>
@@ -157,6 +160,21 @@ interface TrainingCard {
   hint?: string
   pos?: string
   display_word?: string
+  morph?: MorphInfo
+}
+
+interface MorphVerbForms {
+  v1?: string
+  v2?: string
+  v3?: string
+}
+
+interface MorphInfo {
+  pos?: string
+  noun_gender?: string
+  article?: string
+  opposite_gender_word?: string
+  verb_forms?: MorphVerbForms
 }
 
 const route = useRoute()
@@ -177,6 +195,19 @@ const processing = ref(false)
 const currentPronunciationURL = ref<string | null>(null)
 const playingPronunciation = ref(false)
 const { getWordPronunciationURL, playWordPronunciation } = useAudio()
+
+const formatMorph = (morph?: MorphInfo): string => {
+  if (!morph) return ''
+  if (morph.pos === 'noun' && morph.noun_gender) {
+    const core = morph.article ? `${morph.article} • ${morph.noun_gender}` : morph.noun_gender
+    return morph.opposite_gender_word ? `${core} (${morph.opposite_gender_word})` : core
+  }
+  if (morph.pos === 'verb' && morph.verb_forms) {
+    const forms = [morph.verb_forms.v1, morph.verb_forms.v2, morph.verb_forms.v3].filter(Boolean)
+    if (forms.length > 0) return forms.join(', ')
+  }
+  return ''
+}
 
 onMounted(async () => {
   await loadWordSet()
@@ -636,6 +667,12 @@ const startStudy = () => {
   color: var(--text-primary);
   margin-top: 16px;
   font-weight: 600;
+}
+
+.morph {
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--text-secondary);
 }
 
 .meaning {

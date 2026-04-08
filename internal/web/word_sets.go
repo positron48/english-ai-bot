@@ -360,6 +360,16 @@ func (r *Router) handleLearningWordsSetDetail(w http.ResponseWriter, req *http.R
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
+	wordRepo := repository.NewWordRepository(r.db, r.logger)
+	for _, wInfo := range words {
+		if wInfo == nil {
+			continue
+		}
+		wordCard, _ := wordRepo.GetWordCardByID(wInfo.WordCardID)
+		if wordCard != nil {
+			wInfo.Morph = buildCompactMorphFromWordCard(r.config.Learning.TargetLang, wordCard, nil)
+		}
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
@@ -492,6 +502,16 @@ func (r *Router) handleLearningWordsSetStudy(w http.ResponseWriter, req *http.Re
 			selectedCard = trainingCards[0]
 		}
 	}
+
+	if selectedCard == nil {
+		http.Error(w, "Training card not found for word", http.StatusNotFound)
+		return
+	}
+
+	// Add compact morphology payload from canonical word card.
+	wordRepo := repository.NewWordRepository(r.db, r.logger)
+	wordCard, _ := wordRepo.GetWordCardByID(wordCardID)
+	selectedCard.Morph = buildCompactMorphFromWordCard(r.config.Learning.TargetLang, wordCard, selectedCard.POS)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
