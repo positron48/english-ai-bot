@@ -1221,6 +1221,16 @@ func (r *Router) handleAdminWord(w http.ResponseWriter, req *http.Request) {
 			return
 		}
 
+		// Guardrail for RU->ES admin AI fill:
+		// definition_ru must stay Russian (Cyrillic), otherwise UI gets Spanish text in RU field.
+		if strings.EqualFold(r.config.Learning.NativeLang, "ru") && strings.EqualFold(r.config.Learning.TargetLang, "es") {
+			definitionRU := strings.TrimSpace(wordInfo.DefinitionRU)
+			if definitionRU == "" || !service.ContainsCyrillic(definitionRU) {
+				http.Error(w, "LLM returned non-Russian definition_ru; please retry AI fill", http.StatusBadRequest)
+				return
+			}
+		}
+
 		// Prepare examples JSON
 		var examplesJSON string
 		if len(wordInfo.Examples) > 0 {

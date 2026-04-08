@@ -95,6 +95,7 @@ Set error = true only if:
 
 When error = false:
 - lemma/pos/transcription/definition_native → non-empty.
+- definition_native MUST be in Russian (Cyrillic), not in Spanish.
 - noun_gender:
   - for pos="noun": MUST be one of "m", "f", "mf", "n";
   - for non-nouns: return empty string "".

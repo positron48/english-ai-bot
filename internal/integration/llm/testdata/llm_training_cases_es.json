@@ -140,6 +140,81 @@
     "note": "Регрессия: нестабильный кейс, проверка R2 и leakage по глаголу seguir"
   },
   {
+    "word": "grave",
+    "expect": "ok",
+    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
+  },
+  {
+    "word": "similar",
+    "expect": "ok",
+    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
+  },
+  {
+    "word": "superior",
+    "expect": "ok",
+    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
+  },
+  {
+    "word": "rector",
+    "expect": "ok",
+    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
+  },
+  {
+    "word": "parado",
+    "expect": "ok",
+    "note": "Регрессия: не должен ошибочно реджектиться из-за substring-сходства с hard-reject словом 'prado'"
+  },
+  {
+    "word": "castro",
+    "expect": "ok",
+    "note": "Регрессия: валидное испанское слово, не должно уходить в rejected_by_policy"
+  },
+  {
+    "word": "club",
+    "expect": "ok",
+    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
+  },
+  {
+    "word": "casa",
+    "expect": "ok",
+    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
+  },
+  {
+    "word": "final",
+    "expect": "ok",
+    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
+  },
+  {
+    "word": "real",
+    "expect": "ok",
+    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
+  },
+  {
+    "word": "local",
+    "expect": "ok",
+    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
+  },
+  {
+    "word": "central",
+    "expect": "ok",
+    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
+  },
+  {
+    "word": "total",
+    "expect": "ok",
+    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
+  },
+  {
+    "word": "junto",
+    "expect": "ok",
+    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
+  },
+  {
+    "word": "virus",
+    "expect": "ok",
+    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
+  },
+  {
     "word": "prado",
     "expect": "reject",
     "note": "В hard reject списке prompt"

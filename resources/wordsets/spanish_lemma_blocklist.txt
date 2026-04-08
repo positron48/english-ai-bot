@@ -12,9 +12,33 @@ and
 # Reported names / mis-tags / vocalic abbreviations
 nba
 miami
+australia
+james
+cúper
+cuper
+camp
+parlament
+ciu
+antonia
+rivaldo
+ricardo
+javier
+manuel
+colombia
+govern
+ford
+erc
+coi
+asturias
 kostunica
 iu
 gómez
+pérez
+perez
+lópez
+lopez
+pérez lópez
+perez lopez
 maria
 maría
 michael
