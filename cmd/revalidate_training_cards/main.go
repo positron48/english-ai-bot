@@ -24,22 +24,27 @@ import (
 )
 
 type row struct {
-	TrainingCardID int64
-	WordCardID     int64
-	Lemma          string
-	POS            sql.NullString
-	DefinitionRU   sql.NullString
-	SenseIndex     int
-	WordEN         string
-	Transcription  sql.NullString
-	WordRU         string
-	MeaningEN      string
-	ExampleEN      sql.NullString
-	ExampleRU      sql.NullString
-	DistractorsEN  sql.NullString
-	DistractorsRU  sql.NullString
-	Hint           sql.NullString
-	DisplayWord    sql.NullString
+	TrainingCardID  int64
+	WordCardID      int64
+	Lemma           string
+	POS             sql.NullString
+	NounGender      sql.NullString
+	TranscriptionWC sql.NullString
+	DefinitionRU    sql.NullString
+	ExamplesJSON    sql.NullString
+	VerbFormsJSON   sql.NullString
+	DisplayEN       sql.NullString
+	SenseIndex      int
+	WordEN          string
+	Transcription   sql.NullString
+	WordRU          string
+	MeaningEN       string
+	ExampleEN       sql.NullString
+	ExampleRU       sql.NullString
+	DistractorsEN   sql.NullString
+	DistractorsRU   sql.NullString
+	Hint            sql.NullString
+	DisplayWord     sql.NullString
 }
 
 type group struct {
@@ -232,7 +237,7 @@ func runCLI() int {
 
 func loadGroups(conn *sql.DB, onlyWord string) ([]group, error) {
 	query := `SELECT
-		tc.id, wc.id, wc.word, wc.pos, wc.definition_ru,
+		tc.id, wc.id, wc.word, wc.pos, wc.noun_gender, wc.transcription, wc.definition_ru, wc.examples_json, wc.verb_forms_json, wc.display_en,
 		tc.sense_index, tc.word_en, tc.transcription, tc.word_ru, tc.meaning_en,
 		tc.example_en, tc.example_ru, tc.distractors_en, tc.distractors_ru, tc.hint, tc.display_word
 	FROM word_cards wc
@@ -257,7 +262,7 @@ func loadGroups(conn *sql.DB, onlyWord string) ([]group, error) {
 	for rows.Next() {
 		var r row
 		if err := rows.Scan(
-			&r.TrainingCardID, &r.WordCardID, &r.Lemma, &r.POS, &r.DefinitionRU,
+			&r.TrainingCardID, &r.WordCardID, &r.Lemma, &r.POS, &r.NounGender, &r.TranscriptionWC, &r.DefinitionRU, &r.ExamplesJSON, &r.VerbFormsJSON, &r.DisplayEN,
 			&r.SenseIndex, &r.WordEN, &r.Transcription, &r.WordRU, &r.MeaningEN,
 			&r.ExampleEN, &r.ExampleRU, &r.DistractorsEN, &r.DistractorsRU, &r.Hint, &r.DisplayWord,
 		); err != nil {
@@ -274,9 +279,29 @@ func loadGroups(conn *sql.DB, onlyWord string) ([]group, error) {
 				pos := strings.TrimSpace(r.POS.String)
 				wc.POS = &pos
 			}
+			if r.NounGender.Valid && strings.TrimSpace(r.NounGender.String) != "" {
+				g := strings.TrimSpace(r.NounGender.String)
+				wc.NounGender = &g
+			}
+			if r.TranscriptionWC.Valid && strings.TrimSpace(r.TranscriptionWC.String) != "" {
+				tr := strings.TrimSpace(r.TranscriptionWC.String)
+				wc.Transcription = &tr
+			}
 			if r.DefinitionRU.Valid && strings.TrimSpace(r.DefinitionRU.String) != "" {
 				defRU := strings.TrimSpace(r.DefinitionRU.String)
 				wc.DefinitionRU = &defRU
+			}
+			if r.ExamplesJSON.Valid && strings.TrimSpace(r.ExamplesJSON.String) != "" {
+				ex := strings.TrimSpace(r.ExamplesJSON.String)
+				wc.ExamplesJSON = &ex
+			}
+			if r.VerbFormsJSON.Valid && strings.TrimSpace(r.VerbFormsJSON.String) != "" {
+				vf := strings.TrimSpace(r.VerbFormsJSON.String)
+				wc.VerbFormsJSON = &vf
+			}
+			if r.DisplayEN.Valid && strings.TrimSpace(r.DisplayEN.String) != "" {
+				d := strings.TrimSpace(r.DisplayEN.String)
+				wc.DisplayEN = &d
 			}
 			gr := &group{
 				wordCard: wc,
