@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Requeue invalid training cards by running cmd/revalidate_training_cards.
-# Invalid cards will be deleted and corresponding word_cards will be reset
-# (processed_at/processing_error), so background worker can regenerate them.
+# Soft repair for invalid data by running cmd/revalidate_training_cards.
+# - invalid training cards: delete + reset corresponding word_card for regenerate
+# - duplicate training cards: delete duplicate rows only (no word_card reset)
+# - invalid tts statuses: reset tts status to pending only for invalid words
 #
 # Defaults:
 # - target lang: es
@@ -19,6 +20,7 @@ TARGET_LANG="${TARGET_LANG:-es}"
 COMMIT=false
 LIMIT=""
 ONLY_WORD=""
+CHECK_TTS=true
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -37,6 +39,10 @@ while [[ $# -gt 0 ]]; do
     --target-lang)
       TARGET_LANG="${2:-}"
       shift 2
+      ;;
+    --no-tts)
+      CHECK_TTS=false
+      shift
       ;;
     *)
       echo "Unknown argument: $1" >&2
@@ -72,6 +78,9 @@ if [[ -n "${LIMIT}" ]]; then
 fi
 if [[ -n "${ONLY_WORD}" ]]; then
   CMD+=(--only-word "${ONLY_WORD}")
+fi
+if [[ "${CHECK_TTS}" != "true" ]]; then
+  CMD+=(--check-tts=false)
 fi
 
 echo "Running: ${CMD[*]}"

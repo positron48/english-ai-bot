@@ -2,47 +2,66 @@ package main
 
 import (
 	"context"
+	"crypto/sha256"
 	"database/sql"
+	"encoding/hex"
 	"encoding/json"
 	"flag"
 	"fmt"
 	"os"
+	"path/filepath"
 	"sort"
 	"strings"
+	"unicode"
 
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/database"
 	"tgbot-skeleton/internal/logger"
 	"tgbot-skeleton/internal/models"
+	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/service"
 )
 
 type row struct {
-	WordCardID    int64
-	Lemma         string
-	POS           sql.NullString
-	DefinitionRU  sql.NullString
-	SenseIndex    int
-	WordEN        string
-	Transcription sql.NullString
-	WordRU        string
-	MeaningEN     string
-	ExampleEN     sql.NullString
-	ExampleRU     sql.NullString
-	DistractorsEN sql.NullString
-	DistractorsRU sql.NullString
-	Hint          sql.NullString
-	DisplayWord   sql.NullString
+	TrainingCardID int64
+	WordCardID     int64
+	Lemma          string
+	POS            sql.NullString
+	DefinitionRU   sql.NullString
+	SenseIndex     int
+	WordEN         string
+	Transcription  sql.NullString
+	WordRU         string
+	MeaningEN      string
+	ExampleEN      sql.NullString
+	ExampleRU      sql.NullString
+	DistractorsEN  sql.NullString
+	DistractorsRU  sql.NullString
+	Hint           sql.NullString
+	DisplayWord    sql.NullString
 }
 
 type group struct {
-	wordCard models.WordCard
-	resp     models.TrainingCardResponse
+	wordCard        models.WordCard
+	resp            models.TrainingCardResponse
+	trainingCardIDs []int64
 }
 
 type invalidGroup struct {
 	g      group
 	reason string
+}
+
+type duplicateGroup struct {
+	WordCardID int64
+	Lemma      string
+	DeleteIDs  []int64
+	Reason     string
+}
+
+type invalidTTS struct {
+	Word   string
+	Reason string
 }
 
 func main() {
@@ -53,6 +72,7 @@ func runCLI() int {
 	commit := flag.Bool("commit", false, "apply DB changes (default: dry-run)")
 	limit := flag.Int("limit", 0, "max number of word_cards to requeue (0 = no limit)")
 	onlyWord := flag.String("only-word", "", "process only this lemma (optional)")
+	checkTTS := flag.Bool("check-tts", true, "check and softly repair invalid TTS statuses")
 	flag.Parse()
 
 	ctx := context.Background()
@@ -80,6 +100,7 @@ func runCLI() int {
 	}
 
 	invalid := make([]invalidGroup, 0)
+	duplicates := make([]duplicateGroup, 0)
 	for _, g := range groups {
 		if !isNativeDefinitionValid(g.wordCard, cfg.Learning) {
 			invalid = append(invalid, invalidGroup{
@@ -95,10 +116,12 @@ func runCLI() int {
 			})
 			continue
 		}
-		if dupErr := duplicateSenseError(g.resp); dupErr != "" {
-			invalid = append(invalid, invalidGroup{
-				g:      g,
-				reason: dupErr,
+		if deleteIDs, dupErr := duplicateTrainingCardIDs(g); len(deleteIDs) > 0 {
+			duplicates = append(duplicates, duplicateGroup{
+				WordCardID: g.wordCard.ID,
+				Lemma:      g.wordCard.Word,
+				DeleteIDs:  deleteIDs,
+				Reason:     dupErr,
 			})
 		}
 	}
@@ -109,18 +132,53 @@ func runCLI() int {
 	if *limit > 0 && len(invalid) > *limit {
 		invalid = invalid[:*limit]
 	}
+	sort.Slice(duplicates, func(i, j int) bool {
+		return duplicates[i].WordCardID < duplicates[j].WordCardID
+	})
+	if *limit > 0 && len(duplicates) > *limit {
+		duplicates = duplicates[:*limit]
+	}
+
+	invalidTTSList := make([]invalidTTS, 0)
+	if *checkTTS {
+		invalidTTSList, err = loadInvalidTTS(db.GetConnection(), cfg.TTS.AudioDir, *onlyWord)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "failed to load invalid tts statuses: %v\n", err)
+			return 1
+		}
+		if *limit > 0 && len(invalidTTSList) > *limit {
+			invalidTTSList = invalidTTSList[:*limit]
+		}
+	}
 
 	mode := "DRY-RUN"
 	if *commit {
 		mode = "COMMIT"
 	}
-	fmt.Printf("[%s] total_word_cards=%d invalid=%d\n", mode, len(groups), len(invalid))
+	fmt.Printf("[%s] total_word_cards=%d invalid=%d duplicates=%d invalid_tts=%d\n", mode, len(groups), len(invalid), len(duplicates), len(invalidTTSList))
 	for _, g := range invalid {
 		fmt.Printf("INVALID word_card_id=%d lemma=%q senses=%d reason=%q\n", g.g.wordCard.ID, g.g.wordCard.Word, len(g.g.resp.Senses), g.reason)
 	}
+	for _, d := range duplicates {
+		fmt.Printf("DUPLICATE word_card_id=%d lemma=%q delete_training_cards=%v reason=%q\n", d.WordCardID, d.Lemma, d.DeleteIDs, d.Reason)
+	}
+	for _, t := range invalidTTSList {
+		fmt.Printf("INVALID_TTS word=%q reason=%q\n", t.Word, t.Reason)
+	}
 
-	if !*commit || len(invalid) == 0 {
+	if !*commit {
 		return 0
+	}
+
+	deletedDuplicates := 0
+	for _, d := range duplicates {
+		for _, trainingCardID := range d.DeleteIDs {
+			if err := deleteTrainingCardByID(ctx, db.GetConnection(), trainingCardID); err != nil {
+				fmt.Printf("ERROR delete duplicate training_card_id=%d lemma=%q: %v\n", trainingCardID, d.Lemma, err)
+				continue
+			}
+			deletedDuplicates++
+		}
 	}
 
 	requeued := 0
@@ -131,13 +189,25 @@ func runCLI() int {
 		}
 		requeued++
 	}
-	fmt.Printf("Done. requeued=%d\n", requeued)
+
+	resetTTS := 0
+	if *checkTTS {
+		ttsRepo := repository.NewTTSStatusRepository(db.GetConnection(), log, cfg.TTS.MaxRetries)
+		for _, t := range invalidTTSList {
+			if err := ttsRepo.ResetForForceRegenerate(t.Word); err != nil {
+				fmt.Printf("ERROR reset invalid tts word=%q: %v\n", t.Word, err)
+				continue
+			}
+			resetTTS++
+		}
+	}
+	fmt.Printf("Done. requeued_word_cards=%d deleted_duplicate_training_cards=%d reset_tts=%d\n", requeued, deletedDuplicates, resetTTS)
 	return 0
 }
 
 func loadGroups(conn *sql.DB, onlyWord string) ([]group, error) {
 	query := `SELECT
-		wc.id, wc.word, wc.pos, wc.definition_ru,
+		tc.id, wc.id, wc.word, wc.pos, wc.definition_ru,
 		tc.sense_index, tc.word_en, tc.transcription, tc.word_ru, tc.meaning_en,
 		tc.example_en, tc.example_ru, tc.distractors_en, tc.distractors_ru, tc.hint, tc.display_word
 	FROM word_cards wc
@@ -151,6 +221,9 @@ func loadGroups(conn *sql.DB, onlyWord string) ([]group, error) {
 
 	rows, err := conn.Query(query, args...)
 	if err != nil {
+		if isMissingTableErr(err) {
+			return []group{}, nil
+		}
 		return nil, err
 	}
 	defer rows.Close()
@@ -159,7 +232,7 @@ func loadGroups(conn *sql.DB, onlyWord string) ([]group, error) {
 	for rows.Next() {
 		var r row
 		if err := rows.Scan(
-			&r.WordCardID, &r.Lemma, &r.POS, &r.DefinitionRU,
+			&r.TrainingCardID, &r.WordCardID, &r.Lemma, &r.POS, &r.DefinitionRU,
 			&r.SenseIndex, &r.WordEN, &r.Transcription, &r.WordRU, &r.MeaningEN,
 			&r.ExampleEN, &r.ExampleRU, &r.DistractorsEN, &r.DistractorsRU, &r.Hint, &r.DisplayWord,
 		); err != nil {
@@ -189,6 +262,7 @@ func loadGroups(conn *sql.DB, onlyWord string) ([]group, error) {
 					Transcription: strings.TrimSpace(r.Transcription.String),
 					Senses:        []models.TrainingCardSense{},
 				},
+				trainingCardIDs: []int64{},
 			}
 			byID[r.WordCardID] = gr
 			g = gr
@@ -213,6 +287,7 @@ func loadGroups(conn *sql.DB, onlyWord string) ([]group, error) {
 			Hint:          strings.TrimSpace(r.Hint.String),
 		}
 		g.resp.Senses = append(g.resp.Senses, sense)
+		g.trainingCardIDs = append(g.trainingCardIDs, r.TrainingCardID)
 	}
 
 	out := make([]group, 0, len(byID))
@@ -220,6 +295,14 @@ func loadGroups(conn *sql.DB, onlyWord string) ([]group, error) {
 		out = append(out, *g)
 	}
 	return out, rows.Err()
+}
+
+func isMissingTableErr(err error) bool {
+	if err == nil {
+		return false
+	}
+	msg := strings.ToLower(err.Error())
+	return strings.Contains(msg, "no such table") || strings.Contains(msg, "does not exist")
 }
 
 func isNativeDefinitionValid(card models.WordCard, learning config.LearningConfig) bool {
@@ -269,9 +352,16 @@ func requeueWordCard(ctx context.Context, conn *sql.DB, wordCardID int64, nullDe
 	return tx.Commit()
 }
 
-func duplicateSenseError(resp models.TrainingCardResponse) string {
-	seen := make(map[string]int, len(resp.Senses))
-	for i, s := range resp.Senses {
+func deleteTrainingCardByID(ctx context.Context, conn *sql.DB, trainingCardID int64) error {
+	_, err := conn.ExecContext(ctx, `DELETE FROM training_cards WHERE id = ?`, trainingCardID)
+	return err
+}
+
+func duplicateTrainingCardIDs(g group) ([]int64, string) {
+	seen := make(map[string]int, len(g.resp.Senses))
+	deleteIDs := make([]int64, 0)
+	var firstReason string
+	for i, s := range g.resp.Senses {
 		key := strings.Join([]string{
 			normalizeDupField(s.POS),
 			normalizeDupField(s.DisplayWord),
@@ -279,14 +369,135 @@ func duplicateSenseError(resp models.TrainingCardResponse) string {
 			normalizeDupField(s.MeaningEN),
 		}, "|")
 		if prevIdx, ok := seen[key]; ok {
-			return fmt.Sprintf("duplicate_training_sense sense=%d duplicates sense=%d", i, prevIdx)
+			if i < len(g.trainingCardIDs) {
+				deleteIDs = append(deleteIDs, g.trainingCardIDs[i])
+			}
+			if firstReason == "" {
+				firstReason = fmt.Sprintf("duplicate_training_sense sense=%d duplicates sense=%d", i, prevIdx)
+			}
+			continue
 		}
 		seen[key] = i
 	}
-	return ""
+	return deleteIDs, firstReason
 }
 
 func normalizeDupField(v string) string {
 	return strings.ToLower(strings.Join(strings.Fields(strings.TrimSpace(v)), " "))
 }
 
+func loadInvalidTTS(conn *sql.DB, audioDir, onlyWord string) ([]invalidTTS, error) {
+	query := `SELECT word, state, COALESCE(audio_rel_path, '')
+		FROM tts_generation_status`
+	args := []any{}
+	if strings.TrimSpace(onlyWord) != "" {
+		query += ` WHERE LOWER(word) = LOWER(?)`
+		args = append(args, strings.TrimSpace(onlyWord))
+	}
+	query += ` ORDER BY updated_at DESC, word`
+
+	rows, err := conn.Query(query, args...)
+	if err != nil {
+		if isMissingTableErr(err) {
+			return []invalidTTS{}, nil
+		}
+		return nil, err
+	}
+	defer rows.Close()
+
+	out := make([]invalidTTS, 0)
+	seen := make(map[string]struct{})
+	for rows.Next() {
+		var word, state, relPath string
+		if err := rows.Scan(&word, &state, &relPath); err != nil {
+			return nil, err
+		}
+		word = strings.TrimSpace(strings.ToLower(word))
+		if word == "" {
+			continue
+		}
+		if _, ok := seen[word]; ok {
+			continue
+		}
+
+		reason := ""
+		switch state {
+		case models.TTSStateFailedRetryable, models.TTSStateFailedTerminal:
+			reason = "failed_state"
+		case models.TTSStateReady:
+			if !hasAnyAudioFile(audioDir, word, relPath) {
+				reason = "ready_but_audio_missing"
+			}
+		}
+		if reason == "" {
+			continue
+		}
+		seen[word] = struct{}{}
+		out = append(out, invalidTTS{
+			Word:   word,
+			Reason: reason,
+		})
+	}
+	return out, rows.Err()
+}
+
+func hasAnyAudioFile(audioDir, word, relPath string) bool {
+	if strings.TrimSpace(audioDir) == "" {
+		return false
+	}
+	if audioRelPathExists(audioDir, relPath) {
+		return true
+	}
+	legacyBase := legacyAudioRelBase(word)
+	if legacyBase == "" {
+		return false
+	}
+	return audioRelPathExists(audioDir, legacyBase+".mp3") || audioRelPathExists(audioDir, legacyBase+".wav")
+}
+
+func audioRelPathExists(audioDir, relPath string) bool {
+	clean := filepath.Clean(strings.TrimSpace(relPath))
+	if clean == "." || clean == "" || strings.HasPrefix(clean, "..") {
+		return false
+	}
+	_, err := os.Stat(filepath.Join(audioDir, clean))
+	return err == nil
+}
+
+func legacyAudioRelBase(word string) string {
+	key := pronunciationWordKey(word)
+	if len(key) < 4 {
+		return ""
+	}
+	return filepath.Join(key[:2], key[2:4], pronunciationWordFileBase(word))
+}
+
+func pronunciationWordKey(word string) string {
+	sum := sha256.Sum256([]byte(word))
+	return hex.EncodeToString(sum[:])
+}
+
+func pronunciationWordFileBase(word string) string {
+	var b strings.Builder
+	for _, r := range strings.ToLower(strings.TrimSpace(word)) {
+		if (r >= 'a' && r <= 'z') || (r >= '0' && r <= '9') {
+			b.WriteRune(r)
+			continue
+		}
+		if r == '-' || r == '\'' {
+			b.WriteRune(r)
+			continue
+		}
+		if unicode.IsSpace(r) {
+			b.WriteByte('_')
+		}
+	}
+	name := strings.Trim(b.String(), "_")
+	for strings.Contains(name, "__") {
+		name = strings.ReplaceAll(name, "__", "_")
+	}
+	if name == "" {
+		return "word"
+	}
+	return name
+}

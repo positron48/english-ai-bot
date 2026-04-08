@@ -276,10 +276,16 @@ kubectl exec -it deployment/spanish -n spanish -- \
 
 - прогоняет существующие `training_cards` через текущую `ValidateTrainingCardResponse`;
 - для `ru-es` дополнительно проверяет, что `definition_ru` в `word_cards` содержит кириллицу;
+- ищет дубли `training_cards` внутри одного `word_card` (по `pos/display_word/word_ru/meaning_en`);
+- проверяет TTS-статусы: `failed_*` и `ready` без реального аудиофайла;
 - в `--commit` режиме для невалидных слов:
   - удаляет их `training_cards`,
   - сбрасывает у `word_cards` `processed_at/processing_error` (ставит обратно в очередь воркера),
   - если `definition_ru` не на русском — обнуляет `definition_ru`, чтобы воркер запросил поле заново.
+- в `--commit` режиме для дублей:
+  - удаляет только лишние `training_cards` (без reset `word_cards`, без перегенерации).
+- в `--commit` режиме для невалидных TTS:
+  - сбрасывает только проблемные записи `tts_generation_status` в `pending` (валидные TTS не трогаются).
 
 Dry run:
 
@@ -303,6 +309,14 @@ kubectl exec -it deployment/spanish -n spanish -- \
 kubectl exec -it deployment/spanish -n spanish -- \
   env LEARNING_PAIR=ru-es LEARNING_NATIVE_LANG=ru LEARNING_TARGET_LANG=es LEARNING_APP_CODE=spanish GRAMMAR_BUNDLE_ID=es \
   /app/revalidate_training_cards --only-word "puerto" --commit
+```
+
+Запуск без проверки TTS (только word/training):
+
+```bash
+kubectl exec -it deployment/spanish -n spanish -- \
+  env LEARNING_PAIR=ru-es LEARNING_NATIVE_LANG=ru LEARNING_TARGET_LANG=es LEARNING_APP_CODE=spanish GRAMMAR_BUNDLE_ID=es \
+  /app/revalidate_training_cards --check-tts=false --commit
 ```
 
 ## Локализация названий наборов/категорий на испанский (без пересоздания)

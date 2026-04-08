@@ -13,7 +13,7 @@ SERVICE_NAME ?= ai-bot
 -include .env
 .EXPORT_ALL_VARIABLES:
 
-.PHONY: all tidy build run test lint fmt setup up up-en up-es clean check check-quick ci deploy update status logs docker-build docker-run docker-stop docker-logs docker-clean docker-rebuild docker-dev docker-dev-logs docker-dev-restart webapp-install webapp-dev webapp-build test-postgres test-integration test-integration-verbose grammar-bundle grammar-bundle-list postgres-dev-init-dbs clean-spanish-csv sync-spanish-word-sets requeue-invalid-cards-es-dry requeue-invalid-cards-es
+.PHONY: all tidy build run test lint fmt setup up up-en up-es clean check check-quick ci deploy update status logs docker-build docker-run docker-stop docker-logs docker-clean docker-rebuild docker-dev docker-dev-logs docker-dev-restart webapp-install webapp-dev webapp-build test-postgres test-integration test-integration-verbose grammar-bundle grammar-bundle-list postgres-dev-init-dbs clean-spanish-csv sync-spanish-word-sets requeue-invalid-cards-es-dry requeue-invalid-cards-es requeue-invalid-cards-es-no-tts-dry requeue-invalid-cards-es-no-tts
 
 all: build
 
@@ -451,6 +451,12 @@ requeue-invalid-cards-es-dry:
 requeue-invalid-cards-es:
 	@bash scripts/requeue_invalid_training_cards.sh --target-lang es --commit
 
+requeue-invalid-cards-es-no-tts-dry:
+	@bash scripts/requeue_invalid_training_cards.sh --target-lang es --no-tts
+
+requeue-invalid-cards-es-no-tts:
+	@bash scripts/requeue_invalid_training_cards.sh --target-lang es --no-tts --commit
+
 build-spanish-gender-lexicon:
 	@python3 scripts/build_spanish_gender_lexicon.py --download
 
@@ -542,6 +548,10 @@ help:
 	@echo "  make backfill-noun-gender-es - Write noun_gender backfill with .env.es (+ optional .env)"
 	@echo "  make normalize-word-pos-es-dry - Dry-run POS normalization with .env.es (+ optional .env)"
 	@echo "  make normalize-word-pos-es - Write POS normalization with .env.es (+ optional .env)"
+	@echo "  make requeue-invalid-cards-es-dry - Dry-run soft cleanup: invalid cards + duplicates + invalid TTS"
+	@echo "  make requeue-invalid-cards-es - Commit soft cleanup: invalid cards + duplicates + invalid TTS"
+	@echo "  make requeue-invalid-cards-es-no-tts-dry - Dry-run soft cleanup without touching TTS"
+	@echo "  make requeue-invalid-cards-es-no-tts - Commit soft cleanup without touching TTS"
 	@echo ""
 	@echo "Docker commands:"
 	@echo "  make docker-build   - Build Docker image"
