@@ -111,7 +111,7 @@ func runCLI() int {
 	invalid := make([]invalidGroup, 0)
 	duplicates := make([]duplicateGroup, 0)
 	for _, g := range groups {
-		if issues := invalidWordCardFieldIssues(g.wordCard, cfg.Learning); len(issues) > 0 {
+		if issues := invalidWordCardFieldIssues(g, cfg.Learning); len(issues) > 0 {
 			invalid = append(invalid, invalidGroup{
 				g:      g,
 				reason: invalidReasonWordCardFieldsPrefix + strings.Join(issues, ","),
@@ -542,27 +542,36 @@ func isNilOrBlank(v *string) bool {
 	return v == nil || strings.TrimSpace(*v) == ""
 }
 
-func invalidWordCardFieldIssues(card models.WordCard, learning config.LearningConfig) []string {
+func invalidWordCardFieldIssues(g group, learning config.LearningConfig) []string {
+	card := g.wordCard
 	issues := make([]string, 0, 8)
 	if !isNativeDefinitionValid(card, learning) {
 		issues = append(issues, invalidReasonDefinitionRUNotCyrillic)
 	}
-	if isNilOrBlank(card.POS) {
+	posMissing := isNilOrBlank(card.POS)
+	respPOS := sensesPOS(g.resp)
+	if posMissing && strings.TrimSpace(respPOS) == "" {
 		issues = append(issues, "missing_pos")
 	}
-	if isNilOrBlank(card.Transcription) {
+	if isNilOrBlank(card.Transcription) && strings.TrimSpace(g.resp.Transcription) == "" {
 		issues = append(issues, "missing_transcription")
 	}
-	if isNilOrBlank(card.DisplayEN) {
+	if isNilOrBlank(card.DisplayEN) && !hasAnyDisplayWordInSenses(g.resp.Senses) {
 		issues = append(issues, "missing_display_en")
 	}
-	if isNilOrBlank(card.ExamplesJSON) {
+	if isNilOrBlank(card.ExamplesJSON) && !hasAnyExamplesInSenses(g.resp.Senses) {
 		issues = append(issues, "missing_examples_json")
 	}
-	if card.POS != nil && models.IsVerbPOS(*card.POS) && isNilOrBlank(card.VerbFormsJSON) {
+	posValue := ""
+	if card.POS != nil {
+		posValue = *card.POS
+	} else {
+		posValue = respPOS
+	}
+	if models.IsVerbPOS(posValue) && isNilOrBlank(card.VerbFormsJSON) {
 		issues = append(issues, "missing_verb_forms_json")
 	}
-	if card.POS != nil && models.IsNounPOS(*card.POS) && isNilOrBlank(card.NounGender) {
+	if models.IsNounPOS(posValue) && isNilOrBlank(card.NounGender) {
 		issues = append(issues, "missing_noun_gender")
 	}
 	return issues
@@ -570,6 +579,33 @@ func invalidWordCardFieldIssues(card models.WordCard, learning config.LearningCo
 
 func isWordCardRegenerationReason(reason string) bool {
 	return strings.HasPrefix(reason, invalidReasonWordCardFieldsPrefix)
+}
+
+func sensesPOS(r models.TrainingCardResponse) string {
+	for _, s := range r.Senses {
+		if strings.TrimSpace(s.POS) != "" {
+			return strings.TrimSpace(s.POS)
+		}
+	}
+	return ""
+}
+
+func hasAnyDisplayWordInSenses(senses []models.TrainingCardSense) bool {
+	for _, s := range senses {
+		if strings.TrimSpace(s.DisplayWord) != "" {
+			return true
+		}
+	}
+	return false
+}
+
+func hasAnyExamplesInSenses(senses []models.TrainingCardSense) bool {
+	for _, s := range senses {
+		if strings.TrimSpace(s.ExampleEN) != "" || strings.TrimSpace(s.ExampleRU) != "" {
+			return true
+		}
+	}
+	return false
 }
 
 func loadInvalidTTS(conn *sql.DB, audioDir, onlyWord string) ([]invalidTTS, error) {
