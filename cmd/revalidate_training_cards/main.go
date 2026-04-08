@@ -71,6 +71,7 @@ type invalidTTS struct {
 }
 
 const invalidReasonDefinitionRUNotCyrillic = "definition_ru_not_cyrillic"
+const invalidReasonWordCardFieldsPrefix = "word_card_fields:"
 
 func main() {
 	os.Exit(runCLI())
@@ -110,10 +111,10 @@ func runCLI() int {
 	invalid := make([]invalidGroup, 0)
 	duplicates := make([]duplicateGroup, 0)
 	for _, g := range groups {
-		if !isNativeDefinitionValid(g.wordCard, cfg.Learning) {
+		if issues := invalidWordCardFieldIssues(g.wordCard, cfg.Learning); len(issues) > 0 {
 			invalid = append(invalid, invalidGroup{
 				g:      g,
-				reason: invalidReasonDefinitionRUNotCyrillic,
+				reason: invalidReasonWordCardFieldsPrefix + strings.Join(issues, ","),
 			})
 			continue
 		}
@@ -196,7 +197,7 @@ func runCLI() int {
 	regeneratedDefinition := 0
 	regeneratedDefinitionFailed := 0
 	for _, g := range invalid {
-		if g.reason == invalidReasonDefinitionRUNotCyrillic {
+		if isWordCardRegenerationReason(g.reason) {
 			result, err := regenerateWordCardDefinition(ctx, db.GetConnection(), wordRepo, aiService, cfg.Learning, g.g.wordCard.ID)
 			if err != nil {
 				fmt.Printf("ERROR regenerate definition_ru word_card_id=%d lemma=%q: %v\n", g.g.wordCard.ID, g.g.wordCard.Word, err)
@@ -383,7 +384,7 @@ func deleteTrainingCardByID(ctx context.Context, conn *sql.DB, trainingCardID in
 
 func regenerateWordCardDefinition(
 	ctx context.Context,
-	conn *sql.DB,
+	_ *sql.DB,
 	wordRepo *repository.WordRepository,
 	aiService *ai.Service,
 	learning config.LearningConfig,
@@ -417,10 +418,77 @@ func regenerateWordCardDefinition(
 		return out, fmt.Errorf("llm returned invalid definition_native for pair %s", learning.Pair)
 	}
 
-	if _, err := conn.ExecContext(ctx, `UPDATE word_cards
-		SET definition_ru = ?, updated_at = CURRENT_TIMESTAMP
-		WHERE id = ?`, definitionRU, wordCardID); err != nil {
-		return out, fmt.Errorf("update definition_ru: %w", err)
+	updated := &models.WordCard{
+		ID:                 wordCard.ID,
+		Word:               wordCard.Word,
+		Definition:         wordCard.Definition,
+		POS:                wordCard.POS,
+		NounGender:         wordCard.NounGender,
+		OppositeGenderWord: wordCard.OppositeGenderWord,
+		Transcription:      wordCard.Transcription,
+		DefinitionRU:       wordCard.DefinitionRU,
+		ExamplesJSON:       wordCard.ExamplesJSON,
+		VerbFormsJSON:      wordCard.VerbFormsJSON,
+		DisplayEN:          wordCard.DisplayEN,
+	}
+
+	// Always refresh definition_ru in this recovery branch.
+	updated.DefinitionRU = ptr(strings.TrimSpace(wordInfo.DefinitionRU))
+
+	// Fill remaining fields only when empty/missing.
+	if isNilOrBlank(updated.POS) && strings.TrimSpace(wordInfo.POS) != "" {
+		canonicalPOS := models.CanonicalWordPOS(wordInfo.POS)
+		if canonicalPOS != "" {
+			updated.POS = ptr(canonicalPOS)
+		}
+	}
+	if isNilOrBlank(updated.Transcription) && strings.TrimSpace(wordInfo.Transcription) != "" {
+		updated.Transcription = ptr(strings.TrimSpace(wordInfo.Transcription))
+	}
+	if (updated.ExamplesJSON == nil || strings.TrimSpace(*updated.ExamplesJSON) == "") && len(wordInfo.Examples) > 0 {
+		examplesBytes, err := json.Marshal(wordInfo.Examples)
+		if err == nil {
+			updated.ExamplesJSON = ptr(string(examplesBytes))
+		}
+	}
+	if (updated.VerbFormsJSON == nil || strings.TrimSpace(*updated.VerbFormsJSON) == "") && wordInfo.VerbForms != nil {
+		verbFormsBytes, err := json.Marshal(wordInfo.VerbForms)
+		if err == nil {
+			updated.VerbFormsJSON = ptr(string(verbFormsBytes))
+		}
+	}
+	if isNilOrBlank(updated.NounGender) {
+		if g := models.NormalizeNounGenderValue(wordInfo.NounGender); g != "" {
+			updated.NounGender = ptr(g)
+		} else if updated.POS != nil && models.IsNounPOS(*updated.POS) {
+			if inferred := models.InferNounGenderFromPOSText(wordInfo.POS); inferred != "" {
+				updated.NounGender = ptr(inferred)
+			}
+		}
+	}
+	if isNilOrBlank(updated.OppositeGenderWord) && strings.TrimSpace(wordInfo.OppositeGenderWord) != "" {
+		updated.OppositeGenderWord = ptr(strings.TrimSpace(wordInfo.OppositeGenderWord))
+	}
+	if isNilOrBlank(updated.DisplayEN) {
+		lemma := strings.ToLower(strings.TrimSpace(wordInfo.Lemma))
+		if lemma == "" {
+			lemma = strings.ToLower(strings.TrimSpace(wordCard.Word))
+		}
+		display := lemma
+		if models.IsVerbPOS(wordInfo.POS) && wordInfo.VerbForms != nil && strings.TrimSpace(wordInfo.VerbForms.V1) != "" {
+			if strings.EqualFold(learning.TargetLang, "en") {
+				display = "to " + strings.TrimSpace(wordInfo.VerbForms.V1)
+			} else {
+				display = strings.TrimSpace(wordInfo.VerbForms.V1)
+			}
+		}
+		if strings.TrimSpace(display) != "" {
+			updated.DisplayEN = ptr(display)
+		}
+	}
+
+	if err := wordRepo.UpdateWordCard(updated); err != nil {
+		return out, fmt.Errorf("update word card: %w", err)
 	}
 
 	out.Lemma = wordCard.Word
@@ -466,6 +534,42 @@ func isDefinitionForLearningValid(definition string, learning config.LearningCon
 		return service.ContainsCyrillic(definition)
 	}
 	return true
+}
+
+func ptr(v string) *string { return &v }
+
+func isNilOrBlank(v *string) bool {
+	return v == nil || strings.TrimSpace(*v) == ""
+}
+
+func invalidWordCardFieldIssues(card models.WordCard, learning config.LearningConfig) []string {
+	issues := make([]string, 0, 8)
+	if !isNativeDefinitionValid(card, learning) {
+		issues = append(issues, invalidReasonDefinitionRUNotCyrillic)
+	}
+	if isNilOrBlank(card.POS) {
+		issues = append(issues, "missing_pos")
+	}
+	if isNilOrBlank(card.Transcription) {
+		issues = append(issues, "missing_transcription")
+	}
+	if isNilOrBlank(card.DisplayEN) {
+		issues = append(issues, "missing_display_en")
+	}
+	if isNilOrBlank(card.ExamplesJSON) {
+		issues = append(issues, "missing_examples_json")
+	}
+	if card.POS != nil && models.IsVerbPOS(*card.POS) && isNilOrBlank(card.VerbFormsJSON) {
+		issues = append(issues, "missing_verb_forms_json")
+	}
+	if card.POS != nil && models.IsNounPOS(*card.POS) && isNilOrBlank(card.NounGender) {
+		issues = append(issues, "missing_noun_gender")
+	}
+	return issues
+}
+
+func isWordCardRegenerationReason(reason string) bool {
+	return strings.HasPrefix(reason, invalidReasonWordCardFieldsPrefix)
 }
 
 func loadInvalidTTS(conn *sql.DB, audioDir, onlyWord string) ([]invalidTTS, error) {

@@ -276,12 +276,15 @@ kubectl exec -it deployment/spanish -n spanish -- \
 
 - прогоняет существующие `training_cards` через текущую `ValidateTrainingCardResponse`;
 - для `ru-es` дополнительно проверяет, что `definition_ru` в `word_cards` содержит кириллицу;
+- дополнительно проверяет пустые поля `word_cards` (`pos`, `transcription`, `display_en`, `examples_json`, а также профильные `verb_forms_json`/`noun_gender` по POS);
 - ищет дубли `training_cards` внутри одного `word_card` (по `pos/display_word/word_ru/meaning_en`);
 - проверяет TTS-статусы: `failed_*` и `ready` без реального аудиофайла;
 - в `--commit` режиме для невалидных слов:
   - удаляет их `training_cards`,
   - сбрасывает у `word_cards` `processed_at/processing_error` (ставит обратно в очередь воркера),
   - если `definition_ru` не на русском — обнуляет `definition_ru`, чтобы воркер запросил поле заново.
+- в `--commit` режиме для слов с невалидными/пустыми полями `word_cards`:
+  - запускает LLM-перегенерацию словарной карточки и дозаполняет пустые поля без удаления валидных `training_cards`.
 - в `--commit` режиме для дублей:
   - удаляет только лишние `training_cards` (без reset `word_cards`, без перегенерации).
 - в `--commit` режиме для невалидных TTS:
