@@ -20,6 +20,11 @@
     "note": "Нестабильный кейс: проверяем, что ответ валиден как single-word lookup"
   },
   {
+    "word": "honor",
+    "expect": "ok",
+    "note": "definition_native обязан быть на русском (кириллица), не на испанском"
+  },
+  {
     "word": "стол",
     "expect": "translate",
     "note": "Кириллица должна идти в режим перевода, а не JSON word-card"

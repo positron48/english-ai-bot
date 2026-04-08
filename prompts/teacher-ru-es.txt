@@ -96,6 +96,12 @@ Set error = true only if:
 When error = false:
 - lemma/pos/transcription/definition_native → non-empty.
 - definition_native MUST be in Russian (Cyrillic), not in Spanish.
+- definition_native MUST contain Cyrillic letters. Spanish-only or Latin-only definitions are forbidden.
+- If you are about to output a Spanish definition in definition_native, STOP and rewrite it into natural Russian first.
+- Example (must follow this style):
+  - input_word: "honor"
+  - valid definition_native: "честь; почёт; достоинство"
+  - invalid definition_native: "honor, honra, dignidad"
 - noun_gender:
   - for pos="noun": MUST be one of "m", "f", "mf", "n";
   - for non-nouns: return empty string "".
@@ -119,6 +125,8 @@ When error = true:
 
 Validation:
 - Never mark error = true just because the form is rare, inflected or polysemous.
+- Before final output in SINGLE-WORD LOOKUP MODE, do a final check:
+  - if error=false and definition_native has no Cyrillic letters, regenerate the JSON so definition_native is in Russian.
 
 When error = false:
 - The following fields MUST be NON-EMPTY strings: lemma, pos, transcription, definition_native.
