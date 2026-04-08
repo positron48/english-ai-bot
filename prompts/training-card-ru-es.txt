@@ -32,6 +32,24 @@ If rejected by rules above, return this exact shape:
 }
 Do not generate senses for rejected inputs.
 
+STRICT REJECT GUARD (MANDATORY):
+- `error:"rejected_by_policy"` is allowed ONLY when:
+  1) token exactly matches one item from hard reject list (case-insensitive), OR
+  2) token contains any digit.
+- In ALL other cases you MUST output accepted card:
+  - `error:""`
+  - `senses` with at least 1 item.
+- If you produced `rejected_by_policy`, re-check conditions above before final output; if conditions are not met, rewrite as accepted card.
+
+ACCEPTED CARD CONTRACT (MANDATORY):
+- If `senses` is non-empty, then `error` MUST be exactly empty string `""`.
+- For each sense, `pos` MUST be non-empty and one of:
+  `noun`, `verb`, `adjective`, `adverb`, `pronoun`, `preposition`, `conjunction`, `interjection`, `article`.
+- Never output empty `pos`.
+- For each sense, `word_native` MUST be non-empty Russian word/phrase in Cyrillic.
+- Short tokens (2-3 Latin letters) and common international loanwords/technical terms are NOT grounds for policy rejection.
+- If token is alphabetic (Spanish letters only, no digits) and length >= 4, you MUST ACCEPT it (unless it is in hard reject list).
+
 SCHEMA (MUST MATCH)
 {
  "word_target":"", "lemma":"", "transcription":"",

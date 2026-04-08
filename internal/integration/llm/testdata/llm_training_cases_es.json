@@ -285,6 +285,61 @@
     "note": "Регрессия: не должен уходить в rejected_by_policy"
   },
   {
+    "word": "manual",
+    "expect": "ok",
+    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
+  },
+  {
+    "word": "internet",
+    "expect": "ok",
+    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
+  },
+  {
+    "word": "lateral",
+    "expect": "ok",
+    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
+  },
+  {
+    "word": "cuadro",
+    "expect": "ok",
+    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
+  },
+  {
+    "word": "bancario",
+    "expect": "ok",
+    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
+  },
+  {
+    "word": "individual",
+    "expect": "ok",
+    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
+  },
+  {
+    "word": "portal",
+    "expect": "ok",
+    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
+  },
+  {
+    "word": "pro",
+    "expect": "ok",
+    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
+  },
+  {
+    "word": "león",
+    "expect": "ok",
+    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
+  },
+  {
+    "word": "eh",
+    "expect": "ok",
+    "note": "Проверка: междометие, не должно уходить в rejected_by_policy"
+  },
+  {
+    "word": "par",
+    "expect": "ok",
+    "note": "Проверка: короткое валидное слово, не должно уходить в rejected_by_policy"
+  },
+  {
     "word": "prado",
     "expect": "reject",
     "note": "В hard reject списке prompt"
