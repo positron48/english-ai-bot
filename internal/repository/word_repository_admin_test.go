@@ -117,26 +117,37 @@ func TestWordRepository_ListWordCardsAdmin_HasAudioFilter(t *testing.T) {
 	db, repo := setupWordAdminTestDB(t)
 	repo.SaveWordCard("withaudio", "def")
 	repo.SaveWordCard("noaudio", "def")
+	repo.SaveWordCard("pendingstale", "def")
 	// Insert TTS row for one word so has_audio filter can match
 	_, err := db.Exec(`INSERT INTO tts_generation_status (word, state, audio_rel_path) VALUES ('withaudio', 'ready', 'ab/cd/withaudio.mp3')
 		ON CONFLICT (word) DO UPDATE SET state = 'ready', audio_rel_path = EXCLUDED.audio_rel_path`)
 	if err != nil {
 		t.Fatalf("insert tts_generation_status: %v", err)
 	}
+	_, err = db.Exec(`INSERT INTO tts_generation_status (word, state, audio_rel_path) VALUES ('pendingstale', 'pending', 'ab/cd/pendingstale.mp3')
+		ON CONFLICT (word) DO UPDATE SET state = 'pending', audio_rel_path = EXCLUDED.audio_rel_path`)
+	if err != nil {
+		t.Fatalf("insert pending tts_generation_status: %v", err)
+	}
 	hasAudioTrue := true
 	cardsWith, err := repo.ListWordCardsAdmin(nil, false, &hasAudioTrue, "", "", 10, 0, "", "desc")
 	if err != nil {
 		t.Fatalf("ListWordCardsAdmin(hasAudio=true) error = %v", err)
 	}
-	var foundWith bool
+	var foundWith, foundPendingInWith bool
 	for _, c := range cardsWith {
 		if c.Word == "withaudio" {
 			foundWith = true
-			break
+		}
+		if c.Word == "pendingstale" {
+			foundPendingInWith = true
 		}
 	}
 	if !foundWith {
 		t.Error("Expected withaudio in list when hasAudio=true")
+	}
+	if foundPendingInWith {
+		t.Error("pendingstale must not appear when hasAudio=true because state is not ready")
 	}
 	hasAudioFalse := false
 	cardsWithout, err := repo.ListWordCardsAdmin(nil, false, &hasAudioFalse, "", "", 10, 0, "", "desc")
@@ -146,6 +157,18 @@ func TestWordRepository_ListWordCardsAdmin_HasAudioFilter(t *testing.T) {
 	// Should include words without TTS or with empty audio
 	if len(cardsWithout) == 0 {
 		t.Error("Expected some cards when hasAudio=false")
+	}
+	var foundPendingInWithout bool
+	for _, c := range cardsWithout {
+		if c.Word == "pendingstale" {
+			foundPendingInWithout = true
+			if c.TTSAudioURL != nil {
+				t.Error("pendingstale must not expose TTSAudioURL while state is pending")
+			}
+		}
+	}
+	if !foundPendingInWithout {
+		t.Error("Expected pendingstale in list when hasAudio=false")
 	}
 }
 

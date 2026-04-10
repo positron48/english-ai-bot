@@ -331,7 +331,7 @@ func TestHandleAdminTraining_CreateCardForm_Success(t *testing.T) {
 
 func TestHandleAdminTraining_Generate_FormConstraints(t *testing.T) {
 	router, _, adminUserID := setupAdminTrainingTest(t)
-	router.aiService = setupAdminAIService(t, `{"word_en":"x","transcription":"","senses":[{"pos":"n","display_word":"x","word_ru":"икс","meaning_en":"x","example_en":"","example_ru":"","distractors_ru":[],"distractors_en":[],"hint":""}]}`)
+	router.aiService = setupAdminAIService(t, `{"word_en":"x","transcription":"eks","senses":[{"pos":"n","display_word":"x","word_ru":"икс","meaning_en":"letter x","example_en":"","example_ru":"","distractors_ru":[],"distractors_en":[],"hint":""}]}`)
 
 	req := httptest.NewRequest(http.MethodPost, "/api/admin/training/x/generate", strings.NewReader("constraints=verb"))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")

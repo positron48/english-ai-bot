@@ -574,9 +574,9 @@ func (r *WordRepository) ListWordCardsAdmin(filterUserID *int64, onlyWithErrors 
 	// Filter by audio existence if specified
 	if hasAudio != nil {
 		if *hasAudio {
-			conditions = append(conditions, "tts.audio_rel_path IS NOT NULL AND tts.audio_rel_path != ''")
+			conditions = append(conditions, "tts.state = 'ready' AND tts.audio_rel_path IS NOT NULL AND tts.audio_rel_path != ''")
 		} else {
-			conditions = append(conditions, "(tts.audio_rel_path IS NULL OR tts.audio_rel_path = '')")
+			conditions = append(conditions, "(tts.state IS NULL OR tts.state != 'ready' OR tts.audio_rel_path IS NULL OR tts.audio_rel_path = '')")
 		}
 	}
 
@@ -696,7 +696,7 @@ func (r *WordRepository) ListWordCardsAdmin(filterUserID *int64, onlyWithErrors 
 		if ttsErrorStr != "" {
 			item.TTSError = &ttsErrorStr
 		}
-		if ttsAudioRelPath != "" {
+		if ttsStateStr == models.TTSStateReady && ttsAudioRelPath != "" {
 			audioURL := "/media/tts/" + strings.TrimLeft(ttsAudioRelPath, "/")
 			item.TTSAudioURL = &audioURL
 		}
@@ -740,9 +740,9 @@ func (r *WordRepository) CountWordCardsAdmin(filterUserID *int64, onlyWithErrors
 	// Filter by audio existence if specified
 	if hasAudio != nil {
 		if *hasAudio {
-			conditions = append(conditions, "tts.audio_rel_path IS NOT NULL AND tts.audio_rel_path != ''")
+			conditions = append(conditions, "tts.state = 'ready' AND tts.audio_rel_path IS NOT NULL AND tts.audio_rel_path != ''")
 		} else {
-			conditions = append(conditions, "(tts.audio_rel_path IS NULL OR tts.audio_rel_path = '')")
+			conditions = append(conditions, "(tts.state IS NULL OR tts.state != 'ready' OR tts.audio_rel_path IS NULL OR tts.audio_rel_path = '')")
 		}
 	}
 

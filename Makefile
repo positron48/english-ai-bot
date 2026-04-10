@@ -129,12 +129,20 @@ llm-all: llm-words llm-cards
 
 llm-words-es:
 	@echo "Running Spanish LLM word cards integration tests..."
-	@echo "⚠️  Requires: AI_URL, AI_API_KEY environment variables"
+	@echo "⚠️  Requires: .env.es (and AI_URL, AI_API_KEY)"
+	@test -f .env.es || (echo "Нет .env.es — скопируйте env.example.es в .env.es и заполните секреты"; exit 1)
+	@set -e; \
+	set -a; [ -f .env ] && . ./.env; set +a; \
+	set -a && . ./.env.es && set +a; \
 	$(GO) test -tags=integration -v -run '^TestLLM_WordCards_ES$$' -count=1 ./internal/integration/llm/...
 
 llm-cards-es:
 	@echo "Running Spanish LLM training cards integration tests..."
-	@echo "⚠️  Requires: AI_URL, AI_API_KEY environment variables"
+	@echo "⚠️  Requires: .env.es (and AI_URL, AI_API_KEY)"
+	@test -f .env.es || (echo "Нет .env.es — скопируйте env.example.es в .env.es и заполните секреты"; exit 1)
+	@set -e; \
+	set -a; [ -f .env ] && . ./.env; set +a; \
+	set -a && . ./.env.es && set +a; \
 	$(GO) test -tags=integration -v -run '^TestLLM_TrainingCards_ES$$' -count=1 ./internal/integration/llm/...
 
 llm-es: llm-words-es llm-cards-es

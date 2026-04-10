@@ -61,8 +61,9 @@ CARD
 - 1–3 senses.
 - word_target, lemma and every display_word MUST represent exactly ONE lexical item (no comma-separated variants like "conjunto, conjunta").
 - display_word: Spanish verb infinitive form as appropriate; use clear Spanish display conventions.
-- meaning_target MUST be in Spanish (not in English).
-- example_target MUST be in Spanish (not in English).
+- transcription is REQUIRED for accepted card and MUST be non-empty (IPA-style preferred).
+- meaning_target MUST be in Spanish (not in English, not in Russian/Cyrillic).
+- example_target MUST be in Spanish (not in English, not in Russian/Cyrillic).
 - word_native must match pos:
   - verb => Russian infinitive
   - adjective => masculine singular adjective
@@ -85,12 +86,15 @@ DISTRACTORS (THIS IS THE MOST IMPORTANT PART)
   - For EACH sense and EACH item in distractors_target:
     1) must contain NO Cyrillic;
     2) must NOT be equal to lemma and must NOT contain lemma as substring.
+  - For EACH sense:
+    1) meaning_target MUST contain NO Cyrillic;
+    2) example_target MUST contain NO Cyrillic.
 - If any of the checks above fails for a sense, REWRITE distractors for that sense before output.
 - Safe fallback (use only if needed to satisfy checks):
   - verbs: distractors_ru = ["думать","читать","строить"], distractors_target = ["pensar","leer","construir"]
   - nouns: distractors_ru = ["город","страна","вопрос"], distractors_target = ["ciudad","país","pregunta"]
   - adjectives/adverbs: distractors_ru = ["быстрый","медленный","редко"], distractors_target = ["rápido","lento","raramente"]
 
-FINAL SELF-CHECK (MANDATORY): if any rule fails, replace distractors until ALL pass, then output JSON.
+FINAL SELF-CHECK (MANDATORY): if any rule fails, fix fields until ALL pass, then output JSON.
 
 Word to process:

@@ -347,6 +347,11 @@ func containsLatin(s string) bool {
 func validateTrainingResponseOK(t *testing.T, word string, resp map[string]interface{}) []string {
 	var errors []string
 
+	// Check transcription is present for accepted cards
+	if transcription, ok := resp["transcription"].(string); !ok || strings.TrimSpace(transcription) == "" {
+		errors = append(errors, "transcription is missing or empty")
+	}
+
 	// Check error is empty
 	if errorVal, ok := resp["error"].(string); ok && errorVal != "" {
 		errors = append(errors, fmt.Sprintf("error should be empty for ok response, got: %q", errorVal))
@@ -435,6 +440,11 @@ func validateTrainingResponseReject(t *testing.T, word string, resp map[string]i
 		errors = append(errors, "senses should be an array")
 	} else if len(senses) != 0 {
 		errors = append(errors, fmt.Sprintf("senses should be empty for reject response, got %d items", len(senses)))
+	}
+
+	// For rejected response transcription must be empty
+	if transcription, ok := resp["transcription"].(string); !ok || strings.TrimSpace(transcription) != "" {
+		errors = append(errors, "transcription should be empty for reject response")
 	}
 
 	return errors

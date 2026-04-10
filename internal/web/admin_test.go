@@ -3038,6 +3038,33 @@ func TestHandleAdminWord_Direct_POST_Generate_Success(t *testing.T) {
 	}
 }
 
+func TestHandleAdminWord_Direct_POST_Generate_EmptyTranscription(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, _, cbService := setupAdminTestDB(t)
+	wordRepo := repository.NewWordRepository(db, logger)
+	_ = wordRepo.SaveWordCard("run", "def")
+	wc, _ := wordRepo.GetWordCard("run")
+	wordInfoJSON := `{"input_word":"run","lemma":"run","pos":"verb","transcription":"","definition_ru":"бежать","examples":[]}`
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write([]byte(`{"choices":[{"message":{"content":` + strconv.Quote(wordInfoJSON) + `}}]}`))
+	}))
+	t.Cleanup(server.Close)
+	aiSvc := ai.NewService(server.URL, "test-model", "test-key", "prompt", logger)
+
+	cfg := &config.Config{Admin: config.AdminConfig{TelegramID: 123456789}, WebApp: config.WebAppConfig{JWTSecret: "test-secret"}}
+	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
+	router.aiService = aiSvc
+
+	req := httptest.NewRequest(http.MethodPost, fmt.Sprintf("/api/admin/words/%d/generate", wc.ID), nil)
+	w := httptest.NewRecorder()
+	router.handleAdminWord(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("expected 400 for empty transcription, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
 func TestHandleAdminWord_Direct_POST_Generate_LLMError(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, _, cbService := setupAdminTestDB(t)

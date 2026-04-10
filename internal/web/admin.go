@@ -17,6 +17,17 @@ import (
 	"go.uber.org/zap"
 )
 
+func requireNativeCyrillicForLearningPair(nativeLang, targetLang string) bool {
+	return strings.EqualFold(strings.TrimSpace(nativeLang), "ru") && strings.EqualFold(strings.TrimSpace(targetLang), "es")
+}
+
+func validAdminDefinitionNative(definitionNative, nativeLang, targetLang string) bool {
+	if !requireNativeCyrillicForLearningPair(nativeLang, targetLang) {
+		return true
+	}
+	return service.ContainsCyrillic(strings.TrimSpace(definitionNative))
+}
+
 // RequireAdmin wraps a handler to require admin access (legacy - use RequirePermission instead)
 // This now checks for full_access permission or super admin status
 func (r *Router) RequireAdmin(next http.HandlerFunc) http.HandlerFunc {
@@ -345,6 +356,20 @@ func (r *Router) handleAdminTraining(w http.ResponseWriter, req *http.Request) {
 		// Get first sense (should be only one)
 		if len(trainingResp.Senses) == 0 {
 			http.Error(w, "No senses in LLM response", http.StatusInternalServerError)
+			return
+		}
+		if strings.TrimSpace(trainingResp.Transcription) == "" {
+			http.Error(w, "LLM returned empty transcription", http.StatusBadRequest)
+			return
+		}
+		lemma := strings.TrimSpace(trainingResp.WordEN)
+		if lemma == "" {
+			lemma = strings.TrimSpace(wordEN)
+		}
+		validationWordCard := &models.WordCard{Word: lemma}
+		validationError := service.ValidateTrainingCardResponse(r.config.Learning.TargetLang, validationWordCard, &trainingResp)
+		if validationError != "" {
+			http.Error(w, "LLM validation failed: "+validationError, http.StatusBadRequest)
 			return
 		}
 
@@ -1220,15 +1245,13 @@ func (r *Router) handleAdminWord(w http.ResponseWriter, req *http.Request) {
 			http.Error(w, "LLM error: "+wordInfo.Error.Message, http.StatusBadRequest)
 			return
 		}
-
-		// Guardrail for RU->ES admin AI fill:
-		// definition_ru must stay Russian (Cyrillic), otherwise UI gets Spanish text in RU field.
-		if strings.EqualFold(r.config.Learning.NativeLang, "ru") && strings.EqualFold(r.config.Learning.TargetLang, "es") {
-			definitionRU := strings.TrimSpace(wordInfo.DefinitionRU)
-			if definitionRU == "" || !service.ContainsCyrillic(definitionRU) {
-				http.Error(w, "LLM returned non-Russian definition_ru; please retry AI fill", http.StatusBadRequest)
-				return
-			}
+		if strings.TrimSpace(wordInfo.Transcription) == "" {
+			http.Error(w, "LLM returned empty transcription; please retry AI fill", http.StatusBadRequest)
+			return
+		}
+		if !validAdminDefinitionNative(wordInfo.DefinitionRU, r.config.Learning.NativeLang, r.config.Learning.TargetLang) {
+			http.Error(w, "LLM returned definition_native in unexpected language; please retry AI fill", http.StatusBadRequest)
+			return
 		}
 
 		// Prepare examples JSON

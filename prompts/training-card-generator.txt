@@ -28,12 +28,14 @@ SCHEMA (MUST MATCH)
 
 CARD
 - 1–3 senses.
+- For accepted card transcription is REQUIRED and must be non-empty.
 - display_word:
   - if pos=="verb" and target language is English => "to <lemma>"
   - if pos=="verb" and target language is not English => "<lemma>" (bare infinitive, without "to ")
   - if pos!="verb" => "<lemma>"
 - meaning_target MUST be in target language (never in English unless target language is English).
 - example_target MUST be in target language (never in English unless target language is English).
+- If target language is not Russian, meaning_target and example_target MUST NOT contain Cyrillic.
 - word_native must match pos:
   - verb => Russian infinitive
   - adjective => masculine singular adjective

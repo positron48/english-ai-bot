@@ -268,7 +268,7 @@ func TestHandleAdminTraining_CreateCard_JSON_InvalidJSON(t *testing.T) {
 // in the generate path.
 func TestHandleAdminTraining_Generate_FormData_InvalidForm(t *testing.T) {
 	router, _, adminUserID := setupAdminTrainingTest(t)
-	router.aiService = setupAdminAIService(t, `{"word_en":"x","senses":[{"pos":"n","display_word":"x","word_ru":"икс","meaning_en":"x","example_en":"","example_ru":"","distractors_ru":[],"distractors_en":[],"hint":""}]}`)
+	router.aiService = setupAdminAIService(t, `{"word_en":"x","transcription":"eks","senses":[{"pos":"n","display_word":"x","word_ru":"икс","meaning_en":"letter x","example_en":"","example_ru":"","distractors_ru":[],"distractors_en":[],"hint":""}]}`)
 
 	// Use a body that forces ParseForm to fail: content-type form but body is not parseable
 	// Actually ParseForm won't fail on simple bodies; we test the normal form path instead.
@@ -1371,7 +1371,7 @@ func TestHandleAdminOrphanedUserCards_WithOrphanedTrainingCards(t *testing.T) {
 // Since ParseForm rarely fails on normal bodies, we test the form path with empty constraints.
 func TestHandleAdminTraining_Generate_EmptyConstraints(t *testing.T) {
 	router, _, adminUserID := setupAdminTrainingTest(t)
-	response := `{"word_en":"x","transcription":"","senses":[{"pos":"n","display_word":"x","word_ru":"икс","meaning_en":"x","example_en":"","example_ru":"","distractors_ru":[],"distractors_en":[],"hint":""}]}`
+	response := `{"word_en":"x","transcription":"eks","senses":[{"pos":"n","display_word":"x","word_ru":"икс","meaning_en":"letter x","example_en":"","example_ru":"","distractors_ru":[],"distractors_en":[],"hint":""}]}`
 	router.aiService = setupAdminAIService(t, response)
 
 	req := httptest.NewRequest(http.MethodPost, "/api/admin/training/x/generate",

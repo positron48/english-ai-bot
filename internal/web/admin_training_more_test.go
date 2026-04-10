@@ -95,6 +95,40 @@ func TestHandleAdminTraining_Generate_FormData(t *testing.T) {
 	}
 }
 
+func TestHandleAdminTraining_Generate_ValidationFailsMeaningTarget(t *testing.T) {
+	router, _, adminUserID := setupAdminTrainingTest(t)
+	response := `{"word_en":"casa","transcription":"kasa","senses":[{"pos":"noun","display_word":"casa","word_ru":"дом","meaning_en":"дом","example_en":"La casa es grande.","example_ru":"Дом большой.","distractors_ru":["квартира","жилище","здание"],"distractors_en":["hogar","edificio","vivienda"],"hint":"home"}]}`
+	router.aiService = setupAdminAIService(t, response)
+
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/training/casa/generate", bytes.NewBufferString(`{"constraints":"x"}`))
+	req.Header.Set("Content-Type", "application/json")
+	req = setAdminTrainingUserContext(req, adminUserID)
+	w := httptest.NewRecorder()
+
+	router.handleAdminTraining(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Fatalf("expected 400 when validation fails, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+func TestHandleAdminTraining_Generate_ValidationFailsEmptyTranscription(t *testing.T) {
+	router, _, adminUserID := setupAdminTrainingTest(t)
+	response := `{"word_en":"x","transcription":"","senses":[{"pos":"noun","display_word":"x","word_ru":"икс","meaning_en":"letter x","example_en":"This is x.","example_ru":"Это икс.","distractors_ru":["игрек","зет","альфа"],"distractors_en":["y","z","alpha"],"hint":"letter"}]}`
+	router.aiService = setupAdminAIService(t, response)
+
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/training/x/generate", bytes.NewBufferString(`{"constraints":"x"}`))
+	req.Header.Set("Content-Type", "application/json")
+	req = setAdminTrainingUserContext(req, adminUserID)
+	w := httptest.NewRecorder()
+
+	router.handleAdminTraining(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Fatalf("expected 400 when transcription is empty, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
 func TestHandleAdminTraining_CreateCardJSON_SuccessCreatesUserCards(t *testing.T) {
 	router, db, adminUserID := setupAdminTrainingTest(t)
 	wordRepo := repository.NewWordRepository(db.GetConnection(), router.logger)

@@ -140,6 +140,11 @@
     "note": "Регрессия: нестабильный кейс, проверка R2 и leakage по глаголу seguir"
   },
   {
+    "word": "pequeña",
+    "expect": "ok",
+    "note": "Регрессия из админки: meaning_target и example_target должны быть на испанском, transcription обязателен"
+  },
+  {
     "word": "grave",
     "expect": "ok",
     "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
