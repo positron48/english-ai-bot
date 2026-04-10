@@ -55,6 +55,33 @@ func ValidateTrainingCardResponse(targetLang string, wordCard *models.WordCard, 
 			}
 		}
 
+		// R8: word_native (DB: word_ru) должен быть на кириллице и без латиницы.
+		wordNative := strings.TrimSpace(sense.WordRU)
+		if wordNative == "" || !ContainsCyrillic(wordNative) {
+			errors = append(errors, fmt.Sprintf("R8 sense=%d word_native=%q should contain Cyrillic", senseIdx, truncate(sense.WordRU, 50)))
+		}
+		if containsLatin(wordNative) {
+			errors = append(errors, fmt.Sprintf("R8 sense=%d word_native=%q should not contain Latin", senseIdx, truncate(sense.WordRU, 50)))
+		}
+
+		// R9: meaning_target (DB: meaning_en) для не-ru target не должен содержать кириллицу.
+		// Для пар ru->en/ru->es дополнительно ожидаем латиницу в meaning_target.
+		meaningTarget := strings.TrimSpace(sense.MeaningEN)
+		if meaningTarget != "" && ContainsCyrillic(meaningTarget) {
+			errors = append(errors, fmt.Sprintf("R9 sense=%d meaning_target=%q contains Cyrillic", senseIdx, truncate(sense.MeaningEN, 50)))
+		}
+		if !strings.EqualFold(strings.TrimSpace(targetLang), "ru") && meaningTarget != "" {
+			if !containsLatin(meaningTarget) {
+				errors = append(errors, fmt.Sprintf("R9 sense=%d meaning_target=%q should contain Latin", senseIdx, truncate(sense.MeaningEN, 50)))
+			}
+		}
+
+		// R10: hint для не-ru target не должен быть на русском (кириллица запрещена).
+		hint := strings.TrimSpace(sense.Hint)
+		if !strings.EqualFold(strings.TrimSpace(targetLang), "ru") && hint != "" && ContainsCyrillic(hint) {
+			errors = append(errors, fmt.Sprintf("R10 sense=%d hint=%q contains Cyrillic", senseIdx, truncate(sense.Hint, 50)))
+		}
+
 		enInfinitive := englishTargetUsesToInfinitive(targetLang)
 
 		// R3: distractors_en, если pos == "verb" — для английского должны начинаться на "to "

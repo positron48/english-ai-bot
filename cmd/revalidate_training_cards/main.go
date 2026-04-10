@@ -58,6 +58,14 @@ type invalidGroup struct {
 	reason string
 }
 
+type invalidTrainingCard struct {
+	TrainingCardID int64
+	WordCardID     int64
+	Lemma          string
+	SenseIndex     int
+	Reason         string
+}
+
 type definitionRegenerationResult struct {
 	Lemma        string
 	DefinitionRU string
@@ -113,22 +121,36 @@ func runCLI() int {
 		return 1
 	}
 
-	invalid := make([]invalidGroup, 0)
+	invalidWordCards := make([]invalidGroup, 0)
+	invalidTrainingCards := make([]invalidTrainingCard, 0)
 	duplicates := make([]duplicateGroup, 0)
 	for _, g := range groups {
 		if issues := invalidWordCardFieldIssues(g, cfg.Learning); len(issues) > 0 {
-			invalid = append(invalid, invalidGroup{
+			invalidWordCards = append(invalidWordCards, invalidGroup{
 				g:      g,
 				reason: invalidReasonWordCardFieldsPrefix + strings.Join(issues, ","),
 			})
 			continue
 		}
-		if errMsg := service.ValidateTrainingCardResponse(cfg.Learning.TargetLang, &g.wordCard, &g.resp); errMsg != "" {
-			invalid = append(invalid, invalidGroup{
-				g:      g,
-				reason: errMsg,
-			})
-			continue
+		for i, sense := range g.resp.Senses {
+			singleResp := models.TrainingCardResponse{
+				WordEN:        g.resp.WordEN,
+				WordTarget:    g.resp.WordTarget,
+				Lemma:         g.resp.Lemma,
+				Transcription: g.resp.Transcription,
+				Senses:        []models.TrainingCardSense{sense},
+			}
+			if errMsg := service.ValidateTrainingCardResponse(cfg.Learning.TargetLang, &g.wordCard, &singleResp); errMsg != "" {
+				if i < len(g.trainingCardIDs) {
+					invalidTrainingCards = append(invalidTrainingCards, invalidTrainingCard{
+						TrainingCardID: g.trainingCardIDs[i],
+						WordCardID:     g.wordCard.ID,
+						Lemma:          g.wordCard.Word,
+						SenseIndex:     i,
+						Reason:         errMsg,
+					})
+				}
+			}
 		}
 		if deleteIDs, dupErr := duplicateTrainingCardIDs(g); len(deleteIDs) > 0 {
 			duplicates = append(duplicates, duplicateGroup{
@@ -140,11 +162,20 @@ func runCLI() int {
 		}
 	}
 
-	sort.Slice(invalid, func(i, j int) bool {
-		return invalid[i].g.wordCard.ID < invalid[j].g.wordCard.ID
+	sort.Slice(invalidWordCards, func(i, j int) bool {
+		return invalidWordCards[i].g.wordCard.ID < invalidWordCards[j].g.wordCard.ID
 	})
-	if *limit > 0 && len(invalid) > *limit {
-		invalid = invalid[:*limit]
+	if *limit > 0 && len(invalidWordCards) > *limit {
+		invalidWordCards = invalidWordCards[:*limit]
+	}
+	sort.Slice(invalidTrainingCards, func(i, j int) bool {
+		if invalidTrainingCards[i].WordCardID == invalidTrainingCards[j].WordCardID {
+			return invalidTrainingCards[i].TrainingCardID < invalidTrainingCards[j].TrainingCardID
+		}
+		return invalidTrainingCards[i].WordCardID < invalidTrainingCards[j].WordCardID
+	})
+	if *limit > 0 && len(invalidTrainingCards) > *limit {
+		invalidTrainingCards = invalidTrainingCards[:*limit]
 	}
 	sort.Slice(duplicates, func(i, j int) bool {
 		return duplicates[i].WordCardID < duplicates[j].WordCardID
@@ -169,9 +200,14 @@ func runCLI() int {
 	if *commit {
 		mode = "COMMIT"
 	}
-	fmt.Printf("[%s] total_word_cards=%d invalid=%d duplicates=%d invalid_tts=%d\n", mode, len(groups), len(invalid), len(duplicates), len(invalidTTSList))
-	for _, g := range invalid {
-		fmt.Printf("INVALID word_card_id=%d lemma=%q senses=%d reason=%q\n", g.g.wordCard.ID, g.g.wordCard.Word, len(g.g.resp.Senses), g.reason)
+	fmt.Printf("[%s] total_word_cards=%d invalid_word_cards=%d invalid_training_cards=%d duplicates=%d invalid_tts=%d\n",
+		mode, len(groups), len(invalidWordCards), len(invalidTrainingCards), len(duplicates), len(invalidTTSList))
+	for _, g := range invalidWordCards {
+		fmt.Printf("INVALID_WORD_CARD word_card_id=%d lemma=%q senses=%d reason=%q\n", g.g.wordCard.ID, g.g.wordCard.Word, len(g.g.resp.Senses), g.reason)
+	}
+	for _, c := range invalidTrainingCards {
+		fmt.Printf("INVALID_TRAINING_CARD training_card_id=%d word_card_id=%d lemma=%q sense=%d reason=%q\n",
+			c.TrainingCardID, c.WordCardID, c.Lemma, c.SenseIndex, c.Reason)
 	}
 	for _, d := range duplicates {
 		fmt.Printf("DUPLICATE word_card_id=%d lemma=%q delete_training_cards=%v reason=%q\n", d.WordCardID, d.Lemma, d.DeleteIDs, d.Reason)
@@ -201,7 +237,11 @@ func runCLI() int {
 	requeued := 0
 	regeneratedDefinition := 0
 	regeneratedDefinitionFailed := 0
-	for _, g := range invalid {
+	invalidWordCardSet := make(map[int64]struct{}, len(invalidWordCards))
+	for _, g := range invalidWordCards {
+		invalidWordCardSet[g.g.wordCard.ID] = struct{}{}
+	}
+	for _, g := range invalidWordCards {
 		if isWordCardRegenerationReason(g.reason) {
 			result, err := regenerateWordCardDefinition(ctx, db.GetConnection(), wordRepo, aiService, cfg.Learning, g.g.wordCard.ID)
 			if err != nil {
@@ -219,6 +259,17 @@ func runCLI() int {
 		}
 		requeued++
 	}
+	deletedInvalidTrainingCards := 0
+	for _, c := range invalidTrainingCards {
+		if _, exists := invalidWordCardSet[c.WordCardID]; exists {
+			continue
+		}
+		if err := deleteTrainingCardByID(ctx, db.GetConnection(), c.TrainingCardID); err != nil {
+			fmt.Printf("ERROR delete invalid training_card_id=%d word_card_id=%d lemma=%q: %v\n", c.TrainingCardID, c.WordCardID, c.Lemma, err)
+			continue
+		}
+		deletedInvalidTrainingCards++
+	}
 
 	resetTTS := 0
 	if *checkTTS {
@@ -231,7 +282,8 @@ func runCLI() int {
 			resetTTS++
 		}
 	}
-	fmt.Printf("Done. requeued_word_cards=%d regenerated_definition=%d regen_definition_failed=%d deleted_duplicate_training_cards=%d reset_tts=%d\n", requeued, regeneratedDefinition, regeneratedDefinitionFailed, deletedDuplicates, resetTTS)
+	fmt.Printf("Done. requeued_word_cards=%d regenerated_definition=%d regen_definition_failed=%d deleted_invalid_training_cards=%d deleted_duplicate_training_cards=%d reset_tts=%d\n",
+		requeued, regeneratedDefinition, regeneratedDefinitionFailed, deletedInvalidTrainingCards, deletedDuplicates, resetTTS)
 	return 0
 }
 

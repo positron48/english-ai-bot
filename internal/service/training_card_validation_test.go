@@ -135,6 +135,85 @@ func TestValidateTrainingCardResponse_R2_LatinInDistractorsRU(t *testing.T) {
 	}
 }
 
+func TestValidateTrainingCardResponse_R8_WordNativeContainsLatin(t *testing.T) {
+	wordCard := &models.WordCard{
+		Word: "casa",
+	}
+	resp := &models.TrainingCardResponse{
+		WordEN: "casa",
+		Senses: []models.TrainingCardSense{
+			{
+				POS:           "noun",
+				WordRU:        "house",
+				MeaningEN:     "casa",
+				DistractorsEN: []string{"hogar", "edificio", "vivienda"},
+				DistractorsRU: []string{"дом", "квартира", "здание"},
+			},
+		},
+	}
+
+	errorMsg := ValidateTrainingCardResponse("es", wordCard, resp)
+	if errorMsg == "" {
+		t.Fatal("Expected validation error for R8 (word_native in Latin), got empty")
+	}
+	if !strings.Contains(errorMsg, "R8") {
+		t.Fatalf("Expected error message to contain 'R8', got: %s", errorMsg)
+	}
+}
+
+func TestValidateTrainingCardResponse_R9_MeaningTargetContainsCyrillic(t *testing.T) {
+	wordCard := &models.WordCard{
+		Word: "casa",
+	}
+	resp := &models.TrainingCardResponse{
+		WordEN: "casa",
+		Senses: []models.TrainingCardSense{
+			{
+				POS:           "noun",
+				WordRU:        "дом",
+				MeaningEN:     "дом",
+				DistractorsEN: []string{"hogar", "edificio", "vivienda"},
+				DistractorsRU: []string{"квартира", "здание", "жилище"},
+			},
+		},
+	}
+
+	errorMsg := ValidateTrainingCardResponse("es", wordCard, resp)
+	if errorMsg == "" {
+		t.Fatal("Expected validation error for R9 (meaning_target contains Cyrillic), got empty")
+	}
+	if !strings.Contains(errorMsg, "R9") {
+		t.Fatalf("Expected error message to contain 'R9', got: %s", errorMsg)
+	}
+}
+
+func TestValidateTrainingCardResponse_R10_HintContainsCyrillicForEs(t *testing.T) {
+	wordCard := &models.WordCard{
+		Word: "casa",
+	}
+	resp := &models.TrainingCardResponse{
+		WordEN: "casa",
+		Senses: []models.TrainingCardSense{
+			{
+				POS:           "noun",
+				WordRU:        "дом",
+				MeaningEN:     "casa",
+				Hint:          "это дом",
+				DistractorsEN: []string{"hogar", "edificio", "vivienda"},
+				DistractorsRU: []string{"квартира", "здание", "жилище"},
+			},
+		},
+	}
+
+	errorMsg := ValidateTrainingCardResponse("es", wordCard, resp)
+	if errorMsg == "" {
+		t.Fatal("Expected validation error for R10 (hint contains Cyrillic for es target), got empty")
+	}
+	if !strings.Contains(errorMsg, "R10") {
+		t.Fatalf("Expected error message to contain 'R10', got: %s", errorMsg)
+	}
+}
+
 func TestValidateTrainingCardResponse_R3_VerbWithoutToPrefix(t *testing.T) {
 	wordCard := &models.WordCard{
 		Word: "run",
