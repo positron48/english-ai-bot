@@ -100,6 +100,11 @@
     "note": "Прод-регрессия: word_native должен быть кириллицей"
   },
   {
+    "word": "contar",
+    "expect": "ok",
+    "note": "Прод-регрессия: meaning_target/hint без кириллицы в обеих семантиках"
+  },
+  {
     "word": "internet",
     "expect": "ok",
     "note": "Loanword: должен приниматься, не rejected_by_policy"

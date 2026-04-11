@@ -25,6 +25,16 @@
     "note": "definition_native обязан быть на русском (кириллица), не на испанском"
   },
   {
+    "word": "revisión",
+    "expect": "ok",
+    "note": "Прод-регрессия: валидный JSON-ответ и definition_native на русском"
+  },
+  {
+    "word": "texto",
+    "expect": "ok",
+    "note": "Прод-регрессия: валидный JSON-ответ и definition_native на русском"
+  },
+  {
     "word": "стол",
     "expect": "translate",
     "note": "Кириллица должна идти в режим перевода, а не JSON word-card"
