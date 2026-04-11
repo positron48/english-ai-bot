@@ -3,6 +3,8 @@ Generate ONE training card from ONE {{target_lang}} word (pair {{pair}}: {{nativ
 OUTPUT (STRICT)
 - Output ONLY valid JSON, nothing else.
 - Always output keys: word_target, lemma, transcription, senses, error — use only the names from SCHEMA below (neutral keys).
+- `word_target` and `lemma` MUST always be non-empty strings (never empty in accepted or rejected output).
+- For rejected output, `word_target` and `lemma` MUST echo the input token (trimmed).
 - If accepted: error="".
 - If rejected: senses=[] and error is non-empty.
 

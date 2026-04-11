@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"strings"
 	"time"
+	"unicode"
 
 	"go.uber.org/zap"
 )
@@ -24,6 +25,26 @@ func stripLLMJSONFences(s string) string {
 	s = strings.TrimPrefix(s, "```")
 	s = strings.TrimSuffix(s, "```")
 	return strings.TrimSpace(s)
+}
+
+func isSingleWordLookupCandidate(s string) bool {
+	trimmed := strings.TrimSpace(s)
+	if trimmed == "" {
+		return false
+	}
+	if len(strings.Fields(trimmed)) != 1 {
+		return false
+	}
+	hasLatin := false
+	for _, r := range trimmed {
+		if unicode.IsDigit(r) || unicode.Is(unicode.Cyrillic, r) {
+			return false
+		}
+		if unicode.Is(unicode.Latin, r) {
+			hasLatin = true
+		}
+	}
+	return hasLatin
 }
 
 // Service handles AI provider interactions
@@ -92,6 +113,9 @@ type Error struct {
 
 // GenerateResponse sends a message to the AI provider and returns the response
 func (s *Service) GenerateResponse(ctx context.Context, userMessage string) (string, error) {
+	if isSingleWordLookupCandidate(userMessage) {
+		userMessage = "SINGLE_WORD_LOOKUP_MODE\nReturn ONLY one JSON object for dictionary lookup.\nWord: " + strings.TrimSpace(userMessage)
+	}
 	// Prepare messages with system prompt
 	messages := []Message{
 		{
@@ -109,7 +133,7 @@ func (s *Service) GenerateResponse(ctx context.Context, userMessage string) (str
 		Model:       s.model,
 		Messages:    messages,
 		MaxTokens:   2000,
-		Temperature: 0.5,
+		Temperature: 0.3, // Lower temperature for more stable routing/JSON in single-word lookup
 	}
 
 	// Marshal request
@@ -188,7 +212,11 @@ func (s *Service) GenerateTrainingCard(ctx context.Context, word string, modelOv
 	}
 
 	// Prepare user message with word
-	userMessage := s.trainingPrompt + word
+	userMessage := strings.TrimSpace(s.trainingPrompt)
+	if !strings.HasSuffix(userMessage, "\n") {
+		userMessage += "\n"
+	}
+	userMessage += strings.TrimSpace(word)
 
 	// Prepare messages
 	messages := []Message{
@@ -209,7 +237,7 @@ func (s *Service) GenerateTrainingCard(ctx context.Context, word string, modelOv
 		Model:       model,
 		Messages:    messages,
 		MaxTokens:   2000,
-		Temperature: 0.3, // Lower temperature for more consistent JSON output
+		Temperature: 0.3, // Balanced determinism; avoids overfitting to wrong reject branch
 	}
 
 	// Marshal request
@@ -290,8 +318,9 @@ func (s *Service) GenerateAdditionalTrainingCard(ctx context.Context, word strin
 
 	// Build user message with word and constraints
 	var userMessage strings.Builder
-	userMessage.WriteString(s.trainingPrompt)
-	userMessage.WriteString(word)
+	userMessage.WriteString(strings.TrimSpace(s.trainingPrompt))
+	userMessage.WriteString("\n")
+	userMessage.WriteString(strings.TrimSpace(word))
 
 	if constraints != "" {
 		userMessage.WriteString("\n\nAdditional constraints for this card:\n")
@@ -318,7 +347,7 @@ func (s *Service) GenerateAdditionalTrainingCard(ctx context.Context, word strin
 		Model:       model,
 		Messages:    messages,
 		MaxTokens:   2000,
-		Temperature: 0.3, // Lower temperature for more consistent JSON output
+		Temperature: 0.3, // Balanced determinism; avoids overfitting to wrong reject branch
 	}
 
 	// Marshal request

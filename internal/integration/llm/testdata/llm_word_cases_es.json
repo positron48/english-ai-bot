@@ -35,6 +35,46 @@
     "note": "Прод-регрессия: валидный JSON-ответ и definition_native на русском"
   },
   {
+    "word": "ejemplo",
+    "expect": "ok",
+    "note": "Прод-регрессия: не уходить в correction mode, вернуть JSON lookup"
+  },
+  {
+    "word": "mejorar",
+    "expect": "ok",
+    "note": "Прод-регрессия: не уходить в correction mode, вернуть JSON lookup"
+  },
+  {
+    "word": "correcto",
+    "expect": "ok",
+    "note": "Прод-регрессия: single-token adjective должен возвращать JSON lookup"
+  },
+  {
+    "word": "mejora",
+    "expect": "ok",
+    "note": "Прод-регрессия: single-token noun/verb-form должен возвращать JSON lookup"
+  },
+  {
+    "word": "formal",
+    "expect": "ok",
+    "note": "Прод-регрессия: single-token adjective должен возвращать JSON lookup"
+  },
+  {
+    "word": "traducir",
+    "expect": "ok",
+    "note": "Прод-регрессия: single-token verb должен возвращать JSON lookup"
+  },
+  {
+    "word": "traducción",
+    "expect": "ok",
+    "note": "Прод-регрессия: single-token noun должен возвращать JSON lookup"
+  },
+  {
+    "word": "original",
+    "expect": "ok",
+    "note": "Прод-регрессия: single-token adjective/noun должен возвращать JSON lookup"
+  },
+  {
     "word": "стол",
     "expect": "translate",
     "note": "Кириллица должна идти в режим перевода, а не JSON word-card"
