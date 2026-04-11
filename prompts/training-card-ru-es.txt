@@ -13,9 +13,19 @@ REJECTION
   - Example: "parado" => ACCEPT (must not be rejected by substring overlap).
 - Reject nonsense: if the input contains ANY digits (0-9) => reject.
 - Otherwise ACCEPT (do NOT reject for uncertainty).
-- Always ACCEPT "castro" (must not be rejected as proper noun by uncertainty).
-- General acceptance rule: if token looks like a plausible Spanish lexical item (including common loans, demonyms, adjectives/nouns, regional variants), ACCEPT it.
+- General acceptance rule: if token contains only Spanish letters/diacritics (no digits) and is not in hard reject list, ACCEPT it.
 - Never use rejected_by_policy for uncertainty, rarity, polysemy, or "possibly proper noun" guesses.
+- Default mode is ACCEPTED card. Switch to rejected shape ONLY when formal reject condition is true.
+- Function words, particles, prepositions, conjunctions, adverbs, abbreviations, and short lexical tokens are valid accepted inputs.
+- DECISION FUNCTION (execute exactly, before generating senses):
+  1) `token_norm = lowercase(trim(input))`
+  2) `has_digit = token contains any [0-9]`
+  3) `in_hard_reject = token_norm is exactly one of hard reject items`
+  4) `reject_policy = has_digit OR in_hard_reject`
+  5) IF `reject_policy` is true -> output rejected JSON shape and STOP
+  6) ELSE -> output accepted JSON (`error=""`, non-empty `senses`, non-empty `transcription`)
+- For alphabetic tokens without digits (including short tokens and function words), default decision is ACCEPT.
+- Forbidden behavior: outputting `rejected_by_policy` for a purely alphabetic token that is not in hard reject list.
 - Mandatory pre-check order:
   1) First evaluate hard reject list and digits before any lexical analysis.
   2) If input matches any reject rule, return rejected JSON immediately.
@@ -31,6 +41,7 @@ If rejected by rules above, return this exact shape:
  "error":"rejected_by_policy"
 }
 Do not generate senses for rejected inputs.
+Do not include any extra keys in rejected response.
 
 STRICT REJECT GUARD (MANDATORY):
 - `error:"rejected_by_policy"` is allowed ONLY when:
@@ -40,6 +51,8 @@ STRICT REJECT GUARD (MANDATORY):
   - `error:""`
   - `senses` with at least 1 item.
 - If you produced `rejected_by_policy`, re-check conditions above before final output; if conditions are not met, rewrite as accepted card.
+- If `error` is non-empty, you MUST NOT output any senses.
+- If any sense exists, `error` MUST be empty.
 
 ACCEPTED CARD CONTRACT (MANDATORY):
 - If `senses` is non-empty, then `error` MUST be exactly empty string `""`.
@@ -47,8 +60,9 @@ ACCEPTED CARD CONTRACT (MANDATORY):
   `noun`, `verb`, `adjective`, `adverb`, `pronoun`, `preposition`, `conjunction`, `interjection`, `article`.
 - Never output empty `pos`.
 - For each sense, `word_native` MUST be non-empty Russian word/phrase in Cyrillic.
+- For each accepted card, `hint` MUST be Spanish-only text and contain NO Cyrillic.
 - Short tokens (2-3 Latin letters) and common international loanwords/technical terms are NOT grounds for policy rejection.
-- If token is alphabetic (Spanish letters only, no digits) and length >= 4, you MUST ACCEPT it (unless it is in hard reject list).
+- If token is alphabetic (Spanish letters only, no digits), you MUST ACCEPT it (unless it is in hard reject list).
 
 SCHEMA (MUST MATCH)
 {
@@ -62,6 +76,7 @@ CARD
 - word_target, lemma and every display_word MUST represent exactly ONE lexical item (no comma-separated variants like "conjunto, conjunta").
 - display_word: Spanish verb infinitive form as appropriate; use clear Spanish display conventions.
 - transcription is REQUIRED for accepted card and MUST be non-empty (IPA-style preferred).
+- If pronunciation is uncertain, still provide a best-effort IPA-like transcription; never leave it empty for accepted card.
 - meaning_target MUST be in Spanish (not in English, not in Russian/Cyrillic).
 - example_target MUST be in Spanish (not in English, not in Russian/Cyrillic).
 - word_native must match pos:
@@ -69,6 +84,19 @@ CARD
   - adjective => masculine singular adjective
   - adverb => adverb
   - noun => noun (not a verb/adjective form)
+  - word_native MUST be Russian/Cyrillic only (never Spanish labels like "adverbio", never Latin).
+  - hint MUST be Spanish-only and contain NO Cyrillic.
+- Never include Russian gloss inside Spanish hint (forbidden pattern examples: `"... = «уже»"`, `"... = «там»"`).
+- Never use translation notation in hint (`=`, `«...»`, `"..."`, parentheses with translation). Hint must be plain Spanish paraphrase only.
+- `word_native` must be a Russian translation/paraphrase of the sense, not a copy of Spanish token.
+- Never copy `lemma`/`display_word` into `word_native`.
+- If `word_native` contains any Latin letter, you MUST rewrite it to a valid Russian Cyrillic equivalent before output.
+
+SCRIPT FIREWALL (MANDATORY)
+- Cyrillic is allowed ONLY in: `word_native`, `example_native`, `distractors_ru`.
+- Cyrillic is forbidden in: `word_target`, `lemma`, `transcription`, `pos`, `display_word`,
+  `meaning_target`, `example_target`, `distractors_target`, `hint`, `error`.
+- If any forbidden field contains Cyrillic, rewrite that field before output.
 
 DISTRACTORS (THIS IS THE MOST IMPORTANT PART)
 - Exactly 3 Russian + 3 Spanish items in distractors_target.
@@ -76,6 +104,9 @@ DISTRACTORS (THIS IS THE MOST IMPORTANT PART)
 - distractors_target: Spanish (Latin script, Spanish letters only), no Cyrillic.
 - The two lists are INDEPENDENT (no index pairing).
 - For verb senses, distractors_ru must be Russian infinitives in Cyrillic only (forbidden examples in RU list: "describir", "imaginar", "proteger").
+- Generate distractors dynamically from meaning/POS (do not use fixed memorized lists).
+- distractors_ru must be natural Russian alternatives of the same broad POS and theme, but clearly incorrect for this lemma.
+- distractors_target must be natural Spanish alternatives of the same broad POS and theme, but clearly incorrect for this lemma.
 - NO LEAKAGE: distractors_target MUST NOT give away lemma; distractors_ru MUST NOT contain word_native as substring or exact duplicate.
 - Uniqueness: no duplicates in each list.
 - HARD PER-SENSE CONSTRAINTS (zero tolerance):
@@ -89,12 +120,20 @@ DISTRACTORS (THIS IS THE MOST IMPORTANT PART)
   - For EACH sense:
     1) meaning_target MUST contain NO Cyrillic;
     2) example_target MUST contain NO Cyrillic.
+    3) hint MUST contain NO Cyrillic.
 - If any of the checks above fails for a sense, REWRITE distractors for that sense before output.
-- Safe fallback (use only if needed to satisfy checks):
-  - verbs: distractors_ru = ["думать","читать","строить"], distractors_target = ["pensar","leer","construir"]
-  - nouns: distractors_ru = ["город","страна","вопрос"], distractors_target = ["ciudad","país","pregunta"]
-  - adjectives/adverbs: distractors_ru = ["быстрый","медленный","редко"], distractors_target = ["rápido","lento","raramente"]
 
 FINAL SELF-CHECK (MANDATORY): if any rule fails, fix fields until ALL pass, then output JSON.
+- Mandatory final gate:
+  - if `error` is non-empty -> force `senses=[]` and `transcription=""`;
+  - if `senses` is non-empty -> force `error=""`.
+- Additional mandatory checks before final output:
+  - each `distractors_ru[i]` must match Russian/Cyrillic only; if not, regenerate distractors_ru;
+  - `hint` must contain no Cyrillic and no translation notation (`=`, `«`, `»`);
+  - `meaning_target` and `example_target` must contain no Cyrillic.
+  - accepted card MUST have non-empty `transcription`;
+  - rejected card MUST have empty `transcription` and empty `senses`;
+  - no mixed state (`error` non-empty together with non-empty `senses`) is allowed.
+  - `word_native` must contain Cyrillic and must not be identical to `lemma`/`display_word` (case-insensitive).
 
 Word to process:

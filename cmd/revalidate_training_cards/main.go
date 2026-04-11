@@ -232,7 +232,21 @@ func runCLI() int {
 	}
 
 	wordRepo := repository.NewWordRepository(db.GetConnection(), log)
+	trainingCardRepo := repository.NewTrainingCardRepository(db.GetConnection(), log)
 	aiService := ai.NewService(cfg.AI.URL, cfg.AI.Model, cfg.AI.APIKey, cfg.AI.Prompt, log)
+	wordSetService := service.NewWordSetServiceWithMastering(
+		nil,
+		nil,
+		wordRepo,
+		trainingCardRepo,
+		nil,
+		nil,
+		nil,
+		aiService,
+		cfg.Learning,
+		cfg.AI.ModelHigh,
+		log,
+	)
 
 	requeued := 0
 	regeneratedDefinition := 0
@@ -269,6 +283,25 @@ func runCLI() int {
 			continue
 		}
 		deletedInvalidTrainingCards++
+		fmt.Printf("DELETED_INVALID_TRAINING_CARD training_card_id=%d word_card_id=%d lemma=%q reason=%q\n",
+			c.TrainingCardID, c.WordCardID, c.Lemma, c.Reason)
+
+		remaining, err := countTrainingCardsForWord(ctx, db.GetConnection(), c.WordCardID)
+		if err != nil {
+			fmt.Printf("ERROR count training cards word_card_id=%d lemma=%q: %v\n", c.WordCardID, c.Lemma, err)
+			continue
+		}
+		if remaining > 0 {
+			fmt.Printf("SKIP_REGENERATE training still exists word_card_id=%d lemma=%q remaining=%d\n", c.WordCardID, c.Lemma, remaining)
+			continue
+		}
+
+		created, err := regenerateTrainingCardsForWord(ctx, wordSetService, trainingCardRepo, c.WordCardID)
+		if err != nil {
+			fmt.Printf("ERROR regenerate training cards word_card_id=%d lemma=%q: %v\n", c.WordCardID, c.Lemma, err)
+			continue
+		}
+		fmt.Printf("REGENERATED_TRAINING_CARDS word_card_id=%d lemma=%q created=%d\n", c.WordCardID, c.Lemma, created)
 	}
 
 	resetTTS := 0
@@ -457,6 +490,41 @@ func requeueWordCard(ctx context.Context, conn *sql.DB, wordCardID int64, nullDe
 func deleteTrainingCardByID(ctx context.Context, conn *sql.DB, trainingCardID int64) error {
 	_, err := conn.ExecContext(ctx, `DELETE FROM training_cards WHERE id = ?`, trainingCardID)
 	return err
+}
+
+func countTrainingCardsForWord(ctx context.Context, conn *sql.DB, wordCardID int64) (int, error) {
+	var total int
+	if err := conn.QueryRowContext(ctx, `SELECT COUNT(*) FROM training_cards WHERE word_card_id = ?`, wordCardID).Scan(&total); err != nil {
+		return 0, err
+	}
+	return total, nil
+}
+
+func regenerateTrainingCardsForWord(
+	ctx context.Context,
+	wordSetService *service.WordSetService,
+	trainingCardRepo *repository.TrainingCardRepository,
+	wordCardID int64,
+) (int, error) {
+	beforeCards, err := trainingCardRepo.GetTrainingCardsByWordCardID(wordCardID)
+	if err != nil {
+		return 0, fmt.Errorf("get cards before regen: %w", err)
+	}
+	before := len(beforeCards)
+
+	if err := wordSetService.EnsureTrainingCardsExist(ctx, wordCardID); err != nil {
+		return 0, err
+	}
+
+	afterCards, err := trainingCardRepo.GetTrainingCardsByWordCardID(wordCardID)
+	if err != nil {
+		return 0, fmt.Errorf("get cards after regen: %w", err)
+	}
+	after := len(afterCards)
+	if after <= before {
+		return 0, fmt.Errorf("no training cards created")
+	}
+	return after - before, nil
 }
 
 func regenerateWordCardDefinition(

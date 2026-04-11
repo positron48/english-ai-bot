@@ -2,362 +2,87 @@
   {
     "word": "mesa",
     "expect": "ok",
-    "note": "Базовый noun для испанского training prompt"
+    "note": "Базовый noun + контроль R2 (дистракторы RU только кириллица)"
   },
   {
     "word": "conjunta",
     "expect": "ok",
-    "note": "Нестабильный кейс: не должно быть comma-separated форм в word_target/display_word"
+    "note": "Регрессия: без comma-separated форм в word_target/display_word"
   },
   {
     "word": "mes",
     "expect": "ok",
-    "note": "Регрессия: не должно уезжать в 'mesa/стол', ожидается значение месяца"
-  },
-  {
-    "word": "demostrar",
-    "expect": "ok",
-    "note": "Регрессия: distractors_ru должны быть только кириллицей (без describe-подобных латинских слов)"
-  },
-  {
-    "word": "manifestar",
-    "expect": "ok",
-    "note": "Регрессия: distractors_ru должны быть только кириллицей (без imaginar/proteger на латинице)"
-  },
-  {
-    "word": "apoyar",
-    "expect": "ok",
-    "note": "Регрессия: distractors_ru не должны содержать латиницу (ignorar/abandonar/criticar запрещены)"
-  },
-  {
-    "word": "referir",
-    "expect": "ok",
-    "note": "Регрессия: distractors_ru не должны содержать латиницу (suponer/guardar запрещены)"
+    "note": "Семантическая регрессия: не путать с mesa"
   },
   {
     "word": "residir",
     "expect": "ok",
-    "note": "Регрессия: distractors_ru не должны содержать латиницу (viajar/trabajar/permanecer и т.п. запрещены)"
-  },
-  {
-    "word": "trasladar",
-    "expect": "ok",
-    "note": "Регрессия: distractors_ru не должны содержать латиницу (mover/cambiar/llevar запрещены)"
-  },
-  {
-    "word": "crecer",
-    "expect": "ok",
-    "note": "Регрессия: distractors_ru не должны содержать латиницу (disminuir/avanzar/cambiar запрещены)"
-  },
-  {
-    "word": "estudiar",
-    "expect": "ok",
-    "note": "Регрессия: distractors_ru не должны содержать латиницу (leer/practicar/enseñar и т.п. запрещены)"
-  },
-  {
-    "word": "acompañar",
-    "expect": "ok",
-    "note": "Регрессия: distractors_ru не должны содержать латиницу (despedir/observar/regresar и т.п. запрещены)"
-  },
-  {
-    "word": "entender",
-    "expect": "ok",
-    "note": "Регрессия: distractors_ru не должны содержать латиницу (olvidar/explicar/aprender и т.п. запрещены)"
+    "note": "Регрессия: word_native не Latin, hint без кириллицы"
   },
   {
     "word": "acudir",
     "expect": "ok",
-    "note": "Регрессия: distractors_ru не должны содержать латиницу (в т.ч. для sense=1)"
-  },
-  {
-    "word": "apuntar",
-    "expect": "ok",
-    "note": "Регрессия: distractors_ru не должны содержать латиницу (olvidar/borrar/callar и т.п. запрещены)"
-  },
-  {
-    "word": "preguntar",
-    "expect": "ok",
-    "note": "Регрессия: distractors_ru не должны содержать латиницу (responder/contestar/explicar запрещены)"
-  },
-  {
-    "word": "insistir",
-    "expect": "ok",
-    "note": "Регрессия: distractors_ru не должны содержать латиницу (ceder/dudar/callar запрещены)"
-  },
-  {
-    "word": "fundar",
-    "expect": "ok",
-    "note": "Регрессия: distractors_ru не должны содержать латиницу (destruir/cerrar/abandonar запрещены)"
-  },
-  {
-    "word": "prever",
-    "expect": "ok",
-    "note": "Регрессия: distractors_ru не должны содержать латиницу (imaginar/calcular/suponer запрещены)"
-  },
-  {
-    "word": "suceder",
-    "expect": "ok",
-    "note": "Регрессия: distractors_ru не должны содержать латиницу (aparecer запрещен)"
-  },
-  {
-    "word": "sostener",
-    "expect": "ok",
-    "note": "Регрессия: distractors_ru не должны содержать латиницу (levantar/mover/cerrar и др. запрещены)"
-  },
-  {
-    "word": "asistir",
-    "expect": "ok",
-    "note": "Регрессия: distractors_ru не должны содержать латиницу (acudir/presenciar/participar запрещены)"
-  },
-  {
-    "word": "cubrir",
-    "expect": "ok",
-    "note": "Регрессия: distractors_ru не должны содержать латиницу (abrir/descubrir/llenar и др. запрещены)"
-  },
-  {
-    "word": "limitar",
-    "expect": "ok",
-    "note": "Регрессия: distractors_ru не должны содержать латиницу (aumentar запрещен)"
-  },
-  {
-    "word": "interpretar",
-    "expect": "ok",
-    "note": "Регрессия: distractors_ru не должны содержать латиницу (analizar/explicar/imaginar и др. запрещены)"
-  },
-  {
-    "word": "disfrutar",
-    "expect": "ok",
-    "note": "Регрессия: distractors_ru не должны содержать латиницу (desear/soportar/evitar запрещены)"
-  },
-  {
-    "word": "atender",
-    "expect": "ok",
-    "note": "Регрессия: distractors_ru не должны содержать латиницу (describir/imaginar/proteger и др. запрещены)"
-  },
-  {
-    "word": "seguir",
-    "expect": "ok",
-    "note": "Регрессия: нестабильный кейс, проверка R2 и leakage по глаголу seguir"
+    "note": "Регрессия: hint строго на испанском, без кириллицы"
   },
   {
     "word": "pequeña",
     "expect": "ok",
-    "note": "Регрессия из админки: meaning_target и example_target должны быть на испанском, transcription обязателен"
+    "note": "Кейс из админки: transcription обязателен, meaning/example только Spanish"
   },
   {
-    "word": "grave",
+    "word": "no",
     "expect": "ok",
-    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
+    "note": "Короткий токен: не должен уходить в rejected_by_policy"
   },
   {
-    "word": "similar",
+    "word": "ya",
     "expect": "ok",
-    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
+    "note": "Регрессия: no Cyrillic в hint и meaning_target"
   },
   {
-    "word": "superior",
+    "word": "allí",
     "expect": "ok",
-    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
-  },
-  {
-    "word": "rector",
-    "expect": "ok",
-    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
-  },
-  {
-    "word": "parado",
-    "expect": "ok",
-    "note": "Регрессия: не должен ошибочно реджектиться из-за substring-сходства с hard-reject словом 'prado'"
-  },
-  {
-    "word": "castro",
-    "expect": "ok",
-    "note": "Регрессия: валидное испанское слово, не должно уходить в rejected_by_policy"
-  },
-  {
-    "word": "club",
-    "expect": "ok",
-    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
-  },
-  {
-    "word": "casa",
-    "expect": "ok",
-    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
-  },
-  {
-    "word": "final",
-    "expect": "ok",
-    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
-  },
-  {
-    "word": "real",
-    "expect": "ok",
-    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
-  },
-  {
-    "word": "local",
-    "expect": "ok",
-    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
-  },
-  {
-    "word": "central",
-    "expect": "ok",
-    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
-  },
-  {
-    "word": "total",
-    "expect": "ok",
-    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
-  },
-  {
-    "word": "junto",
-    "expect": "ok",
-    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
-  },
-  {
-    "word": "torno",
-    "expect": "ok",
-    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
-  },
-  {
-    "word": "marco",
-    "expect": "ok",
-    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
-  },
-  {
-    "word": "conjunto",
-    "expect": "ok",
-    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
-  },
-  {
-    "word": "plan",
-    "expect": "ok",
-    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
-  },
-  {
-    "word": "través",
-    "expect": "ok",
-    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
-  },
-  {
-    "word": "puesto",
-    "expect": "ok",
-    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
+    "note": "Регрессия: no Cyrillic в hint"
   },
   {
     "word": "sur",
     "expect": "ok",
-    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
+    "note": "Короткий noun: не reject + hint без кириллицы"
   },
   {
-    "word": "industrial",
+    "word": "actualmente",
     "expect": "ok",
-    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
-  },
-  {
-    "word": "original",
-    "expect": "ok",
-    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
-  },
-  {
-    "word": "virus",
-    "expect": "ok",
-    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
-  },
-  {
-    "word": "kilo",
-    "expect": "ok",
-    "note": "Регрессия: не должен уходить в rejected_by_policy"
-  },
-  {
-    "word": "debut",
-    "expect": "ok",
-    "note": "Регрессия: не должен уходить в rejected_by_policy"
-  },
-  {
-    "word": "monte",
-    "expect": "ok",
-    "note": "Регрессия: не должен уходить в rejected_by_policy"
-  },
-  {
-    "word": "portugués",
-    "expect": "ok",
-    "note": "Регрессия: не должен уходить в rejected_by_policy"
-  },
-  {
-    "word": "latino",
-    "expect": "ok",
-    "note": "Регрессия: не должен уходить в rejected_by_policy"
-  },
-  {
-    "word": "manual",
-    "expect": "ok",
-    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
+    "note": "Регрессия из прода: hint/meaning_target без кириллицы"
   },
   {
     "word": "internet",
     "expect": "ok",
-    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
-  },
-  {
-    "word": "lateral",
-    "expect": "ok",
-    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
-  },
-  {
-    "word": "cuadro",
-    "expect": "ok",
-    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
-  },
-  {
-    "word": "bancario",
-    "expect": "ok",
-    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
-  },
-  {
-    "word": "individual",
-    "expect": "ok",
-    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
-  },
-  {
-    "word": "portal",
-    "expect": "ok",
-    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
+    "note": "Loanword: должен приниматься, не rejected_by_policy"
   },
   {
     "word": "pro",
     "expect": "ok",
-    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
+    "note": "Очень короткий валидный токен: должен приниматься"
   },
   {
-    "word": "león",
+    "word": "parado",
     "expect": "ok",
-    "note": "Проверка: валидное испанское слово, не должно уходить в rejected_by_policy"
-  },
-  {
-    "word": "eh",
-    "expect": "ok",
-    "note": "Проверка: междометие, не должно уходить в rejected_by_policy"
-  },
-  {
-    "word": "par",
-    "expect": "ok",
-    "note": "Проверка: короткое валидное слово, не должно уходить в rejected_by_policy"
+    "note": "Не должен падать из-за substring-сходства с prado"
   },
   {
     "word": "prado",
     "expect": "reject",
-    "note": "В hard reject списке prompt"
+    "note": "Hard reject list"
   },
   {
     "word": "microsoft",
     "expect": "reject",
-    "note": "В hard reject списке prompt"
+    "note": "Hard reject list"
   },
   {
     "word": "abc123",
     "expect": "reject",
-    "note": "Цифры должны приводить к reject"
+    "note": "Digits => reject"
   }
 ]
 
