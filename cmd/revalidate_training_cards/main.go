@@ -234,6 +234,14 @@ func runCLI() int {
 	wordRepo := repository.NewWordRepository(db.GetConnection(), log)
 	trainingCardRepo := repository.NewTrainingCardRepository(db.GetConnection(), log)
 	aiService := ai.NewService(cfg.AI.URL, cfg.AI.Model, cfg.AI.APIKey, cfg.AI.Prompt, log)
+	if cfg.Training.PromptFile != "" {
+		trainingPrompt, err := ai.LoadRenderedPromptFile(cfg.Training.PromptFile, cfg.Learning.NativeLang, cfg.Learning.TargetLang, cfg.Learning.Pair)
+		if err != nil {
+			fmt.Printf("WARN failed to load training prompt file %q: %v\n", cfg.Training.PromptFile, err)
+		} else {
+			aiService.SetTrainingPrompt(trainingPrompt)
+		}
+	}
 	wordSetService := service.NewWordSetServiceWithMastering(
 		nil,
 		nil,
@@ -549,11 +557,10 @@ func regenerateWordCardDefinition(
 		return out, fmt.Errorf("llm generate response: %w", err)
 	}
 
-	var wordInfo models.WordInfoResponse
-	if err := json.Unmarshal([]byte(response), &wordInfo); err != nil {
+	wordInfo, err := parseWordInfoResponse(response)
+	if err != nil {
 		return out, fmt.Errorf("parse llm json: %w", err)
 	}
-	models.SyncWordInfoResponseNeutralAliases(&wordInfo)
 	if wordInfo.Error.IsTrue() {
 		return out, fmt.Errorf("llm returned error: %s", wordInfo.Error.Message)
 	}
@@ -685,6 +692,15 @@ func ptr(v string) *string { return &v }
 
 func isNilOrBlank(v *string) bool {
 	return v == nil || strings.TrimSpace(*v) == ""
+}
+
+func parseWordInfoResponse(raw string) (models.WordInfoResponse, error) {
+	var wi models.WordInfoResponse
+	if err := json.Unmarshal([]byte(raw), &wi); err != nil {
+		return models.WordInfoResponse{}, err
+	}
+	models.SyncWordInfoResponseNeutralAliases(&wi)
+	return wi, nil
 }
 
 func invalidWordCardFieldIssues(g group, learning config.LearningConfig) []string {

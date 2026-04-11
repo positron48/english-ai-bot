@@ -17,6 +17,7 @@ REJECTION
 - Never use rejected_by_policy for uncertainty, rarity, polysemy, or "possibly proper noun" guesses.
 - Default mode is ACCEPTED card. Switch to rejected shape ONLY when formal reject condition is true.
 - Function words, particles, prepositions, conjunctions, adverbs, abbreviations, and short lexical tokens are valid accepted inputs.
+- Alphabetic short tokens (length 1-3, no digits) are valid lexical inputs and MUST be accepted.
 - DECISION FUNCTION (execute exactly, before generating senses):
   1) `token_norm = lowercase(trim(input))`
   2) `has_digit = token contains any [0-9]`
@@ -26,6 +27,10 @@ REJECTION
   6) ELSE -> output accepted JSON (`error=""`, non-empty `senses`, non-empty `transcription`)
 - For alphabetic tokens without digits (including short tokens and function words), default decision is ACCEPT.
 - Forbidden behavior: outputting `rejected_by_policy` for a purely alphabetic token that is not in hard reject list.
+- For any alphabetic token without digits:
+  - `error` MUST be `""`
+  - `senses` MUST be non-empty
+  - `transcription` MUST be non-empty
 - Mandatory pre-check order:
   1) First evaluate hard reject list and digits before any lexical analysis.
   2) If input matches any reject rule, return rejected JSON immediately.
@@ -103,6 +108,10 @@ DISTRACTORS (THIS IS THE MOST IMPORTANT PART)
 - distractors_ru: ONLY real Russian words in Cyrillic (letters А-Яа-яЁё, spaces, hyphen only). Never output Latin transliteration or Spanish words here.
 - distractors_target: Spanish (Latin script, Spanish letters only), no Cyrillic.
 - The two lists are INDEPENDENT (no index pairing).
+- `distractors_ru` and `distractors_target` MUST be generated independently; never copy an item from one list to the other.
+- For each item in `distractors_ru`:
+  - MUST contain at least one Cyrillic character [А-Яа-яЁё]
+  - MUST contain zero Latin characters [A-Za-zÁÉÍÓÚÜÑáéíóúüñ]
 - For verb senses, distractors_ru must be Russian infinitives in Cyrillic only (forbidden examples in RU list: "describir", "imaginar", "proteger").
 - Generate distractors dynamically from meaning/POS (do not use fixed memorized lists).
 - distractors_ru must be natural Russian alternatives of the same broad POS and theme, but clearly incorrect for this lemma.
@@ -129,6 +138,7 @@ FINAL SELF-CHECK (MANDATORY): if any rule fails, fix fields until ALL pass, then
   - if `senses` is non-empty -> force `error=""`.
 - Additional mandatory checks before final output:
   - each `distractors_ru[i]` must match Russian/Cyrillic only; if not, regenerate distractors_ru;
+  - each `distractors_ru[i]` must contain Cyrillic and zero Latin letters; otherwise rewrite the whole RU list;
   - `hint` must contain no Cyrillic and no translation notation (`=`, `«`, `»`);
   - `meaning_target` and `example_target` must contain no Cyrillic.
   - accepted card MUST have non-empty `transcription`;

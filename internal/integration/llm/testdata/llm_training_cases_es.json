@@ -55,6 +55,51 @@
     "note": "Регрессия из прода: hint/meaning_target без кириллицы"
   },
   {
+    "word": "forma",
+    "expect": "ok",
+    "note": "Прод-регрессия: hint без кириллицы"
+  },
+  {
+    "word": "españa",
+    "expect": "ok",
+    "note": "Прод-регрессия: word_native должен быть кириллицей"
+  },
+  {
+    "word": "acuerdo",
+    "expect": "ok",
+    "note": "Прод-регрессия: meaning_target без кириллицы"
+  },
+  {
+    "word": "embargo",
+    "expect": "ok",
+    "note": "Прод-регрессия: word_native должен быть кириллицей"
+  },
+  {
+    "word": "productor",
+    "expect": "ok",
+    "note": "Прод-регрессия: hint без кириллицы"
+  },
+  {
+    "word": "artículo",
+    "expect": "ok",
+    "note": "Прод-регрессия: meaning_target без кириллицы"
+  },
+  {
+    "word": "tienda",
+    "expect": "ok",
+    "note": "Прод-регрессия: meaning_target без кириллицы"
+  },
+  {
+    "word": "incremento",
+    "expect": "ok",
+    "note": "Прод-регрессия: word_native должен быть кириллицей"
+  },
+  {
+    "word": "encontrar",
+    "expect": "ok",
+    "note": "Прод-регрессия: word_native должен быть кириллицей"
+  },
+  {
     "word": "internet",
     "expect": "ok",
     "note": "Loanword: должен приниматься, не rejected_by_policy"
