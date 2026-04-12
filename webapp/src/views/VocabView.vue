@@ -648,7 +648,10 @@ const deleteWord = async () => {
   }
 }
 
+let showCardsGen = 0
+
 const showCards = async (lemma: string) => {
+  const gen = ++showCardsGen
   selectedWord.value = lemma
   const wordFromList = words.value.find(w => w.lemma === lemma)
   selectedWordMasteringScore.value = wordFromList != null ? wordFromList.mastering_score : null
@@ -661,6 +664,9 @@ const showCards = async (lemma: string) => {
   
   try {
     const data: { lemma: string; word_card_id: number; cards: CardDetail[]; verb_forms?: any; pos?: string; noun_gender?: string; opposite_gender_word?: string; morph?: MorphInfo; has_user_cards?: boolean; is_known?: boolean } = await apiClient.request(`/api/vocab/${lemma}/cards`)
+    if (gen !== showCardsGen || selectedWord.value !== lemma) {
+      return
+    }
     cards.value = data.cards || []
     verbForms.value = data.verb_forms || null
     wordPOS.value = data.pos || null
@@ -681,22 +687,32 @@ const showCards = async (lemma: string) => {
       }
       selectedTranscription.value = cards.value[0].transcription || ''
       if (selectedTranscription.value) {
-        selectedPronunciationURL.value = await getWordPronunciationURL(selectedPronunciationWord.value)
+        const url = await getWordPronunciationURL(selectedPronunciationWord.value)
+        if (gen !== showCardsGen || selectedWord.value !== lemma) {
+          return
+        }
+        selectedPronunciationURL.value = url
       }
     } else {
       selectedWordDisplay.value = cleanLemma(lemma)
     }
   } catch (error) {
     console.error('Failed to load cards:', error)
-    await showAlert(t('vocab.alertLoadCardsFailed'))
+    if (gen === showCardsGen) {
+      await showAlert(t('vocab.alertLoadCardsFailed'))
+    }
   } finally {
-    cardsLoading.value = false
+    if (gen === showCardsGen) {
+      cardsLoading.value = false
+    }
   }
 }
 
 const closeCardsModal = () => {
+  showCardsGen++
   showCardsModal.value = false
   hideSrsTooltip(true)
+  cardsLoading.value = false
   selectedWord.value = ''
   selectedWordDisplay.value = ''
   selectedTranscription.value = ''

@@ -194,13 +194,19 @@ const loadWords = async () => {
   }
 }
 
+let loadTrainingCardGen = 0
+
 const loadTrainingCard = async (wordCardId: number) => {
+  const gen = ++loadTrainingCardGen
   loadingCard.value = true
   currentTrainingCard.value = null
   currentPronunciationURL.value = null
   try {
     const data: { training_card: TrainingCard } = 
       await apiClient.request(`/api/learning/words/sets/${setId}/study?word_card_id=${wordCardId}`)
+    if (gen !== loadTrainingCardGen || currentWord.value?.word_card_id !== wordCardId) {
+      return
+    }
     currentTrainingCard.value = data.training_card
     if (currentTrainingCard.value?.transcription) {
       const pronunciationWord =
@@ -208,16 +214,22 @@ const loadTrainingCard = async (wordCardId: number) => {
         currentTrainingCard.value.word_en ||
         currentWord.value?.word ||
         ''
-      currentPronunciationURL.value = pronunciationWord
-        ? await getWordPronunciationURL(pronunciationWord)
-        : null
+      const url = pronunciationWord ? await getWordPronunciationURL(pronunciationWord) : null
+      if (gen !== loadTrainingCardGen || currentWord.value?.word_card_id !== wordCardId) {
+        return
+      }
+      currentPronunciationURL.value = url
     }
   } catch (error: any) {
     console.error('Failed to load training card:', error)
     // Don't show error to user, just continue without card
-    currentTrainingCard.value = null
+    if (gen === loadTrainingCardGen) {
+      currentTrainingCard.value = null
+    }
   } finally {
-    loadingCard.value = false
+    if (gen === loadTrainingCardGen) {
+      loadingCard.value = false
+    }
   }
 }
 

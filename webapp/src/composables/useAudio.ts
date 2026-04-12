@@ -5,7 +5,8 @@ let ctx: AudioContext | null = null
 let master: GainNode | null = null
 let wordAudio: HTMLAudioElement | null = null
 
-const pronunciationCache = new Map<string, string | null>()
+/** Только успешные URL; отсутствие озвучки / ошибки запроса не кэшируем — повторный запрос возможен сразу. */
+const pronunciationCache = new Map<string, string>()
 const pronunciationInFlight = new Map<string, Promise<string | null>>()
 
 interface AudioState {
@@ -409,8 +410,9 @@ export function useAudio() {
     const normalized = normalizePronunciationWord(word)
     if (!normalized) return null
 
-    if (pronunciationCache.has(normalized)) {
-      return pronunciationCache.get(normalized) ?? null
+    const cached = pronunciationCache.get(normalized)
+    if (cached) {
+      return cached
     }
 
     if (pronunciationInFlight.has(normalized)) {
@@ -423,10 +425,12 @@ export function useAudio() {
           `/api/tts/word?word=${encodeURIComponent(normalized)}`
         )
         const url = data?.available && data?.url ? data.url : null
-        pronunciationCache.set(normalized, url)
+        // Кэшируем только успешный URL: pending/ошибка не должны «замораживать» отсутствие кнопки до reload.
+        if (url) {
+          pronunciationCache.set(normalized, url)
+        }
         return url
       } catch {
-        pronunciationCache.set(normalized, null)
         return null
       } finally {
         pronunciationInFlight.delete(normalized)

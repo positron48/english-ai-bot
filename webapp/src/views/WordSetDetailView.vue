@@ -196,6 +196,8 @@ const currentPronunciationURL = ref<string | null>(null)
 const playingPronunciation = ref(false)
 const { getWordPronunciationURL, playWordPronunciation } = useAudio()
 
+let openWordCardGen = 0
+
 const formatMorph = (morph?: MorphInfo): string => {
   if (!morph) return ''
   if (morph.pos === 'noun' && morph.noun_gender) {
@@ -230,6 +232,8 @@ const loadWordSet = async () => {
 }
 
 const openWordCard = async (word: WordInfo) => {
+  const targetWordCardId = word.word_card_id
+  const gen = ++openWordCardGen
   selectedWord.value = word
   showWordModal.value = true
   loadingCard.value = true
@@ -239,6 +243,9 @@ const openWordCard = async (word: WordInfo) => {
   try {
     const data: { training_card: TrainingCard } = 
       await apiClient.request(`/api/learning/words/sets/${setId}/study?word_card_id=${word.word_card_id}`)
+    if (gen !== openWordCardGen) {
+      return
+    }
     currentTrainingCard.value = data.training_card
     if (currentTrainingCard.value?.transcription) {
       const pronunciationWord =
@@ -246,23 +253,31 @@ const openWordCard = async (word: WordInfo) => {
         currentTrainingCard.value.word_en ||
         selectedWord.value?.word ||
         ''
-      currentPronunciationURL.value = pronunciationWord
-        ? await getWordPronunciationURL(pronunciationWord)
-        : null
+      const url = pronunciationWord ? await getWordPronunciationURL(pronunciationWord) : null
+      if (gen !== openWordCardGen) {
+        return
+      }
+      currentPronunciationURL.value = url
     }
   } catch (error: any) {
     console.error('Failed to load training card:', error)
-    currentTrainingCard.value = null
+    if (gen === openWordCardGen) {
+      currentTrainingCard.value = null
+    }
   } finally {
-    loadingCard.value = false
+    if (gen === openWordCardGen) {
+      loadingCard.value = false
+    }
   }
 }
 
 const closeWordModal = () => {
+  openWordCardGen++
   showWordModal.value = false
   selectedWord.value = null
   currentTrainingCard.value = null
   currentPronunciationURL.value = null
+  loadingCard.value = false
 }
 
 const handleKeydown = (event: KeyboardEvent) => {

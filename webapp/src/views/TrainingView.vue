@@ -770,7 +770,10 @@ watch(currentCard, async (card) => {
     currentPronunciationURL.value = null
     return
   }
-  currentPronunciationURL.value = await getWordPronunciationURL(word)
+  const url = await getWordPronunciationURL(word)
+  // Не применять результат смены карточки, если за время await currentCard уже другой.
+  if (card !== currentCard.value) return
+  currentPronunciationURL.value = url
 })
 
 const playCurrentPronunciation = async () => {
