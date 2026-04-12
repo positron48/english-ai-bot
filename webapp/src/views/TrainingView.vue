@@ -94,8 +94,22 @@
       </div>
     </div>
 
-    <div v-if="!sessionActive && !loading && !sessionComplete" class="card start-screen">
-      <div class="start-screen-content">
+    <div
+      v-if="sessionComplete && !sessionActive && !loading && showSpanishVerbFormsTraining"
+      class="card training-verb-forms-cta training-verb-forms-cta--compact"
+    >
+      <button
+        type="button"
+        class="btn btn-primary training-verb-forms-cta__btn"
+        @click="openVerbFormsTraining"
+      >
+        {{ t('verbTraining.openDedicated') }}
+      </button>
+    </div>
+
+    <div v-if="!sessionActive && !loading && !sessionComplete" class="training-idle-stack">
+      <div class="card start-screen">
+        <div class="start-screen-content">
         <div class="start-screen-stats" v-if="statsLoaded">
           <div class="start-stat-item">
             <span class="start-stat-label">{{ t('training.availableForTraining') }}</span>
@@ -123,6 +137,18 @@
         <p v-if="statsLoaded && stats.availableForTraining === 0" class="no-cards-message">
           {{ t('training.noCardsAvailable') }}
         </p>
+        </div>
+      </div>
+      <div v-if="showSpanishVerbFormsTraining" class="card training-verb-forms-cta">
+        <h3 class="training-verb-forms-cta__title">{{ t('verbTraining.title') }}</h3>
+        <p class="training-verb-forms-cta__text">{{ t('verbTraining.shortBlurb') }}</p>
+        <button
+          type="button"
+          class="btn btn-primary training-verb-forms-cta__btn"
+          @click="openVerbFormsTraining"
+        >
+          {{ t('verbTraining.openDedicated') }}
+        </button>
       </div>
     </div>
 
@@ -509,6 +535,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, watch, nextTick, TransitionGroup } from 'vue'
+import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { apiClient } from '../api/client'
 import { showAlert } from '../composables/useDialog'
@@ -517,8 +544,21 @@ import { useAudio } from '../composables/useAudio'
 import { useLocale } from '../composables/useLocale'
 import { Chart, registerables } from 'chart.js'
 import Icon from '../components/Icon.vue'
+import { useLearningConfig } from '../composables/useLearningConfig'
 
 const { t, tm, locale } = useI18n()
+const router = useRouter()
+const { learning, ensureLearningLoaded } = useLearningConfig()
+
+function openVerbFormsTraining() {
+  void router.push({ path: '/training/verbs', query: { start: '1' } })
+}
+
+const isSpanishTarget = computed(() => (learning.value?.target_lang || '').toLowerCase() === 'es')
+
+const showSpanishVerbFormsTraining = computed(
+  () => isSpanishTarget.value && learning.value?.spanish_verb_forms_enabled === true
+)
 
 function phraseList(key: string): string[] {
   const raw = tm(key) as unknown
@@ -747,7 +787,7 @@ const morphCompactText = computed(() => {
   if (morph.pos === 'noun' && morph.noun_gender) {
     return nounOppositeWord.value ? `(${nounOppositeWord.value})` : ''
   }
-  if (morph.pos === 'verb' && morph.verb_forms) {
+  if ((morph.pos === 'verb' || morph.pos === 'aux') && morph.verb_forms) {
     const forms = [morph.verb_forms.v1, morph.verb_forms.v2, morph.verb_forms.v3].filter(Boolean)
     if (forms.length > 0) return forms.join(', ')
   }
@@ -1338,9 +1378,7 @@ onMounted(async () => {
   // Add keyboard event listener
   window.addEventListener('keydown', handleKeyPress)
   
-  await loadStats()
-  await loadUpcomingCards()
-  await checkCurrentSession()
+  await Promise.all([ensureLearningLoaded(), loadStats(), loadUpcomingCards(), checkCurrentSession()])
 
   // Spell: scale collected letters to fit container width
   watch(
@@ -3063,6 +3101,12 @@ const handleTimerMouseLeave = () => {
   margin: 20px 0;
 }
 
+@media (min-width: 768px) {
+  .options {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
 .option-btn {
   min-height: 60px;
   font-size: 16px;
@@ -3627,6 +3671,60 @@ const handleTimerMouseLeave = () => {
   font-weight: bold;
   color: var(--color-primary);
   user-select: none;
+}
+
+.training-idle-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.training-verb-forms-cta {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 18px 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.training-verb-forms-cta--compact {
+  margin-top: 16px;
+  padding: 12px 16px;
+}
+
+.training-verb-forms-cta__btn {
+  text-decoration: none;
+  font-weight: 600;
+  min-width: min(100%, 280px);
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+}
+
+.training-verb-forms-cta__btn:hover {
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.45);
+}
+
+.training-verb-forms-cta__title {
+  margin: 0 0 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: center;
+  width: 100%;
+}
+
+.training-verb-forms-cta__text {
+  margin: 0 0 14px;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: var(--text-secondary);
+  text-align: center;
+  max-width: 42rem;
 }
 
 .start-screen {

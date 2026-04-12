@@ -1,6 +1,7 @@
 package web
 
 import (
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -75,6 +76,69 @@ func TestRouter_ServeHTTP(t *testing.T) {
 
 	if w.Code != http.StatusOK {
 		t.Errorf("Expected status 200, got %d", w.Code)
+	}
+}
+
+func TestHandleHealth_SpanishVerbFormsEnabled(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	tests := []struct {
+		name     string
+		lc       config.LearningConfig
+		flag     bool
+		wantBool bool
+	}{
+		{
+			name: "es_flag_on",
+			lc: config.LearningConfig{
+				Pair: "ru-es", NativeLang: "ru", TargetLang: "es",
+				AppCode: "spanish", GrammarBundleID: "es",
+			},
+			flag:     true,
+			wantBool: true,
+		},
+		{
+			name: "es_flag_off",
+			lc: config.LearningConfig{
+				Pair: "ru-es", NativeLang: "ru", TargetLang: "es",
+				AppCode: "spanish", GrammarBundleID: "es",
+			},
+			flag:     false,
+			wantBool: false,
+		},
+		{
+			name:     "en_flag_on_still_false",
+			lc:       config.DefaultLearningConfig(),
+			flag:     true,
+			wantBool: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			cfg := &config.Config{
+				WebApp:   config.WebAppConfig{JWTSecret: "test-secret"},
+				Learning: tt.lc,
+				Training: config.TrainingConfig{SpanishVerbFormsEnabled: tt.flag},
+			}
+			router := NewRouter(logger, cfg, nil, nil, nil, nil, nil)
+			req := httptest.NewRequest(http.MethodGet, "/health", nil)
+			w := httptest.NewRecorder()
+			router.ServeHTTP(w, req)
+			if w.Code != http.StatusOK {
+				t.Fatalf("status %d: %s", w.Code, w.Body.String())
+			}
+			var body map[string]interface{}
+			if err := json.Unmarshal(w.Body.Bytes(), &body); err != nil {
+				t.Fatal(err)
+			}
+			learn, _ := body["learning"].(map[string]interface{})
+			if learn == nil {
+				t.Fatal("missing learning")
+			}
+			got, ok := learn["spanish_verb_forms_enabled"].(bool)
+			if !ok || got != tt.wantBool {
+				t.Fatalf("spanish_verb_forms_enabled = %v (%v), want %v", got, ok, tt.wantBool)
+			}
+		})
 	}
 }
 

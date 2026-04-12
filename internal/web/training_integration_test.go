@@ -106,7 +106,7 @@ func TestHandleTrainingStart_WithCards(t *testing.T) {
 
 	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
-	optionsService := service.NewOptionsService(trainingCardRepo, logger)
+	optionsService := service.NewOptionsService(trainingCardRepo, logger, "en")
 
 	router := NewRouter(logger, cfg, db, trainingService, srsService, optionsService, nil)
 	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
@@ -187,7 +187,7 @@ func TestHandleTrainingStart_WithUserThresholds(t *testing.T) {
 	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
 	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
-	optionsService := service.NewOptionsService(trainingCardRepo, logger)
+	optionsService := service.NewOptionsService(trainingCardRepo, logger, "en")
 	router := NewRouter(logger, cfg, db, trainingService, srsService, optionsService, nil)
 	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
 	router.authMiddleware = authMiddleware
@@ -274,7 +274,7 @@ func TestHandleTrainingReveal_WithSession(t *testing.T) {
 
 	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
-	optionsService := service.NewOptionsService(trainingCardRepo, logger)
+	optionsService := service.NewOptionsService(trainingCardRepo, logger, "en")
 
 	router := NewRouter(logger, cfg, db, trainingService, srsService, optionsService, nil)
 	router.SetDependencies(userRepo, nil, nil, nil, "test-token")

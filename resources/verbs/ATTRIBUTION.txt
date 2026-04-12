@@ -1,0 +1,11 @@
+Источник парадигм: Fred Jehle Spanish Verb Database (сборка Brian Ghidinelli).
+
+Файл: jehle_verb_database.csv
+Взято из: https://github.com/ghidinelli/fred-jehle-spanish-verbs
+SHA256 (зафиксировано в репозитории при вендоринге): f77f01d536cd351584051d76902ff8051ab1b945a38e69c7ed02da78ab082ea8
+
+Лицензия: Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0).
+Полный текст см. https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode
+
+Важно для коммерческого использования: лицензия содержит условие NonCommercial. При необходимости
+коммерческого продукта подберите другой открытый корпус (например CC-BY-SA без NC) и отдельный импорт.

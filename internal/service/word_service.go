@@ -27,6 +27,10 @@ type WordService struct {
 	learning              config.LearningConfig
 	spanishGenderLexicon  map[string]models.SpanishGenderLexiconEntry
 	logger                *zap.Logger
+	// verbTrainingCfg + verbFormSync: optional; wired in cmd/bot so Spanish verb-form DB rows
+	// are created right after user_cards (dashboard chat, bot lookup), same as vocab/set routes.
+	verbTrainingCfg config.TrainingConfig
+	verbFormSync    func(userID int64) error
 }
 
 // NewWordService creates a new word service
@@ -80,6 +84,28 @@ func NewWordServiceWithMastering(
 // SetPronunciationService connects background pronunciation prefetch to word creation/lookups.
 func (s *WordService) SetPronunciationService(pronunciationService *PronunciationService) {
 	s.pronunciationService = pronunciationService
+}
+
+// SetVerbFormCardsSync wires Spanish verb-form materialization after user_cards are ensured.
+// training must be the app TrainingConfig (for SPANISH_VERB_FORMS_ENABLED); hook typically calls VerbTrainingService.EnsureVerbFormUserCards.
+func (s *WordService) SetVerbFormCardsSync(training config.TrainingConfig, hook func(userID int64) error) {
+	s.verbTrainingCfg = training
+	s.verbFormSync = hook
+}
+
+func (s *WordService) tryVerbFormCardsSync(userID int64) {
+	if s.verbFormSync == nil {
+		return
+	}
+	if !strings.EqualFold(s.learning.TargetLang, "es") || !s.verbTrainingCfg.SpanishVerbFormsEnabled {
+		return
+	}
+	if err := s.verbFormSync(userID); err != nil {
+		s.logger.Warn("verb form user cards sync after word user_cards",
+			zap.Int64("user_id", userID),
+			zap.Error(err),
+		)
+	}
 }
 
 func (s *WordService) typoOrInvalidWordMessage() string {
@@ -299,6 +325,7 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 
 	// Step 3: If found in DB, render markdown and return
 	if wordCard != nil {
+		s.tryLinkVerbLemma(wordCard)
 		if !s.wordCardNativeFieldsLookValid(wordCard) {
 			s.logger.Warn("word card from database has invalid native-language fields, forcing refresh from AI",
 				zap.String("word", wordCard.Word),
@@ -333,6 +360,7 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 				// Don't fail the request if user cards creation fails
 			}
 		}
+		s.tryVerbFormCardsSync(userID)
 
 		// Render markdown from structured data
 		if s.pronunciationService != nil {
@@ -589,6 +617,7 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 	}
 
 	// Step 8: Record request history
+	s.tryLinkVerbLemma(wordCard)
 	if err := s.wordRepo.AddWordRequestHistoryWithCard(userID, inputWord, &wordCardID, nil); err != nil {
 		s.logger.Warn("failed to add word request history", zap.Error(err))
 	}
@@ -600,6 +629,24 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 	}
 	markdown := s.renderWordCardMarkdown(wordCard)
 	return markdown, nil
+}
+
+func (s *WordService) tryLinkVerbLemma(card *models.WordCard) {
+	if card == nil || !strings.EqualFold(s.learning.TargetLang, "es") {
+		return
+	}
+	lemma := strings.TrimSpace(strings.ToLower(card.Word))
+	if lemma == "" {
+		return
+	}
+	verbRepo := repository.NewVerbFormsRepository(s.wordRepo.DB(), s.logger)
+	_, err := verbRepo.LinkWordCardByLemma(card.ID, lemma, s.learning.TargetLang, "word_service")
+	if err != nil {
+		s.logger.Warn("failed to link verb lemma for word card",
+			zap.Int64("word_card_id", card.ID),
+			zap.String("lemma", card.Word),
+			zap.Error(err))
+	}
 }
 
 // renderWordCardMarkdown renders markdown from structured WordCard data

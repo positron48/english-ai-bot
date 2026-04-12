@@ -204,6 +204,30 @@
       </div>
     </div>
 
+    <div class="card" v-if="showVerbFormProgression">
+      <h2>{{ t('settings.verbFormProgressionTitle') }}</h2>
+      <div class="settings-group">
+        <div class="setting-item verb-scope-item">
+          <div class="setting-info">
+            <label class="setting-label">{{ t('settings.verbFormProgressionLabel') }}</label>
+            <p class="setting-description">{{ t('settings.verbFormProgressionDescription') }}</p>
+          </div>
+          <div class="setting-control">
+            <span v-if="verbProgressionSaved" class="saved-indicator">{{ t('settings.verbFormProgressionSaved') }}</span>
+            <select
+              v-model.number="verbFormsProgressionIndex"
+              class="theme-select verb-scope-select"
+              @change="handleVerbFormProgressionChange"
+            >
+              <option v-for="(step, idx) in verbLadder" :key="step.scope" :value="idx">
+                {{ verbProgressionOptionLabel(step) }}
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="card">
       <h2>{{ t('settings.notifications') }}</h2>
       <div class="settings-group">
@@ -268,18 +292,18 @@ import { useSettings } from '../composables/useSettings'
 import { useTheme } from '../composables/useTheme'
 import { useAudio } from '../composables/useAudio'
 import { useAuth } from '../composables/useAuth'
-import { useLearningConfig } from '../composables/useLearningConfig'
+import { useLearningConfig, type SpanishVerbScopeLadderStep } from '../composables/useLearningConfig'
 import { apiClient } from '../api/client'
 import Icon from '../components/Icon.vue'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 const router = useRouter()
 const { settings, setSoundsEnabled, setVibrationEnabled, setTheme, setSoundTheme, setHideMorphInTraining } = useSettings()
 const { theme: currentTheme, setTheme: setThemeInTheme } = useTheme()
 const { getThemes, previewTheme } = useAudio()
 const { logout: authLogout } = useAuth()
-const { targetLangDisplay, ensureLearningLoaded } = useLearningConfig()
+const { learning, targetLangDisplay, ensureLearningLoaded } = useLearningConfig()
 
 const soundsEnabled = ref(true)
 const vibrationEnabled = ref(true)
@@ -300,7 +324,24 @@ const spellMasteringThreshold = ref(50)
 const typeModeEnabled = ref(true)
 const typeMasteringThreshold = ref(70)
 const hideMorphInTraining = ref(false)
+const verbFormsProgressionIndex = ref(0)
+const verbProgressionSaved = ref(false)
 let trainingDelaysSavedTimeout: ReturnType<typeof setTimeout> | null = null
+let verbProgressionSavedTimeout: ReturnType<typeof setTimeout> | null = null
+
+const showVerbFormProgression = computed(
+  () =>
+    learning.value?.target_lang === 'es' &&
+    learning.value?.spanish_verb_forms_enabled === true &&
+    (learning.value?.spanish_verb_scope_ladder?.length ?? 0) > 0
+)
+
+const verbLadder = computed(() => learning.value?.spanish_verb_scope_ladder ?? [])
+
+const verbProgressionOptionLabel = (step: { label_ru: string; label_en: string }) => {
+  const label = locale.value === 'ru' ? step.label_ru : step.label_en
+  return t('settings.verbFormProgressionThrough', { label })
+}
 
 onMounted(async () => {
   await ensureLearningLoaded()
@@ -342,12 +383,32 @@ interface SettingsResponse {
     type_mode_enabled?: boolean
     type_mastering_threshold?: number
     hide_morph_in_training?: boolean
+    verb_forms_progression_index?: number
+  }
+  learning?: Record<string, unknown>
+}
+
+const mergeLearningFromSettings = (data: SettingsResponse) => {
+  const patch = data.learning
+  if (!patch || typeof patch !== 'object') return
+  const base = learning.value
+  if (!base) return
+  learning.value = {
+    ...base,
+    spanish_verb_forms_enabled:
+      typeof patch.spanish_verb_forms_enabled === 'boolean'
+        ? patch.spanish_verb_forms_enabled
+        : base.spanish_verb_forms_enabled,
+    spanish_verb_scope_ladder: Array.isArray(patch.spanish_verb_scope_ladder)
+      ? (patch.spanish_verb_scope_ladder as SpanishVerbScopeLadderStep[])
+      : base.spanish_verb_scope_ladder,
   }
 }
 
 const loadTrainingDelaysSettings = async () => {
   try {
     const data = await apiClient.request<SettingsResponse>('/api/settings')
+    mergeLearningFromSettings(data)
     const s = data.settings
     if (s?.options_delay_seconds !== undefined) {
       optionsDelaySeconds.value = Math.max(0, Math.min(10, s.options_delay_seconds))
@@ -371,8 +432,44 @@ const loadTrainingDelaysSettings = async () => {
       hideMorphInTraining.value = s.hide_morph_in_training
       setHideMorphInTraining(hideMorphInTraining.value)
     }
+    if (s?.verb_forms_progression_index !== undefined && typeof s.verb_forms_progression_index === 'number') {
+      verbFormsProgressionIndex.value = Math.max(
+        0,
+        Math.min((learning.value?.spanish_verb_scope_ladder?.length ?? 1) - 1, s.verb_forms_progression_index)
+      )
+    }
   } catch (error) {
     console.error('Failed to load training delay settings:', error)
+  }
+}
+
+const handleVerbFormProgressionChange = async () => {
+  const ladderLen = learning.value?.spanish_verb_scope_ladder?.length ?? 0
+  if (ladderLen === 0) return
+  let idx = verbFormsProgressionIndex.value
+  if (idx < 0) idx = 0
+  if (idx >= ladderLen) idx = ladderLen - 1
+  verbFormsProgressionIndex.value = idx
+  try {
+    const data = await apiClient.request<SettingsResponse>('/api/settings/training', {
+      method: 'POST',
+      body: JSON.stringify({ verb_forms_progression_index: idx }),
+    })
+    mergeLearningFromSettings(data)
+    if (data.settings?.verb_forms_progression_index !== undefined) {
+      verbFormsProgressionIndex.value = data.settings.verb_forms_progression_index
+    }
+    if (verbProgressionSavedTimeout) {
+      clearTimeout(verbProgressionSavedTimeout)
+      verbProgressionSavedTimeout = null
+    }
+    verbProgressionSaved.value = true
+    verbProgressionSavedTimeout = setTimeout(() => {
+      verbProgressionSaved.value = false
+      verbProgressionSavedTimeout = null
+    }, 2500)
+  } catch (error) {
+    console.error('Failed to save verb form progression:', error)
   }
 }
 
@@ -548,6 +645,15 @@ const handleLogout = () => {
 
 .setting-item:last-child {
   border-bottom: none;
+}
+
+.verb-scope-item {
+  align-items: flex-start;
+}
+
+.verb-scope-select {
+  min-width: 220px;
+  max-width: 100%;
 }
 
 .setting-info {

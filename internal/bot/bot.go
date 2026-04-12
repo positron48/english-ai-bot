@@ -2,6 +2,7 @@ package bot
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -14,6 +15,7 @@ import (
 	"tgbot-skeleton/internal/ai"
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/database"
+	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/service"
 	"tgbot-skeleton/internal/web"
@@ -123,9 +125,31 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 	wordService := service.NewWordServiceWithMastering(wordRepo, trainingCardRepo, userCardRepo, userWordMasteringRepo, aiService, cfg.Learning, log)
 	pronunciationService := service.NewPronunciationService(cfg.TTS, cfg.Learning, wordRepo, log)
 	wordService.SetPronunciationService(pronunciationService)
+	verbFormsRepoForSync := repository.NewVerbFormsRepository(conn, log)
+	verbTrainingForWordSync := service.NewVerbTrainingService(verbFormsRepoForSync, cfg.Learning, cfg.Training, log)
+	wordService.SetVerbFormCardsSync(cfg.Training, func(userID int64) error {
+		u, err := userRepo.GetUserByID(userID)
+		var scopes []string
+		switch {
+		case err != nil || u == nil || strings.TrimSpace(u.SettingsJSON) == "":
+			scopes = models.DefaultSpanishVerbScopes()
+		default:
+			var settings models.UserSettings
+			if err := json.Unmarshal([]byte(u.SettingsJSON), &settings); err != nil {
+				scopes = models.DefaultSpanishVerbScopes()
+			} else {
+				scopes = service.ResolveVerbScopes(&settings, cfg.Learning)
+			}
+		}
+		if len(scopes) == 0 {
+			scopes = models.DefaultSpanishVerbScopes()
+		}
+		return verbTrainingForWordSync.EnsureVerbFormUserCards(userID, scopes)
+	})
 	srsService := service.NewSRSService(userCardRepo, cfg.Learning, log)
 	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, cfg.Learning, log)
-	optionsService := service.NewOptionsService(trainingCardRepo, log)
+	targetLang := strings.ToLower(strings.TrimSpace(cfg.Learning.TargetLang))
+	optionsService := service.NewOptionsService(trainingCardRepo, log, targetLang)
 	cbService := service.NewCircuitBreakerService(cbRepo, cfg.Training.CircuitBreakerThreshold, log)
 
 	// Create training handler

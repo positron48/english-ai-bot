@@ -17,7 +17,7 @@ func setupOptionsServiceTest(t *testing.T) (*OptionsService, *database.DB) {
 	db := testutil.SetupTestDatabase(t)
 
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), logger)
-	svc := NewOptionsService(tcRepo, logger)
+	svc := NewOptionsService(tcRepo, logger, "en")
 
 	return svc, db
 }

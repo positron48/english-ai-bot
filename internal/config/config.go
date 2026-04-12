@@ -182,6 +182,13 @@ type TrainingConfig struct {
 	CircuitBreakerAutoReset int    `mapstructure:"circuit_breaker_auto_reset_hours"`
 	OptionsDelayMS          int    `mapstructure:"options_delay_ms"`
 	WrongAnswerDelaySeconds int    `mapstructure:"wrong_answer_delay_seconds"`
+	SpanishVerbFormsEnabled bool `mapstructure:"spanish_verb_forms_enabled"`
+	VerbFormsMaxCards       int  `mapstructure:"verb_forms_max_cards_per_session"`
+	VerbFormsMaxNew         int  `mapstructure:"verb_forms_max_new_per_session"`
+	// VerbFormsTypedMinReps: after this many successful SRS reps (and not in "learning"), verb-form cards become eligible for typing the whole form (see VerbFormsTypedChancePercent).
+	VerbFormsTypedMinReps int `mapstructure:"verb_forms_typed_min_reps"`
+	// VerbFormsTypedChancePercent: when eligible for typed mode, each card uses typed with this probability (0–100); otherwise multiple choice. Default 50 (like spell/type mix in word training).
+	VerbFormsTypedChancePercent int `mapstructure:"verb_forms_typed_chance_percent"`
 }
 
 // AdminConfig holds admin configuration
@@ -272,6 +279,14 @@ func Load() (*Config, error) {
 	viper.SetDefault("training.circuit_breaker_auto_reset_hours", 24)
 	viper.SetDefault("training.options_delay_ms", 5000)
 	viper.SetDefault("training.wrong_answer_delay_seconds", 5)
+	viper.SetDefault("training.spanish_verb_forms_enabled", false)
+	// Verb-form session: size of one run and how many brand-new (state=new) cards may be mixed in.
+	// Defaults match a typical "presente indicativo" grid (~6 slots × several lemmas): one session can hold ~30 cards
+	// and draw new cards in random order so a single lemma does not monopolize the slot when reviews are not due yet.
+	viper.SetDefault("training.verb_forms_max_cards_per_session", 30)
+	viper.SetDefault("training.verb_forms_max_new_per_session", 30)
+	viper.SetDefault("training.verb_forms_typed_min_reps", 2)
+	viper.SetDefault("training.verb_forms_typed_chance_percent", 50)
 
 	// Admin defaults
 	viper.SetDefault("admin.telegram_id", 0)
@@ -374,6 +389,11 @@ func Load() (*Config, error) {
 	_ = viper.BindEnv("training.circuit_breaker_auto_reset_hours", "CIRCUIT_BREAKER_AUTO_RESET_HOURS")
 	_ = viper.BindEnv("training.options_delay_ms", "TRAINING_OPTIONS_DELAY_MS")
 	_ = viper.BindEnv("training.wrong_answer_delay_seconds", "TRAINING_WRONG_ANSWER_DELAY_SECONDS")
+	_ = viper.BindEnv("training.spanish_verb_forms_enabled", "SPANISH_VERB_FORMS_ENABLED")
+	_ = viper.BindEnv("training.verb_forms_max_cards_per_session", "VERB_FORMS_MAX_CARDS_PER_SESSION")
+	_ = viper.BindEnv("training.verb_forms_max_new_per_session", "VERB_FORMS_MAX_NEW_PER_SESSION")
+	_ = viper.BindEnv("training.verb_forms_typed_min_reps", "VERB_FORMS_TYPED_MIN_REPS")
+	_ = viper.BindEnv("training.verb_forms_typed_chance_percent", "VERB_FORMS_TYPED_CHANCE_PERCENT")
 	_ = viper.BindEnv("admin.telegram_id", "ADMIN_TELEGRAM_ID")
 	_ = viper.BindEnv("admin.db_query_access", "DB_QUERY_ACCESS")
 	_ = viper.BindEnv("webapp.public_url", "WEBAPP_PUBLIC_URL")

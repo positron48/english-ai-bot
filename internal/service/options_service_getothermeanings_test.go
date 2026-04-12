@@ -43,7 +43,7 @@ func TestOptionsService_getOtherMeaningsOfWord(t *testing.T) {
 		t.Fatalf("Failed to create training card 2: %v", err)
 	}
 
-	service := NewOptionsService(trainingCardRepo, logger)
+	service := NewOptionsService(trainingCardRepo, logger, "en")
 
 	// Test for RU->EN direction
 	meanings := service.getOtherMeaningsOfWord(1, models.DirectionRUtoEN)

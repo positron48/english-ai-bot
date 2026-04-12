@@ -46,7 +46,7 @@ func TestHandleSettings_LearningPayload(t *testing.T) {
 		t.Fatalf("expected 200, got %d: %s", w.Code, w.Body.String())
 	}
 	var body struct {
-		Learning map[string]string `json:"learning"`
+		Learning map[string]interface{} `json:"learning"`
 	}
 	if err := json.Unmarshal(w.Body.Bytes(), &body); err != nil {
 		t.Fatal(err)
@@ -56,6 +56,9 @@ func TestHandleSettings_LearningPayload(t *testing.T) {
 	}
 	if body.Learning["target_lang_name_ru"] != "английский" || body.Learning["target_lang_name_en"] != "English" {
 		t.Fatalf("unexpected names: %#v", body.Learning)
+	}
+	if v, ok := body.Learning["spanish_verb_forms_enabled"].(bool); !ok || v {
+		t.Fatalf("expected spanish_verb_forms_enabled false for English target, got %#v", body.Learning["spanish_verb_forms_enabled"])
 	}
 }
 

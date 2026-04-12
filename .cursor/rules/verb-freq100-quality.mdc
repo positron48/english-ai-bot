@@ -1,0 +1,13 @@
+---
+alwaysApply: false
+description: Правила при доработке качества ES/RU для испанских глаголов топ-100
+---
+
+# Verb freq-100 quality
+
+Применяй при задачах по **`internal/spanishverbs`**, генерации примеров, gomorphy, каталогу `fp100_*` / `ir_*`.
+
+- После изменений в генерации примеров или морфологии RU — минимум **`make check-quick`** в корне `english-ai-bot`; перед merge фичи в общий поток — полный **`make check`** (см. AGENTS.md).
+- Не меняй **ID** шаблонов `fp100_*` / `ir_*` без явной миграции `allowed_template_ids` в метаданных и заметки в коммите.
+- Не смешивай каталог **`ir`** (motion) с хвостами **freq100** (`contexto neutro`, `día a día` и т.д.).
+- Учитывай ограничения аспекта RU vs испанский pret/imperf и особый случай **`быть`** — см. скилл `verb-freq100-quality`.

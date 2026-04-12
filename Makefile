@@ -13,7 +13,7 @@ SERVICE_NAME ?= ai-bot
 -include .env
 .EXPORT_ALL_VARIABLES:
 
-.PHONY: all tidy build run test lint fmt setup up up-en up-es clean check check-quick ci deploy update status logs docker-build docker-run docker-stop docker-logs docker-clean docker-rebuild docker-dev docker-dev-logs docker-dev-restart webapp-install webapp-dev webapp-build test-postgres test-integration test-integration-verbose grammar-bundle grammar-bundle-list postgres-dev-init-dbs clean-spanish-csv sync-spanish-word-sets requeue-invalid-cards-es-dry requeue-invalid-cards-es requeue-invalid-cards-es-no-tts-dry requeue-invalid-cards-es-no-tts
+.PHONY: all tidy build run test lint fmt setup up up-en up-es clean check check-quick ci deploy update status logs docker-build docker-run docker-stop docker-logs docker-clean docker-rebuild docker-dev docker-dev-logs docker-dev-restart webapp-install webapp-dev webapp-build test-postgres test-integration test-integration-verbose grammar-bundle grammar-bundle-list postgres-dev-init-dbs clean-spanish-csv sync-spanish-word-sets requeue-invalid-cards-es-dry requeue-invalid-cards-es requeue-invalid-cards-es-no-tts-dry requeue-invalid-cards-es-no-tts import-spanish-verbs import-spanish-verbs-jehle-bundled backfill-word-verb-links build-verb-form-examples backfill-verb-lemma-ru-glosses backfill-verb-template-links preview-verb-templates
 
 all: build
 
@@ -301,6 +301,73 @@ normalize-word-pos-es: build-normalize-word-pos
 	echo "Running WRITE normalize_word_pos with BATCH=$$BATCH LIMIT=$$LIMIT"; \
 	./bin/normalize_word_pos -dry-run=false -batch "$$BATCH" -limit "$$LIMIT"
 
+import-spanish-verbs:
+	@if [ -z "$(INPUT)" ]; then \
+		echo "Usage: make import-spanish-verbs INPUT=/path/to/file [FORMAT=json|jehle-csv] [SOURCE=open-data] [VERSION=v1]"; \
+		echo "Bundled Jehle CSV: make import-spanish-verbs-jehle-bundled"; \
+		echo "Uses optional .env then required .env.es (DATABASE_URL), like other Spanish maintenance targets."; \
+		exit 1; \
+	fi
+	@test -f .env.es || (echo "Нет .env.es — скопируйте env.example.es в .env.es и заполните DATABASE_URL"; exit 1)
+	@set -e; \
+	set -a; [ -f .env ] && . ./.env; set +a; \
+	set -a && . ./.env.es && set +a; \
+	$(GO) run ./cmd/import_spanish_verbs --input "$(INPUT)" --format "$${FORMAT:-json}" --source "$${SOURCE:-open-data}" --source-version "$${VERSION:-v1}"
+
+import-spanish-verbs-jehle-bundled:
+	@test -f .env.es || (echo "Нет .env.es — скопируйте env.example.es в .env.es и заполните DATABASE_URL"; exit 1)
+	@set -e; \
+	set -a; [ -f .env ] && . ./.env; set +a; \
+	set -a && . ./.env.es && set +a; \
+	$(GO) run ./cmd/import_spanish_verbs \
+		--input resources/verbs/jehle_verb_database.csv \
+		--format jehle-csv \
+		--source fred-jehle-ghidinelli \
+		--source-version jehle-csv-sha256-f77f01d536cd351584051d76902ff8051ab1b945a38e69c7ed02da78ab082ea8 && \
+	$(GO) run ./cmd/import_spanish_verbs \
+		--input resources/verbs/jehle_supplement_aux_haber.csv \
+		--format jehle-csv \
+		--source project-supplement \
+		--source-version haber-paradigm-v1
+
+backfill-word-verb-links:
+	@test -f .env.es || (echo "Нет .env.es — скопируйте env.example.es в .env.es и заполните DATABASE_URL"; exit 1)
+	@set -e; \
+	set -a; [ -f .env ] && . ./.env; set +a; \
+	set -a && . ./.env.es && set +a; \
+	$(GO) run ./cmd/backfill_word_verb_links
+
+build-verb-form-examples:
+	@test -f .env.es || (echo "Нет .env.es — скопируйте env.example.es в .env.es и заполните DATABASE_URL"; exit 1)
+	@set -e; \
+	set -a; [ -f .env ] && . ./.env; set +a; \
+	set -a && . ./.env.es && set +a; \
+	$(GO) run ./cmd/build_verb_form_examples
+
+# Batch LLM: fill verb_lemmas.metadata_json ru.gloss for Spanish lemmas (min requests: ~ceil(N/batch-size)). Needs AI_* from .env / .env.es.
+backfill-verb-lemma-ru-glosses:
+	@test -f .env.es || (echo "Нет .env.es — скопируйте env.example.es в .env.es и заполните DATABASE_URL"; exit 1)
+	@set -e; \
+	set -a; [ -f .env ] && . ./.env; set +a; \
+	set -a && . ./.env.es && set +a; \
+	$(GO) run ./cmd/backfill_verb_lemma_ru_glosses -- $(ARGS)
+
+# Offline merge: verb_class + allowed_template_ids for curated lemmas (see cmd/backfill_verb_template_links).
+backfill-verb-template-links:
+	@test -f .env.es || (echo "Нет .env.es — скопируйте env.example.es в .env.es и заполните DATABASE_URL"; exit 1)
+	@set -e; \
+	set -a; [ -f .env ] && . ./.env; set +a; \
+	set -a && . ./.env.es && set +a; \
+	$(GO) run ./cmd/backfill_verb_template_links -- $(ARGS)
+
+# Preview ES/RU example lines for every stored paradigm form (runtime templates + DB catalog). Needs .env.es + imported verb_forms_dict.
+preview-verb-templates:
+	@test -f .env.es || (echo "Нет .env.es — скопируйте env.example.es в .env.es и заполните DATABASE_URL"; exit 1)
+	@set -e; \
+	set -a; [ -f .env ] && . ./.env; set +a; \
+	set -a && . ./.env.es && set +a; \
+	$(GO) run ./cmd/preview_verb_templates -- $(ARGS)
+
 # Quick check: same as check but skips integration tests (step 5b). Use for fast feedback.
 check-quick: export CHECK_SKIP_INTEGRATION := 1
 check-quick: check
@@ -556,6 +623,13 @@ help:
 	@echo "  make backfill-noun-gender-es - Write noun_gender backfill with .env.es (+ optional .env)"
 	@echo "  make normalize-word-pos-es-dry - Dry-run POS normalization with .env.es (+ optional .env)"
 	@echo "  make normalize-word-pos-es - Write POS normalization with .env.es (+ optional .env)"
+	@echo "  make import-spanish-verbs INPUT=... [FORMAT=json|jehle-csv] - Import Spanish verb forms"
+	@echo "  make import-spanish-verbs-jehle-bundled - Import bundled Fred Jehle CSV (resources/verbs)"
+	@echo "  make backfill-word-verb-links - Link existing Spanish verb word_cards with verb_lemmas"
+	@echo "  make build-verb-form-examples - No-op (cloze ES/RU lines are generated at training time; keeps Makefile compatibility)"
+	@echo "  make backfill-verb-lemma-ru-glosses ARGS='--dry-run' — LLM batch for RU glosses in verb_lemmas.metadata_json (optional ARGS; add ARGS='--fill-class' for verb_class only)"
+	@echo "  make backfill-verb-template-links ARGS='--dry-run' — offline verb_class + allowed_template_ids for curated lemmas (Spanish DB)"
+	@echo "  make preview-verb-templates ARGS='-lemma=hablar' — dump ES/RU example for each paradigm row (Spanish DB)"
 	@echo "  make requeue-invalid-cards-es-dry - Dry-run soft cleanup: invalid cards + duplicates + invalid TTS"
 	@echo "  make requeue-invalid-cards-es - Commit soft cleanup: invalid cards + duplicates + invalid TTS"
 	@echo "  make requeue-invalid-cards-es-no-tts-dry - Dry-run soft cleanup without touching TTS"

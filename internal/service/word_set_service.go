@@ -103,6 +103,7 @@ func (s *WordSetService) EnsureWordCardExistsMinimal(word string) (int64, error)
 	}
 
 	if wordCard != nil {
+		s.tryLinkVerbLemma(wordCard.ID, wordCard.Word)
 		return wordCard.ID, nil
 	}
 
@@ -118,6 +119,8 @@ func (s *WordSetService) EnsureWordCardExistsMinimal(word string) (int64, error)
 	if err != nil {
 		return 0, fmt.Errorf("failed to create minimal word card: %w", err)
 	}
+
+	s.tryLinkVerbLemma(wordCardID, normalizedWord)
 
 	s.logger.Debug("created minimal word card",
 		zap.String("word", normalizedWord),
@@ -139,6 +142,7 @@ func (s *WordSetService) EnsureWordCardExists(ctx context.Context, word string) 
 	}
 
 	if wordCard != nil {
+		s.tryLinkVerbLemma(wordCard.ID, wordCard.Word)
 		return wordCard.ID, nil
 	}
 
@@ -230,6 +234,7 @@ func (s *WordSetService) EnsureWordCardExists(ctx context.Context, word string) 
 	if err != nil {
 		return 0, fmt.Errorf("failed to save word card: %w", err)
 	}
+	s.tryLinkVerbLemma(wordCardID, lemma)
 
 	// Get the saved word card
 	wordCard, err = s.wordRepo.GetWordCardByID(wordCardID)
@@ -248,6 +253,29 @@ func (s *WordSetService) EnsureWordCardExists(ctx context.Context, word string) 
 	}
 
 	return wordCard.ID, nil
+}
+
+// tryLinkVerbLemma links word_card to verb_lemmas when lemma exists in the Spanish conjugation dictionary (no POS gate).
+func (s *WordSetService) tryLinkVerbLemma(wordCardID int64, lemma string) {
+	if !strings.EqualFold(s.learning.TargetLang, "es") {
+		return
+	}
+	lemma = strings.TrimSpace(strings.ToLower(lemma))
+	if lemma == "" {
+		return
+	}
+	wr, ok := s.wordRepo.(*repository.WordRepository)
+	if !ok {
+		return
+	}
+	verbRepo := repository.NewVerbFormsRepository(wr.DB(), s.logger)
+	_, err := verbRepo.LinkWordCardByLemma(wordCardID, lemma, s.learning.TargetLang, "word_set_service")
+	if err != nil {
+		s.logger.Warn("failed to link verb lemma for word set card",
+			zap.Int64("word_card_id", wordCardID),
+			zap.String("lemma", lemma),
+			zap.Error(err))
+	}
 }
 
 // EnsureTrainingCardsExist ensures training cards exist for a word card

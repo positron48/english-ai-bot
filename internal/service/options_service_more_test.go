@@ -15,7 +15,7 @@ func TestOptionsService_hasMatchingPOS(t *testing.T) {
 	db := testutil.SetupTestDB(t)
 
 	trainingCardRepo := repository.NewTrainingCardRepository(db, logger)
-	service := NewOptionsService(trainingCardRepo, logger)
+	service := NewOptionsService(trainingCardRepo, logger, "en")
 
 	t.Run("Empty target POS accepts all", func(t *testing.T) {
 		result := service.hasMatchingPOS("word", "", models.DirectionRUtoEN)
@@ -147,13 +147,21 @@ func TestOptionsService_hasMatchingPOS(t *testing.T) {
 
 func TestOptionsService_normalizeVerbFormat(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
-	service := NewOptionsService(nil, logger)
+	service := NewOptionsService(nil, logger, "en")
 
 	t.Run("RU to EN with verb POS adds 'to ' prefix", func(t *testing.T) {
 		result := service.normalizeVerbFormat("make", "verb", models.DirectionRUtoEN)
 		expected := "to make"
 		if result != expected {
 			t.Errorf("normalizeVerbFormat() = %q, want %q", result, expected)
+		}
+	})
+
+	t.Run("RU to target with verb POS Spanish does not add 'to ' prefix", func(t *testing.T) {
+		svcES := NewOptionsService(nil, logger, "es")
+		result := svcES.normalizeVerbFormat("hablar", "verb", models.DirectionRUtoEN)
+		if result != "hablar" {
+			t.Errorf("normalizeVerbFormat() = %q, want hablar", result)
 		}
 	})
 

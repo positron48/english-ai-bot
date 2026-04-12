@@ -144,7 +144,7 @@ func TestShowTrainingCard_NormalCardResponse(t *testing.T) {
 		t.Fatalf("create training card: %v", err)
 	}
 
-	optionsService := service.NewOptionsService(trainingCardRepo, logger)
+	optionsService := service.NewOptionsService(trainingCardRepo, logger, "en")
 	cfg := &config.Config{Training: config.TrainingConfig{OptionsDelayMS: 1234, WrongAnswerDelaySeconds: 3}}
 	router := NewRouter(logger, cfg, db, nil, nil, optionsService, nil)
 
@@ -338,7 +338,7 @@ func TestShowTrainingCard_NormalCardRUtoEN(t *testing.T) {
 	}); err != nil {
 		t.Fatalf("create training card: %v", err)
 	}
-	optionsService := service.NewOptionsService(trainingCardRepo, logger)
+	optionsService := service.NewOptionsService(trainingCardRepo, logger, "en")
 	cfg := &config.Config{Training: config.TrainingConfig{OptionsDelayMS: 1000, WrongAnswerDelaySeconds: 3}}
 	router := NewRouter(logger, cfg, db, nil, nil, optionsService, nil)
 	card := &models.UserCardWithTraining{

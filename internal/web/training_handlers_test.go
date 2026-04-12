@@ -60,7 +60,7 @@ func TestHandleTrainingStart_NoCards(t *testing.T) {
 	trainingCardRepo := repository.NewTrainingCardRepository(db, logger)
 	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
-	optionsService := service.NewOptionsService(trainingCardRepo, logger)
+	optionsService := service.NewOptionsService(trainingCardRepo, logger, "en")
 
 	router := NewRouter(logger, cfg, db, trainingService, srsService, optionsService, nil)
 	router.SetDependencies(userRepo, nil, nil, nil, "test-token")

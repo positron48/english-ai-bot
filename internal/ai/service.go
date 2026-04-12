@@ -111,67 +111,37 @@ type Error struct {
 	Type    string `json:"type"`
 }
 
-// GenerateResponse sends a message to the AI provider and returns the response
-func (s *Service) GenerateResponse(ctx context.Context, userMessage string) (string, error) {
-	if isSingleWordLookupCandidate(userMessage) {
-		userMessage = "SINGLE_WORD_LOOKUP_MODE\nReturn ONLY one JSON object for dictionary lookup.\nWord: " + strings.TrimSpace(userMessage)
-	}
-	// Prepare messages with system prompt
-	messages := []Message{
-		{
-			Role:    "system",
-			Content: s.prompt,
-		},
-		{
-			Role:    "user",
-			Content: userMessage,
-		},
-	}
-
-	// Create request (word cards need spacious JSON; 1000 tokens often truncates mid-object)
+// postChatCompletion sends a chat/completions request and returns the first assistant text.
+func (s *Service) postChatCompletion(ctx context.Context, model string, messages []Message, maxTokens int, temperature float64, logFields ...zap.Field) (string, error) {
 	req := ChatRequest{
-		Model:       s.model,
+		Model:       model,
 		Messages:    messages,
-		MaxTokens:   2000,
-		Temperature: 0.3, // Lower temperature for more stable routing/JSON in single-word lookup
+		MaxTokens:   maxTokens,
+		Temperature: temperature,
 	}
-
-	// Marshal request
 	reqBody, err := jsonMarshalFunc(req)
 	if err != nil {
 		return "", fmt.Errorf("failed to marshal request: %w", err)
 	}
-
-	// Create HTTP request
 	httpReq, err := http.NewRequestWithContext(ctx, "POST", s.url+"/chat/completions", bytes.NewBuffer(reqBody))
 	if err != nil {
 		return "", fmt.Errorf("failed to create request: %w", err)
 	}
-
-	// Set headers
 	httpReq.Header.Set("Content-Type", "application/json")
 	httpReq.Header.Set("Authorization", "Bearer "+s.apiKey)
 
-	s.logger.Debug("sending request to AI provider",
-		zap.String("url", s.url),
-		zap.String("model", s.model),
-		zap.String("user_message", userMessage),
-	)
+	fields := append([]zap.Field{zap.String("url", s.url), zap.String("model", model)}, logFields...)
+	s.logger.Debug("sending chat/completions", fields...)
 
-	// Send request
 	resp, err := s.client.Do(httpReq)
 	if err != nil {
 		return "", fmt.Errorf("failed to send request: %w", err)
 	}
 	defer resp.Body.Close()
-
-	// Read response
 	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return "", fmt.Errorf("failed to read response: %w", err)
 	}
-
-	// Check status code
 	if resp.StatusCode != http.StatusOK {
 		s.logger.Error("AI provider returned error",
 			zap.Int("status_code", resp.StatusCode),
@@ -179,29 +149,40 @@ func (s *Service) GenerateResponse(ctx context.Context, userMessage string) (str
 		)
 		return "", fmt.Errorf("AI provider returned status %d: %s", resp.StatusCode, string(respBody))
 	}
-
-	// Parse response
 	var chatResp ChatResponse
 	if err := json.Unmarshal(respBody, &chatResp); err != nil {
 		return "", fmt.Errorf("failed to unmarshal response: %w", err)
 	}
-
-	// Check for API error
 	if chatResp.Error != nil {
 		return "", fmt.Errorf("AI provider error: %s", chatResp.Error.Message)
 	}
-
-	// Check if we have choices
 	if len(chatResp.Choices) == 0 {
 		return "", fmt.Errorf("no response choices received")
 	}
+	out := stripLLMJSONFences(chatResp.Choices[0].Message.Content)
+	s.logger.Debug("received chat/completions response", zap.Int("length", len(out)))
+	return out, nil
+}
 
-	response := stripLLMJSONFences(chatResp.Choices[0].Message.Content)
-	s.logger.Debug("received response from AI provider",
-		zap.String("response", response),
-	)
+// ChatSystemUser sends an explicit system+user chat (no dictionary heuristics on user text).
+func (s *Service) ChatSystemUser(ctx context.Context, systemPrompt, userMessage string) (string, error) {
+	msgs := []Message{
+		{Role: "system", Content: systemPrompt},
+		{Role: "user", Content: userMessage},
+	}
+	return s.postChatCompletion(ctx, s.model, msgs, 1600, 0.15, zap.String("kind", "system_user"))
+}
 
-	return response, nil
+// GenerateResponse sends a message to the AI provider and returns the response
+func (s *Service) GenerateResponse(ctx context.Context, userMessage string) (string, error) {
+	if isSingleWordLookupCandidate(userMessage) {
+		userMessage = "SINGLE_WORD_LOOKUP_MODE\nReturn ONLY one JSON object for dictionary lookup.\nWord: " + strings.TrimSpace(userMessage)
+	}
+	messages := []Message{
+		{Role: "system", Content: s.prompt},
+		{Role: "user", Content: userMessage},
+	}
+	return s.postChatCompletion(ctx, s.model, messages, 2000, 0.3, zap.String("kind", "dictionary"), zap.String("user_message", userMessage))
 }
 
 // GenerateTrainingCard generates a training card for a word using LLM

@@ -34,6 +34,26 @@ interface RefreshResponse {
   token_type: string
 }
 
+/** Parses JSON error bodies from API; exposes stable `code` (e.g. verb_training_disabled) on the thrown Error. */
+function parseApiErrorBody(errorText: string, status: number): { message: string; code?: string } {
+  const fallback = `API error: ${status} ${errorText}`
+  try {
+    const errorJson = JSON.parse(errorText) as { message?: string; error?: string; code?: string }
+    const code = typeof errorJson.code === 'string' ? errorJson.code : undefined
+    let message = fallback
+    if (errorJson.message) {
+      message = errorJson.message
+    } else if (errorJson.error) {
+      message = errorJson.error
+    } else if (code) {
+      message = code
+    }
+    return { message, code }
+  } catch {
+    return { message: fallback }
+  }
+}
+
 // Network error callback type
 type NetworkErrorCallback = (isRetrying: boolean, attempt: number, maxAttempts: number) => void
 type NetworkSuccessCallback = () => void
@@ -257,23 +277,13 @@ class ApiClient {
 
       if (!response.ok) {
         const errorText = await response.text()
-        let errorMessage = `API error: ${response.status} ${errorText}`
-        
-        // Try to parse JSON error if possible
-        try {
-          const errorJson = JSON.parse(errorText)
-          if (errorJson.message) {
-            errorMessage = errorJson.message
-          } else if (errorJson.error) {
-            errorMessage = errorJson.error
-          }
-        } catch {
-          // Not JSON, use text as-is
-        }
-        
+        const { message: errorMessage, code } = parseApiErrorBody(errorText, response.status)
         const error = new Error(errorMessage)
         ;(error as any).status = response.status
         ;(error as any).response = response
+        if (code) {
+          ;(error as any).code = code
+        }
         throw error
       }
 
@@ -359,23 +369,13 @@ class ApiClient {
 
       if (!response.ok) {
         const errorText = await response.text()
-        let errorMessage = `API error: ${response.status} ${errorText}`
-        
-        // Try to parse JSON error if possible
-        try {
-          const errorJson = JSON.parse(errorText)
-          if (errorJson.message) {
-            errorMessage = errorJson.message
-          } else if (errorJson.error) {
-            errorMessage = errorJson.error
-          }
-        } catch {
-          // Not JSON, use text as-is
-        }
-        
+        const { message: errorMessage, code } = parseApiErrorBody(errorText, response.status)
         const error = new Error(errorMessage)
         ;(error as any).status = response.status
         ;(error as any).response = response
+        if (code) {
+          ;(error as any).code = code
+        }
         throw error
       }
 

@@ -364,6 +364,17 @@ func (w *TrainingWorker) fillWordCardData(ctx context.Context, wordCard *models.
 		return fmt.Errorf("failed to update word card: %w", err)
 	}
 
+	if strings.EqualFold(w.learning.TargetLang, "es") {
+		verbRepo := repository.NewVerbFormsRepository(w.wordRepo.DB(), w.logger)
+		if _, err := verbRepo.LinkWordCardByLemma(wordCard.ID, strings.ToLower(strings.TrimSpace(wordCard.Word)), "es", "training_worker"); err != nil {
+			w.logger.Warn("failed to link verb lemma after word card fill",
+				zap.Int64("word_card_id", wordCard.ID),
+				zap.String("word", wordCard.Word),
+				zap.Error(err),
+			)
+		}
+	}
+
 	w.logger.Info("filled missing word card data",
 		zap.String("word", wordCard.Word),
 		zap.Int64("word_card_id", wordCard.ID),

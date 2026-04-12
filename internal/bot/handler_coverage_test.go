@@ -58,7 +58,7 @@ func setupHandlerWithFailingUserRepo(t *testing.T) (*Handler, *mockTelegramClien
 	sessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
 	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
-	optionsService := service.NewOptionsService(trainingCardRepo, logger)
+	optionsService := service.NewOptionsService(trainingCardRepo, logger, "en")
 	trainingHandler := NewTrainingHandler(bot, trainingService, srsService, optionsService, sessionRepo, logger, 0, 0, db.GetConnection())
 
 	cfg := &config.Config{}
@@ -188,7 +188,7 @@ func TestHandleTrainCommand_StartTrainingOtherError_NewFailingDB(t *testing.T) {
 	failingSessionRepo := repository.NewSessionRepository(failingConn, logger)
 	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, failingSessionRepo, nil, config.DefaultLearningConfig(), logger)
 	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
-	optionsService := service.NewOptionsService(trainingCardRepo, logger)
+	optionsService := service.NewOptionsService(trainingCardRepo, logger, "en")
 	trainingHandler := NewTrainingHandler(bot, trainingService, srsService, optionsService, failingSessionRepo, logger, 0, 0, db.GetConnection())
 
 	cfg := &config.Config{}
@@ -486,7 +486,7 @@ func TestHandleCallbackQuery_AnswerRestoreSessionFails(t *testing.T) {
 	failingSessionRepo := repository.NewSessionRepository(failingConn, logger)
 	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, failingSessionRepo, nil, config.DefaultLearningConfig(), logger)
 	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
-	optionsService := service.NewOptionsService(trainingCardRepo, logger)
+	optionsService := service.NewOptionsService(trainingCardRepo, logger, "en")
 	// Use real sessionRepo for handler's sessionRepo (not used in this path)
 	realSessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
 	trainingHandler := NewTrainingHandler(bot, trainingService, srsService, optionsService, realSessionRepo, logger, 0, 0, db.GetConnection())
@@ -612,7 +612,7 @@ func TestHandleCallbackQuery_AnswerUpdateUsernameFails(t *testing.T) {
 	failingSessionRepo := repository.NewSessionRepository(failingConn, logger)
 	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, failingSessionRepo, nil, config.DefaultLearningConfig(), logger)
 	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
-	optionsService := service.NewOptionsService(trainingCardRepo, logger)
+	optionsService := service.NewOptionsService(trainingCardRepo, logger, "en")
 	realSessionRepo := repository.NewSessionRepository(db.GetConnection(), logger)
 	trainingHandler := NewTrainingHandler(bot, trainingService, srsService, optionsService, realSessionRepo, logger, 0, 0, db.GetConnection())
 

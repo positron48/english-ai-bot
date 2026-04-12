@@ -245,18 +245,20 @@ func (r *Router) handleHealth(w http.ResponseWriter, req *http.Request) {
 	if lc.TargetLang == "" {
 		lc = config.DefaultLearningConfig()
 	}
+	spanishVerbForms := r.config.Training.SpanishVerbFormsEnabled && strings.EqualFold(lc.TargetLang, "es")
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	_ = json.NewEncoder(w).Encode(map[string]interface{}{
 		"status": "ok",
 		"learning": map[string]interface{}{
-			"pair":                lc.Pair,
-			"native_lang":         lc.NativeLang,
-			"target_lang":         lc.TargetLang,
-			"app_code":            lc.AppCode,
-			"grammar_bundle_id":   lc.GrammarBundleID,
-			"target_lang_name_ru": learning.TargetLangNameRUAccusative(lc.TargetLang),
-			"target_lang_name_en": learning.TargetLangNameEN(lc.TargetLang),
+			"pair":                         lc.Pair,
+			"native_lang":                  lc.NativeLang,
+			"target_lang":                  lc.TargetLang,
+			"app_code":                     lc.AppCode,
+			"grammar_bundle_id":            lc.GrammarBundleID,
+			"target_lang_name_ru":          learning.TargetLangNameRUAccusative(lc.TargetLang),
+			"target_lang_name_en":          learning.TargetLangNameEN(lc.TargetLang),
+			"spanish_verb_forms_enabled":   spanishVerbForms,
 		},
 	})
 }
@@ -392,6 +394,10 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/training/reveal", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTrainingReveal)))
 	r.mux.HandleFunc("/api/training/answer", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTrainingAnswer)))
 	r.mux.HandleFunc("/api/training/upcoming", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTrainingUpcoming)))
+	r.mux.HandleFunc("/api/verb-training/start", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleVerbTrainingStart)))
+	r.mux.HandleFunc("/api/verb-training/current", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleVerbTrainingCurrent)))
+	r.mux.HandleFunc("/api/verb-training/answer", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleVerbTrainingAnswer)))
+	r.mux.HandleFunc("/api/verb-training/upcoming", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleVerbTrainingUpcoming)))
 	r.mux.HandleFunc("/api/chat", appChatMiddleware.Wrap(auth.RequireAuth(r.handleChat)))
 	r.mux.HandleFunc("/api/settings", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleSettings)))
 	r.mux.HandleFunc("/api/settings/notifications", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleNotificationSettings)))

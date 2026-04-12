@@ -1,0 +1,6 @@
+Supplement: lemma «haber» (Fred Jehle CSV schema, same columns as jehle_verb_database.csv).
+
+The bundled Fred Jehle database does not include the auxiliary «haber» as its own infinitive row set.
+Conjugations were added by this project for app functionality (paradigm + SRS) and are standard Peninsular Spanish forms.
+
+This file is not part of the Jehle CC BY-NC-SA dataset; it is separate project-authored data.

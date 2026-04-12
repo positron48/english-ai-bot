@@ -38,7 +38,7 @@
               ref="textareaRef"
               v-model="inputMessage"
               :placeholder="t('chat.placeholder')"
-              @keyup.enter.ctrl="sendMessage"
+              @keydown.enter.exact.prevent="sendMessage"
               @input="autoResize"
             ></textarea>
             <button @click="sendMessage" class="btn btn-primary" :disabled="sending">

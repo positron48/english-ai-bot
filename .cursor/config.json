@@ -4,6 +4,13 @@
     "coverageProfile": "coverage.out",
     "coverageMinPercent": 50
   },
+  "verbQuality": {
+    "packagePath": "internal/spanishverbs",
+    "goTestCommand": "go test ./internal/spanishverbs/... -count=1",
+    "checkQuickCommand": "make check-quick",
+    "maxIterations": 5,
+    "excludeIrByDefault": true
+  },
   "documentation": {
     "multilangPlanPath": "docs/MULTILANG_SPANISH_LAUNCH_PLAN.md",
     "spanishK3sChecklistPath": "docs/SPANISH_K3S_ROLLOUT_CHECKLIST.md"

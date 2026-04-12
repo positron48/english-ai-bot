@@ -47,7 +47,7 @@ func TestOptionsService_GenerateOptions_Integration(t *testing.T) {
 		t.Fatalf("Failed to create training card: %v", err)
 	}
 
-	service := NewOptionsService(trainingCardRepo, logger)
+	service := NewOptionsService(trainingCardRepo, logger, "en")
 
 	userCard := &models.UserCardWithTraining{
 		UserCard: models.UserCard{
@@ -113,7 +113,7 @@ func TestOptionsService_GenerateOptions_UsesCardDistractors(t *testing.T) {
 		t.Fatalf("Failed to create training card: %v", err)
 	}
 
-	service := NewOptionsService(trainingCardRepo, logger)
+	service := NewOptionsService(trainingCardRepo, logger, "en")
 
 	userCard := &models.UserCardWithTraining{
 		UserCard: models.UserCard{
@@ -196,7 +196,7 @@ func TestOptionsService_GenerateOptions_DirectionENtoRU(t *testing.T) {
 		t.Fatalf("CreateTrainingCard: %v", err)
 	}
 
-	service := NewOptionsService(trainingCardRepo, logger)
+	service := NewOptionsService(trainingCardRepo, logger, "en")
 	userCard := &models.UserCardWithTraining{
 		UserCard:     models.UserCard{ID: 1, Direction: models.DirectionENtoRU},
 		TrainingCard: models.TrainingCard{ID: cardID, WordCardID: wordCardID, WordEN: "generate", WordRU: "генерировать", DistractorsRU: string(distractorsRU)},
@@ -247,7 +247,7 @@ func TestOptionsService_GenerateOptions_InvalidDistractorsJSON(t *testing.T) {
 		t.Fatalf("CreateTrainingCard: %v", err)
 	}
 
-	service := NewOptionsService(trainingCardRepo, logger)
+	service := NewOptionsService(trainingCardRepo, logger, "en")
 	userCard := &models.UserCardWithTraining{
 		UserCard:     models.UserCard{ID: 1, Direction: models.DirectionRUtoEN},
 		TrainingCard: models.TrainingCard{ID: cardID, WordCardID: wordCardID, WordEN: "test", WordRU: "тест", DistractorsEN: `{invalid json`, DistractorsRU: `["другой","третий"]`},
@@ -301,7 +301,7 @@ func TestOptionsService_GenerateOptions_DisplayWordForRUtoEN(t *testing.T) {
 		t.Fatalf("CreateTrainingCard: %v", err)
 	}
 
-	service := NewOptionsService(trainingCardRepo, logger)
+	service := NewOptionsService(trainingCardRepo, logger, "en")
 	userCard := &models.UserCardWithTraining{
 		UserCard:     models.UserCard{ID: 1, Direction: models.DirectionRUtoEN},
 		TrainingCard: models.TrainingCard{ID: cardID, WordCardID: wordCardID, WordEN: "spy", WordRU: "шпионить", DisplayWord: &displayWord, DistractorsEN: string(distractorsEN)},
@@ -339,7 +339,7 @@ func TestOptionsService_GenerateOptions_SessionWordsExcluded(t *testing.T) {
 		t.Fatalf("CreateTrainingCard: %v", err)
 	}
 
-	service := NewOptionsService(trainingCardRepo, logger)
+	service := NewOptionsService(trainingCardRepo, logger, "en")
 	userCard := &models.UserCardWithTraining{
 		UserCard:     models.UserCard{ID: 1, Direction: models.DirectionRUtoEN},
 		TrainingCard: models.TrainingCard{ID: cardID, WordCardID: wordCardID, WordEN: "apple", WordRU: "яблоко", DistractorsEN: string(distractorsEN)},
@@ -385,7 +385,7 @@ func TestOptionsService_GenerateOptions_WrongAnswersIncluded(t *testing.T) {
 	}
 
 	wrongAnswersJSON := `[{"option":"produce"},{"option":"create"}]`
-	service := NewOptionsService(trainingCardRepo, logger)
+	service := NewOptionsService(trainingCardRepo, logger, "en")
 	userCard := &models.UserCardWithTraining{
 		UserCard:     models.UserCard{ID: 1, Direction: models.DirectionRUtoEN, WrongAnswersJSON: wrongAnswersJSON},
 		TrainingCard: models.TrainingCard{ID: cardID, WordCardID: wordCardID, WordEN: "generate", WordRU: "генерировать", DistractorsEN: string(distractorsEN)},

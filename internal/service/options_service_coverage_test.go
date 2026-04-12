@@ -68,7 +68,7 @@ func TestOptionsService_GenerateOptions_WithPOS(t *testing.T) {
 		})
 	}
 
-	service := NewOptionsService(trainingCardRepo, logger)
+	service := NewOptionsService(trainingCardRepo, logger, "en")
 
 	userCard := &models.UserCardWithTraining{
 		UserCard: models.UserCard{
@@ -128,7 +128,7 @@ func TestOptionsService_GenerateOptions_ENtoRU_SessionWordRUs(t *testing.T) {
 		t.Fatalf("CreateTrainingCard: %v", err)
 	}
 
-	service := NewOptionsService(trainingCardRepo, logger)
+	service := NewOptionsService(trainingCardRepo, logger, "en")
 	userCard := &models.UserCardWithTraining{
 		UserCard:     models.UserCard{ID: 1, Direction: models.DirectionENtoRU},
 		TrainingCard: models.TrainingCard{ID: cardID, WordCardID: wordCardID, WordEN: "cat", WordRU: "кошка", DistractorsRU: string(distractorsRU)},
@@ -214,7 +214,7 @@ func TestOptionsService_GenerateOptions_POSFilterInPool(t *testing.T) {
 		})
 	}
 
-	service := NewOptionsService(trainingCardRepo, logger)
+	service := NewOptionsService(trainingCardRepo, logger, "en")
 	userCard := &models.UserCardWithTraining{
 		UserCard: models.UserCard{
 			ID:               1,
@@ -252,7 +252,7 @@ func TestOptionsService_getOtherMeaningsOfWord_Error(t *testing.T) {
 
 	invalidDB := openInvalidSQLDBForOptions(t)
 	trainingCardRepo := repository.NewTrainingCardRepository(invalidDB, logger)
-	service := NewOptionsService(trainingCardRepo, logger)
+	service := NewOptionsService(trainingCardRepo, logger, "en")
 
 	meanings := service.getOtherMeaningsOfWord(999, models.DirectionRUtoEN)
 	if meanings == nil {
@@ -271,7 +271,7 @@ func TestOptionsService_hasMatchingPOS_RepoError(t *testing.T) {
 
 	invalidDB := openInvalidSQLDBForOptions(t)
 	trainingCardRepo := repository.NewTrainingCardRepository(invalidDB, logger)
-	service := NewOptionsService(trainingCardRepo, logger)
+	service := NewOptionsService(trainingCardRepo, logger, "en")
 
 	// When DB errors, hasMatchingPOS should return true (lenient)
 	result := service.hasMatchingPOS("someword", "verb", models.DirectionRUtoEN)
@@ -306,7 +306,7 @@ func TestOptionsService_GenerateOptions_TwoSessionWords(t *testing.T) {
 		t.Fatalf("CreateTrainingCard: %v", err)
 	}
 
-	service := NewOptionsService(trainingCardRepo, logger)
+	service := NewOptionsService(trainingCardRepo, logger, "en")
 	userCard := &models.UserCardWithTraining{
 		UserCard:     models.UserCard{ID: 1, Direction: models.DirectionRUtoEN},
 		TrainingCard: models.TrainingCard{ID: cardID, WordCardID: wordCardID, WordEN: "drive", WordRU: "водить", DistractorsEN: string(distractorsEN)},
@@ -361,7 +361,7 @@ func TestOptionsService_GenerateOptions_HasMatchingPOS_False(t *testing.T) {
 		POS:        &nounPOS,
 	})
 
-	service := NewOptionsService(trainingCardRepo, logger)
+	service := NewOptionsService(trainingCardRepo, logger, "en")
 	userCard := &models.UserCardWithTraining{
 		UserCard: models.UserCard{
 			ID:        1,

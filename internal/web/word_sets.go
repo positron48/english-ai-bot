@@ -609,6 +609,8 @@ func (r *Router) handleLearningWordsSetStudyLearn(w http.ResponseWriter, req *ht
 		r.logger.Warn("failed to create user cards", zap.Error(err))
 	}
 
+	r.ensureVerbFormUserCardsAfterVocab(userID)
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]interface{}{

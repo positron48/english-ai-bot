@@ -17,6 +17,50 @@ import (
 	"go.uber.org/zap"
 )
 
+// settingsJSONForAPI mirrors UserSettings for JSON plus derived fields (Spanish verb ladder index).
+func (r *Router) settingsJSONForAPI(settings models.UserSettings) map[string]interface{} {
+	b, err := json.Marshal(settings)
+	if err != nil {
+		return map[string]interface{}{}
+	}
+	var m map[string]interface{}
+	if err := json.Unmarshal(b, &m); err != nil || m == nil {
+		return map[string]interface{}{}
+	}
+	if strings.EqualFold(r.config.Learning.TargetLang, "es") && r.verbFormsEnabled() {
+		m["verb_forms_progression_index"] = models.InferSpanishVerbProgressionIndex(settings.EnabledVerbScopes)
+	}
+	return m
+}
+
+func (r *Router) learningJSONForSettingsAPI() map[string]interface{} {
+	lc := r.config.Learning
+	spanishVerbForms := r.verbFormsEnabled()
+	out := map[string]interface{}{
+		"pair":                       lc.Pair,
+		"native_lang":                lc.NativeLang,
+		"target_lang":                lc.TargetLang,
+		"app_code":                   lc.AppCode,
+		"grammar_bundle_id":          lc.GrammarBundleID,
+		"target_lang_name_ru":        learning.TargetLangNameRUAccusative(lc.TargetLang),
+		"target_lang_name_en":        learning.TargetLangNameEN(lc.TargetLang),
+		"spanish_verb_forms_enabled": spanishVerbForms,
+	}
+	if spanishVerbForms {
+		steps := models.SpanishVerbScopeLadder()
+		ladder := make([]map[string]interface{}, len(steps))
+		for i, s := range steps {
+			ladder[i] = map[string]interface{}{
+				"scope":    s.Scope,
+				"label_ru": s.LabelRU,
+				"label_en": s.LabelEN,
+			}
+		}
+		out["spanish_verb_scope_ladder"] = ladder
+	}
+	return out
+}
+
 // handleDashboard shows the user dashboard
 // @Summary      Получить данные дашборда
 // @Description  Возвращает расширенную статистику по карточкам и тренировкам
@@ -457,21 +501,21 @@ func (r *Router) handleSettings(w http.ResponseWriter, req *http.Request) {
 		v := false
 		settings.HideMorphInTraining = &v
 	}
+	if strings.EqualFold(r.config.Learning.TargetLang, "es") {
+		if len(settings.EnabledVerbScopes) == 0 {
+			settings.EnabledVerbScopes = models.DefaultSpanishVerbScopes()
+		}
+		if settings.GrammarStage == nil || strings.TrimSpace(*settings.GrammarStage) == "" {
+			v := settings.EnabledVerbScopes[0]
+			settings.GrammarStage = &v
+		}
+	}
 
-	lc := r.config.Learning
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]interface{}{
-		"settings": settings,
-		"learning": map[string]interface{}{
-			"pair":                 lc.Pair,
-			"native_lang":          lc.NativeLang,
-			"target_lang":          lc.TargetLang,
-			"app_code":             lc.AppCode,
-			"grammar_bundle_id":    lc.GrammarBundleID,
-			"target_lang_name_ru":  learning.TargetLangNameRUAccusative(lc.TargetLang),
-			"target_lang_name_en":  learning.TargetLangNameEN(lc.TargetLang),
-		},
+		"settings": r.settingsJSONForAPI(settings),
+		"learning": r.learningJSONForSettingsAPI(),
 	})
 }
 
@@ -720,13 +764,16 @@ func (r *Router) handleTrainingSettings(w http.ResponseWriter, req *http.Request
 	}
 
 	var requestData struct {
-		OptionsDelaySeconds     *int  `json:"options_delay_seconds"`
-		WrongAnswerDelaySeconds *int  `json:"wrong_answer_delay_seconds"`
-		SpellModeEnabled        *bool `json:"spell_mode_enabled"`
-		SpellMasteringThreshold *int  `json:"spell_mastering_threshold"`
-		TypeModeEnabled         *bool `json:"type_mode_enabled"`
-		TypeMasteringThreshold  *int  `json:"type_mastering_threshold"`
-		HideMorphInTraining     *bool `json:"hide_morph_in_training"`
+		OptionsDelaySeconds         *int     `json:"options_delay_seconds"`
+		WrongAnswerDelaySeconds     *int     `json:"wrong_answer_delay_seconds"`
+		SpellModeEnabled            *bool    `json:"spell_mode_enabled"`
+		SpellMasteringThreshold     *int     `json:"spell_mastering_threshold"`
+		TypeModeEnabled             *bool    `json:"type_mode_enabled"`
+		TypeMasteringThreshold      *int     `json:"type_mastering_threshold"`
+		HideMorphInTraining         *bool    `json:"hide_morph_in_training"`
+		GrammarStage                *string  `json:"grammar_stage"`
+		EnabledVerbScopes           []string `json:"enabled_verb_scopes"`
+		VerbFormsProgressionIndex   *int     `json:"verb_forms_progression_index"` // cumulative ladder; expands enabled_verb_scopes
 	}
 
 	if err := json.NewDecoder(req.Body).Decode(&requestData); err != nil {
@@ -839,6 +886,46 @@ func (r *Router) handleTrainingSettings(w http.ResponseWriter, req *http.Request
 	if requestData.HideMorphInTraining != nil {
 		settings.HideMorphInTraining = requestData.HideMorphInTraining
 	}
+	if requestData.GrammarStage != nil {
+		v := strings.ToLower(strings.TrimSpace(*requestData.GrammarStage))
+		if v != "" {
+			settings.GrammarStage = &v
+		}
+	}
+	verbScopeDirty := false
+	if requestData.VerbFormsProgressionIndex != nil && strings.EqualFold(r.config.Learning.TargetLang, "es") && r.verbFormsEnabled() {
+		n := len(models.SpanishVerbScopeLadder())
+		if n > 0 {
+			idx := *requestData.VerbFormsProgressionIndex
+			if idx < 0 {
+				idx = 0
+			}
+			if idx >= n {
+				idx = n - 1
+			}
+			settings.EnabledVerbScopes = models.SpanishVerbScopesThroughIndex(idx)
+			verbScopeDirty = true
+		}
+	} else if requestData.EnabledVerbScopes != nil {
+		scopes := make([]string, 0, len(requestData.EnabledVerbScopes))
+		for _, scope := range requestData.EnabledVerbScopes {
+			scope = strings.ToLower(strings.TrimSpace(scope))
+			if scope != "" {
+				scopes = append(scopes, scope)
+			}
+		}
+		settings.EnabledVerbScopes = scopes
+		verbScopeDirty = true
+	}
+	if strings.EqualFold(r.config.Learning.TargetLang, "es") {
+		if len(settings.EnabledVerbScopes) == 0 {
+			settings.EnabledVerbScopes = models.DefaultSpanishVerbScopes()
+		}
+		if settings.GrammarStage == nil || strings.TrimSpace(*settings.GrammarStage) == "" {
+			v := settings.EnabledVerbScopes[0]
+			settings.GrammarStage = &v
+		}
+	}
 
 	// UserSettings only contains basic types, Marshal cannot fail
 	settingsJSON, _ := json.Marshal(settings)
@@ -853,19 +940,27 @@ func (r *Router) handleTrainingSettings(w http.ResponseWriter, req *http.Request
 		return
 	}
 
+	if verbScopeDirty && strings.EqualFold(r.config.Learning.TargetLang, "es") && r.verbFormsEnabled() {
+		r.ensureVerbFormUserCardsAfterVocab(userID)
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
+	resp := r.settingsJSONForAPI(settings)
+	// Flatten a few training-delay fields for backwards-compatible clients (same shape as before).
+	resp["options_delay_seconds"] = defaultIntPtr(settings.OptionsDelaySeconds, 5)
+	resp["wrong_answer_delay_seconds"] = defaultIntPtr(settings.WrongAnswerDelaySeconds, 5)
+	resp["spell_mode_enabled"] = settings.SpellModeEnabled != nil && *settings.SpellModeEnabled
+	resp["spell_mastering_threshold"] = defaultIntPtr(settings.SpellMasteringThreshold, 50)
+	resp["type_mode_enabled"] = settings.TypeModeEnabled != nil && *settings.TypeModeEnabled
+	resp["type_mastering_threshold"] = defaultIntPtr(settings.TypeMasteringThreshold, 70)
+	resp["hide_morph_in_training"] = settings.HideMorphInTraining != nil && *settings.HideMorphInTraining
+	resp["grammar_stage"] = settings.GrammarStage
+	resp["enabled_verb_scopes"] = settings.EnabledVerbScopes
 	json.NewEncoder(w).Encode(map[string]interface{}{
-		"success": true,
-		"settings": map[string]interface{}{
-			"options_delay_seconds":      defaultIntPtr(settings.OptionsDelaySeconds, 5),
-			"wrong_answer_delay_seconds": defaultIntPtr(settings.WrongAnswerDelaySeconds, 5),
-			"spell_mode_enabled":         settings.SpellModeEnabled != nil && *settings.SpellModeEnabled,
-			"spell_mastering_threshold":  defaultIntPtr(settings.SpellMasteringThreshold, 50),
-			"type_mode_enabled":          settings.TypeModeEnabled != nil && *settings.TypeModeEnabled,
-			"type_mastering_threshold":   defaultIntPtr(settings.TypeMasteringThreshold, 70),
-			"hide_morph_in_training":     settings.HideMorphInTraining != nil && *settings.HideMorphInTraining,
-		},
+		"success":  true,
+		"settings": resp,
+		"learning": r.learningJSONForSettingsAPI(),
 	})
 }
 

@@ -47,7 +47,7 @@ func setupTrainingHandler(t *testing.T, client *mockTelegramClient) (*TrainingHa
 
 	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, config.DefaultLearningConfig(), logger)
 	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
-	optionsService := service.NewOptionsService(trainingCardRepo, logger)
+	optionsService := service.NewOptionsService(trainingCardRepo, logger, "en")
 
 	bot := newTestBot(client)
 	th := NewTrainingHandler(bot, trainingService, srsService, optionsService, sessionRepo, logger, 0, 0, conn)
@@ -226,7 +226,7 @@ func TestShowOptions_SaveSessionStateError(t *testing.T) {
 		t.Skip("no cards in queue")
 	}
 
-	optionsService := service.NewOptionsService(trainingCardRepo, logger)
+	optionsService := service.NewOptionsService(trainingCardRepo, logger, "en")
 	options, correctAnswer, err := optionsService.GenerateOptions(queue[0].Card, models.DefaultOptionCount, nil, nil, nil)
 	if err != nil {
 		t.Skipf("GenerateOptions error: %v", err)
@@ -282,7 +282,7 @@ func TestHandleAnswer_SaveSessionStateError(t *testing.T) {
 		t.Skip("no cards in queue")
 	}
 
-	optionsService := service.NewOptionsService(trainingCardRepo, logger)
+	optionsService := service.NewOptionsService(trainingCardRepo, logger, "en")
 	options, correctAnswer, err := optionsService.GenerateOptions(queue[0].Card, models.DefaultOptionCount, nil, nil, nil)
 	if err != nil {
 		t.Skipf("GenerateOptions error: %v", err)
@@ -338,7 +338,7 @@ func TestHandleAnswer_GradeCardError(t *testing.T) {
 		t.Skip("no cards in queue")
 	}
 
-	optionsService := service.NewOptionsService(trainingCardRepo, logger)
+	optionsService := service.NewOptionsService(trainingCardRepo, logger, "en")
 	options, correctAnswer, err := optionsService.GenerateOptions(queue[0].Card, models.DefaultOptionCount, nil, nil, nil)
 	if err != nil {
 		t.Skipf("GenerateOptions error: %v", err)
@@ -393,7 +393,7 @@ func TestHandleAnswer_RecordWrongAnswerError(t *testing.T) {
 		t.Skip("no cards in queue")
 	}
 
-	optionsService := service.NewOptionsService(trainingCardRepo, logger)
+	optionsService := service.NewOptionsService(trainingCardRepo, logger, "en")
 	options, correctAnswer, err := optionsService.GenerateOptions(queue[0].Card, models.DefaultOptionCount, nil, nil, nil)
 	if err != nil {
 		t.Skipf("GenerateOptions error: %v", err)
@@ -819,7 +819,7 @@ func TestStartTraining_ExistingSessionInMemory(t *testing.T) {
 		t.Skip("no cards in queue")
 	}
 
-	optionsService := service.NewOptionsService(trainingCardRepo, logger)
+	optionsService := service.NewOptionsService(trainingCardRepo, logger, "en")
 	options, correctAnswer, err := optionsService.GenerateOptions(queue[0].Card, models.DefaultOptionCount, nil, nil, nil)
 	if err != nil {
 		t.Skipf("GenerateOptions error: %v", err)
@@ -900,7 +900,7 @@ func TestHandleAnswer_OptionsNotShownYet(t *testing.T) {
 		t.Skip("no cards in queue")
 	}
 
-	optionsService := service.NewOptionsService(trainingCardRepo, logger)
+	optionsService := service.NewOptionsService(trainingCardRepo, logger, "en")
 	options, correctAnswer, err := optionsService.GenerateOptions(queue[0].Card, models.DefaultOptionCount, nil, nil, nil)
 	if err != nil {
 		t.Skipf("GenerateOptions error: %v", err)
@@ -944,7 +944,7 @@ func TestHandleAnswer_EarlyRevealTrue(t *testing.T) {
 	if err != nil || len(queue) == 0 {
 		t.Skipf("StartSession: %v", err)
 	}
-	optionsService := service.NewOptionsService(trainingCardRepo, logger)
+	optionsService := service.NewOptionsService(trainingCardRepo, logger, "en")
 	options, correctAnswer, err := optionsService.GenerateOptions(queue[0].Card, models.DefaultOptionCount, nil, nil, nil)
 	if err != nil {
 		t.Skipf("GenerateOptions: %v", err)
@@ -1081,7 +1081,7 @@ func TestHandleAnswer_TrimRecentCorrectAnswers(t *testing.T) {
 		t.Skip("no cards in queue")
 	}
 
-	optionsService := service.NewOptionsService(trainingCardRepo, logger)
+	optionsService := service.NewOptionsService(trainingCardRepo, logger, "en")
 	options, correctAnswer, err := optionsService.GenerateOptions(queue[0].Card, models.DefaultOptionCount, nil, nil, nil)
 	if err != nil {
 		t.Skipf("GenerateOptions error: %v", err)
@@ -1222,7 +1222,7 @@ func TestShowCard_BotSendError(t *testing.T) {
 	userWordMasteringRepo := repository.NewUserWordMasteringRepository(conn, logger)
 	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, config.DefaultLearningConfig(), logger)
 	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
-	optionsService := service.NewOptionsService(trainingCardRepo, logger)
+	optionsService := service.NewOptionsService(trainingCardRepo, logger, "en")
 
 	th := NewTrainingHandler(failingBot, trainingService, srsService, optionsService, sessionRepo, logger, 0, 0, conn)
 
@@ -1268,7 +1268,7 @@ func TestShowOptions_BotSendError(t *testing.T) {
 	userWordMasteringRepo := repository.NewUserWordMasteringRepository(conn, logger)
 	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, config.DefaultLearningConfig(), logger)
 	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
-	optionsService := service.NewOptionsService(trainingCardRepo, logger)
+	optionsService := service.NewOptionsService(trainingCardRepo, logger, "en")
 
 	th := NewTrainingHandler(failingBot, trainingService, srsService, optionsService, sessionRepo, logger, 0, 0, conn)
 
@@ -1333,7 +1333,7 @@ func TestShowOptions_EarlyRevealTrue(t *testing.T) {
 		t.Skip("no cards in queue")
 	}
 
-	optionsService := service.NewOptionsService(trainingCardRepo, logger)
+	optionsService := service.NewOptionsService(trainingCardRepo, logger, "en")
 	options, correctAnswer, err := optionsService.GenerateOptions(queue[0].Card, models.DefaultOptionCount, nil, nil, nil)
 	if err != nil {
 		t.Skipf("GenerateOptions error: %v", err)
@@ -1380,7 +1380,7 @@ func TestHandleAnswer_ShowCardError(t *testing.T) {
 	userWordMasteringRepo := repository.NewUserWordMasteringRepository(conn, logger)
 	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, config.DefaultLearningConfig(), logger)
 	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
-	optionsService := service.NewOptionsService(trainingCardRepo, logger)
+	optionsService := service.NewOptionsService(trainingCardRepo, logger, "en")
 
 	th := NewTrainingHandler(failingBot, trainingService, srsService, optionsService, sessionRepo, logger, 0, 0, conn)
 
@@ -1450,7 +1450,7 @@ func TestHandleAnswer_ShowCardFailsWhenCardNotInitialized(t *testing.T) {
 	userWordMasteringRepo := repository.NewUserWordMasteringRepository(conn, logger)
 	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, config.DefaultLearningConfig(), logger)
 	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
-	optionsService := service.NewOptionsService(trainingCardRepo, logger)
+	optionsService := service.NewOptionsService(trainingCardRepo, logger, "en")
 
 	th := NewTrainingHandler(failingBot, trainingService, srsService, optionsService, sessionRepo, logger, 0, 0, conn)
 
@@ -1582,7 +1582,7 @@ func TestHandleAnswer_CreateReviewEventError(t *testing.T) {
 		t.Skip("no cards in queue")
 	}
 
-	optionsService := service.NewOptionsService(trainingCardRepo, logger)
+	optionsService := service.NewOptionsService(trainingCardRepo, logger, "en")
 	options, correctAnswer, err := optionsService.GenerateOptions(queue[0].Card, models.DefaultOptionCount, nil, nil, nil)
 	if err != nil {
 		t.Skipf("GenerateOptions error: %v", err)
@@ -1637,7 +1637,7 @@ func TestFinishSession_GetSessionStatsError(t *testing.T) {
 		t.Skip("no cards in queue")
 	}
 
-	optionsService := service.NewOptionsService(trainingCardRepo, logger)
+	optionsService := service.NewOptionsService(trainingCardRepo, logger, "en")
 	options, correctAnswer, err := optionsService.GenerateOptions(queue[0].Card, models.DefaultOptionCount, nil, nil, nil)
 	if err != nil {
 		t.Skipf("GenerateOptions error: %v", err)
@@ -1692,7 +1692,7 @@ func TestFinishSession_DBQueryErrors(t *testing.T) {
 		t.Skip("no cards in queue")
 	}
 
-	optionsService := service.NewOptionsService(trainingCardRepo, logger)
+	optionsService := service.NewOptionsService(trainingCardRepo, logger, "en")
 	options, correctAnswer, err := optionsService.GenerateOptions(queue[0].Card, models.DefaultOptionCount, nil, nil, nil)
 	if err != nil {
 		t.Skipf("GenerateOptions error: %v", err)
@@ -1936,7 +1936,7 @@ func TestFinishSession_DBNil(t *testing.T) {
 	userWordMasteringRepo := repository.NewUserWordMasteringRepository(conn, logger)
 	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, config.DefaultLearningConfig(), logger)
 	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
-	optionsService := service.NewOptionsService(trainingCardRepo, logger)
+	optionsService := service.NewOptionsService(trainingCardRepo, logger, "en")
 	th := NewTrainingHandler(newTestBot(&mockTelegramClient{}), trainingService, srsService, optionsService, sessionRepo, logger, 0, 0, nil)
 	th.sessionsMutex.Lock()
 	th.sessions[3025] = &SessionState{
@@ -2019,7 +2019,7 @@ func TestShowOptions_AlreadyShown(t *testing.T) {
 	if len(queue) == 0 {
 		t.Skip("no cards in queue")
 	}
-	optionsService := service.NewOptionsService(trainingCardRepo, logger)
+	optionsService := service.NewOptionsService(trainingCardRepo, logger, "en")
 	options, correctAnswer, _ := optionsService.GenerateOptions(queue[0].Card, models.DefaultOptionCount, nil, nil, nil)
 	now := time.Now()
 	state := &SessionState{
@@ -2053,14 +2053,14 @@ func TestAutoRevealOptions_OptionsAlreadyShown(t *testing.T) {
 	userWordMasteringRepo := repository.NewUserWordMasteringRepository(conn, logger)
 	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, userWordMasteringRepo, config.DefaultLearningConfig(), logger)
 	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
-	optionsService := service.NewOptionsService(trainingCardRepo, logger)
+	optionsService := service.NewOptionsService(trainingCardRepo, logger, "en")
 	th := NewTrainingHandler(newTestBot(client), trainingService, srsService, optionsService, sessionRepo, logger, 50, 0, conn)
 	userID, _ := createUserWithCard(t, db, 3028)
 	session, queue, err := trainingService.StartSession(userID, models.SourceManual, nil)
 	if err != nil || len(queue) == 0 {
 		t.Skipf("StartSession: %v", err)
 	}
-	optionsService2 := service.NewOptionsService(trainingCardRepo, logger)
+	optionsService2 := service.NewOptionsService(trainingCardRepo, logger, "en")
 	options, correctAnswer, _ := optionsService2.GenerateOptions(queue[0].Card, models.DefaultOptionCount, nil, nil, nil)
 	now := time.Now()
 	state := &SessionState{

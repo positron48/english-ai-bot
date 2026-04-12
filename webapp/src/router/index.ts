@@ -94,6 +94,12 @@ const router = createRouter({
       meta: { requiresAuth: true }
     },
     {
+      path: '/training/verbs',
+      name: 'VerbTraining',
+      component: () => import('../views/VerbTrainingView.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
       path: '/chat',
       name: 'Chat',
       component: () => import('../views/ChatView.vue'),

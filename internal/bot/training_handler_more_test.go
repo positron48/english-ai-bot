@@ -44,7 +44,7 @@ func setupTrainingHandlerDeps(t *testing.T, client *mockTelegramClient) *trainin
 
 	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
-	optionsService := service.NewOptionsService(trainingCardRepo, logger)
+	optionsService := service.NewOptionsService(trainingCardRepo, logger, "en")
 
 	handler := NewTrainingHandler(
 		newTestBot(client),

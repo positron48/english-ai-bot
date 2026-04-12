@@ -65,7 +65,7 @@ func newCoverageRouter(t *testing.T) (*Router, *repository.UserRepository, *repo
 	sessionRepo := repository.NewSessionRepository(db, logger)
 	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
-	optionsService := service.NewOptionsService(trainingCardRepo, logger)
+	optionsService := service.NewOptionsService(trainingCardRepo, logger, "en")
 	router := NewRouter(logger, cfg, db, trainingService, srsService, optionsService, nil)
 	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
 	return router, userRepo, trainingCardRepo, userCardRepo, sessionRepo
@@ -99,7 +99,7 @@ func TestHandleTrainingStart_InternalError(t *testing.T) {
 	brokenSessionRepo := repository.NewSessionRepository(brokenConn, logger)
 	brokenTrainingService := service.NewTrainingService(brokenUserCardRepo, brokenTrainingCardRepo, brokenSessionRepo, nil, config.DefaultLearningConfig(), logger)
 	srsService := service.NewSRSService(brokenUserCardRepo, config.DefaultLearningConfig(), logger)
-	optionsService := service.NewOptionsService(brokenTrainingCardRepo, logger)
+	optionsService := service.NewOptionsService(brokenTrainingCardRepo, logger, "en")
 
 	router := NewRouter(logger, cfg, db, brokenTrainingService, srsService, optionsService, nil)
 	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
@@ -151,7 +151,7 @@ func TestHandleTrainingStart_SpellThresholdNegative(t *testing.T) {
 	}
 	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
-	optionsService := service.NewOptionsService(trainingCardRepo, logger)
+	optionsService := service.NewOptionsService(trainingCardRepo, logger, "en")
 	router := NewRouter(logger, cfg, db, trainingService, srsService, optionsService, nil)
 	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
 
@@ -813,7 +813,7 @@ func TestHandleTrainingAnswer_WithOptionsShownAt(t *testing.T) {
 
 	cfg := &config.Config{Training: config.TrainingConfig{OptionsDelayMS: 2000, WrongAnswerDelaySeconds: 3}}
 	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
-	optionsService := service.NewOptionsService(trainingCardRepo, logger)
+	optionsService := service.NewOptionsService(trainingCardRepo, logger, "en")
 	router := NewRouter(logger, cfg, db, nil, srsService, optionsService, nil)
 
 	// Pre-generate options
@@ -895,7 +895,7 @@ func TestHandleTrainingAnswer_WrongAnswerWithRecentCorrect(t *testing.T) {
 
 	cfg := &config.Config{Training: config.TrainingConfig{OptionsDelayMS: 2000, WrongAnswerDelaySeconds: 5}}
 	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
-	optionsService := service.NewOptionsService(trainingCardRepo, logger)
+	optionsService := service.NewOptionsService(trainingCardRepo, logger, "en")
 	router := NewRouter(logger, cfg, db, nil, srsService, optionsService, nil)
 
 	card := &models.UserCardWithTraining{
@@ -977,7 +977,7 @@ func TestHandleTrainingAnswer_CorrectAnswer_RecentCorrectAnswersTrimmed(t *testi
 
 	cfg := &config.Config{Training: config.TrainingConfig{OptionsDelayMS: 2000, WrongAnswerDelaySeconds: 3}}
 	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
-	optionsService := service.NewOptionsService(trainingCardRepo, logger)
+	optionsService := service.NewOptionsService(trainingCardRepo, logger, "en")
 	router := NewRouter(logger, cfg, db, nil, srsService, optionsService, nil)
 
 	card := &models.UserCardWithTraining{
@@ -1055,7 +1055,7 @@ func TestHandleTrainingAnswer_UserCardDeletedDuringSession(t *testing.T) {
 
 	cfg := &config.Config{Training: config.TrainingConfig{OptionsDelayMS: 2000, WrongAnswerDelaySeconds: 3}}
 	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
-	optionsService := service.NewOptionsService(trainingCardRepo, logger)
+	optionsService := service.NewOptionsService(trainingCardRepo, logger, "en")
 	router := NewRouter(logger, cfg, db, nil, srsService, optionsService, nil)
 
 	card := &models.UserCardWithTraining{
@@ -1128,7 +1128,7 @@ func TestHandleTrainingAnswer_ReviewEventCreateError(t *testing.T) {
 
 	cfg := &config.Config{Training: config.TrainingConfig{OptionsDelayMS: 2000, WrongAnswerDelaySeconds: 3}}
 	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
-	optionsService := service.NewOptionsService(trainingCardRepo, logger)
+	optionsService := service.NewOptionsService(trainingCardRepo, logger, "en")
 	router := NewRouter(logger, cfg, db, nil, srsService, optionsService, nil)
 
 	card := &models.UserCardWithTraining{
@@ -1205,7 +1205,7 @@ func TestHandleTrainingAnswer_GradeCardError(t *testing.T) {
 	})
 
 	cfg := &config.Config{Training: config.TrainingConfig{OptionsDelayMS: 2000, WrongAnswerDelaySeconds: 3}}
-	optionsService := service.NewOptionsService(trainingCardRepo, logger)
+	optionsService := service.NewOptionsService(trainingCardRepo, logger, "en")
 
 	// Use broken srsService so GradeCard (UpdateUserCard) fails
 	brokenDB := newBrokenDB(t)
@@ -1299,7 +1299,7 @@ func TestHandleTrainingAnswer_GetUserCardError(t *testing.T) {
 	})
 
 	cfg := &config.Config{Training: config.TrainingConfig{OptionsDelayMS: 2000, WrongAnswerDelaySeconds: 3}}
-	optionsService := service.NewOptionsService(trainingCardRepo, logger)
+	optionsService := service.NewOptionsService(trainingCardRepo, logger, "en")
 
 	// Use broken r.db so GetUserCard fails (line 962-964)
 	// srsService uses good DB so GradeCard succeeds
@@ -1746,7 +1746,7 @@ func TestHandleTrainingAnswer_RecordWrongAnswerError(t *testing.T) {
 	}
 
 	// Use real optionsService for generating options
-	realOptionsService := service.NewOptionsService(trainingCardRepo, logger)
+	realOptionsService := service.NewOptionsService(trainingCardRepo, logger, "en")
 	router := NewRouter(logger, cfg, db, nil, mockSRS, realOptionsService, nil)
 
 	card := &models.UserCardWithTraining{

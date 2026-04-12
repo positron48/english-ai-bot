@@ -171,7 +171,7 @@
         <div v-else-if="cards.length === 0" class="no-cards">{{ t('vocab.noCardsFound') }}</div>
         <div v-else>
           <!-- Verb Forms Section -->
-          <div v-if="wordPOS === 'verb' && verbForms" class="verb-forms-section">
+          <div v-if="isVerbLikePOS && verbForms" class="verb-forms-section">
             <h4>{{ t('vocab.verbForms') }}</h4>
             <div class="verb-forms-list">
               <div v-if="verbForms.v1" class="verb-form-item">
@@ -194,6 +194,29 @@
                 <span class="verb-form-label">{{ t('vocab.thirdPerson') }}</span>
                 <span class="verb-form-value">{{ verbForms.third_person }}</span>
               </div>
+            </div>
+          </div>
+          <div v-if="isVerbLikePOS && fullVerbForms.length > 0" class="verb-forms-section">
+            <h4>{{ t('vocab.allVerbForms') }}</h4>
+            <div class="verb-forms-table-wrap">
+              <table class="verb-forms-table">
+                <thead>
+                  <tr>
+                    <th>{{ t('vocab.verbFormTense') }}</th>
+                    <th>{{ t('vocab.verbFormMood') }}</th>
+                    <th>{{ t('vocab.verbFormSubject') }}</th>
+                    <th>{{ t('vocab.verbFormSurface') }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="item in fullVerbForms" :key="`${item.tense}-${item.mood}-${item.person}-${item.number}-${item.surface_form}`">
+                    <td>{{ item.tense }}</td>
+                    <td>{{ item.mood }}</td>
+                    <td class="verb-forms-pronoun">{{ spanishVerbSubjectPronoun(item.person, item.number) }}</td>
+                    <td>{{ item.surface_form }}</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
           
@@ -311,6 +334,7 @@
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiClient } from '../api/client'
+import { spanishVerbSubjectPronoun } from '../utils/spanishVerbPronouns'
 import { useAuth } from '../composables/useAuth'
 import { showAlert } from '../composables/useDialog'
 import { useAudio } from '../composables/useAudio'
@@ -384,6 +408,17 @@ interface MorphInfo {
   verb_forms?: MorphVerbForms
 }
 
+interface VerbFormRow {
+  word_card_id: number
+  lemma: string
+  mood: string
+  tense: string
+  person: string
+  number: string
+  surface_form: string
+  is_irregular: boolean
+}
+
 const words = ref<VocabWord[]>([])
 const loading = ref(true)
 const searchQuery = ref('')
@@ -412,7 +447,14 @@ const playingPronunciation = ref(false)
 const cards = ref<CardDetail[]>([])
 const cardsLoading = ref(false)
 const verbForms = ref<any>(null)
+const fullVerbForms = ref<VerbFormRow[]>([])
 const wordPOS = ref<string | null>(null)
+/** Spanish AUX (e.g. haber) uses the same conjugation UI as verbs */
+const isVerbLikePOS = computed(() => {
+  const p = (wordPOS.value || '').toLowerCase()
+  return p === 'verb' || p === 'aux'
+})
+const selectedWordCardID = ref<number | null>(null)
 const nounGender = ref<string | null>(null)
 const wordMorph = ref<MorphInfo | null>(null)
 const hasUserCards = ref(false)
@@ -670,10 +712,22 @@ const showCards = async (lemma: string) => {
     cards.value = data.cards || []
     verbForms.value = data.verb_forms || null
     wordPOS.value = data.pos || null
+    selectedWordCardID.value = data.word_card_id || null
     nounGender.value = data.noun_gender || null
     wordMorph.value = data.morph || null
     hasUserCards.value = data.has_user_cards || false
     isKnown.value = data.is_known || false
+    fullVerbForms.value = []
+    if (isVerbLikePOS.value && selectedWordCardID.value) {
+      try {
+        const formsResp: { forms?: VerbFormRow[] } = await apiClient.request(`/api/vocab/${selectedWordCardID.value}/verb-forms`)
+        if (gen === showCardsGen) {
+          fullVerbForms.value = formsResp.forms || []
+        }
+      } catch (e) {
+        console.warn('Failed to load full verb forms', e)
+      }
+    }
     
     // Find display word and transcription from first card
     if (cards.value.length > 0) {
@@ -721,7 +775,9 @@ const closeCardsModal = () => {
   selectedWordMasteringScore.value = null
   cards.value = []
   verbForms.value = null
+  fullVerbForms.value = []
   wordPOS.value = null
+  selectedWordCardID.value = null
   nounGender.value = null
   wordMorph.value = null
   hasUserCards.value = false
@@ -858,7 +914,7 @@ const selectedMorphText = computed(() => {
       const core = m.article ? `${m.article} • ${m.noun_gender}` : m.noun_gender
       return m.opposite_gender_word ? `${core} (${m.opposite_gender_word})` : core
     }
-    if (m.pos === 'verb' && m.verb_forms) {
+    if ((m.pos === 'verb' || m.pos === 'aux') && m.verb_forms) {
       const forms = [m.verb_forms.v1, m.verb_forms.v2, m.verb_forms.v3].filter(Boolean)
       if (forms.length > 0) return forms.join(', ')
     }
@@ -1425,6 +1481,62 @@ function getStepIntervalDays(direction: string, learningStep: number): number {
 .verb-form-value {
   color: var(--text-primary);
   font-weight: 500;
+}
+
+.verb-forms-table-wrap {
+  overflow-x: auto;
+  margin-top: 4px;
+  border: 1px solid var(--border-primary, var(--table-border, rgba(0, 0, 0, 0.12)));
+  border-radius: 8px;
+  background: var(--card-bg, var(--input-bg, rgba(0, 0, 0, 0.02)));
+}
+
+.verb-forms-table {
+  width: 100%;
+  min-width: 520px;
+  border-collapse: collapse;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.verb-forms-table thead {
+  background: var(--bg-tertiary, rgba(0, 0, 0, 0.06));
+}
+
+.verb-forms-table th,
+.verb-forms-table td {
+  border: 1px solid var(--border-primary, var(--table-border, rgba(0, 0, 0, 0.1)));
+  padding: 8px 10px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.verb-forms-table th {
+  font-weight: 600;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.verb-forms-table td {
+  color: var(--text-primary);
+}
+
+.verb-forms-table tbody tr:nth-child(even) {
+  background: var(--bg-secondary, rgba(0, 0, 0, 0.03));
+}
+
+.verb-forms-table tbody tr:hover {
+  background: var(--hover-bg, rgba(0, 0, 0, 0.06));
+}
+
+.verb-forms-table td.verb-forms-pronoun {
+  white-space: normal;
+  max-width: 14rem;
+  line-height: 1.35;
+}
+
+.verb-forms-table td:last-child {
+  font-weight: 600;
 }
 
 .cards-list-simple {

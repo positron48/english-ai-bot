@@ -92,7 +92,7 @@ func TestFinishTrainingSession_CompleteSession(t *testing.T) {
 
 	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
 	srsService := service.NewSRSService(userCardRepo, config.DefaultLearningConfig(), logger)
-	optionsService := service.NewOptionsService(trainingCardRepo, logger)
+	optionsService := service.NewOptionsService(trainingCardRepo, logger, "en")
 
 	router := NewRouter(logger, cfg, db, trainingService, srsService, optionsService, nil)
 	router.SetDependencies(userRepo, nil, nil, nil, "test-token")

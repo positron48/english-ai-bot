@@ -39,6 +39,17 @@ TRAINING_WORKER_ENABLED=true
 TRAINING_WORKER_INTERVAL=30s
 TRAINING_LLM_WORKERS=4
 
+# Тренировка спряжений (отдельный SRS): /api/verb-training/* и экран «Формы»
+SPANISH_VERB_FORMS_ENABLED=true
+# Сколько карточек в одной сессии и сколько из них могут быть в состоянии new (остальное — просроченные review/learning).
+# По умолчанию 30/30; новые карточки набираются вперемешку по разным словам (round-robin по word_card_id).
+# VERB_FORMS_MAX_CARDS_PER_SESSION=30
+# VERB_FORMS_MAX_NEW_PER_SESSION=30
+# После стольких успешных повторов (reps) без состояния learning — карточка допускает режим ввода формы целиком
+VERB_FORMS_TYPED_MIN_REPS=2
+# При допуске к вводу: с какой вероятностью (0–100) показывать ввод, а не варианты; 50 ≈ как spell/type в тренировке слов
+VERB_FORMS_TYPED_CHANCE_PERCENT=50
+
 # Отдельный JWT для второго инстанса (или тот же для локалки)
 WEBAPP_JWT_SECRET=change_me_local_es
 WEBAPP_JWT_TTL_HOURS=24

@@ -111,7 +111,7 @@ func NewHarness(t *testing.T, opts ...HarnessOpt) *Harness {
 	wordService := service.NewWordService(wordRepo, trainingCardRepo, userCardRepo, aiService, hc.learning, logger)
 	srsService := service.NewSRSService(userCardRepo, hc.learning, logger)
 	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, hc.learning, logger)
-	optionsService := service.NewOptionsService(trainingCardRepo, logger)
+	optionsService := service.NewOptionsService(trainingCardRepo, logger, strings.ToLower(strings.TrimSpace(hc.learning.TargetLang)))
 	cbService := service.NewCircuitBreakerService(cbRepo, 5, logger)
 	grammarService := service.NewGrammarService(grammarContentRepo, grammarPublishRepo, grammarAttemptRepo, hc.learning, logger)
 

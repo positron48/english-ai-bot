@@ -775,3 +775,29 @@ func TestGenerateAdditionalTrainingCard_MarshalError(t *testing.T) {
 		t.Errorf("Expected marshal error message, got %q", err.Error())
 	}
 }
+
+func TestChatSystemUser_Success(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	service := NewService("http://example.com", "test-model", "test-key", "ignored-prompt", logger)
+	service.client.Transport = roundTripperFunc(func(r *http.Request) (*http.Response, error) {
+		body, _ := io.ReadAll(r.Body)
+		var req ChatRequest
+		if err := json.Unmarshal(body, &req); err != nil {
+			t.Fatalf("parse req: %v", err)
+		}
+		if len(req.Messages) != 2 || req.Messages[0].Role != "system" || req.Messages[1].Role != "user" {
+			t.Fatalf("messages: %+v", req.Messages)
+		}
+		resp := ChatResponse{
+			Choices: []Choice{{Message: Message{Role: "assistant", Content: `{"x":"y"}`}}},
+		}
+		return newJSONResponse(http.StatusOK, resp), nil
+	})
+	out, err := service.ChatSystemUser(context.Background(), "system text", "user text")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.TrimSpace(out) != `{"x":"y"}` {
+		t.Fatalf("got %q", out)
+	}
+}

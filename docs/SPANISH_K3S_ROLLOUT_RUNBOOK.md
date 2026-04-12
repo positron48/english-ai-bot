@@ -55,6 +55,11 @@
 | `TTS_CHAT_PRONUNCIATION_PROMPT` | испанский one-word prompt (в ConfigMap) |
 | `TELEGRAM_SOCKS5_PROXY_ADDR` | как у English (`51.254.98.124:1080` в репо) |
 | `WEBAPP_PUBLIC_URL` | `https://es.qantrix.ru` |
+| `SPANISH_VERB_FORMS_ENABLED` | `true` — если нужна тренировка спряжений («Формы») и API `/api/verb-training/*` |
+| `VERB_FORMS_MAX_CARDS_PER_SESSION` | `30` (опционально; иначе дефолт в приложении) |
+| `VERB_FORMS_MAX_NEW_PER_SESSION` | `30` |
+| `VERB_FORMS_TYPED_MIN_REPS` | `2` |
+| `VERB_FORMS_TYPED_CHANCE_PERCENT` | `50` |
 
 Секреты в ConfigMap не кладём: `DATABASE_URL`, `AI_API_KEY`, `WEBAPP_JWT_SECRET`, `TELEGRAM_TOKEN`, `TTS_API_KEY` — только в `spanish-secrets`.
 
@@ -112,8 +117,18 @@ kubectl logs -n spanish deploy/spanish --tail=200
 curl -fsS https://es.qantrix.ru/health
 ```
 
-## 7. См. также
+## 7. Словарь спряжений (verb forms) в Postgres
+
+После релиза с миграциями verb forms / каталога примеров и образом с `/app/import_spanish_verbs` и CSV в `/app/data/verbs/`:
+
+1. В `spanish-config` выставить `SPANISH_VERB_FORMS_ENABLED` и при необходимости `VERB_FORMS_*` (см. таблицу выше).
+2. Выкатить образ, затем по шагам из **`docs/SPANISH_VERB_DICTIONARY_K3S.md`** выполнить блок `kubectl exec` (импорт Jehle + `backfill_word_verb_links`, опционально глоссы и шаблоны).
+
+Лицензия Jehle (CC BY-NC-SA 3.0) и полный список бинарников в образе — в том же файле.
+
+## 8. См. также
 
 - `docs/SPANISH_K3S_ROLLOUT_CHECKLIST.md` — короткий чеклист.
 - `docs/MULTILANG_SPANISH_LAUNCH_PLAN.md` — архитектура и этапы кода.
+- `docs/SPANISH_VERB_DICTIONARY_K3S.md` — импорт Jehle CSV в k3s и локально.
 - `devops-time-host/apps/spanish/RELEASE_K3S.md` — секреты и Flux одной страницей.

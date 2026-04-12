@@ -15,13 +15,21 @@ import (
 type OptionsService struct {
 	trainingCardRepo *repository.TrainingCardRepository
 	logger           *zap.Logger
+	// targetLang is LEARNING_TARGET_LANG (e.g. en, es). English-specific "to " on verbs applies only when targetLang is en.
+	targetLang string
 }
 
-// NewOptionsService creates a new options service
-func NewOptionsService(trainingCardRepo *repository.TrainingCardRepository, logger *zap.Logger) *OptionsService {
+// NewOptionsService creates a new options service.
+// targetLang should match config learning target; empty defaults to "en" (tests / legacy callers).
+func NewOptionsService(trainingCardRepo *repository.TrainingCardRepository, logger *zap.Logger, targetLang string) *OptionsService {
+	tl := strings.ToLower(strings.TrimSpace(targetLang))
+	if tl == "" {
+		tl = "en"
+	}
 	return &OptionsService{
 		trainingCardRepo: trainingCardRepo,
 		logger:           logger,
+		targetLang:       tl,
 	}
 }
 
@@ -441,10 +449,9 @@ func (s *OptionsService) hasMatchingPOS(word string, targetPOS string, direction
 	return false
 }
 
-// normalizeVerbFormat adds "to " prefix to verbs for RU->EN direction if needed
+// normalizeVerbFormat adds "to " prefix to English verbs for RU->target (ru_en) direction when target is English.
 func (s *OptionsService) normalizeVerbFormat(word string, pos string, direction models.CardDirection) string {
-	// Only normalize for RU->EN direction and if POS is verb
-	if direction != models.DirectionRUtoEN || pos != "verb" {
+	if direction != models.DirectionRUtoEN || pos != "verb" || s.targetLang != "en" {
 		return word
 	}
 

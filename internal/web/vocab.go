@@ -428,6 +428,10 @@ func (r *Router) handleVocabDelete(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, "Invalid path", http.StatusBadRequest)
 		return
 	}
+	if wordCardID, ok := parseWordCardIDForVerbForms(path); ok {
+		r.handleVocabVerbForms(w, req, userID, wordCardID)
+		return
+	}
 	parts := strings.Split(strings.TrimPrefix(path, "/api/vocab/"), "/")
 
 	lemma := parts[0]
@@ -565,6 +569,8 @@ func (r *Router) handleVocabDelete(w http.ResponseWriter, req *http.Request) {
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
+
+		r.ensureVerbFormUserCardsAfterVocab(userID)
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)

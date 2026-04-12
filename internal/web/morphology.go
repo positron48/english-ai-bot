@@ -133,7 +133,7 @@ func buildCompactMorphFromWordCard(targetLang string, card *models.WordCard, fal
 			m.OppositeGenderWord = opp
 		}
 	}
-	if pos == "verb" && card != nil {
+	if models.IsVerbPOS(pos) && card != nil {
 		m.VerbForms = parseVerbFormsJSON(card.VerbFormsJSON)
 	}
 

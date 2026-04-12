@@ -221,6 +221,11 @@ const routeHierarchy = computed(() => {
       { label: t('navigation.dashboard'), path: '/dashboard' },
       { label: t('navigation.chat'), path: '/chat' }
     ],
+    '/training/verbs': [
+      { label: t('navigation.dashboard'), path: '/dashboard' },
+      { label: t('navigation.training'), path: '/training' },
+      { label: t('navigation.verbForms'), path: '/training/verbs' }
+    ],
     '/settings': [
       { label: t('navigation.dashboard'), path: '/dashboard' },
       { label: t('navigation.settings'), path: '/settings' }

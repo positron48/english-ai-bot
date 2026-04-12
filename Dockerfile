@@ -35,6 +35,12 @@ RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o fill_missing_set_pos_c
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o revalidate_training_cards ./cmd/revalidate_training_cards
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o backfill_noun_gender ./cmd/backfill_noun_gender
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o normalize_word_pos ./cmd/normalize_word_pos
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o import_spanish_verbs ./cmd/import_spanish_verbs
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o backfill_word_verb_links ./cmd/backfill_word_verb_links
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o build_verb_form_examples ./cmd/build_verb_form_examples
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o backfill_verb_lemma_ru_glosses ./cmd/backfill_verb_lemma_ru_glosses
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o backfill_verb_template_links ./cmd/backfill_verb_template_links
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o preview_verb_templates ./cmd/preview_verb_templates
 
 # Final stage
 FROM alpine:latest
@@ -60,11 +66,22 @@ COPY --from=builder /app/fill_missing_set_pos_cards .
 COPY --from=builder /app/revalidate_training_cards .
 COPY --from=builder /app/backfill_noun_gender .
 COPY --from=builder /app/normalize_word_pos .
+COPY --from=builder /app/import_spanish_verbs .
+COPY --from=builder /app/backfill_word_verb_links .
+COPY --from=builder /app/build_verb_form_examples .
+COPY --from=builder /app/backfill_verb_lemma_ru_glosses .
+COPY --from=builder /app/backfill_verb_template_links .
+COPY --from=builder /app/preview_verb_templates .
 COPY --from=builder /app/scripts/requeue_invalid_training_cards.sh ./scripts/requeue_invalid_training_cards.sh
 COPY --from=builder /app/prompts ./prompts
 # Ship static Spanish frequency CSV for in-cluster imports (independent from grammar submodule).
 COPY --from=builder /app/resources/wordsets/spanish_word_freq_pos_ud_top6000.csv ./data/spanish_word_freq_pos_ud_top6000.csv
 COPY --from=builder /app/resources/wordsets/spanish_gender_lexicon.tsv ./data/spanish_gender_lexicon.tsv
+# Fred Jehle Spanish verb paradigms (CC BY-NC-SA 3.0) — see resources/verbs/ATTRIBUTION.txt
+COPY --from=builder /app/resources/verbs/jehle_verb_database.csv ./data/verbs/jehle_verb_database.csv
+COPY --from=builder /app/resources/verbs/jehle_supplement_aux_haber.csv ./data/verbs/jehle_supplement_aux_haber.csv
+COPY --from=builder /app/resources/verbs/ATTRIBUTION.txt ./data/verbs/ATTRIBUTION.txt
+COPY --from=builder /app/resources/verbs/SUPPLEMENT_HABER.txt ./data/verbs/SUPPLEMENT_HABER.txt
 
 RUN chmod +x /app/scripts/requeue_invalid_training_cards.sh
 

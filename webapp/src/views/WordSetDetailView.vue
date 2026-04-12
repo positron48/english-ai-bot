@@ -204,7 +204,7 @@ const formatMorph = (morph?: MorphInfo): string => {
     const core = morph.article ? `${morph.article} • ${morph.noun_gender}` : morph.noun_gender
     return morph.opposite_gender_word ? `${core} (${morph.opposite_gender_word})` : core
   }
-  if (morph.pos === 'verb' && morph.verb_forms) {
+  if ((morph.pos === 'verb' || morph.pos === 'aux') && morph.verb_forms) {
     const forms = [morph.verb_forms.v1, morph.verb_forms.v2, morph.verb_forms.v3].filter(Boolean)
     if (forms.length > 0) return forms.join(', ')
   }

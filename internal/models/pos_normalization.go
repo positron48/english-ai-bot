@@ -37,7 +37,13 @@ func IsNounPOS(raw string) bool {
 }
 
 func IsVerbPOS(raw string) bool {
-	return CanonicalWordPOS(raw) == "verb"
+	// Spanish UD often tags haber/ser/estar as AUX; they conjugate like verbs and live in the verb-forms DB.
+	switch CanonicalWordPOS(raw) {
+	case "verb", "aux":
+		return true
+	default:
+		return false
+	}
 }
 
 // InferNounGenderFromPOSText extracts noun gender hints from noisy POS text.
