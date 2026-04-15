@@ -121,42 +121,54 @@ Dockerfile собирает бинарники и кладёт данные в �
 
 ```bash
 kubectl -n spanish exec -it deployment/spanish -- sh -c '
-  ./import_spanish_verbs \
+  /app/import_spanish_verbs \
     --input /app/data/verbs/jehle_verb_database.csv \
     --format jehle-csv \
     --source fred-jehle-ghidinelli \
     --source-version jehle-csv-sha256-f77f01d536cd351584051d76902ff8051ab1b945a38e69c7ed02da78ab082ea8 &&
-  ./import_spanish_verbs \
+  /app/import_spanish_verbs \
     --input /app/data/verbs/jehle_supplement_aux_haber.csv \
     --format jehle-csv \
     --source project-supplement \
     --source-version haber-paradigm-v1 &&
-  ./backfill_word_verb_links
+  /app/backfill_word_verb_links
 '
 ```
+
+#### 3a. Ошибка `sh: ... import_spanish_verbs: not found` (exit 127)
+
+Чаще всего в кластере крутится **старый digest** образа `ghcr.io/.../spanish`: в GitOps у `Deployment` часто закреплён `image: ...@sha256:...` через Flux ImagePolicy. Если этот образ собран **до** появления в Dockerfile стадий `import_spanish_verbs` / `COPY` CSV, бинарника в слое просто нет — `not found` не из-за каталога, а из-за отсутствия файла.
+
+Проверка в том же поде:
+
+```bash
+kubectl -n spanish exec deployment/spanish -- ls -la /app/import_spanish_verbs /app/data/verbs/jehle_verb_database.csv
+```
+
+Если `No such file` — нужен **новый релиз** `english-ai-bot` (git **tag** → CI публикует `spanish:latest` + digest), затем дождаться коммита Flux с новым digest в `devops-time-host` и `rollout status` для `deployment/spanish`. После этого снова блок из §3.
 
 Опционально в том же поде (если в секрете/окружении пода доступны `AI_URL`, `AI_API_KEY`, `AI_MODEL` — как у основного бота):
 
 ```bash
-kubectl -n spanish exec -it deployment/spanish -- ./backfill_verb_lemma_ru_glosses --batch-size=28 --sleep-ms=800
+kubectl -n spanish exec -it deployment/spanish -- /app/backfill_verb_lemma_ru_glosses --batch-size=28 --sleep-ms=800
 ```
 
 Опционально **после** глоссов (или параллельно по смыслу данных):
 
 ```bash
-kubectl -n spanish exec -it deployment/spanish -- ./backfill_verb_template_links
+kubectl -n spanish exec -it deployment/spanish -- /app/backfill_verb_template_links
 # при необходимости LLM-классификация хвоста лемм (нужны AI_*):
-kubectl -n spanish exec -it deployment/spanish -- ./backfill_verb_lemma_ru_glosses --fill-class --batch-size=28 --sleep-ms=800
+kubectl -n spanish exec -it deployment/spanish -- /app/backfill_verb_lemma_ru_glosses --fill-class --batch-size=28 --sleep-ms=800
 ```
 
 Просмотр **всех** сгенерированных примеров ES/RU по лемме (как в рантайме тренировки, столбец `source`: `catalog` или `generic`):
 
 ```bash
-kubectl -n spanish exec -it deployment/spanish -- ./preview_verb_templates -lemma=hablar
+kubectl -n spanish exec -it deployment/spanish -- /app/preview_verb_templates -lemma=hablar
 # первые 20 строк: -max=20 ; машиночитаемый вывод: -tsv
 ```
 
-`./build_verb_form_examples` вызывать не обязательно (no-op).
+`/app/build_verb_form_examples` вызывать не обязательно (no-op).
 
 Проверка логов: в stdout — счётчики импорта и бэкфилла ссылок; для `backfill_verb_lemma_ru_glosses` — число обновлённых строк `verb_lemmas`.
 
