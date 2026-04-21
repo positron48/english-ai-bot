@@ -670,7 +670,8 @@ func NewPronunciationService(cfg config.TTSConfig, learning config.LearningConfi
 	service.publicBasePath = "/" + strings.Trim(service.publicBasePath, "/")
 
 	service.providers = buildPronunciationProviders(cfg, learning, logger)
-	if len(service.providers) == 0 {
+	externalMode := cfg.ExternalOnly || strings.EqualFold(strings.TrimSpace(cfg.Provider), "external")
+	if len(service.providers) == 0 && !externalMode {
 		service.enabled = false
 		logger.Warn("tts disabled: no pronunciation providers available")
 	}
