@@ -917,7 +917,7 @@ func (s *PronunciationService) ListPendingExternal(limit int) ([]ExternalPending
 			continue
 		}
 		switch status.State {
-		case models.TTSStatePending, models.TTSStateFailedRetryable:
+		case models.TTSStatePending, models.TTSStateFailedRetryable, models.TTSStateFailedTerminal:
 			result = append(result, ExternalPendingWord{Word: word, TargetLang: target})
 		case models.TTSStateReady:
 			// ensureStatusForWord already converts missing-file ready -> pending; keep this as safety net.

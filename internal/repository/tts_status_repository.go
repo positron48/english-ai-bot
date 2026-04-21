@@ -132,10 +132,12 @@ func (r *TTSStatusRepository) MarkReady(word, provider, relPath string) error {
 		) VALUES (?, ?, 0, ?, ?, ?, NULL, NULL, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 		ON CONFLICT(word) DO UPDATE SET
 			state = excluded.state,
+			attempt_count = 0,
 			audio_rel_path = excluded.audio_rel_path,
 			last_provider = excluded.last_provider,
 			last_error_code = NULL,
 			last_error_message = NULL,
+			last_attempt_at = NULL,
 			updated_at = CURRENT_TIMESTAMP`
 	if _, err := r.db.Exec(q, normalized, models.TTSStateReady, r.maxAttempts, nullableString(provider), nullableString(relPath)); err != nil {
 		return fmt.Errorf("mark tts ready: %w", err)
