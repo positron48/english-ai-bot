@@ -429,15 +429,23 @@ func (r *WordRepository) ListPronunciationCandidates(limit int) ([]string, error
 
 // ListRecentWords returns recent distinct canonical words from word_cards.
 func (r *WordRepository) ListRecentWords(limit int) ([]string, error) {
+	return r.ListRecentWordsPage(limit, 0)
+}
+
+// ListRecentWordsPage returns recent distinct canonical words from word_cards with offset support.
+func (r *WordRepository) ListRecentWordsPage(limit, offset int) ([]string, error) {
 	if limit <= 0 {
 		limit = 200
+	}
+	if offset < 0 {
+		offset = 0
 	}
 	rows, err := r.db.Query(`
 		SELECT wc.word
 		FROM word_cards wc
 		WHERE wc.word IS NOT NULL AND wc.word <> ''
 		ORDER BY wc.created_at DESC
-		LIMIT ?`, limit*3)
+		LIMIT ? OFFSET ?`, limit*3, offset)
 	if err != nil {
 		return nil, fmt.Errorf("failed to list recent words: %w", err)
 	}

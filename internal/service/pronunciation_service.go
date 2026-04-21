@@ -887,45 +887,58 @@ func (s *PronunciationService) ListPendingExternal(limit int) ([]ExternalPending
 	if limit <= 0 {
 		limit = 100
 	}
-	candidates, err := s.wordRepo.ListRecentWords(limit * 5)
-	if err != nil {
-		return nil, err
-	}
 	result := make([]ExternalPendingWord, 0, limit)
 	seen := make(map[string]struct{}, limit)
 	target := strings.ToLower(strings.TrimSpace(s.learning.TargetLang))
-	for _, raw := range candidates {
-		if len(result) >= limit {
+	offset := 0
+	pageLimit := limit * 5
+	if pageLimit < 100 {
+		pageLimit = 100
+	}
+	const maxScanned = 20000
+	scanned := 0
+
+	for len(result) < limit && scanned < maxScanned {
+		candidates, err := s.wordRepo.ListRecentWordsPage(pageLimit, offset)
+		if err != nil {
+			return nil, err
+		}
+		if len(candidates) == 0 {
 			break
 		}
-		word, ok := normalizePronunciationWord(raw)
-		if !ok {
-			continue
-		}
-		if _, ok := seen[word]; ok {
-			continue
-		}
-		seen[word] = struct{}{}
+		for _, raw := range candidates {
+			if len(result) >= limit {
+				break
+			}
+			word, ok := normalizePronunciationWord(raw)
+			if !ok {
+				continue
+			}
+			if _, ok := seen[word]; ok {
+				continue
+			}
+			seen[word] = struct{}{}
+			scanned++
 
-		status, err := s.ensureStatusForWord(word)
-		if err != nil {
-			continue
-		}
-		if status == nil {
-			_ = s.ttsRepo.UpsertPending(word)
-			result = append(result, ExternalPendingWord{Word: word, TargetLang: target})
-			continue
-		}
-		switch status.State {
-		case models.TTSStatePending, models.TTSStateFailedRetryable, models.TTSStateFailedTerminal:
-			result = append(result, ExternalPendingWord{Word: word, TargetLang: target})
-		case models.TTSStateReady:
-			// ensureStatusForWord already converts missing-file ready -> pending; keep this as safety net.
-			if rel := s.resolveReadyRelPath(word, status); rel == "" {
-				_ = s.ttsRepo.UpsertPending(word)
+			// Read-only path: do not mutate status while listing pending words for external workers.
+			status, err := s.ttsRepo.GetByWord(word)
+			if err != nil {
+				continue
+			}
+			if status == nil {
 				result = append(result, ExternalPendingWord{Word: word, TargetLang: target})
+				continue
+			}
+			switch status.State {
+			case models.TTSStatePending, models.TTSStateFailedRetryable, models.TTSStateFailedTerminal:
+				result = append(result, ExternalPendingWord{Word: word, TargetLang: target})
+			case models.TTSStateReady:
+				if rel := s.resolveReadyRelPath(word, status); rel == "" {
+					result = append(result, ExternalPendingWord{Word: word, TargetLang: target})
+				}
 			}
 		}
+		offset += len(candidates)
 	}
 	return result, nil
 }
@@ -1455,11 +1468,27 @@ func (s *PronunciationService) resolveReadyRelPath(word string, status *models.T
 }
 
 func (s *PronunciationService) audioRelPathExists(relPath string) bool {
-	clean := filepath.Clean(relPath)
-	if clean == "." || strings.HasPrefix(clean, "..") {
+	clean := strings.TrimSpace(relPath)
+	if clean == "" {
 		return false
 	}
-	_, err := os.Stat(filepath.Join(s.audioDir, clean))
+	clean = filepath.Clean(clean)
+	if clean == "." {
+		return false
+	}
+	// Guard against absolute paths or traversal in DB value.
+	if filepath.IsAbs(clean) {
+		clean = strings.TrimLeft(clean, `/\`)
+	}
+	if clean == "" || clean == "." || strings.HasPrefix(clean, "..") {
+		return false
+	}
+	root := filepath.Clean(s.audioDir)
+	target := filepath.Clean(filepath.Join(root, clean))
+	if target != root && !strings.HasPrefix(target, root+string(os.PathSeparator)) {
+		return false
+	}
+	_, err := os.Stat(target)
 	return err == nil
 }
 
