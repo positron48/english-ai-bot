@@ -69,6 +69,9 @@ type pronunciationServiceInterface interface {
 	ForceRegenerate(word string) (service.TTSStatusResult, error)
 	Recheck(word string) (service.TTSStatusResult, error)
 	ScheduleWord(word string) bool
+	ListPendingExternal(limit int) ([]service.ExternalPendingWord, error)
+	StoreExternalAudio(word, provider, format string, audio []byte) (service.TTSStatusResult, error)
+	MarkExternalFailure(word, provider, state, errorCode, errorMessage string) (service.TTSStatusResult, error)
 }
 
 // srsServiceInterface is the subset of SRSService used by web handlers.
@@ -108,6 +111,10 @@ type Router struct {
 	rateLimiter                       *RateLimiter
 	botCommandService                 *service.BotCommandService
 	pronunciationMediaRouteRegistered bool
+	internalTTSEnabled                bool
+	internalTTSTokens                 map[string]string
+	internalTTSMaxPendingLimit        int
+	internalTTSMaxUploadBytes         int
 	// generateTokenPairForRefresh if set is used in handleAuthRefresh instead of auth.GenerateTokenPair (for testing).
 	generateTokenPairForRefresh func(userID, telegramID int64) (access, refresh string, err error)
 	// getOrCreateUserForTelegram if set is used in handleAuthTelegram/handleAuthTelegramUnsafe instead of userRepo.GetOrCreateUser (for testing).
@@ -130,15 +137,19 @@ func NewRouter(
 	rateLimiter := NewRateLimiter(5*time.Minute, 1*time.Hour)
 
 	r := &Router{
-		mux:             http.NewServeMux(),
-		logger:          logger,
-		config:          cfg,
-		db:              db,
-		trainingService: trainingService,
-		srsService:      srsService,
-		optionsService:  optionsService,
-		cbService:       cbService,
-		rateLimiter:     rateLimiter,
+		mux:                        http.NewServeMux(),
+		logger:                     logger,
+		config:                     cfg,
+		db:                         db,
+		trainingService:            trainingService,
+		srsService:                 srsService,
+		optionsService:             optionsService,
+		cbService:                  cbService,
+		rateLimiter:                rateLimiter,
+		internalTTSEnabled:         cfg.TTS.InternalEnabled,
+		internalTTSTokens:          parseTTSTokens(cfg.TTS.InternalTokensJSON, logger),
+		internalTTSMaxPendingLimit: maxInt(cfg.TTS.InternalMaxPendingLimit, 500),
+		internalTTSMaxUploadBytes:  maxInt(cfg.TTS.InternalMaxUploadMB, 10) * 1024 * 1024,
 	}
 
 	// Setup routes
@@ -251,14 +262,14 @@ func (r *Router) handleHealth(w http.ResponseWriter, req *http.Request) {
 	_ = json.NewEncoder(w).Encode(map[string]interface{}{
 		"status": "ok",
 		"learning": map[string]interface{}{
-			"pair":                         lc.Pair,
-			"native_lang":                  lc.NativeLang,
-			"target_lang":                  lc.TargetLang,
-			"app_code":                     lc.AppCode,
-			"grammar_bundle_id":            lc.GrammarBundleID,
-			"target_lang_name_ru":          learning.TargetLangNameRUAccusative(lc.TargetLang),
-			"target_lang_name_en":          learning.TargetLangNameEN(lc.TargetLang),
-			"spanish_verb_forms_enabled":   spanishVerbForms,
+			"pair":                       lc.Pair,
+			"native_lang":                lc.NativeLang,
+			"target_lang":                lc.TargetLang,
+			"app_code":                   lc.AppCode,
+			"grammar_bundle_id":          lc.GrammarBundleID,
+			"target_lang_name_ru":        learning.TargetLangNameRUAccusative(lc.TargetLang),
+			"target_lang_name_en":        learning.TargetLangNameEN(lc.TargetLang),
+			"spanish_verb_forms_enabled": spanishVerbForms,
 		},
 	})
 }
@@ -404,6 +415,9 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/settings/language", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLanguageSettings)))
 	r.mux.HandleFunc("/api/settings/training", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTrainingSettings)))
 	r.mux.HandleFunc("/api/tts/word", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTTSWord)))
+	r.mux.HandleFunc("/api/internal/tts/pending", r.handleInternalTTSPending)
+	r.mux.HandleFunc("/api/internal/tts/audio", r.handleInternalTTSAudio)
+	r.mux.HandleFunc("/api/internal/tts/fail", r.handleInternalTTSFail)
 
 	// Access control routes
 	r.mux.HandleFunc("/api/access/me", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleAccessMe)))
@@ -467,6 +481,36 @@ func (r *Router) setupProtectedRoutes() {
 
 	// App settings admin routes (require full_access)
 	r.mux.HandleFunc("/api/admin/app-settings", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminAppSettings))))
+}
+
+func parseTTSTokens(raw string, logger *zap.Logger) map[string]string {
+	m := map[string]string{}
+	if strings.TrimSpace(raw) == "" {
+		return m
+	}
+	if err := json.Unmarshal([]byte(raw), &m); err != nil {
+		if logger != nil {
+			logger.Warn("failed to parse TTS_INTERNAL_TOKENS_JSON", zap.Error(err))
+		}
+		return map[string]string{}
+	}
+	out := make(map[string]string, len(m))
+	for k, v := range m {
+		key := strings.ToLower(strings.TrimSpace(k))
+		val := strings.TrimSpace(v)
+		if key == "" || val == "" {
+			continue
+		}
+		out[key] = val
+	}
+	return out
+}
+
+func maxInt(v, fallback int) int {
+	if v > 0 {
+		return v
+	}
+	return fallback
 }
 
 // corsMiddleware adds CORS headers to allow Swagger UI to make requests

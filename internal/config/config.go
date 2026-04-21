@@ -133,7 +133,8 @@ type AIConfig struct {
 // TTSConfig holds text-to-speech/pronunciation audio configuration
 type TTSConfig struct {
 	Enabled            bool   `mapstructure:"enabled"`
-	Provider           string `mapstructure:"provider"` // auto | dictionary | openrouter
+	Provider           string `mapstructure:"provider"` // auto | dictionary | openrouter | external
+	ExternalOnly       bool   `mapstructure:"external_only"`
 	AudioDir           string `mapstructure:"audio_dir"`
 	PublicBasePath     string `mapstructure:"public_base_path"`
 	Model              string `mapstructure:"model"`
@@ -153,6 +154,10 @@ type TTSConfig struct {
 	DictionaryMinDelay string `mapstructure:"dictionary_min_delay"`
 	// ChatPronunciationPrompt is the user message for OpenRouter chat+audio TTS. Use {word} — replaced with the word in backticks. Empty = built-in English default.
 	ChatPronunciationPrompt string `mapstructure:"chat_pronunciation_prompt"`
+	InternalEnabled         bool   `mapstructure:"internal_enabled"`
+	InternalTokensJSON      string `mapstructure:"internal_tokens_json"`
+	InternalMaxPendingLimit int    `mapstructure:"internal_max_pending_limit"`
+	InternalMaxUploadMB     int    `mapstructure:"internal_max_upload_mb"`
 }
 
 // BotConfig holds bot messages and behavior configuration
@@ -182,9 +187,9 @@ type TrainingConfig struct {
 	CircuitBreakerAutoReset int    `mapstructure:"circuit_breaker_auto_reset_hours"`
 	OptionsDelayMS          int    `mapstructure:"options_delay_ms"`
 	WrongAnswerDelaySeconds int    `mapstructure:"wrong_answer_delay_seconds"`
-	SpanishVerbFormsEnabled bool `mapstructure:"spanish_verb_forms_enabled"`
-	VerbFormsMaxCards       int  `mapstructure:"verb_forms_max_cards_per_session"`
-	VerbFormsMaxNew         int  `mapstructure:"verb_forms_max_new_per_session"`
+	SpanishVerbFormsEnabled bool   `mapstructure:"spanish_verb_forms_enabled"`
+	VerbFormsMaxCards       int    `mapstructure:"verb_forms_max_cards_per_session"`
+	VerbFormsMaxNew         int    `mapstructure:"verb_forms_max_new_per_session"`
 	// VerbFormsTypedMinReps: after this many successful SRS reps (and not in "learning"), verb-form cards become eligible for typing the whole form (see VerbFormsTypedChancePercent).
 	VerbFormsTypedMinReps int `mapstructure:"verb_forms_typed_min_reps"`
 	// VerbFormsTypedChancePercent: when eligible for typed mode, each card uses typed with this probability (0–100); otherwise multiple choice. Default 50 (like spell/type mix in word training).
@@ -249,6 +254,7 @@ func Load() (*Config, error) {
 	viper.SetDefault("ai.model", "gpt-3.5-turbo")
 	viper.SetDefault("tts.enabled", true)
 	viper.SetDefault("tts.provider", "auto")
+	viper.SetDefault("tts.external_only", false)
 	viper.SetDefault("tts.audio_dir", "/app/data/tts")
 	viper.SetDefault("tts.public_base_path", "/media/tts")
 	viper.SetDefault("tts.model", "openai/gpt-audio-mini")
@@ -266,6 +272,10 @@ func Load() (*Config, error) {
 	viper.SetDefault("tts.dictionary_enabled", true)
 	viper.SetDefault("tts.dictionary_min_delay", "100ms")
 	viper.SetDefault("tts.chat_pronunciation_prompt", "")
+	viper.SetDefault("tts.internal_enabled", false)
+	viper.SetDefault("tts.internal_tokens_json", "")
+	viper.SetDefault("tts.internal_max_pending_limit", 500)
+	viper.SetDefault("tts.internal_max_upload_mb", 10)
 	viper.SetDefault("database.driver", "postgres")
 	viper.SetDefault("database.path", "")
 
@@ -354,6 +364,7 @@ func Load() (*Config, error) {
 	_ = viper.BindEnv("ai.prompt_file", "AI_PROMPT_FILE")
 	_ = viper.BindEnv("tts.enabled", "TTS_ENABLED")
 	_ = viper.BindEnv("tts.provider", "TTS_PROVIDER")
+	_ = viper.BindEnv("tts.external_only", "TTS_EXTERNAL_ONLY")
 	_ = viper.BindEnv("tts.audio_dir", "TTS_AUDIO_DIR")
 	_ = viper.BindEnv("tts.public_base_path", "TTS_PUBLIC_BASE_PATH")
 	_ = viper.BindEnv("tts.model", "TTS_MODEL")
@@ -372,6 +383,10 @@ func Load() (*Config, error) {
 	_ = viper.BindEnv("tts.dictionary_min_delay", "TTS_DICTIONARY_MIN_DELAY")
 	_ = viper.BindEnv("tts.dictionary_enabled", "TTS_DICTIONARY_ENABLED")
 	_ = viper.BindEnv("tts.chat_pronunciation_prompt", "TTS_CHAT_PRONUNCIATION_PROMPT")
+	_ = viper.BindEnv("tts.internal_enabled", "TTS_INTERNAL_ENABLED")
+	_ = viper.BindEnv("tts.internal_tokens_json", "TTS_INTERNAL_TOKENS_JSON")
+	_ = viper.BindEnv("tts.internal_max_pending_limit", "TTS_INTERNAL_MAX_PENDING_LIMIT")
+	_ = viper.BindEnv("tts.internal_max_upload_mb", "TTS_INTERNAL_MAX_UPLOAD_MB")
 	_ = viper.BindEnv("bot.start_message", "BOT_START_MESSAGE")
 	_ = viper.BindEnv("bot.help_message", "BOT_HELP_MESSAGE")
 	_ = viper.BindEnv("bot.unknown_command_message", "BOT_UNKNOWN_COMMAND_MESSAGE")

@@ -679,6 +679,9 @@ func NewPronunciationService(cfg config.TTSConfig, learning config.LearningConfi
 }
 
 func buildPronunciationProviders(cfg config.TTSConfig, learning config.LearningConfig, logger *zap.Logger) []pronunciationProvider {
+	if cfg.ExternalOnly {
+		return nil
+	}
 	timeout := parseDurationWithDefault(cfg.RequestTimeout, 45*time.Second)
 	client := &http.Client{Timeout: timeout}
 	provider := strings.ToLower(strings.TrimSpace(cfg.Provider))
@@ -740,6 +743,9 @@ func buildPronunciationProviders(cfg config.TTSConfig, learning config.LearningC
 		addDictionary()
 	case "openrouter":
 		addOpenRouter()
+	case "external":
+		// External worker mode: service keeps cache/status API but does not synthesize locally.
+		return nil
 	case "auto":
 		addDictionary()
 		addOpenRouter()
@@ -838,6 +844,10 @@ func (s *PronunciationService) Start(ctx context.Context) {
 	if !s.IsEnabled() {
 		return
 	}
+	if len(s.providers) == 0 {
+		<-ctx.Done()
+		return
+	}
 	if err := os.MkdirAll(s.audioDir, 0o755); err != nil {
 		s.logger.Error("failed to create tts audio directory", zap.String("dir", s.audioDir), zap.Error(err))
 		return
@@ -862,6 +872,133 @@ func (s *PronunciationService) Start(ctx context.Context) {
 	}
 
 	<-ctx.Done()
+}
+
+type ExternalPendingWord struct {
+	Word       string `json:"word"`
+	TargetLang string `json:"target_lang"`
+}
+
+func (s *PronunciationService) ListPendingExternal(limit int) ([]ExternalPendingWord, error) {
+	if s.wordRepo == nil || s.ttsRepo == nil {
+		return nil, fmt.Errorf("tts dependencies are not configured")
+	}
+	if limit <= 0 {
+		limit = 100
+	}
+	candidates, err := s.wordRepo.ListRecentWords(limit * 5)
+	if err != nil {
+		return nil, err
+	}
+	result := make([]ExternalPendingWord, 0, limit)
+	seen := make(map[string]struct{}, limit)
+	target := strings.ToLower(strings.TrimSpace(s.learning.TargetLang))
+	for _, raw := range candidates {
+		if len(result) >= limit {
+			break
+		}
+		word, ok := normalizePronunciationWord(raw)
+		if !ok {
+			continue
+		}
+		if _, ok := seen[word]; ok {
+			continue
+		}
+		seen[word] = struct{}{}
+
+		status, err := s.ensureStatusForWord(word)
+		if err != nil {
+			continue
+		}
+		if status == nil {
+			_ = s.ttsRepo.UpsertPending(word)
+			result = append(result, ExternalPendingWord{Word: word, TargetLang: target})
+			continue
+		}
+		switch status.State {
+		case models.TTSStatePending, models.TTSStateFailedRetryable:
+			result = append(result, ExternalPendingWord{Word: word, TargetLang: target})
+		case models.TTSStateReady:
+			// ensureStatusForWord already converts missing-file ready -> pending; keep this as safety net.
+			if rel := s.resolveReadyRelPath(word, status); rel == "" {
+				_ = s.ttsRepo.UpsertPending(word)
+				result = append(result, ExternalPendingWord{Word: word, TargetLang: target})
+			}
+		}
+	}
+	return result, nil
+}
+
+func (s *PronunciationService) StoreExternalAudio(word, provider, format string, audio []byte) (TTSStatusResult, error) {
+	var out TTSStatusResult
+	if s.ttsRepo == nil {
+		return out, fmt.Errorf("tts status repository is not configured")
+	}
+	normalized, ok := normalizePronunciationWord(word)
+	if !ok {
+		return out, fmt.Errorf("invalid word")
+	}
+	if strings.ToLower(strings.TrimSpace(format)) != "mp3" {
+		return out, fmt.Errorf("unsupported format: only mp3 is allowed")
+	}
+	if len(audio) == 0 {
+		return out, fmt.Errorf("audio is empty")
+	}
+	if !isLikelyMP3(audio) {
+		return out, fmt.Errorf("audio does not look like mp3")
+	}
+	relPath := s.relativePathForWordWithExt(normalized, ".mp3")
+	fullPath := filepath.Join(s.audioDir, relPath)
+	if err := writeFileAtomic(fullPath, audio, 0o644); err != nil {
+		return out, fmt.Errorf("write external audio: %w", err)
+	}
+	p := strings.TrimSpace(provider)
+	if p == "" {
+		p = "external"
+	}
+	if err := s.ttsRepo.MarkReady(normalized, p, relPath); err != nil {
+		return out, err
+	}
+	return s.GetStatus(normalized)
+}
+
+func (s *PronunciationService) MarkExternalFailure(word, provider, state, errorCode, errorMessage string) (TTSStatusResult, error) {
+	var out TTSStatusResult
+	if s.ttsRepo == nil {
+		return out, fmt.Errorf("tts status repository is not configured")
+	}
+	normalized, ok := normalizePronunciationWord(word)
+	if !ok {
+		return out, fmt.Errorf("invalid word")
+	}
+	p := strings.TrimSpace(provider)
+	if p == "" {
+		p = "external"
+	}
+	st := strings.TrimSpace(state)
+	switch st {
+	case models.TTSStateFailedTerminal:
+		if err := s.ttsRepo.MarkTerminal(normalized, p, errorCode, errorMessage); err != nil {
+			return out, err
+		}
+	default:
+		if err := s.ttsRepo.MarkAttempt(normalized, p, errorCode, errorMessage, true); err != nil {
+			return out, err
+		}
+	}
+	return s.GetStatus(normalized)
+}
+
+func isLikelyMP3(b []byte) bool {
+	if len(b) < 3 {
+		return false
+	}
+	// ID3 header
+	if len(b) >= 3 && b[0] == 'I' && b[1] == 'D' && b[2] == '3' {
+		return true
+	}
+	// MPEG frame sync 0xFFFx
+	return len(b) >= 2 && b[0] == 0xFF && (b[1]&0xE0) == 0xE0
 }
 
 func (s *PronunciationService) worker(ctx context.Context) {

@@ -44,6 +44,15 @@ func (m *mockPronunciationService) Recheck(word string) (service.TTSStatusResult
 	return service.TTSStatusResult{}, nil
 }
 func (m *mockPronunciationService) ScheduleWord(word string) bool { return true }
+func (m *mockPronunciationService) ListPendingExternal(limit int) ([]service.ExternalPendingWord, error) {
+	return nil, nil
+}
+func (m *mockPronunciationService) StoreExternalAudio(word, provider, format string, audio []byte) (service.TTSStatusResult, error) {
+	return service.TTSStatusResult{}, nil
+}
+func (m *mockPronunciationService) MarkExternalFailure(word, provider, state, errorCode, errorMessage string) (service.TTSStatusResult, error) {
+	return service.TTSStatusResult{}, nil
+}
 
 func TestSetupPronunciationMediaRoute_RegistersRoute(t *testing.T) {
 	logger := zap.NewNop()

@@ -427,6 +427,46 @@ func (r *WordRepository) ListPronunciationCandidates(limit int) ([]string, error
 	return candidates, nil
 }
 
+// ListRecentWords returns recent distinct canonical words from word_cards.
+func (r *WordRepository) ListRecentWords(limit int) ([]string, error) {
+	if limit <= 0 {
+		limit = 200
+	}
+	rows, err := r.db.Query(`
+		SELECT wc.word
+		FROM word_cards wc
+		WHERE wc.word IS NOT NULL AND wc.word <> ''
+		ORDER BY wc.created_at DESC
+		LIMIT ?`, limit*3)
+	if err != nil {
+		return nil, fmt.Errorf("failed to list recent words: %w", err)
+	}
+	defer rows.Close()
+
+	out := make([]string, 0, limit)
+	seen := make(map[string]struct{}, limit)
+	for rows.Next() {
+		var word string
+		if err := rows.Scan(&word); err != nil {
+			return nil, fmt.Errorf("failed to scan recent word: %w", err)
+		}
+		word = strings.TrimSpace(word)
+		if word == "" {
+			continue
+		}
+		key := strings.ToLower(word)
+		if _, ok := seen[key]; ok {
+			continue
+		}
+		seen[key] = struct{}{}
+		out = append(out, word)
+		if len(out) >= limit {
+			break
+		}
+	}
+	return out, nil
+}
+
 // MarkWordCardProcessedError marks a word card as processed with an error
 func (r *WordRepository) MarkWordCardProcessedError(wordCardID int64, errorText string) error {
 	query := `UPDATE word_cards 
