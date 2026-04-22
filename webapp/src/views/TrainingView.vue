@@ -197,15 +197,15 @@
           </div>
 
           <div
-            v-if="isTargetLangSide && currentCard?.transcription"
+            v-if="isTargetLangSide && (currentCard?.transcription || pronunciationWord)"
             class="training-pronunciation-row"
           >
-            <span class="training-transcription">{{ currentCard.transcription }}</span>
+            <span v-if="currentCard?.transcription" class="training-transcription">{{ currentCard.transcription }}</span>
             <button
-              v-if="currentPronunciationURL"
+              v-if="pronunciationWord"
               type="button"
               class="btn-pronunciation"
-              :disabled="playingPronunciation || !(currentCard?.word_target || currentCard?.word_en)"
+              :disabled="playingPronunciation || !pronunciationWord"
               :aria-label="t('training.listen') || 'Pronounce'"
               @click="playCurrentPronunciation"
             >
@@ -215,15 +215,15 @@
         </div>
       </div>
       <div
-        v-if="!showQuestionMetaRow && isTargetLangSide && currentCard?.transcription"
+        v-if="!showQuestionMetaRow && isTargetLangSide && (currentCard?.transcription || pronunciationWord)"
         class="training-pronunciation-row training-pronunciation-row-standalone"
       >
-        <span class="training-transcription">{{ currentCard.transcription }}</span>
+        <span v-if="currentCard?.transcription" class="training-transcription">{{ currentCard.transcription }}</span>
         <button
-          v-if="currentPronunciationURL"
+          v-if="pronunciationWord"
           type="button"
           class="btn-pronunciation"
-          :disabled="playingPronunciation || !(currentCard?.word_target || currentCard?.word_en)"
+          :disabled="playingPronunciation || !pronunciationWord"
           :aria-label="t('training.listen') || 'Pronounce'"
           @click="playCurrentPronunciation"
         >
@@ -796,7 +796,7 @@ const morphCompactText = computed(() => {
 })
 
 const showQuestionMetaRow = computed(() => {
-  const hasPron = isTargetLangSide.value && !!currentCard.value?.transcription
+  const hasPron = isTargetLangSide.value && (!!currentCard.value?.transcription || !!pronunciationWord.value)
   const hasMorph = showMorphInTraining.value && isTargetLangSide.value && morphCompactText.value.length > 0
   return hasPron || hasMorph
 })
@@ -807,13 +807,12 @@ const pronunciationWord = computed(() => {
   return (card.word_target || card.word_en || '').trim()
 })
 
-const shouldAutoplayPronunciation = computed(() => {
+const shouldAutoplayPronunciationOnCardShown = computed(() => {
   const card = currentCard.value
   if (!card) return false
   if (!settings.value.autoplayPronunciation) return false
   // Trigger A: foreign-side card is shown (en_ru).
-  // Trigger B: native prompt expects foreign answer (ru_en).
-  return card.direction === 'en_ru' || card.direction === 'ru_en'
+  return card.direction === 'en_ru'
 })
 
 watch(currentCard, async (card) => {
@@ -830,7 +829,7 @@ watch(currentCard, async (card) => {
   const url = await getWordPronunciationURL(word)
   if (reqId !== pronunciationLoadRequestId || card !== currentCard.value) return
   currentPronunciationURL.value = url
-  if (!url || !shouldAutoplayPronunciation.value || playingPronunciation.value) return
+  if (!url || !shouldAutoplayPronunciationOnCardShown.value || playingPronunciation.value) return
   playingPronunciation.value = true
   try {
     await playWordPronunciation(word)
@@ -838,6 +837,22 @@ watch(currentCard, async (card) => {
     playingPronunciation.value = false
   }
 })
+
+const autoplayPronunciationAfterAnswer = async () => {
+  const card = currentCard.value
+  if (!card) return
+  if (!settings.value.autoplayPronunciation) return
+  // Trigger B: native prompt with target-language answer (ru_en) => play after answer feedback.
+  if (card.direction !== 'ru_en') return
+  const word = pronunciationWord.value
+  if (!word || playingPronunciation.value) return
+  playingPronunciation.value = true
+  try {
+    await playWordPronunciation(word)
+  } finally {
+    playingPronunciation.value = false
+  }
+}
 
 const playCurrentPronunciation = async () => {
   const word = pronunciationWord.value
@@ -2031,6 +2046,7 @@ const submitSpellAnswerAs = async (answerText: string, isSkip = false) => {
       playIncorrectSound()
       currentDisappointingPhrase.value = getRandomDisappointingPhrase()
     }
+    void autoplayPronunciationAfterAnswer()
     const nextDelayMs = data.is_correct ? 1000 : (data.delay_seconds ?? 0) * 1000
     const isCorrectSpell = data.is_correct && currentCard.value?.type === 'spell'
     if (isCorrectSpell) {
@@ -2126,6 +2142,7 @@ const submitTypeAnswerAs = async (answerText: string) => {
       playIncorrectSound()
       currentDisappointingPhrase.value = getRandomDisappointingPhrase()
     }
+    void autoplayPronunciationAfterAnswer()
     const nextDelayMs = data.is_correct ? 1000 : (data.delay_seconds ?? 0) * 1000
     const startCountdownOrNext = () => {
       if (nextDelayMs > 0) {
@@ -2286,6 +2303,7 @@ const submitAnswer = async (optionIndex: number) => {
     } else {
       playIncorrectSound()
     }
+    void autoplayPronunciationAfterAnswer()
     
     // Generate random phrase based on answer correctness
     if (data.is_correct) {
