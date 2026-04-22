@@ -152,6 +152,12 @@ function normalizePronunciationWord(raw: string): string {
   return raw.trim().toLowerCase().replace(/\s+/g, ' ')
 }
 
+function stripInfinitiveToPrefix(normalized: string): string {
+  if (!normalized.startsWith('to ')) return ''
+  const stripped = normalized.slice(3).trim()
+  return stripped
+}
+
 function playMelody(
   notes: Array<{ freq: number; durMs: number; type: OscillatorType; peak: number }>,
   opts: { gapMs?: number; releaseMs?: number } = {}
@@ -419,19 +425,35 @@ export function useAudio() {
       return pronunciationInFlight.get(normalized) as Promise<string | null>
     }
 
-    const request = (async () => {
+    const requestURL = async (normalizedWord: string): Promise<string | null> => {
       try {
         const data = await apiClient.request<{ available: boolean; url: string }>(
-          `/api/tts/word?word=${encodeURIComponent(normalized)}`
+          `/api/tts/word?word=${encodeURIComponent(normalizedWord)}`
         )
-        const url = data?.available && data?.url ? data.url : null
+        return data?.available && data?.url ? data.url : null
+      } catch {
+        return null
+      }
+    }
+
+    const request = (async () => {
+      try {
+        let url = await requestURL(normalized)
+        // English infinitive display form fallback: "to X" -> "X".
+        if (!url) {
+          const stripped = stripInfinitiveToPrefix(normalized)
+          if (stripped) {
+            url = await requestURL(stripped)
+            if (url) {
+              pronunciationCache.set(stripped, url)
+            }
+          }
+        }
         // Кэшируем только успешный URL: pending/ошибка не должны «замораживать» отсутствие кнопки до reload.
         if (url) {
           pronunciationCache.set(normalized, url)
         }
         return url
-      } catch {
-        return null
       } finally {
         pronunciationInFlight.delete(normalized)
       }
