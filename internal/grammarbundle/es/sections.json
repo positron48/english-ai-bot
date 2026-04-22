@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "last_updated": "2026-04-12T12:00:00Z",
+  "last_updated": "2026-04-11T22:30:00Z",
   "sections": [
     {
       "section_id": "es.grammar.orientation_alphabet_sounds",
@@ -1296,7 +1296,7 @@
       "title": "Haber + participio: the form of preterito perfecto",
       "level": "A2",
       "order": 43,
-      "status": "validated",
+      "status": "pending",
       "input_file": "config/chapter-templates/es.grammar.past_preterito_perfecto.haber_plus_participio_form_preterito_perfecto-input.json",
       "output_dir": "chapters/043.es.grammar.past_preterito_perfecto.haber_plus_participio_form_preterito_perfecto",
       "files": {
@@ -1317,7 +1317,7 @@
       "title": "Regular and irregular participles",
       "level": "A2",
       "order": 44,
-      "status": "validated",
+      "status": "pending",
       "input_file": "config/chapter-templates/es.grammar.past_preterito_perfecto.regular_irregular_participles-input.json",
       "output_dir": "chapters/044.es.grammar.past_preterito_perfecto.regular_irregular_participles",
       "files": {
@@ -1338,7 +1338,7 @@
       "title": "Meaning: experience, result and unfinished time periods",
       "level": "A2",
       "order": 45,
-      "status": "validated",
+      "status": "pending",
       "input_file": "config/chapter-templates/es.grammar.past_preterito_perfecto.meaning_experience_result_unfinished_time_periods-input.json",
       "output_dir": "chapters/045.es.grammar.past_preterito_perfecto.meaning_experience_result_unfinished_time_periods",
       "files": {
@@ -1359,7 +1359,7 @@
       "title": "Markers: ya, todavia no, alguna vez, nunca, esta semana",
       "level": "A2",
       "order": 46,
-      "status": "validated",
+      "status": "pending",
       "input_file": "config/chapter-templates/es.grammar.past_preterito_perfecto.markers_ya_todavia_no_alguna_vez_nunca_esta-input.json",
       "output_dir": "chapters/046.es.grammar.past_preterito_perfecto.markers_ya_todavia_no_alguna_vez_nunca_esta",
       "files": {
@@ -3606,9 +3606,9 @@
     "total_chapters": 152,
     "chapters_generated": 0,
     "chapters_in_progress": 0,
-    "chapters_pending": 106,
+    "chapters_pending": 110,
     "chapters_failed": 0,
-    "chapters_validated": 46,
-    "last_updated": "2026-04-12T12:00:00Z"
+    "chapters_validated": 42,
+    "last_updated": "2026-04-11T22:30:00Z"
   }
 }
