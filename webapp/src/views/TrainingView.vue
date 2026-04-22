@@ -856,8 +856,10 @@ const autoplayPronunciationAfterAnswer = async (resp?: Feedback) => {
   const card = currentCard.value
   if (!card) return
   if (!settings.value.autoplayPronunciation) return
-  // Trigger B: native prompt with target-language answer (ru_en) => play after answer feedback.
-  if (card.direction !== 'ru_en') return
+  // Trigger B: native prompt with target-language answer => play after answer feedback.
+  // For classic cards this is ru_en; for special challenges backend uses direction=spell/type.
+  const expectsTargetAnswer = card.direction === 'ru_en' || card.type === 'spell' || card.type === 'type'
+  if (!expectsTargetAnswer) return
   const fromAnswer = normalizePronunciationAnswerWord(resp?.correct_answer || '', card.prefix)
   const word = fromAnswer || pronunciationWord.value
   if (!word || playingPronunciation.value) return
