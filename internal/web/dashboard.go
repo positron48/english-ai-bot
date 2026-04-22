@@ -27,6 +27,9 @@ func (r *Router) settingsJSONForAPI(settings models.UserSettings) map[string]int
 	if err := json.Unmarshal(b, &m); err != nil || m == nil {
 		return map[string]interface{}{}
 	}
+	if settings.AutoplayPronunciation == nil {
+		m["autoplay_pronunciation"] = true
+	}
 	if strings.EqualFold(r.config.Learning.TargetLang, "es") && r.verbFormsEnabled() {
 		m["verb_forms_progression_index"] = models.InferSpanishVerbProgressionIndex(settings.EnabledVerbScopes)
 	}
@@ -764,16 +767,17 @@ func (r *Router) handleTrainingSettings(w http.ResponseWriter, req *http.Request
 	}
 
 	var requestData struct {
-		OptionsDelaySeconds         *int     `json:"options_delay_seconds"`
-		WrongAnswerDelaySeconds     *int     `json:"wrong_answer_delay_seconds"`
-		SpellModeEnabled            *bool    `json:"spell_mode_enabled"`
-		SpellMasteringThreshold     *int     `json:"spell_mastering_threshold"`
-		TypeModeEnabled             *bool    `json:"type_mode_enabled"`
-		TypeMasteringThreshold      *int     `json:"type_mastering_threshold"`
-		HideMorphInTraining         *bool    `json:"hide_morph_in_training"`
-		GrammarStage                *string  `json:"grammar_stage"`
-		EnabledVerbScopes           []string `json:"enabled_verb_scopes"`
-		VerbFormsProgressionIndex   *int     `json:"verb_forms_progression_index"` // cumulative ladder; expands enabled_verb_scopes
+		OptionsDelaySeconds       *int     `json:"options_delay_seconds"`
+		WrongAnswerDelaySeconds   *int     `json:"wrong_answer_delay_seconds"`
+		SpellModeEnabled          *bool    `json:"spell_mode_enabled"`
+		SpellMasteringThreshold   *int     `json:"spell_mastering_threshold"`
+		TypeModeEnabled           *bool    `json:"type_mode_enabled"`
+		TypeMasteringThreshold    *int     `json:"type_mastering_threshold"`
+		HideMorphInTraining       *bool    `json:"hide_morph_in_training"`
+		AutoplayPronunciation     *bool    `json:"autoplay_pronunciation"`
+		GrammarStage              *string  `json:"grammar_stage"`
+		EnabledVerbScopes         []string `json:"enabled_verb_scopes"`
+		VerbFormsProgressionIndex *int     `json:"verb_forms_progression_index"` // cumulative ladder; expands enabled_verb_scopes
 	}
 
 	if err := json.NewDecoder(req.Body).Decode(&requestData); err != nil {
@@ -886,6 +890,9 @@ func (r *Router) handleTrainingSettings(w http.ResponseWriter, req *http.Request
 	if requestData.HideMorphInTraining != nil {
 		settings.HideMorphInTraining = requestData.HideMorphInTraining
 	}
+	if requestData.AutoplayPronunciation != nil {
+		settings.AutoplayPronunciation = requestData.AutoplayPronunciation
+	}
 	if requestData.GrammarStage != nil {
 		v := strings.ToLower(strings.TrimSpace(*requestData.GrammarStage))
 		if v != "" {
@@ -955,6 +962,7 @@ func (r *Router) handleTrainingSettings(w http.ResponseWriter, req *http.Request
 	resp["type_mode_enabled"] = settings.TypeModeEnabled != nil && *settings.TypeModeEnabled
 	resp["type_mastering_threshold"] = defaultIntPtr(settings.TypeMasteringThreshold, 70)
 	resp["hide_morph_in_training"] = settings.HideMorphInTraining != nil && *settings.HideMorphInTraining
+	resp["autoplay_pronunciation"] = settings.AutoplayPronunciation == nil || *settings.AutoplayPronunciation
 	resp["grammar_stage"] = settings.GrammarStage
 	resp["enabled_verb_scopes"] = settings.EnabledVerbScopes
 	json.NewEncoder(w).Encode(map[string]interface{}{

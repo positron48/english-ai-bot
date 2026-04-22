@@ -30,6 +30,7 @@ type UserSettings struct {
 	TypeModeEnabled         *bool  `json:"type_mode_enabled,omitempty"`          // enable "type the word" (no letters) in training; nil = true
 	TypeMasteringThreshold  *int   `json:"type_mastering_threshold,omitempty"`   // min mastering_score (0-100) for type challenge; nil = 70
 	HideMorphInTraining     *bool  `json:"hide_morph_in_training,omitempty"`     // hide compact morphology hints in training UI; nil = false
+	AutoplayPronunciation   *bool  `json:"autoplay_pronunciation,omitempty"`     // autoplay pronunciation on training cards; nil = true
 	// GrammarStage scopes grammar complexity (legacy compact flag).
 	// Example: "es.presente.indicativo".
 	GrammarStage *string `json:"grammar_stage,omitempty"`

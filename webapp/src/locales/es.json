@@ -90,6 +90,8 @@
     "typeMasteringThresholdDescription": "Solo palabras con este nivel de dominio o superior pueden aparecer en la tarea de escribir palabra (por ejemplo 70 = bien conocidas).",
     "hideMorphInTraining": "Ocultar formas extra en entrenamiento",
     "hideMorphInTrainingDescription": "Ocultar pistas compactas de forma de palabra (género nominal / formas verbales) en las tarjetas.",
+    "autoplayPronunciation": "Reproducción automática de pronunciación",
+    "autoplayPronunciationDescription": "Reproduce automáticamente la pronunciación de la palabra extranjera en las tarjetas cuando se muestra el lado extranjero o cuando la respuesta esperada es en el idioma extranjero.",
     "seconds": "s",
     "notifications": "Notificaciones",
     "notificationFrequency": "Frecuencia de notificaciones",

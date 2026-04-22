@@ -520,6 +520,9 @@ func TestHandleTrainingSettings_Success(t *testing.T) {
 	if getResp.Settings.WrongAnswerDelaySeconds == nil || *getResp.Settings.WrongAnswerDelaySeconds != 2 {
 		t.Errorf("GET settings: expected wrong_answer_delay_seconds 2, got %v", getResp.Settings.WrongAnswerDelaySeconds)
 	}
+	if getResp.Settings.AutoplayPronunciation == nil || *getResp.Settings.AutoplayPronunciation != true {
+		t.Errorf("GET settings: expected autoplay_pronunciation default true, got %v", getResp.Settings.AutoplayPronunciation)
+	}
 
 	// Save spell settings and verify
 	req2 := httptest.NewRequest(http.MethodPost, "/api/settings/training", bytes.NewBufferString(`{"spell_mode_enabled":false,"spell_mastering_threshold":75}`))
@@ -577,6 +580,32 @@ func TestHandleTrainingSettings_Success(t *testing.T) {
 	}
 	if getResp3.Settings.TypeMasteringThreshold == nil || *getResp3.Settings.TypeMasteringThreshold != 80 {
 		t.Errorf("GET settings: expected type_mastering_threshold 80, got %v", getResp3.Settings.TypeMasteringThreshold)
+	}
+
+	// Save autoplay setting and verify
+	req4 := httptest.NewRequest(http.MethodPost, "/api/settings/training", bytes.NewBufferString(`{"autoplay_pronunciation":false}`))
+	req4.Header.Set("Content-Type", "application/json")
+	req4 = setUserIDInContext(req4, 1)
+	w4 := httptest.NewRecorder()
+	router.handleTrainingSettings(w4, req4)
+	if w4.Code != http.StatusOK {
+		t.Fatalf("POST autoplay setting expected 200, got %d: %s", w4.Code, w4.Body.String())
+	}
+	getReq4 := httptest.NewRequest(http.MethodGet, "/api/settings", nil)
+	getReq4 = setUserIDInContext(getReq4, 1)
+	getW4 := httptest.NewRecorder()
+	router.handleSettings(getW4, getReq4)
+	if getW4.Code != http.StatusOK {
+		t.Fatalf("GET settings (autoplay) expected 200, got %d", getW4.Code)
+	}
+	var getResp4 struct {
+		Settings models.UserSettings `json:"settings"`
+	}
+	if err := json.NewDecoder(getW4.Body).Decode(&getResp4); err != nil {
+		t.Fatalf("decode GET response: %v", err)
+	}
+	if getResp4.Settings.AutoplayPronunciation == nil || *getResp4.Settings.AutoplayPronunciation != false {
+		t.Errorf("GET settings: expected autoplay_pronunciation false, got %v", getResp4.Settings.AutoplayPronunciation)
 	}
 }
 

@@ -90,6 +90,8 @@
     "typeMasteringThresholdDescription": "Only words with this mastery level or higher can appear in the type-the-word task (e.g. 70 = well known).",
     "hideMorphInTraining": "Hide extra forms in training",
     "hideMorphInTrainingDescription": "Hide compact word-form hints (noun gender / verb forms) on training cards.",
+    "autoplayPronunciation": "Autoplay pronunciation",
+    "autoplayPronunciationDescription": "Automatically play the foreign word pronunciation on training cards when the foreign side is shown or when the expected answer is in the foreign language.",
     "verbFormProgressionTitle": "Verb conjugation (separate training)",
     "verbFormProgressionDescription": "Choose how far to include Jehle dictionary forms. Easier tenses stay in the mix. After you change this, new forms for the added tenses appear in the queue immediately as new cards (no calendar wait).",
     "verbFormProgressionLabel": "Include forms through",

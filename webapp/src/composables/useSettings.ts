@@ -8,6 +8,7 @@ interface Settings {
   theme: 'light' | 'dark'
   soundTheme: string
   hideMorphInTraining: boolean
+  autoplayPronunciation: boolean
 }
 
 const defaultSettings: Settings = {
@@ -15,7 +16,8 @@ const defaultSettings: Settings = {
   vibrationEnabled: true,
   theme: 'light',
   soundTheme: 'tick',
-  hideMorphInTraining: false
+  hideMorphInTraining: false,
+  autoplayPronunciation: true
 }
 
 const currentSettings = ref<Settings>({ ...defaultSettings })
@@ -33,7 +35,8 @@ const loadSettings = () => {
         vibrationEnabled: parsed.vibrationEnabled !== undefined ? parsed.vibrationEnabled : defaultSettings.vibrationEnabled,
         theme: parsed.theme || defaultSettings.theme,
         soundTheme: parsed.soundTheme || defaultSettings.soundTheme,
-        hideMorphInTraining: parsed.hideMorphInTraining !== undefined ? parsed.hideMorphInTraining : defaultSettings.hideMorphInTraining
+        hideMorphInTraining: parsed.hideMorphInTraining !== undefined ? parsed.hideMorphInTraining : defaultSettings.hideMorphInTraining,
+        autoplayPronunciation: parsed.autoplayPronunciation !== undefined ? parsed.autoplayPronunciation : defaultSettings.autoplayPronunciation
       }
     } else {
       // If no saved settings, try to get theme from useTheme's storage
@@ -91,6 +94,9 @@ export function useSettings() {
   const setHideMorphInTraining = (hide: boolean) => {
     currentSettings.value.hideMorphInTraining = hide
   }
+  const setAutoplayPronunciation = (enabled: boolean) => {
+    currentSettings.value.autoplayPronunciation = enabled
+  }
 
   return {
     settings: currentSettings,
@@ -99,6 +105,7 @@ export function useSettings() {
     setTheme,
     setSoundTheme,
     setHideMorphInTraining,
+    setAutoplayPronunciation,
     loadSettings,
     saveSettings
   }

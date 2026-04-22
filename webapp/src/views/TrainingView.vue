@@ -730,9 +730,10 @@ let typeRevealTimeouts: ReturnType<typeof setTimeout>[] = []
 const typeInputRef = ref<HTMLInputElement | null>(null)
 const playingPronunciation = ref(false)
 const currentPronunciationURL = ref<string | null>(null)
+let pronunciationLoadRequestId = 0
 
 // Settings
-const { settings } = useSettings()
+const { settings, setAutoplayPronunciation } = useSettings()
 const { playSuccess, playFail, playVictory, playDefeat, getWordPronunciationURL, playWordPronunciation } = useAudio()
 
 // Target-language side of the card (e.g. EN in RU→EN when direction is en_ru)
@@ -800,24 +801,46 @@ const showQuestionMetaRow = computed(() => {
   return hasPron || hasMorph
 })
 
+const pronunciationWord = computed(() => {
+  const card = currentCard.value
+  if (!card) return ''
+  return (card.word_target || card.word_en || '').trim()
+})
+
+const shouldAutoplayPronunciation = computed(() => {
+  const card = currentCard.value
+  if (!card) return false
+  if (!settings.value.autoplayPronunciation) return false
+  // Trigger A: foreign-side card is shown (en_ru).
+  // Trigger B: native prompt expects foreign answer (ru_en).
+  return card.direction === 'en_ru' || card.direction === 'ru_en'
+})
+
 watch(currentCard, async (card) => {
-  if (!card || card.direction !== 'en_ru' || !card.transcription) {
+  const reqId = ++pronunciationLoadRequestId
+  if (!card) {
     currentPronunciationURL.value = null
     return
   }
-  const word = card.word_target || card.word_en || ''
+  const word = (card.word_target || card.word_en || '').trim()
   if (!word) {
     currentPronunciationURL.value = null
     return
   }
   const url = await getWordPronunciationURL(word)
-  // Не применять результат смены карточки, если за время await currentCard уже другой.
-  if (card !== currentCard.value) return
+  if (reqId !== pronunciationLoadRequestId || card !== currentCard.value) return
   currentPronunciationURL.value = url
+  if (!url || !shouldAutoplayPronunciation.value || playingPronunciation.value) return
+  playingPronunciation.value = true
+  try {
+    await playWordPronunciation(word)
+  } finally {
+    playingPronunciation.value = false
+  }
 })
 
 const playCurrentPronunciation = async () => {
-  const word = currentCard.value?.word_target || currentCard.value?.word_en
+  const word = pronunciationWord.value
   if (!word || playingPronunciation.value) return
   playingPronunciation.value = true
   try {
@@ -1360,6 +1383,22 @@ const handleKeyPress = (event: KeyboardEvent) => {
   }
 }
 
+interface TrainingSettingsResponse {
+  settings?: {
+    autoplay_pronunciation?: boolean
+  }
+}
+
+const loadTrainingUISettings = async () => {
+  try {
+    const data = await apiClient.request<TrainingSettingsResponse>('/api/settings')
+    const autoplay = data.settings?.autoplay_pronunciation
+    setAutoplayPronunciation(autoplay === undefined ? true : autoplay)
+  } catch (error) {
+    console.error('Failed to load training UI settings:', error)
+  }
+}
+
 onMounted(async () => {
   // Set up network error callback
   apiClient.setNetworkErrorCallback((isRetrying: boolean, attempt: number, maxAttempts: number) => {
@@ -1378,7 +1417,7 @@ onMounted(async () => {
   // Add keyboard event listener
   window.addEventListener('keydown', handleKeyPress)
   
-  await Promise.all([ensureLearningLoaded(), loadStats(), loadUpcomingCards(), checkCurrentSession()])
+  await Promise.all([ensureLearningLoaded(), loadTrainingUISettings(), loadStats(), loadUpcomingCards(), checkCurrentSession()])
 
   // Spell: scale collected letters to fit container width
   watch(

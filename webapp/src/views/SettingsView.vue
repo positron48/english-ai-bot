@@ -201,6 +201,19 @@
             </label>
           </div>
         </div>
+        <div class="setting-item">
+          <div class="setting-info">
+            <label class="setting-label">{{ t('settings.autoplayPronunciation') }}</label>
+            <p class="setting-description">{{ t('settings.autoplayPronunciationDescription') }}</p>
+          </div>
+          <div class="setting-control">
+            <span v-if="trainingDelaysSavedAt === 'autoplay'" class="saved-indicator">{{ t('common.saved') }}</span>
+            <label class="toggle-switch">
+              <input v-model="autoplayPronunciation" type="checkbox" @change="handleAutoplayPronunciationChange" />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -299,7 +312,7 @@ import Icon from '../components/Icon.vue'
 const { t, locale } = useI18n()
 
 const router = useRouter()
-const { settings, setSoundsEnabled, setVibrationEnabled, setTheme, setSoundTheme, setHideMorphInTraining } = useSettings()
+const { settings, setSoundsEnabled, setVibrationEnabled, setTheme, setSoundTheme, setHideMorphInTraining, setAutoplayPronunciation } = useSettings()
 const { theme: currentTheme, setTheme: setThemeInTheme } = useTheme()
 const { getThemes, previewTheme } = useAudio()
 const { logout: authLogout } = useAuth()
@@ -318,12 +331,13 @@ const isSaved = ref(false)
 const optionsDelaySeconds = ref(5)
 const wrongAnswerDelaySeconds = ref(5)
 /** 'options' | 'wrong' - which delay control just saved (to show "saved" there) */
-const trainingDelaysSavedAt = ref<'options' | 'wrong' | 'spell' | 'type' | 'morph' | null>(null)
+const trainingDelaysSavedAt = ref<'options' | 'wrong' | 'spell' | 'type' | 'morph' | 'autoplay' | null>(null)
 const spellModeEnabled = ref(true)
 const spellMasteringThreshold = ref(50)
 const typeModeEnabled = ref(true)
 const typeMasteringThreshold = ref(70)
 const hideMorphInTraining = ref(false)
+const autoplayPronunciation = ref(true)
 const verbFormsProgressionIndex = ref(0)
 const verbProgressionSaved = ref(false)
 let trainingDelaysSavedTimeout: ReturnType<typeof setTimeout> | null = null
@@ -350,6 +364,7 @@ onMounted(async () => {
   vibrationEnabled.value = settings.value.vibrationEnabled
   selectedTheme.value = currentTheme.value
   selectedSoundTheme.value = settings.value.soundTheme || 'tick'
+  autoplayPronunciation.value = settings.value.autoplayPronunciation
   
   // Load notification settings from API
   await loadNotificationSettings()
@@ -383,6 +398,7 @@ interface SettingsResponse {
     type_mode_enabled?: boolean
     type_mastering_threshold?: number
     hide_morph_in_training?: boolean
+    autoplay_pronunciation?: boolean
     verb_forms_progression_index?: number
   }
   learning?: Record<string, unknown>
@@ -432,6 +448,13 @@ const loadTrainingDelaysSettings = async () => {
       hideMorphInTraining.value = s.hide_morph_in_training
       setHideMorphInTraining(hideMorphInTraining.value)
     }
+    if (s?.autoplay_pronunciation !== undefined) {
+      autoplayPronunciation.value = s.autoplay_pronunciation
+      setAutoplayPronunciation(autoplayPronunciation.value)
+    } else {
+      autoplayPronunciation.value = true
+      setAutoplayPronunciation(true)
+    }
     if (s?.verb_forms_progression_index !== undefined && typeof s.verb_forms_progression_index === 'number') {
       verbFormsProgressionIndex.value = Math.max(
         0,
@@ -473,7 +496,7 @@ const handleVerbFormProgressionChange = async () => {
   }
 }
 
-const saveTrainingDelays = async (showSavedAt: 'options' | 'wrong' | 'spell' | 'type' | 'morph') => {
+const saveTrainingDelays = async (showSavedAt: 'options' | 'wrong' | 'spell' | 'type' | 'morph' | 'autoplay') => {
   const opts = Math.max(0, Math.min(10, optionsDelaySeconds.value))
   const wrong = Math.max(0, Math.min(10, wrongAnswerDelaySeconds.value))
   const spellThreshold = Math.max(0, Math.min(100, spellMasteringThreshold.value))
@@ -492,10 +515,12 @@ const saveTrainingDelays = async (showSavedAt: 'options' | 'wrong' | 'spell' | '
         spell_mastering_threshold: spellThreshold,
         type_mode_enabled: typeModeEnabled.value,
         type_mastering_threshold: typeThreshold,
-        hide_morph_in_training: hideMorphInTraining.value
+        hide_morph_in_training: hideMorphInTraining.value,
+        autoplay_pronunciation: autoplayPronunciation.value
       })
     })
     setHideMorphInTraining(hideMorphInTraining.value)
+    setAutoplayPronunciation(autoplayPronunciation.value)
     if (trainingDelaysSavedTimeout) {
       clearTimeout(trainingDelaysSavedTimeout)
       trainingDelaysSavedTimeout = null
@@ -515,6 +540,7 @@ const handleWrongAnswerDelayChange = () => saveTrainingDelays('wrong')
 const handleSpellSettingsChange = () => saveTrainingDelays('spell')
 const handleTypeSettingsChange = () => saveTrainingDelays('type')
 const handleMorphVisibilityChange = () => saveTrainingDelays('morph')
+const handleAutoplayPronunciationChange = () => saveTrainingDelays('autoplay')
 
 const handleNotificationFrequencyChange = async () => {
   const freq = notificationFrequency.value
