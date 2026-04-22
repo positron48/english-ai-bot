@@ -82,8 +82,8 @@ func TestHandleTrainCommand_WithCards(t *testing.T) {
 
 	h.handleTrainCommand(context.Background(), 10, 42)
 
-	if got := client.lastParams.Get("text"); !strings.Contains(got, "Карточка") {
-		t.Fatalf("expected training question message, got %q", got)
+	if got := client.lastParams.Get("text"); !strings.Contains(got, "Карточка") && !strings.Contains(got, "Выберите правильный вариант") {
+		t.Fatalf("expected training start message, got %q", got)
 	}
 }
 

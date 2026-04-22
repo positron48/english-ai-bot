@@ -33,9 +33,20 @@ swagger:
 
 # Regenerate internal/grammarbundle/* from every courses/*/ that has bundle.target + config/generation-status.json
 grammar-bundle:
-	@echo "Initializing / updating grammar submodules..."
-	@git submodule update --init --recursive 2>/dev/null || true
-	@-git submodule update --remote 2>/dev/null || true
+	@echo "Updating grammar course repos from git (without switching pinned submodule commits)..."
+	@for d in courses/*; do \
+		if [ ! -d "$$d" ]; then continue; fi; \
+		if git -C "$$d" rev-parse --is-inside-work-tree >/dev/null 2>&1; then \
+			branch=$$(git -C "$$d" symbolic-ref --short HEAD 2>/dev/null || true); \
+			echo "-> $$d"; \
+			git -C "$$d" fetch --all --prune --quiet || true; \
+			if [ -n "$$branch" ]; then \
+				git -C "$$d" pull --ff-only origin "$$branch" --quiet || true; \
+			else \
+				echo "   (detached HEAD, fetch-only)"; \
+			fi; \
+		fi; \
+	done
 	@echo ""
 	@echo "Generating embedded grammar bundles (see: ./scripts/generate-grammar-bundle.sh list)..."
 	@./scripts/generate-grammar-bundle.sh
