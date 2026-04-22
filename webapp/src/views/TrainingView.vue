@@ -838,13 +838,28 @@ watch(currentCard, async (card) => {
   }
 })
 
-const autoplayPronunciationAfterAnswer = async () => {
+const normalizePronunciationAnswerWord = (answer: string, prefix?: string): string => {
+  const raw = (answer || '').trim()
+  if (!raw) return ''
+  const p = (prefix || '').trim()
+  if (!p) return raw
+  const lowerRaw = raw.toLowerCase()
+  const lowerPrefix = p.toLowerCase()
+  if (lowerRaw.startsWith(lowerPrefix)) {
+    const cut = raw.slice(p.length).trim()
+    if (cut) return cut
+  }
+  return raw
+}
+
+const autoplayPronunciationAfterAnswer = async (resp?: Feedback) => {
   const card = currentCard.value
   if (!card) return
   if (!settings.value.autoplayPronunciation) return
   // Trigger B: native prompt with target-language answer (ru_en) => play after answer feedback.
   if (card.direction !== 'ru_en') return
-  const word = pronunciationWord.value
+  const fromAnswer = normalizePronunciationAnswerWord(resp?.correct_answer || '', card.prefix)
+  const word = fromAnswer || pronunciationWord.value
   if (!word || playingPronunciation.value) return
   playingPronunciation.value = true
   try {
@@ -2046,7 +2061,7 @@ const submitSpellAnswerAs = async (answerText: string, isSkip = false) => {
       playIncorrectSound()
       currentDisappointingPhrase.value = getRandomDisappointingPhrase()
     }
-    void autoplayPronunciationAfterAnswer()
+    void autoplayPronunciationAfterAnswer(data)
     const nextDelayMs = data.is_correct ? 1000 : (data.delay_seconds ?? 0) * 1000
     const isCorrectSpell = data.is_correct && currentCard.value?.type === 'spell'
     if (isCorrectSpell) {
@@ -2142,7 +2157,7 @@ const submitTypeAnswerAs = async (answerText: string) => {
       playIncorrectSound()
       currentDisappointingPhrase.value = getRandomDisappointingPhrase()
     }
-    void autoplayPronunciationAfterAnswer()
+    void autoplayPronunciationAfterAnswer(data)
     const nextDelayMs = data.is_correct ? 1000 : (data.delay_seconds ?? 0) * 1000
     const startCountdownOrNext = () => {
       if (nextDelayMs > 0) {
@@ -2303,7 +2318,7 @@ const submitAnswer = async (optionIndex: number) => {
     } else {
       playIncorrectSound()
     }
-    void autoplayPronunciationAfterAnswer()
+    void autoplayPronunciationAfterAnswer(data)
     
     // Generate random phrase based on answer correctness
     if (data.is_correct) {
