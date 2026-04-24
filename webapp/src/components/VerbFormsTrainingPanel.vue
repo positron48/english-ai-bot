@@ -18,10 +18,17 @@
     </section>
 
     <div v-else-if="active" class="card verb-forms-training-card">
-      <div v-if="finished" class="verb-forms-finished">
-        <p>{{ t('verbTraining.sessionFinished') }}</p>
-        <button type="button" class="btn btn-primary" @click="start">{{ t('verbTraining.newSession') }}</button>
-      </div>
+      <TrainingSessionCompletion
+        v-if="finished"
+        :total-cards="trainingStats.totalCards"
+        :correct-cards="trainingStats.correctCards"
+        :stats-loaded="true"
+        :available-for-training="availableForTraining"
+        :estimated-time-for-remaining="estimatedTimeForRemaining"
+        :show-continue-button="true"
+        :sounds-enabled="true"
+        @continue="start"
+      />
 
       <template v-else-if="card">
         <div v-if="card.total_cards" class="training-progress">
@@ -145,6 +152,7 @@ import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { apiClient } from '../api/client'
 import Icon from './Icon.vue'
+import TrainingSessionCompletion from './TrainingSessionCompletion.vue'
 import { useAudio } from '../composables/useAudio'
 import { useTrainingAnswerDelay } from '../composables/useTrainingAnswerDelay'
 
@@ -184,6 +192,8 @@ const active = ref(false)
 const finished = ref(false)
 const error = ref('')
 const autoStarting = ref(false)
+const trainingStats = ref({ totalCards: 0, correctCards: 0 })
+const availableForTraining = ref<number | null>(null)
 
 /** Title + intro only before the first successful start (idle). Hidden during load and whole session. */
 const showIdleChrome = computed(() => !active.value && !autoStarting.value)
@@ -200,6 +210,14 @@ const inputMode = computed(() => {
   if (c.input_mode === 'typed') return 'typed'
   if (c.input_mode === 'choice') return 'choice'
   return c.options && c.options.length > 0 ? 'choice' : 'typed'
+})
+const estimatedTimeForRemaining = computed(() => {
+  const cards = availableForTraining.value
+  if (!cards || cards <= 0) return null
+  const minutes = Math.floor((cards * 15) / 60)
+  if (minutes < 1) return t('training.oneMin')
+  if (minutes === 1) return t('training.oneMin')
+  return t('training.min', { minutes })
 })
 
 const errorCircumference = 2 * Math.PI * 16
@@ -244,6 +262,7 @@ const start = async () => {
   typedAnswer.value = ''
   finished.value = false
   clearAll()
+  trainingStats.value = { totalCards: 0, correctCards: 0 }
   try {
     const data = await apiClient.request<VerbCard>('/api/verb-training/start', { method: 'POST' })
     active.value = true
@@ -255,6 +274,15 @@ const start = async () => {
     } else {
       error.value = e?.message || t('verbTraining.startFailed')
     }
+  }
+}
+
+async function loadUpcomingVerbCards() {
+  try {
+    const data = await apiClient.request<{ due?: number }>('/api/verb-training/upcoming')
+    availableForTraining.value = typeof data?.due === 'number' ? data.due : 0
+  } catch {
+    availableForTraining.value = null
   }
 }
 
@@ -275,7 +303,7 @@ async function postAnswer(body: { answer?: string; skip?: boolean }) {
   if (!card.value?.user_verb_card_id) return
   answeringLocal.value = true
   try {
-    const data = await apiClient.request<VerbFeedback & { next?: boolean }>('/api/verb-training/answer', {
+    const data = await apiClient.request<VerbFeedback & { next?: boolean; total_cards?: number; correct_cards?: number }>('/api/verb-training/answer', {
       method: 'POST',
       body: {
         user_verb_card_id: card.value.user_verb_card_id,
@@ -304,6 +332,11 @@ async function postAnswer(body: { answer?: string; skip?: boolean }) {
       clearAll()
       if (!data.next) {
         finished.value = true
+        trainingStats.value = {
+          totalCards: data.total_cards || card.value?.total_cards || 0,
+          correctCards: data.correct_cards || 0,
+        }
+        await loadUpcomingVerbCards()
         card.value = null
         return
       }

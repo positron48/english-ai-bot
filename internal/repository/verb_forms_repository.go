@@ -342,7 +342,7 @@ func (r *VerbFormsRepository) GetOrCreateUserVerbCard(userID, verbTrainingCardID
 	}
 	q := `INSERT INTO user_verb_cards (
 		user_id, verb_training_card_id, state, ef, reps, interval_days, learning_step, lapse_count, next_due_at, created_at, updated_at
-	) VALUES (?, ?, 'new', 2.5, 0, 0, 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`
+	) VALUES (?, ?, 'new', 2.5, 0, 0, 0, 0, NULL, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`
 	newID, err := database.InsertAndReturnID(r.db, q, userID, verbTrainingCardID)
 	if err != nil {
 		return 0, fmt.Errorf("create user verb card: %w", err)
@@ -460,16 +460,14 @@ func (r *VerbFormsRepository) GetVerbQueue(userID int64, now time.Time, maxCards
 	if maxNew < 0 {
 		maxNew = 0
 	}
-	dueLimit := maxCards - maxNew
-	if dueLimit < 0 {
-		dueLimit = 0
+	dueLimit := models.MaxDuePoolSize
+	if dueLimit < maxCards {
+		dueLimit = maxCards
 	}
-	// Due / learning / review cards only — exclude state='new' so they come from the second query
-	// (avoids competing with overdue reviews on next_due_at and duplicate rows in the combined queue).
 	q := `SELECT uvc.id, vtc.card_type, vtc.prompt_json, vtc.answer_json, COALESCE(vtc.distractors_json,'')
 	      FROM user_verb_cards uvc
 	      JOIN verb_training_cards vtc ON vtc.id = uvc.verb_training_card_id
-	      WHERE uvc.user_id = ? AND vtc.card_type = ? AND uvc.state <> 'new'
+	      WHERE uvc.user_id = ? AND vtc.card_type = ?
 	        AND (uvc.next_due_at IS NULL OR uvc.next_due_at <= ?)
 	      ORDER BY CASE WHEN uvc.state='learning' THEN 0 ELSE 1 END, uvc.next_due_at NULLS FIRST
 	      LIMIT ?`
@@ -478,13 +476,15 @@ func (r *VerbFormsRepository) GetVerbQueue(userID int64, now time.Time, maxCards
 		return nil, fmt.Errorf("get due verb queue: %w", err)
 	}
 	defer rows.Close()
-	out := make([]VerbQueueCard, 0, maxCards)
+	out := make([]VerbQueueCard, 0, maxCards+maxNew)
+	seenIDs := make(map[int64]struct{}, maxCards+maxNew)
 	for rows.Next() {
 		var c VerbQueueCard
 		if err := rows.Scan(&c.UserVerbCardID, &c.CardType, &c.PromptJSON, &c.AnswerJSON, &c.DistractorsJSON); err != nil {
 			return nil, err
 		}
 		out = append(out, c)
+		seenIDs[c.UserVerbCardID] = struct{}{}
 	}
 	if maxNew > 0 {
 		poolCap := maxNew * 30
@@ -511,6 +511,9 @@ func (r *VerbFormsRepository) GetVerbQueue(userID int64, now time.Time, maxCards
 			if err := rowsNew.Scan(&c.UserVerbCardID, &c.CardType, &c.PromptJSON, &c.AnswerJSON, &c.DistractorsJSON, &wcid); err != nil {
 				_ = rowsNew.Close()
 				return nil, err
+			}
+			if _, exists := seenIDs[c.UserVerbCardID]; exists {
+				continue
 			}
 			pool = append(pool, verbNewQueueRow{card: c, wordCardID: wcid})
 		}
@@ -589,6 +592,19 @@ func (r *VerbFormsRepository) FinishVerbSession(sessionID int64, done int) error
 		return fmt.Errorf("finish verb session: %w", err)
 	}
 	return nil
+}
+
+func (r *VerbFormsRepository) GetVerbSessionStats(sessionID int64) (totalCards int, correctCards int, err error) {
+	query := `SELECT
+		COUNT(*) AS total,
+		COALESCE(SUM(CASE WHEN is_correct = 1 THEN 1 ELSE 0 END), 0) AS correct
+	FROM verb_review_events
+	WHERE session_id = ? AND answered_at IS NOT NULL`
+	err = r.db.QueryRow(query, sessionID).Scan(&totalCards, &correctCards)
+	if err != nil {
+		return 0, 0, fmt.Errorf("get verb session stats: %w", err)
+	}
+	return totalCards, correctCards, nil
 }
 
 // GetVerbLemmaMetadataJSONBatch returns metadata_json keyed by lowercased lemma (language=es).

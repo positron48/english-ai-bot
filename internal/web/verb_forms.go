@@ -173,13 +173,7 @@ func (r *Router) handleVerbTrainingCurrent(w http.ResponseWriter, req *http.Requ
 
 func (r *Router) writeCurrentVerbCard(w http.ResponseWriter, state *webVerbTrainingState) {
 	if state.Index >= len(state.Queue) {
-		repo := repository.NewVerbFormsRepository(r.db, r.logger)
-		_ = repo.FinishVerbSession(state.SessionID, len(state.Queue))
-		w.Header().Set("Content-Type", "application/json")
-		_ = json.NewEncoder(w).Encode(map[string]interface{}{
-			"finished": true,
-			"total":    len(state.Queue),
-		})
+		r.finishVerbTrainingSessionResponse(w, state)
 		return
 	}
 	item := state.Queue[state.Index]
@@ -315,8 +309,13 @@ func (r *Router) handleVerbTrainingAnswer(w http.ResponseWriter, req *http.Reque
 		return
 	}
 	state.Index++
+	sessionComplete := state.Index >= len(state.Queue)
 	webVerbSessionsMu.Lock()
-	webVerbSessions[userID] = state
+	if sessionComplete {
+		delete(webVerbSessions, userID)
+	} else {
+		webVerbSessions[userID] = state
+	}
 	webVerbSessionsMu.Unlock()
 
 	feedback := map[string]interface{}{
@@ -331,8 +330,50 @@ func (r *Router) handleVerbTrainingAnswer(w http.ResponseWriter, req *http.Reque
 		_, wrongAnswerDelaySeconds := r.getTrainingDelaysForUser(userID)
 		feedback["delay_seconds"] = wrongAnswerDelaySeconds
 	}
+	if sessionComplete {
+		repo := repository.NewVerbFormsRepository(r.db, r.logger)
+		if err := repo.FinishVerbSession(state.SessionID, state.Index); err != nil {
+			r.logger.Error("failed to finish verb session", zap.Error(err))
+		}
+		totalCards, correctCards, err := repo.GetVerbSessionStats(state.SessionID)
+		if err != nil {
+			r.logger.Error("failed to get verb session stats", zap.Error(err))
+			totalCards = state.Index
+			correctCards = 0
+		}
+		feedback["complete"] = true
+		feedback["cards_completed"] = state.Index
+		feedback["total_cards"] = totalCards
+		feedback["correct_cards"] = correctCards
+	}
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(feedback)
+}
+
+func (r *Router) finishVerbTrainingSessionResponse(w http.ResponseWriter, state *webVerbTrainingState) {
+	repo := repository.NewVerbFormsRepository(r.db, r.logger)
+	if err := repo.FinishVerbSession(state.SessionID, state.Index); err != nil {
+		r.logger.Error("failed to finish verb session", zap.Error(err))
+	}
+	totalCards, correctCards, err := repo.GetVerbSessionStats(state.SessionID)
+	if err != nil {
+		r.logger.Error("failed to get verb session stats", zap.Error(err))
+		totalCards = state.Index
+		correctCards = 0
+	}
+	webVerbSessionsMu.Lock()
+	delete(webVerbSessions, state.UserID)
+	webVerbSessionsMu.Unlock()
+
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(map[string]interface{}{
+		"finished":        true,
+		"complete":        true,
+		"total":           totalCards,
+		"total_cards":     totalCards,
+		"correct_cards":   correctCards,
+		"cards_completed": state.Index,
+	})
 }
 
 func (r *Router) handleVerbTrainingUpcoming(w http.ResponseWriter, req *http.Request) {

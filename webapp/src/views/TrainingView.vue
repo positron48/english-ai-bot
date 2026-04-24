@@ -2,97 +2,17 @@
   <div class="training">
     <h1 v-if="!(sessionActive && currentCard)" class="training-title">{{ t('training.title') }}</h1>
     
-    <div v-if="sessionComplete && !sessionActive" class="card completion-screen">
-      <!-- Animated percentage display -->
-      <div class="completion-percentage">
-        <div class="percentage-circle-wrapper">
-          <svg class="percentage-circle" viewBox="0 0 120 120">
-            <circle
-              class="percentage-circle-bg"
-              cx="60"
-              cy="60"
-              r="54"
-              fill="none"
-              stroke="var(--bg-secondary, rgba(0, 0, 0, 0.1))"
-              stroke-width="8"
-            />
-            <circle
-              class="percentage-circle-outline"
-              cx="60"
-              cy="60"
-              r="54"
-              fill="none"
-              :stroke="percentageColor"
-              stroke-width="8"
-              stroke-opacity="0.2"
-            />
-            <circle
-              class="percentage-circle-fill"
-              cx="60"
-              cy="60"
-              r="54"
-              fill="none"
-              :stroke="percentageColor"
-              stroke-width="8"
-              stroke-linecap="round"
-              :style="{
-                strokeDasharray: circumference,
-                strokeDashoffset: percentageOffset
-              }"
-            />
-          </svg>
-          <div class="percentage-text">
-            <span class="percentage-number">{{ animatedPercentage }}%</span>
-            <span class="percentage-ratio">{{ trainingStats.correctCards }}/{{ trainingStats.totalCards }}</span>
-          </div>
-          
-          <!-- Fireworks/Confetti for >90% -->
-          <div v-if="accuracyPercentage > 90 && percentageAnimationComplete" class="celebration-container">
-            <div class="fireworks">
-              <div v-for="i in 20" :key="i" class="firework" :style="getFireworkStyle(i)">
-                <div class="firework-core"></div>
-                <div class="firework-particle" v-for="j in 12" :key="j" :data-particle-index="j" :style="{ '--angle': (j * 30) + 'deg' }"></div>
-              </div>
-            </div>
-            <div class="confetti">
-              <div v-for="i in 50" :key="i" class="confetti-piece" :style="getConfettiStyle(i)"></div>
-            </div>
-          </div>
-          
-          <!-- Failure animation for <10% -->
-          <div v-if="accuracyPercentage < 10 && percentageAnimationComplete" class="failure-container">
-            <div class="failure-rain">
-              <div v-for="i in 12" :key="i" class="failure-item" :style="getFailureItemStyle(i)">
-                <span class="failure-emoji">💩</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Motivational message -->
-        <div class="motivational-message" :class="messageClass">
-          <p class="message-text">{{ motivationalMessage }}</p>
-        </div>
-        
-        <!-- Compact info and continue button -->
-        <div class="completion-actions" v-if="statsLoaded">
-          <div class="remaining-cards-info">
-            <span class="remaining-text">
-              <span class="remaining-label">{{ t('training.available') }}</span>
-              {{ stats.availableForTraining }} {{ t('common.cards') || 'cards' }}
-              <span v-if="estimatedTimeForRemaining">({{ estimatedTimeForRemaining }})</span>
-            </span>
-          </div>
-          <button 
-            v-if="stats.availableForTraining > 0" 
-            @click="startTraining" 
-            class="btn btn-primary btn-continue"
-          >
-            {{ t('training.continueTraining') || 'Continue Training' }}
-          </button>
-        </div>
-      </div>
-    </div>
+    <TrainingSessionCompletion
+      v-if="sessionComplete && !sessionActive"
+      :total-cards="trainingStats.totalCards"
+      :correct-cards="trainingStats.correctCards"
+      :stats-loaded="statsLoaded"
+      :available-for-training="stats.availableForTraining"
+      :estimated-time-for-remaining="estimatedTimeForRemaining"
+      :show-continue-button="true"
+      :sounds-enabled="false"
+      @continue="startTraining"
+    />
 
     <div
       v-if="sessionComplete && !sessionActive && !loading && showSpanishVerbFormsTraining"
@@ -544,6 +464,7 @@ import { useAudio } from '../composables/useAudio'
 import { useLocale } from '../composables/useLocale'
 import { Chart, registerables } from 'chart.js'
 import Icon from '../components/Icon.vue'
+import TrainingSessionCompletion from '../components/TrainingSessionCompletion.vue'
 import { useLearningConfig } from '../composables/useLearningConfig'
 
 const { t, tm, locale } = useI18n()
