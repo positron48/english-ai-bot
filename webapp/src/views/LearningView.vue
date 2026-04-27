@@ -9,6 +9,13 @@
         </div>
         <h2>{{ t('learning.grammar') }}</h2>
         <p>{{ t('learning.grammarDescription') }}</p>
+        <button
+          v-if="grammarTrainingAvailable"
+          class="btn btn-primary grammar-training-btn"
+          @click.stop="goGrammarTraining"
+        >
+          {{ t('grammar.trainingTitle') || 'Grammar Training' }}
+        </button>
       </router-link>
       
       <router-link to="/learning/words" class="learning-card words-card">
@@ -23,10 +30,28 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
+import { apiClient } from '../api/client'
 import Icon from '../components/Icon.vue'
 
 const { t } = useI18n()
+const router = useRouter()
+const grammarTrainingAvailable = ref(false)
+
+onMounted(async () => {
+  try {
+    const data: any = await apiClient.request('/api/learning/grammar/training/availability')
+    grammarTrainingAvailable.value = !!data?.grammar_training?.available
+  } catch {
+    grammarTrainingAvailable.value = false
+  }
+})
+
+const goGrammarTraining = () => {
+  router.push('/learning/grammar/training')
+}
 </script>
 
 <style scoped>
@@ -82,6 +107,10 @@ const { t } = useI18n()
   margin: 0;
   color: var(--text-secondary);
   text-align: center;
+}
+
+.grammar-training-btn {
+  margin-top: 14px;
 }
 
 .coming-soon {

@@ -1,0 +1,165 @@
+{
+  "chapter_id": "es.grammar.past_preterito_indefinido.regular_indefinido_endings",
+  "theory_block_id": "b2_theory_regular_ar_endings_indefinido_a2",
+  "course_version": "1.0.0",
+  "questions": [
+    {
+      "type": "mcq_single",
+      "prompt": "Какое окончание у глагола 'hablar' в 1-м лице ед.ч. прошедшего времени?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "hablo"
+        },
+        {
+          "id": "b",
+          "text": "hablé"
+        },
+        {
+          "id": "c",
+          "text": "habló"
+        },
+        {
+          "id": "d",
+          "text": "hablaba"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "В 1-м лице ед.ч. для глаголов на -ar в прошедшем времени обязательно ставится ударение: -é. Правильно: hablé, а не hablo (настоящее время) или habló (3-е лицо).",
+      "theory_block_id": "b2_theory_regular_ar_endings_indefinido_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.regular_indefinido_endings",
+      "concept_id": "regular_ar_endings_indefinido_a2",
+      "difficulty": 2,
+      "id": "q1",
+      "signature": "4ff311951deed9f0"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какая форма глагола 'trabajar' в 3-м лице мн.ч. прошедшего времени?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "trabajaron"
+        },
+        {
+          "id": "b",
+          "text": "trabajaba"
+        },
+        {
+          "id": "c",
+          "text": "trabajaste"
+        },
+        {
+          "id": "d",
+          "text": "trabajamos"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Для 3-го лица мн.ч. (ellos/ellas) глаголов на -ar окончание -aron. Правильно: trabajaron, а не trabajaba (непрерывное) или trabajaste (ты).",
+      "theory_block_id": "b2_theory_regular_ar_endings_indefinido_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.regular_indefinido_endings",
+      "concept_id": "regular_ar_endings_indefinido_a2",
+      "difficulty": 2,
+      "id": "q2",
+      "signature": "a2252507011b73c2"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "В каком предложении правильно использованы формы 'yo' и 'él' для глагола 'hablar'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Yo habla y él habló."
+        },
+        {
+          "id": "b",
+          "text": "Yo hablé y él habló."
+        },
+        {
+          "id": "c",
+          "text": "Yo hablé y él habla."
+        },
+        {
+          "id": "d",
+          "text": "Yo hablo y él habló."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Правильно: yo hablé (с ударением), él habló (с ударением). Ошибки в других вариантах: отсутствие ударения в 'yo' или использование настоящего времени 'habla'/'hablo'.",
+      "theory_block_id": "b2_theory_regular_ar_endings_indefinido_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.regular_indefinido_endings",
+      "concept_id": "regular_ar_endings_indefinido_a2",
+      "difficulty": 3,
+      "id": "q3",
+      "signature": "e58732ec3c109a05"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно: 'Yo _______ la lección' (глагол 'estudiar')?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "estudie"
+        },
+        {
+          "id": "b",
+          "text": "estudié"
+        },
+        {
+          "id": "c",
+          "text": "estudio"
+        },
+        {
+          "id": "d",
+          "text": "estudiaba"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "В прошедшем времени для 'yo' глагола на -ar требуется ударение: -é. Правильно: estudié, а не estudie (императив) или estudio (настоящее).",
+      "theory_block_id": "b2_theory_regular_ar_endings_indefinido_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.regular_indefinido_endings",
+      "concept_id": "regular_ar_endings_indefinido_a2",
+      "difficulty": 2,
+      "id": "q4",
+      "signature": "60de52e78ba03b55"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое окончание для 'vosotros' в прошедшем времени (глагол 'cantar')?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "cantasteis"
+        },
+        {
+          "id": "b",
+          "text": "cantaste"
+        },
+        {
+          "id": "c",
+          "text": "cantaron"
+        },
+        {
+          "id": "d",
+          "text": "cantamos"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Для 'vosotros' (2-е лицо мн.ч.) окончание -asteis. Правильно: cantasteis, а не cantaste (ты) или cantaron (они).",
+      "theory_block_id": "b2_theory_regular_ar_endings_indefinido_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.regular_indefinido_endings",
+      "concept_id": "regular_ar_endings_indefinido_a2",
+      "difficulty": 3,
+      "id": "q5",
+      "signature": "2fdb28de1ceed3c5"
+    }
+  ],
+  "meta": {
+    "generated_at": "2026-04-25T19:13:14Z",
+    "source": "llm-only",
+    "questions_per_block": 10,
+    "chapter_number_filter": 49,
+    "block_number_filter": 2,
+    "append": true
+  }
+}

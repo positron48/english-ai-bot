@@ -31,7 +31,7 @@ swagger:
 		2>&1 | grep -vE "(warning: failed to get package name|warning: failed to evaluate const)" || true
 	@echo "✅ Swagger documentation generated in docs/swagger/"
 
-# Regenerate internal/grammarbundle/* from every courses/*/ that has bundle.target + config/generation-status.json
+# Regenerate internal/grammarbundle/* and internal/grammartrainingpack/* from courses/* (bundle + training pack per bundle.target)
 grammar-bundle:
 	@echo "Updating grammar course repos from git (without switching pinned submodule commits)..."
 	@for d in courses/*; do \
@@ -51,6 +51,10 @@ grammar-bundle:
 	@echo "Generating embedded grammar bundles (see: ./scripts/generate-grammar-bundle.sh list)..."
 	@./scripts/generate-grammar-bundle.sh
 	@echo "✅ Grammar bundles generated"
+	@echo ""
+	@echo "Copying embedded grammar training packs (courses/*/training_pack -> internal/grammartrainingpack)..."
+	@./scripts/generate-grammar-training-pack.sh
+	@echo "✅ Grammar training packs generated"
 
 grammar-bundle-list:
 	@./scripts/generate-grammar-bundle.sh list
@@ -608,7 +612,7 @@ help:
 	@echo "  make postgres-up    - Start PostgreSQL for local dev (port 5433); run before make run"
 	@echo "  make postgres-dev-init-dbs - CREATE DATABASE spanish on local Postgres (for make up-es)"
 	@echo "  make postgres-down  - Stop local PostgreSQL"
-	@echo "  make grammar-bundle - Regenerate internal/grammarbundle/* from all courses/*/bundle.target"
+	@echo "  make grammar-bundle - Regenerate internal/grammarbundle/* and internal/grammartrainingpack/* from courses/*/bundle.target"
 	@echo "  make grammar-bundle-list - List course dirs -> bundle ids"
 	@echo "  make up-en          - Run bot+web with .env.en (+ optional .env), http :8184, DB english"
 	@echo "  make up-es          - Run second instance with .env.es (+ optional .env), http :8284, DB spanish"

@@ -206,6 +206,11 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 	}
 	grammarPublishRepo := repository.NewGrammarPublishRepository(conn, log)
 	grammarAttemptRepo := repository.NewGrammarAttemptRepository(conn, log)
+	grammarTrainingPackRepo, err := repository.NewGrammarTrainingPackRepositoryForLearning(cfg.Learning, log)
+	if err != nil {
+		return nil, fmt.Errorf("grammar training pack repository: %w", err)
+	}
+	grammarSRSRepo := repository.NewGrammarSRSRepository(conn, log)
 	grammarService := service.NewGrammarService(
 		grammarContentRepo,
 		grammarPublishRepo,
@@ -213,6 +218,8 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 		cfg.Learning,
 		log,
 	)
+	grammarService.SetTrainingPackRepository(grammarTrainingPackRepo)
+	grammarService.SetSRSRepository(grammarSRSRepo)
 
 	// Create web router
 	webRouter := web.NewRouter(

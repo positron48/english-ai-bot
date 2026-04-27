@@ -1,0 +1,285 @@
+{
+  "chapter_id": "es.grammar.past_preterito_perfecto.preterito_perfecto_spain_latin_america_changes",
+  "theory_block_id": "b6_theory_safe_production_strategy_for_a2_a2",
+  "course_version": "1.0.0",
+  "questions": [
+    {
+      "type": "mcq_single",
+      "prompt": "Какую стратегию рекомендуется использовать для активной речи на уровне A2?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Использовать обе формы (perfecto и indefinido) в зависимости от региона в каждом предложении."
+        },
+        {
+          "id": "b",
+          "text": "Выбрать одну форму (например, perfecto для Испании) и использовать её последовательно."
+        },
+        {
+          "id": "c",
+          "text": "Следить за тем, чтобы в каждом предложении использовалась форма, соответствующая месту произнесения."
+        },
+        {
+          "id": "d",
+          "text": "Не использовать indefinido, так как он считается менее формальным."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Согласно теории, шаг 2: в одном ответе держите выбранный вариант последовательно. Это избегает когнитивной нагрузки и смешения времен.",
+      "theory_block_id": "b6_theory_safe_production_strategy_for_a2_a2",
+      "chapter_id": "es.grammar.past_preterito_perfecto.preterito_perfecto_spain_latin_america_changes",
+      "concept_id": "safe_production_strategy_for_a2_a2",
+      "difficulty": 2,
+      "id": "q1",
+      "signature": "369f60ca8c7d9f87"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно относиться к альтернативной форме (indefinido) при аудировании?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Считать её ошибкой и игнорировать."
+        },
+        {
+          "id": "b",
+          "text": "Распознавать её как нормальную региональную альтернативу, даже если активно используете одну систему."
+        },
+        {
+          "id": "c",
+          "text": "Использовать её в своих предложениях, чтобы соответствовать аудитории."
+        },
+        {
+          "id": "d",
+          "text": "Избегать её, так как она сложнее для понимания."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Цель A2: понятность и устойчивость. Шаг 3: при слушании автоматически распознавайте альтернативную форму как нормальную.",
+      "theory_block_id": "b6_theory_safe_production_strategy_for_a2_a2",
+      "chapter_id": "es.grammar.past_preterito_perfecto.preterito_perfecto_spain_latin_america_changes",
+      "concept_id": "safe_production_strategy_for_a2_a2",
+      "difficulty": 3,
+      "id": "q2",
+      "signature": "40e6c2b7da96d9dd"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант соответствует типичной для Испании норме в открытых периодах?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ayer he visto el partido."
+        },
+        {
+          "id": "b",
+          "text": "Ayer vi el partido."
+        },
+        {
+          "id": "c",
+          "text": "Ayer he visto el partido en la televisión."
+        },
+        {
+          "id": "d",
+          "text": "Ayer vi el partido con mi hermano."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "В Испании для открытых периодов (например, в учебной норме) используется pretérito perfecto (he visto). Вариант a соответствует этому правилу.",
+      "theory_block_id": "b6_theory_safe_production_strategy_for_a2_a2",
+      "chapter_id": "es.grammar.past_preterito_perfecto.preterito_perfecto_spain_latin_america_changes",
+      "concept_id": "safe_production_strategy_for_a2_a2",
+      "difficulty": 2,
+      "id": "q3",
+      "signature": "06cae5244bbb3ea8"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант чаще используется в Латинской Америке?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Hoy he escrito una carta."
+        },
+        {
+          "id": "b",
+          "text": "Hoy escribí una carta."
+        },
+        {
+          "id": "c",
+          "text": "Hoy he escrito una carta a mi madre."
+        },
+        {
+          "id": "d",
+          "text": "Hoy escribí una carta en el correo."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "В Латинской Америке активно используется indefinido (escribí) вместо perfecto, особенно в разговорной речи.",
+      "theory_block_id": "b6_theory_safe_production_strategy_for_a2_a2",
+      "chapter_id": "es.grammar.past_preterito_perfecto.preterito_perfecto_spain_latin_america_changes",
+      "concept_id": "safe_production_strategy_for_a2_a2",
+      "difficulty": 2,
+      "id": "q4",
+      "signature": "705b39b0d337201a"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Почему важно распознавать обе формы даже при активном использовании одной?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Чтобы соответствовать всем регионам в письменной речи."
+        },
+        {
+          "id": "b",
+          "text": "Это критично для реального общения, аудирования и чтения из разных стран."
+        },
+        {
+          "id": "c",
+          "text": "Потому что в учебниках всегда используется perfecto."
+        },
+        {
+          "id": "d",
+          "text": "Чтобы избежать смешения времен в собственной речи."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Согласно теории, это критично для реального общения и аудирования, даже если активно говорите в одной системе.",
+      "theory_block_id": "b6_theory_safe_production_strategy_for_a2_a2",
+      "chapter_id": "es.grammar.past_preterito_perfecto.preterito_perfecto_spain_latin_america_changes",
+      "concept_id": "safe_production_strategy_for_a2_a2",
+      "difficulty": 4,
+      "id": "q5",
+      "signature": "83f1878d5a57e795"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой пример соответствует стратегии для активной речи?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Hoy he ido al mercado."
+        },
+        {
+          "id": "b",
+          "text": "Hoy fui al mercado."
+        },
+        {
+          "id": "c",
+          "text": "Hoy he ido al mercado, pero luego fui a casa."
+        },
+        {
+          "id": "d",
+          "text": "Hoy fui al mercado y he ido a casa."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Правильная стратегия — последовательно использовать одну форму (например, perfecto). Вариант a показывает использование perfecto в обоих действиях.",
+      "theory_block_id": "b6_theory_safe_production_strategy_for_a2_a2",
+      "chapter_id": "es.grammar.past_preterito_perfecto.preterito_perfecto_spain_latin_america_changes",
+      "concept_id": "safe_production_strategy_for_a2_a2",
+      "difficulty": 3,
+      "id": "q6",
+      "signature": "0942171809934af7"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какая форма чаще встречается в Латинской Америке для глагола 'ver'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Hoy he visto la película."
+        },
+        {
+          "id": "b",
+          "text": "Hoy vi la película."
+        },
+        {
+          "id": "c",
+          "text": "Hoy he visto la película en el cine."
+        },
+        {
+          "id": "d",
+          "text": "Hoy vi la película con mis amigos."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "В Латинской Америке чаще используется indefinido (vi), особенно в разговорной речи, как показано в примере.",
+      "theory_block_id": "b6_theory_safe_production_strategy_for_a2_a2",
+      "chapter_id": "es.grammar.past_preterito_perfecto.preterito_perfecto_spain_latin_america_changes",
+      "concept_id": "safe_production_strategy_for_a2_a2",
+      "difficulty": 2,
+      "id": "q7",
+      "signature": "2bb7c9c06e78bf64"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Что означает 'держать выбранный вариант последовательно'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Использовать разные формы в зависимости от собеседника."
+        },
+        {
+          "id": "b",
+          "text": "Выбрать одну форму и применять её везде в своей речи."
+        },
+        {
+          "id": "c",
+          "text": "Изменять форму в зависимости от времени суток."
+        },
+        {
+          "id": "d",
+          "text": "Использовать perfecto только в письменной речи."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Это означает, что после выбора одной стратегии (например, perfecto для Испании) её нужно использовать последовательно в активной речи.",
+      "theory_block_id": "b6_theory_safe_production_strategy_for_a2_a2",
+      "chapter_id": "es.grammar.past_preterito_perfecto.preterito_perfecto_spain_latin_america_changes",
+      "concept_id": "safe_production_strategy_for_a2_a2",
+      "difficulty": 2,
+      "id": "q8",
+      "signature": "70ea9b372fe935d3"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант не рекомендуется использовать для активной речи на A2?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Hoy he hablado con mi jefe."
+        },
+        {
+          "id": "b",
+          "text": "Hoy hablé con mi jefe."
+        },
+        {
+          "id": "c",
+          "text": "Hoy he hablado con mi jefe, но потом hablé con él."
+        },
+        {
+          "id": "d",
+          "text": "Hoy hablé con mi jefe, но luego he hablado con él."
+        }
+      ],
+      "correct_answer": "c",
+      "explanation": "Смешивание форм (he hablado и hablé) в одном ответе приведёт к смешению времен, что противоречит стратегии.",
+      "theory_block_id": "b6_theory_safe_production_strategy_for_a2_a2",
+      "chapter_id": "es.grammar.past_preterito_perfecto.preterito_perfecto_spain_latin_america_changes",
+      "concept_id": "safe_production_strategy_for_a2_a2",
+      "difficulty": 4,
+      "id": "q9",
+      "signature": "f0248d0b49dc035c"
+    }
+  ],
+  "meta": {
+    "generated_at": "2026-04-25T18:59:17Z",
+    "source": "llm-only",
+    "questions_per_block": 10,
+    "chapter_number_filter": 47,
+    "block_number_filter": 6,
+    "append": true
+  }
+}

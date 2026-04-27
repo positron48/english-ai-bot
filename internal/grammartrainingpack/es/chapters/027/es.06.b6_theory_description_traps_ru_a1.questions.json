@@ -1,0 +1,255 @@
+{
+  "chapter_id": "es.grammar.existence_location_possession.build_speak_describe_room_city_daily_schedule",
+  "theory_block_id": "b6_theory_description_traps_ru_a1",
+  "course_version": "1.0.0",
+  "questions": [
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно выразить 'Сегодня солнечно' на испанском?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Hoy hace sol."
+        },
+        {
+          "id": "b",
+          "text": "Hoy es sol."
+        },
+        {
+          "id": "c",
+          "text": "Hoy está sol."
+        },
+        {
+          "id": "d",
+          "text": "Hoy hay sol."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Для погоды в устойчивой конструкции используется 'hace' (Hoy hace sol), а не 'es' (ser) или 'está' (estar), которые не применяются в этом контексте.",
+      "theory_block_id": "b6_theory_description_traps_ru_a1",
+      "chapter_id": "es.grammar.existence_location_possession.build_speak_describe_room_city_daily_schedule",
+      "concept_id": "description_traps_russian_a1",
+      "difficulty": 2,
+      "id": "q1",
+      "signature": "0ad4fe5cd367f69f"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как спросить 'В каком городе ты учишься?' на испанском?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "¿En qué ciudad estudias?"
+        },
+        {
+          "id": "b",
+          "text": "¿Dónde está tu ciudad de estudio?"
+        },
+        {
+          "id": "c",
+          "text": "¿Cuál es tu ciudad de estudio?"
+        },
+        {
+          "id": "d",
+          "text": "¿Qué ciudad estudias?"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Вопрос о месте (в каком городе) требует 'en qué ciudad', тогда как 'dónde' относится к местоположению, а 'cuál' — к типу города.",
+      "theory_block_id": "b6_theory_description_traps_ru_a1",
+      "chapter_id": "es.grammar.existence_location_possession.build_speak_describe_room_city_daily_schedule",
+      "concept_id": "description_traps_russian_a1",
+      "difficulty": 3,
+      "id": "q2",
+      "signature": "0c1c970a8ddc7a2e"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно сказать 'На полке лежит картина' на испанском?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "La pintura está en el estante."
+        },
+        {
+          "id": "b",
+          "text": "Hay una pintura en el estante."
+        },
+        {
+          "id": "c",
+          "text": "Está una pintura en el estante."
+        },
+        {
+          "id": "d",
+          "text": "Hay pintura está en el estante."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Описание расположения предмета (на полке) требует глагола 'está', тогда как 'hay' означает наличие, что не подходит для описания позиции.",
+      "theory_block_id": "b6_theory_description_traps_ru_a1",
+      "chapter_id": "es.grammar.existence_location_possession.build_speak_describe_room_city_daily_schedule",
+      "concept_id": "description_traps_russian_a1",
+      "difficulty": 2,
+      "id": "q3",
+      "signature": "e056c981697c8cbe"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно выразить 'Сегодня тепло' на испанском?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Hoy hace calor."
+        },
+        {
+          "id": "b",
+          "text": "Hoy es calor."
+        },
+        {
+          "id": "c",
+          "text": "Hoy está calor."
+        },
+        {
+          "id": "d",
+          "text": "Hoy hay calor."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Для погоды в конструкции 'hace' используется с 'calor', а не 'es' или 'está', которые не подходят для описания температуры.",
+      "theory_block_id": "b6_theory_description_traps_ru_a1",
+      "chapter_id": "es.grammar.existence_location_possession.build_speak_describe_room_city_daily_schedule",
+      "concept_id": "description_traps_russian_a1",
+      "difficulty": 2,
+      "id": "q4",
+      "signature": "4256d275fbfc25e4"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как спросить 'Какой город находится в Испании?' на испанском?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "¿Cuál ciudad está en España?"
+        },
+        {
+          "id": "b",
+          "text": "¿Dónde está la ciudad en España?"
+        },
+        {
+          "id": "c",
+          "text": "¿En qué ciudad está España?"
+        },
+        {
+          "id": "d",
+          "text": "¿Qué ciudad está en España?"
+        }
+      ],
+      "correct_answer": "d",
+      "explanation": "Вопрос о типе города (какой) требует 'qué', тогда как 'cuál' и 'dónde' относятся к другим аспектам. 'Qué ciudad' используется для выбора из вариантов.",
+      "theory_block_id": "b6_theory_description_traps_ru_a1",
+      "chapter_id": "es.grammar.existence_location_possession.build_speak_describe_room_city_daily_schedule",
+      "concept_id": "description_traps_russian_a1",
+      "difficulty": 3,
+      "id": "q5",
+      "signature": "c65ce71d468512dd"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно сказать 'В ванной есть полотенце' на испанском?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Hay una toalla en el baño."
+        },
+        {
+          "id": "b",
+          "text": "Está una toalla en el baño."
+        },
+        {
+          "id": "c",
+          "text": "Hay toalla está en el baño."
+        },
+        {
+          "id": "d",
+          "text": "Está toalla en el baño."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Наличие предмета ('полотенце') обозначается глаголом 'hay', а не 'está', который указывает на расположение.",
+      "theory_block_id": "b6_theory_description_traps_ru_a1",
+      "chapter_id": "es.grammar.existence_location_possession.build_speak_describe_room_city_daily_schedule",
+      "concept_id": "description_traps_russian_a1",
+      "difficulty": 2,
+      "id": "q6",
+      "signature": "c009d5de9bfd141f"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно выразить 'Сегодня дождливо' на испанском?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Hoy hace lluvia."
+        },
+        {
+          "id": "b",
+          "text": "Hoy es lluvia."
+        },
+        {
+          "id": "c",
+          "text": "Hoy está lluvia."
+        },
+        {
+          "id": "d",
+          "text": "Hoy hay lluvia."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Для погоды в конструкции 'hace' используется с 'lluvia', а не 'es' или 'está', которые не применяются в этом контексте.",
+      "theory_block_id": "b6_theory_description_traps_ru_a1",
+      "chapter_id": "es.grammar.existence_location_possession.build_speak_describe_room_city_daily_schedule",
+      "concept_id": "description_traps_russian_a1",
+      "difficulty": 2,
+      "id": "q7",
+      "signature": "6643e822c89fcc84"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как спросить 'В каком городе ты родился?' на испанском?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "¿En qué ciudad naciste?"
+        },
+        {
+          "id": "b",
+          "text": "¿Dónde está tu ciudad natal?"
+        },
+        {
+          "id": "c",
+          "text": "¿Cuál es tu ciudad natal?"
+        },
+        {
+          "id": "d",
+          "text": "¿Qué ciudad naciste?"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Вопрос о месте (в каком городе) требует 'en qué ciudad', а не 'dónde' или 'cuál', которые относятся к другим вопросам.",
+      "theory_block_id": "b6_theory_description_traps_ru_a1",
+      "chapter_id": "es.grammar.existence_location_possession.build_speak_describe_room_city_daily_schedule",
+      "concept_id": "description_traps_russian_a1",
+      "difficulty": 3,
+      "id": "q8",
+      "signature": "e19dbb75afade21b"
+    }
+  ],
+  "meta": {
+    "generated_at": "2026-04-25T13:53:25Z",
+    "source": "llm-only",
+    "questions_per_block": 10,
+    "chapter_number_filter": 27,
+    "block_number_filter": 6,
+    "append": true
+  }
+}

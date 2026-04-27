@@ -1,0 +1,225 @@
+{
+  "chapter_id": "es.grammar.orientation_alphabet_sounds.vowels_syllables_diphthongs_hiatus",
+  "theory_block_id": "b5_theory_hiatus",
+  "course_version": "1.0.0",
+  "questions": [
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно разделить слово 'caída' на слоги?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "ca-í-da"
+        },
+        {
+          "id": "b",
+          "text": "ca-id-a"
+        },
+        {
+          "id": "c",
+          "text": "ca-ida"
+        },
+        {
+          "id": "d",
+          "text": "ca-ída"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "В слове 'caída' ударение на 'í', что разрывает соседние гласные. Правильное разделение: ca-í-da.",
+      "theory_block_id": "b5_theory_hiatus",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.vowels_syllables_diphthongs_hiatus",
+      "concept_id": "hiatus_main_patterns",
+      "difficulty": 2,
+      "id": "q1",
+      "signature": "1cd73f582e7502a9"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно разделить слово 'vía' на слоги?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "vi-a"
+        },
+        {
+          "id": "b",
+          "text": "vía"
+        },
+        {
+          "id": "c",
+          "text": "vi-á"
+        },
+        {
+          "id": "d",
+          "text": "v-ia"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "В слове 'vía' ударение на 'í', поэтому гласные 'í' и 'a' разделяются на разные слоги. Правильное разделение: vi-a.",
+      "theory_block_id": "b5_theory_hiatus",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.vowels_syllables_diphthongs_hiatus",
+      "concept_id": "hiatus_main_patterns",
+      "difficulty": 1,
+      "id": "q2",
+      "signature": "cdf47ff404f120d3"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно разделить слово 'aéreo' на слоги?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "a-é-re-o"
+        },
+        {
+          "id": "b",
+          "text": "aé-re-o"
+        },
+        {
+          "id": "c",
+          "text": "a-ereo"
+        },
+        {
+          "id": "d",
+          "text": "aéreo"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "В слове 'aéreo' ударение на 'é', что разделяет гласные 'é' и 'e' на разные слоги. Правильное разделение: a-é-re-o.",
+      "theory_block_id": "b5_theory_hiatus",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.vowels_syllables_diphthongs_hiatus",
+      "concept_id": "hiatus_main_patterns",
+      "difficulty": 2,
+      "id": "q3",
+      "signature": "807f8f1636f98783"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно разделить слово 'león' на слоги?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "le-ón"
+        },
+        {
+          "id": "b",
+          "text": "león"
+        },
+        {
+          "id": "c",
+          "text": "le-ó-n"
+        },
+        {
+          "id": "d",
+          "text": "le-o-n"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "В слове 'león' две сильные гласные 'e' и 'o' подряд, что вызывает hiato. Правильное разделение: le-ón.",
+      "theory_block_id": "b5_theory_hiatus",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.vowels_syllables_diphthongs_hiatus",
+      "concept_id": "hiatus_main_patterns",
+      "difficulty": 2,
+      "id": "q4",
+      "signature": "00308ac30e26994f"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно разделить слово 'mía' на слоги?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "mi-a"
+        },
+        {
+          "id": "b",
+          "text": "mía"
+        },
+        {
+          "id": "c",
+          "text": "mi-á"
+        },
+        {
+          "id": "d",
+          "text": "m-ia"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "В слове 'mía' ударение на 'í', поэтому гласные 'í' и 'a' разделяются на разные слоги. Правильное разделение: mi-a.",
+      "theory_block_id": "b5_theory_hiatus",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.vowels_syllables_diphthongs_hiatus",
+      "concept_id": "hiatus_main_patterns",
+      "difficulty": 1,
+      "id": "q5",
+      "signature": "c010fe74cd941399"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно разделить слово 'tía' на слоги?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "ti-a"
+        },
+        {
+          "id": "b",
+          "text": "tía"
+        },
+        {
+          "id": "c",
+          "text": "ti-á"
+        },
+        {
+          "id": "d",
+          "text": "t-ia"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "В слове 'tía' ударение на 'í', поэтому гласные 'í' и 'a' разделяются на разные слоги. Правильное разделение: ti-a.",
+      "theory_block_id": "b5_theory_hiatus",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.vowels_syllables_diphthongs_hiatus",
+      "concept_id": "hiatus_main_patterns",
+      "difficulty": 1,
+      "id": "q6",
+      "signature": "4d929d264cc30d44"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно разделить слово 'café' на слоги?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "ca-fé"
+        },
+        {
+          "id": "b",
+          "text": "caf-e"
+        },
+        {
+          "id": "c",
+          "text": "ca-fe"
+        },
+        {
+          "id": "d",
+          "text": "café"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "В слове 'café' ударение на 'é', что разделяет гласные 'a' и 'é' на разные слоги. Правильное разделение: ca-fé.",
+      "theory_block_id": "b5_theory_hiatus",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.vowels_syllables_diphthongs_hiatus",
+      "concept_id": "hiatus_main_patterns",
+      "difficulty": 2,
+      "id": "q7",
+      "signature": "c7a72cc37e78bfcf"
+    }
+  ],
+  "meta": {
+    "generated_at": "2026-04-24T21:01:27Z",
+    "source": "llm-only",
+    "questions_per_block": 10,
+    "chapter_number_filter": 2,
+    "block_number_filter": 5,
+    "append": true
+  }
+}

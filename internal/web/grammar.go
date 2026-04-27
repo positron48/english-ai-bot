@@ -330,13 +330,32 @@ func (r *Router) handleLearningGrammarChapter(w http.ResponseWriter, req *http.R
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(map[string]interface{}{
+	resp := map[string]interface{}{
 		"chapter":            content.Chapter,
 		"title":              content.Title,
 		"title_translations": content.Chapter.TitleTranslations,
-	})
+	}
+	if sec, err := r.grammarService.GetSectionBySectionID(req.Context(), content.Chapter.SectionID); err == nil && sec != nil {
+		resp["section"] = map[string]interface{}{
+			"section_id":          sec.SectionID,
+			"title":               sec.Title,
+			"title_translations":  sec.TitleTranslations,
+			"level":               sec.Level,
+		}
+	} else {
+		resp["section"] = map[string]interface{}{
+			"section_id": content.Chapter.SectionID,
+		}
+		if err != nil && r.logger != nil {
+			r.logger.Debug("grammar chapter: section metadata lookup failed",
+				zap.String("section_id", content.Chapter.SectionID),
+				zap.Error(err))
+		}
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(resp)
 }
 
 // handleLearningGrammarCategoryTest generates a category test
@@ -743,4 +762,90 @@ func (r *Router) handleLearningGrammarSubmitPlacementTest(w http.ResponseWriter,
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(result)
+}
+
+func (r *Router) handleLearningGrammarTrainingAvailability(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	userID := getUserIDFromContext(req.Context())
+	if userID == 0 {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+	availability, err := r.grammarService.GetGrammarTrainingAvailability(req.Context(), userID)
+	if err != nil {
+		r.logger.Error("failed to get grammar training availability", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(map[string]interface{}{
+		"grammar_training": availability,
+	})
+}
+
+type grammarTrainingStartRequest struct {
+	Limit int `json:"limit"`
+}
+
+func (r *Router) handleLearningGrammarTrainingStart(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	userID := getUserIDFromContext(req.Context())
+	if userID == 0 {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+	var body grammarTrainingStartRequest
+	_ = json.NewDecoder(req.Body).Decode(&body)
+	session, err := r.grammarService.StartGrammarSrsSession(req.Context(), userID, body.Limit)
+	if err != nil {
+		r.logger.Error("failed to start grammar training session", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(session)
+}
+
+type grammarTrainingAnswerRequest struct {
+	QuestionID string      `json:"question_id"`
+	Answer     interface{} `json:"answer"`
+}
+
+func (r *Router) handleLearningGrammarTrainingAnswer(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	userID := getUserIDFromContext(req.Context())
+	if userID == 0 {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+	var body grammarTrainingAnswerRequest
+	if err := json.NewDecoder(req.Body).Decode(&body); err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+	if strings.TrimSpace(body.QuestionID) == "" {
+		http.Error(w, "question_id required", http.StatusBadRequest)
+		return
+	}
+	result, err := r.grammarService.SubmitGrammarSrsAnswer(req.Context(), userID, body.QuestionID, body.Answer)
+	if err != nil {
+		if strings.Contains(err.Error(), "not found") {
+			http.Error(w, "Question not found", http.StatusNotFound)
+			return
+		}
+		r.logger.Error("failed to submit grammar training answer", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(result)
 }

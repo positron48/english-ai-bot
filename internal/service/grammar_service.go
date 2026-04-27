@@ -17,11 +17,14 @@ import (
 
 // GrammarService handles grammar course business logic
 type GrammarService struct {
-	ContentRepo *repository.GrammarContentRepository
-	PublishRepo *repository.GrammarPublishRepository
-	AttemptRepo *repository.GrammarAttemptRepository
-	learning    config.LearningConfig
-	logger      *zap.Logger
+	ContentRepo      *repository.GrammarContentRepository
+	PublishRepo      *repository.GrammarPublishRepository
+	AttemptRepo      *repository.GrammarAttemptRepository
+	TrainingPackRepo *repository.GrammarTrainingPackRepository
+	SRSRepo          *repository.GrammarSRSRepository
+	TheoryIndex      *repository.TheoryBlockIndex
+	learning         config.LearningConfig
+	logger           *zap.Logger
 }
 
 // NewGrammarService creates a new grammar service
@@ -32,13 +35,26 @@ func NewGrammarService(
 	learning config.LearningConfig,
 	logger *zap.Logger,
 ) *GrammarService {
-	return &GrammarService{
-		ContentRepo: contentRepo,
-		PublishRepo: publishRepo,
-		AttemptRepo: attemptRepo,
-		learning:    learning,
-		logger:      logger,
+	theoryIndex, err := repository.BuildTheoryBlockIndex(contentRepo)
+	if err != nil && logger != nil {
+		logger.Warn("failed to build theory block index", zap.Error(err))
 	}
+	return &GrammarService{
+		ContentRepo:      contentRepo,
+		PublishRepo:      publishRepo,
+		AttemptRepo:      attemptRepo,
+		TheoryIndex:      theoryIndex,
+		learning:         learning,
+		logger:           logger,
+	}
+}
+
+func (s *GrammarService) SetTrainingPackRepository(repo *repository.GrammarTrainingPackRepository) {
+	s.TrainingPackRepo = repo
+}
+
+func (s *GrammarService) SetSRSRepository(repo *repository.GrammarSRSRepository) {
+	s.SRSRepo = repo
 }
 
 // GetPublishedSections returns published sections with progress
@@ -359,6 +375,24 @@ func (s *GrammarService) GetChapterContent(ctx context.Context, chapterID string
 	content.Chapter = s.filterQuestionBankForQuizzes(content.Chapter)
 
 	return content, nil
+}
+
+// GetSectionBySectionID returns section metadata from the bundle (categories list).
+func (s *GrammarService) GetSectionBySectionID(_ context.Context, sectionID string) (*repository.Section, error) {
+	if strings.TrimSpace(sectionID) == "" {
+		return nil, fmt.Errorf("section_id empty")
+	}
+	sectionsData, err := s.ContentRepo.GetSections()
+	if err != nil {
+		return nil, err
+	}
+	for i := range sectionsData.Sections {
+		if sectionsData.Sections[i].SectionID == sectionID {
+			sec := sectionsData.Sections[i]
+			return &sec, nil
+		}
+	}
+	return nil, fmt.Errorf("section not found: %s", sectionID)
 }
 
 // ChapterContent represents chapter content for display
@@ -1042,6 +1076,7 @@ func (s *GrammarService) SubmitTest(ctx context.Context, userID int64, scopeType
 				resultItem["chapter_id"] = chapterID
 			}
 			results = append(results, resultItem)
+			s.RecordGrammarTheoryAttemptFromTest(userID, q, false)
 			continue
 		}
 
@@ -1081,6 +1116,7 @@ func (s *GrammarService) SubmitTest(ctx context.Context, userID int64, scopeType
 			resultItem["chapter_id"] = chapterID
 		}
 		results = append(results, resultItem)
+		s.RecordGrammarTheoryAttemptFromTest(userID, q, isCorrect)
 	}
 
 	score := 0

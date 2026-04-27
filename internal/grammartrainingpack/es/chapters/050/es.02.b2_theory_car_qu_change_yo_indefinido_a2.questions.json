@@ -1,0 +1,285 @@
+{
+  "chapter_id": "es.grammar.past_preterito_indefinido.spelling_changes_car_gar_zar_vowel_shifts",
+  "theory_block_id": "b2_theory_car_qu_change_yo_indefinido_a2",
+  "course_version": "1.0.0",
+  "questions": [
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно написать форму 'я' глагола 'buscar' в прошедшем неопределённом времени?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "buscé"
+        },
+        {
+          "id": "b",
+          "text": "busco"
+        },
+        {
+          "id": "c",
+          "text": "buscó"
+        },
+        {
+          "id": "d",
+          "text": "busqué"
+        }
+      ],
+      "correct_answer": "d",
+      "explanation": "В форме 'я' глаголов на -car добавляется 'qu' перед 'é' для сохранения звука [k]. Правильный вариант: 'busqué'.",
+      "theory_block_id": "b2_theory_car_qu_change_yo_indefinido_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.spelling_changes_car_gar_zar_vowel_shifts",
+      "concept_id": "car_qu_change_yo_indefinido_a2",
+      "difficulty": 2,
+      "id": "q1",
+      "signature": "943be7af126b2098"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно написать форму 'я' глагола 'tocar' в прошедшем неопределённом времени?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "tocé"
+        },
+        {
+          "id": "b",
+          "text": "toco"
+        },
+        {
+          "id": "c",
+          "text": "tocó"
+        },
+        {
+          "id": "d",
+          "text": "toqué"
+        }
+      ],
+      "correct_answer": "d",
+      "explanation": "Глагол 'tocar' в форме 'я' требует добавления 'qu' перед 'é' для сохранения звука [k]. Правильный вариант: 'toqué'.",
+      "theory_block_id": "b2_theory_car_qu_change_yo_indefinido_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.spelling_changes_car_gar_zar_vowel_shifts",
+      "concept_id": "car_qu_change_yo_indefinido_a2",
+      "difficulty": 2,
+      "id": "q2",
+      "signature": "108177c2a0d580de"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно написать форму 'я' глагола 'pescar' в прошедшем неопределённом времени?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "pescé"
+        },
+        {
+          "id": "b",
+          "text": "pescó"
+        },
+        {
+          "id": "c",
+          "text": "pescue"
+        },
+        {
+          "id": "d",
+          "text": "pescué"
+        }
+      ],
+      "correct_answer": "d",
+      "explanation": "Глагол 'pescar' в форме 'я' пишется с 'qu' перед 'é'. Правильный вариант: 'pescué'.",
+      "theory_block_id": "b2_theory_car_qu_change_yo_indefinido_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.spelling_changes_car_gar_zar_vowel_shifts",
+      "concept_id": "car_qu_change_yo_indefinido_a2",
+      "difficulty": 3,
+      "id": "q3",
+      "signature": "940dd748142316c5"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какая форма глагола \"pescar\" в прошедшем простом для лица yo?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "pescé"
+        },
+        {
+          "id": "b",
+          "text": "pescué"
+        },
+        {
+          "id": "c",
+          "text": "pescas"
+        },
+        {
+          "id": "d",
+          "text": "pescamos"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Для глаголов на -car в форме yo прошедшего простого пишется qu перед é, чтобы сохранить звук [k]. Поэтому pescar → pescué.",
+      "theory_block_id": "b2_theory_car_qu_change_yo_indefinido_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.spelling_changes_car_gar_zar_vowel_shifts",
+      "concept_id": "car_qu_change_yo_indefinido_a2",
+      "difficulty": 2,
+      "id": "q4",
+      "signature": "642a4f07b538cde9"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно написать форму yo в прошедшем простом для глагола \"buscar\"?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "buscé"
+        },
+        {
+          "id": "b",
+          "text": "busqué"
+        },
+        {
+          "id": "c",
+          "text": "buscas"
+        },
+        {
+          "id": "d",
+          "text": "buscó"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Правило требует замены c на qu перед é в форме yo для глаголов на -car. Поэтому buscar → busqué.",
+      "theory_block_id": "b2_theory_car_qu_change_yo_indefinido_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.spelling_changes_car_gar_zar_vowel_shifts",
+      "concept_id": "car_qu_change_yo_indefinido_a2",
+      "difficulty": 2,
+      "id": "q5",
+      "signature": "b07416e2a97890c7"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "В какой форме прошедшего простого глагола \"tocar\" используется qu перед é?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "tú tocaste"
+        },
+        {
+          "id": "b",
+          "text": "él tocó"
+        },
+        {
+          "id": "c",
+          "text": "yo toqué"
+        },
+        {
+          "id": "d",
+          "text": "nosotros tocamos"
+        }
+      ],
+      "correct_answer": "c",
+      "explanation": "Замена c→qu применяется только в форме yo прошедшего простого, поэтому tocar → toqué.",
+      "theory_block_id": "b2_theory_car_qu_change_yo_indefinido_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.spelling_changes_car_gar_zar_vowel_shifts",
+      "concept_id": "car_qu_change_yo_indefinido_a2",
+      "difficulty": 2,
+      "id": "q6",
+      "signature": "f74e2d443d463e44"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какая форма глагола \"buscar\" в прошедшем простом для лица yo?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "busqué"
+        },
+        {
+          "id": "b",
+          "text": "buscé"
+        },
+        {
+          "id": "c",
+          "text": "busco"
+        },
+        {
+          "id": "d",
+          "text": "buscas"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Глаголы на -car в форме yo прошедшего простого требуют qu перед é. Поэтому buscar → busqué.",
+      "theory_block_id": "b2_theory_car_qu_change_yo_indefinido_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.spelling_changes_car_gar_zar_vowel_shifts",
+      "concept_id": "car_qu_change_yo_indefinido_a2",
+      "difficulty": 2,
+      "id": "q7",
+      "signature": "f8952a3ac4d69a51"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно написать форму yo в прошедшем простом для глагола \"tocar\"?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "tocé"
+        },
+        {
+          "id": "b",
+          "text": "toqué"
+        },
+        {
+          "id": "c",
+          "text": "tocas"
+        },
+        {
+          "id": "d",
+          "text": "tocaron"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Для глаголов на -car в форме yo прошедшего простого пишется qu перед é, поэтому tocar → toqué.",
+      "theory_block_id": "b2_theory_car_qu_change_yo_indefinido_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.spelling_changes_car_gar_zar_vowel_shifts",
+      "concept_id": "car_qu_change_yo_indefinido_a2",
+      "difficulty": 2,
+      "id": "q8",
+      "signature": "e7d7193be1c5c11d"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какая форма глагола \"tocar\" в прошедшем простом для лица yo?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "tocé"
+        },
+        {
+          "id": "b",
+          "text": "toqué"
+        },
+        {
+          "id": "c",
+          "text": "tocas"
+        },
+        {
+          "id": "d",
+          "text": "tocamos"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Для глаголов на -car в прошедшем простом только в форме yo добавляется qu перед é. Поэтому tocar → toqué.",
+      "theory_block_id": "b2_theory_car_qu_change_yo_indefinido_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.spelling_changes_car_gar_zar_vowel_shifts",
+      "concept_id": "car_qu_change_yo_indefinido_a2",
+      "difficulty": 2,
+      "id": "q9",
+      "signature": "b1d9b195ba07aad3"
+    }
+  ],
+  "meta": {
+    "generated_at": "2026-04-25T19:31:15Z",
+    "source": "llm-only",
+    "questions_per_block": 10,
+    "chapter_number_filter": 50,
+    "block_number_filter": 2,
+    "append": true
+  }
+}

@@ -46,6 +46,12 @@ const router = createRouter({
       meta: { requiresAuth: true }
     },
     {
+      path: '/learning/grammar/training',
+      name: 'GrammarTraining',
+      component: () => import('../views/GrammarTrainingView.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
       path: '/learning/grammar/:sectionId',
       name: 'GrammarChapters',
       component: () => import('../views/GrammarChaptersView.vue'),
@@ -286,6 +292,20 @@ router.beforeEach(async (to, _from, next) => {
       }
     } catch (error: any) {
       console.error('Failed to check section access:', error)
+    }
+  }
+
+  if (to.name === 'GrammarTraining') {
+    try {
+      const response: any = await apiClient.request('/api/learning/grammar/training/availability')
+      if (!response?.grammar_training?.available) {
+        next('/learning/grammar')
+        return
+      }
+    } catch (error: any) {
+      console.error('Failed to check grammar training availability:', error)
+      next('/learning/grammar')
+      return
     }
   }
   

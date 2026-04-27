@@ -1,0 +1,285 @@
+{
+  "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.doler_faltar_quedar_verbs_like_gustar",
+  "theory_block_id": "b1_theory_like_gustar_bridge_doler_faltar_quedar",
+  "course_version": "1.0.0",
+  "questions": [
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант правильно использует глагол *doler* с единственным числом?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Me duele la cabeza."
+        },
+        {
+          "id": "b",
+          "text": "Me duelen la cabeza."
+        },
+        {
+          "id": "c",
+          "text": "Me duele los ojos."
+        },
+        {
+          "id": "d",
+          "text": "Me duelen los ojos."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Глагол *duele* согласуется с единственным числом *cabeza*. Неправильно использовать *duelen* с единственным существительным.",
+      "theory_block_id": "b1_theory_like_gustar_bridge_doler_faltar_quedar",
+      "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.doler_faltar_quedar_verbs_like_gustar",
+      "concept_id": "gustar_family_extended_verbs_frame",
+      "difficulty": 2,
+      "id": "q1",
+      "signature": "0bb0d021161f2e53"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант правильно использует глагол *faltar* с неисчисляемым существительным?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Me faltan tiempo."
+        },
+        {
+          "id": "b",
+          "text": "Me falta tiempo."
+        },
+        {
+          "id": "c",
+          "text": "Me faltan tiempos."
+        },
+        {
+          "id": "d",
+          "text": "Me falta tiempos."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Для неисчисляемого существительного *tiempo* используется форма *falta* (единственное число).",
+      "theory_block_id": "b1_theory_like_gustar_bridge_doler_faltar_quedar",
+      "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.doler_faltar_quedar_verbs_like_gustar",
+      "concept_id": "gustar_family_extended_verbs_frame",
+      "difficulty": 2,
+      "id": "q2",
+      "signature": "1e23d3fc5f93ef7b"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант правильно использует глагол *quedar* с выражением *poco pan*?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Me quedan poco pan."
+        },
+        {
+          "id": "b",
+          "text": "Me queda poco pan."
+        },
+        {
+          "id": "c",
+          "text": "Me quedan pocos panes."
+        },
+        {
+          "id": "d",
+          "text": "Me queda pocos panes."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Выражение *poco pan* рассматривается как единое количество, поэтому глагол *queda* (единственное число).",
+      "theory_block_id": "b1_theory_like_gustar_bridge_doler_faltar_quedar",
+      "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.doler_faltar_quedar_verbs_like_gustar",
+      "concept_id": "gustar_family_extended_verbs_frame",
+      "difficulty": 3,
+      "id": "q3",
+      "signature": "31d58499abc11c67"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант правильно использует глагол *doler* с множественным числом?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Me duele las rodillas."
+        },
+        {
+          "id": "b",
+          "text": "Me duelen las rodillas."
+        },
+        {
+          "id": "c",
+          "text": "Me duele los pies."
+        },
+        {
+          "id": "d",
+          "text": "Me duelen los pies."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Существительные *rodillas* (мн. ч.) требуют формы *duelen*.",
+      "theory_block_id": "b1_theory_like_gustar_bridge_doler_faltar_quedar",
+      "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.doler_faltar_quedar_verbs_like_gustar",
+      "concept_id": "gustar_family_extended_verbs_frame",
+      "difficulty": 2,
+      "id": "q4",
+      "signature": "20095e1d5e61b493"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант правильно использует глагол *quedar* с выражением *un pastel*?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Me queda un pastel."
+        },
+        {
+          "id": "b",
+          "text": "Me quedan un pastel."
+        },
+        {
+          "id": "c",
+          "text": "Me queda unos pasteles."
+        },
+        {
+          "id": "d",
+          "text": "Me quedan unos pasteles."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Существительное *pastel* (ед. ч.) требует формы *queda*.",
+      "theory_block_id": "b1_theory_like_gustar_bridge_doler_faltar_quedar",
+      "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.doler_faltar_quedar_verbs_like_gustar",
+      "concept_id": "gustar_family_extended_verbs_frame",
+      "difficulty": 2,
+      "id": "q5",
+      "signature": "d750e82d5916b05e"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант правильно использует глагол *doler* с существительным *los dientes*?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Me duele los dientes."
+        },
+        {
+          "id": "b",
+          "text": "Me duelen los dientes."
+        },
+        {
+          "id": "c",
+          "text": "Me duele el diente."
+        },
+        {
+          "id": "d",
+          "text": "Me duelen el diente."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Существительное *dientes* (мн. ч.) требует формы *duelen*.",
+      "theory_block_id": "b1_theory_like_gustar_bridge_doler_faltar_quedar",
+      "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.doler_faltar_quedar_verbs_like_gustar",
+      "concept_id": "gustar_family_extended_verbs_frame",
+      "difficulty": 2,
+      "id": "q6",
+      "signature": "1776df6c4817e193"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант правильно использует глагол *faltar* с исчисляемым существительным в единственном числе?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Me falta un bolígrafo."
+        },
+        {
+          "id": "b",
+          "text": "Me faltan un bolígrafo."
+        },
+        {
+          "id": "c",
+          "text": "Me falta unos bolígrafos."
+        },
+        {
+          "id": "d",
+          "text": "Me faltan unos bolígrafos."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Для исчисляемого существительного в единственном числе (*bolígrafo*) используется форма *falta*.",
+      "theory_block_id": "b1_theory_like_gustar_bridge_doler_faltar_quedar",
+      "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.doler_faltar_quedar_verbs_like_gustar",
+      "concept_id": "gustar_family_extended_verbs_frame",
+      "difficulty": 2,
+      "id": "q7",
+      "signature": "296419ecf8a60295"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант правильно использует глагол *quedar* с неисчисляемым существительным *agua*?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Me queda mucha agua."
+        },
+        {
+          "id": "b",
+          "text": "Me quedan mucha agua."
+        },
+        {
+          "id": "c",
+          "text": "Me queda muchas aguas."
+        },
+        {
+          "id": "d",
+          "text": "Me quedan muchas aguas."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Неисчисляемое существительное *agua* требует формы *queda* (ед. ч.).",
+      "theory_block_id": "b1_theory_like_gustar_bridge_doler_faltar_quedar",
+      "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.doler_faltar_quedar_verbs_like_gustar",
+      "concept_id": "gustar_family_extended_verbs_frame",
+      "difficulty": 3,
+      "id": "q8",
+      "signature": "7df76cb15a8cc18c"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант правильно использует глагол *faltar* в предложении *Nos falta...*?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Nos falta tiempo."
+        },
+        {
+          "id": "b",
+          "text": "Nos faltan tiempo."
+        },
+        {
+          "id": "c",
+          "text": "Nos falta tiempos."
+        },
+        {
+          "id": "d",
+          "text": "Nos faltan tiempos."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "В предложении с *nos* и неисчисляемым *tiempo* используется форма *falta*.",
+      "theory_block_id": "b1_theory_like_gustar_bridge_doler_faltar_quedar",
+      "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.doler_faltar_quedar_verbs_like_gustar",
+      "concept_id": "gustar_family_extended_verbs_frame",
+      "difficulty": 2,
+      "id": "q9",
+      "signature": "1acfb76e5d61060b"
+    }
+  ],
+  "meta": {
+    "generated_at": "2026-04-25T16:52:23Z",
+    "source": "llm-only",
+    "questions_per_block": 10,
+    "chapter_number_filter": 39,
+    "block_number_filter": 1,
+    "append": true
+  }
+}

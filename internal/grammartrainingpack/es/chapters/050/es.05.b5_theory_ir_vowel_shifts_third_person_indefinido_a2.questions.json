@@ -1,0 +1,225 @@
+{
+  "chapter_id": "es.grammar.past_preterito_indefinido.spelling_changes_car_gar_zar_vowel_shifts",
+  "theory_block_id": "b5_theory_ir_vowel_shifts_third_person_indefinido_a2",
+  "course_version": "1.0.0",
+  "questions": [
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант правильный для глагола 'preferir' в 3-м лице единственного числа?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "prefirió"
+        },
+        {
+          "id": "b",
+          "text": "preferió"
+        },
+        {
+          "id": "c",
+          "text": "prefirio"
+        },
+        {
+          "id": "d",
+          "text": "preferio"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Смена e→i в 3-м лице требует правильного написания 'prefirió', а не 'preferió' (без смены) или без акцента.",
+      "theory_block_id": "b5_theory_ir_vowel_shifts_third_person_indefinido_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.spelling_changes_car_gar_zar_vowel_shifts",
+      "concept_id": "ir_vowel_shifts_third_person_indefinido_a2",
+      "difficulty": 2,
+      "id": "q1",
+      "signature": "7c343dac4825ea5d"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно написать форму 3-го лица единственного числа для глагола 'reír'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "rió"
+        },
+        {
+          "id": "b",
+          "text": "reió"
+        },
+        {
+          "id": "c",
+          "text": "rio"
+        },
+        {
+          "id": "d",
+          "text": "reio"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Глагол 'reír' в 3-м лице меняет e→i, поэтому правильная форма 'rió', а не 'reió' (с e) или без акцента.",
+      "theory_block_id": "b5_theory_ir_vowel_shifts_third_person_indefinido_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.spelling_changes_car_gar_zar_vowel_shifts",
+      "concept_id": "ir_vowel_shifts_third_person_indefinido_a2",
+      "difficulty": 3,
+      "id": "q2",
+      "signature": "9efee952d877651c"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно написать форму 3-го лица единственного числа для глагола 'sufrir'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "sufrió"
+        },
+        {
+          "id": "b",
+          "text": "sufrío"
+        },
+        {
+          "id": "c",
+          "text": "sufrio"
+        },
+        {
+          "id": "d",
+          "text": "sufriró"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Глаголы на -ir с o→u в 3-м лице требуют 'sufrió', а не 'sufrío' (без смены) или без акцента.",
+      "theory_block_id": "b5_theory_ir_vowel_shifts_third_person_indefinido_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.spelling_changes_car_gar_zar_vowel_shifts",
+      "concept_id": "ir_vowel_shifts_third_person_indefinido_a2",
+      "difficulty": 3,
+      "id": "q3",
+      "signature": "41cc82000b7d031e"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант правильный для глагола 'recibir' в 3-м лице?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "recibió"
+        },
+        {
+          "id": "b",
+          "text": "recibio"
+        },
+        {
+          "id": "c",
+          "text": "recivió"
+        },
+        {
+          "id": "d",
+          "text": "recivio"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Смена e→i в 3-м лице требует 'recibió', а не 'recibio' (без акцента) или 'recivió' (ошибка в корне).",
+      "theory_block_id": "b5_theory_ir_vowel_shifts_third_person_indefinido_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.spelling_changes_car_gar_zar_vowel_shifts",
+      "concept_id": "ir_vowel_shifts_third_person_indefinido_a2",
+      "difficulty": 2,
+      "id": "q4",
+      "signature": "e831bab43d0d1688"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какая форма глагола 'sentir' в прошедшем времени для третьего лица единственного числа?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "sintió"
+        },
+        {
+          "id": "b",
+          "text": "sentió"
+        },
+        {
+          "id": "c",
+          "text": "sintio"
+        },
+        {
+          "id": "d",
+          "text": "sentio"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "В прошедшем времени для глаголов на -ir в третьем лице единственного числа происходит смена e → i. Правильная форма: sintió.",
+      "theory_block_id": "b5_theory_ir_vowel_shifts_third_person_indefinido_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.spelling_changes_car_gar_zar_vowel_shifts",
+      "concept_id": "ir_vowel_shifts_third_person_indefinido_a2",
+      "difficulty": 2,
+      "id": "q5",
+      "signature": "fb633ad6a996b368"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какая форма глагола 'preferir' в прошедшем времени для третьего лица единственного числа?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "prefirió"
+        },
+        {
+          "id": "b",
+          "text": "preferió"
+        },
+        {
+          "id": "c",
+          "text": "prefirio"
+        },
+        {
+          "id": "d",
+          "text": "preferio"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Смена e → i в третьем лице: prefirió. Неправильные варианты не отражают эту смену.",
+      "theory_block_id": "b5_theory_ir_vowel_shifts_third_person_indefinido_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.spelling_changes_car_gar_zar_vowel_shifts",
+      "concept_id": "ir_vowel_shifts_third_person_indefinido_a2",
+      "difficulty": 2,
+      "id": "q6",
+      "signature": "d7bc9ef6c2a5ca4d"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какая форма глагола 'servir' в прошедшем времени для третьего лица единственного числа?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "sirvió"
+        },
+        {
+          "id": "b",
+          "text": "servió"
+        },
+        {
+          "id": "c",
+          "text": "sirvio"
+        },
+        {
+          "id": "d",
+          "text": "servio"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Смена o → u в третьем лице: sirvió. Неправильные варианты не имеют смены гласной.",
+      "theory_block_id": "b5_theory_ir_vowel_shifts_third_person_indefinido_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.spelling_changes_car_gar_zar_vowel_shifts",
+      "concept_id": "ir_vowel_shifts_third_person_indefinido_a2",
+      "difficulty": 2,
+      "id": "q7",
+      "signature": "7767edce925eff4a"
+    }
+  ],
+  "meta": {
+    "generated_at": "2026-04-25T19:52:26Z",
+    "source": "llm-only",
+    "questions_per_block": 10,
+    "chapter_number_filter": 50,
+    "block_number_filter": 5,
+    "append": true
+  }
+}

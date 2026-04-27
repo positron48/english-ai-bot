@@ -1,0 +1,255 @@
+{
+  "chapter_id": "es.grammar.existence_location_possession.build_speak_describe_room_city_daily_schedule",
+  "theory_block_id": "b3_theory_daily_routine_slices",
+  "course_version": "1.0.0",
+  "questions": [
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно выразить 'утром' в расписании, например, 'Утром я учу испанский'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Por la mañana estudio español."
+        },
+        {
+          "id": "b",
+          "text": "A las mañana estudio español."
+        },
+        {
+          "id": "c",
+          "text": "Después de la mañana estudio español."
+        },
+        {
+          "id": "d",
+          "text": "Antes de la mañana estudio español."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Предлог 'por' используется с частями суток (утро, вечер, ночь), а 'a las' применяется только с часами. Варианты с 'después/antes' относятся к порядку действий, не к части суток.",
+      "theory_block_id": "b3_theory_daily_routine_slices",
+      "chapter_id": "es.grammar.existence_location_possession.build_speak_describe_room_city_daily_schedule",
+      "concept_id": "daily_routine_time_slices",
+      "difficulty": 2,
+      "id": "q1",
+      "signature": "6c977c942e634ee7"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно указать время 'в два часа' в предложении 'В два часа я иду на работу'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "A las dos voy a trabajar."
+        },
+        {
+          "id": "b",
+          "text": "Por las dos voy a trabajar."
+        },
+        {
+          "id": "c",
+          "text": "Antes de las dos voy a trabajar."
+        },
+        {
+          "id": "d",
+          "text": "Después de las dos voy a trabajar."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "'A las' используется для конкретного времени (часов). 'Por las' относится к частям дня, а 'antes/después' обозначает порядок, не время суток.",
+      "theory_block_id": "b3_theory_daily_routine_slices",
+      "chapter_id": "es.grammar.existence_location_possession.build_speak_describe_room_city_daily_schedule",
+      "concept_id": "daily_routine_time_slices",
+      "difficulty": 2,
+      "id": "q2",
+      "signature": "1bda09785fca6970"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно сказать 'Перед обедом я читаю книгу'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Antes del almuerzo leo un libro."
+        },
+        {
+          "id": "b",
+          "text": "Antes de almuerzo leo un libro."
+        },
+        {
+          "id": "c",
+          "text": "Antes de el almuerzo leo un libro."
+        },
+        {
+          "id": "d",
+          "text": "Antes de la almuerzo leo un libro."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "После 'antes de' требуется артикль 'el', поэтому 'antes del' (сокращение от 'antes de + el'). Варианты без артикля или с неправильным 'la' неверны.",
+      "theory_block_id": "b3_theory_daily_routine_slices",
+      "chapter_id": "es.grammar.existence_location_possession.build_speak_describe_room_city_daily_schedule",
+      "concept_id": "daily_routine_time_slices",
+      "difficulty": 3,
+      "id": "q3",
+      "signature": "9abd21f371c9a33c"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно сказать 'Вечером я встречаюсь с друзьями'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Por la tarde me encuentro con amigos."
+        },
+        {
+          "id": "b",
+          "text": "A la tarde me encuentro con amigos."
+        },
+        {
+          "id": "c",
+          "text": "Después de la tarde me encuentro con amigos."
+        },
+        {
+          "id": "d",
+          "text": "Antes de la tarde me encuentro con amigos."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "'Por la tarde' обозначает часть дня. 'A la tarde' неверно, так как 'a las' применяется только к часам, а 'después/antes' относятся к порядку действий.",
+      "theory_block_id": "b3_theory_daily_routine_slices",
+      "chapter_id": "es.grammar.existence_location_possession.build_speak_describe_room_city_daily_schedule",
+      "concept_id": "daily_routine_time_slices",
+      "difficulty": 2,
+      "id": "q4",
+      "signature": "03129faf19a80aed"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно указать время 'в пять часов' в предложении 'В пять часов я начинаю урок'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "A las cinco empiezo la clase."
+        },
+        {
+          "id": "b",
+          "text": "Por las cinco empiezo la clase."
+        },
+        {
+          "id": "c",
+          "text": "Antes de las cinco empiezo la clase."
+        },
+        {
+          "id": "d",
+          "text": "Después de las cinco empiezo la clase."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Для конкретного времени используется 'a las' + число. 'Por las' относится к части дня, а 'antes/después' обозначают порядок, не время.",
+      "theory_block_id": "b3_theory_daily_routine_slices",
+      "chapter_id": "es.grammar.existence_location_possession.build_speak_describe_room_city_daily_schedule",
+      "concept_id": "daily_routine_time_slices",
+      "difficulty": 2,
+      "id": "q5",
+      "signature": "c839417ff2c71f12"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно выразить 'Перед завтраком я встаю'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Antes del desayuno me levanto."
+        },
+        {
+          "id": "b",
+          "text": "Antes de desayuno me levanto."
+        },
+        {
+          "id": "c",
+          "text": "Antes de el desayuno me levanto."
+        },
+        {
+          "id": "d",
+          "text": "Antes de la desayuno me levanto."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "После 'antes de' требуется артикль 'el', поэтому 'antes del' (сокращение от 'antes de + el'). Отсутствие артикля или неправильный 'la' делает другие варианты неверными.",
+      "theory_block_id": "b3_theory_daily_routine_slices",
+      "chapter_id": "es.grammar.existence_location_possession.build_speak_describe_room_city_daily_schedule",
+      "concept_id": "daily_routine_time_slices",
+      "difficulty": 3,
+      "id": "q6",
+      "signature": "229b5a34330289dc"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно выразить 'После завтрака я иду в школу'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Después del desayuno voy a la escuela."
+        },
+        {
+          "id": "b",
+          "text": "Después de desayuno voy a la escuela."
+        },
+        {
+          "id": "c",
+          "text": "Después de la desayuno voy a la escuela."
+        },
+        {
+          "id": "d",
+          "text": "Después de desayunar voy a la escuela."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "После 'después de' используется существительное с артиклем ('el desayuno'). Варианты без артикля или с инфинитивом ('desayunar') не соответствуют правилу.",
+      "theory_block_id": "b3_theory_daily_routine_slices",
+      "chapter_id": "es.grammar.existence_location_possession.build_speak_describe_room_city_daily_schedule",
+      "concept_id": "daily_routine_time_slices",
+      "difficulty": 3,
+      "id": "q7",
+      "signature": "4630b122d18cc55f"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно сказать 'Ночью я читаю книги'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Por la noche leo libros."
+        },
+        {
+          "id": "b",
+          "text": "A la noche leo libros."
+        },
+        {
+          "id": "c",
+          "text": "Antes de la noche leo libros."
+        },
+        {
+          "id": "d",
+          "text": "Después de la noche leo libros."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Предлог 'por' используется с частями суток (ночь, утро, вечер). 'A la noche' неверно, так как 'a las' применяется только к часам.",
+      "theory_block_id": "b3_theory_daily_routine_slices",
+      "chapter_id": "es.grammar.existence_location_possession.build_speak_describe_room_city_daily_schedule",
+      "concept_id": "daily_routine_time_slices",
+      "difficulty": 2,
+      "id": "q8",
+      "signature": "dffca2348cfed4a4"
+    }
+  ],
+  "meta": {
+    "generated_at": "2026-04-25T13:46:25Z",
+    "source": "llm-only",
+    "questions_per_block": 10,
+    "chapter_number_filter": 27,
+    "block_number_filter": 3,
+    "append": true
+  }
+}

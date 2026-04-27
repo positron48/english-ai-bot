@@ -1,0 +1,285 @@
+{
+  "chapter_id": "es.grammar.past_preterito_indefinido.regular_indefinido_endings",
+  "theory_block_id": "b5_theory_confusing_forms_nosotros_and_context_a2",
+  "course_version": "1.0.0",
+  "questions": [
+    {
+      "type": "mcq_single",
+      "prompt": "В каком предложении используется pretérito indefinido для глагола 'hablamos'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Hoy hablamos con amigos."
+        },
+        {
+          "id": "b",
+          "text": "Ayer hablamos con amigos."
+        },
+        {
+          "id": "c",
+          "text": "Normalmente hablamos en clase."
+        },
+        {
+          "id": "d",
+          "text": "Mañana hablamos con amigos."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Маркер 'ayer' указывает на прошлое время, поэтому это pretérito indefinido. Остальные варианты используют маркеры настоящего ('hoy', 'normalmente') или будущего ('mañana').",
+      "theory_block_id": "b5_theory_confusing_forms_nosotros_and_context_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.regular_indefinido_endings",
+      "concept_id": "confusing_forms_nosotros_and_context_a2",
+      "difficulty": 2,
+      "id": "q1",
+      "signature": "8f780c6e8c3787b3"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое предложение содержит pretérito indefinido для глагола 'comemos'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Hoy comemos pizza."
+        },
+        {
+          "id": "b",
+          "text": "Anoche comemos pizza."
+        },
+        {
+          "id": "c",
+          "text": "Todos los días comemos ensalada."
+        },
+        {
+          "id": "d",
+          "text": "La semana pasada comemos pizza."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "'Anoche' — явный маркер прошлого, поэтому это pretérito indefinido. Вариант d использует прошлый маркер, но глагол 'comemos' (настоящее) не соответствует времени.",
+      "theory_block_id": "b5_theory_confusing_forms_nosotros_and_context_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.regular_indefinido_endings",
+      "concept_id": "confusing_forms_nosotros_and_context_a2",
+      "difficulty": 2,
+      "id": "q2",
+      "signature": "db43fc1f43af99bc"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Определите, в каком предложении глагол 'vivimos' относится к прошлому времени.",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Vivimos en Madrid hoy."
+        },
+        {
+          "id": "b",
+          "text": "El año pasado vivimos en Madrid."
+        },
+        {
+          "id": "c",
+          "text": "Normalmente vivimos en ciudades."
+        },
+        {
+          "id": "d",
+          "text": "Mañana vivimos en Barcelona."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Маркер 'el año pasado' указывает на прошлое, поэтому это pretérito indefinido. Другие варианты относятся к настоящему или будущему.",
+      "theory_block_id": "b5_theory_confusing_forms_nosotros_and_context_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.regular_indefinido_endings",
+      "concept_id": "confusing_forms_nosotros_and_context_a2",
+      "difficulty": 2,
+      "id": "q3",
+      "signature": "2b032494871eb3fd"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое предложение содержит маркер времени, указывающий на pretérito indefinido?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Hablamos de viajes hoy."
+        },
+        {
+          "id": "b",
+          "text": "Ayer hablamos de viajes."
+        },
+        {
+          "id": "c",
+          "text": "Hablamos de viajes cada semana."
+        },
+        {
+          "id": "d",
+          "text": "Mañana hablamos de viajes."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "'Ayer' — маркер закрытого прошлого, поэтому это pretérito indefinido. Остальные варианты не содержат временных маркеров прошлого.",
+      "theory_block_id": "b5_theory_confusing_forms_nosotros_and_context_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.regular_indefinido_endings",
+      "concept_id": "confusing_forms_nosotros_and_context_a2",
+      "difficulty": 2,
+      "id": "q4",
+      "signature": "775ceed948a6c01d"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "В каком случае глагол 'comemos' используется в прошлом времени?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Comemos pescado cada semana."
+        },
+        {
+          "id": "b",
+          "text": "Anoche comemos pescado."
+        },
+        {
+          "id": "c",
+          "text": "Comemos en el restaurante todos los días."
+        },
+        {
+          "id": "d",
+          "text": "El mes pasado comemos pescado."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Маркер 'anoche' явно указывает на прошлое, поэтому это pretérito indefinido. Вариант d использует прошлый маркер, но глагол 'comemos' не соответствует временному контексту.",
+      "theory_block_id": "b5_theory_confusing_forms_nosotros_and_context_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.regular_indefinido_endings",
+      "concept_id": "confusing_forms_nosotros_and_context_a2",
+      "difficulty": 2,
+      "id": "q5",
+      "signature": "ddfa8b2761f2d1f2"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое предложение относится к прошлому времени с использованием формы 'vivimos'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Vivimos en el centro hoy."
+        },
+        {
+          "id": "b",
+          "text": "Hace dos años vivimos en el campo."
+        },
+        {
+          "id": "c",
+          "text": "Vivimos en el centro cada año."
+        },
+        {
+          "id": "d",
+          "text": "Mañana vivimos en el centro."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Маркер 'hace dos años' указывает на прошлое, поэтому это pretérito indefinido. Остальные варианты не содержат временных маркеров прошлого.",
+      "theory_block_id": "b5_theory_confusing_forms_nosotros_and_context_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.regular_indefinido_endings",
+      "concept_id": "confusing_forms_nosotros_and_context_a2",
+      "difficulty": 2,
+      "id": "q6",
+      "signature": "d405afd30b28a0ca"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "В каком предложении глагол 'hablamos' находится в pretérito indefinido?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Hablamos de trabajo hoy."
+        },
+        {
+          "id": "b",
+          "text": "Ayer hablamos de trabajo."
+        },
+        {
+          "id": "c",
+          "text": "Hablamos de trabajo todos los días."
+        },
+        {
+          "id": "d",
+          "text": "Mañana hablamos de trabajo."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Маркер 'ayer' однозначно указывает на прошлое время, поэтому это pretérito indefinido. Остальные варианты относятся к настоящему или будущему.",
+      "theory_block_id": "b5_theory_confusing_forms_nosotros_and_context_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.regular_indefinido_endings",
+      "concept_id": "confusing_forms_nosotros_and_context_a2",
+      "difficulty": 2,
+      "id": "q7",
+      "signature": "9833d70ce734e820"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое предложение содержит pretérito indefinido для глагола 'comemos'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Comemos arroz todos los días."
+        },
+        {
+          "id": "b",
+          "text": "El mes pasado comemos arroz."
+        },
+        {
+          "id": "c",
+          "text": "Comemos arroz en el restaurante."
+        },
+        {
+          "id": "d",
+          "text": "Anoche comemos arroz."
+        }
+      ],
+      "correct_answer": "d",
+      "explanation": "'Anoche' — маркер прошлого, поэтому это pretérito indefinido. Вариант b использует прошлый маркер, но глагол 'comemos' не соответствует времени.",
+      "theory_block_id": "b5_theory_confusing_forms_nosotros_and_context_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.regular_indefinido_endings",
+      "concept_id": "confusing_forms_nosotros_and_context_a2",
+      "difficulty": 2,
+      "id": "q8",
+      "signature": "f4643e9f9eb6c431"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Определите, в каком предложении глагол 'vivimos' относится к прошлому времени.",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Vivimos en el centro."
+        },
+        {
+          "id": "b",
+          "text": "El año pasado vivimos en el centro."
+        },
+        {
+          "id": "c",
+          "text": "Vivimos en el centro cada año."
+        },
+        {
+          "id": "d",
+          "text": "Mañana vivimos en el centro."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Маркер 'el año pasado' указывает на прошлое, поэтому это pretérito indefinido. Остальные варианты не содержат временных маркеров прошлого.",
+      "theory_block_id": "b5_theory_confusing_forms_nosotros_and_context_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.regular_indefinido_endings",
+      "concept_id": "confusing_forms_nosotros_and_context_a2",
+      "difficulty": 2,
+      "id": "q9",
+      "signature": "2d3394d0f9fcae3d"
+    }
+  ],
+  "meta": {
+    "generated_at": "2026-04-25T19:20:44Z",
+    "source": "llm-only",
+    "questions_per_block": 10,
+    "chapter_number_filter": 49,
+    "block_number_filter": 5,
+    "append": true
+  }
+}

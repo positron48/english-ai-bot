@@ -1,0 +1,225 @@
+{
+  "chapter_id": "es.grammar.past_preterito_indefinido.sequencing_events_simple_story",
+  "theory_block_id": "b1_theory_story_spine_indefinido",
+  "course_version": "1.0.0",
+  "questions": [
+    {
+      "type": "mcq_single",
+      "prompt": "Какое предложение правильно описывает последовательные завершенные действия в прошлом?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ayer salí, comí y llegué a tiempo."
+        },
+        {
+          "id": "b",
+          "text": "Ayer salía, comía y llegaba."
+        },
+        {
+          "id": "c",
+          "text": "Ayer salí, como y llego."
+        },
+        {
+          "id": "d",
+          "text": "Ayer salí, comiendo y llegué."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Все глаголы в варианте a находятся в pretérito indefinido, что соответствует правилу последовательных завершенных действий. Остальные варианты используют неправильные времена или формы.",
+      "theory_block_id": "b1_theory_story_spine_indefinido",
+      "chapter_id": "es.grammar.past_preterito_indefinido.sequencing_events_simple_story",
+      "concept_id": "story_spine_indefinido",
+      "difficulty": 2,
+      "id": "q1",
+      "signature": "30ccc50aa6db2847"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой пример соответствует правилу «Каждое новое действие должно продвигать рассказ»?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Juan se levantó, desayunó y miró la televisión."
+        },
+        {
+          "id": "b",
+          "text": "Juan se levantó, desayunó, miró la televisión y pensó en su día."
+        },
+        {
+          "id": "c",
+          "text": "Juan se levantó, desayunó y estudió."
+        },
+        {
+          "id": "d",
+          "text": "Juan se levantó, desayunó y caminó por el parque."
+        }
+      ],
+      "correct_answer": "c",
+      "explanation": "Вариант c демонстрирует последовательные действия, где каждое новое действие (студировал) напрямую продвигает сюжет. Варианты a и d содержат несущественные действия.",
+      "theory_block_id": "b1_theory_story_spine_indefinido",
+      "chapter_id": "es.grammar.past_preterito_indefinido.sequencing_events_simple_story",
+      "concept_id": "story_spine_indefinido",
+      "difficulty": 4,
+      "id": "q2",
+      "signature": "6728606d2e371129"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант правильно использует pretérito indefinido для мини-истории?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ayer fui al mercado, compré frutas y cociné."
+        },
+        {
+          "id": "b",
+          "text": "Ayer fui al mercado, compro frutas y cocino."
+        },
+        {
+          "id": "c",
+          "text": "Ayer fui al mercado, compraba frutas y cocinaba."
+        },
+        {
+          "id": "d",
+          "text": "Ayer fui al mercado, compré frutas y cocinando."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Вариант a содержит все глаголы в pretérito indefinido, что соответствует правилу. Остальные варианты используют другие времена или формы.",
+      "theory_block_id": "b1_theory_story_spine_indefinido",
+      "chapter_id": "es.grammar.past_preterito_indefinido.sequencing_events_simple_story",
+      "concept_id": "story_spine_indefinido",
+      "difficulty": 2,
+      "id": "q3",
+      "signature": "c1351d31798446fa"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое действие не должно быть включено в мини-историю?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ella llegó al trabajo."
+        },
+        {
+          "id": "b",
+          "text": "Ella estaba cansada."
+        },
+        {
+          "id": "c",
+          "text": "Ella entregó el informe."
+        },
+        {
+          "id": "d",
+          "text": "Ella terminó la reunión."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Действие «estaba cansada» описывает состояние (Imperfecto), а не завершенное действие. В мини-истории должны быть только завершенные действия в pretérito indefinido.",
+      "theory_block_id": "b1_theory_story_spine_indefinido",
+      "chapter_id": "es.grammar.past_preterito_indefinido.sequencing_events_simple_story",
+      "concept_id": "story_spine_indefinido",
+      "difficulty": 3,
+      "id": "q4",
+      "signature": "296343e7ca334306"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой пример демонстрирует «скелет» из 3 последовательных действий?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ella salió, compró pan y volvió a casa."
+        },
+        {
+          "id": "b",
+          "text": "Ella salía, compraba pan y volvía a casa."
+        },
+        {
+          "id": "c",
+          "text": "Ella salió, compra pan y vuelve a casa."
+        },
+        {
+          "id": "d",
+          "text": "Ella salió, comprando pan y volviendo a casa."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Вариант a содержит три завершенных действия в pretérito indefinido, что соответствует правилу мини-истории. Остальные варианты используют неправильные времена.",
+      "theory_block_id": "b1_theory_story_spine_indefinido",
+      "chapter_id": "es.grammar.past_preterito_indefinido.sequencing_events_simple_story",
+      "concept_id": "story_spine_indefinido",
+      "difficulty": 2,
+      "id": "q5",
+      "signature": "36534192d23d69dd"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое предложение соответствует правилу «В мини-истории лучше держать одну ясную линию событий»?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "María salió, compró flores, habló con su amiga y volvió a casa."
+        },
+        {
+          "id": "b",
+          "text": "María salió, compró flores, miró el cielo y volvió a casa."
+        },
+        {
+          "id": "c",
+          "text": "María salió, compró flores, habló con su amiga y compró más flores."
+        },
+        {
+          "id": "d",
+          "text": "María salió, compró flores, habló con su amiga y caminó por el parque."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Вариант a показывает четкую линию событий: выход, покупка, разговор, возвращение. Вариант c добавляет лишнее действие (покупка больше цветов), нарушая ясность.",
+      "theory_block_id": "b1_theory_story_spine_indefinido",
+      "chapter_id": "es.grammar.past_preterito_indefinido.sequencing_events_simple_story",
+      "concept_id": "story_spine_indefinido",
+      "difficulty": 4,
+      "id": "q6",
+      "signature": "89b2ac0758c36fc7"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой пример демонстрирует завершенные действия в прошлом?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ella escribió una carta, la envió y recibió una respuesta."
+        },
+        {
+          "id": "b",
+          "text": "Ella escribía una carta, la enviaba y recibía una respuesta."
+        },
+        {
+          "id": "c",
+          "text": "Ella escribe una carta, la envía y recibe una respuesta."
+        },
+        {
+          "id": "d",
+          "text": "Ella escribirá una carta, la enviará y recibirá una respuesta."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Вариант a использует pretérito indefinido для всех действий, что соответствует правилу завершенных действий в прошлом. Остальные варианты используют другие времена.",
+      "theory_block_id": "b1_theory_story_spine_indefinido",
+      "chapter_id": "es.grammar.past_preterito_indefinido.sequencing_events_simple_story",
+      "concept_id": "story_spine_indefinido",
+      "difficulty": 2,
+      "id": "q7",
+      "signature": "57006330c7427a26"
+    }
+  ],
+  "meta": {
+    "generated_at": "2026-04-25T20:26:01Z",
+    "source": "llm-only",
+    "questions_per_block": 10,
+    "chapter_number_filter": 53,
+    "block_number_filter": 1,
+    "append": true
+  }
+}

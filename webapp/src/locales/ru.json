@@ -23,7 +23,9 @@
     "noItemsFound": "Элементы не найдены.",
     "today": "Сегодня",
     "yesterday": "Вчера",
-    "from": "Из"
+    "from": "Из",
+    "next": "Далее",
+    "finish": "Завершить"
   },
   "app": {
     "titleEnInstance": "Английский — бот",
@@ -456,7 +458,14 @@
     "noQuestionsAvailable": "Нет вопросов для теста на определение уровня.",
     "placementTest": "Тест на определение уровня",
     "placementTestDescription": "Этот тест поможет определить ваш текущий уровень грамматики. Ответьте на 25 вопросов из разных тем, и мы разблокируем подходящие разделы для вас.",
-    "loadingQuestion": "Загрузка вопроса..."
+    "loadingQuestion": "Загрузка вопроса...",
+    "theoryBlock": "Теоретический блок",
+    "theoryFooterCategory": "Категория",
+    "theoryFooterChapter": "Глава",
+    "theoryFooterLevel": "Уровень",
+    "trainingTitle": "Тренировка грамматики",
+    "trainingDone": "Сессия завершена.",
+    "trainingUnavailable": "Тренировка грамматики пока недоступна для этого курса."
   },
   "errors": {
     "unauthorized": "Неавторизован",

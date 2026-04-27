@@ -1,5 +1,60 @@
 <template>
   <div class="grammar-question" :class="{ 'answered': answered, 'correct': isCorrect, 'incorrect': !isCorrect && answered }">
+    <button
+      v-if="showTheoryHelpButton && hasTheoryBlock"
+      type="button"
+      class="question-block-indicator"
+      :title="theoryHelpText"
+      :aria-label="theoryHelpText"
+      @click="toggleTheoryHelp"
+    >
+      <span class="question-block-icon">i</span>
+    </button>
+    <teleport to="body">
+      <div
+        v-if="showTheoryHelp && hasTheoryBlock"
+        class="theory-modal-overlay"
+        @click.self="closeTheoryHelp"
+      >
+        <div class="theory-modal">
+          <button
+            type="button"
+            class="theory-modal-close"
+            :aria-label="t('common.close')"
+            :title="t('common.close')"
+            @click="closeTheoryHelp"
+          >
+            ×
+          </button>
+          <template v-if="theoryBlock">
+            <div
+              v-if="theoryBlock.theory?.content_md"
+              class="theory-tooltip-content markdown-content"
+              v-html="renderMarkdown(theoryBlock.theory.content_md)"
+            ></div>
+            <ul v-if="Array.isArray(theoryBlock.theory?.key_points) && theoryBlock.theory.key_points.length" class="theory-tooltip-points">
+              <li v-for="(point, idx) in theoryBlock.theory.key_points" :key="idx">{{ point }}</li>
+            </ul>
+          </template>
+          <template v-else>
+            {{ t('common.loading') }}
+          </template>
+          <div
+            v-if="theoryMetaLines.length"
+            class="theory-modal-source"
+          >
+            <div
+              v-for="(line, idx) in theoryMetaLines"
+              :key="idx"
+              class="theory-modal-source-line"
+            >
+              <span class="theory-modal-source-label">{{ line.label }}</span>
+              <span class="theory-modal-source-value">{{ line.value }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </teleport>
     <div v-if="chapterTitle" class="question-chapter">{{ chapterTitle }}</div>
     <div class="question-prompt" v-html="renderMarkdown(question.prompt)"></div>
     
@@ -83,12 +138,12 @@
       <div v-if="answered && showAnswers" class="fill-blank-feedback" :class="{ 'correct': isCorrect, 'incorrect': !isCorrect }">
         <span v-if="isCorrect" class="feedback-icon">✓</span>
         <span v-else class="feedback-icon">✗</span>
-        <span v-if="isCorrect" class="feedback-text">Correct!</span>
-        <span v-else class="feedback-text">Incorrect</span>
+        <span v-if="isCorrect" class="feedback-text">{{ t('grammar.correct') }}</span>
+        <span v-else class="feedback-text">{{ t('grammar.wrong') }}</span>
       </div>
       <!-- Show correct answer if incorrect -->
       <div v-if="answered && !isCorrect && showAnswers && correctAnswer" class="correct-answer-display">
-        <strong>Правильный ответ:</strong> {{ correctAnswer }}
+        <strong>{{ t('grammar.correctAnswer') }}:</strong> {{ correctAnswer }}
       </div>
     </div>
     
@@ -179,12 +234,12 @@
       
       <!-- Show correct answer if incorrect -->
       <div v-if="answered && !isCorrect" class="correct-answer-display">
-        <strong>Правильный ответ:</strong> {{ correctAnswer }}
+        <strong>{{ t('grammar.correctAnswer') }}:</strong> {{ correctAnswer }}
       </div>
     </div>
     
-    <div v-if="answered && question.explanation" class="question-explanation">
-      <strong>Explanation:</strong>
+    <div v-if="showExplanation && answered && question.explanation" class="question-explanation">
+      <strong>{{ t('grammar.explanation') }}:</strong>
       <div v-html="renderMarkdown(question.explanation)"></div>
     </div>
   </div>
@@ -193,6 +248,15 @@
 <script setup lang="ts">
 import { ref, computed, watch, nextTick } from 'vue'
 import { marked } from 'marked'
+import { useI18n } from 'vue-i18n'
+
+export interface TheoryChapterContext {
+  categoryTitle: string
+  categoryTitleTranslations?: Record<string, string>
+  chapterTitle: string
+  chapterTitleTranslations?: Record<string, string>
+  level: string
+}
 
 interface Question {
   id: string
@@ -205,12 +269,22 @@ interface Question {
   difficulty?: number
 }
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   question: Question
+  theoryBlock?: any
   showAnswers?: boolean
   initialAnswer?: any
   chapterTitle?: string
-}>()
+  showExplanation?: boolean
+  /** When false, parent renders the help control (e.g. next to Continue) and calls toggleTheoryHelp via ref */
+  showTheoryHelpButton?: boolean
+  theoryChapterContext?: TheoryChapterContext | null
+}>(), {
+  showExplanation: true,
+  showTheoryHelpButton: true
+})
+
+const { t, locale } = useI18n()
 
 const emit = defineEmits<{
   answer: [answer: any]
@@ -233,6 +307,44 @@ const isCorrect = computed(() => {
   if (!answered.value || userAnswer.value === null) return false
   return compareAnswers(userAnswer.value, correctAnswer.value)
 })
+
+const hasTheoryBlock = computed(() => typeof props.question?.theory_block_id === 'string' && props.question.theory_block_id.length > 0)
+const showTheoryHelp = ref(false)
+const theoryHelpText = t('grammar.theoryBlock')
+
+const localizedTitle = (title: string, titleTranslations?: Record<string, string>) => {
+  const currentLocale = locale.value
+  if (currentLocale && currentLocale !== 'en' && titleTranslations?.[currentLocale]) {
+    return titleTranslations[currentLocale]
+  }
+  return title
+}
+
+const theoryMetaLines = computed(() => {
+  const ctx = props.theoryChapterContext
+  if (!ctx) return [] as { label: string; value: string }[]
+  const out: { label: string; value: string }[] = []
+  const cat = localizedTitle(ctx.categoryTitle, ctx.categoryTitleTranslations)
+  if (cat) {
+    out.push({ label: t('grammar.theoryFooterCategory'), value: cat })
+  }
+  const ch = localizedTitle(ctx.chapterTitle, ctx.chapterTitleTranslations)
+  if (ch) {
+    out.push({ label: t('grammar.theoryFooterChapter'), value: ch })
+  }
+  if (ctx.level) {
+    out.push({ label: t('grammar.theoryFooterLevel'), value: ctx.level })
+  }
+  return out
+})
+
+const toggleTheoryHelp = () => {
+  showTheoryHelp.value = !showTheoryHelp.value
+}
+
+const closeTheoryHelp = () => {
+  showTheoryHelp.value = false
+}
 
 // Shuffle function (Fisher-Yates algorithm)
 const shuffleArray = <T>(array: T[]): T[] => {
@@ -586,15 +698,158 @@ watch(() => props.showAnswers, (newVal) => {
     answered.value = true
   }
 })
+
+watch(() => props.question?.id, () => {
+  showTheoryHelp.value = false
+})
+
+defineExpose({
+  toggleTheoryHelp,
+  closeTheoryHelp
+})
 </script>
 
 <style scoped>
 .grammar-question {
+  position: relative;
   background: var(--card-bg);
   border: 2px solid var(--border-primary);
   border-radius: 8px;
   padding: 20px;
   margin-bottom: 24px;
+}
+
+.question-block-indicator {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--border-primary);
+  border-radius: 50%;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.question-block-indicator:hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+
+.question-block-icon {
+  width: 100%;
+  height: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--text-secondary);
+}
+
+.theory-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 16px;
+}
+
+.theory-modal {
+  position: relative;
+  width: min(900px, 100%);
+  max-height: 80vh;
+  overflow: auto;
+  padding: 42px 44px 16px 18px;
+  border: 1px solid var(--border-primary);
+  border-radius: 10px;
+  background: var(--card-bg);
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.5;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+}
+
+.theory-modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 26px;
+  font-weight: 300;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.theory-modal-close:hover {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.theory-tooltip-content {
+  color: var(--text-primary);
+}
+
+.theory-tooltip-points {
+  margin: 10px 0 0;
+  padding-left: 18px;
+}
+
+.theory-tooltip-points li {
+  margin-bottom: 6px;
+}
+
+.theory-modal-source {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-primary);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.theory-modal-source-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  margin-bottom: 6px;
+}
+
+.theory-modal-source-line:last-child {
+  margin-bottom: 0;
+}
+
+.theory-modal-source-label {
+  font-weight: 600;
+  color: var(--text-primary);
+  min-width: 5.5em;
+}
+
+.theory-modal-source-value {
+  flex: 1;
+  min-width: 0;
 }
 
 .question-chapter {

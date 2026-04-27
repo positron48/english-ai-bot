@@ -1,0 +1,375 @@
+{
+  "chapter_id": "es.grammar.orientation_alphabet_sounds.vowels_syllables_diphthongs_hiatus",
+  "theory_block_id": "b6_theory_practical_algorithm",
+  "course_version": "1.0.0",
+  "questions": [
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно разделить слово 'papá' на слоги?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "pa-pá"
+        },
+        {
+          "id": "b",
+          "text": "pa-pa"
+        },
+        {
+          "id": "c",
+          "text": "pap-á"
+        },
+        {
+          "id": "d",
+          "text": "papá"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Ударение на 'á' делает её отдельным слогом, поэтому правильное разделение — pa-pá. Неверные варианты пропускают ударение или объединяют слоги.",
+      "theory_block_id": "b6_theory_practical_algorithm",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.vowels_syllables_diphthongs_hiatus",
+      "concept_id": "practical_decoding_algorithm",
+      "difficulty": 2,
+      "id": "q1",
+      "signature": "f48c63a8e45718b4"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно разделить слово 'canción' на слоги?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "can-ción"
+        },
+        {
+          "id": "b",
+          "text": "can-ci-on"
+        },
+        {
+          "id": "c",
+          "text": "can-cion"
+        },
+        {
+          "id": "d",
+          "text": "can-sión"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Ударение на 'ción' создает отдельный слог, поэтому разделение can-ción. Неверные варианты не учитывают ударение или искажают слоги.",
+      "theory_block_id": "b6_theory_practical_algorithm",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.vowels_syllables_diphthongs_hiatus",
+      "concept_id": "practical_decoding_algorithm",
+      "difficulty": 3,
+      "id": "q2",
+      "signature": "7549dcdbda9567d2"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно разделить слово 'música' на слоги?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "mú-si-ca"
+        },
+        {
+          "id": "b",
+          "text": "mu-si-ca"
+        },
+        {
+          "id": "c",
+          "text": "mú-sica"
+        },
+        {
+          "id": "d",
+          "text": "musi-ca"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Ударение на 'ú' означает, что это отдельный слог, поэтому разделение mú-si-ca. Неверные варианты пропускают акцент или разделяют неправильно.",
+      "theory_block_id": "b6_theory_practical_algorithm",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.vowels_syllables_diphthongs_hiatus",
+      "concept_id": "practical_decoding_algorithm",
+      "difficulty": 2,
+      "id": "q3",
+      "signature": "62a571cc82706d1d"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно разделить слово 'tía' на слоги?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "ti-a"
+        },
+        {
+          "id": "b",
+          "text": "tía"
+        },
+        {
+          "id": "c",
+          "text": "ti-á"
+        },
+        {
+          "id": "d",
+          "text": "t-ia"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Ударение на 'í' создает отдельный слог, поэтому разделение ti-a. Неверные варианты объединяют слоги или неправильно разделяют буквы.",
+      "theory_block_id": "b6_theory_practical_algorithm",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.vowels_syllables_diphthongs_hiatus",
+      "concept_id": "practical_decoding_algorithm",
+      "difficulty": 2,
+      "id": "q4",
+      "signature": "c54408aacdfbb3ea"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно разделить слово 'café' на слоги?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "ca-fé"
+        },
+        {
+          "id": "b",
+          "text": "ca-fe"
+        },
+        {
+          "id": "c",
+          "text": "caf-é"
+        },
+        {
+          "id": "d",
+          "text": "cafe"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Ударение на 'é' означает отдельный слог, поэтому разделение ca-fé. Неверные варианты не учитывают акцент или объединяют слоги.",
+      "theory_block_id": "b6_theory_practical_algorithm",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.vowels_syllables_diphthongs_hiatus",
+      "concept_id": "practical_decoding_algorithm",
+      "difficulty": 2,
+      "id": "q5",
+      "signature": "b4fed29734aeb7e2"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно разделить слово 'mañana' на слоги?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "ma-ña-na"
+        },
+        {
+          "id": "b",
+          "text": "maña-na"
+        },
+        {
+          "id": "c",
+          "text": "ma-ñana"
+        },
+        {
+          "id": "d",
+          "text": "ma-na-ña"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Ударение на 'ña' создает отдельный слог, поэтому разделение ma-ña-na. Неверные варианты искажают слоги или не учитывают ударение.",
+      "theory_block_id": "b6_theory_practical_algorithm",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.vowels_syllables_diphthongs_hiatus",
+      "concept_id": "practical_decoding_algorithm",
+      "difficulty": 3,
+      "id": "q6",
+      "signature": "6e6d3dfbb4e06644"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно разделить слово 'cólera' на слоги?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "có-le-ra"
+        },
+        {
+          "id": "b",
+          "text": "co-le-ra"
+        },
+        {
+          "id": "c",
+          "text": "có-l-era"
+        },
+        {
+          "id": "d",
+          "text": "cóle-ra"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Ударение на 'ó' делает его отдельным слогом, поэтому разделение có-le-ra. Неверные варианты не учитывают акцент или добавляют лишние разделения.",
+      "theory_block_id": "b6_theory_practical_algorithm",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.vowels_syllables_diphthongs_hiatus",
+      "concept_id": "practical_decoding_algorithm",
+      "difficulty": 3,
+      "id": "q7",
+      "signature": "49090a8ab8cbbdcc"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно разделить слово 'lección' на слоги?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "le-ción"
+        },
+        {
+          "id": "b",
+          "text": "le-ci-ón"
+        },
+        {
+          "id": "c",
+          "text": "l-e-ción"
+        },
+        {
+          "id": "d",
+          "text": "le-ci-on"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Ударение на 'í' требует разделения на 'le-ción'. Вариант b добавляет лишний слог 'ci', c разделяет 'l' и 'e' неправильно, d не учитывает ударение.",
+      "theory_block_id": "b6_theory_practical_algorithm",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.vowels_syllables_diphthongs_hiatus",
+      "concept_id": "practical_decoding_algorithm",
+      "difficulty": 3,
+      "id": "q8",
+      "signature": "ebd56b78ca3c0436"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно разделить слово 'autobús' на слоги?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "au-to-bús"
+        },
+        {
+          "id": "b",
+          "text": "au-to-bú"
+        },
+        {
+          "id": "c",
+          "text": "au-to-bus"
+        },
+        {
+          "id": "d",
+          "text": "au-to-bú-s"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Ударение на 'ú' в 'bús' формирует отдельный слог. Вариант b пропускает 's', c игнорирует ударение, d добавляет лишний слог 's'.",
+      "theory_block_id": "b6_theory_practical_algorithm",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.vowels_syllables_diphthongs_hiatus",
+      "concept_id": "practical_decoding_algorithm",
+      "difficulty": 3,
+      "id": "q9",
+      "signature": "334b925ab38a622a"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно разделить слово 'teléfono' на слоги?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "te-le-fó-no"
+        },
+        {
+          "id": "b",
+          "text": "te-le-fón-o"
+        },
+        {
+          "id": "c",
+          "text": "te-lee-fó-no"
+        },
+        {
+          "id": "d",
+          "text": "te-le-fón"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Ударение на 'ó' формирует слог 'fó', поэтому правильное разделение — 'te-le-fó-no'. Вариант b добавляет лишний 'o', c включает неправильный дифтонг 'ee', d пропускает последний слог.",
+      "theory_block_id": "b6_theory_practical_algorithm",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.vowels_syllables_diphthongs_hiatus",
+      "concept_id": "practical_decoding_algorithm",
+      "difficulty": 3,
+      "id": "q10",
+      "signature": "65f41e7517638caf"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно разделить слово 'ciudad' на слоги?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "ciu-dad"
+        },
+        {
+          "id": "b",
+          "text": "ci-u-dad"
+        },
+        {
+          "id": "c",
+          "text": "ciu-da-d"
+        },
+        {
+          "id": "d",
+          "text": "ci-udad"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Ударение на 'u' в 'ciu' требует разделения 'ciu-dad'. Вариант b делит 'u' как отдельный слог, c добавляет лишний слог, d объединяет 'ci' и 'u' неправильно.",
+      "theory_block_id": "b6_theory_practical_algorithm",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.vowels_syllables_diphthongs_hiatus",
+      "concept_id": "practical_decoding_algorithm",
+      "difficulty": 3,
+      "id": "q11",
+      "signature": "a4e5ac27522399b2"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно разделить слово 'árbol' на слоги?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "á-rbol"
+        },
+        {
+          "id": "b",
+          "text": "ár-bol"
+        },
+        {
+          "id": "c",
+          "text": "árb-ol"
+        },
+        {
+          "id": "d",
+          "text": "á-r-bol"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Ударение на первом слоге 'á' требует разделения 'ár-bol'. Вариант a разделяет 'á' и 'r' неправильно, c объединяет 'árb', d добавляет лишний слог 'r'.",
+      "theory_block_id": "b6_theory_practical_algorithm",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.vowels_syllables_diphthongs_hiatus",
+      "concept_id": "practical_decoding_algorithm",
+      "difficulty": 4,
+      "id": "q12",
+      "signature": "4993c4540d531e2f"
+    }
+  ],
+  "meta": {
+    "generated_at": "2026-04-24T21:03:19Z",
+    "source": "llm-only",
+    "questions_per_block": 10,
+    "chapter_number_filter": 2,
+    "block_number_filter": 6,
+    "append": true
+  }
+}

@@ -1,0 +1,255 @@
+{
+  "chapter_id": "es.grammar.past_preterito_indefinido.time_markers_ayer_anoche_el_ano_pasado_en",
+  "theory_block_id": "b5_theory_indefinido_vs_perfecto_marker_based_choice_a2",
+  "course_version": "1.0.0",
+  "questions": [
+    {
+      "type": "mcq_single",
+      "prompt": "Какой глагол правильно используется в предложении: 'El mes pasado ______ un viaje a México'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "he hecho"
+        },
+        {
+          "id": "b",
+          "text": "hice"
+        },
+        {
+          "id": "c",
+          "text": "ha hecho"
+        },
+        {
+          "id": "d",
+          "text": "viajé"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Маркер 'el mes pasado' указывает на закрытый период, поэтому используется pretérito indefinido (hice).",
+      "theory_block_id": "b5_theory_indefinido_vs_perfecto_marker_based_choice_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.time_markers_ayer_anoche_el_ano_pasado_en",
+      "concept_id": "indefinido_vs_perfecto_marker_based_choice_a2",
+      "difficulty": 2,
+      "id": "q1",
+      "signature": "14e11688b29715dc"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой глагол правильно используется в предложении: 'Esta semana ______ tres libros'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "he leído"
+        },
+        {
+          "id": "b",
+          "text": "leí"
+        },
+        {
+          "id": "c",
+          "text": "ha leído"
+        },
+        {
+          "id": "d",
+          "text": "leo"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Маркер 'esta semana' указывает на открытый период, поэтому используется pretérito perfecto (he leído).",
+      "theory_block_id": "b5_theory_indefinido_vs_perfecto_marker_based_choice_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.time_markers_ayer_anoche_el_ano_pasado_en",
+      "concept_id": "indefinido_vs_perfecto_marker_based_choice_a2",
+      "difficulty": 3,
+      "id": "q2",
+      "signature": "6daa34420f1b2f2c"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой глагол правильно используется в предложении: 'En 2020 ______ un curso de cocina'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "he hecho"
+        },
+        {
+          "id": "b",
+          "text": "hice"
+        },
+        {
+          "id": "c",
+          "text": "ha hecho"
+        },
+        {
+          "id": "d",
+          "text": "hago"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Маркер 'en 2020' указывает на закрытый период, поэтому используется pretérito indefinido (hice).",
+      "theory_block_id": "b5_theory_indefinido_vs_perfecto_marker_based_choice_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.time_markers_ayer_anoche_el_ano_pasado_en",
+      "concept_id": "indefinido_vs_perfecto_marker_based_choice_a2",
+      "difficulty": 2,
+      "id": "q3",
+      "signature": "2b881a42b02e7f97"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой глагол правильно используется в предложении: 'Ayer ______ mi amigo al cine'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "he llevado"
+        },
+        {
+          "id": "b",
+          "text": "llevé"
+        },
+        {
+          "id": "c",
+          "text": "ha llevado"
+        },
+        {
+          "id": "d",
+          "text": "lleva"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Маркер 'ayer' указывает на закрытый период, поэтому используется pretérito indefinido (llevé).",
+      "theory_block_id": "b5_theory_indefinido_vs_perfecto_marker_based_choice_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.time_markers_ayer_anoche_el_ano_pasado_en",
+      "concept_id": "indefinido_vs_perfecto_marker_based_choice_a2",
+      "difficulty": 2,
+      "id": "q4",
+      "signature": "055b93959430ad7e"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой глагол правильно используется в предложении: 'Hoy ______ una nueva receta'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "he probado"
+        },
+        {
+          "id": "b",
+          "text": "probé"
+        },
+        {
+          "id": "c",
+          "text": "ha probado"
+        },
+        {
+          "id": "d",
+          "text": "pruebo"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Маркер 'hoy' указывает на открытый период, поэтому используется pretérito perfecto (he probado).",
+      "theory_block_id": "b5_theory_indefinido_vs_perfecto_marker_based_choice_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.time_markers_ayer_anoche_el_ano_pasado_en",
+      "concept_id": "indefinido_vs_perfecto_marker_based_choice_a2",
+      "difficulty": 3,
+      "id": "q5",
+      "signature": "dfc557d9e71d7cf3"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой глагол правильно используется в предложении: 'La semana pasada ______ un examen difícil'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "he tenido"
+        },
+        {
+          "id": "b",
+          "text": "tuve"
+        },
+        {
+          "id": "c",
+          "text": "ha tenido"
+        },
+        {
+          "id": "d",
+          "text": "tengo"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Маркер 'la semana pasada' указывает на закрытый период, поэтому используется pretérito indefinido (tuve).",
+      "theory_block_id": "b5_theory_indefinido_vs_perfecto_marker_based_choice_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.time_markers_ayer_anoche_el_ano_pasado_en",
+      "concept_id": "indefinido_vs_perfecto_marker_based_choice_a2",
+      "difficulty": 2,
+      "id": "q6",
+      "signature": "aaadeadcb7fb8f05"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой глагол правильно используется в предложении: 'Esta mañana ______ un mensaje importante'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "he recibido"
+        },
+        {
+          "id": "b",
+          "text": "recibí"
+        },
+        {
+          "id": "c",
+          "text": "ha recibido"
+        },
+        {
+          "id": "d",
+          "text": "recibo"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Маркер 'esta mañana' указывает на открытый период, поэтому используется pretérito perfecto (he recibido).",
+      "theory_block_id": "b5_theory_indefinido_vs_perfecto_marker_based_choice_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.time_markers_ayer_anoche_el_ano_pasado_en",
+      "concept_id": "indefinido_vs_perfecto_marker_based_choice_a2",
+      "difficulty": 3,
+      "id": "q7",
+      "signature": "a7a3e6fccbf273b0"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой глагол правильно используется в предложении: 'Ayer ______ un error en el trabajo'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "he hecho"
+        },
+        {
+          "id": "b",
+          "text": "hice"
+        },
+        {
+          "id": "c",
+          "text": "ha hecho"
+        },
+        {
+          "id": "d",
+          "text": "hago"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Маркер 'ayer' указывает на закрытый период, поэтому используется pretérito indefinido (hice).",
+      "theory_block_id": "b5_theory_indefinido_vs_perfecto_marker_based_choice_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.time_markers_ayer_anoche_el_ano_pasado_en",
+      "concept_id": "indefinido_vs_perfecto_marker_based_choice_a2",
+      "difficulty": 2,
+      "id": "q8",
+      "signature": "68cac876c5efddca"
+    }
+  ],
+  "meta": {
+    "generated_at": "2026-04-26T07:55:01Z",
+    "source": "llm-only",
+    "questions_per_block": 10,
+    "chapter_number_filter": 52,
+    "block_number_filter": 5,
+    "append": true
+  }
+}

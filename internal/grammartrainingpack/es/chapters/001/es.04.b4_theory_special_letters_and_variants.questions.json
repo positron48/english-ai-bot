@@ -1,0 +1,525 @@
+{
+  "chapter_id": "es.grammar.orientation_alphabet_sounds.spanish_alphabet_letter_names",
+  "theory_block_id": "b4_theory_special_letters_and_variants",
+  "course_version": "1.0.0",
+  "questions": [
+    {
+      "type": "mcq_single",
+      "prompt": "Как называется буква ñ в испанском алфавите?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "eñe"
+        },
+        {
+          "id": "b",
+          "text": "ene"
+        },
+        {
+          "id": "c",
+          "text": "enye"
+        },
+        {
+          "id": "d",
+          "text": "ñ con tilde"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Буква ñ называется eñe. Это отдельная буква алфавита, а не просто буква n с тильдой.",
+      "theory_block_id": "b4_theory_special_letters_and_variants",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.spanish_alphabet_letter_names",
+      "concept_id": "special_letters_and_name_variants",
+      "difficulty": 1,
+      "id": "q1",
+      "signature": "cf1d6631ebfbf75f"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно произносить букву h в слове 'hola'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "hache"
+        },
+        {
+          "id": "b",
+          "text": "ache"
+        },
+        {
+          "id": "c",
+          "text": "a"
+        },
+        {
+          "id": "d",
+          "text": "hache muda"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Буква h называется hache, даже если в слове 'hola' звук [h] не произносится (немая h).",
+      "theory_block_id": "b4_theory_special_letters_and_variants",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.spanish_alphabet_letter_names",
+      "concept_id": "special_letters_and_name_variants",
+      "difficulty": 1,
+      "id": "q2",
+      "signature": "26410504f0101f2c"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно назвать букву w в испанском языке?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "uve doble"
+        },
+        {
+          "id": "b",
+          "text": "doble u"
+        },
+        {
+          "id": "c",
+          "text": "w"
+        },
+        {
+          "id": "d",
+          "text": "doble v"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Буква w называется uve doble (другой вариант — doble u, но uve doble более распространён).",
+      "theory_block_id": "b4_theory_special_letters_and_variants",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.spanish_alphabet_letter_names",
+      "concept_id": "special_letters_and_name_variants",
+      "difficulty": 1,
+      "id": "q3",
+      "signature": "7aeb005b9c19c55e"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как называется сочетание rr при произношении по буквам?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "erre doble"
+        },
+        {
+          "id": "b",
+          "text": "rr"
+        },
+        {
+          "id": "c",
+          "text": "arr"
+        },
+        {
+          "id": "d",
+          "text": "erre"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Сочетание rr не является отдельной буквой, но при произношении по буквам называется erre doble.",
+      "theory_block_id": "b4_theory_special_letters_and_variants",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.spanish_alphabet_letter_names",
+      "concept_id": "special_letters_and_name_variants",
+      "difficulty": 2,
+      "id": "q4",
+      "signature": "45ace4ede6f60d19"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как называется буква h в испанском алфавите?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "hache"
+        },
+        {
+          "id": "b",
+          "text": "ache"
+        },
+        {
+          "id": "c",
+          "text": "eche"
+        },
+        {
+          "id": "d",
+          "text": "i"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Буква h называется hache. Ошибка в выборе 'ache' или 'eche' связана с путаницей с другими буквами, а 'i' — это название буквы i.",
+      "theory_block_id": "b4_theory_special_letters_and_variants",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.spanish_alphabet_letter_names",
+      "concept_id": "special_letters_and_name_variants",
+      "difficulty": 1,
+      "id": "q5",
+      "signature": "e32cef2bb3f86d45"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какая из перечисленных не является отдельной буквой испанского алфавита?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "h"
+        },
+        {
+          "id": "b",
+          "text": "ñ"
+        },
+        {
+          "id": "c",
+          "text": "x"
+        },
+        {
+          "id": "d",
+          "text": "rr"
+        }
+      ],
+      "correct_answer": "d",
+      "explanation": "В испанском алфавите rr не является отдельной буквой, а представляет собой сочетание двух r. Остальные варианты — отдельные буквы (h, ñ, x).",
+      "theory_block_id": "b4_theory_special_letters_and_variants",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.spanish_alphabet_letter_names",
+      "concept_id": "special_letters_and_name_variants",
+      "difficulty": 1,
+      "id": "q6",
+      "signature": "e33e7d8e149f4fc3"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Когда над буквой u ставится диэрезис?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "После g перед e или i"
+        },
+        {
+          "id": "b",
+          "text": "После g перед a или o"
+        },
+        {
+          "id": "c",
+          "text": "После c перед e или i"
+        },
+        {
+          "id": "d",
+          "text": "После r перед e или i"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Диэрезис над u ставится после g перед e или i, чтобы произнести u как отдельную гласную (например, в слове pingüino).",
+      "theory_block_id": "b4_theory_special_letters_and_variants",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.spanish_alphabet_letter_names",
+      "concept_id": "special_letters_and_name_variants",
+      "difficulty": 2,
+      "id": "q7",
+      "signature": "9a45ba568511d051"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как называется буква h в испанском языке?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "acha"
+        },
+        {
+          "id": "b",
+          "text": "hache"
+        },
+        {
+          "id": "c",
+          "text": "eñe"
+        },
+        {
+          "id": "d",
+          "text": "equis"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Согласно блоку, буква h называется hache (не путать с другими названиями, например, eñe — для ñ).",
+      "theory_block_id": "b4_theory_special_letters_and_variants",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.spanish_alphabet_letter_names",
+      "concept_id": "special_letters_and_name_variants",
+      "difficulty": 2,
+      "id": "q8",
+      "signature": "8460b7724b5eeb82"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как называется буква ñ в слове 'año'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "eñe"
+        },
+        {
+          "id": "b",
+          "text": "hache"
+        },
+        {
+          "id": "c",
+          "text": "equis"
+        },
+        {
+          "id": "d",
+          "text": "ye"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "В блоке указано, что ñ называется eñe, и это отдельная буква алфавита (пример: 'año' — слово с ñ).",
+      "theory_block_id": "b4_theory_special_letters_and_variants",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.spanish_alphabet_letter_names",
+      "concept_id": "special_letters_and_name_variants",
+      "difficulty": 2,
+      "id": "q9",
+      "signature": "d721c10935868a0f"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как называется буква y в современном испанском?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "i griega"
+        },
+        {
+          "id": "b",
+          "text": "ye"
+        },
+        {
+          "id": "c",
+          "text": "eñe"
+        },
+        {
+          "id": "d",
+          "text": "hache"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Согласно блоку, современное название y — ye (традиционное — i griega, но оно менее употребительно).",
+      "theory_block_id": "b4_theory_special_letters_and_variants",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.spanish_alphabet_letter_names",
+      "concept_id": "special_letters_and_name_variants",
+      "difficulty": 2,
+      "id": "q10",
+      "signature": "cae2dab20d11a442"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как называется сочетание rr при произнесении по буквам?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "erre doble"
+        },
+        {
+          "id": "b",
+          "text": "eñe"
+        },
+        {
+          "id": "c",
+          "text": "hache"
+        },
+        {
+          "id": "d",
+          "text": "equis"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "В блоке сказано, что rr не отдельная буква, но при произнесении по буквам называется erre doble (не путать с eñe или другими названиями).",
+      "theory_block_id": "b4_theory_special_letters_and_variants",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.spanish_alphabet_letter_names",
+      "concept_id": "special_letters_and_name_variants",
+      "difficulty": 3,
+      "id": "q11",
+      "signature": "6eb98e1e60620835"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой знак ставится над u в слове 'pingüino' для обозначения звука [u]?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "diéresis"
+        },
+        {
+          "id": "b",
+          "text": "tilde"
+        },
+        {
+          "id": "c",
+          "text": "acento"
+        },
+        {
+          "id": "d",
+          "text": "coma"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "В блоке указано, что для произношения [u] после g перед e/i используется диэрезис (ü), а не другие знаки.",
+      "theory_block_id": "b4_theory_special_letters_and_variants",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.spanish_alphabet_letter_names",
+      "concept_id": "special_letters_and_name_variants",
+      "difficulty": 3,
+      "id": "q12",
+      "signature": "91dac61b111d0c65"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как называется буква w в испанском языке?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "uve doble"
+        },
+        {
+          "id": "b",
+          "text": "doble u"
+        },
+        {
+          "id": "c",
+          "text": "hache"
+        },
+        {
+          "id": "d",
+          "text": "equis"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Буква w обычно называется uve doble в нейтральной норме, хотя возможен вариант 'doble u'.",
+      "theory_block_id": "b4_theory_special_letters_and_variants",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.spanish_alphabet_letter_names",
+      "concept_id": "special_letters_and_name_variants",
+      "difficulty": 1,
+      "id": "q13",
+      "signature": "81f954329d7cb877"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "После буквы 'g' перед 'e' или 'i' для произношения звука [u] над 'u' ставят:",
+      "choices": [
+        {
+          "id": "a",
+          "text": "diéresis"
+        },
+        {
+          "id": "b",
+          "text": "tilde"
+        },
+        {
+          "id": "c",
+          "text": "acento"
+        },
+        {
+          "id": "d",
+          "text": "circunflejo"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Для произношения звука [u] после g перед e или i над u ставят диэрезис, как в слове 'pingüino'.",
+      "theory_block_id": "b4_theory_special_letters_and_variants",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.spanish_alphabet_letter_names",
+      "concept_id": "special_letters_and_name_variants",
+      "difficulty": 2,
+      "id": "q14",
+      "signature": "2accb4bf0f980750"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как называется сочетание букв 'rr' при произношении по буквам?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "erre"
+        },
+        {
+          "id": "b",
+          "text": "erre doble"
+        },
+        {
+          "id": "c",
+          "text": "arr"
+        },
+        {
+          "id": "d",
+          "text": "r doble"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Сочетание 'rr' не является отдельной буквой, но при произношении по буквам его называют erre doble.",
+      "theory_block_id": "b4_theory_special_letters_and_variants",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.spanish_alphabet_letter_names",
+      "concept_id": "special_letters_and_name_variants",
+      "difficulty": 1,
+      "id": "q15",
+      "signature": "7dc80b1782495df9"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как называется буква v в испанском языке?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "uve"
+        },
+        {
+          "id": "b",
+          "text": "hache"
+        },
+        {
+          "id": "c",
+          "text": "equis"
+        },
+        {
+          "id": "d",
+          "text": "ye"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Буква v обычно называется uve в современном испанском.",
+      "theory_block_id": "b4_theory_special_letters_and_variants",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.spanish_alphabet_letter_names",
+      "concept_id": "special_letters_and_name_variants",
+      "difficulty": 1,
+      "id": "q16",
+      "signature": "dd7d0afc05628404"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как называется буква x в испанском алфавите?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "equis"
+        },
+        {
+          "id": "b",
+          "text": "hache"
+        },
+        {
+          "id": "c",
+          "text": "eñe"
+        },
+        {
+          "id": "d",
+          "text": "ye"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Буква x называется equis, что соответствует её произношению в испанском.",
+      "theory_block_id": "b4_theory_special_letters_and_variants",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.spanish_alphabet_letter_names",
+      "concept_id": "special_letters_and_name_variants",
+      "difficulty": 1,
+      "id": "q17",
+      "signature": "8965171b0f7c6834"
+    }
+  ],
+  "meta": {
+    "generated_at": "2026-04-24T19:29:33Z",
+    "source": "llm-only",
+    "questions_per_block": 10,
+    "chapter_number_filter": 1,
+    "block_number_filter": 4,
+    "append": true
+  }
+}

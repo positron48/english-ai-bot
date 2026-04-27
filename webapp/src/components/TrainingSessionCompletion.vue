@@ -47,8 +47,14 @@
         <p class="message-text">{{ motivationalMessage }}</p>
       </div>
 
-      <div v-if="statsLoaded && availableForTraining !== null" class="completion-actions">
-        <div class="remaining-cards-info">
+      <div
+        v-if="completionActionsVisible"
+        class="completion-actions"
+      >
+        <div
+          v-if="showWordTrainingAvailability"
+          class="remaining-cards-info"
+        >
           <span class="remaining-text">
             <span class="remaining-label">{{ t('training.available') }}</span>
             {{ availableForTraining }} {{ t('common.cards') || 'cards' }}
@@ -56,7 +62,7 @@
           </span>
         </div>
         <button
-          v-if="showContinueButton && availableForTraining > 0"
+          v-if="showContinueButton && continueButtonEnabled"
           type="button"
           class="btn btn-primary btn-continue"
           @click="$emit('continue')"
@@ -83,6 +89,8 @@ const props = withDefaults(defineProps<{
   showContinueButton?: boolean
   soundsEnabled?: boolean
   soundTheme?: string
+  /** If true, show primary action even with 0 due word cards (e.g. restart grammar training) */
+  showContinueWithoutDueCards?: boolean
 }>(), {
   statsLoaded: false,
   availableForTraining: null,
@@ -91,12 +99,31 @@ const props = withDefaults(defineProps<{
   showContinueButton: true,
   soundsEnabled: true,
   soundTheme: 'tick',
+  showContinueWithoutDueCards: false,
 })
 
 defineEmits<{ (e: 'continue'): void }>()
 
 const { t, tm } = useI18n()
 const { playVictory, playDefeat } = useAudio()
+
+const showWordTrainingAvailability = computed(
+  () => !props.showContinueWithoutDueCards && props.statsLoaded && props.availableForTraining !== null
+)
+
+const completionActionsVisible = computed(() => {
+  if (props.showContinueWithoutDueCards) {
+    return true
+  }
+  return props.statsLoaded && props.availableForTraining !== null
+})
+
+const continueButtonEnabled = computed(() => {
+  if (props.showContinueWithoutDueCards) {
+    return true
+  }
+  return (props.availableForTraining ?? 0) > 0
+})
 
 const animatedPercentage = ref(0)
 const percentageAnimationComplete = ref(false)
@@ -200,12 +227,22 @@ const getFailureItemStyle = () => ({
   '--delay': `${0.2 + Math.random() * 0.6}s`,
   '--duration': `${1.8 + Math.random() * 0.7}s`,
 }) as Record<string, string>
-const getFireworkStyle = () => ({
-  '--firework-x': `${Math.cos(Math.random() * Math.PI * 2) * 90}px`,
-  '--firework-y': `${Math.sin(Math.random() * Math.PI * 2) * 90}px`,
-  '--delay': `${Math.random() * 1.2}s`,
-  '--firework-size': `${0.8 + Math.random() * 0.4}`,
-}) as Record<string, string>
+/** Same geometry as TrainingView.vue — burst from circle edge (r≈90px for 200px wrapper) */
+const getFireworkStyle = (_index: number) => {
+  const startAngle = Math.random() * 360
+  const startAngleRad = (startAngle * Math.PI) / 180
+  const circleRadius = 90
+  const startX = Math.cos(startAngleRad) * circleRadius
+  const startY = Math.sin(startAngleRad) * circleRadius
+  const delay = Math.random() * 1.2
+  const size = 0.8 + Math.random() * 0.4
+  return {
+    '--firework-x': `${startX}px`,
+    '--firework-y': `${startY}px`,
+    '--delay': `${delay}s`,
+    '--firework-size': size,
+  } as Record<string, string | number>
+}
 
 watch(() => [props.totalCards, props.correctCards], () => {
   animatedPercentage.value = 0
@@ -256,30 +293,208 @@ watch([() => percentageAnimationComplete.value, () => accuracyPercentage.value],
 .remaining-cards-info { padding: 10px 14px; border-radius: 10px; background: var(--bg-secondary); color: var(--text-secondary); }
 .remaining-label { font-weight: 600; margin-right: 6px; }
 .btn-continue { width: 100%; }
-.celebration-container, .failure-container { position: absolute; inset: 0; pointer-events: none; }
-.fireworks, .confetti, .failure-rain { position: absolute; inset: 0; }
-.firework, .confetti-piece, .failure-item { position: absolute; top: 50%; left: 50%; }
-.firework { width: 6px; height: 6px; border-radius: 50%; transform: translate(var(--firework-x), var(--firework-y)) scale(var(--firework-size)); animation: firework-explode 2s ease-out var(--delay) forwards; }
-.firework-core { width: 6px; height: 6px; border-radius: 50%; background: radial-gradient(circle, #fff 0%, #ffd700 50%, transparent 100%); animation: firework-core-pulse 0.35s ease-out var(--delay) forwards; }
-.firework-particle { width: 8px; height: 8px; border-radius: 50%; background: #10b981; box-shadow: 0 0 6px #10b981; transform: translate(-50%, -50%); animation: particle-fly 2s ease-out var(--delay) forwards; }
-.confetti-piece { width: 8px; height: 12px; background: var(--confetti-color); transform: translate(var(--confetti-start-x), var(--confetti-start-y)); animation: confetti-fly var(--confetti-duration) ease-out var(--confetti-delay) forwards; }
-.failure-item { font-size: 28px; transform: translate(var(--start-x), -200px); animation: failure-fall var(--duration) ease-in var(--delay) forwards; }
-.failure-emoji { display: inline-block; }
-@keyframes firework-explode { from { opacity: 1; } to { opacity: 0; transform: translate(var(--firework-x), var(--firework-y)) scale(0); } }
-@keyframes firework-core-pulse { from { opacity: 1; transform: scale(0); } to { opacity: 0; transform: scale(3); } }
-@keyframes particle-fly { from { opacity: 1; } to { opacity: 0; transform: translate(-50%, -50%) translateX(var(--offset-x, 0)) translateY(var(--offset-y, 0)); } }
-@keyframes confetti-fly { from { opacity: 1; } to { opacity: 0; transform: translate(var(--confetti-end-x), var(--confetti-end-y)) rotate(480deg); } }
-@keyframes failure-fall { from { opacity: 0; } 20% { opacity: 1; } to { opacity: 0; transform: translate(var(--end-x), 260px) rotate(360deg); } }
-.firework-particle[data-particle-index="1"] { --offset-x: 100px; --offset-y: 0px; }
-.firework-particle[data-particle-index="2"] { --offset-x: 86px; --offset-y: -50px; }
-.firework-particle[data-particle-index="3"] { --offset-x: 50px; --offset-y: -86px; }
-.firework-particle[data-particle-index="4"] { --offset-x: 0px; --offset-y: -100px; }
-.firework-particle[data-particle-index="5"] { --offset-x: -50px; --offset-y: -86px; }
-.firework-particle[data-particle-index="6"] { --offset-x: -86px; --offset-y: -50px; }
-.firework-particle[data-particle-index="7"] { --offset-x: -100px; --offset-y: 0px; }
-.firework-particle[data-particle-index="8"] { --offset-x: -86px; --offset-y: 50px; }
-.firework-particle[data-particle-index="9"] { --offset-x: -50px; --offset-y: 86px; }
-.firework-particle[data-particle-index="10"] { --offset-x: 0px; --offset-y: 100px; }
-.firework-particle[data-particle-index="11"] { --offset-x: 50px; --offset-y: 86px; }
-.firework-particle[data-particle-index="12"] { --offset-x: 86px; --offset-y: 50px; }
+.celebration-container, .failure-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 2;
+}
+.fireworks {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  inset: 0;
+}
+.confetti {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  inset: 0;
+}
+.failure-rain {
+  position: absolute;
+  inset: 0;
+}
+.confetti-piece,
+.failure-item {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
+.firework {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  top: 0;
+  left: 0;
+  transform: translate(var(--firework-x, 0), var(--firework-y, 0)) scale(var(--firework-size, 1));
+  animation: firework-explode-session 2s ease-out var(--delay, 0s) forwards;
+}
+.firework-core {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff 0%, #ffd700 50%, transparent 100%);
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.8), 0 0 20px rgba(255, 215, 0, 0.5);
+  animation: firework-core-pulse-session 0.3s ease-out var(--delay, 0s) forwards;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+}
+.firework-particle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--particle-color, #10b981);
+  top: 0;
+  left: 0;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 6px var(--particle-color, #10b981);
+  animation: particle-fly-session 2s ease-out var(--delay, 0s) forwards;
+}
+.firework:nth-child(3n + 1) .firework-particle {
+  --particle-color: #3b82f6;
+}
+.firework:nth-child(3n + 2) .firework-particle {
+  --particle-color: #f59e0b;
+}
+.firework:nth-child(3n + 3) .firework-particle {
+  --particle-color: #ec4899;
+}
+.firework:nth-child(4n + 1) .firework-particle {
+  --particle-color: #10b981;
+}
+.firework:nth-child(4n + 2) .firework-particle {
+  --particle-color: #8b5cf6;
+}
+.confetti-piece {
+  width: 8px;
+  height: 12px;
+  background: var(--confetti-color);
+  transform: translate(var(--confetti-start-x), var(--confetti-start-y));
+  animation: confetti-fly var(--confetti-duration) ease-out var(--confetti-delay) forwards;
+}
+.failure-item {
+  font-size: 28px;
+  transform: translate(var(--start-x), -200px);
+  animation: failure-fall var(--duration) ease-in var(--delay) forwards;
+}
+.failure-emoji {
+  display: inline-block;
+}
+@keyframes firework-explode-session {
+  0% {
+    opacity: 1;
+    transform: translate(var(--firework-x, 0), var(--firework-y, 0)) scale(var(--firework-size, 1));
+  }
+  15% {
+    opacity: 1;
+    transform: translate(var(--firework-x, 0), var(--firework-y, 0)) scale(calc(var(--firework-size, 1) * 1.5));
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--firework-x, 0), var(--firework-y, 0)) scale(0);
+  }
+}
+@keyframes firework-core-pulse-session {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(2);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(3);
+    opacity: 0;
+  }
+}
+@keyframes particle-fly-session {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) translateX(calc(var(--offset-x, 0) * 0.5)) translateY(calc(var(--offset-y, 0) * 0.5)) scale(1.2) rotate(180deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translateX(var(--offset-x, 0)) translateY(var(--offset-y, 0)) scale(0) rotate(360deg);
+  }
+}
+@keyframes confetti-fly {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    transform: translate(var(--confetti-end-x), var(--confetti-end-y)) rotate(480deg);
+  }
+}
+@keyframes failure-fall {
+  from {
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    transform: translate(var(--end-x), 260px) rotate(360deg);
+  }
+}
+.firework-particle[data-particle-index='1'] {
+  --offset-x: 100px;
+  --offset-y: 0px;
+}
+.firework-particle[data-particle-index='2'] {
+  --offset-x: 86.6px;
+  --offset-y: -50px;
+}
+.firework-particle[data-particle-index='3'] {
+  --offset-x: 50px;
+  --offset-y: -86.6px;
+}
+.firework-particle[data-particle-index='4'] {
+  --offset-x: 0px;
+  --offset-y: -100px;
+}
+.firework-particle[data-particle-index='5'] {
+  --offset-x: -50px;
+  --offset-y: -86.6px;
+}
+.firework-particle[data-particle-index='6'] {
+  --offset-x: -86.6px;
+  --offset-y: -50px;
+}
+.firework-particle[data-particle-index='7'] {
+  --offset-x: -100px;
+  --offset-y: 0px;
+}
+.firework-particle[data-particle-index='8'] {
+  --offset-x: -86.6px;
+  --offset-y: 50px;
+}
+.firework-particle[data-particle-index='9'] {
+  --offset-x: -50px;
+  --offset-y: 86.6px;
+}
+.firework-particle[data-particle-index='10'] {
+  --offset-x: 0px;
+  --offset-y: 100px;
+}
+.firework-particle[data-particle-index='11'] {
+  --offset-x: 50px;
+  --offset-y: 86.6px;
+}
+.firework-particle[data-particle-index='12'] {
+  --offset-x: 86.6px;
+  --offset-y: 50px;
+}
 </style>

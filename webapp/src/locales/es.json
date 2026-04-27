@@ -23,7 +23,9 @@
     "noItemsFound": "No se encontraron elementos.",
     "today": "Hoy",
     "yesterday": "Ayer",
-    "from": "De"
+    "from": "De",
+    "next": "Siguiente",
+    "finish": "Finalizar"
   },
   "app": {
     "titleEnInstance": "Bot de inglés",
@@ -451,7 +453,14 @@
     "noQuestionsAvailable": "No hay preguntas disponibles para el test de nivel.",
     "placementTest": "Test de nivel",
     "placementTestDescription": "Este test ayuda a estimar tu nivel de gramática. Responde a 25 preguntas de distintos temas y desbloquearemos las secciones adecuadas.",
-    "loadingQuestion": "Cargando pregunta..."
+    "loadingQuestion": "Cargando pregunta...",
+    "theoryBlock": "Bloque teórico",
+    "theoryFooterCategory": "Categoría",
+    "theoryFooterChapter": "Capítulo",
+    "theoryFooterLevel": "Nivel",
+    "trainingTitle": "Entrenamiento de gramática",
+    "trainingDone": "Sesión completada.",
+    "trainingUnavailable": "El entrenamiento de gramática aún no está disponible para este curso."
   },
   "errors": {
     "unauthorized": "No autorizado",

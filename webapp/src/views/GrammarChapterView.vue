@@ -90,6 +90,7 @@
               v-for="questionId in block.quiz_inline?.question_ids || []"
               :key="questionId"
               :question="getQuestionById(questionId)"
+              :theory-chapter-context="theoryChapterContextForCourse"
               :show-answers="block.quiz_inline?.show_answers_immediately"
               @answer="handleQuizAnswer(questionId, $event)"
             />
@@ -126,6 +127,11 @@ const { playSuccess, playFail } = useAudio()
 
 const chapter = ref<any>(null)
 const chapterTitleOverride = ref<string | null>(null)
+const sectionMeta = ref<{
+  title?: string
+  title_translations?: Record<string, string>
+  level?: string
+} | null>(null)
 const loading = ref(true)
 const error = ref<string | null>(null)
 const questionMap = ref<Map<string, any>>(new Map())
@@ -144,13 +150,35 @@ const chapterTitle = computed(() => {
   return getLocalizedTitle(baseTitle, translations)
 })
 
+const theoryChapterContextForCourse = computed(() => {
+  if (!chapter.value) return null
+  const sec = sectionMeta.value
+  const baseTitle = chapterTitleOverride.value || chapter.value?.title || chapterId.value
+  const level =
+    (typeof chapter.value.level === 'string' && chapter.value.level.length > 0 ? chapter.value.level : '') ||
+    (typeof sec?.level === 'string' && sec.level.length > 0 ? sec.level : '')
+  return {
+    categoryTitle: typeof sec?.title === 'string' ? sec.title : '',
+    categoryTitleTranslations: sec?.title_translations,
+    chapterTitle: baseTitle,
+    chapterTitleTranslations: chapter.value.title_translations,
+    level
+  }
+})
+
 const loadChapter = async () => {
   loading.value = true
   error.value = null
   try {
-    const data: { chapter: any; title: string; title_translations?: Record<string, string> } = await apiClient.request(
+    const data: {
+      chapter: any
+      title: string
+      title_translations?: Record<string, string>
+      section?: { title?: string; title_translations?: Record<string, string>; level?: string }
+    } = await apiClient.request(
       `/api/learning/grammar/chapters/${chapterId.value}`
     )
+    sectionMeta.value = data.section ?? null
     chapter.value = data.chapter
     chapterTitleOverride.value = data.title || null
     if (data.title_translations && chapter.value) {

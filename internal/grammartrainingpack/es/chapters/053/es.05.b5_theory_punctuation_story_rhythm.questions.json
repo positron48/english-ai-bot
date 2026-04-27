@@ -1,0 +1,165 @@
+{
+  "chapter_id": "es.grammar.past_preterito_indefinido.sequencing_events_simple_story",
+  "theory_block_id": "b5_theory_punctuation_story_rhythm",
+  "course_version": "1.0.0",
+  "questions": [
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант правильно использует запятые и союз *y* для последовательности действий?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Compré libros, leí una revista y escribí un correo."
+        },
+        {
+          "id": "b",
+          "text": "Compré libros leí una revista y escribí un correo."
+        },
+        {
+          "id": "c",
+          "text": "Compré libros, leí una revista, escribí un correo."
+        },
+        {
+          "id": "d",
+          "text": "Compré libros, leí una revista, y escribí un correo."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Запятые разделяют действия, а союз *y* соединяет последнее действие без запятой перед ним.",
+      "theory_block_id": "b5_theory_punctuation_story_rhythm",
+      "chapter_id": "es.grammar.past_preterito_indefinido.sequencing_events_simple_story",
+      "concept_id": "punctuation_story_rhythm",
+      "difficulty": 2,
+      "id": "q1",
+      "signature": "4ed7955459b02e50"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант избегает ошибки, когда действия объединены в одну длинную фразу?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Fui al mercado, compré frutas, leí un libro y me senté en el parque."
+        },
+        {
+          "id": "b",
+          "text": "Fui al mercado, compré frutas leí un libro y me senté en el parque."
+        },
+        {
+          "id": "c",
+          "text": "Fui al mercado, compré frutas, leí un libro, me senté en el parque."
+        },
+        {
+          "id": "d",
+          "text": "Fui al mercado. Compré frutas leí un libro y me senté en el parque."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Правильная пунктуация с запятыми и союзом *y* помогает разбить длинную фразу на понятные части.",
+      "theory_block_id": "b5_theory_punctuation_story_rhythm",
+      "chapter_id": "es.grammar.past_preterito_indefinido.sequencing_events_simple_story",
+      "concept_id": "punctuation_story_rhythm",
+      "difficulty": 3,
+      "id": "q2",
+      "signature": "90801cb19a746f32"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант содержит ошибку пунктуации, пропустив запятые между действиями?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ella abrió la ventana, salió al jardín y comenzó a cortar el césped."
+        },
+        {
+          "id": "b",
+          "text": "Ella abrió la ventana salió al jardín y comenzó a cortar el césped."
+        },
+        {
+          "id": "c",
+          "text": "Ella abrió la ventana, salió al jardín, comenzó a cortar el césped."
+        },
+        {
+          "id": "d",
+          "text": "Ella abrió la ventana, salió al jardín, y comenzó a cortar el césped."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Отсутствие запятых делает последовательность действий неясной.",
+      "theory_block_id": "b5_theory_punctuation_story_rhythm",
+      "chapter_id": "es.grammar.past_preterito_indefinido.sequencing_events_simple_story",
+      "concept_id": "punctuation_story_rhythm",
+      "difficulty": 3,
+      "id": "q3",
+      "signature": "172c164082178b13"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант правильно использует короткие предложения для лучшей читаемости?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Fui al parque, compré helado, caminé por el jardín y hablé con amigos."
+        },
+        {
+          "id": "b",
+          "text": "Fui al parque. Compré helado. Caminé por el jardín y hablé con amigos."
+        },
+        {
+          "id": "c",
+          "text": "Fui al parque, compré helado y caminé por el jardín."
+        },
+        {
+          "id": "d",
+          "text": "Fui al parque. Compré helado y caminé por el jardín."
+        }
+      ],
+      "correct_answer": "d",
+      "explanation": "Короткие предложения с разделением точкой улучшают понятность истории.",
+      "theory_block_id": "b5_theory_punctuation_story_rhythm",
+      "chapter_id": "es.grammar.past_preterito_indefinido.sequencing_events_simple_story",
+      "concept_id": "punctuation_story_rhythm",
+      "difficulty": 2,
+      "id": "q4",
+      "signature": "fd74350215224c5e"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант соответствует правилу пунктуации для ритма и понятности короткой истории?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Me acosté temprano, me levanté tarde y fui al trabajo."
+        },
+        {
+          "id": "b",
+          "text": "Me acosté temprano. Me levanté tarde y fui al trabajo."
+        },
+        {
+          "id": "c",
+          "text": "Me acosté temprano, me levanté tarde, fui al trabajo."
+        },
+        {
+          "id": "d",
+          "text": "Me acosté temprano. Me levanté tarde. Fui al trabajo."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Точка разделяет завершенный этап (пошел спать), а следующие действия соединены союзом *y*.",
+      "theory_block_id": "b5_theory_punctuation_story_rhythm",
+      "chapter_id": "es.grammar.past_preterito_indefinido.sequencing_events_simple_story",
+      "concept_id": "punctuation_story_rhythm",
+      "difficulty": 2,
+      "id": "q5",
+      "signature": "6e69598dc898684d"
+    }
+  ],
+  "meta": {
+    "generated_at": "2026-04-25T20:36:15Z",
+    "source": "llm-only",
+    "questions_per_block": 10,
+    "chapter_number_filter": 53,
+    "block_number_filter": 5,
+    "append": true
+  }
+}

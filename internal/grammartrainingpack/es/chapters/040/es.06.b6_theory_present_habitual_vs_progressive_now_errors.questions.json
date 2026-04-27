@@ -1,0 +1,285 @@
+{
+  "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.estar_plus_gerundio_happening_right_now",
+  "theory_block_id": "b6_theory_present_habitual_vs_progressive_now_errors",
+  "course_version": "1.0.0",
+  "questions": [
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант правильно передаёт привычку, а не действие в момент речи?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ella trabaja en una oficina todos los días."
+        },
+        {
+          "id": "b",
+          "text": "Ella está trabajando en una oficina ahora."
+        },
+        {
+          "id": "c",
+          "text": "Ella está trabajando en una oficina todos los días."
+        },
+        {
+          "id": "d",
+          "text": "Ella trabaja en una oficina ahora."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Простое настоящее время (trabaja) используется для привычек, а не для действия сейчас. Вариант 'a' правильно показывает регулярную работу, а 'b' и 'd' ошибочно используют 'estar + gerundio' для общей привычки, а 'c' сочетает 'estar + gerundio' с частотным маркером 'todos los días', что неправильно.",
+      "theory_block_id": "b6_theory_present_habitual_vs_progressive_now_errors",
+      "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.estar_plus_gerundio_happening_right_now",
+      "concept_id": "presente_vs_estar_gerundio_russian_transfer",
+      "difficulty": 2,
+      "id": "q1",
+      "signature": "bcf4b4f352b36be9"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант правильно показывает текущее действие (не привычку)?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Yo estudio español cada tarde."
+        },
+        {
+          "id": "b",
+          "text": "Yo estoy estudiando español ahora."
+        },
+        {
+          "id": "c",
+          "text": "Yo estudio español ahora."
+        },
+        {
+          "id": "d",
+          "text": "Yo estoy estudiando español cada tarde."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Связка 'estar + gerundio' (estoy estudiando) указывает на действие в момент речи. Вариант 'b' правильно использует её для 'сейчас', а 'a' и 'c' используют простое настоящее время для привычки или общего факта, а 'd' ошибочно сочетает 'estar + gerundio' с частотным маркером 'cada tarde'.",
+      "theory_block_id": "b6_theory_present_habitual_vs_progressive_now_errors",
+      "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.estar_plus_gerundio_happening_right_now",
+      "concept_id": "presente_vs_estar_gerundio_russian_transfer",
+      "difficulty": 3,
+      "id": "q2",
+      "signature": "eae78fe41dc93847"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант является ошибкой при выражении привычки?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ella lee libros todos los días."
+        },
+        {
+          "id": "b",
+          "text": "Ella está leyendo libros todos los días."
+        },
+        {
+          "id": "c",
+          "text": "Ella lee libros en su tiempo libre."
+        },
+        {
+          "id": "d",
+          "text": "Ella lee libros regularmente."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Вариант 'b' ошибочно использует 'estar + gerundio' для привычки (вместо простого настоящего). 'Estar + gerundio' применяется только для действий в момент речи, а не для регулярных привычек. Остальные варианты ('a', 'c', 'd') правильно используют простое настоящее время.",
+      "theory_block_id": "b6_theory_present_habitual_vs_progressive_now_errors",
+      "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.estar_plus_gerundio_happening_right_now",
+      "concept_id": "presente_vs_estar_gerundio_russian_transfer",
+      "difficulty": 2,
+      "id": "q3",
+      "signature": "83dc9038fd58a644"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант правильно передаёт 'Я знаю ответ сейчас' без кальки?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Estoy sabiendo la respuesta."
+        },
+        {
+          "id": "b",
+          "text": "Sé la respuesta."
+        },
+        {
+          "id": "c",
+          "text": "Estoy entendiendo la respuesta."
+        },
+        {
+          "id": "d",
+          "text": "Estoy conociendo la respuesta."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Глагол 'saber' (знать факт) не требует 'estar + gerundio'. Правильный вариант — 'Sé la respuesta'. Варианты 'a', 'c', 'd' ошибочно применяют 'estar + gerundio' к глаголам восприятия/состояния, что неправильно согласно теории.",
+      "theory_block_id": "b6_theory_present_habitual_vs_progressive_now_errors",
+      "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.estar_plus_gerundio_happening_right_now",
+      "concept_id": "presente_vs_estar_gerundio_russian_transfer",
+      "difficulty": 3,
+      "id": "q4",
+      "signature": "9c695694f752812c"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант правильно описывает 'Я читаю книгу в данный момент'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Estoy leyendo una novela ahora."
+        },
+        {
+          "id": "b",
+          "text": "Leo una novela ahora."
+        },
+        {
+          "id": "c",
+          "text": "Estoy leyendo una novela todos los días."
+        },
+        {
+          "id": "d",
+          "text": "Leo una novela en mi tiempo libre."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Связка 'estar + gerundio' (estoy leyendo) используется для действия в момент речи. Вариант 'a' правильно показывает 'сейчас', а 'b' и 'd' используют простое настоящее время для общего факта, 'c' ошибочно сочетает 'estar + gerundio' с частотой.",
+      "theory_block_id": "b6_theory_present_habitual_vs_progressive_now_errors",
+      "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.estar_plus_gerundio_happening_right_now",
+      "concept_id": "presente_vs_estar_gerundio_russian_transfer",
+      "difficulty": 2,
+      "id": "q5",
+      "signature": "7b770db4e932e883"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант является примером ошибки при описании привычки?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ellos caminan al parque cada mañana."
+        },
+        {
+          "id": "b",
+          "text": "Ellos están caminando al parque cada mañana."
+        },
+        {
+          "id": "c",
+          "text": "Ellos caminan al parque regularmente."
+        },
+        {
+          "id": "d",
+          "text": "Ellos caminan al parque los lunes."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Вариант 'b' неправильно использует 'estar + gerundio' для регулярной привычки (с маркером 'cada mañana'). Правильно — простое настоящее время ('caminan'), как в 'a', 'c', 'd'.",
+      "theory_block_id": "b6_theory_present_habitual_vs_progressive_now_errors",
+      "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.estar_plus_gerundio_happening_right_now",
+      "concept_id": "presente_vs_estar_gerundio_russian_transfer",
+      "difficulty": 2,
+      "id": "q6",
+      "signature": "fd88341926d0bec9"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант правильно передаёт 'Я учусь в библиотеке сейчас'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Estoy estudiando en la biblioteca."
+        },
+        {
+          "id": "b",
+          "text": "Estudio en la biblioteca."
+        },
+        {
+          "id": "c",
+          "text": "Estoy estudiando en la biblioteca todos los días."
+        },
+        {
+          "id": "d",
+          "text": "Estudio en la biblioteca cada día."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Вариант 'a' (estoy estudiando) точно показывает действие в момент речи. Варианты 'b' и 'd' описывают привычку (простое настоящее время), 'c' ошибочно добавляет частоту к 'estar + gerundio'.",
+      "theory_block_id": "b6_theory_present_habitual_vs_progressive_now_errors",
+      "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.estar_plus_gerundio_happening_right_now",
+      "concept_id": "presente_vs_estar_gerundio_russian_transfer",
+      "difficulty": 3,
+      "id": "q7",
+      "signature": "4cac3869e063776e"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант НЕ является правильным для выражения 'сейчас понимаю'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ahora lo entiendo."
+        },
+        {
+          "id": "b",
+          "text": "Estoy entendiendo ahora."
+        },
+        {
+          "id": "c",
+          "text": "Ahora lo comprendo."
+        },
+        {
+          "id": "d",
+          "text": "Estoy comprendiendo ahora."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Вариант 'b' (estoy entendiendo) неправильно использует 'estar + gerundio' для глагола восприятия ('entender'). Правильно — нейтральное 'Ahora lo entiendo' или 'Ahora lo comprendo', как в 'a' и 'c'. Вариант 'd' аналогичен ошибке.",
+      "theory_block_id": "b6_theory_present_habitual_vs_progressive_now_errors",
+      "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.estar_plus_gerundio_happening_right_now",
+      "concept_id": "presente_vs_estar_gerundio_russian_transfer",
+      "difficulty": 4,
+      "id": "q8",
+      "signature": "1a7c801551b053e3"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант показывает контраст между привычкой и действием сейчас?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Trabajo en una tienda los lunes."
+        },
+        {
+          "id": "b",
+          "text": "Trabajo en una tienda ahora."
+        },
+        {
+          "id": "c",
+          "text": "Estoy trabajando en una tienda ahora."
+        },
+        {
+          "id": "d",
+          "text": "Estoy trabajando en una tienda los lunes."
+        }
+      ],
+      "correct_answer": "c",
+      "explanation": "Вариант 'c' (estoy trabajando) правильно показывает действие сейчас. Вариант 'a' — привычка (простое настоящее), 'b' ошибочно использует простое настоящее для действия сейчас, 'd' неправильно сочетает 'estar + gerundio' с частотным маркером 'los lunes'.",
+      "theory_block_id": "b6_theory_present_habitual_vs_progressive_now_errors",
+      "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.estar_plus_gerundio_happening_right_now",
+      "concept_id": "presente_vs_estar_gerundio_russian_transfer",
+      "difficulty": 3,
+      "id": "q9",
+      "signature": "4c9490674ea95787"
+    }
+  ],
+  "meta": {
+    "generated_at": "2026-04-25T17:19:05Z",
+    "source": "llm-only",
+    "questions_per_block": 10,
+    "chapter_number_filter": 40,
+    "block_number_filter": 6,
+    "append": true
+  }
+}

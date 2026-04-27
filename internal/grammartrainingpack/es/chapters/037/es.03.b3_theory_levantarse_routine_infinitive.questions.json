@@ -1,0 +1,285 @@
+{
+  "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.reflexive_verbs_llamarse_levantarse_sentirse",
+  "theory_block_id": "b3_theory_levantarse_routine_infinitive",
+  "course_version": "1.0.0",
+  "questions": [
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно сказать 'Я встаю в восемь утра'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Me levanto a las ocho."
+        },
+        {
+          "id": "b",
+          "text": "Levanto a las ocho."
+        },
+        {
+          "id": "c",
+          "text": "Se levanto a las ocho."
+        },
+        {
+          "id": "d",
+          "text": "Me levantarse a las ocho."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Правильный вариант использует возвратное местоимение 'me' для первого лица и спрягаемую форму глагола. Вариант 'b' без возвратного глагола, 'c' содержит ошибочное местоимение, 'd' — инфинитив вместо спрягаемой формы.",
+      "theory_block_id": "b3_theory_levantarse_routine_infinitive",
+      "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.reflexive_verbs_llamarse_levantarse_sentirse",
+      "concept_id": "reflexive_levantarse_routine",
+      "difficulty": 2,
+      "id": "q1",
+      "signature": "083ba9962c931fa8"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно написать 'мне нужно встать рано'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Tengo que levantarme temprano."
+        },
+        {
+          "id": "b",
+          "text": "Tengo que levanto temprano."
+        },
+        {
+          "id": "c",
+          "text": "Tengo que levantarse temprano."
+        },
+        {
+          "id": "d",
+          "text": "Tengo que levantar temprano."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "После 'tener que' используется инфинитив с возвратным местоимением для первого лица 'levantarme'. Вариант 'b' содержит спрягаемую форму, 'c' — для третьего лица, 'd' — без возвратного глагола.",
+      "theory_block_id": "b3_theory_levantarse_routine_infinitive",
+      "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.reflexive_verbs_llamarse_levantarse_sentirse",
+      "concept_id": "reflexive_levantarse_routine",
+      "difficulty": 2,
+      "id": "q2",
+      "signature": "5892b3d5f6a47881"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант содержит ошибку в использовании глагола 'levantarse'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ella se levanta a las siete."
+        },
+        {
+          "id": "b",
+          "text": "Tengo que levantarme temprano."
+        },
+        {
+          "id": "c",
+          "text": "El levanta a las ocho."
+        },
+        {
+          "id": "d",
+          "text": "Nosotros nos levantamos temprano."
+        }
+      ],
+      "correct_answer": "c",
+      "explanation": "Вариант 'c' неправильный: 'levanta' без 'se' означает 'поднимает' (не 'встает'). Остальные варианты соответствуют правилу возвратного глагола.",
+      "theory_block_id": "b3_theory_levantarse_routine_infinitive",
+      "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.reflexive_verbs_llamarse_levantarse_sentirse",
+      "concept_id": "reflexive_levantarse_routine",
+      "difficulty": 3,
+      "id": "q3",
+      "signature": "90d543522d4aa84b"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно написать 'встать' в инфинитиве для первого лица?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "levantarse"
+        },
+        {
+          "id": "b",
+          "text": "levantarme"
+        },
+        {
+          "id": "c",
+          "text": "levantarte"
+        },
+        {
+          "id": "d",
+          "text": "levantar"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Для первого лица в инфинитиве добавляется 'me', поэтому правильный вариант — 'levantarme'. 'Levantarse' — общая форма, но в контексте с местоимением требуется 'levantarme'.",
+      "theory_block_id": "b3_theory_levantarse_routine_infinitive",
+      "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.reflexive_verbs_llamarse_levantarse_sentirse",
+      "concept_id": "reflexive_levantarse_routine",
+      "difficulty": 1,
+      "id": "q4",
+      "signature": "2f8f461a4fcf96f9"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно сказать 'Вы встаете рано'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Te levantas temprano."
+        },
+        {
+          "id": "b",
+          "text": "Se levantas temprano."
+        },
+        {
+          "id": "c",
+          "text": "Me levantas temprano."
+        },
+        {
+          "id": "d",
+          "text": "Levantas temprano."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Для второго лица (вы) используется 'te', поэтому правильный вариант — 'te levantas'. Вариант 'b' использует 'se' для третьего лица, 'c' — 'me' для первого лица, 'd' — без возвратного глагола.",
+      "theory_block_id": "b3_theory_levantarse_routine_infinitive",
+      "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.reflexive_verbs_llamarse_levantarse_sentirse",
+      "concept_id": "reflexive_levantarse_routine",
+      "difficulty": 2,
+      "id": "q5",
+      "signature": "e0c98713e774471b"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно сказать 'Мы встаем рано'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Nos levantamos temprano."
+        },
+        {
+          "id": "b",
+          "text": "Me levantamos temprano."
+        },
+        {
+          "id": "c",
+          "text": "Se levantamos temprano."
+        },
+        {
+          "id": "d",
+          "text": "Levantamos temprano."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Для первого лица множественного числа используется 'nos', поэтому правильный вариант — 'nos levantamos'. Варианты 'b' и 'c' используют неправильные местоимения, 'd' — без возвратного глагола.",
+      "theory_block_id": "b3_theory_levantarse_routine_infinitive",
+      "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.reflexive_verbs_llamarse_levantarse_sentirse",
+      "concept_id": "reflexive_levantarse_routine",
+      "difficulty": 1,
+      "id": "q6",
+      "signature": "c5051e4ea87221d3"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант не соответствует правилу возвратного глагола?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ella se levanta a las siete."
+        },
+        {
+          "id": "b",
+          "text": "Tengo que levantarme a las ocho."
+        },
+        {
+          "id": "c",
+          "text": "Ella levanta a las nueve."
+        },
+        {
+          "id": "d",
+          "text": "Tú te levantas temprano."
+        }
+      ],
+      "correct_answer": "c",
+      "explanation": "Вариант 'c' неправильный: 'levanta' без 'se' означает 'поднимает', а не 'встает'. Остальные варианты верны по правилу возвратного глагола.",
+      "theory_block_id": "b3_theory_levantarse_routine_infinitive",
+      "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.reflexive_verbs_llamarse_levantarse_sentirse",
+      "concept_id": "reflexive_levantarse_routine",
+      "difficulty": 3,
+      "id": "q7",
+      "signature": "9e41d701999c5ecb"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно написать 'встать' в инфинитиве для третьего лица?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "levantarse"
+        },
+        {
+          "id": "b",
+          "text": "levantarme"
+        },
+        {
+          "id": "c",
+          "text": "levantarte"
+        },
+        {
+          "id": "d",
+          "text": "levantar"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Для третьего лица инфинитив пишется как 'levantarse'. Остальные варианты относятся к другим лицам (первое, второе, без возвратного).",
+      "theory_block_id": "b3_theory_levantarse_routine_infinitive",
+      "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.reflexive_verbs_llamarse_levantarse_sentirse",
+      "concept_id": "reflexive_levantarse_routine",
+      "difficulty": 1,
+      "id": "q8",
+      "signature": "8d8d25c3fa86cfe4"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какая ошибка в предложении 'Ella tiene que levantar a las siete'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Нужно использовать 'levantarse' вместо 'levantar'."
+        },
+        {
+          "id": "b",
+          "text": "Нужно добавить 'me' после 'tener que'."
+        },
+        {
+          "id": "c",
+          "text": "Правильно, нет ошибки."
+        },
+        {
+          "id": "d",
+          "text": "Нужно использовать 'levantarme'."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "После 'tener que' должно быть 'levantarse' (инфинитив с 'se'), а не 'levantar' без возвратного. Вариант 'a' правильно указывает на ошибку.",
+      "theory_block_id": "b3_theory_levantarse_routine_infinitive",
+      "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.reflexive_verbs_llamarse_levantarse_sentirse",
+      "concept_id": "reflexive_levantarse_routine",
+      "difficulty": 3,
+      "id": "q9",
+      "signature": "850dc24e6cbb532e"
+    }
+  ],
+  "meta": {
+    "generated_at": "2026-04-25T16:31:21Z",
+    "source": "llm-only",
+    "questions_per_block": 10,
+    "chapter_number_filter": 37,
+    "block_number_filter": 3,
+    "append": true
+  }
+}

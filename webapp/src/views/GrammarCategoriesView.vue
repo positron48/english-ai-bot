@@ -2,6 +2,13 @@
   <div class="grammar-categories">
     <div class="header-section">
       <h1>{{ t('grammar.courseTitle') || 'Grammar Course' }}</h1>
+      <router-link
+        v-if="grammarTrainingAvailable"
+        to="/learning/grammar/training"
+        class="btn btn-primary grammar-training-nav-btn"
+      >
+        {{ t('grammar.trainingTitle') || 'Grammar Training' }}
+      </router-link>
       <router-link 
         v-if="settingsLoaded && !hidePlacementTestButton"
         to="/learning/grammar/placement-test" 
@@ -259,6 +266,7 @@ const statistics = ref<{
 } | null>(null)
 const hidePlacementTestButton = ref(true) // По умолчанию скрыта, пока не загрузим данные
 const settingsLoaded = ref(false) // Флаг загрузки настроек
+const grammarTrainingAvailable = ref(false)
 
 // Computed properties for statistics
 const totalChapters = computed(() => {
@@ -345,15 +353,17 @@ const loadCategories = async () => {
   loading.value = true
   error.value = null
   try {
-    const [categoriesData, statsData] = await Promise.all([
+    const [categoriesData, statsData, trainingData] = await Promise.all([
       apiClient.request('/api/learning/grammar/categories'),
-      apiClient.request('/api/learning/grammar/statistics')
+      apiClient.request('/api/learning/grammar/statistics'),
+      apiClient.request('/api/learning/grammar/training/availability')
     ])
     
     const loadedCategories = (categoriesData as { categories: Category[] }).categories || []
     // can_access comes from the API (considers placement test opened_sections + previous category passed)
     categories.value = loadedCategories
     statistics.value = statsData as NonNullable<typeof statistics.value>
+    grammarTrainingAvailable.value = !!(trainingData as any)?.grammar_training?.available
     // Устанавливаем настройку только после загрузки данных
     hidePlacementTestButton.value = statistics.value?.hide_placement_test_button || false
     settingsLoaded.value = true
@@ -389,6 +399,22 @@ onMounted(() => {
   margin: 0;
 }
 
+/* router-link = <a>: явно как у btn-placement-test — белый текст, без подчёркивания */
+.grammar-training-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: #fff;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.grammar-training-nav-btn:hover {
+  color: #fff;
+  text-decoration: none;
+}
+
 .btn-placement-test {
   display: flex;
   align-items: center;
@@ -416,7 +442,8 @@ onMounted(() => {
     align-items: flex-start;
   }
   
-  .btn-placement-test {
+  .btn-placement-test,
+  .grammar-training-nav-btn {
     width: 100%;
     justify-content: center;
   }

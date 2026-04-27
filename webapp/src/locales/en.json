@@ -23,7 +23,9 @@
     "noItemsFound": "No items found.",
     "today": "Today",
     "yesterday": "Yesterday",
-    "from": "From"
+    "from": "From",
+    "next": "Next",
+    "finish": "Finish"
   },
   "app": {
     "titleEnInstance": "English Bot",
@@ -456,7 +458,14 @@
     "noQuestionsAvailable": "No questions available for the placement test.",
     "placementTest": "Placement Test",
     "placementTestDescription": "This test will help determine your current grammar level. Answer 25 questions from different topics, and we'll unlock the appropriate sections for you.",
-    "loadingQuestion": "Loading question..."
+    "loadingQuestion": "Loading question...",
+    "theoryBlock": "Theoretical block",
+    "theoryFooterCategory": "Category",
+    "theoryFooterChapter": "Chapter",
+    "theoryFooterLevel": "Level",
+    "trainingTitle": "Grammar Training",
+    "trainingDone": "Session completed.",
+    "trainingUnavailable": "Grammar training is not available for this course yet."
   },
   "errors": {
     "unauthorized": "Unauthorized",

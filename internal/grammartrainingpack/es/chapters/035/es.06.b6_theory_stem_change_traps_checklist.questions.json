@@ -1,0 +1,285 @@
+{
+  "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.stem_changing_verbs_e_ie_o_ue_e",
+  "theory_block_id": "b6_theory_stem_change_traps_checklist",
+  "course_version": "1.0.0",
+  "questions": [
+    {
+      "type": "mcq_single",
+      "prompt": "Какая форма глагола *preferir* в 1-м лице единственного числа?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "prefiero"
+        },
+        {
+          "id": "b",
+          "text": "prefiere"
+        },
+        {
+          "id": "c",
+          "text": "prefieren"
+        },
+        {
+          "id": "d",
+          "text": "prefero"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Чередование e → ie в глаголе *preferir* даёт форму *prefiero* в 1-м лице.",
+      "theory_block_id": "b6_theory_stem_change_traps_checklist",
+      "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.stem_changing_verbs_e_ie_o_ue_e",
+      "concept_id": "stem_change_russian_traps_checklist",
+      "difficulty": 2,
+      "id": "q1",
+      "signature": "bc1b026d88a25e31"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какая форма глагола *pedir* в 1-м лице единственного числа?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "pido"
+        },
+        {
+          "id": "b",
+          "text": "piedo"
+        },
+        {
+          "id": "c",
+          "text": "pides"
+        },
+        {
+          "id": "d",
+          "text": "piden"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Глагол *pedir* требует чередования e → i, поэтому правильная форма — *pido*.",
+      "theory_block_id": "b6_theory_stem_change_traps_checklist",
+      "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.stem_changing_verbs_e_ie_o_ue_e",
+      "concept_id": "stem_change_russian_traps_checklist",
+      "difficulty": 2,
+      "id": "q2",
+      "signature": "ad5efece2e213670"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какая форма глагола *sentir* в 1-м лице единственного числа?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "siento"
+        },
+        {
+          "id": "b",
+          "text": "siente"
+        },
+        {
+          "id": "c",
+          "text": "sienten"
+        },
+        {
+          "id": "d",
+          "text": "sento"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Для глагола *sentir* чередование e → i даёт форму *siento* в 1-м лице.",
+      "theory_block_id": "b6_theory_stem_change_traps_checklist",
+      "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.stem_changing_verbs_e_ie_o_ue_e",
+      "concept_id": "stem_change_russian_traps_checklist",
+      "difficulty": 2,
+      "id": "q3",
+      "signature": "a4e10136f2c855e0"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какая форма глагола *poder* в 1-м лице единственного числа?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "puedo"
+        },
+        {
+          "id": "b",
+          "text": "puedes"
+        },
+        {
+          "id": "c",
+          "text": "puede"
+        },
+        {
+          "id": "d",
+          "text": "podéis"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Глагол *poder* имеет чередование o → ue, поэтому в 1-м лице — *puedo*.",
+      "theory_block_id": "b6_theory_stem_change_traps_checklist",
+      "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.stem_changing_verbs_e_ie_o_ue_e",
+      "concept_id": "stem_change_russian_traps_checklist",
+      "difficulty": 2,
+      "id": "q4",
+      "signature": "60e8e822b9e3bbd6"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какая форма глагола *volver* в 1-м лице единственного числа?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "vuelvo"
+        },
+        {
+          "id": "b",
+          "text": "vuelves"
+        },
+        {
+          "id": "c",
+          "text": "vuelve"
+        },
+        {
+          "id": "d",
+          "text": "volvemos"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Для глагола *volver* чередование o → ue даёт форму *vuelvo* в 1-м лице.",
+      "theory_block_id": "b6_theory_stem_change_traps_checklist",
+      "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.stem_changing_verbs_e_ie_o_ue_e",
+      "concept_id": "stem_change_russian_traps_checklist",
+      "difficulty": 2,
+      "id": "q5",
+      "signature": "b6b0f58946cacaaf"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какая форма глагола *querer* в 1-м лице множественного числа?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "queremos"
+        },
+        {
+          "id": "b",
+          "text": "quieren"
+        },
+        {
+          "id": "c",
+          "text": "quiero"
+        },
+        {
+          "id": "d",
+          "text": "quiere"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "В форме *nosotros* чередование не применяется, поэтому правильная форма — *queremos*.",
+      "theory_block_id": "b6_theory_stem_change_traps_checklist",
+      "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.stem_changing_verbs_e_ie_o_ue_e",
+      "concept_id": "stem_change_russian_traps_checklist",
+      "difficulty": 3,
+      "id": "q6",
+      "signature": "3306a85f535f1c8e"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какая форма глагола *preferir* в 1-м лице множественного числа?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "preferimos"
+        },
+        {
+          "id": "b",
+          "text": "prefieren"
+        },
+        {
+          "id": "c",
+          "text": "prefiero"
+        },
+        {
+          "id": "d",
+          "text": "prefiere"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Для *preferir* в *nosotros* чередование не применяется, поэтому *preferimos*.",
+      "theory_block_id": "b6_theory_stem_change_traps_checklist",
+      "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.stem_changing_verbs_e_ie_o_ue_e",
+      "concept_id": "stem_change_russian_traps_checklist",
+      "difficulty": 3,
+      "id": "q7",
+      "signature": "6c575a5f1823eb0e"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какая форма глагола *pedir* в 1-м лице множественного числа?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "pedimos"
+        },
+        {
+          "id": "b",
+          "text": "piden"
+        },
+        {
+          "id": "c",
+          "text": "pides"
+        },
+        {
+          "id": "d",
+          "text": "pido"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "В форме *nosotros* глагол *pedir* не меняет корень, поэтому правильная форма — *pedimos*.",
+      "theory_block_id": "b6_theory_stem_change_traps_checklist",
+      "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.stem_changing_verbs_e_ie_o_ue_e",
+      "concept_id": "stem_change_russian_traps_checklist",
+      "difficulty": 3,
+      "id": "q8",
+      "signature": "4d0a47d826bf1360"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какая форма глагола *sentir* в 1-м лице множественного числа?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "sentimos"
+        },
+        {
+          "id": "b",
+          "text": "sienten"
+        },
+        {
+          "id": "c",
+          "text": "sientes"
+        },
+        {
+          "id": "d",
+          "text": "siento"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Для *sentir* в *nosotros* чередование не применяется, поэтому *sentimos*.",
+      "theory_block_id": "b6_theory_stem_change_traps_checklist",
+      "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.stem_changing_verbs_e_ie_o_ue_e",
+      "concept_id": "stem_change_russian_traps_checklist",
+      "difficulty": 3,
+      "id": "q9",
+      "signature": "7d52c09405a8a945"
+    }
+  ],
+  "meta": {
+    "generated_at": "2026-04-25T16:08:06Z",
+    "source": "llm-only",
+    "questions_per_block": 10,
+    "chapter_number_filter": 35,
+    "block_number_filter": 6,
+    "append": true
+  }
+}
