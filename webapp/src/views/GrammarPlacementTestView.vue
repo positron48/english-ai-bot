@@ -155,6 +155,7 @@
           :ref="el => setQuestionRef(currentQuestionIndex, el)"
           :question="currentQuestion"
           :show-answers="false"
+          :show-theory-help-button="false"
           :initial-answer="answers.get(currentQuestionIndex)"
           :chapter-title="currentQuestion.placement_chapter_title"
           @answer="handleAnswerWithAutoNext(currentQuestionIndex, $event)"

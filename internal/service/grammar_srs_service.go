@@ -39,11 +39,11 @@ func (s *GrammarService) GetGrammarTrainingAvailability(ctx context.Context, use
 	if s.TrainingPackRepo == nil {
 		return out, nil
 	}
-	ok, count, err := s.TrainingPackRepo.HasAnyQuestions()
+	byBlock, err := s.TrainingPackRepo.QuestionsByTheoryBlock()
 	if err != nil {
 		return nil, err
 	}
-	if !ok || count == 0 {
+	if len(byBlock) == 0 {
 		return out, nil
 	}
 	allowedByChapter, err := s.allowedTrainingChapters(ctx, userID)
@@ -52,10 +52,6 @@ func (s *GrammarService) GetGrammarTrainingAvailability(ctx context.Context, use
 	}
 	if len(allowedByChapter) == 0 {
 		return out, nil
-	}
-	byBlock, err := s.TrainingPackRepo.QuestionsByTheoryBlock()
-	if err != nil {
-		return nil, err
 	}
 	filtered := s.filterBlocksByAllowedChapters(byBlock, allowedByChapter)
 	totalQuestions := 0
@@ -110,12 +106,12 @@ func (s *GrammarService) StartGrammarSrsSession(ctx context.Context, userID int6
 		due, err := s.SRSRepo.ListDueMemories(userID, s.learning.TargetLang, s.learning.GrammarBundleID, time.Now(), limit*3)
 		if err == nil {
 			for _, m := range due {
-				if len(selectedBlocks) >= limit {
-					break
-				}
 				if _, exists := byBlock[m.TheoryBlockID]; exists {
 					selectedBlocks = append(selectedBlocks, m.TheoryBlockID)
 				}
+			}
+			if len(selectedBlocks) > limit {
+				selectedBlocks = selectedBlocks[:limit]
 			}
 		}
 	}
@@ -132,20 +128,15 @@ func (s *GrammarService) StartGrammarSrsSession(ctx context.Context, userID int6
 			}
 		}
 		rand.Shuffle(len(remaining), func(i, j int) { remaining[i], remaining[j] = remaining[j], remaining[i] })
-		for _, id := range remaining {
-			if len(selectedBlocks) >= limit {
-				break
-			}
-			selectedBlocks = append(selectedBlocks, id)
+		selectedBlocks = append(selectedBlocks, remaining...)
+		if len(selectedBlocks) > limit {
+			selectedBlocks = selectedBlocks[:limit]
 		}
 	}
 
 	items := make([]GrammarSrsSessionItem, 0, len(selectedBlocks))
 	for _, theoryBlockID := range selectedBlocks {
 		qs := byBlock[theoryBlockID]
-		if len(qs) == 0 {
-			continue
-		}
 		q := qs[rand.Intn(len(qs))]
 		items = append(items, GrammarSrsSessionItem{Question: q})
 	}

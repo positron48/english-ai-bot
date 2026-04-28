@@ -272,10 +272,310 @@
       "difficulty": 1,
       "id": "q9",
       "signature": "28308df041dfb560"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой регион чаще использует форму *he bebido* в предложении 'Hoy he bebido café'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Испания"
+        },
+        {
+          "id": "b",
+          "text": "Латинская Америка"
+        },
+        {
+          "id": "c",
+          "text": "Оба региона"
+        },
+        {
+          "id": "d",
+          "text": "Ни один регион"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "В современной Испании в контекстах, связанных с текущим днем, чаще используется pretérito perfecto, тогда как во многих странах Латинской Америки предпочитают indefinido.",
+      "theory_block_id": "b1_theory_regional_map_perfecto_vs_indefinido_a2",
+      "chapter_id": "es.grammar.past_preterito_perfecto.preterito_perfecto_spain_latin_america_changes",
+      "concept_id": "regional_map_perfecto_vs_indefinido_a2",
+      "difficulty": 2,
+      "id": "q10",
+      "signature": "a149c9f6ed4789e2"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой регион чаще использует форму *vi* в предложении 'Hoy vi la película'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Испания"
+        },
+        {
+          "id": "b",
+          "text": "Латинская Америка"
+        },
+        {
+          "id": "c",
+          "text": "Оба региона"
+        },
+        {
+          "id": "d",
+          "text": "Ни один регион"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Во многих странах Латинской Америки в повседневной речи для контекстов, связанных с текущим днем, чаще используется indefinido, тогда как в Испании предпочтительнее perfecto.",
+      "theory_block_id": "b1_theory_regional_map_perfecto_vs_indefinido_a2",
+      "chapter_id": "es.grammar.past_preterito_perfecto.preterito_perfecto_spain_latin_america_changes",
+      "concept_id": "regional_map_perfecto_vs_indefinido_a2",
+      "difficulty": 2,
+      "id": "q11",
+      "signature": "bc3cee7a613b0985"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой регион чаще использует форму *he hecho* в предложении 'Hoy he hecho la tarea'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Испания"
+        },
+        {
+          "id": "b",
+          "text": "Латинская Америка"
+        },
+        {
+          "id": "c",
+          "text": "Оба региона"
+        },
+        {
+          "id": "d",
+          "text": "Ни один регион"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "В Испании для действий, связанных с текущим периодом (например, сегодня), чаще применяется pretérito perfecto, тогда как в Латинской Америке предпочитают indefinido.",
+      "theory_block_id": "b1_theory_regional_map_perfecto_vs_indefinido_a2",
+      "chapter_id": "es.grammar.past_preterito_perfecto.preterito_perfecto_spain_latin_america_changes",
+      "concept_id": "regional_map_perfecto_vs_indefinido_a2",
+      "difficulty": 2,
+      "id": "q12",
+      "signature": "8f2627278cee6b93"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой регион чаще использует форму *hice* в предложении 'Hoy hice la tarea'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Испания"
+        },
+        {
+          "id": "b",
+          "text": "Латинская Америка"
+        },
+        {
+          "id": "c",
+          "text": "Оба региона"
+        },
+        {
+          "id": "d",
+          "text": "Ни один регион"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Во многих странах Латинской Америки для описания действий, связанных с текущим днем, чаще используется indefinido, что не является ошибкой, а отражает региональную норму.",
+      "theory_block_id": "b1_theory_regional_map_perfecto_vs_indefinido_a2",
+      "chapter_id": "es.grammar.past_preterito_perfecto.preterito_perfecto_spain_latin_america_changes",
+      "concept_id": "regional_map_perfecto_vs_indefinido_a2",
+      "difficulty": 2,
+      "id": "q13",
+      "signature": "d435ff8e0ede86a0"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой регион чаще использует форму *he escrito* в предложении 'Hoy he escrito una carta'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Испания"
+        },
+        {
+          "id": "b",
+          "text": "Латинская Америка"
+        },
+        {
+          "id": "c",
+          "text": "Оба региона"
+        },
+        {
+          "id": "d",
+          "text": "Ни один регион"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "В Испании для открытых периодов (например, сегодня) активно используется pretérito perfecto, тогда как в Латинской Америке чаще выбирают indefinido в таких контекстах.",
+      "theory_block_id": "b1_theory_regional_map_perfecto_vs_indefinido_a2",
+      "chapter_id": "es.grammar.past_preterito_perfecto.preterito_perfecto_spain_latin_america_changes",
+      "concept_id": "regional_map_perfecto_vs_indefinido_a2",
+      "difficulty": 2,
+      "id": "q14",
+      "signature": "4e2a6b7e0cc182f1"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой регион чаще использует форму *escribí* в предложении 'Hoy escribí una carta'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Испания"
+        },
+        {
+          "id": "b",
+          "text": "Латинская Америка"
+        },
+        {
+          "id": "c",
+          "text": "Оба региона"
+        },
+        {
+          "id": "d",
+          "text": "Ни один регион"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "В Латинской Америке для повседневных ситуаций, связанных с текущим днем, чаще используется indefinido, что соответствует местной грамматической традиции.",
+      "theory_block_id": "b1_theory_regional_map_perfecto_vs_indefinido_a2",
+      "chapter_id": "es.grammar.past_preterito_perfecto.preterito_perfecto_spain_latin_america_changes",
+      "concept_id": "regional_map_perfecto_vs_indefinido_a2",
+      "difficulty": 2,
+      "id": "q15",
+      "signature": "8532d751af05f451"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой регион чаще использует форму *he aprendido* в предложении 'Hoy he aprendido algo nuevo'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Испания"
+        },
+        {
+          "id": "b",
+          "text": "Латинская Америка"
+        },
+        {
+          "id": "c",
+          "text": "Оба региона"
+        },
+        {
+          "id": "d",
+          "text": "Ни один регион"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "В Испании для действий, завершенных в текущем периоде, предпочитается pretérito perfecto, тогда как в Латинской Америке чаще используют indefinido.",
+      "theory_block_id": "b1_theory_regional_map_perfecto_vs_indefinido_a2",
+      "chapter_id": "es.grammar.past_preterito_perfecto.preterito_perfecto_spain_latin_america_changes",
+      "concept_id": "regional_map_perfecto_vs_indefinido_a2",
+      "difficulty": 2,
+      "id": "q16",
+      "signature": "c5da85d71c3e1723"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой регион чаще использует форму *aprendí* в предложении 'Hoy aprendí algo nuevo'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Испания"
+        },
+        {
+          "id": "b",
+          "text": "Латинская Америка"
+        },
+        {
+          "id": "c",
+          "text": "Оба региона"
+        },
+        {
+          "id": "d",
+          "text": "Ни один регион"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Во многих странах Латинской Америки для описания недавних действий в текущем периоде чаще применяется indefinido, что не считается ошибкой.",
+      "theory_block_id": "b1_theory_regional_map_perfecto_vs_indefinido_a2",
+      "chapter_id": "es.grammar.past_preterito_perfecto.preterito_perfecto_spain_latin_america_changes",
+      "concept_id": "regional_map_perfecto_vs_indefinido_a2",
+      "difficulty": 2,
+      "id": "q17",
+      "signature": "1488e5568e721380"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой регион чаще использует форму *he llegado* в предложении 'Hoy he llegado tarde'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Испания"
+        },
+        {
+          "id": "b",
+          "text": "Латинская Америка"
+        },
+        {
+          "id": "c",
+          "text": "Оба региона"
+        },
+        {
+          "id": "d",
+          "text": "Ни один регион"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "В Испании для открытых периодов (например, сегодня) активно используется pretérito perfecto, что отражает местную грамматическую привычку.",
+      "theory_block_id": "b1_theory_regional_map_perfecto_vs_indefinido_a2",
+      "chapter_id": "es.grammar.past_preterito_perfecto.preterito_perfecto_spain_latin_america_changes",
+      "concept_id": "regional_map_perfecto_vs_indefinido_a2",
+      "difficulty": 2,
+      "id": "q18",
+      "signature": "7a19e0b94a514e4e"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой регион чаще использует форму *llegué* в предложении 'Hoy llegué tarde'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Испания"
+        },
+        {
+          "id": "b",
+          "text": "Латинская Америка"
+        },
+        {
+          "id": "c",
+          "text": "Оба региона"
+        },
+        {
+          "id": "d",
+          "text": "Ни один регион"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "В Латинской Америке для контекстов, связанных с текущим днем, чаще используется indefinido, что является нормой в региональной речи.",
+      "theory_block_id": "b1_theory_regional_map_perfecto_vs_indefinido_a2",
+      "chapter_id": "es.grammar.past_preterito_perfecto.preterito_perfecto_spain_latin_america_changes",
+      "concept_id": "regional_map_perfecto_vs_indefinido_a2",
+      "difficulty": 2,
+      "id": "q19",
+      "signature": "1fc65477309b5b37"
     }
   ],
   "meta": {
-    "generated_at": "2026-04-25T18:49:05Z",
+    "generated_at": "2026-04-28T10:16:12Z",
     "source": "llm-only",
     "questions_per_block": 10,
     "chapter_number_filter": 47,

@@ -170,7 +170,11 @@
     "failedLoadOptions": "Could not load answer options. Try refreshing the page.",
     "failedSubmitAnswer": "Could not submit your answer. Please try again.",
     "noActiveSession": "No active session. Tap \"Start training\" first.",
-    "failedNextCard": "Could not load the next card. Try refreshing the page."
+    "failedNextCard": "Could not load the next card. Try refreshing the page.",
+    "reportIssue": "Report issue",
+    "reportSent": "Reported",
+    "reportThanks": "Thanks, report sent.",
+    "reportFailed": "Could not send report. Try again."
   },
   "verbTraining": {
     "title": "Verb conjugation practice",

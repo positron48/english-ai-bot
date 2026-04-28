@@ -261,6 +261,10 @@ func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, stat
 			"user_card_id":   0,
 			"delay_ms":       0,
 			"direction":      "spell",
+			"word_card_id":   item.Spell.WordCardID,
+		}
+		if item.Spell.ReplacedUserCardID > 0 {
+			response["user_card_id"] = item.Spell.ReplacedUserCardID
 		}
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
@@ -303,6 +307,10 @@ func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, stat
 			"user_card_id":      0,
 			"delay_ms":          0,
 			"direction":         "type",
+			"word_card_id":      item.TypeChallenge.WordCardID,
+		}
+		if item.TypeChallenge.ReplacedUserCardID > 0 {
+			response["user_card_id"] = item.TypeChallenge.ReplacedUserCardID
 		}
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
@@ -386,13 +394,21 @@ func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, stat
 	}
 	// Return card data as JSON
 	response := map[string]interface{}{
-		"question":     questionText,
-		"card_index":   state.CurrentIndex + 1,
-		"total_cards":  len(state.Queue),
-		"session_id":   state.SessionID,
-		"user_card_id": card.UserCard.ID,
-		"delay_ms":     optionsDelayMS,
-		"direction":    string(card.UserCard.Direction),
+		"question":         questionText,
+		"card_index":       state.CurrentIndex + 1,
+		"total_cards":      len(state.Queue),
+		"session_id":       state.SessionID,
+		"user_card_id":     card.UserCard.ID,
+		"delay_ms":         optionsDelayMS,
+		"direction":        string(card.UserCard.Direction),
+		"word_card_id":     card.TrainingCard.WordCardID,
+		"training_card_id": card.TrainingCard.ID,
+		"word_category": func() string {
+			if card.TrainingCard.POS != nil {
+				return *card.TrainingCard.POS
+			}
+			return ""
+		}(),
 	}
 	if morph != nil {
 		response["morph"] = morph

@@ -242,10 +242,190 @@
       "difficulty": 1,
       "id": "q8",
       "signature": "34cbd6af04e0d57e"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно сказать «Сегодня понедельник» на испанском?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Hoy es el lunes."
+        },
+        {
+          "id": "b",
+          "text": "Hoy es lunes."
+        },
+        {
+          "id": "c",
+          "text": "Hoy es un lunes."
+        },
+        {
+          "id": "d",
+          "text": "Hoy es los lunes."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "В календарной формуле *Hoy es [день недели]* артикль не используется, как в примере *Hoy es lunes*.",
+      "theory_block_id": "b3_theory_weekdays_months_calendar",
+      "chapter_id": "es.grammar.existence_location_possession.basic_time_date_weather_expressions",
+      "concept_id": "weekdays_months_calendar",
+      "difficulty": 1,
+      "id": "q9",
+      "signature": "a7a3163a43f0f710"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно выразить повторяемость «по понедельникам»?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Los lunes estudio español."
+        },
+        {
+          "id": "b",
+          "text": "El lunes estudio español."
+        },
+        {
+          "id": "c",
+          "text": "Un lunes estudio español."
+        },
+        {
+          "id": "d",
+          "text": "En lunes estudio español."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Для повторяемости используется конструкция *Los [день недели]*, как в примере *Los lunes estudio español*.",
+      "theory_block_id": "b3_theory_weekdays_months_calendar",
+      "chapter_id": "es.grammar.existence_location_possession.basic_time_date_weather_expressions",
+      "concept_id": "weekdays_months_calendar",
+      "difficulty": 1,
+      "id": "q10",
+      "signature": "94038185b903ba2f"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое предложение содержит ошибку в использовании дня недели?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Hoy es martes."
+        },
+        {
+          "id": "b",
+          "text": "Los martes trabajo desde дома."
+        },
+        {
+          "id": "c",
+          "text": "El viernes es mi день свободный."
+        },
+        {
+          "id": "d",
+          "text": "En mayo es мой день рождения."
+        }
+      ],
+      "correct_answer": "c",
+      "explanation": "Перед днём недели не используется артикль, поэтому *Viernes es mi día* вместо *El viernes*.",
+      "theory_block_id": "b3_theory_weekdays_months_calendar",
+      "chapter_id": "es.grammar.existence_location_possession.basic_time_date_weather_expressions",
+      "concept_id": "weekdays_months_calendar",
+      "difficulty": 2,
+      "id": "q11",
+      "signature": "143533e3778c8b0d"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое предложение правильно описывает повторяемость по субботам?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Los sábados visito a mis abuelos."
+        },
+        {
+          "id": "b",
+          "text": "El sábado visito a mis abuelos."
+        },
+        {
+          "id": "c",
+          "text": "Un sábado visito a mis abuelos."
+        },
+        {
+          "id": "d",
+          "text": "En sábado visito a mis abuelos."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Для повторяемости используется *Los [день]*, как в примере *Los sábados visito a mis abuelos*.",
+      "theory_block_id": "b3_theory_weekdays_months_calendar",
+      "chapter_id": "es.grammar.existence_location_possession.basic_time_date_weather_expressions",
+      "concept_id": "weekdays_months_calendar",
+      "difficulty": 1,
+      "id": "q12",
+      "signature": "f81f60558f95578a"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое предложение содержит ошибку в написании месяца?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "En junio es verano."
+        },
+        {
+          "id": "b",
+          "text": "En Julio hago отпуск."
+        },
+        {
+          "id": "c",
+          "text": "En agosto visito друзей."
+        },
+        {
+          "id": "d",
+          "text": "En septiembre llueve много."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Месяц *julio* должен быть написан со строчной буквы, поэтому *en julio*.",
+      "theory_block_id": "b3_theory_weekdays_months_calendar",
+      "chapter_id": "es.grammar.existence_location_possession.basic_time_date_weather_expressions",
+      "concept_id": "weekdays_months_calendar",
+      "difficulty": 2,
+      "id": "q13",
+      "signature": "f2c5387ce6414e95"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какая фраза верна для выражения «Сегодня воскресенье»?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Hoy es domingo."
+        },
+        {
+          "id": "b",
+          "text": "Hoy es el domingo."
+        },
+        {
+          "id": "c",
+          "text": "Hoy es un domingo."
+        },
+        {
+          "id": "d",
+          "text": "Hoy es los domingos."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "В календарной формуле *Hoy es [день]* артикль не используется, как в примере *Hoy es domingo*.",
+      "theory_block_id": "b3_theory_weekdays_months_calendar",
+      "chapter_id": "es.grammar.existence_location_possession.basic_time_date_weather_expressions",
+      "concept_id": "weekdays_months_calendar",
+      "difficulty": 1,
+      "id": "q14",
+      "signature": "17dbbef0fb290b0b"
     }
   ],
   "meta": {
-    "generated_at": "2026-04-25T13:31:23Z",
+    "generated_at": "2026-04-28T09:21:02Z",
     "source": "llm-only",
     "questions_per_block": 10,
     "chapter_number_filter": 26,

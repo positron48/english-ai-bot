@@ -1,9 +1,9 @@
 {
   "ok": true,
-  "generated_at": "2026-04-26T11:29:25Z",
+  "generated_at": "2026-04-28T11:45:49Z",
   "mode": "llm-only",
   "validation": {
-    "generated_at": "2026-04-26T11:29:24Z",
+    "generated_at": "2026-04-28T11:45:49Z",
     "ok": true,
     "errors": [],
     "chapters": {
@@ -14,102 +14,102 @@
       },
       "es.grammar.orientation_alphabet_sounds.vowels_syllables_diphthongs_hiatus": {
         "errors": [],
-        "accepted_questions": 80,
+        "accepted_questions": 88,
         "duplicates_removed": 0
       },
       "es.grammar.orientation_alphabet_sounds.stress_rules_written_accents": {
         "errors": [],
-        "accepted_questions": 48,
+        "accepted_questions": 42,
         "duplicates_removed": 0
       },
       "es.grammar.orientation_alphabet_sounds.core_pronunciation_map_b_v_c_z_g": {
         "errors": [],
-        "accepted_questions": 42,
+        "accepted_questions": 46,
         "duplicates_removed": 0
       },
       "es.grammar.orientation_alphabet_sounds.intonation_inverted_question_exclamation_marks": {
         "errors": [],
-        "accepted_questions": 46,
+        "accepted_questions": 84,
         "duplicates_removed": 0
       },
       "es.grammar.orientation_alphabet_sounds.build_read_decode_words_read_mini_sentences_aloud": {
         "errors": [],
-        "accepted_questions": 40,
+        "accepted_questions": 88,
         "duplicates_removed": 0
       },
       "es.grammar.noun_gender_articles_agreement.noun_gender_masculine_feminine_useful_heuristics": {
         "errors": [],
-        "accepted_questions": 59,
+        "accepted_questions": 68,
         "duplicates_removed": 0
       },
       "es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes": {
         "errors": [],
-        "accepted_questions": 52,
+        "accepted_questions": 84,
         "duplicates_removed": 0
       },
       "es.grammar.noun_gender_articles_agreement.definite_indefinite_articles_el_la_los_las_un": {
         "errors": [],
-        "accepted_questions": 62,
+        "accepted_questions": 72,
         "duplicates_removed": 0
       },
       "es.grammar.noun_gender_articles_agreement.adjectives_gender_number_agreement": {
         "errors": [],
-        "accepted_questions": 58,
+        "accepted_questions": 76,
         "duplicates_removed": 0
       },
       "es.grammar.noun_gender_articles_agreement.demonstratives_este_ese_aquel_esto_eso_aquello": {
         "errors": [],
-        "accepted_questions": 56,
+        "accepted_questions": 86,
         "duplicates_removed": 0
       },
       "es.grammar.noun_gender_articles_agreement.numbers_0_100_basic_quantity_words": {
         "errors": [],
-        "accepted_questions": 48,
+        "accepted_questions": 91,
         "duplicates_removed": 0
       },
       "es.grammar.noun_gender_articles_agreement.build_speak_name_describe_objects_around_you": {
         "errors": [],
-        "accepted_questions": 59,
+        "accepted_questions": 68,
         "duplicates_removed": 0
       },
       "es.grammar.first_sentences_ser_pronouns.subject_pronouns_null_subjects_say_yo": {
         "errors": [],
-        "accepted_questions": 54,
+        "accepted_questions": 86,
         "duplicates_removed": 0
       },
       "es.grammar.first_sentences_ser_pronouns.forms_address_tu_usted_ustedes_vosotros_register": {
         "errors": [],
-        "accepted_questions": 51,
+        "accepted_questions": 90,
         "duplicates_removed": 0
       },
       "es.grammar.first_sentences_ser_pronouns.ser_identity_origin_profession_material_time": {
         "errors": [],
-        "accepted_questions": 61,
+        "accepted_questions": 70,
         "duplicates_removed": 0
       },
       "es.grammar.first_sentences_ser_pronouns.statements_yes_no_questions_negation_no": {
         "errors": [],
-        "accepted_questions": 55,
+        "accepted_questions": 80,
         "duplicates_removed": 0
       },
       "es.grammar.first_sentences_ser_pronouns.basic_question_words_que_quien_cual_donde_como": {
         "errors": [],
-        "accepted_questions": 60,
+        "accepted_questions": 76,
         "duplicates_removed": 0
       },
       "es.grammar.first_sentences_ser_pronouns.ser_plus_adjectives_personal_description_evaluation": {
         "errors": [],
-        "accepted_questions": 55,
+        "accepted_questions": 82,
         "duplicates_removed": 0
       },
       "es.grammar.first_sentences_ser_pronouns.build_speak_introduce_yourself_other_people": {
         "errors": [],
-        "accepted_questions": 59,
+        "accepted_questions": 90,
         "duplicates_removed": 0
       },
       "es.grammar.existence_location_possession.estar_location_temporary_states": {
         "errors": [],
-        "accepted_questions": 52,
+        "accepted_questions": 98,
         "duplicates_removed": 0
       },
       "es.grammar.existence_location_possession.hay_existence_introducing_new_things": {
@@ -134,22 +134,22 @@
       },
       "es.grammar.existence_location_possession.basic_time_date_weather_expressions": {
         "errors": [],
-        "accepted_questions": 56,
+        "accepted_questions": 72,
         "duplicates_removed": 0
       },
       "es.grammar.existence_location_possession.build_speak_describe_room_city_daily_schedule": {
         "errors": [],
-        "accepted_questions": 56,
+        "accepted_questions": 76,
         "duplicates_removed": 0
       },
       "es.grammar.present_regular_actions.infinitives_present_tense_endings_ar_er_ir": {
         "errors": [],
-        "accepted_questions": 58,
+        "accepted_questions": 75,
         "duplicates_removed": 0
       },
       "es.grammar.present_regular_actions.present_statements_regular_verbs": {
         "errors": [],
-        "accepted_questions": 56,
+        "accepted_questions": 67,
         "duplicates_removed": 0
       },
       "es.grammar.present_regular_actions.present_questions_where_subject_adverbs_go": {
@@ -164,12 +164,12 @@
       },
       "es.grammar.present_regular_actions.frequency_expressions_siempre_menudo_veces_nunca": {
         "errors": [],
-        "accepted_questions": 56,
+        "accepted_questions": 66,
         "duplicates_removed": 0
       },
       "es.grammar.present_regular_actions.spelling_change_verbs_sacar_pagar_empezar_like_basics": {
         "errors": [],
-        "accepted_questions": 54,
+        "accepted_questions": 82,
         "duplicates_removed": 0
       },
       "es.grammar.present_regular_actions.build_speak_my_day_habits_routines": {
@@ -179,32 +179,32 @@
       },
       "es.grammar.present_irregulars_reflexives_gustar.stem_changing_verbs_e_ie_o_ue_e": {
         "errors": [],
-        "accepted_questions": 59,
+        "accepted_questions": 69,
         "duplicates_removed": 0
       },
       "es.grammar.present_irregulars_reflexives_gustar.high_frequency_irregulars_ir_hacer_tener_venir_decir": {
         "errors": [],
-        "accepted_questions": 58,
+        "accepted_questions": 68,
         "duplicates_removed": 0
       },
       "es.grammar.present_irregulars_reflexives_gustar.reflexive_verbs_llamarse_levantarse_sentirse": {
         "errors": [],
-        "accepted_questions": 59,
+        "accepted_questions": 66,
         "duplicates_removed": 0
       },
       "es.grammar.present_irregulars_reflexives_gustar.gustar_encantar_interesar_liking_indirect_pattern": {
         "errors": [],
-        "accepted_questions": 59,
+        "accepted_questions": 69,
         "duplicates_removed": 0
       },
       "es.grammar.present_irregulars_reflexives_gustar.doler_faltar_quedar_verbs_like_gustar": {
         "errors": [],
-        "accepted_questions": 57,
+        "accepted_questions": 77,
         "duplicates_removed": 0
       },
       "es.grammar.present_irregulars_reflexives_gustar.estar_plus_gerundio_happening_right_now": {
         "errors": [],
-        "accepted_questions": 55,
+        "accepted_questions": 74,
         "duplicates_removed": 0
       },
       "es.grammar.present_irregulars_reflexives_gustar.present_simple_estar_plus_gerundio": {
@@ -219,17 +219,17 @@
       },
       "es.grammar.past_preterito_perfecto.haber_plus_participio_form_preterito_perfecto": {
         "errors": [],
-        "accepted_questions": 59,
+        "accepted_questions": 68,
         "duplicates_removed": 0
       },
       "es.grammar.past_preterito_perfecto.regular_irregular_participles": {
         "errors": [],
-        "accepted_questions": 58,
+        "accepted_questions": 64,
         "duplicates_removed": 0
       },
       "es.grammar.past_preterito_perfecto.meaning_experience_result_unfinished_time_periods": {
         "errors": [],
-        "accepted_questions": 57,
+        "accepted_questions": 73,
         "duplicates_removed": 0
       },
       "es.grammar.past_preterito_perfecto.markers_ya_todavia_no_alguna_vez_nunca_esta": {
@@ -239,7 +239,7 @@
       },
       "es.grammar.past_preterito_perfecto.preterito_perfecto_spain_latin_america_changes": {
         "errors": [],
-        "accepted_questions": 55,
+        "accepted_questions": 81,
         "duplicates_removed": 0
       },
       "es.grammar.past_preterito_perfecto.build_speak_recent_news_experience_results": {
@@ -249,12 +249,12 @@
       },
       "es.grammar.past_preterito_indefinido.regular_indefinido_endings": {
         "errors": [],
-        "accepted_questions": 52,
+        "accepted_questions": 82,
         "duplicates_removed": 0
       },
       "es.grammar.past_preterito_indefinido.spelling_changes_car_gar_zar_vowel_shifts": {
         "errors": [],
-        "accepted_questions": 54,
+        "accepted_questions": 72,
         "duplicates_removed": 0
       },
       "es.grammar.past_preterito_indefinido.core_irregulars_fue_tuvo_estuvo_hizo_dijo_pudo": {
@@ -264,12 +264,12 @@
       },
       "es.grammar.past_preterito_indefinido.time_markers_ayer_anoche_el_ano_pasado_en": {
         "errors": [],
-        "accepted_questions": 57,
+        "accepted_questions": 77,
         "duplicates_removed": 0
       },
       "es.grammar.past_preterito_indefinido.sequencing_events_simple_story": {
         "errors": [],
-        "accepted_questions": 51,
+        "accepted_questions": 76,
         "duplicates_removed": 0
       },
       "es.grammar.past_preterito_indefinido.build_speak_tell_happened_yesterday": {
@@ -280,6 +280,26 @@
       "es.grammar.complex_sentences_connecting.que_si_noun_clauses_after_saying_thinking_asking": {
         "errors": [],
         "accepted_questions": 54,
+        "duplicates_removed": 0
+      },
+      "es.grammar.past_imperfecto_contrast.imperfecto_background_repetition_description": {
+        "errors": [],
+        "accepted_questions": 60,
+        "duplicates_removed": 0
+      },
+      "es.grammar.past_imperfecto_contrast.imperfecto_forms_three_main_irregulars": {
+        "errors": [],
+        "accepted_questions": 77,
+        "duplicates_removed": 0
+      },
+      "es.grammar.past_imperfecto_contrast.indefinido_imperfecto_event_background": {
+        "errors": [],
+        "accepted_questions": 60,
+        "duplicates_removed": 0
+      },
+      "es.grammar.past_imperfecto_contrast.antes_siempre_de_nino_habitual_past": {
+        "errors": [],
+        "accepted_questions": 47,
         "duplicates_removed": 0
       }
     },

@@ -212,10 +212,250 @@
       "difficulty": 2,
       "id": "q7",
       "signature": "57006330c7427a26"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое предложение правильно показывает последовательность завершенных действий в прошлом?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ayer María salió de casa, compró leche y fue al trabajo."
+        },
+        {
+          "id": "b",
+          "text": "Ayer María sale de casa, compra leche y va al trabajo."
+        },
+        {
+          "id": "c",
+          "text": "Ayer María salía de casa, compraba leche y iba al trabajo."
+        },
+        {
+          "id": "d",
+          "text": "Ayer María salió de casa, compra leche y va al trabajo."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Все глаголы в прошедшем времени (salí, compró, fue) соответствуют правилу pretérito indefinido для последовательных действий. Остальные варианты содержат ошибки в времени.",
+      "theory_block_id": "b1_theory_story_spine_indefinido",
+      "chapter_id": "es.grammar.past_preterito_indefinido.sequencing_events_simple_story",
+      "concept_id": "story_spine_indefinido",
+      "difficulty": 2,
+      "id": "q8",
+      "signature": "669686cf0c5b30b8"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое предложение соответствует правилу «каждое действие продвигает сюжет»?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ayer Ana salió, compró pan y volvió a casa."
+        },
+        {
+          "id": "b",
+          "text": "Ayer Ana salió, compró pan y estaba cansada."
+        },
+        {
+          "id": "c",
+          "text": "Ayer Ana salió, compró pan y comía pan."
+        },
+        {
+          "id": "d",
+          "text": "Ayer Ana salió, compró pan y compra pan."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "В варианте a все действия завершены и двигают сюжет (выход, покупка, возвращение). Вариант b добавляет состояние (была уставшей), которое не продвигает сюжет.",
+      "theory_block_id": "b1_theory_story_spine_indefinido",
+      "chapter_id": "es.grammar.past_preterito_indefinido.sequencing_events_simple_story",
+      "concept_id": "story_spine_indefinido",
+      "difficulty": 3,
+      "id": "q9",
+      "signature": "60c22e8cea04b67d"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое предложение использует pretérito indefinido для последовательных действий?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ayer ellos llegaron, tomaron café y se fueron."
+        },
+        {
+          "id": "b",
+          "text": "Ayer ellos llegan, toman café y se van."
+        },
+        {
+          "id": "c",
+          "text": "Ayer ellos llegaron, tomaban café y se iban."
+        },
+        {
+          "id": "d",
+          "text": "Ayer ellos llegaron, toman café y se van."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Все глаголы в прошедшем времени (llegaron, tomaron, se fueron) соответствуют правилу. Остальные варианты содержат ошибки в времени.",
+      "theory_block_id": "b1_theory_story_spine_indefinido",
+      "chapter_id": "es.grammar.past_preterito_indefinido.sequencing_events_simple_story",
+      "concept_id": "story_spine_indefinido",
+      "difficulty": 2,
+      "id": "q10",
+      "signature": "a27d292a5b2cfad6"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант правильно описывает цепочку завершенных действий?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ayer Luis hizo ejercicio, comió y durmió."
+        },
+        {
+          "id": "b",
+          "text": "Ayer Luis hace ejercicio, come y duerme."
+        },
+        {
+          "id": "c",
+          "text": "Ayer Luis hacía ejercicio, comía y dormía."
+        },
+        {
+          "id": "d",
+          "text": "Ayer Luis hizo ejercicio, come y duerme."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Все действия в прошедшем времени (hizo, comió, durmió) показывают последовательность. Остальные варианты содержат ошибки в времени.",
+      "theory_block_id": "b1_theory_story_spine_indefinido",
+      "chapter_id": "es.grammar.past_preterito_indefinido.sequencing_events_simple_story",
+      "concept_id": "story_spine_indefinido",
+      "difficulty": 2,
+      "id": "q11",
+      "signature": "e4ed7628921d0dc5"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое предложение содержит только завершенные действия в прошлом?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ayer María leyó un libro, escribió una carta y salió."
+        },
+        {
+          "id": "b",
+          "text": "Ayer María lee un libro, escribe una carta y sale."
+        },
+        {
+          "id": "c",
+          "text": "Ayer María leía un libro, escribía una carta y salía."
+        },
+        {
+          "id": "d",
+          "text": "Ayer María leyó un libro, escribe una carta y sale."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Вариант a использует все глаголы в прошедшем времени. Остальные варианты содержат ошибки в времени (настоящее или имперфект).",
+      "theory_block_id": "b1_theory_story_spine_indefinido",
+      "chapter_id": "es.grammar.past_preterito_indefinido.sequencing_events_simple_story",
+      "concept_id": "story_spine_indefinido",
+      "difficulty": 2,
+      "id": "q12",
+      "signature": "99eff4d1fd60a99c"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант соответствует правилу «каждое действие должно продвигать сюжет»?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ayer Juan llegó, habló con amigos y se fue."
+        },
+        {
+          "id": "b",
+          "text": "Ayer Juan llegó, habló con amigos y estaba feliz."
+        },
+        {
+          "id": "c",
+          "text": "Ayer Juan llegó, hablaba con amigos y se fue."
+        },
+        {
+          "id": "d",
+          "text": "Ayer Juan llegó, habla con amigos y se va."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Вариант a показывает последовательные действия, которые продвигают сюжет (прибытие, разговор, уход). Вариант b добавляет состояние (был счастлив), что не продвигает сюжет.",
+      "theory_block_id": "b1_theory_story_spine_indefinido",
+      "chapter_id": "es.grammar.past_preterito_indefinido.sequencing_events_simple_story",
+      "concept_id": "story_spine_indefinido",
+      "difficulty": 3,
+      "id": "q13",
+      "signature": "1b9d14a624a2f899"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое предложение правильно использует pretérito indefinido для мини-истории?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ayer Elena abrió la puerta, entró y cerró."
+        },
+        {
+          "id": "b",
+          "text": "Ayer Elena abre la puerta, entra y cierra."
+        },
+        {
+          "id": "c",
+          "text": "Ayer Elena abría la puerta, entraba y cerraba."
+        },
+        {
+          "id": "d",
+          "text": "Ayer Elena abrió la puerta, entra y cierra."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Все глаголы в прошедшем времени (abrió, entró, cerró) соответствуют правилу. Остальные варианты содержат ошибки в времени.",
+      "theory_block_id": "b1_theory_story_spine_indefinido",
+      "chapter_id": "es.grammar.past_preterito_indefinido.sequencing_events_simple_story",
+      "concept_id": "story_spine_indefinido",
+      "difficulty": 2,
+      "id": "q14",
+      "signature": "cbbcb3624f50a2ae"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое предложение соответствует примеру «3-4 шага» в мини-истории?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ayer María desayunó, fue al trabajo y terminó la reunión."
+        },
+        {
+          "id": "b",
+          "text": "Ayer María desayuna, va al trabajo y termina la reunión."
+        },
+        {
+          "id": "c",
+          "text": "Ayer María desayunaba, iba al trabajo y terminaba la reunión."
+        },
+        {
+          "id": "d",
+          "text": "Ayer María desayunó, va al trabajo y termina la reunión."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Вариант a содержит 3 завершенных действия в прошлом, соответствующих правилу. Остальные варианты содержат ошибки в времени.",
+      "theory_block_id": "b1_theory_story_spine_indefinido",
+      "chapter_id": "es.grammar.past_preterito_indefinido.sequencing_events_simple_story",
+      "concept_id": "story_spine_indefinido",
+      "difficulty": 3,
+      "id": "q15",
+      "signature": "c05cd5ddfd05717a"
     }
   ],
   "meta": {
-    "generated_at": "2026-04-25T20:26:01Z",
+    "generated_at": "2026-04-28T10:41:28Z",
     "source": "llm-only",
     "questions_per_block": 10,
     "chapter_number_filter": 53,

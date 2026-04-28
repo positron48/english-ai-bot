@@ -2122,9 +2122,6 @@ func (s *GrammarService) FormatPlacementLevelDisplay(opened []string, hasPlaceme
 		return "—"
 	}
 	labels := []string{"A0", "A1", "A2", "B1", "B2", "C1", "C2"}
-	if maxOrd >= len(labels) {
-		return "—"
-	}
 	return labels[maxOrd]
 }
 

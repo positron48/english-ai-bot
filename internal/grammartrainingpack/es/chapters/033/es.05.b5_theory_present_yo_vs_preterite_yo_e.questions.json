@@ -242,10 +242,250 @@
       "difficulty": 2,
       "id": "q8",
       "signature": "dcf31fd4d441f404"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое окончание у глагола 'sacar' в настоящем времени (я)?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "saco"
+        },
+        {
+          "id": "b",
+          "text": "sacé"
+        },
+        {
+          "id": "c",
+          "text": "sacó"
+        },
+        {
+          "id": "d",
+          "text": "sacar"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "В настоящем времени (я) глагол 'sacar' имеет окончание -o: 'saco'. Форма 'sacé' относится к прошедшему времени.",
+      "theory_block_id": "b5_theory_present_yo_vs_preterite_yo_e",
+      "chapter_id": "es.grammar.present_regular_actions.spelling_change_verbs_sacar_pagar_empezar_like_basics",
+      "concept_id": "verb_orthography_present_yo_vs_e_ending",
+      "difficulty": 1,
+      "id": "q9",
+      "signature": "098960c536d7f9dc"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какая форма верна для 'pagar' в прошедшем времени (я)?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "pagó"
+        },
+        {
+          "id": "b",
+          "text": "pago"
+        },
+        {
+          "id": "c",
+          "text": "pagué"
+        },
+        {
+          "id": "d",
+          "text": "pagaba"
+        }
+      ],
+      "correct_answer": "c",
+      "explanation": "В прошедшем времени (я) глагол 'pagar' имеет форму 'pagué' с окончанием -é. Форма 'pagó' относится к прошедшему времени (он/она), а 'pago' — к настоящему.",
+      "theory_block_id": "b5_theory_present_yo_vs_preterite_yo_e",
+      "chapter_id": "es.grammar.present_regular_actions.spelling_change_verbs_sacar_pagar_empezar_like_basics",
+      "concept_id": "verb_orthography_present_yo_vs_e_ending",
+      "difficulty": 2,
+      "id": "q10",
+      "signature": "83cb7100acea6205"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "В каком предложении правильно использованы формы 'sacar' (настоящее) и 'sacar' (прошедшее)?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Hoy saco el libro, pero ayer saqué el periódico."
+        },
+        {
+          "id": "b",
+          "text": "Hoy saqué el libro, pero ayer saco el periódico."
+        },
+        {
+          "id": "c",
+          "text": "Hoy saco el libro, pero ayer saco el periódico."
+        },
+        {
+          "id": "d",
+          "text": "Hoy saqué el libro, pero ayer saqué el periódico."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Правильно: 'saco' (настоящее) и 'saqué' (прошедшее). Остальные варианты содержат ошибки в форме прошедшего времени или несоответствие времени.",
+      "theory_block_id": "b5_theory_present_yo_vs_preterite_yo_e",
+      "chapter_id": "es.grammar.present_regular_actions.spelling_change_verbs_sacar_pagar_empezar_like_basics",
+      "concept_id": "verb_orthography_present_yo_vs_e_ending",
+      "difficulty": 2,
+      "id": "q11",
+      "signature": "bd68892f1f77522a"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какая форма глагола 'pagar' (я) в настоящем времени?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "pago"
+        },
+        {
+          "id": "b",
+          "text": "pagué"
+        },
+        {
+          "id": "c",
+          "text": "pague"
+        },
+        {
+          "id": "d",
+          "text": "pagaba"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Настоящее время (я) для 'pagar' — 'pago'. Форма 'pagué' относится к прошедшему времени, 'pague' — к повелительному наклонению.",
+      "theory_block_id": "b5_theory_present_yo_vs_preterite_yo_e",
+      "chapter_id": "es.grammar.present_regular_actions.spelling_change_verbs_sacar_pagar_empezar_like_basics",
+      "concept_id": "verb_orthography_present_yo_vs_e_ending",
+      "difficulty": 1,
+      "id": "q12",
+      "signature": "edb7c5fe89d7bc7a"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант содержит правильное окончание для 'empezar' (я) в прошедшем времени?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "empezo"
+        },
+        {
+          "id": "b",
+          "text": "empecé"
+        },
+        {
+          "id": "c",
+          "text": "empiezo"
+        },
+        {
+          "id": "d",
+          "text": "empezó"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Правильная форма — 'empecé' (с 'c'). Форма 'empezó' относится к прошедшему времени (он/она), а 'empiezo' — к настоящему.",
+      "theory_block_id": "b5_theory_present_yo_vs_preterite_yo_e",
+      "chapter_id": "es.grammar.present_regular_actions.spelling_change_verbs_sacar_pagar_empezar_like_basics",
+      "concept_id": "verb_orthography_present_yo_vs_e_ending",
+      "difficulty": 2,
+      "id": "q13",
+      "signature": "8575be3995d011de"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "В каком случае глагол 'sacar' будет иметь окончание -é?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Hoy yo saco la basura."
+        },
+        {
+          "id": "b",
+          "text": "Ayer yo saqué la basura."
+        },
+        {
+          "id": "c",
+          "text": "Siempre saco la basura."
+        },
+        {
+          "id": "d",
+          "text": "Mañana sacaré la basura."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Окончание -é используется в прошедшем времени (я). Вариант 'saqué' — правильная форма прошедшего времени (я).",
+      "theory_block_id": "b5_theory_present_yo_vs_preterite_yo_e",
+      "chapter_id": "es.grammar.present_regular_actions.spelling_change_verbs_sacar_pagar_empezar_like_basics",
+      "concept_id": "verb_orthography_present_yo_vs_e_ending",
+      "difficulty": 3,
+      "id": "q14",
+      "signature": "fd2b64042d5b35f0"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое предложение содержит грамматическую ошибку в форме 'empezar'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Hoy empiezo a trabajar."
+        },
+        {
+          "id": "b",
+          "text": "Ayer empecé a trabajar."
+        },
+        {
+          "id": "c",
+          "text": "Hoy empecé a trabajar."
+        },
+        {
+          "id": "d",
+          "text": "Ayer empiezo a trabajar."
+        }
+      ],
+      "correct_answer": "c",
+      "explanation": "Ошибка: 'empecé' (прошедшее) не может использоваться в настоящем времени. Правильно: 'Hoy empiezo' (настоящее) или 'Ayer empecé' (прошедшее).",
+      "theory_block_id": "b5_theory_present_yo_vs_preterite_yo_e",
+      "chapter_id": "es.grammar.present_regular_actions.spelling_change_verbs_sacar_pagar_empezar_like_basics",
+      "concept_id": "verb_orthography_present_yo_vs_e_ending",
+      "difficulty": 3,
+      "id": "q15",
+      "signature": "a8e229ce4162def7"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какая форма глагола 'sacar' (я) в прошедшем времени?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "saco"
+        },
+        {
+          "id": "b",
+          "text": "sacó"
+        },
+        {
+          "id": "c",
+          "text": "saqué"
+        },
+        {
+          "id": "d",
+          "text": "sacé"
+        }
+      ],
+      "correct_answer": "c",
+      "explanation": "Правильная форма прошедшего времени (я) — 'saqué'. Форма 'sacé' пропускает 'qu' и не соответствует правилу орфографии.",
+      "theory_block_id": "b5_theory_present_yo_vs_preterite_yo_e",
+      "chapter_id": "es.grammar.present_regular_actions.spelling_change_verbs_sacar_pagar_empezar_like_basics",
+      "concept_id": "verb_orthography_present_yo_vs_e_ending",
+      "difficulty": 2,
+      "id": "q16",
+      "signature": "2a7f595706263ca4"
     }
   ],
   "meta": {
-    "generated_at": "2026-04-25T15:35:45Z",
+    "generated_at": "2026-04-28T09:39:45Z",
     "source": "llm-only",
     "questions_per_block": 10,
     "chapter_number_filter": 33,

@@ -272,10 +272,70 @@
       "difficulty": 2,
       "id": "q9",
       "signature": "88444ce6d78e10a7"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое предложение правильно выражает, что ты говоришь по-испански?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Tú hablas español."
+        },
+        {
+          "id": "b",
+          "text": "Tú habla español."
+        },
+        {
+          "id": "c",
+          "text": "Tú hablan español."
+        },
+        {
+          "id": "d",
+          "text": "Tú hablo español."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Для подлежащего 'Tú' глагол 'hablar' требует формы 'hablas'. Остальные варианты используют неправильные окончания: 'habla' (3-е лицо), 'hablan' (3-е лицо мн.ч.), 'hablo' (1-е лицо).",
+      "theory_block_id": "b4_theory_present_regular_form_in_full_sentence",
+      "chapter_id": "es.grammar.present_regular_actions.present_statements_regular_verbs",
+      "concept_id": "present_regular_form_in_clause",
+      "difficulty": 1,
+      "id": "q10",
+      "signature": "1381ceff187d4446"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое предложение правильно выражает, что ты учишься в школе?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Tú estudias en la escuela."
+        },
+        {
+          "id": "b",
+          "text": "Tú estudia en la escuela."
+        },
+        {
+          "id": "c",
+          "text": "Tú estudian en la escuela."
+        },
+        {
+          "id": "d",
+          "text": "Tú estudio en la escuela."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Для 'tú' глагол 'estudiar' требует формы 'estudias'. Вариант 'estudia' — 3-е лицо, 'estudian' — 3-е мн.ч., 'estudio' — 1-е лицо.",
+      "theory_block_id": "b4_theory_present_regular_form_in_full_sentence",
+      "chapter_id": "es.grammar.present_regular_actions.present_statements_regular_verbs",
+      "concept_id": "present_regular_form_in_clause",
+      "difficulty": 1,
+      "id": "q11",
+      "signature": "60c6ba34998b4a7a"
     }
   ],
   "meta": {
-    "generated_at": "2026-04-25T14:21:16Z",
+    "generated_at": "2026-04-28T09:33:32Z",
     "source": "llm-only",
     "questions_per_block": 10,
     "chapter_number_filter": 29,

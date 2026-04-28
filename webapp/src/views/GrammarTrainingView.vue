@@ -35,11 +35,12 @@
       </div>
     </div>
 
-    <div v-else-if="currentQuestion" class="card">
-      <div class="header">
-        <h1>{{ t('grammar.trainingTitle') }}</h1>
-        <div class="progress">{{ currentIndex + 1 }} / {{ totalCount }}</div>
-      </div>
+    <div v-else-if="currentQuestion" class="question-stage">
+      <div class="card">
+        <div class="header">
+          <h1>{{ t('grammar.trainingTitle') }}</h1>
+          <div class="progress">{{ currentIndex + 1 }} / {{ totalCount }}</div>
+        </div>
 
       <GrammarQuestion
         ref="grammarQuestionRef"
@@ -53,7 +54,7 @@
         @answer="onAnswer"
       />
 
-      <div v-if="result" class="feedback-section">
+        <div v-if="result" class="feedback-section">
         <div v-if="result.correct" class="feedback-badge feedback-success">
           <span class="feedback-icon">✓</span>
           <span class="feedback-text">{{ feedbackHeadline }}</span>
@@ -95,20 +96,34 @@
         </div>
       </div>
 
-      <div class="actions footer-actions">
-        <button class="btn btn-primary" :disabled="!result" @click="nextQuestion">
-          {{ currentIndex + 1 >= totalCount ? t('common.finish') : t('common.next') }}
-        </button>
+        <div class="actions footer-actions">
+          <button class="btn btn-primary" :disabled="!result" @click="nextQuestion">
+            {{ currentIndex + 1 >= totalCount ? t('common.finish') : t('common.next') }}
+          </button>
+          <button
+            v-if="hasTheoryForCurrentCard"
+            type="button"
+            class="theory-help-footer-btn"
+            :title="t('grammar.theoryBlock')"
+            :aria-label="t('grammar.theoryBlock')"
+            @click="grammarQuestionRef?.toggleTheoryHelp()"
+          >
+            <span class="theory-help-footer-icon">i</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="report-footer">
         <button
-          v-if="hasTheoryForCurrentCard"
+          v-if="!reportAlreadySent"
           type="button"
-          class="theory-help-footer-btn"
-          :title="t('grammar.theoryBlock')"
-          :aria-label="t('grammar.theoryBlock')"
-          @click="grammarQuestionRef?.toggleTheoryHelp()"
+          class="report-text-link"
+          :disabled="reportSubmitting || !currentQuestion"
+          @click="reportCurrentQuestion"
         >
-          <span class="theory-help-footer-icon">i</span>
+          {{ t('training.reportIssue') }}
         </button>
+        <span v-if="reportMessage" class="report-message">{{ reportMessage }}</span>
       </div>
     </div>
   </div>
@@ -263,6 +278,13 @@ const waitingCorrectDelay = ref(false)
 const remainingMs = ref(0)
 const initialDelayMs = ref(0)
 const delaySeconds = ref(0)
+const reportSubmitting = ref(false)
+const reportMessage = ref('')
+const reportSentForQuestionID = ref('')
+const reportAlreadySent = computed(() => {
+  const qid = currentQuestion.value?.id
+  return !!qid && reportSentForQuestionID.value === qid
+})
 
 const delayCircumference = computed(() => {
   const radius = 34
@@ -427,6 +449,30 @@ const nextQuestion = () => {
   currentIndex.value++
 }
 
+const reportCurrentQuestion = async () => {
+  if (!currentQuestion.value || reportSubmitting.value) return
+  reportMessage.value = ''
+  reportSubmitting.value = true
+  try {
+    await apiClient.request('/api/learning/grammar/training/report', {
+      method: 'POST',
+      body: JSON.stringify({
+        question_id: currentQuestion.value.id,
+        chapter_id: currentQuestion.value.chapter_id || '',
+        theory_block_id: currentQuestion.value.theory_block_id || '',
+        question_data: currentQuestion.value
+      })
+    })
+    reportSentForQuestionID.value = currentQuestion.value.id
+    reportMessage.value = t('training.reportThanks')
+  } catch (e) {
+    console.error('Failed to report grammar question:', e)
+    reportMessage.value = t('training.reportFailed')
+  } finally {
+    reportSubmitting.value = false
+  }
+}
+
 onMounted(init)
 
 onBeforeUnmount(() => {
@@ -434,6 +480,7 @@ onBeforeUnmount(() => {
 })
 
 watch(currentQuestion, async (q) => {
+  reportMessage.value = ''
   if (!q?.chapter_id || !q?.theory_block_id) return
   const key = `${q.chapter_id}::${q.theory_block_id}`
   if (theoryBlockMap.value[key]) return
@@ -478,6 +525,10 @@ watch(currentQuestion, async (q) => {
   text-decoration: none;
   min-width: 200px;
   text-align: center;
+}
+.question-stage {
+  display: flex;
+  flex-direction: column;
 }
 .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
 .progress { color: var(--text-secondary); font-weight: 600; }
@@ -530,6 +581,61 @@ watch(currentQuestion, async (q) => {
   flex-direction: column;
   align-items: center;
   width: 100%;
+}
+
+.report-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--border-primary);
+  border-radius: 8px;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 4px 10px;
+  font-size: 12px;
+}
+
+.report-btn:hover {
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+}
+
+.report-btn.subtle {
+  opacity: 0.75;
+}
+
+.report-btn-icon {
+  font-weight: 700;
+}
+.report-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+}
+.report-message {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+.report-text-link {
+  border: 0;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.2;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  text-decoration: none;
+}
+.report-text-link:hover:not(:disabled) {
+  color: var(--text-primary);
+}
+.report-text-link:disabled {
+  cursor: default;
+  opacity: 0.8;
 }
 .feedback-badge {
   display: inline-flex;

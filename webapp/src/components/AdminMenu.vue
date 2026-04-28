@@ -83,6 +83,16 @@
         <Icon name="warning" class="admin-sidebar-icon" />
         <span>Orphaned Cards</span>
       </router-link>
+      <router-link
+        v-if="can('full_access')"
+        to="/admin/content-reports"
+        class="admin-sidebar-item"
+        :class="{ active: $route.path === '/admin/content-reports' }"
+        @click="isMobile && handleCloseSidebar()"
+      >
+        <Icon name="warning" class="admin-sidebar-icon" />
+        <span>Content Reports</span>
+      </router-link>
       <router-link 
         v-if="can('word_sets.read')"
         to="/admin/word-sets" 

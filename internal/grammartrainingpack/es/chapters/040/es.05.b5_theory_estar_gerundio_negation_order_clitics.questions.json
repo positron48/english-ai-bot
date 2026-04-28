@@ -272,10 +272,40 @@
       "difficulty": 2,
       "id": "q9",
       "signature": "646841de55a0c702"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно вставить местоимённое дополнение *se* в предложении: «Она моется»?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Se estoy duchando"
+        },
+        {
+          "id": "b",
+          "text": "Estoy duchándome"
+        },
+        {
+          "id": "c",
+          "text": "Me estoy duchando"
+        },
+        {
+          "id": "d",
+          "text": "Estoy duchándola"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Возвратные местоимённые дополнения (*me, te, se*) прикрепляются к герундию (*Estoy duchándome*). Не смешивайте с *me estoy duchando* в одном предложении.",
+      "theory_block_id": "b5_theory_estar_gerundio_negation_order_clitics",
+      "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.estar_plus_gerundio_happening_right_now",
+      "concept_id": "estar_gerundio_negation_clitic_placement",
+      "difficulty": 4,
+      "id": "q10",
+      "signature": "4d29a40350815941"
     }
   ],
   "meta": {
-    "generated_at": "2026-04-25T17:17:46Z",
+    "generated_at": "2026-04-28T09:58:29Z",
     "source": "llm-only",
     "questions_per_block": 10,
     "chapter_number_filter": 40,

@@ -272,10 +272,310 @@
       "difficulty": 2,
       "id": "q9",
       "signature": "f2cdb873341bba85"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант правильно передает последовательность событий без смешения времён?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ayer fui al parque y hoy lo visité."
+        },
+        {
+          "id": "b",
+          "text": "Ayer fui al parque y por la tarde lo visité."
+        },
+        {
+          "id": "c",
+          "text": "Ayer fui al parque y mañana lo visité."
+        },
+        {
+          "id": "d",
+          "text": "Ayer fui al parque y luego lo visité."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Слово 'hoy' нарушает временнóю линию в прошлом. Правильно использовать конкретное время в прошлом, например, 'por la tarde'.",
+      "theory_block_id": "b6_theory_typical_ru_learner_traps",
+      "chapter_id": "es.grammar.past_preterito_indefinido.sequencing_events_simple_story",
+      "concept_id": "ru_learner_story_traps",
+      "difficulty": 2,
+      "id": "q10",
+      "signature": "bac6ad8fd3a1f00e"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант имеет естественный порядок слов в испанском?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Después yo escribí el correo."
+        },
+        {
+          "id": "b",
+          "text": "Después escribí el correo."
+        },
+        {
+          "id": "c",
+          "text": "Escribí después el correo."
+        },
+        {
+          "id": "d",
+          "text": "Después el correo escribí."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Лишнее подлежащее 'yo' и неправильный порядок в вариантах a, c, d нарушают естественность. Правильно: 'Después escribí el correo.'",
+      "theory_block_id": "b6_theory_typical_ru_learner_traps",
+      "chapter_id": "es.grammar.past_preterito_indefinido.sequencing_events_simple_story",
+      "concept_id": "ru_learner_story_traps",
+      "difficulty": 2,
+      "id": "q11",
+      "signature": "93eabac7a311b149"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант избегает лишних связок при описании последовательности?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Primero, después, luego revisé los datos."
+        },
+        {
+          "id": "b",
+          "text": "Primero revisé los datos y luego los envié."
+        },
+        {
+          "id": "c",
+          "text": "Primero, después revisé los datos y luego los envié."
+        },
+        {
+          "id": "d",
+          "text": "Primero revisé los datos, después, luego y al final los envié."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Вариант b использует минимальные необходимые связки. Варианты a, c, d содержат избыточные повторяющиеся связки.",
+      "theory_block_id": "b6_theory_typical_ru_learner_traps",
+      "chapter_id": "es.grammar.past_preterito_indefinido.sequencing_events_simple_story",
+      "concept_id": "ru_learner_story_traps",
+      "difficulty": 2,
+      "id": "q12",
+      "signature": "80bb6b72da129f13"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант не нарушает временнóю линию в рассказе о прошлом?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ayer escribí el informe y hoy lo envié."
+        },
+        {
+          "id": "b",
+          "text": "Ayer escribí el informe y por la noche lo envié."
+        },
+        {
+          "id": "c",
+          "text": "Ayer escribí el informe y mañana lo envié."
+        },
+        {
+          "id": "d",
+          "text": "Ayer escribí el informe y luego lo envié."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Слово 'hoy' в прошлом времени нарушает линию событий. Правильный вариант указывает конкретное время ('por la noche').",
+      "theory_block_id": "b6_theory_typical_ru_learner_traps",
+      "chapter_id": "es.grammar.past_preterito_indefinido.sequencing_events_simple_story",
+      "concept_id": "ru_learner_story_traps",
+      "difficulty": 2,
+      "id": "q13",
+      "signature": "ad56caf81c631f9d"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант правильно передает порядок слов в предложении?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Rápidamente después llamé a mi amigo."
+        },
+        {
+          "id": "b",
+          "text": "Después rápidamente llamé a mi amigo."
+        },
+        {
+          "id": "c",
+          "text": "Llamé rápidamente después a mi amigo."
+        },
+        {
+          "id": "d",
+          "text": "Después llamé rápidamente a mi amigo."
+        }
+      ],
+      "correct_answer": "d",
+      "explanation": "Наречие 'rápidamente' следует за глаголом. Правильный порядок: 'Después llamé rápidamente a mi amigo.'",
+      "theory_block_id": "b6_theory_typical_ru_learner_traps",
+      "chapter_id": "es.grammar.past_preterito_indefinido.sequencing_events_simple_story",
+      "concept_id": "ru_learner_story_traps",
+      "difficulty": 3,
+      "id": "q14",
+      "signature": "2b1c2ff1ecd8cb79"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант не использует лишние связки?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Primero, luego, al final revisé los documentos."
+        },
+        {
+          "id": "b",
+          "text": "Primero revisé los documentos y luego los firmé."
+        },
+        {
+          "id": "c",
+          "text": "Primero, luego revisé los documentos y firmé."
+        },
+        {
+          "id": "d",
+          "text": "Primero, luego, al final revisé y firmé."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Вариант b использует только необходимые связки. Варианты a, c, d содержат избыточные повторяющиеся связки.",
+      "theory_block_id": "b6_theory_typical_ru_learner_traps",
+      "chapter_id": "es.grammar.past_preterito_indefinido.sequencing_events_simple_story",
+      "concept_id": "ru_learner_story_traps",
+      "difficulty": 2,
+      "id": "q15",
+      "signature": "46d779c40471cb69"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант правильно описывает последовательность без ошибки смешения времён?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ayer terminé el informe y hoy lo revisé."
+        },
+        {
+          "id": "b",
+          "text": "Ayer terminé el informe y por la mañana lo revisé."
+        },
+        {
+          "id": "c",
+          "text": "Ayer terminé el informe y mañana lo revisé."
+        },
+        {
+          "id": "d",
+          "text": "Ayer terminé el informe y luego lo revisé."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Слово 'hoy' нарушает временнóю линию. Правильный вариант указывает конкретное время ('por la mañana').",
+      "theory_block_id": "b6_theory_typical_ru_learner_traps",
+      "chapter_id": "es.grammar.past_preterito_indefinido.sequencing_events_simple_story",
+      "concept_id": "ru_learner_story_traps",
+      "difficulty": 2,
+      "id": "q16",
+      "signature": "18c81f8586a3a86d"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант имеет правильный порядок слов в испанском?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Al final yo terminé el informe."
+        },
+        {
+          "id": "b",
+          "text": "Al final terminé el informe."
+        },
+        {
+          "id": "c",
+          "text": "Terminé al final el informe."
+        },
+        {
+          "id": "d",
+          "text": "El informe terminé al final."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Лишнее 'yo' и неправильный порядок в вариантах a, c, d. Правильный порядок: 'Al final terminé el informe.'",
+      "theory_block_id": "b6_theory_typical_ru_learner_traps",
+      "chapter_id": "es.grammar.past_preterito_indefinido.sequencing_events_simple_story",
+      "concept_id": "ru_learner_story_traps",
+      "difficulty": 2,
+      "id": "q17",
+      "signature": "78a9126d5ac48284"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант не содержит избыточных связок?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Primero, después, luego, al final escribí el informe."
+        },
+        {
+          "id": "b",
+          "text": "Primero escribí el informe y luego lo envié."
+        },
+        {
+          "id": "c",
+          "text": "Primero, después escribí el informe y luego lo envié."
+        },
+        {
+          "id": "d",
+          "text": "Después, luego, al final escribí el informe."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Вариант b использует минимальные связки. Варианты a, c, d содержат повторяющиеся связки.",
+      "theory_block_id": "b6_theory_typical_ru_learner_traps",
+      "chapter_id": "es.grammar.past_preterito_indefinido.sequencing_events_simple_story",
+      "concept_id": "ru_learner_story_traps",
+      "difficulty": 2,
+      "id": "q18",
+      "signature": "7d416da327b12a00"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант правильно передает последовательность событий без временного смешения?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ayer compré pan y hoy lo comí."
+        },
+        {
+          "id": "b",
+          "text": "Ayer compré pan y por la tarde lo comí."
+        },
+        {
+          "id": "c",
+          "text": "Ayer compré pan y mañana lo comí."
+        },
+        {
+          "id": "d",
+          "text": "Ayer compré pan y luego lo comí."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Слово 'hoy' нарушает временнóю линию. Правильный вариант указывает конкретное время в прошлом ('por la tarde').",
+      "theory_block_id": "b6_theory_typical_ru_learner_traps",
+      "chapter_id": "es.grammar.past_preterito_indefinido.sequencing_events_simple_story",
+      "concept_id": "ru_learner_story_traps",
+      "difficulty": 2,
+      "id": "q19",
+      "signature": "50a767dde3d797cb"
     }
   ],
   "meta": {
-    "generated_at": "2026-04-25T20:38:17Z",
+    "generated_at": "2026-04-28T10:46:54Z",
     "source": "llm-only",
     "questions_per_block": 10,
     "chapter_number_filter": 53,

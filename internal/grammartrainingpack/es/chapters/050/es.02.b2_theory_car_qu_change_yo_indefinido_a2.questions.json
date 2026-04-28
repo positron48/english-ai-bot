@@ -272,10 +272,250 @@
       "difficulty": 2,
       "id": "q9",
       "signature": "b1d9b195ba07aad3"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какая форма верна для глагола 'buscar' в форме 'yo' прошедшего неопределённого времени?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "buscé"
+        },
+        {
+          "id": "b",
+          "text": "busqué"
+        },
+        {
+          "id": "c",
+          "text": "buscó"
+        },
+        {
+          "id": "d",
+          "text": "buscamos"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Правило требует добавления 'qu' перед 'é' в форме 'yo' для глаголов на '-car' (например, 'buscar → busqué'). Вариант 'buscé' пропускает 'qu', что нарушает орфографию.",
+      "theory_block_id": "b2_theory_car_qu_change_yo_indefinido_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.spelling_changes_car_gar_zar_vowel_shifts",
+      "concept_id": "car_qu_change_yo_indefinido_a2",
+      "difficulty": 2,
+      "id": "q10",
+      "signature": "890483a16f884cde"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант содержит ошибку в форме 'yo' для глагола 'tocar'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "toqué"
+        },
+        {
+          "id": "b",
+          "text": "tocé"
+        },
+        {
+          "id": "c",
+          "text": "tocó"
+        },
+        {
+          "id": "d",
+          "text": "tocamos"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Правильная форма — 'toqué' (с 'qu'). Вариант 'tocé' пропускает 'qu', что нарушает правило. Остальные варианты относятся к другим лицам или формам.",
+      "theory_block_id": "b2_theory_car_qu_change_yo_indefinido_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.spelling_changes_car_gar_zar_vowel_shifts",
+      "concept_id": "car_qu_change_yo_indefinido_a2",
+      "difficulty": 3,
+      "id": "q11",
+      "signature": "08db076ff7ede95e"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "В каком предложении используется правильная форма 'yo' для глагола 'buscar'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Yo buscé el libro."
+        },
+        {
+          "id": "b",
+          "text": "Yo busqué el libro."
+        },
+        {
+          "id": "c",
+          "text": "Yo buscó el libro."
+        },
+        {
+          "id": "d",
+          "text": "Yo buscamos el libro."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Правильная форма — 'busqué' (с 'qu' перед 'é'). Варианты 'buscé' и 'buscó' содержат ошибки, а 'buscamos' относится к другому лицу.",
+      "theory_block_id": "b2_theory_car_qu_change_yo_indefinido_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.spelling_changes_car_gar_zar_vowel_shifts",
+      "concept_id": "car_qu_change_yo_indefinido_a2",
+      "difficulty": 2,
+      "id": "q12",
+      "signature": "d90be44ede7421ae"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант соответствует правилу для глагола 'tocar' в форме 'yo'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "tocé"
+        },
+        {
+          "id": "b",
+          "text": "toqué"
+        },
+        {
+          "id": "c",
+          "text": "tocó"
+        },
+        {
+          "id": "d",
+          "text": "toco"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Правило требует 'qu' перед 'é', поэтому 'toqué' — верно. Вариант 'tocé' пропускает 'qu', 'tocó' — для 'él/ella', 'toco' — для настоящего времени.",
+      "theory_block_id": "b2_theory_car_qu_change_yo_indefinido_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.spelling_changes_car_gar_zar_vowel_shifts",
+      "concept_id": "car_qu_change_yo_indefinido_a2",
+      "difficulty": 3,
+      "id": "q13",
+      "signature": "dd49bdb97abce9a9"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "В предложении 'Yo ________ la puerta y ________ el libro' какая пара форм верна?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "tocé, busqué"
+        },
+        {
+          "id": "b",
+          "text": "toqué, buscó"
+        },
+        {
+          "id": "c",
+          "text": "toqué, busqué"
+        },
+        {
+          "id": "d",
+          "text": "tocé, buscamos"
+        }
+      ],
+      "correct_answer": "c",
+      "explanation": "Обе формы должны соответствовать правилу: 'toqué' (для 'tocar') и 'busqué' (для 'buscar'). Вариант 'a' пропускает 'qu' в 'tocé', 'b' использует 'buscó' вместо 'busqué', 'd' содержит 'buscamos'.",
+      "theory_block_id": "b2_theory_car_qu_change_yo_indefinido_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.spelling_changes_car_gar_zar_vowel_shifts",
+      "concept_id": "car_qu_change_yo_indefinido_a2",
+      "difficulty": 3,
+      "id": "q14",
+      "signature": "492cf0e8acdcbaee"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант не относится к форме 'yo' прошедшего неопределённого времени?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "busqué"
+        },
+        {
+          "id": "b",
+          "text": "llamé"
+        },
+        {
+          "id": "c",
+          "text": "tocó"
+        },
+        {
+          "id": "d",
+          "text": "toqué"
+        }
+      ],
+      "correct_answer": "c",
+      "explanation": "Форма 'tocó' относится к 'él/ella', а не к 'yo'. Все остальные варианты ('busqué', 'llamé', 'toqué') — верные формы для 'yo'.",
+      "theory_block_id": "b2_theory_car_qu_change_yo_indefinido_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.spelling_changes_car_gar_zar_vowel_shifts",
+      "concept_id": "car_qu_change_yo_indefinido_a2",
+      "difficulty": 2,
+      "id": "q15",
+      "signature": "c7e9f9e59819b8b3"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какая форма глагола 'buscar' в 'yo' сохраняет звук [k] перед 'e'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "buscé"
+        },
+        {
+          "id": "b",
+          "text": "busqué"
+        },
+        {
+          "id": "c",
+          "text": "busco"
+        },
+        {
+          "id": "d",
+          "text": "buscan"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Форма 'busqué' сохраняет звук [k] благодаря 'qu'. Вариант 'buscé' не сохраняет [k], а остальные формы относятся к другим времена или лицам.",
+      "theory_block_id": "b2_theory_car_qu_change_yo_indefinido_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.spelling_changes_car_gar_zar_vowel_shifts",
+      "concept_id": "car_qu_change_yo_indefinido_a2",
+      "difficulty": 3,
+      "id": "q16",
+      "signature": "23267672bdd2beaf"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант показывает правильное применение правила для глагола 'llamar'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Yo llamé a mi amigo."
+        },
+        {
+          "id": "b",
+          "text": "Yo llamó a mi amigo."
+        },
+        {
+          "id": "c",
+          "text": "Yo llamamos a mi amigo."
+        },
+        {
+          "id": "d",
+          "text": "Yo llamo a mi amigo."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Правильная форма — 'llamé' (с 'qu'). Вариант 'llamó' относится к 'él/ella', 'llamamos' — к 'nosotros', 'llamo' — к настоящему времени.",
+      "theory_block_id": "b2_theory_car_qu_change_yo_indefinido_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.spelling_changes_car_gar_zar_vowel_shifts",
+      "concept_id": "car_qu_change_yo_indefinido_a2",
+      "difficulty": 2,
+      "id": "q17",
+      "signature": "c3aa1ce48803f713"
     }
   ],
   "meta": {
-    "generated_at": "2026-04-25T19:31:15Z",
+    "generated_at": "2026-04-28T10:30:06Z",
     "source": "llm-only",
     "questions_per_block": 10,
     "chapter_number_filter": 50,

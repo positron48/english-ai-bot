@@ -137,6 +137,11 @@ const router = createRouter({
           component: () => import('../views/AdminOrphanedCardsView.vue')
         },
         {
+          path: 'content-reports',
+          name: 'AdminContentReports',
+          component: () => import('../views/AdminContentReportsView.vue')
+        },
+        {
           path: 'grammar',
           name: 'AdminGrammar',
           component: () => import('../views/AdminGrammarView.vue')

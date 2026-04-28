@@ -450,6 +450,18 @@
       </div>
 
     </div>
+    <div v-if="sessionActive && currentCard" class="report-row report-row-outside">
+      <button
+        v-if="!reportAlreadySent"
+        type="button"
+        class="report-text-link"
+        :disabled="reportSubmitting"
+        @click="submitWordReport"
+      >
+        {{ t('training.reportIssue') || 'Пожаловаться' }}
+      </button>
+      <span v-if="reportMessage" class="report-message">{{ reportMessage }}</span>
+    </div>
   </div>
 </template>
 
@@ -529,6 +541,9 @@ interface Card {
   /** Type challenge: word length for hint */
   hint_length?: number
   morph?: MorphInfo
+  word_card_id?: number
+  training_card_id?: number
+  word_category?: string
 }
 
 interface MorphVerbForms {
@@ -600,6 +615,22 @@ const showExampleButton = ref(false)
 const showExampleButtonVisible = ref(false)
 const exampleUsageShown = ref(false)
 let exampleButtonTimer: ReturnType<typeof setTimeout> | null = null
+const reportSubmitting = ref(false)
+const reportMessage = ref('')
+const reportSentForCardKey = ref('')
+
+const cardReportKey = (card: Card | null): string => {
+  if (!card) return ''
+  if (card.user_card_id) return `user:${card.user_card_id}`
+  if (card.training_card_id) return `training:${card.training_card_id}`
+  if (card.word_card_id) return `word:${card.word_card_id}`
+  return `${card.word_en || card.display_word || ''}:${card.direction || ''}`
+}
+
+const reportAlreadySent = computed(() => {
+  const key = cardReportKey(currentCard.value)
+  return !!key && reportSentForCardKey.value === key
+})
 
 // Spell (compose word) state
 const spellAnswerLetters = ref<string[]>([])
@@ -1768,6 +1799,44 @@ const startTraining = async () => {
   }
 }
 
+const submitWordReport = async () => {
+  if (!currentCard.value || reportSubmitting.value || reportAlreadySent.value) return
+  reportMessage.value = ''
+  const key = cardReportKey(currentCard.value)
+  reportSubmitting.value = true
+  try {
+    const extra: Record<string, unknown> = {
+      question: currentCard.value.question,
+      card_type: currentCard.value.type || 'card'
+    }
+    if (currentCard.value.word_en) extra.word_en = currentCard.value.word_en
+    if (currentCard.value.word_ru) extra.word_ru = currentCard.value.word_ru
+    await apiClient.request('/api/training/report', {
+      method: 'POST',
+      body: JSON.stringify({
+        user_card_id: currentCard.value.user_card_id || 0,
+        word: currentCard.value.word_en || currentCard.value.display_word || '',
+        direction: currentCard.value.direction || '',
+        word_card_id: currentCard.value.word_card_id,
+        training_card_id: currentCard.value.training_card_id,
+        word_category: currentCard.value.word_category || '',
+        extra
+      })
+    })
+    reportSentForCardKey.value = key
+    reportMessage.value = t('training.reportThanks') || 'Спасибо, жалоба отправлена.'
+  } catch (error) {
+    console.error('Failed to submit training report:', error)
+    reportMessage.value = t('training.reportFailed') || 'Не удалось отправить жалобу'
+  } finally {
+    reportSubmitting.value = false
+  }
+}
+
+watch(() => cardReportKey(currentCard.value), () => {
+  reportMessage.value = ''
+})
+
 const revealOptions = async (isEarly: boolean = false) => {
   // Clear timer if it exists
   if (autoRevealTimer) {
@@ -2670,6 +2739,43 @@ const handleTimerMouseLeave = () => {
   word-wrap: break-word;
   overflow-wrap: break-word;
   hyphens: auto;
+}
+
+.report-row {
+  margin-top: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+.report-row-outside {
+  margin-top: 10px;
+}
+
+.report-text-link {
+  border: 0;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.2;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.report-text-link:hover:not(:disabled) {
+  color: var(--text-primary);
+}
+
+.report-text-link:disabled {
+  cursor: default;
+  opacity: 0.8;
+}
+
+.report-message {
+  font-size: 12px;
+  color: var(--text-secondary);
 }
 
 /* Make strong element start on a new line */

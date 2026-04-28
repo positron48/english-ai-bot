@@ -242,10 +242,190 @@
       "difficulty": 2,
       "id": "q8",
       "signature": "302a71ff10e9236b"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое правильное написание причастия для глагола 'construir'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "construdo"
+        },
+        {
+          "id": "b",
+          "text": "construido"
+        },
+        {
+          "id": "c",
+          "text": "construidido"
+        },
+        {
+          "id": "d",
+          "text": "construid"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Глаголы на -uir образуют причастие с буквой 'i' в середине: construir → construido.",
+      "theory_block_id": "b1_theory_participio_regular_spelling_deepening",
+      "chapter_id": "es.grammar.past_preterito_perfecto.regular_irregular_participles",
+      "concept_id": "participio_regular_spelling_deepening_a2",
+      "difficulty": 1,
+      "id": "q9",
+      "signature": "e03010e982fd147e"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое правильное написание причастия для глагола 'destruir'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "destrudo"
+        },
+        {
+          "id": "b",
+          "text": "destruido"
+        },
+        {
+          "id": "c",
+          "text": "destruidido"
+        },
+        {
+          "id": "d",
+          "text": "destruiddo"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Правильное написание причастия для глаголов на -uir включает 'i' после 'u': destruir → destruido.",
+      "theory_block_id": "b1_theory_participio_regular_spelling_deepening",
+      "chapter_id": "es.grammar.past_preterito_perfecto.regular_irregular_participles",
+      "concept_id": "participio_regular_spelling_deepening_a2",
+      "difficulty": 1,
+      "id": "q10",
+      "signature": "ef05b9331f697328"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое правильное написание причастия для глагола 'admitir'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "admitido"
+        },
+        {
+          "id": "b",
+          "text": "admittido"
+        },
+        {
+          "id": "c",
+          "text": "admiido"
+        },
+        {
+          "id": "d",
+          "text": "admiid"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Регулярные причастия не содержат лишних удвоений согласных: admitir → admitido.",
+      "theory_block_id": "b1_theory_participio_regular_spelling_deepening",
+      "chapter_id": "es.grammar.past_preterito_perfecto.regular_irregular_participles",
+      "concept_id": "participio_regular_spelling_deepening_a2",
+      "difficulty": 1,
+      "id": "q11",
+      "signature": "0481275ce88d3040"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое слово содержит ошибку в причастии?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "construido"
+        },
+        {
+          "id": "b",
+          "text": "destruido"
+        },
+        {
+          "id": "c",
+          "text": "admitido"
+        },
+        {
+          "id": "d",
+          "text": "admittido"
+        }
+      ],
+      "correct_answer": "d",
+      "explanation": "Слово 'admittido' содержит лишнее удвоение 't' — правильное написание: admitido.",
+      "theory_block_id": "b1_theory_participio_regular_spelling_deepening",
+      "chapter_id": "es.grammar.past_preterito_perfecto.regular_irregular_participles",
+      "concept_id": "participio_regular_spelling_deepening_a2",
+      "difficulty": 1,
+      "id": "q12",
+      "signature": "a32160ab76c3b9e2"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое из следующих слов написано верно?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "destruido"
+        },
+        {
+          "id": "b",
+          "text": "destrudo"
+        },
+        {
+          "id": "c",
+          "text": "destruidido"
+        },
+        {
+          "id": "d",
+          "text": "destruiddo"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Правильное написание причастия для 'destruir' — 'destruido' с 'i' после 'u'.",
+      "theory_block_id": "b1_theory_participio_regular_spelling_deepening",
+      "chapter_id": "es.grammar.past_preterito_perfecto.regular_irregular_participles",
+      "concept_id": "participio_regular_spelling_deepening_a2",
+      "difficulty": 1,
+      "id": "q13",
+      "signature": "55d8e56610a17e33"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое из следующих слов написано с ошибкой?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "construido"
+        },
+        {
+          "id": "b",
+          "text": "admitido"
+        },
+        {
+          "id": "c",
+          "text": "destruido"
+        },
+        {
+          "id": "d",
+          "text": "admittido"
+        }
+      ],
+      "correct_answer": "d",
+      "explanation": "Слово 'admittido' содержит ошибку в удвоении согласной 't'.",
+      "theory_block_id": "b1_theory_participio_regular_spelling_deepening",
+      "chapter_id": "es.grammar.past_preterito_perfecto.regular_irregular_participles",
+      "concept_id": "participio_regular_spelling_deepening_a2",
+      "difficulty": 1,
+      "id": "q14",
+      "signature": "796ea8b950688d62"
     }
   ],
   "meta": {
-    "generated_at": "2026-04-25T18:10:35Z",
+    "generated_at": "2026-04-28T10:06:29Z",
     "source": "llm-only",
     "questions_per_block": 10,
     "chapter_number_filter": 44,

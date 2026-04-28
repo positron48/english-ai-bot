@@ -272,10 +272,310 @@
       "difficulty": 3,
       "id": "q9",
       "signature": "1810957613b66642"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно выразить 'В 2019 году я начал учиться' на испанском?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "En 2019 empecé a estudiar."
+        },
+        {
+          "id": "b",
+          "text": "En 2019 empiezo a estudiar."
+        },
+        {
+          "id": "c",
+          "text": "A 2019 empecé a estudiar."
+        },
+        {
+          "id": "d",
+          "text": "En el 2019 empecé a estudiar."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Для конкретного года в прошлом используется предлог 'en' и pretérito indefinido 'empecé', что соответствует правильному употреблению.",
+      "theory_block_id": "b3_theory_el_ano_pasado_and_en_year_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.time_markers_ayer_anoche_el_ano_pasado_en",
+      "concept_id": "el_ano_pasado_and_en_year_a2",
+      "difficulty": 2,
+      "id": "q10",
+      "signature": "c9308b04dcd3050b"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант использует правильный маркер для прошлогоднего события?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "El año pasado viajé a Francia."
+        },
+        {
+          "id": "b",
+          "text": "En el año pasado viajé a Francia."
+        },
+        {
+          "id": "c",
+          "text": "En 2020 viajé a Francia."
+        },
+        {
+          "id": "d",
+          "text": "Año pasado viajé a Francia."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Маркер 'el año pasado' правильно используется для обозначения прошлого года, в отличие от неправильных вариантов с 'en' или отсутствием предлога.",
+      "theory_block_id": "b3_theory_el_ano_pasado_and_en_year_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.time_markers_ayer_anoche_el_ano_pasado_en",
+      "concept_id": "el_ano_pasado_and_en_year_a2",
+      "difficulty": 2,
+      "id": "q11",
+      "signature": "38caecfc4af94e22"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой предлог используется с годом в прошлом для выражения завершённого действия?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "a"
+        },
+        {
+          "id": "b",
+          "text": "en"
+        },
+        {
+          "id": "c",
+          "text": "por"
+        },
+        {
+          "id": "d",
+          "text": "desde"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "В испанском языке для указания года в прошлом используется предлог 'en', как указано в теории.",
+      "theory_block_id": "b3_theory_el_ano_pasado_and_en_year_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.time_markers_ayer_anoche_el_ano_pasado_en",
+      "concept_id": "el_ano_pasado_and_en_year_a2",
+      "difficulty": 1,
+      "id": "q12",
+      "signature": "784d0982c2a296c6"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно перевести 'В прошлом году мы купили машину' на испанский?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "El año pasado compramos un coche."
+        },
+        {
+          "id": "b",
+          "text": "El año pasado compramos a un coche."
+        },
+        {
+          "id": "c",
+          "text": "En el año pasado compramos un coche."
+        },
+        {
+          "id": "d",
+          "text": "El año pasado compramos en un coche."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Правильный вариант использует маркер 'el año pasado' и отсутствие лишних предлогов перед существительным 'coche'.",
+      "theory_block_id": "b3_theory_el_ano_pasado_and_en_year_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.time_markers_ayer_anoche_el_ano_pasado_en",
+      "concept_id": "el_ano_pasado_and_en_year_a2",
+      "difficulty": 2,
+      "id": "q13",
+      "signature": "7c3d0e9b70b4900e"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой пример верно использует 'en + год' для прошлого времени?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "En 2021 aprendí español."
+        },
+        {
+          "id": "b",
+          "text": "En 2021 aprendo español."
+        },
+        {
+          "id": "c",
+          "text": "En 2021 he aprendido español."
+        },
+        {
+          "id": "d",
+          "text": "En 2021 voy a aprender español."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Для конкретного года в прошлом требуется pretérito indefinido 'aprendí', а не другие времена.",
+      "theory_block_id": "b3_theory_el_ano_pasado_and_en_year_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.time_markers_ayer_anoche_el_ano_pasado_en",
+      "concept_id": "el_ano_pasado_and_en_year_a2",
+      "difficulty": 2,
+      "id": "q14",
+      "signature": "fa2e5d8e88f807c1"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой маркер времени указывает на действие, завершившееся в прошлом году?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "en 2022"
+        },
+        {
+          "id": "b",
+          "text": "el año pasado"
+        },
+        {
+          "id": "c",
+          "text": "ahora"
+        },
+        {
+          "id": "d",
+          "text": "el próximo año"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Маркер 'el año pasado' напрямую относится к прошлому году, тогда как 'en 2022' указывает на конкретный год.",
+      "theory_block_id": "b3_theory_el_ano_pasado_and_en_year_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.time_markers_ayer_anoche_el_ano_pasado_en",
+      "concept_id": "el_ano_pasado_and_en_year_a2",
+      "difficulty": 1,
+      "id": "q15",
+      "signature": "f70af3a930e9cd46"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант содержит ошибку в использовании предлога с годом?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "En 2018 viajé a Italia."
+        },
+        {
+          "id": "b",
+          "text": "A 2018 viajé a Italia."
+        },
+        {
+          "id": "c",
+          "text": "En 2018 aprendí a cocinar."
+        },
+        {
+          "id": "d",
+          "text": "En 2018 nos mudamos."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Предлог 'a' не используется с годами, правильный предлог — 'en', как указано в теории.",
+      "theory_block_id": "b3_theory_el_ano_pasado_and_en_year_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.time_markers_ayer_anoche_el_ano_pasado_en",
+      "concept_id": "el_ano_pasado_and_en_year_a2",
+      "difficulty": 2,
+      "id": "q16",
+      "signature": "0e94c13fdc3dba4b"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно сказать 'В прошлом году мы изучали испанский'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "El año pasado estudiábamos español."
+        },
+        {
+          "id": "b",
+          "text": "El año pasado estudiamos español."
+        },
+        {
+          "id": "c",
+          "text": "El año pasado estudiamos a español."
+        },
+        {
+          "id": "d",
+          "text": "En el año pasado estudiamos español."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Правильный вариант использует 'el año pasado' и pretérito indefinido 'estudiamos' без лишних предлогов.",
+      "theory_block_id": "b3_theory_el_ano_pasado_and_en_year_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.time_markers_ayer_anoche_el_ano_pasado_en",
+      "concept_id": "el_ano_pasado_and_en_year_a2",
+      "difficulty": 3,
+      "id": "q17",
+      "signature": "74e6b9278ee39e58"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой пример содержит неправильное время для маркера 'en 2020'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "En 2020 terminé la universidad."
+        },
+        {
+          "id": "b",
+          "text": "En 2020 termino la universidad."
+        },
+        {
+          "id": "c",
+          "text": "En 2020 he terminado la universidad."
+        },
+        {
+          "id": "d",
+          "text": "En 2020 voy a terminar la universidad."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Для прошлого года требуется прошедшее время, а не настоящее 'termino'.",
+      "theory_block_id": "b3_theory_el_ano_pasado_and_en_year_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.time_markers_ayer_anoche_el_ano_pasado_en",
+      "concept_id": "el_ano_pasado_and_en_year_a2",
+      "difficulty": 2,
+      "id": "q18",
+      "signature": "0bcb10d18ade70fb"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой маркер времени не требует использования pretérito indefinido?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "el año pasado"
+        },
+        {
+          "id": "b",
+          "text": "en 2021"
+        },
+        {
+          "id": "c",
+          "text": "ahora"
+        },
+        {
+          "id": "d",
+          "text": "en 2020"
+        }
+      ],
+      "correct_answer": "c",
+      "explanation": "Маркер 'ahora' относится к настоящему времени и не требует pretérito indefinido.",
+      "theory_block_id": "b3_theory_el_ano_pasado_and_en_year_a2",
+      "chapter_id": "es.grammar.past_preterito_indefinido.time_markers_ayer_anoche_el_ano_pasado_en",
+      "concept_id": "el_ano_pasado_and_en_year_a2",
+      "difficulty": 1,
+      "id": "q19",
+      "signature": "77028418d5fc582e"
     }
   ],
   "meta": {
-    "generated_at": "2026-04-25T20:17:02Z",
+    "generated_at": "2026-04-28T10:38:06Z",
     "source": "llm-only",
     "questions_per_block": 10,
     "chapter_number_filter": 52,

@@ -400,6 +400,7 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/learning/grammar/training/availability", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarTrainingAvailability)))
 	r.mux.HandleFunc("/api/learning/grammar/training/session/start", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarTrainingStart)))
 	r.mux.HandleFunc("/api/learning/grammar/training/session/answer", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarTrainingAnswer)))
+	r.mux.HandleFunc("/api/learning/grammar/training/report", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarTrainingReport)))
 	r.mux.HandleFunc("/api/learning/grammar/placement-test", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarPlacementTest)))
 	r.mux.HandleFunc("/api/learning/grammar/placement-test/submit", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarSubmitPlacementTest)))
 
@@ -407,6 +408,7 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/training/current", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTrainingCurrent)))
 	r.mux.HandleFunc("/api/training/reveal", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTrainingReveal)))
 	r.mux.HandleFunc("/api/training/answer", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTrainingAnswer)))
+	r.mux.HandleFunc("/api/training/report", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTrainingReport)))
 	r.mux.HandleFunc("/api/training/upcoming", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTrainingUpcoming)))
 	r.mux.HandleFunc("/api/verb-training/start", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleVerbTrainingStart)))
 	r.mux.HandleFunc("/api/verb-training/current", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleVerbTrainingCurrent)))
@@ -474,6 +476,8 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/admin/orphaned-user-cards/", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminOrphanedUserCard))))
 	r.mux.HandleFunc("/api/admin/prompt-tester/default-prompts", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminPromptTesterDefaultPrompts))))
 	r.mux.HandleFunc("/api/admin/prompt-tester/run", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminPromptTesterRun))))
+	r.mux.HandleFunc("/api/admin/content-reports", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminContentReports))))
+	r.mux.HandleFunc("/api/admin/content-reports/", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminContentReportByID))))
 
 	// Grammar admin routes (require full_access)
 	r.mux.HandleFunc("/api/admin/grammar/categories", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminGrammarCategories))))

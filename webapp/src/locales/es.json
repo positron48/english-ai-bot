@@ -165,7 +165,11 @@
     "failedLoadOptions": "No se pudieron cargar las opciones. Prueba a actualizar la página.",
     "failedSubmitAnswer": "No se pudo enviar la respuesta. Inténtalo de nuevo.",
     "noActiveSession": "No hay sesión activa. Pulsa «Iniciar entrenamiento» primero.",
-    "failedNextCard": "No se pudo cargar la siguiente tarjeta. Prueba a actualizar la página."
+    "failedNextCard": "No se pudo cargar la siguiente tarjeta. Prueba a actualizar la página.",
+    "reportIssue": "Reportar problema",
+    "reportSent": "Enviado",
+    "reportThanks": "Gracias, reporte enviado.",
+    "reportFailed": "No se pudo enviar el reporte. Inténtalo de nuevo."
   },
   "verbTraining": {
     "title": "Práctica de conjugación",

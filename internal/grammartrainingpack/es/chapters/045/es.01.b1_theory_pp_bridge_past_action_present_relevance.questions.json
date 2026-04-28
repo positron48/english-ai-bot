@@ -272,10 +272,310 @@
       "difficulty": 2,
       "id": "q9",
       "signature": "cd7e1809e70744b5"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое предложение правильно показывает, что действие (изучение кулинарии) имеет значение сейчас?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Aprendí a cocinar el año pasado."
+        },
+        {
+          "id": "b",
+          "text": "He aprendido a cocinar."
+        },
+        {
+          "id": "c",
+          "text": "Aprendo a cocinar cada día."
+        },
+        {
+          "id": "d",
+          "text": "He aprendido a cocinar el año pasado."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Pretérito perfecto используется для показа опыта, связанного с настоящим (теперь умею готовить), а не для завершенного действия в прошлом.",
+      "theory_block_id": "b1_theory_pp_bridge_past_action_present_relevance",
+      "chapter_id": "es.grammar.past_preterito_perfecto.meaning_experience_result_unfinished_time_periods",
+      "concept_id": "preterito_perfecto_meaning_bridge_to_present_a2",
+      "difficulty": 1,
+      "id": "q10",
+      "signature": "8e890b655ce4ae30"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое предложение правильно отражает текущее состояние (снегопад продолжается до настоящего момента)?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Nevó mucho ayer."
+        },
+        {
+          "id": "b",
+          "text": "Ha nevado mucho esta semana."
+        },
+        {
+          "id": "c",
+          "text": "Nieva mucho cada año."
+        },
+        {
+          "id": "d",
+          "text": "Ha nevado mucho ayer."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Открытое время («эта неделя») требует pretérito perfecto, чтобы показать, что снегопад продолжается до настоящего момента.",
+      "theory_block_id": "b1_theory_pp_bridge_past_action_present_relevance",
+      "chapter_id": "es.grammar.past_preterito_perfecto.meaning_experience_result_unfinished_time_periods",
+      "concept_id": "preterito_perfecto_meaning_bridge_to_present_a2",
+      "difficulty": 1,
+      "id": "q11",
+      "signature": "f4615073d23478b7"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое предложение показывает, что просмотр фильма имеет текущий результат (теперь помню сюжет)?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Vi esa película ayer."
+        },
+        {
+          "id": "b",
+          "text": "He visto esa película."
+        },
+        {
+          "id": "c",
+          "text": "Veo esa película cada день."
+        },
+        {
+          "id": "d",
+          "text": "He visto esa película ayer."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Просмотр фильма имеет текущий результат (теперь помню сюжет), поэтому используется pretérito perfecto.",
+      "theory_block_id": "b1_theory_pp_bridge_past_action_present_relevance",
+      "chapter_id": "es.grammar.past_preterito_perfecto.meaning_experience_result_unfinished_time_periods",
+      "concept_id": "preterito_perfecto_meaning_bridge_to_present_a2",
+      "difficulty": 1,
+      "id": "q12",
+      "signature": "696acd821b3cdbc9"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое предложение правильно описывает изменение погоды, актуальное сейчас?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Cambió el clima ayer."
+        },
+        {
+          "id": "b",
+          "text": "Ha cambiado el clima."
+        },
+        {
+          "id": "c",
+          "text": "Cambia el clima cada mes."
+        },
+        {
+          "id": "d",
+          "text": "Ha cambiado el clima ayer."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Изменение погоды относится к текущему состоянию (сейчас холодно), поэтому требуется pretérito perfecto.",
+      "theory_block_id": "b1_theory_pp_bridge_past_action_present_relevance",
+      "chapter_id": "es.grammar.past_preterito_perfecto.meaning_experience_result_unfinished_time_periods",
+      "concept_id": "preterito_perfecto_meaning_bridge_to_present_a2",
+      "difficulty": 1,
+      "id": "q13",
+      "signature": "612eb32881d57c66"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое предложение показывает, что опоздание имеет текущее значение (сейчас я опоздал)?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Llegué tarde ayer."
+        },
+        {
+          "id": "b",
+          "text": "He llegado tarde."
+        },
+        {
+          "id": "c",
+          "text": "Llego tarde cada día."
+        },
+        {
+          "id": "d",
+          "text": "He llegado tarde ayer."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Опоздание имеет текущее значение (сейчас я опоздал), поэтому используется pretérito perfecto.",
+      "theory_block_id": "b1_theory_pp_bridge_past_action_present_relevance",
+      "chapter_id": "es.grammar.past_preterito_perfecto.meaning_experience_result_unfinished_time_periods",
+      "concept_id": "preterito_perfecto_meaning_bridge_to_present_a2",
+      "difficulty": 1,
+      "id": "q14",
+      "signature": "0b1012529fe39d9b"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое предложение правильно отражает текущий факт (цена уже выше)?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Subió el precio ayer."
+        },
+        {
+          "id": "b",
+          "text": "Ha subido el precio."
+        },
+        {
+          "id": "c",
+          "text": "Sube el precio cada mes."
+        },
+        {
+          "id": "d",
+          "text": "Ha subido el precio ayer."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Рост цены актуален сейчас (цена уже выше), поэтому требуется pretérito perfecto.",
+      "theory_block_id": "b1_theory_pp_bridge_past_action_present_relevance",
+      "chapter_id": "es.grammar.past_preterito_perfecto.meaning_experience_result_unfinished_time_periods",
+      "concept_id": "preterito_perfecto_meaning_bridge_to_present_a2",
+      "difficulty": 1,
+      "id": "q15",
+      "signature": "781c87c0f4d053ac"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое предложение показывает, что письмо отправлено и сейчас доступно?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Escribí un correo ayer."
+        },
+        {
+          "id": "b",
+          "text": "He escrito un correo."
+        },
+        {
+          "id": "c",
+          "text": "Escribo correos cada día."
+        },
+        {
+          "id": "d",
+          "text": "He escrito un correo ayer."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Письмо отправлено и сейчас доступно, поэтому используется pretérito perfecto.",
+      "theory_block_id": "b1_theory_pp_bridge_past_action_present_relevance",
+      "chapter_id": "es.grammar.past_preterito_perfecto.meaning_experience_result_unfinished_time_periods",
+      "concept_id": "preterito_perfecto_meaning_bridge_to_present_a2",
+      "difficulty": 1,
+      "id": "q16",
+      "signature": "40151460a07f4365"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое предложение правильно показывает, что брат прибыл и сейчас здесь?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Llegó mi hermano ayer."
+        },
+        {
+          "id": "b",
+          "text": "Ha llegado mi hermano."
+        },
+        {
+          "id": "c",
+          "text": "Llega mi hermano cada domingo."
+        },
+        {
+          "id": "d",
+          "text": "Ha llegado mi hermano ayer."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Прибытие брата имеет текущее значение (он сейчас здесь), поэтому требуется pretérito perfecto.",
+      "theory_block_id": "b1_theory_pp_bridge_past_action_present_relevance",
+      "chapter_id": "es.grammar.past_preterito_perfecto.meaning_experience_result_unfinished_time_periods",
+      "concept_id": "preterito_perfecto_meaning_bridge_to_present_a2",
+      "difficulty": 1,
+      "id": "q17",
+      "signature": "692bf410844dca96"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое предложение правильно отражает, что цветы куплены и сейчас у меня?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Compré flores ayer."
+        },
+        {
+          "id": "b",
+          "text": "He comprado flores."
+        },
+        {
+          "id": "c",
+          "text": "Compro flores cada mes."
+        },
+        {
+          "id": "d",
+          "text": "He comprado flores ayer."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Цветы куплены и сейчас у меня, поэтому используется pretérito perfecto.",
+      "theory_block_id": "b1_theory_pp_bridge_past_action_present_relevance",
+      "chapter_id": "es.grammar.past_preterito_perfecto.meaning_experience_result_unfinished_time_periods",
+      "concept_id": "preterito_perfecto_meaning_bridge_to_present_a2",
+      "difficulty": 1,
+      "id": "q18",
+      "signature": "7ece0a7e41a78bd8"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое предложение показывает, что мнение изменилось и сейчас актуально?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Cambié mi opinión ayer."
+        },
+        {
+          "id": "b",
+          "text": "Ha cambiado mi opinión."
+        },
+        {
+          "id": "c",
+          "text": "Cambio mi opinión cada día."
+        },
+        {
+          "id": "d",
+          "text": "Ha cambiado mi opinión ayer."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Изменение мнения актуально сейчас (сейчас я думаю иначе), поэтому требуется pretérito perfecto.",
+      "theory_block_id": "b1_theory_pp_bridge_past_action_present_relevance",
+      "chapter_id": "es.grammar.past_preterito_perfecto.meaning_experience_result_unfinished_time_periods",
+      "concept_id": "preterito_perfecto_meaning_bridge_to_present_a2",
+      "difficulty": 1,
+      "id": "q19",
+      "signature": "924aeded02885e5d"
     }
   ],
   "meta": {
-    "generated_at": "2026-04-25T18:28:12Z",
+    "generated_at": "2026-04-28T10:12:34Z",
     "source": "llm-only",
     "questions_per_block": 10,
     "chapter_number_filter": 45,

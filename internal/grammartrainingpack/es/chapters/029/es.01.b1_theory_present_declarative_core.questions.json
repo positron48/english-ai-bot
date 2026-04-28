@@ -212,10 +212,280 @@
       "difficulty": 2,
       "id": "q7",
       "signature": "af04ad1d7f8c933b"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое предложение соответствует структуре подлежащее + глагол в настоящем + дополнение?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "El niño juega con el perro."
+        },
+        {
+          "id": "b",
+          "text": "Juega el niño con el perro."
+        },
+        {
+          "id": "c",
+          "text": "Con el perro juega el niño."
+        },
+        {
+          "id": "d",
+          "text": "El niño con el perro juega."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Правильный порядок: подлежащее (El niño) → глагол в настоящем (juega) → дополнение (con el perro). Остальные варианты нарушают структуру SVO.",
+      "theory_block_id": "b1_theory_present_declarative_core",
+      "chapter_id": "es.grammar.present_regular_actions.present_statements_regular_verbs",
+      "concept_id": "present_declarative_sentence_core",
+      "difficulty": 2,
+      "id": "q8",
+      "signature": "85def015d709f510"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое предложение содержит спряженную форму глагола, а не инфинитив?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ella estudia química."
+        },
+        {
+          "id": "b",
+          "text": "Ella estudia para el examen."
+        },
+        {
+          "id": "c",
+          "text": "Ella estudiar química."
+        },
+        {
+          "id": "d",
+          "text": "Ella quiere estudiar química."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Вариант 'estudia' — спряженная форма глагола. Вариант 'estudiar' (c) — инфинитив, что нарушает правило.",
+      "theory_block_id": "b1_theory_present_declarative_core",
+      "chapter_id": "es.grammar.present_regular_actions.present_statements_regular_verbs",
+      "concept_id": "present_declarative_sentence_core",
+      "difficulty": 1,
+      "id": "q9",
+      "signature": "c11ed7aa0e059e37"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "В каком предложении дополнение следует за глаголом?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ella lee un libro."
+        },
+        {
+          "id": "b",
+          "text": "Libro ella lee."
+        },
+        {
+          "id": "c",
+          "text": "Lee un libro ella."
+        },
+        {
+          "id": "d",
+          "text": "Un libro lee ella."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Дополнение 'un libro' стоит после глагола 'lee'. Остальные варианты нарушают порядок SVO.",
+      "theory_block_id": "b1_theory_present_declarative_core",
+      "chapter_id": "es.grammar.present_regular_actions.present_statements_regular_verbs",
+      "concept_id": "present_declarative_sentence_core",
+      "difficulty": 2,
+      "id": "q10",
+      "signature": "06df579cfe109d6a"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое предложение содержит ошибку, используя инфинитив вместо спряженной формы?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Tú hablas español."
+        },
+        {
+          "id": "b",
+          "text": "Tú habla español."
+        },
+        {
+          "id": "c",
+          "text": "Tú hablas con amigos."
+        },
+        {
+          "id": "d",
+          "text": "Tú hablas música."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Для подлежащего 'tú' глагол должен быть 'hablas', а не 'habla' (форма для 'él/ella').",
+      "theory_block_id": "b1_theory_present_declarative_core",
+      "chapter_id": "es.grammar.present_regular_actions.present_statements_regular_verbs",
+      "concept_id": "present_declarative_sentence_core",
+      "difficulty": 3,
+      "id": "q11",
+      "signature": "d7bddc4fbd56e6a1"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое предложение соответствует правилу: дополнение обычно следует за глаголом?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ellos escuchan música."
+        },
+        {
+          "id": "b",
+          "text": "Música escuchan ellos."
+        },
+        {
+          "id": "c",
+          "text": "Escuchan música ellos."
+        },
+        {
+          "id": "d",
+          "text": "Ellos música escuchan."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Порядок 'Ellos escuchan música' соответствует структуре SVO. Остальные варианты неправильные.",
+      "theory_block_id": "b1_theory_present_declarative_core",
+      "chapter_id": "es.grammar.present_regular_actions.present_statements_regular_verbs",
+      "concept_id": "present_declarative_sentence_core",
+      "difficulty": 1,
+      "id": "q12",
+      "signature": "daf613963c476e5f"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое предложение содержит глагол в настоящем времени, а не инфинитив?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ellos aprenden español."
+        },
+        {
+          "id": "b",
+          "text": "Ellos aprenden para el examen."
+        },
+        {
+          "id": "c",
+          "text": "Ellos aprender español."
+        },
+        {
+          "id": "d",
+          "text": "Ellos quieren aprender español."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Вариант 'aprenden' — спряженная форма. Вариант 'aprender' (c) — инфинитив, что неправильно.",
+      "theory_block_id": "b1_theory_present_declarative_core",
+      "chapter_id": "es.grammar.present_regular_actions.present_statements_regular_verbs",
+      "concept_id": "present_declarative_sentence_core",
+      "difficulty": 1,
+      "id": "q13",
+      "signature": "88d9c79c4bc3ac63"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой вариант соответствует структуре подлежащее + глагол + дополнение?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "El perro corre en el parque."
+        },
+        {
+          "id": "b",
+          "text": "Corre el perro en el parque."
+        },
+        {
+          "id": "c",
+          "text": "En el parque corre el perro."
+        },
+        {
+          "id": "d",
+          "text": "El perro en el parque corre."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Порядок 'El perro corre en el parque' соответствует SVO. 'En el parque' — обстоятельство, а не дополнение. Структура подлежащее + глагол + дополнение сохраняется.",
+      "theory_block_id": "b1_theory_present_declarative_core",
+      "chapter_id": "es.grammar.present_regular_actions.present_statements_regular_verbs",
+      "concept_id": "present_declarative_sentence_core",
+      "difficulty": 2,
+      "id": "q14",
+      "signature": "d25709ce7f597369"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое предложение содержит ошибку, используя инфинитив вместо спряженной формы?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Nosotros comemos pizza."
+        },
+        {
+          "id": "b",
+          "text": "Nosotros comer pizza."
+        },
+        {
+          "id": "c",
+          "text": "Nosotros comemos pizza todos los días."
+        },
+        {
+          "id": "d",
+          "text": "Nosotros comemos pizza con amigos."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Вариант 'comer' — инфинитив. Для подлежащего 'nosotros' требуется форма 'comemos'.",
+      "theory_block_id": "b1_theory_present_declarative_core",
+      "chapter_id": "es.grammar.present_regular_actions.present_statements_regular_verbs",
+      "concept_id": "present_declarative_sentence_core",
+      "difficulty": 3,
+      "id": "q15",
+      "signature": "ae4776a590a9194e"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое предложение правильно показывает, что дополнение следует за глаголом?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ella cocina una pizza."
+        },
+        {
+          "id": "b",
+          "text": "Una pizza cocina ella."
+        },
+        {
+          "id": "c",
+          "text": "Cocina una pizza ella."
+        },
+        {
+          "id": "d",
+          "text": "Ella una pizza cocina."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Дополнение 'una pizza' стоит после глагола 'cocina'. Остальные варианты нарушают структуру SVO.",
+      "theory_block_id": "b1_theory_present_declarative_core",
+      "chapter_id": "es.grammar.present_regular_actions.present_statements_regular_verbs",
+      "concept_id": "present_declarative_sentence_core",
+      "difficulty": 2,
+      "id": "q16",
+      "signature": "53dc0d631d603226"
     }
   ],
   "meta": {
-    "generated_at": "2026-04-25T14:14:33Z",
+    "generated_at": "2026-04-28T09:31:57Z",
     "source": "llm-only",
     "questions_per_block": 10,
     "chapter_number_filter": 29,

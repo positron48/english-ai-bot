@@ -272,10 +272,310 @@
       "difficulty": 3,
       "id": "q9",
       "signature": "4c9490674ea95787"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое предложение правильно описывает привычку (не текущее действие)?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Trabajo en un bar los fines de semana."
+        },
+        {
+          "id": "b",
+          "text": "Estoy trabajando en un bar los fines de semana."
+        },
+        {
+          "id": "c",
+          "text": "Trabajo en un bar hoy."
+        },
+        {
+          "id": "d",
+          "text": "Estoy trabajando en un bar hoy."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Presente de indicativo используется для привычек, а estar + gerundio — для действий в момент речи. Вариант b ошибочно применяет прогрессивную форму к привычке.",
+      "theory_block_id": "b6_theory_present_habitual_vs_progressive_now_errors",
+      "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.estar_plus_gerundio_happening_right_now",
+      "concept_id": "presente_vs_estar_gerundio_russian_transfer",
+      "difficulty": 2,
+      "id": "q10",
+      "signature": "b4eaa2be30041ad5"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно выразить «Я знаю ответ»?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Sé la respuesta."
+        },
+        {
+          "id": "b",
+          "text": "Estoy sabiendo la respuesta."
+        },
+        {
+          "id": "c",
+          "text": "Conozco la respuesta."
+        },
+        {
+          "id": "d",
+          "text": "Estoy conociendo la respuesta."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Для выражения знания факта используется presente (sé), а не estar + gerundio. Варианты b и d являются ошибками, как указано в теории.",
+      "theory_block_id": "b6_theory_present_habitual_vs_progressive_now_errors",
+      "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.estar_plus_gerundio_happening_right_now",
+      "concept_id": "presente_vs_estar_gerundio_russian_transfer",
+      "difficulty": 3,
+      "id": "q11",
+      "signature": "bc157ede9cc11b2a"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое предложение правильно описывает действие, происходящее в момент речи?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Estoy hablando con mi amigo."
+        },
+        {
+          "id": "b",
+          "text": "Hablo con mi amigo."
+        },
+        {
+          "id": "c",
+          "text": "Hablo con mi amigo cada día."
+        },
+        {
+          "id": "d",
+          "text": "Hablo con mi amigo en la oficina."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Estar + gerundio используется для описания действия, происходящего в настоящий момент. Вариант b описывает привычку или общий факт.",
+      "theory_block_id": "b6_theory_present_habitual_vs_progressive_now_errors",
+      "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.estar_plus_gerundio_happening_right_now",
+      "concept_id": "presente_vs_estar_gerundio_russian_transfer",
+      "difficulty": 2,
+      "id": "q12",
+      "signature": "dc6bba22b2258d1d"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое предложение содержит ошибку, используя estar + gerundio вместо presente для привычки?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Siempre estudio en la biblioteca."
+        },
+        {
+          "id": "b",
+          "text": "Siempre estoy estudiando en la biblioteca."
+        },
+        {
+          "id": "c",
+          "text": "Leo novelas por la noche."
+        },
+        {
+          "id": "d",
+          "text": "Trabajo en una tienda los fines de semana."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Вариант b ошибочно использует estar + gerundio для привычки. Правильно: presente (siempre estudio).",
+      "theory_block_id": "b6_theory_present_habitual_vs_progressive_now_errors",
+      "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.estar_plus_gerundio_happening_right_now",
+      "concept_id": "presente_vs_estar_gerundio_russian_transfer",
+      "difficulty": 3,
+      "id": "q13",
+      "signature": "862e41b5f2b093d6"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое предложение правильно описывает регулярную привычку (не текущее действие)?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Leo libros cada noche."
+        },
+        {
+          "id": "b",
+          "text": "Estoy leyendo libros cada noche."
+        },
+        {
+          "id": "c",
+          "text": "Leo libros en la biblioteca."
+        },
+        {
+          "id": "d",
+          "text": "Estoy leyendo libros en la biblioteca."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Presente (leo) используется для привычек, а estar + gerundio (estoy leyendo) — для текущего действия. Вариант b ошибочно применяет прогрессивную форму.",
+      "theory_block_id": "b6_theory_present_habitual_vs_progressive_now_errors",
+      "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.estar_plus_gerundio_happening_right_now",
+      "concept_id": "presente_vs_estar_gerundio_russian_transfer",
+      "difficulty": 2,
+      "id": "q14",
+      "signature": "3c4b35aaea57f5c9"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое предложение правильно описывает процесс, происходящий сейчас?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Estoy cocinando la cena."
+        },
+        {
+          "id": "b",
+          "text": "Cocino la cena."
+        },
+        {
+          "id": "c",
+          "text": "Cocino la cena cada día."
+        },
+        {
+          "id": "d",
+          "text": "Cocino la cena en la cocina."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Estar + gerundio (estoy cocinando) указывает на действие в момент речи. Варианты b, c, d описывают привычку или общий факт.",
+      "theory_block_id": "b6_theory_present_habitual_vs_progressive_now_errors",
+      "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.estar_plus_gerundio_happening_right_now",
+      "concept_id": "presente_vs_estar_gerundio_russian_transfer",
+      "difficulty": 2,
+      "id": "q15",
+      "signature": "cbc6780933cb3c72"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое предложение правильно передает «Я знаю город»?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Conozco la ciudad."
+        },
+        {
+          "id": "b",
+          "text": "Estoy conociendo la ciudad."
+        },
+        {
+          "id": "c",
+          "text": "Sé la ciudad."
+        },
+        {
+          "id": "d",
+          "text": "Conozco la ciudad cada día."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Conocer используется для знакомства с местом, а estar + gerundio не применяется. Вариант b — ошибка, как указано в теории.",
+      "theory_block_id": "b6_theory_present_habitual_vs_progressive_now_errors",
+      "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.estar_plus_gerundio_happening_right_now",
+      "concept_id": "presente_vs_estar_gerundio_russian_transfer",
+      "difficulty": 3,
+      "id": "q16",
+      "signature": "f2ac84d7c151d03c"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое предложение правильно использует контраст между привычкой и текущим действием?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Trabajo en una oficina; estoy trabajando en la oficina."
+        },
+        {
+          "id": "b",
+          "text": "No trabajo en una oficina; estoy trabajando en la oficina."
+        },
+        {
+          "id": "c",
+          "text": "Trabajo en una oficina; estoy trabajando en el café."
+        },
+        {
+          "id": "d",
+          "text": "No trabajo en una oficina; estoy trabajando en el café."
+        }
+      ],
+      "correct_answer": "d",
+      "explanation": "Контраст: «сегодня я не работаю, но сейчас работаю» (no trabajo... estoy trabajando). Вариант d соответствует примеру из теории.",
+      "theory_block_id": "b6_theory_present_habitual_vs_progressive_now_errors",
+      "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.estar_plus_gerundio_happening_right_now",
+      "concept_id": "presente_vs_estar_gerundio_russian_transfer",
+      "difficulty": 3,
+      "id": "q17",
+      "signature": "049f4bbc51160933"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое предложение неверно для выражения «Я знаю ответ»?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Sé la respuesta."
+        },
+        {
+          "id": "b",
+          "text": "Estoy sabiendo la respuesta."
+        },
+        {
+          "id": "c",
+          "text": "Conozco la respuesta."
+        },
+        {
+          "id": "d",
+          "text": "Sé la respuesta ahora."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Форма «estoy sabiendo» неправильна. Правильно: «sé» или перефразирование. Вариант b — пример из общих ошибок теории.",
+      "theory_block_id": "b6_theory_present_habitual_vs_progressive_now_errors",
+      "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.estar_plus_gerundio_happening_right_now",
+      "concept_id": "presente_vs_estar_gerundio_russian_transfer",
+      "difficulty": 3,
+      "id": "q18",
+      "signature": "44a8186e5c338c8b"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое предложение правильно описывает, что человек учится в библиотеке как привычку?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Estudio en la biblioteca."
+        },
+        {
+          "id": "b",
+          "text": "Estoy estudiando en la biblioteca."
+        },
+        {
+          "id": "c",
+          "text": "Estudio en la biblioteca todos los días."
+        },
+        {
+          "id": "d",
+          "text": "Estoy estudiando en la biblioteca cada día."
+        }
+      ],
+      "correct_answer": "c",
+      "explanation": "Presente (estudio) с указанием частоты (todos los días) описывает привычку. Варианты b и d ошибочно используют estar + gerundio для привычки.",
+      "theory_block_id": "b6_theory_present_habitual_vs_progressive_now_errors",
+      "chapter_id": "es.grammar.present_irregulars_reflexives_gustar.estar_plus_gerundio_happening_right_now",
+      "concept_id": "presente_vs_estar_gerundio_russian_transfer",
+      "difficulty": 2,
+      "id": "q19",
+      "signature": "61b622a101ec87fb"
     }
   ],
   "meta": {
-    "generated_at": "2026-04-25T17:19:05Z",
+    "generated_at": "2026-04-28T10:01:21Z",
     "source": "llm-only",
     "questions_per_block": 10,
     "chapter_number_filter": 40,

@@ -144,6 +144,7 @@
           :ref="el => setQuestionRef(currentQuestionIndex, el)"
           :question="currentQuestion"
           :show-answers="false"
+          :show-theory-help-button="false"
           :initial-answer="currentQuestion ? answers.get(getQuestionKey(currentQuestion)) : undefined"
           @answer="handleAnswerWithAutoNext(currentQuestionIndex, $event)"
         />

@@ -272,10 +272,220 @@
       "difficulty": 2,
       "id": "q9",
       "signature": "50ad35396fe32b38"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно сказать 'Мы готовим обед' на испанском?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "cocinar"
+        },
+        {
+          "id": "b",
+          "text": "cocino"
+        },
+        {
+          "id": "c",
+          "text": "cocinamos"
+        },
+        {
+          "id": "d",
+          "text": "cocinan"
+        }
+      ],
+      "correct_answer": "c",
+      "explanation": "Инфинитив 'cocinar' используется для списков, а в повествовании требуется спряженная форма. Для 'мы' глагол 'cocinar' спрягается как 'cocinamos'.",
+      "theory_block_id": "b6_theory_present_regular_traps_ru_learners",
+      "chapter_id": "es.grammar.present_regular_actions.infinitives_present_tense_endings_ar_er_ir",
+      "concept_id": "present_regular_russian_traps",
+      "difficulty": 2,
+      "id": "q10",
+      "signature": "7bf61ac952d567e3"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое окончание у глагола 'vivir' для 'мы'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "-emos"
+        },
+        {
+          "id": "b",
+          "text": "-imos"
+        },
+        {
+          "id": "c",
+          "text": "-en"
+        },
+        {
+          "id": "d",
+          "text": "-ís"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Глагол 'vivir' относится к группе '-ir', поэтому для 'мы' используется окончание '-imos'.",
+      "theory_block_id": "b6_theory_present_regular_traps_ru_learners",
+      "chapter_id": "es.grammar.present_regular_actions.infinitives_present_tense_endings_ar_er_ir",
+      "concept_id": "present_regular_russian_traps",
+      "difficulty": 2,
+      "id": "q11",
+      "signature": "224ffb1f09005f5c"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое окончание у глагола 'comer' для 'они'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "-emos"
+        },
+        {
+          "id": "b",
+          "text": "-en"
+        },
+        {
+          "id": "c",
+          "text": "-ís"
+        },
+        {
+          "id": "d",
+          "text": "-mos"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Для 'они' (ellos/ellas) глаголы группы '-er' спрягаются с окончанием '-en'. Ошибка 'comemos' относится к 'мы'.",
+      "theory_block_id": "b6_theory_present_regular_traps_ru_learners",
+      "chapter_id": "es.grammar.present_regular_actions.infinitives_present_tense_endings_ar_er_ir",
+      "concept_id": "present_regular_russian_traps",
+      "difficulty": 3,
+      "id": "q12",
+      "signature": "7c3adb352706a375"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое окончание у глагола 'beber' для 'мы'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "-imos"
+        },
+        {
+          "id": "b",
+          "text": "-emos"
+        },
+        {
+          "id": "c",
+          "text": "-en"
+        },
+        {
+          "id": "d",
+          "text": "-ís"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Глагол 'beber' относится к группе '-er', поэтому для 'мы' используется окончание '-emos'.",
+      "theory_block_id": "b6_theory_present_regular_traps_ru_learners",
+      "chapter_id": "es.grammar.present_regular_actions.infinitives_present_tense_endings_ar_er_ir",
+      "concept_id": "present_regular_russian_traps",
+      "difficulty": 2,
+      "id": "q13",
+      "signature": "42cb3cda2996075a"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как правильно сказать 'Она готовит суп'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ella cocinar sopa"
+        },
+        {
+          "id": "b",
+          "text": "Ella cocina sopa"
+        },
+        {
+          "id": "c",
+          "text": "Ella cocinando sopa"
+        },
+        {
+          "id": "d",
+          "text": "Ella cocinó sopa"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "В повествовании используется спряженная форма 'cocina' вместо инфинитива 'cocinar'. 'Cocinó' — прошедшее время, не подходит.",
+      "theory_block_id": "b6_theory_present_regular_traps_ru_learners",
+      "chapter_id": "es.grammar.present_regular_actions.infinitives_present_tense_endings_ar_er_ir",
+      "concept_id": "present_regular_russian_traps",
+      "difficulty": 2,
+      "id": "q14",
+      "signature": "03f0a74917043a7a"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое окончание у глагола 'vivir' для 'они'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "-en"
+        },
+        {
+          "id": "b",
+          "text": "-imos"
+        },
+        {
+          "id": "c",
+          "text": "-emos"
+        },
+        {
+          "id": "d",
+          "text": "-ís"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Глагол 'vivir' (группа '-ir') для 'они' имеет окончание '-en', как 'viven'.",
+      "theory_block_id": "b6_theory_present_regular_traps_ru_learners",
+      "chapter_id": "es.grammar.present_regular_actions.infinitives_present_tense_endings_ar_er_ir",
+      "concept_id": "present_regular_russian_traps",
+      "difficulty": 3,
+      "id": "q15",
+      "signature": "b765bc843e35b52c"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой глагол относится к группе '-ir'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "hablar"
+        },
+        {
+          "id": "b",
+          "text": "beber"
+        },
+        {
+          "id": "c",
+          "text": "vivir"
+        },
+        {
+          "id": "d",
+          "text": "comer"
+        }
+      ],
+      "correct_answer": "c",
+      "explanation": "Глагол 'vivir' оканчивается на '-ir', поэтому относится ко второй группе. Остальные глаголы — из групп '-ar' и '-er'.",
+      "theory_block_id": "b6_theory_present_regular_traps_ru_learners",
+      "chapter_id": "es.grammar.present_regular_actions.infinitives_present_tense_endings_ar_er_ir",
+      "concept_id": "present_regular_russian_traps",
+      "difficulty": 1,
+      "id": "q16",
+      "signature": "ef77fce160b02c18"
     }
   ],
   "meta": {
-    "generated_at": "2026-04-25T14:11:51Z",
+    "generated_at": "2026-04-28T09:29:33Z",
     "source": "llm-only",
     "questions_per_block": 10,
     "chapter_number_filter": 28,
