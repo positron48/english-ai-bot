@@ -43,6 +43,7 @@
 
       <GrammarQuestion
         ref="grammarQuestionRef"
+        :key="`${currentQuestion.id}-${currentIndex}`"
         :question="currentQuestion"
         :theory-block="currentTheoryBlock"
         :theory-chapter-context="currentChapterContext"
