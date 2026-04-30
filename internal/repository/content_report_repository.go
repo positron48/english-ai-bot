@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"tgbot-skeleton/internal/database"
 	"tgbot-skeleton/internal/models"
@@ -78,6 +79,97 @@ func (r *ContentReportRepository) Resolve(reportID, resolvedByUserID int64) erro
 		return fmt.Errorf("content report not found")
 	}
 	return nil
+}
+
+type ListGrammarReportsFilter struct {
+	Course      string
+	ChapterID   string
+	TheoryBlock string
+	CursorID    int64
+	Limit       int
+}
+
+func (r *ContentReportRepository) ListActiveGrammarReports(filter ListGrammarReportsFilter) ([]*models.ContentReport, error) {
+	limit := filter.Limit
+	if limit <= 0 {
+		limit = 200
+	}
+	if limit > 1000 {
+		limit = 1000
+	}
+
+	base := `SELECT id, user_id, source_type, status, COALESCE(word,''), COALESCE(translation_direction,''),
+	                word_card_id, training_card_id, user_card_id, COALESCE(word_category,''),
+	                COALESCE(grammar_chapter_id,''), COALESCE(theory_block_id,''), COALESCE(grammar_question_id,''),
+	                COALESCE(payload_json,''), resolved_at, resolved_by_user_id, created_at, updated_at
+	         FROM content_reports
+	         WHERE status = 'active' AND source_type = 'grammar_training'`
+	args := make([]interface{}, 0, 8)
+	if filter.CursorID > 0 {
+		base += ` AND id < ?`
+		args = append(args, filter.CursorID)
+	}
+	if chapterID := strings.TrimSpace(filter.ChapterID); chapterID != "" {
+		base += ` AND grammar_chapter_id = ?`
+		args = append(args, chapterID)
+	}
+	if theoryBlock := strings.TrimSpace(filter.TheoryBlock); theoryBlock != "" {
+		base += ` AND theory_block_id = ?`
+		args = append(args, theoryBlock)
+	}
+	if course := strings.ToLower(strings.TrimSpace(filter.Course)); course != "" {
+		switch course {
+		case "en", "english":
+			base += ` AND grammar_chapter_id LIKE 'en.%'`
+		case "es", "spanish":
+			base += ` AND grammar_chapter_id LIKE 'es.%'`
+		default:
+			return nil, fmt.Errorf("unsupported course filter: %s", filter.Course)
+		}
+	}
+	base += ` ORDER BY id DESC LIMIT ?`
+	args = append(args, limit)
+
+	rows, err := r.db.Query(base, args...)
+	if err != nil {
+		return nil, fmt.Errorf("list active grammar reports: %w", err)
+	}
+	defer rows.Close()
+
+	result := make([]*models.ContentReport, 0, limit)
+	for rows.Next() {
+		item, err := scanContentReport(rows)
+		if err != nil {
+			return nil, err
+		}
+		result = append(result, item)
+	}
+	return result, nil
+}
+
+func (r *ContentReportRepository) ResolveBulk(reportIDs []int64, resolvedByUserID *int64) (int64, error) {
+	if len(reportIDs) == 0 {
+		return 0, nil
+	}
+	placeholders := make([]string, 0, len(reportIDs))
+	args := make([]interface{}, 0, len(reportIDs)+1)
+	args = append(args, resolvedByUserID)
+	for _, id := range reportIDs {
+		placeholders = append(placeholders, "?")
+		args = append(args, id)
+	}
+	q := fmt.Sprintf(`UPDATE content_reports
+	      SET status='resolved', resolved_at=CURRENT_TIMESTAMP, resolved_by_user_id=?, updated_at=CURRENT_TIMESTAMP
+	      WHERE status='active' AND id IN (%s)`, strings.Join(placeholders, ","))
+	res, err := r.db.Exec(q, args...)
+	if err != nil {
+		return 0, fmt.Errorf("resolve bulk content reports: %w", err)
+	}
+	affected, err := res.RowsAffected()
+	if err != nil {
+		return 0, fmt.Errorf("resolve bulk content reports rows affected: %w", err)
+	}
+	return affected, nil
 }
 
 func (r *ContentReportRepository) List(status string, limit int) ([]*models.ContentReport, error) {

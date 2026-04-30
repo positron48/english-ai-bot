@@ -22,6 +22,7 @@ CARD
 - 1–3 senses.
 - display_word: verb => "to <lemma>", else => "<lemma>".
 - meaning_target MUST be in English.
+- meaning_target MUST be Latin-only: it must contain Latin letters and MUST NOT contain any Cyrillic characters.
 - example_target MUST be in English.
 - word_native must match pos:
   - verb => Russian infinitive
@@ -50,5 +51,6 @@ DISTRACTORS (THIS IS THE MOST IMPORTANT PART)
   - For this case, do not substitute other words and do not include word_native in distractors_ru.
 
 FINAL SELF-CHECK (MANDATORY): if any rule fails, replace distractors until ALL pass, then output JSON.
+- Ensure meaning_target is Latin-only (contains Latin, contains zero Cyrillic).
 
 Word to process:

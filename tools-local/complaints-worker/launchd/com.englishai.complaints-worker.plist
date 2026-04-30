@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.englishai.complaints-worker</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/bash</string>
+    <string>/Users/antonfilatov/www/my/k3s/english-ai-bot/tools-local/complaints-worker/run.sh</string>
+  </array>
+
+  <key>StartInterval</key>
+  <integer>3600</integer>
+
+  <key>WorkingDirectory</key>
+  <string>/Users/antonfilatov/www/my/k3s/english-ai-bot</string>
+
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>COMPLAINTS_SERVICE_URL</key>
+    <string>http://127.0.0.1:8184</string>
+    <key>COMPLAINTS_SERVICE_TOKEN</key>
+    <string>REPLACE_ME</string>
+    <key>LLAMACPP_URL</key>
+    <string>http://127.0.0.1:8080</string>
+    <key>LLAMACPP_MODEL</key>
+    <string>local-model</string>
+    <key>COURSE_SCOPE</key>
+    <string>both</string>
+  </dict>
+
+  <key>StandardOutPath</key>
+  <string>/Users/antonfilatov/www/my/k3s/english-ai-bot/logs/complaints/launchd.stdout.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/antonfilatov/www/my/k3s/english-ai-bot/logs/complaints/launchd.stderr.log</string>
+
+  <key>RunAtLoad</key>
+  <true/>
+</dict>
+</plist>
+

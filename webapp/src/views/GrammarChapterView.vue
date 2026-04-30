@@ -92,6 +92,7 @@
               :question="getQuestionById(questionId)"
               :theory-chapter-context="theoryChapterContextForCourse"
               :show-answers="block.quiz_inline?.show_answers_immediately"
+              :show-theory-help-button="false"
               @answer="handleQuizAnswer(questionId, $event)"
             />
           </div>

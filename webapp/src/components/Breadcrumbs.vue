@@ -244,11 +244,6 @@ const routeHierarchy = computed(() => {
       { label: 'Admin', path: '/admin' },
       { label: 'Prompt Tester', path: '/admin/prompt-tester' }
     ],
-    '/admin/orphaned-cards': [
-      { label: 'Dashboard', path: '/dashboard' },
-      { label: 'Admin', path: '/admin' },
-      { label: 'Orphaned Cards', path: '/admin/orphaned-cards' }
-    ],
     '/admin/word-sets': [
       { label: 'Dashboard', path: '/dashboard' },
       { label: 'Admin', path: '/admin' },
@@ -265,11 +260,6 @@ const routeHierarchy = computed(() => {
       { label: 'Admin', path: '/admin' },
       { label: 'Word Sets', path: '/admin/word-sets' },
       { label: 'Sets', path: '/admin/word-sets/sets' }
-    ],
-    '/admin/db-schema': [
-      { label: 'Dashboard', path: '/dashboard' },
-      { label: 'Admin', path: '/admin' },
-      { label: 'DB Schema', path: '/admin/db-schema' }
     ]
   } as Record<string, Breadcrumb[]>
 })

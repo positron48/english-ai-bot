@@ -115,6 +115,7 @@ type Router struct {
 	internalTTSTokens                 map[string]string
 	internalTTSMaxPendingLimit        int
 	internalTTSMaxUploadBytes         int
+	internalServiceTokens             map[string]string
 	// generateTokenPairForRefresh if set is used in handleAuthRefresh instead of auth.GenerateTokenPair (for testing).
 	generateTokenPairForRefresh func(userID, telegramID int64) (access, refresh string, err error)
 	// getOrCreateUserForTelegram if set is used in handleAuthTelegram/handleAuthTelegramUnsafe instead of userRepo.GetOrCreateUser (for testing).
@@ -150,6 +151,7 @@ func NewRouter(
 		internalTTSTokens:          parseTTSTokens(cfg.TTS.InternalTokensJSON, logger),
 		internalTTSMaxPendingLimit: maxInt(cfg.TTS.InternalMaxPendingLimit, 500),
 		internalTTSMaxUploadBytes:  maxInt(cfg.TTS.InternalMaxUploadMB, 10) * 1024 * 1024,
+		internalServiceTokens:      parseTTSTokens(cfg.WebApp.InternalServiceTokensJSON, logger),
 	}
 
 	// Setup routes
@@ -423,6 +425,8 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/internal/tts/pending", r.handleInternalTTSPending)
 	r.mux.HandleFunc("/api/internal/tts/audio", r.handleInternalTTSAudio)
 	r.mux.HandleFunc("/api/internal/tts/fail", r.handleInternalTTSFail)
+	r.mux.HandleFunc("/api/internal/content-reports/grammar", r.handleInternalGrammarContentReports)
+	r.mux.HandleFunc("/api/internal/content-reports/grammar/resolve-bulk", r.handleInternalGrammarContentReportsResolveBulk)
 
 	// Access control routes
 	r.mux.HandleFunc("/api/access/me", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleAccessMe)))
@@ -468,12 +472,6 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/admin", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdmin))))
 	r.mux.HandleFunc("/api/admin/circuit/reset", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminCircuitReset))))
 	r.mux.HandleFunc("/api/admin/circuit/open", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminCircuitOpen))))
-	r.mux.HandleFunc("/api/admin/db-schema", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleDBSchema))))
-	r.mux.HandleFunc("/api/admin/db-query", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleDBQuery))))
-	r.mux.HandleFunc("/api/admin/orphaned-cards", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminOrphanedCards))))
-	r.mux.HandleFunc("/api/admin/orphaned-cards/", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminOrphanedCard))))
-	r.mux.HandleFunc("/api/admin/orphaned-user-cards", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminOrphanedUserCards))))
-	r.mux.HandleFunc("/api/admin/orphaned-user-cards/", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminOrphanedUserCard))))
 	r.mux.HandleFunc("/api/admin/prompt-tester/default-prompts", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminPromptTesterDefaultPrompts))))
 	r.mux.HandleFunc("/api/admin/prompt-tester/run", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminPromptTesterRun))))
 	r.mux.HandleFunc("/api/admin/content-reports", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminContentReports))))

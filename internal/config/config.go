@@ -204,14 +204,15 @@ type AdminConfig struct {
 
 // WebAppConfig holds web app configuration
 type WebAppConfig struct {
-	PublicURL        string `mapstructure:"public_url"`
-	SessionSecret    string `mapstructure:"session_secret"`
-	JWTSecret        string `mapstructure:"jwt_secret"`
-	OTPTTLSeconds    int    `mapstructure:"otp_ttl_seconds"`
-	SessionTTLHours  int    `mapstructure:"session_ttl_hours"`
-	JWTTTLHours      int    `mapstructure:"jwt_ttl_hours"`
-	RefreshTTLHours  int    `mapstructure:"refresh_ttl_hours"`
-	ViteDevServerURL string `mapstructure:"vite_dev_server_url"`
+	PublicURL                 string `mapstructure:"public_url"`
+	SessionSecret             string `mapstructure:"session_secret"`
+	JWTSecret                 string `mapstructure:"jwt_secret"`
+	InternalServiceTokensJSON string `mapstructure:"internal_service_tokens_json"`
+	OTPTTLSeconds             int    `mapstructure:"otp_ttl_seconds"`
+	SessionTTLHours           int    `mapstructure:"session_ttl_hours"`
+	JWTTTLHours               int    `mapstructure:"jwt_ttl_hours"`
+	RefreshTTLHours           int    `mapstructure:"refresh_ttl_hours"`
+	ViteDevServerURL          string `mapstructure:"vite_dev_server_url"`
 
 	// Rate limiting configuration
 	RateLimitAuthRequestOTPPerIP         int `mapstructure:"rate_limit_auth_request_otp_per_ip"`
@@ -306,6 +307,7 @@ func Load() (*Config, error) {
 	viper.SetDefault("webapp.public_url", "")
 	viper.SetDefault("webapp.session_secret", "")
 	viper.SetDefault("webapp.jwt_secret", "")
+	viper.SetDefault("webapp.internal_service_tokens_json", "")
 	viper.SetDefault("webapp.otp_ttl_seconds", 300)
 	viper.SetDefault("webapp.session_ttl_hours", 720)
 	viper.SetDefault("webapp.jwt_ttl_hours", 24)
@@ -414,6 +416,7 @@ func Load() (*Config, error) {
 	_ = viper.BindEnv("webapp.public_url", "WEBAPP_PUBLIC_URL")
 	_ = viper.BindEnv("webapp.session_secret", "WEBAPP_SESSION_SECRET")
 	_ = viper.BindEnv("webapp.jwt_secret", "WEBAPP_JWT_SECRET")
+	_ = viper.BindEnv("webapp.internal_service_tokens_json", "WEBAPP_INTERNAL_SERVICE_TOKENS_JSON")
 	_ = viper.BindEnv("webapp.otp_ttl_seconds", "WEBAPP_OTP_TTL_SECONDS")
 	_ = viper.BindEnv("webapp.session_ttl_hours", "WEBAPP_SESSION_TTL_HOURS")
 	_ = viper.BindEnv("webapp.jwt_ttl_hours", "WEBAPP_JWT_TTL_HOURS")

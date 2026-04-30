@@ -132,11 +132,6 @@ const router = createRouter({
           component: () => import('../views/AdminPromptTesterView.vue')
         },
         {
-          path: 'orphaned-cards',
-          name: 'AdminOrphanedCards',
-          component: () => import('../views/AdminOrphanedCardsView.vue')
-        },
-        {
           path: 'content-reports',
           name: 'AdminContentReports',
           component: () => import('../views/AdminContentReportsView.vue')
@@ -159,11 +154,6 @@ const router = createRouter({
           path: 'word-sets/sets',
           name: 'AdminWordSetsSets',
           component: () => import('../views/AdminWordSetsView.vue')
-        },
-        {
-          path: 'db-schema',
-          name: 'AdminDBSchema',
-          component: () => import('../views/AdminDBSchemaView.vue')
         },
         {
           path: 'app-settings',

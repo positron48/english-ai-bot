@@ -276,3 +276,115 @@ func asReportTime(t *time.Time) interface{} {
 	}
 	return t.UTC().Format("2006-01-02T15:04:05Z")
 }
+
+func (r *Router) authorizeInternalService(req *http.Request) bool {
+	token := strings.TrimSpace(req.Header.Get("X-Service-Token"))
+	if token == "" || len(r.internalServiceTokens) == 0 {
+		return false
+	}
+	for _, expected := range r.internalServiceTokens {
+		if expected == token {
+			return true
+		}
+	}
+	return false
+}
+
+func (r *Router) handleInternalGrammarContentReports(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	if !r.authorizeInternalService(req) {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+	limit := 200
+	if raw := strings.TrimSpace(req.URL.Query().Get("limit")); raw != "" {
+		if v, err := strconv.Atoi(raw); err == nil && v > 0 {
+			limit = v
+		}
+	}
+	var cursorID int64
+	if raw := strings.TrimSpace(req.URL.Query().Get("cursor")); raw != "" {
+		v, err := strconv.ParseInt(raw, 10, 64)
+		if err != nil || v < 0 {
+			http.Error(w, "Invalid cursor", http.StatusBadRequest)
+			return
+		}
+		cursorID = v
+	}
+	repo := repository.NewContentReportRepository(r.db, r.logger)
+	reports, err := repo.ListActiveGrammarReports(repository.ListGrammarReportsFilter{
+		Course:      strings.TrimSpace(req.URL.Query().Get("course")),
+		ChapterID:   strings.TrimSpace(req.URL.Query().Get("chapter_id")),
+		TheoryBlock: strings.TrimSpace(req.URL.Query().Get("theory_block_id")),
+		CursorID:    cursorID,
+		Limit:       limit,
+	})
+	if err != nil {
+		r.logger.Error("failed to list internal grammar content reports", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	items := make([]map[string]interface{}, 0, len(reports))
+	var nextCursor int64
+	for _, item := range reports {
+		nextCursor = item.ID
+		items = append(items, map[string]interface{}{
+			"id":                  item.ID,
+			"source_type":         item.SourceType,
+			"status":              item.Status,
+			"grammar_chapter_id":  item.GrammarChapterID,
+			"theory_block_id":     item.TheoryBlockID,
+			"grammar_question_id": item.GrammarQuestionID,
+			"payload":             repo.ParsePayload(item.PayloadJSON),
+			"created_at":          item.CreatedAt.UTC().Format("2006-01-02T15:04:05Z"),
+		})
+	}
+	resp := map[string]interface{}{"reports": items}
+	if len(reports) > 0 {
+		resp["next_cursor"] = nextCursor
+	}
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(resp)
+}
+
+type resolveBulkGrammarReportsRequest struct {
+	ReportIDs []int64 `json:"report_ids"`
+	Reason    string  `json:"reason"`
+}
+
+func (r *Router) handleInternalGrammarContentReportsResolveBulk(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	if !r.authorizeInternalService(req) {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+	var body resolveBulkGrammarReportsRequest
+	if err := json.NewDecoder(req.Body).Decode(&body); err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+	if len(body.ReportIDs) == 0 {
+		http.Error(w, "report_ids required", http.StatusBadRequest)
+		return
+	}
+	repo := repository.NewContentReportRepository(r.db, r.logger)
+	affected, err := repo.ResolveBulk(body.ReportIDs, nil)
+	if err != nil {
+		r.logger.Error("failed to resolve bulk grammar content reports", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(map[string]interface{}{
+		"success":        true,
+		"affected":       affected,
+		"resolved_by":    "service",
+		"resolve_reason": strings.TrimSpace(body.Reason),
+	})
+}

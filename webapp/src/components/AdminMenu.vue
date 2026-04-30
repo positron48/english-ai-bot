@@ -73,16 +73,6 @@
         <Icon name="code" class="admin-sidebar-icon" />
         <span>Prompt Tester</span>
       </router-link>
-      <router-link 
-        v-if="can('full_access')"
-        to="/admin/orphaned-cards" 
-        class="admin-sidebar-item" 
-        :class="{ active: $route.path === '/admin/orphaned-cards' }"
-        @click="isMobile && handleCloseSidebar()"
-      >
-        <Icon name="warning" class="admin-sidebar-icon" />
-        <span>Orphaned Cards</span>
-      </router-link>
       <router-link
         v-if="can('full_access')"
         to="/admin/content-reports"
@@ -112,16 +102,6 @@
       >
         <Icon name="book-open" class="admin-sidebar-icon" />
         <span>Grammar</span>
-      </router-link>
-      <router-link 
-        v-if="can('full_access')"
-        to="/admin/db-schema" 
-        class="admin-sidebar-item" 
-        :class="{ active: $route.path === '/admin/db-schema' }"
-        @click="isMobile && handleCloseSidebar()"
-      >
-        <Icon name="database" class="admin-sidebar-icon" />
-        <span>DB Schema</span>
       </router-link>
       <router-link 
         v-if="can('full_access')"
