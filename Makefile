@@ -13,7 +13,7 @@ SERVICE_NAME ?= ai-bot
 -include .env
 .EXPORT_ALL_VARIABLES:
 
-.PHONY: all tidy build run test lint fmt setup up up-en up-es clean check check-quick ci deploy update status logs docker-build docker-run docker-stop docker-logs docker-clean docker-rebuild docker-dev docker-dev-logs docker-dev-restart webapp-install webapp-dev webapp-build test-postgres test-integration test-integration-verbose grammar-bundle grammar-bundle-list postgres-dev-init-dbs clean-spanish-csv sync-spanish-word-sets requeue-invalid-cards-es-dry requeue-invalid-cards-es requeue-invalid-cards-es-no-tts-dry requeue-invalid-cards-es-no-tts import-spanish-verbs import-spanish-verbs-jehle-bundled backfill-word-verb-links build-verb-form-examples backfill-verb-lemma-ru-glosses backfill-verb-template-links preview-verb-templates
+.PHONY: all tidy build run test lint fmt setup up up-en up-es complaints-dry-en complaints-apply-en complaints-dry-es complaints-apply-es complaints-dry-both complaints-apply-both complaints-improve-both complaints-prompt-autofix-es complaints-prompt-regression complaints-both complaints-cycle-both clean check check-quick ci deploy update status logs docker-build docker-run docker-stop docker-logs docker-clean docker-rebuild docker-dev docker-dev-logs docker-dev-restart webapp-install webapp-dev webapp-build test-postgres test-integration test-integration-verbose grammar-bundle grammar-bundle-list postgres-dev-init-dbs clean-spanish-csv sync-spanish-word-sets requeue-invalid-cards-es-dry requeue-invalid-cards-es requeue-invalid-cards-es-no-tts-dry requeue-invalid-cards-es-no-tts import-spanish-verbs import-spanish-verbs-jehle-bundled backfill-word-verb-links build-verb-form-examples backfill-verb-lemma-ru-glosses backfill-verb-template-links preview-verb-templates
 
 all: build
 
@@ -517,6 +517,124 @@ up-es: postgres-up postgres-dev-init-dbs build
 	echo ""; \
 	exec ./bin/$(APP_NAME)
 
+# Local complaints worker (English profile)
+complaints-dry-en:
+	@test -f .env.en || (echo "Нет .env.en — скопируйте env.example.en в .env.en и заполните COMPLAINTS_SERVICE_TOKEN"; exit 1)
+	@set -e; \
+	set -a; [ -f .env ] && . ./.env; set +a; \
+	set -a && . ./.env.en && set +a; \
+	bash tools-local/complaints-worker/ensure-llama.sh; \
+	URL="$${COMPLAINTS_SERVICE_URL:-http://127.0.0.1:$${SERVER_PORT:-8184}}"; \
+	TOKEN="$${COMPLAINTS_SERVICE_TOKEN:-}"; \
+	[ -n "$$TOKEN" ] || (echo "COMPLAINTS_SERVICE_TOKEN пустой"; exit 1); \
+	COMPLAINTS_SERVICE_URL="$$URL" COMPLAINTS_SERVICE_TOKEN="$$TOKEN" COURSE_SCOPE=english \
+	python3 tools-local/complaints-worker/worker.py
+
+complaints-apply-en:
+	@test -f .env.en || (echo "Нет .env.en — скопируйте env.example.en в .env.en и заполните COMPLAINTS_SERVICE_TOKEN"; exit 1)
+	@set -e; \
+	set -a; [ -f .env ] && . ./.env; set +a; \
+	set -a && . ./.env.en && set +a; \
+	bash tools-local/complaints-worker/ensure-llama.sh; \
+	URL="$${COMPLAINTS_SERVICE_URL:-http://127.0.0.1:$${SERVER_PORT:-8184}}"; \
+	TOKEN="$${COMPLAINTS_SERVICE_TOKEN:-}"; \
+	[ -n "$$TOKEN" ] || (echo "COMPLAINTS_SERVICE_TOKEN пустой"; exit 1); \
+	COMPLAINTS_SERVICE_URL="$$URL" COMPLAINTS_SERVICE_TOKEN="$$TOKEN" COURSE_SCOPE=english \
+	python3 tools-local/complaints-worker/worker.py --apply
+
+# Local complaints worker (Spanish profile)
+complaints-dry-es:
+	@test -f .env.es || (echo "Нет .env.es — скопируйте env.example.es в .env.es и заполните COMPLAINTS_SERVICE_TOKEN"; exit 1)
+	@set -e; \
+	set -a; [ -f .env ] && . ./.env; set +a; \
+	set -a && . ./.env.es && set +a; \
+	bash tools-local/complaints-worker/ensure-llama.sh; \
+	URL="$${COMPLAINTS_SERVICE_URL:-http://127.0.0.1:$${SERVER_PORT:-8284}}"; \
+	TOKEN="$${COMPLAINTS_SERVICE_TOKEN:-}"; \
+	[ -n "$$TOKEN" ] || (echo "COMPLAINTS_SERVICE_TOKEN пустой"; exit 1); \
+	COMPLAINTS_SERVICE_URL="$$URL" COMPLAINTS_SERVICE_TOKEN="$$TOKEN" COURSE_SCOPE=spanish \
+	python3 tools-local/complaints-worker/worker.py
+
+complaints-apply-es:
+	@test -f .env.es || (echo "Нет .env.es — скопируйте env.example.es в .env.es и заполните COMPLAINTS_SERVICE_TOKEN"; exit 1)
+	@set -e; \
+	set -a; [ -f .env ] && . ./.env; set +a; \
+	set -a && . ./.env.es && set +a; \
+	bash tools-local/complaints-worker/ensure-llama.sh; \
+	URL="$${COMPLAINTS_SERVICE_URL:-http://127.0.0.1:$${SERVER_PORT:-8284}}"; \
+	TOKEN="$${COMPLAINTS_SERVICE_TOKEN:-}"; \
+	[ -n "$$TOKEN" ] || (echo "COMPLAINTS_SERVICE_TOKEN пустой"; exit 1); \
+	COMPLAINTS_SERVICE_URL="$$URL" COMPLAINTS_SERVICE_TOKEN="$$TOKEN" COURSE_SCOPE=spanish \
+	python3 tools-local/complaints-worker/worker.py --apply
+
+# Run both profiles sequentially (requires EN/ES urls; token can be shared)
+complaints-dry-both:
+	@set -e; \
+	set -a; [ -f .env ] && . ./.env; set +a; \
+	if [ -f .env.en ]; then set -a; . ./.env.en; set +a; fi; \
+	if [ -f .env.es ]; then set -a; . ./.env.es; set +a; fi; \
+	URL_EN="$${COMPLAINTS_SERVICE_URL_EN:-$${COMPLAINTS_SERVICE_URL:-http://127.0.0.1:8184}}"; \
+	URL_ES="$${COMPLAINTS_SERVICE_URL_ES:-$${COMPLAINTS_SERVICE_URL:-http://127.0.0.1:8284}}"; \
+	TOKEN_EN="$${COMPLAINTS_SERVICE_TOKEN_EN:-$${COMPLAINTS_SERVICE_TOKEN:-}}"; \
+	TOKEN_ES="$${COMPLAINTS_SERVICE_TOKEN_ES:-$${COMPLAINTS_SERVICE_TOKEN:-}}"; \
+	[ -n "$$TOKEN_EN" ] || (echo "COMPLAINTS_SERVICE_TOKEN_EN или COMPLAINTS_SERVICE_TOKEN обязателен"; exit 1); \
+	[ -n "$$TOKEN_ES" ] || (echo "COMPLAINTS_SERVICE_TOKEN_ES или COMPLAINTS_SERVICE_TOKEN обязателен"; exit 1); \
+	bash tools-local/complaints-worker/ensure-llama.sh; \
+	COMPLAINTS_SERVICE_URL="$$URL_EN" COMPLAINTS_SERVICE_TOKEN="$$TOKEN_EN" COURSE_SCOPE=english \
+	python3 tools-local/complaints-worker/worker.py; \
+	COMPLAINTS_SERVICE_URL="$$URL_ES" COMPLAINTS_SERVICE_TOKEN="$$TOKEN_ES" COURSE_SCOPE=spanish \
+	python3 tools-local/complaints-worker/worker.py
+
+complaints-apply-both:
+	@set -e; \
+	set -a; [ -f .env ] && . ./.env; set +a; \
+	if [ -f .env.en ]; then set -a; . ./.env.en; set +a; fi; \
+	if [ -f .env.es ]; then set -a; . ./.env.es; set +a; fi; \
+	URL_EN="$${COMPLAINTS_SERVICE_URL_EN:-$${COMPLAINTS_SERVICE_URL:-http://127.0.0.1:8184}}"; \
+	URL_ES="$${COMPLAINTS_SERVICE_URL_ES:-$${COMPLAINTS_SERVICE_URL:-http://127.0.0.1:8284}}"; \
+	TOKEN_EN="$${COMPLAINTS_SERVICE_TOKEN_EN:-$${COMPLAINTS_SERVICE_TOKEN:-}}"; \
+	TOKEN_ES="$${COMPLAINTS_SERVICE_TOKEN_ES:-$${COMPLAINTS_SERVICE_TOKEN:-}}"; \
+	[ -n "$$TOKEN_EN" ] || (echo "COMPLAINTS_SERVICE_TOKEN_EN или COMPLAINTS_SERVICE_TOKEN обязателен"; exit 1); \
+	[ -n "$$TOKEN_ES" ] || (echo "COMPLAINTS_SERVICE_TOKEN_ES или COMPLAINTS_SERVICE_TOKEN обязателен"; exit 1); \
+	bash tools-local/complaints-worker/ensure-llama.sh; \
+	COMPLAINTS_SERVICE_URL="$$URL_EN" COMPLAINTS_SERVICE_TOKEN="$$TOKEN_EN" COURSE_SCOPE=english \
+	python3 tools-local/complaints-worker/worker.py --apply; \
+	COMPLAINTS_SERVICE_URL="$$URL_ES" COMPLAINTS_SERVICE_TOKEN="$$TOKEN_ES" COURSE_SCOPE=spanish \
+	python3 tools-local/complaints-worker/worker.py --apply
+
+complaints-improve-both:
+	@set -e; \
+	set -a; [ -f .env ] && . ./.env; set +a; \
+	if [ -f .env.en ]; then set -a; . ./.env.en; set +a; fi; \
+	if [ -f .env.es ]; then set -a; . ./.env.es; set +a; fi; \
+	bash tools-local/complaints-worker/ensure-llama.sh; \
+	python3 tools-local/complaints-worker/analyze-journal.py
+
+complaints-prompt-autofix-es:
+	@set -e; \
+	set -a; [ -f .env ] && . ./.env; set +a; \
+	if [ -f .env.es ]; then set -a; . ./.env.es; set +a; fi; \
+	bash tools-local/complaints-worker/ensure-llama.sh; \
+	python3 tools-local/complaints-worker/apply-prompt-improvements.py --course spanish
+
+complaints-prompt-regression:
+	@python3 tools-local/complaints-worker/prompt-validator-regression.py
+
+# Full automated complaints loop entrypoint:
+# 1) apply complaints cleanup + resolve
+# 2) LLM analysis of journal and actionable improvement plan
+complaints-both: complaints-apply-both complaints-improve-both
+	@echo "✅ complaints-both done"
+	@echo "Next: run training-pack-fill in affected course(s), then make grammar-bundle, make check, commit/tag."
+
+# End-to-end automated cycle for Spanish complaints:
+# apply complaints -> improve journal -> auto-fix prompt -> regression test -> regenerate pack -> rebuild bundles
+complaints-cycle-both: complaints-both complaints-prompt-autofix-es complaints-prompt-regression
+	@$(MAKE) -C courses/spanish-grammar training-pack-fill
+	@$(MAKE) grammar-bundle
+	@echo "✅ complaints-cycle-both done"
+	@echo "Next: make check, then manual commit and make tag."
+
 clean-spanish-csv:
 	@python3 scripts/clean_spanish_frequency_csv.py \
 		resources/wordsets/spanish_word_freq_pos_ud_top6000.csv \
@@ -616,6 +734,17 @@ help:
 	@echo "  make grammar-bundle-list - List course dirs -> bundle ids"
 	@echo "  make up-en          - Run bot+web with .env.en (+ optional .env), http :8184, DB english"
 	@echo "  make up-es          - Run second instance with .env.es (+ optional .env), http :8284, DB spanish"
+	@echo "  make complaints-dry-en   - Dry-run complaints worker for English profile (.env + .env.en)"
+	@echo "  make complaints-apply-en - Apply complaints worker for English profile (.env + .env.en)"
+	@echo "  make complaints-dry-es   - Dry-run complaints worker for Spanish profile (.env + .env.es)"
+	@echo "  make complaints-apply-es - Apply complaints worker for Spanish profile (.env + .env.es)"
+	@echo "  make complaints-dry-both - Dry-run for EN and ES URLs sequentially (COMPLAINTS_SERVICE_URL_EN/ES)"
+	@echo "  make complaints-apply-both - Apply for EN and ES URLs sequentially (COMPLAINTS_SERVICE_URL_EN/ES)"
+	@echo "  make complaints-improve-both - Analyze latest complaints journal via LLM and build improvement plan"
+	@echo "  make complaints-both - Full loop: apply complaints + auto improvement analysis"
+	@echo "  make complaints-prompt-autofix-es - Auto-update ES generator prompt from latest improvement plan"
+	@echo "  make complaints-prompt-regression - Regression checks for prompt + validator compatibility"
+	@echo "  make complaints-cycle-both - Full automated cycle through regen + grammar-bundle"
 	@echo "  make build-spanish-gender-lexicon - Rebuild resources/wordsets/spanish_gender_lexicon.tsv from online source"
 	@echo "  make dev            - Run backend + frontend in development mode"
 	@echo "  make webapp-install - Install webapp dependencies"

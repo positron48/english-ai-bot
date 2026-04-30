@@ -15,7 +15,7 @@ from typing import Dict, List, Tuple
 
 
 def utc_now() -> str:
-    return dt.datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
+    return dt.datetime.now(dt.UTC).replace(microsecond=0).isoformat().replace("+00:00", "Z")
 
 
 def read_json(path: Path) -> dict:
@@ -49,6 +49,11 @@ def http_json(method: str, url: str, token: str, payload=None):
     except urllib.error.HTTPError as e:
         msg = e.read().decode("utf-8", errors="replace")
         raise RuntimeError(f"http error {e.code} {url}: {msg}") from e
+    except urllib.error.URLError as e:
+        raise RuntimeError(
+            f"network error for {url}: {e}. "
+            "Проверь COMPLAINTS_SERVICE_URL(_EN/_ES), доступность сервиса и порт."
+        ) from e
 
 
 def fetch_reports(service_url: str, token: str, course: str, limit: int = 200) -> List[dict]:
@@ -182,7 +187,7 @@ def main() -> int:
 
     dry_run = not args.apply
     run_id = base64.urlsafe_b64encode(os.urandom(9)).decode("ascii").rstrip("=")
-    now = dt.datetime.utcnow()
+    now = dt.datetime.now(dt.UTC)
     logs_dir = Path(args.workspace) / "logs" / "complaints"
     journal_path = logs_dir / f"complaints-{now.strftime('%Y-%m')}.jsonl"
     changed_blocks_path = logs_dir / f"changed-theory-blocks-{now.strftime('%Y%m%d%H')}.json"

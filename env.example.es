@@ -58,6 +58,11 @@ VERB_FORMS_TYPED_CHANCE_PERCENT=50
 # Отдельный JWT для второго инстанса (или тот же для локалки)
 WEBAPP_JWT_SECRET=change_me_local_es
 COMPLAINTS_SERVICE_TOKEN=
+COMPLAINTS_SERVICE_URL=http://127.0.0.1:8284
+LLAMACPP_URL=http://127.0.0.1:8080
+LLAMACPP_MODEL=local-model
+# Optional auto-start command if LLAMACPP_URL is down:
+# LLAMACPP_START_CMD='nohup llama-server -m "/path/to/model.gguf" --host 127.0.0.1 --port 8080 -ngl 999 -c 8192 >/tmp/llama-complaints.log 2>&1 &'
 WEBAPP_JWT_TTL_HOURS=24
 WEBAPP_REFRESH_TTL_HOURS=720
 WEBAPP_OTP_TTL_SECONDS=300
