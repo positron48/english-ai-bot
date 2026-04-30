@@ -20,6 +20,7 @@
             <th>Status</th>
             <th>Source</th>
             <th>Word/Question</th>
+            <th>Comment</th>
             <th>User</th>
             <th>Created</th>
           </tr>
@@ -35,6 +36,7 @@
             <td><span :class="['status-badge', report.status]">{{ report.status }}</span></td>
             <td>{{ report.source_type }}</td>
             <td>{{ report.word || report.grammar_question_id || '—' }}</td>
+            <td class="comment-cell">{{ truncateComment(report.comment_text) }}</td>
             <td>{{ report.user_id }}</td>
             <td>{{ formatDate(report.created_at) }}</td>
           </tr>
@@ -60,6 +62,7 @@
             <div v-if="selectedReport.grammar_chapter_id"><b>Chapter:</b> {{ selectedReport.grammar_chapter_id }}</div>
             <div v-if="selectedReport.theory_block_id"><b>Theory block:</b> {{ selectedReport.theory_block_id }}</div>
             <div v-if="selectedReport.grammar_question_id"><b>Question:</b> {{ selectedReport.grammar_question_id }}</div>
+            <div v-if="selectedReport.comment_text" class="comment-full"><b>Comment:</b> {{ selectedReport.comment_text }}</div>
           </div>
 
           <div v-if="selectedReport.training_card" class="edit-card-section">
@@ -182,6 +185,11 @@ const closeModal = () => {
 
 const pretty = (v: any) => JSON.stringify(v, null, 2)
 const formatDate = (v: string) => (v ? new Date(v).toLocaleString() : '—')
+const truncateComment = (v: string) => {
+  const s = String(v || '').trim()
+  if (!s) return '—'
+  return s.length > 120 ? `${s.slice(0, 117)}...` : s
+}
 
 void loadReports()
 </script>
@@ -190,6 +198,7 @@ void loadReports()
 .toolbar { display: flex; gap: 10px; margin-bottom: 16px; }
 .reports-table { width: 100%; border-collapse: collapse; }
 .reports-table th, .reports-table td { padding: 8px; border-bottom: 1px solid var(--border-primary); text-align: left; }
+.comment-cell { max-width: 360px; white-space: normal; word-break: break-word; color: var(--text-secondary); }
 .clickable-row { cursor: pointer; }
 .clickable-row:hover { background: var(--bg-secondary); }
 .status-badge { padding: 2px 8px; border-radius: 10px; font-size: 12px; }
@@ -201,6 +210,7 @@ void loadReports()
 .modal-header { display: flex; justify-content: space-between; align-items: center; }
 .btn-close { border: 0; background: transparent; font-size: 26px; cursor: pointer; color: var(--text-primary); }
 .kv { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 8px 14px; margin-bottom: 14px; }
+.comment-full { grid-column: 1 / -1; white-space: pre-wrap; }
 .edit-card-section, .readonly-block { margin-top: 16px; }
 .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
 .form-input { width: 100%; margin-top: 4px; }
