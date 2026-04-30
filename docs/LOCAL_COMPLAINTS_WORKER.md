@@ -251,3 +251,19 @@ make check
   - что ключевые инварианты prompt не потеряны (JSON-only, `mcq_single`, маркеры авто-блока),
   - что авто-блок остается компактным,
   - что `validate_question()` из `generate-training-pack.py` пропускает валидный кейс и режет невалидный.
+
+Это быстрый тест **без вызова LLM** (инварианты/контракт).
+
+### Реальный LLM smoke тест генерации
+
+Для проверки "prompt -> LLM generation -> validator ok" есть отдельная команда:
+
+```bash
+make complaints-prompt-integration-es
+```
+
+Она:
+
+1. проверяет/поднимает `llama.cpp`,
+2. запускает `generate-training-pack.py` на 1 block (append, `questions-per-block=1`),
+3. проверяет, что `training_pack/reports/validation-report.json` имеет `ok=true`.

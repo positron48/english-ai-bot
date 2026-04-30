@@ -19,6 +19,7 @@ type createWordReportRequest struct {
 	WordCardID     *int64                 `json:"word_card_id"`
 	TrainingCardID *int64                 `json:"training_card_id"`
 	WordCategory   string                 `json:"word_category"`
+	Comment        string                 `json:"comment"`
 	Extra          map[string]interface{} `json:"extra"`
 }
 
@@ -62,6 +63,11 @@ func (r *Router) handleTrainingReport(w http.ResponseWriter, req *http.Request) 
 		http.Error(w, "word or valid user_card_id required", http.StatusBadRequest)
 		return
 	}
+	comment := strings.TrimSpace(body.Comment)
+	if comment == "" {
+		http.Error(w, "comment required", http.StatusBadRequest)
+		return
+	}
 	var reportUserCardID *int64
 	if body.UserCardID > 0 {
 		v := body.UserCardID
@@ -74,6 +80,7 @@ func (r *Router) handleTrainingReport(w http.ResponseWriter, req *http.Request) 
 		"direction":     ctx.TranslationDirection,
 		"word_card_id":  ctx.WordCardID,
 		"training_card": ctx.TrainingCardID,
+		"comment":       comment,
 	}
 	for k, v := range body.Extra {
 		payload[k] = v
@@ -87,6 +94,7 @@ func (r *Router) handleTrainingReport(w http.ResponseWriter, req *http.Request) 
 		TrainingCardID:       ctx.TrainingCardID,
 		UserCardID:           reportUserCardID,
 		WordCategory:         ctx.WordCategory,
+		CommentText:          comment,
 		Payload:              payload,
 	})
 	if err != nil {
@@ -102,6 +110,7 @@ type createGrammarReportRequest struct {
 	QuestionID   string                 `json:"question_id"`
 	ChapterID    string                 `json:"chapter_id"`
 	TheoryBlock  string                 `json:"theory_block_id"`
+	Comment      string                 `json:"comment"`
 	QuestionData map[string]interface{} `json:"question_data"`
 }
 
@@ -124,12 +133,18 @@ func (r *Router) handleLearningGrammarTrainingReport(w http.ResponseWriter, req 
 		http.Error(w, "question_id required", http.StatusBadRequest)
 		return
 	}
+	comment := strings.TrimSpace(body.Comment)
+	if comment == "" {
+		http.Error(w, "comment required", http.StatusBadRequest)
+		return
+	}
 	repo := repository.NewContentReportRepository(r.db, r.logger)
 	payload := map[string]interface{}{
 		"question_id":       body.QuestionID,
 		"chapter_id":        body.ChapterID,
 		"theory_block_id":   body.TheoryBlock,
 		"question_snapshot": body.QuestionData,
+		"comment":           comment,
 	}
 	id, err := repo.Create(repository.CreateContentReportInput{
 		UserID:            userID,
@@ -137,6 +152,7 @@ func (r *Router) handleLearningGrammarTrainingReport(w http.ResponseWriter, req 
 		GrammarChapterID:  strings.TrimSpace(body.ChapterID),
 		TheoryBlockID:     strings.TrimSpace(body.TheoryBlock),
 		GrammarQuestionID: strings.TrimSpace(body.QuestionID),
+		CommentText:       comment,
 		Payload:           payload,
 	})
 	if err != nil {
@@ -175,6 +191,7 @@ func (r *Router) handleAdminContentReports(w http.ResponseWriter, req *http.Requ
 				"grammar_chapter_id":    item.GrammarChapterID,
 				"theory_block_id":       item.TheoryBlockID,
 				"grammar_question_id":   item.GrammarQuestionID,
+				"comment_text":          item.CommentText,
 				"payload":               repo.ParsePayload(item.PayloadJSON),
 				"resolved_at":           asReportTime(item.ResolvedAt),
 				"resolved_by_user_id":   item.ResolvedByUserID,
@@ -254,6 +271,7 @@ func (r *Router) handleAdminContentReportByID(w http.ResponseWriter, req *http.R
 		"grammar_chapter_id":    report.GrammarChapterID,
 		"theory_block_id":       report.TheoryBlockID,
 		"grammar_question_id":   report.GrammarQuestionID,
+		"comment_text":          report.CommentText,
 		"payload":               repo.ParsePayload(report.PayloadJSON),
 		"resolved_at":           asReportTime(report.ResolvedAt),
 		"resolved_by_user_id":   report.ResolvedByUserID,
@@ -338,6 +356,7 @@ func (r *Router) handleInternalGrammarContentReports(w http.ResponseWriter, req 
 			"grammar_chapter_id":  item.GrammarChapterID,
 			"theory_block_id":     item.TheoryBlockID,
 			"grammar_question_id": item.GrammarQuestionID,
+			"comment_text":        item.CommentText,
 			"payload":             repo.ParsePayload(item.PayloadJSON),
 			"created_at":          item.CreatedAt.UTC().Format("2006-01-02T15:04:05Z"),
 		})

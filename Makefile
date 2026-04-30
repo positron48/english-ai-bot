@@ -13,7 +13,7 @@ SERVICE_NAME ?= ai-bot
 -include .env
 .EXPORT_ALL_VARIABLES:
 
-.PHONY: all tidy build run test lint fmt setup up up-en up-es complaints-dry-en complaints-apply-en complaints-dry-es complaints-apply-es complaints-dry-both complaints-apply-both complaints-improve-both complaints-prompt-autofix-es complaints-prompt-regression complaints-both complaints-cycle-both clean check check-quick ci deploy update status logs docker-build docker-run docker-stop docker-logs docker-clean docker-rebuild docker-dev docker-dev-logs docker-dev-restart webapp-install webapp-dev webapp-build test-postgres test-integration test-integration-verbose grammar-bundle grammar-bundle-list postgres-dev-init-dbs clean-spanish-csv sync-spanish-word-sets requeue-invalid-cards-es-dry requeue-invalid-cards-es requeue-invalid-cards-es-no-tts-dry requeue-invalid-cards-es-no-tts import-spanish-verbs import-spanish-verbs-jehle-bundled backfill-word-verb-links build-verb-form-examples backfill-verb-lemma-ru-glosses backfill-verb-template-links preview-verb-templates
+.PHONY: all tidy build run test lint fmt setup up up-en up-es complaints-dry-en complaints-apply-en complaints-dry-es complaints-apply-es complaints-dry-both complaints-apply-both complaints-improve-both complaints-plan-both complaints-prompt-autofix-en complaints-prompt-autofix-es complaints-prompt-autofix-both complaints-prompt-regression complaints-prompt-integration-es complaints-smoke-en complaints-smoke-es complaints-smoke-both complaints-quality-both complaints-quality-baseline-both complaints-regenerate-affected complaints-improve-loop-both complaints-both complaints-cycle-both complaints-loop-tests clean check check-quick ci deploy update status logs docker-build docker-run docker-stop docker-logs docker-clean docker-rebuild docker-dev docker-dev-logs docker-dev-restart webapp-install webapp-dev webapp-build test-postgres test-integration test-integration-verbose grammar-bundle grammar-bundle-list postgres-dev-init-dbs clean-spanish-csv sync-spanish-word-sets requeue-invalid-cards-es-dry requeue-invalid-cards-es requeue-invalid-cards-es-no-tts-dry requeue-invalid-cards-es-no-tts import-spanish-verbs import-spanish-verbs-jehle-bundled backfill-word-verb-links build-verb-form-examples backfill-verb-lemma-ru-glosses backfill-verb-template-links preview-verb-templates
 
 all: build
 
@@ -610,6 +610,21 @@ complaints-improve-both:
 	bash tools-local/complaints-worker/ensure-llama.sh; \
 	python3 tools-local/complaints-worker/analyze-journal.py
 
+complaints-plan-both:
+	@set -e; \
+	set -a; [ -f .env ] && . ./.env; set +a; \
+	if [ -f .env.en ]; then set -a; . ./.env.en; set +a; fi; \
+	if [ -f .env.es ]; then set -a; . ./.env.es; set +a; fi; \
+	bash tools-local/complaints-worker/ensure-llama.sh; \
+	python3 tools-local/complaints-worker/analyze-journal.py
+
+complaints-prompt-autofix-en:
+	@set -e; \
+	set -a; [ -f .env ] && . ./.env; set +a; \
+	if [ -f .env.en ]; then set -a; . ./.env.en; set +a; fi; \
+	bash tools-local/complaints-worker/ensure-llama.sh; \
+	python3 tools-local/complaints-worker/apply-prompt-improvements.py --course english
+
 complaints-prompt-autofix-es:
 	@set -e; \
 	set -a; [ -f .env ] && . ./.env; set +a; \
@@ -617,8 +632,65 @@ complaints-prompt-autofix-es:
 	bash tools-local/complaints-worker/ensure-llama.sh; \
 	python3 tools-local/complaints-worker/apply-prompt-improvements.py --course spanish
 
+complaints-prompt-autofix-both: complaints-prompt-autofix-en complaints-prompt-autofix-es
+	@echo "✅ complaints-prompt-autofix-both done"
+
 complaints-prompt-regression:
 	@python3 tools-local/complaints-worker/prompt-validator-regression.py
+
+complaints-smoke-en:
+	@set -e; \
+	set -a; [ -f .env ] && . ./.env; set +a; \
+	if [ -f .env.en ]; then set -a; . ./.env.en; set +a; fi; \
+	bash tools-local/complaints-worker/ensure-llama.sh; \
+	python3 tools-local/complaints-worker/prompt-llm-integration-smoke.py --course english
+
+complaints-smoke-es:
+	@set -e; \
+	set -a; [ -f .env ] && . ./.env; set +a; \
+	if [ -f .env.es ]; then set -a; . ./.env.es; set +a; fi; \
+	bash tools-local/complaints-worker/ensure-llama.sh; \
+	python3 tools-local/complaints-worker/prompt-llm-integration-smoke.py --course spanish
+
+complaints-smoke-both: complaints-smoke-en complaints-smoke-es
+	@echo "✅ complaints-smoke-both done"
+
+complaints-quality-both:
+	@set -e; \
+	set -a; [ -f .env ] && . ./.env; set +a; \
+	if [ -f .env.en ]; then set -a; . ./.env.en; set +a; fi; \
+	if [ -f .env.es ]; then set -a; . ./.env.es; set +a; fi; \
+	bash tools-local/complaints-worker/ensure-llama.sh; \
+	python3 tools-local/complaints-worker/quality-regression.py
+
+complaints-quality-baseline-both:
+	@set -e; \
+	set -a; [ -f .env ] && . ./.env; set +a; \
+	if [ -f .env.en ]; then set -a; . ./.env.en; set +a; fi; \
+	if [ -f .env.es ]; then set -a; . ./.env.es; set +a; fi; \
+	bash tools-local/complaints-worker/ensure-llama.sh; \
+	python3 tools-local/complaints-worker/quality-regression.py --set-baseline
+
+complaints-regenerate-affected:
+	@python3 tools-local/complaints-worker/regenerate-affected-chapters.py
+
+complaints-prompt-integration-es:
+	@set -e; \
+	set -a; [ -f .env ] && . ./.env; set +a; \
+	if [ -f .env.es ]; then set -a; . ./.env.es; set +a; fi; \
+	bash tools-local/complaints-worker/ensure-llama.sh; \
+	python3 tools-local/complaints-worker/prompt-llm-integration-smoke.py
+
+complaints-loop-tests:
+	@python3 tools-local/complaints-worker/tests/test_improve_prompt_loop.py
+
+complaints-improve-loop-both:
+	@set -e; \
+	set -a; [ -f .env ] && . ./.env; set +a; \
+	if [ -f .env.en ]; then set -a; . ./.env.en; set +a; fi; \
+	if [ -f .env.es ]; then set -a; . ./.env.es; set +a; fi; \
+	bash tools-local/complaints-worker/ensure-llama.sh; \
+	python3 tools-local/complaints-worker/improve-prompt-loop.py
 
 # Full automated complaints loop entrypoint:
 # 1) apply complaints cleanup + resolve
@@ -741,9 +813,21 @@ help:
 	@echo "  make complaints-dry-both - Dry-run for EN and ES URLs sequentially (COMPLAINTS_SERVICE_URL_EN/ES)"
 	@echo "  make complaints-apply-both - Apply for EN and ES URLs sequentially (COMPLAINTS_SERVICE_URL_EN/ES)"
 	@echo "  make complaints-improve-both - Analyze latest complaints journal via LLM and build improvement plan"
+	@echo "  make complaints-plan-both - Build/update improvement plan from latest complaints journal"
 	@echo "  make complaints-both - Full loop: apply complaints + auto improvement analysis"
 	@echo "  make complaints-prompt-autofix-es - Auto-update ES generator prompt from latest improvement plan"
+	@echo "  make complaints-prompt-autofix-en - Auto-update EN generator prompt from latest improvement plan"
+	@echo "  make complaints-prompt-autofix-both - Auto-update EN+ES prompts from latest improvement plan"
 	@echo "  make complaints-prompt-regression - Regression checks for prompt + validator compatibility"
+	@echo "  make complaints-prompt-integration-es - Real LLM smoke: generate 1 block and ensure validation passes"
+	@echo "  make complaints-smoke-en - Real LLM smoke for English prompt and validator"
+	@echo "  make complaints-smoke-es - Real LLM smoke for Spanish prompt and validator"
+	@echo "  make complaints-smoke-both - Real LLM smoke for EN + ES"
+	@echo "  make complaints-quality-both - Multi-scenario LLM quality regression with baseline comparison"
+	@echo "  make complaints-quality-baseline-both - Save current quality run as baseline"
+	@echo "  make complaints-regenerate-affected - Targeted fill-training-pack for chapters from latest changed-theory-blocks"
+	@echo "  make complaints-loop-tests - Contract tests for iterative improve loop helpers"
+	@echo "  make complaints-improve-loop-both - Autonomous strict iterative prompt-improve loop (max 3 iterations)"
 	@echo "  make complaints-cycle-both - Full automated cycle through regen + grammar-bundle"
 	@echo "  make build-spanish-gender-lexicon - Rebuild resources/wordsets/spanish_gender_lexicon.tsv from online source"
 	@echo "  make dev            - Run backend + frontend in development mode"

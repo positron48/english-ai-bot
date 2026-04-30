@@ -119,11 +119,31 @@
           type="button"
           class="report-text-link"
           :disabled="reportSubmitting || !currentQuestion"
-          @click="reportCurrentQuestion"
+          @click="openGrammarReportDialog"
         >
           {{ t('training.reportIssue') }}
         </button>
         <span v-if="reportMessage" class="report-message">{{ reportMessage }}</span>
+      </div>
+      <div v-if="reportDialogOpen" class="report-modal-backdrop" @click.self="closeGrammarReportDialog">
+        <div class="report-modal">
+          <h3 class="report-modal-title">{{ t('training.reportIssue') }}</h3>
+          <textarea
+            v-model.trim="reportComment"
+            class="report-modal-textarea"
+            :placeholder="t('training.reportCommentPlaceholder') || 'Опишите, что не так с вопросом'"
+            rows="5"
+            maxlength="1000"
+          />
+          <div class="report-modal-actions">
+            <button type="button" class="report-modal-cancel" @click="closeGrammarReportDialog">
+              {{ t('common.cancel') || 'Отмена' }}
+            </button>
+            <button type="button" class="report-modal-submit" :disabled="reportSubmitting || !reportComment" @click="reportCurrentQuestion">
+              {{ t('training.reportSend') || 'Отправить' }}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -281,6 +301,8 @@ const delaySeconds = ref(0)
 const reportSubmitting = ref(false)
 const reportMessage = ref('')
 const reportSentForQuestionID = ref('')
+const reportDialogOpen = ref(false)
+const reportComment = ref('')
 const reportAlreadySent = computed(() => {
   const qid = currentQuestion.value?.id
   return !!qid && reportSentForQuestionID.value === qid
@@ -450,7 +472,7 @@ const nextQuestion = () => {
 }
 
 const reportCurrentQuestion = async () => {
-  if (!currentQuestion.value || reportSubmitting.value) return
+  if (!currentQuestion.value || reportSubmitting.value || !reportComment.value) return
   reportMessage.value = ''
   reportSubmitting.value = true
   try {
@@ -460,17 +482,31 @@ const reportCurrentQuestion = async () => {
         question_id: currentQuestion.value.id,
         chapter_id: currentQuestion.value.chapter_id || '',
         theory_block_id: currentQuestion.value.theory_block_id || '',
+        comment: reportComment.value,
         question_data: currentQuestion.value
       })
     })
     reportSentForQuestionID.value = currentQuestion.value.id
     reportMessage.value = t('training.reportThanks')
+    reportDialogOpen.value = false
+    reportComment.value = ''
   } catch (e) {
     console.error('Failed to report grammar question:', e)
     reportMessage.value = t('training.reportFailed')
   } finally {
     reportSubmitting.value = false
   }
+}
+
+const openGrammarReportDialog = () => {
+  if (!currentQuestion.value || reportSubmitting.value || reportAlreadySent.value) return
+  reportComment.value = ''
+  reportDialogOpen.value = true
+}
+
+const closeGrammarReportDialog = () => {
+  if (reportSubmitting.value) return
+  reportDialogOpen.value = false
 }
 
 onMounted(init)
@@ -481,6 +517,8 @@ onBeforeUnmount(() => {
 
 watch(currentQuestion, async (q) => {
   reportMessage.value = ''
+  reportDialogOpen.value = false
+  reportComment.value = ''
   if (!q?.chapter_id || !q?.theory_block_id) return
   const key = `${q.chapter_id}::${q.theory_block_id}`
   if (theoryBlockMap.value[key]) return
@@ -636,6 +674,73 @@ watch(currentQuestion, async (q) => {
 .report-text-link:disabled {
   cursor: default;
   opacity: 0.8;
+}
+
+.report-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.report-modal {
+  width: min(92vw, 460px);
+  background: var(--background-color);
+  color: var(--text-primary);
+  border-radius: 12px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+  padding: 16px;
+}
+
+.report-modal-title {
+  margin: 0 0 10px 0;
+  font-size: 16px;
+}
+
+.report-modal-textarea {
+  width: 100%;
+  min-height: 110px;
+  resize: vertical;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 10px;
+  font: inherit;
+  color: var(--text-primary);
+  background: var(--background-color);
+}
+
+.report-modal-actions {
+  margin-top: 12px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.report-modal-cancel,
+.report-modal-submit {
+  border: 0;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.report-modal-cancel {
+  background: var(--button-secondary-bg);
+  color: var(--button-secondary-text);
+}
+
+.report-modal-submit {
+  background: var(--button-primary-bg);
+  color: var(--button-primary-text);
+}
+
+.report-modal-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 .feedback-badge {
   display: inline-flex;

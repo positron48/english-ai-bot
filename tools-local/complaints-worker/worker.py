@@ -13,6 +13,12 @@ import urllib.request
 from pathlib import Path
 from typing import Dict, List, Tuple
 
+ANSI_PROMPT = "\033[35m"  # magenta
+ANSI_RESPONSE = "\033[32m"  # green
+ANSI_API_REQUEST = "\033[34m"  # blue
+ANSI_API_RESPONSE = "\033[36m"  # cyan
+ANSI_RESET = "\033[0m"
+
 
 def utc_now() -> str:
     return dt.datetime.now(dt.UTC).replace(microsecond=0).isoformat().replace("+00:00", "Z")
@@ -42,12 +48,17 @@ def http_json(method: str, url: str, token: str, payload=None):
     headers = {"X-Service-Token": token, "Content-Type": "application/json"}
     if payload is not None:
         body = json.dumps(payload).encode("utf-8")
+    body_text = body.decode("utf-8") if body is not None else ""
+    print(f"{ANSI_API_REQUEST}[API REQUEST] {method} {url} body={body_text}{ANSI_RESET}")
     req = urllib.request.Request(url=url, method=method, headers=headers, data=body)
     try:
         with urllib.request.urlopen(req, timeout=30) as resp:
-            return json.loads(resp.read().decode("utf-8"))
+            resp_text = resp.read().decode("utf-8")
+            print(f"{ANSI_API_RESPONSE}[API RESPONSE] {method} {url} status={resp.status} body={resp_text}{ANSI_RESET}")
+            return json.loads(resp_text)
     except urllib.error.HTTPError as e:
         msg = e.read().decode("utf-8", errors="replace")
+        print(f"{ANSI_API_RESPONSE}[API RESPONSE] {method} {url} status={e.code} body={msg}{ANSI_RESET}")
         raise RuntimeError(f"http error {e.code} {url}: {msg}") from e
     except urllib.error.URLError as e:
         raise RuntimeError(
@@ -130,9 +141,18 @@ def parse_llm_json(text: str) -> dict:
 
 
 def analyze_block_with_llama(llama_url: str, llama_model: str, block_key: str, reports: List[dict]) -> dict:
+    user_comments = []
+    for r in reports:
+        c = str(r.get("comment_text", "")).strip()
+        if not c:
+            payload = r.get("payload", {}) or {}
+            c = str(payload.get("comment", "")).strip()
+        if c:
+            user_comments.append(c)
     prompt = {
-        "task": "Analyze complained grammar questions and explain likely issue patterns in one theory block.",
+        "task": "Analyze complained grammar questions and explain likely issue patterns in one theory block. Prioritize user comments as primary evidence.",
         "block_key": block_key,
+        "user_comments": user_comments,
         "reports": reports,
         "required_json_fields": ["summary", "root_causes", "risk_level", "recommended_fix"],
     }
@@ -144,6 +164,7 @@ def analyze_block_with_llama(llama_url: str, llama_model: str, block_key: str, r
         ],
         "temperature": 0.1,
     }
+    print(f"{ANSI_PROMPT}[LLM REQUEST][{block_key}] {json.dumps(payload, ensure_ascii=False)}{ANSI_RESET}")
     req = urllib.request.Request(
         url=f"{llama_url.rstrip('/')}/v1/chat/completions",
         method="POST",
@@ -160,6 +181,7 @@ def analyze_block_with_llama(llama_url: str, llama_model: str, block_key: str, r
         content = data["choices"][0]["message"]["content"]
     except Exception:
         return {"summary": "llm response malformed", "raw": data}
+    print(f"{ANSI_RESPONSE}[LLM RESPONSE][{block_key}] {content}{ANSI_RESET}")
     return parse_llm_json(content)
 
 

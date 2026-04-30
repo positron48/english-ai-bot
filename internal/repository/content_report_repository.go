@@ -33,6 +33,7 @@ type CreateContentReportInput struct {
 	GrammarChapterID     string
 	TheoryBlockID        string
 	GrammarQuestionID    string
+	CommentText          string
 	Payload              map[string]interface{}
 }
 
@@ -49,13 +50,13 @@ func (r *ContentReportRepository) Create(input CreateContentReportInput) (int64,
 	q := `INSERT INTO content_reports (
 		user_id, source_type, status, word, translation_direction,
 		word_card_id, training_card_id, user_card_id, word_category,
-		grammar_chapter_id, theory_block_id, grammar_question_id, payload_json
-	) VALUES (?, ?, 'active', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+		grammar_chapter_id, theory_block_id, grammar_question_id, comment_text, payload_json
+	) VALUES (?, ?, 'active', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
 
 	id, err := database.InsertAndReturnID(r.db, q,
 		input.UserID, input.SourceType, input.Word, input.TranslationDirection,
 		input.WordCardID, input.TrainingCardID, input.UserCardID, input.WordCategory,
-		input.GrammarChapterID, input.TheoryBlockID, input.GrammarQuestionID, payloadJSON,
+		input.GrammarChapterID, input.TheoryBlockID, input.GrammarQuestionID, strings.TrimSpace(input.CommentText), payloadJSON,
 	)
 	if err != nil {
 		return 0, fmt.Errorf("create content report: %w", err)
@@ -101,7 +102,7 @@ func (r *ContentReportRepository) ListActiveGrammarReports(filter ListGrammarRep
 	base := `SELECT id, user_id, source_type, status, COALESCE(word,''), COALESCE(translation_direction,''),
 	                word_card_id, training_card_id, user_card_id, COALESCE(word_category,''),
 	                COALESCE(grammar_chapter_id,''), COALESCE(theory_block_id,''), COALESCE(grammar_question_id,''),
-	                COALESCE(payload_json,''), resolved_at, resolved_by_user_id, created_at, updated_at
+	                COALESCE(comment_text,''), COALESCE(payload_json,''), resolved_at, resolved_by_user_id, created_at, updated_at
 	         FROM content_reports
 	         WHERE status = 'active' AND source_type = 'grammar_training'`
 	args := make([]interface{}, 0, 8)
@@ -183,7 +184,7 @@ func (r *ContentReportRepository) List(status string, limit int) ([]*models.Cont
 	base := `SELECT id, user_id, source_type, status, COALESCE(word,''), COALESCE(translation_direction,''),
 	                word_card_id, training_card_id, user_card_id, COALESCE(word_category,''),
 	                COALESCE(grammar_chapter_id,''), COALESCE(theory_block_id,''), COALESCE(grammar_question_id,''),
-	                COALESCE(payload_json,''), resolved_at, resolved_by_user_id, created_at, updated_at
+	                COALESCE(comment_text,''), COALESCE(payload_json,''), resolved_at, resolved_by_user_id, created_at, updated_at
 	         FROM content_reports`
 	args := make([]interface{}, 0, 2)
 	if status != "" {
@@ -214,7 +215,7 @@ func (r *ContentReportRepository) GetByID(reportID int64) (*models.ContentReport
 	q := `SELECT id, user_id, source_type, status, COALESCE(word,''), COALESCE(translation_direction,''),
 	             word_card_id, training_card_id, user_card_id, COALESCE(word_category,''),
 	             COALESCE(grammar_chapter_id,''), COALESCE(theory_block_id,''), COALESCE(grammar_question_id,''),
-	             COALESCE(payload_json,''), resolved_at, resolved_by_user_id, created_at, updated_at
+	             COALESCE(comment_text,''), COALESCE(payload_json,''), resolved_at, resolved_by_user_id, created_at, updated_at
 	      FROM content_reports
 	      WHERE id = ?`
 	rows, err := r.db.Query(q, reportID)
@@ -241,7 +242,7 @@ func scanContentReport(rows *sql.Rows) (*models.ContentReport, error) {
 		&item.ID, &item.UserID, &item.SourceType, &item.Status, &item.Word, &item.TranslationDirection,
 		&wordCardID, &trainingID, &userCardID, &item.WordCategory,
 		&item.GrammarChapterID, &item.TheoryBlockID, &item.GrammarQuestionID,
-		&item.PayloadJSON, &resolvedAt, &resolvedByID, &item.CreatedAt, &item.UpdatedAt,
+		&item.CommentText, &item.PayloadJSON, &resolvedAt, &resolvedByID, &item.CreatedAt, &item.UpdatedAt,
 	); err != nil {
 		return nil, fmt.Errorf("scan content report: %w", err)
 	}

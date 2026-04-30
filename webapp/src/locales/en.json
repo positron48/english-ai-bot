@@ -172,6 +172,8 @@
     "noActiveSession": "No active session. Tap \"Start training\" first.",
     "failedNextCard": "Could not load the next card. Try refreshing the page.",
     "reportIssue": "Report issue",
+    "reportCommentPlaceholder": "Describe what is wrong with this question",
+    "reportSend": "Send",
     "reportSent": "Reported",
     "reportThanks": "Thanks, report sent.",
     "reportFailed": "Could not send report. Try again."

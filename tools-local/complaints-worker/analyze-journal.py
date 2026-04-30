@@ -8,6 +8,10 @@ import urllib.request
 from pathlib import Path
 from typing import Dict, List
 
+ANSI_PROMPT = "\033[35m"  # magenta
+ANSI_RESPONSE = "\033[32m"  # green
+ANSI_RESET = "\033[0m"
+
 
 def utc_now() -> str:
     return dt.datetime.now(dt.UTC).replace(microsecond=0).isoformat().replace("+00:00", "Z")
@@ -63,6 +67,7 @@ def call_llm(llama_url: str, llama_model: str, payload_obj: dict) -> dict:
         ],
         "temperature": 0.1,
     }
+    print(f"{ANSI_PROMPT}[LLM REQUEST][analyze-journal] {json.dumps(payload, ensure_ascii=False)}{ANSI_RESET}")
     req = urllib.request.Request(
         url=f"{llama_url.rstrip('/')}/v1/chat/completions",
         method="POST",
@@ -72,7 +77,18 @@ def call_llm(llama_url: str, llama_model: str, payload_obj: dict) -> dict:
     with urllib.request.urlopen(req, timeout=120) as resp:
         data = json.loads(resp.read().decode("utf-8"))
     content = data["choices"][0]["message"]["content"]
+    print(f"{ANSI_RESPONSE}[LLM RESPONSE][analyze-journal] {content}{ANSI_RESET}")
     return parse_llm_json(content)
+
+
+def read_prompt_excerpt(workspace: Path, course: str, limit: int = 6000) -> str:
+    prompt_path = workspace / "courses" / f"{course}-grammar" / "prompts" / "16-training-pack-generator-system.md"
+    if not prompt_path.exists():
+        return ""
+    text = prompt_path.read_text(encoding="utf-8")
+    if len(text) <= limit:
+        return text
+    return text[-limit:]
 
 
 def build_markdown(plan: dict, run_id: str, source_journal: str) -> str:
@@ -183,6 +199,11 @@ def main() -> int:
         if diag.get("recommended_fix"):
             bucket["recommended_fixes"].append(diag["recommended_fix"])
 
+    prompt_context = {
+        "english": read_prompt_excerpt(workspace, "english"),
+        "spanish": read_prompt_excerpt(workspace, "spanish"),
+    }
+
     payload_obj = {
         "task": "Analyze grammar complaints and propose concrete system improvements.",
         "required_output_json_fields": [
@@ -197,6 +218,7 @@ def main() -> int:
             "Propose changes that can be applied in prompts and validation logic.",
             "Keep recommendations concise and executable.",
         ],
+        "current_generator_prompts_excerpt": prompt_context,
         "blocks": list(grouped.values()),
     }
 

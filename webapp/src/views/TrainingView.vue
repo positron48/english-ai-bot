@@ -456,11 +456,31 @@
         type="button"
         class="report-text-link"
         :disabled="reportSubmitting"
-        @click="submitWordReport"
+        @click="openWordReportDialog"
       >
         {{ t('training.reportIssue') || 'Пожаловаться' }}
       </button>
       <span v-if="reportMessage" class="report-message">{{ reportMessage }}</span>
+    </div>
+    <div v-if="reportDialogOpen" class="report-modal-backdrop" @click.self="closeWordReportDialog">
+      <div class="report-modal">
+        <h3 class="report-modal-title">{{ t('training.reportIssue') || 'Пожаловаться' }}</h3>
+        <textarea
+          v-model.trim="reportComment"
+          class="report-modal-textarea"
+          :placeholder="t('training.reportCommentPlaceholder') || 'Опишите, что не так с вопросом'"
+          rows="5"
+          maxlength="1000"
+        />
+        <div class="report-modal-actions">
+          <button type="button" class="report-modal-cancel" @click="closeWordReportDialog">
+            {{ t('common.cancel') || 'Отмена' }}
+          </button>
+          <button type="button" class="report-modal-submit" :disabled="reportSubmitting || !reportComment" @click="submitWordReport">
+            {{ t('training.reportSend') || 'Отправить' }}
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -618,6 +638,8 @@ let exampleButtonTimer: ReturnType<typeof setTimeout> | null = null
 const reportSubmitting = ref(false)
 const reportMessage = ref('')
 const reportSentForCardKey = ref('')
+const reportDialogOpen = ref(false)
+const reportComment = ref('')
 
 const cardReportKey = (card: Card | null): string => {
   if (!card) return ''
@@ -1800,7 +1822,7 @@ const startTraining = async () => {
 }
 
 const submitWordReport = async () => {
-  if (!currentCard.value || reportSubmitting.value || reportAlreadySent.value) return
+  if (!currentCard.value || reportSubmitting.value || reportAlreadySent.value || !reportComment.value) return
   reportMessage.value = ''
   const key = cardReportKey(currentCard.value)
   reportSubmitting.value = true
@@ -1820,11 +1842,14 @@ const submitWordReport = async () => {
         word_card_id: currentCard.value.word_card_id,
         training_card_id: currentCard.value.training_card_id,
         word_category: currentCard.value.word_category || '',
+        comment: reportComment.value,
         extra
       })
     })
     reportSentForCardKey.value = key
     reportMessage.value = t('training.reportThanks') || 'Спасибо, жалоба отправлена.'
+    reportDialogOpen.value = false
+    reportComment.value = ''
   } catch (error) {
     console.error('Failed to submit training report:', error)
     reportMessage.value = t('training.reportFailed') || 'Не удалось отправить жалобу'
@@ -1833,8 +1858,21 @@ const submitWordReport = async () => {
   }
 }
 
+const openWordReportDialog = () => {
+  if (!currentCard.value || reportSubmitting.value || reportAlreadySent.value) return
+  reportComment.value = ''
+  reportDialogOpen.value = true
+}
+
+const closeWordReportDialog = () => {
+  if (reportSubmitting.value) return
+  reportDialogOpen.value = false
+}
+
 watch(() => cardReportKey(currentCard.value), () => {
   reportMessage.value = ''
+  reportDialogOpen.value = false
+  reportComment.value = ''
 })
 
 const revealOptions = async (isEarly: boolean = false) => {
@@ -2776,6 +2814,73 @@ const handleTimerMouseLeave = () => {
 .report-message {
   font-size: 12px;
   color: var(--text-secondary);
+}
+
+.report-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.report-modal {
+  width: min(92vw, 460px);
+  background: var(--background-color);
+  color: var(--text-primary);
+  border-radius: 12px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+  padding: 16px;
+}
+
+.report-modal-title {
+  margin: 0 0 10px 0;
+  font-size: 16px;
+}
+
+.report-modal-textarea {
+  width: 100%;
+  min-height: 110px;
+  resize: vertical;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 10px;
+  font: inherit;
+  color: var(--text-primary);
+  background: var(--background-color);
+}
+
+.report-modal-actions {
+  margin-top: 12px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.report-modal-cancel,
+.report-modal-submit {
+  border: 0;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.report-modal-cancel {
+  background: var(--button-secondary-bg);
+  color: var(--button-secondary-text);
+}
+
+.report-modal-submit {
+  background: var(--button-primary-bg);
+  color: var(--button-primary-text);
+}
+
+.report-modal-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 /* Make strong element start on a new line */

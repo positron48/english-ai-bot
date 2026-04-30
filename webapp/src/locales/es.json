@@ -167,6 +167,8 @@
     "noActiveSession": "No hay sesión activa. Pulsa «Iniciar entrenamiento» primero.",
     "failedNextCard": "No se pudo cargar la siguiente tarjeta. Prueba a actualizar la página.",
     "reportIssue": "Reportar problema",
+    "reportCommentPlaceholder": "Describe qué está mal en esta pregunta",
+    "reportSend": "Enviar",
     "reportSent": "Enviado",
     "reportThanks": "Gracias, reporte enviado.",
     "reportFailed": "No se pudo enviar el reporte. Inténtalo de nuevo."
