@@ -151,7 +151,7 @@ func NewRouter(
 		internalTTSTokens:          parseTTSTokens(cfg.TTS.InternalTokensJSON, logger),
 		internalTTSMaxPendingLimit: maxInt(cfg.TTS.InternalMaxPendingLimit, 500),
 		internalTTSMaxUploadBytes:  maxInt(cfg.TTS.InternalMaxUploadMB, 10) * 1024 * 1024,
-		internalServiceTokens:      parseTTSTokens(cfg.WebApp.InternalServiceTokensJSON, logger),
+		internalServiceTokens:      parseInternalServiceTokens(cfg, logger),
 	}
 
 	// Setup routes
@@ -516,6 +516,25 @@ func maxInt(v, fallback int) int {
 		return v
 	}
 	return fallback
+}
+
+func parseInternalServiceTokens(cfg *config.Config, logger *zap.Logger) map[string]string {
+	tokens := parseTTSTokens(cfg.WebApp.InternalServiceTokensJSON, logger)
+	raw := strings.TrimSpace(cfg.WebApp.ComplaintsServiceToken)
+	if raw == "" {
+		return tokens
+	}
+	if tokens == nil {
+		tokens = map[string]string{}
+	}
+	// COMPLAINTS_SERVICE_TOKEN is the primary release variable.
+	if _, exists := tokens["default"]; !exists {
+		tokens["default"] = raw
+		return tokens
+	}
+	// Keep backward compatibility if default is already set via WEBAPP_INTERNAL_SERVICE_TOKENS_JSON.
+	tokens["complaints"] = raw
+	return tokens
 }
 
 // corsMiddleware adds CORS headers to allow Swagger UI to make requests

@@ -38,8 +38,10 @@
 ### Конфиг токенов internal API
 
 - Новый конфиг:
+  - `webapp.complaints_service_token`
+  - `COMPLAINTS_SERVICE_TOKEN` (основной для релиза)
   - `webapp.internal_service_tokens_json`
-- Новый env:
+- Дополнительно (backward compatible):
   - `WEBAPP_INTERNAL_SERVICE_TOKENS_JSON`
 - Формат: JSON map токенов (например `{"default":"token123","en":"...","es":"..."}`).
 

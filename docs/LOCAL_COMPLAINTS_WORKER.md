@@ -6,7 +6,9 @@
 
 - `GET /api/internal/content-reports/grammar`
 - `POST /api/internal/content-reports/grammar/resolve-bulk`
-- Авторизация через `X-Service-Token` (`WEBAPP_INTERNAL_SERVICE_TOKENS_JSON`).
+- Авторизация через `X-Service-Token`.
+- Основной release-env: `COMPLAINTS_SERVICE_TOKEN`.
+- Backward-compatible env: `WEBAPP_INTERNAL_SERVICE_TOKENS_JSON`.
 
 В сервисе нет LLM-анализа, нет редактирования `courses/`, нет локального scheduler.
 
