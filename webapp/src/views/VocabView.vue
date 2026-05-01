@@ -11,8 +11,8 @@
             class="search-input"
           />
         </div>
-        <div class="filter-controls">
-          <label for="status-filter" class="filter-label">{{ t('vocab.status') }}</label>
+        <label class="filter-controls" for="status-filter">
+          <span class="filter-label">{{ t('vocab.status') }}</span>
           <select id="status-filter" v-model="statusFilter" @change="onFilterChange" class="filter-select">
             <option value="">{{ t('vocab.all') }}</option>
             <option value="new">{{ t('vocab.new') }}</option>
@@ -20,9 +20,9 @@
             <option value="mastered">{{ t('vocab.mastered') }}</option>
             <option value="known">{{ t('vocab.known') }}</option>
           </select>
-        </div>
-        <div class="sort-controls">
-          <label for="sort-select" class="sort-label">{{ t('vocab.sortBy') }}</label>
+        </label>
+        <label class="sort-controls" for="sort-select">
+          <span class="sort-label">{{ t('vocab.sortBy') }}</span>
           <select id="sort-select" v-model="sortField" @change="onSortChange" class="sort-select">
             <option value="display_word">A→Z</option>
             <option value="display_word_desc">Z→A</option>
@@ -32,7 +32,7 @@
             <option value="mastering_score">{{ t('vocab.masteringScore') }}</option>
             <option value="mastering_score_desc">{{ t('vocab.masteringScoreDesc') }}</option>
           </select>
-        </div>
+        </label>
       </div>
     </div>
 
@@ -1053,6 +1053,8 @@ function getStepIntervalDays(direction: string, learningStep: number): number {
 
 .vocab-header {
   margin-bottom: 24px;
+  position: relative;
+  z-index: 20;
 }
 
 
@@ -1080,48 +1082,57 @@ function getStepIntervalDays(direction: string, learningStep: number): number {
   margin-bottom: 0;
 }
 
-.filter-controls {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.filter-label {
-  font-size: 14px;
-  color: var(--text-primary);
-  white-space: nowrap;
-}
-
-.filter-select {
-  padding: 10px;
-  border: 1px solid var(--input-border);
-  border-radius: 4px;
-  font-size: 14px;
-  background-color: var(--input-bg);
-  color: var(--text-primary);
-  cursor: pointer;
-}
-
+.filter-controls,
 .sort-controls {
   display: flex;
   align-items: center;
   gap: 8px;
+  margin: 0;
+  font-weight: normal;
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 100%;
 }
 
+.filter-label,
 .sort-label {
   font-size: 14px;
   color: var(--text-primary);
   white-space: nowrap;
 }
 
-.sort-select {
+.filter-select {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 100%;
   padding: 10px;
   border: 1px solid var(--input-border);
   border-radius: 4px;
-  font-size: 14px;
+  font-size: 16px;
+  line-height: 1.25;
   background-color: var(--input-bg);
   color: var(--text-primary);
   cursor: pointer;
+  touch-action: manipulation;
+  -webkit-appearance: menulist;
+  appearance: menulist;
+}
+
+.sort-select {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  padding: 10px;
+  border: 1px solid var(--input-border);
+  border-radius: 4px;
+  font-size: 16px;
+  line-height: 1.25;
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-appearance: menulist;
+  appearance: menulist;
 }
 
 .empty-state {
@@ -1814,6 +1825,26 @@ function getStepIntervalDays(direction: string, learningStep: number): number {
   .header-controls {
     flex-direction: column;
     align-items: stretch;
+  }
+  
+  .filter-controls,
+  .sort-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    width: 100%;
+  }
+
+  .filter-label,
+  .sort-label {
+    white-space: normal;
+  }
+
+  .filter-select,
+  .sort-select {
+    width: 100%;
+    min-height: 44px;
+    padding: 12px 10px;
   }
   
   .search-box {
