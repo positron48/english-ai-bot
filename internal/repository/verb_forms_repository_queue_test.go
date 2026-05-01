@@ -113,3 +113,27 @@ func TestGetVerbQueue_NewPoolSkipsAlreadyIncludedDue(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+func TestCountUserVerbClozeCards(t *testing.T) {
+	db, mock, err := sqlmock.New(sqlmock.QueryMatcherOption(sqlmock.QueryMatcherRegexp))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer db.Close()
+	repo := NewVerbFormsRepository(db, zap.NewNop())
+
+	mock.ExpectQuery(`SELECT COUNT\(\*\) FROM user_verb_cards`).
+		WithArgs(int64(3), models.VerbCardTypeCloze).
+		WillReturnRows(sqlmock.NewRows([]string{"count"}).AddRow(int64(42)))
+
+	n, err := repo.CountUserVerbClozeCards(3)
+	if err != nil {
+		t.Fatalf("CountUserVerbClozeCards: %v", err)
+	}
+	if n != 42 {
+		t.Fatalf("got %d want 42", n)
+	}
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Fatal(err)
+	}
+}

@@ -18,6 +18,12 @@
       v-if="sessionComplete && !sessionActive && !loading && showSpanishVerbFormsTraining"
       class="card training-verb-forms-cta training-verb-forms-cta--compact"
     >
+      <p
+        v-if="verbFormsTotalCardsPool !== null"
+        class="training-verb-forms-cta__count training-verb-forms-cta__count--compact"
+      >
+        {{ t('verbTraining.totalCardsAvailable', { count: verbFormsTotalCardsPool }) }}
+      </p>
       <button
         type="button"
         class="btn btn-primary training-verb-forms-cta__btn"
@@ -62,6 +68,9 @@
       <div v-if="showSpanishVerbFormsTraining" class="card training-verb-forms-cta">
         <h3 class="training-verb-forms-cta__title">{{ t('verbTraining.title') }}</h3>
         <p class="training-verb-forms-cta__text">{{ t('verbTraining.shortBlurb') }}</p>
+        <p v-if="verbFormsTotalCardsPool !== null" class="training-verb-forms-cta__count">
+          {{ t('verbTraining.totalCardsAvailable', { count: verbFormsTotalCardsPool }) }}
+        </p>
         <button
           type="button"
           class="btn btn-primary training-verb-forms-cta__btn"
@@ -504,6 +513,23 @@ import { useLearningConfig } from '../composables/useLearningConfig'
 const { t, tm, locale } = useI18n()
 const router = useRouter()
 const { learning, ensureLearningLoaded } = useLearningConfig()
+
+const verbFormsTotalCardsPool = ref<number | null>(null)
+
+async function refreshVerbFormsPoolCount() {
+  await ensureLearningLoaded()
+  const ly = learning.value
+  if (!ly || ly.target_lang?.toLowerCase() !== 'es' || !ly.spanish_verb_forms_enabled) {
+    verbFormsTotalCardsPool.value = null
+    return
+  }
+  try {
+    const data = await apiClient.request<{ total_cards?: number }>('/api/verb-training/upcoming')
+    verbFormsTotalCardsPool.value = typeof data?.total_cards === 'number' ? data.total_cards : null
+  } catch {
+    verbFormsTotalCardsPool.value = null
+  }
+}
 
 function openVerbFormsTraining() {
   void router.push({ path: '/training/verbs', query: { start: '1' } })
@@ -1463,6 +1489,7 @@ const loadStats = async () => {
     console.error('Failed to load stats:', error)
     statsLoaded.value = true // Mark as loaded even on error to avoid infinite loading state
   }
+  await refreshVerbFormsPoolCount()
 }
 
 const loadUpcomingCards = async () => {
@@ -3940,6 +3967,20 @@ const handleTimerMouseLeave = () => {
   color: var(--text-secondary);
   text-align: center;
   max-width: 42rem;
+}
+
+.training-verb-forms-cta__count {
+  margin: 0 0 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.training-verb-forms-cta__count--compact {
+  margin: 0 0 10px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-secondary);
 }
 
 .start-screen {

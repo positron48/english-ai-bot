@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"strings"
 	"time"
 
 	"go.uber.org/zap"
@@ -84,6 +85,66 @@ func (r *GrammarSRSRepository) ListDueMemories(userID int64, language, courseID 
 		out = append(out, m)
 	}
 	return out, nil
+}
+
+// CountDueOrNewTheoryBlocks counts how many theory_block_ids from the slice either have no SRS row yet
+// or have next_review_at <= now (due for review). Duplicates in theoryBlockIDs are ignored.
+func (r *GrammarSRSRepository) CountDueOrNewTheoryBlocks(userID int64, language, courseID string, theoryBlockIDs []string, now time.Time) (int, error) {
+	if len(theoryBlockIDs) == 0 {
+		return 0, nil
+	}
+	seen := make(map[string]struct{}, len(theoryBlockIDs))
+	uniq := make([]string, 0, len(theoryBlockIDs))
+	for _, id := range theoryBlockIDs {
+		id = strings.TrimSpace(id)
+		if id == "" {
+			continue
+		}
+		if _, ok := seen[id]; ok {
+			continue
+		}
+		seen[id] = struct{}{}
+		uniq = append(uniq, id)
+	}
+	if len(uniq) == 0 {
+		return 0, nil
+	}
+
+	ph := strings.TrimSuffix(strings.Repeat("?,", len(uniq)), ",")
+	args := make([]interface{}, 0, 3+len(uniq))
+	args = append(args, userID, language, courseID)
+	for _, id := range uniq {
+		args = append(args, id)
+	}
+	q := fmt.Sprintf(`SELECT theory_block_id, next_review_at FROM grammar_theory_memory
+	      WHERE user_id=? AND language=? AND course_id=? AND theory_block_id IN (%s)`, ph)
+	rows, err := r.db.Query(q, args...)
+	if err != nil {
+		return 0, fmt.Errorf("count due/new grammar theory blocks: %w", err)
+	}
+	defer rows.Close()
+
+	nextByBlock := make(map[string]time.Time, len(uniq))
+	for rows.Next() {
+		var bid string
+		var nr time.Time
+		if err := rows.Scan(&bid, &nr); err != nil {
+			return 0, fmt.Errorf("scan grammar_theory_memory row: %w", err)
+		}
+		nextByBlock[bid] = nr
+	}
+	if err := rows.Err(); err != nil {
+		return 0, err
+	}
+
+	n := 0
+	for _, bid := range uniq {
+		nr, ok := nextByBlock[bid]
+		if !ok || !nr.After(now) {
+			n++
+		}
+	}
+	return n, nil
 }
 
 func (r *GrammarSRSRepository) UpdateAfterAnswer(memory *GrammarTheoryMemory, isCorrect bool) error {

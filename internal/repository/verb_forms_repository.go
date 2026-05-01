@@ -528,6 +528,18 @@ func (r *VerbFormsRepository) GetVerbQueue(userID int64, now time.Time, maxCards
 	return out, nil
 }
 
+// CountUserVerbClozeCards returns how many verb-form cloze cards exist for the user (full pool, not session queue).
+func (r *VerbFormsRepository) CountUserVerbClozeCards(userID int64) (int64, error) {
+	const q = `SELECT COUNT(*) FROM user_verb_cards uvc
+		INNER JOIN verb_training_cards vtc ON vtc.id = uvc.verb_training_card_id
+		WHERE uvc.user_id = ? AND vtc.card_type = ?`
+	var n int64
+	if err := r.db.QueryRow(q, userID, models.VerbCardTypeCloze).Scan(&n); err != nil {
+		return 0, fmt.Errorf("count user verb cloze cards: %w", err)
+	}
+	return n, nil
+}
+
 type VerbUserCardSRS struct {
 	ID           int64
 	State        string

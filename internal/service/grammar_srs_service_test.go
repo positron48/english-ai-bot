@@ -101,8 +101,8 @@ func TestGrammarSRS_AvailabilityAndSessionAndAnswer_HappyPath(t *testing.T) {
 	if err != nil {
 		t.Fatalf("GetGrammarTrainingAvailability: %v", err)
 	}
-	if !availability.Available || availability.QuestionCount == 0 {
-		t.Fatalf("expected available questions, got %+v", availability)
+	if !availability.Available || availability.QuestionCount != 2 || availability.TheoryBlockCount != 1 || availability.DueTheoryBlockCount != 1 {
+		t.Fatalf("expected availability with 2 questions / 1 theory block / 1 due block, got %+v", availability)
 	}
 
 	session, err := svc.StartGrammarSrsSession(context.Background(), userID, 5)
@@ -134,7 +134,7 @@ func TestGrammarSRS_Availability_EdgeBranches(t *testing.T) {
 	if err != nil {
 		t.Fatalf("GetGrammarTrainingAvailability without pack: %v", err)
 	}
-	if availability.Available || availability.QuestionCount != 0 {
+	if availability.Available || availability.QuestionCount != 0 || availability.TheoryBlockCount != 0 || availability.DueTheoryBlockCount != 0 {
 		t.Fatalf("expected unavailable without pack, got %+v", availability)
 	}
 
@@ -258,7 +258,7 @@ func TestGrammarSRS_Availability_AllowedEmptyBranch(t *testing.T) {
 	if err != nil {
 		t.Fatalf("availability with unknown user: %v", err)
 	}
-	if got.Available || got.QuestionCount != 0 {
+	if got.Available || got.QuestionCount != 0 || got.TheoryBlockCount != 0 || got.DueTheoryBlockCount != 0 {
 		t.Fatalf("expected unavailable for unknown user, got %+v", got)
 	}
 }
@@ -480,7 +480,7 @@ func TestGrammarSRS_Availability_InvalidPackFilesAreSkipped(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error for invalid pack files: %v", err)
 	}
-	if got.Available || got.QuestionCount != 0 {
+	if got.Available || got.QuestionCount != 0 || got.TheoryBlockCount != 0 || got.DueTheoryBlockCount != 0 {
 		t.Fatalf("expected unavailable because invalid files are skipped, got %+v", got)
 	}
 }

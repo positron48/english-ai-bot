@@ -396,9 +396,16 @@ func (r *Router) handleVerbTrainingUpcoming(w http.ResponseWriter, req *http.Req
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
+	totalCards, err := repo.CountUserVerbClozeCards(userID)
+	if err != nil {
+		r.logger.Error("count user verb cloze cards", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(map[string]interface{}{
 		"due":             len(queue),
+		"total_cards":     totalCards,
 		"max_per_session": r.config.Training.VerbFormsMaxCards,
 		"enabled":         true,
 	})

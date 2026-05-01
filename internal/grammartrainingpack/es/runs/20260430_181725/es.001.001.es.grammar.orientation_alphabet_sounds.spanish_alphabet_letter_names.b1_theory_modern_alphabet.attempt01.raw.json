@@ -1,0 +1,5 @@
+{
+  "attempt": 1,
+  "error": null,
+  "raw_response": "[\n  {\n    \"type\": \"mcq_single\",\n    \"prompt\": \"Какая из следующих букв является отдельной буквой в современном испанском алфавите?\",\n    \"choices\": [\n      {\n        \"id\": \"a\",\n        \"text\": \"ch\"\n      },\n      {\n        \"id\": \"b\",\n        \"text\": \"ll\"\n      },\n      {\n        \"id\": \"c\",\n        \"text\": \"ñ\"\n      },\n      {\n        \"id\": \"d\",\n        \"text\": \"rr\"\n      }\n    ],\n    \"correct_answer\": \"c\",\n    \"explanation\": \"В современном испанском алфавите буква ñ (eñe) является отдельной буквой, расположенной после n и перед o. Сочетания ch, ll и rr не считаются отдельными буквами, а являются диграфами.\",\n    \"theory_block_id\": \"b1_theory_modern_alphabet\",\n    \"chapter_id\": \"es.grammar.orientation_alphabet_sounds.spanish_alphabet_letter_names\",\n    \"concept_id\": \"modern_spanish_alphabet\",\n    \"difficulty\": 1\n  }\n]"
+}

@@ -2,21 +2,23 @@
   <div class="grammar-categories">
     <div class="header-section">
       <h1>{{ t('grammar.courseTitle') || 'Grammar Course' }}</h1>
-      <router-link
-        v-if="grammarTrainingAvailable"
-        to="/learning/grammar/training"
-        class="btn btn-primary grammar-training-nav-btn"
-      >
-        {{ t('grammar.trainingTitle') || 'Grammar Training' }}
-      </router-link>
-      <router-link 
-        v-if="settingsLoaded && !hidePlacementTestButton"
-        to="/learning/grammar/placement-test" 
-        class="btn btn-placement-test"
-      >
-        <Icon name="sparkles" />
-        {{ t('grammar.takePlacementTest') || 'Take Placement Test' }}
-      </router-link>
+      <div class="header-actions">
+        <router-link
+          v-if="grammarTrainingAvailable"
+          to="/learning/grammar/training"
+          class="btn btn-primary grammar-training-nav-btn"
+        >
+          {{ t('grammar.trainingTitle') || 'Grammar Training' }}
+        </router-link>
+        <router-link 
+          v-if="settingsLoaded && !hidePlacementTestButton"
+          to="/learning/grammar/placement-test" 
+          class="btn btn-placement-test"
+        >
+          <Icon name="sparkles" />
+          {{ t('grammar.takePlacementTest') || 'Take Placement Test' }}
+        </router-link>
+      </div>
     </div>
     
     <!-- Statistics Block -->
@@ -363,12 +365,14 @@ const loadCategories = async () => {
     // can_access comes from the API (considers placement test opened_sections + previous category passed)
     categories.value = loadedCategories
     statistics.value = statsData as NonNullable<typeof statistics.value>
-    grammarTrainingAvailable.value = !!(trainingData as any)?.grammar_training?.available
+    const gt = (trainingData as { grammar_training?: { available?: boolean } })?.grammar_training
+    grammarTrainingAvailable.value = !!gt?.available
     // Устанавливаем настройку только после загрузки данных
     hidePlacementTestButton.value = statistics.value?.hide_placement_test_button || false
     settingsLoaded.value = true
   } catch (err: any) {
     error.value = err.message || 'Failed to load categories'
+    grammarTrainingAvailable.value = false
     console.error('Failed to load grammar categories:', err)
   } finally {
     loading.value = false
@@ -390,9 +394,17 @@ onMounted(() => {
 .header-section {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 32px;
   gap: 16px;
+  flex-wrap: wrap;
+}
+
+.header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 12px;
 }
 
 .grammar-categories h1 {
@@ -447,6 +459,7 @@ onMounted(() => {
     width: 100%;
     justify-content: center;
   }
+
 }
 
 .statistics-block {

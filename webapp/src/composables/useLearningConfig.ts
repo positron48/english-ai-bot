@@ -60,43 +60,43 @@ function learningFromHealthPayload(raw: unknown): LearningPayload | null {
 
 /** Loads learning metadata from GET /health (no auth) then GET /api/settings (cached). Safe to call multiple times. */
 export async function ensureLearningLoaded(): Promise<void> {
-  if (learning.value) return
-  if (loadPromise) return loadPromise
-  loadPromise = (async () => {
-    try {
-      const hr = await fetch('/health')
-      if (hr.ok) {
-        const hj = await hr.json()
-        const pub = learningFromHealthPayload(hj?.learning)
-        if (pub) {
-          learning.value = pub
+  if (!loadPromise) {
+    loadPromise = (async () => {
+      try {
+        const hr = await fetch('/health')
+        if (hr.ok) {
+          const hj = await hr.json()
+          const pub = learningFromHealthPayload(hj?.learning)
+          if (pub) {
+            learning.value = pub
+          }
+        }
+      } catch {
+        /* ignore */
+      }
+      try {
+        const data = await apiClient.request<{ learning?: Partial<LearningPayload> }>('/api/settings')
+        const patch = data.learning
+        const base = learning.value ?? defaultLearning()
+        learning.value = {
+          ...base,
+          ...(patch ?? {}),
+          spanish_verb_forms_enabled:
+            typeof patch?.spanish_verb_forms_enabled === 'boolean'
+              ? patch.spanish_verb_forms_enabled
+              : base.spanish_verb_forms_enabled,
+          spanish_verb_scope_ladder: Array.isArray(patch?.spanish_verb_scope_ladder)
+            ? (patch.spanish_verb_scope_ladder as SpanishVerbScopeLadderStep[])
+            : base.spanish_verb_scope_ladder,
+        }
+      } catch {
+        if (!learning.value) {
+          learning.value = defaultLearning()
         }
       }
-    } catch {
-      /* ignore */
-    }
-    try {
-      const data = await apiClient.request<{ learning?: Partial<LearningPayload> }>('/api/settings')
-      const patch = data.learning
-      const base = learning.value ?? defaultLearning()
-      learning.value = {
-        ...base,
-        ...(patch ?? {}),
-        spanish_verb_forms_enabled:
-          typeof patch?.spanish_verb_forms_enabled === 'boolean'
-            ? patch.spanish_verb_forms_enabled
-            : base.spanish_verb_forms_enabled,
-        spanish_verb_scope_ladder: Array.isArray(patch?.spanish_verb_scope_ladder)
-          ? (patch.spanish_verb_scope_ladder as SpanishVerbScopeLadderStep[])
-          : base.spanish_verb_scope_ladder,
-      }
-    } catch {
-      if (!learning.value) {
-        learning.value = defaultLearning()
-      }
-    }
-  })()
-  return loadPromise
+    })()
+  }
+  await loadPromise
 }
 
 export function useLearningConfig() {

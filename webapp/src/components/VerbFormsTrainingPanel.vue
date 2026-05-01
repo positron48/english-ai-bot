@@ -13,6 +13,9 @@
         {{ t('verbTraining.title') }}
       </component>
       <p class="verb-forms-pre__intro">{{ t('verbTraining.intro') }}</p>
+      <p v-if="totalVerbCardsPool !== null" class="verb-forms-pre__pool">
+        {{ t('verbTraining.totalCardsAvailable', { count: totalVerbCardsPool }) }}
+      </p>
       <button type="button" class="btn btn-primary" @click="start">{{ t('verbTraining.start') }}</button>
       <p v-if="error" class="verb-forms-pre__error">{{ error }}</p>
     </section>
@@ -194,6 +197,8 @@ const error = ref('')
 const autoStarting = ref(false)
 const trainingStats = ref({ totalCards: 0, correctCards: 0 })
 const availableForTraining = ref<number | null>(null)
+/** Full cloze verb-form card pool for user (from API); distinct from session queue size (`due`). */
+const totalVerbCardsPool = ref<number | null>(null)
 
 /** Title + intro only before the first successful start (idle). Hidden during load and whole session. */
 const showIdleChrome = computed(() => !active.value && !autoStarting.value)
@@ -279,15 +284,20 @@ const start = async () => {
 
 async function loadUpcomingVerbCards() {
   try {
-    const data = await apiClient.request<{ due?: number }>('/api/verb-training/upcoming')
+    const data = await apiClient.request<{ due?: number; total_cards?: number }>('/api/verb-training/upcoming')
     availableForTraining.value = typeof data?.due === 'number' ? data.due : 0
+    totalVerbCardsPool.value = typeof data?.total_cards === 'number' ? data.total_cards : null
   } catch {
     availableForTraining.value = null
+    totalVerbCardsPool.value = null
   }
 }
 
 onMounted(async () => {
-  if (!props.autoStart) return
+  if (!props.autoStart) {
+    await loadUpcomingVerbCards()
+    return
+  }
   autoStarting.value = true
   try {
     await start()
@@ -412,10 +422,17 @@ const submitSkip = () => {
 }
 
 .verb-forms-pre__intro {
-  margin: 0 0 18px;
+  margin: 0 0 10px;
   font-size: 0.95rem;
   line-height: 1.45;
   color: var(--text-secondary);
+}
+
+.verb-forms-pre__pool {
+  margin: 0 0 18px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--text-primary);
 }
 
 .verb-forms-pre__error {

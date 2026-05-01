@@ -192,7 +192,8 @@
     "openDedicated": "Abrir práctica de formas",
     "shortBlurb": "Modo aparte: primero opciones múltiples; luego escribes la forma completa cuando ya la recuerdas bien.",
     "modeChoiceHint": "Elige la opción correcta. Tras {n} repasos seguidos sin fallar, pasarás a escribir la forma completa.",
-    "modeTypedHint": "Escribe la forma verbal completa."
+    "modeTypedHint": "Escribe la forma verbal completa.",
+    "totalCardsAvailable": "{count} tarjetas de formas verbales disponibles"
   },
   "learning": {
     "title": "Aprendizaje",
@@ -466,6 +467,8 @@
     "theoryFooterChapter": "Capítulo",
     "theoryFooterLevel": "Nivel",
     "trainingTitle": "Entrenamiento de gramática",
+    "trainingStatTopicsLabel": "Temas",
+    "trainingStatDueLabel": "Repaso",
     "trainingDone": "Sesión completada.",
     "trainingUnavailable": "El entrenamiento de gramática aún no está disponible para este curso."
   },

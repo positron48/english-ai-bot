@@ -1,15 +1,15 @@
 {
   "ok": true,
-  "generated_at": "2026-04-28T11:45:49Z",
+  "generated_at": "2026-04-30T18:17:51Z",
   "mode": "llm-only",
   "validation": {
-    "generated_at": "2026-04-28T11:45:49Z",
+    "generated_at": "2026-04-30T18:17:50Z",
     "ok": true,
     "errors": [],
     "chapters": {
       "es.grammar.orientation_alphabet_sounds.spanish_alphabet_letter_names": {
         "errors": [],
-        "accepted_questions": 86,
+        "accepted_questions": 87,
         "duplicates_removed": 0
       },
       "es.grammar.orientation_alphabet_sounds.vowels_syllables_diphthongs_hiatus": {
@@ -24,7 +24,7 @@
       },
       "es.grammar.orientation_alphabet_sounds.core_pronunciation_map_b_v_c_z_g": {
         "errors": [],
-        "accepted_questions": 46,
+        "accepted_questions": 45,
         "duplicates_removed": 0
       },
       "es.grammar.orientation_alphabet_sounds.intonation_inverted_question_exclamation_marks": {
@@ -34,17 +34,17 @@
       },
       "es.grammar.orientation_alphabet_sounds.build_read_decode_words_read_mini_sentences_aloud": {
         "errors": [],
-        "accepted_questions": 88,
+        "accepted_questions": 48,
         "duplicates_removed": 0
       },
       "es.grammar.noun_gender_articles_agreement.noun_gender_masculine_feminine_useful_heuristics": {
         "errors": [],
-        "accepted_questions": 68,
+        "accepted_questions": 66,
         "duplicates_removed": 0
       },
       "es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes": {
         "errors": [],
-        "accepted_questions": 84,
+        "accepted_questions": 80,
         "duplicates_removed": 0
       },
       "es.grammar.noun_gender_articles_agreement.definite_indefinite_articles_el_la_los_las_un": {
@@ -59,12 +59,12 @@
       },
       "es.grammar.noun_gender_articles_agreement.demonstratives_este_ese_aquel_esto_eso_aquello": {
         "errors": [],
-        "accepted_questions": 86,
+        "accepted_questions": 80,
         "duplicates_removed": 0
       },
       "es.grammar.noun_gender_articles_agreement.numbers_0_100_basic_quantity_words": {
         "errors": [],
-        "accepted_questions": 91,
+        "accepted_questions": 87,
         "duplicates_removed": 0
       },
       "es.grammar.noun_gender_articles_agreement.build_speak_name_describe_objects_around_you": {
@@ -74,7 +74,7 @@
       },
       "es.grammar.first_sentences_ser_pronouns.subject_pronouns_null_subjects_say_yo": {
         "errors": [],
-        "accepted_questions": 86,
+        "accepted_questions": 71,
         "duplicates_removed": 0
       },
       "es.grammar.first_sentences_ser_pronouns.forms_address_tu_usted_ustedes_vosotros_register": {
@@ -89,7 +89,7 @@
       },
       "es.grammar.first_sentences_ser_pronouns.statements_yes_no_questions_negation_no": {
         "errors": [],
-        "accepted_questions": 80,
+        "accepted_questions": 78,
         "duplicates_removed": 0
       },
       "es.grammar.first_sentences_ser_pronouns.basic_question_words_que_quien_cual_donde_como": {
@@ -104,12 +104,12 @@
       },
       "es.grammar.first_sentences_ser_pronouns.build_speak_introduce_yourself_other_people": {
         "errors": [],
-        "accepted_questions": 90,
+        "accepted_questions": 85,
         "duplicates_removed": 0
       },
       "es.grammar.existence_location_possession.estar_location_temporary_states": {
         "errors": [],
-        "accepted_questions": 98,
+        "accepted_questions": 96,
         "duplicates_removed": 0
       },
       "es.grammar.existence_location_possession.hay_existence_introducing_new_things": {
@@ -119,7 +119,7 @@
       },
       "es.grammar.existence_location_possession.first_ser_estar_contrast": {
         "errors": [],
-        "accepted_questions": 60,
+        "accepted_questions": 59,
         "duplicates_removed": 0
       },
       "es.grammar.existence_location_possession.tener_possession_age_common_bodily_state_expressions": {
@@ -149,7 +149,7 @@
       },
       "es.grammar.present_regular_actions.present_statements_regular_verbs": {
         "errors": [],
-        "accepted_questions": 67,
+        "accepted_questions": 66,
         "duplicates_removed": 0
       },
       "es.grammar.present_regular_actions.present_questions_where_subject_adverbs_go": {

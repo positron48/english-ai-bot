@@ -197,7 +197,8 @@
     "openDedicated": "Open verb-form practice",
     "shortBlurb": "Separate mode: multiple choice first, then typing the full form once it is well remembered.",
     "modeChoiceHint": "Pick the correct option. After {n} successful reviews in a row for this form, you will type the full form.",
-    "modeTypedHint": "Type the full verb form."
+    "modeTypedHint": "Type the full verb form.",
+    "totalCardsAvailable": "{count} verb-form cards available"
   },
   "learning": {
     "title": "Learning",
@@ -471,6 +472,8 @@
     "theoryFooterChapter": "Chapter",
     "theoryFooterLevel": "Level",
     "trainingTitle": "Grammar Training",
+    "trainingStatTopicsLabel": "Topics",
+    "trainingStatDueLabel": "Due",
     "trainingDone": "Session completed.",
     "trainingUnavailable": "Grammar training is not available for this course yet."
   },

@@ -48,7 +48,7 @@
                 {{ t('grammar.next') }}
               </button>
             </div>
-            <h3 v-if="displayedTheoryBlock.title" class="theory-modal-block-title">{{ displayedTheoryBlock.title }}</h3>
+            <h3 v-if="theoryModalChapterHeading" class="theory-modal-chapter-title">{{ theoryModalChapterHeading }}</h3>
             <div
               v-if="displayedTheoryBlock.theory?.content_md"
               class="theory-tooltip-content markdown-content"
@@ -387,6 +387,14 @@ const localizedTitle = (title: string, titleTranslations?: Record<string, string
   return title
 }
 
+const theoryModalChapterHeading = computed(() => {
+  const ctx = props.theoryChapterContext
+  if (!ctx) return ''
+  const ch = localizedTitle(ctx.chapterTitle, ctx.chapterTitleTranslations)
+  return typeof ch === 'string' ? ch.trim() : ''
+})
+
+/** Footer meta: chapter title is shown as modal heading above theory content */
 const theoryMetaLines = computed(() => {
   const ctx = props.theoryChapterContext
   if (!ctx) return [] as { label: string; value: string }[]
@@ -394,10 +402,6 @@ const theoryMetaLines = computed(() => {
   const cat = localizedTitle(ctx.categoryTitle, ctx.categoryTitleTranslations)
   if (cat) {
     out.push({ label: t('grammar.theoryFooterCategory'), value: cat })
-  }
-  const ch = localizedTitle(ctx.chapterTitle, ctx.chapterTitleTranslations)
-  if (ch) {
-    out.push({ label: t('grammar.theoryFooterChapter'), value: ch })
   }
   if (ctx.level) {
     out.push({ label: t('grammar.theoryFooterLevel'), value: ctx.level })
@@ -704,6 +708,10 @@ const compareAnswers = (user: any, correct: any): boolean => {
 const renderMarkdown = (text: string): string => {
   if (!text) return ''
   try {
+    marked.setOptions({
+      breaks: true,
+      gfm: true,
+    })
     return marked.parse(text) as string
   } catch (error) {
     return text
@@ -943,6 +951,9 @@ defineExpose({
 .theory-tooltip-content {
   color: var(--text-primary);
   margin-bottom: 16px;
+  line-height: 1.7;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .theory-modal-pager {
@@ -985,10 +996,12 @@ defineExpose({
   text-align: center;
 }
 
-.theory-modal-block-title {
-  margin: 0 0 12px 0;
-  font-size: 17px;
-  font-weight: 600;
+.theory-modal-chapter-title {
+  margin: 0 0 14px 0;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-primary);
+  font-size: 1.15rem;
+  font-weight: 700;
   line-height: 1.35;
   color: var(--text-primary);
 }

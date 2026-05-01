@@ -9,10 +9,12 @@ import (
 )
 
 type GrammarTrainingAvailability struct {
-	Available      bool   `json:"available"`
-	QuestionCount  int    `json:"question_count"`
-	BundleID       string `json:"bundle_id"`
-	BundleLanguage string `json:"bundle_language"`
+	Available           bool   `json:"available"`
+	QuestionCount       int    `json:"question_count"`         // all questions in training pack (many per theory block); legacy/diagnostic
+	TheoryBlockCount    int    `json:"theory_block_count"`     // SRS deck size — one spaced-repetition unit per theory block
+	DueTheoryBlockCount int    `json:"due_theory_block_count"` // blocks with no row yet or next_review_at <= now
+	BundleID            string `json:"bundle_id"`
+	BundleLanguage      string `json:"bundle_language"`
 }
 
 type GrammarSrsSessionItem struct {
@@ -31,10 +33,12 @@ type GrammarSrsAnswerResult struct {
 
 func (s *GrammarService) GetGrammarTrainingAvailability(ctx context.Context, userID int64) (*GrammarTrainingAvailability, error) {
 	out := &GrammarTrainingAvailability{
-		Available:      false,
-		QuestionCount:  0,
-		BundleID:       s.learning.GrammarBundleID,
-		BundleLanguage: s.learning.TargetLang,
+		Available:           false,
+		QuestionCount:       0,
+		TheoryBlockCount:    0,
+		DueTheoryBlockCount: 0,
+		BundleID:            s.learning.GrammarBundleID,
+		BundleLanguage:      s.learning.TargetLang,
 	}
 	if s.TrainingPackRepo == nil {
 		return out, nil
@@ -54,12 +58,22 @@ func (s *GrammarService) GetGrammarTrainingAvailability(ctx context.Context, use
 		return out, nil
 	}
 	filtered := s.filterBlocksByAllowedChapters(byBlock, allowedByChapter)
+	theoryBlockCount := len(filtered)
 	totalQuestions := 0
-	for _, qs := range filtered {
+	blockIDs := make([]string, 0, theoryBlockCount)
+	for tbID, qs := range filtered {
 		totalQuestions += len(qs)
+		blockIDs = append(blockIDs, tbID)
 	}
-	out.Available = totalQuestions > 0
+	out.Available = theoryBlockCount > 0
 	out.QuestionCount = totalQuestions
+	out.TheoryBlockCount = theoryBlockCount
+	out.DueTheoryBlockCount = theoryBlockCount
+	if s.SRSRepo != nil && userID != 0 && theoryBlockCount > 0 {
+		if n, err := s.SRSRepo.CountDueOrNewTheoryBlocks(userID, s.learning.TargetLang, s.learning.GrammarBundleID, blockIDs, time.Now()); err == nil {
+			out.DueTheoryBlockCount = n
+		}
+	}
 	return out, nil
 }
 
