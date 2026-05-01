@@ -4,6 +4,7 @@ import router from './router'
 import i18n from './i18n'
 import './styles/theme.css'
 import './style.css'
+import './styles/markdown-content.css'
 
 // Clean up Telegram URL parameters before router initialization
 // Telegram adds tgWebAppData to URL which needs to be extracted and removed

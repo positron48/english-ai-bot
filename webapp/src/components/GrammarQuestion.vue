@@ -775,8 +775,8 @@ defineExpose({
   border-radius: 10px;
   background: var(--card-bg);
   color: var(--text-secondary);
-  font-size: 14px;
-  line-height: 1.5;
+  font-size: 15px;
+  line-height: 1.65;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
 }
 
@@ -810,10 +810,11 @@ defineExpose({
 
 .theory-tooltip-content {
   color: var(--text-primary);
+  margin-bottom: 16px;
 }
 
 .theory-tooltip-points {
-  margin: 10px 0 0;
+  margin: 0 0 0;
   padding-left: 18px;
 }
 
