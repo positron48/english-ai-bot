@@ -125,26 +125,28 @@
         </button>
         <span v-if="reportMessage" class="report-message">{{ reportMessage }}</span>
       </div>
-      <div v-if="reportDialogOpen" class="report-modal-backdrop" @click.self="closeGrammarReportDialog">
-        <div class="report-modal">
-          <h3 class="report-modal-title">{{ t('training.reportIssue') }}</h3>
-          <textarea
-            v-model.trim="reportComment"
-            class="report-modal-textarea"
-            :placeholder="t('training.reportCommentPlaceholder') || 'Опишите, что не так с вопросом'"
-            rows="5"
-            maxlength="1000"
-          />
-          <div class="report-modal-actions">
-            <button type="button" class="report-modal-cancel" @click="closeGrammarReportDialog">
-              {{ t('common.cancel') || 'Отмена' }}
-            </button>
-            <button type="button" class="report-modal-submit" :disabled="reportSubmitting || !reportComment" @click="reportCurrentQuestion">
-              {{ t('training.reportSend') || 'Отправить' }}
-            </button>
+      <Teleport to="body">
+        <div v-if="reportDialogOpen" class="report-modal-backdrop" @click.self="closeGrammarReportDialog">
+          <div class="report-modal">
+            <h3 class="report-modal-title">{{ t('training.reportIssue') }}</h3>
+            <textarea
+              v-model.trim="reportComment"
+              class="report-modal-textarea"
+              :placeholder="t('training.reportCommentPlaceholder') || 'Опишите, что не так с вопросом'"
+              rows="5"
+              maxlength="1000"
+            />
+            <div class="report-modal-actions">
+              <button type="button" class="report-modal-cancel" @click="closeGrammarReportDialog">
+                {{ t('common.cancel') || 'Отмена' }}
+              </button>
+              <button type="button" class="report-modal-submit" :disabled="reportSubmitting || !reportComment" @click="reportCurrentQuestion">
+                {{ t('training.reportSend') || 'Отправить' }}
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      </Teleport>
     </div>
   </div>
 </template>
@@ -679,19 +681,20 @@ watch(currentQuestion, async (q) => {
 .report-modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.45);
+  background: var(--bg-modal-overlay);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 10050;
 }
 
 .report-modal {
   width: min(92vw, 460px);
-  background: var(--background-color);
+  background: var(--card-bg);
   color: var(--text-primary);
+  border: 1px solid var(--border-primary);
   border-radius: 12px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 12px 40px var(--card-shadow);
   padding: 16px;
 }
 
@@ -704,12 +707,13 @@ watch(currentQuestion, async (q) => {
   width: 100%;
   min-height: 110px;
   resize: vertical;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--input-border);
   border-radius: 8px;
   padding: 10px;
   font: inherit;
   color: var(--text-primary);
-  background: var(--background-color);
+  background: var(--input-bg);
+  box-sizing: border-box;
 }
 
 .report-modal-actions {
@@ -729,13 +733,18 @@ watch(currentQuestion, async (q) => {
 }
 
 .report-modal-cancel {
-  background: var(--button-secondary-bg);
-  color: var(--button-secondary-text);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-primary);
 }
 
 .report-modal-submit {
-  background: var(--button-primary-bg);
-  color: var(--button-primary-text);
+  background: var(--color-primary);
+  color: var(--text-inverse);
+}
+
+.report-modal-submit:hover:not(:disabled) {
+  background: var(--color-primary-hover);
 }
 
 .report-modal-submit:disabled {
