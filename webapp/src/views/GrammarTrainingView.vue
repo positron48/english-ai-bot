@@ -47,6 +47,7 @@
         :key="`${currentQuestion.id}-${currentIndex}`"
         :question="currentQuestion"
         :theory-block="currentTheoryBlock"
+        :chapter-theory-blocks="currentChapterTheoryBlocksOrdered"
         :theory-chapter-context="currentChapterContext"
         :show-answers="!!result"
         :show-explanation="false"
@@ -230,6 +231,8 @@ const error = ref<string | null>(null)
 const available = ref(false)
 const sessionQuestions = ref<any[]>([])
 const theoryBlockMap = ref<Record<string, any>>({})
+/** Theory blocks per chapter in API order (for theory modal pager in training). */
+const chapterTheoryBlocksOrdered = ref<Record<string, any[]>>({})
 /** Category/chapter/level labels for theory modal (from chapter API + section) */
 const chapterContextMap = ref<
   Record<
@@ -258,6 +261,13 @@ const currentChapterContext = computed(() => {
   const q = currentQuestion.value
   if (!q?.chapter_id) return null
   return chapterContextMap.value[q.chapter_id] ?? null
+})
+
+const currentChapterTheoryBlocksOrdered = computed(() => {
+  const q = currentQuestion.value
+  if (!q?.chapter_id) return null
+  const arr = chapterTheoryBlocksOrdered.value[q.chapter_id]
+  return Array.isArray(arr) && arr.length > 0 ? arr : null
 })
 
 function cacheChapterContextFromApi(chapterId: string, data: any) {
@@ -374,6 +384,7 @@ const startSession = async () => {
   currentIndex.value = 0
   correctCount.value = 0
   theoryBlockMap.value = {}
+  chapterTheoryBlocksOrdered.value = {}
   chapterContextMap.value = {}
   const data: any = await apiClient.request('/api/learning/grammar/training/session/start', {
     method: 'POST',
@@ -397,10 +408,18 @@ const hydrateTheoryBlocksForSession = async () => {
       cacheChapterContextFromApi(chapterId, data)
       const blocks = data?.chapter?.blocks
       if (!Array.isArray(blocks)) continue
+      const theoryOrdered: any[] = []
       for (const block of blocks) {
         if (block?.type !== 'theory' || !block?.id) continue
         const key = `${chapterId}::${block.id}`
         theoryBlockMap.value[key] = block
+        theoryOrdered.push(block)
+      }
+      if (theoryOrdered.length > 0) {
+        chapterTheoryBlocksOrdered.value = {
+          ...chapterTheoryBlocksOrdered.value,
+          [chapterId]: theoryOrdered
+        }
       }
     } catch {
       // Не блокируем тренировку, если по главе не удалось получить теорию.
@@ -529,9 +548,17 @@ watch(currentQuestion, async (q) => {
     cacheChapterContextFromApi(q.chapter_id, data)
     const blocks = data?.chapter?.blocks
     if (!Array.isArray(blocks)) return
+    const theoryOrdered: any[] = []
     for (const block of blocks) {
       if (block?.type !== 'theory' || !block?.id) continue
       theoryBlockMap.value[`${q.chapter_id}::${block.id}`] = block
+      theoryOrdered.push(block)
+    }
+    if (theoryOrdered.length > 0) {
+      chapterTheoryBlocksOrdered.value = {
+        ...chapterTheoryBlocksOrdered.value,
+        [q.chapter_id]: theoryOrdered
+      }
     }
   } catch {
     // best-effort

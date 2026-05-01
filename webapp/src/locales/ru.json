@@ -466,6 +466,7 @@
     "placementTestDescription": "Этот тест поможет определить ваш текущий уровень грамматики. Ответьте на 25 вопросов из разных тем, и мы разблокируем подходящие разделы для вас.",
     "loadingQuestion": "Загрузка вопроса...",
     "theoryBlock": "Теоретический блок",
+    "theoryBlockCounter": "Блок {current} из {total}",
     "theoryFooterCategory": "Категория",
     "theoryFooterChapter": "Глава",
     "theoryFooterLevel": "Уровень",

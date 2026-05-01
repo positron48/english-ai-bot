@@ -16,7 +16,7 @@
         class="theory-modal-overlay"
         @click.self="closeTheoryHelp"
       >
-        <div class="theory-modal">
+        <div ref="theoryModalPanelRef" class="theory-modal">
           <button
             type="button"
             class="theory-modal-close"
@@ -26,15 +26,79 @@
           >
             ×
           </button>
-          <template v-if="theoryBlock">
+          <template v-if="displayedTheoryBlock">
+            <div v-if="showTheoryChapterPager" class="theory-modal-pager">
+              <button
+                type="button"
+                class="theory-pager-btn"
+                :disabled="!canPrevTheoryBlock"
+                @click="goPrevTheoryBlock"
+              >
+                {{ t('grammar.previous') }}
+              </button>
+              <span class="theory-pager-counter">
+                {{ t('grammar.theoryBlockCounter', { current: theoryPagerIndex + 1, total: theoryPagerTotal }) }}
+              </span>
+              <button
+                type="button"
+                class="theory-pager-btn"
+                :disabled="!canNextTheoryBlock"
+                @click="goNextTheoryBlock"
+              >
+                {{ t('grammar.next') }}
+              </button>
+            </div>
+            <h3 v-if="displayedTheoryBlock.title" class="theory-modal-block-title">{{ displayedTheoryBlock.title }}</h3>
             <div
-              v-if="theoryBlock.theory?.content_md"
+              v-if="displayedTheoryBlock.theory?.content_md"
               class="theory-tooltip-content markdown-content"
-              v-html="renderMarkdown(theoryBlock.theory.content_md)"
+              v-html="renderMarkdown(displayedTheoryBlock.theory.content_md)"
             ></div>
-            <ul v-if="Array.isArray(theoryBlock.theory?.key_points) && theoryBlock.theory.key_points.length" class="theory-tooltip-points">
-              <li v-for="(point, idx) in theoryBlock.theory.key_points" :key="idx">{{ point }}</li>
-            </ul>
+            <div
+              v-if="Array.isArray(displayedTheoryBlock.theory?.key_points) && displayedTheoryBlock.theory.key_points.length"
+              class="theory-modal-key-callout"
+            >
+              <h4 class="theory-modal-subheading">{{ t('grammar.keyPoints') }}</h4>
+              <ul class="theory-tooltip-points theory-tooltip-points-callout">
+                <li v-for="(point, idx) in displayedTheoryBlock.theory.key_points" :key="idx">{{ point }}</li>
+              </ul>
+            </div>
+            <div
+              v-if="Array.isArray(displayedTheoryBlock.theory?.common_mistakes) && displayedTheoryBlock.theory.common_mistakes.length"
+              class="theory-modal-section theory-modal-mistakes"
+            >
+              <h4 class="theory-modal-subheading">{{ t('grammar.commonMistakes') }}</h4>
+              <div
+                v-for="(mistake, midx) in displayedTheoryBlock.theory.common_mistakes"
+                :key="midx"
+                class="theory-mistake-item"
+              >
+                <div class="theory-mistake-wrong">
+                  <strong>{{ t('grammar.wrong') }}:</strong> {{ mistake.wrong }}
+                </div>
+                <div class="theory-mistake-right">
+                  <strong>{{ t('grammar.correct') }}:</strong> {{ mistake.right }}
+                </div>
+                <div v-if="mistake.why" class="theory-mistake-why">
+                  <strong>{{ t('grammar.why') }}:</strong> {{ mistake.why }}
+                </div>
+              </div>
+            </div>
+            <div
+              v-if="Array.isArray(displayedTheoryBlock.theory?.examples) && displayedTheoryBlock.theory.examples.length"
+              class="theory-modal-section theory-modal-examples"
+            >
+              <h4 class="theory-modal-subheading">{{ t('grammar.examples') }}</h4>
+              <div
+                v-for="example in displayedTheoryBlock.theory.examples"
+                :key="example.id || example.text"
+                class="theory-example-item"
+              >
+                <div class="theory-example-text">{{ example.text }}</div>
+                <div v-if="example.translation" class="theory-example-translation">{{ example.translation }}</div>
+                <div v-if="example.notes" class="theory-example-notes">{{ example.notes }}</div>
+              </div>
+            </div>
           </template>
           <template v-else>
             {{ t('common.loading') }}
@@ -272,6 +336,8 @@ interface Question {
 const props = withDefaults(defineProps<{
   question: Question
   theoryBlock?: any
+  /** Ordered theory blocks for the current chapter only (training modal pager). */
+  chapterTheoryBlocks?: any[] | null
   showAnswers?: boolean
   initialAnswer?: any
   chapterTitle?: string
@@ -281,7 +347,8 @@ const props = withDefaults(defineProps<{
   theoryChapterContext?: TheoryChapterContext | null
 }>(), {
   showExplanation: true,
-  showTheoryHelpButton: true
+  showTheoryHelpButton: true,
+  chapterTheoryBlocks: null
 })
 
 const { t, locale } = useI18n()
@@ -338,8 +405,73 @@ const theoryMetaLines = computed(() => {
   return out
 })
 
+const chapterTheoryBlocksList = computed(() => {
+  const raw = props.chapterTheoryBlocks
+  return Array.isArray(raw) && raw.length > 0 ? raw : null
+})
+
+const theoryModalPanelRef = ref<HTMLElement | null>(null)
+const theoryPagerIndex = ref(0)
+
+const theoryPagerTotal = computed(() => chapterTheoryBlocksList.value?.length ?? 0)
+
+const showTheoryChapterPager = computed(() => theoryPagerTotal.value > 1)
+
+const displayedTheoryBlock = computed(() => {
+  const list = chapterTheoryBlocksList.value
+  if (list && list.length > 0) {
+    const i = Math.min(Math.max(0, theoryPagerIndex.value), list.length - 1)
+    return list[i]
+  }
+  return props.theoryBlock ?? null
+})
+
+function syncTheoryPagerFromQuestion() {
+  const list = chapterTheoryBlocksList.value
+  const qid = props.question?.theory_block_id
+  if (!list || list.length === 0) {
+    theoryPagerIndex.value = 0
+    return
+  }
+  const idx = qid ? list.findIndex((b: any) => b?.id === qid) : -1
+  theoryPagerIndex.value = idx >= 0 ? idx : 0
+}
+
+watch([() => props.question?.theory_block_id, chapterTheoryBlocksList], () => {
+  syncTheoryPagerFromQuestion()
+}, { immediate: true })
+
+const canPrevTheoryBlock = computed(() => showTheoryChapterPager.value && theoryPagerIndex.value > 0)
+const canNextTheoryBlock = computed(
+  () => showTheoryChapterPager.value && theoryPagerIndex.value < theoryPagerTotal.value - 1
+)
+
+function scrollTheoryModalTop() {
+  nextTick(() => {
+    const el = theoryModalPanelRef.value
+    if (el) el.scrollTop = 0
+  })
+}
+
+function goPrevTheoryBlock() {
+  if (!canPrevTheoryBlock.value) return
+  theoryPagerIndex.value--
+  scrollTheoryModalTop()
+}
+
+function goNextTheoryBlock() {
+  if (!canNextTheoryBlock.value) return
+  theoryPagerIndex.value++
+  scrollTheoryModalTop()
+}
+
 const toggleTheoryHelp = () => {
-  showTheoryHelp.value = !showTheoryHelp.value
+  const opening = !showTheoryHelp.value
+  showTheoryHelp.value = opening
+  if (opening) {
+    syncTheoryPagerFromQuestion()
+    scrollTheoryModalTop()
+  }
 }
 
 const closeTheoryHelp = () => {
@@ -813,13 +945,150 @@ defineExpose({
   margin-bottom: 16px;
 }
 
+.theory-modal-pager {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px 14px;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.theory-pager-btn {
+  padding: 8px 14px;
+  border: 1px solid var(--border-primary);
+  border-radius: 8px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 14px;
+  cursor: pointer;
+  min-height: 40px;
+}
+
+.theory-pager-btn:hover:not(:disabled) {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+
+.theory-pager-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.theory-pager-counter {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  min-width: 7rem;
+  text-align: center;
+}
+
+.theory-modal-block-title {
+  margin: 0 0 12px 0;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--text-primary);
+}
+
+.theory-modal-subheading {
+  margin: 0 0 10px 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.theory-modal-key-callout {
+  margin-top: 16px;
+  padding: 14px 16px;
+  background: var(--color-primary-light);
+  border-left: 4px solid var(--color-primary);
+  border-radius: 8px;
+}
+
 .theory-tooltip-points {
-  margin: 0 0 0;
+  margin: 0;
   padding-left: 18px;
+}
+
+.theory-tooltip-points-callout {
+  margin-top: 4px;
 }
 
 .theory-tooltip-points li {
   margin-bottom: 6px;
+}
+
+.theory-modal-section {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-primary);
+}
+
+.theory-mistake-item {
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  background: var(--bg-tertiary);
+  border-radius: 8px;
+}
+
+.theory-mistake-item:last-child {
+  margin-bottom: 0;
+}
+
+.theory-mistake-wrong {
+  color: var(--color-danger);
+  margin-bottom: 6px;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.theory-mistake-right {
+  color: var(--color-success);
+  margin-bottom: 6px;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.theory-mistake-why {
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.theory-example-item {
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  background: var(--example-bg, var(--bg-tertiary));
+  border-radius: 8px;
+  border-left: 4px solid var(--color-primary);
+}
+
+.theory-example-item:last-child {
+  margin-bottom: 0;
+}
+
+.theory-example-text {
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: var(--text-primary);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.theory-example-translation {
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.theory-example-notes {
+  margin-top: 6px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 1.4;
 }
 
 .theory-modal-source {

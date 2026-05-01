@@ -466,6 +466,7 @@
     "placementTestDescription": "This test will help determine your current grammar level. Answer 25 questions from different topics, and we'll unlock the appropriate sections for you.",
     "loadingQuestion": "Loading question...",
     "theoryBlock": "Theoretical block",
+    "theoryBlockCounter": "Block {current} of {total}",
     "theoryFooterCategory": "Category",
     "theoryFooterChapter": "Chapter",
     "theoryFooterLevel": "Level",

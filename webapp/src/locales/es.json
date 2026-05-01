@@ -461,6 +461,7 @@
     "placementTestDescription": "Este test ayuda a estimar tu nivel de gramática. Responde a 25 preguntas de distintos temas y desbloquearemos las secciones adecuadas.",
     "loadingQuestion": "Cargando pregunta...",
     "theoryBlock": "Bloque teórico",
+    "theoryBlockCounter": "Bloque {current} de {total}",
     "theoryFooterCategory": "Categoría",
     "theoryFooterChapter": "Capítulo",
     "theoryFooterLevel": "Nivel",
