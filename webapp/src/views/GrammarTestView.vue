@@ -325,7 +325,6 @@ const hasAnswer = (index: number): boolean => {
   if (answer === undefined || answer === null) {
     return false
   }
-  // For arrays (mcq_multi), check if at least one option is selected
   if (Array.isArray(answer)) {
     return answer.length > 0
   }
@@ -776,22 +775,6 @@ const formatAnswer = (questionId: string, answer: any, chapterId?: string): stri
       }
       return String(answer)
     
-    case 'mcq_multi':
-      // Multiple choice - format as comma-separated list
-      if (Array.isArray(answer)) {
-        if (question.choices && Array.isArray(question.choices)) {
-          const choiceTexts = answer
-            .map((id: string) => {
-              const choice = question.choices.find((c: any) => c.id === id)
-              return choice ? choice.text : id
-            })
-            .filter(Boolean)
-          return choiceTexts.join(', ')
-        }
-        return answer.join(', ')
-      }
-      return String(answer)
-    
     case 'fill_blank':
     case 'reorder':
       return String(answer)
@@ -816,8 +799,6 @@ const getChoiceFeedback = (questionId: string, userAnswer: any, chapterId?: stri
     }
   }
   
-  // For multi-choice, we could show feedback for each selected incorrect choice
-  // For now, return empty string
   return ''
 }
 

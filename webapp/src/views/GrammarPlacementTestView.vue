@@ -390,12 +390,6 @@ const formatAnswer = (questionId: string, answer: any): string => {
     if (t === 'true_false') return (answer === 'true' || answer === true) ? 'Да' : 'Нет'
     return String(answer)
   }
-  if (t === 'mcq_multi' && Array.isArray(answer)) {
-    if (q.choices?.length) {
-      return answer.map((id: string) => q.choices.find((x: any) => x.id === id)?.text || id).filter(Boolean).join(', ')
-    }
-    return answer.join(', ')
-  }
   return String(answer)
 }
 

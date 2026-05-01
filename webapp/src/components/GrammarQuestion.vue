@@ -149,33 +149,6 @@
       </button>
     </div>
     
-    <!-- MCQ Multi -->
-    <div v-if="question.type === 'mcq_multi'" class="question-choices">
-      <button
-        v-for="choice in shuffledChoices"
-        :key="choice.id"
-        @click="toggleAnswer(choice.id)"
-        :disabled="answered"
-        :class="['choice-btn', 'multi', { 
-          'selected': Array.isArray(userAnswer) && userAnswer.includes(choice.id),
-          'correct': answered && Array.isArray(correctAnswer) && correctAnswer.includes(choice.id),
-          'incorrect': answered && Array.isArray(userAnswer) && userAnswer.includes(choice.id) && Array.isArray(correctAnswer) && !correctAnswer.includes(choice.id)
-        }]"
-      >
-        <div class="choice-content">
-          <span class="checkbox" :class="{ 'checked': Array.isArray(userAnswer) && userAnswer.includes(choice.id) }"></span>
-          <span v-html="renderMarkdown(choice.text)"></span>
-        </div>
-        <!-- Show feedback inside incorrect selected choice -->
-        <div 
-          v-if="answered && Array.isArray(userAnswer) && userAnswer.includes(choice.id) && Array.isArray(correctAnswer) && !correctAnswer.includes(choice.id) && choice.feedback"
-          class="choice-feedback-inline"
-        >
-          <div v-html="renderMarkdown(choice.feedback)"></div>
-        </div>
-      </button>
-    </div>
-    
     <!-- Fill Blank -->
     <div v-if="question.type === 'fill_blank'" class="question-input">
       <div class="fill-input-wrapper">
@@ -324,7 +297,7 @@ export interface TheoryChapterContext {
 
 interface Question {
   id: string
-  type: 'mcq_single' | 'mcq_multi' | 'fill_blank' | 'reorder' | 'error_spotting' | 'true_false'
+  type: 'mcq_single' | 'fill_blank' | 'reorder' | 'error_spotting' | 'true_false'
   prompt: string
   choices?: Array<{ id: string; text: string; feedback?: string }>
   correct_answer?: any
@@ -494,7 +467,7 @@ const shuffleArray = <T>(array: T[]): T[] => {
 
 // Initialize shuffled choices for MCQ and error_spotting questions
 const initializeChoices = () => {
-  if (props.question.type === 'mcq_single' || props.question.type === 'mcq_multi' || props.question.type === 'error_spotting') {
+  if (props.question.type === 'mcq_single' || props.question.type === 'error_spotting') {
     if (props.question.choices && props.question.choices.length > 0) {
       shuffledChoices.value = shuffleArray(props.question.choices)
     } else {
@@ -571,22 +544,6 @@ const selectAnswer = (answer: any) => {
   if (!props.showAnswers) {
     // Answer is already emitted above
   }
-}
-
-const toggleAnswer = (choiceId: string) => {
-  if (answered.value) return
-  if (!Array.isArray(userAnswer.value)) {
-    userAnswer.value = []
-  }
-  const index = userAnswer.value.indexOf(choiceId)
-  if (index > -1) {
-    userAnswer.value.splice(index, 1)
-  } else {
-    userAnswer.value.push(choiceId)
-  }
-  emit('answer', [...userAnswer.value])
-  // For multi-choice, auto-advance happens when at least one option is selected
-  // The parent component will handle the auto-advance logic
 }
 
 const onAnswerChange = () => {
@@ -726,8 +683,6 @@ const restoreAnswer = () => {
   
   if (props.question.type === 'mcq_single' || props.question.type === 'true_false' || props.question.type === 'error_spotting') {
     userAnswer.value = props.initialAnswer
-  } else if (props.question.type === 'mcq_multi') {
-    userAnswer.value = Array.isArray(props.initialAnswer) ? [...props.initialAnswer] : [props.initialAnswer]
   } else if (props.question.type === 'fill_blank') {
     userAnswer.value = props.initialAnswer
   } else if (props.question.type === 'reorder') {
@@ -1199,35 +1154,6 @@ defineExpose({
 .choice-btn:disabled {
   cursor: not-allowed;
   opacity: 0.7;
-}
-
-.choice-btn.multi {
-  gap: 12px;
-}
-
-.checkbox {
-  width: 20px;
-  height: 20px;
-  border: 2px solid var(--border-primary);
-  border-radius: 4px;
-  flex-shrink: 0;
-  position: relative;
-}
-
-.checkbox.checked {
-  background: var(--color-primary);
-  border-color: var(--color-primary);
-}
-
-.checkbox.checked::after {
-  content: '✓';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: white;
-  font-size: 14px;
-  font-weight: bold;
 }
 
 .check-icon {
