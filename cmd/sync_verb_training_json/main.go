@@ -43,7 +43,19 @@ func run() int {
 	flag.Parse()
 
 	root := filepath.Clean(*courseRoot)
-	indexPath := filepath.Join(root, "training_pack", "verb_forms", "index.json")
+	artifactRoot := filepath.Join(root, "training_pack", "verb_forms")
+	indexPath := filepath.Join(artifactRoot, "index.json")
+	if _, err := os.Stat(indexPath); err != nil {
+		fallbackRoot := filepath.Join("internal", "grammartrainingpack", "es", "verb_forms")
+		fallbackIndex := filepath.Join(fallbackRoot, "index.json")
+		if _, ferr := os.Stat(fallbackIndex); ferr == nil {
+			artifactRoot = fallbackRoot
+			indexPath = fallbackIndex
+		} else {
+			fmt.Fprintf(os.Stderr, "index.json not found at %s and fallback %s\n", indexPath, fallbackIndex)
+			return 1
+		}
+	}
 	indexRaw, err := os.ReadFile(indexPath)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "read index: %v\n", err)
@@ -75,7 +87,7 @@ func run() int {
 			fmt.Fprintf(os.Stderr, "empty path for lemma %s\n", lemma)
 			return 1
 		}
-		path := filepath.Join(root, "training_pack", "verb_forms", filepath.FromSlash(rel))
+		path := filepath.Join(artifactRoot, filepath.FromSlash(rel))
 		raw, err := os.ReadFile(path)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "read lemma file %s: %v\n", path, err)

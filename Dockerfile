@@ -84,7 +84,7 @@ COPY --from=builder /app/resources/verbs/jehle_verb_database.csv ./data/verbs/je
 COPY --from=builder /app/resources/verbs/jehle_supplement_aux_haber.csv ./data/verbs/jehle_supplement_aux_haber.csv
 COPY --from=builder /app/resources/verbs/ATTRIBUTION.txt ./data/verbs/ATTRIBUTION.txt
 COPY --from=builder /app/resources/verbs/SUPPLEMENT_HABER.txt ./data/verbs/SUPPLEMENT_HABER.txt
-COPY --from=builder /app/courses/spanish-grammar/training_pack/verb_forms ./courses/spanish-grammar/training_pack/verb_forms
+COPY --from=builder /app/internal/grammartrainingpack/es/verb_forms ./internal/grammartrainingpack/es/verb_forms
 
 RUN chmod +x /app/scripts/requeue_invalid_training_cards.sh
 
