@@ -13,7 +13,7 @@ SERVICE_NAME ?= ai-bot
 -include .env
 .EXPORT_ALL_VARIABLES:
 
-.PHONY: all tidy build run test lint fmt setup up up-en up-es complaints-dry-en complaints-apply-en complaints-dry-es complaints-apply-es complaints-dry-both complaints-apply-both complaints-improve-both complaints-plan-both complaints-prompt-autofix-en complaints-prompt-autofix-es complaints-prompt-autofix-both complaints-prompt-regression complaints-prompt-integration-es complaints-smoke-en complaints-smoke-es complaints-smoke-both complaints-quality-both complaints-quality-baseline-both complaints-regenerate-affected complaints-improve-loop-both complaints-both complaints-cycle-both complaints-loop-tests clean check check-quick ci deploy update status logs docker-build docker-run docker-stop docker-logs docker-clean docker-rebuild docker-dev docker-dev-logs docker-dev-restart webapp-install webapp-dev webapp-build test-postgres test-integration test-integration-verbose grammar-bundle grammar-bundle-list postgres-dev-init-dbs clean-spanish-csv sync-spanish-word-sets requeue-invalid-cards-es-dry requeue-invalid-cards-es requeue-invalid-cards-es-no-tts-dry requeue-invalid-cards-es-no-tts import-spanish-verbs import-spanish-verbs-jehle-bundled backfill-word-verb-links build-verb-form-examples backfill-verb-lemma-ru-glosses backfill-verb-template-links preview-verb-templates
+.PHONY: all tidy build run test lint fmt setup up up-en up-es complaints-dry-en complaints-apply-en complaints-dry-es complaints-apply-es complaints-dry-both complaints-apply-both complaints-improve-both complaints-plan-both complaints-prompt-autofix-en complaints-prompt-autofix-es complaints-prompt-autofix-both complaints-prompt-regression complaints-prompt-integration-es complaints-smoke-en complaints-smoke-es complaints-smoke-both complaints-quality-both complaints-quality-baseline-both complaints-regenerate-affected complaints-improve-loop-both complaints-both complaints-cycle-both complaints-loop-tests clean check check-quick ci deploy update status logs docker-build docker-run docker-stop docker-logs docker-clean docker-rebuild docker-dev docker-dev-logs docker-dev-restart webapp-install webapp-dev webapp-build test-postgres test-integration test-integration-verbose grammar-bundle grammar-bundle-list postgres-dev-init-dbs clean-spanish-csv sync-spanish-word-sets requeue-invalid-cards-es-dry requeue-invalid-cards-es requeue-invalid-cards-es-no-tts-dry requeue-invalid-cards-es-no-tts import-spanish-verbs import-spanish-verbs-jehle-bundled backfill-word-verb-links build-verb-form-examples backfill-verb-lemma-ru-glosses backfill-verb-template-links preview-verb-templates verb-training-pack-fill verb-training-sync-db
 
 all: build
 
@@ -58,6 +58,14 @@ grammar-bundle:
 
 grammar-bundle-list:
 	@./scripts/generate-grammar-bundle.sh list
+
+verb-training-pack-fill:
+	@$(MAKE) -C courses/spanish-grammar verb-training-pack-fill
+
+verb-training-sync-db:
+	@echo "Syncing verb training JSON artifacts into DB..."
+	@$(GO) run ./cmd/sync_verb_training_json --course-root courses/spanish-grammar
+	@echo "✅ Verb training DB sync complete"
 
 tag:
 	@V=$$(git describe --tags --abbrev=0 2>/dev/null | sed -E 's/^v?//' || echo "0.0.0"); \

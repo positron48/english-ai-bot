@@ -10,7 +10,6 @@ import (
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
-	"tgbot-skeleton/internal/spanishverbs"
 
 	"go.uber.org/zap"
 )
@@ -128,65 +127,9 @@ func (s *VerbTrainingService) StartSession(userID int64, scopes []string) (*Verb
 }
 
 func (s *VerbTrainingService) ensureTrainingCardsForUser(userID int64, scopes []string) error {
-	rows, err := s.repo.GetLinkedVerbFormsForUser(userID, scopes)
-	if err != nil {
-		return err
-	}
-	lemmaKeys := map[string]struct{}{}
-	for _, row := range rows {
-		k := strings.ToLower(strings.TrimSpace(row.Lemma))
-		if k != "" {
-			lemmaKeys[k] = struct{}{}
-		}
-	}
-	uniqLemmas := make([]string, 0, len(lemmaKeys))
-	for k := range lemmaKeys {
-		uniqLemmas = append(uniqLemmas, k)
-	}
-	metaByLemma, metaErr := s.repo.GetVerbLemmaMetadataJSONBatch(uniqLemmas)
-	if metaErr != nil {
-		s.logger.Warn("verb lemma metadata batch failed; ru gloss from DB unavailable", zap.Error(metaErr))
-		metaByLemma = map[string]string{}
-	}
-	for _, row := range rows {
-		lg := strings.ToLower(strings.TrimSpace(row.Lemma))
-		ruGloss := spanishverbs.RuGlossFromLemmaMetadataJSON(metaByLemma[lg])
-		if ruGloss == "" {
-			ruGloss = spanishverbs.DefaultRuGloss(row.Lemma)
-		}
-		verbClass := spanishverbs.VerbClassFromLemmaMetadataJSON(metaByLemma[lg])
-		allowedTpl := spanishverbs.AllowedTemplateIDsFromLemmaMetadataJSON(metaByLemma[lg])
-		if allowedTpl == nil {
-			allowedTpl = []string{}
-		}
-		clozePrompt, _ := json.Marshal(map[string]interface{}{
-			"type":                   models.VerbCardTypeCloze,
-			"example_mode":           spanishverbs.ExampleModeRuntime,
-			"lemma":                  row.Lemma,
-			"mood":                   row.Mood,
-			"tense":                  row.Tense,
-			"person":                 row.Person,
-			"number":                 row.Number,
-			"expected_form":          row.SurfaceForm,
-			"question":               "",
-			"example_source":         "runtime_templates",
-			"ru_gloss":               ruGloss,
-			"verb_class":             verbClass,
-			"allowed_template_ids":   allowedTpl,
-		})
-		clozeAnswer, _ := json.Marshal(map[string]string{"surface_form": row.SurfaceForm})
-		if _, err := s.repo.UpsertVerbTrainingCard(&models.VerbTrainingCard{
-			WordCardID:      row.WordCardID,
-			VerbFormDictID:  row.VerbFormDictID,
-			CardType:        models.VerbCardTypeCloze,
-			PromptJSON:      string(clozePrompt),
-			AnswerJSON:      string(clozeAnswer),
-			ExampleID:       nil,
-			DistractorsJSON: "[]",
-		}); err != nil {
-			return err
-		}
-	}
+	// Cards are synced by JSON importer during release; runtime must not generate them algorithmically.
+	_ = userID
+	_ = scopes
 	return nil
 }
 

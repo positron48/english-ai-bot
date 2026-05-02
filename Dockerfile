@@ -41,6 +41,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o build_verb_form_exampl
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o backfill_verb_lemma_ru_glosses ./cmd/backfill_verb_lemma_ru_glosses
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o backfill_verb_template_links ./cmd/backfill_verb_template_links
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o preview_verb_templates ./cmd/preview_verb_templates
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o sync_verb_training_json ./cmd/sync_verb_training_json
 
 # Final stage
 FROM alpine:latest
@@ -72,6 +73,7 @@ COPY --from=builder /app/build_verb_form_examples .
 COPY --from=builder /app/backfill_verb_lemma_ru_glosses .
 COPY --from=builder /app/backfill_verb_template_links .
 COPY --from=builder /app/preview_verb_templates .
+COPY --from=builder /app/sync_verb_training_json .
 COPY --from=builder /app/scripts/requeue_invalid_training_cards.sh ./scripts/requeue_invalid_training_cards.sh
 COPY --from=builder /app/prompts ./prompts
 # Ship static Spanish frequency CSV for in-cluster imports (independent from grammar submodule).
@@ -82,6 +84,7 @@ COPY --from=builder /app/resources/verbs/jehle_verb_database.csv ./data/verbs/je
 COPY --from=builder /app/resources/verbs/jehle_supplement_aux_haber.csv ./data/verbs/jehle_supplement_aux_haber.csv
 COPY --from=builder /app/resources/verbs/ATTRIBUTION.txt ./data/verbs/ATTRIBUTION.txt
 COPY --from=builder /app/resources/verbs/SUPPLEMENT_HABER.txt ./data/verbs/SUPPLEMENT_HABER.txt
+COPY --from=builder /app/courses/spanish-grammar/training_pack/verb_forms ./courses/spanish-grammar/training_pack/verb_forms
 
 RUN chmod +x /app/scripts/requeue_invalid_training_cards.sh
 

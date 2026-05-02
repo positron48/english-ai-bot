@@ -427,6 +427,7 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/internal/tts/fail", r.handleInternalTTSFail)
 	r.mux.HandleFunc("/api/internal/content-reports/grammar", r.handleInternalGrammarContentReports)
 	r.mux.HandleFunc("/api/internal/content-reports/grammar/resolve-bulk", r.handleInternalGrammarContentReportsResolveBulk)
+	r.mux.HandleFunc("/api/internal/verb-training/pending", r.handleInternalVerbTrainingPending)
 
 	// Access control routes
 	r.mux.HandleFunc("/api/access/me", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleAccessMe)))

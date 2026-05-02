@@ -1,6 +1,7 @@
 package web
 
 import (
+	"context"
 	"encoding/json"
 	"math/rand"
 	"net/http"
@@ -9,10 +10,11 @@ import (
 	"sync"
 	"time"
 
+	"tgbot-skeleton/internal/grammartrainingpack"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/service"
-	"tgbot-skeleton/internal/spanishverbs"
+	"tgbot-skeleton/internal/verbtraining"
 
 	"go.uber.org/zap"
 )
@@ -75,6 +77,29 @@ func (r *Router) handleVocabVerbForms(w http.ResponseWriter, req *http.Request, 
 }
 
 func (r *Router) getUserVerbScopes(userID int64) []string {
+	if strings.ToLower(strings.TrimSpace(r.config.Learning.TargetLang)) != "es" {
+		return nil
+	}
+	if fsys, err := grammartrainingpack.PackFS(r.config.Learning.GrammarBundleID); err == nil {
+		if gates, err := verbtraining.LoadUnlockGates(fsys); err == nil && gates != nil {
+			allowed := map[string]bool{}
+			if r.grammarService != nil && userID > 0 {
+				for chapterID := range gates.Chapters {
+					canAccess, err := r.grammarService.CanAccessChapter(context.Background(), userID, chapterID)
+					if err != nil {
+						continue
+					}
+					if canAccess {
+						allowed[chapterID] = true
+					}
+				}
+			}
+			scopes := gates.EnabledScopes(allowed)
+			if len(scopes) > 0 {
+				return scopes
+			}
+		}
+	}
 	if r.userRepo == nil {
 		return models.DefaultSpanishVerbScopes()
 	}
@@ -184,17 +209,7 @@ func (r *Router) writeCurrentVerbCard(w http.ResponseWriter, state *webVerbTrain
 	_ = json.Unmarshal([]byte(item.AnswerJSON), &answer)
 	surfaceAns := strings.TrimSpace(answer["surface_form"])
 	if item.CardType == models.VerbCardTypeCloze && prompt != nil && surfaceAns != "" {
-		mode, _ := prompt["example_mode"].(string)
-		if mode == spanishverbs.ExampleModeRuntime {
-			lemma, _ := prompt["lemma"].(string)
-			mood, _ := prompt["mood"].(string)
-			tense, _ := prompt["tense"].(string)
-			person, _ := prompt["person"].(string)
-			number, _ := prompt["number"].(string)
-			ruGloss, _ := prompt["ru_gloss"].(string)
-			prompt["question"] = spanishverbs.BuildVerbTrainingClozeQuestion(person, number, lemma, mood, tense)
-			prompt["example_translation"] = spanishverbs.PlainRussianVerbTrainingHintLine(lemma, person, number, ruGloss, mood, tense)
-		} else if q, ok := prompt["question"].(string); ok && strings.TrimSpace(q) != "" {
+		if q, ok := prompt["question"].(string); ok && strings.TrimSpace(q) != "" {
 			prompt["question"] = service.MaskClozeVerbSurfaceInQuestion(q, surfaceAns)
 		}
 	}
@@ -231,22 +246,15 @@ func (r *Router) writeCurrentVerbCard(w http.ResponseWriter, state *webVerbTrain
 		}
 	}
 	if inputMode == "choice" && len(options) < 2 {
-		lemma := ""
-		if prompt != nil {
-			if v, ok := prompt["lemma"].(string); ok {
-				lemma = strings.TrimSpace(v)
-			}
-		}
-		options = service.BuildVerbFormMultipleChoiceOptions(surfaceAns, lemma, item.UserVerbCardID)
-	}
-	if inputMode == "choice" && len(options) > service.VerbChoiceOptionCount {
-		options = service.CapVerbMultipleChoiceOptions(surfaceAns, options, item.UserVerbCardID)
+		inputMode = "typed"
+		options = []string{}
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(map[string]interface{}{
 		"session_id":           state.SessionID,
 		"user_verb_card_id":    item.UserVerbCardID,
+		"word_card_id":         item.WordCardID,
 		"card_type":            item.CardType,
 		"prompt":               prompt,
 		"options":              options,
@@ -408,6 +416,57 @@ func (r *Router) handleVerbTrainingUpcoming(w http.ResponseWriter, req *http.Req
 		"total_cards":     totalCards,
 		"max_per_session": r.config.Training.VerbFormsMaxCards,
 		"enabled":         true,
+	})
+}
+
+func (r *Router) handleInternalVerbTrainingPending(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	if !r.authorizeInternalService(req) {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+	limit := 200
+	if raw := strings.TrimSpace(req.URL.Query().Get("limit")); raw != "" {
+		v, err := strconv.Atoi(raw)
+		if err != nil || v <= 0 {
+			http.Error(w, "Invalid limit", http.StatusBadRequest)
+			return
+		}
+		limit = v
+	}
+	var cursor int64
+	if raw := strings.TrimSpace(req.URL.Query().Get("cursor")); raw != "" {
+		v, err := strconv.ParseInt(raw, 10, 64)
+		if err != nil || v < 0 {
+			http.Error(w, "Invalid cursor", http.StatusBadRequest)
+			return
+		}
+		cursor = v
+	}
+	repo := repository.NewVerbFormsRepository(r.db, r.logger)
+	rows, err := repo.ListPendingVerbTrainingLemmas(limit, cursor)
+	if err != nil {
+		r.logger.Error("list pending verb lemmas", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	items := make([]map[string]interface{}, 0, len(rows))
+	nextCursor := int64(0)
+	for _, row := range rows {
+		nextCursor = row.WordCardID
+		items = append(items, map[string]interface{}{
+			"word_card_id": row.WordCardID,
+			"lemma":        row.Lemma,
+		})
+	}
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(map[string]interface{}{
+		"items":       items,
+		"count":       len(items),
+		"next_cursor": nextCursor,
 	})
 }
 

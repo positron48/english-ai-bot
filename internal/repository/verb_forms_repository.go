@@ -177,6 +177,11 @@ type VerbFormViewRow struct {
 	IsIrregular bool   `json:"is_irregular"`
 }
 
+type PendingVerbLemmaRow struct {
+	WordCardID int64  `json:"word_card_id"`
+	Lemma      string `json:"lemma"`
+}
+
 type LinkedVerbFormRow struct {
 	WordCardID     int64
 	Lemma          string
@@ -325,6 +330,7 @@ func (r *VerbFormsRepository) GetVerbFormExamples(verbFormDictID int64, limit in
 
 type VerbQueueCard struct {
 	UserVerbCardID  int64
+	WordCardID      int64
 	CardType        string
 	PromptJSON      string
 	AnswerJSON      string
@@ -464,7 +470,7 @@ func (r *VerbFormsRepository) GetVerbQueue(userID int64, now time.Time, maxCards
 	if dueLimit < maxCards {
 		dueLimit = maxCards
 	}
-	q := `SELECT uvc.id, vtc.card_type, vtc.prompt_json, vtc.answer_json, COALESCE(vtc.distractors_json,'')
+	q := `SELECT uvc.id, vtc.word_card_id, vtc.card_type, vtc.prompt_json, vtc.answer_json, COALESCE(vtc.distractors_json,'')
 	      FROM user_verb_cards uvc
 	      JOIN verb_training_cards vtc ON vtc.id = uvc.verb_training_card_id
 	      WHERE uvc.user_id = ? AND vtc.card_type = ?
@@ -480,7 +486,7 @@ func (r *VerbFormsRepository) GetVerbQueue(userID int64, now time.Time, maxCards
 	seenIDs := make(map[int64]struct{}, maxCards+maxNew)
 	for rows.Next() {
 		var c VerbQueueCard
-		if err := rows.Scan(&c.UserVerbCardID, &c.CardType, &c.PromptJSON, &c.AnswerJSON, &c.DistractorsJSON); err != nil {
+		if err := rows.Scan(&c.UserVerbCardID, &c.WordCardID, &c.CardType, &c.PromptJSON, &c.AnswerJSON, &c.DistractorsJSON); err != nil {
 			return nil, err
 		}
 		out = append(out, c)
@@ -494,7 +500,7 @@ func (r *VerbFormsRepository) GetVerbQueue(userID int64, now time.Time, maxCards
 		if poolCap < maxNew {
 			poolCap = maxNew
 		}
-		nq := `SELECT uvc.id, vtc.card_type, vtc.prompt_json, vtc.answer_json, COALESCE(vtc.distractors_json,''), vtc.word_card_id
+		nq := `SELECT uvc.id, vtc.word_card_id, vtc.card_type, vtc.prompt_json, vtc.answer_json, COALESCE(vtc.distractors_json,'')
 		      FROM user_verb_cards uvc
 		      JOIN verb_training_cards vtc ON vtc.id = uvc.verb_training_card_id
 		      WHERE uvc.user_id = ? AND uvc.state='new' AND vtc.card_type = ?
@@ -507,15 +513,14 @@ func (r *VerbFormsRepository) GetVerbQueue(userID int64, now time.Time, maxCards
 		pool := make([]verbNewQueueRow, 0, poolCap)
 		for rowsNew.Next() {
 			var c VerbQueueCard
-			var wcid int64
-			if err := rowsNew.Scan(&c.UserVerbCardID, &c.CardType, &c.PromptJSON, &c.AnswerJSON, &c.DistractorsJSON, &wcid); err != nil {
+			if err := rowsNew.Scan(&c.UserVerbCardID, &c.WordCardID, &c.CardType, &c.PromptJSON, &c.AnswerJSON, &c.DistractorsJSON); err != nil {
 				_ = rowsNew.Close()
 				return nil, err
 			}
 			if _, exists := seenIDs[c.UserVerbCardID]; exists {
 				continue
 			}
-			pool = append(pool, verbNewQueueRow{card: c, wordCardID: wcid})
+			pool = append(pool, verbNewQueueRow{card: c, wordCardID: c.WordCardID})
 		}
 		if err := rowsNew.Close(); err != nil {
 			return nil, err
@@ -696,6 +701,53 @@ func (r *VerbFormsRepository) ListSpanishVerbLemmas() ([]string, error) {
 		out = append(out, strings.TrimSpace(lemma))
 	}
 	return out, rows.Err()
+}
+
+// ListPendingVerbTrainingLemmas returns verb lemmas that still do not have any linked finite forms.
+// Cursor is word_card_id based.
+func (r *VerbFormsRepository) ListPendingVerbTrainingLemmas(limit int, cursorWordCardID int64) ([]PendingVerbLemmaRow, error) {
+	if limit <= 0 {
+		limit = 200
+	}
+	if limit > 2000 {
+		limit = 2000
+	}
+	q := `SELECT w.id, LOWER(TRIM(w.word)) AS lemma
+	      FROM word_cards w
+	      WHERE LOWER(COALESCE(TRIM(w.pos), '')) LIKE 'verb%'
+	        AND LOWER(TRIM(w.word)) <> ''
+	        AND w.id > ?
+	        AND EXISTS (
+	          SELECT 1 FROM training_cards tc WHERE tc.word_card_id = w.id
+	        )
+	        AND NOT EXISTS (
+	          SELECT 1
+	          FROM word_verb_lemmas l
+	          JOIN verb_forms_dict d ON d.verb_lemma_id = l.verb_lemma_id
+	          WHERE l.word_card_id = w.id
+	        )
+	      ORDER BY w.id ASC
+	      LIMIT ?`
+	rows, err := r.db.Query(q, cursorWordCardID, limit)
+	if err != nil {
+		return nil, fmt.Errorf("list pending verb training lemmas: %w", err)
+	}
+	defer rows.Close()
+	out := make([]PendingVerbLemmaRow, 0, limit)
+	for rows.Next() {
+		var row PendingVerbLemmaRow
+		if err := rows.Scan(&row.WordCardID, &row.Lemma); err != nil {
+			return nil, fmt.Errorf("scan pending lemma: %w", err)
+		}
+		if row.WordCardID <= 0 || strings.TrimSpace(row.Lemma) == "" {
+			continue
+		}
+		out = append(out, row)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 const verbExampleCatalogTTL = 5 * time.Minute

@@ -1,0 +1,38 @@
+{
+  "version": "v1",
+  "language": "es",
+  "generated_at": "",
+  "generator": {
+    "name": "generate-verb-forms-training.py",
+    "model": ""
+  },
+  "generation_coverage": {
+    "required_scopes": [
+      "es.presente.indicativo",
+      "es.preterito_imperfecto.indicativo",
+      "es.preterito_indefinido.indicativo",
+      "es.futuro_simple.indicativo",
+      "es.condicional_simple.indicativo",
+      "es.preterito_perfecto_compuesto.indicativo",
+      "es.preterito_pluscuamperfecto.indicativo",
+      "es.preterito_anterior.indicativo",
+      "es.futuro_perfecto.indicativo",
+      "es.condicional_perfecto.indicativo",
+      "es.presente.subjuntivo",
+      "es.preterito_imperfecto.subjuntivo",
+      "es.futuro_simple.subjuntivo",
+      "es.preterito_perfecto.subjuntivo",
+      "es.preterito_pluscuamperfecto.subjuntivo",
+      "es.futuro_perfecto.subjuntivo"
+    ],
+    "required_slots_per_scope": [
+      "1:singular",
+      "2:singular",
+      "3:singular",
+      "1:plural",
+      "2:plural",
+      "3:plural"
+    ]
+  },
+  "lemmas": {}
+}

@@ -41,6 +41,16 @@
         <div class="question verb-forms-question">
           <div>{{ card.prompt?.question }}</div>
           <p v-if="card.prompt?.example_translation" class="verb-forms-ru-line">{{ card.prompt.example_translation }}</p>
+          <div class="verb-forms-info-row">
+            <button
+              type="button"
+              class="verb-forms-info-btn"
+              :disabled="!card.word_card_id"
+              @click="openWordInfo"
+            >
+              (i)
+            </button>
+          </div>
         </div>
 
         <div v-if="inputMode === 'choice' && card.options?.length" class="options">
@@ -146,6 +156,37 @@
         </div>
       </template>
     </div>
+
+    <div v-if="showWordInfoPopup" class="verb-word-popup-overlay" @click.self="closeWordInfo">
+      <div class="verb-word-popup">
+        <div class="verb-word-popup__header">
+          <h4>{{ wordInfoLemma || t('verbTraining.title') }}</h4>
+          <button type="button" class="verb-word-popup__close" @click="closeWordInfo">×</button>
+        </div>
+        <p v-if="wordInfoError" class="verb-word-popup__error">{{ wordInfoError }}</p>
+        <p v-else-if="wordInfoLoading" class="verb-word-popup__loading">{{ t('common.loading') }}</p>
+        <div v-else class="verb-word-popup__table-wrap">
+          <table class="verb-word-popup__table">
+            <thead>
+              <tr>
+                <th>Mood</th>
+                <th>Tense</th>
+                <th>Pronoun</th>
+                <th>Form</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(row, idx) in wordInfoRows" :key="`${idx}-${row.mood}-${row.tense}-${row.person}-${row.number}`">
+                <td>{{ row.mood }}</td>
+                <td>{{ row.tense }}</td>
+                <td>{{ subjectPronoun(row.person, row.number) }}</td>
+                <td>{{ row.surface_form }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -187,8 +228,18 @@ interface VerbCard {
   options?: string[]
   prompt?: { question?: string; example_translation?: string }
   user_verb_card_id?: number
+  word_card_id?: number
   card_index?: number
   total_cards?: number
+}
+
+interface VerbFormRow {
+  lemma?: string
+  mood: string
+  tense: string
+  person: string
+  number: string
+  surface_form: string
 }
 
 const active = ref(false)
@@ -208,6 +259,11 @@ const verbFeedback = ref<VerbFeedback | null>(null)
 const answeringLocal = ref(false)
 const encouragingPhrase = ref('')
 const disappointingPhrase = ref('')
+const showWordInfoPopup = ref(false)
+const wordInfoLoading = ref(false)
+const wordInfoError = ref('')
+const wordInfoRows = ref<VerbFormRow[]>([])
+const wordInfoLemma = ref('')
 
 const inputMode = computed(() => {
   const c = card.value
@@ -381,6 +437,41 @@ const submitTyped = () => {
 const submitSkip = () => {
   void postAnswer({ skip: true })
 }
+
+function subjectPronoun(person: string, number: string): string {
+  const p = String(person || '').trim()
+  const n = String(number || '').trim().toLowerCase()
+  if (p === '1' && n === 'singular') return 'yo'
+  if (p === '2' && n === 'singular') return 'tú'
+  if (p === '3' && n === 'singular') return 'él/ella/usted'
+  if (p === '1' && n === 'plural') return 'nosotros'
+  if (p === '2' && n === 'plural') return 'vosotros/ustedes'
+  if (p === '3' && n === 'plural') return 'ellos/ellas/ustedes'
+  return `${person}/${number}`
+}
+
+async function openWordInfo() {
+  const wordCardID = card.value?.word_card_id
+  if (!wordCardID) return
+  showWordInfoPopup.value = true
+  wordInfoLoading.value = true
+  wordInfoError.value = ''
+  wordInfoRows.value = []
+  wordInfoLemma.value = ''
+  try {
+    const resp = await apiClient.request<{ forms?: VerbFormRow[] }>(`/api/vocab/${wordCardID}/verb-forms`)
+    wordInfoRows.value = Array.isArray(resp?.forms) ? resp.forms : []
+    wordInfoLemma.value = wordInfoRows.value[0]?.lemma || ''
+  } catch (e: any) {
+    wordInfoError.value = e?.message || 'Failed to load word card'
+  } finally {
+    wordInfoLoading.value = false
+  }
+}
+
+function closeWordInfo() {
+  showWordInfoPopup.value = false
+}
 </script>
 
 <style scoped>
@@ -476,6 +567,78 @@ const submitSkip = () => {
   line-height: 1.45;
   text-align: center;
   color: var(--text-secondary, #888);
+}
+
+.verb-forms-info-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.verb-forms-info-btn {
+  border: 1px solid var(--border-primary);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  border-radius: 999px;
+  min-width: 32px;
+  height: 32px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.verb-word-popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1200;
+}
+
+.verb-word-popup {
+  width: min(900px, 95vw);
+  max-height: 85vh;
+  overflow: auto;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.verb-word-popup__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.verb-word-popup__close {
+  border: 0;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+
+.verb-word-popup__error {
+  color: #c62828;
+}
+
+.verb-word-popup__table-wrap {
+  overflow: auto;
+}
+
+.verb-word-popup__table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.verb-word-popup__table th,
+.verb-word-popup__table td {
+  border-bottom: 1px solid var(--border-primary);
+  padding: 8px 10px;
+  text-align: left;
 }
 
 .type-block {
