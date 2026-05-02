@@ -71,8 +71,8 @@ func run() int {
 		return 1
 	}
 	if len(idx.Lemmas) == 0 {
-		fmt.Fprintln(os.Stderr, "index.lemmas is empty")
-		return 1
+		fmt.Println("index.lemmas is empty; nothing to sync")
+		return 0
 	}
 	lemmas := make([]string, 0, len(idx.Lemmas))
 	for lemma := range idx.Lemmas {
