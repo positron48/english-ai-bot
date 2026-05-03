@@ -31,6 +31,30 @@ type syncStats struct {
 	LemmasDeleted int
 }
 
+// resolveVerbFormsArtifactRoot finds training_pack/verb_forms under course-root, or the bundled
+// internal/grammartrainingpack/es/verb_forms shipped in the image. Init containers often run with
+// cwd "/", so we try explicit /app/... and paths next to the sync binary, not only relative CWD.
+func resolveVerbFormsArtifactRoot(courseRoot string) (artifactRoot string, indexPath string, err error) {
+	root := filepath.Clean(courseRoot)
+	primaryIndex := filepath.Join(root, "training_pack", "verb_forms", "index.json")
+	if st, e := os.Stat(primaryIndex); e == nil && !st.IsDir() {
+		return filepath.Dir(primaryIndex), primaryIndex, nil
+	}
+	candidates := []string{
+		filepath.Join("internal", "grammartrainingpack", "es", "verb_forms", "index.json"),
+		filepath.Join("/app", "internal", "grammartrainingpack", "es", "verb_forms", "index.json"),
+	}
+	if exe, e := os.Executable(); e == nil && exe != "" {
+		candidates = append(candidates, filepath.Join(filepath.Dir(exe), "internal", "grammartrainingpack", "es", "verb_forms", "index.json"))
+	}
+	for _, p := range candidates {
+		if st, e := os.Stat(p); e == nil && !st.IsDir() {
+			return filepath.Dir(p), p, nil
+		}
+	}
+	return "", "", fmt.Errorf("verb forms index.json not found (tried %s and bundled fallbacks)", primaryIndex)
+}
+
 func main() {
 	os.Exit(run())
 }
@@ -42,19 +66,10 @@ func run() int {
 	)
 	flag.Parse()
 
-	root := filepath.Clean(*courseRoot)
-	artifactRoot := filepath.Join(root, "training_pack", "verb_forms")
-	indexPath := filepath.Join(artifactRoot, "index.json")
-	if _, err := os.Stat(indexPath); err != nil {
-		fallbackRoot := filepath.Join("internal", "grammartrainingpack", "es", "verb_forms")
-		fallbackIndex := filepath.Join(fallbackRoot, "index.json")
-		if _, ferr := os.Stat(fallbackIndex); ferr == nil {
-			artifactRoot = fallbackRoot
-			indexPath = fallbackIndex
-		} else {
-			fmt.Fprintf(os.Stderr, "index.json not found at %s and fallback %s\n", indexPath, fallbackIndex)
-			return 1
-		}
+	artifactRoot, indexPath, err := resolveVerbFormsArtifactRoot(*courseRoot)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "%v\n", err)
+		return 1
 	}
 	indexRaw, err := os.ReadFile(indexPath)
 	if err != nil {

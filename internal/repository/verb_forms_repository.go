@@ -23,6 +23,25 @@ func NewVerbFormsRepository(db *sql.DB, logger *zap.Logger) *VerbFormsRepository
 	return &VerbFormsRepository{db: db, logger: logger}
 }
 
+// verbTrainingEligibleByWordCardSQL restricts to headwords that are real verb training rows:
+// word_cards.pos is verb* or at least one training_cards row for that word is verb* (aligns with ListPendingVerbTrainingLemmas).
+// Excludes nouns/adjectives (e.g. "palabra") that still have verb_training_cards rows from old syncs.
+func verbTrainingEligibleByWordCardSQL(verbTrainingTableAlias string) string {
+	return `
+AND (
+  EXISTS (
+    SELECT 1 FROM word_cards wc
+    WHERE wc.id = ` + verbTrainingTableAlias + `.word_card_id
+      AND LOWER(TRIM(COALESCE(wc.pos, ''))) LIKE 'verb%'
+  )
+  OR EXISTS (
+    SELECT 1 FROM training_cards tc
+    WHERE tc.word_card_id = ` + verbTrainingTableAlias + `.word_card_id
+      AND LOWER(TRIM(COALESCE(tc.pos, ''))) LIKE 'verb%'
+  )
+)`
+}
+
 func (r *VerbFormsRepository) UpsertVerbLemma(lemma, language, source, sourceVersion, checksum, metadataJSON string) (int64, error) {
 	q := `INSERT INTO verb_lemmas (lemma, language, source, source_version, checksum, metadata_json, updated_at)
 	      VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
@@ -434,7 +453,7 @@ func (r *VerbFormsRepository) EnsureUserCardsForUserWords(userID int64, scopes [
 	          SELECT tc.word_card_id FROM user_cards uc JOIN training_cards tc ON tc.id=uc.training_card_id WHERE uc.user_id=?
 	          UNION
 	          SELECT word_card_id FROM user_word_knowledge WHERE user_id=? AND status='known'
-	        )`
+	        )` + verbTrainingEligibleByWordCardSQL("c")
 	rows, err := r.db.Query(q, args...)
 	if err != nil {
 		return fmt.Errorf("load candidate verb training cards: %w", err)
@@ -510,7 +529,7 @@ func (r *VerbFormsRepository) GetVerbQueue(userID int64, now time.Time, maxCards
 	      JOIN verb_training_cards vtc ON vtc.id = uvc.verb_training_card_id
 	      INNER JOIN verb_forms_dict d ON d.id = vtc.verb_form_dict_id
 	      WHERE uvc.user_id = ? AND vtc.card_type = ?
-	        AND (uvc.next_due_at IS NULL OR uvc.next_due_at <= ?)
+	        AND (uvc.next_due_at IS NULL OR uvc.next_due_at <= ?)` + verbTrainingEligibleByWordCardSQL("vtc") + `
 	      ORDER BY CASE WHEN uvc.state='learning' THEN 0 ELSE 1 END, uvc.next_due_at NULLS FIRST
 	      LIMIT ?`
 	rows, err := r.db.Query(q, userID, models.VerbCardTypeCloze, now, dueLimit)
@@ -540,7 +559,7 @@ func (r *VerbFormsRepository) GetVerbQueue(userID int64, now time.Time, maxCards
 		      FROM user_verb_cards uvc
 		      JOIN verb_training_cards vtc ON vtc.id = uvc.verb_training_card_id
 		      INNER JOIN verb_forms_dict d ON d.id = vtc.verb_form_dict_id
-		      WHERE uvc.user_id = ? AND uvc.state='new' AND vtc.card_type = ?
+		      WHERE uvc.user_id = ? AND uvc.state='new' AND vtc.card_type = ?` + verbTrainingEligibleByWordCardSQL("vtc") + `
 		      ORDER BY random()
 		      LIMIT ?`
 		rowsNew, err := r.db.Query(nq, userID, models.VerbCardTypeCloze, poolCap)
@@ -572,10 +591,10 @@ func (r *VerbFormsRepository) GetVerbQueue(userID int64, now time.Time, maxCards
 
 // CountUserVerbClozeCards returns how many verb-form cloze cards exist for the user (full pool, not session queue).
 func (r *VerbFormsRepository) CountUserVerbClozeCards(userID int64) (int64, error) {
-	const q = `SELECT COUNT(*) FROM user_verb_cards uvc
+	q := `SELECT COUNT(*) FROM user_verb_cards uvc
 		INNER JOIN verb_training_cards vtc ON vtc.id = uvc.verb_training_card_id
 		INNER JOIN verb_forms_dict d ON d.id = vtc.verb_form_dict_id
-		WHERE uvc.user_id = ? AND vtc.card_type = ?`
+		WHERE uvc.user_id = ? AND vtc.card_type = ?` + verbTrainingEligibleByWordCardSQL("vtc")
 	var n int64
 	if err := r.db.QueryRow(q, userID, models.VerbCardTypeCloze).Scan(&n); err != nil {
 		return 0, fmt.Errorf("count user verb cloze cards: %w", err)
@@ -741,6 +760,23 @@ func (r *VerbFormsRepository) ListSpanishVerbLemmas() ([]string, error) {
 	return out, rows.Err()
 }
 
+// spanishLemmaLooksLikeInfinitiveSQL restricts lemmas to plausible Spanish infinitives:
+// -ir/-ar/-er (length ≥ 4) plus short irregulars ir, dar, ser, ver.
+// Excludes nouns/participles mistaken as lemmas (pasado, embargo, hecho, cuenta, …).
+func spanishLemmaLooksLikeInfinitiveSQL() string {
+	return `AND (
+  LOWER(TRIM(w.word)) IN ('ir','dar','ser','ver')
+  OR (
+    LENGTH(LOWER(TRIM(w.word))) >= 4
+    AND (
+      LOWER(TRIM(w.word)) LIKE '%ar'
+      OR LOWER(TRIM(w.word)) LIKE '%er'
+      OR LOWER(TRIM(w.word)) LIKE '%ir'
+    )
+  )
+)`
+}
+
 // ListPendingVerbTrainingLemmas returns verb lemmas that still do not have any linked finite forms.
 // Only word_cards whose Spanish headword exists in verb_lemmas (dictionary infinitives) and that have at least one
 // training_cards row with POS verb — avoids conjugated/noun lemmas mistaken for verbs on word_cards.
@@ -768,6 +804,7 @@ func (r *VerbFormsRepository) ListPendingVerbTrainingLemmas(limit int, cursorWor
 	          JOIN verb_forms_dict d ON d.verb_lemma_id = l.verb_lemma_id
 	          WHERE l.word_card_id = w.id
 	        )
+	        ` + spanishLemmaLooksLikeInfinitiveSQL() + `
 	      ORDER BY w.id ASC
 	      LIMIT ?`
 	rows, err := r.db.Query(q, cursorWordCardID, limit)
