@@ -4,9 +4,13 @@
     class="verb-forms-root"
     :class="{ 'verb-forms-root--embedded': embedded }"
   >
-    <div v-if="autoStarting" class="card verb-forms-loading">
+    <div v-if="autoStarting || verbPoolUnset" class="card verb-forms-loading">
       <p class="verb-forms-loading-text">{{ t('common.loading') }}</p>
     </div>
+
+    <section v-else-if="showNoCardsInPool" class="card verb-forms-pre">
+      <p class="verb-forms-pre__intro">{{ t('verbTraining.noCardsPool') }}</p>
+    </section>
 
     <section v-else-if="showIdleChrome" class="card verb-forms-pre">
       <component :is="headingTag" class="verb-forms-pre__title">
@@ -45,7 +49,7 @@
             <button
               type="button"
               class="verb-forms-info-btn"
-              :disabled="!card.word_card_id"
+              :disabled="!canOpenVerbInfo"
               @click="openWordInfo"
             >
               (i)
@@ -226,9 +230,11 @@ interface VerbCard {
   input_mode?: string
   typed_min_reps?: number
   options?: string[]
-  prompt?: { question?: string; example_translation?: string }
+  prompt?: { question?: string; example_translation?: string; lemma?: string }
   user_verb_card_id?: number
   word_card_id?: number
+  /** Spanish infinitive from backend (same as prompt.lemma). */
+  lemma?: string
   card_index?: number
   total_cards?: number
 }
@@ -251,8 +257,37 @@ const availableForTraining = ref<number | null>(null)
 /** Full cloze verb-form card pool for user (from API); distinct from session queue size (`due`). */
 const totalVerbCardsPool = ref<number | null>(null)
 
+/** Waiting for /api/verb-training/upcoming so we know total_cards. */
+const verbPoolUnset = computed(
+  () => totalVerbCardsPool === null && !active.value && !autoStarting.value
+)
+
+/** No materialized verb-form cards in DB — cannot train. */
+const showNoCardsInPool = computed(
+  () =>
+    totalVerbCardsPool !== null &&
+    totalVerbCardsPool === 0 &&
+    !active.value &&
+    !autoStarting.value
+)
+
 /** Title + intro only before the first successful start (idle). Hidden during load and whole session. */
-const showIdleChrome = computed(() => !active.value && !autoStarting.value)
+const showIdleChrome = computed(
+  () =>
+    !active.value &&
+    !autoStarting.value &&
+    !verbPoolUnset.value &&
+    !showNoCardsInPool.value
+)
+
+const canOpenVerbInfo = computed(() => {
+  const c = card.value
+  if (!c) return false
+  const fromPrompt = (c.prompt as { lemma?: string } | undefined)?.lemma
+  const lem = (fromPrompt || c.lemma || '').trim()
+  if (lem.length > 0) return true
+  return !!c.word_card_id
+})
 const typedAnswer = ref('')
 const card = ref<VerbCard | null>(null)
 const verbFeedback = ref<VerbFeedback | null>(null)
@@ -345,7 +380,7 @@ async function loadUpcomingVerbCards() {
     totalVerbCardsPool.value = typeof data?.total_cards === 'number' ? data.total_cards : null
   } catch {
     availableForTraining.value = null
-    totalVerbCardsPool.value = null
+    totalVerbCardsPool.value = 0
   }
 }
 
@@ -451,19 +486,37 @@ function subjectPronoun(person: string, number: string): string {
 }
 
 async function openWordInfo() {
-  const wordCardID = card.value?.word_card_id
-  if (!wordCardID) return
+  const c = card.value
+  if (!c) return
+  const lemmaHint = (
+    (c.prompt as { lemma?: string } | undefined)?.lemma ||
+    c.lemma ||
+    ''
+  ).trim()
   showWordInfoPopup.value = true
   wordInfoLoading.value = true
   wordInfoError.value = ''
   wordInfoRows.value = []
   wordInfoLemma.value = ''
   try {
+    if (lemmaHint) {
+      const resp = await apiClient.request<{ forms?: VerbFormRow[] }>(
+        `/api/verb-training/forms-by-lemma?lemma=${encodeURIComponent(lemmaHint)}`
+      )
+      wordInfoRows.value = Array.isArray(resp?.forms) ? resp.forms : []
+      wordInfoLemma.value = wordInfoRows.value[0]?.lemma || lemmaHint
+      return
+    }
+    const wordCardID = c.word_card_id
+    if (!wordCardID) {
+      wordInfoError.value = 'No lemma for this card'
+      return
+    }
     const resp = await apiClient.request<{ forms?: VerbFormRow[] }>(`/api/vocab/${wordCardID}/verb-forms`)
     wordInfoRows.value = Array.isArray(resp?.forms) ? resp.forms : []
     wordInfoLemma.value = wordInfoRows.value[0]?.lemma || ''
   } catch (e: any) {
-    wordInfoError.value = e?.message || 'Failed to load word card'
+    wordInfoError.value = e?.message || 'Failed to load forms'
   } finally {
     wordInfoLoading.value = false
   }

@@ -237,6 +237,41 @@ func (r *VerbFormsRepository) ListVerbFormsForLemma(lemma, language string) ([]V
 	return out, nil
 }
 
+// ListVerbFormViewRowsForLemma returns all stored paradigm forms for a Spanish lemma (dictionary only, no user filter).
+func (r *VerbFormsRepository) ListVerbFormViewRowsForLemma(lemma, language string) ([]VerbFormViewRow, error) {
+	lemma = strings.ToLower(strings.TrimSpace(lemma))
+	if lemma == "" {
+		return nil, fmt.Errorf("empty lemma")
+	}
+	lang := strings.ToLower(strings.TrimSpace(language))
+	if lang == "" {
+		lang = "es"
+	}
+	rows, err := r.db.Query(`SELECT 0, l.lemma, d.mood, d.tense, d.person, d.number, d.surface_form, d.is_irregular
+		FROM verb_lemmas l
+		JOIN verb_forms_dict d ON d.verb_lemma_id = l.id
+		WHERE l.lemma = ? AND l.language = ?`, lemma, lang)
+	if err != nil {
+		return nil, fmt.Errorf("list verb form view rows for lemma: %w", err)
+	}
+	defer rows.Close()
+	out := make([]VerbFormViewRow, 0, 80)
+	for rows.Next() {
+		var row VerbFormViewRow
+		var ir int64
+		if err := rows.Scan(&row.WordCardID, &row.Lemma, &row.Mood, &row.Tense, &row.Person, &row.Number, &row.SurfaceForm, &ir); err != nil {
+			return nil, fmt.Errorf("scan: %w", err)
+		}
+		row.IsIrregular = ir != 0
+		out = append(out, row)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	SortVerbFormViewRowsSpanish(out)
+	return out, nil
+}
+
 func (r *VerbFormsRepository) GetUserVerbForms(userID, wordCardID int64) ([]VerbFormViewRow, error) {
 	q := `SELECT w.id, w.word, d.mood, d.tense, d.person, d.number, d.surface_form, d.is_irregular
 	      FROM word_cards w
@@ -473,6 +508,7 @@ func (r *VerbFormsRepository) GetVerbQueue(userID int64, now time.Time, maxCards
 	q := `SELECT uvc.id, vtc.word_card_id, vtc.card_type, vtc.prompt_json, vtc.answer_json, COALESCE(vtc.distractors_json,'')
 	      FROM user_verb_cards uvc
 	      JOIN verb_training_cards vtc ON vtc.id = uvc.verb_training_card_id
+	      INNER JOIN verb_forms_dict d ON d.id = vtc.verb_form_dict_id
 	      WHERE uvc.user_id = ? AND vtc.card_type = ?
 	        AND (uvc.next_due_at IS NULL OR uvc.next_due_at <= ?)
 	      ORDER BY CASE WHEN uvc.state='learning' THEN 0 ELSE 1 END, uvc.next_due_at NULLS FIRST
@@ -503,6 +539,7 @@ func (r *VerbFormsRepository) GetVerbQueue(userID int64, now time.Time, maxCards
 		nq := `SELECT uvc.id, vtc.word_card_id, vtc.card_type, vtc.prompt_json, vtc.answer_json, COALESCE(vtc.distractors_json,'')
 		      FROM user_verb_cards uvc
 		      JOIN verb_training_cards vtc ON vtc.id = uvc.verb_training_card_id
+		      INNER JOIN verb_forms_dict d ON d.id = vtc.verb_form_dict_id
 		      WHERE uvc.user_id = ? AND uvc.state='new' AND vtc.card_type = ?
 		      ORDER BY random()
 		      LIMIT ?`
@@ -537,6 +574,7 @@ func (r *VerbFormsRepository) GetVerbQueue(userID int64, now time.Time, maxCards
 func (r *VerbFormsRepository) CountUserVerbClozeCards(userID int64) (int64, error) {
 	const q = `SELECT COUNT(*) FROM user_verb_cards uvc
 		INNER JOIN verb_training_cards vtc ON vtc.id = uvc.verb_training_card_id
+		INNER JOIN verb_forms_dict d ON d.id = vtc.verb_form_dict_id
 		WHERE uvc.user_id = ? AND vtc.card_type = ?`
 	var n int64
 	if err := r.db.QueryRow(q, userID, models.VerbCardTypeCloze).Scan(&n); err != nil {
@@ -704,6 +742,8 @@ func (r *VerbFormsRepository) ListSpanishVerbLemmas() ([]string, error) {
 }
 
 // ListPendingVerbTrainingLemmas returns verb lemmas that still do not have any linked finite forms.
+// Only word_cards whose Spanish headword exists in verb_lemmas (dictionary infinitives) and that have at least one
+// training_cards row with POS verb — avoids conjugated/noun lemmas mistaken for verbs on word_cards.
 // Cursor is word_card_id based.
 func (r *VerbFormsRepository) ListPendingVerbTrainingLemmas(limit int, cursorWordCardID int64) ([]PendingVerbLemmaRow, error) {
 	if limit <= 0 {
@@ -714,11 +754,13 @@ func (r *VerbFormsRepository) ListPendingVerbTrainingLemmas(limit int, cursorWor
 	}
 	q := `SELECT w.id, LOWER(TRIM(w.word)) AS lemma
 	      FROM word_cards w
-	      WHERE LOWER(COALESCE(TRIM(w.pos), '')) LIKE 'verb%'
-	        AND LOWER(TRIM(w.word)) <> ''
+	      INNER JOIN verb_lemmas vl ON vl.language = 'es' AND vl.lemma = LOWER(TRIM(w.word))
+	      WHERE LOWER(TRIM(w.word)) <> ''
 	        AND w.id > ?
 	        AND EXISTS (
-	          SELECT 1 FROM training_cards tc WHERE tc.word_card_id = w.id
+	          SELECT 1 FROM training_cards tc
+	          WHERE tc.word_card_id = w.id
+	            AND LOWER(TRIM(COALESCE(tc.pos, ''))) LIKE 'verb%'
 	        )
 	        AND NOT EXISTS (
 	          SELECT 1

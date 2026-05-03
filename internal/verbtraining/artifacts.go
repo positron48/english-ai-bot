@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+	"unicode"
 )
 
 const (
@@ -45,11 +46,11 @@ var expectedSlots = []struct {
 
 // LemmaArtifact is one generated file in training_pack/verb_forms/lemmas/<lemma>.json.
 type LemmaArtifact struct {
-	Version    string         `json:"version"`
-	Language   string         `json:"language"`
-	Lemma      string         `json:"lemma"`
-	WordCardID int64          `json:"word_card_id"`
-	Generated  string         `json:"generated_at"`
+	Version    string          `json:"version"`
+	Language   string          `json:"language"`
+	Lemma      string          `json:"lemma"`
+	WordCardID int64           `json:"word_card_id,omitempty"`
+	Generated  string          `json:"generated_at"`
 	Cards      []GeneratedCard `json:"cards"`
 }
 
@@ -69,6 +70,20 @@ type UnlockGates struct {
 	Version        string              `json:"version"`
 	AlwaysUnlocked []string            `json:"always_unlocked"`
 	Chapters       map[string][]string `json:"chapters"`
+}
+
+func hasCyrillic(s string) bool {
+	for _, r := range s {
+		if unicode.Is(unicode.Cyrillic, r) {
+			return true
+		}
+	}
+	return false
+}
+
+func normUniqKey(s string) string {
+	s = strings.ToLower(strings.TrimSpace(s))
+	return strings.Join(strings.Fields(s), " ")
 }
 
 func ParseScope(scope string) (tense, mood string, ok bool) {
@@ -123,13 +138,14 @@ func (a *LemmaArtifact) ValidateStrictCoverage() error {
 	if a.Lemma == "" {
 		return fmt.Errorf("artifact lemma is empty")
 	}
-	if a.WordCardID <= 0 {
-		return fmt.Errorf("artifact word_card_id must be > 0")
-	}
 	if len(a.Cards) == 0 {
 		return fmt.Errorf("artifact cards are empty")
 	}
-	seenQuestionByScope := map[string]map[string]struct{}{}
+	wantCards := len(ExpectedScopesV1) * len(expectedSlots)
+	if len(a.Cards) != wantCards {
+		return fmt.Errorf("expected exactly %d cards (full tense × person coverage), got %d", wantCards, len(a.Cards))
+	}
+	seenPairByScope := map[string]map[string]struct{}{}
 	seenCoverage := map[string]map[string]struct{}{}
 	for _, card := range a.Cards {
 		if card.Scope == "" || card.Mood == "" || card.Tense == "" || card.Person == "" || card.Number == "" {
@@ -141,11 +157,20 @@ func (a *LemmaArtifact) ValidateStrictCoverage() error {
 		if card.Question == "" || card.TranslationRU == "" {
 			return fmt.Errorf("card has empty question/translation for scope=%s person=%s number=%s", card.Scope, card.Person, card.Number)
 		}
+		if !hasCyrillic(card.TranslationRU) {
+			return fmt.Errorf("translation_ru_full must contain Cyrillic for scope=%s person=%s number=%s", card.Scope, card.Person, card.Number)
+		}
+		if hasCyrillic(card.SurfaceForm) || hasCyrillic(card.Question) {
+			return fmt.Errorf("spanish fields must not contain Cyrillic for scope=%s person=%s number=%s", card.Scope, card.Person, card.Number)
+		}
 		if len(card.Options) != 4 {
 			return fmt.Errorf("card options must have exactly 4 entries for scope=%s person=%s number=%s", card.Scope, card.Person, card.Number)
 		}
 		hasCorrect := false
 		for _, opt := range card.Options {
+			if hasCyrillic(opt) {
+				return fmt.Errorf("spanish option must not contain Cyrillic for scope=%s person=%s number=%s", card.Scope, card.Person, card.Number)
+			}
 			if opt == card.SurfaceForm {
 				hasCorrect = true
 			}
@@ -153,14 +178,14 @@ func (a *LemmaArtifact) ValidateStrictCoverage() error {
 		if !hasCorrect {
 			return fmt.Errorf("options do not contain surface_form for scope=%s person=%s number=%s", card.Scope, card.Person, card.Number)
 		}
-		if _, ok := seenQuestionByScope[card.Scope]; !ok {
-			seenQuestionByScope[card.Scope] = map[string]struct{}{}
+		pairKey := normUniqKey(card.Question) + "\x00" + normUniqKey(card.TranslationRU)
+		if _, ok := seenPairByScope[card.Scope]; !ok {
+			seenPairByScope[card.Scope] = map[string]struct{}{}
 		}
-		qKey := strings.ToLower(strings.TrimSpace(card.Question))
-		if _, dup := seenQuestionByScope[card.Scope][qKey]; dup {
-			return fmt.Errorf("duplicate question inside scope=%s", card.Scope)
+		if _, dup := seenPairByScope[card.Scope][pairKey]; dup {
+			return fmt.Errorf("duplicate question+translation_ru pair inside scope=%s", card.Scope)
 		}
-		seenQuestionByScope[card.Scope][qKey] = struct{}{}
+		seenPairByScope[card.Scope][pairKey] = struct{}{}
 		if _, ok := seenCoverage[card.Scope]; !ok {
 			seenCoverage[card.Scope] = map[string]struct{}{}
 		}

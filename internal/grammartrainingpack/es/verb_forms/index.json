@@ -1,10 +1,10 @@
 {
   "version": "v1",
   "language": "es",
-  "generated_at": "",
+  "generated_at": "2026-05-03T07:29:57Z",
   "generator": {
     "name": "generate-verb-forms-training.py",
-    "model": ""
+    "model": "qwen3:30b"
   },
   "generation_coverage": {
     "required_scopes": [
@@ -34,5 +34,57 @@
       "3:plural"
     ]
   },
-  "lemmas": {}
+  "lemmas": {
+    "abrir": "lemmas/abrir.json",
+    "acercar": "lemmas/acercar.json",
+    "afectar": "lemmas/afectar.json",
+    "asegurar": "lemmas/asegurar.json",
+    "bloquear": "lemmas/bloquear.json",
+    "cambiar": "lemmas/cambiar.json",
+    "cantar": "lemmas/cantar.json",
+    "cargar": "lemmas/cargar.json",
+    "comentar": "lemmas/comentar.json",
+    "comprar": "lemmas/comprar.json",
+    "comunicar": "lemmas/comunicar.json",
+    "considerar": "lemmas/considerar.json",
+    "contar": "lemmas/contar.json",
+    "corresponder": "lemmas/corresponder.json",
+    "cortar": "lemmas/cortar.json",
+    "dar": "lemmas/dar.json",
+    "descansar": "lemmas/descansar.json",
+    "destacar": "lemmas/destacar.json",
+    "disponer": "lemmas/disponer.json",
+    "disputar": "lemmas/disputar.json",
+    "embargar": "lemmas/embargar.json",
+    "encontrar": "lemmas/encontrar.json",
+    "entregar": "lemmas/entregar.json",
+    "enviar": "lemmas/enviar.json",
+    "existir": "lemmas/existir.json",
+    "ganar": "lemmas/ganar.json",
+    "guiar": "lemmas/guiar.json",
+    "hacer": "lemmas/hacer.json",
+    "importar": "lemmas/importar.json",
+    "intentar": "lemmas/intentar.json",
+    "juzgar": "lemmas/juzgar.json",
+    "llamar": "lemmas/llamar.json",
+    "manifestar": "lemmas/manifestar.json",
+    "mediar": "lemmas/mediar.json",
+    "mejorar": "lemmas/mejorar.json",
+    "ocupar": "lemmas/ocupar.json",
+    "parar": "lemmas/parar.json",
+    "partir": "lemmas/partir.json",
+    "pasar": "lemmas/pasar.json",
+    "picar": "lemmas/picar.json",
+    "prever": "lemmas/prever.json",
+    "recuperar": "lemmas/recuperar.json",
+    "referir": "lemmas/referir.json",
+    "representar": "lemmas/representar.json",
+    "restar": "lemmas/restar.json",
+    "reunir": "lemmas/reunir.json",
+    "reír": "lemmas/reír.json",
+    "situar": "lemmas/situar.json",
+    "superar": "lemmas/superar.json",
+    "unir": "lemmas/unir.json",
+    "vivir": "lemmas/vivir.json"
+  }
 }

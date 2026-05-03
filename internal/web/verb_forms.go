@@ -45,6 +45,54 @@ func (r *Router) writeVerbTrainingDisabled(w http.ResponseWriter) {
 	})
 }
 
+func writeVerbFormsGroupedResponse(w http.ResponseWriter, wordCardID int64, rows []repository.VerbFormViewRow) {
+	grouped := map[string]map[string][]repository.VerbFormViewRow{}
+	for _, row := range rows {
+		if grouped[row.Mood] == nil {
+			grouped[row.Mood] = map[string][]repository.VerbFormViewRow{}
+		}
+		grouped[row.Mood][row.Tense] = append(grouped[row.Mood][row.Tense], row)
+	}
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(map[string]interface{}{
+		"word_card_id": wordCardID,
+		"forms":        rows,
+		"grouped":      grouped,
+	})
+}
+
+func (r *Router) handleVerbTrainingLemmaForms(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	if getUserIDFromContext(req.Context()) == 0 {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+	if !r.verbFormsEnabled() {
+		http.NotFound(w, req)
+		return
+	}
+	lemma := strings.TrimSpace(req.URL.Query().Get("lemma"))
+	if lemma == "" {
+		http.Error(w, "missing lemma", http.StatusBadRequest)
+		return
+	}
+	repo := repository.NewVerbFormsRepository(r.db, r.logger)
+	rows, err := repo.ListVerbFormViewRowsForLemma(lemma, "es")
+	if err != nil {
+		r.logger.Error("verb forms by lemma", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	if len(rows) == 0 {
+		http.Error(w, "no forms for lemma", http.StatusNotFound)
+		return
+	}
+	writeVerbFormsGroupedResponse(w, 0, rows)
+}
+
 func (r *Router) handleVocabVerbForms(w http.ResponseWriter, req *http.Request, userID int64, wordCardID int64) {
 	if req.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -61,19 +109,7 @@ func (r *Router) handleVocabVerbForms(w http.ResponseWriter, req *http.Request, 
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
-	grouped := map[string]map[string][]repository.VerbFormViewRow{}
-	for _, row := range rows {
-		if grouped[row.Mood] == nil {
-			grouped[row.Mood] = map[string][]repository.VerbFormViewRow{}
-		}
-		grouped[row.Mood][row.Tense] = append(grouped[row.Mood][row.Tense], row)
-	}
-	w.Header().Set("Content-Type", "application/json")
-	_ = json.NewEncoder(w).Encode(map[string]interface{}{
-		"word_card_id": wordCardID,
-		"forms":        rows,
-		"grouped":      grouped,
-	})
+	writeVerbFormsGroupedResponse(w, wordCardID, rows)
 }
 
 func (r *Router) getUserVerbScopes(userID int64) []string {
@@ -250,20 +286,27 @@ func (r *Router) writeCurrentVerbCard(w http.ResponseWriter, state *webVerbTrain
 		options = []string{}
 	}
 
+	lemma := ""
+	if prompt != nil {
+		if s, ok := prompt["lemma"].(string); ok {
+			lemma = strings.TrimSpace(s)
+		}
+	}
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(map[string]interface{}{
-		"session_id":           state.SessionID,
-		"user_verb_card_id":    item.UserVerbCardID,
-		"word_card_id":         item.WordCardID,
-		"card_type":            item.CardType,
-		"prompt":               prompt,
-		"options":              options,
-		"input_mode":           inputMode,
-		"typed_min_reps":       minR,
-		"card_index":           state.Index + 1,
-		"total_cards":          len(state.Queue),
-		"direction":            "verb_forms",
-		"supports_immediate":   true,
+		"session_id":         state.SessionID,
+		"user_verb_card_id":  item.UserVerbCardID,
+		"word_card_id":       item.WordCardID,
+		"lemma":              lemma,
+		"card_type":          item.CardType,
+		"prompt":             prompt,
+		"options":            options,
+		"input_mode":         inputMode,
+		"typed_min_reps":     minR,
+		"card_index":         state.Index + 1,
+		"total_cards":        len(state.Queue),
+		"direction":          "verb_forms",
+		"supports_immediate": true,
 	})
 }
 
@@ -416,6 +459,7 @@ func (r *Router) handleVerbTrainingUpcoming(w http.ResponseWriter, req *http.Req
 		"total_cards":     totalCards,
 		"max_per_session": r.config.Training.VerbFormsMaxCards,
 		"enabled":         true,
+		"pool_ready":      totalCards > 0,
 	})
 }
 
@@ -458,8 +502,7 @@ func (r *Router) handleInternalVerbTrainingPending(w http.ResponseWriter, req *h
 	for _, row := range rows {
 		nextCursor = row.WordCardID
 		items = append(items, map[string]interface{}{
-			"word_card_id": row.WordCardID,
-			"lemma":        row.Lemma,
+			"lemma": row.Lemma,
 		})
 	}
 	w.Header().Set("Content-Type", "application/json")

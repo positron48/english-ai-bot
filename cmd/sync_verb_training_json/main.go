@@ -136,6 +136,22 @@ func run() int {
 	return 0
 }
 
+func lookupWordCardIDByLemma(tx *sql.Tx, lemma string) (int64, error) {
+	lemma = strings.TrimSpace(lemma)
+	if lemma == "" {
+		return 0, fmt.Errorf("empty lemma")
+	}
+	var id int64
+	err := tx.QueryRow(`SELECT id FROM word_cards WHERE LOWER(TRIM(word)) = LOWER(?)`, lemma).Scan(&id)
+	if err == sql.ErrNoRows {
+		return 0, fmt.Errorf("no word_cards row for lemma %q (add the infinitive to vocabulary first)", lemma)
+	}
+	if err != nil {
+		return 0, err
+	}
+	return id, nil
+}
+
 func syncArtifacts(db *sql.DB, artifacts []verbtraining.LemmaArtifact, dryRun bool) (*syncStats, error) {
 	tx, err := db.Begin()
 	if err != nil {
@@ -150,12 +166,16 @@ func syncArtifacts(db *sql.DB, artifacts []verbtraining.LemmaArtifact, dryRun bo
 	seenLemma := make(map[string]struct{}, len(artifacts))
 	for _, a := range artifacts {
 		seenLemma[a.Lemma] = struct{}{}
-		lemmaID, err := upsertLemma(tx, a.Lemma, a.WordCardID)
+		wordCardID, err := lookupWordCardIDByLemma(tx, a.Lemma)
+		if err != nil {
+			return nil, fmt.Errorf("lemma %s: %w", a.Lemma, err)
+		}
+		lemmaID, err := upsertLemma(tx, a.Lemma, wordCardID)
 		if err != nil {
 			return nil, fmt.Errorf("upsert lemma %s: %w", a.Lemma, err)
 		}
-		if err := linkWordCard(tx, a.WordCardID, lemmaID); err != nil {
-			return nil, fmt.Errorf("link word-card %d -> lemma %s: %w", a.WordCardID, a.Lemma, err)
+		if err := linkWordCard(tx, wordCardID, lemmaID); err != nil {
+			return nil, fmt.Errorf("link word-card %d -> lemma %s: %w", wordCardID, a.Lemma, err)
 		}
 		expectedFormIDs := make(map[int64]struct{}, len(a.Cards))
 		expectedCardIDs := make(map[int64]struct{}, len(a.Cards))
@@ -177,7 +197,7 @@ func syncArtifacts(db *sql.DB, artifacts []verbtraining.LemmaArtifact, dryRun bo
 			}
 			answerJSON, _ := json.Marshal(map[string]string{"surface_form": card.SurfaceForm})
 			optionsJSON, _ := json.Marshal(card.Options)
-			cardID, err := upsertTrainingCard(tx, a.WordCardID, formID, promptJSON, string(answerJSON), string(optionsJSON))
+			cardID, err := upsertTrainingCard(tx, wordCardID, formID, promptJSON, string(answerJSON), string(optionsJSON))
 			if err != nil {
 				return nil, fmt.Errorf("upsert training card %s %s: %w", a.Lemma, card.Scope, err)
 			}
@@ -189,7 +209,7 @@ func syncArtifacts(db *sql.DB, artifacts []verbtraining.LemmaArtifact, dryRun bo
 			return nil, fmt.Errorf("prune forms %s: %w", a.Lemma, err)
 		}
 		stats.FormsDeleted += nf
-		nc, err := pruneCardsForWord(tx, a.WordCardID, expectedCardIDs)
+		nc, err := pruneCardsForWord(tx, wordCardID, expectedCardIDs)
 		if err != nil {
 			return nil, fmt.Errorf("prune cards %s: %w", a.Lemma, err)
 		}

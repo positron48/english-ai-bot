@@ -42,7 +42,7 @@ func makeValidArtifact() LemmaArtifact {
 		Version:    ArtifactVersionV1,
 		Language:   "es",
 		Lemma:      "tener",
-		WordCardID: 42,
+		WordCardID: 0,
 		Cards:      cards,
 	}
 }
@@ -65,11 +65,37 @@ func TestLemmaArtifactValidateStrictCoverage_MissingSlot(t *testing.T) {
 	}
 }
 
-func TestLemmaArtifactValidateStrictCoverage_DuplicateQuestionInScope(t *testing.T) {
+func TestLemmaArtifactValidateStrictCoverage_SameBlankDifferentRUallowed(t *testing.T) {
 	a := makeValidArtifact()
-	a.Cards[1].Question = a.Cards[0].Question
+	// Два разных лица в одном scope: одинаковый cloze, разные переводы — допускается.
+	a.Cards[25].Question = a.Cards[24].Question
+	if err := a.ValidateStrictCoverage(); err != nil {
+		t.Fatalf("same blank with different RU should pass: %v", err)
+	}
+}
+
+func TestLemmaArtifactValidateStrictCoverage_DuplicateQuestionTranslationPair(t *testing.T) {
+	a := makeValidArtifact()
+	a.Cards[25].Question = a.Cards[24].Question
+	a.Cards[25].TranslationRU = a.Cards[24].TranslationRU
 	if err := a.ValidateStrictCoverage(); err == nil {
-		t.Fatal("expected duplicate-question error")
+		t.Fatal("expected duplicate question+translation_ru error")
+	}
+}
+
+func TestLemmaArtifactValidateStrictCoverage_TranslationNeedsCyrillic(t *testing.T) {
+	a := makeValidArtifact()
+	a.Cards[0].TranslationRU = "only latin here"
+	if err := a.ValidateStrictCoverage(); err == nil {
+		t.Fatal("expected translation_ru_full must contain Cyrillic")
+	}
+}
+
+func TestLemmaArtifactValidateStrictCoverage_NoCyrillicInSpanish(t *testing.T) {
+	a := makeValidArtifact()
+	a.Cards[0].Question = "Привет _ здесь (tener)"
+	if err := a.ValidateStrictCoverage(); err == nil {
+		t.Fatal("expected Spanish question must not contain Cyrillic")
 	}
 }
 

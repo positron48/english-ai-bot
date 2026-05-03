@@ -198,7 +198,8 @@
     "shortBlurb": "Separate mode: multiple choice first, then typing the full form once it is well remembered.",
     "modeChoiceHint": "Pick the correct option. After {n} successful reviews in a row for this form, you will type the full form.",
     "modeTypedHint": "Type the full verb form.",
-    "totalCardsAvailable": "{count} verb-form cards available"
+    "totalCardsAvailable": "{count} verb-form cards available",
+    "noCardsPool": "No verb-form training cards in the database yet: sync vocabulary and run the verb-forms artifact import (sync_verb_training_json), then load word sets or add words."
   },
   "learning": {
     "title": "Learning",

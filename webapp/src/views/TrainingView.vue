@@ -515,12 +515,16 @@ const router = useRouter()
 const { learning, ensureLearningLoaded } = useLearningConfig()
 
 const verbFormsTotalCardsPool = ref<number | null>(null)
+/** Set true after we know whether the user has any materialized verb-form training cards. */
+const verbFormsPoolResolved = ref(false)
 
 async function refreshVerbFormsPoolCount() {
+  verbFormsPoolResolved.value = false
   await ensureLearningLoaded()
   const ly = learning.value
   if (!ly || ly.target_lang?.toLowerCase() !== 'es' || !ly.spanish_verb_forms_enabled) {
     verbFormsTotalCardsPool.value = null
+    verbFormsPoolResolved.value = true
     return
   }
   try {
@@ -528,6 +532,8 @@ async function refreshVerbFormsPoolCount() {
     verbFormsTotalCardsPool.value = typeof data?.total_cards === 'number' ? data.total_cards : null
   } catch {
     verbFormsTotalCardsPool.value = null
+  } finally {
+    verbFormsPoolResolved.value = true
   }
 }
 
@@ -538,7 +544,12 @@ function openVerbFormsTraining() {
 const isSpanishTarget = computed(() => (learning.value?.target_lang || '').toLowerCase() === 'es')
 
 const showSpanishVerbFormsTraining = computed(
-  () => isSpanishTarget.value && learning.value?.spanish_verb_forms_enabled === true
+  () =>
+    isSpanishTarget.value &&
+    learning.value?.spanish_verb_forms_enabled === true &&
+    verbFormsPoolResolved.value &&
+    verbFormsTotalCardsPool.value !== null &&
+    verbFormsTotalCardsPool.value > 0
 )
 
 function phraseList(key: string): string[] {

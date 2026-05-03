@@ -157,6 +157,56 @@ curl -H "X-Service-Token: $WEBAPP_INTERNAL_SERVICE_TOKEN" \
 - в choice-режиме варианты берутся из БД (без runtime эвристик);
 - `(i)` в правом нижнем углу открывает popup с полной таблицей спряжений (`/api/vocab/{word_card_id}/verb-forms`).
 
+## Админка Verb Forms (визуальная проверка)
+
+Для ручной проверки сгенерированных `verb_forms`-артефактов есть lightweight админка курса.
+
+Запуск:
+
+```bash
+make -C courses/spanish-grammar training-pack-admin
+```
+
+или алиас:
+
+```bash
+make -C courses/spanish-grammar verb-forms-admin
+```
+
+URL:
+
+- `http://127.0.0.1:8010/`
+
+В админке доступны 2 режима:
+
+- `Training Pack` — существующий просмотр вопросов по theory blocks;
+- `Verb Forms` — просмотр глагольных артефактов.
+
+Что есть в режиме `Verb Forms`:
+
+- слева:
+  - поиск по lemma,
+  - список глаголов из `training_pack/verb_forms/index.json`;
+- справа:
+  - мета выбранной lemma (`word_card_id`, `cards_count`, `scopes_count`, `generated_at`),
+  - список scopes (времена/наклонения),
+  - таблица по выбранному scope:
+    - `person`, `number`,
+    - `surface_form`,
+    - `question_es_with_blank`,
+    - `translation_ru_full`,
+    - `options`.
+
+Backend endpoints админки для verb forms:
+
+- `GET /api/verb-forms/lemmas?q=...`
+- `GET /api/verb-forms/lemma?lemma=...`
+
+Эти endpoints читают данные из:
+
+- `courses/spanish-grammar/training_pack/verb_forms/index.json`
+- `courses/spanish-grammar/training_pack/verb_forms/lemmas/*.json`
+
 ## Частые проблемы и диагностика
 
 - `401` на `/api/internal/verb-training/pending`:
