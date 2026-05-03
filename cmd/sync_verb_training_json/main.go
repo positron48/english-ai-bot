@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"flag"
 	"fmt"
 	"os"
@@ -23,13 +24,17 @@ type packIndex struct {
 }
 
 type syncStats struct {
-	LemmasTotal int
+	LemmasTotal    int
+	LemmasSkipped  int
 	FormsUpserted int
 	CardsUpserted int
 	FormsDeleted int
 	CardsDeleted int
 	LemmasDeleted int
 }
+
+// ErrLemmaNoWordCard means the lemma is in the JSON bundle but there is no vocabulary row yet.
+var ErrLemmaNoWordCard = errors.New("no word_cards row for lemma")
 
 // resolveVerbFormsArtifactRoot finds training_pack/verb_forms under course-root, or the bundled
 // internal/grammartrainingpack/es/verb_forms shipped in the image. Init containers often run with
@@ -146,25 +151,46 @@ func run() int {
 		fmt.Fprintf(os.Stderr, "sync failed: %v\n", err)
 		return 1
 	}
-	fmt.Printf("sync_verb_training_json: lemmas=%d forms_upserted=%d cards_upserted=%d forms_deleted=%d cards_deleted=%d lemmas_deleted=%d dry_run=%v\n",
-		stats.LemmasTotal, stats.FormsUpserted, stats.CardsUpserted, stats.FormsDeleted, stats.CardsDeleted, stats.LemmasDeleted, *dryRun)
+	fmt.Printf("sync_verb_training_json: lemmas=%d skipped_no_word_card=%d forms_upserted=%d cards_upserted=%d forms_deleted=%d cards_deleted=%d lemmas_deleted=%d dry_run=%v\n",
+		stats.LemmasTotal, stats.LemmasSkipped, stats.FormsUpserted, stats.CardsUpserted, stats.FormsDeleted, stats.CardsDeleted, stats.LemmasDeleted, *dryRun)
 	return 0
 }
 
-func lookupWordCardIDByLemma(tx *sql.Tx, lemma string) (int64, error) {
+// lookupWordCardIDForVerbLemma resolves the vocabulary row for an infinitive lemma:
+//  1) word_cards.word (canonical headword)
+//  2) training_cards whose display_word equals the lemma → word_card_id (prefer rows with verb POS)
+// If nothing matches, ErrLemmaNoWordCard — caller may skip.
+func lookupWordCardIDForVerbLemma(tx *sql.Tx, lemma string) (int64, error) {
 	lemma = strings.TrimSpace(lemma)
 	if lemma == "" {
 		return 0, fmt.Errorf("empty lemma")
 	}
+	l := strings.ToLower(lemma)
+
 	var id int64
-	err := tx.QueryRow(`SELECT id FROM word_cards WHERE LOWER(TRIM(word)) = LOWER(?)`, lemma).Scan(&id)
-	if err == sql.ErrNoRows {
-		return 0, fmt.Errorf("no word_cards row for lemma %q (add the infinitive to vocabulary first)", lemma)
+	err := tx.QueryRow(`SELECT id FROM word_cards WHERE LOWER(TRIM(word)) = ?`, l).Scan(&id)
+	if err == nil {
+		return id, nil
 	}
-	if err != nil {
+	if err != sql.ErrNoRows {
 		return 0, err
 	}
-	return id, nil
+
+	err = tx.QueryRow(`
+		SELECT tc.word_card_id
+		FROM training_cards tc
+		WHERE LOWER(TRIM(COALESCE(tc.display_word, ''))) = ?
+		ORDER BY CASE WHEN LOWER(TRIM(COALESCE(tc.pos, ''))) LIKE 'verb%' THEN 0 ELSE 1 END, tc.id
+		LIMIT 1
+	`, l).Scan(&id)
+	if err == nil {
+		return id, nil
+	}
+	if err != sql.ErrNoRows {
+		return 0, err
+	}
+
+	return 0, fmt.Errorf("%w: %q (no word_cards headword and no training_cards.display_word match)", ErrLemmaNoWordCard, lemma)
 }
 
 func syncArtifacts(db *sql.DB, artifacts []verbtraining.LemmaArtifact, dryRun bool) (*syncStats, error) {
@@ -178,11 +204,18 @@ func syncArtifacts(db *sql.DB, artifacts []verbtraining.LemmaArtifact, dryRun bo
 		}
 	}()
 	stats := &syncStats{LemmasTotal: len(artifacts)}
-	seenLemma := make(map[string]struct{}, len(artifacts))
+	bundleLemmas := make(map[string]struct{}, len(artifacts))
 	for _, a := range artifacts {
-		seenLemma[a.Lemma] = struct{}{}
-		wordCardID, err := lookupWordCardIDByLemma(tx, a.Lemma)
+		bundleLemmas[strings.ToLower(strings.TrimSpace(a.Lemma))] = struct{}{}
+	}
+	for _, a := range artifacts {
+		wordCardID, err := lookupWordCardIDForVerbLemma(tx, a.Lemma)
 		if err != nil {
+			if errors.Is(err, ErrLemmaNoWordCard) {
+				fmt.Fprintf(os.Stderr, "sync_verb_training_json: skip lemma %q (no word_cards.word or training_cards.display_word match)\n", a.Lemma)
+				stats.LemmasSkipped++
+				continue
+			}
 			return nil, fmt.Errorf("lemma %s: %w", a.Lemma, err)
 		}
 		lemmaID, err := upsertLemma(tx, a.Lemma, wordCardID)
@@ -230,7 +263,7 @@ func syncArtifacts(db *sql.DB, artifacts []verbtraining.LemmaArtifact, dryRun bo
 		}
 		stats.CardsDeleted += nc
 	}
-	nd, err := pruneLemmasMissingFromJSON(tx, seenLemma)
+	nd, err := pruneLemmasMissingFromJSON(tx, bundleLemmas)
 	if err != nil {
 		return nil, fmt.Errorf("prune removed lemmas: %w", err)
 	}
