@@ -447,6 +447,9 @@ func (r *Router) setupProtectedRoutes() {
 	// Training admin routes (GET requires words.read_all, POST/PUT/DELETE require words.edit_all)
 	r.mux.HandleFunc("/api/admin/training/", appAPIMiddleware.Wrap(adminAuth(r.RequireAnyPermission(PermissionWordsReadAll, PermissionWordsEditAll)(r.handleAdminTraining))))
 	r.mux.HandleFunc("/api/admin/training/card/", appAPIMiddleware.Wrap(adminAuth(r.RequireAnyPermission(PermissionWordsReadAll, PermissionWordsEditAll)(r.handleAdminTrainingCard))))
+	// Verb-form training cards inventory (read-only, Spanish DB content)
+	r.mux.HandleFunc("/api/admin/verb-training/lemmas", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionWordsReadAll)(r.handleAdminVerbTrainingLemmas))))
+	r.mux.HandleFunc("/api/admin/verb-training/cards", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionWordsReadAll)(r.handleAdminVerbTrainingCards))))
 
 	// Users admin routes
 	r.mux.HandleFunc("/api/admin/users", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionUsersReadAll)(r.handleAdminUsers))))

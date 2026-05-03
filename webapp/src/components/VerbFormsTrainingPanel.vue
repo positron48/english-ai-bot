@@ -50,9 +50,12 @@
               type="button"
               class="verb-forms-info-btn"
               :disabled="!canOpenVerbInfo"
+              :aria-label="t('verbTraining.formsInfoAria')"
               @click="openWordInfo"
             >
-              (i)
+              <span class="verb-forms-info-icon-wrap" aria-hidden="true">
+                <Icon name="info" class="verb-forms-info-icon" />
+              </span>
             </button>
           </div>
         </div>
@@ -629,14 +632,26 @@ function closeWordInfo() {
 }
 
 .verb-forms-info-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border: 1px solid var(--border-primary);
   background: var(--bg-secondary);
   color: var(--text-secondary);
   border-radius: 999px;
   min-width: 32px;
   height: 32px;
-  font-size: 0.9rem;
+  padding: 0;
   cursor: pointer;
+}
+
+.verb-forms-info-btn .verb-forms-info-icon.icon {
+  display: inline-flex;
+}
+
+.verb-forms-info-btn .verb-forms-info-icon.icon svg {
+  width: 18px;
+  height: 18px;
 }
 
 .verb-word-popup-overlay {

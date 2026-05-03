@@ -7,6 +7,7 @@ import (
 	"go.uber.org/zap"
 
 	"tgbot-skeleton/internal/models"
+	"tgbot-skeleton/internal/verbtraining"
 )
 
 func TestLinkMissingSpanishVerbLemmasForUser_EmptyVocab(t *testing.T) {
@@ -68,11 +69,11 @@ func TestListPendingVerbTrainingLemmas_JoinsVerbLemmasAndTrainingCardPOS(t *test
 	repo := NewVerbFormsRepository(db, zap.NewNop())
 
 	mock.ExpectQuery(`SELECT w\.id, LOWER\(TRIM\(w\.word\)\)`).
-		WithArgs(int64(0), 50).
+		WithArgs(int64(0), models.VerbCardTypeCloze, int64(verbtraining.FullCoverageClozeCardCountV1()), 50).
 		WillReturnRows(sqlmock.NewRows([]string{"id", "lemma"}).
 			AddRow(int64(100), "hablar"))
 
-	got, err := repo.ListPendingVerbTrainingLemmas(50, 0)
+	got, err := repo.ListPendingVerbTrainingLemmas(50, 0, true)
 	if err != nil {
 		t.Fatalf("ListPendingVerbTrainingLemmas: %v", err)
 	}

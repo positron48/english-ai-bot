@@ -40,6 +40,7 @@
     "vocab": "Vocabulario",
     "settings": "Configuración",
     "admin": "Administración",
+    "adminVerbFormsDb": "Formas verbales (BD)",
     "logout": "Cerrar sesión",
     "more": "Más",
     "menu": "Menú"
@@ -194,7 +195,8 @@
     "modeChoiceHint": "Elige la opción correcta. Tras {n} repasos seguidos sin fallar, pasarás a escribir la forma completa.",
     "modeTypedHint": "Escribe la forma verbal completa.",
     "totalCardsAvailable": "{count} tarjetas de formas verbales disponibles",
-    "noCardsPool": "Aún no hay tarjetas de formas en la base: sincroniza el vocabulario y ejecuta el import de artefactos (sync_verb_training_json), luego abre listas o añade palabras."
+    "noCardsPool": "Aún no hay tarjetas de formas en la base: sincroniza el vocabulario y ejecuta el import de artefactos (sync_verb_training_json), luego abre listas o añade palabras.",
+    "formsInfoAria": "Tabla de conjugación de este verbo"
   },
   "learning": {
     "title": "Aprendizaje",
@@ -472,6 +474,33 @@
     "trainingStatDueLabel": "Repaso",
     "trainingDone": "Sesión completada.",
     "trainingUnavailable": "El entrenamiento de gramática aún no está disponible para este curso."
+  },
+  "adminVerbTraining": {
+    "title": "Tarjetas de formas verbales (español)",
+    "subtitle": "Infinitivos enlazados en la BD con verb_training_cards materializadas (solo lectura).",
+    "refresh": "Actualizar",
+    "searchPlaceholder": "Filtrar por lema…",
+    "lemma": "Lema",
+    "ruGloss": "Gloss RU",
+    "clozeCount": "Tarjetas cloze",
+    "fullCoverage": "Paquete completo",
+    "yes": "Sí",
+    "no": "No",
+    "showCards": "Tarjetas",
+    "hideCards": "Ocultar",
+    "loadMore": "Cargar más",
+    "cardsHeading": "Tarjetas de entrenamiento verbal",
+    "cardId": "ID de tarjeta",
+    "slice": "Forma",
+    "surface": "Forma superficial",
+    "promptJson": "Prompt",
+    "answerJson": "Answer",
+    "distractorsJson": "Distractores",
+    "expectedPack": "Tarjetas cloze esperadas por lema con paquete completo: {n}",
+    "noLemmas": "Ningún lema coincide con el filtro.",
+    "loadingCards": "Cargando tarjetas…",
+    "noCards": "Aún no hay filas verb_training_cards para esta palabra.",
+    "loadFailed": "Error al cargar los datos."
   },
   "errors": {
     "unauthorized": "No autorizado",

@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"strings"
 	"sync"
@@ -10,6 +11,7 @@ import (
 	"tgbot-skeleton/internal/database"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/spanishverbs"
+	"tgbot-skeleton/internal/verbtraining"
 
 	"go.uber.org/zap"
 )
@@ -23,22 +25,15 @@ func NewVerbFormsRepository(db *sql.DB, logger *zap.Logger) *VerbFormsRepository
 	return &VerbFormsRepository{db: db, logger: logger}
 }
 
-// verbTrainingEligibleByWordCardSQL restricts to headwords that are real verb training rows:
-// word_cards.pos is verb* or at least one training_cards row for that word is verb* (aligns with ListPendingVerbTrainingLemmas).
-// Excludes nouns/adjectives (e.g. "palabra") that still have verb_training_cards rows from old syncs.
+// verbTrainingEligibleByWordCardSQL keeps only verb_training rows whose word_card is linked to a Spanish
+// verb_lemmas row via word_verb_lemmas. POS-only heuristics miss mis-tagged nouns ("palabra") that still
+// have stray verb_training_cards from old syncs.
 func verbTrainingEligibleByWordCardSQL(verbTrainingTableAlias string) string {
 	return `
-AND (
-  EXISTS (
-    SELECT 1 FROM word_cards wc
-    WHERE wc.id = ` + verbTrainingTableAlias + `.word_card_id
-      AND LOWER(TRIM(COALESCE(wc.pos, ''))) LIKE 'verb%'
-  )
-  OR EXISTS (
-    SELECT 1 FROM training_cards tc
-    WHERE tc.word_card_id = ` + verbTrainingTableAlias + `.word_card_id
-      AND LOWER(TRIM(COALESCE(tc.pos, ''))) LIKE 'verb%'
-  )
+AND EXISTS (
+  SELECT 1 FROM word_verb_lemmas wvl
+  INNER JOIN verb_lemmas vl ON vl.id = wvl.verb_lemma_id AND vl.language = 'es'
+  WHERE wvl.word_card_id = ` + verbTrainingTableAlias + `.word_card_id
 )`
 }
 
@@ -777,18 +772,20 @@ func spanishLemmaLooksLikeInfinitiveSQL() string {
 )`
 }
 
-// ListPendingVerbTrainingLemmas returns verb lemmas that still do not have any linked finite forms.
-// Only word_cards whose Spanish headword exists in verb_lemmas (dictionary infinitives) and that have at least one
-// training_cards row with POS verb — avoids conjugated/noun lemmas mistaken for verbs on word_cards.
+// ListPendingVerbTrainingLemmas lists Spanish infinitive headwords suitable for LLM verb-pack authoring.
+// formsGapOnly=true (default for API): lemmas where verb_training_cards (cloze_form) count is below full V1 coverage
+// (same count as one generated lemma file). So vocabulary verbs without any synced pack, or with a partial pack, appear here.
+// Training UI only shows verbs that already have materialized cards (user_verb_cards); this endpoint lists the rest for generation.
+// formsGapOnly=false: all infinitive-like headwords with verb_lemmas + a vocabulary training_card with verb POS (ignore pack completeness).
 // Cursor is word_card_id based.
-func (r *VerbFormsRepository) ListPendingVerbTrainingLemmas(limit int, cursorWordCardID int64) ([]PendingVerbLemmaRow, error) {
+func (r *VerbFormsRepository) ListPendingVerbTrainingLemmas(limit int, cursorWordCardID int64, formsGapOnly bool) ([]PendingVerbLemmaRow, error) {
 	if limit <= 0 {
 		limit = 200
 	}
 	if limit > 2000 {
 		limit = 2000
 	}
-	q := `SELECT w.id, LOWER(TRIM(w.word)) AS lemma
+	base := `SELECT w.id, LOWER(TRIM(w.word)) AS lemma
 	      FROM word_cards w
 	      INNER JOIN verb_lemmas vl ON vl.language = 'es' AND vl.lemma = LOWER(TRIM(w.word))
 	      WHERE LOWER(TRIM(w.word)) <> ''
@@ -797,17 +794,23 @@ func (r *VerbFormsRepository) ListPendingVerbTrainingLemmas(limit int, cursorWor
 	          SELECT 1 FROM training_cards tc
 	          WHERE tc.word_card_id = w.id
 	            AND LOWER(TRIM(COALESCE(tc.pos, ''))) LIKE 'verb%'
-	        )
-	        AND NOT EXISTS (
-	          SELECT 1
-	          FROM word_verb_lemmas l
-	          JOIN verb_forms_dict d ON d.verb_lemma_id = l.verb_lemma_id
-	          WHERE l.word_card_id = w.id
-	        )
-	        ` + spanishLemmaLooksLikeInfinitiveSQL() + `
+	        )`
+	tail := spanishLemmaLooksLikeInfinitiveSQL() + `
 	      ORDER BY w.id ASC
 	      LIMIT ?`
-	rows, err := r.db.Query(q, cursorWordCardID, limit)
+	var rows *sql.Rows
+	var err error
+	if formsGapOnly {
+		full := verbtraining.FullCoverageClozeCardCountV1()
+		gap := `
+	        AND (
+	          SELECT COUNT(*) FROM verb_training_cards vtc
+	          WHERE vtc.word_card_id = w.id AND vtc.card_type = ?
+	        ) < ?`
+		rows, err = r.db.Query(base+gap+tail, cursorWordCardID, models.VerbCardTypeCloze, full, limit)
+	} else {
+		rows, err = r.db.Query(base+tail, cursorWordCardID, limit)
+	}
 	if err != nil {
 		return nil, fmt.Errorf("list pending verb training lemmas: %w", err)
 	}
@@ -827,6 +830,141 @@ func (r *VerbFormsRepository) ListPendingVerbTrainingLemmas(limit int, cursorWor
 		return nil, err
 	}
 	return out, nil
+}
+
+// AdminVerbLemmaSummary is one Spanish lemma linked from vocabulary (word_verb_lemmas) for admin browsing.
+type AdminVerbLemmaSummary struct {
+	WordCardID int64  `json:"word_card_id"`
+	Lemma      string `json:"lemma"`
+	ClozeCount int64  `json:"cloze_count"`
+	RuGloss    string `json:"ru_gloss,omitempty"`
+}
+
+// ListAdminVerbTrainingLemmas returns lemmas with verb-training cloze card counts (cursor on word_card.id).
+func (r *VerbFormsRepository) ListAdminVerbTrainingLemmas(search string, limit int, afterWordCardID int64) ([]AdminVerbLemmaSummary, error) {
+	if limit <= 0 {
+		limit = 50
+	}
+	if limit > 200 {
+		limit = 200
+	}
+	search = strings.TrimSpace(search)
+	args := []interface{}{afterWordCardID}
+	q := `
+SELECT w.id, LOWER(TRIM(w.word)),
+  (SELECT COUNT(*) FROM verb_training_cards vtc
+   WHERE vtc.word_card_id = w.id AND vtc.card_type = '` + models.VerbCardTypeCloze + `'),
+  COALESCE(vl.metadata_json,'')
+FROM word_cards w
+INNER JOIN word_verb_lemmas wvl ON wvl.word_card_id = w.id
+INNER JOIN verb_lemmas vl ON vl.id = wvl.verb_lemma_id AND vl.language = 'es'
+WHERE w.id > ?`
+	if search != "" {
+		q += ` AND LOWER(TRIM(w.word)) LIKE ?`
+		args = append(args, "%"+strings.ToLower(search)+"%")
+	}
+	q += `
+ORDER BY w.id ASC
+LIMIT ?`
+	args = append(args, limit)
+
+	rows, err := r.db.Query(q, args...)
+	if err != nil {
+		return nil, fmt.Errorf("list admin verb training lemmas: %w", err)
+	}
+	defer rows.Close()
+	out := make([]AdminVerbLemmaSummary, 0, limit)
+	for rows.Next() {
+		var row AdminVerbLemmaSummary
+		var meta string
+		if err := rows.Scan(&row.WordCardID, &row.Lemma, &row.ClozeCount, &meta); err != nil {
+			return nil, fmt.Errorf("scan admin verb lemma: %w", err)
+		}
+		row.RuGloss = spanishverbs.RuGlossFromLemmaMetadataJSON(meta)
+		out = append(out, row)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// AdminVerbTrainingCardDetail is one materialized verb_training_cards row with conjugation slice for admin UI.
+type AdminVerbTrainingCardDetail struct {
+	ID          int64           `json:"id"`
+	CardType    string          `json:"card_type"`
+	Mood        string          `json:"mood"`
+	Tense       string          `json:"tense"`
+	Person      string          `json:"person"`
+	Number      string          `json:"number"`
+	SurfaceForm string          `json:"surface_form"`
+	Prompt      json.RawMessage `json:"prompt"`
+	Answer      json.RawMessage `json:"answer"`
+	Distractors json.RawMessage `json:"distractors,omitempty"`
+}
+
+// ListAdminVerbTrainingCardsByWordCard returns all verb training cards for a word_card_id with joined dictionary slice.
+func (r *VerbFormsRepository) ListAdminVerbTrainingCardsByWordCard(wordCardID int64) ([]AdminVerbTrainingCardDetail, error) {
+	if wordCardID <= 0 {
+		return nil, fmt.Errorf("invalid word_card_id")
+	}
+	q := `SELECT vtc.id, vtc.card_type,
+	  vtc.prompt_json, vtc.answer_json, COALESCE(vtc.distractors_json,''),
+	  d.mood, d.tense, d.person, d.number, d.surface_form
+	FROM verb_training_cards vtc
+	INNER JOIN verb_forms_dict d ON d.id = vtc.verb_form_dict_id
+	WHERE vtc.word_card_id = ?
+	ORDER BY d.mood, d.tense, d.person, d.number, vtc.id`
+	rows, err := r.db.Query(q, wordCardID)
+	if err != nil {
+		return nil, fmt.Errorf("list admin verb training cards: %w", err)
+	}
+	defer rows.Close()
+	out := make([]AdminVerbTrainingCardDetail, 0, 64)
+	for rows.Next() {
+		var row AdminVerbTrainingCardDetail
+		var promptStr, answerStr, distStr string
+		if err := rows.Scan(&row.ID, &row.CardType, &promptStr, &answerStr, &distStr, &row.Mood, &row.Tense, &row.Person, &row.Number, &row.SurfaceForm); err != nil {
+			return nil, fmt.Errorf("scan admin verb training card: %w", err)
+		}
+		row.Prompt = json.RawMessage(strings.TrimSpace(promptStr))
+		if len(row.Prompt) == 0 {
+			row.Prompt = json.RawMessage("{}")
+		}
+		row.Answer = json.RawMessage(strings.TrimSpace(answerStr))
+		if len(row.Answer) == 0 {
+			row.Answer = json.RawMessage("{}")
+		}
+		d := strings.TrimSpace(distStr)
+		if d != "" {
+			row.Distractors = json.RawMessage(d)
+		}
+		out = append(out, row)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// AdminVerbLemmaLookup resolves lemma for a word_card linked to Spanish verb_lemmas (admin).
+func (r *VerbFormsRepository) AdminVerbLemmaLookup(wordCardID int64) (lemma string, ok bool, err error) {
+	if wordCardID <= 0 {
+		return "", false, nil
+	}
+	err = r.db.QueryRow(`
+SELECT LOWER(TRIM(w.word))
+FROM word_cards w
+INNER JOIN word_verb_lemmas wvl ON wvl.word_card_id = w.id
+INNER JOIN verb_lemmas vl ON vl.id = wvl.verb_lemma_id AND vl.language = 'es'
+WHERE w.id = ?`, wordCardID).Scan(&lemma)
+	if err == sql.ErrNoRows {
+		return "", false, nil
+	}
+	if err != nil {
+		return "", false, fmt.Errorf("admin verb lemma lookup: %w", err)
+	}
+	return strings.TrimSpace(lemma), true, nil
 }
 
 const verbExampleCatalogTTL = 5 * time.Minute

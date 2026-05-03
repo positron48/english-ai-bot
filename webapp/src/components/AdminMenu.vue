@@ -53,6 +53,16 @@
         <Icon name="home" class="admin-sidebar-icon" />
         <span>Words Management</span>
       </router-link>
+      <router-link
+        v-if="can('words.read_all')"
+        to="/admin/verb-forms"
+        class="admin-sidebar-item"
+        :class="{ active: $route.path === '/admin/verb-forms' }"
+        @click="isMobile && handleCloseSidebar()"
+      >
+        <Icon name="list" class="admin-sidebar-icon" />
+        <span>{{ t('navigation.adminVerbFormsDb') }}</span>
+      </router-link>
       <router-link 
         v-if="can('full_access')"
         to="/admin/circuit-breaker" 
@@ -170,10 +180,12 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed, watch, nextTick } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useTheme } from '../composables/useTheme'
 import { useAuth } from '../composables/useAuth'
 import Icon from './Icon.vue'
 
+const { t } = useI18n()
 const { can, loadPermissions } = useAuth()
 
 const showSidebar = ref(false)

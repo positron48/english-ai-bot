@@ -44,6 +44,11 @@ var expectedSlots = []struct {
 	{Person: "3", Number: "plural"},
 }
 
+// FullCoverageClozeCardCountV1 is how many cloze_form rows in verb_training_cards equal one full lemma artifact (16 scopes × 6 persons).
+func FullCoverageClozeCardCountV1() int {
+	return len(ExpectedScopesV1) * len(expectedSlots)
+}
+
 // LemmaArtifact is one generated file in training_pack/verb_forms/lemmas/<lemma>.json.
 type LemmaArtifact struct {
 	Version    string          `json:"version"`

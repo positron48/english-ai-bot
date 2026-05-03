@@ -122,6 +122,11 @@ const router = createRouter({
           component: () => import('../views/AdminView.vue')
         },
         {
+          path: 'verb-forms',
+          name: 'AdminVerbTraining',
+          component: () => import('../views/AdminVerbTrainingView.vue')
+        },
+        {
           path: 'circuit-breaker',
           name: 'AdminCircuitBreaker',
           component: () => import('../views/AdminCircuitBreakerView.vue')

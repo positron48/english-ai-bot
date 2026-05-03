@@ -40,6 +40,7 @@
     "vocab": "Vocabulary",
     "settings": "Settings",
     "admin": "Admin",
+    "adminVerbFormsDb": "Verb forms (DB)",
     "logout": "Logout",
     "more": "More",
     "menu": "Menu"
@@ -199,7 +200,8 @@
     "modeChoiceHint": "Pick the correct option. After {n} successful reviews in a row for this form, you will type the full form.",
     "modeTypedHint": "Type the full verb form.",
     "totalCardsAvailable": "{count} verb-form cards available",
-    "noCardsPool": "No verb-form training cards in the database yet: sync vocabulary and run the verb-forms artifact import (sync_verb_training_json), then load word sets or add words."
+    "noCardsPool": "No verb-form training cards in the database yet: sync vocabulary and run the verb-forms artifact import (sync_verb_training_json), then load word sets or add words.",
+    "formsInfoAria": "Full conjugation table for this verb"
   },
   "learning": {
     "title": "Learning",
@@ -477,6 +479,33 @@
     "trainingStatDueLabel": "Due",
     "trainingDone": "Session completed.",
     "trainingUnavailable": "Grammar training is not available for this course yet."
+  },
+  "adminVerbTraining": {
+    "title": "Verb form cards (Spanish)",
+    "subtitle": "Infinitives linked in the DB with materialized verb_training_cards (read-only).",
+    "refresh": "Refresh",
+    "searchPlaceholder": "Filter by lemma…",
+    "lemma": "Lemma",
+    "ruGloss": "RU gloss",
+    "clozeCount": "Cloze cards",
+    "fullCoverage": "Full pack",
+    "yes": "Yes",
+    "no": "No",
+    "showCards": "Cards",
+    "hideCards": "Hide",
+    "loadMore": "Load more",
+    "cardsHeading": "Verb training cards",
+    "cardId": "Card ID",
+    "slice": "Form",
+    "surface": "Surface",
+    "promptJson": "Prompt",
+    "answerJson": "Answer",
+    "distractorsJson": "Distractors",
+    "expectedPack": "Expected cloze cards per lemma when pack is complete: {n}",
+    "noLemmas": "No lemmas match this filter.",
+    "loadingCards": "Loading cards…",
+    "noCards": "No verb_training_cards rows for this word yet.",
+    "loadFailed": "Failed to load data."
   },
   "errors": {
     "unauthorized": "Unauthorized",

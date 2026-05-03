@@ -3,6 +3,7 @@ package web
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"math/rand"
 	"net/http"
 	"strconv"
@@ -14,6 +15,7 @@ import (
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/service"
+	"tgbot-skeleton/internal/spanishverbs"
 	"tgbot-skeleton/internal/verbtraining"
 
 	"go.uber.org/zap"
@@ -210,6 +212,50 @@ func (r *Router) handleVerbTrainingStart(w http.ResponseWriter, req *http.Reques
 	r.writeCurrentVerbCard(w, state)
 }
 
+func isVerbClozeCardType(cardType string) bool {
+	return strings.EqualFold(strings.TrimSpace(cardType), models.VerbCardTypeCloze)
+}
+
+func promptString(m map[string]interface{}, key string) string {
+	if m == nil {
+		return ""
+	}
+	v, ok := m[key]
+	if !ok || v == nil {
+		return ""
+	}
+	switch t := v.(type) {
+	case string:
+		return strings.TrimSpace(t)
+	case float64:
+		return strings.TrimSpace(strconv.FormatInt(int64(t), 10))
+	case json.Number:
+		return strings.TrimSpace(t.String())
+	default:
+		return strings.TrimSpace(fmt.Sprintf("%v", t))
+	}
+}
+
+func ensureVerbClozeQuestionLine(prompt map[string]interface{}) {
+	if prompt == nil {
+		return
+	}
+	if strings.TrimSpace(promptString(prompt, "question")) != "" {
+		return
+	}
+	lemma := promptString(prompt, "lemma")
+	if lemma == "" {
+		return
+	}
+	prompt["question"] = spanishverbs.BuildVerbTrainingClozeQuestion(
+		promptString(prompt, "person"),
+		promptString(prompt, "number"),
+		lemma,
+		promptString(prompt, "mood"),
+		promptString(prompt, "tense"),
+	)
+}
+
 func (r *Router) handleVerbTrainingCurrent(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -240,14 +286,23 @@ func (r *Router) writeCurrentVerbCard(w http.ResponseWriter, state *webVerbTrain
 	item := state.Queue[state.Index]
 	var prompt map[string]interface{}
 	_ = json.Unmarshal([]byte(item.PromptJSON), &prompt)
+	if prompt == nil {
+		prompt = map[string]interface{}{}
+	}
+	if isVerbClozeCardType(item.CardType) {
+		ensureVerbClozeQuestionLine(prompt)
+	}
 
 	var answer map[string]string
 	_ = json.Unmarshal([]byte(item.AnswerJSON), &answer)
 	surfaceAns := strings.TrimSpace(answer["surface_form"])
-	if item.CardType == models.VerbCardTypeCloze && prompt != nil && surfaceAns != "" {
-		if q, ok := prompt["question"].(string); ok && strings.TrimSpace(q) != "" {
+	if isVerbClozeCardType(item.CardType) && surfaceAns != "" {
+		if q := strings.TrimSpace(promptString(prompt, "question")); q != "" {
 			prompt["question"] = service.MaskClozeVerbSurfaceInQuestion(q, surfaceAns)
 		}
+	}
+	if isVerbClozeCardType(item.CardType) {
+		ensureVerbClozeQuestionLine(prompt)
 	}
 
 	options := service.ParseStringJSONArray(item.DistractorsJSON)
@@ -285,13 +340,13 @@ func (r *Router) writeCurrentVerbCard(w http.ResponseWriter, state *webVerbTrain
 		inputMode = "typed"
 		options = []string{}
 	}
-
-	lemma := ""
-	if prompt != nil {
-		if s, ok := prompt["lemma"].(string); ok {
-			lemma = strings.TrimSpace(s)
-		}
+	if inputMode == "choice" && len(options) >= 2 {
+		seed := state.SessionID ^ item.UserVerbCardID ^ int64(state.Index)
+		rng := rand.New(rand.NewSource(seed))
+		rng.Shuffle(len(options), func(i, j int) { options[i], options[j] = options[j], options[i] })
 	}
+
+	lemma := promptString(prompt, "lemma")
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(map[string]interface{}{
 		"session_id":         state.SessionID,
@@ -490,8 +545,17 @@ func (r *Router) handleInternalVerbTrainingPending(w http.ResponseWriter, req *h
 		}
 		cursor = v
 	}
+	// Default (forms_gap_only): lemmas with fewer than full V1 cloze cards in verb_training_cards (none/partial pack).
+	// all=1 / forms_gap_only=0: every qualifying infinitive with a verb vocabulary card (ignore pack completeness).
+	formsGapOnly := true
+	if raw := strings.TrimSpace(req.URL.Query().Get("all")); raw == "1" || strings.EqualFold(raw, "true") {
+		formsGapOnly = false
+	}
+	if raw := strings.TrimSpace(req.URL.Query().Get("forms_gap_only")); raw == "0" || strings.EqualFold(raw, "false") {
+		formsGapOnly = false
+	}
 	repo := repository.NewVerbFormsRepository(r.db, r.logger)
-	rows, err := repo.ListPendingVerbTrainingLemmas(limit, cursor)
+	rows, err := repo.ListPendingVerbTrainingLemmas(limit, cursor, formsGapOnly)
 	if err != nil {
 		r.logger.Error("list pending verb lemmas", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
