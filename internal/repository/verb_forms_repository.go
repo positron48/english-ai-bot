@@ -951,6 +951,7 @@ func (r *VerbFormsRepository) ListAdminVerbTrainingCardsByWordCard(wordCardID in
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
+	SortAdminVerbTrainingCardDetailsSpanish(out)
 	return out, nil
 }
 
