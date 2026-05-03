@@ -1,0 +1,4 @@
+# English lemma blocklist for frequency word-set imports.
+# One lemma per line, lowercase.
+# Keep this list minimal and deterministic; prefer adding only proven noise.
+

@@ -12,6 +12,16 @@ import (
 	"go.uber.org/zap"
 )
 
+func (r *Router) spanishVerbFormsAdminAvailable() bool {
+	if r == nil || r.config == nil {
+		return false
+	}
+	if !r.config.Training.SpanishVerbFormsEnabled {
+		return false
+	}
+	return strings.EqualFold(strings.TrimSpace(r.config.Learning.TargetLang), "es")
+}
+
 // handleAdminVerbTrainingLemmas GET /api/admin/verb-training/lemmas?q=&limit=&cursor=
 func (r *Router) handleAdminVerbTrainingLemmas(w http.ResponseWriter, req *http.Request) {
 	ctx := r.loadUserPermissionsIntoContext(req.Context())
@@ -22,6 +32,10 @@ func (r *Router) handleAdminVerbTrainingLemmas(w http.ResponseWriter, req *http.
 	}
 	if !r.HasPermission(ctx, PermissionWordsReadAll) {
 		http.Error(w, "Forbidden: read permission required", http.StatusForbidden)
+		return
+	}
+	if !r.spanishVerbFormsAdminAvailable() {
+		http.Error(w, "Not Found", http.StatusNotFound)
 		return
 	}
 
@@ -60,9 +74,9 @@ func (r *Router) handleAdminVerbTrainingLemmas(w http.ResponseWriter, req *http.
 
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(map[string]interface{}{
-		"lemmas":                    out,
-		"next_cursor":               nextCursor,
-		"expected_cloze_per_lemma":  full,
+		"lemmas":                   out,
+		"next_cursor":              nextCursor,
+		"expected_cloze_per_lemma": full,
 	})
 }
 
@@ -76,6 +90,10 @@ func (r *Router) handleAdminVerbTrainingCards(w http.ResponseWriter, req *http.R
 	}
 	if !r.HasPermission(ctx, PermissionWordsReadAll) {
 		http.Error(w, "Forbidden: read permission required", http.StatusForbidden)
+		return
+	}
+	if !r.spanishVerbFormsAdminAvailable() {
+		http.Error(w, "Not Found", http.StatusNotFound)
 		return
 	}
 

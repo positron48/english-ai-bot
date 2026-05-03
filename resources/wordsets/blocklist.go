@@ -11,10 +11,15 @@ import (
 //go:embed spanish_lemma_blocklist.txt
 var spanishLemmaBlocklistRaw string
 
+//go:embed english_lemma_blocklist.txt
+var englishLemmaBlocklistRaw string
+
 var blockedSpanishLemmas map[string]struct{}
+var blockedEnglishLemmas map[string]struct{}
 
 func init() {
 	blockedSpanishLemmas = parseLemmaBlocklist(spanishLemmaBlocklistRaw)
+	blockedEnglishLemmas = parseLemmaBlocklist(englishLemmaBlocklistRaw)
 }
 
 func parseLemmaBlocklist(raw string) map[string]struct{} {
@@ -38,6 +43,18 @@ func NormalizeLemmaImport(s string) string {
 func IsLemmaBlocked(lemma string) bool {
 	_, ok := blockedSpanishLemmas[lemma]
 	return ok
+}
+
+// IsLemmaBlockedForLang reports whether lemma is listed in a language-specific blocklist.
+func IsLemmaBlockedForLang(lang, lemma string) bool {
+	switch strings.ToLower(strings.TrimSpace(lang)) {
+	case "en":
+		_, ok := blockedEnglishLemmas[lemma]
+		return ok
+	default:
+		_, ok := blockedSpanishLemmas[lemma]
+		return ok
+	}
 }
 
 // IsVowellessAbbrevASCII is true for 2–5 letter a–z tokens with no vowels (y counts as vowel). Catches cm, mm, psc, etc.

@@ -248,6 +248,19 @@ router.beforeEach(async (to, _from, next) => {
       next('/dashboard')
       return
     }
+
+    if (to.name === 'AdminVerbTraining') {
+      try {
+        const settings = await apiClient.request<{ learning?: { spanish_verb_forms_enabled?: boolean } }>('/api/settings')
+        if (!settings?.learning?.spanish_verb_forms_enabled) {
+          next('/admin')
+          return
+        }
+      } catch (_error) {
+        next('/admin')
+        return
+      }
+    }
   }
   
   // Check grammar chapter access (guard client-side, backend will enforce too)

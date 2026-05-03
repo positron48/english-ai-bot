@@ -1,0 +1,212 @@
+{
+  "input_ods": "/Users/antonfilatov/www/my/k3s/english-ai-bot/wordFrequency.ods",
+  "output_csv": "/Users/antonfilatov/www/my/k3s/english-ai-bot/resources/wordsets/english_word_freq_pos_ud_top6000.filtered.csv",
+  "sheet": "1 lemmas",
+  "total_extracted_rows": 4759,
+  "rule_filtered_out": 6,
+  "llm_candidates": 255,
+  "llm_filtered_out": 32,
+  "final_rows": 4721,
+  "final_rows_by_pos": {
+    "VERB": 969,
+    "ADV": 328,
+    "NOUN": 2602,
+    "ADJ": 822
+  },
+  "llm_enabled": true,
+  "llm_model": "openai/gpt-5.4",
+  "removed_samples_rule": [
+    {
+      "lemma": "истина",
+      "pos": "ADJ",
+      "reason": "rule_filter"
+    },
+    {
+      "lemma": "tv",
+      "pos": "NOUN",
+      "reason": "rule_filter"
+    },
+    {
+      "lemma": "pm",
+      "pos": "ADV",
+      "reason": "rule_filter"
+    },
+    {
+      "lemma": "ложь",
+      "pos": "ADJ",
+      "reason": "rule_filter"
+    },
+    {
+      "lemma": "pc",
+      "pos": "NOUN",
+      "reason": "rule_filter"
+    },
+    {
+      "lemma": "cd",
+      "pos": "NOUN",
+      "reason": "rule_filter"
+    }
+  ],
+  "removed_samples_llm": [
+    {
+      "lemma": "republican",
+      "pos": "NOUN",
+      "reason": "political identity term heavily tied to proper-name/entity usage"
+    },
+    {
+      "lemma": "american",
+      "pos": "NOUN",
+      "reason": "demonym/nationality term treated as proper-group label"
+    },
+    {
+      "lemma": "congress",
+      "pos": "NOUN",
+      "reason": "institution/governing body often used as proper entity"
+    },
+    {
+      "lemma": "democrat",
+      "pos": "NOUN",
+      "reason": "political identity term heavily tied to proper-name/entity usage"
+    },
+    {
+      "lemma": "et",
+      "pos": "ADV",
+      "reason": "non-standalone/foreign abbreviation noise"
+    },
+    {
+      "lemma": "may",
+      "pos": "NOUN",
+      "reason": "month name/proper calendar term"
+    },
+    {
+      "lemma": "friday",
+      "pos": "NOUN",
+      "reason": "day name/proper calendar term"
+    },
+    {
+      "lemma": "july",
+      "pos": "NOUN",
+      "reason": "month name/proper calendar term"
+    },
+    {
+      "lemma": "senate",
+      "pos": "NOUN",
+      "reason": "institution/governing body often used as proper entity"
+    },
+    {
+      "lemma": "saturday",
+      "pos": "NOUN",
+      "reason": "day name/proper calendar term"
+    },
+    {
+      "lemma": "christmas",
+      "pos": "NOUN",
+      "reason": "holiday/proper calendar term"
+    },
+    {
+      "lemma": "am",
+      "pos": "ADV",
+      "reason": "malformed POS/token; likely auxiliary verb or time abbreviation"
+    },
+    {
+      "lemma": "august",
+      "pos": "NOUN",
+      "reason": "month name/proper calendar term"
+    },
+    {
+      "lemma": "it",
+      "pos": "NOUN",
+      "reason": "malformed POS; pronoun mislabeled as noun"
+    },
+    {
+      "lemma": "wednesday",
+      "pos": "NOUN",
+      "reason": "day name/proper calendar term"
+    },
+    {
+      "lemma": "english",
+      "pos": "NOUN",
+      "reason": "language/nationality term treated as proper-group label"
+    },
+    {
+      "lemma": "bible",
+      "pos": "NOUN",
+      "reason": "religious proper text/entity usage dominates"
+    },
+    {
+      "lemma": "christian",
+      "pos": "NOUN",
+      "reason": "religious identity term treated as proper-group label"
+    },
+    {
+      "lemma": "twitter",
+      "pos": "NOUN",
+      "reason": "brand/proper name"
+    },
+    {
+      "lemma": "aids",
+      "pos": "NOUN",
+      "reason": "disease name/acronym-like entity term"
+    },
+    {
+      "lemma": "muslim",
+      "pos": "NOUN",
+      "reason": "religious identity term treated as proper-group label"
+    },
+    {
+      "lemma": "indian",
+      "pos": "NOUN",
+      "reason": "demonym/ethnonym treated as proper-group label"
+    },
+    {
+      "lemma": "gop",
+      "pos": "NOUN",
+      "reason": "political acronym/entity term"
+    },
+    {
+      "lemma": "islam",
+      "pos": "NOUN",
+      "reason": "religion name/proper belief system"
+    },
+    {
+      "lemma": "catholic",
+      "pos": "NOUN",
+      "reason": "religious identity term treated as proper-group label"
+    },
+    {
+      "lemma": "palestinian",
+      "pos": "NOUN",
+      "reason": "demonym/ethnonym treated as proper-group label"
+    },
+    {
+      "lemma": "german",
+      "pos": "NOUN",
+      "reason": "demonym/language term treated as proper-group label"
+    },
+    {
+      "lemma": "french",
+      "pos": "NOUN",
+      "reason": "demonym/language term treated as proper-group label"
+    },
+    {
+      "lemma": "pope",
+      "pos": "NOUN",
+      "reason": "religious office strongly tied to unique proper entity usage"
+    },
+    {
+      "lemma": "mount",
+      "pos": "NOUN",
+      "reason": "artifact of place-name construction rather than standalone learner lemma"
+    },
+    {
+      "lemma": "thanksgiving",
+      "pos": "NOUN",
+      "reason": "holiday/proper calendar term"
+    },
+    {
+      "lemma": "olympics",
+      "pos": "NOUN",
+      "reason": "named event/entity rather than a general common word"
+    }
+  ]
+}

@@ -13,7 +13,7 @@ SERVICE_NAME ?= ai-bot
 -include .env
 .EXPORT_ALL_VARIABLES:
 
-.PHONY: all tidy build run test lint fmt setup up up-en up-es complaints-dry-en complaints-apply-en complaints-dry-es complaints-apply-es complaints-dry-both complaints-apply-both complaints-improve-both complaints-plan-both complaints-prompt-autofix-en complaints-prompt-autofix-es complaints-prompt-autofix-both complaints-prompt-regression complaints-prompt-integration-es complaints-smoke-en complaints-smoke-es complaints-smoke-both complaints-quality-both complaints-quality-baseline-both complaints-regenerate-affected complaints-improve-loop-both complaints-both complaints-cycle-both complaints-loop-tests clean check check-quick ci deploy update status logs docker-build docker-run docker-stop docker-logs docker-clean docker-rebuild docker-dev docker-dev-logs docker-dev-restart webapp-install webapp-dev webapp-build test-postgres test-integration test-integration-verbose grammar-bundle grammar-bundle-list postgres-dev-init-dbs clean-spanish-csv sync-spanish-word-sets requeue-invalid-cards-es-dry requeue-invalid-cards-es requeue-invalid-cards-es-no-tts-dry requeue-invalid-cards-es-no-tts import-spanish-verbs import-spanish-verbs-jehle-bundled backfill-word-verb-links build-verb-form-examples backfill-verb-lemma-ru-glosses backfill-verb-template-links preview-verb-templates verb-training-pack-fill verb-training-sync-db
+.PHONY: all tidy build run test lint fmt setup up up-en up-es complaints-dry-en complaints-apply-en complaints-dry-es complaints-apply-es complaints-dry-both complaints-apply-both complaints-improve-both complaints-plan-both complaints-prompt-autofix-en complaints-prompt-autofix-es complaints-prompt-autofix-both complaints-prompt-regression complaints-prompt-integration-es complaints-smoke-en complaints-smoke-es complaints-smoke-both complaints-quality-both complaints-quality-baseline-both complaints-regenerate-affected complaints-improve-loop-both complaints-both complaints-cycle-both complaints-loop-tests clean check check-quick ci deploy update status logs docker-build docker-run docker-stop docker-logs docker-clean docker-rebuild docker-dev docker-dev-logs docker-dev-restart webapp-install webapp-dev webapp-build test-postgres test-integration test-integration-verbose grammar-bundle grammar-bundle-list postgres-dev-init-dbs clean-spanish-csv sync-spanish-word-sets prepare-english-csv sync-english-word-sets requeue-invalid-cards-es-dry requeue-invalid-cards-es requeue-invalid-cards-es-no-tts-dry requeue-invalid-cards-es-no-tts import-spanish-verbs import-spanish-verbs-jehle-bundled backfill-word-verb-links build-verb-form-examples backfill-verb-lemma-ru-glosses backfill-verb-template-links preview-verb-templates verb-training-pack-fill verb-training-sync-db
 
 all: build
 
@@ -730,7 +730,28 @@ sync-spanish-word-sets:
 	LEARNING_APP_CODE=spanish \
 	GRAMMAR_BUNDLE_ID=es \
 	go run ./cmd/import_word_sets_from_csv \
+		--lang es \
 		--csv "resources/wordsets/spanish_word_freq_pos_ud_top6000.csv" \
+		--commit
+
+prepare-english-csv:
+	@set -e; \
+	set -a; [ -f .env ] && . ./.env; set +a; \
+	set -a; [ -f .env.en ] && . ./.env.en; set +a; \
+	python3 scripts/prepare_english_frequency_csv.py
+
+sync-english-word-sets:
+	@set -e; \
+	set -a; [ -f .env ] && . ./.env; set +a; \
+	set -a && . ./.env.en && set +a; \
+	LEARNING_PAIR=ru-en \
+	LEARNING_NATIVE_LANG=ru \
+	LEARNING_TARGET_LANG=en \
+	LEARNING_APP_CODE=english \
+	GRAMMAR_BUNDLE_ID=en \
+	go run ./cmd/import_word_sets_from_csv \
+		--lang en \
+		--csv "resources/wordsets/english_word_freq_pos_ud_top6000.filtered.csv" \
 		--commit
 
 requeue-invalid-cards-es-dry:
@@ -866,6 +887,8 @@ help:
 	@echo "  make backfill-verb-lemma-ru-glosses ARGS='--dry-run' — LLM batch for RU glosses in verb_lemmas.metadata_json (optional ARGS; add ARGS='--fill-class' for verb_class only)"
 	@echo "  make backfill-verb-template-links ARGS='--dry-run' — offline verb_class + allowed_template_ids for curated lemmas (Spanish DB)"
 	@echo "  make preview-verb-templates ARGS='-lemma=hablar' — dump ES/RU example for each paradigm row (Spanish DB)"
+	@echo "  make prepare-english-csv - Build English frequency CSV from wordFrequency.ods (rule + LLM cleanup)"
+	@echo "  make sync-english-word-sets - Import prepared English CSV into word sets (local/manual run)"
 	@echo "  make requeue-invalid-cards-es-dry - Dry-run soft cleanup: invalid cards + duplicates + invalid TTS"
 	@echo "  make requeue-invalid-cards-es - Commit soft cleanup: invalid cards + duplicates + invalid TTS"
 	@echo "  make requeue-invalid-cards-es-no-tts-dry - Dry-run soft cleanup without touching TTS"

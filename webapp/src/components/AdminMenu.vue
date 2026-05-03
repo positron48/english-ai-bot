@@ -54,7 +54,7 @@
         <span>Words Management</span>
       </router-link>
       <router-link
-        v-if="can('words.read_all')"
+        v-if="can('words.read_all') && showSpanishVerbFormsAdmin"
         to="/admin/verb-forms"
         class="admin-sidebar-item"
         :class="{ active: $route.path === '/admin/verb-forms' }"
@@ -183,10 +183,12 @@ import { ref, onMounted, onUnmounted, computed, watch, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useTheme } from '../composables/useTheme'
 import { useAuth } from '../composables/useAuth'
+import { useLearningConfig } from '../composables/useLearningConfig'
 import Icon from './Icon.vue'
 
 const { t } = useI18n()
 const { can, loadPermissions } = useAuth()
+const { learning, ensureLearningLoaded } = useLearningConfig()
 
 const showSidebar = ref(false)
 const windowWidth = ref(window.innerWidth)
@@ -194,6 +196,7 @@ const { theme: currentTheme, toggleTheme, setTheme } = useTheme()
 const selectedTheme = ref<'light' | 'dark'>(currentTheme.value)
 
 const isMobile = computed(() => windowWidth.value < 768)
+const showSpanishVerbFormsAdmin = computed(() => Boolean(learning.value?.spanish_verb_forms_enabled))
 
 let isClosingSidebar = false // Флаг для предотвращения двойного закрытия
 
@@ -306,6 +309,7 @@ const handleOpenMenu = (e?: Event) => {
 
 onMounted(async () => {
   await loadPermissions()
+  await ensureLearningLoaded()
   
   // Проверяем, нет ли уже другого сайдбара в DOM
   const existingSidebars = document.querySelectorAll('[data-admin-sidebar="true"]')

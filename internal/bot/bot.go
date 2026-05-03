@@ -19,6 +19,7 @@ import (
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/service"
 	"tgbot-skeleton/internal/web"
+	"tgbot-skeleton/internal/wordsetimport"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"go.uber.org/zap"
@@ -112,6 +113,12 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 
 	// Create repositories
 	conn := db.GetConnection()
+
+	// Zero-touch bootstrap for English frequency word sets.
+	if err := wordsetimport.AutoSyncEnglishWordSets(context.Background(), cfg, conn, log); err != nil {
+		log.Warn("english word sets bootstrap skipped due to error", zap.Error(err))
+	}
+
 	wordRepo := repository.NewWordRepository(conn, log)
 	userRepo := repository.NewUserRepository(conn, log)
 	trainingCardRepo := repository.NewTrainingCardRepository(conn, log)

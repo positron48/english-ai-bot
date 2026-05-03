@@ -37,6 +37,10 @@ func (r *AppSettingsRepository) GetSetting(key string) (string, error) {
 
 // SetSetting sets a setting value by key
 func (r *AppSettingsRepository) SetSetting(key, value string, userID int64) error {
+	var updatedBy interface{}
+	if userID > 0 {
+		updatedBy = userID
+	}
 	query := `
 		INSERT INTO app_settings (key, value, updated_by_user_id, updated_at)
 		VALUES (?, ?, ?, CURRENT_TIMESTAMP)
@@ -45,7 +49,7 @@ func (r *AppSettingsRepository) SetSetting(key, value string, userID int64) erro
 			updated_by_user_id = excluded.updated_by_user_id,
 			updated_at = CURRENT_TIMESTAMP
 	`
-	_, err := r.db.Exec(query, key, value, userID)
+	_, err := r.db.Exec(query, key, value, updatedBy)
 	if err != nil {
 		return fmt.Errorf("failed to set setting %s: %w", key, err)
 	}

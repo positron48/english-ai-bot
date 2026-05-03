@@ -1,7 +1,7 @@
 {
   "version": "v1",
   "language": "es",
-  "generated_at": "2026-05-03T07:29:57Z",
+  "generated_at": "2026-05-03T14:58:42Z",
   "generator": {
     "name": "generate-verb-forms-training.py",
     "model": "qwen3:30b"
@@ -85,6 +85,23 @@
     "situar": "lemmas/situar.json",
     "superar": "lemmas/superar.json",
     "unir": "lemmas/unir.json",
-    "vivir": "lemmas/vivir.json"
+    "vivir": "lemmas/vivir.json",
+    "ser": "lemmas/ser.json",
+    "haber": "lemmas/haber.json",
+    "tener": "lemmas/tener.json",
+    "estar": "lemmas/estar.json",
+    "poder": "lemmas/poder.json",
+    "decir": "lemmas/decir.json",
+    "ir": "lemmas/ir.json",
+    "deber": "lemmas/deber.json",
+    "ver": "lemmas/ver.json",
+    "llegar": "lemmas/llegar.json",
+    "llevar": "lemmas/llevar.json",
+    "querer": "lemmas/querer.json",
+    "seguir": "lemmas/seguir.json",
+    "poner": "lemmas/poner.json",
+    "dejar": "lemmas/dejar.json",
+    "conocer": "lemmas/conocer.json",
+    "quedar": "lemmas/quedar.json"
   }
 }
