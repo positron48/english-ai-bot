@@ -505,7 +505,14 @@
     "noLemmas": "No lemmas match this filter.",
     "loadingCards": "Loading cards…",
     "noCards": "No verb_training_cards rows for this word yet.",
-    "loadFailed": "Failed to load data."
+    "loadFailed": "Failed to load data.",
+    "colId": "ID",
+    "colTense": "Tense / mood",
+    "colPronoun": "Pronoun",
+    "colForm": "Form",
+    "colSentence": "Sentence (gap)",
+    "colRu": "Russian",
+    "colOptions": "Options"
   },
   "errors": {
     "unauthorized": "Unauthorized",

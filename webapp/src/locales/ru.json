@@ -505,7 +505,14 @@
     "noLemmas": "Нет лемм по этому фильтру.",
     "loadingCards": "Загрузка карточек…",
     "noCards": "Для этого слова пока нет строк verb_training_cards.",
-    "loadFailed": "Не удалось загрузить данные."
+    "loadFailed": "Не удалось загрузить данные.",
+    "colId": "ID",
+    "colTense": "Время / наклонение",
+    "colPronoun": "Местоимение",
+    "colForm": "Форма",
+    "colSentence": "Предложение с пропуском",
+    "colRu": "Перевод (RU)",
+    "colOptions": "Варианты ответов"
   },
   "errors": {
     "unauthorized": "Неавторизован",

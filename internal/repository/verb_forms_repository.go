@@ -37,6 +37,12 @@ AND EXISTS (
 )`
 }
 
+// verbTrainingPromptHasExampleTranslationSQL keeps only cards with a non-empty example_translation in prompt_json
+// (skips legacy/partial rows before full lemma pack import).
+func verbTrainingPromptHasExampleTranslationSQL(vtcAlias string) string {
+	return ` AND NULLIF(TRIM(COALESCE(` + vtcAlias + `.prompt_json::jsonb->>'example_translation','')), '') IS NOT NULL`
+}
+
 func (r *VerbFormsRepository) UpsertVerbLemma(lemma, language, source, sourceVersion, checksum, metadataJSON string) (int64, error) {
 	q := `INSERT INTO verb_lemmas (lemma, language, source, source_version, checksum, metadata_json, updated_at)
 	      VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
@@ -448,7 +454,7 @@ func (r *VerbFormsRepository) EnsureUserCardsForUserWords(userID int64, scopes [
 	          SELECT tc.word_card_id FROM user_cards uc JOIN training_cards tc ON tc.id=uc.training_card_id WHERE uc.user_id=?
 	          UNION
 	          SELECT word_card_id FROM user_word_knowledge WHERE user_id=? AND status='known'
-	        )` + verbTrainingEligibleByWordCardSQL("c")
+	        )` + verbTrainingEligibleByWordCardSQL("c") + verbTrainingPromptHasExampleTranslationSQL("c")
 	rows, err := r.db.Query(q, args...)
 	if err != nil {
 		return fmt.Errorf("load candidate verb training cards: %w", err)
@@ -524,7 +530,7 @@ func (r *VerbFormsRepository) GetVerbQueue(userID int64, now time.Time, maxCards
 	      JOIN verb_training_cards vtc ON vtc.id = uvc.verb_training_card_id
 	      INNER JOIN verb_forms_dict d ON d.id = vtc.verb_form_dict_id
 	      WHERE uvc.user_id = ? AND vtc.card_type = ?
-	        AND (uvc.next_due_at IS NULL OR uvc.next_due_at <= ?)` + verbTrainingEligibleByWordCardSQL("vtc") + `
+	        AND (uvc.next_due_at IS NULL OR uvc.next_due_at <= ?)` + verbTrainingEligibleByWordCardSQL("vtc") + verbTrainingPromptHasExampleTranslationSQL("vtc") + `
 	      ORDER BY CASE WHEN uvc.state='learning' THEN 0 ELSE 1 END, uvc.next_due_at NULLS FIRST
 	      LIMIT ?`
 	rows, err := r.db.Query(q, userID, models.VerbCardTypeCloze, now, dueLimit)
@@ -554,7 +560,7 @@ func (r *VerbFormsRepository) GetVerbQueue(userID int64, now time.Time, maxCards
 		      FROM user_verb_cards uvc
 		      JOIN verb_training_cards vtc ON vtc.id = uvc.verb_training_card_id
 		      INNER JOIN verb_forms_dict d ON d.id = vtc.verb_form_dict_id
-		      WHERE uvc.user_id = ? AND uvc.state='new' AND vtc.card_type = ?` + verbTrainingEligibleByWordCardSQL("vtc") + `
+		      WHERE uvc.user_id = ? AND uvc.state='new' AND vtc.card_type = ?` + verbTrainingEligibleByWordCardSQL("vtc") + verbTrainingPromptHasExampleTranslationSQL("vtc") + `
 		      ORDER BY random()
 		      LIMIT ?`
 		rowsNew, err := r.db.Query(nq, userID, models.VerbCardTypeCloze, poolCap)
@@ -589,7 +595,7 @@ func (r *VerbFormsRepository) CountUserVerbClozeCards(userID int64) (int64, erro
 	q := `SELECT COUNT(*) FROM user_verb_cards uvc
 		INNER JOIN verb_training_cards vtc ON vtc.id = uvc.verb_training_card_id
 		INNER JOIN verb_forms_dict d ON d.id = vtc.verb_form_dict_id
-		WHERE uvc.user_id = ? AND vtc.card_type = ?` + verbTrainingEligibleByWordCardSQL("vtc")
+		WHERE uvc.user_id = ? AND vtc.card_type = ?` + verbTrainingEligibleByWordCardSQL("vtc") + verbTrainingPromptHasExampleTranslationSQL("vtc")
 	var n int64
 	if err := r.db.QueryRow(q, userID, models.VerbCardTypeCloze).Scan(&n); err != nil {
 		return 0, fmt.Errorf("count user verb cloze cards: %w", err)
@@ -759,7 +765,8 @@ func (r *VerbFormsRepository) ListSpanishVerbLemmas() ([]string, error) {
 // -ir/-ar/-er (length ≥ 4) plus short irregulars ir, dar, ser, ver.
 // Excludes nouns/participles mistaken as lemmas (pasado, embargo, hecho, cuenta, …).
 func spanishLemmaLooksLikeInfinitiveSQL() string {
-	return `AND (
+	// Leading space so concatenation after ")" or ") < ?" never yields ")AND" / "?AND" (PostgreSQL 42601).
+	return ` AND (
   LOWER(TRIM(w.word)) IN ('ir','dar','ser','ver')
   OR (
     LENGTH(LOWER(TRIM(w.word))) >= 4

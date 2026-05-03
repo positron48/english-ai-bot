@@ -72,35 +72,47 @@
                   </div>
                   <div v-else class="verb-cards-list">
                     <h4 class="verb-cards-list__title">{{ t('adminVerbTraining.cardsHeading') }}</h4>
-                    <div
-                      v-for="c in cardsByWordId[row.word_card_id] || []"
-                      :key="c.id"
-                      class="verb-card-block"
-                    >
-                      <div class="verb-card-block__head">
-                        <span class="verb-card-block__id">{{ t('adminVerbTraining.cardId') }}: {{ c.id }}</span>
-                        <span class="verb-card-block__slice">{{ formatSlice(c) }}</span>
-                        <span v-if="c.surface_form" class="verb-card-block__surface">{{
-                          c.surface_form
-                        }}</span>
-                      </div>
-                      <div class="verb-card-block__grid">
-                        <div v-if="c.prompt != null" class="verb-card-block__col">
-                          <div class="verb-card-block__label">{{ t('adminVerbTraining.promptJson') }}</div>
-                          <pre class="json-block">{{ pretty(c.prompt) }}</pre>
-                        </div>
-                        <div v-if="c.answer != null" class="verb-card-block__col">
-                          <div class="verb-card-block__label">{{ t('adminVerbTraining.answerJson') }}</div>
-                          <pre class="json-block">{{ pretty(c.answer) }}</pre>
-                        </div>
-                        <div
-                          v-if="c.distractors != null && hasContent(c.distractors)"
-                          class="verb-card-block__col"
-                        >
-                          <div class="verb-card-block__label">{{ t('adminVerbTraining.distractorsJson') }}</div>
-                          <pre class="json-block">{{ pretty(c.distractors) }}</pre>
-                        </div>
-                      </div>
+                    <div class="verb-cards-table-wrap">
+                      <table class="verb-cards-detail-table">
+                        <thead>
+                          <tr>
+                            <th class="verb-cards-detail-table__th-num">{{ t('adminVerbTraining.colId') }}</th>
+                            <th>{{ t('adminVerbTraining.colTense') }}</th>
+                            <th>{{ t('adminVerbTraining.colPronoun') }}</th>
+                            <th>{{ t('adminVerbTraining.colForm') }}</th>
+                            <th>{{ t('adminVerbTraining.colSentence') }}</th>
+                            <th>{{ t('adminVerbTraining.colRu') }}</th>
+                            <th>{{ t('adminVerbTraining.colOptions') }}</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr
+                            v-for="c in cardsByWordId[row.word_card_id] || []"
+                            :key="c.id"
+                            class="verb-cards-detail-table__row"
+                          >
+                            <td class="verb-cards-detail-table__id">{{ c.id }}</td>
+                            <td class="verb-cards-detail-table__nowrap">{{ formatTenseMood(c) }}</td>
+                            <td>{{ subjectPronoun(c.person, c.number) }}</td>
+                            <td class="verb-cards-detail-table__form">{{ c.surface_form || '—' }}</td>
+                            <td class="verb-cards-detail-table__text">{{ promptQuestion(c) }}</td>
+                            <td class="verb-cards-detail-table__text">{{ promptTranslationRu(c) }}</td>
+                            <td class="verb-cards-detail-table__options">
+                              <div
+                                v-for="(opt, oi) in parseDistractorOptions(c)"
+                                :key="`${c.id}-opt-${oi}`"
+                                class="verb-cards-detail-table__option-line"
+                              >
+                                {{ opt }}
+                              </div>
+                              <span
+                                v-if="parseDistractorOptions(c).length === 0"
+                                class="muted"
+                              >—</span>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
                     </div>
                   </div>
                 </td>
@@ -148,6 +160,11 @@ interface VerbTrainingCardAPI {
   distractors?: unknown
 }
 
+interface VerbPromptFields {
+  question?: string
+  example_translation?: string
+}
+
 const searchQuery = ref('')
 const lemmas = ref<LemmaRow[]>([])
 const nextCursor = ref(0)
@@ -162,24 +179,65 @@ const cardsLoadingId = ref<number | null>(null)
 
 let searchDebounce: ReturnType<typeof setTimeout> | null = null
 
-function pretty(v: unknown): string {
-  try {
-    return JSON.stringify(v, null, 2)
-  } catch {
-    return String(v)
+function promptFields(c: VerbTrainingCardAPI): VerbPromptFields {
+  const p = c.prompt
+  if (p && typeof p === 'object' && !Array.isArray(p)) {
+    return p as VerbPromptFields
   }
+  return {}
 }
 
-function hasContent(v: unknown): boolean {
-  if (v === null || v === undefined) return false
-  if (typeof v === 'string') return v.trim() !== '' && v !== '{}'
-  if (Array.isArray(v)) return v.length > 0
-  if (typeof v === 'object') return Object.keys(v as object).length > 0
-  return true
+function promptQuestion(c: VerbTrainingCardAPI): string {
+  const q = promptFields(c).question
+  return typeof q === 'string' && q.trim() !== '' ? q.trim() : '—'
 }
 
-function formatSlice(c: VerbTrainingCardAPI): string {
-  return `${c.mood} · ${c.tense} · ${c.person}/${c.number}`
+function promptTranslationRu(c: VerbTrainingCardAPI): string {
+  const tr = promptFields(c).example_translation
+  return typeof tr === 'string' && tr.trim() !== '' ? tr.trim() : '—'
+}
+
+function formatTenseMood(c: VerbTrainingCardAPI): string {
+  const mood = String(c.mood || '').trim()
+  const tense = String(c.tense || '').trim()
+  if (!tense && !mood) return '—'
+  if (!mood) return tense
+  if (!tense) return mood
+  return `${tense} · ${mood}`
+}
+
+function subjectPronoun(person: string, number: string): string {
+  const p = String(person || '').trim()
+  const n = String(number || '').trim().toLowerCase()
+  if (p === '1' && n === 'singular') return 'yo'
+  if (p === '2' && n === 'singular') return 'tú'
+  if (p === '3' && n === 'singular') return 'él/ella/usted'
+  if (p === '1' && n === 'plural') return 'nosotros'
+  if (p === '2' && n === 'plural') return 'vosotros/ustedes'
+  if (p === '3' && n === 'plural') return 'ellos/ellas/ustedes'
+  return `${person}/${number}`
+}
+
+function parseDistractorOptions(c: VerbTrainingCardAPI): string[] {
+  const d = c.distractors
+  if (d == null) return []
+  if (Array.isArray(d)) {
+    return d.map((x) => String(x).trim()).filter(Boolean)
+  }
+  if (typeof d === 'string') {
+    const s = d.trim()
+    if (!s || s === 'null') return []
+    try {
+      const parsed = JSON.parse(s) as unknown
+      if (Array.isArray(parsed)) {
+        return parsed.map((x) => String(x).trim()).filter(Boolean)
+      }
+    } catch {
+      /* raw string */
+    }
+    return s ? [s] : []
+  }
+  return []
 }
 
 async function fetchPage(append: boolean) {
@@ -363,57 +421,79 @@ onMounted(() => {
   font-size: 16px;
 }
 
-.verb-card-block {
+.verb-cards-table-wrap {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.verb-cards-detail-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  background: var(--bg-primary);
   border: 1px solid var(--border-primary);
   border-radius: 8px;
-  padding: 12px;
-  margin-bottom: 12px;
-  background: var(--bg-primary);
+  overflow: hidden;
 }
 
-.verb-card-block__head {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 16px;
-  align-items: baseline;
-  margin-bottom: 8px;
-  font-size: 13px;
+.verb-cards-detail-table th,
+.verb-cards-detail-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border-primary);
+  vertical-align: top;
+  text-align: left;
 }
 
-.verb-card-block__id {
-  color: var(--text-secondary);
-}
-
-.verb-card-block__slice {
+.verb-cards-detail-table thead th {
+  background: var(--bg-secondary, #eee);
   font-weight: 600;
-}
-
-.verb-card-block__surface {
-  font-family: ui-monospace, monospace;
-}
-
-.verb-card-block__grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 12px;
-}
-
-.verb-card-block__label {
   font-size: 12px;
-  color: var(--text-secondary);
-  margin-bottom: 4px;
+  white-space: nowrap;
 }
 
-.json-block {
-  margin: 0;
-  padding: 8px;
-  border-radius: 6px;
-  background: var(--bg-secondary, #f0f0f0);
-  font-size: 11px;
-  line-height: 1.4;
-  max-height: 220px;
-  overflow: auto;
-  white-space: pre-wrap;
+.verb-cards-detail-table__th-num {
+  width: 56px;
+}
+
+.verb-cards-detail-table__row:last-child td {
+  border-bottom: none;
+}
+
+.verb-cards-detail-table__id {
+  color: var(--text-secondary);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.verb-cards-detail-table__nowrap {
+  white-space: nowrap;
+}
+
+.verb-cards-detail-table__form {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+}
+
+.verb-cards-detail-table__text {
+  max-width: 280px;
+  line-height: 1.45;
   word-break: break-word;
+}
+
+.verb-cards-detail-table__options {
+  min-width: 140px;
+  max-width: 220px;
+}
+
+.verb-cards-detail-table__option-line {
+  padding: 4px 0;
+  border-bottom: 1px dashed var(--border-primary);
+  line-height: 1.35;
+  word-break: break-word;
+}
+
+.verb-cards-detail-table__option-line:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
 }
 </style>

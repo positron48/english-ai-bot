@@ -236,6 +236,73 @@ func promptString(m map[string]interface{}, key string) string {
 	}
 }
 
+func stringSliceFromPrompt(m map[string]interface{}, key string) []string {
+	if m == nil {
+		return nil
+	}
+	v, ok := m[key]
+	if !ok || v == nil {
+		return nil
+	}
+	switch t := v.(type) {
+	case []string:
+		out := make([]string, 0, len(t))
+		for _, s := range t {
+			s = strings.TrimSpace(s)
+			if s != "" {
+				out = append(out, s)
+			}
+		}
+		return out
+	case []interface{}:
+		out := make([]string, 0, len(t))
+		for _, x := range t {
+			s := strings.TrimSpace(fmt.Sprint(x))
+			if s != "" {
+				out = append(out, s)
+			}
+		}
+		return out
+	default:
+		return nil
+	}
+}
+
+// hydrateVerbClozePrompt fills Spanish cloze line and Russian support text when the stored prompt is minimal
+// (e.g. legacy/runtime rows with empty question). Typed input mode uses the same payload as choice mode, so both must show
+// a sentence-style cloze plus translation like imported lemma artifacts (question + example_translation).
+func hydrateVerbClozePrompt(prompt map[string]interface{}, surfaceAns string, seed int64) {
+	if prompt == nil {
+		return
+	}
+	lemma := promptString(prompt, "lemma")
+	mood := promptString(prompt, "mood")
+	tense := promptString(prompt, "tense")
+	person := promptString(prompt, "person")
+	number := promptString(prompt, "number")
+	ruGloss := promptString(prompt, "ru_gloss")
+	verbClass := promptString(prompt, "verb_class")
+	allowed := stringSliceFromPrompt(prompt, "allowed_template_ids")
+
+	q := strings.TrimSpace(promptString(prompt, "question"))
+	tr := strings.TrimSpace(promptString(prompt, "example_translation"))
+	surfaceAns = strings.TrimSpace(surfaceAns)
+
+	switch {
+	case q == "" && surfaceAns != "":
+		es, ru := spanishverbs.GenerateVerbExamplePair(seed, lemma, mood, tense, person, number, surfaceAns, ruGloss, verbClass, allowed)
+		if strings.TrimSpace(es) != "" {
+			prompt["question"] = es
+		}
+		if tr == "" && strings.TrimSpace(ru) != "" {
+			prompt["example_translation"] = ru
+		}
+	case q != "" && tr == "" && surfaceAns != "":
+		prompt["example_translation"] = spanishverbs.BuildRussianLiteraryLine(
+			q, lemma, surfaceAns, mood, tense, ruGloss, seed)
+	}
+}
+
 func ensureVerbClozeQuestionLine(prompt map[string]interface{}) {
 	if prompt == nil {
 		return
@@ -289,13 +356,16 @@ func (r *Router) writeCurrentVerbCard(w http.ResponseWriter, state *webVerbTrain
 	if prompt == nil {
 		prompt = map[string]interface{}{}
 	}
-	if isVerbClozeCardType(item.CardType) {
-		ensureVerbClozeQuestionLine(prompt)
-	}
 
 	var answer map[string]string
 	_ = json.Unmarshal([]byte(item.AnswerJSON), &answer)
 	surfaceAns := strings.TrimSpace(answer["surface_form"])
+
+	cardSeed := state.SessionID ^ item.UserVerbCardID ^ int64(state.Index)
+	if isVerbClozeCardType(item.CardType) {
+		hydrateVerbClozePrompt(prompt, surfaceAns, cardSeed)
+	}
+
 	if isVerbClozeCardType(item.CardType) && surfaceAns != "" {
 		if q := strings.TrimSpace(promptString(prompt, "question")); q != "" {
 			prompt["question"] = service.MaskClozeVerbSurfaceInQuestion(q, surfaceAns)

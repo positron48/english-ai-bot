@@ -500,7 +500,14 @@
     "noLemmas": "Ningún lema coincide con el filtro.",
     "loadingCards": "Cargando tarjetas…",
     "noCards": "Aún no hay filas verb_training_cards para esta palabra.",
-    "loadFailed": "Error al cargar los datos."
+    "loadFailed": "Error al cargar los datos.",
+    "colId": "ID",
+    "colTense": "Tiempo / modo",
+    "colPronoun": "Pronombre",
+    "colForm": "Forma",
+    "colSentence": "Oración (lazo)",
+    "colRu": "Ruso",
+    "colOptions": "Opciones"
   },
   "errors": {
     "unauthorized": "No autorizado",
