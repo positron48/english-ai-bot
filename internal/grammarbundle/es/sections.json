@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "last_updated": "2026-04-28T08:44:00Z",
+  "last_updated": "2026-05-04T16:15:34.395Z",
   "sections": [
     {
       "section_id": "es.grammar.orientation_alphabet_sounds",
@@ -1737,7 +1737,7 @@
       "title": "Futuro for probability in the present",
       "level": "A2",
       "order": 64,
-      "status": "pending",
+      "status": "validated",
       "input_file": "config/chapter-templates/es.grammar.future_conditionals.futuro_probability_present-input.json",
       "output_dir": "chapters/064.es.grammar.future_conditionals.futuro_probability_present",
       "files": {
@@ -1758,7 +1758,7 @@
       "title": "Condicional simple: polite requests and hypotheticals",
       "level": "A2",
       "order": 65,
-      "status": "pending",
+      "status": "validated",
       "input_file": "config/chapter-templates/es.grammar.future_conditionals.condicional_simple_polite_requests_hypotheticals-input.json",
       "output_dir": "chapters/065.es.grammar.future_conditionals.condicional_simple_polite_requests_hypotheticals",
       "files": {
@@ -1779,7 +1779,7 @@
       "title": "Build & speak: plans, predictions and polite requests",
       "level": "A2",
       "order": 66,
-      "status": "pending",
+      "status": "validated",
       "input_file": "config/chapter-templates/es.grammar.future_conditionals.build_speak_plans_predictions_polite_requests-input.json",
       "output_dir": "chapters/066.es.grammar.future_conditionals.build_speak_plans_predictions_polite_requests",
       "files": {
@@ -1800,7 +1800,7 @@
       "title": "Poder, saber and querer + infinitive",
       "level": "A2",
       "order": 67,
-      "status": "pending",
+      "status": "validated",
       "input_file": "config/chapter-templates/es.grammar.obligation_ability_commands.poder_saber_querer_plus_infinitive-input.json",
       "output_dir": "chapters/067.es.grammar.obligation_ability_commands.poder_saber_querer_plus_infinitive",
       "files": {
@@ -1821,7 +1821,7 @@
       "title": "Tener que, deber and hay que: shades of obligation",
       "level": "A2",
       "order": 68,
-      "status": "pending",
+      "status": "validated",
       "input_file": "config/chapter-templates/es.grammar.obligation_ability_commands.tener_que_deber_hay_que_shades_obligation-input.json",
       "output_dir": "chapters/068.es.grammar.obligation_ability_commands.tener_que_deber_hay_que_shades_obligation",
       "files": {
@@ -3606,9 +3606,9 @@
     "total_chapters": 152,
     "chapters_generated": 64,
     "chapters_in_progress": 0,
-    "chapters_pending": 88,
+    "chapters_pending": 83,
     "chapters_failed": 0,
-    "chapters_validated": 64,
-    "last_updated": "2026-04-28T08:44:00Z"
+    "chapters_validated": 69,
+    "last_updated": "2026-05-04T16:15:34.395Z"
   }
 }
