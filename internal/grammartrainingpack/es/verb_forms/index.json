@@ -1,7 +1,7 @@
 {
   "version": "v1",
   "language": "es",
-  "generated_at": "2026-05-04T16:14:38Z",
+  "generated_at": "2026-05-04T18:01:50Z",
   "generator": {
     "name": "generate-verb-forms-training.py",
     "model": "qwen3:30b"
@@ -225,6 +225,15 @@
     "colocar": "lemmas/colocar.json",
     "organizar": "lemmas/organizar.json",
     "preguntar": "lemmas/preguntar.json",
-    "insistir": "lemmas/insistir.json"
+    "insistir": "lemmas/insistir.json",
+    "marcar": "lemmas/marcar.json",
+    "responder": "lemmas/responder.json",
+    "controlar": "lemmas/controlar.json",
+    "conducir": "lemmas/conducir.json",
+    "compartir": "lemmas/compartir.json",
+    "obligar": "lemmas/obligar.json",
+    "admitir": "lemmas/admitir.json",
+    "rechazar": "lemmas/rechazar.json",
+    "recoger": "lemmas/recoger.json"
   }
 }
