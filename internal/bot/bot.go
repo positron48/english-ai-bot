@@ -118,6 +118,12 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 	if err := wordsetimport.AutoSyncEnglishWordSets(context.Background(), cfg, conn, log); err != nil {
 		log.Warn("english word sets bootstrap skipped due to error", zap.Error(err))
 	}
+	if err := wordsetimport.AutoSyncEnglishMustHaveWordSets(context.Background(), cfg, conn, log); err != nil {
+		log.Warn("english must-have word sets bootstrap skipped due to error", zap.Error(err))
+	}
+	if err := wordsetimport.AutoSyncSpanishMustHaveWordSets(context.Background(), cfg, conn, log); err != nil {
+		log.Warn("spanish must-have word sets bootstrap skipped due to error", zap.Error(err))
+	}
 
 	wordRepo := repository.NewWordRepository(conn, log)
 	userRepo := repository.NewUserRepository(conn, log)

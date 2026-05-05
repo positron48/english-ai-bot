@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "last_updated": "2026-05-04T16:15:34.395Z",
+  "last_updated": "2026-05-05T07:59:03.211Z",
   "sections": [
     {
       "section_id": "es.grammar.orientation_alphabet_sounds",
@@ -1842,7 +1842,7 @@
       "title": "Se puede, no se puede and esta prohibido",
       "level": "A2",
       "order": 69,
-      "status": "pending",
+      "status": "validated",
       "input_file": "config/chapter-templates/es.grammar.obligation_ability_commands.se_puede_no_se_puede_esta_prohibido-input.json",
       "output_dir": "chapters/069.es.grammar.obligation_ability_commands.se_puede_no_se_puede_esta_prohibido",
       "files": {
@@ -1863,7 +1863,7 @@
       "title": "Affirmative commands: tu, usted and nosotros",
       "level": "A2",
       "order": 70,
-      "status": "pending",
+      "status": "validated",
       "input_file": "config/chapter-templates/es.grammar.obligation_ability_commands.affirmative_commands_tu_usted_nosotros-input.json",
       "output_dir": "chapters/070.es.grammar.obligation_ability_commands.affirmative_commands_tu_usted_nosotros",
       "files": {
@@ -1884,7 +1884,7 @@
       "title": "Pronouns with infinitives, gerunds and affirmative commands",
       "level": "A2",
       "order": 71,
-      "status": "pending",
+      "status": "validated",
       "input_file": "config/chapter-templates/es.grammar.obligation_ability_commands.pronouns_infinitives_gerunds_affirmative_commands-input.json",
       "output_dir": "chapters/071.es.grammar.obligation_ability_commands.pronouns_infinitives_gerunds_affirmative_commands",
       "files": {
@@ -1905,7 +1905,7 @@
       "title": "Build & speak: rules, instructions and advice",
       "level": "A2",
       "order": 72,
-      "status": "pending",
+      "status": "validated",
       "input_file": "config/chapter-templates/es.grammar.obligation_ability_commands.build_speak_rules_instructions_advice-input.json",
       "output_dir": "chapters/072.es.grammar.obligation_ability_commands.build_speak_rules_instructions_advice",
       "files": {
@@ -3606,9 +3606,9 @@
     "total_chapters": 152,
     "chapters_generated": 64,
     "chapters_in_progress": 0,
-    "chapters_pending": 83,
+    "chapters_pending": 79,
     "chapters_failed": 0,
-    "chapters_validated": 69,
-    "last_updated": "2026-05-04T16:15:34.395Z"
+    "chapters_validated": 73,
+    "last_updated": "2026-05-05T07:59:03.211Z"
   }
 }

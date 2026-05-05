@@ -12,7 +12,10 @@ import (
 
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/repository"
+	"tgbot-skeleton/internal/service"
+	"tgbot-skeleton/resources/wordsets"
 
+	"go.yaml.in/yaml/v3"
 	"go.uber.org/zap"
 )
 
@@ -21,8 +24,44 @@ const (
 	englishCSVImportedSetting = "word_sets.english.last_import_summary"
 	defaultEnglishCSVPath     = "/app/data/english_word_freq_pos_ud_top6000.filtered.csv"
 	fallbackEnglishCSVPath    = "resources/wordsets/english_word_freq_pos_ud_top6000.filtered.csv"
+	englishMustHaveChecksum   = "word_sets.english.must_have_sha256"
+	englishMustHaveSummary    = "word_sets.english.must_have_last_import_summary"
+	defaultEnglishMustHaveYAMLPath  = "/app/data/english_word_sets_must_have.yaml"
+	fallbackEnglishMustHaveYAMLPath = "courses/english-grammar/word-sets-must-have.yaml"
+	spanishMustHaveChecksum   = "word_sets.spanish.must_have_sha256"
+	spanishMustHaveSummary    = "word_sets.spanish.must_have_last_import_summary"
+	defaultSpanishMustHaveYAMLPath  = "/app/data/spanish_word_sets_must_have.yaml"
+	fallbackSpanishMustHaveYAMLPath = "courses/spanish-grammar/word-sets-must-have.yaml"
 	systemUserID              = int64(0)
 )
+
+type mustHaveFile struct {
+	MustHave mustHaveRoot `yaml:"must_have"`
+}
+
+type mustHaveRoot struct {
+	Title         string                 `yaml:"title"`
+	Description   string                 `yaml:"description"`
+	Subcategories []mustHaveSubcategory  `yaml:"subcategories"`
+}
+
+type mustHaveSubcategory struct {
+	ID    string          `yaml:"id"`
+	Title string          `yaml:"title"`
+	Sets  []mustHaveSet   `yaml:"sets"`
+}
+
+type mustHaveSet struct {
+	ID    string          `yaml:"id"`
+	Title string          `yaml:"title"`
+	Words []mustHaveWord  `yaml:"words"`
+}
+
+type mustHaveWord struct {
+	ES string `yaml:"es"`
+	EN string `yaml:"en"`
+	RU string `yaml:"ru"`
+}
 
 func detectEnglishCSVPath() (string, error) {
 	candidates := []string{
@@ -36,6 +75,16 @@ func detectEnglishCSVPath() (string, error) {
 		}
 	}
 	return "", fmt.Errorf("english frequency csv not found: %s or %s", defaultEnglishCSVPath, fallbackEnglishCSVPath)
+}
+
+func detectMustHaveYAMLPath(candidates []string) (string, error) {
+	for _, path := range candidates {
+		st, err := os.Stat(path)
+		if err == nil && !st.IsDir() {
+			return path, nil
+		}
+	}
+	return "", fmt.Errorf("must-have yaml not found: %s", strings.Join(candidates, " or "))
 }
 
 func fileSHA256(path string) (string, error) {
@@ -72,6 +121,20 @@ func upsertCategory(conn *sql.DB, parentID *int64, name, description string, sor
 	return id, err
 }
 
+func ensureCategoryMetadata(conn *sql.DB, id int64, description string, sortOrder int) error {
+	_, err := conn.Exec(`
+		UPDATE word_set_categories
+		SET description = CASE
+			WHEN (description IS NULL OR btrim(description) = '') AND btrim($2) <> '' THEN $2
+			ELSE description
+		END,
+		sort_order = $3,
+		is_published = 1
+		WHERE id = $1`,
+		id, strings.TrimSpace(description), sortOrder)
+	return err
+}
+
 func upsertWordSet(conn *sql.DB, categoryID int64, title, description, preferredPOS string, sortOrder int) error {
 	_, err := conn.Exec(`
 		INSERT INTO word_sets (category_id, title, description, is_published, sort_order, preferred_pos)
@@ -83,6 +146,163 @@ func upsertWordSet(conn *sql.DB, categoryID int64, title, description, preferred
 	return err
 }
 
+func ensureWordSet(conn *sql.DB, categoryID int64, title, description string, sortOrder int, preferredPOS *string) (int64, error) {
+	var pos any
+	if preferredPOS != nil {
+		p := strings.TrimSpace(*preferredPOS)
+		if p != "" {
+			pos = p
+		}
+	}
+	_, err := conn.Exec(`
+		INSERT INTO word_sets (category_id, title, description, is_published, sort_order, preferred_pos)
+		SELECT $1, $2, $3, 1, $4, $5
+		WHERE NOT EXISTS (
+			SELECT 1 FROM word_sets WHERE category_id = $1 AND title = $2
+		)`,
+		categoryID, title, description, sortOrder, pos)
+	if err != nil {
+		return 0, err
+	}
+	var id int64
+	if err := conn.QueryRow(`
+		SELECT id FROM word_sets
+		WHERE category_id = $1 AND title = $2
+		ORDER BY id LIMIT 1`,
+		categoryID, title).Scan(&id); err != nil {
+		return 0, err
+	}
+	_, err = conn.Exec(`
+		UPDATE word_sets
+		SET description = CASE
+			WHEN (description IS NULL OR btrim(description) = '') AND btrim($2) <> '' THEN $2
+			ELSE description
+		END,
+		sort_order = $3,
+		is_published = 1
+		WHERE id = $1`,
+		id, strings.TrimSpace(description), sortOrder)
+	if err != nil {
+		return 0, err
+	}
+	return id, nil
+}
+
+func loadMustHaveBlueprint(path string) (*mustHaveRoot, error) {
+	b, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+	var f mustHaveFile
+	if err := yaml.Unmarshal(b, &f); err != nil {
+		return nil, err
+	}
+	if strings.TrimSpace(f.MustHave.Title) == "" {
+		return nil, fmt.Errorf("must_have.title is required")
+	}
+	return &f.MustHave, nil
+}
+
+func normalizeMustHaveWords(words []mustHaveWord, lang string) []string {
+	out := make([]string, 0, len(words))
+	seen := make(map[string]struct{}, len(words))
+	for _, w := range words {
+		raw := strings.TrimSpace(w.ES)
+		if strings.EqualFold(lang, "en") {
+			raw = strings.TrimSpace(w.EN)
+		}
+		lemma := wordsets.NormalizeLemmaImport(raw)
+		if lemma == "" {
+			continue
+		}
+		if _, ok := seen[lemma]; ok {
+			continue
+		}
+		seen[lemma] = struct{}{}
+		out = append(out, lemma)
+	}
+	return out
+}
+
+func defaultDescription(kind, title string) string {
+	switch kind {
+	case "root":
+		return "Must-have Spanish vocabulary sets for everyday situations."
+	case "subcategory":
+		return fmt.Sprintf("Must-have vocabulary for %s.", title)
+	default:
+		return fmt.Sprintf("Must-have words for %s.", title)
+	}
+}
+
+func ensureMustHaveBlueprint(ctx context.Context, conn *sql.DB, cfg *config.Config, root *mustHaveRoot, lang string, commit bool, log *zap.Logger) (int, int, error) {
+	rootTitle := strings.TrimSpace(root.Title)
+	rootDesc := strings.TrimSpace(root.Description)
+	if rootDesc == "" {
+		rootDesc = defaultDescription("root", rootTitle)
+	}
+	rootID, err := upsertCategory(conn, nil, rootTitle, rootDesc, 100)
+	if err != nil {
+		return 0, 0, err
+	}
+	if err := ensureCategoryMetadata(conn, rootID, rootDesc, 100); err != nil {
+		return 0, 0, err
+	}
+
+	wordSetRepo := repository.NewWordSetRepository(conn, log)
+	wordSetCategoryRepo := repository.NewWordSetCategoryRepository(conn, log)
+	wordRepo := repository.NewWordRepository(conn, log)
+	svc := service.NewWordSetService(
+		wordSetRepo,
+		wordSetCategoryRepo,
+		wordRepo,
+		nil,
+		nil,
+		nil,
+		nil,
+		cfg.Learning,
+		"",
+		log,
+	)
+
+	totalSets := 0
+	totalItems := 0
+	for subIdx, sub := range root.Subcategories {
+		subTitle := strings.TrimSpace(sub.Title)
+		if subTitle == "" {
+			continue
+		}
+		subDesc := defaultDescription("subcategory", subTitle)
+		subID, err := upsertCategory(conn, &rootID, subTitle, subDesc, subIdx)
+		if err != nil {
+			return totalSets, totalItems, err
+		}
+		if err := ensureCategoryMetadata(conn, subID, subDesc, subIdx); err != nil {
+			return totalSets, totalItems, err
+		}
+		for setIdx, set := range sub.Sets {
+			setTitle := strings.TrimSpace(set.Title)
+			if setTitle == "" {
+				continue
+			}
+			setDesc := defaultDescription("set", setTitle)
+			setID, err := ensureWordSet(conn, subID, setTitle, setDesc, setIdx, nil)
+			if err != nil {
+				return totalSets, totalItems, err
+			}
+			lemmas := normalizeMustHaveWords(set.Words, lang)
+			totalSets++
+			totalItems += len(lemmas)
+			if !commit || len(lemmas) == 0 {
+				continue
+			}
+			if err := svc.ProcessWordSetItems(ctx, setID, strings.Join(lemmas, ",")); err != nil {
+				return totalSets, totalItems, err
+			}
+		}
+	}
+	return totalSets, totalItems, nil
+}
 func ensureRangeSets(conn *sql.DB, categoryID int64, titlePrefix, itemName, preferredPOS string, fromRank, toRank, step int) error {
 	idx := 0
 	for start := fromRank; start <= toRank; start += step {
@@ -285,5 +505,123 @@ func AutoSyncEnglishWordSets(ctx context.Context, cfg *config.Config, conn *sql.
 		zap.String("reason", reason),
 		zap.Int("processed_sets", res.Processed),
 		zap.Int("selected_sets", len(res.Sets)))
+	return nil
+}
+
+// AutoSyncSpanishMustHaveWordSets creates/updates "Must Have" hierarchy for Spanish deployment.
+func AutoSyncSpanishMustHaveWordSets(ctx context.Context, cfg *config.Config, conn *sql.DB, log *zap.Logger) error {
+	target := strings.ToLower(strings.TrimSpace(cfg.Learning.TargetLang))
+	appCode := strings.ToLower(strings.TrimSpace(cfg.Learning.AppCode))
+	if target != "es" || appCode != "spanish" {
+		return nil
+	}
+
+	yamlPath, err := detectMustHaveYAMLPath([]string{
+		defaultSpanishMustHaveYAMLPath,
+		fallbackSpanishMustHaveYAMLPath,
+	})
+	if err != nil {
+		return err
+	}
+	checksum, err := fileSHA256(yamlPath)
+	if err != nil {
+		return fmt.Errorf("compute must-have yaml checksum: %w", err)
+	}
+	root, err := loadMustHaveBlueprint(yamlPath)
+	if err != nil {
+		return fmt.Errorf("parse must-have yaml: %w", err)
+	}
+
+	settingsRepo := repository.NewAppSettingsRepository(conn, log)
+	currentChecksum, err := settingsRepo.GetSetting(spanishMustHaveChecksum)
+	if err != nil {
+		return fmt.Errorf("read app setting %q: %w", spanishMustHaveChecksum, err)
+	}
+	commit := currentChecksum != checksum
+
+	sets, items, err := ensureMustHaveBlueprint(ctx, conn, cfg, root, "es", commit, log)
+	if err != nil {
+		return fmt.Errorf("sync must-have blueprint: %w", err)
+	}
+
+	reason := "up_to_date"
+	if commit {
+		reason = "yaml_checksum_changed"
+		if err := settingsRepo.SetSetting(spanishMustHaveChecksum, checksum, systemUserID); err != nil {
+			return fmt.Errorf("write app setting %q: %w", spanishMustHaveChecksum, err)
+		}
+	}
+	summary := fmt.Sprintf("mode=%s sets=%d items=%d yaml=%s sha256=%s",
+		map[bool]string{true: "COMMIT", false: "DRY-RUN"}[commit], sets, items, yamlPath, checksum)
+	if err := settingsRepo.SetSetting(spanishMustHaveSummary, summary, systemUserID); err != nil {
+		return fmt.Errorf("write app setting %q: %w", spanishMustHaveSummary, err)
+	}
+
+	log.Info("spanish must-have word sets bootstrap completed",
+		zap.String("mode", map[bool]string{true: "COMMIT", false: "DRY-RUN"}[commit]),
+		zap.String("reason", reason),
+		zap.Int("sets", sets),
+		zap.Int("items", items),
+		zap.String("yaml_path", yamlPath),
+		zap.String("yaml_sha256", checksum))
+	return nil
+}
+
+// AutoSyncEnglishMustHaveWordSets creates/updates "Must Have" hierarchy for English deployment.
+func AutoSyncEnglishMustHaveWordSets(ctx context.Context, cfg *config.Config, conn *sql.DB, log *zap.Logger) error {
+	target := strings.ToLower(strings.TrimSpace(cfg.Learning.TargetLang))
+	appCode := strings.ToLower(strings.TrimSpace(cfg.Learning.AppCode))
+	if target != "en" || appCode != "english" {
+		return nil
+	}
+
+	yamlPath, err := detectMustHaveYAMLPath([]string{
+		defaultEnglishMustHaveYAMLPath,
+		fallbackEnglishMustHaveYAMLPath,
+	})
+	if err != nil {
+		return err
+	}
+	checksum, err := fileSHA256(yamlPath)
+	if err != nil {
+		return fmt.Errorf("compute english must-have yaml checksum: %w", err)
+	}
+	root, err := loadMustHaveBlueprint(yamlPath)
+	if err != nil {
+		return fmt.Errorf("parse english must-have yaml: %w", err)
+	}
+
+	settingsRepo := repository.NewAppSettingsRepository(conn, log)
+	currentChecksum, err := settingsRepo.GetSetting(englishMustHaveChecksum)
+	if err != nil {
+		return fmt.Errorf("read app setting %q: %w", englishMustHaveChecksum, err)
+	}
+	commit := currentChecksum != checksum
+
+	sets, items, err := ensureMustHaveBlueprint(ctx, conn, cfg, root, "en", commit, log)
+	if err != nil {
+		return fmt.Errorf("sync english must-have blueprint: %w", err)
+	}
+
+	reason := "up_to_date"
+	if commit {
+		reason = "yaml_checksum_changed"
+		if err := settingsRepo.SetSetting(englishMustHaveChecksum, checksum, systemUserID); err != nil {
+			return fmt.Errorf("write app setting %q: %w", englishMustHaveChecksum, err)
+		}
+	}
+	summary := fmt.Sprintf("mode=%s sets=%d items=%d yaml=%s sha256=%s",
+		map[bool]string{true: "COMMIT", false: "DRY-RUN"}[commit], sets, items, yamlPath, checksum)
+	if err := settingsRepo.SetSetting(englishMustHaveSummary, summary, systemUserID); err != nil {
+		return fmt.Errorf("write app setting %q: %w", englishMustHaveSummary, err)
+	}
+
+	log.Info("english must-have word sets bootstrap completed",
+		zap.String("mode", map[bool]string{true: "COMMIT", false: "DRY-RUN"}[commit]),
+		zap.String("reason", reason),
+		zap.Int("sets", sets),
+		zap.Int("items", items),
+		zap.String("yaml_path", yamlPath),
+		zap.String("yaml_sha256", checksum))
 	return nil
 }
