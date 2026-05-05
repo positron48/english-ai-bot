@@ -27,11 +27,11 @@ const (
 	englishMustHaveChecksum   = "word_sets.english.must_have_sha256"
 	englishMustHaveSummary    = "word_sets.english.must_have_last_import_summary"
 	defaultEnglishMustHaveYAMLPath  = "/app/data/english_word_sets_must_have.yaml"
-	fallbackEnglishMustHaveYAMLPath = "courses/english-grammar/word-sets-must-have.yaml"
+	fallbackEnglishMustHaveYAMLPath = "resources/wordsets/english_word_sets_must_have.yaml"
 	spanishMustHaveChecksum   = "word_sets.spanish.must_have_sha256"
 	spanishMustHaveSummary    = "word_sets.spanish.must_have_last_import_summary"
 	defaultSpanishMustHaveYAMLPath  = "/app/data/spanish_word_sets_must_have.yaml"
-	fallbackSpanishMustHaveYAMLPath = "courses/spanish-grammar/word-sets-must-have.yaml"
+	fallbackSpanishMustHaveYAMLPath = "resources/wordsets/spanish_word_sets_must_have.yaml"
 	systemUserID              = int64(0)
 )
 
