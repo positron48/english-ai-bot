@@ -1,0 +1,14 @@
+{
+  "version": "1.0.0",
+  "generated_at": "2026-05-10T09:51:52Z",
+  "categories": {
+    "en_a2": {
+      "id": "en_a2",
+      "title": "EN A2 Reading",
+      "level": "A2",
+      "order": 0,
+      "text_ids": []
+    }
+  },
+  "texts": {}
+}

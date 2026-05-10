@@ -126,7 +126,7 @@ func main() {
 	}
 	defer db.Close()
 
-	aiService := ai.NewService(cfg.AI.URL, cfg.AI.Model, cfg.AI.APIKey, "You are a strict morphology classifier.", log)
+	aiService := ai.NewServiceWithTimeout(cfg.AI.URL, cfg.AI.Model, cfg.AI.APIKey, "You are a strict morphology classifier.", ai.ParseHTTPTimeout(cfg.AI.RequestTimeout), log)
 	lexicon, lexPath, lexErr := models.LoadSpanishGenderLexiconDefault()
 	if lexErr != nil {
 		log.Warn("spanish gender lexicon unavailable; fallback to LLM only", zap.Error(lexErr))

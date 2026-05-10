@@ -113,6 +113,16 @@
         <Icon name="book-open" class="admin-sidebar-icon" />
         <span>Grammar</span>
       </router-link>
+      <router-link
+        v-if="can('full_access')"
+        to="/admin/reading-texts"
+        class="admin-sidebar-item"
+        :class="{ active: $route.path === '/admin/reading-texts' }"
+        @click="isMobile && handleCloseSidebar()"
+      >
+        <Icon name="book" class="admin-sidebar-icon" />
+        <span>Reading Texts</span>
+      </router-link>
       <router-link 
         v-if="can('full_access')"
         to="/admin/app-settings" 

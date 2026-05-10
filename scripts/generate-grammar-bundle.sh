@@ -25,6 +25,16 @@ generate_bundle() {
 
 	rm -rf "$BUNDLE_DIR/chapters"
 	mkdir -p "$BUNDLE_DIR/chapters"
+	rm -rf "$BUNDLE_DIR/assets"
+	if [ -d "$COURSE_DIR/assets" ]; then
+		cp -R "$COURSE_DIR/assets" "$BUNDLE_DIR/assets"
+		echo "✓ Copied assets for ${OUT_SUB}"
+	fi
+	rm -rf "$BUNDLE_DIR/reading"
+	if [ -d "$COURSE_DIR/reading" ]; then
+		cp -R "$COURSE_DIR/reading" "$BUNDLE_DIR/reading"
+		echo "✓ Copied reading catalog for ${OUT_SUB}"
+	fi
 
 	if [ -f "$COURSE_DIR/config/generation-status.json" ]; then
 		cp "$COURSE_DIR/config/generation-status.json" "$BUNDLE_DIR/sections.json"

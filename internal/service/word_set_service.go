@@ -134,8 +134,36 @@ func (s *WordSetService) EnsureWordCardExistsMinimal(word string) (int64, error)
 // Returns the word card ID
 func (s *WordSetService) EnsureWordCardExists(ctx context.Context, word string) (int64, error) {
 	normalizedWord := strings.TrimSpace(strings.ToLower(word))
+	if normalizedWord == "" {
+		return 0, fmt.Errorf("word is empty")
+	}
 
-	// Try to get existing word card
+	// Step 1: try word form mapping first (same lookup order as chat word flow),
+	// but only when repository implementation supports this operation.
+	type wordFormLookup interface {
+		GetWordFormMapping(wordForm string) (*models.WordForm, error)
+	}
+	if lookupRepo, ok := s.wordRepo.(wordFormLookup); ok {
+		wordForm, err := lookupRepo.GetWordFormMapping(normalizedWord)
+		if err != nil {
+			s.logger.Warn("failed to get word form mapping, fallback to lemma lookup",
+				zap.String("word", normalizedWord),
+				zap.Error(err),
+			)
+		}
+		if err == nil && wordForm != nil {
+			wordCard, err := s.wordRepo.GetWordCardByID(wordForm.WordCardID)
+			if err != nil {
+				return 0, fmt.Errorf("failed to get mapped word card: %w", err)
+			}
+			if wordCard != nil {
+				s.tryLinkVerbLemma(wordCard.ID, wordCard.Word)
+				return wordCard.ID, nil
+			}
+		}
+	}
+
+	// Step 2: direct lookup by lemma.
 	wordCard, err := s.wordRepo.GetWordCardByLemma(normalizedWord)
 	if err != nil {
 		return 0, fmt.Errorf("failed to get word card: %w", err)
@@ -146,7 +174,7 @@ func (s *WordSetService) EnsureWordCardExists(ctx context.Context, word string) 
 		return wordCard.ID, nil
 	}
 
-	// Word not found, need to create it via AI
+	// Step 3: missing in DB -> create via AI.
 	if s.aiService == nil {
 		return 0, fmt.Errorf("AI service not available")
 	}

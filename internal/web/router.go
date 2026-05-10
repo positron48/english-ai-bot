@@ -397,6 +397,8 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/learning/grammar/categories", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarCategories)))
 	r.mux.HandleFunc("/api/learning/grammar/categories/", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarChapters)))
 	r.mux.HandleFunc("/api/learning/grammar/chapters/", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarChapterOrTest)))
+	// Reading segment audio is fetched by plain <audio>/new Audio(), so keep it public.
+	r.mux.HandleFunc("/api/learning/reading/audio", appAPIMiddleware.Wrap(r.handleLearningReadingAudio))
 	r.mux.HandleFunc("/api/learning/grammar/tests/submit", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarSubmitTest)))
 	r.mux.HandleFunc("/api/learning/grammar/statistics", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarStatistics)))
 	r.mux.HandleFunc("/api/learning/grammar/training/availability", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarTrainingAvailability)))
@@ -405,6 +407,10 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/learning/grammar/training/report", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarTrainingReport)))
 	r.mux.HandleFunc("/api/learning/grammar/placement-test", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarPlacementTest)))
 	r.mux.HandleFunc("/api/learning/grammar/placement-test/submit", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarSubmitPlacementTest)))
+	r.mux.HandleFunc("/api/learning/reading/categories", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningReadingCategories)))
+	r.mux.HandleFunc("/api/learning/reading/categories/", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningReadingCategoryTexts)))
+	r.mux.HandleFunc("/api/learning/reading/texts/", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningReadingTexts)))
+	r.mux.HandleFunc("/api/reading/word-lookup", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleReadingWordLookup)))
 
 	r.mux.HandleFunc("/api/training/start", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTrainingStart)))
 	r.mux.HandleFunc("/api/training/current", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTrainingCurrent)))
@@ -488,6 +494,8 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/admin/grammar/chapters", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminGrammarChapters))))
 	r.mux.HandleFunc("/api/admin/grammar/chapters/", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminGrammarChapterPublish))))
 	r.mux.HandleFunc("/api/admin/grammar/items/", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminGrammarItemRename))))
+	r.mux.HandleFunc("/api/admin/reading/texts", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminReadingTexts))))
+	r.mux.HandleFunc("/api/admin/reading/texts/", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminReadingTexts))))
 
 	// App settings admin routes (require full_access)
 	r.mux.HandleFunc("/api/admin/app-settings", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminAppSettings))))

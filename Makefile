@@ -194,6 +194,11 @@ check:
 	@$(GO) mod verify
 	@echo "✅ Go dependencies verified"
 	@echo ""
+	@echo "4b. Validating reading artifacts in courses..."
+	@$(MAKE) -C courses/english-grammar reading-validate
+	@$(MAKE) -C courses/spanish-grammar reading-validate
+	@echo "✅ Reading artifacts validation passed"
+	@echo ""
 	@echo "5. Running Go tests for coverage (compact: . ok | E fail | F panic/build | S skip)..."
 	@rm -f coverage.out .go-test-output.jsonl
 	@/bin/bash -c 'set -o pipefail; $(GO) test -tags=test -count=1 -p 3 -timeout 30m -coverprofile=coverage.out -covermode=atomic -json $(COVER_PKGS) 2>&1 | tee .go-test-output.jsonl | python3 scripts/go-test-compact.py'; \

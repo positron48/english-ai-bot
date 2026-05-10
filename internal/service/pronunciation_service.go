@@ -633,8 +633,9 @@ func NewPronunciationService(cfg config.TTSConfig, learning config.LearningConfi
 		maxRetries = 20
 	}
 
+	enabled := resolveTTSEnabled(cfg.Enabled)
 	service := &PronunciationService{
-		enabled:         cfg.Enabled,
+		enabled:         enabled,
 		prefetchEnabled: cfg.PrefetchEnabled,
 		audioDir:        strings.TrimSpace(cfg.AudioDir),
 		publicBasePath:  strings.TrimSpace(cfg.PublicBasePath),
@@ -677,6 +678,26 @@ func NewPronunciationService(cfg config.TTSConfig, learning config.LearningConfi
 	}
 
 	return service
+}
+
+func resolveTTSEnabled(defaultValue bool) bool {
+	for _, key := range []string{"TTS_ENABLED", "TTS_ENABLE"} {
+		raw, ok := os.LookupEnv(key)
+		if !ok {
+			continue
+		}
+		v := strings.ToLower(strings.TrimSpace(raw))
+		switch v {
+		case "1", "true", "yes", "on":
+			return true
+		case "0", "false", "no", "off":
+			return false
+		default:
+			// Unknown value: keep config-derived default.
+			return defaultValue
+		}
+	}
+	return defaultValue
 }
 
 func buildPronunciationProviders(cfg config.TTSConfig, learning config.LearningConfig, logger *zap.Logger) []pronunciationProvider {

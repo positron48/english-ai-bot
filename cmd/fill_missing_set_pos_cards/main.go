@@ -53,7 +53,7 @@ func runCLI() int {
 	}
 	defer db.Close()
 
-	aiService := ai.NewService(cfg.AI.URL, cfg.AI.Model, cfg.AI.APIKey, cfg.AI.Prompt, log)
+	aiService := ai.NewServiceWithTimeout(cfg.AI.URL, cfg.AI.Model, cfg.AI.APIKey, cfg.AI.Prompt, ai.ParseHTTPTimeout(cfg.AI.RequestTimeout), log)
 	trainingPrompt, err := ai.LoadRenderedPromptFile(
 		cfg.Training.PromptFile,
 		cfg.Learning.NativeLang,

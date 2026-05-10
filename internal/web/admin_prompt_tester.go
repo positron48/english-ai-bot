@@ -155,11 +155,12 @@ func (r *Router) handleAdminPromptTesterRun(w http.ResponseWriter, req *http.Req
 	ctx := req.Context()
 
 	// Create temporary AI service with custom prompts
-	aiService := ai.NewService(
+	aiService := ai.NewServiceWithTimeout(
 		r.config.AI.URL,
 		r.config.AI.Model,
 		r.config.AI.APIKey,
 		runReq.WordPrompt,
+		ai.ParseHTTPTimeout(r.config.AI.RequestTimeout),
 		r.logger,
 	)
 	aiService.SetTrainingPrompt(runReq.TrainingPrompt)

@@ -233,7 +233,7 @@ func runCLI() int {
 
 	wordRepo := repository.NewWordRepository(db.GetConnection(), log)
 	trainingCardRepo := repository.NewTrainingCardRepository(db.GetConnection(), log)
-	aiService := ai.NewService(cfg.AI.URL, cfg.AI.Model, cfg.AI.APIKey, cfg.AI.Prompt, log)
+	aiService := ai.NewServiceWithTimeout(cfg.AI.URL, cfg.AI.Model, cfg.AI.APIKey, cfg.AI.Prompt, ai.ParseHTTPTimeout(cfg.AI.RequestTimeout), log)
 	if cfg.Training.PromptFile != "" {
 		trainingPrompt, err := ai.LoadRenderedPromptFile(cfg.Training.PromptFile, cfg.Learning.NativeLang, cfg.Learning.TargetLang, cfg.Learning.Pair)
 		if err != nil {

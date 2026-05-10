@@ -90,11 +90,13 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 	}
 
 	// Create AI service
-	aiService := ai.NewService(
+	aiHTTPTimeout := ai.ParseHTTPTimeout(cfg.AI.RequestTimeout)
+	aiService := ai.NewServiceWithTimeout(
 		cfg.AI.URL,
 		cfg.AI.Model,
 		cfg.AI.APIKey,
 		cfg.AI.Prompt,
+		aiHTTPTimeout,
 		log,
 	)
 
@@ -287,6 +289,11 @@ func (b *Bot) Start(ctx context.Context) error {
 	if b.notificationService != nil {
 		go b.notificationService.Start(ctx)
 		b.logger.Info("notification service started")
+	}
+
+	// Startup bootstrap for reading vocabulary cards.
+	if b.webRouter != nil {
+		go b.webRouter.BootstrapReadingWordCards(ctx)
 	}
 
 	// Register bot commands (will be updated by webRouter.SetDependencies)

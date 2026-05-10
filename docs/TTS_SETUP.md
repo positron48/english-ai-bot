@@ -209,3 +209,20 @@ Fallback при `TTS_BASE_URL` с `openrouter.ai`:
 - Ответ: SSE-стрим; приложение собирает `choices[0].delta.audio.data` (base64 PCM 16-bit 24 kHz), декодирует, конвертирует в MP3 через **ffmpeg** и сохраняет в кэш.
 
 Рекомендованные модели (audio output): `openai/gpt-audio-mini`, `openai/gpt-4o-audio-preview`. Для стоимости и лимитов смотри [openrouter.ai/models](https://openrouter.ai/models) (фильтр output = audio).
+
+## 8) Reading Texts: сегментное multi-voice аудио
+
+Для блока `reading_passage` аудио хранится как сегменты (`audio_rel_path`) в `courses/*/assets/reading/...` и копируется в `internal/grammarbundle/*/assets` при `make grammar-bundle`.
+
+Генерация делается локально через:
+- `courses/english-grammar/scripts/generate-reading-text.py`
+- `courses/spanish-grammar/scripts/generate-reading-text.py`
+
+Профили голосов:
+- `courses/english-grammar/config/reading-voices.json`
+- `courses/spanish-grammar/config/reading-voices.json`
+
+Минимальный preflight:
+1. `make -C courses/english-grammar reading-validate`
+2. `make -C courses/spanish-grammar reading-validate`
+3. Убедиться, что для каждого сегмента `reading_passage.segments[].audio_rel_path` существует файл.

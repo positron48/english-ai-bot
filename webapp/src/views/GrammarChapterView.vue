@@ -96,6 +96,7 @@
               @answer="handleQuizAnswer(questionId, $event)"
             />
           </div>
+
         </div>
       </div>
       
@@ -185,7 +186,6 @@ const loadChapter = async () => {
     if (data.title_translations && chapter.value) {
       chapter.value.title_translations = data.title_translations
     }
-    
     // Build question map for quick lookup
     if (chapter.value?.question_bank?.questions) {
       questionMap.value = new Map()

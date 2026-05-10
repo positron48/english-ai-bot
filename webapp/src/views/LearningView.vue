@@ -42,6 +42,14 @@
         <h2>{{ t('learning.words') }}</h2>
         <p>{{ t('learning.wordsDescription') }}</p>
       </router-link>
+
+      <router-link to="/learning/reading" class="learning-card reading-card">
+        <div class="card-icon">
+          <Icon name="book-open" />
+        </div>
+        <h2>{{ t('learning.reading') }}</h2>
+        <p>{{ t('learning.readingDescription') }}</p>
+      </router-link>
     </div>
   </div>
 </template>

@@ -14,6 +14,22 @@ import (
 	"go.uber.org/zap"
 )
 
+// DefaultHTTPTimeout is the AI HTTP client timeout when RequestTimeout is unset or invalid.
+const DefaultHTTPTimeout = 30 * time.Second
+
+// ParseHTTPTimeout parses a duration string (e.g. "120s", "3m", "2h"). Empty returns 0 (use default in NewServiceWithTimeout). Invalid returns 0.
+func ParseHTTPTimeout(raw string) time.Duration {
+	raw = strings.TrimSpace(raw)
+	if raw == "" {
+		return 0
+	}
+	d, err := time.ParseDuration(raw)
+	if err != nil || d <= 0 {
+		return 0
+	}
+	return d
+}
+
 // jsonMarshalFunc is used for request marshaling; overridable in tests for coverage.
 var jsonMarshalFunc = json.Marshal
 
@@ -58,14 +74,22 @@ type Service struct {
 	logger         *zap.Logger
 }
 
-// NewService creates a new AI service
+// NewService creates a new AI service with the default HTTP client timeout (30s).
 func NewService(url, model, apiKey, prompt string, logger *zap.Logger) *Service {
+	return NewServiceWithTimeout(url, model, apiKey, prompt, 0, logger)
+}
+
+// NewServiceWithTimeout creates a new AI service. httpTimeout <= 0 means DefaultHTTPTimeout.
+func NewServiceWithTimeout(url, model, apiKey, prompt string, httpTimeout time.Duration, logger *zap.Logger) *Service {
+	if httpTimeout <= 0 {
+		httpTimeout = DefaultHTTPTimeout
+	}
 	// Process prompt to handle escaped newlines
 	processedPrompt := strings.ReplaceAll(prompt, "\\n", "\n")
 
 	return &Service{
 		client: &http.Client{
-			Timeout: 30 * time.Second,
+			Timeout: httpTimeout,
 		},
 		url:    url,
 		model:  model,

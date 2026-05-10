@@ -337,10 +337,10 @@ func (r *Router) handleLearningGrammarChapter(w http.ResponseWriter, req *http.R
 	}
 	if sec, err := r.grammarService.GetSectionBySectionID(req.Context(), content.Chapter.SectionID); err == nil && sec != nil {
 		resp["section"] = map[string]interface{}{
-			"section_id":          sec.SectionID,
-			"title":               sec.Title,
-			"title_translations":  sec.TitleTranslations,
-			"level":               sec.Level,
+			"section_id":         sec.SectionID,
+			"title":              sec.Title,
+			"title_translations": sec.TitleTranslations,
+			"level":              sec.Level,
 		}
 	} else {
 		resp["section"] = map[string]interface{}{

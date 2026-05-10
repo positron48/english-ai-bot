@@ -208,7 +208,20 @@
     "grammar": "Grammar",
     "grammarDescription": "Grammar exercises and rules",
     "words": "Words",
-    "wordsDescription": "Word sets and vocabulary library"
+    "wordsDescription": "Word sets and vocabulary library",
+    "reading": "Reading Texts",
+    "readingDescription": "Read short texts with audio and word lookup"
+  },
+  "reading": {
+    "title": "Reading Texts",
+    "noTexts": "No reading texts available yet.",
+    "markRead": "Mark as read",
+    "alreadyRead": "Read",
+    "wordNotFound": "Word not found in the dictionary.",
+    "wordNoDefinition": "No card or translation for this word yet.",
+    "wordLookupFailed": "Could not open the dictionary. Try again.",
+    "wordLookupServerError": "Server is temporarily unavailable. Try later.",
+    "wordLookupNetwork": "No network. Check your connection."
   },
   "wordSets": {
     "back": "← Back",

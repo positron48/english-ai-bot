@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
+	"time"
 
 	"github.com/joho/godotenv"
 	"github.com/spf13/viper"
@@ -122,12 +123,13 @@ type LoggingConfig struct {
 
 // AIConfig holds AI provider configuration
 type AIConfig struct {
-	URL        string `mapstructure:"url"`
-	Model      string `mapstructure:"model"`
-	ModelHigh  string `mapstructure:"model_high"`
-	APIKey     string `mapstructure:"api_key"`
-	Prompt     string `mapstructure:"prompt"`
-	PromptFile string `mapstructure:"prompt_file"`
+	URL             string `mapstructure:"url"`
+	Model           string `mapstructure:"model"`
+	ModelHigh       string `mapstructure:"model_high"`
+	APIKey          string `mapstructure:"api_key"`
+	Prompt          string `mapstructure:"prompt"`
+	PromptFile      string `mapstructure:"prompt_file"`
+	RequestTimeout  string `mapstructure:"request_timeout"` // e.g. 120s, 3m; HTTP client timeout for chat/completions (default 30s)
 }
 
 // TTSConfig holds text-to-speech/pronunciation audio configuration
@@ -366,7 +368,8 @@ func Load() (*Config, error) {
 	_ = viper.BindEnv("ai.api_key", "AI_API_KEY")
 	_ = viper.BindEnv("ai.prompt", "AI_PROMPT")
 	_ = viper.BindEnv("ai.prompt_file", "AI_PROMPT_FILE")
-	_ = viper.BindEnv("tts.enabled", "TTS_ENABLED")
+	_ = viper.BindEnv("ai.request_timeout", "AI_REQUEST_TIMEOUT")
+	_ = viper.BindEnv("tts.enabled", "TTS_ENABLED", "TTS_ENABLE")
 	_ = viper.BindEnv("tts.provider", "TTS_PROVIDER")
 	_ = viper.BindEnv("tts.external_only", "TTS_EXTERNAL_ONLY")
 	_ = viper.BindEnv("tts.audio_dir", "TTS_AUDIO_DIR")
@@ -494,6 +497,12 @@ func Load() (*Config, error) {
 	}
 	if config.AI.APIKey == "" {
 		return nil, fmt.Errorf("ai api key is required")
+	}
+	config.AI.RequestTimeout = strings.TrimSpace(config.AI.RequestTimeout)
+	if config.AI.RequestTimeout != "" {
+		if _, err := time.ParseDuration(config.AI.RequestTimeout); err != nil {
+			return nil, fmt.Errorf("AI_REQUEST_TIMEOUT: invalid duration %q (examples: 120s, 3m): %w", config.AI.RequestTimeout, err)
+		}
 	}
 	if config.WebApp.JWTSecret == "" && config.WebApp.SessionSecret == "" {
 		return nil, fmt.Errorf("JWT secret is required (set WEBAPP_JWT_SECRET or WEBAPP_SESSION_SECRET)")

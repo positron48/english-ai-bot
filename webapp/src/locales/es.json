@@ -203,7 +203,20 @@
     "grammar": "Gramática",
     "grammarDescription": "Ejercicios y reglas de gramática",
     "words": "Palabras",
-    "wordsDescription": "Conjuntos de palabras y biblioteca de vocabulario"
+    "wordsDescription": "Conjuntos de palabras y biblioteca de vocabulario",
+    "reading": "Textos de lectura",
+    "readingDescription": "Textos cortos con audio y tarjetas de palabras"
+  },
+  "reading": {
+    "title": "Textos de lectura",
+    "noTexts": "Todavía no hay textos de lectura.",
+    "markRead": "Marcar como leído",
+    "alreadyRead": "Leído",
+    "wordNotFound": "Palabra no encontrada en el diccionario.",
+    "wordNoDefinition": "Aún no hay tarjeta ni traducción para esta palabra.",
+    "wordLookupFailed": "No se pudo abrir el diccionario. Inténtalo de nuevo.",
+    "wordLookupServerError": "El servidor no está disponible. Prueba más tarde.",
+    "wordLookupNetwork": "Sin red. Comprueba la conexión."
   },
   "wordSets": {
     "back": "← Atrás",

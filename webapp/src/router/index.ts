@@ -70,6 +70,24 @@ const router = createRouter({
       meta: { requiresAuth: true }
     },
     {
+      path: '/learning/reading',
+      name: 'ReadingCategories',
+      component: () => import('../views/ReadingCategoriesView.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/learning/reading/category/:categoryId',
+      name: 'ReadingChapters',
+      component: () => import('../views/ReadingChaptersView.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/learning/reading/text/:textId',
+      name: 'ReadingText',
+      component: () => import('../views/ReadingTextView.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
       path: '/learning/grammar/chapter/:chapterId/test',
       name: 'GrammarChapterTest',
       component: () => import('../views/GrammarTestView.vue'),
@@ -145,6 +163,11 @@ const router = createRouter({
           path: 'grammar',
           name: 'AdminGrammar',
           component: () => import('../views/AdminGrammarView.vue')
+        },
+        {
+          path: 'reading-texts',
+          name: 'AdminReadingTexts',
+          component: () => import('../views/AdminReadingTextsView.vue')
         },
         {
           path: 'word-sets',
