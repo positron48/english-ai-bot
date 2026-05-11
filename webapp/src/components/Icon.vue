@@ -98,6 +98,10 @@
       <polyline points="3 6 5 6 21 6"/>
       <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
     </svg>
+    <svg v-else-if="name === 'user'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+      <circle cx="12" cy="7" r="4"/>
+    </svg>
     <svg v-else-if="name === 'users'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
       <circle cx="9" cy="7" r="4"/>
@@ -207,6 +211,7 @@ defineProps<{
     | 'magic'
     | 'edit'
     | 'trash'
+    | 'user'
     | 'users'
     | 'home'
     | 'code'
@@ -227,13 +232,14 @@ defineProps<{
 </script>
 
 <style scoped>
+/* Use inherit so parents (e.g. colored speaker markers) can set color via currentColor */
 .icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 1em;
   height: 1em;
-  color: currentColor;
+  color: inherit;
 }
 
 .icon svg {
@@ -243,17 +249,6 @@ defineProps<{
   fill: none;
 }
 
-/* Light theme - dark icons */
-.icon {
-  color: var(--text-primary, #333);
-}
-
-/* Dark theme - light icons */
-[data-theme="dark"] .icon {
-  color: var(--text-primary, #fff);
-}
-
-/* Force dark mode for specific icons if needed */
 .icon-dark {
   color: var(--text-primary);
 }

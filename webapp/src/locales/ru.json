@@ -214,6 +214,9 @@
   },
   "reading": {
     "title": "Тексты для чтения",
+    "textsCount": "{n} текст | {n} текста | {n} текстов",
+    "completedSection": "Прочитанные",
+    "allReadInCategory": "Все тексты этого уровня уже прочитаны.",
     "noTexts": "Пока нет текстов для чтения.",
     "markRead": "Прочитано",
     "alreadyRead": "Прочитано",

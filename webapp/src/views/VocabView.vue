@@ -133,198 +133,15 @@
       </div>
     </div>
 
-    <!-- Word Details Modal (Simplified) -->
+    <!-- Word detail (shared with Reading) -->
     <div v-if="showCardsModal" class="modal" @click.self="closeCardsModal">
       <div class="modal-content modal-large">
-        <div class="modal-header">
-          <div class="word-header-info">
-            <div class="word-title-row">
-              <h3>{{ selectedWordDisplay }}</h3>
-              <div v-if="selectedTranscription" class="transcription-with-audio">
-                <div class="transcription">{{ selectedTranscription }}</div>
-                <button
-                  v-if="selectedPronunciationURL"
-                  class="btn-pronunciation"
-                  :disabled="playingPronunciation"
-                  title="Pronounce"
-                  aria-label="Pronounce"
-                  @click="playSelectedPronunciation"
-                >
-                  <Icon name="play" />
-                </button>
-              </div>
-            </div>
-            <div class="word-summary">
-              <span v-if="selectedMorphText">{{ selectedMorphText }}</span>
-              <span v-if="selectedWordMasteringScore !== null" class="mastering-score-inline" :title="t('vocab.scoreLabel') + ' 0–100'">
-                <span class="mastery-dot-inline" :style="{ backgroundColor: masteryColor(selectedWordMasteringScore) }" />
-                {{ selectedWordMasteringScore }}
-              </span>
-              <span>{{ t('vocab.cards', totalCards, { n: totalCards }) }}</span>
-              <span v-if="totalDue > 0">{{ t('vocab.due', totalDue, { n: totalDue }) }}</span>
-              <span v-if="lastReview" :title="formatDateAbsolute(lastReview)">{{ t('vocab.last') }} {{ formatDateRelative(lastReview) }}</span>
-            </div>
-          </div>
-          <button @click="closeCardsModal" class="btn-close">&times;</button>
-        </div>
-        <div v-if="cardsLoading" class="loading">{{ t('vocab.loadingCards') }}</div>
-        <div v-else-if="cards.length === 0" class="no-cards">{{ t('vocab.noCardsFound') }}</div>
-        <div v-else>
-          <!-- Verb Forms Section -->
-          <div v-if="isVerbLikePOS && verbForms" class="verb-forms-section">
-            <h4>{{ t('vocab.verbForms') }}</h4>
-            <div class="verb-forms-list">
-              <div v-if="verbForms.v1" class="verb-form-item">
-                <span class="verb-form-label">{{ t('vocab.v1Base') }}</span>
-                <span class="verb-form-value">{{ verbForms.v1 }}</span>
-              </div>
-              <div v-if="verbForms.v2" class="verb-form-item">
-                <span class="verb-form-label">{{ t('vocab.v2PastSimple') }}</span>
-                <span class="verb-form-value">{{ verbForms.v2 }}</span>
-              </div>
-              <div v-if="verbForms.v3" class="verb-form-item">
-                <span class="verb-form-label">{{ t('vocab.v3PastParticiple') }}</span>
-                <span class="verb-form-value">{{ verbForms.v3 }}</span>
-              </div>
-              <div v-if="verbForms.gerund" class="verb-form-item">
-                <span class="verb-form-label">{{ t('vocab.gerund') }}</span>
-                <span class="verb-form-value">{{ verbForms.gerund }}</span>
-              </div>
-              <div v-if="verbForms.third_person" class="verb-form-item">
-                <span class="verb-form-label">{{ t('vocab.thirdPerson') }}</span>
-                <span class="verb-form-value">{{ verbForms.third_person }}</span>
-              </div>
-            </div>
-          </div>
-          <div v-if="isVerbLikePOS && fullVerbForms.length > 0" class="verb-forms-section">
-            <h4>{{ t('vocab.allVerbForms') }}</h4>
-            <div class="verb-forms-table-wrap">
-              <table class="verb-forms-table">
-                <thead>
-                  <tr>
-                    <th>{{ t('vocab.verbFormTense') }}</th>
-                    <th>{{ t('vocab.verbFormMood') }}</th>
-                    <th>{{ t('vocab.verbFormSubject') }}</th>
-                    <th>{{ t('vocab.verbFormSurface') }}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="item in fullVerbForms" :key="`${item.tense}-${item.mood}-${item.person}-${item.number}-${item.surface_form}`">
-                    <td>{{ item.tense }}</td>
-                    <td>{{ item.mood }}</td>
-                    <td class="verb-forms-pronoun">{{ spanishVerbSubjectPronoun(item.person, item.number) }}</td>
-                    <td>{{ item.surface_form }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          
-          <div class="cards-list-simple">
-          <div v-for="senseGroup in groupedCards" :key="senseGroup.sense_index" class="sense-group-simple">
-            <div class="sense-header-simple">
-              <h4>
-                <span class="word-ru">{{ senseGroup.word_native || senseGroup.word_ru }}</span>
-                <span v-if="senseGroup.pos" class="pos-badge">{{ senseGroup.pos }}</span>
-              </h4>
-            </div>
-            
-            <div class="sense-info-simple">
-              <div v-if="senseGroup.meaning_target || senseGroup.meaning_en" class="meaning">
-                {{ senseGroup.meaning_target || senseGroup.meaning_en }}
-              </div>
-              <div v-if="senseGroup.example_target || senseGroup.example_en" class="example">
-                <strong>{{ t('vocab.example') }}:</strong> {{ senseGroup.example_target || senseGroup.example_en }}
-              </div>
-            </div>
-            
-            <div class="directions-simple">
-              <div v-for="directionCard in senseGroup.directions" :key="directionCard.direction" class="direction-item-simple">
-                <div class="direction-header-simple">
-                  <span class="direction-badge" :class="`direction-${directionCard.direction}`">
-                    {{ directionCard.direction === 'ru_en' ? 'RU→EN' : 'EN→RU' }}
-                  </span>
-                  <span :class="['state-badge', `state-${directionCard.state}`]">{{ directionCard.state }}</span>
-                  <span
-                    class="srs-info-wrap"
-                    @click.prevent
-                    @mouseenter="(e: MouseEvent) => showSrsTooltip(e, directionCard)"
-                    @mouseleave="hideSrsTooltip"
-                  >
-                    <Icon name="info" class="srs-info-icon" />
-                  </span>
-                </div>
-                <div class="direction-stats-simple">
-                  <span v-if="directionCard.reps > 0" :title="t('vocab.reps')">{{ t('vocab.reps') }} {{ directionCard.reps }}</span>
-                  <span v-else-if="directionCard.review_count > 0" :title="t('vocab.reviews')">{{ t('vocab.reviews') }} {{ directionCard.review_count }}</span>
-                  <span v-if="directionCard.next_due_at" :title="`${t('vocab.due')}: ${formatDateAbsolute(directionCard.next_due_at)}`">{{ t('vocab.due') }}: {{ formatDateRelative(directionCard.next_due_at) }}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <div class="footer-actions">
-            <button 
-              v-if="hasUserCards" 
-              @click="markKnown" 
-              class="btn btn-primary"
-              :disabled="processingAction"
-            >
-              {{ t('vocab.moveToKnown') }}
-            </button>
-            <button 
-              v-if="!hasUserCards && isKnown" 
-              @click="moveToTraining" 
-              class="btn btn-primary"
-              :disabled="processingAction"
-            >
-              {{ t('vocab.moveToTraining') }}
-            </button>
-            <button @click="confirmDelete" class="btn btn-danger" :disabled="processingAction">
-              {{ t('vocab.removeFromVocabulary') }}
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- SRS tooltip: teleport to body so it is not clipped by modal overflow -->
-    <Teleport to="body">
-      <div
-        v-if="srsTooltipCard"
-        class="srs-tooltip srs-tooltip-fixed"
-        :style="srsTooltipStyle"
-        @mouseenter="keepSrsTooltip"
-        @mouseleave="hideSrsTooltip(true)"
-      >
-        <div class="srs-tooltip-title">{{ t('vocab.srsTooltipTitle') }}</div>
-        <div class="srs-tooltip-row"><span>{{ t('vocab.srsState') }}:</span> {{ srsTooltipCard.state }}</div>
-        <div class="srs-tooltip-row"><span>{{ t('vocab.srsEf') }}:</span> {{ formatSrsNumber(srsTooltipCard.ef) }}</div>
-        <div class="srs-tooltip-row"><span>{{ t('vocab.srsReps') }}:</span> {{ srsTooltipCard.reps }} <span v-if="srsTooltipCard.state === 'learning'" class="srs-tooltip-hint" :title="t('vocab.srsRepsNote')">(?)</span></div>
-        <div class="srs-tooltip-row"><span>{{ t('vocab.srsIntervalDays') }}:</span> {{ srsTooltipCard.interval_days }}<template v-if="srsTooltipCard.state === 'learning'"> → <span class="srs-tooltip-step">{{ t('vocab.srsStepInterval') }}: {{ getStepIntervalDays(srsTooltipCard.direction, srsTooltipCard.learning_step) }} {{ getStepIntervalDays(srsTooltipCard.direction, srsTooltipCard.learning_step) === 1 ? t('vocab.srsDay') : t('vocab.srsDays') }}</span></template></div>
-        <div class="srs-tooltip-row"><span>{{ t('vocab.srsLearningStep') }}:</span> {{ srsTooltipCard.learning_step }}</div>
-        <div class="srs-tooltip-row"><span>{{ t('vocab.srsLapseCount') }}:</span> {{ srsTooltipCard.lapse_count }}</div>
-        <div class="srs-tooltip-row"><span>{{ t('vocab.srsNextDueAt') }}:</span> {{ formatDateAbsolute(srsTooltipCard.next_due_at) }}</div>
-        <div class="srs-tooltip-row"><span>{{ t('vocab.srsLastReviewAt') }}:</span> {{ formatDateAbsolute(srsTooltipCard.last_review_at) }}</div>
-        <div class="srs-tooltip-row"><span>{{ t('vocab.srsLastQuality') }}:</span> {{ srsTooltipCard.last_quality != null ? srsTooltipCard.last_quality : '—' }}</div>
-        <div v-if="srsTooltipCard.last_quality === 0 || srsTooltipCard.last_quality === 1" class="srs-tooltip-reason">{{ t('vocab.srsQualityHardReason') }}</div>
-        <div class="srs-tooltip-row"><span>{{ t('vocab.srsCreatedAt') }}:</span> {{ formatDateAbsolute(srsTooltipCard.created_at ?? null) }}</div>
-        <div class="srs-tooltip-row"><span>{{ t('vocab.srsUpdatedAt') }}:</span> {{ formatDateAbsolute(srsTooltipCard.updated_at ?? null) }}</div>
-      </div>
-    </Teleport>
-
-    <!-- Delete Confirmation Modal -->
-    <div v-if="showDeleteConfirm" class="modal" @click.self="showDeleteConfirm = false">
-      <div class="modal-content">
-        <h3>{{ t('vocab.removeFromVocabularyTitle') }}</h3>
-        <p>{{ t('vocab.removeConfirm', { word: wordToDelete }) }}</p>
-        <p class="warning-text">{{ t('vocab.removeWarning') }}</p>
-        <div class="modal-actions">
-          <button @click="deleteWord" class="btn btn-danger">{{ t('vocab.remove') }}</button>
-          <button @click="showDeleteConfirm = false" class="btn btn-secondary">{{ t('common.cancel') }}</button>
-        </div>
+        <VocabWordCardsDetail
+          :lemma="selectedWord"
+          :list-mastering-score="selectedWordMasteringScore"
+          @close="closeCardsModal"
+          @vocab-changed="loadVocab"
+        />
       </div>
     </div>
   </div>
@@ -334,14 +151,7 @@
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiClient } from '../api/client'
-import { spanishVerbSubjectPronoun } from '../utils/spanishVerbPronouns'
-import { useAuth } from '../composables/useAuth'
-import { showAlert } from '../composables/useDialog'
-import { useAudio } from '../composables/useAudio'
-import Icon from '../components/Icon.vue'
-
-const { t } = useI18n()
-const { isAdmin } = useAuth()
+import VocabWordCardsDetail from '../components/VocabWordCardsDetail.vue'
 
 interface VocabWord {
   word_card_id: number
@@ -365,59 +175,7 @@ interface Pagination {
   total_pages: number
 }
 
-interface CardDetail {
-  id: number
-  training_card_id: number
-  direction: string
-  state: string
-  ef: number
-  reps: number
-  interval_days: number
-  learning_step: number
-  lapse_count: number
-  next_due_at: string | null
-  last_review_at: string | null
-  last_quality: number | null
-  created_at?: string
-  updated_at?: string
-  word_ru: string
-  word_native?: string
-  meaning_en: string
-  meaning_target?: string
-  example_en: string
-  example_target?: string
-  example_ru: string
-  example_native?: string
-  transcription: string
-  sense_index: number
-  pos?: string
-  review_count: number
-}
-
-interface MorphVerbForms {
-  v1?: string
-  v2?: string
-  v3?: string
-}
-
-interface MorphInfo {
-  pos?: string
-  noun_gender?: string
-  article?: string
-  opposite_gender_word?: string
-  verb_forms?: MorphVerbForms
-}
-
-interface VerbFormRow {
-  word_card_id: number
-  lemma: string
-  mood: string
-  tense: string
-  person: string
-  number: string
-  surface_form: string
-  is_irregular: boolean
-}
+const { t } = useI18n()
 
 const words = ref<VocabWord[]>([])
 const loading = ref(true)
@@ -432,88 +190,9 @@ const pagination = ref<Pagination>({
   total_pages: 0
 })
 
-const showDeleteConfirm = ref(false)
-const wordToDelete = ref('')
-const lemmaToDelete = ref('')
-
 const showCardsModal = ref(false)
 const selectedWord = ref('')
-const selectedWordDisplay = ref('')
-const selectedTranscription = ref('')
 const selectedWordMasteringScore = ref<number | null>(null)
-const selectedPronunciationWord = ref('')
-const selectedPronunciationURL = ref<string | null>(null)
-const playingPronunciation = ref(false)
-const cards = ref<CardDetail[]>([])
-const cardsLoading = ref(false)
-const verbForms = ref<any>(null)
-const fullVerbForms = ref<VerbFormRow[]>([])
-const wordPOS = ref<string | null>(null)
-/** Spanish AUX (e.g. haber) uses the same conjugation UI as verbs */
-const isVerbLikePOS = computed(() => {
-  const p = (wordPOS.value || '').toLowerCase()
-  return p === 'verb' || p === 'aux'
-})
-const selectedWordCardID = ref<number | null>(null)
-const nounGender = ref<string | null>(null)
-const wordMorph = ref<MorphInfo | null>(null)
-const hasUserCards = ref(false)
-const isKnown = ref(false)
-const processingAction = ref(false)
-const { getWordPronunciationURL, playWordPronunciation } = useAudio()
-
-// SRS tooltip teleported to body so it is not clipped by modal
-const srsTooltipCard = ref<CardDetail | null>(null)
-const srsTooltipPosition = ref<{ top: number; left: number } | null>(null)
-let srsTooltipHideTimeout: ReturnType<typeof setTimeout> | null = null
-
-const srsTooltipStyle = computed(() => {
-  const pos = srsTooltipPosition.value
-  if (!pos) return {}
-  return {
-    top: `${pos.top}px`,
-    left: `${pos.left}px`,
-  }
-})
-
-function showSrsTooltip(e: MouseEvent, card: CardDetail) {
-  if (srsTooltipHideTimeout) {
-    clearTimeout(srsTooltipHideTimeout)
-    srsTooltipHideTimeout = null
-  }
-  const el = e.currentTarget as HTMLElement
-  const rect = el.getBoundingClientRect()
-  srsTooltipCard.value = card
-  // Position above the icon, centered
-  srsTooltipPosition.value = {
-    top: rect.top - 8,
-    left: rect.left + rect.width / 2,
-  }
-}
-
-function keepSrsTooltip() {
-  if (srsTooltipHideTimeout) {
-    clearTimeout(srsTooltipHideTimeout)
-    srsTooltipHideTimeout = null
-  }
-}
-
-function hideSrsTooltip(immediate = false) {
-  if (immediate) {
-    if (srsTooltipHideTimeout) {
-      clearTimeout(srsTooltipHideTimeout)
-      srsTooltipHideTimeout = null
-    }
-    srsTooltipCard.value = null
-    srsTooltipPosition.value = null
-    return
-  }
-  srsTooltipHideTimeout = setTimeout(() => {
-    srsTooltipHideTimeout = null
-    srsTooltipCard.value = null
-    srsTooltipPosition.value = null
-  }, 150)
-}
 
 onMounted(async () => {
   await loadVocab()
@@ -671,143 +350,28 @@ const alphabetSections = computed(() => {
   return sections
 })
 
-const confirmDelete = () => {
-  wordToDelete.value = selectedWordDisplay.value
-  lemmaToDelete.value = selectedWord.value
-  showDeleteConfirm.value = true
-}
-
-const deleteWord = async () => {
-  try {
-    const formData = new FormData()
-    await apiClient.requestFormData(`/api/vocab/${lemmaToDelete.value}/delete`, formData)
-    showDeleteConfirm.value = false
-    showCardsModal.value = false
-    await loadVocab()
-  } catch (error) {
-    console.error('Failed to delete word:', error)
-    await showAlert(t('vocab.alertRemoveFailed'))
-  }
-}
-
-let showCardsGen = 0
-
-const showCards = async (lemma: string) => {
-  const gen = ++showCardsGen
-  selectedWord.value = lemma
-  const wordFromList = words.value.find(w => w.lemma === lemma)
+const showCards = (lemma: string) => {
+  const wordFromList = words.value.find((w) => w.lemma === lemma)
   selectedWordMasteringScore.value = wordFromList != null ? wordFromList.mastering_score : null
+  selectedWord.value = lemma
   showCardsModal.value = true
-  cardsLoading.value = true
-  cards.value = []
-  selectedTranscription.value = ''
-  selectedPronunciationWord.value = ''
-  selectedPronunciationURL.value = null
-  
-  try {
-    const data: { lemma: string; word_card_id: number; cards: CardDetail[]; verb_forms?: any; pos?: string; noun_gender?: string; opposite_gender_word?: string; morph?: MorphInfo; has_user_cards?: boolean; is_known?: boolean } = await apiClient.request(`/api/vocab/${lemma}/cards`)
-    if (gen !== showCardsGen || selectedWord.value !== lemma) {
-      return
-    }
-    cards.value = data.cards || []
-    verbForms.value = data.verb_forms || null
-    wordPOS.value = data.pos || null
-    selectedWordCardID.value = data.word_card_id || null
-    nounGender.value = data.noun_gender || null
-    wordMorph.value = data.morph || null
-    hasUserCards.value = data.has_user_cards || false
-    isKnown.value = data.is_known || false
-    fullVerbForms.value = []
-    if (isVerbLikePOS.value && selectedWordCardID.value) {
-      try {
-        const formsResp: { forms?: VerbFormRow[] } = await apiClient.request(`/api/vocab/${selectedWordCardID.value}/verb-forms`)
-        if (gen === showCardsGen) {
-          fullVerbForms.value = formsResp.forms || []
-        }
-      } catch (e) {
-        console.warn('Failed to load full verb forms', e)
-      }
-    }
-    
-    // Find display word and transcription from first card
-    if (cards.value.length > 0) {
-      const word = words.value.find(w => w.lemma === lemma)
-      if (word) {
-        selectedWordDisplay.value = cleanLemma(word.lemma)
-        selectedPronunciationWord.value = word.lemma
-      } else {
-        selectedWordDisplay.value = cleanLemma(lemma)
-        selectedPronunciationWord.value = lemma
-      }
-      selectedTranscription.value = cards.value[0].transcription || ''
-      if (selectedTranscription.value) {
-        const url = await getWordPronunciationURL(selectedPronunciationWord.value)
-        if (gen !== showCardsGen || selectedWord.value !== lemma) {
-          return
-        }
-        selectedPronunciationURL.value = url
-      }
-    } else {
-      selectedWordDisplay.value = cleanLemma(lemma)
-    }
-  } catch (error) {
-    console.error('Failed to load cards:', error)
-    if (gen === showCardsGen) {
-      await showAlert(t('vocab.alertLoadCardsFailed'))
-    }
-  } finally {
-    if (gen === showCardsGen) {
-      cardsLoading.value = false
-    }
-  }
 }
 
 const closeCardsModal = () => {
-  showCardsGen++
   showCardsModal.value = false
-  hideSrsTooltip(true)
-  cardsLoading.value = false
   selectedWord.value = ''
-  selectedWordDisplay.value = ''
-  selectedTranscription.value = ''
-  selectedPronunciationWord.value = ''
-  selectedPronunciationURL.value = null
   selectedWordMasteringScore.value = null
-  cards.value = []
-  verbForms.value = null
-  fullVerbForms.value = []
-  wordPOS.value = null
-  selectedWordCardID.value = null
-  nounGender.value = null
-  wordMorph.value = null
-  hasUserCards.value = false
-  isKnown.value = false
-}
-
-const playSelectedPronunciation = async () => {
-  if (!selectedPronunciationWord.value || playingPronunciation.value) return
-  playingPronunciation.value = true
-  try {
-    await playWordPronunciation(selectedPronunciationWord.value)
-  } finally {
-    playingPronunciation.value = false
-  }
 }
 
 const handleKeydown = (event: KeyboardEvent) => {
-  if (event.key === 'Escape') {
-    if (showCardsModal.value) {
-      event.preventDefault()
-      closeCardsModal()
-    } else if (showDeleteConfirm.value) {
-      event.preventDefault()
-      showDeleteConfirm.value = false
-    }
+  if (event.key === 'Escape' && showCardsModal.value) {
+    event.preventDefault()
+    closeCardsModal()
   }
 }
 
-watch([showCardsModal, showDeleteConfirm], ([cardsOpen, deleteOpen]) => {
-  if (cardsOpen || deleteOpen) {
+watch(showCardsModal, (open) => {
+  if (open) {
     window.addEventListener('keydown', handleKeydown)
   } else {
     window.removeEventListener('keydown', handleKeydown)
@@ -817,230 +381,6 @@ watch([showCardsModal, showDeleteConfirm], ([cardsOpen, deleteOpen]) => {
 onUnmounted(() => {
   window.removeEventListener('keydown', handleKeydown)
 })
-
-const markKnown = async () => {
-  if (processingAction.value || !selectedWord.value) return
-  
-  processingAction.value = true
-  try {
-    const formData = new FormData()
-    await apiClient.requestFormData(`/api/vocab/${selectedWord.value}/mark_known`, formData)
-    showCardsModal.value = false
-    await loadVocab()
-  } catch (error) {
-    console.error('Failed to mark as known:', error)
-    await showAlert(t('vocab.alertMarkKnownFailed'))
-  } finally {
-    processingAction.value = false
-  }
-}
-
-const moveToTraining = async () => {
-  if (processingAction.value || !selectedWord.value) return
-  
-  processingAction.value = true
-  try {
-    const formData = new FormData()
-    await apiClient.requestFormData(`/api/vocab/${selectedWord.value}/move_to_training`, formData)
-    showCardsModal.value = false
-    await loadVocab()
-  } catch (error) {
-    console.error('Failed to move to training:', error)
-    await showAlert(t('vocab.alertMoveTrainingFailed'))
-  } finally {
-    processingAction.value = false
-  }
-}
-
-// Group cards by sense_index
-interface SenseGroup {
-  sense_index: number
-  word_ru: string
-  word_native?: string
-  meaning_en: string
-  meaning_target?: string
-  example_en: string
-  example_target?: string
-  example_ru: string
-  example_native?: string
-  transcription: string
-  pos?: string
-  directions: CardDetail[]
-}
-
-const groupedCards = computed((): SenseGroup[] => {
-  const groups = new Map<number, SenseGroup>()
-  
-  for (const card of cards.value) {
-    if (!groups.has(card.sense_index)) {
-      groups.set(card.sense_index, {
-        sense_index: card.sense_index,
-        word_ru: card.word_ru,
-        word_native: card.word_native,
-        meaning_en: card.meaning_en,
-        meaning_target: card.meaning_target,
-        example_en: card.example_en,
-        example_target: card.example_target,
-        example_ru: card.example_ru,
-        example_native: card.example_native,
-        transcription: card.transcription,
-        pos: card.pos,
-        directions: []
-      })
-    }
-    
-    const group = groups.get(card.sense_index)!
-    group.directions.push(card)
-  }
-  
-  // Sort by sense_index and sort directions within each group
-  return Array.from(groups.values())
-    .sort((a, b) => a.sense_index - b.sense_index)
-    .map(group => ({
-      ...group,
-      directions: group.directions.sort((a, b) => {
-        // Sort directions: EN→RU first, then RU→EN
-        if (a.direction === 'en_ru' && b.direction === 'ru_en') return -1
-        if (a.direction === 'ru_en' && b.direction === 'en_ru') return 1
-        return 0
-      })
-    }))
-})
-
-const selectedMorphText = computed(() => {
-  if (wordMorph.value) {
-    const m = wordMorph.value
-    if (m.pos === 'noun' && m.noun_gender) {
-      const core = m.article ? `${m.article} • ${m.noun_gender}` : m.noun_gender
-      return m.opposite_gender_word ? `${core} (${m.opposite_gender_word})` : core
-    }
-    if ((m.pos === 'verb' || m.pos === 'aux') && m.verb_forms) {
-      const forms = [m.verb_forms.v1, m.verb_forms.v2, m.verb_forms.v3].filter(Boolean)
-      if (forms.length > 0) return forms.join(', ')
-    }
-  }
-  if (wordPOS.value === 'noun' && nounGender.value) {
-    return nounGender.value
-  }
-  return ''
-})
-
-const totalCards = computed(() => cards.value.length)
-const totalDue = computed(() => cards.value.filter(c => c.next_due_at && new Date(c.next_due_at) <= new Date()).length)
-const lastReview = computed(() => {
-  const reviews = cards.value
-    .map(c => c.last_review_at)
-    .filter((d): d is string => d !== null)
-    .sort()
-    .reverse()
-  return reviews.length > 0 ? reviews[0] : null
-})
-
-const formatDate = (dateStr: string | null) => {
-  if (!dateStr) return '—'
-  const date = new Date(dateStr)
-  return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-}
-
-const formatDateShort = (dateStr: string | null) => {
-  if (!dateStr) return '—'
-  const date = new Date(dateStr)
-  return date.toLocaleDateString()
-}
-
-const formatDateRelative = (dateStr: string | null): string => {
-  if (!dateStr) return '—'
-  
-  const date = new Date(dateStr)
-  if (isNaN(date.getTime())) return '—'
-  
-  const now = new Date()
-  const diffTime = now.getTime() - date.getTime()
-  const diffDays = Math.floor(Math.abs(diffTime) / (1000 * 60 * 60 * 24))
-  const diffHours = Math.floor(Math.abs(diffTime) / (1000 * 60 * 60))
-  const diffMinutes = Math.floor(Math.abs(diffTime) / (1000 * 60))
-  const isFuture = diffTime < 0
-  
-  // Today
-  if (diffDays === 0) {
-    if (diffHours === 0) {
-      if (diffMinutes < 1) {
-        return t('vocab.justNow')
-      }
-      if (isFuture) {
-        return t('vocab.inMinutes', diffMinutes, { n: diffMinutes })
-      }
-      return t('vocab.minutesAgo', diffMinutes, { n: diffMinutes })
-    }
-    if (isFuture) {
-      return t('vocab.inHours', diffHours, { n: diffHours })
-    }
-    return t('vocab.hoursAgo', diffHours, { n: diffHours })
-  }
-  
-  // Tomorrow / Yesterday
-  if (diffDays === 1) {
-    return isFuture ? t('vocab.tomorrow') : t('vocab.yesterday')
-  }
-  
-  // Days
-  if (diffDays < 7) {
-    return isFuture ? t('vocab.inDays', diffDays, { n: diffDays }) : t('vocab.daysAgo', diffDays, { n: diffDays })
-  }
-  
-  // Weeks
-  const diffWeeks = Math.floor(diffDays / 7)
-  if (diffWeeks < 4) {
-    if (isFuture) {
-      return t('vocab.inWeeks', diffWeeks, { n: diffWeeks })
-    }
-    return t('vocab.weeksAgo', diffWeeks, { n: diffWeeks })
-  }
-  
-  // Months
-  const diffMonths = Math.floor(diffDays / 30)
-  if (diffMonths < 12) {
-    if (isFuture) {
-      return t('vocab.inMonths', diffMonths, { n: diffMonths })
-    }
-    return t('vocab.monthsAgo', diffMonths, { n: diffMonths })
-  }
-  
-  // Years
-  const diffYears = Math.floor(diffDays / 365)
-  if (isFuture) {
-    return t('vocab.inYears', diffYears, { n: diffYears })
-  }
-  return t('vocab.yearsAgo', diffYears, { n: diffYears })
-}
-
-const formatDateAbsolute = (dateStr: string | null): string => {
-  if (!dateStr) return '—'
-  
-  const date = new Date(dateStr)
-  if (isNaN(date.getTime())) return '—'
-  
-  const day = String(date.getDate()).padStart(2, '0')
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const year = date.getFullYear()
-  
-  return `${day}.${month}.${year}`
-}
-
-const formatSrsNumber = (n: number): string => {
-  if (typeof n !== 'number' || Number.isNaN(n)) return '—'
-  return Number.isInteger(n) ? String(n) : n.toFixed(2)
-}
-
-// Learning step intervals in days (must match backend models.LearningStepsDays)
-const LEARNING_STEPS_EN_RU = [1, 3, 7]      // EN→RU
-const LEARNING_STEPS_RU_EN = [1, 3, 7, 14]  // RU→EN
-
-function getStepIntervalDays(direction: string, learningStep: number): number {
-  const steps = direction === 'ru_en' ? LEARNING_STEPS_RU_EN : LEARNING_STEPS_EN_RU
-  if (learningStep < 0 || learningStep >= steps.length) return 0
-  return steps[learningStep]
-}
 
 </script>
 

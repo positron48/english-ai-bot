@@ -31,8 +31,15 @@
             :class="[{ narrator: isNarrator(segment), active: activeSegmentId === segment.segment_id }]"
             @click="playSingleSegment(segment)"
           >
-            <div v-if="!isNarrator(segment)" class="speaker-icon" :class="speakerClass(segment.speaker_id)">
-              <Icon name="users" />
+            <div
+              v-if="!isNarrator(segment)"
+              class="speaker-icon"
+              :style="{ color: speakerIconColor(segment.speaker_id) }"
+              :title="speakerLabel(segment.speaker_id)"
+              role="img"
+              :aria-label="speakerLabel(segment.speaker_id)"
+            >
+              <Icon name="user" />
             </div>
             <div v-else></div>
 
@@ -68,55 +75,6 @@
           </div>
         </div>
 
-        <aside
-          v-if="wordPopoverVisible"
-          ref="popoverRef"
-          class="dictionary-popover"
-          :style="{
-            top: `${popoverTop}px`,
-            left: `${popoverLeft}px`,
-            '--arrow-top': `${popoverArrowTop}px`,
-          }"
-        >
-          <div v-if="wordLoading">{{ t('common.loading') }}</div>
-          <template v-else-if="wordPopoverError">
-            <div class="dictionary-header">
-              <div class="dictionary-word dictionary-word--compact">{{ popoverLemmaDisplay }}</div>
-            </div>
-            <p class="dictionary-popover-message">{{ wordPopoverError }}</p>
-          </template>
-          <template v-else-if="wordModalData && hasDictionaryBody">
-            <div class="dictionary-header">
-              <div class="dictionary-word">{{ wordModalData.lemma }}</div>
-              <button type="button" class="dictionary-audio" aria-label="Озвучить слово" @click="playWordAudio">
-                <Icon name="play" />
-              </button>
-            </div>
-            <div v-if="dictionaryMeta" class="dictionary-meta">{{ dictionaryMeta }}</div>
-            <div class="dictionary-meanings">
-              <div v-for="(meaning, idx) in dictionaryMeanings" :key="`${meaning}-${idx}`" class="meaning-row">
-                <span class="meaning-index">{{ idx + 1 }}.</span>
-                <span class="meaning-text">{{ meaning }}</span>
-              </div>
-            </div>
-            <div class="dictionary-footer">
-              <span>Добавить в слова</span>
-              <button type="button" class="add-word-button" disabled>
-                <Icon name="plus" />
-              </button>
-            </div>
-          </template>
-          <template v-else-if="wordModalData">
-            <div class="dictionary-header">
-              <div class="dictionary-word">{{ wordModalData.lemma || popoverLemmaDisplay }}</div>
-              <button type="button" class="dictionary-audio" aria-label="Озвучить слово" @click="playWordAudio">
-                <Icon name="play" />
-              </button>
-            </div>
-            <p class="dictionary-popover-message">{{ t('reading.wordNoDefinition') }}</p>
-          </template>
-        </aside>
-
         <footer class="footer">
           <button
             type="button"
@@ -130,17 +88,34 @@
         </footer>
       </section>
     </main>
+
+    <!-- Полный экран как в «Словарь»: карточки, SRS, формы глаголов; слово в обучение — на сервере при word-lookup -->
+    <div v-if="wordModalVisible" class="word-modal-overlay" @click.self="closeWordModal">
+      <div class="word-modal-panel">
+        <div v-if="wordLookupLoading" class="word-modal-loading">{{ t('common.loading') }}</div>
+        <div v-else-if="wordLookupError" class="word-modal-error">
+          <p class="word-modal-error-text">{{ wordLookupError }}</p>
+          <button type="button" class="word-modal-close-btn" @click="closeWordModal">{{ t('common.close') }}</button>
+        </div>
+        <VocabWordCardsDetail
+          v-else
+          :lemma="modalLemma"
+          :preloaded="modalPreloaded"
+          @close="closeWordModal"
+        />
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { apiClient } from '../api/client'
-import { useAudio } from '../composables/useAudio'
 import { useSettings } from '../composables/useSettings'
 import Icon from './Icon.vue'
+import VocabWordCardsDetail, { type VocabCardsAPIResponse } from './VocabWordCardsDetail.vue'
 
 const props = defineProps<{
   block: any
@@ -155,27 +130,59 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 const router = useRouter()
-const { playWordPronunciation } = useAudio()
 const { settings } = useSettings()
 
 const showTranslation = ref(false)
-const wordPopoverVisible = ref(false)
-const wordLoading = ref(false)
-const wordModalData = ref<any>(null)
-const wordPopoverError = ref('')
+const wordModalVisible = ref(false)
+const wordLookupLoading = ref(false)
+const wordLookupError = ref('')
+const modalLemma = ref('')
+const modalPreloaded = ref<VocabCardsAPIResponse | null>(null)
 const markingRead = ref(false)
 const selectedTokenKey = ref('')
-const selectedLemma = ref('')
-const popoverTop = ref(0)
-const popoverLeft = ref(0)
-const popoverArrowTop = ref(24)
-const popoverRef = ref<HTMLElement | null>(null)
 const activeSegmentId = ref<string | null>(null)
 const isAutoplaying = ref(false)
 let currentAudio: HTMLAudioElement | null = null
 let autoplayRun = 0
 
 const segments = computed(() => props.block?.reading_passage?.segments || [])
+
+/** Distinct hues for dialogue speakers (first appearance order). */
+const SPEAKER_ICON_PALETTE = [
+  '#5b9cff',
+  '#ffb020',
+  '#3dd68c',
+  '#f472b6',
+  '#a78bfa',
+  '#fb923c',
+  '#38bdf8',
+  '#f87171',
+  '#4ade80',
+  '#e879f9',
+] as const
+
+const speakerColorById = computed(() => {
+  const map: Record<string, string> = {}
+  let idx = 0
+  for (const seg of segments.value) {
+    const id = String(seg?.speaker_id || '').trim().toLowerCase()
+    if (!id || id === 'narrator') continue
+    if (map[id]) continue
+    map[id] = SPEAKER_ICON_PALETTE[idx % SPEAKER_ICON_PALETTE.length]
+    idx += 1
+  }
+  return map
+})
+
+function speakerIconColor(speakerId: string): string {
+  const id = String(speakerId || '').trim().toLowerCase()
+  return speakerColorById.value[id] ?? '#94a3b8'
+}
+
+function speakerLabel(id: unknown): string {
+  const s = String(id ?? '').trim()
+  return s || 'speaker'
+}
 
 const noSpaceBefore = new Set(['.', ',', '!', '?', ';', ':', ')', ']', '}', '%', '…'])
 const noSpaceAfter = new Set(['(', '[', '{', '¿', '¡', '«'])
@@ -198,53 +205,6 @@ const goBack = () => {
 const tokenKey = (segmentId: string, tokenIdx: number) => `${segmentId}-${tokenIdx}`
 
 const isNarrator = (segment: any) => String(segment?.speaker_id || '').toLowerCase() === 'narrator'
-
-const speakerClass = (speakerId: string) => {
-  const id = String(speakerId || '').toLowerCase()
-  if (id === 'speaker_b') return 'yellow'
-  return 'blue'
-}
-
-const posMap: Record<string, string> = {
-  noun: 'существительное',
-  verb: 'глагол',
-  adjective: 'прилагательное',
-  adverb: 'наречие',
-  pronoun: 'местоимение',
-  preposition: 'предлог',
-}
-
-const genderMap: Record<string, string> = {
-  masculine: 'мужской род',
-  feminine: 'женский род',
-  neuter: 'средний род',
-}
-
-const dictionaryMeanings = computed(() => {
-  const cards = Array.isArray(wordModalData.value?.cards) ? wordModalData.value.cards : []
-  const out: string[] = []
-  const keys = ['meaning_target', 'meaning_en', 'word_native', 'word_ru'] as const
-  for (const card of cards) {
-    for (const k of keys) {
-      const value = String(card?.[k] || '').trim()
-      if (value && !out.includes(value)) out.push(value)
-      if (out.length >= 4) break
-    }
-    if (out.length >= 4) break
-  }
-  return out
-})
-
-const dictionaryMeta = computed(() => {
-  const first = (wordModalData.value?.cards || [])[0] || {}
-  const pos = posMap[String(first?.pos || '').toLowerCase()] || String(first?.pos || '').trim()
-  const gender = genderMap[String(first?.noun_gender || '').toLowerCase()] || ''
-  return [pos, gender].filter(Boolean).join(', ')
-})
-
-const hasDictionaryBody = computed(() => dictionaryMeanings.value.length > 0 || !!dictionaryMeta.value)
-
-const popoverLemmaDisplay = computed(() => String(selectedLemma.value || '').trim() || '—')
 
 const stopCurrentAudio = () => {
   if (!currentAudio) return
@@ -304,68 +264,66 @@ const toggleAutoplay = async () => {
   }
 }
 
-const playWordAudio = async () => {
-  if (!selectedLemma.value) return
-  await playWordPronunciation(selectedLemma.value)
-}
-
-const updatePopoverPosition = (target: HTMLElement) => {
-  const rect = target.getBoundingClientRect()
-  const width = 370
-  const maxLeft = window.innerWidth - width - 12
-  const top = Math.max(12, rect.top - 18)
-  const left = Math.max(12, Math.min(maxLeft, rect.right + 16))
-  popoverTop.value = top
-  popoverLeft.value = left
-  popoverArrowTop.value = Math.max(18, Math.min(56, rect.top - top + rect.height / 2))
-}
-
-const closePopover = () => {
-  wordPopoverVisible.value = false
+const closeWordModal = () => {
+  wordModalVisible.value = false
+  wordLookupLoading.value = false
+  wordLookupError.value = ''
+  modalLemma.value = ''
+  modalPreloaded.value = null
   selectedTokenKey.value = ''
-  wordPopoverError.value = ''
-  wordModalData.value = null
 }
 
-const onDocumentMouseDown = (e: MouseEvent) => {
-  const target = e.target as Node
-  if (popoverRef.value?.contains(target)) return
-  const el = target as HTMLElement | null
-  if (el?.closest('.token.clickable')) return
-  closePopover()
+const wordModalKeydown = (event: KeyboardEvent) => {
+  if (event.key === 'Escape' && wordModalVisible.value) {
+    event.preventDefault()
+    closeWordModal()
+  }
 }
+
+watch(wordModalVisible, (open) => {
+  if (open) {
+    window.addEventListener('keydown', wordModalKeydown)
+  } else {
+    window.removeEventListener('keydown', wordModalKeydown)
+  }
+})
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', wordModalKeydown)
+})
 
 const onTokenClick = async (event: MouseEvent, token: any, segment: any) => {
   if (!token?.clickable || !token?.lemma) return
-  const target = event.currentTarget as HTMLElement | null
-  if (!target) return
 
-  selectedLemma.value = token.lemma
   selectedTokenKey.value = tokenKey(segment.segment_id, token.token_idx)
-  updatePopoverPosition(target)
-  wordPopoverVisible.value = true
-  wordLoading.value = true
-  wordPopoverError.value = ''
-  wordModalData.value = null
+
+  wordModalVisible.value = true
+  wordLookupLoading.value = true
+  wordLookupError.value = ''
+  modalPreloaded.value = null
+  modalLemma.value = token.lemma
 
   try {
-    const data = await apiClient.request(`/api/reading/word-lookup?lemma=${encodeURIComponent(token.lemma)}`)
-    wordModalData.value = data
+    const data: VocabCardsAPIResponse = await apiClient.request(
+      `/api/reading/word-lookup?lemma=${encodeURIComponent(token.lemma)}`,
+    )
+    modalLemma.value = data.lemma || token.lemma
+    modalPreloaded.value = data
   } catch (error: any) {
     console.error('Word lookup failed', error)
-    wordModalData.value = null
+    modalPreloaded.value = null
     const status = typeof error?.status === 'number' ? error.status : 0
     if (error?.isNetworkError) {
-      wordPopoverError.value = t('reading.wordLookupNetwork')
+      wordLookupError.value = t('reading.wordLookupNetwork')
     } else if (status === 404) {
-      wordPopoverError.value = t('reading.wordNotFound')
+      wordLookupError.value = t('reading.wordNotFound')
     } else if (status >= 500) {
-      wordPopoverError.value = t('reading.wordLookupServerError')
+      wordLookupError.value = t('reading.wordLookupServerError')
     } else {
-      wordPopoverError.value = t('reading.wordLookupFailed')
+      wordLookupError.value = t('reading.wordLookupFailed')
     }
   } finally {
-    wordLoading.value = false
+    wordLookupLoading.value = false
   }
 }
 
@@ -385,12 +343,10 @@ const loadAutoplayPreference = async () => {
 }
 
 onMounted(() => {
-  document.addEventListener('mousedown', onDocumentMouseDown)
   loadAutoplayPreference()
 })
 
 onBeforeUnmount(() => {
-  document.removeEventListener('mousedown', onDocumentMouseDown)
   stopCurrentAudio()
 })
 
@@ -530,15 +486,12 @@ const markRead = async () => {
   width: 24px;
   height: 24px;
   margin-top: 7px;
-  opacity: 0.95;
-}
-
-.speaker-icon.blue {
-  color: #4f91ff;
-}
-
-.speaker-icon.yellow {
-  color: #ffca3a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 22px;
+  opacity: 1;
 }
 
 .sentence-text {
@@ -594,118 +547,62 @@ const markRead = async () => {
   color: var(--text-primary);
 }
 
-.dictionary-popover {
+.word-modal-overlay {
   position: fixed;
-  z-index: 30;
-  width: min(370px, calc(100vw - 24px));
-  padding: 20px 20px 16px;
-  border-radius: 18px;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-primary);
-  box-shadow: 0 24px 70px var(--card-shadow);
-}
-
-.dictionary-popover::before {
-  content: "";
-  position: absolute;
-  top: var(--arrow-top);
-  left: -12px;
-  width: 18px;
-  height: 18px;
-  background: var(--bg-secondary);
-  border-left: 1px solid var(--border-primary);
-  border-bottom: 1px solid var(--border-primary);
-  transform: rotate(45deg);
-}
-
-.dictionary-header {
+  inset: 0;
+  z-index: 1000;
+  background: var(--bg-modal-overlay, rgba(0, 0, 0, 0.5));
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 8px;
+  justify-content: center;
+  padding: 16px;
 }
 
-.dictionary-word {
-  font-size: 24px;
-  line-height: 1.15;
-  font-weight: 700;
+.word-modal-panel {
+  background: var(--card-bg);
+  border-radius: 8px;
+  max-width: 800px;
+  width: 100%;
+  max-height: min(90vh, 900px);
+  overflow-y: auto;
+  padding: 24px 28px;
   color: var(--text-primary);
+  border: 1px solid var(--border-primary);
+  box-shadow: 0 24px 64px var(--card-shadow);
 }
 
-.dictionary-word--compact {
-  font-size: 20px;
-  font-weight: 600;
+.word-modal-loading {
+  text-align: center;
+  padding: 48px 16px;
+  font-size: 16px;
+  color: var(--text-secondary);
 }
 
-.dictionary-popover-message {
-  margin: 0;
-  font-size: 14px;
+.word-modal-error {
+  padding: 24px 8px;
+  text-align: center;
+}
+
+.word-modal-error-text {
+  margin: 0 0 20px;
+  font-size: 15px;
   line-height: 1.45;
   color: var(--text-secondary);
 }
 
-.dictionary-audio {
-  width: 34px;
-  height: 34px;
-  display: grid;
-  place-items: center;
-  color: var(--text-secondary);
-  background: transparent;
-  border: 0;
-  cursor: pointer;
-}
-
-.dictionary-meta {
-  font-size: 14px;
-  color: var(--text-secondary);
-  margin-bottom: 12px;
-}
-
-.dictionary-meanings {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding-top: 12px;
-  border-top: 1px solid var(--border-primary);
-}
-
-.meaning-row {
-  display: grid;
-  grid-template-columns: 20px 1fr;
-  gap: 8px;
-  font-size: 16px;
-  line-height: 1.32;
-}
-
-.meaning-index {
-  color: var(--text-secondary);
-}
-
-.meaning-text {
-  color: var(--text-primary);
-}
-
-.dictionary-footer {
-  margin-top: 16px;
-  padding-top: 12px;
-  border-top: 1px solid var(--border-primary);
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 10px;
-  color: var(--text-secondary);
-  font-size: 14px;
-}
-
-.add-word-button {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
+.word-modal-close-btn {
+  padding: 10px 20px;
+  border-radius: 8px;
   border: 1px solid var(--border-primary);
   background: var(--bg-tertiary);
   color: var(--text-primary);
-  display: grid;
-  place-items: center;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.word-modal-close-btn:hover {
+  background: var(--bg-hover);
 }
 
 .footer {

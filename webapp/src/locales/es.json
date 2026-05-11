@@ -209,6 +209,9 @@
   },
   "reading": {
     "title": "Textos de lectura",
+    "textsCount": "{n} texto | {n} textos",
+    "completedSection": "Leídos",
+    "allReadInCategory": "Ya has leído todos los textos de este nivel.",
     "noTexts": "Todavía no hay textos de lectura.",
     "markRead": "Marcar como leído",
     "alreadyRead": "Leído",

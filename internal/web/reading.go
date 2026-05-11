@@ -167,9 +167,10 @@ func (r *Router) handleLearningReadingCategoryTexts(w http.ResponseWriter, req *
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(map[string]interface{}{
 		"category": map[string]interface{}{
-			"category_id": categoryID,
-			"title":       cat.Title,
-			"level":       cat.Level,
+			"category_id":        categoryID,
+			"title":              cat.Title,
+			"title_translations": cat.TitleTranslations,
+			"level":              cat.Level,
 		},
 		"texts": out,
 	})
@@ -379,7 +380,7 @@ func (r *Router) findReadingWordCardByInput(input string) (string, int64, bool, 
 SELECT wc.word, wc.id
 FROM word_forms wf
 JOIN word_cards wc ON wc.id = wf.word_card_id
-WHERE LOWER(wf.word_form) = LOWER(?)
+WHERE LOWER(wf.form) = LOWER(?)
 LIMIT 1`, normalized).Scan(&canonicalLemma, &wordCardID)
 	if err == nil {
 		return canonicalLemma, wordCardID, true, nil

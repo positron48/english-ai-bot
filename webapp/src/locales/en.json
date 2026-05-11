@@ -214,6 +214,9 @@
   },
   "reading": {
     "title": "Reading Texts",
+    "textsCount": "{n} text | {n} texts",
+    "completedSection": "Completed",
+    "allReadInCategory": "You've read all texts in this level.",
     "noTexts": "No reading texts available yet.",
     "markRead": "Mark as read",
     "alreadyRead": "Read",

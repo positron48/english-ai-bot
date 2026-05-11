@@ -1,6 +1,6 @@
 <template>
   <div class="reading-categories">
-    <h1>{{ t('reading.title') }}</h1>
+    <h1 class="page-title">{{ t('reading.title') }}</h1>
     <div v-if="loading">{{ t('common.loading') }}</div>
     <div v-else-if="error">{{ error }}</div>
     <div v-else-if="categories.length === 0" class="empty">{{ t('reading.noTexts') }}</div>
@@ -11,8 +11,10 @@
         :to="`/learning/reading/category/${category.category_id}`"
         class="card"
       >
-        <h3>{{ getLocalizedTitle(category.title, category.title_translations) }}</h3>
-        <p>{{ category.level }}</p>
+        <h3 class="level-label">{{ categoryLabel(category) }}</h3>
+        <p class="meta">
+          {{ t('reading.textsCount', category.text_count, { n: category.text_count }) }}
+        </p>
       </router-link>
     </div>
   </div>
@@ -23,17 +25,15 @@ import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiClient } from '../api/client'
 
-const { t, locale } = useI18n()
+const { t } = useI18n()
 const loading = ref(true)
 const error = ref<string | null>(null)
 const categories = ref<any[]>([])
 
-const getLocalizedTitle = (title: string, titleTranslations?: Record<string, string>) => {
-  const currentLocale = locale.value
-  if (currentLocale && currentLocale !== 'en' && titleTranslations?.[currentLocale]) {
-    return titleTranslations[currentLocale]
-  }
-  return title
+const categoryLabel = (category: { level?: string; category_id: string }) => {
+  const lv = String(category.level || '').trim()
+  if (lv) return lv
+  return category.category_id
 }
 
 onMounted(async () => {
@@ -51,8 +51,11 @@ onMounted(async () => {
 
 <style scoped>
 .reading-categories { max-width: 1100px; margin: 0 auto; padding: 20px; }
+.page-title { margin: 0 0 1rem; }
 .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
 .card { text-decoration: none; color: var(--text-primary); border: 2px solid var(--border-primary); border-radius: 10px; padding: 16px; background: var(--card-bg); }
+.level-label { margin: 0 0 8px; font-size: 1.75rem; font-weight: 700; letter-spacing: 0.02em; line-height: 1.2; }
+.meta { margin: 0; font-size: 0.9rem; color: var(--text-secondary); }
 .empty { color: var(--text-secondary); }
 </style>
 

@@ -51,6 +51,20 @@ if [[ ! -f "${VOICE_MODEL}.json" ]]; then
   exit 1
 fi
 
+# Corrupted or HTML-error_page downloads are tiny; ONNX runtime then fails with "Protobuf parsing failed".
+MIN_ONNX_BYTES=$((80 * 1024))
+if [[ "$(uname -s)" == "Darwin" ]]; then
+  ONNX_SZ=$(stat -f%z "$VOICE_MODEL" 2>/dev/null || echo 0)
+else
+  ONNX_SZ=$(stat -c%s "$VOICE_MODEL" 2>/dev/null || echo 0)
+fi
+if [[ "${ONNX_SZ:-0}" -lt "$MIN_ONNX_BYTES" ]]; then
+  echo "voice model looks invalid or truncated (${ONNX_SZ} bytes): $VOICE_MODEL" >&2
+  echo "Remove that file and ${VOICE_MODEL}.json, then re-download:" >&2
+  echo "  bash scripts/download-reading-voices.sh \"\$HOME/tts/voices\"" >&2
+  exit 1
+fi
+
 if ! command -v ffmpeg >/dev/null 2>&1; then
   echo "ffmpeg not found in PATH" >&2
   exit 1
