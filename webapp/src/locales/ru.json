@@ -217,6 +217,8 @@
     "textsCount": "{n} текст | {n} текста | {n} текстов",
     "completedSection": "Прочитанные",
     "allReadInCategory": "Все тексты этого уровня уже прочитаны.",
+    "randomUnread": "Случайный непрочитанный текст",
+    "anotherRandomUnread": "Другой случайный непрочитанный",
     "noTexts": "Пока нет текстов для чтения.",
     "markRead": "Прочитано",
     "alreadyRead": "Прочитано",
@@ -224,7 +226,11 @@
     "wordNoDefinition": "Для этого слова пока нет карточки или перевода.",
     "wordLookupFailed": "Не удалось открыть словарь. Попробуйте ещё раз.",
     "wordLookupServerError": "Сервер временно недоступен. Попробуйте позже.",
-    "wordLookupNetwork": "Нет сети. Проверьте подключение."
+    "wordLookupNetwork": "Нет сети. Проверьте подключение.",
+    "deleteText": "Удалить текст",
+    "deleteConfirm": "Удалить «{title}» и все связанные файлы?",
+    "deleteSuccess": "Текст для чтения удалён.",
+    "deleteFailed": "Не удалось удалить текст."
   },
   "wordSets": {
     "back": "← Назад",

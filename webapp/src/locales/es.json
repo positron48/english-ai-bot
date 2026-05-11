@@ -212,6 +212,8 @@
     "textsCount": "{n} texto | {n} textos",
     "completedSection": "Leídos",
     "allReadInCategory": "Ya has leído todos los textos de este nivel.",
+    "randomUnread": "Abrir un texto no leído al azar",
+    "anotherRandomUnread": "Otro texto no leído al azar",
     "noTexts": "Todavía no hay textos de lectura.",
     "markRead": "Marcar como leído",
     "alreadyRead": "Leído",
@@ -219,7 +221,11 @@
     "wordNoDefinition": "Aún no hay tarjeta ni traducción para esta palabra.",
     "wordLookupFailed": "No se pudo abrir el diccionario. Inténtalo de nuevo.",
     "wordLookupServerError": "El servidor no está disponible. Prueba más tarde.",
-    "wordLookupNetwork": "Sin red. Comprueba la conexión."
+    "wordLookupNetwork": "Sin red. Comprueba la conexión.",
+    "deleteText": "Eliminar texto",
+    "deleteConfirm": "¿Eliminar «{title}» y todos los archivos relacionados?",
+    "deleteSuccess": "Texto de lectura eliminado.",
+    "deleteFailed": "No se pudo eliminar el texto."
   },
   "wordSets": {
     "back": "← Atrás",

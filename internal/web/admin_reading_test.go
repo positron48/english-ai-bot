@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"tgbot-skeleton/internal/config"
+	"tgbot-skeleton/internal/readingbundle"
 
 	"go.uber.org/zap"
 )
@@ -54,7 +55,7 @@ func TestReadingBundleFS_matchesWritableRootInRepo(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	bundleFS, err := readingBundleFS(cfg)
+	bundleFS, err := readingbundle.BundleFS(cfg)
 	if err != nil {
 		t.Fatal(err)
 	}

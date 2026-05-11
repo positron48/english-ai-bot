@@ -217,6 +217,8 @@
     "textsCount": "{n} text | {n} texts",
     "completedSection": "Completed",
     "allReadInCategory": "You've read all texts in this level.",
+    "randomUnread": "Open a random unread text",
+    "anotherRandomUnread": "Another random unread text",
     "noTexts": "No reading texts available yet.",
     "markRead": "Mark as read",
     "alreadyRead": "Read",
@@ -224,7 +226,11 @@
     "wordNoDefinition": "No card or translation for this word yet.",
     "wordLookupFailed": "Could not open the dictionary. Try again.",
     "wordLookupServerError": "Server is temporarily unavailable. Try later.",
-    "wordLookupNetwork": "No network. Check your connection."
+    "wordLookupNetwork": "No network. Check your connection.",
+    "deleteText": "Delete text",
+    "deleteConfirm": "Delete \"{title}\" and all related files?",
+    "deleteSuccess": "Reading text deleted.",
+    "deleteFailed": "Could not delete reading text."
   },
   "wordSets": {
     "back": "← Back",

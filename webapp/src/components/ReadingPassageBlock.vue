@@ -85,6 +85,16 @@
             <span>✓</span>
             <span>{{ isRead ? t('reading.alreadyRead') : t('reading.markRead') }}</span>
           </button>
+          <button
+            v-if="categoryId && otherUnreadInCategoryCount > 0"
+            type="button"
+            class="random-unread-footer-button"
+            :disabled="randomUnreadNavigating"
+            @click="openRandomUnreadInCategory"
+          >
+            <Icon name="dice" />
+            <span>{{ t('reading.anotherRandomUnread') }}</span>
+          </button>
         </footer>
       </section>
     </main>
@@ -121,6 +131,7 @@ const props = defineProps<{
   block: any
   chapterId?: string
   textId?: string
+  categoryId?: string
   isRead: boolean
 }>()
 
@@ -139,13 +150,15 @@ const wordLookupError = ref('')
 const modalLemma = ref('')
 const modalPreloaded = ref<VocabCardsAPIResponse | null>(null)
 const markingRead = ref(false)
-const selectedTokenKey = ref('')
+const otherUnreadInCategoryCount = ref(0)
+const randomUnreadNavigating = ref(false)
+
+const segments = computed(() => props.block?.reading_passage?.segments || [])
 const activeSegmentId = ref<string | null>(null)
+const selectedTokenKey = ref('')
 const isAutoplaying = ref(false)
 let currentAudio: HTMLAudioElement | null = null
 let autoplayRun = 0
-
-const segments = computed(() => props.block?.reading_passage?.segments || [])
 
 /** Distinct hues for dialogue speakers (first appearance order). */
 const SPEAKER_ICON_PALETTE = [
@@ -361,6 +374,53 @@ const markRead = async () => {
     console.error('Failed to mark reading text as read', error)
   } finally {
     markingRead.value = false
+  }
+}
+
+const currentTextId = computed(() => String(props.textId || props.chapterId || '').trim())
+
+async function refreshOtherUnreadInCategory() {
+  const cat = String(props.categoryId || '').trim()
+  const tid = currentTextId.value
+  otherUnreadInCategoryCount.value = 0
+  if (!cat || !tid) return
+  try {
+    const data: { texts?: { text_id: string; is_read: boolean }[] } = await apiClient.request(
+      `/api/learning/reading/categories/${encodeURIComponent(cat)}/texts`
+    )
+    const texts = data.texts || []
+    otherUnreadInCategoryCount.value = texts.filter((x) => !x.is_read && x.text_id !== tid).length
+  } catch {
+    otherUnreadInCategoryCount.value = 0
+  }
+}
+
+watch(
+  () => [props.categoryId, props.textId, props.chapterId, props.isRead] as const,
+  () => {
+    void refreshOtherUnreadInCategory()
+  },
+  { immediate: true }
+)
+
+const openRandomUnreadInCategory = async () => {
+  const cat = String(props.categoryId || '').trim()
+  const tid = currentTextId.value
+  if (!cat || !tid || randomUnreadNavigating.value) return
+  randomUnreadNavigating.value = true
+  try {
+    const data: { texts?: { text_id: string; is_read: boolean }[] } = await apiClient.request(
+      `/api/learning/reading/categories/${encodeURIComponent(cat)}/texts`
+    )
+    const pool = (data.texts || []).filter((x) => !x.is_read && x.text_id !== tid)
+    if (!pool.length) {
+      otherUnreadInCategoryCount.value = 0
+      return
+    }
+    const pick = pool[Math.floor(Math.random() * pool.length)]
+    await router.push(`/learning/reading/text/${pick.text_id}`)
+  } finally {
+    randomUnreadNavigating.value = false
   }
 }
 </script>
@@ -609,6 +669,9 @@ const markRead = async () => {
   margin-top: 24px;
   padding-top: 16px;
   border-top: 1px solid var(--border-primary);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .mark-read-button {
@@ -634,6 +697,35 @@ const markRead = async () => {
 .mark-read-button:disabled {
   opacity: 0.6;
   cursor: default;
+}
+
+.random-unread-footer-button {
+  width: 100%;
+  min-height: 58px;
+  border-radius: 12px;
+  border: 1px dashed var(--border-primary);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.random-unread-footer-button:hover:not(:disabled) {
+  background: var(--bg-hover);
+}
+
+.random-unread-footer-button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.random-unread-footer-button :deep(.icon) {
+  font-size: 22px;
 }
 
 @media (max-width: 768px) {

@@ -106,6 +106,7 @@ type Router struct {
 	bot                               *tgbotapi.BotAPI
 	authMiddleware                    *AuthMiddleware
 	otpRepo                           *repository.WebOTPRepository
+	readingCatalogRepo                *repository.ReadingCatalogRepository
 	botToken                          string
 	webTrainingHandler                *WebTrainingHandler
 	rateLimiter                       *RateLimiter
@@ -152,6 +153,9 @@ func NewRouter(
 		internalTTSMaxPendingLimit: maxInt(cfg.TTS.InternalMaxPendingLimit, 500),
 		internalTTSMaxUploadBytes:  maxInt(cfg.TTS.InternalMaxUploadMB, 10) * 1024 * 1024,
 		internalServiceTokens:      parseInternalServiceTokens(cfg, logger),
+	}
+	if db != nil {
+		r.readingCatalogRepo = repository.NewReadingCatalogRepository(db)
 	}
 
 	// Setup routes

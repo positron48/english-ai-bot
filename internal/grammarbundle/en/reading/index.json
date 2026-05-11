@@ -1,14 +1,88 @@
 {
   "version": "1.0.0",
-  "generated_at": "2026-05-10T09:51:52Z",
+  "generated_at": "2026-05-11T06:53:05Z",
   "categories": {
     "en_a2": {
       "id": "en_a2",
       "title": "EN A2 Reading",
       "level": "A2",
       "order": 0,
-      "text_ids": []
+      "text_ids": [
+        "free_en_a2_reading_1778480699",
+        "free_en_a2_reading_1778481014",
+        "free_en_a2_reading_1778481318",
+        "free_en_a2_reading_1778482010"
+      ]
+    },
+    "en_a1": {
+      "id": "en_a1",
+      "title": "EN A1 Reading",
+      "level": "A1",
+      "order": 0,
+      "text_ids": [
+        "free_en_a1_reading_1778480654",
+        "free_en_a1_reading_1778480966"
+      ]
+    },
+    "en_b1": {
+      "id": "en_b1",
+      "title": "EN B1 Reading",
+      "level": "B1",
+      "order": 0,
+      "text_ids": [
+        "free_en_b1_reading_1778480757",
+        "free_en_b1_reading_1778481051",
+        "free_en_b1_reading_1778481663",
+        "free_en_b1_reading_1778482091"
+      ]
+    },
+    "en_b2": {
+      "id": "en_b2",
+      "title": "EN B2 Reading",
+      "level": "B2",
+      "order": 0,
+      "text_ids": [
+        "free_en_b2_reading_1778480801",
+        "free_en_b2_reading_1778481092",
+        "free_en_b2_reading_1778481387",
+        "free_en_b2_reading_1778481734",
+        "free_en_b2_reading_1778482121"
+      ]
+    },
+    "en_c1": {
+      "id": "en_c1",
+      "title": "EN C1 Reading",
+      "level": "C1",
+      "order": 0,
+      "text_ids": [
+        "free_en_c1_reading_1778480858",
+        "free_en_c1_reading_1778481134",
+        "free_en_c1_reading_1778481436",
+        "free_en_c1_reading_1778481845",
+        "free_en_c1_reading_1778482227"
+      ]
     }
   },
-  "texts": {}
+  "texts": {
+    "free_en_a1_reading_1778480654": "texts/free_en_a1_reading_1778480654.json",
+    "free_en_a2_reading_1778480699": "texts/free_en_a2_reading_1778480699.json",
+    "free_en_b1_reading_1778480757": "texts/free_en_b1_reading_1778480757.json",
+    "free_en_b2_reading_1778480801": "texts/free_en_b2_reading_1778480801.json",
+    "free_en_c1_reading_1778480858": "texts/free_en_c1_reading_1778480858.json",
+    "free_en_a1_reading_1778480966": "texts/free_en_a1_reading_1778480966.json",
+    "free_en_a2_reading_1778481014": "texts/free_en_a2_reading_1778481014.json",
+    "free_en_b1_reading_1778481051": "texts/free_en_b1_reading_1778481051.json",
+    "free_en_b2_reading_1778481092": "texts/free_en_b2_reading_1778481092.json",
+    "free_en_c1_reading_1778481134": "texts/free_en_c1_reading_1778481134.json",
+    "free_en_a2_reading_1778481318": "texts/free_en_a2_reading_1778481318.json",
+    "free_en_b2_reading_1778481387": "texts/free_en_b2_reading_1778481387.json",
+    "free_en_c1_reading_1778481436": "texts/free_en_c1_reading_1778481436.json",
+    "free_en_b1_reading_1778481663": "texts/free_en_b1_reading_1778481663.json",
+    "free_en_b2_reading_1778481734": "texts/free_en_b2_reading_1778481734.json",
+    "free_en_c1_reading_1778481845": "texts/free_en_c1_reading_1778481845.json",
+    "free_en_a2_reading_1778482010": "texts/free_en_a2_reading_1778482010.json",
+    "free_en_b1_reading_1778482091": "texts/free_en_b1_reading_1778482091.json",
+    "free_en_b2_reading_1778482121": "texts/free_en_b2_reading_1778482121.json",
+    "free_en_c1_reading_1778482227": "texts/free_en_c1_reading_1778482227.json"
+  }
 }

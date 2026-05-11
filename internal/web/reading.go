@@ -8,13 +8,12 @@ import (
 	"fmt"
 	"io/fs"
 	"net/http"
-	"os"
 	"path/filepath"
 	"sort"
 	"strings"
 
-	"tgbot-skeleton/internal/config"
-	"tgbot-skeleton/internal/grammarbundle"
+	"tgbot-skeleton/internal/readingbundle"
+	"tgbot-skeleton/internal/readingsync"
 	"tgbot-skeleton/internal/repository"
 
 	"go.uber.org/zap"
@@ -44,6 +43,52 @@ type readingTextDoc struct {
 	Level             string                 `json:"level"`
 	TargetLanguage    string                 `json:"target_language"`
 	ReadingPassage    map[string]interface{} `json:"reading_passage"`
+}
+
+// SyncReadingCatalogFromBundle loads reading content from the grammar bundle into the database.
+func (r *Router) SyncReadingCatalogFromBundle(ctx context.Context) error {
+	if r == nil || r.readingCatalogRepo == nil {
+		return nil
+	}
+	return readingsync.SyncFromBundle(ctx, r.config, r.readingCatalogRepo, r.logger)
+}
+
+func docFromRepo(d *repository.ReadingTextDocument) *readingTextDoc {
+	if d == nil {
+		return nil
+	}
+	return &readingTextDoc{
+		ID:                d.ID,
+		CategoryID:        d.CategoryID,
+		Title:             d.Title,
+		TitleTranslations: d.TitleTranslations,
+		Level:             d.Level,
+		TargetLanguage:    d.TargetLanguage,
+		ReadingPassage:    d.ReadingPassage,
+	}
+}
+
+func snapshotToReadingIndex(snap *repository.ReadingCatalogSnapshot) *readingIndex {
+	idx := &readingIndex{
+		Version:     snap.Version,
+		GeneratedAt: snap.GeneratedAt,
+		Categories:  make(map[string]readingCategory, len(snap.Categories)),
+		Texts:       make(map[string]string),
+	}
+	for id, c := range snap.Categories {
+		idx.Categories[id] = readingCategory{
+			ID:                c.CategoryID,
+			Title:             c.Title,
+			TitleTranslations: c.TitleTranslations,
+			Level:             c.Level,
+			Order:             c.Order,
+			TextIDs:           append([]string(nil), c.TextIDs...),
+		}
+		for _, tid := range c.TextIDs {
+			idx.Texts[tid] = ""
+		}
+	}
+	return idx
 }
 
 func (r *Router) handleLearningReadingCategories(w http.ResponseWriter, req *http.Request) {
@@ -515,7 +560,7 @@ func (r *Router) handleLearningReadingAudio(w http.ResponseWriter, req *http.Req
 		return
 	}
 	audioPath = filepath.Clean(audioPath)
-	bundleFS, err := readingBundleFS(r.config)
+	bundleFS, err := readingbundle.BundleFS(r.config)
 	if err != nil {
 		r.logger.Error("failed to select grammar bundle filesystem", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -523,7 +568,7 @@ func (r *Router) handleLearningReadingAudio(w http.ResponseWriter, req *http.Req
 	}
 	data, err := fs.ReadFile(bundleFS, audioPath)
 	if err != nil {
-		if os.IsNotExist(err) {
+		if errors.Is(err, fs.ErrNotExist) {
 			http.Error(w, "Not found", http.StatusNotFound)
 			return
 		}
@@ -536,8 +581,66 @@ func (r *Router) handleLearningReadingAudio(w http.ResponseWriter, req *http.Req
 	_, _ = w.Write(data)
 }
 
+func (r *Router) readReadingText(idx *readingIndex, textID string) (*readingTextDoc, error) {
+	if r.readingCatalogRepo != nil {
+		doc, ok, err := r.readingCatalogRepo.GetTextDocument(textID)
+		if err != nil {
+			return nil, err
+		}
+		if ok {
+			return docFromRepo(doc), nil
+		}
+	}
+	if idx == nil {
+		return nil, fmt.Errorf("text not found: %s", textID)
+	}
+	relPath, ok := idx.Texts[textID]
+	if !ok {
+		return nil, fmt.Errorf("text not found: %s", textID)
+	}
+	if strings.TrimSpace(relPath) == "" {
+		return nil, fmt.Errorf("text not found: %s", textID)
+	}
+	if strings.Contains(relPath, "..") || strings.HasPrefix(relPath, "/") {
+		return nil, fmt.Errorf("invalid reading text path")
+	}
+	bundleFS, err := readingbundle.BundleFS(r.config)
+	if err != nil {
+		return nil, err
+	}
+	data, err := fs.ReadFile(bundleFS, filepath.Join("reading", filepath.Clean(relPath)))
+	if err != nil {
+		return nil, err
+	}
+	var doc readingTextDoc
+	if err := json.Unmarshal(data, &doc); err != nil {
+		return nil, err
+	}
+	if strings.TrimSpace(doc.ID) == "" {
+		doc.ID = textID
+	}
+	return &doc, nil
+}
+
 func (r *Router) readReadingIndex() (*readingIndex, error) {
-	bundleFS, err := readingBundleFS(r.config)
+	if r.readingCatalogRepo != nil {
+		n, err := r.readingCatalogRepo.CountCategories()
+		if err != nil {
+			r.logger.Warn("reading index: db category count failed, falling back to bundle", zap.Error(err))
+		} else if n > 0 {
+			snap, err := r.readingCatalogRepo.LoadSnapshot()
+			if err != nil {
+				r.logger.Warn("reading index: db snapshot failed, falling back to bundle", zap.Error(err))
+			} else {
+				return snapshotToReadingIndex(snap), nil
+			}
+		}
+	}
+	return r.readReadingIndexFromBundleFS()
+}
+
+func (r *Router) readReadingIndexFromBundleFS() (*readingIndex, error) {
+	bundleFS, err := readingbundle.BundleFS(r.config)
 	if err != nil {
 		return nil, err
 	}
@@ -566,67 +669,3 @@ func (r *Router) readReadingIndex() (*readingIndex, error) {
 	return &idx, nil
 }
 
-func (r *Router) readReadingText(idx *readingIndex, textID string) (*readingTextDoc, error) {
-	relPath, ok := idx.Texts[textID]
-	if !ok {
-		return nil, fmt.Errorf("text not found: %s", textID)
-	}
-	if strings.Contains(relPath, "..") || strings.HasPrefix(relPath, "/") {
-		return nil, fmt.Errorf("invalid reading text path")
-	}
-	bundleFS, err := readingBundleFS(r.config)
-	if err != nil {
-		return nil, err
-	}
-	data, err := fs.ReadFile(bundleFS, filepath.Join("reading", filepath.Clean(relPath)))
-	if err != nil {
-		return nil, err
-	}
-	var doc readingTextDoc
-	if err := json.Unmarshal(data, &doc); err != nil {
-		return nil, err
-	}
-	if strings.TrimSpace(doc.ID) == "" {
-		doc.ID = textID
-	}
-	return &doc, nil
-}
-
-// grammarBundleFilesystemRoot returns an absolute bundle root directory when the server should
-// read grammar/reading content from the working tree. An empty string means use the embedded bundle
-// (must match readingWritableRootDir so admin deletes affect the same source as GET /api/.../reading).
-func grammarBundleFilesystemRoot(cfg *config.Config) (string, error) {
-	if cfg == nil {
-		return "", fmt.Errorf("config is nil")
-	}
-	if dir := strings.TrimSpace(cfg.Learning.GrammarBundleDir); dir != "" {
-		return filepath.Abs(dir)
-	}
-	bundleID := strings.TrimSpace(cfg.Learning.GrammarBundleID)
-	if bundleID == "" {
-		return "", nil
-	}
-	wd, err := os.Getwd()
-	if err != nil {
-		return "", nil
-	}
-	candidate := filepath.Join(wd, "internal", "grammarbundle", bundleID)
-	indexPath := filepath.Join(candidate, "reading", "index.json")
-	st, statErr := os.Stat(indexPath)
-	if statErr != nil || st.IsDir() {
-		return "", nil
-	}
-	return filepath.Abs(candidate)
-}
-
-func readingBundleFS(cfg *config.Config) (fs.FS, error) {
-	lc := cfg.Learning
-	root, err := grammarBundleFilesystemRoot(cfg)
-	if err != nil {
-		return nil, err
-	}
-	if root != "" {
-		return os.DirFS(root), nil
-	}
-	return grammarbundle.BundleFS(lc.GrammarBundleID)
-}

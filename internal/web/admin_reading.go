@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"tgbot-skeleton/internal/config"
+	"tgbot-skeleton/internal/readingbundle"
 
 	"go.uber.org/zap"
 )
@@ -146,9 +147,13 @@ func (r *Router) handleAdminReadingTextDelete(w http.ResponseWriter, req *http.R
 	syncDeleteReadingTextInMatchingCourses(r.logger, r.config, rootDir, textID)
 
 	if r.db != nil {
-		if _, err := r.db.Exec(`DELETE FROM reading_text_progress WHERE chapter_id = $1`, textID); err != nil {
+		if _, err := r.db.Exec(`DELETE FROM reading_text_progress WHERE chapter_id = ?`, textID); err != nil {
 			r.logger.Warn("admin reading: failed to cleanup reading progress", zap.String("text_id", textID), zap.Error(err))
 		}
+	}
+
+	if err := r.SyncReadingCatalogFromBundle(req.Context()); err != nil {
+		r.logger.Warn("admin reading: catalog db sync after delete failed", zap.String("text_id", textID), zap.Error(err))
 	}
 
 	w.Header().Set("Content-Type", "application/json")
@@ -159,7 +164,7 @@ func (r *Router) handleAdminReadingTextDelete(w http.ResponseWriter, req *http.R
 }
 
 func readingWritableRootDir(cfg *config.Config) (string, error) {
-	root, err := grammarBundleFilesystemRoot(cfg)
+	root, err := readingbundle.GrammarFilesystemRoot(cfg)
 	if err != nil {
 		return "", err
 	}

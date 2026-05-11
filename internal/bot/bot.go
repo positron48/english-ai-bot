@@ -291,8 +291,11 @@ func (b *Bot) Start(ctx context.Context) error {
 		b.logger.Info("notification service started")
 	}
 
-	// Startup bootstrap for reading vocabulary cards.
+	// Reading catalog: sync bundle → DB, then vocabulary bootstrap (uses catalog).
 	if b.webRouter != nil {
+		if err := b.webRouter.SyncReadingCatalogFromBundle(ctx); err != nil {
+			b.logger.Warn("reading catalog sync failed", zap.Error(err))
+		}
 		go b.webRouter.BootstrapReadingWordCards(ctx)
 	}
 

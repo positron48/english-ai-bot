@@ -175,6 +175,15 @@
       <polygon points="5 4 15 12 5 20 5 4"/>
       <line x1="19" y1="5" x2="19" y2="19"/>
     </svg>
+    <!-- dice-5: Lucide Icons (ISC) https://lucide.dev/icons/dice-5 -->
+    <svg v-else-if="name === 'dice'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
+      <path d="M16 8h.01" />
+      <path d="M8 8h.01" />
+      <path d="M8 16h.01" />
+      <path d="M16 16h.01" />
+      <path d="M12 12h.01" />
+    </svg>
     <svg v-else-if="name === 'info'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <circle cx="12" cy="12" r="10"/>
       <line x1="12" y1="16" x2="12" y2="12"/>
@@ -227,6 +236,7 @@ defineProps<{
     | 'check'
     | 'forward'
     | 'info'
+    | 'dice'
   dark?: boolean
 }>()
 </script>
