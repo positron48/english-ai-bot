@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generated_at": "2026-05-11T06:53:08Z",
+  "generated_at": "2026-05-11T09:53:24Z",
   "categories": {
     "es_a0": {
       "id": "es_a0",
@@ -12,7 +12,9 @@
         "free_es_a0_reading_1778459777",
         "free_es_a0_reading_1778471595",
         "free_es_a0_reading_1778472160",
-        "free_es_a0_reading_1778476383"
+        "free_es_a0_reading_1778476383",
+        "free_es_a0_reading_1778489197",
+        "free_es_a0_reading_1778490922"
       ]
     },
     "es_a1": {
@@ -59,7 +61,10 @@
         "free_es_a2_reading_1778475504",
         "free_es_a2_reading_1778476148",
         "free_es_a2_reading_1778477574",
-        "free_es_a2_reading_1778478981"
+        "free_es_a2_reading_1778478981",
+        "free_es_a2_reading_1778488583",
+        "free_es_a2_reading_1778490619",
+        "free_es_a2_reading_1778491150"
       ]
     },
     "es_b1": {
@@ -110,7 +115,11 @@
         "free_es_b1_reading_1778477595",
         "free_es_b1_reading_1778478434",
         "free_es_b1_reading_1778478734",
-        "free_es_b1_reading_1778479020"
+        "free_es_b1_reading_1778479020",
+        "free_es_b1_reading_1778488655",
+        "free_es_b1_reading_1778490692",
+        "free_es_b1_reading_1778491261",
+        "free_es_b1_reading_1778492644"
       ]
     },
     "es_b2": {
@@ -182,7 +191,9 @@
         "free_es_b2_reading_1778478090",
         "free_es_b2_reading_1778478776",
         "free_es_b2_reading_1778479043",
-        "free_es_b2_reading_1778479686"
+        "free_es_b2_reading_1778479686",
+        "free_es_b2_reading_1778489544",
+        "free_es_b2_reading_1778491347"
       ]
     },
     "es_c1": {
@@ -256,7 +267,10 @@
         "free_es_c1_reading_1778478503",
         "free_es_c1_reading_1778479107",
         "free_es_c1_reading_1778479434",
-        "free_es_c1_reading_1778480017"
+        "free_es_c1_reading_1778480017",
+        "free_es_c1_reading_1778489656",
+        "free_es_c1_reading_1778490831",
+        "free_es_c1_reading_1778492987"
       ]
     }
   },
@@ -469,6 +483,20 @@
     "free_es_c1_reading_1778479434": "texts/free_es_c1_reading_1778479434.json",
     "free_es_a1_reading_1778479519": "texts/free_es_a1_reading_1778479519.json",
     "free_es_b2_reading_1778479686": "texts/free_es_b2_reading_1778479686.json",
-    "free_es_c1_reading_1778480017": "texts/free_es_c1_reading_1778480017.json"
+    "free_es_c1_reading_1778480017": "texts/free_es_c1_reading_1778480017.json",
+    "free_es_a2_reading_1778488583": "texts/free_es_a2_reading_1778488583.json",
+    "free_es_b1_reading_1778488655": "texts/free_es_b1_reading_1778488655.json",
+    "free_es_a0_reading_1778489197": "texts/free_es_a0_reading_1778489197.json",
+    "free_es_b2_reading_1778489544": "texts/free_es_b2_reading_1778489544.json",
+    "free_es_c1_reading_1778489656": "texts/free_es_c1_reading_1778489656.json",
+    "free_es_a2_reading_1778490619": "texts/free_es_a2_reading_1778490619.json",
+    "free_es_b1_reading_1778490692": "texts/free_es_b1_reading_1778490692.json",
+    "free_es_c1_reading_1778490831": "texts/free_es_c1_reading_1778490831.json",
+    "free_es_a0_reading_1778490922": "texts/free_es_a0_reading_1778490922.json",
+    "free_es_a2_reading_1778491150": "texts/free_es_a2_reading_1778491150.json",
+    "free_es_b1_reading_1778491261": "texts/free_es_b1_reading_1778491261.json",
+    "free_es_b2_reading_1778491347": "texts/free_es_b2_reading_1778491347.json",
+    "free_es_b1_reading_1778492644": "texts/free_es_b1_reading_1778492644.json",
+    "free_es_c1_reading_1778492987": "texts/free_es_c1_reading_1778492987.json"
   }
 }

@@ -11,6 +11,17 @@
             文A
           </button>
           <button
+            v-if="canDelete"
+            type="button"
+            class="icon-button icon-button-danger"
+            :disabled="deleting"
+            :aria-label="t('reading.deleteText')"
+            :title="t('reading.deleteText')"
+            @click.stop="emit('delete-request')"
+          >
+            <Icon name="trash" />
+          </button>
+          <button
             type="button"
             class="icon-button"
             :class="{ active: isAutoplaying }"
@@ -133,10 +144,13 @@ const props = defineProps<{
   textId?: string
   categoryId?: string
   isRead: boolean
+  canDelete?: boolean
+  deleting?: boolean
 }>()
 
 const emit = defineEmits<{
   (e: 'marked-read'): void
+  (e: 'delete-request'): void
 }>()
 
 const { t } = useI18n()
@@ -504,6 +518,20 @@ const openRandomUnreadInCategory = async () => {
 
 .icon-button:hover {
   background: var(--bg-hover);
+}
+
+.icon-button-danger {
+  color: #ef4444;
+  border-color: color-mix(in srgb, #ef4444 40%, var(--border-primary));
+}
+
+.icon-button-danger:hover:not(:disabled) {
+  background: color-mix(in srgb, #ef4444 16%, var(--bg-hover));
+}
+
+.icon-button:disabled {
+  opacity: 0.55;
+  cursor: default;
 }
 
 .content {

@@ -3,27 +3,17 @@
     <div v-if="loading">{{ t('common.loading') }}</div>
     <div v-else-if="error">{{ error }}</div>
     <div v-else-if="!block">{{ t('reading.noTexts') }}</div>
-    <template v-else>
-      <div v-if="can('full_access')" class="reading-admin-bar">
-        <button
-          type="button"
-          class="btn btn-sm btn-danger reading-delete-btn"
-          :disabled="deleting"
-          :title="t('reading.deleteText')"
-          :aria-label="t('reading.deleteText')"
-          @click="onDeleteText"
-        >
-          <Icon name="trash" />
-        </button>
-      </div>
-      <ReadingPassageBlock
-        :block="block"
-        :text-id="textId"
-        :category-id="categoryId"
-        :is-read="readingIsRead"
-        @marked-read="readingIsRead = true"
-      />
-    </template>
+    <ReadingPassageBlock
+      v-else
+      :block="block"
+      :text-id="textId"
+      :category-id="categoryId"
+      :is-read="readingIsRead"
+      :can-delete="can('full_access')"
+      :deleting="deleting"
+      @marked-read="readingIsRead = true"
+      @delete-request="onDeleteText"
+    />
   </div>
 </template>
 
@@ -33,7 +23,6 @@ import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { apiClient } from '../api/client'
 import ReadingPassageBlock from '../components/ReadingPassageBlock.vue'
-import Icon from '../components/Icon.vue'
 import { useAuth } from '../composables/useAuth'
 import { showAlert, showConfirm } from '../composables/useDialog'
 
@@ -100,19 +89,5 @@ onMounted(async () => {
 
 <style scoped>
 .reading-text-view { margin: 0; padding: 0; }
-
-.reading-admin-bar {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 8px;
-}
-
-.reading-delete-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 2.25rem;
-  padding: 0.35rem 0.5rem;
-}
 </style>
 

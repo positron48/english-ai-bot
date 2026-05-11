@@ -1,6 +1,15 @@
 <template>
   <div class="reading-chapters">
     <div class="page-heading">
+      <button
+        type="button"
+        class="back-levels-btn"
+        :aria-label="t('common.back')"
+        @click="router.push('/learning/reading')"
+      >
+        <Icon name="arrow-left" />
+        <span>{{ t('common.back') }}</span>
+      </button>
       <h1 class="page-title">{{ pageHeading }}</h1>
       <button
         v-if="!loading && !error && texts.length > 0 && unreadTexts.length > 0"
@@ -123,6 +132,24 @@ onMounted(async () => {
   margin-bottom: 1rem;
 }
 .page-title { margin: 0; flex: 1; min-width: 0; }
+.back-levels-btn {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 42px;
+  padding: 0 12px;
+  border: 2px solid var(--border-primary);
+  border-radius: 10px;
+  background: var(--card-bg);
+  color: var(--text-primary);
+  cursor: pointer;
+  font: inherit;
+}
+.back-levels-btn:hover {
+  border-color: var(--accent-primary, #3b82f6);
+  color: var(--accent-primary, #3b82f6);
+}
 .random-unread-btn {
   flex-shrink: 0;
   display: inline-flex;
