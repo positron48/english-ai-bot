@@ -2,7 +2,7 @@
   <div class="screen">
     <main class="reader-shell">
       <header class="header">
-        <button type="button" class="back-button" aria-label="Назад" @click="goBack">
+        <button type="button" class="back-button" :aria-label="t('common.back')" @click="goBack">
           <Icon name="arrow-left" />
         </button>
         <h1 class="title">{{ block.reading_passage?.title || block.title }}</h1>
@@ -225,8 +225,13 @@ const tokenText = (tokens: any[], index: number) => {
 
 const waitMs = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms))
 
-const goBack = () => {
-  router.back()
+const goBack = async () => {
+  const cid = String(props.categoryId || '').trim()
+  if (cid) {
+    await router.push({ name: 'ReadingChapters', params: { categoryId: cid } })
+    return
+  }
+  await router.push({ name: 'ReadingCategories' })
 }
 
 const tokenKey = (segmentId: string, tokenIdx: number) => `${segmentId}-${tokenIdx}`

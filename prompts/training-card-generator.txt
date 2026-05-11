@@ -37,6 +37,7 @@ CARD
 - example_target MUST be in target language (never in English unless target language is English).
 - If target language is not Russian, meaning_target and example_target MUST NOT contain Cyrillic.
 - If target language is not Russian, meaning_target MUST be Latin-only: it must contain Latin letters and contain zero Cyrillic.
+- When target language is English (ru→en): meaning_target is an English gloss (not Russian in Cyrillic). Forbidden in meaning_target: any Cyrillic, including short Russian glosses like "принадлежащий вам" or "те, которые" — rewrite into English words.
 - word_native must match pos:
   - verb => Russian infinitive
   - adjective => masculine singular adjective
@@ -61,12 +62,15 @@ DISTRACTORS (THIS IS THE MOST IMPORTANT PART)
   - distractors_target MUST NOT contain lemma anywhere (forbid "outburst" when lemma="burst"; forbid any phrase containing "bank" when lemma="bank").
   - distractors_ru MUST NOT contain word_native anywhere (forbid "учительница" when word_native="учитель"; forbid "банкрот/банкир/банка" when word_native="банк"; forbid "поранить" when word_native="ранить").
   - Also: distractors_ru MUST NOT equal word_native exactly. NEVER include the correct word_native as a distractor (0 tolerance).
+- VALIDATOR R6 (ru→en, exact duplicate of correct Russian): every distractors_ru[i] must differ from word_native after trim, case-insensitive (e.g. never reuse "каждый" if word_native is "каждый").
+- VALIDATOR R5 (ru→en, exact duplicate of English lemma): every distractors_target[i] must differ from lemma after trim, case-insensitive; if pos=="verb", strip leading "to " from the distractor before comparing to lemma (same as server validator).
 - Uniqueness: no duplicates in each list.
 - STRICT FALLBACK MODE (use this to avoid validation failures):
   - If word_native is ONE word and length <= 7: you MUST use the fallback set for the sense POS AS-IS.
   - For this case, do not substitute other words and do not include word_native in distractors_ru.
 
 FINAL SELF-CHECK (MANDATORY): if any rule fails, replace distractors until ALL pass, then output JSON.
-- Ensure meaning_target is Latin-only for non-Russian target language (contains Latin, contains zero Cyrillic).
+- For non-Russian target: meaning_target is Latin-only (contains Latin, contains zero Cyrillic). For English target, meaning_target is English-only (no Cyrillic at all).
+- R5/R6 when target is English: no distractors_target equals lemma (verb rule: strip "to "); no distractors_ru equals word_native (case-insensitive).
 
 Word to process:

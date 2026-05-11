@@ -21,9 +21,10 @@ SCHEMA (MUST MATCH)
 CARD
 - 1–3 senses.
 - display_word: verb => "to <lemma>", else => "<lemma>".
-- meaning_target MUST be in English.
-- meaning_target MUST be Latin-only: it must contain Latin letters and MUST NOT contain any Cyrillic characters.
-- example_target MUST be in English.
+- meaning_target MUST be in English (a short gloss/definition learners would see as the “English meaning”).
+- meaning_target MUST be Latin-only: it must contain at least one Latin letter [A-Za-z] and MUST NOT contain ANY Cyrillic character [А-Яа-яЁё].
+- meaning_target MUST NOT be a Russian paraphrase written in Cyrillic (forbidden examples: "принадлежащий вам", "те, которые"). If you think in Russian, rewrite the idea into plain English words before output.
+- example_target MUST be in English (Latin script, no Cyrillic).
 - word_native must match pos:
   - verb => Russian infinitive
   - adjective => masculine singular adjective
@@ -45,12 +46,22 @@ DISTRACTORS (THIS IS THE MOST IMPORTANT PART)
   - distractors_target MUST NOT contain lemma anywhere (forbid "outburst" when lemma="burst"; forbid any phrase containing "bank" when lemma="bank").
   - distractors_ru MUST NOT contain word_native anywhere (forbid "учительница" when word_native="учитель"; forbid "банкрот/банкир/банка" when word_native="банк"; forbid "поранить" when word_native="ранить").
   - Also: distractors_ru MUST NOT equal word_native exactly. NEVER include the correct word_native as a distractor (0 tolerance).
+- VALIDATOR R6 (exact duplicate of correct Russian): for EACH sense, after trimming spaces, compare case-insensitively:
+  - EVERY distractors_ru[i] MUST differ from word_native (even if it is a single short word like "каждый" / "звонить").
+  - If any distractor equals word_native, replace it with a different wrong Russian word of the same POS (still obeying substring “no leakage” rules above).
+- VALIDATOR R5 (exact duplicate of English lemma): for EACH sense, compare case-insensitively:
+  - EVERY distractors_target[i] MUST NOT equal lemma after trimming spaces.
+  - If pos=="verb": strip a leading "to " (and spaces) from the distractor before comparing to lemma (validator does the same). So lemma "call" forbids distractors "call" and "to call".
+  - If pos!="verb": compare the distractor string directly to lemma (example forbidden: lemma "those" => distractors_target must not include "those").
 - Uniqueness: no duplicates in each list.
 - STRICT FALLBACK MODE (use this to avoid validation failures):
   - If word_native is ONE word and length <= 7: you MUST use the fallback set for the sense POS AS-IS.
   - For this case, do not substitute other words and do not include word_native in distractors_ru.
 
-FINAL SELF-CHECK (MANDATORY): if any rule fails, replace distractors until ALL pass, then output JSON.
-- Ensure meaning_target is Latin-only (contains Latin, contains zero Cyrillic).
+FINAL SELF-CHECK (MANDATORY): if any rule fails, rewrite fields until ALL pass, then output JSON.
+- R9: meaning_target has ≥1 Latin letter AND zero Cyrillic characters.
+- R5: no distractors_target item equals lemma (case-insensitive; for verbs, ignore leading "to " on the distractor when comparing to lemma).
+- R6: no distractors_ru item equals word_native (case-insensitive).
+- R1/R2 script firewall: distractors_target has zero Cyrillic; distractors_ru has zero Latin letters.
 
 Word to process:
