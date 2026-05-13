@@ -1,0 +1,5 @@
+{
+  "attempt": 2,
+  "error": null,
+  "raw_response": "[\n  {\n    \"type\": \"mcq_single\",\n    \"prompt\": \"Какое предложение правильно описывает фон воспоминания, используя imperfecto для времени и возраста?\",\n    \"choices\": [\n      {\n        \"id\": \"a\",\n        \"text\": \"Era un día soleado y yo tenía diez años.\"\n      },\n      {\n        \"id\": \"b\",\n        \"text\": \"Era un día soleado y yo tuve diez años.\"\n      },\n      {\n        \"id\": \"c\",\n        \"text\": \"Es un día soleado y yo tengo diez años.\"\n      },\n      {\n        \"id\": \"d\",\n        \"text\": \"Estaba un día soleado y yo tenía diez años.\"\n      }\n    ],\n    \"correct_answer\": \"a\",\n    \"explanation\": \"Фон сцены-воспоминания задается в imperfecto: время (Era un día soleado) и возраст (tenía diez años). Использование других времен, например, pretérito (tuve), неверно для описания фона.\",\n    \"theory_block_id\": \"b1_theory_memory_frame\",\n    \"chapter_id\": \"es.grammar.past_imperfecto_contrast.build_write_childhood_memory_scene\",\n    \"concept_id\": \"memory_scene_background_frame\",\n    \"difficulty\": 2\n  }\n]"
+}

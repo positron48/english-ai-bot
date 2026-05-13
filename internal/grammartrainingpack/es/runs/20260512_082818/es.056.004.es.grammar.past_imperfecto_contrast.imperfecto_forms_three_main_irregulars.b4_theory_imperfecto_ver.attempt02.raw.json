@@ -1,0 +1,5 @@
+{
+  "attempt": 2,
+  "error": null,
+  "raw_response": "[\n  {\n    \"type\": \"mcq_single\",\n    \"prompt\": \"Как правильно написать форму глагола 'ver' для третьего лица единственного числа в imperfecto?\",\n    \"choices\": [\n      {\n        \"id\": \"a\",\n        \"text\": \"veía\"\n      },\n      {\n        \"id\": \"b\",\n        \"text\": \"veia\"\n      },\n      {\n        \"id\": \"c\",\n        \"text\": \"veían\"\n      }\n    ],\n    \"correct_answer\": \"a\",\n    \"explanation\": \"Правильная форма для 'él/ella' — veía, с вставкой -í- и ударением на í. Неправильно писать без тильды (veia) или использовать форму для множественного числа (veían).\",\n    \"theory_block_id\": \"b4_theory_imperfecto_ver\",\n    \"chapter_id\": \"es.grammar.past_imperfecto_contrast.imperfecto_forms_three_main_irregulars\",\n    \"concept_id\": \"imperfecto_irregular_ver_diphthong_insert\",\n    \"difficulty\": 2\n  }\n]"
+}

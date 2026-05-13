@@ -1,0 +1,5 @@
+{
+  "attempt": 2,
+  "error": null,
+  "raw_response": "[\n  {\n    \"type\": \"mcq_single\",\n    \"prompt\": \"Какой вариант правильно выражает вежливую просьбу с использованием условного наклонения?\",\n    \"choices\": [\n      {\n        \"id\": \"a\",\n        \"text\": \"Quieres cerrar la ventana, por favor?\"\n      },\n      {\n        \"id\": \"b\",\n        \"text\": \"Podrías cerrar la ventana, por favor?\"\n      },\n      {\n        \"id\": \"c\",\n        \"text\": \"Puedes cerrar la ventana, por favor?\"\n      },\n      {\n        \"id\": \"d\",\n        \"text\": \"Cerrarias la ventana, por favor?\"\n      }\n    ],\n    \"correct_answer\": \"b\",\n    \"explanation\": \"Использование условного наклонения (podrías) делает просьбу вежливой, в отличие от прямого настояния (quieres/ puedes). В примере из теории указано, что формы вроде 'podrías' уместны в вежливых просьбах.\",\n    \"theory_block_id\": \"b2_theory_polite_requests\",\n    \"chapter_id\": \"es.grammar.future_conditionals.condicional_simple_polite_requests_hypotheticals\",\n    \"concept_id\": \"condicional_politeness\",\n    \"difficulty\": 2\n  }\n]"
+}

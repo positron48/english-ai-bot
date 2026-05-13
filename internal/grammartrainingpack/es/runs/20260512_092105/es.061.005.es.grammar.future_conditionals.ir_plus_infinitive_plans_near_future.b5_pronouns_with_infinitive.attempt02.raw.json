@@ -1,0 +1,5 @@
+{
+  "attempt": 2,
+  "error": null,
+  "raw_response": "[\n  {\n    \"type\": \"mcq_single\",\n    \"prompt\": \"Как правильно написать предложение 'Я собираюсь купить его' в конструкции ir a + infinitivo?\",\n    \"choices\": [\n      {\n        \"id\": \"a\",\n        \"text\": \"Voy a comprarlo.\"\n      },\n      {\n        \"id\": \"b\",\n        \"text\": \"Lo voy a comprar.\"\n      },\n      {\n        \"id\": \"c\",\n        \"text\": \"Voy a lo comprar.\"\n      }\n    ],\n    \"correct_answer\": \"a\",\n    \"explanation\": \"В конструкции ir a + infinitivo местоимения-дополнения ставятся после инфинитива и пишутся слитно, как в примере 'Voy a comprarlo'.\",\n    \"theory_block_id\": \"b5_pronouns_with_infinitive\",\n    \"chapter_id\": \"es.grammar.future_conditionals.ir_plus_infinitive_plans_near_future\",\n    \"concept_id\": \"clitic_pronouns_with_infinitive\",\n    \"difficulty\": 2\n  }\n]"
+}

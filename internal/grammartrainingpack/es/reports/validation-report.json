@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-30T18:17:50Z",
+  "generated_at": "2026-05-12T12:18:33Z",
   "ok": true,
   "errors": [],
   "chapters": {
@@ -15,7 +15,7 @@
     },
     "es.grammar.orientation_alphabet_sounds.stress_rules_written_accents": {
       "errors": [],
-      "accepted_questions": 42,
+      "accepted_questions": 52,
       "duplicates_removed": 0
     },
     "es.grammar.orientation_alphabet_sounds.core_pronunciation_map_b_v_c_z_g": {
@@ -115,12 +115,12 @@
     },
     "es.grammar.existence_location_possession.first_ser_estar_contrast": {
       "errors": [],
-      "accepted_questions": 59,
+      "accepted_questions": 58,
       "duplicates_removed": 0
     },
     "es.grammar.existence_location_possession.tener_possession_age_common_bodily_state_expressions": {
       "errors": [],
-      "accepted_questions": 60,
+      "accepted_questions": 59,
       "duplicates_removed": 0
     },
     "es.grammar.existence_location_possession.possessives_mi_tu_su_nuestro_de_plus_noun": {
@@ -285,7 +285,7 @@
     },
     "es.grammar.past_imperfecto_contrast.imperfecto_forms_three_main_irregulars": {
       "errors": [],
-      "accepted_questions": 77,
+      "accepted_questions": 87,
       "duplicates_removed": 0
     },
     "es.grammar.past_imperfecto_contrast.indefinido_imperfecto_event_background": {
@@ -295,7 +295,87 @@
     },
     "es.grammar.past_imperfecto_contrast.antes_siempre_de_nino_habitual_past": {
       "errors": [],
-      "accepted_questions": 47,
+      "accepted_questions": 67,
+      "duplicates_removed": 0
+    },
+    "es.grammar.past_imperfecto_contrast.weather_age_time_setting_stories": {
+      "errors": [],
+      "accepted_questions": 60,
+      "duplicates_removed": 0
+    },
+    "es.grammar.past_imperfecto_contrast.build_write_childhood_memory_scene": {
+      "errors": [],
+      "accepted_questions": 60,
+      "duplicates_removed": 0
+    },
+    "es.grammar.future_conditionals.ir_plus_infinitive_plans_near_future": {
+      "errors": [],
+      "accepted_questions": 60,
+      "duplicates_removed": 0
+    },
+    "es.grammar.future_conditionals.present_tense_schedules_fixed_arrangements": {
+      "errors": [],
+      "accepted_questions": 60,
+      "duplicates_removed": 0
+    },
+    "es.grammar.future_conditionals.futuro_simple_forms_core_uses": {
+      "errors": [],
+      "accepted_questions": 60,
+      "duplicates_removed": 0
+    },
+    "es.grammar.future_conditionals.futuro_probability_present": {
+      "errors": [],
+      "accepted_questions": 60,
+      "duplicates_removed": 0
+    },
+    "es.grammar.future_conditionals.condicional_simple_polite_requests_hypotheticals": {
+      "errors": [],
+      "accepted_questions": 60,
+      "duplicates_removed": 0
+    },
+    "es.grammar.future_conditionals.build_speak_plans_predictions_polite_requests": {
+      "errors": [],
+      "accepted_questions": 60,
+      "duplicates_removed": 0
+    },
+    "es.grammar.obligation_ability_commands.poder_saber_querer_plus_infinitive": {
+      "errors": [],
+      "accepted_questions": 60,
+      "duplicates_removed": 0
+    },
+    "es.grammar.obligation_ability_commands.tener_que_deber_hay_que_shades_obligation": {
+      "errors": [],
+      "accepted_questions": 60,
+      "duplicates_removed": 0
+    },
+    "es.grammar.obligation_ability_commands.se_puede_no_se_puede_esta_prohibido": {
+      "errors": [],
+      "accepted_questions": 60,
+      "duplicates_removed": 0
+    },
+    "es.grammar.obligation_ability_commands.affirmative_commands_tu_usted_nosotros": {
+      "errors": [],
+      "accepted_questions": 60,
+      "duplicates_removed": 0
+    },
+    "es.grammar.obligation_ability_commands.pronouns_infinitives_gerunds_affirmative_commands": {
+      "errors": [],
+      "accepted_questions": 60,
+      "duplicates_removed": 0
+    },
+    "es.grammar.obligation_ability_commands.build_speak_rules_instructions_advice": {
+      "errors": [],
+      "accepted_questions": 60,
+      "duplicates_removed": 0
+    },
+    "es.grammar.noun_phrase_upgrade_precision.mucho_poco_bastante_demasiado_suficiente": {
+      "errors": [],
+      "accepted_questions": 60,
+      "duplicates_removed": 0
+    },
+    "es.grammar.noun_phrase_upgrade_precision.alguno_ninguno_otro_mismo_cada_todo": {
+      "errors": [],
+      "accepted_questions": 10,
       "duplicates_removed": 0
     }
   },

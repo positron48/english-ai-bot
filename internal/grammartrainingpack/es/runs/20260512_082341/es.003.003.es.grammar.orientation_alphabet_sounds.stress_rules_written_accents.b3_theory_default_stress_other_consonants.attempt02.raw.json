@@ -1,0 +1,5 @@
+{
+  "attempt": 2,
+  "error": null,
+  "raw_response": "[\n  {\n    \"type\": \"mcq_single\",\n    \"prompt\": \"Как правильно расставить ударение в слове 'calle'?\",\n    \"choices\": [\n      {\n        \"id\": \"a\",\n        \"text\": \"cal-LE\"\n      },\n      {\n        \"id\": \"b\",\n        \"text\": \"CAL-le\"\n      },\n      {\n        \"id\": \"c\",\n        \"text\": \"cal-Le\"\n      },\n      {\n        \"id\": \"d\",\n        \"text\": \"Cal-le\"\n      }\n    ],\n    \"correct_answer\": \"a\",\n    \"explanation\": \"Слово 'calle' заканчивается на согласную 'l', не является гласной, 'n' или 's', поэтому без тильды ударение падает на последний слог. Правильная транскрипция: cal-LE.\",\n    \"theory_block_id\": \"b3_theory_default_stress_other_consonants\",\n    \"chapter_id\": \"es.grammar.orientation_alphabet_sounds.stress_rules_written_accents\",\n    \"concept_id\": \"default_stress_other_consonants\",\n    \"difficulty\": 2\n  }\n]"
+}

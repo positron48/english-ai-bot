@@ -16,7 +16,8 @@
         originalLog.apply(console, args);
       };
     </script>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- Vendored: telegram.org is slow/blocked for some users (e.g. RU). Refresh from upstream when Telegram ships WebApp API updates. -->
+    <script src="/telegram-web-app.js"></script>
   </head>
   <body>
     <div id="app"></div>
