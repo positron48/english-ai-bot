@@ -63,6 +63,10 @@ LLAMACPP_URL=http://127.0.0.1:8080
 LLAMACPP_MODEL=local-model
 # Optional auto-start command if LLAMACPP_URL is down:
 # LLAMACPP_START_CMD='nohup llama-server -m "/path/to/model.gguf" --host 127.0.0.1 --port 8080 -ngl 999 -c 8192 >/tmp/llama-complaints.log 2>&1 &'
+# Verb forms (large ctx): LLAMACPP_START_CMD_VERB='... -c 32768 -n 16384 ...'
+# Reading on Mac (qwen3:30b): use smaller ctx in courses/spanish-grammar/.env.local:
+# LLAMACPP_START_CMD_READING='pkill -f "llama-server.*--port 8080" || true; sleep 2; nohup llama-server ... -c 8192 -n 2048 >/tmp/llama-reading.log 2>&1 &'
+# READING_CTX_TOKENS=8192  READING_RESTART_ON_OOM=1
 WEBAPP_JWT_TTL_HOURS=24
 WEBAPP_REFRESH_TTL_HOURS=720
 WEBAPP_OTP_TTL_SECONDS=300

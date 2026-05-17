@@ -1,9 +1,9 @@
 {
   "ok": true,
-  "generated_at": "2026-05-12T12:18:33Z",
+  "generated_at": "2026-05-15T08:31:19Z",
   "mode": "llm-only",
   "validation": {
-    "generated_at": "2026-05-12T12:18:33Z",
+    "generated_at": "2026-05-15T08:31:19Z",
     "ok": true,
     "errors": [],
     "chapters": {
@@ -379,7 +379,27 @@
       },
       "es.grammar.noun_phrase_upgrade_precision.alguno_ninguno_otro_mismo_cada_todo": {
         "errors": [],
-        "accepted_questions": 10,
+        "accepted_questions": 60,
+        "duplicates_removed": 0
+      },
+      "es.grammar.noun_phrase_upgrade_precision.comparative_structures_mas_menos_tan_como": {
+        "errors": [],
+        "accepted_questions": 60,
+        "duplicates_removed": 0
+      },
+      "es.grammar.noun_phrase_upgrade_precision.superlatives_intensifiers_el_mas_muchisimo_super": {
+        "errors": [],
+        "accepted_questions": 60,
+        "duplicates_removed": 0
+      },
+      "es.grammar.noun_phrase_upgrade_precision.articles_generic_reference_body_parts_abstract_nouns": {
+        "errors": [],
+        "accepted_questions": 60,
+        "duplicates_removed": 0
+      },
+      "es.grammar.noun_phrase_upgrade_precision.apocope_short_adjective_forms_buen_gran_primer": {
+        "errors": [],
+        "accepted_questions": 60,
         "duplicates_removed": 0
       }
     },

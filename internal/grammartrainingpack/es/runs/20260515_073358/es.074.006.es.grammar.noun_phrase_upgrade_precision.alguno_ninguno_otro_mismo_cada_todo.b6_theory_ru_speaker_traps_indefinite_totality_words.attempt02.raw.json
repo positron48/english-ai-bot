@@ -1,0 +1,5 @@
+{
+  "attempt": 2,
+  "error": null,
+  "raw_response": "[\n  {\n    \"type\": \"mcq_single\",\n    \"prompt\": \"Как правильно выразить 'У меня нет никакого плана' на испанском?\",\n    \"choices\": [\n      {\n        \"id\": \"a\",\n        \"text\": \"Tengo ningún plan.\"\n      },\n      {\n        \"id\": \"b\",\n        \"text\": \"No tengo ningún plan.\"\n      },\n      {\n        \"id\": \"c\",\n        \"text\": \"Tengo ninguno plan.\"\n      },\n      {\n        \"id\": \"d\",\n        \"text\": \"No tengo ninguno plan.\"\n      }\n    ],\n    \"correct_answer\": \"b\",\n    \"explanation\": \"В испанском отрицание с 'ningún' требует использования 'no' перед глаголом, поэтому правильный вариант — 'No tengo ningún plan'. Ошибка в варианте 'a' — отсутствие 'no', а в 'c' и 'd' неправильное использование 'ninguno' вместо 'ningún'.\",\n    \"theory_block_id\": \"b6_theory_ru_speaker_traps_indefinite_totality_words\",\n    \"chapter_id\": \"es.grammar.noun_phrase_upgrade_precision.alguno_ninguno_otro_mismo_cada_todo\",\n    \"concept_id\": \"ru_speaker_traps_indefinite_totality_words\",\n    \"difficulty\": 2\n  }\n]"
+}

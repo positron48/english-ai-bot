@@ -110,6 +110,62 @@
       </section>
     </main>
 
+    <div v-if="quizOpen" class="word-modal-overlay" @click.self="closeQuiz">
+      <div class="word-modal-panel">
+        <h3 style="margin-top:0">{{ t('reading.markRead') }}</h3>
+        <p class="translation" style="margin-top:0">Ответьте на вопросы по тексту. Нужно верно: {{ passThreshold }} из {{ quizQuestions.length }}.</p>
+        <div v-if="quizQuestions.length" style="margin:12px 0">
+          <div class="translation" style="margin-bottom:10px">Вопрос {{ quizIndex + 1 }} из {{ quizQuestions.length }}</div>
+          <GrammarQuestion
+            :key="`q-${quizIndex}`"
+            :question="quizQuestionCurrent"
+            :show-answers="quizAnswered[quizIndex] === true"
+            :show-explanation="false"
+            :show-theory-help-button="false"
+            :initial-answer="quizAnswers[quizIndex]"
+            @answer="onQuizAnswer"
+          />
+        </div>
+        <div v-if="quizDone" class="feedback-section">
+          <div class="feedback-badge" :class="quizCorrectCount >= passThreshold ? 'feedback-success' : 'feedback-error'">
+            <span class="feedback-icon">{{ quizCorrectCount >= passThreshold ? '✓' : '✗' }}</span>
+            <span class="feedback-text">Итог: {{ quizPercent }}% ({{ quizCorrectCount }}/{{ quizQuestions.length }})</span>
+          </div>
+        </div>
+        <div v-if="quizResultMessage" class="translation" style="margin-top:10px">{{ quizResultMessage }}</div>
+        <div style="display:flex; gap:8px; margin-top:14px">
+          <button type="button" class="word-modal-close-btn" @click="closeQuiz">{{ t('common.close') }}</button>
+          <button
+            v-if="!quizDone && quizIndex < quizQuestions.length - 1"
+            type="button"
+            class="word-modal-close-btn"
+            :disabled="!quizAnswers[quizIndex]"
+            @click="nextQuizQuestion"
+          >
+            Далее
+          </button>
+          <button
+            v-else-if="!quizDone"
+            type="button"
+            class="word-modal-close-btn"
+            :disabled="markingRead || !allQuizAnswered"
+            @click="finishQuiz"
+          >
+            Завершить квиз
+          </button>
+          <button
+            v-else
+            type="button"
+            class="word-modal-close-btn"
+            :disabled="markingRead || quizCorrectCount < passThreshold"
+            @click="submitQuizAndMarkRead"
+          >
+            Отметить как прочитанное
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Полный экран как в «Словарь»: карточки, SRS, формы глаголов; слово в обучение — на сервере при word-lookup -->
     <div v-if="wordModalVisible" class="word-modal-overlay" @click.self="closeWordModal">
       <div class="word-modal-panel">
@@ -134,8 +190,10 @@ import { computed, onBeforeUnmount, onMounted, onUnmounted, ref, watch } from 'v
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { apiClient } from '../api/client'
+import { useAudio } from '../composables/useAudio'
 import { useSettings } from '../composables/useSettings'
 import Icon from './Icon.vue'
+import GrammarQuestion from './GrammarQuestion.vue'
 import VocabWordCardsDetail, { type VocabCardsAPIResponse } from './VocabWordCardsDetail.vue'
 
 const props = defineProps<{
@@ -156,6 +214,7 @@ const emit = defineEmits<{
 const { t } = useI18n()
 const router = useRouter()
 const { settings } = useSettings()
+const { playSuccess, playFail } = useAudio()
 
 const showTranslation = ref(false)
 const wordModalVisible = ref(false)
@@ -166,8 +225,40 @@ const modalPreloaded = ref<VocabCardsAPIResponse | null>(null)
 const markingRead = ref(false)
 const otherUnreadInCategoryCount = ref(0)
 const randomUnreadNavigating = ref(false)
+const quizOpen = ref(false)
+const quizAnswers = ref<Record<number, string>>({})
+const quizResultMessage = ref('')
+const quizIndex = ref(0)
+const quizAnswered = ref<Record<number, boolean>>({})
+const quizCorrectMap = ref<Record<number, boolean>>({})
+const quizDone = ref(false)
+const quizPercent = ref(0)
 
 const segments = computed(() => props.block?.reading_passage?.segments || [])
+const quizQuestions = computed(() => {
+  const raw = props.block?.reading_passage?.comprehension_questions
+  return Array.isArray(raw) ? raw : []
+})
+const passThreshold = computed(() => {
+  const n = quizQuestions.value.length
+  if (n <= 0) return 0
+  return Math.ceil(n / 2)
+})
+const quizQuestionCurrent = computed(() => {
+  const q = quizQuestions.value[quizIndex.value] || {}
+  if (String(q?.type || '').toLowerCase() === 'true_false' || !Array.isArray(q?.choices) || !q.choices.length) {
+    return { ...q, type: 'true_false' as const }
+  }
+  return { ...q, type: 'mcq_single' as const }
+})
+const allQuizAnswered = computed(() => {
+  const n = quizQuestions.value.length
+  for (let i = 0; i < n; i += 1) {
+    if (!normalizeAnswer(quizAnswers.value[i])) return false
+  }
+  return n > 0
+})
+const quizCorrectCount = computed(() => Object.values(quizCorrectMap.value).filter(Boolean).length)
 const activeSegmentId = ref<string | null>(null)
 const selectedTokenKey = ref('')
 const isAutoplaying = ref(false)
@@ -383,6 +474,102 @@ onBeforeUnmount(() => {
 })
 
 const markRead = async () => {
+  if (!isReadQuestionGateEnabled()) {
+    await markReadDirect()
+    return
+  }
+  quizAnswers.value = {}
+  quizResultMessage.value = ''
+  quizIndex.value = 0
+  quizAnswered.value = {}
+  quizCorrectMap.value = {}
+  quizDone.value = false
+  quizPercent.value = 0
+  quizOpen.value = true
+}
+
+const closeQuiz = () => {
+  if (markingRead.value) return
+  quizOpen.value = false
+}
+
+function isReadQuestionGateEnabled(): boolean {
+  return quizQuestions.value.length > 0
+}
+
+function normalizeAnswer(v: unknown): string {
+  return String(v ?? '').trim().toLowerCase()
+}
+function onQuizAnswer(answer: any) {
+  const idx = quizIndex.value
+  const got = normalizeAnswer(answer)
+  const want = normalizeAnswer(quizQuestions.value[idx]?.correct_answer)
+  const ok = !!got && !!want && got === want
+  quizAnswers.value[idx] = got
+  quizAnswered.value[idx] = true
+  quizCorrectMap.value[idx] = ok
+  triggerHapticFeedback(ok)
+  if (ok) playCorrectSound()
+  else playIncorrectSound()
+  setTimeout(() => {
+    if (quizDone.value || !quizOpen.value) return
+    if (idx !== quizIndex.value) return
+    if (idx < quizQuestions.value.length - 1) quizIndex.value += 1
+  }, ok ? 700 : 1000)
+}
+function nextQuizQuestion() {
+  if (quizIndex.value < quizQuestions.value.length - 1) quizIndex.value += 1
+}
+
+const submitQuizAndMarkRead = async () => {
+  const questions = quizQuestions.value
+  if (!questions.length) {
+    await markReadDirect()
+    return
+  }
+  let correct = 0
+  for (let i = 0; i < questions.length; i += 1) {
+    const q = questions[i]
+    const got = normalizeAnswer(quizAnswers.value[i])
+    const want = normalizeAnswer(q?.correct_answer)
+    if (got && want && got === want) correct += 1
+  }
+  const needed = passThreshold.value
+  if (correct < needed) {
+    quizResultMessage.value = `Недостаточно верных ответов: ${correct}/${questions.length}. Нужно минимум ${needed}.`
+    return
+  }
+  quizResultMessage.value = `Отлично: ${correct}/${questions.length}. Отмечаю как прочитанное.`
+  await markReadDirect()
+  quizOpen.value = false
+}
+
+const finishQuiz = () => {
+  const total = quizQuestions.value.length
+  const correct = quizCorrectCount.value
+  quizDone.value = true
+  quizPercent.value = total > 0 ? Math.round((correct * 100) / total) : 0
+  triggerHapticFeedback(correct >= passThreshold.value)
+}
+
+const playCorrectSound = () => {
+  if (!settings.value.soundsEnabled) return
+  playSuccess(settings.value.soundTheme)
+}
+const playIncorrectSound = () => {
+  if (!settings.value.soundsEnabled) return
+  playFail(settings.value.soundTheme)
+}
+const triggerHapticFeedback = (isCorrect: boolean) => {
+  if (!settings.value.vibrationEnabled) return
+  const tg = (window as any).Telegram?.WebApp
+  if (tg?.HapticFeedback?.notificationOccurred) {
+    try { tg.HapticFeedback.notificationOccurred(isCorrect ? 'success' : 'error'); return } catch {}
+  }
+  if ('vibrate' in navigator && typeof navigator.vibrate === 'function') navigator.vibrate(isCorrect ? 50 : [100, 50, 100])
+}
+
+const markReadDirect = async () => {
   markingRead.value = true
   try {
     const resourceId = props.textId || props.chapterId
@@ -759,6 +946,42 @@ const openRandomUnreadInCategory = async () => {
 
 .random-unread-footer-button :deep(.icon) {
   font-size: 22px;
+}
+
+.feedback-section {
+  margin-top: 12px;
+}
+.feedback-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--border-primary);
+}
+.feedback-success {
+  background: color-mix(in srgb, #10b981 18%, var(--bg-tertiary));
+  animation: feedback-success-appear 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.feedback-error {
+  background: color-mix(in srgb, #ef4444 14%, var(--bg-tertiary));
+  animation: feedback-error-appear 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+.feedback-icon {
+  font-size: 20px;
+  font-weight: 700;
+}
+.feedback-text {
+  font-size: 16px;
+  font-weight: 600;
+}
+@keyframes feedback-success-appear {
+  from { transform: scale(0.92); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+@keyframes feedback-error-appear {
+  from { transform: translateX(-8px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
 }
 
 @media (max-width: 768px) {

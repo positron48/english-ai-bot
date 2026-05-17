@@ -1,0 +1,5 @@
+{
+  "attempt": 2,
+  "error": null,
+  "raw_response": "[\n  {\n    \"type\": \"mcq_single\",\n    \"prompt\": \"Как правильно сказать 'хорошая идея' на испанском?\",\n    \"choices\": [\n      {\n        \"id\": \"a\",\n        \"text\": \"un buen idea\"\n      },\n      {\n        \"id\": \"b\",\n        \"text\": \"una buena idea\"\n      },\n      {\n        \"id\": \"c\",\n        \"text\": \"un buena idea\"\n      },\n      {\n        \"id\": \"d\",\n        \"text\": \"una buen idea\"\n      }\n    ],\n    \"correct_answer\": \"b\",\n    \"explanation\": \"Для женского рода (idea — женский) требуется полная форма 'buena', поэтому правильный вариант — una buena idea.\",\n    \"theory_block_id\": \"b6_theory_ru_speaker_traps_apocope_short_forms\",\n    \"chapter_id\": \"es.grammar.noun_phrase_upgrade_precision.apocope_short_adjective_forms_buen_gran_primer\",\n    \"concept_id\": \"ru_speaker_traps_apocope_short_forms\",\n    \"difficulty\": 2\n  }\n]"
+}

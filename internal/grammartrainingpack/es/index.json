@@ -2,13 +2,13 @@
   "version": "1.0.0",
   "language": "es",
   "course_id": "spanish-grammar",
-  "generated_at": "2026-05-12T12:16:32Z",
+  "generated_at": "2026-05-15T08:27:28Z",
   "generator_version": "training-pack-generator-v3",
   "mode": "llm-only",
   "prompt_version": "sp-grammar-pack-v1",
   "chapters": {
-    "es.grammar.noun_phrase_upgrade_precision.alguno_ninguno_otro_mismo_cada_todo": [
-      "074/es.01.b1_theory_alguno_ninguno_meaning_and_forms.questions.json"
+    "es.grammar.noun_phrase_upgrade_precision.apocope_short_adjective_forms_buen_gran_primer": [
+      "078/es.06.b6_theory_ru_speaker_traps_apocope_short_forms.questions.json"
     ]
   },
   "blocks": {
@@ -457,6 +457,35 @@
     "es.grammar.noun_phrase_upgrade_precision.mucho_poco_bastante_demasiado_suficiente::b4_theory_countable_uncountable_patterns": "073/es.04.b4_theory_countable_uncountable_patterns.questions.json",
     "es.grammar.noun_phrase_upgrade_precision.mucho_poco_bastante_demasiado_suficiente::b5_theory_bastante_vs_suficiente_vs_demasiado": "073/es.05.b5_theory_bastante_vs_suficiente_vs_demasiado.questions.json",
     "es.grammar.noun_phrase_upgrade_precision.mucho_poco_bastante_demasiado_suficiente::b6_theory_ru_speaker_traps_quantity_words": "073/es.06.b6_theory_ru_speaker_traps_quantity_words.questions.json",
-    "es.grammar.noun_phrase_upgrade_precision.alguno_ninguno_otro_mismo_cada_todo::b1_theory_alguno_ninguno_meaning_and_forms": "074/es.01.b1_theory_alguno_ninguno_meaning_and_forms.questions.json"
+    "es.grammar.noun_phrase_upgrade_precision.alguno_ninguno_otro_mismo_cada_todo::b1_theory_alguno_ninguno_meaning_and_forms": "074/es.01.b1_theory_alguno_ninguno_meaning_and_forms.questions.json",
+    "es.grammar.noun_phrase_upgrade_precision.alguno_ninguno_otro_mismo_cada_todo::b2_theory_apocope_algun_ningun_before_noun": "074/es.02.b2_theory_apocope_algun_ningun_before_noun.questions.json",
+    "es.grammar.noun_phrase_upgrade_precision.alguno_ninguno_otro_mismo_cada_todo::b3_theory_otro_mismo_with_articles": "074/es.03.b3_theory_otro_mismo_with_articles.questions.json",
+    "es.grammar.noun_phrase_upgrade_precision.alguno_ninguno_otro_mismo_cada_todo::b4_theory_cada_vs_todo_distribution_duration": "074/es.04.b4_theory_cada_vs_todo_distribution_duration.questions.json",
+    "es.grammar.noun_phrase_upgrade_precision.alguno_ninguno_otro_mismo_cada_todo::b5_theory_todo_forms_and_article_patterns": "074/es.05.b5_theory_todo_forms_and_article_patterns.questions.json",
+    "es.grammar.noun_phrase_upgrade_precision.alguno_ninguno_otro_mismo_cada_todo::b6_theory_ru_speaker_traps_indefinite_totality_words": "074/es.06.b6_theory_ru_speaker_traps_indefinite_totality_words.questions.json",
+    "es.grammar.noun_phrase_upgrade_precision.comparative_structures_mas_menos_tan_como::b1_theory_comparison_map_inequality_vs_equality": "075/es.01.b1_theory_comparison_map_inequality_vs_equality.questions.json",
+    "es.grammar.noun_phrase_upgrade_precision.comparative_structures_mas_menos_tan_como::b2_theory_comparing_adjectives_adverbs": "075/es.02.b2_theory_comparing_adjectives_adverbs.questions.json",
+    "es.grammar.noun_phrase_upgrade_precision.comparative_structures_mas_menos_tan_como::b3_theory_comparing_nouns_and_quantities": "075/es.03.b3_theory_comparing_nouns_and_quantities.questions.json",
+    "es.grammar.noun_phrase_upgrade_precision.comparative_structures_mas_menos_tan_como::b4_theory_comparing_actions_verbs": "075/es.04.b4_theory_comparing_actions_verbs.questions.json",
+    "es.grammar.noun_phrase_upgrade_precision.comparative_structures_mas_menos_tan_como::b5_theory_equality_tan_vs_tanto_patterns": "075/es.05.b5_theory_equality_tan_vs_tanto_patterns.questions.json",
+    "es.grammar.noun_phrase_upgrade_precision.comparative_structures_mas_menos_tan_como::b6_theory_ru_speaker_traps_comparatives": "075/es.06.b6_theory_ru_speaker_traps_comparatives.questions.json",
+    "es.grammar.noun_phrase_upgrade_precision.superlatives_intensifiers_el_mas_muchisimo_super::b1_theory_absolute_vs_relative_strength": "076/es.01.b1_theory_absolute_vs_relative_strength.questions.json",
+    "es.grammar.noun_phrase_upgrade_precision.superlatives_intensifiers_el_mas_muchisimo_super::b2_theory_relative_superlative_el_mas_la_mas": "076/es.02.b2_theory_relative_superlative_el_mas_la_mas.questions.json",
+    "es.grammar.noun_phrase_upgrade_precision.superlatives_intensifiers_el_mas_muchisimo_super::b3_theory_lo_mas_adjective_de": "076/es.03.b3_theory_lo_mas_adjective_de.questions.json",
+    "es.grammar.noun_phrase_upgrade_precision.superlatives_intensifiers_el_mas_muchisimo_super::b4_theory_absolute_superlative_ísimo": "076/es.04.b4_theory_absolute_superlative_ísimo.questions.json",
+    "es.grammar.noun_phrase_upgrade_precision.superlatives_intensifiers_el_mas_muchisimo_super::b5_theory_muy_super_requete_register": "076/es.05.b5_theory_muy_super_requete_register.questions.json",
+    "es.grammar.noun_phrase_upgrade_precision.superlatives_intensifiers_el_mas_muchisimo_super::b6_theory_ru_speaker_traps_superlatives": "076/es.06.b6_theory_ru_speaker_traps_superlatives.questions.json",
+    "es.grammar.noun_phrase_upgrade_precision.articles_generic_reference_body_parts_abstract_nouns::b1_theory_generic_reference_with_definite_article": "077/es.01.b1_theory_generic_reference_with_definite_article.questions.json",
+    "es.grammar.noun_phrase_upgrade_precision.articles_generic_reference_body_parts_abstract_nouns::b2_theory_generic_reference_without_article": "077/es.02.b2_theory_generic_reference_without_article.questions.json",
+    "es.grammar.noun_phrase_upgrade_precision.articles_generic_reference_body_parts_abstract_nouns::b3_theory_body_parts_reflexive_indirect_object": "077/es.03.b3_theory_body_parts_reflexive_indirect_object.questions.json",
+    "es.grammar.noun_phrase_upgrade_precision.articles_generic_reference_body_parts_abstract_nouns::b4_theory_body_parts_article_vs_possessive": "077/es.04.b4_theory_body_parts_article_vs_possessive.questions.json",
+    "es.grammar.noun_phrase_upgrade_precision.articles_generic_reference_body_parts_abstract_nouns::b5_theory_abstract_nouns_article_choice": "077/es.05.b5_theory_abstract_nouns_article_choice.questions.json",
+    "es.grammar.noun_phrase_upgrade_precision.articles_generic_reference_body_parts_abstract_nouns::b6_theory_ru_speaker_traps_articles_generic_body_abstract": "077/es.06.b6_theory_ru_speaker_traps_articles_generic_body_abstract.questions.json",
+    "es.grammar.noun_phrase_upgrade_precision.apocope_short_adjective_forms_buen_gran_primer::b1_theory_apocope_core_rule_before_singular_masculine": "078/es.01.b1_theory_apocope_core_rule_before_singular_masculine.questions.json",
+    "es.grammar.noun_phrase_upgrade_precision.apocope_short_adjective_forms_buen_gran_primer::b2_theory_bueno_buen_position_and_agreement": "078/es.02.b2_theory_bueno_buen_position_and_agreement.questions.json",
+    "es.grammar.noun_phrase_upgrade_precision.apocope_short_adjective_forms_buen_gran_primer::b3_theory_grande_gran_meaning_and_register": "078/es.03.b3_theory_grande_gran_meaning_and_register.questions.json",
+    "es.grammar.noun_phrase_upgrade_precision.apocope_short_adjective_forms_buen_gran_primer::b4_theory_primero_primer_and_order_expressions": "078/es.04.b4_theory_primero_primer_and_order_expressions.questions.json",
+    "es.grammar.noun_phrase_upgrade_precision.apocope_short_adjective_forms_buen_gran_primer::b5_theory_exceptions_boundaries_and_fixed_phrases": "078/es.05.b5_theory_exceptions_boundaries_and_fixed_phrases.questions.json",
+    "es.grammar.noun_phrase_upgrade_precision.apocope_short_adjective_forms_buen_gran_primer::b6_theory_ru_speaker_traps_apocope_short_forms": "078/es.06.b6_theory_ru_speaker_traps_apocope_short_forms.questions.json"
   }
 }
