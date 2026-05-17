@@ -113,7 +113,7 @@
     <div v-if="quizOpen" class="word-modal-overlay" @click.self="closeQuiz">
       <div class="word-modal-panel">
         <h3 style="margin-top:0">{{ t('reading.markRead') }}</h3>
-        <p class="translation" style="margin-top:0">Ответьте на вопросы по тексту. Нужно верно: {{ passThreshold }} из {{ quizQuestions.length }}.</p>
+        <p class="translation" style="margin-top:0">{{ t('reading.quizNeedCorrect', { need: passThreshold, total: quizQuestions.length }) }}</p>
         <div v-if="quizQuestions.length" style="margin:12px 0">
           <div class="translation" style="margin-bottom:10px">Вопрос {{ quizIndex + 1 }} из {{ quizQuestions.length }}</div>
           <GrammarQuestion
@@ -129,9 +129,10 @@
         <div v-if="quizDone" class="feedback-section">
           <div class="feedback-badge" :class="quizCorrectCount >= passThreshold ? 'feedback-success' : 'feedback-error'">
             <span class="feedback-icon">{{ quizCorrectCount >= passThreshold ? '✓' : '✗' }}</span>
-            <span class="feedback-text">Итог: {{ quizPercent }}% ({{ quizCorrectCount }}/{{ quizQuestions.length }})</span>
+            <span class="feedback-text">{{ t('reading.quizResult', { percent: quizPercent, correct: quizCorrectCount, total: quizQuestions.length }) }}</span>
           </div>
         </div>
+        <div v-if="currentWrongExplanation" class="translation" style="margin-top:10px">{{ currentWrongExplanation }}</div>
         <div v-if="quizResultMessage" class="translation" style="margin-top:10px">{{ quizResultMessage }}</div>
         <div style="display:flex; gap:8px; margin-top:14px">
           <button type="button" class="word-modal-close-btn" @click="closeQuiz">{{ t('common.close') }}</button>
@@ -142,7 +143,7 @@
             :disabled="!quizAnswers[quizIndex]"
             @click="nextQuizQuestion"
           >
-            Далее
+            {{ t('common.next') }}
           </button>
           <button
             v-else-if="!quizDone"
@@ -151,16 +152,16 @@
             :disabled="markingRead || !allQuizAnswered"
             @click="finishQuiz"
           >
-            Завершить квиз
+            {{ t('reading.quizFinish') }}
           </button>
           <button
-            v-else
+            v-else-if="quizCorrectCount >= passThreshold"
             type="button"
             class="word-modal-close-btn"
-            :disabled="markingRead || quizCorrectCount < passThreshold"
+            :disabled="markingRead"
             @click="submitQuizAndMarkRead"
           >
-            Отметить как прочитанное
+            {{ t('reading.quizMarkRead') }}
           </button>
         </div>
       </div>
@@ -259,6 +260,13 @@ const allQuizAnswered = computed(() => {
   return n > 0
 })
 const quizCorrectCount = computed(() => Object.values(quizCorrectMap.value).filter(Boolean).length)
+const currentWrongExplanation = computed(() => {
+  const idx = quizIndex.value
+  if (!quizAnswered.value[idx]) return ''
+  if (quizCorrectMap.value[idx]) return ''
+  const exp = quizQuestions.value[idx]?.explanation
+  return typeof exp === 'string' ? exp.trim() : ''
+})
 const activeSegmentId = ref<string | null>(null)
 const selectedTokenKey = ref('')
 const isAutoplaying = ref(false)
@@ -514,7 +522,7 @@ function onQuizAnswer(answer: any) {
   setTimeout(() => {
     if (quizDone.value || !quizOpen.value) return
     if (idx !== quizIndex.value) return
-    if (idx < quizQuestions.value.length - 1) quizIndex.value += 1
+    if (ok && idx < quizQuestions.value.length - 1) quizIndex.value += 1
   }, ok ? 700 : 1000)
 }
 function nextQuizQuestion() {

@@ -223,6 +223,10 @@
     "wordLookupServerError": "El servidor no está disponible. Prueba más tarde.",
     "wordLookupNetwork": "Sin red. Comprueba la conexión.",
     "deleteText": "Eliminar texto",
+    "quizNeedCorrect": "Responde a las preguntas del texto. Necesitas acertar {need} de {total}.",
+    "quizResult": "Resultado: {percent}% ({correct}/{total})",
+    "quizFinish": "Finalizar quiz",
+    "quizMarkRead": "Marcar como leído",
     "deleteConfirm": "¿Eliminar «{title}» y todos los archivos relacionados?",
     "deleteSuccess": "Texto de lectura eliminado.",
     "deleteFailed": "No se pudo eliminar el texto."

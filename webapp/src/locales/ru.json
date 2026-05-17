@@ -228,6 +228,10 @@
     "wordLookupServerError": "Сервер временно недоступен. Попробуйте позже.",
     "wordLookupNetwork": "Нет сети. Проверьте подключение.",
     "deleteText": "Удалить текст",
+    "quizNeedCorrect": "Ответьте на вопросы по тексту. Нужно верно: {need} из {total}.",
+    "quizResult": "Итог: {percent}% ({correct}/{total})",
+    "quizFinish": "Завершить квиз",
+    "quizMarkRead": "Отметить как прочитанное",
     "deleteConfirm": "Удалить «{title}» и все связанные файлы?",
     "deleteSuccess": "Текст для чтения удалён.",
     "deleteFailed": "Не удалось удалить текст."

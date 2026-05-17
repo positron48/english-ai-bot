@@ -228,6 +228,10 @@
     "wordLookupServerError": "Server is temporarily unavailable. Try later.",
     "wordLookupNetwork": "No network. Check your connection.",
     "deleteText": "Delete text",
+    "quizNeedCorrect": "Answer reading questions. Required correct: {need} out of {total}.",
+    "quizResult": "Result: {percent}% ({correct}/{total})",
+    "quizFinish": "Finish quiz",
+    "quizMarkRead": "Mark as read",
     "deleteConfirm": "Delete \"{title}\" and all related files?",
     "deleteSuccess": "Reading text deleted.",
     "deleteFailed": "Could not delete reading text."
