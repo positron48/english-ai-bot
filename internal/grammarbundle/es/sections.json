@@ -2346,7 +2346,7 @@
       "title": "Build & speak: giving, showing, buying and telling",
       "level": "B1",
       "order": 93,
-      "status": "pending",
+      "status": "validated",
       "input_file": "config/chapter-templates/es.grammar.pronouns_direct_indirect.build_speak_giving_showing_buying_telling-input.json",
       "output_dir": "chapters/093.es.grammar.pronouns_direct_indirect.build_speak_giving_showing_buying_telling",
       "files": {
@@ -3604,11 +3604,11 @@
   "summary": {
     "total_sections": 23,
     "total_chapters": 152,
-    "chapters_generated": 78,
+    "chapters_generated": 79,
     "chapters_in_progress": 0,
-    "chapters_pending": 64,
+    "chapters_pending": 63,
     "chapters_failed": 0,
-    "chapters_validated": 88,
-    "last_updated": "2026-05-24T18:00:00.000Z"
+    "chapters_validated": 89,
+    "last_updated": "2026-05-24T20:00:00.000Z"
   }
 }
