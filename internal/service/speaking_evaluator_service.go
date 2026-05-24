@@ -89,9 +89,17 @@ func (s *SpeakingEvaluatorService) Evaluate(
 	}
 
 	format := normalizeAudioFormat(audioFormat)
+	prepared, apiFormat, err := prepareSpeakingAudioForModel(ctx, audio, format, nil)
+	if err != nil {
+		return nil, fmt.Errorf("prepare audio: %w", err)
+	}
+	if len(prepared) > maxBytes {
+		return nil, fmt.Errorf("audio too large after conversion")
+	}
+
 	prompt := buildSpeakingEvalPrompt(task, attemptNo, mode, s.AcceptMeaningScore())
 
-	result, err := s.callModel(ctx, prompt, audio, format)
+	result, err := s.callModel(ctx, prompt, prepared, apiFormat)
 	if err != nil {
 		return nil, err
 	}

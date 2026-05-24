@@ -15,26 +15,13 @@
         <h2>{{ currentTask.title }}</h2>
         <p class="prompt">{{ currentTask.prompt_ru }}</p>
         <p class="display-text">{{ currentTask.display_text }}</p>
-        <div class="record-controls">
-          <button v-if="recorder.state.value !== 'recording'" type="button" class="btn primary" @click="recorder.startRecording()">
-            {{ t('speaking.tapToRecord') }}
-          </button>
-          <button v-else type="button" class="btn danger" @click="recorder.stopRecording()">
-            {{ t('speaking.stopRecording') }}
-          </button>
-          <button
-            v-if="recorder.state.value === 'recorded'"
-            type="button"
-            class="btn primary"
-            :disabled="submitting"
-            @click="submit('initial')"
-          >
-            {{ submitting ? t('speaking.evaluating') : t('speaking.submit') }}
-          </button>
-          <button v-if="recorder.state.value === 'recorded'" type="button" class="btn ghost" @click="recorder.resetRecording()">
-            {{ t('speaking.recordAgain') }}
-          </button>
-        </div>
+        <SpeakingRecordingPanel
+          :recorder="recorder"
+          :submitting="submitting"
+          @start="beginRecording('initial')"
+          @stop="recorder.stopRecording()"
+          @retry="recorder.resetRecording()"
+        />
         <p v-if="recorder.errorMessage.value" class="error">{{ recorder.errorMessage.value }}</p>
       </section>
 
@@ -83,23 +70,13 @@
       <section v-else-if="phase === 'repair' && evaluation" class="task-card">
         <h2>{{ t('speaking.repeatImproved') }}</h2>
         <p class="display-text">{{ evaluation.repeat_task || evaluation.better_version }}</p>
-        <div class="record-controls">
-          <button v-if="recorder.state.value !== 'recording'" type="button" class="btn primary" @click="recorder.startRecording()">
-            {{ t('speaking.tapToRecord') }}
-          </button>
-          <button v-else type="button" class="btn danger" @click="recorder.stopRecording()">
-            {{ t('speaking.stopRecording') }}
-          </button>
-          <button
-            v-if="recorder.state.value === 'recorded'"
-            type="button"
-            class="btn primary"
-            :disabled="submitting"
-            @click="submit('repair')"
-          >
-            {{ submitting ? t('speaking.evaluating') : t('speaking.submit') }}
-          </button>
-        </div>
+        <SpeakingRecordingPanel
+          :recorder="recorder"
+          :submitting="submitting"
+          @start="beginRecording('repair')"
+          @stop="recorder.stopRecording()"
+          @retry="recorder.resetRecording()"
+        />
       </section>
     </template>
   </div>
@@ -109,6 +86,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import SpeakingRecordingPanel from '../components/SpeakingRecordingPanel.vue'
 import { useAudioRecorder } from '../composables/useAudioRecorder'
 import { useSpeaking, type SpeakingEvaluation, type SpeakingSession, type SpeakingTask } from '../composables/useSpeaking'
 
@@ -127,25 +105,33 @@ const phase = ref<'task' | 'feedback' | 'repair'>('task')
 const sessionId = computed(() => Number(route.params.sessionId))
 const currentTask = computed<SpeakingTask | null>(() => session.value?.current_task ?? null)
 
-onMounted(async () => {
-  try {
-    session.value = await getSession(sessionId.value)
-  } catch (e: unknown) {
-    error.value = e instanceof Error ? e.message : t('speaking.loadFailed')
-  } finally {
-    loading.value = false
+function phraseForRecording(): string {
+  if (phase.value === 'repair' && evaluation.value) {
+    return evaluation.value.repeat_task || evaluation.value.better_version || ''
   }
-})
+  return currentTask.value?.display_text || currentTask.value?.title || ''
+}
 
-async function submit(mode: 'initial' | 'repair') {
-  if (!session.value || !currentTask.value || !recorder.blob.value) return
+async function beginRecording(mode: 'initial' | 'repair') {
+  error.value = ''
+  await recorder.startRecording({ referenceText: phraseForRecording() }, (result) => {
+    if (result?.analysis.hasSpeech && result.blob) {
+      void submit(mode, result.blob)
+    }
+  })
+}
+
+async function submit(mode: 'initial' | 'repair', audio?: Blob) {
+  const blob = audio ?? recorder.blob.value
+  if (!session.value || !currentTask.value || !blob) return
   submitting.value = true
   error.value = ''
   try {
-    evaluation.value = await submitAudio(sessionId.value, currentTask.value.id, recorder.blob.value, mode)
+    evaluation.value = await submitAudio(sessionId.value, currentTask.value.id, blob, mode)
     phase.value = 'feedback'
   } catch (e: unknown) {
     error.value = e instanceof Error ? e.message : t('speaking.submitFailed')
+    recorder.resetRecording()
   } finally {
     submitting.value = false
   }
@@ -174,6 +160,16 @@ async function advance() {
     error.value = e instanceof Error ? e.message : t('speaking.advanceFailed')
   }
 }
+
+onMounted(async () => {
+  try {
+    session.value = await getSession(sessionId.value)
+  } catch (e: unknown) {
+    error.value = e instanceof Error ? e.message : t('speaking.loadFailed')
+  } finally {
+    loading.value = false
+  }
+})
 </script>
 
 <style scoped>
@@ -200,11 +196,6 @@ async function advance() {
   font-weight: 600;
   margin: 16px 0 24px;
 }
-.record-controls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-}
 .btn {
   padding: 10px 16px;
   border-radius: 8px;
@@ -216,14 +207,6 @@ async function advance() {
   background: var(--color-primary);
   color: #fff;
   border-color: var(--color-primary);
-}
-.btn.danger {
-  background: #c0392b;
-  color: #fff;
-  border-color: #c0392b;
-}
-.btn.ghost {
-  background: transparent;
 }
 .scores {
   display: flex;

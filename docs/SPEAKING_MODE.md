@@ -31,6 +31,8 @@ Seed: `python3 courses/spanish-grammar/speaking/generate_seed.py`.
 
 При старте приложения каталог синхронизируется в БД (`speaking_categories`, `speaking_tasks`).
 
+Браузер записывает **webm**; перед отправкой в OpenRouter backend конвертирует в **mp3** через ffmpeg (в Docker-образе уже есть).
+
 ## API
 
 - `GET /api/learning/speaking/availability` — без tier gate (для UI)

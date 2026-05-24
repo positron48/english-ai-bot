@@ -1,5 +1,6 @@
 import { ref } from 'vue'
 import { apiClient } from '../api/client'
+import { recordingFileName } from '../utils/speechAudio'
 
 export interface SpeakingAvailability {
   available: boolean
@@ -91,7 +92,7 @@ export function useSpeaking() {
     const form = new FormData()
     form.append('task_id', taskId)
     form.append('mode', mode)
-    form.append('audio', audio, 'recording.webm')
+    form.append('audio', audio, recordingFileName(audio))
     return apiClient.request<SpeakingEvaluation>(`/api/learning/speaking/sessions/${sessionId}/submit`, {
       method: 'POST',
       body: form,
