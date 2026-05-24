@@ -1350,6 +1350,7 @@ func (r *Router) handleAdminUsers(w http.ResponseWriter, req *http.Request) {
 
 	// Return user list with id, telegram_id, telegram_username, created_at, grammar placement summary
 	query := `SELECT u.id, u.telegram_id, COALESCE(u.telegram_username, ''), 
+			  COALESCE(u.subscription_tier, 'free'),
 			  COALESCE(CAST(u.created_at AS TEXT), '') as created_at,
 			  gpt.score, gpt.total_questions, gpt.opened_sections_json,
 			  COALESCE(CAST(gpt.completed_at AS TEXT), ''),
@@ -1370,6 +1371,7 @@ func (r *Router) handleAdminUsers(w http.ResponseWriter, req *http.Request) {
 		var id int64
 		var telegramID int64
 		var telegramUsername string
+		var subscriptionTier string
 		var createdAt string
 		var gptScore sql.NullInt64
 		var gptTotal sql.NullInt64
@@ -1377,7 +1379,7 @@ func (r *Router) handleAdminUsers(w http.ResponseWriter, req *http.Request) {
 		var gptCompleted sql.NullString
 		var gptAdminOverride sql.NullBool
 
-		if err := rows.Scan(&id, &telegramID, &telegramUsername, &createdAt,
+		if err := rows.Scan(&id, &telegramID, &telegramUsername, &subscriptionTier, &createdAt,
 			&gptScore, &gptTotal, &gptOpenedJSON, &gptCompleted, &gptAdminOverride); err != nil {
 			r.logger.Warn("failed to scan user", zap.Error(err))
 			continue
@@ -1387,6 +1389,7 @@ func (r *Router) handleAdminUsers(w http.ResponseWriter, req *http.Request) {
 			"id":                id,
 			"telegram_id":       telegramID,
 			"telegram_username": telegramUsername,
+			"subscription_tier": models.ParseUserTier(subscriptionTier),
 			"created_at":        createdAt,
 		}
 
@@ -1441,9 +1444,44 @@ func (r *Router) handleAdminUserSubroutes(w http.ResponseWriter, req *http.Reque
 	switch parts[1] {
 	case "grammar-placement":
 		r.handleAdminUserGrammarPlacement(w, req, userID)
+	case "subscription-tier":
+		r.handleAdminUserSubscriptionTier(w, req, userID)
 	default:
 		http.NotFound(w, req)
 	}
+}
+
+func (r *Router) handleAdminUserSubscriptionTier(w http.ResponseWriter, req *http.Request, userID int64) {
+	if req.Method != http.MethodPatch && req.Method != http.MethodPut && req.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	var body struct {
+		Tier string `json:"tier"`
+	}
+	if err := json.NewDecoder(req.Body).Decode(&body); err != nil {
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
+		return
+	}
+	if !models.IsValidUserTier(body.Tier) {
+		http.Error(w, fmt.Sprintf("invalid tier: %q", body.Tier), http.StatusBadRequest)
+		return
+	}
+	userRepo, ok := r.userRepo.(*repository.UserRepository)
+	if !ok {
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	if err := userRepo.UpdateSubscriptionTier(userID, models.ParseUserTier(body.Tier)); err != nil {
+		http.Error(w, "Failed to update tier", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"ok":                true,
+		"user_id":           userID,
+		"subscription_tier": models.ParseUserTier(body.Tier),
+	})
 }
 
 func (r *Router) handleAdminUserGrammarPlacement(w http.ResponseWriter, req *http.Request, userID int64) {

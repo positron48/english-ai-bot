@@ -2,7 +2,10 @@
   <div class="admin-users-view">
     <div class="admin-users-header">
       <h1>Пользователи</h1>
-      <p class="admin-users-description">Список зарегистрированных пользователей и уровень грамматики после placement (доступ к разделам курса)</p>
+      <p class="admin-users-description">
+        Список пользователей, уровень грамматики (placement) и тип подписки.
+        Для доступа к «Говорению» выставьте tier <strong>pro</strong> или <strong>pro_plus</strong>.
+      </p>
     </div>
 
     <div v-if="loading" class="admin-users-loading">
@@ -26,7 +29,8 @@
             <th>Username</th>
             <th>Регистрация</th>
             <th>Грамматика (placement)</th>
-            <th></th>
+            <th>Подписка (tier)</th>
+            <th>Действия</th>
           </tr>
         </thead>
         <tbody>
@@ -54,14 +58,36 @@
                 </option>
               </select>
             </td>
-            <td>
+            <td class="tier-cell">
+              <div class="tier-meta">
+                <span class="tier-current">{{ tierLabel(user.subscription_tier) }}</span>
+              </div>
+              <select
+                class="grammar-select"
+                v-model="tierDraft[user.id]"
+                :disabled="tierSaving[user.id] === true"
+              >
+                <option v-for="opt in tierOptions" :key="opt.value" :value="opt.value">
+                  {{ opt.label }}
+                </option>
+              </select>
+            </td>
+            <td class="actions-cell">
               <button
                 type="button"
                 class="save-btn"
+                :disabled="tierSaving[user.id] === true || !tierDirty(user)"
+                @click="saveSubscriptionTier(user.id)"
+              >
+                {{ tierSaving[user.id] ? '…' : 'Сохранить tier' }}
+              </button>
+              <button
+                type="button"
+                class="save-btn save-btn-secondary"
                 :disabled="saving[user.id] === true || !levelDirty(user)"
                 @click="saveGrammarLevel(user.id)"
               >
-                {{ saving[user.id] ? '…' : 'Сохранить' }}
+                {{ saving[user.id] ? '…' : 'Сохранить уровень' }}
               </button>
             </td>
           </tr>
@@ -87,8 +113,26 @@ interface User {
   id: number
   telegram_id: number
   telegram_username: string | null
+  subscription_tier: string
   created_at: string
   grammar_placement: GrammarPlacement | null
+}
+
+const tierOptions = [
+  { value: 'free', label: 'free — бесплатный' },
+  { value: 'pro', label: 'pro — говорение и расширенные фичи' },
+  { value: 'pro_plus', label: 'pro_plus — максимальный tier' },
+] as const
+
+const tierLabels: Record<string, string> = {
+  free: 'free (бесплатный)',
+  pro: 'pro',
+  pro_plus: 'pro_plus',
+}
+
+function tierLabel(tier: string | undefined): string {
+  const key = tier || 'free'
+  return tierLabels[key] ?? key
 }
 
 const levelOptions = [
@@ -111,6 +155,9 @@ const levelDraft = ref<Record<number, string>>({})
 /** Original select value after last load (for dirty check) */
 const levelBaseline = ref<Record<number, string>>({})
 const saving = ref<Record<number, boolean>>({})
+const tierDraft = ref<Record<number, string>>({})
+const tierBaseline = ref<Record<number, string>>({})
+const tierSaving = ref<Record<number, boolean>>({})
 
 function placementToSelectValue(p: GrammarPlacement | null): string {
   if (!p || !p.level) {
@@ -132,6 +179,19 @@ function syncDraftsFromUsers(list: User[]) {
   }
   levelDraft.value = d
   levelBaseline.value = { ...b }
+  const td: Record<number, string> = {}
+  const tb: Record<number, string> = {}
+  for (const u of list) {
+    const v = u.subscription_tier || 'free'
+    td[u.id] = v
+    tb[u.id] = v
+  }
+  tierDraft.value = td
+  tierBaseline.value = { ...tb }
+}
+
+function tierDirty(user: User): boolean {
+  return tierDraft.value[user.id] !== tierBaseline.value[user.id]
 }
 
 function levelDirty(user: User): boolean {
@@ -170,6 +230,24 @@ const saveGrammarLevel = async (userId: number) => {
     console.error('saveGrammarLevel:', err)
   } finally {
     saving.value = { ...saving.value, [userId]: false }
+  }
+}
+
+const saveSubscriptionTier = async (userId: number) => {
+  tierSaving.value = { ...tierSaving.value, [userId]: true }
+  error.value = null
+  try {
+    const tier = tierDraft.value[userId] ?? 'free'
+    await apiClient.request(`/api/admin/users/${userId}/subscription-tier`, {
+      method: 'PUT',
+      body: { tier },
+    })
+    tierBaseline.value = { ...tierBaseline.value, [userId]: tier }
+    await loadUsers()
+  } catch (err: any) {
+    error.value = err.message || 'Ошибка сохранения tier'
+  } finally {
+    tierSaving.value = { ...tierSaving.value, [userId]: false }
   }
 }
 
@@ -345,6 +423,31 @@ onMounted(() => {
 .save-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.tier-cell {
+  min-width: 200px;
+}
+
+.tier-meta {
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+
+.tier-current {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.actions-cell {
+  min-width: 160px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.save-btn-secondary {
+  background: var(--bg-primary);
 }
 
 .save-btn:not(:disabled):hover {

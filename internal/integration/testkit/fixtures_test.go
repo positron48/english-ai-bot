@@ -26,8 +26,8 @@ func TestUserFixture_Success(t *testing.T) {
 	// GetUserByID: return user row
 	mock.ExpectQuery("SELECT id, telegram_id.*FROM users WHERE id").
 		WithArgs(int64(1)).
-		WillReturnRows(sqlmock.NewRows([]string{"id", "telegram_id", "telegram_username", "timezone", "preferred_training_time", "settings_json", "created_at", "updated_at"}).
-			AddRow(int64(1), telegramID, "", "", "", "", "2024-01-01 12:00:00", "2024-01-01 12:00:00"))
+		WillReturnRows(sqlmock.NewRows([]string{"id", "telegram_id", "telegram_username", "timezone", "preferred_training_time", "settings_json", "subscription_tier", "created_at", "updated_at"}).
+			AddRow(int64(1), telegramID, "", "", "", "", "free", "2024-01-01 12:00:00", "2024-01-01 12:00:00"))
 
 	user := UserFixture(t, db, telegramID)
 	if user == nil {
@@ -217,8 +217,8 @@ func TestUserFixture_GetOrCreateUser_ExistingUser(t *testing.T) {
 	telegramID := int64(22222)
 	mock.ExpectQuery("SELECT id, telegram_id.*FROM users WHERE telegram_id").
 		WithArgs(telegramID).
-		WillReturnRows(sqlmock.NewRows([]string{"id", "telegram_id", "telegram_username", "timezone", "preferred_training_time", "settings_json", "created_at", "updated_at"}).
-			AddRow(int64(2), telegramID, "", "", "", "", "2024-01-01 12:00:00", "2024-01-01 12:00:00"))
+		WillReturnRows(sqlmock.NewRows([]string{"id", "telegram_id", "telegram_username", "timezone", "preferred_training_time", "settings_json", "subscription_tier", "created_at", "updated_at"}).
+			AddRow(int64(2), telegramID, "", "", "", "", "free", "2024-01-01 12:00:00", "2024-01-01 12:00:00"))
 
 	user := UserFixture(t, db, telegramID)
 	if user == nil {

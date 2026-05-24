@@ -35,6 +35,11 @@ generate_bundle() {
 		cp -R "$COURSE_DIR/reading" "$BUNDLE_DIR/reading"
 		echo "✓ Copied reading catalog for ${OUT_SUB}"
 	fi
+	rm -rf "$BUNDLE_DIR/speaking"
+	if [ -d "$COURSE_DIR/speaking" ]; then
+		cp -R "$COURSE_DIR/speaking" "$BUNDLE_DIR/speaking"
+		echo "✓ Copied speaking catalog for ${OUT_SUB}"
+	fi
 
 	if [ -f "$COURSE_DIR/config/generation-status.json" ]; then
 		cp "$COURSE_DIR/config/generation-status.json" "$BUNDLE_DIR/sections.json"

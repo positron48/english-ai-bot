@@ -214,10 +214,13 @@ class ApiClient {
       // This ensures tokens are always fresh, especially on direct URL access
       this.loadTokens()
       
+      const isFormData = options.body instanceof FormData
       const headers: Record<string, string> = {
-        'Content-Type': 'application/json',
         'Accept-Language': getCurrentLocale(),
         ...(options.headers as Record<string, string> || {}),
+      }
+      if (!isFormData) {
+        headers['Content-Type'] = 'application/json'
       }
 
       // Get token directly from localStorage to ensure it's current

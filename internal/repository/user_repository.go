@@ -53,70 +53,60 @@ func (r *UserRepository) GetOrCreateUser(telegramID int64) (*models.User, error)
 	return r.GetUserByID(userID)
 }
 
-// GetUserByID gets a user by internal ID
-func (r *UserRepository) GetUserByID(userID int64) (*models.User, error) {
-	query := `SELECT id, telegram_id, COALESCE(telegram_username, ''), timezone, preferred_training_time, 
-			  COALESCE(settings_json, ''), created_at, updated_at
-			  FROM users WHERE id = ?`
+// userSelectColumns is the standard users projection including subscription_tier.
+const userSelectColumns = `id, telegram_id, COALESCE(telegram_username, ''), timezone, preferred_training_time,
+			  COALESCE(settings_json, ''), COALESCE(subscription_tier, 'free'), created_at, updated_at`
 
+func scanUser(row interface {
+	Scan(dest ...interface{}) error
+}) (*models.User, error) {
 	var user models.User
 	var createdAt, updatedAt string
-
-	err := r.db.QueryRow(query, userID).Scan(
+	var tier string
+	err := row.Scan(
 		&user.ID,
 		&user.TelegramID,
 		&user.TelegramUsername,
 		&user.Timezone,
 		&user.PreferredTrainingTime,
 		&user.SettingsJSON,
+		&tier,
 		&createdAt,
 		&updatedAt,
 	)
+	if err != nil {
+		return nil, err
+	}
+	user.SubscriptionTier = models.ParseUserTier(tier)
+	user.CreatedAt, _ = time.Parse("2006-01-02 15:04:05", createdAt)
+	user.UpdatedAt, _ = time.Parse("2006-01-02 15:04:05", updatedAt)
+	return &user, nil
+}
 
+// GetUserByID gets a user by internal ID
+func (r *UserRepository) GetUserByID(userID int64) (*models.User, error) {
+	query := `SELECT ` + userSelectColumns + ` FROM users WHERE id = ?`
+	user, err := scanUser(r.db.QueryRow(query, userID))
 	if err == sql.ErrNoRows {
 		return nil, nil
 	}
 	if err != nil {
 		return nil, fmt.Errorf("failed to get user: %w", err)
 	}
-
-	user.CreatedAt, _ = time.Parse("2006-01-02 15:04:05", createdAt)
-	user.UpdatedAt, _ = time.Parse("2006-01-02 15:04:05", updatedAt)
-
-	return &user, nil
+	return user, nil
 }
 
 // GetUserByTelegramID gets a user by telegram ID
 func (r *UserRepository) GetUserByTelegramID(telegramID int64) (*models.User, error) {
-	query := `SELECT id, telegram_id, COALESCE(telegram_username, ''), timezone, preferred_training_time, 
-			  COALESCE(settings_json, ''), created_at, updated_at
-			  FROM users WHERE telegram_id = ?`
-
-	var user models.User
-	var createdAt, updatedAt string
-
-	err := r.db.QueryRow(query, telegramID).Scan(
-		&user.ID,
-		&user.TelegramID,
-		&user.TelegramUsername,
-		&user.Timezone,
-		&user.PreferredTrainingTime,
-		&user.SettingsJSON,
-		&createdAt,
-		&updatedAt,
-	)
-
+	query := `SELECT ` + userSelectColumns + ` FROM users WHERE telegram_id = ?`
+	user, err := scanUser(r.db.QueryRow(query, telegramID))
 	if err == sql.ErrNoRows {
 		return nil, nil
 	}
 	if err != nil {
 		return nil, fmt.Errorf("failed to get user: %w", err)
 	}
-
-	user.CreatedAt, _ = time.Parse("2006-01-02 15:04:05", createdAt)
-	user.UpdatedAt, _ = time.Parse("2006-01-02 15:04:05", updatedAt)
-
-	return &user, nil
+	return user, nil
 }
 
 // UpdateUserSettings updates user settings
@@ -150,35 +140,28 @@ func (r *UserRepository) GetUserByUsernameOrID(usernameOrID string) (*models.Use
 
 	// Try to find by username (remove @ if present, trim spaces); case-insensitive
 	username := strings.TrimSpace(strings.TrimPrefix(usernameOrID, "@"))
-	query := `SELECT id, telegram_id, COALESCE(telegram_username, ''), timezone, preferred_training_time, 
-			  COALESCE(settings_json, ''), created_at, updated_at
-			  FROM users WHERE LOWER(telegram_username) = LOWER(?)`
-
-	var user models.User
-	var createdAt, updatedAt string
-
-	err := r.db.QueryRow(query, username).Scan(
-		&user.ID,
-		&user.TelegramID,
-		&user.TelegramUsername,
-		&user.Timezone,
-		&user.PreferredTrainingTime,
-		&user.SettingsJSON,
-		&createdAt,
-		&updatedAt,
-	)
-
+	query := `SELECT ` + userSelectColumns + ` FROM users WHERE LOWER(telegram_username) = LOWER(?)`
+	user, err := scanUser(r.db.QueryRow(query, username))
 	if err == sql.ErrNoRows {
 		return nil, nil
 	}
 	if err != nil {
 		return nil, fmt.Errorf("failed to get user: %w", err)
 	}
+	return user, nil
+}
 
-	user.CreatedAt, _ = time.Parse("2006-01-02 15:04:05", createdAt)
-	user.UpdatedAt, _ = time.Parse("2006-01-02 15:04:05", updatedAt)
-
-	return &user, nil
+// UpdateSubscriptionTier sets the user's subscription tier.
+func (r *UserRepository) UpdateSubscriptionTier(userID int64, tier models.UserTier) error {
+	if !models.IsValidUserTier(string(tier)) {
+		return fmt.Errorf("invalid subscription tier: %q", tier)
+	}
+	query := `UPDATE users SET subscription_tier = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?`
+	_, err := r.db.Exec(query, string(tier), userID)
+	if err != nil {
+		return fmt.Errorf("failed to update subscription tier: %w", err)
+	}
+	return nil
 }
 
 // UpdateUsername updates user's telegram username
@@ -193,9 +176,7 @@ func (r *UserRepository) UpdateUsername(telegramID int64, username string) error
 
 // GetAllUsers returns all users (for notification scheduler)
 func (r *UserRepository) GetAllUsers() ([]*models.User, error) {
-	query := `SELECT id, telegram_id, COALESCE(telegram_username, ''), timezone, preferred_training_time, 
-			  COALESCE(settings_json, ''), created_at, updated_at
-			  FROM users ORDER BY id`
+	query := `SELECT ` + userSelectColumns + ` FROM users ORDER BY id`
 
 	rows, err := r.db.Query(query)
 	if err != nil {
@@ -205,28 +186,12 @@ func (r *UserRepository) GetAllUsers() ([]*models.User, error) {
 
 	var users []*models.User
 	for rows.Next() {
-		var user models.User
-		var createdAt, updatedAt string
-
-		err := rows.Scan(
-			&user.ID,
-			&user.TelegramID,
-			&user.TelegramUsername,
-			&user.Timezone,
-			&user.PreferredTrainingTime,
-			&user.SettingsJSON,
-			&createdAt,
-			&updatedAt,
-		)
+		user, err := scanUser(rows)
 		if err != nil {
 			return nil, fmt.Errorf("failed to scan user: %w", err)
 		}
-
-		user.CreatedAt, _ = time.Parse("2006-01-02 15:04:05", createdAt)
-		user.UpdatedAt, _ = time.Parse("2006-01-02 15:04:05", updatedAt)
-
-		users = append(users, &user)
+		users = append(users, user)
 	}
 
-	return users, nil
+	return users, rows.Err()
 }

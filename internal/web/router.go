@@ -107,6 +107,9 @@ type Router struct {
 	authMiddleware                    *AuthMiddleware
 	otpRepo                           *repository.WebOTPRepository
 	readingCatalogRepo                *repository.ReadingCatalogRepository
+	speakingCatalogRepo               *repository.SpeakingCatalogRepository
+	speakingSessionRepo               *repository.SpeakingSessionRepository
+	speakingEvaluator                 *service.SpeakingEvaluatorService
 	botToken                          string
 	webTrainingHandler                *WebTrainingHandler
 	rateLimiter                       *RateLimiter
@@ -156,6 +159,8 @@ func NewRouter(
 	}
 	if db != nil {
 		r.readingCatalogRepo = repository.NewReadingCatalogRepository(db)
+		r.speakingCatalogRepo = repository.NewSpeakingCatalogRepository(db)
+		r.speakingSessionRepo = repository.NewSpeakingSessionRepository(db)
 	}
 
 	// Setup routes
@@ -224,6 +229,11 @@ func (r *Router) SetGrammarService(grammarService *service.GrammarService) {
 func (r *Router) SetPronunciationService(pronunciationService *service.PronunciationService) {
 	r.pronunciationService = pronunciationService
 	r.setupPronunciationMediaRoute()
+}
+
+// SetSpeakingEvaluator sets the speaking evaluation service.
+func (r *Router) SetSpeakingEvaluator(evaluator *service.SpeakingEvaluatorService) {
+	r.speakingEvaluator = evaluator
 }
 
 // SetOTPRepo sets the OTP repository
@@ -384,8 +394,13 @@ func (r *Router) setupProtectedRoutes() {
 		r.config.WebApp.RateLimitAppChatPerUser,
 		r.config.WebApp.RateLimitBurstMultiplier,
 	)
+	speakingPolicy := r.getRateLimitPolicy(
+		r.config.WebApp.RateLimitSpeakingPerUser,
+		r.config.WebApp.RateLimitBurstMultiplier,
+	)
 	appAPIMiddleware := NewRateLimitMiddleware(r.rateLimiter, r.logger, appAPIPolicy, KeyFuncIPAndUserIDFromContext)
 	appChatMiddleware := NewRateLimitMiddleware(r.rateLimiter, r.logger, appChatPolicy, KeyFuncIPAndUserIDFromContext)
+	speakingMiddleware := NewRateLimitMiddleware(r.rateLimiter, r.logger, speakingPolicy, KeyFuncIPAndUserIDFromContext)
 
 	// Protected user routes (wrapped with auth middleware and rate limiting)
 	r.mux.HandleFunc("/api/dashboard", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleDashboard)))
@@ -415,6 +430,15 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/learning/reading/categories/", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningReadingCategoryTexts)))
 	r.mux.HandleFunc("/api/learning/reading/texts/", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningReadingTexts)))
 	r.mux.HandleFunc("/api/reading/word-lookup", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleReadingWordLookup)))
+
+	speakingAuth := func(h http.HandlerFunc) http.HandlerFunc {
+		return speakingMiddleware.Wrap(auth.RequireAuth(r.RequireFeature("speaking")(h)))
+	}
+	r.mux.HandleFunc("/api/learning/speaking/availability", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningSpeakingAvailability)))
+	r.mux.HandleFunc("/api/learning/speaking/categories", speakingAuth(r.handleLearningSpeakingCategories))
+	r.mux.HandleFunc("/api/learning/speaking/categories/", speakingAuth(r.handleLearningSpeakingCategoryTasks))
+	r.mux.HandleFunc("/api/learning/speaking/sessions", speakingAuth(r.handleLearningSpeakingSessions))
+	r.mux.HandleFunc("/api/learning/speaking/sessions/", speakingAuth(r.handleLearningSpeakingSessionByID))
 
 	r.mux.HandleFunc("/api/training/start", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTrainingStart)))
 	r.mux.HandleFunc("/api/training/current", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTrainingCurrent)))

@@ -61,6 +61,7 @@ func (r *Router) learningJSONForSettingsAPI() map[string]interface{} {
 		}
 		out["spanish_verb_scope_ladder"] = ladder
 	}
+	out["speaking_mode_enabled"] = r.config.Speaking.Enabled
 	return out
 }
 
@@ -516,9 +517,12 @@ func (r *Router) handleSettings(w http.ResponseWriter, req *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
+	tier := user.SubscriptionTier
 	json.NewEncoder(w).Encode(map[string]interface{}{
-		"settings": r.settingsJSONForAPI(settings),
-		"learning": r.learningJSONForSettingsAPI(),
+		"settings":           r.settingsJSONForAPI(settings),
+		"learning":           r.learningJSONForSettingsAPI(),
+		"subscription_tier":  string(tier),
+		"features":           models.UserFeaturesForTier(tier),
 	})
 }
 

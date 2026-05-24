@@ -88,6 +88,18 @@ const router = createRouter({
       meta: { requiresAuth: true }
     },
     {
+      path: '/learning/speaking',
+      name: 'SpeakingCategories',
+      component: () => import('../views/SpeakingCategoriesView.vue'),
+      meta: { requiresAuth: true, requiresSpeaking: true }
+    },
+    {
+      path: '/learning/speaking/session/:sessionId',
+      name: 'SpeakingSession',
+      component: () => import('../views/SpeakingSessionView.vue'),
+      meta: { requiresAuth: true, requiresSpeaking: true }
+    },
+    {
       path: '/learning/grammar/chapter/:chapterId/test',
       name: 'GrammarChapterTest',
       component: () => import('../views/GrammarTestView.vue'),
@@ -341,6 +353,20 @@ router.beforeEach(async (to, _from, next) => {
     } catch (error: any) {
       console.error('Failed to check grammar training availability:', error)
       next('/learning/grammar')
+      return
+    }
+  }
+
+  if (to.meta.requiresSpeaking) {
+    try {
+      const response: any = await apiClient.request('/api/learning/speaking/availability')
+      if (!response?.can_access || !response?.available) {
+        next('/learning')
+        return
+      }
+    } catch (error: any) {
+      console.error('Failed to check speaking availability:', error)
+      next('/learning')
       return
     }
   }

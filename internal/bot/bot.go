@@ -250,6 +250,8 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 	webRouter.SetOTPRepo(otpRepo)
 	webRouter.SetGrammarService(grammarService)
 	webRouter.SetPronunciationService(pronunciationService)
+	speakingEvaluator := service.NewSpeakingEvaluatorService(cfg, log)
+	webRouter.SetSpeakingEvaluator(speakingEvaluator)
 
 	b := &Bot{
 		api:                  bot,
@@ -295,6 +297,9 @@ func (b *Bot) Start(ctx context.Context) error {
 	if b.webRouter != nil {
 		if err := b.webRouter.SyncReadingCatalogFromBundle(ctx); err != nil {
 			b.logger.Warn("reading catalog sync failed", zap.Error(err))
+		}
+		if err := b.webRouter.SyncSpeakingCatalogFromBundle(ctx); err != nil {
+			b.logger.Warn("speaking catalog sync failed", zap.Error(err))
 		}
 		go b.webRouter.BootstrapReadingWordCards(ctx)
 	}

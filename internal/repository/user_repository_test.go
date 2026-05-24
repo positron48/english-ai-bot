@@ -499,9 +499,9 @@ func TestUserRepository_GetAllUsers_ScanError(t *testing.T) {
 	defer db.Close()
 
 	// Query returns rows with bad type so Scan fails (e.g. text in id column)
-	cols := []string{"id", "telegram_id", "telegram_username", "timezone", "preferred_training_time", "settings_json", "created_at", "updated_at"}
+	cols := []string{"id", "telegram_id", "telegram_username", "timezone", "preferred_training_time", "settings_json", "subscription_tier", "created_at", "updated_at"}
 	mock.ExpectQuery("SELECT .+ FROM users ORDER BY id").
-		WillReturnRows(sqlmock.NewRows(cols).AddRow("not_an_int", int64(1), "", "", "", "", "2024-01-01 12:00:00", "2024-01-01 12:00:00"))
+		WillReturnRows(sqlmock.NewRows(cols).AddRow("not_an_int", int64(1), "", "", "", "", "free", "2024-01-01 12:00:00", "2024-01-01 12:00:00"))
 
 	repo := NewUserRepository(db, zap.NewNop())
 	_, err = repo.GetAllUsers()

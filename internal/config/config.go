@@ -30,6 +30,7 @@ type Config struct {
 	Admin    AdminConfig    `mapstructure:"admin"`
 	WebApp   WebAppConfig   `mapstructure:"webapp"`
 	Learning LearningConfig `mapstructure:"learning"`
+	Speaking SpeakingConfig `mapstructure:"speaking"`
 }
 
 // LearningConfig holds language pair and bundle identity for multilang deployments.
@@ -162,6 +163,19 @@ type TTSConfig struct {
 	InternalMaxUploadMB     int    `mapstructure:"internal_max_upload_mb"`
 }
 
+// SpeakingConfig holds speaking evaluation mode settings.
+type SpeakingConfig struct {
+	Enabled              bool   `mapstructure:"enabled"`
+	EvalModel            string `mapstructure:"eval_model"`
+	EvalBaseURL          string `mapstructure:"eval_base_url"`
+	EvalAPIKey           string `mapstructure:"eval_api_key"`
+	EvalTimeout          string `mapstructure:"eval_timeout"`
+	MaxAudioMB           int    `mapstructure:"max_audio_mb"`
+	MaxAttemptsDefault   int    `mapstructure:"max_attempts_default"`
+	AcceptMeaningScore   int    `mapstructure:"accept_meaning_score"`
+	SessionTaskCount     int    `mapstructure:"session_task_count"`
+}
+
 // BotConfig holds bot messages and behavior configuration
 type BotConfig struct {
 	StartMessage          string `mapstructure:"start_message"`
@@ -228,6 +242,7 @@ type WebAppConfig struct {
 	RateLimitAuthRefreshPerIP            int `mapstructure:"rate_limit_auth_refresh_per_ip"`
 	RateLimitAppAPIPerUser               int `mapstructure:"rate_limit_app_api_per_user"`
 	RateLimitAppChatPerUser              int `mapstructure:"rate_limit_app_chat_per_user"`
+	RateLimitSpeakingPerUser             int `mapstructure:"rate_limit_speaking_per_user"`
 	RateLimitWindowMinutes               int `mapstructure:"rate_limit_window_minutes"`
 	RateLimitBurstMultiplier             int `mapstructure:"rate_limit_burst_multiplier"`
 }
@@ -280,6 +295,15 @@ func Load() (*Config, error) {
 	viper.SetDefault("tts.internal_tokens_json", "")
 	viper.SetDefault("tts.internal_max_pending_limit", 500)
 	viper.SetDefault("tts.internal_max_upload_mb", 10)
+	viper.SetDefault("speaking.enabled", false)
+	viper.SetDefault("speaking.eval_model", "openai/gpt-audio-mini")
+	viper.SetDefault("speaking.eval_base_url", "https://openrouter.ai/api/v1")
+	viper.SetDefault("speaking.eval_timeout", "60s")
+	viper.SetDefault("speaking.max_audio_mb", 2)
+	viper.SetDefault("speaking.max_attempts_default", 3)
+	viper.SetDefault("speaking.accept_meaning_score", 3)
+	viper.SetDefault("speaking.session_task_count", 5)
+	viper.SetDefault("webapp.rate_limit_speaking_per_user", 30)
 	viper.SetDefault("database.driver", "postgres")
 	viper.SetDefault("database.path", "")
 
@@ -394,6 +418,15 @@ func Load() (*Config, error) {
 	_ = viper.BindEnv("tts.internal_tokens_json", "TTS_INTERNAL_TOKENS_JSON")
 	_ = viper.BindEnv("tts.internal_max_pending_limit", "TTS_INTERNAL_MAX_PENDING_LIMIT")
 	_ = viper.BindEnv("tts.internal_max_upload_mb", "TTS_INTERNAL_MAX_UPLOAD_MB")
+	_ = viper.BindEnv("speaking.enabled", "SPEAKING_MODE_ENABLED")
+	_ = viper.BindEnv("speaking.eval_model", "SPEAKING_EVAL_MODEL")
+	_ = viper.BindEnv("speaking.eval_base_url", "SPEAKING_EVAL_BASE_URL")
+	_ = viper.BindEnv("speaking.eval_api_key", "SPEAKING_EVAL_API_KEY")
+	_ = viper.BindEnv("speaking.eval_timeout", "SPEAKING_EVAL_TIMEOUT")
+	_ = viper.BindEnv("speaking.max_audio_mb", "SPEAKING_MAX_AUDIO_MB")
+	_ = viper.BindEnv("speaking.max_attempts_default", "SPEAKING_MAX_ATTEMPTS_DEFAULT")
+	_ = viper.BindEnv("speaking.accept_meaning_score", "SPEAKING_ACCEPT_MEANING_SCORE")
+	_ = viper.BindEnv("speaking.session_task_count", "SPEAKING_SESSION_TASK_COUNT")
 	_ = viper.BindEnv("bot.start_message", "BOT_START_MESSAGE")
 	_ = viper.BindEnv("bot.help_message", "BOT_HELP_MESSAGE")
 	_ = viper.BindEnv("bot.unknown_command_message", "BOT_UNKNOWN_COMMAND_MESSAGE")
@@ -438,6 +471,7 @@ func Load() (*Config, error) {
 	_ = viper.BindEnv("webapp.rate_limit_auth_refresh_per_ip", "WEBAPP_RATE_LIMIT_AUTH_REFRESH_PER_IP")
 	_ = viper.BindEnv("webapp.rate_limit_app_api_per_user", "WEBAPP_RATE_LIMIT_APP_API_PER_USER")
 	_ = viper.BindEnv("webapp.rate_limit_app_chat_per_user", "WEBAPP_RATE_LIMIT_APP_CHAT_PER_USER")
+	_ = viper.BindEnv("webapp.rate_limit_speaking_per_user", "WEBAPP_RATE_LIMIT_SPEAKING_PER_USER")
 	_ = viper.BindEnv("webapp.rate_limit_window_minutes", "WEBAPP_RATE_LIMIT_WINDOW_MINUTES")
 	_ = viper.BindEnv("webapp.rate_limit_burst_multiplier", "WEBAPP_RATE_LIMIT_BURST_MULTIPLIER")
 	_ = viper.BindEnv("learning.pair", "LEARNING_PAIR")
@@ -530,6 +564,19 @@ func Load() (*Config, error) {
 	}
 
 	config.AI.Prompt = ai.PreparePrompt(config.AI.Prompt, config.Learning.NativeLang, config.Learning.TargetLang, config.Learning.Pair)
+
+	if strings.TrimSpace(config.Speaking.EvalAPIKey) == "" {
+		config.Speaking.EvalAPIKey = strings.TrimSpace(config.TTS.APIKey)
+	}
+	if strings.TrimSpace(config.Speaking.EvalAPIKey) == "" {
+		config.Speaking.EvalAPIKey = strings.TrimSpace(config.AI.APIKey)
+	}
+	if strings.TrimSpace(config.Speaking.EvalBaseURL) == "" {
+		config.Speaking.EvalBaseURL = strings.TrimSpace(config.TTS.BaseURL)
+	}
+	if strings.TrimSpace(config.Speaking.EvalBaseURL) == "" {
+		config.Speaking.EvalBaseURL = strings.TrimSpace(config.AI.URL)
+	}
 
 	return &config, nil
 }

@@ -609,8 +609,8 @@ func TestNotificationService_CheckAndSendNotifications_DisableFailsWithError(t *
 	mock.ExpectQuery(`SELECT id, telegram_id`).
 		WillReturnRows(sqlmock.NewRows([]string{
 			"id", "telegram_id", "telegram_username", "timezone", "preferred_training_time",
-			"settings_json", "created_at", "updated_at",
-		}).AddRow(user.ID, user.TelegramID, "", "UTC", "00:00", settingsStr, now, now))
+			"settings_json", "subscription_tier", "created_at", "updated_at",
+		}).AddRow(user.ID, user.TelegramID, "", "UTC", "00:00", settingsStr, "free", now, now))
 
 	// UpdateUserSettings from disableUserNotifications — fails
 	mock.ExpectExec(`UPDATE users SET settings_json`).

@@ -2052,7 +2052,7 @@
       "title": "Neuter lo: lo bueno, lo importante",
       "level": "B1",
       "order": 79,
-      "status": "pending",
+      "status": "validated",
       "input_file": "config/chapter-templates/es.grammar.noun_phrase_upgrade_precision.neuter_lo_lo_bueno_lo_importante-input.json",
       "output_dir": "chapters/079.es.grammar.noun_phrase_upgrade_precision.neuter_lo_lo_bueno_lo_importante",
       "files": {
@@ -2073,7 +2073,7 @@
       "title": "Build & speak: compare cities, people, habits and options",
       "level": "B1",
       "order": 80,
-      "status": "pending",
+      "status": "validated",
       "input_file": "config/chapter-templates/es.grammar.noun_phrase_upgrade_precision.build_speak_compare_cities_people_habits_options-input.json",
       "output_dir": "chapters/080.es.grammar.noun_phrase_upgrade_precision.build_speak_compare_cities_people_habits_options",
       "files": {
@@ -2094,7 +2094,7 @@
       "title": "Personal a and object marking",
       "level": "B1",
       "order": 81,
-      "status": "pending",
+      "status": "validated",
       "input_file": "config/chapter-templates/es.grammar.prepositions_verb_patterns.personal_object_marking-input.json",
       "output_dir": "chapters/081.es.grammar.prepositions_verb_patterns.personal_object_marking",
       "files": {
@@ -2115,7 +2115,7 @@
       "title": "Core prepositions: a, de, en, con, sin, sobre",
       "level": "B1",
       "order": 82,
-      "status": "pending",
+      "status": "validated",
       "input_file": "config/chapter-templates/es.grammar.prepositions_verb_patterns.core_prepositions_de_en_con_sin_sobre-input.json",
       "output_dir": "chapters/082.es.grammar.prepositions_verb_patterns.core_prepositions_de_en_con_sin_sobre",
       "files": {
@@ -2136,7 +2136,7 @@
       "title": "Por vs para: the central contrast",
       "level": "B1",
       "order": 83,
-      "status": "pending",
+      "status": "validated",
       "input_file": "config/chapter-templates/es.grammar.prepositions_verb_patterns.por_para_central_contrast-input.json",
       "output_dir": "chapters/083.es.grammar.prepositions_verb_patterns.por_para_central_contrast",
       "files": {
@@ -2157,7 +2157,7 @@
       "title": "Prepositions with time and movement: desde, hasta, hacia, por, para",
       "level": "B1",
       "order": 84,
-      "status": "pending",
+      "status": "validated",
       "input_file": "config/chapter-templates/es.grammar.prepositions_verb_patterns.prepositions_time_movement_desde_hasta_hacia_por_para-input.json",
       "output_dir": "chapters/084.es.grammar.prepositions_verb_patterns.prepositions_time_movement_desde_hasta_hacia_por_para",
       "files": {
@@ -2178,7 +2178,7 @@
       "title": "Verb + preposition patterns: pensar en, depender de, contar con",
       "level": "B1",
       "order": 85,
-      "status": "pending",
+      "status": "validated",
       "input_file": "config/chapter-templates/es.grammar.prepositions_verb_patterns.verb_plus_preposition_patterns_pensar_en_depender_de-input.json",
       "output_dir": "chapters/085.es.grammar.prepositions_verb_patterns.verb_plus_preposition_patterns_pensar_en_depender_de",
       "files": {
@@ -2199,7 +2199,7 @@
       "title": "Adjective + preposition patterns: contento con, parecido a, lleno de",
       "level": "B1",
       "order": 86,
-      "status": "pending",
+      "status": "validated",
       "input_file": "config/chapter-templates/es.grammar.prepositions_verb_patterns.adjective_plus_preposition_patterns_contento_con_parecido_lleno-input.json",
       "output_dir": "chapters/086.es.grammar.prepositions_verb_patterns.adjective_plus_preposition_patterns_contento_con_parecido_lleno",
       "files": {
@@ -2220,7 +2220,7 @@
       "title": "Build & speak: directions, reasons, goals and relationships",
       "level": "B1",
       "order": 87,
-      "status": "pending",
+      "status": "validated",
       "input_file": "config/chapter-templates/es.grammar.prepositions_verb_patterns.build_speak_directions_reasons_goals_relationships-input.json",
       "output_dir": "chapters/087.es.grammar.prepositions_verb_patterns.build_speak_directions_reasons_goals_relationships",
       "files": {
@@ -2241,7 +2241,7 @@
       "title": "Direct object pronouns: lo, la, los, las",
       "level": "B1",
       "order": 88,
-      "status": "pending",
+      "status": "validated",
       "input_file": "config/chapter-templates/es.grammar.pronouns_direct_indirect.direct_object_pronouns_lo_la_los_las-input.json",
       "output_dir": "chapters/088.es.grammar.pronouns_direct_indirect.direct_object_pronouns_lo_la_los_las",
       "files": {
@@ -2262,7 +2262,7 @@
       "title": "Indirect object pronouns: le, les and recipient meaning",
       "level": "B1",
       "order": 89,
-      "status": "pending",
+      "status": "validated",
       "input_file": "config/chapter-templates/es.grammar.pronouns_direct_indirect.indirect_object_pronouns_le_les_recipient_meaning-input.json",
       "output_dir": "chapters/089.es.grammar.pronouns_direct_indirect.indirect_object_pronouns_le_les_recipient_meaning",
       "files": {
@@ -2283,7 +2283,7 @@
       "title": "Placement rules: before the verb or attached after it",
       "level": "B1",
       "order": 90,
-      "status": "pending",
+      "status": "validated",
       "input_file": "config/chapter-templates/es.grammar.pronouns_direct_indirect.placement_rules_before_verb_attached_after-input.json",
       "output_dir": "chapters/090.es.grammar.pronouns_direct_indirect.placement_rules_before_verb_attached_after",
       "files": {
@@ -2304,7 +2304,7 @@
       "title": "Double pronouns: me lo, se lo, te la",
       "level": "B1",
       "order": 91,
-      "status": "pending",
+      "status": "validated",
       "input_file": "config/chapter-templates/es.grammar.pronouns_direct_indirect.double_pronouns_me_lo_se_lo_te_la-input.json",
       "output_dir": "chapters/091.es.grammar.pronouns_direct_indirect.double_pronouns_me_lo_se_lo_te_la",
       "files": {
@@ -2325,7 +2325,7 @@
       "title": "Le, lo, la: baseline norm and what learners should treat as standard",
       "level": "B1",
       "order": 92,
-      "status": "pending",
+      "status": "validated",
       "input_file": "config/chapter-templates/es.grammar.pronouns_direct_indirect.le_lo_la_baseline_norm_learners_should_treat-input.json",
       "output_dir": "chapters/092.es.grammar.pronouns_direct_indirect.le_lo_la_baseline_norm_learners_should_treat",
       "files": {
@@ -3604,11 +3604,11 @@
   "summary": {
     "total_sections": 23,
     "total_chapters": 152,
-    "chapters_generated": 64,
+    "chapters_generated": 78,
     "chapters_in_progress": 0,
-    "chapters_pending": 78,
+    "chapters_pending": 64,
     "chapters_failed": 0,
-    "chapters_validated": 74,
-    "last_updated": "2026-05-11T18:12:25.769Z"
+    "chapters_validated": 88,
+    "last_updated": "2026-05-24T18:00:00.000Z"
   }
 }

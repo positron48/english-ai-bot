@@ -10,6 +10,7 @@ type User struct {
 	Timezone              string
 	PreferredTrainingTime string
 	SettingsJSON          string
+	SubscriptionTier      UserTier
 	CreatedAt             time.Time
 	UpdatedAt             time.Time
 }

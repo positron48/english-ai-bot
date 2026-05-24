@@ -26,15 +26,40 @@
         <h2>{{ t('learning.reading') }}</h2>
         <p>{{ t('learning.readingDescription') }}</p>
       </router-link>
+
+      <router-link
+        v-if="showSpeaking"
+        to="/learning/speaking"
+        class="learning-card speaking-card"
+      >
+        <div class="card-icon">
+          <Icon name="chat" />
+        </div>
+        <h2>{{ t('learning.speaking') }}</h2>
+        <p>{{ t('learning.speakingDescription') }}</p>
+      </router-link>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Icon from '../components/Icon.vue'
+import { useSpeaking } from '../composables/useSpeaking'
 
 const { t } = useI18n()
+const { loadAvailability } = useSpeaking()
+const showSpeaking = ref(false)
+
+onMounted(async () => {
+  try {
+    const avail = await loadAvailability()
+    showSpeaking.value = Boolean(avail.can_access && avail.available)
+  } catch {
+    showSpeaking.value = false
+  }
+})
 </script>
 
 <style scoped>

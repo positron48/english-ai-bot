@@ -2178,7 +2178,7 @@ func TestHandleAdminUsers_ScanError(t *testing.T) {
 	if err != nil {
 		t.Skipf("cannot rename users: %v", err)
 	}
-	_, err = conn.Exec(`CREATE VIEW users AS SELECT 'not-a-number'::text as id, 12345::bigint as telegram_id, ''::text as telegram_username, ''::text as created_at`)
+	_, err = conn.Exec(`CREATE VIEW users AS SELECT 'not-a-number'::text as id, 12345::bigint as telegram_id, ''::text as telegram_username, 'free'::text as subscription_tier, ''::text as created_at`)
 	if err != nil {
 		t.Skipf("cannot create view: %v", err)
 	}
