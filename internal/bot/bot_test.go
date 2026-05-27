@@ -547,7 +547,7 @@ func TestStart_Webhook_HandlerInvoked(t *testing.T) {
 	}()
 	defer func() { cancel(); <-done }()
 
-	time.Sleep(200 * time.Millisecond)
+	requireServerReady(t, "http://"+addr+"/health", 2*time.Second)
 
 	// Bad body triggers webhook handle error path (HandleUpdate returns err, 400)
 	resp, err := http.Post("http://"+addr+"/webhook", "application/json", strings.NewReader("invalid"))
@@ -569,6 +569,26 @@ func TestStart_Webhook_HandlerInvoked(t *testing.T) {
 	if resp2.StatusCode != http.StatusOK {
 		t.Errorf("expected 200 for valid update, got %d", resp2.StatusCode)
 	}
+}
+
+func requireServerReady(t *testing.T, healthURL string, timeout time.Duration) {
+	t.Helper()
+
+	deadline := time.Now().Add(timeout)
+	client := &http.Client{Timeout: 200 * time.Millisecond}
+
+	for time.Now().Before(deadline) {
+		resp, err := client.Get(healthURL)
+		if err == nil {
+			_ = resp.Body.Close()
+			if resp.StatusCode == http.StatusOK {
+				return
+			}
+		}
+		time.Sleep(25 * time.Millisecond)
+	}
+
+	t.Fatalf("server did not become ready: %s", healthURL)
 }
 
 func TestStart_Webhook_DeleteWebhookFails(t *testing.T) {
