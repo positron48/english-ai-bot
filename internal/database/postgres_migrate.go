@@ -212,8 +212,12 @@ func (db *DB) migratePostgres() error {
 			total_questions INTEGER NOT NULL,
 			answers_json TEXT,
 			results_json TEXT,
-			course_version TEXT
+			course_version TEXT,
+			client_attempt_id TEXT
 		)`,
+		`CREATE UNIQUE INDEX IF NOT EXISTS idx_grammar_test_attempts_client_attempt_id
+			ON grammar_test_attempts(user_id, client_attempt_id)
+			WHERE client_attempt_id IS NOT NULL`,
 		`CREATE TABLE IF NOT EXISTS grammar_progress (
 			user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
 			chapter_id TEXT NOT NULL,

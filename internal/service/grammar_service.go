@@ -40,12 +40,12 @@ func NewGrammarService(
 		logger.Warn("failed to build theory block index", zap.Error(err))
 	}
 	return &GrammarService{
-		ContentRepo:      contentRepo,
-		PublishRepo:      publishRepo,
-		AttemptRepo:      attemptRepo,
-		TheoryIndex:      theoryIndex,
-		learning:         learning,
-		logger:           logger,
+		ContentRepo: contentRepo,
+		PublishRepo: publishRepo,
+		AttemptRepo: attemptRepo,
+		TheoryIndex: theoryIndex,
+		learning:    learning,
+		logger:      logger,
 	}
 }
 
@@ -871,6 +871,12 @@ type AnswerItem struct {
 // answers is an array of AnswerItem objects in the order they appear in the test
 // Each AnswerItem explicitly links an answer to its question via question_id and chapter_id (for category tests)
 func (s *GrammarService) SubmitTest(ctx context.Context, userID int64, scopeType, scopeID string, answers []AnswerItem) (*TestResult, error) {
+	return s.SubmitTestWithClientAttemptID(ctx, userID, scopeType, scopeID, answers, "")
+}
+
+// SubmitTestWithClientAttemptID checks answers and saves an attempt with an optional
+// client-side idempotency key used by offline sync.
+func (s *GrammarService) SubmitTestWithClientAttemptID(ctx context.Context, userID int64, scopeType, scopeID string, answers []AnswerItem, clientAttemptID string) (*TestResult, error) {
 	var questionMap map[string]map[string]interface{}
 	var questionMapByChapter map[string]map[string]map[string]interface{} // For category tests
 	var err error
@@ -1142,6 +1148,10 @@ func (s *GrammarService) SubmitTest(ctx context.Context, userID int64, scopeType
 		TotalQuestions: total,
 		AnswersJSON:    string(answersJSON),
 		ResultsJSON:    string(resultsJSON),
+	}
+	if strings.TrimSpace(clientAttemptID) != "" {
+		id := strings.TrimSpace(clientAttemptID)
+		attempt.ClientAttemptID = &id
 	}
 
 	_, err = s.AttemptRepo.CreateAttempt(attempt)

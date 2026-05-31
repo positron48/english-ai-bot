@@ -192,7 +192,7 @@ import { ref, computed, onMounted, watch, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
 import { marked } from 'marked'
-import { apiClient } from '../api/client'
+import { grammarClient } from '../api/grammarClient'
 import GrammarQuestion from '../components/GrammarQuestion.vue'
 import ConfirmModal from '../components/ConfirmModal.vue'
 import { useSettings } from '../composables/useSettings'
@@ -344,15 +344,11 @@ const loadTest = async () => {
   error.value = null
   try {
     if (scope.value === 'chapter') {
-      const data: { questions: any[]; total: number } = await apiClient.request(
-        `/api/learning/grammar/chapters/${scopeId.value}/test`
-      )
+      const data: { questions: any[]; total: number } = await grammarClient.getChapterTest(scopeId.value)
       questions.value = data.questions || []
     } else {
       // Category test
-      const data: { questions: any[]; total: number } = await apiClient.request(
-        `/api/learning/grammar/categories/${scopeId.value}/test`
-      )
+      const data: { questions: any[]; total: number } = await grammarClient.getCategoryTest(scopeId.value)
       questions.value = data.questions || []
     }
   } catch (err: any) {
@@ -480,14 +476,7 @@ const submitTest = async () => {
   submitting.value = true
   try {
     const data: { score: number; passed: boolean; correct: number; total: number; results: any[] } = 
-      await apiClient.request('/api/learning/grammar/tests/submit', {
-        method: 'POST',
-        body: {
-          scope: scope.value,
-          scope_id: scopeId.value,
-          answers: answerItems
-        }
-      })
+      await grammarClient.submitTest(scope.value as 'chapter' | 'category', scopeId.value, answerItems)
     
     result.value = data
     testSubmitted.value = true
@@ -643,7 +632,7 @@ const loadNextChapterId = async () => {
   nextActionLoading.value = true
   try {
     const data: { section_id: string; is_last: boolean; next_chapter_id: string } =
-      await apiClient.request(`/api/learning/grammar/chapters/${chapterId}/next`)
+      await grammarClient.getNextChapter(chapterId)
 
     nextSectionId.value = data.section_id || null
     isLastChapterInCategory.value = !!data.is_last

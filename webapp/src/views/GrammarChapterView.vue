@@ -114,7 +114,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { marked } from 'marked'
-import { apiClient } from '../api/client'
+import { grammarClient } from '../api/grammarClient'
 import GrammarQuestion from '../components/GrammarQuestion.vue'
 import { useSettings } from '../composables/useSettings'
 import { useAudio } from '../composables/useAudio'
@@ -177,9 +177,7 @@ const loadChapter = async () => {
       title: string
       title_translations?: Record<string, string>
       section?: { title?: string; title_translations?: Record<string, string>; level?: string }
-    } = await apiClient.request(
-      `/api/learning/grammar/chapters/${chapterId.value}`
-    )
+    } = await grammarClient.getChapter(chapterId.value)
     sectionMeta.value = data.section ?? null
     chapter.value = data.chapter
     chapterTitleOverride.value = data.title || null

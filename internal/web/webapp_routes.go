@@ -1,6 +1,7 @@
 package web
 
 import (
+	"encoding/json"
 	"io/fs"
 	"net/http"
 	"net/url"
@@ -28,6 +29,25 @@ func (r *Router) setupWebappRoutes() {
 	webappRoot, _ := fs.Sub(webappFS, "dist")
 
 	fileServer := http.FileServer(http.FS(webappRoot))
+
+	r.mux.HandleFunc("/sw.js", func(w http.ResponseWriter, req *http.Request) {
+		if req.Method != http.MethodGet {
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+			return
+		}
+		data, err := fs.ReadFile(webappRoot, "sw.js")
+		if err != nil {
+			r.logger.Error("failed to read service worker", zap.Error(err))
+			http.Error(w, "Not found", http.StatusNotFound)
+			return
+		}
+		w.Header().Set("Content-Type", "application/javascript; charset=utf-8")
+		w.Header().Set("Service-Worker-Allowed", "/")
+		_, _ = w.Write(data)
+	})
+
+	r.mux.HandleFunc("/app/manifest.webmanifest", r.handleWebAppManifest)
+	r.mux.HandleFunc("/.well-known/assetlinks.json", r.handleAndroidAssetLinks)
 
 	// Serve static assets (JS, CSS, images, etc.)
 	// Strip /app prefix before serving files
@@ -71,6 +91,78 @@ func (r *Router) setupWebappRoutes() {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		w.Write(indexData)
 	})
+}
+
+func (r *Router) handleWebAppManifest(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	name := "Qantrix English"
+	shortName := "English"
+	themeColor := "#256f5d"
+	backgroundColor := "#f7f2e8"
+	iconPath := "/app/icons/english-512.png"
+	if strings.EqualFold(r.config.Learning.AppCode, "spanish") || strings.EqualFold(r.config.Learning.TargetLang, "es") {
+		name = "Qantrix Spanish"
+		shortName = "Spanish"
+		themeColor = "#b45309"
+		backgroundColor = "#fff7ed"
+		iconPath = "/app/icons/spanish-512.png"
+	}
+	w.Header().Set("Content-Type", "application/manifest+json; charset=utf-8")
+	_ = json.NewEncoder(w).Encode(map[string]interface{}{
+		"name":             name,
+		"short_name":       shortName,
+		"start_url":        "/app/",
+		"scope":            "/",
+		"display":          "standalone",
+		"orientation":      "portrait",
+		"theme_color":      themeColor,
+		"background_color": backgroundColor,
+		"icons": []map[string]string{
+			{
+				"src":   iconPath,
+				"sizes": "512x512",
+				"type":  "image/png",
+			},
+		},
+	})
+}
+
+func (r *Router) handleAndroidAssetLinks(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	packageName := "ru.qantrix.english"
+	if strings.EqualFold(r.config.Learning.AppCode, "spanish") || strings.EqualFold(r.config.Learning.TargetLang, "es") {
+		packageName = "ru.qantrix.spanish"
+	}
+	fingerprints := splitCSVNonEmpty(r.config.WebApp.AndroidCertFingerprints)
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	_ = json.NewEncoder(w).Encode([]map[string]interface{}{
+		{
+			"relation": []string{"delegate_permission/common.handle_all_urls"},
+			"target": map[string]interface{}{
+				"namespace":                "android_app",
+				"package_name":             packageName,
+				"sha256_cert_fingerprints": fingerprints,
+			},
+		},
+	})
+}
+
+func splitCSVNonEmpty(value string) []string {
+	parts := strings.Split(value, ",")
+	out := make([]string, 0, len(parts))
+	for _, part := range parts {
+		part = strings.TrimSpace(part)
+		if part != "" {
+			out = append(out, part)
+		}
+	}
+	return out
 }
 
 // isAPIEndpoint checks if the path is a known API endpoint

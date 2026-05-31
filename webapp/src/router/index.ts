@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuth } from '../composables/useAuth'
 import { apiClient } from '../api/client'
+import { grammarClient } from '../api/grammarClient'
 
 const router = createRouter({
   history: createWebHistory('/app'),
@@ -249,6 +250,10 @@ router.beforeEach(async (to, _from, next) => {
   // If user is trying to access login page, check if they're already authenticated
   // by making a request to the backend
   if (to.path === '/login' && isAuthenticated.value) {
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+      next('/learning/grammar')
+      return
+    }
     try {
       // Check authentication via backend request
       await apiClient.request('/api/dashboard')
@@ -269,6 +274,20 @@ router.beforeEach(async (to, _from, next) => {
   // Check authentication
   if (to.meta.requiresAuth && !isAuthenticated.value) {
     next('/login')
+    return
+  }
+
+  const isOffline = typeof navigator !== 'undefined' && navigator.onLine === false
+  const isOfflineAllowedRoute = typeof to.name === 'string' && [
+    'LearningGrammar',
+    'GrammarChapters',
+    'GrammarChapter',
+    'GrammarChapterTest',
+    'GrammarCategoryTest',
+    'GrammarPlacementTest',
+  ].includes(to.name)
+  if (isOffline && to.meta.requiresAuth && !isOfflineAllowedRoute) {
+    next('/learning/grammar')
     return
   }
   
@@ -302,9 +321,7 @@ router.beforeEach(async (to, _from, next) => {
   if (to.name === 'GrammarChapter' && to.params.chapterId) {
     try {
       const chapterId = to.params.chapterId as string
-      const response: { can_access: boolean } = await apiClient.request(
-        `/api/learning/grammar/chapters/${chapterId}/access`
-      )
+      const response: { can_access: boolean } = await grammarClient.canAccessChapter(chapterId)
       if (!response.can_access) {
         // Extract sectionId from chapterId (format: section.chapter)
         const sectionMatch = chapterId.match(/^(.+)\.[^.]+$/)
@@ -328,9 +345,7 @@ router.beforeEach(async (to, _from, next) => {
   if (to.name === 'GrammarChapters' && to.params.sectionId) {
     try {
       const sectionId = to.params.sectionId as string
-      const response: { can_access: boolean } = await apiClient.request(
-        `/api/learning/grammar/categories/${sectionId}/access`
-      )
+      const response: { can_access: boolean } = await grammarClient.canAccessSection(sectionId)
       if (!response.can_access) {
         next({
           path: '/learning/grammar',
@@ -375,4 +390,3 @@ router.beforeEach(async (to, _from, next) => {
 })
 
 export default router
-

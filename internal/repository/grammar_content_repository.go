@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io/fs"
@@ -18,6 +20,23 @@ import (
 type GrammarContentRepository struct {
 	fs     fs.FS
 	logger *zap.Logger
+}
+
+// BundleVersionHash returns a stable content hash for the bundle index and section list.
+func (r *GrammarContentRepository) BundleVersionHash() (string, error) {
+	sections, err := fs.ReadFile(r.fs, "sections.json")
+	if err != nil {
+		return "", fmt.Errorf("failed to read sections.json: %w", err)
+	}
+	index, err := fs.ReadFile(r.fs, "index.json")
+	if err != nil {
+		return "", fmt.Errorf("failed to read index.json: %w", err)
+	}
+	sum := sha256.New()
+	_, _ = sum.Write(sections)
+	_, _ = sum.Write([]byte{0})
+	_, _ = sum.Write(index)
+	return hex.EncodeToString(sum.Sum(nil)), nil
 }
 
 // NewGrammarContentRepository creates a new grammar content repository using the default embedded English bundle.
@@ -131,6 +150,21 @@ func (r *GrammarContentRepository) GetIndex() (*IndexData, error) {
 
 // GetChapter returns a chapter by ID
 func (r *GrammarContentRepository) GetChapter(chapterID string) (*Chapter, error) {
+	data, err := r.GetChapterRawJSON(chapterID)
+	if err != nil {
+		return nil, err
+	}
+
+	var chapter Chapter
+	if err := json.Unmarshal(data, &chapter); err != nil {
+		return nil, fmt.Errorf("failed to parse chapter JSON: %w", err)
+	}
+
+	return &chapter, nil
+}
+
+// GetChapterRawJSON returns the original chapter JSON by ID.
+func (r *GrammarContentRepository) GetChapterRawJSON(chapterID string) ([]byte, error) {
 	// Get index to find the filename
 	index, err := r.GetIndex()
 	if err != nil {
@@ -149,12 +183,7 @@ func (r *GrammarContentRepository) GetChapter(chapterID string) (*Chapter, error
 		return nil, fmt.Errorf("failed to read chapter file %s: %w", filename, err)
 	}
 
-	var chapter Chapter
-	if err := json.Unmarshal(data, &chapter); err != nil {
-		return nil, fmt.Errorf("failed to parse chapter JSON: %w", err)
-	}
-
-	return &chapter, nil
+	return data, nil
 }
 
 // ChapterExists checks if a chapter exists in the bundle

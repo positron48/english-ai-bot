@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import i18n from './i18n'
+import { grammarClient } from './api/grammarClient'
 import './styles/theme.css'
 import './style.css'
 import './styles/markdown-content.css'
@@ -34,6 +35,20 @@ window.addEventListener('unhandledrejection', (event) => {
   console.error('[Unhandled Promise Rejection]', event.reason)
 })
 
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch((error) => {
+      console.warn('[PWA] Service worker registration failed:', error)
+    })
+  })
+}
+
+window.addEventListener('online', () => {
+  grammarClient.syncQueuedAttempts().catch((error) => {
+    console.warn('[PWA] Offline grammar sync failed:', error)
+  })
+})
+
 app.use(router)
 app.use(i18n)
 
@@ -42,4 +57,3 @@ try {
 } catch (error) {
   errorHandler(error, null, 'mount')
 }
-

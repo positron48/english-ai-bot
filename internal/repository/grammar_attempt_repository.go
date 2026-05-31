@@ -27,25 +27,26 @@ func NewGrammarAttemptRepository(db *sql.DB, logger *zap.Logger) *GrammarAttempt
 
 // TestAttempt represents a grammar test attempt
 type TestAttempt struct {
-	ID             int64
-	UserID         int64
-	ScopeType      string // "chapter" or "category"
-	ScopeID        string
-	StartedAt      time.Time
-	FinishedAt     *time.Time
-	Score          int
-	Passed         bool
-	TotalQuestions int
-	AnswersJSON    string
-	ResultsJSON    string
-	CourseVersion  *string
+	ID              int64
+	UserID          int64
+	ScopeType       string // "chapter" or "category"
+	ScopeID         string
+	StartedAt       time.Time
+	FinishedAt      *time.Time
+	Score           int
+	Passed          bool
+	TotalQuestions  int
+	AnswersJSON     string
+	ResultsJSON     string
+	CourseVersion   *string
+	ClientAttemptID *string
 }
 
 // CreateAttempt creates a new test attempt
 func (r *GrammarAttemptRepository) CreateAttempt(attempt *TestAttempt) (int64, error) {
 	query := `INSERT INTO grammar_test_attempts 
-			  (user_id, scope_type, scope_id, started_at, finished_at, score, passed, total_questions, answers_json, results_json, course_version)
-			  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+			  (user_id, scope_type, scope_id, started_at, finished_at, score, passed, total_questions, answers_json, results_json, course_version, client_attempt_id)
+			  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
 
 	var finishedAt interface{}
 	if attempt.FinishedAt != nil {
@@ -69,6 +70,7 @@ func (r *GrammarAttemptRepository) CreateAttempt(attempt *TestAttempt) (int64, e
 		attempt.AnswersJSON,
 		attempt.ResultsJSON,
 		attempt.CourseVersion,
+		attempt.ClientAttemptID,
 	)
 
 	if err != nil {
@@ -76,6 +78,20 @@ func (r *GrammarAttemptRepository) CreateAttempt(attempt *TestAttempt) (int64, e
 	}
 
 	return id, nil
+}
+
+// HasClientAttempt checks whether an offline/client-originated attempt was already synced.
+func (r *GrammarAttemptRepository) HasClientAttempt(userID int64, clientAttemptID string) (bool, error) {
+	if clientAttemptID == "" {
+		return false, nil
+	}
+	query := `SELECT COUNT(*) > 0 FROM grammar_test_attempts
+			  WHERE user_id = ? AND client_attempt_id = ?`
+	var exists bool
+	if err := r.db.QueryRow(query, userID, clientAttemptID).Scan(&exists); err != nil {
+		return false, fmt.Errorf("failed to check client attempt: %w", err)
+	}
+	return exists, nil
 }
 
 // UpdateProgress updates grammar progress for a chapter

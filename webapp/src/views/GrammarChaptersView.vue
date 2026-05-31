@@ -91,7 +91,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
-import { apiClient } from '../api/client'
+import { grammarClient } from '../api/grammarClient'
 import Icon from '../components/Icon.vue'
 
 const { t, locale } = useI18n()
@@ -149,7 +149,7 @@ const categoryTitle = computed(() => {
 
 const loadCategoryTitle = async () => {
   try {
-    const data: any = await apiClient.request('/api/learning/grammar/categories')
+    const data: any = await grammarClient.getCategories()
     const categories = data.categories || []
     const section = categories.find((s: any) => s.section_id === sectionId.value)
     
@@ -210,9 +210,7 @@ const loadChapters = async () => {
     // Load category title and test score first
     await loadCategoryTitle()
     
-    const data: { chapters: Chapter[] } = await apiClient.request(
-      `/api/learning/grammar/categories/${sectionId.value}/chapters`
-    )
+    const data: { chapters: Chapter[] } = await grammarClient.getChapters(sectionId.value)
     const loadedChapters = data.chapters || []
     // can_access from API: if section is unlocked (placement/previous) then all chapters; else first + after prev passed
     chapters.value = loadedChapters

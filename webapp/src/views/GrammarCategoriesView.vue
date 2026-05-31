@@ -20,6 +20,30 @@
         </router-link>
       </div>
     </div>
+
+    <div class="offline-preload-panel">
+      <div>
+        <strong>Offline grammar</strong>
+        <p v-if="offlineStatus.ready">
+          Ready: {{ offlineStatus.downloadedChapters }}/{{ offlineStatus.totalChapters }} chapters.
+          <span v-if="offlineStatus.pendingAttempts > 0">{{ offlineStatus.pendingAttempts }} result(s) waiting to sync.</span>
+        </p>
+        <p v-else>
+          Preload grammar to use course theory and tests without internet.
+        </p>
+      </div>
+      <div class="offline-actions">
+        <button @click="preloadGrammar" class="btn btn-secondary" :disabled="preloading">
+          {{ preloading ? `Downloading ${preloadDone}/${preloadTotal}` : (offlineStatus.ready ? 'Update preload' : 'Preload grammar') }}
+        </button>
+        <button v-if="offlineStatus.pendingAttempts > 0" @click="syncOfflineAttempts" class="btn btn-primary" :disabled="syncing">
+          {{ syncing ? 'Syncing...' : 'Sync results' }}
+        </button>
+        <button v-if="offlineStatus.ready" @click="clearPreload" class="btn btn-secondary" :disabled="preloading">
+          Delete
+        </button>
+      </div>
+    </div>
     
     <!-- Statistics Block -->
     <div v-if="!loading && !error && statistics" class="statistics-block">
@@ -229,14 +253,11 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { apiClient } from '../api/client'
+import { grammarClient, type OfflineStatus } from '../api/grammarClient'
 import Icon from '../components/Icon.vue'
 
 const { t, locale } = useI18n()
-
-const route = useRoute()
 
 interface Category {
   section_id: string
@@ -269,6 +290,17 @@ const statistics = ref<{
 const hidePlacementTestButton = ref(true) // По умолчанию скрыта, пока не загрузим данные
 const settingsLoaded = ref(false) // Флаг загрузки настроек
 const grammarTrainingAvailable = ref(false)
+const offlineStatus = ref<OfflineStatus>({
+  ready: false,
+  downloading: false,
+  downloadedChapters: 0,
+  totalChapters: 0,
+  pendingAttempts: 0
+})
+const preloading = ref(false)
+const preloadDone = ref(0)
+const preloadTotal = ref(0)
+const syncing = ref(false)
 
 // Computed properties for statistics
 const totalChapters = computed(() => {
@@ -356,9 +388,9 @@ const loadCategories = async () => {
   error.value = null
   try {
     const [categoriesData, statsData, trainingData] = await Promise.all([
-      apiClient.request('/api/learning/grammar/categories'),
-      apiClient.request('/api/learning/grammar/statistics'),
-      apiClient.request('/api/learning/grammar/training/availability')
+      grammarClient.getCategories(),
+      grammarClient.getStatistics(),
+      grammarClient.getTrainingAvailability()
     ])
     
     const loadedCategories = (categoriesData as { categories: Category[] }).categories || []
@@ -376,7 +408,45 @@ const loadCategories = async () => {
     console.error('Failed to load grammar categories:', err)
   } finally {
     loading.value = false
+    await refreshOfflineStatus()
   }
+}
+
+const refreshOfflineStatus = async () => {
+  offlineStatus.value = await grammarClient.getOfflineStatus()
+}
+
+const preloadGrammar = async () => {
+  preloading.value = true
+  error.value = null
+  try {
+    offlineStatus.value = await grammarClient.preload((done, total) => {
+      preloadDone.value = done
+      preloadTotal.value = total
+    })
+  } catch (err: any) {
+    error.value = err.message || 'Failed to preload grammar'
+  } finally {
+    preloading.value = false
+  }
+}
+
+const syncOfflineAttempts = async () => {
+  syncing.value = true
+  try {
+    await grammarClient.syncQueuedAttempts()
+    await loadCategories()
+  } catch (err) {
+    console.error('Failed to sync offline attempts:', err)
+  } finally {
+    syncing.value = false
+    await refreshOfflineStatus()
+  }
+}
+
+const clearPreload = async () => {
+  await grammarClient.clear()
+  await refreshOfflineStatus()
 }
 
 onMounted(() => {
@@ -405,6 +475,29 @@ onMounted(() => {
   flex-wrap: wrap;
   align-items: flex-start;
   gap: 12px;
+}
+
+.offline-preload-panel {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  padding: 16px;
+  margin-bottom: 24px;
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  background: var(--bg-secondary);
+}
+
+.offline-preload-panel p {
+  margin: 4px 0 0;
+  color: var(--text-secondary);
+}
+
+.offline-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .grammar-categories h1 {

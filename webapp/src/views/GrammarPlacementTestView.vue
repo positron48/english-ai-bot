@@ -207,7 +207,7 @@ import { ref, computed, onMounted, nextTick, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { marked } from 'marked'
-import { apiClient } from '../api/client'
+import { grammarClient } from '../api/grammarClient'
 import GrammarQuestion from '../components/GrammarQuestion.vue'
 import ConfirmModal from '../components/ConfirmModal.vue'
 
@@ -308,9 +308,7 @@ const loadTest = async () => {
       console.warn('Failed to load section names:', err)
     })
     
-    const data: { questions: any[]; total: number } = await apiClient.request(
-      '/api/learning/grammar/placement-test'
-    )
+    const data: { questions: any[]; total: number } = await grammarClient.getPlacementTest()
     
     console.log('Placement test data:', data)
     
@@ -331,9 +329,7 @@ const loadTest = async () => {
 
 const loadSectionNames = async () => {
   try {
-    const response: { categories: Array<{ section_id: string; title: string; title_translations?: Record<string, string> }> } = await apiClient.request(
-      '/api/learning/grammar/categories'
-    )
+    const response: { categories: Array<{ section_id: string; title: string; title_translations?: Record<string, string> }> } = await grammarClient.getCategories()
     const names: Record<string, string> = {}
     if (response.categories && Array.isArray(response.categories)) {
       response.categories.forEach((item: any) => {
@@ -487,10 +483,7 @@ const submitTest = async () => {
       total_questions: number
       correct: number
       opened_sections: string[]
-    } = await apiClient.request('/api/learning/grammar/placement-test/submit', {
-      method: 'POST',
-      body: answersMap
-    })
+    } = await grammarClient.submitPlacementTest(answersMap)
     
     console.log('Placement test result:', data)
     

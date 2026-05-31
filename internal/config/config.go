@@ -124,13 +124,13 @@ type LoggingConfig struct {
 
 // AIConfig holds AI provider configuration
 type AIConfig struct {
-	URL             string `mapstructure:"url"`
-	Model           string `mapstructure:"model"`
-	ModelHigh       string `mapstructure:"model_high"`
-	APIKey          string `mapstructure:"api_key"`
-	Prompt          string `mapstructure:"prompt"`
-	PromptFile      string `mapstructure:"prompt_file"`
-	RequestTimeout  string `mapstructure:"request_timeout"` // e.g. 120s, 3m; HTTP client timeout for chat/completions (default 30s)
+	URL            string `mapstructure:"url"`
+	Model          string `mapstructure:"model"`
+	ModelHigh      string `mapstructure:"model_high"`
+	APIKey         string `mapstructure:"api_key"`
+	Prompt         string `mapstructure:"prompt"`
+	PromptFile     string `mapstructure:"prompt_file"`
+	RequestTimeout string `mapstructure:"request_timeout"` // e.g. 120s, 3m; HTTP client timeout for chat/completions (default 30s)
 }
 
 // TTSConfig holds text-to-speech/pronunciation audio configuration
@@ -165,15 +165,15 @@ type TTSConfig struct {
 
 // SpeakingConfig holds speaking evaluation mode settings.
 type SpeakingConfig struct {
-	Enabled              bool   `mapstructure:"enabled"`
-	EvalModel            string `mapstructure:"eval_model"`
-	EvalBaseURL          string `mapstructure:"eval_base_url"`
-	EvalAPIKey           string `mapstructure:"eval_api_key"`
-	EvalTimeout          string `mapstructure:"eval_timeout"`
-	MaxAudioMB           int    `mapstructure:"max_audio_mb"`
-	MaxAttemptsDefault   int    `mapstructure:"max_attempts_default"`
-	AcceptMeaningScore   int    `mapstructure:"accept_meaning_score"`
-	SessionTaskCount     int    `mapstructure:"session_task_count"`
+	Enabled            bool   `mapstructure:"enabled"`
+	EvalModel          string `mapstructure:"eval_model"`
+	EvalBaseURL        string `mapstructure:"eval_base_url"`
+	EvalAPIKey         string `mapstructure:"eval_api_key"`
+	EvalTimeout        string `mapstructure:"eval_timeout"`
+	MaxAudioMB         int    `mapstructure:"max_audio_mb"`
+	MaxAttemptsDefault int    `mapstructure:"max_attempts_default"`
+	AcceptMeaningScore int    `mapstructure:"accept_meaning_score"`
+	SessionTaskCount   int    `mapstructure:"session_task_count"`
 }
 
 // BotConfig holds bot messages and behavior configuration
@@ -230,6 +230,7 @@ type WebAppConfig struct {
 	JWTTTLHours               int    `mapstructure:"jwt_ttl_hours"`
 	RefreshTTLHours           int    `mapstructure:"refresh_ttl_hours"`
 	ViteDevServerURL          string `mapstructure:"vite_dev_server_url"`
+	AndroidCertFingerprints   string `mapstructure:"android_cert_fingerprints"`
 
 	// Rate limiting configuration
 	RateLimitAuthRequestOTPPerIP         int `mapstructure:"rate_limit_auth_request_otp_per_ip"`
@@ -461,6 +462,7 @@ func Load() (*Config, error) {
 	_ = viper.BindEnv("webapp.jwt_ttl_hours", "WEBAPP_JWT_TTL_HOURS")
 	_ = viper.BindEnv("webapp.refresh_ttl_hours", "WEBAPP_REFRESH_TTL_HOURS")
 	_ = viper.BindEnv("webapp.vite_dev_server_url", "WEBAPP_VITE_DEV_SERVER_URL")
+	_ = viper.BindEnv("webapp.android_cert_fingerprints", "WEBAPP_ANDROID_CERT_FINGERPRINTS")
 	_ = viper.BindEnv("webapp.rate_limit_auth_request_otp_per_ip", "WEBAPP_RATE_LIMIT_AUTH_REQUEST_OTP_PER_IP")
 	_ = viper.BindEnv("webapp.rate_limit_auth_request_otp_per_ip_user", "WEBAPP_RATE_LIMIT_AUTH_REQUEST_OTP_PER_IP_USER")
 	_ = viper.BindEnv("webapp.rate_limit_auth_otp_per_ip", "WEBAPP_RATE_LIMIT_AUTH_OTP_PER_IP")
