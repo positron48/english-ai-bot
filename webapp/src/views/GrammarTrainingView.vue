@@ -156,6 +156,7 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiClient } from '../api/client'
+import { grammarClient } from '../api/grammarClient'
 import GrammarQuestion from '../components/GrammarQuestion.vue'
 import TrainingSessionCompletion from '../components/TrainingSessionCompletion.vue'
 import { useSettings } from '../composables/useSettings'
@@ -366,7 +367,7 @@ const init = async () => {
   error.value = null
   try {
     await loadTrainingDelaySetting()
-    const data: any = await apiClient.request('/api/learning/grammar/training/availability')
+    const data: any = await grammarClient.getTrainingAvailability()
     available.value = !!data?.grammar_training?.available
     if (available.value) {
       await startSession()
@@ -386,10 +387,7 @@ const startSession = async () => {
   theoryBlockMap.value = {}
   chapterTheoryBlocksOrdered.value = {}
   chapterContextMap.value = {}
-  const data: any = await apiClient.request('/api/learning/grammar/training/session/start', {
-    method: 'POST',
-    body: JSON.stringify({ limit: 20 })
-  })
+  const data: any = await grammarClient.startTrainingSession(20)
   sessionQuestions.value = (data?.items || []).map((it: any) => it.question).filter(Boolean)
   await hydrateTheoryBlocksForSession()
 }
@@ -404,7 +402,7 @@ const hydrateTheoryBlocksForSession = async () => {
 
   for (const chapterId of chapterIds) {
     try {
-      const data: any = await apiClient.request(`/api/learning/grammar/chapters/${chapterId}`)
+      const data: any = await grammarClient.getChapter(chapterId)
       cacheChapterContextFromApi(chapterId, data)
       const blocks = data?.chapter?.blocks
       if (!Array.isArray(blocks)) continue
@@ -430,10 +428,7 @@ const hydrateTheoryBlocksForSession = async () => {
 const onAnswer = async (answer: any) => {
   if (!currentQuestion.value || result.value) return
   try {
-    const data = await apiClient.request('/api/learning/grammar/training/session/answer', {
-      method: 'POST',
-      body: JSON.stringify({ question_id: currentQuestion.value.id, answer })
-    })
+    const data = await grammarClient.submitTrainingAnswer(currentQuestion.value.id, answer)
     result.value = data
     if (data?.correct) correctCount.value++
 
@@ -544,7 +539,7 @@ watch(currentQuestion, async (q) => {
   const key = `${q.chapter_id}::${q.theory_block_id}`
   if (theoryBlockMap.value[key]) return
   try {
-    const data: any = await apiClient.request(`/api/learning/grammar/chapters/${q.chapter_id}`)
+    const data: any = await grammarClient.getChapter(q.chapter_id)
     cacheChapterContextFromApi(q.chapter_id, data)
     const blocks = data?.chapter?.blocks
     if (!Array.isArray(blocks)) return
@@ -861,4 +856,3 @@ watch(currentQuestion, async (q) => {
   user-select: none;
 }
 </style>
-

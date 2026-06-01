@@ -1,5 +1,5 @@
 const DB_NAME = 'qantrix-grammar-offline'
-const DB_VERSION = 1
+const DB_VERSION = 2
 const META_KEY = 'bundle'
 
 export interface OfflineChapterManifest {
@@ -63,7 +63,15 @@ export interface QueuedGrammarAttempt {
   result: any
 }
 
-type StoreName = 'meta' | 'chapters' | 'queue'
+export interface QueuedGrammarTrainingAttempt {
+  client_attempt_id: string
+  question_id: string
+  answer: any
+  created_at: string
+  result: any
+}
+
+type StoreName = 'meta' | 'chapters' | 'queue' | 'training' | 'training_queue'
 
 let dbPromise: Promise<IDBDatabase> | null = null
 
@@ -76,6 +84,8 @@ function openDB(): Promise<IDBDatabase> {
       if (!db.objectStoreNames.contains('meta')) db.createObjectStore('meta')
       if (!db.objectStoreNames.contains('chapters')) db.createObjectStore('chapters', { keyPath: 'chapter_id' })
       if (!db.objectStoreNames.contains('queue')) db.createObjectStore('queue', { keyPath: 'client_attempt_id' })
+      if (!db.objectStoreNames.contains('training')) db.createObjectStore('training')
+      if (!db.objectStoreNames.contains('training_queue')) db.createObjectStore('training_queue', { keyPath: 'client_attempt_id' })
     }
     request.onsuccess = () => resolve(request.result)
     request.onerror = () => reject(request.error)
@@ -128,6 +138,8 @@ export async function clearOfflineGrammar(): Promise<void> {
   await tx('meta', 'readwrite', (store) => store.clear())
   await tx('chapters', 'readwrite', (store) => store.clear())
   await tx('queue', 'readwrite', (store) => store.clear())
+  await tx('training', 'readwrite', (store) => store.clear())
+  await tx('training_queue', 'readwrite', (store) => store.clear())
 }
 
 export async function enqueueAttempt(attempt: QueuedGrammarAttempt): Promise<void> {
@@ -144,4 +156,28 @@ export async function deleteQueuedAttempt(clientAttemptID: string): Promise<void
 
 export async function queueCount(): Promise<number> {
   return (await tx<number>('queue', 'readonly', (store) => store.count())) || 0
+}
+
+export async function setTrainingQuestions(questions: any[]): Promise<void> {
+  await tx('training', 'readwrite', (store) => store.put(questions, 'questions'))
+}
+
+export async function getTrainingQuestions(): Promise<any[]> {
+  return (await tx<any[]>('training', 'readonly', (store) => store.get('questions'))) || []
+}
+
+export async function enqueueTrainingAttempt(attempt: QueuedGrammarTrainingAttempt): Promise<void> {
+  await tx('training_queue', 'readwrite', (store) => store.put(attempt))
+}
+
+export async function getQueuedTrainingAttempts(): Promise<QueuedGrammarTrainingAttempt[]> {
+  return getAllFromStore<QueuedGrammarTrainingAttempt>('training_queue')
+}
+
+export async function deleteQueuedTrainingAttempt(clientAttemptID: string): Promise<void> {
+  await tx('training_queue', 'readwrite', (store) => store.delete(clientAttemptID))
+}
+
+export async function trainingQueueCount(): Promise<number> {
+  return (await tx<number>('training_queue', 'readonly', (store) => store.count())) || 0
 }

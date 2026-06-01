@@ -16,25 +16,25 @@ type GrammarSRSRepository struct {
 }
 
 type GrammarTheoryMemory struct {
-	ID           int64
-	UserID       int64
-	Language     string
-	CourseID     string
-	ChapterID    string
+	ID            int64
+	UserID        int64
+	Language      string
+	CourseID      string
+	ChapterID     string
 	TheoryBlockID string
-	ConceptID    string
-	State        string
-	ReviewCount  int
-	CorrectCount int
-	WrongCount   int
-	LapseCount   int
+	ConceptID     string
+	State         string
+	ReviewCount   int
+	CorrectCount  int
+	WrongCount    int
+	LapseCount    int
 	CorrectStreak int
-	WrongStreak  int
-	Ease         float64
-	IntervalDays int
-	MasteryScore int
-	NextReviewAt time.Time
-	LastReviewAt *time.Time
+	WrongStreak   int
+	Ease          float64
+	IntervalDays  int
+	MasteryScore  int
+	NextReviewAt  time.Time
+	LastReviewAt  *time.Time
 }
 
 func NewGrammarSRSRepository(db *sql.DB, logger *zap.Logger) *GrammarSRSRepository {
@@ -211,14 +211,40 @@ func (r *GrammarSRSRepository) SaveAttempt(
 	correctPayload interface{},
 	isCorrect bool,
 ) error {
+	return r.SaveAttemptWithClientID(userID, language, courseID, chapterID, theoryBlockID, conceptID, questionID, answerPayload, correctPayload, isCorrect, "")
+}
+
+func (r *GrammarSRSRepository) SaveAttemptWithClientID(
+	userID int64,
+	language, courseID, chapterID, theoryBlockID, conceptID, questionID string,
+	answerPayload interface{},
+	correctPayload interface{},
+	isCorrect bool,
+	clientAttemptID string,
+) error {
 	answerJSON, _ := json.Marshal(answerPayload)
 	correctJSON, _ := json.Marshal(correctPayload)
 	q := `INSERT INTO grammar_attempts
-	      (user_id, language, course_id, chapter_id, theory_block_id, concept_id, question_id, question_source, is_correct, answer_payload_json, correct_payload_json, answered_at)
-	      VALUES (?, ?, ?, ?, ?, ?, ?, 'training_pack', ?, ?, ?, CURRENT_TIMESTAMP)`
-	if _, err := r.db.Exec(q, userID, language, courseID, chapterID, theoryBlockID, conceptID, questionID, isCorrect, string(answerJSON), string(correctJSON)); err != nil {
+	      (user_id, language, course_id, chapter_id, theory_block_id, concept_id, question_id, question_source, is_correct, answer_payload_json, correct_payload_json, answered_at, client_attempt_id)
+	      VALUES (?, ?, ?, ?, ?, ?, ?, 'training_pack', ?, ?, ?, CURRENT_TIMESTAMP, ?)`
+	var clientID interface{}
+	if strings.TrimSpace(clientAttemptID) != "" {
+		clientID = strings.TrimSpace(clientAttemptID)
+	}
+	if _, err := r.db.Exec(q, userID, language, courseID, chapterID, theoryBlockID, conceptID, questionID, isCorrect, string(answerJSON), string(correctJSON), clientID); err != nil {
 		return fmt.Errorf("insert grammar attempt: %w", err)
 	}
 	return nil
 }
 
+func (r *GrammarSRSRepository) HasClientAttempt(userID int64, clientAttemptID string) (bool, error) {
+	if strings.TrimSpace(clientAttemptID) == "" {
+		return false, nil
+	}
+	q := `SELECT COUNT(*) > 0 FROM grammar_attempts WHERE user_id = ? AND client_attempt_id = ?`
+	var exists bool
+	if err := r.db.QueryRow(q, userID, strings.TrimSpace(clientAttemptID)).Scan(&exists); err != nil {
+		return false, fmt.Errorf("check grammar attempt client id: %w", err)
+	}
+	return exists, nil
+}

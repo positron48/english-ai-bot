@@ -23,7 +23,12 @@
 
     <div class="offline-preload-panel">
       <div>
-        <strong>Offline grammar</strong>
+        <div class="offline-title-row">
+          <strong>Offline grammar</strong>
+          <span class="network-badge" :class="{ 'network-badge--offline': !isOnline }">
+            {{ isOnline ? 'Online' : 'Offline' }}
+          </span>
+        </div>
         <p v-if="offlineStatus.ready">
           Ready: {{ offlineStatus.downloadedChapters }}/{{ offlineStatus.totalChapters }} chapters.
           <span v-if="offlineStatus.pendingAttempts > 0">{{ offlineStatus.pendingAttempts }} result(s) waiting to sync.</span>
@@ -252,7 +257,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { grammarClient, type OfflineStatus } from '../api/grammarClient'
 import Icon from '../components/Icon.vue'
@@ -301,6 +306,7 @@ const preloading = ref(false)
 const preloadDone = ref(0)
 const preloadTotal = ref(0)
 const syncing = ref(false)
+const isOnline = ref(typeof navigator === 'undefined' ? true : navigator.onLine)
 
 // Computed properties for statistics
 const totalChapters = computed(() => {
@@ -450,8 +456,23 @@ const clearPreload = async () => {
 }
 
 onMounted(() => {
+  window.addEventListener('online', handleNetworkChange)
+  window.addEventListener('offline', handleNetworkChange)
   loadCategories()
 })
+
+onUnmounted(() => {
+  window.removeEventListener('online', handleNetworkChange)
+  window.removeEventListener('offline', handleNetworkChange)
+})
+
+const handleNetworkChange = async () => {
+  isOnline.value = typeof navigator === 'undefined' ? true : navigator.onLine
+  await refreshOfflineStatus()
+  if (isOnline.value && offlineStatus.value.pendingAttempts > 0) {
+    await syncOfflineAttempts()
+  }
+}
 </script>
 
 <style scoped>
@@ -492,6 +513,28 @@ onMounted(() => {
 .offline-preload-panel p {
   margin: 4px 0 0;
   color: var(--text-secondary);
+}
+
+.offline-title-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.network-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 3px 9px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #065f46;
+  background: #d1fae5;
+}
+
+.network-badge--offline {
+  color: #92400e;
+  background: #fef3c7;
 }
 
 .offline-actions {

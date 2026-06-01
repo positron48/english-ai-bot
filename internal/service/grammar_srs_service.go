@@ -158,6 +158,10 @@ func (s *GrammarService) StartGrammarSrsSession(ctx context.Context, userID int6
 }
 
 func (s *GrammarService) SubmitGrammarSrsAnswer(ctx context.Context, userID int64, questionID string, userAnswer interface{}) (*GrammarSrsAnswerResult, error) {
+	return s.SubmitGrammarSrsAnswerWithClientAttemptID(ctx, userID, questionID, userAnswer, "")
+}
+
+func (s *GrammarService) SubmitGrammarSrsAnswerWithClientAttemptID(ctx context.Context, userID int64, questionID string, userAnswer interface{}, clientAttemptID string) (*GrammarSrsAnswerResult, error) {
 	if s.TrainingPackRepo == nil {
 		return nil, fmt.Errorf("training pack repository is not configured")
 	}
@@ -190,7 +194,7 @@ func (s *GrammarService) SubmitGrammarSrsAnswer(ctx context.Context, userID int6
 	conceptID, _ := question["concept_id"].(string)
 	if s.SRSRepo != nil && theoryBlockID != "" {
 		_ = s.updateTheoryMemory(userID, chapterID, theoryBlockID, conceptID, isCorrect)
-		_ = s.SRSRepo.SaveAttempt(userID, s.learning.TargetLang, s.learning.GrammarBundleID, chapterID, theoryBlockID, conceptID, questionID, userAnswer, correctAnswer, isCorrect)
+		_ = s.SRSRepo.SaveAttemptWithClientID(userID, s.learning.TargetLang, s.learning.GrammarBundleID, chapterID, theoryBlockID, conceptID, questionID, userAnswer, correctAnswer, isCorrect, clientAttemptID)
 	}
 
 	return &GrammarSrsAnswerResult{
@@ -198,6 +202,28 @@ func (s *GrammarService) SubmitGrammarSrsAnswer(ctx context.Context, userID int6
 		CorrectAnswer: correctAnswer,
 		Explanation:   question["explanation"],
 	}, nil
+}
+
+func (s *GrammarService) GetOfflineGrammarTrainingQuestions(ctx context.Context, userID int64) ([]map[string]interface{}, error) {
+	if s.TrainingPackRepo == nil {
+		return []map[string]interface{}{}, nil
+	}
+	all, err := s.TrainingPackRepo.GetAllQuestions()
+	if err != nil {
+		return nil, err
+	}
+	allowedByChapter, err := s.allowedTrainingChapters(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+	out := make([]map[string]interface{}, 0, len(all))
+	for _, q := range all {
+		chapterID, _ := q["chapter_id"].(string)
+		if allowedByChapter[chapterID] {
+			out = append(out, q)
+		}
+	}
+	return out, nil
 }
 
 func (s *GrammarService) allowedTrainingChapters(ctx context.Context, userID int64) (map[string]bool, error) {

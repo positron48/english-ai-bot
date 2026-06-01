@@ -414,8 +414,10 @@ func (r *Router) setupProtectedRoutes() {
 
 	// Learning grammar routes
 	r.mux.HandleFunc("/api/learning/grammar/offline/manifest", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarOfflineManifest)))
+	r.mux.HandleFunc("/api/learning/grammar/offline/training-pack", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarOfflineTrainingPack)))
 	r.mux.HandleFunc("/api/learning/grammar/offline/chapters/", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarOfflineChapter)))
 	r.mux.HandleFunc("/api/learning/grammar/offline/sync-attempts", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarOfflineSyncAttempts)))
+	r.mux.HandleFunc("/api/learning/grammar/offline/sync-training-attempts", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarOfflineSyncTrainingAttempts)))
 	r.mux.HandleFunc("/api/learning/grammar/categories", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarCategories)))
 	r.mux.HandleFunc("/api/learning/grammar/categories/", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarChapters)))
 	r.mux.HandleFunc("/api/learning/grammar/chapters/", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarChapterOrTest)))

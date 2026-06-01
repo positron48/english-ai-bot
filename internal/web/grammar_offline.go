@@ -189,6 +189,35 @@ func (r *Router) handleLearningGrammarOfflineManifest(w http.ResponseWriter, req
 		"total_chapters":  totalChapters,
 		"downloaded_from": r.config.WebApp.PublicURL,
 		"sections":        sections,
+		"training_pack": map[string]interface{}{
+			"download_url": "/api/learning/grammar/offline/training-pack",
+		},
+	})
+}
+
+func (r *Router) handleLearningGrammarOfflineTrainingPack(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	userID := getUserIDFromContext(req.Context())
+	if userID == 0 {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+	questions, err := r.grammarService.GetOfflineGrammarTrainingQuestions(req.Context(), userID)
+	if err != nil {
+		r.logger.Error("failed to get offline grammar training pack", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(map[string]interface{}{
+		"bundle_id":  r.config.Learning.GrammarBundleID,
+		"language":   r.config.Learning.TargetLang,
+		"questions":  questions,
+		"total":      len(questions),
+		"downloaded": false,
 	})
 }
 
@@ -316,4 +345,56 @@ func (r *Router) handleLearningGrammarOfflineSyncAttempts(w http.ResponseWriter,
 	_ = json.NewEncoder(w).Encode(map[string]interface{}{
 		"results": results,
 	})
+}
+
+type offlineSyncTrainingAttempt struct {
+	ClientAttemptID string      `json:"client_attempt_id"`
+	QuestionID      string      `json:"question_id"`
+	Answer          interface{} `json:"answer"`
+}
+
+func (r *Router) handleLearningGrammarOfflineSyncTrainingAttempts(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	userID := getUserIDFromContext(req.Context())
+	if userID == 0 {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+	var body struct {
+		Attempts []offlineSyncTrainingAttempt `json:"attempts"`
+	}
+	if err := json.NewDecoder(req.Body).Decode(&body); err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+	results := make([]map[string]interface{}, 0, len(body.Attempts))
+	for _, attempt := range body.Attempts {
+		clientID := strings.TrimSpace(attempt.ClientAttemptID)
+		if clientID == "" || strings.TrimSpace(attempt.QuestionID) == "" {
+			results = append(results, map[string]interface{}{"client_attempt_id": clientID, "synced": false, "error": "client_attempt_id and question_id are required"})
+			continue
+		}
+		if r.grammarService.SRSRepo != nil {
+			exists, err := r.grammarService.SRSRepo.HasClientAttempt(userID, clientID)
+			if err != nil {
+				results = append(results, map[string]interface{}{"client_attempt_id": clientID, "synced": false, "error": err.Error()})
+				continue
+			}
+			if exists {
+				results = append(results, map[string]interface{}{"client_attempt_id": clientID, "synced": true, "duplicate": true})
+				continue
+			}
+		}
+		result, err := r.grammarService.SubmitGrammarSrsAnswerWithClientAttemptID(req.Context(), userID, attempt.QuestionID, attempt.Answer, clientID)
+		if err != nil {
+			results = append(results, map[string]interface{}{"client_attempt_id": clientID, "synced": false, "error": err.Error()})
+			continue
+		}
+		results = append(results, map[string]interface{}{"client_attempt_id": clientID, "synced": true, "result": result})
+	}
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(map[string]interface{}{"results": results})
 }

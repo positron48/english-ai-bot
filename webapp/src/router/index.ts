@@ -285,6 +285,7 @@ router.beforeEach(async (to, _from, next) => {
     'GrammarChapterTest',
     'GrammarCategoryTest',
     'GrammarPlacementTest',
+    'GrammarTraining',
   ].includes(to.name)
   if (isOffline && to.meta.requiresAuth && !isOfflineAllowedRoute) {
     next('/learning/grammar')
@@ -360,7 +361,7 @@ router.beforeEach(async (to, _from, next) => {
 
   if (to.name === 'GrammarTraining') {
     try {
-      const response: any = await apiClient.request('/api/learning/grammar/training/availability')
+      const response: any = await grammarClient.getTrainingAvailability()
       if (!response?.grammar_training?.available) {
         next('/learning/grammar')
         return

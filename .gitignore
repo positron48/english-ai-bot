@@ -30,6 +30,7 @@ go.work
 .env.*.local
 .env.en
 .env.es
+secrets/
 
 # IDE files
 .vscode/

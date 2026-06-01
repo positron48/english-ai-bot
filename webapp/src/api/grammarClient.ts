@@ -5,13 +5,19 @@ import {
   clearOfflineGrammar,
   countStoredChapters,
   deleteQueuedAttempt,
+  deleteQueuedTrainingAttempt,
+  enqueueTrainingAttempt,
   enqueueAttempt,
   getOfflineMeta,
   getQueuedAttempts,
+  getQueuedTrainingAttempts,
   getStoredChapter,
+  getTrainingQuestions,
   queueCount,
+  setTrainingQuestions,
   setOfflineMeta,
   setStoredChapter,
+  trainingQueueCount,
 } from './grammarOfflineStore'
 
 export class OfflineGrammarUnavailableError extends Error {
@@ -208,11 +214,30 @@ async function queueOfflineAttempt(scope: 'chapter' | 'category', scopeID: strin
   await enqueueAttempt(attempt)
 }
 
+function sanitizeTrainingQuestion(question: any): any {
+  const q = clone(question)
+  delete q.correct_answer
+  return q
+}
+
+async function queueOfflineTrainingAttempt(questionID: string, answer: any, result: any): Promise<void> {
+  const id = typeof crypto !== 'undefined' && 'randomUUID' in crypto
+    ? crypto.randomUUID()
+    : `offline-training-${Date.now()}-${Math.random().toString(16).slice(2)}`
+  await enqueueTrainingAttempt({
+    client_attempt_id: id,
+    question_id: questionID,
+    answer,
+    created_at: new Date().toISOString(),
+    result,
+  })
+}
+
 export const grammarClient = {
   async getOfflineStatus(): Promise<OfflineStatus> {
     const meta = await getOfflineMeta()
     const downloadedChapters = await countStoredChapters()
-    const pendingAttempts = await queueCount()
+    const pendingAttempts = (await queueCount()) + (await trainingQueueCount())
     return {
       ready: !!meta && downloadedChapters >= (meta.total_chapters || 0),
       downloading: false,
@@ -237,6 +262,11 @@ export const grammarClient = {
       done++
       onProgress?.(done, chapters.length)
     }
+    const trainingURL = (manifest as any)?.training_pack?.download_url
+    if (trainingURL) {
+      const trainingPack = await apiClient.request<any>(trainingURL)
+      await setTrainingQuestions(trainingPack?.questions || [])
+    }
     return this.getOfflineStatus()
   },
 
@@ -247,16 +277,30 @@ export const grammarClient = {
   async syncQueuedAttempts(): Promise<number> {
     if (isBrowserOffline()) return 0
     const attempts = await getQueuedAttempts()
-    if (attempts.length === 0) return 0
-    const response: any = await apiClient.request('/api/learning/grammar/offline/sync-attempts', {
-      method: 'POST',
-      body: { attempts } as any,
-    })
     let synced = 0
-    for (const item of response.results || []) {
-      if (item.synced && item.client_attempt_id) {
-        await deleteQueuedAttempt(item.client_attempt_id)
-        synced++
+    if (attempts.length > 0) {
+      const response: any = await apiClient.request('/api/learning/grammar/offline/sync-attempts', {
+        method: 'POST',
+        body: { attempts } as any,
+      })
+      for (const item of response.results || []) {
+        if (item.synced && item.client_attempt_id) {
+          await deleteQueuedAttempt(item.client_attempt_id)
+          synced++
+        }
+      }
+    }
+    const trainingAttempts = await getQueuedTrainingAttempts()
+    if (trainingAttempts.length > 0) {
+      const trainingResponse: any = await apiClient.request('/api/learning/grammar/offline/sync-training-attempts', {
+        method: 'POST',
+        body: { attempts: trainingAttempts } as any,
+      })
+      for (const item of trainingResponse.results || []) {
+        if (item.synced && item.client_attempt_id) {
+          await deleteQueuedTrainingAttempt(item.client_attempt_id)
+          synced++
+        }
       }
     }
     return synced
@@ -277,8 +321,63 @@ export const grammarClient = {
   },
 
   async getTrainingAvailability(): Promise<any> {
-    if (isBrowserOffline()) return { grammar_training: { available: false, offline: true } }
+    if (isBrowserOffline()) {
+      const questions = await getTrainingQuestions()
+      const blocks = new Set(questions.map((q: any) => q?.theory_block_id).filter(Boolean))
+      return { grammar_training: { available: questions.length > 0, offline: true, question_count: questions.length, theory_block_count: blocks.size, due_theory_block_count: blocks.size } }
+    }
     return apiClient.request('/api/learning/grammar/training/availability')
+  },
+
+  async startTrainingSession(limit = 20): Promise<any> {
+    if (!isBrowserOffline()) {
+      return apiClient.request('/api/learning/grammar/training/session/start', {
+        method: 'POST',
+        body: { limit } as any,
+      })
+    }
+    const questions = await getTrainingQuestions()
+    if (questions.length === 0) return { items: [] }
+    const byBlock = new Map<string, any[]>()
+    for (const q of questions) {
+      const block = q?.theory_block_id || q?.id
+      if (!byBlock.has(block)) byBlock.set(block, [])
+      byBlock.get(block)!.push(q)
+    }
+    const selectedBlocks = shuffle([...byBlock.keys()]).slice(0, Math.max(1, Math.min(30, limit)))
+    return {
+      items: selectedBlocks.map((block) => {
+        const qs = byBlock.get(block) || []
+        return { question: sanitizeTrainingQuestion(qs[Math.floor(Math.random() * qs.length)]) }
+      }),
+      offline: true,
+    }
+  },
+
+  async submitTrainingAnswer(questionID: string, answer: any): Promise<any> {
+    if (!isBrowserOffline()) {
+      try {
+        return await apiClient.request('/api/learning/grammar/training/session/answer', {
+          method: 'POST',
+          body: { question_id: questionID, answer } as any,
+        })
+      } catch (error) {
+        if (!isNetworkError(error)) throw error
+      }
+    }
+    const questions = await getTrainingQuestions()
+    const question = questions.find((q: any) => q?.id === questionID)
+    if (!question) throw new OfflineGrammarUnavailableError('Training question is not available offline')
+    const correct = compareAnswers(answer, question.correct_answer, question.type)
+    const result = {
+      correct,
+      correct_answer: question.correct_answer,
+      explanation: question.explanation,
+      offline: true,
+      queued: true,
+    }
+    await queueOfflineTrainingAttempt(questionID, answer, result)
+    return result
   },
 
   async getChapters(sectionID: string): Promise<{ chapters: any[] }> {

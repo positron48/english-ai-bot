@@ -43,11 +43,15 @@ if ('serviceWorker' in navigator) {
   })
 }
 
-window.addEventListener('online', () => {
+const trySyncOfflineGrammar = () => {
+  if (typeof navigator !== 'undefined' && navigator.onLine === false) return
   grammarClient.syncQueuedAttempts().catch((error) => {
     console.warn('[PWA] Offline grammar sync failed:', error)
   })
-})
+}
+
+window.addEventListener('online', trySyncOfflineGrammar)
+window.setInterval(trySyncOfflineGrammar, 30_000)
 
 app.use(router)
 app.use(i18n)
