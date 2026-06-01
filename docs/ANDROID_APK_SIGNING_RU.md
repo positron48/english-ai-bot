@@ -74,12 +74,16 @@ Workflow:
 
 1. GitHub Actions читает `ANDROID_KEYSTORE_BASE64`.
 2. Декодирует его в `release.keystore`.
-3. Bubblewrap собирает два signed TWA APK:
+3. `actions/setup-java` ставит JDK 17, `android-actions/setup-android` ставит Android SDK.
+4. `scripts/build-twa-apks.sh` заранее пишет `${HOME}/.bubblewrap/config.json` с `JAVA_HOME` и `ANDROID_HOME`, чтобы Bubblewrap не задавал интерактивный вопрос `Do you want Bubblewrap to install the JDK?`.
+5. Bubblewrap собирает два signed TWA APK:
    - `qantrix-english-<tag>.apk` для `ru.qantrix.english` и `https://qantrix.ru/app/`;
    - `qantrix-spanish-<tag>.apk` для `ru.qantrix.spanish` и `https://es.qantrix.ru/app/`.
-4. APK и `checksums.txt` загружаются в GitHub Release.
+6. APK и `checksums.txt` загружаются в GitHub Release.
 
 Если `ANDROID_KEYSTORE_BASE64 is required`, значит GitHub secret не добавлен или добавлен не в тот репозиторий.
+
+Если CI падает на вопросе `Do you want Bubblewrap to install the JDK?`, значит workflow запустился без актуальной версии `scripts/build-twa-apks.sh`, где создаётся `${HOME}/.bubblewrap/config.json`, или `JAVA_HOME`/`ANDROID_HOME` не были выставлены предыдущими setup actions.
 
 ## Проверка локальных значений
 

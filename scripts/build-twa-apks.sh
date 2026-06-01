@@ -56,7 +56,21 @@ cat > "${WORKDIR}/twa-manifest.json" <<JSON
 }
 JSON
 
-npx --yes @bubblewrap/cli@latest updateConfig --jdkPath="${JAVA_HOME}" --androidSdkPath="${ANDROID_HOME}"
+# Bubblewrap tries to create ~/.bubblewrap/config.json interactively on the
+# first run. CI must be fully non-interactive, so write the config directly.
+if [ -z "${JAVA_HOME:-}" ]; then
+  echo "JAVA_HOME is required; run actions/setup-java before this script" >&2
+  exit 1
+fi
+if [ -z "${ANDROID_HOME:-}" ]; then
+  echo "ANDROID_HOME is required; run android-actions/setup-android before this script" >&2
+  exit 1
+fi
+mkdir -p "${HOME}/.bubblewrap"
+cat > "${HOME}/.bubblewrap/config.json" <<JSON
+{"jdkPath":"${JAVA_HOME}","androidSdkPath":"${ANDROID_HOME}"}
+JSON
+
 npx --yes @bubblewrap/cli@latest build \
   --manifest="${WORKDIR}" \
   --skipPwaValidation \
