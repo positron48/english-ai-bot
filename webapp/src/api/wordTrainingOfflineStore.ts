@@ -108,6 +108,14 @@ export async function setWordTrainingPack(pack: OfflineWordTrainingPack): Promis
   await tx('meta', 'readwrite', (store) => store.put(pack, PACK_KEY))
 }
 
+export async function removeWordTrainingCards(userCardIDs: number[]): Promise<void> {
+  if (userCardIDs.length === 0) return
+  const pack = await getWordTrainingPack()
+  if (!pack) return
+  const ids = new Set(userCardIDs)
+  await setWordTrainingPack({ ...pack, cards: pack.cards.filter((card) => !ids.has(card.user_card_id)) })
+}
+
 export async function clearWordTrainingPack(): Promise<void> {
   await tx('meta', 'readwrite', (store) => store.delete(PACK_KEY))
   await tx('meta', 'readwrite', (store) => store.delete(SESSION_KEY))

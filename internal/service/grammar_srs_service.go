@@ -208,22 +208,7 @@ func (s *GrammarService) GetOfflineGrammarTrainingQuestions(ctx context.Context,
 	if s.TrainingPackRepo == nil {
 		return []map[string]interface{}{}, nil
 	}
-	all, err := s.TrainingPackRepo.GetAllQuestions()
-	if err != nil {
-		return nil, err
-	}
-	allowedByChapter, err := s.allowedTrainingChapters(ctx, userID)
-	if err != nil {
-		return nil, err
-	}
-	out := make([]map[string]interface{}, 0, len(all))
-	for _, q := range all {
-		chapterID, _ := q["chapter_id"].(string)
-		if allowedByChapter[chapterID] {
-			out = append(out, q)
-		}
-	}
-	return out, nil
+	return s.TrainingPackRepo.GetAllQuestions()
 }
 
 func (s *GrammarService) allowedTrainingChapters(ctx context.Context, userID int64) (map[string]bool, error) {

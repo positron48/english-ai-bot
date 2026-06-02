@@ -101,14 +101,12 @@ func (r *Router) handleWebAppManifest(w http.ResponseWriter, req *http.Request) 
 	}
 	name := "Qantrix English"
 	shortName := "English"
-	themeColor := "#256f5d"
-	backgroundColor := "#f7f2e8"
+	themeColor := "#f5f5f5"
+	backgroundColor := "#f5f5f5"
 	iconPath := "/app/icons/english-512.png"
 	if strings.EqualFold(r.config.Learning.AppCode, "spanish") || strings.EqualFold(r.config.Learning.TargetLang, "es") {
 		name = "Qantrix Spanish"
 		shortName = "Spanish"
-		themeColor = "#b45309"
-		backgroundColor = "#fff7ed"
 		iconPath = "/app/icons/spanish-512.png"
 	}
 	w.Header().Set("Content-Type", "application/manifest+json; charset=utf-8")

@@ -34,7 +34,7 @@
     </div>
 
     <div v-if="!sessionActive && !loading && !sessionComplete" class="training-idle-stack">
-      <div class="card word-offline-panel">
+      <div v-if="showWordOfflinePanel" class="card word-offline-panel">
         <div class="word-offline-title-row">
           <h3>Offline word training</h3>
           <span class="network-badge" :class="{ 'network-badge--offline': !isOnline }">
@@ -117,6 +117,7 @@
             {{ networkErrorRetrying ? t('common.retrying', { attempt: networkErrorAttempt, max: networkErrorMaxAttempts }) : t('common.networkError') }}
           </div>
         </div>
+        <button type="button" class="network-error-close" @click="dismissNetworkError">×</button>
       </div>
     </div>
 
@@ -571,6 +572,7 @@ const isSpanishTarget = computed(() => (learning.value?.target_lang || '').toLow
 const showSpanishVerbFormsTraining = computed(
   () =>
     isSpanishTarget.value &&
+    isOnline.value &&
     learning.value?.spanish_verb_forms_enabled === true &&
     verbFormsPoolResolved.value &&
     verbFormsTotalCardsPool.value !== null &&
@@ -699,7 +701,9 @@ const isOnline = ref(typeof navigator === 'undefined' ? true : navigator.onLine)
 const wordPreloading = ref(false)
 const wordSyncing = ref(false)
 const wordOfflineStatus = ref<WordTrainingOfflineStatus>({ ready: false, downloadedCards: 0, pendingAttempts: 0 })
+const isInstalledWebApp = ref(false)
 let upcomingChartInstance: Chart | null = null
+let networkErrorHideTimer: ReturnType<typeof setTimeout> | null = null
 const showExampleButton = ref(false)
 const showExampleButtonVisible = ref(false)
 const exampleUsageShown = ref(false)
@@ -721,6 +725,10 @@ const cardReportKey = (card: Card | null): string => {
 const reportAlreadySent = computed(() => {
   const key = cardReportKey(currentCard.value)
   return !!key && reportSentForCardKey.value === key
+})
+
+const showWordOfflinePanel = computed(() => {
+  return isInstalledWebApp.value || !isOnline.value || wordOfflineStatus.value.ready || wordOfflineStatus.value.pendingAttempts > 0
 })
 
 // Spell (compose word) state
@@ -1474,6 +1482,15 @@ const loadTrainingUISettings = async () => {
   }
 }
 
+const dismissNetworkError = () => {
+  networkError.value = false
+  networkErrorRetrying.value = false
+  if (networkErrorHideTimer) {
+    clearTimeout(networkErrorHideTimer)
+    networkErrorHideTimer = null
+  }
+}
+
 const refreshWordOfflineStatus = async () => {
   wordOfflineStatus.value = await wordTrainingClient.getOfflineStatus()
 }
@@ -1519,18 +1536,24 @@ const handleNetworkChange = async () => {
 }
 
 onMounted(async () => {
+  isInstalledWebApp.value = window.matchMedia?.('(display-mode: standalone)').matches || document.referrer.startsWith('android-app://')
   // Set up network error callback
   apiClient.setNetworkErrorCallback((isRetrying: boolean, attempt: number, maxAttempts: number) => {
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+      dismissNetworkError()
+      return
+    }
     networkError.value = true
     networkErrorRetrying.value = isRetrying
     networkErrorAttempt.value = attempt
     networkErrorMaxAttempts.value = maxAttempts
+    if (networkErrorHideTimer) clearTimeout(networkErrorHideTimer)
+    networkErrorHideTimer = setTimeout(dismissNetworkError, isRetrying ? 7000 : 4500)
   })
   
   // Set up network success callback to hide error notification
   apiClient.setNetworkSuccessCallback(() => {
-    networkError.value = false
-    networkErrorRetrying.value = false
+    dismissNetworkError()
   })
   
   // Add keyboard event listener
@@ -1769,6 +1792,7 @@ onUnmounted(() => {
     spellAnswerLettersResizeObserver.disconnect()
     spellAnswerLettersResizeObserver = null
   }
+  dismissNetworkError()
 
   // Destroy chart
   if (upcomingChartInstance) {
@@ -4684,6 +4708,20 @@ const handleTimerMouseLeave = () => {
   display: flex;
   align-items: center;
   gap: 12px;
+  width: 100%;
+}
+
+.network-error-close {
+  margin-left: auto;
+  border: 0;
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  background: rgba(255, 255, 255, 0.22);
+  color: #fff;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
 }
 
 .network-error-icon {

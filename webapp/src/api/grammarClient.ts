@@ -123,8 +123,8 @@ function computeChapterAccess(meta: OfflineGrammarMeta, chapterID: string): bool
     const index = section.chapters.findIndex((chapter) => chapter.chapter_id === chapterID)
     if (index < 0) continue
     const chapter = section.chapters[index]
-    if (chapter.passed || chapter.can_access || section.can_access) return true
-    if (index === 0) return section.can_access
+    if (chapter.passed || chapter.can_access) return true
+    if (index === 0) return computeSectionAccess(meta, section.section_id)
     return !!section.chapters[index - 1]?.passed
   }
   return false

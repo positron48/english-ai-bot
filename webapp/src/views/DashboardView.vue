@@ -10,6 +10,10 @@
     <div v-if="loading" class="loading">{{ t('common.loading') }}</div>
     
     <div v-else class="dashboard-content">
+      <div v-if="offlineDashboard" class="card dashboard-offline-card">
+        <strong>Offline mode</strong>
+        <p>Показаны только локально предзагруженные данные. Онлайн-разделы станут доступны после восстановления связи.</p>
+      </div>
       <!-- Main Stats Cards -->
       <div class="stats-grid">
         <div class="stat-card stat-card-primary stat-card-clickable" @click="goToTraining">
@@ -258,6 +262,8 @@ import { useTheme } from '../composables/useTheme'
 import { useAuth } from '../composables/useAuth'
 import { useLocale } from '../composables/useLocale'
 import { apiClient } from '../api/client'
+import { grammarClient } from '../api/grammarClient'
+import { wordTrainingClient } from '../api/wordTrainingClient'
 import Icon from '../components/Icon.vue'
 
 const { t } = useI18n()
@@ -294,6 +300,7 @@ interface DashboardStats {
   accuracyPercent: number
   weeklyStats: WeeklyStat[]
   wordsAddedStats: WordsAddedStat[]
+  grammarStats?: any
 }
 
 const stats = ref<DashboardStats>({
@@ -309,6 +316,7 @@ const stats = ref<DashboardStats>({
 })
 
 const loading = ref(true)
+const offlineDashboard = ref(false)
 
 // Watch for changes in weeklyStats and update chart (after stats is initialized)
 watch(() => stats.value.weeklyStats, async (newStats) => {
@@ -375,7 +383,23 @@ const loadData = async () => {
   
   try {
     loading.value = true
-    const data = await apiClient.request('/api/dashboard')
+    offlineDashboard.value = false
+    let data: any
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+      const [wordStats, grammarStats] = await Promise.all([
+        wordTrainingClient.getDashboard().catch(() => null),
+        grammarClient.getStatistics().catch(() => null),
+      ])
+      data = {
+        due_count: wordStats?.due_count || 0,
+        total_cards: wordStats?.total_cards || 0,
+        available_for_training: wordStats?.available_for_training || 0,
+        grammar_stats: grammarStats,
+      }
+      offlineDashboard.value = true
+    } else {
+      data = await apiClient.request('/api/dashboard')
+    }
     stats.value = {
       dueCount: data.due_count || 0,
       newCount: data.new_count || 0,
@@ -1406,5 +1430,15 @@ onMounted(() => {
   .chart-container {
     height: 250px;
   }
+}
+
+.dashboard-offline-card {
+  border: 1px solid rgba(180, 83, 9, 0.35);
+  background: linear-gradient(135deg, var(--card-bg), rgba(180, 83, 9, 0.08));
+}
+
+.dashboard-offline-card p {
+  margin: 6px 0 0;
+  color: var(--text-secondary);
 }
 </style>

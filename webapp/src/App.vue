@@ -1,5 +1,9 @@
 <template>
   <div id="app">
+    <div v-if="networkToast.visible" class="network-toast" :class="`network-toast--${networkToast.kind}`">
+      <span>{{ networkToast.message }}</span>
+      <button type="button" class="network-toast-close" @click="hideNetworkToast">×</button>
+    </div>
     <!-- Auth Error Message -->
     <div v-if="authError" class="auth-error-banner">
       <div class="auth-error-content">
@@ -239,6 +243,47 @@ const showSidebar = ref(false)
 const showMoreDropdown = ref(false)
 const moreDropdownRef = ref<HTMLElement | null>(null)
 const moreButtonRef = ref<HTMLElement | null>(null)
+const networkToast = ref<{ visible: boolean; kind: 'offline' | 'online'; message: string }>({
+  visible: false,
+  kind: 'online',
+  message: '',
+})
+let networkToastTimer: ReturnType<typeof setTimeout> | null = null
+
+const hideNetworkToast = () => {
+  networkToast.value.visible = false
+  if (networkToastTimer) {
+    clearTimeout(networkToastTimer)
+    networkToastTimer = null
+  }
+}
+
+const showNetworkToast = (kind: 'offline' | 'online') => {
+  networkToast.value = {
+    visible: true,
+    kind,
+    message: kind === 'offline' ? 'Подключение пропало. Доступны только предзагруженные офлайн-разделы.' : 'Подключение восстановлено. Результаты будут синхронизированы.',
+  }
+  if (networkToastTimer) clearTimeout(networkToastTimer)
+  networkToastTimer = setTimeout(() => {
+    networkToast.value.visible = false
+    networkToastTimer = null
+  }, 5200)
+}
+
+const handleOffline = () => showNetworkToast('offline')
+const handleOnline = () => showNetworkToast('online')
+
+const updateThemeMetaColor = () => {
+  const bg = getComputedStyle(document.documentElement).getPropertyValue('--bg-primary').trim() || '#f5f5f5'
+  let meta = document.querySelector('meta[name="theme-color"]') as HTMLMetaElement | null
+  if (!meta) {
+    meta = document.createElement('meta')
+    meta.name = 'theme-color'
+    document.head.appendChild(meta)
+  }
+  meta.content = bg
+}
 
 const updateDocumentTitle = () => {
   const tl = learning.value?.target_lang ?? 'en'
@@ -271,11 +316,14 @@ onMounted(() => {
   
   checkMobile()
   window.addEventListener('resize', checkMobile)
+  window.addEventListener('offline', handleOffline)
+  window.addEventListener('online', handleOnline)
   
   // Add click outside handler
   document.addEventListener('click', handleClickOutside)
   
   mounted.value = true
+  updateThemeMetaColor()
   
   // Check auth status after a delay
   setTimeout(() => {
@@ -290,7 +338,12 @@ onMounted(() => {
 onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside)
   window.removeEventListener('resize', checkMobile)
+  window.removeEventListener('offline', handleOffline)
+  window.removeEventListener('online', handleOnline)
+  hideNetworkToast()
 })
+
+watch(theme, () => setTimeout(updateThemeMetaColor, 0), { immediate: true })
 
 // Watch route changes
 watch(() => route.path, (newPath) => {
@@ -778,6 +831,43 @@ main.with-desktop-navbar {
   background: rgba(255,255,255,0.3);
 }
 
+.network-toast {
+  position: fixed;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10020;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: min(92vw, 560px);
+  padding: 12px 14px;
+  border-radius: 12px;
+  color: #fff;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22);
+  animation: fadeIn 0.18s ease-out;
+}
+
+.network-toast--offline {
+  background: #b91c1c;
+}
+
+.network-toast--online {
+  background: #047857;
+}
+
+.network-toast-close {
+  border: 0;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+
 /* Language Switcher */
 .lang-switcher {
   position: relative;
@@ -858,4 +948,3 @@ main.with-desktop-navbar {
   max-width: 200px;
 }
 </style>
-

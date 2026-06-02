@@ -21,7 +21,7 @@
       </div>
     </div>
 
-    <div class="offline-preload-panel">
+    <div v-if="showOfflinePanel" class="offline-preload-panel">
       <div>
         <div class="offline-title-row">
           <strong>Offline grammar</strong>
@@ -38,7 +38,7 @@
         </p>
       </div>
       <div class="offline-actions">
-        <button @click="preloadGrammar" class="btn btn-secondary" :disabled="preloading">
+        <button @click="preloadGrammar" class="btn btn-secondary" :disabled="preloading || !isOnline">
           {{ preloading ? `Downloading ${preloadDone}/${preloadTotal}` : (offlineStatus.ready ? 'Update preload' : 'Preload grammar') }}
         </button>
         <button v-if="offlineStatus.pendingAttempts > 0" @click="syncOfflineAttempts" class="btn btn-primary" :disabled="syncing">
@@ -307,6 +307,7 @@ const preloadDone = ref(0)
 const preloadTotal = ref(0)
 const syncing = ref(false)
 const isOnline = ref(typeof navigator === 'undefined' ? true : navigator.onLine)
+const isInstalledWebApp = ref(false)
 
 // Computed properties for statistics
 const totalChapters = computed(() => {
@@ -344,6 +345,10 @@ const levelDescription = computed(() => {
   if (level.startsWith('B')) return 'Intermediate level'
   if (level.startsWith('A')) return 'Beginner level'
   return 'Keep learning!'
+})
+
+const showOfflinePanel = computed(() => {
+  return isInstalledWebApp.value || !isOnline.value || offlineStatus.value.ready || offlineStatus.value.pendingAttempts > 0
 })
 
 // Small circle calculations
@@ -456,6 +461,7 @@ const clearPreload = async () => {
 }
 
 onMounted(() => {
+  isInstalledWebApp.value = window.matchMedia?.('(display-mode: standalone)').matches || document.referrer.startsWith('android-app://')
   window.addEventListener('online', handleNetworkChange)
   window.addEventListener('offline', handleNetworkChange)
   loadCategories()

@@ -257,3 +257,16 @@ POST /api/training/offline/sync-attempts
 - В pack попадают только карточки, уже созданные для пользователя в `user_cards`; каталоги слов сами по себе не скачиваются как новые user cards.
 - Локальная тренировка слов поддерживает multiple choice, но не spell/type.
 - Если пользователь долго занимался офлайн, сервер при sync применяет попытки последовательно к текущему состоянию карточек; это ожидаемое поведение и сохраняет сервер как source of truth.
+
+## Offline UI behavior fixes
+
+Текущая модель UI после доработки:
+
+- В обычном браузере offline preload панели скрыты по умолчанию, чтобы не шуметь в web-версии. Они показываются в установленном PWA/TWA, при отсутствии сети, при уже скачанном bundle/pack или при pending sync.
+- При потере/возврате сети показывается один глобальный toast с автоскрытием и кнопкой закрытия. Постоянный retry-banner на экране тренировки не используется для ожидаемого offline-mode.
+- `/dashboard`, `/training` и offline grammar routes разрешены в router без редиректа на grammar root. Остальные online-only разделы офлайн редиректятся на dashboard с offline-state.
+- Dashboard офлайн показывает только локально предзагруженные агрегаты: word training pack и grammar progress из IndexedDB.
+- Завершенная офлайн word-training сессия не восстанавливается повторно как активная при новом входе на `/training`; пройденные локально карточки вычитаются из локального word pack до следующей предзагрузки.
+- Offline grammar chapter access на фронте повторяет progression: первая глава доступной категории открыта, следующие открываются только после `passed` предыдущей главы. Доступность всей категории больше не раскрывает все главы сразу.
+- Offline grammar training pack скачивает все опубликованные grammar training questions, чтобы тренировка могла стартовать из предзагруженного курса без зависимости от текущего server-side due/progress фильтра.
+- Android status bar / PWA theme color выставлен в основной фон приложения (`#f5f5f5` для light theme) вместо language-specific brand color.

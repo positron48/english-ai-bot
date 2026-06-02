@@ -11,6 +11,7 @@ import {
   getQueuedWordTrainingAttempts,
   getWordTrainingPack,
   getWordTrainingSession,
+  removeWordTrainingCards,
   setWordTrainingPack,
   setWordTrainingSession,
   wordTrainingQueueCount,
@@ -60,13 +61,15 @@ async function requirePack(): Promise<OfflineWordTrainingPack> {
 
 function toCardResponse(session: OfflineWordTrainingSession): any {
   if (session.index >= session.queue.length) {
-    return {
+    const response = {
       complete: true,
       cards_completed: session.queue.length,
       total_cards: session.queue.length,
       correct_cards: session.correct_count,
       offline: true,
     }
+    void clearWordTrainingSession()
+    return response
   }
   const item = session.queue[session.index]
   const shownAt = new Date().toISOString()
@@ -116,6 +119,7 @@ async function queueAttempt(session: OfflineWordTrainingSession, item: OfflineWo
     correct_answer: item.correct_answer,
   }
   await enqueueWordTrainingAttempt(attempt)
+  await removeWordTrainingCards([item.user_card_id])
   if (isCorrect) session.correct_count++
   session.index++
   await setWordTrainingSession(session)
