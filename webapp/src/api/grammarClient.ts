@@ -108,6 +108,16 @@ async function requireMeta(): Promise<OfflineGrammarMeta> {
   return meta
 }
 
+async function offlineFallback<T>(online: () => Promise<T>, offline: () => Promise<T>): Promise<T> {
+  if (isBrowserOffline()) return offline()
+  try {
+    return await online()
+  } catch (error) {
+    if (!isNetworkError(error)) throw error
+    return offline()
+  }
+}
+
 function computeChapterAccess(meta: OfflineGrammarMeta, chapterID: string): boolean {
   for (const section of meta.sections) {
     const index = section.chapters.findIndex((chapter) => chapter.chapter_id === chapterID)
@@ -279,10 +289,16 @@ export const grammarClient = {
     const attempts = await getQueuedAttempts()
     let synced = 0
     if (attempts.length > 0) {
-      const response: any = await apiClient.request('/api/learning/grammar/offline/sync-attempts', {
-        method: 'POST',
-        body: { attempts } as any,
-      })
+      let response: any
+      try {
+        response = await apiClient.request('/api/learning/grammar/offline/sync-attempts', {
+          method: 'POST',
+          body: { attempts } as any,
+        })
+      } catch (error) {
+        if (isNetworkError(error)) return synced
+        throw error
+      }
       for (const item of response.results || []) {
         if (item.synced && item.client_attempt_id) {
           await deleteQueuedAttempt(item.client_attempt_id)
@@ -292,10 +308,16 @@ export const grammarClient = {
     }
     const trainingAttempts = await getQueuedTrainingAttempts()
     if (trainingAttempts.length > 0) {
-      const trainingResponse: any = await apiClient.request('/api/learning/grammar/offline/sync-training-attempts', {
-        method: 'POST',
-        body: { attempts: trainingAttempts } as any,
-      })
+      let trainingResponse: any
+      try {
+        trainingResponse = await apiClient.request('/api/learning/grammar/offline/sync-training-attempts', {
+          method: 'POST',
+          body: { attempts: trainingAttempts } as any,
+        })
+      } catch (error) {
+        if (isNetworkError(error)) return synced
+        throw error
+      }
       for (const item of trainingResponse.results || []) {
         if (item.synced && item.client_attempt_id) {
           await deleteQueuedTrainingAttempt(item.client_attempt_id)
@@ -307,51 +329,61 @@ export const grammarClient = {
   },
 
   async getCategories(): Promise<{ categories: any[] }> {
-    if (!isBrowserOffline()) return apiClient.request('/api/learning/grammar/categories')
-    const meta = await requireMeta()
-    return { categories: meta.sections.map(({ chapters, ...section }) => ({
-      ...section,
-      can_access: computeSectionAccess(meta, section.section_id),
-    })) }
+    return offlineFallback(
+      () => apiClient.request('/api/learning/grammar/categories'),
+      async () => {
+        const meta = await requireMeta()
+        return { categories: meta.sections.map(({ chapters, ...section }) => ({
+          ...section,
+          can_access: computeSectionAccess(meta, section.section_id),
+        })) }
+      },
+    )
   },
 
   async getStatistics(): Promise<any> {
-    if (!isBrowserOffline()) return apiClient.request('/api/learning/grammar/statistics')
-    return buildStatistics(await requireMeta())
+    return offlineFallback(
+      () => apiClient.request('/api/learning/grammar/statistics'),
+      async () => buildStatistics(await requireMeta()),
+    )
   },
 
   async getTrainingAvailability(): Promise<any> {
-    if (isBrowserOffline()) {
-      const questions = await getTrainingQuestions()
-      const blocks = new Set(questions.map((q: any) => q?.theory_block_id).filter(Boolean))
-      return { grammar_training: { available: questions.length > 0, offline: true, question_count: questions.length, theory_block_count: blocks.size, due_theory_block_count: blocks.size } }
-    }
-    return apiClient.request('/api/learning/grammar/training/availability')
+    return offlineFallback(
+      () => apiClient.request('/api/learning/grammar/training/availability'),
+      async () => {
+        const questions = await getTrainingQuestions()
+        const blocks = new Set(questions.map((q: any) => q?.theory_block_id).filter(Boolean))
+        return { grammar_training: { available: questions.length > 0, offline: true, question_count: questions.length, theory_block_count: blocks.size, due_theory_block_count: blocks.size } }
+      },
+    )
   },
 
   async startTrainingSession(limit = 20): Promise<any> {
-    if (!isBrowserOffline()) {
-      return apiClient.request('/api/learning/grammar/training/session/start', {
+    return offlineFallback(
+      () => apiClient.request('/api/learning/grammar/training/session/start', {
         method: 'POST',
         body: { limit } as any,
-      })
-    }
-    const questions = await getTrainingQuestions()
-    if (questions.length === 0) return { items: [] }
-    const byBlock = new Map<string, any[]>()
-    for (const q of questions) {
-      const block = q?.theory_block_id || q?.id
-      if (!byBlock.has(block)) byBlock.set(block, [])
-      byBlock.get(block)!.push(q)
-    }
-    const selectedBlocks = shuffle([...byBlock.keys()]).slice(0, Math.max(1, Math.min(30, limit)))
-    return {
-      items: selectedBlocks.map((block) => {
-        const qs = byBlock.get(block) || []
-        return { question: sanitizeTrainingQuestion(qs[Math.floor(Math.random() * qs.length)]) }
       }),
-      offline: true,
-    }
+      async () => {
+        const questions = await getTrainingQuestions()
+        if (questions.length === 0) return { items: [] }
+        const byBlock = new Map<string, any[]>()
+        for (const q of questions) {
+          const block = q?.theory_block_id || q?.id
+          if (!byBlock.has(block)) byBlock.set(block, [])
+          byBlock.get(block)!.push(q)
+        }
+        const selectedBlocks = shuffle([...byBlock.keys()]).slice(0, Math.max(1, Math.min(30, limit)))
+        return {
+          items: selectedBlocks.map((block) => {
+            const qs = byBlock.get(block) || []
+            return { question: sanitizeTrainingQuestion(qs[Math.floor(Math.random() * qs.length)]) }
+          }),
+          offline: true,
+        }
+      },
+    )
   },
 
   async submitTrainingAnswer(questionID: string, answer: any): Promise<any> {
@@ -381,90 +413,114 @@ export const grammarClient = {
   },
 
   async getChapters(sectionID: string): Promise<{ chapters: any[] }> {
-    if (!isBrowserOffline()) return apiClient.request(`/api/learning/grammar/categories/${sectionID}/chapters`)
-    const meta = await requireMeta()
-    const section = meta.sections.find((item) => item.section_id === sectionID)
-    if (!section) throw new Error('Section not found')
-    return { chapters: section.chapters.map((chapter) => ({ ...chapter, can_access: computeChapterAccess(meta, chapter.chapter_id) })) }
+    return offlineFallback(
+      () => apiClient.request(`/api/learning/grammar/categories/${sectionID}/chapters`),
+      async () => {
+        const meta = await requireMeta()
+        const section = meta.sections.find((item) => item.section_id === sectionID)
+        if (!section) throw new Error('Section not found')
+        return { chapters: section.chapters.map((chapter) => ({ ...chapter, can_access: computeChapterAccess(meta, chapter.chapter_id) })) }
+      },
+    )
   },
 
   async getChapter(chapterID: string): Promise<any> {
-    if (!isBrowserOffline()) return apiClient.request(`/api/learning/grammar/chapters/${chapterID}`)
-    const payload = await getStoredChapter(chapterID)
-    if (!payload) throw new OfflineGrammarUnavailableError('Chapter is not available offline')
-    return payload
+    return offlineFallback(
+      () => apiClient.request(`/api/learning/grammar/chapters/${chapterID}`),
+      async () => {
+        const payload = await getStoredChapter(chapterID)
+        if (!payload) throw new OfflineGrammarUnavailableError('Chapter is not available offline')
+        return payload
+      },
+    )
   },
 
   async canAccessChapter(chapterID: string): Promise<{ can_access: boolean }> {
-    if (!isBrowserOffline()) return apiClient.request(`/api/learning/grammar/chapters/${chapterID}/access`)
-    return { can_access: computeChapterAccess(await requireMeta(), chapterID) }
+    return offlineFallback(
+      () => apiClient.request(`/api/learning/grammar/chapters/${chapterID}/access`),
+      async () => ({ can_access: computeChapterAccess(await requireMeta(), chapterID) }),
+    )
   },
 
   async canAccessSection(sectionID: string): Promise<{ can_access: boolean }> {
-    if (!isBrowserOffline()) return apiClient.request(`/api/learning/grammar/categories/${sectionID}/access`)
-    return { can_access: computeSectionAccess(await requireMeta(), sectionID) }
+    return offlineFallback(
+      () => apiClient.request(`/api/learning/grammar/categories/${sectionID}/access`),
+      async () => ({ can_access: computeSectionAccess(await requireMeta(), sectionID) }),
+    )
   },
 
   async getChapterTest(chapterID: string): Promise<{ questions: any[]; total: number }> {
-    if (!isBrowserOffline()) return apiClient.request(`/api/learning/grammar/chapters/${chapterID}/test`)
-    const payload = await getStoredChapter(chapterID)
-    if (!payload) throw new OfflineGrammarUnavailableError('Chapter test is not available offline')
-    const num = Number(payload?.chapter?.chapter_test?.num_questions || 10)
-    const selected = shuffle(chapterPoolQuestions(payload)).slice(0, num).map(sanitizeQuestionForTest)
-    return { questions: selected, total: selected.length }
+    return offlineFallback(
+      () => apiClient.request(`/api/learning/grammar/chapters/${chapterID}/test`),
+      async () => {
+        const payload = await getStoredChapter(chapterID)
+        if (!payload) throw new OfflineGrammarUnavailableError('Chapter test is not available offline')
+        const num = Number(payload?.chapter?.chapter_test?.num_questions || 10)
+        const selected = shuffle(chapterPoolQuestions(payload)).slice(0, num).map(sanitizeQuestionForTest)
+        return { questions: selected, total: selected.length }
+      },
+    )
   },
 
   async getCategoryTest(sectionID: string): Promise<{ questions: any[]; total: number }> {
-    if (!isBrowserOffline()) return apiClient.request(`/api/learning/grammar/categories/${sectionID}/test`)
-    const meta = await requireMeta()
-    const section = meta.sections.find((item) => item.section_id === sectionID)
-    if (!section) throw new Error('Section not found')
-    const selected: any[] = []
-    const seen = new Set<string>()
-    const perChapter: Array<{ chapterID: string; questions: any[] }> = []
-    for (const chapter of section.chapters) {
-      const payload = await getStoredChapter(chapter.chapter_id)
-      const questions = shuffle(chapterPoolQuestions(payload))
-      perChapter.push({ chapterID: chapter.chapter_id, questions })
-      for (const question of questions.slice(0, 2)) {
-        const key = `${chapter.chapter_id}:${question.id}`
-        if (seen.has(key)) continue
-        seen.add(key)
-        selected.push(sanitizeQuestionForTest({ ...question, _category_test_chapter_id: chapter.chapter_id }))
-      }
-    }
-    const remaining = shuffle(perChapter.flatMap((item) => item.questions.map((question) => ({ chapterID: item.chapterID, question }))))
-    for (const item of remaining) {
-      if (selected.length >= 20) break
-      const key = `${item.chapterID}:${item.question.id}`
-      if (seen.has(key)) continue
-      seen.add(key)
-      selected.push(sanitizeQuestionForTest({ ...item.question, _category_test_chapter_id: item.chapterID }))
-    }
-    return { questions: selected, total: selected.length }
+    return offlineFallback(
+      () => apiClient.request(`/api/learning/grammar/categories/${sectionID}/test`),
+      async () => {
+        const meta = await requireMeta()
+        const section = meta.sections.find((item) => item.section_id === sectionID)
+        if (!section) throw new Error('Section not found')
+        const selected: any[] = []
+        const seen = new Set<string>()
+        const perChapter: Array<{ chapterID: string; questions: any[] }> = []
+        for (const chapter of section.chapters) {
+          const payload = await getStoredChapter(chapter.chapter_id)
+          const questions = shuffle(chapterPoolQuestions(payload))
+          perChapter.push({ chapterID: chapter.chapter_id, questions })
+          for (const question of questions.slice(0, 2)) {
+            const key = `${chapter.chapter_id}:${question.id}`
+            if (seen.has(key)) continue
+            seen.add(key)
+            selected.push(sanitizeQuestionForTest({ ...question, _category_test_chapter_id: chapter.chapter_id }))
+          }
+        }
+        const remaining = shuffle(perChapter.flatMap((item) => item.questions.map((question) => ({ chapterID: item.chapterID, question }))))
+        for (const item of remaining) {
+          if (selected.length >= 20) break
+          const key = `${item.chapterID}:${item.question.id}`
+          if (seen.has(key)) continue
+          seen.add(key)
+          selected.push(sanitizeQuestionForTest({ ...item.question, _category_test_chapter_id: item.chapterID }))
+        }
+        return { questions: selected, total: selected.length }
+      },
+    )
   },
 
   async getPlacementTest(): Promise<{ questions: any[]; total: number }> {
-    if (!isBrowserOffline()) return apiClient.request('/api/learning/grammar/placement-test')
-    const meta = await requireMeta()
-    const candidates: any[] = []
-    for (const section of meta.sections) {
-      for (const chapter of section.chapters) {
-        const payload = await getStoredChapter(chapter.chapter_id)
-        for (const question of chapterPoolQuestions(payload)) {
-          candidates.push(sanitizeQuestionForTest({
-            ...question,
-            id: `${chapter.chapter_id}:${question.id}`,
-            _offline_original_question_id: question.id,
-            _category_test_chapter_id: chapter.chapter_id,
-            placement_chapter_title: chapter.title,
-            level: chapter.level || section.level,
-          }))
+    return offlineFallback(
+      () => apiClient.request('/api/learning/grammar/placement-test'),
+      async () => {
+        const meta = await requireMeta()
+        const candidates: any[] = []
+        for (const section of meta.sections) {
+          for (const chapter of section.chapters) {
+            const payload = await getStoredChapter(chapter.chapter_id)
+            for (const question of chapterPoolQuestions(payload)) {
+              candidates.push(sanitizeQuestionForTest({
+                ...question,
+                id: `${chapter.chapter_id}:${question.id}`,
+                _offline_original_question_id: question.id,
+                _category_test_chapter_id: chapter.chapter_id,
+                placement_chapter_title: chapter.title,
+                level: chapter.level || section.level,
+              }))
+            }
+          }
         }
-      }
-    }
-    const selected = shuffle(candidates).slice(0, 25)
-    return { questions: selected, total: selected.length }
+        const selected = shuffle(candidates).slice(0, 25)
+        return { questions: selected, total: selected.length }
+      },
+    )
   },
 
   async submitTest(scope: 'chapter' | 'category', scopeID: string, answers: any[]): Promise<any> {
@@ -486,10 +542,14 @@ export const grammarClient = {
 
   async submitPlacementTest(answersMap: Record<string, any>): Promise<any> {
     if (!isBrowserOffline()) {
-      return apiClient.request('/api/learning/grammar/placement-test/submit', {
-        method: 'POST',
-        body: answersMap as any,
-      })
+      try {
+        return await apiClient.request('/api/learning/grammar/placement-test/submit', {
+          method: 'POST',
+          body: answersMap as any,
+        })
+      } catch (error) {
+        if (!isNetworkError(error)) throw error
+      }
     }
     const meta = await requireMeta()
     const results: any[] = []
@@ -535,18 +595,22 @@ export const grammarClient = {
   },
 
   async getNextChapter(chapterID: string): Promise<any> {
-    if (!isBrowserOffline()) return apiClient.request(`/api/learning/grammar/chapters/${chapterID}/next`)
-    const meta = await requireMeta()
-    for (const section of meta.sections) {
-      const index = section.chapters.findIndex((chapter) => chapter.chapter_id === chapterID)
-      if (index < 0) continue
-      const next = section.chapters[index + 1]
-      return {
-        section_id: section.section_id,
-        is_last: !next,
-        next_chapter_id: next?.chapter_id || '',
-      }
-    }
-    throw new Error('Chapter not found')
+    return offlineFallback(
+      () => apiClient.request(`/api/learning/grammar/chapters/${chapterID}/next`),
+      async () => {
+        const meta = await requireMeta()
+        for (const section of meta.sections) {
+          const index = section.chapters.findIndex((chapter) => chapter.chapter_id === chapterID)
+          if (index < 0) continue
+          const next = section.chapters[index + 1]
+          return {
+            section_id: section.section_id,
+            is_last: !next,
+            next_chapter_id: next?.chapter_id || '',
+          }
+        }
+        throw new Error('Chapter not found')
+      },
+    )
   },
 }

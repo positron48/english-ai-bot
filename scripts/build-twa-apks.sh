@@ -46,7 +46,7 @@ cat > "${WORKDIR}/twa-manifest.json" <<JSON
   "fullScopeUrl": "${ORIGIN}/",
   "iconUrl": "${ICON_URL}",
   "maskableIconUrl": "${ICON_URL}",
-  "fallbackType": "customtabs",
+  "fallbackType": "webview",
   "appVersion": "${VERSION_NAME}",
   "appVersionCode": ${VERSION_CODE},
   "splashScreenFadeOutDuration": 300,

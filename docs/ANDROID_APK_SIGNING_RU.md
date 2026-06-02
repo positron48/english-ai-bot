@@ -88,6 +88,8 @@ Workflow:
    - `qantrix-spanish-<tag>.apk` для `ru.qantrix.spanish` и `https://es.qantrix.ru/app/`.
 7. APK и `checksums.txt` загружаются в GitHub Release.
 
+В `scripts/build-twa-apks.sh` `fallbackType` выставлен в `webview`. Основной режим всё равно verified TWA, если Android Digital Asset Links совпали. Но если на устройстве нет подходящего TWA browser runtime или домен временно не verified, fallback не открывается как Chrome Custom Tab с верхней панелью домена.
+
 Если `ANDROID_KEYSTORE_BASE64 is required`, значит GitHub secret не добавлен или добавлен не в тот репозиторий.
 
 Если CI падает на вопросе `Do you want Bubblewrap to install the JDK?`, значит workflow запустился без актуальной версии `scripts/build-twa-apks.sh`, где создаётся `${HOME}/.bubblewrap/config.json`, или `JAVA_HOME`/`ANDROID_HOME` не были выставлены предыдущими setup actions.
@@ -117,6 +119,15 @@ grep '^ANDROID_KEYSTORE_BASE64=' english-ai-bot/secrets/android/github-actions-s
 ```bash
 git -C english-ai-bot status --ignored --short secrets/android
 ```
+
+Проверить Digital Asset Links на prod:
+
+```bash
+curl -sS https://qantrix.ru/.well-known/assetlinks.json | jq .
+curl -sS https://es.qantrix.ru/.well-known/assetlinks.json | jq .
+```
+
+В ответе должны быть package names `ru.qantrix.english` / `ru.qantrix.spanish` и тот же SHA-256 fingerprint, которым подписан APK. Если установлен старый APK, собранный до корректного `assetlinks.json`, проще удалить приложение и установить свежий APK из нового релиза.
 
 ## Проверка prod перед rerun APK job
 
