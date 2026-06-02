@@ -35,6 +35,8 @@ cat > "${WORKDIR}/twa-manifest.json" <<JSON
   "orientation": "portrait",
   "themeColor": "${THEME_COLOR}",
   "themeColorDark": "${THEME_COLOR}",
+  "statusBarColor": "${THEME_COLOR}",
+  "statusBarColorDark": "${THEME_COLOR}",
   "navigationColor": "#000000",
   "navigationColorDark": "#000000",
   "navigationDividerColor": "#000000",
@@ -83,6 +85,19 @@ JSON
     --signingKeyPath="${KEYSTORE_PATH}" \
     --signingKeyAlias="${KEY_ALIAS}"
 )
+
+ANDROID_MANIFEST="${WORKDIR}/app/src/main/AndroidManifest.xml"
+if [ -f "$ANDROID_MANIFEST" ]; then
+  grep -q 'android.support.customtabs.trusted.FALLBACK_STRATEGY' "$ANDROID_MANIFEST" || {
+    echo "Generated AndroidManifest.xml does not contain TWA fallback strategy metadata" >&2
+    exit 1
+  }
+  grep -q 'android:value="webview"' "$ANDROID_MANIFEST" || {
+    echo "Generated AndroidManifest.xml fallback strategy is not webview" >&2
+    grep -n 'FALLBACK_STRATEGY\\|fallback' "$ANDROID_MANIFEST" >&2 || true
+    exit 1
+  }
+fi
 
 APK="${WORKDIR}/app-release-signed.apk"
 if [ ! -f "$APK" ]; then

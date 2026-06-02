@@ -287,6 +287,39 @@ export const grammarClient = {
     }
   },
 
+  async getOfflineDebugState(): Promise<any> {
+    const meta = await getOfflineMeta()
+    const downloadedChapters = await countStoredChapters()
+    const storedChapters = await getStoredChapters()
+    const trainingQuestions = await getTrainingQuestions()
+    const fallbackTrainingQuestions = storedChapters.flatMap(trainingQuestionsFromChapterPayload)
+    const pendingAttempts = (await queueCount()) + (await trainingQueueCount())
+    const sections = meta?.sections || []
+    const accessibleSections = sections
+      .filter((section) => section.chapters.length > 0 || computeSectionAccess(meta!, section.section_id))
+      .map((section) => section.section_id)
+    return {
+      href: typeof location !== 'undefined' ? location.href : '',
+      navigatorOnLine: typeof navigator !== 'undefined' ? navigator.onLine : null,
+      serviceWorkerControlled: typeof navigator !== 'undefined' ? !!navigator.serviceWorker?.controller : null,
+      displayModeStandalone: typeof window !== 'undefined' ? window.matchMedia?.('(display-mode: standalone)').matches : null,
+      referrer: typeof document !== 'undefined' ? document.referrer : '',
+      hasMeta: !!meta,
+      bundleID: meta?.bundle_id || '',
+      versionHash: meta?.version_hash || '',
+      downloadedChapters,
+      totalChapters: meta?.total_chapters || 0,
+      sectionCount: sections.length,
+      accessibleSectionCount: accessibleSections.length,
+      firstAccessibleSection: accessibleSections[0] || '',
+      firstSection: sections[0]?.section_id || '',
+      storedChapterSample: storedChapters.slice(0, 3).map(chapterIDFromPayload),
+      trainingQuestions: trainingQuestions.length,
+      fallbackTrainingQuestions: fallbackTrainingQuestions.length,
+      pendingAttempts,
+    }
+  },
+
   async preload(onProgress?: (done: number, total: number) => void): Promise<OfflineStatus> {
     const manifest = await apiClient.request<OfflineGrammarMeta>('/api/learning/grammar/offline/manifest')
     const meta = { ...manifest, downloaded_at: new Date().toISOString() }

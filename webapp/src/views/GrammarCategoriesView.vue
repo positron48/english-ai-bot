@@ -3,13 +3,14 @@
     <div class="header-section">
       <h1>{{ t('grammar.courseTitle') || 'Grammar Course' }}</h1>
       <div class="header-actions">
-        <router-link
+        <button
           v-if="grammarTrainingAvailable"
-          to="/learning/grammar/training"
           class="btn btn-primary grammar-training-nav-btn"
+          type="button"
+          @click="openGrammarTraining"
         >
           {{ t('grammar.trainingTitle') || 'Grammar Training' }}
-        </router-link>
+        </button>
         <router-link 
           v-if="settingsLoaded && !hidePlacementTestButton"
           to="/learning/grammar/placement-test" 
@@ -47,8 +48,12 @@
         <button v-if="offlineStatus.ready" @click="clearPreload" class="btn btn-secondary" :disabled="preloading">
           Delete
         </button>
+        <button v-if="showOfflinePanel" @click="refreshDebugState" class="btn btn-secondary" type="button">
+          Debug
+        </button>
       </div>
     </div>
+    <pre v-if="debugState" class="offline-debug">{{ debugState }}</pre>
     
     <!-- Statistics Block -->
     <div v-if="!loading && !error && statistics" class="statistics-block">
@@ -199,10 +204,11 @@
         class="category-card"
         :class="{ 'locked': category.is_published !== false && !category.can_access, 'unpublished': category.is_published === false }"
       >
-        <router-link
+        <button
           v-if="category.is_published !== false && category.can_access"
-          :to="`/learning/grammar/${category.section_id}`"
           class="category-link"
+          type="button"
+          @click="openCategory(category)"
         >
           <div class="category-header">
             <h2>{{ getLocalizedTitle(category.title, category.title_translations) }}</h2>
@@ -222,7 +228,7 @@
               {{ t('grammar.categoryTest') || 'Category Test' }}: {{ category.category_test_score }}%
             </span>
           </div>
-        </router-link>
+        </button>
         <div v-else class="category-link locked-link">
           <div class="category-header">
             <h2>{{ getLocalizedTitle(category.title, category.title_translations) }}</h2>
@@ -259,10 +265,12 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 import { grammarClient, type OfflineStatus } from '../api/grammarClient'
 import Icon from '../components/Icon.vue'
 
 const { t, locale } = useI18n()
+const router = useRouter()
 
 interface Category {
   section_id: string
@@ -308,6 +316,7 @@ const preloadTotal = ref(0)
 const syncing = ref(false)
 const isOnline = ref(typeof navigator === 'undefined' ? true : navigator.onLine)
 const isInstalledWebApp = ref(false)
+const debugState = ref('')
 
 // Computed properties for statistics
 const totalChapters = computed(() => {
@@ -427,6 +436,25 @@ const refreshOfflineStatus = async () => {
   offlineStatus.value = await grammarClient.getOfflineStatus()
 }
 
+const refreshDebugState = async (action = 'manual') => {
+  try {
+    const state = await grammarClient.getOfflineDebugState()
+    debugState.value = JSON.stringify({ action, at: new Date().toISOString(), ...state }, null, 2)
+  } catch (err: any) {
+    debugState.value = JSON.stringify({ action, at: new Date().toISOString(), error: err?.message || String(err) }, null, 2)
+  }
+}
+
+const openGrammarTraining = async () => {
+  await refreshDebugState('openGrammarTraining')
+  await router.push('/learning/grammar/training')
+}
+
+const openCategory = async (category: Category) => {
+  await refreshDebugState(`openCategory:${category.section_id}`)
+  await router.push(`/learning/grammar/${category.section_id}`)
+}
+
 const preloadGrammar = async () => {
   preloading.value = true
   error.value = null
@@ -435,6 +463,7 @@ const preloadGrammar = async () => {
       preloadDone.value = done
       preloadTotal.value = total
     })
+    await refreshDebugState('preloadGrammar')
   } catch (err: any) {
     error.value = err.message || 'Failed to preload grammar'
   } finally {
@@ -547,6 +576,19 @@ const handleNetworkChange = async () => {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+}
+
+.offline-debug {
+  margin: -12px 0 24px;
+  padding: 12px;
+  max-height: 280px;
+  overflow: auto;
+  border: 1px solid var(--border-primary);
+  border-radius: 10px;
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  font-size: 11px;
+  white-space: pre-wrap;
 }
 
 .grammar-categories h1 {
@@ -837,6 +879,14 @@ const handleNetworkChange = async () => {
 }
 
 .category-link {
+  appearance: none;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
   text-decoration: none;
   color: var(--text-primary);
   display: flex;

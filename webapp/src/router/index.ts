@@ -346,37 +346,6 @@ router.beforeEach(async (to, _from, next) => {
     }
   }
   
-  // Check grammar section access
-  if (to.name === 'GrammarChapters' && to.params.sectionId) {
-    try {
-      const sectionId = to.params.sectionId as string
-      const response: { can_access: boolean } = await grammarClient.canAccessSection(sectionId)
-      if (!response.can_access) {
-        next({
-          path: '/learning/grammar',
-          query: { error: 'previous_section_not_complete' }
-        })
-        return
-      }
-    } catch (error: any) {
-      console.error('Failed to check section access:', error)
-    }
-  }
-
-  if (to.name === 'GrammarTraining') {
-    try {
-      const response: any = await grammarClient.getTrainingAvailability()
-      if (!response?.grammar_training?.available) {
-        next('/learning/grammar')
-        return
-      }
-    } catch (error: any) {
-      console.error('Failed to check grammar training availability:', error)
-      next('/learning/grammar')
-      return
-    }
-  }
-
   if (to.meta.requiresSpeaking) {
     try {
       const response: any = await apiClient.request('/api/learning/speaking/availability')

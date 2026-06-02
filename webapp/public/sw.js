@@ -1,4 +1,4 @@
-const APP_SHELL_CACHE = 'qantrix-app-shell-v3'
+const APP_SHELL_CACHE = 'qantrix-app-shell-v4'
 const APP_SHELL_URLS = ['/app', '/app/', '/app/manifest.webmanifest']
 
 self.addEventListener('install', (event) => {
