@@ -64,7 +64,9 @@ APK не содержит курс внутри себя. В APK фактиче�
 - очередь офлайн-попыток по тестам;
 - очередь офлайн-попыток Grammar Training/SRS.
 
-Service worker отдельно кэширует только web shell (`/app`, `/app/`, static assets, manifest), чтобы приложение могло открыться без сети. Контент курса хранится не в CacheStorage, а в IndexedDB.
+Service worker отдельно кэширует web shell (`/app`, `/app/`, manifest, vendored Telegram script) и все Vite assets из `/app/asset-manifest.json`, чтобы lazy-loaded страницы грамматики могли открываться без сети даже после прямого перехода на route. Контент курса хранится не в CacheStorage, а в IndexedDB.
+
+`/app/asset-manifest.json` генерируется на каждом production build скриптом `webapp/scripts/write-asset-manifest.mjs`. Если офлайн-переход в APK даёт чёрный экран, в первую очередь проверять, что на сервере доступен `/app/asset-manifest.json`, а service worker обновился до актуальной версии cache.
 
 ## Что видно на фронте
 
@@ -76,6 +78,13 @@ Service worker отдельно кэширует только web shell (`/app`,
 - даёт кнопки `Preload grammar` / `Update preload`, `Sync results`, `Delete`.
 
 Если пользователь офлайн и пытается открыть режимы вне поддержанного набора grammar offline, router перенаправляет его обратно в грамматику. В текущей минимальной реализации нет отдельного глобального баннера на всех экранах; явный статус сети находится в блоке грамматики.
+
+Для диагностики runtime-падений frontend сохраняет последние ошибки в `localStorage`:
+
+- `qantrix-offline-debug-state` — последнее действие/переход в grammar offline UI;
+- `qantrix-runtime-error` — Vue/window/router error с URL, online-state и stack/message.
+
+В офлайн-режиме такие ошибки показываются поверх приложения отдельным debug overlay вместо пустого чёрного экрана.
 
 ## Как работают офлайн-тесты
 

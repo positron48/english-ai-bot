@@ -1,12 +1,22 @@
-const APP_SHELL_CACHE = 'qantrix-app-shell-v4'
-const APP_SHELL_URLS = ['/app', '/app/', '/app/manifest.webmanifest']
+const APP_SHELL_CACHE = 'qantrix-app-shell-v5'
+const ASSET_MANIFEST_URL = '/app/asset-manifest.json'
+const APP_SHELL_URLS = ['/app', '/app/', '/app/manifest.webmanifest', '/telegram-web-app.js', '/favicon.svg']
+
+const cacheAppShell = async () => {
+  const cache = await caches.open(APP_SHELL_CACHE)
+  await Promise.all(APP_SHELL_URLS.map((url) => cache.add(url).catch(() => undefined)))
+
+  const manifestResponse = await fetch(ASSET_MANIFEST_URL, { cache: 'no-store' }).catch(() => null)
+  if (!manifestResponse || !manifestResponse.ok) return
+
+  await cache.put(ASSET_MANIFEST_URL, manifestResponse.clone())
+  const manifest = await manifestResponse.json().catch(() => null)
+  const assets = Array.isArray(manifest?.assets) ? manifest.assets : []
+  await Promise.all(assets.map((url) => cache.add(url).catch(() => undefined)))
+}
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(APP_SHELL_CACHE)
-      .then((cache) => cache.addAll(APP_SHELL_URLS))
-      .catch(() => undefined)
-  )
+  event.waitUntil(cacheAppShell().catch(() => undefined))
   self.skipWaiting()
 })
 
@@ -14,7 +24,7 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
       Promise.all(keys.filter((key) => key !== APP_SHELL_CACHE).map((key) => caches.delete(key)))
-    )
+    ).then(() => cacheAppShell()).catch(() => undefined)
   )
   self.clients.claim()
 })
@@ -40,7 +50,13 @@ self.addEventListener('fetch', (event) => {
     return
   }
 
-  if (url.pathname.startsWith('/app/assets/') || url.pathname === '/app/manifest.webmanifest') {
+  if (
+    url.pathname.startsWith('/app/assets/') ||
+    url.pathname === '/app/manifest.webmanifest' ||
+    url.pathname === ASSET_MANIFEST_URL ||
+    url.pathname === '/telegram-web-app.js' ||
+    url.pathname === '/favicon.svg'
+  ) {
     event.respondWith(
       caches.match(request).then((cached) => {
         if (cached) return cached
@@ -50,7 +66,7 @@ self.addEventListener('fetch', (event) => {
             caches.open(APP_SHELL_CACHE).then((cache) => cache.put(request, copy))
           }
           return response
-        })
+        }).catch(() => caches.match(request))
       })
     )
   }

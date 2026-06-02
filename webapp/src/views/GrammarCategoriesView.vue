@@ -316,7 +316,16 @@ const preloadTotal = ref(0)
 const syncing = ref(false)
 const isOnline = ref(typeof navigator === 'undefined' ? true : navigator.onLine)
 const isInstalledWebApp = ref(false)
-const debugState = ref('')
+const offlineDebugStorageKey = 'qantrix-offline-debug-state'
+const readStoredDebugState = () => {
+  if (typeof localStorage === 'undefined') return ''
+  return localStorage.getItem(offlineDebugStorageKey) || ''
+}
+const writeStoredDebugState = (value: string) => {
+  if (typeof localStorage === 'undefined') return
+  localStorage.setItem(offlineDebugStorageKey, value)
+}
+const debugState = ref(readStoredDebugState())
 
 // Computed properties for statistics
 const totalChapters = computed(() => {
@@ -443,14 +452,37 @@ const refreshDebugState = async (action = 'manual') => {
   } catch (err: any) {
     debugState.value = JSON.stringify({ action, at: new Date().toISOString(), error: err?.message || String(err) }, null, 2)
   }
+  writeStoredDebugState(debugState.value)
 }
 
 const navigateToAppPath = async (path: string) => {
-  if (typeof navigator !== 'undefined' && navigator.onLine === false && typeof window !== 'undefined') {
-    window.location.assign(`${window.location.origin}/app${path}`)
-    return
+  if (typeof window !== 'undefined') {
+    const value = JSON.stringify({
+      action: 'grammarNavigation',
+      at: new Date().toISOString(),
+      from: window.location.href,
+      to: `${window.location.origin}/app${path}`,
+      online: typeof navigator === 'undefined' ? null : navigator.onLine,
+      previousDebug: debugState.value || null,
+    }, null, 2)
+    debugState.value = value
+    writeStoredDebugState(value)
   }
-  await router.push(path)
+
+  try {
+    await router.push(path)
+  } catch (error: any) {
+    const value = JSON.stringify({
+      action: 'grammarNavigationFailed',
+      at: new Date().toISOString(),
+      path,
+      error: error?.message || String(error),
+      previousDebug: debugState.value || null,
+    }, null, 2)
+    debugState.value = value
+    writeStoredDebugState(value)
+    throw error
+  }
 }
 
 const openGrammarTraining = async () => {
