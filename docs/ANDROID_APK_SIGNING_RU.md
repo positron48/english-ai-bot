@@ -85,6 +85,8 @@ Workflow:
 
 Если CI падает на вопросе `Do you want Bubblewrap to install the JDK?`, значит workflow запустился без актуальной версии `scripts/build-twa-apks.sh`, где создаётся `${HOME}/.bubblewrap/config.json`, или `JAVA_HOME`/`ANDROID_HOME` не были выставлены предыдущими setup actions.
 
+Если CI падает с `cli ERROR EISDIR: illegal operation on a directory, read`, значит Bubblewrap получил директорию вместо файла manifest. В актуальном `scripts/build-twa-apks.sh` используется `--manifest="${WORKDIR}/twa-manifest.json"`.
+
 ## Проверка локальных значений
 
 Посмотреть fingerprint:

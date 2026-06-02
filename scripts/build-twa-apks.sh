@@ -72,7 +72,7 @@ cat > "${HOME}/.bubblewrap/config.json" <<JSON
 JSON
 
 npx --yes @bubblewrap/cli@latest build \
-  --manifest="${WORKDIR}" \
+  --manifest="${WORKDIR}/twa-manifest.json" \
   --skipPwaValidation \
   --signingKeyPath="${KEYSTORE_PATH}" \
   --signingKeyAlias="${KEY_ALIAS}"
