@@ -92,11 +92,20 @@ if [ -f "$ANDROID_MANIFEST" ]; then
     echo "Generated AndroidManifest.xml does not contain TWA fallback strategy metadata" >&2
     exit 1
   }
-  grep -q 'android:value="webview"' "$ANDROID_MANIFEST" || {
+  if grep -q 'android:value="webview"' "$ANDROID_MANIFEST"; then
+    :
+  elif grep -q 'android:value="@string/fallbackType"' "$ANDROID_MANIFEST"; then
+    STRINGS_XML="${WORKDIR}/app/src/main/res/values/strings.xml"
+    grep -q '<string name="fallbackType">webview</string>' "$STRINGS_XML" || {
+      echo "Generated AndroidManifest.xml references @string/fallbackType, but strings.xml is not webview" >&2
+      grep -n 'fallbackType' "$STRINGS_XML" >&2 || true
+      exit 1
+    }
+  else
     echo "Generated AndroidManifest.xml fallback strategy is not webview" >&2
-    grep -n 'FALLBACK_STRATEGY\\|fallback' "$ANDROID_MANIFEST" >&2 || true
+    grep -n 'FALLBACK_STRATEGY\\|fallbackType\\|fallback' "$ANDROID_MANIFEST" >&2 || true
     exit 1
-  }
+  fi
 fi
 
 APK="${WORKDIR}/app-release-signed.apk"
