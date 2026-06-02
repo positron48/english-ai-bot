@@ -451,6 +451,8 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/training/answer", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTrainingAnswer)))
 	r.mux.HandleFunc("/api/training/report", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTrainingReport)))
 	r.mux.HandleFunc("/api/training/upcoming", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTrainingUpcoming)))
+	r.mux.HandleFunc("/api/training/offline/pack", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTrainingOfflinePack)))
+	r.mux.HandleFunc("/api/training/offline/sync-attempts", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTrainingOfflineSyncAttempts)))
 	r.mux.HandleFunc("/api/verb-training/start", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleVerbTrainingStart)))
 	r.mux.HandleFunc("/api/verb-training/current", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleVerbTrainingCurrent)))
 	r.mux.HandleFunc("/api/verb-training/answer", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleVerbTrainingAnswer)))

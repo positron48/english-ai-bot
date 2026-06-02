@@ -173,3 +173,87 @@ grammar_attempts.client_attempt_id
 Кнопка `Update preload` повторно получает manifest и главы с сервера и перезаписывает локальный bundle metadata/chapters. Версия определяется `version_hash`, который строится сервером из embedded grammar bundle index/sections.
 
 Если курс обновился на сервере, пользователь должен обновить preload, чтобы офлайн-режим использовал новую версию. Автоматического фонового скачивания новых глав в текущей v1 нет.
+
+## Офлайн-тренировка слов
+
+Добавлен отдельный offline-v1 режим для обычной тренировки слов (`/training`). Он работает независимо от grammar preload и хранится в отдельной IndexedDB базе `qantrix-word-training-offline`.
+
+### Что скачивается
+
+На экране тренировки слов есть блок `Offline word training` с кнопкой `Preload words`. При нажатии онлайн frontend вызывает:
+
+```http
+GET /api/training/offline/pack
+```
+
+Сервер собирает текущий тренировочный пул пользователя:
+
+- due cards из `user_cards`, у которых `next_due_at` пустой или уже наступил;
+- новые карточки пользователя (`state = new`);
+- связанные `training_cards` и базовые поля слова;
+- готовые варианты ответа и правильный ответ для multiple choice;
+- подсказку, пример, транскрипцию и morph metadata, если они есть.
+
+В APK ничего из слов не зашивается. На устройстве лежат только данные, которые пользователь явно скачал кнопкой preload после логина.
+
+### Что работает офлайн
+
+Офлайн поддержана обычная word training с выбором варианта ответа (`card` / multiple choice). Экран `/training` разрешён router-ом офлайн только если word training pack уже скачан.
+
+Пока не воспроизводятся локально spell/type варианты тренировки слов. Причина: live-режим на сервере подменяет часть карточек на spell/type на основании актуального mastering score и server-side queue generation. В offline-v1 для минимального риска используется стабильный multiple-choice pack, а SRS пересчитывается сервером после синхронизации.
+
+### Локальная попытка и видимость статуса
+
+Когда пользователь офлайн:
+
+1. `Start Training` создаёт локальную сессию из скачанного pack, максимум 30 карточек.
+2. `Reveal` показывает заранее скачанные options.
+3. Ответ проверяется локально по `correct_answer`.
+4. Пользователь сразу видит correct/incorrect, hint/example и локальное завершение сессии.
+5. Попытка кладётся в IndexedDB queue с `client_attempt_id`.
+
+В блоке `Offline word training` видно:
+
+- `Online` / `Offline`;
+- сколько карточек скачано;
+- сколько результатов ждёт синхронизации;
+- кнопки `Update preload`, `Sync results`, `Delete preload`.
+
+### Синхронизация слов
+
+Синхронизация запускается:
+
+- автоматически при событии браузера `online`;
+- периодически из `main.ts` раз в 30 секунд, если сеть есть;
+- вручную кнопкой `Sync results` на экране тренировки.
+
+Frontend отправляет очередь в:
+
+```http
+POST /api/training/offline/sync-attempts
+```
+
+Backend для каждой попытки:
+
+- проверяет `client_attempt_id` в `review_events`;
+- если такая попытка уже есть у пользователя, возвращает success без повторного SRS update;
+- проверяет, что `user_card_id` принадлежит текущему пользователю;
+- применяет canonical `SRSService.GradeCard` к актуальному `user_cards`;
+- создаёт `review_events` с `client_attempt_id`;
+- для неправильных ответов обновляет wrong answers;
+- закрывает синтетическую training session и пересчитывает `user_word_mastering` для затронутых слов.
+
+Idempotency хранится в `review_events.client_attempt_id`; уникальный индекс: `(user_id, client_attempt_id)` where `client_attempt_id is not null`.
+
+### Новые public API
+
+```http
+GET /api/training/offline/pack
+POST /api/training/offline/sync-attempts
+```
+
+### Ограничения v1
+
+- В pack попадают только карточки, уже созданные для пользователя в `user_cards`; каталоги слов сами по себе не скачиваются как новые user cards.
+- Локальная тренировка слов поддерживает multiple choice, но не spell/type.
+- Если пользователь долго занимался офлайн, сервер при sync применяет попытки последовательно к текущему состоянию карточек; это ожидаемое поведение и сохраняет сервер как source of truth.

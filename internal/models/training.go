@@ -88,24 +88,25 @@ type TrainingSession struct {
 
 // ReviewEvent represents a single card review attempt
 type ReviewEvent struct {
-	ID             int64
-	SessionID      *int64
-	UserID         int64
-	UserCardID     int64
-	Direction      CardDirection
-	ShownAt        time.Time
-	OptionsShownAt *time.Time
-	AnsweredAt     *time.Time
-	TDelayMS       int
-	EarlyReveal    bool
-	OptionCount    int
-	OptionsJSON    string
-	ChosenOption   string
-	IsCorrect      bool
-	Quality        int
-	MetricsJSON    string
-	SRSBeforeJSON  string
-	SRSAfterJSON   string
+	ID              int64
+	SessionID       *int64
+	UserID          int64
+	UserCardID      int64
+	ClientAttemptID string
+	Direction       CardDirection
+	ShownAt         time.Time
+	OptionsShownAt  *time.Time
+	AnsweredAt      *time.Time
+	TDelayMS        int
+	EarlyReveal     bool
+	OptionCount     int
+	OptionsJSON     string
+	ChosenOption    string
+	IsCorrect       bool
+	Quality         int
+	MetricsJSON     string
+	SRSBeforeJSON   string
+	SRSAfterJSON    string
 }
 
 // TrainingNudge represents a daily training notification

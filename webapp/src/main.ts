@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router'
 import i18n from './i18n'
 import { grammarClient } from './api/grammarClient'
+import { wordTrainingClient } from './api/wordTrainingClient'
 import './styles/theme.css'
 import './style.css'
 import './styles/markdown-content.css'
@@ -47,6 +48,9 @@ const trySyncOfflineGrammar = () => {
   if (typeof navigator !== 'undefined' && navigator.onLine === false) return
   grammarClient.syncQueuedAttempts().catch((error) => {
     console.warn('[PWA] Offline grammar sync failed:', error)
+  })
+  wordTrainingClient.syncQueuedAttempts().catch((error) => {
+    console.warn('[PWA] Offline word training sync failed:', error)
   })
 }
 

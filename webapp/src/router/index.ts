@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { useAuth } from '../composables/useAuth'
 import { apiClient } from '../api/client'
 import { grammarClient } from '../api/grammarClient'
+import { wordTrainingClient } from '../api/wordTrainingClient'
 
 const router = createRouter({
   history: createWebHistory('/app'),
@@ -278,7 +279,7 @@ router.beforeEach(async (to, _from, next) => {
   }
 
   const isOffline = typeof navigator !== 'undefined' && navigator.onLine === false
-  const isOfflineAllowedRoute = typeof to.name === 'string' && [
+  const isOfflineGrammarRoute = typeof to.name === 'string' && [
     'LearningGrammar',
     'GrammarChapters',
     'GrammarChapter',
@@ -287,6 +288,14 @@ router.beforeEach(async (to, _from, next) => {
     'GrammarPlacementTest',
     'GrammarTraining',
   ].includes(to.name)
+  let isOfflineAllowedRoute = isOfflineGrammarRoute
+  if (isOffline && to.name === 'Training') {
+    try {
+      isOfflineAllowedRoute = (await wordTrainingClient.getOfflineStatus()).ready
+    } catch {
+      isOfflineAllowedRoute = false
+    }
+  }
   if (isOffline && to.meta.requiresAuth && !isOfflineAllowedRoute) {
     next('/learning/grammar')
     return

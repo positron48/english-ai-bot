@@ -34,6 +34,30 @@
     </div>
 
     <div v-if="!sessionActive && !loading && !sessionComplete" class="training-idle-stack">
+      <div class="card word-offline-panel">
+        <div class="word-offline-title-row">
+          <h3>Offline word training</h3>
+          <span class="network-badge" :class="{ 'network-badge--offline': !isOnline }">
+            {{ isOnline ? 'Online' : 'Offline' }}
+          </span>
+        </div>
+        <p v-if="wordOfflineStatus.ready">
+          Ready: {{ wordOfflineStatus.downloadedCards }} cards.
+          <span v-if="wordOfflineStatus.pendingAttempts > 0">{{ wordOfflineStatus.pendingAttempts }} result(s) waiting to sync.</span>
+        </p>
+        <p v-else>Preload your current word training cards to practice offline after disconnecting.</p>
+        <div class="word-offline-actions">
+          <button class="btn btn-secondary" :disabled="wordPreloading || !isOnline" @click="preloadWordTraining">
+            {{ wordPreloading ? 'Downloading...' : (wordOfflineStatus.ready ? 'Update preload' : 'Preload words') }}
+          </button>
+          <button v-if="wordOfflineStatus.pendingAttempts > 0" class="btn btn-primary" :disabled="wordSyncing || !isOnline" @click="syncWordTrainingAttempts">
+            {{ wordSyncing ? 'Syncing...' : 'Sync results' }}
+          </button>
+          <button v-if="wordOfflineStatus.ready" class="btn btn-secondary" :disabled="wordPreloading" @click="clearWordTrainingPreload">
+            Delete preload
+          </button>
+        </div>
+      </div>
       <div class="card start-screen">
         <div class="start-screen-content">
         <div class="start-screen-stats" v-if="statsLoaded">
@@ -461,7 +485,7 @@
     </div>
     <div v-if="sessionActive && currentCard" class="report-row report-row-outside">
       <button
-        v-if="!reportAlreadySent"
+        v-if="!reportAlreadySent && !currentCard?.offline"
         type="button"
         class="report-text-link"
         :disabled="reportSubmitting"
@@ -501,6 +525,7 @@ import { ref, computed, onMounted, onUnmounted, watch, nextTick, TransitionGroup
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { apiClient } from '../api/client'
+import { wordTrainingClient, type WordTrainingOfflineStatus } from '../api/wordTrainingClient'
 import { showAlert } from '../composables/useDialog'
 import { useSettings } from '../composables/useSettings'
 import { useAudio } from '../composables/useAudio'
@@ -603,6 +628,7 @@ interface Card {
   word_card_id?: number
   training_card_id?: number
   word_category?: string
+  offline?: boolean
 }
 
 interface MorphVerbForms {
@@ -669,6 +695,10 @@ const percentageAnimationComplete = ref(false)
 const upcomingChartCanvas = ref<HTMLCanvasElement | null>(null)
 const upcomingCardsLoaded = ref(false)
 const upcomingCardsData = ref<Record<string, { date: string; label: string; count: number }>>({})
+const isOnline = ref(typeof navigator === 'undefined' ? true : navigator.onLine)
+const wordPreloading = ref(false)
+const wordSyncing = ref(false)
+const wordOfflineStatus = ref<WordTrainingOfflineStatus>({ ready: false, downloadedCards: 0, pendingAttempts: 0 })
 let upcomingChartInstance: Chart | null = null
 const showExampleButton = ref(false)
 const showExampleButtonVisible = ref(false)
@@ -1444,6 +1474,50 @@ const loadTrainingUISettings = async () => {
   }
 }
 
+const refreshWordOfflineStatus = async () => {
+  wordOfflineStatus.value = await wordTrainingClient.getOfflineStatus()
+}
+
+const syncWordTrainingAttempts = async () => {
+  if (!isOnline.value) return
+  wordSyncing.value = true
+  try {
+    await wordTrainingClient.syncQueuedAttempts()
+    await refreshWordOfflineStatus()
+    await loadStats()
+  } catch (error) {
+    console.error('Failed to sync offline word training attempts:', error)
+  } finally {
+    wordSyncing.value = false
+  }
+}
+
+const preloadWordTraining = async () => {
+  if (!isOnline.value) return
+  wordPreloading.value = true
+  try {
+    wordOfflineStatus.value = await wordTrainingClient.preload()
+  } catch (error) {
+    console.error('Failed to preload word training:', error)
+    await showAlert('Не удалось загрузить тренировку слов для офлайна')
+  } finally {
+    wordPreloading.value = false
+  }
+}
+
+const clearWordTrainingPreload = async () => {
+  await wordTrainingClient.clear()
+  await refreshWordOfflineStatus()
+}
+
+const handleNetworkChange = async () => {
+  isOnline.value = typeof navigator === 'undefined' ? true : navigator.onLine
+  await refreshWordOfflineStatus()
+  if (isOnline.value && wordOfflineStatus.value.pendingAttempts > 0) {
+    await syncWordTrainingAttempts()
+  }
+}
+
 onMounted(async () => {
   // Set up network error callback
   apiClient.setNetworkErrorCallback((isRetrying: boolean, attempt: number, maxAttempts: number) => {
@@ -1461,8 +1535,10 @@ onMounted(async () => {
   
   // Add keyboard event listener
   window.addEventListener('keydown', handleKeyPress)
+  window.addEventListener('online', handleNetworkChange)
+  window.addEventListener('offline', handleNetworkChange)
   
-  await Promise.all([ensureLearningLoaded(), loadTrainingUISettings(), loadStats(), loadUpcomingCards(), checkCurrentSession()])
+  await Promise.all([ensureLearningLoaded(), loadTrainingUISettings(), refreshWordOfflineStatus(), loadStats(), loadUpcomingCards(), checkCurrentSession()])
 
   // Spell: scale collected letters to fit container width
   watch(
@@ -1491,7 +1567,7 @@ onMounted(async () => {
 
 const loadStats = async () => {
   try {
-    const data: { due_count: number; total_cards?: number; available_for_training?: number } = await apiClient.request('/api/dashboard')
+    const data: { due_count: number; total_cards?: number; available_for_training?: number } = await wordTrainingClient.getDashboard()
     stats.value.dueCount = data.due_count || 0
     stats.value.totalCards = data.total_cards || 0
     stats.value.availableForTraining = data.available_for_training || data.due_count || 0
@@ -1505,7 +1581,7 @@ const loadStats = async () => {
 
 const loadUpcomingCards = async () => {
   try {
-    const data = await apiClient.request('/api/training/upcoming')
+    const data = await wordTrainingClient.getUpcoming()
     console.log('Upcoming cards data:', data)
     
     // Ensure data is in correct format
@@ -1664,6 +1740,8 @@ const updateUpcomingChart = () => {
 onUnmounted(() => {
   // Remove keyboard event listener
   window.removeEventListener('keydown', handleKeyPress)
+  window.removeEventListener('online', handleNetworkChange)
+  window.removeEventListener('offline', handleNetworkChange)
   
   if (autoRevealTimer) {
     clearTimeout(autoRevealTimer)
@@ -1701,7 +1779,7 @@ onUnmounted(() => {
 
 const checkCurrentSession = async () => {
   try {
-    const response = await apiClient.request('/api/training/current')
+    const response = await wordTrainingClient.current()
     
     // No active session (HTTP 200)
     if (response && typeof response === 'object' && 'active' in response && (response as any).active === false) {
@@ -1843,7 +1921,7 @@ const setupCard = (card: Card) => {
 const startTraining = async () => {
   loading.value = true
   try {
-    const card: Card = await apiClient.request('/api/training/start', { method: 'POST' })
+    const card: Card = await wordTrainingClient.start()
     sessionActive.value = true
     setupCard(card)
     sessionComplete.value = false
@@ -1934,10 +2012,7 @@ const revealOptions = async (isEarly: boolean = false) => {
   }
 
   try {
-    const data: OptionsResponse = await apiClient.request('/api/training/reveal', { 
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' }
-    })
+    const data: OptionsResponse = await wordTrainingClient.reveal()
     options.value = data.options
     optionsShown.value = true
     
@@ -2108,7 +2183,7 @@ const submitSpellAnswerAs = async (answerText: string, isSkip = false) => {
   try {
     const formData = new FormData()
     formData.append('answer_text', answerText)
-    const data: Feedback = await apiClient.requestFormData('/api/training/answer', formData)
+    const data: Feedback = await wordTrainingClient.answer(formData)
     feedback.value = data
     if (!data.is_correct && currentCard.value?.type === 'spell' && data.correct_answer) {
       const prefix = currentCard.value?.prefix ?? ''
@@ -2217,7 +2292,7 @@ const submitTypeAnswerAs = async (answerText: string) => {
   try {
     const formData = new FormData()
     formData.append('answer_text', answerText)
-    const data: Feedback = await apiClient.requestFormData('/api/training/answer', formData)
+    const data: Feedback = await wordTrainingClient.answer(formData)
     feedback.value = data
     triggerHapticFeedback(data.is_correct)
     if (data.is_correct) {
@@ -2373,7 +2448,7 @@ const submitAnswer = async (optionIndex: number) => {
     formData.append('option_index', optionIndex.toString())
     formData.append('user_card_id', userCardId.value.toString())
     
-    const data: Feedback = await apiClient.requestFormData('/api/training/answer', formData)
+    const data: Feedback = await wordTrainingClient.answer(formData)
     feedback.value = data
     
     // Hide example if it was shown before answer (to avoid duplicate display in feedback)
@@ -2561,7 +2636,7 @@ const nextCard = async () => {
   typeAnswerText.value = ''
 
   try {
-    const response = await apiClient.request('/api/training/current')
+    const response = await wordTrainingClient.current()
     
     // Check if training is complete (response has complete field)
     if (response && typeof response === 'object' && 'complete' in response) {
@@ -2598,7 +2673,7 @@ const nextCard = async () => {
       cardsCompleted.value = card.card_index - 1
       // Try to get stats by making another request
       try {
-        const statsResponse = await apiClient.request('/api/training/current')
+        const statsResponse = await wordTrainingClient.current()
         if (statsResponse && typeof statsResponse === 'object' && 'complete' in statsResponse) {
           const statsData = statsResponse as { total_cards?: number; correct_cards?: number }
           trainingStats.value = {
@@ -4791,5 +4866,48 @@ const handleTimerMouseLeave = () => {
     padding: 14px 28px;
     font-size: 16px;
   }
+}
+.word-offline-panel {
+  padding: 20px;
+  border: 1px solid var(--border-primary);
+  background: linear-gradient(135deg, var(--bg-secondary), rgba(67, 160, 71, 0.08));
+}
+
+.word-offline-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.word-offline-title-row h3 {
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.word-offline-panel p {
+  margin: 0 0 14px;
+  color: var(--text-secondary);
+}
+
+.word-offline-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.network-badge {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(46, 125, 50, 0.14);
+  color: #2e7d32;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.network-badge--offline {
+  background: rgba(198, 40, 40, 0.14);
+  color: #c62828;
 }
 </style>

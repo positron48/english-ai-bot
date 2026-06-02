@@ -97,6 +97,7 @@ func (db *DB) migratePostgres() error {
 			session_id BIGINT REFERENCES training_sessions(id) ON DELETE SET NULL,
 			user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
 			user_card_id BIGINT NOT NULL REFERENCES user_cards(id) ON DELETE CASCADE,
+			client_attempt_id TEXT,
 			direction TEXT NOT NULL,
 			shown_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
 			options_shown_at TIMESTAMPTZ,
@@ -112,6 +113,10 @@ func (db *DB) migratePostgres() error {
 			srs_before_json TEXT,
 			srs_after_json TEXT
 		)`,
+		`ALTER TABLE review_events ADD COLUMN IF NOT EXISTS client_attempt_id TEXT`,
+		`CREATE UNIQUE INDEX IF NOT EXISTS idx_review_events_client_attempt_id
+			ON review_events(user_id, client_attempt_id)
+			WHERE client_attempt_id IS NOT NULL`,
 		`CREATE TABLE IF NOT EXISTS training_nudges (
 			id BIGSERIAL PRIMARY KEY,
 			user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
