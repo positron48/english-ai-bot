@@ -126,6 +126,11 @@ export async function getStoredChapter(chapterID: string): Promise<any | null> {
   return row?.payload || null
 }
 
+export async function getStoredChapters(): Promise<any[]> {
+  const rows = await getAllFromStore<StoredOfflineChapter>('chapters')
+  return rows.map((row) => row.payload).filter(Boolean)
+}
+
 export async function setStoredChapter(chapterID: string, payload: any): Promise<void> {
   await tx('chapters', 'readwrite', (store) => store.put({ chapter_id: chapterID, payload }))
 }

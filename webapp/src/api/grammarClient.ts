@@ -12,6 +12,7 @@ import {
   getQueuedAttempts,
   getQueuedTrainingAttempts,
   getStoredChapter,
+  getStoredChapters,
   getTrainingQuestions,
   queueCount,
   setTrainingQuestions,
@@ -134,6 +135,7 @@ function computeSectionAccess(meta: OfflineGrammarMeta, sectionID: string): bool
   const index = meta.sections.findIndex((section) => section.section_id === sectionID)
   if (index < 0) return false
   const section = meta.sections[index]
+  if (section.chapters.length > 0) return true
   if (section.can_access) return true
   if (index === 0) return true
   const prev = meta.sections[index - 1]
@@ -228,6 +230,32 @@ function sanitizeTrainingQuestion(question: any): any {
   const q = clone(question)
   delete q.correct_answer
   return q
+}
+
+function chapterIDFromPayload(payload: any): string {
+  return payload?.chapter?.id || payload?.chapter?.chapter_id || payload?.chapter_id || ''
+}
+
+function trainingQuestionsFromChapterPayload(payload: any): any[] {
+  const chapterID = chapterIDFromPayload(payload)
+  if (!chapterID) return []
+  const questions = payload?.chapter?.question_bank?.questions || []
+  if (!Array.isArray(questions)) return []
+  return questions
+    .filter((question: any) => question?.id)
+    .map((question: any) => ({
+      ...question,
+      id: `${chapterID}:${question.id}`,
+      _offline_original_question_id: question.id,
+      chapter_id: chapterID,
+    }))
+}
+
+async function getOfflineTrainingQuestionPool(): Promise<any[]> {
+  const trainingQuestions = await getTrainingQuestions()
+  if (trainingQuestions.length > 0) return trainingQuestions
+  const chapters = await getStoredChapters()
+  return chapters.flatMap(trainingQuestionsFromChapterPayload)
 }
 
 async function queueOfflineTrainingAttempt(questionID: string, answer: any, result: any): Promise<void> {
@@ -335,7 +363,7 @@ export const grammarClient = {
         const meta = await requireMeta()
         return { categories: meta.sections.map(({ chapters, ...section }) => ({
           ...section,
-          can_access: computeSectionAccess(meta, section.section_id),
+          can_access: chapters.length > 0 || computeSectionAccess(meta, section.section_id),
         })) }
       },
     )
@@ -352,7 +380,7 @@ export const grammarClient = {
     return offlineFallback(
       () => apiClient.request('/api/learning/grammar/training/availability'),
       async () => {
-        const questions = await getTrainingQuestions()
+        const questions = await getOfflineTrainingQuestionPool()
         const blocks = new Set(questions.map((q: any) => q?.theory_block_id).filter(Boolean))
         return { grammar_training: { available: questions.length > 0, offline: true, question_count: questions.length, theory_block_count: blocks.size, due_theory_block_count: blocks.size } }
       },
@@ -366,7 +394,7 @@ export const grammarClient = {
         body: { limit } as any,
       }),
       async () => {
-        const questions = await getTrainingQuestions()
+        const questions = await getOfflineTrainingQuestionPool()
         if (questions.length === 0) return { items: [] }
         const byBlock = new Map<string, any[]>()
         for (const q of questions) {
@@ -397,8 +425,8 @@ export const grammarClient = {
         if (!isNetworkError(error)) throw error
       }
     }
-    const questions = await getTrainingQuestions()
-    const question = questions.find((q: any) => q?.id === questionID)
+    const questions = await getOfflineTrainingQuestionPool()
+    const question = questions.find((q: any) => q?.id === questionID || q?._offline_original_question_id === questionID)
     if (!question) throw new OfflineGrammarUnavailableError('Training question is not available offline')
     const correct = compareAnswers(answer, question.correct_answer, question.type)
     const result = {
@@ -408,7 +436,7 @@ export const grammarClient = {
       offline: true,
       queued: true,
     }
-    await queueOfflineTrainingAttempt(questionID, answer, result)
+    await queueOfflineTrainingAttempt(question._offline_original_question_id || questionID, answer, result)
     return result
   },
 
