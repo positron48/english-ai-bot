@@ -281,6 +281,7 @@ router.beforeEach(async (to, _from, next) => {
   const isOfflineAllowedBaseRoute = typeof to.name === 'string' && [
     'Dashboard',
     'Training',
+    'Learning',
     'LearningGrammar',
     'GrammarChapters',
     'GrammarChapter',
@@ -291,7 +292,7 @@ router.beforeEach(async (to, _from, next) => {
   ].includes(to.name)
   const isOfflineAllowedRoute = isOfflineAllowedBaseRoute
   if (isOffline && to.meta.requiresAuth && !isOfflineAllowedRoute) {
-    next('/dashboard')
+    next(to.path.startsWith('/learning') ? '/learning' : '/dashboard')
     return
   }
   

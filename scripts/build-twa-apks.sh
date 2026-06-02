@@ -39,7 +39,7 @@ cat > "${WORKDIR}/twa-manifest.json" <<JSON
   "navigationColorDark": "#000000",
   "navigationDividerColor": "#000000",
   "navigationDividerColorDark": "#000000",
-  "backgroundColor": "#ffffff",
+  "backgroundColor": "${THEME_COLOR}",
   "enableNotifications": false,
   "startUrl": "/app/",
   "webManifestUrl": "${ORIGIN}/app/manifest.webmanifest",

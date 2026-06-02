@@ -2,6 +2,10 @@
   <div class="learning">
     <h1>{{ t('learning.title') }}</h1>
     
+    <p v-if="isOffline" class="offline-note">
+      Офлайн доступны только предзагруженные разделы грамматики.
+    </p>
+
     <div class="learning-sections">
       <router-link to="/learning/grammar" class="learning-card grammar-card">
         <div class="card-icon">
@@ -11,7 +15,15 @@
         <p>{{ t('learning.grammarDescription') }}</p>
       </router-link>
       
-      <router-link to="/learning/words" class="learning-card words-card">
+      <div v-if="isOffline" class="learning-card words-card disabled-card">
+        <span class="offline-badge">Недоступно офлайн</span>
+        <div class="card-icon">
+          <Icon name="book" />
+        </div>
+        <h2>{{ t('learning.words') }}</h2>
+        <p>{{ t('learning.wordsDescription') }}</p>
+      </div>
+      <router-link v-else to="/learning/words" class="learning-card words-card">
         <div class="card-icon">
           <Icon name="book" />
         </div>
@@ -19,7 +31,15 @@
         <p>{{ t('learning.wordsDescription') }}</p>
       </router-link>
 
-      <router-link to="/learning/reading" class="learning-card reading-card">
+      <div v-if="isOffline" class="learning-card reading-card disabled-card">
+        <span class="offline-badge">Недоступно офлайн</span>
+        <div class="card-icon">
+          <Icon name="book-open" />
+        </div>
+        <h2>{{ t('learning.reading') }}</h2>
+        <p>{{ t('learning.readingDescription') }}</p>
+      </div>
+      <router-link v-else to="/learning/reading" class="learning-card reading-card">
         <div class="card-icon">
           <Icon name="book-open" />
         </div>
@@ -28,7 +48,7 @@
       </router-link>
 
       <router-link
-        v-if="showSpeaking"
+        v-if="showSpeaking && !isOffline"
         to="/learning/speaking"
         class="learning-card speaking-card"
       >
@@ -43,7 +63,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Icon from '../components/Icon.vue'
 import { useSpeaking } from '../composables/useSpeaking'
@@ -51,14 +71,30 @@ import { useSpeaking } from '../composables/useSpeaking'
 const { t } = useI18n()
 const { loadAvailability } = useSpeaking()
 const showSpeaking = ref(false)
+const isOffline = ref(typeof navigator !== 'undefined' && navigator.onLine === false)
+
+const handleNetworkChange = () => {
+  isOffline.value = typeof navigator !== 'undefined' && navigator.onLine === false
+}
 
 onMounted(async () => {
+  window.addEventListener('online', handleNetworkChange)
+  window.addEventListener('offline', handleNetworkChange)
   try {
+    if (isOffline.value) {
+      showSpeaking.value = false
+      return
+    }
     const avail = await loadAvailability()
     showSpeaking.value = Boolean(avail.can_access && avail.available)
   } catch {
     showSpeaking.value = false
   }
+})
+
+onUnmounted(() => {
+  window.removeEventListener('online', handleNetworkChange)
+  window.removeEventListener('offline', handleNetworkChange)
 })
 </script>
 
@@ -70,7 +106,16 @@ onMounted(async () => {
 }
 
 .learning h1 {
-  margin-bottom: 32px;
+  margin-bottom: 16px;
+}
+
+.offline-note {
+  margin: 0 0 24px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-primary);
 }
 
 .learning-sections {
@@ -97,6 +142,29 @@ onMounted(async () => {
   border-color: var(--color-primary);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transform: translateY(-2px);
+}
+
+.disabled-card {
+  opacity: 0.58;
+  cursor: not-allowed;
+}
+
+.disabled-card:hover {
+  border-color: var(--border-primary);
+  box-shadow: none;
+  transform: none;
+}
+
+.offline-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-size: 12px;
+  padding: 4px 8px;
+  background: var(--color-secondary);
+  color: white;
+  border-radius: 4px;
+  font-weight: 600;
 }
 
 

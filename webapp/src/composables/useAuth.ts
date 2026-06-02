@@ -102,8 +102,10 @@ export function useAuth() {
         isAdmin.value = true
       }
       
-      // Load permissions from API
-      await loadPermissions()
+      // Offline navigation must not wait for permission API retries.
+      if (typeof navigator === 'undefined' || navigator.onLine !== false) {
+        await loadPermissions()
+      }
     } else {
       categories.value = []
       permissions.value = []
@@ -211,4 +213,3 @@ export function useAuth() {
     loadPermissions
   }
 }
-
