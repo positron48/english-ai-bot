@@ -76,16 +76,19 @@ Workflow:
 2. Декодирует его в `release.keystore`.
 3. `actions/setup-java` ставит JDK 17, `android-actions/setup-android` ставит Android SDK.
 4. `scripts/build-twa-apks.sh` заранее пишет `${HOME}/.bubblewrap/config.json` с `JAVA_HOME` и `ANDROID_HOME`, чтобы Bubblewrap не задавал интерактивный вопрос `Do you want Bubblewrap to install the JDK?`.
-5. Bubblewrap собирает два signed TWA APK:
+5. `scripts/build-twa-apks.sh` перед `build` выполняет `bubblewrap update --skipVersionUpgrade` внутри `dist/twa-<app>/`, чтобы создать Android project и `manifest-checksum.txt` без интерактивного regenerate prompt.
+6. Bubblewrap собирает два signed TWA APK:
    - `qantrix-english-<tag>.apk` для `ru.qantrix.english` и `https://qantrix.ru/app/`;
    - `qantrix-spanish-<tag>.apk` для `ru.qantrix.spanish` и `https://es.qantrix.ru/app/`.
-6. APK и `checksums.txt` загружаются в GitHub Release.
+7. APK и `checksums.txt` загружаются в GitHub Release.
 
 Если `ANDROID_KEYSTORE_BASE64 is required`, значит GitHub secret не добавлен или добавлен не в тот репозиторий.
 
 Если CI падает на вопросе `Do you want Bubblewrap to install the JDK?`, значит workflow запустился без актуальной версии `scripts/build-twa-apks.sh`, где создаётся `${HOME}/.bubblewrap/config.json`, или `JAVA_HOME`/`ANDROID_HOME` не были выставлены предыдущими setup actions.
 
 Если CI падает с `cli ERROR EISDIR: illegal operation on a directory, read`, значит Bubblewrap получил директорию вместо файла manifest. В актуальном `scripts/build-twa-apks.sh` используется `--manifest="${WORKDIR}/twa-manifest.json"`.
+
+Если CI падает на вопросе `No checksum file was found ... would you like to regenerate your project?`, значит `build` запустился без предварительного `bubblewrap update --skipVersionUpgrade`. В актуальном `scripts/build-twa-apks.sh` update запускается перед build внутри `dist/twa-<app>/`.
 
 ## Проверка локальных значений
 

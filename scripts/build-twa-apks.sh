@@ -71,11 +71,17 @@ cat > "${HOME}/.bubblewrap/config.json" <<JSON
 {"jdkPath":"${JAVA_HOME}","androidSdkPath":"${ANDROID_HOME}"}
 JSON
 
-npx --yes @bubblewrap/cli@latest build \
-  --manifest="${WORKDIR}/twa-manifest.json" \
-  --skipPwaValidation \
-  --signingKeyPath="${KEYSTORE_PATH}" \
-  --signingKeyAlias="${KEY_ALIAS}"
+(
+  cd "$WORKDIR"
+  npx --yes @bubblewrap/cli@latest update \
+    --manifest="twa-manifest.json" \
+    --skipVersionUpgrade
+  npx --yes @bubblewrap/cli@latest build \
+    --manifest="twa-manifest.json" \
+    --skipPwaValidation \
+    --signingKeyPath="${KEYSTORE_PATH}" \
+    --signingKeyAlias="${KEY_ALIAS}"
+)
 
 APK="${WORKDIR}/app-release-signed.apk"
 if [ ! -f "$APK" ]; then
