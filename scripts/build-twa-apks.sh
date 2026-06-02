@@ -79,6 +79,28 @@ JSON
   npx --yes @bubblewrap/cli@latest update \
     --manifest="twa-manifest.json" \
     --skipVersionUpgrade
+)
+
+ANDROID_MANIFEST="${WORKDIR}/app/src/main/AndroidManifest.xml"
+STRINGS_XML="${WORKDIR}/app/src/main/res/values/strings.xml"
+if [ -f "$ANDROID_MANIFEST" ] && grep -q 'android.support.customtabs.trusted.FALLBACK_STRATEGY' "$ANDROID_MANIFEST"; then
+  if grep -q 'android:value="@string/fallbackType"' "$ANDROID_MANIFEST"; then
+    if [ ! -f "$STRINGS_XML" ]; then
+      echo "Generated AndroidManifest.xml references @string/fallbackType, but ${STRINGS_XML} is missing" >&2
+      exit 1
+    fi
+    if grep -q '<string name="fallbackType">' "$STRINGS_XML"; then
+      sed -i.bak 's#<string name="fallbackType">[^<]*</string>#<string name="fallbackType">webview</string>#' "$STRINGS_XML"
+      rm -f "${STRINGS_XML}.bak"
+    else
+      sed -i.bak 's#</resources>#    <string name="fallbackType">webview</string>\n</resources>#' "$STRINGS_XML"
+      rm -f "${STRINGS_XML}.bak"
+    fi
+  fi
+fi
+
+(
+  cd "$WORKDIR"
   npx --yes @bubblewrap/cli@latest build \
     --manifest="twa-manifest.json" \
     --skipPwaValidation \
@@ -86,7 +108,6 @@ JSON
     --signingKeyAlias="${KEY_ALIAS}"
 )
 
-ANDROID_MANIFEST="${WORKDIR}/app/src/main/AndroidManifest.xml"
 if [ -f "$ANDROID_MANIFEST" ]; then
   grep -q 'android.support.customtabs.trusted.FALLBACK_STRATEGY' "$ANDROID_MANIFEST" || {
     echo "Generated AndroidManifest.xml does not contain TWA fallback strategy metadata" >&2
@@ -95,7 +116,6 @@ if [ -f "$ANDROID_MANIFEST" ]; then
   if grep -q 'android:value="webview"' "$ANDROID_MANIFEST"; then
     :
   elif grep -q 'android:value="@string/fallbackType"' "$ANDROID_MANIFEST"; then
-    STRINGS_XML="${WORKDIR}/app/src/main/res/values/strings.xml"
     grep -q '<string name="fallbackType">webview</string>' "$STRINGS_XML" || {
       echo "Generated AndroidManifest.xml references @string/fallbackType, but strings.xml is not webview" >&2
       grep -n 'fallbackType' "$STRINGS_XML" >&2 || true
