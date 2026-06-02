@@ -16,6 +16,9 @@ var webappFS fs.FS
 
 // setupWebappRoutes configures routes for serving the embedded webapp
 func (r *Router) setupWebappRoutes() {
+	r.mux.HandleFunc("/app/manifest.webmanifest", r.handleWebAppManifest)
+	r.mux.HandleFunc("/.well-known/assetlinks.json", r.handleAndroidAssetLinks)
+
 	// Check if webappFS is empty (test mode) - in dev mode, Vite serves static files
 	// Try to read index.html to check if files are embedded
 	_, err := fs.ReadFile(webappFS, "dist/index.html")
@@ -46,13 +49,11 @@ func (r *Router) setupWebappRoutes() {
 		_, _ = w.Write(data)
 	})
 
-	r.mux.HandleFunc("/app/manifest.webmanifest", r.handleWebAppManifest)
-	r.mux.HandleFunc("/.well-known/assetlinks.json", r.handleAndroidAssetLinks)
-
 	// Serve static assets (JS, CSS, images, etc.)
 	// Strip /app prefix before serving files
 	// This must be registered before the general /app/ handler to ensure assets are served correctly
 	r.mux.Handle("/app/assets/", http.StripPrefix("/app", fileServer))
+	r.mux.Handle("/app/icons/", http.StripPrefix("/app", fileServer))
 
 	// Serve other static files (favicon, robots.txt, etc.)
 	r.mux.HandleFunc("/app/", func(w http.ResponseWriter, req *http.Request) {
