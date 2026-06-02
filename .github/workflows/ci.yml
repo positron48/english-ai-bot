@@ -272,10 +272,12 @@ jobs:
       env:
         GH_TOKEN: ${{ github.token }}
       run: |
-        gh release view "${{ github.ref_name }}" >/dev/null 2>&1 || \
+        if ! gh release view "${{ github.ref_name }}" >/dev/null 2>&1; then
           gh release create "${{ github.ref_name }}" \
             --title "${{ github.ref_name }}" \
-            --notes "Temporary APK CI debug release. The normal release job may update assets later."
+            --notes "Temporary APK CI debug release. The normal release job may update assets later." || \
+            gh release view "${{ github.ref_name }}" >/dev/null
+        fi
 
     - name: Build TWA APK
       env:
