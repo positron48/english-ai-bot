@@ -445,14 +445,22 @@ const refreshDebugState = async (action = 'manual') => {
   }
 }
 
+const navigateToAppPath = async (path: string) => {
+  if (typeof navigator !== 'undefined' && navigator.onLine === false && typeof window !== 'undefined') {
+    window.location.assign(`${window.location.origin}/app${path}`)
+    return
+  }
+  await router.push(path)
+}
+
 const openGrammarTraining = async () => {
   await refreshDebugState('openGrammarTraining')
-  await router.push('/learning/grammar/training')
+  await navigateToAppPath('/learning/grammar/training')
 }
 
 const openCategory = async (category: Category) => {
   await refreshDebugState(`openCategory:${category.section_id}`)
-  await router.push(`/learning/grammar/${category.section_id}`)
+  await navigateToAppPath(`/learning/grammar/${category.section_id}`)
 }
 
 const preloadGrammar = async () => {
