@@ -76,11 +76,12 @@ Workflow:
 2. Декодирует его в `release.keystore`.
 3. `actions/setup-java` ставит JDK 17, `android-actions/setup-android` ставит Android SDK.
 4. `scripts/build-twa-apks.sh` заранее пишет `${HOME}/.bubblewrap/config.json` с `JAVA_HOME` и `ANDROID_HOME`, чтобы Bubblewrap не задавал интерактивный вопрос `Do you want Bubblewrap to install the JDK?`.
-5. `scripts/build-twa-apks.sh` перед `build` выполняет `bubblewrap update --skipVersionUpgrade` внутри `dist/twa-<app>/`, чтобы создать Android project и `manifest-checksum.txt` без интерактивного regenerate prompt.
-6. Bubblewrap собирает два signed TWA APK:
+5. Для `iconUrl`/`maskableIconUrl` в TWA manifest CI использует raw GitHub URL вида `https://raw.githubusercontent.com/<repo>/<sha>/webapp/public/icons/<app>-512.png`. Это убирает зависимость APK build от того, успел ли новый web image выкатиться на `qantrix.ru` / `es.qantrix.ru`.
+6. `scripts/build-twa-apks.sh` перед `build` выполняет `bubblewrap update --skipVersionUpgrade` внутри `dist/twa-<app>/`, чтобы создать Android project и `manifest-checksum.txt` без интерактивного regenerate prompt.
+7. Bubblewrap собирает два signed TWA APK:
    - `qantrix-english-<tag>.apk` для `ru.qantrix.english` и `https://qantrix.ru/app/`;
    - `qantrix-spanish-<tag>.apk` для `ru.qantrix.spanish` и `https://es.qantrix.ru/app/`.
-7. APK и `checksums.txt` загружаются в GitHub Release.
+8. APK и `checksums.txt` загружаются в GitHub Release.
 
 Если `ANDROID_KEYSTORE_BASE64 is required`, значит GitHub secret не добавлен или добавлен не в тот репозиторий.
 
@@ -89,6 +90,8 @@ Workflow:
 Если CI падает с `cli ERROR EISDIR: illegal operation on a directory, read`, значит Bubblewrap получил директорию вместо файла manifest. В актуальном `scripts/build-twa-apks.sh` используется `--manifest="${WORKDIR}/twa-manifest.json"`.
 
 Если CI падает на вопросе `No checksum file was found ... would you like to regenerate your project?`, значит `build` запустился без предварительного `bubblewrap update --skipVersionUpgrade`. В актуальном `scripts/build-twa-apks.sh` update запускается перед build внутри `dist/twa-<app>/`.
+
+Если CI падает с `Failed to download icon https://.../app/icons/<app>-512.png ... 404`, значит сборка использует старый скрипт, где icon URL брался с продового домена. В актуальном `scripts/build-twa-apks.sh` для GitHub Actions icon URL берётся из `raw.githubusercontent.com` по `GITHUB_SHA`.
 
 ## Проверка локальных значений
 

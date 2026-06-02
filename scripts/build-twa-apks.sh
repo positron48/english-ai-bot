@@ -23,6 +23,11 @@ HOST="${HOST#http://}"
 HOST="${HOST%%/*}"
 VERSION_NAME="${GITHUB_REF_NAME:-0.0.0}"
 VERSION_CODE="${GITHUB_RUN_NUMBER:-1}"
+ICON_URL="${ORIGIN}${ICON_PATH}"
+if [ -n "${GITHUB_REPOSITORY:-}" ] && [ -n "${GITHUB_SHA:-}" ]; then
+  PUBLIC_ICON_PATH="${ICON_PATH#/app}"
+  ICON_URL="https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/${GITHUB_SHA}/webapp/public${PUBLIC_ICON_PATH}"
+fi
 
 cat > "${WORKDIR}/twa-manifest.json" <<JSON
 {
@@ -43,8 +48,8 @@ cat > "${WORKDIR}/twa-manifest.json" <<JSON
   "startUrl": "/app/",
   "webManifestUrl": "${ORIGIN}/app/manifest.webmanifest",
   "fullScopeUrl": "${ORIGIN}/",
-  "iconUrl": "${ORIGIN}${ICON_PATH}",
-  "maskableIconUrl": "${ORIGIN}${ICON_PATH}",
+  "iconUrl": "${ICON_URL}",
+  "maskableIconUrl": "${ICON_URL}",
   "fallbackType": "customtabs",
   "appVersion": "${VERSION_NAME}",
   "appVersionCode": ${VERSION_CODE},
