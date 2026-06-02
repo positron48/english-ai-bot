@@ -70,6 +70,12 @@ qantrix-release
 
 APK job запускается только на tag push.
 
+Временный режим отладки APK CI: `android-apk` сейчас не ждёт полный `release` job и сам создаёт GitHub Release, если его ещё нет. После стабилизации Bubblewrap вернуть зависимость:
+
+```yaml
+needs: [release]
+```
+
 Workflow:
 
 1. GitHub Actions читает `ANDROID_KEYSTORE_BASE64`.
