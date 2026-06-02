@@ -24,26 +24,6 @@ HOST="${HOST%%/*}"
 VERSION_NAME="${GITHUB_REF_NAME:-0.0.0}"
 VERSION_CODE="${GITHUB_RUN_NUMBER:-1}"
 ICON_URL="${ORIGIN}${ICON_PATH}"
-if [ "${GITHUB_ACTIONS:-}" = "true" ]; then
-  PUBLIC_ICON_PATH="${ICON_PATH#/app}"
-  ICON_SERVER_PORT="${TWA_ICON_SERVER_PORT:-8765}"
-  ICON_SERVER_LOG="${RUNNER_TEMP:-/tmp}/twa-icon-server-${APP}.log"
-  python3 -m http.server "$ICON_SERVER_PORT" --bind 127.0.0.1 --directory webapp/public >"$ICON_SERVER_LOG" 2>&1 &
-  ICON_SERVER_PID="$!"
-  trap 'kill "${ICON_SERVER_PID:-}" 2>/dev/null || true' EXIT
-  ICON_URL="http://127.0.0.1:${ICON_SERVER_PORT}${PUBLIC_ICON_PATH}"
-  for _ in $(seq 1 20); do
-    if curl -fsS "$ICON_URL" >/dev/null 2>&1; then
-      break
-    fi
-    sleep 0.25
-  done
-  curl -fsS "$ICON_URL" >/dev/null || {
-    echo "Failed to serve TWA icon ${ICON_URL}; server log:" >&2
-    cat "$ICON_SERVER_LOG" >&2 || true
-    exit 1
-  }
-fi
 
 cat > "${WORKDIR}/twa-manifest.json" <<JSON
 {

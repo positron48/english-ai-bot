@@ -76,12 +76,11 @@ Workflow:
 2. Декодирует его в `release.keystore`.
 3. `actions/setup-java` ставит JDK 17, `android-actions/setup-android` ставит Android SDK.
 4. `scripts/build-twa-apks.sh` заранее пишет `${HOME}/.bubblewrap/config.json` с `JAVA_HOME` и `ANDROID_HOME`, чтобы Bubblewrap не задавал интерактивный вопрос `Do you want Bubblewrap to install the JDK?`.
-5. Для `iconUrl`/`maskableIconUrl` в TWA manifest CI поднимает локальный HTTP server на `127.0.0.1:8765` из `webapp/public` и отдаёт `/icons/<app>-512.png`. Это убирает зависимость APK build от приватности GitHub raw URLs и от того, успел ли новый web image выкатиться на `qantrix.ru` / `es.qantrix.ru`.
-6. `scripts/build-twa-apks.sh` перед `build` выполняет `bubblewrap update --skipVersionUpgrade` внутри `dist/twa-<app>/`, чтобы создать Android project и `manifest-checksum.txt` без интерактивного regenerate prompt.
-7. Bubblewrap собирает два signed TWA APK:
+5. `scripts/build-twa-apks.sh` перед `build` выполняет `bubblewrap update --skipVersionUpgrade` внутри `dist/twa-<app>/`, чтобы создать Android project и `manifest-checksum.txt` без интерактивного regenerate prompt.
+6. Bubblewrap собирает два signed TWA APK:
    - `qantrix-english-<tag>.apk` для `ru.qantrix.english` и `https://qantrix.ru/app/`;
    - `qantrix-spanish-<tag>.apk` для `ru.qantrix.spanish` и `https://es.qantrix.ru/app/`.
-8. APK и `checksums.txt` загружаются в GitHub Release.
+7. APK и `checksums.txt` загружаются в GitHub Release.
 
 Если `ANDROID_KEYSTORE_BASE64 is required`, значит GitHub secret не добавлен или добавлен не в тот репозиторий.
 
@@ -91,9 +90,7 @@ Workflow:
 
 Если CI падает на вопросе `No checksum file was found ... would you like to regenerate your project?`, значит `build` запустился без предварительного `bubblewrap update --skipVersionUpgrade`. В актуальном `scripts/build-twa-apks.sh` update запускается перед build внутри `dist/twa-<app>/`.
 
-Если CI падает с `Failed to download icon https://.../app/icons/<app>-512.png ... 404`, значит сборка использует старый скрипт, где icon URL брался с продового домена. В актуальном `scripts/build-twa-apks.sh` для GitHub Actions icon URL берётся с локального server `http://127.0.0.1:8765/icons/<app>-512.png`.
-
-Если CI падает с `Failed to download icon https://raw.githubusercontent.com/... 404`, значит сборка использует промежуточный старый скрипт, где icon URL брался из GitHub raw. Для приватного репозитория raw URL без токена недоступен. Актуальный скрипт raw GitHub не использует.
+Если CI падает с `Failed to download Web Manifest https://qantrix.ru/app/manifest.webmanifest ... 404` или `Failed to download icon https://.../app/icons/<app>-512.png ... 404`, значит prod еще не обновлен до образа, где есть PWA routes/assets. Дождаться rollout English/Spanish, проверить URL из раздела ниже, затем rerun APK job.
 
 ## Проверка локальных значений
 
@@ -114,6 +111,19 @@ grep '^ANDROID_KEYSTORE_BASE64=' english-ai-bot/secrets/android/github-actions-s
 ```bash
 git -C english-ai-bot status --ignored --short secrets/android
 ```
+
+## Проверка prod перед rerun APK job
+
+Перед rerun failed APK job проверить, что English/Spanish prod уже отдают PWA manifest и иконки:
+
+```bash
+curl -fsSI https://qantrix.ru/app/manifest.webmanifest
+curl -fsSI https://qantrix.ru/app/icons/english-512.png
+curl -fsSI https://es.qantrix.ru/app/manifest.webmanifest
+curl -fsSI https://es.qantrix.ru/app/icons/spanish-512.png
+```
+
+Все четыре команды должны вернуть `2xx`. Если там `404`, значит Flux/k3s ещё не выкатил новый image или запрос попадает в старый pod.
 
 ## Важное правило
 
