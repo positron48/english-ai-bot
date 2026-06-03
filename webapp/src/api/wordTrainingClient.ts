@@ -33,6 +33,13 @@ export interface WordTrainingOfflineStatus {
 
 const isBrowserOffline = () => typeof navigator !== 'undefined' && navigator.onLine === false
 const isNetworkError = (error: any) => error?.isNetworkError || error?.name === 'TypeError' || String(error?.message || '').includes('Failed to fetch')
+const offlineLabel = () => {
+  if (typeof localStorage === 'undefined') return 'Offline'
+  const locale = localStorage.getItem('locale')
+  if (locale === 'ru') return 'Офлайн'
+  if (locale === 'es') return 'Offline'
+  return 'Offline'
+}
 
 function shuffle<T>(items: T[]): T[] {
   const arr = [...items]
@@ -199,7 +206,7 @@ export const wordTrainingClient = {
       async () => {
         const pack = await requirePack()
         const today = new Date().toISOString().slice(0, 10)
-        return { [today]: { date: today, label: 'Offline', count: pack.cards.length } }
+        return { [today]: { date: today, label: offlineLabel(), count: pack.cards.length } }
       },
     )
   },

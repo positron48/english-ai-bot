@@ -135,11 +135,11 @@ function computeSectionAccess(meta: OfflineGrammarMeta, sectionID: string): bool
   const index = meta.sections.findIndex((section) => section.section_id === sectionID)
   if (index < 0) return false
   const section = meta.sections[index]
-  if (section.chapters.length > 0) return true
   if (section.can_access) return true
   if (index === 0) return true
   const prev = meta.sections[index - 1]
-  return prev.chapters.length > 0 && prev.chapters.every((chapter) => chapter.passed) && (prev.category_test_score || 0) >= 50
+  if ((prev.category_test_score || 0) >= 50) return true
+  return prev.chapters.length > 0 && prev.chapters.every((chapter) => chapter.passed)
 }
 
 async function updateLocalProgress(scope: 'chapter' | 'category', scopeID: string, result: any): Promise<void> {
@@ -396,7 +396,7 @@ export const grammarClient = {
         const meta = await requireMeta()
         return { categories: meta.sections.map(({ chapters, ...section }) => ({
           ...section,
-          can_access: chapters.length > 0 || computeSectionAccess(meta, section.section_id),
+          can_access: computeSectionAccess(meta, section.section_id),
         })) }
       },
     )
@@ -491,6 +491,7 @@ export const grammarClient = {
       async () => {
         const payload = await getStoredChapter(chapterID)
         if (!payload) throw new OfflineGrammarUnavailableError('Chapter is not available offline')
+        if (!computeChapterAccess(await requireMeta(), chapterID)) throw new OfflineGrammarUnavailableError('Chapter is locked offline')
         return payload
       },
     )
@@ -516,6 +517,7 @@ export const grammarClient = {
       async () => {
         const payload = await getStoredChapter(chapterID)
         if (!payload) throw new OfflineGrammarUnavailableError('Chapter test is not available offline')
+        if (!computeChapterAccess(await requireMeta(), chapterID)) throw new OfflineGrammarUnavailableError('Chapter test is locked offline')
         const num = Number(payload?.chapter?.chapter_test?.num_questions || 10)
         const selected = shuffle(chapterPoolQuestions(payload)).slice(0, num).map(sanitizeQuestionForTest)
         return { questions: selected, total: selected.length }
@@ -530,6 +532,8 @@ export const grammarClient = {
         const meta = await requireMeta()
         const section = meta.sections.find((item) => item.section_id === sectionID)
         if (!section) throw new Error('Section not found')
+        if (!computeSectionAccess(meta, sectionID)) throw new OfflineGrammarUnavailableError('Category test is locked offline')
+        if (!section.chapters.every((chapter) => chapter.passed)) throw new OfflineGrammarUnavailableError('Complete all chapters to unlock this category test offline')
         const selected: any[] = []
         const seen = new Set<string>()
         const perChapter: Array<{ chapterID: string; questions: any[] }> = []
@@ -640,7 +644,10 @@ export const grammarClient = {
     const openedSections = meta.sections.slice(0, sectionCount).map((section) => section.section_id)
     if (openedSections.length > 0) {
       for (const section of meta.sections) {
-        section.can_access = openedSections.includes(section.section_id) || section.can_access
+        if (openedSections.includes(section.section_id)) {
+          section.can_access = true
+          for (const chapter of section.chapters) chapter.can_access = true
+        }
       }
       await setOfflineMeta(meta)
     }

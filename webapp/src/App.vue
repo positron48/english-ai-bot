@@ -263,7 +263,7 @@ const showNetworkToast = (kind: 'offline' | 'online') => {
   networkToast.value = {
     visible: true,
     kind,
-    message: kind === 'offline' ? 'Подключение пропало. Доступны только предзагруженные офлайн-разделы.' : 'Подключение восстановлено. Результаты будут синхронизированы.',
+    message: kind === 'offline' ? t('offline.connectionLost') : t('offline.connectionRestored'),
   }
   if (networkToastTimer) clearTimeout(networkToastTimer)
   networkToastTimer = setTimeout(() => {

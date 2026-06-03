@@ -11,8 +11,8 @@
     
     <div v-else class="dashboard-content">
       <div v-if="offlineDashboard" class="card dashboard-offline-card">
-        <strong>Offline mode</strong>
-        <p>Показаны только локально предзагруженные данные. Онлайн-разделы станут доступны после восстановления связи.</p>
+        <strong>{{ t('offline.modeTitle') }}</strong>
+        <p>{{ t('offline.dashboardDescription') }}</p>
       </div>
       <!-- Main Stats Cards -->
       <div class="stats-grid">

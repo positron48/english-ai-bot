@@ -36,25 +36,25 @@
     <div v-if="!sessionActive && !loading && !sessionComplete" class="training-idle-stack">
       <div v-if="showWordOfflinePanel" class="card word-offline-panel">
         <div class="word-offline-title-row">
-          <h3>Offline word training</h3>
+          <h3>{{ t('offline.wordTrainingTitle') }}</h3>
           <span class="network-badge" :class="{ 'network-badge--offline': !isOnline }">
-            {{ isOnline ? 'Online' : 'Offline' }}
+            {{ isOnline ? t('offline.online') : t('offline.offline') }}
           </span>
         </div>
         <p v-if="wordOfflineStatus.ready">
-          Ready: {{ wordOfflineStatus.downloadedCards }} cards.
-          <span v-if="wordOfflineStatus.pendingAttempts > 0">{{ wordOfflineStatus.pendingAttempts }} result(s) waiting to sync.</span>
+          {{ t('offline.wordTrainingReady', { count: wordOfflineStatus.downloadedCards }) }}
+          <span v-if="wordOfflineStatus.pendingAttempts > 0">{{ t('offline.pendingSync', { count: wordOfflineStatus.pendingAttempts }) }}</span>
         </p>
-        <p v-else>Preload your current word training cards to practice offline after disconnecting.</p>
+        <p v-else>{{ t('offline.wordTrainingDescription') }}</p>
         <div class="word-offline-actions">
           <button class="btn btn-secondary" :disabled="wordPreloading || !isOnline" @click="preloadWordTraining">
-            {{ wordPreloading ? 'Downloading...' : (wordOfflineStatus.ready ? 'Update preload' : 'Preload words') }}
+            {{ wordPreloading ? t('offline.downloading') : (wordOfflineStatus.ready ? t('offline.updatePreload') : t('offline.preloadWords')) }}
           </button>
           <button v-if="wordOfflineStatus.pendingAttempts > 0" class="btn btn-primary" :disabled="wordSyncing || !isOnline" @click="syncWordTrainingAttempts">
-            {{ wordSyncing ? 'Syncing...' : 'Sync results' }}
+            {{ wordSyncing ? t('offline.syncing') : t('offline.syncResults') }}
           </button>
           <button v-if="wordOfflineStatus.ready" class="btn btn-secondary" :disabled="wordPreloading" @click="clearWordTrainingPreload">
-            Delete preload
+            {{ t('offline.deletePreload') }}
           </button>
         </div>
       </div>

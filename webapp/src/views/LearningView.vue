@@ -3,7 +3,7 @@
     <h1>{{ t('learning.title') }}</h1>
     
     <p v-if="isOffline" class="offline-note">
-      Офлайн доступны только предзагруженные разделы грамматики.
+      {{ t('offline.learningNote') }}
     </p>
 
     <div class="learning-sections">
@@ -16,7 +16,7 @@
       </router-link>
       
       <div v-if="isOffline" class="learning-card words-card disabled-card">
-        <span class="offline-badge">Недоступно офлайн</span>
+        <span class="offline-badge">{{ t('offline.unavailableOffline') }}</span>
         <div class="card-icon">
           <Icon name="book" />
         </div>
@@ -32,7 +32,7 @@
       </router-link>
 
       <div v-if="isOffline" class="learning-card reading-card disabled-card">
-        <span class="offline-badge">Недоступно офлайн</span>
+        <span class="offline-badge">{{ t('offline.unavailableOffline') }}</span>
         <div class="card-icon">
           <Icon name="book-open" />
         </div>

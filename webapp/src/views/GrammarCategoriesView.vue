@@ -25,28 +25,28 @@
     <div v-if="showOfflinePanel" class="offline-preload-panel">
       <div>
         <div class="offline-title-row">
-          <strong>Offline grammar</strong>
+          <strong>{{ t('offline.grammarTitle') }}</strong>
           <span class="network-badge" :class="{ 'network-badge--offline': !isOnline }">
-            {{ isOnline ? 'Online' : 'Offline' }}
+            {{ isOnline ? t('offline.online') : t('offline.offline') }}
           </span>
         </div>
         <p v-if="offlineStatus.ready">
-          Ready: {{ offlineStatus.downloadedChapters }}/{{ offlineStatus.totalChapters }} chapters.
-          <span v-if="offlineStatus.pendingAttempts > 0">{{ offlineStatus.pendingAttempts }} result(s) waiting to sync.</span>
+          {{ t('offline.grammarReady', { downloaded: offlineStatus.downloadedChapters, total: offlineStatus.totalChapters }) }}
+          <span v-if="offlineStatus.pendingAttempts > 0">{{ t('offline.pendingSync', { count: offlineStatus.pendingAttempts }) }}</span>
         </p>
         <p v-else>
-          Preload grammar to use course theory and tests without internet.
+          {{ t('offline.grammarDescription') }}
         </p>
       </div>
       <div class="offline-actions">
         <button @click="preloadGrammar" class="btn btn-secondary" :disabled="preloading || !isOnline">
-          {{ preloading ? `Downloading ${preloadDone}/${preloadTotal}` : (offlineStatus.ready ? 'Update preload' : 'Preload grammar') }}
+          {{ preloading ? t('offline.downloadingProgress', { done: preloadDone, total: preloadTotal }) : (offlineStatus.ready ? t('offline.updatePreload') : t('offline.preloadGrammar')) }}
         </button>
         <button v-if="offlineStatus.pendingAttempts > 0" @click="syncOfflineAttempts" class="btn btn-primary" :disabled="syncing">
-          {{ syncing ? 'Syncing...' : 'Sync results' }}
+          {{ syncing ? t('offline.syncing') : t('offline.syncResults') }}
         </button>
         <button v-if="offlineStatus.ready" @click="clearPreload" class="btn btn-secondary" :disabled="preloading">
-          Delete
+          {{ t('offline.deletePreload') }}
         </button>
       </div>
     </div>
