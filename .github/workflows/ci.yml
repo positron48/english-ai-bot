@@ -219,28 +219,10 @@ jobs:
         cache-to: type=gha,mode=max
 
   android-apk:
-    name: Build Android APK (${{ matrix.app }})
+    name: Build Android APK
     runs-on: ubuntu-latest
-    # TEMPORARY APK CI DEBUG MODE:
-    # Do not wait for the full release/test pipeline while stabilizing Bubblewrap.
-    # Restore `needs: [release]` after APK builds are stable.
+    needs: [release]
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - app: english
-            origin: https://qantrix.ru
-            package_id: ru.qantrix.english
-            name: Qantrix English
-            theme_color: "#f5f5f5"
-            icon_path: /app/icons/english-512.png
-          - app: spanish
-            origin: https://es.qantrix.ru
-            package_id: ru.qantrix.spanish
-            name: Qantrix Spanish
-            theme_color: "#f5f5f5"
-            icon_path: /app/icons/spanish-512.png
     permissions:
       contents: write
     steps:
@@ -261,6 +243,17 @@ jobs:
     - name: Set up Android SDK
       uses: android-actions/setup-android@v3
 
+    - name: Install Android SDK packages
+      run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+
+    - name: Install webapp dependencies
+      working-directory: ./webapp
+      run: npm ci --prefer-offline --no-audit --no-fund
+
+    - name: Build embedded webapp
+      working-directory: ./webapp
+      run: npm run build
+
     - name: Decode Android keystore
       env:
         ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
@@ -279,7 +272,7 @@ jobs:
             gh release view "${{ github.ref_name }}" >/dev/null
         fi
 
-    - name: Build TWA APK
+    - name: Build embedded APKs
       env:
         BUBBLEWRAP_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
         BUBBLEWRAP_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
@@ -287,13 +280,8 @@ jobs:
         test -n "${BUBBLEWRAP_KEYSTORE_PASSWORD}" || (echo "ANDROID_KEYSTORE_PASSWORD is required" && exit 1)
         test -n "${BUBBLEWRAP_KEY_PASSWORD}" || (echo "ANDROID_KEY_PASSWORD is required" && exit 1)
         test -n "${{ secrets.ANDROID_KEY_ALIAS }}" || (echo "ANDROID_KEY_ALIAS is required" && exit 1)
-        ./scripts/build-twa-apks.sh \
-          "${{ matrix.app }}" \
-          "${{ matrix.origin }}" \
-          "${{ matrix.package_id }}" \
-          "${{ matrix.name }}" \
-          "${{ matrix.theme_color }}" \
-          "${{ matrix.icon_path }}" \
+        ./scripts/build-embedded-apks.sh \
+          "${{ github.ref_name }}" \
           "$PWD/release.keystore" \
           "${{ secrets.ANDROID_KEY_ALIAS }}"
 
@@ -303,9 +291,10 @@ jobs:
       run: |
         cd dist
         gh release download "${{ github.ref_name }}" -p checksums.txt || true
-        sha256sum qantrix-${{ matrix.app }}-${{ github.ref_name }}.apk >> checksums.txt
+        sha256sum qantrix-english-${{ github.ref_name }}.apk qantrix-spanish-${{ github.ref_name }}.apk >> checksums.txt
         sort -u checksums.txt -o checksums.txt
         gh release upload "${{ github.ref_name }}" \
-          qantrix-${{ matrix.app }}-${{ github.ref_name }}.apk \
+          qantrix-english-${{ github.ref_name }}.apk \
+          qantrix-spanish-${{ github.ref_name }}.apk \
           checksums.txt \
           --clobber

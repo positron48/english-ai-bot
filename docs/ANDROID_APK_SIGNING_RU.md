@@ -1,6 +1,6 @@
-# Android APK signing для TWA/PWA
+# Android APK signing для embedded APK
 
-Документ описывает, где лежит локальный release keystore для сборки English/Spanish APK и какие значения нужно прописать в GitHub Actions.
+Документ описывает, где лежит локальный release keystore для сборки English/Spanish embedded WebView APK и какие значения нужно прописать в GitHub Actions.
 
 ## Что уже сгенерировано
 
@@ -49,7 +49,7 @@ ANDROID_KEY_PASSWORD
 qantrix-release
 ```
 
-`ANDROID_KEYSTORE_PASSWORD` и `ANDROID_KEY_PASSWORD` для этого keystore одинаковые. Это нормально для PKCS#12 и упрощает Gradle/Bubblewrap signing.
+`ANDROID_KEYSTORE_PASSWORD` и `ANDROID_KEY_PASSWORD` для этого keystore одинаковые. Это нормально для PKCS#12 и упрощает Gradle signing.
 
 ## Fingerprint для серверов
 
@@ -64,41 +64,31 @@ qantrix-release
 - `devops-time-host/apps/english/base/configmap.yaml` -> `WEBAPP_ANDROID_CERT_FINGERPRINTS`;
 - `devops-time-host/apps/spanish/base/configmap.yaml` -> `WEBAPP_ANDROID_CERT_FINGERPRINTS`.
 
-Этот fingerprint нужен, чтобы backend отдавал корректный `/.well-known/assetlinks.json`, а Android мог verified-связать APK с доменом.
+Этот fingerprint остаётся полезным для web/PWA и совместимости с App Links, но embedded APK больше не зависит от verified TWA: frontend shell лежит внутри APK.
 
 ## Как работает CI
 
 APK job запускается только на tag push.
-
-Временный режим отладки APK CI: `android-apk` сейчас не ждёт полный `release` job и сам создаёт GitHub Release, если его ещё нет. После стабилизации Bubblewrap вернуть зависимость:
-
-```yaml
-needs: [release]
-```
 
 Workflow:
 
 1. GitHub Actions читает `ANDROID_KEYSTORE_BASE64`.
 2. Декодирует его в `release.keystore`.
 3. `actions/setup-java` ставит JDK 17, `android-actions/setup-android` ставит Android SDK.
-4. `scripts/build-twa-apks.sh` заранее пишет `${HOME}/.bubblewrap/config.json` с `JAVA_HOME` и `ANDROID_HOME`, чтобы Bubblewrap не задавал интерактивный вопрос `Do you want Bubblewrap to install the JDK?`.
-5. `scripts/build-twa-apks.sh` перед `build` выполняет `bubblewrap update --skipVersionUpgrade` внутри `dist/twa-<app>/`, чтобы создать Android project и `manifest-checksum.txt` без интерактивного regenerate prompt.
-6. Bubblewrap собирает два signed TWA APK:
-   - `qantrix-english-<tag>.apk` для `ru.qantrix.english` и `https://qantrix.ru/app/`;
-   - `qantrix-spanish-<tag>.apk` для `ru.qantrix.spanish` и `https://es.qantrix.ru/app/`.
+4. Workflow собирает `webapp/dist`.
+5. `scripts/build-embedded-apks.sh` копирует `webapp/dist` в Android assets.
+6. Gradle собирает два signed embedded APK:
+   - `qantrix-english-<tag>.apk` для `ru.qantrix.english`, frontend origin `https://qantrix.ru/app/`;
+   - `qantrix-spanish-<tag>.apk` для `ru.qantrix.spanish`, frontend origin `https://es.qantrix.ru/app/`.
 7. APK и `checksums.txt` загружаются в GitHub Release.
 
-В `scripts/build-twa-apks.sh` `fallbackType` выставлен в `webview`. Основной режим всё равно verified TWA, если Android Digital Asset Links совпали. Но если на устройстве нет подходящего TWA browser runtime или домен временно не verified, fallback не открывается как Chrome Custom Tab с верхней панелью домена.
+В APK лежит весь frontend shell: `index.html`, Vite JS/CSS chunks, icons, manifest и `asset-manifest.json`. WebView подменяет локальными assets только `/app/*`; `/api/*`, `/auth/*` и другие backend requests уходят в production host.
 
 Если `ANDROID_KEYSTORE_BASE64 is required`, значит GitHub secret не добавлен или добавлен не в тот репозиторий.
 
-Если CI падает на вопросе `Do you want Bubblewrap to install the JDK?`, значит workflow запустился без актуальной версии `scripts/build-twa-apks.sh`, где создаётся `${HOME}/.bubblewrap/config.json`, или `JAVA_HOME`/`ANDROID_HOME` не были выставлены предыдущими setup actions.
+Если CI падает на `SDK location not found` или `failed to find target android-35`, проверить шаг `Install Android SDK packages` в `.github/workflows/ci.yml`.
 
-Если CI падает с `cli ERROR EISDIR: illegal operation on a directory, read`, значит Bubblewrap получил директорию вместо файла manifest. В актуальном `scripts/build-twa-apks.sh` используется `--manifest="${WORKDIR}/twa-manifest.json"`.
-
-Если CI падает на вопросе `No checksum file was found ... would you like to regenerate your project?`, значит `build` запустился без предварительного `bubblewrap update --skipVersionUpgrade`. В актуальном `scripts/build-twa-apks.sh` update запускается перед build внутри `dist/twa-<app>/`.
-
-Если CI падает с `Failed to download Web Manifest https://qantrix.ru/app/manifest.webmanifest ... 404` или `Failed to download icon https://.../app/icons/<app>-512.png ... 404`, значит prod еще не обновлен до образа, где есть PWA routes/assets. Дождаться rollout English/Spanish, проверить URL из раздела ниже, затем rerun APK job.
+Если CI падает на Gradle dependency resolution, проверить доступность `google()`/`mavenCentral()` и версию Android Gradle Plugin в `android-embedded/build.gradle`.
 
 ## Проверка локальных значений
 
@@ -120,14 +110,14 @@ grep '^ANDROID_KEYSTORE_BASE64=' english-ai-bot/secrets/android/github-actions-s
 git -C english-ai-bot status --ignored --short secrets/android
 ```
 
-Проверить Digital Asset Links на prod:
+Проверить Digital Asset Links на prod, если нужно валидировать web/PWA совместимость:
 
 ```bash
 curl -sS https://qantrix.ru/.well-known/assetlinks.json | jq .
 curl -sS https://es.qantrix.ru/.well-known/assetlinks.json | jq .
 ```
 
-В ответе должны быть package names `ru.qantrix.english` / `ru.qantrix.spanish` и тот же SHA-256 fingerprint, которым подписан APK. Если установлен старый APK, собранный до корректного `assetlinks.json`, проще удалить приложение и установить свежий APK из нового релиза.
+В ответе должны быть package names `ru.qantrix.english` / `ru.qantrix.spanish` и тот же SHA-256 fingerprint, которым подписан APK.
 
 ## Проверка prod перед rerun APK job
 

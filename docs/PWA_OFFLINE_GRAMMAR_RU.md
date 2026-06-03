@@ -1,27 +1,27 @@
 # PWA/APK: офлайн-режим грамматики
 
-Документ описывает фактически реализованную модель Android PWA/TWA APK и офлайн-грамматики для English/Spanish инстансов `english-ai-bot`.
+Документ описывает фактически реализованную модель Android embedded WebView APK, web/PWA routes и офлайн-грамматики для English/Spanish инстансов `english-ai-bot`.
 
 ## Итоговая карта реализации
 
 Что было добавлено в рамках PWA/APK/offline-работ:
 
-- Android TWA/PWA APK для двух приложений: English (`ru.qantrix.english`, `https://qantrix.ru/app/`) и Spanish (`ru.qantrix.spanish`, `https://es.qantrix.ru/app/`).
+- Android embedded WebView APK для двух приложений: English (`ru.qantrix.english`, локальный frontend с origin `https://qantrix.ru/app/`) и Spanish (`ru.qantrix.spanish`, локальный frontend с origin `https://es.qantrix.ru/app/`).
 - PWA endpoints в web/backend: `/sw.js`, `/app/manifest.webmanifest`, `/app/icons/*`, `/.well-known/assetlinks.json`.
-- Подпись APK через GitHub Actions secrets и Bubblewrap.
+- Подпись APK через GitHub Actions secrets и Gradle.
 - GitHub Release assets для APK: `qantrix-english-<tag>.apk`, `qantrix-spanish-<tag>.apk`, `checksums.txt`.
 - Offline grammar preload: manifest, главы, question bank, chapter/category/placement tests, Grammar Training/SRS pack.
 - Offline word training preload: current due/new word cards для обычной multiple-choice тренировки.
 - IndexedDB-хранилища для скачанных grammar/word данных и очередей попыток.
 - Idempotent sync на сервере через `client_attempt_id`, чтобы повторная отправка не создавала дубли.
-- Service worker cache для app shell и всех Vite assets, чтобы lazy routes открывались офлайн.
+- В embedded APK весь Vite frontend shell и lazy chunks лежат внутри APK; в web/PWA service worker cache продолжает кэшировать app shell и Vite assets.
 - Offline UI: preload panels, статус online/offline, pending sync, toast при потере/возврате сети, disabled/redirect для online-only разделов.
-- Android/TWA polish: `fallbackType=webview`, светлый status bar/theme color, проверка Digital Asset Links через `assetlinks.json`.
+- Android WebView shell: локальная отдача `/app/*` из APK через `WebViewAssetLoader`, светлый status bar/theme color.
 
 Ключевое разделение:
 
-- APK содержит только wrapper metadata: package id, server URL, icons/manifest metadata, подпись, TWA config.
-- Web frontend, service worker и API приходят с сервера.
+- APK содержит package id, WebView wrapper и собранный frontend bundle (`index.html`, JS/CSS chunks, icons, manifest, `asset-manifest.json`).
+- API, login, preload и sync ходят на production backend.
 - Курсы, тесты и тренировочные данные не зашиваются в APK; пользователь скачивает их кнопками preload после логина.
 - Offline source of truth на устройстве — IndexedDB.
 - Server source of truth сохраняется после sync; сервер повторно применяет canonical grading/SRS logic.
@@ -55,21 +55,21 @@
 
 ## Как пользователь получает APK
 
-GitHub tag release в `english-ai-bot` собирает два TWA APK:
+GitHub tag release в `english-ai-bot` собирает два embedded WebView APK:
 
-- `qantrix-english-<tag>.apk`: Android package `ru.qantrix.english`, открывает `https://qantrix.ru/app/`;
-- `qantrix-spanish-<tag>.apk`: Android package `ru.qantrix.spanish`, открывает `https://es.qantrix.ru/app/`.
+- `qantrix-english-<tag>.apk`: Android package `ru.qantrix.english`, открывает bundled frontend с origin `https://qantrix.ru/app/`;
+- `qantrix-spanish-<tag>.apk`: Android package `ru.qantrix.spanish`, открывает bundled frontend с origin `https://es.qantrix.ru/app/`.
 
-APK не содержит курс внутри себя. В APK фактически зашиты package id, URL сервера, TWA metadata и подпись. Сам web shell, service worker и курс приходят с выбранного сервера.
+APK содержит frontend shell внутри себя, поэтому первый запуск без интернета должен показывать приложение, а не пустой экран браузера. APK не содержит курс и пользовательские preload-данные: они скачиваются после логина и хранятся в IndexedDB WebView.
 
-Для verified TWA сервер должен отдавать `/.well-known/assetlinks.json`. SHA-256 fingerprint релизного Android signing certificate задаётся в GitOps через `WEBAPP_ANDROID_CERT_FINGERPRINTS` в соответствующем ConfigMap English/Spanish.
+`/.well-known/assetlinks.json` и SHA-256 fingerprint релизного Android signing certificate остаются для web/PWA/App Links совместимости, но embedded APK больше не зависит от verified TWA для запуска frontend.
 
 Что лежит в APK:
 
 - package id (`ru.qantrix.english` или `ru.qantrix.spanish`);
-- host/start URL (`https://qantrix.ru/app/` или `https://es.qantrix.ru/app/`);
-- TWA config, app name, цвета status/navigation bar;
-- ссылки на web manifest/icon URL;
+- WebView app name, цвета status/navigation bar;
+- host/start URL (`https://qantrix.ru/app/` или `https://es.qantrix.ru/app/`) как origin для localStorage/IndexedDB/API;
+- frontend bundle из `webapp/dist`;
 - Android signing metadata.
 
 Что не лежит в APK:
@@ -79,9 +79,9 @@ APK не содержит курс внутри себя. В APK фактиче�
 - Grammar Training pack;
 - word training pack;
 - пользовательский progress;
-- web frontend bundle как постоянный embedded asset.
+- пользовательские preload-данные до первого online preload.
 
-Это значит: большинство frontend/offline исправлений раскатывается через серверный webapp и не требует переустановки APK. Переустановка APK нужна, если поменялись package id, TWA config, fallback strategy, signing, icon/start URL или нужно проверить новый release asset.
+Это значит: frontend/offline исправления для APK требуют нового APK release. Серверный webapp по-прежнему обновляет браузерную/PWA версию.
 
 ## CI и GitHub Releases
 
@@ -100,27 +100,19 @@ APK не содержит курс внутри себя. В APK фактиче�
 
 - `release` job: собирает server binary artifacts и загружает их в GitHub Release;
 - `docker-image` job: собирает и публикует `ghcr.io/<owner>/english:<tag/latest>` и `ghcr.io/<owner>/spanish:<tag/latest>`;
-- `android-apk` matrix job: собирает English/Spanish APK и загружает их в тот же GitHub Release.
-
-Важно: `android-apk` сейчас оставлен в ускоренном режиме и не ждёт полный `release` job. Это временная настройка, чтобы быстрее стабилизировать APK CI. После стабилизации можно вернуть зависимость:
-
-```yaml
-needs: [release]
-```
+- `android-apk` job: собирает English/Spanish embedded APK и загружает их в тот же GitHub Release.
 
 APK job делает следующее:
 
 1. Ставит Node.js, JDK 17 и Android SDK.
 2. Декодирует `ANDROID_KEYSTORE_BASE64` в `release.keystore`.
 3. Создаёт GitHub Release, если его ещё нет.
-4. Запускает `scripts/build-twa-apks.sh` для `english` и `spanish`.
-5. Скрипт генерирует `dist/twa-<app>/twa-manifest.json`.
-6. Скрипт заранее пишет `${HOME}/.bubblewrap/config.json`, чтобы Bubblewrap не спрашивал про JDK интерактивно.
-7. Запускает `bubblewrap update --skipVersionUpgrade`, чтобы появился Android project и checksum без prompt.
-8. Принудительно проверяет/патчит `fallbackType=webview`.
-9. Запускает `bubblewrap build --skipPwaValidation`.
-10. Кладёт APK в `dist/qantrix-<app>-<tag>.apk`.
-11. Обновляет `checksums.txt` и release assets через `gh release upload --clobber`.
+4. Собирает `webapp/dist`.
+5. Запускает `scripts/build-embedded-apks.sh`.
+6. Скрипт копирует `webapp/dist` в `android-embedded/app/src/main/assets/public/app`.
+7. Gradle собирает `englishRelease` и `spanishRelease`.
+8. Скрипт кладёт APK в `dist/qantrix-english-<tag>.apk` и `dist/qantrix-spanish-<tag>.apk`.
+9. Workflow обновляет `checksums.txt` и release assets через `gh release upload --clobber`.
 
 GitHub Actions secrets для APK:
 
@@ -135,7 +127,7 @@ ANDROID_KEY_PASSWORD
 
 ## GitOps/k3s часть
 
-Для APK и offline frontend важны оба слоя: новый Docker image должен выкатиться на prod до успешной APK-сборки, потому что Bubblewrap скачивает web manifest/icon URL с реального домена.
+Для embedded APK frontend берётся из текущего `webapp/dist` на момент tag build, поэтому APK job больше не ждёт, пока prod начнёт отдавать новый `/app/manifest.webmanifest` или icons. Новый Docker image всё равно нужен для backend/API и браузерной web/PWA версии.
 
 English:
 
@@ -158,7 +150,7 @@ Digital Asset Links:
 - backend отдаёт `/.well-known/assetlinks.json`;
 - fingerprint берётся из env `WEBAPP_ANDROID_CERT_FINGERPRINTS`;
 - значение хранится в GitOps ConfigMap для English/Spanish;
-- если fingerprint не совпал с APK signing cert, verified TWA не поднимется и Android может открыть fallback.
+- если fingerprint не совпал с APK signing cert, web/PWA App Links verification будет неполной; embedded APK shell при этом продолжит запускаться.
 
 Перед rerun APK job проверять prod URL:
 
@@ -189,7 +181,7 @@ curl -fsSI https://es.qantrix.ru/app/asset-manifest.json
 - Для каждой опубликованной главы: `GET /api/learning/grammar/offline/chapters/{chapter_id}` — получает полный JSON главы, включая `question_bank` и `chapter_test`, чтобы локально показывать теорию и проверять ответы.
 - `GET /api/learning/grammar/offline/training-pack` — получает доступные пользователю вопросы Grammar Training/SRS из `grammartrainingpack`.
 
-Данные сохраняются в IndexedDB браузера/TWA:
+Данные сохраняются в IndexedDB браузера/PWA/WebView:
 
 - metadata bundle (`version_hash`, `bundle_id`, `target_lang`, дата скачивания);
 - sections/categories;
@@ -232,7 +224,7 @@ Service worker отдельно кэширует web shell (`/app`, `/app/`, man
 6. Результат сразу показывается пользователю и обновляет локальный progress snapshot.
 7. Попытка сохраняется в IndexedDB queue с `client_attempt_id`.
 
-Важно для Android/TWA: `navigator.onLine` на реальных устройствах может быть слишком оптимистичным. Поэтому frontend не полагается только на него: категории, главы, проверки доступа, chapter/category/placement tests и Grammar Training сначала пробуют сервер, а при сетевой ошибке автоматически переходят на IndexedDB.
+Важно для Android WebView/PWA: `navigator.onLine` на реальных устройствах может быть слишком оптимистичным. Поэтому frontend не полагается только на него: категории, главы, проверки доступа, chapter/category/placement tests и Grammar Training сначала пробуют сервер, а при сетевой ошибке автоматически переходят на IndexedDB.
 
 Ограничение: локальная генерация тестов не пытается полностью воспроизвести все серверные нюансы отбора/placement-level алгоритма. Это минимальная offline-v1 модель: пользователь может заниматься и видеть результат сразу, а сервер при синхронизации пересчитает и сохранит результат по своему canonical logic.
 
@@ -405,7 +397,7 @@ POST /api/training/offline/sync-attempts
 
 Текущая модель UI после доработки:
 
-- В обычном браузере offline preload панели скрыты по умолчанию, чтобы не шуметь в web-версии. Они показываются в установленном PWA/TWA, при отсутствии сети, при уже скачанном bundle/pack или при pending sync.
+- В обычном браузере offline preload панели скрыты по умолчанию, чтобы не шуметь в web-версии. Они показываются в установленном PWA/WebView, при отсутствии сети, при уже скачанном bundle/pack или при pending sync.
 - При потере/возврате сети показывается один глобальный toast с автоскрытием и кнопкой закрытия. Постоянный retry-banner на экране тренировки не используется для ожидаемого offline-mode.
 - `/dashboard`, `/training` и offline grammar routes разрешены в router без редиректа на grammar root. Остальные online-only разделы офлайн редиректятся на dashboard с offline-state.
 - Dashboard офлайн показывает только локально предзагруженные агрегаты: word training pack и grammar progress из IndexedDB.
@@ -428,73 +420,35 @@ ANDROID_KEYSTORE_BASE64 is required
 
 Исправление: добавить 4 secrets из `docs/ANDROID_APK_SIGNING_RU.md`.
 
-### Bubblewrap спрашивает JDK или regenerate
+### Embedded APK не собирается
 
 Симптомы:
 
 ```text
-Do you want Bubblewrap to install the JDK?
-No checksum file was found ... would you like to regenerate your project?
+SDK location not found
+failed to find target android-35
+Could not resolve com.android.tools.build:gradle
 ```
 
-Причина: Bubblewrap запущен интерактивно.
+Проверки:
 
-Исправление уже в `scripts/build-twa-apks.sh`:
+- в CI должен быть шаг `Install Android SDK packages`;
+- `android-embedded/build.gradle` должен использовать доступную версию Android Gradle Plugin;
+- `scripts/build-embedded-apks.sh` должен запускаться после `webapp npm run build`.
 
-- заранее пишется `${HOME}/.bubblewrap/config.json`;
-- перед build выполняется `bubblewrap update --skipVersionUpgrade`.
+### APK стартует без frontend assets
 
-### Bubblewrap `EISDIR`
-
-Симптом:
-
-```text
-cli ERROR EISDIR: illegal operation on a directory, read
-```
-
-Причина: Bubblewrap получил директорию вместо manifest file.
-
-Исправление уже в `scripts/build-twa-apks.sh`: `--manifest="twa-manifest.json"` внутри `dist/twa-<app>/`.
-
-### 404 на `/app/manifest.webmanifest` или `/app/icons/*.png`
-
-Симптом:
-
-```text
-Failed to download Web Manifest ... 404
-Failed to download icon ... 404
-```
-
-Причина: prod ещё не выкатил новый image, запрос попадает в старый pod, или pod падает до отдачи новых routes/assets.
+Симптом: первый запуск без интернета показывает пустой экран или WebView error вместо приложения.
 
 Проверки:
 
 ```bash
-kubectl get pods -n english -l app=english
-kubectl logs -n english deploy/english --tail=200
-kubectl get pods -n spanish -l app=spanish
-kubectl logs -n spanish deploy/spanish --tail=200
+unzip -l dist/qantrix-english-<tag>.apk | grep 'assets/public/app/index.html'
+unzip -l dist/qantrix-english-<tag>.apk | grep 'assets/public/app/assets/'
+unzip -l dist/qantrix-spanish-<tag>.apk | grep 'assets/public/app/index.html'
 ```
 
-В одном из инцидентов новый pod падал из-за порядка Postgres migration: индекс по `client_attempt_id` создавался до добавления колонки. Это исправлено отдельным релизом, но при повторении симптома сначала смотреть startup logs.
-
-### APK показывает верхнюю browser/domain панель
-
-Причины:
-
-- Digital Asset Links не verified;
-- `WEBAPP_ANDROID_CERT_FINGERPRINTS` не совпадает с сертификатом APK;
-- домен отдаёт старый/битый `assetlinks.json`;
-- Android использует fallback вместо verified TWA.
-
-Проверки:
-
-```bash
-curl -sS https://qantrix.ru/.well-known/assetlinks.json | jq .
-curl -sS https://es.qantrix.ru/.well-known/assetlinks.json | jq .
-```
-
-В актуальном APK fallback strategy выставлен в `webview`, чтобы при сбое verified TWA не показывать Chrome Custom Tab с доменной панелью.
+Если файлов нет, проверить, что `scripts/build-embedded-apks.sh` копирует свежий `webapp/dist` в `android-embedded/app/src/main/assets/public/app` до Gradle build.
 
 ### Чёрный экран после offline navigation
 
