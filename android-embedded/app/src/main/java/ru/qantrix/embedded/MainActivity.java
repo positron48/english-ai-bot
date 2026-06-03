@@ -11,26 +11,19 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import androidx.webkit.WebViewAssetLoader;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 
 public class MainActivity extends Activity {
     private WebView webView;
-    private WebViewAssetLoader assetLoader;
 
     @Override
     @SuppressLint("SetJavaScriptEnabled")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        assetLoader = new WebViewAssetLoader.Builder()
-                .setDomain(BuildConfig.APP_HOST)
-                .addPathHandler("/app/", new WebViewAssetLoader.AssetsPathHandler(this, "public/app/"))
-                .build();
 
         webView = new WebView(this);
         setContentView(webView);
@@ -92,7 +85,7 @@ public class MainActivity extends Activity {
                 return openAsset("public/app/index.html", "text/html");
             }
 
-            return assetLoader.shouldInterceptRequest(uri);
+            return openAppAsset(path);
         }
 
         private boolean isSpaRoute(String path) {
@@ -110,6 +103,15 @@ public class MainActivity extends Activity {
             } catch (IOException ignored) {
                 return null;
             }
+        }
+
+        private WebResourceResponse openAppAsset(String path) {
+            String relativePath = path.startsWith("/app/") ? path.substring("/app/".length()) : path;
+            String mimeType = URLConnection.guessContentTypeFromName(relativePath);
+            if (mimeType == null) {
+                mimeType = "application/octet-stream";
+            }
+            return openAsset("public/app/" + relativePath, mimeType);
         }
 
         private WebResourceResponse textResponse(int statusCode, String reasonPhrase, String body) {
