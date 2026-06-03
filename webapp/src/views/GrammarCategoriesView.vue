@@ -48,12 +48,8 @@
         <button v-if="offlineStatus.ready" @click="clearPreload" class="btn btn-secondary" :disabled="preloading">
           Delete
         </button>
-        <button v-if="showOfflinePanel" @click="refreshDebugState" class="btn btn-secondary" type="button">
-          Debug
-        </button>
       </div>
     </div>
-    <pre v-if="debugState" class="offline-debug">{{ debugState }}</pre>
     
     <!-- Statistics Block -->
     <div v-if="!loading && !error && statistics" class="statistics-block">
@@ -616,19 +612,6 @@ const handleNetworkChange = async () => {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-}
-
-.offline-debug {
-  margin: -12px 0 24px;
-  padding: 12px;
-  max-height: 280px;
-  overflow: auto;
-  border: 1px solid var(--border-primary);
-  border-radius: 10px;
-  background: var(--bg-tertiary);
-  color: var(--text-primary);
-  font-size: 11px;
-  white-space: pre-wrap;
 }
 
 .grammar-categories h1 {
