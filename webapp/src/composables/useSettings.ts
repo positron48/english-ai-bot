@@ -14,7 +14,7 @@ interface Settings {
 const defaultSettings: Settings = {
   soundsEnabled: true,
   vibrationEnabled: true,
-  theme: 'light',
+  theme: 'dark',
   soundTheme: 'tick',
   hideMorphInTraining: false,
   autoplayPronunciation: true

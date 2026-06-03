@@ -17,6 +17,10 @@ android {
         buildConfig true
     }
 
+    sourceSets {
+        main.assets.srcDirs = ["src/main/assets"]
+    }
+
     flavorDimensions "language"
     productFlavors {
         english {

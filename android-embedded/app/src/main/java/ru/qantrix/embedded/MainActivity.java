@@ -2,8 +2,10 @@ package ru.qantrix.embedded;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.webkit.JavascriptInterface;
 import android.webkit.CookieManager;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
@@ -12,6 +14,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLConnection;
@@ -35,12 +38,14 @@ public class MainActivity extends Activity {
         settings.setMediaPlaybackRequiresUserGesture(false);
         settings.setAllowFileAccess(false);
         settings.setAllowContentAccess(false);
+        settings.setUserAgentString(settings.getUserAgentString() + " QantrixEmbeddedApp");
 
         CookieManager.getInstance().setAcceptCookie(true);
         CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true);
 
+        webView.addJavascriptInterface(new AndroidBridge(), "QantrixAndroid");
         webView.setWebViewClient(new EmbeddedWebViewClient());
-        webView.loadUrl(BuildConfig.START_URL);
+        loadBundledApp();
     }
 
     @Override
@@ -50,6 +55,42 @@ public class MainActivity extends Activity {
             return;
         }
         super.onBackPressed();
+    }
+
+    private void loadBundledApp() {
+        try {
+            String html = readAssetText("public/app/index.html");
+            webView.loadDataWithBaseURL(BuildConfig.START_URL, html, "text/html", "UTF-8", BuildConfig.START_URL);
+        } catch (IOException ignored) {
+            webView.loadUrl(BuildConfig.START_URL);
+        }
+    }
+
+    private String readAssetText(String assetPath) throws IOException {
+        try (InputStream input = getAssets().open(assetPath);
+             ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+            byte[] buffer = new byte[8192];
+            int read;
+            while ((read = input.read(buffer)) != -1) {
+                output.write(buffer, 0, read);
+            }
+            return output.toString(StandardCharsets.UTF_8.name());
+        }
+    }
+
+    private final class AndroidBridge {
+        @JavascriptInterface
+        public void setSystemBarsColor(String color) {
+            runOnUiThread(() -> {
+                try {
+                    int parsed = Color.parseColor(color);
+                    getWindow().setStatusBarColor(parsed);
+                    getWindow().setNavigationBarColor(parsed);
+                } catch (IllegalArgumentException ignored) {
+                    // Ignore invalid CSS colors from the web layer.
+                }
+            });
+        }
     }
 
     private final class EmbeddedWebViewClient extends WebViewClient {

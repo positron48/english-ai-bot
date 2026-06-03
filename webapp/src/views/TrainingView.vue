@@ -533,6 +533,7 @@ import { useAudio } from '../composables/useAudio'
 import { useLocale } from '../composables/useLocale'
 import { Chart, registerables } from 'chart.js'
 import Icon from '../components/Icon.vue'
+import { isEmbeddedAndroidApp } from '../utils/runtime'
 import TrainingSessionCompletion from '../components/TrainingSessionCompletion.vue'
 import { useLearningConfig } from '../composables/useLearningConfig'
 
@@ -1536,7 +1537,7 @@ const handleNetworkChange = async () => {
 }
 
 onMounted(async () => {
-  isInstalledWebApp.value = window.matchMedia?.('(display-mode: standalone)').matches || document.referrer.startsWith('android-app://')
+  isInstalledWebApp.value = isEmbeddedAndroidApp() || window.matchMedia?.('(display-mode: standalone)').matches || document.referrer.startsWith('android-app://')
   // Set up network error callback
   apiClient.setNetworkErrorCallback((isRetrying: boolean, attempt: number, maxAttempts: number) => {
     if (typeof navigator !== 'undefined' && navigator.onLine === false) {

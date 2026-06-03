@@ -201,6 +201,7 @@ import { useTheme } from './composables/useTheme'
 import { useDialog } from './composables/useDialog'
 import { useLocale } from './composables/useLocale'
 import { useLearningConfig } from './composables/useLearningConfig'
+import { isEmbeddedAndroidApp } from './utils/runtime'
 import Icon from './components/Icon.vue'
 import AlertModal from './components/AlertModal.vue'
 import ConfirmModal from './components/ConfirmModal.vue'
@@ -283,6 +284,9 @@ const updateThemeMetaColor = () => {
     document.head.appendChild(meta)
   }
   meta.content = bg
+  if (isEmbeddedAndroidApp()) {
+    ;(window as any).QantrixAndroid?.setSystemBarsColor?.(bg)
+  }
 }
 
 const updateDocumentTitle = () => {

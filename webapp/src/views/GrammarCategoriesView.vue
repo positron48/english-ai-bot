@@ -264,6 +264,7 @@ import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { grammarClient, type OfflineStatus } from '../api/grammarClient'
 import Icon from '../components/Icon.vue'
+import { isEmbeddedAndroidApp } from '../utils/runtime'
 
 const { t, locale } = useI18n()
 const router = useRouter()
@@ -526,7 +527,7 @@ const clearPreload = async () => {
 }
 
 onMounted(() => {
-  isInstalledWebApp.value = window.matchMedia?.('(display-mode: standalone)').matches || document.referrer.startsWith('android-app://')
+  isInstalledWebApp.value = isEmbeddedAndroidApp() || window.matchMedia?.('(display-mode: standalone)').matches || document.referrer.startsWith('android-app://')
   window.addEventListener('online', handleNetworkChange)
   window.addEventListener('offline', handleNetworkChange)
   loadCategories()
