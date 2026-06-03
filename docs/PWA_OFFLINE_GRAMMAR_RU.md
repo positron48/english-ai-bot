@@ -2,6 +2,30 @@
 
 Документ описывает фактически реализованную модель Android PWA/TWA APK и офлайн-грамматики для English/Spanish инстансов `english-ai-bot`.
 
+## Итоговая карта реализации
+
+Что было добавлено в рамках PWA/APK/offline-работ:
+
+- Android TWA/PWA APK для двух приложений: English (`ru.qantrix.english`, `https://qantrix.ru/app/`) и Spanish (`ru.qantrix.spanish`, `https://es.qantrix.ru/app/`).
+- PWA endpoints в web/backend: `/sw.js`, `/app/manifest.webmanifest`, `/app/icons/*`, `/.well-known/assetlinks.json`.
+- Подпись APK через GitHub Actions secrets и Bubblewrap.
+- GitHub Release assets для APK: `qantrix-english-<tag>.apk`, `qantrix-spanish-<tag>.apk`, `checksums.txt`.
+- Offline grammar preload: manifest, главы, question bank, chapter/category/placement tests, Grammar Training/SRS pack.
+- Offline word training preload: current due/new word cards для обычной multiple-choice тренировки.
+- IndexedDB-хранилища для скачанных grammar/word данных и очередей попыток.
+- Idempotent sync на сервере через `client_attempt_id`, чтобы повторная отправка не создавала дубли.
+- Service worker cache для app shell и всех Vite assets, чтобы lazy routes открывались офлайн.
+- Offline UI: preload panels, статус online/offline, pending sync, toast при потере/возврате сети, disabled/redirect для online-only разделов.
+- Android/TWA polish: `fallbackType=webview`, светлый status bar/theme color, проверка Digital Asset Links через `assetlinks.json`.
+
+Ключевое разделение:
+
+- APK содержит только wrapper metadata: package id, server URL, icons/manifest metadata, подпись, TWA config.
+- Web frontend, service worker и API приходят с сервера.
+- Курсы, тесты и тренировочные данные не зашиваются в APK; пользователь скачивает их кнопками preload после логина.
+- Offline source of truth на устройстве — IndexedDB.
+- Server source of truth сохраняется после sync; сервер повторно применяет canonical grading/SRS logic.
+
 ## Что работает офлайн
 
 После предзагрузки грамматики офлайн доступны:
@@ -16,15 +40,16 @@
 - локальное отображение прогресса по результатам офлайн-тестов;
 - очередь результатов с последующей синхронизацией на сервер;
 - отдельный экран `Grammar Training` / SRS-тренировка грамматики (`/learning/grammar/training`) на основе предзагруженного training pack.
+- обычная тренировка слов (`/training`) в offline-v1 multiple-choice режиме после отдельного `Preload words`.
 
 Не работают офлайн в текущей версии:
 - словарь и word sets;
-- обычные training cards;
+- spell/type варианты тренировки слов и server-only варианты генерации training queue;
 - chat/LLM;
 - reading;
 - speaking;
 - админка;
-- любые серверные операции вне offline grammar API.
+- любые серверные операции вне offline grammar/word training API.
 
 Важно: в UI есть два похожих понятия. “Тесты по грамматике” (chapter/category/placement tests) и “Grammar Training” как отдельный режим повторения/SRS теперь оба работают офлайн после preload, но синхронизируются разными очередями.
 
@@ -38,6 +63,115 @@ GitHub tag release в `english-ai-bot` собирает два TWA APK:
 APK не содержит курс внутри себя. В APK фактически зашиты package id, URL сервера, TWA metadata и подпись. Сам web shell, service worker и курс приходят с выбранного сервера.
 
 Для verified TWA сервер должен отдавать `/.well-known/assetlinks.json`. SHA-256 fingerprint релизного Android signing certificate задаётся в GitOps через `WEBAPP_ANDROID_CERT_FINGERPRINTS` в соответствующем ConfigMap English/Spanish.
+
+Что лежит в APK:
+
+- package id (`ru.qantrix.english` или `ru.qantrix.spanish`);
+- host/start URL (`https://qantrix.ru/app/` или `https://es.qantrix.ru/app/`);
+- TWA config, app name, цвета status/navigation bar;
+- ссылки на web manifest/icon URL;
+- Android signing metadata.
+
+Что не лежит в APK:
+
+- grammar course JSON;
+- grammar tests/question bank;
+- Grammar Training pack;
+- word training pack;
+- пользовательский progress;
+- web frontend bundle как постоянный embedded asset.
+
+Это значит: большинство frontend/offline исправлений раскатывается через серверный webapp и не требует переустановки APK. Переустановка APK нужна, если поменялись package id, TWA config, fallback strategy, signing, icon/start URL или нужно проверить новый release asset.
+
+## CI и GitHub Releases
+
+Основной workflow: `.github/workflows/ci.yml`.
+
+На обычный push в `master` запускаются:
+
+- webapp dependency install;
+- `npm run type-check`;
+- `npm run build`;
+- Go dependency verify;
+- Go tests;
+- golangci-lint.
+
+На tag push дополнительно запускаются:
+
+- `release` job: собирает server binary artifacts и загружает их в GitHub Release;
+- `docker-image` job: собирает и публикует `ghcr.io/<owner>/english:<tag/latest>` и `ghcr.io/<owner>/spanish:<tag/latest>`;
+- `android-apk` matrix job: собирает English/Spanish APK и загружает их в тот же GitHub Release.
+
+Важно: `android-apk` сейчас оставлен в ускоренном режиме и не ждёт полный `release` job. Это временная настройка, чтобы быстрее стабилизировать APK CI. После стабилизации можно вернуть зависимость:
+
+```yaml
+needs: [release]
+```
+
+APK job делает следующее:
+
+1. Ставит Node.js, JDK 17 и Android SDK.
+2. Декодирует `ANDROID_KEYSTORE_BASE64` в `release.keystore`.
+3. Создаёт GitHub Release, если его ещё нет.
+4. Запускает `scripts/build-twa-apks.sh` для `english` и `spanish`.
+5. Скрипт генерирует `dist/twa-<app>/twa-manifest.json`.
+6. Скрипт заранее пишет `${HOME}/.bubblewrap/config.json`, чтобы Bubblewrap не спрашивал про JDK интерактивно.
+7. Запускает `bubblewrap update --skipVersionUpgrade`, чтобы появился Android project и checksum без prompt.
+8. Принудительно проверяет/патчит `fallbackType=webview`.
+9. Запускает `bubblewrap build --skipPwaValidation`.
+10. Кладёт APK в `dist/qantrix-<app>-<tag>.apk`.
+11. Обновляет `checksums.txt` и release assets через `gh release upload --clobber`.
+
+GitHub Actions secrets для APK:
+
+```text
+ANDROID_KEYSTORE_BASE64
+ANDROID_KEYSTORE_PASSWORD
+ANDROID_KEY_ALIAS
+ANDROID_KEY_PASSWORD
+```
+
+Локальный signing runbook: `docs/ANDROID_APK_SIGNING_RU.md`.
+
+## GitOps/k3s часть
+
+Для APK и offline frontend важны оба слоя: новый Docker image должен выкатиться на prod до успешной APK-сборки, потому что Bubblewrap скачивает web manifest/icon URL с реального домена.
+
+English:
+
+- namespace: `english`;
+- deployment: `english`;
+- image: `ghcr.io/positron48/english`;
+- GitOps manifests: `devops-time-host/apps/english/base/`;
+- public URL: `https://qantrix.ru`.
+
+Spanish:
+
+- namespace: `spanish`;
+- deployment: `spanish`;
+- image: `ghcr.io/positron48/spanish`;
+- GitOps manifests: `devops-time-host/apps/spanish/base/`;
+- public URL: `https://es.qantrix.ru`.
+
+Digital Asset Links:
+
+- backend отдаёт `/.well-known/assetlinks.json`;
+- fingerprint берётся из env `WEBAPP_ANDROID_CERT_FINGERPRINTS`;
+- значение хранится в GitOps ConfigMap для English/Spanish;
+- если fingerprint не совпал с APK signing cert, verified TWA не поднимется и Android может открыть fallback.
+
+Перед rerun APK job проверять prod URL:
+
+```bash
+curl -fsSI https://qantrix.ru/app/manifest.webmanifest
+curl -fsSI https://qantrix.ru/app/icons/english-512.png
+curl -fsSI https://qantrix.ru/app/asset-manifest.json
+curl -fsSI https://es.qantrix.ru/app/manifest.webmanifest
+curl -fsSI https://es.qantrix.ru/app/icons/spanish-512.png
+curl -fsSI https://es.qantrix.ru/app/asset-manifest.json
+```
+
+Если там `404`, APK CI будет падать на скачивании manifest/icon или offline lazy routes не будут надежно precache-иться.
 
 ## Когда скачивается курс грамматики
 
@@ -279,3 +413,121 @@ POST /api/training/offline/sync-attempts
 - Offline grammar chapter access на фронте повторяет progression: первая глава доступной категории открыта, следующие открываются только после `passed` предыдущей главы. Доступность всей категории больше не раскрывает все главы сразу.
 - Offline grammar training pack скачивает все опубликованные grammar training questions, чтобы тренировка могла стартовать из предзагруженного курса без зависимости от текущего server-side due/progress фильтра.
 - Android status bar / PWA theme color выставлен в основной фон приложения (`#f5f5f5` для light theme) вместо language-specific brand color.
+
+## Troubleshooting по уже пойманным проблемам
+
+### APK CI: нет signing secret
+
+Симптом:
+
+```text
+ANDROID_KEYSTORE_BASE64 is required
+```
+
+Причина: secrets не добавлены в GitHub Actions или добавлены не в тот repo.
+
+Исправление: добавить 4 secrets из `docs/ANDROID_APK_SIGNING_RU.md`.
+
+### Bubblewrap спрашивает JDK или regenerate
+
+Симптомы:
+
+```text
+Do you want Bubblewrap to install the JDK?
+No checksum file was found ... would you like to regenerate your project?
+```
+
+Причина: Bubblewrap запущен интерактивно.
+
+Исправление уже в `scripts/build-twa-apks.sh`:
+
+- заранее пишется `${HOME}/.bubblewrap/config.json`;
+- перед build выполняется `bubblewrap update --skipVersionUpgrade`.
+
+### Bubblewrap `EISDIR`
+
+Симптом:
+
+```text
+cli ERROR EISDIR: illegal operation on a directory, read
+```
+
+Причина: Bubblewrap получил директорию вместо manifest file.
+
+Исправление уже в `scripts/build-twa-apks.sh`: `--manifest="twa-manifest.json"` внутри `dist/twa-<app>/`.
+
+### 404 на `/app/manifest.webmanifest` или `/app/icons/*.png`
+
+Симптом:
+
+```text
+Failed to download Web Manifest ... 404
+Failed to download icon ... 404
+```
+
+Причина: prod ещё не выкатил новый image, запрос попадает в старый pod, или pod падает до отдачи новых routes/assets.
+
+Проверки:
+
+```bash
+kubectl get pods -n english -l app=english
+kubectl logs -n english deploy/english --tail=200
+kubectl get pods -n spanish -l app=spanish
+kubectl logs -n spanish deploy/spanish --tail=200
+```
+
+В одном из инцидентов новый pod падал из-за порядка Postgres migration: индекс по `client_attempt_id` создавался до добавления колонки. Это исправлено отдельным релизом, но при повторении симптома сначала смотреть startup logs.
+
+### APK показывает верхнюю browser/domain панель
+
+Причины:
+
+- Digital Asset Links не verified;
+- `WEBAPP_ANDROID_CERT_FINGERPRINTS` не совпадает с сертификатом APK;
+- домен отдаёт старый/битый `assetlinks.json`;
+- Android использует fallback вместо verified TWA.
+
+Проверки:
+
+```bash
+curl -sS https://qantrix.ru/.well-known/assetlinks.json | jq .
+curl -sS https://es.qantrix.ru/.well-known/assetlinks.json | jq .
+```
+
+В актуальном APK fallback strategy выставлен в `webview`, чтобы при сбое verified TWA не показывать Chrome Custom Tab с доменной панелью.
+
+### Чёрный экран после offline navigation
+
+Причина, которую уже ловили: direct offline route открывался, но lazy JS chunk для страницы не был в CacheStorage.
+
+Исправление:
+
+- `npm run build` генерирует `/app/asset-manifest.json`;
+- `/sw.js` precache-ит все assets из этого manifest;
+- grammar navigation работает через Vue Router без forced full reload.
+
+Проверка:
+
+```bash
+curl -fsS https://es.qantrix.ru/app/asset-manifest.json | jq '.assets | length'
+```
+
+После выката пользователь должен один раз открыть приложение онлайн, чтобы обновился service worker и asset cache.
+
+### Offline результаты не синхронизируются
+
+Ожидаемое поведение:
+
+- если нет сети, попытки остаются в IndexedDB;
+- если auth истёк, попытки остаются в IndexedDB до повторного логина;
+- sync повторяется по `online` event, раз в 30 секунд и вручную кнопкой `Sync results`.
+
+Если после логина и сети sync не уходит, смотреть API:
+
+```http
+POST /api/learning/grammar/offline/sync-attempts
+POST /api/learning/grammar/offline/sync-training-attempts
+POST /api/training/offline/sync-attempts
+```
+
+Повторы безопасны из-за unique `(user_id, client_attempt_id)`.
