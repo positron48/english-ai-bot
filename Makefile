@@ -310,6 +310,23 @@ backfill-linglow-word-srs: build-backfill-linglow-word-srs
 	@echo ""
 	./bin/backfill_linglow_word_srs --commit
 
+build-backfill-linglow-grammar-srs:
+	@mkdir -p bin
+	$(GO) build -o bin/backfill_linglow_grammar_srs ./cmd/backfill_linglow_grammar_srs
+	@echo "✅ Linglow grammar SRS backfill tool built: bin/backfill_linglow_grammar_srs"
+
+backfill-linglow-grammar-srs-audit: build-backfill-linglow-grammar-srs
+	@echo "Dry-run audit of legacy grammar_theory_memory missing in Linglow srs_items."
+	@echo "DATABASE_URL must be set."
+	@echo ""
+	./bin/backfill_linglow_grammar_srs
+
+backfill-linglow-grammar-srs: build-backfill-linglow-grammar-srs
+	@echo "Backfill legacy grammar_theory_memory into Linglow srs_items."
+	@echo "DATABASE_URL must be set."
+	@echo ""
+	./bin/backfill_linglow_grammar_srs --commit
+
 build-backfill-noun-gender:
 	@mkdir -p bin
 	$(GO) build -o bin/backfill_noun_gender ./cmd/backfill_noun_gender

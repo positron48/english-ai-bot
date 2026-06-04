@@ -437,6 +437,7 @@ func (r *CourseRepository) MapLegacyContent(ctx context.Context, courseCode, bun
 	}{
 		{mapGrammarSectionModulesSQL, true},
 		{mapGrammarChapterItemsSQL, true},
+		{mapGrammarTheoryBlockItemsSQL, true},
 		{mapReadingCategoryModulesSQL, false},
 		{mapReadingTextItemsSQL, false},
 		{mapSpeakingCategoryModulesSQL, false},
@@ -529,6 +530,65 @@ ON CONFLICT (course_id, source_kind, source_id) DO UPDATE SET
     title = excluded.title,
     cefr_level = excluded.cefr_level,
     content_hash = excluded.content_hash,
+    status = excluded.status,
+    updated_at = CURRENT_TIMESTAMP`
+
+var mapGrammarTheoryBlockItemsSQL = `
+WITH src AS (
+    SELECT
+        q.chapter_id,
+        q.theory_block_id,
+        MIN(q.concept_id) FILTER (WHERE q.concept_id IS NOT NULL AND q.concept_id <> '') AS concept_id,
+        MIN(ch.section_id) AS section_id,
+        MIN(ch.level) AS level,
+        MIN(ch.sort_order) AS chapter_sort_order,
+        COUNT(*) AS question_count,
+        md5(string_agg(q.source_hash, ',' ORDER BY q.question_id)) AS source_hash
+    FROM grammar_training_content_questions q
+    JOIN grammar_content_chapters ch ON ch.bundle_id = q.bundle_id AND ch.chapter_id = q.chapter_id
+    WHERE q.bundle_id = ?
+    GROUP BY q.chapter_id, q.theory_block_id
+), target AS (
+    SELECT c.id AS course_id, d.id AS district_id, l.id AS location_id, m.id AS module_id, src.*
+    FROM src
+    JOIN courses c ON c.id = ?
+    ` + levelDistrictJoinSQL + `
+    JOIN locations l ON l.district_id = d.id AND l.location_type = 'grammar'
+    LEFT JOIN modules m ON m.course_id = c.id AND m.source_kind = 'grammar_section' AND m.source_id = src.section_id
+)
+INSERT INTO learning_items (
+    course_id, module_id, district_id, location_id, item_type, source_kind, source_id,
+    title, cefr_level, content_hash, payload_json, status, updated_at
+)
+SELECT
+    course_id,
+    module_id,
+    district_id,
+    location_id,
+    'grammar_theory_block',
+    'grammar_theory_block',
+    chapter_id || ':' || theory_block_id,
+    COALESCE(concept_id, theory_block_id),
+    level,
+    source_hash,
+    jsonb_build_object(
+        'chapter_id', chapter_id,
+        'theory_block_id', theory_block_id,
+        'concept_id', concept_id,
+        'question_count', question_count,
+        'chapter_sort_order', chapter_sort_order
+    ),
+    'published',
+    CURRENT_TIMESTAMP
+FROM target
+ON CONFLICT (course_id, source_kind, source_id) DO UPDATE SET
+    module_id = excluded.module_id,
+    district_id = excluded.district_id,
+    location_id = excluded.location_id,
+    title = excluded.title,
+    cefr_level = excluded.cefr_level,
+    content_hash = excluded.content_hash,
+    payload_json = excluded.payload_json,
     status = excluded.status,
     updated_at = CURRENT_TIMESTAMP`
 
