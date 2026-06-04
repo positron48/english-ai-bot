@@ -132,6 +132,73 @@ func TestDatabase_CoreTables_Exist(t *testing.T) {
 	}
 }
 
+func TestDatabase_LinglowCourseArchitectureSeeded(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	dsn := startTestPostgres(t)
+
+	var db *DB
+	var err error
+	for attempt := 0; attempt < 10; attempt++ {
+		db, err = NewWithConfig("postgres", "", dsn, logger)
+		if err == nil {
+			break
+		}
+		time.Sleep(time.Duration(attempt+1) * 500 * time.Millisecond)
+	}
+	if err != nil {
+		t.Fatalf("NewWithConfig() error = %v", err)
+	}
+	defer db.Close()
+
+	conn := db.GetConnection()
+	expectedTables := []string{
+		"courses",
+		"user_courses",
+		"districts",
+		"locations",
+		"theme_lines",
+		"modules",
+		"learning_objectives",
+		"learning_items",
+		"srs_items",
+		"exercise_attempts",
+		"learning_events",
+		"daily_course_stats",
+		"mode_daily_stats",
+		"district_progress",
+		"learning_item_stats",
+		"content_performance_stats",
+	}
+	for _, table := range expectedTables {
+		var count int
+		err := conn.QueryRow(
+			"SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='public' AND table_name=$1",
+			table,
+		).Scan(&count)
+		if err != nil {
+			t.Fatalf("check table %s: %v", table, err)
+		}
+		if count == 0 {
+			t.Fatalf("expected table %s to exist", table)
+		}
+	}
+
+	checkCount := func(query string, want int) {
+		t.Helper()
+		var got int
+		if err := conn.QueryRow(query).Scan(&got); err != nil {
+			t.Fatalf("count query failed: %v", err)
+		}
+		if got != want {
+			t.Fatalf("count query got %d, want %d: %s", got, want, query)
+		}
+	}
+	checkCount(`SELECT COUNT(*) FROM courses WHERE code IN ('en_ru', 'es_ru')`, 2)
+	checkCount(`SELECT COUNT(*) FROM districts`, 12)
+	checkCount(`SELECT COUNT(*) FROM locations`, 72)
+	checkCount(`SELECT COUNT(*) FROM theme_lines`, 8)
+}
+
 // TestMigratePostgres_ErrorWhenConnClosed covers migratePostgres error branch when Exec fails (e.g. closed connection).
 func TestMigratePostgres_ErrorWhenConnClosed(t *testing.T) {
 	logger, _ := zap.NewDevelopment()

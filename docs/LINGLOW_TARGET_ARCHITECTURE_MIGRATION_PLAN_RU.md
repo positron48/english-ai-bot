@@ -4,6 +4,11 @@
 
 Цель: привести текущее приложение `english-ai-bot` к целевой концепции Linglow без потери пользовательских данных. Итоговая модель: одно приложение, один backend, одна PostgreSQL БД, несколько курсов (`en_ru`, `es_ru`), прогресс через `user_course_id`, контент импортируется из Git-файлов в БД и в runtime читается из БД.
 
+Текущий статус:
+
+- Phase 0/DB-first content: grammar content, grammar training, reading catalog и speaking catalog импортируются в БД; prod runtime переключен на `CONTENT_SOURCE=db`.
+- Phase 1/schema foundation: добавлена миграция `000017_linglow_course_architecture.sql` с canonical Linglow v2 таблицами и seed для `en_ru`/`es_ru`, districts, locations и theme lines.
+
 ## 1. Текущая точка
 
 Что уже есть и что нужно сохранить:
