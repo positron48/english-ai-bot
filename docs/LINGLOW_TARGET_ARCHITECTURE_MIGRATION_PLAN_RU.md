@@ -12,6 +12,7 @@
 - Phase 3/content mapping bootstrap: добавлен zero-touch startup mapping legacy/DB-first content в `modules` и `learning_items` для grammar, reading, speaking и word sets; mapping идемпотентный и пока не меняет runtime.
 - Phase 4/dual-write foundation: добавлен feature flag `LINGLOW_EVENTS_WRITE_ENABLED`; при включении online/offline grammar test attempts, Grammar Training SRS attempts, web/PWA word training review events и Telegram bot word training review events зеркалятся в `exercise_attempts` и `learning_events` non-blocking, старые таблицы остаются source of truth.
 - Phase 5/attempts-events backfill foundation: добавлен `cmd/backfill_linglow_events` с dry-run по умолчанию и `--commit`; команда сверяет и дозаливает исторические `grammar_test_attempts`, `grammar_attempts`, `review_events` в `exercise_attempts` + `learning_events` через тот же idempotent writer, что и runtime dual-write.
+- Phase 5/word SRS snapshot foundation: добавлен `cmd/backfill_linglow_word_srs` с dry-run по умолчанию и `--commit`; команда переносит текущий legacy state из `user_cards` в canonical `srs_items` для mapped `word_card` learning items.
 - Phase 6/course-aware read API foundation: добавлен protected endpoint `GET /api/learning/course`, который отдаёт карту course -> districts -> locations -> modules -> learning_items из Linglow v2 таблиц; во фронте добавлен `/city` read-only экран поверх этого API.
 
 ## 1. Текущая точка
@@ -328,8 +329,8 @@ Rollback:
 
 1. Написать команды:
    - `cmd/backfill_linglow_events` - готово для attempts/events из `grammar_test_attempts`, `grammar_attempts`, `review_events`;
-   - `cmd/backfill_linglow_word_progress` - далее для `srs_items`/word state snapshots;
-   - `cmd/backfill_linglow_grammar_progress` - далее для grammar progress/SRS snapshots;
+   - `cmd/backfill_linglow_word_srs` - готово для `srs_items`/word state snapshots из `user_cards`;
+   - `cmd/backfill_linglow_grammar_progress` - далее после mapping theory-block/concept learning items, чтобы не схлопнуть несколько SRS units в один chapter item;
    - `cmd/backfill_linglow_reading_progress`;
    - `cmd/backfill_linglow_speaking_progress`.
 

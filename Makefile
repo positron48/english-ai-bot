@@ -293,6 +293,23 @@ backfill-linglow-events: build-backfill-linglow-events
 	@echo ""
 	./bin/backfill_linglow_events --commit
 
+build-backfill-linglow-word-srs:
+	@mkdir -p bin
+	$(GO) build -o bin/backfill_linglow_word_srs ./cmd/backfill_linglow_word_srs
+	@echo "✅ Linglow word SRS backfill tool built: bin/backfill_linglow_word_srs"
+
+backfill-linglow-word-srs-audit: build-backfill-linglow-word-srs
+	@echo "Dry-run audit of legacy user_cards missing in Linglow srs_items."
+	@echo "DATABASE_URL must be set."
+	@echo ""
+	./bin/backfill_linglow_word_srs
+
+backfill-linglow-word-srs: build-backfill-linglow-word-srs
+	@echo "Backfill legacy user_cards into Linglow srs_items."
+	@echo "DATABASE_URL must be set."
+	@echo ""
+	./bin/backfill_linglow_word_srs --commit
+
 build-backfill-noun-gender:
 	@mkdir -p bin
 	$(GO) build -o bin/backfill_noun_gender ./cmd/backfill_noun_gender
