@@ -34,11 +34,51 @@ func (r *Router) handleLearningGrammarCategories(w http.ResponseWriter, req *htt
 		return
 	}
 
-	sections, err := r.grammarService.GetAllSectionsWithProgress(req.Context(), userID)
+	sectionsData, err := r.grammarService.ContentRepo.GetSections()
 	if err != nil {
 		r.logger.Error("failed to get grammar categories", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
+	}
+	sectionItems, err := r.grammarService.PublishRepo.GetPublishedItemsByType("section")
+	if err != nil {
+		r.logger.Error("failed to get grammar section publish state", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	chapterItems, err := r.grammarService.PublishRepo.GetPublishedItemsByType("chapter")
+	if err != nil {
+		r.logger.Error("failed to get grammar chapter publish state", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	progressByChapter, err := r.grammarService.AttemptRepo.GetAllChapterProgress(userID)
+	if err != nil {
+		r.logger.Error("failed to get grammar chapter progress", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	categoryScores, err := r.grammarService.AttemptRepo.GetCategoryTestBestScores(userID)
+	if err != nil {
+		r.logger.Warn("failed to get grammar category scores, defaulting section access to locked", zap.Error(err))
+		categoryScores = map[string]int{}
+	}
+	placementResult, _ := r.grammarService.AttemptRepo.GetPlacementTestResult(userID)
+	levelOrder := map[string]int{"A0": 0, "A1": 1, "A2": 2, "B1": 3, "B2": 4, "C1": 5, "C2": 6, "mixed": -1}
+	placementOpened := make(map[string]bool)
+	placementEffectiveOrder := -1
+	if placementResult != nil {
+		for _, openedSectionID := range placementResult.OpenedSections {
+			placementOpened[openedSectionID] = true
+			for i := range sectionsData.Sections {
+				if sectionsData.Sections[i].SectionID == openedSectionID {
+					if ord, ok := levelOrder[sectionsData.Sections[i].Level]; ok && ord >= 0 && ord > placementEffectiveOrder {
+						placementEffectiveOrder = ord
+					}
+					break
+				}
+			}
+		}
 	}
 
 	type CategoryResponse struct {
@@ -56,37 +96,88 @@ func (r *Router) handleLearningGrammarCategories(w http.ResponseWriter, req *htt
 		CategoryTestScore  *int              `json:"category_test_score,omitempty"`
 	}
 
-	categories := make([]CategoryResponse, 0, len(sections))
-	for _, section := range sections {
-		canAccess := false
-		if section.IsPublished {
-			var errAccess error
-			canAccess, errAccess = r.grammarService.CanAccessSection(req.Context(), userID, section.Section.SectionID)
-			if errAccess != nil {
-				r.logger.Warn("failed to check section access, defaulting to false", zap.String("section_id", section.Section.SectionID), zap.Error(errAccess))
-				canAccess = false
+	categories := make([]CategoryResponse, 0, len(sectionsData.Sections))
+	for i := range sectionsData.Sections {
+		section := &sectionsData.Sections[i]
+		item, exists := sectionItems[section.SectionID]
+		isPublished := exists && item.IsPublished
+		title := section.Title
+		if isPublished && item.Name != nil && *item.Name != "" {
+			title = *item.Name
+		}
+		publishedChapters := 0
+		passedChapters := 0
+		totalScore := 0
+		for _, chapterID := range section.ChapterIDs {
+			chapterItem, exists := chapterItems[chapterID]
+			if !exists || !chapterItem.IsPublished {
+				continue
+			}
+			publishedChapters++
+			progress := progressByChapter[chapterID]
+			if progress != nil {
+				if progress.Passed {
+					passedChapters++
+				}
+				totalScore += progress.BestScore
 			}
 		}
-
+		progressPercentage := 0
+		if publishedChapters > 0 {
+			progressPercentage = totalScore / publishedChapters
+		}
+		canAccess := false
+		if isPublished {
+			if placementOpened[section.SectionID] {
+				canAccess = true
+			} else if placementEffectiveOrder >= 0 {
+				if secOrd, ok := levelOrder[section.Level]; ok && secOrd >= 0 && secOrd <= placementEffectiveOrder {
+					canAccess = true
+				}
+			}
+			if !canAccess && i == 0 {
+				canAccess = true
+			}
+			if !canAccess && i > 0 {
+				previousSection := &sectionsData.Sections[i-1]
+				if categoryScores[previousSection.SectionID] >= 50 {
+					canAccess = true
+				} else {
+					previousPublishedChapters := 0
+					previousPassedChapters := 0
+					for _, chapterID := range previousSection.ChapterIDs {
+						chapterItem, exists := chapterItems[chapterID]
+						if !exists || !chapterItem.IsPublished {
+							continue
+						}
+						previousPublishedChapters++
+						if progress := progressByChapter[chapterID]; progress != nil && progress.Passed {
+							previousPassedChapters++
+						}
+					}
+					canAccess = previousPublishedChapters > 0 && previousPassedChapters == previousPublishedChapters
+				}
+			}
+		}
 		var categoryTestScore *int
-		if section.IsPublished {
-			bestScore, errScore := r.grammarService.AttemptRepo.GetCategoryTestBestScore(userID, section.Section.SectionID)
-			if errScore == nil && bestScore > 0 {
-				categoryTestScore = &bestScore
+		if isPublished {
+			if bestScore := categoryScores[section.SectionID]; bestScore > 0 {
+				score := bestScore
+				categoryTestScore = &score
 			}
 		}
 
 		categories = append(categories, CategoryResponse{
-			SectionID:          section.Section.SectionID,
-			Title:              section.Title,
-			TitleTranslations:  section.Section.TitleTranslations,
-			Level:              section.Section.Level,
-			Order:              section.Section.Order,
-			IsPublished:        section.IsPublished,
-			PublishedChapters:  section.PublishedChapters,
-			PassedChapters:     section.PassedChapters,
-			TotalChapters:      len(section.Section.ChapterIDs),
-			ProgressPercentage: section.ProgressPercentage,
+			SectionID:          section.SectionID,
+			Title:              title,
+			TitleTranslations:  section.TitleTranslations,
+			Level:              section.Level,
+			Order:              section.Order,
+			IsPublished:        isPublished,
+			PublishedChapters:  publishedChapters,
+			PassedChapters:     passedChapters,
+			TotalChapters:      len(section.ChapterIDs),
+			ProgressPercentage: progressPercentage,
 			CanAccess:          canAccess,
 			CategoryTestScore:  categoryTestScore,
 		})

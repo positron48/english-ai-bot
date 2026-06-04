@@ -174,6 +174,33 @@ func (r *GrammarAttemptRepository) GetCategoryTestBestScore(userID int64, sectio
 	return int(bestScore.Int64), nil
 }
 
+// GetCategoryTestBestScores returns best category-test scores for all sections attempted by a user.
+func (r *GrammarAttemptRepository) GetCategoryTestBestScores(userID int64) (map[string]int, error) {
+	query := `SELECT scope_id, MAX(score)
+			  FROM grammar_test_attempts
+			  WHERE user_id = ? AND scope_type = 'category'
+			  GROUP BY scope_id`
+
+	rows, err := r.db.Query(query, userID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to query category test best scores: %w", err)
+	}
+	defer rows.Close()
+
+	scores := make(map[string]int)
+	for rows.Next() {
+		var sectionID string
+		var score sql.NullInt64
+		if err := rows.Scan(&sectionID, &score); err != nil {
+			return nil, fmt.Errorf("failed to scan category test best score: %w", err)
+		}
+		if score.Valid {
+			scores[sectionID] = int(score.Int64)
+		}
+	}
+	return scores, rows.Err()
+}
+
 // GetChapterProgress retrieves progress for a chapter
 func (r *GrammarAttemptRepository) GetChapterProgress(userID int64, chapterID string) (*ChapterProgress, error) {
 	query := `SELECT best_score, passed_at, last_attempt_at
@@ -211,6 +238,39 @@ func (r *GrammarAttemptRepository) GetChapterProgress(userID int64, chapterID st
 	}
 
 	return &progress, nil
+}
+
+// GetAllChapterProgress returns all grammar chapter progress rows for a user.
+func (r *GrammarAttemptRepository) GetAllChapterProgress(userID int64) (map[string]*ChapterProgress, error) {
+	query := `SELECT chapter_id, best_score, passed_at, last_attempt_at
+			  FROM grammar_progress
+			  WHERE user_id = ?`
+
+	rows, err := r.db.Query(query, userID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to query chapter progress: %w", err)
+	}
+	defer rows.Close()
+
+	progressByChapter := make(map[string]*ChapterProgress)
+	for rows.Next() {
+		var chapterID string
+		var progress ChapterProgress
+		var passedAt sql.NullString
+		var lastAttemptAt sql.NullString
+		if err := rows.Scan(&chapterID, &progress.BestScore, &passedAt, &lastAttemptAt); err != nil {
+			return nil, fmt.Errorf("failed to scan chapter progress: %w", err)
+		}
+		if passedAt.Valid {
+			progress.PassedAt = parseTimestampFlex(passedAt.String)
+			progress.Passed = true
+		}
+		if lastAttemptAt.Valid {
+			progress.LastAttemptAt = parseTimestampFlex(lastAttemptAt.String)
+		}
+		progressByChapter[chapterID] = &progress
+	}
+	return progressByChapter, rows.Err()
 }
 
 // parseTimestampFlex tries multiple common timestamp formats returned by PostgreSQL.

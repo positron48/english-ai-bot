@@ -28,6 +28,7 @@ import { computed, ref, watch, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { apiClient } from '../api/client'
+import { grammarClient } from '../api/grammarClient'
 import Icon from './Icon.vue'
 
 const { t, locale } = useI18n()
@@ -77,7 +78,7 @@ const loadCategories = async () => {
 // Загружаем название секции грамматики
 const loadGrammarSectionName = async (sectionId: string) => {
   try {
-    const data: any = await apiClient.request('/api/learning/grammar/categories')
+    const data: any = await grammarClient.getCategories()
     const categories = data.categories || []
     const section = categories.find((s: any) => s.section_id === sectionId)
     

@@ -119,6 +119,31 @@ async function offlineFallback<T>(online: () => Promise<T>, offline: () => Promi
   }
 }
 
+const categoriesCacheTTL = 30_000
+let categoriesCache: { data: { categories: any[] }; expiresAt: number } | null = null
+let categoriesRequest: Promise<{ categories: any[] }> | null = null
+
+function clearCategoriesCache() {
+  categoriesCache = null
+  categoriesRequest = null
+}
+
+async function fetchOnlineCategories(): Promise<{ categories: any[] }> {
+  const now = Date.now()
+  if (categoriesCache && categoriesCache.expiresAt > now) return clone(categoriesCache.data)
+  if (categoriesRequest) return clone(await categoriesRequest)
+  categoriesRequest = apiClient.request('/api/learning/grammar/categories')
+    .then((data: any) => {
+      const normalized = { categories: data.categories || [] }
+      categoriesCache = { data: normalized, expiresAt: Date.now() + categoriesCacheTTL }
+      return normalized
+    })
+    .finally(() => {
+      categoriesRequest = null
+    })
+  return clone(await categoriesRequest)
+}
+
 function computeChapterAccess(meta: OfflineGrammarMeta, chapterID: string): boolean {
   for (const section of meta.sections) {
     const index = section.chapters.findIndex((chapter) => chapter.chapter_id === chapterID)
@@ -366,6 +391,7 @@ export const grammarClient = {
           synced++
         }
       }
+      if (synced > 0) clearCategoriesCache()
     }
     const trainingAttempts = await getQueuedTrainingAttempts()
     if (trainingAttempts.length > 0) {
@@ -391,7 +417,7 @@ export const grammarClient = {
 
   async getCategories(): Promise<{ categories: any[] }> {
     return offlineFallback(
-      () => apiClient.request('/api/learning/grammar/categories'),
+      () => fetchOnlineCategories(),
       async () => {
         const meta = await requireMeta()
         return { categories: meta.sections.map(({ chapters, ...section }) => ({
@@ -591,10 +617,12 @@ export const grammarClient = {
   async submitTest(scope: 'chapter' | 'category', scopeID: string, answers: any[]): Promise<any> {
     if (!isBrowserOffline()) {
       try {
-        return await apiClient.request('/api/learning/grammar/tests/submit', {
+        const result = await apiClient.request('/api/learning/grammar/tests/submit', {
           method: 'POST',
           body: { scope, scope_id: scopeID, answers } as any,
         })
+        clearCategoriesCache()
+        return result
       } catch (error) {
         if (!isNetworkError(error)) throw error
       }
@@ -608,10 +636,12 @@ export const grammarClient = {
   async submitPlacementTest(answersMap: Record<string, any>): Promise<any> {
     if (!isBrowserOffline()) {
       try {
-        return await apiClient.request('/api/learning/grammar/placement-test/submit', {
+        const result = await apiClient.request('/api/learning/grammar/placement-test/submit', {
           method: 'POST',
           body: answersMap as any,
         })
+        clearCategoriesCache()
+        return result
       } catch (error) {
         if (!isNetworkError(error)) throw error
       }
