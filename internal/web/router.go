@@ -408,6 +408,9 @@ func (r *Router) setupProtectedRoutes() {
 
 	// Protected user routes (wrapped with auth middleware and rate limiting)
 	r.mux.HandleFunc("/api/dashboard", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleDashboard)))
+	r.mux.HandleFunc("/api/courses", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleCourses)))
+	r.mux.HandleFunc("/api/user/courses/current", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleCurrentCourse)))
+	r.mux.HandleFunc("/api/user/courses/select", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleSelectCourse)))
 	r.mux.HandleFunc("/api/learning/course", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningCourse)))
 	r.mux.HandleFunc("/api/vocab", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleVocab)))
 	r.mux.HandleFunc("/api/vocab/", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleVocabDelete)))

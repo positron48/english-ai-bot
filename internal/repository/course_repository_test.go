@@ -165,3 +165,52 @@ func TestCourseRepository_GetCourseMap(t *testing.T) {
 		t.Fatalf("expected district locations")
 	}
 }
+
+func TestCourseRepository_CurrentCourseSelection(t *testing.T) {
+	conn := testutil.SetupTestDB(t)
+	logger := zap.NewNop()
+	userRepo := NewUserRepository(conn, logger)
+	user, err := userRepo.GetOrCreateUser(4343)
+	if err != nil {
+		t.Fatalf("create user: %v", err)
+	}
+	repo := NewCourseRepository(conn, logger)
+
+	current, err := repo.GetCurrentCourse(context.Background(), user.ID, "es_ru")
+	if err != nil {
+		t.Fatalf("GetCurrentCourse default: %v", err)
+	}
+	if current.Course.Code != "es_ru" || current.UserCourse.ID == 0 {
+		t.Fatalf("default current = %+v", current)
+	}
+
+	selected, err := repo.SelectCurrentCourse(context.Background(), user.ID, "en_ru")
+	if err != nil {
+		t.Fatalf("SelectCurrentCourse: %v", err)
+	}
+	if selected.Course.Code != "en_ru" || selected.UserCourse.ID == 0 {
+		t.Fatalf("selected current = %+v", selected)
+	}
+
+	resolved, err := repo.ResolveCurrentCourseCode(context.Background(), user.ID, "es_ru")
+	if err != nil {
+		t.Fatalf("ResolveCurrentCourseCode: %v", err)
+	}
+	if resolved != "en_ru" {
+		t.Fatalf("resolved = %q, want en_ru", resolved)
+	}
+
+	courses, err := repo.ListCoursesForUser(context.Background(), user.ID, "es_ru")
+	if err != nil {
+		t.Fatalf("ListCoursesForUser: %v", err)
+	}
+	var foundCurrent bool
+	for _, course := range courses {
+		if course.Code == "en_ru" && course.IsCurrent && course.UserCourseID != nil {
+			foundCurrent = true
+		}
+	}
+	if !foundCurrent {
+		t.Fatalf("current selected course not found in %+v", courses)
+	}
+}

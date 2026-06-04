@@ -17,6 +17,7 @@
 - Phase 5/attempt-SRS linking: runtime dual-write для word/grammar SRS attempts теперь проставляет `exercise_attempts.srs_item_id`; добавлен `cmd/backfill_linglow_attempt_srs_links`, который дозаполняет `srs_item_id` для исторических attempts и переводит grammar training attempts на `grammar_theory_block` item.
 - Phase 5/reading-speaking progress foundation: добавлен `cmd/backfill_linglow_media_progress`, который переносит legacy `reading_text_progress` и `speaking_attempts` в `exercise_attempts` + `learning_events` для mapped `reading_text`/`speaking_task` items.
 - Phase 6/course-aware read API foundation: добавлен protected endpoint `GET /api/learning/course`, который отдаёт карту course -> districts -> locations -> modules -> learning_items из Linglow v2 таблиц; во фронте добавлен `/city` read-only экран поверх этого API.
+- Phase 6/course selection API foundation: добавлены protected endpoints `GET /api/courses`, `GET /api/user/courses/current`, `POST /api/user/courses/select`; текущий курс хранится в `users.settings_json.current_course_code`, selection идемпотентно создаёт `user_courses`.
 
 ## 1. Текущая точка
 
@@ -391,9 +392,9 @@ Rollback:
 Шаги:
 
 1. Добавить API:
-   - `GET /api/courses`
-   - `POST /api/user/courses/select`
-   - `GET /api/user/courses/current`
+   - `GET /api/courses` - готово;
+   - `POST /api/user/courses/select` - готово;
+   - `GET /api/user/courses/current` - готово;
    - `GET /api/linglow/city`
    - `GET /api/linglow/daily-route`
    - `POST /api/linglow/exercise-attempts`

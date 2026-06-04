@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -111,6 +112,25 @@ type CourseMapTotals struct {
 	ByType    map[string]int `json:"by_type"`
 }
 
+type CourseSummary struct {
+	ID             int64  `json:"id"`
+	Code           string `json:"code"`
+	Title          string `json:"title"`
+	CityName       string `json:"city_name"`
+	TargetLanguage string `json:"target_language"`
+	NativeLanguage string `json:"native_language"`
+	UILocale       string `json:"ui_locale"`
+	Status         string `json:"status"`
+	IsCurrent      bool   `json:"is_current"`
+	UserCourseID   *int64 `json:"user_course_id,omitempty"`
+	UserStatus     string `json:"user_status,omitempty"`
+}
+
+type CurrentCourse struct {
+	Course     CourseSummary       `json:"course"`
+	UserCourse CourseMapUserCourse `json:"user_course"`
+}
+
 func NewCourseRepository(db *sql.DB, logger *zap.Logger) *CourseRepository {
 	return &CourseRepository{db: db, logger: logger}
 }
@@ -173,6 +193,184 @@ func (r *CourseRepository) BackfillUserCourses(ctx context.Context, courseCode s
 		Existing:     existing,
 		Created:      created,
 	}, nil
+}
+
+func (r *CourseRepository) ListCoursesForUser(ctx context.Context, userID int64, defaultCourseCode string) ([]CourseSummary, error) {
+	currentCode, err := r.ResolveCurrentCourseCode(ctx, userID, defaultCourseCode)
+	if err != nil {
+		return nil, err
+	}
+	rows, err := r.db.QueryContext(ctx, `
+		SELECT c.id, c.code, c.title, c.city_name, c.target_lang, c.teaching_locale, c.ui_locale, c.status,
+			uc.id, uc.status
+		FROM courses c
+		LEFT JOIN user_courses uc ON uc.course_id = c.id AND uc.user_id = ?
+		WHERE c.status = 'active'
+		ORDER BY c.code
+	`, userID)
+	if err != nil {
+		return nil, fmt.Errorf("list courses: %w", err)
+	}
+	defer rows.Close()
+	var out []CourseSummary
+	for rows.Next() {
+		var c CourseSummary
+		var userCourseID sql.NullInt64
+		var userStatus sql.NullString
+		if err := rows.Scan(&c.ID, &c.Code, &c.Title, &c.CityName, &c.TargetLanguage, &c.NativeLanguage, &c.UILocale, &c.Status, &userCourseID, &userStatus); err != nil {
+			return nil, fmt.Errorf("scan course: %w", err)
+		}
+		if userCourseID.Valid {
+			id := userCourseID.Int64
+			c.UserCourseID = &id
+		}
+		if userStatus.Valid {
+			c.UserStatus = userStatus.String
+		}
+		c.IsCurrent = c.Code == currentCode
+		out = append(out, c)
+	}
+	return out, rows.Err()
+}
+
+func (r *CourseRepository) GetCurrentCourse(ctx context.Context, userID int64, defaultCourseCode string) (*CurrentCourse, error) {
+	courseCode, err := r.ResolveCurrentCourseCode(ctx, userID, defaultCourseCode)
+	if err != nil {
+		return nil, err
+	}
+	if _, err := r.SelectCurrentCourse(ctx, userID, courseCode); err != nil {
+		return nil, err
+	}
+	var current CurrentCourse
+	var userCourseID int64
+	if err := r.db.QueryRowContext(ctx, `
+		SELECT c.id, c.code, c.title, c.city_name, c.target_lang, c.teaching_locale, c.ui_locale, c.status,
+			uc.id, uc.status
+		FROM courses c
+		JOIN user_courses uc ON uc.course_id = c.id AND uc.user_id = ?
+		WHERE c.code = ?
+	`, userID, courseCode).Scan(
+		&current.Course.ID,
+		&current.Course.Code,
+		&current.Course.Title,
+		&current.Course.CityName,
+		&current.Course.TargetLanguage,
+		&current.Course.NativeLanguage,
+		&current.Course.UILocale,
+		&current.Course.Status,
+		&userCourseID,
+		&current.UserCourse.Status,
+	); err != nil {
+		return nil, fmt.Errorf("get current course: %w", err)
+	}
+	current.Course.IsCurrent = true
+	current.Course.UserCourseID = &userCourseID
+	current.Course.UserStatus = current.UserCourse.Status
+	current.UserCourse.ID = userCourseID
+	return &current, nil
+}
+
+func (r *CourseRepository) SelectCurrentCourse(ctx context.Context, userID int64, courseCode string) (*CurrentCourse, error) {
+	courseCode = strings.TrimSpace(strings.ToLower(courseCode))
+	if userID == 0 {
+		return nil, fmt.Errorf("user id is empty")
+	}
+	if courseCode == "" {
+		return nil, fmt.Errorf("course code is empty")
+	}
+	tx, err := r.db.BeginTx(ctx, nil)
+	if err != nil {
+		return nil, fmt.Errorf("begin select current course: %w", err)
+	}
+	defer tx.Rollback()
+	var course CourseSummary
+	if err := tx.QueryRowContext(ctx, `
+		SELECT id, code, title, city_name, target_lang, teaching_locale, ui_locale, status
+		FROM courses
+		WHERE code = ? AND status = 'active'
+	`, courseCode).Scan(&course.ID, &course.Code, &course.Title, &course.CityName, &course.TargetLanguage, &course.NativeLanguage, &course.UILocale, &course.Status); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, fmt.Errorf("course %q is not active or does not exist", courseCode)
+		}
+		return nil, fmt.Errorf("get course %q: %w", courseCode, err)
+	}
+	var userCourseID int64
+	var userCourseStatus string
+	if err := tx.QueryRowContext(ctx, `
+		INSERT INTO user_courses (user_id, course_id, status, started_at, created_at, updated_at)
+		VALUES (?, ?, 'active', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+		ON CONFLICT (user_id, course_id) DO UPDATE SET
+			status = CASE WHEN user_courses.status = 'archived' THEN 'active' ELSE user_courses.status END,
+			updated_at = CURRENT_TIMESTAMP
+		RETURNING id, status
+	`, userID, course.ID).Scan(&userCourseID, &userCourseStatus); err != nil {
+		return nil, fmt.Errorf("upsert user course: %w", err)
+	}
+	if err := updateCurrentCourseSetting(ctx, tx, userID, course.Code); err != nil {
+		return nil, err
+	}
+	if err := tx.Commit(); err != nil {
+		return nil, fmt.Errorf("commit select current course: %w", err)
+	}
+	course.IsCurrent = true
+	course.UserCourseID = &userCourseID
+	course.UserStatus = userCourseStatus
+	return &CurrentCourse{Course: course, UserCourse: CourseMapUserCourse{ID: userCourseID, Status: course.UserStatus}}, nil
+}
+
+func (r *CourseRepository) ResolveCurrentCourseCode(ctx context.Context, userID int64, defaultCourseCode string) (string, error) {
+	defaultCourseCode = strings.TrimSpace(strings.ToLower(defaultCourseCode))
+	var settingsRaw sql.NullString
+	if err := r.db.QueryRowContext(ctx, `SELECT settings_json FROM users WHERE id = ?`, userID).Scan(&settingsRaw); err != nil {
+		return "", fmt.Errorf("get user settings: %w", err)
+	}
+	if settingsRaw.Valid && strings.TrimSpace(settingsRaw.String) != "" {
+		var settings map[string]interface{}
+		if err := json.Unmarshal([]byte(settingsRaw.String), &settings); err == nil {
+			if value, ok := settings["current_course_code"].(string); ok {
+				value = strings.TrimSpace(strings.ToLower(value))
+				if value != "" && r.courseIsActive(ctx, value) {
+					return value, nil
+				}
+			}
+		}
+	}
+	if defaultCourseCode != "" && r.courseIsActive(ctx, defaultCourseCode) {
+		return defaultCourseCode, nil
+	}
+	var code string
+	if err := r.db.QueryRowContext(ctx, `SELECT code FROM courses WHERE status = 'active' ORDER BY code LIMIT 1`).Scan(&code); err != nil {
+		return "", fmt.Errorf("resolve fallback course: %w", err)
+	}
+	return code, nil
+}
+
+func (r *CourseRepository) courseIsActive(ctx context.Context, courseCode string) bool {
+	var exists bool
+	if err := r.db.QueryRowContext(ctx, `SELECT COUNT(*) > 0 FROM courses WHERE code = ? AND status = 'active'`, courseCode).Scan(&exists); err != nil {
+		return false
+	}
+	return exists
+}
+
+func updateCurrentCourseSetting(ctx context.Context, tx *sql.Tx, userID int64, courseCode string) error {
+	var raw sql.NullString
+	if err := tx.QueryRowContext(ctx, `SELECT settings_json FROM users WHERE id = ?`, userID).Scan(&raw); err != nil {
+		return fmt.Errorf("get user settings for update: %w", err)
+	}
+	settings := map[string]interface{}{}
+	if raw.Valid && strings.TrimSpace(raw.String) != "" {
+		_ = json.Unmarshal([]byte(raw.String), &settings)
+	}
+	settings["current_course_code"] = courseCode
+	encoded, err := json.Marshal(settings)
+	if err != nil {
+		return fmt.Errorf("encode course setting: %w", err)
+	}
+	if _, err := tx.ExecContext(ctx, `UPDATE users SET settings_json = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?`, string(encoded), userID); err != nil {
+		return fmt.Errorf("update course setting: %w", err)
+	}
+	return nil
 }
 
 // GetCourseMapForLearning returns the Linglow v2 course map for the configured language pair.

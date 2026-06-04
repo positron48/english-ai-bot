@@ -3,9 +3,100 @@ package web
 import (
 	"encoding/json"
 	"net/http"
+	"strings"
+
+	"tgbot-skeleton/internal/repository"
 
 	"go.uber.org/zap"
 )
+
+func (r *Router) defaultCourseCode() string {
+	if r == nil || r.config == nil {
+		return ""
+	}
+	return repository.CourseCodeForLearning(r.config.Learning)
+}
+
+func (r *Router) handleCourses(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	if r.courseRepo == nil {
+		http.Error(w, "Course repository is not available", http.StatusServiceUnavailable)
+		return
+	}
+	userID := getUserIDFromContext(req.Context())
+	if userID == 0 {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+	courses, err := r.courseRepo.ListCoursesForUser(req.Context(), userID, r.defaultCourseCode())
+	if err != nil {
+		r.logger.Error("failed to list courses", zap.Error(err), zap.Int64("user_id", userID))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	writeJSON(w, map[string]interface{}{"courses": courses})
+}
+
+func (r *Router) handleCurrentCourse(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	if r.courseRepo == nil {
+		http.Error(w, "Course repository is not available", http.StatusServiceUnavailable)
+		return
+	}
+	userID := getUserIDFromContext(req.Context())
+	if userID == 0 {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+	current, err := r.courseRepo.GetCurrentCourse(req.Context(), userID, r.defaultCourseCode())
+	if err != nil {
+		r.logger.Error("failed to get current course", zap.Error(err), zap.Int64("user_id", userID))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	writeJSON(w, current)
+}
+
+func (r *Router) handleSelectCourse(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	if r.courseRepo == nil {
+		http.Error(w, "Course repository is not available", http.StatusServiceUnavailable)
+		return
+	}
+	userID := getUserIDFromContext(req.Context())
+	if userID == 0 {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+	var body struct {
+		CourseCode string `json:"course_code"`
+	}
+	if err := json.NewDecoder(req.Body).Decode(&body); err != nil {
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
+		return
+	}
+	body.CourseCode = strings.TrimSpace(strings.ToLower(body.CourseCode))
+	if body.CourseCode == "" {
+		http.Error(w, "course_code is required", http.StatusBadRequest)
+		return
+	}
+	current, err := r.courseRepo.SelectCurrentCourse(req.Context(), userID, body.CourseCode)
+	if err != nil {
+		r.logger.Warn("failed to select current course", zap.Error(err), zap.Int64("user_id", userID), zap.String("course_code", body.CourseCode))
+		http.Error(w, "Course not found", http.StatusNotFound)
+		return
+	}
+	writeJSON(w, current)
+}
 
 // handleLearningCourse returns the Linglow v2 course map for the current app language.
 func (r *Router) handleLearningCourse(w http.ResponseWriter, req *http.Request) {
@@ -35,4 +126,9 @@ func (r *Router) handleLearningCourse(w http.ResponseWriter, req *http.Request) 
 	if err := json.NewEncoder(w).Encode(courseMap); err != nil {
 		r.logger.Error("failed to encode learning course map", zap.Error(err))
 	}
+}
+
+func writeJSON(w http.ResponseWriter, value interface{}) {
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(value)
 }
