@@ -117,3 +117,37 @@ func TestInternalGrammarContentReports_ListAndResolveBulk(t *testing.T) {
 		t.Fatalf("expected 0 active reports for en.chapter.1 after resolve, got %d", len(after.Reports))
 	}
 }
+
+func TestInternalContentReports_UnifiedListAndSummary(t *testing.T) {
+	router, _, userID, cleanup := setupGrammarTest(t)
+	defer cleanup()
+	router.internalServiceTokens = map[string]string{"default": "tok"}
+
+	_, err := repository.NewContentReportRepository(router.db, router.logger).Create(repository.CreateContentReportInput{
+		UserID:         userID,
+		SourceType:     "word_training",
+		Word:           "hello",
+		ReportCategory: "bad_audio",
+		CommentText:    "bad",
+	})
+	if err != nil {
+		t.Fatalf("create word report: %v", err)
+	}
+	_ = seedInternalGrammarReport(t, router, userID, "en.chapter.9", "b9", "en.chapter.9::b9::q1")
+
+	req := httptest.NewRequest(http.MethodGet, "/api/internal/content-reports?limit=50", nil)
+	req.Header.Set("X-Service-Token", "tok")
+	w := httptest.NewRecorder()
+	router.handleInternalContentReports(w, req)
+	if w.Code != http.StatusOK {
+		t.Fatalf("unified list: %d %s", w.Code, w.Body.String())
+	}
+
+	req = httptest.NewRequest(http.MethodGet, "/api/internal/content-reports/summary", nil)
+	req.Header.Set("X-Service-Token", "tok")
+	w = httptest.NewRecorder()
+	router.handleInternalContentReportsSummary(w, req)
+	if w.Code != http.StatusOK {
+		t.Fatalf("summary: %d %s", w.Code, w.Body.String())
+	}
+}

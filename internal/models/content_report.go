@@ -23,6 +23,7 @@ type ContentReport struct {
 	GrammarChapterID     string
 	TheoryBlockID        string
 	GrammarQuestionID    string
+	ReportCategory       string
 	CommentText          string
 	PayloadJSON          string
 	ResolvedAt           *time.Time

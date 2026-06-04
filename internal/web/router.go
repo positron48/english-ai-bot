@@ -467,8 +467,13 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/internal/tts/pending", r.handleInternalTTSPending)
 	r.mux.HandleFunc("/api/internal/tts/audio", r.handleInternalTTSAudio)
 	r.mux.HandleFunc("/api/internal/tts/fail", r.handleInternalTTSFail)
+	r.mux.HandleFunc("/api/internal/content-reports", r.handleInternalContentReports)
+	r.mux.HandleFunc("/api/internal/content-reports/", r.handleInternalContentReportsSubpath)
 	r.mux.HandleFunc("/api/internal/content-reports/grammar", r.handleInternalGrammarContentReports)
 	r.mux.HandleFunc("/api/internal/content-reports/grammar/resolve-bulk", r.handleInternalGrammarContentReportsResolveBulk)
+	r.mux.HandleFunc("/api/internal/training/card/", r.handleInternalTrainingCard)
+	r.mux.HandleFunc("/api/internal/tts/regenerate", r.handleInternalTTSRegenerate)
+	r.mux.HandleFunc("/api/internal/tts/status", r.handleInternalTTSStatus)
 	r.mux.HandleFunc("/api/internal/verb-training/pending", r.handleInternalVerbTrainingPending)
 
 	// Access control routes

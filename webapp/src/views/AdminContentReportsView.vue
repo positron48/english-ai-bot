@@ -8,6 +8,10 @@
           <option value="">All</option>
           <option value="resolved">Resolved only</option>
         </select>
+        <select v-model="categoryFilter" class="admin-select" @change="loadReports">
+          <option value="">All categories</option>
+          <option v-for="c in categoryOptions" :key="c" :value="c">{{ c }}</option>
+        </select>
         <button class="btn btn-primary" @click="loadReports">Refresh</button>
       </div>
 
@@ -19,6 +23,7 @@
             <th>ID</th>
             <th>Status</th>
             <th>Source</th>
+            <th>Category</th>
             <th>Word/Question</th>
             <th>Comment</th>
             <th>User</th>
@@ -35,6 +40,7 @@
             <td>{{ report.id }}</td>
             <td><span :class="['status-badge', report.status]">{{ report.status }}</span></td>
             <td>{{ report.source_type }}</td>
+            <td>{{ report.report_category || '—' }}</td>
             <td>{{ report.word || report.grammar_question_id || '—' }}</td>
             <td class="comment-cell">{{ truncateComment(report.comment_text) }}</td>
             <td>{{ report.user_id }}</td>
@@ -54,6 +60,7 @@
           <div class="kv">
             <div><b>Status:</b> {{ selectedReport.status }}</div>
             <div><b>Source:</b> {{ selectedReport.source_type }}</div>
+            <div v-if="selectedReport.report_category"><b>Category:</b> {{ selectedReport.report_category }}</div>
             <div><b>User:</b> {{ selectedReport.user_id }}</div>
             <div><b>Created:</b> {{ formatDate(selectedReport.created_at) }}</div>
             <div v-if="selectedReport.word"><b>Word:</b> {{ selectedReport.word }}</div>
@@ -108,6 +115,11 @@ import { apiClient } from '../api/client'
 import { showAlert } from '../composables/useDialog'
 
 const statusFilter = ref('active')
+const categoryFilter = ref('')
+const categoryOptions = [
+  'wrong_translation', 'wrong_example', 'wrong_distractors', 'typo', 'bad_audio', 'unclear_question',
+  'wrong_answer', 'ambiguous', 'wrong_explanation', 'theory_mismatch', 'too_hard', 'other'
+]
 const loading = ref(false)
 const reports = ref<any[]>([])
 const showModal = ref(false)
@@ -129,9 +141,15 @@ const cardForm = ref({
 const loadReports = async () => {
   loading.value = true
   try {
-    const qs = statusFilter.value ? `?status=${encodeURIComponent(statusFilter.value)}` : ''
+    const params = new URLSearchParams()
+    if (statusFilter.value) params.set('status', statusFilter.value)
+    const qs = params.toString() ? `?${params.toString()}` : ''
     const data: any = await apiClient.request(`/api/admin/content-reports${qs}`)
-    reports.value = data.reports || []
+    let rows = data.reports || []
+    if (categoryFilter.value) {
+      rows = rows.filter((r: any) => r.report_category === categoryFilter.value)
+    }
+    reports.value = rows
   } finally {
     loading.value = false
   }

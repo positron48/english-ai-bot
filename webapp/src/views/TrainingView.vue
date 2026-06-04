@@ -496,28 +496,17 @@
       </button>
       <span v-if="reportMessage" class="report-message">{{ reportMessage }}</span>
     </div>
-    <Teleport to="body">
-      <div v-if="reportDialogOpen" class="report-modal-backdrop" @click.self="closeWordReportDialog">
-        <div class="report-modal">
-          <h3 class="report-modal-title">{{ t('training.reportIssue') || 'Пожаловаться' }}</h3>
-          <textarea
-            v-model.trim="reportComment"
-            class="report-modal-textarea"
-            :placeholder="t('training.reportCommentPlaceholder') || 'Опишите, что не так с вопросом'"
-            rows="5"
-            maxlength="1000"
-          />
-          <div class="report-modal-actions">
-            <button type="button" class="report-modal-cancel" @click="closeWordReportDialog">
-              {{ t('common.cancel') || 'Отмена' }}
-            </button>
-            <button type="button" class="report-modal-submit" :disabled="reportSubmitting || !reportComment" @click="submitWordReport">
-              {{ t('training.reportSend') || 'Отправить' }}
-            </button>
-          </div>
-        </div>
-      </div>
-    </Teleport>
+    <ContentReportDialog
+      :open="reportDialogOpen"
+      :submitting="reportSubmitting"
+      :categories="wordReportCategories"
+      :category="reportCategory"
+      :details="reportDetails"
+      @update:category="reportCategory = $event"
+      @update:details="reportDetails = $event"
+      @close="closeWordReportDialog"
+      @submit="submitWordReport"
+    />
   </div>
 </template>
 
@@ -535,6 +524,11 @@ import { Chart, registerables } from 'chart.js'
 import Icon from '../components/Icon.vue'
 import { isEmbeddedAndroidApp } from '../utils/runtime'
 import TrainingSessionCompletion from '../components/TrainingSessionCompletion.vue'
+import ContentReportDialog from '../components/ContentReportDialog.vue'
+import {
+  WORD_TRAINING_REPORT_CATEGORIES,
+  buildReportComment
+} from '../constants/contentReportCategories'
 import { useLearningConfig } from '../composables/useLearningConfig'
 
 const { t, tm, locale } = useI18n()
@@ -713,7 +707,9 @@ const reportSubmitting = ref(false)
 const reportMessage = ref('')
 const reportSentForCardKey = ref('')
 const reportDialogOpen = ref(false)
-const reportComment = ref('')
+const reportCategory = ref('')
+const reportDetails = ref('')
+const wordReportCategories = WORD_TRAINING_REPORT_CATEGORIES
 
 const cardReportKey = (card: Card | null): string => {
   if (!card) return ''
@@ -1965,7 +1961,13 @@ const startTraining = async () => {
 }
 
 const submitWordReport = async () => {
-  if (!currentCard.value || reportSubmitting.value || reportAlreadySent.value || !reportComment.value) return
+  if (!currentCard.value || reportSubmitting.value || reportAlreadySent.value) return
+  const comment = buildReportComment(
+    reportCategory.value,
+    reportDetails.value,
+    t(`training.reportCategories.${reportCategory.value}`)
+  )
+  if (!comment) return
   reportMessage.value = ''
   const key = cardReportKey(currentCard.value)
   reportSubmitting.value = true
@@ -1985,14 +1987,16 @@ const submitWordReport = async () => {
         word_card_id: currentCard.value.word_card_id,
         training_card_id: currentCard.value.training_card_id,
         word_category: currentCard.value.word_category || '',
-        comment: reportComment.value,
+        report_category: reportCategory.value,
+        comment,
         extra
       })
     })
     reportSentForCardKey.value = key
     reportMessage.value = t('training.reportThanks') || 'Спасибо, жалоба отправлена.'
     reportDialogOpen.value = false
-    reportComment.value = ''
+    reportCategory.value = ''
+    reportDetails.value = ''
   } catch (error) {
     console.error('Failed to submit training report:', error)
     reportMessage.value = t('training.reportFailed') || 'Не удалось отправить жалобу'
@@ -2003,7 +2007,8 @@ const submitWordReport = async () => {
 
 const openWordReportDialog = () => {
   if (!currentCard.value || reportSubmitting.value || reportAlreadySent.value) return
-  reportComment.value = ''
+  reportCategory.value = ''
+  reportDetails.value = ''
   reportDialogOpen.value = true
 }
 
@@ -2015,7 +2020,8 @@ const closeWordReportDialog = () => {
 watch(() => cardReportKey(currentCard.value), () => {
   reportMessage.value = ''
   reportDialogOpen.value = false
-  reportComment.value = ''
+  reportCategory.value = ''
+  reportDetails.value = ''
 })
 
 const revealOptions = async (isEarly: boolean = false) => {

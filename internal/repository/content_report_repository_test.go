@@ -54,6 +54,21 @@ func TestContentReportRepository_ListActiveGrammarReports_AndResolveBulk(t *test
 	if len(list) != 2 {
 		t.Fatalf("expected 2 grammar active reports, got %d", len(list))
 	}
+
+	all, err := repo.ListActiveReports(ListActiveReportsFilter{Limit: 20})
+	if err != nil {
+		t.Fatalf("ListActiveReports: %v", err)
+	}
+	if len(all) != 3 {
+		t.Fatalf("expected 3 active reports total, got %d", len(all))
+	}
+	summary, err := repo.SummaryActiveReports("")
+	if err != nil {
+		t.Fatalf("SummaryActiveReports: %v", err)
+	}
+	if len(summary) == 0 {
+		t.Fatal("expected summary rows")
+	}
 	if list[0].ID <= list[1].ID {
 		t.Fatalf("expected DESC order by id")
 	}

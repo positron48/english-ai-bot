@@ -5,6 +5,10 @@
   <key>Label</key>
   <string>com.englishai.complaints-worker</string>
 
+  <!-- DEPRECATED: disable hourly llama worker; use Cursor skill content-complaints-triage instead. -->
+  <key>Disabled</key>
+  <true/>
+
   <key>ProgramArguments</key>
   <array>
     <string>/bin/bash</string>

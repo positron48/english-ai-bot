@@ -1,6 +1,8 @@
 # Local Complaints Worker
 
-Этот документ описывает локальный hourly-процесс обработки grammar-жалоб, вынесенный из релизного Go-сервиса.
+> **DEPRECATED для триажа жалоб.** Используй Cursor skill `.cursor/skills/content-complaints-triage/` и `make complaints-fetch-en|es`. Документ сохранён для legacy llama-worker и launchd.
+
+Этот документ описывает локальный hourly-процесс обработки grammar-жалоб через `llama.cpp` (устаревший путь).
 
 ## Что находится в релизном сервисе
 

@@ -33,6 +33,7 @@ type CreateContentReportInput struct {
 	GrammarChapterID     string
 	TheoryBlockID        string
 	GrammarQuestionID    string
+	ReportCategory       string
 	CommentText          string
 	Payload              map[string]interface{}
 }
@@ -47,16 +48,17 @@ func (r *ContentReportRepository) Create(input CreateContentReportInput) (int64,
 		payloadJSON = string(raw)
 	}
 
+	category := models.NormalizeReportCategory(input.SourceType, input.ReportCategory)
 	q := `INSERT INTO content_reports (
 		user_id, source_type, status, word, translation_direction,
 		word_card_id, training_card_id, user_card_id, word_category,
-		grammar_chapter_id, theory_block_id, grammar_question_id, comment_text, payload_json
-	) VALUES (?, ?, 'active', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+		grammar_chapter_id, theory_block_id, grammar_question_id, report_category, comment_text, payload_json
+	) VALUES (?, ?, 'active', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
 
 	id, err := database.InsertAndReturnID(r.db, q,
 		input.UserID, input.SourceType, input.Word, input.TranslationDirection,
 		input.WordCardID, input.TrainingCardID, input.UserCardID, input.WordCategory,
-		input.GrammarChapterID, input.TheoryBlockID, input.GrammarQuestionID, strings.TrimSpace(input.CommentText), payloadJSON,
+		input.GrammarChapterID, input.TheoryBlockID, input.GrammarQuestionID, category, strings.TrimSpace(input.CommentText), payloadJSON,
 	)
 	if err != nil {
 		return 0, fmt.Errorf("create content report: %w", err)
@@ -90,7 +92,39 @@ type ListGrammarReportsFilter struct {
 	Limit       int
 }
 
+// ListActiveReportsFilter lists content reports for internal triage tooling.
+type ListActiveReportsFilter struct {
+	Status      string
+	SourceType  string
+	Course      string
+	ChapterID   string
+	TheoryBlock string
+	Category    string
+	CursorID    int64
+	Limit       int
+}
+
+type ContentReportSummaryRow struct {
+	SourceType        string
+	ReportCategory    string
+	GrammarChapterID  string
+	WordCategory      string
+	Count             int64
+}
+
 func (r *ContentReportRepository) ListActiveGrammarReports(filter ListGrammarReportsFilter) ([]*models.ContentReport, error) {
+	return r.ListActiveReports(ListActiveReportsFilter{
+		Status:      string(models.ContentReportStatusActive),
+		SourceType:  "grammar_training",
+		Course:      filter.Course,
+		ChapterID:   filter.ChapterID,
+		TheoryBlock: filter.TheoryBlock,
+		CursorID:    filter.CursorID,
+		Limit:       filter.Limit,
+	})
+}
+
+func (r *ContentReportRepository) ListActiveReports(filter ListActiveReportsFilter) ([]*models.ContentReport, error) {
 	limit := filter.Limit
 	if limit <= 0 {
 		limit = 200
@@ -98,14 +132,24 @@ func (r *ContentReportRepository) ListActiveGrammarReports(filter ListGrammarRep
 	if limit > 1000 {
 		limit = 1000
 	}
+	status := strings.TrimSpace(filter.Status)
+	if status == "" {
+		status = string(models.ContentReportStatusActive)
+	}
 
 	base := `SELECT id, user_id, source_type, status, COALESCE(word,''), COALESCE(translation_direction,''),
 	                word_card_id, training_card_id, user_card_id, COALESCE(word_category,''),
 	                COALESCE(grammar_chapter_id,''), COALESCE(theory_block_id,''), COALESCE(grammar_question_id,''),
-	                COALESCE(comment_text,''), COALESCE(payload_json,''), resolved_at, resolved_by_user_id, created_at, updated_at
+	                COALESCE(report_category,'other'), COALESCE(comment_text,''), COALESCE(payload_json,''),
+	                resolved_at, resolved_by_user_id, created_at, updated_at
 	         FROM content_reports
-	         WHERE status = 'active' AND source_type = 'grammar_training'`
-	args := make([]interface{}, 0, 8)
+	         WHERE status = ?`
+	args := []interface{}{status}
+
+	if sourceType := strings.TrimSpace(filter.SourceType); sourceType != "" {
+		base += ` AND source_type = ?`
+		args = append(args, sourceType)
+	}
 	if filter.CursorID > 0 {
 		base += ` AND id < ?`
 		args = append(args, filter.CursorID)
@@ -118,12 +162,16 @@ func (r *ContentReportRepository) ListActiveGrammarReports(filter ListGrammarRep
 		base += ` AND theory_block_id = ?`
 		args = append(args, theoryBlock)
 	}
+	if category := strings.TrimSpace(filter.Category); category != "" {
+		base += ` AND report_category = ?`
+		args = append(args, category)
+	}
 	if course := strings.ToLower(strings.TrimSpace(filter.Course)); course != "" {
 		switch course {
 		case "en", "english":
-			base += ` AND grammar_chapter_id LIKE 'en.%'`
+			base += ` AND (source_type = 'word_training' OR grammar_chapter_id LIKE 'en.%')`
 		case "es", "spanish":
-			base += ` AND grammar_chapter_id LIKE 'es.%'`
+			base += ` AND (source_type = 'word_training' OR grammar_chapter_id LIKE 'es.%')`
 		default:
 			return nil, fmt.Errorf("unsupported course filter: %s", filter.Course)
 		}
@@ -133,7 +181,7 @@ func (r *ContentReportRepository) ListActiveGrammarReports(filter ListGrammarRep
 
 	rows, err := r.db.Query(base, args...)
 	if err != nil {
-		return nil, fmt.Errorf("list active grammar reports: %w", err)
+		return nil, fmt.Errorf("list active content reports: %w", err)
 	}
 	defer rows.Close()
 
@@ -146,6 +194,42 @@ func (r *ContentReportRepository) ListActiveGrammarReports(filter ListGrammarRep
 		result = append(result, item)
 	}
 	return result, nil
+}
+
+func (r *ContentReportRepository) SummaryActiveReports(course string) ([]ContentReportSummaryRow, error) {
+	status := string(models.ContentReportStatusActive)
+	base := `SELECT source_type, COALESCE(report_category,'other'), COALESCE(grammar_chapter_id,''), COALESCE(word_category,''), COUNT(*)
+	         FROM content_reports
+	         WHERE status = ?`
+	args := []interface{}{status}
+	if course := strings.ToLower(strings.TrimSpace(course)); course != "" {
+		switch course {
+		case "en", "english":
+			base += ` AND (source_type = 'word_training' OR grammar_chapter_id LIKE 'en.%')`
+		case "es", "spanish":
+			base += ` AND (source_type = 'word_training' OR grammar_chapter_id LIKE 'es.%')`
+		default:
+			return nil, fmt.Errorf("unsupported course filter: %s", course)
+		}
+	}
+	base += ` GROUP BY source_type, report_category, grammar_chapter_id, word_category
+	          ORDER BY COUNT(*) DESC, source_type, report_category`
+
+	rows, err := r.db.Query(base, args...)
+	if err != nil {
+		return nil, fmt.Errorf("summary active content reports: %w", err)
+	}
+	defer rows.Close()
+
+	out := make([]ContentReportSummaryRow, 0, 32)
+	for rows.Next() {
+		var row ContentReportSummaryRow
+		if err := rows.Scan(&row.SourceType, &row.ReportCategory, &row.GrammarChapterID, &row.WordCategory, &row.Count); err != nil {
+			return nil, fmt.Errorf("scan content report summary: %w", err)
+		}
+		out = append(out, row)
+	}
+	return out, nil
 }
 
 func (r *ContentReportRepository) ResolveBulk(reportIDs []int64, resolvedByUserID *int64) (int64, error) {
@@ -184,7 +268,8 @@ func (r *ContentReportRepository) List(status string, limit int) ([]*models.Cont
 	base := `SELECT id, user_id, source_type, status, COALESCE(word,''), COALESCE(translation_direction,''),
 	                word_card_id, training_card_id, user_card_id, COALESCE(word_category,''),
 	                COALESCE(grammar_chapter_id,''), COALESCE(theory_block_id,''), COALESCE(grammar_question_id,''),
-	                COALESCE(comment_text,''), COALESCE(payload_json,''), resolved_at, resolved_by_user_id, created_at, updated_at
+	                COALESCE(report_category,'other'), COALESCE(comment_text,''), COALESCE(payload_json,''),
+	                resolved_at, resolved_by_user_id, created_at, updated_at
 	         FROM content_reports`
 	args := make([]interface{}, 0, 2)
 	if status != "" {
@@ -215,7 +300,8 @@ func (r *ContentReportRepository) GetByID(reportID int64) (*models.ContentReport
 	q := `SELECT id, user_id, source_type, status, COALESCE(word,''), COALESCE(translation_direction,''),
 	             word_card_id, training_card_id, user_card_id, COALESCE(word_category,''),
 	             COALESCE(grammar_chapter_id,''), COALESCE(theory_block_id,''), COALESCE(grammar_question_id,''),
-	             COALESCE(comment_text,''), COALESCE(payload_json,''), resolved_at, resolved_by_user_id, created_at, updated_at
+	             COALESCE(report_category,'other'), COALESCE(comment_text,''), COALESCE(payload_json,''),
+	             resolved_at, resolved_by_user_id, created_at, updated_at
 	      FROM content_reports
 	      WHERE id = ?`
 	rows, err := r.db.Query(q, reportID)
@@ -242,7 +328,7 @@ func scanContentReport(rows *sql.Rows) (*models.ContentReport, error) {
 		&item.ID, &item.UserID, &item.SourceType, &item.Status, &item.Word, &item.TranslationDirection,
 		&wordCardID, &trainingID, &userCardID, &item.WordCategory,
 		&item.GrammarChapterID, &item.TheoryBlockID, &item.GrammarQuestionID,
-		&item.CommentText, &item.PayloadJSON, &resolvedAt, &resolvedByID, &item.CreatedAt, &item.UpdatedAt,
+		&item.ReportCategory, &item.CommentText, &item.PayloadJSON, &resolvedAt, &resolvedByID, &item.CreatedAt, &item.UpdatedAt,
 	); err != nil {
 		return nil, fmt.Errorf("scan content report: %w", err)
 	}

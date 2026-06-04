@@ -126,28 +126,17 @@
         </button>
         <span v-if="reportMessage" class="report-message">{{ reportMessage }}</span>
       </div>
-      <Teleport to="body">
-        <div v-if="reportDialogOpen" class="report-modal-backdrop" @click.self="closeGrammarReportDialog">
-          <div class="report-modal">
-            <h3 class="report-modal-title">{{ t('training.reportIssue') }}</h3>
-            <textarea
-              v-model.trim="reportComment"
-              class="report-modal-textarea"
-              :placeholder="t('training.reportCommentPlaceholder') || 'Опишите, что не так с вопросом'"
-              rows="5"
-              maxlength="1000"
-            />
-            <div class="report-modal-actions">
-              <button type="button" class="report-modal-cancel" @click="closeGrammarReportDialog">
-                {{ t('common.cancel') || 'Отмена' }}
-              </button>
-              <button type="button" class="report-modal-submit" :disabled="reportSubmitting || !reportComment" @click="reportCurrentQuestion">
-                {{ t('training.reportSend') || 'Отправить' }}
-              </button>
-            </div>
-          </div>
-        </div>
-      </Teleport>
+      <ContentReportDialog
+        :open="reportDialogOpen"
+        :submitting="reportSubmitting"
+        :categories="grammarReportCategories"
+        :category="reportCategory"
+        :details="reportDetails"
+        @update:category="reportCategory = $event"
+        @update:details="reportDetails = $event"
+        @close="closeGrammarReportDialog"
+        @submit="reportCurrentQuestion"
+      />
     </div>
   </div>
 </template>
@@ -159,6 +148,11 @@ import { apiClient } from '../api/client'
 import { grammarClient } from '../api/grammarClient'
 import GrammarQuestion from '../components/GrammarQuestion.vue'
 import TrainingSessionCompletion from '../components/TrainingSessionCompletion.vue'
+import ContentReportDialog from '../components/ContentReportDialog.vue'
+import {
+  GRAMMAR_TRAINING_REPORT_CATEGORIES,
+  buildReportComment
+} from '../constants/contentReportCategories'
 import { useSettings } from '../composables/useSettings'
 
 const { settings } = useSettings()
@@ -315,7 +309,9 @@ const reportSubmitting = ref(false)
 const reportMessage = ref('')
 const reportSentForQuestionID = ref('')
 const reportDialogOpen = ref(false)
-const reportComment = ref('')
+const reportCategory = ref('')
+const reportDetails = ref('')
+const grammarReportCategories = GRAMMAR_TRAINING_REPORT_CATEGORIES
 const reportAlreadySent = computed(() => {
   const qid = currentQuestion.value?.id
   return !!qid && reportSentForQuestionID.value === qid
@@ -488,7 +484,13 @@ const nextQuestion = () => {
 }
 
 const reportCurrentQuestion = async () => {
-  if (!currentQuestion.value || reportSubmitting.value || !reportComment.value) return
+  if (!currentQuestion.value || reportSubmitting.value) return
+  const comment = buildReportComment(
+    reportCategory.value,
+    reportDetails.value,
+    t(`training.reportCategories.${reportCategory.value}`)
+  )
+  if (!comment) return
   reportMessage.value = ''
   reportSubmitting.value = true
   try {
@@ -498,14 +500,16 @@ const reportCurrentQuestion = async () => {
         question_id: currentQuestion.value.id,
         chapter_id: currentQuestion.value.chapter_id || '',
         theory_block_id: currentQuestion.value.theory_block_id || '',
-        comment: reportComment.value,
+        report_category: reportCategory.value,
+        comment,
         question_data: currentQuestion.value
       })
     })
     reportSentForQuestionID.value = currentQuestion.value.id
     reportMessage.value = t('training.reportThanks')
     reportDialogOpen.value = false
-    reportComment.value = ''
+    reportCategory.value = ''
+    reportDetails.value = ''
   } catch (e) {
     console.error('Failed to report grammar question:', e)
     reportMessage.value = t('training.reportFailed')
@@ -516,7 +520,8 @@ const reportCurrentQuestion = async () => {
 
 const openGrammarReportDialog = () => {
   if (!currentQuestion.value || reportSubmitting.value || reportAlreadySent.value) return
-  reportComment.value = ''
+  reportCategory.value = ''
+  reportDetails.value = ''
   reportDialogOpen.value = true
 }
 
@@ -534,7 +539,8 @@ onBeforeUnmount(() => {
 watch(currentQuestion, async (q) => {
   reportMessage.value = ''
   reportDialogOpen.value = false
-  reportComment.value = ''
+  reportCategory.value = ''
+  reportDetails.value = ''
   if (!q?.chapter_id || !q?.theory_block_id) return
   const key = `${q.chapter_id}::${q.theory_block_id}`
   if (theoryBlockMap.value[key]) return

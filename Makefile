@@ -13,7 +13,7 @@ SERVICE_NAME ?= ai-bot
 -include .env
 .EXPORT_ALL_VARIABLES:
 
-.PHONY: all tidy build run test lint fmt setup up up-en up-es complaints-dry-en complaints-apply-en complaints-dry-es complaints-apply-es complaints-dry-both complaints-apply-both complaints-improve-both complaints-plan-both complaints-prompt-autofix-en complaints-prompt-autofix-es complaints-prompt-autofix-both complaints-prompt-regression complaints-prompt-integration-es complaints-smoke-en complaints-smoke-es complaints-smoke-both complaints-quality-both complaints-quality-baseline-both complaints-regenerate-affected complaints-improve-loop-both complaints-both complaints-cycle-both complaints-loop-tests clean check check-quick ci deploy update status logs docker-build docker-run docker-stop docker-logs docker-clean docker-rebuild docker-dev docker-dev-logs docker-dev-restart webapp-install webapp-dev webapp-build test-postgres test-integration test-integration-verbose grammar-bundle grammar-bundle-list postgres-dev-init-dbs clean-spanish-csv sync-spanish-word-sets prepare-english-csv sync-english-word-sets requeue-invalid-cards-es-dry requeue-invalid-cards-es requeue-invalid-cards-es-no-tts-dry requeue-invalid-cards-es-no-tts import-spanish-verbs import-spanish-verbs-jehle-bundled backfill-word-verb-links build-verb-form-examples backfill-verb-lemma-ru-glosses backfill-verb-template-links preview-verb-templates verb-training-pack-fill verb-training-sync-db
+.PHONY: all tidy build run test lint fmt setup up up-en up-es complaints-fetch-en complaints-fetch-es complaints-cluster-en complaints-cluster-es complaints-triage-dry-en complaints-triage-dry-es complaints-dry-en complaints-apply-en complaints-dry-es complaints-apply-es complaints-dry-both complaints-apply-both complaints-improve-both complaints-plan-both complaints-prompt-autofix-en complaints-prompt-autofix-es complaints-prompt-autofix-both complaints-prompt-regression complaints-prompt-integration-es complaints-smoke-en complaints-smoke-es complaints-smoke-both complaints-quality-both complaints-quality-baseline-both complaints-regenerate-affected complaints-improve-loop-both complaints-both complaints-cycle-both complaints-loop-tests clean check check-quick ci deploy update status logs docker-build docker-run docker-stop docker-logs docker-clean docker-rebuild docker-dev docker-dev-logs docker-dev-restart webapp-install webapp-dev webapp-build test-postgres test-integration test-integration-verbose grammar-bundle grammar-bundle-list postgres-dev-init-dbs clean-spanish-csv sync-spanish-word-sets prepare-english-csv sync-english-word-sets requeue-invalid-cards-es-dry requeue-invalid-cards-es requeue-invalid-cards-es-no-tts-dry requeue-invalid-cards-es-no-tts import-spanish-verbs import-spanish-verbs-jehle-bundled backfill-word-verb-links build-verb-form-examples backfill-verb-lemma-ru-glosses backfill-verb-template-links preview-verb-templates verb-training-pack-fill verb-training-sync-db
 
 all: build
 
@@ -530,8 +530,49 @@ up-es: postgres-up postgres-dev-init-dbs build
 	echo ""; \
 	exec ./bin/$(APP_NAME)
 
-# Local complaints worker (English profile)
+# Fetch active content reports snapshot (prod or local; no LLM). Uses secrets/complaints-prod.env when present.
+complaints-fetch-en:
+	@set -e; \
+	set -a; [ -f secrets/complaints-prod.env ] && . ./secrets/complaints-prod.env; set +a; \
+	set -a; [ -f .env ] && . ./.env; set +a; \
+	set -a; [ -f .env.en ] && . ./.env.en; set +a; \
+	URL="$${COMPLAINTS_SERVICE_URL_EN:-$${COMPLAINTS_SERVICE_URL:-http://127.0.0.1:$${SERVER_PORT:-8184}}}"; \
+	TOKEN="$${COMPLAINTS_SERVICE_TOKEN_EN:-$${COMPLAINTS_SERVICE_TOKEN:-}}"; \
+	[ -n "$$TOKEN" ] || (echo "COMPLAINTS_SERVICE_TOKEN_EN или COMPLAINTS_SERVICE_TOKEN пустой"; exit 1); \
+	COMPLAINTS_SERVICE_URL="$$URL" COMPLAINTS_SERVICE_TOKEN="$$TOKEN" \
+	python3 tools-local/complaints-triage/fetch_reports.py --course en
+
+complaints-fetch-es:
+	@set -e; \
+	set -a; [ -f secrets/complaints-prod.env ] && . ./secrets/complaints-prod.env; set +a; \
+	set -a; [ -f .env ] && . ./.env; set +a; \
+	set -a; [ -f .env.es ] && . ./.env.es; set +a; \
+	URL="$${COMPLAINTS_SERVICE_URL_ES:-$${COMPLAINTS_SERVICE_URL:-http://127.0.0.1:$${SERVER_PORT:-8284}}}"; \
+	TOKEN="$${COMPLAINTS_SERVICE_TOKEN_ES:-$${COMPLAINTS_SERVICE_TOKEN:-}}"; \
+	[ -n "$$TOKEN" ] || (echo "COMPLAINTS_SERVICE_TOKEN_ES или COMPLAINTS_SERVICE_TOKEN пустой"; exit 1); \
+	COMPLAINTS_SERVICE_URL="$$URL" COMPLAINTS_SERVICE_TOKEN="$$TOKEN" \
+	python3 tools-local/complaints-triage/fetch_reports.py --course es
+
+# Cluster latest EN snapshot (dry-run planning aid)
+complaints-cluster-en:
+	@SNAP=$$(ls -t logs/complaints/snapshot-en-*.json 2>/dev/null | head -1); \
+	[ -n "$$SNAP" ] || (echo "Нет snapshot — сначала make complaints-fetch-en"; exit 1); \
+	python3 tools-local/complaints-triage/cluster_reports.py "$$SNAP" | tee "logs/complaints/clusters-en-$$(date -u +%Y%m%dT%H%M%SZ).json"
+
+complaints-cluster-es:
+	@SNAP=$$(ls -t logs/complaints/snapshot-es-*.json 2>/dev/null | head -1); \
+	[ -n "$$SNAP" ] || (echo "Нет snapshot — сначала make complaints-fetch-es"; exit 1); \
+	python3 tools-local/complaints-triage/cluster_reports.py "$$SNAP" | tee "logs/complaints/clusters-es-$$(date -u +%Y%m%dT%H%M%SZ).json"
+
+complaints-triage-dry-en: complaints-fetch-en complaints-cluster-en
+	@echo "✅ Dry-run EN: см. logs/complaints/clusters-en-*.json и skill content-complaints-triage"
+
+complaints-triage-dry-es: complaints-fetch-es complaints-cluster-es
+	@echo "✅ Dry-run ES: см. logs/complaints/clusters-es-*.json"
+
+# DEPRECATED: llama-based worker — use Cursor skill content-complaints-triage instead.
 complaints-dry-en:
+	@echo "⚠️  DEPRECATED: use Cursor skill .cursor/skills/content-complaints-triage or make complaints-fetch-en"
 	@test -f .env.en || (echo "Нет .env.en — скопируйте env.example.en в .env.en и заполните COMPLAINTS_SERVICE_TOKEN"; exit 1)
 	@set -e; \
 	set -a; [ -f .env ] && . ./.env; set +a; \
@@ -840,7 +881,9 @@ help:
 	@echo "  make grammar-bundle-list - List course dirs -> bundle ids"
 	@echo "  make up-en          - Run bot+web with .env.en (+ optional .env), http :8184, DB english"
 	@echo "  make up-es          - Run second instance with .env.es (+ optional .env), http :8284, DB spanish"
-	@echo "  make complaints-dry-en   - Dry-run complaints worker for English profile (.env + .env.en)"
+	@echo "  make complaints-fetch-en - Fetch active content reports snapshot (EN, no LLM)"
+	@echo "  make complaints-fetch-es - Fetch active content reports snapshot (ES, no LLM)"
+	@echo "  make complaints-dry-en   - [DEPRECATED] llama complaints worker for English"
 	@echo "  make complaints-apply-en - Apply complaints worker for English profile (.env + .env.en)"
 	@echo "  make complaints-dry-es   - Dry-run complaints worker for Spanish profile (.env + .env.es)"
 	@echo "  make complaints-apply-es - Apply complaints worker for Spanish profile (.env + .env.es)"

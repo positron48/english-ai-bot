@@ -1,156 +1,57 @@
-# Complaints Automation Spec (Release + Local)
+# Complaints automation (agent skill first)
 
-## 1) Разделение контуров
+## Рекомендуемый контур (2026)
 
-- **Release (Go-сервис):** только internal API для чтения активных grammar-жалоб и массового `resolve`.
-- **Local (Mac):** отдельный инструмент для группировки, анализа через `llama.cpp`, удаления вопросов из `courses/`, ведения журнала и hourly запуска.
+- **Триаж:** Cursor skill [`.cursor/skills/content-complaints-triage/`](../.cursor/skills/content-complaints-triage/SKILL.md) + [reference.md](../.cursor/skills/content-complaints-triage/reference.md).
+- **Fetch без LLM:** `make complaints-fetch-en` / `make complaints-fetch-es` → `tools-local/complaints-triage/fetch_reports.py`.
+- **Prod credentials:** `secrets/complaints-prod.env` (шаблон `secrets/complaints-prod.env.example`).
 
----
+## Release internal API
 
-## 2) Что реализовано в release-контуре
+Авторизация: header `X-Service-Token` (`COMPLAINTS_SERVICE_TOKEN` или `WEBAPP_INTERNAL_SERVICE_TOKENS_JSON`).
 
-### Internal API
+| Method | Path | Описание |
+|--------|------|----------|
+| GET | `/api/internal/content-reports` | Все типы: `source_type`, `course`, `category`, `status`, `cursor`, `limit` |
+| GET | `/api/internal/content-reports/summary` | Агрегаты по category/chapter |
+| GET | `/api/internal/content-reports/{id}` | Контекст: cards, TTS, training_pack_relpath |
+| POST | `/api/internal/content-reports/resolve-bulk` | Массовый resolve |
+| PUT | `/api/internal/training/card/{id}` | Правка training card (JSON) |
+| POST | `/api/internal/tts/regenerate` | `{"word":"..."}` |
+| GET | `/api/internal/tts/status?word=` | Статус TTS |
+
+Legacy (совместимость):
 
 - `GET /api/internal/content-reports/grammar`
-  - Авторизация: `X-Service-Token`
-  - Возвращает активные жалобы `source_type=grammar_training`
-  - Поддерживает фильтры:
-    - `course` (`en|english|es|spanish`)
-    - `chapter_id`
-    - `theory_block_id`
-    - `cursor` (по `id`, для пагинации)
-    - `limit`
 - `POST /api/internal/content-reports/grammar/resolve-bulk`
-  - Авторизация: `X-Service-Token`
-  - Тело:
-    - `report_ids: []int64`
-    - `reason: string`
-  - Массово переводит жалобы в `resolved`.
 
-### Репозиторий и БД
+## UI
 
-- Добавлены методы:
-  - `ListActiveGrammarReports(...)`
-  - `ResolveBulk(...)`
-- Добавлена миграция индексов:
-  - `internal/database/migrations/000008_content_reports_internal_indexes.sql`
+Попап жалобы: категории (chips) + опциональные подробности. Поле БД: `content_reports.report_category`.
 
-### Конфиг токенов internal API
+## БД
 
-- Новый конфиг:
-  - `webapp.complaints_service_token`
-  - `COMPLAINTS_SERVICE_TOKEN` (основной для релиза)
-  - `webapp.internal_service_tokens_json`
-- Дополнительно (backward compatible):
-  - `WEBAPP_INTERNAL_SERVICE_TOKENS_JSON`
-- Формат: JSON map токенов (например `{"default":"token123","en":"...","es":"..."}`).
+- Миграция `000010_content_reports_report_category.sql`
+- Индекс `(source_type, report_category, status)`
 
-### Файлы release-части
+## Grammar sync
 
-- `internal/web/content_reports.go`
-- `internal/web/router.go`
+Источник правды — `courses/*-grammar`. Релиз: `make grammar-bundle` → deploy → `kubectl exec ... /app/import_learning_content --commit`. См. `docs/DB_FIRST_CONTENT_MIGRATION.md` и skill reference § Grammar sync.
+
+## Deprecated: llama worker
+
+`tools-local/complaints-worker/worker.py`, launchd, `make complaints-dry-*` / `complaints-apply-*` — **не использовать для триажа**. Оставлены для обратной совместимости и отдельных prompt-autofix задач. См. `docs/LOCAL_COMPLAINTS_WORKER.md`.
+
+## Файлы
+
+- `internal/web/content_reports.go`, `content_reports_internal.go`, `content_reports_internal_write.go`
 - `internal/repository/content_report_repository.go`
-- `internal/config/config.go`
-- `internal/database/migrations/000008_content_reports_internal_indexes.sql`
+- `internal/database/migrations/000010_content_reports_report_category.sql`
+- `webapp/src/components/ContentReportDialog.vue`
+- `webapp/src/constants/contentReportCategories.ts`
 
-### Тесты release-части
+## Тесты
 
 - `internal/repository/content_report_repository_test.go`
 - `internal/web/content_reports_internal_test.go`
-
----
-
-## 3) Что реализовано в local-контуре
-
-### Локальный инструмент
-
-- `tools-local/complaints-worker/worker.py`
-- Обертка запуска: `tools-local/complaints-worker/run.sh`
-
-### Что делает worker
-
-1. Получает жалобы через internal API.
-2. Группирует по `course -> chapter_id -> theory_block_id`.
-3. Вызывает `llama.cpp` (OpenAI-compatible endpoint `/v1/chat/completions`).
-4. Удаляет вопросы из:
-  - `courses/*-grammar/training_pack/chapters/*.questions.json`
-5. Отправляет bulk resolve в API (в боевом режиме).
-6. Пишет журнал и артефакты.
-
-### Режимы
-
-- По умолчанию: **dry-run**
-- Боевой режим: `--apply`
-
----
-
-## 4) Журнал и артефакты
-
-### JSONL журнал
-
-- Путь: `logs/complaints/complaints-YYYY-MM.jsonl`
-
-Поля записи:
-
-- `timestamp`
-- `run_id`
-- `course`
-- `chapter_id`
-- `theory_block_id`
-- `question_ids`
-- `report_ids`
-- `llm_diagnosis`
-- `action` (`dry_run|removed|noop|error`)
-- `error`
-- `resolve_status`
-- `hash_before`
-- `hash_after`
-- `training_pack_relpath`
-- `dry_run`
-
-### Snapshot затронутых блоков
-
-- Путь: `logs/complaints/changed-theory-blocks-YYYYMMDDHH.json`
-- Используется как вход для последующей пакетной ревалидации/перегенерации.
-
----
-
-## 5) Hourly запуск на Mac (launchd)
-
-Шаблон:
-
-- `tools-local/complaints-worker/launchd/com.englishai.complaints-worker.plist`
-
-Ключевые параметры:
-
-- `StartInterval = 3600`
-- запуск `tools-local/complaints-worker/run.sh`
-- stdout/stderr в `logs/complaints/`
-
----
-
-## 6) Минимальные команды
-
-### Dry-run
-
-```bash
-python3 tools-local/complaints-worker/worker.py
-```
-
-### Боевой запуск
-
-```bash
-python3 tools-local/complaints-worker/worker.py --apply
-```
-
-### Проверка launchd
-
-```bash
-launchctl list | rg complaints-worker
-```
-
----
-
-## 7) Где смотреть подробный runbook
-
-- `docs/LOCAL_COMPLAINTS_WORKER.md`
+- `internal/models/content_report_category_test.go`

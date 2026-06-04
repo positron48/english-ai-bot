@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""DEPRECATED: use Cursor skill content-complaints-triage and tools-local/complaints-triage/fetch_reports.py."""
 import argparse
 import base64
 import datetime as dt

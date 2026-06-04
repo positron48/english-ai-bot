@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 
 	"go.uber.org/zap"
@@ -19,6 +20,7 @@ type createWordReportRequest struct {
 	WordCardID     *int64                 `json:"word_card_id"`
 	TrainingCardID *int64                 `json:"training_card_id"`
 	WordCategory   string                 `json:"word_category"`
+	ReportCategory string                 `json:"report_category"`
 	Comment        string                 `json:"comment"`
 	Extra          map[string]interface{} `json:"extra"`
 }
@@ -64,9 +66,12 @@ func (r *Router) handleTrainingReport(w http.ResponseWriter, req *http.Request) 
 		return
 	}
 	comment := strings.TrimSpace(body.Comment)
-	if comment == "" {
+	if !validateReportComment("word_training", body.ReportCategory, comment) {
 		http.Error(w, "comment required", http.StatusBadRequest)
 		return
+	}
+	if comment == "" {
+		comment = models.NormalizeReportCategory("word_training", body.ReportCategory)
 	}
 	var reportUserCardID *int64
 	if body.UserCardID > 0 {
@@ -94,6 +99,7 @@ func (r *Router) handleTrainingReport(w http.ResponseWriter, req *http.Request) 
 		TrainingCardID:       ctx.TrainingCardID,
 		UserCardID:           reportUserCardID,
 		WordCategory:         ctx.WordCategory,
+		ReportCategory:       body.ReportCategory,
 		CommentText:          comment,
 		Payload:              payload,
 	})
@@ -110,8 +116,9 @@ type createGrammarReportRequest struct {
 	QuestionID   string                 `json:"question_id"`
 	ChapterID    string                 `json:"chapter_id"`
 	TheoryBlock  string                 `json:"theory_block_id"`
-	Comment      string                 `json:"comment"`
-	QuestionData map[string]interface{} `json:"question_data"`
+	ReportCategory string                 `json:"report_category"`
+	Comment        string                 `json:"comment"`
+	QuestionData   map[string]interface{} `json:"question_data"`
 }
 
 func (r *Router) handleLearningGrammarTrainingReport(w http.ResponseWriter, req *http.Request) {
@@ -134,9 +141,12 @@ func (r *Router) handleLearningGrammarTrainingReport(w http.ResponseWriter, req 
 		return
 	}
 	comment := strings.TrimSpace(body.Comment)
-	if comment == "" {
+	if !validateReportComment("grammar_training", body.ReportCategory, comment) {
 		http.Error(w, "comment required", http.StatusBadRequest)
 		return
+	}
+	if comment == "" {
+		comment = models.NormalizeReportCategory("grammar_training", body.ReportCategory)
 	}
 	repo := repository.NewContentReportRepository(r.db, r.logger)
 	payload := map[string]interface{}{
@@ -152,6 +162,7 @@ func (r *Router) handleLearningGrammarTrainingReport(w http.ResponseWriter, req 
 		GrammarChapterID:  strings.TrimSpace(body.ChapterID),
 		TheoryBlockID:     strings.TrimSpace(body.TheoryBlock),
 		GrammarQuestionID: strings.TrimSpace(body.QuestionID),
+		ReportCategory:    body.ReportCategory,
 		CommentText:       comment,
 		Payload:           payload,
 	})
@@ -177,27 +188,7 @@ func (r *Router) handleAdminContentReports(w http.ResponseWriter, req *http.Requ
 		}
 		out := make([]map[string]interface{}, 0, len(reports))
 		for _, item := range reports {
-			out = append(out, map[string]interface{}{
-				"id":                    item.ID,
-				"user_id":               item.UserID,
-				"source_type":           item.SourceType,
-				"status":                item.Status,
-				"word":                  item.Word,
-				"translation_direction": item.TranslationDirection,
-				"word_card_id":          item.WordCardID,
-				"training_card_id":      item.TrainingCardID,
-				"user_card_id":          item.UserCardID,
-				"word_category":         item.WordCategory,
-				"grammar_chapter_id":    item.GrammarChapterID,
-				"theory_block_id":       item.TheoryBlockID,
-				"grammar_question_id":   item.GrammarQuestionID,
-				"comment_text":          item.CommentText,
-				"payload":               repo.ParsePayload(item.PayloadJSON),
-				"resolved_at":           asReportTime(item.ResolvedAt),
-				"resolved_by_user_id":   item.ResolvedByUserID,
-				"created_at":            item.CreatedAt.UTC().Format("2006-01-02T15:04:05Z"),
-				"updated_at":            item.UpdatedAt.UTC().Format("2006-01-02T15:04:05Z"),
-			})
+			out = append(out, contentReportToMap(item, repo))
 		}
 		w.Header().Set("Content-Type", "application/json")
 		_ = json.NewEncoder(w).Encode(map[string]interface{}{"reports": out})
@@ -257,27 +248,7 @@ func (r *Router) handleAdminContentReportByID(w http.ResponseWriter, req *http.R
 		http.Error(w, "Not found", http.StatusNotFound)
 		return
 	}
-	resp := map[string]interface{}{
-		"id":                    report.ID,
-		"user_id":               report.UserID,
-		"source_type":           report.SourceType,
-		"status":                report.Status,
-		"word":                  report.Word,
-		"translation_direction": report.TranslationDirection,
-		"word_card_id":          report.WordCardID,
-		"training_card_id":      report.TrainingCardID,
-		"user_card_id":          report.UserCardID,
-		"word_category":         report.WordCategory,
-		"grammar_chapter_id":    report.GrammarChapterID,
-		"theory_block_id":       report.TheoryBlockID,
-		"grammar_question_id":   report.GrammarQuestionID,
-		"comment_text":          report.CommentText,
-		"payload":               repo.ParsePayload(report.PayloadJSON),
-		"resolved_at":           asReportTime(report.ResolvedAt),
-		"resolved_by_user_id":   report.ResolvedByUserID,
-		"created_at":            report.CreatedAt.UTC().Format("2006-01-02T15:04:05Z"),
-		"updated_at":            report.UpdatedAt.UTC().Format("2006-01-02T15:04:05Z"),
-	}
+	resp := contentReportToMap(report, repo)
 	if report.TrainingCardID != nil {
 		trainingRepo := repository.NewTrainingCardRepository(r.db, r.logger)
 		if card, e := trainingRepo.GetTrainingCard(*report.TrainingCardID); e == nil && card != nil {
@@ -349,17 +320,12 @@ func (r *Router) handleInternalGrammarContentReports(w http.ResponseWriter, req 
 	var nextCursor int64
 	for _, item := range reports {
 		nextCursor = item.ID
-		items = append(items, map[string]interface{}{
-			"id":                  item.ID,
-			"source_type":         item.SourceType,
-			"status":              item.Status,
-			"grammar_chapter_id":  item.GrammarChapterID,
-			"theory_block_id":     item.TheoryBlockID,
-			"grammar_question_id": item.GrammarQuestionID,
-			"comment_text":        item.CommentText,
-			"payload":             repo.ParsePayload(item.PayloadJSON),
-			"created_at":          item.CreatedAt.UTC().Format("2006-01-02T15:04:05Z"),
-		})
+		m := contentReportToMap(item, repo)
+		delete(m, "resolved_at")
+		delete(m, "resolved_by_user_id")
+		delete(m, "updated_at")
+		delete(m, "user_id")
+		items = append(items, m)
 	}
 	resp := map[string]interface{}{"reports": items}
 	if len(reports) > 0 {
