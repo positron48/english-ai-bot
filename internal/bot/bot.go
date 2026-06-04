@@ -138,6 +138,18 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 			zap.Int64("created", summary.Created),
 		)
 	}
+	if summary, err := courseRepo.MapLegacyContentForLearning(context.Background(), cfg.Learning); err != nil {
+		log.Warn("linglow content mapping bootstrap skipped due to error", zap.Error(err))
+	} else {
+		log.Info("linglow content mapping bootstrap completed",
+			zap.String("course_code", summary.CourseCode),
+			zap.Int64("course_id", summary.CourseID),
+			zap.Int64("modules_created", summary.ModulesCreated),
+			zap.Int64("items_created", summary.ItemsCreated),
+			zap.Int64("modules_total", summary.ModulesTotal),
+			zap.Int64("items_total", summary.ItemsTotal),
+		)
+	}
 
 	wordRepo := repository.NewWordRepository(conn, log)
 	userRepo := repository.NewUserRepository(conn, log)
