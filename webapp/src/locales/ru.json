@@ -63,12 +63,31 @@
     "verbForms": "Формы",
     "chat": "Чат",
     "vocab": "Словарь",
+    "city": "Город",
     "settings": "Настройки",
     "admin": "Админка",
     "adminVerbFormsDb": "Формы глаголов (БД)",
     "logout": "Выйти",
     "more": "Ещё",
     "menu": "Меню"
+  },
+  "city": {
+    "title": "Город курса",
+    "kicker": "Linglow city",
+    "districts": "районы",
+    "locations": "локации",
+    "modules": "модули",
+    "items": "элементы",
+    "locationsShort": "локаций",
+    "moreModules": "+{count} мод.",
+    "locationTypes": {
+      "grammar": "Грамматика",
+      "word_market": "Слова",
+      "reading": "Чтение",
+      "conversation": "Разговор",
+      "review_station": "Повторение",
+      "mistake_workshop": "Ошибки"
+    }
   },
   "auth": {
     "error": "Ошибка авторизации:",

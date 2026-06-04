@@ -106,6 +106,7 @@ type Router struct {
 	bot                               *tgbotapi.BotAPI
 	authMiddleware                    *AuthMiddleware
 	otpRepo                           *repository.WebOTPRepository
+	courseRepo                        *repository.CourseRepository
 	readingCatalogRepo                *repository.ReadingCatalogRepository
 	speakingCatalogRepo               *repository.SpeakingCatalogRepository
 	speakingSessionRepo               *repository.SpeakingSessionRepository
@@ -158,6 +159,7 @@ func NewRouter(
 		internalServiceTokens:      parseInternalServiceTokens(cfg, logger),
 	}
 	if db != nil {
+		r.courseRepo = repository.NewCourseRepository(db, logger)
 		r.readingCatalogRepo = repository.NewReadingCatalogRepository(db)
 		r.speakingCatalogRepo = repository.NewSpeakingCatalogRepository(db)
 		r.speakingSessionRepo = repository.NewSpeakingSessionRepository(db)
@@ -404,6 +406,7 @@ func (r *Router) setupProtectedRoutes() {
 
 	// Protected user routes (wrapped with auth middleware and rate limiting)
 	r.mux.HandleFunc("/api/dashboard", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleDashboard)))
+	r.mux.HandleFunc("/api/learning/course", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningCourse)))
 	r.mux.HandleFunc("/api/vocab", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleVocab)))
 	r.mux.HandleFunc("/api/vocab/", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleVocabDelete)))
 

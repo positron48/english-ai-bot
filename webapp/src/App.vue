@@ -37,6 +37,10 @@
                   <Icon name="book" class="dropdown-icon" />
                   <span>{{ t('navigation.vocab') }}</span>
                 </router-link>
+                <router-link to="/city" class="dropdown-item" @click="showMoreDropdown = false">
+                  <Icon name="dashboard" class="dropdown-icon" />
+                  <span>{{ t('navigation.city') }}</span>
+                </router-link>
                 <router-link v-if="isAdmin" to="/admin" class="dropdown-item" @click="showMoreDropdown = false">
                   <Icon name="shield" class="dropdown-icon" />
                   <span>{{ t('navigation.admin') }}</span>
@@ -161,6 +165,10 @@
         <router-link to="/vocab" class="sidebar-item" @click="showSidebar = false">
           <Icon name="book" class="sidebar-icon" />
           <span>{{ t('navigation.vocab') }}</span>
+        </router-link>
+        <router-link to="/city" class="sidebar-item" @click="showSidebar = false">
+          <Icon name="dashboard" class="sidebar-icon" />
+          <span>{{ t('navigation.city') }}</span>
         </router-link>
         <router-link to="/settings" class="sidebar-item" @click="showSidebar = false">
           <Icon name="gear" class="sidebar-icon" />

@@ -203,6 +203,10 @@ const routeHierarchy = computed(() => {
       { label: t('navigation.dashboard'), path: '/dashboard' },
       { label: t('navigation.vocab'), path: '/vocab' }
     ],
+    '/city': [
+      { label: t('navigation.dashboard'), path: '/dashboard' },
+      { label: t('navigation.city'), path: '/city' }
+    ],
     '/learning': [
       { label: t('navigation.dashboard'), path: '/dashboard' },
       { label: t('navigation.learning'), path: '/learning' }

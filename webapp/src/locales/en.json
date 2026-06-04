@@ -63,12 +63,31 @@
     "verbForms": "Forms",
     "chat": "Chat",
     "vocab": "Vocabulary",
+    "city": "City",
     "settings": "Settings",
     "admin": "Admin",
     "adminVerbFormsDb": "Verb forms (DB)",
     "logout": "Logout",
     "more": "More",
     "menu": "Menu"
+  },
+  "city": {
+    "title": "Course City",
+    "kicker": "Linglow city",
+    "districts": "districts",
+    "locations": "locations",
+    "modules": "modules",
+    "items": "items",
+    "locationsShort": "locations",
+    "moreModules": "+{count} mod.",
+    "locationTypes": {
+      "grammar": "Grammar",
+      "word_market": "Words",
+      "reading": "Reading",
+      "conversation": "Conversation",
+      "review_station": "Review",
+      "mistake_workshop": "Mistakes"
+    }
   },
   "auth": {
     "error": "Authorization error:",

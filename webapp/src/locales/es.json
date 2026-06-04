@@ -63,12 +63,31 @@
     "verbForms": "Formas",
     "chat": "Chat",
     "vocab": "Vocabulario",
+    "city": "Ciudad",
     "settings": "Configuración",
     "admin": "Administración",
     "adminVerbFormsDb": "Formas verbales (BD)",
     "logout": "Cerrar sesión",
     "more": "Más",
     "menu": "Menú"
+  },
+  "city": {
+    "title": "Ciudad del curso",
+    "kicker": "Linglow city",
+    "districts": "distritos",
+    "locations": "ubicaciones",
+    "modules": "módulos",
+    "items": "elementos",
+    "locationsShort": "ubicaciones",
+    "moreModules": "+{count} mód.",
+    "locationTypes": {
+      "grammar": "Gramática",
+      "word_market": "Palabras",
+      "reading": "Lectura",
+      "conversation": "Conversación",
+      "review_station": "Repaso",
+      "mistake_workshop": "Errores"
+    }
   },
   "auth": {
     "error": "Error de autorización:",

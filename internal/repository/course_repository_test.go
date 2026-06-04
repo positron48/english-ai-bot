@@ -111,3 +111,57 @@ func TestCourseRepository_MapLegacyContent(t *testing.T) {
 		t.Fatalf("mapping should be idempotent, got %+v", second)
 	}
 }
+
+func TestCourseRepository_GetCourseMap(t *testing.T) {
+	conn := testutil.SetupTestDB(t)
+	logger := zap.NewNop()
+	userRepo := NewUserRepository(conn, logger)
+	user, err := userRepo.GetOrCreateUser(4242)
+	if err != nil {
+		t.Fatalf("create user: %v", err)
+	}
+
+	repo := NewCourseRepository(conn, logger)
+	if _, err := repo.BackfillUserCourses(context.Background(), "es_ru"); err != nil {
+		t.Fatalf("BackfillUserCourses: %v", err)
+	}
+	if _, err := conn.Exec(`
+		INSERT INTO modules (course_id, district_id, location_id, code, module_type, title, source_kind, source_id, sort_order, status)
+		SELECT c.id, d.id, l.id, 'grammar_section:test', 'grammar', 'Grammar Test', 'grammar_section', 'test.section', 1, 'published'
+		FROM courses c
+		JOIN districts d ON d.course_id = c.id AND d.level_code = 'A0'
+		JOIN locations l ON l.district_id = d.id AND l.location_type = 'grammar'
+		WHERE c.code = 'es_ru'
+	`); err != nil {
+		t.Fatalf("insert module: %v", err)
+	}
+	if _, err := conn.Exec(`
+		INSERT INTO learning_items (course_id, module_id, district_id, location_id, item_type, source_kind, source_id, title, cefr_level, status)
+		SELECT m.course_id, m.id, m.district_id, m.location_id, 'grammar_chapter', 'grammar_chapter', 'test.chapter', 'Chapter Test', 'A0', 'published'
+		FROM modules m
+		JOIN courses c ON c.id = m.course_id
+		WHERE c.code = 'es_ru' AND m.code = 'grammar_section:test'
+	`); err != nil {
+		t.Fatalf("insert learning item: %v", err)
+	}
+
+	courseMap, err := repo.GetCourseMap(context.Background(), "es_ru", user.ID)
+	if err != nil {
+		t.Fatalf("GetCourseMap: %v", err)
+	}
+	if courseMap.Course.Code != "es_ru" {
+		t.Fatalf("course code = %q, want es_ru", courseMap.Course.Code)
+	}
+	if courseMap.UserCourse == nil {
+		t.Fatalf("expected user_course in response")
+	}
+	if courseMap.Totals.Districts != 6 || courseMap.Totals.Locations != 36 || courseMap.Totals.Modules != 1 || courseMap.Totals.Items != 1 {
+		t.Fatalf("unexpected totals: %+v", courseMap.Totals)
+	}
+	if courseMap.Totals.ByType["grammar_chapter"] != 1 {
+		t.Fatalf("grammar_chapter total = %d, want 1", courseMap.Totals.ByType["grammar_chapter"])
+	}
+	if len(courseMap.Districts) == 0 || len(courseMap.Districts[0].Locations) == 0 {
+		t.Fatalf("expected district locations")
+	}
+}

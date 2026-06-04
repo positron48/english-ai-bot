@@ -36,6 +36,81 @@ type ContentMappingSummary struct {
 	ItemsTotal     int64
 }
 
+// CourseMap is the read model used by the course-aware API.
+type CourseMap struct {
+	Course     CourseMapCourse      `json:"course"`
+	UserCourse *CourseMapUserCourse `json:"user_course,omitempty"`
+	Districts  []CourseMapDistrict  `json:"districts"`
+	Totals     CourseMapTotals      `json:"totals"`
+}
+
+type CourseMapCourse struct {
+	ID             int64  `json:"id"`
+	Code           string `json:"code"`
+	Slug           string `json:"slug"`
+	Title          string `json:"title"`
+	TargetLanguage string `json:"target_language"`
+	NativeLanguage string `json:"native_language"`
+	UILocale       string `json:"ui_locale"`
+	Status         string `json:"status"`
+	CityName       string `json:"city_name"`
+}
+
+type CourseMapUserCourse struct {
+	ID     int64  `json:"id"`
+	Status string `json:"status"`
+}
+
+type CourseMapDistrict struct {
+	ID        int64               `json:"id"`
+	Code      string              `json:"code"`
+	LevelCode string              `json:"level_code"`
+	Title     string              `json:"title"`
+	Order     int                 `json:"order"`
+	Status    string              `json:"status"`
+	Locations []CourseMapLocation `json:"locations"`
+}
+
+type CourseMapLocation struct {
+	ID           int64             `json:"id"`
+	Code         string            `json:"code"`
+	LocationType string            `json:"location_type"`
+	Title        string            `json:"title"`
+	Order        int               `json:"order"`
+	Status       string            `json:"status"`
+	Modules      []CourseMapModule `json:"modules"`
+}
+
+type CourseMapModule struct {
+	ID         int64           `json:"id"`
+	Code       string          `json:"code"`
+	Type       string          `json:"type"`
+	Title      string          `json:"title"`
+	SourceKind string          `json:"source_kind,omitempty"`
+	SourceID   string          `json:"source_id,omitempty"`
+	Order      int             `json:"order"`
+	Status     string          `json:"status"`
+	Items      []CourseMapItem `json:"items"`
+}
+
+type CourseMapItem struct {
+	ID         int64  `json:"id"`
+	Type       string `json:"type"`
+	SourceKind string `json:"source_kind"`
+	SourceID   string `json:"source_id"`
+	Title      string `json:"title,omitempty"`
+	CEFRLevel  string `json:"cefr_level,omitempty"`
+	Status     string `json:"status"`
+}
+
+type CourseMapTotals struct {
+	Districts int            `json:"districts"`
+	Locations int            `json:"locations"`
+	Modules   int            `json:"modules"`
+	Items     int            `json:"items"`
+	ByType    map[string]int `json:"by_type"`
+}
+
 func NewCourseRepository(db *sql.DB, logger *zap.Logger) *CourseRepository {
 	return &CourseRepository{db: db, logger: logger}
 }
@@ -98,6 +173,228 @@ func (r *CourseRepository) BackfillUserCourses(ctx context.Context, courseCode s
 		Existing:     existing,
 		Created:      created,
 	}, nil
+}
+
+// GetCourseMapForLearning returns the Linglow v2 course map for the configured language pair.
+func (r *CourseRepository) GetCourseMapForLearning(ctx context.Context, lc config.LearningConfig, userID int64) (*CourseMap, error) {
+	return r.GetCourseMap(ctx, CourseCodeForLearning(lc), userID)
+}
+
+// GetCourseMap returns the Linglow v2 course map with the current user's course enrollment when present.
+func (r *CourseRepository) GetCourseMap(ctx context.Context, courseCode string, userID int64) (*CourseMap, error) {
+	courseCode = strings.TrimSpace(strings.ToLower(courseCode))
+	if courseCode == "" {
+		return nil, fmt.Errorf("course code is empty")
+	}
+
+	var result CourseMap
+	if err := r.db.QueryRowContext(ctx, `
+		SELECT id, code, title, target_lang, teaching_locale, ui_locale, status, city_name
+		FROM courses
+		WHERE code = ?
+	`, courseCode).Scan(
+		&result.Course.ID,
+		&result.Course.Code,
+		&result.Course.Title,
+		&result.Course.TargetLanguage,
+		&result.Course.NativeLanguage,
+		&result.Course.UILocale,
+		&result.Course.Status,
+		&result.Course.CityName,
+	); err != nil {
+		return nil, fmt.Errorf("get course %q: %w", courseCode, err)
+	}
+	result.Course.Slug = result.Course.Code
+
+	if userID > 0 {
+		var uc CourseMapUserCourse
+		err := r.db.QueryRowContext(ctx, `
+			SELECT id, status
+			FROM user_courses
+			WHERE user_id = ? AND course_id = ?
+		`, userID, result.Course.ID).Scan(&uc.ID, &uc.Status)
+		if err != nil && err != sql.ErrNoRows {
+			return nil, fmt.Errorf("get user course: %w", err)
+		}
+		if err == nil {
+			result.UserCourse = &uc
+		}
+	}
+
+	districts, err := r.listCourseDistricts(ctx, result.Course.ID)
+	if err != nil {
+		return nil, err
+	}
+	locations, err := r.listCourseLocations(ctx, result.Course.ID)
+	if err != nil {
+		return nil, err
+	}
+	modules, err := r.listCourseModules(ctx, result.Course.ID)
+	if err != nil {
+		return nil, err
+	}
+	items, err := r.listCourseItems(ctx, result.Course.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	itemsByModule := make(map[int64][]CourseMapItem)
+	for _, item := range items {
+		itemsByModule[item.moduleID] = append(itemsByModule[item.moduleID], item.CourseMapItem)
+		result.Totals.Items++
+		if result.Totals.ByType == nil {
+			result.Totals.ByType = make(map[string]int)
+		}
+		result.Totals.ByType[item.Type]++
+	}
+	modulesByLocation := make(map[int64][]CourseMapModule)
+	for _, module := range modules {
+		module.Items = itemsByModule[module.ID]
+		modulesByLocation[module.locationID] = append(modulesByLocation[module.locationID], module.CourseMapModule)
+		result.Totals.Modules++
+	}
+	locationsByDistrict := make(map[int64][]CourseMapLocation)
+	for _, location := range locations {
+		location.Modules = modulesByLocation[location.ID]
+		locationsByDistrict[location.districtID] = append(locationsByDistrict[location.districtID], location.CourseMapLocation)
+		result.Totals.Locations++
+	}
+	result.Districts = make([]CourseMapDistrict, 0, len(districts))
+	for _, district := range districts {
+		district.Locations = locationsByDistrict[district.ID]
+		result.Districts = append(result.Districts, district)
+		result.Totals.Districts++
+	}
+	if result.Totals.ByType == nil {
+		result.Totals.ByType = map[string]int{}
+	}
+	return &result, nil
+}
+
+type courseMapLocationRow struct {
+	CourseMapLocation
+	districtID int64
+}
+
+type courseMapModuleRow struct {
+	CourseMapModule
+	locationID int64
+}
+
+type courseMapItemRow struct {
+	CourseMapItem
+	moduleID int64
+}
+
+func (r *CourseRepository) listCourseDistricts(ctx context.Context, courseID int64) ([]CourseMapDistrict, error) {
+	rows, err := r.db.QueryContext(ctx, `
+		SELECT id, code, level_code, title, sort_order, status
+		FROM districts
+		WHERE course_id = ?
+		ORDER BY sort_order, id
+	`, courseID)
+	if err != nil {
+		return nil, fmt.Errorf("list districts: %w", err)
+	}
+	defer rows.Close()
+
+	var districts []CourseMapDistrict
+	for rows.Next() {
+		var d CourseMapDistrict
+		if err := rows.Scan(&d.ID, &d.Code, &d.LevelCode, &d.Title, &d.Order, &d.Status); err != nil {
+			return nil, fmt.Errorf("scan district: %w", err)
+		}
+		districts = append(districts, d)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("iterate districts: %w", err)
+	}
+	return districts, nil
+}
+
+func (r *CourseRepository) listCourseLocations(ctx context.Context, courseID int64) ([]courseMapLocationRow, error) {
+	rows, err := r.db.QueryContext(ctx, `
+		SELECT l.id, l.district_id, l.code, l.location_type, l.title, l.sort_order, l.status
+		FROM locations l
+		JOIN districts d ON d.id = l.district_id
+		WHERE d.course_id = ?
+		ORDER BY d.sort_order, l.sort_order, l.id
+	`, courseID)
+	if err != nil {
+		return nil, fmt.Errorf("list locations: %w", err)
+	}
+	defer rows.Close()
+
+	var locations []courseMapLocationRow
+	for rows.Next() {
+		var l courseMapLocationRow
+		if err := rows.Scan(&l.ID, &l.districtID, &l.Code, &l.LocationType, &l.Title, &l.Order, &l.Status); err != nil {
+			return nil, fmt.Errorf("scan location: %w", err)
+		}
+		locations = append(locations, l)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("iterate locations: %w", err)
+	}
+	return locations, nil
+}
+
+func (r *CourseRepository) listCourseModules(ctx context.Context, courseID int64) ([]courseMapModuleRow, error) {
+	rows, err := r.db.QueryContext(ctx, `
+		SELECT id, location_id, code, module_type, title, source_kind, source_id, sort_order, status
+		FROM modules
+		WHERE course_id = ? AND location_id IS NOT NULL
+		ORDER BY sort_order, id
+	`, courseID)
+	if err != nil {
+		return nil, fmt.Errorf("list modules: %w", err)
+	}
+	defer rows.Close()
+
+	var modules []courseMapModuleRow
+	for rows.Next() {
+		var m courseMapModuleRow
+		var sourceKind, sourceID sql.NullString
+		if err := rows.Scan(&m.ID, &m.locationID, &m.Code, &m.Type, &m.Title, &sourceKind, &sourceID, &m.Order, &m.Status); err != nil {
+			return nil, fmt.Errorf("scan module: %w", err)
+		}
+		m.SourceKind = sourceKind.String
+		m.SourceID = sourceID.String
+		modules = append(modules, m)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("iterate modules: %w", err)
+	}
+	return modules, nil
+}
+
+func (r *CourseRepository) listCourseItems(ctx context.Context, courseID int64) ([]courseMapItemRow, error) {
+	rows, err := r.db.QueryContext(ctx, `
+		SELECT id, module_id, item_type, source_kind, source_id, title, cefr_level, status
+		FROM learning_items
+		WHERE course_id = ? AND module_id IS NOT NULL
+		ORDER BY id
+	`, courseID)
+	if err != nil {
+		return nil, fmt.Errorf("list learning items: %w", err)
+	}
+	defer rows.Close()
+
+	var items []courseMapItemRow
+	for rows.Next() {
+		var item courseMapItemRow
+		var title, cefrLevel sql.NullString
+		if err := rows.Scan(&item.ID, &item.moduleID, &item.Type, &item.SourceKind, &item.SourceID, &title, &cefrLevel, &item.Status); err != nil {
+			return nil, fmt.Errorf("scan learning item: %w", err)
+		}
+		item.Title = title.String
+		item.CEFRLevel = cefrLevel.String
+		items = append(items, item)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("iterate learning items: %w", err)
+	}
+	return items, nil
 }
 
 // MapLegacyContentForLearning idempotently maps existing DB-first/bundle-derived content into Linglow v2 modules and learning_items.
