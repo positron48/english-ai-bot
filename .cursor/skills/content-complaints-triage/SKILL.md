@@ -7,75 +7,95 @@ description: Триаж жалоб content_reports с prod (EN/ES), исправ
 
 Локальный агент **без llama.cpp**. Источник жалоб по умолчанию: **prod k3s** (`qantrix.ru` / `es.qantrix.ru`).
 
-Подробный runbook: [reference.md](reference.md).
+Подробный runbook: [reference.md](reference.md).  
+Пошаговый запуск и журналы в git: [docs/complaints/README.md](../../../docs/complaints/README.md).
+
+## Как запустить потом
+
+### Быстро (Cursor)
+
+1. Команда **`/content-complaints-triage`** или текст: «триаж жалоб, course=en, apply».
+2. Навык сам пройдёт фазы A–F ниже.
+
+### Вручную (терминал)
+
+```bash
+# 1) секреты
+cp env.example.complaints-prod secrets/complaints-prod.env   # один раз
+
+# 2) новый журнал в git (в начале apply-прогона)
+make complaints-journal-new              # docs/complaints/journal-YYYY-MM-DD-triage.md
+make complaints-journal-new SLUG=en      # только EN в имени файла
+
+# 3) снимок + кластеры (dry-run)
+make complaints-triage-dry-en
+make complaints-triage-dry-es
+
+# 4) правки контента (агент / редактор) + prod API для слов/TTS
+set -a && . ./secrets/complaints-prod.env && set +a
+python3 tools-local/complaints-triage/apply_prod_word_fixes.py   # при необходимости
+python3 tools-local/complaints-triage/resolve_all_active.py en
+python3 tools-local/complaints-triage/resolve_all_active.py es
+
+# 5) грамматика: courses → generate-grammar-training-pack → commit → make tag → import в pod
+
+# 6) закоммитить журнал
+git add docs/complaints/journal-*.md docs/complaints/README.md
+```
 
 ## Перед стартом
 
-1. Скопируй `env.example.complaints-prod` → `secrets/complaints-prod.env` и заполни URL + `COMPLAINTS_SERVICE_TOKEN`.
-2. Уточни у пользователя режим: `dry-run` (по умолчанию) или `apply`.
-3. Один прогон = один курс: `course=en` **или** `course=es` (не смешивать URL/токены).
-
-Снимок жалоб:
-
-```bash
-make complaints-triage-dry-en   # fetch + cluster → logs/complaints/
-# или вручную:
-set -a && . ./secrets/complaints-prod.env && set +a
-COMPLAINTS_SERVICE_URL="$COMPLAINTS_SERVICE_URL_EN" \
-  python3 tools-local/complaints-triage/fetch_reports.py --course en
-python3 tools-local/complaints-triage/cluster_reports.py logs/complaints/snapshot-en-*.json
-```
+1. `secrets/complaints-prod.env` из `env.example.complaints-prod` (URL + токены).
+2. Режим: `dry-run` или `apply`.
+3. Один прогон за раз по курсу: `en` **или** `es` (для fetch/resolve); журнал может описывать оба.
 
 ## Фазы
 
 ### A — Fetch
 
-- `GET /api/internal/content-reports?course=&source_type=&cursor=&limit=`
-- `GET /api/internal/content-reports/summary?course=`
-- Для одной жалобы: `GET /api/internal/content-reports/{id}` (training_card, word_card, tts_status, training_pack_relpath)
+```bash
+make complaints-fetch-en   # или complaints-fetch-es
+```
+
+Снимки: `logs/complaints/snapshot-*.json` (локально, не в git).
 
 ### B — Кластеризация
 
-Группируй по `report_category` + entity key:
-
-| source_type | entity_key |
-|-------------|------------|
-| word_training | training_card_id / word_card_id / word |
-| grammar_training | chapter_id + theory_block_id + question_id |
-
-Сортируй кластеры по `summary` count.
+```bash
+make complaints-cluster-en   # после fetch EN
+```
 
 ### C — Решение (playbook)
 
 | category | действие |
 |----------|----------|
-| wrong_translation, wrong_example, wrong_distractors, typo | `PUT /api/internal/training/card/{id}` JSON |
-| bad_audio | `POST /api/internal/tts/regenerate` + `GET /api/internal/tts/status?word=` |
-| wrong_answer, ambiguous, wrong_explanation, theory_mismatch, too_hard | правка JSON в `courses/*-grammar/training_pack/` → bundle → import |
-| other | полный `payload` + ручной разбор |
+| wrong_translation, wrong_example, wrong_distractors, typo | `PUT /api/internal/training/card/{id}` |
+| bad_audio | `POST /api/internal/tts/regenerate` |
+| wrong_answer, ambiguous, … | `courses/*-grammar/training_pack/` → bundle → import |
+| other | ручной разбор `GET .../content-reports/{id}` |
 
-### D — Pattern sweep (обязательно)
+### D — Pattern sweep
 
-После фикса кластера ищи аналоги (grep по courses, тот же theory_block_id, word_card_id, pos).
+grep по `theory_block_id`, pos, word; см. `.cursor/rules/content-quality-guardrails.mdc`.
 
-### E — Resolve (только apply)
+### E — Resolve + журнал (apply)
 
-`POST /api/internal/content-reports/resolve-bulk` с `report_ids` и `reason`.
+1. `resolve_all_active.py en|es` или `resolve-bulk`.
+2. **Текстовый журнал в git:** дописать `docs/complaints/journal-YYYY-MM-DD-<slug>.md` — на каждую жалобу: дата → суть → что изменено.
+3. **JSONL локально:** `logs/complaints/triage-YYYY-MM.jsonl` (`append_triage_log.py`).
 
-**Журнал (обязательно после apply):**
+Шаблон нового журнала: `make complaints-journal-new` → `docs/complaints/journal-TEMPLATE.md`.
 
-1. **Текст** — `logs/complaints/journal-YYYY-MM-DD-<run>.md`: по каждой жалобе блок «дата → суть → что изменено» (см. [reference.md](reference.md) § Журнал).
-2. **JSONL** — `logs/complaints/triage-YYYY-MM.jsonl` (`append_triage_log.py` или итоговая строка resolve).
+### F — Релиз грамматики
 
-### F — Релиз грамматики (если менялись courses)
-
-См. [reference.md](reference.md) § Grammar sync.
+См. [reference.md](reference.md) § Grammar sync; в шапке журнала указать **тег** и коммиты submodule.
 
 ## Проверки
 
-- После Go/web изменений в репо: `make check`
-- После правки грамматики: `make grammar-bundle` + smoke API
+- `make check` после изменений в english-ai-bot
+- `make grammar-bundle` / `generate-grammar-training-pack.sh` после courses
+- активных жалоб 0: `GET /api/internal/content-reports?status=active&course=`
 
 ## Устаревшее
 
-Не используй `tools-local/complaints-worker/worker.py` (llama) для триажа — только fetch из `complaints-triage/`.
+Не используй `tools-local/complaints-worker/worker.py` (llama).

@@ -79,35 +79,54 @@ Legacy (совместимость): `/api/internal/content-reports/grammar`, `.
 
 ## Журнал триажа
 
-### Текстовый (для людей, по блокам)
+Полный runbook: **`docs/complaints/README.md`**.
 
-После apply-прогона вести файл:
+### Текстовый (в git, по датам)
 
-`logs/complaints/journal-YYYY-MM-DD-<кратко>.md`
+Канонический путь:
 
-В каждом блоке:
+`docs/complaints/journal-YYYY-MM-DD-<slug>.md`
 
-- **дата** жалобы (`created_at` из snapshot);
-- **на что жалоба** — тип (word/grammar), id, комментарий, question_id / word;
-- **что изменено** — файлы courses/training_pack, prod API (PUT card, TTS), или «без правки».
+Создать перед apply:
 
-Пример: `logs/complaints/journal-2026-06-04-triage.md`.
-
-### JSONL (машинный, apply mode)
-
-`logs/complaints/triage-YYYY-MM.jsonl`:
-
-```json
-{"run_id":"...","course":"en","cluster_key":"...","category":"bad_audio","action":"tts_regenerate","report_ids":[1,2],"files_changed":[],"resolve_status":"ok"}
+```bash
+make complaints-journal-new
+make complaints-journal-new SLUG=en
+make complaints-journal-new JOURNAL_DATE=2026-06-15 SLUG=hotfix
 ```
 
-Дописать строку: `python3 tools-local/complaints-triage/append_triage_log.py --help`.
+Шаблон: `docs/complaints/journal-TEMPLATE.md`. Индекс прогонов: таблица в `docs/complaints/README.md`.
+
+В каждом блоке жалобы:
+
+- **дата** (`created_at` из snapshot);
+- **на что жалоба** — word/grammar, id, комментарий, question_id / word;
+- **что изменено** — courses, prod API, «без правки».
+
+Пример: `docs/complaints/journal-2026-06-04-triage.md`.
+
+После релиза — в шапке журнала: тег (`make tag`), коммиты submodule.
+
+### JSONL (локально, не в git)
+
+`logs/complaints/triage-YYYY-MM.jsonl` — `append_triage_log.py` или вывод `resolve_all_active.py`.
+
+### Локальные снимки (не в git)
+
+`logs/complaints/snapshot-*.json`, `clusters-*.json` — из `make complaints-fetch-*`.
 
 ## Makefile helpers
 
 ```bash
-make complaints-triage-dry-en   # fetch + cluster EN
-make complaints-triage-dry-es   # fetch + cluster ES
-make complaints-fetch-en        # только snapshot
-python3 tools-local/complaints-triage/append_triage_log.py --help
+make complaints-journal-new      # новый docs/complaints/journal-*.md
+make complaints-triage-dry-en    # fetch + cluster EN
+make complaints-triage-dry-es    # fetch + cluster ES
+make complaints-fetch-en         # только snapshot
+```
+
+Prod apply:
+
+```bash
+set -a && . ./secrets/complaints-prod.env && set +a
+python3 tools-local/complaints-triage/resolve_all_active.py en
 ```

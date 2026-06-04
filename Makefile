@@ -13,7 +13,7 @@ SERVICE_NAME ?= ai-bot
 -include .env
 .EXPORT_ALL_VARIABLES:
 
-.PHONY: all tidy build run test lint fmt setup up up-en up-es complaints-fetch-en complaints-fetch-es complaints-cluster-en complaints-cluster-es complaints-triage-dry-en complaints-triage-dry-es complaints-dry-en complaints-apply-en complaints-dry-es complaints-apply-es complaints-dry-both complaints-apply-both complaints-improve-both complaints-plan-both complaints-prompt-autofix-en complaints-prompt-autofix-es complaints-prompt-autofix-both complaints-prompt-regression complaints-prompt-integration-es complaints-smoke-en complaints-smoke-es complaints-smoke-both complaints-quality-both complaints-quality-baseline-both complaints-regenerate-affected complaints-improve-loop-both complaints-both complaints-cycle-both complaints-loop-tests clean check check-quick ci deploy update status logs docker-build docker-run docker-stop docker-logs docker-clean docker-rebuild docker-dev docker-dev-logs docker-dev-restart webapp-install webapp-dev webapp-build test-postgres test-integration test-integration-verbose grammar-bundle grammar-bundle-list postgres-dev-init-dbs clean-spanish-csv sync-spanish-word-sets prepare-english-csv sync-english-word-sets requeue-invalid-cards-es-dry requeue-invalid-cards-es requeue-invalid-cards-es-no-tts-dry requeue-invalid-cards-es-no-tts import-spanish-verbs import-spanish-verbs-jehle-bundled backfill-word-verb-links build-verb-form-examples backfill-verb-lemma-ru-glosses backfill-verb-template-links preview-verb-templates verb-training-pack-fill verb-training-sync-db
+.PHONY: all tidy build run test lint fmt setup up up-en up-es complaints-fetch-en complaints-fetch-es complaints-cluster-en complaints-cluster-es complaints-triage-dry-en complaints-triage-dry-es complaints-journal-new complaints-dry-en complaints-apply-en complaints-dry-es complaints-apply-es complaints-dry-both complaints-apply-both complaints-improve-both complaints-plan-both complaints-prompt-autofix-en complaints-prompt-autofix-es complaints-prompt-autofix-both complaints-prompt-regression complaints-prompt-integration-es complaints-smoke-en complaints-smoke-es complaints-smoke-both complaints-quality-both complaints-quality-baseline-both complaints-regenerate-affected complaints-improve-loop-both complaints-both complaints-cycle-both complaints-loop-tests clean check check-quick ci deploy update status logs docker-build docker-run docker-stop docker-logs docker-clean docker-rebuild docker-dev docker-dev-logs docker-dev-restart webapp-install webapp-dev webapp-build test-postgres test-integration test-integration-verbose grammar-bundle grammar-bundle-list postgres-dev-init-dbs clean-spanish-csv sync-spanish-word-sets prepare-english-csv sync-english-word-sets requeue-invalid-cards-es-dry requeue-invalid-cards-es requeue-invalid-cards-es-no-tts-dry requeue-invalid-cards-es-no-tts import-spanish-verbs import-spanish-verbs-jehle-bundled backfill-word-verb-links build-verb-form-examples backfill-verb-lemma-ru-glosses backfill-verb-template-links preview-verb-templates verb-training-pack-fill verb-training-sync-db
 
 all: build
 
@@ -570,6 +570,11 @@ complaints-triage-dry-en: complaints-fetch-en complaints-cluster-en
 complaints-triage-dry-es: complaints-fetch-es complaints-cluster-es
 	@echo "✅ Dry-run ES: см. logs/complaints/clusters-es-*.json"
 
+# Dated triage journal in docs/complaints/ (git). Optional: make complaints-journal-new SLUG=en
+complaints-journal-new:
+	@python3 tools-local/complaints-triage/new_journal.py $(JOURNAL_DATE) $(SLUG)
+	@echo "✅ Допиши блоки в docs/complaints/journal-*.md; см. docs/complaints/README.md"
+
 # DEPRECATED: llama-based worker — use Cursor skill content-complaints-triage instead.
 complaints-dry-en:
 	@echo "⚠️  DEPRECATED: use Cursor skill .cursor/skills/content-complaints-triage or make complaints-fetch-en"
@@ -881,6 +886,7 @@ help:
 	@echo "  make grammar-bundle-list - List course dirs -> bundle ids"
 	@echo "  make up-en          - Run bot+web with .env.en (+ optional .env), http :8184, DB english"
 	@echo "  make up-es          - Run second instance with .env.es (+ optional .env), http :8284, DB spanish"
+	@echo "  make complaints-journal-new - Create docs/complaints/journal-YYYY-MM-DD-<slug>.md (git)"
 	@echo "  make complaints-fetch-en - Fetch active content reports snapshot (EN, no LLM)"
 	@echo "  make complaints-fetch-es - Fetch active content reports snapshot (ES, no LLM)"
 	@echo "  make complaints-dry-en   - [DEPRECATED] llama complaints worker for English"
