@@ -8,7 +8,9 @@ import (
 	"sync"
 	"time"
 
+	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/models"
+	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/service"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -43,6 +45,9 @@ type TrainingHandler struct {
 	optionsDelayMS          int
 	wrongAnswerDelaySeconds int
 	db                      *sql.DB
+	linglowEventRepo        *repository.LinglowEventRepository
+	learning                config.LearningConfig
+	linglowEventsEnabled    bool
 }
 
 // SessionState holds the state of an active training session
@@ -90,6 +95,46 @@ func NewTrainingHandler(
 		optionsDelayMS:          optionsDelayMS,
 		wrongAnswerDelaySeconds: wrongAnswerDelaySeconds,
 		db:                      db,
+	}
+}
+
+// SetLinglowEventWriter enables optional non-blocking dual-write into Linglow v2 event tables.
+func (h *TrainingHandler) SetLinglowEventWriter(repo *repository.LinglowEventRepository, learning config.LearningConfig, enabled bool) {
+	h.linglowEventRepo = repo
+	h.learning = learning
+	h.linglowEventsEnabled = enabled
+}
+
+func (h *TrainingHandler) recordLinglowWordReviewEvent(reviewEventID int64, event *models.ReviewEvent) {
+	if h == nil || !h.linglowEventsEnabled || h.linglowEventRepo == nil || event == nil || reviewEventID == 0 {
+		return
+	}
+	answeredAt := time.Now()
+	if event.AnsweredAt != nil {
+		answeredAt = *event.AnsweredAt
+	}
+	input := repository.WordReviewEventInput{
+		UserID:          event.UserID,
+		ReviewEventID:   reviewEventID,
+		UserCardID:      event.UserCardID,
+		ClientAttemptID: event.ClientAttemptID,
+		Direction:       string(event.Direction),
+		IsCorrect:       event.IsCorrect,
+		Quality:         event.Quality,
+		OptionsJSON:     event.OptionsJSON,
+		ChosenOption:    event.ChosenOption,
+		MetricsJSON:     event.MetricsJSON,
+		SRSBeforeJSON:   event.SRSBeforeJSON,
+		SRSAfterJSON:    event.SRSAfterJSON,
+		AnsweredAt:      answeredAt,
+	}
+	if _, err := h.linglowEventRepo.RecordWordReviewEvent(context.Background(), h.learning, input); err != nil {
+		h.logger.Warn("failed to dual-write linglow bot word review event",
+			zap.Int64("user_id", event.UserID),
+			zap.Int64("review_event_id", reviewEventID),
+			zap.Int64("user_card_id", event.UserCardID),
+			zap.Error(err),
+		)
 	}
 }
 
@@ -482,8 +527,10 @@ func (h *TrainingHandler) HandleAnswer(chatID int64, optionIndex int) error {
 			SRSAfterJSON:   string(srsAfterJSON),
 		}
 
-		if _, err := h.sessionRepo.CreateReviewEvent(reviewEvent); err != nil {
+		if reviewEventID, err := h.sessionRepo.CreateReviewEvent(reviewEvent); err != nil {
 			h.logger.Error("failed to create review event", zap.Error(err))
+		} else {
+			h.recordLinglowWordReviewEvent(reviewEventID, reviewEvent)
 		}
 	}
 
