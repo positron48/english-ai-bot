@@ -26,9 +26,16 @@ type GrammarSrsSession struct {
 }
 
 type GrammarSrsAnswerResult struct {
-	Correct       bool        `json:"correct"`
-	CorrectAnswer interface{} `json:"correct_answer"`
-	Explanation   interface{} `json:"explanation"`
+	Correct         bool        `json:"correct"`
+	CorrectAnswer   interface{} `json:"correct_answer"`
+	Explanation     interface{} `json:"explanation"`
+	AttemptID       int64       `json:"-"`
+	ChapterID       string      `json:"-"`
+	TheoryBlockID   string      `json:"-"`
+	ConceptID       string      `json:"-"`
+	QuestionID      string      `json:"-"`
+	UserAnswer      interface{} `json:"-"`
+	ClientAttemptID string      `json:"-"`
 }
 
 func (s *GrammarService) GetGrammarTrainingAvailability(ctx context.Context, userID int64) (*GrammarTrainingAvailability, error) {
@@ -192,15 +199,23 @@ func (s *GrammarService) SubmitGrammarSrsAnswerWithClientAttemptID(ctx context.C
 
 	theoryBlockID, _ := question["theory_block_id"].(string)
 	conceptID, _ := question["concept_id"].(string)
+	var attemptID int64
 	if s.SRSRepo != nil && theoryBlockID != "" {
 		_ = s.updateTheoryMemory(userID, chapterID, theoryBlockID, conceptID, isCorrect)
-		_ = s.SRSRepo.SaveAttemptWithClientID(userID, s.learning.TargetLang, s.learning.GrammarBundleID, chapterID, theoryBlockID, conceptID, questionID, userAnswer, correctAnswer, isCorrect, clientAttemptID)
+		attemptID, _ = s.SRSRepo.SaveAttemptWithClientID(userID, s.learning.TargetLang, s.learning.GrammarBundleID, chapterID, theoryBlockID, conceptID, questionID, userAnswer, correctAnswer, isCorrect, clientAttemptID)
 	}
 
 	return &GrammarSrsAnswerResult{
-		Correct:       isCorrect,
-		CorrectAnswer: correctAnswer,
-		Explanation:   question["explanation"],
+		Correct:         isCorrect,
+		CorrectAnswer:   correctAnswer,
+		Explanation:     question["explanation"],
+		AttemptID:       attemptID,
+		ChapterID:       chapterID,
+		TheoryBlockID:   theoryBlockID,
+		ConceptID:       conceptID,
+		QuestionID:      questionID,
+		UserAnswer:      userAnswer,
+		ClientAttemptID: strings.TrimSpace(clientAttemptID),
 	}, nil
 }
 

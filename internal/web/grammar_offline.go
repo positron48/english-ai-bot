@@ -394,6 +394,7 @@ func (r *Router) handleLearningGrammarOfflineSyncTrainingAttempts(w http.Respons
 			results = append(results, map[string]interface{}{"client_attempt_id": clientID, "synced": false, "error": err.Error()})
 			continue
 		}
+		r.recordLinglowGrammarTrainingAttempt(req, userID, clientID, result)
 		results = append(results, map[string]interface{}{"client_attempt_id": clientID, "synced": true, "result": result})
 	}
 	w.Header().Set("Content-Type", "application/json")

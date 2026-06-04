@@ -969,6 +969,45 @@ func (r *Router) handleLearningGrammarTrainingAnswer(w http.ResponseWriter, req 
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
+	r.recordLinglowGrammarTrainingAttempt(req, userID, "", result)
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(result)
+}
+
+func (r *Router) recordLinglowGrammarTrainingAttempt(req *http.Request, userID int64, clientAttemptID string, result *service.GrammarSrsAnswerResult) {
+	if r == nil || r.config == nil || !r.config.Linglow.EventsWriteEnabled || r.linglowEventRepo == nil || result == nil || result.AttemptID == 0 {
+		return
+	}
+	answerJSON, _ := json.Marshal(result.UserAnswer)
+	correctJSON, _ := json.Marshal(result.CorrectAnswer)
+	input := repository.GrammarTrainingEventInput{
+		UserID:          userID,
+		AttemptID:       result.AttemptID,
+		ChapterID:       result.ChapterID,
+		TheoryBlockID:   result.TheoryBlockID,
+		ConceptID:       result.ConceptID,
+		QuestionID:      result.QuestionID,
+		IsCorrect:       result.Correct,
+		AnswerJSON:      string(answerJSON),
+		CorrectJSON:     string(correctJSON),
+		ClientAttemptID: strings.TrimSpace(firstNonEmpty(clientAttemptID, result.ClientAttemptID)),
+		AnsweredAt:      time.Now(),
+	}
+	if _, err := r.linglowEventRepo.RecordGrammarTrainingAttempt(req.Context(), r.config.Learning, input); err != nil {
+		r.logger.Warn("failed to dual-write linglow grammar training event",
+			zap.Int64("user_id", userID),
+			zap.Int64("attempt_id", result.AttemptID),
+			zap.String("question_id", result.QuestionID),
+			zap.Error(err),
+		)
+	}
+}
+
+func firstNonEmpty(values ...string) string {
+	for _, value := range values {
+		if strings.TrimSpace(value) != "" {
+			return value
+		}
+	}
+	return ""
 }

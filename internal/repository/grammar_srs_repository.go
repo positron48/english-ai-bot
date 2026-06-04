@@ -7,6 +7,8 @@ import (
 	"strings"
 	"time"
 
+	"tgbot-skeleton/internal/database"
+
 	"go.uber.org/zap"
 )
 
@@ -211,7 +213,8 @@ func (r *GrammarSRSRepository) SaveAttempt(
 	correctPayload interface{},
 	isCorrect bool,
 ) error {
-	return r.SaveAttemptWithClientID(userID, language, courseID, chapterID, theoryBlockID, conceptID, questionID, answerPayload, correctPayload, isCorrect, "")
+	_, err := r.SaveAttemptWithClientID(userID, language, courseID, chapterID, theoryBlockID, conceptID, questionID, answerPayload, correctPayload, isCorrect, "")
+	return err
 }
 
 func (r *GrammarSRSRepository) SaveAttemptWithClientID(
@@ -221,7 +224,7 @@ func (r *GrammarSRSRepository) SaveAttemptWithClientID(
 	correctPayload interface{},
 	isCorrect bool,
 	clientAttemptID string,
-) error {
+) (int64, error) {
 	answerJSON, _ := json.Marshal(answerPayload)
 	correctJSON, _ := json.Marshal(correctPayload)
 	q := `INSERT INTO grammar_attempts
@@ -231,10 +234,11 @@ func (r *GrammarSRSRepository) SaveAttemptWithClientID(
 	if strings.TrimSpace(clientAttemptID) != "" {
 		clientID = strings.TrimSpace(clientAttemptID)
 	}
-	if _, err := r.db.Exec(q, userID, language, courseID, chapterID, theoryBlockID, conceptID, questionID, isCorrect, string(answerJSON), string(correctJSON), clientID); err != nil {
-		return fmt.Errorf("insert grammar attempt: %w", err)
+	id, err := database.InsertAndReturnID(r.db, q, userID, language, courseID, chapterID, theoryBlockID, conceptID, questionID, isCorrect, string(answerJSON), string(correctJSON), clientID)
+	if err != nil {
+		return 0, fmt.Errorf("insert grammar attempt: %w", err)
 	}
-	return nil
+	return id, nil
 }
 
 func (r *GrammarSRSRepository) HasClientAttempt(userID int64, clientAttemptID string) (bool, error) {

@@ -35,6 +35,21 @@ type GrammarTestEventInput struct {
 	AnsweredAt      time.Time
 }
 
+// GrammarTrainingEventInput describes a legacy grammar_attempts row that should be mirrored.
+type GrammarTrainingEventInput struct {
+	UserID          int64
+	AttemptID       int64
+	ChapterID       string
+	TheoryBlockID   string
+	ConceptID       string
+	QuestionID      string
+	IsCorrect       bool
+	AnswerJSON      string
+	CorrectJSON     string
+	ClientAttemptID string
+	AnsweredAt      time.Time
+}
+
 // RecordGrammarTestAttempt mirrors a legacy grammar test attempt into exercise_attempts and learning_events.
 func (r *LinglowEventRepository) RecordGrammarTestAttempt(ctx context.Context, lc config.LearningConfig, input GrammarTestEventInput) (int64, error) {
 	if input.UserID == 0 {
@@ -153,4 +168,121 @@ func normalizeJSON(raw string) string {
 		return "{}"
 	}
 	return raw
+}
+
+// RecordGrammarTrainingAttempt mirrors a legacy grammar_attempts SRS row into exercise_attempts and learning_events.
+func (r *LinglowEventRepository) RecordGrammarTrainingAttempt(ctx context.Context, lc config.LearningConfig, input GrammarTrainingEventInput) (int64, error) {
+	if input.UserID == 0 {
+		return 0, fmt.Errorf("user id is empty")
+	}
+	if input.AttemptID == 0 {
+		return 0, fmt.Errorf("attempt id is empty")
+	}
+	courseCode := CourseCodeForLearning(lc)
+	if courseCode == "" {
+		return 0, fmt.Errorf("course code is empty")
+	}
+
+	tx, err := r.db.BeginTx(ctx, nil)
+	if err != nil {
+		return 0, fmt.Errorf("begin linglow grammar training write: %w", err)
+	}
+	defer tx.Rollback()
+
+	var userCourseID int64
+	if err := tx.QueryRowContext(ctx, `
+		SELECT uc.id
+		FROM user_courses uc
+		JOIN courses c ON c.id = uc.course_id
+		WHERE uc.user_id = ? AND c.code = ?
+	`, input.UserID, courseCode).Scan(&userCourseID); err != nil {
+		return 0, fmt.Errorf("get user course: %w", err)
+	}
+
+	sourcePK := fmt.Sprintf("%d", input.AttemptID)
+	var existingID int64
+	err = tx.QueryRowContext(ctx, `
+		SELECT id
+		FROM exercise_attempts
+		WHERE user_course_id = ? AND source_table = 'grammar_attempts' AND source_pk = ?
+	`, userCourseID, sourcePK).Scan(&existingID)
+	if err != nil && err != sql.ErrNoRows {
+		return 0, fmt.Errorf("check existing grammar training exercise attempt: %w", err)
+	}
+	if err == nil {
+		return existingID, tx.Commit()
+	}
+
+	var learningItemID interface{}
+	if strings.TrimSpace(input.ChapterID) != "" {
+		var id int64
+		err := tx.QueryRowContext(ctx, `
+			SELECT li.id
+			FROM learning_items li
+			JOIN courses c ON c.id = li.course_id
+			WHERE c.code = ? AND li.source_kind = 'grammar_chapter' AND li.source_id = ?
+		`, courseCode, strings.TrimSpace(input.ChapterID)).Scan(&id)
+		if err != nil && err != sql.ErrNoRows {
+			return 0, fmt.Errorf("lookup grammar chapter learning item: %w", err)
+		}
+		if err == nil {
+			learningItemID = id
+		}
+	}
+
+	promptJSON, _ := json.Marshal(map[string]interface{}{
+		"chapter_id":      input.ChapterID,
+		"theory_block_id": input.TheoryBlockID,
+		"concept_id":      input.ConceptID,
+		"question_id":     input.QuestionID,
+	})
+	resultJSON, _ := json.Marshal(map[string]interface{}{
+		"is_correct":      input.IsCorrect,
+		"correct_payload": json.RawMessage(normalizeJSON(input.CorrectJSON)),
+	})
+	eventJSON, _ := json.Marshal(map[string]interface{}{
+		"chapter_id":      input.ChapterID,
+		"theory_block_id": input.TheoryBlockID,
+		"concept_id":      input.ConceptID,
+		"question_id":     input.QuestionID,
+		"is_correct":      input.IsCorrect,
+	})
+
+	var clientAttemptID interface{}
+	if strings.TrimSpace(input.ClientAttemptID) != "" {
+		clientAttemptID = strings.TrimSpace(input.ClientAttemptID)
+	}
+	answeredAt := input.AnsweredAt
+	if answeredAt.IsZero() {
+		answeredAt = time.Now()
+	}
+
+	var exerciseID int64
+	err = tx.QueryRowContext(ctx, `
+		INSERT INTO exercise_attempts (
+			user_course_id, learning_item_id, mode, client_attempt_id,
+			started_at, answered_at, is_correct,
+			prompt_json, answer_json, result_json, source_table, source_pk
+		)
+		VALUES (?, ?, 'grammar_training', ?, ?, ?, ?, CAST(? AS jsonb), CAST(? AS jsonb), CAST(? AS jsonb), 'grammar_attempts', ?)
+		RETURNING id
+	`, userCourseID, learningItemID, clientAttemptID, answeredAt, answeredAt, input.IsCorrect, string(promptJSON), normalizeJSON(input.AnswerJSON), string(resultJSON), sourcePK).Scan(&exerciseID)
+	if err != nil {
+		return 0, fmt.Errorf("insert grammar training exercise attempt: %w", err)
+	}
+
+	if _, err := tx.ExecContext(ctx, `
+		INSERT INTO learning_events (
+			user_course_id, learning_item_id, exercise_attempt_id,
+			event_type, event_time, mode, source_table, source_pk, event_json
+		)
+		VALUES (?, ?, ?, 'grammar_training_answered', ?, 'grammar_training', 'grammar_attempts', ?, CAST(? AS jsonb))
+	`, userCourseID, learningItemID, exerciseID, answeredAt, sourcePK, string(eventJSON)); err != nil {
+		return 0, fmt.Errorf("insert grammar training learning event: %w", err)
+	}
+
+	if err := tx.Commit(); err != nil {
+		return 0, fmt.Errorf("commit linglow grammar training write: %w", err)
+	}
+	return exerciseID, nil
 }
