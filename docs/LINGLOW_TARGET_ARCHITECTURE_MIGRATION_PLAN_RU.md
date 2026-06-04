@@ -8,6 +8,7 @@
 
 - Phase 0/DB-first content: grammar content, grammar training, reading catalog и speaking catalog импортируются в БД; prod runtime переключен на `CONTENT_SOURCE=db`.
 - Phase 1/schema foundation: добавлена миграция `000017_linglow_course_architecture.sql` с canonical Linglow v2 таблицами и seed для `en_ru`/`es_ru`, districts, locations и theme lines.
+- Phase 2/user_courses bootstrap: добавлен zero-touch startup backfill, который по `LearningConfig` создаёт отсутствующие `user_courses` для всех существующих пользователей текущей БД (`en_ru` в English, `es_ru` в Spanish) без ручного `kubectl exec`.
 
 ## 1. Текущая точка
 

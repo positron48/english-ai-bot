@@ -126,6 +126,18 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 	if err := wordsetimport.AutoSyncSpanishMustHaveWordSets(context.Background(), cfg, conn, log); err != nil {
 		log.Warn("spanish must-have word sets bootstrap skipped due to error", zap.Error(err))
 	}
+	courseRepo := repository.NewCourseRepository(conn, log)
+	if summary, err := courseRepo.BackfillUserCoursesForLearning(context.Background(), cfg.Learning); err != nil {
+		log.Warn("linglow user_courses bootstrap skipped due to error", zap.Error(err))
+	} else {
+		log.Info("linglow user_courses bootstrap completed",
+			zap.String("course_code", summary.CourseCode),
+			zap.Int64("course_id", summary.CourseID),
+			zap.Int64("users_scanned", summary.UsersScanned),
+			zap.Int64("existing", summary.Existing),
+			zap.Int64("created", summary.Created),
+		)
+	}
 
 	wordRepo := repository.NewWordRepository(conn, log)
 	userRepo := repository.NewUserRepository(conn, log)
