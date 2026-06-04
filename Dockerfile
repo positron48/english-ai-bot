@@ -30,6 +30,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o main ./cmd/bot
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o backfill_mastering ./cmd/backfill_mastering
 
 # Build word-sets import tooling for one-time/k3s maintenance runs
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o import_learning_content ./cmd/import_learning_content
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o import_word_sets_from_csv ./cmd/import_word_sets_from_csv
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o fill_missing_set_pos_cards ./cmd/fill_missing_set_pos_cards
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o revalidate_training_cards ./cmd/revalidate_training_cards
@@ -62,6 +63,7 @@ RUN mkdir -p /app/data/tts && chown -R appuser:appgroup /app/data
 # Copy binaries from builder stage
 COPY --from=builder /app/main .
 COPY --from=builder /app/backfill_mastering .
+COPY --from=builder /app/import_learning_content .
 COPY --from=builder /app/import_word_sets_from_csv .
 COPY --from=builder /app/fill_missing_set_pos_cards .
 COPY --from=builder /app/revalidate_training_cards .

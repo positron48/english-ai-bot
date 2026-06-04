@@ -63,6 +63,20 @@ set -a && . ./.env.es && set +a
 go run ./cmd/import_learning_content --commit
 ```
 
+In k3s, run the binary inside the deployed pod:
+
+English:
+
+```bash
+kubectl exec -it deployment/english -n english -- /app/import_learning_content --commit
+```
+
+Spanish:
+
+```bash
+kubectl exec -it deployment/spanish -n spanish -- /app/import_learning_content --commit
+```
+
 ## Switch runtime
 
 Only after commit import succeeds and API smoke checks match the bundle-backed behavior:
