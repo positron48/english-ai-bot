@@ -1,6 +1,7 @@
 package web
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -741,8 +742,10 @@ func (r *Router) gradeReplacedCardForSpellType(userID int64, userCardID int64, i
 		SRSBeforeJSON:  string(srsBeforeJSON),
 		SRSAfterJSON:   string(srsAfterJSON),
 	}
-	if _, err := r.webTrainingHandler.sessionRepo.CreateReviewEvent(reviewEvent); err != nil {
+	if reviewEventID, err := r.webTrainingHandler.sessionRepo.CreateReviewEvent(reviewEvent); err != nil {
 		r.logger.Error("failed to create review event for spell/type", zap.Error(err))
+	} else {
+		r.recordLinglowWordReviewEvent(context.Background(), reviewEventID, reviewEvent)
 	}
 	if !isCorrect {
 		if err := r.srsService.RecordWrongAnswer(userCard, chosenOption); err != nil {
@@ -1080,8 +1083,10 @@ func (r *Router) handleTrainingAnswer(w http.ResponseWriter, req *http.Request) 
 			SRSBeforeJSON:  string(srsBeforeJSON),
 			SRSAfterJSON:   string(srsAfterJSON),
 		}
-		if _, err := r.webTrainingHandler.sessionRepo.CreateReviewEvent(reviewEvent); err != nil {
+		if reviewEventID, err := r.webTrainingHandler.sessionRepo.CreateReviewEvent(reviewEvent); err != nil {
 			r.logger.Error("failed to create review event", zap.Error(err))
+		} else {
+			r.recordLinglowWordReviewEvent(req.Context(), reviewEventID, reviewEvent)
 		}
 	}
 
@@ -1107,6 +1112,39 @@ func (r *Router) handleTrainingAnswer(w http.ResponseWriter, req *http.Request) 
 
 	// Show feedback and next card
 	r.showTrainingFeedback(w, req, state, isCorrect, chosenOption, correctAnswer, card.TrainingCard)
+}
+
+func (r *Router) recordLinglowWordReviewEvent(ctx context.Context, reviewEventID int64, event *models.ReviewEvent) {
+	if r == nil || r.config == nil || !r.config.Linglow.EventsWriteEnabled || r.linglowEventRepo == nil || event == nil || reviewEventID == 0 {
+		return
+	}
+	answeredAt := time.Now()
+	if event.AnsweredAt != nil {
+		answeredAt = *event.AnsweredAt
+	}
+	input := repository.WordReviewEventInput{
+		UserID:          event.UserID,
+		ReviewEventID:   reviewEventID,
+		UserCardID:      event.UserCardID,
+		ClientAttemptID: event.ClientAttemptID,
+		Direction:       string(event.Direction),
+		IsCorrect:       event.IsCorrect,
+		Quality:         event.Quality,
+		OptionsJSON:     event.OptionsJSON,
+		ChosenOption:    event.ChosenOption,
+		MetricsJSON:     event.MetricsJSON,
+		SRSBeforeJSON:   event.SRSBeforeJSON,
+		SRSAfterJSON:    event.SRSAfterJSON,
+		AnsweredAt:      answeredAt,
+	}
+	if _, err := r.linglowEventRepo.RecordWordReviewEvent(ctx, r.config.Learning, input); err != nil {
+		r.logger.Warn("failed to dual-write linglow word review event",
+			zap.Int64("user_id", event.UserID),
+			zap.Int64("review_event_id", reviewEventID),
+			zap.Int64("user_card_id", event.UserCardID),
+			zap.Error(err),
+		)
+	}
 }
 
 // showTrainingFeedback shows feedback and moves to next card

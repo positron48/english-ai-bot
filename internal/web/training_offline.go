@@ -363,11 +363,13 @@ func (r *Router) handleTrainingOfflineSyncAttempts(w http.ResponseWriter, req *h
 			SRSBeforeJSON:   string(srsBeforeJSON),
 			SRSAfterJSON:    string(srsAfterJSON),
 		}
-		if _, err := sessionRepo.CreateReviewEvent(reviewEvent); err != nil {
+		if reviewEventID, err := sessionRepo.CreateReviewEvent(reviewEvent); err != nil {
 			result["synced"] = false
 			result["error"] = "review_event_create_failed"
 			results = append(results, result)
 			continue
+		} else {
+			r.recordLinglowWordReviewEvent(req.Context(), reviewEventID, reviewEvent)
 		}
 		if !isCorrect {
 			if err := r.srsService.RecordWrongAnswer(userCard, chosenOption); err != nil {
