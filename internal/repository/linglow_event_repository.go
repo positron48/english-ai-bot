@@ -238,7 +238,22 @@ func (r *LinglowEventRepository) RecordGrammarTrainingAttempt(ctx context.Contex
 	}
 
 	var learningItemID interface{}
-	if strings.TrimSpace(input.ChapterID) != "" {
+	if strings.TrimSpace(input.ChapterID) != "" && strings.TrimSpace(input.TheoryBlockID) != "" {
+		var id int64
+		err := tx.QueryRowContext(ctx, `
+			SELECT li.id
+			FROM learning_items li
+			JOIN courses c ON c.id = li.course_id
+			WHERE c.code = ? AND li.source_kind = 'grammar_theory_block' AND li.source_id = ?
+		`, courseCode, strings.TrimSpace(input.ChapterID)+":"+strings.TrimSpace(input.TheoryBlockID)).Scan(&id)
+		if err != nil && err != sql.ErrNoRows {
+			return 0, fmt.Errorf("lookup grammar theory block learning item: %w", err)
+		}
+		if err == nil {
+			learningItemID = id
+		}
+	}
+	if learningItemID == nil && strings.TrimSpace(input.ChapterID) != "" {
 		var id int64
 		err := tx.QueryRowContext(ctx, `
 			SELECT li.id
@@ -253,6 +268,7 @@ func (r *LinglowEventRepository) RecordGrammarTrainingAttempt(ctx context.Contex
 			learningItemID = id
 		}
 	}
+	srsItemID := lookupSRSItemID(ctx, tx, userCourseID, learningItemID)
 
 	promptJSON, _ := json.Marshal(map[string]interface{}{
 		"chapter_id":      input.ChapterID,
@@ -284,13 +300,13 @@ func (r *LinglowEventRepository) RecordGrammarTrainingAttempt(ctx context.Contex
 	var exerciseID int64
 	err = tx.QueryRowContext(ctx, `
 		INSERT INTO exercise_attempts (
-			user_course_id, learning_item_id, mode, client_attempt_id,
+			user_course_id, learning_item_id, srs_item_id, mode, client_attempt_id,
 			started_at, answered_at, is_correct,
 			prompt_json, answer_json, result_json, source_table, source_pk
 		)
-		VALUES (?, ?, 'grammar_training', ?, ?, ?, ?, CAST(? AS jsonb), CAST(? AS jsonb), CAST(? AS jsonb), 'grammar_attempts', ?)
+		VALUES (?, ?, ?, 'grammar_training', ?, ?, ?, ?, CAST(? AS jsonb), CAST(? AS jsonb), CAST(? AS jsonb), 'grammar_attempts', ?)
 		RETURNING id
-	`, userCourseID, learningItemID, clientAttemptID, answeredAt, answeredAt, input.IsCorrect, string(promptJSON), normalizeJSON(input.AnswerJSON), string(resultJSON), sourcePK).Scan(&exerciseID)
+	`, userCourseID, learningItemID, srsItemID, clientAttemptID, answeredAt, answeredAt, input.IsCorrect, string(promptJSON), normalizeJSON(input.AnswerJSON), string(resultJSON), sourcePK).Scan(&exerciseID)
 	if err != nil {
 		return 0, fmt.Errorf("insert grammar training exercise attempt: %w", err)
 	}
@@ -381,6 +397,7 @@ func (r *LinglowEventRepository) RecordWordReviewEvent(ctx context.Context, lc c
 	if err == nil {
 		learningItemID = itemID
 	}
+	srsItemID := lookupSRSItemID(ctx, tx, userCourseID, learningItemID)
 
 	promptJSON, _ := json.Marshal(map[string]interface{}{
 		"user_card_id": input.UserCardID,
@@ -418,13 +435,13 @@ func (r *LinglowEventRepository) RecordWordReviewEvent(ctx context.Context, lc c
 	var exerciseID int64
 	err = tx.QueryRowContext(ctx, `
 		INSERT INTO exercise_attempts (
-			user_course_id, learning_item_id, mode, client_attempt_id,
+			user_course_id, learning_item_id, srs_item_id, mode, client_attempt_id,
 			started_at, answered_at, is_correct, quality,
 			prompt_json, answer_json, result_json, source_table, source_pk
 		)
-		VALUES (?, ?, 'word_training', ?, ?, ?, ?, ?, CAST(? AS jsonb), CAST(? AS jsonb), CAST(? AS jsonb), 'review_events', ?)
+		VALUES (?, ?, ?, 'word_training', ?, ?, ?, ?, ?, CAST(? AS jsonb), CAST(? AS jsonb), CAST(? AS jsonb), 'review_events', ?)
 		RETURNING id
-	`, userCourseID, learningItemID, clientAttemptID, answeredAt, answeredAt, input.IsCorrect, input.Quality, string(promptJSON), string(answerJSON), string(resultJSON), sourcePK).Scan(&exerciseID)
+	`, userCourseID, learningItemID, srsItemID, clientAttemptID, answeredAt, answeredAt, input.IsCorrect, input.Quality, string(promptJSON), string(answerJSON), string(resultJSON), sourcePK).Scan(&exerciseID)
 	if err != nil {
 		return 0, fmt.Errorf("insert word review exercise attempt: %w", err)
 	}
@@ -443,4 +460,20 @@ func (r *LinglowEventRepository) RecordWordReviewEvent(ctx context.Context, lc c
 		return 0, fmt.Errorf("commit linglow word review write: %w", err)
 	}
 	return exerciseID, nil
+}
+
+func lookupSRSItemID(ctx context.Context, tx *sql.Tx, userCourseID int64, learningItemID interface{}) interface{} {
+	id, ok := learningItemID.(int64)
+	if !ok || id == 0 {
+		return nil
+	}
+	var srsItemID int64
+	if err := tx.QueryRowContext(ctx, `
+		SELECT id
+		FROM srs_items
+		WHERE user_course_id = ? AND learning_item_id = ?
+	`, userCourseID, id).Scan(&srsItemID); err != nil {
+		return nil
+	}
+	return srsItemID
 }

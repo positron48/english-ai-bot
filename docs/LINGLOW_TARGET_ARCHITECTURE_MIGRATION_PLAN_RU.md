@@ -14,6 +14,7 @@
 - Phase 5/attempts-events backfill foundation: добавлен `cmd/backfill_linglow_events` с dry-run по умолчанию и `--commit`; команда сверяет и дозаливает исторические `grammar_test_attempts`, `grammar_attempts`, `review_events` в `exercise_attempts` + `learning_events` через тот же idempotent writer, что и runtime dual-write.
 - Phase 5/word SRS snapshot foundation: добавлен `cmd/backfill_linglow_word_srs` с dry-run по умолчанию и `--commit`; команда переносит текущий legacy state из `user_cards` в canonical `srs_items` для mapped `word_card` learning items.
 - Phase 5/grammar SRS snapshot foundation: добавлен canonical `grammar_theory_block` learning item, startup mapping theory blocks из DB-first training content и `cmd/backfill_linglow_grammar_srs`, который переносит `grammar_theory_memory` в `srs_items` без схлопывания нескольких blocks в chapter.
+- Phase 5/attempt-SRS linking: runtime dual-write для word/grammar SRS attempts теперь проставляет `exercise_attempts.srs_item_id`; добавлен `cmd/backfill_linglow_attempt_srs_links`, который дозаполняет `srs_item_id` для исторических attempts и переводит grammar training attempts на `grammar_theory_block` item.
 - Phase 6/course-aware read API foundation: добавлен protected endpoint `GET /api/learning/course`, который отдаёт карту course -> districts -> locations -> modules -> learning_items из Linglow v2 таблиц; во фронте добавлен `/city` read-only экран поверх этого API.
 
 ## 1. Текущая точка
@@ -332,6 +333,7 @@ Rollback:
    - `cmd/backfill_linglow_events` - готово для attempts/events из `grammar_test_attempts`, `grammar_attempts`, `review_events`;
    - `cmd/backfill_linglow_word_srs` - готово для `srs_items`/word state snapshots из `user_cards`;
    - `cmd/backfill_linglow_grammar_srs` - готово для `srs_items`/grammar theory-block snapshots из `grammar_theory_memory`;
+   - `cmd/backfill_linglow_attempt_srs_links` - готово для связи historical `exercise_attempts` с `srs_items`;
    - `cmd/backfill_linglow_reading_progress`;
    - `cmd/backfill_linglow_speaking_progress`.
 

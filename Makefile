@@ -327,6 +327,23 @@ backfill-linglow-grammar-srs: build-backfill-linglow-grammar-srs
 	@echo ""
 	./bin/backfill_linglow_grammar_srs --commit
 
+build-backfill-linglow-attempt-srs-links:
+	@mkdir -p bin
+	$(GO) build -o bin/backfill_linglow_attempt_srs_links ./cmd/backfill_linglow_attempt_srs_links
+	@echo "✅ Linglow attempt SRS link backfill tool built: bin/backfill_linglow_attempt_srs_links"
+
+backfill-linglow-attempt-srs-links-audit: build-backfill-linglow-attempt-srs-links
+	@echo "Dry-run audit of exercise_attempts missing srs_item_id links."
+	@echo "DATABASE_URL must be set."
+	@echo ""
+	./bin/backfill_linglow_attempt_srs_links
+
+backfill-linglow-attempt-srs-links: build-backfill-linglow-attempt-srs-links
+	@echo "Backfill exercise_attempts.srs_item_id links."
+	@echo "DATABASE_URL must be set."
+	@echo ""
+	./bin/backfill_linglow_attempt_srs_links --commit
+
 build-backfill-noun-gender:
 	@mkdir -p bin
 	$(GO) build -o bin/backfill_noun_gender ./cmd/backfill_noun_gender
