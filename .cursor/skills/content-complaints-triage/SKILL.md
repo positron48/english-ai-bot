@@ -62,7 +62,10 @@ python3 tools-local/complaints-triage/cluster_reports.py logs/complaints/snapsho
 
 `POST /api/internal/content-reports/resolve-bulk` с `report_ids` и `reason`.
 
-Журнал: `logs/complaints/triage-YYYY-MM.jsonl`.
+**Журнал (обязательно после apply):**
+
+1. **Текст** — `logs/complaints/journal-YYYY-MM-DD-<run>.md`: по каждой жалобе блок «дата → суть → что изменено» (см. [reference.md](reference.md) § Журнал).
+2. **JSONL** — `logs/complaints/triage-YYYY-MM.jsonl` (`append_triage_log.py` или итоговая строка resolve).
 
 ### F — Релиз грамматики (если менялись courses)
 

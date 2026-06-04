@@ -1,0 +1,35 @@
+---
+description: Guardrails for word cards, grammar MCQ, and TTS — prevent recurring content_reports patterns
+globs:
+  - courses/**/training_pack/**/*.json
+  - courses/**/chapters/**/03-questions.json
+  - internal/service/training_card_validation*.go
+---
+
+# Content quality guardrails (complaints triage)
+
+При генерации или правке карточек слов и вопросов Grammar Training проверяй чеклист **до** коммита.
+
+## MCQ (grammar_training)
+
+1. **Один однозначный ключ**: для «найди ошибку» ровно один вариант с целевой ошибкой; остальные — грамматически правдоподобны в рамках заданного лица/времени.
+2. **Согласованность prompt ↔ correct_answer**: если вопрос «где пропущено *than*» — правильный ответ без *than*, не наоборот.
+3. **Не смешивать критерии**: не спрашивать «где собака», если проверяется ser/estar; не спрашивать «какое время», если варианты — обрывки без контекста роли (фон vs событие).
+4. **Язык вариантов**: в ES-курсе текст `choices` и примеров в prompt — **только испанский** (без русских вставок внутри фраз). Русский — только в `prompt`/`explanation`.
+5. **Дубликаты-синонимы**: не ставить в один MCQ два правильных ответа (*I'm* vs *I am* для одного плана) — оставить один канонический вариант.
+6. **Региональная фонетика**: вопросы про *z/c* указывать регистр (кастильское / латиноамериканское), если иначе несколько ответов верны.
+7. **Pattern sweep**: после правки блока — `rg` по `theory_block_id` / `concept_id` в `training_pack`.
+
+## Word training (training_cards)
+
+1. **distractors_ru / distractors_en**: JSON-массив **без пустых строк**; минимум 3–4 осмысленных дистрактора той же POS/темы.
+2. **bad_audio / missing TTS**: `POST /api/internal/tts/regenerate`, дождаться `ready` на prod.
+3. Валидация полей — см. `internal/service/training_card_validation.go` (R1–R5).
+
+## Релиз
+
+1. Правки в `courses/*-grammar/training_pack/`, затем `make grammar-bundle` или `./scripts/generate-grammar-training-pack.sh en|es`.
+2. На prod с `CONTENT_SOURCE=db`: после rollout — `import_learning_content --commit` в pod.
+3. Закрытие жалоб: `POST /api/internal/content-reports/resolve-bulk` + запись в `logs/complaints/triage-*.jsonl`.
+
+См. skill `.cursor/skills/content-complaints-triage/`.

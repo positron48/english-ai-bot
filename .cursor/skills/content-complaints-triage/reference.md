@@ -77,13 +77,31 @@ Legacy (совместимость): `/api/internal/content-reports/grammar`, `.
 - Озвучка: `POST /api/internal/tts/regenerate`, затем status pending/ready.
 - Массовые однотипные ошибки: grep training_cards / word_cards по word_category, pos.
 
-## JSONL journal (apply mode)
+## Журнал триажа
+
+### Текстовый (для людей, по блокам)
+
+После apply-прогона вести файл:
+
+`logs/complaints/journal-YYYY-MM-DD-<кратко>.md`
+
+В каждом блоке:
+
+- **дата** жалобы (`created_at` из snapshot);
+- **на что жалоба** — тип (word/grammar), id, комментарий, question_id / word;
+- **что изменено** — файлы courses/training_pack, prod API (PUT card, TTS), или «без правки».
+
+Пример: `logs/complaints/journal-2026-06-04-triage.md`.
+
+### JSONL (машинный, apply mode)
 
 `logs/complaints/triage-YYYY-MM.jsonl`:
 
 ```json
 {"run_id":"...","course":"en","cluster_key":"...","category":"bad_audio","action":"tts_regenerate","report_ids":[1,2],"files_changed":[],"resolve_status":"ok"}
 ```
+
+Дописать строку: `python3 tools-local/complaints-triage/append_triage_log.py --help`.
 
 ## Makefile helpers
 
