@@ -344,6 +344,23 @@ backfill-linglow-attempt-srs-links: build-backfill-linglow-attempt-srs-links
 	@echo ""
 	./bin/backfill_linglow_attempt_srs_links --commit
 
+build-backfill-linglow-media-progress:
+	@mkdir -p bin
+	$(GO) build -o bin/backfill_linglow_media_progress ./cmd/backfill_linglow_media_progress
+	@echo "✅ Linglow media progress backfill tool built: bin/backfill_linglow_media_progress"
+
+backfill-linglow-media-progress-audit: build-backfill-linglow-media-progress
+	@echo "Dry-run audit of legacy reading/speaking progress missing in Linglow attempts/events."
+	@echo "DATABASE_URL must be set."
+	@echo ""
+	./bin/backfill_linglow_media_progress
+
+backfill-linglow-media-progress: build-backfill-linglow-media-progress
+	@echo "Backfill legacy reading/speaking progress into Linglow attempts/events."
+	@echo "DATABASE_URL must be set."
+	@echo ""
+	./bin/backfill_linglow_media_progress --commit
+
 build-backfill-noun-gender:
 	@mkdir -p bin
 	$(GO) build -o bin/backfill_noun_gender ./cmd/backfill_noun_gender
