@@ -28,6 +28,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o main ./cmd/bot
 
 # Build backfill tool for one-time mastering score backfill
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o backfill_mastering ./cmd/backfill_mastering
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o backfill_linglow_events ./cmd/backfill_linglow_events
 
 # Build word-sets import tooling for one-time/k3s maintenance runs
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o import_learning_content ./cmd/import_learning_content
@@ -63,6 +64,7 @@ RUN mkdir -p /app/data/tts && chown -R appuser:appgroup /app/data
 # Copy binaries from builder stage
 COPY --from=builder /app/main .
 COPY --from=builder /app/backfill_mastering .
+COPY --from=builder /app/backfill_linglow_events .
 COPY --from=builder /app/import_learning_content .
 COPY --from=builder /app/import_word_sets_from_csv .
 COPY --from=builder /app/fill_missing_set_pos_cards .

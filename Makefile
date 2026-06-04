@@ -276,6 +276,23 @@ backfill-mastering: build-backfill-mastering
 	@echo ""
 	./bin/backfill_mastering
 
+build-backfill-linglow-events:
+	@mkdir -p bin
+	$(GO) build -o bin/backfill_linglow_events ./cmd/backfill_linglow_events
+	@echo "✅ Linglow event backfill tool built: bin/backfill_linglow_events"
+
+backfill-linglow-events-audit: build-backfill-linglow-events
+	@echo "Dry-run audit of legacy attempts missing in Linglow exercise_attempts."
+	@echo "DATABASE_URL must be set."
+	@echo ""
+	./bin/backfill_linglow_events
+
+backfill-linglow-events: build-backfill-linglow-events
+	@echo "Backfill legacy attempts into Linglow exercise_attempts/learning_events."
+	@echo "DATABASE_URL must be set."
+	@echo ""
+	./bin/backfill_linglow_events --commit
+
 build-backfill-noun-gender:
 	@mkdir -p bin
 	$(GO) build -o bin/backfill_noun_gender ./cmd/backfill_noun_gender
