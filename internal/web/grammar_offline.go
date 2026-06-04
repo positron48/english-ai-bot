@@ -335,6 +335,7 @@ func (r *Router) handleLearningGrammarOfflineSyncAttempts(w http.ResponseWriter,
 			})
 			continue
 		}
+		r.recordLinglowGrammarTestAttempt(req, userID, attempt.Scope, attempt.ScopeID, clientID, attempt.Answers, result)
 		results = append(results, map[string]interface{}{
 			"client_attempt_id": clientID,
 			"synced":            true,

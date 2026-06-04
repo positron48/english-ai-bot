@@ -107,6 +107,7 @@ type Router struct {
 	authMiddleware                    *AuthMiddleware
 	otpRepo                           *repository.WebOTPRepository
 	courseRepo                        *repository.CourseRepository
+	linglowEventRepo                  *repository.LinglowEventRepository
 	readingCatalogRepo                *repository.ReadingCatalogRepository
 	speakingCatalogRepo               *repository.SpeakingCatalogRepository
 	speakingSessionRepo               *repository.SpeakingSessionRepository
@@ -160,6 +161,7 @@ func NewRouter(
 	}
 	if db != nil {
 		r.courseRepo = repository.NewCourseRepository(db, logger)
+		r.linglowEventRepo = repository.NewLinglowEventRepository(db)
 		r.readingCatalogRepo = repository.NewReadingCatalogRepository(db)
 		r.speakingCatalogRepo = repository.NewSpeakingCatalogRepository(db)
 		r.speakingSessionRepo = repository.NewSpeakingSessionRepository(db)

@@ -30,6 +30,7 @@ type Config struct {
 	Admin    AdminConfig    `mapstructure:"admin"`
 	WebApp   WebAppConfig   `mapstructure:"webapp"`
 	Learning LearningConfig `mapstructure:"learning"`
+	Linglow  LinglowConfig  `mapstructure:"linglow"`
 	Speaking SpeakingConfig `mapstructure:"speaking"`
 }
 
@@ -42,6 +43,11 @@ type LearningConfig struct {
 	GrammarBundleID  string `mapstructure:"grammar_bundle_id"`
 	GrammarBundleDir string `mapstructure:"grammar_bundle_dir"` // optional: filesystem root with sections.json (overrides embedded bundle)
 	ContentSource    string `mapstructure:"content_source"`     // bundle | db
+}
+
+// LinglowConfig holds migration flags for the Linglow v2 architecture.
+type LinglowConfig struct {
+	EventsWriteEnabled bool `mapstructure:"events_write_enabled"`
 }
 
 // DefaultLearningConfig returns the canonical RU→EN English instance defaults (matches viper defaults in Load).
@@ -366,6 +372,7 @@ func Load() (*Config, error) {
 	viper.SetDefault("learning.app_code", "english")
 	viper.SetDefault("learning.grammar_bundle_id", "en")
 	viper.SetDefault("learning.content_source", "bundle")
+	viper.SetDefault("linglow.events_write_enabled", false)
 
 	// Bot message defaults
 	viper.SetDefault("bot.start_message", "🇬🇧 Привет! Я ваш персональный преподаватель английского языка!\n\n📝 Что я умею:\n• Исправлять ошибки в английском тексте\n• Переводить с русского на английский\n• Создавать карточки слов с объяснениями\n\n💡 Как пользоваться:\n• Отправьте английский текст → получите исправления\n• Отправьте русский текст → получите перевод\n• Отправьте одно слово → получите карточку слова\n\nИспользуйте /help для подробной информации.")
@@ -486,6 +493,7 @@ func Load() (*Config, error) {
 	_ = viper.BindEnv("learning.grammar_bundle_id", "GRAMMAR_BUNDLE_ID")
 	_ = viper.BindEnv("learning.grammar_bundle_dir", "GRAMMAR_BUNDLE_DIR")
 	_ = viper.BindEnv("learning.content_source", "CONTENT_SOURCE")
+	_ = viper.BindEnv("linglow.events_write_enabled", "LINGLOW_EVENTS_WRITE_ENABLED")
 
 	// Set config file
 	viper.SetConfigName("config")

@@ -1154,7 +1154,7 @@ func (s *GrammarService) SubmitTestWithClientAttemptID(ctx context.Context, user
 		attempt.ClientAttemptID = &id
 	}
 
-	_, err = s.AttemptRepo.CreateAttempt(attempt)
+	attemptID, err := s.AttemptRepo.CreateAttempt(attempt)
 	if err != nil {
 		s.logger.Error("failed to save attempt", zap.Error(err))
 	}
@@ -1172,21 +1172,23 @@ func (s *GrammarService) SubmitTestWithClientAttemptID(ctx context.Context, user
 	}
 
 	return &TestResult{
-		Score:   score,
-		Passed:  passed,
-		Correct: correct,
-		Total:   total,
-		Results: results,
+		AttemptID: attemptID,
+		Score:     score,
+		Passed:    passed,
+		Correct:   correct,
+		Total:     total,
+		Results:   results,
 	}, nil
 }
 
 // TestResult represents test submission result
 type TestResult struct {
-	Score   int
-	Passed  bool
-	Correct int
-	Total   int
-	Results []interface{}
+	AttemptID int64
+	Score     int
+	Passed    bool
+	Correct   int
+	Total     int
+	Results   []interface{}
 }
 
 // normalizeTrueFalseValue maps Да/Нет, true/false, bool, etc. to "true" or "false"

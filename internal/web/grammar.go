@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"strings"
+	"time"
 
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/service"
@@ -603,6 +604,7 @@ func (r *Router) handleLearningGrammarSubmitTest(w http.ResponseWriter, req *htt
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
+	r.recordLinglowGrammarTestAttempt(req, userID, request.Scope, request.ScopeID, "", request.Answers, result)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
@@ -613,6 +615,36 @@ func (r *Router) handleLearningGrammarSubmitTest(w http.ResponseWriter, req *htt
 		"total":   result.Total,
 		"results": result.Results,
 	})
+}
+
+func (r *Router) recordLinglowGrammarTestAttempt(req *http.Request, userID int64, scope, scopeID, clientAttemptID string, answers []service.AnswerItem, result *service.TestResult) {
+	if r == nil || r.config == nil || !r.config.Linglow.EventsWriteEnabled || r.linglowEventRepo == nil || result == nil || result.AttemptID == 0 {
+		return
+	}
+	answersJSON, _ := json.Marshal(answers)
+	resultsJSON, _ := json.Marshal(result.Results)
+	input := repository.GrammarTestEventInput{
+		UserID:          userID,
+		AttemptID:       result.AttemptID,
+		ScopeType:       scope,
+		ScopeID:         scopeID,
+		Score:           result.Score,
+		Passed:          result.Passed,
+		TotalQuestions:  result.Total,
+		AnswersJSON:     string(answersJSON),
+		ResultsJSON:     string(resultsJSON),
+		ClientAttemptID: clientAttemptID,
+		AnsweredAt:      time.Now(),
+	}
+	if _, err := r.linglowEventRepo.RecordGrammarTestAttempt(req.Context(), r.config.Learning, input); err != nil {
+		r.logger.Warn("failed to dual-write linglow grammar test event",
+			zap.Int64("user_id", userID),
+			zap.Int64("attempt_id", result.AttemptID),
+			zap.String("scope", scope),
+			zap.String("scope_id", scopeID),
+			zap.Error(err),
+		)
+	}
 }
 
 // handleLearningGrammarChapterAccess checks if user can access a chapter
