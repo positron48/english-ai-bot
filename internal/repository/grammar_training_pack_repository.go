@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"io/fs"
@@ -15,21 +16,23 @@ import (
 )
 
 type GrammarTrainingPackRepository struct {
-	fs     fs.FS
-	logger *zap.Logger
+	fs       fs.FS
+	db       *sql.DB
+	bundleID string
+	logger   *zap.Logger
 }
 
 // GrammarTrainingPackIndex is a parsed training pack index.
 // v1: chapters → one file per chapter (string or one-element list).
 // v2: blocks → "chapterID::theoryBlockID" → path under chapters/ (per-theory file).
 type GrammarTrainingPackIndex struct {
-	Version     string            `json:"version"`
-	Language    string            `json:"language"`
-	CourseID    string            `json:"course_id"`
-	GeneratedAt string            `json:"generated_at"`
+	Version     string `json:"version"`
+	Language    string `json:"language"`
+	CourseID    string `json:"course_id"`
+	GeneratedAt string `json:"generated_at"`
 	// Chapters is a legacy view: at most one file per chapter (for backward compatibility).
-	Chapters    map[string]string `json:"chapters"`
-	blockFiles  map[string]string
+	Chapters     map[string]string `json:"chapters"`
+	blockFiles   map[string]string
 	chapterFiles map[string][]string
 }
 
@@ -54,6 +57,15 @@ func NewGrammarTrainingPackRepositoryWithFS(filesystem fs.FS, logger *zap.Logger
 	return &GrammarTrainingPackRepository{
 		fs:     filesystem,
 		logger: logger,
+	}
+}
+
+// NewGrammarTrainingPackRepositoryFromDB creates a repository backed by PostgreSQL-imported training content.
+func NewGrammarTrainingPackRepositoryFromDB(db *sql.DB, bundleID string, logger *zap.Logger) *GrammarTrainingPackRepository {
+	return &GrammarTrainingPackRepository{
+		db:       db,
+		bundleID: strings.TrimSpace(strings.ToLower(bundleID)),
+		logger:   logger,
 	}
 }
 
@@ -130,6 +142,21 @@ func parseTrainingPackIndex(data []byte) (*GrammarTrainingPackIndex, error) {
 }
 
 func (r *GrammarTrainingPackRepository) GetIndex() (*GrammarTrainingPackIndex, error) {
+	if r.db != nil {
+		var raw string
+		err := r.db.QueryRow(`SELECT index_json FROM grammar_training_content_meta WHERE bundle_id = ?`, r.bundleID).Scan(&raw)
+		if err != nil {
+			return nil, fmt.Errorf("db grammar training index %q: %w", r.bundleID, err)
+		}
+		idx, err := parseTrainingPackIndex([]byte(raw))
+		if err != nil {
+			return nil, fmt.Errorf("parse db grammar training index: %w", err)
+		}
+		if idx.Chapters == nil {
+			idx.Chapters = map[string]string{}
+		}
+		return idx, nil
+	}
 	data, err := fs.ReadFile(r.fs, "index.json")
 	if err != nil {
 		return nil, fmt.Errorf("read grammar training index: %w", err)
@@ -219,6 +246,9 @@ func (r *GrammarTrainingPackRepository) HasAnyQuestions() (bool, int, error) {
 }
 
 func (r *GrammarTrainingPackRepository) GetAllQuestions() ([]map[string]interface{}, error) {
+	if r.db != nil {
+		return r.getDBQuestions(`SELECT raw_json FROM grammar_training_content_questions WHERE bundle_id = ? ORDER BY chapter_id, theory_block_id, question_id`, r.bundleID)
+	}
 	idx, err := r.GetIndex()
 	if err != nil {
 		return nil, err
@@ -241,6 +271,9 @@ func (r *GrammarTrainingPackRepository) GetAllQuestions() ([]map[string]interfac
 
 // GetChapterQuestions returns all training questions for one grammar chapter.
 func (r *GrammarTrainingPackRepository) GetChapterQuestions(chapterID string) ([]map[string]interface{}, error) {
+	if r.db != nil {
+		return r.getDBQuestions(`SELECT raw_json FROM grammar_training_content_questions WHERE bundle_id = ? AND chapter_id = ? ORDER BY theory_block_id, question_id`, r.bundleID, chapterID)
+	}
 	idx, err := r.GetIndex()
 	if err != nil {
 		return nil, err
@@ -284,6 +317,33 @@ func (r *GrammarTrainingPackRepository) GetChapterQuestions(chapterID string) ([
 		out = append(out, qs...)
 	}
 	assignStableQuestionIDs(out)
+	return out, nil
+}
+
+func (r *GrammarTrainingPackRepository) getDBQuestions(query string, args ...interface{}) ([]map[string]interface{}, error) {
+	rows, err := r.db.Query(query, args...)
+	if err != nil {
+		return nil, fmt.Errorf("db grammar training questions: %w", err)
+	}
+	defer rows.Close()
+	var out []map[string]interface{}
+	for rows.Next() {
+		var raw string
+		if err := rows.Scan(&raw); err != nil {
+			return nil, err
+		}
+		var q map[string]interface{}
+		if err := json.Unmarshal([]byte(raw), &q); err != nil {
+			return nil, fmt.Errorf("parse db grammar training question: %w", err)
+		}
+		out = append(out, q)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	if len(out) == 0 {
+		return nil, fmt.Errorf("no db grammar training questions found")
+	}
 	return out, nil
 }
 

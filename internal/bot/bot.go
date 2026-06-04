@@ -215,15 +215,25 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 	otpRepo := repository.NewWebOTPRepository(conn, log)
 
 	// Create grammar repositories and service
-	grammarContentRepo, err := repository.NewGrammarContentRepositoryForLearning(cfg.Learning, log)
-	if err != nil {
-		return nil, fmt.Errorf("grammar content repository: %w", err)
+	var grammarContentRepo *repository.GrammarContentRepository
+	if cfg.Learning.ContentSource == "db" {
+		grammarContentRepo = repository.NewGrammarContentRepositoryFromDB(conn, cfg.Learning.GrammarBundleID, log)
+	} else {
+		grammarContentRepo, err = repository.NewGrammarContentRepositoryForLearning(cfg.Learning, log)
+		if err != nil {
+			return nil, fmt.Errorf("grammar content repository: %w", err)
+		}
 	}
 	grammarPublishRepo := repository.NewGrammarPublishRepository(conn, log)
 	grammarAttemptRepo := repository.NewGrammarAttemptRepository(conn, log)
-	grammarTrainingPackRepo, err := repository.NewGrammarTrainingPackRepositoryForLearning(cfg.Learning, log)
-	if err != nil {
-		return nil, fmt.Errorf("grammar training pack repository: %w", err)
+	var grammarTrainingPackRepo *repository.GrammarTrainingPackRepository
+	if cfg.Learning.ContentSource == "db" {
+		grammarTrainingPackRepo = repository.NewGrammarTrainingPackRepositoryFromDB(conn, cfg.Learning.GrammarBundleID, log)
+	} else {
+		grammarTrainingPackRepo, err = repository.NewGrammarTrainingPackRepositoryForLearning(cfg.Learning, log)
+		if err != nil {
+			return nil, fmt.Errorf("grammar training pack repository: %w", err)
+		}
 	}
 	grammarSRSRepo := repository.NewGrammarSRSRepository(conn, log)
 	grammarService := service.NewGrammarService(
@@ -293,13 +303,16 @@ func (b *Bot) Start(ctx context.Context) error {
 		b.logger.Info("notification service started")
 	}
 
-	// Reading catalog: sync bundle → DB, then vocabulary bootstrap (uses catalog).
+	// Reading/speaking catalog: in bundle mode sync bundle → DB on startup; in DB-first mode
+	// content must already be imported by cmd/import_learning_content.
 	if b.webRouter != nil {
-		if err := b.webRouter.SyncReadingCatalogFromBundle(ctx); err != nil {
-			b.logger.Warn("reading catalog sync failed", zap.Error(err))
-		}
-		if err := b.webRouter.SyncSpeakingCatalogFromBundle(ctx); err != nil {
-			b.logger.Warn("speaking catalog sync failed", zap.Error(err))
+		if b.config.Learning.ContentSource != "db" {
+			if err := b.webRouter.SyncReadingCatalogFromBundle(ctx); err != nil {
+				b.logger.Warn("reading catalog sync failed", zap.Error(err))
+			}
+			if err := b.webRouter.SyncSpeakingCatalogFromBundle(ctx); err != nil {
+				b.logger.Warn("speaking catalog sync failed", zap.Error(err))
+			}
 		}
 		go b.webRouter.BootstrapReadingWordCards(ctx)
 	}

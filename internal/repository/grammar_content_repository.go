@@ -2,6 +2,7 @@ package repository
 
 import (
 	"crypto/sha256"
+	"database/sql"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
@@ -18,12 +19,22 @@ import (
 
 // GrammarContentRepository handles reading grammar course content from embedded filesystem
 type GrammarContentRepository struct {
-	fs     fs.FS
-	logger *zap.Logger
+	fs       fs.FS
+	db       *sql.DB
+	bundleID string
+	logger   *zap.Logger
 }
 
 // BundleVersionHash returns a stable content hash for the bundle index and section list.
 func (r *GrammarContentRepository) BundleVersionHash() (string, error) {
+	if r.db != nil {
+		var hash string
+		err := r.db.QueryRow(`SELECT source_hash FROM grammar_content_bundle_meta WHERE bundle_id = ?`, r.bundleID).Scan(&hash)
+		if err != nil {
+			return "", fmt.Errorf("db grammar bundle hash %q: %w", r.bundleID, err)
+		}
+		return hash, nil
+	}
 	sections, err := fs.ReadFile(r.fs, "sections.json")
 	if err != nil {
 		return "", fmt.Errorf("failed to read sections.json: %w", err)
@@ -68,8 +79,18 @@ func grammarFSForLearning(lc config.LearningConfig) (fs.FS, error) {
 // NewGrammarContentRepositoryWithFS creates a grammar content repository with the given fs (for tests or custom bundles).
 func NewGrammarContentRepositoryWithFS(filesystem fs.FS, logger *zap.Logger) *GrammarContentRepository {
 	return &GrammarContentRepository{
-		fs:     filesystem,
-		logger: logger,
+		fs:       filesystem,
+		bundleID: "",
+		logger:   logger,
+	}
+}
+
+// NewGrammarContentRepositoryFromDB creates a repository that reads grammar content from PostgreSQL.
+func NewGrammarContentRepositoryFromDB(db *sql.DB, bundleID string, logger *zap.Logger) *GrammarContentRepository {
+	return &GrammarContentRepository{
+		db:       db,
+		bundleID: strings.TrimSpace(strings.ToLower(bundleID)),
+		logger:   logger,
 	}
 }
 
@@ -120,6 +141,18 @@ type IndexData struct {
 
 // GetSections returns all sections from the bundle
 func (r *GrammarContentRepository) GetSections() (*SectionsData, error) {
+	if r.db != nil {
+		var raw string
+		err := r.db.QueryRow(`SELECT sections_json FROM grammar_content_bundle_meta WHERE bundle_id = ?`, r.bundleID).Scan(&raw)
+		if err != nil {
+			return nil, fmt.Errorf("db grammar sections %q: %w", r.bundleID, err)
+		}
+		var sections SectionsData
+		if err := json.Unmarshal([]byte(raw), &sections); err != nil {
+			return nil, fmt.Errorf("parse db sections json: %w", err)
+		}
+		return &sections, nil
+	}
 	data, err := fs.ReadFile(r.fs, "sections.json")
 	if err != nil {
 		return nil, fmt.Errorf("failed to read sections.json: %w", err)
@@ -135,6 +168,18 @@ func (r *GrammarContentRepository) GetSections() (*SectionsData, error) {
 
 // GetIndex returns the bundle index
 func (r *GrammarContentRepository) GetIndex() (*IndexData, error) {
+	if r.db != nil {
+		var raw string
+		err := r.db.QueryRow(`SELECT index_json FROM grammar_content_bundle_meta WHERE bundle_id = ?`, r.bundleID).Scan(&raw)
+		if err != nil {
+			return nil, fmt.Errorf("db grammar index %q: %w", r.bundleID, err)
+		}
+		var index IndexData
+		if err := json.Unmarshal([]byte(raw), &index); err != nil {
+			return nil, fmt.Errorf("parse db index json: %w", err)
+		}
+		return &index, nil
+	}
 	data, err := fs.ReadFile(r.fs, "index.json")
 	if err != nil {
 		return nil, fmt.Errorf("failed to read index.json: %w", err)
@@ -165,6 +210,14 @@ func (r *GrammarContentRepository) GetChapter(chapterID string) (*Chapter, error
 
 // GetChapterRawJSON returns the original chapter JSON by ID.
 func (r *GrammarContentRepository) GetChapterRawJSON(chapterID string) ([]byte, error) {
+	if r.db != nil {
+		var raw string
+		err := r.db.QueryRow(`SELECT raw_json FROM grammar_content_chapters WHERE bundle_id = ? AND chapter_id = ?`, r.bundleID, chapterID).Scan(&raw)
+		if err != nil {
+			return nil, fmt.Errorf("db chapter not found %s: %w", chapterID, err)
+		}
+		return []byte(raw), nil
+	}
 	// Get index to find the filename
 	index, err := r.GetIndex()
 	if err != nil {

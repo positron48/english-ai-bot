@@ -41,6 +41,7 @@ type LearningConfig struct {
 	AppCode          string `mapstructure:"app_code"`
 	GrammarBundleID  string `mapstructure:"grammar_bundle_id"`
 	GrammarBundleDir string `mapstructure:"grammar_bundle_dir"` // optional: filesystem root with sections.json (overrides embedded bundle)
+	ContentSource    string `mapstructure:"content_source"`     // bundle | db
 }
 
 // DefaultLearningConfig returns the canonical RU→EN English instance defaults (matches viper defaults in Load).
@@ -52,6 +53,7 @@ func DefaultLearningConfig() LearningConfig {
 		AppCode:          "english",
 		GrammarBundleID:  "en",
 		GrammarBundleDir: "",
+		ContentSource:    "bundle",
 	}
 }
 
@@ -363,6 +365,7 @@ func Load() (*Config, error) {
 	viper.SetDefault("learning.target_lang", "en")
 	viper.SetDefault("learning.app_code", "english")
 	viper.SetDefault("learning.grammar_bundle_id", "en")
+	viper.SetDefault("learning.content_source", "bundle")
 
 	// Bot message defaults
 	viper.SetDefault("bot.start_message", "🇬🇧 Привет! Я ваш персональный преподаватель английского языка!\n\n📝 Что я умею:\n• Исправлять ошибки в английском тексте\n• Переводить с русского на английский\n• Создавать карточки слов с объяснениями\n\n💡 Как пользоваться:\n• Отправьте английский текст → получите исправления\n• Отправьте русский текст → получите перевод\n• Отправьте одно слово → получите карточку слова\n\nИспользуйте /help для подробной информации.")
@@ -482,6 +485,7 @@ func Load() (*Config, error) {
 	_ = viper.BindEnv("learning.app_code", "LEARNING_APP_CODE")
 	_ = viper.BindEnv("learning.grammar_bundle_id", "GRAMMAR_BUNDLE_ID")
 	_ = viper.BindEnv("learning.grammar_bundle_dir", "GRAMMAR_BUNDLE_DIR")
+	_ = viper.BindEnv("learning.content_source", "CONTENT_SOURCE")
 
 	// Set config file
 	viper.SetConfigName("config")
@@ -511,6 +515,13 @@ func Load() (*Config, error) {
 	config.Learning.AppCode = strings.TrimSpace(config.Learning.AppCode)
 	config.Learning.GrammarBundleID = strings.TrimSpace(config.Learning.GrammarBundleID)
 	config.Learning.GrammarBundleDir = strings.TrimSpace(config.Learning.GrammarBundleDir)
+	config.Learning.ContentSource = strings.ToLower(strings.TrimSpace(config.Learning.ContentSource))
+	if config.Learning.ContentSource == "" {
+		config.Learning.ContentSource = "bundle"
+	}
+	if config.Learning.ContentSource != "bundle" && config.Learning.ContentSource != "db" {
+		return nil, fmt.Errorf("CONTENT_SOURCE must be bundle or db, got %q", config.Learning.ContentSource)
+	}
 
 	if config.Learning.GrammarBundleDir != "" {
 		if err := validateGrammarBundleDir(config.Learning.GrammarBundleDir); err != nil {
