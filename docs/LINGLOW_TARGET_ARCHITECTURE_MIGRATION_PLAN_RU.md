@@ -24,6 +24,7 @@
 - Phase 6/progress + generic attempt API foundation: добавлены protected `GET /api/linglow/progress` и `POST /api/linglow/exercise-attempts`; write endpoint проверяет принадлежность item/SRS к resolved `user_course_id`, пишет `exercise_attempts` + `learning_events`, idempotency по `(user_course_id, client_attempt_id)`.
 - Phase 7/SRS write foundation: добавлен feature flag `LINGLOW_SRS_WRITE_ENABLED`; при включении `POST /api/linglow/exercise-attempts` создаёт/обновляет canonical `srs_items` по SM-2-compatible алгоритму и связывает `exercise_attempts.srs_item_id`, старые runtime paths не переключены.
 - Phase 7/SRS shadow-read foundation: добавлен feature flag `LINGLOW_SRS_READ_ENABLED` (default off) и protected diagnostics endpoint `GET /api/linglow/srs-shadow`, который сравнивает legacy word due/mastery с canonical `srs_items` для текущего `user_course_id`.
+- Phase 7/SRS gated-read foundation: `GET /api/linglow/review` и `GET /api/linglow/daily-route` теперь реально уважают `LINGLOW_SRS_READ_ENABLED`; default off читает legacy `user_cards`/`grammar_theory_memory`, on читает canonical `srs_items`, в summary отдаётся `read_source`.
 - Phase 8/City Home foundation: `/city` получил course selector, progress summary, daily route и review station blocks поверх `GET /api/courses`, `/api/linglow/progress`, `/api/linglow/daily-route`, `/api/linglow/review`; старая карта districts/locations сохранена.
 - Phase 8/District UX foundation: добавлен `/city/district/:districtCode` поверх `GET /api/linglow/city`; City Home получил кликабельные daily/review items, переходы в district/location и Simple Mode быстрые входы в review, grammar, reading и words.
 
@@ -468,6 +469,7 @@ Rollback:
 5. Ввести flags:
    - `LINGLOW_SRS_READ_ENABLED` - готово, default off;
    - `LINGLOW_SRS_WRITE_ENABLED` - готово для generic Linglow attempt endpoint, default off;
+   - `GET /api/linglow/review` и `GET /api/linglow/daily-route` используют gated read source и отдают `summary.read_source` - готово.
 
 6. Перевести сначала non-critical режим или internal user cohort.
 

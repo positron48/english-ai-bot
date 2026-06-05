@@ -166,7 +166,7 @@ func (r *Router) handleLinglowDailyRoute(w http.ResponseWriter, req *http.Reques
 		return
 	}
 	explicitCourseCode := req.URL.Query().Get("course_code")
-	route, err := r.courseRepo.GetDailyRouteForUser(req.Context(), userID, r.defaultCourseCode(), explicitCourseCode, limit)
+	route, err := r.courseRepo.GetDailyRouteForUserWithSRSRead(req.Context(), userID, r.defaultCourseCode(), explicitCourseCode, limit, r.config != nil && r.config.Linglow.SRSReadEnabled)
 	if err != nil {
 		if errors.Is(err, repository.ErrCourseNotFound) {
 			http.Error(w, "Course not found", http.StatusNotFound)
@@ -198,7 +198,7 @@ func (r *Router) handleLinglowReview(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	explicitCourseCode := req.URL.Query().Get("course_code")
-	queue, err := r.courseRepo.GetReviewQueueForUser(req.Context(), userID, r.defaultCourseCode(), explicitCourseCode, limit)
+	queue, err := r.courseRepo.GetReviewQueueForUserWithSRSRead(req.Context(), userID, r.defaultCourseCode(), explicitCourseCode, limit, r.config != nil && r.config.Linglow.SRSReadEnabled)
 	if err != nil {
 		if errors.Is(err, repository.ErrCourseNotFound) {
 			http.Error(w, "Course not found", http.StatusNotFound)

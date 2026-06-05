@@ -120,6 +120,7 @@ export interface DailyRoute {
     due_review_count: number
     new_item_count: number
     by_type: Record<string, number>
+    read_source?: string
   }
   review: DailyRouteItem[]
   new_items: DailyRouteItem[]
@@ -139,6 +140,7 @@ export interface ReviewQueue {
     relearning_count: number
     upcoming_count: number
     by_type: Record<string, number>
+    read_source?: string
   }
   items: DailyRouteItem[]
   generated_at: string

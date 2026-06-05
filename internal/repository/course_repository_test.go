@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"fmt"
+	"strconv"
 	"testing"
 	"time"
 
@@ -434,11 +435,119 @@ func TestCourseRepository_ReviewQueueForUser(t *testing.T) {
 	if queue.Summary.DueCount != 1 || queue.Summary.ReviewCount != 1 || queue.Summary.UpcomingCount != 1 {
 		t.Fatalf("queue summary = %+v", queue.Summary)
 	}
+	if queue.Summary.ReadSource != "canonical" {
+		t.Fatalf("queue read source = %q", queue.Summary.ReadSource)
+	}
 	if queue.Summary.ByType["grammar_theory_block"] != 1 {
 		t.Fatalf("queue by type = %+v", queue.Summary.ByType)
 	}
 	if len(queue.Items) != 1 || queue.Items[0].LearningItemID != dueItemID || queue.Items[0].SRSItemID == nil {
 		t.Fatalf("queue items = %+v", queue.Items)
+	}
+}
+
+func TestCourseRepository_ReviewQueueForUserLegacySRSRead(t *testing.T) {
+	conn := testutil.SetupTestDB(t)
+	logger := zap.NewNop()
+	userRepo := NewUserRepository(conn, logger)
+	user, err := userRepo.GetOrCreateUser(43461)
+	if err != nil {
+		t.Fatalf("create user: %v", err)
+	}
+	repo := NewCourseRepository(conn, logger)
+	current, err := repo.SelectCurrentCourse(context.Background(), user.ID, "es_ru")
+	if err != nil {
+		t.Fatalf("SelectCurrentCourse: %v", err)
+	}
+
+	var wordCardID, trainingCardID, wordItemID, grammarItemID int64
+	if err := conn.QueryRow(`INSERT INTO word_cards (word, definition) VALUES ('legacy-due', 'legacy due') RETURNING id`).Scan(&wordCardID); err != nil {
+		t.Fatalf("insert word card: %v", err)
+	}
+	if err := conn.QueryRow(`
+		INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en)
+		VALUES (?, 'legacy-due', 0, 'legacy due', 'legacy due')
+		RETURNING id
+	`, wordCardID).Scan(&trainingCardID); err != nil {
+		t.Fatalf("insert training card: %v", err)
+	}
+	if err := conn.QueryRow(`
+		WITH target AS (
+			SELECT c.id AS course_id, d.id AS district_id, l.id AS location_id
+			FROM courses c
+			JOIN districts d ON d.course_id = c.id AND d.level_code = 'A0'
+			JOIN locations l ON l.district_id = d.id AND l.location_type = 'word_market'
+			WHERE c.code = 'es_ru'
+			LIMIT 1
+		), module AS (
+			INSERT INTO modules (course_id, district_id, location_id, code, module_type, title, source_kind, source_id, sort_order, status)
+			SELECT course_id, district_id, location_id, 'word_set:legacy-review-test', 'word_set', 'Legacy Words', 'word_set', 'legacy-review-test', 1, 'published'
+			FROM target
+			RETURNING id, course_id, district_id, location_id
+		)
+		INSERT INTO learning_items (course_id, module_id, district_id, location_id, item_type, source_kind, source_id, title, cefr_level, status)
+		SELECT course_id, id, district_id, location_id, 'word', 'word_card', CAST(? AS text), 'Legacy Due Word', 'A0', 'published'
+		FROM module
+		RETURNING id
+	`, strconv.FormatInt(wordCardID, 10)).Scan(&wordItemID); err != nil {
+		t.Fatalf("insert word item: %v", err)
+	}
+	if err := conn.QueryRow(`
+		WITH target AS (
+			SELECT c.id AS course_id, d.id AS district_id, l.id AS location_id
+			FROM courses c
+			JOIN districts d ON d.course_id = c.id AND d.level_code = 'A0'
+			JOIN locations l ON l.district_id = d.id AND l.location_type = 'grammar'
+			WHERE c.code = 'es_ru'
+			LIMIT 1
+		), module AS (
+			INSERT INTO modules (course_id, district_id, location_id, code, module_type, title, source_kind, source_id, sort_order, status)
+			SELECT course_id, district_id, location_id, 'grammar:legacy-review-test', 'grammar', 'Legacy Grammar', 'grammar_category', 'legacy-review-test', 1, 'published'
+			FROM target
+			RETURNING id, course_id, district_id, location_id
+		)
+		INSERT INTO learning_items (course_id, module_id, district_id, location_id, item_type, source_kind, source_id, title, cefr_level, status)
+		SELECT course_id, id, district_id, location_id, 'grammar_theory_block', 'grammar_theory_block', 'legacy.chapter:block1', 'Legacy Grammar Block', 'A0', 'published'
+		FROM module
+		RETURNING id
+	`).Scan(&grammarItemID); err != nil {
+		t.Fatalf("insert grammar item: %v", err)
+	}
+	if _, err := conn.Exec(`
+		INSERT INTO user_cards (user_id, training_card_id, direction, state, next_due_at, last_review_at, reps)
+		VALUES (?, ?, 'es_ru', 'review', CURRENT_TIMESTAMP - INTERVAL '1 hour', CURRENT_TIMESTAMP - INTERVAL '1 day', 2)
+	`, user.ID, trainingCardID); err != nil {
+		t.Fatalf("insert user card: %v", err)
+	}
+	if _, err := conn.Exec(`
+		INSERT INTO grammar_theory_memory (user_id, language, course_id, chapter_id, theory_block_id, concept_id, state, next_review_at)
+		VALUES (?, 'es', 'es', 'legacy.chapter', 'block1', 'legacy.concept', 'learning', CURRENT_TIMESTAMP - INTERVAL '2 hours')
+	`, user.ID); err != nil {
+		t.Fatalf("insert grammar memory: %v", err)
+	}
+
+	queue, err := repo.GetReviewQueueForUserWithSRSRead(context.Background(), user.ID, "es_ru", "", 10, false)
+	if err != nil {
+		t.Fatalf("GetReviewQueueForUserWithSRSRead legacy: %v", err)
+	}
+	if queue.UserCourse.ID != current.UserCourse.ID || queue.Summary.ReadSource != "legacy" {
+		t.Fatalf("legacy queue course=%+v summary=%+v", queue.UserCourse, queue.Summary)
+	}
+	if queue.Summary.DueCount != 2 || queue.Summary.ReviewCount != 1 || queue.Summary.LearningCount != 1 {
+		t.Fatalf("legacy queue summary = %+v", queue.Summary)
+	}
+	if queue.Summary.ByType["word"] != 1 || queue.Summary.ByType["grammar_theory_block"] != 1 {
+		t.Fatalf("legacy queue by type = %+v", queue.Summary.ByType)
+	}
+	got := map[int64]bool{}
+	for _, item := range queue.Items {
+		got[item.LearningItemID] = true
+		if item.SRSItemID != nil {
+			t.Fatalf("legacy item should not expose canonical srs id: %+v", item)
+		}
+	}
+	if !got[wordItemID] || !got[grammarItemID] {
+		t.Fatalf("legacy queue items = %+v", queue.Items)
 	}
 }
 

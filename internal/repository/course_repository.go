@@ -148,6 +148,7 @@ type DailyRouteSummary struct {
 	DueReviewCount int            `json:"due_review_count"`
 	NewItemCount   int            `json:"new_item_count"`
 	ByType         map[string]int `json:"by_type"`
+	ReadSource     string         `json:"read_source"`
 }
 
 type DailyRouteItem struct {
@@ -185,6 +186,7 @@ type ReviewQueueSummary struct {
 	RelearningCount int            `json:"relearning_count"`
 	UpcomingCount   int            `json:"upcoming_count"`
 	ByType          map[string]int `json:"by_type"`
+	ReadSource      string         `json:"read_source"`
 }
 
 type CourseProgress struct {
@@ -570,6 +572,10 @@ func (r *CourseRepository) GetCourseMapForUser(ctx context.Context, userID int64
 }
 
 func (r *CourseRepository) GetDailyRouteForUser(ctx context.Context, userID int64, defaultCourseCode, explicitCourseCode string, limit int) (*DailyRoute, error) {
+	return r.GetDailyRouteForUserWithSRSRead(ctx, userID, defaultCourseCode, explicitCourseCode, limit, true)
+}
+
+func (r *CourseRepository) GetDailyRouteForUserWithSRSRead(ctx context.Context, userID int64, defaultCourseCode, explicitCourseCode string, limit int, canonicalSRSRead bool) (*DailyRoute, error) {
 	if userID == 0 {
 		return nil, fmt.Errorf("user id is empty")
 	}
@@ -602,12 +608,12 @@ func (r *CourseRepository) GetDailyRouteForUser(ctx context.Context, userID int6
 		route.UserCourse = *courseMap.UserCourse
 	}
 
-	summary, err := r.getDailyRouteSummary(ctx, userCourse.ID)
+	summary, err := r.getDailyRouteSummary(ctx, userCourse.ID, userID, courseMap.Course.Code, canonicalSRSRead)
 	if err != nil {
 		return nil, err
 	}
 	route.Summary = summary
-	route.Review, err = r.listDailyRouteReviewItems(ctx, userCourse.ID, limit)
+	route.Review, err = r.listDailyRouteReviewItems(ctx, userCourse.ID, userID, courseMap.Course.Code, limit, canonicalSRSRead)
 	if err != nil {
 		return nil, err
 	}
@@ -619,6 +625,10 @@ func (r *CourseRepository) GetDailyRouteForUser(ctx context.Context, userID int6
 }
 
 func (r *CourseRepository) GetReviewQueueForUser(ctx context.Context, userID int64, defaultCourseCode, explicitCourseCode string, limit int) (*ReviewQueue, error) {
+	return r.GetReviewQueueForUserWithSRSRead(ctx, userID, defaultCourseCode, explicitCourseCode, limit, true)
+}
+
+func (r *CourseRepository) GetReviewQueueForUserWithSRSRead(ctx context.Context, userID int64, defaultCourseCode, explicitCourseCode string, limit int, canonicalSRSRead bool) (*ReviewQueue, error) {
 	if userID == 0 {
 		return nil, fmt.Errorf("user id is empty")
 	}
@@ -649,11 +659,11 @@ func (r *CourseRepository) GetReviewQueueForUser(ctx context.Context, userID int
 	if courseMap.UserCourse != nil {
 		queue.UserCourse = *courseMap.UserCourse
 	}
-	queue.Summary, err = r.getReviewQueueSummary(ctx, userCourse.ID)
+	queue.Summary, err = r.getReviewQueueSummary(ctx, userCourse.ID, userID, courseMap.Course.Code, canonicalSRSRead)
 	if err != nil {
 		return nil, err
 	}
-	queue.Items, err = r.listDailyRouteReviewItems(ctx, userCourse.ID, limit)
+	queue.Items, err = r.listDailyRouteReviewItems(ctx, userCourse.ID, userID, courseMap.Course.Code, limit, canonicalSRSRead)
 	if err != nil {
 		return nil, err
 	}
@@ -1263,8 +1273,11 @@ func absFloat(value float64) float64 {
 	return value
 }
 
-func (r *CourseRepository) getReviewQueueSummary(ctx context.Context, userCourseID int64) (ReviewQueueSummary, error) {
-	summary := ReviewQueueSummary{ByType: map[string]int{}}
+func (r *CourseRepository) getReviewQueueSummary(ctx context.Context, userCourseID, userID int64, courseCode string, canonicalSRSRead bool) (ReviewQueueSummary, error) {
+	summary := ReviewQueueSummary{ByType: map[string]int{}, ReadSource: linglowSRSReadSource(canonicalSRSRead)}
+	if !canonicalSRSRead {
+		return r.getLegacyReviewQueueSummary(ctx, userID, courseCode)
+	}
 	rows, err := r.db.QueryContext(ctx, `
 		SELECT state, COUNT(*)
 		FROM srs_items
@@ -1332,8 +1345,36 @@ func (r *CourseRepository) getReviewQueueSummary(ctx context.Context, userCourse
 	return summary, nil
 }
 
-func (r *CourseRepository) getDailyRouteSummary(ctx context.Context, userCourseID int64) (DailyRouteSummary, error) {
-	summary := DailyRouteSummary{ByType: map[string]int{}}
+func (r *CourseRepository) getDailyRouteSummary(ctx context.Context, userCourseID, userID int64, courseCode string, canonicalSRSRead bool) (DailyRouteSummary, error) {
+	summary := DailyRouteSummary{ByType: map[string]int{}, ReadSource: linglowSRSReadSource(canonicalSRSRead)}
+	if !canonicalSRSRead {
+		legacy, err := r.getLegacyReviewQueueSummary(ctx, userID, courseCode)
+		if err != nil {
+			return summary, err
+		}
+		summary.DueReviewCount = legacy.DueCount
+		summary.ByType = legacy.ByType
+		summary.ReadSource = legacy.ReadSource
+		if err := r.db.QueryRowContext(ctx, `
+			SELECT COUNT(*)
+			FROM learning_items li
+			WHERE li.course_id = (
+				SELECT course_id FROM user_courses WHERE id = ?
+			)
+				AND li.status = 'published'
+				AND NOT EXISTS (
+					SELECT 1 FROM srs_items si
+					WHERE si.user_course_id = ? AND si.learning_item_id = li.id
+				)
+				AND NOT EXISTS (
+					SELECT 1 FROM exercise_attempts ea
+					WHERE ea.user_course_id = ? AND ea.learning_item_id = li.id
+				)
+		`, userCourseID, userCourseID, userCourseID).Scan(&summary.NewItemCount); err != nil {
+			return summary, fmt.Errorf("count new legacy route items: %w", err)
+		}
+		return summary, nil
+	}
 	if err := r.db.QueryRowContext(ctx, `
 		SELECT COUNT(*)
 		FROM srs_items
@@ -1388,7 +1429,10 @@ func (r *CourseRepository) getDailyRouteSummary(ctx context.Context, userCourseI
 	return summary, nil
 }
 
-func (r *CourseRepository) listDailyRouteReviewItems(ctx context.Context, userCourseID int64, limit int) ([]DailyRouteItem, error) {
+func (r *CourseRepository) listDailyRouteReviewItems(ctx context.Context, userCourseID, userID int64, courseCode string, limit int, canonicalSRSRead bool) ([]DailyRouteItem, error) {
+	if !canonicalSRSRead {
+		return r.listLegacyDailyRouteReviewItems(ctx, userID, courseCode, limit)
+	}
 	rows, err := r.db.QueryContext(ctx, `
 		SELECT
 			li.id, si.id, li.item_type, li.source_kind, li.source_id, COALESCE(li.title, ''), COALESCE(li.cefr_level, ''),
@@ -1413,6 +1457,185 @@ func (r *CourseRepository) listDailyRouteReviewItems(ctx context.Context, userCo
 	}
 	defer rows.Close()
 	return scanDailyRouteItems(rows, true)
+}
+
+func (r *CourseRepository) getLegacyReviewQueueSummary(ctx context.Context, userID int64, courseCode string) (ReviewQueueSummary, error) {
+	summary := ReviewQueueSummary{ByType: map[string]int{}, ReadSource: "legacy"}
+	rows, err := r.db.QueryContext(ctx, `
+		WITH course_scope AS (
+			SELECT id, target_lang AS target_language
+			FROM courses
+			WHERE code = ?
+		), legacy_due AS (
+			SELECT li.id AS learning_item_id, li.item_type, COALESCE(NULLIF(uc.state, ''), 'review') AS state
+			FROM user_cards uc
+			JOIN training_cards tc ON tc.id = uc.training_card_id
+			JOIN learning_items li ON li.course_id = (SELECT id FROM course_scope)
+				AND li.source_kind = 'word_card'
+				AND li.source_id = CAST(tc.word_card_id AS TEXT)
+				AND li.status = 'published'
+			WHERE uc.user_id = ?
+				AND (uc.next_due_at IS NULL OR uc.next_due_at <= CURRENT_TIMESTAMP)
+			GROUP BY li.id, li.item_type, COALESCE(NULLIF(uc.state, ''), 'review')
+
+			UNION ALL
+
+			SELECT li.id AS learning_item_id, li.item_type, COALESCE(NULLIF(gtm.state, ''), 'review') AS state
+			FROM grammar_theory_memory gtm
+			JOIN learning_items li ON li.course_id = (SELECT id FROM course_scope)
+				AND li.source_kind = 'grammar_theory_block'
+				AND li.source_id = gtm.chapter_id || ':' || gtm.theory_block_id
+				AND li.status = 'published'
+			WHERE gtm.user_id = ?
+				AND lower(gtm.language) = lower((SELECT target_language FROM course_scope))
+				AND lower(gtm.course_id) = lower((SELECT target_language FROM course_scope))
+				AND gtm.next_review_at <= CURRENT_TIMESTAMP
+		)
+		SELECT state, item_type, COUNT(DISTINCT learning_item_id)
+		FROM legacy_due
+		GROUP BY state, item_type
+	`, courseCode, userID, userID)
+	if err != nil {
+		return summary, fmt.Errorf("count legacy review queue: %w", err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var state string
+		var itemType string
+		var count int
+		if err := rows.Scan(&state, &itemType, &count); err != nil {
+			return summary, fmt.Errorf("scan legacy review count: %w", err)
+		}
+		summary.DueCount += count
+		summary.ByType[itemType] += count
+		switch normalizeLinglowSRSState(state) {
+		case "learning":
+			summary.LearningCount += count
+		case "relearning":
+			summary.RelearningCount += count
+		default:
+			summary.ReviewCount += count
+		}
+	}
+	if err := rows.Err(); err != nil {
+		return summary, fmt.Errorf("iterate legacy review counts: %w", err)
+	}
+	if err := r.db.QueryRowContext(ctx, `
+		WITH course_scope AS (
+			SELECT id, target_lang AS target_language
+			FROM courses
+			WHERE code = ?
+		), legacy_upcoming AS (
+			SELECT li.id AS learning_item_id
+			FROM user_cards uc
+			JOIN training_cards tc ON tc.id = uc.training_card_id
+			JOIN learning_items li ON li.course_id = (SELECT id FROM course_scope)
+				AND li.source_kind = 'word_card'
+				AND li.source_id = CAST(tc.word_card_id AS TEXT)
+				AND li.status = 'published'
+			WHERE uc.user_id = ? AND uc.next_due_at > CURRENT_TIMESTAMP
+			GROUP BY li.id
+
+			UNION
+
+			SELECT li.id AS learning_item_id
+			FROM grammar_theory_memory gtm
+			JOIN learning_items li ON li.course_id = (SELECT id FROM course_scope)
+				AND li.source_kind = 'grammar_theory_block'
+				AND li.source_id = gtm.chapter_id || ':' || gtm.theory_block_id
+				AND li.status = 'published'
+			WHERE gtm.user_id = ?
+				AND lower(gtm.language) = lower((SELECT target_language FROM course_scope))
+				AND lower(gtm.course_id) = lower((SELECT target_language FROM course_scope))
+				AND gtm.next_review_at > CURRENT_TIMESTAMP
+		)
+		SELECT COUNT(*) FROM legacy_upcoming
+	`, courseCode, userID, userID).Scan(&summary.UpcomingCount); err != nil {
+		return summary, fmt.Errorf("count legacy upcoming review items: %w", err)
+	}
+	return summary, nil
+}
+
+func (r *CourseRepository) listLegacyDailyRouteReviewItems(ctx context.Context, userID int64, courseCode string, limit int) ([]DailyRouteItem, error) {
+	rows, err := r.db.QueryContext(ctx, `
+		WITH course_scope AS (
+			SELECT id, target_lang AS target_language
+			FROM courses
+			WHERE code = ?
+		), legacy_due AS (
+			SELECT
+				li.id AS learning_item_id,
+				li.item_type,
+				li.source_kind,
+				li.source_id,
+				COALESCE(li.title, '') AS title,
+				COALESCE(li.cefr_level, '') AS cefr_level,
+				COALESCE(NULLIF(uc.state, ''), 'review') AS state,
+				MIN(uc.next_due_at) AS due_at,
+				COALESCE(d.code, '') AS district_code,
+				COALESCE(d.title, '') AS district_title,
+				COALESCE(l.code, '') AS location_code,
+				COALESCE(l.location_type, '') AS location_type,
+				COALESCE(l.title, '') AS location_title,
+				COALESCE(m.code, '') AS module_code,
+				COALESCE(m.title, '') AS module_title
+			FROM user_cards uc
+			JOIN training_cards tc ON tc.id = uc.training_card_id
+			JOIN learning_items li ON li.course_id = (SELECT id FROM course_scope)
+				AND li.source_kind = 'word_card'
+				AND li.source_id = CAST(tc.word_card_id AS TEXT)
+				AND li.status = 'published'
+			LEFT JOIN districts d ON d.id = li.district_id
+			LEFT JOIN locations l ON l.id = li.location_id
+			LEFT JOIN modules m ON m.id = li.module_id
+			WHERE uc.user_id = ?
+				AND (uc.next_due_at IS NULL OR uc.next_due_at <= CURRENT_TIMESTAMP)
+			GROUP BY li.id, li.item_type, li.source_kind, li.source_id, li.title, li.cefr_level, state,
+				d.code, d.title, l.code, l.location_type, l.title, m.code, m.title
+
+			UNION ALL
+
+			SELECT
+				li.id AS learning_item_id,
+				li.item_type,
+				li.source_kind,
+				li.source_id,
+				COALESCE(li.title, '') AS title,
+				COALESCE(li.cefr_level, '') AS cefr_level,
+				COALESCE(NULLIF(gtm.state, ''), 'review') AS state,
+				gtm.next_review_at AS due_at,
+				COALESCE(d.code, '') AS district_code,
+				COALESCE(d.title, '') AS district_title,
+				COALESCE(l.code, '') AS location_code,
+				COALESCE(l.location_type, '') AS location_type,
+				COALESCE(l.title, '') AS location_title,
+				COALESCE(m.code, '') AS module_code,
+				COALESCE(m.title, '') AS module_title
+			FROM grammar_theory_memory gtm
+			JOIN learning_items li ON li.course_id = (SELECT id FROM course_scope)
+				AND li.source_kind = 'grammar_theory_block'
+				AND li.source_id = gtm.chapter_id || ':' || gtm.theory_block_id
+				AND li.status = 'published'
+			LEFT JOIN districts d ON d.id = li.district_id
+			LEFT JOIN locations l ON l.id = li.location_id
+			LEFT JOIN modules m ON m.id = li.module_id
+			WHERE gtm.user_id = ?
+				AND lower(gtm.language) = lower((SELECT target_language FROM course_scope))
+				AND lower(gtm.course_id) = lower((SELECT target_language FROM course_scope))
+				AND gtm.next_review_at <= CURRENT_TIMESTAMP
+		)
+		SELECT
+			learning_item_id, item_type, source_kind, source_id, title, cefr_level, state, due_at,
+			district_code, district_title, location_code, location_type, location_title, module_code, module_title
+		FROM legacy_due
+		ORDER BY due_at NULLS FIRST, learning_item_id
+		LIMIT ?
+	`, courseCode, userID, userID, limit)
+	if err != nil {
+		return nil, fmt.Errorf("list legacy due route items: %w", err)
+	}
+	defer rows.Close()
+	return scanLegacyDailyRouteItems(rows)
 }
 
 func (r *CourseRepository) listDailyRouteNewItems(ctx context.Context, userCourseID, courseID int64, limit int) ([]DailyRouteItem, error) {
@@ -1507,6 +1730,44 @@ func scanDailyRouteItems(rows *sql.Rows, includeSRS bool) ([]DailyRouteItem, err
 	return out, nil
 }
 
+func scanLegacyDailyRouteItems(rows *sql.Rows) ([]DailyRouteItem, error) {
+	out := []DailyRouteItem{}
+	for rows.Next() {
+		var item DailyRouteItem
+		var dueAt sql.NullTime
+		if err := rows.Scan(
+			&item.LearningItemID,
+			&item.Type,
+			&item.SourceKind,
+			&item.SourceID,
+			&item.Title,
+			&item.CEFRLevel,
+			&item.State,
+			&dueAt,
+			&item.DistrictCode,
+			&item.DistrictTitle,
+			&item.LocationCode,
+			&item.LocationType,
+			&item.LocationTitle,
+			&item.ModuleCode,
+			&item.ModuleTitle,
+		); err != nil {
+			return nil, fmt.Errorf("scan legacy route review item: %w", err)
+		}
+		item.State = normalizeLinglowSRSState(item.State)
+		item.Mode = dailyRouteMode(item.Type)
+		if dueAt.Valid {
+			formatted := dueAt.Time.UTC().Format(time.RFC3339)
+			item.DueAt = &formatted
+		}
+		out = append(out, item)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("iterate legacy route items: %w", err)
+	}
+	return out, nil
+}
+
 func dailyRouteMode(itemType string) string {
 	switch itemType {
 	case "word":
@@ -1520,6 +1781,13 @@ func dailyRouteMode(itemType string) string {
 	default:
 		return itemType
 	}
+}
+
+func linglowSRSReadSource(canonical bool) string {
+	if canonical {
+		return "canonical"
+	}
+	return "legacy"
 }
 
 func normalizeJSONObject(raw string) string {

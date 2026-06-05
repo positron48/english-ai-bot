@@ -242,12 +242,18 @@ func TestHandleLinglowReview_OKAndLimitValidation(t *testing.T) {
 		Items []struct {
 			LearningItemID int64 `json:"learning_item_id"`
 		} `json:"items"`
+		Summary struct {
+			ReadSource string `json:"read_source"`
+		} `json:"summary"`
 	}
 	if err := json.Unmarshal(w.Body.Bytes(), &body); err != nil {
 		t.Fatalf("decode review queue: %v", err)
 	}
 	if body.Course.Code != "es_ru" || body.UserCourse.ID == 0 || body.Items == nil {
 		t.Fatalf("review queue body = %+v", body)
+	}
+	if body.Summary.ReadSource != "legacy" {
+		t.Fatalf("review queue read source = %q", body.Summary.ReadSource)
 	}
 
 	req = httptest.NewRequest(http.MethodGet, "/api/linglow/review?limit=bad", nil)
