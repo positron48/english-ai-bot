@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"time"
 
 	"tgbot-skeleton/internal/config"
 
@@ -132,6 +133,41 @@ type CourseSummary struct {
 type CurrentCourse struct {
 	Course     CourseSummary       `json:"course"`
 	UserCourse CourseMapUserCourse `json:"user_course"`
+}
+
+type DailyRoute struct {
+	Course     CourseMapCourse     `json:"course"`
+	UserCourse CourseMapUserCourse `json:"user_course"`
+	Summary    DailyRouteSummary   `json:"summary"`
+	Review     []DailyRouteItem    `json:"review"`
+	NewItems   []DailyRouteItem    `json:"new_items"`
+	Generated  string              `json:"generated_at"`
+}
+
+type DailyRouteSummary struct {
+	DueReviewCount int            `json:"due_review_count"`
+	NewItemCount   int            `json:"new_item_count"`
+	ByType         map[string]int `json:"by_type"`
+}
+
+type DailyRouteItem struct {
+	LearningItemID int64   `json:"learning_item_id"`
+	SRSItemID      *int64  `json:"srs_item_id,omitempty"`
+	Type           string  `json:"type"`
+	SourceKind     string  `json:"source_kind"`
+	SourceID       string  `json:"source_id"`
+	Title          string  `json:"title,omitempty"`
+	CEFRLevel      string  `json:"cefr_level,omitempty"`
+	Mode           string  `json:"mode"`
+	State          string  `json:"state,omitempty"`
+	DueAt          *string `json:"due_at,omitempty"`
+	DistrictCode   string  `json:"district_code,omitempty"`
+	DistrictTitle  string  `json:"district_title,omitempty"`
+	LocationCode   string  `json:"location_code,omitempty"`
+	LocationType   string  `json:"location_type,omitempty"`
+	LocationTitle  string  `json:"location_title,omitempty"`
+	ModuleCode     string  `json:"module_code,omitempty"`
+	ModuleTitle    string  `json:"module_title,omitempty"`
 }
 
 func NewCourseRepository(db *sql.DB, logger *zap.Logger) *CourseRepository {
@@ -432,6 +468,245 @@ func (r *CourseRepository) GetCourseMapForUser(ctx context.Context, userID int64
 		}
 	}
 	return r.GetCourseMap(ctx, courseCode, userID)
+}
+
+func (r *CourseRepository) GetDailyRouteForUser(ctx context.Context, userID int64, defaultCourseCode, explicitCourseCode string, limit int) (*DailyRoute, error) {
+	if userID == 0 {
+		return nil, fmt.Errorf("user id is empty")
+	}
+	if limit <= 0 {
+		limit = 8
+	}
+	if limit > 50 {
+		limit = 50
+	}
+	courseCode, err := r.ResolveRequestedCourseCode(ctx, userID, defaultCourseCode, explicitCourseCode)
+	if err != nil {
+		return nil, err
+	}
+	userCourse, err := r.EnsureUserCourse(ctx, userID, courseCode)
+	if err != nil {
+		return nil, err
+	}
+	courseMap, err := r.GetCourseMap(ctx, courseCode, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	route := &DailyRoute{
+		Course:     courseMap.Course,
+		UserCourse: *userCourse,
+		Summary:    DailyRouteSummary{ByType: map[string]int{}},
+		Generated:  time.Now().UTC().Format(time.RFC3339),
+	}
+	if courseMap.UserCourse != nil {
+		route.UserCourse = *courseMap.UserCourse
+	}
+
+	summary, err := r.getDailyRouteSummary(ctx, userCourse.ID)
+	if err != nil {
+		return nil, err
+	}
+	route.Summary = summary
+	route.Review, err = r.listDailyRouteReviewItems(ctx, userCourse.ID, limit)
+	if err != nil {
+		return nil, err
+	}
+	route.NewItems, err = r.listDailyRouteNewItems(ctx, userCourse.ID, courseMap.Course.ID, limit)
+	if err != nil {
+		return nil, err
+	}
+	return route, nil
+}
+
+func (r *CourseRepository) getDailyRouteSummary(ctx context.Context, userCourseID int64) (DailyRouteSummary, error) {
+	summary := DailyRouteSummary{ByType: map[string]int{}}
+	if err := r.db.QueryRowContext(ctx, `
+		SELECT COUNT(*)
+		FROM srs_items
+		WHERE user_course_id = ?
+			AND state IN ('learning', 'review', 'relearning')
+			AND (due_at IS NULL OR due_at <= CURRENT_TIMESTAMP)
+	`, userCourseID).Scan(&summary.DueReviewCount); err != nil {
+		return summary, fmt.Errorf("count due route items: %w", err)
+	}
+	if err := r.db.QueryRowContext(ctx, `
+		SELECT COUNT(*)
+		FROM learning_items li
+		WHERE li.course_id = (
+			SELECT course_id FROM user_courses WHERE id = ?
+		)
+			AND li.status = 'published'
+			AND NOT EXISTS (
+				SELECT 1 FROM srs_items si
+				WHERE si.user_course_id = ? AND si.learning_item_id = li.id
+			)
+			AND NOT EXISTS (
+				SELECT 1 FROM exercise_attempts ea
+				WHERE ea.user_course_id = ? AND ea.learning_item_id = li.id
+			)
+	`, userCourseID, userCourseID, userCourseID).Scan(&summary.NewItemCount); err != nil {
+		return summary, fmt.Errorf("count new route items: %w", err)
+	}
+	rows, err := r.db.QueryContext(ctx, `
+		SELECT li.item_type, COUNT(*)
+		FROM srs_items si
+		JOIN learning_items li ON li.id = si.learning_item_id
+		WHERE si.user_course_id = ?
+			AND si.state IN ('learning', 'review', 'relearning')
+			AND (si.due_at IS NULL OR si.due_at <= CURRENT_TIMESTAMP)
+		GROUP BY li.item_type
+	`, userCourseID)
+	if err != nil {
+		return summary, fmt.Errorf("count route items by type: %w", err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var itemType string
+		var count int
+		if err := rows.Scan(&itemType, &count); err != nil {
+			return summary, fmt.Errorf("scan route type count: %w", err)
+		}
+		summary.ByType[itemType] = count
+	}
+	if err := rows.Err(); err != nil {
+		return summary, fmt.Errorf("iterate route type counts: %w", err)
+	}
+	return summary, nil
+}
+
+func (r *CourseRepository) listDailyRouteReviewItems(ctx context.Context, userCourseID int64, limit int) ([]DailyRouteItem, error) {
+	rows, err := r.db.QueryContext(ctx, `
+		SELECT
+			li.id, si.id, li.item_type, li.source_kind, li.source_id, COALESCE(li.title, ''), COALESCE(li.cefr_level, ''),
+			si.state, si.due_at,
+			COALESCE(d.code, ''), COALESCE(d.title, ''),
+			COALESCE(l.code, ''), COALESCE(l.location_type, ''), COALESCE(l.title, ''),
+			COALESCE(m.code, ''), COALESCE(m.title, '')
+		FROM srs_items si
+		JOIN learning_items li ON li.id = si.learning_item_id
+		LEFT JOIN districts d ON d.id = li.district_id
+		LEFT JOIN locations l ON l.id = li.location_id
+		LEFT JOIN modules m ON m.id = li.module_id
+		WHERE si.user_course_id = ?
+			AND li.status = 'published'
+			AND si.state IN ('learning', 'review', 'relearning')
+			AND (si.due_at IS NULL OR si.due_at <= CURRENT_TIMESTAMP)
+		ORDER BY si.due_at NULLS FIRST, si.last_review_at NULLS FIRST, si.id
+		LIMIT ?
+	`, userCourseID, limit)
+	if err != nil {
+		return nil, fmt.Errorf("list due route items: %w", err)
+	}
+	defer rows.Close()
+	return scanDailyRouteItems(rows, true)
+}
+
+func (r *CourseRepository) listDailyRouteNewItems(ctx context.Context, userCourseID, courseID int64, limit int) ([]DailyRouteItem, error) {
+	rows, err := r.db.QueryContext(ctx, `
+		SELECT
+			li.id, li.item_type, li.source_kind, li.source_id, COALESCE(li.title, ''), COALESCE(li.cefr_level, ''),
+			COALESCE(d.code, ''), COALESCE(d.title, ''),
+			COALESCE(l.code, ''), COALESCE(l.location_type, ''), COALESCE(l.title, ''),
+			COALESCE(m.code, ''), COALESCE(m.title, '')
+		FROM learning_items li
+		LEFT JOIN districts d ON d.id = li.district_id
+		LEFT JOIN locations l ON l.id = li.location_id
+		LEFT JOIN modules m ON m.id = li.module_id
+		WHERE li.course_id = ?
+			AND li.status = 'published'
+			AND NOT EXISTS (
+				SELECT 1 FROM srs_items si
+				WHERE si.user_course_id = ? AND si.learning_item_id = li.id
+			)
+			AND NOT EXISTS (
+				SELECT 1 FROM exercise_attempts ea
+				WHERE ea.user_course_id = ? AND ea.learning_item_id = li.id
+			)
+		ORDER BY d.sort_order NULLS LAST, l.sort_order NULLS LAST, m.sort_order NULLS LAST, li.id
+		LIMIT ?
+	`, courseID, userCourseID, userCourseID, limit)
+	if err != nil {
+		return nil, fmt.Errorf("list new route items: %w", err)
+	}
+	defer rows.Close()
+	return scanDailyRouteItems(rows, false)
+}
+
+func scanDailyRouteItems(rows *sql.Rows, includeSRS bool) ([]DailyRouteItem, error) {
+	var out []DailyRouteItem
+	for rows.Next() {
+		var item DailyRouteItem
+		var dueAt sql.NullTime
+		if includeSRS {
+			var srsItemID int64
+			if err := rows.Scan(
+				&item.LearningItemID,
+				&srsItemID,
+				&item.Type,
+				&item.SourceKind,
+				&item.SourceID,
+				&item.Title,
+				&item.CEFRLevel,
+				&item.State,
+				&dueAt,
+				&item.DistrictCode,
+				&item.DistrictTitle,
+				&item.LocationCode,
+				&item.LocationType,
+				&item.LocationTitle,
+				&item.ModuleCode,
+				&item.ModuleTitle,
+			); err != nil {
+				return nil, fmt.Errorf("scan route review item: %w", err)
+			}
+			item.SRSItemID = &srsItemID
+		} else if err := rows.Scan(
+			&item.LearningItemID,
+			&item.Type,
+			&item.SourceKind,
+			&item.SourceID,
+			&item.Title,
+			&item.CEFRLevel,
+			&item.DistrictCode,
+			&item.DistrictTitle,
+			&item.LocationCode,
+			&item.LocationType,
+			&item.LocationTitle,
+			&item.ModuleCode,
+			&item.ModuleTitle,
+		); err != nil {
+			return nil, fmt.Errorf("scan route new item: %w", err)
+		}
+		item.Mode = dailyRouteMode(item.Type)
+		if !includeSRS {
+			item.State = "new"
+		}
+		if dueAt.Valid {
+			formatted := dueAt.Time.UTC().Format(time.RFC3339)
+			item.DueAt = &formatted
+		}
+		out = append(out, item)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("iterate route items: %w", err)
+	}
+	return out, nil
+}
+
+func dailyRouteMode(itemType string) string {
+	switch itemType {
+	case "word":
+		return "word_training"
+	case "grammar_chapter", "grammar_concept", "grammar_theory_block", "grammar_question":
+		return "grammar"
+	case "reading_text", "reading_question":
+		return "reading"
+	case "speaking_task":
+		return "speaking"
+	default:
+		return itemType
+	}
 }
 
 // GetCourseMap returns the Linglow v2 course map with the current user's course enrollment when present.

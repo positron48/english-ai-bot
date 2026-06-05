@@ -19,6 +19,7 @@
 - Phase 6/course-aware read API foundation: добавлен protected endpoint `GET /api/learning/course`, который отдаёт карту course -> districts -> locations -> modules -> learning_items из Linglow v2 таблиц; во фронте добавлен `/city` read-only экран поверх этого API.
 - Phase 6/course selection API foundation: добавлены protected endpoints `GET /api/courses`, `GET /api/user/courses/current`, `POST /api/user/courses/select`; текущий курс хранится в `users.settings_json.current_course_code`, selection идемпотентно создаёт `user_courses`.
 - Phase 6/current-course city API: `GET /api/linglow/city` добавлен как новый endpoint карты города; `/api/learning/course` оставлен совместимым alias. Оба endpoint используют resolution `course_code query -> users.settings_json.current_course_code -> legacy env default`, а explicit read не меняет текущий курс пользователя.
+- Phase 6/daily-route API foundation: добавлен protected `GET /api/linglow/daily-route`, который отдаёт текущий course/user_course, due SRS summary, due review items и next new learning items, scoped строго через `user_course_id`.
 
 ## 1. Текущая точка
 
@@ -397,7 +398,7 @@ Rollback:
    - `POST /api/user/courses/select` - готово;
    - `GET /api/user/courses/current` - готово;
    - `GET /api/linglow/city` - готово;
-   - `GET /api/linglow/daily-route`
+   - `GET /api/linglow/daily-route` - готово как read-only foundation;
    - `POST /api/linglow/exercise-attempts`
    - `GET /api/linglow/review`
    - `GET /api/linglow/progress`

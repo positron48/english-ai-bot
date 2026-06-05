@@ -252,3 +252,84 @@ func TestCourseRepository_CourseMapForUserResolvesCurrentAndExplicit(t *testing.
 		t.Fatalf("explicit read changed current course to %q", resolved)
 	}
 }
+
+func TestCourseRepository_DailyRouteForUser(t *testing.T) {
+	conn := testutil.SetupTestDB(t)
+	logger := zap.NewNop()
+	userRepo := NewUserRepository(conn, logger)
+	user, err := userRepo.GetOrCreateUser(4345)
+	if err != nil {
+		t.Fatalf("create user: %v", err)
+	}
+	repo := NewCourseRepository(conn, logger)
+	current, err := repo.SelectCurrentCourse(context.Background(), user.ID, "es_ru")
+	if err != nil {
+		t.Fatalf("SelectCurrentCourse: %v", err)
+	}
+
+	var dueItemID, newItemID int64
+	if err := conn.QueryRow(`
+		WITH target AS (
+			SELECT c.id AS course_id, d.id AS district_id, l.id AS location_id
+			FROM courses c
+			JOIN districts d ON d.course_id = c.id AND d.level_code = 'A0'
+			JOIN locations l ON l.district_id = d.id AND l.location_type = 'grammar'
+			WHERE c.code = 'es_ru'
+			LIMIT 1
+		), module AS (
+			INSERT INTO modules (course_id, district_id, location_id, code, module_type, title, source_kind, source_id, sort_order, status)
+			SELECT course_id, district_id, location_id, 'grammar:route-test', 'grammar', 'Route Grammar', 'grammar_category', 'route-test', 1, 'published'
+			FROM target
+			RETURNING id, course_id, district_id, location_id
+		)
+		INSERT INTO learning_items (course_id, module_id, district_id, location_id, item_type, source_kind, source_id, title, cefr_level, status)
+		SELECT course_id, id, district_id, location_id, 'grammar_theory_block', 'grammar_theory_block', 'route-due', 'Due Block', 'A0', 'published'
+		FROM module
+		RETURNING id
+	`).Scan(&dueItemID); err != nil {
+		t.Fatalf("insert due item: %v", err)
+	}
+	if err := conn.QueryRow(`
+		WITH module AS (
+			SELECT m.id, m.course_id, m.district_id, m.location_id
+			FROM modules m
+			JOIN courses c ON c.id = m.course_id
+			WHERE c.code = 'es_ru' AND m.code = 'grammar:route-test'
+		)
+		INSERT INTO learning_items (course_id, module_id, district_id, location_id, item_type, source_kind, source_id, title, cefr_level, status)
+		SELECT course_id, id, district_id, location_id, 'reading_text', 'reading_text', 'route-new', 'New Text', 'A0', 'published'
+		FROM module
+		RETURNING id
+	`).Scan(&newItemID); err != nil {
+		t.Fatalf("insert new item: %v", err)
+	}
+	if _, err := conn.Exec(`
+		INSERT INTO srs_items (user_course_id, learning_item_id, state, due_at, last_review_at, reps)
+		VALUES (?, ?, 'review', CURRENT_TIMESTAMP - INTERVAL '1 hour', CURRENT_TIMESTAMP - INTERVAL '1 day', 3)
+	`, current.UserCourse.ID, dueItemID); err != nil {
+		t.Fatalf("insert srs item: %v", err)
+	}
+
+	route, err := repo.GetDailyRouteForUser(context.Background(), user.ID, "es_ru", "", 4)
+	if err != nil {
+		t.Fatalf("GetDailyRouteForUser: %v", err)
+	}
+	if route.Course.Code != "es_ru" || route.UserCourse.ID != current.UserCourse.ID {
+		t.Fatalf("route course = %+v user_course=%+v", route.Course, route.UserCourse)
+	}
+	if route.Summary.DueReviewCount != 1 || route.Summary.NewItemCount < 1 {
+		t.Fatalf("route summary = %+v", route.Summary)
+	}
+	if len(route.Review) != 1 || route.Review[0].LearningItemID != dueItemID || route.Review[0].SRSItemID == nil {
+		t.Fatalf("route review = %+v", route.Review)
+	}
+	var foundNew bool
+	for _, item := range route.NewItems {
+		if item.LearningItemID == newItemID && item.State == "new" {
+			foundNew = true
+		}
+	}
+	if !foundNew {
+		t.Fatalf("new item %d not found in %+v", newItemID, route.NewItems)
+	}
+}

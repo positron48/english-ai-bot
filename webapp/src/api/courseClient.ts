@@ -68,8 +68,47 @@ export interface CourseMap {
   }
 }
 
+export interface DailyRouteItem {
+  learning_item_id: number
+  srs_item_id?: number
+  type: string
+  source_kind: string
+  source_id: string
+  title?: string
+  cefr_level?: string
+  mode: string
+  state?: string
+  due_at?: string
+  district_code?: string
+  district_title?: string
+  location_code?: string
+  location_type?: string
+  location_title?: string
+  module_code?: string
+  module_title?: string
+}
+
+export interface DailyRoute {
+  course: CourseMap['course']
+  user_course: {
+    id: number
+    status: string
+  }
+  summary: {
+    due_review_count: number
+    new_item_count: number
+    by_type: Record<string, number>
+  }
+  review: DailyRouteItem[]
+  new_items: DailyRouteItem[]
+  generated_at: string
+}
+
 export const courseClient = {
   getCourseMap(): Promise<CourseMap> {
     return apiClient.request('/api/linglow/city')
+  },
+  getDailyRoute(limit = 8): Promise<DailyRoute> {
+    return apiClient.request(`/api/linglow/daily-route?limit=${encodeURIComponent(String(limit))}`)
   },
 }

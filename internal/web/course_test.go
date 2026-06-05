@@ -167,6 +167,51 @@ func TestHandleLearningCourse_ExplicitUnknownCourse(t *testing.T) {
 	}
 }
 
+func TestHandleLinglowDailyRoute_OKAndLimitValidation(t *testing.T) {
+	conn := testutil.SetupTestDB(t)
+	logger := zap.NewNop()
+	cfg := &config.Config{Learning: config.LearningConfig{NativeLang: "ru", TargetLang: "es", GrammarBundleID: "es"}}
+	router := NewRouter(logger, cfg, conn, nil, nil, nil, nil)
+	userRepo := repository.NewUserRepository(conn, logger)
+	user, err := userRepo.GetOrCreateUser(100503)
+	if err != nil {
+		t.Fatalf("create user: %v", err)
+	}
+
+	req := httptest.NewRequest(http.MethodGet, "/api/linglow/daily-route?limit=3", nil)
+	req = setUserIDInContext(req, user.ID)
+	w := httptest.NewRecorder()
+	router.handleLinglowDailyRoute(w, req)
+	if w.Code != http.StatusOK {
+		t.Fatalf("status=%d body=%s", w.Code, w.Body.String())
+	}
+	var body struct {
+		Course struct {
+			Code string `json:"code"`
+		} `json:"course"`
+		UserCourse struct {
+			ID int64 `json:"id"`
+		} `json:"user_course"`
+		Summary struct {
+			DueReviewCount int `json:"due_review_count"`
+		} `json:"summary"`
+	}
+	if err := json.Unmarshal(w.Body.Bytes(), &body); err != nil {
+		t.Fatalf("decode route: %v", err)
+	}
+	if body.Course.Code != "es_ru" || body.UserCourse.ID == 0 {
+		t.Fatalf("daily route body = %+v", body)
+	}
+
+	req = httptest.NewRequest(http.MethodGet, "/api/linglow/daily-route?limit=bad", nil)
+	req = setUserIDInContext(req, user.ID)
+	w = httptest.NewRecorder()
+	router.handleLinglowDailyRoute(w, req)
+	if w.Code != http.StatusBadRequest {
+		t.Fatalf("bad limit status=%d body=%s", w.Code, w.Body.String())
+	}
+}
+
 func TestHandleLearningCourse_Unauthorized(t *testing.T) {
 	conn := testutil.SetupTestDB(t)
 	router := NewRouter(zap.NewNop(), &config.Config{Learning: config.DefaultLearningConfig()}, conn, nil, nil, nil, nil)
