@@ -16,22 +16,22 @@
       <p>{{ error }}</p>
     </div>
 
-    <template v-else-if="courseMap">
+    <template v-else-if="safeCourseMap">
       <section class="city-stats" aria-label="Course totals">
         <div class="city-stat">
-          <span>{{ courseMap.totals.districts }}</span>
+          <span>{{ safeCourseMap.totals.districts }}</span>
           <label>{{ t('city.districts') }}</label>
         </div>
         <div class="city-stat">
-          <span>{{ courseMap.totals.locations }}</span>
+          <span>{{ safeCourseMap.totals.locations }}</span>
           <label>{{ t('city.locations') }}</label>
         </div>
         <div class="city-stat">
-          <span>{{ courseMap.totals.modules }}</span>
+          <span>{{ safeCourseMap.totals.modules }}</span>
           <label>{{ t('city.modules') }}</label>
         </div>
         <div class="city-stat">
-          <span>{{ courseMap.totals.items }}</span>
+          <span>{{ safeCourseMap.totals.items }}</span>
           <label>{{ t('city.items') }}</label>
         </div>
       </section>
@@ -44,15 +44,15 @@
       </section>
 
       <section class="district-list">
-        <article v-for="district in courseMap.districts" :key="district.id" class="district-row">
+        <article v-for="district in safeCourseMap.districts" :key="district.id" class="district-row">
           <aside class="district-meta">
             <span class="level-badge">{{ district.level_code }}</span>
             <h2>{{ district.title }}</h2>
-            <p>{{ district.locations.length }} {{ t('city.locationsShort') }}</p>
+            <p>{{ safeLocations(district).length }} {{ t('city.locationsShort') }}</p>
           </aside>
 
           <div class="location-grid">
-            <div v-for="location in district.locations" :key="location.id" class="location-cell">
+            <div v-for="location in safeLocations(district)" :key="location.id" class="location-cell">
               <div class="location-head">
                 <span>{{ locationTitle(location.location_type, location.title) }}</span>
                 <strong>{{ countLocationItems(location) }}</strong>
@@ -60,10 +60,10 @@
               <div class="module-list">
                 <div v-for="module in visibleModules(location)" :key="module.id" class="module-line">
                   <span>{{ module.title }}</span>
-                  <small>{{ module.items.length }}</small>
+                  <small>{{ safeItems(module).length }}</small>
                 </div>
-                <div v-if="location.modules.length > visibleModules(location).length" class="module-more">
-                  {{ t('city.moreModules', { count: location.modules.length - visibleModules(location).length }) }}
+                <div v-if="safeModules(location).length > visibleModules(location).length" class="module-more">
+                  {{ t('city.moreModules', { count: safeModules(location).length - visibleModules(location).length }) }}
                 </div>
               </div>
             </div>
@@ -86,8 +86,23 @@ const loading = ref(false)
 const error = ref('')
 
 const itemTypes = computed(() => {
-  const totals = courseMap.value?.totals.by_type || {}
+  const totals = safeCourseMap.value?.totals.by_type || {}
   return Object.entries(totals).sort((left, right) => right[1] - left[1])
+})
+
+const safeCourseMap = computed(() => {
+  if (!courseMap.value) return null
+  return {
+    ...courseMap.value,
+    districts: Array.isArray(courseMap.value.districts) ? courseMap.value.districts : [],
+    totals: {
+      districts: courseMap.value.totals?.districts || 0,
+      locations: courseMap.value.totals?.locations || 0,
+      modules: courseMap.value.totals?.modules || 0,
+      items: courseMap.value.totals?.items || 0,
+      by_type: courseMap.value.totals?.by_type || {},
+    },
+  }
 })
 
 function formatType(type: string): string {
@@ -101,11 +116,23 @@ function locationTitle(type: string, fallback: string): string {
 }
 
 function visibleModules(location: CourseMapLocation) {
-  return location.modules.slice(0, 4)
+  return safeModules(location).slice(0, 4)
 }
 
 function countLocationItems(location: CourseMapLocation): number {
-  return location.modules.reduce((sum, module) => sum + module.items.length, 0)
+  return safeModules(location).reduce((sum, module) => sum + safeItems(module).length, 0)
+}
+
+function safeLocations(district: CourseMap['districts'][number]) {
+  return Array.isArray(district.locations) ? district.locations : []
+}
+
+function safeModules(location: CourseMapLocation) {
+  return Array.isArray(location.modules) ? location.modules : []
+}
+
+function safeItems(module: CourseMapLocation['modules'][number]) {
+  return Array.isArray(module.items) ? module.items : []
 }
 
 async function loadCourseMap() {

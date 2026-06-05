@@ -166,6 +166,35 @@ func TestCourseRepository_GetCourseMap(t *testing.T) {
 	}
 }
 
+func TestCourseRepository_GetCourseMapEmptyCollections(t *testing.T) {
+	conn := testutil.SetupTestDB(t)
+	logger := zap.NewNop()
+	repo := NewCourseRepository(conn, logger)
+
+	courseMap, err := repo.GetCourseMap(context.Background(), "es_ru", 0)
+	if err != nil {
+		t.Fatalf("GetCourseMap: %v", err)
+	}
+	if len(courseMap.Districts) == 0 {
+		t.Fatalf("expected seeded districts")
+	}
+	for _, district := range courseMap.Districts {
+		if district.Locations == nil {
+			t.Fatalf("district %s locations is nil", district.Code)
+		}
+		for _, location := range district.Locations {
+			if location.Modules == nil {
+				t.Fatalf("location %s modules is nil", location.Code)
+			}
+			for _, module := range location.Modules {
+				if module.Items == nil {
+					t.Fatalf("module %s items is nil", module.Code)
+				}
+			}
+		}
+	}
+}
+
 func TestCourseRepository_CurrentCourseSelection(t *testing.T) {
 	conn := testutil.SetupTestDB(t)
 	logger := zap.NewNop()

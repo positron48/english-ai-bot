@@ -779,18 +779,27 @@ func (r *CourseRepository) GetCourseMap(ctx context.Context, courseCode string, 
 	modulesByLocation := make(map[int64][]CourseMapModule)
 	for _, module := range modules {
 		module.Items = itemsByModule[module.ID]
+		if module.Items == nil {
+			module.Items = []CourseMapItem{}
+		}
 		modulesByLocation[module.locationID] = append(modulesByLocation[module.locationID], module.CourseMapModule)
 		result.Totals.Modules++
 	}
 	locationsByDistrict := make(map[int64][]CourseMapLocation)
 	for _, location := range locations {
 		location.Modules = modulesByLocation[location.ID]
+		if location.Modules == nil {
+			location.Modules = []CourseMapModule{}
+		}
 		locationsByDistrict[location.districtID] = append(locationsByDistrict[location.districtID], location.CourseMapLocation)
 		result.Totals.Locations++
 	}
 	result.Districts = make([]CourseMapDistrict, 0, len(districts))
 	for _, district := range districts {
 		district.Locations = locationsByDistrict[district.ID]
+		if district.Locations == nil {
+			district.Locations = []CourseMapLocation{}
+		}
 		result.Districts = append(result.Districts, district)
 		result.Totals.Districts++
 	}
