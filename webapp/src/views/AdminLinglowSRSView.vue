@@ -27,43 +27,54 @@
     </div>
 
     <template v-else-if="report">
-      <section class="readiness-panel" :class="{ ready: report.review_queue.ready_for_canonical_read }">
+      <section class="readiness-panel" :class="{ ready: aggregate?.ready_for_canonical_read }">
         <div>
           <span class="readiness-label">{{ t('adminLinglowSRS.readiness') }}</span>
-          <strong>{{ report.review_queue.ready_for_canonical_read ? t('adminLinglowSRS.ready') : t('adminLinglowSRS.notReady') }}</strong>
+          <strong>{{ aggregate?.ready_for_canonical_read ? t('adminLinglowSRS.ready') : t('adminLinglowSRS.notReady') }}</strong>
         </div>
-        <small>{{ report.course.title }} · {{ formatDate(report.generated_at) }}</small>
+        <small>{{ report.course.title }} · {{ formatDate(aggregate?.generated_at || report.generated_at) }}</small>
       </section>
 
       <section class="metric-grid">
         <article class="metric-card">
-          <span>{{ report.review_queue.legacy_due_count }}</span>
-          <label>{{ t('adminLinglowSRS.legacyQueue') }}</label>
+          <span>{{ aggregate?.user_courses_total || 0 }}</span>
+          <label>{{ t('adminLinglowSRS.userCourses') }}</label>
         </article>
         <article class="metric-card">
-          <span>{{ report.review_queue.canonical_due_count }}</span>
-          <label>{{ t('adminLinglowSRS.canonicalQueue') }}</label>
+          <span>{{ aggregate?.ready_count || 0 }} / {{ aggregate?.not_ready_count || 0 }}</span>
+          <label>{{ t('adminLinglowSRS.readyUsers') }}</label>
         </article>
         <article class="metric-card">
-          <span>{{ report.review_queue.overlap_count }}</span>
-          <label>{{ t('adminLinglowSRS.overlap') }}</label>
+          <span>{{ aggregate?.legacy_due_total || 0 }} / {{ aggregate?.canonical_due_total || 0 }}</span>
+          <label>{{ t('adminLinglowSRS.queueTotals') }}</label>
         </article>
         <article class="metric-card danger">
-          <span>{{ report.review_queue.legacy_only_count }} / {{ report.review_queue.canonical_only_count }}</span>
+          <span>{{ aggregate?.legacy_only_total || 0 }} / {{ aggregate?.canonical_only_total || 0 }}</span>
           <label>{{ t('adminLinglowSRS.onlyMismatch') }}</label>
         </article>
       </section>
 
       <section class="report-grid">
         <article class="report-card">
-          <h2>{{ t('adminLinglowSRS.reviewQueue') }}</h2>
+          <h2>{{ t('adminLinglowSRS.aggregateReviewQueue') }}</h2>
           <div class="type-list">
-            <div v-for="[type, count] in reviewTypes" :key="type" class="type-row">
+            <div v-for="[type, count] in aggregateTypes" :key="type" class="type-row">
               <span>{{ formatType(type) }}</span>
               <strong>{{ count }}</strong>
             </div>
-            <div v-if="reviewTypes.length === 0" class="empty-line">{{ t('common.noItemsFound') }}</div>
+            <div v-if="aggregateTypes.length === 0" class="empty-line">{{ t('common.noItemsFound') }}</div>
           </div>
+        </article>
+
+        <article class="report-card">
+          <h2>{{ t('adminLinglowSRS.currentUserQueue') }}</h2>
+          <dl class="detail-list">
+            <div><dt>{{ t('adminLinglowSRS.legacy') }}</dt><dd>{{ report.review_queue.legacy_due_count }}</dd></div>
+            <div><dt>{{ t('adminLinglowSRS.canonical') }}</dt><dd>{{ report.review_queue.canonical_due_count }}</dd></div>
+            <div><dt>{{ t('adminLinglowSRS.overlap') }}</dt><dd>{{ report.review_queue.overlap_count }}</dd></div>
+            <div><dt>{{ t('adminLinglowSRS.legacyOnly') }}</dt><dd>{{ report.review_queue.legacy_only_count }}</dd></div>
+            <div><dt>{{ t('adminLinglowSRS.canonicalOnly') }}</dt><dd>{{ report.review_queue.canonical_only_count }}</dd></div>
+          </dl>
         </article>
 
         <article class="report-card">
@@ -88,6 +99,16 @@
           </dl>
         </article>
       </section>
+
+      <section v-if="aggregate?.not_ready_users?.length" class="report-card">
+        <h2>{{ t('adminLinglowSRS.notReadyUsers') }}</h2>
+        <div class="user-list">
+          <div v-for="user in aggregate.not_ready_users" :key="user.user_course_id" class="user-row">
+            <span>#{{ user.user_id }} / {{ user.user_course_id }}</span>
+            <strong>{{ user.legacy_only_count }} / {{ user.canonical_only_count }}</strong>
+          </div>
+        </div>
+      </section>
     </template>
   </div>
 </template>
@@ -95,18 +116,19 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { courseClient, CourseSummary, SRSShadowReport } from '../api/courseClient'
+import { courseClient, CourseSummary, SRSReadinessAggregateReport, SRSShadowReport } from '../api/courseClient'
 
 const { t } = useI18n()
 
 const courses = ref<CourseSummary[]>([])
 const selectedCourseCode = ref('')
 const report = ref<SRSShadowReport | null>(null)
+const aggregate = ref<SRSReadinessAggregateReport | null>(null)
 const loading = ref(false)
 const error = ref('')
 
-const reviewTypes = computed(() => {
-  const byType = report.value?.review_queue.by_type || {}
+const aggregateTypes = computed(() => {
+  const byType = aggregate.value?.by_type || {}
   return Object.entries(byType).sort((left, right) => right[1] - left[1])
 })
 
@@ -135,7 +157,13 @@ async function loadReport() {
       courses.value = courseList.courses || []
       selectedCourseCode.value = courses.value.find((course) => course.is_current)?.code || courses.value[0]?.code || ''
     }
-    report.value = await courseClient.getSRSShadowReport(selectedCourseCode.value || undefined)
+    const courseCode = selectedCourseCode.value || undefined
+    const [shadowReport, aggregateReport] = await Promise.all([
+      courseClient.getSRSShadowReport(courseCode),
+      courseClient.getSRSReadinessAggregate(courseCode, 20),
+    ])
+    report.value = shadowReport
+    aggregate.value = aggregateReport
   } catch (err: any) {
     error.value = err?.message || t('common.networkError')
   } finally {
@@ -309,13 +337,15 @@ onMounted(loadReport)
 }
 
 .type-list,
-.detail-list {
+.detail-list,
+.user-list {
   display: grid;
   gap: 8px;
 }
 
 .type-row,
-.detail-list div {
+.detail-list div,
+.user-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 12px;
@@ -336,6 +366,10 @@ onMounted(loadReport)
 .detail-list dd {
   margin: 0;
   font-weight: 800;
+}
+
+.user-row span {
+  color: var(--text-secondary);
 }
 
 @media (max-width: 900px) {

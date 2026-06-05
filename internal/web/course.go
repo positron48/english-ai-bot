@@ -267,6 +267,36 @@ func (r *Router) handleLinglowSRSShadow(w http.ResponseWriter, req *http.Request
 	writeJSON(w, report)
 }
 
+func (r *Router) handleAdminLinglowSRSReadiness(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	if r.courseRepo == nil {
+		http.Error(w, "Course repository is not available", http.StatusServiceUnavailable)
+		return
+	}
+	courseCode := strings.TrimSpace(req.URL.Query().Get("course_code"))
+	if courseCode == "" {
+		courseCode = r.defaultCourseCode()
+	}
+	limit, ok := parsePositiveLimit(w, req, 20)
+	if !ok {
+		return
+	}
+	report, err := r.courseRepo.GetSRSReadinessAggregate(req.Context(), courseCode, limit)
+	if err != nil {
+		if errors.Is(err, repository.ErrCourseNotFound) {
+			http.Error(w, "Course not found", http.StatusNotFound)
+			return
+		}
+		r.logger.Error("failed to get admin Linglow SRS readiness", zap.Error(err), zap.String("course_code", courseCode))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	writeJSON(w, report)
+}
+
 func (r *Router) handleLinglowExerciseAttempts(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)

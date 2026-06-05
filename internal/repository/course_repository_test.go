@@ -824,3 +824,86 @@ func TestCourseRepository_SRSShadowReportEmpty(t *testing.T) {
 		t.Fatalf("empty review queue shadow should be ready: %+v", report.ReviewQueue)
 	}
 }
+
+func TestCourseRepository_SRSReadinessAggregate(t *testing.T) {
+	conn := testutil.SetupTestDB(t)
+	logger := zap.NewNop()
+	userRepo := NewUserRepository(conn, logger)
+	readyUser, err := userRepo.GetOrCreateUser(4351)
+	if err != nil {
+		t.Fatalf("create ready user: %v", err)
+	}
+	notReadyUser, err := userRepo.GetOrCreateUser(4352)
+	if err != nil {
+		t.Fatalf("create not ready user: %v", err)
+	}
+	repo := NewCourseRepository(conn, logger)
+	readyCourse, err := repo.SelectCurrentCourse(context.Background(), readyUser.ID, "es_ru")
+	if err != nil {
+		t.Fatalf("SelectCurrentCourse ready: %v", err)
+	}
+	if _, err := repo.SelectCurrentCourse(context.Background(), notReadyUser.ID, "es_ru"); err != nil {
+		t.Fatalf("SelectCurrentCourse not ready: %v", err)
+	}
+
+	var wordCardID, trainingCardID, learningItemID int64
+	if err := conn.QueryRow(`INSERT INTO word_cards (word, definition) VALUES ('readiness', 'readiness') RETURNING id`).Scan(&wordCardID); err != nil {
+		t.Fatalf("insert word card: %v", err)
+	}
+	if err := conn.QueryRow(`
+		INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en)
+		VALUES (?, 'readiness', 0, 'готовность', 'readiness')
+		RETURNING id
+	`, wordCardID).Scan(&trainingCardID); err != nil {
+		t.Fatalf("insert training card: %v", err)
+	}
+	if err := conn.QueryRow(`
+		WITH target AS (
+			SELECT c.id AS course_id, d.id AS district_id, l.id AS location_id
+			FROM courses c
+			JOIN districts d ON d.course_id = c.id AND d.level_code = 'A0'
+			JOIN locations l ON l.district_id = d.id AND l.location_type = 'word_market'
+			WHERE c.code = 'es_ru'
+			LIMIT 1
+		), module AS (
+			INSERT INTO modules (course_id, district_id, location_id, code, module_type, title, source_kind, source_id, sort_order, status)
+			SELECT course_id, district_id, location_id, 'word:readiness-test', 'word_set', 'Readiness Words', 'word_set', 'readiness-test', 1, 'published'
+			FROM target
+			RETURNING id, course_id, district_id, location_id
+		)
+		INSERT INTO learning_items (course_id, module_id, district_id, location_id, item_type, source_kind, source_id, title, cefr_level, status)
+		SELECT course_id, id, district_id, location_id, 'word', 'word_card', CAST(? AS text), 'readiness', 'A0', 'published'
+		FROM module
+		RETURNING id
+	`, strconv.FormatInt(wordCardID, 10)).Scan(&learningItemID); err != nil {
+		t.Fatalf("insert learning item: %v", err)
+	}
+	if _, err := conn.Exec(`
+		INSERT INTO user_cards (user_id, training_card_id, direction, state, ef, next_due_at)
+		VALUES
+			(?, ?, 'es_ru', 'review', 2.5, CURRENT_TIMESTAMP - INTERVAL '1 hour'),
+			(?, ?, 'es_ru', 'review', 2.5, CURRENT_TIMESTAMP - INTERVAL '1 hour')
+	`, readyUser.ID, trainingCardID, notReadyUser.ID, trainingCardID); err != nil {
+		t.Fatalf("insert user cards: %v", err)
+	}
+	if _, err := conn.Exec(`
+		INSERT INTO srs_items (user_course_id, learning_item_id, state, due_at)
+		VALUES (?, ?, 'review', CURRENT_TIMESTAMP - INTERVAL '1 hour')
+	`, readyCourse.UserCourse.ID, learningItemID); err != nil {
+		t.Fatalf("insert canonical srs: %v", err)
+	}
+
+	report, err := repo.GetSRSReadinessAggregate(context.Background(), "es_ru", 10)
+	if err != nil {
+		t.Fatalf("GetSRSReadinessAggregate: %v", err)
+	}
+	if report.UserCoursesTotal != 2 || report.ReadyCount != 1 || report.NotReadyCount != 1 || report.ReadyForCanonicalRead {
+		t.Fatalf("aggregate readiness = %+v", report)
+	}
+	if report.LegacyDueTotal != 2 || report.CanonicalDueTotal != 1 || report.LegacyOnlyTotal != 1 || report.CanonicalOnlyTotal != 0 || report.OverlapTotal != 1 {
+		t.Fatalf("aggregate totals = %+v", report)
+	}
+	if len(report.NotReadyUsers) != 1 || report.NotReadyUsers[0].UserID != notReadyUser.ID {
+		t.Fatalf("not ready users = %+v", report.NotReadyUsers)
+	}
+}

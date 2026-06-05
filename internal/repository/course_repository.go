@@ -282,6 +282,31 @@ type SRSShadowReviewQueueReport struct {
 	ByType                map[string]int `json:"by_type"`
 }
 
+type SRSReadinessAggregateReport struct {
+	Course                CourseMapCourse             `json:"course"`
+	UserCoursesTotal      int                         `json:"user_courses_total"`
+	ReadyCount            int                         `json:"ready_count"`
+	NotReadyCount         int                         `json:"not_ready_count"`
+	ReadyForCanonicalRead bool                        `json:"ready_for_canonical_read"`
+	LegacyDueTotal        int                         `json:"legacy_due_total"`
+	CanonicalDueTotal     int                         `json:"canonical_due_total"`
+	LegacyOnlyTotal       int                         `json:"legacy_only_total"`
+	CanonicalOnlyTotal    int                         `json:"canonical_only_total"`
+	OverlapTotal          int                         `json:"overlap_total"`
+	ByType                map[string]int              `json:"by_type"`
+	NotReadyUsers         []SRSReadinessAggregateUser `json:"not_ready_users"`
+	Generated             string                      `json:"generated_at"`
+}
+
+type SRSReadinessAggregateUser struct {
+	UserID             int64 `json:"user_id"`
+	UserCourseID       int64 `json:"user_course_id"`
+	LegacyDueCount     int   `json:"legacy_due_count"`
+	CanonicalDueCount  int   `json:"canonical_due_count"`
+	LegacyOnlyCount    int   `json:"legacy_only_count"`
+	CanonicalOnlyCount int   `json:"canonical_only_count"`
+}
+
 func NewCourseRepository(db *sql.DB, logger *zap.Logger) *CourseRepository {
 	return &CourseRepository{db: db, logger: logger}
 }
@@ -773,6 +798,86 @@ func (r *CourseRepository) GetSRSShadowReportForUser(ctx context.Context, userID
 	if err != nil {
 		return nil, err
 	}
+	return report, nil
+}
+
+func (r *CourseRepository) GetSRSReadinessAggregate(ctx context.Context, courseCode string, notReadyLimit int) (*SRSReadinessAggregateReport, error) {
+	courseCode = strings.TrimSpace(strings.ToLower(courseCode))
+	if courseCode == "" {
+		return nil, ErrCourseNotFound
+	}
+	if notReadyLimit <= 0 {
+		notReadyLimit = 20
+	}
+	if notReadyLimit > 100 {
+		notReadyLimit = 100
+	}
+	courseMap, err := r.GetCourseMap(ctx, courseCode, 0)
+	if err != nil {
+		return nil, err
+	}
+	report := &SRSReadinessAggregateReport{
+		Course:    courseMap.Course,
+		ByType:    map[string]int{},
+		Generated: time.Now().UTC().Format(time.RFC3339),
+	}
+	rows, err := r.db.QueryContext(ctx, `
+		SELECT uc.id, uc.user_id
+		FROM user_courses uc
+		JOIN courses c ON c.id = uc.course_id
+		WHERE c.code = ? AND uc.status IN ('active', 'trial')
+		ORDER BY uc.id
+	`, courseCode)
+	if err != nil {
+		return nil, fmt.Errorf("list user courses for srs readiness: %w", err)
+	}
+	defer rows.Close()
+	type userCourseRow struct {
+		id     int64
+		userID int64
+	}
+	userCourses := []userCourseRow{}
+	for rows.Next() {
+		var row userCourseRow
+		if err := rows.Scan(&row.id, &row.userID); err != nil {
+			return nil, fmt.Errorf("scan user course for srs readiness: %w", err)
+		}
+		userCourses = append(userCourses, row)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("iterate user courses for srs readiness: %w", err)
+	}
+	report.UserCoursesTotal = len(userCourses)
+	for _, userCourse := range userCourses {
+		itemReport, err := r.getSRSShadowReviewQueueReport(ctx, userCourse.userID, userCourse.id, courseCode)
+		if err != nil {
+			return nil, fmt.Errorf("get srs readiness for user_course=%d: %w", userCourse.id, err)
+		}
+		report.LegacyDueTotal += itemReport.LegacyDueCount
+		report.CanonicalDueTotal += itemReport.CanonicalDueCount
+		report.LegacyOnlyTotal += itemReport.LegacyOnlyCount
+		report.CanonicalOnlyTotal += itemReport.CanonicalOnlyCount
+		report.OverlapTotal += itemReport.OverlapCount
+		for itemType, count := range itemReport.ByType {
+			report.ByType[itemType] += count
+		}
+		if itemReport.ReadyForCanonicalRead {
+			report.ReadyCount++
+			continue
+		}
+		report.NotReadyCount++
+		if len(report.NotReadyUsers) < notReadyLimit {
+			report.NotReadyUsers = append(report.NotReadyUsers, SRSReadinessAggregateUser{
+				UserID:             userCourse.userID,
+				UserCourseID:       userCourse.id,
+				LegacyDueCount:     itemReport.LegacyDueCount,
+				CanonicalDueCount:  itemReport.CanonicalDueCount,
+				LegacyOnlyCount:    itemReport.LegacyOnlyCount,
+				CanonicalOnlyCount: itemReport.CanonicalOnlyCount,
+			})
+		}
+	}
+	report.ReadyForCanonicalRead = report.NotReadyCount == 0
 	return report, nil
 }
 

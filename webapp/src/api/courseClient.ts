@@ -234,6 +234,29 @@ export interface SRSShadowReport {
   generated_at: string
 }
 
+export interface SRSReadinessAggregateReport {
+  course: CourseMap['course']
+  user_courses_total: number
+  ready_count: number
+  not_ready_count: number
+  ready_for_canonical_read: boolean
+  legacy_due_total: number
+  canonical_due_total: number
+  legacy_only_total: number
+  canonical_only_total: number
+  overlap_total: number
+  by_type: Record<string, number>
+  not_ready_users: Array<{
+    user_id: number
+    user_course_id: number
+    legacy_due_count: number
+    canonical_due_count: number
+    legacy_only_count: number
+    canonical_only_count: number
+  }>
+  generated_at: string
+}
+
 export const courseClient = {
   getCourses(): Promise<{ courses: CourseSummary[] }> {
     return apiClient.request('/api/courses')
@@ -258,6 +281,9 @@ export const courseClient = {
   },
   getSRSShadowReport(courseCode?: string): Promise<SRSShadowReport> {
     return apiClient.request(withCourseCode('/api/linglow/srs-shadow', courseCode))
+  },
+  getSRSReadinessAggregate(courseCode?: string, limit = 20): Promise<SRSReadinessAggregateReport> {
+    return apiClient.request(withCourseCode(`/api/admin/linglow/srs-readiness?limit=${encodeURIComponent(String(limit))}`, courseCode))
   },
   recordExerciseAttempt(payload: ExerciseAttemptRequest): Promise<ExerciseAttemptResult> {
     return apiClient.request('/api/linglow/exercise-attempts', {
