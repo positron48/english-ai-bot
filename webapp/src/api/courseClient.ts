@@ -104,11 +104,32 @@ export interface DailyRoute {
   generated_at: string
 }
 
+export interface ReviewQueue {
+  course: CourseMap['course']
+  user_course: {
+    id: number
+    status: string
+  }
+  summary: {
+    due_count: number
+    learning_count: number
+    review_count: number
+    relearning_count: number
+    upcoming_count: number
+    by_type: Record<string, number>
+  }
+  items: DailyRouteItem[]
+  generated_at: string
+}
+
 export const courseClient = {
   getCourseMap(): Promise<CourseMap> {
     return apiClient.request('/api/linglow/city')
   },
   getDailyRoute(limit = 8): Promise<DailyRoute> {
     return apiClient.request(`/api/linglow/daily-route?limit=${encodeURIComponent(String(limit))}`)
+  },
+  getReviewQueue(limit = 20): Promise<ReviewQueue> {
+    return apiClient.request(`/api/linglow/review?limit=${encodeURIComponent(String(limit))}`)
   },
 }

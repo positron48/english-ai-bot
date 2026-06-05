@@ -159,13 +159,10 @@ func (r *Router) handleLinglowDailyRoute(w http.ResponseWriter, req *http.Reques
 		return
 	}
 	limit := 8
-	if rawLimit := strings.TrimSpace(req.URL.Query().Get("limit")); rawLimit != "" {
-		parsed, err := strconv.Atoi(rawLimit)
-		if err != nil || parsed < 1 {
-			http.Error(w, "Invalid limit", http.StatusBadRequest)
-			return
-		}
+	if parsed, ok := parsePositiveLimit(w, req, limit); ok {
 		limit = parsed
+	} else {
+		return
 	}
 	explicitCourseCode := req.URL.Query().Get("course_code")
 	route, err := r.courseRepo.GetDailyRouteForUser(req.Context(), userID, r.defaultCourseCode(), explicitCourseCode, limit)
@@ -179,6 +176,51 @@ func (r *Router) handleLinglowDailyRoute(w http.ResponseWriter, req *http.Reques
 		return
 	}
 	writeJSON(w, route)
+}
+
+func (r *Router) handleLinglowReview(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	if r.courseRepo == nil {
+		http.Error(w, "Course repository is not available", http.StatusServiceUnavailable)
+		return
+	}
+	userID := getUserIDFromContext(req.Context())
+	if userID == 0 {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+	limit, ok := parsePositiveLimit(w, req, 20)
+	if !ok {
+		return
+	}
+	explicitCourseCode := req.URL.Query().Get("course_code")
+	queue, err := r.courseRepo.GetReviewQueueForUser(req.Context(), userID, r.defaultCourseCode(), explicitCourseCode, limit)
+	if err != nil {
+		if errors.Is(err, repository.ErrCourseNotFound) {
+			http.Error(w, "Course not found", http.StatusNotFound)
+			return
+		}
+		r.logger.Error("failed to get review queue", zap.Error(err), zap.Int64("user_id", userID), zap.String("course_code", explicitCourseCode))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	writeJSON(w, queue)
+}
+
+func parsePositiveLimit(w http.ResponseWriter, req *http.Request, defaultLimit int) (int, bool) {
+	rawLimit := strings.TrimSpace(req.URL.Query().Get("limit"))
+	if rawLimit == "" {
+		return defaultLimit, true
+	}
+	parsed, err := strconv.Atoi(rawLimit)
+	if err != nil || parsed < 1 {
+		http.Error(w, "Invalid limit", http.StatusBadRequest)
+		return 0, false
+	}
+	return parsed, true
 }
 
 func writeJSON(w http.ResponseWriter, value interface{}) {

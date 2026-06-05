@@ -170,6 +170,23 @@ type DailyRouteItem struct {
 	ModuleTitle    string  `json:"module_title,omitempty"`
 }
 
+type ReviewQueue struct {
+	Course     CourseMapCourse     `json:"course"`
+	UserCourse CourseMapUserCourse `json:"user_course"`
+	Summary    ReviewQueueSummary  `json:"summary"`
+	Items      []DailyRouteItem    `json:"items"`
+	Generated  string              `json:"generated_at"`
+}
+
+type ReviewQueueSummary struct {
+	DueCount        int            `json:"due_count"`
+	LearningCount   int            `json:"learning_count"`
+	ReviewCount     int            `json:"review_count"`
+	RelearningCount int            `json:"relearning_count"`
+	UpcomingCount   int            `json:"upcoming_count"`
+	ByType          map[string]int `json:"by_type"`
+}
+
 func NewCourseRepository(db *sql.DB, logger *zap.Logger) *CourseRepository {
 	return &CourseRepository{db: db, logger: logger}
 }
@@ -519,6 +536,117 @@ func (r *CourseRepository) GetDailyRouteForUser(ctx context.Context, userID int6
 	return route, nil
 }
 
+func (r *CourseRepository) GetReviewQueueForUser(ctx context.Context, userID int64, defaultCourseCode, explicitCourseCode string, limit int) (*ReviewQueue, error) {
+	if userID == 0 {
+		return nil, fmt.Errorf("user id is empty")
+	}
+	if limit <= 0 {
+		limit = 20
+	}
+	if limit > 100 {
+		limit = 100
+	}
+	courseCode, err := r.ResolveRequestedCourseCode(ctx, userID, defaultCourseCode, explicitCourseCode)
+	if err != nil {
+		return nil, err
+	}
+	userCourse, err := r.EnsureUserCourse(ctx, userID, courseCode)
+	if err != nil {
+		return nil, err
+	}
+	courseMap, err := r.GetCourseMap(ctx, courseCode, userID)
+	if err != nil {
+		return nil, err
+	}
+	queue := &ReviewQueue{
+		Course:     courseMap.Course,
+		UserCourse: *userCourse,
+		Summary:    ReviewQueueSummary{ByType: map[string]int{}},
+		Generated:  time.Now().UTC().Format(time.RFC3339),
+	}
+	if courseMap.UserCourse != nil {
+		queue.UserCourse = *courseMap.UserCourse
+	}
+	queue.Summary, err = r.getReviewQueueSummary(ctx, userCourse.ID)
+	if err != nil {
+		return nil, err
+	}
+	queue.Items, err = r.listDailyRouteReviewItems(ctx, userCourse.ID, limit)
+	if err != nil {
+		return nil, err
+	}
+	return queue, nil
+}
+
+func (r *CourseRepository) getReviewQueueSummary(ctx context.Context, userCourseID int64) (ReviewQueueSummary, error) {
+	summary := ReviewQueueSummary{ByType: map[string]int{}}
+	rows, err := r.db.QueryContext(ctx, `
+		SELECT state, COUNT(*)
+		FROM srs_items
+		WHERE user_course_id = ?
+			AND state IN ('learning', 'review', 'relearning')
+			AND (due_at IS NULL OR due_at <= CURRENT_TIMESTAMP)
+		GROUP BY state
+	`, userCourseID)
+	if err != nil {
+		return summary, fmt.Errorf("count review queue states: %w", err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var state string
+		var count int
+		if err := rows.Scan(&state, &count); err != nil {
+			return summary, fmt.Errorf("scan review state count: %w", err)
+		}
+		summary.DueCount += count
+		switch state {
+		case "learning":
+			summary.LearningCount = count
+		case "review":
+			summary.ReviewCount = count
+		case "relearning":
+			summary.RelearningCount = count
+		}
+	}
+	if err := rows.Err(); err != nil {
+		return summary, fmt.Errorf("iterate review state counts: %w", err)
+	}
+	if err := r.db.QueryRowContext(ctx, `
+		SELECT COUNT(*)
+		FROM srs_items
+		WHERE user_course_id = ?
+			AND state IN ('learning', 'review', 'relearning')
+			AND due_at > CURRENT_TIMESTAMP
+	`, userCourseID).Scan(&summary.UpcomingCount); err != nil {
+		return summary, fmt.Errorf("count upcoming review items: %w", err)
+	}
+	typeRows, err := r.db.QueryContext(ctx, `
+		SELECT li.item_type, COUNT(*)
+		FROM srs_items si
+		JOIN learning_items li ON li.id = si.learning_item_id
+		WHERE si.user_course_id = ?
+			AND si.state IN ('learning', 'review', 'relearning')
+			AND (si.due_at IS NULL OR si.due_at <= CURRENT_TIMESTAMP)
+		GROUP BY li.item_type
+	`, userCourseID)
+	if err != nil {
+		return summary, fmt.Errorf("count review queue types: %w", err)
+	}
+	defer typeRows.Close()
+	for typeRows.Next() {
+		var itemType string
+		var count int
+		if err := typeRows.Scan(&itemType, &count); err != nil {
+			return summary, fmt.Errorf("scan review type count: %w", err)
+		}
+		summary.ByType[itemType] = count
+	}
+	if err := typeRows.Err(); err != nil {
+		return summary, fmt.Errorf("iterate review type counts: %w", err)
+	}
+	return summary, nil
+}
+
 func (r *CourseRepository) getDailyRouteSummary(ctx context.Context, userCourseID int64) (DailyRouteSummary, error) {
 	summary := DailyRouteSummary{ByType: map[string]int{}}
 	if err := r.db.QueryRowContext(ctx, `
@@ -634,7 +762,7 @@ func (r *CourseRepository) listDailyRouteNewItems(ctx context.Context, userCours
 }
 
 func scanDailyRouteItems(rows *sql.Rows, includeSRS bool) ([]DailyRouteItem, error) {
-	var out []DailyRouteItem
+	out := []DailyRouteItem{}
 	for rows.Next() {
 		var item DailyRouteItem
 		var dueAt sql.NullTime
