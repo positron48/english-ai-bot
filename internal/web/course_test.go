@@ -85,6 +85,88 @@ func TestHandleLearningCourse_OK(t *testing.T) {
 	}
 }
 
+func TestHandleLearningCourse_UsesCurrentCourseAndExplicitOverride(t *testing.T) {
+	conn := testutil.SetupTestDB(t)
+	logger := zap.NewNop()
+	cfg := &config.Config{Learning: config.LearningConfig{NativeLang: "ru", TargetLang: "es", GrammarBundleID: "es"}}
+	router := NewRouter(logger, cfg, conn, nil, nil, nil, nil)
+
+	userRepo := repository.NewUserRepository(conn, logger)
+	user, err := userRepo.GetOrCreateUser(100501)
+	if err != nil {
+		t.Fatalf("create user: %v", err)
+	}
+	courseRepo := repository.NewCourseRepository(conn, logger)
+	if _, err := courseRepo.SelectCurrentCourse(t.Context(), user.ID, "en_ru"); err != nil {
+		t.Fatalf("SelectCurrentCourse: %v", err)
+	}
+
+	req := httptest.NewRequest(http.MethodGet, "/api/learning/course", nil)
+	req = setUserIDInContext(req, user.ID)
+	w := httptest.NewRecorder()
+	router.handleLearningCourse(w, req)
+	if w.Code != http.StatusOK {
+		t.Fatalf("current status=%d body=%s", w.Code, w.Body.String())
+	}
+	var currentBody struct {
+		Course struct {
+			Code string `json:"code"`
+		} `json:"course"`
+	}
+	if err := json.Unmarshal(w.Body.Bytes(), &currentBody); err != nil {
+		t.Fatalf("decode current: %v", err)
+	}
+	if currentBody.Course.Code != "en_ru" {
+		t.Fatalf("current course = %q, want en_ru", currentBody.Course.Code)
+	}
+
+	req = httptest.NewRequest(http.MethodGet, "/api/linglow/city?course_code=es_ru", nil)
+	req = setUserIDInContext(req, user.ID)
+	w = httptest.NewRecorder()
+	router.handleLinglowCity(w, req)
+	if w.Code != http.StatusOK {
+		t.Fatalf("explicit status=%d body=%s", w.Code, w.Body.String())
+	}
+	var explicitBody struct {
+		Course struct {
+			Code string `json:"code"`
+		} `json:"course"`
+	}
+	if err := json.Unmarshal(w.Body.Bytes(), &explicitBody); err != nil {
+		t.Fatalf("decode explicit: %v", err)
+	}
+	if explicitBody.Course.Code != "es_ru" {
+		t.Fatalf("explicit course = %q, want es_ru", explicitBody.Course.Code)
+	}
+
+	resolved, err := courseRepo.ResolveCurrentCourseCode(t.Context(), user.ID, "es_ru")
+	if err != nil {
+		t.Fatalf("ResolveCurrentCourseCode: %v", err)
+	}
+	if resolved != "en_ru" {
+		t.Fatalf("explicit read changed current course to %q", resolved)
+	}
+}
+
+func TestHandleLearningCourse_ExplicitUnknownCourse(t *testing.T) {
+	conn := testutil.SetupTestDB(t)
+	router := NewRouter(zap.NewNop(), &config.Config{Learning: config.DefaultLearningConfig()}, conn, nil, nil, nil, nil)
+	userRepo := repository.NewUserRepository(conn, zap.NewNop())
+	user, err := userRepo.GetOrCreateUser(100502)
+	if err != nil {
+		t.Fatalf("create user: %v", err)
+	}
+
+	req := httptest.NewRequest(http.MethodGet, "/api/linglow/city?course_code=xx_ru", nil)
+	req = setUserIDInContext(req, user.ID)
+	w := httptest.NewRecorder()
+	router.handleLinglowCity(w, req)
+
+	if w.Code != http.StatusNotFound {
+		t.Fatalf("expected 404, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
 func TestHandleLearningCourse_Unauthorized(t *testing.T) {
 	conn := testutil.SetupTestDB(t)
 	router := NewRouter(zap.NewNop(), &config.Config{Learning: config.DefaultLearningConfig()}, conn, nil, nil, nil, nil)

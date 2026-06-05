@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"strings"
 
@@ -17,6 +18,8 @@ type CourseRepository struct {
 	db     *sql.DB
 	logger *zap.Logger
 }
+
+var ErrCourseNotFound = errors.New("course not found")
 
 // UserCourseBackfillSummary describes one idempotent user_courses bootstrap run.
 type UserCourseBackfillSummary struct {
@@ -318,6 +321,44 @@ func (r *CourseRepository) SelectCurrentCourse(ctx context.Context, userID int64
 	return &CurrentCourse{Course: course, UserCourse: CourseMapUserCourse{ID: userCourseID, Status: course.UserStatus}}, nil
 }
 
+func (r *CourseRepository) EnsureUserCourse(ctx context.Context, userID int64, courseCode string) (*CourseMapUserCourse, error) {
+	courseCode = strings.TrimSpace(strings.ToLower(courseCode))
+	if userID == 0 {
+		return nil, fmt.Errorf("user id is empty")
+	}
+	if courseCode == "" {
+		return nil, fmt.Errorf("course code is empty")
+	}
+	var userCourse CourseMapUserCourse
+	if err := r.db.QueryRowContext(ctx, `
+		INSERT INTO user_courses (user_id, course_id, status, started_at, created_at, updated_at)
+		SELECT ?, c.id, 'active', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+		FROM courses c
+		WHERE c.code = ? AND c.status = 'active'
+		ON CONFLICT (user_id, course_id) DO UPDATE SET
+			status = CASE WHEN user_courses.status = 'archived' THEN 'active' ELSE user_courses.status END,
+			updated_at = CURRENT_TIMESTAMP
+		RETURNING id, status
+	`, userID, courseCode).Scan(&userCourse.ID, &userCourse.Status); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, fmt.Errorf("%w: %s", ErrCourseNotFound, courseCode)
+		}
+		return nil, fmt.Errorf("ensure user course %q: %w", courseCode, err)
+	}
+	return &userCourse, nil
+}
+
+func (r *CourseRepository) ResolveRequestedCourseCode(ctx context.Context, userID int64, defaultCourseCode, explicitCourseCode string) (string, error) {
+	explicitCourseCode = strings.TrimSpace(strings.ToLower(explicitCourseCode))
+	if explicitCourseCode != "" {
+		if !r.courseIsActive(ctx, explicitCourseCode) {
+			return "", fmt.Errorf("%w: %s", ErrCourseNotFound, explicitCourseCode)
+		}
+		return explicitCourseCode, nil
+	}
+	return r.ResolveCurrentCourseCode(ctx, userID, defaultCourseCode)
+}
+
 func (r *CourseRepository) ResolveCurrentCourseCode(ctx context.Context, userID int64, defaultCourseCode string) (string, error) {
 	defaultCourseCode = strings.TrimSpace(strings.ToLower(defaultCourseCode))
 	var settingsRaw sql.NullString
@@ -376,6 +417,21 @@ func updateCurrentCourseSetting(ctx context.Context, tx *sql.Tx, userID int64, c
 // GetCourseMapForLearning returns the Linglow v2 course map for the configured language pair.
 func (r *CourseRepository) GetCourseMapForLearning(ctx context.Context, lc config.LearningConfig, userID int64) (*CourseMap, error) {
 	return r.GetCourseMap(ctx, CourseCodeForLearning(lc), userID)
+}
+
+// GetCourseMapForUser resolves the requested course and returns the Linglow v2 course map.
+// An explicit course code is scoped to this read and does not update the user's current course preference.
+func (r *CourseRepository) GetCourseMapForUser(ctx context.Context, userID int64, defaultCourseCode, explicitCourseCode string) (*CourseMap, error) {
+	courseCode, err := r.ResolveRequestedCourseCode(ctx, userID, defaultCourseCode, explicitCourseCode)
+	if err != nil {
+		return nil, err
+	}
+	if userID > 0 {
+		if _, err := r.EnsureUserCourse(ctx, userID, courseCode); err != nil {
+			return nil, err
+		}
+	}
+	return r.GetCourseMap(ctx, courseCode, userID)
 }
 
 // GetCourseMap returns the Linglow v2 course map with the current user's course enrollment when present.

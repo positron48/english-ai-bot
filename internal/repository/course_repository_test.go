@@ -214,3 +214,41 @@ func TestCourseRepository_CurrentCourseSelection(t *testing.T) {
 		t.Fatalf("current selected course not found in %+v", courses)
 	}
 }
+
+func TestCourseRepository_CourseMapForUserResolvesCurrentAndExplicit(t *testing.T) {
+	conn := testutil.SetupTestDB(t)
+	logger := zap.NewNop()
+	userRepo := NewUserRepository(conn, logger)
+	user, err := userRepo.GetOrCreateUser(4344)
+	if err != nil {
+		t.Fatalf("create user: %v", err)
+	}
+	repo := NewCourseRepository(conn, logger)
+
+	if _, err := repo.SelectCurrentCourse(context.Background(), user.ID, "en_ru"); err != nil {
+		t.Fatalf("SelectCurrentCourse: %v", err)
+	}
+	currentMap, err := repo.GetCourseMapForUser(context.Background(), user.ID, "es_ru", "")
+	if err != nil {
+		t.Fatalf("GetCourseMapForUser current: %v", err)
+	}
+	if currentMap.Course.Code != "en_ru" || currentMap.UserCourse == nil {
+		t.Fatalf("current map = %+v", currentMap)
+	}
+
+	explicitMap, err := repo.GetCourseMapForUser(context.Background(), user.ID, "es_ru", "es_ru")
+	if err != nil {
+		t.Fatalf("GetCourseMapForUser explicit: %v", err)
+	}
+	if explicitMap.Course.Code != "es_ru" || explicitMap.UserCourse == nil {
+		t.Fatalf("explicit map = %+v", explicitMap)
+	}
+
+	resolved, err := repo.ResolveCurrentCourseCode(context.Background(), user.ID, "es_ru")
+	if err != nil {
+		t.Fatalf("ResolveCurrentCourseCode: %v", err)
+	}
+	if resolved != "en_ru" {
+		t.Fatalf("explicit read changed current course to %q", resolved)
+	}
+}

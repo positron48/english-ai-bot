@@ -18,6 +18,7 @@
 - Phase 5/reading-speaking progress foundation: добавлен `cmd/backfill_linglow_media_progress`, который переносит legacy `reading_text_progress` и `speaking_attempts` в `exercise_attempts` + `learning_events` для mapped `reading_text`/`speaking_task` items.
 - Phase 6/course-aware read API foundation: добавлен protected endpoint `GET /api/learning/course`, который отдаёт карту course -> districts -> locations -> modules -> learning_items из Linglow v2 таблиц; во фронте добавлен `/city` read-only экран поверх этого API.
 - Phase 6/course selection API foundation: добавлены protected endpoints `GET /api/courses`, `GET /api/user/courses/current`, `POST /api/user/courses/select`; текущий курс хранится в `users.settings_json.current_course_code`, selection идемпотентно создаёт `user_courses`.
+- Phase 6/current-course city API: `GET /api/linglow/city` добавлен как новый endpoint карты города; `/api/learning/course` оставлен совместимым alias. Оба endpoint используют resolution `course_code query -> users.settings_json.current_course_code -> legacy env default`, а explicit read не меняет текущий курс пользователя.
 
 ## 1. Текущая точка
 
@@ -395,7 +396,7 @@ Rollback:
    - `GET /api/courses` - готово;
    - `POST /api/user/courses/select` - готово;
    - `GET /api/user/courses/current` - готово;
-   - `GET /api/linglow/city`
+   - `GET /api/linglow/city` - готово;
    - `GET /api/linglow/daily-route`
    - `POST /api/linglow/exercise-attempts`
    - `GET /api/linglow/review`

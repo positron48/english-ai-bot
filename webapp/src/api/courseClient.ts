@@ -70,6 +70,6 @@ export interface CourseMap {
 
 export const courseClient = {
   getCourseMap(): Promise<CourseMap> {
-    return apiClient.request('/api/learning/course')
+    return apiClient.request('/api/linglow/city')
   },
 }

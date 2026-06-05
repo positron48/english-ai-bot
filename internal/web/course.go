@@ -2,6 +2,7 @@ package web
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"strings"
 
@@ -98,8 +99,17 @@ func (r *Router) handleSelectCourse(w http.ResponseWriter, req *http.Request) {
 	writeJSON(w, current)
 }
 
-// handleLearningCourse returns the Linglow v2 course map for the current app language.
+// handleLearningCourse returns the Linglow v2 course map for compatibility with the old route.
 func (r *Router) handleLearningCourse(w http.ResponseWriter, req *http.Request) {
+	r.handleCourseMap(w, req)
+}
+
+// handleLinglowCity returns the Linglow v2 course map for the selected or requested course.
+func (r *Router) handleLinglowCity(w http.ResponseWriter, req *http.Request) {
+	r.handleCourseMap(w, req)
+}
+
+func (r *Router) handleCourseMap(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
@@ -115,9 +125,14 @@ func (r *Router) handleLearningCourse(w http.ResponseWriter, req *http.Request) 
 		return
 	}
 
-	courseMap, err := r.courseRepo.GetCourseMapForLearning(req.Context(), r.config.Learning, userID)
+	explicitCourseCode := req.URL.Query().Get("course_code")
+	courseMap, err := r.courseRepo.GetCourseMapForUser(req.Context(), userID, r.defaultCourseCode(), explicitCourseCode)
 	if err != nil {
-		r.logger.Error("failed to get learning course map", zap.Error(err), zap.Int64("user_id", userID))
+		if errors.Is(err, repository.ErrCourseNotFound) {
+			http.Error(w, "Course not found", http.StatusNotFound)
+			return
+		}
+		r.logger.Error("failed to get learning course map", zap.Error(err), zap.Int64("user_id", userID), zap.String("course_code", explicitCourseCode))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
