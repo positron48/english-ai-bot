@@ -2,7 +2,9 @@ package repository
 
 import (
 	"context"
+	"fmt"
 	"testing"
+	"time"
 
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/testutil"
@@ -609,5 +611,98 @@ func TestCourseRepository_RecordExerciseAttemptUpdatesSRS(t *testing.T) {
 	}
 	if !duplicate.Duplicate || duplicate.SRSUpdated {
 		t.Fatalf("duplicate should not update SRS: %+v", duplicate)
+	}
+}
+
+func TestCourseRepository_SRSShadowReportForUser(t *testing.T) {
+	conn := testutil.SetupTestDB(t)
+	logger := zap.NewNop()
+	userRepo := NewUserRepository(conn, logger)
+	user, err := userRepo.GetOrCreateUser(4349)
+	if err != nil {
+		t.Fatalf("create user: %v", err)
+	}
+	repo := NewCourseRepository(conn, logger)
+	current, err := repo.SelectCurrentCourse(context.Background(), user.ID, "es_ru")
+	if err != nil {
+		t.Fatalf("SelectCurrentCourse: %v", err)
+	}
+
+	var wordCardID, trainingCardID, learningItemID int64
+	if err := conn.QueryRow(`INSERT INTO word_cards (word, definition) VALUES ('shadow', 'shadow') RETURNING id`).Scan(&wordCardID); err != nil {
+		t.Fatalf("insert word card: %v", err)
+	}
+	if err := conn.QueryRow(`
+		INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, display_word)
+		VALUES (?, 'shadow', 0, 'тень', 'shadow', 'noun', 'shadow')
+		RETURNING id
+	`, wordCardID).Scan(&trainingCardID); err != nil {
+		t.Fatalf("insert training card: %v", err)
+	}
+	dueAt := time.Now().Add(-time.Hour)
+	if _, err := conn.Exec(`
+		INSERT INTO user_cards (user_id, training_card_id, direction, state, ef, reps, interval_days, next_due_at)
+		VALUES (?, ?, 'ru_en', 'review', 2.5, 4, 7, ?)
+	`, user.ID, trainingCardID, dueAt); err != nil {
+		t.Fatalf("insert user card: %v", err)
+	}
+	if _, err := conn.Exec(`INSERT INTO user_word_mastering (user_id, word_card_id, mastering_score) VALUES (?, ?, 80)`, user.ID, wordCardID); err != nil {
+		t.Fatalf("insert mastering: %v", err)
+	}
+	if err := conn.QueryRow(`
+		WITH target AS (
+			SELECT c.id AS course_id, d.id AS district_id, l.id AS location_id
+			FROM courses c
+			JOIN districts d ON d.course_id = c.id AND d.level_code = 'A0'
+			JOIN locations l ON l.district_id = d.id AND l.location_type = 'word_market'
+			WHERE c.code = 'es_ru'
+			LIMIT 1
+		), module AS (
+			INSERT INTO modules (course_id, district_id, location_id, code, module_type, title, source_kind, source_id, sort_order, status)
+			SELECT course_id, district_id, location_id, 'word:shadow-test', 'word_set', 'Shadow Words', 'word_set', 'shadow-test', 1, 'published'
+			FROM target
+			RETURNING id, course_id, district_id, location_id
+		)
+		INSERT INTO learning_items (course_id, module_id, district_id, location_id, item_type, source_kind, source_id, title, cefr_level, status)
+		SELECT course_id, id, district_id, location_id, 'word', 'word_card', CAST(? AS text), 'shadow', 'A0', 'published'
+		FROM module
+		RETURNING id
+	`, fmt.Sprintf("%d", wordCardID)).Scan(&learningItemID); err != nil {
+		t.Fatalf("insert learning item: %v", err)
+	}
+	if _, err := conn.Exec(`
+		INSERT INTO srs_items (user_course_id, learning_item_id, state, due_at, reps, stats_json)
+		VALUES (?, ?, 'review', ?, 3, '{"mastery_score":70}'::jsonb)
+	`, current.UserCourse.ID, learningItemID, dueAt); err != nil {
+		t.Fatalf("insert srs item: %v", err)
+	}
+
+	report, err := repo.GetSRSShadowReportForUser(context.Background(), user.ID, "es_ru", "")
+	if err != nil {
+		t.Fatalf("GetSRSShadowReportForUser: %v", err)
+	}
+	if report.Due.LegacyDueCount != 1 || report.Due.LinglowDueCount != 1 || report.Due.OverlapCount != 1 {
+		t.Fatalf("due shadow = %+v", report.Due)
+	}
+	if report.Mastery.ComparedCount != 1 || report.Mastery.AverageDifference != 10 {
+		t.Fatalf("mastery shadow = %+v", report.Mastery)
+	}
+}
+
+func TestCourseRepository_SRSShadowReportEmpty(t *testing.T) {
+	conn := testutil.SetupTestDB(t)
+	logger := zap.NewNop()
+	userRepo := NewUserRepository(conn, logger)
+	user, err := userRepo.GetOrCreateUser(4350)
+	if err != nil {
+		t.Fatalf("create user: %v", err)
+	}
+	repo := NewCourseRepository(conn, logger)
+	report, err := repo.GetSRSShadowReportForUser(context.Background(), user.ID, "es_ru", "")
+	if err != nil {
+		t.Fatalf("GetSRSShadowReportForUser empty: %v", err)
+	}
+	if report.Course.Code != "es_ru" || report.UserCourse.ID == 0 {
+		t.Fatalf("empty shadow report = %+v", report)
 	}
 }

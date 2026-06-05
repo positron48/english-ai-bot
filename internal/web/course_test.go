@@ -354,6 +354,46 @@ func TestHandleLinglowExerciseAttemptsAndProgress(t *testing.T) {
 	}
 }
 
+func TestHandleLinglowSRSShadow_OK(t *testing.T) {
+	conn := testutil.SetupTestDB(t)
+	logger := zap.NewNop()
+	cfg := &config.Config{Learning: config.LearningConfig{NativeLang: "ru", TargetLang: "es", GrammarBundleID: "es"}}
+	router := NewRouter(logger, cfg, conn, nil, nil, nil, nil)
+	userRepo := repository.NewUserRepository(conn, logger)
+	user, err := userRepo.GetOrCreateUser(100506)
+	if err != nil {
+		t.Fatalf("create user: %v", err)
+	}
+
+	req := httptest.NewRequest(http.MethodGet, "/api/linglow/srs-shadow", nil)
+	req = setUserIDInContext(req, user.ID)
+	w := httptest.NewRecorder()
+	router.handleLinglowSRSShadow(w, req)
+	if w.Code != http.StatusOK {
+		t.Fatalf("status=%d body=%s", w.Code, w.Body.String())
+	}
+	var body struct {
+		Course struct {
+			Code string `json:"code"`
+		} `json:"course"`
+		UserCourse struct {
+			ID int64 `json:"id"`
+		} `json:"user_course"`
+		Due struct {
+			LegacyDueCount int `json:"legacy_due_count"`
+		} `json:"due"`
+		Mastery struct {
+			ComparedCount int `json:"compared_count"`
+		} `json:"mastery"`
+	}
+	if err := json.Unmarshal(w.Body.Bytes(), &body); err != nil {
+		t.Fatalf("decode shadow report: %v", err)
+	}
+	if body.Course.Code != "es_ru" || body.UserCourse.ID == 0 {
+		t.Fatalf("shadow body = %+v", body)
+	}
+}
+
 func TestHandleLearningCourse_Unauthorized(t *testing.T) {
 	conn := testutil.SetupTestDB(t)
 	router := NewRouter(zap.NewNop(), &config.Config{Learning: config.DefaultLearningConfig()}, conn, nil, nil, nil, nil)

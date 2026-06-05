@@ -239,6 +239,34 @@ func (r *Router) handleLinglowProgress(w http.ResponseWriter, req *http.Request)
 	writeJSON(w, progress)
 }
 
+func (r *Router) handleLinglowSRSShadow(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	if r.courseRepo == nil {
+		http.Error(w, "Course repository is not available", http.StatusServiceUnavailable)
+		return
+	}
+	userID := getUserIDFromContext(req.Context())
+	if userID == 0 {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+	explicitCourseCode := req.URL.Query().Get("course_code")
+	report, err := r.courseRepo.GetSRSShadowReportForUser(req.Context(), userID, r.defaultCourseCode(), explicitCourseCode)
+	if err != nil {
+		if errors.Is(err, repository.ErrCourseNotFound) {
+			http.Error(w, "Course not found", http.StatusNotFound)
+			return
+		}
+		r.logger.Error("failed to get Linglow SRS shadow report", zap.Error(err), zap.Int64("user_id", userID), zap.String("course_code", explicitCourseCode))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	writeJSON(w, report)
+}
+
 func (r *Router) handleLinglowExerciseAttempts(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)

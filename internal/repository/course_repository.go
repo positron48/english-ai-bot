@@ -245,6 +245,30 @@ type ExerciseAttemptResult struct {
 	UserCourse      CourseMapUserCourse `json:"user_course"`
 }
 
+type SRSShadowReport struct {
+	Course     CourseMapCourse        `json:"course"`
+	UserCourse CourseMapUserCourse    `json:"user_course"`
+	Due        SRSShadowDueReport     `json:"due"`
+	Mastery    SRSShadowMasteryReport `json:"mastery"`
+	Generated  string                 `json:"generated_at"`
+}
+
+type SRSShadowDueReport struct {
+	LegacyDueCount   int `json:"legacy_due_count"`
+	LinglowDueCount  int `json:"linglow_due_count"`
+	OverlapCount     int `json:"overlap_count"`
+	LegacyOnlyCount  int `json:"legacy_only_count"`
+	LinglowOnlyCount int `json:"linglow_only_count"`
+}
+
+type SRSShadowMasteryReport struct {
+	ComparedCount     int     `json:"compared_count"`
+	AverageLegacy     float64 `json:"average_legacy"`
+	AverageLinglow    float64 `json:"average_linglow"`
+	AverageDifference float64 `json:"average_difference"`
+	MaxDifference     float64 `json:"max_difference"`
+}
+
 func NewCourseRepository(db *sql.DB, logger *zap.Logger) *CourseRepository {
 	return &CourseRepository{db: db, logger: logger}
 }
@@ -692,6 +716,140 @@ func (r *CourseRepository) GetProgressForUser(ctx context.Context, userID int64,
 	return progress, nil
 }
 
+func (r *CourseRepository) GetSRSShadowReportForUser(ctx context.Context, userID int64, defaultCourseCode, explicitCourseCode string) (*SRSShadowReport, error) {
+	if userID == 0 {
+		return nil, fmt.Errorf("user id is empty")
+	}
+	courseCode, err := r.ResolveRequestedCourseCode(ctx, userID, defaultCourseCode, explicitCourseCode)
+	if err != nil {
+		return nil, err
+	}
+	userCourse, err := r.EnsureUserCourse(ctx, userID, courseCode)
+	if err != nil {
+		return nil, err
+	}
+	courseMap, err := r.GetCourseMap(ctx, courseCode, userID)
+	if err != nil {
+		return nil, err
+	}
+	report := &SRSShadowReport{
+		Course:     courseMap.Course,
+		UserCourse: *userCourse,
+		Generated:  time.Now().UTC().Format(time.RFC3339),
+	}
+	if courseMap.UserCourse != nil {
+		report.UserCourse = *courseMap.UserCourse
+	}
+	report.Due, err = r.getSRSShadowDueReport(ctx, userID, userCourse.ID, courseMap.Course.ID)
+	if err != nil {
+		return nil, err
+	}
+	report.Mastery, err = r.getSRSShadowMasteryReport(ctx, userID, userCourse.ID, courseMap.Course.ID)
+	if err != nil {
+		return nil, err
+	}
+	return report, nil
+}
+
+func (r *CourseRepository) getSRSShadowDueReport(ctx context.Context, userID, userCourseID, courseID int64) (SRSShadowDueReport, error) {
+	var report SRSShadowDueReport
+	if err := r.db.QueryRowContext(ctx, `
+		WITH legacy_due AS (
+			SELECT DISTINCT tc.word_card_id
+			FROM user_cards uc
+			JOIN training_cards tc ON tc.id = uc.training_card_id
+			WHERE uc.user_id = ?
+				AND (uc.next_due_at IS NULL OR uc.next_due_at <= CURRENT_TIMESTAMP)
+				AND NOT EXISTS (
+					SELECT 1 FROM user_word_knowledge uwk
+					WHERE uwk.user_id = uc.user_id AND uwk.word_card_id = tc.word_card_id AND uwk.status = 'known'
+				)
+		),
+		linglow_due AS (
+			SELECT DISTINCT li.source_id::BIGINT AS word_card_id
+			FROM srs_items si
+			JOIN learning_items li ON li.id = si.learning_item_id
+			WHERE si.user_course_id = ?
+				AND li.course_id = ?
+				AND li.source_kind = 'word_card'
+				AND li.source_id ~ '^[0-9]+$'
+				AND si.state IN ('learning', 'review', 'relearning')
+				AND (si.due_at IS NULL OR si.due_at <= CURRENT_TIMESTAMP)
+		)
+		SELECT
+			(SELECT COUNT(*) FROM legacy_due),
+			(SELECT COUNT(*) FROM linglow_due),
+			(SELECT COUNT(*) FROM legacy_due l JOIN linglow_due n USING (word_card_id)),
+			(SELECT COUNT(*) FROM legacy_due l WHERE NOT EXISTS (SELECT 1 FROM linglow_due n WHERE n.word_card_id = l.word_card_id)),
+			(SELECT COUNT(*) FROM linglow_due n WHERE NOT EXISTS (SELECT 1 FROM legacy_due l WHERE l.word_card_id = n.word_card_id))
+	`, userID, userCourseID, courseID).Scan(
+		&report.LegacyDueCount,
+		&report.LinglowDueCount,
+		&report.OverlapCount,
+		&report.LegacyOnlyCount,
+		&report.LinglowOnlyCount,
+	); err != nil {
+		return report, fmt.Errorf("get srs shadow due report: %w", err)
+	}
+	return report, nil
+}
+
+func (r *CourseRepository) getSRSShadowMasteryReport(ctx context.Context, userID, userCourseID, courseID int64) (SRSShadowMasteryReport, error) {
+	rows, err := r.db.QueryContext(ctx, `
+		SELECT
+			COALESCE(uwm.mastering_score, 0)::DOUBLE PRECISION AS legacy_score,
+			CASE
+				WHEN si.stats_json->>'mastery_score' IS NOT NULL THEN COALESCE((si.stats_json->>'mastery_score')::DOUBLE PRECISION, 0)
+				WHEN si.state = 'mastered' THEN 100
+				WHEN si.state = 'review' THEN LEAST(100, 50 + (si.reps * 10))
+				WHEN si.state IN ('learning', 'relearning') THEN 25
+				ELSE 0
+			END AS linglow_score
+		FROM srs_items si
+		JOIN learning_items li ON li.id = si.learning_item_id
+		JOIN user_courses uc ON uc.id = si.user_course_id
+		LEFT JOIN user_word_mastering uwm
+			ON uwm.user_id = uc.user_id
+			AND li.source_kind = 'word_card'
+			AND li.source_id ~ '^[0-9]+$'
+			AND uwm.word_card_id = li.source_id::BIGINT
+		WHERE si.user_course_id = ?
+			AND uc.user_id = ?
+			AND li.course_id = ?
+			AND li.source_kind = 'word_card'
+			AND li.source_id ~ '^[0-9]+$'
+	`, userCourseID, userID, courseID)
+	if err != nil {
+		return SRSShadowMasteryReport{}, fmt.Errorf("get srs shadow mastery rows: %w", err)
+	}
+	defer rows.Close()
+	var report SRSShadowMasteryReport
+	var legacyTotal, linglowTotal, diffTotal float64
+	for rows.Next() {
+		var legacy, linglow float64
+		if err := rows.Scan(&legacy, &linglow); err != nil {
+			return report, fmt.Errorf("scan srs shadow mastery row: %w", err)
+		}
+		diff := absFloat(legacy - linglow)
+		report.ComparedCount++
+		legacyTotal += legacy
+		linglowTotal += linglow
+		diffTotal += diff
+		if diff > report.MaxDifference {
+			report.MaxDifference = diff
+		}
+	}
+	if err := rows.Err(); err != nil {
+		return report, fmt.Errorf("iterate srs shadow mastery rows: %w", err)
+	}
+	if report.ComparedCount > 0 {
+		report.AverageLegacy = legacyTotal / float64(report.ComparedCount)
+		report.AverageLinglow = linglowTotal / float64(report.ComparedCount)
+		report.AverageDifference = diffTotal / float64(report.ComparedCount)
+	}
+	return report, nil
+}
+
 func (r *CourseRepository) listProgressByType(ctx context.Context, userCourseID, courseID int64) ([]CourseProgressType, error) {
 	rows, err := r.db.QueryContext(ctx, `
 		SELECT
@@ -1096,6 +1254,13 @@ func maxFloat(left, right float64) float64 {
 		return left
 	}
 	return right
+}
+
+func absFloat(value float64) float64 {
+	if value < 0 {
+		return -value
+	}
+	return value
 }
 
 func (r *CourseRepository) getReviewQueueSummary(ctx context.Context, userCourseID int64) (ReviewQueueSummary, error) {

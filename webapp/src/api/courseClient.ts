@@ -178,6 +178,29 @@ export interface ExerciseAttemptResult {
   }
 }
 
+export interface SRSShadowReport {
+  course: CourseMap['course']
+  user_course: {
+    id: number
+    status: string
+  }
+  due: {
+    legacy_due_count: number
+    linglow_due_count: number
+    overlap_count: number
+    legacy_only_count: number
+    linglow_only_count: number
+  }
+  mastery: {
+    compared_count: number
+    average_legacy: number
+    average_linglow: number
+    average_difference: number
+    max_difference: number
+  }
+  generated_at: string
+}
+
 export const courseClient = {
   getCourseMap(): Promise<CourseMap> {
     return apiClient.request('/api/linglow/city')
@@ -190,6 +213,9 @@ export const courseClient = {
   },
   getProgress(): Promise<CourseProgress> {
     return apiClient.request('/api/linglow/progress')
+  },
+  getSRSShadowReport(): Promise<SRSShadowReport> {
+    return apiClient.request('/api/linglow/srs-shadow')
   },
   recordExerciseAttempt(payload: ExerciseAttemptRequest): Promise<ExerciseAttemptResult> {
     return apiClient.request('/api/linglow/exercise-attempts', {
