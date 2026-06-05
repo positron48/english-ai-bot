@@ -187,6 +187,62 @@ type ReviewQueueSummary struct {
 	ByType          map[string]int `json:"by_type"`
 }
 
+type CourseProgress struct {
+	Course     CourseMapCourse       `json:"course"`
+	UserCourse CourseMapUserCourse   `json:"user_course"`
+	Summary    CourseProgressSummary `json:"summary"`
+	ByType     []CourseProgressType  `json:"by_type"`
+	Generated  string                `json:"generated_at"`
+}
+
+type CourseProgressSummary struct {
+	TotalItems      int     `json:"total_items"`
+	AttemptedItems  int     `json:"attempted_items"`
+	MasteredItems   int     `json:"mastered_items"`
+	DueReviewCount  int     `json:"due_review_count"`
+	AttemptCount    int     `json:"attempt_count"`
+	CorrectCount    int     `json:"correct_count"`
+	ProgressPercent float64 `json:"progress_percent"`
+	AccuracyPercent float64 `json:"accuracy_percent"`
+}
+
+type CourseProgressType struct {
+	Type            string  `json:"type"`
+	TotalItems      int     `json:"total_items"`
+	AttemptedItems  int     `json:"attempted_items"`
+	MasteredItems   int     `json:"mastered_items"`
+	ProgressPercent float64 `json:"progress_percent"`
+}
+
+type ExerciseAttemptInput struct {
+	UserID          int64
+	DefaultCourse   string
+	ExplicitCourse  string
+	LearningItemID  int64
+	SRSItemID       int64
+	Mode            string
+	ClientAttemptID string
+	IsCorrect       *bool
+	Score           *int
+	Quality         *int
+	PromptJSON      string
+	AnswerJSON      string
+	ResultJSON      string
+	AnsweredAt      time.Time
+}
+
+type ExerciseAttemptResult struct {
+	ID              int64               `json:"id"`
+	UserCourseID    int64               `json:"user_course_id"`
+	LearningItemID  *int64              `json:"learning_item_id,omitempty"`
+	SRSItemID       *int64              `json:"srs_item_id,omitempty"`
+	ClientAttemptID string              `json:"client_attempt_id,omitempty"`
+	Duplicate       bool                `json:"duplicate"`
+	EventID         int64               `json:"event_id,omitempty"`
+	Course          CourseMapCourse     `json:"course"`
+	UserCourse      CourseMapUserCourse `json:"user_course"`
+}
+
 func NewCourseRepository(db *sql.DB, logger *zap.Logger) *CourseRepository {
 	return &CourseRepository{db: db, logger: logger}
 }
@@ -578,6 +634,262 @@ func (r *CourseRepository) GetReviewQueueForUser(ctx context.Context, userID int
 	return queue, nil
 }
 
+func (r *CourseRepository) GetProgressForUser(ctx context.Context, userID int64, defaultCourseCode, explicitCourseCode string) (*CourseProgress, error) {
+	if userID == 0 {
+		return nil, fmt.Errorf("user id is empty")
+	}
+	courseCode, err := r.ResolveRequestedCourseCode(ctx, userID, defaultCourseCode, explicitCourseCode)
+	if err != nil {
+		return nil, err
+	}
+	userCourse, err := r.EnsureUserCourse(ctx, userID, courseCode)
+	if err != nil {
+		return nil, err
+	}
+	courseMap, err := r.GetCourseMap(ctx, courseCode, userID)
+	if err != nil {
+		return nil, err
+	}
+	progress := &CourseProgress{
+		Course:     courseMap.Course,
+		UserCourse: *userCourse,
+		Generated:  time.Now().UTC().Format(time.RFC3339),
+	}
+	if courseMap.UserCourse != nil {
+		progress.UserCourse = *courseMap.UserCourse
+	}
+	if err := r.db.QueryRowContext(ctx, `
+		SELECT
+			COUNT(DISTINCT li.id) AS total_items,
+			COUNT(DISTINCT ea.learning_item_id) AS attempted_items,
+			COUNT(DISTINCT CASE WHEN si.state = 'mastered' THEN si.learning_item_id END) AS mastered_items,
+			COUNT(DISTINCT CASE WHEN si.state IN ('learning', 'review', 'relearning') AND (si.due_at IS NULL OR si.due_at <= CURRENT_TIMESTAMP) THEN si.id END) AS due_review_count,
+			COUNT(ea.id) AS attempt_count,
+			COUNT(CASE WHEN ea.is_correct THEN 1 END) AS correct_count
+		FROM learning_items li
+		LEFT JOIN exercise_attempts ea ON ea.learning_item_id = li.id AND ea.user_course_id = ?
+		LEFT JOIN srs_items si ON si.learning_item_id = li.id AND si.user_course_id = ?
+		WHERE li.course_id = ? AND li.status = 'published'
+	`, userCourse.ID, userCourse.ID, courseMap.Course.ID).Scan(
+		&progress.Summary.TotalItems,
+		&progress.Summary.AttemptedItems,
+		&progress.Summary.MasteredItems,
+		&progress.Summary.DueReviewCount,
+		&progress.Summary.AttemptCount,
+		&progress.Summary.CorrectCount,
+	); err != nil {
+		return nil, fmt.Errorf("get course progress summary: %w", err)
+	}
+	progress.Summary.ProgressPercent = percent(progress.Summary.AttemptedItems+progress.Summary.MasteredItems, progress.Summary.TotalItems)
+	progress.Summary.AccuracyPercent = percent(progress.Summary.CorrectCount, progress.Summary.AttemptCount)
+
+	progress.ByType, err = r.listProgressByType(ctx, userCourse.ID, courseMap.Course.ID)
+	if err != nil {
+		return nil, err
+	}
+	return progress, nil
+}
+
+func (r *CourseRepository) listProgressByType(ctx context.Context, userCourseID, courseID int64) ([]CourseProgressType, error) {
+	rows, err := r.db.QueryContext(ctx, `
+		SELECT
+			li.item_type,
+			COUNT(DISTINCT li.id) AS total_items,
+			COUNT(DISTINCT ea.learning_item_id) AS attempted_items,
+			COUNT(DISTINCT CASE WHEN si.state = 'mastered' THEN si.learning_item_id END) AS mastered_items
+		FROM learning_items li
+		LEFT JOIN exercise_attempts ea ON ea.learning_item_id = li.id AND ea.user_course_id = ?
+		LEFT JOIN srs_items si ON si.learning_item_id = li.id AND si.user_course_id = ?
+		WHERE li.course_id = ? AND li.status = 'published'
+		GROUP BY li.item_type
+		ORDER BY li.item_type
+	`, userCourseID, userCourseID, courseID)
+	if err != nil {
+		return nil, fmt.Errorf("list progress by type: %w", err)
+	}
+	defer rows.Close()
+	out := []CourseProgressType{}
+	for rows.Next() {
+		var row CourseProgressType
+		if err := rows.Scan(&row.Type, &row.TotalItems, &row.AttemptedItems, &row.MasteredItems); err != nil {
+			return nil, fmt.Errorf("scan progress type: %w", err)
+		}
+		row.ProgressPercent = percent(row.AttemptedItems+row.MasteredItems, row.TotalItems)
+		out = append(out, row)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("iterate progress types: %w", err)
+	}
+	return out, nil
+}
+
+func (r *CourseRepository) RecordExerciseAttempt(ctx context.Context, input ExerciseAttemptInput) (*ExerciseAttemptResult, error) {
+	if input.UserID == 0 {
+		return nil, fmt.Errorf("user id is empty")
+	}
+	input.Mode = strings.TrimSpace(input.Mode)
+	if input.Mode == "" {
+		return nil, fmt.Errorf("mode is required")
+	}
+	courseCode, err := r.ResolveRequestedCourseCode(ctx, input.UserID, input.DefaultCourse, input.ExplicitCourse)
+	if err != nil {
+		return nil, err
+	}
+	userCourse, err := r.EnsureUserCourse(ctx, input.UserID, courseCode)
+	if err != nil {
+		return nil, err
+	}
+	courseMap, err := r.GetCourseMap(ctx, courseCode, input.UserID)
+	if err != nil {
+		return nil, err
+	}
+	tx, err := r.db.BeginTx(ctx, nil)
+	if err != nil {
+		return nil, fmt.Errorf("begin exercise attempt: %w", err)
+	}
+	defer tx.Rollback()
+
+	var learningItemID interface{}
+	var learningItemIDPtr *int64
+	if input.LearningItemID > 0 {
+		var exists bool
+		if err := tx.QueryRowContext(ctx, `
+			SELECT COUNT(*) > 0
+			FROM learning_items
+			WHERE id = ? AND course_id = ? AND status = 'published'
+		`, input.LearningItemID, courseMap.Course.ID).Scan(&exists); err != nil {
+			return nil, fmt.Errorf("check learning item: %w", err)
+		}
+		if !exists {
+			return nil, fmt.Errorf("learning item %d does not belong to course %s", input.LearningItemID, courseMap.Course.Code)
+		}
+		learningItemID = input.LearningItemID
+		id := input.LearningItemID
+		learningItemIDPtr = &id
+	}
+	var srsItemID interface{}
+	var srsItemIDPtr *int64
+	if input.SRSItemID > 0 {
+		var linkedLearningItemID int64
+		if err := tx.QueryRowContext(ctx, `
+			SELECT learning_item_id
+			FROM srs_items
+			WHERE id = ? AND user_course_id = ?
+		`, input.SRSItemID, userCourse.ID).Scan(&linkedLearningItemID); err != nil {
+			if err == sql.ErrNoRows {
+				return nil, fmt.Errorf("srs item %d does not belong to user course", input.SRSItemID)
+			}
+			return nil, fmt.Errorf("check srs item: %w", err)
+		}
+		if input.LearningItemID > 0 && linkedLearningItemID != input.LearningItemID {
+			return nil, fmt.Errorf("srs item %d does not match learning item %d", input.SRSItemID, input.LearningItemID)
+		}
+		if input.LearningItemID == 0 {
+			learningItemID = linkedLearningItemID
+			id := linkedLearningItemID
+			learningItemIDPtr = &id
+		}
+		srsItemID = input.SRSItemID
+		id := input.SRSItemID
+		srsItemIDPtr = &id
+	}
+	clientAttemptID := strings.TrimSpace(input.ClientAttemptID)
+	if clientAttemptID != "" {
+		existing, err := r.getExistingExerciseAttempt(ctx, tx, userCourse.ID, clientAttemptID, courseMap.Course, *userCourse)
+		if err != nil {
+			return nil, err
+		}
+		if existing != nil {
+			return existing, tx.Commit()
+		}
+	}
+	answeredAt := input.AnsweredAt
+	if answeredAt.IsZero() {
+		answeredAt = time.Now()
+	}
+	promptJSON := normalizeJSONObject(input.PromptJSON)
+	answerJSON := normalizeJSONObject(input.AnswerJSON)
+	resultJSON := normalizeJSONObject(input.ResultJSON)
+	var clientAttemptValue interface{}
+	if clientAttemptID != "" {
+		clientAttemptValue = clientAttemptID
+	}
+	var exerciseID int64
+	if err := tx.QueryRowContext(ctx, `
+		INSERT INTO exercise_attempts (
+			user_course_id, learning_item_id, srs_item_id, mode, client_attempt_id,
+			started_at, answered_at, is_correct, score, quality,
+			prompt_json, answer_json, result_json, source_table, source_pk
+		)
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CAST(? AS jsonb), CAST(? AS jsonb), CAST(? AS jsonb), 'linglow_api', ?)
+		RETURNING id
+	`, userCourse.ID, learningItemID, srsItemID, input.Mode, clientAttemptValue, answeredAt, answeredAt, input.IsCorrect, input.Score, input.Quality, promptJSON, answerJSON, resultJSON, clientAttemptID).Scan(&exerciseID); err != nil {
+		return nil, fmt.Errorf("insert exercise attempt: %w", err)
+	}
+	eventJSON, _ := json.Marshal(map[string]interface{}{
+		"mode":              input.Mode,
+		"client_attempt_id": clientAttemptID,
+		"is_correct":        input.IsCorrect,
+		"score":             input.Score,
+		"quality":           input.Quality,
+	})
+	var eventID int64
+	if err := tx.QueryRowContext(ctx, `
+		INSERT INTO learning_events (
+			user_course_id, learning_item_id, exercise_attempt_id,
+			event_type, event_time, mode, source_table, source_pk, event_json
+		)
+		VALUES (?, ?, ?, 'exercise_attempt_submitted', ?, ?, 'linglow_api', ?, CAST(? AS jsonb))
+		RETURNING id
+	`, userCourse.ID, learningItemID, exerciseID, answeredAt, input.Mode, clientAttemptID, string(eventJSON)).Scan(&eventID); err != nil {
+		return nil, fmt.Errorf("insert learning event: %w", err)
+	}
+	if err := tx.Commit(); err != nil {
+		return nil, fmt.Errorf("commit exercise attempt: %w", err)
+	}
+	return &ExerciseAttemptResult{
+		ID:              exerciseID,
+		UserCourseID:    userCourse.ID,
+		LearningItemID:  learningItemIDPtr,
+		SRSItemID:       srsItemIDPtr,
+		ClientAttemptID: clientAttemptID,
+		EventID:         eventID,
+		Course:          courseMap.Course,
+		UserCourse:      *userCourse,
+	}, nil
+}
+
+func (r *CourseRepository) getExistingExerciseAttempt(ctx context.Context, tx *sql.Tx, userCourseID int64, clientAttemptID string, course CourseMapCourse, userCourse CourseMapUserCourse) (*ExerciseAttemptResult, error) {
+	var result ExerciseAttemptResult
+	var learningItemID sql.NullInt64
+	var srsItemID sql.NullInt64
+	err := tx.QueryRowContext(ctx, `
+		SELECT id, learning_item_id, srs_item_id
+		FROM exercise_attempts
+		WHERE user_course_id = ? AND client_attempt_id = ?
+	`, userCourseID, clientAttemptID).Scan(&result.ID, &learningItemID, &srsItemID)
+	if err != nil && err != sql.ErrNoRows {
+		return nil, fmt.Errorf("check existing exercise attempt: %w", err)
+	}
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
+	result.UserCourseID = userCourseID
+	result.ClientAttemptID = clientAttemptID
+	result.Duplicate = true
+	result.Course = course
+	result.UserCourse = userCourse
+	if learningItemID.Valid {
+		id := learningItemID.Int64
+		result.LearningItemID = &id
+	}
+	if srsItemID.Valid {
+		id := srsItemID.Int64
+		result.SRSItemID = &id
+	}
+	return &result, nil
+}
+
 func (r *CourseRepository) getReviewQueueSummary(ctx context.Context, userCourseID int64) (ReviewQueueSummary, error) {
 	summary := ReviewQueueSummary{ByType: map[string]int{}}
 	rows, err := r.db.QueryContext(ctx, `
@@ -835,6 +1147,21 @@ func dailyRouteMode(itemType string) string {
 	default:
 		return itemType
 	}
+}
+
+func normalizeJSONObject(raw string) string {
+	raw = strings.TrimSpace(raw)
+	if raw == "" {
+		return "{}"
+	}
+	return raw
+}
+
+func percent(numerator, denominator int) float64 {
+	if denominator <= 0 {
+		return 0
+	}
+	return float64(numerator) * 100 / float64(denominator)
 }
 
 // GetCourseMap returns the Linglow v2 course map with the current user's course enrollment when present.

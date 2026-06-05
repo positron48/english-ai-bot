@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"tgbot-skeleton/internal/repository"
 
@@ -210,6 +211,119 @@ func (r *Router) handleLinglowReview(w http.ResponseWriter, req *http.Request) {
 	writeJSON(w, queue)
 }
 
+func (r *Router) handleLinglowProgress(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	if r.courseRepo == nil {
+		http.Error(w, "Course repository is not available", http.StatusServiceUnavailable)
+		return
+	}
+	userID := getUserIDFromContext(req.Context())
+	if userID == 0 {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+	explicitCourseCode := req.URL.Query().Get("course_code")
+	progress, err := r.courseRepo.GetProgressForUser(req.Context(), userID, r.defaultCourseCode(), explicitCourseCode)
+	if err != nil {
+		if errors.Is(err, repository.ErrCourseNotFound) {
+			http.Error(w, "Course not found", http.StatusNotFound)
+			return
+		}
+		r.logger.Error("failed to get Linglow progress", zap.Error(err), zap.Int64("user_id", userID), zap.String("course_code", explicitCourseCode))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	writeJSON(w, progress)
+}
+
+func (r *Router) handleLinglowExerciseAttempts(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	if r.courseRepo == nil {
+		http.Error(w, "Course repository is not available", http.StatusServiceUnavailable)
+		return
+	}
+	userID := getUserIDFromContext(req.Context())
+	if userID == 0 {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+	var body struct {
+		CourseCode      string          `json:"course_code"`
+		LearningItemID  int64           `json:"learning_item_id"`
+		SRSItemID       int64           `json:"srs_item_id"`
+		Mode            string          `json:"mode"`
+		ClientAttemptID string          `json:"client_attempt_id"`
+		IsCorrect       *bool           `json:"is_correct"`
+		Score           *int            `json:"score"`
+		Quality         *int            `json:"quality"`
+		Prompt          json.RawMessage `json:"prompt"`
+		Answer          json.RawMessage `json:"answer"`
+		Result          json.RawMessage `json:"result"`
+		AnsweredAt      string          `json:"answered_at"`
+	}
+	if err := json.NewDecoder(req.Body).Decode(&body); err != nil {
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
+		return
+	}
+	if strings.TrimSpace(body.Mode) == "" {
+		http.Error(w, "mode is required", http.StatusBadRequest)
+		return
+	}
+	promptJSON, ok := rawObjectJSON(w, body.Prompt, "prompt")
+	if !ok {
+		return
+	}
+	answerJSON, ok := rawObjectJSON(w, body.Answer, "answer")
+	if !ok {
+		return
+	}
+	resultJSON, ok := rawObjectJSON(w, body.Result, "result")
+	if !ok {
+		return
+	}
+	var answeredAt time.Time
+	if strings.TrimSpace(body.AnsweredAt) != "" {
+		parsed, err := time.Parse(time.RFC3339, strings.TrimSpace(body.AnsweredAt))
+		if err != nil {
+			http.Error(w, "answered_at must be RFC3339", http.StatusBadRequest)
+			return
+		}
+		answeredAt = parsed
+	}
+	result, err := r.courseRepo.RecordExerciseAttempt(req.Context(), repository.ExerciseAttemptInput{
+		UserID:          userID,
+		DefaultCourse:   r.defaultCourseCode(),
+		ExplicitCourse:  body.CourseCode,
+		LearningItemID:  body.LearningItemID,
+		SRSItemID:       body.SRSItemID,
+		Mode:            body.Mode,
+		ClientAttemptID: body.ClientAttemptID,
+		IsCorrect:       body.IsCorrect,
+		Score:           body.Score,
+		Quality:         body.Quality,
+		PromptJSON:      promptJSON,
+		AnswerJSON:      answerJSON,
+		ResultJSON:      resultJSON,
+		AnsweredAt:      answeredAt,
+	})
+	if err != nil {
+		if errors.Is(err, repository.ErrCourseNotFound) {
+			http.Error(w, "Course not found", http.StatusNotFound)
+			return
+		}
+		r.logger.Warn("failed to record Linglow exercise attempt", zap.Error(err), zap.Int64("user_id", userID), zap.String("course_code", body.CourseCode))
+		http.Error(w, "Invalid exercise attempt", http.StatusBadRequest)
+		return
+	}
+	writeJSON(w, result)
+}
+
 func parsePositiveLimit(w http.ResponseWriter, req *http.Request, defaultLimit int) (int, bool) {
 	rawLimit := strings.TrimSpace(req.URL.Query().Get("limit"))
 	if rawLimit == "" {
@@ -221,6 +335,18 @@ func parsePositiveLimit(w http.ResponseWriter, req *http.Request, defaultLimit i
 		return 0, false
 	}
 	return parsed, true
+}
+
+func rawObjectJSON(w http.ResponseWriter, raw json.RawMessage, field string) (string, bool) {
+	if len(raw) == 0 {
+		return "{}", true
+	}
+	var object map[string]interface{}
+	if err := json.Unmarshal(raw, &object); err != nil {
+		http.Error(w, field+" must be a JSON object", http.StatusBadRequest)
+		return "", false
+	}
+	return string(raw), true
 }
 
 func writeJSON(w http.ResponseWriter, value interface{}) {

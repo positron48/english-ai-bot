@@ -21,6 +21,7 @@
 - Phase 6/current-course city API: `GET /api/linglow/city` добавлен как новый endpoint карты города; `/api/learning/course` оставлен совместимым alias. Оба endpoint используют resolution `course_code query -> users.settings_json.current_course_code -> legacy env default`, а explicit read не меняет текущий курс пользователя.
 - Phase 6/daily-route API foundation: добавлен protected `GET /api/linglow/daily-route`, который отдаёт текущий course/user_course, due SRS summary, due review items и next new learning items, scoped строго через `user_course_id`.
 - Phase 6/review API foundation: добавлен protected `GET /api/linglow/review`, который отдаёт due SRS queue и summary по состояниям/типам строго внутри текущего `user_course_id`.
+- Phase 6/progress + generic attempt API foundation: добавлены protected `GET /api/linglow/progress` и `POST /api/linglow/exercise-attempts`; write endpoint проверяет принадлежность item/SRS к resolved `user_course_id`, пишет `exercise_attempts` + `learning_events`, idempotency по `(user_course_id, client_attempt_id)`.
 
 ## 1. Текущая точка
 
@@ -400,9 +401,9 @@ Rollback:
    - `GET /api/user/courses/current` - готово;
    - `GET /api/linglow/city` - готово;
    - `GET /api/linglow/daily-route` - готово как read-only foundation;
-   - `POST /api/linglow/exercise-attempts`
+   - `POST /api/linglow/exercise-attempts` - готово как generic foundation;
    - `GET /api/linglow/review` - готово как read-only foundation;
-   - `GET /api/linglow/progress`
+   - `GET /api/linglow/progress` - готово как aggregate foundation;
 
 2. Старые API оставить совместимыми.
 

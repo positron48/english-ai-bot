@@ -439,3 +439,92 @@ func TestCourseRepository_ReviewQueueForUser(t *testing.T) {
 		t.Fatalf("queue items = %+v", queue.Items)
 	}
 }
+
+func TestCourseRepository_RecordExerciseAttemptAndProgress(t *testing.T) {
+	conn := testutil.SetupTestDB(t)
+	logger := zap.NewNop()
+	userRepo := NewUserRepository(conn, logger)
+	user, err := userRepo.GetOrCreateUser(4347)
+	if err != nil {
+		t.Fatalf("create user: %v", err)
+	}
+	repo := NewCourseRepository(conn, logger)
+	if _, err := repo.SelectCurrentCourse(context.Background(), user.ID, "es_ru"); err != nil {
+		t.Fatalf("SelectCurrentCourse: %v", err)
+	}
+
+	var itemID int64
+	if err := conn.QueryRow(`
+		WITH target AS (
+			SELECT c.id AS course_id, d.id AS district_id, l.id AS location_id
+			FROM courses c
+			JOIN districts d ON d.course_id = c.id AND d.level_code = 'A0'
+			JOIN locations l ON l.district_id = d.id AND l.location_type = 'grammar'
+			WHERE c.code = 'es_ru'
+			LIMIT 1
+		), module AS (
+			INSERT INTO modules (course_id, district_id, location_id, code, module_type, title, source_kind, source_id, sort_order, status)
+			SELECT course_id, district_id, location_id, 'grammar:attempt-test', 'grammar', 'Attempt Grammar', 'grammar_category', 'attempt-test', 1, 'published'
+			FROM target
+			RETURNING id, course_id, district_id, location_id
+		)
+		INSERT INTO learning_items (course_id, module_id, district_id, location_id, item_type, source_kind, source_id, title, cefr_level, status)
+		SELECT course_id, id, district_id, location_id, 'grammar_theory_block', 'grammar_theory_block', 'attempt-item', 'Attempt Block', 'A0', 'published'
+		FROM module
+		RETURNING id
+	`).Scan(&itemID); err != nil {
+		t.Fatalf("insert item: %v", err)
+	}
+
+	correct := true
+	score := 90
+	quality := 4
+	first, err := repo.RecordExerciseAttempt(context.Background(), ExerciseAttemptInput{
+		UserID:          user.ID,
+		DefaultCourse:   "es_ru",
+		LearningItemID:  itemID,
+		Mode:            "grammar",
+		ClientAttemptID: "attempt-1",
+		IsCorrect:       &correct,
+		Score:           &score,
+		Quality:         &quality,
+		PromptJSON:      `{"kind":"test"}`,
+		AnswerJSON:      `{"answer":"x"}`,
+		ResultJSON:      `{"ok":true}`,
+	})
+	if err != nil {
+		t.Fatalf("RecordExerciseAttempt first: %v", err)
+	}
+	second, err := repo.RecordExerciseAttempt(context.Background(), ExerciseAttemptInput{
+		UserID:          user.ID,
+		DefaultCourse:   "es_ru",
+		LearningItemID:  itemID,
+		Mode:            "grammar",
+		ClientAttemptID: "attempt-1",
+		IsCorrect:       &correct,
+	})
+	if err != nil {
+		t.Fatalf("RecordExerciseAttempt duplicate: %v", err)
+	}
+	if second.ID != first.ID || !second.Duplicate {
+		t.Fatalf("duplicate result = %+v first=%+v", second, first)
+	}
+	var attempts, events int
+	if err := conn.QueryRow(`SELECT COUNT(*) FROM exercise_attempts WHERE client_attempt_id = 'attempt-1'`).Scan(&attempts); err != nil {
+		t.Fatalf("count attempts: %v", err)
+	}
+	if err := conn.QueryRow(`SELECT COUNT(*) FROM learning_events WHERE exercise_attempt_id = ?`, first.ID).Scan(&events); err != nil {
+		t.Fatalf("count events: %v", err)
+	}
+	if attempts != 1 || events != 1 {
+		t.Fatalf("attempts=%d events=%d", attempts, events)
+	}
+
+	progress, err := repo.GetProgressForUser(context.Background(), user.ID, "es_ru", "")
+	if err != nil {
+		t.Fatalf("GetProgressForUser: %v", err)
+	}
+	if progress.Summary.AttemptedItems != 1 || progress.Summary.AttemptCount != 1 || progress.Summary.CorrectCount != 1 {
+		t.Fatalf("progress summary = %+v", progress.Summary)
+	}
+}
