@@ -24,6 +24,7 @@
 - Phase 6/progress + generic attempt API foundation: добавлены protected `GET /api/linglow/progress` и `POST /api/linglow/exercise-attempts`; write endpoint проверяет принадлежность item/SRS к resolved `user_course_id`, пишет `exercise_attempts` + `learning_events`, idempotency по `(user_course_id, client_attempt_id)`.
 - Phase 7/SRS write foundation: добавлен feature flag `LINGLOW_SRS_WRITE_ENABLED`; при включении `POST /api/linglow/exercise-attempts` создаёт/обновляет canonical `srs_items` по SM-2-compatible алгоритму и связывает `exercise_attempts.srs_item_id`, старые runtime paths не переключены.
 - Phase 7/SRS shadow-read foundation: добавлен feature flag `LINGLOW_SRS_READ_ENABLED` (default off) и protected diagnostics endpoint `GET /api/linglow/srs-shadow`, который сравнивает legacy word due/mastery с canonical `srs_items` для текущего `user_course_id`.
+- Phase 8/City Home foundation: `/city` получил course selector, progress summary, daily route и review station blocks поверх `GET /api/courses`, `/api/linglow/progress`, `/api/linglow/daily-route`, `/api/linglow/review`; старая карта districts/locations сохранена.
 
 ## 1. Текущая точка
 
@@ -486,14 +487,15 @@ Rollback:
 Шаги:
 
 1. Добавить course selector.
+   - готово на `/city`.
 
 2. Добавить City Home:
    - city name;
    - districts A0-C1;
    - locked/unlocked states;
-   - current daily route;
-   - review pressure;
-   - next openings.
+   - current daily route - готово как compact block;
+   - review pressure - готово из progress/review API;
+   - next openings - готово из daily-route summary.
 
 3. Добавить District view:
    - buildings/locations;

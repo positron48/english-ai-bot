@@ -68,6 +68,28 @@ export interface CourseMap {
   }
 }
 
+export interface CourseSummary {
+  id: number
+  code: string
+  title: string
+  city_name: string
+  target_language: string
+  native_language: string
+  ui_locale: string
+  status: string
+  is_current: boolean
+  user_course_id?: number
+  user_status?: string
+}
+
+export interface CurrentCourse {
+  course: CourseSummary
+  user_course: {
+    id: number
+    status: string
+  }
+}
+
 export interface DailyRouteItem {
   learning_item_id: number
   srs_item_id?: number
@@ -202,20 +224,29 @@ export interface SRSShadowReport {
 }
 
 export const courseClient = {
-  getCourseMap(): Promise<CourseMap> {
-    return apiClient.request('/api/linglow/city')
+  getCourses(): Promise<{ courses: CourseSummary[] }> {
+    return apiClient.request('/api/courses')
   },
-  getDailyRoute(limit = 8): Promise<DailyRoute> {
-    return apiClient.request(`/api/linglow/daily-route?limit=${encodeURIComponent(String(limit))}`)
+  selectCourse(courseCode: string): Promise<CurrentCourse> {
+    return apiClient.request('/api/user/courses/select', {
+      method: 'POST',
+      body: JSON.stringify({ course_code: courseCode }),
+    })
   },
-  getReviewQueue(limit = 20): Promise<ReviewQueue> {
-    return apiClient.request(`/api/linglow/review?limit=${encodeURIComponent(String(limit))}`)
+  getCourseMap(courseCode?: string): Promise<CourseMap> {
+    return apiClient.request(withCourseCode('/api/linglow/city', courseCode))
   },
-  getProgress(): Promise<CourseProgress> {
-    return apiClient.request('/api/linglow/progress')
+  getDailyRoute(limit = 8, courseCode?: string): Promise<DailyRoute> {
+    return apiClient.request(withCourseCode(`/api/linglow/daily-route?limit=${encodeURIComponent(String(limit))}`, courseCode))
   },
-  getSRSShadowReport(): Promise<SRSShadowReport> {
-    return apiClient.request('/api/linglow/srs-shadow')
+  getReviewQueue(limit = 20, courseCode?: string): Promise<ReviewQueue> {
+    return apiClient.request(withCourseCode(`/api/linglow/review?limit=${encodeURIComponent(String(limit))}`, courseCode))
+  },
+  getProgress(courseCode?: string): Promise<CourseProgress> {
+    return apiClient.request(withCourseCode('/api/linglow/progress', courseCode))
+  },
+  getSRSShadowReport(courseCode?: string): Promise<SRSShadowReport> {
+    return apiClient.request(withCourseCode('/api/linglow/srs-shadow', courseCode))
   },
   recordExerciseAttempt(payload: ExerciseAttemptRequest): Promise<ExerciseAttemptResult> {
     return apiClient.request('/api/linglow/exercise-attempts', {
@@ -223,4 +254,10 @@ export const courseClient = {
       body: JSON.stringify(payload),
     })
   },
+}
+
+function withCourseCode(url: string, courseCode?: string): string {
+  if (!courseCode) return url
+  const sep = url.includes('?') ? '&' : '?'
+  return `${url}${sep}course_code=${encodeURIComponent(courseCode)}`
 }
