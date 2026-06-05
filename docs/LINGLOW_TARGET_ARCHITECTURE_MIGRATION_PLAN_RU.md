@@ -26,6 +26,7 @@
 - Phase 7/SRS shadow-read foundation: добавлен feature flag `LINGLOW_SRS_READ_ENABLED` (default off) и protected diagnostics endpoint `GET /api/linglow/srs-shadow`, который сравнивает legacy word due/mastery с canonical `srs_items` для текущего `user_course_id`.
 - Phase 7/SRS gated-read foundation: `GET /api/linglow/review` и `GET /api/linglow/daily-route` теперь реально уважают `LINGLOW_SRS_READ_ENABLED`; default off читает legacy `user_cards`/`grammar_theory_memory`, on читает canonical `srs_items`, в summary отдаётся `read_source`.
 - Phase 7/SRS read readiness foundation: `/api/linglow/srs-shadow` расширен блоком `review_queue`, который сравнивает legacy vs canonical due queue по `learning_item_id` для word + grammar theory и отдаёт `ready_for_canonical_read`.
+- Phase 7/SRS admin readiness UI: добавлен `/admin/linglow-srs` read-only экран для админов, который показывает `/api/linglow/srs-shadow`, course selector, readiness, due/mismatch/mastery metrics и breakdown по типам.
 - Phase 8/City Home foundation: `/city` получил course selector, progress summary, daily route и review station blocks поверх `GET /api/courses`, `/api/linglow/progress`, `/api/linglow/daily-route`, `/api/linglow/review`; старая карта districts/locations сохранена.
 - Phase 8/District UX foundation: добавлен `/city/district/:districtCode` поверх `GET /api/linglow/city`; City Home получил кликабельные daily/review items, переходы в district/location и Simple Mode быстрые входы в review, grammar, reading и words.
 
@@ -467,6 +468,7 @@ Rollback:
    - старый due list vs новый due list - готово для word SRS через `/api/linglow/srs-shadow`;
    - старый mastery score vs новый confidence/stability - готово для mapped word items через `/api/linglow/srs-shadow`;
    - readiness review queue legacy vs canonical по word + grammar theory через `review_queue.ready_for_canonical_read` - готово.
+   - админский read-only экран `/admin/linglow-srs` для операционной проверки readiness - готово.
 
 5. Ввести flags:
    - `LINGLOW_SRS_READ_ENABLED` - готово, default off;

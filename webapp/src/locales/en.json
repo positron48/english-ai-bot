@@ -115,6 +115,29 @@
       "mistake_workshop": "Mistakes"
     }
   },
+  "adminLinglowSRS": {
+    "title": "Linglow SRS",
+    "subtitle": "Compare legacy and canonical review queues before switching SRS reads.",
+    "readiness": "Canonical read readiness",
+    "ready": "Ready to switch",
+    "notReady": "Mismatches found",
+    "legacyQueue": "legacy queue",
+    "canonicalQueue": "canonical queue",
+    "overlap": "overlap",
+    "onlyMismatch": "legacy only / canonical only",
+    "reviewQueue": "Review queue",
+    "wordDue": "Word due",
+    "mastery": "Mastery",
+    "legacy": "Legacy",
+    "canonical": "Canonical",
+    "legacyOnly": "Legacy only",
+    "canonicalOnly": "Canonical only",
+    "compared": "Compared",
+    "avgLegacy": "Avg legacy",
+    "avgCanonical": "Avg canonical",
+    "avgDiff": "Avg diff",
+    "maxDiff": "Max diff"
+  },
   "auth": {
     "error": "Authorization error:",
     "telegramAuthFailed": "Telegram authorization failed. Please use OTP login.",

@@ -115,6 +115,29 @@
       "mistake_workshop": "Errores"
     }
   },
+  "adminLinglowSRS": {
+    "title": "Linglow SRS",
+    "subtitle": "Compara colas legacy y canonical antes de cambiar lecturas SRS.",
+    "readiness": "Preparación de lectura canonical",
+    "ready": "Listo para cambiar",
+    "notReady": "Hay diferencias",
+    "legacyQueue": "cola legacy",
+    "canonicalQueue": "cola canonical",
+    "overlap": "coincidencias",
+    "onlyMismatch": "solo legacy / solo canonical",
+    "reviewQueue": "Cola de repaso",
+    "wordDue": "Palabras pendientes",
+    "mastery": "Dominio",
+    "legacy": "Legacy",
+    "canonical": "Canonical",
+    "legacyOnly": "Solo legacy",
+    "canonicalOnly": "Solo canonical",
+    "compared": "Comparados",
+    "avgLegacy": "Promedio legacy",
+    "avgCanonical": "Promedio canonical",
+    "avgDiff": "Diferencia media",
+    "maxDiff": "Diferencia máx."
+  },
   "auth": {
     "error": "Error de autorización:",
     "telegramAuthFailed": "La autorización por Telegram falló. Por favor, use inicio por OTP.",

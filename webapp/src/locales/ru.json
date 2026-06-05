@@ -115,6 +115,29 @@
       "mistake_workshop": "Ошибки"
     }
   },
+  "adminLinglowSRS": {
+    "title": "Linglow SRS",
+    "subtitle": "Сверка legacy и canonical очередей перед переключением чтения SRS.",
+    "readiness": "Готовность canonical read",
+    "ready": "Готово к переключению",
+    "notReady": "Есть расхождения",
+    "legacyQueue": "legacy очередь",
+    "canonicalQueue": "canonical очередь",
+    "overlap": "совпадения",
+    "onlyMismatch": "legacy only / canonical only",
+    "reviewQueue": "Review queue",
+    "wordDue": "Word due",
+    "mastery": "Mastery",
+    "legacy": "Legacy",
+    "canonical": "Canonical",
+    "legacyOnly": "Legacy only",
+    "canonicalOnly": "Canonical only",
+    "compared": "Сравнено",
+    "avgLegacy": "Среднее legacy",
+    "avgCanonical": "Среднее canonical",
+    "avgDiff": "Средняя разница",
+    "maxDiff": "Макс. разница"
+  },
   "auth": {
     "error": "Ошибка авторизации:",
     "telegramAuthFailed": "Авторизация через Telegram не удалась. Пожалуйста, используйте OTP вход.",

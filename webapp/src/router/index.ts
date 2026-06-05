@@ -214,6 +214,11 @@ const router = createRouter({
           component: () => import('../views/AdminAppSettingsView.vue')
         },
         {
+          path: 'linglow-srs',
+          name: 'AdminLinglowSRS',
+          component: () => import('../views/AdminLinglowSRSView.vue')
+        },
+        {
           path: 'access',
           name: 'AdminAccess',
           component: () => import('../views/AdminAccessView.vue')

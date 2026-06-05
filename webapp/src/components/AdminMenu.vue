@@ -133,6 +133,16 @@
         <Icon name="gear" class="admin-sidebar-icon" />
         <span>App Settings</span>
       </router-link>
+      <router-link
+        v-if="can('full_access')"
+        to="/admin/linglow-srs"
+        class="admin-sidebar-item"
+        :class="{ active: $route.path === '/admin/linglow-srs' }"
+        @click="isMobile && handleCloseSidebar()"
+      >
+        <Icon name="chart" class="admin-sidebar-icon" />
+        <span>Linglow SRS</span>
+      </router-link>
       <router-link 
         v-if="can('full_access')"
         to="/admin/access" 
