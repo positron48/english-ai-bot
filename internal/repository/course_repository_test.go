@@ -793,6 +793,12 @@ func TestCourseRepository_SRSShadowReportForUser(t *testing.T) {
 	if report.Due.LegacyDueCount != 1 || report.Due.LinglowDueCount != 1 || report.Due.OverlapCount != 1 {
 		t.Fatalf("due shadow = %+v", report.Due)
 	}
+	if report.ReviewQueue.LegacyDueCount != 1 || report.ReviewQueue.CanonicalDueCount != 1 || report.ReviewQueue.OverlapCount != 1 || !report.ReviewQueue.ReadyForCanonicalRead {
+		t.Fatalf("review queue shadow = %+v", report.ReviewQueue)
+	}
+	if report.ReviewQueue.ByType["word"] != 1 {
+		t.Fatalf("review queue by type = %+v", report.ReviewQueue.ByType)
+	}
 	if report.Mastery.ComparedCount != 1 || report.Mastery.AverageDifference != 10 {
 		t.Fatalf("mastery shadow = %+v", report.Mastery)
 	}
@@ -813,5 +819,8 @@ func TestCourseRepository_SRSShadowReportEmpty(t *testing.T) {
 	}
 	if report.Course.Code != "es_ru" || report.UserCourse.ID == 0 {
 		t.Fatalf("empty shadow report = %+v", report)
+	}
+	if !report.ReviewQueue.ReadyForCanonicalRead {
+		t.Fatalf("empty review queue shadow should be ready: %+v", report.ReviewQueue)
 	}
 }

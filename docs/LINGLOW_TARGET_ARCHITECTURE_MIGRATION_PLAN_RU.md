@@ -25,6 +25,7 @@
 - Phase 7/SRS write foundation: добавлен feature flag `LINGLOW_SRS_WRITE_ENABLED`; при включении `POST /api/linglow/exercise-attempts` создаёт/обновляет canonical `srs_items` по SM-2-compatible алгоритму и связывает `exercise_attempts.srs_item_id`, старые runtime paths не переключены.
 - Phase 7/SRS shadow-read foundation: добавлен feature flag `LINGLOW_SRS_READ_ENABLED` (default off) и protected diagnostics endpoint `GET /api/linglow/srs-shadow`, который сравнивает legacy word due/mastery с canonical `srs_items` для текущего `user_course_id`.
 - Phase 7/SRS gated-read foundation: `GET /api/linglow/review` и `GET /api/linglow/daily-route` теперь реально уважают `LINGLOW_SRS_READ_ENABLED`; default off читает legacy `user_cards`/`grammar_theory_memory`, on читает canonical `srs_items`, в summary отдаётся `read_source`.
+- Phase 7/SRS read readiness foundation: `/api/linglow/srs-shadow` расширен блоком `review_queue`, который сравнивает legacy vs canonical due queue по `learning_item_id` для word + grammar theory и отдаёт `ready_for_canonical_read`.
 - Phase 8/City Home foundation: `/city` получил course selector, progress summary, daily route и review station blocks поверх `GET /api/courses`, `/api/linglow/progress`, `/api/linglow/daily-route`, `/api/linglow/review`; старая карта districts/locations сохранена.
 - Phase 8/District UX foundation: добавлен `/city/district/:districtCode` поверх `GET /api/linglow/city`; City Home получил кликабельные daily/review items, переходы в district/location и Simple Mode быстрые входы в review, grammar, reading и words.
 
@@ -464,7 +465,8 @@ Rollback:
 
 4. Добавить shadow-read сравнение:
    - старый due list vs новый due list - готово для word SRS через `/api/linglow/srs-shadow`;
-   - старый mastery score vs новый confidence/stability - готово для mapped word items через `/api/linglow/srs-shadow`.
+   - старый mastery score vs новый confidence/stability - готово для mapped word items через `/api/linglow/srs-shadow`;
+   - readiness review queue legacy vs canonical по word + grammar theory через `review_queue.ready_for_canonical_read` - готово.
 
 5. Ввести flags:
    - `LINGLOW_SRS_READ_ENABLED` - готово, default off;

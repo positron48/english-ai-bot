@@ -248,11 +248,12 @@ type ExerciseAttemptResult struct {
 }
 
 type SRSShadowReport struct {
-	Course     CourseMapCourse        `json:"course"`
-	UserCourse CourseMapUserCourse    `json:"user_course"`
-	Due        SRSShadowDueReport     `json:"due"`
-	Mastery    SRSShadowMasteryReport `json:"mastery"`
-	Generated  string                 `json:"generated_at"`
+	Course      CourseMapCourse            `json:"course"`
+	UserCourse  CourseMapUserCourse        `json:"user_course"`
+	Due         SRSShadowDueReport         `json:"due"`
+	ReviewQueue SRSShadowReviewQueueReport `json:"review_queue"`
+	Mastery     SRSShadowMasteryReport     `json:"mastery"`
+	Generated   string                     `json:"generated_at"`
 }
 
 type SRSShadowDueReport struct {
@@ -269,6 +270,16 @@ type SRSShadowMasteryReport struct {
 	AverageLinglow    float64 `json:"average_linglow"`
 	AverageDifference float64 `json:"average_difference"`
 	MaxDifference     float64 `json:"max_difference"`
+}
+
+type SRSShadowReviewQueueReport struct {
+	LegacyDueCount        int            `json:"legacy_due_count"`
+	CanonicalDueCount     int            `json:"canonical_due_count"`
+	OverlapCount          int            `json:"overlap_count"`
+	LegacyOnlyCount       int            `json:"legacy_only_count"`
+	CanonicalOnlyCount    int            `json:"canonical_only_count"`
+	ReadyForCanonicalRead bool           `json:"ready_for_canonical_read"`
+	ByType                map[string]int `json:"by_type"`
 }
 
 func NewCourseRepository(db *sql.DB, logger *zap.Logger) *CourseRepository {
@@ -754,10 +765,137 @@ func (r *CourseRepository) GetSRSShadowReportForUser(ctx context.Context, userID
 	if err != nil {
 		return nil, err
 	}
+	report.ReviewQueue, err = r.getSRSShadowReviewQueueReport(ctx, userID, userCourse.ID, courseMap.Course.Code)
+	if err != nil {
+		return nil, err
+	}
 	report.Mastery, err = r.getSRSShadowMasteryReport(ctx, userID, userCourse.ID, courseMap.Course.ID)
 	if err != nil {
 		return nil, err
 	}
+	return report, nil
+}
+
+func (r *CourseRepository) getSRSShadowReviewQueueReport(ctx context.Context, userID, userCourseID int64, courseCode string) (SRSShadowReviewQueueReport, error) {
+	report := SRSShadowReviewQueueReport{ByType: map[string]int{}}
+	if err := r.db.QueryRowContext(ctx, `
+		WITH course_scope AS (
+			SELECT id, target_lang AS target_language
+			FROM courses
+			WHERE code = ?
+		), legacy_due AS (
+			SELECT DISTINCT li.id AS learning_item_id, li.item_type
+			FROM user_cards uc
+			JOIN training_cards tc ON tc.id = uc.training_card_id
+			JOIN learning_items li ON li.course_id = (SELECT id FROM course_scope)
+				AND li.source_kind = 'word_card'
+				AND li.source_id = CAST(tc.word_card_id AS TEXT)
+				AND li.status = 'published'
+			WHERE uc.user_id = ?
+				AND (uc.next_due_at IS NULL OR uc.next_due_at <= CURRENT_TIMESTAMP)
+				AND NOT EXISTS (
+					SELECT 1 FROM user_word_knowledge uwk
+					WHERE uwk.user_id = uc.user_id AND uwk.word_card_id = tc.word_card_id AND uwk.status = 'known'
+				)
+
+			UNION
+
+			SELECT DISTINCT li.id AS learning_item_id, li.item_type
+			FROM grammar_theory_memory gtm
+			JOIN learning_items li ON li.course_id = (SELECT id FROM course_scope)
+				AND li.source_kind = 'grammar_theory_block'
+				AND li.source_id = gtm.chapter_id || ':' || gtm.theory_block_id
+				AND li.status = 'published'
+			WHERE gtm.user_id = ?
+				AND lower(gtm.language) = lower((SELECT target_language FROM course_scope))
+				AND lower(gtm.course_id) = lower((SELECT target_language FROM course_scope))
+				AND gtm.next_review_at <= CURRENT_TIMESTAMP
+		), canonical_due AS (
+			SELECT DISTINCT li.id AS learning_item_id, li.item_type
+			FROM srs_items si
+			JOIN learning_items li ON li.id = si.learning_item_id
+			WHERE si.user_course_id = ?
+				AND li.status = 'published'
+				AND si.state IN ('learning', 'review', 'relearning')
+				AND (si.due_at IS NULL OR si.due_at <= CURRENT_TIMESTAMP)
+		)
+		SELECT
+			(SELECT COUNT(*) FROM legacy_due),
+			(SELECT COUNT(*) FROM canonical_due),
+			(SELECT COUNT(*) FROM legacy_due l JOIN canonical_due c USING (learning_item_id)),
+			(SELECT COUNT(*) FROM legacy_due l WHERE NOT EXISTS (SELECT 1 FROM canonical_due c WHERE c.learning_item_id = l.learning_item_id)),
+			(SELECT COUNT(*) FROM canonical_due c WHERE NOT EXISTS (SELECT 1 FROM legacy_due l WHERE l.learning_item_id = c.learning_item_id))
+	`, courseCode, userID, userID, userCourseID).Scan(
+		&report.LegacyDueCount,
+		&report.CanonicalDueCount,
+		&report.OverlapCount,
+		&report.LegacyOnlyCount,
+		&report.CanonicalOnlyCount,
+	); err != nil {
+		return report, fmt.Errorf("get srs shadow review queue report: %w", err)
+	}
+	rows, err := r.db.QueryContext(ctx, `
+		WITH course_scope AS (
+			SELECT id, target_lang AS target_language
+			FROM courses
+			WHERE code = ?
+		), legacy_due AS (
+			SELECT DISTINCT li.id AS learning_item_id, li.item_type
+			FROM user_cards uc
+			JOIN training_cards tc ON tc.id = uc.training_card_id
+			JOIN learning_items li ON li.course_id = (SELECT id FROM course_scope)
+				AND li.source_kind = 'word_card'
+				AND li.source_id = CAST(tc.word_card_id AS TEXT)
+				AND li.status = 'published'
+			WHERE uc.user_id = ?
+				AND (uc.next_due_at IS NULL OR uc.next_due_at <= CURRENT_TIMESTAMP)
+				AND NOT EXISTS (
+					SELECT 1 FROM user_word_knowledge uwk
+					WHERE uwk.user_id = uc.user_id AND uwk.word_card_id = tc.word_card_id AND uwk.status = 'known'
+				)
+
+			UNION
+
+			SELECT DISTINCT li.id AS learning_item_id, li.item_type
+			FROM grammar_theory_memory gtm
+			JOIN learning_items li ON li.course_id = (SELECT id FROM course_scope)
+				AND li.source_kind = 'grammar_theory_block'
+				AND li.source_id = gtm.chapter_id || ':' || gtm.theory_block_id
+				AND li.status = 'published'
+			WHERE gtm.user_id = ?
+				AND lower(gtm.language) = lower((SELECT target_language FROM course_scope))
+				AND lower(gtm.course_id) = lower((SELECT target_language FROM course_scope))
+				AND gtm.next_review_at <= CURRENT_TIMESTAMP
+		), canonical_due AS (
+			SELECT DISTINCT li.id AS learning_item_id, li.item_type
+			FROM srs_items si
+			JOIN learning_items li ON li.id = si.learning_item_id
+			WHERE si.user_course_id = ?
+				AND li.status = 'published'
+				AND si.state IN ('learning', 'review', 'relearning')
+				AND (si.due_at IS NULL OR si.due_at <= CURRENT_TIMESTAMP)
+		)
+		SELECT COALESCE(l.item_type, c.item_type) AS item_type, COUNT(*)
+		FROM legacy_due l
+		FULL OUTER JOIN canonical_due c USING (learning_item_id)
+		GROUP BY COALESCE(l.item_type, c.item_type)
+	`, courseCode, userID, userID, userCourseID)
+	if err != nil {
+		return report, fmt.Errorf("get srs shadow review queue types: %w", err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var itemType string
+		var count int
+		if err := rows.Scan(&itemType, &count); err != nil {
+			return report, fmt.Errorf("scan srs shadow review queue type: %w", err)
+		}
+		report.ByType[itemType] = count
+	}
+	if err := rows.Err(); err != nil {
+		return report, fmt.Errorf("iterate srs shadow review queue types: %w", err)
+	}
+	report.ReadyForCanonicalRead = report.LegacyOnlyCount == 0 && report.CanonicalOnlyCount == 0
 	return report, nil
 }
 

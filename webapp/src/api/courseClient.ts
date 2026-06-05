@@ -215,6 +215,15 @@ export interface SRSShadowReport {
     legacy_only_count: number
     linglow_only_count: number
   }
+  review_queue: {
+    legacy_due_count: number
+    canonical_due_count: number
+    overlap_count: number
+    legacy_only_count: number
+    canonical_only_count: number
+    ready_for_canonical_read: boolean
+    by_type: Record<string, number>
+  }
   mastery: {
     compared_count: number
     average_legacy: number
