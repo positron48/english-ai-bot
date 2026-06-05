@@ -53,11 +53,11 @@
             <span>{{ dailyRoute?.review.length || 0 }} / {{ dailyRoute?.new_items.length || 0 }}</span>
           </div>
           <div class="route-list">
-            <div v-for="item in dailyItems" :key="`${item.mode}:${item.learning_item_id}`" class="route-item">
+            <RouterLink v-for="item in dailyItems" :key="`${item.mode}:${item.learning_item_id}`" class="route-item route-link" :to="routeForLinglowItem(item)">
               <span class="item-mode">{{ formatType(item.mode) }}</span>
               <strong>{{ item.title || formatType(item.type) }}</strong>
               <small>{{ item.location_title || item.module_title || item.cefr_level }}</small>
-            </div>
+            </RouterLink>
             <div v-if="dailyItems.length === 0" class="empty-line">{{ t('city.noDailyItems') }}</div>
           </div>
         </article>
@@ -68,14 +68,33 @@
             <span>{{ reviewQueue?.summary.due_count || 0 }}</span>
           </div>
           <div class="route-list">
-            <div v-for="item in reviewItems" :key="`review:${item.learning_item_id}`" class="route-item">
+            <RouterLink v-for="item in reviewItems" :key="`review:${item.learning_item_id}`" class="route-item route-link" :to="routeForLinglowItem(item)">
               <span class="item-mode">{{ formatType(item.state || item.mode) }}</span>
               <strong>{{ item.title || formatType(item.type) }}</strong>
               <small>{{ item.due_at ? formatDate(item.due_at) : item.location_title }}</small>
-            </div>
+            </RouterLink>
             <div v-if="reviewItems.length === 0" class="empty-line">{{ t('city.noReviewItems') }}</div>
           </div>
         </article>
+      </section>
+
+      <section class="simple-mode" aria-label="Simple mode">
+        <RouterLink class="simple-link primary" to="/training">
+          <strong>{{ t('city.simple.review') }}</strong>
+          <span>{{ t('city.simple.reviewHint') }}</span>
+        </RouterLink>
+        <RouterLink class="simple-link" to="/learning/grammar">
+          <strong>{{ t('city.simple.grammar') }}</strong>
+          <span>{{ t('city.simple.grammarHint') }}</span>
+        </RouterLink>
+        <RouterLink class="simple-link" to="/learning/reading">
+          <strong>{{ t('city.simple.reading') }}</strong>
+          <span>{{ t('city.simple.readingHint') }}</span>
+        </RouterLink>
+        <RouterLink class="simple-link" to="/learning/words">
+          <strong>{{ t('city.simple.words') }}</strong>
+          <span>{{ t('city.simple.wordsHint') }}</span>
+        </RouterLink>
       </section>
 
       <section class="city-stats" aria-label="Course totals">
@@ -110,10 +129,13 @@
             <span class="level-badge">{{ district.level_code }}</span>
             <h2>{{ district.title }}</h2>
             <p>{{ safeLocations(district).length }} {{ t('city.locationsShort') }}</p>
+            <RouterLink class="district-link" :to="{ name: 'CityDistrict', params: { districtCode: district.code }, query: selectedCourseCode ? { course_code: selectedCourseCode } : undefined }">
+              {{ t('city.openDistrict') }}
+            </RouterLink>
           </aside>
 
           <div class="location-grid">
-            <div v-for="location in safeLocations(district)" :key="location.id" class="location-cell">
+            <RouterLink v-for="location in safeLocations(district)" :key="location.id" class="location-cell location-link" :to="{ name: 'CityDistrict', params: { districtCode: district.code }, query: selectedCourseCode ? { course_code: selectedCourseCode, location: location.code } : { location: location.code } }">
               <div class="location-head">
                 <span>{{ locationTitle(location.location_type, location.title) }}</span>
                 <strong>{{ countLocationItems(location) }}</strong>
@@ -127,7 +149,7 @@
                   {{ t('city.moreModules', { count: safeModules(location).length - visibleModules(location).length }) }}
                 </div>
               </div>
-            </div>
+            </RouterLink>
           </div>
         </article>
       </section>
@@ -139,6 +161,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { courseClient, CourseMap, CourseMapLocation, CourseProgress, CourseSummary, DailyRoute, ReviewQueue } from '../api/courseClient'
+import { routeForLinglowItem } from '../utils/linglowNavigation'
 
 const { t } = useI18n()
 
@@ -366,11 +389,18 @@ onMounted(loadCity)
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.simple-mode {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
 .city-stat,
 .overview-metric,
 .work-panel,
 .type-pill,
-.location-cell {
+.location-cell,
+.simple-link {
   border: 1px solid var(--border-color);
   border-radius: 8px;
   background: var(--surface-color);
@@ -442,6 +472,21 @@ onMounted(loadCity)
   border-top: 1px solid var(--border-color);
 }
 
+.route-link,
+.location-link,
+.district-link,
+.simple-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.route-link:hover strong,
+.location-link:hover .location-head span,
+.district-link:hover,
+.simple-link:hover strong {
+  color: var(--primary-color);
+}
+
 .route-item strong {
   min-width: 0;
   overflow: hidden;
@@ -476,6 +521,27 @@ onMounted(loadCity)
   gap: 8px;
 }
 
+.simple-link {
+  display: grid;
+  gap: 4px;
+  min-height: 72px;
+  padding: 12px;
+}
+
+.simple-link.primary {
+  border-color: var(--primary-color);
+}
+
+.simple-link strong {
+  font-size: 0.95rem;
+}
+
+.simple-link span {
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  line-height: 1.3;
+}
+
 .type-pill {
   display: inline-flex;
   align-items: center;
@@ -506,6 +572,13 @@ onMounted(loadCity)
 .district-meta p {
   margin: 0;
   color: var(--text-secondary);
+}
+
+.district-link {
+  display: inline-flex;
+  margin-top: 10px;
+  color: var(--primary-color);
+  font-weight: 700;
 }
 
 .level-badge {
@@ -581,6 +654,10 @@ onMounted(loadCity)
   .city-work-grid {
     grid-template-columns: 1fr;
   }
+
+  .simple-mode {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 620px) {
@@ -612,6 +689,10 @@ onMounted(loadCity)
   }
 
   .location-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .simple-mode {
     grid-template-columns: 1fr;
   }
 }

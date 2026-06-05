@@ -25,6 +25,7 @@
 - Phase 7/SRS write foundation: добавлен feature flag `LINGLOW_SRS_WRITE_ENABLED`; при включении `POST /api/linglow/exercise-attempts` создаёт/обновляет canonical `srs_items` по SM-2-compatible алгоритму и связывает `exercise_attempts.srs_item_id`, старые runtime paths не переключены.
 - Phase 7/SRS shadow-read foundation: добавлен feature flag `LINGLOW_SRS_READ_ENABLED` (default off) и protected diagnostics endpoint `GET /api/linglow/srs-shadow`, который сравнивает legacy word due/mastery с canonical `srs_items` для текущего `user_course_id`.
 - Phase 8/City Home foundation: `/city` получил course selector, progress summary, daily route и review station blocks поверх `GET /api/courses`, `/api/linglow/progress`, `/api/linglow/daily-route`, `/api/linglow/review`; старая карта districts/locations сохранена.
+- Phase 8/District UX foundation: добавлен `/city/district/:districtCode` поверх `GET /api/linglow/city`; City Home получил кликабельные daily/review items, переходы в district/location и Simple Mode быстрые входы в review, grammar, reading и words.
 
 ## 1. Текущая точка
 
@@ -499,6 +500,7 @@ Rollback:
 
 3. Добавить District view:
    - buildings/locations;
+   - список modules/items и переходы в существующие runtime-экраны - готово как `/city/district/:districtCode`;
    - foundation/confidence/stability вместо процента завершения;
    - weak items;
    - revisit tasks.
@@ -510,7 +512,7 @@ Rollback:
    - mistake workshop block, если есть ошибки.
 
 5. Добавить Simple Mode:
-   - прямой доступ к review, grammar, texts, vocab, settings;
+   - прямой доступ к review, grammar, texts, vocab, settings - готово на City Home для review, grammar, reading и words;
    - без декоративного city layer для повторяющихся рабочих сценариев.
 
 6. Сначала использовать существующие экраны внутри новых маршрутов.
