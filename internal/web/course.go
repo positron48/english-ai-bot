@@ -311,6 +311,7 @@ func (r *Router) handleLinglowExerciseAttempts(w http.ResponseWriter, req *http.
 		AnswerJSON:      answerJSON,
 		ResultJSON:      resultJSON,
 		AnsweredAt:      answeredAt,
+		UpdateSRS:       r.config != nil && r.config.Linglow.SRSWriteEnabled,
 	})
 	if err != nil {
 		if errors.Is(err, repository.ErrCourseNotFound) {

@@ -90,7 +90,7 @@ func TestHandleLearningCourse_OK(t *testing.T) {
 func TestHandleLearningCourse_UsesCurrentCourseAndExplicitOverride(t *testing.T) {
 	conn := testutil.SetupTestDB(t)
 	logger := zap.NewNop()
-	cfg := &config.Config{Learning: config.LearningConfig{NativeLang: "ru", TargetLang: "es", GrammarBundleID: "es"}}
+	cfg := &config.Config{Learning: config.LearningConfig{NativeLang: "ru", TargetLang: "es", GrammarBundleID: "es"}, Linglow: config.LinglowConfig{SRSWriteEnabled: true}}
 	router := NewRouter(logger, cfg, conn, nil, nil, nil, nil)
 
 	userRepo := repository.NewUserRepository(conn, logger)
@@ -262,7 +262,7 @@ func TestHandleLinglowReview_OKAndLimitValidation(t *testing.T) {
 func TestHandleLinglowExerciseAttemptsAndProgress(t *testing.T) {
 	conn := testutil.SetupTestDB(t)
 	logger := zap.NewNop()
-	cfg := &config.Config{Learning: config.LearningConfig{NativeLang: "ru", TargetLang: "es", GrammarBundleID: "es"}}
+	cfg := &config.Config{Learning: config.LearningConfig{NativeLang: "ru", TargetLang: "es", GrammarBundleID: "es"}, Linglow: config.LinglowConfig{SRSWriteEnabled: true}}
 	router := NewRouter(logger, cfg, conn, nil, nil, nil, nil)
 	userRepo := repository.NewUserRepository(conn, logger)
 	user, err := userRepo.GetOrCreateUser(100505)
@@ -302,13 +302,15 @@ func TestHandleLinglowExerciseAttemptsAndProgress(t *testing.T) {
 		t.Fatalf("attempt status=%d body=%s", w.Code, w.Body.String())
 	}
 	var attemptResp struct {
-		ID        int64 `json:"id"`
-		Duplicate bool  `json:"duplicate"`
+		ID         int64 `json:"id"`
+		Duplicate  bool  `json:"duplicate"`
+		SRSItemID  int64 `json:"srs_item_id"`
+		SRSUpdated bool  `json:"srs_updated"`
 	}
 	if err := json.Unmarshal(w.Body.Bytes(), &attemptResp); err != nil {
 		t.Fatalf("decode attempt: %v", err)
 	}
-	if attemptResp.ID == 0 || attemptResp.Duplicate {
+	if attemptResp.ID == 0 || attemptResp.Duplicate || attemptResp.SRSItemID == 0 || !attemptResp.SRSUpdated {
 		t.Fatalf("attempt response = %+v", attemptResp)
 	}
 

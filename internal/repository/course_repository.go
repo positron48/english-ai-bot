@@ -229,6 +229,7 @@ type ExerciseAttemptInput struct {
 	AnswerJSON      string
 	ResultJSON      string
 	AnsweredAt      time.Time
+	UpdateSRS       bool
 }
 
 type ExerciseAttemptResult struct {
@@ -239,6 +240,7 @@ type ExerciseAttemptResult struct {
 	ClientAttemptID string              `json:"client_attempt_id,omitempty"`
 	Duplicate       bool                `json:"duplicate"`
 	EventID         int64               `json:"event_id,omitempty"`
+	SRSUpdated      bool                `json:"srs_updated"`
 	Course          CourseMapCourse     `json:"course"`
 	UserCourse      CourseMapUserCourse `json:"user_course"`
 }
@@ -826,12 +828,29 @@ func (r *CourseRepository) RecordExerciseAttempt(ctx context.Context, input Exer
 	`, userCourse.ID, learningItemID, srsItemID, input.Mode, clientAttemptValue, answeredAt, answeredAt, input.IsCorrect, input.Score, input.Quality, promptJSON, answerJSON, resultJSON, clientAttemptID).Scan(&exerciseID); err != nil {
 		return nil, fmt.Errorf("insert exercise attempt: %w", err)
 	}
+	srsUpdated := false
+	if input.UpdateSRS && learningItemIDPtr != nil {
+		updatedID, err := r.upsertSRSForExerciseAttempt(ctx, tx, userCourse.ID, *learningItemIDPtr, input.IsCorrect, input.Quality, answeredAt)
+		if err != nil {
+			return nil, err
+		}
+		if updatedID > 0 {
+			srsUpdated = true
+			if srsItemIDPtr == nil {
+				srsItemIDPtr = &updatedID
+				if _, err := tx.ExecContext(ctx, `UPDATE exercise_attempts SET srs_item_id = ? WHERE id = ?`, updatedID, exerciseID); err != nil {
+					return nil, fmt.Errorf("link exercise attempt to srs item: %w", err)
+				}
+			}
+		}
+	}
 	eventJSON, _ := json.Marshal(map[string]interface{}{
 		"mode":              input.Mode,
 		"client_attempt_id": clientAttemptID,
 		"is_correct":        input.IsCorrect,
 		"score":             input.Score,
 		"quality":           input.Quality,
+		"srs_updated":       srsUpdated,
 	})
 	var eventID int64
 	if err := tx.QueryRowContext(ctx, `
@@ -854,6 +873,7 @@ func (r *CourseRepository) RecordExerciseAttempt(ctx context.Context, input Exer
 		SRSItemID:       srsItemIDPtr,
 		ClientAttemptID: clientAttemptID,
 		EventID:         eventID,
+		SRSUpdated:      srsUpdated,
 		Course:          courseMap.Course,
 		UserCourse:      *userCourse,
 	}, nil
@@ -888,6 +908,194 @@ func (r *CourseRepository) getExistingExerciseAttempt(ctx context.Context, tx *s
 		result.SRSItemID = &id
 	}
 	return &result, nil
+}
+
+type linglowSRSState struct {
+	ID           int64
+	State        string
+	EF           float64
+	Reps         int
+	IntervalDays int
+	LearningStep int
+	LapseCount   int
+	Stats        map[string]interface{}
+}
+
+func (r *CourseRepository) upsertSRSForExerciseAttempt(ctx context.Context, tx *sql.Tx, userCourseID, learningItemID int64, isCorrect *bool, quality *int, reviewedAt time.Time) (int64, error) {
+	if isCorrect == nil {
+		return 0, nil
+	}
+	current, err := r.getOrCreateSRSState(ctx, tx, userCourseID, learningItemID)
+	if err != nil {
+		return 0, err
+	}
+	next := applyLinglowSRS(current, *isCorrect, quality, reviewedAt)
+	statsJSON, _ := json.Marshal(next.Stats)
+	if _, err := tx.ExecContext(ctx, `
+		UPDATE srs_items
+		SET state = ?, stability = ?, difficulty = ?, due_at = ?, last_review_at = ?,
+			reps = ?, lapse_count = ?, stats_json = CAST(? AS jsonb), updated_at = CURRENT_TIMESTAMP
+		WHERE id = ?
+	`, next.State, float64(next.IntervalDays), next.EF, next.Stats["next_due_at"], reviewedAt, next.Reps, next.LapseCount, string(statsJSON), next.ID); err != nil {
+		return 0, fmt.Errorf("update linglow srs item: %w", err)
+	}
+	return next.ID, nil
+}
+
+func (r *CourseRepository) getOrCreateSRSState(ctx context.Context, tx *sql.Tx, userCourseID, learningItemID int64) (linglowSRSState, error) {
+	var state linglowSRSState
+	var statsRaw string
+	err := tx.QueryRowContext(ctx, `
+		SELECT id, state, COALESCE(difficulty, 2.5), reps, lapse_count, COALESCE(stats_json::text, '{}')
+		FROM srs_items
+		WHERE user_course_id = ? AND learning_item_id = ?
+	`, userCourseID, learningItemID).Scan(&state.ID, &state.State, &state.EF, &state.Reps, &state.LapseCount, &statsRaw)
+	if err != nil && err != sql.ErrNoRows {
+		return state, fmt.Errorf("get linglow srs item: %w", err)
+	}
+	if err == sql.ErrNoRows {
+		if err := tx.QueryRowContext(ctx, `
+			INSERT INTO srs_items (user_course_id, learning_item_id, state, stability, difficulty, stats_json, created_at, updated_at)
+			VALUES (?, ?, 'new', 0, 2.5, '{}'::jsonb, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+			RETURNING id
+		`, userCourseID, learningItemID).Scan(&state.ID); err != nil {
+			return state, fmt.Errorf("create linglow srs item: %w", err)
+		}
+		state.State = "new"
+		state.EF = 2.5
+		state.Stats = map[string]interface{}{}
+		return state, nil
+	}
+	state.Stats = map[string]interface{}{}
+	_ = json.Unmarshal([]byte(statsRaw), &state.Stats)
+	state.IntervalDays = intFromStats(state.Stats, "interval_days", 0)
+	state.LearningStep = intFromStats(state.Stats, "learning_step", 0)
+	if state.EF <= 0 {
+		state.EF = 2.5
+	}
+	return state, nil
+}
+
+func applyLinglowSRS(current linglowSRSState, correct bool, quality *int, now time.Time) linglowSRSState {
+	q := normalizeLinglowQuality(correct, quality)
+	next := current
+	if next.Stats == nil {
+		next.Stats = map[string]interface{}{}
+	}
+	next.Stats["algo_version"] = "linglow_sm2_foundation_v1"
+	next.Stats["last_quality"] = q
+	next.Stats["last_review_at"] = now.UTC().Format(time.RFC3339)
+	if next.EF <= 0 {
+		next.EF = 2.5
+	}
+	if q == 0 {
+		next.LapseCount++
+		next.EF = maxFloat(1.3, next.EF-0.2)
+		if next.State == "review" || next.State == "mastered" {
+			next.State = "relearning"
+			next.IntervalDays = maxInt(1, next.IntervalDays/2)
+		} else {
+			next.State = "learning"
+			next.IntervalDays = 1
+		}
+		next.LearningStep = 0
+		next.Stats["next_due_at"] = now.Add(time.Duration(next.IntervalDays) * 24 * time.Hour).UTC().Format(time.RFC3339)
+		next.Stats["interval_days"] = next.IntervalDays
+		next.Stats["learning_step"] = next.LearningStep
+		return next
+	}
+	next.LapseCount = 0
+	switch next.State {
+	case "new", "learning", "relearning":
+		next.LearningStep++
+		if q == 1 {
+			next.State = "learning"
+			next.IntervalDays = 1
+		} else if next.LearningStep >= 2 {
+			next.State = "review"
+			next.Reps = maxInt(1, next.Reps+1)
+			next.IntervalDays = 3
+		} else {
+			next.State = "learning"
+			next.IntervalDays = 3
+		}
+	case "review", "mastered":
+		next.EF = maxFloat(1.3, next.EF+(0.1-float64(5-sm2Quality(q))*(0.08+float64(5-sm2Quality(q))*0.02)))
+		switch next.Reps {
+		case 0:
+			next.IntervalDays = 1
+		case 1:
+			next.IntervalDays = 6
+		default:
+			next.IntervalDays = maxInt(1, int(float64(maxInt(1, next.IntervalDays))*next.EF+0.999999))
+		}
+		next.Reps++
+		next.State = "review"
+	default:
+		next.State = "learning"
+		next.IntervalDays = 1
+	}
+	next.Stats["next_due_at"] = now.Add(time.Duration(next.IntervalDays) * 24 * time.Hour).UTC().Format(time.RFC3339)
+	next.Stats["interval_days"] = next.IntervalDays
+	next.Stats["learning_step"] = next.LearningStep
+	return next
+}
+
+func normalizeLinglowQuality(correct bool, quality *int) int {
+	if !correct {
+		return 0
+	}
+	if quality == nil {
+		return 2
+	}
+	if *quality <= 0 {
+		return 0
+	}
+	if *quality == 1 {
+		return 1
+	}
+	if *quality >= 3 {
+		return 3
+	}
+	return 2
+}
+
+func sm2Quality(q int) int {
+	switch q {
+	case 1:
+		return 3
+	case 2:
+		return 4
+	case 3:
+		return 5
+	default:
+		return 0
+	}
+}
+
+func intFromStats(stats map[string]interface{}, key string, fallback int) int {
+	switch value := stats[key].(type) {
+	case float64:
+		return int(value)
+	case int:
+		return value
+	default:
+		return fallback
+	}
+}
+
+func maxInt(left, right int) int {
+	if left > right {
+		return left
+	}
+	return right
+}
+
+func maxFloat(left, right float64) float64 {
+	if left > right {
+		return left
+	}
+	return right
 }
 
 func (r *CourseRepository) getReviewQueueSummary(ctx context.Context, userCourseID int64) (ReviewQueueSummary, error) {

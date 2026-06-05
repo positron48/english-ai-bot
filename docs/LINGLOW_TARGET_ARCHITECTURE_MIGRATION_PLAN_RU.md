@@ -22,6 +22,7 @@
 - Phase 6/daily-route API foundation: добавлен protected `GET /api/linglow/daily-route`, который отдаёт текущий course/user_course, due SRS summary, due review items и next new learning items, scoped строго через `user_course_id`.
 - Phase 6/review API foundation: добавлен protected `GET /api/linglow/review`, который отдаёт due SRS queue и summary по состояниям/типам строго внутри текущего `user_course_id`.
 - Phase 6/progress + generic attempt API foundation: добавлены protected `GET /api/linglow/progress` и `POST /api/linglow/exercise-attempts`; write endpoint проверяет принадлежность item/SRS к resolved `user_course_id`, пишет `exercise_attempts` + `learning_events`, idempotency по `(user_course_id, client_attempt_id)`.
+- Phase 7/SRS write foundation: добавлен feature flag `LINGLOW_SRS_WRITE_ENABLED`; при включении `POST /api/linglow/exercise-attempts` создаёт/обновляет canonical `srs_items` по SM-2-compatible алгоритму и связывает `exercise_attempts.srs_item_id`, старые runtime paths не переключены.
 
 ## 1. Текущая точка
 
@@ -463,7 +464,7 @@ Rollback:
 
 5. Ввести flags:
    - `LINGLOW_SRS_READ_ENABLED`
-   - `LINGLOW_SRS_WRITE_ENABLED`
+   - `LINGLOW_SRS_WRITE_ENABLED` - готово для generic Linglow attempt endpoint, default off;
 
 6. Перевести сначала non-critical режим или internal user cohort.
 

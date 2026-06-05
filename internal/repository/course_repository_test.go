@@ -528,3 +528,86 @@ func TestCourseRepository_RecordExerciseAttemptAndProgress(t *testing.T) {
 		t.Fatalf("progress summary = %+v", progress.Summary)
 	}
 }
+
+func TestCourseRepository_RecordExerciseAttemptUpdatesSRS(t *testing.T) {
+	conn := testutil.SetupTestDB(t)
+	logger := zap.NewNop()
+	userRepo := NewUserRepository(conn, logger)
+	user, err := userRepo.GetOrCreateUser(4348)
+	if err != nil {
+		t.Fatalf("create user: %v", err)
+	}
+	repo := NewCourseRepository(conn, logger)
+	if _, err := repo.SelectCurrentCourse(context.Background(), user.ID, "es_ru"); err != nil {
+		t.Fatalf("SelectCurrentCourse: %v", err)
+	}
+
+	var itemID int64
+	if err := conn.QueryRow(`
+		WITH target AS (
+			SELECT c.id AS course_id, d.id AS district_id, l.id AS location_id
+			FROM courses c
+			JOIN districts d ON d.course_id = c.id AND d.level_code = 'A0'
+			JOIN locations l ON l.district_id = d.id AND l.location_type = 'grammar'
+			WHERE c.code = 'es_ru'
+			LIMIT 1
+		), module AS (
+			INSERT INTO modules (course_id, district_id, location_id, code, module_type, title, source_kind, source_id, sort_order, status)
+			SELECT course_id, district_id, location_id, 'grammar:srs-attempt-test', 'grammar', 'SRS Attempt Grammar', 'grammar_category', 'srs-attempt-test', 1, 'published'
+			FROM target
+			RETURNING id, course_id, district_id, location_id
+		)
+		INSERT INTO learning_items (course_id, module_id, district_id, location_id, item_type, source_kind, source_id, title, cefr_level, status)
+		SELECT course_id, id, district_id, location_id, 'grammar_theory_block', 'grammar_theory_block', 'srs-attempt-item', 'SRS Attempt Block', 'A0', 'published'
+		FROM module
+		RETURNING id
+	`).Scan(&itemID); err != nil {
+		t.Fatalf("insert item: %v", err)
+	}
+
+	correct := true
+	quality := 3
+	result, err := repo.RecordExerciseAttempt(context.Background(), ExerciseAttemptInput{
+		UserID:          user.ID,
+		DefaultCourse:   "es_ru",
+		LearningItemID:  itemID,
+		Mode:            "grammar",
+		ClientAttemptID: "srs-attempt-1",
+		IsCorrect:       &correct,
+		Quality:         &quality,
+		UpdateSRS:       true,
+	})
+	if err != nil {
+		t.Fatalf("RecordExerciseAttempt: %v", err)
+	}
+	if !result.SRSUpdated || result.SRSItemID == nil {
+		t.Fatalf("expected SRS update, got %+v", result)
+	}
+	var state string
+	var dueCount int
+	if err := conn.QueryRow(`SELECT state FROM srs_items WHERE id = ?`, *result.SRSItemID).Scan(&state); err != nil {
+		t.Fatalf("get srs state: %v", err)
+	}
+	if err := conn.QueryRow(`SELECT COUNT(*) FROM exercise_attempts WHERE id = ? AND srs_item_id = ?`, result.ID, *result.SRSItemID).Scan(&dueCount); err != nil {
+		t.Fatalf("count linked attempt: %v", err)
+	}
+	if state != "learning" || dueCount != 1 {
+		t.Fatalf("state=%s linked=%d", state, dueCount)
+	}
+
+	duplicate, err := repo.RecordExerciseAttempt(context.Background(), ExerciseAttemptInput{
+		UserID:          user.ID,
+		DefaultCourse:   "es_ru",
+		LearningItemID:  itemID,
+		Mode:            "grammar",
+		ClientAttemptID: "srs-attempt-1",
+		IsCorrect:       &correct,
+		UpdateSRS:       true,
+	})
+	if err != nil {
+		t.Fatalf("duplicate RecordExerciseAttempt: %v", err)
+	}
+	if !duplicate.Duplicate || duplicate.SRSUpdated {
+		t.Fatalf("duplicate should not update SRS: %+v", duplicate)
+	}
+}
