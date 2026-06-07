@@ -12,12 +12,18 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"sort"
 	"strings"
 	"time"
 
 	_ "github.com/jackc/pgx/v5/stdlib"
 )
+
+type userActivitySample struct {
+	UserID           int64  `json:"user_id"`
+	TelegramID       *int64 `json:"telegram_id,omitempty"`
+	TelegramUsername string `json:"telegram_username,omitempty"`
+	LatestActivityAt string `json:"latest_activity_at"`
+}
 
 type dbSummary struct {
 	Label                 string               `json:"label"`
@@ -39,6 +45,25 @@ type dbSummary struct {
 	Readiness             readinessReport      `json:"readiness"`
 	CourseBreakdown       []courseBreakdownRow `json:"course_breakdown"`
 	AttemptSources        []attemptSourceRow   `json:"attempt_sources"`
+	UserActivitySamples   []userActivitySample `json:"user_activity_samples"`
+}
+
+type telegramMultiCourseUser struct {
+	TelegramID    int64    `json:"telegram_id"`
+	SourceLabels  []string `json:"source_labels"`
+	SourceUserIDs []string `json:"source_user_ids"`
+}
+
+type writeSummary struct {
+	Phase            string `json:"phase"`
+	UsersScanned     int64  `json:"users_scanned"`
+	MappingsCreated  int64  `json:"mappings_created"`
+	MappingsExisting int64  `json:"mappings_existing"`
+	UsersInserted    int64  `json:"users_inserted"`
+	UsersReused      int64  `json:"users_reused"`
+	UserCoursesAdded int64  `json:"user_courses_added"`
+	ConflictsLogged  int64  `json:"conflicts_logged"`
+	Skipped          int64  `json:"skipped"`
 }
 
 type courseBreakdownRow struct {
@@ -89,14 +114,17 @@ type stableIdentityConflict struct {
 }
 
 type auditReport struct {
-	Mode               string                   `json:"mode"`
-	GeneratedAt        time.Time                `json:"generated_at"`
-	Sources            []dbSummary              `json:"sources"`
-	Target             *dbSummary               `json:"target,omitempty"`
-	TelegramConflicts  []identityConflict       `json:"telegram_conflicts"`
-	IdentityConflicts  []stableIdentityConflict `json:"identity_conflicts"`
-	ReadyForWriteMerge bool                     `json:"ready_for_write_merge"`
-	Notes              []string                 `json:"notes"`
+	Mode                string                    `json:"mode"`
+	GeneratedAt         time.Time                 `json:"generated_at"`
+	Sources             []dbSummary               `json:"sources"`
+	Target              *dbSummary                `json:"target,omitempty"`
+	TelegramMultiCourse []telegramMultiCourseUser `json:"telegram_multi_course_users"`
+	TelegramConflicts   []identityConflict        `json:"telegram_conflicts"`
+	IdentityConflicts   []stableIdentityConflict  `json:"identity_conflicts"`
+	ReadyForWriteMerge  bool                      `json:"ready_for_write_merge"`
+	WritePhase          string                    `json:"write_phase,omitempty"`
+	WriteSummary        *writeSummary             `json:"write_summary,omitempty"`
+	Notes               []string                  `json:"notes"`
 }
 
 type sourceDB struct {
@@ -112,10 +140,16 @@ type openedSourceDB struct {
 func main() {
 	var englishURL, spanishURL, targetURL string
 	var timeout time.Duration
+	var commit bool
+	var phase string
+	var activitySampleLimit int
 	flag.StringVar(&englishURL, "english-db-url", env("ENGLISH_DATABASE_URL"), "English source DATABASE_URL; defaults to ENGLISH_DATABASE_URL")
 	flag.StringVar(&spanishURL, "spanish-db-url", env("SPANISH_DATABASE_URL"), "Spanish source DATABASE_URL; defaults to SPANISH_DATABASE_URL")
 	flag.StringVar(&targetURL, "target-db-url", env("TARGET_DATABASE_URL"), "Target unified DATABASE_URL; defaults to TARGET_DATABASE_URL")
 	flag.DurationVar(&timeout, "timeout", 30*time.Second, "audit query timeout")
+	flag.BoolVar(&commit, "commit", false, "write merge data to target DB; requires --phase")
+	flag.StringVar(&phase, "phase", "", "write phase: users or user-courses")
+	flag.IntVar(&activitySampleLimit, "activity-sample-limit", 20, "per-source user activity samples in audit report; 0 disables")
 	flag.Parse()
 
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
@@ -127,19 +161,20 @@ func main() {
 	}
 
 	report := auditReport{
-		Mode:              "dry-run",
-		GeneratedAt:       time.Now().UTC(),
-		TelegramConflicts: []identityConflict{},
-		IdentityConflicts: []stableIdentityConflict{},
+		Mode:                "dry-run",
+		GeneratedAt:         time.Now().UTC(),
+		TelegramMultiCourse: []telegramMultiCourseUser{},
+		TelegramConflicts:   []identityConflict{},
+		IdentityConflicts:   []stableIdentityConflict{},
 		Notes: []string{
-			"audit-only foundation: no data is written",
-			"real merge remains blocked until source identity conflicts are reviewed",
+			"audit foundation: default mode is read-only",
+			"use --commit --phase=users|user-courses to write the first unified DB slices",
 		},
 	}
 
 	var openSources []openedSourceDB
 	for _, src := range sources {
-		summary, db, err := summarizeDB(ctx, src.Label, src.URL)
+		summary, db, err := summarizeDB(ctx, src.Label, src.URL, activitySampleLimit)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "merge audit failed for %s: %v\n", src.Label, err)
 			os.Exit(1)
@@ -151,7 +186,7 @@ func main() {
 		}
 	}
 
-	targetSummary, targetDB, err := summarizeDB(ctx, "target", strings.TrimSpace(targetURL))
+	targetSummary, targetDB, err := summarizeDB(ctx, "target", strings.TrimSpace(targetURL), activitySampleLimit)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "merge audit failed for target: %v\n", err)
 		os.Exit(1)
@@ -161,36 +196,79 @@ func main() {
 		report.Target = &targetSummary
 	}
 
-	conflicts, err := findTelegramConflicts(ctx, openSources, targetDB)
+	telegramEntries, err := collectTelegramEntries(ctx, openSources, targetDB)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "merge audit conflict scan failed: %v\n", err)
+		fmt.Fprintf(os.Stderr, "merge audit telegram scan failed: %v\n", err)
 		os.Exit(1)
 	}
+	multiCourse, conflicts := classifyTelegramEntries(telegramEntries)
+	report.TelegramMultiCourse = multiCourse
 	if conflicts == nil {
 		conflicts = []identityConflict{}
 	}
 	report.TelegramConflicts = conflicts
-	identityConflicts, err := findStableIdentityConflicts(ctx, openSources, targetDB)
+
+	stableEntries, err := collectStableIdentityEntries(ctx, openSources, targetDB)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "merge audit stable identity scan failed: %v\n", err)
 		os.Exit(1)
 	}
+	identityConflicts := classifyStableIdentityConflicts(stableEntries)
 	if identityConflicts == nil {
 		identityConflicts = []stableIdentityConflict{}
 	}
 	report.IdentityConflicts = identityConflicts
-	report.ReadyForWriteMerge = len(conflicts) == 0 && len(identityConflicts) == 0 && len(openSources) > 0 && targetDB != nil && targetSummary.LegacyMappingTablesOK
+
+	allSourcesReady := true
+	for _, src := range report.Sources {
+		if !src.Readiness.ReadyForDryRunMerge {
+			allSourcesReady = false
+			break
+		}
+	}
+	report.ReadyForWriteMerge = len(conflicts) == 0 && len(identityConflicts) == 0 && len(openSources) == 2 && targetDB != nil && targetSummary.LegacyMappingTablesOK && allSourcesReady
 	if targetDB == nil {
 		report.Notes = append(report.Notes, "target DB URL is not set; target readiness could not be checked")
 	}
 	if len(openSources) < 2 {
 		report.Notes = append(report.Notes, "provide both English and Spanish source URLs before real merge planning")
 	}
+	if len(multiCourse) > 0 {
+		report.Notes = append(report.Notes, fmt.Sprintf("%d telegram users span both English and Spanish and will merge into one target user", len(multiCourse)))
+	}
 	if len(conflicts) > 0 {
 		report.Notes = append(report.Notes, "telegram identity conflicts exist; real merge must map them explicitly")
 	}
 	if len(identityConflicts) > 0 {
 		report.Notes = append(report.Notes, "stable identity conflicts exist; real merge must map them explicitly")
+	}
+	if !allSourcesReady {
+		report.Notes = append(report.Notes, "one or more source DBs are not ready for merge; fix readiness gaps first")
+	}
+
+	if commit {
+		if phase == "" {
+			fmt.Fprintln(os.Stderr, "--commit requires --phase=users or --phase=user-courses")
+			os.Exit(1)
+		}
+		if targetDB == nil {
+			fmt.Fprintln(os.Stderr, "TARGET_DATABASE_URL is required for write merge")
+			os.Exit(1)
+		}
+		if !report.ReadyForWriteMerge {
+			fmt.Fprintln(os.Stderr, "write merge blocked: resolve audit conflicts and source readiness first")
+			os.Exit(1)
+		}
+		writeCtx, writeCancel := context.WithTimeout(context.Background(), timeout)
+		defer writeCancel()
+		summary, err := runWritePhase(writeCtx, phase, openSources, targetDB)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "write merge failed: %v\n", err)
+			os.Exit(1)
+		}
+		report.Mode = "commit"
+		report.WritePhase = phase
+		report.WriteSummary = summary
 	}
 
 	enc := json.NewEncoder(os.Stdout)
@@ -205,15 +283,16 @@ func env(key string) string {
 	return strings.TrimSpace(os.Getenv(key))
 }
 
-func summarizeDB(ctx context.Context, label, url string) (dbSummary, *sql.DB, error) {
+func summarizeDB(ctx context.Context, label, url string, activitySampleLimit int) (dbSummary, *sql.DB, error) {
 	s := dbSummary{
 		Label:       label,
 		URLProvided: url != "",
 		Readiness: readinessReport{
 			BlockingReasons: []string{},
 		},
-		CourseBreakdown: []courseBreakdownRow{},
-		AttemptSources:  []attemptSourceRow{},
+		CourseBreakdown:     []courseBreakdownRow{},
+		AttemptSources:      []attemptSourceRow{},
+		UserActivitySamples: []userActivitySample{},
 	}
 	if url == "" {
 		return s, nil, nil
@@ -278,7 +357,101 @@ func summarizeDB(ctx context.Context, label, url string) (dbSummary, *sql.DB, er
 		return s, nil, err
 	}
 	s.AttemptSources = sources
+	if activitySampleLimit > 0 {
+		samples, err := userActivitySamples(ctx, db, activitySampleLimit)
+		if err != nil {
+			db.Close()
+			return s, nil, err
+		}
+		s.UserActivitySamples = samples
+	}
 	return s, db, nil
+}
+
+func userActivitySamples(ctx context.Context, db *sql.DB, limit int) ([]userActivitySample, error) {
+	exists, err := tableExists(ctx, db, "users")
+	if err != nil || !exists {
+		return []userActivitySample{}, err
+	}
+	activityParts := []string{"u.created_at", "u.updated_at"}
+	candidates := []struct {
+		table  string
+		column string
+	}{
+		{"review_events", "answered_at"},
+		{"grammar_test_attempts", "finished_at"},
+		{"grammar_attempts", "answered_at"},
+		{"reading_text_progress", "read_at"},
+		{"speaking_attempts", "created_at"},
+	}
+	for _, c := range candidates {
+		ok, err := tableExists(ctx, db, c.table)
+		if err != nil {
+			return nil, err
+		}
+		if !ok {
+			continue
+		}
+		hasUser, err := columnExists(ctx, db, c.table, "user_id")
+		if err != nil {
+			return nil, err
+		}
+		if !hasUser {
+			continue
+		}
+		activityParts = append(activityParts, fmt.Sprintf(
+			"COALESCE((SELECT MAX(%s) FROM %s t WHERE t.user_id = u.id), TIMESTAMPTZ 'epoch')",
+			c.column, c.table,
+		))
+	}
+	if hasEA, _ := tableExists(ctx, db, "exercise_attempts"); hasEA {
+		if hasUC, _ := tableExists(ctx, db, "user_courses"); hasUC {
+			activityParts = append(activityParts, `
+				COALESCE((
+					SELECT MAX(ea.answered_at)
+					FROM exercise_attempts ea
+					JOIN user_courses uc ON uc.id = ea.user_course_id
+					WHERE uc.user_id = u.id
+				), TIMESTAMPTZ 'epoch')`)
+		}
+	}
+	rows, err := db.QueryContext(ctx, fmt.Sprintf(`
+		SELECT
+			u.id,
+			u.telegram_id,
+			COALESCE(NULLIF(TRIM(u.telegram_username), ''), ''),
+			GREATEST(%s) AS latest_activity_at
+		FROM users u
+		ORDER BY latest_activity_at DESC NULLS LAST, u.id ASC
+		LIMIT $1
+	`, strings.Join(activityParts, ", ")), limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var out []userActivitySample
+	for rows.Next() {
+		var sample userActivitySample
+		var telegramID sql.NullInt64
+		var latest time.Time
+		if err := rows.Scan(&sample.UserID, &telegramID, &sample.TelegramUsername, &latest); err != nil {
+			return nil, err
+		}
+		if telegramID.Valid {
+			v := telegramID.Int64
+			sample.TelegramID = &v
+		}
+		sample.LatestActivityAt = latest.UTC().Format(time.RFC3339)
+		out = append(out, sample)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	if out == nil {
+		out = []userActivitySample{}
+	}
+	return out, nil
 }
 
 func countTable(ctx context.Context, db *sql.DB, table string) (int64, error) {
@@ -522,7 +695,7 @@ func attemptSources(ctx context.Context, db *sql.DB) ([]attemptSourceRow, error)
 	return out, nil
 }
 
-func findTelegramConflicts(ctx context.Context, dbs []openedSourceDB, targetDB *sql.DB) ([]identityConflict, error) {
+func collectTelegramEntries(ctx context.Context, dbs []openedSourceDB, targetDB *sql.DB) (map[int64]*identityConflict, error) {
 	seen := map[int64]*identityConflict{}
 	for _, src := range dbs {
 		if src.DB == nil {
@@ -574,23 +747,10 @@ func findTelegramConflicts(ctx context.Context, dbs []openedSourceDB, targetDB *
 		rows.Close()
 	}
 
-	var conflicts []identityConflict
-	for _, entry := range seen {
-		sourceSet := map[string]bool{}
-		for _, label := range entry.SourceLabels {
-			sourceSet[label] = true
-		}
-		if len(sourceSet) > 1 || len(entry.TargetUserIDs) > 0 {
-			conflicts = append(conflicts, *entry)
-		}
-	}
-	sort.Slice(conflicts, func(i, j int) bool {
-		return conflicts[i].TelegramID < conflicts[j].TelegramID
-	})
-	return conflicts, nil
+	return seen, nil
 }
 
-func findStableIdentityConflicts(ctx context.Context, dbs []openedSourceDB, targetDB *sql.DB) ([]stableIdentityConflict, error) {
+func collectStableIdentityEntries(ctx context.Context, dbs []openedSourceDB, targetDB *sql.DB) (map[string]*stableIdentityConflict, error) {
 	seen := map[string]*stableIdentityConflict{}
 	for _, src := range dbs {
 		if src.DB == nil {
@@ -606,23 +766,7 @@ func findStableIdentityConflicts(ctx context.Context, dbs []openedSourceDB, targ
 		}
 	}
 
-	var conflicts []stableIdentityConflict
-	for _, entry := range seen {
-		sourceSet := map[string]bool{}
-		for _, label := range entry.SourceLabels {
-			sourceSet[label] = true
-		}
-		if len(sourceSet) > 1 || len(entry.TargetUserIDs) > 0 {
-			conflicts = append(conflicts, *entry)
-		}
-	}
-	sort.Slice(conflicts, func(i, j int) bool {
-		if conflicts[i].IdentityType != conflicts[j].IdentityType {
-			return conflicts[i].IdentityType < conflicts[j].IdentityType
-		}
-		return conflicts[i].IdentityValue < conflicts[j].IdentityValue
-	})
-	return conflicts, nil
+	return seen, nil
 }
 
 func collectStableIdentities(ctx context.Context, seen map[string]*stableIdentityConflict, label string, db *sql.DB, target bool) error {

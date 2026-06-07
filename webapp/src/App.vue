@@ -18,6 +18,7 @@
         <div class="nav-links">
           <div class="nav-left">
             <router-link to="/dashboard">{{ t('navigation.dashboard') }}</router-link>
+            <router-link to="/city">{{ t('navigation.city') }}</router-link>
             <router-link to="/learning">{{ t('navigation.learning') }}</router-link>
             <router-link to="/training">{{ t('navigation.training') }}</router-link>
             <router-link to="/chat">{{ t('navigation.chat') }}</router-link>

@@ -29,7 +29,8 @@
 - Phase 7/SRS admin readiness UI: добавлен `/admin/linglow-srs` read-only экран для админов, который показывает `/api/linglow/srs-shadow`, course selector, readiness, due/mismatch/mastery metrics и breakdown по типам.
 - Phase 7/SRS aggregate readiness foundation: добавлен full-access admin endpoint `GET /api/admin/linglow/srs-readiness`, который агрегирует readiness по всем `user_courses` выбранного курса и показывает totals/первых not-ready users на `/admin/linglow-srs`.
 - Phase 8/City Home foundation: `/city` получил course selector, progress summary, daily route и review station blocks поверх `GET /api/courses`, `/api/linglow/progress`, `/api/linglow/daily-route`, `/api/linglow/review`; старая карта districts/locations сохранена. `/city/daily-route` вынесен в отдельный рабочий экран с review/new/mistake-workshop блоками.
-- Phase 8/District UX foundation: добавлен `/city/district/:districtCode` поверх `GET /api/linglow/city`; City Home получил кликабельные daily/review items, переходы в district/location и Simple Mode быстрые входы в review, grammar, reading и words. `GET /api/linglow/progress` расширен `by_district`/`by_location` с foundation/confidence/stability/weakness сигналами, City Home и District view показывают эти сигналы.
+- Phase 8/District UX foundation: добавлен `/city/district/:districtCode` поверх `GET /api/linglow/city`; City Home получил кликабельные daily/review items, переходы в district/location и Simple Mode быстрые входы в review, grammar, reading и words. `GET /api/linglow/progress` расширен `by_district`/`by_location` с foundation/confidence/stability/weakness сигналами, City Home и District view показывают эти сигналы. `/city` вынесен в основную desktop-навигацию.
+- Phase 9/unified DB merge foundation: migration `000020_linglow_legacy_merge_mappings.sql`, `cmd/merge_language_databases` dry-run audit с `user_activity_samples`, `telegram_multi_course_users` и blocking conflicts; write foundation `--commit --phase=users|user-courses` для target unified DB.
 
 ## 1. Текущая точка
 
@@ -556,7 +557,7 @@ Rollback:
 2. Накатить все migrations.
 
 3. Написать merge command:
-   `cmd/merge_language_databases` - начат audit-only foundation: dry-run JSON report по counts, course breakdown, attempt sources, readiness gaps, latest activity, Telegram conflicts и generalized stable identity conflicts (`telegram_id`, `telegram_username`), без writes.
+   `cmd/merge_language_databases` - audit foundation + первые write phases: dry-run JSON report по counts, course breakdown, attempt sources, readiness gaps, latest activity, per-user activity samples, `telegram_multi_course_users`, blocking conflicts; `--commit --phase=users|user-courses` для target unified DB.
 
 4. Merge command должен:
    - принимать English source DB;
@@ -597,7 +598,7 @@ Rollback:
    - user_courses count - foundation есть;
    - attempts by course - canonical course breakdown готов в `merge_language_databases`;
    - active subscriptions/settings;
-   - latest activity per user - общий latest activity foundation есть, per user ещё нужен;
+   - latest activity per user - audit отдаёт `user_activity_samples` per source DB;
    - random sample пользователей.
 
 10. Prod cutover:

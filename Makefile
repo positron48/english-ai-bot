@@ -372,6 +372,14 @@ merge-language-databases-audit: build-merge-language-databases
 	@echo ""
 	./bin/merge_language_databases
 
+merge-language-databases-users: build-merge-language-databases
+	@test -n "$$TARGET_DATABASE_URL" || (echo "Set TARGET_DATABASE_URL for write merge"; exit 1)
+	./bin/merge_language_databases --commit --phase=users
+
+merge-language-databases-user-courses: build-merge-language-databases
+	@test -n "$$TARGET_DATABASE_URL" || (echo "Set TARGET_DATABASE_URL for write merge"; exit 1)
+	./bin/merge_language_databases --commit --phase=user-courses
+
 build-backfill-noun-gender:
 	@mkdir -p bin
 	$(GO) build -o bin/backfill_noun_gender ./cmd/backfill_noun_gender
