@@ -30,6 +30,7 @@ export interface OfflineSectionManifest {
   progress_percentage: number
   can_access: boolean
   category_test_score?: number
+  opened_by_placement?: boolean
   chapters: OfflineChapterManifest[]
 }
 

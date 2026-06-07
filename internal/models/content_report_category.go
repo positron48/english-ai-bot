@@ -24,6 +24,23 @@ var GrammarTrainingReportCategories = []string{
 	"other",
 }
 
+var GrammarChapterReportCategories = []string{
+	"wrong_theory",
+	"wrong_example",
+	"typo",
+	"unclear_explanation",
+	"other",
+}
+
+var GrammarTestReportCategories = []string{
+	"wrong_answer",
+	"ambiguous",
+	"wrong_explanation",
+	"typo",
+	"too_hard",
+	"other",
+}
+
 func IsValidReportCategory(sourceType, category string) bool {
 	category = trimCategory(category)
 	if category == "" {
@@ -38,6 +55,18 @@ func IsValidReportCategory(sourceType, category string) bool {
 		}
 	case "grammar_training":
 		for _, c := range GrammarTrainingReportCategories {
+			if c == category {
+				return true
+			}
+		}
+	case "grammar_chapter":
+		for _, c := range GrammarChapterReportCategories {
+			if c == category {
+				return true
+			}
+		}
+	case "grammar_test":
+		for _, c := range GrammarTestReportCategories {
 			if c == category {
 				return true
 			}

@@ -26,6 +26,17 @@ export interface OfflineWordTrainingCard {
   srs?: Record<string, unknown>
 }
 
+export interface OfflineWordTrainingQueueItem extends Partial<OfflineWordTrainingCard> {
+  type: 'card' | 'spell' | 'type'
+  user_card_id: number
+  direction: string
+  correct_answer: string
+  prefix?: string
+  letters?: string[]
+  hint_first_letter?: string
+  hint_length?: number
+}
+
 export interface OfflineWordTrainingPack {
   app_code: string
   native_lang: string
@@ -36,6 +47,7 @@ export interface OfflineWordTrainingPack {
   available_count: number
   downloaded_at: string
   cards: OfflineWordTrainingCard[]
+  queue?: OfflineWordTrainingQueueItem[]
 }
 
 export interface OfflineWordTrainingSession {
@@ -43,7 +55,7 @@ export interface OfflineWordTrainingSession {
   started_at: string
   index: number
   correct_count: number
-  queue: OfflineWordTrainingCard[]
+  queue: OfflineWordTrainingQueueItem[]
   shown_at?: string
   options_shown_at?: string
 }
@@ -53,7 +65,7 @@ export interface QueuedWordTrainingAttempt {
   user_card_id: number
   training_card_id: number
   direction: string
-  mode: 'card'
+  mode: 'card' | 'spell' | 'type'
   shown_at: string
   options_shown_at: string
   answered_at: string
@@ -61,7 +73,8 @@ export interface QueuedWordTrainingAttempt {
   answer_time_ms: number
   early_reveal: boolean
   options: string[]
-  chosen_option: string
+  chosen_option?: string
+  answer_text?: string
   correct_answer: string
 }
 
@@ -108,12 +121,27 @@ export async function setWordTrainingPack(pack: OfflineWordTrainingPack): Promis
   await tx('meta', 'readwrite', (store) => store.put(pack, PACK_KEY))
 }
 
-export async function removeWordTrainingCards(userCardIDs: number[]): Promise<void> {
+export function packQueueItems(pack: OfflineWordTrainingPack | null): OfflineWordTrainingQueueItem[] {
+  if (!pack) return []
+  if (pack.queue?.length) return pack.queue
+  return (pack.cards || []).map((card) => ({ ...card, type: 'card' as const }))
+}
+
+export async function removeWordTrainingUserCards(userCardIDs: number[]): Promise<void> {
   if (userCardIDs.length === 0) return
   const pack = await getWordTrainingPack()
   if (!pack) return
   const ids = new Set(userCardIDs)
-  await setWordTrainingPack({ ...pack, cards: pack.cards.filter((card) => !ids.has(card.user_card_id)) })
+  await setWordTrainingPack({
+    ...pack,
+    cards: (pack.cards || []).filter((card) => !ids.has(card.user_card_id)),
+    queue: (pack.queue || []).filter((item) => !ids.has(item.user_card_id)),
+  })
+}
+
+/** @deprecated use removeWordTrainingUserCards */
+export async function removeWordTrainingCards(userCardIDs: number[]): Promise<void> {
+  return removeWordTrainingUserCards(userCardIDs)
 }
 
 export async function clearWordTrainingPack(): Promise<void> {

@@ -24,6 +24,7 @@ func NewContentReportRepository(db *sql.DB, logger *zap.Logger) *ContentReportRe
 type CreateContentReportInput struct {
 	UserID               int64
 	SourceType           string
+	ClientReportID       string
 	Word                 string
 	TranslationDirection string
 	WordCardID           *int64
@@ -49,21 +50,43 @@ func (r *ContentReportRepository) Create(input CreateContentReportInput) (int64,
 	}
 
 	category := models.NormalizeReportCategory(input.SourceType, input.ReportCategory)
+	clientReportID := strings.TrimSpace(input.ClientReportID)
+	var clientReportArg interface{}
+	if clientReportID != "" {
+		clientReportArg = clientReportID
+	}
 	q := `INSERT INTO content_reports (
 		user_id, source_type, status, word, translation_direction,
 		word_card_id, training_card_id, user_card_id, word_category,
-		grammar_chapter_id, theory_block_id, grammar_question_id, report_category, comment_text, payload_json
-	) VALUES (?, ?, 'active', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+		grammar_chapter_id, theory_block_id, grammar_question_id, report_category, comment_text, payload_json, client_report_id
+	) VALUES (?, ?, 'active', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
 
 	id, err := database.InsertAndReturnID(r.db, q,
 		input.UserID, input.SourceType, input.Word, input.TranslationDirection,
 		input.WordCardID, input.TrainingCardID, input.UserCardID, input.WordCategory,
 		input.GrammarChapterID, input.TheoryBlockID, input.GrammarQuestionID, category, strings.TrimSpace(input.CommentText), payloadJSON,
+		clientReportArg,
 	)
 	if err != nil {
 		return 0, fmt.Errorf("create content report: %w", err)
 	}
 	return id, nil
+}
+
+func (r *ContentReportRepository) HasClientReport(userID int64, clientReportID string) (bool, error) {
+	clientReportID = strings.TrimSpace(clientReportID)
+	if userID == 0 || clientReportID == "" {
+		return false, nil
+	}
+	var exists bool
+	err := r.db.QueryRow(
+		`SELECT EXISTS(SELECT 1 FROM content_reports WHERE user_id = ? AND client_report_id = ?)`,
+		userID, clientReportID,
+	).Scan(&exists)
+	if err != nil {
+		return false, fmt.Errorf("has client content report: %w", err)
+	}
+	return exists, nil
 }
 
 func (r *ContentReportRepository) Resolve(reportID, resolvedByUserID int64) error {

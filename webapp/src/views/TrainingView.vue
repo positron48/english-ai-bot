@@ -486,7 +486,7 @@
     </div>
     <div v-if="sessionActive && currentCard" class="report-row report-row-outside">
       <button
-        v-if="!reportAlreadySent && !currentCard?.offline"
+        v-if="!reportAlreadySent"
         type="button"
         class="report-text-link"
         :disabled="reportSubmitting"
@@ -515,6 +515,7 @@ import { ref, computed, onMounted, onUnmounted, watch, nextTick, TransitionGroup
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { apiClient } from '../api/client'
+import { contentReportClient } from '../api/contentReportClient'
 import { wordTrainingClient, type WordTrainingOfflineStatus } from '../api/wordTrainingClient'
 import { showAlert } from '../composables/useDialog'
 import { useSettings } from '../composables/useSettings'
@@ -1978,22 +1979,22 @@ const submitWordReport = async () => {
     }
     if (currentCard.value.word_en) extra.word_en = currentCard.value.word_en
     if (currentCard.value.word_ru) extra.word_ru = currentCard.value.word_ru
-    await apiClient.request('/api/training/report', {
-      method: 'POST',
-      body: JSON.stringify({
-        user_card_id: currentCard.value.user_card_id || 0,
-        word: currentCard.value.word_en || currentCard.value.display_word || '',
-        direction: currentCard.value.direction || '',
-        word_card_id: currentCard.value.word_card_id,
-        training_card_id: currentCard.value.training_card_id,
-        word_category: currentCard.value.word_category || '',
-        report_category: reportCategory.value,
-        comment,
-        extra
-      })
+    const submitResult = await contentReportClient.submit({
+      sourceType: 'word_training',
+      reportCategory: reportCategory.value,
+      comment,
+      userCardID: currentCard.value.user_card_id || 0,
+      word: currentCard.value.word_en || currentCard.value.display_word || '',
+      direction: currentCard.value.direction || '',
+      wordCardID: currentCard.value.word_card_id,
+      trainingCardID: currentCard.value.training_card_id,
+      wordCategory: currentCard.value.word_category || '',
+      payload: extra,
     })
     reportSentForCardKey.value = key
-    reportMessage.value = t('training.reportThanks') || 'Спасибо, жалоба отправлена.'
+    reportMessage.value = submitResult.queued
+      ? (t('training.reportQueued') || 'Жалоба сохранена и будет отправлена при появлении сети.')
+      : (t('training.reportThanks') || 'Спасибо, жалоба отправлена.')
     reportDialogOpen.value = false
     reportCategory.value = ''
     reportDetails.value = ''

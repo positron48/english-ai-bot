@@ -4,12 +4,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"tgbot-skeleton/internal/i18n"
 	"tgbot-skeleton/internal/learning"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
+	"tgbot-skeleton/internal/service"
 
 	"go.uber.org/zap"
 )
@@ -37,6 +39,34 @@ type offlineWordTrainingCard struct {
 	SRS            map[string]interface{} `json:"srs"`
 }
 
+type offlineWordTrainingQueueItem struct {
+	Type            string                 `json:"type"`
+	Question        string                 `json:"question,omitempty"`
+	UserCardID      int64                  `json:"user_card_id"`
+	TrainingCardID  int64                  `json:"training_card_id,omitempty"`
+	WordCardID      int64                  `json:"word_card_id,omitempty"`
+	Direction       string                 `json:"direction"`
+	WordEN          string                 `json:"word_en,omitempty"`
+	WordTarget      string                 `json:"word_target,omitempty"`
+	WordRU          string                 `json:"word_ru,omitempty"`
+	WordNative      string                 `json:"word_native,omitempty"`
+	DisplayWord     string                 `json:"display_word,omitempty"`
+	DisplayTarget   string                 `json:"display_target,omitempty"`
+	Transcription   string                 `json:"transcription,omitempty"`
+	ExampleEN       string                 `json:"example_en,omitempty"`
+	ExampleTarget   string                 `json:"example_target,omitempty"`
+	Hint            string                 `json:"hint,omitempty"`
+	WordCategory    string                 `json:"word_category,omitempty"`
+	Morph           *models.WordMorphInfo  `json:"morph,omitempty"`
+	Options         []string               `json:"options,omitempty"`
+	CorrectAnswer   string                 `json:"correct_answer"`
+	Prefix          string                 `json:"prefix,omitempty"`
+	Letters         []string               `json:"letters,omitempty"`
+	HintFirstLetter string                 `json:"hint_first_letter,omitempty"`
+	HintLength      int                    `json:"hint_length,omitempty"`
+	SRS             map[string]interface{} `json:"srs,omitempty"`
+}
+
 type offlineWordTrainingAttempt struct {
 	ClientAttemptID string    `json:"client_attempt_id"`
 	UserCardID      int64     `json:"user_card_id"`
@@ -51,6 +81,7 @@ type offlineWordTrainingAttempt struct {
 	EarlyReveal     bool      `json:"early_reveal"`
 	Options         []string  `json:"options"`
 	ChosenOption    string    `json:"chosen_option"`
+	AnswerText      string    `json:"answer_text"`
 	CorrectAnswer   string    `json:"correct_answer"`
 }
 
@@ -64,56 +95,133 @@ func (r *Router) handleTrainingOfflinePack(w http.ResponseWriter, req *http.Requ
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
-	if r.optionsService == nil {
-		http.Error(w, "Options service unavailable", http.StatusInternalServerError)
+	if r.optionsService == nil || r.trainingService == nil {
+		http.Error(w, "Training service unavailable", http.StatusInternalServerError)
 		return
 	}
 
-	userCardRepo := repository.NewUserCardRepository(r.db, r.logger)
-	trainingCardRepo := repository.NewTrainingCardRepository(r.db, r.logger)
-	now := time.Now()
-	dueCards, err := userCardRepo.GetDueCards(userID, now, models.MaxDuePoolSize)
+	config := r.trainingSessionConfigForUser(userID)
+	queue, err := r.trainingService.GenerateQueue(userID, config)
 	if err != nil {
-		r.logger.Error("failed to get offline due word cards", zap.Int64("user_id", userID), zap.Error(err))
+		r.logger.Error("failed to generate offline word training queue", zap.Int64("user_id", userID), zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
-	newCards, err := userCardRepo.GetNewCards(userID, 300)
-	if err != nil {
-		r.logger.Error("failed to get offline new word cards", zap.Int64("user_id", userID), zap.Error(err))
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
+	if len(queue) == 0 {
+		w.Header().Set("Content-Type", "application/json")
+		_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			"app_code":        r.config.Learning.AppCode,
+			"native_lang":     r.config.Learning.NativeLang,
+			"target_lang":     r.config.Learning.TargetLang,
+			"generated_at":    time.Now().UTC().Format(time.RFC3339),
+			"algo_version":    "word_training_offline_v2_queue",
+			"total_cards":     0,
+			"available_count": 0,
+			"queue":           []offlineWordTrainingQueueItem{},
+			"cards":           []offlineWordTrainingCard{},
+		})
 		return
 	}
 
-	seen := make(map[int64]bool)
-	pool := make([]*models.UserCard, 0, len(dueCards)+len(newCards))
-	for _, card := range append(dueCards, newCards...) {
-		if card == nil || seen[card.ID] {
-			continue
-		}
-		seen[card.ID] = true
-		pool = append(pool, card)
-	}
-
-	queue := make([]*models.UserCardWithTraining, 0, len(pool))
-	for _, userCard := range pool {
-		trainingCard, err := trainingCardRepo.GetTrainingCard(userCard.TrainingCardID)
-		if err != nil || trainingCard == nil {
-			r.logger.Warn("failed to load offline training card", zap.Int64("user_card_id", userCard.ID), zap.Int64("training_card_id", userCard.TrainingCardID), zap.Error(err))
-			continue
-		}
-		queue = append(queue, &models.UserCardWithTraining{UserCard: *userCard, TrainingCard: *trainingCard})
-	}
-
-	cards := make([]offlineWordTrainingCard, 0, len(queue))
 	lang := i18n.GetLanguageFromContext(req.Context())
-	for i, card := range queue {
-		options, correctAnswer, err := r.optionsService.GenerateOptions(card, models.DefaultOptionCount, r.extractSessionWords(queue, i, card, nil), collectWordENs(queue, i), collectWordRUs(queue, i))
-		if err != nil {
-			r.logger.Warn("failed to generate offline word options", zap.Int64("user_card_id", card.UserCard.ID), zap.Error(err))
-			continue
+	items := make([]offlineWordTrainingQueueItem, 0, len(queue))
+	legacyCards := make([]offlineWordTrainingCard, 0, len(queue))
+	cardQueue := make([]*models.UserCardWithTraining, 0, len(queue))
+	for _, item := range queue {
+		if item.Type == "card" && item.Card != nil {
+			cardQueue = append(cardQueue, item.Card)
 		}
-		cards = append(cards, r.buildOfflineWordTrainingCard(req, lang, card, options, correctAnswer))
+	}
+	for _, item := range queue {
+		switch item.Type {
+		case "spell":
+			if item.Spell == nil {
+				continue
+			}
+			tl := learning.TargetLangNameRUPrepositional(r.config.Learning.TargetLang)
+			items = append(items, offlineWordTrainingQueueItem{
+				Type:           "spell",
+				Question:       fmt.Sprintf("Составьте слово на %s: <strong>%s</strong>", tl, item.Spell.WordRU),
+				UserCardID:     item.Spell.ReplacedUserCardID,
+				WordCardID:     item.Spell.WordCardID,
+				Direction:      "spell",
+				WordRU:         item.Spell.WordRU,
+				WordNative:     item.Spell.WordNative,
+				WordTarget:     item.Spell.WordTarget,
+				Prefix:         item.Spell.Prefix,
+				Letters:        item.Spell.ShuffledLetters,
+				CorrectAnswer:  item.Spell.DisplayWord,
+			})
+		case "type":
+			if item.TypeChallenge == nil {
+				continue
+			}
+			displayWord := item.TypeChallenge.DisplayWord
+			prefix := ""
+			wordForHint := displayWord
+			if strings.HasPrefix(displayWord, "to ") && len(displayWord) > 3 {
+				prefix = "to "
+				wordForHint = displayWord[3:]
+			}
+			runes := []rune(wordForHint)
+			hintFirstLetter := ""
+			hintLength := 0
+			if len(runes) > 0 {
+				hintFirstLetter = string(runes[0])
+				hintLength = len(runes)
+			}
+			tl := learning.TargetLangNameRUPrepositional(r.config.Learning.TargetLang)
+			items = append(items, offlineWordTrainingQueueItem{
+				Type:            "type",
+				Question:        fmt.Sprintf("Введите слово на %s: <strong>%s</strong>", tl, item.TypeChallenge.WordRU),
+				UserCardID:      item.TypeChallenge.ReplacedUserCardID,
+				WordCardID:      item.TypeChallenge.WordCardID,
+				Direction:       "type",
+				WordRU:          item.TypeChallenge.WordRU,
+				WordNative:      item.TypeChallenge.WordNative,
+				WordTarget:      item.TypeChallenge.WordTarget,
+				Prefix:          prefix,
+				HintFirstLetter: hintFirstLetter,
+				HintLength:      hintLength,
+				CorrectAnswer:   displayWord,
+			})
+		default:
+			if item.Card == nil {
+				continue
+			}
+			cardIndex := indexOfCardInQueue(cardQueue, item.Card.UserCard.ID)
+			options, correctAnswer, err := r.optionsService.GenerateOptions(item.Card, models.DefaultOptionCount, r.extractSessionWords(cardQueue, cardIndex, item.Card, nil), collectWordENs(cardQueue, cardIndex), collectWordRUs(cardQueue, cardIndex))
+			if err != nil {
+				r.logger.Warn("failed to generate offline word options", zap.Int64("user_card_id", item.Card.UserCard.ID), zap.Error(err))
+				continue
+			}
+			legacy := r.buildOfflineWordTrainingCard(req, lang, item.Card, options, correctAnswer)
+			legacyCards = append(legacyCards, legacy)
+			queueItem := offlineWordTrainingQueueItem{
+				Type:           "card",
+				Question:       legacy.Question,
+				UserCardID:     legacy.UserCardID,
+				TrainingCardID: legacy.TrainingCardID,
+				WordCardID:     legacy.WordCardID,
+				Direction:      legacy.Direction,
+				WordEN:         legacy.WordEN,
+				WordTarget:     legacy.WordTarget,
+				WordRU:         legacy.WordRU,
+				WordNative:     legacy.WordNative,
+				DisplayWord:    legacy.DisplayWord,
+				DisplayTarget:  legacy.DisplayTarget,
+				Transcription:  legacy.Transcription,
+				ExampleEN:      legacy.ExampleEN,
+				ExampleTarget:  legacy.ExampleTarget,
+				Hint:           legacy.Hint,
+				WordCategory:   legacy.WordCategory,
+				Morph:          legacy.Morph,
+				Options:        legacy.Options,
+				CorrectAnswer:  legacy.CorrectAnswer,
+				SRS:            legacy.SRS,
+			}
+			items = append(items, queueItem)
+		}
 	}
 
 	response := map[string]interface{}{
@@ -121,13 +229,72 @@ func (r *Router) handleTrainingOfflinePack(w http.ResponseWriter, req *http.Requ
 		"native_lang":     r.config.Learning.NativeLang,
 		"target_lang":     r.config.Learning.TargetLang,
 		"generated_at":    time.Now().UTC().Format(time.RFC3339),
-		"algo_version":    "word_training_offline_v1_mcq",
-		"total_cards":     len(cards),
-		"available_count": len(cards),
-		"cards":           cards,
+		"algo_version":    "word_training_offline_v2_queue",
+		"total_cards":     len(items),
+		"available_count": len(items),
+		"queue":           items,
+		"cards":           legacyCards,
 	}
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(response)
+}
+
+func indexOfCardInQueue(queue []*models.UserCardWithTraining, userCardID int64) int {
+	for i, card := range queue {
+		if card != nil && card.UserCard.ID == userCardID {
+			return i
+		}
+	}
+	return -1
+}
+
+func (r *Router) trainingSessionConfigForUser(userID int64) service.SessionConfig {
+	config := service.SessionConfig{
+		MaxCardsPerSession:      models.DefaultMaxCardsPerSession,
+		MaxNewPerSession:        models.DefaultMaxNewPerSession,
+		AlgoVersion:             "word_training_offline_v2_queue",
+		SpellEnabled:            true,
+		SpellMasteringThreshold: 50,
+		TypeEnabled:             true,
+		TypeMasteringThreshold:  70,
+	}
+	if r.userRepo != nil {
+		if userRepo, ok := r.userRepo.(*repository.UserRepository); ok {
+			user, _ := userRepo.GetUserByID(userID)
+			if user != nil && user.SettingsJSON != "" {
+				var settings models.UserSettings
+				if json.Unmarshal([]byte(user.SettingsJSON), &settings) == nil {
+					if settings.SpellModeEnabled != nil {
+						config.SpellEnabled = *settings.SpellModeEnabled
+					}
+					if settings.SpellMasteringThreshold != nil {
+						t := *settings.SpellMasteringThreshold
+						if t < 0 {
+							t = 0
+						}
+						if t > 100 {
+							t = 100
+						}
+						config.SpellMasteringThreshold = t
+					}
+					if settings.TypeModeEnabled != nil {
+						config.TypeEnabled = *settings.TypeModeEnabled
+					}
+					if settings.TypeMasteringThreshold != nil {
+						t := *settings.TypeMasteringThreshold
+						if t < 0 {
+							t = 0
+						}
+						if t > 100 {
+							t = 100
+						}
+						config.TypeMasteringThreshold = t
+					}
+				}
+			}
+		}
+	}
+	return config
 }
 
 func collectWordENs(queue []*models.UserCardWithTraining, excludeIndex int) map[string]bool {
@@ -269,6 +436,33 @@ func (r *Router) handleTrainingOfflineSyncAttempts(w http.ResponseWriter, req *h
 			continue
 		}
 
+		mode := strings.TrimSpace(attempt.Mode)
+		if mode == "" {
+			mode = "card"
+		}
+		if mode == "spell" || mode == "type" {
+			if sessionID == 0 {
+				session := &models.TrainingSession{UserID: userID, Source: models.SourceManual, PlannedCount: len(payload.Attempts), SessionJSON: `{"offline_sync":true}`}
+				newID, err := sessionRepo.CreateSession(session)
+				if err != nil {
+					result["synced"] = false
+					result["error"] = "session_create_failed"
+					results = append(results, result)
+					continue
+				}
+				sessionID = newID
+			}
+			if err := r.syncOfflineSpellTypeAttempt(req, userID, sessionRepo, sessionID, attempt, mode, result); err != nil {
+				result["synced"] = false
+				result["error"] = err.Error()
+				results = append(results, result)
+				continue
+			}
+			syncedCount++
+			results = append(results, result)
+			continue
+		}
+
 		userCard, err := userCardRepo.GetUserCard(attempt.UserCardID)
 		if err != nil || userCard == nil || userCard.UserID != userID {
 			result["synced"] = false
@@ -341,7 +535,7 @@ func (r *Router) handleTrainingOfflineSyncAttempts(w http.ResponseWriter, req *h
 		srsAfter := models.SRSState{State: userCard.State, EF: userCard.EF, Reps: userCard.Reps, IntervalDays: userCard.IntervalDays, LearningStep: userCard.LearningStep, LapseCount: userCard.LapseCount}
 		srsAfterJSON, _ := json.Marshal(srsAfter)
 		optionsJSON, _ := json.Marshal(attempt.Options)
-		metricsJSON, _ := json.Marshal(map[string]interface{}{"offline_sync": true, "answer_time_ms": answerTimeMS, "total_time_ms": int(answeredAt.Sub(shownAt).Milliseconds()), "mode": "card"})
+		metricsJSON, _ := json.Marshal(map[string]interface{}{"offline_sync": true, "answer_time_ms": answerTimeMS, "total_time_ms": int(answeredAt.Sub(shownAt).Milliseconds()), "mode": mode})
 		quality := models.CalculateQuality(attemptData)
 		reviewEvent := &models.ReviewEvent{
 			SessionID:       &sessionID,
@@ -401,4 +595,92 @@ func fallbackTime(value time.Time) time.Time {
 		return time.Now()
 	}
 	return value
+}
+
+func (r *Router) syncOfflineSpellTypeAttempt(req *http.Request, userID int64, sessionRepo *repository.SessionRepository, sessionID int64, attempt offlineWordTrainingAttempt, mode string, result map[string]interface{}) error {
+	userCardRepo := repository.NewUserCardRepository(r.db, r.logger)
+	userCard, err := userCardRepo.GetUserCard(attempt.UserCardID)
+	if err != nil || userCard == nil || userCard.UserID != userID {
+		return fmt.Errorf("user_card_not_found")
+	}
+	correctAnswer := strings.TrimSpace(attempt.CorrectAnswer)
+	if correctAnswer == "" {
+		return fmt.Errorf("correct_answer_required")
+	}
+	userAnswer := strings.TrimSpace(strings.ToLower(attempt.AnswerText))
+	if userAnswer == "" && attempt.ChosenOption != "" {
+		userAnswer = strings.TrimSpace(strings.ToLower(attempt.ChosenOption))
+	}
+	if userAnswer == "" {
+		userAnswer = " "
+	}
+	isCorrect := userAnswer == strings.TrimSpace(strings.ToLower(correctAnswer))
+	shownAt := fallbackTime(attempt.ShownAt)
+	answeredAt := fallbackTime(attempt.AnsweredAt)
+	answerTimeMS := attempt.AnswerTimeMS
+	if answerTimeMS <= 0 {
+		answerTimeMS = int(answeredAt.Sub(shownAt).Milliseconds())
+		if answerTimeMS < 0 {
+			answerTimeMS = 0
+		}
+	}
+	wordLen := len(correctAnswer)
+	attemptData := models.AttemptData{
+		Correct:        isCorrect,
+		EarlyReveal:    false,
+		AnswerTimeMS:   answerTimeMS,
+		TDelayMS:       0,
+		OptionCount:    1,
+		ChosenOption:   attempt.AnswerText,
+		TimeMultiplier: models.TimeMultiplierForMode(mode, wordLen),
+	}
+	srsBefore := models.SRSState{
+		State: userCard.State, EF: userCard.EF, Reps: userCard.Reps,
+		IntervalDays: userCard.IntervalDays, LearningStep: userCard.LearningStep, LapseCount: userCard.LapseCount,
+	}
+	srsBeforeJSON, _ := json.Marshal(srsBefore)
+	if err := r.srsService.GradeCard(userCard, attemptData); err != nil {
+		return fmt.Errorf("grade_failed")
+	}
+	srsAfter := models.SRSState{
+		State: userCard.State, EF: userCard.EF, Reps: userCard.Reps,
+		IntervalDays: userCard.IntervalDays, LearningStep: userCard.LearningStep, LapseCount: userCard.LapseCount,
+	}
+	srsAfterJSON, _ := json.Marshal(srsAfter)
+	quality := models.CalculateQuality(attemptData)
+	metricsJSON, _ := json.Marshal(map[string]interface{}{
+		"offline_sync": true, "spell_or_type": true, "answer_time_ms": answerTimeMS, "mode": mode, "word_len": wordLen,
+	})
+	reviewEvent := &models.ReviewEvent{
+		SessionID:       &sessionID,
+		UserID:          userID,
+		UserCardID:      userCard.ID,
+		ClientAttemptID: attempt.ClientAttemptID,
+		Direction:       userCard.Direction,
+		ShownAt:         shownAt,
+		AnsweredAt:      &answeredAt,
+		TDelayMS:        0,
+		EarlyReveal:     false,
+		OptionCount:     1,
+		OptionsJSON:     "[]",
+		ChosenOption:    attempt.AnswerText,
+		IsCorrect:       isCorrect,
+		Quality:         int(quality),
+		MetricsJSON:     string(metricsJSON),
+		SRSBeforeJSON:   string(srsBeforeJSON),
+		SRSAfterJSON:    string(srsAfterJSON),
+	}
+	if reviewEventID, err := sessionRepo.CreateReviewEvent(reviewEvent); err != nil {
+		return fmt.Errorf("review_event_create_failed")
+	} else {
+		r.recordLinglowWordReviewEvent(req.Context(), reviewEventID, reviewEvent)
+	}
+	if !isCorrect {
+		if err := r.srsService.RecordWrongAnswer(userCard, attempt.AnswerText); err != nil {
+			r.logger.Warn("failed to record offline spell/type wrong answer", zap.Int64("user_card_id", userCard.ID), zap.Error(err))
+		}
+	}
+	result["synced"] = true
+	result["is_correct"] = isCorrect
+	return nil
 }

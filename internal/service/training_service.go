@@ -318,6 +318,11 @@ func (s *TrainingService) generateQueue(userID int64, config SessionConfig) ([]*
 	return queue, nil
 }
 
+// GenerateQueue builds a training queue for the user (used by web training and offline pack).
+func (s *TrainingService) GenerateQueue(userID int64, config SessionConfig) ([]*models.TrainingQueueItem, error) {
+	return s.generateQueue(userID, config)
+}
+
 // applySpellTypeChallenges replaces some card items with spell or type challenge based on mastering score (mutates queue in place).
 func (s *TrainingService) applySpellTypeChallenges(queue []*models.TrainingQueueItem, userID int64, config SessionConfig) {
 	spellThresh := config.SpellMasteringThreshold

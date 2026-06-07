@@ -105,6 +105,17 @@
               <strong>{{ t('grammar.explanation') }}:</strong>
               <div v-html="renderMarkdown(item.explanation)"></div>
             </div>
+
+            <div class="result-report-row">
+              <button
+                type="button"
+                class="report-text-link"
+                :disabled="reportSubmitting || isTestReportSent(item, index)"
+                @click.stop="openTestReportDialog(item, index)"
+              >
+                {{ isTestReportSent(item, index) ? t('training.reportSent') : t('training.reportIssue') }}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -184,6 +195,18 @@
       @confirm="handleExitConfirm"
       @cancel="showExitConfirm = false"
     />
+
+    <ContentReportDialog
+      :open="reportDialogOpen"
+      :submitting="reportSubmitting"
+      :categories="testReportCategories"
+      :category="reportCategory"
+      :details="reportDetails"
+      @update:category="reportCategory = $event"
+      @update:details="reportDetails = $event"
+      @close="closeTestReportDialog"
+      @submit="submitTestReport"
+    />
   </div>
 </template>
 
@@ -195,6 +218,12 @@ import { marked } from 'marked'
 import { grammarClient } from '../api/grammarClient'
 import GrammarQuestion from '../components/GrammarQuestion.vue'
 import ConfirmModal from '../components/ConfirmModal.vue'
+import ContentReportDialog from '../components/ContentReportDialog.vue'
+import { contentReportClient } from '../api/contentReportClient'
+import {
+  GRAMMAR_TEST_REPORT_CATEGORIES,
+  buildReportComment,
+} from '../constants/contentReportCategories'
 import { useSettings } from '../composables/useSettings'
 import { useAudio } from '../composables/useAudio'
 
@@ -246,6 +275,65 @@ const nextSectionId = ref<string | null>(null)
 const isLastChapterInCategory = ref(false)
 const nextActionLoading = ref(false)
 const nextActionButtonRef = ref<HTMLButtonElement | null>(null)
+
+const testReportCategories = GRAMMAR_TEST_REPORT_CATEGORIES
+const reportDialogOpen = ref(false)
+const reportSubmitting = ref(false)
+const reportCategory = ref('')
+const reportDetails = ref('')
+const reportTarget = ref<{ item: any; index: number } | null>(null)
+const reportSentKeys = ref<Set<string>>(new Set())
+
+const testReportKey = (item: any, index: number) => `${item.question_id || index}:${item.chapter_id || scopeId.value}:${index}`
+const isTestReportSent = (item: any, index: number) => reportSentKeys.value.has(testReportKey(item, index))
+
+const openTestReportDialog = (item: any, index: number) => {
+  if (reportSubmitting.value || isTestReportSent(item, index)) return
+  reportTarget.value = { item, index }
+  reportCategory.value = ''
+  reportDetails.value = ''
+  reportDialogOpen.value = true
+}
+
+const closeTestReportDialog = () => {
+  if (reportSubmitting.value) return
+  reportDialogOpen.value = false
+}
+
+const submitTestReport = async () => {
+  if (!reportTarget.value || reportSubmitting.value) return
+  const { item, index } = reportTarget.value
+  const comment = buildReportComment(
+    reportCategory.value,
+    reportDetails.value,
+    t(`training.reportCategories.${reportCategory.value}`)
+  )
+  if (!comment) return
+  reportSubmitting.value = true
+  try {
+    const question = getQuestionById(item.question_id, item.chapter_id)
+    await contentReportClient.submit({
+      sourceType: 'grammar_test',
+      reportCategory: reportCategory.value,
+      comment,
+      grammarQuestionID: item.question_id,
+      grammarChapterID: item.chapter_id || scopeId.value,
+      payload: {
+        scope: scope.value,
+        scope_id: scopeId.value,
+        question_snapshot: question || item,
+        user_answer: item.user_answer,
+        correct_answer: item.correct_answer,
+      },
+    })
+    reportSentKeys.value.add(testReportKey(item, index))
+    reportDialogOpen.value = false
+  } catch (err) {
+    console.error('Failed to submit grammar test report:', err)
+  } finally {
+    reportSubmitting.value = false
+  }
+}
 
 const nextActionKind = computed<null | 'nextChapter' | 'categoryTest'>(() => {
   if (scope.value !== 'chapter' || !result.value?.passed) return null

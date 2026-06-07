@@ -1336,6 +1336,11 @@ func (s *GrammarService) CanAccessChapter(ctx context.Context, userID int64, cha
 	return progress.Passed, nil
 }
 
+// IsSectionOpenedByPlacement reports whether the user unlocked this section via placement test.
+func (s *GrammarService) IsSectionOpenedByPlacement(ctx context.Context, userID int64, sectionID string) (bool, error) {
+	return s.isSectionOpenedByPlacement(ctx, userID, sectionID)
+}
+
 // isSectionOpenedByPlacement checks if a section was opened by placement test
 // This is used to determine if all chapters should be accessible (placement) or only first chapter (category test)
 func (s *GrammarService) isSectionOpenedByPlacement(ctx context.Context, userID int64, sectionID string) (bool, error) {

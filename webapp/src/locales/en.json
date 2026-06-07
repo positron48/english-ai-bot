@@ -286,12 +286,16 @@
       "ambiguous": "Ambiguous question",
       "wrong_explanation": "Wrong explanation",
       "theory_mismatch": "Does not match theory",
+      "wrong_theory": "Incorrect theory",
+      "wrong_example": "Incorrect example",
+      "unclear_explanation": "Unclear explanation",
       "too_hard": "Too difficult",
       "other": "Other"
     },
     "reportSend": "Send",
     "reportSent": "Reported",
     "reportThanks": "Thanks, report sent.",
+    "reportQueued": "Report saved and will be sent when you're back online.",
     "reportFailed": "Could not send report. Try again."
   },
   "verbTraining": {
@@ -604,6 +608,7 @@
     "keyPoints": "Key Points",
     "commonMistakes": "Common Mistakes",
     "examples": "Examples",
+    "showTranslation": "Show translation",
     "wrong": "Wrong",
     "correct": "Correct",
     "why": "Why",

@@ -32,6 +32,16 @@
         >
           <!-- Theory Block -->
           <div v-if="block.type === 'theory'" class="theory-block">
+            <div class="theory-block-header">
+              <button
+                type="button"
+                class="report-text-link"
+                :disabled="reportSubmitting || reportSentForBlock === block.id"
+                @click="openChapterReportDialog(block)"
+              >
+                {{ reportSentForBlock === block.id ? t('training.reportSent') : t('training.reportIssue') }}
+              </button>
+            </div>
             <div 
               v-if="block.theory?.content_md" 
               class="theory-content markdown-content"
@@ -68,19 +78,11 @@
               </div>
             </div>
             
-            <!-- Examples -->
-            <div v-if="block.theory?.examples && block.theory.examples.length > 0" class="examples">
-              <h3>{{ t('grammar.examples') }}</h3>
-              <div
-                v-for="example in block.theory.examples"
-                :key="example.id"
-                class="example-item"
-              >
-                <div class="example-text">{{ example.text }}</div>
-                <div class="example-translation">{{ example.translation }}</div>
-                <div v-if="example.notes" class="example-notes">{{ example.notes }}</div>
-              </div>
-            </div>
+            <GrammarTheoryExamples
+              v-if="block.theory?.examples && block.theory.examples.length > 0"
+              :examples="block.theory.examples"
+              variant="chapter"
+            />
           </div>
           
           <!-- Inline Quiz Block -->
@@ -106,6 +108,18 @@
         </button>
       </div>
     </div>
+
+    <ContentReportDialog
+      :open="reportDialogOpen"
+      :submitting="reportSubmitting"
+      :categories="chapterReportCategories"
+      :category="reportCategory"
+      :details="reportDetails"
+      @update:category="reportCategory = $event"
+      @update:details="reportDetails = $event"
+      @close="closeChapterReportDialog"
+      @submit="submitChapterReport"
+    />
   </div>
 </template>
 
@@ -116,6 +130,13 @@ import { useRoute, useRouter } from 'vue-router'
 import { marked } from 'marked'
 import { grammarClient } from '../api/grammarClient'
 import GrammarQuestion from '../components/GrammarQuestion.vue'
+import GrammarTheoryExamples from '../components/GrammarTheoryExamples.vue'
+import ContentReportDialog from '../components/ContentReportDialog.vue'
+import { contentReportClient } from '../api/contentReportClient'
+import {
+  GRAMMAR_CHAPTER_REPORT_CATEGORIES,
+  buildReportComment,
+} from '../constants/contentReportCategories'
 import { useSettings } from '../composables/useSettings'
 import { useAudio } from '../composables/useAudio'
 
@@ -308,6 +329,62 @@ const handleQuizAnswer = (questionId: string, answer: any) => {
   }
 }
 
+const chapterReportCategories = GRAMMAR_CHAPTER_REPORT_CATEGORIES
+const reportDialogOpen = ref(false)
+const reportSubmitting = ref(false)
+const reportCategory = ref('')
+const reportDetails = ref('')
+const reportTargetBlock = ref<any | null>(null)
+const reportSentForBlock = ref('')
+
+const openChapterReportDialog = (block: any) => {
+  if (reportSubmitting.value || reportSentForBlock.value === block.id) return
+  reportTargetBlock.value = block
+  reportCategory.value = ''
+  reportDetails.value = ''
+  reportDialogOpen.value = true
+}
+
+const closeChapterReportDialog = () => {
+  if (reportSubmitting.value) return
+  reportDialogOpen.value = false
+}
+
+const submitChapterReport = async () => {
+  if (!chapter.value || !reportTargetBlock.value || reportSubmitting.value) return
+  const comment = buildReportComment(
+    reportCategory.value,
+    reportDetails.value,
+    t(`training.reportCategories.${reportCategory.value}`)
+  )
+  if (!comment) return
+  reportSubmitting.value = true
+  try {
+    const block = reportTargetBlock.value
+    await contentReportClient.submit({
+      sourceType: 'grammar_chapter',
+      reportCategory: reportCategory.value,
+      comment,
+      grammarChapterID: chapterId.value,
+      theoryBlockID: block.id || '',
+      payload: {
+        content_snapshot: {
+          chapter_id: chapterId.value,
+          theory_block_id: block.id,
+          theory: block.theory,
+          title: block.title,
+        },
+      },
+    })
+    reportSentForBlock.value = block.id
+    reportDialogOpen.value = false
+  } catch (err) {
+    console.error('Failed to submit grammar chapter report:', err)
+  } finally {
+    reportSubmitting.value = false
+  }
+}
+
 const startTest = () => {
   router.push(`/learning/grammar/chapter/${chapterId.value}/test`)
 }
@@ -399,6 +476,12 @@ onMounted(() => {
   border: 2px solid var(--border-primary);
   border-radius: 8px;
   padding: 24px;
+}
+
+.theory-block-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 8px;
 }
 
 .theory-content {

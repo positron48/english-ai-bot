@@ -22,6 +22,7 @@ type createWordReportRequest struct {
 	WordCategory   string                 `json:"word_category"`
 	ReportCategory string                 `json:"report_category"`
 	Comment        string                 `json:"comment"`
+	ClientReportID string                 `json:"client_report_id"`
 	Extra          map[string]interface{} `json:"extra"`
 }
 
@@ -90,9 +91,10 @@ func (r *Router) handleTrainingReport(w http.ResponseWriter, req *http.Request) 
 	for k, v := range body.Extra {
 		payload[k] = v
 	}
-	id, err := repo.Create(repository.CreateContentReportInput{
+	id, err := r.createContentReport(userID, repository.CreateContentReportInput{
 		UserID:               userID,
 		SourceType:           "word_training",
+		ClientReportID:       body.ClientReportID,
 		Word:                 ctx.Word,
 		TranslationDirection: ctx.TranslationDirection,
 		WordCardID:           ctx.WordCardID,
@@ -104,6 +106,11 @@ func (r *Router) handleTrainingReport(w http.ResponseWriter, req *http.Request) 
 		Payload:              payload,
 	})
 	if err != nil {
+		if strings.Contains(err.Error(), "duplicate") {
+			w.Header().Set("Content-Type", "application/json")
+			_ = json.NewEncoder(w).Encode(map[string]interface{}{"success": true, "duplicate": true})
+			return
+		}
 		r.logger.Error("failed to create word training report", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
@@ -113,11 +120,12 @@ func (r *Router) handleTrainingReport(w http.ResponseWriter, req *http.Request) 
 }
 
 type createGrammarReportRequest struct {
-	QuestionID   string                 `json:"question_id"`
-	ChapterID    string                 `json:"chapter_id"`
-	TheoryBlock  string                 `json:"theory_block_id"`
+	QuestionID     string                 `json:"question_id"`
+	ChapterID      string                 `json:"chapter_id"`
+	TheoryBlock    string                 `json:"theory_block_id"`
 	ReportCategory string                 `json:"report_category"`
 	Comment        string                 `json:"comment"`
+	ClientReportID string                 `json:"client_report_id"`
 	QuestionData   map[string]interface{} `json:"question_data"`
 }
 
@@ -148,7 +156,6 @@ func (r *Router) handleLearningGrammarTrainingReport(w http.ResponseWriter, req 
 	if comment == "" {
 		comment = models.NormalizeReportCategory("grammar_training", body.ReportCategory)
 	}
-	repo := repository.NewContentReportRepository(r.db, r.logger)
 	payload := map[string]interface{}{
 		"question_id":       body.QuestionID,
 		"chapter_id":        body.ChapterID,
@@ -156,9 +163,10 @@ func (r *Router) handleLearningGrammarTrainingReport(w http.ResponseWriter, req 
 		"question_snapshot": body.QuestionData,
 		"comment":           comment,
 	}
-	id, err := repo.Create(repository.CreateContentReportInput{
+	id, err := r.createContentReport(userID, repository.CreateContentReportInput{
 		UserID:            userID,
 		SourceType:        "grammar_training",
+		ClientReportID:    body.ClientReportID,
 		GrammarChapterID:  strings.TrimSpace(body.ChapterID),
 		TheoryBlockID:     strings.TrimSpace(body.TheoryBlock),
 		GrammarQuestionID: strings.TrimSpace(body.QuestionID),
@@ -167,6 +175,11 @@ func (r *Router) handleLearningGrammarTrainingReport(w http.ResponseWriter, req 
 		Payload:           payload,
 	})
 	if err != nil {
+		if strings.Contains(err.Error(), "duplicate") {
+			w.Header().Set("Content-Type", "application/json")
+			_ = json.NewEncoder(w).Encode(map[string]interface{}{"success": true, "duplicate": true})
+			return
+		}
 		r.logger.Error("failed to create grammar training report", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return

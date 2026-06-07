@@ -281,12 +281,16 @@
       "ambiguous": "Pregunta ambigua",
       "wrong_explanation": "Explicación incorrecta",
       "theory_mismatch": "No coincide con la teoría",
+      "wrong_theory": "Teoría incorrecta",
+      "wrong_example": "Ejemplo incorrecto",
+      "unclear_explanation": "Explicación poco clara",
       "too_hard": "Demasiado difícil",
       "other": "Otro"
     },
     "reportSend": "Enviar",
     "reportSent": "Enviado",
     "reportThanks": "Gracias, reporte enviado.",
+    "reportQueued": "Reporte guardado; se enviará cuando vuelva la conexión.",
     "reportFailed": "No se pudo enviar el reporte. Inténtalo de nuevo."
   },
   "verbTraining": {
@@ -565,6 +569,7 @@
     "keyPoints": "Ideas clave",
     "commonMistakes": "Errores frecuentes",
     "examples": "Ejemplos",
+    "showTranslation": "Mostrar traducción",
     "wrong": "Incorrecto",
     "correct": "Correcto",
     "why": "Por qué",

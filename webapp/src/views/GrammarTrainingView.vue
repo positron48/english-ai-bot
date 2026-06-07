@@ -50,6 +50,7 @@
         :chapter-theory-blocks="currentChapterTheoryBlocksOrdered"
         :theory-chapter-context="currentChapterContext"
         :show-answers="!!result"
+        :feedback-correct-answer="result?.correct_answer"
         :show-explanation="false"
         :show-theory-help-button="false"
         @answer="onAnswer"
@@ -144,8 +145,8 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { apiClient } from '../api/client'
 import { grammarClient } from '../api/grammarClient'
+import { contentReportClient } from '../api/contentReportClient'
 import GrammarQuestion from '../components/GrammarQuestion.vue'
 import TrainingSessionCompletion from '../components/TrainingSessionCompletion.vue'
 import ContentReportDialog from '../components/ContentReportDialog.vue'
@@ -398,7 +399,7 @@ const hydrateTheoryBlocksForSession = async () => {
 
   for (const chapterId of chapterIds) {
     try {
-      const data: any = await grammarClient.getChapter(chapterId)
+      const data: any = await grammarClient.getChapterForTheory(chapterId)
       cacheChapterContextFromApi(chapterId, data)
       const blocks = data?.chapter?.blocks
       if (!Array.isArray(blocks)) continue
@@ -494,19 +495,19 @@ const reportCurrentQuestion = async () => {
   reportMessage.value = ''
   reportSubmitting.value = true
   try {
-    await apiClient.request('/api/learning/grammar/training/report', {
-      method: 'POST',
-      body: JSON.stringify({
-        question_id: currentQuestion.value.id,
-        chapter_id: currentQuestion.value.chapter_id || '',
-        theory_block_id: currentQuestion.value.theory_block_id || '',
-        report_category: reportCategory.value,
-        comment,
-        question_data: currentQuestion.value
-      })
+    const resultSubmit = await contentReportClient.submit({
+      sourceType: 'grammar_training',
+      reportCategory: reportCategory.value,
+      comment,
+      grammarQuestionID: currentQuestion.value.id,
+      grammarChapterID: currentQuestion.value.chapter_id || '',
+      theoryBlockID: currentQuestion.value.theory_block_id || '',
+      payload: { question_snapshot: currentQuestion.value },
     })
     reportSentForQuestionID.value = currentQuestion.value.id
-    reportMessage.value = t('training.reportThanks')
+    reportMessage.value = resultSubmit.queued
+      ? t('training.reportQueued')
+      : t('training.reportThanks')
     reportDialogOpen.value = false
     reportCategory.value = ''
     reportDetails.value = ''
@@ -545,7 +546,7 @@ watch(currentQuestion, async (q) => {
   const key = `${q.chapter_id}::${q.theory_block_id}`
   if (theoryBlockMap.value[key]) return
   try {
-    const data: any = await grammarClient.getChapter(q.chapter_id)
+    const data: any = await grammarClient.getChapterForTheory(q.chapter_id)
     cacheChapterContextFromApi(q.chapter_id, data)
     const blocks = data?.chapter?.blocks
     if (!Array.isArray(blocks)) return

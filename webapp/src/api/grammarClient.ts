@@ -160,11 +160,31 @@ function computeSectionAccess(meta: OfflineGrammarMeta, sectionID: string): bool
   const index = meta.sections.findIndex((section) => section.section_id === sectionID)
   if (index < 0) return false
   const section = meta.sections[index]
-  if (section.can_access) return true
+  if (section.can_access || section.opened_by_placement) return true
   if (index === 0) return true
   const prev = meta.sections[index - 1]
   if ((prev.category_test_score || 0) >= 50) return true
   return prev.chapters.length > 0 && prev.chapters.every((chapter) => chapter.passed)
+}
+
+function isChapterStudied(meta: OfflineGrammarMeta, chapterID: string): boolean {
+  for (const section of meta.sections) {
+    const chapter = section.chapters.find((item) => item.chapter_id === chapterID)
+    if (!chapter) continue
+    if (chapter.passed) return true
+    if (section.opened_by_placement) return true
+    return false
+  }
+  return false
+}
+
+async function filterTrainingQuestionsByStudiedChapters(questions: any[]): Promise<any[]> {
+  const meta = await getOfflineMeta()
+  if (!meta) return questions
+  return questions.filter((q) => {
+    const chapterID = q?.chapter_id
+    return typeof chapterID === 'string' && chapterID.length > 0 && isChapterStudied(meta, chapterID)
+  })
 }
 
 async function updateLocalProgress(scope: 'chapter' | 'category', scopeID: string, result: any): Promise<void> {
@@ -278,9 +298,10 @@ function trainingQuestionsFromChapterPayload(payload: any): any[] {
 
 async function getOfflineTrainingQuestionPool(): Promise<any[]> {
   const trainingQuestions = await getTrainingQuestions()
-  if (trainingQuestions.length > 0) return trainingQuestions
-  const chapters = await getStoredChapters()
-  return chapters.flatMap(trainingQuestionsFromChapterPayload)
+  const pool = trainingQuestions.length > 0
+    ? trainingQuestions
+    : (await getStoredChapters()).flatMap(trainingQuestionsFromChapterPayload)
+  return filterTrainingQuestionsByStudiedChapters(pool)
 }
 
 async function queueOfflineTrainingAttempt(questionID: string, answer: any, result: any): Promise<void> {
@@ -523,6 +544,32 @@ export const grammarClient = {
     )
   },
 
+  async getChapterForTheory(chapterID: string): Promise<any> {
+    return offlineFallback(
+      () => apiClient.request(`/api/learning/grammar/chapters/${chapterID}`),
+      async () => {
+        const payload = await getStoredChapter(chapterID)
+        if (!payload) throw new OfflineGrammarUnavailableError('Chapter is not available offline')
+        const meta = await requireMeta()
+        let sectionMeta: any = payload.section
+        if (!sectionMeta) {
+          for (const section of meta.sections) {
+            if (section.chapters.some((chapter) => chapter.chapter_id === chapterID)) {
+              sectionMeta = {
+                section_id: section.section_id,
+                title: section.title,
+                title_translations: section.title_translations,
+                level: section.level,
+              }
+              break
+            }
+          }
+        }
+        return { ...payload, section: sectionMeta }
+      },
+    )
+  },
+
   async canAccessChapter(chapterID: string): Promise<{ can_access: boolean }> {
     return offlineFallback(
       () => apiClient.request(`/api/learning/grammar/chapters/${chapterID}/access`),
@@ -676,6 +723,7 @@ export const grammarClient = {
       for (const section of meta.sections) {
         if (openedSections.includes(section.section_id)) {
           section.can_access = true
+          section.opened_by_placement = true
           for (const chapter of section.chapters) chapter.can_access = true
         }
       }

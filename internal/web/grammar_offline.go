@@ -37,8 +37,9 @@ type offlineSectionManifest struct {
 	TotalChapters      int                      `json:"total_chapters"`
 	ProgressPercentage int                      `json:"progress_percentage"`
 	CanAccess          bool                     `json:"can_access"`
-	CategoryTestScore  *int                     `json:"category_test_score,omitempty"`
-	Chapters           []offlineChapterManifest `json:"chapters"`
+  CategoryTestScore  *int                     `json:"category_test_score,omitempty"`
+  OpenedByPlacement  bool                     `json:"opened_by_placement,omitempty"`
+  Chapters           []offlineChapterManifest `json:"chapters"`
 }
 
 func (r *Router) handleLearningGrammarOfflineManifest(w http.ResponseWriter, req *http.Request) {
@@ -102,6 +103,10 @@ func (r *Router) handleLearningGrammarOfflineManifest(w http.ResponseWriter, req
 		canAccess, errAccess := r.grammarService.CanAccessSection(req.Context(), userID, section.SectionID)
 		if errAccess != nil {
 			r.logger.Warn("failed to check offline section access", zap.String("section_id", section.SectionID), zap.Error(errAccess))
+		}
+		openedByPlacement, errPlacement := r.grammarService.IsSectionOpenedByPlacement(req.Context(), userID, section.SectionID)
+		if errPlacement != nil {
+			r.logger.Warn("failed to check offline placement section", zap.String("section_id", section.SectionID), zap.Error(errPlacement))
 		}
 		bestCategoryScore, errScore := r.grammarService.AttemptRepo.GetCategoryTestBestScore(userID, section.SectionID)
 		var categoryTestScore *int
@@ -171,6 +176,7 @@ func (r *Router) handleLearningGrammarOfflineManifest(w http.ResponseWriter, req
 			TotalChapters:      len(section.ChapterIDs),
 			ProgressPercentage: progressPct,
 			CanAccess:          canAccess,
+			OpenedByPlacement:  openedByPlacement,
 			CategoryTestScore:  categoryTestScore,
 			Chapters:           chapters,
 		})

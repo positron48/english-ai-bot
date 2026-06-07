@@ -84,21 +84,12 @@
                 </div>
               </div>
             </div>
-            <div
+            <GrammarTheoryExamples
               v-if="Array.isArray(displayedTheoryBlock.theory?.examples) && displayedTheoryBlock.theory.examples.length"
-              class="theory-modal-section theory-modal-examples"
-            >
-              <h4 class="theory-modal-subheading">{{ t('grammar.examples') }}</h4>
-              <div
-                v-for="example in displayedTheoryBlock.theory.examples"
-                :key="example.id || example.text"
-                class="theory-example-item"
-              >
-                <div class="theory-example-text">{{ example.text }}</div>
-                <div v-if="example.translation" class="theory-example-translation">{{ example.translation }}</div>
-                <div v-if="example.notes" class="theory-example-notes">{{ example.notes }}</div>
-              </div>
-            </div>
+              :examples="displayedTheoryBlock.theory.examples"
+              variant="modal"
+              :show-heading="false"
+            />
           </template>
           <template v-else>
             {{ t('common.loading') }}
@@ -286,6 +277,7 @@
 import { ref, computed, watch, nextTick } from 'vue'
 import { marked } from 'marked'
 import { useI18n } from 'vue-i18n'
+import GrammarTheoryExamples from './GrammarTheoryExamples.vue'
 
 export interface TheoryChapterContext {
   categoryTitle: string
@@ -313,6 +305,7 @@ const props = withDefaults(defineProps<{
   chapterTheoryBlocks?: any[] | null
   showAnswers?: boolean
   initialAnswer?: any
+  feedbackCorrectAnswer?: any
   chapterTitle?: string
   showExplanation?: boolean
   /** When false, parent renders the help control (e.g. next to Continue) and calls toggleTheoryHelp via ref */
@@ -793,6 +786,14 @@ watch(() => props.showAnswers, (newVal) => {
     answered.value = true
   }
 })
+
+watch(() => props.feedbackCorrectAnswer, (value) => {
+  if (value === undefined || value === null) return
+  correctAnswer.value = value
+  if (props.showAnswers && userAnswer.value !== null) {
+    answered.value = true
+  }
+}, { immediate: true })
 
 watch(() => props.question?.id, () => {
   showTheoryHelp.value = false

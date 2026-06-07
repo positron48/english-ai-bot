@@ -286,12 +286,16 @@
       "ambiguous": "Двусмысленный вопрос",
       "wrong_explanation": "Неверное объяснение",
       "theory_mismatch": "Не совпадает с теорией",
+      "wrong_theory": "Неверная теория",
+      "wrong_example": "Неверный пример",
+      "unclear_explanation": "Непонятное объяснение",
       "too_hard": "Слишком сложно",
       "other": "Другое"
     },
     "reportSend": "Отправить",
     "reportSent": "Отправлено",
     "reportThanks": "Спасибо, жалоба отправлена.",
+    "reportQueued": "Жалоба сохранена и будет отправлена при появлении сети.",
     "reportFailed": "Не удалось отправить жалобу. Попробуйте снова."
   },
   "verbTraining": {
@@ -604,6 +608,7 @@
     "keyPoints": "Ключевые моменты",
     "commonMistakes": "Частые ошибки",
     "examples": "Примеры",
+    "showTranslation": "Показать перевод",
     "wrong": "Неправильно",
     "correct": "Правильно",
     "why": "Почему",

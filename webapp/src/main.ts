@@ -2,8 +2,7 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import i18n from './i18n'
-import { grammarClient } from './api/grammarClient'
-import { wordTrainingClient } from './api/wordTrainingClient'
+import { initOfflineSyncRunner } from './api/offlineSyncRunner'
 import './styles/theme.css'
 import './style.css'
 import './styles/markdown-content.css'
@@ -134,18 +133,7 @@ if ('serviceWorker' in navigator) {
   })
 }
 
-const trySyncOfflineGrammar = () => {
-  if (typeof navigator !== 'undefined' && navigator.onLine === false) return
-  grammarClient.syncQueuedAttempts().catch((error) => {
-    console.warn('[PWA] Offline grammar sync failed:', error)
-  })
-  wordTrainingClient.syncQueuedAttempts().catch((error) => {
-    console.warn('[PWA] Offline word training sync failed:', error)
-  })
-}
-
-window.addEventListener('online', trySyncOfflineGrammar)
-window.setInterval(trySyncOfflineGrammar, 30_000)
+initOfflineSyncRunner()
 
 app.use(router)
 app.use(i18n)
