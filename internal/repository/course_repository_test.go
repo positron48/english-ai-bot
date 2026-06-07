@@ -638,6 +638,36 @@ func TestCourseRepository_RecordExerciseAttemptAndProgress(t *testing.T) {
 	if progress.Summary.AttemptedItems != 1 || progress.Summary.AttemptCount != 1 || progress.Summary.CorrectCount != 1 {
 		t.Fatalf("progress summary = %+v", progress.Summary)
 	}
+	if len(progress.ByDistrict) == 0 {
+		t.Fatalf("expected district progress rows")
+	}
+	var districtFound bool
+	for _, district := range progress.ByDistrict {
+		if district.AttemptedItems == 1 {
+			districtFound = true
+			if district.Foundation <= 0 || district.Confidence != 100 {
+				t.Fatalf("district signals = %+v", district)
+			}
+		}
+	}
+	if !districtFound {
+		t.Fatalf("expected attempted district progress, got %+v", progress.ByDistrict)
+	}
+	if len(progress.ByLocation) == 0 {
+		t.Fatalf("expected location progress rows")
+	}
+	var locationFound bool
+	for _, location := range progress.ByLocation {
+		if location.AttemptedItems == 1 {
+			locationFound = true
+			if location.Foundation <= 0 || location.Confidence != 100 {
+				t.Fatalf("location signals = %+v", location)
+			}
+		}
+	}
+	if !locationFound {
+		t.Fatalf("expected attempted location progress, got %+v", progress.ByLocation)
+	}
 }
 
 func TestCourseRepository_RecordExerciseAttemptUpdatesSRS(t *testing.T) {

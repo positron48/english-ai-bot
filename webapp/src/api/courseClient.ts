@@ -169,7 +169,47 @@ export interface CourseProgress {
     mastered_items: number
     progress_percent: number
   }>
+  by_district?: CourseProgressDistrict[]
+  by_location?: CourseProgressLocation[]
   generated_at: string
+}
+
+export interface CourseProgressDistrict {
+  district_id: number
+  district_code: string
+  level_code: string
+  title: string
+  total_items: number
+  attempted_items: number
+  mastered_items: number
+  due_review_count: number
+  attempt_count: number
+  correct_count: number
+  foundation: number
+  confidence: number
+  stability: number
+  weakness: number
+  progress_percent: number
+}
+
+export interface CourseProgressLocation {
+  location_id: number
+  location_code: string
+  location_type: string
+  title: string
+  district_id: number
+  district_code: string
+  total_items: number
+  attempted_items: number
+  mastered_items: number
+  due_review_count: number
+  attempt_count: number
+  correct_count: number
+  foundation: number
+  confidence: number
+  stability: number
+  weakness: number
+  progress_percent: number
 }
 
 export interface ExerciseAttemptRequest {

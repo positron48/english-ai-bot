@@ -29,6 +29,10 @@
           <span>{{ itemCount }}</span>
           <label>{{ t('city.items') }}</label>
         </div>
+        <div class="stat-box">
+          <span>{{ formatPercent(districtSignal.foundation) }}</span>
+          <label>{{ t('city.foundation') }}</label>
+        </div>
       </section>
 
       <section class="location-sections">
@@ -38,7 +42,12 @@
               <p>{{ locationTitle(location.location_type, location.title) }}</p>
               <h2>{{ location.title }}</h2>
             </div>
-            <strong>{{ countLocationItems(location) }}</strong>
+            <strong>{{ formatPercent(locationSignal(location.code).foundation) }}</strong>
+          </div>
+          <div class="location-signals">
+            <span>{{ t('city.confidence') }} {{ formatPercent(locationSignal(location.code).confidence) }}</span>
+            <span>{{ t('city.stability') }} {{ formatPercent(locationSignal(location.code).stability) }}</span>
+            <span>{{ t('city.reviewPressure') }} {{ locationSignal(location.code).due_review_count }}</span>
           </div>
 
           <div class="module-grid">
@@ -75,13 +84,14 @@
 import { computed, nextTick, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
-import { courseClient, CourseMap, CourseMapLocation } from '../api/courseClient'
+import { courseClient, CourseMap, CourseMapLocation, CourseProgress } from '../api/courseClient'
 import { routeForLinglowItem } from '../utils/linglowNavigation'
 
 const { t } = useI18n()
 const route = useRoute()
 
 const courseMap = ref<CourseMap | null>(null)
+const progress = ref<CourseProgress | null>(null)
 const loading = ref(false)
 const error = ref('')
 
@@ -93,9 +103,37 @@ const district = computed(() => {
 const locations = computed(() => (district.value && Array.isArray(district.value.locations) ? district.value.locations : []))
 const moduleCount = computed(() => locations.value.reduce((sum, location) => sum + safeModules(location).length, 0))
 const itemCount = computed(() => locations.value.reduce((sum, location) => sum + countLocationItems(location), 0))
+const locationProgressByCode = computed(() => {
+  const out: Record<string, NonNullable<CourseProgress['by_location']>[number]> = {}
+  for (const row of progress.value?.by_location || []) {
+    out[row.location_code] = row
+  }
+  return out
+})
+const districtSignal = computed(() => {
+  return (progress.value?.by_district || []).find((item) => item.district_code === route.params.districtCode) || emptySignal()
+})
 
 function formatType(type: string): string {
   return type.replace(/_/g, ' ')
+}
+
+function formatPercent(value: number): string {
+  return `${Math.round(value)}%`
+}
+
+function emptySignal() {
+  return {
+    foundation: 0,
+    confidence: 0,
+    stability: 0,
+    weakness: 0,
+    due_review_count: 0,
+  }
+}
+
+function locationSignal(code: string) {
+  return locationProgressByCode.value[code] || emptySignal()
 }
 
 function locationTitle(type: string, fallback: string): string {
@@ -125,7 +163,12 @@ async function loadDistrict() {
   error.value = ''
   try {
     const courseCode = typeof route.query.course_code === 'string' ? route.query.course_code : undefined
-    courseMap.value = await courseClient.getCourseMap(courseCode)
+    const [map, progressData] = await Promise.all([
+      courseClient.getCourseMap(courseCode),
+      courseClient.getProgress(courseCode),
+    ])
+    courseMap.value = map
+    progress.value = progressData
     await nextTick()
     if (typeof route.query.location === 'string') {
       document.getElementById(route.query.location)?.scrollIntoView({ block: 'start' })
@@ -218,7 +261,7 @@ onMounted(loadDistrict)
 
 .district-stats {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 10px;
 }
 
@@ -271,6 +314,16 @@ onMounted(loadDistrict)
 
 .location-title strong {
   color: var(--primary-color);
+}
+
+.location-signals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: -2px 0 10px;
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  font-weight: 650;
 }
 
 .module-grid {

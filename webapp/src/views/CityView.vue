@@ -129,6 +129,11 @@
             <span class="level-badge">{{ district.level_code }}</span>
             <h2>{{ district.title }}</h2>
             <p>{{ safeLocations(district).length }} {{ t('city.locationsShort') }}</p>
+            <div class="signal-stack">
+              <span>{{ t('city.foundation') }} {{ formatPercent(districtSignal(district.code).foundation) }}</span>
+              <span>{{ t('city.confidence') }} {{ formatPercent(districtSignal(district.code).confidence) }}</span>
+              <span>{{ t('city.stability') }} {{ formatPercent(districtSignal(district.code).stability) }}</span>
+            </div>
             <RouterLink class="district-link" :to="{ name: 'CityDistrict', params: { districtCode: district.code }, query: selectedCourseCode ? { course_code: selectedCourseCode } : undefined }">
               {{ t('city.openDistrict') }}
             </RouterLink>
@@ -138,7 +143,11 @@
             <RouterLink v-for="location in safeLocations(district)" :key="location.id" class="location-cell location-link" :to="{ name: 'CityDistrict', params: { districtCode: district.code }, query: selectedCourseCode ? { course_code: selectedCourseCode, location: location.code } : { location: location.code } }">
               <div class="location-head">
                 <span>{{ locationTitle(location.location_type, location.title) }}</span>
-                <strong>{{ countLocationItems(location) }}</strong>
+                <strong>{{ formatPercent(locationSignal(location.code).foundation) }}</strong>
+              </div>
+              <div class="location-signals">
+                <span>{{ t('city.confidenceShort') }} {{ formatPercent(locationSignal(location.code).confidence) }}</span>
+                <span>{{ t('city.weaknessShort') }} {{ locationSignal(location.code).due_review_count }}</span>
               </div>
               <div class="module-list">
                 <div v-for="module in visibleModules(location)" :key="module.id" class="module-line">
@@ -203,12 +212,46 @@ const dailyItems = computed(() => {
 
 const reviewItems = computed(() => (reviewQueue.value?.items || []).slice(0, 6))
 
+const districtProgressByCode = computed(() => {
+  const out: Record<string, NonNullable<CourseProgress['by_district']>[number]> = {}
+  for (const row of progress.value?.by_district || []) {
+    out[row.district_code] = row
+  }
+  return out
+})
+
+const locationProgressByCode = computed(() => {
+  const out: Record<string, NonNullable<CourseProgress['by_location']>[number]> = {}
+  for (const row of progress.value?.by_location || []) {
+    out[row.location_code] = row
+  }
+  return out
+})
+
 function formatType(type: string): string {
   return type.replace(/_/g, ' ')
 }
 
 function formatPercent(value: number): string {
   return `${Math.round(value)}%`
+}
+
+function emptySignal() {
+  return {
+    foundation: 0,
+    confidence: 0,
+    stability: 0,
+    weakness: 0,
+    due_review_count: 0,
+  }
+}
+
+function districtSignal(code: string) {
+  return districtProgressByCode.value[code] || emptySignal()
+}
+
+function locationSignal(code: string) {
+  return locationProgressByCode.value[code] || emptySignal()
 }
 
 function formatDate(value: string): string {
@@ -574,6 +617,14 @@ onMounted(loadCity)
   color: var(--text-secondary);
 }
 
+.signal-stack {
+  display: grid;
+  gap: 4px;
+  margin-top: 10px;
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+}
+
 .district-link {
   display: inline-flex;
   margin-top: 10px;
@@ -615,6 +666,16 @@ onMounted(loadCity)
 
 .location-head strong {
   color: var(--primary-color);
+}
+
+.location-signals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  font-weight: 650;
 }
 
 .module-list {

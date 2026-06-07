@@ -29,7 +29,7 @@
 - Phase 7/SRS admin readiness UI: добавлен `/admin/linglow-srs` read-only экран для админов, который показывает `/api/linglow/srs-shadow`, course selector, readiness, due/mismatch/mastery metrics и breakdown по типам.
 - Phase 7/SRS aggregate readiness foundation: добавлен full-access admin endpoint `GET /api/admin/linglow/srs-readiness`, который агрегирует readiness по всем `user_courses` выбранного курса и показывает totals/первых not-ready users на `/admin/linglow-srs`.
 - Phase 8/City Home foundation: `/city` получил course selector, progress summary, daily route и review station blocks поверх `GET /api/courses`, `/api/linglow/progress`, `/api/linglow/daily-route`, `/api/linglow/review`; старая карта districts/locations сохранена.
-- Phase 8/District UX foundation: добавлен `/city/district/:districtCode` поверх `GET /api/linglow/city`; City Home получил кликабельные daily/review items, переходы в district/location и Simple Mode быстрые входы в review, grammar, reading и words.
+- Phase 8/District UX foundation: добавлен `/city/district/:districtCode` поверх `GET /api/linglow/city`; City Home получил кликабельные daily/review items, переходы в district/location и Simple Mode быстрые входы в review, grammar, reading и words. `GET /api/linglow/progress` расширен `by_district`/`by_location` с foundation/confidence/stability/weakness сигналами, City Home и District view показывают эти сигналы.
 
 ## 1. Текущая точка
 
@@ -509,7 +509,7 @@ Rollback:
 3. Добавить District view:
    - buildings/locations;
    - список modules/items и переходы в существующие runtime-экраны - готово как `/city/district/:districtCode`;
-   - foundation/confidence/stability вместо процента завершения;
+   - foundation/confidence/stability вместо процента завершения - готово как progress signals в `/api/linglow/progress`;
    - weak items;
    - revisit tasks.
 

@@ -351,12 +351,25 @@ func TestHandleLinglowExerciseAttemptsAndProgress(t *testing.T) {
 			AttemptCount   int `json:"attempt_count"`
 			CorrectCount   int `json:"correct_count"`
 		} `json:"summary"`
+		ByDistrict []struct {
+			DistrictCode string  `json:"district_code"`
+			Foundation   float64 `json:"foundation"`
+			Confidence   float64 `json:"confidence"`
+		} `json:"by_district"`
+		ByLocation []struct {
+			LocationCode string  `json:"location_code"`
+			Foundation   float64 `json:"foundation"`
+			Confidence   float64 `json:"confidence"`
+		} `json:"by_location"`
 	}
 	if err := json.Unmarshal(w.Body.Bytes(), &progressResp); err != nil {
 		t.Fatalf("decode progress: %v", err)
 	}
 	if progressResp.Summary.AttemptedItems != 1 || progressResp.Summary.AttemptCount != 1 || progressResp.Summary.CorrectCount != 1 {
 		t.Fatalf("progress response = %+v", progressResp)
+	}
+	if len(progressResp.ByDistrict) == 0 || len(progressResp.ByLocation) == 0 {
+		t.Fatalf("progress breakdown missing: %+v", progressResp)
 	}
 }
 

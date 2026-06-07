@@ -190,11 +190,13 @@ type ReviewQueueSummary struct {
 }
 
 type CourseProgress struct {
-	Course     CourseMapCourse       `json:"course"`
-	UserCourse CourseMapUserCourse   `json:"user_course"`
-	Summary    CourseProgressSummary `json:"summary"`
-	ByType     []CourseProgressType  `json:"by_type"`
-	Generated  string                `json:"generated_at"`
+	Course     CourseMapCourse          `json:"course"`
+	UserCourse CourseMapUserCourse      `json:"user_course"`
+	Summary    CourseProgressSummary    `json:"summary"`
+	ByType     []CourseProgressType     `json:"by_type"`
+	ByDistrict []CourseProgressDistrict `json:"by_district"`
+	ByLocation []CourseProgressLocation `json:"by_location"`
+	Generated  string                   `json:"generated_at"`
 }
 
 type CourseProgressSummary struct {
@@ -213,6 +215,44 @@ type CourseProgressType struct {
 	TotalItems      int     `json:"total_items"`
 	AttemptedItems  int     `json:"attempted_items"`
 	MasteredItems   int     `json:"mastered_items"`
+	ProgressPercent float64 `json:"progress_percent"`
+}
+
+type CourseProgressDistrict struct {
+	DistrictID      int64   `json:"district_id"`
+	DistrictCode    string  `json:"district_code"`
+	LevelCode       string  `json:"level_code"`
+	Title           string  `json:"title"`
+	TotalItems      int     `json:"total_items"`
+	AttemptedItems  int     `json:"attempted_items"`
+	MasteredItems   int     `json:"mastered_items"`
+	DueReviewCount  int     `json:"due_review_count"`
+	AttemptCount    int     `json:"attempt_count"`
+	CorrectCount    int     `json:"correct_count"`
+	Foundation      float64 `json:"foundation"`
+	Confidence      float64 `json:"confidence"`
+	Stability       float64 `json:"stability"`
+	Weakness        float64 `json:"weakness"`
+	ProgressPercent float64 `json:"progress_percent"`
+}
+
+type CourseProgressLocation struct {
+	LocationID      int64   `json:"location_id"`
+	LocationCode    string  `json:"location_code"`
+	LocationType    string  `json:"location_type"`
+	Title           string  `json:"title"`
+	DistrictID      int64   `json:"district_id"`
+	DistrictCode    string  `json:"district_code"`
+	TotalItems      int     `json:"total_items"`
+	AttemptedItems  int     `json:"attempted_items"`
+	MasteredItems   int     `json:"mastered_items"`
+	DueReviewCount  int     `json:"due_review_count"`
+	AttemptCount    int     `json:"attempt_count"`
+	CorrectCount    int     `json:"correct_count"`
+	Foundation      float64 `json:"foundation"`
+	Confidence      float64 `json:"confidence"`
+	Stability       float64 `json:"stability"`
+	Weakness        float64 `json:"weakness"`
 	ProgressPercent float64 `json:"progress_percent"`
 }
 
@@ -762,6 +802,14 @@ func (r *CourseRepository) GetProgressForUser(ctx context.Context, userID int64,
 	if err != nil {
 		return nil, err
 	}
+	progress.ByDistrict, err = r.listProgressByDistrict(ctx, userCourse.ID, courseMap.Course.ID)
+	if err != nil {
+		return nil, err
+	}
+	progress.ByLocation, err = r.listProgressByLocation(ctx, userCourse.ID, courseMap.Course.ID)
+	if err != nil {
+		return nil, err
+	}
 	return progress, nil
 }
 
@@ -1137,6 +1185,89 @@ func (r *CourseRepository) listProgressByType(ctx context.Context, userCourseID,
 		return nil, fmt.Errorf("iterate progress types: %w", err)
 	}
 	return out, nil
+}
+
+func (r *CourseRepository) listProgressByDistrict(ctx context.Context, userCourseID, courseID int64) ([]CourseProgressDistrict, error) {
+	rows, err := r.db.QueryContext(ctx, `
+		SELECT
+			d.id, d.code, d.level_code, d.title,
+			COUNT(DISTINCT li.id) AS total_items,
+			COUNT(DISTINCT ea.learning_item_id) AS attempted_items,
+			COUNT(DISTINCT CASE WHEN si.state = 'mastered' THEN si.learning_item_id END) AS mastered_items,
+			COUNT(DISTINCT CASE WHEN si.state IN ('learning', 'review', 'relearning') AND (si.due_at IS NULL OR si.due_at <= CURRENT_TIMESTAMP) THEN si.id END) AS due_review_count,
+			COUNT(ea.id) AS attempt_count,
+			COUNT(CASE WHEN ea.is_correct THEN 1 END) AS correct_count
+		FROM districts d
+		LEFT JOIN learning_items li ON li.district_id = d.id AND li.status = 'published'
+		LEFT JOIN exercise_attempts ea ON ea.learning_item_id = li.id AND ea.user_course_id = ?
+		LEFT JOIN srs_items si ON si.learning_item_id = li.id AND si.user_course_id = ?
+		WHERE d.course_id = ? AND d.status = 'active'
+		GROUP BY d.id, d.code, d.level_code, d.title, d.sort_order
+		ORDER BY d.sort_order, d.id
+	`, userCourseID, userCourseID, courseID)
+	if err != nil {
+		return nil, fmt.Errorf("list progress by district: %w", err)
+	}
+	defer rows.Close()
+	out := []CourseProgressDistrict{}
+	for rows.Next() {
+		var row CourseProgressDistrict
+		if err := rows.Scan(&row.DistrictID, &row.DistrictCode, &row.LevelCode, &row.Title, &row.TotalItems, &row.AttemptedItems, &row.MasteredItems, &row.DueReviewCount, &row.AttemptCount, &row.CorrectCount); err != nil {
+			return nil, fmt.Errorf("scan progress district: %w", err)
+		}
+		fillProgressSignals(&row.Foundation, &row.Confidence, &row.Stability, &row.Weakness, &row.ProgressPercent, row.TotalItems, row.AttemptedItems, row.MasteredItems, row.DueReviewCount, row.AttemptCount, row.CorrectCount)
+		out = append(out, row)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("iterate progress districts: %w", err)
+	}
+	return out, nil
+}
+
+func (r *CourseRepository) listProgressByLocation(ctx context.Context, userCourseID, courseID int64) ([]CourseProgressLocation, error) {
+	rows, err := r.db.QueryContext(ctx, `
+		SELECT
+			l.id, l.code, l.location_type, l.title, d.id, d.code,
+			COUNT(DISTINCT li.id) AS total_items,
+			COUNT(DISTINCT ea.learning_item_id) AS attempted_items,
+			COUNT(DISTINCT CASE WHEN si.state = 'mastered' THEN si.learning_item_id END) AS mastered_items,
+			COUNT(DISTINCT CASE WHEN si.state IN ('learning', 'review', 'relearning') AND (si.due_at IS NULL OR si.due_at <= CURRENT_TIMESTAMP) THEN si.id END) AS due_review_count,
+			COUNT(ea.id) AS attempt_count,
+			COUNT(CASE WHEN ea.is_correct THEN 1 END) AS correct_count
+		FROM locations l
+		JOIN districts d ON d.id = l.district_id
+		LEFT JOIN learning_items li ON li.location_id = l.id AND li.status = 'published'
+		LEFT JOIN exercise_attempts ea ON ea.learning_item_id = li.id AND ea.user_course_id = ?
+		LEFT JOIN srs_items si ON si.learning_item_id = li.id AND si.user_course_id = ?
+		WHERE l.course_id = ? AND l.status = 'active'
+		GROUP BY l.id, l.code, l.location_type, l.title, l.sort_order, d.id, d.code, d.sort_order
+		ORDER BY d.sort_order, l.sort_order, l.id
+	`, userCourseID, userCourseID, courseID)
+	if err != nil {
+		return nil, fmt.Errorf("list progress by location: %w", err)
+	}
+	defer rows.Close()
+	out := []CourseProgressLocation{}
+	for rows.Next() {
+		var row CourseProgressLocation
+		if err := rows.Scan(&row.LocationID, &row.LocationCode, &row.LocationType, &row.Title, &row.DistrictID, &row.DistrictCode, &row.TotalItems, &row.AttemptedItems, &row.MasteredItems, &row.DueReviewCount, &row.AttemptCount, &row.CorrectCount); err != nil {
+			return nil, fmt.Errorf("scan progress location: %w", err)
+		}
+		fillProgressSignals(&row.Foundation, &row.Confidence, &row.Stability, &row.Weakness, &row.ProgressPercent, row.TotalItems, row.AttemptedItems, row.MasteredItems, row.DueReviewCount, row.AttemptCount, row.CorrectCount)
+		out = append(out, row)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("iterate progress locations: %w", err)
+	}
+	return out, nil
+}
+
+func fillProgressSignals(foundation, confidence, stability, weakness, progressPercent *float64, totalItems, attemptedItems, masteredItems, dueReviewCount, attemptCount, correctCount int) {
+	*foundation = percent(attemptedItems+masteredItems, totalItems)
+	*confidence = percent(correctCount, attemptCount)
+	*stability = percent(masteredItems, totalItems)
+	*weakness = percent(dueReviewCount, totalItems)
+	*progressPercent = *foundation
 }
 
 func (r *CourseRepository) RecordExerciseAttempt(ctx context.Context, input ExerciseAttemptInput) (*ExerciseAttemptResult, error) {
