@@ -6,6 +6,7 @@ const isAdmin = ref(false)
 const categories = ref<number[]>([])
 const permissions = ref<string[]>([])
 const permissionsLoading = ref(false)
+let permissionsLoadPromise: Promise<void> | null = null
 
 // Decode JWT token to extract claims
 function decodeJWT(token: string): any | null {
@@ -51,36 +52,46 @@ function getCategoriesFromToken(token: string | null): number[] {
 
 // Load permissions from API
 async function loadPermissions(): Promise<void> {
-  if (!isAuthenticated.value || permissionsLoading.value) {
+  if (!isAuthenticated.value) {
+    return
+  }
+
+  if (permissionsLoadPromise) {
+    await permissionsLoadPromise
     return
   }
   
   permissionsLoading.value = true
-  try {
-    const data: { categories: number[]; permissions: string[] } = await apiClient.request('/api/access/me')
-    categories.value = data.categories || []
-    permissions.value = data.permissions || []
-    
-    // Update isAdmin based on permissions
-    // User is admin if they have any admin permission
-    isAdmin.value = permissions.value.includes('full_access') || 
-                   permissions.value.includes('words.read_all') ||
-                   permissions.value.includes('words.edit_all') ||
-                   permissions.value.includes('word_sets.read') ||
-                   permissions.value.includes('word_sets.edit') ||
-                   permissions.value.includes('users.read_all') ||
-                   permissions.value.includes('stats.read') ||
-                   categories.value.length > 0 // Also check categories as fallback
-  } catch (error) {
-    console.error('Failed to load permissions:', error)
-    // Don't reset isAdmin on error - keep optimistic value if categories exist
-    // Only reset if we're sure user has no access
-    if (categories.value.length === 0) {
-      isAdmin.value = false
+  permissionsLoadPromise = (async () => {
+    try {
+      const data: { categories: number[]; permissions: string[] } = await apiClient.request('/api/access/me')
+      categories.value = data.categories || []
+      permissions.value = data.permissions || []
+      
+      // Update isAdmin based on permissions
+      // User is admin if they have any admin permission
+      isAdmin.value = permissions.value.includes('full_access') || 
+                     permissions.value.includes('words.read_all') ||
+                     permissions.value.includes('words.edit_all') ||
+                     permissions.value.includes('word_sets.read') ||
+                     permissions.value.includes('word_sets.edit') ||
+                     permissions.value.includes('users.read_all') ||
+                     permissions.value.includes('stats.read') ||
+                     categories.value.length > 0 // Also check categories as fallback
+    } catch (error) {
+      console.error('Failed to load permissions:', error)
+      // Don't reset isAdmin on error - keep optimistic value if categories exist
+      // Only reset if we're sure user has no access
+      if (categories.value.length === 0) {
+        isAdmin.value = false
+      }
+    } finally {
+      permissionsLoading.value = false
+      permissionsLoadPromise = null
     }
-  } finally {
-    permissionsLoading.value = false
-  }
+  })()
+
+  await permissionsLoadPromise
 }
 
 export function useAuth() {

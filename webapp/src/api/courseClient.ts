@@ -240,6 +240,9 @@ export interface SRSReadinessAggregateReport {
   ready_count: number
   not_ready_count: number
   ready_for_canonical_read: boolean
+  can_enable_srs_read?: boolean
+  srs_read_enabled?: boolean
+  srs_write_enabled?: boolean
   legacy_due_total: number
   canonical_due_total: number
   legacy_only_total: number

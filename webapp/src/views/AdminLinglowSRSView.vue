@@ -35,6 +35,21 @@
         <small>{{ report.course.title }} · {{ formatDate(aggregate?.generated_at || report.generated_at) }}</small>
       </section>
 
+      <section class="cutover-panel">
+        <div class="cutover-state" :class="{ enabled: aggregate?.srs_read_enabled }">
+          <span>{{ t('adminLinglowSRS.srsReadFlag') }}</span>
+          <strong>{{ aggregate?.srs_read_enabled ? t('adminLinglowSRS.enabled') : t('adminLinglowSRS.disabled') }}</strong>
+        </div>
+        <div class="cutover-state" :class="{ enabled: aggregate?.srs_write_enabled }">
+          <span>{{ t('adminLinglowSRS.srsWriteFlag') }}</span>
+          <strong>{{ aggregate?.srs_write_enabled ? t('adminLinglowSRS.enabled') : t('adminLinglowSRS.disabled') }}</strong>
+        </div>
+        <div class="cutover-state" :class="{ enabled: aggregate?.can_enable_srs_read || aggregate?.srs_read_enabled }">
+          <span>{{ t('adminLinglowSRS.cutoverGate') }}</span>
+          <strong>{{ cutoverStatusLabel }}</strong>
+        </div>
+      </section>
+
       <section class="metric-grid">
         <article class="metric-card">
           <span>{{ aggregate?.user_courses_total || 0 }}</span>
@@ -130,6 +145,12 @@ const error = ref('')
 const aggregateTypes = computed(() => {
   const byType = aggregate.value?.by_type || {}
   return Object.entries(byType).sort((left, right) => right[1] - left[1])
+})
+
+const cutoverStatusLabel = computed(() => {
+  if (aggregate.value?.srs_read_enabled) return t('adminLinglowSRS.readAlreadyEnabled')
+  if (aggregate.value?.can_enable_srs_read) return t('adminLinglowSRS.canEnableRead')
+  return t('adminLinglowSRS.cannotEnableRead')
 })
 
 function formatType(type: string): string {
@@ -251,6 +272,7 @@ onMounted(loadReport)
 
 .state-card,
 .readiness-panel,
+.cutover-panel,
 .metric-card,
 .report-card {
   border: 1px solid var(--border-primary);
@@ -295,6 +317,37 @@ onMounted(loadReport)
 
 .readiness-panel small {
   color: var(--text-secondary);
+}
+
+.cutover-panel {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  padding: 14px;
+}
+
+.cutover-state {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  border: 1px solid var(--border-primary);
+  border-radius: 8px;
+  background: var(--bg-secondary);
+}
+
+.cutover-state span {
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.cutover-state strong {
+  color: var(--text-primary);
+}
+
+.cutover-state.enabled {
+  border-color: var(--color-success);
 }
 
 .metric-grid,
@@ -385,6 +438,7 @@ onMounted(loadReport)
   }
 
   .metric-grid,
+  .cutover-panel,
   .report-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -392,6 +446,7 @@ onMounted(loadReport)
 
 @media (max-width: 560px) {
   .metric-grid,
+  .cutover-panel,
   .report-grid {
     grid-template-columns: 1fr;
   }

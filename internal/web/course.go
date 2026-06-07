@@ -294,6 +294,11 @@ func (r *Router) handleAdminLinglowSRSReadiness(w http.ResponseWriter, req *http
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
+	if r.config != nil {
+		report.SRSReadEnabled = r.config.Linglow.SRSReadEnabled
+		report.SRSWriteEnabled = r.config.Linglow.SRSWriteEnabled
+	}
+	report.CanEnableSRSRead = report.ReadyForCanonicalRead && !report.SRSReadEnabled
 	writeJSON(w, report)
 }
 

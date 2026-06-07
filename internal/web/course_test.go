@@ -429,12 +429,18 @@ func TestHandleAdminLinglowSRSReadiness_OKAndLimitValidation(t *testing.T) {
 		UserCoursesTotal int  `json:"user_courses_total"`
 		ReadyCount       int  `json:"ready_count"`
 		Ready            bool `json:"ready_for_canonical_read"`
+		CanEnableRead    bool `json:"can_enable_srs_read"`
+		SRSReadEnabled   bool `json:"srs_read_enabled"`
+		SRSWriteEnabled  bool `json:"srs_write_enabled"`
 	}
 	if err := json.Unmarshal(w.Body.Bytes(), &body); err != nil {
 		t.Fatalf("decode readiness: %v", err)
 	}
 	if body.Course.Code != "es_ru" || body.UserCoursesTotal != 1 || body.ReadyCount != 1 || !body.Ready {
 		t.Fatalf("readiness body = %+v", body)
+	}
+	if !body.CanEnableRead || body.SRSReadEnabled || body.SRSWriteEnabled {
+		t.Fatalf("runtime cutover status = %+v", body)
 	}
 
 	req = httptest.NewRequest(http.MethodGet, "/api/admin/linglow/srs-readiness?limit=bad", nil)

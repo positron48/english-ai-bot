@@ -288,6 +288,9 @@ type SRSReadinessAggregateReport struct {
 	ReadyCount            int                         `json:"ready_count"`
 	NotReadyCount         int                         `json:"not_ready_count"`
 	ReadyForCanonicalRead bool                        `json:"ready_for_canonical_read"`
+	CanEnableSRSRead      bool                        `json:"can_enable_srs_read"`
+	SRSReadEnabled        bool                        `json:"srs_read_enabled"`
+	SRSWriteEnabled       bool                        `json:"srs_write_enabled"`
 	LegacyDueTotal        int                         `json:"legacy_due_total"`
 	CanonicalDueTotal     int                         `json:"canonical_due_total"`
 	LegacyOnlyTotal       int                         `json:"legacy_only_total"`
