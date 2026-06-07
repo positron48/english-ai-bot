@@ -510,8 +510,8 @@ Rollback:
    - buildings/locations;
    - список modules/items и переходы в существующие runtime-экраны - готово как `/city/district/:districtCode`;
    - foundation/confidence/stability вместо процента завершения - готово как progress signals в `/api/linglow/progress`;
-   - weak items;
-   - revisit tasks.
+   - weak items - готово на district view из `by_location.due_review_count/weakness`;
+   - revisit tasks - готово на district view из `/api/linglow/review`, отфильтрованного по `district_code`.
 
 4. Добавить Daily Route:
    - review block - готово как отдельная секция `/city/daily-route`;
@@ -520,7 +520,7 @@ Rollback:
    - mistake workshop block, если есть ошибки - готово как weak locations на базе `by_location.due_review_count/weakness`.
 
 5. Добавить Simple Mode:
-   - прямой доступ к review, grammar, texts, vocab, settings - готово на City Home для review, grammar, reading и words;
+   - прямой доступ к review, grammar, texts, vocab, settings - готово на City Home для review, daily route, grammar, reading, words и settings;
    - без декоративного city layer для повторяющихся рабочих сценариев.
 
 6. Сначала использовать существующие экраны внутри новых маршрутов.

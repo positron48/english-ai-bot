@@ -35,6 +35,44 @@
         </div>
       </section>
 
+      <section class="district-work-grid">
+        <article class="work-panel">
+          <div class="panel-head">
+            <div>
+              <p>{{ t('city.revisitTasks') }}</p>
+              <h2>{{ t('city.reviewStation') }}</h2>
+            </div>
+            <span>{{ districtReviewItems.length }}</span>
+          </div>
+          <div class="task-list">
+            <RouterLink v-for="item in districtReviewItems" :key="`review:${item.learning_item_id}`" class="task-row" :to="routeForLinglowItem(item)">
+              <span>{{ formatType(item.state || item.mode) }}</span>
+              <strong>{{ item.title || formatType(item.type) }}</strong>
+              <small>{{ item.location_title || item.module_title || item.cefr_level }}</small>
+            </RouterLink>
+            <div v-if="districtReviewItems.length === 0" class="empty-line">{{ t('city.noReviewItems') }}</div>
+          </div>
+        </article>
+
+        <article class="work-panel">
+          <div class="panel-head">
+            <div>
+              <p>{{ t('city.weakItems') }}</p>
+              <h2>{{ t('city.mistakeWorkshop') }}</h2>
+            </div>
+            <span>{{ weakLocations.length }}</span>
+          </div>
+          <div class="weak-list">
+            <RouterLink v-for="location in weakLocations" :key="location.location_code" class="weak-row" :to="{ name: 'CityDistrict', params: { districtCode: location.district_code }, query: courseCode ? { course_code: courseCode, location: location.location_code } : { location: location.location_code } }">
+              <strong>{{ location.title }}</strong>
+              <span>{{ t('city.confidenceShort') }} {{ formatPercent(location.confidence) }}</span>
+              <span>{{ t('city.weaknessShort') }} {{ location.due_review_count }}</span>
+            </RouterLink>
+            <div v-if="weakLocations.length === 0" class="empty-line">{{ t('city.noWeakItems') }}</div>
+          </div>
+        </article>
+      </section>
+
       <section class="location-sections">
         <article v-for="location in locations" :id="location.code" :key="location.id" class="location-section">
           <div class="location-title">
@@ -84,7 +122,7 @@
 import { computed, nextTick, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
-import { courseClient, CourseMap, CourseMapLocation, CourseProgress } from '../api/courseClient'
+import { courseClient, CourseMap, CourseMapLocation, CourseProgress, DailyRouteItem, ReviewQueue } from '../api/courseClient'
 import { routeForLinglowItem } from '../utils/linglowNavigation'
 
 const { t } = useI18n()
@@ -92,8 +130,10 @@ const route = useRoute()
 
 const courseMap = ref<CourseMap | null>(null)
 const progress = ref<CourseProgress | null>(null)
+const reviewQueue = ref<ReviewQueue | null>(null)
 const loading = ref(false)
 const error = ref('')
+const courseCode = computed(() => (typeof route.query.course_code === 'string' ? route.query.course_code : undefined))
 
 const district = computed(() => {
   const districts = Array.isArray(courseMap.value?.districts) ? courseMap.value?.districts : []
@@ -112,6 +152,20 @@ const locationProgressByCode = computed(() => {
 })
 const districtSignal = computed(() => {
   return (progress.value?.by_district || []).find((item) => item.district_code === route.params.districtCode) || emptySignal()
+})
+const districtReviewItems = computed(() => {
+  const districtCode = String(route.params.districtCode || '')
+  return (reviewQueue.value?.items || []).filter((item: DailyRouteItem) => item.district_code === districtCode).slice(0, 8)
+})
+const weakLocations = computed(() => {
+  const districtCode = String(route.params.districtCode || '')
+  return [...(progress.value?.by_location || [])]
+    .filter((location) => location.district_code === districtCode && (location.due_review_count > 0 || location.weakness > 0))
+    .sort((left, right) => {
+      if (right.due_review_count !== left.due_review_count) return right.due_review_count - left.due_review_count
+      return right.weakness - left.weakness
+    })
+    .slice(0, 5)
 })
 
 function formatType(type: string): string {
@@ -162,13 +216,14 @@ async function loadDistrict() {
   loading.value = true
   error.value = ''
   try {
-    const courseCode = typeof route.query.course_code === 'string' ? route.query.course_code : undefined
-    const [map, progressData] = await Promise.all([
-      courseClient.getCourseMap(courseCode),
-      courseClient.getProgress(courseCode),
+    const [map, progressData, reviewData] = await Promise.all([
+      courseClient.getCourseMap(courseCode.value),
+      courseClient.getProgress(courseCode.value),
+      courseClient.getReviewQueue(24, courseCode.value),
     ])
     courseMap.value = map
     progress.value = progressData
+    reviewQueue.value = reviewData
     await nextTick()
     if (typeof route.query.location === 'string') {
       document.getElementById(route.query.location)?.scrollIntoView({ block: 'start' })
@@ -203,7 +258,9 @@ onMounted(loadDistrict)
 
 .back-link,
 .module-action,
-.item-row {
+.item-row,
+.task-row,
+.weak-row {
   color: inherit;
   text-decoration: none;
 }
@@ -243,7 +300,8 @@ onMounted(loadDistrict)
 .loading,
 .error-card,
 .stat-box,
-.module-card {
+.module-card,
+.work-panel {
   border: 1px solid var(--border-color);
   border-radius: 8px;
   background: var(--surface-color);
@@ -279,8 +337,95 @@ onMounted(loadDistrict)
 .location-title p,
 .module-head span,
 .item-row small,
+.task-row span,
+.task-row small,
+.weak-row span,
 .item-more {
   color: var(--text-secondary);
+}
+
+.district-work-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.work-panel {
+  min-height: 180px;
+  padding: 14px;
+}
+
+.panel-head {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.panel-head p,
+.panel-head h2 {
+  margin: 0;
+}
+
+.panel-head p {
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  font-weight: 750;
+  text-transform: uppercase;
+}
+
+.panel-head h2 {
+  margin-top: 3px;
+  font-size: 1rem;
+}
+
+.panel-head > span {
+  color: var(--text-secondary);
+  font-weight: 800;
+}
+
+.task-list,
+.weak-list {
+  display: grid;
+  gap: 8px;
+}
+
+.task-row {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr);
+  gap: 4px 10px;
+  padding: 9px 0;
+  border-top: 1px solid var(--border-color);
+}
+
+.task-row strong {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.task-row small {
+  grid-column: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.weak-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 10px;
+  padding: 9px 0;
+  border-top: 1px solid var(--border-color);
+}
+
+.weak-row strong {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .location-sections {
@@ -370,9 +515,16 @@ onMounted(loadDistrict)
 }
 
 .item-row:hover span,
+.task-row:hover strong,
+.weak-row:hover strong,
 .module-action:hover,
 .back-link:hover {
   color: var(--primary-color);
+}
+
+.empty-line {
+  padding: 14px 0;
+  color: var(--text-secondary);
 }
 
 .item-more {
@@ -391,6 +543,10 @@ onMounted(loadDistrict)
   .module-grid {
     grid-template-columns: 1fr;
   }
+
+  .district-work-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 560px) {
@@ -400,6 +556,15 @@ onMounted(loadDistrict)
 
   .item-row {
     grid-template-columns: 1fr;
+  }
+
+  .task-row,
+  .weak-row {
+    grid-template-columns: 1fr;
+  }
+
+  .task-row small {
+    grid-column: auto;
   }
 }
 </style>

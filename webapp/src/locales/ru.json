@@ -92,6 +92,8 @@
     "reviewStation": "Станция повторения",
     "openDailyRoute": "Открыть маршрут",
     "mistakeWorkshop": "Мастерская ошибок",
+    "revisitTasks": "Повторить в районе",
+    "weakItems": "Слабые места",
     "openDistrict": "Открыть район",
     "backToCity": "Назад в город",
     "district": "Район",
@@ -119,7 +121,9 @@
       "reading": "Чтение",
       "readingHint": "Тексты по уровню",
       "words": "Словари",
-      "wordsHint": "Наборы слов"
+      "wordsHint": "Наборы слов",
+      "settings": "Настройки",
+      "settingsHint": "Язык, звук и профиль"
     },
     "locationTypes": {
       "grammar": "Грамматика",

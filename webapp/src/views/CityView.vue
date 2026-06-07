@@ -101,6 +101,10 @@
           <strong>{{ t('city.simple.words') }}</strong>
           <span>{{ t('city.simple.wordsHint') }}</span>
         </RouterLink>
+        <RouterLink class="simple-link" to="/settings">
+          <strong>{{ t('city.simple.settings') }}</strong>
+          <span>{{ t('city.simple.settingsHint') }}</span>
+        </RouterLink>
       </section>
 
       <section class="city-stats" aria-label="Course totals">
@@ -441,7 +445,7 @@ onMounted(loadCity)
 
 .simple-mode {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 10px;
 }
 

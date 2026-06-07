@@ -92,6 +92,8 @@
     "reviewStation": "Estación de repaso",
     "openDailyRoute": "Abrir ruta",
     "mistakeWorkshop": "Taller de errores",
+    "revisitTasks": "Repasar en distrito",
+    "weakItems": "Puntos débiles",
     "openDistrict": "Abrir distrito",
     "backToCity": "Volver a ciudad",
     "district": "Distrito",
@@ -119,7 +121,9 @@
       "reading": "Lectura",
       "readingHint": "Textos por nivel",
       "words": "Palabras",
-      "wordsHint": "Conjuntos de palabras"
+      "wordsHint": "Conjuntos de palabras",
+      "settings": "Ajustes",
+      "settingsHint": "Idioma, audio y perfil"
     },
     "locationTypes": {
       "grammar": "Gramática",

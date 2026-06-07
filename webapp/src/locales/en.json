@@ -92,6 +92,8 @@
     "reviewStation": "Review station",
     "openDailyRoute": "Open route",
     "mistakeWorkshop": "Mistake workshop",
+    "revisitTasks": "Revisit in district",
+    "weakItems": "Weak spots",
     "openDistrict": "Open district",
     "backToCity": "Back to city",
     "district": "District",
@@ -119,7 +121,9 @@
       "reading": "Reading",
       "readingHint": "Texts by level",
       "words": "Words",
-      "wordsHint": "Word sets"
+      "wordsHint": "Word sets",
+      "settings": "Settings",
+      "settingsHint": "Language, audio and profile"
     },
     "locationTypes": {
       "grammar": "Grammar",
