@@ -14,8 +14,10 @@ type LinglowWordSRSBackfillRepository struct {
 }
 
 type LinglowWordSRSBackfillOptions struct {
-	Commit bool
-	Limit  int
+	Commit       bool
+	Resync       bool
+	PruneOrphans bool
+	Limit        int
 }
 
 type LinglowWordSRSBackfillSummary struct {
@@ -26,6 +28,7 @@ type LinglowWordSRSBackfillSummary struct {
 	Missing       int64
 	Processed     int64
 	Upserted      int64
+	PrunedOrphans int64
 	UnmappedTotal int64
 }
 
@@ -47,6 +50,9 @@ func (r *LinglowWordSRSBackfillRepository) Backfill(ctx context.Context, lc conf
 	}
 
 	query := missingWordSRSRowsSQL
+	if opts.Resync {
+		query = resyncWordSRSRowsSQL
+	}
 	args := []interface{}{courseCode}
 	if opts.Limit > 0 {
 		query += " LIMIT ?"
@@ -88,13 +94,33 @@ func (r *LinglowWordSRSBackfillRepository) Backfill(ctx context.Context, lc conf
 	if err := rows.Err(); err != nil {
 		return nil, fmt.Errorf("iterate word srs rows: %w", err)
 	}
+	if opts.Resync && opts.PruneOrphans {
+		pruned, err := r.pruneOrphanWordSRSItems(ctx, courseCode)
+		if err != nil {
+			return nil, err
+		}
+		summary.PrunedOrphans = pruned
+	}
 	refreshed, err := r.audit(ctx, courseCode)
 	if err != nil {
 		return nil, err
 	}
 	refreshed.Processed = summary.Processed
 	refreshed.Upserted = summary.Upserted
+	refreshed.PrunedOrphans = summary.PrunedOrphans
 	return refreshed, nil
+}
+
+func (r *LinglowWordSRSBackfillRepository) pruneOrphanWordSRSItems(ctx context.Context, courseCode string) (int64, error) {
+	res, err := r.db.ExecContext(ctx, pruneOrphanWordSRSItemsSQL, courseCode)
+	if err != nil {
+		return 0, fmt.Errorf("prune orphan word srs items: %w", err)
+	}
+	affected, err := res.RowsAffected()
+	if err != nil {
+		return 0, fmt.Errorf("prune orphan word srs rows affected: %w", err)
+	}
+	return affected, nil
 }
 
 func (r *LinglowWordSRSBackfillRepository) audit(ctx context.Context, courseCode string) (*LinglowWordSRSBackfillSummary, error) {
@@ -258,4 +284,46 @@ const missingWordSRSRowsSQL = `
 			SELECT 1 FROM srs_items si
 			WHERE si.user_course_id = ucourse.id AND si.learning_item_id = li.id
 		)
+		ORDER BY ucards.id`
+
+const resyncWordSRSRowsSQL = `
+	SELECT ucourse.id AS user_course_id, li.id AS learning_item_id,
+		CASE WHEN uwk.status = 'known' THEN 'mastered' ELSE ucards.state END AS state,
+		ucards.ef,
+		CASE WHEN uwk.status = 'known' THEN NULL ELSE ucards.next_due_at END AS next_due_at,
+		ucards.last_review_at,
+		ucards.reps, ucards.lapse_count, ucards.interval_days, ucards.learning_step,
+		ucards.last_quality, ucards.stats_json,
+		ucards.id AS user_card_id, tc.id AS training_card_id, tc.word_card_id, ucards.direction
+	FROM user_cards ucards
+	JOIN training_cards tc ON tc.id = ucards.training_card_id
+	JOIN user_courses ucourse ON ucourse.user_id = ucards.user_id
+	JOIN courses c ON c.id = ucourse.course_id
+	JOIN learning_items li ON li.course_id = c.id
+		AND li.source_kind = 'word_card'
+		AND li.source_id = CAST(tc.word_card_id AS TEXT)
+	LEFT JOIN user_word_knowledge uwk
+		ON uwk.user_id = ucards.user_id AND uwk.word_card_id = tc.word_card_id
+	WHERE c.code = ?
 	ORDER BY ucards.id`
+
+const pruneOrphanWordSRSItemsSQL = `
+	UPDATE srs_items si
+	SET state = 'suspended',
+		due_at = NULL,
+		updated_at = CURRENT_TIMESTAMP
+	FROM learning_items li, user_courses uc, courses c
+	WHERE si.learning_item_id = li.id
+		AND li.source_kind = 'word_card'
+		AND si.user_course_id = uc.id
+		AND uc.course_id = c.id
+		AND c.code = ?
+		AND si.state IN ('learning', 'review', 'relearning')
+		AND (si.due_at IS NULL OR si.due_at <= CURRENT_TIMESTAMP)
+		AND NOT EXISTS (
+			SELECT 1
+			FROM user_cards ucards
+			JOIN training_cards tc ON tc.id = ucards.training_card_id
+			WHERE ucards.user_id = uc.user_id
+				AND li.source_id = CAST(tc.word_card_id AS TEXT)
+		)`

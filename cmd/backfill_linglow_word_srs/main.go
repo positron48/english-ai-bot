@@ -17,9 +17,15 @@ import (
 
 func main() {
 	var opts repository.LinglowWordSRSBackfillOptions
+	var noPruneOrphans bool
 	flag.BoolVar(&opts.Commit, "commit", false, "write missing Linglow word srs_items")
+	flag.BoolVar(&opts.Resync, "resync", false, "re-upsert all mapped legacy user_cards into srs_items; use with --commit")
+	flag.BoolVar(&noPruneOrphans, "no-prune-orphans", false, "with --resync --commit, keep canonical due items that have no legacy user_cards row")
 	flag.IntVar(&opts.Limit, "limit", 0, "max rows to process when --commit is set; 0 means no limit")
 	flag.Parse()
+	if opts.Resync && opts.Commit {
+		opts.PruneOrphans = !noPruneOrphans
+	}
 
 	cfg, err := config.Load()
 	if err != nil {
@@ -45,9 +51,13 @@ func main() {
 
 	mode := "dry-run"
 	if opts.Commit {
-		mode = "commit"
+		if opts.Resync {
+			mode = "resync"
+		} else {
+			mode = "commit"
+		}
 	}
-	fmt.Printf("[%s] course=%s legacy_total=%d mapped_total=%d srs_total=%d missing=%d processed=%d upserted=%d unmapped_total=%d\n",
+	fmt.Printf("[%s] course=%s legacy_total=%d mapped_total=%d srs_total=%d missing=%d processed=%d upserted=%d pruned_orphans=%d unmapped_total=%d\n",
 		mode,
 		summary.CourseCode,
 		summary.LegacyTotal,
@@ -56,6 +66,7 @@ func main() {
 		summary.Missing,
 		summary.Processed,
 		summary.Upserted,
+		summary.PrunedOrphans,
 		summary.UnmappedTotal,
 	)
 }

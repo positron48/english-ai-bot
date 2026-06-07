@@ -310,6 +310,12 @@ backfill-linglow-word-srs: build-backfill-linglow-word-srs
 	@echo ""
 	./bin/backfill_linglow_word_srs --commit
 
+backfill-linglow-word-srs-resync: build-backfill-linglow-word-srs
+	@echo "Resync all mapped legacy user_cards into Linglow srs_items and prune orphan due snapshots."
+	@echo "DATABASE_URL must be set."
+	@echo ""
+	./bin/backfill_linglow_word_srs --commit --resync
+
 build-backfill-linglow-grammar-srs:
 	@mkdir -p bin
 	$(GO) build -o bin/backfill_linglow_grammar_srs ./cmd/backfill_linglow_grammar_srs
@@ -326,6 +332,12 @@ backfill-linglow-grammar-srs: build-backfill-linglow-grammar-srs
 	@echo "DATABASE_URL must be set."
 	@echo ""
 	./bin/backfill_linglow_grammar_srs --commit
+
+backfill-linglow-grammar-srs-resync: build-backfill-linglow-grammar-srs
+	@echo "Resync all mapped legacy grammar_theory_memory into Linglow srs_items and prune orphan due snapshots."
+	@echo "DATABASE_URL must be set."
+	@echo ""
+	./bin/backfill_linglow_grammar_srs --commit --resync
 
 build-backfill-linglow-attempt-srs-links:
 	@mkdir -p bin

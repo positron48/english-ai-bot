@@ -14,8 +14,10 @@ type LinglowGrammarSRSBackfillRepository struct {
 }
 
 type LinglowGrammarSRSBackfillOptions struct {
-	Commit bool
-	Limit  int
+	Commit       bool
+	Resync       bool
+	PruneOrphans bool
+	Limit        int
 }
 
 type LinglowGrammarSRSBackfillSummary struct {
@@ -26,6 +28,7 @@ type LinglowGrammarSRSBackfillSummary struct {
 	Missing       int64
 	Processed     int64
 	Upserted      int64
+	PrunedOrphans int64
 	UnmappedTotal int64
 }
 
@@ -51,6 +54,9 @@ func (r *LinglowGrammarSRSBackfillRepository) Backfill(ctx context.Context, lc c
 		return summary, nil
 	}
 	query := missingGrammarSRSRowsSQL
+	if opts.Resync {
+		query = resyncGrammarSRSRowsSQL
+	}
 	args := []interface{}{courseCode, targetLang, legacyCourseID}
 	if opts.Limit > 0 {
 		query += " LIMIT ?"
@@ -94,13 +100,33 @@ func (r *LinglowGrammarSRSBackfillRepository) Backfill(ctx context.Context, lc c
 	if err := rows.Err(); err != nil {
 		return nil, fmt.Errorf("iterate grammar srs rows: %w", err)
 	}
+	if opts.Resync && opts.PruneOrphans {
+		pruned, err := r.pruneOrphanGrammarSRSItems(ctx, courseCode, targetLang, legacyCourseID)
+		if err != nil {
+			return nil, err
+		}
+		summary.PrunedOrphans = pruned
+	}
 	refreshed, err := r.audit(ctx, courseCode, targetLang, legacyCourseID)
 	if err != nil {
 		return nil, err
 	}
 	refreshed.Processed = summary.Processed
 	refreshed.Upserted = summary.Upserted
+	refreshed.PrunedOrphans = summary.PrunedOrphans
 	return refreshed, nil
+}
+
+func (r *LinglowGrammarSRSBackfillRepository) pruneOrphanGrammarSRSItems(ctx context.Context, courseCode, targetLang, legacyCourseID string) (int64, error) {
+	res, err := r.db.ExecContext(ctx, pruneOrphanGrammarSRSItemsSQL, courseCode, targetLang, legacyCourseID)
+	if err != nil {
+		return 0, fmt.Errorf("prune orphan grammar srs items: %w", err)
+	}
+	affected, err := res.RowsAffected()
+	if err != nil {
+		return 0, fmt.Errorf("prune orphan grammar srs rows affected: %w", err)
+	}
+	return affected, nil
 }
 
 func (r *LinglowGrammarSRSBackfillRepository) audit(ctx context.Context, courseCode, targetLang, legacyCourseID string) (*LinglowGrammarSRSBackfillSummary, error) {
@@ -242,4 +268,41 @@ const missingGrammarSRSRowsSQL = `
 			SELECT 1 FROM srs_items si
 			WHERE si.user_course_id = ucourse.id AND si.learning_item_id = li.id
 		)
+		ORDER BY gtm.id`
+
+const resyncGrammarSRSRowsSQL = `
+	SELECT ucourse.id AS user_course_id, li.id AS learning_item_id,
+		gtm.state, gtm.ease, gtm.next_review_at, gtm.last_review_at,
+		gtm.review_count, gtm.lapse_count, gtm.correct_count, gtm.wrong_count,
+		gtm.correct_streak, gtm.wrong_streak, gtm.interval_days, gtm.mastery_score,
+		gtm.id AS memory_id, gtm.chapter_id, gtm.theory_block_id, gtm.concept_id
+	FROM grammar_theory_memory gtm
+	JOIN user_courses ucourse ON ucourse.user_id = gtm.user_id
+	JOIN courses c ON c.id = ucourse.course_id
+	JOIN learning_items li ON li.course_id = c.id
+		AND li.source_kind = 'grammar_theory_block'
+		AND li.source_id = gtm.chapter_id || ':' || gtm.theory_block_id
+	WHERE c.code = ? AND lower(gtm.language) = ? AND lower(gtm.course_id) = ?
 	ORDER BY gtm.id`
+
+const pruneOrphanGrammarSRSItemsSQL = `
+	UPDATE srs_items si
+	SET state = 'suspended',
+		due_at = NULL,
+		updated_at = CURRENT_TIMESTAMP
+	FROM learning_items li, user_courses uc, courses c
+	WHERE si.learning_item_id = li.id
+		AND li.source_kind = 'grammar_theory_block'
+		AND si.user_course_id = uc.id
+		AND uc.course_id = c.id
+		AND c.code = ?
+		AND si.state IN ('learning', 'review', 'relearning')
+		AND (si.due_at IS NULL OR si.due_at <= CURRENT_TIMESTAMP)
+		AND NOT EXISTS (
+			SELECT 1
+			FROM grammar_theory_memory gtm
+			WHERE gtm.user_id = uc.user_id
+				AND lower(gtm.language) = ?
+				AND lower(gtm.course_id) = ?
+				AND li.source_id = gtm.chapter_id || ':' || gtm.theory_block_id
+		)`

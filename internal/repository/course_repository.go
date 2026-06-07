@@ -970,10 +970,21 @@ func (r *CourseRepository) getSRSShadowReviewQueueReport(ctx context.Context, us
 			SELECT DISTINCT li.id AS learning_item_id, li.item_type
 			FROM srs_items si
 			JOIN learning_items li ON li.id = si.learning_item_id
+			JOIN user_courses uc ON uc.id = si.user_course_id
 			WHERE si.user_course_id = ?
 				AND li.status = 'published'
 				AND si.state IN ('learning', 'review', 'relearning')
 				AND (si.due_at IS NULL OR si.due_at <= CURRENT_TIMESTAMP)
+				AND NOT (
+					li.source_kind = 'word_card'
+					AND li.source_id ~ '^[0-9]+$'
+					AND EXISTS (
+						SELECT 1 FROM user_word_knowledge uwk
+						WHERE uwk.user_id = uc.user_id
+							AND uwk.word_card_id = li.source_id::BIGINT
+							AND uwk.status = 'known'
+					)
+				)
 		)
 		SELECT
 			(SELECT COUNT(*) FROM legacy_due),
@@ -1026,10 +1037,21 @@ func (r *CourseRepository) getSRSShadowReviewQueueReport(ctx context.Context, us
 			SELECT DISTINCT li.id AS learning_item_id, li.item_type
 			FROM srs_items si
 			JOIN learning_items li ON li.id = si.learning_item_id
+			JOIN user_courses uc ON uc.id = si.user_course_id
 			WHERE si.user_course_id = ?
 				AND li.status = 'published'
 				AND si.state IN ('learning', 'review', 'relearning')
 				AND (si.due_at IS NULL OR si.due_at <= CURRENT_TIMESTAMP)
+				AND NOT (
+					li.source_kind = 'word_card'
+					AND li.source_id ~ '^[0-9]+$'
+					AND EXISTS (
+						SELECT 1 FROM user_word_knowledge uwk
+						WHERE uwk.user_id = uc.user_id
+							AND uwk.word_card_id = li.source_id::BIGINT
+							AND uwk.status = 'known'
+					)
+				)
 		)
 		SELECT COALESCE(l.item_type, c.item_type) AS item_type, COUNT(*)
 		FROM legacy_due l
@@ -1656,12 +1678,24 @@ func (r *CourseRepository) getReviewQueueSummary(ctx context.Context, userCourse
 		return r.getLegacyReviewQueueSummary(ctx, userID, courseCode)
 	}
 	rows, err := r.db.QueryContext(ctx, `
-		SELECT state, COUNT(*)
-		FROM srs_items
-		WHERE user_course_id = ?
-			AND state IN ('learning', 'review', 'relearning')
-			AND (due_at IS NULL OR due_at <= CURRENT_TIMESTAMP)
-		GROUP BY state
+		SELECT si.state, COUNT(*)
+		FROM srs_items si
+		JOIN learning_items li ON li.id = si.learning_item_id
+		JOIN user_courses uc ON uc.id = si.user_course_id
+		WHERE si.user_course_id = ?
+			AND si.state IN ('learning', 'review', 'relearning')
+			AND (si.due_at IS NULL OR si.due_at <= CURRENT_TIMESTAMP)
+			AND NOT (
+				li.source_kind = 'word_card'
+				AND li.source_id ~ '^[0-9]+$'
+				AND EXISTS (
+					SELECT 1 FROM user_word_knowledge uwk
+					WHERE uwk.user_id = uc.user_id
+						AND uwk.word_card_id = li.source_id::BIGINT
+						AND uwk.status = 'known'
+				)
+			)
+		GROUP BY si.state
 	`, userCourseID)
 	if err != nil {
 		return summary, fmt.Errorf("count review queue states: %w", err)
@@ -1688,10 +1722,22 @@ func (r *CourseRepository) getReviewQueueSummary(ctx context.Context, userCourse
 	}
 	if err := r.db.QueryRowContext(ctx, `
 		SELECT COUNT(*)
-		FROM srs_items
-		WHERE user_course_id = ?
-			AND state IN ('learning', 'review', 'relearning')
-			AND due_at > CURRENT_TIMESTAMP
+		FROM srs_items si
+		JOIN learning_items li ON li.id = si.learning_item_id
+		JOIN user_courses uc ON uc.id = si.user_course_id
+		WHERE si.user_course_id = ?
+			AND si.state IN ('learning', 'review', 'relearning')
+			AND si.due_at > CURRENT_TIMESTAMP
+			AND NOT (
+				li.source_kind = 'word_card'
+				AND li.source_id ~ '^[0-9]+$'
+				AND EXISTS (
+					SELECT 1 FROM user_word_knowledge uwk
+					WHERE uwk.user_id = uc.user_id
+						AND uwk.word_card_id = li.source_id::BIGINT
+						AND uwk.status = 'known'
+				)
+			)
 	`, userCourseID).Scan(&summary.UpcomingCount); err != nil {
 		return summary, fmt.Errorf("count upcoming review items: %w", err)
 	}
@@ -1699,9 +1745,20 @@ func (r *CourseRepository) getReviewQueueSummary(ctx context.Context, userCourse
 		SELECT li.item_type, COUNT(*)
 		FROM srs_items si
 		JOIN learning_items li ON li.id = si.learning_item_id
+		JOIN user_courses uc ON uc.id = si.user_course_id
 		WHERE si.user_course_id = ?
 			AND si.state IN ('learning', 'review', 'relearning')
 			AND (si.due_at IS NULL OR si.due_at <= CURRENT_TIMESTAMP)
+			AND NOT (
+				li.source_kind = 'word_card'
+				AND li.source_id ~ '^[0-9]+$'
+				AND EXISTS (
+					SELECT 1 FROM user_word_knowledge uwk
+					WHERE uwk.user_id = uc.user_id
+						AND uwk.word_card_id = li.source_id::BIGINT
+						AND uwk.status = 'known'
+				)
+			)
 		GROUP BY li.item_type
 	`, userCourseID)
 	if err != nil {
@@ -1754,10 +1811,22 @@ func (r *CourseRepository) getDailyRouteSummary(ctx context.Context, userCourseI
 	}
 	if err := r.db.QueryRowContext(ctx, `
 		SELECT COUNT(*)
-		FROM srs_items
-		WHERE user_course_id = ?
-			AND state IN ('learning', 'review', 'relearning')
-			AND (due_at IS NULL OR due_at <= CURRENT_TIMESTAMP)
+		FROM srs_items si
+		JOIN learning_items li ON li.id = si.learning_item_id
+		JOIN user_courses uc ON uc.id = si.user_course_id
+		WHERE si.user_course_id = ?
+			AND si.state IN ('learning', 'review', 'relearning')
+			AND (si.due_at IS NULL OR si.due_at <= CURRENT_TIMESTAMP)
+			AND NOT (
+				li.source_kind = 'word_card'
+				AND li.source_id ~ '^[0-9]+$'
+				AND EXISTS (
+					SELECT 1 FROM user_word_knowledge uwk
+					WHERE uwk.user_id = uc.user_id
+						AND uwk.word_card_id = li.source_id::BIGINT
+						AND uwk.status = 'known'
+				)
+			)
 	`, userCourseID).Scan(&summary.DueReviewCount); err != nil {
 		return summary, fmt.Errorf("count due route items: %w", err)
 	}
@@ -1819,6 +1888,7 @@ func (r *CourseRepository) listDailyRouteReviewItems(ctx context.Context, userCo
 			COALESCE(m.code, ''), COALESCE(m.title, '')
 		FROM srs_items si
 		JOIN learning_items li ON li.id = si.learning_item_id
+		JOIN user_courses uc ON uc.id = si.user_course_id
 		LEFT JOIN districts d ON d.id = li.district_id
 		LEFT JOIN locations l ON l.id = li.location_id
 		LEFT JOIN modules m ON m.id = li.module_id
@@ -1826,6 +1896,16 @@ func (r *CourseRepository) listDailyRouteReviewItems(ctx context.Context, userCo
 			AND li.status = 'published'
 			AND si.state IN ('learning', 'review', 'relearning')
 			AND (si.due_at IS NULL OR si.due_at <= CURRENT_TIMESTAMP)
+			AND NOT (
+				li.source_kind = 'word_card'
+				AND li.source_id ~ '^[0-9]+$'
+				AND EXISTS (
+					SELECT 1 FROM user_word_knowledge uwk
+					WHERE uwk.user_id = uc.user_id
+						AND uwk.word_card_id = li.source_id::BIGINT
+						AND uwk.status = 'known'
+				)
+			)
 		ORDER BY si.due_at NULLS FIRST, si.last_review_at NULLS FIRST, si.id
 		LIMIT ?
 	`, userCourseID, limit)

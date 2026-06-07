@@ -74,6 +74,62 @@ func TestLinglowWordSRSBackfillRepository_BackfillDryRunCommitAndIdempotency(t *
 	}
 }
 
+func TestLinglowWordSRSBackfillRepository_ResyncUpdatesExistingSnapshot(t *testing.T) {
+	conn := testutil.SetupTestDB(t)
+	ctx := context.Background()
+	logger := zap.NewNop()
+	userRepo := NewUserRepository(conn, logger)
+	user, err := userRepo.GetOrCreateUser(99302)
+	if err != nil {
+		t.Fatalf("create user: %v", err)
+	}
+	lc := config.LearningConfig{NativeLang: "ru", TargetLang: "es", GrammarBundleID: "es"}
+	courseRepo := NewCourseRepository(conn, logger)
+	if _, err := courseRepo.BackfillUserCoursesForLearning(ctx, lc); err != nil {
+		t.Fatalf("BackfillUserCoursesForLearning: %v", err)
+	}
+	userCardID := insertBackfillWordFixtures(t, conn, user.ID)
+	nextDue := time.Now().UTC().Add(24 * time.Hour).Truncate(time.Second)
+	if _, err := conn.Exec(`
+		UPDATE user_cards
+		SET state = 'review', reps = 2, next_due_at = ?, last_review_at = CURRENT_TIMESTAMP
+		WHERE id = ?
+	`, nextDue, userCardID); err != nil {
+		t.Fatalf("update user card srs state: %v", err)
+	}
+
+	repo := NewLinglowWordSRSBackfillRepository(conn)
+	if _, err := repo.Backfill(ctx, lc, LinglowWordSRSBackfillOptions{Commit: true}); err != nil {
+		t.Fatalf("initial commit: %v", err)
+	}
+	staleDue := time.Now().UTC().Add(72 * time.Hour).Truncate(time.Second)
+	if _, err := conn.Exec(`UPDATE srs_items SET due_at = ?, state = 'learning', reps = 1 WHERE user_course_id IN (SELECT id FROM user_courses WHERE user_id = ?)`, staleDue, user.ID); err != nil {
+		t.Fatalf("stale srs snapshot: %v", err)
+	}
+
+	resync, err := repo.Backfill(ctx, lc, LinglowWordSRSBackfillOptions{Commit: true, Resync: true, PruneOrphans: true})
+	if err != nil {
+		t.Fatalf("resync: %v", err)
+	}
+	if resync.Processed != 1 || resync.Upserted != 1 {
+		t.Fatalf("unexpected resync summary: %+v", resync)
+	}
+	var state string
+	var reps int
+	var due time.Time
+	if err := conn.QueryRow(`
+		SELECT si.state, si.reps, si.due_at
+		FROM srs_items si
+		JOIN user_courses uc ON uc.id = si.user_course_id
+		WHERE uc.user_id = ?
+	`, user.ID).Scan(&state, &reps, &due); err != nil {
+		t.Fatalf("query srs after resync: %v", err)
+	}
+	if state != "review" || reps != 2 || !due.Equal(nextDue) {
+		t.Fatalf("srs not resynced from legacy: state=%s reps=%d due=%s want=%s", state, reps, due, nextDue)
+	}
+}
+
 func assertWordSRSSummary(t *testing.T, s *LinglowWordSRSBackfillSummary, legacy, mapped, srs, missing, processed, upserted, unmapped int64) {
 	t.Helper()
 	if s.LegacyTotal != legacy || s.MappedTotal != mapped || s.SRSTotal != srs || s.Missing != missing || s.Processed != processed || s.Upserted != upserted || s.UnmappedTotal != unmapped {
