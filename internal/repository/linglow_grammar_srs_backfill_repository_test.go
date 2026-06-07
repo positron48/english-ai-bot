@@ -85,6 +85,53 @@ func TestLinglowGrammarSRSBackfillRepository_BackfillTheoryBlockSnapshots(t *tes
 	}
 }
 
+func TestLinglowGrammarSRSBackfillRepository_PromotesDueNewStateToLearning(t *testing.T) {
+	conn := testutil.SetupTestDB(t)
+	ctx := context.Background()
+	logger := zap.NewNop()
+	userRepo := NewUserRepository(conn, logger)
+	user, err := userRepo.GetOrCreateUser(99402)
+	if err != nil {
+		t.Fatalf("create user: %v", err)
+	}
+	lc := config.LearningConfig{NativeLang: "ru", TargetLang: "es", GrammarBundleID: "es"}
+	courseRepo := NewCourseRepository(conn, logger)
+	if _, err := courseRepo.BackfillUserCoursesForLearning(ctx, lc); err != nil {
+		t.Fatalf("BackfillUserCoursesForLearning: %v", err)
+	}
+	insertGrammarTheoryBlockContent(t, conn, "grammar.section.two", "grammar.chapter.two", "block.two", "concept.two")
+	if _, err := courseRepo.MapLegacyContentForLearning(ctx, lc); err != nil {
+		t.Fatalf("MapLegacyContentForLearning: %v", err)
+	}
+	if _, err := conn.Exec(`
+		INSERT INTO grammar_theory_memory (
+			user_id, language, course_id, chapter_id, theory_block_id, concept_id, state, next_review_at
+		)
+		VALUES (?, 'es', 'es', 'grammar.chapter.two', 'block.two', 'concept.two', 'new', CURRENT_TIMESTAMP - INTERVAL '1 hour')
+	`, user.ID); err != nil {
+		t.Fatalf("insert grammar theory memory: %v", err)
+	}
+
+	repo := NewLinglowGrammarSRSBackfillRepository(conn)
+	if _, err := repo.Backfill(ctx, lc, LinglowGrammarSRSBackfillOptions{Commit: true, Resync: true}); err != nil {
+		t.Fatalf("grammar resync: %v", err)
+	}
+
+	var state string
+	if err := conn.QueryRow(`
+		SELECT si.state
+		FROM srs_items si
+		JOIN learning_items li ON li.id = si.learning_item_id
+		JOIN user_courses uc ON uc.id = si.user_course_id
+		WHERE uc.user_id = ? AND li.source_id = 'grammar.chapter.two:block.two'
+	`, user.ID).Scan(&state); err != nil {
+		t.Fatalf("query grammar srs state: %v", err)
+	}
+	if state != "learning" {
+		t.Fatalf("due legacy new grammar state = %q, want learning", state)
+	}
+}
+
 func insertGrammarTheoryBlockContent(t *testing.T, conn backfillTestDB, sectionID, chapterID, blockID, conceptID string) {
 	t.Helper()
 	if _, err := conn.Exec(`

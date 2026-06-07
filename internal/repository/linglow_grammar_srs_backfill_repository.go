@@ -205,7 +205,7 @@ func (r *LinglowGrammarSRSBackfillRepository) upsertGrammarSRSRow(ctx context.Co
 			lapse_count = excluded.lapse_count,
 			stats_json = excluded.stats_json,
 			updated_at = CURRENT_TIMESTAMP
-	`, row.UserCourseID, row.LearningItemID, normalizeLinglowSRSState(row.State), row.Ease, row.Ease, row.NextReviewAt, row.LastReviewAt, row.ReviewCount, row.LapseCount,
+	`, row.UserCourseID, row.LearningItemID, normalizeLinglowSRSStateForBackfill(row.State, row.NextReviewAt), row.Ease, row.Ease, row.NextReviewAt, row.LastReviewAt, row.ReviewCount, row.LapseCount,
 		row.MemoryID, row.ChapterID, row.TheoryBlockID, nullString(row.ConceptID), row.CorrectCount, row.WrongCount, row.CorrectStreak, row.WrongStreak, row.IntervalDays, row.MasteryScore); err != nil {
 		return fmt.Errorf("upsert grammar srs item user_course=%d item=%d: %w", row.UserCourseID, row.LearningItemID, err)
 	}

@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"database/sql"
 	"testing"
 	"time"
 
@@ -127,6 +128,104 @@ func TestLinglowWordSRSBackfillRepository_ResyncUpdatesExistingSnapshot(t *testi
 	}
 	if state != "review" || reps != 2 || !due.Equal(nextDue) {
 		t.Fatalf("srs not resynced from legacy: state=%s reps=%d due=%s want=%s", state, reps, due, nextDue)
+	}
+}
+
+func TestLinglowWordSRSBackfillRepository_ResyncAggregatesDueDirection(t *testing.T) {
+	conn := testutil.SetupTestDB(t)
+	ctx := context.Background()
+	logger := zap.NewNop()
+	userRepo := NewUserRepository(conn, logger)
+	user, err := userRepo.GetOrCreateUser(99303)
+	if err != nil {
+		t.Fatalf("create user: %v", err)
+	}
+	lc := config.LearningConfig{NativeLang: "ru", TargetLang: "es", GrammarBundleID: "es"}
+	courseRepo := NewCourseRepository(conn, logger)
+	if _, err := courseRepo.BackfillUserCoursesForLearning(ctx, lc); err != nil {
+		t.Fatalf("BackfillUserCoursesForLearning: %v", err)
+	}
+	userCardID := insertBackfillWordFixtures(t, conn, user.ID)
+	var trainingCardID int64
+	if err := conn.QueryRow(`SELECT training_card_id FROM user_cards WHERE id = ?`, userCardID).Scan(&trainingCardID); err != nil {
+		t.Fatalf("query training card id: %v", err)
+	}
+	futureDue := time.Now().UTC().Add(48 * time.Hour).Truncate(time.Second)
+	pastDue := time.Now().UTC().Add(-2 * time.Hour).Truncate(time.Second)
+	if _, err := conn.Exec(`
+		UPDATE user_cards
+		SET state = 'review', reps = 4, next_due_at = ?
+		WHERE id = ?
+	`, futureDue, userCardID); err != nil {
+		t.Fatalf("update future direction card: %v", err)
+	}
+	if _, err := conn.Exec(`
+		INSERT INTO user_cards (user_id, training_card_id, direction, state, ef, reps, next_due_at, last_review_at)
+		VALUES (?, ?, 'ru_en', 'new', 2.5, 0, ?, CURRENT_TIMESTAMP - INTERVAL '1 day')
+	`, user.ID, trainingCardID, pastDue); err != nil {
+		t.Fatalf("insert due opposite direction card: %v", err)
+	}
+
+	repo := NewLinglowWordSRSBackfillRepository(conn)
+	if _, err := repo.Backfill(ctx, lc, LinglowWordSRSBackfillOptions{Commit: true, Resync: true}); err != nil {
+		t.Fatalf("resync aggregated word srs: %v", err)
+	}
+
+	var state string
+	var reps int
+	var due sql.NullTime
+	if err := conn.QueryRow(`
+		SELECT si.state, si.reps, si.due_at
+		FROM srs_items si
+		JOIN user_courses uc ON uc.id = si.user_course_id
+		WHERE uc.user_id = ?
+	`, user.ID).Scan(&state, &reps, &due); err != nil {
+		t.Fatalf("query srs after aggregated resync: %v", err)
+	}
+	if state != "learning" || reps != 0 || !due.Valid || !due.Time.Equal(pastDue) {
+		t.Fatalf("aggregated srs snapshot = state %s reps %d due %v, want learning/0/%s", state, reps, due, pastDue)
+	}
+}
+
+func TestLinglowWordSRSBackfillRepository_PromotesDueNewStateToLearning(t *testing.T) {
+	conn := testutil.SetupTestDB(t)
+	ctx := context.Background()
+	logger := zap.NewNop()
+	userRepo := NewUserRepository(conn, logger)
+	user, err := userRepo.GetOrCreateUser(99304)
+	if err != nil {
+		t.Fatalf("create user: %v", err)
+	}
+	lc := config.LearningConfig{NativeLang: "ru", TargetLang: "es", GrammarBundleID: "es"}
+	courseRepo := NewCourseRepository(conn, logger)
+	if _, err := courseRepo.BackfillUserCoursesForLearning(ctx, lc); err != nil {
+		t.Fatalf("BackfillUserCoursesForLearning: %v", err)
+	}
+	userCardID := insertBackfillWordFixtures(t, conn, user.ID)
+	if _, err := conn.Exec(`
+		UPDATE user_cards
+		SET state = 'new', next_due_at = NULL, reps = 0
+		WHERE id = ?
+	`, userCardID); err != nil {
+		t.Fatalf("update user card to due new: %v", err)
+	}
+
+	repo := NewLinglowWordSRSBackfillRepository(conn)
+	if _, err := repo.Backfill(ctx, lc, LinglowWordSRSBackfillOptions{Commit: true}); err != nil {
+		t.Fatalf("commit due new word srs: %v", err)
+	}
+
+	var state string
+	if err := conn.QueryRow(`
+		SELECT si.state
+		FROM srs_items si
+		JOIN user_courses uc ON uc.id = si.user_course_id
+		WHERE uc.user_id = ?
+	`, user.ID).Scan(&state); err != nil {
+		t.Fatalf("query srs state: %v", err)
+	}
+	if state != "learning" {
+		t.Fatalf("due new word state = %q, want learning", state)
 	}
 }
 

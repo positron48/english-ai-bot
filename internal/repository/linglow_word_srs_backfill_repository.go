@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"strings"
+	"time"
 
 	"tgbot-skeleton/internal/config"
 )
@@ -164,7 +165,7 @@ type wordSRSBackfillRow struct {
 }
 
 func (r *LinglowWordSRSBackfillRepository) upsertWordSRSRow(ctx context.Context, row wordSRSBackfillRow) error {
-	state := normalizeLinglowSRSState(row.State)
+	state := normalizeLinglowSRSStateForBackfill(row.State, row.NextDueAt)
 	statsJSON := strings.TrimSpace(row.StatsJSON.String)
 	if !row.StatsJSON.Valid || statsJSON == "" {
 		statsJSON = "{}"
@@ -225,6 +226,25 @@ func normalizeLinglowSRSState(state string) string {
 	}
 }
 
+func legacySRSDueAt(dueAt sql.NullTime) bool {
+	if !dueAt.Valid {
+		return true
+	}
+	return !dueAt.Time.After(time.Now().UTC())
+}
+
+// normalizeLinglowSRSStateForBackfill maps legacy due "new" cards into active canonical SRS.
+func normalizeLinglowSRSStateForBackfill(state string, dueAt sql.NullTime) string {
+	normalized := normalizeLinglowSRSState(state)
+	if normalized != "new" {
+		return normalized
+	}
+	if legacySRSDueAt(dueAt) {
+		return "learning"
+	}
+	return "new"
+}
+
 const wordSRSAuditLegacyTotalSQL = `
 	SELECT COUNT(*)
 	FROM user_cards ucards
@@ -266,46 +286,82 @@ const wordSRSAuditMissingSQL = `
 			WHERE si.user_course_id = ucourse.id AND si.learning_item_id = li.id
 		)`
 
-const missingWordSRSRowsSQL = `
-	SELECT ucourse.id AS user_course_id, li.id AS learning_item_id,
-		ucards.state, ucards.ef, ucards.next_due_at, ucards.last_review_at,
-		ucards.reps, ucards.lapse_count, ucards.interval_days, ucards.learning_step,
-		ucards.last_quality, ucards.stats_json,
-		ucards.id AS user_card_id, tc.id AS training_card_id, tc.word_card_id, ucards.direction
-	FROM user_cards ucards
-	JOIN training_cards tc ON tc.id = ucards.training_card_id
-	JOIN user_courses ucourse ON ucourse.user_id = ucards.user_id
-	JOIN courses c ON c.id = ucourse.course_id
-	JOIN learning_items li ON li.course_id = c.id
-		AND li.source_kind = 'word_card'
-		AND li.source_id = CAST(tc.word_card_id AS TEXT)
-	WHERE c.code = ?
+const wordSRSAggregatedRowsSQL = `
+	WITH card_rows AS (
+		SELECT
+			ucourse.id AS user_course_id,
+			li.id AS learning_item_id,
+			CASE WHEN uwk.status = 'known' THEN 'mastered' ELSE COALESCE(NULLIF(ucards.state, ''), 'new') END AS state,
+			ucards.ef,
+			CASE WHEN uwk.status = 'known' THEN NULL ELSE ucards.next_due_at END AS next_due_at,
+			ucards.last_review_at,
+			ucards.reps,
+			ucards.lapse_count,
+			ucards.interval_days,
+			ucards.learning_step,
+			ucards.last_quality,
+			ucards.stats_json,
+			ucards.id AS user_card_id,
+			tc.id AS training_card_id,
+			tc.word_card_id,
+			ucards.direction,
+			CASE
+				WHEN uwk.status = 'known' THEN FALSE
+				WHEN ucards.next_due_at IS NULL OR ucards.next_due_at <= CURRENT_TIMESTAMP THEN TRUE
+				ELSE FALSE
+			END AS is_legacy_due
+		FROM user_cards ucards
+		JOIN training_cards tc ON tc.id = ucards.training_card_id
+		JOIN user_courses ucourse ON ucourse.user_id = ucards.user_id
+		JOIN courses c ON c.id = ucourse.course_id
+		JOIN learning_items li ON li.course_id = c.id
+			AND li.source_kind = 'word_card'
+			AND li.source_id = CAST(tc.word_card_id AS TEXT)
+		LEFT JOIN user_word_knowledge uwk
+			ON uwk.user_id = ucards.user_id AND uwk.word_card_id = tc.word_card_id
+		WHERE c.code = ?
+	), ranked AS (
+		SELECT
+			card_rows.*,
+			ROW_NUMBER() OVER (
+				PARTITION BY user_course_id, learning_item_id
+				ORDER BY
+					CASE WHEN state = 'mastered' THEN 1 ELSE 0 END,
+					CASE WHEN is_legacy_due THEN 0 ELSE 1 END,
+					CASE lower(trim(state))
+						WHEN 'relearning' THEN 0
+						WHEN 'learning' THEN 1
+						WHEN 'new' THEN 2
+						WHEN 'review' THEN 3
+						ELSE 4
+					END,
+					next_due_at NULLS FIRST,
+					user_card_id
+			) AS rn
+		FROM card_rows
+	)`
+
+const missingWordSRSRowsSQL = wordSRSAggregatedRowsSQL + `
+	SELECT
+		user_course_id, learning_item_id, state, ef, next_due_at, last_review_at,
+		reps, lapse_count, interval_days, learning_step, last_quality, stats_json,
+		user_card_id, training_card_id, word_card_id, direction
+	FROM ranked
+	WHERE rn = 1
 		AND NOT EXISTS (
 			SELECT 1 FROM srs_items si
-			WHERE si.user_course_id = ucourse.id AND si.learning_item_id = li.id
+			WHERE si.user_course_id = ranked.user_course_id AND si.learning_item_id = ranked.learning_item_id
 		)
-		ORDER BY ucards.id`
+	ORDER BY user_course_id, learning_item_id`
 
-const resyncWordSRSRowsSQL = `
-	SELECT ucourse.id AS user_course_id, li.id AS learning_item_id,
-		CASE WHEN uwk.status = 'known' THEN 'mastered' ELSE ucards.state END AS state,
-		ucards.ef,
-		CASE WHEN uwk.status = 'known' THEN NULL ELSE ucards.next_due_at END AS next_due_at,
-		ucards.last_review_at,
-		ucards.reps, ucards.lapse_count, ucards.interval_days, ucards.learning_step,
-		ucards.last_quality, ucards.stats_json,
-		ucards.id AS user_card_id, tc.id AS training_card_id, tc.word_card_id, ucards.direction
-	FROM user_cards ucards
-	JOIN training_cards tc ON tc.id = ucards.training_card_id
-	JOIN user_courses ucourse ON ucourse.user_id = ucards.user_id
-	JOIN courses c ON c.id = ucourse.course_id
-	JOIN learning_items li ON li.course_id = c.id
-		AND li.source_kind = 'word_card'
-		AND li.source_id = CAST(tc.word_card_id AS TEXT)
-	LEFT JOIN user_word_knowledge uwk
-		ON uwk.user_id = ucards.user_id AND uwk.word_card_id = tc.word_card_id
-	WHERE c.code = ?
-	ORDER BY ucards.id`
+const resyncWordSRSRowsSQL = wordSRSAggregatedRowsSQL + `
+	SELECT
+		user_course_id, learning_item_id, state, ef, next_due_at, last_review_at,
+		reps, lapse_count, interval_days, learning_step, last_quality, stats_json,
+		user_card_id, training_card_id, word_card_id, direction
+	FROM ranked
+	WHERE rn = 1
+	ORDER BY user_course_id, learning_item_id`
 
 const pruneOrphanWordSRSItemsSQL = `
 	UPDATE srs_items si
