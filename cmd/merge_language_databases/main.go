@@ -20,23 +20,41 @@ import (
 )
 
 type dbSummary struct {
-	Label                 string          `json:"label"`
-	URLProvided           bool            `json:"url_provided"`
-	Users                 int64           `json:"users"`
-	Courses               int64           `json:"courses"`
-	UserCourses           int64           `json:"user_courses"`
-	LearningItems         int64           `json:"learning_items"`
-	ExerciseAttempts      int64           `json:"exercise_attempts"`
-	LearningEvents        int64           `json:"learning_events"`
-	SRSItems              int64           `json:"srs_items"`
-	ReviewEvents          int64           `json:"review_events"`
-	GrammarTestAttempts   int64           `json:"grammar_test_attempts"`
-	GrammarSRSAttempts    int64           `json:"grammar_srs_attempts"`
-	ReadingTextProgress   int64           `json:"reading_text_progress"`
-	SpeakingAttempts      int64           `json:"speaking_attempts"`
-	LegacyMappingTablesOK bool            `json:"legacy_mapping_tables_ok"`
-	LatestActivityAt      string          `json:"latest_activity_at,omitempty"`
-	Readiness             readinessReport `json:"readiness"`
+	Label                 string               `json:"label"`
+	URLProvided           bool                 `json:"url_provided"`
+	Users                 int64                `json:"users"`
+	Courses               int64                `json:"courses"`
+	UserCourses           int64                `json:"user_courses"`
+	LearningItems         int64                `json:"learning_items"`
+	ExerciseAttempts      int64                `json:"exercise_attempts"`
+	LearningEvents        int64                `json:"learning_events"`
+	SRSItems              int64                `json:"srs_items"`
+	ReviewEvents          int64                `json:"review_events"`
+	GrammarTestAttempts   int64                `json:"grammar_test_attempts"`
+	GrammarSRSAttempts    int64                `json:"grammar_srs_attempts"`
+	ReadingTextProgress   int64                `json:"reading_text_progress"`
+	SpeakingAttempts      int64                `json:"speaking_attempts"`
+	LegacyMappingTablesOK bool                 `json:"legacy_mapping_tables_ok"`
+	LatestActivityAt      string               `json:"latest_activity_at,omitempty"`
+	Readiness             readinessReport      `json:"readiness"`
+	CourseBreakdown       []courseBreakdownRow `json:"course_breakdown"`
+	AttemptSources        []attemptSourceRow   `json:"attempt_sources"`
+}
+
+type courseBreakdownRow struct {
+	CourseCode       string `json:"course_code"`
+	Users            int64  `json:"users"`
+	UserCourses      int64  `json:"user_courses"`
+	LearningItems    int64  `json:"learning_items"`
+	ExerciseAttempts int64  `json:"exercise_attempts"`
+	LearningEvents   int64  `json:"learning_events"`
+	SRSItems         int64  `json:"srs_items"`
+}
+
+type attemptSourceRow struct {
+	SourceTable string `json:"source_table"`
+	Mode        string `json:"mode"`
+	Count       int64  `json:"count"`
 }
 
 type readinessReport struct {
@@ -172,6 +190,8 @@ func summarizeDB(ctx context.Context, label, url string) (dbSummary, *sql.DB, er
 		Readiness: readinessReport{
 			BlockingReasons: []string{},
 		},
+		CourseBreakdown: []courseBreakdownRow{},
+		AttemptSources:  []attemptSourceRow{},
 	}
 	if url == "" {
 		return s, nil, nil
@@ -224,6 +244,18 @@ func summarizeDB(ctx context.Context, label, url string) (dbSummary, *sql.DB, er
 		return s, nil, err
 	}
 	s.Readiness = readiness
+	courses, err := courseBreakdown(ctx, db)
+	if err != nil {
+		db.Close()
+		return s, nil, err
+	}
+	s.CourseBreakdown = courses
+	sources, err := attemptSources(ctx, db)
+	if err != nil {
+		db.Close()
+		return s, nil, err
+	}
+	s.AttemptSources = sources
 	return s, db, nil
 }
 
@@ -385,6 +417,87 @@ func countCanonicalMediaAttempts(ctx context.Context, db *sql.DB) (int64, error)
 		   OR mode IN ('reading', 'speaking')
 	`).Scan(&count)
 	return count, err
+}
+
+func courseBreakdown(ctx context.Context, db *sql.DB) ([]courseBreakdownRow, error) {
+	required := []string{"courses", "user_courses", "learning_items", "exercise_attempts", "learning_events", "srs_items"}
+	for _, table := range required {
+		exists, err := tableExists(ctx, db, table)
+		if err != nil || !exists {
+			return []courseBreakdownRow{}, err
+		}
+	}
+	rows, err := db.QueryContext(ctx, `
+		SELECT
+			c.code,
+			COUNT(DISTINCT uc.user_id) AS users,
+			COUNT(DISTINCT uc.id) AS user_courses,
+			COUNT(DISTINCT li.id) AS learning_items,
+			COUNT(DISTINCT ea.id) AS exercise_attempts,
+			COUNT(DISTINCT le.id) AS learning_events,
+			COUNT(DISTINCT si.id) AS srs_items
+		FROM courses c
+		LEFT JOIN user_courses uc ON uc.course_id = c.id
+		LEFT JOIN learning_items li ON li.course_id = c.id
+		LEFT JOIN exercise_attempts ea ON ea.user_course_id = uc.id
+		LEFT JOIN learning_events le ON le.user_course_id = uc.id
+		LEFT JOIN srs_items si ON si.user_course_id = uc.id
+		GROUP BY c.code
+		ORDER BY c.code
+	`)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var out []courseBreakdownRow
+	for rows.Next() {
+		var row courseBreakdownRow
+		if err := rows.Scan(&row.CourseCode, &row.Users, &row.UserCourses, &row.LearningItems, &row.ExerciseAttempts, &row.LearningEvents, &row.SRSItems); err != nil {
+			return nil, err
+		}
+		out = append(out, row)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	if out == nil {
+		out = []courseBreakdownRow{}
+	}
+	return out, nil
+}
+
+func attemptSources(ctx context.Context, db *sql.DB) ([]attemptSourceRow, error) {
+	exists, err := tableExists(ctx, db, "exercise_attempts")
+	if err != nil || !exists {
+		return []attemptSourceRow{}, err
+	}
+	rows, err := db.QueryContext(ctx, `
+		SELECT COALESCE(source_table, ''), mode, COUNT(*)
+		FROM exercise_attempts
+		GROUP BY COALESCE(source_table, ''), mode
+		ORDER BY COALESCE(source_table, ''), mode
+	`)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var out []attemptSourceRow
+	for rows.Next() {
+		var row attemptSourceRow
+		if err := rows.Scan(&row.SourceTable, &row.Mode, &row.Count); err != nil {
+			return nil, err
+		}
+		out = append(out, row)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	if out == nil {
+		out = []attemptSourceRow{}
+	}
+	return out, nil
 }
 
 func findTelegramConflicts(ctx context.Context, dbs []openedSourceDB, targetDB *sql.DB) ([]identityConflict, error) {
