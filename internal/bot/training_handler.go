@@ -46,8 +46,10 @@ type TrainingHandler struct {
 	wrongAnswerDelaySeconds int
 	db                      *sql.DB
 	linglowEventRepo        *repository.LinglowEventRepository
+	linglowSRSMirrorRepo    *repository.LinglowSRSMirrorRepository
 	learning                config.LearningConfig
 	linglowEventsEnabled    bool
+	linglowSRSReadEnabled   bool
 }
 
 // SessionState holds the state of an active training session
@@ -105,6 +107,11 @@ func (h *TrainingHandler) SetLinglowEventWriter(repo *repository.LinglowEventRep
 	h.linglowEventsEnabled = enabled
 }
 
+func (h *TrainingHandler) SetLinglowSRSReadMirror(repo *repository.LinglowSRSMirrorRepository, srsReadEnabled bool) {
+	h.linglowSRSMirrorRepo = repo
+	h.linglowSRSReadEnabled = srsReadEnabled
+}
+
 func (h *TrainingHandler) recordLinglowWordReviewEvent(reviewEventID int64, event *models.ReviewEvent) {
 	if h == nil || !h.linglowEventsEnabled || h.linglowEventRepo == nil || event == nil || reviewEventID == 0 {
 		return
@@ -135,6 +142,15 @@ func (h *TrainingHandler) recordLinglowWordReviewEvent(reviewEventID int64, even
 			zap.Int64("user_card_id", event.UserCardID),
 			zap.Error(err),
 		)
+	}
+	if h.linglowSRSReadEnabled && h.linglowSRSMirrorRepo != nil {
+		if err := h.linglowSRSMirrorRepo.MirrorWordReview(context.Background(), h.learning, event.UserID, event.UserCardID); err != nil {
+			h.logger.Warn("failed to mirror legacy bot word srs snapshot",
+				zap.Int64("user_id", event.UserID),
+				zap.Int64("user_card_id", event.UserCardID),
+				zap.Error(err),
+			)
+		}
 	}
 }
 

@@ -193,7 +193,9 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 
 	// Create training handler
 	trainingHandler := NewTrainingHandler(bot, trainingService, srsService, optionsService, sessionRepo, log, cfg.Training.OptionsDelayMS, cfg.Training.WrongAnswerDelaySeconds, conn)
-	trainingHandler.SetLinglowEventWriter(repository.NewLinglowEventRepository(conn), cfg.Learning, cfg.Linglow.EventsWriteEnabled)
+	linglowEventRepo := repository.NewLinglowEventRepository(conn)
+	trainingHandler.SetLinglowEventWriter(linglowEventRepo, cfg.Learning, cfg.Linglow.EventsWriteEnabled)
+	trainingHandler.SetLinglowSRSReadMirror(repository.NewLinglowSRSMirrorRepository(conn), cfg.Linglow.SRSReadEnabled)
 
 	// Create handler
 	handler := NewHandler(bot, log, aiService, wordService, trainingHandler, userRepo, trainingCardRepo, userCardRepo, cbService, cfg, conn)

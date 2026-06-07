@@ -1149,6 +1149,20 @@ func (r *Router) recordLinglowWordReviewEvent(ctx context.Context, reviewEventID
 			zap.Error(err),
 		)
 	}
+	r.mirrorLegacyWordSRS(ctx, event)
+}
+
+func (r *Router) mirrorLegacyWordSRS(ctx context.Context, event *models.ReviewEvent) {
+	if r == nil || r.config == nil || !r.config.Linglow.SRSReadEnabled || r.linglowSRSMirrorRepo == nil || event == nil {
+		return
+	}
+	if err := r.linglowSRSMirrorRepo.MirrorWordReview(ctx, r.config.Learning, event.UserID, event.UserCardID); err != nil {
+		r.logger.Warn("failed to mirror legacy word srs snapshot",
+			zap.Int64("user_id", event.UserID),
+			zap.Int64("user_card_id", event.UserCardID),
+			zap.Error(err),
+		)
+	}
 }
 
 // showTrainingFeedback shows feedback and moves to next card

@@ -117,6 +117,51 @@ func (r *LinglowGrammarSRSBackfillRepository) Backfill(ctx context.Context, lc c
 	return refreshed, nil
 }
 
+func (r *LinglowGrammarSRSBackfillRepository) SyncTheoryBlockForUser(ctx context.Context, lc config.LearningConfig, userID int64, chapterID, theoryBlockID string) error {
+	courseCode := CourseCodeForLearning(lc)
+	targetLang := strings.TrimSpace(strings.ToLower(lc.TargetLang))
+	legacyCourseID := strings.TrimSpace(strings.ToLower(lc.GrammarBundleID))
+	if legacyCourseID == "" {
+		legacyCourseID = targetLang
+	}
+	if courseCode == "" || targetLang == "" || legacyCourseID == "" || userID == 0 {
+		return nil
+	}
+	chapterID = strings.TrimSpace(chapterID)
+	theoryBlockID = strings.TrimSpace(theoryBlockID)
+	if chapterID == "" || theoryBlockID == "" {
+		return nil
+	}
+	row := grammarSRSBackfillRow{}
+	err := r.db.QueryRowContext(ctx, syncGrammarSRSForTheoryBlockSQL, courseCode, targetLang, legacyCourseID, userID, chapterID, theoryBlockID).Scan(
+		&row.UserCourseID,
+		&row.LearningItemID,
+		&row.State,
+		&row.Ease,
+		&row.NextReviewAt,
+		&row.LastReviewAt,
+		&row.ReviewCount,
+		&row.LapseCount,
+		&row.CorrectCount,
+		&row.WrongCount,
+		&row.CorrectStreak,
+		&row.WrongStreak,
+		&row.IntervalDays,
+		&row.MasteryScore,
+		&row.MemoryID,
+		&row.ChapterID,
+		&row.TheoryBlockID,
+		&row.ConceptID,
+	)
+	if err == sql.ErrNoRows {
+		return nil
+	}
+	if err != nil {
+		return fmt.Errorf("query grammar srs mirror row: %w", err)
+	}
+	return r.upsertGrammarSRSRow(ctx, row)
+}
+
 func (r *LinglowGrammarSRSBackfillRepository) pruneOrphanGrammarSRSItems(ctx context.Context, courseCode, targetLang, legacyCourseID string) (int64, error) {
 	res, err := r.db.ExecContext(ctx, pruneOrphanGrammarSRSItemsSQL, courseCode, targetLang, legacyCourseID)
 	if err != nil {
@@ -269,6 +314,22 @@ const missingGrammarSRSRowsSQL = `
 			WHERE si.user_course_id = ucourse.id AND si.learning_item_id = li.id
 		)
 		ORDER BY gtm.id`
+
+const syncGrammarSRSForTheoryBlockSQL = `
+	SELECT ucourse.id AS user_course_id, li.id AS learning_item_id,
+		gtm.state, gtm.ease, gtm.next_review_at, gtm.last_review_at,
+		gtm.review_count, gtm.lapse_count, gtm.correct_count, gtm.wrong_count,
+		gtm.correct_streak, gtm.wrong_streak, gtm.interval_days, gtm.mastery_score,
+		gtm.id AS memory_id, gtm.chapter_id, gtm.theory_block_id, gtm.concept_id
+	FROM grammar_theory_memory gtm
+	JOIN user_courses ucourse ON ucourse.user_id = gtm.user_id
+	JOIN courses c ON c.id = ucourse.course_id
+	JOIN learning_items li ON li.course_id = c.id
+		AND li.source_kind = 'grammar_theory_block'
+		AND li.source_id = gtm.chapter_id || ':' || gtm.theory_block_id
+	WHERE c.code = ? AND lower(gtm.language) = ? AND lower(gtm.course_id) = ?
+		AND gtm.user_id = ? AND gtm.chapter_id = ? AND gtm.theory_block_id = ?
+	LIMIT 1`
 
 const resyncGrammarSRSRowsSQL = `
 	SELECT ucourse.id AS user_course_id, li.id AS learning_item_id,

@@ -1,6 +1,7 @@
 package web
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"strings"
@@ -998,6 +999,21 @@ func (r *Router) recordLinglowGrammarTrainingAttempt(req *http.Request, userID i
 			zap.Int64("user_id", userID),
 			zap.Int64("attempt_id", result.AttemptID),
 			zap.String("question_id", result.QuestionID),
+			zap.Error(err),
+		)
+	}
+	r.mirrorLegacyGrammarSRS(req.Context(), userID, result.ChapterID, result.TheoryBlockID)
+}
+
+func (r *Router) mirrorLegacyGrammarSRS(ctx context.Context, userID int64, chapterID, theoryBlockID string) {
+	if r == nil || r.config == nil || !r.config.Linglow.SRSReadEnabled || r.linglowSRSMirrorRepo == nil {
+		return
+	}
+	if err := r.linglowSRSMirrorRepo.MirrorGrammarTraining(ctx, r.config.Learning, userID, chapterID, theoryBlockID); err != nil {
+		r.logger.Warn("failed to mirror legacy grammar srs snapshot",
+			zap.Int64("user_id", userID),
+			zap.String("chapter_id", chapterID),
+			zap.String("theory_block_id", theoryBlockID),
 			zap.Error(err),
 		)
 	}
