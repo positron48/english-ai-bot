@@ -90,6 +90,8 @@
     "accuracy": "точность",
     "dailyRoute": "Маршрут дня",
     "reviewStation": "Станция повторения",
+    "openDailyRoute": "Открыть маршрут",
+    "mistakeWorkshop": "Мастерская ошибок",
     "openDistrict": "Открыть район",
     "backToCity": "Назад в город",
     "district": "Район",
@@ -99,11 +101,19 @@
     "noItems": "Элементов пока нет",
     "noDailyItems": "Маршрут пока пуст",
     "noReviewItems": "Повторений сейчас нет",
+    "noWeakItems": "Слабых мест сейчас нет",
     "locationsShort": "локаций",
     "moreModules": "+{count} мод.",
+    "routeSteps": {
+      "reviewBlock": "Сначала",
+      "newBlock": "Затем",
+      "mistakeBlock": "При необходимости"
+    },
     "simple": {
       "review": "Повторять",
       "reviewHint": "Слова и карточки к сроку",
+      "dailyRoute": "Маршрут дня",
+      "dailyRouteHint": "План занятий на сегодня",
       "grammar": "Грамматика",
       "grammarHint": "Главы и тренировки",
       "reading": "Чтение",

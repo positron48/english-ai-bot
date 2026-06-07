@@ -90,6 +90,8 @@
     "accuracy": "accuracy",
     "dailyRoute": "Daily route",
     "reviewStation": "Review station",
+    "openDailyRoute": "Open route",
+    "mistakeWorkshop": "Mistake workshop",
     "openDistrict": "Open district",
     "backToCity": "Back to city",
     "district": "District",
@@ -99,11 +101,19 @@
     "noItems": "No items yet",
     "noDailyItems": "Daily route is empty",
     "noReviewItems": "No reviews due",
+    "noWeakItems": "No weak spots right now",
     "locationsShort": "locations",
     "moreModules": "+{count} mod.",
+    "routeSteps": {
+      "reviewBlock": "First",
+      "newBlock": "Next",
+      "mistakeBlock": "If needed"
+    },
     "simple": {
       "review": "Review",
       "reviewHint": "Due words and cards",
+      "dailyRoute": "Daily route",
+      "dailyRouteHint": "Today's study plan",
       "grammar": "Grammar",
       "grammarHint": "Chapters and drills",
       "reading": "Reading",

@@ -50,7 +50,9 @@
         <article class="work-panel">
           <div class="panel-head">
             <h2>{{ t('city.dailyRoute') }}</h2>
-            <span>{{ dailyRoute?.review.length || 0 }} / {{ dailyRoute?.new_items.length || 0 }}</span>
+            <RouterLink class="panel-action" :to="dailyRouteLink">
+              {{ t('city.openDailyRoute') }}
+            </RouterLink>
           </div>
           <div class="route-list">
             <RouterLink v-for="item in dailyItems" :key="`${item.mode}:${item.learning_item_id}`" class="route-item route-link" :to="routeForLinglowItem(item)">
@@ -82,6 +84,10 @@
         <RouterLink class="simple-link primary" to="/training">
           <strong>{{ t('city.simple.review') }}</strong>
           <span>{{ t('city.simple.reviewHint') }}</span>
+        </RouterLink>
+        <RouterLink class="simple-link" :to="dailyRouteLink">
+          <strong>{{ t('city.simple.dailyRoute') }}</strong>
+          <span>{{ t('city.simple.dailyRouteHint') }}</span>
         </RouterLink>
         <RouterLink class="simple-link" to="/learning/grammar">
           <strong>{{ t('city.simple.grammar') }}</strong>
@@ -212,6 +218,11 @@ const dailyItems = computed(() => {
 
 const reviewItems = computed(() => (reviewQueue.value?.items || []).slice(0, 6))
 
+const dailyRouteLink = computed(() => ({
+  name: 'CityDailyRoute',
+  query: selectedCourseCode.value ? { course_code: selectedCourseCode.value } : undefined,
+}))
+
 const districtProgressByCode = computed(() => {
   const out: Record<string, NonNullable<CourseProgress['by_district']>[number]> = {}
   for (const row of progress.value?.by_district || []) {
@@ -270,10 +281,6 @@ function locationTitle(type: string, fallback: string): string {
 
 function visibleModules(location: CourseMapLocation) {
   return safeModules(location).slice(0, 4)
-}
-
-function countLocationItems(location: CourseMapLocation): number {
-  return safeModules(location).reduce((sum, module) => sum + safeItems(module).length, 0)
 }
 
 function safeLocations(district: CourseMap['districts'][number]) {
@@ -434,7 +441,7 @@ onMounted(loadCity)
 
 .simple-mode {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 10px;
 }
 
@@ -500,6 +507,13 @@ onMounted(loadCity)
 .panel-head span {
   color: var(--text-secondary);
   font-weight: 750;
+}
+
+.panel-action {
+  color: var(--primary-color);
+  font-size: 0.86rem;
+  font-weight: 750;
+  text-decoration: none;
 }
 
 .route-list {

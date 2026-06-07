@@ -28,7 +28,7 @@
 - Phase 7/SRS read readiness foundation: `/api/linglow/srs-shadow` расширен блоком `review_queue`, который сравнивает legacy vs canonical due queue по `learning_item_id` для word + grammar theory и отдаёт `ready_for_canonical_read`.
 - Phase 7/SRS admin readiness UI: добавлен `/admin/linglow-srs` read-only экран для админов, который показывает `/api/linglow/srs-shadow`, course selector, readiness, due/mismatch/mastery metrics и breakdown по типам.
 - Phase 7/SRS aggregate readiness foundation: добавлен full-access admin endpoint `GET /api/admin/linglow/srs-readiness`, который агрегирует readiness по всем `user_courses` выбранного курса и показывает totals/первых not-ready users на `/admin/linglow-srs`.
-- Phase 8/City Home foundation: `/city` получил course selector, progress summary, daily route и review station blocks поверх `GET /api/courses`, `/api/linglow/progress`, `/api/linglow/daily-route`, `/api/linglow/review`; старая карта districts/locations сохранена.
+- Phase 8/City Home foundation: `/city` получил course selector, progress summary, daily route и review station blocks поверх `GET /api/courses`, `/api/linglow/progress`, `/api/linglow/daily-route`, `/api/linglow/review`; старая карта districts/locations сохранена. `/city/daily-route` вынесен в отдельный рабочий экран с review/new/mistake-workshop блоками.
 - Phase 8/District UX foundation: добавлен `/city/district/:districtCode` поверх `GET /api/linglow/city`; City Home получил кликабельные daily/review items, переходы в district/location и Simple Mode быстрые входы в review, grammar, reading и words. `GET /api/linglow/progress` расширен `by_district`/`by_location` с foundation/confidence/stability/weakness сигналами, City Home и District view показывают эти сигналы.
 
 ## 1. Текущая точка
@@ -514,10 +514,10 @@ Rollback:
    - revisit tasks.
 
 4. Добавить Daily Route:
-   - review block;
-   - grammar block;
-   - vocabulary/reading/conversation block;
-   - mistake workshop block, если есть ошибки.
+   - review block - готово как отдельная секция `/city/daily-route`;
+   - grammar block - готово через new items и переходы в существующие grammar routes;
+   - vocabulary/reading/conversation block - готово через new items и `source_kind` navigation;
+   - mistake workshop block, если есть ошибки - готово как weak locations на базе `by_location.due_review_count/weakness`.
 
 5. Добавить Simple Mode:
    - прямой доступ к review, grammar, texts, vocab, settings - готово на City Home для review, grammar, reading и words;

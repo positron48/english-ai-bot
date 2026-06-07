@@ -29,6 +29,12 @@ const router = createRouter({
       meta: { requiresAuth: true }
     },
     {
+      path: '/city/daily-route',
+      name: 'CityDailyRoute',
+      component: () => import('../views/CityDailyRouteView.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
       path: '/city/district/:districtCode',
       name: 'CityDistrict',
       component: () => import('../views/CityDistrictView.vue'),

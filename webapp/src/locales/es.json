@@ -90,6 +90,8 @@
     "accuracy": "precisión",
     "dailyRoute": "Ruta diaria",
     "reviewStation": "Estación de repaso",
+    "openDailyRoute": "Abrir ruta",
+    "mistakeWorkshop": "Taller de errores",
     "openDistrict": "Abrir distrito",
     "backToCity": "Volver a ciudad",
     "district": "Distrito",
@@ -99,11 +101,19 @@
     "noItems": "Aún no hay elementos",
     "noDailyItems": "La ruta diaria está vacía",
     "noReviewItems": "No hay repasos pendientes",
+    "noWeakItems": "No hay puntos débiles ahora",
     "locationsShort": "ubicaciones",
     "moreModules": "+{count} mód.",
+    "routeSteps": {
+      "reviewBlock": "Primero",
+      "newBlock": "Luego",
+      "mistakeBlock": "Si hace falta"
+    },
     "simple": {
       "review": "Repasar",
       "reviewHint": "Palabras y tarjetas vencidas",
+      "dailyRoute": "Ruta diaria",
+      "dailyRouteHint": "Plan de estudio de hoy",
       "grammar": "Gramática",
       "grammarHint": "Capítulos y práctica",
       "reading": "Lectura",
