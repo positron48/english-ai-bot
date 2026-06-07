@@ -556,7 +556,7 @@ Rollback:
 2. Накатить все migrations.
 
 3. Написать merge command:
-   `cmd/merge_language_databases` - начат audit-only foundation: dry-run JSON report по counts, course breakdown, attempt sources, readiness gaps, latest activity и telegram identity conflicts, без writes.
+   `cmd/merge_language_databases` - начат audit-only foundation: dry-run JSON report по counts, course breakdown, attempt sources, readiness gaps, latest activity, Telegram conflicts и generalized stable identity conflicts (`telegram_id`, `telegram_username`), без writes.
 
 4. Merge command должен:
    - принимать English source DB;
@@ -585,7 +585,8 @@ Rollback:
    - aggregates.
 
 7. Конфликты:
-   - один Telegram id в двух БД - объединять в одного user;
+   - один Telegram id в двух БД - audit foundation готов через `telegram_conflicts` и `identity_conflicts`;
+   - одинаковый Telegram username в двух БД - audit foundation готов через `identity_conflicts`;
    - одинаковые emails/auth identities - объединять только при строгом совпадении verified identity;
    - несовпадения писать в conflict report, не угадывать.
 

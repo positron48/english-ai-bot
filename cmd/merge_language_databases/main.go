@@ -80,14 +80,23 @@ type identityConflict struct {
 	TargetUserIDs []string `json:"target_user_ids,omitempty"`
 }
 
+type stableIdentityConflict struct {
+	IdentityType  string   `json:"identity_type"`
+	IdentityValue string   `json:"identity_value"`
+	SourceLabels  []string `json:"source_labels"`
+	SourceUserIDs []string `json:"source_user_ids"`
+	TargetUserIDs []string `json:"target_user_ids,omitempty"`
+}
+
 type auditReport struct {
-	Mode               string             `json:"mode"`
-	GeneratedAt        time.Time          `json:"generated_at"`
-	Sources            []dbSummary        `json:"sources"`
-	Target             *dbSummary         `json:"target,omitempty"`
-	TelegramConflicts  []identityConflict `json:"telegram_conflicts"`
-	ReadyForWriteMerge bool               `json:"ready_for_write_merge"`
-	Notes              []string           `json:"notes"`
+	Mode               string                   `json:"mode"`
+	GeneratedAt        time.Time                `json:"generated_at"`
+	Sources            []dbSummary              `json:"sources"`
+	Target             *dbSummary               `json:"target,omitempty"`
+	TelegramConflicts  []identityConflict       `json:"telegram_conflicts"`
+	IdentityConflicts  []stableIdentityConflict `json:"identity_conflicts"`
+	ReadyForWriteMerge bool                     `json:"ready_for_write_merge"`
+	Notes              []string                 `json:"notes"`
 }
 
 type sourceDB struct {
@@ -121,6 +130,7 @@ func main() {
 		Mode:              "dry-run",
 		GeneratedAt:       time.Now().UTC(),
 		TelegramConflicts: []identityConflict{},
+		IdentityConflicts: []stableIdentityConflict{},
 		Notes: []string{
 			"audit-only foundation: no data is written",
 			"real merge remains blocked until source identity conflicts are reviewed",
@@ -160,7 +170,16 @@ func main() {
 		conflicts = []identityConflict{}
 	}
 	report.TelegramConflicts = conflicts
-	report.ReadyForWriteMerge = len(conflicts) == 0 && len(openSources) > 0 && targetDB != nil && targetSummary.LegacyMappingTablesOK
+	identityConflicts, err := findStableIdentityConflicts(ctx, openSources, targetDB)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "merge audit stable identity scan failed: %v\n", err)
+		os.Exit(1)
+	}
+	if identityConflicts == nil {
+		identityConflicts = []stableIdentityConflict{}
+	}
+	report.IdentityConflicts = identityConflicts
+	report.ReadyForWriteMerge = len(conflicts) == 0 && len(identityConflicts) == 0 && len(openSources) > 0 && targetDB != nil && targetSummary.LegacyMappingTablesOK
 	if targetDB == nil {
 		report.Notes = append(report.Notes, "target DB URL is not set; target readiness could not be checked")
 	}
@@ -169,6 +188,9 @@ func main() {
 	}
 	if len(conflicts) > 0 {
 		report.Notes = append(report.Notes, "telegram identity conflicts exist; real merge must map them explicitly")
+	}
+	if len(identityConflicts) > 0 {
+		report.Notes = append(report.Notes, "stable identity conflicts exist; real merge must map them explicitly")
 	}
 
 	enc := json.NewEncoder(os.Stdout)
@@ -566,4 +588,88 @@ func findTelegramConflicts(ctx context.Context, dbs []openedSourceDB, targetDB *
 		return conflicts[i].TelegramID < conflicts[j].TelegramID
 	})
 	return conflicts, nil
+}
+
+func findStableIdentityConflicts(ctx context.Context, dbs []openedSourceDB, targetDB *sql.DB) ([]stableIdentityConflict, error) {
+	seen := map[string]*stableIdentityConflict{}
+	for _, src := range dbs {
+		if src.DB == nil {
+			continue
+		}
+		if err := collectStableIdentities(ctx, seen, src.Label, src.DB, false); err != nil {
+			return nil, err
+		}
+	}
+	if targetDB != nil {
+		if err := collectStableIdentities(ctx, seen, "target", targetDB, true); err != nil {
+			return nil, err
+		}
+	}
+
+	var conflicts []stableIdentityConflict
+	for _, entry := range seen {
+		sourceSet := map[string]bool{}
+		for _, label := range entry.SourceLabels {
+			sourceSet[label] = true
+		}
+		if len(sourceSet) > 1 || len(entry.TargetUserIDs) > 0 {
+			conflicts = append(conflicts, *entry)
+		}
+	}
+	sort.Slice(conflicts, func(i, j int) bool {
+		if conflicts[i].IdentityType != conflicts[j].IdentityType {
+			return conflicts[i].IdentityType < conflicts[j].IdentityType
+		}
+		return conflicts[i].IdentityValue < conflicts[j].IdentityValue
+	})
+	return conflicts, nil
+}
+
+func collectStableIdentities(ctx context.Context, seen map[string]*stableIdentityConflict, label string, db *sql.DB, target bool) error {
+	exists, err := tableExists(ctx, db, "users")
+	if err != nil || !exists {
+		return err
+	}
+	rows, err := db.QueryContext(ctx, `
+		SELECT id, telegram_id, COALESCE(NULLIF(TRIM(telegram_username), ''), '')
+		FROM users
+	`)
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var userID, telegramID int64
+		var username string
+		if err := rows.Scan(&userID, &telegramID, &username); err != nil {
+			return err
+		}
+		addStableIdentity(seen, "telegram_id", fmt.Sprintf("%d", telegramID), label, userID, target)
+		if username != "" {
+			addStableIdentity(seen, "telegram_username", strings.ToLower(username), label, userID, target)
+		}
+	}
+	return rows.Err()
+}
+
+func addStableIdentity(seen map[string]*stableIdentityConflict, identityType, identityValue, label string, userID int64, target bool) {
+	key := identityType + "\x00" + identityValue
+	entry := seen[key]
+	if entry == nil {
+		entry = &stableIdentityConflict{
+			IdentityType:  identityType,
+			IdentityValue: identityValue,
+			SourceLabels:  []string{},
+			SourceUserIDs: []string{},
+			TargetUserIDs: []string{},
+		}
+		seen[key] = entry
+	}
+	if target {
+		entry.TargetUserIDs = append(entry.TargetUserIDs, fmt.Sprintf("%s:%d", label, userID))
+		return
+	}
+	entry.SourceLabels = append(entry.SourceLabels, label)
+	entry.SourceUserIDs = append(entry.SourceUserIDs, fmt.Sprintf("%s:%d", label, userID))
 }
