@@ -99,8 +99,8 @@ func TestCourseRepository_MapLegacyContent(t *testing.T) {
 	if err != nil {
 		t.Fatalf("MapLegacyContent: %v", err)
 	}
-	if summary.ModulesCreated != 4 {
-		t.Fatalf("ModulesCreated = %d, want 4 (%+v)", summary.ModulesCreated, summary)
+	if summary.ModulesCreated != 5 {
+		t.Fatalf("ModulesCreated = %d, want 5 (%+v)", summary.ModulesCreated, summary)
 	}
 	if summary.ItemsCreated != 4 {
 		t.Fatalf("ItemsCreated = %d, want 4 (%+v)", summary.ItemsCreated, summary)
@@ -112,6 +112,61 @@ func TestCourseRepository_MapLegacyContent(t *testing.T) {
 	}
 	if second.ModulesCreated != 0 || second.ItemsCreated != 0 {
 		t.Fatalf("mapping should be idempotent, got %+v", second)
+	}
+}
+
+func TestCourseRepository_MapLegacyContentMapsCustomUserWords(t *testing.T) {
+	conn := testutil.SetupTestDB(t)
+	logger := zap.NewNop()
+	userRepo := NewUserRepository(conn, logger)
+	user, err := userRepo.GetOrCreateUser(99401)
+	if err != nil {
+		t.Fatalf("create user: %v", err)
+	}
+	repo := NewCourseRepository(conn, logger)
+	if _, err := repo.BackfillUserCourses(context.Background(), "es_ru"); err != nil {
+		t.Fatalf("BackfillUserCourses: %v", err)
+	}
+	if _, err := conn.Exec(`
+		INSERT INTO grammar_content_sections (bundle_id, section_id, title, level, sort_order, chapter_ids_json, raw_json, source_hash)
+		VALUES ('es', 'es.section.custom', 'Grammar', 'A0', 1, '[]', '{}', 'sec-custom')`); err != nil {
+		t.Fatalf("insert grammar section: %v", err)
+	}
+	var wordCardID, trainingCardID int64
+	if err := conn.QueryRow(`INSERT INTO word_cards (word, definition, display_en) VALUES ('custom-libro', 'book', 'libro') RETURNING id`).Scan(&wordCardID); err != nil {
+		t.Fatalf("insert custom word card: %v", err)
+	}
+	if err := conn.QueryRow(`INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (?, 'libro', 0, 'книга', 'book') RETURNING id`, wordCardID).Scan(&trainingCardID); err != nil {
+		t.Fatalf("insert training card: %v", err)
+	}
+	if _, err := conn.Exec(`INSERT INTO user_cards (user_id, training_card_id, direction, state, ef) VALUES (?, ?, 'es_ru', 'new', 2.5)`, user.ID, trainingCardID); err != nil {
+		t.Fatalf("insert user card: %v", err)
+	}
+
+	if _, err := repo.MapLegacyContent(context.Background(), "es_ru", "es"); err != nil {
+		t.Fatalf("MapLegacyContent: %v", err)
+	}
+	var itemCount int
+	if err := conn.QueryRow(`
+		SELECT COUNT(*)
+		FROM learning_items li
+		JOIN courses c ON c.id = li.course_id
+		WHERE c.code = 'es_ru' AND li.source_kind = 'word_card' AND li.source_id = ?
+	`, fmt.Sprintf("%d", wordCardID)).Scan(&itemCount); err != nil {
+		t.Fatalf("count custom learning item: %v", err)
+	}
+	if itemCount != 1 {
+		t.Fatalf("custom learning_items count = %d, want 1", itemCount)
+	}
+
+	lc := config.LearningConfig{NativeLang: "ru", TargetLang: "es", GrammarBundleID: "es"}
+	wordRepo := NewLinglowWordSRSBackfillRepository(conn)
+	summary, err := wordRepo.Backfill(context.Background(), lc, LinglowWordSRSBackfillOptions{})
+	if err != nil {
+		t.Fatalf("word srs audit: %v", err)
+	}
+	if summary.UnmappedTotal != 0 {
+		t.Fatalf("UnmappedTotal = %d, want 0 after custom mapping", summary.UnmappedTotal)
 	}
 }
 

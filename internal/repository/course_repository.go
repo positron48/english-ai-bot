@@ -2535,6 +2535,8 @@ func (r *CourseRepository) MapLegacyContent(ctx context.Context, courseCode, bun
 		{mapSpeakingTaskItemsSQL, false},
 		{mapWordSetModulesSQL, false},
 		{mapWordCardItemsSQL, false},
+		{mapCustomWordModuleSQL, false},
+		{mapCustomWordCardItemsSQL, false},
 	}
 	for _, stmt := range statements {
 		args := []interface{}{courseID}
@@ -2825,6 +2827,72 @@ WITH src AS (
     ` + levelDistrictJoinSQL + `
     JOIN locations l ON l.district_id = d.id AND l.location_type = 'word_market'
     LEFT JOIN modules m ON m.course_id = c.id AND m.source_kind = 'word_set' AND m.source_id = src.module_source_id
+)
+INSERT INTO learning_items (course_id, module_id, district_id, location_id, item_type, source_kind, source_id, title, cefr_level, content_hash, status, updated_at)
+SELECT course_id, module_id, district_id, location_id, 'word', 'word_card', source_id, title, level, md5(source_hash), 'published', CURRENT_TIMESTAMP
+FROM target
+ON CONFLICT (course_id, source_kind, source_id) DO UPDATE SET
+    module_id = excluded.module_id,
+    district_id = excluded.district_id,
+    location_id = excluded.location_id,
+    title = excluded.title,
+    cefr_level = excluded.cefr_level,
+    content_hash = excluded.content_hash,
+    status = excluded.status,
+    updated_at = CURRENT_TIMESTAMP`
+
+var mapCustomWordModuleSQL = `
+WITH target AS (
+    SELECT c.id AS course_id, d.id AS district_id, l.id AS location_id
+    FROM courses c
+    JOIN districts d ON d.course_id = c.id AND d.level_code = 'A0'
+    JOIN locations l ON l.district_id = d.id AND l.location_type = 'word_market'
+    WHERE c.id = ?
+)
+INSERT INTO modules (course_id, district_id, location_id, code, module_type, title, source_kind, source_id, sort_order, status, updated_at)
+SELECT course_id, district_id, location_id, 'word_set:custom', 'word_set', 'Custom words', 'word_set', 'custom', 9999, 'published', CURRENT_TIMESTAMP
+FROM target
+ON CONFLICT (course_id, code) DO UPDATE SET
+    district_id = excluded.district_id,
+    location_id = excluded.location_id,
+    title = excluded.title,
+    source_kind = excluded.source_kind,
+    source_id = excluded.source_id,
+    sort_order = excluded.sort_order,
+    status = excluded.status,
+    updated_at = CURRENT_TIMESTAMP`
+
+var mapCustomWordCardItemsSQL = `
+WITH course_scope AS (
+    SELECT id AS course_id FROM courses WHERE id = ?
+), active_cards AS (
+    SELECT DISTINCT tc.word_card_id
+    FROM user_cards uc
+    JOIN training_cards tc ON tc.id = uc.training_card_id
+    JOIN user_courses ucourse ON ucourse.user_id = uc.user_id
+    JOIN course_scope cs ON cs.course_id = ucourse.course_id
+), custom_src AS (
+    SELECT
+        wc.id::text AS source_id,
+        coalesce(nullif(wc.display_en, ''), wc.word) AS title,
+        coalesce(wc.updated_at::text, wc.created_at::text, '') AS source_hash,
+        'A0' AS level
+    FROM active_cards ac
+    JOIN word_cards wc ON wc.id = ac.word_card_id
+    WHERE NOT EXISTS (
+        SELECT 1
+        FROM word_set_items wsi
+        JOIN word_sets ws ON ws.id = wsi.word_set_id AND ws.is_published = 1
+        WHERE wsi.word_card_id = wc.id
+    )
+), target AS (
+    SELECT cs.course_id, d.id AS district_id, l.id AS location_id, m.id AS module_id, src.*
+    FROM custom_src src
+    CROSS JOIN course_scope cs
+    JOIN courses c ON c.id = cs.course_id
+    ` + levelDistrictJoinSQL + `
+    JOIN locations l ON l.district_id = d.id AND l.location_type = 'word_market'
+    JOIN modules m ON m.course_id = c.id AND m.source_kind = 'word_set' AND m.source_id = 'custom'
 )
 INSERT INTO learning_items (course_id, module_id, district_id, location_id, item_type, source_kind, source_id, title, cefr_level, content_hash, status, updated_at)
 SELECT course_id, module_id, district_id, location_id, 'word', 'word_card', source_id, title, level, md5(source_hash), 'published', CURRENT_TIMESTAMP
