@@ -556,7 +556,7 @@ Rollback:
 2. Накатить все migrations.
 
 3. Написать merge command:
-   `cmd/merge_language_databases` - начат audit-only foundation: dry-run JSON report по counts и telegram identity conflicts, без writes.
+   `cmd/merge_language_databases` - начат audit-only foundation: dry-run JSON report по counts, readiness gaps, latest activity и telegram identity conflicts, без writes.
 
 4. Merge command должен:
    - принимать English source DB;
@@ -592,11 +592,11 @@ Rollback:
 8. Прогнать merge на staging.
 
 9. Провести сверку:
-   - users count;
-   - user_courses count;
-   - attempts by course;
+   - users count - foundation есть в `merge_language_databases`;
+   - user_courses count - foundation есть;
+   - attempts by course - общий attempts readiness есть, разбивка by course ещё нужна;
    - active subscriptions/settings;
-   - latest activity per user;
+   - latest activity per user - общий latest activity foundation есть, per user ещё нужен;
    - random sample пользователей.
 
 10. Prod cutover:

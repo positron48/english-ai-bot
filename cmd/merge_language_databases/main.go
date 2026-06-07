@@ -12,6 +12,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"sort"
 	"strings"
 	"time"
 
@@ -19,21 +20,39 @@ import (
 )
 
 type dbSummary struct {
-	Label                 string `json:"label"`
-	URLProvided           bool   `json:"url_provided"`
-	Users                 int64  `json:"users"`
-	Courses               int64  `json:"courses"`
-	UserCourses           int64  `json:"user_courses"`
-	LearningItems         int64  `json:"learning_items"`
-	ExerciseAttempts      int64  `json:"exercise_attempts"`
-	LearningEvents        int64  `json:"learning_events"`
-	SRSItems              int64  `json:"srs_items"`
-	ReviewEvents          int64  `json:"review_events"`
-	GrammarTestAttempts   int64  `json:"grammar_test_attempts"`
-	GrammarSRSAttempts    int64  `json:"grammar_srs_attempts"`
-	ReadingTextProgress   int64  `json:"reading_text_progress"`
-	SpeakingAttempts      int64  `json:"speaking_attempts"`
-	LegacyMappingTablesOK bool   `json:"legacy_mapping_tables_ok"`
+	Label                 string          `json:"label"`
+	URLProvided           bool            `json:"url_provided"`
+	Users                 int64           `json:"users"`
+	Courses               int64           `json:"courses"`
+	UserCourses           int64           `json:"user_courses"`
+	LearningItems         int64           `json:"learning_items"`
+	ExerciseAttempts      int64           `json:"exercise_attempts"`
+	LearningEvents        int64           `json:"learning_events"`
+	SRSItems              int64           `json:"srs_items"`
+	ReviewEvents          int64           `json:"review_events"`
+	GrammarTestAttempts   int64           `json:"grammar_test_attempts"`
+	GrammarSRSAttempts    int64           `json:"grammar_srs_attempts"`
+	ReadingTextProgress   int64           `json:"reading_text_progress"`
+	SpeakingAttempts      int64           `json:"speaking_attempts"`
+	LegacyMappingTablesOK bool            `json:"legacy_mapping_tables_ok"`
+	LatestActivityAt      string          `json:"latest_activity_at,omitempty"`
+	Readiness             readinessReport `json:"readiness"`
+}
+
+type readinessReport struct {
+	UserCoursesMissing       int64    `json:"user_courses_missing"`
+	UnmappedContentHints     int64    `json:"unmapped_content_hints"`
+	LegacyAttemptsTotal      int64    `json:"legacy_attempts_total"`
+	CanonicalAttemptsTotal   int64    `json:"canonical_attempts_total"`
+	AttemptBackfillGap       int64    `json:"attempt_backfill_gap"`
+	LegacySRSSnapshotsTotal  int64    `json:"legacy_srs_snapshots_total"`
+	CanonicalSRSItemsTotal   int64    `json:"canonical_srs_items_total"`
+	SRSBackfillGap           int64    `json:"srs_backfill_gap"`
+	LegacyMediaProgressTotal int64    `json:"legacy_media_progress_total"`
+	CanonicalMediaAttempts   int64    `json:"canonical_media_attempts"`
+	MediaProgressBackfillGap int64    `json:"media_progress_backfill_gap"`
+	ReadyForDryRunMerge      bool     `json:"ready_for_dry_run_merge"`
+	BlockingReasons          []string `json:"blocking_reasons"`
 }
 
 type identityConflict struct {
@@ -119,6 +138,9 @@ func main() {
 		fmt.Fprintf(os.Stderr, "merge audit conflict scan failed: %v\n", err)
 		os.Exit(1)
 	}
+	if conflicts == nil {
+		conflicts = []identityConflict{}
+	}
 	report.TelegramConflicts = conflicts
 	report.ReadyForWriteMerge = len(conflicts) == 0 && len(openSources) > 0 && targetDB != nil && targetSummary.LegacyMappingTablesOK
 	if targetDB == nil {
@@ -144,7 +166,13 @@ func env(key string) string {
 }
 
 func summarizeDB(ctx context.Context, label, url string) (dbSummary, *sql.DB, error) {
-	s := dbSummary{Label: label, URLProvided: url != ""}
+	s := dbSummary{
+		Label:       label,
+		URLProvided: url != "",
+		Readiness: readinessReport{
+			BlockingReasons: []string{},
+		},
+	}
 	if url == "" {
 		return s, nil, nil
 	}
@@ -184,6 +212,18 @@ func summarizeDB(ctx context.Context, label, url string) (dbSummary, *sql.DB, er
 		return s, nil, err
 	}
 	s.LegacyMappingTablesOK = ok
+	latest, err := latestActivity(ctx, db)
+	if err != nil {
+		db.Close()
+		return s, nil, err
+	}
+	s.LatestActivityAt = latest
+	readiness, err := computeReadiness(ctx, db, s)
+	if err != nil {
+		db.Close()
+		return s, nil, err
+	}
+	s.Readiness = readiness
 	return s, db, nil
 }
 
@@ -226,6 +266,125 @@ func mappingTablesPresent(ctx context.Context, db *sql.DB) (bool, error) {
 		}
 	}
 	return true, nil
+}
+
+func latestActivity(ctx context.Context, db *sql.DB) (string, error) {
+	tables := map[string]string{
+		"exercise_attempts":     "answered_at",
+		"learning_events":       "event_time",
+		"review_events":         "answered_at",
+		"grammar_test_attempts": "finished_at",
+		"grammar_attempts":      "answered_at",
+		"reading_text_progress": "read_at",
+		"speaking_attempts":     "created_at",
+	}
+	var latest *time.Time
+	for table, column := range tables {
+		exists, err := columnExists(ctx, db, table, column)
+		if err != nil {
+			return "", err
+		}
+		if !exists {
+			continue
+		}
+		var value sql.NullTime
+		if err := db.QueryRowContext(ctx, fmt.Sprintf("SELECT MAX(%s) FROM %s", column, table)).Scan(&value); err != nil {
+			return "", err
+		}
+		if value.Valid && (latest == nil || value.Time.After(*latest)) {
+			t := value.Time.UTC()
+			latest = &t
+		}
+	}
+	if latest == nil {
+		return "", nil
+	}
+	return latest.Format(time.RFC3339), nil
+}
+
+func columnExists(ctx context.Context, db *sql.DB, table, column string) (bool, error) {
+	var exists bool
+	err := db.QueryRowContext(ctx, `
+		SELECT EXISTS (
+			SELECT 1
+			FROM information_schema.columns
+			WHERE table_schema = 'public' AND table_name = $1 AND column_name = $2
+		)
+	`, table, column).Scan(&exists)
+	return exists, err
+}
+
+func computeReadiness(ctx context.Context, db *sql.DB, s dbSummary) (readinessReport, error) {
+	r := readinessReport{
+		LegacyAttemptsTotal:      s.ReviewEvents + s.GrammarTestAttempts + s.GrammarSRSAttempts,
+		CanonicalAttemptsTotal:   s.ExerciseAttempts,
+		LegacySRSSnapshotsTotal:  0,
+		CanonicalSRSItemsTotal:   s.SRSItems,
+		LegacyMediaProgressTotal: s.ReadingTextProgress + s.SpeakingAttempts,
+		BlockingReasons:          []string{},
+	}
+	if s.Users > s.UserCourses {
+		r.UserCoursesMissing = s.Users - s.UserCourses
+	}
+	if s.ExerciseAttempts < r.LegacyAttemptsTotal {
+		r.AttemptBackfillGap = r.LegacyAttemptsTotal - s.ExerciseAttempts
+	}
+	wordSRS, err := countTable(ctx, db, "user_cards")
+	if err != nil {
+		return r, err
+	}
+	grammarSRS, err := countTable(ctx, db, "grammar_theory_memory")
+	if err != nil {
+		return r, err
+	}
+	r.LegacySRSSnapshotsTotal = wordSRS + grammarSRS
+	if r.CanonicalSRSItemsTotal < r.LegacySRSSnapshotsTotal {
+		r.SRSBackfillGap = r.LegacySRSSnapshotsTotal - r.CanonicalSRSItemsTotal
+	}
+	mediaCanonical, err := countCanonicalMediaAttempts(ctx, db)
+	if err != nil {
+		return r, err
+	}
+	r.CanonicalMediaAttempts = mediaCanonical
+	if r.CanonicalMediaAttempts < r.LegacyMediaProgressTotal {
+		r.MediaProgressBackfillGap = r.LegacyMediaProgressTotal - r.CanonicalMediaAttempts
+	}
+	if s.LearningItems == 0 && (s.Courses > 0 || s.UserCourses > 0) {
+		r.UnmappedContentHints = 1
+	}
+
+	if r.UserCoursesMissing > 0 {
+		r.BlockingReasons = append(r.BlockingReasons, "user_courses backfill is incomplete")
+	}
+	if s.LearningItems == 0 {
+		r.BlockingReasons = append(r.BlockingReasons, "learning_items mapping is empty")
+	}
+	if r.AttemptBackfillGap > 0 {
+		r.BlockingReasons = append(r.BlockingReasons, "exercise_attempts backfill is behind legacy attempts")
+	}
+	if r.SRSBackfillGap > 0 {
+		r.BlockingReasons = append(r.BlockingReasons, "srs_items snapshot backfill is behind legacy SRS state")
+	}
+	if r.MediaProgressBackfillGap > 0 {
+		r.BlockingReasons = append(r.BlockingReasons, "reading/speaking progress backfill is behind legacy progress")
+	}
+	r.ReadyForDryRunMerge = len(r.BlockingReasons) == 0 && s.Users > 0 && s.UserCourses > 0 && s.LearningItems > 0
+	return r, nil
+}
+
+func countCanonicalMediaAttempts(ctx context.Context, db *sql.DB) (int64, error) {
+	exists, err := tableExists(ctx, db, "exercise_attempts")
+	if err != nil || !exists {
+		return 0, err
+	}
+	var count int64
+	err = db.QueryRowContext(ctx, `
+		SELECT COUNT(*)
+		FROM exercise_attempts
+		WHERE source_table IN ('reading_text_progress', 'speaking_attempts')
+		   OR mode IN ('reading', 'speaking')
+	`).Scan(&count)
+	return count, err
 }
 
 func findTelegramConflicts(ctx context.Context, dbs []openedSourceDB, targetDB *sql.DB) ([]identityConflict, error) {
@@ -290,5 +449,8 @@ func findTelegramConflicts(ctx context.Context, dbs []openedSourceDB, targetDB *
 			conflicts = append(conflicts, *entry)
 		}
 	}
+	sort.Slice(conflicts, func(i, j int) bool {
+		return conflicts[i].TelegramID < conflicts[j].TelegramID
+	})
 	return conflicts, nil
 }
