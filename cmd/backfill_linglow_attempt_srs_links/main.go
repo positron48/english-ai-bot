@@ -18,6 +18,7 @@ import (
 func main() {
 	var opts repository.LinglowAttemptSRSLinkBackfillOptions
 	flag.BoolVar(&opts.Commit, "commit", false, "write missing exercise_attempts.srs_item_id links")
+	flag.IntVar(&opts.Limit, "limit", 5000, "batch size per UPDATE when --commit is set; 0 updates all linkable rows in one pass")
 	flag.Parse()
 
 	cfg, err := config.Load()
