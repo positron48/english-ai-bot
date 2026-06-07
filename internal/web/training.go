@@ -693,6 +693,10 @@ func (r *Router) gradeReplacedCardForSpellType(userID int64, userCardID int64, i
 		ChosenOption:   chosenOption,
 		TimeMultiplier: models.TimeMultiplierForMode(mode, wordLen),
 	}
+	if !answeredAt.IsZero() {
+		gradedAt := answeredAt.UTC()
+		attemptData.GradedAt = &gradedAt
+	}
 	srsBefore := models.SRSState{
 		State:        userCard.State,
 		EF:           userCard.EF,

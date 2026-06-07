@@ -80,6 +80,70 @@ func seedUserCardForOfflineSync(t *testing.T, db *sql.DB, userCardRepo *reposito
 	return userCardID
 }
 
+func TestHandleTrainingOfflineSyncAttempts_PreservesAnsweredAt(t *testing.T) {
+	router, _, userID, userCardRepo, cleanup := setupTrainingOfflineTest(t)
+	defer cleanup()
+	trainingCardRepo := repository.NewTrainingCardRepository(router.db, router.logger)
+	userCardID := seedUserCardForOfflineSync(t, router.db, userCardRepo, trainingCardRepo, userID)
+
+	yesterday := time.Now().UTC().Add(-26 * time.Hour).Truncate(time.Second)
+	payload := map[string]interface{}{
+		"attempts": []map[string]interface{}{
+			{
+				"client_attempt_id": "offline-card-yesterday",
+				"user_card_id":      userCardID,
+				"direction":         string(models.DirectionRUtoEN),
+				"mode":              "card",
+				"shown_at":          yesterday.Format(time.RFC3339),
+				"options_shown_at":  yesterday.Add(500 * time.Millisecond).Format(time.RFC3339),
+				"answered_at":       yesterday.Add(2 * time.Second).Format(time.RFC3339),
+				"answer_time_ms":    1500,
+				"t_delay_ms":        500,
+				"options":           []string{"offline", "wrong1", "wrong2", "wrong3"},
+				"chosen_option":     "offline",
+				"correct_answer":    "offline",
+			},
+		},
+	}
+	raw, _ := json.Marshal(payload)
+	req := httptest.NewRequest(http.MethodPost, "/api/training/offline/sync-attempts", bytes.NewReader(raw))
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, userID))
+	w := httptest.NewRecorder()
+	router.handleTrainingOfflineSyncAttempts(w, req)
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected 200, got %d: %s", w.Code, w.Body.String())
+	}
+
+	userCard, err := userCardRepo.GetUserCard(userCardID)
+	if err != nil {
+		t.Fatalf("GetUserCard: %v", err)
+	}
+	if userCard.LastReviewAt == nil {
+		t.Fatal("expected last_review_at to be set")
+	}
+	diff := userCard.LastReviewAt.UTC().Sub(yesterday.Add(2 * time.Second))
+	if diff < -time.Second || diff > time.Second {
+		t.Fatalf("expected last_review_at near offline answered_at, got %v diff %v", userCard.LastReviewAt, diff)
+	}
+
+	sessionRepo := repository.NewSessionRepository(router.db, router.logger)
+	var answeredAt time.Time
+	err = router.db.QueryRow(`
+		SELECT answered_at FROM review_events
+		WHERE user_id = $1 AND client_attempt_id = $2
+	`, userID, "offline-card-yesterday").Scan(&answeredAt)
+	if err != nil {
+		t.Fatalf("query review_events.answered_at: %v", err)
+	}
+	if exists, err := sessionRepo.HasReviewEventClientAttempt(userID, "offline-card-yesterday"); err != nil || !exists {
+		t.Fatalf("expected review event, exists=%v err=%v", exists, err)
+	}
+	reviewDiff := answeredAt.UTC().Sub(yesterday.Add(2 * time.Second))
+	if reviewDiff < -time.Second || reviewDiff > time.Second {
+		t.Fatalf("expected review_events.answered_at near offline time, got %v diff %v", answeredAt, reviewDiff)
+	}
+}
+
 func TestHandleTrainingOfflineSyncAttempts_SpellType(t *testing.T) {
 	router, _, userID, userCardRepo, cleanup := setupTrainingOfflineTest(t)
 	defer cleanup()

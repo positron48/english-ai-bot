@@ -36,6 +36,7 @@ type GrammarSrsAnswerResult struct {
 	QuestionID      string      `json:"-"`
 	UserAnswer      interface{} `json:"-"`
 	ClientAttemptID string      `json:"-"`
+	AnsweredAt      time.Time   `json:"-"`
 }
 
 func (s *GrammarService) GetGrammarTrainingAvailability(ctx context.Context, userID int64) (*GrammarTrainingAvailability, error) {
@@ -165,10 +166,10 @@ func (s *GrammarService) StartGrammarSrsSession(ctx context.Context, userID int6
 }
 
 func (s *GrammarService) SubmitGrammarSrsAnswer(ctx context.Context, userID int64, questionID string, userAnswer interface{}) (*GrammarSrsAnswerResult, error) {
-	return s.SubmitGrammarSrsAnswerWithClientAttemptID(ctx, userID, questionID, userAnswer, "")
+	return s.SubmitGrammarSrsAnswerWithClientAttemptID(ctx, userID, questionID, userAnswer, "", nil)
 }
 
-func (s *GrammarService) SubmitGrammarSrsAnswerWithClientAttemptID(ctx context.Context, userID int64, questionID string, userAnswer interface{}, clientAttemptID string) (*GrammarSrsAnswerResult, error) {
+func (s *GrammarService) SubmitGrammarSrsAnswerWithClientAttemptID(ctx context.Context, userID int64, questionID string, userAnswer interface{}, clientAttemptID string, answeredAt *time.Time) (*GrammarSrsAnswerResult, error) {
 	if s.TrainingPackRepo == nil {
 		return nil, fmt.Errorf("training pack repository is not configured")
 	}
@@ -200,9 +201,13 @@ func (s *GrammarService) SubmitGrammarSrsAnswerWithClientAttemptID(ctx context.C
 	theoryBlockID, _ := question["theory_block_id"].(string)
 	conceptID, _ := question["concept_id"].(string)
 	var attemptID int64
+	answered := time.Now().UTC()
+	if answeredAt != nil && !answeredAt.IsZero() {
+		answered = answeredAt.UTC()
+	}
 	if s.SRSRepo != nil && theoryBlockID != "" {
-		_ = s.updateTheoryMemory(userID, chapterID, theoryBlockID, conceptID, isCorrect)
-		attemptID, _ = s.SRSRepo.SaveAttemptWithClientID(userID, s.learning.TargetLang, s.learning.GrammarBundleID, chapterID, theoryBlockID, conceptID, questionID, userAnswer, correctAnswer, isCorrect, clientAttemptID)
+		_ = s.updateTheoryMemoryAt(userID, chapterID, theoryBlockID, conceptID, isCorrect, answered)
+		attemptID, _ = s.SRSRepo.SaveAttemptWithClientID(userID, s.learning.TargetLang, s.learning.GrammarBundleID, chapterID, theoryBlockID, conceptID, questionID, userAnswer, correctAnswer, isCorrect, clientAttemptID, &answered)
 	}
 
 	return &GrammarSrsAnswerResult{
@@ -216,6 +221,7 @@ func (s *GrammarService) SubmitGrammarSrsAnswerWithClientAttemptID(ctx context.C
 		QuestionID:      questionID,
 		UserAnswer:      userAnswer,
 		ClientAttemptID: strings.TrimSpace(clientAttemptID),
+		AnsweredAt:      answered,
 	}, nil
 }
 
@@ -305,7 +311,7 @@ func (s *GrammarService) filterBlocksByAllowedChapters(
 	return out
 }
 
-func (s *GrammarService) RecordGrammarTheoryAttemptFromTest(userID int64, question map[string]interface{}, isCorrect bool) {
+func (s *GrammarService) RecordGrammarTheoryAttemptFromTest(userID int64, question map[string]interface{}, isCorrect bool, attemptAt *time.Time) {
 	if s.SRSRepo == nil || question == nil {
 		return
 	}
@@ -315,10 +321,18 @@ func (s *GrammarService) RecordGrammarTheoryAttemptFromTest(userID int64, questi
 	}
 	chapterID, _ := question["chapter_id"].(string)
 	conceptID, _ := question["concept_id"].(string)
-	_ = s.updateTheoryMemory(userID, chapterID, theoryBlockID, conceptID, isCorrect)
+	at := time.Now().UTC()
+	if attemptAt != nil && !attemptAt.IsZero() {
+		at = attemptAt.UTC()
+	}
+	_ = s.updateTheoryMemoryAt(userID, chapterID, theoryBlockID, conceptID, isCorrect, at)
 }
 
 func (s *GrammarService) updateTheoryMemory(userID int64, chapterID, theoryBlockID, conceptID string, isCorrect bool) error {
+	return s.updateTheoryMemoryAt(userID, chapterID, theoryBlockID, conceptID, isCorrect, time.Now().UTC())
+}
+
+func (s *GrammarService) updateTheoryMemoryAt(userID int64, chapterID, theoryBlockID, conceptID string, isCorrect bool, at time.Time) error {
 	if s.SRSRepo == nil || theoryBlockID == "" {
 		return nil
 	}
@@ -339,7 +353,7 @@ func (s *GrammarService) updateTheoryMemory(userID int64, chapterID, theoryBlock
 	}
 	for _, m := range memories {
 		if m.TheoryBlockID == theoryBlockID {
-			return s.SRSRepo.UpdateAfterAnswer(m, isCorrect)
+			return s.SRSRepo.UpdateAfterAnswerAt(m, isCorrect, at)
 		}
 	}
 	return nil

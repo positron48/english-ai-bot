@@ -523,7 +523,7 @@ func (r *Router) handleTrainingOfflineSyncAttempts(w http.ResponseWriter, req *h
 			}
 		}
 
-		attemptData := models.AttemptData{Correct: isCorrect, EarlyReveal: attempt.EarlyReveal, AnswerTimeMS: answerTimeMS, TDelayMS: tDelayMS, OptionCount: len(attempt.Options), ChosenOption: chosenOption}
+		attemptData := models.AttemptData{Correct: isCorrect, EarlyReveal: attempt.EarlyReveal, AnswerTimeMS: answerTimeMS, TDelayMS: tDelayMS, OptionCount: len(attempt.Options), ChosenOption: chosenOption, GradedAt: &answeredAt}
 		srsBefore := models.SRSState{State: userCard.State, EF: userCard.EF, Reps: userCard.Reps, IntervalDays: userCard.IntervalDays, LearningStep: userCard.LearningStep, LapseCount: userCard.LapseCount}
 		srsBeforeJSON, _ := json.Marshal(srsBefore)
 		if err := r.srsService.GradeCard(userCard, attemptData); err != nil {
@@ -633,6 +633,7 @@ func (r *Router) syncOfflineSpellTypeAttempt(req *http.Request, userID int64, se
 		OptionCount:    1,
 		ChosenOption:   attempt.AnswerText,
 		TimeMultiplier: models.TimeMultiplierForMode(mode, wordLen),
+		GradedAt:       &answeredAt,
 	}
 	srsBefore := models.SRSState{
 		State: userCard.State, EF: userCard.EF, Reps: userCard.Reps,

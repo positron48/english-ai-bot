@@ -280,6 +280,8 @@ type offlineSyncAttempt struct {
 	ScopeID         string               `json:"scope_id"`
 	Answers         []service.AnswerItem `json:"answers"`
 	CourseVersion   string               `json:"course_version,omitempty"`
+	CreatedAt       string               `json:"created_at,omitempty"`
+	AnsweredAt      string               `json:"answered_at,omitempty"`
 }
 
 func (r *Router) handleLearningGrammarOfflineSyncAttempts(w http.ResponseWriter, req *http.Request) {
@@ -327,7 +329,15 @@ func (r *Router) handleLearningGrammarOfflineSyncAttempts(w http.ResponseWriter,
 			})
 			continue
 		}
-		result, err := r.grammarService.SubmitTestWithClientAttemptID(req.Context(), userID, attempt.Scope, attempt.ScopeID, attempt.Answers, clientID)
+		result, err := r.grammarService.SubmitTestWithClientAttemptID(
+			req.Context(),
+			userID,
+			attempt.Scope,
+			attempt.ScopeID,
+			attempt.Answers,
+			clientID,
+			parseOfflineTimestamp(attempt.AnsweredAt, attempt.CreatedAt),
+		)
 		if err != nil {
 			r.logger.Warn("failed to sync offline grammar attempt",
 				zap.String("client_attempt_id", clientID),
@@ -358,6 +368,8 @@ type offlineSyncTrainingAttempt struct {
 	ClientAttemptID string      `json:"client_attempt_id"`
 	QuestionID      string      `json:"question_id"`
 	Answer          interface{} `json:"answer"`
+	CreatedAt       string      `json:"created_at,omitempty"`
+	AnsweredAt      string      `json:"answered_at,omitempty"`
 }
 
 func (r *Router) handleLearningGrammarOfflineSyncTrainingAttempts(w http.ResponseWriter, req *http.Request) {
@@ -395,7 +407,8 @@ func (r *Router) handleLearningGrammarOfflineSyncTrainingAttempts(w http.Respons
 				continue
 			}
 		}
-		result, err := r.grammarService.SubmitGrammarSrsAnswerWithClientAttemptID(req.Context(), userID, attempt.QuestionID, attempt.Answer, clientID)
+		answeredAt := parseOfflineTimestamp(attempt.AnsweredAt, attempt.CreatedAt)
+		result, err := r.grammarService.SubmitGrammarSrsAnswerWithClientAttemptID(req.Context(), userID, attempt.QuestionID, attempt.Answer, clientID, answeredAt)
 		if err != nil {
 			results = append(results, map[string]interface{}{"client_attempt_id": clientID, "synced": false, "error": err.Error()})
 			continue

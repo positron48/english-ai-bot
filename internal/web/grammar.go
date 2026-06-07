@@ -634,7 +634,7 @@ func (r *Router) recordLinglowGrammarTestAttempt(req *http.Request, userID int64
 		AnswersJSON:     string(answersJSON),
 		ResultsJSON:     string(resultsJSON),
 		ClientAttemptID: clientAttemptID,
-		AnsweredAt:      time.Now(),
+		AnsweredAt:      linglowAnsweredAt(result.AnsweredAt),
 	}
 	if _, err := r.linglowEventRepo.RecordGrammarTestAttempt(req.Context(), r.config.Learning, input); err != nil {
 		r.logger.Warn("failed to dual-write linglow grammar test event",
@@ -991,7 +991,7 @@ func (r *Router) recordLinglowGrammarTrainingAttempt(req *http.Request, userID i
 		AnswerJSON:      string(answerJSON),
 		CorrectJSON:     string(correctJSON),
 		ClientAttemptID: strings.TrimSpace(firstNonEmpty(clientAttemptID, result.ClientAttemptID)),
-		AnsweredAt:      time.Now(),
+		AnsweredAt:      linglowAnsweredAt(result.AnsweredAt),
 	}
 	if _, err := r.linglowEventRepo.RecordGrammarTrainingAttempt(req.Context(), r.config.Learning, input); err != nil {
 		r.logger.Warn("failed to dual-write linglow grammar training event",
@@ -1010,4 +1010,11 @@ func firstNonEmpty(values ...string) string {
 		}
 	}
 	return ""
+}
+
+func linglowAnsweredAt(at time.Time) time.Time {
+	if !at.IsZero() {
+		return at.UTC()
+	}
+	return time.Now().UTC()
 }

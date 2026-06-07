@@ -1,5 +1,7 @@
 package models
 
+import "time"
+
 // SRS constants based on SM-2 algorithm
 const (
 	// Initial values
@@ -89,6 +91,8 @@ type AttemptData struct {
 	// TimeMultiplier scales quality thresholds: > 1 means more time is allowed (harder mode).
 	// 0 or 1 = multiple choice; use TimeMultiplierForMode for spell/type.
 	TimeMultiplier float64
+	// GradedAt, when set, is used for SRS scheduling timestamps (offline sync).
+	GradedAt *time.Time
 }
 
 // TimeMultiplierForMode returns the time multiplier for the given answer mode and word length.

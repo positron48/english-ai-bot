@@ -871,12 +871,13 @@ type AnswerItem struct {
 // answers is an array of AnswerItem objects in the order they appear in the test
 // Each AnswerItem explicitly links an answer to its question via question_id and chapter_id (for category tests)
 func (s *GrammarService) SubmitTest(ctx context.Context, userID int64, scopeType, scopeID string, answers []AnswerItem) (*TestResult, error) {
-	return s.SubmitTestWithClientAttemptID(ctx, userID, scopeType, scopeID, answers, "")
+	return s.SubmitTestWithClientAttemptID(ctx, userID, scopeType, scopeID, answers, "", nil)
 }
 
 // SubmitTestWithClientAttemptID checks answers and saves an attempt with an optional
-// client-side idempotency key used by offline sync.
-func (s *GrammarService) SubmitTestWithClientAttemptID(ctx context.Context, userID int64, scopeType, scopeID string, answers []AnswerItem, clientAttemptID string) (*TestResult, error) {
+// client-side idempotency key used by offline sync. attemptAt, when set, is stored as
+// the attempt completion time instead of the sync time.
+func (s *GrammarService) SubmitTestWithClientAttemptID(ctx context.Context, userID int64, scopeType, scopeID string, answers []AnswerItem, clientAttemptID string, attemptAt *time.Time) (*TestResult, error) {
 	var questionMap map[string]map[string]interface{}
 	var questionMapByChapter map[string]map[string]map[string]interface{} // For category tests
 	var err error
@@ -1082,7 +1083,7 @@ func (s *GrammarService) SubmitTestWithClientAttemptID(ctx context.Context, user
 				resultItem["chapter_id"] = chapterID
 			}
 			results = append(results, resultItem)
-			s.RecordGrammarTheoryAttemptFromTest(userID, q, false)
+			s.RecordGrammarTheoryAttemptFromTest(userID, q, false, attemptAt)
 			continue
 		}
 
@@ -1122,7 +1123,7 @@ func (s *GrammarService) SubmitTestWithClientAttemptID(ctx context.Context, user
 			resultItem["chapter_id"] = chapterID
 		}
 		results = append(results, resultItem)
-		s.RecordGrammarTheoryAttemptFromTest(userID, q, isCorrect)
+		s.RecordGrammarTheoryAttemptFromTest(userID, q, isCorrect, attemptAt)
 	}
 
 	score := 0
@@ -1137,12 +1138,17 @@ func (s *GrammarService) SubmitTestWithClientAttemptID(ctx context.Context, user
 	answersJSON, _ := json.Marshal(answers)
 	resultsJSON, _ := json.Marshal(results)
 
+	finishedAt := time.Now().UTC()
+	if attemptAt != nil && !attemptAt.IsZero() {
+		finishedAt = attemptAt.UTC()
+	}
+
 	attempt := &repository.TestAttempt{
 		UserID:         userID,
 		ScopeType:      scopeType,
 		ScopeID:        scopeID,
-		StartedAt:      time.Now(),
-		FinishedAt:     &[]time.Time{time.Now()}[0],
+		StartedAt:      finishedAt,
+		FinishedAt:     &finishedAt,
 		Score:          score,
 		Passed:         passed,
 		TotalQuestions: total,
@@ -1172,23 +1178,25 @@ func (s *GrammarService) SubmitTestWithClientAttemptID(ctx context.Context, user
 	}
 
 	return &TestResult{
-		AttemptID: attemptID,
-		Score:     score,
-		Passed:    passed,
-		Correct:   correct,
-		Total:     total,
-		Results:   results,
+		AttemptID:  attemptID,
+		Score:      score,
+		Passed:     passed,
+		Correct:    correct,
+		Total:      total,
+		Results:    results,
+		AnsweredAt: finishedAt,
 	}, nil
 }
 
 // TestResult represents test submission result
 type TestResult struct {
-	AttemptID int64
-	Score     int
-	Passed    bool
-	Correct   int
-	Total     int
-	Results   []interface{}
+	AttemptID  int64
+	Score      int
+	Passed     bool
+	Correct    int
+	Total      int
+	Results    []interface{}
+	AnsweredAt time.Time
 }
 
 // normalizeTrueFalseValue maps Да/Нет, true/false, bool, etc. to "true" or "false"

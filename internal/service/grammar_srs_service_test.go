@@ -241,8 +241,8 @@ func TestGrammarSRS_HelperBranches_FilterAndRecordAndUpdate(t *testing.T) {
 	}
 
 	// RecordGrammarTheoryAttemptFromTest guard branches
-	svc.RecordGrammarTheoryAttemptFromTest(1, nil, true)
-	svc.RecordGrammarTheoryAttemptFromTest(1, map[string]interface{}{"chapter_id": "x"}, true)
+	svc.RecordGrammarTheoryAttemptFromTest(1, nil, true, nil)
+	svc.RecordGrammarTheoryAttemptFromTest(1, map[string]interface{}{"chapter_id": "x"}, true, nil)
 
 	// updateTheoryMemory guard branches
 	if err := svc.updateTheoryMemory(1, "", "", "", true); err != nil {
@@ -736,7 +736,7 @@ func TestGrammarSRS_RecordAndUpdateTheoryMemory_ExtraBranches(t *testing.T) {
 		"chapter_id":      "ch1",
 		"theory_block_id": "b1",
 		"concept_id":      "c1",
-	}, false)
+	}, false, nil)
 
 	// updateTheoryMemory with nil SRS repo branch.
 	svc.SetSRSRepository(nil)

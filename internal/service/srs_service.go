@@ -46,8 +46,13 @@ func (s *SRSService) GradeCard(userCard *models.UserCard, attemptData models.Att
 	// Store state before update
 	before := s.captureState(userCard)
 
+	gradedAt := time.Now()
+	if attemptData.GradedAt != nil && !attemptData.GradedAt.IsZero() {
+		gradedAt = attemptData.GradedAt.UTC()
+	}
+
 	// Update card based on quality
-	s.updateCardState(userCard, quality, time.Now())
+	s.updateCardState(userCard, quality, gradedAt)
 
 	// Store state after update
 	after := s.captureState(userCard)

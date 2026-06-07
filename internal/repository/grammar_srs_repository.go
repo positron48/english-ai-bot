@@ -150,7 +150,11 @@ func (r *GrammarSRSRepository) CountDueOrNewTheoryBlocks(userID int64, language,
 }
 
 func (r *GrammarSRSRepository) UpdateAfterAnswer(memory *GrammarTheoryMemory, isCorrect bool) error {
-	now := time.Now()
+	return r.UpdateAfterAnswerAt(memory, isCorrect, time.Now().UTC())
+}
+
+func (r *GrammarSRSRepository) UpdateAfterAnswerAt(memory *GrammarTheoryMemory, isCorrect bool, at time.Time) error {
+	now := at.UTC()
 	var next time.Time
 	var state string
 	mastery := memory.MasteryScore
@@ -213,7 +217,7 @@ func (r *GrammarSRSRepository) SaveAttempt(
 	correctPayload interface{},
 	isCorrect bool,
 ) error {
-	_, err := r.SaveAttemptWithClientID(userID, language, courseID, chapterID, theoryBlockID, conceptID, questionID, answerPayload, correctPayload, isCorrect, "")
+	_, err := r.SaveAttemptWithClientID(userID, language, courseID, chapterID, theoryBlockID, conceptID, questionID, answerPayload, correctPayload, isCorrect, "", nil)
 	return err
 }
 
@@ -224,17 +228,22 @@ func (r *GrammarSRSRepository) SaveAttemptWithClientID(
 	correctPayload interface{},
 	isCorrect bool,
 	clientAttemptID string,
+	answeredAt *time.Time,
 ) (int64, error) {
 	answerJSON, _ := json.Marshal(answerPayload)
 	correctJSON, _ := json.Marshal(correctPayload)
+	answeredArg := interface{}(time.Now().UTC())
+	if answeredAt != nil && !answeredAt.IsZero() {
+		answeredArg = answeredAt.UTC()
+	}
 	q := `INSERT INTO grammar_attempts
 	      (user_id, language, course_id, chapter_id, theory_block_id, concept_id, question_id, question_source, is_correct, answer_payload_json, correct_payload_json, answered_at, client_attempt_id)
-	      VALUES (?, ?, ?, ?, ?, ?, ?, 'training_pack', ?, ?, ?, CURRENT_TIMESTAMP, ?)`
+	      VALUES (?, ?, ?, ?, ?, ?, ?, 'training_pack', ?, ?, ?, ?, ?)`
 	var clientID interface{}
 	if strings.TrimSpace(clientAttemptID) != "" {
 		clientID = strings.TrimSpace(clientAttemptID)
 	}
-	id, err := database.InsertAndReturnID(r.db, q, userID, language, courseID, chapterID, theoryBlockID, conceptID, questionID, isCorrect, string(answerJSON), string(correctJSON), clientID)
+	id, err := database.InsertAndReturnID(r.db, q, userID, language, courseID, chapterID, theoryBlockID, conceptID, questionID, isCorrect, string(answerJSON), string(correctJSON), answeredArg, clientID)
 	if err != nil {
 		return 0, fmt.Errorf("insert grammar attempt: %w", err)
 	}
