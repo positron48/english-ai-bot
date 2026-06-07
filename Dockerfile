@@ -33,6 +33,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o backfill_linglow_word_
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o backfill_linglow_grammar_srs ./cmd/backfill_linglow_grammar_srs
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o backfill_linglow_attempt_srs_links ./cmd/backfill_linglow_attempt_srs_links
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o backfill_linglow_media_progress ./cmd/backfill_linglow_media_progress
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o merge_language_databases ./cmd/merge_language_databases
 
 # Build word-sets import tooling for one-time/k3s maintenance runs
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o import_learning_content ./cmd/import_learning_content
@@ -73,6 +74,7 @@ COPY --from=builder /app/backfill_linglow_word_srs .
 COPY --from=builder /app/backfill_linglow_grammar_srs .
 COPY --from=builder /app/backfill_linglow_attempt_srs_links .
 COPY --from=builder /app/backfill_linglow_media_progress .
+COPY --from=builder /app/merge_language_databases .
 COPY --from=builder /app/import_learning_content .
 COPY --from=builder /app/import_word_sets_from_csv .
 COPY --from=builder /app/fill_missing_set_pos_cards .

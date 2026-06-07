@@ -556,7 +556,7 @@ Rollback:
 2. Накатить все migrations.
 
 3. Написать merge command:
-   `cmd/merge_language_databases`
+   `cmd/merge_language_databases` - начат audit-only foundation: dry-run JSON report по counts и telegram identity conflicts, без writes.
 
 4. Merge command должен:
    - принимать English source DB;
@@ -568,10 +568,11 @@ Rollback:
    - сохранять old ids в mapping tables.
 
 5. Создать mapping tables:
-   - `legacy_user_mappings`
-   - `legacy_course_mappings`
-   - `legacy_content_mappings`
-   - `legacy_attempt_mappings`
+   - `legacy_user_mappings` - готово в migration `000020_linglow_legacy_merge_mappings.sql`;
+   - `legacy_course_mappings` - готово;
+   - `legacy_content_mappings` - готово;
+   - `legacy_attempt_mappings` - готово;
+   - `legacy_merge_conflicts` - готово для явной фиксации conflict report.
 
 6. Порядок merge:
    - users;

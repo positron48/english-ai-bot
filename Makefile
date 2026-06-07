@@ -361,6 +361,17 @@ backfill-linglow-media-progress: build-backfill-linglow-media-progress
 	@echo ""
 	./bin/backfill_linglow_media_progress --commit
 
+build-merge-language-databases:
+	@mkdir -p bin
+	$(GO) build -o bin/merge_language_databases ./cmd/merge_language_databases
+	@echo "✅ Linglow DB merge audit tool built: bin/merge_language_databases"
+
+merge-language-databases-audit: build-merge-language-databases
+	@echo "Dry-run audit before merging English/Spanish DBs into a unified Linglow DB."
+	@echo "Set ENGLISH_DATABASE_URL, SPANISH_DATABASE_URL and optional TARGET_DATABASE_URL."
+	@echo ""
+	./bin/merge_language_databases
+
 build-backfill-noun-gender:
 	@mkdir -p bin
 	$(GO) build -o bin/backfill_noun_gender ./cmd/backfill_noun_gender
