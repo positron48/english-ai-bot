@@ -194,6 +194,13 @@ func (r *Router) handleTrainingStart(w http.ResponseWriter, req *http.Request) {
 		}
 	}
 
+	// Scope the session to the user's currently selected course so word training shows
+	// only that course's words on the unified multi-course DB. Empty = no filter (legacy).
+	if sessionConfig == nil {
+		sessionConfig = service.DefaultSessionConfig()
+	}
+	sessionConfig.CourseCode = r.currentCourseCodeForUser(req.Context(), userID)
+
 	// Start session
 	session, queue, err := r.trainingService.StartSession(userID, models.SourceManual, sessionConfig)
 	if err != nil {

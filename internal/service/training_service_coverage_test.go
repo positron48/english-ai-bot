@@ -2004,6 +2004,12 @@ func (m *mockUserCardRepoForGenerateQueue) GetNewCards(userID int64, limit int) 
 	}
 	return nil, nil
 }
+func (m *mockUserCardRepoForGenerateQueue) GetDueCardsForCourse(userID int64, _ string, now time.Time, limit int) ([]*models.UserCard, error) {
+	return m.GetDueCards(userID, now, limit)
+}
+func (m *mockUserCardRepoForGenerateQueue) GetNewCardsForCourse(userID int64, _ string, limit int) ([]*models.UserCard, error) {
+	return m.GetNewCards(userID, limit)
+}
 func (m *mockUserCardRepoForGenerateQueue) GetWordMasteringStats(userID, wordCardID int64) (*repository.WordMasteringStats, error) {
 	if m.getWordMasteringStatsFunc != nil {
 		return m.getWordMasteringStatsFunc(userID, wordCardID)

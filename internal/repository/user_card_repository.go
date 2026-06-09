@@ -141,25 +141,33 @@ func (r *UserCardRepository) GetUserCardByTrainingCard(userID, trainingCardID in
 // GetDueCards gets cards that are due for review
 // Excludes words marked as "known" in user_word_knowledge
 func (r *UserCardRepository) GetDueCards(userID int64, now time.Time, limit int) ([]*models.UserCard, error) {
+	return r.GetDueCardsForCourse(userID, "", now, limit)
+}
+
+// GetDueCardsForCourse is GetDueCards scoped to a course. An empty courseCode means
+// "no course filter" (identical to the legacy behaviour); a non-empty courseCode matches
+// rows tagged with it plus still-untagged rows (course_code IS NULL) during prod transition.
+func (r *UserCardRepository) GetDueCardsForCourse(userID int64, courseCode string, now time.Time, limit int) ([]*models.UserCard, error) {
 	query := `SELECT uc.id, uc.user_id, uc.training_card_id, uc.direction, uc.state, uc.ef, uc.reps,
 			  uc.interval_days, uc.learning_step, uc.lapse_count, uc.next_due_at, uc.last_review_at,
-			  uc.last_quality, COALESCE(uc.last_options_json, ''), 
+			  uc.last_quality, COALESCE(uc.last_options_json, ''),
 			  COALESCE(uc.wrong_answers_json, ''), COALESCE(uc.stats_json, ''),
 			  uc.created_at, uc.updated_at
 			  FROM user_cards uc
 			  INNER JOIN training_cards tc ON uc.training_card_id = tc.id
-			  WHERE uc.user_id = ? 
+			  WHERE uc.user_id = ?
 			    AND (uc.next_due_at IS NULL OR uc.next_due_at <= ?)
 			    AND NOT EXISTS (
-			      SELECT 1 FROM user_word_knowledge uwk 
+			      SELECT 1 FROM user_word_knowledge uwk
 			      WHERE uwk.user_id = ? AND uwk.word_card_id = tc.word_card_id AND uwk.status = 'known'
 			    )
-			  ORDER BY 
+			    AND (? = '' OR uc.course_code = ? OR uc.course_code IS NULL)
+			  ORDER BY
 			    CASE WHEN uc.state = 'learning' THEN 0 ELSE 1 END,
 			    uc.next_due_at ASC NULLS FIRST
 			  LIMIT ?`
 
-	rows, err := r.db.Query(query, userID, now, userID, limit)
+	rows, err := r.db.Query(query, userID, now, userID, courseCode, courseCode, limit)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get due cards: %w", err)
 	}
@@ -171,18 +179,24 @@ func (r *UserCardRepository) GetDueCards(userID int64, now time.Time, limit int)
 // GetDueCount gets the count of due cards for a user
 // Excludes words marked as "known" in user_word_knowledge
 func (r *UserCardRepository) GetDueCount(userID int64, now time.Time) (int, error) {
-	query := `SELECT COUNT(*) 
+	return r.GetDueCountForCourse(userID, "", now)
+}
+
+// GetDueCountForCourse is GetDueCount scoped to a course (empty courseCode = no filter).
+func (r *UserCardRepository) GetDueCountForCourse(userID int64, courseCode string, now time.Time) (int, error) {
+	query := `SELECT COUNT(*)
 			  FROM user_cards uc
 			  INNER JOIN training_cards tc ON uc.training_card_id = tc.id
-			  WHERE uc.user_id = ? 
+			  WHERE uc.user_id = ?
 			    AND (uc.next_due_at IS NULL OR uc.next_due_at <= ?)
 			    AND NOT EXISTS (
-			      SELECT 1 FROM user_word_knowledge uwk 
+			      SELECT 1 FROM user_word_knowledge uwk
 			      WHERE uwk.user_id = ? AND uwk.word_card_id = tc.word_card_id AND uwk.status = 'known'
-			    )`
+			    )
+			    AND (? = '' OR uc.course_code = ? OR uc.course_code IS NULL)`
 
 	var count int
-	err := r.db.QueryRow(query, userID, now, userID).Scan(&count)
+	err := r.db.QueryRow(query, userID, now, userID, courseCode, courseCode).Scan(&count)
 	if err != nil {
 		return 0, fmt.Errorf("failed to get due count: %w", err)
 	}
@@ -204,23 +218,29 @@ func (r *UserCardRepository) CountNewCardsSince(userID int64, since time.Time) (
 // GetNewCards gets new cards for a user
 // Excludes words marked as "known" in user_word_knowledge
 func (r *UserCardRepository) GetNewCards(userID int64, limit int) ([]*models.UserCard, error) {
+	return r.GetNewCardsForCourse(userID, "", limit)
+}
+
+// GetNewCardsForCourse is GetNewCards scoped to a course (empty courseCode = no filter).
+func (r *UserCardRepository) GetNewCardsForCourse(userID int64, courseCode string, limit int) ([]*models.UserCard, error) {
 	query := `SELECT uc.id, uc.user_id, uc.training_card_id, uc.direction, uc.state, uc.ef, uc.reps,
 			  uc.interval_days, uc.learning_step, uc.lapse_count, uc.next_due_at, uc.last_review_at,
-			  uc.last_quality, COALESCE(uc.last_options_json, ''), 
+			  uc.last_quality, COALESCE(uc.last_options_json, ''),
 			  COALESCE(uc.wrong_answers_json, ''), COALESCE(uc.stats_json, ''),
 			  uc.created_at, uc.updated_at
 			  FROM user_cards uc
 			  INNER JOIN training_cards tc ON uc.training_card_id = tc.id
-			  WHERE uc.user_id = ? 
+			  WHERE uc.user_id = ?
 			    AND uc.state = 'new'
 			    AND NOT EXISTS (
-			      SELECT 1 FROM user_word_knowledge uwk 
+			      SELECT 1 FROM user_word_knowledge uwk
 			      WHERE uwk.user_id = ? AND uwk.word_card_id = tc.word_card_id AND uwk.status = 'known'
 			    )
+			    AND (? = '' OR uc.course_code = ? OR uc.course_code IS NULL)
 			  ORDER BY uc.created_at
 			  LIMIT ?`
 
-	rows, err := r.db.Query(query, userID, userID, limit)
+	rows, err := r.db.Query(query, userID, userID, courseCode, courseCode, limit)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get new cards: %w", err)
 	}

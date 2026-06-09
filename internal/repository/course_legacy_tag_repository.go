@@ -7,6 +7,23 @@ import (
 	"tgbot-skeleton/internal/config"
 )
 
+// HasMultipleWordCourses reports whether this database serves word content for more than one
+// course (i.e. training_cards tagged with 2+ distinct course_code values). It lets the runtime
+// scope word training by course ONLY on the unified multi-course DB; single-course prod
+// instances return false and never apply a course filter (zero behaviour change).
+func (r *CourseRepository) HasMultipleWordCourses(ctx context.Context) bool {
+	var distinct int
+	err := r.db.QueryRowContext(ctx, `
+		SELECT COUNT(*) FROM (
+			SELECT DISTINCT course_code FROM training_cards WHERE course_code IS NOT NULL
+		) t
+	`).Scan(&distinct)
+	if err != nil {
+		return false
+	}
+	return distinct > 1
+}
+
 // LegacyCourseTagSummary reports how many legacy rows were tagged with a course_code.
 type LegacyCourseTagSummary struct {
 	CourseCode string

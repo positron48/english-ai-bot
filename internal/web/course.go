@@ -1,6 +1,7 @@
 package web
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"net/http"
@@ -18,6 +19,25 @@ func (r *Router) defaultCourseCode() string {
 		return ""
 	}
 	return repository.CourseCodeForLearning(r.config.Learning)
+}
+
+// currentCourseCodeForUser resolves the user's currently selected course code, falling back
+// to the instance default. Returns "" (meaning "no course filter") when unresolved, so callers
+// degrade to legacy single-course behaviour rather than failing.
+func (r *Router) currentCourseCodeForUser(ctx context.Context, userID int64) string {
+	if r == nil || r.courseRepo == nil || userID == 0 {
+		return ""
+	}
+	// Only scope by course on a DB that actually serves multiple courses' word content.
+	// Single-course prod instances never filter, so behaviour there is unchanged.
+	if !r.courseRepo.HasMultipleWordCourses(ctx) {
+		return ""
+	}
+	code, err := r.courseRepo.ResolveCurrentCourseCode(ctx, userID, r.defaultCourseCode())
+	if err != nil {
+		return ""
+	}
+	return code
 }
 
 func (r *Router) handleCourses(w http.ResponseWriter, req *http.Request) {

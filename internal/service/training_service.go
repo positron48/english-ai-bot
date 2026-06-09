@@ -31,6 +31,9 @@ type userWordMasteringRepoForSession interface {
 type userCardRepoForTraining interface {
 	GetDueCards(userID int64, now time.Time, limit int) ([]*models.UserCard, error)
 	GetNewCards(userID int64, limit int) ([]*models.UserCard, error)
+	// Course-scoped variants (empty courseCode = no filter, identical to the non-scoped ones).
+	GetDueCardsForCourse(userID int64, courseCode string, now time.Time, limit int) ([]*models.UserCard, error)
+	GetNewCardsForCourse(userID int64, courseCode string, limit int) ([]*models.UserCard, error)
 	GetWordMasteringStats(userID, wordCardID int64) (*repository.WordMasteringStats, error)
 	GetUserCard(userCardID int64) (*models.UserCard, error)
 	GetDueCount(userID int64, now time.Time) (int, error)
@@ -75,10 +78,24 @@ type SessionConfig struct {
 	MaxCardsPerSession      int
 	MaxNewPerSession        int
 	AlgoVersion             string
-	SpellEnabled            bool // inject spell (compose word) challenges
-	SpellMasteringThreshold int  // min mastering_score 0-100 for words eligible for spell
-	TypeEnabled             bool // inject type-the-word (no letters) challenges
-	TypeMasteringThreshold  int  // min mastering_score 0-100 for words eligible for type
+	SpellEnabled            bool   // inject spell (compose word) challenges
+	SpellMasteringThreshold int    // min mastering_score 0-100 for words eligible for spell
+	TypeEnabled             bool   // inject type-the-word (no letters) challenges
+	TypeMasteringThreshold  int    // min mastering_score 0-100 for words eligible for type
+	CourseCode              string // scope the pool to a course (empty = no course filter)
+}
+
+// DefaultSessionConfig returns the default session configuration (spell+type enabled).
+func DefaultSessionConfig() *SessionConfig {
+	return &SessionConfig{
+		MaxCardsPerSession:      models.DefaultMaxCardsPerSession,
+		MaxNewPerSession:        models.DefaultMaxNewPerSession,
+		AlgoVersion:             "srs_v2_delayed_mcq_sm2_autoquality",
+		SpellEnabled:            true,
+		SpellMasteringThreshold: 50,
+		TypeEnabled:             true,
+		TypeMasteringThreshold:  70,
+	}
 }
 
 // StartSession starts a new training session. If config is nil, defaults are used (spell enabled, threshold 50).
@@ -97,15 +114,7 @@ func (s *TrainingService) StartSession(userID int64, source models.SessionSource
 	}
 
 	if config == nil {
-		config = &SessionConfig{
-			MaxCardsPerSession:      models.DefaultMaxCardsPerSession,
-			MaxNewPerSession:        models.DefaultMaxNewPerSession,
-			AlgoVersion:             "srs_v2_delayed_mcq_sm2_autoquality",
-			SpellEnabled:            true,
-			SpellMasteringThreshold: 50,
-			TypeEnabled:             true,
-			TypeMasteringThreshold:  70,
-		}
+		config = DefaultSessionConfig()
 	}
 
 	// Generate card queue (may include spell challenges if enabled)
@@ -207,12 +216,13 @@ func (s *TrainingService) updateMasteringScoresForSession(sessionID int64) error
 func (s *TrainingService) generateQueue(userID int64, config SessionConfig) ([]*models.TrainingQueueItem, error) {
 	now := time.Now()
 
-	// Build pool: all due (up to limit) + new (up to MaxNewPerSession)
-	dueCards, err := s.userCardRepo.GetDueCards(userID, now, models.MaxDuePoolSize)
+	// Build pool: all due (up to limit) + new (up to MaxNewPerSession), scoped to the
+	// session course (config.CourseCode; empty = no course filter, legacy behaviour).
+	dueCards, err := s.userCardRepo.GetDueCardsForCourse(userID, config.CourseCode, now, models.MaxDuePoolSize)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get due cards: %w", err)
 	}
-	newCards, err := s.userCardRepo.GetNewCards(userID, config.MaxNewPerSession)
+	newCards, err := s.userCardRepo.GetNewCardsForCourse(userID, config.CourseCode, config.MaxNewPerSession)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get new cards: %w", err)
 	}
