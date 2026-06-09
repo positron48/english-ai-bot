@@ -42,7 +42,8 @@ Prod / staging status (2026-06-09):
   - users **45**, user_courses **48**, learning_items **9080**, exercise_attempts **46046**, learning_events **46046**, srs_items **2957**, attempts_with_srs **45868**
   - en_ru / es_ru: **32004/1807** и **14042/1150** attempts/srs; **3** telegram users с обоими курсами
   - merge jobs одноразовые, удалены после успеха
-- **Следующий шаг: Phase 10** — staging deployment `linglow` на `linglow_unified`, smoke web/API, затем prod cutover (отдельное окно).
+- **Phase 10 smoke (2026-06-09):** namespace `linglow`, Flux `apps/linglow/prod`, `DATABASE_URL` → `linglow_unified`, transitional `LEARNING_APP_CODE=english`, Telegram отключён на smoke pod. API verified: `/api/courses` → `en_ru`+`es_ru` (user_course 1/44); `/api/linglow/progress` en_ru (4801 items, 27667 attempts) / es_ru (4279, 11288). Prerequisite: seed `schema_migrations`+`word_sets` из `english` (см. `RELEASE_K3S.md` §2.5).
+- **Следующий шаг:** Phase 10 prod — ingress/домен, grammar content data в unified (опц.), final incremental merge, cutover `english`/`spanish` `DATABASE_URL` (отдельное окно).
 
 ## 1. Текущая точка
 
@@ -639,11 +640,11 @@ Rollback:
 
 Цель: один backend/app вместо отдельных English/Spanish приложений.
 
-**Статус (2026-06-09):** staging merge в `linglow_unified` завершён; Phase 10 начинается с **smoke deployment** (манифесты `devops-time-host/apps/linglow/`, пока **не** в prod Flux kustomization).
+**Статус (2026-06-09):** Phase 10 **smoke deployment пройден** — `linglow` pod на `linglow_unified`, Flux GitOps, runbook `devops-time-host/apps/linglow/RELEASE_K3S.md`. Prod `english`/`spanish` runtime **не переключали**.
 
 Шаги:
 
-1. Добавить новый k3s app, например `linglow`. **В работе:** base manifests + runbook `apps/linglow/RELEASE_K3S.md`; первый smoke — `DATABASE_URL` → `linglow_unified`, transitional `LEARNING_APP_CODE=english` (оба курса в БД, course selector в UI).
+1. Добавить новый k3s app `linglow`. **Готово (smoke):** manifests + secrets manual + API smoke OK; transitional `LEARNING_APP_CODE=english`.
 
 2. Сохранить старые домены как redirects/deep links:
    - `qantrix.ru/app` -> Linglow course `en_ru`;
