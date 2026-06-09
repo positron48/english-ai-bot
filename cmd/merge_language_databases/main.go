@@ -71,6 +71,8 @@ type readinessReport struct {
 	AttemptBackfillGap       int64    `json:"attempt_backfill_gap"`
 	LegacySRSSnapshotsTotal  int64    `json:"legacy_srs_snapshots_total"`
 	CanonicalSRSItemsTotal   int64    `json:"canonical_srs_items_total"`
+	SRSWordMissing           int64    `json:"srs_word_missing"`
+	SRSGrammarMissing        int64    `json:"srs_grammar_missing"`
 	SRSBackfillGap           int64    `json:"srs_backfill_gap"`
 	LegacyMediaProgressTotal int64    `json:"legacy_media_progress_total"`
 	CanonicalMediaAttempts   int64    `json:"canonical_media_attempts"`
@@ -436,9 +438,15 @@ func computeReadiness(ctx context.Context, db *sql.DB, s dbSummary) (readinessRe
 		return r, err
 	}
 	r.LegacySRSSnapshotsTotal = wordSRS + grammarSRS
-	if r.CanonicalSRSItemsTotal < r.LegacySRSSnapshotsTotal {
-		r.SRSBackfillGap = r.LegacySRSSnapshotsTotal - r.CanonicalSRSItemsTotal
+	r.SRSWordMissing, err = countMissingWordSRS(ctx, db)
+	if err != nil {
+		return r, err
 	}
+	r.SRSGrammarMissing, err = countMissingGrammarSRS(ctx, db)
+	if err != nil {
+		return r, err
+	}
+	r.SRSBackfillGap = r.SRSWordMissing + r.SRSGrammarMissing
 	mediaCanonical, err := countCanonicalMediaAttempts(ctx, db)
 	if err != nil {
 		return r, err
