@@ -177,15 +177,16 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { courseClient, CourseMap, CourseMapLocation, CourseProgress, CourseSummary, DailyRoute, ReviewQueue } from '../api/courseClient'
+import { courseClient, CourseMap, CourseMapLocation, CourseProgress, DailyRoute, ReviewQueue } from '../api/courseClient'
+import { useCourse } from '../composables/useCourse'
 import { routeForLinglowItem } from '../utils/linglowNavigation'
 
 const { t } = useI18n()
+const { courses, currentCourseCode, ensureCourseLoaded, selectCourse: setCurrentCourse } = useCourse()
 
 const courseMap = ref<CourseMap | null>(null)
-const courses = ref<CourseSummary[]>([])
 const dailyRoute = ref<DailyRoute | null>(null)
 const reviewQueue = ref<ReviewQueue | null>(null)
 const progress = ref<CourseProgress | null>(null)
@@ -193,6 +194,14 @@ const selectedCourseCode = ref('')
 const loading = ref(false)
 const selectingCourse = ref(false)
 const error = ref('')
+
+// keep local select in sync with global course state
+watch(currentCourseCode, (code) => {
+  if (code && selectedCourseCode.value !== code) {
+    selectedCourseCode.value = code
+    loadCity()
+  }
+})
 
 const itemTypes = computed(() => {
   const totals = safeCourseMap.value?.totals.by_type || {}
@@ -304,14 +313,12 @@ async function loadCity() {
   error.value = ''
   try {
     const courseCode = selectedCourseCode.value || undefined
-    const [courseList, map, route, review, progressData] = await Promise.all([
-      courseClient.getCourses(),
+    const [map, route, review, progressData] = await Promise.all([
       courseClient.getCourseMap(courseCode),
       courseClient.getDailyRoute(8, courseCode),
       courseClient.getReviewQueue(8, courseCode),
       courseClient.getProgress(courseCode),
     ])
-    courses.value = courseList.courses || []
     courseMap.value = map
     dailyRoute.value = route
     reviewQueue.value = review
@@ -329,7 +336,7 @@ async function selectCourse() {
   selectingCourse.value = true
   error.value = ''
   try {
-    await courseClient.selectCourse(selectedCourseCode.value)
+    await setCurrentCourse(selectedCourseCode.value)
     await loadCity()
   } catch (err: any) {
     error.value = err?.message || t('common.networkError')
@@ -338,7 +345,13 @@ async function selectCourse() {
   }
 }
 
-onMounted(loadCity)
+onMounted(async () => {
+  await ensureCourseLoaded()
+  if (!selectedCourseCode.value && currentCourseCode.value) {
+    selectedCourseCode.value = currentCourseCode.value
+  }
+  await loadCity()
+})
 </script>
 
 <style scoped>

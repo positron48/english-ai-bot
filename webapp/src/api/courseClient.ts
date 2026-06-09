@@ -300,6 +300,46 @@ export interface SRSReadinessAggregateReport {
   generated_at: string
 }
 
+export interface LinglowWordItem {
+  learning_item_id: number
+  word_card_id: string
+  lemma: string
+  display_word: string
+  translation: string
+  cefr_level: string
+  state: string
+  due_at?: string
+  reps: number
+  added_at?: string
+  last_review_at?: string
+  due_count: number
+  total_cards: number
+  total_reps: number
+  mastery_level: string
+}
+
+export interface LinglowWordList {
+  course: CourseMap['course']
+  user_course: { id: number; status: string }
+  words: LinglowWordItem[]
+  total: number
+  limit: number
+  offset: number
+  generated_at: string
+}
+
+export interface LinglowHistory {
+  course: CourseMap['course']
+  user_course: { id: number; status: string }
+  accuracy_percent: number
+  total_attempts: number
+  correct_attempts: number
+  weekly_stats: Array<{ day: string; cards_completed: number; cards_correct: number }>
+  words_added_stats: Array<{ day: string; words_added: number }>
+  by_mode: Array<{ mode: string; attempt_count: number; correct_count: number }>
+  generated_at: string
+}
+
 export const courseClient = {
   getCourses(): Promise<{ courses: CourseSummary[] }> {
     return apiClient.request('/api/courses')
@@ -333,6 +373,24 @@ export const courseClient = {
       method: 'POST',
       body: JSON.stringify(payload),
     })
+  },
+  getWordList(params: { courseCode?: string; q?: string; status?: string; sort?: string; limit?: number; offset?: number } = {}): Promise<LinglowWordList> {
+    const p = new URLSearchParams()
+    if (params.courseCode) p.set('course_code', params.courseCode)
+    if (params.q) p.set('q', params.q)
+    if (params.status) p.set('status', params.status)
+    if (params.sort) p.set('sort', params.sort)
+    if (params.limit != null) p.set('limit', String(params.limit))
+    if (params.offset != null) p.set('offset', String(params.offset))
+    const qs = p.toString()
+    return apiClient.request(`/api/linglow/words${qs ? '?' + qs : ''}`)
+  },
+  getHistory(params: { courseCode?: string; days?: number } = {}): Promise<LinglowHistory> {
+    const p = new URLSearchParams()
+    if (params.courseCode) p.set('course_code', params.courseCode)
+    if (params.days != null) p.set('days', String(params.days))
+    const qs = p.toString()
+    return apiClient.request(`/api/linglow/history${qs ? '?' + qs : ''}`)
   },
 }
 

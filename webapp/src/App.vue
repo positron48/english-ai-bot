@@ -54,6 +54,16 @@
             </div>
           </div>
           <div class="nav-right">
+            <select
+              v-if="courses.length > 1"
+              :value="currentCourseCode"
+              class="nav-course-select"
+              @change="(e) => selectCourse((e.target as HTMLSelectElement).value)"
+            >
+              <option v-for="c in courses" :key="c.code" :value="c.code">
+                {{ c.target_language.toUpperCase() }}
+              </option>
+            </select>
             <div class="lang-switcher" @click.stop="handleLangSwitch">
               <div 
                 class="lang-slider"
@@ -140,6 +150,18 @@
         <button @click="showSidebar = false" class="sidebar-close">×</button>
       </div>
       <div class="sidebar-content">
+        <div v-if="courses.length > 1" class="sidebar-course-switcher">
+          <span class="sidebar-lang-label">{{ t('city.course') || 'Course' }}:</span>
+          <select
+            :value="currentCourseCode"
+            class="sidebar-course-select"
+            @change="(e) => { selectCourse((e.target as HTMLSelectElement).value); showSidebar = false }"
+          >
+            <option v-for="c in courses" :key="c.code" :value="c.code">
+              {{ c.title }}
+            </option>
+          </select>
+        </div>
         <div class="sidebar-lang-switcher">
           <span class="sidebar-lang-label">{{ t('common.language') || 'Language' }}:</span>
           <div class="lang-switcher" @click.stop="handleLangSwitchSidebar">
@@ -210,6 +232,7 @@ import { useTheme } from './composables/useTheme'
 import { useDialog } from './composables/useDialog'
 import { useLocale } from './composables/useLocale'
 import { useLearningConfig } from './composables/useLearningConfig'
+import { useCourse } from './composables/useCourse'
 import { isEmbeddedAndroidApp } from './utils/runtime'
 import Icon from './components/Icon.vue'
 import AlertModal from './components/AlertModal.vue'
@@ -222,6 +245,7 @@ const { t } = useI18n()
 const { isAuthenticated, isAdmin, logout: authLogout } = useAuth()
 const { currentLocale, setLocale } = useLocale()
 const { learning, ensureLearningLoaded } = useLearningConfig()
+const { courses, currentCourseCode, ensureCourseLoaded, selectCourse, resetCourse } = useCourse()
 const targetLocale = computed<'en' | 'es'>(() => {
   return learning.value?.target_lang === 'es' ? 'es' : 'en'
 })
@@ -321,6 +345,11 @@ const checkMobile = () => {
   isMobile.value = window.innerWidth <= 768
 }
 
+// Load course list when user is authenticated
+watch(isAuthenticated, (authenticated) => {
+  if (authenticated) ensureCourseLoaded()
+}, { immediate: true })
+
 // Check if we're in Telegram Mini App
 onMounted(() => {
   ensureLearningLoaded()
@@ -382,6 +411,7 @@ const dismissAuthError = () => {
 }
 
 const logout = () => {
+  resetCourse()
   authLogout()
   router.push('/login')
 }
@@ -878,6 +908,51 @@ main.with-desktop-navbar {
   border-radius: 50%;
   font-size: 18px;
   line-height: 1;
+  cursor: pointer;
+}
+
+/* Course Selector */
+.nav-course-select {
+  height: 34px;
+  padding: 0 8px;
+  border: 1px solid var(--border-primary);
+  border-radius: 6px;
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  min-width: 52px;
+  text-align: center;
+}
+
+.nav-course-select:hover {
+  background: var(--bg-secondary);
+  border-color: var(--border-secondary);
+}
+
+.sidebar-course-switcher {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-primary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.sidebar-course-select {
+  flex: 1;
+  max-width: 200px;
+  height: 36px;
+  padding: 0 10px;
+  border: 1px solid var(--border-primary);
+  border-radius: 6px;
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
 }
 

@@ -61,6 +61,33 @@
         </div>
       </div>
 
+      <!-- Linglow Progress Section (shown on new unified DB where legacy stats are empty) -->
+      <div v-if="linglowProgress && stats.availableForTraining === 0" class="linglow-progress-section">
+        <router-link to="/city" class="linglow-progress-link">
+          <div class="linglow-progress-block">
+            <div class="linglow-progress-row">
+              <div class="linglow-metric">
+                <span class="linglow-metric-value">{{ Math.round(linglowProgress.summary.progress_percent) }}%</span>
+                <span class="linglow-metric-label">{{ t('city.progress') }}</span>
+              </div>
+              <div class="linglow-metric">
+                <span class="linglow-metric-value">{{ linglowProgress.summary.due_review_count }}</span>
+                <span class="linglow-metric-label">{{ t('city.reviewPressure') }}</span>
+              </div>
+              <div class="linglow-metric">
+                <span class="linglow-metric-value">{{ linglowProgress.summary.attempted_items }}</span>
+                <span class="linglow-metric-label">{{ t('city.items') }}</span>
+              </div>
+              <div class="linglow-metric">
+                <span class="linglow-metric-value">{{ Math.round(linglowProgress.summary.accuracy_percent) }}%</span>
+                <span class="linglow-metric-label">{{ t('city.accuracy') }}</span>
+              </div>
+            </div>
+            <p class="linglow-progress-hint">{{ t('city.kicker') }} — {{ linglowProgress.course?.city_name }}</p>
+          </div>
+        </router-link>
+      </div>
+
       <!-- Grammar Statistics Section -->
       <div v-if="stats.grammarStats" class="grammar-stats-section">
         <router-link to="/learning/grammar" class="grammar-stats-link">
@@ -264,10 +291,15 @@ import { useLocale } from '../composables/useLocale'
 import { apiClient } from '../api/client'
 import { grammarClient } from '../api/grammarClient'
 import { wordTrainingClient } from '../api/wordTrainingClient'
+import { courseClient, CourseProgress, LinglowHistory } from '../api/courseClient'
+import { useCourse } from '../composables/useCourse'
 import Icon from '../components/Icon.vue'
 
 const { t } = useI18n()
 const { currentLocale } = useLocale()
+const { currentCourseCode } = useCourse()
+
+const linglowProgress = ref<CourseProgress | null>(null)
 
 Chart.register(...registerables)
 
@@ -398,7 +430,26 @@ const loadData = async () => {
       }
       offlineDashboard.value = true
     } else {
-      data = await apiClient.request('/api/dashboard')
+      let history: LinglowHistory | null = null
+      [data] = await Promise.all([
+        apiClient.request('/api/dashboard'),
+        courseClient.getProgress(currentCourseCode.value || undefined).then(p => { linglowProgress.value = p }).catch(() => {}),
+        courseClient.getHistory({ courseCode: currentCourseCode.value || undefined, days: 7 }).then(h => { history = h }).catch(() => {}),
+      ])
+      // On the unified Linglow DB the legacy charts are empty; fall back to canonical history.
+      const legacyWeekly = data.weekly_stats || []
+      const legacyWordsAdded = data.words_added_stats || []
+      if (history) {
+        if (legacyWeekly.length === 0 && (history as LinglowHistory).weekly_stats?.length > 0) {
+          data.weekly_stats = (history as LinglowHistory).weekly_stats
+        }
+        if (legacyWordsAdded.length === 0 && (history as LinglowHistory).words_added_stats?.length > 0) {
+          data.words_added_stats = (history as LinglowHistory).words_added_stats
+        }
+        if (!(data.accuracy_percent > 0) && (history as LinglowHistory).accuracy_percent > 0) {
+          data.accuracy_percent = (history as LinglowHistory).accuracy_percent
+        }
+      }
     }
     stats.value = {
       dueCount: data.due_count || 0,
@@ -876,6 +927,30 @@ onMounted(() => {
 </script>
 
 <style scoped>
+/* Linglow progress block */
+.linglow-progress-section { margin-top: 4px; }
+.linglow-progress-link { text-decoration: none; color: inherit; display: block; }
+.linglow-progress-block {
+  border: 2px solid var(--color-primary, #3b82f6);
+  border-radius: 10px;
+  padding: 14px 18px;
+  background: linear-gradient(135deg, var(--card-bg) 0%, rgba(59, 130, 246, 0.05) 100%);
+  transition: box-shadow 0.2s;
+}
+.linglow-progress-link:hover .linglow-progress-block { box-shadow: 0 4px 14px rgba(59, 130, 246, 0.15); }
+.linglow-progress-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  text-align: center;
+}
+.linglow-metric-value { display: block; font-size: 1.5rem; font-weight: 800; color: var(--text-primary); }
+.linglow-metric-label { display: block; font-size: 0.78rem; color: var(--text-secondary); font-weight: 600; text-transform: uppercase; }
+.linglow-progress-hint { margin: 10px 0 0; font-size: 0.82rem; color: var(--text-secondary); text-align: center; }
+@media (max-width: 480px) {
+  .linglow-progress-row { grid-template-columns: repeat(2, 1fr); }
+}
+
 .dashboard {
   width: min(1200px, 100%);
   margin: 0 auto;

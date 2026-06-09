@@ -417,3 +417,81 @@ func writeJSON(w http.ResponseWriter, value interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(value)
 }
+
+func (r *Router) handleLinglowWords(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	if r.courseRepo == nil {
+		http.Error(w, "Course repository is not available", http.StatusServiceUnavailable)
+		return
+	}
+	userID := getUserIDFromContext(req.Context())
+	if userID == 0 {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+	q := req.URL.Query()
+	limit, ok := parsePositiveLimit(w, req, 50)
+	if !ok {
+		return
+	}
+	offset, _ := strconv.Atoi(q.Get("offset"))
+	if offset < 0 {
+		offset = 0
+	}
+	opts := repository.WordListOptions{
+		Search: strings.TrimSpace(q.Get("q")),
+		Status: strings.TrimSpace(q.Get("status")),
+		Sort:   strings.TrimSpace(q.Get("sort")),
+		Limit:  limit,
+		Offset: offset,
+	}
+	explicitCourseCode := q.Get("course_code")
+	result, err := r.courseRepo.GetWordListForUser(req.Context(), userID, r.defaultCourseCode(), explicitCourseCode, opts)
+	if err != nil {
+		if errors.Is(err, repository.ErrCourseNotFound) {
+			http.Error(w, "Course not found", http.StatusNotFound)
+			return
+		}
+		r.logger.Error("failed to get linglow word list", zap.Error(err), zap.Int64("user_id", userID))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	writeJSON(w, result)
+}
+
+func (r *Router) handleLinglowHistory(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	if r.courseRepo == nil {
+		http.Error(w, "Course repository is not available", http.StatusServiceUnavailable)
+		return
+	}
+	userID := getUserIDFromContext(req.Context())
+	if userID == 0 {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+	days := 7
+	if raw := strings.TrimSpace(req.URL.Query().Get("days")); raw != "" {
+		if parsed, err := strconv.Atoi(raw); err == nil && parsed > 0 && parsed <= 365 {
+			days = parsed
+		}
+	}
+	explicitCourseCode := req.URL.Query().Get("course_code")
+	result, err := r.courseRepo.GetHistoryForUser(req.Context(), userID, r.defaultCourseCode(), explicitCourseCode, days)
+	if err != nil {
+		if errors.Is(err, repository.ErrCourseNotFound) {
+			http.Error(w, "Course not found", http.StatusNotFound)
+			return
+		}
+		r.logger.Error("failed to get linglow history", zap.Error(err), zap.Int64("user_id", userID))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	writeJSON(w, result)
+}

@@ -150,6 +150,14 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 			zap.Int64("items_total", summary.ItemsTotal),
 		)
 	}
+	if summary, err := courseRepo.TagLegacyWordTablesForLearning(context.Background(), cfg.Learning); err != nil {
+		log.Warn("linglow legacy course tagging skipped due to error", zap.Error(err))
+	} else {
+		log.Info("linglow legacy course tagging completed",
+			zap.String("course_code", summary.CourseCode),
+			zap.Any("tagged", summary.Tagged),
+		)
+	}
 
 	wordRepo := repository.NewWordRepository(conn, log)
 	userRepo := repository.NewUserRepository(conn, log)

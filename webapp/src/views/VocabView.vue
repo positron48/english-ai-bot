@@ -151,6 +151,8 @@
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiClient } from '../api/client'
+import { courseClient, LinglowWordItem } from '../api/courseClient'
+import { useCourse } from '../composables/useCourse'
 import VocabWordCardsDetail from '../components/VocabWordCardsDetail.vue'
 
 interface VocabWord {
@@ -176,6 +178,7 @@ interface Pagination {
 }
 
 const { t } = useI18n()
+const { currentCourseCode } = useCourse()
 
 const words = ref<VocabWord[]>([])
 const loading = ref(true)
@@ -218,69 +221,82 @@ const onFilterChange = () => {
   loadVocab()
 }
 
+function linglowSort(frontendSort: string): string {
+  if (frontendSort === 'display_word_desc') return 'word_desc'
+  if (frontendSort === 'added_at') return 'added_at'
+  return 'word_asc'
+}
+
+function linglowWordToVocab(w: LinglowWordItem): VocabWord {
+  return {
+    word_card_id: parseInt(w.word_card_id) || w.learning_item_id,
+    lemma: w.lemma,
+    display_word: w.display_word || w.lemma,
+    display_target: w.translation,
+    total_cards: w.total_cards,
+    due_count: w.due_count,
+    last_review: w.last_review_at ?? null,
+    total_reps: w.total_reps,
+    added_at: w.added_at ?? null,
+    mastery_level: w.mastery_level,
+    mastering_score: w.state === 'mastered' ? 100 : w.state === 'review' ? 60 : w.state === 'learning' ? 30 : 0,
+    review_count: w.reps,
+  }
+}
+
 const loadVocab = async () => {
   loading.value = true
   try {
-    // Map frontend sort field to backend sort_by
+    // Try Linglow v2 word list first (works on new unified DB)
+    const linglowResult = await courseClient.getWordList({
+      courseCode: currentCourseCode.value || undefined,
+      q: searchQuery.value || undefined,
+      status: statusFilter.value || undefined,
+      sort: linglowSort(sortField.value),
+      limit: pagination.value.limit,
+      offset: (pagination.value.page - 1) * pagination.value.limit,
+    }).catch(() => null)
+
+    if (linglowResult && (linglowResult.total > 0 || linglowResult.words?.length > 0)) {
+      words.value = (linglowResult.words || []).map(linglowWordToVocab)
+      const total = linglowResult.total || 0
+      pagination.value = {
+        page: pagination.value.page,
+        limit: linglowResult.limit,
+        total,
+        total_pages: Math.ceil(total / linglowResult.limit) || 1,
+      }
+      return
+    }
+
+    // Fallback to legacy /api/vocab (old prod DB)
     let sortBy = 'display_word'
     let sortOrder = 'asc'
-    
-    if (sortField.value === 'display_word') {
-      sortBy = 'display_word'
-      sortOrder = 'asc'
-    } else if (sortField.value === 'display_word_desc') {
-      sortBy = 'display_word'
-      sortOrder = 'desc'
-    } else if (sortField.value === 'due_count') {
-      sortBy = 'due_count'
-      sortOrder = 'desc'
-    } else if (sortField.value === 'added_at') {
-      sortBy = 'added_at'
-      sortOrder = 'desc'
-    } else if (sortField.value === 'mastery_level') {
-      sortBy = 'mastery_level'
-      sortOrder = 'asc' // known -> mastered -> learning -> new
-    } else if (sortField.value === 'mastery_level_desc') {
-      sortBy = 'mastery_level_desc'
-      sortOrder = 'asc' // new -> learning -> mastered -> known
-    } else if (sortField.value === 'mastering_score') {
-      sortBy = 'mastering_score'
-      sortOrder = 'asc'
-    } else if (sortField.value === 'mastering_score_desc') {
-      sortBy = 'mastering_score_desc'
-      sortOrder = 'asc'
-    }
-    
+    if (sortField.value === 'display_word') { sortBy = 'display_word'; sortOrder = 'asc' }
+    else if (sortField.value === 'display_word_desc') { sortBy = 'display_word'; sortOrder = 'desc' }
+    else if (sortField.value === 'due_count') { sortBy = 'due_count'; sortOrder = 'desc' }
+    else if (sortField.value === 'added_at') { sortBy = 'added_at'; sortOrder = 'desc' }
+    else if (sortField.value === 'mastery_level') { sortBy = 'mastery_level'; sortOrder = 'asc' }
+    else if (sortField.value === 'mastery_level_desc') { sortBy = 'mastery_level_desc'; sortOrder = 'asc' }
+    else if (sortField.value === 'mastering_score') { sortBy = 'mastering_score'; sortOrder = 'asc' }
+    else if (sortField.value === 'mastering_score_desc') { sortBy = 'mastering_score_desc'; sortOrder = 'asc' }
+
     const params = new URLSearchParams({
       page: pagination.value.page.toString(),
       limit: pagination.value.limit.toString(),
       sort_by: sortBy,
-      sort_order: sortOrder
+      sort_order: sortOrder,
     })
-    if (searchQuery.value) {
-      params.append('search', searchQuery.value)
-    }
-    if (statusFilter.value) {
-      params.append('mastery_level', statusFilter.value)
-    }
-    
+    if (searchQuery.value) params.append('search', searchQuery.value)
+    if (statusFilter.value) params.append('mastery_level', statusFilter.value)
+
     const data: { words: VocabWord[], pagination: Pagination } = await apiClient.request(`/api/vocab?${params.toString()}`)
     words.value = data.words || []
-    pagination.value = data.pagination || {
-      page: 1,
-      limit: 100,
-      total: 0,
-      total_pages: 0
-    }
+    pagination.value = data.pagination || { page: 1, limit: 100, total: 0, total_pages: 0 }
   } catch (error) {
     console.error('Failed to load vocabulary:', error)
     words.value = []
-    pagination.value = {
-      page: 1,
-      limit: 100,
-      total: 0,
-      total_pages: 0
-    }
+    pagination.value = { page: 1, limit: 100, total: 0, total_pages: 0 }
   } finally {
     loading.value = false
   }
