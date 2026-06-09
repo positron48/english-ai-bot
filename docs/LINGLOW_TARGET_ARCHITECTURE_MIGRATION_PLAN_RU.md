@@ -44,7 +44,7 @@ Prod / staging status (2026-06-09):
   - merge jobs одноразовые, удалены после успеха
 - **Phase 10 smoke (2026-06-09):** namespace `linglow`, Flux `apps/linglow/prod`, `DATABASE_URL` → `linglow_unified`, transitional `LEARNING_APP_CODE=english`, Telegram отключён на smoke pod. API verified: `/api/courses` → `en_ru`+`es_ru` (user_course 1/44); `/api/linglow/progress` en_ru (4801 items, 27667 attempts) / es_ru (4279, 11288). Prerequisite: seed `schema_migrations`+`word_sets` из `english` (см. `RELEASE_K3S.md` §2.5).
 - **Phase 10 public URL:** https://linglow.qantrix.ru (`apps/linglow/base/ingress.yaml`, `WEBAPP_PUBLIC_URL` в ConfigMap).
-- **Phase 10 staging UX (next):** импорт DB-first content EN+ES в `linglow_unified` (`import_learning_content` в linglow pod) — `RELEASE_K3S.md` §2.6.
+- **Phase 10 content (2026-06-09):** DB-first import EN+ES в `linglow_unified` (chapters 130/152, questions 6901/5375).
 - **После стабилизации staging:** prod cutover window, final incremental merge, `DATABASE_URL` english/spanish → unified (отдельное окно).
 
 ## 1. Текущая точка
