@@ -4,7 +4,70 @@
 
 Цель: привести текущее приложение `english-ai-bot` к целевой концепции Linglow без потери пользовательских данных. Итоговая модель: одно приложение, один backend, одна PostgreSQL БД, несколько курсов (`en_ru`, `es_ru`), прогресс через `user_course_id`, контент импортируется из Git-файлов в БД и в runtime читается из БД.
 
-Текущий статус:
+**Обновлено:** 2026-06-09
+
+## Статус переезда (кратко)
+
+| Зона | Состояние | Комментарий |
+|------|-----------|-------------|
+| **Prod runtime** | `english` + `spanish` | Отдельные namespace, БД, домены `qantrix.ru` / `es.qantrix.ru` — **без изменений** |
+| **Canonical schema + API** | Phases 1–8 в коде | `user_courses`, City, course selector, Linglow read/write API |
+| **Dual-write + SRS cutover (prod)** | Включено EN/ES | `LINGLOW_EVENTS/SRS_READ/SRS_WRITE` в GitOps; legacy tables = source of truth для `/training` |
+| **Historical backfill (prod)** | Выполнен EN/ES | events, SRS resync, attempt links, media progress |
+| **Unified DB merge (staging)** | **Готово** | БД `linglow_unified` на `english-postgres`, merge phases users→srs, 0 conflicts |
+| **Staging app `linglow`** | **Готово** | https://linglow.qantrix.ru → `linglow_unified`, Flux GitOps |
+| **Staging content** | **Готово** | `import_learning_content` EN+ES: chapters 130/152, questions 6901/5375 |
+| **Staging auth** | **Готово** | Отдельный Telegram bot + OTP (`/start` обязателен) |
+| **Staging observability** | **Готово** | Loki namespace `linglow`, Grafana dashboard «Logs of Linglow» |
+| **Prod cutover** | **Не начат** | Нужно окно: final incremental merge → `DATABASE_URL` → unified |
+| **Domain redirects** | **Не начат** | `qantrix.ru` / `es.qantrix.ru` → Linglow course deep links |
+| **Android unified APK** | Phase 11 | Отдельные APK пока на prod domains |
+| **Legacy cleanup** | Phase 12 | После 2–4 недель стабильного unified prod |
+
+### Архитектура сейчас (две параллельные линии)
+
+```
+PROD (пользователи)                    STAGING (переезд)
+─────────────────────                  ───────────────────
+english ns ──► english DB              linglow ns ──► linglow_unified
+spanish ns ──► spanish DB                    │
+     │ dual-write mirror                     ├─ merge snapshot (45 users, 48 user_courses)
+     └─► exercise_attempts / srs_items       ├─ EN+ES grammar content (db)
+         (в каждой своей БД)                └─ https://linglow.qantrix.ru
+```
+
+### Staging `linglow_unified` (snapshot 2026-06-09)
+
+| Метрика | Значение |
+|---------|----------|
+| users | 45 |
+| user_courses | 48 |
+| learning_items | 9080 |
+| exercise_attempts / learning_events | 46046 |
+| srs_items | 2957 |
+| attempts_with_srs | 45868 |
+| en_ru attempts / srs | 32004 / 1807 |
+| es_ru attempts / srs | 14042 / 1150 |
+| telegram multi-course users | 3 |
+| merge conflicts | 0 |
+| grammar chapters (en/es) | 130 / 152 |
+| grammar questions (en/es) | 6901 / 5375 |
+
+Prerequisite первого старта linglow pod: seed из prod `english` — `schema_migrations`, `app_settings`, `word_sets` (см. `devops-time-host/apps/linglow/RELEASE_K3S.md` §2.5).
+
+### Следующие шаги (приоритет)
+
+1. **Soak staging** — grammar, training, `/city`, оба курса на https://linglow.qantrix.ru (дни, не часы).
+2. **Cutover checklist** — maintenance window, backup EN+ES+unified, final incremental merge (`merge_language_databases`), smoke, переключение prod `DATABASE_URL` или ingress.
+3. **Redirects** — `qantrix.ru/app` → `en_ru`, `es.qantrix.ru/app` → `es_ru` на unified backend.
+4. **Backup unified** — добавить `linglow_unified` в k3s-backup после cutover.
+5. **Phase 11** — `ru.qantrix.linglow` APK (после unified prod).
+
+Runbooks: `devops-time-host/apps/linglow/RELEASE_K3S.md`, `devops-time-host/apps/english/RELEASE_K3S.md` §6.3.
+
+---
+
+Текущий статус (детали по фазам):
 
 - Phase 0/DB-first content: grammar content, grammar training, reading catalog и speaking catalog импортируются в БД; prod runtime переключен на `CONTENT_SOURCE=db`.
 - Phase 1/schema foundation: добавлена миграция `000017_linglow_course_architecture.sql` с canonical Linglow v2 таблицами и seed для `en_ru`/`es_ru`, districts, locations и theme lines.
@@ -32,20 +95,7 @@
 - Phase 8/District UX foundation: добавлен `/city/district/:districtCode` поверх `GET /api/linglow/city`; City Home получил кликабельные daily/review items, переходы в district/location и Simple Mode быстрые входы в review, grammar, reading и words. `GET /api/linglow/progress` расширен `by_district`/`by_location` с foundation/confidence/stability/weakness сигналами, City Home и District view показывают эти сигналы. `/city` вынесен в основную desktop-навигацию.
 - Phase 9/unified DB merge foundation: migration `000020_linglow_legacy_merge_mappings.sql`, `cmd/merge_language_databases` low-memory dry-run audit; prod audit/merge через isolated Job 384–512Mi (не `kubectl exec` в app pod). Write phases: `users`, `user-courses`, `course-mappings`, `content`, `attempts`, `srs` (теги `0.11.55`–`0.11.59`).
 
-Prod / staging status (2026-06-09):
-
-- Phase 5 backfill: выполнен на English и Spanish (`events`, `attempt_srs_links`, `media_progress`, SRS `--resync`).
-- Phase 7 read/write: `LINGLOW_SRS_READ_ENABLED=true` и `LINGLOW_SRS_WRITE_ENABLED=true` в GitOps EN/ES; `/training` и Grammar Training по-прежнему пишут legacy + mirror.
-- Ops: weekly CronJob `linglow-srs-resync` (GitOps) и runbook `devops-time-host/apps/english/RELEASE_K3S.md` §6.
-- **Phase 9 prod source audit:** `ready_for_source_merge=true`, telegram conflicts `0` (тег `0.11.56`+, фикс SRS readiness).
-- **Phase 9 staging unified DB `linglow_unified`** на `english-postgres` (отдельная БД, prod `english`/`spanish` не трогали):
-  - users **45**, user_courses **48**, learning_items **9080**, exercise_attempts **46046**, learning_events **46046**, srs_items **2957**, attempts_with_srs **45868**
-  - en_ru / es_ru: **32004/1807** и **14042/1150** attempts/srs; **3** telegram users с обоими курсами
-  - merge jobs одноразовые, удалены после успеха
-- **Phase 10 smoke (2026-06-09):** namespace `linglow`, Flux `apps/linglow/prod`, `DATABASE_URL` → `linglow_unified`, transitional `LEARNING_APP_CODE=english`, Telegram отключён на smoke pod. API verified: `/api/courses` → `en_ru`+`es_ru` (user_course 1/44); `/api/linglow/progress` en_ru (4801 items, 27667 attempts) / es_ru (4279, 11288). Prerequisite: seed `schema_migrations`+`word_sets` из `english` (см. `RELEASE_K3S.md` §2.5).
-- **Phase 10 public URL:** https://linglow.qantrix.ru (`apps/linglow/base/ingress.yaml`, `WEBAPP_PUBLIC_URL` в ConfigMap).
-- **Phase 10 content (2026-06-09):** DB-first import EN+ES в `linglow_unified` (chapters 130/152, questions 6901/5375).
-- **После стабилизации staging:** prod cutover window, final incremental merge, `DATABASE_URL` english/spanish → unified (отдельное окно).
+Prod / staging status — см. раздел **«Статус переезда»** выше; кратко: prod EN/ES без cutover; staging `linglow` на `linglow_unified` полностью поднят (merge + content + URL + auth + logs).
 
 ## 1. Текущая точка
 
@@ -642,34 +692,17 @@ Rollback:
 
 Цель: один backend/app вместо отдельных English/Spanish приложений.
 
-**Статус (2026-06-09):** Phase 10 **smoke deployment пройден** — `linglow` pod на `linglow_unified`, Flux GitOps, runbook `devops-time-host/apps/linglow/RELEASE_K3S.md`. Prod `english`/`spanish` runtime **не переключали**.
+**Статус (2026-06-09):** Phase 10 **staging deployment завершён**. Prod cutover — **не начат**.
 
-Шаги:
-
-1. Добавить новый k3s app `linglow`. **Готово:** manifests, https://linglow.qantrix.ru, отдельный Telegram bot, OTP, Loki; API smoke OK; transitional `LEARNING_APP_CODE=english`.
-
-2. Сохранить старые домены как redirects/deep links:
-   - `qantrix.ru/app` -> Linglow course `en_ru`;
-   - `es.qantrix.ru/app` -> Linglow course `es_ru`.
-
-3. Ввести canonical public URL для Linglow. **Staging (2026-06-09):** https://linglow.qantrix.ru (отдельный поддомен, prod domains пока без redirect).
-
-4. Обновить config:
-   - убрать обязательность `LEARNING_APP_CODE` как runtime tenant;
-   - оставить default course только как fallback для legacy links.
-
-5. Настроить secrets:
-   - один `DATABASE_URL`;
-   - общие AI secrets;
-   - course-specific non-secret config в БД.
-
-6. Обновить backup:
-   - dump unified PostgreSQL;
-   - TTS/cache strategy: либо общий PVC с course/language shard, либо object storage.
-
-7. Обновить observability:
-   - labels by `course_code`;
-   - dashboards by course.
+| Шаг | Статус |
+|-----|--------|
+| 1. k3s app `linglow` | **Готово** — Flux `apps/linglow/prod`, pod на `linglow_unified`, transitional `LEARNING_APP_CODE=english` |
+| 2. Redirects prod domains | Ожидает cutover |
+| 3. Public URL | **Готово (staging)** — https://linglow.qantrix.ru |
+| 4. Multilang config (`LEARNING_APP_CODE=linglow`) | Ожидает cutover / код |
+| 5. Unified secrets | Частично — `linglow-secrets` вручную; prod ещё раздельные |
+| 6. Backup unified DB | Ожидает cutover (`k3s-backup`) |
+| 7. Observability | **Готово (staging)** — Loki `linglow`, dashboard Grafana; labels by `course_code` — позже |
 
 Готовность:
 
