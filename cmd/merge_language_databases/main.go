@@ -58,6 +58,9 @@ type writeSummary struct {
 	AttemptsScanned   int64 `json:"attempts_scanned,omitempty"`
 	AttemptsInserted  int64 `json:"attempts_inserted,omitempty"`
 	EventsInserted    int64 `json:"events_inserted,omitempty"`
+	SRSScanned        int64 `json:"srs_scanned,omitempty"`
+	SRSInserted       int64 `json:"srs_inserted,omitempty"`
+	SRSLinksUpdated   int64 `json:"srs_links_updated,omitempty"`
 	ConflictsLogged   int64 `json:"conflicts_logged"`
 	Skipped          int64  `json:"skipped"`
 }
@@ -136,7 +139,7 @@ func main() {
 	flag.StringVar(&targetURL, "target-db-url", env("TARGET_DATABASE_URL"), "Target unified DATABASE_URL; defaults to TARGET_DATABASE_URL")
 	flag.DurationVar(&timeout, "timeout", 5*time.Minute, "overall audit timeout (counts and telegram identity scans)")
 	flag.BoolVar(&commit, "commit", false, "write merge data to target DB; requires --phase")
-	flag.StringVar(&phase, "phase", "", "write phase: users|user-courses|course-mappings|content|attempts")
+	flag.StringVar(&phase, "phase", "", "write phase: users|user-courses|course-mappings|content|attempts|srs")
 	flag.Parse()
 
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
@@ -155,7 +158,7 @@ func main() {
 		IdentityConflicts:   []stableIdentityConflict{},
 		Notes: []string{
 			"audit foundation: read-only counts, readiness, attempt sources, telegram overlap",
-			"use --commit --phase=users|user-courses|course-mappings|content|attempts for unified DB write slices",
+			"use --commit --phase=users|user-courses|course-mappings|content|attempts|srs for unified DB write slices",
 		},
 	}
 
@@ -226,7 +229,7 @@ func main() {
 
 	if commit {
 		if phase == "" {
-			fmt.Fprintln(os.Stderr, "--commit requires --phase=users|user-courses|course-mappings|content|attempts")
+			fmt.Fprintln(os.Stderr, "--commit requires --phase=users|user-courses|course-mappings|content|attempts|srs")
 			os.Exit(1)
 		}
 		if targetDB == nil {

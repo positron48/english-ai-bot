@@ -25,6 +25,8 @@ func runWritePhase(ctx context.Context, phase string, sources []openedSourceDB, 
 		return mergeContent(ctx, sources, targetDB)
 	case "attempts":
 		return mergeAttempts(ctx, sources, targetDB)
+	case "srs":
+		return mergeSRS(ctx, sources, targetDB)
 	default:
 		return nil, fmt.Errorf("unsupported write phase %q", phase)
 	}
