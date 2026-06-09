@@ -23,6 +23,8 @@ func runWritePhase(ctx context.Context, phase string, sources []openedSourceDB, 
 		return mergeCourseMappings(ctx, sources, targetDB)
 	case "content":
 		return mergeContent(ctx, sources, targetDB)
+	case "attempts":
+		return mergeAttempts(ctx, sources, targetDB)
 	default:
 		return nil, fmt.Errorf("unsupported write phase %q", phase)
 	}
