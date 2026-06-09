@@ -30,14 +30,19 @@
 - Phase 7/SRS aggregate readiness foundation: добавлен full-access admin endpoint `GET /api/admin/linglow/srs-readiness`, который агрегирует readiness по всем `user_courses` выбранного курса и показывает totals/первых not-ready users на `/admin/linglow-srs`.
 - Phase 8/City Home foundation: `/city` получил course selector, progress summary, daily route и review station blocks поверх `GET /api/courses`, `/api/linglow/progress`, `/api/linglow/daily-route`, `/api/linglow/review`; старая карта districts/locations сохранена. `/city/daily-route` вынесен в отдельный рабочий экран с review/new/mistake-workshop блоками.
 - Phase 8/District UX foundation: добавлен `/city/district/:districtCode` поверх `GET /api/linglow/city`; City Home получил кликабельные daily/review items, переходы в district/location и Simple Mode быстрые входы в review, grammar, reading и words. `GET /api/linglow/progress` расширен `by_district`/`by_location` с foundation/confidence/stability/weakness сигналами, City Home и District view показывают эти сигналы. `/city` вынесен в основную desktop-навигацию.
-- Phase 9/unified DB merge foundation: migration `000020_linglow_legacy_merge_mappings.sql`, `cmd/merge_language_databases` low-memory dry-run audit (counts, readiness, attempt sources, `telegram_multi_course_users`); prod via Job 384Mi, не exec в app pod; write foundation `--commit --phase=users|user-courses` для target unified DB.
+- Phase 9/unified DB merge foundation: migration `000020_linglow_legacy_merge_mappings.sql`, `cmd/merge_language_databases` low-memory dry-run audit; prod audit/merge через isolated Job 384–512Mi (не `kubectl exec` в app pod). Write phases: `users`, `user-courses`, `course-mappings`, `content`, `attempts`, `srs` (теги `0.11.55`–`0.11.59`).
 
-Prod cutover status (2026-06-07):
+Prod / staging status (2026-06-09):
 
 - Phase 5 backfill: выполнен на English и Spanish (`events`, `attempt_srs_links`, `media_progress`, SRS `--resync`).
 - Phase 7 read/write: `LINGLOW_SRS_READ_ENABLED=true` и `LINGLOW_SRS_WRITE_ENABLED=true` в GitOps EN/ES; `/training` и Grammar Training по-прежнему пишут legacy + mirror.
 - Ops: weekly CronJob `linglow-srs-resync` (GitOps) и runbook `devops-time-host/apps/english/RELEASE_K3S.md` §6.
-- Следующий шаг: Phase 9 merge audit (`merge_language_databases` dry-run), затем staging write phases; unified DB prod cutover — отдельно.
+- **Phase 9 prod source audit:** `ready_for_source_merge=true`, telegram conflicts `0` (тег `0.11.56`+, фикс SRS readiness).
+- **Phase 9 staging unified DB `linglow_unified`** на `english-postgres` (отдельная БД, prod `english`/`spanish` не трогали):
+  - users **45**, user_courses **48**, learning_items **9080**, exercise_attempts **46046**, learning_events **46046**, srs_items **2957**, attempts_with_srs **45868**
+  - en_ru / es_ru: **32004/1807** и **14042/1150** attempts/srs; **3** telegram users с обоими курсами
+  - merge jobs одноразовые, удалены после успеха
+- **Следующий шаг: Phase 10** — staging deployment `linglow` на `linglow_unified`, smoke web/API, затем prod cutover (отдельное окно).
 
 ## 1. Текущая точка
 
@@ -563,8 +568,9 @@ Rollback:
 
 2. Накатить все migrations.
 
-3. Написать merge command:
-   `cmd/merge_language_databases` - audit foundation + первые write phases: dry-run JSON report по counts, course breakdown, attempt sources, readiness gaps, latest activity, per-user activity samples, `telegram_multi_course_users`, blocking conflicts; `--commit --phase=users|user-courses` для target unified DB.
+3. Merge command `cmd/merge_language_databases`:
+   - dry-run audit: counts, readiness (`srs_word_missing` / `srs_grammar_missing`), attempt sources, `telegram_multi_course_users`, `ready_for_source_merge`
+   - write phases (staging `linglow_unified`, 2026-06-09): `users` → `user-courses` → `course-mappings` → `content` → `attempts` → `srs`
 
 4. Merge command должен:
    - принимать English source DB;
@@ -598,7 +604,7 @@ Rollback:
    - одинаковые emails/auth identities - объединять только при строгом совпадении verified identity;
    - несовпадения писать в conflict report, не угадывать.
 
-8. Прогнать merge на staging.
+8. Прогнать merge на staging. **Готово (2026-06-09):** БД `linglow_unified` на prod `english-postgres`, все write phases, сверка counts OK.
 
 9. Провести сверку:
    - users count - foundation есть в `merge_language_databases`;
@@ -633,9 +639,11 @@ Rollback:
 
 Цель: один backend/app вместо отдельных English/Spanish приложений.
 
+**Статус (2026-06-09):** staging merge в `linglow_unified` завершён; Phase 10 начинается с **smoke deployment** (манифесты `devops-time-host/apps/linglow/`, пока **не** в prod Flux kustomization).
+
 Шаги:
 
-1. Добавить новый k3s app, например `linglow`.
+1. Добавить новый k3s app, например `linglow`. **В работе:** base manifests + runbook `apps/linglow/RELEASE_K3S.md`; первый smoke — `DATABASE_URL` → `linglow_unified`, transitional `LEARNING_APP_CODE=english` (оба курса в БД, course selector в UI).
 
 2. Сохранить старые домены как redirects/deep links:
    - `qantrix.ru/app` -> Linglow course `en_ru`;
