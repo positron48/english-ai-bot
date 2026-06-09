@@ -30,7 +30,14 @@
 - Phase 7/SRS aggregate readiness foundation: добавлен full-access admin endpoint `GET /api/admin/linglow/srs-readiness`, который агрегирует readiness по всем `user_courses` выбранного курса и показывает totals/первых not-ready users на `/admin/linglow-srs`.
 - Phase 8/City Home foundation: `/city` получил course selector, progress summary, daily route и review station blocks поверх `GET /api/courses`, `/api/linglow/progress`, `/api/linglow/daily-route`, `/api/linglow/review`; старая карта districts/locations сохранена. `/city/daily-route` вынесен в отдельный рабочий экран с review/new/mistake-workshop блоками.
 - Phase 8/District UX foundation: добавлен `/city/district/:districtCode` поверх `GET /api/linglow/city`; City Home получил кликабельные daily/review items, переходы в district/location и Simple Mode быстрые входы в review, grammar, reading и words. `GET /api/linglow/progress` расширен `by_district`/`by_location` с foundation/confidence/stability/weakness сигналами, City Home и District view показывают эти сигналы. `/city` вынесен в основную desktop-навигацию.
-- Phase 9/unified DB merge foundation: migration `000020_linglow_legacy_merge_mappings.sql`, `cmd/merge_language_databases` dry-run audit с `user_activity_samples`, `telegram_multi_course_users` и blocking conflicts; write foundation `--commit --phase=users|user-courses` для target unified DB.
+- Phase 9/unified DB merge foundation: migration `000020_linglow_legacy_merge_mappings.sql`, `cmd/merge_language_databases` low-memory dry-run audit (counts, readiness, attempt sources, `telegram_multi_course_users`); prod via Job 384Mi, не exec в app pod; write foundation `--commit --phase=users|user-courses` для target unified DB.
+
+Prod cutover status (2026-06-07):
+
+- Phase 5 backfill: выполнен на English и Spanish (`events`, `attempt_srs_links`, `media_progress`, SRS `--resync`).
+- Phase 7 read/write: `LINGLOW_SRS_READ_ENABLED=true` и `LINGLOW_SRS_WRITE_ENABLED=true` в GitOps EN/ES; `/training` и Grammar Training по-прежнему пишут legacy + mirror.
+- Ops: weekly CronJob `linglow-srs-resync` (GitOps) и runbook `devops-time-host/apps/english/RELEASE_K3S.md` §6.
+- Следующий шаг: Phase 9 merge audit (`merge_language_databases` dry-run), затем staging write phases; unified DB prod cutover — отдельно.
 
 ## 1. Текущая точка
 
