@@ -43,7 +43,8 @@ Prod / staging status (2026-06-09):
   - en_ru / es_ru: **32004/1807** и **14042/1150** attempts/srs; **3** telegram users с обоими курсами
   - merge jobs одноразовые, удалены после успеха
 - **Phase 10 smoke (2026-06-09):** namespace `linglow`, Flux `apps/linglow/prod`, `DATABASE_URL` → `linglow_unified`, transitional `LEARNING_APP_CODE=english`, Telegram отключён на smoke pod. API verified: `/api/courses` → `en_ru`+`es_ru` (user_course 1/44); `/api/linglow/progress` en_ru (4801 items, 27667 attempts) / es_ru (4279, 11288). Prerequisite: seed `schema_migrations`+`word_sets` из `english` (см. `RELEASE_K3S.md` §2.5).
-- **Следующий шаг:** Phase 10 prod — ingress/домен, grammar content data в unified (опц.), final incremental merge, cutover `english`/`spanish` `DATABASE_URL` (отдельное окно).
+- **Phase 10 public URL:** https://linglow.qantrix.ru (`apps/linglow/base/ingress.yaml`, `WEBAPP_PUBLIC_URL` в ConfigMap).
+- **Следующий шаг:** Phase 10 prod cutover — grammar content в unified (опц.), final incremental merge, переключение `english`/`spanish` `DATABASE_URL` (отдельное окно).
 
 ## 1. Текущая точка
 
@@ -650,7 +651,7 @@ Rollback:
    - `qantrix.ru/app` -> Linglow course `en_ru`;
    - `es.qantrix.ru/app` -> Linglow course `es_ru`.
 
-3. Ввести canonical public URL для Linglow.
+3. Ввести canonical public URL для Linglow. **Staging (2026-06-09):** https://linglow.qantrix.ru (отдельный поддомен, prod domains пока без redirect).
 
 4. Обновить config:
    - убрать обязательность `LEARNING_APP_CODE` как runtime tenant;
