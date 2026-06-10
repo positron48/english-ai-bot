@@ -788,10 +788,13 @@ func (r *UserCardRepository) GetUserIDsByWordCardID(wordCardID int64) ([]int64, 
 	return userIDs, nil
 }
 
-// GetUpcomingCardsByDate gets the count of cards that will become due in the next 7 days
-// Returns a map where key is date string (YYYY-MM-DD) and value is the count of cards
-// Excludes words marked as "known" in user_word_knowledge
+// GetUpcomingCardsByDate gets the count of cards that will become due in the next 7 days.
 func (r *UserCardRepository) GetUpcomingCardsByDate(userID int64, startDate time.Time) (map[string]int, error) {
+	return r.GetUpcomingCardsByDateForCourse(userID, "", startDate)
+}
+
+// GetUpcomingCardsByDateForCourse is GetUpcomingCardsByDate scoped to a course (empty = no filter).
+func (r *UserCardRepository) GetUpcomingCardsByDateForCourse(userID int64, courseCode string, startDate time.Time) (map[string]int, error) {
 	// Calculate end date (7 days from start, at end of day)
 	endDate := startDate.AddDate(0, 0, 7)
 
@@ -805,16 +808,17 @@ func (r *UserCardRepository) GetUpcomingCardsByDate(userID int64, startDate time
 	query := `SELECT uc.next_due_at
 	FROM user_cards uc
 	INNER JOIN training_cards tc ON uc.training_card_id = tc.id
-	WHERE uc.user_id = ? 
+	WHERE uc.user_id = ?
 		AND uc.next_due_at IS NOT NULL
 		AND uc.next_due_at > ?
 		AND uc.next_due_at <= ?
 		AND NOT EXISTS (
-			SELECT 1 FROM user_word_knowledge uwk 
+			SELECT 1 FROM user_word_knowledge uwk
 			WHERE uwk.user_id = ? AND uwk.word_card_id = tc.word_card_id AND uwk.status = 'known'
-		)`
+		)
+		AND (? = '' OR uc.course_code = ? OR uc.course_code IS NULL)`
 
-	rows, err := r.db.Query(query, userID, startDate, endDate, userID)
+	rows, err := r.db.Query(query, userID, startDate, endDate, userID, courseCode, courseCode)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get upcoming cards by date: %w", err)
 	}

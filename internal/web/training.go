@@ -1280,7 +1280,8 @@ func (r *Router) handleTrainingUpcoming(w http.ResponseWriter, req *http.Request
 
 	// Get upcoming cards by date
 	userCardRepo := repository.NewUserCardRepository(r.db, r.logger)
-	upcomingCards, err := userCardRepo.GetUpcomingCardsByDate(userID, startDate)
+	courseCode := r.currentCourseCodeForUser(req.Context(), userID)
+	upcomingCards, err := userCardRepo.GetUpcomingCardsByDateForCourse(userID, courseCode, startDate)
 	if err != nil {
 		r.logger.Error("failed to get upcoming cards", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)

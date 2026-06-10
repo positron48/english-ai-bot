@@ -89,9 +89,8 @@ func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 	}
 
 	now := time.Now()
+	courseCode := r.currentCourseCodeForUser(req.Context(), userID)
 
-	// Get new cards count (exclude orphaned cards - those with non-existent training_cards or word_cards)
-	// Excludes words marked as "known" in user_word_knowledge (same as GetNewCards)
 	newQuery := `SELECT COUNT(*)
 		FROM user_cards uc
 		INNER JOIN training_cards tc ON uc.training_card_id = tc.id
@@ -99,17 +98,15 @@ func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 		AND NOT EXISTS (
 			SELECT 1 FROM user_word_knowledge uwk
 			WHERE uwk.user_id = ? AND uwk.word_card_id = tc.word_card_id AND uwk.status = 'known'
-		)`
+		)
+		AND (? = '' OR uc.course_code = ? OR uc.course_code IS NULL)`
 	var newCount int
-	err := r.db.QueryRow(newQuery, userID, userID).Scan(&newCount)
+	err := r.db.QueryRow(newQuery, userID, userID, courseCode, courseCode).Scan(&newCount)
 	if err != nil {
 		r.logger.Error("failed to get new cards count", zap.Error(err))
 		newCount = 0
 	}
 
-	// Get due count (cards ready for review, excluding new cards and orphaned cards)
-	// Excludes words marked as "known" in user_word_knowledge (same as GetDueCards)
-	// Note: GetDueCards doesn't filter by state != 'new', but we do here for clarity
 	dueQuery := `SELECT COUNT(*)
 		FROM user_cards uc
 		INNER JOIN training_cards tc ON uc.training_card_id = tc.id
@@ -117,51 +114,48 @@ func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 		AND NOT EXISTS (
 			SELECT 1 FROM user_word_knowledge uwk
 			WHERE uwk.user_id = ? AND uwk.word_card_id = tc.word_card_id AND uwk.status = 'known'
-		)`
+		)
+		AND (? = '' OR uc.course_code = ? OR uc.course_code IS NULL)`
 	var dueCount int
-	err = r.db.QueryRow(dueQuery, userID, now, userID).Scan(&dueCount)
+	err = r.db.QueryRow(dueQuery, userID, now, userID, courseCode, courseCode).Scan(&dueCount)
 	if err != nil {
 		r.logger.Error("failed to get due count", zap.Error(err))
 		dueCount = 0
 	}
 
-	// Get learning cards count
 	learningQuery := `SELECT COUNT(*)
 		FROM user_cards uc
-		WHERE uc.user_id = ? AND uc.state = 'learning'`
+		WHERE uc.user_id = ? AND uc.state = 'learning'
+		AND (? = '' OR uc.course_code = ? OR uc.course_code IS NULL)`
 	var learningCount int
-	err = r.db.QueryRow(learningQuery, userID).Scan(&learningCount)
+	err = r.db.QueryRow(learningQuery, userID, courseCode, courseCode).Scan(&learningCount)
 	if err != nil {
 		r.logger.Error("failed to get learning count", zap.Error(err))
 		learningCount = 0
 	}
 
-	// Get review cards count
 	reviewQuery := `SELECT COUNT(*)
 		FROM user_cards uc
-		WHERE uc.user_id = ? AND uc.state = 'review'`
+		WHERE uc.user_id = ? AND uc.state = 'review'
+		AND (? = '' OR uc.course_code = ? OR uc.course_code IS NULL)`
 	var reviewCount int
-	err = r.db.QueryRow(reviewQuery, userID).Scan(&reviewCount)
+	err = r.db.QueryRow(reviewQuery, userID, courseCode, courseCode).Scan(&reviewCount)
 	if err != nil {
 		r.logger.Error("failed to get review count", zap.Error(err))
 		reviewCount = 0
 	}
 
-	// Calculate available cards for training
-	// Show actual available count, not limited by session size
-	// Session will still be limited to MaxCardsPerSession (30), but we show total available
 	availableForTraining := dueCount
 	if newCount > 0 {
-		// Add new cards count (not limited here, session logic will handle the limit)
 		availableForTraining += newCount
 	}
 
-	// Get total cards count
 	totalQuery := `SELECT COUNT(*)
 		FROM user_cards uc
-		WHERE uc.user_id = ?`
+		WHERE uc.user_id = ?
+		AND (? = '' OR uc.course_code = ? OR uc.course_code IS NULL)`
 	var totalCards int
-	err = r.db.QueryRow(totalQuery, userID).Scan(&totalCards)
+	err = r.db.QueryRow(totalQuery, userID, courseCode, courseCode).Scan(&totalCards)
 	if err != nil {
 		r.logger.Error("failed to get total cards count", zap.Error(err))
 		totalCards = 0
