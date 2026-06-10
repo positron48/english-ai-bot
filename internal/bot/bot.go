@@ -15,6 +15,7 @@ import (
 	"tgbot-skeleton/internal/ai"
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/database"
+	"tgbot-skeleton/internal/grammarbundle"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/service"
@@ -286,8 +287,7 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 	grammarServicesByBundle := map[string]*service.GrammarService{
 		cfg.Learning.GrammarBundleID: grammarService, // primary bundle from config
 	}
-	knownBundles := []string{"en", "es"}
-	for _, bundleID := range knownBundles {
+	for _, bundleID := range grammarbundle.AvailableBundleIDs() {
 		if bundleID == cfg.Learning.GrammarBundleID {
 			continue // already added above
 		}

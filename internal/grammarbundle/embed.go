@@ -36,6 +36,22 @@ func BundleFS(bundleID string) (fs.FS, error) {
 	return sub, nil
 }
 
+// AvailableBundleIDs returns the list of grammar bundle IDs embedded in the binary
+// (directory names under the embedded root, e.g. ["en", "es"]).
+func AvailableBundleIDs() []string {
+	entries, err := fs.ReadDir(rootFS, ".")
+	if err != nil {
+		return nil
+	}
+	var ids []string
+	for _, e := range entries {
+		if e.IsDir() {
+			ids = append(ids, e.Name())
+		}
+	}
+	return ids
+}
+
 // ValidateEmbeddedBundleID checks that bundleID exists under the embedded root (en, es, …).
 func ValidateEmbeddedBundleID(bundleID string) error {
 	id := strings.TrimSpace(strings.ToLower(bundleID))
