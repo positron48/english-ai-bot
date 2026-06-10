@@ -416,6 +416,12 @@ const loadData = async () => {
   try {
     loading.value = true
     offlineDashboard.value = false
+    // Destroy charts and clear stats before reloading so canvas refs are reset
+    if (chartInstance) { chartInstance.destroy(); chartInstance = null }
+    if (wordsChartInstance) { wordsChartInstance.destroy(); wordsChartInstance = null }
+    stats.value.weeklyStats = []
+    stats.value.wordsAddedStats = []
+    await nextTick()
     let data: any
     if (typeof navigator !== 'undefined' && navigator.onLine === false) {
       const [wordStats, grammarStats] = await Promise.all([
