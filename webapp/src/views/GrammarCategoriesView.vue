@@ -259,15 +259,22 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
-import { grammarClient, type OfflineStatus } from '../api/grammarClient'
+import { grammarClient, setGrammarCourse, type OfflineStatus } from '../api/grammarClient'
 import Icon from '../components/Icon.vue'
 import { isEmbeddedAndroidApp } from '../utils/runtime'
+import { useCourse } from '../composables/useCourse'
 
 const { t, locale } = useI18n()
 const router = useRouter()
+const { currentCourseCode } = useCourse()
+
+watch(currentCourseCode, (code) => {
+  setGrammarCourse(code)
+  loadCategories()
+})
 
 interface Category {
   section_id: string

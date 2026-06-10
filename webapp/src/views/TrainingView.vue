@@ -531,10 +531,17 @@ import {
   buildReportComment
 } from '../constants/contentReportCategories'
 import { useLearningConfig } from '../composables/useLearningConfig'
+import { useCourse } from '../composables/useCourse'
 
 const { t, tm, locale } = useI18n()
 const router = useRouter()
 const { learning, ensureLearningLoaded } = useLearningConfig()
+const { currentCourseCode } = useCourse()
+
+watch(currentCourseCode, () => {
+  loadStats()
+  loadUpcomingCards()
+})
 
 const verbFormsTotalCardsPool = ref<number | null>(null)
 /** Set true after we know whether the user has any materialized verb-form training cards. */
