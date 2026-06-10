@@ -139,7 +139,7 @@ func main() {
 	flag.StringVar(&targetURL, "target-db-url", env("TARGET_DATABASE_URL"), "Target unified DATABASE_URL; defaults to TARGET_DATABASE_URL")
 	flag.DurationVar(&timeout, "timeout", 5*time.Minute, "overall audit timeout (counts and telegram identity scans)")
 	flag.BoolVar(&commit, "commit", false, "write merge data to target DB; requires --phase")
-	flag.StringVar(&phase, "phase", "", "write phase: users|user-courses|course-mappings|content|attempts|srs")
+	flag.StringVar(&phase, "phase", "", "write phase: users|user-courses|course-mappings|content|attempts|srs|legacy-words")
 	flag.Parse()
 
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
