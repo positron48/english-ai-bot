@@ -1,5 +1,6 @@
 import { ref, computed } from 'vue'
 import { courseClient, CourseSummary } from '../api/courseClient'
+import { setGrammarCourse } from '../api/grammarClient'
 
 const courses = ref<CourseSummary[]>([])
 const currentCourse = ref<CourseSummary | null>(null)
@@ -15,6 +16,7 @@ async function ensureCourseLoaded(): Promise<void> {
       const data = await courseClient.getCourses()
       courses.value = data.courses || []
       currentCourse.value = courses.value.find(c => c.is_current) || courses.value[0] || null
+      if (currentCourse.value?.code) setGrammarCourse(currentCourse.value.code)
     } catch {
       // ignore — course selector simply won't render
     }
@@ -37,6 +39,8 @@ export function useCourse() {
     courses.value = courses.value.map(c => ({ ...c, is_current: c.code === code }))
     // allow next ensureCourseLoaded to refresh the list
     loadPromise = null
+    // notify grammar client so it fetches the right bundle on next request
+    setGrammarCourse(code)
   }
 
   return {

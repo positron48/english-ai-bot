@@ -100,6 +100,7 @@ type Router struct {
 	optionsService                    optionsServiceInterface
 	wordService                       interface{} // Will be properly typed later
 	grammarService                    *service.GrammarService
+	grammarServices                   map[string]*service.GrammarService // keyed by bundle ID: "en", "es", ...
 	cbService                         *service.CircuitBreakerService
 	pronunciationService              pronunciationServiceInterface
 	aiService                         interface{} // Will be properly typed later
@@ -226,9 +227,43 @@ func (r *Router) SetDependencies(
 	r.setupProtectedRoutes()
 }
 
-// SetGrammarService sets the grammar service
+// SetGrammarService sets the grammar service (default/fallback).
 func (r *Router) SetGrammarService(grammarService *service.GrammarService) {
 	r.grammarService = grammarService
+}
+
+// SetGrammarServices registers per-bundle grammar services. The map key is
+// the bundle ID ("en", "es"). When set, grammar handlers select the service
+// matching the user's current course (en_ru→"en", es_ru→"es").
+func (r *Router) SetGrammarServices(services map[string]*service.GrammarService) {
+	r.grammarServices = services
+}
+
+// grammarBundleForCourse returns the grammar bundle ID for a given course code.
+func grammarBundleForCourse(courseCode string) string {
+	parts := strings.SplitN(courseCode, "_", 2)
+	if len(parts) > 0 && parts[0] != "" {
+		return parts[0] // "en_ru" → "en", "es_ru" → "es"
+	}
+	return "en"
+}
+
+// grammarServiceForRequest returns the GrammarService appropriate for the
+// current user's course (from ?course_code= param or stored preference).
+// Falls back to the default grammarService if multi-bundle is not configured.
+func (r *Router) grammarServiceForRequest(req *http.Request, userID int64) *service.GrammarService {
+	if len(r.grammarServices) == 0 {
+		return r.grammarService
+	}
+	courseCode := req.URL.Query().Get("course_code")
+	if courseCode == "" {
+		courseCode = r.currentCourseCodeForUser(req.Context(), userID)
+	}
+	bundleID := grammarBundleForCourse(courseCode)
+	if svc, ok := r.grammarServices[bundleID]; ok {
+		return svc
+	}
+	return r.grammarService
 }
 
 // SetPronunciationService sets pronunciation/TTS service and registers media route.

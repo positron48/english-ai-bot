@@ -281,6 +281,41 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 	grammarService.SetTrainingPackRepository(grammarTrainingPackRepo)
 	grammarService.SetSRSRepository(grammarSRSRepo)
 
+	// Build per-bundle grammar services so multi-course instances can serve
+	// different grammar content (en/es) based on the user's selected course.
+	grammarServicesByBundle := map[string]*service.GrammarService{
+		cfg.Learning.GrammarBundleID: grammarService, // primary bundle from config
+	}
+	knownBundles := []string{"en", "es"}
+	for _, bundleID := range knownBundles {
+		if bundleID == cfg.Learning.GrammarBundleID {
+			continue // already added above
+		}
+		altLC := cfg.Learning
+		altLC.GrammarBundleID = bundleID
+		var altContentRepo *repository.GrammarContentRepository
+		var altPackRepo *repository.GrammarTrainingPackRepository
+		if cfg.Learning.ContentSource == "db" {
+			altContentRepo = repository.NewGrammarContentRepositoryFromDB(conn, bundleID, log)
+			altPackRepo = repository.NewGrammarTrainingPackRepositoryFromDB(conn, bundleID, log)
+		} else {
+			altContentRepo, err = repository.NewGrammarContentRepositoryForLearning(altLC, log)
+			if err != nil {
+				log.Warn("skipping grammar bundle (content repo init failed)", zap.String("bundle", bundleID), zap.Error(err))
+				continue
+			}
+			altPackRepo, err = repository.NewGrammarTrainingPackRepositoryForLearning(altLC, log)
+			if err != nil {
+				log.Warn("skipping grammar bundle (training pack repo init failed)", zap.String("bundle", bundleID), zap.Error(err))
+				continue
+			}
+		}
+		altSvc := service.NewGrammarService(altContentRepo, grammarPublishRepo, grammarAttemptRepo, altLC, log)
+		altSvc.SetTrainingPackRepository(altPackRepo)
+		altSvc.SetSRSRepository(grammarSRSRepo)
+		grammarServicesByBundle[bundleID] = altSvc
+	}
+
 	// Create web router
 	webRouter := web.NewRouter(
 		log,
@@ -294,6 +329,7 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 	webRouter.SetDependencies(userRepo, wordService, aiService, bot, cfg.Telegram.Token)
 	webRouter.SetOTPRepo(otpRepo)
 	webRouter.SetGrammarService(grammarService)
+	webRouter.SetGrammarServices(grammarServicesByBundle)
 	webRouter.SetPronunciationService(pronunciationService)
 	speakingEvaluator := service.NewSpeakingEvaluatorService(cfg, log)
 	webRouter.SetSpeakingEvaluator(speakingEvaluator)

@@ -123,6 +123,22 @@ const categoriesCacheTTL = 30_000
 let categoriesCache: { data: { categories: any[] }; expiresAt: number } | null = null
 let categoriesRequest: Promise<{ categories: any[] }> | null = null
 
+// Current course code — set via setGrammarCourse() when user switches courses.
+let _grammarCourseCode = ''
+
+/** Notify grammarClient of course change. Clears in-memory cache so next
+ *  API call fetches data for the new course. */
+export function setGrammarCourse(courseCode: string): void {
+  if (_grammarCourseCode !== courseCode) {
+    _grammarCourseCode = courseCode
+    clearCategoriesCache()
+  }
+}
+
+function grammarCourseParam(): string {
+  return _grammarCourseCode ? `?course_code=${encodeURIComponent(_grammarCourseCode)}` : ''
+}
+
 function clearCategoriesCache() {
   categoriesCache = null
   categoriesRequest = null
@@ -132,7 +148,7 @@ async function fetchOnlineCategories(): Promise<{ categories: any[] }> {
   const now = Date.now()
   if (categoriesCache && categoriesCache.expiresAt > now) return clone(categoriesCache.data)
   if (categoriesRequest) return clone(await categoriesRequest)
-  categoriesRequest = apiClient.request('/api/learning/grammar/categories')
+  categoriesRequest = apiClient.request(`/api/learning/grammar/categories${grammarCourseParam()}`)
     .then((data: any) => {
       const normalized = { categories: data.categories || [] }
       categoriesCache = { data: normalized, expiresAt: Date.now() + categoriesCacheTTL }
@@ -451,14 +467,14 @@ export const grammarClient = {
 
   async getStatistics(): Promise<any> {
     return offlineFallback(
-      () => apiClient.request('/api/learning/grammar/statistics'),
+      () => apiClient.request(`/api/learning/grammar/statistics${grammarCourseParam()}`),
       async () => buildStatistics(await requireMeta()),
     )
   },
 
   async getTrainingAvailability(): Promise<any> {
     return offlineFallback(
-      () => apiClient.request('/api/learning/grammar/training/availability'),
+      () => apiClient.request(`/api/learning/grammar/training/availability${grammarCourseParam()}`),
       async () => {
         const questions = await getOfflineTrainingQuestionPool()
         const blocks = new Set(questions.map((q: any) => q?.theory_block_id).filter(Boolean))
@@ -522,7 +538,7 @@ export const grammarClient = {
 
   async getChapters(sectionID: string): Promise<{ chapters: any[] }> {
     return offlineFallback(
-      () => apiClient.request(`/api/learning/grammar/categories/${sectionID}/chapters`),
+      () => apiClient.request(`/api/learning/grammar/categories/${sectionID}/chapters${grammarCourseParam()}`),
       async () => {
         const meta = await requireMeta()
         const section = meta.sections.find((item) => item.section_id === sectionID)
@@ -534,7 +550,7 @@ export const grammarClient = {
 
   async getChapter(chapterID: string): Promise<any> {
     return offlineFallback(
-      () => apiClient.request(`/api/learning/grammar/chapters/${chapterID}`),
+      () => apiClient.request(`/api/learning/grammar/chapters/${chapterID}${grammarCourseParam()}`),
       async () => {
         const payload = await getStoredChapter(chapterID)
         if (!payload) throw new OfflineGrammarUnavailableError('Chapter is not available offline')
@@ -546,7 +562,7 @@ export const grammarClient = {
 
   async getChapterForTheory(chapterID: string): Promise<any> {
     return offlineFallback(
-      () => apiClient.request(`/api/learning/grammar/chapters/${chapterID}`),
+      () => apiClient.request(`/api/learning/grammar/chapters/${chapterID}${grammarCourseParam()}`),
       async () => {
         const payload = await getStoredChapter(chapterID)
         if (!payload) throw new OfflineGrammarUnavailableError('Chapter is not available offline')
@@ -572,21 +588,21 @@ export const grammarClient = {
 
   async canAccessChapter(chapterID: string): Promise<{ can_access: boolean }> {
     return offlineFallback(
-      () => apiClient.request(`/api/learning/grammar/chapters/${chapterID}/access`),
+      () => apiClient.request(`/api/learning/grammar/chapters/${chapterID}/access${grammarCourseParam()}`),
       async () => ({ can_access: computeChapterAccess(await requireMeta(), chapterID) }),
     )
   },
 
   async canAccessSection(sectionID: string): Promise<{ can_access: boolean }> {
     return offlineFallback(
-      () => apiClient.request(`/api/learning/grammar/categories/${sectionID}/access`),
+      () => apiClient.request(`/api/learning/grammar/categories/${sectionID}/access${grammarCourseParam()}`),
       async () => ({ can_access: computeSectionAccess(await requireMeta(), sectionID) }),
     )
   },
 
   async getChapterTest(chapterID: string): Promise<{ questions: any[]; total: number }> {
     return offlineFallback(
-      () => apiClient.request(`/api/learning/grammar/chapters/${chapterID}/test`),
+      () => apiClient.request(`/api/learning/grammar/chapters/${chapterID}/test${grammarCourseParam()}`),
       async () => {
         const payload = await getStoredChapter(chapterID)
         if (!payload) throw new OfflineGrammarUnavailableError('Chapter test is not available offline')
@@ -600,7 +616,7 @@ export const grammarClient = {
 
   async getCategoryTest(sectionID: string): Promise<{ questions: any[]; total: number }> {
     return offlineFallback(
-      () => apiClient.request(`/api/learning/grammar/categories/${sectionID}/test`),
+      () => apiClient.request(`/api/learning/grammar/categories/${sectionID}/test${grammarCourseParam()}`),
       async () => {
         const meta = await requireMeta()
         const section = meta.sections.find((item) => item.section_id === sectionID)
@@ -742,7 +758,7 @@ export const grammarClient = {
 
   async getNextChapter(chapterID: string): Promise<any> {
     return offlineFallback(
-      () => apiClient.request(`/api/learning/grammar/chapters/${chapterID}/next`),
+      () => apiClient.request(`/api/learning/grammar/chapters/${chapterID}/next${grammarCourseParam()}`),
       async () => {
         const meta = await requireMeta()
         for (const section of meta.sections) {

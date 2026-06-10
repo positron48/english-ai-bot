@@ -36,36 +36,36 @@ func (r *Router) handleLearningGrammarCategories(w http.ResponseWriter, req *htt
 		return
 	}
 
-	sectionsData, err := r.grammarService.ContentRepo.GetSections()
+	sectionsData, err := r.grammarServiceForRequest(req, userID).ContentRepo.GetSections()
 	if err != nil {
 		r.logger.Error("failed to get grammar categories", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
-	sectionItems, err := r.grammarService.PublishRepo.GetPublishedItemsByType("section")
+	sectionItems, err := r.grammarServiceForRequest(req, userID).PublishRepo.GetPublishedItemsByType("section")
 	if err != nil {
 		r.logger.Error("failed to get grammar section publish state", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
-	chapterItems, err := r.grammarService.PublishRepo.GetPublishedItemsByType("chapter")
+	chapterItems, err := r.grammarServiceForRequest(req, userID).PublishRepo.GetPublishedItemsByType("chapter")
 	if err != nil {
 		r.logger.Error("failed to get grammar chapter publish state", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
-	progressByChapter, err := r.grammarService.AttemptRepo.GetAllChapterProgress(userID)
+	progressByChapter, err := r.grammarServiceForRequest(req, userID).AttemptRepo.GetAllChapterProgress(userID)
 	if err != nil {
 		r.logger.Error("failed to get grammar chapter progress", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
-	categoryScores, err := r.grammarService.AttemptRepo.GetCategoryTestBestScores(userID)
+	categoryScores, err := r.grammarServiceForRequest(req, userID).AttemptRepo.GetCategoryTestBestScores(userID)
 	if err != nil {
 		r.logger.Warn("failed to get grammar category scores, defaulting section access to locked", zap.Error(err))
 		categoryScores = map[string]int{}
 	}
-	placementResult, _ := r.grammarService.AttemptRepo.GetPlacementTestResult(userID)
+	placementResult, _ := r.grammarServiceForRequest(req, userID).AttemptRepo.GetPlacementTestResult(userID)
 	levelOrder := map[string]int{"A0": 0, "A1": 1, "A2": 2, "B1": 3, "B2": 4, "C1": 5, "C2": 6, "mixed": -1}
 	placementOpened := make(map[string]bool)
 	placementEffectiveOrder := -1
@@ -240,7 +240,7 @@ func (r *Router) handleLearningGrammarChapters(w http.ResponseWriter, req *http.
 		return
 	}
 
-	chapters, err := r.grammarService.GetPublishedChapters(req.Context(), sectionID, userID)
+	chapters, err := r.grammarServiceForRequest(req, userID).GetPublishedChapters(req.Context(), sectionID, userID)
 	if err != nil {
 		r.logger.Error("failed to get grammar chapters", zap.String("section_id", sectionID), zap.Error(err))
 		if strings.Contains(err.Error(), "not found") || strings.Contains(err.Error(), "not published") {
@@ -356,7 +356,7 @@ func (r *Router) handleLearningGrammarNextChapter(w http.ResponseWriter, req *ht
 		return
 	}
 
-	nextID, isLast, sectionID, err := r.grammarService.GetNextPublishedChapterID(req.Context(), chapterID)
+	nextID, isLast, sectionID, err := r.grammarServiceForRequest(req, userID).GetNextPublishedChapterID(req.Context(), chapterID)
 	if err != nil {
 		r.logger.Error("failed to get next chapter", zap.String("chapter_id", chapterID), zap.Error(err))
 		if strings.Contains(err.Error(), "not found") {
@@ -412,7 +412,7 @@ func (r *Router) handleLearningGrammarChapter(w http.ResponseWriter, req *http.R
 
 	// For chapter content, we include answers for inline quizzes (quick feedback)
 	// but not for chapter tests
-	content, err := r.grammarService.GetChapterContent(req.Context(), chapterID, true)
+	content, err := r.grammarServiceForRequest(req, userID).GetChapterContent(req.Context(), chapterID, true)
 	if err != nil {
 		r.logger.Error("failed to get chapter content", zap.String("chapter_id", chapterID), zap.Error(err))
 		if strings.Contains(err.Error(), "not found") || strings.Contains(err.Error(), "not published") {
@@ -428,7 +428,7 @@ func (r *Router) handleLearningGrammarChapter(w http.ResponseWriter, req *http.R
 		"title":              content.Title,
 		"title_translations": content.Chapter.TitleTranslations,
 	}
-	if sec, err := r.grammarService.GetSectionBySectionID(req.Context(), content.Chapter.SectionID); err == nil && sec != nil {
+	if sec, err := r.grammarServiceForRequest(req, userID).GetSectionBySectionID(req.Context(), content.Chapter.SectionID); err == nil && sec != nil {
 		resp["section"] = map[string]interface{}{
 			"section_id":         sec.SectionID,
 			"title":              sec.Title,
@@ -486,7 +486,7 @@ func (r *Router) handleLearningGrammarCategoryTest(w http.ResponseWriter, req *h
 		return
 	}
 
-	test, err := r.grammarService.GenerateCategoryTest(req.Context(), sectionID)
+	test, err := r.grammarServiceForRequest(req, userID).GenerateCategoryTest(req.Context(), sectionID)
 	if err != nil {
 		r.logger.Error("failed to generate category test", zap.String("section_id", sectionID), zap.Error(err))
 		if strings.Contains(err.Error(), "not found") {
@@ -543,7 +543,7 @@ func (r *Router) handleLearningGrammarChapterTest(w http.ResponseWriter, req *ht
 		return
 	}
 
-	test, err := r.grammarService.GenerateChapterTest(req.Context(), chapterID)
+	test, err := r.grammarServiceForRequest(req, userID).GenerateChapterTest(req.Context(), chapterID)
 	if err != nil {
 		r.logger.Error("failed to generate chapter test", zap.String("chapter_id", chapterID), zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -599,7 +599,7 @@ func (r *Router) handleLearningGrammarSubmitTest(w http.ResponseWriter, req *htt
 		return
 	}
 
-	result, err := r.grammarService.SubmitTest(req.Context(), userID, request.Scope, request.ScopeID, request.Answers)
+	result, err := r.grammarServiceForRequest(req, userID).SubmitTest(req.Context(), userID, request.Scope, request.ScopeID, request.Answers)
 	if err != nil {
 		r.logger.Error("failed to submit test", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -686,7 +686,7 @@ func (r *Router) handleLearningGrammarChapterAccess(w http.ResponseWriter, req *
 		return
 	}
 
-	canAccess, err := r.grammarService.CanAccessChapter(req.Context(), userID, chapterID)
+	canAccess, err := r.grammarServiceForRequest(req, userID).CanAccessChapter(req.Context(), userID, chapterID)
 	if err != nil {
 		r.logger.Error("failed to check chapter access", zap.String("chapter_id", chapterID), zap.Error(err))
 		if strings.Contains(err.Error(), "not found") {
@@ -739,7 +739,7 @@ func (r *Router) handleLearningGrammarSectionAccess(w http.ResponseWriter, req *
 		return
 	}
 
-	canAccess, err := r.grammarService.CanAccessSection(req.Context(), userID, sectionID)
+	canAccess, err := r.grammarServiceForRequest(req, userID).CanAccessSection(req.Context(), userID, sectionID)
 	if err != nil {
 		r.logger.Error("failed to check section access", zap.String("section_id", sectionID), zap.Error(err))
 		if strings.Contains(err.Error(), "not found") {
@@ -780,7 +780,7 @@ func (r *Router) handleLearningGrammarStatistics(w http.ResponseWriter, req *htt
 		return
 	}
 
-	stats, err := r.grammarService.GetGrammarStatistics(req.Context(), userID)
+	stats, err := r.grammarServiceForRequest(req, userID).GetGrammarStatistics(req.Context(), userID)
 	if err != nil {
 		r.logger.Error("failed to get grammar statistics", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -833,7 +833,7 @@ func (r *Router) handleLearningGrammarPlacementTest(w http.ResponseWriter, req *
 		return
 	}
 
-	test, err := r.grammarService.GeneratePlacementTest(req.Context())
+	test, err := r.grammarServiceForRequest(req, userID).GeneratePlacementTest(req.Context())
 	if err != nil {
 		r.logger.Error("failed to generate placement test", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -876,7 +876,7 @@ func (r *Router) handleLearningGrammarSubmitPlacementTest(w http.ResponseWriter,
 		return
 	}
 
-	result, err := r.grammarService.SubmitPlacementTest(req.Context(), userID, answers)
+	result, err := r.grammarServiceForRequest(req, userID).SubmitPlacementTest(req.Context(), userID, answers)
 	if err != nil {
 		r.logger.Error("failed to submit placement test", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -898,7 +898,7 @@ func (r *Router) handleLearningGrammarTrainingAvailability(w http.ResponseWriter
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
-	availability, err := r.grammarService.GetGrammarTrainingAvailability(req.Context(), userID)
+	availability, err := r.grammarServiceForRequest(req, userID).GetGrammarTrainingAvailability(req.Context(), userID)
 	if err != nil {
 		r.logger.Error("failed to get grammar training availability", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -926,7 +926,7 @@ func (r *Router) handleLearningGrammarTrainingStart(w http.ResponseWriter, req *
 	}
 	var body grammarTrainingStartRequest
 	_ = json.NewDecoder(req.Body).Decode(&body)
-	session, err := r.grammarService.StartGrammarSrsSession(req.Context(), userID, body.Limit)
+	session, err := r.grammarServiceForRequest(req, userID).StartGrammarSrsSession(req.Context(), userID, body.Limit)
 	if err != nil {
 		r.logger.Error("failed to start grammar training session", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -960,7 +960,7 @@ func (r *Router) handleLearningGrammarTrainingAnswer(w http.ResponseWriter, req 
 		http.Error(w, "question_id required", http.StatusBadRequest)
 		return
 	}
-	result, err := r.grammarService.SubmitGrammarSrsAnswer(req.Context(), userID, body.QuestionID, body.Answer)
+	result, err := r.grammarServiceForRequest(req, userID).SubmitGrammarSrsAnswer(req.Context(), userID, body.QuestionID, body.Answer)
 	if err != nil {
 		if strings.Contains(err.Error(), "not found") {
 			http.Error(w, "Question not found", http.StatusNotFound)
