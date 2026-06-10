@@ -2,6 +2,7 @@ package bot
 
 import (
 	"context"
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -283,11 +284,14 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 	grammarService.SetSRSRepository(grammarSRSRepo)
 
 	// Build per-bundle grammar services so multi-course instances can serve
-	// different grammar content (en/es) based on the user's selected course.
+	// different grammar content based on the user's selected course.
+	// Bundle list is discovered dynamically: from DB in "db" mode, from
+	// the embedded FS in "bundle" mode — no hardcoded language list.
 	grammarServicesByBundle := map[string]*service.GrammarService{
 		cfg.Learning.GrammarBundleID: grammarService, // primary bundle from config
 	}
-	for _, bundleID := range grammarbundle.AvailableBundleIDs() {
+	allBundleIDs := availableGrammarBundleIDs(cfg.Learning.ContentSource, conn)
+	for _, bundleID := range allBundleIDs {
 		if bundleID == cfg.Learning.GrammarBundleID {
 			continue // already added above
 		}
@@ -624,4 +628,26 @@ func normalizeAPIEndpoint(base string) string {
 // parseDuration parses a duration string (e.g., "30s", "5m")
 func parseDuration(s string) (time.Duration, error) {
 	return time.ParseDuration(s)
+}
+
+// availableGrammarBundleIDs returns the list of grammar bundle IDs to load at startup.
+// In "db" mode: queries grammar_content_bundle_meta for rows already imported.
+// In "bundle" mode: reads directory names from the embedded FS.
+func availableGrammarBundleIDs(contentSource string, db *sql.DB) []string {
+	if contentSource == "db" && db != nil {
+		rows, err := db.Query(`SELECT DISTINCT bundle_id FROM grammar_content_bundle_meta ORDER BY bundle_id`)
+		if err != nil {
+			return nil
+		}
+		defer rows.Close()
+		var ids []string
+		for rows.Next() {
+			var id string
+			if err := rows.Scan(&id); err == nil && id != "" {
+				ids = append(ids, id)
+			}
+		}
+		return ids
+	}
+	return grammarbundle.AvailableBundleIDs()
 }
