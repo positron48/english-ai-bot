@@ -67,11 +67,20 @@ func mergeContent(ctx context.Context, sources []openedSourceDB, targetDB *sql.D
 		if err := targetDB.QueryRowContext(ctx, `SELECT id FROM courses WHERE code = $1`, courseCode).Scan(&targetCourseID); err != nil {
 			return nil, fmt.Errorf("target course %s: %w", courseCode, err)
 		}
+		// Import source word_cards into unified and build source_wc_id → unified_wc_id map.
+		// This ensures that when we copy learning_items with source_kind='word_card', we
+		// remap their source_id to the correct unified word_card ID (not the source DB's ID,
+		// which may differ when both DBs have the same sequence position but different content).
+		wcMap, err := importWordCardsFromSource(ctx, src.DB, targetDB, summary)
+		if err != nil {
+			return nil, fmt.Errorf("import word_cards from %s: %w", src.Label, err)
+		}
+
 		moduleMap, err := copyModules(ctx, src.DB, targetDB, sourceCourseID, targetCourseID)
 		if err != nil {
 			return nil, fmt.Errorf("copy modules %s: %w", src.Label, err)
 		}
-		if err := copyLearningItems(ctx, src.DB, targetDB, src.Label, sourceCourseID, targetCourseID, moduleMap, summary); err != nil {
+		if err := copyLearningItems(ctx, src.DB, targetDB, src.Label, sourceCourseID, targetCourseID, moduleMap, wcMap, summary); err != nil {
 			return nil, fmt.Errorf("copy learning items %s: %w", src.Label, err)
 		}
 	}
@@ -131,6 +140,7 @@ func copyLearningItems(
 	sourceLabel string,
 	sourceCourseID, targetCourseID int64,
 	moduleMap map[int64]int64,
+	wcMap map[int64]int64, // source word_card_id → unified word_card_id; nil = no remapping
 	summary *writeSummary,
 ) error {
 	rows, err := sourceDB.QueryContext(ctx, `
@@ -158,6 +168,21 @@ func copyLearningItems(
 			return err
 		}
 		summary.ItemsScanned++
+
+		// For word_card learning_items, remap source_id from the source DB's word_card ID
+		// to the unified DB's word_card ID (found by word text in importWordCardsFromSource).
+		// Without this, both en_ru and es_ru would end up referencing the same ID-space which
+		// maps to whichever content was seeded first — producing wrong word_card references.
+		if sourceKind == "word_card" && len(wcMap) > 0 {
+			if srcWCID, ok := wordCardIDFromString(sourceID); ok {
+				if targetWCID, mapped := wcMap[srcWCID]; mapped {
+					sourceID = strconv.FormatInt(targetWCID, 10)
+				} else {
+					summary.Skipped++
+					continue // word_card not in unified — skip this item
+				}
+			}
+		}
 
 		var targetModuleID sql.NullInt64
 		if moduleID.Valid {
