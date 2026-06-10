@@ -28,14 +28,16 @@ func (r *Router) handleAdminGrammarCategories(w http.ResponseWriter, req *http.R
 		return
 	}
 
-	sectionsData, err := r.grammarService.ContentRepo.GetSections()
+	userID := getUserIDFromContext(req.Context())
+	svc := r.grammarServiceForRequest(req, userID)
+	sectionsData, err := svc.ContentRepo.GetSections()
 	if err != nil {
 		r.logger.Error("failed to get sections", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 
-	publishedItems, err := r.grammarService.PublishRepo.GetPublishedItemsByType("section")
+	publishedItems, err := svc.PublishRepo.GetPublishedItemsByType("section")
 	if err != nil {
 		r.logger.Error("failed to get published items", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -63,9 +65,9 @@ func (r *Router) handleAdminGrammarCategories(w http.ResponseWriter, req *http.R
 		availableChapters := 0
 		publishedChapters := 0
 		for _, chapterID := range section.ChapterIDs {
-			if r.grammarService.ContentRepo.ChapterExists(chapterID) {
+			if svc.ContentRepo.ChapterExists(chapterID) {
 				availableChapters++
-				chapterItem, _ := r.grammarService.PublishRepo.GetPublishedItem("chapter", chapterID)
+				chapterItem, _ := svc.PublishRepo.GetPublishedItem("chapter", chapterID)
 				if chapterItem.IsPublished {
 					publishedChapters++
 				}
@@ -122,6 +124,7 @@ func (r *Router) handleAdminGrammarCategoryPublish(w http.ResponseWriter, req *h
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
+	svc := r.grammarServiceForRequest(req, userID)
 
 	// Extract section_id from path
 	path := strings.TrimPrefix(req.URL.Path, "/api/admin/grammar/categories/")
@@ -144,7 +147,7 @@ func (r *Router) handleAdminGrammarCategoryPublish(w http.ResponseWriter, req *h
 	}
 
 	// Set category published status
-	if err := r.grammarService.PublishRepo.SetPublished("section", sectionID, request.IsPublished, &userID); err != nil {
+	if err := svc.PublishRepo.SetPublished("section", sectionID, request.IsPublished, &userID); err != nil {
 		r.logger.Error("failed to set category published", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
@@ -152,17 +155,17 @@ func (r *Router) handleAdminGrammarCategoryPublish(w http.ResponseWriter, req *h
 
 	// Cascade to chapters if requested
 	if request.Cascade {
-		sectionsData, err := r.grammarService.ContentRepo.GetSections()
+		sectionsData, err := svc.ContentRepo.GetSections()
 		if err == nil {
 			for _, section := range sectionsData.Sections {
 				if section.SectionID == sectionID {
 					chapterIDs := make([]string, 0, len(section.ChapterIDs))
 					for _, chapterID := range section.ChapterIDs {
-						if r.grammarService.ContentRepo.ChapterExists(chapterID) {
+						if svc.ContentRepo.ChapterExists(chapterID) {
 							chapterIDs = append(chapterIDs, chapterID)
 						}
 					}
-					if err := r.grammarService.PublishRepo.BulkSetPublished("chapter", chapterIDs, request.IsPublished, &userID); err != nil {
+					if err := svc.PublishRepo.BulkSetPublished("chapter", chapterIDs, request.IsPublished, &userID); err != nil {
 						r.logger.Error("failed to cascade publish to chapters", zap.Error(err))
 					}
 					break
@@ -197,13 +200,15 @@ func (r *Router) handleAdminGrammarChapters(w http.ResponseWriter, req *http.Req
 		return
 	}
 
+	userID := getUserIDFromContext(req.Context())
+	svc := r.grammarServiceForRequest(req, userID)
 	sectionID := req.URL.Query().Get("section_id")
 	if sectionID == "" {
 		http.Error(w, "section_id required", http.StatusBadRequest)
 		return
 	}
 
-	sectionsData, err := r.grammarService.ContentRepo.GetSections()
+	sectionsData, err := svc.ContentRepo.GetSections()
 	if err != nil {
 		r.logger.Error("failed to get sections", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -223,7 +228,7 @@ func (r *Router) handleAdminGrammarChapters(w http.ResponseWriter, req *http.Req
 		return
 	}
 
-	publishedItems, err := r.grammarService.PublishRepo.GetPublishedItemsByType("chapter")
+	publishedItems, err := svc.PublishRepo.GetPublishedItemsByType("chapter")
 	if err != nil {
 		r.logger.Error("failed to get published items", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -240,14 +245,14 @@ func (r *Router) handleAdminGrammarChapters(w http.ResponseWriter, req *http.Req
 
 	chapters := make([]ChapterAdminResponse, 0, len(section.ChapterIDs))
 	for _, chapterID := range section.ChapterIDs {
-		fileExists := r.grammarService.ContentRepo.ChapterExists(chapterID)
+		fileExists := svc.ContentRepo.ChapterExists(chapterID)
 		item, exists := publishedItems[chapterID]
 		isPublished := exists && item.IsPublished
 
 		// Try to get chapter title
 		title := chapterID
 		if fileExists {
-			if chapter, err := r.grammarService.ContentRepo.GetChapter(chapterID); err == nil {
+			if chapter, err := svc.ContentRepo.GetChapter(chapterID); err == nil {
 				title = chapter.Title
 			}
 		}
@@ -298,6 +303,7 @@ func (r *Router) handleAdminGrammarChapterPublish(w http.ResponseWriter, req *ht
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
+	svc := r.grammarServiceForRequest(req, userID)
 
 	// Extract chapter_id from path
 	path := strings.TrimPrefix(req.URL.Path, "/api/admin/grammar/chapters/")
@@ -318,7 +324,7 @@ func (r *Router) handleAdminGrammarChapterPublish(w http.ResponseWriter, req *ht
 		return
 	}
 
-	if err := r.grammarService.PublishRepo.SetPublished("chapter", chapterID, request.IsPublished, &userID); err != nil {
+	if err := svc.PublishRepo.SetPublished("chapter", chapterID, request.IsPublished, &userID); err != nil {
 		r.logger.Error("failed to set chapter published", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
@@ -357,6 +363,7 @@ func (r *Router) handleAdminGrammarItemRename(w http.ResponseWriter, req *http.R
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
+	svc := r.grammarServiceForRequest(req, userID)
 
 	// Extract item_type and item_id from path
 	path := strings.TrimPrefix(req.URL.Path, "/api/admin/grammar/items/")
@@ -384,7 +391,7 @@ func (r *Router) handleAdminGrammarItemRename(w http.ResponseWriter, req *http.R
 		return
 	}
 
-	if err := r.grammarService.PublishRepo.SetName(itemType, itemID, request.Name, &userID); err != nil {
+	if err := svc.PublishRepo.SetName(itemType, itemID, request.Name, &userID); err != nil {
 		r.logger.Error("failed to set name", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return

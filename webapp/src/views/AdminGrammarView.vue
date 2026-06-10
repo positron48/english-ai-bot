@@ -1,7 +1,16 @@
 <template>
   <div class="admin-grammar">
     <h1>Grammar Course Management</h1>
-    
+
+    <div v-if="availableCourses.length > 1" class="course-selector">
+      <label>Course:</label>
+      <select v-model="selectedCourseCode" class="course-select">
+        <option v-for="course in availableCourses" :key="course.code" :value="course.code">
+          {{ course.title || course.code }}
+        </option>
+      </select>
+    </div>
+
     <div v-if="loading" class="loading">
       <p>Loading...</p>
     </div>
@@ -123,8 +132,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { apiClient } from '../api/client'
+import { courseClient, type CourseSummary } from '../api/courseClient'
 
 interface Category {
   section_id: string
@@ -153,6 +163,12 @@ const categories = ref<Category[]>([])
 const loading = ref(true)
 const error = ref<string | null>(null)
 const searchQuery = ref('')
+const selectedCourseCode = ref('')
+const availableCourses = ref<CourseSummary[]>([])
+
+const courseParam = computed(() =>
+  selectedCourseCode.value ? `?course_code=${selectedCourseCode.value}` : ''
+)
 
 const filteredCategories = computed(() => {
   if (!searchQuery.value) return categories.value
@@ -168,7 +184,7 @@ const loadCategories = async () => {
   loading.value = true
   error.value = null
   try {
-    const data: { categories: Category[] } = await apiClient.request('/api/admin/grammar/categories')
+    const data: { categories: Category[] } = await apiClient.request(`/api/admin/grammar/categories${courseParam.value}`)
     categories.value = (data.categories || []).map(cat => ({
       ...cat,
       expanded: false,
@@ -200,8 +216,9 @@ const loadChapters = async (sectionId: string) => {
   
   category.chaptersLoading = true
   try {
+    const sep = courseParam.value ? '&' : '?'
     const data: { chapters: Chapter[] } = await apiClient.request(
-      `/api/admin/grammar/chapters?section_id=${sectionId}`
+      `/api/admin/grammar/chapters${courseParam.value}${sep}section_id=${sectionId}`
     )
     category.chapters = data.chapters || []
   } catch (err: any) {
@@ -214,7 +231,7 @@ const loadChapters = async (sectionId: string) => {
 
 const toggleCategoryPublish = async (category: Category) => {
   try {
-    await apiClient.request(`/api/admin/grammar/categories/${category.section_id}/publish`, {
+    await apiClient.request(`/api/admin/grammar/categories/${category.section_id}/publish${courseParam.value}`, {
       method: 'POST',
       body: {
         is_published: !category.is_published,
@@ -230,7 +247,7 @@ const toggleCategoryPublish = async (category: Category) => {
 
 const toggleChapterPublish = async (chapter: Chapter) => {
   try {
-    await apiClient.request(`/api/admin/grammar/chapters/${chapter.chapter_id}/publish`, {
+    await apiClient.request(`/api/admin/grammar/chapters/${chapter.chapter_id}/publish${courseParam.value}`, {
       method: 'POST',
       body: {
         is_published: !chapter.is_published
@@ -245,7 +262,7 @@ const toggleChapterPublish = async (chapter: Chapter) => {
 
 const saveCategoryName = async (category: Category) => {
   try {
-    await apiClient.request(`/api/admin/grammar/items/section/${category.section_id}/rename`, {
+    await apiClient.request(`/api/admin/grammar/items/section/${category.section_id}/rename${courseParam.value}`, {
       method: 'POST',
       body: {
         name: category.custom_name || null
@@ -259,7 +276,7 @@ const saveCategoryName = async (category: Category) => {
 
 const saveChapterName = async (chapter: Chapter) => {
   try {
-    await apiClient.request(`/api/admin/grammar/items/chapter/${chapter.chapter_id}/rename`, {
+    await apiClient.request(`/api/admin/grammar/items/chapter/${chapter.chapter_id}/rename${courseParam.value}`, {
       method: 'POST',
       body: {
         name: chapter.custom_name || null
@@ -275,7 +292,7 @@ const bulkPublishChapters = async (category: Category, publish: boolean) => {
   if (!category.chapters) return
   
   try {
-    await apiClient.request(`/api/admin/grammar/categories/${category.section_id}/publish`, {
+    await apiClient.request(`/api/admin/grammar/categories/${category.section_id}/publish${courseParam.value}`, {
       method: 'POST',
       body: {
         is_published: publish,
@@ -294,7 +311,22 @@ const bulkPublishChapters = async (category: Category, publish: boolean) => {
   }
 }
 
-onMounted(() => {
+watch(selectedCourseCode, () => {
+  loadCategories()
+})
+
+onMounted(async () => {
+  try {
+    const data = await courseClient.getCourses()
+    availableCourses.value = data.courses || []
+    if (availableCourses.value.length > 0) {
+      selectedCourseCode.value = availableCourses.value[0].code
+      // watch will trigger loadCategories
+      return
+    }
+  } catch {
+    // fall through
+  }
   loadCategories()
 })
 </script>
@@ -304,6 +336,23 @@ onMounted(() => {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
+}
+
+.course-selector {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.course-select {
+  padding: 8px 12px;
+  border: 2px solid var(--border-primary);
+  border-radius: 6px;
+  background: var(--input-bg);
+  color: var(--text-primary);
+  font-size: 15px;
+  cursor: pointer;
 }
 
 .loading, .error {
