@@ -175,7 +175,7 @@ func (r *CourseRepository) queryWordList(ctx context.Context, userCourseID, _ in
 		li.id,
 		li.source_id,
 		COALESCE(li.title, wc.word, '') AS lemma,
-		COALESCE(wc.display_en, li.title, wc.word, '') AS display_word,
+		COALESCE(NULLIF(wc.display_en, ''), wc.word, '') AS display_word,
 		COALESCE(wc.definition_ru, wc.definition, '') AS translation,
 		COALESCE(li.cefr_level, '') AS cefr_level,
 		COALESCE(si.state, 'new') AS srs_state,

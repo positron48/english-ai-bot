@@ -592,14 +592,38 @@ func (r *CourseRepository) ResolveCurrentCourseCode(ctx context.Context, userID 
 			}
 		}
 	}
+	// Use the instance default only if the user is actually enrolled in that course.
+	// This prevents English users from defaulting to es_ru (the instance default) on a
+	// multi-course DB where each user should see their own language.
 	if defaultCourseCode != "" && r.courseIsActive(ctx, defaultCourseCode) {
-		return defaultCourseCode, nil
+		if r.userHasCourse(ctx, userID, defaultCourseCode) {
+			return defaultCourseCode, nil
+		}
 	}
+	// Fall back to the user's first enrolled course.
 	var code string
+	if err := r.db.QueryRowContext(ctx, `
+		SELECT c.code FROM user_courses uc
+		JOIN courses c ON c.id = uc.course_id
+		WHERE uc.user_id = ? AND c.status = 'active'
+		ORDER BY uc.created_at ASC LIMIT 1
+	`, userID).Scan(&code); err == nil && code != "" {
+		return code, nil
+	}
 	if err := r.db.QueryRowContext(ctx, `SELECT code FROM courses WHERE status = 'active' ORDER BY code LIMIT 1`).Scan(&code); err != nil {
 		return "", fmt.Errorf("resolve fallback course: %w", err)
 	}
 	return code, nil
+}
+
+func (r *CourseRepository) userHasCourse(ctx context.Context, userID int64, courseCode string) bool {
+	var exists bool
+	_ = r.db.QueryRowContext(ctx, `
+		SELECT COUNT(*) > 0 FROM user_courses uc
+		JOIN courses c ON c.id = uc.course_id
+		WHERE uc.user_id = ? AND c.code = ?
+	`, userID, courseCode).Scan(&exists)
+	return exists
 }
 
 func (r *CourseRepository) courseIsActive(ctx context.Context, courseCode string) bool {

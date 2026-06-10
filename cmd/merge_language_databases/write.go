@@ -31,6 +31,8 @@ func runWritePhase(ctx context.Context, phase string, sources []openedSourceDB, 
 		return mergeLegacyWords(ctx, sources, targetDB)
 	case "reset-word-items", "reset_word_items":
 		return resetWordItems(ctx, sources, targetDB)
+	case "grammar-progress", "grammar_progress":
+		return mergeGrammarProgress(ctx, sources, targetDB)
 	default:
 		return nil, fmt.Errorf("unsupported write phase %q", phase)
 	}
