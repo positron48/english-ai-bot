@@ -144,6 +144,10 @@ func wordListOrderBy(sort string) string {
 		return "li.title DESC NULLS LAST"
 	case "added_at":
 		return "added_at DESC NULLS LAST, li.title ASC"
+	case "mastery_asc":
+		return "CASE COALESCE(si.state,'new') WHEN 'new' THEN 0 WHEN 'learning' THEN 1 WHEN 'relearning' THEN 2 WHEN 'review' THEN 3 WHEN 'mastered' THEN 4 ELSE 0 END ASC, li.title ASC"
+	case "mastery_desc":
+		return "CASE COALESCE(si.state,'new') WHEN 'new' THEN 0 WHEN 'learning' THEN 1 WHEN 'relearning' THEN 2 WHEN 'review' THEN 3 WHEN 'mastered' THEN 4 ELSE 0 END DESC, li.title ASC"
 	default:
 		return "li.title ASC"
 	}

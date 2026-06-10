@@ -66,7 +66,7 @@
                   >
                     <div class="word-main">
                       <div class="word-text">
-                        <span class="word-display">{{ word.display_target || word.display_word || cleanLemma(word.lemma) }}</span>
+                        <span class="word-display">{{ word.display_word || cleanLemma(word.lemma) }}</span>
                       </div>
                       <span
                         class="mastery-marker"
@@ -93,7 +93,7 @@
                 >
                   <div class="word-main">
                     <div class="word-text">
-                      <span class="word-display">{{ word.display_target || word.display_word || cleanLemma(word.lemma) }}</span>
+                      <span class="word-display">{{ word.display_word || cleanLemma(word.lemma) }}</span>
                     </div>
                     <span
                       class="mastery-marker"
@@ -197,6 +197,11 @@ const showCardsModal = ref(false)
 const selectedWord = ref('')
 const selectedWordMasteringScore = ref<number | null>(null)
 
+watch(currentCourseCode, () => {
+  pagination.value.page = 1
+  loadVocab()
+})
+
 onMounted(async () => {
   await loadVocab()
 })
@@ -222,9 +227,15 @@ const onFilterChange = () => {
 }
 
 function linglowSort(frontendSort: string): string {
-  if (frontendSort === 'display_word_desc') return 'word_desc'
-  if (frontendSort === 'added_at') return 'added_at'
-  return 'word_asc'
+  switch (frontendSort) {
+    case 'display_word_desc': return 'word_desc'
+    case 'added_at': return 'added_at'
+    case 'mastery_level': return 'mastery_asc'
+    case 'mastery_level_desc': return 'mastery_desc'
+    case 'mastering_score': return 'mastery_asc'
+    case 'mastering_score_desc': return 'mastery_desc'
+    default: return 'word_asc'
+  }
 }
 
 function linglowWordToVocab(w: LinglowWordItem): VocabWord {
@@ -622,6 +633,11 @@ onUnmounted(() => {
 
 .mastery-learning {
   background-color: var(--color-warning, #f59e0b);
+  color: white;
+}
+
+.mastery-review {
+  background-color: var(--color-primary, #3b82f6);
   color: white;
 }
 
