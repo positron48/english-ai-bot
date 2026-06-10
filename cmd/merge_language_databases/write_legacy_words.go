@@ -177,13 +177,15 @@ func copyTrainingCards(
 			continue
 		}
 
-		// Look up existing training_card for (word_card_id, sense_index, course_code).
+		// Look up existing training_card for (word_card_id, sense_index).
+		// course_code is intentionally excluded: the unique index covers only (word_card_id,
+		// sense_index), so shared words (present in both en_ru and es_ru) must reuse one row.
 		var targetID int64
 		lookupErr := targetDB.QueryRowContext(ctx, `
 			SELECT id FROM training_cards
-			WHERE word_card_id = $1 AND sense_index = $2 AND course_code = $3
+			WHERE word_card_id = $1 AND sense_index = $2
 			LIMIT 1
-		`, targetWCID, senseIndex, courseCode).Scan(&targetID)
+		`, targetWCID, senseIndex).Scan(&targetID)
 
 		if lookupErr == nil {
 			// Already exists.
