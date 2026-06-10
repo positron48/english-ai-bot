@@ -92,13 +92,12 @@ func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 
 	// Get new cards count (exclude orphaned cards - those with non-existent training_cards or word_cards)
 	// Excludes words marked as "known" in user_word_knowledge (same as GetNewCards)
-	newQuery := `SELECT COUNT(*) 
+	newQuery := `SELECT COUNT(*)
 		FROM user_cards uc
 		INNER JOIN training_cards tc ON uc.training_card_id = tc.id
-		INNER JOIN word_cards wc ON tc.word_card_id = wc.id
 		WHERE uc.user_id = ? AND uc.state = 'new'
 		AND NOT EXISTS (
-			SELECT 1 FROM user_word_knowledge uwk 
+			SELECT 1 FROM user_word_knowledge uwk
 			WHERE uwk.user_id = ? AND uwk.word_card_id = tc.word_card_id AND uwk.status = 'known'
 		)`
 	var newCount int
@@ -111,13 +110,12 @@ func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 	// Get due count (cards ready for review, excluding new cards and orphaned cards)
 	// Excludes words marked as "known" in user_word_knowledge (same as GetDueCards)
 	// Note: GetDueCards doesn't filter by state != 'new', but we do here for clarity
-	dueQuery := `SELECT COUNT(*) 
+	dueQuery := `SELECT COUNT(*)
 		FROM user_cards uc
 		INNER JOIN training_cards tc ON uc.training_card_id = tc.id
-		INNER JOIN word_cards wc ON tc.word_card_id = wc.id
 		WHERE uc.user_id = ? AND uc.state != 'new' AND (uc.next_due_at IS NULL OR uc.next_due_at <= ?)
 		AND NOT EXISTS (
-			SELECT 1 FROM user_word_knowledge uwk 
+			SELECT 1 FROM user_word_knowledge uwk
 			WHERE uwk.user_id = ? AND uwk.word_card_id = tc.word_card_id AND uwk.status = 'known'
 		)`
 	var dueCount int
@@ -127,11 +125,9 @@ func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 		dueCount = 0
 	}
 
-	// Get learning cards count (exclude orphaned cards)
-	learningQuery := `SELECT COUNT(*) 
+	// Get learning cards count
+	learningQuery := `SELECT COUNT(*)
 		FROM user_cards uc
-		INNER JOIN training_cards tc ON uc.training_card_id = tc.id
-		INNER JOIN word_cards wc ON tc.word_card_id = wc.id
 		WHERE uc.user_id = ? AND uc.state = 'learning'`
 	var learningCount int
 	err = r.db.QueryRow(learningQuery, userID).Scan(&learningCount)
@@ -140,11 +136,9 @@ func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 		learningCount = 0
 	}
 
-	// Get review cards count (exclude orphaned cards)
-	reviewQuery := `SELECT COUNT(*) 
+	// Get review cards count
+	reviewQuery := `SELECT COUNT(*)
 		FROM user_cards uc
-		INNER JOIN training_cards tc ON uc.training_card_id = tc.id
-		INNER JOIN word_cards wc ON tc.word_card_id = wc.id
 		WHERE uc.user_id = ? AND uc.state = 'review'`
 	var reviewCount int
 	err = r.db.QueryRow(reviewQuery, userID).Scan(&reviewCount)
@@ -162,11 +156,9 @@ func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 		availableForTraining += newCount
 	}
 
-	// Get total cards count (exclude orphaned cards)
-	totalQuery := `SELECT COUNT(*) 
+	// Get total cards count
+	totalQuery := `SELECT COUNT(*)
 		FROM user_cards uc
-		INNER JOIN training_cards tc ON uc.training_card_id = tc.id
-		INNER JOIN word_cards wc ON tc.word_card_id = wc.id
 		WHERE uc.user_id = ?`
 	var totalCards int
 	err = r.db.QueryRow(totalQuery, userID).Scan(&totalCards)
