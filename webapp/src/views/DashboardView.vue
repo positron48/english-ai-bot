@@ -910,6 +910,10 @@ const updateWordsChart = () => {
   })
 }
 
+watch(currentCourseCode, () => {
+  if (isAuthenticated.value) loadData()
+})
+
 // Watch for authentication state and load data when authenticated
 watch(isAuthenticated, (authenticated) => {
   if (authenticated) {
