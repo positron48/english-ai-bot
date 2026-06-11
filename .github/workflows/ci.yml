@@ -52,6 +52,8 @@ jobs:
       run: go mod verify
 
     - name: Run tests
+      env:
+        TESTCONTAINERS_RYUK_DISABLED: "true"
       run: |
         set -o pipefail
         go test -tags=test -count=1 -p 3 -timeout 30m -coverprofile=coverage.out -covermode=atomic -json $(go list ./... | grep -v '/cmd/' | grep -v 'internal/integration/' | grep -v 'internal/testutil') 2>&1 | python3 scripts/go-test-compact.py
@@ -79,6 +81,8 @@ jobs:
       run: go mod download
 
     - name: Run integration tests (Testcontainers)
+      env:
+        TESTCONTAINERS_RYUK_DISABLED: "true"
       run: |
         set -o pipefail
         go test -tags=integration -json -count=1 ./internal/integration/testkit/... ./internal/integration/user_flows/... -timeout 600s 2>&1 | python3 scripts/go-test-compact.py
