@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"tgbot-skeleton/internal/ai"
+	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/service"
@@ -703,6 +704,10 @@ func (r *Router) handleLearningWordsSetStudyKnow(w http.ResponseWriter, req *htt
 
 // getWordSetService returns or creates word set service
 func (r *Router) getWordSetService() *service.WordSetService {
+	return r.getWordSetServiceForCourse(r.defaultCourseCode())
+}
+
+func (r *Router) getWordSetServiceForCourse(courseCode string) *service.WordSetService {
 	wordSetRepo := repository.NewWordSetRepository(r.db, r.logger)
 	wordSetCategoryRepo := repository.NewWordSetCategoryRepository(r.db, r.logger)
 	wordRepo := repository.NewWordRepository(r.db, r.logger)
@@ -728,8 +733,24 @@ func (r *Router) getWordSetService() *service.WordSetService {
 		userWordKnowledgeRepo,
 		userWordMasteringRepo,
 		aiService,
-		r.config.Learning,
+		learningConfigForCourse(r.config.Learning, courseCode),
 		r.config.AI.ModelHigh,
 		r.logger,
 	)
+}
+
+func learningConfigForCourse(fallback config.LearningConfig, courseCode string) config.LearningConfig {
+	parts := strings.SplitN(strings.ToLower(strings.TrimSpace(courseCode)), "_", 2)
+	if len(parts) != 2 || parts[0] == "" || parts[1] == "" {
+		return fallback
+	}
+	target, native := parts[0], parts[1]
+	return config.LearningConfig{
+		Pair:            native + "-" + target,
+		NativeLang:      native,
+		TargetLang:      target,
+		AppCode:         map[string]string{"en": "english", "es": "spanish"}[target],
+		GrammarBundleID: target,
+		ContentSource:   "db",
+	}
 }

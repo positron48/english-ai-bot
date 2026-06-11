@@ -335,6 +335,19 @@ func TestRouter_GetWordSetService(t *testing.T) {
 	}
 }
 
+func TestLearningConfigForCourse(t *testing.T) {
+	fallback := config.DefaultLearningConfig()
+	got := learningConfigForCourse(fallback, "es_ru")
+	if got.Pair != "ru-es" || got.NativeLang != "ru" || got.TargetLang != "es" ||
+		got.AppCode != "spanish" || got.GrammarBundleID != "es" || got.ContentSource != "db" {
+		t.Fatalf("learningConfigForCourse(es_ru) = %+v", got)
+	}
+
+	if got := learningConfigForCourse(fallback, "invalid"); got != fallback {
+		t.Fatalf("invalid course should return fallback: %+v", got)
+	}
+}
+
 // TestGetWordSetService_WithAIService covers the branch where r.aiService is set and type-asserts to *ai.Service.
 func TestGetWordSetService_WithAIService(t *testing.T) {
 	router, _, cleanup := setupWordSetsRouter(t)
