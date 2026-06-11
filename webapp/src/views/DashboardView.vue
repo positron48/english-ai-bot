@@ -416,12 +416,6 @@ const loadData = async () => {
   try {
     loading.value = true
     offlineDashboard.value = false
-    // Destroy charts and clear stats before reloading so canvas refs are reset
-    if (chartInstance) { chartInstance.destroy(); chartInstance = null }
-    if (wordsChartInstance) { wordsChartInstance.destroy(); wordsChartInstance = null }
-    stats.value.weeklyStats = []
-    stats.value.wordsAddedStats = []
-    await nextTick()
     let data: any
     if (typeof navigator !== 'undefined' && navigator.onLine === false) {
       const [wordStats, grammarStats] = await Promise.all([
@@ -574,21 +568,16 @@ const formatDayLabel = (dayString: string): string => {
 }
 
 const updateChart = () => {
+  try {
   if (!chartCanvas.value) {
-    // Retry after a short delay
-    setTimeout(() => {
-      if (chartCanvas.value) {
-        updateChart()
-      }
-    }, 100)
+    setTimeout(() => { if (chartCanvas.value) updateChart() }, 100)
     return
   }
-  
+
   if (!stats.value.weeklyStats || stats.value.weeklyStats.length === 0) {
     return
   }
-  
-  // Destroy existing chart if it exists
+
   if (chartInstance) {
     chartInstance.destroy()
     chartInstance = null
@@ -650,7 +639,7 @@ const updateChart = () => {
   }
   
   // Create stacked bar chart: blue = total cards, green inside = correct cards
-  chartInstance = new Chart(chartCanvas.value, {
+  chartInstance = new Chart(chartCanvas.value!, {
     type: 'bar',
     data: {
       labels: labels,
@@ -753,24 +742,23 @@ const updateChart = () => {
       }
     }
   })
+  } catch (e) {
+    console.warn('updateChart failed:', e)
+    chartInstance = null
+  }
 }
 
 const updateWordsChart = () => {
+  try {
   if (!wordsChartCanvas.value) {
-    // Retry after a short delay
-    setTimeout(() => {
-      if (wordsChartCanvas.value) {
-        updateWordsChart()
-      }
-    }, 100)
+    setTimeout(() => { if (wordsChartCanvas.value) updateWordsChart() }, 100)
     return
   }
-  
+
   if (!stats.value.wordsAddedStats || stats.value.wordsAddedStats.length === 0) {
     return
   }
-  
-  // Destroy existing chart if it exists
+
   if (wordsChartInstance) {
     wordsChartInstance.destroy()
     wordsChartInstance = null
@@ -912,6 +900,10 @@ const updateWordsChart = () => {
       }
     }
   })
+  } catch (e) {
+    console.warn('updateWordsChart failed:', e)
+    wordsChartInstance = null
+  }
 }
 
 watch(currentCourseCode, () => {
@@ -925,7 +917,9 @@ watch(isAuthenticated, (authenticated) => {
   }
 }, { immediate: true })
 
-// onMounted: not needed — watch(isAuthenticated, { immediate: true }) already fires on mount
+onMounted(() => {
+  if (isAuthenticated.value) loadData()
+})
 </script>
 
 <style scoped>
