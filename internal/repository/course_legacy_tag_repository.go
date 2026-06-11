@@ -39,6 +39,8 @@ var legacyCourseTagTables = []string{
 	"review_events",
 	"user_word_mastering",
 	"user_word_knowledge",
+	"word_set_categories",
+	"word_sets",
 }
 
 // TagLegacyWordTablesForLearning is a zero-touch startup backfill: on a single-course

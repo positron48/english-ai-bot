@@ -35,6 +35,33 @@ func TestWordRepository_ListWordCardsAdmin(t *testing.T) {
 	}
 }
 
+func TestWordRepository_ListWordCardsAdminForCourse(t *testing.T) {
+	db, repo := setupWordAdminTestDB(t)
+	if err := repo.SaveWordCard("course-en-word", "definition"); err != nil {
+		t.Fatal(err)
+	}
+	if err := repo.SaveWordCard("course-es-word", "definition"); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.Exec(`UPDATE word_cards SET course_code = 'en_ru' WHERE word = 'course-en-word'`); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.Exec(`UPDATE word_cards SET course_code = 'es_ru' WHERE word = 'course-es-word'`); err != nil {
+		t.Fatal(err)
+	}
+
+	cards, err := repo.ListWordCardsAdminForCourse("es_ru", nil, false, nil, "", "", 10, 0, "word", "asc")
+	if err != nil {
+		t.Fatalf("ListWordCardsAdminForCourse: %v", err)
+	}
+	if len(cards) != 1 || cards[0].Word != "course-es-word" {
+		t.Fatalf("cards = %+v, want only Spanish course word", cards)
+	}
+	if len(cards[0].CourseCodes) != 1 || cards[0].CourseCodes[0] != "es_ru" {
+		t.Fatalf("course_codes = %v, want [es_ru]", cards[0].CourseCodes)
+	}
+}
+
 func TestWordRepository_ListWordCardsAdmin_WithSearch(t *testing.T) {
 	_, repo := setupWordAdminTestDB(t)
 

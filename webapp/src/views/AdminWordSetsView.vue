@@ -1,8 +1,22 @@
 <template>
   <div class="admin-content">
       <h2>Word Sets Management</h2>
+
+    <div class="course-selector">
+      <label for="word-sets-course">Course:</label>
+      <select id="word-sets-course" v-model="selectedCourseCode" class="form-select">
+        <option disabled value="">Select a course</option>
+        <option v-for="course in availableCourses" :key="course.code" :value="course.code">
+          {{ course.title || course.code }}
+        </option>
+      </select>
+    </div>
+
+    <div v-if="coursesLoading" class="loading">Loading courses...</div>
+    <div v-else-if="coursesError" class="error">{{ coursesError }}</div>
+    <div v-else-if="!selectedCourseCode" class="empty-message">Select a course to manage its word sets.</div>
     
-    <div class="admin-tabs-inner">
+    <div v-if="selectedCourseCode" class="admin-tabs-inner">
       <button 
         @click="switchTab('categories')" 
         :class="['tab-button', { active: activeTab === 'categories' }]"
@@ -18,7 +32,7 @@
     </div>
     
     <!-- Categories Tab -->
-    <div v-if="activeTab === 'categories'" class="tab-content">
+    <div v-if="selectedCourseCode && activeTab === 'categories'" class="tab-content">
       <div class="section-header">
         <h2>Categories</h2>
         <button v-if="can('word_sets.edit')" @click="startCreateCategory" class="btn btn-primary">Create Category</button>
@@ -70,7 +84,7 @@
     </div>
     
     <!-- Word Sets Tab -->
-    <div v-if="activeTab === 'sets'" class="tab-content">
+    <div v-if="selectedCourseCode && activeTab === 'sets'" class="tab-content">
       <div class="section-header">
         <h2>Word Sets</h2>
         <button v-if="can('word_sets.edit')" @click="startCreateWordSet" class="btn btn-primary">Create Word Set</button>
@@ -295,6 +309,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { apiClient } from '../api/client'
 import { showAlert, showConfirm } from '../composables/useDialog'
 import { useAuth } from '../composables/useAuth'
+import { courseClient, type CourseSummary } from '../api/courseClient'
 
 const { can, loadPermissions } = useAuth()
 
@@ -303,6 +318,7 @@ const router = useRouter()
 
 interface Category {
   id: number
+  course_code: string
   parent_id?: number | null
   name: string
   description?: string | null
@@ -313,6 +329,7 @@ interface Category {
 
 interface WordSet {
   id: number
+  course_code: string
   category_id?: number | null
   title: string
   description?: string | null
@@ -332,6 +349,10 @@ const getActiveTabFromRoute = (): 'categories' | 'sets' => {
 }
 
 const activeTab = ref<'categories' | 'sets'>(getActiveTabFromRoute())
+const availableCourses = ref<CourseSummary[]>([])
+const selectedCourseCode = ref(typeof route.query.course_code === 'string' ? route.query.course_code : '')
+const coursesLoading = ref(false)
+const coursesError = ref<string | null>(null)
 
 // Watch route changes to update active tab
 watch(() => route.name, (newRouteName) => {
@@ -346,9 +367,9 @@ watch(() => route.name, (newRouteName) => {
 const switchTab = (tab: 'categories' | 'sets') => {
   activeTab.value = tab
   if (tab === 'sets') {
-    router.push({ name: 'AdminWordSetsSets' })
+    router.push({ name: 'AdminWordSetsSets', query: { course_code: selectedCourseCode.value } })
   } else {
-    router.push({ name: 'AdminWordSetsCategories' })
+    router.push({ name: 'AdminWordSetsCategories', query: { course_code: selectedCourseCode.value } })
   }
 }
 
@@ -459,10 +480,45 @@ const itemsWordsCount = computed(() => {
 onMounted(async () => {
   await loadPermissions()
   if (can('word_sets.read')) {
-    await loadCategories()
-    await loadWordSets()
+    coursesLoading.value = true
+    try {
+      const data = await courseClient.getCourses()
+      availableCourses.value = data.courses || []
+      if (!availableCourses.value.some(course => course.code === selectedCourseCode.value)) {
+        selectedCourseCode.value = availableCourses.value.find(course => course.is_current)?.code
+          || availableCourses.value[0]?.code
+          || ''
+      }
+      if (selectedCourseCode.value) {
+        await loadCategories()
+        await loadWordSets()
+      }
+    } catch (error: any) {
+      coursesError.value = error.message || 'Failed to load courses'
+    } finally {
+      coursesLoading.value = false
+    }
   }
 })
+
+watch(selectedCourseCode, async (courseCode, previousCourseCode) => {
+  if (!courseCode || courseCode === previousCourseCode || !can('word_sets.read')) return
+  selectedCategory.value = null
+  categories.value = []
+  wordSets.value = []
+  closeCategoryModal()
+  closeWordSetModal()
+  closeItemsModal()
+  await router.replace({ query: { ...route.query, course_code: courseCode } })
+  await loadCategories()
+  await loadWordSets()
+})
+
+const withCourse = (url: string): string => {
+  if (!selectedCourseCode.value) return url
+  const separator = url.includes('?') ? '&' : '?'
+  return `${url}${separator}course_code=${encodeURIComponent(selectedCourseCode.value)}`
+}
 
 const loadCategories = async () => {
   if (!can('word_sets.read')) {
@@ -472,10 +528,11 @@ const loadCategories = async () => {
   categoriesLoading.value = true
   categoriesError.value = null
   try {
-    const data: any = await apiClient.request('/api/admin/word-set-categories')
+    const data: any = await apiClient.request(withCourse('/api/admin/word-set-categories'))
     // Handle both snake_case and PascalCase field names
     categories.value = (data.categories || []).map((cat: any) => ({
       id: cat.id || cat.ID,
+      course_code: cat.course_code || cat.CourseCode || selectedCourseCode.value,
       parent_id: cat.parent_id !== undefined ? cat.parent_id : (cat.ParentID !== undefined ? cat.ParentID : null),
       name: cat.name || cat.Name || '',
       description: cat.description !== undefined ? cat.description : (cat.Description !== undefined ? cat.Description : null),
@@ -506,7 +563,7 @@ const loadWordSets = async (options?: { silent?: boolean }) => {
       params.append('category_id', selectedCategory.value.toString())
     }
     
-    const data: { word_sets: WordSet[] } = await apiClient.request(`/api/admin/word-sets?${params.toString()}`)
+    const data: { word_sets: WordSet[] } = await apiClient.request(withCourse(`/api/admin/word-sets?${params.toString()}`))
     wordSets.value = data.word_sets || []
   } catch (error: any) {
     console.error('Failed to load word sets:', error)
@@ -566,10 +623,10 @@ const saveCategory = async () => {
     
     const method = editingCategory.value ? 'PUT' : 'POST'
     
-    await apiClient.request(url, {
+    await apiClient.request(withCourse(url), {
       method,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(categoryForm.value)
+      body: JSON.stringify({ ...categoryForm.value, course_code: selectedCourseCode.value })
     })
     
     closeCategoryModal()
@@ -599,7 +656,7 @@ const deleteCategory = async () => {
   }
   
   try {
-    await apiClient.request(`/api/admin/word-set-categories/${categoryToDelete.value.id}`, {
+    await apiClient.request(withCourse(`/api/admin/word-set-categories/${categoryToDelete.value.id}`), {
       method: 'DELETE'
     })
     
@@ -641,7 +698,7 @@ const startEditWordSet = async (wordSet: WordSet) => {
   
   // Load words for editing (same as in viewWordSet)
   try {
-    const data: any = await apiClient.request(`/api/admin/word-sets/${wordSet.id}`)
+    const data: any = await apiClient.request(withCourse(`/api/admin/word-sets/${wordSet.id}`))
     const words = data.words || []
     wordSetForm.value.words = Array.isArray(words) && words.length > 0 
       ? words.map((w: any) => w.word).join(', ')
@@ -680,10 +737,10 @@ const saveWordSet = async () => {
       ...wordSetData
     }
     
-    const response: any = await apiClient.request(url, {
+    const response: any = await apiClient.request(withCourse(url), {
       method,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(dataToSend)
+      body: JSON.stringify({ ...dataToSend, course_code: selectedCourseCode.value })
     })
     
     // Get the word set ID (either from response or existing)
@@ -692,7 +749,7 @@ const saveWordSet = async () => {
     // If words were provided, save them
     if (words && words.trim()) {
       if (wordSetId) {
-        await apiClient.request(`/api/admin/word-sets/${wordSetId}/items`, {
+        await apiClient.request(withCourse(`/api/admin/word-sets/${wordSetId}/items`), {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ words: words.trim() })
@@ -712,7 +769,7 @@ const saveWordSet = async () => {
 
 const viewWordSet = async (wordSet: WordSet) => {
   try {
-    const data: any = await apiClient.request(`/api/admin/word-sets/${wordSet.id}`)
+    const data: any = await apiClient.request(withCourse(`/api/admin/word-sets/${wordSet.id}`))
     
     editingWordSet.value = data.word_set
     // Handle both null and empty array cases
@@ -742,7 +799,7 @@ const saveWordSetItems = async () => {
   
   itemsLoading.value = true
   try {
-    await apiClient.request(`/api/admin/word-sets/${editingWordSet.value.id}/items`, {
+    await apiClient.request(withCourse(`/api/admin/word-sets/${editingWordSet.value.id}/items`), {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ words: itemsForm.value.words })
@@ -811,7 +868,7 @@ const deleteWordSet = async () => {
   }
   
   try {
-    await apiClient.request(`/api/admin/word-sets/${wordSetToDelete.value.id}`, {
+    await apiClient.request(withCourse(`/api/admin/word-sets/${wordSetToDelete.value.id}`), {
       method: 'DELETE'
     })
     
@@ -832,6 +889,18 @@ const deleteWordSet = async () => {
   font-size: 16px;
   overflow-x: hidden;
   box-sizing: border-box;
+}
+
+.course-selector {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.course-selector .form-select {
+  width: auto;
+  min-width: 240px;
 }
 
 .admin-tabs-inner {

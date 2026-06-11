@@ -3,15 +3,57 @@ package web
 import (
 	"encoding/json"
 	"io/fs"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"path/filepath"
 	"testing"
 
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/readingbundle"
+	"tgbot-skeleton/internal/testutil"
 
 	"go.uber.org/zap"
 )
+
+func TestHandleAdminReadingTextsListFiltersByCourse(t *testing.T) {
+	db := testutil.SetupTestDB(t)
+	if _, err := db.Exec(`
+		INSERT INTO reading_categories (category_id, title, level, sort_order, text_ids)
+		VALUES ('mixed', 'Mixed', 'A1', 1, '["en-text","es-text"]')
+	`); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.Exec(`
+		INSERT INTO reading_texts (text_id, category_id, title, level, target_language, reading_passage)
+		VALUES
+			('en-text', 'mixed', 'English text', 'A1', 'en', '{"segments":[]}'),
+			('es-text', 'mixed', 'Spanish text', 'A1', 'es', '{"segments":[]}')
+	`); err != nil {
+		t.Fatal(err)
+	}
+	cfg := &config.Config{Learning: config.LearningConfig{
+		TargetLang:    "en",
+		NativeLang:    "ru",
+		ContentSource: "db",
+	}}
+	router := NewRouter(zap.NewNop(), cfg, db, nil, nil, nil, nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/reading/texts?course_code=es_ru", nil)
+	rr := httptest.NewRecorder()
+	router.handleAdminReadingTextsList(rr, req)
+	if rr.Code != http.StatusOK {
+		t.Fatalf("status = %d: %s", rr.Code, rr.Body.String())
+	}
+	var resp struct {
+		Texts []adminReadingTextItem `json:"texts"`
+	}
+	if err := json.NewDecoder(rr.Body).Decode(&resp); err != nil {
+		t.Fatal(err)
+	}
+	if len(resp.Texts) != 1 || resp.Texts[0].TextID != "es-text" || resp.Texts[0].CourseCode != "es_ru" {
+		t.Fatalf("texts = %+v, want only es_ru text", resp.Texts)
+	}
+}
 
 func TestReadingWritableRootDir_GrammarBundleDir(t *testing.T) {
 	t.Parallel()

@@ -2,7 +2,21 @@
   <div class="admin-content">
     <h2>Reading Texts</h2>
 
-    <div class="toolbar">
+    <div class="course-selector">
+      <label for="reading-course">Course:</label>
+      <select id="reading-course" v-model="selectedCourseCode" class="level-select">
+        <option disabled value="">Select a course</option>
+        <option v-for="course in availableCourses" :key="course.code" :value="course.code">
+          {{ course.title || course.code }}
+        </option>
+      </select>
+    </div>
+
+    <div v-if="coursesLoading" class="loading">Loading courses...</div>
+    <div v-else-if="coursesError" class="error">{{ coursesError }}</div>
+    <div v-else-if="!selectedCourseCode" class="empty-message">Select a course to manage its reading texts.</div>
+
+    <div v-if="selectedCourseCode" class="toolbar">
       <input
         v-model="search"
         type="text"
@@ -17,11 +31,11 @@
       <button class="btn btn-primary" @click="loadTexts">Refresh</button>
     </div>
 
-    <div v-if="loading" class="loading">Loading reading texts...</div>
-    <div v-else-if="error" class="error">{{ error }}</div>
-    <div v-else-if="texts.length === 0" class="empty-message">No texts found.</div>
+    <div v-if="selectedCourseCode && loading" class="loading">Loading reading texts...</div>
+    <div v-else-if="selectedCourseCode && error" class="error">{{ error }}</div>
+    <div v-else-if="selectedCourseCode && texts.length === 0" class="empty-message">No texts found.</div>
 
-    <div v-else class="table-wrap">
+    <div v-else-if="selectedCourseCode" class="table-wrap">
       <table class="texts-table">
         <thead>
           <tr>
@@ -53,12 +67,14 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { apiClient } from '../api/client'
 import { showAlert, showConfirm } from '../composables/useDialog'
+import { courseClient, type CourseSummary } from '../api/courseClient'
 
 interface ReadingTextAdminItem {
   text_id: string
+  course_code: string
   category_id: string
   title: string
   level: string
@@ -73,12 +89,17 @@ const level = ref('')
 const loading = ref(false)
 const error = ref<string | null>(null)
 const deletingId = ref<string | null>(null)
+const availableCourses = ref<CourseSummary[]>([])
+const selectedCourseCode = ref('')
+const coursesLoading = ref(false)
+const coursesError = ref<string | null>(null)
 
 const loadTexts = async () => {
   loading.value = true
   error.value = null
   try {
     const params = new URLSearchParams()
+    params.set('course_code', selectedCourseCode.value)
     if (search.value.trim()) {
       params.set('search', search.value.trim())
     }
@@ -102,7 +123,7 @@ const deleteText = async (text: ReadingTextAdminItem) => {
 
   deletingId.value = text.text_id
   try {
-    await apiClient.request(`/api/admin/reading/texts/${encodeURIComponent(text.text_id)}`, {
+    await apiClient.request(`/api/admin/reading/texts/${encodeURIComponent(text.text_id)}?course_code=${encodeURIComponent(selectedCourseCode.value)}`, {
       method: 'DELETE',
     })
     await loadTexts()
@@ -114,7 +135,27 @@ const deleteText = async (text: ReadingTextAdminItem) => {
   }
 }
 
-onMounted(loadTexts)
+watch(selectedCourseCode, courseCode => {
+  texts.value = []
+  if (courseCode) {
+    loadTexts()
+  }
+})
+
+onMounted(async () => {
+  coursesLoading.value = true
+  try {
+    const data = await courseClient.getCourses()
+    availableCourses.value = data.courses || []
+    selectedCourseCode.value = availableCourses.value.find(course => course.is_current)?.code
+      || availableCourses.value[0]?.code
+      || ''
+  } catch (e: any) {
+    coursesError.value = e?.message || 'Failed to load courses'
+  } finally {
+    coursesLoading.value = false
+  }
+})
 </script>
 
 <style scoped>
@@ -123,6 +164,13 @@ onMounted(loadTexts)
   gap: 10px;
   margin-bottom: 12px;
   flex-wrap: wrap;
+}
+
+.course-selector {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
 }
 
 .search-input,

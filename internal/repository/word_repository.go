@@ -29,6 +29,19 @@ func (r *WordRepository) DB() *sql.DB {
 	return r.db
 }
 
+// TagWordCardCourse fills the legacy course tag without overwriting an existing tag.
+func (r *WordRepository) TagWordCardCourse(wordCardID int64, courseCode string) error {
+	courseCode = strings.TrimSpace(strings.ToLower(courseCode))
+	if courseCode == "" {
+		return nil
+	}
+	_, err := r.db.Exec(`UPDATE word_cards SET course_code = ? WHERE id = ? AND course_code IS NULL`, courseCode, wordCardID)
+	if err != nil {
+		return fmt.Errorf("failed to tag word card course: %w", err)
+	}
+	return nil
+}
+
 // GetWordCard retrieves a word card by word (backward compatibility - searches by lemma)
 func (r *WordRepository) GetWordCard(word string) (*models.WordCard, error) {
 	return r.GetWordCardByLemma(word)
@@ -578,11 +591,21 @@ type WordCardAdminItem struct {
 	TTSState         *string
 	TTSError         *string
 	TTSAudioURL      *string
+	CourseCodes      []string `json:"course_codes"`
 }
 
 // ListWordCardsAdmin lists word cards for admin view with optional filters.
 // missingTrainingPOS: when set, only words that have no training card with this part of speech are returned (e.g. "noun" => words without a noun card).
 func (r *WordRepository) ListWordCardsAdmin(filterUserID *int64, onlyWithErrors bool, hasAudio *bool, searchQuery string, missingTrainingPOS string, limit, offset int, sortBy string, sortOrder string) ([]*WordCardAdminItem, error) {
+	return r.listWordCardsAdmin("", false, filterUserID, onlyWithErrors, hasAudio, searchQuery, missingTrainingPOS, limit, offset, sortBy, sortOrder)
+}
+
+// ListWordCardsAdminForCourse lists admin word cards, optionally restricted to one course.
+func (r *WordRepository) ListWordCardsAdminForCourse(courseCode string, filterUserID *int64, onlyWithErrors bool, hasAudio *bool, searchQuery string, missingTrainingPOS string, limit, offset int, sortBy string, sortOrder string) ([]*WordCardAdminItem, error) {
+	return r.listWordCardsAdmin(courseCode, true, filterUserID, onlyWithErrors, hasAudio, searchQuery, missingTrainingPOS, limit, offset, sortBy, sortOrder)
+}
+
+func (r *WordRepository) listWordCardsAdmin(courseCode string, includeCourseInfo bool, filterUserID *int64, onlyWithErrors bool, hasAudio *bool, searchQuery string, missingTrainingPOS string, limit, offset int, sortBy string, sortOrder string) ([]*WordCardAdminItem, error) {
 	// Use LEFT JOIN with GROUP BY to check for training cards - more reliable than subquery
 	query := `SELECT wc.id, wc.word, wc.definition,
 			  COALESCE(wc.pos, '') as pos,
@@ -597,7 +620,17 @@ func (r *WordRepository) ListWordCardsAdmin(filterUserID *int64, onlyWithErrors 
 			  COALESCE(wc.processing_error, '') as processing_error,
 			  COALESCE(tts.state, '') as tts_state,
 			  COALESCE(tts.last_error_message, '') as tts_error,
-			  COALESCE(tts.audio_rel_path, '') as tts_audio_rel_path,
+			  COALESCE(tts.audio_rel_path, '') as tts_audio_rel_path`
+	if includeCourseInfo {
+		query += `,
+			  COALESCE((
+			    SELECT STRING_AGG(DISTINCT c.code, ',' ORDER BY c.code)
+			    FROM learning_items li
+			    JOIN courses c ON c.id = li.course_id
+			    WHERE li.source_kind = 'word_card' AND li.source_id = CAST(wc.id AS TEXT)
+			  ), COALESCE(wc.course_code, '')) AS course_codes`
+	}
+	query += `,
 			  CAST(wc.created_at AS TEXT) as created_at,
 			  CAST(wc.updated_at AS TEXT) as updated_at,
 			  MAX(CASE WHEN tc.id IS NOT NULL THEN 1 ELSE 0 END) as has_training_cards
@@ -607,6 +640,17 @@ func (r *WordRepository) ListWordCardsAdmin(filterUserID *int64, onlyWithErrors 
 
 	args := []interface{}{}
 	conditions := []string{}
+	if courseCode != "" {
+		conditions = append(conditions, `(wc.course_code = ? OR EXISTS (
+			SELECT 1
+			FROM learning_items li
+			JOIN courses c ON c.id = li.course_id
+			WHERE li.source_kind = 'word_card'
+			  AND li.source_id = CAST(wc.id AS TEXT)
+			  AND c.code = ?
+		))`)
+		args = append(args, courseCode, courseCode)
+	}
 
 	// Filter by user if specified - use subquery to avoid duplicates from JOIN
 	if filterUserID != nil {
@@ -646,7 +690,11 @@ func (r *WordRepository) ListWordCardsAdmin(filterUserID *int64, onlyWithErrors 
 		query += " WHERE " + strings.Join(conditions, " AND ")
 	}
 
-	query += " GROUP BY wc.id, wc.word, wc.definition, wc.pos, wc.noun_gender, wc.opposite_gender_word, wc.transcription, wc.definition_ru, wc.examples_json, wc.verb_forms_json, wc.display_en, wc.processed_at, wc.processing_error, tts.state, tts.last_error_message, tts.audio_rel_path, wc.created_at, wc.updated_at"
+	query += " GROUP BY wc.id, wc.word, wc.definition, wc.pos, wc.noun_gender, wc.opposite_gender_word, wc.transcription, wc.definition_ru, wc.examples_json, wc.verb_forms_json, wc.display_en, wc.processed_at, wc.processing_error, tts.state, tts.last_error_message, tts.audio_rel_path"
+	if includeCourseInfo {
+		query += ", wc.course_code"
+	}
+	query += ", wc.created_at, wc.updated_at"
 
 	// Build ORDER BY clause
 	orderBy := "wc.created_at"
@@ -688,15 +736,21 @@ func (r *WordRepository) ListWordCardsAdmin(filterUserID *int64, onlyWithErrors 
 	var items []*WordCardAdminItem
 	for rows.Next() {
 		var item WordCardAdminItem
-		var createdAt, updatedAt, processedAtStr, processingErrorStr, ttsStateStr, ttsErrorStr, ttsAudioRelPath string
+		var createdAt, updatedAt, processedAtStr, processingErrorStr, ttsStateStr, ttsErrorStr, ttsAudioRelPath, courseCodesStr string
 		var posStr, nounGenderStr, oppositeGenderWordStr, transcriptionStr, definitionRUStr, examplesJSONStr, verbFormsJSONStr, displayENStr string
 		var hasTrainingCards int
 
-		err := rows.Scan(&item.ID, &item.Word, &item.Definition,
+		scanArgs := []interface{}{
+			&item.ID, &item.Word, &item.Definition,
 			&posStr, &nounGenderStr, &oppositeGenderWordStr, &transcriptionStr, &definitionRUStr, &examplesJSONStr, &verbFormsJSONStr, &displayENStr,
 			&processedAtStr, &processingErrorStr,
 			&ttsStateStr, &ttsErrorStr, &ttsAudioRelPath,
-			&createdAt, &updatedAt, &hasTrainingCards)
+		}
+		if includeCourseInfo {
+			scanArgs = append(scanArgs, &courseCodesStr)
+		}
+		scanArgs = append(scanArgs, &createdAt, &updatedAt, &hasTrainingCards)
+		err := rows.Scan(scanArgs...)
 		if err != nil {
 			return nil, fmt.Errorf("failed to scan word card: %w", err)
 		}
@@ -730,6 +784,11 @@ func (r *WordRepository) ListWordCardsAdmin(filterUserID *int64, onlyWithErrors 
 		item.CreatedAt, _ = time.Parse("2006-01-02 15:04:05", createdAt)
 		item.UpdatedAt, _ = time.Parse("2006-01-02 15:04:05", updatedAt)
 		item.HasTrainingCards = hasTrainingCards > 0
+		if courseCodesStr != "" {
+			item.CourseCodes = strings.Split(courseCodesStr, ",")
+		} else {
+			item.CourseCodes = []string{}
+		}
 
 		if processedAtStr != "" {
 			processedAt, _ := time.Parse("2006-01-02 15:04:05", processedAtStr)
@@ -768,11 +827,27 @@ func (r *WordRepository) ListWordCardsAdmin(filterUserID *int64, onlyWithErrors 
 // CountWordCardsAdmin counts total word cards matching filters (for pagination).
 // missingTrainingPOS: when set, only words that have no training card with this part of speech are counted.
 func (r *WordRepository) CountWordCardsAdmin(filterUserID *int64, onlyWithErrors bool, hasAudio *bool, searchQuery string, missingTrainingPOS string) (int, error) {
+	return r.CountWordCardsAdminForCourse("", filterUserID, onlyWithErrors, hasAudio, searchQuery, missingTrainingPOS)
+}
+
+// CountWordCardsAdminForCourse counts admin word cards, optionally restricted to one course.
+func (r *WordRepository) CountWordCardsAdminForCourse(courseCode string, filterUserID *int64, onlyWithErrors bool, hasAudio *bool, searchQuery string, missingTrainingPOS string) (int, error) {
 	query := `SELECT COUNT(DISTINCT wc.id) FROM word_cards wc
 			  LEFT JOIN tts_generation_status tts ON LOWER(tts.word) = LOWER(wc.word)`
 
 	args := []interface{}{}
 	conditions := []string{}
+	if courseCode != "" {
+		conditions = append(conditions, `(wc.course_code = ? OR EXISTS (
+			SELECT 1
+			FROM learning_items li
+			JOIN courses c ON c.id = li.course_id
+			WHERE li.source_kind = 'word_card'
+			  AND li.source_id = CAST(wc.id AS TEXT)
+			  AND c.code = ?
+		))`)
+		args = append(args, courseCode, courseCode)
+	}
 
 	// Filter by user if specified
 	if filterUserID != nil {

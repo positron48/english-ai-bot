@@ -3,6 +3,12 @@
       <div class="card">
       <h2>Words Management</h2>
       <div class="words-filters">
+        <select v-model="wordsCourseCode" class="admin-select" @change="onFilterChange">
+          <option value="">All courses</option>
+          <option v-for="course in availableCourses" :key="course.code" :value="course.code">
+            {{ course.title || course.code }}
+          </option>
+        </select>
         <div class="search-box">
           <input
             ref="searchInputRef"
@@ -96,6 +102,7 @@
                 </th>
                 <th>Gender</th>
                 <th>Opposite</th>
+                <th>Course</th>
                 <th 
                   class="sortable"
                   :class="{ 'sort-asc': sortColumn === 'HasCards' && sortDirection === 'asc', 'sort-desc': sortColumn === 'HasCards' && sortDirection === 'desc' }"
@@ -117,6 +124,7 @@
                   <td>{{ formatPOS(word.POS) }}</td>
                   <td>{{ formatNounGender(word) }}</td>
                   <td>{{ word.opposite_gender_word || '—' }}</td>
+                  <td>{{ formatCourseCodes(word.course_codes) }}</td>
                   <td>
                     <span v-if="!word.HasTrainingCards" :class="{ 'badge': true, 'badge-secondary': true }">
                       No
@@ -202,7 +210,7 @@
                 </tr>
                 <!-- Cards row -->
                 <tr v-if="word && word.showingCards === true && word.HasTrainingCards" class="cards-row">
-                <td colspan="6">
+                <td colspan="8">
                   <div v-if="word.cardsLoading" class="cards-loading">Loading cards...</div>
                   <div v-else class="cards-container">
                     <div class="cards-header">
@@ -687,6 +695,7 @@ import { apiClient } from '../api/client'
 import { showAlert, showConfirm } from '../composables/useDialog'
 import { useAuth } from '../composables/useAuth'
 import { useLearningConfig } from '../composables/useLearningConfig'
+import { courseClient, type CourseSummary } from '../api/courseClient'
 import Icon from '../components/Icon.vue'
 
 const { can, loadPermissions } = useAuth()
@@ -736,6 +745,7 @@ interface WordCard {
   TTSError?: string | null
   TTSAudioURL?: string | null
   RequestingUsers?: number[]
+  course_codes: string[]
   showingCards?: boolean
   cards?: TrainingCard[]
   cardsLoading?: boolean
@@ -761,6 +771,8 @@ const words = ref<WordCard[]>([])
 const wordsLoading = ref(false)
 const wordsError = ref<string | null>(null)
 const wordsFilterUser = ref<number | null>(null)
+const wordsCourseCode = ref('')
+const availableCourses = ref<CourseSummary[]>([])
 const wordsMissingTrainingPOS = ref('')
 const wordsAudioFilter = ref<'all' | 'with_audio' | 'without_audio' | 'only_errors'>('all')
 const wordsSearchQuery = ref('')
@@ -870,6 +882,12 @@ const createCardForm = ref({
 onMounted(async () => {
   await ensureLearningLoaded()
   await loadPermissions()
+  try {
+    const data = await courseClient.getCourses()
+    availableCourses.value = data.courses || []
+  } catch (error) {
+    console.error('Failed to load courses:', error)
+  }
   if (can('users.read_all')) {
     await loadUsers()
   }
@@ -880,6 +898,13 @@ onMounted(async () => {
 
 const targetLangCode = computed(() => (learning.value?.target_lang || 'en').toUpperCase())
 const nativeLangCode = computed(() => (learning.value?.native_lang || 'ru').toUpperCase())
+
+const formatCourseCodes = (courseCodes?: string[]): string => {
+  if (!courseCodes?.length) return '—'
+  return courseCodes
+    .map(code => availableCourses.value.find(course => course.code === code)?.title || code)
+    .join(', ')
+}
 
 const loadUsers = async () => {
   if (!can('users.read_all')) {
@@ -902,6 +927,9 @@ const loadWords = async () => {
   wordsError.value = null
   try {
     const params = new URLSearchParams()
+    if (wordsCourseCode.value) {
+      params.append('course_code', wordsCourseCode.value)
+    }
     if (wordsFilterUser.value !== null) {
       params.append('user_id', wordsFilterUser.value.toString())
     }

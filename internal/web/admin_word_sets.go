@@ -1,6 +1,7 @@
 package web
 
 import (
+	"database/sql"
 	"encoding/json"
 	"net/http"
 	"strconv"
@@ -11,6 +12,26 @@ import (
 
 	"go.uber.org/zap"
 )
+
+func adminCourseCode(req *http.Request, bodyCourseCode string) string {
+	courseCode := strings.TrimSpace(strings.ToLower(bodyCourseCode))
+	if courseCode == "" {
+		courseCode = strings.TrimSpace(strings.ToLower(req.URL.Query().Get("course_code")))
+	}
+	return courseCode
+}
+
+func (r *Router) validateAdminCourseCode(courseCode string) error {
+	if courseCode == "" {
+		return nil
+	}
+	var exists int
+	err := r.db.QueryRow(`SELECT 1 FROM courses WHERE code = ? AND status = 'active'`, courseCode).Scan(&exists)
+	if err == sql.ErrNoRows {
+		return repository.ErrCourseNotFound
+	}
+	return err
+}
 
 // handleAdminWordSetCategories handles CRUD for word set categories
 // @Summary      Управление категориями наборов слов
@@ -34,7 +55,12 @@ func (r *Router) handleAdminWordSetCategories(w http.ResponseWriter, req *http.R
 
 	switch req.Method {
 	case http.MethodGet:
-		categories, err := categoryRepo.GetAllCategories()
+		courseCode := adminCourseCode(req, "")
+		if err := r.validateAdminCourseCode(courseCode); err != nil {
+			http.Error(w, "Course not found", http.StatusNotFound)
+			return
+		}
+		categories, err := categoryRepo.GetAllCategoriesForCourse(courseCode)
 		if err != nil {
 			r.logger.Error("failed to get categories", zap.Error(err))
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -69,6 +95,18 @@ func (r *Router) handleAdminWordSetCategories(w http.ResponseWriter, req *http.R
 		if category.Name == "" {
 			http.Error(w, "Name is required", http.StatusBadRequest)
 			return
+		}
+		category.CourseCode = adminCourseCode(req, category.CourseCode)
+		if err := r.validateAdminCourseCode(category.CourseCode); err != nil {
+			http.Error(w, "Course not found", http.StatusNotFound)
+			return
+		}
+		if category.ParentID != nil && category.CourseCode != "" {
+			parent, err := categoryRepo.GetCategoryForCourse(*category.ParentID, category.CourseCode)
+			if err != nil || parent == nil || parent.CourseCode != category.CourseCode {
+				http.Error(w, "Parent category must belong to the selected course", http.StatusBadRequest)
+				return
+			}
 		}
 
 		// Log received data for debugging
@@ -128,8 +166,26 @@ func (r *Router) handleAdminWordSetCategories(w http.ResponseWriter, req *http.R
 		)
 
 		category.ID = id
-		if err := categoryRepo.UpdateCategory(&category); err != nil {
-			r.logger.Error("failed to update category", zap.Error(err))
+		category.CourseCode = adminCourseCode(req, category.CourseCode)
+		if err := r.validateAdminCourseCode(category.CourseCode); err != nil {
+			http.Error(w, "Course not found", http.StatusNotFound)
+			return
+		}
+		if category.ParentID != nil && category.CourseCode != "" {
+			parent, err := categoryRepo.GetCategoryForCourse(*category.ParentID, category.CourseCode)
+			if err != nil || parent == nil || parent.CourseCode != category.CourseCode {
+				http.Error(w, "Parent category must belong to the selected course", http.StatusBadRequest)
+				return
+			}
+		}
+		var updateErr error
+		if category.CourseCode == "" {
+			updateErr = categoryRepo.UpdateCategory(&category)
+		} else {
+			updateErr = categoryRepo.UpdateCategoryForCourse(&category)
+		}
+		if updateErr != nil {
+			r.logger.Error("failed to update category", zap.Error(updateErr))
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
@@ -161,7 +217,12 @@ func (r *Router) handleAdminWordSetCategories(w http.ResponseWriter, req *http.R
 			return
 		}
 
-		if err := categoryRepo.DeleteCategory(id); err != nil {
+		courseCode := adminCourseCode(req, "")
+		if err := r.validateAdminCourseCode(courseCode); err != nil {
+			http.Error(w, "Course not found", http.StatusNotFound)
+			return
+		}
+		if err := categoryRepo.DeleteCategoryForCourse(id, courseCode); err != nil {
 			r.logger.Error("failed to delete category", zap.Error(err))
 			if strings.Contains(err.Error(), "cannot delete") {
 				http.Error(w, err.Error(), http.StatusBadRequest)
@@ -204,6 +265,11 @@ func (r *Router) handleAdminWordSets(w http.ResponseWriter, req *http.Request) {
 
 	switch req.Method {
 	case http.MethodGet:
+		courseCode := adminCourseCode(req, "")
+		if err := r.validateAdminCourseCode(courseCode); err != nil {
+			http.Error(w, "Course not found", http.StatusNotFound)
+			return
+		}
 		// Parse query parameters
 		var categoryID *int64
 		if catIDStr := req.URL.Query().Get("category_id"); catIDStr != "" {
@@ -227,7 +293,7 @@ func (r *Router) handleAdminWordSets(w http.ResponseWriter, req *http.Request) {
 		}
 
 		// Get all word sets (including unpublished for admin)
-		wordSets, err := wordSetRepo.ListWordSets(categoryID, limit, offset, true)
+		wordSets, err := wordSetRepo.ListWordSetsForCourse(courseCode, categoryID, limit, offset, true)
 		if err != nil {
 			r.logger.Error("failed to list word sets", zap.Error(err))
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -262,6 +328,18 @@ func (r *Router) handleAdminWordSets(w http.ResponseWriter, req *http.Request) {
 		if wordSet.Title == "" {
 			http.Error(w, "Title is required", http.StatusBadRequest)
 			return
+		}
+		wordSet.CourseCode = adminCourseCode(req, wordSet.CourseCode)
+		if err := r.validateAdminCourseCode(wordSet.CourseCode); err != nil {
+			http.Error(w, "Course not found", http.StatusNotFound)
+			return
+		}
+		if wordSet.CategoryID != nil && wordSet.CourseCode != "" {
+			category, err := repository.NewWordSetCategoryRepository(r.db, r.logger).GetCategoryForCourse(*wordSet.CategoryID, wordSet.CourseCode)
+			if err != nil || category == nil || category.CourseCode != wordSet.CourseCode {
+				http.Error(w, "Category must belong to the selected course", http.StatusBadRequest)
+				return
+			}
 		}
 
 		id, err := wordSetRepo.CreateWordSet(&wordSet)
@@ -311,8 +389,13 @@ func (r *Router) handleAdminWordSets(w http.ResponseWriter, req *http.Request) {
 				return
 			}
 
+			courseCode := adminCourseCode(req, "")
+			if err := r.validateAdminCourseCode(courseCode); err != nil {
+				http.Error(w, "Course not found", http.StatusNotFound)
+				return
+			}
 			wordSetService := r.getWordSetService()
-			if err := wordSetService.ProcessWordSetItems(req.Context(), id, requestData.Words); err != nil {
+			if err := wordSetService.ProcessWordSetItemsForCourse(req.Context(), id, courseCode, requestData.Words); err != nil {
 				r.logger.Error("failed to process word set items", zap.Error(err))
 				http.Error(w, "Internal server error", http.StatusInternalServerError)
 				return
@@ -334,6 +417,18 @@ func (r *Router) handleAdminWordSets(w http.ResponseWriter, req *http.Request) {
 		}
 
 		wordSet.ID = id
+		wordSet.CourseCode = adminCourseCode(req, wordSet.CourseCode)
+		if err := r.validateAdminCourseCode(wordSet.CourseCode); err != nil {
+			http.Error(w, "Course not found", http.StatusNotFound)
+			return
+		}
+		if wordSet.CategoryID != nil && wordSet.CourseCode != "" {
+			category, err := repository.NewWordSetCategoryRepository(r.db, r.logger).GetCategoryForCourse(*wordSet.CategoryID, wordSet.CourseCode)
+			if err != nil || category == nil || category.CourseCode != wordSet.CourseCode {
+				http.Error(w, "Category must belong to the selected course", http.StatusBadRequest)
+				return
+			}
+		}
 		if err := wordSetRepo.UpdateWordSet(&wordSet); err != nil {
 			r.logger.Error("failed to update word set", zap.Error(err))
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -367,7 +462,12 @@ func (r *Router) handleAdminWordSets(w http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		if err := wordSetRepo.DeleteWordSet(id); err != nil {
+		courseCode := adminCourseCode(req, "")
+		if err := r.validateAdminCourseCode(courseCode); err != nil {
+			http.Error(w, "Course not found", http.StatusNotFound)
+			return
+		}
+		if err := wordSetRepo.DeleteWordSetForCourse(id, courseCode); err != nil {
 			r.logger.Error("failed to delete word set", zap.Error(err))
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
@@ -442,7 +542,12 @@ func (r *Router) handleAdminWordSetDetail(w http.ResponseWriter, req *http.Reque
 	wordSetRepo := repository.NewWordSetRepository(r.db, r.logger)
 
 	// Get word set
-	wordSet, err := wordSetRepo.GetWordSet(id)
+	courseCode := adminCourseCode(req, "")
+	if err := r.validateAdminCourseCode(courseCode); err != nil {
+		http.Error(w, "Course not found", http.StatusNotFound)
+		return
+	}
+	wordSet, err := wordSetRepo.GetWordSetForCourse(id, courseCode)
 	if err != nil {
 		r.logger.Error("failed to get word set", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)

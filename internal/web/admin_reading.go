@@ -21,6 +21,7 @@ var errInvalidReadingTextPath = errors.New("invalid reading text path")
 
 type adminReadingTextItem struct {
 	TextID         string `json:"text_id"`
+	CourseCode     string `json:"course_code"`
 	CategoryID     string `json:"category_id"`
 	Title          string `json:"title"`
 	Level          string `json:"level"`
@@ -43,6 +44,11 @@ func (r *Router) handleAdminReadingTexts(w http.ResponseWriter, req *http.Reques
 }
 
 func (r *Router) handleAdminReadingTextsList(w http.ResponseWriter, req *http.Request) {
+	courseCode, targetLanguage, err := r.resolveAdminReadingCourse(req)
+	if err != nil {
+		http.Error(w, "Course not found", http.StatusNotFound)
+		return
+	}
 	idx, err := r.readReadingIndex()
 	if err != nil {
 		r.logger.Error("admin reading: failed to load index", zap.Error(err))
@@ -51,7 +57,6 @@ func (r *Router) handleAdminReadingTextsList(w http.ResponseWriter, req *http.Re
 	}
 	search := strings.ToLower(strings.TrimSpace(req.URL.Query().Get("search")))
 	levelFilter := strings.ToUpper(strings.TrimSpace(req.URL.Query().Get("level")))
-	langFilter := strings.ToLower(strings.TrimSpace(req.URL.Query().Get("target_lang")))
 
 	items := make([]adminReadingTextItem, 0, len(idx.Texts))
 	for textID := range idx.Texts {
@@ -70,7 +75,7 @@ func (r *Router) handleAdminReadingTextsList(w http.ResponseWriter, req *http.Re
 		if levelFilter != "" && strings.ToUpper(strings.TrimSpace(doc.Level)) != levelFilter {
 			continue
 		}
-		if langFilter != "" && strings.ToLower(strings.TrimSpace(doc.TargetLanguage)) != langFilter {
+		if targetLanguage != "" && strings.ToLower(strings.TrimSpace(doc.TargetLanguage)) != targetLanguage {
 			continue
 		}
 
@@ -81,6 +86,7 @@ func (r *Router) handleAdminReadingTextsList(w http.ResponseWriter, req *http.Re
 
 		items = append(items, adminReadingTextItem{
 			TextID:         doc.ID,
+			CourseCode:     courseCode,
 			CategoryID:     doc.CategoryID,
 			Title:          title,
 			Level:          doc.Level,
@@ -109,58 +115,91 @@ func (r *Router) handleAdminReadingTextDelete(w http.ResponseWriter, req *http.R
 		http.Error(w, "text_id required", http.StatusBadRequest)
 		return
 	}
-
-	rootDir, err := readingWritableRootDir(r.config)
+	courseCode, targetLanguage, err := r.resolveAdminReadingCourse(req)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, "Course not found", http.StatusNotFound)
 		return
 	}
-	indexPath := filepath.Join(rootDir, "reading", "index.json")
-	data, err := os.ReadFile(indexPath)
+	currentIndex, err := r.readReadingIndex()
 	if err != nil {
 		http.Error(w, "reading index not found", http.StatusNotFound)
 		return
 	}
-	var idx readingIndex
-	if err := json.Unmarshal(data, &idx); err != nil {
-		http.Error(w, "invalid reading index", http.StatusInternalServerError)
-		return
-	}
-
-	relPath, ok := idx.Texts[textID]
-	if !ok {
+	currentDoc, err := r.readReadingText(currentIndex, textID)
+	if err != nil {
 		http.Error(w, "reading text not found", http.StatusNotFound)
 		return
 	}
-
-	if err := applyReadingTextDeletion(rootDir, indexPath, &idx, textID, relPath); err != nil {
-		if errors.Is(err, errInvalidReadingTextPath) {
-			http.Error(w, "invalid reading text path", http.StatusBadRequest)
-			return
-		}
-		r.logger.Error("admin reading: failed to write index", zap.Error(err))
-		http.Error(w, "failed to update reading index", http.StatusInternalServerError)
+	if targetLanguage != "" && strings.ToLower(strings.TrimSpace(currentDoc.TargetLanguage)) != targetLanguage {
+		http.Error(w, "reading text does not belong to selected course", http.StatusNotFound)
 		return
 	}
 
-	// Local authoring checkout only (prod image has no courses/); best-effort, never fail the request.
-	syncDeleteReadingTextInMatchingCourses(r.logger, r.config, rootDir, textID)
-
-	if r.db != nil {
-		if _, err := r.db.Exec(`DELETE FROM reading_text_progress WHERE chapter_id = ?`, textID); err != nil {
-			r.logger.Warn("admin reading: failed to cleanup reading progress", zap.String("text_id", textID), zap.Error(err))
+	rootDir, rootErr := readingWritableRootDirForCourse(r.config, courseCode)
+	if rootErr == nil {
+		indexPath := filepath.Join(rootDir, "reading", "index.json")
+		data, err := os.ReadFile(indexPath)
+		if err != nil {
+			http.Error(w, "reading index not found", http.StatusNotFound)
+			return
 		}
+		var idx readingIndex
+		if err := json.Unmarshal(data, &idx); err != nil {
+			http.Error(w, "invalid reading index", http.StatusInternalServerError)
+			return
+		}
+
+		relPath, ok := idx.Texts[textID]
+		if !ok {
+			http.Error(w, "reading text not found", http.StatusNotFound)
+			return
+		}
+
+		if err := applyReadingTextDeletion(rootDir, indexPath, &idx, textID, relPath); err != nil {
+			if errors.Is(err, errInvalidReadingTextPath) {
+				http.Error(w, "invalid reading text path", http.StatusBadRequest)
+				return
+			}
+			r.logger.Error("admin reading: failed to write index", zap.Error(err))
+			http.Error(w, "failed to update reading index", http.StatusInternalServerError)
+			return
+		}
+
+		// Local authoring checkout only (prod image has no courses/); best-effort, never fail the request.
+		selectedConfig := configForReadingCourse(r.config, courseCode)
+		syncDeleteReadingTextInMatchingCourses(r.logger, selectedConfig, rootDir, textID)
+	} else if r.config == nil || r.config.Learning.ContentSource != "db" {
+		http.Error(w, rootErr.Error(), http.StatusBadRequest)
+		return
 	}
 
-	if err := r.SyncReadingCatalogFromBundle(req.Context()); err != nil {
-		r.logger.Warn("admin reading: catalog db sync after delete failed", zap.String("text_id", textID), zap.Error(err))
+	if err := r.deleteReadingTextFromCatalogDB(req, textID, courseCode, targetLanguage); err != nil {
+		r.logger.Error("admin reading: failed to delete DB catalog row", zap.String("text_id", textID), zap.Error(err))
+		http.Error(w, "failed to update reading catalog", http.StatusInternalServerError)
+		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(map[string]interface{}{
-		"success": true,
-		"text_id": textID,
+		"success":     true,
+		"text_id":     textID,
+		"course_code": courseCode,
 	})
+}
+
+func (r *Router) resolveAdminReadingCourse(req *http.Request) (string, string, error) {
+	courseCode := strings.TrimSpace(strings.ToLower(req.URL.Query().Get("course_code")))
+	if courseCode == "" {
+		courseCode = r.defaultCourseCode()
+	}
+	if courseCode == "" {
+		return "", "", nil
+	}
+	var targetLanguage string
+	if err := r.db.QueryRow(`SELECT target_lang FROM courses WHERE code = ? AND status = 'active'`, courseCode).Scan(&targetLanguage); err != nil {
+		return "", "", err
+	}
+	return courseCode, strings.TrimSpace(strings.ToLower(targetLanguage)), nil
 }
 
 func readingWritableRootDir(cfg *config.Config) (string, error) {
@@ -175,6 +214,108 @@ func readingWritableRootDir(cfg *config.Config) (string, error) {
 		)
 	}
 	return root, nil
+}
+
+func readingWritableRootDirForCourse(cfg *config.Config, courseCode string) (string, error) {
+	return readingWritableRootDir(configForReadingCourse(cfg, courseCode))
+}
+
+func configForReadingCourse(cfg *config.Config, courseCode string) *config.Config {
+	if cfg == nil {
+		return nil
+	}
+	selected := *cfg
+	selected.Learning = cfg.Learning
+	selectedBundleID := grammarBundleForCourse(courseCode)
+	if selectedBundleID != "" && selectedBundleID != selected.Learning.GrammarBundleID {
+		selected.Learning.GrammarBundleDir = ""
+		selected.Learning.GrammarBundleID = selectedBundleID
+	}
+	return &selected
+}
+
+func (r *Router) deleteReadingTextFromCatalogDB(req *http.Request, textID, courseCode, targetLanguage string) error {
+	if r.db == nil {
+		return nil
+	}
+	tx, err := r.db.BeginTx(req.Context(), nil)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
+	if _, err := tx.ExecContext(req.Context(),
+		`DELETE FROM reading_texts WHERE text_id = ? AND (? = '' OR LOWER(target_language) = ?)`,
+		textID, targetLanguage, targetLanguage,
+	); err != nil {
+		return err
+	}
+	if _, err := tx.ExecContext(req.Context(), `DELETE FROM reading_text_progress WHERE chapter_id = ?`, textID); err != nil {
+		return err
+	}
+	if courseCode != "" {
+		if _, err := tx.ExecContext(req.Context(), `
+			DELETE FROM learning_items
+			WHERE source_kind = 'reading_text'
+			  AND source_id = ?
+			  AND course_id = (SELECT id FROM courses WHERE code = ?)
+		`, textID, courseCode); err != nil {
+			return err
+		}
+	}
+
+	rows, err := tx.QueryContext(req.Context(), `SELECT category_id, text_ids FROM reading_categories`)
+	if err != nil {
+		return err
+	}
+	type categoryUpdate struct {
+		id      string
+		textIDs []string
+	}
+	var updates []categoryUpdate
+	for rows.Next() {
+		var id, rawTextIDs string
+		if err := rows.Scan(&id, &rawTextIDs); err != nil {
+			rows.Close()
+			return err
+		}
+		var textIDs []string
+		if err := json.Unmarshal([]byte(rawTextIDs), &textIDs); err != nil {
+			continue
+		}
+		filtered := textIDs[:0]
+		for _, id := range textIDs {
+			if id != textID {
+				filtered = append(filtered, id)
+			}
+		}
+		if len(filtered) != len(textIDs) {
+			updates = append(updates, categoryUpdate{id: id, textIDs: append([]string(nil), filtered...)})
+		}
+	}
+	if err := rows.Err(); err != nil {
+		rows.Close()
+		return err
+	}
+	if err := rows.Close(); err != nil {
+		return err
+	}
+	for _, update := range updates {
+		if len(update.textIDs) == 0 {
+			if _, err := tx.ExecContext(req.Context(), `DELETE FROM reading_categories WHERE category_id = ?`, update.id); err != nil {
+				return err
+			}
+			continue
+		}
+		data, err := json.Marshal(update.textIDs)
+		if err != nil {
+			return err
+		}
+		if _, err := tx.ExecContext(req.Context(), `UPDATE reading_categories SET text_ids = ? WHERE category_id = ?`, string(data), update.id); err != nil {
+			return err
+		}
+	}
+	return tx.Commit()
 }
 
 func nowRFC3339UTC() string {
@@ -299,4 +440,3 @@ func syncDeleteReadingTextInMatchingCourses(log *zap.Logger, cfg *config.Config,
 			zap.String("course_dir", courseDir), zap.String("text_id", textID))
 	}
 }
-

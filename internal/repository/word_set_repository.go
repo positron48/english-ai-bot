@@ -28,8 +28,8 @@ func NewWordSetRepository(db *sql.DB, logger *zap.Logger) *WordSetRepository {
 
 // CreateWordSet creates a new word set
 func (r *WordSetRepository) CreateWordSet(wordSet *models.WordSet) (int64, error) {
-	query := `INSERT INTO word_sets (category_id, title, description, is_published, sort_order, preferred_pos, created_at, updated_at)
-			  VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`
+	query := `INSERT INTO word_sets (course_code, category_id, title, description, is_published, sort_order, preferred_pos, created_at, updated_at)
+			  VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`
 
 	var categoryID interface{}
 	if wordSet.CategoryID != nil {
@@ -51,7 +51,11 @@ func (r *WordSetRepository) CreateWordSet(wordSet *models.WordSet) (int64, error
 		isPublished = 1
 	}
 
-	id, err := database.InsertAndReturnID(r.db, query, categoryID, wordSet.Title, description, isPublished, wordSet.SortOrder, preferredPOS)
+	var courseCode interface{}
+	if wordSet.CourseCode != "" {
+		courseCode = wordSet.CourseCode
+	}
+	id, err := database.InsertAndReturnID(r.db, query, courseCode, categoryID, wordSet.Title, description, isPublished, wordSet.SortOrder, preferredPOS)
 	if err != nil {
 		return 0, fmt.Errorf("failed to create word set: %w", err)
 	}
@@ -63,25 +67,35 @@ func (r *WordSetRepository) CreateWordSet(wordSet *models.WordSet) (int64, error
 func (r *WordSetRepository) GetWordSet(id int64) (*models.WordSet, error) {
 	query := `SELECT id, category_id, title, description, is_published, sort_order, preferred_pos, created_at, updated_at
 			  FROM word_sets WHERE id = ?`
+	return r.scanWordSet(r.db.QueryRow(query, id), false)
+}
 
+// GetWordSetForCourse retrieves a word set by ID and optional course.
+func (r *WordSetRepository) GetWordSetForCourse(id int64, courseCode string) (*models.WordSet, error) {
+	query := `SELECT id, COALESCE(course_code, ''), category_id, title, description, is_published, sort_order, preferred_pos, created_at, updated_at
+			  FROM word_sets WHERE id = ?`
+	args := []interface{}{id}
+	if courseCode != "" {
+		query += ` AND course_code = ?`
+		args = append(args, courseCode)
+	}
+
+	return r.scanWordSet(r.db.QueryRow(query, args...), true)
+}
+
+func (r *WordSetRepository) scanWordSet(row *sql.Row, includeCourse bool) (*models.WordSet, error) {
 	var wordSet models.WordSet
 	var createdAt, updatedAt string
 	var categoryID sql.NullInt64
 	var description sql.NullString
 	var preferredPOS sql.NullString
 	var isPublished int
-
-	err := r.db.QueryRow(query, id).Scan(
-		&wordSet.ID,
-		&categoryID,
-		&wordSet.Title,
-		&description,
-		&isPublished,
-		&wordSet.SortOrder,
-		&preferredPOS,
-		&createdAt,
-		&updatedAt,
-	)
+	var err error
+	if includeCourse {
+		err = row.Scan(&wordSet.ID, &wordSet.CourseCode, &categoryID, &wordSet.Title, &description, &isPublished, &wordSet.SortOrder, &preferredPOS, &createdAt, &updatedAt)
+	} else {
+		err = row.Scan(&wordSet.ID, &categoryID, &wordSet.Title, &description, &isPublished, &wordSet.SortOrder, &preferredPOS, &createdAt, &updatedAt)
+	}
 
 	if err == sql.ErrNoRows {
 		return nil, nil
@@ -115,10 +129,40 @@ func (r *WordSetRepository) ListWordSets(categoryID *int64, limit, offset int, i
 	if len(includeUnpublished) > 0 {
 		includeUnpub = includeUnpublished[0]
 	}
-
 	query := `SELECT id, category_id, title, description, is_published, sort_order, preferred_pos, created_at, updated_at
 			  FROM word_sets WHERE 1=1`
 	args := []interface{}{}
+	if categoryID != nil {
+		query += " AND category_id = ?"
+		args = append(args, *categoryID)
+	}
+	if !includeUnpub {
+		query += " AND is_published = 1"
+	}
+	query += " ORDER BY sort_order, title LIMIT ? OFFSET ?"
+	args = append(args, limit, offset)
+	rows, err := r.db.Query(query, args...)
+	if err != nil {
+		return nil, fmt.Errorf("failed to list word sets: %w", err)
+	}
+	defer rows.Close()
+	return r.scanWordSets(rows, false)
+}
+
+// ListWordSetsForCourse retrieves word sets for one course.
+func (r *WordSetRepository) ListWordSetsForCourse(courseCode string, categoryID *int64, limit, offset int, includeUnpublished ...bool) ([]*models.WordSet, error) {
+	includeUnpub := false
+	if len(includeUnpublished) > 0 {
+		includeUnpub = includeUnpublished[0]
+	}
+
+	query := `SELECT id, COALESCE(course_code, ''), category_id, title, description, is_published, sort_order, preferred_pos, created_at, updated_at
+			  FROM word_sets WHERE 1=1`
+	args := []interface{}{}
+	if courseCode != "" {
+		query += " AND course_code = ?"
+		args = append(args, courseCode)
+	}
 
 	// categoryID can be:
 	// - nil: no filter (show all categories)
@@ -143,6 +187,10 @@ func (r *WordSetRepository) ListWordSets(categoryID *int64, limit, offset int, i
 	}
 	defer rows.Close()
 
+	return r.scanWordSets(rows, true)
+}
+
+func (r *WordSetRepository) scanWordSets(rows *sql.Rows, includeCourse bool) ([]*models.WordSet, error) {
 	var wordSets []*models.WordSet
 	for rows.Next() {
 		var wordSet models.WordSet
@@ -152,17 +200,12 @@ func (r *WordSetRepository) ListWordSets(categoryID *int64, limit, offset int, i
 		var preferredPOS sql.NullString
 		var isPublished int
 
-		err := rows.Scan(
-			&wordSet.ID,
-			&categoryID,
-			&wordSet.Title,
-			&description,
-			&isPublished,
-			&wordSet.SortOrder,
-			&preferredPOS,
-			&createdAt,
-			&updatedAt,
-		)
+		var err error
+		if includeCourse {
+			err = rows.Scan(&wordSet.ID, &wordSet.CourseCode, &categoryID, &wordSet.Title, &description, &isPublished, &wordSet.SortOrder, &preferredPOS, &createdAt, &updatedAt)
+		} else {
+			err = rows.Scan(&wordSet.ID, &categoryID, &wordSet.Title, &description, &isPublished, &wordSet.SortOrder, &preferredPOS, &createdAt, &updatedAt)
+		}
 		if err != nil {
 			r.logger.Warn("failed to scan word set", zap.Error(err))
 			continue
@@ -215,9 +258,17 @@ func (r *WordSetRepository) UpdateWordSet(wordSet *models.WordSet) error {
 		isPublished = 1
 	}
 
-	_, err := r.db.Exec(query, categoryID, wordSet.Title, description, isPublished, wordSet.SortOrder, preferredPOS, wordSet.ID)
+	args := []interface{}{categoryID, wordSet.Title, description, isPublished, wordSet.SortOrder, preferredPOS, wordSet.ID}
+	if wordSet.CourseCode != "" {
+		query += ` AND course_code = ?`
+		args = append(args, wordSet.CourseCode)
+	}
+	result, err := r.db.Exec(query, args...)
 	if err != nil {
 		return fmt.Errorf("failed to update word set: %w", err)
+	}
+	if affected, err := result.RowsAffected(); err == nil && affected == 0 {
+		return fmt.Errorf("word set not found")
 	}
 
 	return nil
@@ -225,9 +276,17 @@ func (r *WordSetRepository) UpdateWordSet(wordSet *models.WordSet) error {
 
 // DeleteWordSet deletes a word set (cascade will delete items)
 func (r *WordSetRepository) DeleteWordSet(id int64) error {
-	_, err := r.db.Exec(`DELETE FROM word_sets WHERE id = ?`, id)
+	return r.DeleteWordSetForCourse(id, "")
+}
+
+// DeleteWordSetForCourse deletes a word set only when it belongs to courseCode.
+func (r *WordSetRepository) DeleteWordSetForCourse(id int64, courseCode string) error {
+	result, err := r.db.Exec(`DELETE FROM word_sets WHERE id = ? AND (? = '' OR course_code = ?)`, id, courseCode, courseCode)
 	if err != nil {
 		return fmt.Errorf("failed to delete word set: %w", err)
+	}
+	if affected, err := result.RowsAffected(); err == nil && affected == 0 {
+		return fmt.Errorf("word set not found")
 	}
 
 	return nil

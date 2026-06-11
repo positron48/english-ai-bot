@@ -5,6 +5,7 @@ import "time"
 // WordSetCategory represents a category in the word sets hierarchy
 type WordSetCategory struct {
 	ID          int64     `json:"id"`
+	CourseCode  string    `json:"course_code"`
 	ParentID    *int64    `json:"parent_id"`
 	Name        string    `json:"name"`
 	Description *string   `json:"description"`
@@ -17,6 +18,7 @@ type WordSetCategory struct {
 // WordSet represents a collection of words
 type WordSet struct {
 	ID           int64     `json:"id"`
+	CourseCode   string    `json:"course_code"`
 	CategoryID   *int64    `json:"category_id"`
 	Title        string    `json:"title"`
 	Description  *string   `json:"description"`

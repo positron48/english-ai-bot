@@ -76,6 +76,35 @@ func TestHandleAdminWordSetCategories_Get(t *testing.T) {
 	_ = resp.Categories
 }
 
+func TestHandleAdminWordSetCategories_GetFiltersByCourse(t *testing.T) {
+	router, db, adminUserID, cleanup := setupAdminWordSetsTest(t)
+	defer cleanup()
+	repo := repository.NewWordSetCategoryRepository(db.GetConnection(), zap.NewNop())
+	if _, err := repo.CreateCategory(&models.WordSetCategory{Name: "English", CourseCode: "en_ru"}); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := repo.CreateCategory(&models.WordSetCategory{Name: "Spanish", CourseCode: "es_ru"}); err != nil {
+		t.Fatal(err)
+	}
+
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/word-set-categories?course_code=es_ru", nil)
+	req = setUserIDInContextWordSets(req, adminUserID)
+	rr := httptest.NewRecorder()
+	router.handleAdminWordSetCategories(rr, req)
+	if rr.Code != http.StatusOK {
+		t.Fatalf("status = %d: %s", rr.Code, rr.Body.String())
+	}
+	var resp struct {
+		Categories []models.WordSetCategory `json:"categories"`
+	}
+	if err := json.NewDecoder(rr.Body).Decode(&resp); err != nil {
+		t.Fatal(err)
+	}
+	if len(resp.Categories) != 1 || resp.Categories[0].CourseCode != "es_ru" {
+		t.Fatalf("categories = %+v, want only es_ru", resp.Categories)
+	}
+}
+
 func TestHandleAdminWordSetCategories_PostInvalidBody(t *testing.T) {
 	router, _, adminUserID, cleanup := setupAdminWordSetsTest(t)
 	defer cleanup()

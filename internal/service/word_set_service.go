@@ -29,6 +29,10 @@ type wordRepoForWordSet interface {
 	UpsertWordFormMapping(form string, wordCardID int64) error
 }
 
+type courseAwareWordRepoForWordSet interface {
+	TagWordCardCourse(wordCardID int64, courseCode string) error
+}
+
 // WordSetService handles word set business logic
 type WordSetService struct {
 	wordSetRepo           *repository.WordSetRepository
@@ -575,6 +579,21 @@ func (s *WordSetService) MarkKnown(userID, wordCardID int64) error {
 // Word card data and training cards are created asynchronously by TrainingWorker
 // This allows saving word sets quickly even with many words
 func (s *WordSetService) ProcessWordSetItems(ctx context.Context, wordSetID int64, wordsStr string) error {
+	return s.ProcessWordSetItemsForCourse(ctx, wordSetID, "", wordsStr)
+}
+
+// ProcessWordSetItemsForCourse replaces a set's items within its declared course.
+func (s *WordSetService) ProcessWordSetItemsForCourse(ctx context.Context, wordSetID int64, courseCode, wordsStr string) error {
+	if courseCode != "" {
+		wordSet, err := s.wordSetRepo.GetWordSetForCourse(wordSetID, courseCode)
+		if err != nil {
+			return fmt.Errorf("failed to get word set: %w", err)
+		}
+		if wordSet == nil {
+			return fmt.Errorf("word set not found for course %s", courseCode)
+		}
+	}
+
 	// Split by comma and normalize
 	words := strings.Split(wordsStr, ",")
 	var wordCardIDs []int64
@@ -595,6 +614,15 @@ func (s *WordSetService) ProcessWordSetItems(ctx context.Context, wordSetID int6
 			)
 			// Continue with other words
 			continue
+		}
+		if taggedRepo, ok := s.wordRepo.(courseAwareWordRepoForWordSet); ok {
+			if err := taggedRepo.TagWordCardCourse(wordCardID, courseCode); err != nil {
+				s.logger.Warn("failed to tag word card with course",
+					zap.Int64("word_card_id", wordCardID),
+					zap.String("course_code", courseCode),
+					zap.Error(err),
+				)
+			}
 		}
 
 		// Word card data and training cards will be created asynchronously by TrainingWorker
