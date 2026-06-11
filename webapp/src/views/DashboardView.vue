@@ -430,7 +430,7 @@ const loadData = async () => {
       }
       offlineDashboard.value = true
     } else {
-      let history: LinglowHistory | null = null
+      let history: LinglowHistory | null = null;
       [data] = await Promise.all([
         apiClient.request('/api/dashboard'),
         courseClient.getProgress(currentCourseCode.value || undefined).then(p => { linglowProgress.value = p }).catch(() => {}),
