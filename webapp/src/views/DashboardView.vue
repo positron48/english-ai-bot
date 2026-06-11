@@ -469,9 +469,7 @@ const loadData = async () => {
       wordsAddedStats: data.words_added_stats || [],
       grammarStats: data.grammar_stats || null
     }
-    await nextTick()
-    updateChart()
-    updateWordsChart()
+    // charts are updated via watchers on weeklyStats / wordsAddedStats
   } catch (error) {
     console.error('Failed to load dashboard:', error)
   } finally {
@@ -927,13 +925,7 @@ watch(isAuthenticated, (authenticated) => {
   }
 }, { immediate: true })
 
-onMounted(() => {
-  // Also try to load on mount if already authenticated
-  // (watch will handle it, but this ensures it happens)
-  if (isAuthenticated.value) {
-    loadData()
-  }
-})
+// onMounted: not needed — watch(isAuthenticated, { immediate: true }) already fires on mount
 </script>
 
 <style scoped>
