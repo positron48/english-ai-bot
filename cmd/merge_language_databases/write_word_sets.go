@@ -11,7 +11,7 @@ type sourceWordSetCategory struct {
 	ParentID    sql.NullInt64
 	Name        string
 	Description sql.NullString
-	IsPublished bool
+	IsPublished int64
 	SortOrder   int
 }
 
@@ -42,7 +42,7 @@ func copyWordSets(
 		var sourceCategoryID sql.NullInt64
 		var title string
 		var description, preferredPOS sql.NullString
-		var isPublished bool
+		var isPublished int64
 		var sortOrder int
 		if err := rows.Scan(
 			&sourceID, &sourceCategoryID, &title, &description,
