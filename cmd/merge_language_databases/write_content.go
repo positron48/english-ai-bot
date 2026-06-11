@@ -75,6 +75,9 @@ func mergeContent(ctx context.Context, sources []openedSourceDB, targetDB *sql.D
 		if err != nil {
 			return nil, fmt.Errorf("import word_cards from %s: %w", src.Label, err)
 		}
+		if err := copyWordSets(ctx, src.DB, targetDB, courseCode, wcMap, summary); err != nil {
+			return nil, fmt.Errorf("copy word sets from %s: %w", src.Label, err)
+		}
 
 		moduleMap, err := copyModules(ctx, src.DB, targetDB, sourceCourseID, targetCourseID)
 		if err != nil {

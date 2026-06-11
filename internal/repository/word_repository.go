@@ -641,13 +641,21 @@ func (r *WordRepository) listWordCardsAdmin(courseCode string, includeCourseInfo
 	args := []interface{}{}
 	conditions := []string{}
 	if courseCode != "" {
-		conditions = append(conditions, `(wc.course_code = ? OR EXISTS (
+		conditions = append(conditions, `(EXISTS (
 			SELECT 1
 			FROM learning_items li
 			JOIN courses c ON c.id = li.course_id
 			WHERE li.source_kind = 'word_card'
 			  AND li.source_id = CAST(wc.id AS TEXT)
 			  AND c.code = ?
+		) OR (
+			wc.course_code = ?
+			AND NOT EXISTS (
+				SELECT 1
+				FROM learning_items li
+				WHERE li.source_kind = 'word_card'
+				  AND li.source_id = CAST(wc.id AS TEXT)
+			)
 		))`)
 		args = append(args, courseCode, courseCode)
 	}
@@ -838,13 +846,21 @@ func (r *WordRepository) CountWordCardsAdminForCourse(courseCode string, filterU
 	args := []interface{}{}
 	conditions := []string{}
 	if courseCode != "" {
-		conditions = append(conditions, `(wc.course_code = ? OR EXISTS (
+		conditions = append(conditions, `(EXISTS (
 			SELECT 1
 			FROM learning_items li
 			JOIN courses c ON c.id = li.course_id
 			WHERE li.source_kind = 'word_card'
 			  AND li.source_id = CAST(wc.id AS TEXT)
 			  AND c.code = ?
+		) OR (
+			wc.course_code = ?
+			AND NOT EXISTS (
+				SELECT 1
+				FROM learning_items li
+				WHERE li.source_kind = 'word_card'
+				  AND li.source_id = CAST(wc.id AS TEXT)
+			)
 		))`)
 		args = append(args, courseCode, courseCode)
 	}

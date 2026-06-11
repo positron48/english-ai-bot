@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+	"fmt"
 	"testing"
 	"time"
 
@@ -59,6 +60,51 @@ func TestWordRepository_ListWordCardsAdminForCourse(t *testing.T) {
 	}
 	if len(cards[0].CourseCodes) != 1 || cards[0].CourseCodes[0] != "es_ru" {
 		t.Fatalf("course_codes = %v, want [es_ru]", cards[0].CourseCodes)
+	}
+}
+
+func TestWordRepository_ListWordCardsAdminForCourseCanonicalMappingOverridesLegacyTag(t *testing.T) {
+	db, repo := setupWordAdminTestDB(t)
+	if err := repo.SaveWordCard("canonical-spanish-word", "definition"); err != nil {
+		t.Fatal(err)
+	}
+	var wordCardID int64
+	if err := db.QueryRow(`SELECT id FROM word_cards WHERE word = 'canonical-spanish-word'`).Scan(&wordCardID); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.Exec(`UPDATE word_cards SET course_code = 'en_ru' WHERE id = ?`, wordCardID); err != nil {
+		t.Fatal(err)
+	}
+	var spanishCourseID int64
+	if err := db.QueryRow(`SELECT id FROM courses WHERE code = 'es_ru'`).Scan(&spanishCourseID); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.Exec(`
+		INSERT INTO learning_items (course_id, item_type, source_kind, source_id, title, status)
+		VALUES (?, 'word', 'word_card', ?, 'canonical-spanish-word', 'published')
+	`, spanishCourseID, fmt.Sprintf("%d", wordCardID)); err != nil {
+		t.Fatal(err)
+	}
+
+	englishCards, err := repo.ListWordCardsAdminForCourse("en_ru", nil, false, nil, "", "", 10, 0, "word", "asc")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(englishCards) != 0 {
+		t.Fatalf("English cards = %+v, want none", englishCards)
+	}
+	spanishCards, err := repo.ListWordCardsAdminForCourse("es_ru", nil, false, nil, "", "", 10, 0, "word", "asc")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(spanishCards) != 1 || spanishCards[0].Word != "canonical-spanish-word" {
+		t.Fatalf("Spanish cards = %+v, want canonical Spanish word", spanishCards)
+	}
+	if total, err := repo.CountWordCardsAdminForCourse("en_ru", nil, false, nil, "", ""); err != nil || total != 0 {
+		t.Fatalf("English count = %d, err = %v", total, err)
+	}
+	if total, err := repo.CountWordCardsAdminForCourse("es_ru", nil, false, nil, "", ""); err != nil || total != 1 {
+		t.Fatalf("Spanish count = %d, err = %v", total, err)
 	}
 }
 
