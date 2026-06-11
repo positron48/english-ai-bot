@@ -27,9 +27,9 @@
   >
     <div class="admin-sidebar-header">
       <div class="admin-sidebar-header-left">
-        <router-link to="/dashboard" class="admin-home-button" title="Go to main site">
+        <a href="/app/dashboard" class="admin-home-button" title="Go to main site">
           <Icon name="home" />
-        </router-link>
+        </a>
         <h1>Admin Panel</h1>
       </div>
       <button 
@@ -45,9 +45,9 @@
     <nav class="admin-sidebar-nav">
       <router-link 
         v-if="can('words.read_all')"
-        to="/admin" 
+        to="/" 
         class="admin-sidebar-item" 
-        :class="{ active: $route.path === '/admin' }"
+        :class="{ active: $route.path === '/' }"
         @click="isMobile && handleCloseSidebar()"
       >
         <Icon name="home" class="admin-sidebar-icon" />
@@ -55,9 +55,9 @@
       </router-link>
       <router-link
         v-if="can('words.read_all') && showSpanishVerbFormsAdmin"
-        to="/admin/verb-forms"
+        to="/verb-forms"
         class="admin-sidebar-item"
-        :class="{ active: $route.path === '/admin/verb-forms' }"
+        :class="{ active: $route.path === '/verb-forms' }"
         @click="isMobile && handleCloseSidebar()"
       >
         <Icon name="list" class="admin-sidebar-icon" />
@@ -65,9 +65,9 @@
       </router-link>
       <router-link 
         v-if="can('full_access')"
-        to="/admin/circuit-breaker" 
+        to="/circuit-breaker" 
         class="admin-sidebar-item" 
-        :class="{ active: $route.path === '/admin/circuit-breaker' }"
+        :class="{ active: $route.path === '/circuit-breaker' }"
         @click="isMobile && handleCloseSidebar()"
       >
         <Icon name="toggle" class="admin-sidebar-icon" />
@@ -75,9 +75,9 @@
       </router-link>
       <router-link 
         v-if="can('full_access')"
-        to="/admin/prompt-tester" 
+        to="/prompt-tester" 
         class="admin-sidebar-item" 
-        :class="{ active: $route.path === '/admin/prompt-tester' }"
+        :class="{ active: $route.path === '/prompt-tester' }"
         @click="isMobile && handleCloseSidebar()"
       >
         <Icon name="code" class="admin-sidebar-icon" />
@@ -85,9 +85,9 @@
       </router-link>
       <router-link
         v-if="can('full_access')"
-        to="/admin/content-reports"
+        to="/content-reports"
         class="admin-sidebar-item"
-        :class="{ active: $route.path === '/admin/content-reports' }"
+        :class="{ active: $route.path === '/content-reports' }"
         @click="isMobile && handleCloseSidebar()"
       >
         <Icon name="warning" class="admin-sidebar-icon" />
@@ -95,9 +95,9 @@
       </router-link>
       <router-link 
         v-if="can('word_sets.read')"
-        to="/admin/word-sets" 
+        to="/word-sets" 
         class="admin-sidebar-item" 
-        :class="{ active: $route.path.startsWith('/admin/word-sets') }"
+        :class="{ active: $route.path.startsWith('/word-sets') }"
         @click="isMobile && handleCloseSidebar()"
       >
         <Icon name="book" class="admin-sidebar-icon" />
@@ -105,9 +105,9 @@
       </router-link>
       <router-link 
         v-if="can('full_access')"
-        to="/admin/grammar" 
+        to="/grammar" 
         class="admin-sidebar-item" 
-        :class="{ active: $route.path === '/admin/grammar' }"
+        :class="{ active: $route.path === '/grammar' }"
         @click="isMobile && handleCloseSidebar()"
       >
         <Icon name="book-open" class="admin-sidebar-icon" />
@@ -115,9 +115,9 @@
       </router-link>
       <router-link
         v-if="can('full_access')"
-        to="/admin/reading-texts"
+        to="/reading-texts"
         class="admin-sidebar-item"
-        :class="{ active: $route.path === '/admin/reading-texts' }"
+        :class="{ active: $route.path === '/reading-texts' }"
         @click="isMobile && handleCloseSidebar()"
       >
         <Icon name="book" class="admin-sidebar-icon" />
@@ -125,9 +125,9 @@
       </router-link>
       <router-link 
         v-if="can('full_access')"
-        to="/admin/app-settings" 
+        to="/app-settings" 
         class="admin-sidebar-item" 
-        :class="{ active: $route.path === '/admin/app-settings' }"
+        :class="{ active: $route.path === '/app-settings' }"
         @click="isMobile && handleCloseSidebar()"
       >
         <Icon name="gear" class="admin-sidebar-icon" />
@@ -135,9 +135,9 @@
       </router-link>
       <router-link
         v-if="can('full_access')"
-        to="/admin/linglow-srs"
+        to="/linglow-srs"
         class="admin-sidebar-item"
-        :class="{ active: $route.path === '/admin/linglow-srs' }"
+        :class="{ active: $route.path === '/linglow-srs' }"
         @click="isMobile && handleCloseSidebar()"
       >
         <Icon name="chart" class="admin-sidebar-icon" />
@@ -145,9 +145,9 @@
       </router-link>
       <router-link 
         v-if="can('full_access')"
-        to="/admin/access" 
+        to="/access" 
         class="admin-sidebar-item" 
-        :class="{ active: $route.path.startsWith('/admin/access') }"
+        :class="{ active: $route.path.startsWith('/access') }"
         @click="isMobile && handleCloseSidebar()"
       >
         <Icon name="lock" class="admin-sidebar-icon" />
@@ -155,9 +155,9 @@
       </router-link>
       <router-link 
         v-if="can('users.read_all')"
-        to="/admin/users" 
+        to="/users" 
         class="admin-sidebar-item" 
-        :class="{ active: $route.path === '/admin/users' }"
+        :class="{ active: $route.path === '/users' }"
         @click="isMobile && handleCloseSidebar()"
       >
         <Icon name="users" class="admin-sidebar-icon" />
@@ -165,9 +165,9 @@
       </router-link>
       <router-link 
         v-if="can('stats.read')"
-        to="/admin/stats" 
+        to="/stats" 
         class="admin-sidebar-item" 
-        :class="{ active: $route.path === '/admin/stats' }"
+        :class="{ active: $route.path === '/stats' }"
         @click="isMobile && handleCloseSidebar()"
       >
         <Icon name="chart" class="admin-sidebar-icon" />

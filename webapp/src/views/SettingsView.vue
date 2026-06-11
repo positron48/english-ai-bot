@@ -1,7 +1,22 @@
 <template>
-  <div class="settings">
-    <h1>{{ t('settings.title') }}</h1>
-    
+  <div class="settings lg-page">
+    <div class="lg-page-header">
+      <h1 class="lg-page-title">{{ t('settings.title') }}</h1>
+      <button class="lg-theme-btn" type="button" @click="handleThemeToggleBtn">
+        <LgIcon :name="selectedTheme === 'dark' ? 'sun' : 'moon'" :s="18" c="var(--text)" />
+      </button>
+    </div>
+
+    <div class="settings-hero">
+      <div class="settings-hero-avatar">
+        <LgLumi :size="50" />
+      </div>
+      <div>
+        <div class="settings-hero-name">{{ t('settings.title') }}</div>
+        <div class="settings-hero-sub">{{ targetLangDisplay }}</div>
+      </div>
+    </div>
+
     <div class="card">
       <h2>{{ t('settings.appearance') }}</h2>
       <div class="settings-group">
@@ -12,8 +27,8 @@
           </div>
           <div class="setting-control">
             <label class="theme-toggle-switch">
-              <input 
-                type="checkbox" 
+              <input
+                type="checkbox"
                 :checked="selectedTheme === 'dark'"
                 @change="handleThemeToggle"
               />
@@ -22,6 +37,35 @@
                 <Icon name="moon" class="theme-icon theme-icon-moon" />
               </span>
             </label>
+          </div>
+        </div>
+        <div class="setting-item">
+          <div class="setting-info">
+            <label class="setting-label">{{ t('common.language') }}</label>
+          </div>
+          <div class="setting-control">
+            <select
+              :value="currentLocale"
+              class="theme-select"
+              @change="(e) => setLocale((e.target as HTMLSelectElement).value as any)"
+            >
+              <option value="ru">Русский</option>
+              <option :value="targetLocale">{{ targetLocale.toUpperCase() }}</option>
+            </select>
+          </div>
+        </div>
+        <div v-if="courses.length > 1" class="setting-item">
+          <div class="setting-info">
+            <label class="setting-label">{{ t('city.course') }}</label>
+          </div>
+          <div class="setting-control">
+            <select
+              :value="currentCourseCode"
+              class="theme-select"
+              @change="(e) => selectCourse((e.target as HTMLSelectElement).value)"
+            >
+              <option v-for="c in courses" :key="c.code" :value="c.code">{{ c.title }}</option>
+            </select>
           </div>
         </div>
       </div>
@@ -277,7 +321,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" v-if="!isTelegramMiniApp">
       <h2>{{ t('settings.account') }}</h2>
       <div class="settings-group">
         <div class="setting-item">
@@ -307,9 +351,15 @@ import { useAudio } from '../composables/useAudio'
 import { useAuth } from '../composables/useAuth'
 import { useLearningConfig, type SpanishVerbScopeLadderStep } from '../composables/useLearningConfig'
 import { apiClient } from '../api/client'
+import { useLocale } from '../composables/useLocale'
+import { useCourse } from '../composables/useCourse'
 import Icon from '../components/Icon.vue'
+import LgIcon from '../components/linglow/LgIcon.vue'
+import LgLumi from '../components/linglow/LgLumi.vue'
 
 const { t, locale } = useI18n()
+const { currentLocale, setLocale } = useLocale()
+const { courses, currentCourseCode, selectCourse } = useCourse()
 
 const router = useRouter()
 const { settings, setSoundsEnabled, setVibrationEnabled, setTheme, setSoundTheme, setHideMorphInTraining, setAutoplayPronunciation } = useSettings()
@@ -324,6 +374,7 @@ const selectedTheme = ref<'light' | 'dark'>('light')
 const selectedSoundTheme = ref('tick')
 const soundThemes = ref(getThemes())
 const previewing = ref(false)
+const isTelegramMiniApp = ref(!!(window as any).Telegram?.WebApp)
 
 const notificationFrequency = ref('daily')
 const customDays = ref(3)
@@ -615,6 +666,13 @@ const handleThemeToggle = (event: Event) => {
   setThemeInTheme(newTheme)
 }
 
+const handleThemeToggleBtn = () => {
+  const newTheme = selectedTheme.value === 'dark' ? 'light' : 'dark'
+  selectedTheme.value = newTheme
+  setTheme(newTheme)
+  setThemeInTheme(newTheme)
+}
+
 const handleSoundThemeChange = () => {
   setSoundTheme(selectedSoundTheme.value)
 }
@@ -641,17 +699,65 @@ const handleLogout = () => {
 .settings {
   max-width: 800px;
   margin: 0 auto;
-  padding: 10px;
 }
 
-.settings h1 {
-  margin-bottom: 24px;
+.settings .card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: var(--shadow-soft);
+  margin-bottom: 14px;
 }
 
 .settings h2 {
-  margin-bottom: 20px;
+  margin-bottom: 12px;
+  font-family: 'Lora', serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.lg-theme-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.settings-hero {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 0 16px;
+}
+
+.settings-hero-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--chip-bg);
+  border: 2px solid var(--salvia);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.settings-hero-name {
+  font-family: 'Lora', serif;
   font-size: 20px;
-  color: var(--text-primary);
+  color: var(--text);
+}
+
+.settings-hero-sub {
+  font-size: 13px;
+  color: var(--subtext);
+  margin-top: 2px;
 }
 
 .settings-group {

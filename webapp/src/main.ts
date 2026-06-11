@@ -3,9 +3,9 @@ import App from './App.vue'
 import router from './router'
 import i18n from './i18n'
 import { initOfflineSyncRunner } from './api/offlineSyncRunner'
-import './styles/theme.css'
-import './style.css'
-import './styles/markdown-content.css'
+// Public entry uses ONLY the new Linglow theme; legacy styles live in admin-main.ts
+import './styles/linglow-theme.css'
+import './styles/linglow-markdown.css'
 
 declare global {
   interface Window {

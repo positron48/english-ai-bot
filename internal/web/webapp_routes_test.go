@@ -30,6 +30,46 @@ func (f subFailingFS) Open(name string) (fs.File, error) {
 func testWebappFS() fs.FS {
 	return fstest.MapFS{
 		"dist/index.html": &fstest.MapFile{Data: []byte("<!DOCTYPE html><html><body>Test</body></html>")},
+		"dist/admin.html": &fstest.MapFile{Data: []byte("<!DOCTYPE html><html><body>Admin</body></html>")},
+	}
+}
+
+// TestWebappSPAFallback_AdminEntry verifies that /app/admin* serves admin.html
+// while other SPA routes keep serving index.html.
+func TestWebappSPAFallback_AdminEntry(t *testing.T) {
+	savedFS := webappFS
+	defer func() { webappFS = savedFS }()
+	webappFS = testWebappFS()
+
+	router := &Router{
+		mux:    http.NewServeMux(),
+		logger: zap.NewNop(),
+		config: &config.Config{},
+	}
+	router.setupWebappRoutes()
+
+	cases := []struct {
+		path string
+		want string
+	}{
+		{"/app/admin", "Admin"},
+		{"/app/admin/", "Admin"},
+		{"/app/admin/users", "Admin"},
+		{"/app/administrator", "Test"}, // not the admin subtree
+		{"/app/dashboard", "Test"},
+		{"/app/", "Test"},
+	}
+	for _, tc := range cases {
+		req := httptest.NewRequest(http.MethodGet, tc.path, nil)
+		rec := httptest.NewRecorder()
+		router.mux.ServeHTTP(rec, req)
+		if rec.Code != http.StatusOK {
+			t.Errorf("%s: status = %d, want 200", tc.path, rec.Code)
+			continue
+		}
+		if !strings.Contains(rec.Body.String(), tc.want) {
+			t.Errorf("%s: body %q does not contain %q", tc.path, rec.Body.String(), tc.want)
+		}
 	}
 }
 

@@ -18,7 +18,8 @@ async function listFiles(dir) {
   return files
 }
 
-const files = await listFiles(assetDir)
+const fontsDir = join(distDir, 'fonts')
+const files = [...await listFiles(assetDir), ...await listFiles(fontsDir).catch(() => [])]
 const assets = files
   .map((file) => `/app/${relative(distDir, file).replaceAll('\\', '/')}`)
   .sort()

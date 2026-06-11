@@ -309,7 +309,6 @@
       "wrong_explanation": "Explicación incorrecta",
       "theory_mismatch": "No coincide con la teoría",
       "wrong_theory": "Teoría incorrecta",
-      "wrong_example": "Ejemplo incorrecto",
       "unclear_explanation": "Explicación poco clara",
       "too_hard": "Demasiado difícil",
       "other": "Otro"
@@ -436,12 +435,28 @@
   },
   "trainingFeedback": {
     "encouragingPhrases": [
-      "¡Perfecto!", "¡Excelente!", "¡Muy bien!", "¡Genial!", "¡Bravo!",
-      "¡Fantástico!", "¡Brillante!", "¡Increíble!", "¡Estupendo!", "¡Magnífico!"
+      "¡Perfecto!",
+      "¡Excelente!",
+      "¡Muy bien!",
+      "¡Genial!",
+      "¡Bravo!",
+      "¡Fantástico!",
+      "¡Brillante!",
+      "¡Increíble!",
+      "¡Estupendo!",
+      "¡Magnífico!"
     ],
     "disappointingPhrases": [
-      "No del todo", "Casi", "¡Cerca!", "Inténtalo de nuevo", "No es correcto",
-      "¡Casi!", "Cerca, pero...", "No exactamente", "Casi lo tienes", "Muy cerca"
+      "No del todo",
+      "Casi",
+      "¡Cerca!",
+      "Inténtalo de nuevo",
+      "No es correcto",
+      "¡Casi!",
+      "Cerca, pero...",
+      "No exactamente",
+      "Casi lo tienes",
+      "Muy cerca"
     ],
     "motivational": {
       "excellent": [
@@ -697,5 +712,41 @@
     "chatError": "Lo sentimos, ocurrió un error al procesar su mensaje. Inténtelo de nuevo.",
     "tooManyRequests": "Demasiadas solicitudes. Inténtelo más tarde.",
     "notFound": "No encontrado"
+  },
+  "lg": {
+    "nav": {
+      "home": "Inicio",
+      "city": "Ciudad",
+      "practice": "Práctica",
+      "progress": "Progreso",
+      "profile": "Perfil"
+    },
+    "streakDays": "{n} días",
+    "lumiTip": "Consejo de Lumi",
+    "lumiKnows": "Lumi sabe",
+    "lumiFacts": [
+      "El español es la segunda lengua del mundo por hablantes nativos: más de 500 millones de personas lo hablan como lengua materna.",
+      "«Chocolate» viene del náhuatl azteca «xocolātl», una bebida amarga de cacao que los españoles trajeron a Europa en el siglo XVI.",
+      "El español tiene unas 10 000 palabras de origen árabe, herencia de 700 años de presencia mora en la península ibérica.",
+      "«Guerrilla» es una palabra española que significa «guerra pequeña». Se convirtió en término internacional tras las guerras napoleónicas.",
+      "«Mariposa» es una de las pocas palabras españolas de origen desconocido: los lingüistas aún debaten su procedencia.",
+      "El español desciende del latín vulgar que llevaron los soldados romanos a Iberia en el siglo III a. C.",
+      "«Plaza» viene del griego «plateía», calle ancha, y llegó al español a través del latín.",
+      "El español tiene dos verbos «ser»: ser para cualidades permanentes y estar para estados temporales, una distinción rara entre las lenguas romances.",
+      "«Tornado» viene del español tornar (girar) y entró al inglés a través de los marineros del Atlántico.",
+      "«Bonanza» significa «buen tiempo» en español. En EE. UU. pasó a significar «golpe de suerte» gracias a los mineros del siglo XIX."
+    ],
+    "todayPath": "Tu camino de hoy",
+    "repeatWords": "Repasa {n} palabras",
+    "repeatWordsSub": "Refuerza tu memoria",
+    "dailyRoute": "Ruta de hoy",
+    "dailyRouteSub": "Explora la ciudad paso a paso",
+    "readText": "Lee un texto corto",
+    "readTextSub": "Sumérgete en el idioma",
+    "practiceChat": "Practica un diálogo con IA",
+    "practiceChatSub": "Habla con confianza",
+    "wordsDueTitle": "{n} palabras por repasar",
+    "wordsDueSub": "El repaso regular es la clave para recordar.",
+    "start": "Empezar"
   }
 }

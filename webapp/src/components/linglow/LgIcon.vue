@@ -1,0 +1,85 @@
+<template>
+  <svg :width="s" :height="s" viewBox="0 0 24 24" fill="none">
+    <template v-if="name === 'home'">
+      <path d="M3 12L12 4L21 12V20C21 20.6 20.6 21 20 21H15V16H9V21H4C3.4 21 3 20.6 3 20V12Z" :fill="c" />
+    </template>
+    <template v-else-if="name === 'map-pin' || name === 'pin'">
+      <circle cx="12" cy="10" r="3" :stroke="c" stroke-width="2" />
+      <path d="M12 2C8.1 2 5 5.1 5 9c0 5.3 7 13 7 13s7-7.7 7-13c0-3.9-3.1-7-7-7z" :stroke="c" stroke-width="2" fill="none" />
+    </template>
+    <template v-else-if="name === 'book'">
+      <rect x="4" y="3" width="16" height="18" rx="2" :stroke="c" stroke-width="2" fill="none" />
+      <path d="M8 7H16M8 11H16M8 15H12" :stroke="c" stroke-width="2" stroke-linecap="round" />
+    </template>
+    <template v-else-if="name === 'refresh'">
+      <path d="M1 4v6h6" :stroke="c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M23 20v-6h-6" :stroke="c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M20.5 9A9 9 0 005.6 5.6L1 10M23 14l-4.6 4.4A9 9 0 013.5 15" :stroke="c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    </template>
+    <template v-else-if="name === 'send'">
+      <path d="M22 2L11 13" :stroke="c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M22 2L15 22L11 13L2 9L22 2Z" :stroke="c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    </template>
+    <template v-else-if="name === 'mic'">
+      <rect x="9" y="2" width="6" height="11" rx="3" :stroke="c" stroke-width="2" fill="none" />
+      <path d="M19 10a7 7 0 01-14 0M12 19v3M8 22h8" :stroke="c" stroke-width="2" stroke-linecap="round" />
+    </template>
+    <template v-else-if="name === 'hamburger'">
+      <path d="M3 6H21M3 12H21M3 18H21" :stroke="c" stroke-width="2" stroke-linecap="round" />
+    </template>
+    <template v-else-if="name === 'clock'">
+      <circle cx="12" cy="12" r="9" :stroke="c" stroke-width="2" fill="none" />
+      <path d="M12 7v5l3 3" :stroke="c" stroke-width="2" stroke-linecap="round" />
+    </template>
+    <template v-else-if="name === 'dumbbell'">
+      <rect x="1" y="10" width="3" height="4" rx="1" :fill="c" />
+      <rect x="4" y="8" width="3" height="8" rx="1.5" :fill="c" />
+      <rect x="7" y="11" width="10" height="2" rx="1" :fill="c" />
+      <rect x="17" y="8" width="3" height="8" rx="1.5" :fill="c" />
+      <rect x="20" y="10" width="3" height="4" rx="1" :fill="c" />
+    </template>
+    <template v-else-if="name === 'bar'">
+      <rect x="3" y="12" width="4" height="9" rx="1" :fill="c" />
+      <rect x="10" y="7" width="4" height="14" rx="1" :fill="c" />
+      <rect x="17" y="3" width="4" height="18" rx="1" :fill="c" />
+    </template>
+    <template v-else-if="name === 'user'">
+      <circle cx="12" cy="8" r="4" :stroke="c" stroke-width="2" fill="none" />
+      <path d="M4 20C4 16.7 7.6 14 12 14C16.4 14 20 16.7 20 20" :stroke="c" stroke-width="2" stroke-linecap="round" fill="none" />
+    </template>
+    <template v-else-if="name === 'chevron-right'">
+      <path d="M9 6L15 12L9 18" :stroke="c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    </template>
+    <template v-else-if="name === 'chevron-left'">
+      <path d="M15 6L9 12L15 18" :stroke="c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    </template>
+    <template v-else-if="name === 'chevron-down'">
+      <path d="M6 9L12 15L18 9" :stroke="c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    </template>
+    <template v-else-if="name === 'x'">
+      <path d="M6 6L18 18M6 18L18 6" :stroke="c" stroke-width="2" stroke-linecap="round" />
+    </template>
+    <template v-else-if="name === 'check'">
+      <path d="M5 12L10 17L19 7" :stroke="c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+    </template>
+    <template v-else-if="name === 'sound'">
+      <path d="M11 5L6 9H2V15H6L11 19V5Z" :fill="c" />
+      <path d="M19.1 4.9A10 10 0 0 1 19.1 19.1M15.5 8.5A5 5 0 0 1 15.5 15.5" :stroke="c" stroke-width="2" fill="none" stroke-linecap="round" />
+    </template>
+    <template v-else-if="name === 'moon'">
+      <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" :fill="c" />
+    </template>
+    <template v-else-if="name === 'sun'">
+      <circle cx="12" cy="12" r="5" :stroke="c" stroke-width="2" fill="none" />
+      <path d="M12 2V4M12 20V22M2 12H4M20 12H22M5.6 5.6L7 7M17 17L18.4 18.4M18.4 5.6L17 7M7 17L5.6 18.4" :stroke="c" stroke-width="2" stroke-linecap="round" />
+    </template>
+  </svg>
+</template>
+
+<script setup lang="ts">
+withDefaults(defineProps<{
+  name: string
+  s?: number
+  c?: string
+}>(), { s: 22, c: 'currentColor' })
+</script>

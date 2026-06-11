@@ -1,91 +1,100 @@
 <template>
-  <div class="dashboard">
-    <div class="dashboard-header">
-      <h1>{{ t('dashboard.title') }}</h1>
-      <button @click="refreshData" class="btn-refresh" :disabled="loading" :class="{ 'rotating': loading }">
-        <Icon name="refresh" />
+  <div class="dashboard lg-page">
+    <!-- Brand header -->
+    <div class="lg-home-header">
+      <div>
+        <div class="lg-home-brand">
+          <span class="lg-home-logo">Linglow</span>
+          <span class="lg-home-spark">✦</span>
+        </div>
+        <div class="lg-home-course">{{ targetLangDisplay }}</div>
+      </div>
+      <button @click="refreshData" class="lg-refresh-btn" :disabled="loading" :class="{ 'rotating': loading }">
+        <LgIcon name="refresh" :s="18" c="var(--text)" />
       </button>
     </div>
-    
-    <div v-if="loading" class="loading">{{ t('common.loading') }}</div>
-    
+
+    <div v-if="loading" class="lg-loading">{{ t('common.loading') }}</div>
+
     <div v-else class="dashboard-content">
-      <div v-if="offlineDashboard" class="card dashboard-offline-card">
-        <strong>{{ t('offline.modeTitle') }}</strong>
-        <p>{{ t('offline.dashboardDescription') }}</p>
-      </div>
-      <!-- Main Stats Cards -->
-      <div class="stats-grid">
-        <div class="stat-card stat-card-primary stat-card-clickable" @click="goToTraining">
-          <div class="stat-header">
-            <Icon name="book" class="stat-icon" />
-            <h3>{{ t('dashboard.availableForTraining') }}</h3>
+      <!-- Ciudad Luminaria card -->
+      <router-link to="/city" class="lg-city-card">
+        <div class="lg-city-card-bg" />
+        <div class="lg-city-card-overlay" />
+        <div class="lg-city-card-content">
+          <div>
+            <div class="lg-city-card-title">{{ linglowProgress?.course?.city_name || t('navigation.city') }}</div>
+            <div class="lg-city-card-kicker">{{ t('city.kicker') }}</div>
           </div>
-          <div class="stat-value-row">
-            <p class="stat-number">{{ stats.availableForTraining }}</p>
-            <p class="stat-label">{{ t('dashboard.cardsAvailable') }}</p>
-          </div>
-        </div>
-
-        <div class="stat-card stat-card-info">
-          <div class="stat-header">
-            <Icon name="sparkles" class="stat-icon" />
-            <h3>{{ t('dashboard.newCards') }}</h3>
-          </div>
-          <div class="stat-value-row">
-            <p class="stat-number">{{ stats.newCount }}</p>
-            <p class="stat-label">{{ t('dashboard.notStarted') }}</p>
-          </div>
-        </div>
-
-        <div class="stat-card stat-card-success">
-          <div class="stat-header">
-            <Icon name="book-open" class="stat-icon" />
-            <h3>{{ t('dashboard.inLearning') }}</h3>
-          </div>
-          <div class="stat-value-row">
-            <p class="stat-number">{{ stats.learningCount }}</p>
-            <p class="stat-label">{{ t('dashboard.beingLearned') }}</p>
-          </div>
-        </div>
-
-        <div class="stat-card stat-card-warning">
-          <div class="stat-header">
-            <Icon name="refresh" class="stat-icon" />
-            <h3>{{ t('dashboard.inReview') }}</h3>
-          </div>
-          <div class="stat-value-row">
-            <p class="stat-number">{{ stats.reviewCount }}</p>
-            <p class="stat-label">{{ t('dashboard.masteredCards') }}</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Linglow Progress Section (shown on new unified DB where legacy stats are empty) -->
-      <div v-if="linglowProgress && stats.availableForTraining === 0" class="linglow-progress-section">
-        <router-link to="/city" class="linglow-progress-link">
-          <div class="linglow-progress-block">
-            <div class="linglow-progress-row">
-              <div class="linglow-metric">
-                <span class="linglow-metric-value">{{ Math.round(linglowProgress.summary.progress_percent) }}%</span>
-                <span class="linglow-metric-label">{{ t('city.progress') }}</span>
-              </div>
-              <div class="linglow-metric">
-                <span class="linglow-metric-value">{{ linglowProgress.summary.due_review_count }}</span>
-                <span class="linglow-metric-label">{{ t('city.reviewPressure') }}</span>
-              </div>
-              <div class="linglow-metric">
-                <span class="linglow-metric-value">{{ linglowProgress.summary.attempted_items }}</span>
-                <span class="linglow-metric-label">{{ t('city.items') }}</span>
-              </div>
-              <div class="linglow-metric">
-                <span class="linglow-metric-value">{{ Math.round(linglowProgress.summary.accuracy_percent) }}%</span>
-                <span class="linglow-metric-label">{{ t('city.accuracy') }}</span>
-              </div>
+          <div v-if="linglowProgress" class="lg-city-card-progress">
+            <div class="lg-city-card-progress-label">
+              {{ Math.round(linglowProgress.summary.progress_percent) }}% · {{ linglowProgress.summary.attempted_items }} {{ t('city.items') }}
             </div>
-            <p class="linglow-progress-hint">{{ t('city.kicker') }} — {{ linglowProgress.course?.city_name }}</p>
+            <LgProgressBar :pct="linglowProgress.summary.progress_percent" :h="4" />
           </div>
-        </router-link>
+        </div>
+      </router-link>
+
+      <!-- Твой путь сегодня -->
+      <div class="lg-path-wrap">
+        <div class="lg-path-lumi"><LgLumi :size="68" /></div>
+        <div class="lg-path-card">
+          <div class="lg-path-head">
+            <span class="lg-path-title">{{ t('lg.todayPath') }}</span>
+            <span class="lg-path-arrow">←</span>
+          </div>
+          <router-link v-if="stats.availableForTraining > 0" to="/training" class="lg-path-row">
+            <div class="lg-icon-box">📖</div>
+            <div class="lg-path-row-text">
+              <div class="lg-list-row-title">{{ t('lg.repeatWords', { n: stats.availableForTraining }) }}</div>
+              <div class="lg-list-row-sub">{{ t('lg.repeatWordsSub') }}</div>
+            </div>
+            <LgIcon name="chevron-right" :s="16" c="var(--text-muted)" />
+          </router-link>
+          <router-link to="/city/daily-route" class="lg-path-row">
+            <div class="lg-icon-box">🗺️</div>
+            <div class="lg-path-row-text">
+              <div class="lg-list-row-title">{{ t('lg.dailyRoute') }}</div>
+              <div class="lg-list-row-sub">{{ t('lg.dailyRouteSub') }}</div>
+            </div>
+            <LgIcon name="chevron-right" :s="16" c="var(--text-muted)" />
+          </router-link>
+          <router-link to="/learning/reading" class="lg-path-row">
+            <div class="lg-icon-box">📚</div>
+            <div class="lg-path-row-text">
+              <div class="lg-list-row-title">{{ t('lg.readText') }}</div>
+              <div class="lg-list-row-sub">{{ t('lg.readTextSub') }}</div>
+            </div>
+            <LgIcon name="chevron-right" :s="16" c="var(--text-muted)" />
+          </router-link>
+          <router-link to="/chat" class="lg-path-row">
+            <div class="lg-icon-box">💬</div>
+            <div class="lg-path-row-text">
+              <div class="lg-list-row-title">{{ t('lg.practiceChat') }}</div>
+              <div class="lg-list-row-sub">{{ t('lg.practiceChatSub') }}</div>
+            </div>
+            <LgIcon name="chevron-right" :s="16" c="var(--text-muted)" />
+          </router-link>
+        </div>
+      </div>
+
+      <!-- N слов пора повторить -->
+      <div v-if="stats.availableForTraining > 0" class="lg-due-card">
+        <div class="lg-due-counter">
+          <span class="lg-due-num">{{ stats.availableForTraining }}</span>
+          <span class="lg-due-unit">{{ t('common.words') }}</span>
+        </div>
+        <div class="lg-due-text">
+          <div class="lg-list-row-title">{{ t('lg.wordsDueTitle', { n: stats.availableForTraining }) }}</div>
+          <div class="lg-list-row-sub">{{ t('lg.wordsDueSub') }}</div>
+        </div>
+        <button class="lg-due-btn" @click="goToTraining">{{ t('lg.start') }}</button>
+      </div>
+
+      <!-- Offline notice -->
+      <div v-if="offlineDashboard" class="lg-card lg-section-gap">
+        <strong>{{ t('offline.modeTitle') }}</strong>
+        <p class="lg-muted" style="margin: 6px 0 0">{{ t('offline.dashboardDescription') }}</p>
       </div>
 
       <!-- Grammar Statistics Section -->
@@ -276,6 +285,9 @@
           </div>
         </div>
       </div>
+
+      <!-- Совет от Lumi -->
+      <LgLumiFact />
     </div>
   </div>
 </template>
@@ -293,9 +305,15 @@ import { grammarClient } from '../api/grammarClient'
 import { wordTrainingClient } from '../api/wordTrainingClient'
 import { courseClient, CourseProgress, LinglowHistory } from '../api/courseClient'
 import { useCourse } from '../composables/useCourse'
-import Icon from '../components/Icon.vue'
+import { useLearningConfig } from '../composables/useLearningConfig'
+import LgIcon from '../components/linglow/LgIcon.vue'
+import LgLumi from '../components/linglow/LgLumi.vue'
+import LgProgressBar from '../components/linglow/LgProgressBar.vue'
+import LgLumiFact from '../components/linglow/LgLumiFact.vue'
 
 const { t } = useI18n()
+const { targetLangDisplay, ensureLearningLoaded } = useLearningConfig()
+ensureLearningLoaded()
 const { currentLocale } = useLocale()
 const { currentCourseCode } = useCourse()
 
@@ -948,42 +966,220 @@ onMounted(() => {
 }
 
 .dashboard {
-  width: min(1200px, 100%);
+  width: min(880px, 100%);
   margin: 0 auto;
   box-sizing: border-box;
-  padding: 20px 16px;
 }
 
-.dashboard-header {
+/* ─── New home header ─── */
+.lg-home-header {
+  padding: 22px 4px 0;
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
+  align-items: flex-start;
+  margin-bottom: 16px;
 }
-
-.dashboard-header h1 {
-  margin: 0;
-  font-size: 32px;
+.lg-home-brand {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+.lg-home-logo {
+  font-family: 'Lora', serif;
+  font-size: 36px;
   font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  line-height: 1;
 }
-
-.btn-refresh {
+.lg-home-spark {
+  color: var(--dorado);
+  font-size: 16px;
+  line-height: 1;
+  padding-bottom: 2px;
+}
+.lg-home-course {
+  font-size: 14px;
+  color: var(--subtext);
+  margin-top: 4px;
+}
+.lg-refresh-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
   background: var(--card-bg);
-  border: 1px solid var(--input-border);
-  border-radius: 6px;
-  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  font-size: 20px;
-  transition: all 0.2s;
-  color: var(--text-primary);
 }
-
-.btn-refresh:hover:not(:disabled) {
-  background: var(--input-bg);
-}
-
-.btn-refresh.rotating {
+.lg-refresh-btn.rotating {
   animation: rotate 1s linear infinite;
+}
+.lg-refresh-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ─── City card ─── */
+.lg-city-card {
+  display: block;
+  position: relative;
+  width: 100%;
+  min-height: 118px;
+  border-radius: 22px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  box-shadow: var(--shadow-card);
+  text-decoration: none;
+  margin-bottom: 10px;
+}
+.lg-city-card-bg {
+  position: absolute;
+  inset: 0;
+  background-image: url('../assets/linglow/map_city.jpg');
+  background-size: cover;
+  background-position: center;
+}
+.lg-city-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(255,249,237,0.98) 0%, rgba(255,249,237,0.80) 50%, rgba(255,249,237,0.05) 100%);
+}
+:root[data-theme="dark"] .lg-city-card-overlay {
+  background: linear-gradient(90deg, rgba(16,28,21,0.97) 0%, rgba(16,28,21,0.78) 50%, rgba(16,28,21,0.12) 100%);
+}
+.lg-city-card-content {
+  position: relative;
+  z-index: 2;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 118px;
+}
+.lg-city-card-title {
+  font-family: 'Lora', serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.15;
+  margin-bottom: 5px;
+}
+.lg-city-card-kicker {
+  font-size: 12px;
+  color: var(--subtext);
+}
+.lg-city-card-progress {
+  margin-top: 14px;
+  max-width: 55%;
+}
+.lg-city-card-progress-label {
+  font-size: 11px;
+  color: var(--subtext);
+  margin-bottom: 5px;
+}
+
+/* ─── Today path ─── */
+.lg-path-wrap {
+  position: relative;
+  margin-bottom: 10px;
+}
+.lg-path-lumi {
+  position: absolute;
+  top: -22px;
+  right: 8px;
+  z-index: 10;
+  pointer-events: none;
+}
+.lg-path-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+}
+.lg-path-head {
+  padding: 16px 80px 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.lg-path-title {
+  font-family: 'Lora', serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1;
+}
+.lg-path-arrow {
+  color: var(--dorado);
+  font-size: 16px;
+  line-height: 1;
+}
+.lg-path-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 18px;
+  border-top: 1px solid var(--border);
+  text-decoration: none;
+  cursor: pointer;
+}
+.lg-path-row-text { flex: 1; }
+
+/* ─── Words due card ─── */
+.lg-due-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: var(--shadow-card);
+  margin-bottom: 10px;
+}
+.lg-due-counter {
+  width: 58px;
+  height: 60px;
+  border-radius: 14px;
+  flex-shrink: 0;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.lg-due-num {
+  font-family: 'Lora', serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1;
+}
+.lg-due-unit {
+  font-size: 9px;
+  color: var(--subtext);
+  margin-top: 2px;
+}
+.lg-due-text { flex: 1; }
+.lg-due-btn {
+  padding: 12px 20px;
+  border-radius: 14px;
+  border: 1px solid var(--btn-border);
+  background: var(--btn-gradient);
+  color: white;
+  flex-shrink: 0;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: var(--btn-shadow);
 }
 
 @keyframes rotate {

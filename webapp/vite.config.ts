@@ -40,12 +40,11 @@ export default defineConfig({
               return next()
             }
             
-            // For all other paths under /app/ (SPA routes), serve index.html
-            // This allows direct URL access to work with history mode
-            // Exclude paths that look like API endpoints or have file extensions
+            // For all other paths under /app/ (SPA routes), serve the right entry:
+            // /app/admin* -> admin.html (admin entry), everything else -> index.html.
+            // Must match the Go fallback in internal/web/webapp_routes.go.
             if (url.startsWith('/app/') && !url.includes('.') && !isAPIEndpoint(url)) {
-              // Rewrite to index.html - Vite will handle the base path automatically
-              req.url = '/index.html'
+              req.url = url === '/app/admin' || url.startsWith('/app/admin/') ? '/admin.html' : '/index.html'
             } else if (url === '/app' || url === '/app/') {
               // Handle root /app path
               req.url = '/index.html'
@@ -61,6 +60,12 @@ export default defineConfig({
     outDir: 'dist',
     assetsDir: 'assets',
     emptyOutDir: true,
+    rollupOptions: {
+      input: {
+        index: new URL('./index.html', import.meta.url).pathname,
+        admin: new URL('./admin.html', import.meta.url).pathname,
+      },
+    },
   },
   base: '/app/',
   server: {

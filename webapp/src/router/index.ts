@@ -3,6 +3,8 @@ import { useAuth } from '../composables/useAuth'
 import { apiClient } from '../api/client'
 import { grammarClient } from '../api/grammarClient'
 
+// Public entry router. Admin routes live in the separate admin entry
+// (router/admin.ts, served from admin.html at /app/admin).
 const router = createRouter({
   history: createWebHistory('/app'),
   routes: [
@@ -17,235 +19,166 @@ const router = createRouter({
       meta: { requiresAuth: false }
     },
     {
-      path: '/dashboard',
-      name: 'Dashboard',
-      component: () => import('../views/DashboardView.vue'),
-      meta: { requiresAuth: true }
-    },
-    {
-      path: '/city',
-      name: 'City',
-      component: () => import('../views/CityView.vue'),
-      meta: { requiresAuth: true }
-    },
-    {
-      path: '/city/daily-route',
-      name: 'CityDailyRoute',
-      component: () => import('../views/CityDailyRouteView.vue'),
-      meta: { requiresAuth: true }
-    },
-    {
-      path: '/city/district/:districtCode',
-      name: 'CityDistrict',
-      component: () => import('../views/CityDistrictView.vue'),
-      meta: { requiresAuth: true }
-    },
-    {
-      path: '/vocab',
-      name: 'Vocab',
-      component: () => import('../views/VocabView.vue'),
-      meta: { requiresAuth: true }
-    },
-    {
-      path: '/learning',
-      name: 'Learning',
-      component: () => import('../views/LearningView.vue'),
-      meta: { requiresAuth: true }
-    },
-    {
-      path: '/learning/grammar',
-      name: 'LearningGrammar',
-      component: () => import('../views/GrammarCategoriesView.vue'),
-      meta: { requiresAuth: true }
-    },
-    {
-      path: '/learning/grammar/placement-test',
-      name: 'GrammarPlacementTest',
-      component: () => import('../views/GrammarPlacementTestView.vue'),
-      meta: { requiresAuth: true }
-    },
-    {
-      path: '/learning/grammar/training',
-      name: 'GrammarTraining',
-      component: () => import('../views/GrammarTrainingView.vue'),
-      meta: { requiresAuth: true }
-    },
-    {
-      path: '/learning/grammar/:sectionId',
-      name: 'GrammarChapters',
-      component: () => import('../views/GrammarChaptersView.vue'),
-      meta: { requiresAuth: true }
-    },
-    {
-      path: '/learning/grammar/:sectionId/test',
-      name: 'GrammarCategoryTest',
-      component: () => import('../views/GrammarTestView.vue'),
-      meta: { requiresAuth: true }
-    },
-    {
-      path: '/learning/grammar/chapter/:chapterId',
-      name: 'GrammarChapter',
-      component: () => import('../views/GrammarChapterView.vue'),
-      meta: { requiresAuth: true }
-    },
-    {
-      path: '/learning/reading',
-      name: 'ReadingCategories',
-      component: () => import('../views/ReadingCategoriesView.vue'),
-      meta: { requiresAuth: true }
-    },
-    {
-      path: '/learning/reading/category/:categoryId',
-      name: 'ReadingChapters',
-      component: () => import('../views/ReadingChaptersView.vue'),
-      meta: { requiresAuth: true }
-    },
-    {
-      path: '/learning/reading/text/:textId',
-      name: 'ReadingText',
-      component: () => import('../views/ReadingTextView.vue'),
-      meta: { requiresAuth: true }
-    },
-    {
-      path: '/learning/speaking',
-      name: 'SpeakingCategories',
-      component: () => import('../views/SpeakingCategoriesView.vue'),
-      meta: { requiresAuth: true, requiresSpeaking: true }
-    },
-    {
-      path: '/learning/speaking/session/:sessionId',
-      name: 'SpeakingSession',
-      component: () => import('../views/SpeakingSessionView.vue'),
-      meta: { requiresAuth: true, requiresSpeaking: true }
-    },
-    {
-      path: '/learning/grammar/chapter/:chapterId/test',
-      name: 'GrammarChapterTest',
-      component: () => import('../views/GrammarTestView.vue'),
-      meta: { requiresAuth: true }
-    },
-    {
-      path: '/learning/words',
-      name: 'WordSets',
-      component: () => import('../views/WordSetsView.vue'),
-      meta: { requiresAuth: true }
-    },
-    {
-      path: '/learning/words/:setId',
-      name: 'WordSetDetail',
-      component: () => import('../views/WordSetDetailView.vue'),
-      meta: { requiresAuth: true }
-    },
-    {
-      path: '/learning/words/:setId/study',
-      name: 'WordSetStudy',
-      component: () => import('../views/WordSetStudyView.vue'),
-      meta: { requiresAuth: true }
-    },
-    {
-      path: '/training',
-      name: 'Training',
-      component: () => import('../views/TrainingView.vue'),
-      meta: { requiresAuth: true }
-    },
-    {
-      path: '/training/verbs',
-      name: 'VerbTraining',
-      component: () => import('../views/VerbTrainingView.vue'),
-      meta: { requiresAuth: true }
-    },
-    {
-      path: '/chat',
-      name: 'Chat',
-      component: () => import('../views/ChatView.vue'),
-      meta: { requiresAuth: true }
-    },
-    {
-      path: '/admin',
-      component: () => import('../layouts/AdminLayout.vue'),
-      meta: { requiresAuth: true, requiresAdmin: true },
+      path: '/',
+      component: () => import('../layouts/PublicLayout.vue'),
       children: [
         {
-          path: '',
-          name: 'Admin',
-          component: () => import('../views/AdminView.vue')
+          path: 'dashboard',
+          name: 'Dashboard',
+          component: () => import('../views/DashboardView.vue'),
+          meta: { requiresAuth: true, navTab: 'home' }
         },
         {
-          path: 'verb-forms',
-          name: 'AdminVerbTraining',
-          component: () => import('../views/AdminVerbTrainingView.vue')
+          path: 'city',
+          name: 'City',
+          component: () => import('../views/CityView.vue'),
+          meta: { requiresAuth: true, navTab: 'city' }
         },
         {
-          path: 'circuit-breaker',
-          name: 'AdminCircuitBreaker',
-          component: () => import('../views/AdminCircuitBreakerView.vue')
+          path: 'city/daily-route',
+          name: 'CityDailyRoute',
+          component: () => import('../views/CityDailyRouteView.vue'),
+          meta: { requiresAuth: true, navTab: 'city' }
         },
         {
-          path: 'prompt-tester',
-          name: 'AdminPromptTester',
-          component: () => import('../views/AdminPromptTesterView.vue')
+          path: 'city/district/:districtCode',
+          name: 'CityDistrict',
+          component: () => import('../views/CityDistrictView.vue'),
+          meta: { requiresAuth: true, navTab: 'city' }
         },
         {
-          path: 'content-reports',
-          name: 'AdminContentReports',
-          component: () => import('../views/AdminContentReportsView.vue')
+          path: 'vocab',
+          name: 'Vocab',
+          component: () => import('../views/VocabView.vue'),
+          meta: { requiresAuth: true, navTab: 'practice' }
         },
         {
-          path: 'grammar',
-          name: 'AdminGrammar',
-          component: () => import('../views/AdminGrammarView.vue')
+          path: 'learning',
+          name: 'Learning',
+          component: () => import('../views/LearningView.vue'),
+          meta: { requiresAuth: true, navTab: 'practice' }
         },
         {
-          path: 'reading-texts',
-          name: 'AdminReadingTexts',
-          component: () => import('../views/AdminReadingTextsView.vue')
+          path: 'learning/grammar',
+          name: 'LearningGrammar',
+          component: () => import('../views/GrammarCategoriesView.vue'),
+          meta: { requiresAuth: true, navTab: 'practice' }
         },
         {
-          path: 'word-sets',
-          redirect: '/admin/word-sets/categories'
+          path: 'learning/grammar/placement-test',
+          name: 'GrammarPlacementTest',
+          component: () => import('../views/GrammarPlacementTestView.vue'),
+          meta: { requiresAuth: true, navTab: 'practice', fullscreen: true }
         },
         {
-          path: 'word-sets/categories',
-          name: 'AdminWordSetsCategories',
-          component: () => import('../views/AdminWordSetsView.vue')
+          path: 'learning/grammar/training',
+          name: 'GrammarTraining',
+          component: () => import('../views/GrammarTrainingView.vue'),
+          meta: { requiresAuth: true, navTab: 'practice', fullscreen: true }
         },
         {
-          path: 'word-sets/sets',
-          name: 'AdminWordSetsSets',
-          component: () => import('../views/AdminWordSetsView.vue')
+          path: 'learning/grammar/:sectionId',
+          name: 'GrammarChapters',
+          component: () => import('../views/GrammarChaptersView.vue'),
+          meta: { requiresAuth: true, navTab: 'practice' }
         },
         {
-          path: 'app-settings',
-          name: 'AdminAppSettings',
-          component: () => import('../views/AdminAppSettingsView.vue')
+          path: 'learning/grammar/:sectionId/test',
+          name: 'GrammarCategoryTest',
+          component: () => import('../views/GrammarTestView.vue'),
+          meta: { requiresAuth: true, navTab: 'practice', fullscreen: true }
         },
         {
-          path: 'linglow-srs',
-          name: 'AdminLinglowSRS',
-          component: () => import('../views/AdminLinglowSRSView.vue')
+          path: 'learning/grammar/chapter/:chapterId',
+          name: 'GrammarChapter',
+          component: () => import('../views/GrammarChapterView.vue'),
+          meta: { requiresAuth: true, navTab: 'practice' }
         },
         {
-          path: 'access',
-          name: 'AdminAccess',
-          component: () => import('../views/AdminAccessView.vue')
+          path: 'learning/grammar/chapter/:chapterId/test',
+          name: 'GrammarChapterTest',
+          component: () => import('../views/GrammarTestView.vue'),
+          meta: { requiresAuth: true, navTab: 'practice', fullscreen: true }
         },
         {
-          path: 'users',
-          name: 'AdminUsers',
-          component: () => import('../views/AdminUsersView.vue')
+          path: 'learning/reading',
+          name: 'ReadingCategories',
+          component: () => import('../views/ReadingCategoriesView.vue'),
+          meta: { requiresAuth: true, navTab: 'practice' }
         },
         {
-          path: 'stats',
-          name: 'AdminStats',
-          component: () => import('../views/AdminStatsView.vue')
+          path: 'learning/reading/category/:categoryId',
+          name: 'ReadingChapters',
+          component: () => import('../views/ReadingChaptersView.vue'),
+          meta: { requiresAuth: true, navTab: 'practice' }
+        },
+        {
+          path: 'learning/reading/text/:textId',
+          name: 'ReadingText',
+          component: () => import('../views/ReadingTextView.vue'),
+          meta: { requiresAuth: true, navTab: 'practice' }
+        },
+        {
+          path: 'learning/speaking',
+          name: 'SpeakingCategories',
+          component: () => import('../views/SpeakingCategoriesView.vue'),
+          meta: { requiresAuth: true, requiresSpeaking: true, navTab: 'practice' }
+        },
+        {
+          path: 'learning/speaking/session/:sessionId',
+          name: 'SpeakingSession',
+          component: () => import('../views/SpeakingSessionView.vue'),
+          meta: { requiresAuth: true, requiresSpeaking: true, navTab: 'practice', fullscreen: true }
+        },
+        {
+          path: 'learning/words',
+          name: 'WordSets',
+          component: () => import('../views/WordSetsView.vue'),
+          meta: { requiresAuth: true, navTab: 'practice' }
+        },
+        {
+          path: 'learning/words/:setId',
+          name: 'WordSetDetail',
+          component: () => import('../views/WordSetDetailView.vue'),
+          meta: { requiresAuth: true, navTab: 'practice' }
+        },
+        {
+          path: 'learning/words/:setId/study',
+          name: 'WordSetStudy',
+          component: () => import('../views/WordSetStudyView.vue'),
+          meta: { requiresAuth: true, navTab: 'practice', fullscreen: true }
+        },
+        {
+          path: 'training',
+          name: 'Training',
+          component: () => import('../views/TrainingView.vue'),
+          meta: { requiresAuth: true, navTab: 'practice' }
+        },
+        {
+          path: 'training/verbs',
+          name: 'VerbTraining',
+          component: () => import('../views/VerbTrainingView.vue'),
+          meta: { requiresAuth: true, navTab: 'practice', fullscreen: true }
+        },
+        {
+          path: 'chat',
+          name: 'Chat',
+          component: () => import('../views/ChatView.vue'),
+          meta: { requiresAuth: true, navTab: 'practice', fullscreen: true }
+        },
+        {
+          path: 'progress',
+          name: 'Progress',
+          component: () => import('../views/ProgressView.vue'),
+          meta: { requiresAuth: true, navTab: 'progress' }
+        },
+        {
+          path: 'settings',
+          name: 'Settings',
+          component: () => import('../views/SettingsView.vue'),
+          meta: { requiresAuth: true, navTab: 'profile' }
         }
       ]
-    },
-    {
-      path: '/settings',
-      name: 'Settings',
-      component: () => import('../views/SettingsView.vue'),
-      meta: { requiresAuth: true }
     }
   ]
 })
@@ -256,20 +189,20 @@ router.beforeEach(async (to, _from, next) => {
   if (cleanPath.includes('tgWebAppData')) {
     cleanPath = '/'
   }
-  
+
   // If path was cleaned, redirect
   if (cleanPath !== to.path) {
     next(cleanPath)
     return
   }
-  
+
   // Get auth state - this will check tokens from localStorage
-  const { isAuthenticated, hasAnyAdminAccess, checkAuth, loadPermissions } = useAuth()
-  
+  const { isAuthenticated, checkAuth } = useAuth()
+
   // Ensure auth state is up to date (especially important on direct URL access)
   // Reload tokens from localStorage and update auth state
   await checkAuth()
-  
+
   // If user is trying to access login page, check if they're already authenticated
   // by making a request to the backend
   if (to.path === '/login' && isAuthenticated.value) {
@@ -293,7 +226,7 @@ router.beforeEach(async (to, _from, next) => {
       }
     }
   }
-  
+
   // Check authentication
   if (to.meta.requiresAuth && !isAuthenticated.value) {
     next('/login')
@@ -318,33 +251,7 @@ router.beforeEach(async (to, _from, next) => {
     next(to.path.startsWith('/learning') ? '/learning' : '/dashboard')
     return
   }
-  
-  // Check admin access (for /admin routes)
-  if (to.meta.requiresAdmin) {
-    // Load permissions if not already loaded
-    if (isAuthenticated.value) {
-      await loadPermissions()
-    }
-    
-    if (!hasAnyAdminAccess()) {
-      next('/dashboard')
-      return
-    }
 
-    if (to.name === 'AdminVerbTraining') {
-      try {
-        const settings = await apiClient.request<{ learning?: { spanish_verb_forms_enabled?: boolean } }>('/api/settings')
-        if (!settings?.learning?.spanish_verb_forms_enabled) {
-          next('/admin')
-          return
-        }
-      } catch (_error) {
-        next('/admin')
-        return
-      }
-    }
-  }
-  
   // Check grammar chapter access (guard client-side, backend will enforce too)
   if (to.name === 'GrammarChapter' && to.params.chapterId) {
     try {
@@ -368,7 +275,7 @@ router.beforeEach(async (to, _from, next) => {
       console.error('Failed to check chapter access:', error)
     }
   }
-  
+
   if (to.meta.requiresSpeaking) {
     try {
       const response: any = await apiClient.request('/api/learning/speaking/availability')
@@ -382,7 +289,7 @@ router.beforeEach(async (to, _from, next) => {
       return
     }
   }
-  
+
   next()
 })
 

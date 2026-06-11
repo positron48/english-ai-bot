@@ -304,7 +304,7 @@
     "reportCommentPlaceholder": "Describe what is wrong",
     "reportCategories": {
       "wrong_translation": "Wrong translation",
-      "wrong_example": "Wrong example",
+      "wrong_example": "Incorrect example",
       "wrong_distractors": "Wrong answer choices",
       "typo": "Typo",
       "bad_audio": "Bad pronunciation audio",
@@ -314,7 +314,6 @@
       "wrong_explanation": "Wrong explanation",
       "theory_mismatch": "Does not match theory",
       "wrong_theory": "Incorrect theory",
-      "wrong_example": "Incorrect example",
       "unclear_explanation": "Unclear explanation",
       "too_hard": "Too difficult",
       "other": "Other"
@@ -475,12 +474,28 @@
   },
   "trainingFeedback": {
     "encouragingPhrases": [
-      "Perfect!", "Excellent!", "Well done!", "Great job!", "Awesome!",
-      "Fantastic!", "Brilliant!", "Outstanding!", "Superb!", "Terrific!"
+      "Perfect!",
+      "Excellent!",
+      "Well done!",
+      "Great job!",
+      "Awesome!",
+      "Fantastic!",
+      "Brilliant!",
+      "Outstanding!",
+      "Superb!",
+      "Terrific!"
     ],
     "disappointingPhrases": [
-      "Not quite", "Almost there", "Close!", "Try again", "Not quite right",
-      "Almost!", "Close, but...", "Not exactly", "Nearly there", "So close!"
+      "Not quite",
+      "Almost there",
+      "Close!",
+      "Try again",
+      "Not quite right",
+      "Almost!",
+      "Close, but...",
+      "Not exactly",
+      "Nearly there",
+      "So close!"
     ],
     "motivational": {
       "excellent": [
@@ -736,5 +751,41 @@
     "chatError": "Sorry, an error occurred while processing your message. Please try again.",
     "tooManyRequests": "Too many requests. Please try again later.",
     "notFound": "Not found"
+  },
+  "lg": {
+    "nav": {
+      "home": "Home",
+      "city": "City",
+      "practice": "Practice",
+      "progress": "Progress",
+      "profile": "Profile"
+    },
+    "streakDays": "{n} days",
+    "lumiTip": "Lumi's tip",
+    "lumiKnows": "Lumi knows",
+    "lumiFacts": [
+      "Spanish is the world's second language by native speakers: over 500 million people speak it natively.",
+      "\"Chocolate\" comes from the Aztec Nahuatl word \"xocolātl\" — a bitter cacao drink brought to Europe by the Spanish in the 16th century.",
+      "Spanish has about 10,000 words of Arabic origin — a legacy of 700 years of Moorish presence on the Iberian Peninsula.",
+      "\"Guerrilla\" is a Spanish word meaning \"little war\". It became an international term after the Napoleonic Wars.",
+      "\"Mariposa\" (butterfly) is one of the few Spanish words of unknown origin — linguists still debate where it came from.",
+      "Spanish descends from Vulgar Latin, brought to Iberia by Roman soldiers in the 3rd century BC.",
+      "\"Plaza\" comes from the Greek \"plateía\" — a wide street — and entered Spanish through Latin.",
+      "Spanish has two verbs for \"to be\": ser for permanent qualities and estar for temporary states — a rare distinction among Romance languages.",
+      "\"Tornado\" comes from the Spanish tornar (to turn) and entered English through Atlantic sailors.",
+      "\"Bonanza\" means \"fair weather\" in Spanish. It came to mean \"a stroke of luck\" in the US thanks to 19th-century miners."
+    ],
+    "todayPath": "Your path today",
+    "repeatWords": "Review {n} words",
+    "repeatWordsSub": "Strengthen your memory",
+    "dailyRoute": "Today's route",
+    "dailyRouteSub": "Explore the city step by step",
+    "readText": "Read a short text",
+    "readTextSub": "Immerse yourself in the language",
+    "practiceChat": "Practice a dialogue with AI",
+    "practiceChatSub": "Speak with confidence",
+    "wordsDueTitle": "{n} words are due for review",
+    "wordsDueSub": "Regular review is the key to remembering.",
+    "start": "Start"
   }
 }

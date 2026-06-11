@@ -1,4 +1,4 @@
-const APP_SHELL_CACHE = 'qantrix-app-shell-v5'
+const APP_SHELL_CACHE = 'qantrix-app-shell-v6'
 const ASSET_MANIFEST_URL = '/app/asset-manifest.json'
 const APP_SHELL_URLS = ['/app', '/app/', '/app/manifest.webmanifest', '/telegram-web-app.js', '/favicon.svg']
 
@@ -37,6 +37,9 @@ self.addEventListener('fetch', (event) => {
   if (url.origin !== self.location.origin) return
   if (url.pathname.startsWith('/api/') || url.pathname.startsWith('/auth/')) return
 
+  // Admin entry (/app/admin*) is online-only; never cache it as the app shell
+  if (url.pathname === '/app/admin' || url.pathname.startsWith('/app/admin/')) return
+
   if (request.mode === 'navigate' || (url.pathname.startsWith('/app') && !url.pathname.includes('.'))) {
     event.respondWith(
       fetch(request)
@@ -52,6 +55,7 @@ self.addEventListener('fetch', (event) => {
 
   if (
     url.pathname.startsWith('/app/assets/') ||
+    url.pathname.startsWith('/app/fonts/') ||
     url.pathname === '/app/manifest.webmanifest' ||
     url.pathname === ASSET_MANIFEST_URL ||
     url.pathname === '/telegram-web-app.js' ||

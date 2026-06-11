@@ -68,10 +68,15 @@ func (r *Router) setupWebappRoutes() {
 			return
 		}
 
-		// Otherwise, serve index.html for SPA routing
-		indexData, err := fs.ReadFile(webappRoot, "index.html")
+		// Otherwise, serve the SPA entry: admin subtree gets admin.html,
+		// everything else index.html. Must match the Vite dev fallback.
+		entry := "index.html"
+		if path == "/app/admin" || strings.HasPrefix(path, "/app/admin/") {
+			entry = "admin.html"
+		}
+		indexData, err := fs.ReadFile(webappRoot, entry)
 		if err != nil {
-			r.logger.Error("failed to read index.html", zap.Error(err))
+			r.logger.Error("failed to read SPA entry", zap.String("entry", entry), zap.Error(err))
 			http.Error(w, "Not found", http.StatusNotFound)
 			return
 		}

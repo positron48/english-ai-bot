@@ -7,215 +7,22 @@
     <!-- Auth Error Message -->
     <div v-if="authError" class="auth-error-banner">
       <div class="auth-error-content">
-        <strong><Icon name="warning" /> {{ t('auth.error') }}</strong> {{ authError }}
+        <strong>{{ t('auth.error') }}</strong> {{ authError }}
         <button @click="dismissAuthError" class="auth-error-close">×</button>
       </div>
     </div>
-    
-    <!-- Desktop Navbar -->
-    <nav v-if="isAuthenticated && !isAdminRoute" class="navbar navbar-desktop">
-      <div class="container">
-        <div class="nav-links">
-          <div class="nav-left">
-            <router-link to="/dashboard">{{ t('navigation.dashboard') }}</router-link>
-            <router-link to="/city">{{ t('navigation.city') }}</router-link>
-            <router-link to="/learning">{{ t('navigation.learning') }}</router-link>
-            <router-link to="/training">{{ t('navigation.training') }}</router-link>
-            <router-link to="/chat">{{ t('navigation.chat') }}</router-link>
-            <div class="nav-more-wrapper">
-              <button 
-                ref="moreButtonRef"
-                @click.stop="showMoreDropdown = !showMoreDropdown" 
-                class="nav-more-btn" 
-                :title="t('navigation.more')"
-                :class="{ active: showMoreDropdown }"
-              >
-                {{ t('navigation.more') }}
-                <Icon name="chevron-down" class="nav-more-chevron" />
-              </button>
-              <div v-if="showMoreDropdown" ref="moreDropdownRef" class="nav-more-dropdown">
-                <router-link to="/vocab" class="dropdown-item" @click="showMoreDropdown = false">
-                  <Icon name="book" class="dropdown-icon" />
-                  <span>{{ t('navigation.vocab') }}</span>
-                </router-link>
-                <router-link to="/city" class="dropdown-item" @click="showMoreDropdown = false">
-                  <Icon name="dashboard" class="dropdown-icon" />
-                  <span>{{ t('navigation.city') }}</span>
-                </router-link>
-                <router-link v-if="isAdmin" to="/admin" class="dropdown-item" @click="showMoreDropdown = false">
-                  <Icon name="shield" class="dropdown-icon" />
-                  <span>{{ t('navigation.admin') }}</span>
-                </router-link>
-                <button v-if="!isTelegramMiniApp" @click="handleMoreLogout" class="dropdown-item">
-                  <Icon name="logout" class="dropdown-icon" />
-                  <span>{{ t('navigation.logout') }}</span>
-                </button>
-              </div>
-            </div>
-          </div>
-          <div class="nav-right">
-            <select
-              v-if="courses.length > 1"
-              :value="currentCourseCode"
-              class="nav-course-select"
-              @change="(e) => selectCourse((e.target as HTMLSelectElement).value)"
-            >
-              <option v-for="c in courses" :key="c.code" :value="c.code">
-                {{ c.target_language.toUpperCase() }}
-              </option>
-            </select>
-            <div class="lang-switcher" @click.stop="handleLangSwitch">
-              <div 
-                class="lang-slider"
-                :class="{ 'lang-slider-ru': currentLocale === 'ru' }"
-              ></div>
-              <button
-                @click.stop="setLocale(targetLocale)"
-                class="lang-btn"
-                :class="{ active: currentLocale === targetLocale }"
-                :title="targetLocaleLabel"
-              >
-                {{ targetLocaleLabel }}
-              </button>
-              <button
-                @click.stop="setLocale('ru')"
-                class="lang-btn"
-                :class="{ active: currentLocale === 'ru' }"
-                title="Русский"
-              >
-                RU
-              </button>
-            </div>
-            <router-link to="/settings" class="nav-settings-btn" :title="t('navigation.settings')">
-              <Icon name="gear" />
-            </router-link>
-          </div>
-        </div>
-      </div>
-    </nav>
-    
-    <main
-      class="container"
-      :class="{
-        'with-mobile-footer': isAuthenticated && isMobile && !isAdminRoute,
-        'with-desktop-navbar': isAuthenticated && !isMobile && !isAdminRoute,
-        'main-admin': isAdminRoute
-      }"
-    >
-      <Breadcrumbs v-if="isAuthenticated && mounted && !isAdminRoute" />
-      <router-view v-if="mounted" :key="route.path" />
-      <div v-else style="padding: 20px; text-align: center;">
-        {{ t('common.loading') }}
-      </div>
-    </main>
-    
-    <!-- Mobile Footer Navigation -->
-    <nav v-if="isAuthenticated && !isAdminRoute" class="navbar-mobile">
-      <div class="mobile-nav-main">
-        <router-link to="/dashboard" class="mobile-nav-item" :title="t('navigation.dashboard')">
-          <Icon name="dashboard" class="mobile-nav-icon" />
-          <span class="mobile-nav-label">{{ t('navigation.dashboard') }}</span>
-        </router-link>
-        <router-link to="/learning" class="mobile-nav-item" :title="t('navigation.learning')">
-          <Icon name="book" class="mobile-nav-icon" />
-          <span class="mobile-nav-label">{{ t('navigation.learning') }}</span>
-        </router-link>
-        <router-link to="/training" class="mobile-nav-item" :title="t('navigation.training')">
-          <Icon name="target" class="mobile-nav-icon" />
-          <span class="mobile-nav-label">{{ t('navigation.training') }}</span>
-        </router-link>
-        <router-link to="/chat" class="mobile-nav-item" :title="t('navigation.chat')">
-          <Icon name="chat" class="mobile-nav-icon" />
-          <span class="mobile-nav-label">{{ t('navigation.chat') }}</span>
-        </router-link>
-        <button 
-          @click="showSidebar = !showSidebar" 
-          class="mobile-nav-item mobile-nav-more"
-          :class="{ active: showSidebar }"
-          :title="t('navigation.more')"
-        >
-          <Icon name="more" class="mobile-nav-icon" />
-          <span class="mobile-nav-label">{{ t('navigation.more') }}</span>
-        </button>
-      </div>
-    </nav>
-    
-    <!-- Sidebar Overlay -->
-    <div v-if="showSidebar" class="sidebar-overlay" @click="showSidebar = false"></div>
-    
-    <!-- Sidebar -->
-    <aside v-if="isAuthenticated && showSidebar && !isAdminRoute" class="sidebar" :class="{ open: showSidebar }">
-      <div class="sidebar-header">
-        <h3>{{ t('navigation.menu') }}</h3>
-        <button @click="showSidebar = false" class="sidebar-close">×</button>
-      </div>
-      <div class="sidebar-content">
-        <div v-if="courses.length > 1" class="sidebar-course-switcher">
-          <span class="sidebar-lang-label">{{ t('city.course') || 'Course' }}:</span>
-          <select
-            :value="currentCourseCode"
-            class="sidebar-course-select"
-            @change="(e) => { selectCourse((e.target as HTMLSelectElement).value); showSidebar = false }"
-          >
-            <option v-for="c in courses" :key="c.code" :value="c.code">
-              {{ c.title }}
-            </option>
-          </select>
-        </div>
-        <div class="sidebar-lang-switcher">
-          <span class="sidebar-lang-label">{{ t('common.language') || 'Language' }}:</span>
-          <div class="lang-switcher" @click.stop="handleLangSwitchSidebar">
-            <div 
-              class="lang-slider"
-              :class="{ 'lang-slider-ru': currentLocale === 'ru' }"
-            ></div>
-            <button
-              @click.stop="setLocale(targetLocale); showSidebar = false"
-              class="lang-btn"
-              :class="{ active: currentLocale === targetLocale }"
-            >
-              {{ targetLocaleLabel }}
-            </button>
-            <button
-              @click.stop="setLocale('ru'); showSidebar = false"
-              class="lang-btn"
-              :class="{ active: currentLocale === 'ru' }"
-            >
-              RU
-            </button>
-          </div>
-        </div>
-        <router-link to="/vocab" class="sidebar-item" @click="showSidebar = false">
-          <Icon name="book" class="sidebar-icon" />
-          <span>{{ t('navigation.vocab') }}</span>
-        </router-link>
-        <router-link to="/city" class="sidebar-item" @click="showSidebar = false">
-          <Icon name="dashboard" class="sidebar-icon" />
-          <span>{{ t('navigation.city') }}</span>
-        </router-link>
-        <router-link to="/settings" class="sidebar-item" @click="showSidebar = false">
-          <Icon name="gear" class="sidebar-icon" />
-          <span>{{ t('navigation.settings') }}</span>
-        </router-link>
-        <router-link v-if="isAdmin" to="/admin" class="sidebar-item" @click="showSidebar = false">
-          <Icon name="shield" class="sidebar-icon" />
-          <span>{{ t('navigation.admin') }}</span>
-        </router-link>
-        <button v-if="!isTelegramMiniApp" @click="handleLogout" class="sidebar-item">
-          <Icon name="logout" class="sidebar-icon" />
-          <span>{{ t('navigation.logout') }}</span>
-        </button>
-      </div>
-    </aside>
-    
+
+    <router-view v-if="mounted" />
+    <div v-else class="app-loading">{{ t('common.loading') }}</div>
+
     <!-- Global Dialog Modals -->
-    <AlertModal 
-      :message="alertState.message" 
+    <AlertModal
+      :message="alertState.message"
       :visible="alertState.visible"
       @close="closeAlert"
     />
-    <ConfirmModal 
-      :message="confirmState.message" 
+    <ConfirmModal
+      :message="confirmState.message"
       :visible="confirmState.visible"
       @confirm="() => closeConfirm(true)"
       @cancel="() => closeConfirm(false)"
@@ -224,32 +31,25 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, watch, computed } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { ref, onMounted, onUnmounted, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useAuth } from './composables/useAuth'
 import { useTheme } from './composables/useTheme'
 import { useDialog } from './composables/useDialog'
 import { useLocale } from './composables/useLocale'
 import { useLearningConfig } from './composables/useLearningConfig'
-import { useCourse } from './composables/useCourse'
 import { isEmbeddedAndroidApp } from './utils/runtime'
-import Icon from './components/Icon.vue'
 import AlertModal from './components/AlertModal.vue'
 import ConfirmModal from './components/ConfirmModal.vue'
-import Breadcrumbs from './components/Breadcrumbs.vue'
 
-const router = useRouter()
 const route = useRoute()
 const { t } = useI18n()
-const { isAuthenticated, isAdmin, logout: authLogout } = useAuth()
+const { isAuthenticated } = useAuth()
 const { currentLocale, setLocale } = useLocale()
 const { learning, ensureLearningLoaded } = useLearningConfig()
-const { courses, currentCourseCode, ensureCourseLoaded, selectCourse, resetCourse } = useCourse()
-const targetLocale = computed<'en' | 'es'>(() => {
-  return learning.value?.target_lang === 'es' ? 'es' : 'en'
-})
-const targetLocaleLabel = computed(() => targetLocale.value.toUpperCase())
+const { theme } = useTheme()
+const { alertState, confirmState, closeAlert, closeConfirm } = useDialog()
 
 // On RU→ES instance we intentionally don't offer English UI in the switcher.
 // If browser/system locale (or stale localStorage) is "en", default to "ru".
@@ -263,20 +63,8 @@ watch(
   { deep: true, immediate: true },
 )
 
-const isAdminRoute = computed(() => {
-  return route.path.startsWith('/admin')
-})
-const { theme, toggleTheme } = useTheme()
-const { alertState, confirmState, closeAlert, closeConfirm } = useDialog()
-
 const mounted = ref(false)
 const authError = ref<string | null>(null)
-const isTelegramMiniApp = ref(false)
-const isMobile = ref(false)
-const showSidebar = ref(false)
-const showMoreDropdown = ref(false)
-const moreDropdownRef = ref<HTMLElement | null>(null)
-const moreButtonRef = ref<HTMLElement | null>(null)
 const networkToast = ref<{ visible: boolean; kind: 'offline' | 'online'; message: string }>({
   visible: false,
   kind: 'online',
@@ -309,7 +97,7 @@ const handleOffline = () => showNetworkToast('offline')
 const handleOnline = () => showNetworkToast('online')
 
 const updateThemeMetaColor = () => {
-  const bg = getComputedStyle(document.documentElement).getPropertyValue('--bg-primary').trim() || '#f5f5f5'
+  const bg = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() || '#F8F1E4'
   let meta = document.querySelector('meta[name="theme-color"]') as HTMLMetaElement | null
   if (!meta) {
     meta = document.createElement('meta')
@@ -329,44 +117,16 @@ const updateDocumentTitle = () => {
 
 watch([learning, currentLocale], updateDocumentTitle, { deep: true, immediate: true })
 
-// Handle click outside dropdown
-const handleClickOutside = (event: MouseEvent) => {
-  if (showMoreDropdown.value) {
-    const target = event.target as HTMLElement
-    if (moreDropdownRef.value && !moreDropdownRef.value.contains(target) &&
-        moreButtonRef.value && !moreButtonRef.value.contains(target)) {
-      showMoreDropdown.value = false
-    }
-  }
-}
-
-// Check if mobile device
-const checkMobile = () => {
-  isMobile.value = window.innerWidth <= 768
-}
-
-// Load course list when user is authenticated
-watch(isAuthenticated, (authenticated) => {
-  if (authenticated) ensureCourseLoaded()
-}, { immediate: true })
-
-// Check if we're in Telegram Mini App
 onMounted(() => {
   ensureLearningLoaded()
   const tg = (window as any).Telegram?.WebApp
-  isTelegramMiniApp.value = !!tg
-  
-  checkMobile()
-  window.addEventListener('resize', checkMobile)
+
   window.addEventListener('offline', handleOffline)
   window.addEventListener('online', handleOnline)
-  
-  // Add click outside handler
-  document.addEventListener('click', handleClickOutside)
-  
+
   mounted.value = true
   updateThemeMetaColor()
-  
+
   // Check auth status after a delay
   setTimeout(() => {
     if (!isAuthenticated.value && route.path !== '/login') {
@@ -378,8 +138,6 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-  document.removeEventListener('click', handleClickOutside)
-  window.removeEventListener('resize', checkMobile)
   window.removeEventListener('offline', handleOffline)
   window.removeEventListener('online', handleOnline)
   hideNetworkToast()
@@ -409,432 +167,13 @@ watch(() => isAuthenticated.value, (newValue) => {
 const dismissAuthError = () => {
   authError.value = null
 }
-
-const logout = () => {
-  resetCourse()
-  authLogout()
-  router.push('/login')
-}
-
-const handleThemeToggle = () => {
-  toggleTheme()
-  showSidebar.value = false
-}
-
-const handleLogout = () => {
-  logout()
-  showSidebar.value = false
-}
-
-const handleMoreLogout = () => {
-  logout()
-  showMoreDropdown.value = false
-}
-
-const handleLangSwitch = (event: MouseEvent) => {
-  const target = event.target as HTMLElement
-  if (target.classList.contains('lang-switcher') || target.classList.contains('lang-slider')) {
-    // Toggle language when clicking on switcher background or slider
-    const newLocale = currentLocale.value === targetLocale.value ? 'ru' : targetLocale.value
-    setLocale(newLocale)
-  }
-}
-
-const handleLangSwitchSidebar = (event: MouseEvent) => {
-  const target = event.target as HTMLElement
-  if (target.classList.contains('lang-switcher') || target.classList.contains('lang-slider')) {
-    // Toggle language when clicking on switcher background or slider
-    const newLocale = currentLocale.value === targetLocale.value ? 'ru' : targetLocale.value
-    setLocale(newLocale)
-    showSidebar.value = false
-  }
-}
-
-// Settings is always in More menu on mobile
 </script>
 
 <style scoped>
-/* Desktop Navbar */
-.navbar-desktop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  background: var(--bg-secondary);
-  box-shadow: 0 2px 4px var(--navbar-shadow);
-  z-index: 1000;
-}
-
-.nav-links {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-
-.nav-left {
-  display: flex;
-  gap: 20px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.nav-right {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-}
-
-.nav-more-wrapper {
-  position: relative;
-}
-
-.nav-more-btn {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  background: transparent;
-  border: none;
-  padding: 10px;
-  cursor: pointer;
-  font-size: inherit;
-  color: var(--text-primary);
-  transition: background-color 0.2s;
-  text-decoration: none;
-  border-radius: 4px;
-}
-
-.nav-more-btn:hover,
-.nav-more-btn.active {
-  background-color: var(--bg-hover);
-}
-
-.nav-more-chevron {
-  font-size: 0.8em;
-  transition: transform 0.2s;
-}
-
-.nav-more-btn.active .nav-more-chevron {
-  transform: rotate(180deg);
-}
-
-.nav-more-dropdown {
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-primary);
-  border-radius: 8px;
-  box-shadow: 0 4px 12px var(--navbar-shadow);
-  min-width: 180px;
-  z-index: 1002;
-  overflow: hidden;
-  animation: fadeIn 0.2s ease-out;
-  pointer-events: auto;
-}
-
-.dropdown-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
-  width: 100%;
-  text-align: left;
-  background: transparent;
-  border: none;
-  color: var(--text-primary);
-  cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.2s;
-  text-decoration: none;
-  pointer-events: auto;
-  position: relative;
-  z-index: 1;
-}
-
-.dropdown-item:hover {
-  background: var(--bg-hover);
-}
-
-.dropdown-icon {
-  font-size: 18px;
-  width: 20px;
+.app-loading {
+  padding: 40px 20px;
   text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.nav-settings-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-  border: 1px solid var(--border-primary);
-  border-radius: 6px;
-  padding: 8px 12px;
-  cursor: pointer;
-  font-size: 18px;
-  color: var(--text-primary);
-  transition: all 0.2s;
-  text-decoration: none;
-  min-width: 44px;
-}
-
-.nav-settings-btn:hover,
-.nav-settings-btn.router-link-active {
-  background-color: var(--bg-hover);
-  border-color: var(--border-secondary);
-}
-
-
-.nav-links a {
-  text-decoration: none;
-  color: var(--text-primary);
-  padding: 10px;
-  border-radius: 4px;
-  transition: background-color 0.2s;
-}
-
-.nav-links a:hover,
-.nav-links a.router-link-active {
-  background-color: var(--bg-hover);
-}
-
-.theme-toggle {
-  background: transparent;
-  border: 1px solid var(--border-primary);
-  border-radius: 6px;
-  padding: 8px 12px;
-  cursor: pointer;
-  font-size: 18px;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 44px;
-}
-
-.theme-toggle:hover,
-.theme-toggle.active {
-  background-color: var(--bg-hover);
-  border-color: var(--border-secondary);
-}
-
-/* Mobile Footer Navigation */
-.navbar-mobile {
-  display: none;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: var(--bg-secondary);
-  box-shadow: 0 -2px 8px var(--navbar-shadow);
-  z-index: 1000;
-  border-top: 1px solid var(--border-primary);
-}
-
-.mobile-nav-main {
-  display: flex;
-  align-items: stretch;
-  height: 60px;
-}
-
-.mobile-nav-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 2px;
-  padding: 0;
-  text-decoration: none;
-  color: var(--text-primary);
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  font-size: 12px;
-  transition: all 0.2s;
-  flex: 1;
-  min-width: 0;
-  margin: 0;
-  border-radius: 0;
-}
-
-.mobile-nav-item:hover,
-.mobile-nav-item.router-link-active,
-.mobile-nav-item.active {
-  background: var(--bg-hover);
-  color: var(--text-primary);
-}
-
-.mobile-nav-icon {
-  font-size: 20px;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.mobile-nav-label {
-  font-size: 10px;
-  line-height: 1.2;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-}
-
-/* Sidebar */
-.sidebar-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 1001;
-  animation: fadeIn 0.2s ease-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-.sidebar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  width: 280px;
-  max-width: 80vw;
-  background: var(--bg-secondary);
-  box-shadow: 2px 0 8px var(--navbar-shadow);
-  z-index: 1002;
-  transform: translateX(-100%);
-  transition: transform 0.3s ease-out;
-  display: flex;
-  flex-direction: column;
-}
-
-.sidebar.open {
-  transform: translateX(0);
-}
-
-.sidebar-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-  border-bottom: 1px solid var(--border-primary);
-}
-
-.sidebar-header h3 {
-  margin: 0;
-  font-size: 18px;
-  color: var(--text-primary);
-}
-
-.sidebar-close {
-  background: transparent;
-  border: none;
-  color: var(--text-primary);
-  font-size: 28px;
-  line-height: 1;
-  cursor: pointer;
-  padding: 0;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 4px;
-  transition: background-color 0.2s;
-}
-
-.sidebar-close:hover {
-  background: var(--bg-hover);
-}
-
-.sidebar-content {
-  flex: 1;
-  overflow-y: auto;
-  padding: 10px 0;
-}
-
-.sidebar-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 20px;
-  width: 100%;
-  text-align: left;
-  background: transparent;
-  border: none;
-  color: var(--text-primary);
-  cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.2s;
-  text-decoration: none;
-}
-
-.sidebar-item:hover {
-  background: var(--bg-hover);
-}
-
-.sidebar-icon {
-  font-size: 20px;
-  width: 24px;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Admin: full width on desktop, no container constraint */
-main.main-admin {
-  max-width: none;
-  margin: 0;
-  padding: 0;
-}
-
-/* Main content padding for mobile footer */
-main.with-mobile-footer {
-  padding-bottom: 80px;
-}
-
-/* Main content padding for desktop navbar */
-main.with-desktop-navbar {
-  padding-top: 80px;
-}
-
-/* Responsive: Hide desktop nav on mobile, show mobile nav */
-@media (max-width: 768px) {
-  .navbar-desktop {
-    display: none;
-  }
-  
-  .navbar-mobile {
-    display: block;
-  }
-  
-  .container {
-    padding-bottom: 20px;
-    padding-left: 8px;
-    padding-right: 8px;
-  }
-}
-
-/* Hide mobile nav on desktop */
-@media (min-width: 769px) {
-  .navbar-mobile {
-    display: none !important;
-  }
+  color: var(--subtext);
 }
 
 .auth-error-banner {
@@ -842,7 +181,7 @@ main.with-desktop-navbar {
   top: 0;
   left: 0;
   right: 0;
-  background: #ff4444;
+  background: #b91c1c;
   color: white;
   padding: 15px 20px;
   z-index: 10001;
@@ -850,7 +189,7 @@ main.with-desktop-navbar {
 }
 
 .auth-error-content {
-  max-width: 1200px;
+  max-width: 880px;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
@@ -888,7 +227,6 @@ main.with-desktop-navbar {
   border-radius: 12px;
   color: #fff;
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22);
-  animation: fadeIn 0.18s ease-out;
 }
 
 .network-toast--offline {
@@ -909,130 +247,5 @@ main.with-desktop-navbar {
   font-size: 18px;
   line-height: 1;
   cursor: pointer;
-}
-
-/* Course Selector */
-.nav-course-select {
-  height: 34px;
-  padding: 0 8px;
-  border: 1px solid var(--border-primary);
-  border-radius: 6px;
-  background: var(--bg-hover);
-  color: var(--text-primary);
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  appearance: none;
-  -webkit-appearance: none;
-  min-width: 52px;
-  text-align: center;
-}
-
-.nav-course-select:hover {
-  background: var(--bg-secondary);
-  border-color: var(--border-secondary);
-}
-
-.sidebar-course-switcher {
-  padding: 16px 20px;
-  border-bottom: 1px solid var(--border-primary);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.sidebar-course-select {
-  flex: 1;
-  max-width: 200px;
-  height: 36px;
-  padding: 0 10px;
-  border: 1px solid var(--border-primary);
-  border-radius: 6px;
-  background: var(--bg-hover);
-  color: var(--text-primary);
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-}
-
-/* Language Switcher */
-.lang-switcher {
-  position: relative;
-  display: flex;
-  gap: 0;
-  align-items: center;
-  background: var(--bg-hover);
-  border: 1px solid var(--border-primary);
-  border-radius: 6px;
-  padding: 2px;
-  margin-right: 8px;
-  overflow: hidden;
-  cursor: pointer;
-}
-
-.lang-slider {
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: calc(50% - 2px);
-  height: calc(100% - 4px);
-  background: var(--bg-secondary);
-  border-radius: 4px;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 0;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  pointer-events: none;
-}
-
-.lang-slider-ru {
-  transform: translateX(100%);
-}
-
-.lang-btn {
-  position: relative;
-  background: transparent;
-  border: none;
-  padding: 6px 12px;
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-secondary);
-  border-radius: 4px;
-  transition: color 0.2s;
-  min-width: 40px;
-  z-index: 1;
-  flex: 1;
-  user-select: none;
-}
-
-.lang-btn:hover {
-  color: var(--text-primary);
-}
-
-.lang-btn.active {
-  color: var(--text-primary);
-}
-
-/* Sidebar Language Switcher */
-.sidebar-lang-switcher {
-  padding: 16px 20px;
-  border-bottom: 1px solid var(--border-primary);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.sidebar-lang-label {
-  font-size: 14px;
-  color: var(--text-secondary);
-  white-space: nowrap;
-}
-
-.sidebar-lang-switcher .lang-switcher {
-  margin-right: 0;
-  flex: 1;
-  max-width: 200px;
 }
 </style>
