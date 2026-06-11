@@ -267,6 +267,8 @@ func (db *DB) migratePostgres() error {
 			updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
 			PRIMARY KEY (course_code, word)
 		)`,
+		// Existing deployments may still have the legacy word-only PK schema until 000024 runs.
+		`ALTER TABLE tts_generation_status ADD COLUMN IF NOT EXISTS course_code TEXT NOT NULL DEFAULT ''`,
 		`CREATE INDEX IF NOT EXISTS idx_tts_generation_status_course_state ON tts_generation_status(course_code, state)`,
 		`CREATE INDEX IF NOT EXISTS idx_tts_generation_status_course_updated ON tts_generation_status(course_code, updated_at)`,
 		`CREATE TABLE IF NOT EXISTS schema_migrations (

@@ -263,3 +263,73 @@ func TestNewWithConfig_MigrateFails(t *testing.T) {
 		t.Errorf("error should mention failed to migrate database: %v", err)
 	}
 }
+
+// TestMigratePostgres_LegacyTTSSchemaUpgradesCourseCode ensures pre-course-scoped
+// tts_generation_status tables migrate before course_code indexes are created.
+func TestMigratePostgres_LegacyTTSSchemaUpgradesCourseCode(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	dsn := startTestPostgres(t)
+
+	var conn *sql.DB
+	var err error
+	for attempt := 0; attempt < 10; attempt++ {
+		conn, err = openPostgresDB(dsn)
+		if err == nil {
+			break
+		}
+		time.Sleep(time.Duration(attempt+1) * 500 * time.Millisecond)
+	}
+	if err != nil {
+		t.Fatalf("openPostgresDB: %v", err)
+	}
+	defer conn.Close()
+
+	const legacyTable = `CREATE TABLE tts_generation_status (
+		word TEXT PRIMARY KEY,
+		state TEXT NOT NULL DEFAULT 'pending',
+		attempt_count INTEGER NOT NULL DEFAULT 0,
+		max_attempts INTEGER NOT NULL DEFAULT 3,
+		created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+		updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+	)`
+	if _, err := conn.Exec(legacyTable); err != nil {
+		t.Fatalf("create legacy tts_generation_status: %v", err)
+	}
+	if _, err := conn.Exec(`INSERT INTO tts_generation_status (word) VALUES ('hello')`); err != nil {
+		t.Fatalf("seed legacy tts row: %v", err)
+	}
+
+	db, err := NewWithConfig("postgres", "", dsn, logger)
+	if err != nil {
+		t.Fatalf("NewWithConfig() error = %v", err)
+	}
+	defer db.Close()
+
+	var hasCourseCode bool
+	err = db.conn.QueryRow(`
+		SELECT EXISTS (
+			SELECT 1
+			FROM information_schema.columns
+			WHERE table_name = 'tts_generation_status' AND column_name = 'course_code'
+		)`).Scan(&hasCourseCode)
+	if err != nil {
+		t.Fatalf("check course_code column: %v", err)
+	}
+	if !hasCourseCode {
+		t.Fatal("expected course_code column after migration")
+	}
+
+	var pkColumns string
+	err = db.conn.QueryRow(`
+		SELECT string_agg(a.attname, ',' ORDER BY array_position(i.indkey, a.attnum))
+		FROM pg_index i
+		JOIN pg_attribute a ON a.attrelid = i.indrelid AND a.attnum = ANY(i.indkey)
+		WHERE i.indrelid = 'tts_generation_status'::regclass AND i.indisprimary
+	`).Scan(&pkColumns)
+	if err != nil {
+		t.Fatalf("check tts_generation_status primary key: %v", err)
+	}
+	if pkColumns != "course_code,word" {
+		t.Fatalf("primary key columns = %q, want course_code,word", pkColumns)
+	}
+}
