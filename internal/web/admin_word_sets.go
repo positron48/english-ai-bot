@@ -394,6 +394,10 @@ func (r *Router) handleAdminWordSets(w http.ResponseWriter, req *http.Request) {
 				http.Error(w, "Course not found", http.StatusNotFound)
 				return
 			}
+			if courseCode != "" && courseCode != r.defaultCourseCode() {
+				http.Error(w, "Word generation for the selected course is not available in this runtime", http.StatusConflict)
+				return
+			}
 			wordSetService := r.getWordSetService()
 			if err := wordSetService.ProcessWordSetItemsForCourse(req.Context(), id, courseCode, requestData.Words); err != nil {
 				r.logger.Error("failed to process word set items", zap.Error(err))

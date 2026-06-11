@@ -24,6 +24,15 @@ func (r *CourseRepository) HasMultipleWordCourses(ctx context.Context) bool {
 	return distinct > 1
 }
 
+// HasMultipleActiveCourses reports whether this database is a unified multi-course runtime.
+func (r *CourseRepository) HasMultipleActiveCourses(ctx context.Context) bool {
+	var count int
+	if err := r.db.QueryRowContext(ctx, `SELECT COUNT(*) FROM courses WHERE status = 'active'`).Scan(&count); err != nil {
+		return false
+	}
+	return count > 1
+}
+
 // LegacyCourseTagSummary reports how many legacy rows were tagged with a course_code.
 type LegacyCourseTagSummary struct {
 	CourseCode string

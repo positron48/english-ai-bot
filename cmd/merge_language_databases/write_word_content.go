@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"strconv"
+	"strings"
 )
 
 // resetWordItems removes word-training content (learning_items where source_kind='word_card',
@@ -82,7 +83,13 @@ func resetWordItems(ctx context.Context, sources []openedSourceDB, targetDB *sql
 // Conflict resolution: ON CONFLICT(word) DO UPDATE to enrich content fields (definition_ru,
 // transcription, etc.) but only when the target value is NULL (COALESCE pattern).
 // Returns map of source_word_card_id → target_word_card_id (built by joining on word text).
-func importWordCardsFromSource(ctx context.Context, sourceDB, targetDB *sql.DB, summary *writeSummary) (map[int64]int64, error) {
+func importWordCardsFromSource(
+	ctx context.Context,
+	sourceDB, targetDB *sql.DB,
+	courseCode string,
+	sharedWords map[string]bool,
+	summary *writeSummary,
+) (map[int64]int64, error) {
 	rows, err := sourceDB.QueryContext(ctx, `
 		SELECT id, word,
 		       definition, pos, noun_gender, opposite_gender_word,
@@ -114,11 +121,11 @@ func importWordCardsFromSource(ctx context.Context, sourceDB, targetDB *sql.DB, 
 			INSERT INTO word_cards (
 				word, definition, pos, noun_gender, opposite_gender_word,
 				transcription, definition_ru, examples_json, verb_forms_json, display_en,
-				updated_at
+				course_code, updated_at
 			) VALUES (
 				$1, $2, $3, $4, $5,
 				$6, $7, $8, $9, $10,
-				CURRENT_TIMESTAMP
+				$11, CURRENT_TIMESTAMP
 			)
 			ON CONFLICT (word) DO UPDATE SET
 				definition       = COALESCE(word_cards.definition, excluded.definition),
@@ -130,6 +137,10 @@ func importWordCardsFromSource(ctx context.Context, sourceDB, targetDB *sql.DB, 
 				examples_json    = COALESCE(word_cards.examples_json, excluded.examples_json),
 				verb_forms_json  = COALESCE(word_cards.verb_forms_json, excluded.verb_forms_json),
 				display_en       = COALESCE(word_cards.display_en, excluded.display_en),
+				course_code      = CASE
+					WHEN $12 THEN word_cards.course_code
+					ELSE excluded.course_code
+				END,
 				updated_at       = CURRENT_TIMESTAMP
 		`,
 			word,
@@ -148,6 +159,8 @@ func importWordCardsFromSource(ctx context.Context, sourceDB, targetDB *sql.DB, 
 				return nil
 			}(),
 			nullableString(displayEN),
+			courseCode,
+			sharedWords[strings.ToLower(strings.TrimSpace(word))],
 		)
 		if err != nil {
 			return nil, fmt.Errorf("upsert word_card %q: %w", word, err)

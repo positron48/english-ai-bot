@@ -30,7 +30,7 @@ func mergeLegacyWords(ctx context.Context, sources []openedSourceDB, targetDB *s
 		}
 
 		// Build word_card_id map: source wc id → target wc id (join on word text).
-		wcMap, err := buildWordCardMap(ctx, src.DB, targetDB)
+		wcMap, err := buildWordCardMap(ctx, src.DB, targetDB, courseCode)
 		if err != nil {
 			return nil, fmt.Errorf("build word_card map for %s: %w", src.Label, err)
 		}
@@ -64,9 +64,17 @@ func mergeLegacyWords(ctx context.Context, sources []openedSourceDB, targetDB *s
 
 // buildWordCardMap returns source_word_card_id → target_word_card_id by joining on word text.
 // word_cards.word is UNIQUE in the target (unified) DB, so the join is 1:1.
-func buildWordCardMap(ctx context.Context, sourceDB, targetDB *sql.DB) (map[int64]int64, error) {
+func buildWordCardMap(ctx context.Context, sourceDB, targetDB *sql.DB, courseCode string) (map[int64]int64, error) {
 	// Load target word → id.
-	rows, err := targetDB.QueryContext(ctx, `SELECT id, word FROM word_cards`)
+	rows, err := targetDB.QueryContext(ctx, `
+		SELECT id, word
+		FROM word_cards
+		WHERE course_code = $1
+		   OR (course_code IS NULL AND NOT EXISTS (
+		       SELECT 1 FROM word_cards scoped
+		       WHERE scoped.word = word_cards.word AND scoped.course_code = $1
+		   ))
+	`, courseCode)
 	if err != nil {
 		return nil, err
 	}

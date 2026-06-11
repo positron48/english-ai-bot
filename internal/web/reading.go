@@ -449,6 +449,10 @@ func (r *Router) BootstrapReadingWordCards(ctx context.Context) {
 	if r == nil || r.db == nil {
 		return
 	}
+	if r.courseRepo != nil && r.courseRepo.HasMultipleActiveCourses(ctx) {
+		r.logger.Info("reading bootstrap skipped for multi-course database")
+		return
+	}
 	idx, err := r.readReadingIndex()
 	if err != nil {
 		r.logger.Warn("reading bootstrap: failed to read index", zap.Error(err))
@@ -668,4 +672,3 @@ func (r *Router) readReadingIndexFromBundleFS() (*readingIndex, error) {
 	}
 	return &idx, nil
 }
-

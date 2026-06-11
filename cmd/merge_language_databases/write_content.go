@@ -51,6 +51,10 @@ func mergeCourseMappings(ctx context.Context, sources []openedSourceDB, targetDB
 
 func mergeContent(ctx context.Context, sources []openedSourceDB, targetDB *sql.DB) (*writeSummary, error) {
 	summary := &writeSummary{Phase: "content"}
+	sharedWords, err := findSharedSourceWords(ctx, sources)
+	if err != nil {
+		return nil, fmt.Errorf("find shared source words: %w", err)
+	}
 	for _, src := range sources {
 		if src.DB == nil {
 			continue
@@ -71,7 +75,7 @@ func mergeContent(ctx context.Context, sources []openedSourceDB, targetDB *sql.D
 		// This ensures that when we copy learning_items with source_kind='word_card', we
 		// remap their source_id to the correct unified word_card ID (not the source DB's ID,
 		// which may differ when both DBs have the same sequence position but different content).
-		wcMap, err := importWordCardsFromSource(ctx, src.DB, targetDB, summary)
+		wcMap, err := importWordCardsFromSource(ctx, src.DB, targetDB, courseCode, sharedWords, summary)
 		if err != nil {
 			return nil, fmt.Errorf("import word_cards from %s: %w", src.Label, err)
 		}
@@ -88,6 +92,43 @@ func mergeContent(ctx context.Context, sources []openedSourceDB, targetDB *sql.D
 		}
 	}
 	return summary, nil
+}
+
+func findSharedSourceWords(ctx context.Context, sources []openedSourceDB) (map[string]bool, error) {
+	counts := map[string]int{}
+	for _, src := range sources {
+		if src.DB == nil {
+			continue
+		}
+		rows, err := src.DB.QueryContext(ctx, `SELECT LOWER(word) FROM word_cards`)
+		if err != nil {
+			return nil, err
+		}
+		seen := map[string]struct{}{}
+		for rows.Next() {
+			var word string
+			if err := rows.Scan(&word); err != nil {
+				rows.Close()
+				return nil, err
+			}
+			if _, ok := seen[word]; !ok {
+				seen[word] = struct{}{}
+				counts[word]++
+			}
+		}
+		if err := rows.Err(); err != nil {
+			rows.Close()
+			return nil, err
+		}
+		rows.Close()
+	}
+	shared := map[string]bool{}
+	for word, count := range counts {
+		if count > 1 {
+			shared[word] = true
+		}
+	}
+	return shared, nil
 }
 
 func copyModules(ctx context.Context, sourceDB, targetDB *sql.DB, sourceCourseID, targetCourseID int64) (map[int64]int64, error) {
