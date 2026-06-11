@@ -193,12 +193,12 @@ func TestWordRepository_ListWordCardsAdmin_HasAudioFilter(t *testing.T) {
 	repo.SaveWordCard("pendingstale", "def")
 	// Insert TTS row for one word so has_audio filter can match
 	_, err := db.Exec(`INSERT INTO tts_generation_status (word, state, audio_rel_path) VALUES ('withaudio', 'ready', 'ab/cd/withaudio.mp3')
-		ON CONFLICT (word) DO UPDATE SET state = 'ready', audio_rel_path = EXCLUDED.audio_rel_path`)
+		ON CONFLICT (course_code, word) DO UPDATE SET state = 'ready', audio_rel_path = EXCLUDED.audio_rel_path`)
 	if err != nil {
 		t.Fatalf("insert tts_generation_status: %v", err)
 	}
 	_, err = db.Exec(`INSERT INTO tts_generation_status (word, state, audio_rel_path) VALUES ('pendingstale', 'pending', 'ab/cd/pendingstale.mp3')
-		ON CONFLICT (word) DO UPDATE SET state = 'pending', audio_rel_path = EXCLUDED.audio_rel_path`)
+		ON CONFLICT (course_code, word) DO UPDATE SET state = 'pending', audio_rel_path = EXCLUDED.audio_rel_path`)
 	if err != nil {
 		t.Fatalf("insert pending tts_generation_status: %v", err)
 	}

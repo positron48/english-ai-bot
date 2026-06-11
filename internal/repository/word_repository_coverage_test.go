@@ -437,7 +437,7 @@ func TestWordRepository_ListWordCardsAdmin_WithTTSFields(t *testing.T) {
 	// Insert TTS row with all fields populated
 	_, err := db.Exec(`INSERT INTO tts_generation_status (word, state, audio_rel_path, last_error_message, attempt_count, max_attempts)
 		VALUES ('ttsadminword', 'ready', 'ab/cd/ttsadminword.mp3', 'some error', 1, 3)
-		ON CONFLICT (word) DO UPDATE SET state = 'ready', audio_rel_path = 'ab/cd/ttsadminword.mp3', last_error_message = 'some error'`)
+		ON CONFLICT (course_code, word) DO UPDATE SET state = 'ready', audio_rel_path = 'ab/cd/ttsadminword.mp3', last_error_message = 'some error'`)
 	if err != nil {
 		t.Fatalf("insert tts status: %v", err)
 	}
@@ -478,7 +478,7 @@ func TestWordRepository_CountWordCardsAdmin_HasAudioFilter(t *testing.T) {
 	// Insert TTS row with audio for one word
 	_, err := db.Exec(`INSERT INTO tts_generation_status (word, state, audio_rel_path, attempt_count, max_attempts)
 		VALUES ('audiocount1', 'ready', 'ab/cd/audiocount1.mp3', 1, 3)
-		ON CONFLICT (word) DO UPDATE SET state = 'ready', audio_rel_path = 'ab/cd/audiocount1.mp3'`)
+		ON CONFLICT (course_code, word) DO UPDATE SET state = 'ready', audio_rel_path = 'ab/cd/audiocount1.mp3'`)
 	if err != nil {
 		t.Fatalf("insert tts status: %v", err)
 	}

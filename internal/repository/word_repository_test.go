@@ -445,7 +445,7 @@ func TestWordRepository_ListPronunciationCandidates_UsesCanonicalWordCardsOnly(t
 	_, err = db.Exec(
 		`INSERT INTO tts_generation_status (word, state, attempt_count, max_attempts, created_at, updated_at)
 		 VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-		 ON CONFLICT (word) DO UPDATE
+		 ON CONFLICT (course_code, word) DO UPDATE
 		 SET state = EXCLUDED.state,
 		     attempt_count = EXCLUDED.attempt_count,
 		     max_attempts = EXCLUDED.max_attempts,
@@ -458,7 +458,7 @@ func TestWordRepository_ListPronunciationCandidates_UsesCanonicalWordCardsOnly(t
 	_, err = db.Exec(
 		`INSERT INTO tts_generation_status (word, state, attempt_count, max_attempts, created_at, updated_at)
 		 VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-		 ON CONFLICT (word) DO UPDATE
+		 ON CONFLICT (course_code, word) DO UPDATE
 		 SET state = EXCLUDED.state,
 		     attempt_count = EXCLUDED.attempt_count,
 		     max_attempts = EXCLUDED.max_attempts,

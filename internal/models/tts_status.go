@@ -10,6 +10,7 @@ const (
 )
 
 type TTSGenerationStatus struct {
+	CourseCode       string `json:"course_code,omitempty"`
 	Word             string
 	WordTarget       string `json:"word_target"` // Neutral alias for Word (same value after sync)
 	State            string

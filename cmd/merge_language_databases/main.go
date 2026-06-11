@@ -19,24 +19,24 @@ import (
 )
 
 type dbSummary struct {
-	Label                 string               `json:"label"`
-	URLProvided           bool                 `json:"url_provided"`
-	Users                 int64                `json:"users"`
-	Courses               int64                `json:"courses"`
-	UserCourses           int64                `json:"user_courses"`
-	LearningItems         int64                `json:"learning_items"`
-	ExerciseAttempts      int64                `json:"exercise_attempts"`
-	LearningEvents        int64                `json:"learning_events"`
-	SRSItems              int64                `json:"srs_items"`
-	ReviewEvents          int64                `json:"review_events"`
-	GrammarTestAttempts   int64                `json:"grammar_test_attempts"`
-	GrammarSRSAttempts    int64                `json:"grammar_srs_attempts"`
-	ReadingTextProgress   int64                `json:"reading_text_progress"`
-	SpeakingAttempts      int64                `json:"speaking_attempts"`
-	LegacyMappingTablesOK bool                 `json:"legacy_mapping_tables_ok"`
-	LatestActivityAt      string               `json:"latest_activity_at,omitempty"`
-	Readiness             readinessReport      `json:"readiness"`
-	AttemptSources []attemptSourceRow `json:"attempt_sources"`
+	Label                 string             `json:"label"`
+	URLProvided           bool               `json:"url_provided"`
+	Users                 int64              `json:"users"`
+	Courses               int64              `json:"courses"`
+	UserCourses           int64              `json:"user_courses"`
+	LearningItems         int64              `json:"learning_items"`
+	ExerciseAttempts      int64              `json:"exercise_attempts"`
+	LearningEvents        int64              `json:"learning_events"`
+	SRSItems              int64              `json:"srs_items"`
+	ReviewEvents          int64              `json:"review_events"`
+	GrammarTestAttempts   int64              `json:"grammar_test_attempts"`
+	GrammarSRSAttempts    int64              `json:"grammar_srs_attempts"`
+	ReadingTextProgress   int64              `json:"reading_text_progress"`
+	SpeakingAttempts      int64              `json:"speaking_attempts"`
+	LegacyMappingTablesOK bool               `json:"legacy_mapping_tables_ok"`
+	LatestActivityAt      string             `json:"latest_activity_at,omitempty"`
+	Readiness             readinessReport    `json:"readiness"`
+	AttemptSources        []attemptSourceRow `json:"attempt_sources"`
 }
 
 type telegramMultiCourseUser struct {
@@ -53,15 +53,17 @@ type writeSummary struct {
 	UsersInserted    int64  `json:"users_inserted"`
 	UsersReused      int64  `json:"users_reused"`
 	UserCoursesAdded int64  `json:"user_courses_added"`
-	ItemsScanned      int64 `json:"items_scanned,omitempty"`
-	ItemsInserted     int64 `json:"items_inserted,omitempty"`
-	AttemptsScanned   int64 `json:"attempts_scanned,omitempty"`
-	AttemptsInserted  int64 `json:"attempts_inserted,omitempty"`
-	EventsInserted    int64 `json:"events_inserted,omitempty"`
-	SRSScanned        int64 `json:"srs_scanned,omitempty"`
-	SRSInserted       int64 `json:"srs_inserted,omitempty"`
-	SRSLinksUpdated   int64 `json:"srs_links_updated,omitempty"`
-	ConflictsLogged   int64 `json:"conflicts_logged"`
+	ItemsScanned     int64  `json:"items_scanned,omitempty"`
+	ItemsInserted    int64  `json:"items_inserted,omitempty"`
+	AttemptsScanned  int64  `json:"attempts_scanned,omitempty"`
+	AttemptsInserted int64  `json:"attempts_inserted,omitempty"`
+	EventsInserted   int64  `json:"events_inserted,omitempty"`
+	SRSScanned       int64  `json:"srs_scanned,omitempty"`
+	SRSInserted      int64  `json:"srs_inserted,omitempty"`
+	SRSLinksUpdated  int64  `json:"srs_links_updated,omitempty"`
+	TTSScanned       int64  `json:"tts_scanned,omitempty"`
+	TTSUpserted      int64  `json:"tts_upserted,omitempty"`
+	ConflictsLogged  int64  `json:"conflicts_logged"`
 	Skipped          int64  `json:"skipped"`
 }
 
@@ -112,9 +114,9 @@ type auditReport struct {
 	TelegramMultiCourse []telegramMultiCourseUser `json:"telegram_multi_course_users"`
 	TelegramConflicts   []identityConflict        `json:"telegram_conflicts"`
 	IdentityConflicts   []stableIdentityConflict  `json:"identity_conflicts"`
-	ReadyForSourceMerge bool   `json:"ready_for_source_merge"`
-	ReadyForWriteMerge  bool   `json:"ready_for_write_merge"`
-	WritePhase          string `json:"write_phase,omitempty"`
+	ReadyForSourceMerge bool                      `json:"ready_for_source_merge"`
+	ReadyForWriteMerge  bool                      `json:"ready_for_write_merge"`
+	WritePhase          string                    `json:"write_phase,omitempty"`
 	WriteSummary        *writeSummary             `json:"write_summary,omitempty"`
 	Notes               []string                  `json:"notes"`
 }
@@ -139,7 +141,7 @@ func main() {
 	flag.StringVar(&targetURL, "target-db-url", env("TARGET_DATABASE_URL"), "Target unified DATABASE_URL; defaults to TARGET_DATABASE_URL")
 	flag.DurationVar(&timeout, "timeout", 5*time.Minute, "overall audit timeout (counts and telegram identity scans)")
 	flag.BoolVar(&commit, "commit", false, "write merge data to target DB; requires --phase")
-	flag.StringVar(&phase, "phase", "", "write phase: users|user-courses|course-mappings|content|attempts|srs|legacy-words|reset-word-items")
+	flag.StringVar(&phase, "phase", "", "write phase: users|user-courses|course-mappings|content|attempts|srs|tts|legacy-words|reset-word-items")
 	flag.Parse()
 
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
@@ -158,7 +160,7 @@ func main() {
 		IdentityConflicts:   []stableIdentityConflict{},
 		Notes: []string{
 			"audit foundation: read-only counts, readiness, attempt sources, telegram overlap",
-			"use --commit --phase=users|user-courses|course-mappings|content|attempts|srs for unified DB write slices",
+			"use --commit --phase=users|user-courses|course-mappings|content|attempts|srs|tts for unified DB write slices",
 		},
 	}
 
@@ -229,7 +231,7 @@ func main() {
 
 	if commit {
 		if phase == "" {
-			fmt.Fprintln(os.Stderr, "--commit requires --phase=users|user-courses|course-mappings|content|attempts|srs")
+			fmt.Fprintln(os.Stderr, "--commit requires --phase=users|user-courses|course-mappings|content|attempts|srs|tts")
 			os.Exit(1)
 		}
 		if targetDB == nil {

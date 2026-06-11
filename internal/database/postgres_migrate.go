@@ -253,7 +253,8 @@ func (db *DB) migratePostgres() error {
 			updated_by_user_id BIGINT REFERENCES users(id) ON DELETE SET NULL
 		)`,
 		`CREATE TABLE IF NOT EXISTS tts_generation_status (
-			word TEXT PRIMARY KEY,
+			course_code TEXT NOT NULL DEFAULT '',
+			word TEXT NOT NULL,
 			state TEXT NOT NULL DEFAULT 'pending',
 			attempt_count INTEGER NOT NULL DEFAULT 0,
 			max_attempts INTEGER NOT NULL DEFAULT 3,
@@ -263,10 +264,11 @@ func (db *DB) migratePostgres() error {
 			audio_rel_path TEXT,
 			last_attempt_at TIMESTAMPTZ,
 			created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-			updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+			updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+			PRIMARY KEY (course_code, word)
 		)`,
-		`CREATE INDEX IF NOT EXISTS idx_tts_generation_status_state ON tts_generation_status(state)`,
-		`CREATE INDEX IF NOT EXISTS idx_tts_generation_status_updated_at ON tts_generation_status(updated_at)`,
+		`CREATE INDEX IF NOT EXISTS idx_tts_generation_status_course_state ON tts_generation_status(course_code, state)`,
+		`CREATE INDEX IF NOT EXISTS idx_tts_generation_status_course_updated ON tts_generation_status(course_code, updated_at)`,
 		`CREATE TABLE IF NOT EXISTS schema_migrations (
 			version TEXT PRIMARY KEY,
 			applied_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP

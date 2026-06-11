@@ -582,6 +582,7 @@ type PronunciationService struct {
 	backfillEvery   time.Duration
 	backfillBatch   int
 	workers         int
+	courseCode      string
 
 	learning   config.LearningConfig
 	wordRepo   *repository.WordRepository
@@ -645,6 +646,7 @@ func NewPronunciationService(cfg config.TTSConfig, learning config.LearningConfi
 		backfillEvery:   backfillEvery,
 		backfillBatch:   backfillBatch,
 		workers:         workers,
+		courseCode:      repository.CourseCodeForLearning(learning),
 		learning:        learning,
 		wordRepo:        wordRepo,
 		logger:          logger,
@@ -659,7 +661,7 @@ func NewPronunciationService(cfg config.TTSConfig, learning config.LearningConfi
 		if maxAttempts > 20 {
 			maxAttempts = 20
 		}
-		service.ttsRepo = repository.NewTTSStatusRepository(wordRepo.DB(), logger, maxAttempts)
+		service.ttsRepo = repository.NewTTSStatusRepositoryForCourse(wordRepo.DB(), logger, maxAttempts, service.courseCode)
 	}
 
 	if service.audioDir == "" {
@@ -1532,9 +1534,13 @@ func (s *PronunciationService) cachedRelPathForWord(word string) string {
 	key := pronunciationWordKey(word)
 	fileBase := pronunciationWordFileBase(word)
 	for _, ext := range []string{".mp3", ".wav"} {
-		relByWord := filepath.Join(key[:2], key[2:4], fileBase+ext)
+		relByWord := filepath.Join(s.courseCode, key[:2], key[2:4], fileBase+ext)
 		if _, err := os.Stat(filepath.Join(s.audioDir, relByWord)); err == nil {
 			return relByWord
+		}
+		legacyRel := filepath.Join(key[:2], key[2:4], fileBase+ext)
+		if _, err := os.Stat(filepath.Join(s.audioDir, legacyRel)); err == nil {
+			return legacyRel
 		}
 	}
 	return ""
@@ -1542,12 +1548,12 @@ func (s *PronunciationService) cachedRelPathForWord(word string) string {
 
 func (s *PronunciationService) relativePathForWord(word string) string {
 	key := pronunciationWordKey(word)
-	return filepath.Join(key[:2], key[2:4], pronunciationWordFileBase(word)+".mp3")
+	return filepath.Join(s.courseCode, key[:2], key[2:4], pronunciationWordFileBase(word)+".mp3")
 }
 
 func (s *PronunciationService) relativePathForWordWithExt(word, ext string) string {
 	key := pronunciationWordKey(word)
-	return filepath.Join(key[:2], key[2:4], pronunciationWordFileBase(word)+ext)
+	return filepath.Join(s.courseCode, key[:2], key[2:4], pronunciationWordFileBase(word)+ext)
 }
 
 func pronunciationWordKey(word string) string {

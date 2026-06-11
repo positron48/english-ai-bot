@@ -27,6 +27,8 @@ func runWritePhase(ctx context.Context, phase string, sources []openedSourceDB, 
 		return mergeAttempts(ctx, sources, targetDB)
 	case "srs":
 		return mergeSRS(ctx, sources, targetDB)
+	case "tts":
+		return mergeTTS(ctx, sources, targetDB)
 	case "legacy-words", "legacy_words":
 		return mergeLegacyWords(ctx, sources, targetDB)
 	case "reset-word-items", "reset_word_items":

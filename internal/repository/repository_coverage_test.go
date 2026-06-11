@@ -2178,7 +2178,7 @@ func TestTTSStatusRepository_GetByWord_NoRows(t *testing.T) {
 	}
 	defer db.Close()
 
-	mock.ExpectQuery("SELECT word, state").WillReturnError(sql.ErrNoRows)
+	mock.ExpectQuery("SELECT course_code, word, state").WillReturnError(sql.ErrNoRows)
 
 	repo := NewTTSStatusRepository(db, zap.NewNop(), 3)
 	result, err := repo.GetByWord("nonexistent")

@@ -1379,10 +1379,10 @@ func TestPronunciationService_ProcessWord_AttemptCountExceedsMaxNotTerminal(t *t
 	// Directly insert a record with state=failed_retryable but attempt_count >= max_attempts.
 	// This bypasses MarkAttempt's capToTerminal logic.
 	_, err := db.Exec(
-		`INSERT INTO tts_generation_status (word, state, attempt_count, max_attempts, created_at, updated_at)
-		 VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-		 ON CONFLICT (word) DO UPDATE SET state=$2, attempt_count=$3, max_attempts=$4, updated_at=CURRENT_TIMESTAMP`,
-		"exceedmaxword", models.TTSStateFailedRetryable, 5, 3,
+		`INSERT INTO tts_generation_status (course_code, word, state, attempt_count, max_attempts, created_at, updated_at)
+		 VALUES ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+		 ON CONFLICT (course_code, word) DO UPDATE SET state=$3, attempt_count=$4, max_attempts=$5, updated_at=CURRENT_TIMESTAMP`,
+		"en_ru", "exceedmaxword", models.TTSStateFailedRetryable, 5, 3,
 	)
 	if err != nil {
 		t.Fatalf("insert test record: %v", err)
@@ -1415,10 +1415,10 @@ func TestPronunciationService_ScheduleWord_AttemptCountExceedsMaxNotTerminal(t *
 	}, config.DefaultLearningConfig(), wordRepo, zap.NewNop())
 
 	_, err := db.Exec(
-		`INSERT INTO tts_generation_status (word, state, attempt_count, max_attempts, created_at, updated_at)
-		 VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-		 ON CONFLICT (word) DO UPDATE SET state=$2, attempt_count=$3, max_attempts=$4, updated_at=CURRENT_TIMESTAMP`,
-		"schedexceedmax", models.TTSStateFailedRetryable, 5, 3,
+		`INSERT INTO tts_generation_status (course_code, word, state, attempt_count, max_attempts, created_at, updated_at)
+		 VALUES ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+		 ON CONFLICT (course_code, word) DO UPDATE SET state=$3, attempt_count=$4, max_attempts=$5, updated_at=CURRENT_TIMESTAMP`,
+		"en_ru", "schedexceedmax", models.TTSStateFailedRetryable, 5, 3,
 	)
 	if err != nil {
 		t.Fatalf("insert test record: %v", err)
@@ -1445,10 +1445,10 @@ func TestPronunciationService_Lookup_AttemptCountExceedsMaxNotTerminal(t *testin
 	}, config.DefaultLearningConfig(), wordRepo, zap.NewNop())
 
 	_, err := db.Exec(
-		`INSERT INTO tts_generation_status (word, state, attempt_count, max_attempts, created_at, updated_at)
-		 VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-		 ON CONFLICT (word) DO UPDATE SET state=$2, attempt_count=$3, max_attempts=$4, updated_at=CURRENT_TIMESTAMP`,
-		"lookupexceedmax", models.TTSStateFailedRetryable, 5, 3,
+		`INSERT INTO tts_generation_status (course_code, word, state, attempt_count, max_attempts, created_at, updated_at)
+		 VALUES ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+		 ON CONFLICT (course_code, word) DO UPDATE SET state=$3, attempt_count=$4, max_attempts=$5, updated_at=CURRENT_TIMESTAMP`,
+		"en_ru", "lookupexceedmax", models.TTSStateFailedRetryable, 5, 3,
 	)
 	if err != nil {
 		t.Fatalf("insert test record: %v", err)
@@ -1521,7 +1521,7 @@ func TestPronunciationService_EnsureStatusForWord_UpsertPendingError(t *testing.
 	_, err := db.Exec(
 		`INSERT INTO tts_generation_status (word, state, attempt_count, max_attempts, audio_rel_path, created_at, updated_at)
 		 VALUES ($1, $2, 0, 10, $3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-		 ON CONFLICT (word) DO UPDATE SET state=$2, audio_rel_path=$3, updated_at=CURRENT_TIMESTAMP`,
+		 ON CONFLICT (course_code, word) DO UPDATE SET state=$2, audio_rel_path=$3, updated_at=CURRENT_TIMESTAMP`,
 		word, models.TTSStateReady, "nonexistent/path.mp3",
 	)
 	if err != nil {
