@@ -1,7 +1,7 @@
 <template>
   <div class="grammar-categories">
     <div class="header-section">
-      <h1>{{ t('grammar.courseTitle') || 'Grammar Course' }}</h1>
+      <h1>{{ districtLevel ? (t('grammar.courseTitle') + ' · ' + districtLevel) : (t('grammar.courseTitle') || 'Grammar Course') }}</h1>
       <div class="header-actions">
         <button
           v-if="grammarTrainingAvailable"
@@ -189,13 +189,13 @@
       <button @click="loadCategories" class="btn btn-primary">{{ t('common.retry') }}</button>
     </div>
     
-    <div v-else-if="!categories || categories.length === 0" class="empty">
+    <div v-else-if="!visibleCategories || visibleCategories.length === 0" class="empty">
       <p>{{ t('grammar.noCategories') || 'No grammar categories available yet.' }}</p>
     </div>
-    
-    <div v-else-if="categories && categories.length > 0" class="categories-grid">
+
+    <div v-else-if="visibleCategories && visibleCategories.length > 0" class="categories-grid">
       <div
-        v-for="category in categories"
+        v-for="category in visibleCategories"
         :key="category.section_id"
         class="category-card"
         :class="{ 'locked': category.is_published !== false && !category.can_access, 'unpublished': category.is_published === false }"
@@ -261,7 +261,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { grammarClient, setGrammarCourse, type OfflineStatus } from '../api/grammarClient'
 import Icon from '../components/Icon.vue'
 import { isEmbeddedAndroidApp } from '../utils/runtime'
@@ -269,7 +269,14 @@ import { useCourse } from '../composables/useCourse'
 
 const { t, locale } = useI18n()
 const router = useRouter()
+const route = useRoute()
 const { currentCourseCode } = useCourse()
+
+// When opened from a city district, filter to that district's CEFR level
+const districtLevel = computed(() => {
+  const lv = route.query.level
+  return typeof lv === 'string' ? lv.toUpperCase() : ''
+})
 
 watch(currentCourseCode, (code) => {
   setGrammarCourse(code)
@@ -340,8 +347,14 @@ const passedChapters = computed(() => {
   return categories.value.reduce((sum, cat) => sum + cat.passed_chapters, 0)
 })
 
+// Filtered categories: if opened from district, only show matching level
+const visibleCategories = computed(() => {
+  if (!districtLevel.value) return categories.value
+  return categories.value.filter(cat => cat.level?.toUpperCase() === districtLevel.value)
+})
+
 const availableCategories = computed(() => {
-  return categories.value.filter(cat => cat.can_access).length
+  return visibleCategories.value.filter(cat => cat.can_access).length
 })
 
 const getLocalizedTitle = (title: string, titleTranslations?: Record<string, string>) => {

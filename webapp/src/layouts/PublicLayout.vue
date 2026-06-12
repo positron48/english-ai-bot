@@ -84,6 +84,6 @@ onUnmounted(() => window.removeEventListener('resize', check))
   padding-bottom: calc(78px + env(safe-area-inset-bottom, 0px)) !important;
 }
 .lg-view-pad {
-  padding: 0 14px 24px;
+  padding: 0 14px;
 }
 </style>

@@ -1,20 +1,23 @@
 <template>
   <div class="grammar-training">
-    <div v-if="loading" class="loading">{{ t('common.loading') }}</div>
+    <LgPageHeader
+      :title="t('grammar.trainingTitle')"
+      :show-back="true"
+      @back="router.push('/learning/grammar')"
+    />
 
-    <div v-else-if="error" class="card">
-      <p>{{ error }}</p>
+    <div v-if="loading" class="gt-state">{{ t('common.loading') }}</div>
+
+    <div v-else-if="error" class="gt-state">
+      <p class="gt-state-text">{{ error }}</p>
       <button class="btn btn-primary" @click="init">{{ t('common.retry') }}</button>
     </div>
 
-    <div v-else-if="!available" class="card">
-      <h1>{{ t('learning.grammar') }}</h1>
-      <p>{{ t('grammar.trainingUnavailable') }}</p>
-      <router-link class="btn btn-primary" to="/learning/grammar">{{ t('common.back') }}</router-link>
+    <div v-else-if="!available" class="gt-state">
+      <p class="gt-state-text">{{ t('grammar.trainingUnavailable') }}</p>
     </div>
 
     <div v-else-if="sessionDone" class="grammar-training-done">
-      <h1 class="grammar-done-title">{{ t('grammar.trainingTitle') }}</h1>
       <TrainingSessionCompletion
         :total-cards="totalCount"
         :correct-cards="correctCount"
@@ -28,19 +31,11 @@
         :sound-theme="settings.soundTheme"
         @continue="startSession"
       />
-      <div class="grammar-done-back-row">
-        <router-link class="btn btn-secondary grammar-done-back-link" to="/learning/grammar">
-          {{ t('common.back') }}
-        </router-link>
-      </div>
     </div>
 
     <div v-else-if="currentQuestion" class="question-stage">
+      <div class="progress-line">{{ currentIndex + 1 }} / {{ totalCount }}</div>
       <div class="card">
-        <div class="header">
-          <h1>{{ t('grammar.trainingTitle') }}</h1>
-          <div class="progress">{{ currentIndex + 1 }} / {{ totalCount }}</div>
-        </div>
 
       <GrammarQuestion
         ref="grammarQuestionRef"
@@ -145,7 +140,10 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
+import { apiClient } from '../api/client'
 import { grammarClient } from '../api/grammarClient'
+import LgPageHeader from '../components/linglow/LgPageHeader.vue'
 import { contentReportClient } from '../api/contentReportClient'
 import GrammarQuestion from '../components/GrammarQuestion.vue'
 import TrainingSessionCompletion from '../components/TrainingSessionCompletion.vue'
@@ -158,6 +156,7 @@ import { useSettings } from '../composables/useSettings'
 
 const { settings } = useSettings()
 
+const router = useRouter()
 const { t, tm } = useI18n()
 
 function phraseList(key: string): string[] {
@@ -569,38 +568,37 @@ watch(currentQuestion, async (q) => {
 </script>
 
 <style scoped>
-.grammar-training { max-width: 980px; margin: 0 auto; padding: 20px; }
+.grammar-training { max-width: 980px; margin: 0 auto; }
+
+.gt-state {
+  padding: 32px 20px;
+  text-align: center;
+}
+.gt-state-text {
+  font-size: 15px;
+  color: var(--text-secondary);
+  margin: 0 0 16px;
+  line-height: 1.5;
+}
 
 .grammar-training-done {
   max-width: 720px;
   margin: 0 auto;
-  padding: 12px 0 24px;
+  padding: 0 20px 24px;
 }
 
-.grammar-done-title {
-  text-align: center;
-  margin: 0 0 20px;
-  font-size: 1.5rem;
-  color: var(--text-primary);
-}
-
-.grammar-done-back-row {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-}
-
-.grammar-done-back-link {
-  text-decoration: none;
-  min-width: 200px;
-  text-align: center;
-}
 .question-stage {
   display: flex;
   flex-direction: column;
+  padding: 0 20px;
 }
-.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-.progress { color: var(--text-secondary); font-weight: 600; }
+.progress-line {
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 600;
+  margin-bottom: 12px;
+}
 .actions { margin-top: 16px; display: flex; gap: 10px; }
 .actions.footer-actions {
   justify-content: flex-start;

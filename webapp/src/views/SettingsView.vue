@@ -1,281 +1,230 @@
 <template>
-  <div class="settings lg-page">
-    <div class="lg-page-header">
-      <h1 class="lg-page-title">{{ t('settings.title') }}</h1>
-      <button class="lg-theme-btn" type="button" @click="handleThemeToggleBtn">
+  <div class="prf-page lg-page">
+
+    <!-- HEADER -->
+    <div class="prf-header">
+      <h1 class="prf-title">{{ t('settings.profileTitle') }}</h1>
+      <button class="prf-theme-btn" type="button" @click="handleThemeToggleBtn">
         <LgIcon :name="selectedTheme === 'dark' ? 'sun' : 'moon'" :s="18" c="var(--text)" />
       </button>
     </div>
 
-    <div class="settings-hero">
-      <div class="settings-hero-avatar">
+    <!-- USER CARD -->
+    <div class="prf-user-card">
+      <div class="prf-avatar">
         <LgLumi :size="50" />
       </div>
-      <div>
-        <div class="settings-hero-name">{{ t('settings.title') }}</div>
-        <div class="settings-hero-sub">{{ targetLangDisplay }}</div>
-      </div>
-    </div>
-
-    <div class="card">
-      <h2>{{ t('settings.appearance') }}</h2>
-      <div class="settings-group">
-        <div class="setting-item">
-          <div class="setting-info">
-            <label class="setting-label">{{ t('settings.theme') }}</label>
-            <p class="setting-description">{{ t('settings.themeDescription') }}</p>
-          </div>
-          <div class="setting-control">
-            <label class="theme-toggle-switch">
-              <input
-                type="checkbox"
-                :checked="selectedTheme === 'dark'"
-                @change="handleThemeToggle"
-              />
-              <span class="theme-toggle-slider">
-                <Icon name="sun" class="theme-icon theme-icon-sun" />
-                <Icon name="moon" class="theme-icon theme-icon-moon" />
-              </span>
-            </label>
-          </div>
-        </div>
-        <div class="setting-item">
-          <div class="setting-info">
-            <label class="setting-label">{{ t('common.language') }}</label>
-          </div>
-          <div class="setting-control">
-            <select
-              :value="currentLocale"
-              class="theme-select"
-              @change="(e) => setLocale((e.target as HTMLSelectElement).value as any)"
-            >
-              <option value="ru">Русский</option>
-              <option :value="targetLocale">{{ targetLocale.toUpperCase() }}</option>
-            </select>
-          </div>
-        </div>
-        <div v-if="courses.length > 1" class="setting-item">
-          <div class="setting-info">
-            <label class="setting-label">{{ t('city.course') }}</label>
-          </div>
-          <div class="setting-control">
-            <select
-              :value="currentCourseCode"
-              class="theme-select"
-              @change="(e) => selectCourse((e.target as HTMLSelectElement).value)"
-            >
-              <option v-for="c in courses" :key="c.code" :value="c.code">{{ c.title }}</option>
-            </select>
-          </div>
+      <div class="prf-user-info">
+        <div class="prf-user-name">Linglow</div>
+        <div class="prf-user-sub">{{ targetLangDisplay }}</div>
+        <div class="prf-chips">
+          <span class="prf-chip prf-chip--active">{{ t('settings.profileChipLevel') }}</span>
+          <span class="prf-chip">{{ t('settings.profileChipCourse') }}</span>
         </div>
       </div>
     </div>
 
-    <div class="card">
-      <h2>{{ t('settings.training') }}</h2>
-      <div class="settings-group">
-        <div class="setting-item">
-          <div class="setting-info">
-            <label class="setting-label">{{ t('settings.vibration') }}</label>
-            <p class="setting-description">{{ t('settings.vibrationDescription') }}</p>
-          </div>
-          <div class="setting-control">
-            <label class="toggle-switch">
-              <input 
-                type="checkbox" 
-                v-model="vibrationEnabled"
-                @change="handleVibrationChange"
-              />
-              <span class="toggle-slider"></span>
-            </label>
+    <!-- QUICK SETTINGS ROWS (theme, language, course) -->
+    <div class="prf-section-card">
+      <!-- Theme -->
+      <div class="prf-row">
+        <span class="prf-row-icon">🎨</span>
+        <span class="prf-row-label">{{ t('settings.theme') }}</span>
+        <label class="prf-toggle-switch">
+          <input type="checkbox" :checked="selectedTheme === 'dark'" @change="handleThemeToggle" />
+          <span class="prf-toggle-slider">
+            <Icon name="sun" class="prf-toggle-icon prf-toggle-icon--sun" />
+            <Icon name="moon" class="prf-toggle-icon prf-toggle-icon--moon" />
+          </span>
+        </label>
+      </div>
+      <!-- Language -->
+      <div class="prf-row">
+        <span class="prf-row-icon">🌐</span>
+        <span class="prf-row-label">{{ t('common.language') }}</span>
+        <select
+          :value="currentLocale"
+          class="prf-select"
+          @change="(e) => setLocale((e.target as HTMLSelectElement).value as any)"
+        >
+          <option value="ru">Русский</option>
+          <option :value="learning?.target_lang">{{ (learning?.target_lang || '').toUpperCase() }}</option>
+        </select>
+      </div>
+      <!-- Course -->
+      <div v-if="courses.length > 1" class="prf-row">
+        <span class="prf-row-icon">📚</span>
+        <span class="prf-row-label">{{ t('city.course') }}</span>
+        <select
+          :value="currentCourseCode"
+          class="prf-select"
+          @change="(e) => selectCourse((e.target as HTMLSelectElement).value)"
+        >
+          <option v-for="c in courses" :key="c.code" :value="c.code">{{ c.title }}</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- TRAINING SECTION -->
+    <div class="prf-section-title">{{ t('settings.training') }}</div>
+    <div class="prf-section-card">
+      <div class="prf-row">
+        <span class="prf-row-icon">📳</span>
+        <div class="prf-row-info">
+          <span class="prf-row-label">{{ t('settings.vibration') }}</span>
+          <span class="prf-row-sub">{{ t('settings.vibrationDescription') }}</span>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" v-model="vibrationEnabled" @change="handleVibrationChange" />
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="prf-row">
+        <span class="prf-row-icon">🔊</span>
+        <div class="prf-row-info">
+          <span class="prf-row-label">{{ t('settings.sounds') }}</span>
+          <span class="prf-row-sub">{{ t('settings.soundsDescription') }}</span>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" v-model="soundsEnabled" @change="handleSoundsChange" />
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div v-if="soundsEnabled" class="prf-row prf-row--col">
+        <div class="prf-row-head">
+          <span class="prf-row-icon">🎵</span>
+          <span class="prf-row-label">{{ t('settings.soundTheme') }}</span>
+        </div>
+        <div class="prf-row-ctrl">
+          <select v-model="selectedSoundTheme" @change="handleSoundThemeChange" class="prf-select">
+            <option v-for="th in soundThemes" :key="th.id" :value="th.id">{{ th.name }}</option>
+          </select>
+          <button @click="previewSounds" class="prf-preview-btn" :disabled="previewing">
+            <Icon name="play" />
+          </button>
+        </div>
+      </div>
+      <div class="prf-row prf-row--col">
+        <div class="prf-row-head">
+          <span class="prf-row-icon">⏱</span>
+          <div class="prf-row-info">
+            <span class="prf-row-label">{{ t('settings.optionsDelay') }}</span>
+            <span class="prf-row-sub">{{ t('settings.optionsDelayDescription') }}</span>
           </div>
         </div>
-        
-        <div class="setting-item">
-          <div class="setting-info">
-            <label class="setting-label">{{ t('settings.sounds') }}</label>
-            <p class="setting-description">{{ t('settings.soundsDescription') }}</p>
-          </div>
-          <div class="setting-control">
-            <label class="toggle-switch">
-              <input 
-                type="checkbox" 
-                v-model="soundsEnabled"
-                @change="handleSoundsChange"
-              />
-              <span class="toggle-slider"></span>
-            </label>
+        <div class="prf-delay-ctrl">
+          <span v-if="trainingDelaysSavedAt === 'options'" class="prf-saved">{{ t('common.saved') }}</span>
+          <input v-model.number="optionsDelaySeconds" type="range" min="0" max="10" class="prf-slider" @change="handleOptionsDelayChange" />
+          <span class="prf-delay-val">{{ optionsDelaySeconds }} {{ t('settings.seconds') }}</span>
+        </div>
+      </div>
+      <div class="prf-row prf-row--col">
+        <div class="prf-row-head">
+          <span class="prf-row-icon">❌</span>
+          <div class="prf-row-info">
+            <span class="prf-row-label">{{ t('settings.wrongAnswerDelay') }}</span>
+            <span class="prf-row-sub">{{ t('settings.wrongAnswerDelayDescription') }}</span>
           </div>
         </div>
-        
-        <div class="setting-item" v-if="soundsEnabled">
-          <div class="setting-info">
-            <label class="setting-label">{{ t('settings.soundTheme') }}</label>
-            <p class="setting-description">{{ t('settings.soundThemeDescription') }}</p>
-          </div>
-          <div class="setting-control">
-            <div class="sound-theme-control">
-              <select v-model="selectedSoundTheme" @change="handleSoundThemeChange" class="theme-select">
-                <option v-for="theme in soundThemes" :key="theme.id" :value="theme.id">
-                  {{ theme.name }}
-                </option>
-              </select>
-              <button 
-                @click="previewSounds" 
-                class="preview-btn"
-                :disabled="previewing"
-                :title="t('settings.preview')"
-              >
-                <Icon name="play" />
-              </button>
+        <div class="prf-delay-ctrl">
+          <span v-if="trainingDelaysSavedAt === 'wrong'" class="prf-saved">{{ t('common.saved') }}</span>
+          <input v-model.number="wrongAnswerDelaySeconds" type="range" min="0" max="10" class="prf-slider" @change="handleWrongAnswerDelayChange" />
+          <span class="prf-delay-val">{{ wrongAnswerDelaySeconds }} {{ t('settings.seconds') }}</span>
+        </div>
+      </div>
+      <div class="prf-row">
+        <span class="prf-row-icon">✍️</span>
+        <div class="prf-row-info">
+          <span class="prf-row-label">{{ t('settings.spellModeEnabled') }}</span>
+          <span class="prf-row-sub">{{ t('settings.spellModeEnabledDescription', { targetLang: targetLangDisplay }) }}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span v-if="trainingDelaysSavedAt === 'spell'" class="prf-saved">{{ t('common.saved') }}</span>
+          <label class="toggle-switch">
+            <input v-model="spellModeEnabled" type="checkbox" @change="handleSpellSettingsChange" />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+      <div v-if="spellModeEnabled" class="prf-row prf-row--col">
+        <div class="prf-row-head">
+          <span class="prf-row-icon">📊</span>
+          <span class="prf-row-label">{{ t('settings.spellMasteringThreshold') }}</span>
+        </div>
+        <div class="prf-delay-ctrl">
+          <input v-model.number="spellMasteringThreshold" type="range" min="0" max="100" class="prf-slider" @change="handleSpellSettingsChange" />
+          <span class="prf-delay-val">{{ spellMasteringThreshold }}</span>
+        </div>
+      </div>
+      <div class="prf-row">
+        <span class="prf-row-icon">⌨️</span>
+        <div class="prf-row-info">
+          <span class="prf-row-label">{{ t('settings.typeModeEnabled') }}</span>
+          <span class="prf-row-sub">{{ t('settings.typeModeEnabledDescription', { targetLang: targetLangDisplay }) }}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span v-if="trainingDelaysSavedAt === 'type'" class="prf-saved">{{ t('common.saved') }}</span>
+          <label class="toggle-switch">
+            <input v-model="typeModeEnabled" type="checkbox" @change="handleTypeSettingsChange" />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+      <div v-if="typeModeEnabled" class="prf-row prf-row--col">
+        <div class="prf-row-head">
+          <span class="prf-row-icon">📊</span>
+          <span class="prf-row-label">{{ t('settings.typeMasteringThreshold') }}</span>
+        </div>
+        <div class="prf-delay-ctrl">
+          <input v-model.number="typeMasteringThreshold" type="range" min="0" max="100" class="prf-slider" @change="handleTypeSettingsChange" />
+          <span class="prf-delay-val">{{ typeMasteringThreshold }}</span>
+        </div>
+      </div>
+      <div class="prf-row">
+        <span class="prf-row-icon">👁</span>
+        <div class="prf-row-info">
+          <span class="prf-row-label">{{ t('settings.hideMorphInTraining') }}</span>
+          <span class="prf-row-sub">{{ t('settings.hideMorphInTrainingDescription') }}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span v-if="trainingDelaysSavedAt === 'morph'" class="prf-saved">{{ t('common.saved') }}</span>
+          <label class="toggle-switch">
+            <input v-model="hideMorphInTraining" type="checkbox" @change="handleMorphVisibilityChange" />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+      <div class="prf-row">
+        <span class="prf-row-icon">🔈</span>
+        <div class="prf-row-info">
+          <span class="prf-row-label">{{ t('settings.autoplayPronunciation') }}</span>
+          <span class="prf-row-sub">{{ t('settings.autoplayPronunciationDescription') }}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span v-if="trainingDelaysSavedAt === 'autoplay'" class="prf-saved">{{ t('common.saved') }}</span>
+          <label class="toggle-switch">
+            <input v-model="autoplayPronunciation" type="checkbox" @change="handleAutoplayPronunciationChange" />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- VERB PROGRESSION -->
+    <template v-if="showVerbFormProgression">
+      <div class="prf-section-title">{{ t('settings.verbFormProgressionTitle') }}</div>
+      <div class="prf-section-card">
+        <div class="prf-row prf-row--col">
+          <div class="prf-row-head">
+            <span class="prf-row-icon">🔀</span>
+            <div class="prf-row-info">
+              <span class="prf-row-label">{{ t('settings.verbFormProgressionLabel') }}</span>
+              <span class="prf-row-sub">{{ t('settings.verbFormProgressionDescription') }}</span>
             </div>
           </div>
-        </div>
-
-        <div class="setting-item">
-          <div class="setting-info">
-            <label class="setting-label">{{ t('settings.optionsDelay') }}</label>
-            <p class="setting-description">{{ t('settings.optionsDelayDescription') }}</p>
-          </div>
-          <div class="setting-control delay-control">
-            <span class="saved-indicator-slot">
-              <span v-if="trainingDelaysSavedAt === 'options'" class="saved-indicator">{{ t('common.saved') }}</span>
-            </span>
-            <input
-              v-model.number="optionsDelaySeconds"
-              type="range"
-              min="0"
-              max="10"
-              class="delay-slider"
-              @change="handleOptionsDelayChange"
-            />
-            <span class="delay-value">{{ optionsDelaySeconds }} {{ t('settings.seconds') }}</span>
-          </div>
-        </div>
-        <div class="setting-item">
-          <div class="setting-info">
-            <label class="setting-label">{{ t('settings.wrongAnswerDelay') }}</label>
-            <p class="setting-description">{{ t('settings.wrongAnswerDelayDescription') }}</p>
-          </div>
-          <div class="setting-control delay-control">
-            <span class="saved-indicator-slot">
-              <span v-if="trainingDelaysSavedAt === 'wrong'" class="saved-indicator">{{ t('common.saved') }}</span>
-            </span>
-            <input
-              v-model.number="wrongAnswerDelaySeconds"
-              type="range"
-              min="0"
-              max="10"
-              class="delay-slider"
-              @change="handleWrongAnswerDelayChange"
-            />
-            <span class="delay-value">{{ wrongAnswerDelaySeconds }} {{ t('settings.seconds') }}</span>
-          </div>
-        </div>
-        <div class="setting-item">
-          <div class="setting-info">
-            <label class="setting-label">{{ t('settings.spellModeEnabled') }}</label>
-            <p class="setting-description">{{ t('settings.spellModeEnabledDescription', { targetLang: targetLangDisplay }) }}</p>
-          </div>
-          <div class="setting-control">
-            <span v-if="trainingDelaysSavedAt === 'spell'" class="saved-indicator">{{ t('common.saved') }}</span>
-            <label class="toggle-switch">
-              <input v-model="spellModeEnabled" type="checkbox" @change="handleSpellSettingsChange" />
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-        </div>
-        <div class="setting-item" v-if="spellModeEnabled">
-          <div class="setting-info">
-            <label class="setting-label">{{ t('settings.spellMasteringThreshold') }}</label>
-            <p class="setting-description">{{ t('settings.spellMasteringThresholdDescription') }}</p>
-          </div>
-          <div class="setting-control delay-control">
-            <input
-              v-model.number="spellMasteringThreshold"
-              type="range"
-              min="0"
-              max="100"
-              class="delay-slider"
-              @change="handleSpellSettingsChange"
-            />
-            <span class="delay-value">{{ spellMasteringThreshold }}</span>
-          </div>
-        </div>
-        <div class="setting-item">
-          <div class="setting-info">
-            <label class="setting-label">{{ t('settings.typeModeEnabled') }}</label>
-            <p class="setting-description">{{ t('settings.typeModeEnabledDescription', { targetLang: targetLangDisplay }) }}</p>
-          </div>
-          <div class="setting-control">
-            <span v-if="trainingDelaysSavedAt === 'type'" class="saved-indicator">{{ t('common.saved') }}</span>
-            <label class="toggle-switch">
-              <input v-model="typeModeEnabled" type="checkbox" @change="handleTypeSettingsChange" />
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-        </div>
-        <div class="setting-item" v-if="typeModeEnabled">
-          <div class="setting-info">
-            <label class="setting-label">{{ t('settings.typeMasteringThreshold') }}</label>
-            <p class="setting-description">{{ t('settings.typeMasteringThresholdDescription') }}</p>
-          </div>
-          <div class="setting-control delay-control">
-            <input
-              v-model.number="typeMasteringThreshold"
-              type="range"
-              min="0"
-              max="100"
-              class="delay-slider"
-              @change="handleTypeSettingsChange"
-            />
-            <span class="delay-value">{{ typeMasteringThreshold }}</span>
-          </div>
-        </div>
-        <div class="setting-item">
-          <div class="setting-info">
-            <label class="setting-label">{{ t('settings.hideMorphInTraining') }}</label>
-            <p class="setting-description">{{ t('settings.hideMorphInTrainingDescription') }}</p>
-          </div>
-          <div class="setting-control">
-            <span v-if="trainingDelaysSavedAt === 'morph'" class="saved-indicator">{{ t('common.saved') }}</span>
-            <label class="toggle-switch">
-              <input v-model="hideMorphInTraining" type="checkbox" @change="handleMorphVisibilityChange" />
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-        </div>
-        <div class="setting-item">
-          <div class="setting-info">
-            <label class="setting-label">{{ t('settings.autoplayPronunciation') }}</label>
-            <p class="setting-description">{{ t('settings.autoplayPronunciationDescription') }}</p>
-          </div>
-          <div class="setting-control">
-            <span v-if="trainingDelaysSavedAt === 'autoplay'" class="saved-indicator">{{ t('common.saved') }}</span>
-            <label class="toggle-switch">
-              <input v-model="autoplayPronunciation" type="checkbox" @change="handleAutoplayPronunciationChange" />
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card" v-if="showVerbFormProgression">
-      <h2>{{ t('settings.verbFormProgressionTitle') }}</h2>
-      <div class="settings-group">
-        <div class="setting-item verb-scope-item">
-          <div class="setting-info">
-            <label class="setting-label">{{ t('settings.verbFormProgressionLabel') }}</label>
-            <p class="setting-description">{{ t('settings.verbFormProgressionDescription') }}</p>
-          </div>
-          <div class="setting-control">
-            <span v-if="verbProgressionSaved" class="saved-indicator">{{ t('settings.verbFormProgressionSaved') }}</span>
-            <select
-              v-model.number="verbFormsProgressionIndex"
-              class="theme-select verb-scope-select"
-              @change="handleVerbFormProgressionChange"
-            >
+          <div style="display:flex;align-items:center;gap:8px;padding-left:36px">
+            <span v-if="verbProgressionSaved" class="prf-saved">{{ t('settings.verbFormProgressionSaved') }}</span>
+            <select v-model.number="verbFormsProgressionIndex" class="prf-select" @change="handleVerbFormProgressionChange">
               <option v-for="(step, idx) in verbLadder" :key="step.scope" :value="idx">
                 {{ verbProgressionOptionLabel(step) }}
               </option>
@@ -283,61 +232,47 @@
           </div>
         </div>
       </div>
-    </div>
+    </template>
 
-    <div class="card">
-      <h2>{{ t('settings.notifications') }}</h2>
-      <div class="settings-group">
-        <div class="setting-item">
-          <div class="setting-info">
-            <label class="setting-label">{{ t('settings.notificationFrequency') }}</label>
-            <p class="setting-description">{{ t('settings.notificationFrequencyDescription') }}</p>
+    <!-- NOTIFICATIONS -->
+    <div class="prf-section-title">{{ t('settings.notifications') }}</div>
+    <div class="prf-section-card">
+      <div class="prf-row prf-row--col">
+        <div class="prf-row-head">
+          <span class="prf-row-icon">🔔</span>
+          <div class="prf-row-info">
+            <span class="prf-row-label">{{ t('settings.notificationFrequency') }}</span>
+            <span class="prf-row-sub">{{ t('settings.notificationFrequencyDescription') }}</span>
           </div>
-          <div class="setting-control">
-            <div class="notification-control">
-              <span v-if="isSaved" class="saved-indicator">{{ t('common.saved') }}</span>
-              <select v-model="notificationFrequency" @change="handleNotificationFrequencyChange" class="theme-select">
-                <option value="daily">{{ t('settings.daily') }}</option>
-                <option value="never">{{ t('settings.never') }}</option>
-                <option value="custom">{{ t('settings.custom') }}</option>
-              </select>
-              <transition name="slide-fade">
-                <div v-if="notificationFrequency === 'custom'" class="custom-days-input">
-                  <input 
-                    type="number" 
-                    v-model.number="customDays" 
-                    min="1" 
-                    max="30"
-                    @input="handleCustomDaysChange"
-                    class="days-input"
-                    :placeholder="t('settings.days')"
-                  />
-                  <span class="days-label">{{ t('settings.days') }}</span>
-                </div>
-              </transition>
+        </div>
+        <div class="prf-notify-ctrl">
+          <span v-if="isSaved" class="prf-saved">{{ t('common.saved') }}</span>
+          <select v-model="notificationFrequency" @change="handleNotificationFrequencyChange" class="prf-select">
+            <option value="daily">{{ t('settings.daily') }}</option>
+            <option value="never">{{ t('settings.never') }}</option>
+            <option value="custom">{{ t('settings.custom') }}</option>
+          </select>
+          <transition name="slide-fade">
+            <div v-if="notificationFrequency === 'custom'" class="prf-custom-days">
+              <input type="number" v-model.number="customDays" min="1" max="30" @input="handleCustomDaysChange" class="prf-days-input" :placeholder="t('settings.days')" />
+              <span class="prf-days-label">{{ t('settings.days') }}</span>
             </div>
-          </div>
+          </transition>
         </div>
       </div>
     </div>
 
-    <div class="card" v-if="!isTelegramMiniApp">
-      <h2>{{ t('settings.account') }}</h2>
-      <div class="settings-group">
-        <div class="setting-item">
-          <div class="setting-info">
-            <label class="setting-label">{{ t('settings.logout') }}</label>
-            <p class="setting-description">{{ t('settings.logoutDescription') }}</p>
-          </div>
-          <div class="setting-control">
-            <button @click="handleLogout" class="logout-btn">
-              <Icon name="logout" class="logout-icon" />
-              <span>{{ t('settings.logout') }}</span>
-            </button>
-          </div>
-        </div>
+    <!-- ACCOUNT -->
+    <template v-if="!isTelegramMiniApp">
+      <div class="prf-section-title">{{ t('settings.account') }}</div>
+      <div class="prf-section-card">
+        <button class="prf-logout-btn" @click="handleLogout">
+          <Icon name="logout" class="prf-logout-icon" />
+          <span>{{ t('settings.logout') }}</span>
+        </button>
       </div>
-    </div>
+    </template>
+
   </div>
 </template>
 
@@ -696,6 +631,157 @@ const handleLogout = () => {
 </script>
 
 <style scoped>
+/* ── Profile page layout ── */
+.prf-page { padding-bottom: 32px; }
+
+.prf-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 16px 12px;
+}
+.prf-title {
+  font-family: 'Lora', serif;
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+}
+.prf-theme-btn {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+}
+
+/* USER CARD */
+.prf-user-card {
+  display: flex; align-items: center; gap: 16px;
+  padding: 0 16px 16px;
+}
+.prf-avatar {
+  width: 72px; height: 72px; border-radius: 50%; flex-shrink: 0;
+  background: var(--chip-bg);
+  border: 2px solid var(--salvia);
+  display: flex; align-items: center; justify-content: center;
+}
+.prf-user-name { font-family: 'Lora', serif; font-size: 20px; color: var(--text); }
+.prf-user-sub { font-family: 'Inter', sans-serif; font-size: 13px; color: var(--subtext); margin: 2px 0; }
+.prf-chips { display: flex; gap: 8px; margin-top: 4px; }
+.prf-chip {
+  padding: 5px 12px; border-radius: 20px;
+  background: var(--chip-bg); border: 1px solid var(--border);
+  font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500; color: var(--text);
+}
+.prf-chip--active { background: var(--salvia); color: #fff; border-color: transparent; }
+
+/* SECTION CARDS */
+.prf-section-title {
+  font-family: 'Lora', serif; font-size: 17px; font-weight: 600; color: var(--text);
+  margin: 14px 16px 8px;
+}
+.prf-section-card {
+  margin: 0 16px 14px;
+  background: var(--card-bg); border: 1px solid var(--border);
+  border-radius: 18px; overflow: hidden;
+  box-shadow: var(--shadow-soft);
+}
+
+/* ROWS */
+.prf-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.prf-row:last-child { border-bottom: none; }
+.prf-row--col { flex-direction: column; align-items: flex-start; }
+.prf-row-head { display: flex; align-items: center; gap: 12px; width: 100%; }
+.prf-row-icon { font-size: 18px; flex-shrink: 0; width: 22px; text-align: center; }
+.prf-row-label { font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; color: var(--text); flex: 1; }
+.prf-row-info { display: flex; flex-direction: column; flex: 1; }
+.prf-row-sub { font-family: 'Inter', sans-serif; font-size: 12px; color: var(--subtext); margin-top: 2px; }
+
+/* Select */
+.prf-select {
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--input-bg);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+.prf-select:focus { outline: none; border-color: var(--salvia); }
+
+/* Theme toggle */
+.prf-toggle-switch {
+  position: relative; display: inline-block;
+  width: 64px; height: 32px; cursor: pointer; flex-shrink: 0;
+}
+.prf-toggle-switch input { opacity: 0; width: 0; height: 0; }
+.prf-toggle-slider {
+  position: absolute; cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: var(--surface-2); border: 2px solid var(--border);
+  border-radius: 32px; display: flex; align-items: center; padding: 2px;
+  transition: 0.3s;
+}
+.prf-toggle-slider:before {
+  content: ""; position: absolute;
+  height: 24px; width: 24px; left: 4px;
+  background: var(--text); border-radius: 50%; z-index: 2;
+  transition: 0.3s;
+}
+.prf-toggle-icon {
+  position: absolute; font-size: 14px;
+  display: flex; align-items: center; justify-content: center; z-index: 1;
+}
+.prf-toggle-icon--sun { left: 8px; opacity: 1; color: var(--text); }
+.prf-toggle-icon--moon { right: 8px; opacity: 0.3; color: var(--text); }
+.prf-toggle-switch input:checked + .prf-toggle-slider { background: var(--salvia); border-color: var(--salvia); }
+.prf-toggle-switch input:checked + .prf-toggle-slider:before { transform: translateX(32px); background: white; }
+
+/* Preview button */
+.prf-preview-btn {
+  border: 1px solid var(--border); border-radius: 10px;
+  padding: 7px 10px; cursor: pointer; background: transparent;
+  display: flex; align-items: center; color: var(--text);
+}
+.prf-preview-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.prf-row-ctrl { display: flex; align-items: center; gap: 8px; padding-left: 34px; }
+.prf-notify-ctrl { display: flex; flex-direction: column; gap: 8px; padding-left: 34px; width: 100%; }
+.prf-custom-days { display: flex; gap: 8px; align-items: center; }
+.prf-days-input {
+  padding: 7px 10px; border: 1px solid var(--border); border-radius: 10px;
+  background: var(--input-bg); color: var(--text); font-size: 14px; width: 72px; margin-bottom: 0;
+}
+.prf-days-label { font-size: 13px; color: var(--subtext); }
+
+/* Delays */
+.prf-delay-ctrl { display: flex; align-items: center; gap: 10px; padding-left: 34px; }
+.prf-slider { width: 110px; height: 8px; accent-color: var(--salvia); cursor: pointer; flex-shrink: 0; }
+.prf-delay-val { font-size: 13px; color: var(--subtext); min-width: 3ch; }
+.prf-saved { font-size: 12px; color: var(--salvia); font-weight: 500; animation: savedFadeInOut 2.5s ease-in-out; }
+
+/* Logout */
+.prf-logout-btn {
+  display: flex; align-items: center; gap: 8px;
+  padding: 14px 16px; width: 100%; background: none; border: none;
+  cursor: pointer; color: var(--error);
+  font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 600;
+  text-align: left;
+}
+.prf-logout-icon { font-size: 18px; }
+
+/* Animations */
+@keyframes savedFadeInOut {
+  0% { opacity: 0; } 15% { opacity: 1; } 75% { opacity: 1; } 100% { opacity: 0; }
+}
+
+/* ── Keep existing toggle-switch/slider for prf-row items ── */
 .settings {
   max-width: 800px;
   margin: 0 auto;

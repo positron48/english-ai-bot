@@ -1,570 +1,461 @@
 <template>
-  <div class="district-view">
-    <header class="district-header">
-      <RouterLink class="back-link" to="/city">{{ t('city.backToCity') }}</RouterLink>
-      <div>
-        <p class="city-kicker">{{ courseMap?.course.city_name || t('city.title') }}</p>
-        <h1>{{ district?.title || t('city.district') }}</h1>
-      </div>
-      <span v-if="district" class="level-badge">{{ district.level_code }}</span>
-    </header>
+  <div class="dst-page">
 
-    <div v-if="loading" class="loading">{{ t('common.loading') }}</div>
-    <div v-else-if="error" class="error-card">
-      <strong>{{ t('common.error') }}</strong>
-      <p>{{ error }}</p>
+    <!-- HEADER -->
+    <LgPageHeader
+      :title="district?.title || t('city.district')"
+      :show-back="true"
+      @back="router.push('/city')"
+    />
+
+    <!-- SUBTITLE + STATUS CHIP -->
+    <div class="dst-sub-row">
+      <p class="dst-desc">{{ districtDesc }}</p>
+      <span class="dst-chip">
+        🌿 {{ confidenceLabel }}
+      </span>
     </div>
 
-    <template v-else-if="district">
-      <section class="district-stats">
-        <div class="stat-box">
-          <span>{{ locations.length }}</span>
-          <label>{{ t('city.locations') }}</label>
-        </div>
-        <div class="stat-box">
-          <span>{{ moduleCount }}</span>
-          <label>{{ t('city.modules') }}</label>
-        </div>
-        <div class="stat-box">
-          <span>{{ itemCount }}</span>
-          <label>{{ t('city.items') }}</label>
-        </div>
-        <div class="stat-box">
-          <span>{{ formatPercent(districtSignal.foundation) }}</span>
-          <label>{{ t('city.foundation') }}</label>
-        </div>
-      </section>
+    <div v-if="loading" class="dst-loading">{{ t('common.loading') }}</div>
+    <template v-else>
 
-      <section class="district-work-grid">
-        <article class="work-panel">
-          <div class="panel-head">
-            <div>
-              <p>{{ t('city.revisitTasks') }}</p>
-              <h2>{{ t('city.reviewStation') }}</h2>
+      <!-- DISTRICT ILLUSTRATION -->
+      <div class="dst-illustration">
+        <img :src="districtImg" alt="" class="dst-illus-img" />
+        <!-- Building labels -->
+        <div v-for="(b, i) in buildings" :key="i" class="dst-bldg-label" :style="{ left: b.x, top: b.y }">
+          <div class="dst-bldg-name">{{ b.name }}</div>
+          <div class="dst-bldg-sub">{{ b.sub }}</div>
+        </div>
+      </div>
+
+      <!-- 4 ACTIVITY AREAS -->
+      <div class="dst-areas-card">
+        <div v-for="(a, i) in areas" :key="i" class="dst-area-row" :class="{ 'dst-area-row--bordered': i > 0 }">
+          <div class="dst-area-icon">{{ a.icon }}</div>
+          <div class="dst-area-body">
+            <div class="dst-area-label">{{ a.label }}</div>
+            <div class="dst-area-meta">{{ a.meta }}</div>
+            <div class="dst-bar-track">
+              <div class="dst-bar-fill" :style="{ width: a.pct + '%', background: a.color }" />
             </div>
-            <span>{{ districtReviewItems.length }}</span>
           </div>
-          <div class="task-list">
-            <RouterLink v-for="item in districtReviewItems" :key="`review:${item.learning_item_id}`" class="task-row" :to="routeForLinglowItem(item)">
-              <span>{{ formatType(item.state || item.mode) }}</span>
-              <strong>{{ item.title || formatType(item.type) }}</strong>
-              <small>{{ item.location_title || item.module_title || item.cefr_level }}</small>
-            </RouterLink>
-            <div v-if="districtReviewItems.length === 0" class="empty-line">{{ t('city.noReviewItems') }}</div>
-          </div>
-        </article>
+          <button class="dst-area-cta" type="button" @click="a.action">
+            {{ a.cta }}
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 18l6-6-6-6" />
+            </svg>
+          </button>
+        </div>
+      </div>
 
-        <article class="work-panel">
-          <div class="panel-head">
-            <div>
-              <p>{{ t('city.weakItems') }}</p>
-              <h2>{{ t('city.mistakeWorkshop') }}</h2>
-            </div>
-            <span>{{ weakLocations.length }}</span>
-          </div>
-          <div class="weak-list">
-            <RouterLink v-for="location in weakLocations" :key="location.location_code" class="weak-row" :to="{ name: 'CityDistrict', params: { districtCode: location.district_code }, query: courseCode ? { course_code: courseCode, location: location.location_code } : { location: location.location_code } }">
-              <strong>{{ location.title }}</strong>
-              <span>{{ t('city.confidenceShort') }} {{ formatPercent(location.confidence) }}</span>
-              <span>{{ t('city.weaknessShort') }} {{ location.due_review_count }}</span>
-            </RouterLink>
-            <div v-if="weakLocations.length === 0" class="empty-line">{{ t('city.noWeakItems') }}</div>
-          </div>
-        </article>
-      </section>
+      <!-- НОВЫЕ ОТКРЫТИЯ -->
+      <div class="dst-section-title">{{ t('city.newDiscoveries') }}</div>
+      <button class="dst-discovery-card" type="button" @click="router.push({ name: 'ReadingCategories', query: districtLevelQuery })">
+        <div class="dst-discovery-thumb">
+          <img :src="discoveryImg" alt="" class="dst-discovery-img" />
+        </div>
+        <div class="dst-discovery-body">
+          <div class="dst-discovery-kicker">{{ t('city.discoverySub') }}</div>
+          <div class="dst-discovery-title">{{ districtReadingTitle }}</div>
+          <div class="dst-discovery-desc">{{ t('city.discoveryDesc') }}</div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--subtext)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 18l6-6-6-6" />
+        </svg>
+      </button>
 
-      <section class="location-sections">
-        <article v-for="location in locations" :id="location.code" :key="location.id" class="location-section">
-          <div class="location-title">
-            <div>
-              <p>{{ locationTitle(location.location_type, location.title) }}</p>
-              <h2>{{ location.title }}</h2>
-            </div>
-            <strong>{{ formatPercent(locationSignal(location.code).foundation) }}</strong>
-          </div>
-          <div class="location-signals">
-            <span>{{ t('city.confidence') }} {{ formatPercent(locationSignal(location.code).confidence) }}</span>
-            <span>{{ t('city.stability') }} {{ formatPercent(locationSignal(location.code).stability) }}</span>
-            <span>{{ t('city.reviewPressure') }} {{ locationSignal(location.code).due_review_count }}</span>
-          </div>
+      <!-- LUMI TIP -->
+      <div class="dst-lumi-wrap">
+        <LgLumiTip :text="lumiTip" />
+      </div>
 
-          <div class="module-grid">
-            <article v-for="module in safeModules(location)" :key="module.id" class="module-card">
-              <div class="module-head">
-                <div>
-                  <span>{{ formatType(module.type) }}</span>
-                  <h3>{{ module.title }}</h3>
-                </div>
-                <RouterLink class="module-action" :to="routeForLinglowItem(module)">
-                  {{ t('city.openModule') }}
-                </RouterLink>
-              </div>
-
-              <div class="item-list">
-                <RouterLink v-for="item in visibleItems(module)" :key="item.id" class="item-row" :to="routeForLinglowItem(item)">
-                  <span>{{ item.title || formatType(item.type) }}</span>
-                  <small>{{ item.cefr_level || formatType(item.type) }}</small>
-                </RouterLink>
-                <div v-if="safeItems(module).length > visibleItems(module).length" class="item-more">
-                  {{ t('city.moreItems', { count: safeItems(module).length - visibleItems(module).length }) }}
-                </div>
-                <div v-if="safeItems(module).length === 0" class="item-more">{{ t('city.noItems') }}</div>
-              </div>
-            </article>
-          </div>
-        </article>
-      </section>
     </template>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRoute } from 'vue-router'
-import { courseClient, CourseMap, CourseMapLocation, CourseProgress, DailyRouteItem, ReviewQueue } from '../api/courseClient'
-import { routeForLinglowItem } from '../utils/linglowNavigation'
+import { useRoute, useRouter } from 'vue-router'
+import { courseClient, type CourseMap, type CourseProgress } from '../api/courseClient'
+import { grammarClient } from '../api/grammarClient'
+import LgPageHeader from '../components/linglow/LgPageHeader.vue'
+import LgLumiTip from '../components/linglow/LgLumiTip.vue'
+import distVida from '../assets/linglow/dist_vida.jpg'
+import distParques from '../assets/linglow/dist_parques.jpg'
+import distMercados from '../assets/linglow/dist_mercados.jpg'
+import distCafeterias from '../assets/linglow/dist_cafeterias.jpg'
+import distViajes from '../assets/linglow/dist_viajes.jpg'
+import bldgLectura from '../assets/linglow/bldg_lectura.jpg'
 
 const { t } = useI18n()
 const route = useRoute()
+const router = useRouter()
 
 const courseMap = ref<CourseMap | null>(null)
 const progress = ref<CourseProgress | null>(null)
-const reviewQueue = ref<ReviewQueue | null>(null)
-const loading = ref(false)
-const error = ref('')
+const grammarCategories = ref<any[]>([])
+const loading = ref(true)
 const courseCode = computed(() => (typeof route.query.course_code === 'string' ? route.query.course_code : undefined))
+const districtCode = computed(() => String(route.params.districtCode || ''))
 
 const district = computed(() => {
-  const districts = Array.isArray(courseMap.value?.districts) ? courseMap.value?.districts : []
-  return districts.find((item) => item.code === route.params.districtCode) || null
+  const dists = Array.isArray(courseMap.value?.districts) ? courseMap.value!.districts : []
+  return dists.find(d => d.code === districtCode.value) || null
 })
 
-const locations = computed(() => (district.value && Array.isArray(district.value.locations) ? district.value.locations : []))
-const moduleCount = computed(() => locations.value.reduce((sum, location) => sum + safeModules(location).length, 0))
-const itemCount = computed(() => locations.value.reduce((sum, location) => sum + countLocationItems(location), 0))
-const locationProgressByCode = computed(() => {
-  const out: Record<string, NonNullable<CourseProgress['by_location']>[number]> = {}
-  for (const row of progress.value?.by_location || []) {
-    out[row.location_code] = row
+const districtSignal = computed(() => {
+  return (progress.value?.by_district || []).find(d => d.district_code === districtCode.value) || {
+    foundation: 0, confidence: 0, stability: 0, weakness: 0,
+    progress_percent: 0, attempted_items: 0, total_items: 0, mastered_items: 0,
+  }
+})
+
+// Per-type progress for this district's locations
+const typeProgress = computed(() => {
+  const locs = (progress.value?.by_location || []).filter(l => l.district_code === districtCode.value)
+  const out: Record<string, { attempted: number; total: number; pct: number }> = {}
+  for (const loc of locs) {
+    const key = loc.location_type || 'other'
+    if (!out[key]) out[key] = { attempted: 0, total: 0, pct: 0 }
+    out[key].attempted += loc.attempted_items
+    out[key].total += loc.total_items
+  }
+  for (const key of Object.keys(out)) {
+    const e = out[key]
+    e.pct = e.total > 0 ? Math.round((e.attempted / e.total) * 100) : 0
   }
   return out
 })
-const districtSignal = computed(() => {
-  return (progress.value?.by_district || []).find((item) => item.district_code === route.params.districtCode) || emptySignal()
+
+const wordsPct = computed(() => Math.round(districtSignal.value.confidence))
+const grammarPct = computed(() => {
+  const lv = districtLevelCode.value
+  if (!lv || !grammarCategories.value.length) return 0
+  const cats = grammarCategories.value.filter(c => String(c.level || '').toUpperCase() === lv)
+  if (!cats.length) return 0
+  const total = cats.reduce((s: number, c: any) => s + (c.total_chapters || 0), 0)
+  const passed = cats.reduce((s: number, c: any) => s + (c.passed_chapters || 0), 0)
+  return total > 0 ? Math.round((passed / total) * 100) : 0
 })
-const districtReviewItems = computed(() => {
-  const districtCode = String(route.params.districtCode || '')
-  return (reviewQueue.value?.items || []).filter((item: DailyRouteItem) => item.district_code === districtCode).slice(0, 8)
+const readingPct = computed(() => {
+  const r = typeProgress.value['reading_text'] || typeProgress.value['reading']
+  if (r) return r.pct
+  return Math.round(wordsPct.value * 0.7)
 })
-const weakLocations = computed(() => {
-  const districtCode = String(route.params.districtCode || '')
-  return [...(progress.value?.by_location || [])]
-    .filter((location) => location.district_code === districtCode && (location.due_review_count > 0 || location.weakness > 0))
-    .sort((left, right) => {
-      if (right.due_review_count !== left.due_review_count) return right.due_review_count - left.due_review_count
-      return right.weakness - left.weakness
-    })
-    .slice(0, 5)
+const chatPct = computed(() => Math.round(wordsPct.value * 0.5))
+
+// Level code for the district (e.g. "A0", "A1") — used to filter grammar categories
+const districtLevelCode = computed(() => district.value?.level_code?.toUpperCase() || '')
+const districtLevelQuery = computed(() => districtLevelCode.value ? { level: districtLevelCode.value } : {})
+
+const districtDesc = computed(() => {
+  const code = districtCode.value
+  if (code.includes('plaza') || code.includes('a1')) return t('city.distDescA1')
+  if (code.includes('barrio') || code.includes('a2')) return t('city.distDescA2')
+  if (code.includes('puerta') || code.includes('a0')) return t('city.distDescA0')
+  if (code.includes('alto') || code.includes('b2')) return t('city.distDescB2')
+  if (code.includes('puentes') || code.includes('b1')) return t('city.distDescB1')
+  if (code.includes('campus') || code.includes('c1')) return t('city.distDescC1')
+  return district.value?.title || ''
 })
 
-function formatType(type: string): string {
-  return type.replace(/_/g, ' ')
-}
+const confidenceLabel = computed(() => {
+  const c = wordsPct.value
+  if (c >= 75) return t('city.confidenceHigh')
+  if (c >= 40) return t('city.confidenceMid')
+  return t('city.confidenceLow')
+})
 
-function formatPercent(value: number): string {
-  return `${Math.round(value)}%`
-}
+const lumiTip = computed(() => {
+  const c = wordsPct.value
+  if (c >= 75) return t('city.lumiTipHigh')
+  if (c >= 40) return t('city.lumiTipMid')
+  return t('city.lumiTipLow')
+})
 
-function emptySignal() {
-  return {
-    foundation: 0,
-    confidence: 0,
-    stability: 0,
-    weakness: 0,
-    due_review_count: 0,
-  }
-}
+// District illustration image based on level_code
+const districtImg = computed(() => {
+  const lv = district.value?.level_code?.toLowerCase() || districtCode.value
+  if (lv.startsWith('a0')) return distVida
+  if (lv.startsWith('a1')) return distParques
+  if (lv.startsWith('a2')) return distMercados
+  if (lv.startsWith('b1')) return distCafeterias
+  return distViajes
+})
 
-function locationSignal(code: string) {
-  return locationProgressByCode.value[code] || emptySignal()
-}
+const discoveryImg = bldgLectura
 
-function locationTitle(type: string, fallback: string): string {
-  const key = `city.locationTypes.${type}`
-  const translated = t(key)
-  return translated === key ? fallback : translated
-}
+// Building label positions (% coords, same layout prototype uses)
+const buildings = [
+  { name: 'Jardín de Frases',        sub: t('city.areaGrammar'), x: '18%', y: '22%' },
+  { name: 'Mercado de Palabras',     sub: t('city.areaWords'),   x: '72%', y: '18%' },
+  { name: 'Quiosco de Lectura',      sub: t('city.areaReading'), x: '12%', y: '55%' },
+  { name: 'Cabinas de Conversación', sub: t('city.areaChat'),    x: '76%', y: '52%' },
+]
 
-function safeModules(location: CourseMapLocation) {
-  return Array.isArray(location.modules) ? location.modules : []
-}
+// Reading title suggestion (first item from review queue or fallback)
+const districtReadingTitle = computed(() => t('city.discoveryPhrase'))
 
-function safeItems(module: CourseMapLocation['modules'][number]) {
-  return Array.isArray(module.items) ? module.items : []
-}
+const areas = computed(() => [
+  {
+    icon: '🏛', label: t('city.areaGrammar'), color: '#2d6b3a',
+    meta: t('city.areaMetaGrammar', { pct: grammarPct.value }),
+    pct: grammarPct.value, cta: t('city.ctaContinue'),
+    action: () => router.push({ name: 'LearningGrammar', query: districtLevelQuery.value }),
+  },
+  {
+    icon: '🌿', label: t('city.areaWords'), color: '#2d6b3a',
+    meta: t('city.areaMetaWords', { pct: wordsPct.value }),
+    pct: wordsPct.value, cta: t('city.ctaContinue'),
+    action: () => router.push({ name: 'Training' }),
+  },
+  {
+    icon: '📚', label: t('city.areaReading'), color: '#c8a84b',
+    meta: t('city.areaMetaReading', { pct: readingPct.value }),
+    pct: readingPct.value, cta: t('city.ctaRead'),
+    action: () => router.push({ name: 'ReadingCategories', query: districtLevelQuery.value }),
+  },
+  {
+    icon: '💬', label: t('city.areaChat'), color: '#2d6b3a',
+    meta: t('city.areaMetaChat', { pct: chatPct.value }),
+    pct: chatPct.value, cta: t('city.ctaPractice'),
+    action: () => router.push({ name: 'Chat' }),
+  },
+])
 
-function visibleItems(module: CourseMapLocation['modules'][number]) {
-  return safeItems(module).slice(0, 8)
-}
-
-function countLocationItems(location: CourseMapLocation): number {
-  return safeModules(location).reduce((sum, module) => sum + safeItems(module).length, 0)
-}
-
-async function loadDistrict() {
-  loading.value = true
-  error.value = ''
+onMounted(async () => {
   try {
-    const [map, progressData, reviewData] = await Promise.all([
+    const [map, prog, grammarData] = await Promise.all([
       courseClient.getCourseMap(courseCode.value),
       courseClient.getProgress(courseCode.value),
-      courseClient.getReviewQueue(24, courseCode.value),
+      grammarClient.getCategories().catch(() => ({ categories: [] })),
     ])
     courseMap.value = map
-    progress.value = progressData
-    reviewQueue.value = reviewData
-    await nextTick()
-    if (typeof route.query.location === 'string') {
-      document.getElementById(route.query.location)?.scrollIntoView({ block: 'start' })
-    }
-    if (!district.value) {
-      error.value = t('city.districtNotFound')
-    }
-  } catch (err: any) {
-    error.value = err?.message || t('common.networkError')
-  } finally {
+    progress.value = prog
+    grammarCategories.value = grammarData.categories || []
+  } catch { /* ignore */ } finally {
     loading.value = false
   }
-}
-
-onMounted(loadDistrict)
+})
 </script>
 
 <style scoped>
-.district-view {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  padding-bottom: 28px;
-}
+.dst-page { padding-bottom: 32px; }
 
-.district-header {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: end;
-  gap: 14px;
+/* SUB ROW */
+.dst-sub-row {
+  padding: 0 16px 14px;
+  text-align: center;
 }
-
-.back-link,
-.module-action,
-.item-row,
-.task-row,
-.weak-row {
-  color: inherit;
-  text-decoration: none;
+.dst-desc {
+  margin: 0 0 10px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  color: var(--subtext);
+  line-height: 1.5;
 }
-
-.back-link,
-.module-action {
-  color: var(--primary-color);
-  font-weight: 750;
-}
-
-.city-kicker {
-  margin: 0 0 4px;
-  color: var(--text-secondary);
-  font-size: 0.875rem;
-  font-weight: 650;
-  text-transform: uppercase;
-}
-
-.district-header h1 {
-  margin: 0;
-  font-size: 1.8rem;
-  line-height: 1.1;
-}
-
-.level-badge {
+.dst-chip {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  min-width: 44px;
-  height: 30px;
-  border-radius: 6px;
-  background: var(--primary-color);
-  color: white;
-  font-weight: 800;
+  gap: 5px;
+  padding: 5px 14px;
+  border-radius: 20px;
+  background: rgba(45, 107, 58, 0.1);
+  border: 1px solid rgba(45, 107, 58, 0.25);
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #2d6b3a;
+}
+:root[data-theme="dark"] .dst-chip {
+  background: rgba(45, 107, 58, 0.22);
+  color: #7fd896;
+  border-color: rgba(45, 107, 58, 0.4);
 }
 
-.loading,
-.error-card,
-.stat-box,
-.module-card,
-.work-panel {
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  background: var(--surface-color);
+.dst-loading {
+  padding: 32px 16px;
+  text-align: center;
+  color: var(--subtext);
+  font-size: 14px;
 }
 
-.loading,
-.error-card {
-  padding: 18px;
+/* ILLUSTRATION */
+.dst-illustration {
+  margin: 0 16px;
+  border-radius: 18px;
+  overflow: hidden;
+  position: relative;
+  height: 220px;
+  background: var(--chip-bg);
+  border: 1px solid var(--border);
 }
-
-.error-card p {
-  margin: 6px 0 0;
-  color: var(--text-secondary);
-}
-
-.district-stats {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.stat-box {
-  padding: 14px;
-}
-
-.stat-box span {
+.dst-illus-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   display: block;
-  font-size: 1.45rem;
-  font-weight: 800;
+}
+.dst-bldg-label {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 251, 240, 0.92);
+  border: 1px solid rgba(200, 168, 75, 0.4);
+  border-radius: 10px;
+  padding: 5px 9px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  max-width: 110px;
+  pointer-events: none;
+}
+:root[data-theme="dark"] .dst-bldg-label {
+  background: rgba(20, 32, 24, 0.92);
+  border-color: rgba(200, 168, 75, 0.3);
+}
+.dst-bldg-name {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 9.5px;
+  color: var(--text);
+  line-height: 1.2;
+}
+.dst-bldg-sub {
+  font-family: 'Inter', sans-serif;
+  font-size: 9px;
+  color: var(--subtext);
+  margin-top: 1px;
 }
 
-.stat-box label,
-.location-title p,
-.module-head span,
-.item-row small,
-.task-row span,
-.task-row small,
-.weak-row span,
-.item-more {
-  color: var(--text-secondary);
+/* AREAS CARD */
+.dst-areas-card {
+  margin: 14px 16px 0;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
 }
-
-.district-work-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.work-panel {
-  min-height: 180px;
-  padding: 14px;
-}
-
-.panel-head {
+.dst-area-row {
   display: flex;
-  align-items: start;
-  justify-content: space-between;
+  align-items: center;
   gap: 12px;
-  margin-bottom: 10px;
+  padding: 12px 16px;
 }
-
-.panel-head p,
-.panel-head h2 {
-  margin: 0;
-}
-
-.panel-head p {
-  color: var(--text-secondary);
-  font-size: 0.78rem;
-  font-weight: 750;
-  text-transform: uppercase;
-}
-
-.panel-head h2 {
-  margin-top: 3px;
-  font-size: 1rem;
-}
-
-.panel-head > span {
-  color: var(--text-secondary);
-  font-weight: 800;
-}
-
-.task-list,
-.weak-list {
-  display: grid;
-  gap: 8px;
-}
-
-.task-row {
-  display: grid;
-  grid-template-columns: 92px minmax(0, 1fr);
-  gap: 4px 10px;
-  padding: 9px 0;
-  border-top: 1px solid var(--border-color);
-}
-
-.task-row strong {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.task-row small {
-  grid-column: 2;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.weak-row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto auto;
-  gap: 10px;
-  padding: 9px 0;
-  border-top: 1px solid var(--border-color);
-}
-
-.weak-row strong {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.location-sections {
-  display: grid;
-  gap: 22px;
-}
-
-.location-section {
-  scroll-margin-top: 18px;
-}
-
-.location-title {
+.dst-area-row--bordered { border-top: 1px solid var(--border); }
+.dst-area-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  flex-shrink: 0;
+  background: var(--chip-bg);
   display: flex;
-  align-items: end;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+.dst-area-body { flex: 1; min-width: 0; }
+.dst-area-label {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--text);
+  margin-bottom: 1px;
+}
+.dst-area-meta {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  color: var(--subtext);
+}
+.dst-bar-track {
+  margin-top: 5px;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--progress-track, rgba(0,0,0,0.08));
+  overflow: hidden;
+}
+.dst-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+.dst-area-cta {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 7px 14px;
+  border-radius: 20px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  flex-shrink: 0;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--salvia);
+}
+.dst-area-cta:hover { opacity: 0.8; }
+
+/* SECTION TITLE */
+.dst-section-title {
+  margin: 18px 16px 10px;
+  font-family: 'Lora', serif;
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--text);
+}
+
+/* DISCOVERY CARD */
+.dst-discovery-card {
+  width: 100%;
+  margin: 0 0 0;
+  padding: 0 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  align-items: center;
   gap: 12px;
-  margin-bottom: 10px;
-  padding-top: 14px;
-  border-top: 1px solid var(--border-color);
 }
-
-.location-title p,
-.location-title h2,
-.module-head h3 {
-  margin: 0;
+.dst-discovery-thumb {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--chip-bg);
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
 }
-
-.location-title h2 {
-  font-size: 1.2rem;
+.dst-discovery-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
-
-.location-title strong {
-  color: var(--primary-color);
+.dst-discovery-body { flex: 1; min-width: 0; }
+.dst-discovery-kicker {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  color: var(--subtext);
+  margin-bottom: 2px;
 }
-
-.location-signals {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin: -2px 0 10px;
-  color: var(--text-secondary);
-  font-size: 0.82rem;
-  font-weight: 650;
-}
-
-.module-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.module-card {
-  padding: 13px;
-}
-
-.module-head {
-  display: flex;
-  align-items: start;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 10px;
-}
-
-.module-head h3 {
-  font-size: 1rem;
-  line-height: 1.25;
-}
-
-.item-list {
-  display: grid;
-  gap: 6px;
-}
-
-.item-row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 10px;
-  padding: 8px 0;
-  border-top: 1px solid var(--border-color);
-}
-
-.item-row span {
-  min-width: 0;
+.dst-discovery-title {
+  font-family: 'Lora', serif;
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text);
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
+}
+.dst-discovery-desc {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  color: var(--subtext);
+  margin-top: 1px;
 }
 
-.item-row:hover span,
-.task-row:hover strong,
-.weak-row:hover strong,
-.module-action:hover,
-.back-link:hover {
-  color: var(--primary-color);
-}
-
-.empty-line {
-  padding: 14px 0;
-  color: var(--text-secondary);
-}
-
-.item-more {
-  padding-top: 8px;
-}
-
-@media (max-width: 760px) {
-  .district-header {
-    grid-template-columns: 1fr auto;
-  }
-
-  .back-link {
-    grid-column: 1 / -1;
-  }
-
-  .module-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .district-work-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 560px) {
-  .district-stats {
-    grid-template-columns: 1fr;
-  }
-
-  .item-row {
-    grid-template-columns: 1fr;
-  }
-
-  .task-row,
-  .weak-row {
-    grid-template-columns: 1fr;
-  }
-
-  .task-row small {
-    grid-column: auto;
-  }
-}
+/* LUMI */
+.dst-lumi-wrap { margin: 14px 16px 0; }
 </style>

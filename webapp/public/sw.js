@@ -1,4 +1,4 @@
-const APP_SHELL_CACHE = 'qantrix-app-shell-v6'
+const APP_SHELL_CACHE = 'qantrix-app-shell-v8'
 const ASSET_MANIFEST_URL = '/app/asset-manifest.json'
 const APP_SHELL_URLS = ['/app', '/app/', '/app/manifest.webmanifest', '/telegram-web-app.js', '/favicon.svg']
 
@@ -56,6 +56,7 @@ self.addEventListener('fetch', (event) => {
   if (
     url.pathname.startsWith('/app/assets/') ||
     url.pathname.startsWith('/app/fonts/') ||
+    url.pathname.startsWith('/app/linglow/') ||
     url.pathname === '/app/manifest.webmanifest' ||
     url.pathname === ASSET_MANIFEST_URL ||
     url.pathname === '/telegram-web-app.js' ||

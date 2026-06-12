@@ -21,14 +21,27 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRoute, useRouter } from 'vue-router'
 import { apiClient } from '../api/client'
 
 const { t } = useI18n()
+const route = useRoute()
+const router = useRouter()
 const loading = ref(true)
 const error = ref<string | null>(null)
-const categories = ref<any[]>([])
+const allCategories = ref<any[]>([])
+
+const districtLevel = computed(() => {
+  const lv = route.query.level
+  return typeof lv === 'string' ? lv.toUpperCase() : ''
+})
+
+const categories = computed(() => {
+  if (!districtLevel.value) return allCategories.value
+  return allCategories.value.filter(c => String(c.level || '').toUpperCase() === districtLevel.value)
+})
 
 const categoryLabel = (category: { level?: string; category_id: string }) => {
   const lv = String(category.level || '').trim()
@@ -40,7 +53,20 @@ onMounted(async () => {
   loading.value = true
   try {
     const data: { categories: any[] } = await apiClient.request('/api/learning/reading/categories')
-    categories.value = data.categories || []
+    allCategories.value = data.categories || []
+
+    // When coming from a district, skip the category list and go directly into the matching category
+    if (districtLevel.value) {
+      const match = allCategories.value.filter(c => String(c.level || '').toUpperCase() === districtLevel.value)
+      if (match.length === 1) {
+        router.replace({
+          name: 'ReadingChapters',
+          params: { categoryId: match[0].category_id },
+          query: { from_district: '1' },
+        })
+        return
+      }
+    }
   } catch (e: any) {
     error.value = e?.message || 'Failed to load reading categories'
   } finally {

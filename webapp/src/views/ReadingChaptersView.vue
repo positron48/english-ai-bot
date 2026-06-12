@@ -5,7 +5,7 @@
         type="button"
         class="back-levels-btn"
         :aria-label="t('common.back')"
-        @click="router.push('/learning/reading')"
+        @click="fromDistrict ? router.back() : router.push('/learning/reading')"
       >
         <Icon name="arrow-left" />
         <span>{{ t('common.back') }}</span>
@@ -68,6 +68,7 @@ const { t, locale } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const categoryId = computed(() => route.params.categoryId as string)
+const fromDistrict = computed(() => route.query.from_district === '1')
 const loading = ref(true)
 const error = ref<string | null>(null)
 const texts = ref<any[]>([])

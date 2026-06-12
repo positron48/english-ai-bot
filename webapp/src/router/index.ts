@@ -31,6 +31,12 @@ const router = createRouter({
         {
           path: 'city',
           name: 'City',
+          component: () => import('../views/CityMapView.vue'),
+          meta: { requiresAuth: true, navTab: 'city' }
+        },
+        {
+          path: 'city/hub',
+          name: 'CityHub',
           component: () => import('../views/CityView.vue'),
           meta: { requiresAuth: true, navTab: 'city' }
         },
@@ -74,7 +80,7 @@ const router = createRouter({
           path: 'learning/grammar/training',
           name: 'GrammarTraining',
           component: () => import('../views/GrammarTrainingView.vue'),
-          meta: { requiresAuth: true, navTab: 'practice', fullscreen: true }
+          meta: { requiresAuth: true, navTab: 'practice' }
         },
         {
           path: 'learning/grammar/:sectionId',

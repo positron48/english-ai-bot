@@ -245,7 +245,7 @@ func grammarBundleForCourse(courseCode string) string {
 	if len(parts) > 0 && parts[0] != "" {
 		return parts[0] // "en_ru" → "en", "es_ru" → "es"
 	}
-	return "en"
+	return ""
 }
 
 // grammarServiceForRequest returns the GrammarService appropriate for the
