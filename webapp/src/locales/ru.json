@@ -786,6 +786,15 @@
     "practiceChatSub": "Говори уверенно",
     "wordsDueTitle": "{n} слов пора повторить",
     "wordsDueSub": "Регулярное повторение — ключ к запоминанию.",
-    "start": "Начать"
+    "start": "Начать",
+    "practiceSub": "Быстрый запуск тренировок.",
+    "quickTrainingSub": "Повторение слов по интервальной системе",
+    "quickGrammarTraining": "Тренировка грамматики",
+    "quickGrammarTrainingSub": "Тест по пройденным главам",
+    "quickChat": "AI-практика — диалог",
+    "quickChatSub": "Ситуационный диалог",
+    "myDictionary": "Мой словарь",
+    "myDictionarySub": "Твои слова — твой прогресс",
+    "exerciseCounter": "{current} из {total}"
   }
 }

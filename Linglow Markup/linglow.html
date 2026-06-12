@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Linglow — Spanish City</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root[data-theme="light"] {
+    --bg:               #F8F1E4;
+    --card-bg:          #FFF9ED;
+    --surface-2:        #FFF4E2;
+    --surface-3:        #F5E9D4;
+    --text:             #20352A;
+    --subtext:          #6F685C;
+    --text-muted:       #9B9283;
+    --border:           rgba(129,93,42,0.14);
+    --border-green:     rgba(71,116,67,0.22);
+    --salvia:           #3F6F3F;
+    --hoja:             #7FAE6A;
+    --bosque:           #20352A;
+    --luz:              #F4D98B;
+    --crema:            #FFF9ED;
+    --dorado:           #D9A83F;
+    --chip-bg:          rgba(63,111,63,0.10);
+    --chip-text:        #3F6F3F;
+    --progress-track:   rgba(32,53,42,0.12);
+    --input-bg:         #FFF9ED;
+    --input-border:     rgba(129,93,42,0.14);
+    --icon-bg:          #FFF4E2;
+    --icon-border:      rgba(129,93,42,0.14);
+    --nav-bg:           rgba(255,249,237,0.94);
+    --nav-active-bg:    rgba(63,111,63,0.10);
+    --nav-active-color: #3F6F3F;
+    --nav-active-border:rgba(63,111,63,0.14);
+    --nav-inactive:     #8F8878;
+    --streak-bg:        rgba(255,249,237,0.86);
+    --streak-border:    rgba(129,93,42,0.18);
+    --shadow-card:      0 14px 34px rgba(86,57,22,0.09), inset 0 1px 0 rgba(255,255,255,0.75);
+    --shadow-soft:      0 6px 18px rgba(86,57,22,0.08);
+    --btn-gradient:     linear-gradient(180deg,#3F6F3F 0%,#345D35 100%);
+    --btn-border:       rgba(32,53,42,0.12);
+    --btn-shadow:       0 8px 20px rgba(63,111,63,0.22), inset 0 1px 0 rgba(255,255,255,0.12);
+  }
+
+  :root[data-theme="dark"] {
+    --bg:               #07110D;
+    --card-bg:          #101C15;
+    --surface-2:        #132219;
+    --surface-3:        #182A1F;
+    --text:             #F4EBD7;
+    --subtext:          #C8BFA9;
+    --text-muted:       #8F8878;
+    --border:           rgba(217,178,92,0.18);
+    --border-green:     rgba(135,190,116,0.28);
+    --salvia:           #3F6F3F;
+    --hoja:             #A8D07F;
+    --bosque:           #F4EBD7;
+    --luz:              #D9B25C;
+    --crema:            #F4EBD7;
+    --dorado:           #D9B25C;
+    --chip-bg:          rgba(63,111,63,0.18);
+    --chip-text:        #A8D07F;
+    --progress-track:   rgba(244,235,215,0.12);
+    --input-bg:         #132219;
+    --input-border:     rgba(217,178,92,0.18);
+    --icon-bg:          rgba(63,111,63,0.18);
+    --icon-border:      rgba(168,208,127,0.22);
+    --nav-bg:           rgba(11,23,17,0.95);
+    --nav-active-bg:    rgba(63,111,63,0.22);
+    --nav-active-color: #A8D07F;
+    --nav-active-border:rgba(168,208,127,0.22);
+    --nav-inactive:     #8F8878;
+    --streak-bg:        rgba(217,178,92,0.08);
+    --streak-border:    rgba(217,178,92,0.25);
+    --shadow-card:      0 16px 40px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.035);
+    --shadow-soft:      0 6px 18px rgba(0,0,0,0.25);
+    --btn-gradient:     linear-gradient(180deg,#3F6F3F 0%,#2F5A34 100%);
+    --btn-border:       rgba(168,208,127,0.35);
+    --btn-shadow:       0 8px 24px rgba(63,111,63,0.30), inset 0 1px 0 rgba(255,255,255,0.10);
+  }
+
+  html, body { height: 100%; overflow: hidden; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  #root { height: 100%; }
+
+  /* Scrollbar hide */
+  ::-webkit-scrollbar { display: none; }
+  * { scrollbar-width: none; }
+
+  /* Button reset */
+  button { outline: none; -webkit-tap-highlight-color: transparent; }
+
+  /* Input */
+  input::placeholder { color: var(--subtext); opacity: 0.7; }
+
+  /* Transitions for theme switch */
+  *, *::before, *::after {
+    transition: background-color .22s ease, border-color .22s ease, color .22s ease;
+  }
+  /* But not transforms/opacity — they'd feel laggy */
+  svg *, button, span, div { transition-property: background-color, border-color, color; }
+
+  /* Lora headings use weight 600 throughout */
+  [style*="Lora"] { font-weight: 600 !important; }
+
+  /* Dark theme body gradient */
+  [data-theme="dark"] body {
+    background:
+      radial-gradient(circle at 80% 8%, rgba(220,174,74,0.10), transparent 28%),
+      radial-gradient(circle at 20% 35%, rgba(92,151,86,0.10), transparent 32%),
+      #07110D;
+  }
+
+  /* Lumi glow per theme */
+  [data-theme="dark"] img[alt="Lumi"] {
+    filter: brightness(1.12) saturate(1.05)
+            drop-shadow(0 0 12px rgba(255,190,80,0.60))
+            drop-shadow(0 0 28px rgba(255,190,80,0.22)) !important;
+    transition: none !important;
+  }
+  [data-theme="light"] img[alt="Lumi"] {
+    filter: brightness(1.04) saturate(1.06)
+            drop-shadow(0 4px 10px rgba(86,57,22,0.14))
+            drop-shadow(0 0 14px rgba(255,190,80,0.22)) !important;
+    transition: none !important;
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<!-- React -->
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js"
+  integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L"
+  crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"
+  integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm"
+  crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"
+  integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y"
+  crossorigin="anonymous"></script>
+
+<!-- Data (plain JS — no Babel needed) -->
+<script src="linglow-data.js"></script>
+
+<!-- Components & Screens (Babel JSX) — ORDER MATTERS -->
+<script type="text/babel" src="linglow-components.jsx"></script>
+<script type="text/babel" src="linglow-screens-home.jsx"></script>
+<script type="text/babel" src="linglow-screens-map.jsx"></script>
+<script type="text/babel" src="linglow-screens-grammar.jsx"></script>
+<script type="text/babel" src="linglow-screens-practice.jsx"></script>
+<script type="text/babel" src="linglow-screens-exercise.jsx"></script>
+<script type="text/babel" src="linglow-screens-reading.jsx"></script>
+<script type="text/babel" src="linglow-screens-chat.jsx"></script>
+<script type="text/babel" src="linglow-screens-progress.jsx"></script>
+
+<!-- App shell — mounts React -->
+<script type="text/babel" src="linglow-app.jsx"></script>
+</body>
+</html>

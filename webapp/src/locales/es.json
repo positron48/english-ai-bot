@@ -747,6 +747,15 @@
     "practiceChatSub": "Habla con confianza",
     "wordsDueTitle": "{n} palabras por repasar",
     "wordsDueSub": "El repaso regular es la clave para recordar.",
-    "start": "Empezar"
+    "start": "Empezar",
+    "practiceSub": "Acceso rápido a tus entrenamientos.",
+    "quickTrainingSub": "Repaso de palabras con repetición espaciada",
+    "quickGrammarTraining": "Entrenamiento de gramática",
+    "quickGrammarTrainingSub": "Test de los capítulos completados",
+    "quickChat": "Práctica con IA — diálogo",
+    "quickChatSub": "Diálogo situacional",
+    "myDictionary": "Mi diccionario",
+    "myDictionarySub": "Tus palabras — tu progreso",
+    "exerciseCounter": "{current} de {total}"
   }
 }

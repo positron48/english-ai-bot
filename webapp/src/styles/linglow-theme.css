@@ -179,9 +179,95 @@ svg *, button, span, div { transition-property: background-color, border-color, 
   --navbar-shadow: rgba(0,0,0,0.12);
 }
 
+/* ─── Legacy global classes, restyled to Linglow ───
+   Views still using .card/.btn/.container from the old style.css get the new
+   look without template changes. */
+.container {
+  /* Horizontal padding comes from the layout's .lg-view-pad wrapper */
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 0;
+}
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: var(--shadow-soft);
+  margin-bottom: 14px;
+}
+.btn {
+  padding: 11px 20px;
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+  background: var(--card-bg);
+  color: var(--text);
+  transition: opacity 0.15s;
+}
+.btn:disabled { opacity: 0.55; cursor: default; }
+.btn-primary {
+  background: var(--btn-gradient);
+  border: 1px solid var(--btn-border);
+  color: #fff;
+  box-shadow: var(--btn-shadow);
+}
+.btn-danger {
+  background: var(--error);
+  border-color: transparent;
+  color: #fff;
+}
+.btn-secondary {
+  background: var(--surface-2);
+  color: var(--text);
+}
+input[type="text"],
+input[type="number"],
+textarea {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid var(--input-border);
+  border-radius: 14px;
+  font-size: 16px;
+  font-family: inherit;
+  margin-bottom: 10px;
+  background-color: var(--input-bg);
+  color: var(--text);
+}
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--salvia);
+}
+select {
+  font-family: inherit;
+}
+.error {
+  color: var(--error);
+  margin: 10px 0;
+}
+.success {
+  color: var(--hoja);
+  margin: 10px 0;
+}
+.loading {
+  text-align: center;
+  padding: 20px;
+  color: var(--subtext);
+}
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text);
+  font-family: 'Lora', serif;
+  font-weight: 600;
+}
+p { color: var(--text); }
+
 /* ─── Shared public-page primitives ─── */
+/* Outer horizontal padding comes from the layout's .lg-view-pad wrapper */
 .lg-page {
-  padding: 0 16px 24px;
+  padding: 0;
 }
 .lg-page-header {
   padding: 20px 0 12px;

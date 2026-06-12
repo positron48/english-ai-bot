@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Редактор районов · Linglow</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:#0f0d17;color:#e0dbd2;font-family:'Inter',system-ui,sans-serif;overflow:hidden}
+#app{display:flex;flex-direction:column;height:100vh}
+
+/* ── Toolbar ── */
+#tb{height:44px;background:#1a1826;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:8px;padding:0 12px;flex-shrink:0;user-select:none}
+.tb-logo{font-size:11px;font-weight:700;color:rgba(255,255,255,.4);letter-spacing:.5px;flex-shrink:0;margin-right:4px}
+.tb-sep{width:1px;height:16px;background:rgba(255,255,255,.09);margin:0 2px;flex-shrink:0}
+.tb-mode{display:flex;gap:1px;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:2px;flex-shrink:0}
+.tb-mode-btn{height:24px;padding:0 10px;border:none;background:transparent;border-radius:6px;color:rgba(255,255,255,.38);font-size:11px;font-weight:500;cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap}
+.tb-mode-btn.active{background:rgba(255,255,255,.11);color:rgba(255,255,255,.9)}
+.tb-btn{height:28px;padding:0 11px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:7px;color:rgba(255,255,255,.58);font-size:11px;font-weight:500;cursor:pointer;font-family:inherit;transition:background .15s;flex-shrink:0;white-space:nowrap}
+.tb-btn:hover{background:rgba(255,255,255,.10)}
+.tb-btn:disabled{opacity:.28;cursor:default}
+.tb-hint{font-size:9.5px;color:rgba(255,255,255,.18);margin-left:auto;flex-shrink:0;white-space:nowrap}
+
+/* ── Main ── */
+#main{flex:1;display:flex;overflow:hidden;min-height:0}
+
+/* ── Editor canvas area ── */
+#editor{flex:1;position:relative;background:#090714;overflow:hidden;cursor:crosshair}
+#cvs{display:block;position:absolute;inset:0}
+#coord-tip{position:absolute;bottom:10px;left:12px;font-size:9.5px;font-family:'JetBrains Mono',monospace;color:rgba(255,255,255,.25);pointer-events:none;z-index:5;background:rgba(0,0,0,.4);padding:3px 7px;border-radius:5px}
+#snap-tip{position:absolute;top:10px;left:50%;transform:translateX(-50%);background:rgba(91,168,120,.92);color:#fff;font-size:10px;font-weight:600;padding:4px 13px;border-radius:16px;pointer-events:none;opacity:0;transition:opacity .18s;white-space:nowrap;z-index:10}
+#snap-tip.show{opacity:1}
+
+/* ── Sidebar ── */
+#side{width:258px;flex-shrink:0;background:#161424;border-left:1px solid rgba(255,255,255,.07);display:flex;flex-direction:column;overflow:hidden}
+.s-sec{padding:11px 13px;border-bottom:1px solid rgba(255,255,255,.05);flex-shrink:0}
+.s-lbl{font-size:8px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.2);margin-bottom:8px}
+
+/* District list */
+.d-item{display:flex;align-items:center;gap:8px;padding:5px 7px;border-radius:7px;cursor:pointer;transition:background .12s;margin-bottom:1px}
+.d-item:hover{background:rgba(255,255,255,.04)}
+.d-item.active{background:rgba(255,255,255,.09)}
+.d-sw{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.d-nm{font-size:11px;color:rgba(255,255,255,.5);line-height:1.3}
+.d-item.active .d-nm{color:rgba(255,255,255,.9);font-weight:500}
+.d-vtx{margin-left:auto;font-size:9px;color:rgba(255,255,255,.22)}
+
+/* Stats */
+.stat{display:flex;justify-content:space-between;margin-bottom:4px;font-size:10.5px}
+.sk{color:rgba(255,255,255,.28)}
+.sv{color:rgba(255,255,255,.75);font-weight:500}
+
+/* Instructions */
+.inst{display:flex;gap:6px;align-items:flex-start;margin-bottom:4px}
+.inst-ic{font-style:normal;font-size:10px;opacity:.55;flex-shrink:0;margin-top:1px}
+.inst-tx{font-size:10px;color:rgba(255,255,255,.3);line-height:1.55}
+
+/* Export */
+#side-export{flex:1;display:flex;flex-direction:column;padding:11px 13px;gap:7px;min-height:0;overflow:hidden}
+.copy-btn{height:31px;flex-shrink:0;background:rgba(107,140,186,.12);border:1px solid rgba(107,140,186,.26);border-radius:8px;color:rgba(107,140,186,.85);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}
+.copy-btn:hover{background:rgba(107,140,186,.2)}
+.copy-btn.ok{background:rgba(91,168,120,.17);border-color:rgba(91,168,120,.33);color:rgba(91,168,120,.9)}
+#exportTA{flex:1;min-height:0;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.07);border-radius:7px;padding:8px;color:rgba(255,255,255,.45);font-family:'JetBrains Mono',monospace;font-size:8.5px;line-height:1.55;resize:none;outline:none;overflow-y:auto}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ── Toolbar ── -->
+  <div id="tb">
+    <span class="tb-logo">LINGLOW / EDITOR</span>
+    <div class="tb-sep"></div>
+    <div class="tb-mode">
+      <button class="tb-mode-btn active" id="btnPoly">Полигоны</button>
+      <button class="tb-mode-btn" id="btnLabel">Метки</button>
+    </div>
+    <div class="tb-sep"></div>
+    <button class="tb-btn" id="btnUndo" disabled>↩ Отмена</button>
+    <button class="tb-btn" id="btnReset">Сбросить</button>
+    <span class="tb-hint" id="hintTxt">Перетаскивай вершины · Клик на ребро = добавить · ПКМ = удалить · ◆ = общая точка · Ctrl+Z</span>
+  </div>
+
+  <div id="main">
+
+    <!-- ── Editor ── -->
+    <div id="editor">
+      <canvas id="cvs"></canvas>
+      <div id="coord-tip">x: — y: —</div>
+      <div id="snap-tip">⬡ привязка к смежной вершине</div>
+    </div>
+
+    <!-- ── Sidebar ── -->
+    <div id="side">
+
+      <div class="s-sec">
+        <div class="s-lbl">Районы</div>
+        <div id="distList"></div>
+      </div>
+
+      <div class="s-sec">
+        <div class="s-lbl">Активный район</div>
+        <div id="stats"></div>
+      </div>
+
+      <div class="s-sec">
+        <div class="s-lbl">Управление</div>
+        <div id="instructions"></div>
+      </div>
+
+      <div id="side-export">
+        <div class="s-lbl">Экспорт данных</div>
+        <button class="copy-btn" id="btnCopy">📋 Скопировать JS</button>
+        <textarea id="exportTA" readonly placeholder="Данные появятся здесь…"></textarea>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+// ═══════════════════════════════════════════════════════════════
+//  DATA
+// ═══════════════════════════════════════════════════════════════
+
+const CLR = {
+  alto:    '#6B8CBA',
+  puentes: '#A87DC8',
+  barrio:  '#5BA878',
+  plaza:   '#D4A84B',
+  puerta:  '#D47A5A',
+  campus:  '#7AB8C8',
+};
+
+const ORIG_DATA = [
+  { id:'alto',    name:'Distrito Alto',          lv:1, lp:[23.9,13.7], wrap:false,
+    poly:[[0,0],[57,0],[57.29,13.59],[36.17,19.67],[34.58,23],[21.78,23.72],[0.37,23.96]],
+    acts:[{i:'📖',s:'started'},{i:'🌿',s:'started'},{i:'📚',s:'started'},{i:'💬',s:'started'}] },
+  { id:'puentes', name:'Puentes del Relato',      lv:1, lp:[80.3,21.8], wrap:true,
+    poly:[[57,0],[99.72,0],[99.91,40.88],[62.34,26.94],[53.08,28.13],[34.58,23],[36.17,19.67],[57.29,13.59]],
+    acts:[{i:'📖',s:'started'},{i:'🌿',s:'started'},{i:'📚',s:'started'},{i:'💬',s:'started'}] },
+  { id:'barrio',  name:'Barrio Vivo',             lv:3, lp:[18,34.4], wrap:false,
+    poly:[[0.37,23.96],[21.78,23.72],[34.58,23],[53.08,28.13],[52.99,31.7],[50.65,34.21],[36.07,39.69],[23.55,45.17],[20.47,54.47],[21.59,57.09],[0,57]],
+    acts:[{i:'📖',s:'stable'},{i:'🌿',s:'growing'},{i:'📚',s:'weak'},{i:'💬',s:'started'}] },
+  { id:'plaza',   name:'Plaza Clara',             lv:5, lp:[65.3,51.8], wrap:false,
+    poly:[[99.91,40.88],[99.91,58.05],[60,73.3],[52.9,69.13],[21.59,57.09],[20.47,54.47],[23.55,45.17],[36.07,39.69],[50.65,34.21],[52.99,31.7],[53.08,28.13],[62.34,26.94]],
+    acts:[{i:'📖',s:'stable'},{i:'🌿',s:'stable'},{i:'📚',s:'growing'},{i:'💬',s:'growing'}] },
+  { id:'puerta',  name:'Puerta de la Chispa',     lv:2, lp:[22.8,73.5], wrap:true,
+    poly:[[0,57],[21.59,57.09],[52.9,69.13],[60,73.3],[60.09,78.19],[52.15,83.08],[41.4,90.11],[45.79,99.88],[0.37,99.4],[0,86]],
+    acts:[{i:'📖',s:'started'},{i:'🌿',s:'growing'},{i:'📚',s:'started'},{i:'💬',s:'started'}] },
+  { id:'campus',  name:'Campus de Maestría',      lv:1, lp:[76.5,91.1], wrap:true,
+    poly:[[99.91,58.05],[100,100],[45.79,99.88],[41.4,90.11],[52.15,83.08],[60.09,78.19],[60,73.3]],
+    acts:[{i:'📖',s:'started'},{i:'🌿',s:'started'},{i:'📚',s:'started'},{i:'💬',s:'started'}] },
+];
+
+// ═══════════════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════════════
+
+let dists     = clone(ORIG_DATA);
+let activeId  = 'alto';
+let mode      = 'poly';    // 'poly' | 'label'
+let drag      = null;      // {type:'vtx'|'lbl', di, vi?, initShared?}
+let hovVtx    = null;      // {di, vi}
+let hovEdge   = null;      // {di, ei, px, py}
+let history   = [];
+let mapImg    = null;
+let W = 0, H = 0;
+
+// ─── Tuning constants ────────────────────────────────────────────
+const VTX_R    = 6.5;   // draw radius px
+const VTX_HIT  = 11;    // hit test radius px
+const EDGE_HIT = 10;    // edge hit distance px
+const SNAP_D   = 2.0;   // % — snap-to distance
+const SHARED_E = 0.8;   // % — "same vertex" epsilon
+
+// ═══════════════════════════════════════════════════════════════
+//  CANVAS
+// ═══════════════════════════════════════════════════════════════
+
+const cvs    = document.getElementById('cvs');
+const ctx    = cvs.getContext('2d');
+const edWrap = document.getElementById('editor');
+
+function resize() {
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const r   = edWrap.getBoundingClientRect();
+  W = r.width  * dpr;
+  H = r.height * dpr;
+  cvs.width  = W; cvs.height = H;
+  cvs.style.width  = r.width  + 'px';
+  cvs.style.height = r.height + 'px';
+  draw();
+}
+window.addEventListener('resize', resize);
+
+// ═══════════════════════════════════════════════════════════════
+//  UTILS
+// ═══════════════════════════════════════════════════════════════
+
+function clone(x)         { return JSON.parse(JSON.stringify(x)); }
+function toPx([px,py])    { return [px*W/100, py*H/100]; }
+function toPct(x,y)       { return [x*100/W,  y*100/H]; }
+function clamp(v,mn,mx)   { return Math.max(mn,Math.min(mx,v)); }
+function d2(a,b)          { return Math.hypot(a[0]-b[0], a[1]-b[1]); }
+function r2(n)            { return Math.round(n*100)/100; }
+
+function adi()  { return dists.findIndex(d=>d.id===activeId); }
+function adistrict() { return dists[adi()]; }
+
+function hexA(hex, a) {
+  const r=parseInt(hex.slice(1,3),16), g=parseInt(hex.slice(3,5),16), b=parseInt(hex.slice(5,7),16);
+  return `rgba(${r},${g},${b},${a})`;
+}
+
+function getPos(e) {
+  const r  = cvs.getBoundingClientRect();
+  const sx = cvs.width  / r.width;
+  const sy = cvs.height / r.height;
+  return [(e.clientX-r.left)*sx, (e.clientY-r.top)*sy];
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  SHARED VERTEX LOGIC
+// ═══════════════════════════════════════════════════════════════
+
+function getShared(di, vi) {
+  const pt = dists[di].poly[vi];
+  const res = [];
+  dists.forEach((d,i) => {
+    if (i===di) return;
+    d.poly.forEach((p,j) => { if (d2(p,pt)<SHARED_E) res.push({di:i,vi:j}); });
+  });
+  return res;
+}
+
+function isSharedVtx(di, vi) { return getShared(di,vi).length>0; }
+
+// Find snap target: nearest vertex NOT being moved
+function findSnap(x, y, exDi, exVi, initShared=[]) {
+  let best=null, bd=SNAP_D;
+  dists.forEach((d,di)=>{
+    d.poly.forEach((p,vi)=>{
+      if (di===exDi && vi===exVi) return;
+      if (initShared.some(s=>s.di===di && s.vi===vi)) return;
+      const dd=d2([x,y],p);
+      if (dd<bd) { bd=dd; best={x:p[0],y:p[1],di,vi}; }
+    });
+  });
+  return best;
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  HISTORY
+// ═══════════════════════════════════════════════════════════════
+
+function push() {
+  history.push(clone(dists));
+  if (history.length>60) history.shift();
+  document.getElementById('btnUndo').disabled = false;
+}
+
+function undo() {
+  if (!history.length) return;
+  dists = history.pop();
+  if (!history.length) document.getElementById('btnUndo').disabled = true;
+  hovVtx=hovEdge=drag=null;
+  draw(); uiUpdate();
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  DRAW
+// ═══════════════════════════════════════════════════════════════
+
+function polyPath(pts) {
+  ctx.beginPath();
+  pts.forEach(([x,y],i)=>{
+    const[px,py]=toPx([x,y]);
+    i ? ctx.lineTo(px,py) : ctx.moveTo(px,py);
+  });
+  ctx.closePath();
+}
+
+function draw() {
+  if (!W||!H) return;
+  ctx.clearRect(0,0,W,H);
+
+  // ── Background ──
+  if (mapImg) {
+    ctx.drawImage(mapImg,0,0,W,H);
+    ctx.fillStyle='rgba(8,6,18,.46)';
+    ctx.fillRect(0,0,W,H);
+  } else {
+    ctx.fillStyle='#0c0a1a';
+    ctx.fillRect(0,0,W,H);
+  }
+
+  // ── Subtle % grid ──
+  ctx.strokeStyle='rgba(255,255,255,.035)';
+  ctx.lineWidth=.5;
+  for (let i=1;i<10;i++) {
+    ctx.beginPath();ctx.moveTo(i*W/10,0);ctx.lineTo(i*W/10,H);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(0,i*H/10);ctx.lineTo(W,i*H/10);ctx.stroke();
+  }
+
+  const ai = adi();
+
+  // ── District polygons ──
+  dists.forEach((d,di)=>{
+    const col = CLR[d.id]||'#888';
+    const isAct = di===ai;
+    polyPath(d.poly);
+    ctx.fillStyle   = hexA(col, isAct ? .42 : .14);
+    ctx.fill();
+    ctx.strokeStyle = hexA(col, isAct ? .95 : .32);
+    ctx.lineWidth   = isAct ? 2.5 : 1;
+    ctx.setLineDash(isAct ? [] : [5,4]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  });
+
+  const d   = adistrict();
+  const col = CLR[d.id];
+
+  if (mode==='poly') {
+
+    // ── Edge insert preview ──
+    if (hovEdge) {
+      const[px,py]=toPx([hovEdge.px,hovEdge.py]);
+      ctx.beginPath(); ctx.arc(px,py,VTX_R*.9,0,Math.PI*2);
+      ctx.fillStyle='rgba(255,255,255,.88)'; ctx.fill();
+      ctx.strokeStyle=col; ctx.lineWidth=2; ctx.stroke();
+      ctx.fillStyle=col;
+      ctx.font=`bold ${Math.round(VTX_R*1.8)}px Inter`;
+      ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText('+',px,py);
+    }
+
+    // ── Vertices of active district ──
+    d.poly.forEach((pt,vi)=>{
+      const[px,py]=toPx(pt);
+      const shared = isSharedVtx(ai,vi);
+      const hov    = hovVtx && hovVtx.vi===vi;
+      const isDrag = drag && drag.type==='vtx' && drag.vi===vi;
+      const r      = VTX_R;
+
+      ctx.save();
+      ctx.translate(px,py);
+
+      // Shape: diamond = shared, circle = local
+      if (shared) {
+        ctx.beginPath();
+        ctx.moveTo(0,-r*1.4); ctx.lineTo(r*1.1,0); ctx.lineTo(0,r*1.4); ctx.lineTo(-r*1.1,0);
+        ctx.closePath();
+      } else {
+        ctx.beginPath(); ctx.arc(0,0,r,0,Math.PI*2);
+      }
+      ctx.fillStyle   = (hov||isDrag) ? '#fff' : hexA(col,.85);
+      ctx.fill();
+      ctx.strokeStyle = (hov||isDrag) ? col : 'rgba(255,255,255,.55)';
+      ctx.lineWidth   = 2;
+      ctx.stroke();
+      ctx.restore();
+    });
+
+    // ── Faint vertices of other districts (orientation help) ──
+    dists.forEach((dd,di)=>{
+      if (di===ai) return;
+      const c=CLR[dd.id];
+      dd.poly.forEach(pt=>{
+        const[px,py]=toPx(pt);
+        ctx.beginPath(); ctx.arc(px,py,3,0,Math.PI*2);
+        ctx.fillStyle=hexA(c,.28); ctx.fill();
+      });
+    });
+
+  } else {
+    // ── Label mode: show anchor dots ──
+    dists.forEach((dd,di)=>{
+      const[px,py]=toPx(dd.lp);
+      const c=CLR[dd.id];
+      const isAct=di===ai;
+      const r=isAct?9:7;
+      ctx.beginPath(); ctx.arc(px,py,r,0,Math.PI*2);
+      ctx.fillStyle=hexA(c, isAct?.9:.5);
+      ctx.fill();
+      ctx.strokeStyle='rgba(255,255,255,.75)';
+      ctx.lineWidth=1.5; ctx.stroke();
+      // crosshair
+      ctx.strokeStyle='rgba(255,255,255,.55)';
+      ctx.lineWidth=1;
+      ctx.beginPath();ctx.moveTo(px-r,py);ctx.lineTo(px+r,py);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(px,py-r);ctx.lineTo(px,py+r);ctx.stroke();
+    });
+  }
+
+  // ── District name labels ──
+  dists.forEach((dd,di)=>{
+    const[lx,ly]=toPx(dd.lp);
+    const isAct=di===ai;
+    ctx.font=`${isAct?'600':'400'} ${isAct?13:11}px Inter`;
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.shadowColor='rgba(0,0,0,.9)'; ctx.shadowBlur=10;
+    ctx.fillStyle=isAct?'#fff':'rgba(255,255,255,.38)';
+    ctx.fillText(dd.name,lx,ly);
+    ctx.shadowBlur=0;
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  HIT TESTING
+// ═══════════════════════════════════════════════════════════════
+
+function hitVtx(mx,my) {
+  const ai=adi(), d=dists[ai];
+  // reverse order: last drawn = topmost
+  for (let vi=d.poly.length-1;vi>=0;vi--) {
+    const[px,py]=toPx(d.poly[vi]);
+    if (Math.hypot(mx-px,my-py)<VTX_HIT) return {di:ai,vi};
+  }
+  return null;
+}
+
+function hitEdge(mx,my) {
+  const ai=adi(), d=dists[ai], n=d.poly.length;
+  let best=null, bd=EDGE_HIT;
+  for (let i=0;i<n;i++) {
+    const j=(i+1)%n;
+    const[ax,ay]=toPx(d.poly[i]), [bx,by]=toPx(d.poly[j]);
+    const dx=bx-ax, dy=by-ay, len2=dx*dx+dy*dy;
+    if (!len2) continue;
+    const t=clamp(((mx-ax)*dx+(my-ay)*dy)/len2,0,1);
+    const cx=ax+t*dx, cy=ay+t*dy;
+    const dd=Math.hypot(mx-cx,my-cy);
+    if (dd<bd) { bd=dd; const[cpx,cpy]=toPct(cx,cy); best={di:ai,ei:i,px:cpx,py:cpy}; }
+  }
+  return best;
+}
+
+function hitLabel(mx,my) {
+  let best=null, bd=14;
+  dists.forEach((dd,di)=>{
+    const[px,py]=toPx(dd.lp);
+    const dd2=Math.hypot(mx-px,my-py);
+    if (dd2<bd) { bd=dd2; best={di}; }
+  });
+  return best;
+}
+
+function inPoly(x,y,poly) {
+  let inside=false, n=poly.length;
+  for (let i=0,j=n-1;i<n;j=i++) {
+    const[xi,yi]=poly[i],[xj,yj]=poly[j];
+    if (((yi>y)!=(yj>y))&&(x<(xj-xi)*(y-yi)/(yj-yi)+xi)) inside=!inside;
+  }
+  return inside;
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  SNAP INDICATOR
+// ═══════════════════════════════════════════════════════════════
+
+let _snapShown=false;
+function showSnap(show) {
+  if (show===_snapShown) return;
+  _snapShown=show;
+  document.getElementById('snap-tip').classList.toggle('show',show);
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  MOUSE EVENTS
+// ═══════════════════════════════════════════════════════════════
+
+cvs.addEventListener('mousedown', e=>{
+  e.preventDefault();
+  if (e.button===2) return;
+  const[mx,my]=getPos(e);
+
+  if (mode==='poly') {
+    // ① Try vertex
+    const vh=hitVtx(mx,my);
+    if (vh) {
+      push();
+      drag={type:'vtx',...vh, initShared:getShared(vh.di,vh.vi)};
+      cvs.style.cursor='grabbing';
+      return;
+    }
+    // ② Try edge → insert vertex
+    const eh=hitEdge(mx,my);
+    if (eh) {
+      push();
+      dists[eh.di].poly.splice(eh.ei+1,0,[eh.px,eh.py]);
+      const vi=eh.ei+1;
+      drag={type:'vtx',di:eh.di,vi,initShared:[]};
+      hovEdge=null;
+      cvs.style.cursor='grabbing';
+      draw(); uiUpdate();
+      return;
+    }
+    // ③ Select district by click
+    const[px,py]=toPct(mx,my);
+    dists.forEach(dd=>{ if (inPoly(px,py,dd.poly)) activeId=dd.id; });
+    draw(); uiUpdate();
+
+  } else { // label mode
+    const lh=hitLabel(mx,my);
+    if (lh) {
+      push();
+      drag={type:'lbl',di:lh.di};
+      activeId=dists[lh.di].id;
+      cvs.style.cursor='grabbing';
+      draw(); uiUpdate();
+    }
+  }
+});
+
+cvs.addEventListener('mousemove', e=>{
+  const[mx,my]=getPos(e);
+
+  // Coord display
+  const[cx,cy]=toPct(mx,my);
+  document.getElementById('coord-tip').textContent=
+    `x: ${clamp(cx,0,100).toFixed(1)}%   y: ${clamp(cy,0,100).toFixed(1)}%`;
+
+  if (drag) {
+    if (drag.type==='vtx') {
+      const[rx,ry]=toPct(mx,my);
+      const snap=findSnap(rx,ry,drag.di,drag.vi,drag.initShared);
+      const fx = snap ? snap.x : clamp(rx,0,100);
+      const fy = snap ? snap.y : clamp(ry,0,100);
+      showSnap(!!snap);
+      // Move this vertex + all that were already shared with it
+      dists[drag.di].poly[drag.vi]=[fx,fy];
+      drag.initShared.forEach(({di,vi})=>{ dists[di].poly[vi]=[fx,fy]; });
+      draw(); updateStats();
+    } else { // label
+      const[rx,ry]=toPct(mx,my);
+      dists[drag.di].lp=[
+        Math.round(clamp(rx,0,100)*10)/10,
+        Math.round(clamp(ry,0,100)*10)/10
+      ];
+      draw(); updateStats();
+    }
+    return;
+  }
+
+  // Hover
+  const pv=hovVtx, pe=hovEdge;
+  if (mode==='poly') {
+    hovVtx  = hitVtx(mx,my);
+    hovEdge = hovVtx ? null : hitEdge(mx,my);
+    cvs.style.cursor = hovVtx ? 'grab' : hovEdge ? 'copy' : 'crosshair';
+  } else {
+    hovVtx=hovEdge=null;
+    cvs.style.cursor = hitLabel(mx,my) ? 'grab' : 'crosshair';
+  }
+  if (JSON.stringify([hovVtx,hovEdge])!==JSON.stringify([pv,pe])) draw();
+});
+
+cvs.addEventListener('mouseup', ()=>{
+  if (!drag) return;
+  drag=null; showSnap(false);
+  cvs.style.cursor='crosshair';
+  draw(); uiUpdate();
+});
+
+cvs.addEventListener('mouseleave', ()=>{
+  hovVtx=hovEdge=null;
+  if (drag) { drag=null; showSnap(false); }
+  draw();
+});
+
+// ── Right-click = delete vertex ──
+cvs.addEventListener('contextmenu', e=>{
+  e.preventDefault();
+  if (mode!=='poly') return;
+  const[mx,my]=getPos(e);
+  const vh=hitVtx(mx,my);
+  if (!vh) return;
+  const d=dists[vh.di];
+  if (d.poly.length<=3) return; // minimum triangle
+  push();
+  d.poly.splice(vh.vi,1);
+  hovVtx=null;
+  draw(); uiUpdate();
+});
+
+// Ctrl+Z
+document.addEventListener('keydown', e=>{
+  if ((e.ctrlKey||e.metaKey)&&e.key==='z') { e.preventDefault(); undo(); }
+});
+
+// ═══════════════════════════════════════════════════════════════
+//  MODE SWITCH
+// ═══════════════════════════════════════════════════════════════
+
+function setMode(m) {
+  mode=m; drag=hovVtx=hovEdge=null;
+  document.getElementById('btnPoly').classList.toggle('active',m==='poly');
+  document.getElementById('btnLabel').classList.toggle('active',m==='label');
+  document.getElementById('hintTxt').textContent = m==='poly'
+    ? 'Перетаскивай вершины · Клик на ребро = добавить · ПКМ = удалить · ◆ = общая точка · Ctrl+Z'
+    : 'Перетаскивай цветные кружки для перемещения подписей районов';
+  updateInstructions();
+  draw();
+}
+
+document.getElementById('btnPoly').onclick  = ()=>setMode('poly');
+document.getElementById('btnLabel').onclick = ()=>setMode('label');
+
+// ═══════════════════════════════════════════════════════════════
+//  UI HELPERS
+// ═══════════════════════════════════════════════════════════════
+
+function uiUpdate() { updateDistList(); updateStats(); updateExport(); }
+
+function updateDistList() {
+  const el=document.getElementById('distList');
+  el.innerHTML='';
+  dists.forEach(d=>{
+    const n=d.poly.length;
+    const ai=adi(), di=dists.indexOf(d);
+    const sh=d.poly.filter((_,vi)=>isSharedVtx(di,vi)).length;
+    const item=document.createElement('div');
+    item.className=`d-item${d.id===activeId?' active':''}`;
+    item.innerHTML=`
+      <div class="d-sw" style="background:${CLR[d.id]}"></div>
+      <div class="d-nm">${d.name}</div>
+      <div class="d-vtx">${n}pt${sh?` ◆${sh}`:''}</div>`;
+    item.onclick=()=>{ activeId=d.id; draw(); uiUpdate(); };
+    el.appendChild(item);
+  });
+}
+
+function updateStats() {
+  const d=adistrict(), ai=adi();
+  const col=CLR[d.id];
+  const sh=d.poly.filter((_,vi)=>isSharedVtx(ai,vi)).length;
+  document.getElementById('stats').innerHTML=`
+    <div class="stat"><span class="sk">Район</span><span class="sv" style="color:${col}">${d.name}</span></div>
+    <div class="stat"><span class="sk">Вершин</span><span class="sv">${d.poly.length}</span></div>
+    <div class="stat"><span class="sk">◆ Общих</span><span class="sv">${sh} из ${d.poly.length}</span></div>
+    <div class="stat"><span class="sk">Метка lp</span><span class="sv">[${d.lp[0].toFixed(1)}, ${d.lp[1].toFixed(1)}]</span></div>
+  `;
+}
+
+function updateInstructions() {
+  const el=document.getElementById('instructions');
+  if (mode==='poly') {
+    el.innerHTML=`
+      <div class="inst"><i class="inst-ic">🖱</i><span class="inst-tx">Тяни вершину для перемещения</span></div>
+      <div class="inst"><i class="inst-ic">＋</i><span class="inst-tx">Клик на ребро — вставить вершину</span></div>
+      <div class="inst"><i class="inst-ic">✕</i><span class="inst-tx">ПКМ на вершину — удалить (мин. 3)</span></div>
+      <div class="inst"><i class="inst-ic">◆</i><span class="inst-tx">Ромб = точка смежна с другим районом, двигаются вместе</span></div>
+      <div class="inst"><i class="inst-ic">⬡</i><span class="inst-tx">Зелёная полоска = привязка активна</span></div>
+      <div class="inst"><i class="inst-ic">•</i><span class="inst-tx">Маленькие точки = вершины соседних районов (для ориентации)</span></div>
+    `;
+  } else {
+    el.innerHTML=`
+      <div class="inst"><i class="inst-ic">🔵</i><span class="inst-tx">Тяни цветной кружок — переместить подпись района</span></div>
+      <div class="inst"><i class="inst-ic">✦</i><span class="inst-tx">Координата lp обновляется в реальном времени</span></div>
+    `;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  EXPORT
+// ═══════════════════════════════════════════════════════════════
+
+function buildExport() {
+  const lines=[];
+
+  lines.push('// ══════════════════════════════════════════');
+  lines.push('// DISTRICTS — вставить в City Map.html');
+  lines.push('// ══════════════════════════════════════════');
+  lines.push('const DISTRICTS = [');
+  dists.forEach((d,i)=>{
+    const poly=d.poly.map(([x,y])=>`[${r2(x)},${r2(y)}]`).join(',');
+    const acts=(d.acts||[]).map(a=>`{i:'${a.i}',s:'${a.s}'}`).join(',');
+    lines.push(`  {`);
+    lines.push(`    id:'${d.id}', name:'${d.name}', lv:${d.lv},`);
+    lines.push(`    lp:[${d.lp[0]},${d.lp[1]}], wrap:${d.wrap},`);
+    lines.push(`    poly:[${poly}],`);
+    lines.push(`    acts:[${acts}]`);
+    lines.push(`  }${i<dists.length-1?',':''}`);
+  });
+  lines.push('];');
+  lines.push('');
+  lines.push('// ══════════════════════════════════════════');
+  lines.push('// CITY_DISTS — вставить в linglow-screens-map.jsx');
+  lines.push('// ══════════════════════════════════════════');
+  lines.push('const CITY_DISTS = [');
+  dists.forEach((d,i)=>{
+    const poly=d.poly.map(([x,y])=>`[${r2(x)}, ${r2(y)}]`).join(', ');
+    const acts=(d.acts||[]).map(a=>`{ i: '${a.i}', s: '${a.s}' }`).join(', ');
+    lines.push(`{ id: '${d.id}', name: '${d.name}', lv: ${d.lv}, lp: [${d.lp[0]}, ${d.lp[1]}], wrap: ${d.wrap},`);
+    lines.push(`  poly: [${poly}],`);
+    lines.push(`  acts: [${acts}] }${i<dists.length-1?',':''}`);
+  });
+  lines.push('];');
+
+  return lines.join('\n');
+}
+
+function updateExport() {
+  document.getElementById('exportTA').value=buildExport();
+}
+
+document.getElementById('btnCopy').addEventListener('click',()=>{
+  const ta=document.getElementById('exportTA');
+  ta.value=buildExport();
+  const text=ta.value;
+  (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject())
+    .catch(()=>{ ta.select(); document.execCommand('copy'); });
+  const btn=document.getElementById('btnCopy');
+  btn.textContent='✓ Скопировано!'; btn.classList.add('ok');
+  setTimeout(()=>{ btn.textContent='📋 Скопировать JS'; btn.classList.remove('ok'); },2200);
+});
+
+document.getElementById('btnUndo').addEventListener('click', undo);
+
+document.getElementById('btnReset').addEventListener('click',()=>{
+  if (!confirm('Сбросить все изменения к исходным значениям?')) return;
+  dists=clone(ORIG_DATA); history=[];
+  document.getElementById('btnUndo').disabled=true;
+  drag=hovVtx=hovEdge=null;
+  draw(); uiUpdate();
+});
+
+// ═══════════════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════════════
+
+function loadMap() {
+  return new Promise(res=>{
+    const img=new Image();
+    img.onload  = ()=>{ mapImg=img; res(); };
+    img.onerror = ()=>res();
+    img.src='uploads/1.jpg';
+  });
+}
+
+async function init() {
+  await loadMap();
+  resize();
+  setMode('poly');
+  uiUpdate();
+}
+
+init();
+</script>
+</body>
+</html>

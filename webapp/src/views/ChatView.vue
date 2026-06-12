@@ -1,8 +1,16 @@
 <template>
   <div class="chat">
-    <div class="card chat-container">
+    <div class="chat-topbar">
+      <button class="chat-back" type="button" @click="router.back()">
+        <LgIcon name="chevron-left" :s="20" c="var(--text)" />
+      </button>
+      <div class="chat-topbar-title">{{ t('navigation.chat') }}</div>
+      <LgLumi :size="38" />
+    </div>
+    <div class="chat-container">
       <div class="chat-messages" ref="messagesContainer">
         <div v-if="messages.length === 0" class="welcome-message">
+          <LgLumi :size="84" />
           <div class="welcome-icon">{{ targetLangFlag }}</div>
           <h2 class="welcome-title">{{ chatWelcome.title }}</h2>
           <p class="welcome-text">{{ chatWelcome.intro }}</p>
@@ -41,8 +49,8 @@
               @keydown.enter.exact.prevent="sendMessage"
               @input="autoResize"
             ></textarea>
-            <button @click="sendMessage" class="btn btn-primary" :disabled="sending">
-              {{ sending ? t('chat.sending') : t('chat.send') }}
+            <button @click="sendMessage" class="chat-send-btn" :disabled="sending" :title="t('chat.send')">
+              <LgIcon name="send" :s="18" c="white" />
             </button>
           </div>
         </div>
@@ -53,7 +61,9 @@
 
 <script setup lang="ts">
 import { ref, computed, nextTick, onMounted, watch, onActivated } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import LgIcon from '../components/linglow/LgIcon.vue'
+import LgLumi from '../components/linglow/LgLumi.vue'
 import { useI18n } from 'vue-i18n'
 import { marked } from 'marked'
 import { apiClient } from '../api/client'
@@ -73,6 +83,7 @@ const sending = ref(false)
 const messagesContainer = ref<HTMLElement | null>(null)
 const textareaRef = ref<HTMLTextAreaElement | null>(null)
 const route = useRoute()
+const router = useRouter()
 
 const targetLangFlag = computed(() =>
   learning.value?.target_lang === 'es' ? '🇪🇸' : '🇬🇧'
@@ -195,14 +206,57 @@ watch(() => route.path, (newPath) => {
 
 <style scoped>
 .chat {
-  max-width: 1200px;
-  margin: -20px auto 0; /* Компенсируем padding main сверху */
+  max-width: 880px;
+  margin: 0 auto;
   padding: 0;
-  height: calc(100vh - 80px); /* Высота экрана минус хедер (80px padding-top у main) */
+  height: 100vh;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
+
+.chat-topbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px 8px;
+  flex-shrink: 0;
+}
+.chat-back {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.chat-topbar-title {
+  flex: 1;
+  text-align: center;
+  font-family: 'Lora', serif;
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--text);
+}
+.chat-send-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--btn-border);
+  background: var(--btn-gradient);
+  box-shadow: var(--btn-shadow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.chat-send-btn:disabled { opacity: 0.55; cursor: default; }
 
 .chat-container {
   display: flex;
@@ -222,8 +276,7 @@ watch(() => route.path, (newPath) => {
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 20px 15px 20px 20px;
-  background: var(--chat-bg);
+  padding: 12px 16px 20px;
   border-radius: 0;
   margin-bottom: 0;
   min-height: 0;
@@ -231,20 +284,18 @@ watch(() => route.path, (newPath) => {
 }
 
 .chat-input-wrapper {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: var(--bg-primary);
-  border-top: 1px solid var(--border-primary);
-  z-index: 10;
-  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+  background: var(--nav-bg);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-top: 1px solid var(--border);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 .chat-input-container {
-  max-width: 1200px;
+  max-width: 880px;
   margin: 0 auto;
-  padding: 10px 20px;
+  padding: 10px 16px;
 }
 
 .chat-input {
@@ -259,10 +310,12 @@ watch(() => route.path, (newPath) => {
   height: 40px;
   min-height: 40px;
   max-height: 200px;
-  padding: 10px;
+  padding: 9px 16px;
   box-sizing: border-box;
   line-height: 20px;
   overflow-y: hidden;
+  border-radius: 20px;
+  margin-bottom: 0;
 }
 
 .chat-input button {
@@ -341,20 +394,24 @@ watch(() => route.path, (newPath) => {
 .message-content {
   display: inline-block;
   padding: 10px 15px;
-  border-radius: 8px;
+  border-radius: 16px;
   max-width: 85%;
   word-wrap: break-word;
+  font-size: 15px;
+  line-height: 1.45;
 }
 
 .message.user .message-content {
-  background: var(--chat-user-bg);
-  color: var(--text-inverse);
+  background: var(--btn-gradient);
+  color: #fff;
+  border-bottom-right-radius: 6px;
 }
 
 .message.assistant .message-content {
-  background: var(--chat-assistant-bg);
-  color: var(--text-primary);
-  border: 1px solid var(--chat-assistant-border);
+  background: var(--card-bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-bottom-left-radius: 6px;
 }
 
 .typing-indicator {
@@ -512,23 +569,9 @@ watch(() => route.path, (newPath) => {
   .chat-messages {
     flex: 1;
     overflow-y: auto;
-    padding: 15px 8px 15px 8px;
-    padding-bottom: 100px; /* Отступ для поля ввода */
+    padding: 12px 10px 16px;
     margin-bottom: 0;
-    background: var(--bg-primary);
     border-radius: 0;
-  }
-
-  .chat-input-wrapper {
-    position: fixed;
-    bottom: 60px; /* Высота мобильного меню */
-    left: 0;
-    right: 0;
-    background: var(--bg-primary);
-    border-top: 1px solid var(--border-primary);
-    border-radius: 0;
-    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
-    z-index: 999;
   }
 
   .chat-input-container {

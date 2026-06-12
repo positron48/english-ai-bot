@@ -786,6 +786,15 @@
     "practiceChatSub": "Speak with confidence",
     "wordsDueTitle": "{n} words are due for review",
     "wordsDueSub": "Regular review is the key to remembering.",
-    "start": "Start"
+    "start": "Start",
+    "practiceSub": "Quick access to your training.",
+    "quickTrainingSub": "Spaced-repetition word review",
+    "quickGrammarTraining": "Grammar training",
+    "quickGrammarTrainingSub": "Test on completed chapters",
+    "quickChat": "AI practice — dialogue",
+    "quickChatSub": "Situational dialogue",
+    "myDictionary": "My dictionary",
+    "myDictionarySub": "Your words — your progress",
+    "exerciseCounter": "{current} of {total}"
   }
 }

@@ -3,13 +3,13 @@
     <template v-if="isDesktop">
       <LgSideNav v-if="!fullscreen" />
       <div class="lg-layout-center">
-        <div class="lg-layout-content" :class="{ 'lg-layout-content--map': isMapRoute }">
+        <div class="lg-layout-content" :class="{ 'lg-layout-content--map': isMapRoute, 'lg-view-pad': !fullscreen }">
           <router-view />
         </div>
       </div>
     </template>
     <template v-else>
-      <div class="lg-layout-mobile" :class="{ 'lg-layout-mobile--with-nav': !fullscreen }">
+      <div class="lg-layout-mobile" :class="{ 'lg-layout-mobile--with-nav': !fullscreen, 'lg-view-pad': !fullscreen }">
         <router-view />
       </div>
       <LgBottomNav v-if="!fullscreen" />
@@ -81,6 +81,9 @@ onUnmounted(() => window.removeEventListener('resize', check))
   position: relative;
 }
 .lg-layout-mobile--with-nav {
-  padding-bottom: calc(78px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: calc(78px + env(safe-area-inset-bottom, 0px)) !important;
+}
+.lg-view-pad {
+  padding: 0 14px 24px;
 }
 </style>

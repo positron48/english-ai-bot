@@ -1,53 +1,45 @@
 <template>
-  <div class="city-view">
-    <header class="city-header">
-      <div>
-        <p class="city-kicker">{{ t('city.kicker') }}</p>
-        <h1>{{ courseMap?.course.city_name || courseMap?.course.title || t('city.title') }}</h1>
+  <div class="city-view lg-page">
+    <!-- Map hero with floating title (prototype MapScreen; static map fallback) -->
+    <div class="city-hero">
+      <img class="city-hero-img" :src="mapCityImg" alt="" />
+      <div class="city-hero-overlay">
+        <div class="city-hero-title">{{ courseMap?.course.city_name || courseMap?.course.title || t('city.title') }}</div>
+        <div class="city-hero-sub">{{ t('city.kicker') }}</div>
       </div>
-      <div class="city-actions">
-        <label class="course-select">
-          <span>{{ t('city.course') }}</span>
-          <select v-model="selectedCourseCode" :disabled="loading || selectingCourse" @change="selectCourse">
-            <option v-for="course in courses" :key="course.code" :value="course.code">
-              {{ course.title }}
-            </option>
-          </select>
-        </label>
-        <button type="button" class="secondary-button" :disabled="loading" @click="loadCity">
-          {{ t('common.retry') }}
-        </button>
-      </div>
-    </header>
+    </div>
 
-    <div v-if="loading" class="loading">{{ t('common.loading') }}</div>
-    <div v-else-if="error" class="error-card">
+    <div v-if="loading" class="lg-loading">{{ t('common.loading') }}</div>
+    <div v-else-if="error" class="lg-error">
       <strong>{{ t('common.error') }}</strong>
-      <p>{{ error }}</p>
+      <p style="margin: 6px 0 0">{{ error }}</p>
+      <button type="button" class="city-retry" :disabled="loading" @click="loadCity">{{ t('common.retry') }}</button>
     </div>
 
     <template v-else-if="safeCourseMap">
+      <!-- Overview metrics -->
       <section class="city-overview">
-        <div class="overview-metric">
+        <div class="lg-card overview-metric">
           <span>{{ formatPercent(progress?.summary.progress_percent || 0) }}</span>
           <label>{{ t('city.progress') }}</label>
         </div>
-        <div class="overview-metric">
+        <div class="lg-card overview-metric">
           <span>{{ progress?.summary.due_review_count || reviewQueue?.summary.due_count || 0 }}</span>
           <label>{{ t('city.reviewPressure') }}</label>
         </div>
-        <div class="overview-metric">
+        <div class="lg-card overview-metric">
           <span>{{ dailyRoute?.summary.new_item_count || 0 }}</span>
           <label>{{ t('city.nextOpenings') }}</label>
         </div>
-        <div class="overview-metric">
+        <div class="lg-card overview-metric">
           <span>{{ formatPercent(progress?.summary.accuracy_percent || 0) }}</span>
           <label>{{ t('city.accuracy') }}</label>
         </div>
       </section>
 
+      <!-- Daily route / review station -->
       <section class="city-work-grid">
-        <article class="work-panel">
+        <article class="lg-card work-panel">
           <div class="panel-head">
             <h2>{{ t('city.dailyRoute') }}</h2>
             <RouterLink class="panel-action" :to="dailyRouteLink">
@@ -64,7 +56,7 @@
           </div>
         </article>
 
-        <article class="work-panel">
+        <article class="lg-card work-panel">
           <div class="panel-head">
             <h2>{{ t('city.reviewStation') }}</h2>
             <span>{{ reviewQueue?.summary.due_count || 0 }}</span>
@@ -80,97 +72,38 @@
         </article>
       </section>
 
-      <section class="simple-mode" aria-label="Simple mode">
-        <RouterLink class="simple-link primary" to="/training">
-          <strong>{{ t('city.simple.review') }}</strong>
-          <span>{{ t('city.simple.reviewHint') }}</span>
-        </RouterLink>
-        <RouterLink class="simple-link" :to="dailyRouteLink">
-          <strong>{{ t('city.simple.dailyRoute') }}</strong>
-          <span>{{ t('city.simple.dailyRouteHint') }}</span>
-        </RouterLink>
-        <RouterLink class="simple-link" to="/learning/grammar">
-          <strong>{{ t('city.simple.grammar') }}</strong>
-          <span>{{ t('city.simple.grammarHint') }}</span>
-        </RouterLink>
-        <RouterLink class="simple-link" to="/learning/reading">
-          <strong>{{ t('city.simple.reading') }}</strong>
-          <span>{{ t('city.simple.readingHint') }}</span>
-        </RouterLink>
-        <RouterLink class="simple-link" to="/learning/words">
-          <strong>{{ t('city.simple.words') }}</strong>
-          <span>{{ t('city.simple.wordsHint') }}</span>
-        </RouterLink>
-        <RouterLink class="simple-link" to="/settings">
-          <strong>{{ t('city.simple.settings') }}</strong>
-          <span>{{ t('city.simple.settingsHint') }}</span>
-        </RouterLink>
-      </section>
-
-      <section class="city-stats" aria-label="Course totals">
-        <div class="city-stat">
-          <span>{{ safeCourseMap.totals.districts }}</span>
-          <label>{{ t('city.districts') }}</label>
-        </div>
-        <div class="city-stat">
-          <span>{{ safeCourseMap.totals.locations }}</span>
-          <label>{{ t('city.locations') }}</label>
-        </div>
-        <div class="city-stat">
-          <span>{{ safeCourseMap.totals.modules }}</span>
-          <label>{{ t('city.modules') }}</label>
-        </div>
-        <div class="city-stat">
-          <span>{{ safeCourseMap.totals.items }}</span>
-          <label>{{ t('city.items') }}</label>
-        </div>
-      </section>
-
-      <section class="type-strip" aria-label="Content item types">
-        <div v-for="[type, count] in itemTypes" :key="type" class="type-pill">
-          <span>{{ formatType(type) }}</span>
-          <strong>{{ count }}</strong>
-        </div>
-      </section>
-
+      <!-- Districts -->
       <section class="district-list">
-        <article v-for="district in safeCourseMap.districts" :key="district.id" class="district-row">
-          <aside class="district-meta">
-            <span class="level-badge">{{ district.level_code }}</span>
-            <h2>{{ district.title }}</h2>
-            <p>{{ safeLocations(district).length }} {{ t('city.locationsShort') }}</p>
-            <div class="signal-stack">
-              <span>{{ t('city.foundation') }} {{ formatPercent(districtSignal(district.code).foundation) }}</span>
-              <span>{{ t('city.confidence') }} {{ formatPercent(districtSignal(district.code).confidence) }}</span>
-              <span>{{ t('city.stability') }} {{ formatPercent(districtSignal(district.code).stability) }}</span>
+        <RouterLink
+          v-for="(district, di) in safeCourseMap.districts"
+          :key="district.id"
+          class="lg-card district-card"
+          :to="{ name: 'CityDistrict', params: { districtCode: district.code }, query: selectedCourseCode ? { course_code: selectedCourseCode } : undefined }"
+        >
+          <img class="district-card-art" :src="districtArt(di)" alt="" />
+          <div class="district-card-body">
+            <div class="district-card-head">
+              <LgChip :label="district.level_code" active />
+              <h2>{{ district.title }}</h2>
             </div>
-            <RouterLink class="district-link" :to="{ name: 'CityDistrict', params: { districtCode: district.code }, query: selectedCourseCode ? { course_code: selectedCourseCode } : undefined }">
-              {{ t('city.openDistrict') }}
-            </RouterLink>
-          </aside>
-
-          <div class="location-grid">
-            <RouterLink v-for="location in safeLocations(district)" :key="location.id" class="location-cell location-link" :to="{ name: 'CityDistrict', params: { districtCode: district.code }, query: selectedCourseCode ? { course_code: selectedCourseCode, location: location.code } : { location: location.code } }">
-              <div class="location-head">
-                <span>{{ locationTitle(location.location_type, location.title) }}</span>
-                <strong>{{ formatPercent(locationSignal(location.code).foundation) }}</strong>
+            <p class="district-card-locations">{{ safeLocations(district).length }} {{ t('city.locationsShort') }}</p>
+            <div class="district-card-signals">
+              <div class="district-signal">
+                <span>{{ t('city.foundation') }}</span>
+                <LgProgressBar :pct="districtSignal(district.code).foundation" :h="4" />
               </div>
-              <div class="location-signals">
-                <span>{{ t('city.confidenceShort') }} {{ formatPercent(locationSignal(location.code).confidence) }}</span>
-                <span>{{ t('city.weaknessShort') }} {{ locationSignal(location.code).due_review_count }}</span>
+              <div class="district-signal">
+                <span>{{ t('city.confidence') }}</span>
+                <LgProgressBar :pct="districtSignal(district.code).confidence" :h="4" color="var(--hoja)" />
               </div>
-              <div class="module-list">
-                <div v-for="module in visibleModules(location)" :key="module.id" class="module-line">
-                  <span>{{ module.title }}</span>
-                  <small>{{ safeItems(module).length }}</small>
-                </div>
-                <div v-if="safeModules(location).length > visibleModules(location).length" class="module-more">
-                  {{ t('city.moreModules', { count: safeModules(location).length - visibleModules(location).length }) }}
-                </div>
+              <div class="district-signal">
+                <span>{{ t('city.stability') }}</span>
+                <LgProgressBar :pct="districtSignal(district.code).stability" :h="4" color="var(--dorado)" />
               </div>
-            </RouterLink>
+            </div>
           </div>
-        </article>
+          <LgIcon name="chevron-right" :s="16" c="var(--text-muted)" />
+        </RouterLink>
       </section>
     </template>
   </div>
@@ -182,6 +115,19 @@ import { useI18n } from 'vue-i18n'
 import { courseClient, CourseMap, CourseMapLocation, CourseProgress, DailyRoute, ReviewQueue } from '../api/courseClient'
 import { useCourse } from '../composables/useCourse'
 import { routeForLinglowItem } from '../utils/linglowNavigation'
+import LgChip from '../components/linglow/LgChip.vue'
+import LgIcon from '../components/linglow/LgIcon.vue'
+import LgProgressBar from '../components/linglow/LgProgressBar.vue'
+import mapCityImg from '../assets/linglow/map_city.jpg'
+import distViajes from '../assets/linglow/dist_viajes.jpg'
+import distCafeterias from '../assets/linglow/dist_cafeterias.jpg'
+import distMercados from '../assets/linglow/dist_mercados.jpg'
+import distParques from '../assets/linglow/dist_parques.jpg'
+import distVida from '../assets/linglow/dist_vida.jpg'
+
+// Decorative district art rotates over the prototype images
+const DISTRICT_ART = [distViajes, distCafeterias, distMercados, distParques, distVida]
+const districtArt = (index: number) => DISTRICT_ART[index % DISTRICT_ART.length]
 
 const { t } = useI18n()
 const { courses, currentCourseCode, ensureCourseLoaded, selectCourse: setCurrentCourse } = useCourse()
@@ -355,437 +301,178 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.city-view {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  padding-bottom: 28px;
-}
+.city-view { padding-top: 16px; display: flex; flex-direction: column; gap: 14px; }
 
-.city-header {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 16px;
+.city-hero {
+  position: relative;
+  border-radius: 22px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+  min-height: 200px;
 }
-
-.city-kicker {
-  margin: 0 0 4px;
-  color: var(--text-secondary);
-  font-size: 0.875rem;
-  font-weight: 600;
-  text-transform: uppercase;
-}
-
-.city-header h1 {
-  margin: 0;
-  font-size: 2rem;
-  line-height: 1.1;
-}
-
-.city-actions {
-  display: flex;
-  align-items: flex-end;
-  gap: 10px;
-}
-
-.course-select {
-  display: grid;
-  gap: 4px;
-  min-width: 220px;
-}
-
-.course-select span {
-  color: var(--text-secondary);
-  font-size: 0.78rem;
-  font-weight: 700;
-}
-
-.course-select select {
+.city-hero-img {
+  display: block;
   width: 100%;
-  min-height: 40px;
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  background: var(--surface-color);
-  color: var(--text-primary);
-  padding: 8px 10px;
-  font-weight: 650;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+  object-fit: cover;
+}
+.city-hero-overlay {
+  position: relative;
+  z-index: 2;
+  padding: 18px 20px 110px;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.30) 0%, transparent 100%);
+  text-align: center;
+}
+.city-hero-title {
+  font-family: 'Lora', serif;
+  font-weight: 700;
+  font-size: 22px;
+  color: #fff;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.5);
+  line-height: 1;
+}
+.city-hero-sub {
+  font-size: 11px;
+  color: rgba(255,255,255,0.78);
+  text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+  margin-top: 4px;
+  letter-spacing: 0.1px;
 }
 
-.secondary-button {
-  border: 1px solid var(--border-color);
-  background: var(--surface-color);
-  color: var(--text-primary);
-  border-radius: 8px;
-  padding: 10px 14px;
+.city-retry {
+  margin-top: 10px;
+  padding: 8px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text);
   font-weight: 600;
   cursor: pointer;
 }
 
-.secondary-button:disabled {
-  opacity: 0.55;
-  cursor: default;
-}
-
-.loading,
-.error-card {
-  padding: 18px;
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  background: var(--surface-color);
-}
-
-.error-card p {
-  margin: 6px 0 0;
-  color: var(--text-secondary);
-}
-
-.city-overview,
-.city-work-grid,
-.city-stats {
+.city-overview {
   display: grid;
-  gap: 12px;
-}
-
-.city-overview,
-.city-stats {
   grid-template-columns: repeat(4, minmax(0, 1fr));
-}
-
-.city-work-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.simple-mode {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 10px;
 }
-
-.city-stat,
-.overview-metric,
-.work-panel,
-.type-pill,
-.location-cell,
-.simple-link {
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  background: var(--surface-color);
-}
-
-.city-stat {
-  padding: 14px;
-}
-
-.overview-metric {
-  padding: 14px;
-}
-
-.city-stat span {
-  display: block;
-  font-size: 1.6rem;
-  font-weight: 750;
-}
-
+.overview-metric { text-align: center; padding: 14px 8px; }
 .overview-metric span {
   display: block;
-  font-size: 1.45rem;
-  font-weight: 800;
+  font-family: 'Lora', serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--text);
 }
+.overview-metric label { color: var(--subtext); font-size: 12px; }
 
-.city-stat label {
-  color: var(--text-secondary);
-  font-size: 0.9rem;
+.city-work-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
 }
-
-.overview-metric label {
-  color: var(--text-secondary);
-  font-size: 0.86rem;
-}
-
-.work-panel {
-  min-height: 220px;
-  padding: 14px;
-}
-
+.work-panel { min-height: 180px; }
 .panel-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
-
 .panel-head h2 {
   margin: 0;
-  font-size: 1rem;
+  font-family: 'Lora', serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
 }
-
-.panel-head span {
-  color: var(--text-secondary);
-  font-weight: 750;
-}
-
+.panel-head span { color: var(--subtext); font-weight: 700; }
 .panel-action {
-  color: var(--primary-color);
-  font-size: 0.86rem;
-  font-weight: 750;
+  color: var(--salvia);
+  font-size: 13px;
+  font-weight: 700;
   text-decoration: none;
 }
-
-.route-list {
-  display: grid;
-  gap: 8px;
-}
-
+.route-list { display: grid; }
 .route-item {
   display: grid;
   grid-template-columns: 96px minmax(0, 1fr);
-  gap: 4px 10px;
+  gap: 2px 10px;
   padding: 9px 0;
-  border-top: 1px solid var(--border-color);
-}
-
-.route-link,
-.location-link,
-.district-link,
-.simple-link {
-  color: inherit;
+  border-top: 1px solid var(--border);
   text-decoration: none;
+  color: var(--text);
 }
-
-.route-link:hover strong,
-.location-link:hover .location-head span,
-.district-link:hover,
-.simple-link:hover strong {
-  color: var(--primary-color);
-}
-
 .route-item strong {
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-size: 14px;
 }
-
 .route-item small {
   grid-column: 2;
-  color: var(--text-secondary);
+  color: var(--subtext);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-
 .item-mode {
   align-self: start;
-  color: var(--primary-color);
-  font-size: 0.78rem;
-  font-weight: 800;
+  color: var(--salvia);
+  font-size: 12px;
+  font-weight: 700;
   text-transform: capitalize;
 }
+.empty-line { padding: 18px 0; color: var(--subtext); font-size: 13px; }
 
-.empty-line {
-  padding: 18px 0;
-  color: var(--text-secondary);
-}
-
-.type-strip {
+.district-list { display: flex; flex-direction: column; gap: 10px; }
+.district-card {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.simple-link {
-  display: grid;
-  gap: 4px;
-  min-height: 72px;
-  padding: 12px;
-}
-
-.simple-link.primary {
-  border-color: var(--primary-color);
-}
-
-.simple-link strong {
-  font-size: 0.95rem;
-}
-
-.simple-link span {
-  color: var(--text-secondary);
-  font-size: 0.82rem;
-  line-height: 1.3;
-}
-
-.type-pill {
-  display: inline-flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px 10px;
-  text-transform: capitalize;
-}
-
-.district-list {
-  display: flex;
-  flex-direction: column;
   gap: 14px;
-}
-
-.district-row {
-  display: grid;
-  grid-template-columns: 220px minmax(0, 1fr);
-  gap: 14px;
-  padding: 14px 0;
-  border-top: 1px solid var(--border-color);
-}
-
-.district-meta h2 {
-  margin: 8px 0 4px;
-  font-size: 1.05rem;
-}
-
-.district-meta p {
-  margin: 0;
-  color: var(--text-secondary);
-}
-
-.signal-stack {
-  display: grid;
-  gap: 4px;
-  margin-top: 10px;
-  color: var(--text-secondary);
-  font-size: 0.82rem;
-}
-
-.district-link {
-  display: inline-flex;
-  margin-top: 10px;
-  color: var(--primary-color);
-  font-weight: 700;
-}
-
-.level-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 44px;
-  height: 28px;
-  border-radius: 6px;
-  background: var(--primary-color);
-  color: white;
-  font-weight: 750;
-}
-
-.location-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.location-cell {
-  min-height: 128px;
-  padding: 12px;
-}
-
-.location-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 8px;
-  font-weight: 700;
-}
-
-.location-head strong {
-  color: var(--primary-color);
-}
-
-.location-signals {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 8px;
-  color: var(--text-secondary);
-  font-size: 0.78rem;
-  font-weight: 650;
-}
-
-.module-list {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.module-line {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 8px;
-  color: var(--text-secondary);
-  font-size: 0.875rem;
-}
-
-.module-line span {
+  text-decoration: none;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  position: relative;
 }
-
-.module-line small,
-.module-more {
-  color: var(--text-muted);
+.district-card-art {
+  width: 84px;
+  height: 84px;
+  border-radius: 14px;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
 }
-
-@media (max-width: 900px) {
-  .district-row {
-    grid-template-columns: 1fr;
-  }
-
-  .location-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .city-work-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .simple-mode {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+.district-card-body { flex: 1; min-width: 0; }
+.district-card-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
 }
+.district-card-head h2 {
+  margin: 0;
+  font-family: 'Lora', serif;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text);
+}
+.district-card-locations { margin: 3px 0 8px; color: var(--subtext); font-size: 12px; }
+.district-card-signals { display: grid; gap: 5px; }
+.district-signal {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  align-items: center;
+  gap: 8px;
+}
+.district-signal span { font-size: 11px; color: var(--subtext); }
 
 @media (max-width: 620px) {
-  .city-header {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
-  .city-actions {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
-  .course-select {
-    min-width: 0;
-  }
-
-  .city-overview,
-  .city-stats {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .route-item {
-    grid-template-columns: 1fr;
-  }
-
-  .route-item small {
-    grid-column: auto;
-  }
-
-  .location-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .simple-mode {
-    grid-template-columns: 1fr;
-  }
+  .city-overview { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .city-work-grid { grid-template-columns: 1fr; }
+  .route-item { grid-template-columns: 1fr; }
+  .route-item small { grid-column: auto; }
 }
 </style>

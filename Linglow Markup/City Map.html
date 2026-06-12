@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ciudad Luminaria · Linglow</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+
+body {
+  background: #13111a;
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 36px;
+  padding: 40px 24px;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* ── Phone frame ── */
+.phone {
+  width: 390px;
+  height: 712px;
+  background: #f4efe5;
+  border-radius: 46px;
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  box-shadow:
+    0 0 0 9px #1e1c28,
+    0 0 0 10px #2e2c3a,
+    0 50px 120px rgba(0,0,0,0.75);
+}
+
+/* ── App header ── */
+.app-hdr {
+  height: 70px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  background: #f4efe5;
+  position: relative;
+  z-index: 20;
+}
+
+.hdr-btn {
+  width: 40px; height: 40px;
+  border-radius: 13px;
+  background: rgba(255,255,255,0.72);
+  border: 1px solid rgba(0,0,0,0.08);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 4.5px;
+  cursor: pointer; flex-shrink: 0;
+}
+.hdr-btn span { display: block; width: 14px; height: 1.5px; background: #3a3228; border-radius: 2px; }
+
+.hdr-mid { text-align: center; flex: 1; padding: 0 8px; }
+.hdr-mid h1 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 20px; font-weight: 600;
+  color: #2c1f0e; letter-spacing: 0.2px; line-height: 1;
+}
+.hdr-mid p { font-size: 10px; color: #9a8e7e; margin-top: 3px; letter-spacing: 0.1px; }
+
+.streak-pill {
+  display: flex; align-items: center; gap: 4px;
+  background: rgba(255,255,255,0.78);
+  border: 1px solid rgba(0,0,0,0.07);
+  border-radius: 22px; padding: 6px 12px; flex-shrink: 0;
+}
+.streak-pill .sn { font-size: 14px; font-weight: 700; color: #2c1f0e; }
+
+/* ── Map ── */
+.map-wrap {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+#cityCanvas {
+  display: block;
+  width: 100%; height: 100%;
+  image-rendering: auto;
+}
+
+/* loading shimmer */
+.map-loading {
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, #e8e0d0, #d8d0c0);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 15px; color: rgba(60,44,28,0.45);
+  letter-spacing: 1px;
+  transition: opacity 0.6s;
+  z-index: 30;
+}
+.map-loading.gone { opacity: 0; pointer-events: none; }
+
+/* ── District label layer ── */
+.dlayer {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.dlabel {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  pointer-events: auto;
+  cursor: default;
+  max-width: 120px;
+  transition: opacity 0.35s;
+}
+
+.dname {
+  display: block;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 13px; font-weight: 600;
+  color: #1e1208;
+  text-shadow:
+    0 0 16px rgba(255,248,210,0.98),
+    0 0  8px rgba(255,240,170,0.85),
+    0 1px 4px rgba(255,255,255,0.7);
+  line-height: 1.25;
+  white-space: nowrap;
+}
+
+/* wrap for 2-line district names */
+.dlabel.wrap .dname { white-space: normal; }
+
+.dlabel.locked .dname {
+  color: rgba(50,40,28,0.38);
+  text-shadow: 0 1px 5px rgba(255,255,255,0.55);
+}
+
+.d-lock {
+  display: flex; justify-content: center; margin-top: 5px;
+}
+.d-lock svg { width: 13px; height: 13px; opacity: 0.35; }
+
+.d-icons {
+  display: flex; gap: 3px; margin-top: 6px; justify-content: center;
+}
+
+.d-icon {
+  width: 25px; height: 25px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px;
+  border: 1px solid rgba(255,255,255,0.28);
+  box-shadow: 0 1px 5px rgba(0,0,0,0.22), 0 0 10px rgba(255,240,170,0.25);
+}
+.d-icon.stable  { background: rgba(36,108,56,0.9); }
+.d-icon.growing { background: rgba(70,155,85,0.85); }
+.d-icon.weak    { background: rgba(196,144,28,0.9); }
+.d-icon.started { background: rgba(142,132,120,0.82); }
+
+/* ── Bottom nav ── */
+.bnav {
+  height: 72px; flex-shrink: 0;
+  background: rgba(244,239,229,0.97);
+  border-top: 1px solid rgba(0,0,0,0.07);
+  display: flex; align-items: center;
+  justify-content: space-around;
+  padding: 0 6px 6px;
+}
+.nitem {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 2px;
+  cursor: pointer; padding: 6px 11px;
+  border-radius: 13px; color: #a89e8e;
+}
+.nitem.active { color: #2a6e40; background: rgba(42,110,64,0.1); }
+.nitem svg { width: 21px; height: 21px; stroke-width: 1.8; }
+.nitem span { font-size: 9.5px; font-weight: 500; }
+.nitem.active span { font-weight: 600; }
+
+/* ── Demo controls (right side) ── */
+.ctrl-panel {
+  width: 215px;
+  align-self: flex-start;
+  padding-top: 8px;
+}
+
+.cp-title {
+  font-size: 9px; font-weight: 600;
+  letter-spacing: 1.4px; text-transform: uppercase;
+  color: rgba(255,255,255,0.28);
+  margin-bottom: 20px;
+}
+
+.cp-row { margin-bottom: 15px; }
+
+.cp-name {
+  font-size: 11px; font-weight: 500;
+  color: rgba(255,255,255,0.52);
+  margin-bottom: 7px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+.cp-dots { display: flex; gap: 7px; }
+
+.cp-dot {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,0.16);
+  background: transparent;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 8.5px; font-weight: 600;
+  color: rgba(255,255,255,0.2);
+  transition: transform 0.12s, border-color 0.2s, background 0.2s, color 0.2s;
+  user-select: none;
+}
+.cp-dot:hover { transform: scale(1.18); }
+
+/* level colours */
+.cp-dot.on                  { color: rgba(255,255,255,0.88); }
+.cp-dot[data-l="1"].on      { border-color: rgba(165,155,142,0.5); background: rgba(165,155,142,0.14); }
+.cp-dot[data-l="2"].on      { border-color: rgba(110,155,190,0.65); background: rgba(110,155,190,0.16); }
+.cp-dot[data-l="3"].on      { border-color: rgba(130,170,100,0.65); background: rgba(130,170,100,0.16); }
+.cp-dot[data-l="4"].on      { border-color: rgba(210,145,55,0.72);  background: rgba(210,145,55,0.18);  }
+.cp-dot[data-l="5"].on      { border-color: rgba(222,178,45,0.92);  background: rgba(222,178,45,0.22);  }
+
+.cp-hint {
+  margin-top: 22px;
+  font-size: 10px; line-height: 1.65;
+  color: rgba(255,255,255,0.18);
+}
+
+/* level legend */
+.lv-legend {
+  margin-top: 24px;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.lv-leg-row {
+  display: flex; align-items: center; gap: 9px;
+}
+.lv-swatch {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+}
+.lv-leg-row span {
+  font-size: 10px; color: rgba(255,255,255,0.28); line-height: 1;
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ PHONE ═══════════════ -->
+<div class="phone">
+
+  <header class="app-hdr">
+    <div class="hdr-btn"><span></span><span></span><span></span></div>
+    <div class="hdr-mid">
+      <h1>Ciudad Luminaria</h1>
+      <p>Исследуй город и учи испанский каждый день.</p>
+    </div>
+    <div class="streak-pill"><span>🔥</span><span class="sn">12</span></div>
+  </header>
+
+  <div class="map-wrap" id="mapWrap">
+    <canvas id="cityCanvas"></canvas>
+    <div class="dlayer" id="dlayer"></div>
+    <div class="map-loading" id="mapLoading">Ciudad Luminaria…</div>
+  </div>
+
+  <nav class="bnav">
+    <div class="nitem">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+        <polyline points="9 22 9 12 15 12 15 22"/>
+      </svg><span>Главная</span>
+    </div>
+    <div class="nitem active">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/>
+        <line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/>
+      </svg><span>Город</span>
+    </div>
+    <div class="nitem">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
+        <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
+      </svg><span>Повторение</span>
+    </div>
+    <div class="nitem">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <line x1="18" y1="20" x2="18" y2="10"/>
+        <line x1="12" y1="20" x2="12" y2="4"/>
+        <line x1="6"  y1="20" x2="6"  y2="14"/>
+      </svg><span>Прогресс</span>
+    </div>
+    <div class="nitem">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+        <circle cx="12" cy="7" r="4"/>
+      </svg><span>Профиль</span>
+    </div>
+  </nav>
+</div>
+
+<!-- ═══════════════ CONTROLS ═══════════════ -->
+<div class="ctrl-panel">
+  <div class="cp-title">Уровень районов</div>
+  <div id="cpRows"></div>
+
+  <div class="lv-legend">
+    <div class="lv-leg-row"><div class="lv-swatch" style="background:rgba(165,155,142,0.6)"></div><span>1 — заперто</span></div>
+    <div class="lv-leg-row"><div class="lv-swatch" style="background:rgba(110,155,190,0.75)"></div><span>2 — начало</span></div>
+    <div class="lv-leg-row"><div class="lv-swatch" style="background:rgba(130,170,100,0.75)"></div><span>3 — развитие</span></div>
+    <div class="lv-leg-row"><div class="lv-swatch" style="background:rgba(210,145,55,0.8)"></div><span>4 — уверенность</span></div>
+    <div class="lv-leg-row"><div class="lv-swatch" style="background:rgba(222,178,45,0.95)"></div><span>5 — мастерство</span></div>
+  </div>
+
+  <p class="cp-hint">
+    Каждый район хранит свой слой изображения. Маски с размытыми краями создают плавные переходы между уровнями на границах районов.
+  </p>
+</div>
+
+<script>
+'use strict';
+
+// ═══ District definitions ═══
+// poly: [[x%, y%], …] — percentage of canvas width/height
+// lp:   [x%, y%]     — label anchor position
+const DISTRICTS = [
+  {
+    id: 'alto',
+    name: 'Distrito Alto',
+    lv: 1,
+    lp: [23.9, 13.7],
+    wrap: false,
+    poly: [
+      [0,0],[57,0],[57.29,13.59],
+      [36.17,19.67],[34.58,23],[21.78,23.72],[0.37,23.96]
+    ],
+    acts: [
+      {i:'📖',s:'started'},{i:'🌿',s:'started'},{i:'📚',s:'started'},{i:'💬',s:'started'}
+    ]
+  },
+  {
+    id: 'puentes',
+    name: 'Puentes del Relato',
+    lv: 1,
+    lp: [80.3, 21.8],
+    wrap: true,
+    poly: [
+      [57,0],[99.72,0],[99.91,40.88],
+      [62.34,26.94],[53.08,28.13],[34.58,23],[36.17,19.67],[57.29,13.59]
+    ],
+    acts: [
+      {i:'📖',s:'started'},{i:'🌿',s:'started'},{i:'📚',s:'started'},{i:'💬',s:'started'}
+    ]
+  },
+  {
+    id: 'barrio',
+    name: 'Barrio Vivo',
+    lv: 3,
+    lp: [18, 34.4],
+    wrap: false,
+    poly: [
+      [0.37,23.96],[21.78,23.72],[34.58,23],[53.08,28.13],
+      [52.99,31.7],[50.65,34.21],[36.07,39.69],[23.55,45.17],
+      [20.47,54.47],[21.59,57.09],[0,57]
+    ],
+    acts: [
+      {i:'📖',s:'stable'},{i:'🌿',s:'growing'},{i:'📚',s:'weak'},{i:'💬',s:'started'}
+    ]
+  },
+  {
+    id: 'plaza',
+    name: 'Plaza Clara',
+    lv: 5,
+    lp: [65.3, 51.8],
+    wrap: false,
+    poly: [
+      [99.91,40.88],[99.91,58.05],[60,73.3],[52.9,69.13],
+      [21.59,57.09],[20.47,54.47],[23.55,45.17],[36.07,39.69],
+      [50.65,34.21],[52.99,31.7],[53.08,28.13],[62.34,26.94]
+    ],
+    acts: [
+      {i:'📖',s:'stable'},{i:'🌿',s:'stable'},{i:'📚',s:'growing'},{i:'💬',s:'growing'}
+    ]
+  },
+  {
+    id: 'puerta',
+    name: 'Puerta de la Chispa',
+    lv: 2,
+    lp: [22.8, 73.5],
+    wrap: true,
+    poly: [
+      [0,57],[21.59,57.09],[52.9,69.13],[60,73.3],
+      [60.09,78.19],[52.15,83.08],[41.4,90.11],[45.79,99.88],[0.37,99.4],[0,86]
+    ],
+    acts: [
+      {i:'📖',s:'started'},{i:'🌿',s:'growing'},{i:'📚',s:'started'},{i:'💬',s:'started'}
+    ]
+  },
+  {
+    id: 'campus',
+    name: 'Campus de Maestría',
+    lv: 1,
+    lp: [76.5, 91.1],
+    wrap: true,
+    poly: [
+      [99.91,58.05],[100,100],[45.79,99.88],
+      [41.4,90.11],[52.15,83.08],[60.09,78.19],[60,73.3]
+    ],
+    acts: [
+      {i:'📖',s:'started'},{i:'🌿',s:'started'},{i:'📚',s:'started'},{i:'💬',s:'started'}
+    ]
+  }
+];
+
+// ═══ Canvas state ═══
+const cvs     = document.getElementById('cityCanvas');
+const mapWrap = document.getElementById('mapWrap');
+const dlayer  = document.getElementById('dlayer');
+const loading = document.getElementById('mapLoading');
+
+let W = 0, H = 0;
+const imgs = new Array(5).fill(null);
+let readyCount = 0;
+let animId = null;
+
+// ─── Load images ───
+['uploads/1.jpg','uploads/2.jpg','uploads/3.jpg','uploads/4.jpg','uploads/5.jpg']
+  .forEach((src, i) => {
+    const img = new Image();
+    img.onload  = () => { imgs[i] = img; if (++readyCount === 5) init(); };
+    img.onerror = () => { console.warn('Could not load', src); if (++readyCount === 5) init(); };
+    img.src = src;
+  });
+
+// ─── Init ───
+function init() {
+  resize();
+  renderFull(cvs);
+  loading.classList.add('gone');
+  buildLabels();
+  buildControls();
+  window.addEventListener('resize', () => { resize(); renderFull(cvs); });
+}
+
+function resize() {
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  W = mapWrap.clientWidth  * dpr;
+  H = mapWrap.clientHeight * dpr;
+  cvs.width  = W;
+  cvs.height = H;
+}
+
+// ═══ Core renderer ═══
+// Layers stack from 1 (dark base) up to 5 (fully lit).
+// Each layer N is masked to show only districts whose level ≥ N.
+// Blur on the mask polygon creates feathered district boundaries.
+function renderFull(target) {
+  const tw = target.width, th = target.height;
+  const ctx = target.getContext('2d');
+  ctx.clearRect(0, 0, tw, th);
+
+  // Base layer — level 1 image everywhere
+  if (imgs[0]) ctx.drawImage(imgs[0], 0, 0, tw, th);
+
+  // Overlay layers 2‒5
+  for (let thresh = 2; thresh <= 5; thresh++) {
+    const eligible = DISTRICTS.filter(d => d.lv >= thresh);
+    if (!eligible.length || !imgs[thresh - 1]) continue;
+
+    // Off-screen: level image
+    const lc = offCanvas(tw, th);
+    lc.ctx.drawImage(imgs[thresh - 1], 0, 0, tw, th);
+
+    // Off-screen: mask — transparent bg, blurred white polygon fills.
+    // destination-in reads alpha channel: blur feathers the edges naturally.
+    const mc = offCanvas(tw, th);
+    const blur = Math.max(10, Math.round(tw * 0.032));
+    mc.ctx.filter = `blur(${blur}px)`;
+    mc.ctx.fillStyle = '#fff';
+    eligible.forEach(d => drawPoly(mc.ctx, d.poly, tw, th));
+    mc.ctx.filter = 'none';
+
+    // Mask the level image
+    lc.ctx.globalCompositeOperation = 'destination-in';
+    lc.ctx.drawImage(mc.el, 0, 0);
+    lc.ctx.globalCompositeOperation = 'source-over';
+
+    // Composite onto main canvas
+    ctx.drawImage(lc.el, 0, 0);
+  }
+}
+
+function offCanvas(w, h) {
+  const el = document.createElement('canvas');
+  el.width = w; el.height = h;
+  return { el, ctx: el.getContext('2d') };
+}
+
+function drawPoly(ctx, pts, W, H) {
+  ctx.beginPath();
+  pts.forEach(([x, y], i) => {
+    const px = x * W / 100, py = y * H / 100;
+    i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+  });
+  ctx.closePath();
+  ctx.fill();
+}
+
+// ═══ Animated level change ═══
+function setLevel(id, lv) {
+  const d = DISTRICTS.find(x => x.id === id);
+  if (!d || d.lv === lv) return;
+
+  // Snapshot current frame
+  const old = offCanvas(W, H);
+  old.ctx.drawImage(cvs, 0, 0);
+
+  // Update and render new state
+  d.lv = lv;
+  const nxt = offCanvas(W, H);
+  renderFull(nxt.el);
+
+  // Crossfade
+  if (animId) cancelAnimationFrame(animId);
+  let t = 0;
+  const tick = () => {
+    t = Math.min(1, t + 0.06);
+    // ease in-out
+    const e = t < 0.5 ? 2*t*t : -1+(4-2*t)*t;
+    const ctx = cvs.getContext('2d');
+    ctx.drawImage(old.el, 0, 0);
+    ctx.globalAlpha = e;
+    ctx.drawImage(nxt.el, 0, 0);
+    ctx.globalAlpha = 1;
+    if (t < 1) animId = requestAnimationFrame(tick);
+    else ctx.drawImage(nxt.el, 0, 0);
+  };
+  animId = requestAnimationFrame(tick);
+
+  refreshLabel(id);
+  refreshCtrlRow(id);
+}
+
+// ═══ District labels ═══
+function buildLabels() {
+  dlayer.innerHTML = '';
+  DISTRICTS.forEach(d => dlayer.appendChild(makeLabel(d)));
+}
+
+function makeLabel(d) {
+  const el = document.createElement('div');
+  el.id        = `lbl-${d.id}`;
+  el.className = labelClass(d);
+  el.style.left = d.lp[0] + '%';
+  el.style.top  = d.lp[1] + '%';
+  el.innerHTML  = labelHTML(d);
+  return el;
+}
+
+function labelClass(d) {
+  return `dlabel${d.lv <= 1 ? ' locked' : ''}${d.wrap ? ' wrap' : ''}`;
+}
+
+function labelHTML(d) {
+  const locked = d.lv <= 1;
+  let h = `<span class="dname">${d.name}</span>`;
+  if (locked) {
+    h += `<div class="d-lock">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#2c1f0e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="11" width="18" height="11" rx="2"/>
+        <path d="M7 11V7a5 5 0 0110 0v4"/>
+      </svg></div>`;
+  } else if (d.acts.length) {
+    h += `<div class="d-icons">${
+      d.acts.map(a => `<div class="d-icon ${a.s}">${a.i}</div>`).join('')
+    }</div>`;
+  }
+  return h;
+}
+
+function refreshLabel(id) {
+  const d  = DISTRICTS.find(x => x.id === id);
+  const el = document.getElementById(`lbl-${id}`);
+  if (!el || !d) return;
+  el.className = labelClass(d);
+  el.innerHTML = labelHTML(d);
+}
+
+// ═══ Demo controls ═══
+function buildControls() {
+  const box = document.getElementById('cpRows');
+  box.innerHTML = '';
+  DISTRICTS.forEach(d => box.appendChild(makeCtrlRow(d)));
+}
+
+function makeCtrlRow(d) {
+  const row = document.createElement('div');
+  row.className = 'cp-row';
+  row.id        = `cr-${d.id}`;
+  row.innerHTML = `<div class="cp-name">${d.name}</div>`;
+
+  const dots = document.createElement('div');
+  dots.className = 'cp-dots';
+
+  for (let i = 1; i <= 5; i++) {
+    const dot = document.createElement('div');
+    dot.className = `cp-dot${d.lv >= i ? ' on' : ''}`;
+    dot.setAttribute('data-l', i);
+    dot.textContent = i;
+    dot.title = `Уровень ${i}`;
+    dot.addEventListener('click', () => setLevel(d.id, i));
+    dots.appendChild(dot);
+  }
+
+  row.appendChild(dots);
+  return row;
+}
+
+function refreshCtrlRow(id) {
+  const d   = DISTRICTS.find(x => x.id === id);
+  const row = document.getElementById(`cr-${id}`);
+  if (!d || !row) return;
+  row.querySelectorAll('.cp-dot').forEach((dot, i) => {
+    dot.classList.toggle('on', d.lv >= i + 1);
+  });
+}
+</script>
+</body>
+</html>

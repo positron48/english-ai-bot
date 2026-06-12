@@ -1,7 +1,11 @@
 <template>
   <div class="login-container">
-    <div class="card" style="max-width: 400px; margin: 50px auto;">
-      <h1>{{ t('auth.loginTitle') }}</h1>
+    <div class="card login-card">
+      <div class="login-brand">
+        <LgLumi :size="84" />
+        <div class="login-logo">Linglow</div>
+      </div>
+      <h1 class="login-title">{{ t('auth.loginTitle') }}</h1>
 
       <!-- Registration hint when login form is shown (no Telegram WebApp or auth failed) -->
       <div v-if="!isCheckingTelegramAuth" class="register-hint">
@@ -98,6 +102,7 @@ import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useAuth } from '../composables/useAuth'
 import { apiClient } from '../api/client'
+import LgLumi from '../components/linglow/LgLumi.vue'
 
 const { t } = useI18n()
 
@@ -322,10 +327,39 @@ const verifyOTP = async () => {
 <style scoped>
 .login-container {
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 20px;
+  background: var(--bg);
+}
+
+.login-card {
+  max-width: 400px;
+  width: 100%;
+  margin: 40px auto;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 24px 20px;
+  box-shadow: var(--shadow-card);
+}
+
+.login-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.login-logo {
+  font-family: 'Lora', serif;
+  font-size: 30px;
+  font-weight: 600;
+  color: var(--salvia);
+  line-height: 1;
 }
 
 .login-step {
@@ -334,9 +368,13 @@ const verifyOTP = async () => {
   gap: 10px;
 }
 
-h1 {
+.login-title {
   margin-bottom: 20px;
   text-align: center;
+  font-family: 'Lora', serif;
+  font-weight: 600;
+  font-size: 22px;
+  color: var(--text);
 }
 
 .info-box {
@@ -344,9 +382,9 @@ h1 {
   gap: 12px;
   padding: 12px 16px;
   margin-bottom: 16px;
-  background-color: var(--info-bg, #e3f2fd);
-  border: 1px solid var(--info-border, #90caf9);
-  border-radius: 8px;
+  background-color: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
   align-items: flex-start;
 }
 
@@ -354,7 +392,7 @@ h1 {
   width: 20px;
   height: 20px;
   min-width: 20px;
-  color: var(--info-icon, #1976d2);
+  color: var(--salvia);
   margin-top: 2px;
   flex-shrink: 0;
 }
@@ -367,12 +405,12 @@ h1 {
   margin: 0;
   font-size: 0.875em;
   line-height: 1.5;
-  color: var(--info-text, #1565c0);
+  color: var(--subtext);
 }
 
 .info-text code {
-  background-color: var(--info-code-bg, rgba(25, 118, 210, 0.1));
-  color: var(--info-code-text, #0d47a1);
+  background-color: var(--chip-bg);
+  color: var(--chip-text);
   padding: 2px 6px;
   border-radius: 4px;
   font-family: 'Courier New', monospace;
@@ -394,7 +432,7 @@ h1 {
   width: 40px;
   height: 40px;
   border: 4px solid var(--border-primary, #e0e0e0);
-  border-top-color: var(--color-primary, #1976d2);
+  border-top-color: var(--salvia);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -414,16 +452,16 @@ h1 {
 .register-hint {
   margin-bottom: 20px;
   padding: 12px 16px;
-  background-color: var(--info-bg, #e3f2fd);
-  border: 1px solid var(--info-border, #90caf9);
-  border-radius: 8px;
+  background-color: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
   text-align: center;
 }
 
 .register-hint p {
   margin: 0 0 8px 0;
   font-size: 0.9em;
-  color: var(--info-text, #1565c0);
+  color: var(--subtext);
 }
 
 .register-bot-lines {
@@ -443,13 +481,13 @@ h1 {
 }
 
 .register-bot-label {
-  color: var(--info-text, #1565c0);
+  color: var(--subtext);
 }
 
 .register-hint .bot-link {
   display: inline-block;
   font-weight: 600;
-  color: var(--color-primary, #1976d2);
+  color: var(--salvia);
   text-decoration: none;
 }
 
@@ -457,37 +495,6 @@ h1 {
   text-decoration: underline;
 }
 
-/* Dark theme support */
-[data-theme="dark"] .info-box {
-  background-color: var(--info-bg, rgba(25, 118, 210, 0.15));
-  border-color: var(--info-border, rgba(144, 202, 249, 0.3));
-}
-
-[data-theme="dark"] .info-icon {
-  color: var(--info-icon, #64b5f6);
-}
-
-[data-theme="dark"] .info-text {
-  color: var(--info-text, #90caf9);
-}
-
-[data-theme="dark"] .info-text code {
-  background-color: var(--info-code-bg, rgba(100, 181, 246, 0.2));
-  color: var(--info-code-text, #bbdefb);
-}
-
-[data-theme="dark"] .register-hint {
-  background-color: var(--info-bg, rgba(25, 118, 210, 0.15));
-  border-color: var(--info-border, rgba(144, 202, 249, 0.3));
-}
-
-[data-theme="dark"] .register-hint p {
-  color: var(--info-text, #90caf9);
-}
-
-[data-theme="dark"] .register-hint .bot-link {
-  color: var(--info-icon, #64b5f6);
-}
 
 .otp-input-container {
   display: flex;
@@ -502,16 +509,16 @@ h1 {
   text-align: center;
   font-size: 24px;
   font-weight: 600;
-  border: 2px solid var(--border-primary, #e0e0e0);
+  border: 2px solid var(--border);
   border-radius: 8px;
-  background-color: var(--input-bg, #fff);
-  color: var(--text-primary);
+  background-color: var(--input-bg);
+  color: var(--text);
   transition: all 0.2s;
 }
 
 .otp-digit:focus {
   outline: none;
-  border-color: var(--color-primary, #1976d2);
+  border-color: var(--salvia);
   box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
 }
 
