@@ -25,6 +25,11 @@ export interface LearningPayload {
 const learning = ref<LearningPayload | null>(null)
 let loadPromise: Promise<void> | null = null
 
+export function resetLearning(): void {
+  learning.value = null
+  loadPromise = null
+}
+
 const defaultLearning = (): LearningPayload => ({
   pair: 'ru-en',
   native_lang: 'ru',

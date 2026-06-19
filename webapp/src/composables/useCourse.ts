@@ -1,6 +1,7 @@
 import { ref, computed } from 'vue'
 import { courseClient, CourseSummary } from '../api/courseClient'
 import { setGrammarCourse } from '../api/grammarClient'
+import { resetLearning } from './useLearningConfig'
 
 const courses = ref<CourseSummary[]>([])
 const currentCourse = ref<CourseSummary | null>(null)
@@ -41,6 +42,8 @@ export function useCourse() {
     loadPromise = null
     // notify grammar client so it fetches the right bundle on next request
     setGrammarCourse(code)
+    // reset learning config cache so targetLangDisplay reloads for new course
+    resetLearning()
   }
 
   return {

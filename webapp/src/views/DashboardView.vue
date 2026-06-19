@@ -329,7 +329,7 @@ const loadData = async () => {
       offlineDashboard.value = true
     } else {
       [data] = await Promise.all([
-        apiClient.request('/api/dashboard'),
+        apiClient.request(currentCourseCode.value ? `/api/dashboard?course_code=${encodeURIComponent(currentCourseCode.value)}` : '/api/dashboard'),
         courseClient.getProgress(currentCourseCode.value || undefined).then(p => { linglowProgress.value = p }).catch(() => {}),
         courseClient.getDailyRoute(8, currentCourseCode.value || undefined).then(rt => { dailyToday.value = rt.today || null }).catch(() => {}),
       ])
@@ -402,7 +402,9 @@ const goToTraining = () => {
 
 
 watch(currentCourseCode, () => {
-  if (isAuthenticated.value) loadData()
+  if (isAuthenticated.value) {
+    ensureLearningLoaded().then(() => loadData())
+  }
 })
 
 // Watch for authentication state and load data when authenticated

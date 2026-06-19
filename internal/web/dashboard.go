@@ -239,7 +239,7 @@ func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 	// Get grammar statistics if grammar service is available
 	var grammarStats map[string]interface{}
 	if r.grammarService != nil {
-		stats, err := r.grammarService.GetGrammarStatistics(req.Context(), userID)
+		stats, err := r.grammarServiceForRequest(req, userID).GetGrammarStatistics(req.Context(), userID)
 		if err == nil {
 			grammarStats = map[string]interface{}{
 				"confirmed_level":             stats.ConfirmedLevel,
