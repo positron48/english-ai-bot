@@ -166,18 +166,30 @@ function readingStatus(distCode: string): 'gray' | 'orange' | 'yellow' | 'green'
   return pctToStatus(Math.round((done / total) * 100))
 }
 
+const STATUS_SCORE: Record<string, number> = { gray: 0, orange: 1, yellow: 2, green: 3 }
+
 // Derived district list with computed lv — reactively updates when grammarByLevel changes
 const CITY_DISTS = computed(() =>
-  DIST_DEFS.map(d => ({
-    ...d,
-    name: districtTitles.value[d.id] || d.id,
-    lv: districtLv(d.cefrLevel),
-    acts: [
+  DIST_DEFS.map(d => {
+    const locked = districtLv(d.cefrLevel) <= 1
+    const acts = [
       { type: 'grammar' as const, status: grammarStatus(d.cefrLevel) },
       { type: 'words' as const, status: wordsStatus(d.cefrLevel) },
       { type: 'reading' as const, status: readingStatus(d.id) },
-    ],
-  }))
+    ]
+    let lv: number
+    if (locked) {
+      lv = 1
+    } else {
+      const score = acts.reduce((s, a) => s + (STATUS_SCORE[a.status] ?? 0), 0)
+      const allGreen = acts.every(a => a.status === 'green')
+      if (allGreen) lv = 5
+      else if (score >= 5) lv = 4        // e.g. yellow+yellow+orange or better
+      else if (score >= 2) lv = 3        // anything started
+      else lv = 2                         // unlocked but nothing done
+    }
+    return { ...d, name: districtTitles.value[d.id] || d.id, lv, acts }
+  })
 )
 
 // Re-render canvas when grammar data arrives
