@@ -5,12 +5,12 @@
         <LgIcon name="chevron-left" :s="20" c="var(--text)" />
       </button>
       <div class="chat-topbar-title">{{ t('navigation.chat') }}</div>
-      <LgLumi :size="38" />
+      <LgLumi :size="38" pose="message" />
     </div>
     <div class="chat-container">
       <div class="chat-messages" ref="messagesContainer">
         <div v-if="messages.length === 0" class="welcome-message">
-          <LgLumi :size="84" />
+          <LgLumi :size="84" pose="speech" />
           <div class="welcome-icon">{{ targetLangFlag }}</div>
           <h2 class="welcome-title">{{ chatWelcome.title }}</h2>
           <p class="welcome-text">{{ chatWelcome.intro }}</p>

@@ -67,13 +67,15 @@ type CourseMapUserCourse struct {
 }
 
 type CourseMapDistrict struct {
-	ID        int64               `json:"id"`
-	Code      string              `json:"code"`
-	LevelCode string              `json:"level_code"`
-	Title     string              `json:"title"`
-	Order     int                 `json:"order"`
-	Status    string              `json:"status"`
-	Locations []CourseMapLocation `json:"locations"`
+	ID          int64               `json:"id"`
+	Code        string              `json:"code"`
+	LevelCode   string              `json:"level_code"`
+	Title       string              `json:"title"`
+	Order       int                 `json:"order"`
+	Status      string              `json:"status"`
+	Description string              `json:"description,omitempty"`
+	Metadata    json.RawMessage     `json:"metadata,omitempty"`
+	Locations   []CourseMapLocation `json:"locations"`
 }
 
 type CourseMapLocation struct {
@@ -141,7 +143,67 @@ type DailyRoute struct {
 	Summary    DailyRouteSummary   `json:"summary"`
 	Review     []DailyRouteItem    `json:"review"`
 	NewItems   []DailyRouteItem    `json:"new_items"`
+	Today      *DailyRouteToday    `json:"today,omitempty"`
 	Generated  string              `json:"generated_at"`
+}
+
+// DailyRouteToday tracks completion of today's path steps on the home screen.
+type DailyRouteToday struct {
+	WordsDue          int                    `json:"words_due"`
+	WordsDone         int                    `json:"words_done"`
+	ReadingDone       bool                   `json:"reading_done"`
+	ReadingSuggestion *DailyReadingSuggested `json:"reading_suggestion,omitempty"`
+	ChatDone          bool                   `json:"chat_done"`
+}
+
+// DailyReadingSuggested is the next unread reading text for the user.
+type DailyReadingSuggested struct {
+	TextID string `json:"text_id"`
+	Title  string `json:"title"`
+}
+
+// FillDailyRouteToday populates the Today section from daily aggregates and events.
+func (r *CourseRepository) FillDailyRouteToday(ctx context.Context, route *DailyRoute, userID int64) {
+	if route == nil {
+		return
+	}
+	today := &DailyRouteToday{WordsDue: route.Summary.DueReviewCount}
+	day := time.Now().Format("2006-01-02")
+
+	_ = r.db.QueryRowContext(ctx, `
+		SELECT COALESCE(SUM(attempt_count), 0)
+		FROM mode_daily_stats
+		WHERE user_course_id = ? AND local_date = CAST(? AS date) AND mode = 'word_training'
+	`, route.UserCourse.ID, day).Scan(&today.WordsDone)
+
+	var readToday, chatToday int
+	_ = r.db.QueryRowContext(ctx, `
+		SELECT
+			COUNT(*) FILTER (WHERE event_type = 'reading_text_completed'),
+			COUNT(*) FILTER (WHERE event_type = 'chat_message_sent')
+		FROM learning_events
+		WHERE user_course_id = ? AND event_time >= CAST(? AS date)
+	`, route.UserCourse.ID, day).Scan(&readToday, &chatToday)
+	today.ReadingDone = readToday > 0
+	today.ChatDone = chatToday > 0
+
+	// Next unread text matching the course target language.
+	var textID, title string
+	if err := r.db.QueryRowContext(ctx, `
+		SELECT rt.text_id, rt.title
+		FROM reading_texts rt
+		WHERE rt.target_language = ?
+			AND NOT EXISTS (
+				SELECT 1 FROM reading_text_progress rtp
+				WHERE rtp.user_id = ? AND rtp.chapter_id = rt.text_id
+			)
+		ORDER BY rt.level, rt.category_id, rt.text_id
+		LIMIT 1
+	`, route.Course.TargetLanguage, userID).Scan(&textID, &title); err == nil {
+		today.ReadingSuggestion = &DailyReadingSuggested{TextID: textID, Title: title}
+	}
+
+	route.Today = today
 }
 
 type DailyRouteSummary struct {
@@ -2409,7 +2471,8 @@ type courseMapItemRow struct {
 
 func (r *CourseRepository) listCourseDistricts(ctx context.Context, courseID int64) ([]CourseMapDistrict, error) {
 	rows, err := r.db.QueryContext(ctx, `
-		SELECT id, code, level_code, title, sort_order, status
+		SELECT id, code, level_code, title, sort_order, status,
+			COALESCE(description, ''), CAST(metadata_json AS text)
 		FROM districts
 		WHERE course_id = ?
 		ORDER BY sort_order, id
@@ -2422,8 +2485,12 @@ func (r *CourseRepository) listCourseDistricts(ctx context.Context, courseID int
 	var districts []CourseMapDistrict
 	for rows.Next() {
 		var d CourseMapDistrict
-		if err := rows.Scan(&d.ID, &d.Code, &d.LevelCode, &d.Title, &d.Order, &d.Status); err != nil {
+		var metadata string
+		if err := rows.Scan(&d.ID, &d.Code, &d.LevelCode, &d.Title, &d.Order, &d.Status, &d.Description, &metadata); err != nil {
 			return nil, fmt.Errorf("scan district: %w", err)
+		}
+		if metadata != "" && metadata != "{}" {
+			d.Metadata = json.RawMessage(metadata)
 		}
 		districts = append(districts, d)
 	}

@@ -345,6 +345,20 @@ func (r *Router) handleLearningSpeakingSubmit(w http.ResponseWriter, req *http.R
 	attemptID, err := r.speakingSessionRepo.SaveAttempt(rec)
 	if err != nil {
 		r.logger.Error("save speaking attempt", zap.Error(err))
+	} else {
+		statsRepo := repository.NewLinglowDailyStatsRepository(r.db)
+		if userCourseID, ucErr := statsRepo.ResolveUserCourseID(req.Context(), userID, r.currentCourseCodeForUser(req.Context(), userID)); ucErr == nil {
+			correct := 0
+			if isAcceptable {
+				correct = 1
+			}
+			_ = statsRepo.Bump(req.Context(), repository.DailyBump{
+				UserCourseID: userCourseID,
+				Mode:         "speaking",
+				Attempts:     1,
+				Correct:      correct,
+			})
+		}
 	}
 
 	canAdvance := isAcceptable || attemptNo >= maxAttempts

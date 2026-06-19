@@ -57,7 +57,7 @@
         >
           <span class="remaining-text">
             <span class="remaining-label">{{ t('training.available') }}</span>
-            {{ availableForTraining }} {{ t('common.cards') || 'cards' }}
+            {{ availableForTraining }} {{ (t as any)('common.cards', availableForTraining) }}
             <span v-if="estimatedTimeForRemaining">({{ estimatedTimeForRemaining }})</span>
           </span>
         </div>

@@ -22,6 +22,7 @@ import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAuth } from '../composables/useAuth'
 import { useCourse } from '../composables/useCourse'
+import { useActivityTracker } from '../composables/useActivityTracker'
 import { PUBLIC_BREAKPOINT } from '../constants/layout'
 import LgSideNav from '../components/linglow/LgSideNav.vue'
 import LgBottomNav from '../components/linglow/LgBottomNav.vue'
@@ -29,6 +30,7 @@ import LgBottomNav from '../components/linglow/LgBottomNav.vue'
 const route = useRoute()
 const { isAuthenticated } = useAuth()
 const { ensureCourseLoaded } = useCourse()
+useActivityTracker()
 
 const isDesktop = ref(window.innerWidth >= PUBLIC_BREAKPOINT)
 const check = () => { isDesktop.value = window.innerWidth >= PUBLIC_BREAKPOINT }

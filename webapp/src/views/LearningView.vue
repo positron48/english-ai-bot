@@ -6,7 +6,7 @@
         <span class="practice-brand">Linglow.</span>
         <span class="practice-title">{{ t('learning.title') }}</span>
       </div>
-      <LgLumi :size="52" />
+      <LgLumi :size="52" pose="teacher" />
     </div>
     <p class="practice-sub">{{ t('lg.practiceSub') }}</p>
 
@@ -17,7 +17,7 @@
     <!-- Quick launches -->
     <div class="practice-quick">
       <router-link v-if="!isOffline" to="/training" class="lg-list-row">
-        <div class="lg-icon-box">📝</div>
+        <div class="lg-icon-box"><LgActivityIcon type="words" status="green" :size="28" /></div>
         <div class="quick-text">
           <div class="lg-list-row-title">{{ t('navigation.training') }}</div>
           <div class="lg-list-row-sub">{{ t('lg.quickTrainingSub') }}</div>
@@ -25,18 +25,10 @@
         <LgIcon name="chevron-right" :s="14" c="var(--subtext)" />
       </router-link>
       <router-link to="/learning/grammar/training" class="lg-list-row">
-        <div class="lg-icon-box">🧩</div>
+        <div class="lg-icon-box"><LgActivityIcon type="grammar" status="green" :size="28" /></div>
         <div class="quick-text">
           <div class="lg-list-row-title">{{ t('lg.quickGrammarTraining') }}</div>
           <div class="lg-list-row-sub">{{ t('lg.quickGrammarTrainingSub') }}</div>
-        </div>
-        <LgIcon name="chevron-right" :s="14" c="var(--subtext)" />
-      </router-link>
-      <router-link v-if="!isOffline" to="/chat" class="lg-list-row">
-        <div class="lg-icon-box">☕</div>
-        <div class="quick-text">
-          <div class="lg-list-row-title">{{ t('lg.quickChat') }}</div>
-          <div class="lg-list-row-sub">{{ t('lg.quickChatSub') }}</div>
         </div>
         <LgIcon name="chevron-right" :s="14" c="var(--subtext)" />
       </router-link>
@@ -52,7 +44,9 @@
         :class="{ 'practice-mode--disabled': mode.disabled }"
         @click.capture="(e: Event) => { if (mode.disabled) e.preventDefault() }"
       >
-        <div class="practice-mode-icon" :style="{ background: mode.bg }">{{ mode.icon }}</div>
+        <div class="practice-mode-icon" :style="{ background: mode.bg }">
+          <LgActivityIcon :type="mode.type" status="green" :size="34" />
+        </div>
         <div class="practice-mode-title">{{ mode.title }}</div>
         <div class="practice-mode-desc">{{ mode.desc }}</div>
         <img class="practice-mode-art" :src="mode.art" alt="" />
@@ -62,7 +56,7 @@
     <!-- My dictionary -->
     <router-link v-if="!isOffline" to="/vocab" class="lg-card practice-dict">
       <div class="practice-dict-left">
-        <div class="practice-dict-emoji">📗</div>
+        <div class="practice-dict-emoji"><LgActivityIcon type="reading" status="green" :size="28" /></div>
         <div class="practice-dict-title">{{ t('lg.myDictionary') }}</div>
         <div class="practice-dict-sub">{{ t('lg.myDictionarySub') }}</div>
       </div>
@@ -70,49 +64,38 @@
     </router-link>
 
     <!-- Lumi fact -->
-    <LgLumiFact :lumi-size="46" />
+    <LgLumiFact :lumi-size="46" context="practice" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useSpeaking } from '../composables/useSpeaking'
 import LgLumi from '../components/linglow/LgLumi.vue'
 import LgIcon from '../components/linglow/LgIcon.vue'
 import LgLumiFact from '../components/linglow/LgLumiFact.vue'
-import artCafeterias from '../assets/linglow/dist_cafeterias.jpg'
-import artRepaso from '../assets/linglow/bldg_repaso.jpg'
-import artGrammar from '../assets/linglow/bldg_grammar.jpg'
-import artLectura from '../assets/linglow/bldg_lectura.jpg'
+import LgActivityIcon from '../components/linglow/LgActivityIcon.vue'
+import artWords from '../assets/linglow/art/bg-word-cards-440.jpg'
+import artGrammar from '../assets/linglow/art/bg-grammar-440.jpg'
+import artReading from '../assets/linglow/art/bg-read-440.jpg'
+import artConversation from '../assets/linglow/art/bg-conversation-440.jpg'
 
 const { t } = useI18n()
-const { loadAvailability } = useSpeaking()
-const showSpeaking = ref(false)
 const isOffline = ref(typeof navigator !== 'undefined' && navigator.onLine === false)
 
 const modes = computed(() => [
   {
-    icon: '💬',
-    bg: 'rgba(63,111,63,0.14)',
-    title: t('learning.speaking'),
-    desc: t('learning.speakingDescription'),
-    art: artCafeterias,
-    to: showSpeaking.value && !isOffline.value ? '/learning/speaking' : '/chat',
-    disabled: isOffline.value,
-  },
-  {
-    icon: '📖',
-    bg: 'rgba(217,168,63,0.14)',
+    type: 'words' as const,
+    bg: 'rgba(45,107,58,0.10)',
     title: t('learning.words'),
     desc: t('learning.wordsDescription'),
-    art: artRepaso,
+    art: artWords,
     to: '/learning/words',
     disabled: isOffline.value,
   },
   {
-    icon: '🧩',
-    bg: 'rgba(155,143,212,0.14)',
+    type: 'grammar' as const,
+    bg: 'rgba(45,107,58,0.10)',
     title: t('learning.grammar'),
     desc: t('learning.grammarDescription'),
     art: artGrammar,
@@ -120,12 +103,21 @@ const modes = computed(() => [
     disabled: false,
   },
   {
-    icon: '📄',
-    bg: 'rgba(91,158,212,0.14)',
+    type: 'reading' as const,
+    bg: 'rgba(45,107,58,0.10)',
     title: t('learning.reading'),
     desc: t('learning.readingDescription'),
-    art: artLectura,
+    art: artReading,
     to: '/learning/reading',
+    disabled: isOffline.value,
+  },
+  {
+    type: 'conversation' as const,
+    bg: 'rgba(45,107,58,0.10)',
+    title: t('learning.conversation'),
+    desc: t('learning.conversationDescription'),
+    art: artConversation,
+    to: '/chat',
     disabled: isOffline.value,
   },
 ])
@@ -134,19 +126,9 @@ const handleNetworkChange = () => {
   isOffline.value = typeof navigator !== 'undefined' && navigator.onLine === false
 }
 
-onMounted(async () => {
+onMounted(() => {
   window.addEventListener('online', handleNetworkChange)
   window.addEventListener('offline', handleNetworkChange)
-  try {
-    if (isOffline.value) {
-      showSpeaking.value = false
-      return
-    }
-    const avail = await loadAvailability()
-    showSpeaking.value = Boolean(avail.can_access && avail.available)
-  } catch {
-    showSpeaking.value = false
-  }
 })
 
 onUnmounted(() => {
@@ -264,7 +246,7 @@ onUnmounted(() => {
   height: 100%;
   object-fit: cover;
   object-position: top;
-  opacity: 0.88;
+  opacity: 0.40;
   border-radius: 0 18px 18px 0;
   -webkit-mask-image: linear-gradient(to right, transparent 0%, black 28%);
   mask-image: linear-gradient(to right, transparent 0%, black 28%);

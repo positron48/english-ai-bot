@@ -143,6 +143,16 @@
         <Icon name="chart" class="admin-sidebar-icon" />
         <span>Linglow SRS</span>
       </router-link>
+      <router-link
+        v-if="can('full_access')"
+        to="/lumi-facts"
+        class="admin-sidebar-item"
+        :class="{ active: $route.path === '/lumi-facts' }"
+        @click="isMobile && handleCloseSidebar()"
+      >
+        <Icon name="book" class="admin-sidebar-icon" />
+        <span>Lumi Facts</span>
+      </router-link>
       <router-link 
         v-if="can('full_access')"
         to="/access" 
@@ -163,15 +173,25 @@
         <Icon name="users" class="admin-sidebar-icon" />
         <span>Users</span>
       </router-link>
-      <router-link 
+      <router-link
         v-if="can('stats.read')"
-        to="/stats" 
-        class="admin-sidebar-item" 
+        to="/stats"
+        class="admin-sidebar-item"
         :class="{ active: $route.path === '/stats' }"
         @click="isMobile && handleCloseSidebar()"
       >
         <Icon name="chart" class="admin-sidebar-icon" />
         <span>Statistics</span>
+      </router-link>
+      <router-link
+        v-if="can('full_access')"
+        to="/help"
+        class="admin-sidebar-item"
+        :class="{ active: $route.path === '/help' }"
+        @click="isMobile && handleCloseSidebar()"
+      >
+        <Icon name="book-open" class="admin-sidebar-icon" />
+        <span>Справка</span>
       </router-link>
     </nav>
     

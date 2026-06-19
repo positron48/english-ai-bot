@@ -1,5 +1,5 @@
 <template>
-  <div class="lg-lumi-fact">
+  <div v-if="fact" class="lg-lumi-fact">
     <LgLumi :size="lumiSize" />
     <div class="lg-lumi-fact-body">
       <div class="lg-lumi-fact-head">
@@ -12,20 +12,43 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { factClient } from '../../api/factClient'
+import { useCourse } from '../../composables/useCourse'
+import { useLocale } from '../../composables/useLocale'
 import LgLumi from './LgLumi.vue'
 
-const props = withDefaults(defineProps<{ lumiSize?: number }>(), { lumiSize: 52 })
-void props
+const props = withDefaults(defineProps<{ lumiSize?: number; context?: string }>(), {
+  lumiSize: 52,
+  context: 'general',
+})
 
-const { t, tm } = useI18n()
+const { t } = useI18n()
+const { currentCourseCode } = useCourse()
+const { currentLocale } = useLocale()
 
-// Day-based rotating fact, list lives in locale files (lg.lumiFacts)
-const fact = computed(() => {
-  const facts = tm('lg.lumiFacts') as string[]
-  if (!Array.isArray(facts) || facts.length === 0) return ''
-  return facts[Math.floor(Date.now() / 86400000) % facts.length]
+const fact = ref('')
+
+const cacheKey = () => {
+  const day = new Date().toISOString().slice(0, 10)
+  return `lumi-fact:${currentCourseCode.value || ''}:${props.context}:${currentLocale.value}:${day}`
+}
+
+onMounted(async () => {
+  // Same-day cache: instant render and offline support
+  try {
+    const cached = localStorage.getItem(cacheKey())
+    if (cached) {
+      fact.value = cached
+      return
+    }
+  } catch { /* ignore */ }
+  const dto = await factClient.getDailyFact(props.context, currentCourseCode.value || undefined, currentLocale.value)
+  if (dto) {
+    fact.value = dto.body
+    try { localStorage.setItem(cacheKey(), dto.body) } catch { /* ignore */ }
+  }
 })
 </script>
 

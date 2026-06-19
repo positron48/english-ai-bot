@@ -385,6 +385,16 @@ func (r *Router) handleChat(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	if r.linglowEventRepo != nil {
+		if err := r.linglowEventRepo.RecordChatMessage(ctx, repository.ChatMessageInput{
+			UserID:     userID,
+			CourseCode: r.currentCourseCodeForUser(ctx, userID),
+			MessageLen: len([]rune(message)),
+		}); err != nil {
+			r.logger.Warn("failed to record linglow chat event", zap.Int64("user_id", userID), zap.Error(err))
+		}
+	}
+
 	// Return response as JSON
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)

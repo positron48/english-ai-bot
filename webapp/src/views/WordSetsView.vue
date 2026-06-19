@@ -38,7 +38,7 @@
           </div>
           <p v-if="wordSet.description" class="word-set-description">{{ wordSet.description }}</p>
           <div class="word-set-stats">
-            <span>{{ wordSet.known_words + wordSet.words_in_vocab }}/{{ wordSet.total_words }} {{ t('common.words') || 'words' }}</span>
+            <span>{{ wordSet.known_words + wordSet.words_in_vocab }}/{{ wordSet.total_words }} {{ (t as any)('common.words', wordSet.total_words) }}</span>
             <span v-if="wordSet.unknown_words > 0" class="unknown-count">
               {{ wordSet.unknown_words }} {{ t('common.new') || 'new' }}
             </span>

@@ -177,6 +177,7 @@ func (r *LinglowEventRepository) RecordGrammarTestAttempt(ctx context.Context, l
 	if err := tx.Commit(); err != nil {
 		return 0, fmt.Errorf("commit linglow event write: %w", err)
 	}
+	r.bumpDaily(ctx, userCourseID, answeredAt, "grammar_test", input.Passed)
 	return exerciseID, nil
 }
 
@@ -324,6 +325,7 @@ func (r *LinglowEventRepository) RecordGrammarTrainingAttempt(ctx context.Contex
 	if err := tx.Commit(); err != nil {
 		return 0, fmt.Errorf("commit linglow grammar training write: %w", err)
 	}
+	r.bumpDaily(ctx, userCourseID, answeredAt, "grammar_training", input.IsCorrect)
 	return exerciseID, nil
 }
 
@@ -459,7 +461,181 @@ func (r *LinglowEventRepository) RecordWordReviewEvent(ctx context.Context, lc c
 	if err := tx.Commit(); err != nil {
 		return 0, fmt.Errorf("commit linglow word review write: %w", err)
 	}
+	r.bumpDaily(ctx, userCourseID, answeredAt, "word_training", input.IsCorrect)
 	return exerciseID, nil
+}
+
+// bumpDaily best-effort increments the daily aggregates after a fresh event insert.
+func (r *LinglowEventRepository) bumpDaily(ctx context.Context, userCourseID int64, eventTime time.Time, mode string, isCorrect bool) {
+	correct := 0
+	if isCorrect {
+		correct = 1
+	}
+	_ = NewLinglowDailyStatsRepository(r.db).Bump(ctx, DailyBump{
+		UserCourseID: userCourseID,
+		Day:          LocalDayFromTime(eventTime),
+		Mode:         mode,
+		Attempts:     1,
+		Correct:      correct,
+	})
+}
+
+// ReadingCompletedInput describes a live "text marked as read" action.
+type ReadingCompletedInput struct {
+	UserID     int64
+	CourseCode string
+	ChapterID  string
+	ReadAt     time.Time
+}
+
+// RecordReadingCompleted mirrors a reading completion into exercise_attempts and learning_events.
+// Idempotent per (user, chapter): uses the same source_table/source_pk as the media backfill.
+func (r *LinglowEventRepository) RecordReadingCompleted(ctx context.Context, input ReadingCompletedInput) (int64, error) {
+	if input.UserID == 0 {
+		return 0, fmt.Errorf("user id is empty")
+	}
+	if strings.TrimSpace(input.ChapterID) == "" {
+		return 0, fmt.Errorf("chapter id is empty")
+	}
+	if strings.TrimSpace(input.CourseCode) == "" {
+		return 0, fmt.Errorf("course code is empty")
+	}
+	readAt := input.ReadAt
+	if readAt.IsZero() {
+		readAt = time.Now()
+	}
+
+	tx, err := r.db.BeginTx(ctx, nil)
+	if err != nil {
+		return 0, fmt.Errorf("begin linglow reading write: %w", err)
+	}
+	defer tx.Rollback()
+
+	var userCourseID int64
+	if err := tx.QueryRowContext(ctx, `
+		SELECT uc.id
+		FROM user_courses uc
+		JOIN courses c ON c.id = uc.course_id
+		WHERE uc.user_id = ? AND c.code = ?
+	`, input.UserID, input.CourseCode).Scan(&userCourseID); err != nil {
+		return 0, fmt.Errorf("get user course: %w", err)
+	}
+
+	sourcePK := fmt.Sprintf("%d:%s", input.UserID, input.ChapterID)
+	var existingID int64
+	err = tx.QueryRowContext(ctx, `
+		SELECT id
+		FROM exercise_attempts
+		WHERE user_course_id = ? AND source_table = 'reading_text_progress' AND source_pk = ?
+	`, userCourseID, sourcePK).Scan(&existingID)
+	if err != nil && err != sql.ErrNoRows {
+		return 0, fmt.Errorf("check existing reading attempt: %w", err)
+	}
+	if err == nil {
+		return existingID, tx.Commit()
+	}
+
+	var learningItemID interface{}
+	var itemID int64
+	err = tx.QueryRowContext(ctx, `
+		SELECT li.id
+		FROM learning_items li
+		JOIN courses c ON c.id = li.course_id
+		WHERE c.code = ? AND li.source_kind = 'reading_text' AND li.source_id = ?
+	`, input.CourseCode, strings.TrimSpace(input.ChapterID)).Scan(&itemID)
+	if err != nil && err != sql.ErrNoRows {
+		return 0, fmt.Errorf("lookup reading learning item: %w", err)
+	}
+	if err == nil {
+		learningItemID = itemID
+	}
+
+	var exerciseID int64
+	if err := tx.QueryRowContext(ctx, `
+		INSERT INTO exercise_attempts (
+			user_course_id, learning_item_id, mode, started_at, answered_at, is_correct, score,
+			prompt_json, answer_json, result_json, source_table, source_pk
+		)
+		VALUES (?, ?, 'reading_completion', ?, ?, true, 100,
+			jsonb_build_object('text_id', CAST(? AS text)),
+			'{}'::jsonb,
+			jsonb_build_object('completed', true),
+			'reading_text_progress',
+			?
+		)
+		RETURNING id
+	`, userCourseID, learningItemID, readAt, readAt, input.ChapterID, sourcePK).Scan(&exerciseID); err != nil {
+		return 0, fmt.Errorf("insert reading exercise attempt: %w", err)
+	}
+	if _, err := tx.ExecContext(ctx, `
+		INSERT INTO learning_events (
+			user_course_id, learning_item_id, exercise_attempt_id, event_type, event_time,
+			mode, source_table, source_pk, event_json
+		)
+		VALUES (?, ?, ?, 'reading_text_completed', ?, 'reading_completion', 'reading_text_progress',
+			?,
+			jsonb_build_object('text_id', CAST(? AS text), 'completed', true)
+		)
+	`, userCourseID, learningItemID, exerciseID, readAt, sourcePK, input.ChapterID); err != nil {
+		return 0, fmt.Errorf("insert reading learning event: %w", err)
+	}
+	if err := tx.Commit(); err != nil {
+		return 0, fmt.Errorf("commit linglow reading write: %w", err)
+	}
+	r.bumpDaily(ctx, userCourseID, readAt, "reading_completion", true)
+	return exerciseID, nil
+}
+
+// ChatMessageInput describes one user message sent to the AI chat.
+type ChatMessageInput struct {
+	UserID     int64
+	CourseCode string
+	MessageLen int
+	SentAt     time.Time
+}
+
+// RecordChatMessage writes a learning event for a sent chat message (no exercise attempt).
+func (r *LinglowEventRepository) RecordChatMessage(ctx context.Context, input ChatMessageInput) error {
+	if input.UserID == 0 {
+		return fmt.Errorf("user id is empty")
+	}
+	if strings.TrimSpace(input.CourseCode) == "" {
+		return fmt.Errorf("course code is empty")
+	}
+	sentAt := input.SentAt
+	if sentAt.IsZero() {
+		sentAt = time.Now()
+	}
+
+	var userCourseID int64
+	if err := r.db.QueryRowContext(ctx, `
+		SELECT uc.id
+		FROM user_courses uc
+		JOIN courses c ON c.id = uc.course_id
+		WHERE uc.user_id = ? AND c.code = ?
+	`, input.UserID, input.CourseCode).Scan(&userCourseID); err != nil {
+		return fmt.Errorf("get user course: %w", err)
+	}
+
+	eventJSON, _ := json.Marshal(map[string]interface{}{
+		"message_len": input.MessageLen,
+	})
+	if _, err := r.db.ExecContext(ctx, `
+		INSERT INTO learning_events (
+			user_course_id, event_type, event_time, mode, source_table, event_json
+		)
+		VALUES (?, 'chat_message_sent', ?, 'chat', 'chat', CAST(? AS jsonb))
+	`, userCourseID, sentAt, string(eventJSON)); err != nil {
+		return fmt.Errorf("insert chat learning event: %w", err)
+	}
+	_ = NewLinglowDailyStatsRepository(r.db).Bump(ctx, DailyBump{
+		UserCourseID: userCourseID,
+		Day:          LocalDayFromTime(sentAt),
+		Mode:         "chat",
+		Attempts:     1,
+		Correct:      1,
+	})
+	return nil
 }
 
 func lookupSRSItemID(ctx context.Context, tx *sql.Tx, userCourseID int64, learningItemID interface{}) interface{} {

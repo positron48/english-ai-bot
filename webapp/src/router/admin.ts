@@ -73,6 +73,11 @@ const router = createRouter({
           component: () => import('../views/AdminLinglowSRSView.vue')
         },
         {
+          path: 'lumi-facts',
+          name: 'AdminLumiFacts',
+          component: () => import('../views/AdminLumiFactsView.vue')
+        },
+        {
           path: 'access',
           name: 'AdminAccess',
           component: () => import('../views/AdminAccessView.vue')
@@ -86,6 +91,11 @@ const router = createRouter({
           path: 'stats',
           name: 'AdminStats',
           component: () => import('../views/AdminStatsView.vue')
+        },
+        {
+          path: 'help',
+          name: 'AdminHelp',
+          component: () => import('../views/AdminHelpView.vue')
         }
       ]
     },

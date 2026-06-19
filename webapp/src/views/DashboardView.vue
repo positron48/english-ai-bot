@@ -9,9 +9,12 @@
         </div>
         <div class="lg-home-course">{{ targetLangDisplay }}</div>
       </div>
-      <button @click="refreshData" class="lg-refresh-btn" :disabled="loading" :class="{ 'rotating': loading }">
-        <LgIcon name="refresh" :s="18" c="var(--text)" />
-      </button>
+      <div class="lg-home-header-right">
+        <LgStreakBadge v-if="streakDays > 0" :n="streakDays" />
+        <button @click="refreshData" class="lg-refresh-btn" :disabled="loading" :class="{ 'rotating': loading }">
+          <LgIcon name="refresh" :s="18" c="var(--text)" />
+        </button>
+      </div>
     </div>
 
     <div v-if="loading" class="lg-loading">{{ t('common.loading') }}</div>
@@ -37,41 +40,26 @@
 
       <!-- Твой путь сегодня -->
       <div class="lg-path-wrap">
-        <div class="lg-path-lumi"><LgLumi :size="68" /></div>
+        <div class="lg-path-lumi"><LgLumi :size="68" pose="point" /></div>
         <div class="lg-path-card">
           <div class="lg-path-head">
             <span class="lg-path-title">{{ t('lg.todayPath') }}</span>
             <span class="lg-path-arrow">←</span>
           </div>
-          <router-link v-if="stats.availableForTraining > 0" to="/training" class="lg-path-row">
-            <div class="lg-icon-box">📖</div>
-            <div class="lg-path-row-text">
-              <div class="lg-list-row-title">{{ t('lg.repeatWords', { n: stats.availableForTraining }) }}</div>
-              <div class="lg-list-row-sub">{{ t('lg.repeatWordsSub') }}</div>
+          <router-link
+            v-for="step in pathSteps"
+            :key="step.key"
+            :to="step.to"
+            class="lg-path-row"
+            :class="{ 'lg-path-row--done': step.done }"
+          >
+            <div class="lg-icon-box" :class="{ 'lg-icon-box--done': step.done }">
+              <template v-if="step.done">✓</template>
+              <LgActivityIcon v-else :type="step.type" status="green" :size="40" />
             </div>
-            <LgIcon name="chevron-right" :s="16" c="var(--text-muted)" />
-          </router-link>
-          <router-link to="/city/daily-route" class="lg-path-row">
-            <div class="lg-icon-box">🗺️</div>
             <div class="lg-path-row-text">
-              <div class="lg-list-row-title">{{ t('lg.dailyRoute') }}</div>
-              <div class="lg-list-row-sub">{{ t('lg.dailyRouteSub') }}</div>
-            </div>
-            <LgIcon name="chevron-right" :s="16" c="var(--text-muted)" />
-          </router-link>
-          <router-link to="/learning/reading" class="lg-path-row">
-            <div class="lg-icon-box">📚</div>
-            <div class="lg-path-row-text">
-              <div class="lg-list-row-title">{{ t('lg.readText') }}</div>
-              <div class="lg-list-row-sub">{{ t('lg.readTextSub') }}</div>
-            </div>
-            <LgIcon name="chevron-right" :s="16" c="var(--text-muted)" />
-          </router-link>
-          <router-link to="/chat" class="lg-path-row">
-            <div class="lg-icon-box">💬</div>
-            <div class="lg-path-row-text">
-              <div class="lg-list-row-title">{{ t('lg.practiceChat') }}</div>
-              <div class="lg-list-row-sub">{{ t('lg.practiceChatSub') }}</div>
+              <div class="lg-list-row-title" :class="{ 'lg-path-title--done': step.done }">{{ step.title }}</div>
+              <div class="lg-list-row-sub">{{ step.sub }}</div>
             </div>
             <LgIcon name="chevron-right" :s="16" c="var(--text-muted)" />
           </router-link>
@@ -82,10 +70,10 @@
       <div v-if="stats.availableForTraining > 0" class="lg-due-card">
         <div class="lg-due-counter">
           <span class="lg-due-num">{{ stats.availableForTraining }}</span>
-          <span class="lg-due-unit">{{ t('common.words') }}</span>
+          <span class="lg-due-unit">{{ (t as any)('common.words', stats.availableForTraining) }}</span>
         </div>
         <div class="lg-due-text">
-          <div class="lg-list-row-title">{{ t('lg.wordsDueTitle', { n: stats.availableForTraining }) }}</div>
+          <div class="lg-list-row-title">{{ (t as any)('lg.wordsDueTitle', stats.availableForTraining, { n: stats.availableForTraining }) }}</div>
           <div class="lg-list-row-sub">{{ t('lg.wordsDueSub') }}</div>
         </div>
         <button class="lg-due-btn" @click="goToTraining">{{ t('lg.start') }}</button>
@@ -166,7 +154,7 @@
               <div class="stat-item level-item">
                 <div class="stat-label">{{ t('dashboard.level') }}</div>
                 <div class="level-badge-compact" :class="grammarLevelBadgeClass">
-                  {{ stats.grammarStats.confirmed_level || t('common.notStarted') }}
+                  {{ stats.grammarStats.confirmed_level || '—' }}
                 </div>
               </div>
 
@@ -229,116 +217,66 @@
         </router-link>
       </div>
 
-      <!-- Progress Section -->
-      <div class="progress-section">
-        <div class="card">
-          <h2>{{ t('dashboard.yourProgress') }}</h2>
-          <div class="progress-grid">
-            <div class="progress-item">
-              <div class="progress-header">
-                <span>{{ t('dashboard.totalCards') }}</span>
-                <span class="progress-value">{{ stats.totalCards }}</span>
-              </div>
-              <div class="progress-bar">
-                <div class="progress-fill" :style="{ width: '100%' }"></div>
-              </div>
-            </div>
-
-            <div class="progress-item">
-              <div class="progress-header">
-                <span>{{ t('dashboard.accuracy30Days') }}</span>
-                <span class="progress-value">{{ formatPercent(stats.accuracyPercent) }}%</span>
-              </div>
-              <div class="progress-bar">
-                <div 
-                  class="progress-fill progress-fill-success" 
-                  :style="{ width: stats.accuracyPercent + '%' }"
-                ></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Weekly Chart -->
-      <div class="weekly-chart-section">
-        <div class="card">
-          <h2>{{ t('dashboard.weeklyActivity') }}</h2>
-          <div v-if="stats.weeklyStats && stats.weeklyStats.length > 0" class="chart-container">
-            <canvas ref="chartCanvas"></canvas>
-          </div>
-          <div v-else class="chart-empty">
-            <p>{{ t('dashboard.noTrainingData') }}</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Words Added Chart -->
-      <div class="weekly-chart-section">
-        <div class="card">
-          <h2>{{ t('dashboard.cardsAdded7Days') }}</h2>
-          <div v-if="stats.wordsAddedStats && stats.wordsAddedStats.length > 0" class="chart-container">
-            <canvas ref="wordsChartCanvas"></canvas>
-          </div>
-          <div v-else class="chart-empty">
-            <p>{{ t('dashboard.noCardsAdded') }}</p>
-          </div>
-        </div>
-      </div>
-
       <!-- Совет от Lumi -->
-      <LgLumiFact />
+      <LgLumiFact class="dashboard-lumi-fact" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch, nextTick } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { Chart, registerables } from 'chart.js'
-import { useTheme } from '../composables/useTheme'
 import { useAuth } from '../composables/useAuth'
-import { useLocale } from '../composables/useLocale'
 import { apiClient } from '../api/client'
 import { grammarClient } from '../api/grammarClient'
 import { wordTrainingClient } from '../api/wordTrainingClient'
-import { courseClient, CourseProgress, LinglowHistory } from '../api/courseClient'
+import { courseClient, CourseProgress, DailyRoute } from '../api/courseClient'
 import { useCourse } from '../composables/useCourse'
 import { useLearningConfig } from '../composables/useLearningConfig'
 import LgIcon from '../components/linglow/LgIcon.vue'
 import LgLumi from '../components/linglow/LgLumi.vue'
 import LgProgressBar from '../components/linglow/LgProgressBar.vue'
 import LgLumiFact from '../components/linglow/LgLumiFact.vue'
+import LgStreakBadge from '../components/linglow/LgStreakBadge.vue'
+import LgActivityIcon from '../components/linglow/LgActivityIcon.vue'
+import { useStats } from '../composables/useStats'
 
 const { t } = useI18n()
+const { streakDays, ensureStatsLoaded, refreshStats } = useStats()
+ensureStatsLoaded()
 const { targetLangDisplay, ensureLearningLoaded } = useLearningConfig()
 ensureLearningLoaded()
-const { currentLocale } = useLocale()
 const { currentCourseCode } = useCourse()
 
 const linglowProgress = ref<CourseProgress | null>(null)
+const dailyToday = ref<NonNullable<DailyRoute['today']> | null>(null)
 
-Chart.register(...registerables)
+// "Today's path" rows: generated from the daily route, done steps sink to the bottom
+const pathSteps = computed(() => {
+  const today = dailyToday.value
+  const steps: Array<{ key: string; type: 'grammar' | 'words' | 'reading'; title: string; sub: string; to: any; done: boolean }> = []
+  const wordsLeft = stats.value.availableForTraining
+  const wordsDone = (today?.words_done ?? 0) > 0 && wordsLeft === 0
+  if (wordsLeft > 0 || wordsDone) {
+    steps.push({
+      key: 'words', type: 'words', done: wordsDone,
+      title: wordsDone ? t('lg.repeatWordsDone') : (t as any)('lg.repeatWords', wordsLeft, { n: wordsLeft }),
+      sub: t('lg.repeatWordsSub'), to: '/training',
+    })
+  }
+  const suggestion = today?.reading_suggestion
+  steps.push({
+    key: 'reading', type: 'reading', done: today?.reading_done ?? false,
+    title: suggestion ? t('lg.readTextTitled', { title: suggestion.title }) : t('lg.readText'),
+    sub: t('lg.readTextSub'),
+    to: suggestion ? { name: 'ReadingText', params: { textId: suggestion.text_id } } : '/learning/reading',
+  })
+  return [...steps.filter(s => !s.done), ...steps.filter(s => s.done)]
+})
 
 const router = useRouter()
-const { theme } = useTheme()
 const { isAuthenticated } = useAuth()
-const chartCanvas = ref<HTMLCanvasElement | null>(null)
-const wordsChartCanvas = ref<HTMLCanvasElement | null>(null)
-let chartInstance: Chart | null = null
-let wordsChartInstance: Chart | null = null
-
-interface WeeklyStat {
-  day: string
-  cards_completed: number
-  cards_correct: number
-}
-
-interface WordsAddedStat {
-  day: string
-  words_added: number
-}
 
 interface DashboardStats {
   dueCount: number
@@ -348,8 +286,6 @@ interface DashboardStats {
   totalCards: number
   availableForTraining: number
   accuracyPercent: number
-  weeklyStats: WeeklyStat[]
-  wordsAddedStats: WordsAddedStat[]
   grammarStats?: any
 }
 
@@ -361,65 +297,10 @@ const stats = ref<DashboardStats>({
   totalCards: 0,
   availableForTraining: 0,
   accuracyPercent: 0,
-  weeklyStats: [],
-  wordsAddedStats: []
 })
 
 const loading = ref(true)
 const offlineDashboard = ref(false)
-
-// Watch for changes in weeklyStats and update chart (after stats is initialized)
-watch(() => stats.value.weeklyStats, async (newStats) => {
-  if (newStats && newStats.length > 0) {
-    await nextTick()
-    // Wait a bit more to ensure canvas is fully rendered
-    setTimeout(() => {
-      updateChart()
-    }, 150)
-  }
-}, { deep: true })
-
-// Watch for changes in wordsAddedStats and update chart
-watch(() => stats.value.wordsAddedStats, async (newStats) => {
-  if (newStats && newStats.length > 0) {
-    await nextTick()
-    setTimeout(() => {
-      updateWordsChart()
-    }, 150)
-  }
-}, { deep: true })
-
-// Watch for theme changes and rebuild charts
-watch(() => theme.value, async () => {
-  if (stats.value.weeklyStats && stats.value.weeklyStats.length > 0) {
-    await nextTick()
-    setTimeout(() => {
-      updateChart()
-    }, 100)
-  }
-  if (stats.value.wordsAddedStats && stats.value.wordsAddedStats.length > 0) {
-    await nextTick()
-    setTimeout(() => {
-      updateWordsChart()
-    }, 100)
-  }
-})
-
-// Watch for locale changes and rebuild charts to update labels
-watch(() => currentLocale.value, async () => {
-  if (stats.value.weeklyStats && stats.value.weeklyStats.length > 0) {
-    await nextTick()
-    setTimeout(() => {
-      updateChart()
-    }, 100)
-  }
-  if (stats.value.wordsAddedStats && stats.value.wordsAddedStats.length > 0) {
-    await nextTick()
-    setTimeout(() => {
-      updateWordsChart()
-    }, 100)
-  }
-})
 
 const loadData = async () => {
   // Ensure tokens are loaded before making request
@@ -448,26 +329,11 @@ const loadData = async () => {
       }
       offlineDashboard.value = true
     } else {
-      let history: LinglowHistory | null = null;
       [data] = await Promise.all([
         apiClient.request('/api/dashboard'),
         courseClient.getProgress(currentCourseCode.value || undefined).then(p => { linglowProgress.value = p }).catch(() => {}),
-        courseClient.getHistory({ courseCode: currentCourseCode.value || undefined, days: 7 }).then(h => { history = h }).catch(() => {}),
+        courseClient.getDailyRoute(8, currentCourseCode.value || undefined).then(rt => { dailyToday.value = rt.today || null }).catch(() => {}),
       ])
-      // On the unified Linglow DB the legacy charts are empty; fall back to canonical history.
-      const legacyWeekly = data.weekly_stats || []
-      const legacyWordsAdded = data.words_added_stats || []
-      if (history) {
-        if (legacyWeekly.length === 0 && (history as LinglowHistory).weekly_stats?.length > 0) {
-          data.weekly_stats = (history as LinglowHistory).weekly_stats
-        }
-        if (legacyWordsAdded.length === 0 && (history as LinglowHistory).words_added_stats?.length > 0) {
-          data.words_added_stats = (history as LinglowHistory).words_added_stats
-        }
-        if (!(data.accuracy_percent > 0) && (history as LinglowHistory).accuracy_percent > 0) {
-          data.accuracy_percent = (history as LinglowHistory).accuracy_percent
-        }
-      }
     }
     stats.value = {
       dueCount: data.due_count || 0,
@@ -477,11 +343,8 @@ const loadData = async () => {
       totalCards: data.total_cards || 0,
       availableForTraining: data.available_for_training || 0,
       accuracyPercent: data.accuracy_percent || 0,
-      weeklyStats: data.weekly_stats || [],
-      wordsAddedStats: data.words_added_stats || [],
       grammarStats: data.grammar_stats || null
     }
-    // charts are updated via watchers on weeklyStats / wordsAddedStats
   } catch (error) {
     console.error('Failed to load dashboard:', error)
   } finally {
@@ -491,10 +354,7 @@ const loadData = async () => {
 
 const refreshData = () => {
   loadData()
-}
-
-const formatPercent = (value: number): string => {
-  return value.toFixed(1)
+  refreshStats()
 }
 
 // Grammar statistics computed properties
@@ -537,392 +397,10 @@ const getGrammarPercentageColor = (percent: number): string => {
   return '#ef4444' // red
 }
 
-const formatDate = (dateString: string): string => {
-  const date = new Date(dateString)
-  const now = new Date()
-  const diffTime = Math.abs(now.getTime() - date.getTime())
-  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))
-  
-  if (diffDays === 0) {
-    return 'Today'
-  } else if (diffDays === 1) {
-    return 'Yesterday'
-  } else if (diffDays < 7) {
-    return `${diffDays} days ago`
-  } else {
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-  }
-}
-
 const goToTraining = () => {
   router.push('/training')
 }
 
-// Format date to YYYY-MM-DD in local timezone (not UTC)
-const formatDateLocal = (date: Date): string => {
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
-  return `${year}-${month}-${day}`
-}
-
-const formatDayLabel = (dayString: string): string => {
-  const date = new Date(dayString + 'T00:00:00') // Parse as local date
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-  date.setHours(0, 0, 0, 0)
-  const diffTime = today.getTime() - date.getTime()
-  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))
-  
-  if (diffDays === 0) {
-    return t('common.today')
-  } else if (diffDays === 1) {
-    return t('common.yesterday')
-  } else {
-    // Use locale-aware formatting
-    const locale = currentLocale.value === 'ru' ? 'ru-RU' : 'en-US'
-    return date.toLocaleDateString(locale, { weekday: 'short', day: 'numeric' })
-  }
-}
-
-const updateChart = () => {
-  try {
-  if (!chartCanvas.value) {
-    setTimeout(() => { if (chartCanvas.value) updateChart() }, 100)
-    return
-  }
-
-  if (!stats.value.weeklyStats || stats.value.weeklyStats.length === 0) {
-    return
-  }
-
-  if (chartInstance) {
-    chartInstance.destroy()
-    chartInstance = null
-  }
-  
-  // Prepare data for last 7 days
-  const today = new Date()
-  const days: string[] = []
-  const cardsTotalData: number[] = []
-  const cardsCorrectData: number[] = []
-  
-  // Create a map of existing data
-  const dataMap = new Map<string, { total: number; correct: number }>()
-  stats.value.weeklyStats.forEach((stat: WeeklyStat) => {
-    dataMap.set(stat.day, { total: stat.cards_completed, correct: stat.cards_correct || 0 })
-  })
-  
-  // Generate last 7 days in local timezone
-  for (let i = 6; i >= 0; i--) {
-    const date = new Date(today)
-    date.setDate(date.getDate() - i)
-    date.setHours(0, 0, 0, 0) // Reset to start of day in local time
-    const dayStr = formatDateLocal(date)
-    days.push(dayStr)
-    
-    const data = dataMap.get(dayStr) || { total: 0, correct: 0 }
-    cardsTotalData.push(data.total)
-    cardsCorrectData.push(data.correct)
-  }
-  
-  const labels = days.map(formatDayLabel)
-  
-  // Get theme colors from CSS variables
-  const root = getComputedStyle(document.documentElement)
-  const isDark = document.documentElement.getAttribute('data-theme') === 'dark'
-  
-  // Use darker, more contrasting colors for light theme
-  let primaryColor = root.getPropertyValue('--color-primary').trim() || '#007bff'
-  let successColor = root.getPropertyValue('--color-success').trim() || '#28a745'
-  const textPrimary = root.getPropertyValue('--text-primary').trim() || '#333333'
-  let textSecondary = root.getPropertyValue('--text-secondary').trim() || '#666666'
-  let borderColor = root.getPropertyValue('--border-primary').trim() || '#dddddd'
-  
-  // Adjust colors for light theme for better contrast
-  if (!isDark) {
-    // Use darker colors for better visibility on light background
-    primaryColor = '#0056b3' // Darker blue
-    successColor = '#1e7e34' // Darker green
-    textSecondary = '#444444' // Darker grey for better readability
-    borderColor = '#cccccc' // Darker border
-  }
-  
-  // Convert hex to rgba
-  const hexToRgba = (hex: string, alpha: number) => {
-    const r = parseInt(hex.slice(1, 3), 16)
-    const g = parseInt(hex.slice(3, 5), 16)
-    const b = parseInt(hex.slice(5, 7), 16)
-    return `rgba(${r}, ${g}, ${b}, ${alpha})`
-  }
-  
-  // Create stacked bar chart: blue = total cards, green inside = correct cards
-  chartInstance = new Chart(chartCanvas.value!, {
-    type: 'bar',
-    data: {
-      labels: labels,
-      datasets: [
-        {
-          label: t('dashboard.chartAccuracy'),
-          data: cardsCorrectData,
-          backgroundColor: hexToRgba(successColor, isDark ? 0.9 : 0.8),
-          borderWidth: 0
-        },
-        {
-          label: t('dashboard.chartCards'),
-          data: cardsTotalData.map((total, idx) => {
-            const correct = cardsCorrectData[idx] || 0
-            return Math.max(0, total - correct)
-          }),
-          backgroundColor: hexToRgba(primaryColor, isDark ? 0.7 : 0.6),
-          borderWidth: 0
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      interaction: {
-        mode: 'index',
-        intersect: false
-      },
-      plugins: {
-        legend: {
-          display: true,
-          position: 'top',
-          labels: {
-            color: isDark ? textPrimary : '#222222',
-            usePointStyle: true,
-            padding: 15,
-            font: {
-              size: 12,
-              weight: '500'
-            }
-          }
-        },
-        tooltip: {
-          backgroundColor: 'rgba(0, 0, 0, 0.8)',
-          titleColor: '#fff',
-          bodyColor: '#fff',
-          borderColor: borderColor,
-          borderWidth: 1,
-          padding: 12,
-          callbacks: {
-            label: function(context) {
-              const datasetLabel = context.dataset.label || ''
-              const value = context.parsed.y || 0
-              const total = cardsTotalData[context.dataIndex] || 0
-              
-              if (datasetLabel === t('dashboard.chartAccuracy')) {
-                const percent = total > 0 ? ((value / total) * 100).toFixed(1) : '0'
-                return t('dashboard.chartAccuracyTooltip', { percent, correct: value })
-              } else if (datasetLabel === t('dashboard.chartCards')) {
-                return t('dashboard.chartCardsTooltip', total, { count: total })
-              }
-              return `${datasetLabel}: ${value}`
-            },
-          }
-        }
-      },
-      scales: {
-        x: {
-          stacked: true,
-          ticks: {
-            color: isDark ? textSecondary : '#555555',
-            font: {
-              size: 11
-            }
-          },
-          grid: {
-            color: borderColor,
-            display: false
-          }
-        },
-        y: {
-          stacked: true,
-          type: 'linear',
-          display: true,
-          beginAtZero: true,
-          ticks: {
-            stepSize: 1,
-            color: isDark ? textSecondary : '#555555',
-            font: {
-              size: 11
-            },
-            callback: function(value) {
-              return Number.isInteger(value) ? value : ''
-            }
-          },
-          grid: {
-            color: isDark ? borderColor : '#e0e0e0'
-          }
-        }
-      }
-    }
-  })
-  } catch (e) {
-    console.warn('updateChart failed:', e)
-    chartInstance = null
-  }
-}
-
-const updateWordsChart = () => {
-  try {
-  if (!wordsChartCanvas.value) {
-    setTimeout(() => { if (wordsChartCanvas.value) updateWordsChart() }, 100)
-    return
-  }
-
-  if (!stats.value.wordsAddedStats || stats.value.wordsAddedStats.length === 0) {
-    return
-  }
-
-  if (wordsChartInstance) {
-    wordsChartInstance.destroy()
-    wordsChartInstance = null
-  }
-  
-  // Prepare data for last 7 days
-  const today = new Date()
-  const days: string[] = []
-  const wordsAddedData: number[] = []
-  
-  // Create a map of existing data
-  const dataMap = new Map<string, number>()
-  stats.value.wordsAddedStats.forEach((stat: WordsAddedStat) => {
-    dataMap.set(stat.day, stat.words_added)
-  })
-  
-  // Generate last 7 days in local timezone
-  for (let i = 6; i >= 0; i--) {
-    const date = new Date(today)
-    date.setDate(date.getDate() - i)
-    date.setHours(0, 0, 0, 0) // Reset to start of day in local time
-    const dayStr = formatDateLocal(date)
-    days.push(dayStr)
-    
-    const count = dataMap.get(dayStr) || 0
-    wordsAddedData.push(count)
-  }
-  
-  const labels = days.map(formatDayLabel)
-  
-  // Get theme colors from CSS variables
-  const root = getComputedStyle(document.documentElement)
-  const isDark = document.documentElement.getAttribute('data-theme') === 'dark'
-  
-  // Use darker, more contrasting colors for light theme
-  let primaryColor = root.getPropertyValue('--color-primary').trim() || '#007bff'
-  const textPrimary = root.getPropertyValue('--text-primary').trim() || '#333333'
-  let textSecondary = root.getPropertyValue('--text-secondary').trim() || '#666666'
-  let borderColor = root.getPropertyValue('--border-primary').trim() || '#dddddd'
-  
-  // Adjust colors for light theme for better contrast
-  if (!isDark) {
-    // Use darker colors for better visibility on light background
-    primaryColor = '#0056b3' // Darker blue
-    textSecondary = '#444444' // Darker grey for better readability
-    borderColor = '#cccccc' // Darker border
-  }
-  
-  // Convert hex to rgba
-  const hexToRgba = (hex: string, alpha: number) => {
-    const r = parseInt(hex.slice(1, 3), 16)
-    const g = parseInt(hex.slice(3, 5), 16)
-    const b = parseInt(hex.slice(5, 7), 16)
-    return `rgba(${r}, ${g}, ${b}, ${alpha})`
-  }
-  
-  // Create bar chart for words added
-  wordsChartInstance = new Chart(wordsChartCanvas.value, {
-    type: 'bar',
-    data: {
-      labels: labels,
-      datasets: [
-        {
-          label: t('dashboard.chartCardsAdded'),
-          data: wordsAddedData,
-          backgroundColor: hexToRgba(primaryColor, isDark ? 0.8 : 0.7),
-          borderColor: primaryColor,
-          borderWidth: 1
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      interaction: {
-        mode: 'index',
-        intersect: false
-      },
-      plugins: {
-        legend: {
-          display: true,
-          position: 'top',
-          labels: {
-            color: isDark ? textPrimary : '#222222',
-            usePointStyle: true,
-            padding: 15,
-            font: {
-              size: 12,
-              weight: '500'
-            }
-          }
-        },
-        tooltip: {
-          backgroundColor: 'rgba(0, 0, 0, 0.8)',
-          titleColor: '#fff',
-          bodyColor: '#fff',
-          borderColor: borderColor,
-          borderWidth: 1,
-          padding: 12,
-          callbacks: {
-            label: function(context) {
-              const value = context.parsed.y || 0
-              return t('dashboard.chartCardsAddedTooltip', { count: value })
-            },
-          }
-        }
-      },
-      scales: {
-        x: {
-          ticks: {
-            color: isDark ? textSecondary : '#555555',
-            font: {
-              size: 11
-            }
-          },
-          grid: {
-            color: borderColor,
-            display: false
-          }
-        },
-        y: {
-          type: 'linear',
-          display: true,
-          beginAtZero: true,
-          ticks: {
-            stepSize: 1,
-            color: isDark ? textSecondary : '#555555',
-            font: {
-              size: 11
-            },
-            callback: function(value) {
-              return Number.isInteger(value) ? value : ''
-            }
-          },
-          grid: {
-            color: isDark ? borderColor : '#e0e0e0'
-          }
-        }
-      }
-    }
-  })
-  } catch (e) {
-    console.warn('updateWordsChart failed:', e)
-    wordsChartInstance = null
-  }
-}
 
 watch(currentCourseCode, () => {
   if (isAuthenticated.value) loadData()
@@ -1003,6 +481,11 @@ onMounted(() => {
   color: var(--subtext);
   margin-top: 4px;
 }
+.lg-home-header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 .lg-refresh-btn {
   width: 38px;
   height: 38px;
@@ -1039,7 +522,7 @@ onMounted(() => {
 .lg-city-card-bg {
   position: absolute;
   inset: 0;
-  background-image: url('../assets/linglow/map_city.jpg');
+  background-image: url('../assets/linglow/art/city-map-826x664.jpg');
   background-size: cover;
   background-position: center;
 }
@@ -1130,6 +613,16 @@ onMounted(() => {
   cursor: pointer;
 }
 .lg-path-row-text { flex: 1; }
+.lg-path-row--done { opacity: 0.72; }
+.lg-icon-box--done {
+  color: #fff;
+  background: #3F6F3F;
+  font-weight: 700;
+}
+.lg-path-title--done {
+  text-decoration: line-through;
+  color: var(--subtext);
+}
 
 /* ─── Words due card ─── */
 .lg-due-card {
@@ -1200,6 +693,10 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   gap: 24px;
+}
+
+.dashboard-lumi-fact {
+  margin-bottom: 32px;
 }
 
 /* Stats Grid */

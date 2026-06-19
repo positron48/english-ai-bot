@@ -312,6 +312,15 @@ func (r *Router) handleLearningReadingTextMarkRead(w http.ResponseWriter, req *h
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
+	if r.linglowEventRepo != nil {
+		if _, err := r.linglowEventRepo.RecordReadingCompleted(req.Context(), repository.ReadingCompletedInput{
+			UserID:     userID,
+			CourseCode: r.currentCourseCodeForUser(req.Context(), userID),
+			ChapterID:  textID,
+		}); err != nil {
+			r.logger.Warn("failed to record linglow reading event", zap.Int64("user_id", userID), zap.String("text_id", textID), zap.Error(err))
+		}
+	}
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(map[string]interface{}{
 		"success": true,

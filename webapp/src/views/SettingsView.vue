@@ -12,14 +12,15 @@
     <!-- USER CARD -->
     <div class="prf-user-card">
       <div class="prf-avatar">
-        <LgLumi :size="50" />
+        <LgLumi :size="50" pose="dreaming" />
       </div>
       <div class="prf-user-info">
-        <div class="prf-user-name">Linglow</div>
+        <div class="prf-user-name">{{ displayName }}</div>
         <div class="prf-user-sub">{{ targetLangDisplay }}</div>
         <div class="prf-chips">
-          <span class="prf-chip prf-chip--active">{{ t('settings.profileChipLevel') }}</span>
-          <span class="prf-chip">{{ t('settings.profileChipCourse') }}</span>
+          <span v-if="confirmedLevel" class="prf-chip prf-chip--active">{{ t('settings.profileLevel', { level: confirmedLevel }) }}</span>
+          <span v-if="currentCourse?.title" class="prf-chip">{{ currentCourse.title }}</span>
+          <span v-if="streakDays > 0" class="prf-chip">{{ t('lg.streakDays', { n: streakDays }) }}</span>
         </div>
       </div>
     </div>
@@ -28,7 +29,6 @@
     <div class="prf-section-card">
       <!-- Theme -->
       <div class="prf-row">
-        <span class="prf-row-icon">🎨</span>
         <span class="prf-row-label">{{ t('settings.theme') }}</span>
         <label class="prf-toggle-switch">
           <input type="checkbox" :checked="selectedTheme === 'dark'" @change="handleThemeToggle" />
@@ -40,7 +40,6 @@
       </div>
       <!-- Language -->
       <div class="prf-row">
-        <span class="prf-row-icon">🌐</span>
         <span class="prf-row-label">{{ t('common.language') }}</span>
         <select
           :value="currentLocale"
@@ -53,7 +52,6 @@
       </div>
       <!-- Course -->
       <div v-if="courses.length > 1" class="prf-row">
-        <span class="prf-row-icon">📚</span>
         <span class="prf-row-label">{{ t('city.course') }}</span>
         <select
           :value="currentCourseCode"
@@ -69,7 +67,6 @@
     <div class="prf-section-title">{{ t('settings.training') }}</div>
     <div class="prf-section-card">
       <div class="prf-row">
-        <span class="prf-row-icon">📳</span>
         <div class="prf-row-info">
           <span class="prf-row-label">{{ t('settings.vibration') }}</span>
           <span class="prf-row-sub">{{ t('settings.vibrationDescription') }}</span>
@@ -80,7 +77,6 @@
         </label>
       </div>
       <div class="prf-row">
-        <span class="prf-row-icon">🔊</span>
         <div class="prf-row-info">
           <span class="prf-row-label">{{ t('settings.sounds') }}</span>
           <span class="prf-row-sub">{{ t('settings.soundsDescription') }}</span>
@@ -92,7 +88,6 @@
       </div>
       <div v-if="soundsEnabled" class="prf-row prf-row--col">
         <div class="prf-row-head">
-          <span class="prf-row-icon">🎵</span>
           <span class="prf-row-label">{{ t('settings.soundTheme') }}</span>
         </div>
         <div class="prf-row-ctrl">
@@ -106,7 +101,6 @@
       </div>
       <div class="prf-row prf-row--col">
         <div class="prf-row-head">
-          <span class="prf-row-icon">⏱</span>
           <div class="prf-row-info">
             <span class="prf-row-label">{{ t('settings.optionsDelay') }}</span>
             <span class="prf-row-sub">{{ t('settings.optionsDelayDescription') }}</span>
@@ -120,7 +114,6 @@
       </div>
       <div class="prf-row prf-row--col">
         <div class="prf-row-head">
-          <span class="prf-row-icon">❌</span>
           <div class="prf-row-info">
             <span class="prf-row-label">{{ t('settings.wrongAnswerDelay') }}</span>
             <span class="prf-row-sub">{{ t('settings.wrongAnswerDelayDescription') }}</span>
@@ -133,7 +126,6 @@
         </div>
       </div>
       <div class="prf-row">
-        <span class="prf-row-icon">✍️</span>
         <div class="prf-row-info">
           <span class="prf-row-label">{{ t('settings.spellModeEnabled') }}</span>
           <span class="prf-row-sub">{{ t('settings.spellModeEnabledDescription', { targetLang: targetLangDisplay }) }}</span>
@@ -148,7 +140,6 @@
       </div>
       <div v-if="spellModeEnabled" class="prf-row prf-row--col">
         <div class="prf-row-head">
-          <span class="prf-row-icon">📊</span>
           <span class="prf-row-label">{{ t('settings.spellMasteringThreshold') }}</span>
         </div>
         <div class="prf-delay-ctrl">
@@ -157,7 +148,6 @@
         </div>
       </div>
       <div class="prf-row">
-        <span class="prf-row-icon">⌨️</span>
         <div class="prf-row-info">
           <span class="prf-row-label">{{ t('settings.typeModeEnabled') }}</span>
           <span class="prf-row-sub">{{ t('settings.typeModeEnabledDescription', { targetLang: targetLangDisplay }) }}</span>
@@ -172,7 +162,6 @@
       </div>
       <div v-if="typeModeEnabled" class="prf-row prf-row--col">
         <div class="prf-row-head">
-          <span class="prf-row-icon">📊</span>
           <span class="prf-row-label">{{ t('settings.typeMasteringThreshold') }}</span>
         </div>
         <div class="prf-delay-ctrl">
@@ -181,7 +170,6 @@
         </div>
       </div>
       <div class="prf-row">
-        <span class="prf-row-icon">👁</span>
         <div class="prf-row-info">
           <span class="prf-row-label">{{ t('settings.hideMorphInTraining') }}</span>
           <span class="prf-row-sub">{{ t('settings.hideMorphInTrainingDescription') }}</span>
@@ -195,7 +183,6 @@
         </div>
       </div>
       <div class="prf-row">
-        <span class="prf-row-icon">🔈</span>
         <div class="prf-row-info">
           <span class="prf-row-label">{{ t('settings.autoplayPronunciation') }}</span>
           <span class="prf-row-sub">{{ t('settings.autoplayPronunciationDescription') }}</span>
@@ -216,7 +203,6 @@
       <div class="prf-section-card">
         <div class="prf-row prf-row--col">
           <div class="prf-row-head">
-            <span class="prf-row-icon">🔀</span>
             <div class="prf-row-info">
               <span class="prf-row-label">{{ t('settings.verbFormProgressionLabel') }}</span>
               <span class="prf-row-sub">{{ t('settings.verbFormProgressionDescription') }}</span>
@@ -239,7 +225,6 @@
     <div class="prf-section-card">
       <div class="prf-row prf-row--col">
         <div class="prf-row-head">
-          <span class="prf-row-icon">🔔</span>
           <div class="prf-row-info">
             <span class="prf-row-label">{{ t('settings.notificationFrequency') }}</span>
             <span class="prf-row-sub">{{ t('settings.notificationFrequencyDescription') }}</span>
@@ -291,10 +276,28 @@ import { useCourse } from '../composables/useCourse'
 import Icon from '../components/Icon.vue'
 import LgIcon from '../components/linglow/LgIcon.vue'
 import LgLumi from '../components/linglow/LgLumi.vue'
+import { useStats } from '../composables/useStats'
 
 const { t, locale } = useI18n()
 const { currentLocale, setLocale } = useLocale()
-const { courses, currentCourseCode, selectCourse } = useCourse()
+const { courses, currentCourse, currentCourseCode, selectCourse } = useCourse()
+const { streakDays, ensureStatsLoaded } = useStats()
+ensureStatsLoaded()
+
+const meUsername = ref('')
+const confirmedLevel = ref('')
+const displayName = computed(() => meUsername.value || 'Linglow')
+
+onMounted(async () => {
+  try {
+    const me: any = await apiClient.request('/api/me')
+    meUsername.value = me?.telegram_username || ''
+  } catch { /* ignore */ }
+  try {
+    const dash: any = await apiClient.request('/api/dashboard')
+    confirmedLevel.value = dash?.grammar_stats?.confirmed_level || ''
+  } catch { /* ignore */ }
+})
 
 const router = useRouter()
 const { settings, setSoundsEnabled, setVibrationEnabled, setTheme, setSoundTheme, setHideMorphInTraining, setAutoplayPronunciation } = useSettings()

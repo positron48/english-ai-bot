@@ -1,7 +1,7 @@
 <template>
   <div class="lg-streak">
     <span class="lg-streak-fire">🔥</span>
-    <span class="lg-streak-n">{{ compact ? n : t('lg.streakDays', { n }) }}</span>
+    <span class="lg-streak-n">{{ compact ? n : (t as any)('lg.streakDays', n, { n }) }}</span>
   </div>
 </template>
 

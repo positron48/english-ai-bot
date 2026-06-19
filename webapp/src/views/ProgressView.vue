@@ -15,14 +15,15 @@
         <div class="prg-summary-overlay2" />
         <img :src="mapCityImg" alt="" class="prg-summary-map" aria-hidden="true" />
         <div class="prg-summary-lumi">
-          <LgLumi :size="66" pose="default" />
+          <LgLumi :size="66" pose="proud" />
         </div>
         <div class="prg-summary-body">
           <div class="prg-summary-title">{{ t('progress.monthTitle') }} <span class="prg-star-s">✦</span></div>
-          <div class="prg-summary-sub">{{ t('progress.monthSub') }}</div>
+          <div class="prg-summary-sub">{{ monthMotivation }}</div>
           <div class="prg-metrics-grid">
             <div v-for="m in metrics" :key="m.label" class="prg-metric-cell">
-              <span class="prg-metric-icon">{{ m.icon }}</span>
+              <LgActivityIcon v-if="m.type" :type="m.type" status="green" :size="40" />
+              <span v-else class="prg-metric-icon">{{ m.icon }}</span>
               <div class="prg-metric-val">{{ m.value }}</div>
               <div class="prg-metric-label">{{ m.label }}</div>
               <div class="prg-metric-sub">{{ m.sub }}</div>
@@ -32,32 +33,31 @@
       </div>
 
       <!-- ROW: RHYTHM + DISTRICTS -->
-      <div class="prg-row2">
+      <div class="prg-row2" :class="{ 'prg-row2--single': districtItems.length === 0 }">
         <!-- Rhythm card -->
         <div class="prg-card">
           <div class="prg-card-title">{{ t('progress.rhythmTitle') }} <span class="prg-star-s">✦</span></div>
-          <div class="prg-card-sub">{{ t('progress.rhythmSub') }}</div>
           <div class="prg-week-row">
-            <div v-for="(d, i) in weekDays" :key="i" class="prg-week-col">
-              <div class="prg-week-dot" :class="`prg-week-dot--${weekAct[i]}`">
-                <svg v-if="weekAct[i] === 'done'" width="9" height="9" viewBox="0 0 24 24" fill="none">
+            <div v-for="(cell, i) in weekCells" :key="i" class="prg-week-col">
+              <div class="prg-week-dot" :class="`prg-week-dot--${cell.status}`">
+                <svg v-if="cell.status === 'done'" width="9" height="9" viewBox="0 0 24 24" fill="none">
                   <path d="M5 12L10 17L19 7" stroke="white" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
                 <span v-else class="prg-week-empty">○</span>
               </div>
-              <span class="prg-week-label">{{ d }}</span>
+              <span class="prg-week-label">{{ cell.label }}</span>
             </div>
           </div>
           <div class="prg-streak-row">
             <span class="prg-streak-num">{{ streakDays }}</span>
-            <span class="prg-streak-unit">{{ t('progress.daysRow') }}</span>
+            <span class="prg-streak-unit">{{ (t as any)('progress.daysRow', streakDays) }}</span>
             <span class="prg-star-s" style="margin-left:4px">✦</span>
           </div>
-          <div class="prg-card-sub" style="margin-top:2px">{{ t('progress.keepGoing') }}</div>
+          <div class="prg-card-sub" style="margin-top:2px">{{ weekMotivation }}</div>
         </div>
 
         <!-- Districts card -->
-        <div class="prg-card">
+        <div v-if="districtItems.length > 0" class="prg-card">
           <div class="prg-card-title">{{ t('progress.districtsTitle') }}</div>
           <div class="prg-card-sub" style="margin-bottom:12px">{{ t('progress.districtsSub') }}</div>
           <div class="prg-districts-list">
@@ -74,24 +74,9 @@
         </div>
       </div>
 
-      <!-- ROW: FAVORITE ZONE + STRONGEST SKILL -->
-      <div class="prg-row2">
-        <div class="prg-card prg-card--rel">
-          <div class="prg-card-title-spk">{{ t('progress.favZone') }} <span class="prg-star-s">✦</span></div>
-          <div class="prg-fav-name">{{ t('progress.favZoneName') }}</div>
-          <div class="prg-card-sub">{{ t('progress.favZoneSub') }}</div>
-          <div class="prg-donut-wrap">
-            <LgCircleRing :val="learnedPct" :max="100" :size="66" :stroke="7">
-              <div class="prg-donut-inner">
-                <span class="prg-donut-pct">{{ learnedPct }}%</span>
-                <span class="prg-donut-sub">{{ t('progress.pctLabel') }}</span>
-              </div>
-            </LgCircleRing>
-          </div>
-          <img :src="mapCityImg" alt="" class="prg-card-bg-img" aria-hidden="true" />
-        </div>
-
-        <div class="prg-card prg-card--rel">
+      <!-- ROW: STRONGEST SKILL -->
+      <div v-if="strongSkill" class="prg-row2 prg-row2--single">
+        <div v-if="strongSkill" class="prg-card prg-card--rel">
           <div class="prg-card-title-spk">{{ t('progress.strongSkill') }} <span class="prg-star-s">✦</span></div>
           <div class="prg-skill-row">
             <div class="prg-skill-icon-box">
@@ -101,7 +86,7 @@
               </svg>
             </div>
             <div>
-              <div class="prg-skill-name">{{ t('progress.grammarLabel') }}</div>
+              <div class="prg-skill-name">{{ strongSkill.name }}</div>
               <div class="prg-card-sub">{{ t('progress.skillSuperpower') }}</div>
             </div>
           </div>
@@ -115,8 +100,8 @@
       </div>
 
       <!-- ROW: SKILLS + IMPROVEMENTS -->
-      <div class="prg-row2">
-        <div class="prg-card">
+      <div v-if="skills.length > 0 || improvements.length > 0" class="prg-row2">
+        <div v-if="skills.length > 0" class="prg-card">
           <div class="prg-card-title">{{ t('progress.strengths') }}</div>
           <div class="prg-skills-list">
             <div v-for="sk in skills" :key="sk.name" class="prg-skill-item">
@@ -131,7 +116,7 @@
           </div>
         </div>
 
-        <div class="prg-card">
+        <div v-if="improvements.length > 0" class="prg-card">
           <div class="prg-card-title">{{ t('progress.improvements') }}</div>
           <div class="prg-improve-list">
             <div v-for="(imp, i) in improvements" :key="i" class="prg-improve-row" :class="{ 'prg-improve-row--bordered': i < improvements.length - 1 }">
@@ -143,7 +128,7 @@
       </div>
 
       <!-- ACHIEVEMENTS -->
-      <div class="prg-achievements-card">
+      <div v-if="achievements.length > 0" class="prg-achievements-card">
         <div class="prg-ach-head">
           <div class="prg-card-title">{{ t('progress.achievements') }} <span class="prg-star-s">✦</span></div>
         </div>
@@ -163,7 +148,12 @@
       </div>
 
       <div class="prg-lumi-wrap">
-        <LgLumiFact />
+        <LgLumiFact context="progress" />
+      </div>
+
+      <!-- Legacy detailed progress + activity charts -->
+      <div class="prg-charts-wrap">
+        <LgProgressCharts />
       </div>
 
     </template>
@@ -173,75 +163,214 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { apiClient } from '../api/client'
-import LgCircleRing from '../components/linglow/LgCircleRing.vue'
+import { statsClient, type LinglowStats } from '../api/statsClient'
+import { courseClient, type CourseProgress } from '../api/courseClient'
+import { useCourse } from '../composables/useCourse'
+import { useLocale } from '../composables/useLocale'
 import LgLumiFact from '../components/linglow/LgLumiFact.vue'
 import LgLumi from '../components/linglow/LgLumi.vue'
-import mapCityImg from '../assets/linglow/map_city.jpg'
+import LgActivityIcon from '../components/linglow/LgActivityIcon.vue'
+import LgProgressCharts from '../components/linglow/LgProgressCharts.vue'
+import mapCityImg from '../assets/linglow/art/city-map-826x664.jpg'
 
 const { t } = useI18n()
+const { currentCourseCode } = useCourse()
+const { currentLocale } = useLocale()
 
 const loading = ref(true)
-const totalWords = ref(0)
-const learnedWords = ref(0)
-const streakDays = ref(6)
-
-const learnedPct = computed(() => {
-  if (!totalWords.value) return 0
-  return Math.round((learnedWords.value / totalWords.value) * 100)
-})
-
-const skillPct = computed(() => Math.min(learnedPct.value + 15, 99))
+const stats = ref<LinglowStats | null>(null)
+const progress = ref<CourseProgress | null>(null)
 
 onMounted(async () => {
   try {
-    const data: any = await apiClient.request('/api/dashboard')
-    const s = data?.stats ?? data ?? {}
-    totalWords.value = s.total_words ?? 0
-    learnedWords.value = s.learned_words ?? 0
+    const code = currentCourseCode.value || undefined
+    const [s, p] = await Promise.all([
+      statsClient.getStats({ courseCode: code }),
+      courseClient.getProgress(code).catch(() => null),
+    ])
+    stats.value = s
+    progress.value = p
   } catch { /* ignore */ } finally {
     loading.value = false
   }
 })
 
-const weekDays = computed(() => t('progress.weekDays').split(','))
-const weekAct = ['done', 'done', 'done', 'done', 'done', 'today', 'empty']
+const streakDays = computed(() => stats.value?.streak.current_days ?? 0)
 
-const metrics = computed(() => [
-  { icon: '⏱', value: String(Math.round(learnedWords.value * 3.2)), label: t('progress.metricMinutes'), sub: t('progress.metricMinutesSub') },
-  { icon: '🌿', value: String(learnedWords.value),  label: t('progress.metricWords'),   sub: t('progress.metricWordsSub') },
-  { icon: '📖', value: String(Math.round(learnedWords.value * 0.06)), label: t('progress.metricTexts'),   sub: t('progress.metricTextsSub') },
-  { icon: '💬', value: String(Math.round(learnedWords.value * 0.05)), label: t('progress.metricChats'),   sub: t('progress.metricChatsSub') },
-])
+const monthMotivation = computed(() => {
+  const m = stats.value?.month
+  if (!m) return ''
+  const words = m.words_learned ?? 0
+  const texts = m.texts_read ?? 0
+  const mins = m.active_minutes ?? 0
+  if (words === 0 && texts === 0 && mins === 0) return 'Этот месяц только начинается — самое время стартовать!'
+  if (words >= 100 || texts >= 20 || mins >= 300) return 'Продуктивный месяц — отличный темп!'
+  if (words >= 30 || texts >= 5 || mins >= 60) return 'Хороший прогресс, продолжай в том же духе.'
+  return 'Небольшой старт — каждый шаг на счету.'
+})
 
-const districtItems = [
-  { name: 'Plaza Clara',    status: t('progress.distExcellent'),  pct: 88, fill: '#3F6F3F' },
-  { name: 'Distrito Alto',  status: t('progress.distGood'),       pct: 62, fill: '#7FAE6A' },
-  { name: 'Barrio del Mar', status: t('progress.distInProgress'), pct: 38, fill: '#D9A83F' },
-  { name: 'El Mercado',     status: t('progress.distJustStarted'),pct: 14, fill: '#E3D8C6' },
-  { name: 'Colina Verde',   status: '',                           pct: 0,  fill: '#E3D8C6', locked: true },
-]
+const weekMotivation = computed(() => {
+  const done = weekCells.value.filter(c => c.status === 'done').length
+  const s = streakDays.value
+  if (s === 0 && done === 0)
+    return 'Начни прямо сейчас — даже одно занятие запускает привычку.'
+  if (s === 0 && done > 0)
+    return `На этой неделе ${done} ${done === 1 ? 'день' : 'дня'} — но streak прервался. Займись сегодня, чтобы восстановить цепочку.`
+  if (s === 1)
+    return 'Первый день streak! Приходи завтра, чтобы не прерывать цепочку.'
+  if (s <= 3)
+    return `${s} дня подряд — хорошее начало. Ещё немного — и войдёт в привычку.`
+  if (s <= 6)
+    return `${s} дней подряд — ритм складывается. Попробуй дотянуть до недели!`
+  if (s === 7)
+    return '7 дней без перерыва — это уже настоящая привычка.'
+  if (s <= 13)
+    return `${s} дней подряд — стабильно и уверенно. Продолжай!`
+  if (s <= 29)
+    return `${s} дней без перерыва — серьёзная дисциплина. Отлично!`
+  return `${s} дней подряд — это впечатляет. Ты явно понял, как учиться.`
+})
 
-const skills = [
-  { name: t('progress.grammarLabel'), pct: computed(() => skillPct.value).value, fill: '#3F6F3F' },
-  { name: t('progress.wordsLabel'),   pct: computed(() => Math.max(learnedPct.value - 3, 0)).value, fill: '#3F6F3F' },
-  { name: t('progress.readingLabel'), pct: computed(() => Math.round(learnedPct.value * 0.73)).value, fill: '#D9A83F' },
-  { name: t('progress.chatLabel'),    pct: computed(() => Math.round(learnedPct.value * 0.80)).value, fill: '#7FAE6A' },
-]
+// Show the current calendar week (Mon–Sun). Future days are always empty,
+// today is highlighted, past days reflect real activity from the backend.
+const weekCells = computed(() => {
+  const locale = currentLocale.value === 'ru' ? 'ru-RU' : 'en-US'
+  const toKey = (d: Date) =>
+    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+  const labelFor = (d: Date) => {
+    const wd = d.toLocaleDateString(locale, { weekday: 'short' })
+    return wd.charAt(0).toUpperCase() + wd.slice(1)
+  }
 
-const improvements = [
-  { skill: t('progress.grammarLabel'), tip: t('progress.impGrammar') },
-  { skill: t('progress.readingLabel'), tip: t('progress.impReading') },
-  { skill: t('progress.wordsLabel'),   tip: t('progress.impWords') },
-]
+  // Map real activity (only "done" matters; today/empty are recomputed locally).
+  const statusByDate = new Map<string, string>()
+  for (const d of stats.value?.week || []) statusByDate.set(d.date, d.status)
 
-const achievements = computed(() => [
-  { icon: '🔥', val: String(streakDays.value), title: t('progress.achStreak'),  sub: t('progress.achStreakSub', { n: streakDays.value }) },
-  { icon: '📚', val: String(Math.round(learnedWords.value * 0.06)), title: t('progress.achReader'), sub: t('progress.achReaderSub') },
-  { icon: '🌿', val: String(learnedWords.value), title: t('progress.achCollector'), sub: t('progress.achCollectorSub') },
-  { icon: '🏙', val: '4',   title: t('progress.achExplorer'), sub: t('progress.achExplorerSub') },
-  { icon: '👑', val: '',    title: t('progress.achExpert'),   sub: t('progress.achExpertSub'), locked: true },
-])
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const todayKey = toKey(today)
+  // Monday of the current week (getDay(): 0=Sun..6=Sat → 0=Mon..6=Sun).
+  const mondayOffset = (today.getDay() + 6) % 7
+  const monday = new Date(today)
+  monday.setDate(today.getDate() - mondayOffset)
+
+  const cells = []
+  for (let i = 0; i < 7; i++) {
+    const date = new Date(monday)
+    date.setDate(monday.getDate() + i)
+    const key = toKey(date)
+    let status: string
+    if (key > todayKey) status = 'empty'                       // future day — never done
+    else if (statusByDate.get(key) === 'done') status = 'done' // past/today with activity
+    else if (key === todayKey) status = 'today'                // today, not yet active
+    else status = 'empty'                                      // past day, no activity
+    cells.push({ label: labelFor(date), status })
+  }
+  return cells
+})
+
+const metrics = computed(() => {
+  const m = stats.value?.month
+  return [
+    { icon: '⏱', value: String(m?.active_minutes ?? 0), label: (t as any)('progress.metricMinutes', m?.active_minutes ?? 0), sub: t('progress.metricMinutesSub') },
+    { icon: '',  type: 'words' as const,       value: String(m?.words_learned ?? 0),  label: (t as any)('progress.metricWords', m?.words_learned ?? 0),   sub: t('progress.metricWordsSub') },
+    { icon: '',  type: 'reading' as const,     value: String(m?.texts_read ?? 0),     label: (t as any)('progress.metricTexts', m?.texts_read ?? 0),   sub: t('progress.metricTextsSub') },
+    { icon: '',  type: 'conversation' as const, value: String(m?.chat_messages ?? 0), label: (t as any)('progress.metricChats', m?.chat_messages ?? 0), sub: t('progress.metricChatsSub') },
+  ]
+})
+
+const DISTRICT_FILLS = ['#3F6F3F', '#7FAE6A', '#D9A83F', '#E3D8C6']
+const districtItems = computed(() => {
+  const rows = progress.value?.by_district || []
+  return rows.map((d) => {
+    const pct = Math.round(d.progress_percent)
+    let status = ''
+    let fill = DISTRICT_FILLS[3]
+    if (pct >= 75) { status = t('progress.distExcellent'); fill = DISTRICT_FILLS[0] }
+    else if (pct >= 40) { status = t('progress.distGood'); fill = DISTRICT_FILLS[1] }
+    else if (pct >= 10) { status = t('progress.distInProgress'); fill = DISTRICT_FILLS[2] }
+    else if (d.attempted_items > 0) { status = t('progress.distJustStarted') }
+    return { name: d.title, status, pct, fill, locked: d.attempted_items === 0 && pct === 0 }
+  })
+})
+
+
+const MODE_LABELS: Record<string, string> = {
+  word_training: 'progress.wordsLabel',
+  grammar_training: 'progress.grammarLabel',
+  grammar_test: 'progress.grammarLabel',
+  reading_completion: 'progress.readingLabel',
+  chat: 'progress.chatLabel',
+  speaking: 'progress.speakingLabel',
+}
+const SKILL_FILLS = ['#3F6F3F', '#7FAE6A', '#D9A83F', '#5B9ED4']
+
+// Merge backend modes sharing one label (grammar test + training) into one skill row
+const skills = computed(() => {
+  const byLabel = new Map<string, { attempts: number; correct: number }>()
+  for (const s of stats.value?.skills || []) {
+    const key = MODE_LABELS[s.mode]
+    if (!key) continue
+    const cur = byLabel.get(key) || { attempts: 0, correct: 0 }
+    cur.attempts += s.attempt_count
+    cur.correct += s.correct_count
+    byLabel.set(key, cur)
+  }
+  return [...byLabel.entries()].map(([key, v], i) => ({
+    name: t(key),
+    pct: v.attempts > 0 ? Math.round((v.correct / v.attempts) * 100) : 0,
+    attempts: v.attempts,
+    fill: SKILL_FILLS[i % SKILL_FILLS.length],
+  })).sort((a, b) => b.pct - a.pct)
+})
+
+const strongSkill = computed(() => {
+  const candidates = skills.value.filter(s => s.attempts >= 20)
+  return candidates.length > 0 ? candidates[0] : null
+})
+const skillPct = computed(() => strongSkill.value?.pct ?? 0)
+
+const ACH_META: Record<string, { icon: string; title: string; sub: string }> = {
+  streak:    { icon: '🔥', title: 'progress.achStreak',    sub: 'progress.achStreakSub' },
+  reader:    { icon: '📚', title: 'progress.achReader',    sub: 'progress.achReaderSub' },
+  collector: { icon: '🌿', title: 'progress.achCollector', sub: 'progress.achCollectorSub' },
+  explorer:  { icon: '🏙', title: 'progress.achExplorer',  sub: 'progress.achExplorerSub' },
+  expert:    { icon: '👑', title: 'progress.achExpert',    sub: 'progress.achExpertSub' },
+}
+const achievements = computed(() => {
+  return (stats.value?.achievements || []).map((a) => {
+    const meta = ACH_META[a.code]
+    if (!meta) return null
+    return {
+      icon: meta.icon,
+      val: a.unlocked && a.value > 0 ? String(a.value) : '',
+      title: t(meta.title),
+      sub: (t as any)(meta.sub, a.value, { n: a.value }),
+      locked: !a.unlocked,
+    }
+  }).filter((a): a is NonNullable<typeof a> => a !== null)
+})
+
+const IMP_TIPS: Record<string, { skill: string; tip: string }> = {
+  mode_accuracy: { skill: '', tip: 'progress.impModeAccuracy' },
+  due_backlog:   { skill: 'progress.wordsLabel', tip: 'progress.impDueBacklog' },
+  weak_district: { skill: '', tip: 'progress.impWeakDistrict' },
+  no_reading:    { skill: 'progress.readingLabel', tip: 'progress.impNoReading' },
+  no_chat:       { skill: 'progress.chatLabel', tip: 'progress.impNoChat' },
+}
+const improvements = computed(() => {
+  return (stats.value?.improvements || []).map((imp) => {
+    const meta = IMP_TIPS[imp.kind]
+    if (!meta) return null
+    let skill = meta.skill ? t(meta.skill) : ''
+    if (imp.kind === 'mode_accuracy' && imp.mode) skill = t(MODE_LABELS[imp.mode] || 'progress.wordsLabel')
+    if (imp.kind === 'weak_district') skill = imp.title || ''
+    return {
+      skill,
+      tip: (t as any)(meta.tip, imp.count ?? 0, { n: imp.count ?? 0, pct: Math.round(imp.accuracy ?? 0), name: imp.title ?? '' }),
+    }
+  }).filter((i): i is NonNullable<typeof i> => i !== null)
+})
 </script>
 
 <style scoped>
@@ -269,12 +398,13 @@ const achievements = computed(() => [
   margin: 12px 16px;
   position: relative;
   border-radius: 18px;
-  overflow: hidden;
   border: 1px solid var(--border);
   box-shadow: var(--shadow-card);
+  /* no overflow:hidden so Lumi can peek out above */
 }
 .prg-summary-overlay1 {
   position: absolute; inset: 0;
+  border-radius: 18px;
   background: linear-gradient(90deg, rgba(255,249,237,0.98) 0%, rgba(255,244,226,0.90) 100%);
 }
 :root[data-theme="dark"] .prg-summary-overlay1 {
@@ -282,19 +412,21 @@ const achievements = computed(() => [
 }
 .prg-summary-overlay2 {
   position: absolute; inset: 0;
+  border-radius: 18px;
   background: radial-gradient(circle at 84% 14%, rgba(217,168,63,0.18), transparent 32%);
 }
 .prg-summary-map {
   position: absolute; right: 0; top: 0;
-  width: 54%; height: 52%;
+  width: 54%; height: 100%;
   object-fit: cover; opacity: 0.70;
+  border-radius: 0 18px 18px 0;
   mask-image: linear-gradient(90deg, transparent 0%, black 36%);
   -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 36%);
   pointer-events: none;
 }
 :root[data-theme="dark"] .prg-summary-map { opacity: 0.38; }
 .prg-summary-lumi {
-  position: absolute; right: 10px; top: 6px; z-index: 3; pointer-events: none;
+  position: absolute; right: 6px; top: -18px; z-index: 3; pointer-events: none;
 }
 .prg-summary-body {
   position: relative; z-index: 2;
@@ -332,6 +464,7 @@ const achievements = computed(() => [
   display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
   padding: 10px 16px 0;
 }
+.prg-row2--single { grid-template-columns: 1fr; }
 .prg-card {
   padding: 14px; border-radius: 16px;
   background: var(--card-bg); border: 1px solid var(--border);
@@ -421,6 +554,7 @@ const achievements = computed(() => [
 
 /* ACHIEVEMENTS */
 .prg-lumi-wrap { margin: 10px 16px 0; }
+.prg-charts-wrap { margin: 16px 16px 0; }
 
 .prg-achievements-card {
   margin: 10px 16px 0; padding: 16px; border-radius: 16px;

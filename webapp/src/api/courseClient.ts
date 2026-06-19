@@ -32,6 +32,21 @@ export interface CourseMapLocation {
   modules: CourseMapModule[]
 }
 
+export interface DistrictBuilding {
+  name: string
+  type: string
+  x: number
+  y: number
+}
+
+export interface DistrictMetadata {
+  image?: string
+  desc_i18n?: Record<string, string>
+  lumi_tips?: { low?: string; mid?: string; high?: string }
+  buildings?: DistrictBuilding[]
+  polygon?: Array<[number, number]>
+}
+
 export interface CourseMapDistrict {
   id: number
   code: string
@@ -39,7 +54,19 @@ export interface CourseMapDistrict {
   title: string
   order: number
   status: string
+  description?: string
+  metadata?: DistrictMetadata
   locations: CourseMapLocation[]
+}
+
+export interface DistrictExtras {
+  discovery: {
+    kind: string
+    text_id: string
+    title: string
+    category_id: string
+  } | null
+  tasks: Array<{ kind: string; target: number; done: number }>
 }
 
 export interface CourseMap {
@@ -124,6 +151,13 @@ export interface DailyRoute {
   }
   review: DailyRouteItem[]
   new_items: DailyRouteItem[]
+  today?: {
+    words_due: number
+    words_done: number
+    reading_done: boolean
+    reading_suggestion?: { text_id: string; title: string }
+    chat_done: boolean
+  }
   generated_at: string
 }
 
@@ -384,6 +418,11 @@ export const courseClient = {
     if (params.offset != null) p.set('offset', String(params.offset))
     const qs = p.toString()
     return apiClient.request(`/api/linglow/words${qs ? '?' + qs : ''}`)
+  },
+  getDistrictExtras(districtCode: string, courseCode?: string): Promise<DistrictExtras> {
+    const p = new URLSearchParams({ district_code: districtCode })
+    if (courseCode) p.set('course_code', courseCode)
+    return apiClient.request(`/api/linglow/district-extras?${p.toString()}`)
   },
   getHistory(params: { courseCode?: string; days?: number } = {}): Promise<LinglowHistory> {
     const p = new URLSearchParams()

@@ -457,6 +457,11 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/linglow/exercise-attempts", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLinglowExerciseAttempts)))
 	r.mux.HandleFunc("/api/linglow/words", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLinglowWords)))
 	r.mux.HandleFunc("/api/linglow/history", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLinglowHistory)))
+	r.mux.HandleFunc("/api/linglow/activity", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLinglowActivity)))
+	r.mux.HandleFunc("/api/linglow/stats", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLinglowStats)))
+	r.mux.HandleFunc("/api/me", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleMe)))
+	r.mux.HandleFunc("/api/linglow/lumi-fact", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLumiFact)))
+	r.mux.HandleFunc("/api/linglow/district-extras", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLinglowDistrictExtras)))
 	r.mux.HandleFunc("/api/vocab", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleVocab)))
 	r.mux.HandleFunc("/api/vocab/", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleVocabDelete)))
 
@@ -584,6 +589,7 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/admin/content-reports", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminContentReports))))
 	r.mux.HandleFunc("/api/admin/content-reports/", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminContentReportByID))))
 	r.mux.HandleFunc("/api/admin/linglow/srs-readiness", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminLinglowSRSReadiness))))
+	r.mux.HandleFunc("/api/admin/lumi-facts", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminLumiFacts))))
 
 	// Grammar admin routes (require full_access)
 	r.mux.HandleFunc("/api/admin/grammar/categories", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminGrammarCategories))))

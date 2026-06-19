@@ -28,12 +28,9 @@
           </svg>
         </div>
         <div v-else class="district-acts">
-          <div
-            v-for="(a, ai) in d.acts"
-            :key="ai"
-            class="district-act"
-            :style="{ background: ACT_BG[a.s] || ACT_BG.started }"
-          >{{ a.i }}</div>
+          <div v-for="(a, ai) in d.acts" :key="ai" class="district-act">
+            <LgActivityIcon :type="a.type" :status="a.status" :size="30" />
+          </div>
         </div>
       </div>
     </div>
@@ -47,6 +44,8 @@ import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useCourse } from '../composables/useCourse'
 import { grammarClient } from '../api/grammarClient'
+import { courseClient, type CourseProgressLocation } from '../api/courseClient'
+import LgActivityIcon from '../components/linglow/LgActivityIcon.vue'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -73,6 +72,7 @@ const DIST_DEFS = [
 
 // Grammar categories keyed by CEFR level (e.g. "A0" → [{passed_chapters, total_chapters, can_access}])
 const grammarByLevel = ref<Record<string, { passed: number; total: number; canAccess: boolean }>>({})
+const courseProgress = ref<{ masteredItems: number; byLocation: CourseProgressLocation[] }>({ masteredItems: 0, byLocation: [] })
 
 async function loadGrammarProgress() {
   try {
@@ -90,6 +90,16 @@ async function loadGrammarProgress() {
   } catch { /* grammar not loaded – all districts stay at lv=1 */ }
 }
 
+async function loadProgress() {
+  try {
+    const prog = await courseClient.getProgress()
+    courseProgress.value = {
+      masteredItems: prog.summary.mastered_items,
+      byLocation: prog.by_location || [],
+    }
+  } catch { /* ignore */ }
+}
+
 // Compute lv for a district from grammar progress:
 // 1 = no grammar access, 2 = access but 0 passed, 3 = <50% passed, 4 = ≥50% passed, 5 = 100% passed
 function districtLv(cefrLevel: string): number {
@@ -102,24 +112,53 @@ function districtLv(cefrLevel: string): number {
   return 3
 }
 
+function pctToStatus(pct: number): 'gray' | 'orange' | 'yellow' | 'green' {
+  if (pct <= 0) return 'gray'
+  if (pct < 34) return 'orange'
+  if (pct < 67) return 'yellow'
+  return 'green'
+}
+
+// Words thresholds: how many mastered words needed for green per CEFR level
+const WORDS_GREEN: Record<string, number> = { A0: 150, A1: 500, A2: 1200, B1: 2500, B2: 5000, C1: 10000 }
+
+function grammarStatus(cefrLevel: string): 'gray' | 'orange' | 'yellow' | 'green' {
+  const g = grammarByLevel.value[cefrLevel]
+  if (!g || !g.canAccess || g.total === 0) return 'gray'
+  return pctToStatus(Math.round((g.passed / g.total) * 100))
+}
+
+function wordsStatus(cefrLevel: string): 'gray' | 'orange' | 'yellow' | 'green' {
+  const top = WORDS_GREEN[cefrLevel.toUpperCase()] ?? 1000
+  return pctToStatus(Math.min(100, Math.round((courseProgress.value.masteredItems / top) * 100)))
+}
+
+function readingStatus(distCode: string): 'gray' | 'orange' | 'yellow' | 'green' {
+  const locs = courseProgress.value.byLocation.filter(
+    l => l.district_code === distCode && (l.location_type === 'reading_text' || l.location_type === 'reading')
+  )
+  const total = locs.reduce((s, l) => s + l.total_items, 0)
+  const done = locs.reduce((s, l) => s + l.attempted_items, 0)
+  if (total === 0) return 'gray'
+  return pctToStatus(Math.round((done / total) * 100))
+}
+
 // Derived district list with computed lv — reactively updates when grammarByLevel changes
 const CITY_DISTS = computed(() =>
   DIST_DEFS.map(d => ({
     ...d,
     lv: districtLv(d.cefrLevel),
-    acts: [{ i: '📖', s: 'started' }, { i: '🌿', s: 'started' }, { i: '📚', s: 'started' }, { i: '💬', s: 'started' }],
+    acts: [
+      { type: 'grammar' as const, status: grammarStatus(d.cefrLevel) },
+      { type: 'words' as const, status: wordsStatus(d.cefrLevel) },
+      { type: 'reading' as const, status: readingStatus(d.id) },
+    ],
   }))
 )
 
-const ACT_BG: Record<string, string> = {
-  stable:  'rgba(36,108,56,0.9)',
-  growing: 'rgba(70,155,85,0.85)',
-  weak:    'rgba(196,144,28,0.9)',
-  started: 'rgba(142,132,120,0.82)',
-}
-
 // Re-render canvas when grammar data arrives
 watch(grammarByLevel, () => renderCity())
+watch(courseProgress, () => renderCity())
 
 // ─── Canvas rendering ───────────────────────────────────────────────────────
 const cvsRef = ref<HTMLCanvasElement | null>(null)
@@ -220,6 +259,7 @@ function handleCanvasClick(e: MouseEvent) {
 
 onMounted(() => {
   loadGrammarProgress()
+  loadProgress()
   setTimeout(resize, 50)
   const srcs = [
     '/app/linglow/city/level1.jpg',
@@ -337,13 +377,13 @@ onUnmounted(() => {
   justify-content: center;
 }
 .district-act {
-  width: 24px;
-  height: 24px;
+  width: 36px;
+  height: 36px;
   border-radius: 7px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
+  background: rgba(255,255,255,0.22);
   border: 1px solid rgba(255,255,255,0.28);
   box-shadow: 0 1px 4px rgba(0,0,0,0.2);
 }

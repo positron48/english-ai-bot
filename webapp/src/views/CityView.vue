@@ -2,11 +2,18 @@
   <div class="city-view lg-page">
     <!-- Map hero with floating title (prototype MapScreen; static map fallback) -->
     <div class="city-hero">
-      <img class="city-hero-img" :src="mapCityImg" alt="" />
-      <div class="city-hero-overlay">
-        <div class="city-hero-title">{{ courseMap?.course.city_name || courseMap?.course.title || t('city.title') }}</div>
-        <div class="city-hero-sub">{{ t('city.kicker') }}</div>
-      </div>
+      <LgCityMap
+        class="city-hero-map"
+        :map-src="mapCityImg"
+        :districts="safeCourseMap?.districts || []"
+        :progress-by-code="districtProgressByCode"
+        @select="openDistrict"
+      >
+        <div class="city-hero-overlay">
+          <div class="city-hero-title">{{ courseMap?.course.city_name || courseMap?.course.title || t('city.title') }}</div>
+          <div class="city-hero-sub">{{ t('city.kicker') }}</div>
+        </div>
+      </LgCityMap>
     </div>
 
     <div v-if="loading" class="lg-loading">{{ t('common.loading') }}</div>
@@ -28,34 +35,13 @@
           <label>{{ t('city.reviewPressure') }}</label>
         </div>
         <div class="lg-card overview-metric">
-          <span>{{ dailyRoute?.summary.new_item_count || 0 }}</span>
-          <label>{{ t('city.nextOpenings') }}</label>
-        </div>
-        <div class="lg-card overview-metric">
           <span>{{ formatPercent(progress?.summary.accuracy_percent || 0) }}</span>
           <label>{{ t('city.accuracy') }}</label>
         </div>
       </section>
 
-      <!-- Daily route / review station -->
+      <!-- Review station -->
       <section class="city-work-grid">
-        <article class="lg-card work-panel">
-          <div class="panel-head">
-            <h2>{{ t('city.dailyRoute') }}</h2>
-            <RouterLink class="panel-action" :to="dailyRouteLink">
-              {{ t('city.openDailyRoute') }}
-            </RouterLink>
-          </div>
-          <div class="route-list">
-            <RouterLink v-for="item in dailyItems" :key="`${item.mode}:${item.learning_item_id}`" class="route-item route-link" :to="routeForLinglowItem(item)">
-              <span class="item-mode">{{ formatType(item.mode) }}</span>
-              <strong>{{ item.title || formatType(item.type) }}</strong>
-              <small>{{ item.location_title || item.module_title || item.cefr_level }}</small>
-            </RouterLink>
-            <div v-if="dailyItems.length === 0" class="empty-line">{{ t('city.noDailyItems') }}</div>
-          </div>
-        </article>
-
         <article class="lg-card work-panel">
           <div class="panel-head">
             <h2>{{ t('city.reviewStation') }}</h2>
@@ -80,7 +66,7 @@
           class="lg-card district-card"
           :to="{ name: 'CityDistrict', params: { districtCode: district.code }, query: selectedCourseCode ? { course_code: selectedCourseCode } : undefined }"
         >
-          <img class="district-card-art" :src="districtArt(di)" alt="" />
+          <img class="district-card-art" :src="districtArt(district, di)" alt="" />
           <div class="district-card-body">
             <div class="district-card-head">
               <LgChip :label="district.level_code" active />
@@ -112,28 +98,49 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { courseClient, CourseMap, CourseMapLocation, CourseProgress, DailyRoute, ReviewQueue } from '../api/courseClient'
+import { useRouter } from 'vue-router'
+import { courseClient, CourseMap, CourseMapLocation, CourseProgress, ReviewQueue } from '../api/courseClient'
 import { useCourse } from '../composables/useCourse'
 import { routeForLinglowItem } from '../utils/linglowNavigation'
 import LgChip from '../components/linglow/LgChip.vue'
 import LgIcon from '../components/linglow/LgIcon.vue'
 import LgProgressBar from '../components/linglow/LgProgressBar.vue'
-import mapCityImg from '../assets/linglow/map_city.jpg'
-import distViajes from '../assets/linglow/dist_viajes.jpg'
-import distCafeterias from '../assets/linglow/dist_cafeterias.jpg'
-import distMercados from '../assets/linglow/dist_mercados.jpg'
-import distParques from '../assets/linglow/dist_parques.jpg'
-import distVida from '../assets/linglow/dist_vida.jpg'
+import LgCityMap from '../components/linglow/LgCityMap.vue'
+import mapCityImg from '../assets/linglow/art/city-map-826x664.jpg'
+import distViajes from '../assets/linglow/art/district-travel-124x90.jpg'
+import distCafeterias from '../assets/linglow/art/district-cafes-124x90.jpg'
+import distMercados from '../assets/linglow/art/district-markets-124x90.jpg'
+import distParques from '../assets/linglow/art/district-parks-124x90.jpg'
+import distVida from '../assets/linglow/art/district-life-124x90.jpg'
 
-// Decorative district art rotates over the prototype images
+// District art comes from district metadata; rotation is the legacy fallback
 const DISTRICT_ART = [distViajes, distCafeterias, distMercados, distParques, distVida]
-const districtArt = (index: number) => DISTRICT_ART[index % DISTRICT_ART.length]
+const DISTRICT_ART_BY_KEY: Record<string, string> = {
+  dist_viajes: distViajes,
+  dist_cafeterias: distCafeterias,
+  dist_mercados: distMercados,
+  dist_parques: distParques,
+  dist_vida: distVida,
+}
+const districtArt = (district: { metadata?: { image?: string } }, index: number) => {
+  const key = district.metadata?.image
+  if (key && DISTRICT_ART_BY_KEY[key]) return DISTRICT_ART_BY_KEY[key]
+  return DISTRICT_ART[index % DISTRICT_ART.length]
+}
 
 const { t } = useI18n()
+const router = useRouter()
 const { courses, currentCourseCode, ensureCourseLoaded, selectCourse: setCurrentCourse } = useCourse()
 
+const openDistrict = (districtCode: string) => {
+  router.push({
+    name: 'CityDistrict',
+    params: { districtCode },
+    query: selectedCourseCode.value ? { course_code: selectedCourseCode.value } : undefined,
+  })
+}
+
 const courseMap = ref<CourseMap | null>(null)
-const dailyRoute = ref<DailyRoute | null>(null)
 const reviewQueue = ref<ReviewQueue | null>(null)
 const progress = ref<CourseProgress | null>(null)
 const selectedCourseCode = ref('')
@@ -169,18 +176,7 @@ const safeCourseMap = computed(() => {
   }
 })
 
-const dailyItems = computed(() => {
-  const route = dailyRoute.value
-  if (!route) return []
-  return [...(route.review || []), ...(route.new_items || [])].slice(0, 8)
-})
-
 const reviewItems = computed(() => (reviewQueue.value?.items || []).slice(0, 6))
-
-const dailyRouteLink = computed(() => ({
-  name: 'CityDailyRoute',
-  query: selectedCourseCode.value ? { course_code: selectedCourseCode.value } : undefined,
-}))
 
 const districtProgressByCode = computed(() => {
   const out: Record<string, NonNullable<CourseProgress['by_district']>[number]> = {}
@@ -259,14 +255,12 @@ async function loadCity() {
   error.value = ''
   try {
     const courseCode = selectedCourseCode.value || undefined
-    const [map, route, review, progressData] = await Promise.all([
+    const [map, review, progressData] = await Promise.all([
       courseClient.getCourseMap(courseCode),
-      courseClient.getDailyRoute(8, courseCode),
       courseClient.getReviewQueue(8, courseCode),
       courseClient.getProgress(courseCode),
     ])
     courseMap.value = map
-    dailyRoute.value = route
     reviewQueue.value = review
     progress.value = progressData
     selectedCourseCode.value = map.course.code
@@ -311,13 +305,9 @@ onMounted(async () => {
   box-shadow: var(--shadow-card);
   min-height: 200px;
 }
-.city-hero-img {
-  display: block;
-  width: 100%;
-  height: 100%;
+.city-hero-map {
   position: absolute;
   inset: 0;
-  object-fit: cover;
 }
 .city-hero-overlay {
   position: relative;
@@ -355,7 +345,7 @@ onMounted(async () => {
 
 .city-overview {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
 }
 .overview-metric { text-align: center; padding: 14px 8px; }
@@ -370,7 +360,7 @@ onMounted(async () => {
 
 .city-work-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   gap: 10px;
 }
 .work-panel { min-height: 180px; }

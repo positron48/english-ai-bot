@@ -255,6 +255,7 @@
         </div>
       </div>
     </div>
+    <LgLumiFact :lumi-size="44" context="grammar" style="margin-top: 14px" />
   </div>
 </template>
 
@@ -264,6 +265,7 @@ import { useI18n } from 'vue-i18n'
 import { useRouter, useRoute } from 'vue-router'
 import { grammarClient, setGrammarCourse, type OfflineStatus } from '../api/grammarClient'
 import Icon from '../components/Icon.vue'
+import LgLumiFact from '../components/linglow/LgLumiFact.vue'
 import { isEmbeddedAndroidApp } from '../utils/runtime'
 import { useCourse } from '../composables/useCourse'
 

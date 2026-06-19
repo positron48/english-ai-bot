@@ -8,35 +8,24 @@
       @back="router.push('/city')"
     />
 
-    <!-- SUBTITLE + STATUS CHIP -->
+    <!-- SUBTITLE -->
     <div class="dst-sub-row">
       <p class="dst-desc">{{ districtDesc }}</p>
-      <span class="dst-chip">
-        🌿 {{ confidenceLabel }}
-      </span>
     </div>
 
     <div v-if="loading" class="dst-loading">{{ t('common.loading') }}</div>
     <template v-else>
 
-      <!-- DISTRICT ILLUSTRATION -->
-      <div class="dst-illustration">
-        <img :src="districtImg" alt="" class="dst-illus-img" />
-        <!-- Building labels -->
-        <div v-for="(b, i) in buildings" :key="i" class="dst-bldg-label" :style="{ left: b.x, top: b.y }">
-          <div class="dst-bldg-name">{{ b.name }}</div>
-          <div class="dst-bldg-sub">{{ b.sub }}</div>
-        </div>
-      </div>
-
       <!-- 4 ACTIVITY AREAS -->
       <div class="dst-areas-card">
         <div v-for="(a, i) in areas" :key="i" class="dst-area-row" :class="{ 'dst-area-row--bordered': i > 0 }">
-          <div class="dst-area-icon">{{ a.icon }}</div>
+          <div class="dst-area-icon">
+            <LgActivityIcon :type="a.type" :status="a.status" :size="22" />
+          </div>
           <div class="dst-area-body">
             <div class="dst-area-label">{{ a.label }}</div>
             <div class="dst-area-meta">{{ a.meta }}</div>
-            <div class="dst-bar-track">
+            <div v-if="a.pct !== null" class="dst-bar-track">
               <div class="dst-bar-fill" :style="{ width: a.pct + '%', background: a.color }" />
             </div>
           </div>
@@ -49,25 +38,9 @@
         </div>
       </div>
 
-      <!-- НОВЫЕ ОТКРЫТИЯ -->
-      <div class="dst-section-title">{{ t('city.newDiscoveries') }}</div>
-      <button class="dst-discovery-card" type="button" @click="router.push({ name: 'ReadingCategories', query: districtLevelQuery })">
-        <div class="dst-discovery-thumb">
-          <img :src="discoveryImg" alt="" class="dst-discovery-img" />
-        </div>
-        <div class="dst-discovery-body">
-          <div class="dst-discovery-kicker">{{ t('city.discoverySub') }}</div>
-          <div class="dst-discovery-title">{{ districtReadingTitle }}</div>
-          <div class="dst-discovery-desc">{{ t('city.discoveryDesc') }}</div>
-        </div>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--subtext)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M9 18l6-6-6-6" />
-        </svg>
-      </button>
-
-      <!-- LUMI TIP -->
+      <!-- LUMI FACT -->
       <div class="dst-lumi-wrap">
-        <LgLumiTip :text="lumiTip" />
+        <LgLumiFact context="district" />
       </div>
 
     </template>
@@ -79,15 +52,11 @@ import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { courseClient, type CourseMap, type CourseProgress } from '../api/courseClient'
+import { useLocale } from '../composables/useLocale'
 import { grammarClient } from '../api/grammarClient'
 import LgPageHeader from '../components/linglow/LgPageHeader.vue'
-import LgLumiTip from '../components/linglow/LgLumiTip.vue'
-import distVida from '../assets/linglow/dist_vida.jpg'
-import distParques from '../assets/linglow/dist_parques.jpg'
-import distMercados from '../assets/linglow/dist_mercados.jpg'
-import distCafeterias from '../assets/linglow/dist_cafeterias.jpg'
-import distViajes from '../assets/linglow/dist_viajes.jpg'
-import bldgLectura from '../assets/linglow/bldg_lectura.jpg'
+import LgLumiFact from '../components/linglow/LgLumiFact.vue'
+import LgActivityIcon from '../components/linglow/LgActivityIcon.vue'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -141,89 +110,54 @@ const grammarPct = computed(() => {
 })
 const readingPct = computed(() => {
   const r = typeProgress.value['reading_text'] || typeProgress.value['reading']
-  if (r) return r.pct
-  return Math.round(wordsPct.value * 0.7)
+  return r ? r.pct : 0
 })
-const chatPct = computed(() => Math.round(wordsPct.value * 0.5))
-
 // Level code for the district (e.g. "A0", "A1") — used to filter grammar categories
 const districtLevelCode = computed(() => district.value?.level_code?.toUpperCase() || '')
 const districtLevelQuery = computed(() => districtLevelCode.value ? { level: districtLevelCode.value } : {})
 
+const { currentLocale } = useLocale()
 const districtDesc = computed(() => {
-  const code = districtCode.value
-  if (code.includes('plaza') || code.includes('a1')) return t('city.distDescA1')
-  if (code.includes('barrio') || code.includes('a2')) return t('city.distDescA2')
-  if (code.includes('puerta') || code.includes('a0')) return t('city.distDescA0')
-  if (code.includes('alto') || code.includes('b2')) return t('city.distDescB2')
-  if (code.includes('puentes') || code.includes('b1')) return t('city.distDescB1')
-  if (code.includes('campus') || code.includes('c1')) return t('city.distDescC1')
-  return district.value?.title || ''
+  const d = district.value
+  if (!d) return ''
+  const i18nDesc = d.metadata?.desc_i18n?.[currentLocale.value]
+  return i18nDesc || d.description || d.title || ''
 })
 
-const confidenceLabel = computed(() => {
-  const c = wordsPct.value
-  if (c >= 75) return t('city.confidenceHigh')
-  if (c >= 40) return t('city.confidenceMid')
-  return t('city.confidenceLow')
+const areas = computed(() => {
+  function pctToStatus(pct: number): 'gray' | 'orange' | 'yellow' | 'green' {
+    if (pct <= 0) return 'gray'
+    if (pct < 34) return 'orange'
+    if (pct < 67) return 'yellow'
+    return 'green'
+  }
+  return [
+    {
+      type: 'grammar' as const,
+      status: pctToStatus(grammarPct.value),
+      label: t('city.areaGrammar'), color: '#2d6b3a',
+      meta: t('city.areaMetaGrammar', { pct: grammarPct.value }),
+      pct: grammarPct.value, cta: t('city.ctaContinue'),
+      action: () => router.push({ name: 'LearningGrammar', query: districtLevelQuery.value }),
+    },
+    {
+      type: 'words' as const,
+      status: pctToStatus(wordsPct.value),
+      label: t('city.areaWords'), color: '#2d6b3a',
+      meta: t('city.areaMetaWords', { pct: wordsPct.value }),
+      pct: wordsPct.value, cta: t('city.ctaContinue'),
+      action: () => router.push({ name: 'Training' }),
+    },
+    {
+      type: 'reading' as const,
+      status: pctToStatus(readingPct.value),
+      label: t('city.areaReading'), color: '#c8a84b',
+      meta: t('city.areaMetaReading', { pct: readingPct.value }),
+      pct: readingPct.value, cta: t('city.ctaRead'),
+      action: () => router.push({ name: 'ReadingCategories', query: districtLevelQuery.value }),
+    },
+  ]
 })
-
-const lumiTip = computed(() => {
-  const c = wordsPct.value
-  if (c >= 75) return t('city.lumiTipHigh')
-  if (c >= 40) return t('city.lumiTipMid')
-  return t('city.lumiTipLow')
-})
-
-// District illustration image based on level_code
-const districtImg = computed(() => {
-  const lv = district.value?.level_code?.toLowerCase() || districtCode.value
-  if (lv.startsWith('a0')) return distVida
-  if (lv.startsWith('a1')) return distParques
-  if (lv.startsWith('a2')) return distMercados
-  if (lv.startsWith('b1')) return distCafeterias
-  return distViajes
-})
-
-const discoveryImg = bldgLectura
-
-// Building label positions (% coords, same layout prototype uses)
-const buildings = [
-  { name: 'Jardín de Frases',        sub: t('city.areaGrammar'), x: '18%', y: '22%' },
-  { name: 'Mercado de Palabras',     sub: t('city.areaWords'),   x: '72%', y: '18%' },
-  { name: 'Quiosco de Lectura',      sub: t('city.areaReading'), x: '12%', y: '55%' },
-  { name: 'Cabinas de Conversación', sub: t('city.areaChat'),    x: '76%', y: '52%' },
-]
-
-// Reading title suggestion (first item from review queue or fallback)
-const districtReadingTitle = computed(() => t('city.discoveryPhrase'))
-
-const areas = computed(() => [
-  {
-    icon: '🏛', label: t('city.areaGrammar'), color: '#2d6b3a',
-    meta: t('city.areaMetaGrammar', { pct: grammarPct.value }),
-    pct: grammarPct.value, cta: t('city.ctaContinue'),
-    action: () => router.push({ name: 'LearningGrammar', query: districtLevelQuery.value }),
-  },
-  {
-    icon: '🌿', label: t('city.areaWords'), color: '#2d6b3a',
-    meta: t('city.areaMetaWords', { pct: wordsPct.value }),
-    pct: wordsPct.value, cta: t('city.ctaContinue'),
-    action: () => router.push({ name: 'Training' }),
-  },
-  {
-    icon: '📚', label: t('city.areaReading'), color: '#c8a84b',
-    meta: t('city.areaMetaReading', { pct: readingPct.value }),
-    pct: readingPct.value, cta: t('city.ctaRead'),
-    action: () => router.push({ name: 'ReadingCategories', query: districtLevelQuery.value }),
-  },
-  {
-    icon: '💬', label: t('city.areaChat'), color: '#2d6b3a',
-    meta: t('city.areaMetaChat', { pct: chatPct.value }),
-    pct: chatPct.value, cta: t('city.ctaPractice'),
-    action: () => router.push({ name: 'Chat' }),
-  },
-])
 
 onMounted(async () => {
   try {
@@ -395,6 +329,53 @@ onMounted(async () => {
   color: var(--salvia);
 }
 .dst-area-cta:hover { opacity: 0.8; }
+
+/* DAILY TASKS */
+.dst-tasks-card {
+  margin: 0 16px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+}
+.dst-task-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+.dst-task-row--bordered { border-top: 1px solid var(--border); }
+.dst-task-check {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  border: 1.5px solid var(--border);
+  background: var(--surface-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.dst-task-check--done { background: #3F6F3F; border-color: #3F6F3F; }
+.dst-task-text {
+  flex: 1;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  color: var(--text);
+}
+.dst-task-text--done { color: var(--subtext); text-decoration: line-through; }
+.dst-task-count {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--subtext);
+}
 
 /* SECTION TITLE */
 .dst-section-title {

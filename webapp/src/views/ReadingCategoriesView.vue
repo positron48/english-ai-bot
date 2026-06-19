@@ -17,6 +17,7 @@
         </p>
       </router-link>
     </div>
+    <LgLumiFact :lumi-size="44" context="reading" style="margin-top: 14px" />
   </div>
 </template>
 
@@ -25,6 +26,7 @@ import { onMounted, ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { apiClient } from '../api/client'
+import LgLumiFact from '../components/linglow/LgLumiFact.vue'
 
 const { t } = useI18n()
 const route = useRoute()

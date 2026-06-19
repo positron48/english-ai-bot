@@ -64,7 +64,7 @@
           <div class="start-stat-item">
             <span class="start-stat-label">{{ t('training.availableForTraining') }}</span>
             <span class="start-stat-value">
-              {{ stats.availableForTraining }} {{ t('common.cards') || 'cards' }}
+              {{ stats.availableForTraining }} {{ (t as any)('common.cards', stats.availableForTraining) }}
               <span v-if="estimatedTime">({{ estimatedTime }})</span>
             </span>
           </div>
@@ -1700,7 +1700,7 @@ const updateUpcomingChart = () => {
     data: {
       labels: labels,
       datasets: [{
-        label: t('common.cards') || 'Cards',
+        label: (t as any)('common.cards', 2),
         data: counts,
         backgroundColor: hexToRgba(primaryColor, isDark ? 0.7 : 0.6),
         borderColor: primaryColor,

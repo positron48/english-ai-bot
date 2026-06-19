@@ -2,7 +2,7 @@
   <div class="login-container">
     <div class="card login-card">
       <div class="login-brand">
-        <LgLumi :size="84" />
+        <LgLumi :size="84" pose="welcome" />
         <div class="login-logo">Linglow</div>
       </div>
       <h1 class="login-title">{{ t('auth.loginTitle') }}</h1>

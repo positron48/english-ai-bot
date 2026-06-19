@@ -196,7 +196,36 @@ func (r *Router) handleLinglowDailyRoute(w http.ResponseWriter, req *http.Reques
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
+	r.courseRepo.FillDailyRouteToday(req.Context(), route, userID)
+	r.enrichTheoryBlockTitles(req, userID, route.Review)
+	r.enrichTheoryBlockTitles(req, userID, route.NewItems)
 	writeJSON(w, route)
+}
+
+// enrichTheoryBlockTitles replaces slug titles for grammar_theory_block items
+// with the human-readable title from the grammar bundle's TheoryIndex.
+func (r *Router) enrichTheoryBlockTitles(req *http.Request, userID int64, items []repository.DailyRouteItem) {
+	if len(items) == 0 {
+		return
+	}
+	svc := r.grammarServiceForRequest(req, userID)
+	if svc == nil || svc.TheoryIndex == nil {
+		return
+	}
+	for i := range items {
+		if items[i].SourceKind != "grammar_theory_block" {
+			continue
+		}
+		// SourceID format: "<chapterID>:<blockID>"
+		colonIdx := strings.LastIndex(items[i].SourceID, ":")
+		if colonIdx < 0 {
+			continue
+		}
+		blockID := items[i].SourceID[colonIdx+1:]
+		if info, ok := svc.TheoryIndex.ByBlockID[blockID]; ok && info.Title != "" {
+			items[i].Title = info.Title
+		}
+	}
 }
 
 func (r *Router) handleLinglowReview(w http.ResponseWriter, req *http.Request) {
