@@ -130,8 +130,16 @@ function pctToStatus(pct: number): 'gray' | 'orange' | 'yellow' | 'green' {
   return 'green'
 }
 
-// Words thresholds: how many mastered words needed for green per CEFR level
-const WORDS_GREEN: Record<string, number> = { A0: 150, A1: 500, A2: 1200, B1: 2500, B2: 5000, C1: 10000 }
+// Words thresholds per CEFR level: [min, max]
+// District is gray until min is reached, then colors from min→max
+const WORDS_RANGE: Record<string, [number, number]> = {
+  A0: [0,    150],
+  A1: [150,  500],
+  A2: [500,  1200],
+  B1: [1200, 2500],
+  B2: [2500, 5000],
+  C1: [5000, 10000],
+}
 
 function grammarStatus(cefrLevel: string): 'gray' | 'orange' | 'yellow' | 'green' {
   const g = grammarByLevel.value[cefrLevel]
@@ -140,8 +148,12 @@ function grammarStatus(cefrLevel: string): 'gray' | 'orange' | 'yellow' | 'green
 }
 
 function wordsStatus(cefrLevel: string): 'gray' | 'orange' | 'yellow' | 'green' {
-  const top = WORDS_GREEN[cefrLevel.toUpperCase()] ?? 1000
-  return pctToStatus(Math.min(100, Math.round((courseProgress.value.masteredItems / top) * 100)))
+  const range = WORDS_RANGE[cefrLevel.toUpperCase()]
+  if (!range) return 'gray'
+  const [min, max] = range
+  const total = courseProgress.value.masteredItems
+  if (total < min) return 'gray'
+  return pctToStatus(Math.min(100, Math.round(((total - min) / (max - min)) * 100)))
 }
 
 function readingStatus(distCode: string): 'gray' | 'orange' | 'yellow' | 'green' {
