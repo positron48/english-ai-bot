@@ -27,7 +27,6 @@
         <div class="lg-city-card-content">
           <div>
             <div class="lg-city-card-title">{{ linglowProgress?.course?.city_name || t('navigation.city') }}</div>
-            <div class="lg-city-card-kicker">{{ t('city.kicker') }}</div>
           </div>
           <div v-if="linglowProgress" class="lg-city-card-progress">
             <div class="lg-city-card-progress-label">

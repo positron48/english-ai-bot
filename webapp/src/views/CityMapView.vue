@@ -56,23 +56,25 @@ const cityName = computed(() => currentCourse.value?.city_name || currentCourse.
 // ─── District definitions (static geometry, lv computed from grammar progress) ─
 // lv: 1=locked, 2=unlocked/0 chapters, 3=started, 4=half+, 5=all passed
 const DIST_DEFS = [
-  { id: 'b2_high_district',  cefrLevel: 'B2', name: 'Distrito Alto',       lp: [23.9, 13.7], wrap: false,
+  { id: 'b2_high_district',  cefrLevel: 'B2', lp: [23.9, 13.7], wrap: false,
     poly: [[0,0],[57,0],[57.29,13.59],[36.17,19.67],[34.58,23],[21.78,23.72],[0.37,23.96]] },
-  { id: 'b1_story_bridges',  cefrLevel: 'B1', name: 'Puentes del Relato',  lp: [80.3, 21.8], wrap: true,
+  { id: 'b1_story_bridges',  cefrLevel: 'B1', lp: [80.3, 21.8], wrap: true,
     poly: [[57,0],[99.72,0],[99.91,40.88],[62.34,26.94],[53.08,28.13],[34.58,23],[36.17,19.67],[57.29,13.59]] },
-  { id: 'a2_living_quarter', cefrLevel: 'A2', name: 'Barrio Vivo',          lp: [18, 34.4],  wrap: false,
+  { id: 'a2_living_quarter', cefrLevel: 'A2', lp: [18, 34.4],  wrap: false,
     poly: [[0.37,23.96],[21.78,23.72],[34.58,23],[53.08,28.13],[52.99,31.7],[50.65,34.21],[36.07,39.69],[23.55,45.17],[20.47,54.47],[21.59,57.09],[0,57]] },
-  { id: 'a1_clear_plaza',    cefrLevel: 'A1', name: 'Plaza Clara',          lp: [65.3, 51.8], wrap: false,
+  { id: 'a1_clear_plaza',    cefrLevel: 'A1', lp: [65.3, 51.8], wrap: false,
     poly: [[99.91,40.88],[99.91,58.05],[60,73.3],[52.9,69.13],[21.59,57.09],[20.47,54.47],[23.55,45.17],[36.07,39.69],[50.65,34.21],[52.99,31.7],[53.08,28.13],[62.34,26.94]] },
-  { id: 'a0_spark_gate',     cefrLevel: 'A0', name: 'Puerta de la Chispa', lp: [22.8, 73.5], wrap: true,
+  { id: 'a0_spark_gate',     cefrLevel: 'A0', lp: [22.8, 73.5], wrap: true,
     poly: [[0,57],[21.59,57.09],[52.9,69.13],[60,73.3],[60.09,78.19],[52.15,83.08],[41.4,90.11],[45.79,99.88],[0.37,99.4],[0,86]] },
-  { id: 'c1_mastery_campus', cefrLevel: 'C1', name: 'Campus de Maestría',  lp: [76.5, 91.1], wrap: true,
+  { id: 'c1_mastery_campus', cefrLevel: 'C1', lp: [76.5, 91.1], wrap: true,
     poly: [[99.91,58.05],[100,100],[45.79,99.88],[41.4,90.11],[52.15,83.08],[60.09,78.19],[60,73.3]] },
 ]
 
 // Grammar categories keyed by CEFR level (e.g. "A0" → [{passed_chapters, total_chapters, can_access}])
 const grammarByLevel = ref<Record<string, { passed: number; total: number; canAccess: boolean }>>({})
 const courseProgress = ref<{ masteredItems: number; byLocation: CourseProgressLocation[] }>({ masteredItems: 0, byLocation: [] })
+// District titles from course API keyed by district code
+const districtTitles = ref<Record<string, string>>({})
 
 async function loadGrammarProgress() {
   try {
@@ -98,6 +100,15 @@ async function loadProgress() {
       byLocation: prog.by_location || [],
     }
   } catch { /* ignore */ }
+}
+
+async function loadDistrictTitles() {
+  try {
+    const map = await courseClient.getCourseMap()
+    const titles: Record<string, string> = {}
+    for (const d of map.districts) titles[d.code] = d.title
+    districtTitles.value = titles
+  } catch { /* fallback to locale names */ }
 }
 
 // Compute lv for a district from grammar progress:
@@ -147,6 +158,7 @@ function readingStatus(distCode: string): 'gray' | 'orange' | 'yellow' | 'green'
 const CITY_DISTS = computed(() =>
   DIST_DEFS.map(d => ({
     ...d,
+    name: districtTitles.value[d.id] || d.id,
     lv: districtLv(d.cefrLevel),
     acts: [
       { type: 'grammar' as const, status: grammarStatus(d.cefrLevel) },
@@ -159,6 +171,7 @@ const CITY_DISTS = computed(() =>
 // Re-render canvas when grammar data arrives
 watch(grammarByLevel, () => renderCity())
 watch(courseProgress, () => renderCity())
+watch(districtTitles, () => renderCity())
 
 // ─── Canvas rendering ───────────────────────────────────────────────────────
 const cvsRef = ref<HTMLCanvasElement | null>(null)
@@ -260,6 +273,7 @@ function handleCanvasClick(e: MouseEvent) {
 onMounted(() => {
   loadGrammarProgress()
   loadProgress()
+  loadDistrictTitles()
   setTimeout(resize, 50)
   const srcs = [
     '/app/linglow/city/level1.jpg',

@@ -4,13 +4,13 @@
       <LgSideNav v-if="!fullscreen" />
       <div class="lg-layout-center">
         <div class="lg-layout-content" :class="{ 'lg-layout-content--map': isMapRoute, 'lg-view-pad': !fullscreen }">
-          <router-view />
+          <router-view :key="currentCourseCode" />
         </div>
       </div>
     </template>
     <template v-else>
       <div class="lg-layout-mobile" :class="{ 'lg-layout-mobile--with-nav': !fullscreen, 'lg-view-pad': !fullscreen }">
-        <router-view />
+        <router-view :key="currentCourseCode" />
       </div>
       <LgBottomNav v-if="!fullscreen" />
     </template>
@@ -29,7 +29,7 @@ import LgBottomNav from '../components/linglow/LgBottomNav.vue'
 
 const route = useRoute()
 const { isAuthenticated } = useAuth()
-const { ensureCourseLoaded } = useCourse()
+const { ensureCourseLoaded, currentCourseCode } = useCourse()
 useActivityTracker()
 
 const isDesktop = ref(window.innerWidth >= PUBLIC_BREAKPOINT)
@@ -56,13 +56,11 @@ onUnmounted(() => window.removeEventListener('resize', check))
   display: flex;
   height: 100vh;
   height: 100dvh;
-  overflow: hidden;
 }
 .lg-layout--desktop .lg-sidenav { height: 100%; }
 .lg-layout-center {
   flex: 1;
   height: 100%;
-  overflow: hidden;
   display: flex;
   justify-content: center;
   position: relative;

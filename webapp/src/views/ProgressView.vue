@@ -275,7 +275,6 @@ const metrics = computed(() => {
     { icon: '⏱', value: String(m?.active_minutes ?? 0), label: (t as any)('progress.metricMinutes', m?.active_minutes ?? 0), sub: t('progress.metricMinutesSub') },
     { icon: '',  type: 'words' as const,       value: String(m?.words_learned ?? 0),  label: (t as any)('progress.metricWords', m?.words_learned ?? 0),   sub: t('progress.metricWordsSub') },
     { icon: '',  type: 'reading' as const,     value: String(m?.texts_read ?? 0),     label: (t as any)('progress.metricTexts', m?.texts_read ?? 0),   sub: t('progress.metricTextsSub') },
-    { icon: '',  type: 'conversation' as const, value: String(m?.chat_messages ?? 0), label: (t as any)('progress.metricChats', m?.chat_messages ?? 0), sub: t('progress.metricChatsSub') },
   ]
 })
 

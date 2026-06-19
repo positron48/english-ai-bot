@@ -78,7 +78,6 @@ import LgActivityIcon from '../components/linglow/LgActivityIcon.vue'
 import artWords from '../assets/linglow/art/bg-word-cards-440.jpg'
 import artGrammar from '../assets/linglow/art/bg-grammar-440.jpg'
 import artReading from '../assets/linglow/art/bg-read-440.jpg'
-import artConversation from '../assets/linglow/art/bg-conversation-440.jpg'
 
 const { t } = useI18n()
 const isOffline = ref(typeof navigator !== 'undefined' && navigator.onLine === false)
@@ -109,15 +108,6 @@ const modes = computed(() => [
     desc: t('learning.readingDescription'),
     art: artReading,
     to: '/learning/reading',
-    disabled: isOffline.value,
-  },
-  {
-    type: 'conversation' as const,
-    bg: 'rgba(45,107,58,0.10)',
-    title: t('learning.conversation'),
-    desc: t('learning.conversationDescription'),
-    art: artConversation,
-    to: '/chat',
     disabled: isOffline.value,
   },
 ])

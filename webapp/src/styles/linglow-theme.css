@@ -118,7 +118,7 @@
   --error-bg:         rgba(224,123,90,0.14);
 }
 
-html, body { height: 100%; }
+html, body { height: 100%; overflow-x: hidden; }
 
 body {
   font-family: 'Inter', sans-serif;
@@ -353,13 +353,11 @@ p { color: var(--text); }
 /* Lumi glow per theme */
 :root[data-theme="dark"] img[alt="Lumi"] {
   filter: brightness(1.12) saturate(1.05)
-          drop-shadow(0 0 12px rgba(255,190,80,0.60))
-          drop-shadow(0 0 28px rgba(255,190,80,0.22)) !important;
+          drop-shadow(0 0 5px rgba(255,190,80,0.60))
+          drop-shadow(0 0 5px rgba(255,190,80,0.22)) !important;
   transition: none !important;
 }
 :root:not([data-theme="dark"]) img[alt="Lumi"] {
-  filter: brightness(1.04) saturate(1.06)
-          drop-shadow(0 4px 10px rgba(86,57,22,0.14))
-          drop-shadow(0 0 14px rgba(255,190,80,0.22)) !important;
+  filter: brightness(1.04) saturate(1.06) !important;
   transition: none !important;
 }

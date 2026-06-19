@@ -11,7 +11,6 @@
       >
         <div class="city-hero-overlay">
           <div class="city-hero-title">{{ courseMap?.course.city_name || courseMap?.course.title || t('city.title') }}</div>
-          <div class="city-hero-sub">{{ t('city.kicker') }}</div>
         </div>
       </LgCityMap>
     </div>
