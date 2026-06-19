@@ -95,9 +95,13 @@ async function loadGrammarProgress() {
 async function loadProgress() {
   try {
     const prog = await courseClient.getProgress()
+    const byLoc = prog.by_location || []
+    const masteredWords = byLoc
+      .filter(l => l.location_type === 'word_market')
+      .reduce((s, l) => s + l.mastered_items, 0)
     courseProgress.value = {
-      masteredItems: prog.summary.mastered_items,
-      byLocation: prog.by_location || [],
+      masteredItems: masteredWords,
+      byLocation: byLoc,
     }
   } catch { /* ignore */ }
 }
