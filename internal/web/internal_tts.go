@@ -69,7 +69,12 @@ func (r *Router) handleInternalTTSPending(w http.ResponseWriter, req *http.Reque
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
-	if r.pronunciationService == nil || !r.pronunciationService.IsEnabled() {
+	targetLang := req.URL.Query().Get("target_lang")
+	if targetLang == "" {
+		targetLang = req.URL.Query().Get("course_code")
+	}
+	svc := r.pronunciationServiceForLang(targetLang)
+	if svc == nil || !svc.IsEnabled() {
 		http.Error(w, "TTS service is unavailable", http.StatusServiceUnavailable)
 		return
 	}
@@ -84,7 +89,7 @@ func (r *Router) handleInternalTTSPending(w http.ResponseWriter, req *http.Reque
 		limit = r.internalTTSMaxPendingLimit
 	}
 
-	items, err := r.pronunciationService.ListPendingExternal(limit)
+	items, err := svc.ListPendingExternal(limit)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -107,11 +112,6 @@ func (r *Router) handleInternalTTSAudio(w http.ResponseWriter, req *http.Request
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
-	if r.pronunciationService == nil || !r.pronunciationService.IsEnabled() {
-		http.Error(w, "TTS service is unavailable", http.StatusServiceUnavailable)
-		return
-	}
-
 	payload, audio, err := r.decodeInternalTTSAudio(req)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -122,6 +122,12 @@ func (r *Router) handleInternalTTSAudio(w http.ResponseWriter, req *http.Request
 		return
 	}
 
+	svc := r.pronunciationServiceForLang(payload.TargetLang)
+	if svc == nil || !svc.IsEnabled() {
+		http.Error(w, "TTS service is unavailable", http.StatusServiceUnavailable)
+		return
+	}
+
 	provider := strings.TrimSpace(payload.Provider)
 	if provider == "" {
 		provider = "external"
@@ -129,18 +135,22 @@ func (r *Router) handleInternalTTSAudio(w http.ResponseWriter, req *http.Request
 	if strings.TrimSpace(payload.Engine) != "" {
 		provider = provider + ":" + strings.TrimSpace(payload.Engine)
 	}
-	status, err := r.pronunciationService.StoreExternalAudio(payload.Word, provider, payload.Format, audio)
+	status, err := svc.StoreExternalAudio(payload.Word, provider, payload.Format, audio)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
+	targetLang := strings.ToLower(strings.TrimSpace(payload.TargetLang))
+	if targetLang == "" {
+		targetLang = strings.ToLower(strings.TrimSpace(r.config.Learning.TargetLang))
+	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	_ = json.NewEncoder(w).Encode(map[string]interface{}{
 		"ok":          true,
 		"word":        status.Word,
-		"target_lang": strings.ToLower(strings.TrimSpace(r.config.Learning.TargetLang)),
+		"target_lang": targetLang,
 		"status":      status,
 	})
 }
@@ -154,16 +164,18 @@ func (r *Router) handleInternalTTSFail(w http.ResponseWriter, req *http.Request)
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
-	if r.pronunciationService == nil || !r.pronunciationService.IsEnabled() {
-		http.Error(w, "TTS service is unavailable", http.StatusServiceUnavailable)
-		return
-	}
-
 	var payload internalTTSFailRequest
 	if err := json.NewDecoder(io.LimitReader(req.Body, 64*1024)).Decode(&payload); err != nil {
 		http.Error(w, "invalid json body", http.StatusBadRequest)
 		return
 	}
+
+	svc := r.pronunciationServiceForLang(payload.TargetLang)
+	if svc == nil || !svc.IsEnabled() {
+		http.Error(w, "TTS service is unavailable", http.StatusServiceUnavailable)
+		return
+	}
+
 	state := strings.TrimSpace(payload.State)
 	if state == "" {
 		state = models.TTSStateFailedRetryable
@@ -183,17 +195,21 @@ func (r *Router) handleInternalTTSFail(w http.ResponseWriter, req *http.Request)
 	if strings.TrimSpace(payload.Engine) != "" {
 		provider = provider + ":" + strings.TrimSpace(payload.Engine)
 	}
-	status, err := r.pronunciationService.MarkExternalFailure(payload.Word, provider, state, strings.TrimSpace(payload.ErrorCode), msg)
+	status, err := svc.MarkExternalFailure(payload.Word, provider, state, strings.TrimSpace(payload.ErrorCode), msg)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
+	}
+	targetLang := strings.ToLower(strings.TrimSpace(payload.TargetLang))
+	if targetLang == "" {
+		targetLang = strings.ToLower(strings.TrimSpace(r.config.Learning.TargetLang))
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	_ = json.NewEncoder(w).Encode(map[string]interface{}{
 		"ok":          true,
 		"word":        status.Word,
-		"target_lang": strings.ToLower(strings.TrimSpace(r.config.Learning.TargetLang)),
+		"target_lang": targetLang,
 		"status":      status,
 	})
 }

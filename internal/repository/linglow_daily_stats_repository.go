@@ -116,11 +116,20 @@ type BackfillSummary struct {
 // existing value and the estimate, so heartbeat data is never reduced.
 func (r *LinglowDailyStatsRepository) Backfill(ctx context.Context) (BackfillSummary, error) {
 	var summary BackfillSummary
+	// Bump() stamps local_date using the app server's local wall-clock day
+	// (LocalDayFromTime). exercise_attempts timestamps are TIMESTAMPTZ, and
+	// casting them straight to ::date would use Postgres's session timezone
+	// instead, which can disagree with the app's local day around midnight.
+	// Shift by the server's current UTC offset before truncating so both
+	// paths agree on the same day boundary.
+	_, offsetSec := time.Now().Zone()
+	offset := fmt.Sprintf("%d seconds", offsetSec)
+
 	res, err := r.db.ExecContext(ctx, `
 		INSERT INTO daily_course_stats (user_course_id, local_date, review_count, new_count, correct_count, attempt_count, active_seconds, stats_json, updated_at)
 		SELECT
 			ea.user_course_id,
-			CAST(COALESCE(ea.answered_at, ea.started_at) AS date) AS d,
+			CAST((COALESCE(ea.answered_at, ea.started_at) + CAST(? AS interval)) AS date) AS d,
 			0, 0,
 			COUNT(*) FILTER (WHERE ea.is_correct IS TRUE),
 			COUNT(*),
@@ -134,7 +143,7 @@ func (r *LinglowDailyStatsRepository) Backfill(ctx context.Context) (BackfillSum
 			attempt_count  = EXCLUDED.attempt_count,
 			active_seconds = GREATEST(daily_course_stats.active_seconds, EXCLUDED.active_seconds),
 			updated_at     = CURRENT_TIMESTAMP
-	`)
+	`, offset)
 	if err != nil {
 		return summary, fmt.Errorf("backfill daily_course_stats: %w", err)
 	}
@@ -146,7 +155,7 @@ func (r *LinglowDailyStatsRepository) Backfill(ctx context.Context) (BackfillSum
 		INSERT INTO mode_daily_stats (user_course_id, local_date, mode, attempt_count, correct_count, active_seconds, stats_json, updated_at)
 		SELECT
 			ea.user_course_id,
-			CAST(COALESCE(ea.answered_at, ea.started_at) AS date) AS d,
+			CAST((COALESCE(ea.answered_at, ea.started_at) + CAST(? AS interval)) AS date) AS d,
 			ea.mode,
 			COUNT(*),
 			COUNT(*) FILTER (WHERE ea.is_correct IS TRUE),
@@ -160,7 +169,7 @@ func (r *LinglowDailyStatsRepository) Backfill(ctx context.Context) (BackfillSum
 			correct_count  = EXCLUDED.correct_count,
 			active_seconds = GREATEST(mode_daily_stats.active_seconds, EXCLUDED.active_seconds),
 			updated_at     = CURRENT_TIMESTAMP
-	`)
+	`, offset)
 	if err != nil {
 		return summary, fmt.Errorf("backfill mode_daily_stats: %w", err)
 	}

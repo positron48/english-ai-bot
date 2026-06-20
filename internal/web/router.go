@@ -305,6 +305,26 @@ func (r *Router) pronunciationServiceForRequest(req *http.Request, userID int64)
 	return r.pronunciationService
 }
 
+// pronunciationServiceForLang returns the PronunciationService registered for the
+// given target language/bundle ID (e.g. "en", "es"). Falls back to the primary
+// service when targetLang is empty or has no dedicated entry.
+func (r *Router) pronunciationServiceForLang(targetLang string) pronunciationServiceInterface {
+	targetLang = strings.ToLower(strings.TrimSpace(targetLang))
+	if targetLang != "" {
+		bundleID := grammarBundleForCourse(targetLang)
+		if bundleID == "" {
+			bundleID = targetLang
+		}
+		if svc, ok := r.pronunciationServices[bundleID]; ok {
+			return svc
+		}
+		if svc, ok := r.pronunciationServices[targetLang]; ok {
+			return svc
+		}
+	}
+	return r.pronunciationService
+}
+
 // SetSpeakingEvaluator sets the speaking evaluation service.
 func (r *Router) SetSpeakingEvaluator(evaluator *service.SpeakingEvaluatorService) {
 	r.speakingEvaluator = evaluator
