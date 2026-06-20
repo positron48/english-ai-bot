@@ -146,7 +146,7 @@ const areas = computed(() => {
       label: t('city.areaWords'), color: '#2d6b3a',
       meta: t('city.areaMetaWords', { pct: wordsPct.value }),
       pct: wordsPct.value, cta: t('city.ctaContinue'),
-      action: () => router.push({ name: 'Training' }),
+      action: () => router.push({ name: 'WordSets', query: districtLevelQuery.value }),
     },
     {
       type: 'reading' as const,

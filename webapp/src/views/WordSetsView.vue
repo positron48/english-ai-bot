@@ -36,7 +36,6 @@
               {{ Math.round(wordSet.progress_percent) }}%
             </div>
           </div>
-          <p v-if="wordSet.description" class="word-set-description">{{ wordSet.description }}</p>
           <div class="word-set-stats">
             <span>{{ wordSet.known_words + wordSet.words_in_vocab }}/{{ wordSet.total_words }} {{ (t as any)('common.words', wordSet.total_words) }}</span>
             <span v-if="wordSet.unknown_words > 0" class="unknown-count">
@@ -70,6 +69,8 @@ interface Category {
   name: string
   description?: string | null
   sort_order: number
+  parent_id?: number | null
+  level_code?: string | null
   children?: Category[]
 }
 
@@ -112,9 +113,26 @@ const pageTitle = computed(() => {
 
 // Items computed is not needed - we'll render categories and wordSets separately in template
 
+// Resolves a CEFR level (e.g. "A0") to the id of its root word-set category
+// ("Уровень A0" with no parent). Used when arriving from the city district page,
+// which only knows the district's level, not any category id.
+const resolveLevelCategoryId = async (level: string): Promise<number | null> => {
+  try {
+    const data: { categories: Category[] } = await apiClient.request('/api/learning/words/categories?all=true')
+    allCategories.value = data.categories || []
+    const match = allCategories.value.find(
+      c => !c.parent_id && (c.level_code || '').toUpperCase() === level.toUpperCase()
+    )
+    return match ? match.id : null
+  } catch (error) {
+    console.error('Failed to resolve level category:', error)
+    return null
+  }
+}
+
 onMounted(async () => {
   categoryHistory.value = []
-  
+
   // Check if category_id is in query params
   const categoryIdParam = route.query.category_id
   if (categoryIdParam) {
@@ -127,8 +145,19 @@ onMounted(async () => {
       // Add to history
       categoryHistory.value.push(categoryId)
     }
+  } else {
+    const levelParam = route.query.level
+    const level = typeof levelParam === 'string' ? levelParam : Array.isArray(levelParam) ? levelParam[0] : null
+    if (level) {
+      const levelCategoryId = await resolveLevelCategoryId(level)
+      if (levelCategoryId !== null) {
+        selectedCategoryId.value = levelCategoryId
+        currentParentId.value = levelCategoryId
+        categoryHistory.value.push(levelCategoryId)
+      }
+    }
   }
-  
+
   await loadCategories()
   await loadWordSets()
 })

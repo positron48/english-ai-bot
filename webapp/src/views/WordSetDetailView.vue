@@ -11,7 +11,6 @@
     <div v-else-if="error" class="error">{{ error }}</div>
     <div v-else-if="wordSet">
       <div class="word-set-info">
-        <p v-if="wordSet.description" class="description">{{ wordSet.description }}</p>
         <div class="word-set-meta">
           <span class="total-words">{{ t('wordSets.totalWords', { n: wordSet.total_words }) }}</span>
           <span class="progress-info">

@@ -84,6 +84,7 @@ func (r *Router) handleLearningWordsCategories(w http.ResponseWriter, req *http.
 		Description *string `json:"description,omitempty"`
 		SortOrder   int     `json:"sort_order"`
 		ParentID    *int64  `json:"parent_id,omitempty"`
+		LevelCode   *string `json:"level_code,omitempty"`
 	}
 
 	result := make([]CategoryNode, 0, len(filteredCategories))
@@ -94,6 +95,7 @@ func (r *Router) handleLearningWordsCategories(w http.ResponseWriter, req *http.
 			Description: cat.Description,
 			SortOrder:   cat.SortOrder,
 			ParentID:    cat.ParentID,
+			LevelCode:   cat.LevelCode,
 		})
 	}
 
