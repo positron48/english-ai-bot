@@ -335,6 +335,8 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 	webRouter.SetGrammarService(grammarService)
 	webRouter.SetGrammarServices(grammarServicesByBundle)
 	webRouter.SetPronunciationService(pronunciationService)
+	pronunciationServicesByBundle := buildPronunciationServicesByBundle(cfg, allBundleIDs, pronunciationService, wordRepo, log)
+	webRouter.SetPronunciationServices(pronunciationServicesByBundle)
 	speakingEvaluator := service.NewSpeakingEvaluatorService(cfg, log)
 	webRouter.SetSpeakingEvaluator(speakingEvaluator)
 
@@ -650,4 +652,30 @@ func availableGrammarBundleIDs(contentSource string, db *sql.DB) []string {
 		return ids
 	}
 	return grammarbundle.AvailableBundleIDs()
+}
+
+// buildPronunciationServicesByBundle builds per-bundle pronunciation services so
+// multi-course instances request TTS audio in the language matching the user's
+// selected course (e.g. "es" bundle → Spanish TTS) instead of always using the
+// primary configured language.
+func buildPronunciationServicesByBundle(
+	cfg *config.Config,
+	bundleIDs []string,
+	primary *service.PronunciationService,
+	wordRepo *repository.WordRepository,
+	log *zap.Logger,
+) map[string]*service.PronunciationService {
+	services := map[string]*service.PronunciationService{
+		cfg.Learning.GrammarBundleID: primary, // primary bundle from config
+	}
+	for _, bundleID := range bundleIDs {
+		if bundleID == cfg.Learning.GrammarBundleID {
+			continue // already added above
+		}
+		altLC := cfg.Learning
+		altLC.GrammarBundleID = bundleID
+		altLC.TargetLang = bundleID
+		services[bundleID] = service.NewPronunciationService(cfg.TTS, altLC, wordRepo, log)
+	}
+	return services
 }

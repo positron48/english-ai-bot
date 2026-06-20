@@ -103,6 +103,7 @@ type Router struct {
 	grammarServices                   map[string]*service.GrammarService // keyed by bundle ID: "en", "es", ...
 	cbService                         *service.CircuitBreakerService
 	pronunciationService              pronunciationServiceInterface
+	pronunciationServices             map[string]pronunciationServiceInterface // keyed by bundle ID: "en", "es", ...
 	aiService                         interface{} // Will be properly typed later
 	bot                               *tgbotapi.BotAPI
 	authMiddleware                    *AuthMiddleware
@@ -270,6 +271,31 @@ func (r *Router) grammarServiceForRequest(req *http.Request, userID int64) *serv
 func (r *Router) SetPronunciationService(pronunciationService *service.PronunciationService) {
 	r.pronunciationService = pronunciationService
 	r.setupPronunciationMediaRoute()
+}
+
+// SetPronunciationServices registers per-bundle pronunciation services. The map key is
+// the bundle ID (e.g. "en", "es"). The primary service must also be set via SetPronunciationService.
+func (r *Router) SetPronunciationServices(services map[string]*service.PronunciationService) {
+	m := make(map[string]pronunciationServiceInterface, len(services))
+	for k, v := range services {
+		m[k] = v
+	}
+	r.pronunciationServices = m
+}
+
+// pronunciationServiceForRequest returns the PronunciationService for the current user's course.
+func (r *Router) pronunciationServiceForRequest(req *http.Request, userID int64) pronunciationServiceInterface {
+	if len(r.pronunciationServices) > 0 {
+		courseCode := req.URL.Query().Get("course_code")
+		if courseCode == "" {
+			courseCode = r.currentCourseCodeForUser(req.Context(), userID)
+		}
+		bundleID := grammarBundleForCourse(courseCode)
+		if svc, ok := r.pronunciationServices[bundleID]; ok {
+			return svc
+		}
+	}
+	return r.pronunciationService
 }
 
 // SetSpeakingEvaluator sets the speaking evaluation service.

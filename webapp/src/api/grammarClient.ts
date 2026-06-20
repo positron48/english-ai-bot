@@ -139,6 +139,12 @@ function grammarCourseParam(): string {
   return _grammarCourseCode ? `?course_code=${encodeURIComponent(_grammarCourseCode)}` : ''
 }
 
+/** Current course code, as set via setGrammarCourse(). Used by other clients
+ *  (e.g. TTS, reading audio) that need to request resources for the active course. */
+export function getGrammarCourseCode(): string {
+  return _grammarCourseCode
+}
+
 function clearCategoriesCache() {
   categoriesCache = null
   categoriesRequest = null

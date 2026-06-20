@@ -46,8 +46,10 @@ func (r *Router) handleTTSWord(w http.ResponseWriter, req *http.Request) {
 		"word":      "",
 	}
 
-	if r.pronunciationService != nil && r.pronunciationService.IsEnabled() {
-		lookup := r.pronunciationService.Lookup(word)
+	userID := getUserIDFromContext(req.Context())
+	svc := r.pronunciationServiceForRequest(req, userID)
+	if svc != nil && svc.IsEnabled() {
+		lookup := svc.Lookup(word)
 		result["available"] = lookup.Available
 		result["url"] = lookup.URL
 		result["word"] = lookup.NormalizedWord

@@ -1,4 +1,5 @@
 import { apiClient } from '../api/client'
+import { getGrammarCourseCode } from '../api/grammarClient'
 
 // Audio engine
 let ctx: AudioContext | null = null
@@ -416,19 +417,23 @@ export function useAudio() {
     const normalized = normalizePronunciationWord(word)
     if (!normalized) return null
 
-    const cached = pronunciationCache.get(normalized)
+    const courseCode = getGrammarCourseCode()
+    const cacheKey = `${courseCode}:${normalized}`
+
+    const cached = pronunciationCache.get(cacheKey)
     if (cached) {
       return cached
     }
 
-    if (pronunciationInFlight.has(normalized)) {
-      return pronunciationInFlight.get(normalized) as Promise<string | null>
+    if (pronunciationInFlight.has(cacheKey)) {
+      return pronunciationInFlight.get(cacheKey) as Promise<string | null>
     }
 
     const requestURL = async (normalizedWord: string): Promise<string | null> => {
       try {
+        const courseParam = courseCode ? `&course_code=${encodeURIComponent(courseCode)}` : ''
         const data = await apiClient.request<{ available: boolean; url: string }>(
-          `/api/tts/word?word=${encodeURIComponent(normalizedWord)}`
+          `/api/tts/word?word=${encodeURIComponent(normalizedWord)}${courseParam}`
         )
         return data?.available && data?.url ? data.url : null
       } catch {
@@ -445,21 +450,21 @@ export function useAudio() {
           if (stripped) {
             url = await requestURL(stripped)
             if (url) {
-              pronunciationCache.set(stripped, url)
+              pronunciationCache.set(`${courseCode}:${stripped}`, url)
             }
           }
         }
         // Кэшируем только успешный URL: pending/ошибка не должны «замораживать» отсутствие кнопки до reload.
         if (url) {
-          pronunciationCache.set(normalized, url)
+          pronunciationCache.set(cacheKey, url)
         }
         return url
       } finally {
-        pronunciationInFlight.delete(normalized)
+        pronunciationInFlight.delete(cacheKey)
       }
     })()
 
-    pronunciationInFlight.set(normalized, request)
+    pronunciationInFlight.set(cacheKey, request)
     return request
   }
 

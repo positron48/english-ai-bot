@@ -61,13 +61,22 @@ func (r *LumiFactRepository) GetDailyFact(ctx context.Context, courseCode, factC
 		tryScopes = append(tryScopes, [2]string{"", "general"})
 	}
 
-	for _, scope := range tryScopes {
-		fact, err := r.dailyFactForScope(ctx, scope[0], scope[1], locale, today)
-		if err != nil {
-			return nil, err
-		}
-		if fact != nil {
-			return fact, nil
+	// Facts are only authored in a subset of locales; fall back to "ru" (the
+	// content baseline) if nothing matches the requested locale.
+	tryLocales := []string{locale}
+	if locale != "ru" {
+		tryLocales = append(tryLocales, "ru")
+	}
+
+	for _, loc := range tryLocales {
+		for _, scope := range tryScopes {
+			fact, err := r.dailyFactForScope(ctx, scope[0], scope[1], loc, today)
+			if err != nil {
+				return nil, err
+			}
+			if fact != nil {
+				return fact, nil
+			}
 		}
 	}
 	return nil, nil

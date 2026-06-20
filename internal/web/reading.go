@@ -12,6 +12,7 @@ import (
 	"sort"
 	"strings"
 
+	"tgbot-skeleton/internal/grammarbundle"
 	"tgbot-skeleton/internal/readingbundle"
 	"tgbot-skeleton/internal/readingsync"
 	"tgbot-skeleton/internal/repository"
@@ -573,7 +574,15 @@ func (r *Router) handleLearningReadingAudio(w http.ResponseWriter, req *http.Req
 		return
 	}
 	audioPath = filepath.Clean(audioPath)
-	bundleFS, err := readingbundle.BundleFS(r.config)
+	var bundleFS fs.FS
+	var err error
+	if courseCode := strings.TrimSpace(req.URL.Query().Get("course_code")); courseCode != "" {
+		bundleID := grammarBundleForCourse(courseCode)
+		bundleFS, err = grammarbundle.BundleFS(bundleID)
+	}
+	if bundleFS == nil {
+		bundleFS, err = readingbundle.BundleFS(r.config)
+	}
 	if err != nil {
 		r.logger.Error("failed to select grammar bundle filesystem", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)

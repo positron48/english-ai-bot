@@ -9,7 +9,14 @@
       </div>
     </template>
     <template v-else>
-      <div class="lg-layout-mobile" :class="{ 'lg-layout-mobile--with-nav': !fullscreen, 'lg-view-pad': !fullscreen }">
+      <div
+        class="lg-layout-mobile"
+        :class="{
+          'lg-layout-mobile--with-nav': !fullscreen,
+          'lg-view-pad': !fullscreen && !isMapRoute,
+          'lg-layout-mobile--map': isMapRoute,
+        }"
+      >
         <router-view :key="currentCourseCode" />
       </div>
       <LgBottomNav v-if="!fullscreen" />
@@ -81,7 +88,17 @@ onUnmounted(() => window.removeEventListener('resize', check))
   position: relative;
 }
 .lg-layout-mobile--with-nav {
-  padding-bottom: calc(78px + env(safe-area-inset-bottom, 0px)) !important;
+  padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px)) !important;
+}
+.lg-layout-mobile--map {
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  overflow: hidden;
+}
+.lg-layout-mobile--map > * {
+  flex: 1;
+  min-height: 0;
 }
 .lg-view-pad {
   padding: 0 14px;

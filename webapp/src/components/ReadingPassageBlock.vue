@@ -191,6 +191,7 @@ import { computed, onBeforeUnmount, onMounted, onUnmounted, ref, watch } from 'v
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { apiClient } from '../api/client'
+import { getGrammarCourseCode } from '../api/grammarClient'
 import { useAudio } from '../composables/useAudio'
 import { useSettings } from '../composables/useSettings'
 import Icon from './Icon.vue'
@@ -345,7 +346,9 @@ const stopCurrentAudio = () => {
 }
 
 const playSegmentAudio = async (audioRelPath: string) => {
-  const url = `/api/learning/reading/audio?path=${encodeURIComponent(audioRelPath)}`
+  const courseCode = getGrammarCourseCode()
+  const courseParam = courseCode ? `&course_code=${encodeURIComponent(courseCode)}` : ''
+  const url = `/api/learning/reading/audio?path=${encodeURIComponent(audioRelPath)}${courseParam}`
   stopCurrentAudio()
   const audio = new Audio(url)
   currentAudio = audio
