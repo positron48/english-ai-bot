@@ -11,6 +11,7 @@ type WordSetCategory struct {
 	Description *string   `json:"description"`
 	IsPublished bool      `json:"is_published"`
 	SortOrder   int       `json:"sort_order"`
+	LevelCode   *string   `json:"level_code,omitempty"` // CEFR level (A0..C1) this category belongs to
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
 }
@@ -25,8 +26,14 @@ type WordSet struct {
 	IsPublished  bool      `json:"is_published"`
 	SortOrder    int       `json:"sort_order"`
 	PreferredPOS *string   `json:"preferred_pos,omitempty"` // Preferred part of speech (noun, verb, adjective, etc.)
+	LevelCode    *string   `json:"level_code,omitempty"`    // CEFR level (A0..C1); if nil, inherits the category's level
 	CreatedAt    time.Time `json:"created_at"`
 	UpdatedAt    time.Time `json:"updated_at"`
+}
+
+// ValidWordSetLevelCodes are the CEFR levels a word set category/set can be bound to.
+var ValidWordSetLevelCodes = map[string]bool{
+	"A0": true, "A1": true, "A2": true, "B1": true, "B2": true, "C1": true,
 }
 
 // WordSetItem represents a word in a word set

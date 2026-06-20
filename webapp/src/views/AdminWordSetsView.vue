@@ -53,6 +53,7 @@
               <strong>{{ category.name }}</strong>
               <span v-if="category.description" class="category-desc">{{ category.description }}</span>
               <span v-if="category.parent_id" class="category-parent">Parent: {{ getCategoryName(category.parent_id) }}</span>
+              <span v-if="category.level_code" class="level-badge">{{ category.level_code }}</span>
               <span :class="['published-badge', category.is_published ? 'published' : 'unpublished']">
                 {{ category.is_published ? 'Published' : 'Unpublished' }}
               </span>
@@ -68,6 +69,7 @@
                 <div class="category-info">
                   <strong>{{ child.name }}</strong>
                   <span v-if="child.description" class="category-desc">{{ child.description }}</span>
+                  <span v-if="child.level_code" class="level-badge">{{ child.level_code }}</span>
                   <span :class="['published-badge', child.is_published ? 'published' : 'unpublished']">
                     {{ child.is_published ? 'Published' : 'Unpublished' }}
                   </span>
@@ -87,7 +89,12 @@
     <div v-if="selectedCourseCode && activeTab === 'sets'" class="tab-content">
       <div class="section-header">
         <h2>Word Sets</h2>
-        <button v-if="can('word_sets.edit')" @click="startCreateWordSet" class="btn btn-primary">Create Word Set</button>
+        <div class="header-actions">
+          <button v-if="can('word_sets.edit')" @click="syncWordSetsWithDistricts" class="btn btn-secondary" :disabled="syncLoading">
+            {{ syncLoading ? 'Syncing...' : 'Sync with City' }}
+          </button>
+          <button v-if="can('word_sets.edit')" @click="startCreateWordSet" class="btn btn-primary">Create Word Set</button>
+        </div>
       </div>
       
       <div class="filters">
@@ -112,6 +119,9 @@
               <p v-if="wordSet.description">{{ wordSet.description }}</p>
               <div class="word-set-meta">
                 <span>Category: {{ getCategoryName(wordSet.category_id) }}</span>
+                <span v-if="effectiveWordSetLevel(wordSet)" class="level-badge">
+                  {{ effectiveWordSetLevel(wordSet) }}<template v-if="!wordSet.level_code"> (inherited)</template>
+                </span>
                 <span :class="['published-badge', wordSet.is_published ? 'published' : 'unpublished']">
                   {{ wordSet.is_published ? 'Published' : 'Unpublished' }}
                 </span>
@@ -155,6 +165,14 @@
           <div class="form-group">
             <label>Sort Order</label>
             <input v-model.number="categoryForm.sort_order" type="number" class="form-input" />
+          </div>
+          <div class="form-group">
+            <label>Level (CEFR)</label>
+            <select v-model="categoryForm.level_code" class="form-select">
+              <option :value="null">Not set</option>
+              <option v-for="lvl in CEFR_LEVELS" :key="lvl" :value="lvl">{{ lvl }}</option>
+            </select>
+            <p class="form-hint">Word sets in this category will land in the matching city district, unless a set overrides its own level.</p>
           </div>
           <div class="form-group">
             <label>
@@ -220,6 +238,14 @@
               <option value="interjection">Interjection</option>
             </select>
             <p class="form-hint">If set, only words with training cards matching this part of speech will be shown in the set</p>
+          </div>
+          <div class="form-group">
+            <label>Level (CEFR)</label>
+            <select v-model="wordSetForm.level_code" class="form-select">
+              <option :value="null">Inherit from category</option>
+              <option v-for="lvl in CEFR_LEVELS" :key="lvl" :value="lvl">{{ lvl }}</option>
+            </select>
+            <p class="form-hint">Determines which city district's Word Market this set appears in. Leave unset to inherit the category's level.</p>
           </div>
           <div class="form-group">
             <label>
@@ -316,6 +342,8 @@ const { can, loadPermissions } = useAuth()
 const route = useRoute()
 const router = useRouter()
 
+const CEFR_LEVELS = ['A0', 'A1', 'A2', 'B1', 'B2', 'C1'] as const
+
 interface Category {
   id: number
   course_code: string
@@ -324,6 +352,7 @@ interface Category {
   description?: string | null
   is_published: boolean
   sort_order: number
+  level_code?: string | null
   children?: Category[]
 }
 
@@ -336,6 +365,7 @@ interface WordSet {
   is_published: boolean
   sort_order?: number
   preferred_pos?: string | null
+  level_code?: string | null
   created_at: string
   updated_at: string
 }
@@ -384,7 +414,8 @@ const categoryForm = ref({
   description: '',
   parent_id: null as number | null,
   is_published: true,
-  sort_order: 0
+  sort_order: 0,
+  level_code: null as string | null
 })
 const showDeleteCategoryConfirm = ref(false)
 const categoryToDelete = ref<Category | null>(null)
@@ -403,6 +434,7 @@ const wordSetForm = ref({
   is_published: true,
   sort_order: 0,
   preferred_pos: null as string | null,
+  level_code: null as string | null,
   words: ''
 })
 const showDeleteWordSetConfirm = ref(false)
@@ -413,6 +445,7 @@ const itemsForm = ref({
 })
 const itemsLoading = ref(false)
 const wordSetLoading = ref(false)
+const syncLoading = ref(false)
 
 // Computed
 const categoriesTree = computed(() => {
@@ -575,6 +608,13 @@ const loadWordSets = async (options?: { silent?: boolean }) => {
   }
 }
 
+const effectiveWordSetLevel = (wordSet: WordSet): string | null => {
+  if (wordSet.level_code) return wordSet.level_code
+  if (!wordSet.category_id) return null
+  const cat = allCategoriesFlat.value.find(c => c.id === wordSet.category_id)
+  return cat?.level_code || null
+}
+
 const getCategoryName = (categoryId: number | null | undefined): string => {
   if (!categoryId) return 'None'
   const cat = allCategoriesFlat.value.find(c => c.id === categoryId)
@@ -589,7 +629,8 @@ const startCreateCategory = () => {
     description: '',
     parent_id: null,
     is_published: true,
-    sort_order: 0
+    sort_order: 0,
+    level_code: null
   }
   showCategoryModal.value = true
 }
@@ -601,7 +642,8 @@ const startEditCategory = (category: Category) => {
     description: category.description || '',
     parent_id: category.parent_id || null,
     is_published: category.is_published ?? true,
-    sort_order: category.sort_order
+    sort_order: category.sort_order,
+    level_code: category.level_code || null
   }
   showCategoryModal.value = true
 }
@@ -635,6 +677,26 @@ const saveCategory = async () => {
   } catch (error: any) {
     console.error('Failed to save category:', error)
     await showAlert(error.message || 'Failed to save category')
+  }
+}
+
+const syncWordSetsWithDistricts = async () => {
+  if (syncLoading.value) return
+  if (!can('word_sets.edit')) {
+    await showAlert('You don\'t have permission to sync word sets.')
+    return
+  }
+  syncLoading.value = true
+  try {
+    await apiClient.request(withCourse('/api/admin/word-sets/sync-districts'), {
+      method: 'POST'
+    })
+    await showAlert('Word sets synced with city districts')
+  } catch (error: any) {
+    console.error('Failed to sync word sets with districts:', error)
+    await showAlert(error.message || 'Failed to sync word sets with districts')
+  } finally {
+    syncLoading.value = false
   }
 }
 
@@ -678,6 +740,7 @@ const startCreateWordSet = () => {
     is_published: true,
     sort_order: 0,
     preferred_pos: null,
+    level_code: null,
     words: ''
   }
   showWordSetModal.value = true
@@ -685,7 +748,7 @@ const startCreateWordSet = () => {
 
 const startEditWordSet = async (wordSet: WordSet) => {
   editingWordSet.value = wordSet
-  
+
   wordSetForm.value = {
     title: wordSet.title,
     description: wordSet.description || '',
@@ -693,6 +756,7 @@ const startEditWordSet = async (wordSet: WordSet) => {
     is_published: wordSet.is_published,
     sort_order: wordSet.sort_order || 0,
     preferred_pos: wordSet.preferred_pos || null,
+    level_code: wordSet.level_code || null,
     words: ''
   }
   
@@ -1085,6 +1149,20 @@ const deleteWordSet = async () => {
 .published-badge.unpublished {
   background: var(--color-secondary, #6b7280);
   color: white;
+}
+
+.level-badge {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--color-primary, #3b82f6);
+  color: white;
+}
+
+.header-actions {
+  display: flex;
+  gap: 8px;
 }
 
 .word-set-actions {

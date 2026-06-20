@@ -3,6 +3,7 @@ package web
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -19,6 +20,19 @@ func adminCourseCode(req *http.Request, bodyCourseCode string) string {
 		courseCode = strings.TrimSpace(strings.ToLower(req.URL.Query().Get("course_code")))
 	}
 	return courseCode
+}
+
+// normalizeWordSetLevelCode upper-cases and validates a CEFR level_code, leaving nil/empty untouched.
+func normalizeWordSetLevelCode(levelCode **string) error {
+	if *levelCode == nil || **levelCode == "" {
+		return nil
+	}
+	upper := strings.ToUpper(strings.TrimSpace(**levelCode))
+	if !models.ValidWordSetLevelCodes[upper] {
+		return fmt.Errorf("invalid level_code: must be one of A0, A1, A2, B1, B2, C1")
+	}
+	*levelCode = &upper
+	return nil
 }
 
 func (r *Router) validateAdminCourseCode(courseCode string) error {
@@ -96,6 +110,10 @@ func (r *Router) handleAdminWordSetCategories(w http.ResponseWriter, req *http.R
 			http.Error(w, "Name is required", http.StatusBadRequest)
 			return
 		}
+		if err := normalizeWordSetLevelCode(&category.LevelCode); err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
 		category.CourseCode = adminCourseCode(req, category.CourseCode)
 		if err := r.validateAdminCourseCode(category.CourseCode); err != nil {
 			http.Error(w, "Course not found", http.StatusNotFound)
@@ -166,6 +184,10 @@ func (r *Router) handleAdminWordSetCategories(w http.ResponseWriter, req *http.R
 		)
 
 		category.ID = id
+		if err := normalizeWordSetLevelCode(&category.LevelCode); err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
 		category.CourseCode = adminCourseCode(req, category.CourseCode)
 		if err := r.validateAdminCourseCode(category.CourseCode); err != nil {
 			http.Error(w, "Course not found", http.StatusNotFound)
@@ -329,6 +351,10 @@ func (r *Router) handleAdminWordSets(w http.ResponseWriter, req *http.Request) {
 			http.Error(w, "Title is required", http.StatusBadRequest)
 			return
 		}
+		if err := normalizeWordSetLevelCode(&wordSet.LevelCode); err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
 		wordSet.CourseCode = adminCourseCode(req, wordSet.CourseCode)
 		if err := r.validateAdminCourseCode(wordSet.CourseCode); err != nil {
 			http.Error(w, "Course not found", http.StatusNotFound)
@@ -417,6 +443,10 @@ func (r *Router) handleAdminWordSets(w http.ResponseWriter, req *http.Request) {
 		}
 
 		wordSet.ID = id
+		if err := normalizeWordSetLevelCode(&wordSet.LevelCode); err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
 		wordSet.CourseCode = adminCourseCode(req, wordSet.CourseCode)
 		if err := r.validateAdminCourseCode(wordSet.CourseCode); err != nil {
 			http.Error(w, "Course not found", http.StatusNotFound)
@@ -482,6 +512,66 @@ func (r *Router) handleAdminWordSets(w http.ResponseWriter, req *http.Request) {
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 	}
+}
+
+// handleAdminWordSetsSyncDistricts re-runs the legacy word-set -> Linglow v2
+// (modules/learning_items/districts) content mapping on demand, so admin changes
+// to word set/category levels show up in the city map without waiting for a bot restart.
+// @Summary      Синхронизировать словарные наборы с районами города
+// @Tags         Admin
+// @Accept       json
+// @Produce      application/json
+// @Security     ApiKeyAuth
+// @Router       /api/admin/word-sets/sync-districts [post]
+func (r *Router) handleAdminWordSetsSyncDistricts(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	ctx := req.Context()
+	if !r.checkPermissionInHandler(ctx, PermissionWordSetsEdit) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusForbidden)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"error":   "Forbidden",
+			"message": "You don't have permission to sync word sets.",
+		})
+		return
+	}
+
+	courseCode := adminCourseCode(req, "")
+	if err := r.validateAdminCourseCode(courseCode); err != nil {
+		http.Error(w, "Course not found", http.StatusNotFound)
+		return
+	}
+	if courseCode == "" {
+		http.Error(w, "course_code is required", http.StatusBadRequest)
+		return
+	}
+	bundleID := grammarBundleForCourse(courseCode)
+	if bundleID == "" {
+		http.Error(w, "Unable to resolve grammar bundle for course", http.StatusBadRequest)
+		return
+	}
+
+	if r.courseRepo == nil {
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	summary, err := r.courseRepo.MapLegacyContent(ctx, courseCode, bundleID)
+	if err != nil {
+		r.logger.Error("failed to sync word sets with districts", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"success": true,
+		"summary": summary,
+	})
 }
 
 // handleAdminWordSetDetailOrSets routes to detail or sets handlers

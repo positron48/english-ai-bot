@@ -177,6 +177,74 @@ func (r *Router) handleAdminCircuitOpen(w http.ResponseWriter, req *http.Request
 	})
 }
 
+// handleAdminTTSCircuitStatus reports the pronunciation/TTS circuit breaker state.
+func (r *Router) handleAdminTTSCircuitStatus(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if r.ttsCbService == nil {
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"circuit_breaker": map[string]interface{}{"state": "not_configured"},
+		})
+		return
+	}
+
+	isOpen, failureCount, lastFailure, err := r.ttsCbService.GetState()
+	if err != nil {
+		r.logger.Error("failed to get tts circuit breaker state", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	state := "closed"
+	if isOpen {
+		state = "open"
+	}
+	cbResponse := map[string]interface{}{
+		"state":        state,
+		"is_open":      isOpen,
+		"failures":     failureCount,
+		"last_failure": nil,
+	}
+	if lastFailure != "" {
+		cbResponse["last_failure"] = lastFailure
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"circuit_breaker": cbResponse,
+	})
+}
+
+// handleAdminTTSCircuitReset resets the pronunciation/TTS circuit breaker.
+func (r *Router) handleAdminTTSCircuitReset(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	if r.ttsCbService == nil {
+		http.Error(w, "tts circuit breaker not configured", http.StatusNotFound)
+		return
+	}
+
+	if err := r.ttsCbService.Reset(); err != nil {
+		r.logger.Error("failed to reset tts circuit breaker", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"success": true,
+		"message": "TTS circuit breaker reset successfully",
+	})
+}
+
 // handleAdminTraining handles training card management
 // @Summary      Управление тренировочными карточками
 // @Description  Получение (GET), создание (POST), генерация через LLM (POST /generate) или удаление (POST /delete) тренировочных карточек по слову. Путь: /api/admin/training/{word} или /api/admin/training/{word}/generate или /api/admin/training/{word}/delete или /api/admin/training/delete_all

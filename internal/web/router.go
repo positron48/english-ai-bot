@@ -102,6 +102,7 @@ type Router struct {
 	grammarService                    *service.GrammarService
 	grammarServices                   map[string]*service.GrammarService // keyed by bundle ID: "en", "es", ...
 	cbService                         *service.CircuitBreakerService
+	ttsCbService                      *service.CircuitBreakerService
 	pronunciationService              pronunciationServiceInterface
 	pronunciationServices             map[string]pronunciationServiceInterface // keyed by bundle ID: "en", "es", ...
 	aiService                         interface{} // Will be properly typed later
@@ -281,6 +282,12 @@ func (r *Router) SetPronunciationServices(services map[string]*service.Pronuncia
 		m[k] = v
 	}
 	r.pronunciationServices = m
+}
+
+// SetTTSCircuitBreaker wires the pronunciation/TTS circuit breaker for the admin
+// status/reset endpoints. Optional: nil leaves those endpoints reporting "not configured".
+func (r *Router) SetTTSCircuitBreaker(ttsCbService *service.CircuitBreakerService) {
+	r.ttsCbService = ttsCbService
 }
 
 // pronunciationServiceForRequest returns the PronunciationService for the current user's course.
@@ -596,6 +603,8 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/admin/word-sets", appAPIMiddleware.Wrap(adminAuth(r.RequireAnyPermission(PermissionWordSetsRead, PermissionWordSetsEdit)(r.handleAdminWordSets))))
 	// Word set detail: GET requires read, PUT items requires edit
 	r.mux.HandleFunc("/api/admin/word-sets/", appAPIMiddleware.Wrap(adminAuth(r.RequireAnyPermission(PermissionWordSetsRead, PermissionWordSetsEdit)(r.handleAdminWordSetDetailOrSets))))
+	// Manual re-sync of legacy word sets into Linglow v2 districts/modules (requires edit)
+	r.mux.HandleFunc("/api/admin/word-sets/sync-districts", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionWordSetsEdit)(r.handleAdminWordSetsSyncDistricts))))
 
 	// Access control admin routes (require full_access)
 	r.mux.HandleFunc("/api/admin/access/available-permissions", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminAccessAvailablePermissions))))
@@ -610,6 +619,8 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/admin", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdmin))))
 	r.mux.HandleFunc("/api/admin/circuit/reset", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminCircuitReset))))
 	r.mux.HandleFunc("/api/admin/circuit/open", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminCircuitOpen))))
+	r.mux.HandleFunc("/api/admin/circuit/tts", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminTTSCircuitStatus))))
+	r.mux.HandleFunc("/api/admin/circuit/tts/reset", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminTTSCircuitReset))))
 	r.mux.HandleFunc("/api/admin/prompt-tester/default-prompts", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminPromptTesterDefaultPrompts))))
 	r.mux.HandleFunc("/api/admin/prompt-tester/run", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminPromptTesterRun))))
 	r.mux.HandleFunc("/api/admin/content-reports", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminContentReports))))

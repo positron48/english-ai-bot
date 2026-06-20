@@ -612,7 +612,7 @@ func TestHandleLearningWordsSets_ScanErrorContinue(t *testing.T) {
 		CREATE VIEW word_sets AS
 		SELECT id, category_id, title, description, is_published,
 		       ARRAY[sort_order] AS sort_order,
-		       preferred_pos, created_at, updated_at
+		       preferred_pos, level_code, created_at, updated_at
 		FROM word_sets_orig;
 	`); err != nil {
 		t.Skipf("cannot create view: %v", err)

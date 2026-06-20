@@ -28,10 +28,6 @@ const (
 	englishMustHaveSummary    = "word_sets.english.must_have_last_import_summary"
 	defaultEnglishMustHaveYAMLPath  = "/app/data/english_word_sets_must_have.yaml"
 	fallbackEnglishMustHaveYAMLPath = "resources/wordsets/english_word_sets_must_have.yaml"
-	spanishMustHaveChecksum   = "word_sets.spanish.must_have_sha256"
-	spanishMustHaveSummary    = "word_sets.spanish.must_have_last_import_summary"
-	defaultSpanishMustHaveYAMLPath  = "/app/data/spanish_word_sets_must_have.yaml"
-	fallbackSpanishMustHaveYAMLPath = "resources/wordsets/spanish_word_sets_must_have.yaml"
 	systemUserID              = int64(0)
 )
 
@@ -505,65 +501,6 @@ func AutoSyncEnglishWordSets(ctx context.Context, cfg *config.Config, conn *sql.
 		zap.String("reason", reason),
 		zap.Int("processed_sets", res.Processed),
 		zap.Int("selected_sets", len(res.Sets)))
-	return nil
-}
-
-// AutoSyncSpanishMustHaveWordSets creates/updates "Must Have" hierarchy for Spanish deployment.
-func AutoSyncSpanishMustHaveWordSets(ctx context.Context, cfg *config.Config, conn *sql.DB, log *zap.Logger) error {
-	target := strings.ToLower(strings.TrimSpace(cfg.Learning.TargetLang))
-	appCode := strings.ToLower(strings.TrimSpace(cfg.Learning.AppCode))
-	if target != "es" || appCode != "spanish" {
-		return nil
-	}
-
-	yamlPath, err := detectMustHaveYAMLPath([]string{
-		defaultSpanishMustHaveYAMLPath,
-		fallbackSpanishMustHaveYAMLPath,
-	})
-	if err != nil {
-		return err
-	}
-	checksum, err := fileSHA256(yamlPath)
-	if err != nil {
-		return fmt.Errorf("compute must-have yaml checksum: %w", err)
-	}
-	root, err := loadMustHaveBlueprint(yamlPath)
-	if err != nil {
-		return fmt.Errorf("parse must-have yaml: %w", err)
-	}
-
-	settingsRepo := repository.NewAppSettingsRepository(conn, log)
-	currentChecksum, err := settingsRepo.GetSetting(spanishMustHaveChecksum)
-	if err != nil {
-		return fmt.Errorf("read app setting %q: %w", spanishMustHaveChecksum, err)
-	}
-	commit := currentChecksum != checksum
-
-	sets, items, err := ensureMustHaveBlueprint(ctx, conn, cfg, root, "es", commit, log)
-	if err != nil {
-		return fmt.Errorf("sync must-have blueprint: %w", err)
-	}
-
-	reason := "up_to_date"
-	if commit {
-		reason = "yaml_checksum_changed"
-		if err := settingsRepo.SetSetting(spanishMustHaveChecksum, checksum, systemUserID); err != nil {
-			return fmt.Errorf("write app setting %q: %w", spanishMustHaveChecksum, err)
-		}
-	}
-	summary := fmt.Sprintf("mode=%s sets=%d items=%d yaml=%s sha256=%s",
-		map[bool]string{true: "COMMIT", false: "DRY-RUN"}[commit], sets, items, yamlPath, checksum)
-	if err := settingsRepo.SetSetting(spanishMustHaveSummary, summary, systemUserID); err != nil {
-		return fmt.Errorf("write app setting %q: %w", spanishMustHaveSummary, err)
-	}
-
-	log.Info("spanish must-have word sets bootstrap completed",
-		zap.String("mode", map[bool]string{true: "COMMIT", false: "DRY-RUN"}[commit]),
-		zap.String("reason", reason),
-		zap.Int("sets", sets),
-		zap.Int("items", items),
-		zap.String("yaml_path", yamlPath),
-		zap.String("yaml_sha256", checksum))
 	return nil
 }
 

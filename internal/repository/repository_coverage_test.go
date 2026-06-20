@@ -2027,8 +2027,8 @@ func TestWordSetRepository_GetWordSetProgress_NegativeUnknown(t *testing.T) {
 
 	// GetWordSet succeeds
 	mock.ExpectQuery("SELECT .+ FROM word_sets WHERE id").
-		WillReturnRows(sqlmock.NewRows([]string{"id", "category_id", "title", "description", "is_published", "sort_order", "preferred_pos", "created_at", "updated_at"}).
-			AddRow(1, nil, "Test", nil, 1, 0, nil, "2024-01-01 00:00:00", "2024-01-01 00:00:00"))
+		WillReturnRows(sqlmock.NewRows([]string{"id", "category_id", "title", "description", "is_published", "sort_order", "preferred_pos", "level_code", "created_at", "updated_at"}).
+			AddRow(1, nil, "Test", nil, 1, 0, nil, nil, "2024-01-01 00:00:00", "2024-01-01 00:00:00"))
 	// COUNT total = 3
 	mock.ExpectQuery("SELECT COUNT").
 		WillReturnRows(sqlmock.NewRows([]string{"count"}).AddRow(3))
@@ -2063,8 +2063,8 @@ func TestWordSetRepository_GetWordSetWords_ScanError(t *testing.T) {
 
 	// GetWordSet succeeds (no preferred_pos)
 	mock.ExpectQuery("SELECT .+ FROM word_sets WHERE id").
-		WillReturnRows(sqlmock.NewRows([]string{"id", "category_id", "title", "description", "is_published", "sort_order", "preferred_pos", "created_at", "updated_at"}).
-			AddRow(1, nil, "Test", nil, 1, 0, nil, "2024-01-01 00:00:00", "2024-01-01 00:00:00"))
+		WillReturnRows(sqlmock.NewRows([]string{"id", "category_id", "title", "description", "is_published", "sort_order", "preferred_pos", "level_code", "created_at", "updated_at"}).
+			AddRow(1, nil, "Test", nil, 1, 0, nil, nil, "2024-01-01 00:00:00", "2024-01-01 00:00:00"))
 	// Main query returns row with wrong type for word_card_id
 	rows := sqlmock.NewRows([]string{"word_card_id", "word", "status", "display_word_pref", "transcription_pref", "word_ru_pref", "meaning_en_pref", "example_en_pref", "example_ru_pref"}).
 		AddRow("not-an-int", "word", "unknown", nil, nil, nil, nil, nil, nil)
@@ -2091,8 +2091,8 @@ func TestWordSetRepository_GetWordSetWords_DisplayWordEmpty(t *testing.T) {
 
 	// GetWordSet succeeds (no preferred_pos)
 	mock.ExpectQuery("SELECT .+ FROM word_sets WHERE id").
-		WillReturnRows(sqlmock.NewRows([]string{"id", "category_id", "title", "description", "is_published", "sort_order", "preferred_pos", "created_at", "updated_at"}).
-			AddRow(1, nil, "Test", nil, 1, 0, nil, "2024-01-01 00:00:00", "2024-01-01 00:00:00"))
+		WillReturnRows(sqlmock.NewRows([]string{"id", "category_id", "title", "description", "is_published", "sort_order", "preferred_pos", "level_code", "created_at", "updated_at"}).
+			AddRow(1, nil, "Test", nil, 1, 0, nil, nil, "2024-01-01 00:00:00", "2024-01-01 00:00:00"))
 	// Main query returns row with NULL display_word (triggers else branch)
 	rows := sqlmock.NewRows([]string{"word_card_id", "word", "status", "display_word_pref", "transcription_pref", "word_ru_pref", "meaning_en_pref", "example_en_pref", "example_ru_pref"}).
 		AddRow(1, "testword", "unknown", sql.NullString{Valid: false}, nil, nil, nil, nil, nil)

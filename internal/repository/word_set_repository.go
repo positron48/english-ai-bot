@@ -28,8 +28,8 @@ func NewWordSetRepository(db *sql.DB, logger *zap.Logger) *WordSetRepository {
 
 // CreateWordSet creates a new word set
 func (r *WordSetRepository) CreateWordSet(wordSet *models.WordSet) (int64, error) {
-	query := `INSERT INTO word_sets (course_code, category_id, title, description, is_published, sort_order, preferred_pos, created_at, updated_at)
-			  VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`
+	query := `INSERT INTO word_sets (course_code, category_id, title, description, is_published, sort_order, preferred_pos, level_code, created_at, updated_at)
+			  VALUES (?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`
 
 	var categoryID interface{}
 	if wordSet.CategoryID != nil {
@@ -55,7 +55,12 @@ func (r *WordSetRepository) CreateWordSet(wordSet *models.WordSet) (int64, error
 	if wordSet.CourseCode != "" {
 		courseCode = wordSet.CourseCode
 	}
-	id, err := database.InsertAndReturnID(r.db, query, courseCode, categoryID, wordSet.Title, description, isPublished, wordSet.SortOrder, preferredPOS)
+
+	var levelCode interface{}
+	if wordSet.LevelCode != nil && *wordSet.LevelCode != "" {
+		levelCode = *wordSet.LevelCode
+	}
+	id, err := database.InsertAndReturnID(r.db, query, courseCode, categoryID, wordSet.Title, description, isPublished, wordSet.SortOrder, preferredPOS, levelCode)
 	if err != nil {
 		return 0, fmt.Errorf("failed to create word set: %w", err)
 	}
@@ -65,14 +70,14 @@ func (r *WordSetRepository) CreateWordSet(wordSet *models.WordSet) (int64, error
 
 // GetWordSet retrieves a word set by ID
 func (r *WordSetRepository) GetWordSet(id int64) (*models.WordSet, error) {
-	query := `SELECT id, category_id, title, description, is_published, sort_order, preferred_pos, created_at, updated_at
+	query := `SELECT id, category_id, title, description, is_published, sort_order, preferred_pos, level_code, created_at, updated_at
 			  FROM word_sets WHERE id = ?`
 	return r.scanWordSet(r.db.QueryRow(query, id), false)
 }
 
 // GetWordSetForCourse retrieves a word set by ID and optional course.
 func (r *WordSetRepository) GetWordSetForCourse(id int64, courseCode string) (*models.WordSet, error) {
-	query := `SELECT id, COALESCE(course_code, ''), category_id, title, description, is_published, sort_order, preferred_pos, created_at, updated_at
+	query := `SELECT id, COALESCE(course_code, ''), category_id, title, description, is_published, sort_order, preferred_pos, level_code, created_at, updated_at
 			  FROM word_sets WHERE id = ?`
 	args := []interface{}{id}
 	if courseCode != "" {
@@ -89,12 +94,13 @@ func (r *WordSetRepository) scanWordSet(row *sql.Row, includeCourse bool) (*mode
 	var categoryID sql.NullInt64
 	var description sql.NullString
 	var preferredPOS sql.NullString
+	var levelCode sql.NullString
 	var isPublished int
 	var err error
 	if includeCourse {
-		err = row.Scan(&wordSet.ID, &wordSet.CourseCode, &categoryID, &wordSet.Title, &description, &isPublished, &wordSet.SortOrder, &preferredPOS, &createdAt, &updatedAt)
+		err = row.Scan(&wordSet.ID, &wordSet.CourseCode, &categoryID, &wordSet.Title, &description, &isPublished, &wordSet.SortOrder, &preferredPOS, &levelCode, &createdAt, &updatedAt)
 	} else {
-		err = row.Scan(&wordSet.ID, &categoryID, &wordSet.Title, &description, &isPublished, &wordSet.SortOrder, &preferredPOS, &createdAt, &updatedAt)
+		err = row.Scan(&wordSet.ID, &categoryID, &wordSet.Title, &description, &isPublished, &wordSet.SortOrder, &preferredPOS, &levelCode, &createdAt, &updatedAt)
 	}
 
 	if err == sql.ErrNoRows {
@@ -114,6 +120,9 @@ func (r *WordSetRepository) scanWordSet(row *sql.Row, includeCourse bool) (*mode
 	if preferredPOS.Valid {
 		wordSet.PreferredPOS = &preferredPOS.String
 	}
+	if levelCode.Valid && levelCode.String != "" {
+		wordSet.LevelCode = &levelCode.String
+	}
 	wordSet.IsPublished = isPublished == 1
 
 	wordSet.CreatedAt, _ = time.Parse("2006-01-02 15:04:05", createdAt)
@@ -129,7 +138,7 @@ func (r *WordSetRepository) ListWordSets(categoryID *int64, limit, offset int, i
 	if len(includeUnpublished) > 0 {
 		includeUnpub = includeUnpublished[0]
 	}
-	query := `SELECT id, category_id, title, description, is_published, sort_order, preferred_pos, created_at, updated_at
+	query := `SELECT id, category_id, title, description, is_published, sort_order, preferred_pos, level_code, created_at, updated_at
 			  FROM word_sets WHERE 1=1`
 	args := []interface{}{}
 	if categoryID != nil {
@@ -156,7 +165,7 @@ func (r *WordSetRepository) ListWordSetsForCourse(courseCode string, categoryID 
 		includeUnpub = includeUnpublished[0]
 	}
 
-	query := `SELECT id, COALESCE(course_code, ''), category_id, title, description, is_published, sort_order, preferred_pos, created_at, updated_at
+	query := `SELECT id, COALESCE(course_code, ''), category_id, title, description, is_published, sort_order, preferred_pos, level_code, created_at, updated_at
 			  FROM word_sets WHERE 1=1`
 	args := []interface{}{}
 	if courseCode != "" {
@@ -198,13 +207,14 @@ func (r *WordSetRepository) scanWordSets(rows *sql.Rows, includeCourse bool) ([]
 		var categoryID sql.NullInt64
 		var description sql.NullString
 		var preferredPOS sql.NullString
+		var levelCode sql.NullString
 		var isPublished int
 
 		var err error
 		if includeCourse {
-			err = rows.Scan(&wordSet.ID, &wordSet.CourseCode, &categoryID, &wordSet.Title, &description, &isPublished, &wordSet.SortOrder, &preferredPOS, &createdAt, &updatedAt)
+			err = rows.Scan(&wordSet.ID, &wordSet.CourseCode, &categoryID, &wordSet.Title, &description, &isPublished, &wordSet.SortOrder, &preferredPOS, &levelCode, &createdAt, &updatedAt)
 		} else {
-			err = rows.Scan(&wordSet.ID, &categoryID, &wordSet.Title, &description, &isPublished, &wordSet.SortOrder, &preferredPOS, &createdAt, &updatedAt)
+			err = rows.Scan(&wordSet.ID, &categoryID, &wordSet.Title, &description, &isPublished, &wordSet.SortOrder, &preferredPOS, &levelCode, &createdAt, &updatedAt)
 		}
 		if err != nil {
 			r.logger.Warn("failed to scan word set", zap.Error(err))
@@ -221,6 +231,9 @@ func (r *WordSetRepository) scanWordSets(rows *sql.Rows, includeCourse bool) ([]
 		if preferredPOS.Valid {
 			wordSet.PreferredPOS = &preferredPOS.String
 		}
+		if levelCode.Valid && levelCode.String != "" {
+			wordSet.LevelCode = &levelCode.String
+		}
 		wordSet.IsPublished = isPublished == 1
 
 		wordSet.CreatedAt, _ = time.Parse("2006-01-02 15:04:05", createdAt)
@@ -234,8 +247,8 @@ func (r *WordSetRepository) scanWordSets(rows *sql.Rows, includeCourse bool) ([]
 
 // UpdateWordSet updates a word set
 func (r *WordSetRepository) UpdateWordSet(wordSet *models.WordSet) error {
-	query := `UPDATE word_sets 
-			  SET category_id = ?, title = ?, description = ?, is_published = ?, sort_order = ?, preferred_pos = ?, updated_at = CURRENT_TIMESTAMP
+	query := `UPDATE word_sets
+			  SET category_id = ?, title = ?, description = ?, is_published = ?, sort_order = ?, preferred_pos = ?, level_code = ?, updated_at = CURRENT_TIMESTAMP
 			  WHERE id = ?`
 
 	var categoryID interface{}
@@ -258,7 +271,12 @@ func (r *WordSetRepository) UpdateWordSet(wordSet *models.WordSet) error {
 		isPublished = 1
 	}
 
-	args := []interface{}{categoryID, wordSet.Title, description, isPublished, wordSet.SortOrder, preferredPOS, wordSet.ID}
+	var levelCode interface{}
+	if wordSet.LevelCode != nil && *wordSet.LevelCode != "" {
+		levelCode = *wordSet.LevelCode
+	}
+
+	args := []interface{}{categoryID, wordSet.Title, description, isPublished, wordSet.SortOrder, preferredPOS, levelCode, wordSet.ID}
 	if wordSet.CourseCode != "" {
 		query += ` AND course_code = ?`
 		args = append(args, wordSet.CourseCode)
@@ -290,6 +308,18 @@ func (r *WordSetRepository) DeleteWordSetForCourse(id int64, courseCode string) 
 	}
 
 	return nil
+}
+
+// EffectiveLevelCode returns the word set's own level if set, otherwise its
+// category's level (categoryLevel may be nil if the set has no category).
+func EffectiveLevelCode(wordSet *models.WordSet, categoryLevel *string) string {
+	if wordSet.LevelCode != nil && *wordSet.LevelCode != "" {
+		return *wordSet.LevelCode
+	}
+	if categoryLevel != nil && *categoryLevel != "" {
+		return *categoryLevel
+	}
+	return ""
 }
 
 // GetWordSetProgress calculates progress for a word set for a user

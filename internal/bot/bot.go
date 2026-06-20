@@ -125,9 +125,6 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 	if err := wordsetimport.AutoSyncEnglishMustHaveWordSets(context.Background(), cfg, conn, log); err != nil {
 		log.Warn("english must-have word sets bootstrap skipped due to error", zap.Error(err))
 	}
-	if err := wordsetimport.AutoSyncSpanishMustHaveWordSets(context.Background(), cfg, conn, log); err != nil {
-		log.Warn("spanish must-have word sets bootstrap skipped due to error", zap.Error(err))
-	}
 	courseRepo := repository.NewCourseRepository(conn, log)
 	if summary, err := courseRepo.BackfillUserCoursesForLearning(context.Background(), cfg.Learning); err != nil {
 		log.Warn("linglow user_courses bootstrap skipped due to error", zap.Error(err))
@@ -173,6 +170,9 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 	userWordMasteringRepo := repository.NewUserWordMasteringRepository(conn, log)
 	wordService := service.NewWordServiceWithMastering(wordRepo, trainingCardRepo, userCardRepo, userWordMasteringRepo, aiService, cfg.Learning, log)
 	pronunciationService := service.NewPronunciationService(cfg.TTS, cfg.Learning, wordRepo, log)
+	ttsCbRepo := repository.NewTTSCircuitBreakerRepository(conn, log)
+	ttsCbService := service.NewCircuitBreakerService(ttsCbRepo, cfg.TTS.CircuitBreakerThreshold, log)
+	pronunciationService.SetCircuitBreaker(ttsCbService)
 	wordService.SetPronunciationService(pronunciationService)
 	verbFormsRepoForSync := repository.NewVerbFormsRepository(conn, log)
 	verbTrainingForWordSync := service.NewVerbTrainingService(verbFormsRepoForSync, cfg.Learning, cfg.Training, log)
@@ -335,8 +335,9 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 	webRouter.SetGrammarService(grammarService)
 	webRouter.SetGrammarServices(grammarServicesByBundle)
 	webRouter.SetPronunciationService(pronunciationService)
-	pronunciationServicesByBundle := buildPronunciationServicesByBundle(cfg, allBundleIDs, pronunciationService, wordRepo, log)
+	pronunciationServicesByBundle := buildPronunciationServicesByBundle(cfg, allBundleIDs, pronunciationService, wordRepo, ttsCbService, log)
 	webRouter.SetPronunciationServices(pronunciationServicesByBundle)
+	webRouter.SetTTSCircuitBreaker(ttsCbService)
 	speakingEvaluator := service.NewSpeakingEvaluatorService(cfg, log)
 	webRouter.SetSpeakingEvaluator(speakingEvaluator)
 
@@ -663,6 +664,7 @@ func buildPronunciationServicesByBundle(
 	bundleIDs []string,
 	primary *service.PronunciationService,
 	wordRepo *repository.WordRepository,
+	cbService *service.CircuitBreakerService,
 	log *zap.Logger,
 ) map[string]*service.PronunciationService {
 	services := map[string]*service.PronunciationService{
@@ -675,7 +677,11 @@ func buildPronunciationServicesByBundle(
 		altLC := cfg.Learning
 		altLC.GrammarBundleID = bundleID
 		altLC.TargetLang = bundleID
-		services[bundleID] = service.NewPronunciationService(cfg.TTS, altLC, wordRepo, log)
+		altSvc := service.NewPronunciationService(cfg.TTS, altLC, wordRepo, log)
+		// Share the same breaker as the primary bundle: it tracks the underlying
+		// provider/account, not the bundle's target language.
+		altSvc.SetCircuitBreaker(cbService)
+		services[bundleID] = altSvc
 	}
 	return services
 }

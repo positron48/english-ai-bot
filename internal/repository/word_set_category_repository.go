@@ -27,8 +27,8 @@ func NewWordSetCategoryRepository(db *sql.DB, logger *zap.Logger) *WordSetCatego
 
 // CreateCategory creates a new category
 func (r *WordSetCategoryRepository) CreateCategory(category *models.WordSetCategory) (int64, error) {
-	query := `INSERT INTO word_set_categories (course_code, parent_id, name, description, is_published, sort_order, created_at, updated_at)
-			  VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`
+	query := `INSERT INTO word_set_categories (course_code, parent_id, name, description, is_published, sort_order, level_code, created_at, updated_at)
+			  VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`
 
 	var parentID interface{}
 	if category.ParentID != nil {
@@ -49,7 +49,12 @@ func (r *WordSetCategoryRepository) CreateCategory(category *models.WordSetCateg
 	if category.CourseCode != "" {
 		courseCode = category.CourseCode
 	}
-	id, err := database.InsertAndReturnID(r.db, query, courseCode, parentID, category.Name, description, isPublished, category.SortOrder)
+
+	var levelCode interface{}
+	if category.LevelCode != nil && *category.LevelCode != "" {
+		levelCode = *category.LevelCode
+	}
+	id, err := database.InsertAndReturnID(r.db, query, courseCode, parentID, category.Name, description, isPublished, category.SortOrder, levelCode)
 	if err != nil {
 		return 0, fmt.Errorf("failed to create category: %w", err)
 	}
@@ -84,7 +89,7 @@ func parseTime(timeStr string) (time.Time, error) {
 
 // GetCategory retrieves a category by ID
 func (r *WordSetCategoryRepository) GetCategory(id int64) (*models.WordSetCategory, error) {
-	query := `SELECT id, parent_id, name, description, is_published, sort_order,
+	query := `SELECT id, parent_id, name, description, is_published, sort_order, level_code,
 			  substr(CAST(created_at AS TEXT), 1, 19) as created_at,
 			  substr(CAST(updated_at AS TEXT), 1, 19) as updated_at
 			  FROM word_set_categories WHERE id = ?`
@@ -93,6 +98,7 @@ func (r *WordSetCategoryRepository) GetCategory(id int64) (*models.WordSetCatego
 	var createdAt, updatedAt string
 	var parentID sql.NullInt64
 	var descText sql.NullString
+	var levelCode sql.NullString
 	var isPublished int
 
 	err := r.db.QueryRow(query, id).Scan(
@@ -102,6 +108,7 @@ func (r *WordSetCategoryRepository) GetCategory(id int64) (*models.WordSetCatego
 		&descText,
 		&isPublished,
 		&category.SortOrder,
+		&levelCode,
 		&createdAt,
 		&updatedAt,
 	)
@@ -122,6 +129,9 @@ func (r *WordSetCategoryRepository) GetCategory(id int64) (*models.WordSetCatego
 	if descText.Valid {
 		category.Description = &descText.String
 	}
+	if levelCode.Valid && levelCode.String != "" {
+		category.LevelCode = &levelCode.String
+	}
 
 	if createdAt != "" {
 		if t, err := parseTime(createdAt); err == nil {
@@ -139,7 +149,7 @@ func (r *WordSetCategoryRepository) GetCategory(id int64) (*models.WordSetCatego
 
 // GetCategoryForCourse retrieves a category only when it belongs to courseCode.
 func (r *WordSetCategoryRepository) GetCategoryForCourse(id int64, courseCode string) (*models.WordSetCategory, error) {
-	query := `SELECT id, COALESCE(course_code, ''), parent_id, name, description, is_published, sort_order,
+	query := `SELECT id, COALESCE(course_code, ''), parent_id, name, description, is_published, sort_order, level_code,
 			  substr(CAST(created_at AS TEXT), 1, 19) as created_at,
 			  substr(CAST(updated_at AS TEXT), 1, 19) as updated_at
 			  FROM word_set_categories WHERE id = ? AND course_code = ?`
@@ -148,6 +158,7 @@ func (r *WordSetCategoryRepository) GetCategoryForCourse(id int64, courseCode st
 	var createdAt, updatedAt string
 	var parentID sql.NullInt64
 	var descText sql.NullString
+	var levelCode sql.NullString
 	var isPublished int
 	err := r.db.QueryRow(query, id, courseCode).Scan(
 		&category.ID,
@@ -157,6 +168,7 @@ func (r *WordSetCategoryRepository) GetCategoryForCourse(id int64, courseCode st
 		&descText,
 		&isPublished,
 		&category.SortOrder,
+		&levelCode,
 		&createdAt,
 		&updatedAt,
 	)
@@ -174,6 +186,9 @@ func (r *WordSetCategoryRepository) GetCategoryForCourse(id int64, courseCode st
 	if descText.Valid {
 		category.Description = &descText.String
 	}
+	if levelCode.Valid && levelCode.String != "" {
+		category.LevelCode = &levelCode.String
+	}
 	category.CreatedAt, _ = parseTime(createdAt)
 	category.UpdatedAt, _ = parseTime(updatedAt)
 	return &category, nil
@@ -181,7 +196,7 @@ func (r *WordSetCategoryRepository) GetCategoryForCourse(id int64, courseCode st
 
 // GetAllCategories retrieves all categories
 func (r *WordSetCategoryRepository) GetAllCategories() ([]*models.WordSetCategory, error) {
-	query := `SELECT id, parent_id, name, description, is_published, sort_order,
+	query := `SELECT id, parent_id, name, description, is_published, sort_order, level_code,
 			  substr(CAST(created_at AS TEXT), 1, 19) as created_at,
 			  substr(CAST(updated_at AS TEXT), 1, 19) as updated_at
 			  FROM word_set_categories ORDER BY sort_order, name`
@@ -197,7 +212,7 @@ func (r *WordSetCategoryRepository) GetAllCategories() ([]*models.WordSetCategor
 
 // GetAllCategoriesForCourse retrieves categories for one course.
 func (r *WordSetCategoryRepository) GetAllCategoriesForCourse(courseCode string) ([]*models.WordSetCategory, error) {
-	query := `SELECT id, COALESCE(course_code, ''), parent_id, name, description, is_published, sort_order,
+	query := `SELECT id, COALESCE(course_code, ''), parent_id, name, description, is_published, sort_order, level_code,
 			  substr(CAST(created_at AS TEXT), 1, 19) as created_at,
 			  substr(CAST(updated_at AS TEXT), 1, 19) as updated_at
 			  FROM word_set_categories`
@@ -224,13 +239,14 @@ func (r *WordSetCategoryRepository) scanCategories(rows *sql.Rows, includeCourse
 		var createdAt, updatedAt string
 		var parentID sql.NullInt64
 		var descText sql.NullString
+		var levelCode sql.NullString
 		var isPublished int
 
 		var err error
 		if includeCourse {
-			err = rows.Scan(&category.ID, &category.CourseCode, &parentID, &category.Name, &descText, &isPublished, &category.SortOrder, &createdAt, &updatedAt)
+			err = rows.Scan(&category.ID, &category.CourseCode, &parentID, &category.Name, &descText, &isPublished, &category.SortOrder, &levelCode, &createdAt, &updatedAt)
 		} else {
-			err = rows.Scan(&category.ID, &parentID, &category.Name, &descText, &isPublished, &category.SortOrder, &createdAt, &updatedAt)
+			err = rows.Scan(&category.ID, &parentID, &category.Name, &descText, &isPublished, &category.SortOrder, &levelCode, &createdAt, &updatedAt)
 		}
 		if err != nil {
 			r.logger.Warn("failed to scan category", zap.Error(err))
@@ -245,6 +261,9 @@ func (r *WordSetCategoryRepository) scanCategories(rows *sql.Rows, includeCourse
 		}
 		if descText.Valid {
 			category.Description = &descText.String
+		}
+		if levelCode.Valid && levelCode.String != "" {
+			category.LevelCode = &levelCode.String
 		}
 
 		if createdAt != "" {
@@ -266,7 +285,7 @@ func (r *WordSetCategoryRepository) scanCategories(rows *sql.Rows, includeCourse
 
 // GetPublishedCategories retrieves only published categories
 func (r *WordSetCategoryRepository) GetPublishedCategories() ([]*models.WordSetCategory, error) {
-	query := `SELECT id, parent_id, name, description, is_published, sort_order,
+	query := `SELECT id, parent_id, name, description, is_published, sort_order, level_code,
 			  substr(CAST(created_at AS TEXT), 1, 19) as created_at,
 			  substr(CAST(updated_at AS TEXT), 1, 19) as updated_at
 			  FROM word_set_categories WHERE is_published = 1 ORDER BY sort_order, name`
@@ -291,8 +310,8 @@ func (r *WordSetCategoryRepository) UpdateCategoryForCourse(category *models.Wor
 }
 
 func (r *WordSetCategoryRepository) updateCategory(category *models.WordSetCategory, scoped bool) error {
-	query := `UPDATE word_set_categories 
-			  SET parent_id = ?, name = ?, description = ?, is_published = ?, sort_order = ?, updated_at = CURRENT_TIMESTAMP
+	query := `UPDATE word_set_categories
+			  SET parent_id = ?, name = ?, description = ?, is_published = ?, sort_order = ?, level_code = ?, updated_at = CURRENT_TIMESTAMP
 			  WHERE id = ?`
 
 	var parentID interface{}
@@ -310,7 +329,12 @@ func (r *WordSetCategoryRepository) updateCategory(category *models.WordSetCateg
 		isPublished = 1
 	}
 
-	args := []interface{}{parentID, category.Name, description, isPublished, category.SortOrder, category.ID}
+	var levelCode interface{}
+	if category.LevelCode != nil && *category.LevelCode != "" {
+		levelCode = *category.LevelCode
+	}
+
+	args := []interface{}{parentID, category.Name, description, isPublished, category.SortOrder, levelCode, category.ID}
 	if scoped {
 		query += ` AND course_code = ?`
 		args = append(args, category.CourseCode)

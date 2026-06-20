@@ -592,6 +592,23 @@ type PronunciationService struct {
 	queue      chan string
 	queueState map[string]struct{}
 	mu         sync.Mutex
+
+	cbService pronunciationCircuitBreaker
+}
+
+// pronunciationCircuitBreaker abstracts circuit breaker storage so provider calls can be
+// paused after repeated failures (e.g. provider account out of balance) without hammering
+// the provider for every queued word. Optional: nil means no circuit breaker is wired in.
+type pronunciationCircuitBreaker interface {
+	IsOpen() (bool, error)
+	RecordFailure(errorMessage string) error
+	RecordSuccess() error
+}
+
+// SetCircuitBreaker wires a circuit breaker into the service. Safe to call once during
+// startup wiring; nil disables the check.
+func (s *PronunciationService) SetCircuitBreaker(cb pronunciationCircuitBreaker) {
+	s.cbService = cb
 }
 
 // NewPronunciationService creates a pronunciation service from config.
@@ -1079,6 +1096,15 @@ func (s *PronunciationService) processWord(ctx context.Context, word string) {
 		}
 	}
 
+	if s.cbService != nil {
+		if open, err := s.cbService.IsOpen(); err != nil {
+			s.logger.Warn("failed to check tts circuit breaker state", zap.Error(err))
+		} else if open {
+			s.logger.Debug("skipping pronunciation generation, circuit breaker open", zap.String("word", word))
+			return
+		}
+	}
+
 	var retryableErr error
 	var retryableCode string
 	var retryableProvider string
@@ -1122,6 +1148,11 @@ func (s *PronunciationService) processWord(ctx context.Context, word string) {
 				retryableProvider = provider.name()
 			}
 			s.logger.Warn("pronunciation provider failed", zap.String("provider", provider.name()), zap.String("word", word), zap.Error(err))
+			if s.cbService != nil {
+				if cbErr := s.cbService.RecordFailure(err.Error()); cbErr != nil {
+					s.logger.Warn("failed to record tts circuit breaker failure", zap.Error(cbErr))
+				}
+			}
 			if !retryable {
 				if s.ttsRepo != nil {
 					_ = s.ttsRepo.MarkTerminal(word, provider.name(), code, err.Error())
@@ -1151,6 +1182,11 @@ func (s *PronunciationService) processWord(ctx context.Context, word string) {
 		}
 		if s.ttsRepo != nil {
 			_ = s.ttsRepo.MarkReady(word, provider.name(), relPath)
+		}
+		if s.cbService != nil {
+			if cbErr := s.cbService.RecordSuccess(); cbErr != nil {
+				s.logger.Warn("failed to record tts circuit breaker success", zap.Error(cbErr))
+			}
 		}
 		s.logger.Info("pronunciation cached", zap.String("word", word), zap.String("path", relPath), zap.String("provider", provider.name()), zap.Int("bytes", len(audio)))
 		return
@@ -1660,6 +1696,8 @@ func classifyPronunciationError(err error) (string, bool) {
 		return "unsupported_country_region_territory", true
 	case strings.Contains(msg, "status 429") || strings.Contains(msg, "too many requests"):
 		return "rate_limited", true
+	case strings.Contains(msg, "(402)") || (strings.Contains(msg, "balance") && strings.Contains(msg, "requires at least")):
+		return "insufficient_balance", true
 	case strings.Contains(msg, "status 5"):
 		return "provider_5xx", true
 	case strings.Contains(msg, "timeout") || strings.Contains(msg, "connection") || strings.Contains(msg, "network"):

@@ -171,6 +171,10 @@ type TTSConfig struct {
 	InternalTokensJSON      string `mapstructure:"internal_tokens_json"`
 	InternalMaxPendingLimit int    `mapstructure:"internal_max_pending_limit"`
 	InternalMaxUploadMB     int    `mapstructure:"internal_max_upload_mb"`
+	// CircuitBreakerThreshold is the number of consecutive provider-level TTS
+	// failures (not "word not found" outcomes) before generation is paused for
+	// all words until an admin resets the breaker.
+	CircuitBreakerThreshold int `mapstructure:"circuit_breaker_threshold"`
 }
 
 // SpeakingConfig holds speaking evaluation mode settings.
@@ -306,6 +310,7 @@ func Load() (*Config, error) {
 	viper.SetDefault("tts.internal_tokens_json", "")
 	viper.SetDefault("tts.internal_max_pending_limit", 500)
 	viper.SetDefault("tts.internal_max_upload_mb", 10)
+	viper.SetDefault("tts.circuit_breaker_threshold", 5)
 	viper.SetDefault("speaking.enabled", false)
 	viper.SetDefault("speaking.eval_model", "openai/gpt-audio-mini")
 	viper.SetDefault("speaking.eval_base_url", "https://openrouter.ai/api/v1")
@@ -431,6 +436,7 @@ func Load() (*Config, error) {
 	_ = viper.BindEnv("tts.internal_tokens_json", "TTS_INTERNAL_TOKENS_JSON")
 	_ = viper.BindEnv("tts.internal_max_pending_limit", "TTS_INTERNAL_MAX_PENDING_LIMIT")
 	_ = viper.BindEnv("tts.internal_max_upload_mb", "TTS_INTERNAL_MAX_UPLOAD_MB")
+	_ = viper.BindEnv("tts.circuit_breaker_threshold", "TTS_CIRCUIT_BREAKER_THRESHOLD")
 	_ = viper.BindEnv("speaking.enabled", "SPEAKING_MODE_ENABLED")
 	_ = viper.BindEnv("speaking.eval_model", "SPEAKING_EVAL_MODEL")
 	_ = viper.BindEnv("speaking.eval_base_url", "SPEAKING_EVAL_BASE_URL")

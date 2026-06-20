@@ -2882,9 +2882,11 @@ ON CONFLICT (course_id, source_kind, source_id) DO UPDATE SET
 
 var mapWordSetModulesSQL = `
 WITH src AS (
-    SELECT id::text AS source_id, title, sort_order, 'A0' AS level
-    FROM word_sets
-    WHERE is_published = 1
+    SELECT ws.id::text AS source_id, ws.title, ws.sort_order,
+        COALESCE(ws.level_code, wsc.level_code, 'A0') AS level
+    FROM word_sets ws
+    LEFT JOIN word_set_categories wsc ON wsc.id = ws.category_id
+    WHERE ws.is_published = 1
 ), target AS (
     SELECT c.id AS course_id, d.id AS district_id, l.id AS location_id, src.*
     FROM src
@@ -2912,10 +2914,11 @@ WITH src AS (
         wsi.word_set_id::text AS module_source_id,
         coalesce(nullif(wc.display_en, ''), wc.word) AS title,
         coalesce(wc.updated_at::text, wc.created_at::text, '') AS source_hash,
-        'A0' AS level
+        COALESCE(ws.level_code, wsc.level_code, 'A0') AS level
     FROM word_cards wc
     JOIN word_set_items wsi ON wsi.word_card_id = wc.id
     JOIN word_sets ws ON ws.id = wsi.word_set_id AND ws.is_published = 1
+    LEFT JOIN word_set_categories wsc ON wsc.id = ws.category_id
     ORDER BY wc.id, wsi.sort_order
 ), target AS (
     SELECT c.id AS course_id, d.id AS district_id, l.id AS location_id, m.id AS module_id, src.*
