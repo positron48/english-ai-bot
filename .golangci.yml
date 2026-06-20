@@ -19,6 +19,15 @@ linters:
     - errcheck      # defer Close() - стандартная практика в Go
     - revive        # Слишком строгие правила для внутреннего проекта
 
+  exclusions:
+    rules:
+      # staticcheck doesn't recognize t.Fatal[f] as terminating the goroutine
+      # in our nil-check-then-use test pattern, leading to false positives.
+      - path: _test\.go
+        linters:
+          - staticcheck
+        text: "SA5011"
+
 issues:
   max-issues-per-linter: 0
   max-same-issues: 0

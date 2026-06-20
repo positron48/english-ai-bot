@@ -94,7 +94,6 @@ COPY --from=builder /app/prompts ./prompts
 COPY --from=builder /app/resources/wordsets/spanish_word_freq_pos_ud_top6000.csv ./data/spanish_word_freq_pos_ud_top6000.csv
 COPY --from=builder /app/resources/wordsets/english_word_freq_pos_ud_top6000.filtered.csv ./data/english_word_freq_pos_ud_top6000.filtered.csv
 COPY --from=builder /app/resources/wordsets/english_word_sets_must_have.yaml ./data/english_word_sets_must_have.yaml
-COPY --from=builder /app/resources/wordsets/spanish_word_sets_must_have.yaml ./data/spanish_word_sets_must_have.yaml
 COPY --from=builder /app/resources/wordsets/spanish_gender_lexicon.tsv ./data/spanish_gender_lexicon.tsv
 # Fred Jehle Spanish verb paradigms (CC BY-NC-SA 3.0) — see resources/verbs/ATTRIBUTION.txt
 COPY --from=builder /app/resources/verbs/jehle_verb_database.csv ./data/verbs/jehle_verb_database.csv
