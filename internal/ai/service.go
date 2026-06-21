@@ -65,13 +65,14 @@ func isSingleWordLookupCandidate(s string) bool {
 
 // Service handles AI provider interactions
 type Service struct {
-	client         *http.Client
-	url            string
-	model          string
-	apiKey         string
-	prompt         string
-	trainingPrompt string
-	logger         *zap.Logger
+	client            *http.Client
+	url               string
+	model             string
+	apiKey            string
+	prompt            string
+	trainingPrompt    string
+	dictionaryPrompts map[string]string // course_code -> dictionary lookup prompt override
+	logger            *zap.Logger
 }
 
 // NewService creates a new AI service with the default HTTP client timeout (30s).
@@ -97,6 +98,15 @@ func NewServiceWithTimeout(url, model, apiKey, prompt string, httpTimeout time.D
 		prompt: processedPrompt,
 		logger: logger,
 	}
+}
+
+// SetDictionaryPromptForCourse registers a dictionary-lookup system prompt override for a given course code.
+// GenerateResponseForCourse uses it instead of the default prompt when the course matches.
+func (s *Service) SetDictionaryPromptForCourse(courseCode, prompt string) {
+	if s.dictionaryPrompts == nil {
+		s.dictionaryPrompts = make(map[string]string)
+	}
+	s.dictionaryPrompts[courseCode] = strings.ReplaceAll(prompt, "\\n", "\n")
 }
 
 // SetTrainingPrompt sets the training card generation prompt
@@ -199,11 +209,27 @@ func (s *Service) ChatSystemUser(ctx context.Context, systemPrompt, userMessage 
 
 // GenerateResponse sends a message to the AI provider and returns the response
 func (s *Service) GenerateResponse(ctx context.Context, userMessage string) (string, error) {
+	return s.generateResponseWithPrompt(ctx, userMessage, s.prompt)
+}
+
+// GenerateResponseForCourse behaves like GenerateResponse but uses the dictionary prompt
+// registered for courseCode via SetDictionaryPromptForCourse, if any, falling back to the
+// default prompt otherwise. Use this for word-card generation so courses in a different
+// target language (e.g. Spanish) aren't validated against the default (English) prompt.
+func (s *Service) GenerateResponseForCourse(ctx context.Context, userMessage, courseCode string) (string, error) {
+	prompt := s.prompt
+	if p, ok := s.dictionaryPrompts[courseCode]; ok && p != "" {
+		prompt = p
+	}
+	return s.generateResponseWithPrompt(ctx, userMessage, prompt)
+}
+
+func (s *Service) generateResponseWithPrompt(ctx context.Context, userMessage, systemPrompt string) (string, error) {
 	if isSingleWordLookupCandidate(userMessage) {
 		userMessage = "SINGLE_WORD_LOOKUP_MODE\nReturn ONLY one JSON object for dictionary lookup.\nWord: " + strings.TrimSpace(userMessage)
 	}
 	messages := []Message{
-		{Role: "system", Content: s.prompt},
+		{Role: "system", Content: systemPrompt},
 		{Role: "user", Content: userMessage},
 	}
 	return s.postChatCompletion(ctx, s.model, messages, 2000, 0.3, zap.String("kind", "dictionary"), zap.String("user_message", userMessage))

@@ -96,11 +96,6 @@ func (m *AuthMiddleware) RequireAuth(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
-		m.logger.Info("JWT authentication successful",
-			zap.String("path", r.URL.Path),
-			zap.Int64("user_id", userID),
-			zap.Int64s("categories", categories))
-
 		// Add user ID and categories to request context
 		ctx := r.Context()
 		ctx = context.WithValue(ctx, userIDKey, userID)

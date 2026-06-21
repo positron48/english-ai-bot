@@ -61,6 +61,7 @@ type WordCard struct {
 	DisplayTarget      *string    `json:"display_target,omitempty"` // Neutral alias; shares pointer with DisplayEN after sync
 	ProcessedAt        *time.Time // NULL if not processed yet, set when processing completes (success or error)
 	ProcessingError    *string    // NULL if no error, contains error message if processing failed
+	CourseCode         string     // DB column `course_code`; empty for legacy/untagged rows
 	CreatedAt          time.Time
 	UpdatedAt          time.Time
 }

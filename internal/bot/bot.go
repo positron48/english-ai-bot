@@ -102,6 +102,16 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 		log,
 	)
 
+	// Load Spanish dictionary-lookup prompt for the es_ru course so word-card generation
+	// doesn't validate Spanish words against the default English-only prompt.
+	if esPrompt, err := ai.LoadRenderedPromptFile("prompts/teacher-ru-es.txt", "ru", "es", "ru-es"); err != nil {
+		log.Warn("failed to load es_ru dictionary prompt file, Spanish word-card generation will use the default prompt",
+			zap.Error(err),
+		)
+	} else {
+		aiService.SetDictionaryPromptForCourse("es_ru", esPrompt)
+	}
+
 	// Load training prompt (same template engine as AI_PROMPT_FILE: {{native_lang}}, {{target_lang}}, {{pair}})
 	if cfg.Training.PromptFile != "" {
 		trainingPrompt, err := ai.LoadRenderedPromptFile(cfg.Training.PromptFile, cfg.Learning.NativeLang, cfg.Learning.TargetLang, cfg.Learning.Pair)

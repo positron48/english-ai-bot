@@ -1290,9 +1290,10 @@ func (r *Router) handleAdminWord(w http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		// Generate word card data via LLM
+		// Generate word card data via LLM (course-aware: Spanish words must not be
+		// validated against the default English-only dictionary prompt)
 		ctx := req.Context()
-		response, err := aiService.GenerateResponse(ctx, existingCard.Word)
+		response, err := aiService.GenerateResponseForCourse(ctx, existingCard.Word, existingCard.CourseCode)
 		if err != nil {
 			r.logger.Error("failed to generate word card data", zap.Error(err), zap.String("word", existingCard.Word))
 			http.Error(w, "Failed to generate word card data: "+err.Error(), http.StatusInternalServerError)
