@@ -28,8 +28,8 @@
     "finish": "Finalizar"
   },
   "app": {
-    "titleEnInstance": "Bot de inglés",
-    "titleEsInstance": "Bot de español"
+    "titleEnInstance": "Linglow — Aprende inglés online con IA",
+    "titleEsInstance": "Linglow — Aprende español online con IA"
   },
   "offline": {
     "online": "Online",
