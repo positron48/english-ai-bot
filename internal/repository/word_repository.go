@@ -390,26 +390,35 @@ func (r *WordRepository) GetUserIDsByWord(word string) ([]int64, error) {
 
 // ListPronunciationCandidates returns recent distinct canonical words (lemmas)
 // suitable for pronunciation prefetch.
-func (r *WordRepository) ListPronunciationCandidates(limit int) ([]string, error) {
+func (r *WordRepository) ListPronunciationCandidates(courseCode string, limit int) ([]string, error) {
 	if limit <= 0 {
 		limit = 200
 	}
+	courseCode = strings.ToLower(strings.TrimSpace(courseCode))
 
+	// Scope both the candidate pool and the "already done" check to this course:
+	// word_cards.course_code may be empty for legacy/untagged rows (treated as
+	// belonging to any course), but a non-empty value must match exactly so a
+	// word tagged for one course is never claimed/voiced by another course's
+	// TTS pipeline. Likewise, a ready/terminal status recorded under a
+	// different course must not suppress generation for this one.
 	query := `
 		SELECT wc.word AS candidate
 		FROM word_cards wc
 		WHERE wc.word IS NOT NULL AND wc.word <> ''
+		  AND (wc.course_code IS NULL OR wc.course_code = '' OR wc.course_code = ?)
 		  AND NOT EXISTS (
 			SELECT 1
 			FROM tts_generation_status tgs
 			WHERE LOWER(tgs.word) = LOWER(wc.word)
+			  AND tgs.course_code = ?
 			  AND tgs.state IN ('ready', 'failed_terminal')
 		  )
 		ORDER BY wc.created_at DESC
 		LIMIT ?
 	`
 
-	rows, err := r.db.Query(query, limit*3)
+	rows, err := r.db.Query(query, courseCode, courseCode, limit*3)
 	if err != nil {
 		return nil, fmt.Errorf("failed to list pronunciation candidates: %w", err)
 	}
@@ -440,25 +449,29 @@ func (r *WordRepository) ListPronunciationCandidates(limit int) ([]string, error
 	return candidates, nil
 }
 
-// ListRecentWords returns recent distinct canonical words from word_cards.
-func (r *WordRepository) ListRecentWords(limit int) ([]string, error) {
-	return r.ListRecentWordsPage(limit, 0)
+// ListRecentWords returns recent distinct canonical words from word_cards scoped to courseCode
+// (legacy untagged rows with an empty course_code are included as they match any course).
+func (r *WordRepository) ListRecentWords(courseCode string, limit int) ([]string, error) {
+	return r.ListRecentWordsPage(courseCode, limit, 0)
 }
 
-// ListRecentWordsPage returns recent distinct canonical words from word_cards with offset support.
-func (r *WordRepository) ListRecentWordsPage(limit, offset int) ([]string, error) {
+// ListRecentWordsPage returns recent distinct canonical words from word_cards with offset support,
+// scoped to courseCode so one course's external TTS worker never claims another course's words.
+func (r *WordRepository) ListRecentWordsPage(courseCode string, limit, offset int) ([]string, error) {
 	if limit <= 0 {
 		limit = 200
 	}
 	if offset < 0 {
 		offset = 0
 	}
+	courseCode = strings.ToLower(strings.TrimSpace(courseCode))
 	rows, err := r.db.Query(`
 		SELECT wc.word
 		FROM word_cards wc
 		WHERE wc.word IS NOT NULL AND wc.word <> ''
+		  AND (wc.course_code IS NULL OR wc.course_code = '' OR wc.course_code = ?)
 		ORDER BY wc.created_at DESC
-		LIMIT ? OFFSET ?`, limit*3, offset)
+		LIMIT ? OFFSET ?`, courseCode, limit*3, offset)
 	if err != nil {
 		return nil, fmt.Errorf("failed to list recent words: %w", err)
 	}

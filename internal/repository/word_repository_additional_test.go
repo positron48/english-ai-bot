@@ -37,9 +37,9 @@ func TestWordRepository_ListPronunciationCandidates_ZeroLimit(t *testing.T) {
 	db := setupWordTestDB(t)
 	repo := NewWordRepository(db, logger)
 
-	cands, err := repo.ListPronunciationCandidates(0)
+	cands, err := repo.ListPronunciationCandidates("", 0)
 	if err != nil {
-		t.Fatalf("ListPronunciationCandidates(0) error = %v", err)
+		t.Fatalf("ListPronunciationCandidates(\"\", 0) error = %v", err)
 	}
 	if cands == nil {
 		t.Fatal("expected non-nil slice")

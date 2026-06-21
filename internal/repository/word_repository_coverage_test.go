@@ -113,7 +113,7 @@ func TestWordRepository_ListPronunciationCandidates_DBError(t *testing.T) {
 	db := invalidWordDB(t)
 	repo := NewWordRepository(db, zap.NewNop())
 
-	_, err := repo.ListPronunciationCandidates(10)
+	_, err := repo.ListPronunciationCandidates("", 10)
 	if err == nil {
 		t.Fatal("expected error when DB is invalid")
 	}
@@ -337,7 +337,7 @@ func TestWordRepository_ListPronunciationCandidates_LimitReached(t *testing.T) {
 	}
 
 	// Request only 2 candidates; the query fetches limit*3=6 rows but we stop at 2
-	candidates, err := repo.ListPronunciationCandidates(2)
+	candidates, err := repo.ListPronunciationCandidates("", 2)
 	if err != nil {
 		t.Fatalf("ListPronunciationCandidates() error = %v", err)
 	}
@@ -575,7 +575,7 @@ func TestWordRepository_ListPronunciationCandidates_EmptyCandidate(t *testing.T)
 	// Insert a normal word
 	_, _ = db.Exec("INSERT INTO word_cards (word, definition) VALUES ($1, $2)", "normalcandidate", "def")
 
-	candidates, err := repo.ListPronunciationCandidates(10)
+	candidates, err := repo.ListPronunciationCandidates("", 10)
 	if err != nil {
 		t.Fatalf("ListPronunciationCandidates() error = %v", err)
 	}
@@ -597,7 +597,7 @@ func TestWordRepository_ListPronunciationCandidates_Deduplication(t *testing.T) 
 	_, _ = db.Exec("INSERT INTO word_cards (word, definition) VALUES ($1, $2)", "DedupWord", "def1")
 	_, _ = db.Exec("INSERT INTO word_cards (word, definition) VALUES ($1, $2)", "dedupword", "def2")
 
-	candidates, err := repo.ListPronunciationCandidates(10)
+	candidates, err := repo.ListPronunciationCandidates("", 10)
 	if err != nil {
 		t.Fatalf("ListPronunciationCandidates() error = %v", err)
 	}
@@ -718,7 +718,7 @@ func TestWordRepository_ListPronunciationCandidates_ScanError(t *testing.T) {
 	mock.ExpectQuery("SELECT").WillReturnRows(rows)
 
 	repo := NewWordRepository(db, zap.NewNop())
-	_, err = repo.ListPronunciationCandidates(10)
+	_, err = repo.ListPronunciationCandidates("", 10)
 	if err == nil {
 		t.Fatal("expected scan error")
 	}

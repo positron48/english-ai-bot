@@ -292,7 +292,8 @@ func ensureMustHaveBlueprint(ctx context.Context, conn *sql.DB, cfg *config.Conf
 			if !commit || len(lemmas) == 0 {
 				continue
 			}
-			if err := svc.ProcessWordSetItems(ctx, setID, strings.Join(lemmas, ",")); err != nil {
+			courseCode := repository.CourseCodeForLearning(cfg.Learning)
+			if err := svc.ProcessWordSetItemsForCourse(ctx, setID, courseCode, strings.Join(lemmas, ",")); err != nil {
 				return totalSets, totalItems, err
 			}
 		}

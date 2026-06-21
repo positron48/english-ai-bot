@@ -469,7 +469,7 @@ func TestWordRepository_ListPronunciationCandidates_UsesCanonicalWordCardsOnly(t
 		t.Fatalf("insert tts status spy failed_terminal: %v", err)
 	}
 
-	candidates, err := repo.ListPronunciationCandidates(10)
+	candidates, err := repo.ListPronunciationCandidates("", 10)
 	if err != nil {
 		t.Fatalf("ListPronunciationCandidates() error = %v", err)
 	}

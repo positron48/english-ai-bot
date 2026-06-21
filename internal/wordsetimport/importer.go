@@ -366,7 +366,7 @@ func Import(ctx context.Context, cfg *config.Config, conn *sql.DB, log *zap.Logg
 		r.Imported = len(lemmas)
 
 		if opts.Commit {
-			if err := svc.ProcessWordSetItems(ctx, ws.ID, strings.Join(lemmas, ",")); err != nil {
+			if err := svc.ProcessWordSetItemsForCourse(ctx, ws.ID, ws.CourseCode, strings.Join(lemmas, ",")); err != nil {
 				r.Skipped = true
 				r.Reason = err.Error()
 				out.Sets = append(out.Sets, r)

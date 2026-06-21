@@ -939,7 +939,7 @@ func (s *PronunciationService) ListPendingExternal(limit int) ([]ExternalPending
 	scanned := 0
 
 	for len(result) < limit && scanned < maxScanned {
-		candidates, err := s.wordRepo.ListRecentWordsPage(pageLimit, offset)
+		candidates, err := s.wordRepo.ListRecentWordsPage(s.courseCode, pageLimit, offset)
 		if err != nil {
 			return nil, err
 		}
@@ -1282,7 +1282,7 @@ func (s *PronunciationService) backfillOnce(ctx context.Context) {
 		return
 	}
 
-	candidates, err := s.wordRepo.ListPronunciationCandidates(s.backfillBatch)
+	candidates, err := s.wordRepo.ListPronunciationCandidates(s.courseCode, s.backfillBatch)
 	if err != nil {
 		s.logger.Warn("failed to list pronunciation candidates", zap.Error(err))
 		return
