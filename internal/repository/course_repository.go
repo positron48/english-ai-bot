@@ -2590,6 +2590,34 @@ func (r *CourseRepository) MapLegacyContentForLearning(ctx context.Context, lc c
 	return r.MapLegacyContent(ctx, CourseCodeForLearning(lc), strings.TrimSpace(strings.ToLower(lc.GrammarBundleID)))
 }
 
+// ListActiveCourseCodes returns the codes of all active courses, e.g. ["en_ru", "es_ru"].
+func (r *CourseRepository) ListActiveCourseCodes(ctx context.Context) ([]string, error) {
+	rows, err := r.db.QueryContext(ctx, `SELECT code FROM courses WHERE status = 'active' ORDER BY code`)
+	if err != nil {
+		return nil, fmt.Errorf("list active course codes: %w", err)
+	}
+	defer rows.Close()
+
+	var codes []string
+	for rows.Next() {
+		var code string
+		if err := rows.Scan(&code); err != nil {
+			return nil, fmt.Errorf("scan course code: %w", err)
+		}
+		codes = append(codes, code)
+	}
+	return codes, rows.Err()
+}
+
+// GrammarBundleIDForCourse derives the grammar bundle id from a course code, e.g. "es_ru" -> "es".
+func GrammarBundleIDForCourse(courseCode string) string {
+	parts := strings.SplitN(courseCode, "_", 2)
+	if len(parts) > 0 && parts[0] != "" {
+		return parts[0]
+	}
+	return ""
+}
+
 // MapLegacyContent idempotently maps existing legacy content tables into Linglow v2 content tables.
 func (r *CourseRepository) MapLegacyContent(ctx context.Context, courseCode, bundleID string) (*ContentMappingSummary, error) {
 	courseCode = strings.TrimSpace(strings.ToLower(courseCode))
@@ -2620,25 +2648,29 @@ func (r *CourseRepository) MapLegacyContent(ctx context.Context, courseCode, bun
 	defer tx.Rollback()
 
 	statements := []struct {
-		query      string
-		usesBundle bool
+		query            string
+		usesBundle       bool
+		usesCourseFilter bool
 	}{
-		{mapGrammarSectionModulesSQL, true},
-		{mapGrammarChapterItemsSQL, true},
-		{mapGrammarTheoryBlockItemsSQL, true},
-		{mapReadingCategoryModulesSQL, false},
-		{mapReadingTextItemsSQL, false},
-		{mapSpeakingCategoryModulesSQL, false},
-		{mapSpeakingTaskItemsSQL, false},
-		{mapWordSetModulesSQL, false},
-		{mapWordCardItemsSQL, false},
-		{mapCustomWordModuleSQL, false},
-		{mapCustomWordCardItemsSQL, false},
+		{mapGrammarSectionModulesSQL, true, false},
+		{mapGrammarChapterItemsSQL, true, false},
+		{mapGrammarTheoryBlockItemsSQL, true, false},
+		{mapReadingCategoryModulesSQL, false, false},
+		{mapReadingTextItemsSQL, false, false},
+		{mapSpeakingCategoryModulesSQL, false, false},
+		{mapSpeakingTaskItemsSQL, false, false},
+		{mapWordSetModulesSQL, false, true},
+		{mapWordCardItemsSQL, false, true},
+		{mapCustomWordModuleSQL, false, false},
+		{mapCustomWordCardItemsSQL, false, false},
 	}
 	for _, stmt := range statements {
 		args := []interface{}{courseID}
-		if stmt.usesBundle {
+		switch {
+		case stmt.usesBundle:
 			args = []interface{}{bundleID, courseID}
+		case stmt.usesCourseFilter:
+			args = []interface{}{courseCode, courseID}
 		}
 		if _, err := tx.ExecContext(ctx, stmt.query, args...); err != nil {
 			return nil, fmt.Errorf("map legacy content: %w", err)
@@ -2886,7 +2918,7 @@ WITH src AS (
         COALESCE(ws.level_code, wsc.level_code, 'A0') AS level
     FROM word_sets ws
     LEFT JOIN word_set_categories wsc ON wsc.id = ws.category_id
-    WHERE ws.is_published = 1
+    WHERE ws.is_published = 1 AND ws.course_code = ?
 ), target AS (
     SELECT c.id AS course_id, d.id AS district_id, l.id AS location_id, src.*
     FROM src
@@ -2917,7 +2949,7 @@ WITH src AS (
         COALESCE(ws.level_code, wsc.level_code, 'A0') AS level
     FROM word_cards wc
     JOIN word_set_items wsi ON wsi.word_card_id = wc.id
-    JOIN word_sets ws ON ws.id = wsi.word_set_id AND ws.is_published = 1
+    JOIN word_sets ws ON ws.id = wsi.word_set_id AND ws.is_published = 1 AND ws.course_code = ?
     LEFT JOIN word_set_categories wsc ON wsc.id = ws.category_id
     ORDER BY wc.id, wsi.sort_order
 ), target AS (

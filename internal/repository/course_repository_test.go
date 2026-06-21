@@ -83,8 +83,8 @@ func TestCourseRepository_MapLegacyContent(t *testing.T) {
 		 VALUES ('speak.task.a0', 'speak.a0', 'Task A0', 'A0', 'answer', 'es', '{}')`,
 		`INSERT INTO word_cards (word, definition, display_en)
 		 VALUES ('hola', 'hello', 'hola')`,
-		`INSERT INTO word_sets (title, description, is_published, sort_order)
-		 VALUES ('Core words', 'Core', 1, 1)`,
+		`INSERT INTO word_sets (title, description, is_published, sort_order, course_code)
+		 VALUES ('Core words', 'Core', 1, 1, 'es_ru')`,
 		`INSERT INTO word_set_items (word_set_id, word_card_id, sort_order)
 		 SELECT ws.id, wc.id, 1 FROM word_sets ws CROSS JOIN word_cards wc WHERE ws.title = 'Core words' AND wc.word = 'hola'`,
 	}
