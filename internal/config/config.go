@@ -19,19 +19,29 @@ var langCodeSegment = regexp.MustCompile(`^[a-z]{2,8}$`)
 
 // Config represents the application configuration
 type Config struct {
-	Telegram TelegramConfig `mapstructure:"telegram"`
-	Server   ServerConfig   `mapstructure:"server"`
-	Logging  LoggingConfig  `mapstructure:"logging"`
-	AI       AIConfig       `mapstructure:"ai"`
-	TTS      TTSConfig      `mapstructure:"tts"`
-	Bot      BotConfig      `mapstructure:"bot"`
-	Database DatabaseConfig `mapstructure:"database"`
-	Training TrainingConfig `mapstructure:"training"`
-	Admin    AdminConfig    `mapstructure:"admin"`
-	WebApp   WebAppConfig   `mapstructure:"webapp"`
-	Learning LearningConfig `mapstructure:"learning"`
-	Linglow  LinglowConfig  `mapstructure:"linglow"`
-	Speaking SpeakingConfig `mapstructure:"speaking"`
+	Telegram  TelegramConfig  `mapstructure:"telegram"`
+	Server    ServerConfig    `mapstructure:"server"`
+	Logging   LoggingConfig   `mapstructure:"logging"`
+	AI        AIConfig        `mapstructure:"ai"`
+	TTS       TTSConfig       `mapstructure:"tts"`
+	Bot       BotConfig       `mapstructure:"bot"`
+	Database  DatabaseConfig  `mapstructure:"database"`
+	Training  TrainingConfig  `mapstructure:"training"`
+	Admin     AdminConfig     `mapstructure:"admin"`
+	WebApp    WebAppConfig    `mapstructure:"webapp"`
+	Learning  LearningConfig  `mapstructure:"learning"`
+	Linglow   LinglowConfig   `mapstructure:"linglow"`
+	Speaking  SpeakingConfig  `mapstructure:"speaking"`
+	Migration MigrationConfig `mapstructure:"migration"`
+}
+
+// MigrationConfig holds settings for the legacy-instance migration shim:
+// when enabled, the bot replies to every message with a redirect notice
+// instead of running normal logic (used for retired per-language instances).
+type MigrationConfig struct {
+	Enabled     bool   `mapstructure:"enabled"`
+	BotUsername string `mapstructure:"bot_username"`
+	Message     string `mapstructure:"message"`
 }
 
 // LearningConfig holds language pair and bundle identity for multilang deployments.
@@ -380,6 +390,9 @@ func Load() (*Config, error) {
 	viper.SetDefault("learning.grammar_bundle_id", "en")
 	viper.SetDefault("learning.content_source", "bundle")
 	viper.SetDefault("linglow.events_write_enabled", false)
+	viper.SetDefault("migration.enabled", false)
+	viper.SetDefault("migration.bot_username", "linglow_bot")
+	viper.SetDefault("migration.message", "🔔 Этот бот переехал! Теперь все занятия проходят в новом боте @{{bot_username}} — переходите туда, ваш аккаунт и прогресс уже ждут вас.")
 
 	// Bot message defaults
 	viper.SetDefault("bot.start_message", "🇬🇧 Привет! Я ваш персональный преподаватель английского языка!\n\n📝 Что я умею:\n• Исправлять ошибки в английском тексте\n• Переводить с русского на английский\n• Создавать карточки слов с объяснениями\n\n💡 Как пользоваться:\n• Отправьте английский текст → получите исправления\n• Отправьте русский текст → получите перевод\n• Отправьте одно слово → получите карточку слова\n\nИспользуйте /help для подробной информации.")
@@ -504,6 +517,9 @@ func Load() (*Config, error) {
 	_ = viper.BindEnv("linglow.events_write_enabled", "LINGLOW_EVENTS_WRITE_ENABLED")
 	_ = viper.BindEnv("linglow.srs_read_enabled", "LINGLOW_SRS_READ_ENABLED")
 	_ = viper.BindEnv("linglow.srs_write_enabled", "LINGLOW_SRS_WRITE_ENABLED")
+	_ = viper.BindEnv("migration.enabled", "MIGRATION_REDIRECT_ENABLED")
+	_ = viper.BindEnv("migration.bot_username", "MIGRATION_BOT_USERNAME")
+	_ = viper.BindEnv("migration.message", "MIGRATION_MESSAGE")
 
 	// Set config file
 	viper.SetConfigName("config")
@@ -588,6 +604,11 @@ func Load() (*Config, error) {
 	config.Bot.UnknownCommandMessage = processNewlines(config.Bot.UnknownCommandMessage)
 	config.Bot.ErrorMessage = processNewlines(config.Bot.ErrorMessage)
 	config.Bot.EmptyMessage = processNewlines(config.Bot.EmptyMessage)
+
+	config.Migration.Message = strings.ReplaceAll(
+		processNewlines(config.Migration.Message),
+		"{{bot_username}}", config.Migration.BotUsername,
+	)
 
 	// AI prompt required (from env or from file)
 	if config.AI.Prompt == "" {

@@ -12,22 +12,12 @@
         <p>{{ t('auth.registerInBotMessage') }}</p>
         <div class="register-bot-lines">
           <div class="register-bot-line">
-            <span class="register-bot-label">{{ t('auth.registerEnglishBotLabel') }}</span>
             <a
-              :href="telegramBotUrls.english"
+              :href="telegramBotUrls.linglow"
               target="_blank"
               rel="noopener noreferrer"
               class="bot-link"
-            >@{{ telegramBotHandles.english }}</a>
-          </div>
-          <div class="register-bot-line">
-            <span class="register-bot-label">{{ t('auth.registerSpanishBotLabel') }}</span>
-            <a
-              :href="telegramBotUrls.spanish"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="bot-link"
-            >@{{ telegramBotHandles.spanish }}</a>
+            >@{{ telegramBotHandles.linglow }}</a>
           </div>
         </div>
       </div>
@@ -108,12 +98,10 @@ const { t } = useI18n()
 
 /** Registration / OTP is tied to the correct bot instance; handles are stable across UI languages. */
 const telegramBotHandles = {
-  english: 'positroid_english_bot',
-  spanish: 'qantrix_spanish_bot',
+  linglow: 'linglow_bot',
 } as const
 const telegramBotUrls = {
-  english: `https://t.me/${telegramBotHandles.english}`,
-  spanish: `https://t.me/${telegramBotHandles.spanish}`,
+  linglow: `https://t.me/${telegramBotHandles.linglow}`,
 } as const
 
 const router = useRouter()

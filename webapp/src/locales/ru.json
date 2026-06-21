@@ -220,9 +220,7 @@
     "otpSendFailed": "Не удалось отправить OTP",
     "otpIncomplete": "Пожалуйста, введите полный код OTP",
     "otpInvalid": "Неверный или истёкший код OTP. Пожалуйста, попробуйте снова.",
-    "registerInBotMessage": "Регистрация доступна в ботах в Telegram:",
-    "registerEnglishBotLabel": "Английский:",
-    "registerSpanishBotLabel": "Испанский:"
+    "registerInBotMessage": "Регистрация доступна в боте Telegram:"
   },
   "progress": {
     "title": "Прогресс",

@@ -220,9 +220,7 @@
     "otpSendFailed": "Failed to send OTP",
     "otpIncomplete": "Please enter complete OTP code",
     "otpInvalid": "Invalid or expired OTP code. Please try again.",
-    "registerInBotMessage": "Registration is available in the Telegram bots:",
-    "registerEnglishBotLabel": "English",
-    "registerSpanishBotLabel": "Spanish"
+    "registerInBotMessage": "Registration is available in the Telegram bot:"
   },
   "progress": {
     "title": "Progress",

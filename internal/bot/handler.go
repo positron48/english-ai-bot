@@ -88,6 +88,13 @@ func NewHandler(
 
 // HandleUpdate handles incoming Telegram updates
 func (h *Handler) HandleUpdate(ctx context.Context, update tgbotapi.Update) {
+	// Migration shim: this instance is retired, just point users to the new bot
+	// and skip all normal handling (no DB access, no AI calls).
+	if h.config.Migration.Enabled {
+		h.handleMigrationRedirect(update)
+		return
+	}
+
 	// Handle callback queries (button presses)
 	if update.CallbackQuery != nil {
 		h.handleCallbackQuery(ctx, update.CallbackQuery)
@@ -120,6 +127,20 @@ func (h *Handler) HandleUpdate(ctx context.Context, update tgbotapi.Update) {
 
 	// Handle regular messages
 	h.handleMessage(ctx, message)
+}
+
+// handleMigrationRedirect replies to any incoming update with the migration notice.
+func (h *Handler) handleMigrationRedirect(update tgbotapi.Update) {
+	var chatID int64
+	switch {
+	case update.Message != nil:
+		chatID = update.Message.Chat.ID
+	case update.CallbackQuery != nil && update.CallbackQuery.Message != nil:
+		chatID = update.CallbackQuery.Message.Chat.ID
+	default:
+		return
+	}
+	h.sendMessage(chatID, h.config.Migration.Message)
 }
 
 // handleCommand handles bot commands
