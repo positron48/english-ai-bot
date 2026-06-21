@@ -36,9 +36,20 @@ func (r *Router) settingsJSONForAPI(settings models.UserSettings) map[string]int
 	return m
 }
 
-func (r *Router) learningJSONForSettingsAPI() map[string]interface{} {
+// learningJSONForSettingsAPI returns the learning metadata for the API response, scoped to the
+// user's currently selected course rather than the server's static default language pair.
+func (r *Router) learningJSONForSettingsAPI(ctx context.Context, userID int64) map[string]interface{} {
 	lc := r.config.Learning
-	spanishVerbForms := r.verbFormsEnabled()
+	if courseCode := r.currentCourseCodeForUser(ctx, userID); courseCode != "" {
+		if target, native, ok := strings.Cut(courseCode, "_"); ok && target != "" && native != "" {
+			lc.TargetLang = target
+			lc.NativeLang = native
+			lc.Pair = native + "-" + target
+			lc.AppCode = appCodeForTargetLang(target)
+			lc.GrammarBundleID = target
+		}
+	}
+	spanishVerbForms := strings.EqualFold(lc.TargetLang, "es") && r.config.Training.SpanishVerbFormsEnabled
 	out := map[string]interface{}{
 		"pair":                       lc.Pair,
 		"native_lang":                lc.NativeLang,
@@ -63,6 +74,19 @@ func (r *Router) learningJSONForSettingsAPI() map[string]interface{} {
 	}
 	out["speaking_mode_enabled"] = r.config.Speaking.Enabled
 	return out
+}
+
+// appCodeForTargetLang maps a target language code to its app_code, mirroring config.DefaultLearningConfig
+// for the two supported targets. Falls back to the language code itself for anything unrecognized.
+func appCodeForTargetLang(target string) string {
+	switch strings.ToLower(target) {
+	case "en":
+		return "english"
+	case "es":
+		return "spanish"
+	default:
+		return target
+	}
 }
 
 // handleDashboard shows the user dashboard
@@ -516,7 +540,7 @@ func (r *Router) handleSettings(w http.ResponseWriter, req *http.Request) {
 	tier := user.SubscriptionTier
 	json.NewEncoder(w).Encode(map[string]interface{}{
 		"settings":           r.settingsJSONForAPI(settings),
-		"learning":           r.learningJSONForSettingsAPI(),
+		"learning":           r.learningJSONForSettingsAPI(req.Context(), userID),
 		"subscription_tier":  string(tier),
 		"features":           models.UserFeaturesForTier(tier),
 	})
@@ -968,7 +992,7 @@ func (r *Router) handleTrainingSettings(w http.ResponseWriter, req *http.Request
 	json.NewEncoder(w).Encode(map[string]interface{}{
 		"success":  true,
 		"settings": resp,
-		"learning": r.learningJSONForSettingsAPI(),
+		"learning": r.learningJSONForSettingsAPI(req.Context(), userID),
 	})
 }
 
