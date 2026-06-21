@@ -39,7 +39,7 @@ func TestHandleChat_SingleWord_WordInDB(t *testing.T) {
 	}
 
 	// Save word to database first
-	err = wordRepo.SaveWordCard("hello", "a greeting")
+	err = wordRepo.SaveWordCard("hello", "a greeting", "")
 	if err != nil {
 		t.Fatalf("Failed to save word card: %v", err)
 	}

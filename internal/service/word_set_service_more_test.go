@@ -42,7 +42,7 @@ func TestMarkKnown(t *testing.T) {
 
 	// Create a word card
 	wordRepo := repository.NewWordRepository(db.GetConnection(), service.logger)
-	wordRepo.SaveWordCard("testword", "test definition")
+	wordRepo.SaveWordCard("testword", "test definition", "en_ru")
 	wordCard, _ := wordRepo.GetWordCard("testword")
 
 	// Mark as known
@@ -71,7 +71,7 @@ func TestMarkKnown_WithUserCards(t *testing.T) {
 
 	// Create a word card
 	wordRepo := repository.NewWordRepository(db.GetConnection(), service.logger)
-	wordRepo.SaveWordCard("testword", "test definition")
+	wordRepo.SaveWordCard("testword", "test definition", "en_ru")
 	wordCard, _ := wordRepo.GetWordCard("testword")
 
 	// Create a user card first
@@ -145,7 +145,7 @@ func TestMarkKnown_DeleteUserCardsFails(t *testing.T) {
 	uwkRepo := repository.NewUserWordKnowledgeRepository(db.GetConnection(), logger)
 	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
 	user, _ := userRepo.GetOrCreateUser(99999)
-	wordRepo.SaveWordCard("markknownword", "def")
+	wordRepo.SaveWordCard("markknownword", "def", "en_ru")
 	wordCard, _ := wordRepo.GetWordCard("markknownword")
 
 	mockUC := &mockUserCardRepoForWordSet{

@@ -47,7 +47,7 @@ func TestWordService_GetWordDefinition_FromDB(t *testing.T) {
 	_, wordRepo := setupWordServiceTestDB(t)
 
 	// Save a word to database
-	err := wordRepo.SaveWordCard("testword", "a test word definition")
+	err := wordRepo.SaveWordCard("testword", "a test word definition", "en_ru")
 	if err != nil {
 		t.Fatalf("Failed to save word card: %v", err)
 	}
@@ -83,7 +83,7 @@ func TestWordService_GetWordCard_Integration(t *testing.T) {
 	_, wordRepo := setupWordServiceTestDB(t)
 
 	// Save a word to database
-	err := wordRepo.SaveWordCard("getcard", "card definition")
+	err := wordRepo.SaveWordCard("getcard", "card definition", "en_ru")
 	if err != nil {
 		t.Fatalf("Failed to save word card: %v", err)
 	}
@@ -121,6 +121,7 @@ func TestWordService_GetWordDefinition_CreatesUserCards(t *testing.T) {
 		Word:         "testword",
 		Definition:   "test definition",
 		DefinitionRU: stringPtr("тестовое определение"),
+		CourseCode:   "en_ru",
 	}
 	wordCardID, err := wordRepo.UpsertWordCardLemma(wordCard)
 	if err != nil {
@@ -229,6 +230,7 @@ func TestWordService_GetWordDefinition_SchedulesPronunciationByCanonicalWord(t *
 		Definition:   "to secretly collect information",
 		DisplayEN:    &displayEN,
 		DefinitionRU: &definitionRU,
+		CourseCode:   "en_ru",
 	})
 	if err != nil {
 		t.Fatalf("UpsertWordCardLemma error: %v", err)

@@ -468,7 +468,7 @@ func TestHandleAdminWords_Get(t *testing.T) {
 
 	// Create word card
 	wordRepo := repository.NewWordRepository(db, logger)
-	err = wordRepo.SaveWordCard("test", "test definition")
+	err = wordRepo.SaveWordCard("test", "test definition", "")
 	if err != nil {
 		t.Fatalf("Failed to create word card: %v", err)
 	}
@@ -526,7 +526,7 @@ func TestHandleAdminWords_WithQueryParams(t *testing.T) {
 	}
 
 	wordRepo := repository.NewWordRepository(db, logger)
-	_ = wordRepo.SaveWordCard("queryword", "def")
+	_ = wordRepo.SaveWordCard("queryword", "def", "")
 
 	cfg := &config.Config{
 		Admin: config.AdminConfig{TelegramID: adminTelegramID},
@@ -579,7 +579,7 @@ func TestHandleAdminWord_Put(t *testing.T) {
 	}
 
 	wordRepo := repository.NewWordRepository(db, logger)
-	err = wordRepo.SaveWordCard("update", "old definition")
+	err = wordRepo.SaveWordCard("update", "old definition", "")
 	if err != nil {
 		t.Fatalf("Failed to create word card: %v", err)
 	}
@@ -643,7 +643,7 @@ func TestHandleAdminWord_Put_WithJSON(t *testing.T) {
 	}
 
 	wordRepo := repository.NewWordRepository(db, logger)
-	err = wordRepo.SaveWordCard("jsonupdate", "old definition")
+	err = wordRepo.SaveWordCard("jsonupdate", "old definition", "")
 	if err != nil {
 		t.Fatalf("Failed to create word card: %v", err)
 	}
@@ -723,7 +723,7 @@ func TestHandleAdminWord_Delete(t *testing.T) {
 	}
 
 	wordRepo := repository.NewWordRepository(db, logger)
-	err = wordRepo.SaveWordCard("delete", "definition")
+	err = wordRepo.SaveWordCard("delete", "definition", "")
 	if err != nil {
 		t.Fatalf("Failed to create word card: %v", err)
 	}
@@ -850,7 +850,7 @@ func TestHandleAdminTraining_Get(t *testing.T) {
 
 	// Create word card and training card
 	wordRepo := repository.NewWordRepository(db, logger)
-	err = wordRepo.SaveWordCard("training", "definition")
+	err = wordRepo.SaveWordCard("training", "definition", "")
 	if err != nil {
 		t.Fatalf("Failed to create word card: %v", err)
 	}
@@ -926,7 +926,7 @@ func TestHandleAdminTrainingCard_Delete(t *testing.T) {
 	}
 
 	wordRepo := repository.NewWordRepository(db, logger)
-	err = wordRepo.SaveWordCard("card", "definition")
+	err = wordRepo.SaveWordCard("card", "definition", "")
 	if err != nil {
 		t.Fatalf("Failed to create word card: %v", err)
 	}
@@ -1002,7 +1002,7 @@ func TestHandleAdminTrainingCard_Put(t *testing.T) {
 	}
 
 	wordRepo := repository.NewWordRepository(db, logger)
-	err = wordRepo.SaveWordCard("updatecard", "definition")
+	err = wordRepo.SaveWordCard("updatecard", "definition", "")
 	if err != nil {
 		t.Fatalf("Failed to create word card: %v", err)
 	}
@@ -1078,7 +1078,7 @@ func TestHandleAdminTrainingCard_Put_UpdatePOS(t *testing.T) {
 	}
 
 	wordRepo := repository.NewWordRepository(db, logger)
-	err = wordRepo.SaveWordCard("poscard", "definition")
+	err = wordRepo.SaveWordCard("poscard", "definition", "")
 	if err != nil {
 		t.Fatalf("Failed to create word card: %v", err)
 	}
@@ -1180,7 +1180,7 @@ func TestHandleAdminTraining_Delete(t *testing.T) {
 	}
 
 	wordRepo := repository.NewWordRepository(db, logger)
-	err = wordRepo.SaveWordCard("deleteword", "definition")
+	err = wordRepo.SaveWordCard("deleteword", "definition", "")
 	if err != nil {
 		t.Fatalf("Failed to create word card: %v", err)
 	}
@@ -1256,7 +1256,7 @@ func TestHandleAdminTraining_DeleteAll(t *testing.T) {
 	}
 
 	wordRepo := repository.NewWordRepository(db, logger)
-	err = wordRepo.SaveWordCard("deleteall1", "definition1")
+	err = wordRepo.SaveWordCard("deleteall1", "definition1", "")
 	if err != nil {
 		t.Fatalf("Failed to create word card: %v", err)
 	}
@@ -1331,7 +1331,7 @@ func TestHandleAdminWord_Reset(t *testing.T) {
 	}
 
 	wordRepo := repository.NewWordRepository(db, logger)
-	err = wordRepo.SaveWordCard("reset", "definition")
+	err = wordRepo.SaveWordCard("reset", "definition", "")
 	if err != nil {
 		t.Fatalf("Failed to create word card: %v", err)
 	}
@@ -1480,7 +1480,7 @@ func TestHandleAdminWord_PUT_InvalidJSON(t *testing.T) {
 		t.Fatalf("Failed to create admin user: %v", err)
 	}
 	wordRepo := repository.NewWordRepository(db, logger)
-	wordRepo.SaveWordCard("x", "d")
+	wordRepo.SaveWordCard("x", "d", "")
 	wc, _ := wordRepo.GetWordCard("x")
 	cfg := &config.Config{
 		Admin:  config.AdminConfig{TelegramID: adminTelegramID},
@@ -1704,7 +1704,7 @@ func TestHandleAdminWord_MethodNotAllowed(t *testing.T) {
 		t.Fatalf("GetOrCreateUser: %v", err)
 	}
 	wordRepo := repository.NewWordRepository(db, logger)
-	_ = wordRepo.SaveWordCard("methodword", "def")
+	_ = wordRepo.SaveWordCard("methodword", "def", "")
 	wc, _ := wordRepo.GetWordCard("methodword")
 	if wc == nil {
 		t.Fatal("word card not found")
@@ -1753,8 +1753,8 @@ func TestHandleAdminWord_PUT_UniqueConstraint(t *testing.T) {
 		t.Fatalf("GetOrCreateUser: %v", err)
 	}
 	wordRepo := repository.NewWordRepository(db, logger)
-	_ = wordRepo.SaveWordCard("uniquea", "def a")
-	_ = wordRepo.SaveWordCard("uniqueb", "def b")
+	_ = wordRepo.SaveWordCard("uniquea", "def a", "")
+	_ = wordRepo.SaveWordCard("uniqueb", "def b", "")
 	wcA, _ := wordRepo.GetWordCard("uniquea")
 	wcB, _ := wordRepo.GetWordCard("uniqueb")
 	if wcA == nil || wcB == nil {
@@ -1802,7 +1802,7 @@ func TestHandleAdminWord_POST_Generate_AIServiceNil(t *testing.T) {
 		t.Fatalf("GetOrCreateUser: %v", err)
 	}
 	wordRepo := repository.NewWordRepository(db, logger)
-	_ = wordRepo.SaveWordCard("genword", "def")
+	_ = wordRepo.SaveWordCard("genword", "def", "")
 	wc, _ := wordRepo.GetWordCard("genword")
 	if wc == nil {
 		t.Fatal("word card not found")
@@ -1909,7 +1909,7 @@ func TestHandleAdminTraining_PostCreate_JSON(t *testing.T) {
 		t.Fatalf("GetOrCreateUser: %v", err)
 	}
 	wordRepo := repository.NewWordRepository(db, logger)
-	_ = wordRepo.SaveWordCard("createjson", "def")
+	_ = wordRepo.SaveWordCard("createjson", "def", "")
 	cfg := &config.Config{
 		Admin:  config.AdminConfig{TelegramID: 123456789},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
@@ -1960,7 +1960,7 @@ func TestHandleAdminTraining_PostCreate_ValidationRequired(t *testing.T) {
 		t.Fatalf("GetOrCreateUser: %v", err)
 	}
 	wordRepo := repository.NewWordRepository(db, logger)
-	_ = wordRepo.SaveWordCard("validword", "def")
+	_ = wordRepo.SaveWordCard("validword", "def", "")
 	cfg := &config.Config{
 		Admin:  config.AdminConfig{TelegramID: 123456789},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
@@ -2030,7 +2030,7 @@ func TestHandleAdminTraining_PostDelete_WordFromForm(t *testing.T) {
 		t.Fatalf("GetOrCreateUser: %v", err)
 	}
 	wordRepo := repository.NewWordRepository(db, logger)
-	_ = wordRepo.SaveWordCard("formdelete", "def")
+	_ = wordRepo.SaveWordCard("formdelete", "def", "")
 	trainingCardRepo := repository.NewTrainingCardRepository(db, logger)
 	wc, _ := wordRepo.GetWordCard("formdelete")
 	tc := &models.TrainingCard{WordCardID: wc.ID, WordEN: "formdelete", SenseIndex: 0, WordRU: "удалить", MeaningEN: "delete"}
@@ -2169,7 +2169,7 @@ func TestHandleAdminTrainingCard_Get_MethodNotAllowed(t *testing.T) {
 		t.Fatalf("GetOrCreateUser: %v", err)
 	}
 	wordRepo := repository.NewWordRepository(db, logger)
-	_ = wordRepo.SaveWordCard("getcard", "def")
+	_ = wordRepo.SaveWordCard("getcard", "def", "")
 	wc, _ := wordRepo.GetWordCard("getcard")
 	trainingCardRepo := repository.NewTrainingCardRepository(db, logger)
 	tc := &models.TrainingCard{WordCardID: wc.ID, WordEN: "getcard", SenseIndex: 0, WordRU: "карта", MeaningEN: "card"}
@@ -2237,7 +2237,7 @@ func TestHandleAdminTrainingCard_Put_JSON(t *testing.T) {
 		t.Fatalf("GetOrCreateUser: %v", err)
 	}
 	wordRepo := repository.NewWordRepository(db, logger)
-	_ = wordRepo.SaveWordCard("putjson", "def")
+	_ = wordRepo.SaveWordCard("putjson", "def", "")
 	wc, _ := wordRepo.GetWordCard("putjson")
 	trainingCardRepo := repository.NewTrainingCardRepository(db, logger)
 	tc := &models.TrainingCard{WordCardID: wc.ID, WordEN: "putjson", SenseIndex: 0, WordRU: "карта", MeaningEN: "card"}
@@ -2316,7 +2316,7 @@ func TestHandleAdminTrainingCard_Put_InvalidJSON(t *testing.T) {
 		t.Fatalf("GetOrCreateUser: %v", err)
 	}
 	wordRepo := repository.NewWordRepository(db, logger)
-	_ = wordRepo.SaveWordCard("invjson", "def")
+	_ = wordRepo.SaveWordCard("invjson", "def", "")
 	wc, _ := wordRepo.GetWordCard("invjson")
 	trainingCardRepo := repository.NewTrainingCardRepository(db, logger)
 	tc := &models.TrainingCard{WordCardID: wc.ID, WordEN: "invjson", SenseIndex: 0, WordRU: "x", MeaningEN: "y"}
@@ -2354,7 +2354,7 @@ func TestHandleAdminTrainingCard_Put_InvalidForm(t *testing.T) {
 		t.Fatalf("GetOrCreateUser: %v", err)
 	}
 	wordRepo := repository.NewWordRepository(db, logger)
-	_ = wordRepo.SaveWordCard("invform", "def")
+	_ = wordRepo.SaveWordCard("invform", "def", "")
 	wc, _ := wordRepo.GetWordCard("invform")
 	trainingCardRepo := repository.NewTrainingCardRepository(db, logger)
 	tc := &models.TrainingCard{WordCardID: wc.ID, WordEN: "invform", SenseIndex: 0, WordRU: "x", MeaningEN: "y"}
@@ -2424,7 +2424,7 @@ func TestHandleAdminWords_QueryParams(t *testing.T) {
 	}
 	_, _ = userRepo.GetOrCreateUser(999888777)
 	wordRepo := repository.NewWordRepository(db, logger)
-	_ = wordRepo.SaveWordCard("sortword", "def")
+	_ = wordRepo.SaveWordCard("sortword", "def", "")
 	cfg := &config.Config{
 		Admin:  config.AdminConfig{TelegramID: 123456789},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
@@ -2476,7 +2476,7 @@ func TestHandleAdminTraining_PostCreate_InvalidForm(t *testing.T) {
 		t.Fatalf("GetOrCreateUser: %v", err)
 	}
 	wordRepo := repository.NewWordRepository(db, logger)
-	_ = wordRepo.SaveWordCard("invformcreate", "def")
+	_ = wordRepo.SaveWordCard("invformcreate", "def", "")
 	cfg := &config.Config{
 		Admin:  config.AdminConfig{TelegramID: 123456789},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
@@ -2510,7 +2510,7 @@ func TestHandleAdminTraining_PostCreate_Form(t *testing.T) {
 		t.Fatalf("GetOrCreateUser: %v", err)
 	}
 	wordRepo := repository.NewWordRepository(db, logger)
-	_ = wordRepo.SaveWordCard("formcreate", "def")
+	_ = wordRepo.SaveWordCard("formcreate", "def", "")
 	cfg := &config.Config{
 		Admin:  config.AdminConfig{TelegramID: 123456789},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
@@ -2584,7 +2584,7 @@ func TestHandleAdminTraining_PostGenerate_AIServiceNil(t *testing.T) {
 		t.Fatalf("GetOrCreateUser: %v", err)
 	}
 	wordRepo := repository.NewWordRepository(db, logger)
-	_ = wordRepo.SaveWordCard("genword", "def")
+	_ = wordRepo.SaveWordCard("genword", "def", "")
 	cfg := &config.Config{
 		Admin:  config.AdminConfig{TelegramID: 123456789},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
@@ -2618,7 +2618,7 @@ func TestHandleAdminTraining_PostGenerate_Form(t *testing.T) {
 		t.Fatalf("GetOrCreateUser: %v", err)
 	}
 	wordRepo := repository.NewWordRepository(db, logger)
-	_ = wordRepo.SaveWordCard("genform", "def")
+	_ = wordRepo.SaveWordCard("genform", "def", "")
 	cfg := &config.Config{
 		Admin:  config.AdminConfig{TelegramID: 123456789},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
@@ -2652,7 +2652,7 @@ func TestHandleAdminTraining_PostGenerate_InvalidJSON(t *testing.T) {
 		t.Fatalf("GetOrCreateUser: %v", err)
 	}
 	wordRepo := repository.NewWordRepository(db, logger)
-	_ = wordRepo.SaveWordCard("genword2", "def")
+	_ = wordRepo.SaveWordCard("genword2", "def", "")
 	cfg := &config.Config{
 		Admin:  config.AdminConfig{TelegramID: 123456789},
 		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
@@ -2930,7 +2930,7 @@ func TestHandleAdminWord_Direct_PutSuccess(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, _, cbService := setupAdminTestDB(t)
 	wordRepo := repository.NewWordRepository(db, logger)
-	_ = wordRepo.SaveWordCard("directput", "old")
+	_ = wordRepo.SaveWordCard("directput", "old", "")
 	wc, _ := wordRepo.GetWordCard("directput")
 	cfg := &config.Config{Admin: config.AdminConfig{TelegramID: 123456789}, WebApp: config.WebAppConfig{JWTSecret: "test-secret"}}
 	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
@@ -2950,7 +2950,7 @@ func TestHandleAdminWord_Direct_ResetSuccess(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, _, cbService := setupAdminTestDB(t)
 	wordRepo := repository.NewWordRepository(db, logger)
-	_ = wordRepo.SaveWordCard("directreset", "def")
+	_ = wordRepo.SaveWordCard("directreset", "def", "")
 	wc, _ := wordRepo.GetWordCard("directreset")
 	cfg := &config.Config{Admin: config.AdminConfig{TelegramID: 123456789}, WebApp: config.WebAppConfig{JWTSecret: "test-secret"}}
 	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
@@ -2968,7 +2968,7 @@ func TestHandleAdminWord_Direct_DeleteSuccess(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, _, cbService := setupAdminTestDB(t)
 	wordRepo := repository.NewWordRepository(db, logger)
-	_ = wordRepo.SaveWordCard("directdel", "def")
+	_ = wordRepo.SaveWordCard("directdel", "def", "")
 	wc, _ := wordRepo.GetWordCard("directdel")
 	cfg := &config.Config{Admin: config.AdminConfig{TelegramID: 123456789}, WebApp: config.WebAppConfig{JWTSecret: "test-secret"}}
 	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
@@ -2986,7 +2986,7 @@ func TestHandleAdminWord_Direct_MethodNotAllowed(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, _, cbService := setupAdminTestDB(t)
 	wordRepo := repository.NewWordRepository(db, logger)
-	_ = wordRepo.SaveWordCard("mna", "def")
+	_ = wordRepo.SaveWordCard("mna", "def", "")
 	wc, _ := wordRepo.GetWordCard("mna")
 	cfg := &config.Config{Admin: config.AdminConfig{TelegramID: 123456789}, WebApp: config.WebAppConfig{JWTSecret: "test-secret"}}
 	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
@@ -3004,7 +3004,7 @@ func TestHandleAdminWord_Direct_POST_Generate_Success(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, _, cbService := setupAdminTestDB(t)
 	wordRepo := repository.NewWordRepository(db, logger)
-	_ = wordRepo.SaveWordCard("run", "def")
+	_ = wordRepo.SaveWordCard("run", "def", "")
 	wc, _ := wordRepo.GetWordCard("run")
 	// WordInfoResponse JSON that AI returns (as content of choices[].message.content)
 	wordInfoJSON := `{"input_word":"run","lemma":"run","pos":"verb","transcription":"rʌn","definition_ru":"бежать","examples":[],"verb_forms":{"v1":"run","v2":"ran","v3":"run"}}`
@@ -3042,7 +3042,7 @@ func TestHandleAdminWord_Direct_POST_Generate_EmptyTranscription(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, _, cbService := setupAdminTestDB(t)
 	wordRepo := repository.NewWordRepository(db, logger)
-	_ = wordRepo.SaveWordCard("run", "def")
+	_ = wordRepo.SaveWordCard("run", "def", "")
 	wc, _ := wordRepo.GetWordCard("run")
 	wordInfoJSON := `{"input_word":"run","lemma":"run","pos":"verb","transcription":"","definition_ru":"бежать","examples":[]}`
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -3069,7 +3069,7 @@ func TestHandleAdminWord_Direct_POST_Generate_LLMError(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, _, cbService := setupAdminTestDB(t)
 	wordRepo := repository.NewWordRepository(db, logger)
-	_ = wordRepo.SaveWordCard("x", "def")
+	_ = wordRepo.SaveWordCard("x", "def", "")
 	wc, _ := wordRepo.GetWordCard("x")
 	wordInfoJSON := `{"error":true,"lemma":"","pos":"","transcription":"","definition_ru":"","examples":[]}`
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -3096,7 +3096,7 @@ func TestHandleAdminWord_Direct_POST_Generate_ParseError(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, _, cbService := setupAdminTestDB(t)
 	wordRepo := repository.NewWordRepository(db, logger)
-	_ = wordRepo.SaveWordCard("y", "def")
+	_ = wordRepo.SaveWordCard("y", "def", "")
 	wc, _ := wordRepo.GetWordCard("y")
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -3325,7 +3325,7 @@ func TestHandleAdminTraining_PostCreate_ValidationRequiredFields(t *testing.T) {
 	db, userRepo, cbService := setupAdminTestDB(t)
 	adminUser, _ := userRepo.GetOrCreateUser(123456789)
 	wordRepo := repository.NewWordRepository(db, logger)
-	_ = wordRepo.SaveWordCard("validword", "def")
+	_ = wordRepo.SaveWordCard("validword", "def", "")
 	cfg := &config.Config{Admin: config.AdminConfig{TelegramID: 123456789}, WebApp: config.WebAppConfig{JWTSecret: "test-secret"}}
 	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
 	ctx := context.WithValue(context.WithValue(context.Background(), userIDKey, adminUser.ID), userPermissionsKey, []string{string(PermissionWordsEditAll)})
@@ -3350,7 +3350,7 @@ func TestHandleAdminTrainingCard_Put_Form_PosEmptySetsNil(t *testing.T) {
 	db, userRepo, cbService := setupAdminTestDB(t)
 	adminUser, _ := userRepo.GetOrCreateUser(123456789)
 	wordRepo := repository.NewWordRepository(db, logger)
-	_ = wordRepo.SaveWordCard("posword", "def")
+	_ = wordRepo.SaveWordCard("posword", "def", "")
 	wc, _ := wordRepo.GetWordCard("posword")
 	trainingCardRepo := repository.NewTrainingCardRepository(db, logger)
 	posVal := "noun"
@@ -3509,7 +3509,7 @@ func TestHandleAdminWord_Put_FormData(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, _, cbService := setupAdminTestDB(t)
 	wordRepo := repository.NewWordRepository(db, logger)
-	_ = wordRepo.SaveWordCard("formput", "old def")
+	_ = wordRepo.SaveWordCard("formput", "old def", "")
 	wc, _ := wordRepo.GetWordCard("formput")
 	cfg := &config.Config{}
 	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
@@ -3588,7 +3588,7 @@ func TestHandleAdminTraining_PostCreate_JSONWithDisplayWordAndPos(t *testing.T) 
 	db, userRepo, cbService := setupAdminTestDB(t)
 	adminUser, _ := userRepo.GetOrCreateUser(123456789)
 	wordRepo := repository.NewWordRepository(db, logger)
-	_ = wordRepo.SaveWordCard("displayword", "def")
+	_ = wordRepo.SaveWordCard("displayword", "def", "")
 	cfg := &config.Config{Admin: config.AdminConfig{TelegramID: 123456789}, WebApp: config.WebAppConfig{JWTSecret: "test-secret"}}
 	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
 	ctx := context.WithValue(context.WithValue(context.Background(), userIDKey, adminUser.ID), userPermissionsKey, []string{string(PermissionWordsEditAll)})
@@ -3610,7 +3610,7 @@ func TestHandleAdminTrainingCard_Put_Form_DisplayWordEmptySetsNil(t *testing.T) 
 	db, userRepo, cbService := setupAdminTestDB(t)
 	adminUser, _ := userRepo.GetOrCreateUser(123456789)
 	wordRepo := repository.NewWordRepository(db, logger)
-	_ = wordRepo.SaveWordCard("dispword", "def")
+	_ = wordRepo.SaveWordCard("dispword", "def", "")
 	wc, _ := wordRepo.GetWordCard("dispword")
 	trainingCardRepo := repository.NewTrainingCardRepository(db, logger)
 	dispVal := "to disp"
@@ -3637,7 +3637,7 @@ func TestHandleAdminTraining_Generate_AIServiceNil(t *testing.T) {
 	db, userRepo, cbService := setupAdminTestDB(t)
 	adminUser, _ := userRepo.GetOrCreateUser(123456789)
 	wordRepo := repository.NewWordRepository(db, logger)
-	_ = wordRepo.SaveWordCard("aiword", "def")
+	_ = wordRepo.SaveWordCard("aiword", "def", "")
 	cfg := &config.Config{Admin: config.AdminConfig{TelegramID: 123456789}, WebApp: config.WebAppConfig{JWTSecret: "test-secret"}}
 	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
 	// aiService left nil
@@ -3661,7 +3661,7 @@ func TestHandleAdminWord_Generate_AIServiceNil(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, _, cbService := setupAdminTestDB(t)
 	wordRepo := repository.NewWordRepository(db, logger)
-	_ = wordRepo.SaveWordCard("genword", "def")
+	_ = wordRepo.SaveWordCard("genword", "def", "")
 	wc, _ := wordRepo.GetWordCard("genword")
 	cfg := &config.Config{}
 	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)
@@ -3716,7 +3716,7 @@ func TestHandleAdminWord_Put_InvalidJSON(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, _, cbService := setupAdminTestDB(t)
 	wordRepo := repository.NewWordRepository(db, logger)
-	_ = wordRepo.SaveWordCard("jsonword", "def")
+	_ = wordRepo.SaveWordCard("jsonword", "def", "")
 	wc, _ := wordRepo.GetWordCard("jsonword")
 	cfg := &config.Config{}
 	router := NewRouter(logger, cfg, db, nil, nil, nil, cbService)

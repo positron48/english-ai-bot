@@ -62,7 +62,7 @@ func TestGetWordDefinition_FoundInDB(t *testing.T) {
 	wordRepo := repository.NewWordRepository(db.GetConnection(), logger)
 	service := NewWordService(wordRepo, nil, nil, nil, config.DefaultLearningConfig(), logger)
 
-	_, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "apple"})
+	_, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "apple", CourseCode: "en_ru"})
 	if err != nil {
 		t.Fatalf("UpsertWordCardLemma error: %v", err)
 	}
@@ -91,7 +91,7 @@ func TestGetWordDefinition_WordFormMapping(t *testing.T) {
 	wordRepo := repository.NewWordRepository(conn, logger)
 	service := NewWordService(wordRepo, nil, nil, nil, config.DefaultLearningConfig(), logger)
 
-	cardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "run", Definition: "to move fast"})
+	cardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "run", Definition: "to move fast", CourseCode: "en_ru"})
 	if err != nil {
 		t.Fatalf("UpsertWordCardLemma: %v", err)
 	}
@@ -304,7 +304,7 @@ func TestGetWordDefinition_FoundInDB_ByLemma(t *testing.T) {
 	wordRepo := repository.NewWordRepository(conn, logger)
 	service := NewWordService(wordRepo, nil, nil, nil, config.DefaultLearningConfig(), logger)
 
-	_, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "run", Definition: "to move"})
+	_, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "run", Definition: "to move", CourseCode: "en_ru"})
 	if err != nil {
 		t.Fatalf("UpsertWordCardLemma: %v", err)
 	}
@@ -353,7 +353,7 @@ func TestWordService_ensureUserCardsForWord(t *testing.T) {
 	userRepo := repository.NewUserRepository(conn, logger)
 
 	user, _ := userRepo.GetOrCreateUser(999)
-	wordCardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "ensureword"})
+	wordCardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "ensureword", CourseCode: "en_ru"})
 	if err != nil {
 		t.Fatalf("UpsertWordCardLemma: %v", err)
 	}
@@ -399,7 +399,7 @@ func TestWordService_ensureUserCardsForWord_NoTrainingCards(t *testing.T) {
 	userRepo := repository.NewUserRepository(conn, logger)
 
 	user, _ := userRepo.GetOrCreateUser(888)
-	wordCardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "nocard"})
+	wordCardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "nocard", CourseCode: "en_ru"})
 	if err != nil {
 		t.Fatalf("UpsertWordCardLemma: %v", err)
 	}
@@ -423,7 +423,7 @@ func TestWordService_ensureUserCardsForWord_SecondCallIdempotent(t *testing.T) {
 	userRepo := repository.NewUserRepository(conn, logger)
 
 	user, _ := userRepo.GetOrCreateUser(777)
-	wordCardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "idem"})
+	wordCardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "idem", CourseCode: "en_ru"})
 	if err != nil {
 		t.Fatalf("UpsertWordCardLemma: %v", err)
 	}
@@ -461,7 +461,7 @@ func TestWordService_ensureUserCardsForWord_WithMasteringRepo(t *testing.T) {
 	userRepo := repository.NewUserRepository(conn, logger)
 
 	user, _ := userRepo.GetOrCreateUser(666)
-	wordCardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "master"})
+	wordCardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "master", CourseCode: "en_ru"})
 	if err != nil {
 		t.Fatalf("UpsertWordCardLemma: %v", err)
 	}

@@ -152,7 +152,7 @@ func TestEnsureWordCardExists_ExistingCard(t *testing.T) {
 	defer cleanup()
 
 	// Pre-create word card
-	if err := wordRepo.SaveWordCard("existing", "definition"); err != nil {
+	if err := wordRepo.SaveWordCard("existing", "definition", "en_ru"); err != nil {
 		t.Fatalf("SaveWordCard: %v", err)
 	}
 	existing, err := wordRepo.GetWordCardByLemma("existing")

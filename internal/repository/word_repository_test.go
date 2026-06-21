@@ -41,7 +41,7 @@ func TestWordRepository_SaveWordCard(t *testing.T) {
 
 	repo := NewWordRepository(db, logger)
 
-	err := repo.SaveWordCard("hello", "a greeting")
+	err := repo.SaveWordCard("hello", "a greeting", "")
 	if err != nil {
 		t.Fatalf("SaveWordCard() error = %v", err)
 	}
@@ -54,7 +54,7 @@ func TestWordRepository_GetWordCard(t *testing.T) {
 	repo := NewWordRepository(db, logger)
 
 	// Save a word first
-	err := repo.SaveWordCard("world", "the earth")
+	err := repo.SaveWordCard("world", "the earth", "")
 	if err != nil {
 		t.Fatalf("Failed to save word: %v", err)
 	}
@@ -92,7 +92,7 @@ func TestWordRepository_GetWordCard_NeutralAliasesMatchLegacy(t *testing.T) {
 	db := setupWordTestDB(t)
 	repo := NewWordRepository(db, logger)
 
-	if err := repo.SaveWordCard("neutralwc", "def en"); err != nil {
+	if err := repo.SaveWordCard("neutralwc", "def en", ""); err != nil {
 		t.Fatalf("SaveWordCard: %v", err)
 	}
 	if _, err := db.Exec(`UPDATE word_cards SET definition_ru = ?, display_en = ? WHERE word = ?`, "def ru", "disp en", "neutralwc"); err != nil {
@@ -155,13 +155,13 @@ func TestWordRepository_SaveWordCard_UpdateExisting(t *testing.T) {
 	repo := NewWordRepository(db, logger)
 
 	// Save word first time
-	err := repo.SaveWordCard("update", "first definition")
+	err := repo.SaveWordCard("update", "first definition", "")
 	if err != nil {
 		t.Fatalf("Failed to save word: %v", err)
 	}
 
 	// Update with new definition
-	err = repo.SaveWordCard("update", "updated definition")
+	err = repo.SaveWordCard("update", "updated definition", "")
 	if err != nil {
 		t.Fatalf("Failed to update word: %v", err)
 	}
@@ -197,7 +197,7 @@ func TestWordRepository_GetWordCardByID(t *testing.T) {
 	repo := NewWordRepository(db, logger)
 
 	// Save a word first
-	err := repo.SaveWordCard("byid", "test definition")
+	err := repo.SaveWordCard("byid", "test definition", "")
 	if err != nil {
 		t.Fatalf("Failed to save word: %v", err)
 	}
@@ -290,7 +290,7 @@ func TestWordRepository_GetWordFormMapping(t *testing.T) {
 	repo := NewWordRepository(db, logger)
 
 	// Save a word first
-	err := repo.SaveWordCard("spy", "to spy")
+	err := repo.SaveWordCard("spy", "to spy", "")
 	if err != nil {
 		t.Fatalf("Failed to save word: %v", err)
 	}
@@ -329,7 +329,7 @@ func TestWordRepository_UpsertWordFormMapping(t *testing.T) {
 	repo := NewWordRepository(db, logger)
 
 	// Save a word first
-	err := repo.SaveWordCard("run", "to run")
+	err := repo.SaveWordCard("run", "to run", "")
 	if err != nil {
 		t.Fatalf("Failed to save word: %v", err)
 	}
@@ -365,7 +365,7 @@ func TestWordRepository_AddWordRequestHistoryWithCard(t *testing.T) {
 	repo := NewWordRepository(db, logger)
 
 	// Save a word card first
-	err := repo.SaveWordCard("test", "a test word")
+	err := repo.SaveWordCard("test", "a test word", "")
 	if err != nil {
 		t.Fatalf("Failed to save word: %v", err)
 	}

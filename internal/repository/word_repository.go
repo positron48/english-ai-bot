@@ -42,7 +42,10 @@ func (r *WordRepository) TagWordCardCourse(wordCardID int64, courseCode string) 
 	return nil
 }
 
-// GetWordCard retrieves a word card by word (backward compatibility - searches by lemma)
+// GetWordCard retrieves a word card by word (backward compatibility - searches by lemma).
+// A word can now have one row per course_code; when several courses share the same
+// spelling this returns an arbitrary one and should only be used by course-agnostic
+// admin/debug tooling. Course-aware code must use GetWordCardByLemmaForCourse.
 func (r *WordRepository) GetWordCard(word string) (*models.WordCard, error) {
 	return r.GetWordCardByLemma(word)
 }
@@ -209,35 +212,154 @@ func (r *WordRepository) GetWordCardByLemma(lemma string) (*models.WordCard, err
 	return &card, nil
 }
 
-// SaveWordCard saves a new word card or updates existing one (backward compatibility)
-func (r *WordRepository) SaveWordCard(word, definition string) error {
-	query := `INSERT INTO word_cards (word, definition, updated_at) 
-			  VALUES (?, ?, CURRENT_TIMESTAMP)
-			  ON CONFLICT(word) DO UPDATE SET 
+// GetWordCardByLemmaForCourse retrieves a word card by lemma scoped to courseCode
+// ("" matches legacy/untagged rows with course_code IS NULL). Use this instead of
+// GetWordCardByLemma/GetWordCard wherever the calling course is known, so words
+// spelled the same across courses (e.g. "real" in en_ru and es_ru) resolve to the
+// correct per-course row instead of an arbitrary one.
+func (r *WordRepository) GetWordCardByLemmaForCourse(lemma, courseCode string) (*models.WordCard, error) {
+	courseCode = strings.TrimSpace(strings.ToLower(courseCode))
+	query := `SELECT id, word, definition, pos, noun_gender, opposite_gender_word, transcription, definition_ru,
+			  examples_json, verb_forms_json, display_en,
+			  COALESCE(CAST(processed_at AS TEXT), '') as processed_at,
+			  COALESCE(processing_error, '') as processing_error,
+			  COALESCE(course_code, '') as course_code,
+			  CAST(created_at AS TEXT) as created_at,
+			  CAST(updated_at AS TEXT) as updated_at
+			  FROM word_cards
+			  WHERE LOWER(word) = LOWER(?) AND course_code IS NOT DISTINCT FROM ?`
+
+	var card models.WordCard
+	var createdAt, updatedAt, processedAtStr, processingErrorStr string
+	var pos, nounGender, oppositeGenderWord, transcription, definitionRU, examplesJSON, verbFormsJSON, displayEN sql.NullString
+
+	err := r.db.QueryRow(query, lemma, nullableCourseCode(courseCode)).Scan(
+		&card.ID,
+		&card.Word,
+		&card.Definition,
+		&pos,
+		&nounGender,
+		&oppositeGenderWord,
+		&transcription,
+		&definitionRU,
+		&examplesJSON,
+		&verbFormsJSON,
+		&displayEN,
+		&processedAtStr,
+		&processingErrorStr,
+		&card.CourseCode,
+		&createdAt,
+		&updatedAt,
+	)
+
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, fmt.Errorf("failed to get word card: %w", err)
+	}
+
+	card.CreatedAt, _ = time.Parse("2006-01-02 15:04:05", createdAt)
+	card.UpdatedAt, _ = time.Parse("2006-01-02 15:04:05", updatedAt)
+
+	if pos.Valid {
+		card.POS = &pos.String
+	}
+	if nounGender.Valid {
+		card.NounGender = &nounGender.String
+	}
+	if oppositeGenderWord.Valid {
+		card.OppositeGenderWord = &oppositeGenderWord.String
+	}
+	if transcription.Valid {
+		card.Transcription = &transcription.String
+	}
+	if definitionRU.Valid {
+		card.DefinitionRU = &definitionRU.String
+	}
+	if examplesJSON.Valid {
+		card.ExamplesJSON = &examplesJSON.String
+	}
+	if verbFormsJSON.Valid {
+		card.VerbFormsJSON = &verbFormsJSON.String
+	}
+	if displayEN.Valid {
+		card.DisplayEN = &displayEN.String
+	}
+	if processedAtStr != "" {
+		processedAt, _ := time.Parse("2006-01-02 15:04:05", processedAtStr)
+		card.ProcessedAt = &processedAt
+	}
+	if processingErrorStr != "" {
+		card.ProcessingError = &processingErrorStr
+	}
+
+	models.SyncWordCardNeutralAliases(&card)
+
+	return &card, nil
+}
+
+// SaveWordCard saves a new word card or updates existing one (backward compatibility).
+// courseCode scopes the row so the same word in different courses doesn't collide;
+// pass "" for legacy/untagged rows.
+func (r *WordRepository) SaveWordCard(word, definition, courseCode string) error {
+	courseCode = strings.TrimSpace(strings.ToLower(courseCode))
+	// course_code IS NULL rows aren't caught by the (word, course_code) UNIQUE
+	// constraint (NULL never equals NULL there); they're covered instead by
+	// the word_cards_word_legacy_key partial unique index, which needs its
+	// own ON CONFLICT target.
+	conflictTarget := "(word, course_code)"
+	if courseCode == "" {
+		conflictTarget = "(word) WHERE course_code IS NULL"
+	}
+	query := `INSERT INTO word_cards (word, definition, course_code, updated_at)
+			  VALUES (?, ?, ?, CURRENT_TIMESTAMP)
+			  ON CONFLICT ` + conflictTarget + ` DO UPDATE SET
 			  	definition = excluded.definition,
 			  	updated_at = CURRENT_TIMESTAMP`
 
-	_, err := r.db.Exec(query, word, definition)
+	_, err := r.db.Exec(query, word, definition, nullableCourseCode(courseCode))
 	if err != nil {
 		return fmt.Errorf("failed to save word card: %w", err)
 	}
 
 	r.logger.Debug("word card saved",
 		zap.String("word", word),
+		zap.String("course_code", courseCode),
 	)
 
 	return nil
 }
 
-// UpsertWordCardLemma saves or updates a word card (lemma) with structured data
+// nullableCourseCode returns nil for an empty course code so it matches the
+// NULL course_code stored for legacy/untagged word_cards rows.
+func nullableCourseCode(courseCode string) interface{} {
+	if courseCode == "" {
+		return nil
+	}
+	return courseCode
+}
+
+// UpsertWordCardLemma saves or updates a word card (lemma) with structured data.
+// The row is scoped by card.CourseCode (empty means legacy/untagged), so the same
+// word in different courses gets its own row instead of being merged together.
 func (r *WordRepository) UpsertWordCardLemma(card *models.WordCard) (int64, error) {
 	models.NormalizeWordCardLegacyBeforeWrite(card)
+	courseCode := strings.TrimSpace(strings.ToLower(card.CourseCode))
 
+	// course_code IS NULL rows aren't caught by the (word, course_code)
+	// UNIQUE constraint (NULL never equals NULL there); they're covered
+	// instead by the word_cards_word_legacy_key partial unique index, which
+	// needs its own ON CONFLICT target.
+	conflictTarget := "(word, course_code)"
+	if courseCode == "" {
+		conflictTarget = "(word) WHERE course_code IS NULL"
+	}
 	query := `INSERT INTO word_cards (
-		word, definition, pos, noun_gender, opposite_gender_word, transcription, definition_ru, 
-		examples_json, verb_forms_json, display_en, updated_at
-	) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
-	ON CONFLICT(word) DO UPDATE SET 
+		word, definition, pos, noun_gender, opposite_gender_word, transcription, definition_ru,
+		examples_json, verb_forms_json, display_en, course_code, updated_at
+	) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+	ON CONFLICT ` + conflictTarget + ` DO UPDATE SET
 		definition = COALESCE(excluded.definition, word_cards.definition),
 		pos = COALESCE(excluded.pos, word_cards.pos),
 		noun_gender = COALESCE(excluded.noun_gender, word_cards.noun_gender),
@@ -260,6 +382,7 @@ func (r *WordRepository) UpsertWordCardLemma(card *models.WordCard) (int64, erro
 		card.ExamplesJSON,
 		card.VerbFormsJSON,
 		card.DisplayEN,
+		nullableCourseCode(courseCode),
 	)
 	if err != nil {
 		return 0, fmt.Errorf("failed to upsert word card: %w", err)
@@ -269,8 +392,8 @@ func (r *WordRepository) UpsertWordCardLemma(card *models.WordCard) (int64, erro
 	// LastInsertId() can return 0 or error when ON CONFLICT triggers UPDATE instead of INSERT
 	// In that case, we need to get the ID by querying the database
 	if err != nil || id == 0 {
-		// Get ID by lemma (works for both INSERT and UPDATE cases)
-		existing, err := r.GetWordCardByLemma(card.Word)
+		// Get ID by lemma+course (works for both INSERT and UPDATE cases)
+		existing, err := r.GetWordCardByLemmaForCourse(card.Word, courseCode)
 		if err != nil {
 			return 0, fmt.Errorf("failed to get word card ID: %w", err)
 		}
@@ -283,6 +406,7 @@ func (r *WordRepository) UpsertWordCardLemma(card *models.WordCard) (int64, erro
 	r.logger.Debug("word card lemma upserted",
 		zap.Int64("id", id),
 		zap.String("lemma", card.Word),
+		zap.String("course_code", courseCode),
 	)
 
 	return id, nil

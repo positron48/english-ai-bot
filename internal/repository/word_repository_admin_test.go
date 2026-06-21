@@ -23,8 +23,8 @@ func TestWordRepository_ListWordCardsAdmin(t *testing.T) {
 	_, repo := setupWordAdminTestDB(t)
 
 	// Create word cards
-	repo.SaveWordCard("admin1", "definition 1")
-	repo.SaveWordCard("admin2", "definition 2")
+	repo.SaveWordCard("admin1", "definition 1", "")
+	repo.SaveWordCard("admin2", "definition 2", "")
 
 	// List word cards
 	cards, err := repo.ListWordCardsAdmin(nil, false, nil, "", "", 10, 0, "", "desc")
@@ -38,10 +38,10 @@ func TestWordRepository_ListWordCardsAdmin(t *testing.T) {
 
 func TestWordRepository_ListWordCardsAdminForCourse(t *testing.T) {
 	db, repo := setupWordAdminTestDB(t)
-	if err := repo.SaveWordCard("course-en-word", "definition"); err != nil {
+	if err := repo.SaveWordCard("course-en-word", "definition", ""); err != nil {
 		t.Fatal(err)
 	}
-	if err := repo.SaveWordCard("course-es-word", "definition"); err != nil {
+	if err := repo.SaveWordCard("course-es-word", "definition", ""); err != nil {
 		t.Fatal(err)
 	}
 	if _, err := db.Exec(`UPDATE word_cards SET course_code = 'en_ru' WHERE word = 'course-en-word'`); err != nil {
@@ -65,7 +65,7 @@ func TestWordRepository_ListWordCardsAdminForCourse(t *testing.T) {
 
 func TestWordRepository_ListWordCardsAdminForCourseCanonicalMappingOverridesLegacyTag(t *testing.T) {
 	db, repo := setupWordAdminTestDB(t)
-	if err := repo.SaveWordCard("canonical-spanish-word", "definition"); err != nil {
+	if err := repo.SaveWordCard("canonical-spanish-word", "definition", ""); err != nil {
 		t.Fatal(err)
 	}
 	var wordCardID int64
@@ -112,8 +112,8 @@ func TestWordRepository_ListWordCardsAdmin_WithSearch(t *testing.T) {
 	_, repo := setupWordAdminTestDB(t)
 
 	// Create word cards
-	repo.SaveWordCard("searchword", "definition")
-	repo.SaveWordCard("otherword", "definition")
+	repo.SaveWordCard("searchword", "definition", "")
+	repo.SaveWordCard("otherword", "definition", "")
 
 	// List word cards with search
 	cards, err := repo.ListWordCardsAdmin(nil, false, nil, "search", "", 10, 0, "", "desc")
@@ -127,8 +127,8 @@ func TestWordRepository_ListWordCardsAdmin_WithSearch(t *testing.T) {
 
 func TestWordRepository_ListWordCardsAdmin_SortByAndOrder(t *testing.T) {
 	_, repo := setupWordAdminTestDB(t)
-	repo.SaveWordCard("zword", "def")
-	repo.SaveWordCard("aword", "def")
+	repo.SaveWordCard("zword", "def", "")
+	repo.SaveWordCard("aword", "def", "")
 
 	// sortBy=word, order=asc
 	cards, err := repo.ListWordCardsAdmin(nil, false, nil, "", "", 10, 0, "word", "asc")
@@ -162,7 +162,7 @@ func TestWordRepository_ListWordCardsAdmin_SortByAndOrder(t *testing.T) {
 
 func TestWordRepository_ListWordCardsAdmin_OnlyWithErrors(t *testing.T) {
 	_, repo := setupWordAdminTestDB(t)
-	repo.SaveWordCard("errorword", "definition")
+	repo.SaveWordCard("errorword", "definition", "")
 	card, err := repo.GetWordCard("errorword")
 	if err != nil {
 		t.Fatalf("GetWordCard: %v", err)
@@ -188,9 +188,9 @@ func TestWordRepository_ListWordCardsAdmin_OnlyWithErrors(t *testing.T) {
 
 func TestWordRepository_ListWordCardsAdmin_HasAudioFilter(t *testing.T) {
 	db, repo := setupWordAdminTestDB(t)
-	repo.SaveWordCard("withaudio", "def")
-	repo.SaveWordCard("noaudio", "def")
-	repo.SaveWordCard("pendingstale", "def")
+	repo.SaveWordCard("withaudio", "def", "")
+	repo.SaveWordCard("noaudio", "def", "")
+	repo.SaveWordCard("pendingstale", "def", "")
 	// Insert TTS row for one word so has_audio filter can match
 	_, err := db.Exec(`INSERT INTO tts_generation_status (word, state, audio_rel_path) VALUES ('withaudio', 'ready', 'ab/cd/withaudio.mp3')
 		ON CONFLICT (course_code, word) DO UPDATE SET state = 'ready', audio_rel_path = EXCLUDED.audio_rel_path`)
@@ -249,9 +249,9 @@ func TestWordRepository_CountWordCardsAdmin(t *testing.T) {
 	_, repo := setupWordAdminTestDB(t)
 
 	// Create word cards
-	repo.SaveWordCard("count1", "definition 1")
-	repo.SaveWordCard("count2", "definition 2")
-	repo.SaveWordCard("count3", "definition 3")
+	repo.SaveWordCard("count1", "definition 1", "")
+	repo.SaveWordCard("count2", "definition 2", "")
+	repo.SaveWordCard("count3", "definition 3", "")
 
 	// Count word cards
 	count, err := repo.CountWordCardsAdmin(nil, false, nil, "", "")
@@ -270,8 +270,8 @@ func TestWordRepository_CountWordCardsAdmin_WithFilterUserID(t *testing.T) {
 	user, _ := userRepo.GetOrCreateUser(100)
 
 	// Create word cards first
-	repo.SaveWordCard("userword1", "definition 1")
-	repo.SaveWordCard("userword2", "definition 2")
+	repo.SaveWordCard("userword1", "definition 1", "")
+	repo.SaveWordCard("userword2", "definition 2", "")
 
 	// Get word cards to get their IDs
 	card1, err := repo.GetWordCard("userword1")
@@ -304,7 +304,7 @@ func TestWordRepository_CountWordCardsAdmin_WithErrors(t *testing.T) {
 	_, repo := setupWordAdminTestDB(t)
 
 	// Create word card with error
-	repo.SaveWordCard("errorword", "definition")
+	repo.SaveWordCard("errorword", "definition", "")
 	card, err := repo.GetWordCard("errorword")
 	if err != nil {
 		t.Fatalf("Failed to get word card: %v", err)
@@ -330,8 +330,8 @@ func TestWordRepository_CountWordCardsAdmin_WithSearch(t *testing.T) {
 	_, repo := setupWordAdminTestDB(t)
 
 	// Create word cards
-	repo.SaveWordCard("searchable", "definition")
-	repo.SaveWordCard("other", "definition")
+	repo.SaveWordCard("searchable", "definition", "")
+	repo.SaveWordCard("other", "definition", "")
 
 	// Count word cards with search
 	count, err := repo.CountWordCardsAdmin(nil, false, nil, "search", "")
@@ -349,7 +349,7 @@ func TestWordRepository_ListWordCardsAdmin_MissingTrainingPOS(t *testing.T) {
 	tcRepo := NewTrainingCardRepository(db, logger)
 
 	// Word A: has a training card with pos=noun
-	repo.SaveWordCard("wordwithnoun", "definition")
+	repo.SaveWordCard("wordwithnoun", "definition", "")
 	cardA, _ := repo.GetWordCard("wordwithnoun")
 	noun := "noun"
 	_, err := tcRepo.CreateTrainingCard(&models.TrainingCard{
@@ -361,7 +361,7 @@ func TestWordRepository_ListWordCardsAdmin_MissingTrainingPOS(t *testing.T) {
 	}
 
 	// Word B: no training card with pos=noun (no cards at all)
-	repo.SaveWordCard("wordwithoutnoun", "definition")
+	repo.SaveWordCard("wordwithoutnoun", "definition", "")
 
 	// Filter: missing card for noun -> only words that have no training card with pos=noun
 	list, err := repo.ListWordCardsAdmin(nil, false, nil, "", "noun", 10, 0, "", "desc")
@@ -403,7 +403,7 @@ func TestWordRepository_GetWordCardRequestingUsers(t *testing.T) {
 	u2, _ := userRepo.GetOrCreateUser(200)
 
 	// Create a word card
-	repo.SaveWordCard("requesting", "definition")
+	repo.SaveWordCard("requesting", "definition", "")
 
 	// Get word card to get its ID
 	card, err := repo.GetWordCard("requesting")
@@ -429,7 +429,7 @@ func TestWordRepository_DeleteWordCard(t *testing.T) {
 	_, repo := setupWordAdminTestDB(t)
 
 	// Create a word card
-	repo.SaveWordCard("deletecard", "definition")
+	repo.SaveWordCard("deletecard", "definition", "")
 
 	// Get word card to get its ID
 	card, err := repo.GetWordCard("deletecard")
@@ -471,7 +471,7 @@ func TestWordRepository_DeleteWordCard_WithTrainingAndUserCards(t *testing.T) {
 	tcRepo := NewTrainingCardRepository(db, logger)
 	ucRepo := NewUserCardRepository(db, logger)
 
-	repo.SaveWordCard("cascadeword", "definition")
+	repo.SaveWordCard("cascadeword", "definition", "")
 	card, err := repo.GetWordCard("cascadeword")
 	if err != nil {
 		t.Fatalf("GetWordCard: %v", err)

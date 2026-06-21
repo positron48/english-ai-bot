@@ -397,9 +397,18 @@ func (r *Router) handleAdminTraining(w http.ResponseWriter, req *http.Request) {
 			return
 		}
 
+		// Get word card to know its course (so the right language prompt is used)
+		wordRepo := repository.NewWordRepository(r.db, r.logger)
+		var courseCode string
+		if wordCard, err := wordRepo.GetWordCard(wordEN); err != nil {
+			r.logger.Warn("failed to get word card for course lookup", zap.Error(err), zap.String("word", wordEN))
+		} else if wordCard != nil {
+			courseCode = wordCard.CourseCode
+		}
+
 		// Generate training card with constraints
 		ctx := req.Context()
-		response, err := aiService.GenerateAdditionalTrainingCard(ctx, wordEN, constraints)
+		response, err := aiService.GenerateAdditionalTrainingCardForCourse(ctx, wordEN, courseCode, constraints)
 		if err != nil {
 			r.logger.Error("failed to generate additional training card", zap.Error(err), zap.String("word", wordEN))
 			http.Error(w, "Failed to generate training card: "+err.Error(), http.StatusInternalServerError)
@@ -1211,6 +1220,21 @@ func (r *Router) handleAdminWord(w http.ResponseWriter, req *http.Request) {
 		}
 		if displayEN == "" {
 			card.DisplayEN = nil
+		}
+
+		// Check for a same-course duplicate before updating: word_cards is now
+		// unique on (word, course_code), and NULL course_code never conflicts
+		// with itself at the DB level, so the UNIQUE constraint alone can't
+		// catch renames within a single legacy/untagged course scope.
+		if dup, dupErr := wordRepo.GetWordCardByLemmaForCourse(word, existingCard.CourseCode); dupErr == nil && dup != nil && dup.ID != wordCardID {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusConflict)
+			json.NewEncoder(w).Encode(map[string]interface{}{
+				"success": false,
+				"error":   "Слово с таким значением уже существует",
+				"message": "Слово с таким значением уже существует. Пожалуйста, выберите другое слово.",
+			})
+			return
 		}
 
 		err = wordRepo.UpdateWordCard(card)

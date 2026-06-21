@@ -136,7 +136,7 @@ func TestHandleAdminTraining_CreateCardJSON_SuccessCreatesUserCards(t *testing.T
 	userRepo := repository.NewUserRepository(db.GetConnection(), router.logger)
 	userCardRepo := repository.NewUserCardRepository(db.GetConnection(), router.logger)
 
-	if err := wordRepo.SaveWordCard("focus", "definition"); err != nil {
+	if err := wordRepo.SaveWordCard("focus", "definition", ""); err != nil {
 		t.Fatalf("SaveWordCard failed: %v", err)
 	}
 	wordCard, err := wordRepo.GetWordCard("focus")

@@ -111,7 +111,7 @@ func TestHandleTrainingUpcoming_WithUserCards(t *testing.T) {
 
 	// Create word card and training card
 	wordRepo := repository.NewWordRepository(db.GetConnection(), router.logger)
-	wordRepo.SaveWordCard("testword", "test definition")
+	wordRepo.SaveWordCard("testword", "test definition", "")
 	wordCard, _ := wordRepo.GetWordCard("testword")
 
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), router.logger)

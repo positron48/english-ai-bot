@@ -52,7 +52,7 @@ func TestWordRepository_SaveWordCard_DBError(t *testing.T) {
 	db := invalidWordDB(t)
 	repo := NewWordRepository(db, zap.NewNop())
 
-	err := repo.SaveWordCard("word", "definition")
+	err := repo.SaveWordCard("word", "definition", "")
 	if err == nil {
 		t.Fatal("expected error when DB is invalid")
 	}
@@ -272,7 +272,7 @@ func TestWordRepository_GetWordCardByLemma_WithProcessedAt(t *testing.T) {
 	db := testutil.SetupTestDB(t)
 	repo := NewWordRepository(db, logger)
 
-	if err := repo.SaveWordCard("processedlemma", "def"); err != nil {
+	if err := repo.SaveWordCard("processedlemma", "def", ""); err != nil {
 		t.Fatalf("SaveWordCard: %v", err)
 	}
 	card, err := repo.GetWordCardByLemma("processedlemma")
@@ -354,7 +354,7 @@ func TestWordRepository_GetUserIDsByWord_WithWordCard(t *testing.T) {
 	userRepo := NewUserRepository(db, logger)
 
 	user, _ := userRepo.GetOrCreateUser(99010)
-	if err := repo.SaveWordCard("withcardword", "def"); err != nil {
+	if err := repo.SaveWordCard("withcardword", "def", ""); err != nil {
 		t.Fatalf("SaveWordCard: %v", err)
 	}
 	card, _ := repo.GetWordCardByLemma("withcardword")
@@ -378,7 +378,7 @@ func TestWordRepository_ListWordCardsAdmin_WithFilterUserID(t *testing.T) {
 	userRepo := NewUserRepository(db, logger)
 
 	user, _ := userRepo.GetOrCreateUser(99020)
-	if err := repo.SaveWordCard("filteruserword", "def"); err != nil {
+	if err := repo.SaveWordCard("filteruserword", "def", ""); err != nil {
 		t.Fatalf("SaveWordCard: %v", err)
 	}
 	card, _ := repo.GetWordCardByLemma("filteruserword")
@@ -403,7 +403,7 @@ func TestWordRepository_DeleteWordCard_WithUserCards_Success(t *testing.T) {
 	tcRepo := NewTrainingCardRepository(db, logger)
 	ucRepo := NewUserCardRepository(db, logger)
 
-	if err := repo.SaveWordCard("deleteucword", "def"); err != nil {
+	if err := repo.SaveWordCard("deleteucword", "def", ""); err != nil {
 		t.Fatalf("SaveWordCard: %v", err)
 	}
 	card, _ := repo.GetWordCardByLemma("deleteucword")
@@ -431,7 +431,7 @@ func TestWordRepository_ListWordCardsAdmin_WithTTSFields(t *testing.T) {
 	db := testutil.SetupTestDB(t)
 	repo := NewWordRepository(db, logger)
 
-	if err := repo.SaveWordCard("ttsadminword", "def"); err != nil {
+	if err := repo.SaveWordCard("ttsadminword", "def", ""); err != nil {
 		t.Fatalf("SaveWordCard: %v", err)
 	}
 	// Insert TTS row with all fields populated
@@ -469,10 +469,10 @@ func TestWordRepository_CountWordCardsAdmin_HasAudioFilter(t *testing.T) {
 	db := testutil.SetupTestDB(t)
 	repo := NewWordRepository(db, logger)
 
-	if err := repo.SaveWordCard("audiocount1", "def"); err != nil {
+	if err := repo.SaveWordCard("audiocount1", "def", ""); err != nil {
 		t.Fatalf("SaveWordCard: %v", err)
 	}
-	if err := repo.SaveWordCard("audiocount2", "def"); err != nil {
+	if err := repo.SaveWordCard("audiocount2", "def", ""); err != nil {
 		t.Fatalf("SaveWordCard: %v", err)
 	}
 	// Insert TTS row with audio for one word
@@ -753,7 +753,7 @@ func TestWordRepository_ListWordCardsAdmin_DefaultSortOrder(t *testing.T) {
 	db := testutil.SetupTestDB(t)
 	repo := NewWordRepository(db, logger)
 
-	if err := repo.SaveWordCard("defaultsortword", "def"); err != nil {
+	if err := repo.SaveWordCard("defaultsortword", "def", ""); err != nil {
 		t.Fatalf("SaveWordCard: %v", err)
 	}
 
@@ -934,7 +934,7 @@ func TestWordRepository_ListWordCardsAdmin_WithProcessedAt(t *testing.T) {
 	db := testutil.SetupTestDB(t)
 	repo := NewWordRepository(db, logger)
 
-	if err := repo.SaveWordCard("processedadmin", "def"); err != nil {
+	if err := repo.SaveWordCard("processedadmin", "def", ""); err != nil {
 		t.Fatalf("SaveWordCard: %v", err)
 	}
 	card, _ := repo.GetWordCardByLemma("processedadmin")

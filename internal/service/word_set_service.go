@@ -22,9 +22,9 @@ type userCardRepoForWordSet interface {
 
 // wordRepoForWordSet is used by WordSetService for word card operations (allows mocks in tests).
 type wordRepoForWordSet interface {
-	GetWordCardByLemma(lemma string) (*models.WordCard, error)
+	GetWordCardByLemmaForCourse(lemma, courseCode string) (*models.WordCard, error)
 	GetWordCardByID(id int64) (*models.WordCard, error)
-	SaveWordCard(word, content string) error
+	SaveWordCard(word, content, courseCode string) error
 	UpsertWordCardLemma(card *models.WordCard) (int64, error)
 	UpsertWordFormMapping(form string, wordCardID int64) error
 }
@@ -44,6 +44,7 @@ type WordSetService struct {
 	userWordMasteringRepo *repository.UserWordMasteringRepository
 	aiService             *ai.Service
 	learning              config.LearningConfig
+	courseCode            string
 	modelHigh             string
 	logger                *zap.Logger
 }
@@ -88,6 +89,7 @@ func NewWordSetServiceWithMastering(
 		userWordMasteringRepo: userWordMasteringRepo,
 		aiService:             aiService,
 		learning:              learning,
+		courseCode:            repository.CourseCodeForLearning(learning),
 		modelHigh:             modelHigh,
 		logger:                logger,
 	}
@@ -101,7 +103,7 @@ func (s *WordSetService) EnsureWordCardExistsMinimal(word string) (int64, error)
 	normalizedWord := strings.TrimSpace(strings.ToLower(word))
 
 	// Try to get existing word card
-	wordCard, err := s.wordRepo.GetWordCardByLemma(normalizedWord)
+	wordCard, err := s.wordRepo.GetWordCardByLemmaForCourse(normalizedWord, s.courseCode)
 	if err != nil {
 		return 0, fmt.Errorf("failed to get word card: %w", err)
 	}
@@ -116,6 +118,7 @@ func (s *WordSetService) EnsureWordCardExistsMinimal(word string) (int64, error)
 	wordCardModel := &models.WordCard{
 		Word:       normalizedWord,
 		Definition: "", // Empty - will be filled later
+		CourseCode: s.courseCode,
 		// All other fields are nil - will be filled asynchronously
 	}
 
@@ -168,7 +171,7 @@ func (s *WordSetService) EnsureWordCardExists(ctx context.Context, word string) 
 	}
 
 	// Step 2: direct lookup by lemma.
-	wordCard, err := s.wordRepo.GetWordCardByLemma(normalizedWord)
+	wordCard, err := s.wordRepo.GetWordCardByLemmaForCourse(normalizedWord, s.courseCode)
 	if err != nil {
 		return 0, fmt.Errorf("failed to get word card: %w", err)
 	}
@@ -183,7 +186,7 @@ func (s *WordSetService) EnsureWordCardExists(ctx context.Context, word string) 
 		return 0, fmt.Errorf("AI service not available")
 	}
 
-	response, err := s.aiService.GenerateResponse(ctx, word)
+	response, err := s.aiService.GenerateResponseForCourse(ctx, word, s.courseCode)
 	if err != nil {
 		return 0, fmt.Errorf("failed to get AI response: %w", err)
 	}
@@ -192,11 +195,11 @@ func (s *WordSetService) EnsureWordCardExists(ctx context.Context, word string) 
 	var wordInfo models.WordInfoResponse
 	if err := json.Unmarshal([]byte(response), &wordInfo); err != nil {
 		// Not JSON, save as legacy format
-		if err := s.wordRepo.SaveWordCard(normalizedWord, response); err != nil {
+		if err := s.wordRepo.SaveWordCard(normalizedWord, response, s.courseCode); err != nil {
 			return 0, fmt.Errorf("failed to save word card: %w", err)
 		}
 		// Get the saved word card
-		wordCard, err := s.wordRepo.GetWordCardByLemma(normalizedWord)
+		wordCard, err := s.wordRepo.GetWordCardByLemmaForCourse(normalizedWord, s.courseCode)
 		if err != nil {
 			return 0, fmt.Errorf("failed to get saved word card: %w", err)
 		}
@@ -260,6 +263,7 @@ func (s *WordSetService) EnsureWordCardExists(ctx context.Context, word string) 
 		ExamplesJSON:  examplesJSON,
 		VerbFormsJSON: verbFormsJSON,
 		DisplayEN:     &displayEN,
+		CourseCode:    s.courseCode,
 	}
 
 	wordCardID, err := s.wordRepo.UpsertWordCardLemma(wordCardModel)
@@ -344,7 +348,7 @@ func (s *WordSetService) EnsureTrainingCardsExist(ctx context.Context, wordCardI
 	var validationError string
 
 	// First attempt with default model
-	response, err = s.aiService.GenerateTrainingCard(ctx, wordCard.Word)
+	response, err = s.aiService.GenerateTrainingCardForCourse(ctx, wordCard.Word, wordCard.CourseCode)
 	if err != nil {
 		return fmt.Errorf("LLM generation failed: %w", err)
 	}
@@ -378,7 +382,7 @@ func (s *WordSetService) EnsureTrainingCardsExist(ctx context.Context, wordCardI
 			)
 
 			// Try with high model
-			response, err = s.aiService.GenerateTrainingCard(ctx, wordCard.Word, s.modelHigh)
+			response, err = s.aiService.GenerateTrainingCardForCourse(ctx, wordCard.Word, wordCard.CourseCode, s.modelHigh)
 			if err != nil {
 				s.logger.Warn("LLM generation with high model failed, using original validation error",
 					zap.String("word", wordCard.Word),

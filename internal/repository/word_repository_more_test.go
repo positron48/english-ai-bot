@@ -13,7 +13,7 @@ func TestWordRepository_MarkWordCardProcessedError(t *testing.T) {
 	repo := NewWordRepository(db, logger)
 
 	// Create a word card
-	err := repo.SaveWordCard("errorword", "definition")
+	err := repo.SaveWordCard("errorword", "definition", "")
 	if err != nil {
 		t.Fatalf("Failed to save word card: %v", err)
 	}
@@ -42,7 +42,7 @@ func TestWordRepository_ResetWordCardProcessed(t *testing.T) {
 	repo := NewWordRepository(db, logger)
 
 	// Create a word card
-	err := repo.SaveWordCard("resetword", "definition")
+	err := repo.SaveWordCard("resetword", "definition", "")
 	if err != nil {
 		t.Fatalf("Failed to save word card: %v", err)
 	}
@@ -85,7 +85,7 @@ func TestWordRepository_UpdateWordCardDefinition(t *testing.T) {
 	repo := NewWordRepository(db, logger)
 
 	// Create a word card
-	err := repo.SaveWordCard("updateword", "old definition")
+	err := repo.SaveWordCard("updateword", "old definition", "")
 	if err != nil {
 		t.Fatalf("Failed to save word card: %v", err)
 	}
@@ -131,7 +131,7 @@ func TestWordRepository_GetWordCardRequestingUsers_NotFoundAndWithHistory(t *tes
 	})
 
 	t.Run("returns user IDs who requested the word", func(t *testing.T) {
-		_ = repo.SaveWordCard("requestedword", "definition")
+		_ = repo.SaveWordCard("requestedword", "definition", "")
 		card, _ := repo.GetWordCard("requestedword")
 		if card == nil {
 			t.Fatal("word card not created")

@@ -72,6 +72,7 @@ type Service struct {
 	prompt            string
 	trainingPrompt    string
 	dictionaryPrompts map[string]string // course_code -> dictionary lookup prompt override
+	trainingPrompts   map[string]string // course_code -> training card generation prompt override
 	logger            *zap.Logger
 }
 
@@ -109,9 +110,27 @@ func (s *Service) SetDictionaryPromptForCourse(courseCode, prompt string) {
 	s.dictionaryPrompts[courseCode] = strings.ReplaceAll(prompt, "\\n", "\n")
 }
 
-// SetTrainingPrompt sets the training card generation prompt
+// SetTrainingPrompt sets the default training card generation prompt
 func (s *Service) SetTrainingPrompt(prompt string) {
 	s.trainingPrompt = prompt
+}
+
+// SetTrainingPromptForCourse registers a training card generation prompt override for a given course code.
+// GenerateTrainingCardForCourse/GenerateAdditionalTrainingCardForCourse use it instead of the default
+// training prompt when the course matches, so e.g. es_ru training cards aren't generated against the
+// default English-only training prompt.
+func (s *Service) SetTrainingPromptForCourse(courseCode, prompt string) {
+	if s.trainingPrompts == nil {
+		s.trainingPrompts = make(map[string]string)
+	}
+	s.trainingPrompts[courseCode] = strings.ReplaceAll(prompt, "\\n", "\n")
+}
+
+func (s *Service) trainingPromptForCourse(courseCode string) string {
+	if p, ok := s.trainingPrompts[courseCode]; ok && p != "" {
+		return p
+	}
+	return s.trainingPrompt
 }
 
 // ChatRequest represents the OpenAI-compatible chat request
@@ -235,15 +254,24 @@ func (s *Service) generateResponseWithPrompt(ctx context.Context, userMessage, s
 	return s.postChatCompletion(ctx, s.model, messages, 2000, 0.3, zap.String("kind", "dictionary"), zap.String("user_message", userMessage))
 }
 
-// GenerateTrainingCard generates a training card for a word using LLM
+// GenerateTrainingCard generates a training card for a word using LLM, using the default training prompt.
 // If modelOverride is provided, it will be used instead of the default model
 func (s *Service) GenerateTrainingCard(ctx context.Context, word string, modelOverride ...string) (string, error) {
-	if s.trainingPrompt == "" {
+	return s.GenerateTrainingCardForCourse(ctx, word, "", modelOverride...)
+}
+
+// GenerateTrainingCardForCourse behaves like GenerateTrainingCard but uses the training prompt
+// registered for courseCode via SetTrainingPromptForCourse, if any, falling back to the default
+// training prompt otherwise. Use this so courses in a different target language (e.g. Spanish)
+// aren't validated against the default (English) training prompt.
+func (s *Service) GenerateTrainingCardForCourse(ctx context.Context, word, courseCode string, modelOverride ...string) (string, error) {
+	trainingPrompt := s.trainingPromptForCourse(courseCode)
+	if trainingPrompt == "" {
 		return "", fmt.Errorf("training prompt not set")
 	}
 
 	// Prepare user message with word
-	userMessage := strings.TrimSpace(s.trainingPrompt)
+	userMessage := strings.TrimSpace(trainingPrompt)
 	if !strings.HasSuffix(userMessage, "\n") {
 		userMessage += "\n"
 	}
@@ -340,16 +368,23 @@ func (s *Service) GenerateTrainingCard(ctx context.Context, word string, modelOv
 	return response, nil
 }
 
-// GenerateAdditionalTrainingCard generates an additional training card for a word with constraints
-// constraints can specify things like specific meaning, part of speech, etc.
+// GenerateAdditionalTrainingCard generates an additional training card for a word with constraints,
+// using the default training prompt. constraints can specify things like specific meaning, part of speech, etc.
 func (s *Service) GenerateAdditionalTrainingCard(ctx context.Context, word string, constraints string, modelOverride ...string) (string, error) {
-	if s.trainingPrompt == "" {
+	return s.GenerateAdditionalTrainingCardForCourse(ctx, word, "", constraints, modelOverride...)
+}
+
+// GenerateAdditionalTrainingCardForCourse behaves like GenerateAdditionalTrainingCard but uses the
+// training prompt registered for courseCode via SetTrainingPromptForCourse, if any.
+func (s *Service) GenerateAdditionalTrainingCardForCourse(ctx context.Context, word, courseCode string, constraints string, modelOverride ...string) (string, error) {
+	trainingPrompt := s.trainingPromptForCourse(courseCode)
+	if trainingPrompt == "" {
 		return "", fmt.Errorf("training prompt not set")
 	}
 
 	// Build user message with word and constraints
 	var userMessage strings.Builder
-	userMessage.WriteString(strings.TrimSpace(s.trainingPrompt))
+	userMessage.WriteString(strings.TrimSpace(trainingPrompt))
 	userMessage.WriteString("\n")
 	userMessage.WriteString(strings.TrimSpace(word))
 

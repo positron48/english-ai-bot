@@ -49,7 +49,7 @@ func TestGetWordDefinition_WordFormMapping_ResolvesToLemma(t *testing.T) {
 	}
 
 	wordRepo := repository.NewWordRepository(conn, logger)
-	cardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "run", Definition: "to move fast"})
+	cardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "run", Definition: "to move fast", CourseCode: "en_ru"})
 	if err != nil {
 		t.Fatalf("UpsertWordCardLemma: %v", err)
 	}
@@ -106,7 +106,7 @@ func TestGetWordDefinition_UpsertWordFormMapping_WhenLemmaNotMatchInput(t *testi
 	// The most realistic scenario: input is a capitalized version that matches via lemma lookup
 	// but the stored word has different case. Since we store lowercase, this is rare.
 	// Let's just verify the normal path works.
-	_, err = wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "run", Definition: "to move"})
+	_, err = wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "run", Definition: "to move", CourseCode: "en_ru"})
 	if err != nil {
 		t.Fatalf("UpsertWordCardLemma: %v", err)
 	}
@@ -138,7 +138,7 @@ func TestGetWordDefinition_EnsureUserCardsForWord_WithTrainingCards(t *testing.T
 	trainingCardRepo := repository.NewTrainingCardRepository(conn, logger)
 	userCardRepo := repository.NewUserCardRepository(conn, logger)
 
-	wordCardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "testensure2", Definition: "test"})
+	wordCardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "testensure2", Definition: "test", CourseCode: "en_ru"})
 	if err != nil {
 		t.Fatalf("UpsertWordCardLemma: %v", err)
 	}
@@ -177,7 +177,7 @@ func TestGetWordDefinition_PronunciationService_DBWord(t *testing.T) {
 	}
 
 	wordRepo := repository.NewWordRepository(conn, logger)
-	_, err = wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "pronword", Definition: "test"})
+	_, err = wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "pronword", Definition: "test", CourseCode: "en_ru"})
 	if err != nil {
 		t.Fatalf("UpsertWordCardLemma: %v", err)
 	}
@@ -592,7 +592,7 @@ func TestEnsureUserCardsForWord_CreateUserCardFails_Idempotent(t *testing.T) {
 	userRepo := repository.NewUserRepository(conn, logger)
 
 	user, _ := userRepo.GetOrCreateUser(111)
-	wordCardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "failcard2"})
+	wordCardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "failcard2", CourseCode: "en_ru"})
 	if err != nil {
 		t.Fatalf("UpsertWordCardLemma: %v", err)
 	}
@@ -636,7 +636,7 @@ func TestGetWordDefinition_GetWordCardByID_Error(t *testing.T) {
 	}
 
 	wordRepo := repository.NewWordRepository(conn, logger)
-	cardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "formword", Definition: "test"})
+	cardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "formword", Definition: "test", CourseCode: "en_ru"})
 	if err != nil {
 		t.Fatalf("UpsertWordCardLemma: %v", err)
 	}
@@ -764,7 +764,7 @@ func TestGetWordDefinition_GetWordCardByID_Fails(t *testing.T) {
 
 	// Create a word form mapping pointing to a word card
 	wordRepo := repository.NewWordRepository(conn, logger)
-	cardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "lemmaword"})
+	cardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "lemmaword", CourseCode: "en_ru"})
 	if err != nil {
 		t.Fatalf("UpsertWordCardLemma: %v", err)
 	}
@@ -810,7 +810,7 @@ func TestGetWordDefinition_UpsertWordFormMapping_Error(t *testing.T) {
 
 	// Create a word card with lemma "running" but input is "runs" (different from lemma)
 	wordRepo := repository.NewWordRepository(conn, logger)
-	_, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "run", Definition: "to run"})
+	_, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "run", Definition: "to run", CourseCode: "en_ru"})
 	if err != nil {
 		t.Fatalf("UpsertWordCardLemma: %v", err)
 	}
@@ -844,7 +844,7 @@ func TestGetWordDefinition_EnsureUserCardsForWord_Error(t *testing.T) {
 	userRepo := repository.NewUserRepository(conn, logger)
 
 	user, _ := userRepo.GetOrCreateUser(999)
-	_, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "ensureerr"})
+	_, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "ensureerr", CourseCode: "en_ru"})
 	if err != nil {
 		t.Fatalf("UpsertWordCardLemma: %v", err)
 	}
@@ -1075,7 +1075,7 @@ func TestEnsureUserCardsForWord_CreateUserCardFails_RuEn(t *testing.T) {
 	wordRepo := repository.NewWordRepository(conn, logger)
 	trainingCardRepo := repository.NewTrainingCardRepository(conn, logger)
 
-	wordCardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "failruen"})
+	wordCardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "failruen", CourseCode: "en_ru"})
 	if err != nil {
 		t.Fatalf("UpsertWordCardLemma: %v", err)
 	}
@@ -1113,7 +1113,7 @@ func TestGetWordDefinition_GetWordCardByID_ErrorAfterFormMapping(t *testing.T) {
 
 	// Create a word card and form mapping
 	wordRepo := repository.NewWordRepository(conn, logger)
-	cardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "testlemma", Definition: "test"})
+	cardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "testlemma", Definition: "test", CourseCode: "en_ru"})
 	if err != nil {
 		t.Fatalf("UpsertWordCardLemma: %v", err)
 	}
@@ -1339,7 +1339,7 @@ func TestEnsureUserCardsForWord_UserWordMasteringUpsertFails(t *testing.T) {
 	userRepo := repository.NewUserRepository(conn, logger)
 
 	user, _ := userRepo.GetOrCreateUser(222)
-	wordCardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "masteringfail"})
+	wordCardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "masteringfail", CourseCode: "en_ru"})
 	if err != nil {
 		t.Fatalf("UpsertWordCardLemma: %v", err)
 	}

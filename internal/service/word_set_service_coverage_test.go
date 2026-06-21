@@ -28,7 +28,7 @@ type mockWordRepo struct {
 	upsertWordFormMapping func(form string, wordCardID int64) error
 }
 
-func (m *mockWordRepo) GetWordCardByLemma(lemma string) (*models.WordCard, error) {
+func (m *mockWordRepo) GetWordCardByLemmaForCourse(lemma, courseCode string) (*models.WordCard, error) {
 	if m.getWordCardByLemmaFn != nil {
 		return m.getWordCardByLemmaFn(lemma)
 	}
@@ -42,7 +42,7 @@ func (m *mockWordRepo) GetWordCardByID(id int64) (*models.WordCard, error) {
 	return nil, nil
 }
 
-func (m *mockWordRepo) SaveWordCard(word, content string) error {
+func (m *mockWordRepo) SaveWordCard(word, content, courseCode string) error {
 	if m.saveWordCardFn != nil {
 		return m.saveWordCardFn(word, content)
 	}

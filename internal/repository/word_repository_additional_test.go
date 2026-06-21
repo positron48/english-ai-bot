@@ -53,7 +53,7 @@ func TestWordRepository_AddWordRequestHistoryWithCard_WithCardAndWord(t *testing
 	user, _ := userRepo.GetOrCreateUser(2000)
 	repo := NewWordRepository(db, logger)
 
-	_ = repo.SaveWordCard("lemma", "definition")
+	_ = repo.SaveWordCard("lemma", "definition", "")
 	card, _ := repo.GetWordCard("lemma")
 	if card == nil {
 		t.Fatal("word card not created")

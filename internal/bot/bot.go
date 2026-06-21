@@ -125,6 +125,16 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 		}
 	}
 
+	// Load Spanish training-card prompt for the es_ru course so training-card generation
+	// (examples, distractors, etc.) doesn't use the default English-only training prompt.
+	if esTrainingPrompt, err := ai.LoadRenderedPromptFile("prompts/training-card-ru-es.txt", "ru", "es", "ru-es"); err != nil {
+		log.Warn("failed to load es_ru training prompt file, Spanish training-card generation will use the default prompt",
+			zap.Error(err),
+		)
+	} else {
+		aiService.SetTrainingPromptForCourse("es_ru", esTrainingPrompt)
+	}
+
 	// Create repositories
 	conn := db.GetConnection()
 

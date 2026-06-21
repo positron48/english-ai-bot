@@ -25,6 +25,7 @@ type WordService struct {
 	pronunciationService  *PronunciationService
 	aiService             *ai.Service
 	learning              config.LearningConfig
+	courseCode            string
 	spanishGenderLexicon  map[string]models.SpanishGenderLexiconEntry
 	logger                *zap.Logger
 	// verbTrainingCfg + verbFormSync: optional; wired in cmd/bot so Spanish verb-form DB rows
@@ -76,6 +77,7 @@ func NewWordServiceWithMastering(
 		userWordMasteringRepo: userWordMasteringRepo,
 		aiService:             aiService,
 		learning:              learning,
+		courseCode:            repository.CourseCodeForLearning(learning),
 		spanishGenderLexicon:  spanishLex,
 		logger:                logger,
 	}
@@ -317,7 +319,7 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 
 	// Step 2: If no mapping found, try direct lookup by lemma
 	if wordCard == nil {
-		wordCard, err = s.wordRepo.GetWordCardByLemma(normalizedWord)
+		wordCard, err = s.wordRepo.GetWordCardByLemmaForCourse(normalizedWord, s.courseCode)
 		if err != nil {
 			s.logger.Warn("failed to get word card by lemma", zap.Error(err))
 		}
@@ -380,7 +382,7 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 		return "", fmt.Errorf("AI service not available")
 	}
 
-	response, err := s.aiService.GenerateResponse(ctx, word)
+	response, err := s.aiService.GenerateResponseForCourse(ctx, word, s.courseCode)
 	if err != nil {
 		return "", fmt.Errorf("failed to get AI response: %w", err)
 	}
@@ -400,7 +402,7 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 		// LLM can occasionally return correction text for single-word lookup.
 		// Retry once with a strict JSON-only lookup instruction.
 		forcedPrompt := buildForcedSingleWordLookupPrompt(word)
-		forcedResponse, forcedErr := s.aiService.GenerateResponse(ctx, forcedPrompt)
+		forcedResponse, forcedErr := s.aiService.GenerateResponseForCourse(ctx, forcedPrompt, s.courseCode)
 		if forcedErr == nil {
 			if retryErr := json.Unmarshal([]byte(forcedResponse), &wordInfo); retryErr == nil {
 				response = forcedResponse
@@ -422,7 +424,7 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 			zap.Error(err),
 			zap.String("response", response[:min(100, len(response))]),
 		)
-		if err := s.wordRepo.SaveWordCard(normalizedWord, response); err != nil {
+		if err := s.wordRepo.SaveWordCard(normalizedWord, response, s.courseCode); err != nil {
 			s.logger.Warn("failed to save word card", zap.Error(err))
 		} else {
 			if err := s.wordRepo.AddWordRequestHistory(userID, normalizedWord); err != nil {
@@ -437,7 +439,7 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 	requireNativeCyrillic := s.nativeLanguageRequiresCyrillic()
 	if !nativeFieldsLookValidForConfig(wordInfo.DefinitionNative, wordInfo.Examples, requireNativeCyrillic) {
 		forcedPrompt := buildForcedNativeLanguagePrompt(word, s.learning.NativeLang, s.learning.TargetLang, s.learning.Pair)
-		forcedResponse, forcedErr := s.aiService.GenerateResponse(ctx, forcedPrompt)
+		forcedResponse, forcedErr := s.aiService.GenerateResponseForCourse(ctx, forcedPrompt, s.courseCode)
 		if forcedErr == nil {
 			var forcedInfo models.WordInfoResponse
 			if err := json.Unmarshal([]byte(forcedResponse), &forcedInfo); err == nil {
@@ -563,6 +565,7 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 		Transcription:      &wordInfo.Transcription,
 		DefinitionRU:       &wordInfo.DefinitionRU,
 		DisplayEN:          &displayEN,
+		CourseCode:         s.courseCode,
 	}
 
 	// Serialize examples

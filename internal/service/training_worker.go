@@ -254,8 +254,9 @@ func (w *TrainingWorker) fillWordCardData(ctx context.Context, wordCard *models.
 		zap.Bool("missing_definition_ru", wordCard.DefinitionRU == nil),
 	)
 
-	// Generate word card data via LLM
-	response, err := w.aiService.GenerateResponse(ctx, wordCard.Word)
+	// Generate word card data via LLM, using the prompt registered for this word's course
+	// so e.g. es_ru words aren't filled in against the default (English) dictionary prompt.
+	response, err := w.aiService.GenerateResponseForCourse(ctx, wordCard.Word, wordCard.CourseCode)
 	if err != nil {
 		return fmt.Errorf("failed to get AI response: %w", err)
 	}
@@ -419,7 +420,7 @@ func (w *TrainingWorker) processCard(ctx context.Context, wordCard *models.WordC
 	triedHighModel := false
 
 	// First attempt with default model
-	response, err = w.aiService.GenerateTrainingCard(ctx, wordCard.Word)
+	response, err = w.aiService.GenerateTrainingCardForCourse(ctx, wordCard.Word, wordCard.CourseCode)
 	if err != nil {
 		return fmt.Errorf("LLM generation failed: %w", err)
 	}
@@ -472,7 +473,7 @@ func (w *TrainingWorker) processCard(ctx context.Context, wordCard *models.WordC
 			)
 
 			// Try with high model
-			response, err = w.aiService.GenerateTrainingCard(ctx, wordCard.Word, w.modelHigh)
+			response, err = w.aiService.GenerateTrainingCardForCourse(ctx, wordCard.Word, wordCard.CourseCode, w.modelHigh)
 			if err != nil {
 				w.logger.Warn("LLM generation with high model failed, using original validation error",
 					zap.String("word", wordCard.Word),

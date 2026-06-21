@@ -59,7 +59,7 @@ func TestHandleAdminTraining_GetWord(t *testing.T) {
 
 	// Create word card
 	wordRepo := repository.NewWordRepository(db.GetConnection(), router.logger)
-	wordRepo.SaveWordCard("test", "test definition")
+	wordRepo.SaveWordCard("test", "test definition", "")
 
 	req := httptest.NewRequest(http.MethodGet, "/api/admin/training/test", nil)
 	req = setAdminTrainingUserContext(req, adminUserID)
@@ -101,7 +101,7 @@ func TestHandleAdminTraining_DeleteAll_More(t *testing.T) {
 
 	// Create some training cards first
 	wordRepo := repository.NewWordRepository(db.GetConnection(), router.logger)
-	wordRepo.SaveWordCard("test", "test definition")
+	wordRepo.SaveWordCard("test", "test definition", "")
 	wordCard, _ := wordRepo.GetWordCard("test")
 
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), router.logger)
@@ -138,7 +138,7 @@ func TestHandleAdminTraining_DeleteWord(t *testing.T) {
 
 	// Create word and training card
 	wordRepo := repository.NewWordRepository(db.GetConnection(), router.logger)
-	wordRepo.SaveWordCard("testword", "test definition")
+	wordRepo.SaveWordCard("testword", "test definition", "")
 	wordCard, _ := wordRepo.GetWordCard("testword")
 
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), router.logger)
@@ -232,7 +232,7 @@ func TestHandleAdminTrainingCard_Delete_More(t *testing.T) {
 
 	// Create word and training card
 	wordRepo := repository.NewWordRepository(db.GetConnection(), router.logger)
-	wordRepo.SaveWordCard("testword", "test definition")
+	wordRepo.SaveWordCard("testword", "test definition", "")
 	wordCard, _ := wordRepo.GetWordCard("testword")
 
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), router.logger)
@@ -312,7 +312,7 @@ func TestHandleAdminTraining_CreateCardForm_Success(t *testing.T) {
 	router, db, adminUserID := setupAdminTrainingTest(t)
 
 	wordRepo := repository.NewWordRepository(db.GetConnection(), router.logger)
-	if err := wordRepo.SaveWordCard("formword", "def"); err != nil {
+	if err := wordRepo.SaveWordCard("formword", "def", ""); err != nil {
 		t.Fatalf("SaveWordCard: %v", err)
 	}
 
@@ -350,7 +350,7 @@ func TestHandleAdminTrainingCard_MethodNotAllowed(t *testing.T) {
 
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), router.logger)
 	wordRepo := repository.NewWordRepository(db.GetConnection(), router.logger)
-	wordRepo.SaveWordCard("w", "d")
+	wordRepo.SaveWordCard("w", "d", "")
 	wc, _ := wordRepo.GetWordCard("w")
 	tc := &models.TrainingCard{WordCardID: wc.ID, WordEN: "w", SenseIndex: 0, WordRU: "п", MeaningEN: "m", DistractorsRU: "[]", DistractorsEN: "[]"}
 	cardID, _ := tcRepo.CreateTrainingCard(tc)
@@ -371,7 +371,7 @@ func TestHandleAdminTrainingCard_PUT_JSON(t *testing.T) {
 
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), router.logger)
 	wordRepo := repository.NewWordRepository(db.GetConnection(), router.logger)
-	wordRepo.SaveWordCard("word", "def")
+	wordRepo.SaveWordCard("word", "def", "")
 	wc, _ := wordRepo.GetWordCard("word")
 	tc := &models.TrainingCard{WordCardID: wc.ID, WordEN: "word", SenseIndex: 0, WordRU: "слово", MeaningEN: "meaning", DistractorsRU: "[]", DistractorsEN: "[]"}
 	cardID, err := tcRepo.CreateTrainingCard(tc)
@@ -398,7 +398,7 @@ func TestHandleAdminTrainingCard_PUT_Form(t *testing.T) {
 
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), router.logger)
 	wordRepo := repository.NewWordRepository(db.GetConnection(), router.logger)
-	wordRepo.SaveWordCard("w2", "def")
+	wordRepo.SaveWordCard("w2", "def", "")
 	wc, _ := wordRepo.GetWordCard("w2")
 	tc := &models.TrainingCard{WordCardID: wc.ID, WordEN: "w2", SenseIndex: 0, WordRU: "сл", MeaningEN: "m", DistractorsRU: "[]", DistractorsEN: "[]"}
 	cardID, _ := tcRepo.CreateTrainingCard(tc)
@@ -421,7 +421,7 @@ func TestHandleAdminTrainingCard_PUT_Form_PosEmptyClearsPOS(t *testing.T) {
 
 	tcRepo := repository.NewTrainingCardRepository(db.GetConnection(), router.logger)
 	wordRepo := repository.NewWordRepository(db.GetConnection(), router.logger)
-	wordRepo.SaveWordCard("w3", "def")
+	wordRepo.SaveWordCard("w3", "def", "")
 	wc, _ := wordRepo.GetWordCard("w3")
 	posVal := "noun"
 	tc := &models.TrainingCard{WordCardID: wc.ID, WordEN: "w3", SenseIndex: 0, WordRU: "сл", MeaningEN: "m", POS: &posVal, DistractorsRU: "[]", DistractorsEN: "[]"}
@@ -446,8 +446,8 @@ func TestHandleAdminWords_Get_More(t *testing.T) {
 
 	// Create some words
 	wordRepo := repository.NewWordRepository(db.GetConnection(), router.logger)
-	wordRepo.SaveWordCard("apple", "a fruit")
-	wordRepo.SaveWordCard("banana", "another fruit")
+	wordRepo.SaveWordCard("apple", "a fruit", "")
+	wordRepo.SaveWordCard("banana", "another fruit", "")
 
 	req := httptest.NewRequest(http.MethodGet, "/api/admin/words", nil)
 	req = setAdminTrainingUserContext(req, adminUserID)
@@ -464,8 +464,8 @@ func TestHandleAdminWords_GetWithSearch(t *testing.T) {
 	router, db, adminUserID := setupAdminTrainingTest(t)
 
 	wordRepo := repository.NewWordRepository(db.GetConnection(), router.logger)
-	wordRepo.SaveWordCard("apple", "a fruit")
-	wordRepo.SaveWordCard("banana", "another fruit")
+	wordRepo.SaveWordCard("apple", "a fruit", "")
+	wordRepo.SaveWordCard("banana", "another fruit", "")
 
 	req := httptest.NewRequest(http.MethodGet, "/api/admin/words?search=apple", nil)
 	req = setAdminTrainingUserContext(req, adminUserID)
@@ -482,7 +482,7 @@ func TestHandleAdminWords_GetWithMissingTrainingPOS(t *testing.T) {
 	router, db, adminUserID := setupAdminTrainingTest(t)
 
 	wordRepo := repository.NewWordRepository(db.GetConnection(), router.logger)
-	wordRepo.SaveWordCard("apple", "a fruit")
+	wordRepo.SaveWordCard("apple", "a fruit", "")
 
 	req := httptest.NewRequest(http.MethodGet, "/api/admin/words?missing_training_pos=noun", nil)
 	req = setAdminTrainingUserContext(req, adminUserID)
@@ -499,7 +499,7 @@ func TestHandleAdminWord_Get(t *testing.T) {
 	router, db, adminUserID := setupAdminTrainingTest(t)
 
 	wordRepo := repository.NewWordRepository(db.GetConnection(), router.logger)
-	wordRepo.SaveWordCard("testword", "test definition")
+	wordRepo.SaveWordCard("testword", "test definition", "")
 	wordCard, _ := wordRepo.GetWordCard("testword")
 
 	req := httptest.NewRequest(http.MethodGet, "/api/admin/words/"+string(rune(wordCard.ID+'0')), nil)
@@ -532,7 +532,7 @@ func TestHandleAdminWord_Delete_More(t *testing.T) {
 	router, db, adminUserID := setupAdminTrainingTest(t)
 
 	wordRepo := repository.NewWordRepository(db.GetConnection(), router.logger)
-	wordRepo.SaveWordCard("testword", "test definition")
+	wordRepo.SaveWordCard("testword", "test definition", "")
 	wordCard, _ := wordRepo.GetWordCard("testword")
 
 	req := httptest.NewRequest(http.MethodDelete, "/api/admin/words/"+string(rune(wordCard.ID+'0')), nil)
