@@ -134,13 +134,14 @@ func (r *WordRepository) GetWordCardByID(id int64) (*models.WordCard, error) {
 
 // GetWordCardByLemma retrieves a word card by lemma (base form)
 func (r *WordRepository) GetWordCardByLemma(lemma string) (*models.WordCard, error) {
-	query := `SELECT id, word, definition, pos, noun_gender, opposite_gender_word, transcription, definition_ru, 
+	query := `SELECT id, word, definition, pos, noun_gender, opposite_gender_word, transcription, definition_ru,
 			  examples_json, verb_forms_json, display_en,
 			  COALESCE(CAST(processed_at AS TEXT), '') as processed_at,
 			  COALESCE(processing_error, '') as processing_error,
+			  COALESCE(course_code, '') as course_code,
 			  CAST(created_at AS TEXT) as created_at,
 			  CAST(updated_at AS TEXT) as updated_at
-			  FROM word_cards 
+			  FROM word_cards
 			  WHERE LOWER(word) = LOWER(?)`
 
 	var card models.WordCard
@@ -161,6 +162,7 @@ func (r *WordRepository) GetWordCardByLemma(lemma string) (*models.WordCard, err
 		&displayEN,
 		&processedAtStr,
 		&processingErrorStr,
+		&card.CourseCode,
 		&createdAt,
 		&updatedAt,
 	)
