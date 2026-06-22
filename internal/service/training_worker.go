@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"strings"
 	"sync"
@@ -16,6 +17,11 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"go.uber.org/zap"
 )
+
+// errWordFormMergedAway is returned by fillWordCardData when the word card turned out to
+// be a surface form of a lemma that already has its own card in the course: the form was
+// merged into the canonical lemma card and deleted, so there is nothing left to process.
+var errWordFormMergedAway = errors.New("word form merged into canonical lemma card")
 
 // circuitBreakerForWorker is used by TrainingWorker for processCards (allows mocks in tests).
 type circuitBreakerForWorker interface {
@@ -43,9 +49,9 @@ type TrainingWorker struct {
 	learning             config.LearningConfig
 	// courseCode, when non-empty, scopes this worker to a single course: it only fetches
 	// word cards with this course_code. Empty means process all courses (legacy behavior).
-	courseCode           string
-	logger               *zap.Logger
-	stopChan             chan struct{}
+	courseCode string
+	logger     *zap.Logger
+	stopChan   chan struct{}
 }
 
 // NewTrainingWorker creates a new training worker
@@ -255,6 +261,23 @@ func (w *TrainingWorker) hasMissingData(wordCard *models.WordCard) bool {
 }
 
 // fillWordCardData fills missing word card data via LLM
+// mergeFormIntoCanonical merges a duplicate surface-form word card into its canonical
+// lemma card (relinking set membership and per-user progress, deleting the form) and
+// removes the form's stale pronunciation.
+func (w *TrainingWorker) mergeFormIntoCanonical(ctx context.Context, form *models.WordCard, canonicalID int64) error {
+	if err := w.wordRepo.MergeWordFormInto(ctx, form.ID, canonicalID); err != nil {
+		return err
+	}
+	if err := w.wordRepo.DeleteTTSStatus(form.CourseCode, form.Word); err != nil {
+		w.logger.Warn("failed to delete tts status for merged word form",
+			zap.String("word", form.Word),
+			zap.Int64("word_card_id", form.ID),
+			zap.Error(err),
+		)
+	}
+	return nil
+}
+
 func (w *TrainingWorker) fillWordCardData(ctx context.Context, wordCard *models.WordCard) error {
 	if !w.hasMissingData(wordCard) {
 		// Word card already has all data, skip
@@ -307,10 +330,34 @@ func (w *TrainingWorker) fillWordCardData(ctx context.Context, wordCard *models.
 		return nil
 	}
 
+	// Canonicalize the card on the lemma. Seed word sets sometimes contain surface
+	// forms (e.g. "tokenizado") rather than lemmas ("tokenizar"); the AI returns the
+	// lemma. Keying each card on its lemma keeps exactly one training-card set per
+	// lemma per course instead of one per surface form.
+	canonicalWord := wordCard.Word
+	lemmaNorm := strings.ToLower(strings.TrimSpace(wordInfo.Lemma))
+	wordNorm := strings.ToLower(strings.TrimSpace(wordCard.Word))
+	if lemmaNorm != "" && lemmaNorm != wordNorm {
+		canonical, err := w.wordRepo.GetWordCardByLemmaForCourse(lemmaNorm, wordCard.CourseCode)
+		if err != nil {
+			return fmt.Errorf("failed to look up canonical lemma card: %w", err)
+		}
+		if canonical != nil && canonical.ID != wordCard.ID {
+			// A card for this lemma already exists in the course: this card is a
+			// duplicate surface form. Merge it into the canonical card and stop.
+			if err := w.mergeFormIntoCanonical(ctx, wordCard, canonical.ID); err != nil {
+				return fmt.Errorf("failed to merge word form into canonical card: %w", err)
+			}
+			return errWordFormMergedAway
+		}
+		// No canonical card yet: rename this card's surface word to the lemma in place.
+		canonicalWord = lemmaNorm
+	}
+
 	// Prepare updated word card model, preserving existing values
 	wordCardModel := &models.WordCard{
 		ID:            wordCard.ID,
-		Word:          wordCard.Word,          // Keep existing word
+		Word:          canonicalWord,          // Canonicalized to the lemma
 		Definition:    wordCard.Definition,    // Keep existing definition
 		POS:           wordCard.POS,           // Will update if nil
 		Transcription: wordCard.Transcription, // Will update if nil
@@ -377,7 +424,37 @@ func (w *TrainingWorker) fillWordCardData(ctx context.Context, wordCard *models.
 
 	// Update word card
 	if err := w.wordRepo.UpdateWordCard(wordCardModel); err != nil {
+		// If we were renaming the surface word to the lemma and a canonical card for
+		// that lemma appeared concurrently (UNIQUE(word, course_code) violation), merge
+		// into it instead of failing.
+		if canonicalWord != wordNorm {
+			if canonical, lookupErr := w.wordRepo.GetWordCardByLemmaForCourse(canonicalWord, wordCard.CourseCode); lookupErr == nil && canonical != nil && canonical.ID != wordCard.ID {
+				if mergeErr := w.mergeFormIntoCanonical(ctx, wordCard, canonical.ID); mergeErr != nil {
+					return fmt.Errorf("failed to merge after update conflict: %w", mergeErr)
+				}
+				return errWordFormMergedAway
+			}
+		}
 		return fmt.Errorf("failed to update word card: %w", err)
+	}
+
+	if canonicalWord != wordNorm {
+		// Surface word changed to the lemma: drop any stale pronunciation keyed on the
+		// old form so it regenerates for the lemma. Update the in-memory card so the
+		// verb-lemma link and downstream training-card generation use the lemma.
+		if err := w.wordRepo.DeleteTTSStatus(wordCard.CourseCode, wordCard.Word); err != nil {
+			w.logger.Warn("failed to delete stale tts status after canonicalization",
+				zap.String("old_word", wordCard.Word),
+				zap.String("lemma", canonicalWord),
+				zap.Error(err),
+			)
+		}
+		w.logger.Info("canonicalized word card surface form to lemma",
+			zap.Int64("word_card_id", wordCard.ID),
+			zap.String("old_word", wordCard.Word),
+			zap.String("lemma", canonicalWord),
+		)
+		wordCard.Word = canonicalWord
 	}
 
 	if strings.EqualFold(w.learning.TargetLang, "es") {
@@ -408,6 +485,15 @@ func (w *TrainingWorker) processCard(ctx context.Context, wordCard *models.WordC
 
 	// Fill word card data if it has minimal data
 	if err := w.fillWordCardData(ctx, wordCard); err != nil {
+		if errors.Is(err, errWordFormMergedAway) {
+			// The card was a surface form of a lemma that already has its own card;
+			// it has been merged into the canonical card and deleted. Nothing left to do.
+			w.logger.Info("skipped word form merged into canonical lemma card",
+				zap.String("word", wordCard.Word),
+				zap.Int64("word_card_id", wordCard.ID),
+			)
+			return nil
+		}
 		w.logger.Warn("failed to fill word card data, continuing anyway",
 			zap.String("word", wordCard.Word),
 			zap.Int64("word_card_id", wordCard.ID),

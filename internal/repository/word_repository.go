@@ -1,12 +1,14 @@
 package repository
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"strings"
 	"time"
 
 	"tgbot-skeleton/internal/models"
+	"tgbot-skeleton/internal/wordmerge"
 
 	"go.uber.org/zap"
 )
@@ -721,6 +723,62 @@ func (r *WordRepository) UpdateWordCard(card *models.WordCard) error {
 		zap.String("word", card.Word),
 	)
 
+	return nil
+}
+
+// MergeWordFormInto relinks all references from a duplicate "form" word_card onto the
+// canonical (lemma) word_card and deletes the form, in a single transaction.
+// See MergeWordCardTx for exactly which references are relinked vs cascaded.
+// TTS rows/audio for the form are NOT removed here; callers handle that separately.
+func (r *WordRepository) MergeWordFormInto(ctx context.Context, formID, canonicalID int64) error {
+	tx, err := r.db.BeginTx(ctx, nil)
+	if err != nil {
+		return fmt.Errorf("begin merge tx: %w", err)
+	}
+	defer tx.Rollback()
+
+	if err := wordmerge.MergeWordCardTx(tx, formID, canonicalID); err != nil {
+		return err
+	}
+
+	if err := tx.Commit(); err != nil {
+		return fmt.Errorf("commit merge tx: %w", err)
+	}
+
+	r.logger.Info("merged duplicate word form into canonical lemma card",
+		zap.Int64("form_word_card_id", formID),
+		zap.Int64("canonical_word_card_id", canonicalID),
+	)
+	return nil
+}
+
+// GetTTSAudioRelPath returns the audio_rel_path for a (course_code, word) TTS row, or
+// "" if there is no row / no audio. Used before removing stale pronunciation after a
+// word_card's surface word changes (canonicalization to the lemma).
+func (r *WordRepository) GetTTSAudioRelPath(courseCode, word string) (string, error) {
+	var rel sql.NullString
+	err := r.db.QueryRow(`SELECT audio_rel_path FROM tts_generation_status
+		WHERE course_code = ? AND LOWER(word) = LOWER(?)`, courseCode, word).Scan(&rel)
+	if err == sql.ErrNoRows {
+		return "", nil
+	}
+	if err != nil {
+		return "", fmt.Errorf("get tts audio rel path: %w", err)
+	}
+	if !rel.Valid {
+		return "", nil
+	}
+	return rel.String, nil
+}
+
+// DeleteTTSStatus removes the tts_generation_status row for a (course_code, word) so
+// pronunciation is regenerated fresh for the new (lemma) surface form.
+func (r *WordRepository) DeleteTTSStatus(courseCode, word string) error {
+	_, err := r.db.Exec(`DELETE FROM tts_generation_status WHERE course_code = ? AND LOWER(word) = LOWER(?)`,
+		courseCode, word)
+	if err != nil {
+		return fmt.Errorf("delete tts status: %w", err)
+	}
 	return nil
 }
 

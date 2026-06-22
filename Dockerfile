@@ -30,7 +30,10 @@ RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o main ./cmd/bot
 # One-off migration tools are intentionally NOT shipped: each grammar-importing binary
 # embeds ~156MB of go:embed assets, so shipping ~20 of them bloated the image to ~1.8GB.
 # Run any one-off tool on demand via `go run ./cmd/<tool>` from a checkout.
+# The tools below stay slim by depending only on the standard library (+ pgx); they read
+# DATABASE_URL from the environment instead of importing the heavy config/repository pkgs.
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o merge_language_databases ./cmd/merge_language_databases
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o dedup_word_forms ./cmd/dedup_word_forms
 
 # Final stage
 FROM alpine:latest
@@ -51,6 +54,7 @@ RUN mkdir -p /app/data/tts && chown -R appuser:appgroup /app/data
 # Copy binaries from builder stage (main + in-cluster job/cronjob tools only)
 COPY --from=builder /app/main .
 COPY --from=builder /app/merge_language_databases .
+COPY --from=builder /app/dedup_word_forms .
 COPY --from=builder /app/scripts/requeue_invalid_training_cards.sh ./scripts/requeue_invalid_training_cards.sh
 COPY --from=builder /app/prompts ./prompts
 # Ship static Spanish frequency CSV for in-cluster imports (independent from grammar submodule).

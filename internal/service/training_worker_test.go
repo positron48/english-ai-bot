@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -194,6 +195,80 @@ func TestTrainingWorkerFillWordCardData(t *testing.T) {
 	}
 	if updated.DisplayEN == nil || *updated.DisplayEN != "to run" {
 		t.Fatalf("expected display EN to be 'to run'")
+	}
+}
+
+// TestTrainingWorker_fillWordCardData_CanonicalizesFormToLemma covers renaming a surface
+// form word card to its lemma in place when no canonical lemma card exists yet.
+func TestTrainingWorker_fillWordCardData_CanonicalizesFormToLemma(t *testing.T) {
+	transport := rtFuncTW(func(req *http.Request) (*http.Response, error) {
+		resp := ai.ChatResponse{
+			Choices: []ai.Choice{{Message: ai.Message{Content: `{"input_word":"tokenizado","lemma":"tokenizar","pos":"verb","transcription":"t","definition_ru":"токенизировать","examples":[],"verb_forms":{"v1":"tokenizar"}}`}}},
+		}
+		return newJSONHTTPResponseTW(http.StatusOK, resp), nil
+	})
+
+	worker, wordRepo, _, _, _, _, cleanup := newTrainingWorker(t, transport)
+	defer cleanup()
+
+	formID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "tokenizado", Definition: ""})
+	if err != nil {
+		t.Fatalf("UpsertWordCardLemma error: %v", err)
+	}
+	form, err := wordRepo.GetWordCardByID(formID)
+	if err != nil {
+		t.Fatalf("GetWordCardByID error: %v", err)
+	}
+
+	if err := worker.fillWordCardData(context.Background(), form); err != nil {
+		t.Fatalf("fillWordCardData error: %v", err)
+	}
+
+	updated, err := wordRepo.GetWordCardByID(formID)
+	if err != nil {
+		t.Fatalf("GetWordCardByID error: %v", err)
+	}
+	if updated.Word != "tokenizar" {
+		t.Fatalf("expected word canonicalized to lemma 'tokenizar', got %q", updated.Word)
+	}
+}
+
+// TestTrainingWorker_fillWordCardData_MergesFormIntoExistingLemma covers merging a
+// surface form into an already-existing canonical lemma card (and deleting the form).
+func TestTrainingWorker_fillWordCardData_MergesFormIntoExistingLemma(t *testing.T) {
+	transport := rtFuncTW(func(req *http.Request) (*http.Response, error) {
+		resp := ai.ChatResponse{
+			Choices: []ai.Choice{{Message: ai.Message{Content: `{"input_word":"tokenizado","lemma":"tokenizar","pos":"verb","transcription":"t","definition_ru":"токенизировать","examples":[],"verb_forms":{"v1":"tokenizar"}}`}}},
+		}
+		return newJSONHTTPResponseTW(http.StatusOK, resp), nil
+	})
+
+	worker, wordRepo, _, _, _, _, cleanup := newTrainingWorker(t, transport)
+	defer cleanup()
+
+	canonicalID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "tokenizar", Definition: ""})
+	if err != nil {
+		t.Fatalf("UpsertWordCardLemma canonical error: %v", err)
+	}
+	formID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "tokenizado", Definition: ""})
+	if err != nil {
+		t.Fatalf("UpsertWordCardLemma form error: %v", err)
+	}
+	form, err := wordRepo.GetWordCardByID(formID)
+	if err != nil {
+		t.Fatalf("GetWordCardByID error: %v", err)
+	}
+
+	err = worker.fillWordCardData(context.Background(), form)
+	if !errors.Is(err, errWordFormMergedAway) {
+		t.Fatalf("expected errWordFormMergedAway, got %v", err)
+	}
+
+	if got, _ := wordRepo.GetWordCardByID(formID); got != nil {
+		t.Fatalf("expected form word card to be deleted after merge, still present: %+v", got)
+	}
+	if got, _ := wordRepo.GetWordCardByID(canonicalID); got == nil {
+		t.Fatalf("expected canonical lemma card to survive merge")
 	}
 }
 
