@@ -204,6 +204,17 @@ func (r *TrainingCardRepository) GetTrainingCardsByWordCardID(wordCardID int64) 
 
 // GetWordCardsWithoutTrainingCards gets word cards that don't have training cards yet and haven't been processed with an error
 func (r *TrainingCardRepository) GetWordCardsWithoutTrainingCards(limit int) ([]*models.WordCard, error) {
+	return r.getWordCardsWithoutTrainingCards("", limit)
+}
+
+// GetWordCardsWithoutTrainingCardsForCourse is like GetWordCardsWithoutTrainingCards but only
+// returns cards belonging to the given course_code. Used by per-course training workers on the
+// unified DB so each worker processes (and validates) only its own course's words.
+func (r *TrainingCardRepository) GetWordCardsWithoutTrainingCardsForCourse(courseCode string, limit int) ([]*models.WordCard, error) {
+	return r.getWordCardsWithoutTrainingCards(courseCode, limit)
+}
+
+func (r *TrainingCardRepository) getWordCardsWithoutTrainingCards(courseCode string, limit int) ([]*models.WordCard, error) {
 	query := `SELECT wc.id, wc.word, wc.definition,
 			  wc.pos, wc.transcription, wc.definition_ru,
 			  wc.examples_json, wc.verb_forms_json, wc.display_en,
@@ -214,11 +225,17 @@ func (r *TrainingCardRepository) GetWordCardsWithoutTrainingCards(limit int) ([]
 			  CAST(wc.updated_at AS TEXT) as updated_at
 			  FROM word_cards wc
 			  LEFT JOIN training_cards tc ON wc.id = tc.word_card_id
-			  WHERE tc.id IS NULL AND wc.processed_at IS NULL
-			  ORDER BY wc.created_at
-			  LIMIT ?`
+			  WHERE tc.id IS NULL AND wc.processed_at IS NULL`
 
-	rows, err := r.db.Query(query, limit)
+	args := []interface{}{}
+	if courseCode != "" {
+		query += ` AND wc.course_code = ?`
+		args = append(args, courseCode)
+	}
+	query += ` ORDER BY wc.created_at LIMIT ?`
+	args = append(args, limit)
+
+	rows, err := r.db.Query(query, args...)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get word cards without training cards: %w", err)
 	}

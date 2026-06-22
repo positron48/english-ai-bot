@@ -41,6 +41,9 @@ type TrainingWorker struct {
 	interval             time.Duration
 	modelHigh            string
 	learning             config.LearningConfig
+	// courseCode, when non-empty, scopes this worker to a single course: it only fetches
+	// word cards with this course_code. Empty means process all courses (legacy behavior).
+	courseCode           string
 	logger               *zap.Logger
 	stopChan             chan struct{}
 }
@@ -83,11 +86,18 @@ func NewTrainingWorker(
 	}
 }
 
+// SetCourseCode scopes the worker to a single course (only word cards with this course_code
+// are fetched). Empty restores the default all-courses behavior.
+func (w *TrainingWorker) SetCourseCode(courseCode string) {
+	w.courseCode = courseCode
+}
+
 // Start starts the worker
 func (w *TrainingWorker) Start(ctx context.Context) {
 	w.logger.Info("starting training worker",
 		zap.String("learning_pair", w.learning.Pair),
 		zap.String("learning_app_code", w.learning.AppCode),
+		zap.String("course_code", w.courseCode),
 		zap.Int("batch_size", w.batchSize),
 		zap.Int("llm_workers", w.llmWorkers),
 		zap.Duration("interval", w.interval),
@@ -136,8 +146,13 @@ func (w *TrainingWorker) processCards(ctx context.Context) {
 		cardsToFetch = w.llmWorkers
 	}
 
-	// Get pending cards
-	cards, err := w.trainingCardRepo.GetWordCardsWithoutTrainingCards(cardsToFetch)
+	// Get pending cards (scoped to this worker's course when set)
+	var cards []*models.WordCard
+	if w.courseCode != "" {
+		cards, err = w.trainingCardRepo.GetWordCardsWithoutTrainingCardsForCourse(w.courseCode, cardsToFetch)
+	} else {
+		cards, err = w.trainingCardRepo.GetWordCardsWithoutTrainingCards(cardsToFetch)
+	}
 	if err != nil {
 		w.logger.Error("failed to get pending cards", zap.Error(err))
 		return

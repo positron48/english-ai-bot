@@ -35,6 +35,9 @@ type Bot struct {
 	handler              *Handler
 	db                   *database.DB
 	trainingWorker       *service.TrainingWorker
+	// trainingWorkers holds per-course workers when training.multi_course is enabled
+	// (one worker per active course on the unified DB). Empty in single-course mode.
+	trainingWorkers      []*service.TrainingWorker
 	pronunciationService *service.PronunciationService
 	notificationService  *service.NotificationService
 	webRouter            *web.Router
@@ -241,8 +244,9 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 	// Create handler
 	handler := NewHandler(bot, log, aiService, wordService, trainingHandler, userRepo, trainingCardRepo, userCardRepo, cbService, cfg, conn)
 
-	// Create training worker
+	// Create training worker(s)
 	var trainingWorker *service.TrainingWorker
+	var trainingWorkers []*service.TrainingWorker
 	if cfg.Training.WorkerEnabled {
 		workerInterval, err := parseDuration(cfg.Training.WorkerInterval)
 		if err != nil {
@@ -250,23 +254,51 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 			workerInterval = 30 * time.Second
 		}
 
-		trainingWorker = service.NewTrainingWorker(
-			aiService,
-			wordRepo,
-			trainingCardRepo,
-			userCardRepo,
-			userRepo,
-			pronunciationService,
-			cbService,
-			bot,
-			cfg.Admin.TelegramID,
-			cfg.Training.WorkerBatchSize,
-			cfg.Training.LLMWorkers,
-			workerInterval,
-			cfg.AI.ModelHigh,
-			cfg.Learning,
-			log,
-		)
+		newWorker := func(learning config.LearningConfig) *service.TrainingWorker {
+			return service.NewTrainingWorker(
+				aiService,
+				wordRepo,
+				trainingCardRepo,
+				userCardRepo,
+				userRepo,
+				pronunciationService,
+				cbService,
+				bot,
+				cfg.Admin.TelegramID,
+				cfg.Training.WorkerBatchSize,
+				cfg.Training.LLMWorkers,
+				workerInterval,
+				cfg.AI.ModelHigh,
+				learning,
+				log,
+			)
+		}
+
+		if cfg.Training.MultiCourse {
+			// One worker per active course on the unified DB, each scoped to its own
+			// course_code and learning config (so en_ru and es_ru cards are both processed
+			// with the correct per-course prompt and validation).
+			courseCodes, cErr := courseRepo.ListActiveCourseCodes(context.Background())
+			if cErr != nil {
+				log.Warn("multi-course worker: failed to list active courses, falling back to single worker", zap.Error(cErr))
+			}
+			for _, code := range courseCodes {
+				learning := learningForCourse(cfg.Learning, code)
+				registerCoursePrompts(aiService, code, learning, log)
+				w := newWorker(learning)
+				w.SetCourseCode(code)
+				trainingWorkers = append(trainingWorkers, w)
+				log.Info("multi-course training worker configured",
+					zap.String("course_code", code),
+					zap.String("target_lang", learning.TargetLang),
+				)
+			}
+		}
+
+		if len(trainingWorkers) == 0 {
+			// Single-course (legacy) mode.
+			trainingWorker = newWorker(cfg.Learning)
+		}
 	}
 
 	// Create notification service
@@ -379,6 +411,7 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 		handler:              handler,
 		db:                   db,
 		trainingWorker:       trainingWorker,
+		trainingWorkers:      trainingWorkers,
 		pronunciationService: pronunciationService,
 		notificationService:  notificationService,
 		webRouter:            webRouter,
@@ -394,8 +427,13 @@ func (b *Bot) Start(ctx context.Context) error {
 	ctx, cancel := signal.NotifyContext(ctx, os.Interrupt, syscall.SIGTERM)
 	defer cancel()
 
-	// Start training worker
-	if b.trainingWorker != nil {
+	// Start training worker(s)
+	if len(b.trainingWorkers) > 0 {
+		for _, w := range b.trainingWorkers {
+			go w.Start(ctx)
+		}
+		b.logger.Info("training workers started", zap.Int("count", len(b.trainingWorkers)))
+	} else if b.trainingWorker != nil {
 		go b.trainingWorker.Start(ctx)
 		b.logger.Info("training worker started")
 	}
@@ -662,6 +700,47 @@ func normalizeAPIEndpoint(base string) string {
 // parseDuration parses a duration string (e.g., "30s", "5m")
 func parseDuration(s string) (time.Duration, error) {
 	return time.ParseDuration(s)
+}
+
+// learningForCourse derives a per-course LearningConfig from a course code (e.g. "es_ru" ->
+// target "es", native "ru", pair "ru-es"), preserving the deployment's base config for
+// everything else. Used by multi-course training workers so each validates against its own
+// target language.
+func learningForCourse(base config.LearningConfig, courseCode string) config.LearningConfig {
+	parts := strings.SplitN(courseCode, "_", 2)
+	target := repository.GrammarBundleIDForCourse(courseCode) // "es_ru" -> "es"
+	native := "ru"
+	if len(parts) == 2 && parts[1] != "" {
+		native = parts[1]
+	}
+	lc := base
+	lc.TargetLang = target
+	lc.NativeLang = native
+	lc.Pair = native + "-" + target
+	lc.AppCode = courseCode
+	return lc
+}
+
+// registerCoursePrompts loads and registers the dictionary and training-card prompts for a
+// course by convention (prompts/teacher-<pair>.txt and prompts/training-card-<pair>.txt),
+// so the per-course worker generates against the correct language prompt instead of the
+// default. Missing files are logged and skipped (the AI service falls back to defaults).
+func registerCoursePrompts(aiService *ai.Service, courseCode string, lc config.LearningConfig, log *zap.Logger) {
+	dictFile := fmt.Sprintf("prompts/teacher-%s.txt", lc.Pair)
+	if p, err := ai.LoadRenderedPromptFile(dictFile, lc.NativeLang, lc.TargetLang, lc.Pair); err != nil {
+		log.Warn("failed to load course dictionary prompt, using default",
+			zap.String("course_code", courseCode), zap.String("file", dictFile), zap.Error(err))
+	} else {
+		aiService.SetDictionaryPromptForCourse(courseCode, p)
+	}
+
+	trainFile := fmt.Sprintf("prompts/training-card-%s.txt", lc.Pair)
+	if p, err := ai.LoadRenderedPromptFile(trainFile, lc.NativeLang, lc.TargetLang, lc.Pair); err != nil {
+		log.Warn("failed to load course training prompt, using default",
+			zap.String("course_code", courseCode), zap.String("file", trainFile), zap.Error(err))
+	} else {
+		aiService.SetTrainingPromptForCourse(courseCode, p)
+	}
 }
 
 // availableGrammarBundleIDs returns the list of grammar bundle IDs to load at startup.

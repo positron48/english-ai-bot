@@ -219,6 +219,10 @@ type DatabaseConfig struct {
 // TrainingConfig holds training system configuration
 type TrainingConfig struct {
 	WorkerEnabled           bool   `mapstructure:"worker_enabled"`
+	// MultiCourse runs one training worker per active course (each scoped to its own
+	// course_code and learning config), so a single deployment on the unified DB can
+	// generate cards for both en_ru and es_ru. When false, a single worker uses cfg.Learning.
+	MultiCourse             bool   `mapstructure:"multi_course"`
 	WorkerInterval          string `mapstructure:"worker_interval"`
 	WorkerBatchSize         int    `mapstructure:"worker_batch_size"`
 	LLMWorkers              int    `mapstructure:"llm_workers"`
@@ -335,6 +339,7 @@ func Load() (*Config, error) {
 
 	// Training defaults
 	viper.SetDefault("training.worker_enabled", true)
+	viper.SetDefault("training.multi_course", false)
 	viper.SetDefault("training.worker_interval", "30s")
 	viper.SetDefault("training.worker_batch_size", 5)
 	viper.SetDefault("training.llm_workers", 4)
@@ -468,6 +473,7 @@ func Load() (*Config, error) {
 	_ = viper.BindEnv("database.driver", "DATABASE_DRIVER")
 	_ = viper.BindEnv("database.url", "DATABASE_URL")
 	_ = viper.BindEnv("training.worker_enabled", "TRAINING_WORKER_ENABLED")
+	_ = viper.BindEnv("training.multi_course", "TRAINING_MULTI_COURSE")
 	_ = viper.BindEnv("training.worker_interval", "TRAINING_WORKER_INTERVAL")
 	_ = viper.BindEnv("training.worker_batch_size", "TRAINING_WORKER_BATCH_SIZE")
 	_ = viper.BindEnv("training.llm_workers", "TRAINING_LLM_WORKERS")

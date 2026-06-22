@@ -305,6 +305,42 @@ func TestTrainingCardRepository_GetWordCardsWithoutTrainingCards(t *testing.T) {
 	}
 }
 
+func TestTrainingCardRepository_GetWordCardsWithoutTrainingCardsForCourse(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := setupTrainingCardTestDB(t)
+	repo := NewTrainingCardRepository(db, logger)
+
+	// Two pending cards in different courses, plus one with empty course.
+	if _, err := db.Exec("INSERT INTO word_cards (word, definition, course_code) VALUES (?, ?, ?)", "hola", "greeting", "es_ru"); err != nil {
+		t.Fatalf("insert es_ru card: %v", err)
+	}
+	if _, err := db.Exec("INSERT INTO word_cards (word, definition, course_code) VALUES (?, ?, ?)", "hello", "greeting", "en_ru"); err != nil {
+		t.Fatalf("insert en_ru card: %v", err)
+	}
+
+	cards, err := repo.GetWordCardsWithoutTrainingCardsForCourse("es_ru", 10)
+	if err != nil {
+		t.Fatalf("GetWordCardsWithoutTrainingCardsForCourse() error = %v", err)
+	}
+	if len(cards) != 1 || cards[0].Word != "hola" {
+		t.Fatalf("expected only es_ru card 'hola', got %+v", cards)
+	}
+	if cards[0].CourseCode != "es_ru" {
+		t.Errorf("expected course_code es_ru, got %q", cards[0].CourseCode)
+	}
+
+	// en_ru scope must not return the es_ru card.
+	enCards, err := repo.GetWordCardsWithoutTrainingCardsForCourse("en_ru", 10)
+	if err != nil {
+		t.Fatalf("GetWordCardsWithoutTrainingCardsForCourse(en_ru) error = %v", err)
+	}
+	for _, c := range enCards {
+		if c.Word == "hola" {
+			t.Error("en_ru scope leaked es_ru card")
+		}
+	}
+}
+
 func TestTrainingCardRepository_GetWordCardsWithoutTrainingCards_ExcludesProcessedAt(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupTrainingCardTestDB(t)
