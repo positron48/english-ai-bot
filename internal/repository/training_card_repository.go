@@ -207,6 +207,7 @@ func (r *TrainingCardRepository) GetWordCardsWithoutTrainingCards(limit int) ([]
 	query := `SELECT wc.id, wc.word, wc.definition,
 			  wc.pos, wc.transcription, wc.definition_ru,
 			  wc.examples_json, wc.verb_forms_json, wc.display_en,
+			  COALESCE(wc.course_code, '') as course_code,
 			  COALESCE(CAST(wc.processed_at AS TEXT), '') as processed_at,
 			  COALESCE(wc.processing_error, '') as processing_error,
 			  CAST(wc.created_at AS TEXT) as created_at,
@@ -226,16 +227,19 @@ func (r *TrainingCardRepository) GetWordCardsWithoutTrainingCards(limit int) ([]
 	var cards []*models.WordCard
 	for rows.Next() {
 		var card models.WordCard
-		var createdAt, updatedAt, processedAtStr, processingErrorStr string
+		var createdAt, updatedAt, processedAtStr, processingErrorStr, courseCode string
 		var pos, transcription, definitionRU, examplesJSON, verbFormsJSON, displayEN sql.NullString
 
 		err := rows.Scan(&card.ID, &card.Word, &card.Definition,
 			&pos, &transcription, &definitionRU,
 			&examplesJSON, &verbFormsJSON, &displayEN,
+			&courseCode,
 			&processedAtStr, &processingErrorStr, &createdAt, &updatedAt)
 		if err != nil {
 			return nil, fmt.Errorf("failed to scan word card: %w", err)
 		}
+
+		card.CourseCode = courseCode
 
 		card.CreatedAt, _ = time.Parse("2006-01-02 15:04:05", createdAt)
 		card.UpdatedAt, _ = time.Parse("2006-01-02 15:04:05", updatedAt)

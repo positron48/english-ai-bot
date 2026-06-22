@@ -509,9 +509,10 @@ func TestTrainingCardRepository_GetWordCardsWithoutTrainingCards_WithProcessedAt
 	rows := sqlmock.NewRows([]string{"id", "word", "definition",
 		"pos", "transcription", "definition_ru",
 		"examples_json", "verb_forms_json", "display_en",
+		"course_code",
 		"processed_at", "processing_error", "created_at", "updated_at"}).
 		AddRow(1, "processedword", "def", nil, nil, nil, nil, nil, nil,
-			"2024-01-01 10:00:00", "", "2024-01-01 00:00:00", "2024-01-01 00:00:00")
+			"", "2024-01-01 10:00:00", "", "2024-01-01 00:00:00", "2024-01-01 00:00:00")
 	mock.ExpectQuery("SELECT wc.id, wc.word").WillReturnRows(rows)
 
 	repo := NewTrainingCardRepository(db, zap.NewNop())
