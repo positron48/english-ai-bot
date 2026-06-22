@@ -219,7 +219,11 @@ class ApiClient {
         'Accept-Language': getCurrentLocale(),
         ...(options.headers as Record<string, string> || {}),
       }
-      if (!isFormData) {
+      // Default to JSON, but never override a Content-Type the caller set
+      // explicitly (e.g. application/x-www-form-urlencoded for the admin
+      // training-card create/edit forms) — otherwise a form-encoded body
+      // arrives tagged as JSON and the server rejects it as invalid JSON.
+      if (!isFormData && !headers['Content-Type']) {
         headers['Content-Type'] = 'application/json'
       }
 
