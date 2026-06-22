@@ -26,30 +26,11 @@ RUN cd webapp && npm run build
 # Build the application (CGO disabled, fast incremental-compatible build)
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o main ./cmd/bot
 
-# Build backfill tool for one-time mastering score backfill
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o backfill_mastering ./cmd/backfill_mastering
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o backfill_linglow_events ./cmd/backfill_linglow_events
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o backfill_linglow_word_srs ./cmd/backfill_linglow_word_srs
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o backfill_linglow_grammar_srs ./cmd/backfill_linglow_grammar_srs
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o backfill_linglow_attempt_srs_links ./cmd/backfill_linglow_attempt_srs_links
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o backfill_linglow_media_progress ./cmd/backfill_linglow_media_progress
+# Build only the maintenance binaries actually invoked in-cluster.
+# One-off migration tools are intentionally NOT shipped: each grammar-importing binary
+# embeds ~156MB of go:embed assets, so shipping ~20 of them bloated the image to ~1.8GB.
+# Run any one-off tool on demand via `go run ./cmd/<tool>` from a checkout.
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o merge_language_databases ./cmd/merge_language_databases
-
-# Build word-sets import tooling for one-time/k3s maintenance runs
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o import_learning_content ./cmd/import_learning_content
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o import_word_sets_from_csv ./cmd/import_word_sets_from_csv
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o fill_missing_set_pos_cards ./cmd/fill_missing_set_pos_cards
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o revalidate_training_cards ./cmd/revalidate_training_cards
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o backfill_noun_gender ./cmd/backfill_noun_gender
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o normalize_word_pos ./cmd/normalize_word_pos
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o import_spanish_verbs ./cmd/import_spanish_verbs
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o backfill_word_verb_links ./cmd/backfill_word_verb_links
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o build_verb_form_examples ./cmd/build_verb_form_examples
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o backfill_verb_lemma_ru_glosses ./cmd/backfill_verb_lemma_ru_glosses
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o backfill_verb_template_links ./cmd/backfill_verb_template_links
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o preview_verb_templates ./cmd/preview_verb_templates
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o sync_verb_training_json ./cmd/sync_verb_training_json
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o fix_misassigned_words ./cmd/fix_misassigned_words
 
 # Final stage
 FROM alpine:latest
@@ -67,29 +48,9 @@ WORKDIR /app
 # Create data directories (DB + cached pronunciation audio)
 RUN mkdir -p /app/data/tts && chown -R appuser:appgroup /app/data
 
-# Copy binaries from builder stage
+# Copy binaries from builder stage (main + in-cluster job/cronjob tools only)
 COPY --from=builder /app/main .
-COPY --from=builder /app/backfill_mastering .
-COPY --from=builder /app/backfill_linglow_events .
-COPY --from=builder /app/backfill_linglow_word_srs .
-COPY --from=builder /app/backfill_linglow_grammar_srs .
-COPY --from=builder /app/backfill_linglow_attempt_srs_links .
-COPY --from=builder /app/backfill_linglow_media_progress .
 COPY --from=builder /app/merge_language_databases .
-COPY --from=builder /app/import_learning_content .
-COPY --from=builder /app/import_word_sets_from_csv .
-COPY --from=builder /app/fill_missing_set_pos_cards .
-COPY --from=builder /app/revalidate_training_cards .
-COPY --from=builder /app/backfill_noun_gender .
-COPY --from=builder /app/normalize_word_pos .
-COPY --from=builder /app/import_spanish_verbs .
-COPY --from=builder /app/backfill_word_verb_links .
-COPY --from=builder /app/build_verb_form_examples .
-COPY --from=builder /app/backfill_verb_lemma_ru_glosses .
-COPY --from=builder /app/backfill_verb_template_links .
-COPY --from=builder /app/preview_verb_templates .
-COPY --from=builder /app/sync_verb_training_json .
-COPY --from=builder /app/fix_misassigned_words .
 COPY --from=builder /app/scripts/requeue_invalid_training_cards.sh ./scripts/requeue_invalid_training_cards.sh
 COPY --from=builder /app/prompts ./prompts
 # Ship static Spanish frequency CSV for in-cluster imports (independent from grammar submodule).
@@ -106,8 +67,9 @@ COPY --from=builder /app/internal/grammartrainingpack/es/verb_forms ./internal/g
 
 RUN chmod +x /app/scripts/requeue_invalid_training_cards.sh
 
-# Change ownership to non-root user
-RUN chown -R appuser:appgroup /app
+# Note: no recursive `chown -R /app` — it would duplicate every binary into a new layer
+# (~500MB of waste). Binaries/data are world-readable; only /app/data (chowned above) is
+# written at runtime.
 
 # Switch to non-root user
 USER appuser
