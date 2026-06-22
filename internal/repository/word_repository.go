@@ -777,7 +777,8 @@ func (r *WordRepository) listWordCardsAdmin(courseCode string, includeCourseInfo
 			  MAX(CASE WHEN tc.id IS NOT NULL THEN 1 ELSE 0 END) as has_training_cards
 			  FROM word_cards wc
 			  LEFT JOIN training_cards tc ON tc.word_card_id = wc.id
-			  LEFT JOIN tts_generation_status tts ON LOWER(tts.word) = LOWER(wc.word)`
+			  LEFT JOIN tts_generation_status tts ON LOWER(tts.word) = LOWER(wc.word)
+			  	AND (wc.course_code IS NULL OR wc.course_code = '' OR tts.course_code = wc.course_code)`
 
 	args := []interface{}{}
 	conditions := []string{}
@@ -982,7 +983,8 @@ func (r *WordRepository) CountWordCardsAdmin(filterUserID *int64, onlyWithErrors
 // CountWordCardsAdminForCourse counts admin word cards, optionally restricted to one course.
 func (r *WordRepository) CountWordCardsAdminForCourse(courseCode string, filterUserID *int64, onlyWithErrors bool, hasAudio *bool, searchQuery string, missingTrainingPOS string) (int, error) {
 	query := `SELECT COUNT(DISTINCT wc.id) FROM word_cards wc
-			  LEFT JOIN tts_generation_status tts ON LOWER(tts.word) = LOWER(wc.word)`
+			  LEFT JOIN tts_generation_status tts ON LOWER(tts.word) = LOWER(wc.word)
+			  	AND (wc.course_code IS NULL OR wc.course_code = '' OR tts.course_code = wc.course_code)`
 
 	args := []interface{}{}
 	conditions := []string{}
