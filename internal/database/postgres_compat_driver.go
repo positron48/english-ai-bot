@@ -109,6 +109,14 @@ func rebindQuestionToDollar(query string) string {
 	return b.String()
 }
 
+// OpenCompat opens a Postgres connection through the ?-placeholder compat driver
+// (rebinding "?" to "$n") WITHOUT running migrations. It is intended for standalone
+// maintenance binaries that reuse repository/wordmerge SQL (which is written with "?"
+// placeholders) but must not touch the schema.
+func OpenCompat(dsn string) (*sql.DB, error) {
+	return openPostgresDB(dsn)
+}
+
 func openPostgresDB(dsn string) (*sql.DB, error) {
 	registerPostgresCompatDriver()
 	conn, err := sql.Open(openPostgresDBDriverName, dsn)

@@ -22,7 +22,7 @@ import (
 	"sort"
 	"strings"
 
-	_ "github.com/jackc/pgx/v5/stdlib"
+	"tgbot-skeleton/internal/database"
 )
 
 type wordSet struct {
@@ -72,16 +72,12 @@ func run() int {
 		fmt.Fprintln(os.Stderr, "DATABASE_URL is required")
 		return 1
 	}
-	conn, err := sql.Open("pgx", dbURL)
+	conn, err := database.OpenCompat(dbURL)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "failed to open db: %v\n", err)
-		return 1
-	}
-	defer conn.Close()
-	if err := conn.Ping(); err != nil {
 		fmt.Fprintf(os.Stderr, "failed to connect db: %v\n", err)
 		return 1
 	}
+	defer conn.Close()
 
 	wordToLemma, err := loadLemmaMap(conn, course)
 	if err != nil {

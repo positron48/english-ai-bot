@@ -35,9 +35,8 @@ import (
 	"sort"
 	"strings"
 
+	"tgbot-skeleton/internal/database"
 	"tgbot-skeleton/internal/wordmerge"
-
-	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
 type wordCardRow struct {
@@ -69,16 +68,12 @@ func run() int {
 		fmt.Fprintln(os.Stderr, "DATABASE_URL is required")
 		return 1
 	}
-	conn, err := sql.Open("pgx", dbURL)
+	conn, err := database.OpenCompat(dbURL)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "failed to open db: %v\n", err)
-		return 1
-	}
-	defer conn.Close()
-	if err := conn.Ping(); err != nil {
 		fmt.Fprintf(os.Stderr, "failed to connect db: %v\n", err)
 		return 1
 	}
+	defer conn.Close()
 
 	audioDir := strings.TrimSpace(os.Getenv("TTS_AUDIO_DIR"))
 	if audioDir == "" {
