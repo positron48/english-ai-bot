@@ -25,6 +25,12 @@ type NotificationService struct {
 	logger        *zap.Logger
 	stopChan      chan struct{}
 	checkInterval time.Duration // configurable for testing; defaults to 1 hour
+	siteURL       string        // public website URL; training/lessons now happen there
+}
+
+// SetSiteURL sets the public website URL used by notification call-to-action buttons.
+func (s *NotificationService) SetSiteURL(url string) {
+	s.siteURL = strings.TrimSpace(url)
 }
 
 // NewNotificationService creates a new notification service
@@ -245,13 +251,23 @@ func (s *NotificationService) sendNotificationIfNeeded(user *models.User, userNo
 
 	message := s.buildNotificationMessage(streak, trainedYesterday, newCardsWeek, dueCount, estimatedMinutes)
 
-	// Create inline keyboard with "Start" and "Отписаться" buttons
-	keyboard := tgbotapi.NewInlineKeyboardMarkup(
-		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData("Начать", "train_start"),
-			tgbotapi.NewInlineKeyboardButtonData("Отписаться", "notification_unsubscribe"),
-		),
-	)
+	// Training now happens on the website: the call-to-action links to the site instead of
+	// starting an in-bot session. If no site URL is configured, fall back to just the
+	// unsubscribe button so we never send an invalid URL button.
+	unsubscribeBtn := tgbotapi.NewInlineKeyboardButtonData("Отписаться", "notification_unsubscribe")
+	var keyboard tgbotapi.InlineKeyboardMarkup
+	if s.siteURL != "" {
+		keyboard = tgbotapi.NewInlineKeyboardMarkup(
+			tgbotapi.NewInlineKeyboardRow(
+				tgbotapi.NewInlineKeyboardButtonURL("Заниматься на сайте", s.siteURL),
+				unsubscribeBtn,
+			),
+		)
+	} else {
+		keyboard = tgbotapi.NewInlineKeyboardMarkup(
+			tgbotapi.NewInlineKeyboardRow(unsubscribeBtn),
+		)
+	}
 
 	if s.bot == nil {
 		s.logger.Warn("cannot send notification: Telegram bot not initialized",

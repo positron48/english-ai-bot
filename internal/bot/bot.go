@@ -235,14 +235,60 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 	optionsService := service.NewOptionsService(trainingCardRepo, log, targetLang)
 	cbService := service.NewCircuitBreakerService(cbRepo, cfg.Training.CircuitBreakerThreshold, log)
 
-	// Create training handler
-	trainingHandler := NewTrainingHandler(bot, trainingService, srsService, optionsService, sessionRepo, log, cfg.Training.OptionsDelayMS, cfg.Training.WrongAnswerDelaySeconds, conn)
-	linglowEventRepo := repository.NewLinglowEventRepository(conn)
-	trainingHandler.SetLinglowEventWriter(linglowEventRepo, cfg.Learning, cfg.Linglow.EventsWriteEnabled)
-	trainingHandler.SetLinglowSRSReadMirror(repository.NewLinglowSRSMirrorRepository(conn), cfg.Linglow.SRSReadEnabled)
+	// Build a WordService per active course so a user can switch language inside the bot.
+	// WordService is bound to a single learning config (Spanish gender lexicon, verb-form
+	// sync, course_code scoping), so we instantiate one per course instead of making it
+	// multi-lingual. The repos and AI service are course-agnostic; only the learning config
+	// differs, so the extra instances are cheap.
+	buildWordService := func(learning config.LearningConfig) *service.WordService {
+		ws := service.NewWordServiceWithMastering(wordRepo, trainingCardRepo, userCardRepo, userWordMasteringRepo, aiService, learning, log)
+		pron := service.NewPronunciationService(cfg.TTS, learning, wordRepo, log)
+		pron.SetCircuitBreaker(ttsCbService)
+		ws.SetPronunciationService(pron)
+		verbTraining := service.NewVerbTrainingService(verbFormsRepoForSync, learning, cfg.Training, log)
+		ws.SetVerbFormCardsSync(cfg.Training, func(userID int64) error {
+			u, err := userRepo.GetUserByID(userID)
+			var scopes []string
+			switch {
+			case err != nil || u == nil || strings.TrimSpace(u.SettingsJSON) == "":
+				scopes = models.DefaultSpanishVerbScopes()
+			default:
+				var settings models.UserSettings
+				if err := json.Unmarshal([]byte(u.SettingsJSON), &settings); err != nil {
+					scopes = models.DefaultSpanishVerbScopes()
+				} else {
+					scopes = service.ResolveVerbScopes(&settings, learning)
+				}
+			}
+			if len(scopes) == 0 {
+				scopes = models.DefaultSpanishVerbScopes()
+			}
+			return verbTraining.EnsureVerbFormUserCards(userID, scopes)
+		})
+		return ws
+	}
+
+	defaultCourseCode := repository.CourseCodeForLearning(cfg.Learning)
+	wordServices := map[string]*service.WordService{defaultCourseCode: wordService}
+	if courseCodes, cErr := courseRepo.ListActiveCourseCodes(context.Background()); cErr != nil {
+		log.Warn("failed to list active courses for per-course word services, only the default course will be available", zap.Error(cErr))
+	} else {
+		for _, code := range courseCodes {
+			if _, ok := wordServices[code]; ok {
+				continue
+			}
+			lc := learningForCourse(cfg.Learning, code)
+			registerCoursePrompts(aiService, code, lc, log)
+			wordServices[code] = buildWordService(lc)
+			log.Info("per-course word service configured",
+				zap.String("course_code", code),
+				zap.String("target_lang", lc.TargetLang),
+			)
+		}
+	}
 
 	// Create handler
-	handler := NewHandler(bot, log, aiService, wordService, trainingHandler, userRepo, trainingCardRepo, userCardRepo, cbService, cfg, conn)
+	handler := NewHandler(bot, log, aiService, wordServices, defaultCourseCode, courseRepo, userRepo, trainingCardRepo, userCardRepo, cbService, cfg, conn)
 
 	// Create training worker(s)
 	var trainingWorker *service.TrainingWorker
@@ -310,6 +356,7 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 		sessionRepo,
 		log,
 	)
+	notificationService.SetSiteURL(cfg.WebApp.PublicURL)
 
 	// Create web repositories
 	otpRepo := repository.NewWebOTPRepository(conn, log)
@@ -485,8 +532,7 @@ func (b *Bot) registerCommands() {
 	commands := []tgbotapi.BotCommand{
 		{Command: "start", Description: "Начать работу с ботом"},
 		{Command: "help", Description: "Помощь"},
-		{Command: "train", Description: "Начать тренировку слов"},
-		{Command: "stats", Description: "Статистика по карточкам"},
+		{Command: "language", Description: "Сменить язык курса"},
 		{Command: "unsubscribe", Description: "Отписаться от уведомлений"},
 		{Command: "notification", Description: "Настроить периодичность уведомлений"},
 	}

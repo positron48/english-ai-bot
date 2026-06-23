@@ -5,9 +5,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"strconv"
 	"strings"
-	"time"
 
 	"tgbot-skeleton/internal/ai"
 	"tgbot-skeleton/internal/config"
@@ -32,8 +30,9 @@ type Handler struct {
 	bot               *tgbotapi.BotAPI
 	logger            *zap.Logger
 	aiService         *ai.Service
-	wordService       *service.WordService
-	trainingHandler   *TrainingHandler
+	wordServices      map[string]*service.WordService
+	defaultCourse     string
+	courseRepo        *repository.CourseRepository
 	userRepo          userRepoInterface
 	trainingCardRepo  *repository.TrainingCardRepository
 	userCardRepo      *repository.UserCardRepository
@@ -48,8 +47,9 @@ func NewHandler(
 	bot *tgbotapi.BotAPI,
 	logger *zap.Logger,
 	aiService *ai.Service,
-	wordService *service.WordService,
-	trainingHandler *TrainingHandler,
+	wordServices map[string]*service.WordService,
+	defaultCourse string,
+	courseRepo *repository.CourseRepository,
 	userRepo *repository.UserRepository,
 	trainingCardRepo *repository.TrainingCardRepository,
 	userCardRepo *repository.UserCardRepository,
@@ -74,8 +74,9 @@ func NewHandler(
 		bot:               bot,
 		logger:            logger,
 		aiService:         aiService,
-		wordService:       wordService,
-		trainingHandler:   trainingHandler,
+		wordServices:      wordServices,
+		defaultCourse:     defaultCourse,
+		courseRepo:        courseRepo,
 		userRepo:          userRepo,
 		trainingCardRepo:  trainingCardRepo,
 		userCardRepo:      userCardRepo,
@@ -84,6 +85,26 @@ func NewHandler(
 		db:                db,
 		botCommandService: botCommandService,
 	}
+}
+
+// resolveUserCourse returns the user's currently selected course code and its WordService.
+// It reuses the shared current-course mechanism (same as the website), falling back to the
+// deployment default course when the user has no selection or the lookup fails.
+func (h *Handler) resolveUserCourse(ctx context.Context, internalUserID int64) (string, *service.WordService) {
+	courseCode := h.defaultCourse
+	if h.courseRepo != nil && internalUserID != 0 {
+		if resolved, err := h.courseRepo.ResolveCurrentCourseCode(ctx, internalUserID, h.defaultCourse); err != nil {
+			h.logger.Warn("failed to resolve current course, using default",
+				zap.Int64("user_id", internalUserID), zap.Error(err))
+		} else if resolved != "" {
+			courseCode = resolved
+		}
+	}
+	if ws, ok := h.wordServices[courseCode]; ok {
+		return courseCode, ws
+	}
+	// Fallback to the default course's word service.
+	return h.defaultCourse, h.wordServices[h.defaultCourse]
 }
 
 // HandleUpdate handles incoming Telegram updates
@@ -159,185 +180,15 @@ func (h *Handler) handleCommand(ctx context.Context, message *tgbotapi.Message) 
 		h.sendMessage(chatID, h.config.Bot.StartMessage)
 	case "help":
 		h.sendMessage(chatID, h.config.Bot.HelpMessage)
-	case "train":
-		h.handleTrainCommand(ctx, chatID, userID)
-	case "stats":
-		h.handleStatsCommand(ctx, chatID, userID)
+	case "language":
+		h.handleLanguageCommand(ctx, chatID, userID)
 	case "get_id":
 		h.handleGetIDCommand(chatID, userID)
 	case "reset_circuit":
 		h.handleResetCircuitCommand(chatID, userID)
-	case "delete_train":
-		h.handleDeleteTrainCommand(chatID, userID, message.CommandArguments())
-	case "delete_train_all":
-		h.handleDeleteTrainAllCommand(chatID, userID)
-	case "get_train_data":
-		h.handleGetTrainDataCommand(chatID, userID, message.CommandArguments())
 	default:
 		h.sendMessage(chatID, h.config.Bot.UnknownCommandMessage)
 	}
-}
-
-// handleTrainCommand handles /train command
-func (h *Handler) handleTrainCommand(ctx context.Context, chatID, userID int64) {
-	// Ensure user exists and get internal user ID
-	user, err := h.userRepo.GetOrCreateUser(userID)
-	if err != nil {
-		h.logger.Error("failed to get/create user", zap.Error(err))
-		h.sendMessage(chatID, "Произошла ошибка. Попробуйте позже.")
-		return
-	}
-	// Note: Username is updated in handleMessage when user sends messages
-
-	h.logger.Info("starting training for user",
-		zap.Int64("telegram_id", userID),
-		zap.Int64("internal_user_id", user.ID),
-	)
-
-	// Start training with internal user ID
-	if err := h.trainingHandler.StartTraining(ctx, chatID, user.ID, models.SourceManual); err != nil {
-		h.logger.Error("failed to start training", zap.Error(err))
-		if strings.Contains(err.Error(), "no cards available") {
-			h.sendMessage(chatID, "У вас пока нет карточек для тренировки. Сначала запросите несколько слов!")
-		} else {
-			h.sendMessage(chatID, "Не удалось начать тренировку. Попробуйте позже.")
-		}
-	}
-}
-
-// handleStatsCommand handles /stats command
-func (h *Handler) handleStatsCommand(ctx context.Context, chatID, userID int64) {
-	// Ensure user exists and get internal user ID
-	user, err := h.userRepo.GetOrCreateUser(userID)
-	if err != nil {
-		h.logger.Error("failed to get/create user", zap.Error(err))
-		h.sendMessage(chatID, "Произошла ошибка. Попробуйте позже.")
-		return
-	}
-
-	internalUserID := user.ID
-	now := time.Now()
-
-	// Get new cards count (exclude orphaned cards - those with non-existent training_cards or word_cards)
-	// Excludes words marked as "known" in user_word_knowledge (same as GetNewCards)
-	newQuery := `SELECT COUNT(*) 
-		FROM user_cards uc
-		INNER JOIN training_cards tc ON uc.training_card_id = tc.id
-		INNER JOIN word_cards wc ON tc.word_card_id = wc.id
-		WHERE uc.user_id = ? AND uc.state = 'new'
-		AND NOT EXISTS (
-			SELECT 1 FROM user_word_knowledge uwk 
-			WHERE uwk.user_id = ? AND uwk.word_card_id = tc.word_card_id AND uwk.status = 'known'
-		)`
-	var newCount int
-	err = h.db.QueryRow(newQuery, internalUserID, internalUserID).Scan(&newCount)
-	if err != nil {
-		h.logger.Error("failed to get new cards count", zap.Error(err))
-		newCount = 0
-	}
-
-	// Get due count (cards ready for review, excluding new cards and orphaned cards)
-	// Excludes words marked as "known" in user_word_knowledge (same as GetDueCards)
-	dueQuery := `SELECT COUNT(*) 
-		FROM user_cards uc
-		INNER JOIN training_cards tc ON uc.training_card_id = tc.id
-		INNER JOIN word_cards wc ON tc.word_card_id = wc.id
-		WHERE uc.user_id = ? AND uc.state != 'new' AND (uc.next_due_at IS NULL OR uc.next_due_at <= ?)
-		AND NOT EXISTS (
-			SELECT 1 FROM user_word_knowledge uwk 
-			WHERE uwk.user_id = ? AND uwk.word_card_id = tc.word_card_id AND uwk.status = 'known'
-		)`
-	var dueCount int
-	err = h.db.QueryRow(dueQuery, internalUserID, now, internalUserID).Scan(&dueCount)
-	if err != nil {
-		h.logger.Error("failed to get due count", zap.Error(err))
-		dueCount = 0
-	}
-
-	// Get learning cards count (exclude orphaned cards)
-	learningQuery := `SELECT COUNT(*) 
-		FROM user_cards uc
-		INNER JOIN training_cards tc ON uc.training_card_id = tc.id
-		INNER JOIN word_cards wc ON tc.word_card_id = wc.id
-		WHERE uc.user_id = ? AND uc.state = 'learning'`
-	var learningCount int
-	err = h.db.QueryRow(learningQuery, internalUserID).Scan(&learningCount)
-	if err != nil {
-		h.logger.Error("failed to get learning count", zap.Error(err))
-		learningCount = 0
-	}
-
-	// Get review cards count (exclude orphaned cards)
-	reviewQuery := `SELECT COUNT(*) 
-		FROM user_cards uc
-		INNER JOIN training_cards tc ON uc.training_card_id = tc.id
-		INNER JOIN word_cards wc ON tc.word_card_id = wc.id
-		WHERE uc.user_id = ? AND uc.state = 'review'`
-	var reviewCount int
-	err = h.db.QueryRow(reviewQuery, internalUserID).Scan(&reviewCount)
-	if err != nil {
-		h.logger.Error("failed to get review count", zap.Error(err))
-		reviewCount = 0
-	}
-
-	// Calculate available cards for training
-	availableForTraining := dueCount
-	if newCount > 0 {
-		availableForTraining += newCount
-	}
-
-	// Get total cards count (exclude orphaned cards)
-	totalQuery := `SELECT COUNT(*) 
-		FROM user_cards uc
-		INNER JOIN training_cards tc ON uc.training_card_id = tc.id
-		INNER JOIN word_cards wc ON tc.word_card_id = wc.id
-		WHERE uc.user_id = ?`
-	var totalCards int
-	err = h.db.QueryRow(totalQuery, internalUserID).Scan(&totalCards)
-	if err != nil {
-		h.logger.Error("failed to get total cards count", zap.Error(err))
-		totalCards = 0
-	}
-
-	// Get accuracy (last 30 days)
-	monthAgo := now.AddDate(0, 0, -30)
-	var totalReviews int
-	var correctReviews int
-	accuracyQuery := `SELECT 
-		COUNT(*) as total,
-		COALESCE(SUM(CASE WHEN is_correct = 1 THEN 1 ELSE 0 END), 0) as correct
-		FROM review_events 
-		WHERE user_id = ? AND answered_at >= ? AND answered_at IS NOT NULL`
-	err = h.db.QueryRow(accuracyQuery, internalUserID, monthAgo).Scan(&totalReviews, &correctReviews)
-	if err != nil {
-		h.logger.Error("failed to get accuracy", zap.Error(err))
-		totalReviews = 0
-		correctReviews = 0
-	}
-
-	var accuracyPercent float64
-	if totalReviews > 0 {
-		accuracyPercent = float64(correctReviews) / float64(totalReviews) * 100
-	}
-
-	// Format message
-	var message strings.Builder
-	message.WriteString("📊 *Статистика*\n\n")
-	message.WriteString("*Карточки:*\n")
-	fmt.Fprintf(&message, "• Доступно для тренировки: *%d*\n", availableForTraining)
-	fmt.Fprintf(&message, "• Новые: *%d*\n", newCount)
-	fmt.Fprintf(&message, "• В изучении: *%d*\n", learningCount)
-	fmt.Fprintf(&message, "• На повторении: *%d*\n", reviewCount)
-	fmt.Fprintf(&message, "• Всего карточек: *%d*\n\n", totalCards)
-	message.WriteString("*Точность (30 дней):*\n")
-	if totalReviews > 0 {
-		fmt.Fprintf(&message, "• Правильных ответов: *%.1f%%*\n", accuracyPercent)
-		fmt.Fprintf(&message, "• Всего ответов: *%d*\n", totalReviews)
-	} else {
-		message.WriteString("• Пока нет данных\n")
-	}
-
-	h.sendMessage(chatID, message.String())
 }
 
 // handleGetIDCommand handles /get_id command
@@ -346,6 +197,92 @@ func (h *Handler) handleGetIDCommand(chatID, userID int64) {
 	msg := tgbotapi.NewMessage(chatID, message)
 	msg.ParseMode = tgbotapi.ModeMarkdown
 	h.bot.Send(msg)
+}
+
+// handleLanguageCommand handles /language: shows the active courses as inline buttons so the
+// user can switch the language the bot works in. The current course is marked.
+func (h *Handler) handleLanguageCommand(ctx context.Context, chatID, userID int64) {
+	user, err := h.userRepo.GetOrCreateUser(userID)
+	if err != nil {
+		h.logger.Error("failed to get/create user", zap.Error(err))
+		h.sendMessage(chatID, "Произошла ошибка. Попробуйте позже.")
+		return
+	}
+
+	courses, err := h.courseRepo.ListCoursesForUser(ctx, user.ID, h.defaultCourse)
+	if err != nil || len(courses) == 0 {
+		if err != nil {
+			h.logger.Error("failed to list courses", zap.Error(err))
+		}
+		h.sendMessage(chatID, "Сейчас нет доступных языков для выбора.")
+		return
+	}
+
+	var rows [][]tgbotapi.InlineKeyboardButton
+	for _, c := range courses {
+		label := courseDisplayName(c)
+		if c.IsCurrent {
+			label = "✅ " + label
+		}
+		rows = append(rows, tgbotapi.NewInlineKeyboardRow(
+			tgbotapi.NewInlineKeyboardButtonData(label, "setlang:"+c.Code),
+		))
+	}
+
+	msg := tgbotapi.NewMessage(chatID, "🌐 Выберите язык, с которым будет работать бот:")
+	msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(rows...)
+	if _, err := h.bot.Send(msg); err != nil {
+		h.logger.Error("failed to send language menu", zap.Error(err))
+	}
+}
+
+// handleSetLanguage handles the setlang:<course_code> callback and persists the user's choice
+// via the shared current-course mechanism (kept in sync with the website).
+func (h *Handler) handleSetLanguage(ctx context.Context, query *tgbotapi.CallbackQuery, courseCode string) {
+	chatID := query.Message.Chat.ID
+	user, err := h.userRepo.GetOrCreateUser(query.From.ID)
+	if err != nil {
+		h.logger.Error("failed to get/create user", zap.Error(err))
+		h.sendMessage(chatID, "Произошла ошибка. Попробуйте позже.")
+		return
+	}
+
+	current, err := h.courseRepo.SelectCurrentCourse(ctx, user.ID, courseCode)
+	if err != nil {
+		h.logger.Error("failed to select course", zap.String("course_code", courseCode), zap.Error(err))
+		h.sendMessage(chatID, "Не удалось переключить язык. Попробуйте позже.")
+		return
+	}
+
+	confirmation := fmt.Sprintf("Язык переключён на %s", courseDisplayName(current.Course))
+	edit := tgbotapi.NewEditMessageText(chatID, query.Message.MessageID, confirmation)
+	if _, err := h.bot.Send(edit); err != nil {
+		h.logger.Warn("failed to edit language confirmation, sending new message", zap.Error(err))
+		h.sendMessage(chatID, confirmation)
+	}
+}
+
+// courseDisplayName renders a friendly course label with a flag based on the target language.
+func courseDisplayName(c repository.CourseSummary) string {
+	title := strings.TrimSpace(c.Title)
+	if title == "" {
+		title = c.Code
+	}
+	if flag := languageFlag(c.TargetLanguage); flag != "" {
+		return flag + " " + title
+	}
+	return title
+}
+
+func languageFlag(targetLang string) string {
+	switch strings.ToLower(strings.TrimSpace(targetLang)) {
+	case "en":
+		return "🇬🇧"
+	case "es":
+		return "🇪🇸"
+	default:
+		return ""
+	}
 }
 
 // handleResetCircuitCommand handles /reset_circuit command (admin only)
@@ -364,168 +301,6 @@ func (h *Handler) handleResetCircuitCommand(chatID, userID int64) {
 	}
 
 	h.sendMessage(chatID, "✅ Circuit breaker сброшен. Воркер возобновит работу.")
-}
-
-// handleDeleteTrainCommand handles /delete_train command (admin only)
-func (h *Handler) handleDeleteTrainCommand(chatID, userID int64, wordEN string) {
-	// Check if user is admin
-	if h.config.Admin.TelegramID == 0 || userID != h.config.Admin.TelegramID {
-		// Silently ignore for non-admins
-		return
-	}
-
-	// Validate word
-	wordEN = strings.TrimSpace(wordEN)
-	if wordEN == "" {
-		h.sendMessage(chatID, "❌ Укажите слово для удаления: `/delete_train word`")
-		return
-	}
-
-	// Delete training cards
-	rowsAffected, err := h.trainingCardRepo.DeleteTrainingCardsByWordEN(wordEN)
-	if err != nil {
-		h.logger.Error("failed to delete training cards",
-			zap.String("word_en", wordEN),
-			zap.Error(err),
-		)
-		h.sendMessage(chatID, fmt.Sprintf("❌ Ошибка при удалении карточек для слова `%s`", wordEN))
-		return
-	}
-
-	if rowsAffected == 0 {
-		h.sendMessage(chatID, fmt.Sprintf("ℹ️ Тренировочные карточки для слова `%s` не найдены", wordEN))
-		return
-	}
-
-	h.logger.Info("deleted training cards",
-		zap.String("word_en", wordEN),
-		zap.Int64("rows_affected", rowsAffected),
-		zap.Int64("admin_id", userID),
-	)
-
-	h.sendMessage(chatID, fmt.Sprintf("✅ Удалено тренировочных карточек для слова `%s`: %d", wordEN, rowsAffected))
-}
-
-// handleDeleteTrainAllCommand handles /delete_train_all command (admin only)
-func (h *Handler) handleDeleteTrainAllCommand(chatID, userID int64) {
-	// Check if user is admin
-	if h.config.Admin.TelegramID == 0 || userID != h.config.Admin.TelegramID {
-		// Silently ignore for non-admins
-		return
-	}
-
-	h.logger.Warn("admin requested deletion of all training cards",
-		zap.Int64("admin_id", userID),
-	)
-
-	// Delete all training cards (cascades to user_cards and review_events)
-	rowsAffected, err := h.trainingCardRepo.DeleteAllTrainingCards()
-	if err != nil {
-		h.logger.Error("failed to delete all training cards",
-			zap.Error(err),
-		)
-		h.sendMessage(chatID, "❌ Ошибка при удалении всех тренировочных карточек")
-		return
-	}
-
-	// Clean up any orphaned user_cards that might remain
-	orphanedCount, err := h.userCardRepo.DeleteOrphanedUserCards()
-	if err != nil {
-		h.logger.Warn("failed to delete orphaned user cards",
-			zap.Error(err),
-		)
-	}
-
-	h.logger.Info("deleted all training cards",
-		zap.Int64("rows_affected", rowsAffected),
-		zap.Int64("orphaned_user_cards", orphanedCount),
-		zap.Int64("admin_id", userID),
-	)
-
-	message := fmt.Sprintf("✅ Удалено всех тренировочных карточек: %d\n\n"+
-		"Также автоматически удалены:\n"+
-		"• Все пользовательские карточки (user_cards)\n"+
-		"• Вся история ответов (review_events)", rowsAffected)
-	if orphanedCount > 0 {
-		message += fmt.Sprintf("\n• Дополнительно очищено висячих записей: %d", orphanedCount)
-	}
-	h.sendMessage(chatID, message)
-}
-
-// handleGetTrainDataCommand handles /get_train_data command (admin only)
-func (h *Handler) handleGetTrainDataCommand(chatID, userID int64, wordEN string) {
-	// Check if user is admin
-	if h.config.Admin.TelegramID == 0 || userID != h.config.Admin.TelegramID {
-		// Silently ignore for non-admins
-		return
-	}
-
-	// Validate word
-	wordEN = strings.TrimSpace(wordEN)
-	if wordEN == "" {
-		h.sendMessage(chatID, "❌ Укажите слово: `/get_train_data word`")
-		return
-	}
-
-	// Get training cards
-	cards, err := h.trainingCardRepo.GetTrainingCardsByWordEN(wordEN)
-	if err != nil {
-		h.logger.Error("failed to get training cards",
-			zap.String("word_en", wordEN),
-			zap.Error(err),
-		)
-		h.sendMessage(chatID, fmt.Sprintf("❌ Ошибка при получении данных для слова `%s`", wordEN))
-		return
-	}
-
-	if len(cards) == 0 {
-		h.sendMessage(chatID, fmt.Sprintf("ℹ️ Тренировочные карточки для слова `%s` не найдены", wordEN))
-		return
-	}
-
-	// Format response
-	var message strings.Builder
-	fmt.Fprintf(&message, "📊 Данные по тренировочным карточкам для слова `%s`:\n\n", wordEN)
-	fmt.Fprintf(&message, "Всего карточек: %d\n\n", len(cards))
-
-	for i, card := range cards {
-		fmt.Fprintf(&message, "*Карточка #%d* (ID: `%d`)\n", i+1, card.ID)
-		fmt.Fprintf(&message, "• Word Card ID: `%d`\n", card.WordCardID)
-		fmt.Fprintf(&message, "• Sense Index: `%d`\n", card.SenseIndex)
-		if card.Transcription != "" {
-			fmt.Fprintf(&message, "• Transcription: `%s`\n", card.Transcription)
-		}
-		fmt.Fprintf(&message, "• Word EN: `%s`\n", card.WordEN)
-		fmt.Fprintf(&message, "• Word RU: %s\n", card.WordRU)
-		fmt.Fprintf(&message, "• Meaning EN: %s\n", card.MeaningEN)
-		if card.ExampleEN != "" {
-			fmt.Fprintf(&message, "• Example EN: %s\n", card.ExampleEN)
-		}
-		if card.ExampleRU != "" {
-			fmt.Fprintf(&message, "• Example RU: %s\n", card.ExampleRU)
-		}
-		if card.Hint != "" {
-			fmt.Fprintf(&message, "• Hint: _%s_\n", card.Hint)
-		}
-		if card.DistractorsRU != "" {
-			fmt.Fprintf(&message, "• Distractors RU: `%s`\n", card.DistractorsRU)
-		}
-		if card.DistractorsEN != "" {
-			fmt.Fprintf(&message, "• Distractors EN: `%s`\n", card.DistractorsEN)
-		}
-		fmt.Fprintf(&message, "• Created: `%s`\n", card.CreatedAt.Format("2006-01-02 15:04:05"))
-		if i < len(cards)-1 {
-			message.WriteString("\n---\n\n")
-		}
-	}
-
-	h.logger.Info("retrieved training cards data",
-		zap.String("word_en", wordEN),
-		zap.Int("count", len(cards)),
-		zap.Int64("admin_id", userID),
-	)
-
-	h.sendMessage(chatID, message.String())
 }
 
 // handleCallbackQuery handles callback queries from inline keyboards
@@ -555,46 +330,9 @@ func (h *Handler) handleCallbackQuery(ctx context.Context, query *tgbotapi.Callb
 	}
 
 	// Handle different callback types
-	if data == "train_start" {
-		// Start training from notification
-		h.handleTrainCommand(ctx, chatID, query.From.ID)
-	} else if strings.HasPrefix(data, "answer_") {
-		// Ensure user exists and get internal user ID
-		user, err := h.userRepo.GetOrCreateUser(query.From.ID)
-		if err != nil {
-			h.logger.Error("failed to get/create user", zap.Error(err))
-			h.sendMessage(chatID, "Произошла ошибка. Попробуйте позже.")
-			return
-		}
-		// Update username if it changed
-		if query.From.UserName != "" && user != nil && user.TelegramUsername != query.From.UserName {
-			if err := h.userRepo.UpdateUsername(query.From.ID, query.From.UserName); err != nil {
-				h.logger.Warn("failed to update username", zap.Error(err))
-			}
-		}
-
-		// Try to restore session if not in memory
-		if !h.trainingHandler.HasActiveSession(chatID) {
-			_, restoreErr := h.trainingHandler.RestoreSession(chatID, user.ID)
-			if restoreErr != nil {
-				h.logger.Warn("failed to restore session", zap.Error(restoreErr))
-			}
-		}
-
-		// Handle answer selection
-		optionIndexStr := strings.TrimPrefix(data, "answer_")
-		optionIndex, err := strconv.Atoi(optionIndexStr)
-		if err != nil {
-			h.logger.Error("invalid option index", zap.Error(err))
-			return
-		}
-
-		if err := h.trainingHandler.HandleAnswer(chatID, optionIndex); err != nil {
-			h.logger.Error("failed to handle answer", zap.Error(err))
-			if strings.Contains(err.Error(), "no active session") {
-				h.sendMessage(chatID, "Сессия не найдена. Начните новую тренировку командой /train")
-			}
-		}
+	if strings.HasPrefix(data, "setlang:") {
+		courseCode := strings.TrimPrefix(data, "setlang:")
+		h.handleSetLanguage(ctx, query, courseCode)
 	}
 }
 
@@ -629,30 +367,36 @@ func (h *Handler) handleMessage(ctx context.Context, message *tgbotapi.Message) 
 	// Send typing indicator
 	h.sendTyping(chatID)
 
+	// Use internal user ID (not telegram_id) for consistency with web chat
+	internalUserID := userID // Default to telegram_id if user not found
+	if user != nil {
+		internalUserID = user.ID
+	}
+
+	// Resolve the user's selected language/course so word cards and corrections use the
+	// right per-course prompt. Falls back to the deployment default course.
+	courseCode, wordService := h.resolveUserCourse(ctx, internalUserID)
+	targetLang := repository.GrammarBundleIDForCourse(courseCode) // e.g. "es_ru" -> "es"
+
 	var response string
 	var err error
 
 	// Check if it's a single word - use word service (DB + AI)
-	// Use internal user.ID instead of telegram_id to match web chat behavior
-	if h.wordService.IsSingleWord(text) {
+	if wordService.IsSingleWord(text) {
 		h.logger.Debug("detected single word request",
 			zap.String("word", text),
+			zap.String("course_code", courseCode),
 		)
-		// Use internal user ID (not telegram_id) for consistency with web chat
-		internalUserID := userID // Default to telegram_id if user not found
-		if user != nil {
-			internalUserID = user.ID
-		}
-		response, err = h.wordService.GetWordDefinition(ctx, internalUserID, text)
+		response, err = wordService.GetWordDefinition(ctx, internalUserID, text)
 	} else {
-		// Regular message - use AI service directly
-		response, err = h.aiService.GenerateResponse(ctx, text)
+		// Regular message - use AI service with the user's selected course prompt
+		response, err = h.aiService.GenerateResponseForCourse(ctx, text, courseCode)
 		if err == nil && looksLikeWordInfoJSON(response) {
-			rendered, converted := renderWordInfoJSONAsMarkdown(response, h.config.Learning.TargetLang)
+			rendered, converted := renderWordInfoJSONAsMarkdown(response, targetLang)
 			if converted {
 				h.logger.Info("converted JSON word-card response to markdown",
 					zap.String("input", text),
-					zap.String("target_lang", h.config.Learning.TargetLang),
+					zap.String("target_lang", targetLang),
 				)
 				response = rendered
 			} else {

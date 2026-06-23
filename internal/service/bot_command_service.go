@@ -108,10 +108,6 @@ func (s *BotCommandService) handleCallbackQuery(query *tgbotapi.CallbackQuery) {
 		// Answer callback query
 		callback := tgbotapi.NewCallback(query.ID, "Вы отписаны от уведомлений")
 		s.bot.Request(callback)
-	case "train_start":
-		// This is handled elsewhere, but we can acknowledge it here
-		callback := tgbotapi.NewCallback(query.ID, "")
-		s.bot.Request(callback)
 	default:
 		// Unknown callback
 		callback := tgbotapi.NewCallback(query.ID, "")

@@ -191,7 +191,7 @@ make migrate-training-cards
 ### Пользовательские
 - `/start` - приветствие
 - `/help` - справка
-- `/train` - начать тренировку
+- `/language` - сменить язык курса
 - `/get_id` - получить Telegram ID
 - `/unsubscribe` - отписаться от уведомлений
 - `/notification [daily|never|N]` - настроить периодичность уведомлений
