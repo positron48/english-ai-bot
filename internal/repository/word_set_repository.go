@@ -392,6 +392,67 @@ func (r *WordSetRepository) GetWordSetProgress(wordSetID, userID int64) (*models
 	}, nil
 }
 
+// GetCategoriesAggregateProgress aggregates word progress across all published
+// word sets belonging to any of the given category IDs (typically a category and
+// its descendants), for a single user. Counting mirrors GetWordSetProgress.
+func (r *WordSetRepository) GetCategoriesAggregateProgress(categoryIDs []int64, userID int64) (total, known, inVocab int, err error) {
+	if len(categoryIDs) == 0 {
+		return 0, 0, 0, nil
+	}
+
+	placeholders := strings.TrimSuffix(strings.Repeat("?,", len(categoryIDs)), ",")
+	catArgs := make([]interface{}, 0, len(categoryIDs))
+	for _, id := range categoryIDs {
+		catArgs = append(catArgs, id)
+	}
+
+	// Total words across all published sets in the categories
+	totalQuery := fmt.Sprintf(`
+		SELECT COUNT(*)
+		FROM word_set_items wsi
+		INNER JOIN word_sets ws ON wsi.word_set_id = ws.id
+		WHERE ws.is_published = 1 AND ws.category_id IN (%s)
+	`, placeholders)
+	if err = r.db.QueryRow(totalQuery, catArgs...).Scan(&total); err != nil {
+		return 0, 0, 0, fmt.Errorf("failed to count total words: %w", err)
+	}
+
+	// Known words (distinct word cards)
+	knownQuery := fmt.Sprintf(`
+		SELECT COUNT(DISTINCT wsi.word_card_id)
+		FROM word_set_items wsi
+		INNER JOIN word_sets ws ON wsi.word_set_id = ws.id
+		INNER JOIN user_word_knowledge uwk ON wsi.word_card_id = uwk.word_card_id
+		WHERE ws.is_published = 1 AND ws.category_id IN (%s)
+		  AND uwk.user_id = ? AND uwk.status = 'known'
+	`, placeholders)
+	knownArgs := append(append([]interface{}{}, catArgs...), userID)
+	if err = r.db.QueryRow(knownQuery, knownArgs...).Scan(&known); err != nil {
+		return 0, 0, 0, fmt.Errorf("failed to count known words: %w", err)
+	}
+
+	// Words in vocab (has user_cards but not known)
+	vocabQuery := fmt.Sprintf(`
+		SELECT COUNT(DISTINCT wsi.word_card_id)
+		FROM word_set_items wsi
+		INNER JOIN word_sets ws ON wsi.word_set_id = ws.id
+		INNER JOIN training_cards tc ON wsi.word_card_id = tc.word_card_id
+		INNER JOIN user_cards uc ON tc.id = uc.training_card_id
+		WHERE ws.is_published = 1 AND ws.category_id IN (%s)
+		  AND uc.user_id = ?
+		  AND NOT EXISTS (
+		    SELECT 1 FROM user_word_knowledge uwk
+		    WHERE uwk.user_id = ? AND uwk.word_card_id = wsi.word_card_id AND uwk.status = 'known'
+		  )
+	`, placeholders)
+	vocabArgs := append(append([]interface{}{}, catArgs...), userID, userID)
+	if err = r.db.QueryRow(vocabQuery, vocabArgs...).Scan(&inVocab); err != nil {
+		return 0, 0, 0, fmt.Errorf("failed to count words in vocab: %w", err)
+	}
+
+	return total, known, inVocab, nil
+}
+
 // GetWordSetWords retrieves words in a set with their status for a user
 // If the word set has preferred_pos set, data from matching training cards is included
 // All words are returned regardless of whether they have matching training cards

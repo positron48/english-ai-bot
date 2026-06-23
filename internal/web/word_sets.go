@@ -35,6 +35,15 @@ func (r *Router) handleLearningWordsCategories(w http.ResponseWriter, req *http.
 		return
 	}
 
+	userID := getUserIDFromContext(req.Context())
+	if userID == 0 {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	// Scope to the user's current course (empty string => no filter, single-course behaviour).
+	courseCode := r.currentCourseCodeForUser(req.Context(), userID)
+
 	// Parse parent_id from query (null means root level)
 	var parentID *int64
 	if parentIDStr := req.URL.Query().Get("parent_id"); parentIDStr != "" {
@@ -47,13 +56,28 @@ func (r *Router) handleLearningWordsCategories(w http.ResponseWriter, req *http.
 	allCategoriesRequested := req.URL.Query().Get("all") == "true"
 
 	categoryRepo := repository.NewWordSetCategoryRepository(r.db, r.logger)
+	wordSetRepo := repository.NewWordSetRepository(r.db, r.logger)
 
-	// Get only published categories for public API
-	allCategories, err := categoryRepo.GetPublishedCategories()
+	// Get categories scoped to the course, then keep only published ones (public API).
+	courseCategories, err := categoryRepo.GetAllCategoriesForCourse(courseCode)
 	if err != nil {
 		r.logger.Error("failed to get categories", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
+	}
+	allCategories := make([]*models.WordSetCategory, 0, len(courseCategories))
+	for _, cat := range courseCategories {
+		if cat.IsPublished {
+			allCategories = append(allCategories, cat)
+		}
+	}
+
+	// Build parent_id -> children index for subtree progress aggregation.
+	childrenByParent := make(map[int64][]*models.WordSetCategory)
+	for _, cat := range allCategories {
+		if cat.ParentID != nil {
+			childrenByParent[*cat.ParentID] = append(childrenByParent[*cat.ParentID], cat)
+		}
 	}
 
 	// Filter by parent_id
@@ -79,24 +103,50 @@ func (r *Router) handleLearningWordsCategories(w http.ResponseWriter, req *http.
 
 	// Build response (flat list, no children)
 	type CategoryNode struct {
-		ID          int64   `json:"id"`
-		Name        string  `json:"name"`
-		Description *string `json:"description,omitempty"`
-		SortOrder   int     `json:"sort_order"`
-		ParentID    *int64  `json:"parent_id,omitempty"`
-		LevelCode   *string `json:"level_code,omitempty"`
+		ID              int64   `json:"id"`
+		Name            string  `json:"name"`
+		Description     *string `json:"description,omitempty"`
+		SortOrder       int     `json:"sort_order"`
+		ParentID        *int64  `json:"parent_id,omitempty"`
+		LevelCode       *string `json:"level_code,omitempty"`
+		TotalWords      int     `json:"total_words"`
+		KnownWords      int     `json:"known_words"`
+		WordsInVocab    int     `json:"words_in_vocab"`
+		UnknownWords    int     `json:"unknown_words"`
+		ProgressPercent float64 `json:"progress_percent"`
 	}
 
 	result := make([]CategoryNode, 0, len(filteredCategories))
 	for _, cat := range filteredCategories {
-		result = append(result, CategoryNode{
+		node := CategoryNode{
 			ID:          cat.ID,
 			Name:        cat.Name,
 			Description: cat.Description,
 			SortOrder:   cat.SortOrder,
 			ParentID:    cat.ParentID,
 			LevelCode:   cat.LevelCode,
-		})
+		}
+
+		// Aggregate progress across this category and all its descendants.
+		subtreeIDs := collectCategorySubtree(cat.ID, childrenByParent)
+		total, known, inVocab, err := wordSetRepo.GetCategoriesAggregateProgress(subtreeIDs, userID)
+		if err != nil {
+			r.logger.Warn("failed to get category progress", zap.Int64("category_id", cat.ID), zap.Error(err))
+		} else {
+			unknown := total - known - inVocab
+			if unknown < 0 {
+				unknown = 0
+			}
+			node.TotalWords = total
+			node.KnownWords = known
+			node.WordsInVocab = inVocab
+			node.UnknownWords = unknown
+			if total > 0 {
+				node.ProgressPercent = float64(known+inVocab) / float64(total) * 100.0
+			}
+		}
+
+		result = append(result, node)
 	}
 
 	r.logger.Debug("returning categories", zap.Int("count", len(result)), zap.Any("parent_id", parentID))
@@ -106,6 +156,22 @@ func (r *Router) handleLearningWordsCategories(w http.ResponseWriter, req *http.
 	json.NewEncoder(w).Encode(map[string]interface{}{
 		"categories": result,
 	})
+}
+
+// collectCategorySubtree returns the given category ID plus all descendant
+// category IDs, walking the parent->children index breadth-first.
+func collectCategorySubtree(rootID int64, childrenByParent map[int64][]*models.WordSetCategory) []int64 {
+	ids := []int64{rootID}
+	queue := []int64{rootID}
+	for len(queue) > 0 {
+		cur := queue[0]
+		queue = queue[1:]
+		for _, child := range childrenByParent[cur] {
+			ids = append(ids, child.ID)
+			queue = append(queue, child.ID)
+		}
+	}
+	return ids
 }
 
 // handleLearningWordsSets returns word sets with progress
@@ -135,6 +201,9 @@ func (r *Router) handleLearningWordsSets(w http.ResponseWriter, req *http.Reques
 	}
 
 	wordSetRepo := repository.NewWordSetRepository(r.db, r.logger)
+
+	// Scope to the user's current course (empty string => no filter, single-course behaviour).
+	courseCode := r.currentCourseCodeForUser(req.Context(), userID)
 
 	// Parse query parameters
 	// category_id can be:
@@ -172,8 +241,8 @@ func (r *Router) handleLearningWordsSets(w http.ResponseWriter, req *http.Reques
 	if showOnlyWithoutCategory {
 		// Query sets without category directly
 		query := `SELECT id, category_id, title, description, is_published, sort_order, preferred_pos, created_at, updated_at
-				  FROM word_sets WHERE category_id IS NULL AND is_published = 1`
-		args := []interface{}{}
+				  FROM word_sets WHERE category_id IS NULL AND is_published = 1 AND (? = '' OR course_code = ?)`
+		args := []interface{}{courseCode, courseCode}
 
 		query += " ORDER BY sort_order, title LIMIT ? OFFSET ?"
 		args = append(args, limit, offset)
@@ -222,7 +291,7 @@ func (r *Router) handleLearningWordsSets(w http.ResponseWriter, req *http.Reques
 			wordSets = append(wordSets, &ws)
 		}
 	} else {
-		wordSets, err = wordSetRepo.ListWordSets(categoryID, limit, offset, false)
+		wordSets, err = wordSetRepo.ListWordSetsForCourse(courseCode, categoryID, limit, offset, false)
 	}
 	if err != nil {
 		r.logger.Error("failed to list word sets", zap.Error(err))

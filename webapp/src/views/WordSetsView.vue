@@ -19,8 +19,21 @@
           <div class="card-header">
             <Icon name="folder" class="card-icon" />
             <h3>{{ category.name }}</h3>
+            <div
+              v-if="(category.total_words ?? 0) > 0"
+              class="progress-badge"
+              :class="getProgressClass(category.progress_percent ?? 0)"
+            >
+              {{ Math.round(category.progress_percent ?? 0) }}%
+            </div>
           </div>
           <p v-if="category.description" class="card-description">{{ category.description }}</p>
+          <div v-if="(category.total_words ?? 0) > 0" class="word-set-stats">
+            <span>{{ (category.known_words ?? 0) + (category.words_in_vocab ?? 0) }}/{{ category.total_words }} {{ (t as any)('common.words', category.total_words ?? 0) }}</span>
+            <span v-if="(category.unknown_words ?? 0) > 0" class="unknown-count">
+              {{ category.unknown_words }} {{ t('common.new') || 'new' }}
+            </span>
+          </div>
         </div>
         
         <!-- Word Sets -->
@@ -72,6 +85,11 @@ interface Category {
   parent_id?: number | null
   level_code?: string | null
   children?: Category[]
+  total_words?: number
+  known_words?: number
+  words_in_vocab?: number
+  unknown_words?: number
+  progress_percent?: number
 }
 
 interface WordSet {
@@ -374,6 +392,14 @@ const getProgressClass = (percent: number): string => {
   align-items: center;
   gap: 12px;
   margin-bottom: 12px;
+}
+
+.card-header .progress-badge {
+  margin-left: auto;
+}
+
+.category-card .word-set-stats {
+  margin-top: auto;
 }
 
 .card-icon {
