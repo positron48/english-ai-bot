@@ -32,6 +32,8 @@ var sharedPostgres struct {
 var truncateTables = []string{
 	"learning_events", "exercise_attempts", "srs_items", "learning_item_stats",
 	"content_performance_stats", "district_progress", "mode_daily_stats", "daily_course_stats",
+	"conversation_task_progress", "conversation_messages", "conversation_sessions",
+	"conversation_tasks", "conversation_scenarios",
 	"learning_items", "learning_objectives", "modules", "user_courses",
 	"grammar_placement_test", "grammar_progress", "grammar_test_attempts",
 	"user_access_user_categories", "user_access_category_permissions", "user_access_categories",

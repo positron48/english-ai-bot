@@ -112,6 +112,10 @@ const readingPct = computed(() => {
   const r = typeProgress.value['reading_text'] || typeProgress.value['reading']
   return r ? r.pct : 0
 })
+const chatPct = computed(() => {
+  const c = typeProgress.value['conversation']
+  return c ? c.pct : 0
+})
 // Level code for the district (e.g. "A0", "A1") — used to filter grammar categories
 const districtLevelCode = computed(() => district.value?.level_code?.toUpperCase() || '')
 const districtLevelQuery = computed(() => districtLevelCode.value ? { level: districtLevelCode.value } : {})
@@ -155,6 +159,14 @@ const areas = computed(() => {
       meta: t('city.areaMetaReading', { pct: readingPct.value }),
       pct: readingPct.value, cta: t('city.ctaRead'),
       action: () => router.push({ name: 'ReadingCategories', query: districtLevelQuery.value }),
+    },
+    {
+      type: 'conversation' as const,
+      status: pctToStatus(chatPct.value),
+      label: t('city.areaChat'), color: '#2d6b3a',
+      meta: t('city.areaMetaChat', { pct: chatPct.value }),
+      pct: chatPct.value, cta: t('city.ctaPractice'),
+      action: () => router.push({ name: 'PlaceChatList', params: { districtCode: districtCode.value } }),
     },
   ]
 })

@@ -65,15 +65,16 @@ func isSingleWordLookupCandidate(s string) bool {
 
 // Service handles AI provider interactions
 type Service struct {
-	client            *http.Client
-	url               string
-	model             string
-	apiKey            string
-	prompt            string
-	trainingPrompt    string
-	dictionaryPrompts map[string]string // course_code -> dictionary lookup prompt override
-	trainingPrompts   map[string]string // course_code -> training card generation prompt override
-	logger            *zap.Logger
+	client              *http.Client
+	url                 string
+	model               string
+	apiKey              string
+	prompt              string
+	trainingPrompt      string
+	dictionaryPrompts   map[string]string // course_code -> dictionary lookup prompt override
+	trainingPrompts     map[string]string // course_code -> training card generation prompt override
+	conversationPrompts map[string]string // course_code -> NPC role-play base prompt
+	logger              *zap.Logger
 }
 
 // NewService creates a new AI service with the default HTTP client timeout (30s).
@@ -133,6 +134,25 @@ func (s *Service) trainingPromptForCourse(courseCode string) string {
 	return s.trainingPrompt
 }
 
+// SetConversationPromptForCourse registers an NPC role-play system prompt for a given course code.
+// ConversationTurn uses it (with runtime scenario details appended by the caller) so each course
+// role-plays in its own target language.
+func (s *Service) SetConversationPromptForCourse(courseCode, prompt string) {
+	if s.conversationPrompts == nil {
+		s.conversationPrompts = make(map[string]string)
+	}
+	s.conversationPrompts[courseCode] = strings.ReplaceAll(prompt, "\\n", "\n")
+}
+
+// ConversationPromptForCourse returns the registered conversation base prompt for a course,
+// falling back to an empty string when none is registered (the caller supplies scenario details).
+func (s *Service) ConversationPromptForCourse(courseCode string) string {
+	if p, ok := s.conversationPrompts[courseCode]; ok && p != "" {
+		return p
+	}
+	return ""
+}
+
 // ChatRequest represents the OpenAI-compatible chat request
 type ChatRequest struct {
 	Model       string    `json:"model"`
@@ -150,7 +170,15 @@ type Message struct {
 // ChatResponse represents the OpenAI-compatible chat response
 type ChatResponse struct {
 	Choices []Choice `json:"choices"`
+	Usage   *Usage   `json:"usage,omitempty"`
 	Error   *Error   `json:"error,omitempty"`
+}
+
+// Usage represents token accounting returned by the provider.
+type Usage struct {
+	PromptTokens     int `json:"prompt_tokens"`
+	CompletionTokens int `json:"completion_tokens"`
+	TotalTokens      int `json:"total_tokens"`
 }
 
 // Choice represents a response choice
@@ -215,6 +243,138 @@ func (s *Service) postChatCompletion(ctx context.Context, model string, messages
 	out := stripLLMJSONFences(chatResp.Choices[0].Message.Content)
 	s.logger.Debug("received chat/completions response", zap.Int("length", len(out)))
 	return out, nil
+}
+
+// ControlSentinel separates the visible NPC reply from the trailing task-completion control block.
+const ControlSentinel = "###CONTROL###"
+
+// chatControlSignal is the JSON the model appends after ControlSentinel on each NPC turn.
+type chatControlSignal struct {
+	CompletedTaskCodes []string `json:"completed_task_codes"`
+	AllDone            bool     `json:"all_done"`
+}
+
+// ChatTurnResult is one parsed NPC turn: the visible reply plus the (advisory) task-completion signal.
+type ChatTurnResult struct {
+	VisibleContent     string
+	CompletedTaskCodes []string
+	AllDoneSignal      bool
+	PromptTokens       int
+	CompletionTokens   int
+	Raw                string
+}
+
+// postChatCompletionRaw sends a chat/completions request and returns the assistant text UNMODIFIED
+// (unlike postChatCompletion it does not strip markdown/JSON fences, which would corrupt a chat
+// reply) along with token usage when the provider reports it.
+func (s *Service) postChatCompletionRaw(ctx context.Context, model string, messages []Message, maxTokens int, temperature float64, logFields ...zap.Field) (string, *Usage, error) {
+	req := ChatRequest{
+		Model:       model,
+		Messages:    messages,
+		MaxTokens:   maxTokens,
+		Temperature: temperature,
+	}
+	reqBody, err := jsonMarshalFunc(req)
+	if err != nil {
+		return "", nil, fmt.Errorf("failed to marshal request: %w", err)
+	}
+	httpReq, err := http.NewRequestWithContext(ctx, "POST", s.url+"/chat/completions", bytes.NewBuffer(reqBody))
+	if err != nil {
+		return "", nil, fmt.Errorf("failed to create request: %w", err)
+	}
+	httpReq.Header.Set("Content-Type", "application/json")
+	httpReq.Header.Set("Authorization", "Bearer "+s.apiKey)
+
+	fields := append([]zap.Field{zap.String("url", s.url), zap.String("model", model)}, logFields...)
+	s.logger.Debug("sending chat/completions (raw)", fields...)
+
+	resp, err := s.client.Do(httpReq)
+	if err != nil {
+		return "", nil, fmt.Errorf("failed to send request: %w", err)
+	}
+	defer resp.Body.Close()
+	respBody, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return "", nil, fmt.Errorf("failed to read response: %w", err)
+	}
+	if resp.StatusCode != http.StatusOK {
+		s.logger.Error("AI provider returned error",
+			zap.Int("status_code", resp.StatusCode),
+			zap.String("response", string(respBody)),
+		)
+		return "", nil, fmt.Errorf("AI provider returned status %d: %s", resp.StatusCode, string(respBody))
+	}
+	var chatResp ChatResponse
+	if err := json.Unmarshal(respBody, &chatResp); err != nil {
+		return "", nil, fmt.Errorf("failed to unmarshal response: %w", err)
+	}
+	if chatResp.Error != nil {
+		return "", nil, fmt.Errorf("AI provider error: %s", chatResp.Error.Message)
+	}
+	if len(chatResp.Choices) == 0 {
+		return "", nil, fmt.Errorf("no response choices received")
+	}
+	return chatResp.Choices[0].Message.Content, chatResp.Usage, nil
+}
+
+// ConversationTurn sends the full running history plus the scenario system prompt and returns the
+// parsed NPC turn. history holds prior user/assistant turns (oldest first); the system prompt is
+// prepended and the new userMessage appended here. The trailing control block is split off so the
+// visible reply never contains it.
+func (s *Service) ConversationTurn(ctx context.Context, systemPrompt string, history []Message, userMessage string, maxTokens int, modelOverride ...string) (*ChatTurnResult, error) {
+	model := s.model
+	if len(modelOverride) > 0 && strings.TrimSpace(modelOverride[0]) != "" {
+		model = modelOverride[0]
+	}
+	if maxTokens <= 0 {
+		maxTokens = 600
+	}
+
+	msgs := make([]Message, 0, len(history)+2)
+	msgs = append(msgs, Message{Role: "system", Content: systemPrompt})
+	msgs = append(msgs, history...)
+	msgs = append(msgs, Message{Role: "user", Content: userMessage})
+
+	raw, usage, err := s.postChatCompletionRaw(ctx, model, msgs, maxTokens, 0.6, zap.String("kind", "conversation"))
+	if err != nil {
+		return nil, err
+	}
+
+	visible, signal := parseChatControl(raw)
+	res := &ChatTurnResult{
+		VisibleContent:     visible,
+		CompletedTaskCodes: signal.CompletedTaskCodes,
+		AllDoneSignal:      signal.AllDone,
+		Raw:                raw,
+	}
+	if usage != nil {
+		res.PromptTokens = usage.PromptTokens
+		res.CompletionTokens = usage.CompletionTokens
+	}
+	return res, nil
+}
+
+// parseChatControl splits an NPC completion into the visible reply and the parsed control signal.
+// A missing or malformed control block yields the full text as visible and an empty signal.
+func parseChatControl(raw string) (string, chatControlSignal) {
+	idx := strings.Index(raw, ControlSentinel)
+	if idx < 0 {
+		return strings.TrimSpace(raw), chatControlSignal{}
+	}
+	visible := strings.TrimSpace(raw[:idx])
+	tail := stripLLMJSONFences(raw[idx+len(ControlSentinel):])
+	var sig chatControlSignal
+	if tail != "" {
+		if err := json.Unmarshal([]byte(tail), &sig); err != nil {
+			// Defensive: best-effort extraction of the first JSON object in the tail.
+			if start := strings.Index(tail, "{"); start >= 0 {
+				if end := strings.LastIndex(tail, "}"); end > start {
+					_ = json.Unmarshal([]byte(tail[start:end+1]), &sig)
+				}
+			}
+		}
+	}
+	return visible, sig
 }
 
 // ChatSystemUser sends an explicit system+user chat (no dictionary heuristics on user text).

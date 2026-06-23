@@ -105,7 +105,7 @@ type Router struct {
 	ttsCbService                      *service.CircuitBreakerService
 	pronunciationService              pronunciationServiceInterface
 	pronunciationServices             map[string]pronunciationServiceInterface // keyed by bundle ID: "en", "es", ...
-	aiService                         interface{} // Will be properly typed later
+	aiService                         interface{}                              // Will be properly typed later
 	bot                               *tgbotapi.BotAPI
 	authMiddleware                    *AuthMiddleware
 	otpRepo                           *repository.WebOTPRepository
@@ -115,6 +115,7 @@ type Router struct {
 	readingCatalogRepo                *repository.ReadingCatalogRepository
 	speakingCatalogRepo               *repository.SpeakingCatalogRepository
 	speakingSessionRepo               *repository.SpeakingSessionRepository
+	conversationRepo                  *repository.ConversationRepository
 	speakingEvaluator                 *service.SpeakingEvaluatorService
 	botToken                          string
 	webTrainingHandler                *WebTrainingHandler
@@ -170,6 +171,7 @@ func NewRouter(
 		r.readingCatalogRepo = repository.NewReadingCatalogRepository(db)
 		r.speakingCatalogRepo = repository.NewSpeakingCatalogRepository(db)
 		r.speakingSessionRepo = repository.NewSpeakingSessionRepository(db)
+		r.conversationRepo = repository.NewConversationRepository(db, logger)
 	}
 
 	// Setup routes
@@ -515,6 +517,9 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/me", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleMe)))
 	r.mux.HandleFunc("/api/linglow/lumi-fact", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLumiFact)))
 	r.mux.HandleFunc("/api/linglow/district-extras", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLinglowDistrictExtras)))
+	r.mux.HandleFunc("/api/linglow/conversation/scenarios", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLinglowConversationScenarios)))
+	r.mux.HandleFunc("/api/linglow/conversation/sessions", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLinglowConversationSessions)))
+	r.mux.HandleFunc("/api/linglow/conversation/sessions/", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLinglowConversationSessionByID)))
 	r.mux.HandleFunc("/api/vocab", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleVocab)))
 	r.mux.HandleFunc("/api/vocab/", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleVocabDelete)))
 

@@ -374,6 +374,57 @@ export interface LinglowHistory {
   generated_at: string
 }
 
+export interface ConversationTask {
+  code: string
+  title: string
+  required: boolean
+  completed: boolean
+}
+
+export interface ConversationScenarioSummary {
+  code: string
+  title: string
+  npc_name: string
+  place_type: string
+  cefr_level: string
+  is_quest: boolean
+  tasks: ConversationTask[]
+  session_status: string
+}
+
+export interface ConversationMessage {
+  role: string
+  content: string
+}
+
+export interface ConversationSessionState {
+  session_id: number
+  scenario_code: string
+  title: string
+  npc_name: string
+  place_type: string
+  cefr_level: string
+  is_quest: boolean
+  scene_setup: string
+  opening_line: string
+  messages: ConversationMessage[]
+  tasks: ConversationTask[]
+  turn_count: number
+  max_turns: number
+  status: string
+  quest_passed: boolean
+}
+
+export interface ConversationTurnResult {
+  reply: string
+  tasks: ConversationTask[]
+  turn_count: number
+  max_turns: number
+  quest_passed: boolean
+  budget_exhausted: boolean
+  status: string
+}
+
 export const courseClient = {
   getCourses(): Promise<{ courses: CourseSummary[] }> {
     return apiClient.request('/api/courses')
@@ -430,6 +481,32 @@ export const courseClient = {
     if (params.days != null) p.set('days', String(params.days))
     const qs = p.toString()
     return apiClient.request(`/api/linglow/history${qs ? '?' + qs : ''}`)
+  },
+  listConversationScenarios(districtCode: string, courseCode?: string): Promise<{ scenarios: ConversationScenarioSummary[] }> {
+    const p = new URLSearchParams({ district_code: districtCode })
+    if (courseCode) p.set('course_code', courseCode)
+    return apiClient.request(`/api/linglow/conversation/scenarios?${p.toString()}`)
+  },
+  startConversationSession(scenarioCode: string, courseCode?: string): Promise<ConversationSessionState> {
+    return apiClient.request('/api/linglow/conversation/sessions', {
+      method: 'POST',
+      body: JSON.stringify({ scenario_code: scenarioCode, course_code: courseCode }),
+    })
+  },
+  getConversationSession(sessionId: number): Promise<ConversationSessionState> {
+    return apiClient.request(`/api/linglow/conversation/sessions/${sessionId}`)
+  },
+  postConversationMessage(sessionId: number, text: string): Promise<ConversationTurnResult> {
+    return apiClient.request(`/api/linglow/conversation/sessions/${sessionId}/message`, {
+      method: 'POST',
+      body: JSON.stringify({ text }),
+    })
+  },
+  endConversationSession(sessionId: number, status?: string): Promise<{ status: string }> {
+    return apiClient.request(`/api/linglow/conversation/sessions/${sessionId}/end`, {
+      method: 'POST',
+      body: JSON.stringify({ status }),
+    })
   },
 }
 

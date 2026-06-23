@@ -53,6 +53,18 @@ const router = createRouter({
           meta: { requiresAuth: true, navTab: 'city' }
         },
         {
+          path: 'city/district/:districtCode/chat',
+          name: 'PlaceChatList',
+          component: () => import('../views/PlaceChatView.vue'),
+          meta: { requiresAuth: true, navTab: 'city' }
+        },
+        {
+          path: 'city/district/:districtCode/chat/:scenarioCode',
+          name: 'PlaceChat',
+          component: () => import('../views/PlaceChatView.vue'),
+          meta: { requiresAuth: true, navTab: 'city' }
+        },
+        {
           path: 'vocab',
           name: 'Vocab',
           component: () => import('../views/VocabView.vue'),
