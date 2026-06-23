@@ -23,13 +23,6 @@ import (
 	"go.uber.org/zap"
 )
 
-// setField writes val into the unexported struct field named fieldName of rv (must be Elem of a pointer).
-// Uses unsafe.Pointer so this works even when reflect.Value.Set is restricted to exported fields in Go 1.26+.
-func setField(rv reflect.Value, fieldName string, val interface{}) {
-	f := rv.FieldByName(fieldName)
-	reflect.NewAt(f.Type(), unsafe.Pointer(f.UnsafeAddr())).Elem().Set(reflect.ValueOf(val))
-}
-
 type mockTelegramClient struct {
 	lastParams url.Values
 	DoCount    int
