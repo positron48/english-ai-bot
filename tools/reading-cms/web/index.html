@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Reading Texts CMS</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>Reading Texts CMS</h1>
+    <p class="subtitle">Локальная авторинг-система для Linglow reading texts</p>
+  </header>
+
+  <main class="layout">
+    <section class="panel">
+      <h2>Генерация (LLM)</h2>
+      <form id="generate-form" class="form-grid">
+        <label>Course
+          <select id="gen-course"></select>
+        </label>
+        <label>Level
+          <select id="gen-level">
+            <option>A0</option><option>A1</option><option selected>A2</option>
+            <option>B1</option><option>B2</option><option>C1</option>
+          </select>
+        </label>
+        <label>Format
+          <select id="gen-format">
+            <option value="dialogue">dialogue</option>
+            <option value="narrative">narrative</option>
+          </select>
+        </label>
+        <label>Count
+          <input id="gen-count" type="number" min="1" max="20" value="1" />
+        </label>
+        <label>Title (optional)
+          <input id="gen-title" type="text" placeholder="auto" />
+        </label>
+        <label class="checkbox">
+          <input id="gen-audio" type="checkbox" /> Сразу озвучить (TTS)
+        </label>
+        <button type="submit" class="btn primary">Сгенерировать</button>
+      </form>
+    </section>
+
+    <section class="panel">
+      <h2>Импорт текста (LLM)</h2>
+      <p class="hint">Вставьте готовый текст — LLM разложит его в формат приложения (сегменты, переводы, вопросы, диалоги) и озвучит.</p>
+      <form id="import-form" class="form-grid">
+        <label>Course
+          <select id="import-course"></select>
+        </label>
+        <label>Level
+          <select id="import-level">
+            <option>A0</option><option>A1</option><option selected>A2</option>
+            <option>B1</option><option>B2</option><option>C1</option>
+          </select>
+        </label>
+        <label>Format
+          <select id="import-format">
+            <option value="dialogue">dialogue</option>
+            <option value="narrative">narrative</option>
+          </select>
+        </label>
+        <label>Title
+          <input id="import-title" type="text" placeholder="Заголовок" />
+        </label>
+        <label class="full">Plain text
+          <textarea id="import-text" rows="6" placeholder="Вставьте текст или диалог (María: Hola...)"></textarea>
+        </label>
+        <label class="checkbox">
+          <input id="import-audio" type="checkbox" checked /> Сразу озвучить (TTS)
+        </label>
+        <label class="checkbox">
+          <input id="import-publish" type="checkbox" checked /> Опубликовать в course после озвучки
+        </label>
+        <label class="checkbox">
+          <input id="import-sync-bundle" type="checkbox" checked /> Sync bundle при публикации
+        </label>
+        <button type="submit" class="btn primary">Обработать текст</button>
+      </form>
+      <details class="json-import" open>
+        <summary>Импорт готового JSON (без LLM)</summary>
+        <p class="hint">Вставьте JSON от внешней модели — пайплайн назначит голоса, озвучит и опубликует (LLM не вызывается).</p>
+        <div class="prompt-row">
+          <button type="button" id="copy-prompt-generate" class="btn">Скопировать промпт генерации</button>
+          <button type="button" id="copy-prompt-transform" class="btn">Скопировать промпт трансформации</button>
+        </div>
+        <textarea id="import-json" rows="8" placeholder='{"title_short":"...","level":"A2","segments":[...]}'></textarea>
+        <div class="json-options">
+          <label class="checkbox">
+            <input id="json-audio" type="checkbox" checked /> Озвучить (TTS)
+          </label>
+          <label class="checkbox">
+            <input id="json-publish" type="checkbox" checked /> Опубликовать после озвучки
+          </label>
+          <label class="checkbox">
+            <input id="json-sync-bundle" type="checkbox" checked /> Sync bundle
+          </label>
+        </div>
+        <button id="import-json-btn" class="btn primary">Импорт JSON</button>
+      </details>
+    </section>
+
+    <section class="panel wide">
+      <div class="toolbar">
+        <h2>Черновики</h2>
+        <div class="filters">
+          <select id="filter-course"><option value="">All courses</option></select>
+          <select id="filter-level">
+            <option value="">All levels</option>
+            <option>A0</option><option>A1</option><option>A2</option>
+            <option>B1</option><option>B2</option><option>C1</option>
+          </select>
+          <select id="filter-status">
+            <option value="">All statuses</option>
+            <option value="draft">draft</option>
+            <option value="approved">approved</option>
+            <option value="audio_ready">audio_ready</option>
+            <option value="published">published</option>
+            <option value="rejected">rejected</option>
+          </select>
+          <select id="filter-audio">
+            <option value="">Any audio</option>
+            <option value="none">none</option>
+            <option value="partial">partial</option>
+            <option value="ready">ready</option>
+          </select>
+          <input id="filter-search" type="search" placeholder="Search title..." />
+          <button id="refresh-drafts" class="btn">Refresh</button>
+        </div>
+      </div>
+      <div id="drafts-table" class="table-wrap"></div>
+    </section>
+
+    <section class="panel wide">
+      <div class="toolbar">
+        <h2>Опубликованные в course</h2>
+        <div class="filters">
+          <select id="pub-course"></select>
+          <select id="pub-level">
+            <option value="">All levels</option>
+            <option>A0</option><option>A1</option><option>A2</option>
+            <option>B1</option><option>B2</option><option>C1</option>
+          </select>
+          <button id="refresh-published" class="btn">Refresh</button>
+        </div>
+      </div>
+      <div id="published-table" class="table-wrap"></div>
+    </section>
+  </main>
+
+  <dialog id="detail-dialog">
+    <form method="dialog" class="detail">
+      <header>
+        <h3 id="detail-title"></h3>
+        <button type="button" id="detail-close" class="btn">Close</button>
+      </header>
+      <div id="detail-meta" class="meta"></div>
+      <div id="detail-preview" class="preview"></div>
+      <details class="edit-panel">
+        <summary>Редактировать JSON</summary>
+        <textarea id="detail-edit" rows="14" spellcheck="false"></textarea>
+        <button type="button" id="btn-save-edit" class="btn">Сохранить изменения</button>
+      </details>
+      <div class="actions">
+        <button type="button" id="btn-approve" class="btn">Approve</button>
+        <button type="button" id="btn-reject" class="btn danger">Reject</button>
+        <button type="button" id="btn-audio" class="btn">Generate audio</button>
+        <button type="button" id="btn-publish" class="btn primary">Publish</button>
+        <label class="checkbox"><input id="sync-bundle" type="checkbox" checked /> Sync bundle dir</label>
+        <button type="button" id="btn-delete-draft" class="btn danger">Delete draft</button>
+      </div>
+      <pre id="detail-log" class="log"></pre>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast hidden"></div>
+  <script src="app.js"></script>
+</body>
+</html>

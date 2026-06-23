@@ -32,6 +32,9 @@ go.work
 .env.es
 secrets/
 
+# Local Reading CMS state (drafts, staging, job work dirs)
+.local/reading-cms/
+
 # IDE files
 .vscode/
 .idea/

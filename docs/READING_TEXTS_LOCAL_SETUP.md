@@ -2,10 +2,48 @@
 
 Этот runbook описывает:
 
+- **локальную CMS** для authoring (`make reading-cms`);
 - как подготовить локальные голоса;
 - как запускать генерацию reading-текста через `make`;
 - как работает выбор голоса (роль LLM vs конфиг голосов);
 - как проверить, что артефакты корректные и попадут в bundle/deploy.
+
+## 0) Локальная CMS (отдельно от `/app/admin`)
+
+Отдельное dev-only приложение для управляемого конвейера: генерация → ревью → озвучка → публикация в `courses/*/reading/`.
+
+Запуск:
+
+```bash
+cd /Users/antonfilatov/www/my/k3s/english-ai-bot
+make reading-cms
+```
+
+Откроется `http://127.0.0.1:8791/` (порт можно сменить: `go run ./cmd/reading_cms -port 8792`).
+
+Данные CMS:
+
+- состояние черновиков: `.local/reading-cms/drafts/`
+- staging аудио: `.local/reading-cms/staging/<text_id>/assets/reading/...`
+
+Workflow:
+
+1. **Generate** — batch LLM (`COUNT`, `LEVEL`, `FORMAT`); опционально TTS сразу.
+2. **Import plain text** — вставить готовый текст; LLM (`--input-text`) преобразует в сегменты/переводы/вопросы/диалоги, по умолчанию сразу TTS и **auto-publish** в course (можно отключить чекбоксами в UI).
+3. **Import JSON** — готовый JSON **без LLM**: назначение голосов, TTS, publish (кнопки «Скопировать промпт» — course-specific промпт для внешней модели).
+4. **Preview** — открыть черновик, при необходимости править JSON.
+5. **Approve / Generate audio / Publish** — для generate-flow или JSON-import без автопубликации.
+6. **Delete** — удаление из course/bundle.
+
+После публикации:
+
+```bash
+make -C courses/english-grammar reading-validate   # или spanish-grammar
+make grammar-bundle
+make check
+```
+
+CMS **не** встроена в prod runtime и **не** требует admin login.
 
 ## 1) Как устроен выбор голоса
 
