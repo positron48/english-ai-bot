@@ -23,19 +23,31 @@ android {
 
     flavorDimensions "language"
     productFlavors {
+        // Target unified Linglow app. Course is chosen in-app (per-user
+        // language switching), so a single flavor serves both en_ru/es_ru.
+        linglow {
+            dimension "language"
+            applicationId "ru.qantrix.linglow"
+            resValue "string", "app_name", "Linglow"
+            buildConfigField "String", "APP_HOST", "\"linglow.qantrix.ru\""
+            buildConfigField "String", "START_URL", "\"https://linglow.qantrix.ru/app/\""
+        }
+        // Legacy flavors kept for existing installs; now point at the unified
+        // Linglow backend (old domains only redirect). Retire after the
+        // migration compatibility window (Phase 12).
         english {
             dimension "language"
             applicationId "ru.qantrix.english"
             resValue "string", "app_name", "Qantrix English"
-            buildConfigField "String", "APP_HOST", "\"qantrix.ru\""
-            buildConfigField "String", "START_URL", "\"https://qantrix.ru/app/\""
+            buildConfigField "String", "APP_HOST", "\"linglow.qantrix.ru\""
+            buildConfigField "String", "START_URL", "\"https://linglow.qantrix.ru/app/\""
         }
         spanish {
             dimension "language"
             applicationId "ru.qantrix.spanish"
             resValue "string", "app_name", "Qantrix Spanish"
-            buildConfigField "String", "APP_HOST", "\"es.qantrix.ru\""
-            buildConfigField "String", "START_URL", "\"https://es.qantrix.ru/app/\""
+            buildConfigField "String", "APP_HOST", "\"linglow.qantrix.ru\""
+            buildConfigField "String", "START_URL", "\"https://linglow.qantrix.ru/app/\""
         }
     }
 }

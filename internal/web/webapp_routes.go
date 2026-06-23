@@ -139,22 +139,25 @@ func (r *Router) handleAndroidAssetLinks(w http.ResponseWriter, req *http.Reques
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
-	packageName := "ru.qantrix.english"
-	if strings.EqualFold(r.config.Learning.AppCode, "spanish") || strings.EqualFold(r.config.Learning.TargetLang, "es") {
-		packageName = "ru.qantrix.spanish"
-	}
+	// Unified Linglow serves all APK flavors from one domain: the target
+	// ru.qantrix.linglow plus the legacy ru.qantrix.english/spanish installs
+	// (now pointed at this domain). All flavors are signed with the same
+	// keystore, so every package gets the same fingerprints.
+	packageNames := []string{"ru.qantrix.linglow", "ru.qantrix.english", "ru.qantrix.spanish"}
 	fingerprints := splitCSVNonEmpty(r.config.WebApp.AndroidCertFingerprints)
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	_ = json.NewEncoder(w).Encode([]map[string]interface{}{
-		{
+	statements := make([]map[string]interface{}, 0, len(packageNames))
+	for _, packageName := range packageNames {
+		statements = append(statements, map[string]interface{}{
 			"relation": []string{"delegate_permission/common.handle_all_urls"},
 			"target": map[string]interface{}{
 				"namespace":                "android_app",
 				"package_name":             packageName,
 				"sha256_cert_fingerprints": fingerprints,
 			},
-		},
-	})
+		})
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	_ = json.NewEncoder(w).Encode(statements)
 }
 
 func splitCSVNonEmpty(value string) []string {
