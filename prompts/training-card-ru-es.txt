@@ -9,14 +9,21 @@ OUTPUT (STRICT)
 - If rejected: senses=[] and error is non-empty.
 
 REJECTION
+- THERE ARE EXACTLY TWO REJECT TRIGGERS. Nothing else is ever a reject reason:
+  1) token (trim+lowercase) is exactly one of the hard reject list;
+  2) token contains any digit 0-9.
 - Hard reject list (any casing): "microsoft", "prado", "jonas".
 - Hard reject list matches ONLY exact whole-token equality after trim/lowercase.
   - Example: "prado" => reject.
   - Example: "parado" => ACCEPT (must not be rejected by substring overlap).
 - Reject nonsense: if the input contains ANY digits (0-9) => reject.
 - Otherwise ACCEPT (do NOT reject for uncertainty).
-- General acceptance rule: if token contains only Spanish letters/diacritics (no digits) and is not in hard reject list, ACCEPT it.
-- Never use rejected_by_policy for uncertainty, rarity, polysemy, or "possibly proper noun" guesses.
+- General acceptance rule: if token contains only letters/diacritics (no digits) and is not in hard reject list, ACCEPT it.
+- LOANWORDS, INTERNATIONALISMS, TECHNICAL/SCIENTIFIC TERMS, NEOLOGISMS, AND ENGLISH-LOOKING TOKENS ARE ALWAYS ACCEPTED.
+  - If the token is used in Spanish (even as a borrowing or specialized term), treat it as a Spanish lexical item and build a normal card.
+  - "Looks English", "looks foreign", "not a common Spanish word", "I am unsure it is Spanish", "might be a name" are NOT reject reasons. ACCEPT and generate the card.
+  - These MUST be ACCEPTED (illustrative, not exhaustive): "prospector", "impasse", "antimalware", "multimodal", "metatextual", "membresía", "estanflación", "elipsis", "software", "marketing", "ciberseguridad", "podcast".
+- Never use rejected_by_policy for uncertainty, rarity, polysemy, foreignness, technicality, or "possibly proper noun" guesses.
 - Default mode is ACCEPTED card. Switch to rejected shape ONLY when formal reject condition is true.
 - Function words, particles, prepositions, conjunctions, adverbs, abbreviations, and short lexical tokens are valid accepted inputs.
 - Alphabetic short tokens (length 1-3, no digits) are valid lexical inputs and MUST be accepted.
@@ -98,6 +105,7 @@ CARD
 - `word_native` must be a Russian translation/paraphrase of the sense, not a copy of Spanish token.
 - Never copy `lemma`/`display_word` into `word_native`.
 - If `word_native` contains any Latin letter, you MUST rewrite it to a valid Russian Cyrillic equivalent before output.
+- HOMOGLYPH BAN: never type Latin look-alike letters inside any Russian/Cyrillic field. Letters that look identical (a e o c p x y k m h b t) MUST be the Cyrillic ones, not Latin. Forbidden example: "травa" (ends with Latin "a") — must be "трава" (all Cyrillic). Re-type the whole word in Cyrillic if unsure.
 
 SCRIPT FIREWALL (MANDATORY)
 - Cyrillic is allowed ONLY in: `word_native`, `example_native`, `distractors_ru`.
@@ -106,6 +114,13 @@ SCRIPT FIREWALL (MANDATORY)
 - If any forbidden field contains Cyrillic, rewrite that field before output.
 
 DISTRACTORS (THIS IS THE MOST IMPORTANT PART)
+- Distractors are WRONG answers only. They exist to be eliminated by the learner.
+- ABSOLUTE RULE (R6): NONE of the 3 items in distractors_ru may equal `word_native`, nor be a synonym/near-synonym of it.
+  - This applies to EVERY sense independently, using that sense's own `word_native`.
+  - The correct translation MUST NEVER appear in distractors_ru. Common failure: putting the right answer as the last distractor — do NOT do this.
+  - Comparison is case-insensitive and ignores surrounding spaces.
+  - Example: word_native="опора" => distractors_ru MUST NOT contain "опора" (pick unrelated wrong words like "ошибка", "дорога", "птица").
+- FINAL DISTRACTOR PASS (do this last, before output): for each sense, scan distractors_ru; if any item equals or is a synonym of word_native, DELETE it and replace with a clearly-wrong Russian word, then re-scan.
 - Exactly 3 Russian + 3 Spanish items in distractors_target.
 - distractors_ru: ONLY real Russian words in Cyrillic (letters А-Яа-яЁё, spaces, hyphen only). Never output Latin transliteration or Spanish words here.
 - distractors_target: Spanish (Latin script, Spanish letters only), no Cyrillic.

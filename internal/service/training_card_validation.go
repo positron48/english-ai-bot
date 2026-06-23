@@ -22,6 +22,13 @@ func ValidateTrainingCardResponse(targetLang string, wordCard *models.WordCard, 
 		return "" // This is handled separately
 	}
 
+	// Repair Latin homoglyphs in Cyrillic-only fields before validating. The LLM
+	// occasionally types a visually identical Latin letter inside an otherwise
+	// Cyrillic word (e.g. "травa" with a Latin "a"), which would fail R8/R2 even
+	// though the word is correct. Fixing it deterministically here is more reliable
+	// than prompting and keeps the corrected value for downstream persistence.
+	normalizeCyrillicHomoglyphs(resp)
+
 	lemma := strings.ToLower(wordCard.Word)
 	var errors []string
 
@@ -275,4 +282,56 @@ func differsOnlyByFirstChar(s1, s2 string) bool {
 	}
 
 	return true
+}
+
+// latinToCyrillicHomoglyphs maps Latin letters to their visually identical
+// Cyrillic counterparts. Only letters with a true look-alike are included.
+var latinToCyrillicHomoglyphs = map[rune]rune{
+	'a': 'а', 'A': 'А',
+	'e': 'е', 'E': 'Е',
+	'o': 'о', 'O': 'О',
+	'c': 'с', 'C': 'С',
+	'p': 'р', 'P': 'Р',
+	'x': 'х', 'X': 'Х',
+	'y': 'у', 'Y': 'У',
+	'B': 'В',
+	'H': 'Н',
+	'K': 'К',
+	'M': 'М',
+	'T': 'Т',
+}
+
+// fixCyrillicHomoglyphs replaces Latin look-alike letters with their Cyrillic
+// counterparts, but only when the string already contains Cyrillic (a mixed-script
+// value such as "травa"). A fully-Latin value is left untouched so genuinely wrong
+// (non-Cyrillic) content is still rejected by validation instead of being masked.
+// Whitespace and all non-homoglyph characters are preserved exactly.
+func fixCyrillicHomoglyphs(s string) string {
+	if s == "" || !containsLatin(s) || !ContainsCyrillic(s) {
+		return s
+	}
+	return strings.Map(func(r rune) rune {
+		if c, ok := latinToCyrillicHomoglyphs[r]; ok {
+			return c
+		}
+		return r
+	}, s)
+}
+
+// normalizeCyrillicHomoglyphs repairs Latin homoglyphs in every Cyrillic-only
+// field of the training card response in place.
+func normalizeCyrillicHomoglyphs(resp *models.TrainingCardResponse) {
+	if resp == nil {
+		return
+	}
+	for i := range resp.Senses {
+		s := &resp.Senses[i]
+		s.WordRU = fixCyrillicHomoglyphs(s.WordRU)
+		s.WordNative = fixCyrillicHomoglyphs(s.WordNative)
+		s.ExampleRU = fixCyrillicHomoglyphs(s.ExampleRU)
+		s.ExampleNative = fixCyrillicHomoglyphs(s.ExampleNative)
+		for j := range s.DistractorsRU {
+			s.DistractorsRU[j] = fixCyrillicHomoglyphs(s.DistractorsRU[j])
+		}
+	}
 }
