@@ -102,8 +102,6 @@ webapp/node_modules
 # Note: webapp/dist is built before Go compilation in CI/CD and locally via 'make build'
 webapp/dist/
 android-embedded/app/src/main/assets/public/app/
-android-embedded/app/src/english/res/mipmap-nodpi/ic_launcher.png
-android-embedded/app/src/spanish/res/mipmap-nodpi/ic_launcher.png
 
 # Serverless directories
 .serverless

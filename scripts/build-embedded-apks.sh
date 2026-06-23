@@ -14,8 +14,6 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 ANDROID_DIR="${ROOT_DIR}/android-embedded"
 ASSETS_DIR="${ANDROID_DIR}/app/src/main/assets/public/app"
 DIST_DIR="${ROOT_DIR}/webapp/dist"
-ENGLISH_ICON="${ROOT_DIR}/webapp/public/icons/english-512.png"
-SPANISH_ICON="${ROOT_DIR}/webapp/public/icons/spanish-512.png"
 GRADLE_VERSION="${GRADLE_VERSION:-8.10.2}"
 GRADLE_DIR="${ROOT_DIR}/dist/gradle-${GRADLE_VERSION}"
 GRADLE_ZIP="${ROOT_DIR}/dist/gradle-${GRADLE_VERSION}-bin.zip"
@@ -30,9 +28,7 @@ rm -rf "${ASSETS_DIR}"
 mkdir -p "${ASSETS_DIR}"
 cp -R "${DIST_DIR}/." "${ASSETS_DIR}/"
 
-mkdir -p "${ANDROID_DIR}/app/src/english/res/mipmap-nodpi" "${ANDROID_DIR}/app/src/spanish/res/mipmap-nodpi"
-cp "${ENGLISH_ICON}" "${ANDROID_DIR}/app/src/english/res/mipmap-nodpi/ic_launcher.png"
-cp "${SPANISH_ICON}" "${ANDROID_DIR}/app/src/spanish/res/mipmap-nodpi/ic_launcher.png"
+# Launcher icon (mipmap/ic_launcher) is committed under src/main/res — no injection needed.
 
 if [ ! -x "${GRADLE_DIR}/bin/gradle" ]; then
   curl -fsSL "https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip" -o "${GRADLE_ZIP}"
