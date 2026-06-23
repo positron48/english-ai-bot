@@ -22,6 +22,7 @@ func TestWordToTraining_LLMMock_CardCreatedAndHistory(t *testing.T) {
 	h := testkit.NewHarness(t, testkit.WithAIService(mockLLM.URL, "test-key", "prompt"))
 	telegramID := int64(99999)
 	user := testkit.UserFixture(t, h.GetConnection().GetConnection(), telegramID)
+	testkit.SetUserTier(t, h.GetConnection().GetConnection(), telegramID, models.TierPro)
 	token := h.AuthAsUser(telegramID)
 
 	// Request word via chat (triggers LLM -> word_card, word_request_history)
@@ -99,6 +100,7 @@ func TestWordToTraining_RepeatRequest_Idempotent(t *testing.T) {
 	h := testkit.NewHarness(t, testkit.WithAIService(mockLLM.URL, "test-key", "prompt"))
 	telegramID := int64(99998)
 	_ = testkit.UserFixture(t, h.GetConnection().GetConnection(), telegramID)
+	testkit.SetUserTier(t, h.GetConnection().GetConnection(), telegramID, models.TierPro)
 	token := h.AuthAsUser(telegramID)
 
 	// First request

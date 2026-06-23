@@ -24,6 +24,14 @@ func UserFixture(t *testing.T, conn *sql.DB, telegramID int64) *models.User {
 	return user
 }
 
+// SetUserTier updates a user's subscription tier (e.g. to unlock Pro-gated features).
+func SetUserTier(t *testing.T, conn *sql.DB, telegramID int64, tier models.UserTier) {
+	t.Helper()
+	if _, err := conn.Exec(`UPDATE users SET subscription_tier = $1 WHERE telegram_id = $2`, string(tier), telegramID); err != nil {
+		t.Fatalf("SetUserTier: %v", err)
+	}
+}
+
 // WordFixture creates a word_card and training_cards; returns word_card_id and training_card IDs
 func WordFixture(t *testing.T, conn *sql.DB, word, definition, wordRu string) (wordCardID int64, trainingCardIDs []int64) {
 	t.Helper()
