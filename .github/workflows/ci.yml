@@ -10,7 +10,7 @@ on:
 env:
   GO_VERSION: '1.24'
   APP_NAME: 'universal-ai-bot'
-  IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/english
+  IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/linglow
 
 jobs:
   test:
@@ -181,7 +181,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        image_suffix: [english, spanish]
+        image_suffix: [linglow]
     permissions:
       contents: read
       packages: write
