@@ -52,10 +52,6 @@ KEY_PASSWORD="${BUBBLEWRAP_KEY_PASSWORD:?BUBBLEWRAP_KEY_PASSWORD is required}"
   -Pandroid.injected.signing.store.password="${KEYSTORE_PASSWORD}" \
   -Pandroid.injected.signing.key.alias="${KEY_ALIAS}" \
   -Pandroid.injected.signing.key.password="${KEY_PASSWORD}" \
-  assembleLinglowRelease \
-  assembleEnglishRelease \
-  assembleSpanishRelease
+  assembleRelease
 
-cp "${ANDROID_DIR}/app/build/outputs/apk/linglow/release/app-linglow-release.apk" "${ROOT_DIR}/dist/qantrix-linglow-${VERSION_NAME}.apk"
-cp "${ANDROID_DIR}/app/build/outputs/apk/english/release/app-english-release.apk" "${ROOT_DIR}/dist/qantrix-english-${VERSION_NAME}.apk"
-cp "${ANDROID_DIR}/app/build/outputs/apk/spanish/release/app-spanish-release.apk" "${ROOT_DIR}/dist/qantrix-spanish-${VERSION_NAME}.apk"
+cp "${ANDROID_DIR}/app/build/outputs/apk/release/app-release.apk" "${ROOT_DIR}/dist/qantrix-linglow-${VERSION_NAME}.apk"

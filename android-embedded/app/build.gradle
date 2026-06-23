@@ -7,10 +7,16 @@ android {
     compileSdk 35
 
     defaultConfig {
+        // Single unified Linglow app. Course is chosen in-app (per-user
+        // language switching), so one APK serves both en_ru and es_ru.
+        applicationId "ru.qantrix.linglow"
         minSdk 23
         targetSdk 35
         versionCode Integer.parseInt(System.getenv("ANDROID_VERSION_CODE") ?: "1")
         versionName System.getenv("ANDROID_VERSION_NAME") ?: "0.0.0"
+        resValue "string", "app_name", "Linglow"
+        buildConfigField "String", "APP_HOST", "\"linglow.qantrix.ru\""
+        buildConfigField "String", "START_URL", "\"https://linglow.qantrix.ru/app/\""
     }
 
     buildFeatures {
@@ -19,36 +25,6 @@ android {
 
     sourceSets {
         main.assets.srcDirs = ["src/main/assets"]
-    }
-
-    flavorDimensions "language"
-    productFlavors {
-        // Target unified Linglow app. Course is chosen in-app (per-user
-        // language switching), so a single flavor serves both en_ru/es_ru.
-        linglow {
-            dimension "language"
-            applicationId "ru.qantrix.linglow"
-            resValue "string", "app_name", "Linglow"
-            buildConfigField "String", "APP_HOST", "\"linglow.qantrix.ru\""
-            buildConfigField "String", "START_URL", "\"https://linglow.qantrix.ru/app/\""
-        }
-        // Legacy flavors kept for existing installs; now point at the unified
-        // Linglow backend (old domains only redirect). Retire after the
-        // migration compatibility window (Phase 12).
-        english {
-            dimension "language"
-            applicationId "ru.qantrix.english"
-            resValue "string", "app_name", "Qantrix English"
-            buildConfigField "String", "APP_HOST", "\"linglow.qantrix.ru\""
-            buildConfigField "String", "START_URL", "\"https://linglow.qantrix.ru/app/\""
-        }
-        spanish {
-            dimension "language"
-            applicationId "ru.qantrix.spanish"
-            resValue "string", "app_name", "Qantrix Spanish"
-            buildConfigField "String", "APP_HOST", "\"linglow.qantrix.ru\""
-            buildConfigField "String", "START_URL", "\"https://linglow.qantrix.ru/app/\""
-        }
     }
 }
 

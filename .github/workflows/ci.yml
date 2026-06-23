@@ -295,11 +295,9 @@ jobs:
       run: |
         cd dist
         gh release download "${{ github.ref_name }}" -p checksums.txt || true
-        sha256sum qantrix-linglow-${{ github.ref_name }}.apk qantrix-english-${{ github.ref_name }}.apk qantrix-spanish-${{ github.ref_name }}.apk >> checksums.txt
+        sha256sum qantrix-linglow-${{ github.ref_name }}.apk >> checksums.txt
         sort -u checksums.txt -o checksums.txt
         gh release upload "${{ github.ref_name }}" \
           qantrix-linglow-${{ github.ref_name }}.apk \
-          qantrix-english-${{ github.ref_name }}.apk \
-          qantrix-spanish-${{ github.ref_name }}.apk \
           checksums.txt \
           --clobber
