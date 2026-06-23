@@ -53,6 +53,7 @@ import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { courseClient, type CourseMap, type CourseProgress } from '../api/courseClient'
 import { useLocale } from '../composables/useLocale'
+import { useMe } from '../composables/useMe'
 import { grammarClient } from '../api/grammarClient'
 import LgPageHeader from '../components/linglow/LgPageHeader.vue'
 import LgLumiFact from '../components/linglow/LgLumiFact.vue'
@@ -61,6 +62,8 @@ import LgActivityIcon from '../components/linglow/LgActivityIcon.vue'
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
+const { ensureMe, hasFeature } = useMe()
+const conversationEnabled = ref(false)
 
 const courseMap = ref<CourseMap | null>(null)
 const progress = ref<CourseProgress | null>(null)
@@ -135,7 +138,7 @@ const areas = computed(() => {
     if (pct < 67) return 'yellow'
     return 'green'
   }
-  return [
+  const list = [
     {
       type: 'grammar' as const,
       status: pctToStatus(grammarPct.value),
@@ -169,6 +172,7 @@ const areas = computed(() => {
       action: () => router.push({ name: 'PlaceChatList', params: { districtCode: districtCode.value } }),
     },
   ]
+  return conversationEnabled.value ? list : list.filter(a => a.type !== 'conversation')
 })
 
 onMounted(async () => {
@@ -177,10 +181,12 @@ onMounted(async () => {
       courseClient.getCourseMap(courseCode.value),
       courseClient.getProgress(courseCode.value),
       grammarClient.getCategories().catch(() => ({ categories: [] })),
+      ensureMe().catch(() => null),
     ])
     courseMap.value = map
     progress.value = prog
     grammarCategories.value = grammarData.categories || []
+    conversationEnabled.value = hasFeature('conversation')
   } catch { /* ignore */ } finally {
     loading.value = false
   }

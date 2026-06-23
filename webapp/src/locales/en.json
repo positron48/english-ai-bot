@@ -329,6 +329,8 @@
   },
   "dashboard": {
     "title": "Dashboard",
+    "aiChatTitle": "AI coach chat",
+    "aiChatSub": "Translate, make flashcards, fix your text",
     "availableForTraining": "Available for Training",
     "cardsAvailable": "Cards available",
     "newCards": "New Cards",

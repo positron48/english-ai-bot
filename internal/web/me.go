@@ -3,6 +3,7 @@ package web
 import (
 	"net/http"
 
+	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 
 	"go.uber.org/zap"
@@ -35,10 +36,13 @@ func (r *Router) handleMe(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
+	tier := models.ParseUserTier(string(user.SubscriptionTier))
 	writeJSON(w, map[string]interface{}{
 		"id":                user.ID,
 		"telegram_id":       user.TelegramID,
 		"telegram_username": user.TelegramUsername,
 		"created_at":        user.CreatedAt,
+		"subscription_tier": string(tier),
+		"features":          models.UserFeaturesForTier(tier),
 	})
 }

@@ -37,6 +37,16 @@
         </div>
       </router-link>
 
+      <!-- AI coach chat (pro only) -->
+      <router-link v-if="conversationEnabled" to="/chat" class="lg-chat-card">
+        <div class="lg-chat-card-icon"><LgIcon name="chat" :s="22" c="#fff" /></div>
+        <div class="lg-chat-card-text">
+          <div class="lg-chat-card-title">{{ t('dashboard.aiChatTitle') }}</div>
+          <div class="lg-chat-card-sub">{{ t('dashboard.aiChatSub') }}</div>
+        </div>
+        <LgIcon name="chevron-right" :s="16" c="var(--text-muted)" />
+      </router-link>
+
       <!-- Твой путь сегодня -->
       <div class="lg-path-wrap">
         <div class="lg-path-lumi"><LgLumi :size="68" pose="point" /></div>
@@ -240,8 +250,11 @@ import LgLumiFact from '../components/linglow/LgLumiFact.vue'
 import LgStreakBadge from '../components/linglow/LgStreakBadge.vue'
 import LgActivityIcon from '../components/linglow/LgActivityIcon.vue'
 import { useStats } from '../composables/useStats'
+import { useMe } from '../composables/useMe'
 
 const { t } = useI18n()
+const { ensureMe, hasFeature } = useMe()
+const conversationEnabled = ref(false)
 const { streakDays, ensureStatsLoaded, refreshStats } = useStats()
 ensureStatsLoaded()
 const { targetLangDisplay, ensureLearningLoaded } = useLearningConfig()
@@ -415,11 +428,40 @@ watch(isAuthenticated, (authenticated) => {
 }, { immediate: true })
 
 onMounted(() => {
-  if (isAuthenticated.value) loadData()
+  if (isAuthenticated.value) {
+    loadData()
+    ensureMe().then(() => { conversationEnabled.value = hasFeature('conversation') }).catch(() => {})
+  }
 })
 </script>
 
 <style scoped>
+/* AI coach chat card */
+.lg-chat-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 14px;
+  background: var(--card-bg);
+  box-shadow: var(--shadow-card);
+  text-decoration: none;
+  color: inherit;
+}
+.lg-chat-card-icon {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #2d6b3a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.lg-chat-card-text { flex: 1; min-width: 0; }
+.lg-chat-card-title { font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 600; color: var(--text); }
+.lg-chat-card-sub { font-family: 'Inter', sans-serif; font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
 /* Linglow progress block */
 .linglow-progress-section { margin-top: 4px; }
 .linglow-progress-link { text-decoration: none; color: inherit; display: block; }

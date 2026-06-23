@@ -329,6 +329,8 @@
   },
   "dashboard": {
     "title": "Дашборд",
+    "aiChatTitle": "Чат с ИИ-коучем",
+    "aiChatSub": "Перевод, карточки слов, правка текста",
     "availableForTraining": "Доступно для тренировки",
     "cardsAvailable": "Карточек доступно",
     "newCards": "Новые карточки",
