@@ -45,25 +45,52 @@ var truncateTables = []string{
 var circuitBreakerInit = `INSERT INTO circuit_breaker_state (id) VALUES (1) ON CONFLICT (id) DO NOTHING`
 var appSettingsInit = `INSERT INTO app_settings (key, value) VALUES ('hide_placement_test_button', 'false') ON CONFLICT (key) DO NOTHING`
 
-func getSharedDB(t *testing.T) *database.DB {
-	t.Helper()
-	sharedPostgres.once.Do(func() {
-		ctx := context.Background()
+// startPostgresContainer starts a postgres:16-alpine testcontainer and returns
+// it together with its connection string. It retries the bring-up to absorb the
+// transient "port \"5432/tcp\" not found" port-mapping race seen under heavy
+// concurrent container starts in CI (Ryuk disabled). A container that came up
+// but failed to expose its port is terminated before the next attempt.
+func startPostgresContainer(ctx context.Context, dbName string) (*postgres.PostgresContainer, string, error) {
+	var lastErr error
+	for attempt := 0; attempt < 4; attempt++ {
 		ctr, err := postgres.Run(ctx, "postgres:16-alpine",
-			postgres.WithDatabase("english_test"),
+			postgres.WithDatabase(dbName),
 			postgres.WithUsername("english"),
 			postgres.WithPassword("english"),
 		)
 		if err != nil {
+			lastErr = err
 			if isDockerUnavailable(err) {
-				err = fmt.Errorf("docker unavailable: %w", err)
+				return nil, "", err
 			}
-			sharedPostgres.err = err
-			return
+			time.Sleep(time.Duration(attempt+1) * time.Second)
+			continue
 		}
 		dsn, err := ctr.ConnectionString(ctx, "sslmode=disable")
 		if err != nil {
+			lastErr = err
 			_ = ctr.Terminate(ctx)
+			time.Sleep(time.Duration(attempt+1) * time.Second)
+			continue
+		}
+		return ctr, dsn, nil
+	}
+	return nil, "", lastErr
+}
+
+func getSharedDB(t *testing.T) *database.DB {
+	t.Helper()
+	sharedPostgres.once.Do(func() {
+		ctx := context.Background()
+		// Under CI (`go test -p 3`, Ryuk disabled) many Postgres containers start
+		// concurrently and the Docker port mapping can transiently be missing
+		// ("port \"5432/tcp\" not found"). Retry the whole bring-up so a flake on
+		// one attempt does not fail the entire package.
+		ctr, dsn, err := startPostgresContainer(ctx, "english_test")
+		if err != nil {
+			if isDockerUnavailable(err) {
+				err = fmt.Errorf("docker unavailable: %w", err)
+			}
 			sharedPostgres.err = err
 			return
 		}
@@ -143,21 +170,11 @@ func SecondPostgresDSN(t *testing.T) string {
 	// Ensure the shared second container is started.
 	sharedSecondContainer.once.Do(func() {
 		ctx := context.Background()
-		ctr, err := postgres.Run(ctx, "postgres:16-alpine",
-			postgres.WithDatabase("english_test_second_init"),
-			postgres.WithUsername("english"),
-			postgres.WithPassword("english"),
-		)
+		ctr, dsn, err := startPostgresContainer(ctx, "english_test_second_init")
 		if err != nil {
 			if isDockerUnavailable(err) {
 				err = fmt.Errorf("docker unavailable: %w", err)
 			}
-			sharedSecondContainer.err = err
-			return
-		}
-		dsn, err := ctr.ConnectionString(ctx, "sslmode=disable")
-		if err != nil {
-			_ = ctr.Terminate(ctx)
 			sharedSecondContainer.err = err
 			return
 		}

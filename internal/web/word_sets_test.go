@@ -52,7 +52,11 @@ func TestHandleLearningWordsCategories(t *testing.T) {
 		t.Fatalf("CreateCategory error: %v", err)
 	}
 
+	userRepo := repository.NewUserRepository(db.GetConnection(), router.logger)
+	user, _ := userRepo.GetOrCreateUser(88810)
+
 	req := httptest.NewRequest(http.MethodGet, "/api/learning/words/categories", nil)
+	req = setUserIDInContext(req, user.ID)
 	w := httptest.NewRecorder()
 	router.handleLearningWordsCategories(w, req)
 
@@ -69,6 +73,7 @@ func TestHandleLearningWordsCategories(t *testing.T) {
 	}
 
 	req = httptest.NewRequest(http.MethodGet, "/api/learning/words/categories?all=true", nil)
+	req = setUserIDInContext(req, user.ID)
 	w = httptest.NewRecorder()
 	router.handleLearningWordsCategories(w, req)
 	if w.Code != http.StatusOK {
@@ -392,7 +397,11 @@ func TestHandleLearningWordsCategories_WithParentID(t *testing.T) {
 		t.Fatalf("CreateCategory child: %v", err)
 	}
 
+	userRepo := repository.NewUserRepository(db.GetConnection(), router.logger)
+	user, _ := userRepo.GetOrCreateUser(88811)
+
 	req := httptest.NewRequest(http.MethodGet, "/api/learning/words/categories?parent_id="+strconv.FormatInt(rootID, 10), nil)
+	req = setUserIDInContext(req, user.ID)
 	w := httptest.NewRecorder()
 	router.handleLearningWordsCategories(w, req)
 
@@ -490,7 +499,11 @@ func TestHandleLearningWordsCategories_SortOrderSwap(t *testing.T) {
 		t.Fatalf("CreateCategory: %v", err)
 	}
 
+	userRepo := repository.NewUserRepository(db.GetConnection(), router.logger)
+	user, _ := userRepo.GetOrCreateUser(88812)
+
 	req := httptest.NewRequest(http.MethodGet, "/api/learning/words/categories", nil)
+	req = setUserIDInContext(req, user.ID)
 	w := httptest.NewRecorder()
 	router.handleLearningWordsCategories(w, req)
 
@@ -524,10 +537,11 @@ func setupWordSetsRouterWithBadDB(t *testing.T) *Router {
 func TestHandleLearningWordsCategories_GetPublishedCategoriesError(t *testing.T) {
 	router := setupWordSetsRouterWithBadDB(t)
 	req := httptest.NewRequest(http.MethodGet, "/api/learning/words/categories", nil)
+	req = setUserIDInContext(req, int64(1))
 	w := httptest.NewRecorder()
 	router.handleLearningWordsCategories(w, req)
 	if w.Code != http.StatusInternalServerError {
-		t.Errorf("expected 500 when GetPublishedCategories fails, got %d", w.Code)
+		t.Errorf("expected 500 when category lookup fails, got %d", w.Code)
 	}
 }
 

@@ -35,7 +35,11 @@ func TestHandleLearningWordsCategories_SortOrder(t *testing.T) {
 		t.Fatalf("CreateCategory A: %v", err)
 	}
 
+	userRepo := repository.NewUserRepository(db.GetConnection(), router.logger)
+	user, _ := userRepo.GetOrCreateUser(88813)
+
 	req := httptest.NewRequest(http.MethodGet, "/api/learning/words/categories", nil)
+	req = setUserIDInContext(req, user.ID)
 	w := httptest.NewRecorder()
 	router.handleLearningWordsCategories(w, req)
 
@@ -612,7 +616,7 @@ func TestHandleLearningWordsSets_ScanErrorContinue(t *testing.T) {
 		CREATE VIEW word_sets AS
 		SELECT id, category_id, title, description, is_published,
 		       ARRAY[sort_order] AS sort_order,
-		       preferred_pos, level_code, created_at, updated_at
+		       preferred_pos, level_code, course_code, created_at, updated_at
 		FROM word_sets_orig;
 	`); err != nil {
 		t.Skipf("cannot create view: %v", err)
