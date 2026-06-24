@@ -662,10 +662,6 @@ func (s *WordService) getWordDefinitionForCourse(ctx context.Context, userID int
 	return markdown, nil
 }
 
-func (s *WordService) tryLinkVerbLemma(card *models.WordCard) {
-	s.tryLinkVerbLemmaForLang(card, s.learning.TargetLang)
-}
-
 func (s *WordService) tryLinkVerbLemmaForLang(card *models.WordCard, targetLang string) {
 	if card == nil || !strings.EqualFold(targetLang, "es") {
 		return
