@@ -103,7 +103,8 @@ func (r *Router) handleLearningReadingCategories(w http.ResponseWriter, req *htt
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
-	if getUserIDFromContext(req.Context()) == 0 {
+	userID := getUserIDFromContext(req.Context())
+	if userID == 0 {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
@@ -115,6 +116,9 @@ func (r *Router) handleLearningReadingCategories(w http.ResponseWriter, req *htt
 		return
 	}
 
+	// Show only categories for the selected course's target language (e.g. es_*).
+	lang := grammarBundleForCourse(r.requestedCourseCodeForUser(req, userID))
+
 	type categoryResponse struct {
 		CategoryID        string            `json:"category_id"`
 		Title             string            `json:"title"`
@@ -125,6 +129,10 @@ func (r *Router) handleLearningReadingCategories(w http.ResponseWriter, req *htt
 	}
 	out := make([]categoryResponse, 0, len(idx.Categories))
 	for id, cat := range idx.Categories {
+		// Category IDs are prefixed by target language (e.g. "es_daily_life").
+		if lang != "" && !strings.HasPrefix(strings.ToLower(id), lang+"_") {
+			continue
+		}
 		title := strings.TrimSpace(cat.Title)
 		if title == "" {
 			title = id
@@ -184,6 +192,8 @@ func (r *Router) handleLearningReadingCategoryTexts(w http.ResponseWriter, req *
 		return
 	}
 
+	lang := grammarBundleForCourse(r.requestedCourseCodeForUser(req, userID))
+
 	progressRepo := repository.NewReadingTextProgressRepository(r.db)
 	type textResponse struct {
 		TextID            string            `json:"text_id"`
@@ -201,6 +211,10 @@ func (r *Router) handleLearningReadingCategoryTexts(w http.ResponseWriter, req *
 		doc, err := r.readReadingText(idx, textID)
 		if err != nil {
 			r.logger.Warn("failed to read reading text", zap.String("text_id", textID), zap.Error(err))
+			continue
+		}
+		// Keep only texts for the selected course's target language.
+		if lang != "" && doc.TargetLanguage != "" && !strings.EqualFold(doc.TargetLanguage, lang) {
 			continue
 		}
 		progress, err := progressRepo.Get(userID, textID)

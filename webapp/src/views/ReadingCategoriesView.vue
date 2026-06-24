@@ -26,6 +26,7 @@ import { onMounted, ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { apiClient } from '../api/client'
+import { getGrammarCourseCode } from '../api/grammarClient'
 import LgLumiFact from '../components/linglow/LgLumiFact.vue'
 import LgLoader from '../components/linglow/LgLoader.vue'
 
@@ -55,7 +56,9 @@ const categoryLabel = (category: { level?: string; category_id: string }) => {
 onMounted(async () => {
   loading.value = true
   try {
-    const data: { categories: any[] } = await apiClient.request('/api/learning/reading/categories')
+    const courseCode = getGrammarCourseCode()
+    const courseQuery = courseCode ? `?course_code=${encodeURIComponent(courseCode)}` : ''
+    const data: { categories: any[] } = await apiClient.request(`/api/learning/reading/categories${courseQuery}`)
     allCategories.value = data.categories || []
 
     // When coming from a district, skip the category list and go directly into the matching category

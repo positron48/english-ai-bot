@@ -40,6 +40,22 @@ func (r *Router) currentCourseCodeForUser(ctx context.Context, userID int64) str
 	return code
 }
 
+// requestedCourseCodeForUser prefers an explicit ?course_code= from the client (the UI's
+// single source of truth for the selected course) and falls back to the user's current course.
+// On single-course instances this still returns "" (no filter), matching legacy behaviour.
+func (r *Router) requestedCourseCodeForUser(req *http.Request, userID int64) string {
+	if r == nil || r.courseRepo == nil || userID == 0 {
+		return ""
+	}
+	// An explicit course_code from the client is the UI's source of truth — honour it
+	// regardless of the multi-course heuristic (which keys off training_cards tagging
+	// and can be stale before content is fully split per course).
+	if explicit := strings.TrimSpace(req.URL.Query().Get("course_code")); explicit != "" {
+		return explicit
+	}
+	return r.currentCourseCodeForUser(req.Context(), userID)
+}
+
 func (r *Router) handleCourses(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)

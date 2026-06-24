@@ -128,8 +128,10 @@ const openRandomUnread = () => {
 onMounted(async () => {
   loading.value = true
   try {
+    const courseCode = getGrammarCourseCode()
+    const courseQuery = courseCode ? `?course_code=${encodeURIComponent(courseCode)}` : ''
     const data: { category?: any; texts?: any[] } = await apiClient.request(
-      `/api/learning/reading/categories/${categoryId.value}/texts`
+      `/api/learning/reading/categories/${categoryId.value}/texts${courseQuery}`
     )
     texts.value = data.texts || []
     if (data.category?.level) {

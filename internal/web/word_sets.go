@@ -41,8 +41,8 @@ func (r *Router) handleLearningWordsCategories(w http.ResponseWriter, req *http.
 		return
 	}
 
-	// Scope to the user's current course (empty string => no filter, single-course behaviour).
-	courseCode := r.currentCourseCodeForUser(req.Context(), userID)
+	// Scope to the course the client selected (explicit course_code), falling back to current.
+	courseCode := r.requestedCourseCodeForUser(req, userID)
 
 	// Parse parent_id from query (null means root level)
 	var parentID *int64
@@ -202,8 +202,8 @@ func (r *Router) handleLearningWordsSets(w http.ResponseWriter, req *http.Reques
 
 	wordSetRepo := repository.NewWordSetRepository(r.db, r.logger)
 
-	// Scope to the user's current course (empty string => no filter, single-course behaviour).
-	courseCode := r.currentCourseCodeForUser(req.Context(), userID)
+	// Scope to the course the client selected (explicit course_code), falling back to current.
+	courseCode := r.requestedCourseCodeForUser(req, userID)
 
 	// Parse query parameters
 	// category_id can be:

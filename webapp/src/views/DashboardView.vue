@@ -7,10 +7,9 @@
           <span class="lg-home-logo">Linglow</span>
           <span class="lg-home-spark">✦</span>
         </div>
-        <div class="lg-home-course">{{ targetLangDisplay }}</div>
+        <LgCourseSwitcher class="lg-home-course" :label="currentCourse?.title || targetLangDisplay" />
       </div>
       <div class="lg-home-header-right">
-        <LgLangSwitcher />
         <LgStreakBadge v-if="streakDays > 0" :n="streakDays" />
         <button @click="refreshData" class="lg-refresh-btn" :disabled="loading" :class="{ 'rotating': loading }">
           <LgIcon name="refresh" :s="18" c="var(--text)" />
@@ -239,7 +238,7 @@ import LgLumi from '../components/linglow/LgLumi.vue'
 import LgProgressBar from '../components/linglow/LgProgressBar.vue'
 import LgLumiFact from '../components/linglow/LgLumiFact.vue'
 import LgStreakBadge from '../components/linglow/LgStreakBadge.vue'
-import LgLangSwitcher from '../components/linglow/LgLangSwitcher.vue'
+import LgCourseSwitcher from '../components/linglow/LgCourseSwitcher.vue'
 import LgActivityIcon from '../components/linglow/LgActivityIcon.vue'
 import { useStats } from '../composables/useStats'
 import { useMe } from '../composables/useMe'
@@ -250,7 +249,7 @@ const { streakDays, ensureStatsLoaded, refreshStats } = useStats()
 ensureStatsLoaded()
 const { targetLangDisplay, ensureLearningLoaded } = useLearningConfig()
 ensureLearningLoaded()
-const { currentCourseCode } = useCourse()
+const { currentCourse, currentCourseCode } = useCourse()
 
 const linglowProgress = ref<CourseProgress | null>(null)
 const dailyToday = ref<NonNullable<DailyRoute['today']> | null>(null)

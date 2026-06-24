@@ -74,8 +74,16 @@ import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { apiClient } from '../api/client'
 import Icon from '../components/Icon.vue'
+import { useCourse } from '../composables/useCourse'
 
 const { t } = useI18n()
+const { currentCourseCode, ensureCourseLoaded } = useCourse()
+
+// Append the selected course so word sets always match the UI's chosen course.
+const withCourse = (params: URLSearchParams): string => {
+  if (currentCourseCode.value) params.append('course_code', currentCourseCode.value)
+  return params.toString()
+}
 
 interface Category {
   id: number
@@ -136,7 +144,9 @@ const pageTitle = computed(() => {
 // which only knows the district's level, not any category id.
 const resolveLevelCategoryId = async (level: string): Promise<number | null> => {
   try {
-    const data: { categories: Category[] } = await apiClient.request('/api/learning/words/categories?all=true')
+    const lvlParams = new URLSearchParams()
+    lvlParams.append('all', 'true')
+    const data: { categories: Category[] } = await apiClient.request(`/api/learning/words/categories?${withCourse(lvlParams)}`)
     allCategories.value = data.categories || []
     const match = allCategories.value.find(
       c => !c.parent_id && (c.level_code || '').toUpperCase() === level.toUpperCase()
@@ -149,6 +159,9 @@ const resolveLevelCategoryId = async (level: string): Promise<number | null> => 
 }
 
 onMounted(async () => {
+  // Make sure the selected course is known before fetching so we never request
+  // word sets for the wrong (default) course on first paint.
+  await ensureCourseLoaded()
   categoryHistory.value = []
 
   // Check if category_id is in query params
@@ -212,15 +225,17 @@ watch(() => route.query.category_id, async (newCategoryId) => {
 const loadCategories = async () => {
   try {
     // Загружаем все категории для получения названия текущей категории
-    const allCategoriesData: { categories: Category[] } = await apiClient.request('/api/learning/words/categories?all=true')
+    const allParams = new URLSearchParams()
+    allParams.append('all', 'true')
+    const allCategoriesData: { categories: Category[] } = await apiClient.request(`/api/learning/words/categories?${withCourse(allParams)}`)
     allCategories.value = allCategoriesData.categories || []
-    
+
     // Загружаем дочерние категории для текущего уровня
     const params = new URLSearchParams()
     if (currentParentId.value !== null) {
       params.append('parent_id', currentParentId.value.toString())
     }
-    const data: { categories: Category[] } = await apiClient.request(`/api/learning/words/categories?${params.toString()}`)
+    const data: { categories: Category[] } = await apiClient.request(`/api/learning/words/categories?${withCourse(params)}`)
     categories.value = data.categories || []
   } catch (error: any) {
     console.error('Failed to load categories:', error)
@@ -238,7 +253,7 @@ const loadWordSets = async () => {
       params.append('category_id', selectedCategoryId.value.toString())
     }
     
-    const data: { sets: WordSet[] } = await apiClient.request(`/api/learning/words/sets?${params.toString()}`)
+    const data: { sets: WordSet[] } = await apiClient.request(`/api/learning/words/sets?${withCourse(params)}`)
     wordSets.value = data.sets || []
   } catch (error: any) {
     console.error('Failed to load word sets:', error)
