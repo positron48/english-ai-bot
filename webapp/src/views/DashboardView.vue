@@ -10,6 +10,7 @@
         <div class="lg-home-course">{{ targetLangDisplay }}</div>
       </div>
       <div class="lg-home-header-right">
+        <LgLangSwitcher />
         <LgStreakBadge v-if="streakDays > 0" :n="streakDays" />
         <button @click="refreshData" class="lg-refresh-btn" :disabled="loading" :class="{ 'rotating': loading }">
           <LgIcon name="refresh" :s="18" c="var(--text)" />
@@ -17,7 +18,7 @@
       </div>
     </div>
 
-    <div v-if="loading" class="lg-loading">{{ t('common.loading') }}</div>
+    <LgLoader v-if="loading" />
 
     <div v-else class="dashboard-content">
       <!-- Ciudad Luminaria card -->
@@ -35,16 +36,6 @@
             <LgProgressBar :pct="linglowProgress.summary.progress_percent" :h="4" />
           </div>
         </div>
-      </router-link>
-
-      <!-- AI coach chat (pro only) -->
-      <router-link v-if="conversationEnabled" to="/chat" class="lg-chat-card">
-        <div class="lg-chat-card-icon"><LgIcon name="chat" :s="22" c="#fff" /></div>
-        <div class="lg-chat-card-text">
-          <div class="lg-chat-card-title">{{ t('dashboard.aiChatTitle') }}</div>
-          <div class="lg-chat-card-sub">{{ t('dashboard.aiChatSub') }}</div>
-        </div>
-        <LgIcon name="chevron-right" :s="16" c="var(--text-muted)" />
       </router-link>
 
       <!-- Твой путь сегодня -->
@@ -248,13 +239,13 @@ import LgLumi from '../components/linglow/LgLumi.vue'
 import LgProgressBar from '../components/linglow/LgProgressBar.vue'
 import LgLumiFact from '../components/linglow/LgLumiFact.vue'
 import LgStreakBadge from '../components/linglow/LgStreakBadge.vue'
+import LgLangSwitcher from '../components/linglow/LgLangSwitcher.vue'
 import LgActivityIcon from '../components/linglow/LgActivityIcon.vue'
 import { useStats } from '../composables/useStats'
 import { useMe } from '../composables/useMe'
 
 const { t } = useI18n()
-const { ensureMe, hasFeature } = useMe()
-const conversationEnabled = ref(false)
+const { ensureMe } = useMe()
 const { streakDays, ensureStatsLoaded, refreshStats } = useStats()
 ensureStatsLoaded()
 const { targetLangDisplay, ensureLearningLoaded } = useLearningConfig()
@@ -430,7 +421,7 @@ watch(isAuthenticated, (authenticated) => {
 onMounted(() => {
   if (isAuthenticated.value) {
     loadData()
-    ensureMe().then(() => { conversationEnabled.value = hasFeature('conversation') }).catch(() => {})
+    void ensureMe().catch(() => {})
   }
 })
 </script>

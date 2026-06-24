@@ -103,6 +103,26 @@
       </details>
     </section>
 
+    <section class="panel">
+      <h2>Batch covers (published)</h2>
+      <form id="cover-batch-form" class="form-grid">
+        <label>Course
+          <select id="cover-batch-course"></select>
+        </label>
+        <label>Level (optional)
+          <select id="cover-batch-level">
+            <option value="">All</option>
+            <option>A0</option><option>A1</option><option>A2</option>
+            <option>B1</option><option>B2</option><option>C1</option>
+          </select>
+        </label>
+        <label class="checkbox">
+          <input id="cover-batch-force" type="checkbox" /> Regenerate existing
+        </label>
+        <button type="submit" class="btn primary">Generate all covers</button>
+      </form>
+    </section>
+
     <section class="panel wide">
       <div class="toolbar">
         <h2>Черновики</h2>
@@ -158,6 +178,7 @@
         <button type="button" id="detail-close" class="btn">Close</button>
       </header>
       <div id="detail-meta" class="meta"></div>
+      <div id="detail-cover" class="cover-panel hidden"></div>
       <div id="detail-preview" class="preview"></div>
       <details class="edit-panel">
         <summary>Редактировать JSON</summary>
@@ -168,6 +189,8 @@
         <button type="button" id="btn-approve" class="btn">Approve</button>
         <button type="button" id="btn-reject" class="btn danger">Reject</button>
         <button type="button" id="btn-audio" class="btn">Generate audio</button>
+        <button type="button" id="btn-cover" class="btn">Generate cover</button>
+        <label class="checkbox"><input id="cover-force" type="checkbox" /> Regenerate cover</label>
         <button type="button" id="btn-publish" class="btn primary">Publish</button>
         <label class="checkbox"><input id="sync-bundle" type="checkbox" checked /> Sync bundle dir</label>
         <button type="button" id="btn-delete-draft" class="btn danger">Delete draft</button>

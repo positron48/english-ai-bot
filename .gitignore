@@ -35,6 +35,9 @@ secrets/
 # Local Reading CMS state (drafts, staging, job work dirs)
 .local/reading-cms/
 
+# ComfyUI staging PNG (WebP covers are committed)
+**/assets/reading/**/cover_raw.png
+
 # IDE files
 .vscode/
 .idea/

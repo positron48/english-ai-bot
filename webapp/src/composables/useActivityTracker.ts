@@ -62,8 +62,12 @@ export function useActivityTracker() {
   }
 
   const drainBatches = (): ActivityBatch[] => {
-    const day = localDay()
     const course = currentCourseCode.value || ''
+    // Never attribute activity to an unknown course: the backend would fall
+    // back to the default course (English), so Spanish time leaked there.
+    // Hold the accrued seconds until the current course is known.
+    if (!course) return []
+    const day = localDay()
     const batches: ActivityBatch[] = []
     for (const [mode, seconds] of Object.entries(secondsByMode)) {
       if (seconds > 0) batches.push({ course_code: course, client_day: day, seconds, mode })

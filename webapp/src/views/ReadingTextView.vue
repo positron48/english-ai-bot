@@ -1,6 +1,6 @@
 <template>
   <div class="reading-text-view">
-    <div v-if="loading">{{ t('common.loading') }}</div>
+    <LgLoader v-if="loading" />
     <div v-else-if="error">{{ error }}</div>
     <div v-else-if="!block">{{ t('reading.noTexts') }}</div>
     <ReadingPassageBlock
@@ -9,6 +9,7 @@
       :text-id="textId"
       :category-id="categoryId"
       :is-read="readingIsRead"
+      :cover-hero-rel-path="coverHeroRelPath"
       :can-delete="can('full_access')"
       :deleting="deleting"
       @marked-read="readingIsRead = true"
@@ -23,6 +24,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { apiClient } from '../api/client'
 import ReadingPassageBlock from '../components/ReadingPassageBlock.vue'
+import LgLoader from '../components/linglow/LgLoader.vue'
 import { useAuth } from '../composables/useAuth'
 import { showAlert, showConfirm } from '../composables/useDialog'
 
@@ -35,6 +37,7 @@ const textId = computed(() => route.params.textId as string)
 const loading = ref(true)
 const error = ref<string | null>(null)
 const block = ref<any>(null)
+const coverHeroRelPath = ref('')
 const readingIsRead = ref(false)
 const categoryId = ref('')
 const deleting = ref(false)
@@ -74,9 +77,11 @@ onMounted(async () => {
     const data: {
       block?: any
       category_id?: string
+      cover_hero_rel_path?: string
       reading_progress?: { is_read?: boolean }
     } = await apiClient.request(`/api/learning/reading/texts/${textId.value}`)
     block.value = data.block ?? null
+    coverHeroRelPath.value = String(data.cover_hero_rel_path || '').trim()
     readingIsRead.value = !!data.reading_progress?.is_read
     categoryId.value = (data.category_id && String(data.category_id)) || ''
   } catch (e: any) {

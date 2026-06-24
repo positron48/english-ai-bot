@@ -22,7 +22,7 @@
         <Icon name="dice" />
       </button>
     </div>
-    <div v-if="loading">{{ t('common.loading') }}</div>
+    <LgLoader v-if="loading" />
     <div v-else-if="error">{{ error }}</div>
     <div v-else-if="texts.length === 0" class="empty">{{ t('reading.noTexts') }}</div>
     <div v-else class="split-layout">
@@ -33,8 +33,17 @@
           :to="`/learning/reading/text/${text.text_id}`"
           class="item"
         >
-          <strong>{{ getLocalizedTitle(text.title, text.title_translations) }}</strong>
-          <span class="level-pill">{{ text.level }}</span>
+          <div class="item-main">
+            <strong>{{ getLocalizedTitle(text.title, text.title_translations) }}</strong>
+            <span class="level-pill">{{ text.level }}</span>
+          </div>
+          <img
+            v-if="text.cover_thumb_rel_path"
+            class="item-thumb"
+            :src="readingImageUrl(text.cover_thumb_rel_path)"
+            alt=""
+            loading="lazy"
+          />
         </router-link>
       </div>
       <p v-else class="all-read-hint">{{ t('reading.allReadInCategory') }}</p>
@@ -48,8 +57,17 @@
             :to="`/learning/reading/text/${text.text_id}`"
             class="item item--read"
           >
-            <span class="item-title">{{ getLocalizedTitle(text.title, text.title_translations) }}</span>
-            <span class="read-badge" aria-hidden="true">{{ t('reading.alreadyRead') }}</span>
+            <div class="item-main">
+              <span class="item-title">{{ getLocalizedTitle(text.title, text.title_translations) }}</span>
+              <span class="read-badge" aria-hidden="true">{{ t('reading.alreadyRead') }}</span>
+            </div>
+            <img
+              v-if="text.cover_thumb_rel_path"
+              class="item-thumb"
+              :src="readingImageUrl(text.cover_thumb_rel_path)"
+              alt=""
+              loading="lazy"
+            />
           </router-link>
         </div>
       </section>
@@ -63,6 +81,8 @@ import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { apiClient } from '../api/client'
 import Icon from '../components/Icon.vue'
+import LgLoader from '../components/linglow/LgLoader.vue'
+import { getGrammarCourseCode } from '../api/grammarClient'
 
 const { t, locale } = useI18n()
 const route = useRoute()
@@ -90,6 +110,12 @@ const getLocalizedTitle = (value: string, translations?: Record<string, string>)
     return translations[currentLocale]
   }
   return value
+}
+
+const readingImageUrl = (relPath: string) => {
+  const courseCode = getGrammarCourseCode()
+  const courseParam = courseCode ? `&course_code=${encodeURIComponent(courseCode)}` : ''
+  return `/api/learning/reading/image?path=${encodeURIComponent(relPath)}${courseParam}`
 }
 
 const openRandomUnread = () => {
@@ -182,7 +208,23 @@ onMounted(async () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 12px;
+}
+.item-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+.item-thumb {
+  width: 100px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+  background: var(--bg-tertiary);
 }
 .item--read {
   border-style: dashed;

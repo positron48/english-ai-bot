@@ -46,8 +46,7 @@
           class="prf-select"
           @change="(e) => setLocale((e.target as HTMLSelectElement).value as any)"
         >
-          <option value="ru">Русский</option>
-          <option :value="learning?.target_lang">{{ (learning?.target_lang || '').toUpperCase() }}</option>
+          <option v-for="l in availableLocales" :key="l.code" :value="l.code">{{ l.label }}</option>
         </select>
       </div>
       <!-- Course -->
@@ -272,6 +271,7 @@ import { useAuth } from '../composables/useAuth'
 import { useLearningConfig, type SpanishVerbScopeLadderStep } from '../composables/useLearningConfig'
 import { apiClient } from '../api/client'
 import { useLocale } from '../composables/useLocale'
+import { AVAILABLE_LOCALES } from '../i18n'
 import { useCourse } from '../composables/useCourse'
 import Icon from '../components/Icon.vue'
 import LgIcon from '../components/linglow/LgIcon.vue'
@@ -280,6 +280,7 @@ import { useStats } from '../composables/useStats'
 
 const { t, locale } = useI18n()
 const { currentLocale, setLocale } = useLocale()
+const availableLocales = AVAILABLE_LOCALES
 const { courses, currentCourse, currentCourseCode, selectCourse } = useCourse()
 const { streakDays, ensureStatsLoaded } = useStats()
 ensureStatsLoaded()

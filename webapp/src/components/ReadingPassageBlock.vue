@@ -34,6 +34,11 @@
       </header>
 
       <section class="content">
+        <div
+          v-if="coverHeroRelPath"
+          class="hero"
+          :style="{ backgroundImage: `url(${readingImageUrl(coverHeroRelPath)})` }"
+        ></div>
         <div class="text-flow">
           <div
             v-for="segment in segments"
@@ -206,6 +211,7 @@ const props = defineProps<{
   isRead: boolean
   canDelete?: boolean
   deleting?: boolean
+  coverHeroRelPath?: string
 }>()
 
 const emit = defineEmits<{
@@ -335,6 +341,12 @@ const goBack = async () => {
 }
 
 const tokenKey = (segmentId: string, tokenIdx: number) => `${segmentId}-${tokenIdx}`
+
+const readingImageUrl = (relPath: string) => {
+  const courseCode = getGrammarCourseCode()
+  const courseParam = courseCode ? `&course_code=${encodeURIComponent(courseCode)}` : ''
+  return `/api/learning/reading/image?path=${encodeURIComponent(relPath)}${courseParam}`
+}
 
 const isNarrator = (segment: any) => String(segment?.speaker_id || '').toLowerCase() === 'narrator'
 
@@ -740,6 +752,24 @@ const openRandomUnreadInCategory = async () => {
 .content {
   padding: 22px 16px 24px;
   position: relative;
+}
+
+.hero {
+  width: 100%;
+  height: 200px;
+  margin: 0 0 18px;
+  border-radius: 14px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 45%, var(--bg-secondary) 100%);
 }
 
 .text-flow {

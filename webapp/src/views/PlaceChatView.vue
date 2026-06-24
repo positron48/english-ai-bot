@@ -96,7 +96,7 @@
           </button>
         </div>
       </template>
-      <div v-else class="chat-loading">{{ t('chat.notAvailable') }}</div>
+      <div v-else class="chat-loading">{{ loadError || t('chat.notAvailable') }}</div>
     </template>
   </div>
 </template>
@@ -137,6 +137,7 @@ const questPassed = ref(false)
 const budgetExhausted = ref(false)
 const status = ref('open')
 const scrollEl = ref<HTMLElement | null>(null)
+const loadError = ref('')
 
 const headerTitle = computed(() => {
   if (scenarioCode.value && session.value) return session.value.title
@@ -193,7 +194,14 @@ onMounted(async () => {
       const r = await courseClient.listConversationScenarios(districtCode.value)
       scenarios.value = r.scenarios || []
     }
-  } catch { /* ignore */ } finally {
+  } catch (e: any) {
+    // Surface the real reason instead of a blanket "not available".
+    const msg = String(e?.message || '')
+    if (msg.includes('403')) loadError.value = t('chat.requiresPro')
+    else if (msg.includes('404')) loadError.value = t('chat.scenarioMissing')
+    else loadError.value = t('chat.notAvailable')
+    console.error('Failed to start conversation:', e)
+  } finally {
     loading.value = false
   }
 })

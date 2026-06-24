@@ -7,6 +7,7 @@
 - как запускать генерацию reading-текста через `make`;
 - как работает выбор голоса (роль LLM vs конфиг голосов);
 - как проверить, что артефакты корректные и попадут в bundle/deploy.
+- **обложки reading texts** (ComfyUI + LLM): см. [READING_IMAGES_LOCAL_SETUP.md](./READING_IMAGES_LOCAL_SETUP.md).
 
 ## 0) Локальная CMS (отдельно от `/app/admin`)
 

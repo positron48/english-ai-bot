@@ -31,6 +31,8 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("/api/prompts/reading", s.handleReadingPrompt)
 	mux.HandleFunc("/api/published", s.handlePublished)
 	mux.HandleFunc("/api/audio/", s.handleAudio)
+	mux.HandleFunc("/api/images/", s.handleImage)
+	mux.HandleFunc("/api/covers/batch", s.handleCoverBatch)
 	mux.HandleFunc("/api/drafts/", s.handleDraftSubroutes)
 	if s.webRoot != "" {
 		mux.Handle("/", http.FileServer(http.Dir(s.webRoot)))
@@ -217,6 +219,8 @@ func (s *Server) handleDraftSubroutes(w http.ResponseWriter, r *http.Request) {
 		s.handleDraftAction(w, r, textID, "reject")
 	case "audio":
 		s.handleDraftAction(w, r, textID, "audio")
+	case "cover":
+		s.handleDraftCover(w, r, textID)
 	case "publish":
 		s.handlePublish(w, r, textID)
 	default:
@@ -289,6 +293,71 @@ func (s *Server) handleDraftAction(w http.ResponseWriter, r *http.Request, textI
 		return
 	}
 	writeJSON(w, map[string]interface{}{"draft": meta})
+}
+
+func (s *Server) handleDraftCover(w http.ResponseWriter, r *http.Request, textID string) {
+	if r.Method != http.MethodPost {
+		methodNotAllowed(w)
+		return
+	}
+	var body struct {
+		Force bool `json:"force"`
+	}
+	_ = readJSON(r, &body)
+	meta, err := s.svc.GenerateCover(r.Context(), textID, body.Force)
+	if err != nil {
+		writeError(w, http.StatusBadRequest, err)
+		return
+	}
+	writeJSON(w, map[string]interface{}{"draft": meta})
+}
+
+func (s *Server) handleCoverBatch(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		methodNotAllowed(w)
+		return
+	}
+	var req CoverBatchRequest
+	if err := readJSON(r, &req); err != nil {
+		writeError(w, http.StatusBadRequest, err)
+		return
+	}
+	count, err := s.svc.GenerateCoverBatch(r.Context(), req)
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, err)
+		return
+	}
+	writeJSON(w, map[string]interface{}{"generated": count})
+}
+
+func (s *Server) handleImage(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		methodNotAllowed(w)
+		return
+	}
+	rest := strings.TrimPrefix(r.URL.Path, "/api/images/")
+	parts := strings.Split(strings.Trim(rest, "/"), "/")
+	if len(parts) < 2 {
+		http.Error(w, "invalid image path", http.StatusBadRequest)
+		return
+	}
+	textID := parts[0]
+	filename := parts[len(parts)-1]
+	path := filepath.Join(s.svc.Paths().StagingDir(textID), "assets", "reading", textID, filename)
+	data, err := os.ReadFile(path)
+	if err != nil {
+		http.Error(w, "not found", http.StatusNotFound)
+		return
+	}
+	contentType := "application/octet-stream"
+	switch strings.ToLower(filepath.Ext(filename)) {
+	case ".webp":
+		contentType = "image/webp"
+	case ".png":
+		contentType = "image/png"
+	}
+	w.Header().Set("Content-Type", contentType)
+	_, _ = w.Write(data)
 }
 
 func (s *Server) handlePublish(w http.ResponseWriter, r *http.Request, textID string) {

@@ -251,6 +251,12 @@ router.beforeEach(async (to, _from, next) => {
     return
   }
 
+  // General AI chat section is closed for everyone — redirect to dashboard.
+  if (to.name === 'Chat') {
+    next('/dashboard')
+    return
+  }
+
   const isOffline = typeof navigator !== 'undefined' && navigator.onLine === false
   const isOfflineAllowedBaseRoute = typeof to.name === 'string' && [
     'Dashboard',

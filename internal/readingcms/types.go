@@ -16,6 +16,9 @@ const (
 	AudioPartial = "partial"
 	AudioReady   = "ready"
 
+	CoverNone  = "none"
+	CoverReady = "ready"
+
 	OriginLLM        = "llm"
 	OriginManualText = "manual_text"
 	OriginInputJSON  = "input_json"
@@ -32,6 +35,8 @@ type DraftMeta struct {
 	Status            string     `json:"status"`
 	Origin            string     `json:"origin"`
 	AudioStatus       string     `json:"audio_status"`
+	CoverStatus       string     `json:"cover_status"`
+	CoverImagePrompt  string     `json:"cover_image_prompt,omitempty"`
 	SegmentsTotal     int        `json:"segments_total"`
 	SegmentsWithAudio int        `json:"segments_with_audio"`
 	LastJobLog        string     `json:"last_job_log,omitempty"`
@@ -48,6 +53,9 @@ type TextDocument struct {
 	TitleTranslations map[string]string      `json:"title_translations,omitempty"`
 	Level             string                 `json:"level"`
 	TargetLanguage    string                 `json:"target_language"`
+	CoverThumbRelPath string                 `json:"cover_thumb_rel_path,omitempty"`
+	CoverHeroRelPath  string                 `json:"cover_hero_rel_path,omitempty"`
+	CoverImagePrompt  string                 `json:"cover_image_prompt,omitempty"`
 	ReadingPassage    map[string]interface{} `json:"reading_passage"`
 }
 
@@ -106,4 +114,11 @@ type PromptRequest struct {
 	Title      string `json:"title"`
 	Kind       string `json:"kind"` // generate | transform
 	SourceText string `json:"source_text,omitempty"`
+}
+
+// CoverBatchRequest triggers cover generation for published texts in a course.
+type CoverBatchRequest struct {
+	CourseCode string `json:"course_code"`
+	Level      string `json:"level,omitempty"`
+	Force      bool   `json:"force"`
 }

@@ -43,6 +43,9 @@ type readingTextDoc struct {
 	TitleTranslations map[string]string      `json:"title_translations,omitempty"`
 	Level             string                 `json:"level"`
 	TargetLanguage    string                 `json:"target_language"`
+	CoverThumbRelPath string                 `json:"cover_thumb_rel_path,omitempty"`
+	CoverHeroRelPath  string                 `json:"cover_hero_rel_path,omitempty"`
+	CoverImagePrompt  string                 `json:"cover_image_prompt,omitempty"`
 	ReadingPassage    map[string]interface{} `json:"reading_passage"`
 }
 
@@ -65,6 +68,9 @@ func docFromRepo(d *repository.ReadingTextDocument) *readingTextDoc {
 		TitleTranslations: d.TitleTranslations,
 		Level:             d.Level,
 		TargetLanguage:    d.TargetLanguage,
+		CoverThumbRelPath: d.CoverThumbRelPath,
+		CoverHeroRelPath:  d.CoverHeroRelPath,
+		CoverImagePrompt:  d.CoverImagePrompt,
 		ReadingPassage:    d.ReadingPassage,
 	}
 }
@@ -186,6 +192,8 @@ func (r *Router) handleLearningReadingCategoryTexts(w http.ResponseWriter, req *
 		TitleTranslations map[string]string `json:"title_translations,omitempty"`
 		Level             string            `json:"level"`
 		TargetLanguage    string            `json:"target_language"`
+		CoverThumbRelPath string            `json:"cover_thumb_rel_path,omitempty"`
+		CoverHeroRelPath  string            `json:"cover_hero_rel_path,omitempty"`
 		IsRead            bool              `json:"is_read"`
 	}
 	out := make([]textResponse, 0, len(cat.TextIDs))
@@ -206,6 +214,8 @@ func (r *Router) handleLearningReadingCategoryTexts(w http.ResponseWriter, req *
 			TitleTranslations: doc.TitleTranslations,
 			Level:             doc.Level,
 			TargetLanguage:    doc.TargetLanguage,
+			CoverThumbRelPath: doc.CoverThumbRelPath,
+			CoverHeroRelPath:  doc.CoverHeroRelPath,
 			IsRead:            progress != nil,
 		})
 	}
@@ -284,14 +294,17 @@ func (r *Router) handleLearningReadingTextGet(w http.ResponseWriter, req *http.R
 
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(map[string]interface{}{
-		"text_id":            doc.ID,
-		"category_id":        doc.CategoryID,
-		"title":              doc.Title,
-		"title_translations": doc.TitleTranslations,
-		"level":              doc.Level,
-		"target_language":    doc.TargetLanguage,
-		"block":              block,
-		"reading_progress":   readingProgress,
+		"text_id":               doc.ID,
+		"category_id":           doc.CategoryID,
+		"title":                 doc.Title,
+		"title_translations":    doc.TitleTranslations,
+		"level":                 doc.Level,
+		"target_language":       doc.TargetLanguage,
+		"cover_thumb_rel_path":  doc.CoverThumbRelPath,
+		"cover_hero_rel_path":   doc.CoverHeroRelPath,
+		"cover_image_prompt":    doc.CoverImagePrompt,
+		"block":                 block,
+		"reading_progress":      readingProgress,
 	})
 }
 
@@ -599,6 +612,59 @@ func (r *Router) handleLearningReadingAudio(w http.ResponseWriter, req *http.Req
 		return
 	}
 	w.Header().Set("Content-Type", "audio/mpeg")
+	w.Header().Set("Cache-Control", "public, max-age=86400")
+	_, _ = w.Write(data)
+}
+
+func (r *Router) handleLearningReadingImage(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	imagePath := strings.TrimSpace(req.URL.Query().Get("path"))
+	if imagePath == "" {
+		http.Error(w, "path required", http.StatusBadRequest)
+		return
+	}
+	if strings.Contains(imagePath, "..") || strings.HasPrefix(imagePath, "/") {
+		http.Error(w, "invalid path", http.StatusBadRequest)
+		return
+	}
+	imagePath = filepath.Clean(imagePath)
+	var bundleFS fs.FS
+	var err error
+	if courseCode := strings.TrimSpace(req.URL.Query().Get("course_code")); courseCode != "" {
+		bundleID := grammarBundleForCourse(courseCode)
+		bundleFS, err = grammarbundle.BundleFS(bundleID)
+	}
+	if bundleFS == nil {
+		bundleFS, err = readingbundle.BundleFS(r.config)
+	}
+	if err != nil {
+		r.logger.Error("failed to select grammar bundle filesystem", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	data, err := fs.ReadFile(bundleFS, imagePath)
+	if err != nil {
+		if errors.Is(err, fs.ErrNotExist) {
+			http.Error(w, "Not found", http.StatusNotFound)
+			return
+		}
+		r.logger.Error("failed to read reading image asset", zap.String("path", imagePath), zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	contentType := "application/octet-stream"
+	switch strings.ToLower(filepath.Ext(imagePath)) {
+	case ".webp":
+		contentType = "image/webp"
+	case ".png":
+		contentType = "image/png"
+	case ".jpg", ".jpeg":
+		contentType = "image/jpeg"
+	}
+	w.Header().Set("Content-Type", contentType)
 	w.Header().Set("Cache-Control", "public, max-age=86400")
 	_, _ = w.Write(data)
 }

@@ -539,6 +539,7 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/learning/grammar/chapters/", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarChapterOrTest)))
 	// Reading segment audio is fetched by plain <audio>/new Audio(), so keep it public.
 	r.mux.HandleFunc("/api/learning/reading/audio", appAPIMiddleware.Wrap(r.handleLearningReadingAudio))
+	r.mux.HandleFunc("/api/learning/reading/image", appAPIMiddleware.Wrap(r.handleLearningReadingImage))
 	r.mux.HandleFunc("/api/learning/grammar/tests/submit", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarSubmitTest)))
 	r.mux.HandleFunc("/api/learning/grammar/statistics", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarStatistics)))
 	r.mux.HandleFunc("/api/learning/grammar/training/availability", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarTrainingAvailability)))

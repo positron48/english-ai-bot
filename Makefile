@@ -66,6 +66,13 @@ reading-cms:
 reading-cms-build:
 	@$(GO) build -o bin/reading_cms ./cmd/reading_cms
 
+reading-covers-batch:
+	@echo "Generating reading covers for Spanish course..."
+	@$(MAKE) -C courses/spanish-grammar reading-covers-batch FORCE="$(FORCE)" LIMIT="$(LIMIT)"
+	@echo "Generating reading covers for English course..."
+	@$(MAKE) -C courses/english-grammar reading-covers-batch FORCE="$(FORCE)" LIMIT="$(LIMIT)"
+	@echo "✅ reading-covers-batch complete"
+
 verb-training-pack-fill:
 	@$(MAKE) -C courses/spanish-grammar verb-training-pack-fill
 

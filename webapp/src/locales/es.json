@@ -524,7 +524,19 @@
     "placeholder": "Escribe tu mensaje...",
     "send": "Enviar",
     "sending": "Enviando...",
-    "errorSend": "Lo sentimos, hubo un error. Inténtalo de nuevo."
+    "errorSend": "Lo sentimos, hubo un error. Inténtalo de nuevo.",
+    "placesTitle": "Lugares para conversar",
+    "noPlaces": "Aún no hay lugares para conversar aquí",
+    "quest": "Misión",
+    "free": "Chat libre",
+    "tasksTitle": "Tareas",
+    "optional": "opcional",
+    "questComplete": "¡Misión completada! Bien hecho 🎉",
+    "backToDistrict": "Volver al distrito",
+    "budgetEnded": "La conversación ha terminado. Inténtalo de nuevo para completar la misión.",
+    "notAvailable": "El chat no está disponible",
+    "requiresPro": "El chat está disponible con la suscripción Pro",
+    "scenarioMissing": "Este escenario de chat aún no está disponible"
   },
   "trainingFeedback": {
     "encouragingPhrases": [

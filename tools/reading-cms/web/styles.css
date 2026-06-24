@@ -25,7 +25,11 @@ body {
   padding: 16px;
 }
 .panel.wide { grid-column: 1 / -1; }
-.hint { color: #9aa8bc; font-size: 0.85rem; margin: 0 0 12px; }
+.cover-panel { margin: 12px 0; display: flex; flex-direction: column; gap: 8px; }
+.cover-panel.hidden { display: none; }
+.cover-thumb { width: 120px; border-radius: 8px; }
+.cover-hero { width: 100%; max-height: 140px; object-fit: cover; border-radius: 8px; }
+.cover-prompt { font-size: 0.75rem; color: #9aa8bc; white-space: pre-wrap; margin: 0; }
 .prompt-row, .json-options { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0; align-items: center; }
 .form-grid {
   display: grid;

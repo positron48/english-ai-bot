@@ -51,6 +51,7 @@ func (r *Router) getTrainingDelaysForUser(userID int64) (optionsDelayMS int, wro
 type WebTrainingState struct {
 	UserID               int64
 	SessionID            int64
+	CourseCode           string
 	Queue                []*models.TrainingQueueItem
 	CurrentIndex         int
 	CorrectCount         int // deprecated: stats are taken only from review_events (each mode creates one event per answer)
@@ -226,6 +227,7 @@ func (r *Router) handleTrainingStart(w http.ResponseWriter, req *http.Request) {
 	state := &WebTrainingState{
 		UserID:               userID,
 		SessionID:            session.ID,
+		CourseCode:           sessionConfig.CourseCode,
 		Queue:                queue,
 		CurrentIndex:         0,
 		RecentCorrectAnswers: make([]string, 0, 2),
@@ -604,6 +606,25 @@ func (r *Router) handleTrainingCurrent(w http.ResponseWriter, req *http.Request)
 	r.webTrainingHandler.sessionsMutex.RUnlock()
 
 	if !exists || state == nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"active":  false,
+			"message": "No active session",
+		})
+		return
+	}
+
+	// If the user switched courses since this session started, abandon it so the
+	// client starts a fresh session scoped to the now-current course.
+	currentCourse := r.currentCourseCodeForUser(req.Context(), userID)
+	if state.CourseCode != currentCourse {
+		if err := r.trainingService.FinishSession(state.SessionID, state.CurrentIndex); err != nil {
+			r.logger.Error("failed to finish stale session on course switch", zap.Error(err))
+		}
+		r.webTrainingHandler.sessionsMutex.Lock()
+		delete(r.webTrainingHandler.sessions, userID)
+		r.webTrainingHandler.sessionsMutex.Unlock()
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(map[string]interface{}{

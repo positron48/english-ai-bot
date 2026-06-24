@@ -26,6 +26,7 @@
       >
         <option v-for="c in courses" :key="c.code" :value="c.code">{{ c.title }}</option>
       </select>
+      <LgLangSwitcher />
       <button class="lg-sidenav-theme" type="button" @click="toggleTheme">
         <LgIcon :name="theme === 'light' ? 'moon' : 'sun'" :s="16" c="var(--text)" />
       </button>
@@ -41,6 +42,7 @@ import { useTheme } from '../../composables/useTheme'
 import { useCourse } from '../../composables/useCourse'
 import { NAV_TABS } from './navTabs'
 import LgIcon from './LgIcon.vue'
+import LgLangSwitcher from './LgLangSwitcher.vue'
 
 const route = useRoute()
 const { t } = useI18n()

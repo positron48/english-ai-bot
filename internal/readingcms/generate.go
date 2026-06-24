@@ -164,6 +164,7 @@ func (s *Service) runReadingScript(ctx context.Context, opts scriptRunOptions) (
 		Status:            StatusDraft,
 		Origin:            opts.origin,
 		AudioStatus:       audioSt,
+		CoverStatus:       CoverNone,
 		SegmentsTotal:     total,
 		SegmentsWithAudio: withAudioCount,
 		LastJobLog:        opts.jobLog,

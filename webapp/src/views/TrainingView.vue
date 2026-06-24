@@ -105,7 +105,7 @@
       </div>
     </div>
 
-    <div v-if="loading" class="loading">{{ t('common.loading') }}</div>
+    <LgLoader v-if="loading" />
 
     <!-- Network error notification -->
     <div v-if="networkError" class="network-error-notification">
@@ -523,6 +523,7 @@ import { useAudio } from '../composables/useAudio'
 import { useLocale } from '../composables/useLocale'
 import { Chart, registerables } from 'chart.js'
 import Icon from '../components/Icon.vue'
+import LgLoader from '../components/linglow/LgLoader.vue'
 import { isEmbeddedAndroidApp } from '../utils/runtime'
 import TrainingSessionCompletion from '../components/TrainingSessionCompletion.vue'
 import ContentReportDialog from '../components/ContentReportDialog.vue'

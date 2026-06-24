@@ -21,7 +21,7 @@ function toast(msg) {
 }
 
 function fillCourseSelects() {
-  const ids = ['gen-course', 'import-course', 'filter-course', 'pub-course'];
+  const ids = ['gen-course', 'import-course', 'filter-course', 'pub-course', 'cover-batch-course'];
   for (const id of ids) {
     const sel = document.getElementById(id);
     const keepAll = id === 'filter-course';
@@ -134,6 +134,26 @@ function renderPreview(doc) {
   }).join('');
 }
 
+function renderCoverPanel(doc, draft) {
+  const panel = document.getElementById('detail-cover');
+  const thumb = doc?.cover_thumb_rel_path || '';
+  const hero = doc?.cover_hero_rel_path || '';
+  if (!thumb && !hero) {
+    panel.classList.add('hidden');
+    panel.innerHTML = '';
+    return;
+  }
+  panel.classList.remove('hidden');
+  const thumbUrl = thumb ? `/api/images/${doc.id}/${thumb.split('/').pop()}` : '';
+  const heroUrl = hero ? `/api/images/${doc.id}/${hero.split('/').pop()}` : '';
+  panel.innerHTML = `
+    <div class="cover-status">cover: ${draft.cover_status || 'none'}</div>
+    ${thumbUrl ? `<img class="cover-thumb" src="${thumbUrl}" alt="thumb" />` : ''}
+    ${heroUrl ? `<img class="cover-hero" src="${heroUrl}" alt="hero" />` : ''}
+    ${draft.cover_image_prompt ? `<pre class="cover-prompt">${escapeHtml(draft.cover_image_prompt)}</pre>` : ''}
+  `;
+}
+
 async function openDraft(id) {
   currentDraftId = id;
   const data = await api('/api/drafts/' + encodeURIComponent(id));
@@ -141,7 +161,8 @@ async function openDraft(id) {
   const doc = data.document;
   document.getElementById('detail-title').textContent = d.title;
   document.getElementById('detail-meta').textContent =
-    `${d.text_id} · ${d.course_code} · ${d.level} · ${d.status} · audio ${d.audio_status} (${d.segments_with_audio}/${d.segments_total})`;
+    `${d.text_id} · ${d.course_code} · ${d.level} · ${d.status} · audio ${d.audio_status} (${d.segments_with_audio}/${d.segments_total}) · cover ${d.cover_status || 'none'}`;
+  renderCoverPanel(doc, d);
   document.getElementById('detail-preview').innerHTML = renderPreview(doc);
   document.getElementById('detail-edit').value = JSON.stringify(doc, null, 2);
   document.getElementById('detail-log').textContent = d.last_job_log || '';
@@ -290,6 +311,41 @@ document.getElementById('btn-save-edit').addEventListener('click', async () => {
 document.getElementById('btn-approve').addEventListener('click', () => draftAction('approve'));
 document.getElementById('btn-reject').addEventListener('click', () => draftAction('reject'));
 document.getElementById('btn-audio').addEventListener('click', () => draftAction('audio'));
+document.getElementById('btn-cover').addEventListener('click', async () => {
+  if (!currentDraftId) return;
+  toast('Generating cover (LLM + ComfyUI)...');
+  try {
+    const force = document.getElementById('cover-force').checked;
+    const data = await api(`/api/drafts/${encodeURIComponent(currentDraftId)}/cover`, {
+      method: 'POST',
+      body: JSON.stringify({ force }),
+    });
+    toast(`Cover: ${data.draft?.cover_status || 'ok'}`);
+    document.getElementById('detail-log').textContent = data.draft?.last_job_log || '';
+    await openDraft(currentDraftId);
+    await loadDrafts();
+  } catch (err) {
+    toast(err.message);
+  }
+});
+document.getElementById('cover-batch-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  toast('Batch cover generation started...');
+  try {
+    const data = await api('/api/covers/batch', {
+      method: 'POST',
+      body: JSON.stringify({
+        course_code: document.getElementById('cover-batch-course').value,
+        level: document.getElementById('cover-batch-level').value,
+        force: document.getElementById('cover-batch-force').checked,
+      }),
+    });
+    toast(`Batch done: ${data.generated ?? 0} with covers`);
+    await loadPublished();
+  } catch (err) {
+    toast(err.message);
+  }
+});
 document.getElementById('btn-publish').addEventListener('click', async () => {
   if (!currentDraftId) return;
   const sync = document.getElementById('sync-bundle').checked;

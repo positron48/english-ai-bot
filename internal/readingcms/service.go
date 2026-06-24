@@ -80,10 +80,15 @@ func (s *Service) SaveDocument(textID string, doc *TextDocument) (*DraftMeta, er
 			meta.Level = doc.Level
 		}
 	}
-	total, withAudio, audioSt := AudioStats(doc, s.paths.StagingDir(textID))
+	staging := s.paths.StagingDir(textID)
+	total, withAudio, audioSt := AudioStats(doc, staging)
 	meta.SegmentsTotal = total
 	meta.SegmentsWithAudio = withAudio
 	meta.AudioStatus = audioSt
+	meta.CoverStatus = CoverStats(doc, staging)
+	if doc != nil {
+		meta.CoverImagePrompt = doc.CoverImagePrompt
+	}
 	if err := s.store.SaveDraft(meta, doc); err != nil {
 		return nil, err
 	}

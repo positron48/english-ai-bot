@@ -573,7 +573,9 @@
     "questComplete": "Квест пройден! Отлично 🎉",
     "backToDistrict": "Назад в район",
     "budgetEnded": "Разговор завершён. Попробуйте снова, чтобы пройти квест.",
-    "notAvailable": "Общение недоступно"
+    "notAvailable": "Общение недоступно",
+    "requiresPro": "Общение доступно по подписке Pro",
+    "scenarioMissing": "Сценарий общения пока недоступен"
   },
   "trainingFeedback": {
     "encouragingPhrases": [

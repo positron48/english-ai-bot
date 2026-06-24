@@ -13,7 +13,7 @@
       <p class="dst-desc">{{ districtDesc }}</p>
     </div>
 
-    <div v-if="loading" class="dst-loading">{{ t('common.loading') }}</div>
+    <LgLoader v-if="loading" />
     <template v-else>
 
       <!-- 4 ACTIVITY AREAS -->
@@ -58,6 +58,8 @@ import { grammarClient } from '../api/grammarClient'
 import LgPageHeader from '../components/linglow/LgPageHeader.vue'
 import LgLumiFact from '../components/linglow/LgLumiFact.vue'
 import LgActivityIcon from '../components/linglow/LgActivityIcon.vue'
+import LgLoader from '../components/linglow/LgLoader.vue'
+import { wordsPercentForDistrict } from '../utils/wordsProgress'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -101,7 +103,9 @@ const typeProgress = computed(() => {
   return out
 })
 
-const wordsPct = computed(() => Math.round(districtSignal.value.confidence))
+const wordsPct = computed(() =>
+  wordsPercentForDistrict(progress.value?.by_location || [], districtCode.value, districtLevelCode.value),
+)
 const grammarPct = computed(() => {
   const lv = districtLevelCode.value
   if (!lv || !grammarCategories.value.length) return 0

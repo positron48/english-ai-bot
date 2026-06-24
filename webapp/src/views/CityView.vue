@@ -15,7 +15,7 @@
       </LgCityMap>
     </div>
 
-    <div v-if="loading" class="lg-loading">{{ t('common.loading') }}</div>
+    <LgLoader v-if="loading" />
     <div v-else-if="error" class="lg-error">
       <strong>{{ t('common.error') }}</strong>
       <p style="margin: 6px 0 0">{{ error }}</p>
@@ -103,6 +103,7 @@ import { useCourse } from '../composables/useCourse'
 import { routeForLinglowItem } from '../utils/linglowNavigation'
 import LgChip from '../components/linglow/LgChip.vue'
 import LgIcon from '../components/linglow/LgIcon.vue'
+import LgLoader from '../components/linglow/LgLoader.vue'
 import LgProgressBar from '../components/linglow/LgProgressBar.vue'
 import LgCityMap from '../components/linglow/LgCityMap.vue'
 import mapCityImg from '../assets/linglow/art/city-map-826x664.jpg'

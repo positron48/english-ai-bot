@@ -5,6 +5,13 @@ import es from './locales/es.json'
 
 export type SupportedLocale = 'en' | 'ru' | 'es'
 
+// UI locales are always available regardless of the selected course.
+export const AVAILABLE_LOCALES: { code: SupportedLocale; label: string }[] = [
+  { code: 'ru', label: 'Русский' },
+  { code: 'en', label: 'English' },
+  { code: 'es', label: 'Español' },
+]
+
 const messages = {
   en,
   ru,

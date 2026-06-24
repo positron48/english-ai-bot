@@ -1,7 +1,7 @@
 <template>
   <div class="reading-categories">
     <h1 class="page-title">{{ t('reading.title') }}</h1>
-    <div v-if="loading">{{ t('common.loading') }}</div>
+    <LgLoader v-if="loading" />
     <div v-else-if="error">{{ error }}</div>
     <div v-else-if="categories.length === 0" class="empty">{{ t('reading.noTexts') }}</div>
     <div v-else class="grid">
@@ -27,6 +27,7 @@ import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { apiClient } from '../api/client'
 import LgLumiFact from '../components/linglow/LgLumiFact.vue'
+import LgLoader from '../components/linglow/LgLoader.vue'
 
 const { t } = useI18n()
 const route = useRoute()

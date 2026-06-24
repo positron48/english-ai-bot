@@ -46,22 +46,10 @@ import ConfirmModal from './components/ConfirmModal.vue'
 const route = useRoute()
 const { t } = useI18n()
 const { isAuthenticated } = useAuth()
-const { currentLocale, setLocale } = useLocale()
+const { currentLocale } = useLocale()
 const { learning, ensureLearningLoaded } = useLearningConfig()
 const { theme } = useTheme()
 const { alertState, confirmState, closeAlert, closeConfirm } = useDialog()
-
-// On RU→ES instance we intentionally don't offer English UI in the switcher.
-// If browser/system locale (or stale localStorage) is "en", default to "ru".
-watch(
-  learning,
-  (l) => {
-    if (l?.target_lang === 'es' && currentLocale.value === 'en') {
-      void setLocale('ru')
-    }
-  },
-  { deep: true, immediate: true },
-)
 
 const mounted = ref(false)
 const authError = ref<string | null>(null)

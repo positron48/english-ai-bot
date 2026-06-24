@@ -563,7 +563,19 @@
     "placeholder": "Type your message...",
     "send": "Send",
     "sending": "Sending...",
-    "errorSend": "Sorry, an error occurred. Please try again."
+    "errorSend": "Sorry, an error occurred. Please try again.",
+    "placesTitle": "Places to chat",
+    "noPlaces": "No places to chat here yet",
+    "quest": "Quest",
+    "free": "Free chat",
+    "tasksTitle": "Tasks",
+    "optional": "optional",
+    "questComplete": "Quest complete! Well done 🎉",
+    "backToDistrict": "Back to district",
+    "budgetEnded": "The conversation has ended. Try again to complete the quest.",
+    "notAvailable": "Chat is unavailable",
+    "requiresPro": "Chat is available with a Pro subscription",
+    "scenarioMissing": "This chat scenario is not available yet"
   },
   "trainingFeedback": {
     "encouragingPhrases": [
