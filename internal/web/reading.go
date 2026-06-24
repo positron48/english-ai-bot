@@ -390,7 +390,11 @@ func (r *Router) handleReadingWordLookup(w http.ResponseWriter, req *http.Reques
 		return
 	}
 
-	canonicalLemma, wordCardID, found, err := r.findReadingWordCardByInput(lemma)
+	// Scope the lookup to the learner's selected course so Spanish words resolve/create
+	// under es_ru (not the instance default course).
+	courseCode := r.requestedCourseCodeForUser(req, userID)
+
+	canonicalLemma, wordCardID, found, err := r.findReadingWordCardByInput(lemma, courseCode)
 	if err != nil {
 		r.logger.Error("reading word lookup: failed to resolve word card", zap.String("lemma", lemma), zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -398,11 +402,12 @@ func (r *Router) handleReadingWordLookup(w http.ResponseWriter, req *http.Reques
 	}
 	if !found {
 		if ws := r.getReadingWordService(); ws != nil && ws.IsSingleWord(lemma) {
-			// Reuse the same path as chat single-word lookup: DB + word_forms + LLM fallback.
-			if _, err := ws.GetWordDefinition(req.Context(), userID, lemma); err != nil {
+			// Reuse the same path as chat single-word lookup: DB + word_forms + LLM fallback,
+			// but generate the card in the learner's course.
+			if _, err := ws.GetWordDefinitionForCourse(req.Context(), userID, lemma, courseCode); err != nil {
 				r.logger.Warn("reading word lookup: word service fallback failed", zap.String("lemma", lemma), zap.Error(err))
 			}
-			canonicalLemma, wordCardID, found, err = r.findReadingWordCardByInput(lemma)
+			canonicalLemma, wordCardID, found, err = r.findReadingWordCardByInput(lemma, courseCode)
 			if err != nil {
 				r.logger.Error("reading word lookup: failed to resolve word card after fallback", zap.String("lemma", lemma), zap.Error(err))
 				http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -438,6 +443,7 @@ func (r *Router) handleReadingWordLookup(w http.ResponseWriter, req *http.Reques
 type readingWordLookupService interface {
 	IsSingleWord(text string) bool
 	GetWordDefinition(ctx context.Context, userID int64, word string) (string, error)
+	GetWordDefinitionForCourse(ctx context.Context, userID int64, word, courseCode string) (string, error)
 }
 
 func (r *Router) getReadingWordService() readingWordLookupService {
@@ -451,11 +457,39 @@ func (r *Router) getReadingWordService() readingWordLookupService {
 	return ws
 }
 
-func (r *Router) findReadingWordCardByInput(input string) (string, int64, bool, error) {
+func (r *Router) findReadingWordCardByInput(input, courseCode string) (string, int64, bool, error) {
 	normalized := strings.TrimSpace(strings.ToLower(input))
 	if normalized == "" {
 		return "", 0, false, nil
 	}
+	courseCode = strings.TrimSpace(strings.ToLower(courseCode))
+
+	// Prefer a card in the requested course (so the same word in another course
+	// doesn't shadow it), then fall back to an unscoped match for legacy/untagged rows.
+	if courseCode != "" {
+		var canonicalLemma string
+		var wordCardID int64
+		err := r.db.QueryRow(`
+SELECT wc.word, wc.id
+FROM word_forms wf
+JOIN word_cards wc ON wc.id = wf.word_card_id
+WHERE LOWER(wf.form) = LOWER(?) AND LOWER(wc.course_code) = ?
+LIMIT 1`, normalized, courseCode).Scan(&canonicalLemma, &wordCardID)
+		if err == nil {
+			return canonicalLemma, wordCardID, true, nil
+		}
+		if err != nil && !errors.Is(err, sql.ErrNoRows) {
+			return "", 0, false, err
+		}
+		err = r.db.QueryRow(`SELECT word, id FROM word_cards WHERE LOWER(word) = LOWER(?) AND LOWER(course_code) = ?`, normalized, courseCode).Scan(&canonicalLemma, &wordCardID)
+		if err == nil {
+			return canonicalLemma, wordCardID, true, nil
+		}
+		if err != nil && !errors.Is(err, sql.ErrNoRows) {
+			return "", 0, false, err
+		}
+	}
+
 	var canonicalLemma string
 	var wordCardID int64
 	err := r.db.QueryRow(`
@@ -528,7 +562,7 @@ func (r *Router) BootstrapReadingWordCards(ctx context.Context) {
 			seen[n] = struct{}{}
 			total++
 
-			if _, _, found, err := r.findReadingWordCardByInput(n); err == nil && found {
+			if _, _, found, err := r.findReadingWordCardByInput(n, ""); err == nil && found {
 				continue
 			}
 			if ws != nil && !ws.IsSingleWord(n) {

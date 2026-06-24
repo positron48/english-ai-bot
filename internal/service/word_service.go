@@ -296,9 +296,37 @@ func (s *WordService) NormalizeWord(word string) string {
 	return strings.TrimSpace(strings.ToLower(word))
 }
 
-// GetWordDefinition gets word definition from DB or AI
-// New flow: resolve word form -> lemma -> render markdown from structured data
+// courseTargetLang extracts the target language from a course code ("es_ru" -> "es").
+func courseTargetLang(courseCode string) string {
+	parts := strings.SplitN(strings.TrimSpace(strings.ToLower(courseCode)), "_", 2)
+	if len(parts) > 0 {
+		return parts[0]
+	}
+	return ""
+}
+
+// GetWordDefinition gets word definition from DB or AI for the instance's default course.
 func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word string) (string, error) {
+	return s.getWordDefinitionForCourse(ctx, userID, word, s.courseCode, s.learning.TargetLang)
+}
+
+// GetWordDefinitionForCourse is the multi-course entry point: it resolves and stores the
+// word card under the given course (e.g. es_ru) instead of the instance default, so reading
+// look-ups on a unified DB return/create cards in the learner's selected course.
+func (s *WordService) GetWordDefinitionForCourse(ctx context.Context, userID int64, word, courseCode string) (string, error) {
+	if strings.TrimSpace(courseCode) == "" {
+		return s.GetWordDefinition(ctx, userID, word)
+	}
+	targetLang := courseTargetLang(courseCode)
+	if targetLang == "" {
+		targetLang = s.learning.TargetLang
+	}
+	return s.getWordDefinitionForCourse(ctx, userID, word, courseCode, targetLang)
+}
+
+// getWordDefinitionForCourse resolves a word form -> lemma -> markdown, scoped to courseCode
+// and targetLang (the language-specific bits like verb display and gender lexicon).
+func (s *WordService) getWordDefinitionForCourse(ctx context.Context, userID int64, word, courseCode, targetLang string) (string, error) {
 	normalizedWord := s.NormalizeWord(word)
 	inputWord := word // Keep original for history
 
@@ -319,7 +347,7 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 
 	// Step 2: If no mapping found, try direct lookup by lemma
 	if wordCard == nil {
-		wordCard, err = s.wordRepo.GetWordCardByLemmaForCourse(normalizedWord, s.courseCode)
+		wordCard, err = s.wordRepo.GetWordCardByLemmaForCourse(normalizedWord, courseCode)
 		if err != nil {
 			s.logger.Warn("failed to get word card by lemma", zap.Error(err))
 		}
@@ -327,7 +355,7 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 
 	// Step 3: If found in DB, render markdown and return
 	if wordCard != nil {
-		s.tryLinkVerbLemma(wordCard)
+		s.tryLinkVerbLemmaForLang(wordCard, targetLang)
 		if !s.wordCardNativeFieldsLookValid(wordCard) {
 			s.logger.Warn("word card from database has invalid native-language fields, forcing refresh from AI",
 				zap.String("word", wordCard.Word),
@@ -382,7 +410,7 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 		return "", fmt.Errorf("AI service not available")
 	}
 
-	response, err := s.aiService.GenerateResponseForCourse(ctx, word, s.courseCode)
+	response, err := s.aiService.GenerateResponseForCourse(ctx, word, courseCode)
 	if err != nil {
 		return "", fmt.Errorf("failed to get AI response: %w", err)
 	}
@@ -402,7 +430,7 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 		// LLM can occasionally return correction text for single-word lookup.
 		// Retry once with a strict JSON-only lookup instruction.
 		forcedPrompt := buildForcedSingleWordLookupPrompt(word)
-		forcedResponse, forcedErr := s.aiService.GenerateResponseForCourse(ctx, forcedPrompt, s.courseCode)
+		forcedResponse, forcedErr := s.aiService.GenerateResponseForCourse(ctx, forcedPrompt, courseCode)
 		if forcedErr == nil {
 			if retryErr := json.Unmarshal([]byte(forcedResponse), &wordInfo); retryErr == nil {
 				response = forcedResponse
@@ -424,7 +452,7 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 			zap.Error(err),
 			zap.String("response", response[:min(100, len(response))]),
 		)
-		if err := s.wordRepo.SaveWordCard(normalizedWord, response, s.courseCode); err != nil {
+		if err := s.wordRepo.SaveWordCard(normalizedWord, response, courseCode); err != nil {
 			s.logger.Warn("failed to save word card", zap.Error(err))
 		} else {
 			if err := s.wordRepo.AddWordRequestHistory(userID, normalizedWord); err != nil {
@@ -438,8 +466,8 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 
 	requireNativeCyrillic := s.nativeLanguageRequiresCyrillic()
 	if !nativeFieldsLookValidForConfig(wordInfo.DefinitionNative, wordInfo.Examples, requireNativeCyrillic) {
-		forcedPrompt := buildForcedNativeLanguagePrompt(word, s.learning.NativeLang, s.learning.TargetLang, s.learning.Pair)
-		forcedResponse, forcedErr := s.aiService.GenerateResponseForCourse(ctx, forcedPrompt, s.courseCode)
+		forcedPrompt := buildForcedNativeLanguagePrompt(word, s.learning.NativeLang, targetLang, s.learning.Pair)
+		forcedResponse, forcedErr := s.aiService.GenerateResponseForCourse(ctx, forcedPrompt, courseCode)
 		if forcedErr == nil {
 			var forcedInfo models.WordInfoResponse
 			if err := json.Unmarshal([]byte(forcedResponse), &forcedInfo); err == nil {
@@ -548,7 +576,7 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 	wordInfo.POS = canonicalPOSValue(wordInfo.POS)
 	s.applySpanishGenderLexicon(lemma, &wordInfo)
 	if models.IsVerbPOS(wordInfo.POS) && wordInfo.VerbForms != nil && wordInfo.VerbForms.V1 != "" {
-		if strings.EqualFold(s.learning.TargetLang, "en") {
+		if strings.EqualFold(targetLang, "en") {
 			displayEN = "to " + wordInfo.VerbForms.V1
 		} else {
 			// Spanish and other targets: infinitive without English "to " prefix
@@ -561,11 +589,11 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 		Definition:         "", // Legacy field, keep empty
 		POS:                &wordInfo.POS,
 		NounGender:         normalizeNounGender(wordInfo.POS, wordInfo.NounGender),
-		OppositeGenderWord: s.normalizeOppositeGenderWord(wordInfo.POS, wordInfo.OppositeGenderWord, lemma, s.learning.TargetLang),
+		OppositeGenderWord: s.normalizeOppositeGenderWord(wordInfo.POS, wordInfo.OppositeGenderWord, lemma, targetLang),
 		Transcription:      &wordInfo.Transcription,
 		DefinitionRU:       &wordInfo.DefinitionRU,
 		DisplayEN:          &displayEN,
-		CourseCode:         s.courseCode,
+		CourseCode:         courseCode,
 	}
 
 	// Serialize examples
@@ -620,7 +648,7 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 	}
 
 	// Step 8: Record request history
-	s.tryLinkVerbLemma(wordCard)
+	s.tryLinkVerbLemmaForLang(wordCard, targetLang)
 	if err := s.wordRepo.AddWordRequestHistoryWithCard(userID, inputWord, &wordCardID, nil); err != nil {
 		s.logger.Warn("failed to add word request history", zap.Error(err))
 	}
@@ -635,7 +663,11 @@ func (s *WordService) GetWordDefinition(ctx context.Context, userID int64, word 
 }
 
 func (s *WordService) tryLinkVerbLemma(card *models.WordCard) {
-	if card == nil || !strings.EqualFold(s.learning.TargetLang, "es") {
+	s.tryLinkVerbLemmaForLang(card, s.learning.TargetLang)
+}
+
+func (s *WordService) tryLinkVerbLemmaForLang(card *models.WordCard, targetLang string) {
+	if card == nil || !strings.EqualFold(targetLang, "es") {
 		return
 	}
 	lemma := strings.TrimSpace(strings.ToLower(card.Word))
@@ -643,7 +675,7 @@ func (s *WordService) tryLinkVerbLemma(card *models.WordCard) {
 		return
 	}
 	verbRepo := repository.NewVerbFormsRepository(s.wordRepo.DB(), s.logger)
-	_, err := verbRepo.LinkWordCardByLemma(card.ID, lemma, s.learning.TargetLang, "word_service")
+	_, err := verbRepo.LinkWordCardByLemma(card.ID, lemma, targetLang, "word_service")
 	if err != nil {
 		s.logger.Warn("failed to link verb lemma for word card",
 			zap.Int64("word_card_id", card.ID),
