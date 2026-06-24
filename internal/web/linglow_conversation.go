@@ -616,6 +616,7 @@ func buildConversationSystemPrompt(base, targetLang string, scenario *repository
 			fmt.Fprintf(&b, "- [%s] (%s, %s) %s\n", t.Code, req, status, t.CompletionCriteria)
 		}
 		b.WriteString("\nUse the task codes in square brackets in completed_task_codes. Only mark a task when the learner has genuinely done it in their own words. Do not re-mark tasks already done.\n")
+		b.WriteString("IMPORTANT: mark each task in completed_task_codes on the SAME turn the learner accomplishes it — as soon as it happens. Never wait until the end of the conversation to report several tasks at once. Each reply must report any tasks newly satisfied by the learner's latest message.\n")
 		if nudge {
 			b.WriteString("\nThe learner is taking a while. Gently steer them, in very simple language, toward a remaining task without solving it for them.\n")
 		}
