@@ -178,7 +178,7 @@ interface Pagination {
 }
 
 const { t } = useI18n()
-const { currentCourseCode } = useCourse()
+const { currentCourseCode, ensureCourseLoaded } = useCourse()
 
 const words = ref<VocabWord[]>([])
 const loading = ref(true)
@@ -203,6 +203,8 @@ watch(currentCourseCode, () => {
 })
 
 onMounted(async () => {
+  // Resolve the selected course before the first fetch so the dictionary is course-scoped.
+  await ensureCourseLoaded()
   await loadVocab()
 })
 
@@ -258,29 +260,10 @@ function linglowWordToVocab(w: LinglowWordItem): VocabWord {
 const loadVocab = async () => {
   loading.value = true
   try {
-    // Try Linglow v2 word list first (works on new unified DB)
-    const linglowResult = await courseClient.getWordList({
-      courseCode: currentCourseCode.value || undefined,
-      q: searchQuery.value || undefined,
-      status: statusFilter.value || undefined,
-      sort: linglowSort(sortField.value),
-      limit: pagination.value.limit,
-      offset: (pagination.value.page - 1) * pagination.value.limit,
-    }).catch(() => null)
-
-    if (linglowResult && (linglowResult.total > 0 || linglowResult.words?.length > 0)) {
-      words.value = (linglowResult.words || []).map(linglowWordToVocab)
-      const total = linglowResult.total || 0
-      pagination.value = {
-        page: pagination.value.page,
-        limit: linglowResult.limit,
-        total,
-        total_pages: Math.ceil(total / linglowResult.limit) || 1,
-      }
-      return
-    }
-
-    // Fallback to legacy /api/vocab (old prod DB)
+    // The dictionary reads the legacy vocab (user_cards/user_word_knowledge over word_cards),
+    // course-scoped — the same source as the "in vocab" indicator in word sets, so what the
+    // user has actually studied is shown. v2 word list is only a fallback for instances
+    // without the legacy tables.
     let sortBy = 'display_word'
     let sortOrder = 'asc'
     if (sortField.value === 'display_word') { sortBy = 'display_word'; sortOrder = 'asc' }
@@ -298,12 +281,39 @@ const loadVocab = async () => {
       sort_by: sortBy,
       sort_order: sortOrder,
     })
+    if (currentCourseCode.value) params.append('course_code', currentCourseCode.value)
     if (searchQuery.value) params.append('search', searchQuery.value)
     if (statusFilter.value) params.append('mastery_level', statusFilter.value)
 
-    const data: { words: VocabWord[], pagination: Pagination } = await apiClient.request(`/api/vocab?${params.toString()}`)
-    words.value = data.words || []
-    pagination.value = data.pagination || { page: 1, limit: 100, total: 0, total_pages: 0 }
+    const data: { words: VocabWord[], pagination: Pagination } | null =
+      await apiClient.request(`/api/vocab?${params.toString()}`).catch(() => null) as any
+
+    if (data && data.words) {
+      words.value = data.words || []
+      pagination.value = data.pagination || { page: 1, limit: 100, total: 0, total_pages: 0 }
+      return
+    }
+
+    // Fallback: Linglow v2 word list (instances without legacy vocab tables).
+    const linglowResult = await courseClient.getWordList({
+      courseCode: currentCourseCode.value || undefined,
+      q: searchQuery.value || undefined,
+      status: statusFilter.value || undefined,
+      sort: linglowSort(sortField.value),
+      limit: pagination.value.limit,
+      offset: (pagination.value.page - 1) * pagination.value.limit,
+    }).catch(() => null)
+
+    if (linglowResult) {
+      words.value = (linglowResult.words || []).map(linglowWordToVocab)
+      const total = linglowResult.total || 0
+      pagination.value = {
+        page: pagination.value.page,
+        limit: linglowResult.limit,
+        total,
+        total_pages: Math.ceil(total / linglowResult.limit) || 1,
+      }
+    }
   } catch (error) {
     console.error('Failed to load vocabulary:', error)
     words.value = []

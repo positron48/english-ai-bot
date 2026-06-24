@@ -153,6 +153,14 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 	args := []interface{}{now, userID, userID, userID}
 	argsKnown := []interface{}{userID, userID}
 
+	// Scope to the learner's selected course on the unified DB so the dictionary matches
+	// the word-set "in vocab" indicator. Empty course (single-course prod) = no filter.
+	courseCode := r.requestedCourseCodeForUser(req, userID)
+	queryFromCards += " AND (? = '' OR LOWER(wc.course_code) = LOWER(?))"
+	args = append(args, courseCode, courseCode)
+	queryFromKnown += " AND (? = '' OR LOWER(wc.course_code) = LOWER(?))"
+	argsKnown = append(argsKnown, courseCode, courseCode)
+
 	if search != "" {
 		// Search by lemma, display_word, or word_ru (case-insensitive)
 		searchLower := strings.ToLower(search)
