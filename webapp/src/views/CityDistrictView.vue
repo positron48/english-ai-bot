@@ -53,6 +53,7 @@ import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { courseClient, type CourseMap, type CourseProgress } from '../api/courseClient'
 import { useLocale } from '../composables/useLocale'
+import { useCourse } from '../composables/useCourse'
 import { grammarClient } from '../api/grammarClient'
 import LgPageHeader from '../components/linglow/LgPageHeader.vue'
 import LgLumiFact from '../components/linglow/LgLumiFact.vue'
@@ -63,6 +64,7 @@ import { wordsPercentForLevel, type WordLevelProgressMap } from '../utils/wordsP
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
+const { currentCourseCode, ensureCourseLoaded } = useCourse()
 
 const courseMap = ref<CourseMap | null>(null)
 const progress = ref<CourseProgress | null>(null)
@@ -171,11 +173,13 @@ const areas = computed(() => {
 
 onMounted(async () => {
   try {
+    await ensureCourseLoaded()
+    const wpCourse = courseCode.value || currentCourseCode.value || undefined
     const [map, prog, grammarData, wp] = await Promise.all([
       courseClient.getCourseMap(courseCode.value),
       courseClient.getProgress(courseCode.value),
       grammarClient.getCategories().catch(() => ({ categories: [] })),
-      courseClient.getWordLevelProgress(courseCode.value).catch(() => ({ levels: {} })),
+      courseClient.getWordLevelProgress(wpCourse).catch(() => ({ levels: {} })),
     ])
     courseMap.value = map
     progress.value = prog

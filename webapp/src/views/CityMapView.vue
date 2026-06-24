@@ -54,7 +54,7 @@ import { wordsPercentForLevel, type WordLevelProgressMap } from '../utils/wordsP
 
 const { t } = useI18n()
 const router = useRouter()
-const { currentCourse } = useCourse()
+const { currentCourse, currentCourseCode, ensureCourseLoaded } = useCourse()
 
 const cityName = computed(() => currentCourse.value?.city_name || currentCourse.value?.title || 'Ciudad Luminaria')
 
@@ -126,7 +126,7 @@ async function loadDistrictTitles() {
 
 async function loadWordLevels() {
   try {
-    const res = await courseClient.getWordLevelProgress(currentCourse.value?.code || undefined)
+    const res = await courseClient.getWordLevelProgress(currentCourseCode.value || undefined)
     wordLevels.value = res.levels || {}
   } catch { /* leave empty -> 0% */ }
 }
@@ -301,7 +301,8 @@ function handleCanvasClick(e: MouseEvent) {
 }
 
 onMounted(() => {
-  Promise.all([loadGrammarProgress(), loadProgress(), loadDistrictTitles(), loadWordLevels()])
+  ensureCourseLoaded()
+    .then(() => Promise.all([loadGrammarProgress(), loadProgress(), loadDistrictTitles(), loadWordLevels()]))
     .finally(() => { mapReady.value = true })
   setTimeout(resize, 50)
   const srcs = [
