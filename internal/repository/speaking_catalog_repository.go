@@ -26,25 +26,25 @@ type SpeakingCategorySnapshot struct {
 
 // SpeakingTaskDocument is the public task payload (without evaluation hints for client).
 type SpeakingTaskDocument struct {
-	ID             string   `json:"id"`
-	CategoryID     string   `json:"category_id"`
-	Level          string   `json:"level"`
-	Type           string   `json:"type"`
-	TargetLanguage string   `json:"target_language"`
-	Title          string   `json:"title"`
-	PromptRU       string   `json:"prompt_ru"`
-	DisplayText    string   `json:"display_text,omitempty"`
-	QuestionES     string   `json:"question_es,omitempty"`
-	MaxAttempts    int      `json:"max_attempts"`
-	Order          int      `json:"order"`
+	ID             string `json:"id"`
+	CategoryID     string `json:"category_id"`
+	Level          string `json:"level"`
+	Type           string `json:"type"`
+	TargetLanguage string `json:"target_language"`
+	Title          string `json:"title"`
+	PromptRU       string `json:"prompt_ru"`
+	DisplayText    string `json:"display_text,omitempty"`
+	QuestionES     string `json:"question_es,omitempty"`
+	MaxAttempts    int    `json:"max_attempts"`
+	Order          int    `json:"order"`
 }
 
 // SpeakingTaskFull includes evaluator-only fields from stored JSON.
 type SpeakingTaskFull struct {
 	SpeakingTaskDocument
-	ExpectedMeaningRU  string   `json:"expected_meaning_ru,omitempty"`
-	AcceptableAnswers  []string `json:"acceptable_answers,omitempty"`
-	EvaluationNotes    string   `json:"evaluation_notes,omitempty"`
+	ExpectedMeaningRU string   `json:"expected_meaning_ru,omitempty"`
+	AcceptableAnswers []string `json:"acceptable_answers,omitempty"`
+	EvaluationNotes   string   `json:"evaluation_notes,omitempty"`
 }
 
 // SpeakingCatalogRepository persists speaking tasks synced from bundle.
@@ -178,20 +178,38 @@ func (r *SpeakingCatalogRepository) ReplaceCatalog(
 	categories []SpeakingCategoryUpsert,
 	tasks []SpeakingTaskUpsert,
 ) error {
+	return r.ReplaceCatalogForTargetLanguage("", version, generatedAt, categories, tasks)
+}
+
+func (r *SpeakingCatalogRepository) ReplaceCatalogForTargetLanguage(
+	targetLanguage, version, generatedAt string,
+	categories []SpeakingCategoryUpsert,
+	tasks []SpeakingTaskUpsert,
+) error {
 	if r == nil || r.db == nil {
 		return fmt.Errorf("speaking catalog repo: nil db")
 	}
+	targetLanguage = strings.TrimSpace(strings.ToLower(targetLanguage))
 	tx, err := r.db.Begin()
 	if err != nil {
 		return err
 	}
 	defer func() { _ = tx.Rollback() }()
 
-	if _, err := tx.Exec(`DELETE FROM speaking_tasks`); err != nil {
-		return fmt.Errorf("truncate speaking_tasks: %w", err)
-	}
-	if _, err := tx.Exec(`DELETE FROM speaking_categories`); err != nil {
-		return fmt.Errorf("truncate speaking_categories: %w", err)
+	if targetLanguage == "" {
+		if _, err := tx.Exec(`DELETE FROM speaking_tasks`); err != nil {
+			return fmt.Errorf("truncate speaking_tasks: %w", err)
+		}
+		if _, err := tx.Exec(`DELETE FROM speaking_categories`); err != nil {
+			return fmt.Errorf("truncate speaking_categories: %w", err)
+		}
+	} else {
+		if _, err := tx.Exec(`DELETE FROM speaking_tasks WHERE LOWER(target_language) = ?`, targetLanguage); err != nil {
+			return fmt.Errorf("delete speaking_tasks for %q: %w", targetLanguage, err)
+		}
+		if _, err := tx.Exec(`DELETE FROM speaking_categories WHERE LOWER(category_id) LIKE ? ESCAPE '\'`, targetLanguage+`\_%`); err != nil {
+			return fmt.Errorf("delete speaking_categories for %q: %w", targetLanguage, err)
+		}
 	}
 
 	for _, c := range categories {
@@ -205,7 +223,13 @@ func (r *SpeakingCatalogRepository) ReplaceCatalog(
 		}
 		if _, err := tx.Exec(`
 INSERT INTO speaking_categories (category_id, title, title_translations, level, sort_order, task_ids)
-VALUES (?, ?, ?, ?, ?, ?)`,
+VALUES (?, ?, ?, ?, ?, ?)
+ON CONFLICT(category_id) DO UPDATE SET
+  title = excluded.title,
+  title_translations = excluded.title_translations,
+  level = excluded.level,
+  sort_order = excluded.sort_order,
+  task_ids = excluded.task_ids`,
 			c.CategoryID, c.Title, string(titleTrans), c.Level, c.SortOrder, string(taskIDs),
 		); err != nil {
 			return fmt.Errorf("insert speaking_categories %q: %w", c.CategoryID, err)
@@ -213,9 +237,21 @@ VALUES (?, ?, ?, ?, ?, ?)`,
 	}
 
 	for _, t := range tasks {
+		if targetLanguage != "" && strings.TrimSpace(strings.ToLower(t.TargetLanguage)) != targetLanguage {
+			return fmt.Errorf("speaking task %q target_language=%q does not match import target %q", t.TaskID, t.TargetLanguage, targetLanguage)
+		}
 		if _, err := tx.Exec(`
 INSERT INTO speaking_tasks (task_id, category_id, title, level, task_type, target_language, sort_order, task_json, updated_at)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)`,
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+ON CONFLICT(task_id) DO UPDATE SET
+  category_id = excluded.category_id,
+  title = excluded.title,
+  level = excluded.level,
+  task_type = excluded.task_type,
+  target_language = excluded.target_language,
+  sort_order = excluded.sort_order,
+  task_json = excluded.task_json,
+  updated_at = CURRENT_TIMESTAMP`,
 			t.TaskID, t.CategoryID, t.Title, t.Level, t.TaskType, t.TargetLanguage, t.SortOrder, t.TaskJSON,
 		); err != nil {
 			return fmt.Errorf("insert speaking_tasks %q: %w", t.TaskID, err)

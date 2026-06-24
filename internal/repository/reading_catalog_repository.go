@@ -33,6 +33,9 @@ type ReadingTextDocument struct {
 	TitleTranslations map[string]string      `json:"title_translations,omitempty"`
 	Level             string                 `json:"level"`
 	TargetLanguage    string                 `json:"target_language"`
+	CoverThumbRelPath string                 `json:"cover_thumb_rel_path,omitempty"`
+	CoverHeroRelPath  string                 `json:"cover_hero_rel_path,omitempty"`
+	CoverImagePrompt  string                 `json:"cover_image_prompt,omitempty"`
 	ReadingPassage    map[string]interface{} `json:"reading_passage"`
 }
 
@@ -118,11 +121,13 @@ func (r *ReadingCatalogRepository) GetTextDocument(textID string) (*ReadingTextD
 		return nil, false, nil
 	}
 	const q = `
-SELECT text_id, category_id, title, COALESCE(title_translations, ''), level, target_language, reading_passage
+SELECT text_id, category_id, title, COALESCE(title_translations, ''), level, target_language,
+       COALESCE(cover_thumb_rel_path, ''), COALESCE(cover_hero_rel_path, ''), COALESCE(cover_image_prompt, ''),
+       reading_passage
 FROM reading_texts
 WHERE text_id = ?`
-	var tid, catID, title, titleJSON, level, targetLang, passageJSON string
-	err := r.db.QueryRow(q, textID).Scan(&tid, &catID, &title, &titleJSON, &level, &targetLang, &passageJSON)
+	var tid, catID, title, titleJSON, level, targetLang, thumb, hero, prompt, passageJSON string
+	err := r.db.QueryRow(q, textID).Scan(&tid, &catID, &title, &titleJSON, &level, &targetLang, &thumb, &hero, &prompt, &passageJSON)
 	if errors.Is(err, sql.ErrNoRows) {
 		return nil, false, nil
 	}
@@ -147,6 +152,9 @@ WHERE text_id = ?`
 		TitleTranslations: titleTrans,
 		Level:             level,
 		TargetLanguage:    targetLang,
+		CoverThumbRelPath: thumb,
+		CoverHeroRelPath:  hero,
+		CoverImagePrompt:  prompt,
 		ReadingPassage:    passage,
 	}
 	return doc, true, nil
@@ -179,20 +187,42 @@ func (r *ReadingCatalogRepository) ReplaceCatalog(
 	categories []ReadingCategoryUpsert,
 	texts []ReadingTextUpsert,
 ) error {
+	return r.ReplaceCatalogForTargetLanguage("", version, generatedAt, categories, texts)
+}
+
+// ReplaceCatalogForTargetLanguage replaces only the catalog rows for one target language.
+// Empty targetLanguage preserves the legacy full-catalog replacement behavior.
+func (r *ReadingCatalogRepository) ReplaceCatalogForTargetLanguage(
+	targetLanguage, version, generatedAt string,
+	categories []ReadingCategoryUpsert,
+	texts []ReadingTextUpsert,
+) error {
 	if r == nil || r.db == nil {
 		return fmt.Errorf("reading catalog repo: nil db")
 	}
+	targetLanguage = strings.TrimSpace(strings.ToLower(targetLanguage))
 	tx, err := r.db.Begin()
 	if err != nil {
 		return err
 	}
 	defer func() { _ = tx.Rollback() }()
 
-	if _, err := tx.Exec(`DELETE FROM reading_texts`); err != nil {
-		return fmt.Errorf("truncate reading_texts: %w", err)
-	}
-	if _, err := tx.Exec(`DELETE FROM reading_categories`); err != nil {
-		return fmt.Errorf("truncate reading_categories: %w", err)
+	if targetLanguage == "" {
+		if _, err := tx.Exec(`DELETE FROM reading_texts`); err != nil {
+			return fmt.Errorf("truncate reading_texts: %w", err)
+		}
+		if _, err := tx.Exec(`DELETE FROM reading_categories`); err != nil {
+			return fmt.Errorf("truncate reading_categories: %w", err)
+		}
+	} else {
+		if _, err := tx.Exec(`DELETE FROM reading_texts WHERE LOWER(target_language) = ?`, targetLanguage); err != nil {
+			return fmt.Errorf("delete reading_texts for %q: %w", targetLanguage, err)
+		}
+		// Existing category IDs are language-prefixed (en_a1, es_a1, ...). Keep
+		// other languages intact in the unified Linglow DB.
+		if _, err := tx.Exec(`DELETE FROM reading_categories WHERE LOWER(category_id) LIKE ? ESCAPE '\'`, targetLanguage+`\_%`); err != nil {
+			return fmt.Errorf("delete reading_categories for %q: %w", targetLanguage, err)
+		}
 	}
 
 	for _, c := range categories {
@@ -206,7 +236,13 @@ func (r *ReadingCatalogRepository) ReplaceCatalog(
 		}
 		if _, err := tx.Exec(`
 INSERT INTO reading_categories (category_id, title, title_translations, level, sort_order, text_ids)
-VALUES (?, ?, ?, ?, ?, ?)`,
+VALUES (?, ?, ?, ?, ?, ?)
+ON CONFLICT(category_id) DO UPDATE SET
+  title = excluded.title,
+  title_translations = excluded.title_translations,
+  level = excluded.level,
+  sort_order = excluded.sort_order,
+  text_ids = excluded.text_ids`,
 			c.CategoryID,
 			c.Title,
 			string(titleTrans),
@@ -223,15 +259,33 @@ VALUES (?, ?, ?, ?, ?, ?)`,
 		if err != nil {
 			return err
 		}
+		if targetLanguage != "" && strings.TrimSpace(strings.ToLower(t.TargetLanguage)) != targetLanguage {
+			return fmt.Errorf("reading text %q target_language=%q does not match import target %q", t.TextID, t.TargetLanguage, targetLanguage)
+		}
 		if _, err := tx.Exec(`
-INSERT INTO reading_texts (text_id, category_id, title, title_translations, level, target_language, reading_passage, updated_at)
-VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)`,
+INSERT INTO reading_texts (text_id, category_id, title, title_translations, level, target_language,
+  cover_thumb_rel_path, cover_hero_rel_path, cover_image_prompt, reading_passage, updated_at)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+ON CONFLICT(text_id) DO UPDATE SET
+  category_id = excluded.category_id,
+  title = excluded.title,
+  title_translations = excluded.title_translations,
+  level = excluded.level,
+  target_language = excluded.target_language,
+  cover_thumb_rel_path = excluded.cover_thumb_rel_path,
+  cover_hero_rel_path = excluded.cover_hero_rel_path,
+  cover_image_prompt = excluded.cover_image_prompt,
+  reading_passage = excluded.reading_passage,
+  updated_at = CURRENT_TIMESTAMP`,
 			t.TextID,
 			t.CategoryID,
 			t.Title,
 			string(titleTrans),
 			t.Level,
 			t.TargetLanguage,
+			nullIfEmpty(t.CoverThumbRelPath),
+			nullIfEmpty(t.CoverHeroRelPath),
+			nullIfEmpty(t.CoverImagePrompt),
 			t.ReadingPassageJSON,
 		); err != nil {
 			return fmt.Errorf("insert reading_texts %q: %w", t.TextID, err)
@@ -265,11 +319,21 @@ type ReadingCategoryUpsert struct {
 
 // ReadingTextUpsert is one text row for ReplaceCatalog.
 type ReadingTextUpsert struct {
-	TextID               string
-	CategoryID           string
-	Title                string
-	TitleTranslations    map[string]string
-	Level                string
-	TargetLanguage       string
-	ReadingPassageJSON   string
+	TextID             string
+	CategoryID         string
+	Title              string
+	TitleTranslations  map[string]string
+	Level              string
+	TargetLanguage     string
+	CoverThumbRelPath  string
+	CoverHeroRelPath   string
+	CoverImagePrompt   string
+	ReadingPassageJSON string
+}
+
+func nullIfEmpty(s string) interface{} {
+	if strings.TrimSpace(s) == "" {
+		return nil
+	}
+	return s
 }

@@ -18,10 +18,10 @@ import (
 )
 
 type bundleIndex struct {
-	Version     string                     `json:"version"`
-	GeneratedAt string                     `json:"generated_at"`
-	Categories  map[string]bundleCategory  `json:"categories"`
-	Texts       map[string]string          `json:"texts"`
+	Version     string                    `json:"version"`
+	GeneratedAt string                    `json:"generated_at"`
+	Categories  map[string]bundleCategory `json:"categories"`
+	Texts       map[string]string         `json:"texts"`
 }
 
 type bundleCategory struct {
@@ -40,6 +40,9 @@ type bundleTextFile struct {
 	TitleTranslations map[string]string      `json:"title_translations,omitempty"`
 	Level             string                 `json:"level"`
 	TargetLanguage    string                 `json:"target_language"`
+	CoverThumbRelPath string                 `json:"cover_thumb_rel_path,omitempty"`
+	CoverHeroRelPath  string                 `json:"cover_hero_rel_path,omitempty"`
+	CoverImagePrompt  string                 `json:"cover_image_prompt,omitempty"`
 	ReadingPassage    map[string]interface{} `json:"reading_passage"`
 }
 
@@ -177,17 +180,20 @@ func SyncFromBundle(ctx context.Context, cfg *config.Config, repo *repository.Re
 			continue
 		}
 		textUpserts = append(textUpserts, repository.ReadingTextUpsert{
-			TextID:               tid,
-			CategoryID:           catID,
-			Title:                title,
-			TitleTranslations:    doc.TitleTranslations,
-			Level:                doc.Level,
-			TargetLanguage:       doc.TargetLanguage,
-			ReadingPassageJSON:   string(passageJSON),
+			TextID:             tid,
+			CategoryID:         catID,
+			Title:              title,
+			TitleTranslations:  doc.TitleTranslations,
+			Level:              doc.Level,
+			TargetLanguage:     doc.TargetLanguage,
+			CoverThumbRelPath:  doc.CoverThumbRelPath,
+			CoverHeroRelPath:   doc.CoverHeroRelPath,
+			CoverImagePrompt:   doc.CoverImagePrompt,
+			ReadingPassageJSON: string(passageJSON),
 		})
 	}
 
-	if err := repo.ReplaceCatalog(idx.Version, idx.GeneratedAt, cats, textUpserts); err != nil {
+	if err := repo.ReplaceCatalogForTargetLanguage(cfg.Learning.TargetLang, idx.Version, idx.GeneratedAt, cats, textUpserts); err != nil {
 		return err
 	}
 	if log != nil {

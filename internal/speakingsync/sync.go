@@ -185,7 +185,7 @@ func SyncFromBundle(ctx context.Context, cfg *config.Config, repo *repository.Sp
 		})
 	}
 
-	if err := repo.ReplaceCatalog(idx.Version, idx.GeneratedAt, cats, taskUpserts); err != nil {
+	if err := repo.ReplaceCatalogForTargetLanguage(cfg.Learning.TargetLang, idx.Version, idx.GeneratedAt, cats, taskUpserts); err != nil {
 		return err
 	}
 	if log != nil {

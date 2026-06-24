@@ -2824,6 +2824,12 @@ WITH src AS (
     JOIN courses c ON c.id = ?
     ` + levelDistrictJoinSQL + `
     JOIN locations l ON l.district_id = d.id AND l.location_type = 'reading'
+    WHERE EXISTS (
+        SELECT 1
+        FROM reading_texts rt
+        WHERE rt.category_id = src.source_id
+          AND LOWER(rt.target_language) = LOWER(c.target_lang)
+    )
 )
 INSERT INTO modules (course_id, district_id, location_id, code, module_type, title, source_kind, source_id, sort_order, status, updated_at)
 SELECT course_id, district_id, location_id, 'reading_category:' || source_id, 'reading', title, 'reading_category', source_id, sort_order, 'published', CURRENT_TIMESTAMP
@@ -2840,7 +2846,7 @@ ON CONFLICT (course_id, code) DO UPDATE SET
 
 var mapReadingTextItemsSQL = `
 WITH src AS (
-    SELECT text_id AS source_id, category_id, title, level, md5(reading_passage) AS source_hash
+    SELECT text_id AS source_id, category_id, title, level, target_language, md5(reading_passage) AS source_hash
     FROM reading_texts
 ), target AS (
     SELECT c.id AS course_id, d.id AS district_id, l.id AS location_id, m.id AS module_id, src.*
@@ -2849,6 +2855,7 @@ WITH src AS (
     ` + levelDistrictJoinSQL + `
     JOIN locations l ON l.district_id = d.id AND l.location_type = 'reading'
     LEFT JOIN modules m ON m.course_id = c.id AND m.source_kind = 'reading_category' AND m.source_id = src.category_id
+    WHERE LOWER(src.target_language) = LOWER(c.target_lang)
 )
 INSERT INTO learning_items (course_id, module_id, district_id, location_id, item_type, source_kind, source_id, title, cefr_level, content_hash, status, updated_at)
 SELECT course_id, module_id, district_id, location_id, 'reading_text', 'reading_text', source_id, title, level, source_hash, 'published', CURRENT_TIMESTAMP

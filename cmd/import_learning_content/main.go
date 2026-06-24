@@ -47,6 +47,7 @@ func main() {
 
 func run() int {
 	commit := flag.Bool("commit", false, "write imported content to DB")
+	courseCode := flag.String("course-code", "", "course code to import (e.g. en_ru, es_ru, or all); defaults to LEARNING_* config")
 	flag.Parse()
 	if !*commit && strings.TrimSpace(os.Getenv("DATABASE_URL")) == "" {
 		_ = os.Setenv("DATABASE_URL", "postgres://dry-run:dry-run@localhost:5432/dry-run?sslmode=disable")
@@ -65,43 +66,107 @@ func run() int {
 		fmt.Fprintf(os.Stderr, "logger: %v\n", err)
 		return 1
 	}
-	plan, err := buildPlan(cfg, log)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "build import plan: %v\n", err)
-		return 1
-	}
 	mode := "dry-run"
 	if *commit {
 		mode = "commit"
 	}
-	fmt.Printf("[%s] bundle=%s app=%s target=%s sections=%d chapters=%d training_questions=%d hash=%s\n",
-		mode, plan.BundleID, plan.AppCode, plan.TargetLang, len(plan.SectionsData.Sections), len(plan.ChaptersRaw), len(plan.TrainingQuestions), plan.SourceHash)
-	if !*commit {
-		return 0
+
+	ctx := context.Background()
+	var conn *sql.DB
+	if *commit {
+		db, err := database.NewWithConfig(cfg.Database.Driver, cfg.Database.Path, cfg.Database.URL, log)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "db: %v\n", err)
+			return 1
+		}
+		defer db.Close()
+		conn = db.GetConnection()
 	}
 
-	db, err := database.NewWithConfig(cfg.Database.Driver, cfg.Database.Path, cfg.Database.URL, log)
+	courses, err := resolveImportCourses(ctx, conn, cfg, *courseCode, *commit)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "db: %v\n", err)
+		fmt.Fprintf(os.Stderr, "resolve courses: %v\n", err)
 		return 1
 	}
-	defer db.Close()
-	ctx := context.Background()
-	conn := db.GetConnection()
-	if err := writePlan(ctx, conn, plan); err != nil {
-		fmt.Fprintf(os.Stderr, "commit import: %v\n", err)
-		return 1
+	for _, learning := range courses {
+		courseCfg := *cfg
+		courseCfg.Learning = learning
+		plan, err := buildPlan(&courseCfg, log)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "build import plan (%s): %v\n", repository.CourseCodeForLearning(learning), err)
+			return 1
+		}
+		fmt.Printf("[%s] course=%s bundle=%s app=%s target=%s sections=%d chapters=%d training_questions=%d hash=%s\n",
+			mode, repository.CourseCodeForLearning(learning), plan.BundleID, plan.AppCode, plan.TargetLang, len(plan.SectionsData.Sections), len(plan.ChaptersRaw), len(plan.TrainingQuestions), plan.SourceHash)
+		if !*commit {
+			continue
+		}
+		if err := writePlan(ctx, conn, plan); err != nil {
+			fmt.Fprintf(os.Stderr, "commit import (%s): %v\n", repository.CourseCodeForLearning(learning), err)
+			return 1
+		}
+		if err := readingsync.SyncFromBundle(ctx, &courseCfg, repository.NewReadingCatalogRepository(conn), log); err != nil {
+			fmt.Fprintf(os.Stderr, "commit reading import (%s): %v\n", repository.CourseCodeForLearning(learning), err)
+			return 1
+		}
+		if err := speakingsync.SyncFromBundle(ctx, &courseCfg, repository.NewSpeakingCatalogRepository(conn), log); err != nil {
+			fmt.Fprintf(os.Stderr, "commit speaking import (%s): %v\n", repository.CourseCodeForLearning(learning), err)
+			return 1
+		}
+		if _, err := repository.NewCourseRepository(conn, log).MapLegacyContentForLearning(ctx, learning); err != nil {
+			fmt.Fprintf(os.Stderr, "commit content mapping (%s): %v\n", repository.CourseCodeForLearning(learning), err)
+			return 1
+		}
 	}
-	if err := readingsync.SyncFromBundle(ctx, cfg, repository.NewReadingCatalogRepository(conn), log); err != nil {
-		fmt.Fprintf(os.Stderr, "commit reading import: %v\n", err)
-		return 1
+	if *commit {
+		fmt.Println("Import committed.")
 	}
-	if err := speakingsync.SyncFromBundle(ctx, cfg, repository.NewSpeakingCatalogRepository(conn), log); err != nil {
-		fmt.Fprintf(os.Stderr, "commit speaking import: %v\n", err)
-		return 1
-	}
-	fmt.Println("Import committed.")
 	return 0
+}
+
+func resolveImportCourses(ctx context.Context, db *sql.DB, cfg *config.Config, requested string, commit bool) ([]config.LearningConfig, error) {
+	requested = strings.TrimSpace(strings.ToLower(requested))
+	if requested == "" {
+		return []config.LearningConfig{cfg.Learning}, nil
+	}
+	if requested != "all" {
+		return []config.LearningConfig{learningConfigForCourse(cfg.Learning, requested)}, nil
+	}
+	codes := []string{"en_ru", "es_ru"}
+	if commit {
+		if db == nil {
+			return nil, fmt.Errorf("db is required for --course-code=all --commit")
+		}
+		var err error
+		codes, err = repository.NewCourseRepository(db, nil).ListActiveCourseCodes(ctx)
+		if err != nil {
+			return nil, err
+		}
+	}
+	out := make([]config.LearningConfig, 0, len(codes))
+	for _, code := range codes {
+		out = append(out, learningConfigForCourse(cfg.Learning, code))
+	}
+	return out, nil
+}
+
+func learningConfigForCourse(base config.LearningConfig, courseCode string) config.LearningConfig {
+	courseCode = strings.TrimSpace(strings.ToLower(courseCode))
+	target := repository.GrammarBundleIDForCourse(courseCode)
+	if target == "" {
+		target = strings.TrimSpace(strings.ToLower(base.TargetLang))
+	}
+	native := "ru"
+	if parts := strings.SplitN(courseCode, "_", 2); len(parts) == 2 && strings.TrimSpace(parts[1]) != "" {
+		native = strings.TrimSpace(strings.ToLower(parts[1]))
+	}
+	lc := base
+	lc.NativeLang = native
+	lc.TargetLang = target
+	lc.Pair = native + "-" + target
+	lc.GrammarBundleID = target
+	lc.GrammarBundleDir = ""
+	return lc
 }
 
 func buildPlan(cfg *config.Config, log *zap.Logger) (*importPlan, error) {
