@@ -117,8 +117,10 @@ import LgActivityIcon from '../components/linglow/LgActivityIcon.vue'
 import LgSpeechBubble from '../components/linglow/LgSpeechBubble.vue'
 import LgButton from '../components/linglow/LgButton.vue'
 import LgLumi from '../components/linglow/LgLumi.vue'
+import { useCourse } from '../composables/useCourse'
 
 const { t } = useI18n()
+const { currentCourseCode, ensureCourseLoaded } = useCourse()
 const route = useRoute()
 const router = useRouter()
 
@@ -182,8 +184,10 @@ async function send() {
 
 onMounted(async () => {
   try {
+    await ensureCourseLoaded()
+    const course = currentCourseCode.value || undefined
     if (scenarioCode.value) {
-      const s = await courseClient.startConversationSession(scenarioCode.value)
+      const s = await courseClient.startConversationSession(scenarioCode.value, course)
       session.value = s
       messages.value = [...(s.messages || [])]
       tasks.value = s.tasks || []
@@ -191,7 +195,7 @@ onMounted(async () => {
       questPassed.value = s.quest_passed
       await scrollToBottom()
     } else {
-      const r = await courseClient.listConversationScenarios(districtCode.value)
+      const r = await courseClient.listConversationScenarios(districtCode.value, course)
       scenarios.value = r.scenarios || []
     }
   } catch (e: any) {

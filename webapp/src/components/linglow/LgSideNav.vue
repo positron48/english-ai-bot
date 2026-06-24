@@ -18,15 +18,6 @@
       </router-link>
     </div>
     <div class="lg-sidenav-bottom">
-      <select
-        v-if="courses.length > 1"
-        :value="currentCourseCode"
-        class="lg-sidenav-course"
-        @change="(e) => selectCourse((e.target as HTMLSelectElement).value)"
-      >
-        <option v-for="c in courses" :key="c.code" :value="c.code">{{ c.title }}</option>
-      </select>
-      <LgLangSwitcher />
       <button class="lg-sidenav-theme" type="button" @click="toggleTheme">
         <LgIcon :name="theme === 'light' ? 'moon' : 'sun'" :s="16" c="var(--text)" />
       </button>
@@ -39,15 +30,12 @@ import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useTheme } from '../../composables/useTheme'
-import { useCourse } from '../../composables/useCourse'
 import { NAV_TABS } from './navTabs'
 import LgIcon from './LgIcon.vue'
-import LgLangSwitcher from './LgLangSwitcher.vue'
 
 const route = useRoute()
 const { t } = useI18n()
 const { theme, toggleTheme } = useTheme()
-const { courses, currentCourseCode, selectCourse } = useCourse()
 
 const activeTab = computed(() => (route.meta.navTab as string) || 'home')
 </script>
