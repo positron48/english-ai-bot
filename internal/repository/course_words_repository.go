@@ -43,13 +43,17 @@ func (r *CourseRepository) GetWordLevelProgressForCourse(ctx context.Context, us
 	if userID == 0 || courseCode == "" {
 		return map[string]WordLevelProgress{}, nil
 	}
+	// CEFR level lives on the root category (e.g. "Уровень A0"); word sets hang off
+	// subcategories whose parent is that root. Resolve level as set -> subcategory ->
+	// root category level_code.
 	const q = `
-SELECT COALESCE(NULLIF(ws.level_code, ''), cat.level_code) AS level,
+SELECT COALESCE(NULLIF(ws.level_code, ''), NULLIF(cat.level_code, ''), root.level_code) AS level,
        COUNT(DISTINCT wsi.word_card_id) AS total,
        COUNT(DISTINCT CASE WHEN uwk.word_card_id IS NOT NULL OR uc.word_card_id IS NOT NULL
                            THEN wsi.word_card_id END) AS mastered
 FROM word_sets ws
 LEFT JOIN word_set_categories cat ON cat.id = ws.category_id
+LEFT JOIN word_set_categories root ON root.id = cat.parent_id
 JOIN word_set_items wsi ON wsi.word_set_id = ws.id
 LEFT JOIN (
     SELECT DISTINCT word_card_id FROM user_word_knowledge WHERE user_id = ? AND status = 'known'
@@ -60,7 +64,7 @@ LEFT JOIN (
     WHERE ucx.user_id = ?
 ) uc ON uc.word_card_id = wsi.word_card_id
 WHERE LOWER(ws.course_code) = ? AND COALESCE(ws.is_published, 1) = 1
-GROUP BY COALESCE(NULLIF(ws.level_code, ''), cat.level_code)`
+GROUP BY COALESCE(NULLIF(ws.level_code, ''), NULLIF(cat.level_code, ''), root.level_code)`
 	rows, err := r.db.QueryContext(ctx, q, userID, userID, courseCode)
 	if err != nil {
 		return nil, fmt.Errorf("word level progress: %w", err)
