@@ -511,6 +511,7 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/linglow/srs-shadow", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLinglowSRSShadow)))
 	r.mux.HandleFunc("/api/linglow/exercise-attempts", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLinglowExerciseAttempts)))
 	r.mux.HandleFunc("/api/linglow/words", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLinglowWords)))
+	r.mux.HandleFunc("/api/linglow/word-progress", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLinglowWordLevelProgress)))
 	r.mux.HandleFunc("/api/linglow/history", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLinglowHistory)))
 	r.mux.HandleFunc("/api/linglow/activity", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLinglowActivity)))
 	r.mux.HandleFunc("/api/linglow/stats", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLinglowStats)))

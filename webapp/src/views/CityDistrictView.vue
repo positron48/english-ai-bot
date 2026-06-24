@@ -58,7 +58,7 @@ import LgPageHeader from '../components/linglow/LgPageHeader.vue'
 import LgLumiFact from '../components/linglow/LgLumiFact.vue'
 import LgActivityIcon from '../components/linglow/LgActivityIcon.vue'
 import LgLoader from '../components/linglow/LgLoader.vue'
-import { wordsPercentForDistrict } from '../utils/wordsProgress'
+import { wordsPercentForLevel, type WordLevelProgressMap } from '../utils/wordsProgress'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -74,13 +74,6 @@ const districtCode = computed(() => String(route.params.districtCode || ''))
 const district = computed(() => {
   const dists = Array.isArray(courseMap.value?.districts) ? courseMap.value!.districts : []
   return dists.find(d => d.code === districtCode.value) || null
-})
-
-const districtSignal = computed(() => {
-  return (progress.value?.by_district || []).find(d => d.district_code === districtCode.value) || {
-    foundation: 0, confidence: 0, stability: 0, weakness: 0,
-    progress_percent: 0, attempted_items: 0, total_items: 0, mastered_items: 0,
-  }
 })
 
 // Per-type progress for this district's locations
@@ -100,9 +93,8 @@ const typeProgress = computed(() => {
   return out
 })
 
-const wordsPct = computed(() =>
-  wordsPercentForDistrict(progress.value?.by_location || [], districtCode.value, districtLevelCode.value),
-)
+const wordLevels = ref<WordLevelProgressMap>({})
+const wordsPct = computed(() => wordsPercentForLevel(wordLevels.value, districtLevelCode.value))
 const grammarPct = computed(() => {
   const lv = districtLevelCode.value
   if (!lv || !grammarCategories.value.length) return 0
@@ -179,14 +171,16 @@ const areas = computed(() => {
 
 onMounted(async () => {
   try {
-    const [map, prog, grammarData] = await Promise.all([
+    const [map, prog, grammarData, wp] = await Promise.all([
       courseClient.getCourseMap(courseCode.value),
       courseClient.getProgress(courseCode.value),
       grammarClient.getCategories().catch(() => ({ categories: [] })),
+      courseClient.getWordLevelProgress(courseCode.value).catch(() => ({ levels: {} })),
     ])
     courseMap.value = map
     progress.value = prog
     grammarCategories.value = grammarData.categories || []
+    wordLevels.value = wp.levels || {}
   } catch { /* ignore */ } finally {
     loading.value = false
   }

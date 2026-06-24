@@ -470,6 +470,12 @@ export const courseClient = {
     const qs = p.toString()
     return apiClient.request(`/api/linglow/words${qs ? '?' + qs : ''}`)
   },
+  getWordLevelProgress(courseCode?: string): Promise<{ levels: Record<string, { total: number; mastered: number }> }> {
+    const p = new URLSearchParams()
+    if (courseCode) p.set('course_code', courseCode)
+    const qs = p.toString()
+    return apiClient.request(`/api/linglow/word-progress${qs ? '?' + qs : ''}`)
+  },
   getDistrictExtras(districtCode: string, courseCode?: string): Promise<DistrictExtras> {
     const p = new URLSearchParams({ district_code: districtCode })
     if (courseCode) p.set('course_code', courseCode)

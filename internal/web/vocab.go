@@ -79,6 +79,37 @@ type VocabWord struct {
 // @Failure      405  {string}  string  "Метод не разрешен"
 // @Failure      500  {string}  string  "Внутренняя ошибка сервера"
 // @Router       /api/vocab [get]
+// handleLinglowWordLevelProgress returns per-CEFR-level word coverage from the legacy vocab,
+// course-scoped, so the city map and district pages match what the learner actually studied.
+// @Summary      Прогресс по словам в разрезе уровней
+// @Tags         Linglow
+// @Produce      json
+// @Success      200  {object}  map[string]interface{}
+// @Router       /api/linglow/word-progress [get]
+func (r *Router) handleLinglowWordLevelProgress(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	userID := getUserIDFromContext(req.Context())
+	if userID == 0 {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+	if r.courseRepo == nil {
+		writeJSON(w, map[string]interface{}{"levels": map[string]interface{}{}})
+		return
+	}
+	courseCode := r.requestedCourseCodeForUser(req, userID)
+	levels, err := r.courseRepo.GetWordLevelProgressForCourse(req.Context(), userID, courseCode)
+	if err != nil {
+		r.logger.Error("failed to get word level progress", zap.Error(err), zap.Int64("user_id", userID))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	writeJSON(w, map[string]interface{}{"levels": levels})
+}
+
 func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)

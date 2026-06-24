@@ -50,7 +50,7 @@ import { grammarClient } from '../api/grammarClient'
 import { courseClient, type CourseProgressLocation } from '../api/courseClient'
 import LgActivityIcon from '../components/linglow/LgActivityIcon.vue'
 import LgLoader from '../components/linglow/LgLoader.vue'
-import { wordsPercentForDistrict } from '../utils/wordsProgress'
+import { wordsPercentForLevel, type WordLevelProgressMap } from '../utils/wordsProgress'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -80,6 +80,8 @@ const grammarByLevel = ref<Record<string, { passed: number; total: number; canAc
 const courseProgress = ref<{ masteredItems: number; byLocation: CourseProgressLocation[] }>({ masteredItems: 0, byLocation: [] })
 // District titles from course API keyed by district code
 const districtTitles = ref<Record<string, string>>({})
+// Per-CEFR-level word coverage (mastered/total) from the legacy vocab.
+const wordLevels = ref<WordLevelProgressMap>({})
 // True once district titles + progress are loaded, so labels render at final width.
 const mapReady = ref(false)
 
@@ -122,6 +124,13 @@ async function loadDistrictTitles() {
   } catch { /* fallback to locale names */ }
 }
 
+async function loadWordLevels() {
+  try {
+    const res = await courseClient.getWordLevelProgress(currentCourse.value?.code || undefined)
+    wordLevels.value = res.levels || {}
+  } catch { /* leave empty -> 0% */ }
+}
+
 // Compute lv for a district from grammar progress:
 // 1 = no grammar access, 2 = access but 0 passed, 3 = <50% passed, 4 = ≥50% passed, 5 = 100% passed
 function districtLv(cefrLevel: string): number {
@@ -147,9 +156,9 @@ function grammarStatus(cefrLevel: string): 'gray' | 'orange' | 'yellow' | 'green
   return pctToStatus(Math.round((g.passed / g.total) * 100))
 }
 
-// Per-district mastered words vs. the level norm (shared with the district page).
-function wordsStatus(cefrLevel: string, distCode: string): 'gray' | 'orange' | 'yellow' | 'green' {
-  return pctToStatus(wordsPercentForDistrict(courseProgress.value.byLocation, distCode, cefrLevel))
+// Per-level mastered words vs. total for the level (shared with the district page).
+function wordsStatus(cefrLevel: string): 'gray' | 'orange' | 'yellow' | 'green' {
+  return pctToStatus(wordsPercentForLevel(wordLevels.value, cefrLevel))
 }
 
 function readingStatus(distCode: string): 'gray' | 'orange' | 'yellow' | 'green' {
@@ -170,7 +179,7 @@ const CITY_DISTS = computed(() =>
     const locked = districtLv(d.cefrLevel) <= 1
     const acts = [
       { type: 'grammar' as const, status: grammarStatus(d.cefrLevel) },
-      { type: 'words' as const, status: wordsStatus(d.cefrLevel, d.id) },
+      { type: 'words' as const, status: wordsStatus(d.cefrLevel) },
       { type: 'reading' as const, status: readingStatus(d.id) },
     ]
     let lv: number
@@ -192,6 +201,7 @@ const CITY_DISTS = computed(() =>
 watch(grammarByLevel, () => renderCity())
 watch(courseProgress, () => renderCity())
 watch(districtTitles, () => renderCity())
+watch(wordLevels, () => renderCity())
 
 // ─── Canvas rendering ───────────────────────────────────────────────────────
 const cvsRef = ref<HTMLCanvasElement | null>(null)
@@ -291,7 +301,7 @@ function handleCanvasClick(e: MouseEvent) {
 }
 
 onMounted(() => {
-  Promise.all([loadGrammarProgress(), loadProgress(), loadDistrictTitles()])
+  Promise.all([loadGrammarProgress(), loadProgress(), loadDistrictTitles(), loadWordLevels()])
     .finally(() => { mapReady.value = true })
   setTimeout(resize, 50)
   const srcs = [

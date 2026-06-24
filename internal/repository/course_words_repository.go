@@ -27,6 +27,60 @@ type LinglowWordItem struct {
 	MasteryLevel string `json:"mastery_level"`
 }
 
+// WordLevelProgress is per-CEFR-level word coverage computed from the legacy vocab
+// (word_sets/word_set_items + user_word_knowledge/user_cards), course-scoped. This is the
+// same data the word-set progress bars use, so the city map / district pages stay consistent
+// with what the learner actually studied (v2 srs_items is not populated by word training).
+type WordLevelProgress struct {
+	Total    int `json:"total"`
+	Mastered int `json:"mastered"`
+}
+
+// GetWordLevelProgressForCourse returns a map of CEFR level -> {total, mastered} for a course.
+// "mastered" = the learner has the word in vocab (user_cards) or marked it known.
+func (r *CourseRepository) GetWordLevelProgressForCourse(ctx context.Context, userID int64, courseCode string) (map[string]WordLevelProgress, error) {
+	courseCode = strings.TrimSpace(strings.ToLower(courseCode))
+	if userID == 0 || courseCode == "" {
+		return map[string]WordLevelProgress{}, nil
+	}
+	const q = `
+SELECT COALESCE(NULLIF(ws.level_code, ''), cat.level_code) AS level,
+       COUNT(DISTINCT wsi.word_card_id) AS total,
+       COUNT(DISTINCT CASE WHEN uwk.word_card_id IS NOT NULL OR uc.word_card_id IS NOT NULL
+                           THEN wsi.word_card_id END) AS mastered
+FROM word_sets ws
+LEFT JOIN word_set_categories cat ON cat.id = ws.category_id
+JOIN word_set_items wsi ON wsi.word_set_id = ws.id
+LEFT JOIN (
+    SELECT DISTINCT word_card_id FROM user_word_knowledge WHERE user_id = ? AND status = 'known'
+) uwk ON uwk.word_card_id = wsi.word_card_id
+LEFT JOIN (
+    SELECT DISTINCT tc.word_card_id
+    FROM user_cards ucx JOIN training_cards tc ON tc.id = ucx.training_card_id
+    WHERE ucx.user_id = ?
+) uc ON uc.word_card_id = wsi.word_card_id
+WHERE LOWER(ws.course_code) = ? AND COALESCE(ws.is_published, 1) = 1
+GROUP BY COALESCE(NULLIF(ws.level_code, ''), cat.level_code)`
+	rows, err := r.db.QueryContext(ctx, q, userID, userID, courseCode)
+	if err != nil {
+		return nil, fmt.Errorf("word level progress: %w", err)
+	}
+	defer rows.Close()
+	out := make(map[string]WordLevelProgress, 8)
+	for rows.Next() {
+		var level *string
+		var p WordLevelProgress
+		if err := rows.Scan(&level, &p.Total, &p.Mastered); err != nil {
+			return nil, fmt.Errorf("scan word level progress: %w", err)
+		}
+		if level == nil || strings.TrimSpace(*level) == "" {
+			continue
+		}
+		out[strings.ToUpper(strings.TrimSpace(*level))] = p
+	}
+	return out, rows.Err()
+}
+
 // LinglowWordListResult is the paginated word list response.
 type LinglowWordListResult struct {
 	Course     CourseMapCourse     `json:"course"`
