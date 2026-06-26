@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"go.uber.org/zap"
@@ -58,7 +59,10 @@ type ConversationMessage struct {
 	Seq       int
 	Role      string
 	Content   string
-	CreatedAt time.Time
+	// CorrectionsJSON is the raw JSON array of error corrections attached to an assistant
+	// message ("[]" when none). The web layer parses it for the client.
+	CorrectionsJSON string
+	CreatedAt       time.Time
 }
 
 // ConversationRepository handles conversation scenarios, sessions, messages and task progress.
@@ -260,6 +264,12 @@ func (r *ConversationRepository) NextSeq(ctx context.Context, sessionID int64) (
 
 // AppendMessage stores one message. promptTok/complTok may be 0 when unknown.
 func (r *ConversationRepository) AppendMessage(ctx context.Context, sessionID int64, seq int, role, content string, promptTok, complTok int) error {
+	return r.AppendMessageWithCorrections(ctx, sessionID, seq, role, content, promptTok, complTok, "")
+}
+
+// AppendMessageWithCorrections stores a message together with an optional JSON array of error
+// corrections (used for assistant replies). An empty correctionsJSON stores "[]".
+func (r *ConversationRepository) AppendMessageWithCorrections(ctx context.Context, sessionID int64, seq int, role, content string, promptTok, complTok int, correctionsJSON string) error {
 	var pt, ct interface{}
 	if promptTok > 0 {
 		pt = promptTok
@@ -267,9 +277,12 @@ func (r *ConversationRepository) AppendMessage(ctx context.Context, sessionID in
 	if complTok > 0 {
 		ct = complTok
 	}
+	if strings.TrimSpace(correctionsJSON) == "" {
+		correctionsJSON = "[]"
+	}
 	if _, err := r.db.ExecContext(ctx, `
-		INSERT INTO conversation_messages (session_id, seq, role, content, prompt_tokens, completion_tokens)
-		VALUES (?, ?, ?, ?, ?, ?)`, sessionID, seq, role, content, pt, ct); err != nil {
+		INSERT INTO conversation_messages (session_id, seq, role, content, prompt_tokens, completion_tokens, corrections)
+		VALUES (?, ?, ?, ?, ?, ?, ?)`, sessionID, seq, role, content, pt, ct, correctionsJSON); err != nil {
 		return fmt.Errorf("append message: %w", err)
 	}
 	return nil
@@ -278,7 +291,7 @@ func (r *ConversationRepository) AppendMessage(ctx context.Context, sessionID in
 // ListMessages returns all visible messages of a session ordered by seq.
 func (r *ConversationRepository) ListMessages(ctx context.Context, sessionID int64) ([]ConversationMessage, error) {
 	rows, err := r.db.QueryContext(ctx, `
-		SELECT id, seq, role, content, created_at
+		SELECT id, seq, role, content, COALESCE(corrections, '[]'::jsonb), created_at
 		FROM conversation_messages
 		WHERE session_id = ?
 		ORDER BY seq`, sessionID)
@@ -290,7 +303,7 @@ func (r *ConversationRepository) ListMessages(ctx context.Context, sessionID int
 	var out []ConversationMessage
 	for rows.Next() {
 		var m ConversationMessage
-		if err := rows.Scan(&m.ID, &m.Seq, &m.Role, &m.Content, &m.CreatedAt); err != nil {
+		if err := rows.Scan(&m.ID, &m.Seq, &m.Role, &m.Content, &m.CorrectionsJSON, &m.CreatedAt); err != nil {
 			return nil, err
 		}
 		out = append(out, m)

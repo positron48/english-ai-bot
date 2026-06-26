@@ -725,8 +725,8 @@ func (w *TrainingWorker) processCard(ctx context.Context, wordCard *models.WordC
 		w.pronunciationService.ScheduleWord(wordCard.Word)
 	}
 
-	// Get users who requested this word
-	users, err := w.getUsersForWord(wordCard.Word)
+	// Get users who requested this word (matched by the course-scoped word card id)
+	users, err := w.getUsersForWordCard(wordCard.ID, wordCard.Word)
 	if err != nil {
 		w.logger.Warn("failed to get users for word", zap.Error(err))
 		// Don't fail the whole process
@@ -788,9 +788,20 @@ func (w *TrainingWorker) processCard(ctx context.Context, wordCard *models.WordC
 	return nil
 }
 
-// getUsersForWord gets users who requested this word
+// getUsersForWordCard gets users who requested this (course-scoped) word card. It matches the
+// exact word_card_id (with a legacy fallback by word for pre-migration rows), which is the
+// course-correct way to find requesters after the multilingual word_cards split.
+func (w *TrainingWorker) getUsersForWordCard(wordCardID int64, word string) ([]*models.User, error) {
+	userIDs, err := w.wordRepo.GetUserIDsByWordCardID(wordCardID, word)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get user IDs: %w", err)
+	}
+	return w.resolveUsersByID(userIDs), nil
+}
+
+// getUsersForWord gets users who requested this word (by lemma/input_word, course-agnostic).
 func (w *TrainingWorker) getUsersForWord(word string) ([]*models.User, error) {
-	// Get user IDs who requested this word from word_request_history
+	// Get user IDs who requested this word from word_request_history.
 	// Note: user_id in word_request_history can be either:
 	// - Internal user_id (from web chat via JWT)
 	// - Telegram_id (from telegram bot - legacy)
@@ -798,7 +809,11 @@ func (w *TrainingWorker) getUsersForWord(word string) ([]*models.User, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to get user IDs: %w", err)
 	}
+	return w.resolveUsersByID(userIDs), nil
+}
 
+// resolveUsersByID resolves history user ids (internal id or legacy telegram id) to unique users.
+func (w *TrainingWorker) resolveUsersByID(userIDs []int64) []*models.User {
 	// Get users by internal ID first, then fallback to telegram_id for backward compatibility
 	users := make([]*models.User, 0, len(userIDs))
 	seenUserIDs := make(map[int64]bool) // Track already added users to avoid duplicates
@@ -837,7 +852,7 @@ func (w *TrainingWorker) getUsersForWord(word string) ([]*models.User, error) {
 		}
 	}
 
-	return users, nil
+	return users
 }
 
 // notifyAdmin sends a notification to the admin about circuit breaker

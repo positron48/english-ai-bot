@@ -518,6 +518,33 @@ func (r *WordRepository) GetUserIDsByWord(word string) ([]int64, error) {
 	return userIDs, nil
 }
 
+// GetUserIDsByWordCardID gets user IDs who requested a specific word card. It matches the exact
+// word_card_id (course-correct, since word_card_id is course-scoped after the multilingual split)
+// plus a legacy fallback for old history rows that have no word_card_id, matched by input_word/word.
+// This avoids GetUserIDsByWord's lemma re-resolution, which could pick a same-spelled word card
+// from a different course and so fail to enqueue the word for the right course's training.
+func (r *WordRepository) GetUserIDsByWordCardID(wordCardID int64, word string) ([]int64, error) {
+	const query = `SELECT DISTINCT user_id FROM word_request_history
+		WHERE word_card_id = ?
+		   OR (word_card_id IS NULL AND (LOWER(input_word) = LOWER(?) OR LOWER(word) = LOWER(?)))`
+
+	rows, err := r.db.Query(query, wordCardID, word, word)
+	if err != nil {
+		return nil, fmt.Errorf("failed to query user IDs by word card: %w", err)
+	}
+	defer rows.Close()
+
+	var userIDs []int64
+	for rows.Next() {
+		var userID int64
+		if err := rows.Scan(&userID); err != nil {
+			return nil, fmt.Errorf("failed to scan user ID: %w", err)
+		}
+		userIDs = append(userIDs, userID)
+	}
+	return userIDs, rows.Err()
+}
+
 // ListPronunciationCandidates returns recent distinct canonical words (lemmas)
 // suitable for pronunciation prefetch.
 func (r *WordRepository) ListPronunciationCandidates(courseCode string, limit int) ([]string, error) {

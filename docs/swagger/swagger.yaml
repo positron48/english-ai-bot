@@ -207,6 +207,12 @@ paths:
       summary: Сбросить circuit breaker
       tags:
       - Admin
+  /api/admin/conversations/scenarios:
+    get:
+      responses: {}
+      summary: 'Admin: список/создание сценариев общения'
+      tags:
+      - Admin
   /api/admin/grammar/categories:
     get:
       consumes:

@@ -425,9 +425,15 @@ func (r *Router) handleConversationMessage(w http.ResponseWriter, req *http.Requ
 		return
 	}
 
-	// Persist the NPC reply.
+	// Persist the NPC reply together with any error corrections for the learner's last message.
+	correctionsJSON := "[]"
+	if len(result.Corrections) > 0 {
+		if b, mErr := json.Marshal(result.Corrections); mErr == nil {
+			correctionsJSON = string(b)
+		}
+	}
 	replySeq := userSeq + 1
-	if err := r.conversationRepo.AppendMessage(ctx, session.ID, replySeq, "assistant", result.VisibleContent, result.PromptTokens, result.CompletionTokens); err != nil {
+	if err := r.conversationRepo.AppendMessageWithCorrections(ctx, session.ID, replySeq, "assistant", result.VisibleContent, result.PromptTokens, result.CompletionTokens, correctionsJSON); err != nil {
 		r.logger.Error("store reply", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
@@ -465,6 +471,7 @@ func (r *Router) handleConversationMessage(w http.ResponseWriter, req *http.Requ
 
 	writeJSON(w, map[string]interface{}{
 		"reply":            result.VisibleContent,
+		"corrections":      result.Corrections,
 		"tasks":            tasksJSON(tasks, completedAfter),
 		"turn_count":       session.TurnCount + 1,
 		"max_turns":        scenario.MaxTurns,
@@ -488,10 +495,14 @@ func (r *Router) writeSessionState(w http.ResponseWriter, ctx context.Context, u
 	msgs := make([]map[string]interface{}, 0, len(messages))
 	openingLine := ""
 	for _, m := range messages {
-		msgs = append(msgs, map[string]interface{}{
+		entry := map[string]interface{}{
 			"role":    m.Role,
 			"content": m.Content,
-		})
+		}
+		if cj := strings.TrimSpace(m.CorrectionsJSON); cj != "" && cj != "[]" {
+			entry["corrections"] = json.RawMessage(cj)
+		}
+		msgs = append(msgs, entry)
 		if openingLine == "" && m.Role == "assistant" {
 			openingLine = m.Content
 		}
@@ -595,7 +606,7 @@ func buildConversationSystemPrompt(base, targetLang string, scenario *repository
 		b.WriteString("\n\n")
 	} else {
 		// Built-in fallback when no course prompt file is registered.
-		b.WriteString("You are an NPC in a language-learning role-play game. Speak only in the target language, stay in character, keep replies short and simple, and after each reply output a line '###CONTROL###' followed by a JSON object {\"completed_task_codes\":[...],\"all_done\":bool}.\n\n")
+		b.WriteString("You are an NPC in a language-learning role-play game. Speak only in the target language, stay in character, keep replies short and simple, and after each reply output a line '###CONTROL###' followed by a JSON object {\"completed_task_codes\":[...],\"all_done\":bool,\"corrections\":[{\"original\":\"...\",\"corrected\":\"...\",\"explanation\":\"...\"}]}. In corrections, list real mistakes in the learner's latest message with a short explanation in Russian; use an empty array when there are none.\n\n")
 	}
 
 	fmt.Fprintf(&b, "SCENE\n- You are %s, %s.\n- Setting: %s\n- Target language code: %s. CEFR level: %s.\n",

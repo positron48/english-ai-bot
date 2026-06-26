@@ -248,10 +248,19 @@ func (s *Service) postChatCompletion(ctx context.Context, model string, messages
 // ControlSentinel separates the visible NPC reply from the trailing task-completion control block.
 const ControlSentinel = "###CONTROL###"
 
+// ChatCorrection is a single mistake the model spotted in the learner's latest message,
+// with a corrected version and a short explanation (in the learner's native language).
+type ChatCorrection struct {
+	Original    string `json:"original"`
+	Corrected   string `json:"corrected"`
+	Explanation string `json:"explanation"`
+}
+
 // chatControlSignal is the JSON the model appends after ControlSentinel on each NPC turn.
 type chatControlSignal struct {
-	CompletedTaskCodes []string `json:"completed_task_codes"`
-	AllDone            bool     `json:"all_done"`
+	CompletedTaskCodes []string         `json:"completed_task_codes"`
+	AllDone            bool             `json:"all_done"`
+	Corrections        []ChatCorrection `json:"corrections"`
 }
 
 // ChatTurnResult is one parsed NPC turn: the visible reply plus the (advisory) task-completion signal.
@@ -259,6 +268,7 @@ type ChatTurnResult struct {
 	VisibleContent     string
 	CompletedTaskCodes []string
 	AllDoneSignal      bool
+	Corrections        []ChatCorrection
 	PromptTokens       int
 	CompletionTokens   int
 	Raw                string
@@ -345,6 +355,7 @@ func (s *Service) ConversationTurn(ctx context.Context, systemPrompt string, his
 		VisibleContent:     visible,
 		CompletedTaskCodes: signal.CompletedTaskCodes,
 		AllDoneSignal:      signal.AllDone,
+		Corrections:        sanitizeCorrections(signal.Corrections),
 		Raw:                raw,
 	}
 	if usage != nil {
@@ -375,6 +386,31 @@ func parseChatControl(raw string) (string, chatControlSignal) {
 		}
 	}
 	return visible, sig
+}
+
+// sanitizeCorrections trims and drops empty/degenerate corrections so the client only ever
+// receives meaningful entries (a corrected form that actually differs from the original).
+func sanitizeCorrections(in []ChatCorrection) []ChatCorrection {
+	if len(in) == 0 {
+		return nil
+	}
+	out := make([]ChatCorrection, 0, len(in))
+	for _, c := range in {
+		c.Original = strings.TrimSpace(c.Original)
+		c.Corrected = strings.TrimSpace(c.Corrected)
+		c.Explanation = strings.TrimSpace(c.Explanation)
+		if c.Corrected == "" {
+			continue
+		}
+		if c.Original != "" && strings.EqualFold(c.Original, c.Corrected) {
+			continue
+		}
+		out = append(out, c)
+	}
+	if len(out) == 0 {
+		return nil
+	}
+	return out
 }
 
 // ChatSystemUser sends an explicit system+user chat (no dictionary heuristics on user text).

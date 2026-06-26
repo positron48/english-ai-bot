@@ -119,6 +119,54 @@ func TestWordRepository_GetUserIDsByWord(t *testing.T) {
 	}
 }
 
+func TestWordRepository_GetUserIDsByWordCardID_CourseScoped(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := setupWordTestDB(t)
+	userRepo := NewUserRepository(db, logger)
+	uEn, _ := userRepo.GetOrCreateUser(2100)
+	uEs, _ := userRepo.GetOrCreateUser(2200)
+	repo := NewWordRepository(db, logger)
+
+	// Same spelling "real" exists in two courses (en_ru and es_ru) -> two distinct word cards.
+	enCard := &models.WordCard{Word: "real", CourseCode: "en_ru"}
+	enID, err := repo.UpsertWordCardLemma(enCard)
+	if err != nil {
+		t.Fatalf("upsert en card: %v", err)
+	}
+	esCard := &models.WordCard{Word: "real", CourseCode: "es_ru"}
+	esID, err := repo.UpsertWordCardLemma(esCard)
+	if err != nil {
+		t.Fatalf("upsert es card: %v", err)
+	}
+	if enID == esID {
+		t.Fatal("expected distinct word card ids per course")
+	}
+
+	// Each user requested "real" in their own course (history carries the course-scoped card id).
+	if err := repo.AddWordRequestHistoryWithCard(uEn.ID, "real", &enID, nil); err != nil {
+		t.Fatalf("history en: %v", err)
+	}
+	if err := repo.AddWordRequestHistoryWithCard(uEs.ID, "real", &esID, nil); err != nil {
+		t.Fatalf("history es: %v", err)
+	}
+
+	// Lookup by the es card id must return only the es requester (not the en one).
+	esUsers, err := repo.GetUserIDsByWordCardID(esID, "real")
+	if err != nil {
+		t.Fatalf("GetUserIDsByWordCardID es: %v", err)
+	}
+	if len(esUsers) != 1 || esUsers[0] != uEs.ID {
+		t.Fatalf("es card requesters = %v, want [%d]", esUsers, uEs.ID)
+	}
+	enUsers, err := repo.GetUserIDsByWordCardID(enID, "real")
+	if err != nil {
+		t.Fatalf("GetUserIDsByWordCardID en: %v", err)
+	}
+	if len(enUsers) != 1 || enUsers[0] != uEn.ID {
+		t.Fatalf("en card requesters = %v, want [%d]", enUsers, uEn.ID)
+	}
+}
+
 func TestWordRepository_GetUserIDsByWord_CaseInsensitive(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupWordTestDB(t)

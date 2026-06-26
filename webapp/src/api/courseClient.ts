@@ -392,9 +392,16 @@ export interface ConversationScenarioSummary {
   session_status: string
 }
 
+export interface ConversationCorrection {
+  original: string
+  corrected: string
+  explanation: string
+}
+
 export interface ConversationMessage {
   role: string
   content: string
+  corrections?: ConversationCorrection[]
 }
 
 export interface ConversationSessionState {
@@ -417,6 +424,7 @@ export interface ConversationSessionState {
 
 export interface ConversationTurnResult {
   reply: string
+  corrections?: ConversationCorrection[]
   tasks: ConversationTask[]
   turn_count: number
   max_turns: number

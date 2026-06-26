@@ -54,15 +54,26 @@
         <!-- messages -->
         <div ref="scrollEl" class="chat-thread">
           <p v-if="session.scene_setup" class="chat-scene">{{ session.scene_setup }}</p>
-          <div
-            v-for="(m, i) in messages"
-            :key="i"
-            class="chat-row"
-            :class="m.role === 'user' ? 'chat-row--user' : 'chat-row--npc'"
-          >
-            <LgSpeechBubble v-if="m.role !== 'user'" :text="m.content" />
-            <div v-else class="chat-user-bubble">{{ m.content }}</div>
-          </div>
+          <template v-for="(m, i) in messages" :key="i">
+            <div
+              class="chat-row"
+              :class="m.role === 'user' ? 'chat-row--user' : 'chat-row--npc'"
+            >
+              <LgSpeechBubble v-if="m.role !== 'user'" :text="m.content" />
+              <div v-else class="chat-user-bubble">{{ m.content }}</div>
+            </div>
+            <div v-if="m.role !== 'user' && m.corrections && m.corrections.length" class="chat-corrections">
+              <div class="chat-corrections-title">{{ t('chat.correctionsTitle') }}</div>
+              <div v-for="(c, ci) in m.corrections" :key="ci" class="chat-correction">
+                <div class="chat-correction-line">
+                  <span class="chat-correction-bad">{{ c.original }}</span>
+                  <span class="chat-correction-arrow">→</span>
+                  <span class="chat-correction-good">{{ c.corrected }}</span>
+                </div>
+                <div v-if="c.explanation" class="chat-correction-expl">{{ c.explanation }}</div>
+              </div>
+            </div>
+          </template>
           <div v-if="sending" class="chat-row chat-row--npc">
             <div class="chat-typing">…</div>
           </div>
@@ -169,7 +180,7 @@ async function send() {
   await scrollToBottom()
   try {
     const res = await courseClient.postConversationMessage(session.value.session_id, text)
-    if (res.reply) messages.value.push({ role: 'assistant', content: res.reply })
+    if (res.reply) messages.value.push({ role: 'assistant', content: res.reply, corrections: res.corrections })
     tasks.value = res.tasks
     status.value = res.status
     questPassed.value = res.quest_passed
@@ -253,6 +264,27 @@ onMounted(async () => {
   background: #2d6b3a; color: #fff; font-family: 'Inter', sans-serif; font-size: 14px; line-height: 1.4;
 }
 .chat-typing { padding: 8px 14px; color: var(--subtext); font-size: 18px; letter-spacing: 2px; }
+
+/* error corrections block (shown under the NPC reply) */
+.chat-corrections {
+  align-self: flex-start; max-width: 88%; margin: -2px 0 2px;
+  padding: 10px 12px; border-radius: 12px;
+  background: rgba(200, 80, 60, 0.07); border: 1px solid rgba(200, 80, 60, 0.22);
+}
+:root[data-theme="dark"] .chat-corrections {
+  background: rgba(200, 80, 60, 0.14); border-color: rgba(200, 80, 60, 0.32);
+}
+.chat-corrections-title {
+  font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.04em; color: #b3503c; margin-bottom: 6px;
+}
+.chat-correction { padding: 3px 0; }
+.chat-correction + .chat-correction { border-top: 1px solid rgba(200, 80, 60, 0.15); margin-top: 4px; padding-top: 6px; }
+.chat-correction-line { font-family: 'Inter', sans-serif; font-size: 13px; line-height: 1.5; }
+.chat-correction-bad { color: #b3503c; text-decoration: line-through; }
+.chat-correction-arrow { margin: 0 6px; color: var(--subtext); }
+.chat-correction-good { color: #2d6b3a; font-weight: 600; }
+.chat-correction-expl { font-family: 'Inter', sans-serif; font-size: 12px; color: var(--subtext); margin-top: 2px; }
 
 /* banners */
 .chat-banner { margin: 10px 16px; padding: 16px; border-radius: 14px; background: var(--card, #fff); border: 1px solid var(--border, rgba(0,0,0,0.08)); display: flex; flex-direction: column; align-items: center; gap: 10px; }

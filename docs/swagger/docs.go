@@ -267,6 +267,15 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/admin/conversations/scenarios": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Admin: список/создание сценариев общения",
+                "responses": {}
+            }
+        },
         "/api/admin/grammar/categories": {
             "get": {
                 "security": [

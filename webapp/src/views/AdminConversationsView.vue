@@ -1,0 +1,340 @@
+<template>
+  <div class="admin-content">
+    <h2>Обсуждения (Conversation Quests)</h2>
+
+    <div class="course-selector">
+      <label for="conv-course">Курс:</label>
+      <select id="conv-course" v-model="selectedCourseCode" class="level-select">
+        <option disabled value="">Выберите курс</option>
+        <option v-for="course in availableCourses" :key="course.code" :value="course.code">
+          {{ course.title || course.code }}
+        </option>
+      </select>
+      <button class="btn btn-primary" :disabled="!selectedCourseCode" @click="newScenario">+ Новый сценарий</button>
+      <button class="btn" :disabled="!selectedCourseCode" @click="load">Обновить</button>
+    </div>
+
+    <div v-if="coursesError" class="error">{{ coursesError }}</div>
+    <div v-if="loading" class="loading">Загрузка…</div>
+    <div v-else-if="error" class="error">{{ error }}</div>
+    <div v-else-if="selectedCourseCode && !scenarios.length" class="empty-message">Сценариев нет.</div>
+
+    <!-- SCENARIO LIST -->
+    <div v-else class="scenario-list">
+      <div v-for="s in scenarios" :key="s.id" class="scenario-card">
+        <div class="scenario-head">
+          <div>
+            <span class="scenario-title">{{ s.title }}</span>
+            <span class="badge" :class="'badge--' + s.status">{{ s.status }}</span>
+            <span v-if="s.is_quest" class="badge badge--quest">quest</span>
+            <span v-else class="badge badge--free">free</span>
+          </div>
+          <div class="scenario-actions">
+            <button class="btn btn-sm" @click="editScenario(s)">Изменить</button>
+            <button class="btn btn-sm btn-danger" @click="removeScenario(s)">Удалить</button>
+          </div>
+        </div>
+        <div class="scenario-meta mono">
+          {{ s.code }} · {{ s.cefr_level }} · {{ s.place_type }} · NPC: {{ s.npc_name }}
+          · {{ s.max_turns }} ходов · {{ s.token_budget }} токенов · order {{ s.sort_order }}
+        </div>
+
+        <!-- tasks -->
+        <div class="tasks-block">
+          <div class="tasks-head">
+            <span>Задачи квеста ({{ s.tasks.length }})</span>
+            <button class="btn btn-sm" @click="newTask(s)">+ Задача</button>
+          </div>
+          <table v-if="s.tasks.length" class="tasks-table">
+            <thead>
+              <tr><th>code</th><th>Название</th><th>Критерий выполнения</th><th>req</th><th>ord</th><th></th></tr>
+            </thead>
+            <tbody>
+              <tr v-for="t in s.tasks" :key="t.id">
+                <td class="mono">{{ t.code }}</td>
+                <td>{{ t.title }}</td>
+                <td class="criteria">{{ t.completion_criteria }}</td>
+                <td>{{ t.is_required ? '✓' : '—' }}</td>
+                <td>{{ t.sort_order }}</td>
+                <td class="nowrap">
+                  <button class="btn btn-xs" @click="editTask(s, t)">ред.</button>
+                  <button class="btn btn-xs btn-danger" @click="removeTask(s, t)">×</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCENARIO EDIT MODAL -->
+    <div v-if="scenarioForm" class="modal-overlay" @click.self="scenarioForm = null">
+      <div class="modal">
+        <h3>{{ scenarioForm.id ? 'Изменить сценарий' : 'Новый сценарий' }}</h3>
+        <div class="form-grid">
+          <label>code <input v-model="scenarioForm.code" class="inp mono" /></label>
+          <label>CEFR уровень
+            <select v-model="scenarioForm.cefr_level" class="inp">
+              <option v-for="l in levels" :key="l.level_code" :value="l.level_code">{{ l.level_code }} — {{ l.title }}</option>
+            </select>
+          </label>
+          <label>Название <input v-model="scenarioForm.title" class="inp" /></label>
+          <label>place_type <input v-model="scenarioForm.place_type" class="inp mono" /></label>
+          <label>NPC имя <input v-model="scenarioForm.npc_name" class="inp" /></label>
+          <label>Статус
+            <select v-model="scenarioForm.status" class="inp">
+              <option value="draft">draft</option>
+              <option value="active">active</option>
+              <option value="locked">locked</option>
+              <option value="archived">archived</option>
+            </select>
+          </label>
+          <label class="check"><input type="checkbox" v-model="scenarioForm.is_quest" /> Квест (есть задачи)</label>
+          <label>Макс. ходов <input v-model.number="scenarioForm.max_turns" type="number" class="inp" /></label>
+          <label>Бюджет токенов <input v-model.number="scenarioForm.token_budget" type="number" class="inp" /></label>
+          <label>Порядок <input v-model.number="scenarioForm.sort_order" type="number" class="inp" /></label>
+        </div>
+        <label class="full">NPC персона (инструкция для ИИ)
+          <textarea v-model="scenarioForm.npc_persona" class="inp" rows="2"></textarea>
+        </label>
+        <label class="full">Сцена / завязка (инструкция для ИИ)
+          <textarea v-model="scenarioForm.scene_setup" class="inp" rows="2"></textarea>
+        </label>
+        <div class="modal-actions">
+          <button class="btn" @click="scenarioForm = null">Отмена</button>
+          <button class="btn btn-primary" :disabled="saving" @click="saveScenario">{{ saving ? 'Сохранение…' : 'Сохранить' }}</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TASK EDIT MODAL -->
+    <div v-if="taskForm" class="modal-overlay" @click.self="taskForm = null">
+      <div class="modal">
+        <h3>{{ taskForm.id ? 'Изменить задачу' : 'Новая задача' }}</h3>
+        <div class="form-grid">
+          <label>code <input v-model="taskForm.code" class="inp mono" /></label>
+          <label>Порядок <input v-model.number="taskForm.sort_order" type="number" class="inp" /></label>
+          <label>Название <input v-model="taskForm.title" class="inp" /></label>
+          <label class="check"><input type="checkbox" v-model="taskForm.is_required" /> Обязательная</label>
+        </div>
+        <label class="full">Критерий выполнения (инструкция для ИИ, на англ.)
+          <textarea v-model="taskForm.completion_criteria" class="inp" rows="3"></textarea>
+        </label>
+        <div class="modal-actions">
+          <button class="btn" @click="taskForm = null">Отмена</button>
+          <button class="btn btn-primary" :disabled="saving" @click="saveTask">{{ saving ? 'Сохранение…' : 'Сохранить' }}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { onMounted, ref, watch } from 'vue'
+import { apiClient } from '../api/client'
+import { showAlert, showConfirm } from '../composables/useDialog'
+import { courseClient, type CourseSummary } from '../api/courseClient'
+
+interface AdminTask {
+  id: number
+  code: string
+  title: string
+  completion_criteria: string
+  is_required: boolean
+  sort_order: number
+}
+interface AdminScenario {
+  id: number
+  code: string
+  title: string
+  cefr_level: string
+  place_type: string
+  npc_name: string
+  npc_persona: string
+  scene_setup: string
+  is_quest: boolean
+  max_turns: number
+  token_budget: number
+  sort_order: number
+  status: string
+  tasks: AdminTask[]
+}
+interface LevelOption { level_code: string; title: string }
+
+const availableCourses = ref<CourseSummary[]>([])
+const selectedCourseCode = ref('')
+const coursesError = ref<string | null>(null)
+const scenarios = ref<AdminScenario[]>([])
+const levels = ref<LevelOption[]>([])
+const loading = ref(false)
+const error = ref<string | null>(null)
+const saving = ref(false)
+
+const scenarioForm = ref<Partial<AdminScenario> & { id?: number } | null>(null)
+const taskForm = ref<(Partial<AdminTask> & { id?: number, scenarioId: number }) | null>(null)
+
+async function load() {
+  if (!selectedCourseCode.value) return
+  loading.value = true
+  error.value = null
+  try {
+    const data: { scenarios?: AdminScenario[], levels?: LevelOption[] } =
+      await apiClient.request(`/api/admin/conversations/scenarios?course_code=${encodeURIComponent(selectedCourseCode.value)}`)
+    scenarios.value = data.scenarios || []
+    levels.value = data.levels || []
+  } catch (e: any) {
+    error.value = e?.message || 'Не удалось загрузить сценарии'
+  } finally {
+    loading.value = false
+  }
+}
+
+function newScenario() {
+  scenarioForm.value = {
+    code: '', title: '', cefr_level: levels.value[0]?.level_code || 'A0', place_type: 'cafe',
+    npc_name: '', npc_persona: '', scene_setup: '', is_quest: true,
+    max_turns: 20, token_budget: 6000, sort_order: scenarios.value.length, status: 'draft',
+  }
+}
+function editScenario(s: AdminScenario) {
+  scenarioForm.value = { ...s }
+}
+
+async function saveScenario() {
+  const f = scenarioForm.value
+  if (!f) return
+  if (!f.code?.trim() || !f.title?.trim() || !f.cefr_level) {
+    await showAlert('Заполните code, название и уровень')
+    return
+  }
+  saving.value = true
+  try {
+    const url = `/api/admin/conversations/scenarios${f.id ? '/' + f.id : ''}?course_code=${encodeURIComponent(selectedCourseCode.value)}`
+    await apiClient.request(url, { method: f.id ? 'PUT' : 'POST', body: JSON.stringify(f) })
+    scenarioForm.value = null
+    await load()
+  } catch (e: any) {
+    await showAlert(e?.message || 'Не удалось сохранить')
+  } finally {
+    saving.value = false
+  }
+}
+
+async function removeScenario(s: AdminScenario) {
+  if (!await showConfirm(`Удалить сценарий «${s.title}» и все его задачи/сессии?`)) return
+  try {
+    await apiClient.request(`/api/admin/conversations/scenarios/${s.id}`, { method: 'DELETE' })
+    await load()
+  } catch (e: any) {
+    await showAlert(e?.message || 'Не удалось удалить')
+  }
+}
+
+function newTask(s: AdminScenario) {
+  taskForm.value = { scenarioId: s.id, code: '', title: '', completion_criteria: '', is_required: true, sort_order: s.tasks.length }
+}
+function editTask(s: AdminScenario, t: AdminTask) {
+  taskForm.value = { ...t, scenarioId: s.id }
+}
+
+async function saveTask() {
+  const f = taskForm.value
+  if (!f) return
+  if (!f.code?.trim() || !f.title?.trim() || !f.completion_criteria?.trim()) {
+    await showAlert('Заполните code, название и критерий')
+    return
+  }
+  saving.value = true
+  try {
+    const body = JSON.stringify({
+      code: f.code, title: f.title, completion_criteria: f.completion_criteria,
+      is_required: f.is_required, sort_order: f.sort_order,
+    })
+    if (f.id) {
+      await apiClient.request(`/api/admin/conversations/tasks/${f.id}`, { method: 'PUT', body })
+    } else {
+      await apiClient.request(`/api/admin/conversations/scenarios/${f.scenarioId}/tasks`, { method: 'POST', body })
+    }
+    taskForm.value = null
+    await load()
+  } catch (e: any) {
+    await showAlert(e?.message || 'Не удалось сохранить')
+  } finally {
+    saving.value = false
+  }
+}
+
+async function removeTask(_s: AdminScenario, t: AdminTask) {
+  if (!await showConfirm(`Удалить задачу «${t.title}»?`)) return
+  try {
+    await apiClient.request(`/api/admin/conversations/tasks/${t.id}`, { method: 'DELETE' })
+    await load()
+  } catch (e: any) {
+    await showAlert(e?.message || 'Не удалось удалить')
+  }
+}
+
+watch(selectedCourseCode, () => { scenarios.value = []; load() })
+
+onMounted(async () => {
+  try {
+    const data = await courseClient.getCourses()
+    availableCourses.value = data.courses || []
+    selectedCourseCode.value = availableCourses.value.find(c => c.is_current)?.code
+      || availableCourses.value[0]?.code || ''
+  } catch (e: any) {
+    coursesError.value = e?.message || 'Не удалось загрузить курсы'
+  }
+})
+</script>
+
+<style scoped>
+.course-selector { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+.level-select, .inp {
+  border: 1px solid var(--border-primary); border-radius: 6px; padding: 6px 10px;
+  background: var(--bg-primary); color: var(--text-primary); font-size: 13px;
+}
+.inp { width: 100%; box-sizing: border-box; }
+textarea.inp { resize: vertical; font-family: inherit; }
+.mono { font-family: ui-monospace, monospace; }
+.loading, .empty-message { padding: 24px; color: var(--text-secondary); }
+.error { padding: 12px; color: #c0392b; }
+
+.scenario-list { display: flex; flex-direction: column; gap: 14px; }
+.scenario-card { border: 1px solid var(--border-primary); border-radius: 10px; padding: 14px; background: var(--bg-secondary); }
+.scenario-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.scenario-title { font-weight: 600; font-size: 15px; margin-right: 8px; }
+.scenario-meta { font-size: 12px; color: var(--text-secondary); margin: 6px 0 10px; }
+.scenario-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+.badge { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; margin-right: 5px; }
+.badge--active { background: rgba(45,107,58,0.15); color: #2d6b3a; }
+.badge--draft { background: rgba(150,150,150,0.18); color: #777; }
+.badge--locked { background: rgba(200,150,40,0.18); color: #9a7b1e; }
+.badge--archived { background: rgba(150,150,150,0.12); color: #999; }
+.badge--quest { background: rgba(45,107,58,0.12); color: #2d6b3a; }
+.badge--free { background: rgba(200,168,75,0.18); color: #9a7b1e; }
+
+.tasks-block { border-top: 1px solid var(--border-primary); padding-top: 8px; }
+.tasks-head { display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px; }
+.tasks-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.tasks-table th, .tasks-table td { text-align: left; padding: 4px 6px; border-bottom: 1px solid var(--border-primary); vertical-align: top; }
+.tasks-table .criteria { color: var(--text-secondary); max-width: 360px; }
+.nowrap { white-space: nowrap; }
+
+.btn { border: 1px solid var(--border-primary); border-radius: 6px; padding: 6px 12px; background: var(--bg-primary); color: var(--text-primary); cursor: pointer; font-size: 13px; }
+.btn-primary { background: #2d6b3a; color: #fff; border-color: #2d6b3a; }
+.btn-danger { color: #c0392b; }
+.btn-sm { padding: 4px 9px; font-size: 12px; }
+.btn-xs { padding: 2px 7px; font-size: 11px; margin-left: 4px; }
+.btn:disabled { opacity: 0.5; cursor: default; }
+
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); display: flex; align-items: flex-start; justify-content: center; padding: 40px 16px; z-index: 1000; overflow-y: auto; }
+.modal { background: var(--bg-primary); border-radius: 12px; padding: 20px; width: 100%; max-width: 640px; }
+.modal h3 { margin: 0 0 14px; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px; }
+.form-grid label, .full { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--text-secondary); }
+.full { margin-top: 10px; }
+.check { flex-direction: row !important; align-items: center; gap: 6px; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; }
+</style>

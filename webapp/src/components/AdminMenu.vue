@@ -75,6 +75,16 @@
       </router-link>
       <router-link
         v-if="can('full_access')"
+        to="/conversations"
+        class="admin-sidebar-item"
+        :class="{ active: $route.path.startsWith('/conversations') }"
+        @click="isMobile && handleCloseSidebar()"
+      >
+        <Icon name="chat" class="admin-sidebar-icon" />
+        <span>Обсуждения</span>
+      </router-link>
+      <router-link
+        v-if="can('full_access')"
         to="/content-reports"
         class="admin-sidebar-item"
         :class="{ active: $route.path === '/content-reports' }"
