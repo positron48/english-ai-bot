@@ -3,8 +3,11 @@ package ru.qantrix.embedded;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Color;
+import android.graphics.Insets;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.WindowInsets;
 import android.webkit.JavascriptInterface;
 import android.webkit.CookieManager;
 import android.webkit.WebResourceRequest;
@@ -22,8 +25,6 @@ import java.nio.charset.StandardCharsets;
 
 public class MainActivity extends Activity {
     private WebView webView;
-    private int lastInsetTop = 0;
-    private int lastInsetBottom = 0;
 
     @Override
     @SuppressLint("SetJavaScriptEnabled")
@@ -32,6 +33,14 @@ public class MainActivity extends Activity {
 
         webView = new WebView(this);
         setContentView(webView);
+
+        // targetSdk 35 forces edge-to-edge: the WebView draws under the status/navigation bars.
+        // Some devices (e.g. Samsung One UI) don't reliably expose env(safe-area-inset-*) to CSS,
+        // so we make the native side authoritative: read the real bar insets and pad the WebView
+        // itself. The web content then never draws under the system bars on any screen.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            getWindow().setDecorFitsSystemWindows(false);
+        }
 
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
@@ -48,27 +57,24 @@ public class MainActivity extends Activity {
         webView.addJavascriptInterface(new AndroidBridge(), "QantrixAndroid");
         webView.setWebViewClient(new EmbeddedWebViewClient());
 
-        // The WebView draws edge-to-edge under the system bars on some devices (e.g. Samsung)
-        // without reliably exposing env(safe-area-inset-*) to CSS. Read the real insets and
-        // push them to the web layer as CSS px so the layout can pad the status/nav bars.
-        final float density = getResources().getDisplayMetrics().density;
         webView.setOnApplyWindowInsetsListener((v, insets) -> {
-            lastInsetTop = Math.round(insets.getSystemWindowInsetTop() / density);
-            lastInsetBottom = Math.round(insets.getSystemWindowInsetBottom() / density);
-            pushSafeAreaInsets();
+            int top;
+            int bottom;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                // statusBars() | navigationBars() also covers the display cutout via systemBars().
+                Insets bars = insets.getInsets(WindowInsets.Type.systemBars()
+                        | WindowInsets.Type.displayCutout());
+                top = bars.top;
+                bottom = bars.bottom;
+            } else {
+                top = insets.getSystemWindowInsetTop();
+                bottom = insets.getSystemWindowInsetBottom();
+            }
+            v.setPadding(0, top, 0, bottom);
             return insets;
         });
 
         loadBundledApp();
-    }
-
-    private void pushSafeAreaInsets() {
-        if (webView == null) {
-            return;
-        }
-        final String js = "window.__setSafeAreaInsets && window.__setSafeAreaInsets("
-                + lastInsetTop + "," + lastInsetBottom + ")";
-        webView.post(() -> webView.evaluateJavascript(js, null));
     }
 
     @Override
@@ -117,13 +123,6 @@ public class MainActivity extends Activity {
     }
 
     private final class EmbeddedWebViewClient extends WebViewClient {
-        @Override
-        public void onPageFinished(WebView view, String url) {
-            super.onPageFinished(view, url);
-            // Re-push insets once the web layer is ready to receive them.
-            pushSafeAreaInsets();
-        }
-
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
             return intercept(request.getUrl());
