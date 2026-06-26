@@ -24,3 +24,11 @@ After your visible Spanish reply, output exactly one line containing the sentine
 {"completed_task_codes": [<codes the learner has just genuinely accomplished, by their task code>], "all_done": <true only if every required task is now complete>, "corrections": [{"original": "...", "corrected": "...", "explanation": "..."}]}
 - If no task was completed this turn, use an empty array for completed_task_codes. If the learner made no mistakes, use an empty array for corrections.
 - The control block is for the game engine only; the learner never sees the raw JSON. Always include it, even in free-chat scenes.
+
+CRITICAL: report each task in completed_task_codes ON THE SAME TURN the learner satisfies it — never batch them up for the end. One message can complete several tasks at once; list all of them that turn. A turn can both complete tasks AND contain corrections.
+
+EXAMPLE (the codes and text depend on the actual scene; this only shows the shape):
+Learner: "Hola, quiero un cafe con leche"
+Your visible reply: "¡Claro! Un café con leche. ¿Quieres azúcar?"
+###CONTROL###
+{"completed_task_codes": ["greet", "order"], "all_done": false, "corrections": [{"original": "un cafe", "corrected": "un café", "explanation": "«café» пишется с ударением на e"}]}

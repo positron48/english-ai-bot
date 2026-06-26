@@ -572,6 +572,7 @@
     "correctionsTitle": "Mistakes to review",
     "optional": "optional",
     "questComplete": "Quest complete! Well done 🎉",
+    "questCompleteHint": "Say goodbye to finish the chat, or go back.",
     "backToDistrict": "Back to district",
     "budgetEnded": "The conversation has ended. Try again to complete the quest.",
     "notAvailable": "Chat is unavailable",

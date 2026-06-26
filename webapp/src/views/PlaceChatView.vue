@@ -83,6 +83,7 @@
         <div v-if="questPassed" class="chat-banner chat-banner--win">
           <LgLumi pose="clapping" :size="48" />
           <div class="chat-banner-text">{{ t('chat.questComplete') }}</div>
+          <div v-if="status === 'open'" class="chat-banner-hint">{{ t('chat.questCompleteHint') }}</div>
           <LgButton @click="goBack">{{ t('chat.backToDistrict') }}</LgButton>
         </div>
         <div v-else-if="budgetExhausted" class="chat-banner">
@@ -156,7 +157,9 @@ const headerTitle = computed(() => {
   if (scenarioCode.value && session.value) return session.value.title
   return t('chat.placesTitle')
 })
-const canSend = computed(() => status.value === 'open' && !questPassed.value && !budgetExhausted.value)
+// Keep the composer usable after the quest passes so the learner can say goodbye / finish
+// optional tasks; the session only truly ends when status flips to completed or budget runs out.
+const canSend = computed(() => status.value === 'open' && !budgetExhausted.value)
 
 function goBack() {
   router.push({ name: 'CityDistrict', params: { districtCode: districtCode.value } })
@@ -269,6 +272,8 @@ onMounted(loadForRoute)
 
 /* thread */
 .chat-thread { flex: 1; overflow-y: auto; padding: 12px 16px; display: flex; flex-direction: column; gap: 10px; }
+/* NPC reply bubbles in chat are wider than the default Lumi speech bubble. */
+.chat-thread :deep(.lg-bubble) { max-width: 400px; font-size: 14px; }
 .chat-scene { font-family: 'Inter', sans-serif; font-size: 12px; font-style: italic; color: var(--subtext); text-align: center; margin: 0 0 6px; }
 .chat-row { display: flex; }
 .chat-row--user { justify-content: flex-end; }
@@ -304,6 +309,7 @@ onMounted(loadForRoute)
 .chat-banner { margin: 10px 16px; padding: 16px; border-radius: 14px; background: var(--card, #fff); border: 1px solid var(--border, rgba(0,0,0,0.08)); display: flex; flex-direction: column; align-items: center; gap: 10px; }
 .chat-banner--win { background: rgba(45,107,58,0.08); border-color: rgba(45,107,58,0.3); }
 .chat-banner-text { font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 600; color: var(--text); text-align: center; }
+.chat-banner-hint { font-family: 'Inter', sans-serif; font-size: 12px; color: var(--subtext); text-align: center; margin-top: -4px; }
 
 /* composer */
 .chat-composer { display: flex; gap: 8px; padding: 10px 16px; }

@@ -457,14 +457,22 @@ func (r *Router) handleConversationMessage(w http.ResponseWriter, req *http.Requ
 	}
 
 	completedAfter, _ := r.conversationRepo.GetCompletedTaskIDs(ctx, session.ID)
+	passedBefore := scenario.IsQuest && allRequiredDone(tasks, completedBefore)
 	questPassed := scenario.IsQuest && allRequiredDone(tasks, completedAfter)
 	status := "open"
-	if questPassed {
-		if err := r.conversationRepo.CloseSession(ctx, session.ID, session.UserCourseID, "completed"); err != nil {
-			r.logger.Warn("close completed session failed", zap.Error(err))
-		}
+	if questPassed && !passedBefore {
+		// Record the win exactly once (the turn the last required task is met). We do NOT close
+		// the session here: the learner should still be able to say goodbye and finish optional
+		// tasks (the abrupt close was cutting the conversation off mid-scene).
 		if err := r.conversationRepo.RecordQuestCompletion(ctx, session.UserCourseID, scenario.LearningItemID, scenario.Code, session.ID); err != nil {
 			r.logger.Warn("record quest completion failed", zap.Error(err))
+		}
+	}
+	// Close the session only when the WHOLE checklist (including optional tasks like the farewell)
+	// is done, giving the scene a natural ending instead of stopping the moment quests pass.
+	if scenario.IsQuest && allTasksDone(tasks, completedAfter) {
+		if err := r.conversationRepo.CloseSession(ctx, session.ID, session.UserCourseID, "completed"); err != nil {
+			r.logger.Warn("close completed session failed", zap.Error(err))
 		}
 		status = "completed"
 	}
@@ -580,6 +588,19 @@ func tasksJSON(tasks []repository.ConversationTask, completedByID map[int64]bool
 		})
 	}
 	return out
+}
+
+// allTasksDone reports whether every task (required AND optional) is completed.
+func allTasksDone(tasks []repository.ConversationTask, completedByID map[int64]bool) bool {
+	if len(tasks) == 0 {
+		return false
+	}
+	for _, t := range tasks {
+		if !completedByID[t.ID] {
+			return false
+		}
+	}
+	return true
 }
 
 // allRequiredDone reports whether every required task is completed.

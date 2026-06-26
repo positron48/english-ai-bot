@@ -533,6 +533,7 @@
     "correctionsTitle": "Errores para repasar",
     "optional": "opcional",
     "questComplete": "¡Misión completada! Bien hecho 🎉",
+    "questCompleteHint": "Despídete para terminar la charla o vuelve atrás.",
     "backToDistrict": "Volver al distrito",
     "budgetEnded": "La conversación ha terminado. Inténtalo de nuevo para completar la misión.",
     "notAvailable": "El chat no está disponible",
