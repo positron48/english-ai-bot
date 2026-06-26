@@ -257,7 +257,9 @@ func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, stat
 	if parts := strings.SplitN(state.CourseCode, "_", 2); len(parts) > 0 && parts[0] != "" {
 		sessTL = parts[0]
 	}
-	isEnglishTarget := strings.EqualFold(sessTL, "en")
+	// Only strip the English "to " infinitive for an explicitly non-English target;
+	// an unknown/empty target keeps the legacy English behaviour.
+	isEnglishTarget := sessTL == "" || strings.EqualFold(sessTL, "en")
 
 	// Spell challenge: compose the word from letters
 	if item.Type == "spell" && item.Spell != nil {
