@@ -74,7 +74,15 @@ type Service struct {
 	dictionaryPrompts   map[string]string // course_code -> dictionary lookup prompt override
 	trainingPrompts     map[string]string // course_code -> training card generation prompt override
 	conversationPrompts map[string]string // course_code -> NPC role-play base prompt
+	conversationModel   string            // optional model override for NPC conversations ("" = use model)
 	logger              *zap.Logger
+}
+
+// SetConversationModel sets an optional model override used only by ConversationTurn (NPC
+// role-play). Empty keeps the default model. Conversations benefit from a stronger
+// instruction-following model than dictionary/training generation.
+func (s *Service) SetConversationModel(model string) {
+	s.conversationModel = strings.TrimSpace(model)
 }
 
 // NewService creates a new AI service with the default HTTP client timeout (30s).
@@ -333,6 +341,9 @@ func (s *Service) postChatCompletionRaw(ctx context.Context, model string, messa
 // visible reply never contains it.
 func (s *Service) ConversationTurn(ctx context.Context, systemPrompt string, history []Message, userMessage string, maxTokens int, modelOverride ...string) (*ChatTurnResult, error) {
 	model := s.model
+	if s.conversationModel != "" {
+		model = s.conversationModel
+	}
 	if len(modelOverride) > 0 && strings.TrimSpace(modelOverride[0]) != "" {
 		model = modelOverride[0]
 	}

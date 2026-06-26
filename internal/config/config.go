@@ -147,7 +147,10 @@ type AIConfig struct {
 	URL            string `mapstructure:"url"`
 	Model          string `mapstructure:"model"`
 	ModelHigh      string `mapstructure:"model_high"`
-	APIKey         string `mapstructure:"api_key"`
+	// ConversationModel overrides the model used for NPC role-play conversations only (it benefits
+	// from stronger instruction-following than dictionary/training). Empty = fall back to Model.
+	ConversationModel string `mapstructure:"conversation_model"`
+	APIKey            string `mapstructure:"api_key"`
 	Prompt         string `mapstructure:"prompt"`
 	PromptFile     string `mapstructure:"prompt_file"`
 	RequestTimeout string `mapstructure:"request_timeout"` // e.g. 120s, 3m; HTTP client timeout for chat/completions (default 30s)
@@ -425,6 +428,7 @@ func Load() (*Config, error) {
 	_ = viper.BindEnv("ai.url", "AI_URL")
 	_ = viper.BindEnv("ai.model", "AI_MODEL")
 	_ = viper.BindEnv("ai.model_high", "AI_MODEL_HIGH")
+	_ = viper.BindEnv("ai.conversation_model", "AI_CONVERSATION_MODEL")
 	_ = viper.BindEnv("ai.api_key", "AI_API_KEY")
 	_ = viper.BindEnv("ai.prompt", "AI_PROMPT")
 	_ = viper.BindEnv("ai.prompt_file", "AI_PROMPT_FILE")

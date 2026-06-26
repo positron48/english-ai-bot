@@ -104,6 +104,12 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 		aiHTTPTimeout,
 		log,
 	)
+	// NPC role-play conversations use a stronger instruction-following model than dictionary/
+	// training generation when AI_CONVERSATION_MODEL is set (empty falls back to AI_MODEL).
+	if cfg.AI.ConversationModel != "" {
+		aiService.SetConversationModel(cfg.AI.ConversationModel)
+		log.Info("conversation model override active", zap.String("model", cfg.AI.ConversationModel))
+	}
 
 	// Load Spanish dictionary-lookup prompt for the es_ru course so word-card generation
 	// doesn't validate Spanish words against the default English-only prompt.
