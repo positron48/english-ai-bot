@@ -250,7 +250,7 @@ function newScenario() {
   scenarioForm.value = {
     code: '', title: '', cefr_level: levels.value[0]?.level_code || 'A0', place_type: 'cafe',
     npc_name: '', npc_persona: '', scene_setup: '', is_quest: true,
-    max_turns: 20, token_budget: 6000, npc_code: '', prerequisite_code: '',
+    max_turns: 30, token_budget: 40000, npc_code: '', prerequisite_code: '',
     sort_order: scenarios.value.length, status: 'draft',
   }
 }

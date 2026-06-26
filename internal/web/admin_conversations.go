@@ -173,10 +173,12 @@ func (p *scenarioPayload) toInput(courseCode string) (repository.AdminScenarioIn
 		in.NPCName = "NPC"
 	}
 	if in.MaxTurns <= 0 {
-		in.MaxTurns = 20
+		in.MaxTurns = 30
 	}
 	if in.TokenBudget <= 0 {
-		in.TokenBudget = 6000
+		// Each turn replays the system prompt + recent history, so a turn can cost ~1-1.5k tokens.
+		// Keep the budget generous so a normal quest is never cut off mid-scene.
+		in.TokenBudget = 40000
 	}
 	switch in.Status {
 	case "draft", "active", "locked", "archived":

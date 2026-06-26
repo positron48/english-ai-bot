@@ -441,7 +441,8 @@ func (r *Router) handleConversationMessage(w http.ResponseWriter, req *http.Requ
 		return
 	}
 	completedBefore, _ := r.conversationRepo.GetCompletedTaskIDs(ctx, session.ID)
-	nudge := scenario.IsQuest && session.TurnCount >= (scenario.MaxTurns*6/10) && !allRequiredDone(tasks, completedBefore)
+	// Only nudge late in the budget so the NPC doesn't feel pushy early on.
+	nudge := scenario.IsQuest && session.TurnCount >= (scenario.MaxTurns*85/100) && !allRequiredDone(tasks, completedBefore)
 
 	targetLang := r.courseTargetLang(ctx, scenario.CourseID)
 	systemPrompt := buildConversationSystemPrompt(r.aiSvc().ConversationPromptForCourse(courseCode), targetLang, scenario, tasks, completedBefore, nudge)
@@ -655,7 +656,7 @@ func buildConversationSystemPrompt(base, targetLang string, scenario *repository
 		b.WriteString("\n\n")
 	} else {
 		// Built-in fallback when no course prompt file is registered.
-		b.WriteString("You are an NPC in a language-learning role-play game. Speak only in the target language, stay in character, keep replies short and simple, and after each reply output a line '###CONTROL###' followed by a JSON object {\"completed_task_codes\":[...],\"all_done\":bool,\"corrections\":[{\"original\":\"...\",\"corrected\":\"...\",\"explanation\":\"...\"}]}. In corrections, list real mistakes in the learner's latest message with a short explanation in Russian; use an empty array when there are none.\n\n")
+		b.WriteString("You are an NPC in a language-learning role-play game. Speak only in the target language, stay fully in character, and answer the learner's questions from your role (e.g. as a shop assistant, state the price yourself — never ask the buyer the price, never repeat their words back as your line). Keep replies short and simple. Never coach the learner or tell them what to say, and never reveal the task list. After each reply output a line '###CONTROL###' followed by a JSON object {\"completed_task_codes\":[...],\"all_done\":bool,\"corrections\":[{\"original\":\"...\",\"corrected\":\"...\",\"explanation\":\"...\"}]}. In corrections, report only real mistakes in the learner's LATEST message (never repeat earlier ones) with a short explanation in Russian; use an empty array when there are none.\n\n")
 	}
 
 	fmt.Fprintf(&b, "SCENE\n- You are %s, %s.\n- Setting: %s\n- Target language code: %s. CEFR level: %s.\n",
@@ -676,9 +677,10 @@ func buildConversationSystemPrompt(base, targetLang string, scenario *repository
 			fmt.Fprintf(&b, "- [%s] (%s, %s) %s\n", t.Code, req, status, t.CompletionCriteria)
 		}
 		b.WriteString("\nUse the task codes in square brackets in completed_task_codes. Only mark a task when the learner has genuinely done it in their own words. Do not re-mark tasks already done.\n")
-		b.WriteString("IMPORTANT: mark each task in completed_task_codes on the SAME turn the learner accomplishes it — as soon as it happens. Never wait until the end of the conversation to report several tasks at once. Each reply must report any tasks newly satisfied by the learner's latest message.\n")
+		b.WriteString("Re-check the learner's latest message against EACH 'not done yet' task above independently: a single message can satisfy several at once (e.g. a greeting plus a question) — report ALL of their codes this turn, never just one. Mark tasks on the SAME turn they happen; never batch them for the end.\n")
+		b.WriteString("Do NOT coach the learner toward these tasks, hint at what is left, or ask them to perform a specific one — just play your role and let them complete tasks on their own.\n")
 		if nudge {
-			b.WriteString("\nThe learner is taking a while. Gently steer them, in very simple language, toward a remaining task without solving it for them.\n")
+			b.WriteString("\nThe scene has stalled. You may move your own part of the scene forward in very simple language, staying in character — but do not tell the learner what to say or reveal any task.\n")
 		}
 	} else {
 		b.WriteString("\nThis is a free-chat scene with no tasks. Keep an easy, friendly conversation going. Always still output the control line with an empty completed_task_codes array.\n")

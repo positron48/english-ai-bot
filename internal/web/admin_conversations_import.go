@@ -44,7 +44,7 @@ func (r *Router) handleAdminConversationImport(w http.ResponseWriter, req *http.
 		courseCode = r.adminConversationCourseCode(req)
 	}
 
-	in, err := p.scenarioPayload.toInput(courseCode)
+	in, err := p.toInput(courseCode)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -136,8 +136,8 @@ func conversationGenerationPrompt(courseCode, targetLang string) string {
   "npc_persona": "string (EN) — характер и манера речи NPC, инструкция для модели",
   "scene_setup": "string (EN) — завязка сцены, что происходит, инструкция для модели",
   "is_quest": true,
-  "max_turns": 16,
-  "token_budget": 6000,
+  "max_turns": 30,
+  "token_budget": 40000,
   "sort_order": 0,
   "status": "draft",
   "tasks": [

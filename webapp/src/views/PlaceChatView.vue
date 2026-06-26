@@ -1,5 +1,5 @@
 <template>
-  <div class="chat-page">
+  <div class="chat-page" :class="{ 'chat-page--shell': !!scenarioCode }">
     <LgPageHeader
       :title="headerTitle"
       :show-back="true"
@@ -138,11 +138,11 @@
         <!-- composer -->
         <div v-if="canSend" class="chat-composer">
           <input
+            ref="composerInput"
             v-model="input"
             class="chat-input"
             type="text"
             :placeholder="t('chat.placeholder')"
-            :disabled="sending"
             @keyup.enter="send"
           />
           <button class="chat-send" type="button" :disabled="sending || !input.trim()" @click="send">
@@ -256,7 +256,13 @@ const questPassed = ref(false)
 const budgetExhausted = ref(false)
 const status = ref('open')
 const scrollEl = ref<HTMLElement | null>(null)
+const composerInput = ref<HTMLInputElement | null>(null)
 const loadError = ref('')
+
+function focusComposer() {
+  // Keep the cursor in the input after sending so the learner can keep typing without re-tapping.
+  nextTick(() => composerInput.value?.focus())
+}
 
 const headerTitle = computed(() => {
   if (scenarioCode.value && session.value) return session.value.title
@@ -298,6 +304,7 @@ async function send() {
   } finally {
     sending.value = false
     await scrollToBottom()
+    if (canSend.value) focusComposer()
   }
 }
 
@@ -346,6 +353,30 @@ onMounted(loadForRoute)
 
 <style scoped>
 .chat-page { display: flex; flex-direction: column; min-height: 100%; padding-bottom: 16px; }
+
+/* Chat (scenario) mode: a fixed app-shell pinned between the status bar and the bottom nav so
+   only the message thread scrolls and the composer stays put at the bottom of the screen. */
+.chat-page--shell {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: max(env(safe-area-inset-top, 0px), var(--android-inset-top, 0px));
+  bottom: calc(60px + max(env(safe-area-inset-bottom, 0px), var(--android-inset-bottom, 0px)));
+  min-height: 0;
+  padding-bottom: 0;
+  background: var(--bg);
+  z-index: 50;
+}
+@media (min-width: 900px) {
+  /* Desktop has a 220px side nav and no bottom nav; align the shell with the centered content column. */
+  .chat-page--shell {
+    left: 220px;
+    top: 0;
+    bottom: 0;
+    max-width: 880px;
+    margin: 0 auto;
+  }
+}
 .chat-loading { padding: 40px 16px; text-align: center; color: var(--subtext); }
 
 /* scenario list */
@@ -353,7 +384,7 @@ onMounted(loadForRoute)
 .chat-card {
   display: flex; align-items: center; gap: 12px; width: 100%;
   padding: 14px; border-radius: 14px; border: 1px solid var(--border, rgba(0,0,0,0.08));
-  background: var(--card, #fff); cursor: pointer; text-align: left;
+  background: var(--card-bg); cursor: pointer; text-align: left;
 }
 .chat-card-body { flex: 1; min-width: 0; }
 .chat-card-title { font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 600; color: var(--text); }
@@ -378,7 +409,7 @@ onMounted(loadForRoute)
 .npc-step {
   display: flex; align-items: center; gap: 10px; width: 100%;
   padding: 10px 12px; border-radius: 12px; border: 1px solid var(--border, rgba(0,0,0,0.08));
-  background: var(--card, #fff); cursor: pointer; text-align: left;
+  background: var(--card-bg); cursor: pointer; text-align: left;
 }
 .npc-step:disabled { cursor: default; opacity: 0.55; }
 .npc-step--done { background: rgba(45,107,58,0.06); border-color: rgba(45,107,58,0.25); }
@@ -396,7 +427,7 @@ onMounted(loadForRoute)
 .npc-step--done .npc-step-state { color: #2d6b3a; }
 
 /* task checklist */
-.chat-tasks { margin: 8px 16px; padding: 12px 14px; border-radius: 14px; background: var(--card, #fff); border: 1px solid var(--border, rgba(0,0,0,0.08)); }
+.chat-tasks { margin: 8px 16px; padding: 12px 14px; border-radius: 14px; background: var(--card-bg); border: 1px solid var(--border, rgba(0,0,0,0.08)); }
 .chat-tasks-title { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; color: var(--subtext); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 8px; }
 .chat-task { display: flex; align-items: center; gap: 8px; padding: 4px 0; font-family: 'Inter', sans-serif; font-size: 13px; color: var(--text); transition: opacity 0.25s; }
 .chat-task-check { width: 18px; text-align: center; color: var(--subtext); }
@@ -406,7 +437,7 @@ onMounted(loadForRoute)
 .chat-task-opt { font-size: 10px; color: var(--subtext); }
 
 /* thread */
-.chat-thread { flex: 1; overflow-y: auto; padding: 12px 16px; display: flex; flex-direction: column; gap: 10px; }
+.chat-thread { flex: 1; min-height: 0; overflow-y: auto; padding: 12px 16px; display: flex; flex-direction: column; gap: 10px; }
 /* NPC reply bubbles in chat are wider than the default Lumi speech bubble. */
 .chat-thread :deep(.lg-bubble) { max-width: 400px; font-size: 14px; }
 .chat-scene { font-family: 'Inter', sans-serif; font-size: 12px; font-style: italic; color: var(--subtext); text-align: center; margin: 0 0 6px; }
@@ -441,16 +472,21 @@ onMounted(loadForRoute)
 .chat-correction-expl { font-family: 'Inter', sans-serif; font-size: 12px; color: var(--subtext); margin-top: 2px; }
 
 /* banners */
-.chat-banner { margin: 10px 16px; padding: 16px; border-radius: 14px; background: var(--card, #fff); border: 1px solid var(--border, rgba(0,0,0,0.08)); display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.chat-banner { margin: 10px 16px; padding: 16px; border-radius: 14px; background: var(--card-bg); border: 1px solid var(--border, rgba(0,0,0,0.08)); display: flex; flex-direction: column; align-items: center; gap: 10px; }
 .chat-banner--win { background: rgba(45,107,58,0.08); border-color: rgba(45,107,58,0.3); }
 .chat-banner-text { font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 600; color: var(--text); text-align: center; }
 .chat-banner-hint { font-family: 'Inter', sans-serif; font-size: 12px; color: var(--subtext); text-align: center; margin-top: -4px; }
 
 /* composer */
-.chat-composer { display: flex; gap: 8px; padding: 10px 16px; }
+.chat-composer {
+  display: flex; gap: 8px; padding: 10px 16px;
+  flex-shrink: 0;
+  background: var(--card-bg);
+  border-top: 1px solid var(--border);
+}
 .chat-input {
   flex: 1; padding: 11px 14px; border-radius: 22px; border: 1px solid var(--border, rgba(0,0,0,0.12));
-  background: var(--card, #fff); color: var(--text); font-family: 'Inter', sans-serif; font-size: 14px; outline: none;
+  background: var(--card-bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 14px; outline: none;
 }
 .chat-send {
   flex-shrink: 0; width: 44px; height: 44px; border-radius: 50%; border: none;
