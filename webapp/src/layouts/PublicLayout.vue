@@ -104,6 +104,9 @@ onUnmounted(() => window.removeEventListener('resize', check))
   min-height: 0;
 }
 .lg-view-pad {
-  padding: 0 14px;
+  /* Horizontal only: the `padding` shorthand here would reset the safe-area
+     padding-top/bottom set by .lg-layout-mobile and draw content under the bars. */
+  padding-left: 14px;
+  padding-right: 14px;
 }
 </style>
