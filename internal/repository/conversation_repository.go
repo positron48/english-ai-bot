@@ -28,6 +28,11 @@ type ConversationScenario struct {
 	IsQuest        bool
 	MaxTurns       int
 	TokenBudget    int
+	// NPCCode groups several scenarios under one recurring NPC ("" = standalone).
+	NPCCode string
+	// PrerequisiteCode is the scenario code that must be completed before this one
+	// unlocks for a learner ("" = always available).
+	PrerequisiteCode string
 }
 
 // ConversationTask is one ordered task inside a quest scenario.
@@ -78,13 +83,14 @@ func NewConversationRepository(db *sql.DB, logger *zap.Logger) *ConversationRepo
 
 const conversationScenarioColumns = `
 	id, course_id, district_id, location_id, learning_item_id, code, place_type, cefr_level,
-	title, npc_name, npc_persona, scene_setup, is_quest, max_turns, token_budget`
+	title, npc_name, npc_persona, scene_setup, is_quest, max_turns, token_budget, npc_code, prerequisite_code`
 
 func scanScenario(row interface{ Scan(...interface{}) error }) (*ConversationScenario, error) {
 	var s ConversationScenario
 	if err := row.Scan(
 		&s.ID, &s.CourseID, &s.DistrictID, &s.LocationID, &s.LearningItemID, &s.Code, &s.PlaceType, &s.CEFRLevel,
 		&s.Title, &s.NPCName, &s.NPCPersona, &s.SceneSetup, &s.IsQuest, &s.MaxTurns, &s.TokenBudget,
+		&s.NPCCode, &s.PrerequisiteCode,
 	); err != nil {
 		return nil, err
 	}
@@ -401,6 +407,30 @@ func (r *ConversationRepository) RecordQuestCompletion(ctx context.Context, user
 		Correct:      1,
 	})
 	return nil
+}
+
+// LatestCompletedScenarioCodes returns the set of scenario codes the user_course has at least one
+// 'completed' session for, within a course. Used to resolve prerequisite/unlock state.
+func (r *ConversationRepository) LatestCompletedScenarioCodes(ctx context.Context, userCourseID, courseID int64) (map[string]bool, error) {
+	rows, err := r.db.QueryContext(ctx, `
+		SELECT DISTINCT sc.code
+		FROM conversation_sessions sess
+		JOIN conversation_scenarios sc ON sc.id = sess.scenario_id
+		WHERE sess.user_course_id = ? AND sc.course_id = ? AND sess.status = 'completed'`,
+		userCourseID, courseID)
+	if err != nil {
+		return nil, fmt.Errorf("completed scenario codes: %w", err)
+	}
+	defer rows.Close()
+	out := make(map[string]bool)
+	for rows.Next() {
+		var code string
+		if err := rows.Scan(&code); err != nil {
+			return nil, err
+		}
+		out[code] = true
+	}
+	return out, rows.Err()
 }
 
 // CloseSession sets a terminal status ('completed' or 'abandoned') on a session.

@@ -23,12 +23,14 @@ type adminConversationScenario struct {
 	NPCName     string                  `json:"npc_name"`
 	NPCPersona  string                  `json:"npc_persona"`
 	SceneSetup  string                  `json:"scene_setup"`
-	IsQuest     bool                    `json:"is_quest"`
-	MaxTurns    int                     `json:"max_turns"`
-	TokenBudget int                     `json:"token_budget"`
-	SortOrder   int                     `json:"sort_order"`
-	Status      string                  `json:"status"`
-	Tasks       []adminConversationTask `json:"tasks"`
+	IsQuest          bool                    `json:"is_quest"`
+	MaxTurns         int                     `json:"max_turns"`
+	TokenBudget      int                     `json:"token_budget"`
+	NPCCode          string                  `json:"npc_code"`
+	PrerequisiteCode string                  `json:"prerequisite_code"`
+	SortOrder        int                     `json:"sort_order"`
+	Status           string                  `json:"status"`
+	Tasks            []adminConversationTask `json:"tasks"`
 }
 
 type adminConversationTask struct {
@@ -100,7 +102,9 @@ func (r *Router) adminConversationsList(w http.ResponseWriter, req *http.Request
 		out = append(out, adminConversationScenario{
 			ID: sc.ID, Code: sc.Code, Title: sc.Title, CEFRLevel: sc.CEFRLevel, PlaceType: sc.PlaceType,
 			NPCName: sc.NPCName, NPCPersona: sc.NPCPersona, SceneSetup: sc.SceneSetup, IsQuest: sc.IsQuest,
-			MaxTurns: sc.MaxTurns, TokenBudget: sc.TokenBudget, SortOrder: sc.SortOrder, Status: sc.Status,
+			MaxTurns: sc.MaxTurns, TokenBudget: sc.TokenBudget,
+			NPCCode: sc.NPCCode, PrerequisiteCode: sc.PrerequisiteCode,
+			SortOrder: sc.SortOrder, Status: sc.Status,
 			Tasks: taskOut,
 		})
 	}
@@ -132,28 +136,32 @@ type scenarioPayload struct {
 	NPCName     string `json:"npc_name"`
 	NPCPersona  string `json:"npc_persona"`
 	SceneSetup  string `json:"scene_setup"`
-	IsQuest     bool   `json:"is_quest"`
-	MaxTurns    int    `json:"max_turns"`
-	TokenBudget int    `json:"token_budget"`
-	SortOrder   int    `json:"sort_order"`
-	Status      string `json:"status"`
+	IsQuest          bool   `json:"is_quest"`
+	MaxTurns         int    `json:"max_turns"`
+	TokenBudget      int    `json:"token_budget"`
+	NPCCode          string `json:"npc_code"`
+	PrerequisiteCode string `json:"prerequisite_code"`
+	SortOrder        int    `json:"sort_order"`
+	Status           string `json:"status"`
 }
 
 func (p *scenarioPayload) toInput(courseCode string) (repository.AdminScenarioInput, error) {
 	in := repository.AdminScenarioInput{
-		CourseCode:  courseCode,
-		CEFRLevel:   strings.TrimSpace(p.CEFRLevel),
-		Code:        strings.TrimSpace(p.Code),
-		PlaceType:   strings.TrimSpace(p.PlaceType),
-		Title:       strings.TrimSpace(p.Title),
-		NPCName:     strings.TrimSpace(p.NPCName),
-		NPCPersona:  strings.TrimSpace(p.NPCPersona),
-		SceneSetup:  strings.TrimSpace(p.SceneSetup),
-		IsQuest:     p.IsQuest,
-		MaxTurns:    p.MaxTurns,
-		TokenBudget: p.TokenBudget,
-		SortOrder:   p.SortOrder,
-		Status:      strings.TrimSpace(p.Status),
+		CourseCode:       courseCode,
+		CEFRLevel:        strings.TrimSpace(p.CEFRLevel),
+		Code:             strings.TrimSpace(p.Code),
+		PlaceType:        strings.TrimSpace(p.PlaceType),
+		Title:            strings.TrimSpace(p.Title),
+		NPCName:          strings.TrimSpace(p.NPCName),
+		NPCPersona:       strings.TrimSpace(p.NPCPersona),
+		SceneSetup:       strings.TrimSpace(p.SceneSetup),
+		IsQuest:          p.IsQuest,
+		MaxTurns:         p.MaxTurns,
+		TokenBudget:      p.TokenBudget,
+		NPCCode:          strings.TrimSpace(p.NPCCode),
+		PrerequisiteCode: strings.TrimSpace(p.PrerequisiteCode),
+		SortOrder:        p.SortOrder,
+		Status:           strings.TrimSpace(p.Status),
 	}
 	if in.Code == "" || in.Title == "" || in.CEFRLevel == "" {
 		return in, errors.New("code, title and cefr_level are required")

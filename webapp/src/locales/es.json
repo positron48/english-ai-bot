@@ -542,7 +542,10 @@
     "budgetEnded": "La conversación ha terminado. Inténtalo de nuevo para completar la misión.",
     "notAvailable": "El chat no está disponible",
     "requiresPro": "El chat está disponible con la suscripción Pro",
-    "scenarioMissing": "Este escenario de chat aún no está disponible"
+    "scenarioMissing": "Este escenario de chat aún no está disponible",
+    "npcTitle": "Personas para conversar",
+    "locked": "Bloqueado",
+    "lockedHint": "Completa la conversación anterior primero"
   },
   "trainingFeedback": {
     "encouragingPhrases": [

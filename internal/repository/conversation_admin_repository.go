@@ -20,19 +20,21 @@ type AdminScenarioRow struct {
 
 // AdminScenarioInput holds the writable fields of a scenario for create/update.
 type AdminScenarioInput struct {
-	CourseCode  string
-	CEFRLevel   string
-	Code        string
-	PlaceType   string
-	Title       string
-	NPCName     string
-	NPCPersona  string
-	SceneSetup  string
-	IsQuest     bool
-	MaxTurns    int
-	TokenBudget int
-	SortOrder   int
-	Status      string
+	CourseCode       string
+	CEFRLevel        string
+	Code             string
+	PlaceType        string
+	Title            string
+	NPCName          string
+	NPCPersona       string
+	SceneSetup       string
+	IsQuest          bool
+	MaxTurns         int
+	TokenBudget      int
+	SortOrder        int
+	Status           string
+	NPCCode          string
+	PrerequisiteCode string
 }
 
 // AdminTaskInput holds the writable fields of a quest task.
@@ -49,7 +51,8 @@ func (r *ConversationRepository) ListScenariosForCourseAdmin(ctx context.Context
 	rows, err := r.db.QueryContext(ctx, `
 		SELECT cs.id, cs.course_id, cs.district_id, cs.location_id, cs.learning_item_id, cs.code,
 		       cs.place_type, cs.cefr_level, cs.title, cs.npc_name, cs.npc_persona, cs.scene_setup,
-		       cs.is_quest, cs.max_turns, cs.token_budget, cs.sort_order, cs.status,
+		       cs.is_quest, cs.max_turns, cs.token_budget, cs.npc_code, cs.prerequisite_code,
+		       cs.sort_order, cs.status,
 		       COALESCE(d.code, ''), COALESCE(d.level_code, ''), COALESCE(l.code, '')
 		FROM conversation_scenarios cs
 		LEFT JOIN districts d ON d.id = cs.district_id
@@ -67,7 +70,8 @@ func (r *ConversationRepository) ListScenariosForCourseAdmin(ctx context.Context
 		if err := rows.Scan(
 			&s.ID, &s.CourseID, &s.DistrictID, &s.LocationID, &s.LearningItemID, &s.Code,
 			&s.PlaceType, &s.CEFRLevel, &s.Title, &s.NPCName, &s.NPCPersona, &s.SceneSetup,
-			&s.IsQuest, &s.MaxTurns, &s.TokenBudget, &s.SortOrder, &s.Status,
+			&s.IsQuest, &s.MaxTurns, &s.TokenBudget, &s.NPCCode, &s.PrerequisiteCode,
+			&s.SortOrder, &s.Status,
 			&s.DistrictCode, &s.LevelCode, &s.LocationCode,
 		); err != nil {
 			return nil, err
@@ -134,11 +138,13 @@ func (r *ConversationRepository) CreateScenario(ctx context.Context, in AdminSce
 	if err := tx.QueryRowContext(ctx, `
 		INSERT INTO conversation_scenarios
 			(course_id, district_id, location_id, learning_item_id, code, place_type, cefr_level,
-			 title, npc_name, npc_persona, scene_setup, is_quest, max_turns, token_budget, sort_order, status, updated_at)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+			 title, npc_name, npc_persona, scene_setup, is_quest, max_turns, token_budget,
+			 npc_code, prerequisite_code, sort_order, status, updated_at)
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
 		RETURNING id`,
 		courseID, districtID, locationID, learningItemID, in.Code, in.PlaceType, in.CEFRLevel,
-		in.Title, in.NPCName, in.NPCPersona, in.SceneSetup, in.IsQuest, in.MaxTurns, in.TokenBudget, in.SortOrder, in.Status,
+		in.Title, in.NPCName, in.NPCPersona, in.SceneSetup, in.IsQuest, in.MaxTurns, in.TokenBudget,
+		in.NPCCode, in.PrerequisiteCode, in.SortOrder, in.Status,
 	).Scan(&id); err != nil {
 		if isUniqueViolation(err) {
 			return 0, ErrDuplicateScenarioCode
@@ -172,11 +178,13 @@ func (r *ConversationRepository) UpdateScenario(ctx context.Context, id int64, i
 		UPDATE conversation_scenarios SET
 			district_id = ?, location_id = ?, code = ?, place_type = ?, cefr_level = ?,
 			title = ?, npc_name = ?, npc_persona = ?, scene_setup = ?, is_quest = ?,
-			max_turns = ?, token_budget = ?, sort_order = ?, status = ?, updated_at = CURRENT_TIMESTAMP
+			max_turns = ?, token_budget = ?, npc_code = ?, prerequisite_code = ?,
+			sort_order = ?, status = ?, updated_at = CURRENT_TIMESTAMP
 		WHERE id = ?`,
 		districtID, locationID, in.Code, in.PlaceType, in.CEFRLevel,
 		in.Title, in.NPCName, in.NPCPersona, in.SceneSetup, in.IsQuest,
-		in.MaxTurns, in.TokenBudget, in.SortOrder, in.Status, id,
+		in.MaxTurns, in.TokenBudget, in.NPCCode, in.PrerequisiteCode,
+		in.SortOrder, in.Status, id,
 	); err != nil {
 		if isUniqueViolation(err) {
 			return ErrDuplicateScenarioCode
@@ -217,6 +225,66 @@ func (r *ConversationRepository) DeleteScenario(ctx context.Context, id int64) e
 		courseID, code,
 	); err != nil {
 		return fmt.Errorf("delete backing learning_item: %w", err)
+	}
+	return tx.Commit()
+}
+
+// ImportScenario upserts a scenario (by course+code) together with its full task list. Existing
+// tasks of the scenario are replaced by the provided set. Returns the scenario id and whether it
+// was newly created. Used by the admin JSON import.
+func (r *ConversationRepository) ImportScenario(ctx context.Context, in AdminScenarioInput, tasks []AdminTaskInput) (id int64, created bool, err error) {
+	courseID, err := r.CourseIDByCode(ctx, in.CourseCode)
+	if err != nil {
+		return 0, false, fmt.Errorf("course %q: %w", in.CourseCode, err)
+	}
+
+	var existingID int64
+	scanErr := r.db.QueryRowContext(ctx,
+		`SELECT id FROM conversation_scenarios WHERE course_id = ? AND code = ?`, courseID, in.Code).Scan(&existingID)
+	switch {
+	case scanErr == nil:
+		if err := r.UpdateScenario(ctx, existingID, in); err != nil {
+			return 0, false, err
+		}
+		id = existingID
+	case errors.Is(scanErr, sql.ErrNoRows):
+		newID, err := r.CreateScenario(ctx, in)
+		if err != nil {
+			return 0, false, err
+		}
+		id, created = newID, true
+	default:
+		return 0, false, fmt.Errorf("lookup scenario: %w", scanErr)
+	}
+
+	if err := r.replaceTasks(ctx, id, tasks); err != nil {
+		return 0, false, err
+	}
+	return id, created, nil
+}
+
+// replaceTasks deletes the scenario's existing tasks and inserts the provided set in one tx.
+func (r *ConversationRepository) replaceTasks(ctx context.Context, scenarioID int64, tasks []AdminTaskInput) error {
+	tx, err := r.db.BeginTx(ctx, nil)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback() //nolint:errcheck
+
+	if _, err := tx.ExecContext(ctx, `DELETE FROM conversation_tasks WHERE scenario_id = ?`, scenarioID); err != nil {
+		return fmt.Errorf("clear tasks: %w", err)
+	}
+	for _, t := range tasks {
+		if _, err := tx.ExecContext(ctx, `
+			INSERT INTO conversation_tasks (scenario_id, code, sort_order, is_required, title, completion_criteria)
+			VALUES (?, ?, ?, ?, ?, ?)`,
+			scenarioID, t.Code, t.SortOrder, t.IsRequired, t.Title, t.CompletionCriteria,
+		); err != nil {
+			if isUniqueViolation(err) {
+				return ErrDuplicateTaskCode
+			}
+			return fmt.Errorf("insert task %q: %w", t.Code, err)
+		}
 	}
 	return tx.Commit()
 }

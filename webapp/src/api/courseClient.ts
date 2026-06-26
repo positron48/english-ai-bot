@@ -385,9 +385,12 @@ export interface ConversationScenarioSummary {
   code: string
   title: string
   npc_name: string
+  npc_code: string
   place_type: string
   cefr_level: string
   is_quest: boolean
+  prerequisite_code: string
+  locked: boolean
   tasks: ConversationTask[]
   session_status: string
 }

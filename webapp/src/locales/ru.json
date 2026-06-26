@@ -581,7 +581,10 @@
     "budgetEnded": "Разговор завершён. Попробуйте снова, чтобы пройти квест.",
     "notAvailable": "Общение недоступно",
     "requiresPro": "Общение доступно по подписке Pro",
-    "scenarioMissing": "Сценарий общения пока недоступен"
+    "scenarioMissing": "Сценарий общения пока недоступен",
+    "npcTitle": "Собеседники",
+    "locked": "Закрыто",
+    "lockedHint": "Сначала пройдите предыдущий разговор"
   },
   "trainingFeedback": {
     "encouragingPhrases": [

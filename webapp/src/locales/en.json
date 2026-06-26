@@ -581,7 +581,10 @@
     "budgetEnded": "The conversation has ended. Try again to complete the quest.",
     "notAvailable": "Chat is unavailable",
     "requiresPro": "Chat is available with a Pro subscription",
-    "scenarioMissing": "This chat scenario is not available yet"
+    "scenarioMissing": "This chat scenario is not available yet",
+    "npcTitle": "People to talk to",
+    "locked": "Locked",
+    "lockedHint": "Complete the previous chat first"
   },
   "trainingFeedback": {
     "encouragingPhrases": [

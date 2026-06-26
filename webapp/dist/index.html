@@ -17,6 +17,25 @@
     <meta name="twitter:title" content="Linglow — Learn Languages with AI" />
     <meta name="twitter:description" content="Learn English and Spanish with AI-powered courses, spaced-repetition vocabulary, and grammar practice." />
     <script>
+      // Safe-area insets from the embedded Android app. Defined here (before the JS bundle) so a
+      // native push that arrives during early page load is not lost. Some devices (e.g. Samsung)
+      // don't expose env(safe-area-inset-*) to the WebView, so the layout falls back to these vars.
+      (function () {
+        var root = document.documentElement;
+        window.__qantrixInsets = window.__qantrixInsets || {};
+        window.__setSafeAreaInsets = function (top, bottom) {
+          if (typeof top === 'number' && !isNaN(top)) {
+            window.__qantrixInsets.top = Math.max(0, top);
+            root.style.setProperty('--android-inset-top', Math.max(0, top) + 'px');
+          }
+          if (typeof bottom === 'number' && !isNaN(bottom)) {
+            window.__qantrixInsets.bottom = Math.max(0, bottom);
+            root.style.setProperty('--android-inset-bottom', Math.max(0, bottom) + 'px');
+          }
+        };
+      })();
+    </script>
+    <script>
       // Suppress Telegram Web App console logs
       const originalLog = console.log;
       console.log = function(...args) {
@@ -29,9 +48,9 @@
     </script>
     <!-- Vendored: telegram.org is slow/blocked for some users (e.g. RU). Refresh from upstream when Telegram ships WebApp API updates. -->
     <script src="/app/telegram-web-app.js"></script>
-    <script type="module" crossorigin src="/app/assets/index-CEJkHUqI.js"></script>
-    <link rel="modulepreload" crossorigin href="/app/assets/preload-helper-C2xC8igO.js">
-    <link rel="modulepreload" crossorigin href="/app/assets/useTheme-YVqlyQ_o.js">
+    <script type="module" crossorigin src="/app/assets/index-Dbw_NcJV.js"></script>
+    <link rel="modulepreload" crossorigin href="/app/assets/preload-helper-CCkduhV_.js">
+    <link rel="modulepreload" crossorigin href="/app/assets/useTheme-BXbAdYDK.js">
     <link rel="stylesheet" crossorigin href="/app/assets/preload-helper-DjIuUQ4p.css">
     <link rel="stylesheet" crossorigin href="/app/assets/index-CoYXvg5u.css">
   </head>

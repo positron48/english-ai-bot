@@ -6,29 +6,73 @@
       @back="goBack"
     />
 
-    <!-- SCENARIO LIST -->
+    <!-- NPC LIST -->
     <template v-if="!scenarioCode">
       <div v-if="loading" class="chat-loading">{{ t('common.loading') }}</div>
-      <div v-else-if="!scenarios.length" class="chat-loading">{{ t('chat.noPlaces') }}</div>
+      <div v-else-if="!npcGroups.length" class="chat-loading">{{ t('chat.noPlaces') }}</div>
       <div v-else class="chat-list">
-        <button
-          v-for="s in scenarios"
-          :key="s.code"
-          class="chat-card"
-          type="button"
-          @click="openScenario(s.code)"
-        >
-          <LgActivityIcon type="conversation" :status="s.session_status === 'completed' ? 'green' : 'gray'" :size="22" />
-          <div class="chat-card-body">
-            <div class="chat-card-title">{{ s.title }}</div>
-            <div class="chat-card-meta">
-              {{ s.npc_name }} · {{ s.cefr_level }}
-              <span v-if="s.is_quest" class="chat-tag">{{ t('chat.quest') }}</span>
-              <span v-else class="chat-tag chat-tag--free">{{ t('chat.free') }}</span>
+        <div v-for="g in npcGroups" :key="g.key" class="npc-block">
+          <button
+            class="chat-card"
+            :class="{ 'chat-card--locked': g.locked }"
+            type="button"
+            @click="onNpcClick(g)"
+          >
+            <LgActivityIcon
+              type="conversation"
+              :status="g.allDone ? 'green' : (g.locked ? 'gray' : 'orange')"
+              :size="22"
+            />
+            <div class="chat-card-body">
+              <div class="chat-card-title">{{ g.npcName }}</div>
+              <div class="chat-card-meta">
+                {{ placeLabel(g.placeType) }} · {{ g.level }}
+                <span class="chat-tag">{{ g.completedCount }}/{{ g.total }}</span>
+                <span v-if="g.locked" class="chat-tag chat-tag--locked">🔒 {{ t('chat.locked') }}</span>
+              </div>
+              <div v-if="g.total > 1" class="npc-bar-track">
+                <div class="npc-bar-fill" :style="{ width: g.pct + '%' }" />
+              </div>
             </div>
+            <span v-if="g.allDone" class="chat-done">✓</span>
+            <svg
+              v-else-if="g.total > 1"
+              class="npc-chevron"
+              :class="{ 'npc-chevron--open': expandedNpc === g.key }"
+              width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+            >
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </button>
+
+          <!-- chain steps -->
+          <div v-if="g.total > 1 && expandedNpc === g.key" class="npc-steps">
+            <button
+              v-for="(s, idx) in g.scenarios"
+              :key="s.code"
+              class="npc-step"
+              :class="{ 'npc-step--locked': s.locked, 'npc-step--done': s.session_status === 'completed' }"
+              type="button"
+              :disabled="s.locked"
+              @click="openScenario(s.code)"
+            >
+              <span class="npc-step-num">{{ idx + 1 }}</span>
+              <span class="npc-step-body">
+                <span class="npc-step-title">{{ s.title }}</span>
+                <span class="npc-step-meta">
+                  <span v-if="s.is_quest" class="chat-tag">{{ t('chat.quest') }}</span>
+                  <span v-else class="chat-tag chat-tag--free">{{ t('chat.free') }}</span>
+                </span>
+              </span>
+              <span class="npc-step-state">
+                <template v-if="s.session_status === 'completed'">✓</template>
+                <template v-else-if="s.locked">🔒</template>
+                <template v-else>›</template>
+              </span>
+            </button>
           </div>
-          <span v-if="s.session_status === 'completed'" class="chat-done">✓</span>
-        </button>
+        </div>
       </div>
     </template>
 
@@ -141,6 +185,67 @@ const scenarioCode = computed(() => String(route.params.scenarioCode || ''))
 
 const loading = ref(true)
 const scenarios = ref<ConversationScenarioSummary[]>([])
+const expandedNpc = ref('')
+
+interface NpcGroup {
+  key: string
+  npcName: string
+  placeType: string
+  level: string
+  scenarios: ConversationScenarioSummary[]
+  total: number
+  completedCount: number
+  pct: number
+  allDone: boolean
+  locked: boolean
+}
+
+// Group scenarios by NPC (npc_code). Standalone scenarios (no npc_code) each form their own group.
+// Backend already returns scenarios ordered by sort_order, so chain order is preserved.
+const npcGroups = computed<NpcGroup[]>(() => {
+  const groups: NpcGroup[] = []
+  const byKey = new Map<string, NpcGroup>()
+  for (const s of scenarios.value) {
+    const key = s.npc_code || `_solo_${s.code}`
+    let g = byKey.get(key)
+    if (!g) {
+      g = {
+        key, npcName: s.npc_name, placeType: s.place_type, level: s.cefr_level,
+        scenarios: [], total: 0, completedCount: 0, pct: 0, allDone: false, locked: false,
+      }
+      byKey.set(key, g)
+      groups.push(g)
+    }
+    g.scenarios.push(s)
+  }
+  for (const g of groups) {
+    g.total = g.scenarios.length
+    g.completedCount = g.scenarios.filter(s => s.session_status === 'completed').length
+    g.pct = g.total > 0 ? Math.round((g.completedCount / g.total) * 100) : 0
+    g.allDone = g.total > 0 && g.completedCount === g.total
+    // The NPC is "locked" only when every one of its scenarios is locked (nothing to start yet).
+    g.locked = g.scenarios.every(s => s.locked)
+  }
+  return groups
+})
+
+const PLACE_LABELS: Record<string, string> = {
+  cafe: 'Кафе', shop: 'Магазин', police_station: 'Полиция',
+  pharmacy: 'Аптека', hotel: 'Отель', restaurant: 'Ресторан', market: 'Рынок',
+}
+function placeLabel(placeType: string): string {
+  return PLACE_LABELS[placeType] || placeType
+}
+
+function onNpcClick(g: NpcGroup) {
+  if (g.locked) return
+  if (g.total === 1) {
+    openScenario(g.scenarios[0].code)
+    return
+  }
+  // Multi-scenario NPC: toggle the chain steps.
+  expandedNpc.value = expandedNpc.value === g.key ? '' : g.key
+}
 
 const session = ref<ConversationSessionState | null>(null)
 const messages = ref<ConversationMessage[]>([])
@@ -155,7 +260,7 @@ const loadError = ref('')
 
 const headerTitle = computed(() => {
   if (scenarioCode.value && session.value) return session.value.title
-  return t('chat.placesTitle')
+  return t('chat.npcTitle')
 })
 // Keep the composer usable after the quest passes so the learner can say goodbye / finish
 // optional tasks; the session only truly ends when status flips to completed or budget runs out.
@@ -258,7 +363,37 @@ onMounted(loadForRoute)
   font-size: 10px; font-weight: 600; background: rgba(45,107,58,0.12); color: #2d6b3a;
 }
 .chat-tag--free { background: rgba(200,168,75,0.18); color: #9a7b1e; }
+.chat-tag--locked { background: rgba(120,120,120,0.16); color: var(--subtext); }
 .chat-done { color: #2d6b3a; font-weight: 700; font-size: 18px; }
+
+/* NPC groups + chain steps */
+.npc-block { display: flex; flex-direction: column; }
+.chat-card--locked { opacity: 0.6; cursor: default; }
+.npc-chevron { color: var(--subtext); flex-shrink: 0; transition: transform 0.2s; }
+.npc-chevron--open { transform: rotate(180deg); }
+.npc-bar-track { margin-top: 6px; height: 3px; border-radius: 999px; background: var(--progress-track, rgba(0,0,0,0.08)); overflow: hidden; }
+.npc-bar-fill { height: 100%; border-radius: 999px; background: #2d6b3a; transition: width 0.4s ease; }
+
+.npc-steps { display: flex; flex-direction: column; gap: 6px; margin: 6px 0 2px 14px; padding-left: 14px; border-left: 2px solid var(--border, rgba(0,0,0,0.08)); }
+.npc-step {
+  display: flex; align-items: center; gap: 10px; width: 100%;
+  padding: 10px 12px; border-radius: 12px; border: 1px solid var(--border, rgba(0,0,0,0.08));
+  background: var(--card, #fff); cursor: pointer; text-align: left;
+}
+.npc-step:disabled { cursor: default; opacity: 0.55; }
+.npc-step--done { background: rgba(45,107,58,0.06); border-color: rgba(45,107,58,0.25); }
+.npc-step-num {
+  width: 22px; height: 22px; flex-shrink: 0; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: var(--subtext);
+  background: var(--chip-bg, rgba(0,0,0,0.05));
+}
+.npc-step--done .npc-step-num { background: #2d6b3a; color: #fff; }
+.npc-step-body { flex: 1; min-width: 0; }
+.npc-step-title { display: block; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; color: var(--text); }
+.npc-step-meta { margin-top: 2px; }
+.npc-step-state { flex-shrink: 0; color: var(--subtext); font-size: 16px; font-weight: 700; }
+.npc-step--done .npc-step-state { color: #2d6b3a; }
 
 /* task checklist */
 .chat-tasks { margin: 8px 16px; padding: 12px 14px; border-radius: 14px; background: var(--card, #fff); border: 1px solid var(--border, rgba(0,0,0,0.08)); }

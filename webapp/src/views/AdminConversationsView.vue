@@ -11,6 +11,8 @@
         </option>
       </select>
       <button class="btn btn-primary" :disabled="!selectedCourseCode" @click="newScenario">+ Новый сценарий</button>
+      <button class="btn" :disabled="!selectedCourseCode" @click="openImport">Импорт JSON</button>
+      <button class="btn" :disabled="!selectedCourseCode" @click="openPrompt">Промпт для генерации</button>
       <button class="btn" :disabled="!selectedCourseCode" @click="load">Обновить</button>
     </div>
 
@@ -37,6 +39,10 @@
         <div class="scenario-meta mono">
           {{ s.code }} · {{ s.cefr_level }} · {{ s.place_type }} · NPC: {{ s.npc_name }}
           · {{ s.max_turns }} ходов · {{ s.token_budget }} токенов · order {{ s.sort_order }}
+        </div>
+        <div v-if="s.npc_code || s.prerequisite_code" class="scenario-meta mono chain">
+          <span v-if="s.npc_code">🔗 npc: {{ s.npc_code }}</span>
+          <span v-if="s.prerequisite_code">⟵ после: {{ s.prerequisite_code }}</span>
         </div>
 
         <!-- tasks -->
@@ -93,6 +99,12 @@
           <label>Макс. ходов <input v-model.number="scenarioForm.max_turns" type="number" class="inp" /></label>
           <label>Бюджет токенов <input v-model.number="scenarioForm.token_budget" type="number" class="inp" /></label>
           <label>Порядок <input v-model.number="scenarioForm.sort_order" type="number" class="inp" /></label>
+          <label>NPC код (цепочка)
+            <input v-model="scenarioForm.npc_code" class="inp mono" placeholder="например mara_barista" />
+          </label>
+          <label>Открывается после (code сценария)
+            <input v-model="scenarioForm.prerequisite_code" class="inp mono" placeholder="пусто = доступен сразу" />
+          </label>
         </div>
         <label class="full">NPC персона (инструкция для ИИ)
           <textarea v-model="scenarioForm.npc_persona" class="inp" rows="2"></textarea>
@@ -126,11 +138,44 @@
         </div>
       </div>
     </div>
+
+    <!-- IMPORT MODAL -->
+    <div v-if="importOpen" class="modal-overlay" @click.self="importOpen = false">
+      <div class="modal">
+        <h3>Импорт сценария из JSON</h3>
+        <p class="hint">
+          Вставьте JSON одного сценария с задачами (структура — как из кнопки «Промпт для генерации»).
+          Сценарий с таким же <span class="mono">code</span> в курсе <span class="mono">{{ selectedCourseCode }}</span>
+          будет перезаписан вместе с задачами.
+        </p>
+        <textarea v-model="importText" class="inp code-area" rows="16" placeholder='{ "code": "...", "title": "...", "tasks": [ ... ] }'></textarea>
+        <div v-if="importError" class="error">{{ importError }}</div>
+        <div class="modal-actions">
+          <button class="btn" @click="importOpen = false">Отмена</button>
+          <button class="btn btn-primary" :disabled="importing || !importText.trim()" @click="doImport">
+            {{ importing ? 'Импорт…' : 'Импортировать' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROMPT MODAL -->
+    <div v-if="promptOpen" class="modal-overlay" @click.self="promptOpen = false">
+      <div class="modal">
+        <h3>Промпт для генерации сценария</h3>
+        <p class="hint">Скопируйте промпт в любую LLM, получите JSON и вставьте его через «Импорт JSON».</p>
+        <textarea ref="promptArea" :value="promptText" readonly class="inp code-area" rows="18"></textarea>
+        <div class="modal-actions">
+          <button class="btn" @click="promptOpen = false">Закрыть</button>
+          <button class="btn btn-primary" @click="copyPrompt">{{ copied ? 'Скопировано ✓' : 'Скопировать' }}</button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue'
+import { nextTick, onMounted, ref, watch } from 'vue'
 import { apiClient } from '../api/client'
 import { showAlert, showConfirm } from '../composables/useDialog'
 import { courseClient, type CourseSummary } from '../api/courseClient'
@@ -155,6 +200,8 @@ interface AdminScenario {
   is_quest: boolean
   max_turns: number
   token_budget: number
+  npc_code: string
+  prerequisite_code: string
   sort_order: number
   status: string
   tasks: AdminTask[]
@@ -172,6 +219,16 @@ const saving = ref(false)
 
 const scenarioForm = ref<Partial<AdminScenario> & { id?: number } | null>(null)
 const taskForm = ref<(Partial<AdminTask> & { id?: number, scenarioId: number }) | null>(null)
+
+const importOpen = ref(false)
+const importText = ref('')
+const importError = ref<string | null>(null)
+const importing = ref(false)
+
+const promptOpen = ref(false)
+const promptText = ref('')
+const promptArea = ref<HTMLTextAreaElement | null>(null)
+const copied = ref(false)
 
 async function load() {
   if (!selectedCourseCode.value) return
@@ -193,7 +250,8 @@ function newScenario() {
   scenarioForm.value = {
     code: '', title: '', cefr_level: levels.value[0]?.level_code || 'A0', place_type: 'cafe',
     npc_name: '', npc_persona: '', scene_setup: '', is_quest: true,
-    max_turns: 20, token_budget: 6000, sort_order: scenarios.value.length, status: 'draft',
+    max_turns: 20, token_budget: 6000, npc_code: '', prerequisite_code: '',
+    sort_order: scenarios.value.length, status: 'draft',
   }
 }
 function editScenario(s: AdminScenario) {
@@ -274,6 +332,64 @@ async function removeTask(_s: AdminScenario, t: AdminTask) {
   }
 }
 
+function openImport() {
+  importText.value = ''
+  importError.value = null
+  importOpen.value = true
+}
+
+async function doImport() {
+  importError.value = null
+  let parsed: unknown
+  try {
+    parsed = JSON.parse(importText.value)
+  } catch (e: any) {
+    importError.value = 'Невалидный JSON: ' + (e?.message || '')
+    return
+  }
+  importing.value = true
+  try {
+    const res: { created?: boolean, task_count?: number } = await apiClient.request(
+      `/api/admin/conversations/import?course_code=${encodeURIComponent(selectedCourseCode.value)}`,
+      { method: 'POST', body: JSON.stringify(parsed) },
+    )
+    importOpen.value = false
+    await load()
+    await showAlert(`${res.created ? 'Создан' : 'Обновлён'} сценарий, задач: ${res.task_count ?? 0}`)
+  } catch (e: any) {
+    importError.value = e?.message || 'Не удалось импортировать'
+  } finally {
+    importing.value = false
+  }
+}
+
+async function openPrompt() {
+  copied.value = false
+  promptText.value = 'Загрузка…'
+  promptOpen.value = true
+  try {
+    const data: { prompt?: string } = await apiClient.request(
+      `/api/admin/conversations/prompt-template?course_code=${encodeURIComponent(selectedCourseCode.value)}`)
+    promptText.value = data.prompt || ''
+  } catch (e: any) {
+    promptText.value = ''
+    await showAlert(e?.message || 'Не удалось получить промпт')
+    promptOpen.value = false
+  }
+}
+
+async function copyPrompt() {
+  try {
+    await navigator.clipboard.writeText(promptText.value)
+  } catch {
+    await nextTick()
+    promptArea.value?.select()
+    document.execCommand('copy')
+  }
+  copied.value = true
+  setTimeout(() => { copied.value = false }, 1500)
+}
+
 watch(selectedCourseCode, () => { scenarios.value = []; load() })
 
 onMounted(async () => {
@@ -337,4 +453,7 @@ textarea.inp { resize: vertical; font-family: inherit; }
 .full { margin-top: 10px; }
 .check { flex-direction: row !important; align-items: center; gap: 6px; }
 .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; }
+.hint { font-size: 12px; color: var(--text-secondary); margin: 0 0 10px; line-height: 1.5; }
+.code-area { width: 100%; box-sizing: border-box; font-family: ui-monospace, monospace; font-size: 12px; resize: vertical; }
+.scenario-meta.chain { display: flex; gap: 14px; margin-top: -4px; color: var(--text-secondary); }
 </style>

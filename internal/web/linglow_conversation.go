@@ -109,6 +109,15 @@ func (r *Router) handleLinglowConversationScenarios(w http.ResponseWriter, req *
 		return
 	}
 
+	// Resolve which scenarios the learner has already completed so prerequisite-gated
+	// scenarios (NPC chains) can be marked locked until their predecessor is done.
+	completedCodes, err := r.conversationRepo.LatestCompletedScenarioCodes(ctx, userCourseID, courseID)
+	if err != nil {
+		r.logger.Error("completed scenario codes", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
 	out := make([]map[string]interface{}, 0, len(scenarios))
 	for i := range scenarios {
 		sc := &scenarios[i]
@@ -118,15 +127,19 @@ func (r *Router) handleLinglowConversationScenarios(w http.ResponseWriter, req *
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
+		locked := sc.PrerequisiteCode != "" && !completedCodes[sc.PrerequisiteCode]
 		out = append(out, map[string]interface{}{
-			"code":           sc.Code,
-			"title":          sc.Title,
-			"npc_name":       sc.NPCName,
-			"place_type":     sc.PlaceType,
-			"cefr_level":     sc.CEFRLevel,
-			"is_quest":       sc.IsQuest,
-			"tasks":          tasksJSON(tasks, nil),
-			"session_status": r.latestSessionStatus(ctx, userCourseID, sc.ID),
+			"code":              sc.Code,
+			"title":             sc.Title,
+			"npc_name":          sc.NPCName,
+			"npc_code":          sc.NPCCode,
+			"place_type":        sc.PlaceType,
+			"cefr_level":        sc.CEFRLevel,
+			"is_quest":          sc.IsQuest,
+			"prerequisite_code": sc.PrerequisiteCode,
+			"locked":            locked,
+			"tasks":             tasksJSON(tasks, nil),
+			"session_status":    r.latestSessionStatus(ctx, userCourseID, sc.ID),
 		})
 	}
 	writeJSON(w, map[string]interface{}{"scenarios": out})
@@ -200,6 +213,21 @@ func (r *Router) handleLinglowConversationSessions(w http.ResponseWriter, req *h
 	if scenario == nil {
 		http.Error(w, "Scenario not found", http.StatusNotFound)
 		return
+	}
+
+	// Enforce prerequisite chains: a gated scenario cannot be started until its predecessor
+	// has been completed (mirrors the locked flag in the scenario list).
+	if scenario.PrerequisiteCode != "" {
+		completedCodes, err := r.conversationRepo.LatestCompletedScenarioCodes(ctx, userCourseID, courseID)
+		if err != nil {
+			r.logger.Error("completed scenario codes", zap.Error(err))
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
+		}
+		if !completedCodes[scenario.PrerequisiteCode] {
+			http.Error(w, "Scenario is locked: complete the previous one first", http.StatusForbidden)
+			return
+		}
 	}
 
 	session, created, err := r.conversationRepo.StartSession(ctx, userCourseID, scenario.ID)
