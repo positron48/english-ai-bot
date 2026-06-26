@@ -563,7 +563,7 @@ func (r *Router) handleTrainingOfflineSyncAttempts(w http.ResponseWriter, req *h
 			results = append(results, result)
 			continue
 		} else {
-			r.recordLinglowWordReviewEvent(req.Context(), reviewEventID, reviewEvent)
+			r.recordLinglowWordReviewEvent(req.Context(), "", reviewEventID, reviewEvent)
 		}
 		if !isCorrect {
 			if err := r.srsService.RecordWrongAnswer(userCard, chosenOption); err != nil {
@@ -674,7 +674,7 @@ func (r *Router) syncOfflineSpellTypeAttempt(req *http.Request, userID int64, se
 	if reviewEventID, err := sessionRepo.CreateReviewEvent(reviewEvent); err != nil {
 		return fmt.Errorf("review_event_create_failed")
 	} else {
-		r.recordLinglowWordReviewEvent(req.Context(), reviewEventID, reviewEvent)
+		r.recordLinglowWordReviewEvent(req.Context(), "", reviewEventID, reviewEvent)
 	}
 	if !isCorrect {
 		if err := r.srsService.RecordWrongAnswer(userCard, attempt.AnswerText); err != nil {

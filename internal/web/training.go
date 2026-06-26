@@ -251,20 +251,34 @@ func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, stat
 
 	item := state.Queue[state.CurrentIndex]
 
+	// Target language of the session's course (e.g. es_ru -> "es"), so prompts name the
+	// right language and Spanish verbs aren't shown with the English "to " infinitive marker.
+	sessTL := r.config.Learning.TargetLang
+	if parts := strings.SplitN(state.CourseCode, "_", 2); len(parts) > 0 && parts[0] != "" {
+		sessTL = parts[0]
+	}
+	isEnglishTarget := strings.EqualFold(sessTL, "en")
+
 	// Spell challenge: compose the word from letters
 	if item.Type == "spell" && item.Spell != nil {
 		state.ShownAt = time.Now()
 		state.OptionsShownAt = nil
-		tl := learning.TargetLangNameRUPrepositional(r.config.Learning.TargetLang)
+		tl := learning.TargetLangNameRUPrepositional(sessTL)
+		spellPrefix := item.Spell.Prefix
+		spellAnswer := item.Spell.DisplayWord
+		if !isEnglishTarget {
+			spellPrefix = ""
+			spellAnswer = strings.TrimPrefix(spellAnswer, "to ")
+		}
 		response := map[string]interface{}{
 			"type":           "spell",
 			"question":       fmt.Sprintf("Составьте слово на %s: <strong>%s</strong>", tl, item.Spell.WordRU),
 			"word_ru":        item.Spell.WordRU,
 			"word_native":    item.Spell.WordNative,
 			"word_target":    item.Spell.WordTarget,
-			"prefix":         item.Spell.Prefix,
+			"prefix":         spellPrefix,
 			"letters":        item.Spell.ShuffledLetters,
-			"correct_answer": item.Spell.DisplayWord,
+			"correct_answer": spellAnswer,
 			"card_index":     state.CurrentIndex + 1,
 			"total_cards":    len(state.Queue),
 			"session_id":     state.SessionID,
@@ -290,8 +304,14 @@ func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, stat
 		prefix := ""
 		wordForHint := displayWord
 		if strings.HasPrefix(displayWord, "to ") && len(displayWord) > 3 {
-			prefix = "to "
-			wordForHint = displayWord[3:]
+			if isEnglishTarget {
+				prefix = "to "
+				wordForHint = displayWord[3:]
+			} else {
+				// Spanish (etc.) infinitives have no "to " marker.
+				displayWord = displayWord[3:]
+				wordForHint = displayWord
+			}
 		}
 		runes := []rune(wordForHint)
 		hintFirstLetter := ""
@@ -300,7 +320,7 @@ func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, stat
 			hintFirstLetter = string(runes[0])
 			hintLength = len(runes)
 		}
-		tl := learning.TargetLangNameRUPrepositional(r.config.Learning.TargetLang)
+		tl := learning.TargetLangNameRUPrepositional(sessTL)
 		response := map[string]interface{}{
 			"type":              "type",
 			"question":          fmt.Sprintf("Введите слово на %s: <strong>%s</strong>", tl, item.TypeChallenge.WordRU),
@@ -377,14 +397,17 @@ func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, stat
 	if card.TrainingCard.DisplayWord != nil && *card.TrainingCard.DisplayWord != "" {
 		displayWord = *card.TrainingCard.DisplayWord
 	}
+	if !isEnglishTarget {
+		displayWord = strings.TrimPrefix(displayWord, "to ")
+	}
 	var tl string
 	switch lang {
 	case "ru":
-		tl = learning.TargetLangNameRUAccusative(r.config.Learning.TargetLang)
+		tl = learning.TargetLangNameRUAccusative(sessTL)
 	case "es":
-		tl = learning.TargetLangNameES(r.config.Learning.TargetLang)
+		tl = learning.TargetLangNameES(sessTL)
 	default:
-		tl = learning.TargetLangNameEN(r.config.Learning.TargetLang)
+		tl = learning.TargetLangNameEN(sessTL)
 	}
 	if card.UserCard.Direction == models.DirectionRUtoEN {
 		questionText = fmt.Sprintf(i18n.T(lang, "training.translateTo"), tl, card.TrainingCard.WordRU)
@@ -400,7 +423,7 @@ func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, stat
 	var morph *models.WordMorphInfo
 	wordRepo := repository.NewWordRepository(r.db, r.logger)
 	if wordCard, err := wordRepo.GetWordCardByID(card.TrainingCard.WordCardID); err == nil {
-		morph = buildCompactMorphFromWordCard(r.config.Learning.TargetLang, wordCard, card.TrainingCard.POS)
+		morph = buildCompactMorphFromWordCard(sessTL, wordCard, card.TrainingCard.POS)
 	}
 	// Return card data as JSON
 	response := map[string]interface{}{
@@ -777,7 +800,7 @@ func (r *Router) gradeReplacedCardForSpellType(userID int64, userCardID int64, i
 	if reviewEventID, err := r.webTrainingHandler.sessionRepo.CreateReviewEvent(reviewEvent); err != nil {
 		r.logger.Error("failed to create review event for spell/type", zap.Error(err))
 	} else {
-		r.recordLinglowWordReviewEvent(context.Background(), reviewEventID, reviewEvent)
+		r.recordLinglowWordReviewEvent(context.Background(), "", reviewEventID, reviewEvent)
 	}
 	if !isCorrect {
 		if err := r.srsService.RecordWrongAnswer(userCard, chosenOption); err != nil {
@@ -1118,7 +1141,7 @@ func (r *Router) handleTrainingAnswer(w http.ResponseWriter, req *http.Request) 
 		if reviewEventID, err := r.webTrainingHandler.sessionRepo.CreateReviewEvent(reviewEvent); err != nil {
 			r.logger.Error("failed to create review event", zap.Error(err))
 		} else {
-			r.recordLinglowWordReviewEvent(req.Context(), reviewEventID, reviewEvent)
+			r.recordLinglowWordReviewEvent(req.Context(), state.CourseCode, reviewEventID, reviewEvent)
 		}
 	}
 
@@ -1146,13 +1169,18 @@ func (r *Router) handleTrainingAnswer(w http.ResponseWriter, req *http.Request) 
 	r.showTrainingFeedback(w, req, state, isCorrect, chosenOption, correctAnswer, card.TrainingCard)
 }
 
-func (r *Router) recordLinglowWordReviewEvent(ctx context.Context, reviewEventID int64, event *models.ReviewEvent) {
+func (r *Router) recordLinglowWordReviewEvent(ctx context.Context, courseCode string, reviewEventID int64, event *models.ReviewEvent) {
 	if r == nil || r.config == nil || !r.config.Linglow.EventsWriteEnabled || r.linglowEventRepo == nil || event == nil || reviewEventID == 0 {
 		return
 	}
 	answeredAt := time.Now()
 	if event.AnsweredAt != nil {
 		answeredAt = *event.AnsweredAt
+	}
+	// Attribute the attempt to the learner's selected course (falls back to current course),
+	// so daily activity / progress land on the right course on the unified DB.
+	if strings.TrimSpace(courseCode) == "" {
+		courseCode = r.currentCourseCodeForUser(ctx, event.UserID)
 	}
 	input := repository.WordReviewEventInput{
 		UserID:          event.UserID,
@@ -1168,6 +1196,7 @@ func (r *Router) recordLinglowWordReviewEvent(ctx context.Context, reviewEventID
 		SRSBeforeJSON:   event.SRSBeforeJSON,
 		SRSAfterJSON:    event.SRSAfterJSON,
 		AnsweredAt:      answeredAt,
+		CourseCode:      courseCode,
 	}
 	if _, err := r.linglowEventRepo.RecordWordReviewEvent(ctx, r.config.Learning, input); err != nil {
 		r.logger.Warn("failed to dual-write linglow word review event",

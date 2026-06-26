@@ -55,7 +55,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll, true))
   display: flex;
   z-index: 200;
   align-items: center;
-  padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding-bottom: max(env(safe-area-inset-bottom, 0px), var(--android-inset-bottom, 0px));
   transition: border-color .2s ease;
 }
 .lg-bottomnav--bordered {

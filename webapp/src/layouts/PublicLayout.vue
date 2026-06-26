@@ -86,11 +86,12 @@ onUnmounted(() => window.removeEventListener('resize', check))
   min-height: 100vh;
   min-height: 100dvh;
   position: relative;
-  /* Some Android devices (e.g. Samsung) draw under the status bar; keep content clear of it. */
-  padding-top: env(safe-area-inset-top, 0px);
+  /* Some Android devices (e.g. Samsung) draw under the status bar but don't expose
+     env(safe-area-inset-top); --android-inset-top is pushed from native as a fallback. */
+  padding-top: max(env(safe-area-inset-top, 0px), var(--android-inset-top, 0px));
 }
 .lg-layout-mobile--with-nav {
-  padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px)) !important;
+  padding-bottom: calc(60px + max(env(safe-area-inset-bottom, 0px), var(--android-inset-bottom, 0px))) !important;
 }
 .lg-layout-mobile--map {
   height: 100vh;

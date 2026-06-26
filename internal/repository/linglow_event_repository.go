@@ -55,6 +55,9 @@ type WordReviewEventInput struct {
 	UserID          int64
 	ReviewEventID   int64
 	UserCardID      int64
+	// CourseCode scopes the attempt to the learner's selected course; when empty it falls
+	// back to the instance default (CourseCodeForLearning), preserving single-course behaviour.
+	CourseCode      string
 	ClientAttemptID string
 	Direction       string
 	IsCorrect       bool
@@ -340,7 +343,10 @@ func (r *LinglowEventRepository) RecordWordReviewEvent(ctx context.Context, lc c
 	if input.UserCardID == 0 {
 		return 0, fmt.Errorf("user card id is empty")
 	}
-	courseCode := CourseCodeForLearning(lc)
+	courseCode := strings.TrimSpace(strings.ToLower(input.CourseCode))
+	if courseCode == "" {
+		courseCode = CourseCodeForLearning(lc)
+	}
 	if courseCode == "" {
 		return 0, fmt.Errorf("course code is empty")
 	}

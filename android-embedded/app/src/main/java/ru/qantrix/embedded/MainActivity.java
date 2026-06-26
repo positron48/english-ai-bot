@@ -22,6 +22,8 @@ import java.nio.charset.StandardCharsets;
 
 public class MainActivity extends Activity {
     private WebView webView;
+    private int lastInsetTop = 0;
+    private int lastInsetBottom = 0;
 
     @Override
     @SuppressLint("SetJavaScriptEnabled")
@@ -45,7 +47,28 @@ public class MainActivity extends Activity {
 
         webView.addJavascriptInterface(new AndroidBridge(), "QantrixAndroid");
         webView.setWebViewClient(new EmbeddedWebViewClient());
+
+        // The WebView draws edge-to-edge under the system bars on some devices (e.g. Samsung)
+        // without reliably exposing env(safe-area-inset-*) to CSS. Read the real insets and
+        // push them to the web layer as CSS px so the layout can pad the status/nav bars.
+        final float density = getResources().getDisplayMetrics().density;
+        webView.setOnApplyWindowInsetsListener((v, insets) -> {
+            lastInsetTop = Math.round(insets.getSystemWindowInsetTop() / density);
+            lastInsetBottom = Math.round(insets.getSystemWindowInsetBottom() / density);
+            pushSafeAreaInsets();
+            return insets;
+        });
+
         loadBundledApp();
+    }
+
+    private void pushSafeAreaInsets() {
+        if (webView == null) {
+            return;
+        }
+        final String js = "window.__setSafeAreaInsets && window.__setSafeAreaInsets("
+                + lastInsetTop + "," + lastInsetBottom + ")";
+        webView.post(() -> webView.evaluateJavascript(js, null));
     }
 
     @Override
@@ -94,6 +117,13 @@ public class MainActivity extends Activity {
     }
 
     private final class EmbeddedWebViewClient extends WebViewClient {
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            super.onPageFinished(view, url);
+            // Re-push insets once the web layer is ready to receive them.
+            pushSafeAreaInsets();
+        }
+
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
             return intercept(request.getUrl());

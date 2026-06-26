@@ -10,7 +10,16 @@ import './styles/linglow-markdown.css'
 declare global {
   interface Window {
     __showQantrixRuntimeDebug?: () => void
+    __setSafeAreaInsets?: (top: number, bottom: number) => void
   }
+}
+
+// Embedded Android pushes real system-bar insets here (CSS px). Some devices (Samsung)
+// don't expose env(safe-area-inset-*) to the WebView, so the layout reads these vars.
+window.__setSafeAreaInsets = (top: number, bottom: number) => {
+  const root = document.documentElement
+  root.style.setProperty('--android-inset-top', `${Math.max(0, top || 0)}px`)
+  root.style.setProperty('--android-inset-bottom', `${Math.max(0, bottom || 0)}px`)
 }
 
 const OFFLINE_DEBUG_STORAGE_KEY = 'qantrix-offline-debug-state'
