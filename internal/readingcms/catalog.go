@@ -143,26 +143,3 @@ func readTextFile(courseDir string, idx *readingIndex, textID string) (*TextDocu
 	}
 	return &doc, nil
 }
-
-func segmentsHaveAudio(courseDir string, doc *TextDocument) bool {
-	if doc == nil || doc.ReadingPassage == nil {
-		return false
-	}
-	segs := passageSegments(doc.ReadingPassage)
-	if len(segs) == 0 {
-		return false
-	}
-	for _, seg := range segs {
-		rel, _ := seg["audio_rel_path"].(string)
-		rel = strings.TrimSpace(rel)
-		if rel == "" {
-			return false
-		}
-		abs := filepath.Join(courseDir, filepath.FromSlash(rel))
-		st, err := os.Stat(abs)
-		if err != nil || st.IsDir() || st.Size() == 0 {
-			return false
-		}
-	}
-	return true
-}

@@ -361,11 +361,7 @@ func (s *Server) handleDraftCover(w http.ResponseWriter, r *http.Request, textID
 	case http.MethodPost:
 		var body DraftCoverRequest
 		_ = readJSON(r, &body)
-		meta, err := s.svc.GenerateCover(r.Context(), textID, CoverGenerateOpts{
-			Force:   body.Force,
-			Prompt:  body.Prompt,
-			SkipLLM: body.SkipLLM,
-		})
+		meta, err := s.svc.GenerateCover(r.Context(), textID, CoverGenerateOpts(body))
 		if err != nil {
 			writeErrorLog(w, http.StatusBadRequest, err, metaLastJobLog(meta))
 			return
