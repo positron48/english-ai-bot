@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router'
 import i18n from './i18n'
 import { initOfflineSyncRunner } from './api/offlineSyncRunner'
+import { isEmbeddedAndroidApp } from './utils/runtime'
 // Public entry uses ONLY the new Linglow theme; legacy styles live in admin-main.ts
 import './styles/linglow-theme.css'
 import './styles/linglow-markdown.css'
@@ -14,13 +15,42 @@ declare global {
   }
 }
 
-// Embedded Android pushes real system-bar insets here (CSS px). Some devices (Samsung)
-// don't expose env(safe-area-inset-*) to the WebView, so the layout reads these vars.
-window.__setSafeAreaInsets = (top: number, bottom: number) => {
-  const root = document.documentElement
-  root.style.setProperty('--android-inset-top', `${Math.max(0, top || 0)}px`)
-  root.style.setProperty('--android-inset-bottom', `${Math.max(0, bottom || 0)}px`)
+// window.__setSafeAreaInsets is defined by an inline script in index.html (so a native push that
+// arrives before this bundle loads is not lost). Here we add a fallback for the embedded Android
+// app on devices that neither expose env(safe-area-inset-top) nor push a native value (some
+// Samsungs): without it the layout draws under the status bar.
+
+// measureEnvTopInset returns the effective env(safe-area-inset-top) in CSS px (0 when unsupported).
+function measureEnvTopInset(): number {
+  const probe = document.createElement('div')
+  probe.style.cssText =
+    'position:fixed;top:0;left:0;width:0;height:env(safe-area-inset-top,0px);visibility:hidden;pointer-events:none;'
+  document.body.appendChild(probe)
+  const h = probe.getBoundingClientRect().height
+  probe.remove()
+  return h
 }
+
+function ensureAndroidTopInset(): void {
+  if (!isEmbeddedAndroidApp()) return
+  const root = document.documentElement
+  const native = parseFloat(getComputedStyle(root).getPropertyValue('--android-inset-top')) || 0
+  if (native > 0) return // native already pushed a real value
+  if (measureEnvTopInset() > 0) return // env() works, the layout already uses it
+
+  // Try the native bridge (status bar height is usually reported in device pixels).
+  let top = 0
+  try {
+    const raw = Number((window as any).QantrixAndroid?.getStatusBarHeight?.())
+    if (raw > 0) top = raw > 60 ? raw / (window.devicePixelRatio || 1) : raw
+  } catch { /* bridge getter absent — fall through to the floor */ }
+  if (top <= 0) top = 28 // conservative floor so content clears the status bar
+
+  root.style.setProperty('--android-inset-top', `${Math.round(top)}px`)
+}
+
+// Run after mount, with retries, to let a late native push win before applying the fallback.
+;[300, 1200].forEach((delay) => setTimeout(ensureAndroidTopInset, delay))
 
 const OFFLINE_DEBUG_STORAGE_KEY = 'qantrix-offline-debug-state'
 const RUNTIME_ERROR_STORAGE_KEY = 'qantrix-runtime-error'
