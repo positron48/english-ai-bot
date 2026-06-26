@@ -38,7 +38,7 @@
   "7": {
     "class_type": "CLIPTextEncode",
     "inputs": {
-      "text": "text, watermark, logo, blurry, low quality, ugly, deformed",
+      "text": "long paragraph of text, wall of text, watermark, logo, blurry, low quality, ugly, deformed",
       "clip": ["4", 1]
     }
   },

@@ -25,7 +25,7 @@
 
 - `COMPLAINTS_SERVICE_URL` - базовый URL сервиса, например `http://127.0.0.1:8184`
 - `COMPLAINTS_SERVICE_TOKEN` - service token для internal API
-- `LLAMACPP_URL` - URL локального `llama.cpp` OpenAI-compatible API, например `http://127.0.0.1:8080`
+- `LLAMACPP_URL` - URL локального `llama.cpp` OpenAI-compatible API, например `http://127.0.0.1:8090`
 - `LLAMACPP_MODEL` - имя модели
 - `LLAMACPP_START_CMD` - опциональная команда автозапуска `llama.cpp`, если `LLAMACPP_URL` недоступен
 - `LLAMACPP_START_MAX_WAIT_SEC` - сколько ждать готовности после автозапуска (по умолчанию `45`)

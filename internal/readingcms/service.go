@@ -2,13 +2,16 @@ package readingcms
 
 import (
 	"strings"
+	"sync"
 	"time"
 )
 
 // Service orchestrates the local Reading CMS pipeline.
 type Service struct {
-	paths *Paths
-	store *Store
+	paths     *Paths
+	store     *Store
+	coverJobs      sync.Map // key: course:text_id -> *coverProgressState
+	coverBatchJobs sync.Map // key: batch_id -> *coverBatchState
 }
 
 func NewService(repoRoot string) (*Service, error) {

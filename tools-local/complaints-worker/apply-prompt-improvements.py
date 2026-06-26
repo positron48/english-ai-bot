@@ -133,7 +133,7 @@ def main() -> int:
     parser.add_argument("--course", choices=["spanish", "english"], default="spanish")
     parser.add_argument("--plan-json", default="", help="Path to improvement-plan json (optional)")
     parser.add_argument("--feedback-json", default="", help="Path to iteration feedback json (optional)")
-    parser.add_argument("--llama-url", default=os.getenv("LLAMACPP_URL", "http://127.0.0.1:8080"))
+    parser.add_argument("--llama-url", default=os.getenv("LLAMACPP_URL", "http://127.0.0.1:8090"))
     parser.add_argument("--llama-model", default=os.getenv("LLAMACPP_MODEL", "local-model"))
     args = parser.parse_args()
 

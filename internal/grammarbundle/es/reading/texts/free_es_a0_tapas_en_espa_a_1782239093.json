@@ -492,5 +492,8 @@
       "bebida",
       "carta"
     ]
-  }
+  },
+  "cover_image_prompt": "casual watercolor illustration, A young woman sips sangria at a bustling Spanish bar counter with small tapas plates and a menu on the table",
+  "cover_thumb_rel_path": "assets/reading/free_es_a0_tapas_en_espa_a_1782239093/cover_thumb.webp",
+  "cover_hero_rel_path": "assets/reading/free_es_a0_tapas_en_espa_a_1782239093/cover_hero.webp"
 }

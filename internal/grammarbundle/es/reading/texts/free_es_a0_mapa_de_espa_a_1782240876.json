@@ -614,5 +614,8 @@
       "este",
       "ruta"
     ]
-  }
+  },
+  "cover_image_prompt": "casual watercolor illustration, A map of Spain showing mountains",
+  "cover_thumb_rel_path": "assets/reading/free_es_a0_mapa_de_espa_a_1782240876/cover_thumb.webp",
+  "cover_hero_rel_path": "assets/reading/free_es_a0_mapa_de_espa_a_1782240876/cover_hero.webp"
 }

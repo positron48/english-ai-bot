@@ -16,12 +16,14 @@ const (
 	AudioPartial = "partial"
 	AudioReady   = "ready"
 
-	CoverNone  = "none"
-	CoverReady = "ready"
+	CoverNone   = "none"
+	CoverPrompt = "prompt"
+	CoverReady  = "ready"
 
-	OriginLLM        = "llm"
-	OriginManualText = "manual_text"
-	OriginInputJSON  = "input_json"
+	OriginLLM          = "llm"
+	OriginManualText   = "manual_text"
+	OriginInputJSON    = "input_json"
+	OriginCourseImport = "course_import"
 )
 
 // DraftMeta is stored in drafts/index.json.
@@ -36,6 +38,7 @@ type DraftMeta struct {
 	Origin            string     `json:"origin"`
 	AudioStatus       string     `json:"audio_status"`
 	CoverStatus       string     `json:"cover_status"`
+	CoverThumbRelPath string     `json:"cover_thumb_rel_path,omitempty"`
 	CoverImagePrompt  string     `json:"cover_image_prompt,omitempty"`
 	SegmentsTotal     int        `json:"segments_total"`
 	SegmentsWithAudio int        `json:"segments_with_audio"`
@@ -61,15 +64,38 @@ type TextDocument struct {
 
 // PublishedItem is a text already present in course reading catalog.
 type PublishedItem struct {
-	TextID         string `json:"text_id"`
-	CourseCode     string `json:"course_code"`
-	Title          string `json:"title"`
-	Level          string `json:"level"`
-	TargetLanguage string `json:"target_language"`
-	CategoryID     string `json:"category_id"`
-	SegmentsCount  int    `json:"segments_count"`
-	AudioReady     bool   `json:"audio_ready"`
-	InCMS          bool   `json:"in_cms"`
+	TextID             string `json:"text_id"`
+	CourseCode         string `json:"course_code"`
+	Title              string `json:"title"`
+	Level              string `json:"level"`
+	TargetLanguage     string `json:"target_language"`
+	CategoryID         string `json:"category_id"`
+	SegmentsCount      int    `json:"segments_count"`
+	SegmentsWithAudio  int    `json:"segments_with_audio"`
+	AudioStatus        string `json:"audio_status"`
+	AudioReady         bool   `json:"audio_ready"`
+	CoverStatus        string `json:"cover_status"`
+	CoverThumbRelPath  string `json:"cover_thumb_rel_path,omitempty"`
+	CoverHeroRelPath   string `json:"cover_hero_rel_path,omitempty"`
+	CoverImagePrompt   string `json:"cover_image_prompt,omitempty"`
+	CoverGeneratedAt   *time.Time `json:"cover_generated_at,omitempty"`
+	InCMS              bool   `json:"in_cms"`
+}
+
+// PublishedCoverRequest generates a cover for one published course text.
+type PublishedCoverRequest struct {
+	CourseCode string `json:"course_code"`
+	TextID     string `json:"text_id"`
+	Force      bool   `json:"force"`
+	Prompt     string `json:"prompt,omitempty"`
+	SkipLLM    bool   `json:"skip_llm"`
+}
+
+// DraftCoverRequest generates a cover for a draft.
+type DraftCoverRequest struct {
+	Force   bool   `json:"force"`
+	Prompt  string `json:"prompt,omitempty"`
+	SkipLLM bool   `json:"skip_llm"`
 }
 
 // GenerateRequest is batch LLM generation input.
@@ -121,4 +147,5 @@ type CoverBatchRequest struct {
 	CourseCode string `json:"course_code"`
 	Level      string `json:"level,omitempty"`
 	Force      bool   `json:"force"`
+	Limit      int    `json:"limit,omitempty"`
 }

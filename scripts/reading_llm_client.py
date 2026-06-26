@@ -11,6 +11,11 @@ import urllib.error
 import urllib.request
 
 
+def _llm_log(label: str, msg: str) -> None:
+    ts = time.strftime("%H:%M:%S")
+    print(f"[{label} {ts}] {msg}", flush=True)
+
+
 def parse_duration_seconds(raw: str, default: int = 0) -> int:
     s = (raw or "").strip()
     if not s:
@@ -206,10 +211,7 @@ def _cap_output_for_context(prompt: str, level: str | None, base_url: str) -> in
         )
     capped = min(want, available)
     if capped < want:
-        print(
-            f"[reading-llm] max_tokens {want} → {capped} (ctx={ctx}, prompt≈{prompt_tok} tok, reserve={reserve})",
-            flush=True,
-        )
+        _llm_log("reading-llm", f"max_tokens {want} → {capped} (ctx={ctx}, prompt≈{prompt_tok} tok, reserve={reserve})")
     return capped
 
 
@@ -227,6 +229,21 @@ def _reading_disable_stream() -> bool:
 
 def _is_qwen_thinking_model(model: str) -> bool:
     return "qwen3" in (model or "").lower()
+
+
+def _prepare_cover_prompt(prompt: str, model: str, base_url: str) -> str:
+    """Short JSON-only cover scene prompts — avoid long rule lists the model echoes back."""
+    body = prompt
+    if is_local_llamacpp_url(base_url) and _is_qwen_thinking_model(model):
+        if not body.lstrip().startswith("/no_think"):
+            body = "/no_think\n" + body
+    if "First non-whitespace character must be {" not in body:
+        body += (
+            "\n\nOutput ONLY one JSON object {\"image_prompt\": \"...\"}. "
+            "First non-whitespace character must be {. "
+            "No planning, no summary, no markdown fences."
+        )
+    return body
 
 
 def _prepare_reading_prompt(prompt: str, model: str, base_url: str) -> str:
@@ -255,14 +272,17 @@ def _text_from_parts(part: dict) -> str:
     return "".join(chunks)
 
 
-_THINK_BLOCK_RE = re.compile(r"<think(?:ing)?>.*?</think(?:ing)?>", re.I | re.S)
+_THINK_BLOCK_RE = re.compile(
+    r"<(?:redacted_)?think(?:ing)?>.*?</(?:redacted_)?think(?:ing)?>",
+    re.I | re.S,
+)
 
 
 def strip_qwen_thinking(text: str) -> str:
     """Remove Qwen3 thinking blocks; leave JSON/prose outside tags."""
     s = str(text or "")
     s = _THINK_BLOCK_RE.sub("", s)
-    s = re.sub(r"</?think(?:ing)?>", "", s, flags=re.I)
+    s = re.sub(r"</?(?:redacted_)?think(?:ing)?>", "", s, flags=re.I)
     return s.strip()
 
 
@@ -322,7 +342,7 @@ def _message_text_variants(message: dict) -> list[tuple[str, str]]:
 
 
 def _pick_response_text(message: dict, model: str = "") -> tuple[str, str]:
-    """Parseable JSON may be in content; qwen3 planning often lands in reasoning — ignore it."""
+    """JSON may be in content; qwen3 planning may land in reasoning when content is empty."""
     if _is_qwen_thinking_model(model):
         content = strip_qwen_thinking(str(message.get("content") or ""))
         if content:
@@ -333,6 +353,21 @@ def _pick_response_text(message: dict, model: str = "") -> tuple[str, str]:
                     return "content", content
                 except json.JSONDecodeError:
                     pass
+        reasoning = strip_qwen_thinking(
+            str(message.get("reasoning_content") or message.get("reasoning") or "")
+        )
+        if reasoning:
+            blob = extract_json_object(reasoning)
+            if blob:
+                try:
+                    json.loads(blob)
+                    return "reasoning_content", reasoning
+                except json.JSONDecodeError:
+                    pass
+        if content:
+            return "content", content
+        if reasoning:
+            return "reasoning_content", reasoning
         return "", ""
 
     variants = _message_text_variants(message)
@@ -404,6 +439,52 @@ def _llamacpp_probe_ready(http_base: str) -> bool:
     return False
 
 
+def _llama_server_count_on_port(port: int) -> int:
+    try:
+        result = subprocess.run(
+            ["pgrep", "-f", f"llama-server.*--port {port}"],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+    except OSError:
+        return 0
+    return len([ln for ln in (result.stdout or "").splitlines() if ln.strip()])
+
+
+def _start_kill_enabled() -> bool:
+    raw = os.getenv("LLAMACPP_START_KILL_EXISTING", "1").strip().lower()
+    return raw not in ("0", "false", "no", "off")
+
+
+def _kill_llama_servers_on_port(port: int, label: str) -> None:
+    count = _llama_server_count_on_port(port)
+    if count == 0:
+        return
+    _llm_log(label, f"останавливаем llama-server на порту {port} ({count} проц.)…")
+    subprocess.run(
+        ["bash", "-lc", f"pkill -f 'llama-server.*--port {port}' || true"],
+        check=False,
+    )
+    time.sleep(1)
+
+
+def _run_llamacpp_start_cmd(start_cmd: str, port: int, label: str) -> bool:
+    """Start llama via START_CMD. Returns False if a server is already running (no duplicate spawn)."""
+    existing = _llama_server_count_on_port(port)
+    if existing > 0:
+        _llm_log(
+            label,
+            f"llama-server на порту {port} уже запущен ({existing} проц.) — пропускаем START_CMD",
+        )
+        return False
+    if _start_kill_enabled():
+        _kill_llama_servers_on_port(port, label)
+    _llm_log(label, "выполняем START_CMD…")
+    subprocess.run(["bash", "-lc", start_cmd], check=False)
+    return True
+
+
 def resolve_llamacpp_start_cmd() -> str:
     return (
         os.getenv("LLAMACPP_START_CMD_READING", "").strip()
@@ -418,6 +499,23 @@ def _ensure_llama_disabled() -> bool:
 
 
 _LLAMA_ENSURED_BASES: set[str] = set()
+
+
+def _port_busy_quick_sec() -> int:
+    raw = os.getenv("LLAMACPP_PORT_BUSY_QUICK_SEC", "").strip()
+    try:
+        return max(1, min(int(raw) if raw else 3, 30))
+    except ValueError:
+        return 3
+
+
+def _wait_llamacpp_ready(http_base: str, seconds: int) -> int:
+    """Poll API up to `seconds`; return 0-based second index when ready, else -1."""
+    for i in range(seconds):
+        if _llamacpp_probe_ready(http_base):
+            return i
+        time.sleep(1)
+    return -1
 
 
 def ensure_llamacpp_server(course_root: pathlib.Path, label: str = "reading-llm") -> bool:
@@ -438,69 +536,70 @@ def ensure_llamacpp_server(course_root: pathlib.Path, label: str = "reading-llm"
     except ValueError:
         max_wait = 120
     max_wait = max(5, min(max_wait, 3600))
-    busy_wait_raw = os.getenv("LLAMACPP_PORT_BUSY_GRACE_SEC", "").strip()
-    try:
-        busy_grace = int(busy_wait_raw) if busy_wait_raw else 20
-    except ValueError:
-        busy_grace = 20
-    busy_grace = max(1, min(busy_grace, max_wait))
+    quick_sec = _port_busy_quick_sec()
 
     if _llamacpp_probe_ready(http_base):
-        print(f"[{label}] llama.cpp ready at {http_base}", flush=True)
+        _llm_log(label, f"llama.cpp ready at {http_base}")
         _LLAMA_ENSURED_BASES.add(http_base)
         return True
 
     host, port = _host_port_from_base_url(http_base)
-    if _tcp_port_open(host, port):
-        print(
-            f"[{label}] port {port} already in use — ждём готовности llama.cpp",
-            flush=True,
-        )
-        for i in range(busy_grace):
-            if _llamacpp_probe_ready(http_base):
-                print(f"[{label}] llama.cpp ready after {i + 1}s", flush=True)
-                _LLAMA_ENSURED_BASES.add(http_base)
-                return True
-            time.sleep(1)
-        if start_cmd:
-            print(
-                f"[{label}] порт {port} занят, но API не отвечает {busy_grace}s — запускаем START_CMD",
-                flush=True,
-            )
-            subprocess.run(["bash", "-lc", start_cmd], check=False)
-            for i in range(max_wait):
-                if _llamacpp_probe_ready(http_base):
-                    print(f"[{label}] llama.cpp ready after START_CMD ({i + 1}s)", flush=True)
-                    _LLAMA_ENSURED_BASES.add(http_base)
-                    return True
-                time.sleep(1)
-        print(
-            f"[{label}] порт {port} занят, но API не отвечает за {max_wait}s — "
-            "проверьте процесс на порту и LLAMACPP_START_CMD",
-            flush=True,
-        )
-        return False
+    existing = _llama_server_count_on_port(port)
 
-    if not start_cmd:
-        print(
-            f"[{label}] {http_base} not reachable; set LLAMACPP_START_CMD_VERB in ../../.env.es",
-            flush=True,
-        )
-        return False
-
-    print(f"[{label}] llama.cpp not running; autostart (START_CMD)...", flush=True)
-    subprocess.run(["bash", "-lc", start_cmd], check=False)
-    for i in range(max_wait):
-        if _llamacpp_probe_ready(http_base):
-            print(f"[{label}] llama.cpp ready after {i + 1}s", flush=True)
+    if existing > 0:
+        _llm_log(label, f"найден llama-server на порту {port} ({existing} проц.) — ждём API…")
+        ready_at = _wait_llamacpp_ready(http_base, max_wait)
+        if ready_at >= 0:
+            _llm_log(label, f"llama.cpp ready после {ready_at + 1}s")
             _LLAMA_ENSURED_BASES.add(http_base)
             return True
-        time.sleep(1)
+        _llm_log(
+            label,
+            f"llama-server запущен, но API на {http_base} не отвечает за {max_wait}s — "
+            "второй процесс не поднимаем (проверьте /tmp/llama-*.log или перезапустите вручную)",
+        )
+        return False
 
-    print(
-        f"[{label}] llama.cpp not ready after {max_wait}s — check LLAMACPP_URL={http_base} "
-        "matches --port in START_CMD",
-        flush=True,
+    if _tcp_port_open(host, port):
+        _llm_log(
+            label,
+            f"порт {port} занят (TCP), но llama-server не найден — возможен Docker/другой сервис",
+        )
+        ready_at = _wait_llamacpp_ready(http_base, quick_sec)
+        if ready_at >= 0:
+            _llm_log(label, f"API ответил после {ready_at + 1}s")
+            _LLAMA_ENSURED_BASES.add(http_base)
+            return True
+
+    if not start_cmd:
+        if _tcp_port_open(host, port):
+            _llm_log(
+                label,
+                f"порт {port} занят, API недоступен — задайте LLAMACPP_START_CMD_READING или освободите порт",
+            )
+        else:
+            _llm_log(
+                label,
+                f"{http_base} not reachable; set LLAMACPP_START_CMD_READING in .env.es",
+            )
+        return False
+
+    if _tcp_port_open(host, port):
+        _llm_log(
+            label,
+            f"порт {port} занят не-llama — пробуем START_CMD только если процесса llama-server ещё нет",
+        )
+
+    _run_llamacpp_start_cmd(start_cmd, port, label)
+    ready_at = _wait_llamacpp_ready(http_base, max_wait)
+    if ready_at >= 0:
+        _llm_log(label, f"llama.cpp ready after START_CMD ({ready_at + 1}s)")
+        _LLAMA_ENSURED_BASES.add(http_base)
+        return True
+
+    _llm_log(
+        label,
+        f"после START_CMD API не ответил за {max_wait}s — проверьте LLAMACPP_URL={http_base} и порт в START_CMD",
     )
     return False
 
@@ -560,12 +659,9 @@ def _blocking_chat_completion(chat_url: str, payload: dict, headers: dict, timeo
     field, text = _pick_response_text(message, str(payload.get("model", "")))
     if text:
         if field != "content":
-            print(f"[reading-llm] using message.{field} ({len(text)} chars)", flush=True)
+            _llm_log("reading-llm", f"using message.{field} ({len(text)} chars)")
         if finish == "length":
-            print(
-                "[reading-llm] finish_reason=length — ответ обрезан; JSON может быть битым",
-                flush=True,
-            )
+            _llm_log("reading-llm", "finish_reason=length — ответ обрезан; JSON может быть битым")
         return text
     parts = _message_text_variants(message)
     detail = ", ".join(f"{k}={len(t)}ch" for k, t in parts) or "no fields"
@@ -588,6 +684,8 @@ def chat_completion(
     course_root: pathlib.Path,
     temperature: float | None = None,
     level: str | None = None,
+    max_tokens: int | None = None,
+    prompt_profile: str = "default",
 ) -> str:
     base_url = resolve_llm_base_url(course_root)
     if temperature is None:
@@ -602,8 +700,25 @@ def chat_completion(
     chat_url = openai_chat_completions_url(base_url)
     timeout_s = llm_timeout_seconds(base_url)
 
-    user_prompt = _prepare_reading_prompt(prompt, model, base_url)
-    max_out = _resolve_max_tokens(user_prompt, level, base_url)
+    profile = (prompt_profile or "default").strip().lower()
+    if profile == "cover":
+        user_prompt = _prepare_cover_prompt(prompt, model, base_url)
+    else:
+        user_prompt = _prepare_reading_prompt(prompt, model, base_url)
+    if max_tokens is not None:
+        max_out = max_tokens
+    else:
+        max_out = _resolve_max_tokens(user_prompt, level, base_url)
+    if profile == "cover":
+        cover_default = 4096
+        raw_cover = os.getenv("READING_COVER_MAX_TOKENS", "").strip()
+        if raw_cover:
+            try:
+                cover_default = max(256, int(raw_cover))
+            except ValueError:
+                pass
+        if max_out is None or max_out < cover_default:
+            max_out = cover_default
 
     payload: dict = {
         "model": model,
@@ -623,8 +738,10 @@ def chat_completion(
                 payload["reasoning_budget"] = int(rb)
             except ValueError:
                 pass
-    # Training-pack does not set response_format; qwen3 + json_object often leaks planning into content.
-    if (
+    # Cover prompts are tiny JSON; json_object keeps qwen3 from rambling. Reading generation stays off by default.
+    if profile == "cover" and is_local_llamacpp_url(base_url):
+        payload["response_format"] = {"type": "json_object"}
+    elif (
         is_local_llamacpp_url(base_url)
         and os.getenv("READING_ENABLE_JSON_FORMAT", "").strip().lower() in ("1", "true", "yes")
     ):
@@ -635,14 +752,16 @@ def chat_completion(
         headers["Authorization"] = f"Bearer {api_key}"
 
     use_stream = _reading_use_stream(base_url, model)
+    if profile == "cover":
+        use_stream = False
     ctx = _llama_context_tokens(base_url) if is_local_llamacpp_url(base_url) else 0
     ctx_from_props = base_url.rstrip("/") in _CTX_PROBE_CACHE if ctx else False
     max_tok_label = "server-default" if max_out is None else str(max_out)
-    print(
-        f"[reading-llm] → {chat_url} model={model} stream={use_stream} "
+    _llm_log(
+        "reading-llm",
+        f"→ {chat_url} model={model} stream={use_stream} "
         f"prompt_chars={len(user_prompt)} max_tokens={max_tok_label}"
         + (f" ctx={ctx}" + (" (from /props)" if ctx_from_props else " (from env)") if ctx else ""),
-        flush=True,
     )
 
     try:

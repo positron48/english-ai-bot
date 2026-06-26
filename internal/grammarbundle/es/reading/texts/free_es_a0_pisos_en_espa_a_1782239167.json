@@ -486,5 +486,8 @@
       "puerta",
       "dirección"
     ]
-  }
+  },
+  "cover_thumb_rel_path": "assets/reading/free_es_a0_pisos_en_espa_a_1782239167/cover_thumb.webp",
+  "cover_hero_rel_path": "assets/reading/free_es_a0_pisos_en_espa_a_1782239167/cover_hero.webp",
+  "cover_image_prompt": "casual watercolor illustration, A woman looking at a building door with a blue circle symbol on a Spanish street, no readable text"
 }

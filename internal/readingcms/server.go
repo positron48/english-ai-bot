@@ -3,6 +3,7 @@ package readingcms
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -30,9 +31,16 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("/api/drafts/import-json", s.handleImportJSON)
 	mux.HandleFunc("/api/prompts/reading", s.handleReadingPrompt)
 	mux.HandleFunc("/api/published", s.handlePublished)
+	mux.HandleFunc("/api/published/detail", s.handlePublishedDetail)
+	mux.HandleFunc("/api/published/sync", s.handlePublishedSync)
+	mux.HandleFunc("/api/published/cover", s.handlePublishedCover)
 	mux.HandleFunc("/api/audio/", s.handleAudio)
 	mux.HandleFunc("/api/images/", s.handleImage)
+	mux.HandleFunc("/api/course-images/", s.handleCourseImage)
+	mux.HandleFunc("/api/course-audio/", s.handleCourseAudio)
 	mux.HandleFunc("/api/covers/batch", s.handleCoverBatch)
+	mux.HandleFunc("/api/cover-batch-progress", s.handleCoverBatchProgress)
+	mux.HandleFunc("/api/cover-progress", s.handleCoverProgress)
 	mux.HandleFunc("/api/drafts/", s.handleDraftSubroutes)
 	if s.webRoot != "" {
 		mux.Handle("/", http.FileServer(http.Dir(s.webRoot)))
@@ -146,7 +154,7 @@ func (s *Server) handlePublished(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
 		q := r.URL.Query()
-		items, err := s.svc.ListPublished(q.Get("course_code"), q.Get("level"), q.Get("search"))
+		items, err := s.svc.ListPublished(q.Get("course_code"), q.Get("level"), q.Get("search"), q.Get("cover"))
 		if err != nil {
 			writeError(w, http.StatusInternalServerError, err)
 			return
@@ -174,6 +182,30 @@ func (s *Server) handlePublished(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (s *Server) handlePublishedDetail(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		methodNotAllowed(w)
+		return
+	}
+	q := r.URL.Query()
+	courseCode := strings.TrimSpace(q.Get("course_code"))
+	textID := strings.TrimSpace(q.Get("text_id"))
+	if textID == "" || courseCode == "" {
+		writeError(w, http.StatusBadRequest, errInvalid("course_code and text_id required"))
+		return
+	}
+	item, doc, err := s.svc.GetPublishedDocument(courseCode, textID)
+	if err != nil {
+		if IsNotFound(err) || strings.Contains(err.Error(), "not found") {
+			writeError(w, http.StatusNotFound, err)
+			return
+		}
+		writeError(w, http.StatusInternalServerError, err)
+		return
+	}
+	writeJSON(w, map[string]interface{}{"text": item, "document": doc})
+}
+
 func (s *Server) handleAudio(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		methodNotAllowed(w)
@@ -188,6 +220,35 @@ func (s *Server) handleAudio(w http.ResponseWriter, r *http.Request) {
 	textID := parts[0]
 	filename := parts[len(parts)-1]
 	path := filepath.Join(s.svc.Paths().StagingDir(textID), "assets", "reading", textID, filename)
+	data, err := os.ReadFile(path)
+	if err != nil {
+		http.Error(w, "not found", http.StatusNotFound)
+		return
+	}
+	w.Header().Set("Content-Type", "audio/mpeg")
+	_, _ = w.Write(data)
+}
+
+func (s *Server) handleCourseAudio(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		methodNotAllowed(w)
+		return
+	}
+	rest := strings.TrimPrefix(r.URL.Path, "/api/course-audio/")
+	parts := strings.Split(strings.Trim(rest, "/"), "/")
+	if len(parts) < 3 {
+		http.Error(w, "invalid audio path", http.StatusBadRequest)
+		return
+	}
+	courseCode := parts[0]
+	textID := parts[1]
+	filename := parts[len(parts)-1]
+	course, err := s.svc.paths.Course(courseCode)
+	if err != nil {
+		http.Error(w, "not found", http.StatusNotFound)
+		return
+	}
+	path := filepath.Join(course.GrammarDir, "assets", "reading", textID, filename)
 	data, err := os.ReadFile(path)
 	if err != nil {
 		http.Error(w, "not found", http.StatusNotFound)
@@ -296,20 +357,66 @@ func (s *Server) handleDraftAction(w http.ResponseWriter, r *http.Request, textI
 }
 
 func (s *Server) handleDraftCover(w http.ResponseWriter, r *http.Request, textID string) {
-	if r.Method != http.MethodPost {
+	switch r.Method {
+	case http.MethodPost:
+		var body DraftCoverRequest
+		_ = readJSON(r, &body)
+		meta, err := s.svc.GenerateCover(r.Context(), textID, CoverGenerateOpts{
+			Force:   body.Force,
+			Prompt:  body.Prompt,
+			SkipLLM: body.SkipLLM,
+		})
+		if err != nil {
+			writeErrorLog(w, http.StatusBadRequest, err, metaLastJobLog(meta))
+			return
+		}
+		writeJSON(w, map[string]interface{}{"draft": meta, "log": meta.LastJobLog})
+	case http.MethodDelete:
+		meta, err := s.svc.DeleteDraftCover(textID)
+		if err != nil {
+			if IsNotFound(err) {
+				writeError(w, http.StatusNotFound, err)
+				return
+			}
+			writeError(w, http.StatusBadRequest, err)
+			return
+		}
+		writeJSON(w, map[string]interface{}{"draft": meta})
+	default:
+		methodNotAllowed(w)
+	}
+}
+
+func metaLastJobLog(meta *DraftMeta) string {
+	if meta == nil {
+		return ""
+	}
+	return meta.LastJobLog
+}
+
+func (s *Server) handleCoverProgress(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
 		methodNotAllowed(w)
 		return
 	}
-	var body struct {
-		Force bool `json:"force"`
-	}
-	_ = readJSON(r, &body)
-	meta, err := s.svc.GenerateCover(r.Context(), textID, body.Force)
-	if err != nil {
-		writeError(w, http.StatusBadRequest, err)
+	courseCode := strings.TrimSpace(r.URL.Query().Get("course_code"))
+	textID := strings.TrimSpace(r.URL.Query().Get("text_id"))
+	if courseCode == "" || textID == "" {
+		writeError(w, http.StatusBadRequest, fmt.Errorf("course_code and text_id required"))
 		return
 	}
-	writeJSON(w, map[string]interface{}{"draft": meta})
+	view, ok := s.svc.CoverProgress(courseCode, textID)
+	if !ok {
+		writeJSON(w, map[string]interface{}{
+			"running": false,
+			"done":    false,
+			"log":     "",
+			"percent": 0,
+			"stages":  []CoverStageView{},
+		})
+		return
+	}
+	writeJSON(w, view)
 }
 
 func (s *Server) handleCoverBatch(w http.ResponseWriter, r *http.Request) {
@@ -322,12 +429,144 @@ func (s *Server) handleCoverBatch(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusBadRequest, err)
 		return
 	}
-	count, err := s.svc.GenerateCoverBatch(r.Context(), req)
+	batchID, total, err := s.svc.StartCoverBatch(req)
 	if err != nil {
+		if IsNotFound(err) || strings.Contains(err.Error(), "no texts") {
+			writeError(w, http.StatusBadRequest, err)
+			return
+		}
 		writeError(w, http.StatusInternalServerError, err)
 		return
 	}
-	writeJSON(w, map[string]interface{}{"generated": count})
+	writeJSON(w, map[string]interface{}{
+		"batch_id": batchID,
+		"total":    total,
+		"started":  true,
+	})
+}
+
+func (s *Server) handleCoverBatchProgress(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		methodNotAllowed(w)
+		return
+	}
+	batchID := strings.TrimSpace(r.URL.Query().Get("batch_id"))
+	if batchID == "" {
+		writeError(w, http.StatusBadRequest, fmt.Errorf("batch_id required"))
+		return
+	}
+	view, ok := s.svc.CoverBatchProgress(batchID)
+	if !ok {
+		writeJSON(w, map[string]interface{}{
+			"running": false,
+			"done":    false,
+			"log":     "",
+			"percent": 0,
+			"total":   0,
+		})
+		return
+	}
+	writeJSON(w, view)
+}
+
+func (s *Server) handlePublishedCover(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodPost:
+		var req PublishedCoverRequest
+		if err := readJSON(r, &req); err != nil {
+			writeError(w, http.StatusBadRequest, err)
+			return
+		}
+		item, jobLog, err := s.svc.GeneratePublishedCover(r.Context(), req.CourseCode, req.TextID, CoverGenerateOpts{
+			Force:   req.Force,
+			Prompt:  req.Prompt,
+			SkipLLM: req.SkipLLM,
+		})
+		if err != nil {
+			if IsNotFound(err) {
+				writeErrorLog(w, http.StatusNotFound, err, jobLog)
+				return
+			}
+			writeErrorLog(w, http.StatusBadRequest, err, jobLog)
+			return
+		}
+		writeJSON(w, map[string]interface{}{"text": item, "log": jobLog})
+	case http.MethodDelete:
+		var req PublishedCoverRequest
+		if err := readJSON(r, &req); err != nil {
+			writeError(w, http.StatusBadRequest, err)
+			return
+		}
+		item, err := s.svc.DeletePublishedCover(req.CourseCode, req.TextID)
+		if err != nil {
+			if IsNotFound(err) {
+				writeError(w, http.StatusNotFound, err)
+				return
+			}
+			writeError(w, http.StatusBadRequest, err)
+			return
+		}
+		writeJSON(w, map[string]interface{}{"text": item})
+	default:
+		methodNotAllowed(w)
+	}
+}
+
+func (s *Server) handlePublishedSync(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		methodNotAllowed(w)
+		return
+	}
+	var req PublishedSyncRequest
+	if err := readJSON(r, &req); err != nil {
+		writeError(w, http.StatusBadRequest, err)
+		return
+	}
+	res, err := s.svc.SyncPublishedToCMS(req)
+	if err != nil {
+		writeError(w, http.StatusBadRequest, err)
+		return
+	}
+	writeJSON(w, res)
+}
+
+func (s *Server) handleCourseImage(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		methodNotAllowed(w)
+		return
+	}
+	rest := strings.TrimPrefix(r.URL.Path, "/api/course-images/")
+	parts := strings.Split(strings.Trim(rest, "/"), "/")
+	if len(parts) < 3 {
+		http.Error(w, "invalid image path", http.StatusBadRequest)
+		return
+	}
+	courseCode := parts[0]
+	textID := parts[1]
+	filename := parts[len(parts)-1]
+	course, err := s.svc.paths.Course(courseCode)
+	if err != nil {
+		http.Error(w, "not found", http.StatusNotFound)
+		return
+	}
+	path := filepath.Join(course.GrammarDir, "assets", "reading", textID, filename)
+	data, err := os.ReadFile(path)
+	if err != nil {
+		http.Error(w, "not found", http.StatusNotFound)
+		return
+	}
+	contentType := "application/octet-stream"
+	switch strings.ToLower(filepath.Ext(filename)) {
+	case ".webp":
+		contentType = "image/webp"
+	case ".png":
+		contentType = "image/png"
+	case ".jpg", ".jpeg":
+		contentType = "image/jpeg"
+	}
+	w.Header().Set("Content-Type", contentType)
+	w.Header().Set("Cache-Control", "no-cache")
+	_, _ = w.Write(data)
 }
 
 func (s *Server) handleImage(w http.ResponseWriter, r *http.Request) {
@@ -397,9 +636,17 @@ func writeJSON(w http.ResponseWriter, v interface{}) {
 }
 
 func writeError(w http.ResponseWriter, code int, err error) {
+	writeErrorLog(w, code, err, "")
+}
+
+func writeErrorLog(w http.ResponseWriter, code int, err error, log string) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
-	_ = json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+	payload := map[string]string{"error": err.Error()}
+	if strings.TrimSpace(log) != "" {
+		payload["log"] = log
+	}
+	_ = json.NewEncoder(w).Encode(payload)
 }
 
 func methodNotAllowed(w http.ResponseWriter) {

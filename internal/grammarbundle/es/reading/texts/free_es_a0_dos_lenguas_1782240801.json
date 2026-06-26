@@ -608,5 +608,8 @@
       "escuela",
       "carteles"
     ]
-  }
+  },
+  "cover_thumb_rel_path": "assets/reading/free_es_a0_dos_lenguas_1782240801/cover_thumb.webp",
+  "cover_hero_rel_path": "assets/reading/free_es_a0_dos_lenguas_1782240801/cover_hero.webp",
+  "cover_image_prompt": "casual watercolor illustration,A man and woman on a sunny street looking at a shop sign with two colored panels and tiny illegible brushstroke marks, no readable words  no readable words or paragraphs; if signs or labels are essential to the topic, show at most tiny illegible brushstroke glyphs, never real lettering"
 }

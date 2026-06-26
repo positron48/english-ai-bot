@@ -117,7 +117,7 @@ func (s *Service) runReadingScript(ctx context.Context, opts scriptRunOptions) (
 
 	cmd := exec.CommandContext(ctx, "python3", args...)
 	cmd.Dir = opts.course.GrammarDir
-	cmd.Env = os.Environ()
+	cmd.Env = s.paths.ScriptEnv(opts.course.Code)
 	if opts.withAudio {
 		cmd.Env = append(cmd.Env, "READING_TTS_CMD_TEMPLATE="+s.paths.TTSCommandTemplate())
 	} else {

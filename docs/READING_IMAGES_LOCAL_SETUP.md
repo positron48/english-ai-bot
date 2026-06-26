@@ -8,23 +8,33 @@
 
 | Variable | Default | Назначение |
 |----------|---------|------------|
-| `COMFYUI_URL` | `http://127.0.0.1:8188` | ComfyUI HTTP API |
-| `COMFYUI_WORKFLOW` | `scripts/comfyui/reading-cover.workflow.json` | workflow JSON |
-| `COMFYUI_CHECKPOINT` | `v1-5-pruned-emaonly.safetensors` | имя checkpoint в `ComfyUI/models/checkpoints/` |
+| `COMFYUI_URL` | auto (`8000` then `8188`) | ComfyUI HTTP API |
+| `COMFYUI_WORKFLOW` | `scripts/comfyui/reading-cover-z-image-turbo.workflow.json` (if present) | workflow JSON |
+| `COMFYUI_CHECKPOINT` | `v1-5-pruned-emaonly.safetensors` | только для legacy SD1.5 workflow |
 | `READING_COVER_THUMB_W` / `_H` | `400` / `300` | thumbnail для списка |
-| `READING_COVER_HERO_W` / `_H` | `1200` / `480` | hero для экрана текста |
+| `READING_COVER_HERO_W` / `_H` | `1024` / `768` | hero для экрана текста (как у ComfyUI, без обрезки) |
 | `READING_COVER_WEBP_QUALITY` | `85` | качество WebP |
-| `READING_COVER_BATCH_SLEEP_SEC` | `2` | пауза между текстами в batch |
-| LLM | `LLAMACPP_URL` / `AI_URL` | как для reading text generation |
+| `READING_COVER_MAX_TOKENS` | `4096` | qwen3:30b cover JSON; reasoning eats tokens before `content` |
+| `READING_COVER_STYLE_PREFIX` | watercolor / storybook / casual game (см. код) | English style prefix, добавляется к промпту автоматически |
+| `READING_COVER_STYLE_SUFFIX` | _(пусто)_ | опциональный суффикс в конце промпта |
+| LLM | `LLAMACPP_URL`, `LLAMACPP_START_CMD_READING` (или `LLAMACPP_START_CMD`) в `.env` / `.env.es` | локальный llama.cpp; CMS подхватывает эти файлы при генерации обложек |
+| `LLAMACPP_START_CMD_READING` | — | автозапуск llama.cpp для cover prompt (из `.env.es`) |
+| `READING_COVER_USE_AI_URL` | `0` | `1` — промпт обложки через `AI_URL` (OpenRouter), без local llama |
+
+**Reading CMS** (`make reading-cms`) при каждом запуске Python-пайплайна подгружает `.env` + `.env.es` / `.env.en` — те же переменные, что и `make reading-covers-batch`. Перезапуск CMS после правки `.env` не обязателен.
+
+Локальная LLM описывает **только сцену** (кто/где/что); стиль **акварель + storybook + casual game** дописывается в коде на английском — так стабильнее для слабых моделей.
 
 Для тестов без LLM: `READING_COVER_PROMPT_MOCK=1`.
 
 ## 1) ComfyUI
 
-1. Установите [ComfyUI](https://github.com/comfyanonymous/ComfyUI) локально.
-2. Положите checkpoint в `ComfyUI/models/checkpoints/` и задайте `COMFYUI_CHECKPOINT`.
-3. Запустите сервер (по умолчанию порт `8188`).
-4. При необходимости отредактируйте `scripts/comfyui/reading-cover.workflow.json` (размер latent, steps, negative prompt).
+**Comfy Desktop** обычно слушает `http://127.0.0.1:8000` (не 8188). Скрипт сам пробует `8000` → `8188`, если `COMFYUI_URL` не задан.
+
+Для **Z-Image-Turbo** (дефолтный workflow в Comfy Desktop) в репо уже есть API workflow:
+`scripts/comfyui/reading-cover-z-image-turbo.workflow.json` — он подхватывается автоматически, если файл существует.
+
+Для legacy SD1.5 checkpoint: `scripts/comfyui/reading-cover.workflow.json` + `COMFYUI_CHECKPOINT`.
 
 Проверка:
 
@@ -35,10 +45,10 @@ curl -s http://127.0.0.1:8188/system_stats | head
 ## 2) Зависимости Python
 
 ```bash
-pip install Pillow
+pip3 install --user Pillow --break-system-packages
 ```
 
-LLM — тот же llama.cpp / OpenAI-compatible endpoint, что и для `make reading-generate-free`.
+LLM — локальный llama.cpp (тот же endpoint, что и `make reading-generate-free`).
 
 ## 3) Один текст
 
@@ -108,11 +118,17 @@ courses/<course>/assets/reading/<text_id>/
 
 ## 6) Reading CMS
 
-В `make reading-cms` UI:
+`make reading-cms` при запуске cover-пайплайна подхватывает `.env` и `.env.es` / `.env.en` (как `make` для Spanish/English). Нужны:
 
+- `LLAMACPP_URL` — URL локального llama-server (например `http://127.0.0.1:8090`)
+- `LLAMACPP_START_CMD_READING` или `LLAMACPP_START_CMD` — автозапуск, если сервер ещё не поднят
+- `COMFYUI_URL` — Comfy Desktop (`http://127.0.0.1:8000`)
+
+В UI:
+
+- **Сгенерировать** обложку в таблице текстов (`POST /api/published/cover`);
 - **Generate cover** на черновике (`POST /api/drafts/:id/cover`);
-- preview thumb/hero + `cover_image_prompt`;
-- **Generate all covers** для опубликованных текстов курса (`POST /api/covers/batch`).
+- **Batch covers** в шапке (`POST /api/covers/batch`).
 
 Publish копирует `assets/reading/<text_id>/` вместе с аудио.
 

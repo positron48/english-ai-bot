@@ -1,0 +1,633 @@
+{
+  "id": "free_es_a1_bibliotecas_p_blicas_1782395382",
+  "category_id": "es_a1",
+  "title": "Bibliotecas públicas",
+  "level": "A1",
+  "target_language": "es",
+  "reading_passage": {
+    "comprehension_questions": [
+      {
+        "correct_answer": "true",
+        "explanation": "Текст начинается с библиотек в испанских городах.",
+        "id": "q1",
+        "prompt": "В тексте говорится о публичных библиотеках в Испании.",
+        "type": "true_false"
+      },
+      {
+        "correct_answer": "false",
+        "explanation": "В тексте сказано, что вход обычно бесплатный.",
+        "id": "q2",
+        "prompt": "Вход в библиотеку обычно платный.",
+        "type": "true_false"
+      },
+      {
+        "correct_answer": "true",
+        "explanation": "В тексте говорится, что для книг нужна карточка.",
+        "id": "q3",
+        "prompt": "Чтобы брать книги домой, нужна карточка.",
+        "type": "true_false"
+      },
+      {
+        "correct_answer": "false",
+        "explanation": "Там также есть журналы, фильмы и музыка.",
+        "id": "q4",
+        "prompt": "В библиотеках есть только книги.",
+        "type": "true_false"
+      },
+      {
+        "correct_answer": "true",
+        "explanation": "В тексте сказано, что в это время залы полные.",
+        "id": "q5",
+        "prompt": "Во время экзаменов залы для учёбы могут быть заполнены.",
+        "type": "true_false"
+      }
+    ],
+    "estimated_minutes": 6,
+    "level": "A1",
+    "segments": [
+      {
+        "audio_rel_path": "assets/reading/free_es_a1_bibliotecas_p_blicas_1782395382/seg_01_narrator.mp3",
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "text": "En muchas ciudades españolas hay bibliotecas públicas.",
+        "text_translation_ru": "Во многих испанских городах есть публичные библиотеки.",
+        "tokens": [
+          {
+            "clickable": true,
+            "lemma": "en",
+            "surface": "En",
+            "token_idx": 0
+          },
+          {
+            "clickable": true,
+            "lemma": "muchas",
+            "surface": "muchas",
+            "token_idx": 1
+          },
+          {
+            "clickable": true,
+            "lemma": "ciudades",
+            "surface": "ciudades",
+            "token_idx": 2
+          },
+          {
+            "clickable": true,
+            "lemma": "españolas",
+            "surface": "españolas",
+            "token_idx": 3
+          },
+          {
+            "clickable": true,
+            "lemma": "hay",
+            "surface": "hay",
+            "token_idx": 4
+          },
+          {
+            "clickable": true,
+            "lemma": "bibliotecas",
+            "surface": "bibliotecas",
+            "token_idx": 5
+          },
+          {
+            "clickable": true,
+            "lemma": "públicas",
+            "surface": "públicas",
+            "token_idx": 6
+          },
+          {
+            "clickable": false,
+            "lemma": ".",
+            "surface": ".",
+            "token_idx": 7
+          }
+        ],
+        "voice_id": "es_narrator"
+      },
+      {
+        "audio_rel_path": "assets/reading/free_es_a1_bibliotecas_p_blicas_1782395382/seg_02_narrator.mp3",
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "text": "La entrada normalmente es gratuita.",
+        "text_translation_ru": "Вход обычно бесплатный.",
+        "tokens": [
+          {
+            "clickable": true,
+            "lemma": "la",
+            "surface": "La",
+            "token_idx": 0
+          },
+          {
+            "clickable": true,
+            "lemma": "entrada",
+            "surface": "entrada",
+            "token_idx": 1
+          },
+          {
+            "clickable": true,
+            "lemma": "normalmente",
+            "surface": "normalmente",
+            "token_idx": 2
+          },
+          {
+            "clickable": true,
+            "lemma": "es",
+            "surface": "es",
+            "token_idx": 3
+          },
+          {
+            "clickable": true,
+            "lemma": "gratuita",
+            "surface": "gratuita",
+            "token_idx": 4
+          },
+          {
+            "clickable": false,
+            "lemma": ".",
+            "surface": ".",
+            "token_idx": 5
+          }
+        ],
+        "voice_id": "es_narrator"
+      },
+      {
+        "audio_rel_path": "assets/reading/free_es_a1_bibliotecas_p_blicas_1782395382/seg_03_narrator.mp3",
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "text": "Para llevar libros, necesitas una tarjeta.",
+        "text_translation_ru": "Чтобы брать книги, нужна карточка.",
+        "tokens": [
+          {
+            "clickable": true,
+            "lemma": "para",
+            "surface": "Para",
+            "token_idx": 0
+          },
+          {
+            "clickable": true,
+            "lemma": "llevar",
+            "surface": "llevar",
+            "token_idx": 1
+          },
+          {
+            "clickable": true,
+            "lemma": "libros",
+            "surface": "libros",
+            "token_idx": 2
+          },
+          {
+            "clickable": false,
+            "lemma": ",",
+            "surface": ",",
+            "token_idx": 3
+          },
+          {
+            "clickable": true,
+            "lemma": "necesitas",
+            "surface": "necesitas",
+            "token_idx": 4
+          },
+          {
+            "clickable": true,
+            "lemma": "una",
+            "surface": "una",
+            "token_idx": 5
+          },
+          {
+            "clickable": true,
+            "lemma": "tarjeta",
+            "surface": "tarjeta",
+            "token_idx": 6
+          },
+          {
+            "clickable": false,
+            "lemma": ".",
+            "surface": ".",
+            "token_idx": 7
+          }
+        ],
+        "voice_id": "es_narrator"
+      },
+      {
+        "audio_rel_path": "assets/reading/free_es_a1_bibliotecas_p_blicas_1782395382/seg_04_narrator.mp3",
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "text": "Esta tarjeta suele ser gratis.",
+        "text_translation_ru": "Такая карточка обычно тоже бесплатная.",
+        "tokens": [
+          {
+            "clickable": true,
+            "lemma": "esta",
+            "surface": "Esta",
+            "token_idx": 0
+          },
+          {
+            "clickable": true,
+            "lemma": "tarjeta",
+            "surface": "tarjeta",
+            "token_idx": 1
+          },
+          {
+            "clickable": true,
+            "lemma": "suele",
+            "surface": "suele",
+            "token_idx": 2
+          },
+          {
+            "clickable": true,
+            "lemma": "ser",
+            "surface": "ser",
+            "token_idx": 3
+          },
+          {
+            "clickable": true,
+            "lemma": "gratis",
+            "surface": "gratis",
+            "token_idx": 4
+          },
+          {
+            "clickable": false,
+            "lemma": ".",
+            "surface": ".",
+            "token_idx": 5
+          }
+        ],
+        "voice_id": "es_narrator"
+      },
+      {
+        "audio_rel_path": "assets/reading/free_es_a1_bibliotecas_p_blicas_1782395382/seg_05_narrator.mp3",
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "text": "Con ella puedes llevar libros a casa.",
+        "text_translation_ru": "С ней можно брать книги домой.",
+        "tokens": [
+          {
+            "clickable": true,
+            "lemma": "con",
+            "surface": "Con",
+            "token_idx": 0
+          },
+          {
+            "clickable": true,
+            "lemma": "ella",
+            "surface": "ella",
+            "token_idx": 1
+          },
+          {
+            "clickable": true,
+            "lemma": "puedes",
+            "surface": "puedes",
+            "token_idx": 2
+          },
+          {
+            "clickable": true,
+            "lemma": "llevar",
+            "surface": "llevar",
+            "token_idx": 3
+          },
+          {
+            "clickable": true,
+            "lemma": "libros",
+            "surface": "libros",
+            "token_idx": 4
+          },
+          {
+            "clickable": true,
+            "lemma": "a",
+            "surface": "a",
+            "token_idx": 5
+          },
+          {
+            "clickable": true,
+            "lemma": "casa",
+            "surface": "casa",
+            "token_idx": 6
+          },
+          {
+            "clickable": false,
+            "lemma": ".",
+            "surface": ".",
+            "token_idx": 7
+          }
+        ],
+        "voice_id": "es_narrator"
+      },
+      {
+        "audio_rel_path": "assets/reading/free_es_a1_bibliotecas_p_blicas_1782395382/seg_06_narrator.mp3",
+        "segment_id": "s6",
+        "speaker_id": "narrator",
+        "text": "También hay revistas, películas y música.",
+        "text_translation_ru": "Там также есть журналы, фильмы и музыка.",
+        "tokens": [
+          {
+            "clickable": true,
+            "lemma": "también",
+            "surface": "También",
+            "token_idx": 0
+          },
+          {
+            "clickable": true,
+            "lemma": "hay",
+            "surface": "hay",
+            "token_idx": 1
+          },
+          {
+            "clickable": true,
+            "lemma": "revistas",
+            "surface": "revistas",
+            "token_idx": 2
+          },
+          {
+            "clickable": false,
+            "lemma": ",",
+            "surface": ",",
+            "token_idx": 3
+          },
+          {
+            "clickable": true,
+            "lemma": "películas",
+            "surface": "películas",
+            "token_idx": 4
+          },
+          {
+            "clickable": true,
+            "lemma": "y",
+            "surface": "y",
+            "token_idx": 5
+          },
+          {
+            "clickable": true,
+            "lemma": "música",
+            "surface": "música",
+            "token_idx": 6
+          },
+          {
+            "clickable": false,
+            "lemma": ".",
+            "surface": ".",
+            "token_idx": 7
+          }
+        ],
+        "voice_id": "es_narrator"
+      },
+      {
+        "audio_rel_path": "assets/reading/free_es_a1_bibliotecas_p_blicas_1782395382/seg_07_narrator.mp3",
+        "segment_id": "s7",
+        "speaker_id": "narrator",
+        "text": "Muchas bibliotecas tienen salas de estudio.",
+        "text_translation_ru": "Во многих библиотеках есть залы для учёбы.",
+        "tokens": [
+          {
+            "clickable": true,
+            "lemma": "muchas",
+            "surface": "Muchas",
+            "token_idx": 0
+          },
+          {
+            "clickable": true,
+            "lemma": "bibliotecas",
+            "surface": "bibliotecas",
+            "token_idx": 1
+          },
+          {
+            "clickable": true,
+            "lemma": "tienen",
+            "surface": "tienen",
+            "token_idx": 2
+          },
+          {
+            "clickable": true,
+            "lemma": "salas",
+            "surface": "salas",
+            "token_idx": 3
+          },
+          {
+            "clickable": true,
+            "lemma": "de",
+            "surface": "de",
+            "token_idx": 4
+          },
+          {
+            "clickable": true,
+            "lemma": "estudio",
+            "surface": "estudio",
+            "token_idx": 5
+          },
+          {
+            "clickable": false,
+            "lemma": ".",
+            "surface": ".",
+            "token_idx": 6
+          }
+        ],
+        "voice_id": "es_narrator"
+      },
+      {
+        "audio_rel_path": "assets/reading/free_es_a1_bibliotecas_p_blicas_1782395382/seg_08_narrator.mp3",
+        "segment_id": "s8",
+        "speaker_id": "narrator",
+        "text": "En época de exámenes, estas salas están llenas.",
+        "text_translation_ru": "Во время экзаменов эти залы заполнены.",
+        "tokens": [
+          {
+            "clickable": true,
+            "lemma": "en",
+            "surface": "En",
+            "token_idx": 0
+          },
+          {
+            "clickable": true,
+            "lemma": "época",
+            "surface": "época",
+            "token_idx": 1
+          },
+          {
+            "clickable": true,
+            "lemma": "de",
+            "surface": "de",
+            "token_idx": 2
+          },
+          {
+            "clickable": true,
+            "lemma": "exámenes",
+            "surface": "exámenes",
+            "token_idx": 3
+          },
+          {
+            "clickable": false,
+            "lemma": ",",
+            "surface": ",",
+            "token_idx": 4
+          },
+          {
+            "clickable": true,
+            "lemma": "estas",
+            "surface": "estas",
+            "token_idx": 5
+          },
+          {
+            "clickable": true,
+            "lemma": "salas",
+            "surface": "salas",
+            "token_idx": 6
+          },
+          {
+            "clickable": true,
+            "lemma": "están",
+            "surface": "están",
+            "token_idx": 7
+          },
+          {
+            "clickable": true,
+            "lemma": "llenas",
+            "surface": "llenas",
+            "token_idx": 8
+          },
+          {
+            "clickable": false,
+            "lemma": ".",
+            "surface": ".",
+            "token_idx": 9
+          }
+        ],
+        "voice_id": "es_narrator"
+      },
+      {
+        "audio_rel_path": "assets/reading/free_es_a1_bibliotecas_p_blicas_1782395382/seg_09_narrator.mp3",
+        "segment_id": "s9",
+        "speaker_id": "narrator",
+        "text": "Algunas ofrecen actividades para niños y adultos.",
+        "text_translation_ru": "Некоторые библиотеки проводят занятия для детей и взрослых.",
+        "tokens": [
+          {
+            "clickable": true,
+            "lemma": "algunas",
+            "surface": "Algunas",
+            "token_idx": 0
+          },
+          {
+            "clickable": true,
+            "lemma": "ofrecen",
+            "surface": "ofrecen",
+            "token_idx": 1
+          },
+          {
+            "clickable": true,
+            "lemma": "actividades",
+            "surface": "actividades",
+            "token_idx": 2
+          },
+          {
+            "clickable": true,
+            "lemma": "para",
+            "surface": "para",
+            "token_idx": 3
+          },
+          {
+            "clickable": true,
+            "lemma": "niños",
+            "surface": "niños",
+            "token_idx": 4
+          },
+          {
+            "clickable": true,
+            "lemma": "y",
+            "surface": "y",
+            "token_idx": 5
+          },
+          {
+            "clickable": true,
+            "lemma": "adultos",
+            "surface": "adultos",
+            "token_idx": 6
+          },
+          {
+            "clickable": false,
+            "lemma": ".",
+            "surface": ".",
+            "token_idx": 7
+          }
+        ],
+        "voice_id": "es_narrator"
+      },
+      {
+        "audio_rel_path": "assets/reading/free_es_a1_bibliotecas_p_blicas_1782395382/seg_10_narrator.mp3",
+        "segment_id": "s10",
+        "speaker_id": "narrator",
+        "text": "La biblioteca es un lugar tranquilo del barrio.",
+        "text_translation_ru": "Библиотека — это спокойное место в районе.",
+        "tokens": [
+          {
+            "clickable": true,
+            "lemma": "la",
+            "surface": "La",
+            "token_idx": 0
+          },
+          {
+            "clickable": true,
+            "lemma": "biblioteca",
+            "surface": "biblioteca",
+            "token_idx": 1
+          },
+          {
+            "clickable": true,
+            "lemma": "es",
+            "surface": "es",
+            "token_idx": 2
+          },
+          {
+            "clickable": true,
+            "lemma": "un",
+            "surface": "un",
+            "token_idx": 3
+          },
+          {
+            "clickable": true,
+            "lemma": "lugar",
+            "surface": "lugar",
+            "token_idx": 4
+          },
+          {
+            "clickable": true,
+            "lemma": "tranquilo",
+            "surface": "tranquilo",
+            "token_idx": 5
+          },
+          {
+            "clickable": true,
+            "lemma": "del",
+            "surface": "del",
+            "token_idx": 6
+          },
+          {
+            "clickable": true,
+            "lemma": "barrio",
+            "surface": "barrio",
+            "token_idx": 7
+          },
+          {
+            "clickable": false,
+            "lemma": ".",
+            "surface": ".",
+            "token_idx": 8
+          }
+        ],
+        "voice_id": "es_narrator"
+      }
+    ],
+    "target_language": "es",
+    "title": "Bibliotecas públicas",
+    "vocab_focus": [
+      "bibliotecas públicas",
+      "gratuita",
+      "tarjeta",
+      "llevar libros",
+      "revistas",
+      "películas",
+      "salas de estudio",
+      "barrio"
+    ]
+  },
+  "cover_image_prompt": "casual watercolor illustration, Two friends studying in a public library with bookshelves and magazines",
+  "cover_thumb_rel_path": "assets/reading/free_es_a1_bibliotecas_p_blicas_1782395382/cover_thumb.webp",
+  "cover_hero_rel_path": "assets/reading/free_es_a1_bibliotecas_p_blicas_1782395382/cover_hero.webp"
+}

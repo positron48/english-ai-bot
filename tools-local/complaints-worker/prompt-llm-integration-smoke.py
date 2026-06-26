@@ -17,7 +17,7 @@ def main() -> int:
     parser.add_argument("--chapter-number", type=int, default=int(os.getenv("COMPLAINTS_SMOKE_CHAPTER", "1")))
     parser.add_argument("--block-number", type=int, default=int(os.getenv("COMPLAINTS_SMOKE_BLOCK", "1")))
     parser.add_argument("--questions-per-block", type=int, default=int(os.getenv("COMPLAINTS_SMOKE_QPB", "1")))
-    parser.add_argument("--llm-base-url", default=os.getenv("LLAMACPP_URL", "http://127.0.0.1:8080"))
+    parser.add_argument("--llm-base-url", default=os.getenv("LLAMACPP_URL", "http://127.0.0.1:8090"))
     parser.add_argument("--llm-model", default=os.getenv("LLAMACPP_MODEL", "qwen3:30b"))
     args = parser.parse_args()
 

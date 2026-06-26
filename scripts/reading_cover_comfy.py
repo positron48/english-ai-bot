@@ -6,22 +6,45 @@ import json
 import os
 import pathlib
 import random
+import sys
 import time
 import urllib.error
 import urllib.parse
 import urllib.request
 import uuid
 
+_REPO_SCRIPTS = pathlib.Path(__file__).resolve().parent
+if str(_REPO_SCRIPTS) not in sys.path:
+    sys.path.insert(0, str(_REPO_SCRIPTS))
+
+from reading_cover_log import log  # noqa: E402
+
 
 def comfyui_url() -> str:
-    return os.getenv("COMFYUI_URL", "http://127.0.0.1:8188").rstrip("/")
+    explicit = os.getenv("COMFYUI_URL", "").strip()
+    if explicit:
+        return explicit.rstrip("/")
+    # Comfy Desktop defaults to 8188 in docs but often binds 8000 locally.
+    for port in (8000, 8188):
+        try:
+            req = urllib.request.Request(f"http://127.0.0.1:{port}/system_stats", method="GET")
+            with urllib.request.urlopen(req, timeout=2) as resp:
+                if resp.status == 200:
+                    return f"http://127.0.0.1:{port}"
+        except Exception:
+            continue
+    return "http://127.0.0.1:8188"
 
 
 def workflow_path() -> pathlib.Path:
     custom = os.getenv("COMFYUI_WORKFLOW", "").strip()
     if custom:
         return pathlib.Path(custom).expanduser().resolve()
-    return pathlib.Path(__file__).resolve().parent / "comfyui" / "reading-cover.workflow.json"
+    repo = pathlib.Path(__file__).resolve().parent / "comfyui"
+    z_image = repo / "reading-cover-z-image-turbo.workflow.json"
+    if z_image.exists():
+        return z_image
+    return repo / "reading-cover.workflow.json"
 
 
 def load_workflow() -> dict:
@@ -36,7 +59,8 @@ def inject_prompt(workflow: dict, prompt: str, checkpoint: str) -> dict:
     ckpt = checkpoint or os.getenv("COMFYUI_CHECKPOINT", "").strip() or "v1-5-pruned-emaonly.safetensors"
     raw = json.dumps(wf)
     raw = raw.replace("__PROMPT__", json.dumps(prompt)[1:-1])
-    raw = raw.replace("__CHECKPOINT__", json.dumps(ckpt)[1:-1])
+    if "__CHECKPOINT__" in raw:
+        raw = raw.replace("__CHECKPOINT__", json.dumps(ckpt)[1:-1])
     out = json.loads(raw)
     # Randomize KSampler seed when present.
     for node in out.values():
@@ -70,6 +94,8 @@ def queue_prompt(workflow: dict, client_id: str | None = None) -> str:
 def wait_for_image(prompt_id: str, poll_sec: float = 1.0, timeout_sec: int = 600) -> dict:
     base = comfyui_url()
     deadline = time.time() + timeout_sec
+    started = time.time()
+    last_log = started
     while time.time() < deadline:
         try:
             hist = _http_json(f"{base}/history/{prompt_id}", timeout=30)
@@ -78,12 +104,17 @@ def wait_for_image(prompt_id: str, poll_sec: float = 1.0, timeout_sec: int = 600
             continue
         entry = hist.get(prompt_id) if isinstance(hist, dict) else None
         if not entry:
+            now = time.time()
+            if now-last_log >= 10:
+                log(f"ComfyUI: still waiting… {int(now-started)}s elapsed")
+                last_log = now
             time.sleep(poll_sec)
             continue
         outputs = entry.get("outputs") or {}
         for node_out in outputs.values():
             images = node_out.get("images") or []
             if images:
+                log(f"ComfyUI: render finished in {time.time()-started:.1f}s")
                 return images[0]
         status = entry.get("status") or {}
         if status.get("status_str") == "error":
@@ -110,7 +141,17 @@ def download_image(image_meta: dict, output_path: pathlib.Path) -> None:
 
 
 def generate_png(prompt: str, output_path: pathlib.Path, checkpoint: str = "") -> None:
+    base = comfyui_url()
+    wf_path = workflow_path()
+    ckpt = checkpoint or os.getenv("COMFYUI_CHECKPOINT", "").strip() or "v1-5-pruned-emaonly.safetensors"
+    log(f"ComfyUI: url={base} workflow={wf_path.name} checkpoint={ckpt}")
+    log(f"ComfyUI: prompt length {len(prompt)} chars")
     wf = inject_prompt(load_workflow(), prompt, checkpoint)
+    log("ComfyUI: queueing workflow…")
     prompt_id = queue_prompt(wf)
+    log(f"ComfyUI: prompt_id={prompt_id}")
     image_meta = wait_for_image(prompt_id)
+    log(f"ComfyUI: downloading image -> {output_path}")
     download_image(image_meta, output_path)
+    size = output_path.stat().st_size if output_path.is_file() else 0
+    log(f"ComfyUI: saved {output_path.name} ({size} bytes)")

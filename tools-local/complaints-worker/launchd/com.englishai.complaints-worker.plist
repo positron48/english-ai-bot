@@ -28,7 +28,7 @@
     <key>COMPLAINTS_SERVICE_TOKEN</key>
     <string>REPLACE_ME</string>
     <key>LLAMACPP_URL</key>
-    <string>http://127.0.0.1:8080</string>
+    <string>http://127.0.0.1:8090</string>
     <key>LLAMACPP_MODEL</key>
     <string>local-model</string>
     <key>COURSE_SCOPE</key>

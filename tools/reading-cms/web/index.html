@@ -7,18 +7,97 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header class="topbar">
-    <h1>Reading Texts CMS</h1>
-    <p class="subtitle">Локальная авторинг-система для Linglow reading texts</p>
+  <header class="app-header">
+    <div class="brand">
+      <h1>Reading CMS</h1>
+      <p class="subtitle">Linglow reading texts</p>
+    </div>
+    <nav class="tabs" role="tablist">
+      <button type="button" class="tab active" data-tab="texts" role="tab" aria-selected="true">Тексты в course</button>
+      <button type="button" class="tab" data-tab="drafts" role="tab">Черновики</button>
+    </nav>
+    <div class="header-actions">
+      <button type="button" id="open-batch-modal" class="btn">Batch covers</button>
+      <button type="button" id="open-import-modal" class="btn">Импорт</button>
+      <button type="button" id="open-generate-modal" class="btn primary">+ Новый текст</button>
+    </div>
   </header>
 
-  <main class="layout">
-    <section class="panel">
-      <h2>Генерация (LLM)</h2>
+  <main class="app-main">
+    <section id="view-texts" class="view active">
+      <div class="view-toolbar">
+        <div class="view-title">
+          <h2>Каталог <span id="published-count" class="count-badge"></span></h2>
+          <p class="hint">Тексты из <code>courses/*/reading/</code> — здесь же генерируются обложки.</p>
+        </div>
+        <div class="filters">
+          <select id="pub-course" aria-label="Course"></select>
+          <select id="pub-level" aria-label="Level">
+            <option value="">Все уровни</option>
+            <option>A0</option><option>A1</option><option>A2</option>
+            <option>B1</option><option>B2</option><option>C1</option>
+          </select>
+          <select id="pub-cover" aria-label="Cover">
+            <option value="">Любая обложка</option>
+            <option value="none">Без обложки</option>
+            <option value="ready">С обложкой</option>
+          </select>
+          <select id="pub-sort" aria-label="Sort">
+            <option value="level">Сортировка: уровень</option>
+            <option value="cover_desc">Обложка: сначала новые</option>
+            <option value="cover_asc">Обложка: сначала старые</option>
+          </select>
+          <input id="pub-search" type="search" placeholder="Поиск по названию…" />
+          <button id="pub-sync-cms" class="btn" type="button">→ В черновики</button>
+          <button id="refresh-published" class="btn" type="button">↻</button>
+        </div>
+      </div>
+      <div id="published-table" class="table-wrap table-scroll"></div>
+    </section>
+
+    <section id="view-drafts" class="view hidden">
+      <div class="view-toolbar">
+        <div class="view-title">
+          <h2>Черновики CMS</h2>
+          <p class="hint">Созданные или импортированные в <code>.local/reading-cms</code>.</p>
+        </div>
+        <div class="filters">
+          <select id="filter-course"><option value="">Все курсы</option></select>
+          <select id="filter-level">
+            <option value="">Все уровни</option>
+            <option>A0</option><option>A1</option><option>A2</option>
+            <option>B1</option><option>B2</option><option>C1</option>
+          </select>
+          <select id="filter-status">
+            <option value="">Все статусы</option>
+            <option value="draft">draft</option>
+            <option value="approved">approved</option>
+            <option value="audio_ready">audio_ready</option>
+            <option value="published">published</option>
+            <option value="rejected">rejected</option>
+          </select>
+          <select id="filter-audio">
+            <option value="">Любое аудио</option>
+            <option value="none">none</option>
+            <option value="partial">partial</option>
+            <option value="ready">ready</option>
+          </select>
+          <input id="filter-search" type="search" placeholder="Поиск…" />
+          <button id="refresh-drafts" class="btn" type="button">↻</button>
+        </div>
+      </div>
+      <div id="drafts-table" class="table-wrap table-scroll"></div>
+    </section>
+  </main>
+
+  <dialog id="generate-dialog" class="tool-dialog">
+    <div class="dialog-form">
+      <header class="dialog-header">
+        <h3>Генерация (LLM)</h3>
+        <button type="button" class="btn" data-close="generate-dialog">Закрыть</button>
+      </header>
       <form id="generate-form" class="form-grid">
-        <label>Course
-          <select id="gen-course"></select>
-        </label>
+        <label>Course <select id="gen-course"></select></label>
         <label>Level
           <select id="gen-level">
             <option>A0</option><option>A1</option><option selected>A2</option>
@@ -31,151 +110,157 @@
             <option value="narrative">narrative</option>
           </select>
         </label>
-        <label>Count
-          <input id="gen-count" type="number" min="1" max="20" value="1" />
-        </label>
-        <label>Title (optional)
-          <input id="gen-title" type="text" placeholder="auto" />
-        </label>
-        <label class="checkbox">
-          <input id="gen-audio" type="checkbox" /> Сразу озвучить (TTS)
-        </label>
-        <button type="submit" class="btn primary">Сгенерировать</button>
-      </form>
-    </section>
-
-    <section class="panel">
-      <h2>Импорт текста (LLM)</h2>
-      <p class="hint">Вставьте готовый текст — LLM разложит его в формат приложения (сегменты, переводы, вопросы, диалоги) и озвучит.</p>
-      <form id="import-form" class="form-grid">
-        <label>Course
-          <select id="import-course"></select>
-        </label>
-        <label>Level
-          <select id="import-level">
-            <option>A0</option><option>A1</option><option selected>A2</option>
-            <option>B1</option><option>B2</option><option>C1</option>
-          </select>
-        </label>
-        <label>Format
-          <select id="import-format">
-            <option value="dialogue">dialogue</option>
-            <option value="narrative">narrative</option>
-          </select>
-        </label>
-        <label>Title
-          <input id="import-title" type="text" placeholder="Заголовок" />
-        </label>
-        <label class="full">Plain text
-          <textarea id="import-text" rows="6" placeholder="Вставьте текст или диалог (María: Hola...)"></textarea>
-        </label>
-        <label class="checkbox">
-          <input id="import-audio" type="checkbox" checked /> Сразу озвучить (TTS)
-        </label>
-        <label class="checkbox">
-          <input id="import-publish" type="checkbox" checked /> Опубликовать в course после озвучки
-        </label>
-        <label class="checkbox">
-          <input id="import-sync-bundle" type="checkbox" checked /> Sync bundle при публикации
-        </label>
-        <button type="submit" class="btn primary">Обработать текст</button>
-      </form>
-      <details class="json-import" open>
-        <summary>Импорт готового JSON (без LLM)</summary>
-        <p class="hint">Вставьте JSON от внешней модели — пайплайн назначит голоса, озвучит и опубликует (LLM не вызывается).</p>
-        <div class="prompt-row">
-          <button type="button" id="copy-prompt-generate" class="btn">Скопировать промпт генерации</button>
-          <button type="button" id="copy-prompt-transform" class="btn">Скопировать промпт трансформации</button>
+        <label>Count <input id="gen-count" type="number" min="1" max="20" value="1" /></label>
+        <label class="full">Title (optional) <input id="gen-title" type="text" placeholder="auto" /></label>
+        <label class="checkbox full"><input id="gen-audio" type="checkbox" /> Сразу озвучить (TTS)</label>
+        <div class="form-actions full">
+          <button type="submit" class="btn primary" id="generate-submit">Сгенерировать</button>
         </div>
-        <textarea id="import-json" rows="8" placeholder='{"title_short":"...","level":"A2","segments":[...]}'></textarea>
+      </form>
+    </div>
+  </dialog>
+
+  <dialog id="import-dialog" class="tool-dialog">
+    <div class="dialog-form">
+      <header class="dialog-header">
+        <h3>Импорт текста</h3>
+        <button type="button" class="btn" data-close="import-dialog">Закрыть</button>
+      </header>
+      <div class="import-tabs">
+        <button type="button" class="import-tab active" data-import="llm">LLM из plain text</button>
+        <button type="button" class="import-tab" data-import="json">Готовый JSON</button>
+      </div>
+      <div id="import-panel-llm">
+        <p class="hint">LLM разложит текст в сегменты, переводы и озвучит.</p>
+        <form id="import-form" class="form-grid">
+          <label>Course <select id="import-course"></select></label>
+          <label>Level
+            <select id="import-level">
+              <option>A0</option><option>A1</option><option selected>A2</option>
+              <option>B1</option><option>B2</option><option>C1</option>
+            </select>
+          </label>
+          <label>Format
+            <select id="import-format">
+              <option value="dialogue">dialogue</option>
+              <option value="narrative">narrative</option>
+            </select>
+          </label>
+          <label>Title <input id="import-title" type="text" placeholder="Заголовок" /></label>
+          <label class="full">Plain text
+            <textarea id="import-text" rows="8" placeholder="María: Hola…"></textarea>
+          </label>
+          <label class="checkbox"><input id="import-audio" type="checkbox" checked /> TTS</label>
+          <label class="checkbox"><input id="import-publish" type="checkbox" checked /> Опубликовать</label>
+          <label class="checkbox"><input id="import-sync-bundle" type="checkbox" checked /> Sync bundle</label>
+          <div class="form-actions full">
+            <button type="button" id="copy-prompt-generate" class="btn">Промпт генерации</button>
+            <button type="button" id="copy-prompt-transform" class="btn">Промпт трансформации</button>
+            <button type="submit" class="btn primary">Обработать</button>
+          </div>
+        </form>
+      </div>
+      <div id="import-panel-json" class="hidden">
+        <p class="hint">JSON без LLM — голоса, TTS, опционально publish.</p>
+        <textarea id="import-json" rows="10" class="mono" placeholder='{"title":"...","level":"A2",...}'></textarea>
         <div class="json-options">
-          <label class="checkbox">
-            <input id="json-audio" type="checkbox" checked /> Озвучить (TTS)
-          </label>
-          <label class="checkbox">
-            <input id="json-publish" type="checkbox" checked /> Опубликовать после озвучки
-          </label>
-          <label class="checkbox">
-            <input id="json-sync-bundle" type="checkbox" checked /> Sync bundle
-          </label>
+          <label class="checkbox"><input id="json-audio" type="checkbox" checked /> TTS</label>
+          <label class="checkbox"><input id="json-publish" type="checkbox" checked /> Publish</label>
+          <label class="checkbox"><input id="json-sync-bundle" type="checkbox" checked /> Sync bundle</label>
         </div>
-        <button id="import-json-btn" class="btn primary">Импорт JSON</button>
-      </details>
-    </section>
+        <button id="import-json-btn" class="btn primary" type="button">Импорт JSON</button>
+      </div>
+    </div>
+  </dialog>
 
-    <section class="panel">
-      <h2>Batch covers (published)</h2>
+  <dialog id="batch-dialog" class="tool-dialog">
+    <div class="dialog-form">
+      <header class="dialog-header">
+        <h3>Batch covers</h3>
+        <button type="button" class="btn" data-close="batch-dialog">Закрыть</button>
+      </header>
+      <p class="hint">LLM + ComfyUI для всех текстов курса без обложки (или force — все).</p>
       <form id="cover-batch-form" class="form-grid">
-        <label>Course
-          <select id="cover-batch-course"></select>
-        </label>
-        <label>Level (optional)
+        <label>Course <select id="cover-batch-course"></select></label>
+        <label>Level
           <select id="cover-batch-level">
             <option value="">All</option>
             <option>A0</option><option>A1</option><option>A2</option>
             <option>B1</option><option>B2</option><option>C1</option>
           </select>
         </label>
-        <label class="checkbox">
-          <input id="cover-batch-force" type="checkbox" /> Regenerate existing
-        </label>
-        <button type="submit" class="btn primary">Generate all covers</button>
+        <label class="checkbox full"><input id="cover-batch-force" type="checkbox" /> Regenerate existing</label>
+        <div class="form-actions full">
+          <button type="submit" class="btn primary">Запустить batch</button>
+        </div>
       </form>
-    </section>
+    </div>
+  </dialog>
 
-    <section class="panel wide">
-      <div class="toolbar">
-        <h2>Черновики</h2>
-        <div class="filters">
-          <select id="filter-course"><option value="">All courses</option></select>
-          <select id="filter-level">
-            <option value="">All levels</option>
-            <option>A0</option><option>A1</option><option>A2</option>
-            <option>B1</option><option>B2</option><option>C1</option>
-          </select>
-          <select id="filter-status">
-            <option value="">All statuses</option>
-            <option value="draft">draft</option>
-            <option value="approved">approved</option>
-            <option value="audio_ready">audio_ready</option>
-            <option value="published">published</option>
-            <option value="rejected">rejected</option>
-          </select>
-          <select id="filter-audio">
-            <option value="">Any audio</option>
-            <option value="none">none</option>
-            <option value="partial">partial</option>
-            <option value="ready">ready</option>
-          </select>
-          <input id="filter-search" type="search" placeholder="Search title..." />
-          <button id="refresh-drafts" class="btn">Refresh</button>
+  <dialog id="text-reader-dialog" class="reader-dialog">
+    <div class="reader-shell">
+      <header class="reader-header">
+        <div>
+          <h3 id="text-reader-title">Текст</h3>
+          <div id="text-reader-meta" class="meta"></div>
         </div>
-      </div>
-      <div id="drafts-table" class="table-wrap"></div>
-    </section>
+        <button type="button" id="text-reader-close" class="btn">Закрыть</button>
+      </header>
+      <div id="text-reader-body" class="reader-body"></div>
+      <footer class="reader-footer">
+        <button type="button" id="text-reader-edit" class="btn hidden">Редактировать JSON</button>
+        <button type="button" id="text-reader-cover" class="btn hidden">Обложка</button>
+      </footer>
+    </div>
+  </dialog>
 
-    <section class="panel wide">
-      <div class="toolbar">
-        <h2>Опубликованные в course</h2>
-        <div class="filters">
-          <select id="pub-course"></select>
-          <select id="pub-level">
-            <option value="">All levels</option>
-            <option>A0</option><option>A1</option><option>A2</option>
-            <option>B1</option><option>B2</option><option>C1</option>
-          </select>
-          <button id="refresh-published" class="btn">Refresh</button>
+  <dialog id="cover-progress-dialog" class="tool-dialog">
+    <div class="cover-progress">
+      <header class="dialog-header">
+        <h3 id="cover-progress-dialog-title">Генерация обложки</h3>
+        <button type="button" id="cover-progress-close" class="btn" disabled>Закрыть</button>
+      </header>
+      <div class="cover-progress-body">
+        <section id="cover-batch-overall" class="cover-batch-overall hidden">
+          <h4 class="cover-progress-section-title">Весь batch</h4>
+          <p id="cover-batch-status" class="meta">0 / 0 текстов</p>
+          <div class="cover-progress-bar-wrap cover-progress-bar-wrap--batch" aria-hidden="true">
+            <div id="cover-batch-bar" class="cover-progress-bar cover-progress-bar--batch"></div>
+          </div>
+          <p id="cover-batch-percent" class="cover-progress-percent">0%</p>
+        </section>
+        <h4 id="cover-current-section-title" class="cover-progress-section-title hidden">Текущая обложка</h4>
+        <p id="cover-progress-status" class="meta">Запуск…</p>
+        <div class="cover-progress-bar-wrap" aria-hidden="true">
+          <div id="cover-progress-bar" class="cover-progress-bar"></div>
         </div>
+        <p id="cover-progress-percent" class="cover-progress-percent">0%</p>
+        <ol id="cover-progress-stages" class="cover-progress-stages"></ol>
+        <details class="cover-progress-log-panel">
+          <summary>Подробный лог</summary>
+          <div class="cover-progress-log-wrap">
+            <div id="cover-progress-log" class="cover-progress-log" role="log" aria-live="polite"></div>
+          </div>
+        </details>
       </div>
-      <div id="published-table" class="table-wrap"></div>
-    </section>
-  </main>
+    </div>
+  </dialog>
+
+  <dialog id="cover-dialog">
+    <form method="dialog" class="cover-modal">
+      <header>
+        <h3 id="cover-dialog-title">Cover</h3>
+        <button type="submit" class="btn">Закрыть</button>
+      </header>
+      <div id="cover-dialog-body"></div>
+    </form>
+  </dialog>
 
   <dialog id="detail-dialog">
     <form method="dialog" class="detail">
       <header>
         <h3 id="detail-title"></h3>
-        <button type="button" id="detail-close" class="btn">Close</button>
+        <button type="button" id="detail-close" class="btn">Закрыть</button>
       </header>
       <div id="detail-meta" class="meta"></div>
       <div id="detail-cover" class="cover-panel hidden"></div>
@@ -183,17 +268,17 @@
       <details class="edit-panel">
         <summary>Редактировать JSON</summary>
         <textarea id="detail-edit" rows="14" spellcheck="false"></textarea>
-        <button type="button" id="btn-save-edit" class="btn">Сохранить изменения</button>
+        <button type="button" id="btn-save-edit" class="btn">Сохранить</button>
       </details>
       <div class="actions">
         <button type="button" id="btn-approve" class="btn">Approve</button>
         <button type="button" id="btn-reject" class="btn danger">Reject</button>
-        <button type="button" id="btn-audio" class="btn">Generate audio</button>
-        <button type="button" id="btn-cover" class="btn">Generate cover</button>
+        <button type="button" id="btn-audio" class="btn">TTS</button>
+        <button type="button" id="btn-cover" class="btn">Cover</button>
         <label class="checkbox"><input id="cover-force" type="checkbox" /> Regenerate cover</label>
         <button type="button" id="btn-publish" class="btn primary">Publish</button>
-        <label class="checkbox"><input id="sync-bundle" type="checkbox" checked /> Sync bundle dir</label>
-        <button type="button" id="btn-delete-draft" class="btn danger">Delete draft</button>
+        <label class="checkbox"><input id="sync-bundle" type="checkbox" checked /> Sync bundle</label>
+        <button type="button" id="btn-delete-draft" class="btn danger">Delete</button>
       </div>
       <pre id="detail-log" class="log"></pre>
     </form>

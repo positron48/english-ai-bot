@@ -2,13 +2,14 @@ package readingcms
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
 )
 
 // ListPublished scans course reading catalog on disk.
-func (s *Service) ListPublished(courseCode, levelFilter, search string) ([]PublishedItem, error) {
+func (s *Service) ListPublished(courseCode, levelFilter, search, coverFilter string) ([]PublishedItem, error) {
 	course, err := s.paths.Course(courseCode)
 	if err != nil {
 		return nil, err
@@ -24,6 +25,7 @@ func (s *Service) ListPublished(courseCode, levelFilter, search string) ([]Publi
 	}
 	levelFilter = strings.ToUpper(strings.TrimSpace(levelFilter))
 	search = strings.ToLower(strings.TrimSpace(search))
+	coverFilter = strings.TrimSpace(coverFilter)
 
 	var out []PublishedItem
 	seen := map[string]bool{}
@@ -46,21 +48,80 @@ func (s *Service) ListPublished(courseCode, levelFilter, search string) ([]Publi
 		if search != "" && !strings.Contains(strings.ToLower(title), search) {
 			continue
 		}
+		coverSt := CoverStats(doc, course.GrammarDir)
+		if coverFilter != "" && coverSt != coverFilter {
+			continue
+		}
 		segs := CountSegments(doc)
-		audioOK := segmentsHaveAudio(course.GrammarDir, doc)
+		_, withAudio, audioSt := AudioStats(doc, course.GrammarDir)
 		out = append(out, PublishedItem{
-			TextID:         textID,
-			CourseCode:     course.Code,
-			Title:          title,
-			Level:          doc.Level,
-			TargetLanguage: doc.TargetLanguage,
-			CategoryID:     doc.CategoryID,
-			SegmentsCount:  segs,
-			AudioReady:     audioOK,
-			InCMS:          cmsIDs[textID],
+			TextID:            textID,
+			CourseCode:        course.Code,
+			Title:             title,
+			Level:             doc.Level,
+			TargetLanguage:    doc.TargetLanguage,
+			CategoryID:        doc.CategoryID,
+			SegmentsCount:     segs,
+			SegmentsWithAudio: withAudio,
+			AudioStatus:       audioSt,
+			AudioReady:        audioSt == AudioReady,
+			CoverStatus:       coverSt,
+			CoverThumbRelPath: doc.CoverThumbRelPath,
+			CoverHeroRelPath:  doc.CoverHeroRelPath,
+			CoverImagePrompt:  doc.CoverImagePrompt,
+			CoverGeneratedAt:  CoverGeneratedAt(doc, course.GrammarDir),
+			InCMS:             cmsIDs[textID],
 		})
 	}
 	return out, nil
+}
+
+// GetPublishedDocument loads one course catalog text with its JSON document.
+func (s *Service) GetPublishedDocument(courseCode, textID string) (*PublishedItem, *TextDocument, error) {
+	courseCode = strings.ToLower(strings.TrimSpace(courseCode))
+	textID = strings.TrimSpace(textID)
+	if courseCode == "" || textID == "" {
+		return nil, nil, errInvalid("course_code and text_id required")
+	}
+	course, err := s.paths.Course(courseCode)
+	if err != nil {
+		return nil, nil, err
+	}
+	idx, err := loadReadingIndex(course.GrammarDir)
+	if err != nil {
+		return nil, nil, err
+	}
+	doc, err := readTextFile(course.GrammarDir, idx, textID)
+	if err != nil {
+		return nil, nil, fmt.Errorf("published text not found: %s", textID)
+	}
+	cmsIDs := s.cmsDraftIDs()
+	title := strings.TrimSpace(doc.Title)
+	if title == "" {
+		title = textID
+	}
+	total := CountSegments(doc)
+	_, withAudio, audioSt := AudioStats(doc, course.GrammarDir)
+	coverSt := CoverStats(doc, course.GrammarDir)
+	item := &PublishedItem{
+		TextID:            textID,
+		CourseCode:        course.Code,
+		Title:             title,
+		Level:             doc.Level,
+		TargetLanguage:    doc.TargetLanguage,
+		CategoryID:        doc.CategoryID,
+		SegmentsCount:     total,
+		SegmentsWithAudio: withAudio,
+		AudioStatus:       audioSt,
+		AudioReady:        audioSt == AudioReady,
+		CoverStatus:       coverSt,
+		CoverThumbRelPath: doc.CoverThumbRelPath,
+		CoverHeroRelPath:  doc.CoverHeroRelPath,
+		CoverImagePrompt:  doc.CoverImagePrompt,
+		CoverGeneratedAt:  CoverGeneratedAt(doc, course.GrammarDir),
+		InCMS:             cmsIDs[textID],
+	}
+	return item, doc, nil
 }
 
 func readTextFile(courseDir string, idx *readingIndex, textID string) (*TextDocument, error) {

@@ -1,0 +1,697 @@
+{
+  "id": "free_es_a1_el_camino_de_santiago_1782395192",
+  "category_id": "es_a1",
+  "title": "El Camino de Santiago",
+  "level": "A1",
+  "target_language": "es",
+  "reading_passage": {
+    "comprehension_questions": [
+      {
+        "correct_answer": "true",
+        "explanation": "В тексте сказано, что в Испании есть этот известный путь.",
+        "id": "q1",
+        "prompt": "Путь Святого Иакова находится в Испании.",
+        "type": "true_false"
+      },
+      {
+        "correct_answer": "false",
+        "explanation": "Финальная точка — Сантьяго-де-Компостела.",
+        "id": "q2",
+        "prompt": "Маршрут заканчивается в Мадриде.",
+        "type": "true_false"
+      },
+      {
+        "correct_answer": "true",
+        "explanation": "В тексте прямо сказано: город в Галисии.",
+        "id": "q3",
+        "prompt": "Сантьяго-де-Компостела находится в Галисии.",
+        "type": "true_false"
+      },
+      {
+        "correct_answer": "false",
+        "explanation": "Печати связаны с приютами, барами и офисами.",
+        "id": "q4",
+        "prompt": "Путешественники получают печати только в аэропортах.",
+        "type": "true_false"
+      },
+      {
+        "correct_answer": "true",
+        "explanation": "Последняя фраза говорит именно об этом.",
+        "id": "q5",
+        "prompt": "В тексте говорится, что каждый идёт в своём темпе.",
+        "type": "true_false"
+      }
+    ],
+    "estimated_minutes": 6,
+    "level": "A1",
+    "segments": [
+      {
+        "audio_rel_path": "assets/reading/free_es_a1_el_camino_de_santiago_1782395192/seg_01_narrator.mp3",
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "text": "En España hay un camino muy famoso.",
+        "text_translation_ru": "В Испании есть очень известный маршрут.",
+        "tokens": [
+          {
+            "clickable": true,
+            "lemma": "en",
+            "surface": "En",
+            "token_idx": 0
+          },
+          {
+            "clickable": true,
+            "lemma": "españa",
+            "surface": "España",
+            "token_idx": 1
+          },
+          {
+            "clickable": true,
+            "lemma": "hay",
+            "surface": "hay",
+            "token_idx": 2
+          },
+          {
+            "clickable": true,
+            "lemma": "un",
+            "surface": "un",
+            "token_idx": 3
+          },
+          {
+            "clickable": true,
+            "lemma": "camino",
+            "surface": "camino",
+            "token_idx": 4
+          },
+          {
+            "clickable": true,
+            "lemma": "muy",
+            "surface": "muy",
+            "token_idx": 5
+          },
+          {
+            "clickable": true,
+            "lemma": "famoso",
+            "surface": "famoso",
+            "token_idx": 6
+          },
+          {
+            "clickable": false,
+            "lemma": ".",
+            "surface": ".",
+            "token_idx": 7
+          }
+        ],
+        "voice_id": "es_narrator"
+      },
+      {
+        "audio_rel_path": "assets/reading/free_es_a1_el_camino_de_santiago_1782395192/seg_02_narrator.mp3",
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "text": "Se llama el Camino de Santiago.",
+        "text_translation_ru": "Он называется Путь Святого Иакова.",
+        "tokens": [
+          {
+            "clickable": true,
+            "lemma": "se",
+            "surface": "Se",
+            "token_idx": 0
+          },
+          {
+            "clickable": true,
+            "lemma": "llama",
+            "surface": "llama",
+            "token_idx": 1
+          },
+          {
+            "clickable": true,
+            "lemma": "el",
+            "surface": "el",
+            "token_idx": 2
+          },
+          {
+            "clickable": true,
+            "lemma": "camino",
+            "surface": "Camino",
+            "token_idx": 3
+          },
+          {
+            "clickable": true,
+            "lemma": "de",
+            "surface": "de",
+            "token_idx": 4
+          },
+          {
+            "clickable": true,
+            "lemma": "santiago",
+            "surface": "Santiago",
+            "token_idx": 5
+          },
+          {
+            "clickable": false,
+            "lemma": ".",
+            "surface": ".",
+            "token_idx": 6
+          }
+        ],
+        "voice_id": "es_narrator"
+      },
+      {
+        "audio_rel_path": "assets/reading/free_es_a1_el_camino_de_santiago_1782395192/seg_03_narrator.mp3",
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "text": "Muchas personas caminan por pueblos y ciudades.",
+        "text_translation_ru": "Многие люди идут через деревни и города.",
+        "tokens": [
+          {
+            "clickable": true,
+            "lemma": "muchas",
+            "surface": "Muchas",
+            "token_idx": 0
+          },
+          {
+            "clickable": true,
+            "lemma": "personas",
+            "surface": "personas",
+            "token_idx": 1
+          },
+          {
+            "clickable": true,
+            "lemma": "caminan",
+            "surface": "caminan",
+            "token_idx": 2
+          },
+          {
+            "clickable": true,
+            "lemma": "por",
+            "surface": "por",
+            "token_idx": 3
+          },
+          {
+            "clickable": true,
+            "lemma": "pueblos",
+            "surface": "pueblos",
+            "token_idx": 4
+          },
+          {
+            "clickable": true,
+            "lemma": "y",
+            "surface": "y",
+            "token_idx": 5
+          },
+          {
+            "clickable": true,
+            "lemma": "ciudades",
+            "surface": "ciudades",
+            "token_idx": 6
+          },
+          {
+            "clickable": false,
+            "lemma": ".",
+            "surface": ".",
+            "token_idx": 7
+          }
+        ],
+        "voice_id": "es_narrator"
+      },
+      {
+        "audio_rel_path": "assets/reading/free_es_a1_el_camino_de_santiago_1782395192/seg_04_narrator.mp3",
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "text": "El final está en Santiago de Compostela.",
+        "text_translation_ru": "Маршрут заканчивается в Сантьяго-де-Компостела.",
+        "tokens": [
+          {
+            "clickable": true,
+            "lemma": "el",
+            "surface": "El",
+            "token_idx": 0
+          },
+          {
+            "clickable": true,
+            "lemma": "final",
+            "surface": "final",
+            "token_idx": 1
+          },
+          {
+            "clickable": true,
+            "lemma": "está",
+            "surface": "está",
+            "token_idx": 2
+          },
+          {
+            "clickable": true,
+            "lemma": "en",
+            "surface": "en",
+            "token_idx": 3
+          },
+          {
+            "clickable": true,
+            "lemma": "santiago",
+            "surface": "Santiago",
+            "token_idx": 4
+          },
+          {
+            "clickable": true,
+            "lemma": "de",
+            "surface": "de",
+            "token_idx": 5
+          },
+          {
+            "clickable": true,
+            "lemma": "compostela",
+            "surface": "Compostela",
+            "token_idx": 6
+          },
+          {
+            "clickable": false,
+            "lemma": ".",
+            "surface": ".",
+            "token_idx": 7
+          }
+        ],
+        "voice_id": "es_narrator"
+      },
+      {
+        "audio_rel_path": "assets/reading/free_es_a1_el_camino_de_santiago_1782395192/seg_05_narrator.mp3",
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "text": "Esta ciudad está en Galicia, al norte.",
+        "text_translation_ru": "Этот город находится в Галисии, на севере.",
+        "tokens": [
+          {
+            "clickable": true,
+            "lemma": "esta",
+            "surface": "Esta",
+            "token_idx": 0
+          },
+          {
+            "clickable": true,
+            "lemma": "ciudad",
+            "surface": "ciudad",
+            "token_idx": 1
+          },
+          {
+            "clickable": true,
+            "lemma": "está",
+            "surface": "está",
+            "token_idx": 2
+          },
+          {
+            "clickable": true,
+            "lemma": "en",
+            "surface": "en",
+            "token_idx": 3
+          },
+          {
+            "clickable": true,
+            "lemma": "galicia",
+            "surface": "Galicia",
+            "token_idx": 4
+          },
+          {
+            "clickable": false,
+            "lemma": ",",
+            "surface": ",",
+            "token_idx": 5
+          },
+          {
+            "clickable": true,
+            "lemma": "al",
+            "surface": "al",
+            "token_idx": 6
+          },
+          {
+            "clickable": true,
+            "lemma": "norte",
+            "surface": "norte",
+            "token_idx": 7
+          },
+          {
+            "clickable": false,
+            "lemma": ".",
+            "surface": ".",
+            "token_idx": 8
+          }
+        ],
+        "voice_id": "es_narrator"
+      },
+      {
+        "audio_rel_path": "assets/reading/free_es_a1_el_camino_de_santiago_1782395192/seg_06_narrator.mp3",
+        "segment_id": "s6",
+        "speaker_id": "narrator",
+        "text": "Algunos viajeros llevan una mochila pequeña.",
+        "text_translation_ru": "Некоторые путешественники несут небольшой рюкзак.",
+        "tokens": [
+          {
+            "clickable": true,
+            "lemma": "algunos",
+            "surface": "Algunos",
+            "token_idx": 0
+          },
+          {
+            "clickable": true,
+            "lemma": "viajeros",
+            "surface": "viajeros",
+            "token_idx": 1
+          },
+          {
+            "clickable": true,
+            "lemma": "llevan",
+            "surface": "llevan",
+            "token_idx": 2
+          },
+          {
+            "clickable": true,
+            "lemma": "una",
+            "surface": "una",
+            "token_idx": 3
+          },
+          {
+            "clickable": true,
+            "lemma": "mochila",
+            "surface": "mochila",
+            "token_idx": 4
+          },
+          {
+            "clickable": true,
+            "lemma": "pequeña",
+            "surface": "pequeña",
+            "token_idx": 5
+          },
+          {
+            "clickable": false,
+            "lemma": ".",
+            "surface": ".",
+            "token_idx": 6
+          }
+        ],
+        "voice_id": "es_narrator"
+      },
+      {
+        "audio_rel_path": "assets/reading/free_es_a1_el_camino_de_santiago_1782395192/seg_07_narrator.mp3",
+        "segment_id": "s7",
+        "speaker_id": "narrator",
+        "text": "También llevan una credencial con sellos.",
+        "text_translation_ru": "Ещё у них есть карточка для печатей.",
+        "tokens": [
+          {
+            "clickable": true,
+            "lemma": "también",
+            "surface": "También",
+            "token_idx": 0
+          },
+          {
+            "clickable": true,
+            "lemma": "llevan",
+            "surface": "llevan",
+            "token_idx": 1
+          },
+          {
+            "clickable": true,
+            "lemma": "una",
+            "surface": "una",
+            "token_idx": 2
+          },
+          {
+            "clickable": true,
+            "lemma": "credencial",
+            "surface": "credencial",
+            "token_idx": 3
+          },
+          {
+            "clickable": true,
+            "lemma": "con",
+            "surface": "con",
+            "token_idx": 4
+          },
+          {
+            "clickable": true,
+            "lemma": "sellos",
+            "surface": "sellos",
+            "token_idx": 5
+          },
+          {
+            "clickable": false,
+            "lemma": ".",
+            "surface": ".",
+            "token_idx": 6
+          }
+        ],
+        "voice_id": "es_narrator"
+      },
+      {
+        "audio_rel_path": "assets/reading/free_es_a1_el_camino_de_santiago_1782395192/seg_08_narrator.mp3",
+        "segment_id": "s8",
+        "speaker_id": "narrator",
+        "text": "Los sellos son de albergues, bares y oficinas.",
+        "text_translation_ru": "Печати ставят в приютах, барах и офисах.",
+        "tokens": [
+          {
+            "clickable": true,
+            "lemma": "los",
+            "surface": "Los",
+            "token_idx": 0
+          },
+          {
+            "clickable": true,
+            "lemma": "sellos",
+            "surface": "sellos",
+            "token_idx": 1
+          },
+          {
+            "clickable": true,
+            "lemma": "son",
+            "surface": "son",
+            "token_idx": 2
+          },
+          {
+            "clickable": true,
+            "lemma": "de",
+            "surface": "de",
+            "token_idx": 3
+          },
+          {
+            "clickable": true,
+            "lemma": "albergues",
+            "surface": "albergues",
+            "token_idx": 4
+          },
+          {
+            "clickable": false,
+            "lemma": ",",
+            "surface": ",",
+            "token_idx": 5
+          },
+          {
+            "clickable": true,
+            "lemma": "bares",
+            "surface": "bares",
+            "token_idx": 6
+          },
+          {
+            "clickable": true,
+            "lemma": "y",
+            "surface": "y",
+            "token_idx": 7
+          },
+          {
+            "clickable": true,
+            "lemma": "oficinas",
+            "surface": "oficinas",
+            "token_idx": 8
+          },
+          {
+            "clickable": false,
+            "lemma": ".",
+            "surface": ".",
+            "token_idx": 9
+          }
+        ],
+        "voice_id": "es_narrator"
+      },
+      {
+        "audio_rel_path": "assets/reading/free_es_a1_el_camino_de_santiago_1782395192/seg_09_narrator.mp3",
+        "segment_id": "s9",
+        "speaker_id": "narrator",
+        "text": "Al final, muchos reciben un documento especial.",
+        "text_translation_ru": "В конце многие получают специальный документ.",
+        "tokens": [
+          {
+            "clickable": true,
+            "lemma": "al",
+            "surface": "Al",
+            "token_idx": 0
+          },
+          {
+            "clickable": true,
+            "lemma": "final",
+            "surface": "final",
+            "token_idx": 1
+          },
+          {
+            "clickable": false,
+            "lemma": ",",
+            "surface": ",",
+            "token_idx": 2
+          },
+          {
+            "clickable": true,
+            "lemma": "muchos",
+            "surface": "muchos",
+            "token_idx": 3
+          },
+          {
+            "clickable": true,
+            "lemma": "reciben",
+            "surface": "reciben",
+            "token_idx": 4
+          },
+          {
+            "clickable": true,
+            "lemma": "un",
+            "surface": "un",
+            "token_idx": 5
+          },
+          {
+            "clickable": true,
+            "lemma": "documento",
+            "surface": "documento",
+            "token_idx": 6
+          },
+          {
+            "clickable": true,
+            "lemma": "especial",
+            "surface": "especial",
+            "token_idx": 7
+          },
+          {
+            "clickable": false,
+            "lemma": ".",
+            "surface": ".",
+            "token_idx": 8
+          }
+        ],
+        "voice_id": "es_narrator"
+      },
+      {
+        "audio_rel_path": "assets/reading/free_es_a1_el_camino_de_santiago_1782395192/seg_10_narrator.mp3",
+        "segment_id": "s10",
+        "speaker_id": "narrator",
+        "text": "El camino no es una carrera.",
+        "text_translation_ru": "Этот путь не похож на соревнование.",
+        "tokens": [
+          {
+            "clickable": true,
+            "lemma": "el",
+            "surface": "El",
+            "token_idx": 0
+          },
+          {
+            "clickable": true,
+            "lemma": "camino",
+            "surface": "camino",
+            "token_idx": 1
+          },
+          {
+            "clickable": true,
+            "lemma": "no",
+            "surface": "no",
+            "token_idx": 2
+          },
+          {
+            "clickable": true,
+            "lemma": "es",
+            "surface": "es",
+            "token_idx": 3
+          },
+          {
+            "clickable": true,
+            "lemma": "una",
+            "surface": "una",
+            "token_idx": 4
+          },
+          {
+            "clickable": true,
+            "lemma": "carrera",
+            "surface": "carrera",
+            "token_idx": 5
+          },
+          {
+            "clickable": false,
+            "lemma": ".",
+            "surface": ".",
+            "token_idx": 6
+          }
+        ],
+        "voice_id": "es_narrator"
+      },
+      {
+        "audio_rel_path": "assets/reading/free_es_a1_el_camino_de_santiago_1782395192/seg_11_narrator.mp3",
+        "segment_id": "s11",
+        "speaker_id": "narrator",
+        "text": "Cada persona camina a su ritmo.",
+        "text_translation_ru": "Каждый человек идёт в своём темпе.",
+        "tokens": [
+          {
+            "clickable": true,
+            "lemma": "cada",
+            "surface": "Cada",
+            "token_idx": 0
+          },
+          {
+            "clickable": true,
+            "lemma": "persona",
+            "surface": "persona",
+            "token_idx": 1
+          },
+          {
+            "clickable": true,
+            "lemma": "camina",
+            "surface": "camina",
+            "token_idx": 2
+          },
+          {
+            "clickable": true,
+            "lemma": "a",
+            "surface": "a",
+            "token_idx": 3
+          },
+          {
+            "clickable": true,
+            "lemma": "su",
+            "surface": "su",
+            "token_idx": 4
+          },
+          {
+            "clickable": true,
+            "lemma": "ritmo",
+            "surface": "ritmo",
+            "token_idx": 5
+          },
+          {
+            "clickable": false,
+            "lemma": ".",
+            "surface": ".",
+            "token_idx": 6
+          }
+        ],
+        "voice_id": "es_narrator"
+      }
+    ],
+    "target_language": "es",
+    "title": "El Camino de Santiago",
+    "vocab_focus": [
+      "camino",
+      "pueblos",
+      "ciudades",
+      "mochila pequeña",
+      "credencial",
+      "sellos",
+      "albergues",
+      "a su ritmo"
+    ]
+  },
+  "cover_image_prompt": "casual watercolor illustration, A pilgrim walking the Camino de Santiago through a Galician village, carrying a small backpack",
+  "cover_thumb_rel_path": "assets/reading/free_es_a1_el_camino_de_santiago_1782395192/cover_thumb.webp",
+  "cover_hero_rel_path": "assets/reading/free_es_a1_el_camino_de_santiago_1782395192/cover_hero.webp"
+}

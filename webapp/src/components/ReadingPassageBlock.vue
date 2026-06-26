@@ -34,11 +34,12 @@
       </header>
 
       <section class="content">
-        <div
+        <img
           v-if="coverHeroRelPath"
           class="hero"
-          :style="{ backgroundImage: `url(${readingImageUrl(coverHeroRelPath)})` }"
-        ></div>
+          :src="readingImageUrl(coverHeroRelPath)"
+          alt=""
+        />
         <div class="text-flow">
           <div
             v-for="segment in segments"
@@ -755,21 +756,15 @@ const openRandomUnreadInCategory = async () => {
 }
 
 .hero {
+  display: block;
   width: 100%;
-  height: 200px;
+  height: auto;
+  max-height: 320px;
   margin: 0 0 18px;
   border-radius: 14px;
-  background-size: cover;
-  background-position: center;
-  position: relative;
-  overflow: hidden;
-}
-
-.hero::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to bottom, transparent 45%, var(--bg-secondary) 100%);
+  object-fit: contain;
+  object-position: center;
+  background: var(--bg-tertiary, rgba(0, 0, 0, 0.04));
 }
 
 .text-flow {

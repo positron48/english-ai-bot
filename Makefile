@@ -13,7 +13,7 @@ SERVICE_NAME ?= ai-bot
 -include .env
 .EXPORT_ALL_VARIABLES:
 
-.PHONY: all tidy build run test lint fmt setup up up-en up-es down complaints-fetch-en complaints-fetch-es complaints-cluster-en complaints-cluster-es complaints-triage-dry-en complaints-triage-dry-es complaints-journal-new complaints-dry-en complaints-apply-en complaints-dry-es complaints-apply-es complaints-dry-both complaints-apply-both complaints-improve-both complaints-plan-both complaints-prompt-autofix-en complaints-prompt-autofix-es complaints-prompt-autofix-both complaints-prompt-regression complaints-prompt-integration-es complaints-smoke-en complaints-smoke-es complaints-smoke-both complaints-quality-both complaints-quality-baseline-both complaints-regenerate-affected complaints-improve-loop-both complaints-both complaints-cycle-both complaints-loop-tests clean check check-quick ci deploy update status logs docker-build docker-run docker-stop docker-logs docker-clean docker-rebuild docker-dev docker-dev-logs docker-dev-restart webapp-install webapp-dev webapp-build test-postgres test-integration test-integration-verbose grammar-bundle grammar-bundle-list reading-cms postgres-dev-init-dbs clean-spanish-csv sync-spanish-word-sets prepare-english-csv sync-english-word-sets requeue-invalid-cards-es-dry requeue-invalid-cards-es requeue-invalid-cards-es-no-tts-dry requeue-invalid-cards-es-no-tts import-spanish-verbs import-spanish-verbs-jehle-bundled backfill-word-verb-links build-verb-form-examples backfill-verb-lemma-ru-glosses backfill-verb-template-links preview-verb-templates verb-training-pack-fill verb-training-sync-db
+.PHONY: all tidy build run test lint fmt setup up up-en up-es down complaints-fetch-en complaints-fetch-es complaints-cluster-en complaints-cluster-es complaints-triage-dry-en complaints-triage-dry-es complaints-journal-new complaints-dry-en complaints-apply-en complaints-dry-es complaints-apply-es complaints-dry-both complaints-apply-both complaints-improve-both complaints-plan-both complaints-prompt-autofix-en complaints-prompt-autofix-es complaints-prompt-autofix-both complaints-prompt-regression complaints-prompt-integration-es complaints-smoke-en complaints-smoke-es complaints-smoke-both complaints-quality-both complaints-quality-baseline-both complaints-regenerate-affected complaints-improve-loop-both complaints-both complaints-cycle-both complaints-loop-tests clean check check-quick ci deploy update status logs docker-build docker-run docker-stop docker-logs docker-clean docker-rebuild docker-dev docker-dev-logs docker-dev-restart webapp-install webapp-dev webapp-build test-postgres test-integration test-integration-verbose grammar-bundle grammar-bundle-list reading-cms reading-cms-stop reading-cms-build reading-covers-batch stop-llm stop-comfy postgres-dev-init-dbs clean-spanish-csv sync-spanish-word-sets prepare-english-csv sync-english-word-sets requeue-invalid-cards-es-dry requeue-invalid-cards-es requeue-invalid-cards-es-no-tts-dry requeue-invalid-cards-es-no-tts import-spanish-verbs import-spanish-verbs-jehle-bundled backfill-word-verb-links build-verb-form-examples backfill-verb-lemma-ru-glosses backfill-verb-template-links preview-verb-templates verb-training-pack-fill verb-training-sync-db help
 
 all: build
 
@@ -60,11 +60,42 @@ grammar-bundle-list:
 	@./scripts/generate-grammar-bundle.sh list
 
 # Local Reading Texts CMS (dev-only authoring UI, not part of prod runtime)
-reading-cms:
-	@$(GO) run ./cmd/reading_cms
+READING_CMS_PORT ?= 8791
+
+reading-cms-stop:
+	@port="$(READING_CMS_PORT)"; \
+	stopped=0; \
+	for pid in $$(lsof -tiTCP:$$port -sTCP:LISTEN 2>/dev/null); do \
+		cmd=$$(ps -p $$pid -o command= 2>/dev/null || true); \
+		if echo "$$cmd" | grep -qE 'reading_cms|cmd/reading_cms'; then \
+			echo "Stopping Reading CMS on port $$port (pid $$pid)..."; \
+			kill $$pid 2>/dev/null || true; \
+			stopped=1; \
+		else \
+			echo "ERROR: port $$port in use by another process (pid $$pid):" >&2; \
+			echo "  $$cmd" >&2; \
+			echo "Stop it manually or set READING_CMS_PORT to a free port." >&2; \
+			exit 1; \
+		fi; \
+	done; \
+	for pid in $$(pgrep -f '[g]o run.*cmd/reading_cms' 2>/dev/null); do \
+		echo "Stopping stale go run reading_cms (pid $$pid)..."; \
+		kill $$pid 2>/dev/null || true; \
+		stopped=1; \
+	done; \
+	if [ $$stopped -eq 1 ]; then sleep 0.4; fi
+
+reading-cms: reading-cms-stop
+	@$(GO) run ./cmd/reading_cms -port $(READING_CMS_PORT)
 
 reading-cms-build:
 	@$(GO) build -o bin/reading_cms ./cmd/reading_cms
+
+stop-llm:
+	@bash scripts/stop-local-llm.sh
+
+stop-comfy:
+	@bash scripts/stop-local-comfy.sh
 
 reading-covers-batch:
 	@echo "Generating reading covers for Spanish course..."
@@ -1013,90 +1044,115 @@ setup:
 
 # Help
 help:
-	@echo "Available commands:"
-	@echo "  make setup-local    - Initial local project setup"
-	@echo "  make setup          - Setup systemd service (requires sudo)"
-	@echo "  make build          - Build the application"
-	@echo "  make run            - Run the application"
-	@echo "  make postgres-up    - Start PostgreSQL for local dev (port 5433); run before make run"
-	@echo "  make postgres-dev-init-dbs - CREATE DATABASE spanish on local Postgres (for make up-es)"
-	@echo "  make postgres-down  - Stop local PostgreSQL"
-	@echo "  make grammar-bundle - Regenerate internal/grammarbundle/* and internal/grammartrainingpack/* from courses/*/bundle.target"
+	@echo "Linglow / english-ai-bot — make targets"
+	@echo ""
+	@echo "Quick start:"
+	@echo "  make setup-local         - Initial local project setup"
+	@echo "  make postgres-up         - Start local Postgres (port 5433)"
+	@echo "  make up-en               - Bot+web English (.env.en), http://127.0.0.1:8184"
+	@echo "  make up-es               - Bot+web Spanish (.env.es), http://127.0.0.1:8284"
+	@echo "  make up-linglow          - Unified linglow_unified DB profile"
+	@echo "  make down                - Stop local bot processes"
+	@echo "  make dev                 - Backend dev mode (webapp build + grammar-bundle + go run)"
+	@echo ""
+	@echo "Build & run:"
+	@echo "  make build               - webapp-build + grammar-bundle + bin/universal-ai-bot"
+	@echo "  make run                 - postgres-up + build + run bot"
+	@echo "  make tidy                - go mod tidy"
+	@echo "  make tag                 - Bump patch git tag and push"
+	@echo "  make clean               - Remove bin/ and coverage artifacts"
+	@echo ""
+	@echo "Webapp:"
+	@echo "  make webapp-install      - npm ci in webapp/"
+	@echo "  make webapp-dev          - Vite dev server"
+	@echo "  make webapp-build        - Production webapp build -> webapp/dist"
+	@echo ""
+	@echo "Tests & CI:"
+	@echo "  make test                - go test ./..."
+	@echo "  make test-verbose        - go test -v ./..."
+	@echo "  make test-postgres       - Start ephemeral Postgres for tests"
+	@echo "  make test-integration    - Integration tests (needs DB)"
+	@echo "  make check               - Full CI: webapp, tests, lint, coverage, grammar validate"
+	@echo "  make check-quick         - check without integration tests"
+	@echo "  make ci                  - Alias for check"
+	@echo "  make fmt                 - gofmt"
+	@echo "  make lint                - fmt + golangci-lint"
+	@echo "  make lint-install        - Install golangci-lint locally"
+	@echo "  make swagger             - Generate docs/swagger from router"
+	@echo ""
+	@echo "LLM integration tests (need AI_URL + AI_API_KEY in .env):"
+	@echo "  make llm-words           - English word cards LLM tests"
+	@echo "  make llm-cards           - English training cards LLM tests"
+	@echo "  make llm-all             - llm-words + llm-cards"
+	@echo "  make llm-words-es        - Spanish word cards (.env + .env.es)"
+	@echo "  make llm-cards-es        - Spanish training cards (.env + .env.es)"
+	@echo "  make llm-es              - llm-words-es + llm-cards-es"
+	@echo ""
+	@echo "Grammar bundles & training:"
+	@echo "  make grammar-bundle      - Regenerate internal/grammarbundle + grammartrainingpack"
 	@echo "  make grammar-bundle-list - List course dirs -> bundle ids"
-	@echo "  make up-en          - Run bot+web with .env.en (+ optional .env), http :8184, DB english"
-	@echo "  make up-es          - Run second instance with .env.es (+ optional .env), http :8284, DB spanish"
-	@echo "  make complaints-journal-new - Create docs/complaints/journal-YYYY-MM-DD-<slug>.md (git)"
-	@echo "  make complaints-fetch-en - Fetch active content reports snapshot (EN, no LLM)"
-	@echo "  make complaints-fetch-es - Fetch active content reports snapshot (ES, no LLM)"
-	@echo "  make complaints-dry-en   - [DEPRECATED] llama complaints worker for English"
-	@echo "  make complaints-apply-en - Apply complaints worker for English profile (.env + .env.en)"
-	@echo "  make complaints-dry-es   - Dry-run complaints worker for Spanish profile (.env + .env.es)"
-	@echo "  make complaints-apply-es - Apply complaints worker for Spanish profile (.env + .env.es)"
-	@echo "  make complaints-dry-both - Dry-run for EN and ES URLs sequentially (COMPLAINTS_SERVICE_URL_EN/ES)"
-	@echo "  make complaints-apply-both - Apply for EN and ES URLs sequentially (COMPLAINTS_SERVICE_URL_EN/ES)"
-	@echo "  make complaints-improve-both - Analyze latest complaints journal via LLM and build improvement plan"
-	@echo "  make complaints-plan-both - Build/update improvement plan from latest complaints journal"
-	@echo "  make complaints-both - Full loop: apply complaints + auto improvement analysis"
-	@echo "  make complaints-prompt-autofix-es - Auto-update ES generator prompt from latest improvement plan"
-	@echo "  make complaints-prompt-autofix-en - Auto-update EN generator prompt from latest improvement plan"
-	@echo "  make complaints-prompt-autofix-both - Auto-update EN+ES prompts from latest improvement plan"
-	@echo "  make complaints-prompt-regression - Regression checks for prompt + validator compatibility"
-	@echo "  make complaints-prompt-integration-es - Real LLM smoke: generate 1 block and ensure validation passes"
-	@echo "  make complaints-smoke-en - Real LLM smoke for English prompt and validator"
-	@echo "  make complaints-smoke-es - Real LLM smoke for Spanish prompt and validator"
-	@echo "  make complaints-smoke-both - Real LLM smoke for EN + ES"
-	@echo "  make complaints-quality-both - Multi-scenario LLM quality regression with baseline comparison"
-	@echo "  make complaints-quality-baseline-both - Save current quality run as baseline"
-	@echo "  make complaints-regenerate-affected - Targeted fill-training-pack for chapters from latest changed-theory-blocks"
-	@echo "  make complaints-loop-tests - Contract tests for iterative improve loop helpers"
-	@echo "  make complaints-improve-loop-both - Autonomous strict iterative prompt-improve loop (max 3 iterations)"
-	@echo "  make complaints-cycle-both - Full automated cycle through regen + grammar-bundle"
-	@echo "  make build-spanish-gender-lexicon - Rebuild resources/wordsets/spanish_gender_lexicon.tsv from online source"
-	@echo "  make dev            - Run backend + frontend in development mode"
-	@echo "  make webapp-install - Install webapp dependencies"
-	@echo "  make webapp-dev     - Run webapp dev server only"
-	@echo "  make webapp-build   - Build webapp for production"
-	@echo "  make test           - Run tests"
-	@echo "  make llm-words       - Run LLM word cards integration tests (requires AI_URL, AI_API_KEY)"
-	@echo "  make llm-training   - Run LLM training cards integration tests (requires AI_URL, AI_API_KEY)"
-	@echo "  make llm-all        - Run all LLM integration tests"
-	@echo "  make fmt            - Format code"
-	@echo "  make lint           - Run linter"
-	@echo "  make check          - Run all CI checks (tests, lint, verify, incl. integration)"
-	@echo "  make check-quick    - Run CI checks without integration tests (faster)"
-	@echo "  make swagger        - Generate Swagger API documentation"
-	@echo "  make clean          - Clean build artifacts"
-	@echo "  make migrate-words  - Migrate existing word cards to new structured format"
-	@echo "  make migrate-training-cards  - Migrate existing training cards with POS and display_word"
-	@echo "  make backfill-mastering  - One-time backfill of user_word_mastering from review_events"
-	@echo "  make backfill-noun-gender-es-dry - Dry-run noun_gender backfill with .env.es (+ optional .env)"
-	@echo "  make backfill-noun-gender-es - Write noun_gender backfill with .env.es (+ optional .env)"
-	@echo "  make normalize-word-pos-es-dry - Dry-run POS normalization with .env.es (+ optional .env)"
-	@echo "  make normalize-word-pos-es - Write POS normalization with .env.es (+ optional .env)"
-	@echo "  make import-spanish-verbs INPUT=... [FORMAT=json|jehle-csv] - Import Spanish verb forms"
-	@echo "  make import-spanish-verbs-jehle-bundled - Import bundled Fred Jehle CSV (resources/verbs)"
-	@echo "  make backfill-word-verb-links - Link existing Spanish verb word_cards with verb_lemmas"
-	@echo "  make build-verb-form-examples - No-op (cloze ES/RU lines are generated at training time; keeps Makefile compatibility)"
-	@echo "  make backfill-verb-lemma-ru-glosses ARGS='--dry-run' — LLM batch for RU glosses in verb_lemmas.metadata_json (optional ARGS; add ARGS='--fill-class' for verb_class only)"
-	@echo "  make backfill-verb-template-links ARGS='--dry-run' — offline verb_class + allowed_template_ids for curated lemmas (Spanish DB)"
-	@echo "  make preview-verb-templates ARGS='-lemma=hablar' — dump ES/RU example for each paradigm row (Spanish DB)"
-	@echo "  make prepare-english-csv - Build English frequency CSV from wordFrequency.ods (rule + LLM cleanup)"
-	@echo "  make sync-english-word-sets - Import prepared English CSV into word sets (local/manual run)"
-	@echo "  make requeue-invalid-cards-es-dry - Dry-run soft cleanup: invalid cards + duplicates + invalid TTS"
-	@echo "  make requeue-invalid-cards-es - Commit soft cleanup: invalid cards + duplicates + invalid TTS"
-	@echo "  make requeue-invalid-cards-es-no-tts-dry - Dry-run soft cleanup without touching TTS"
-	@echo "  make requeue-invalid-cards-es-no-tts - Commit soft cleanup without touching TTS"
+	@echo "  make verb-training-pack-fill  - Fill Spanish grammar training pack (course Makefile)"
+	@echo "  make verb-training-sync-db    - Sync verb training JSON into DB"
 	@echo ""
-	@echo "Docker commands:"
-	@echo "  make docker-build   - Build Docker image"
-	@echo "  make docker-run     - Run with docker compose"
-	@echo "  make docker-stop    - Stop docker compose"
-	@echo "  make docker-logs    - Show docker logs"
-	@echo "  make docker-clean   - Clean Docker resources"
-	@echo "  make docker-deploy  - Deploy with Docker"
+	@echo "Reading texts (local dev):"
+	@echo "  make reading-cms         - Start Reading CMS UI on http://127.0.0.1:8791 (restarts if already running)"
+	@echo "  make reading-cms-stop    - Stop Reading CMS on READING_CMS_PORT (default 8791)"
+	@echo "  make reading-cms-build   - Build bin/reading_cms"
+	@echo "  make stop-llm            - Stop all local llama.cpp (llama-server) processes"
+	@echo "  make stop-comfy          - Stop local ComfyUI / Comfy Desktop"
+	@echo "  make reading-covers-batch - Batch cover images EN+ES (FORCE=1 LIMIT=N, needs ComfyUI)"
 	@echo ""
-	@echo "Deployment commands:"
-	@echo "  make deploy         - Deploy binary from GitHub releases"
-	@echo "  make update         - Update deployed binary"
-	@echo "  make status         - Check service status"
-	@echo "  make logs           - Show service logs"
+	@echo "Word sets & Spanish verbs:"
+	@echo "  make prepare-english-csv - Build English frequency CSV from wordFrequency.ods"
+	@echo "  make sync-english-word-sets - Import English CSV into word sets"
+	@echo "  make clean-spanish-csv   - Clean Spanish frequency CSV"
+	@echo "  make sync-spanish-word-sets - Import Spanish CSV into word sets"
+	@echo "  make build-spanish-gender-lexicon - Rebuild spanish_gender_lexicon.tsv"
+	@echo "  make import-spanish-verbs INPUT=... [FORMAT=json|jehle-csv]"
+	@echo "  make import-spanish-verbs-jehle-bundled"
+	@echo "  make backfill-word-verb-links"
+	@echo "  make backfill-verb-lemma-ru-glosses ARGS='--dry-run'"
+	@echo "  make backfill-verb-template-links ARGS='--dry-run'"
+	@echo "  make preview-verb-templates ARGS='-lemma=hablar'"
+	@echo "  make backfill-noun-gender-es-dry / backfill-noun-gender-es"
+	@echo "  make normalize-word-pos-es-dry / normalize-word-pos-es"
+	@echo "  make requeue-invalid-cards-es-dry / requeue-invalid-cards-es"
+	@echo "  make requeue-invalid-cards-es-no-tts-dry / requeue-invalid-cards-es-no-tts"
+	@echo ""
+	@echo "DB migrations & backfills:"
+	@echo "  make migrate-words         - Migrate word cards to structured format"
+	@echo "  make migrate-training-cards - Migrate training cards (POS, display_word)"
+	@echo "  make backfill-mastering    - user_word_mastering from review_events"
+	@echo "  make backfill-linglow-events-audit / backfill-linglow-events"
+	@echo "  make backfill-linglow-word-srs-audit / backfill-linglow-word-srs / -resync"
+	@echo "  make backfill-linglow-grammar-srs-audit / backfill-linglow-grammar-srs / -resync"
+	@echo "  make backfill-linglow-attempt-srs-links-audit / backfill-linglow-attempt-srs-links"
+	@echo "  make backfill-linglow-media-progress-audit / backfill-linglow-media-progress"
+	@echo "  make merge-language-databases-audit / -users / -user-courses"
+	@echo ""
+	@echo "Postgres (local):"
+	@echo "  make postgres-down         - Stop local Postgres container"
+	@echo "  make postgres-dev-init-dbs - CREATE DATABASE spanish on local Postgres"
+	@echo ""
+	@echo "Content complaints (see docs/COMPLAINTS_AUTOMATION_SPEC.md):"
+	@echo "  make complaints-journal-new"
+	@echo "  make complaints-fetch-en / complaints-fetch-es"
+	@echo "  make complaints-triage-dry-en / complaints-triage-dry-es"
+	@echo "  make complaints-dry-en / complaints-apply-en"
+	@echo "  make complaints-dry-es / complaints-apply-es"
+	@echo "  make complaints-dry-both / complaints-apply-both"
+	@echo "  make complaints-improve-both / complaints-plan-both / complaints-both"
+	@echo "  make complaints-prompt-autofix-en / -es / -both"
+	@echo "  make complaints-prompt-regression / complaints-prompt-integration-es"
+	@echo "  make complaints-smoke-en / -es / -both"
+	@echo "  make complaints-quality-both / complaints-quality-baseline-both"
+	@echo "  make complaints-regenerate-affected / complaints-improve-loop-both"
+	@echo "  make complaints-cycle-both / complaints-loop-tests"
+	@echo ""
+	@echo "Docker:"
+	@echo "  make docker-build / docker-run / docker-stop / docker-logs / docker-clean"
+	@echo "  make docker-rebuild / docker-dev / docker-dev-logs / docker-dev-restart"
+	@echo "  make docker-deploy"
+	@echo ""
+	@echo "Remote deploy (systemd):"
+	@echo "  make setup / deploy / update / status / logs"

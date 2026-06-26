@@ -578,5 +578,8 @@
       "parada",
       "derecha"
     ]
-  }
+  },
+  "cover_thumb_rel_path": "assets/reading/free_es_a0_un_billete_de_bus_1782239992/cover_thumb.webp",
+  "cover_hero_rel_path": "assets/reading/free_es_a0_un_billete_de_bus_1782239992/cover_hero.webp",
+  "cover_image_prompt": "casual watercolor illustration, A traveler at a bus station ticket counter receiving a bus ticket, no readable text"
 }

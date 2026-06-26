@@ -572,5 +572,8 @@
       "minutos",
       "ahora"
     ]
-  }
+  },
+  "cover_image_prompt": "casual watercolor illustration, reception desk with 2 people with no text",
+  "cover_thumb_rel_path": "assets/reading/free_es_a0_una_cita_hoy_1782240181/cover_thumb.webp",
+  "cover_hero_rel_path": "assets/reading/free_es_a0_una_cita_hoy_1782240181/cover_hero.webp"
 }

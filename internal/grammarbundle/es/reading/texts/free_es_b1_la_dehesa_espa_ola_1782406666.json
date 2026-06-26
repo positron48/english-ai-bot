@@ -1,0 +1,869 @@
+{
+  "id": "free_es_b1_la_dehesa_espa_ola_1782406666",
+  "category_id": "es_b1",
+  "title": "La dehesa española",
+  "level": "B1",
+  "target_language": "es",
+  "reading_passage": {
+    "comprehension_questions": [
+      {
+        "correct_answer": "true",
+        "explanation": "В первом сегменте прямо сказано про запад Испании.",
+        "id": "q1",
+        "prompt": "Деэса в тексте описана как ландшафт западной Испании.",
+        "type": "true_false"
+      },
+      {
+        "correct_answer": "false",
+        "explanation": "В тексте названы Эстремадура и Андалусия.",
+        "id": "q2",
+        "prompt": "Деэса встречается главным образом на севере Испании.",
+        "type": "true_false"
+      },
+      {
+        "correct_answer": "true",
+        "explanation": "Это прямо указано в шестом сегменте.",
+        "id": "q3",
+        "prompt": "Иберийская свинья названа одним из символов деэсы.",
+        "type": "true_false"
+      },
+      {
+        "correct_answer": "true",
+        "explanation": "Текст говорит о свиньях, желудях и этапе montanera.",
+        "id": "q4",
+        "prompt": "Монтанера связана с осенним поеданием желудей.",
+        "type": "true_false"
+      },
+      {
+        "correct_answer": "false",
+        "explanation": "Наоборот, ей нужен баланс между использованием и сохранением.",
+        "id": "q5",
+        "prompt": "Текст говорит, что деэсе не нужна охрана и баланс.",
+        "type": "true_false"
+      }
+    ],
+    "estimated_minutes": 6,
+    "level": "B1",
+    "segments": [
+      {
+        "audio_rel_path": "assets/reading/free_es_b1_la_dehesa_espa_ola_1782406666/seg_01_narrator.mp3",
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "text": "La dehesa es un paisaje típico del oeste español.",
+        "text_translation_ru": "Деэса — это типичный ландшафт западной Испании.",
+        "tokens": [
+          {
+            "clickable": true,
+            "lemma": "la",
+            "surface": "La",
+            "token_idx": 0
+          },
+          {
+            "clickable": true,
+            "lemma": "dehesa",
+            "surface": "dehesa",
+            "token_idx": 1
+          },
+          {
+            "clickable": true,
+            "lemma": "es",
+            "surface": "es",
+            "token_idx": 2
+          },
+          {
+            "clickable": true,
+            "lemma": "un",
+            "surface": "un",
+            "token_idx": 3
+          },
+          {
+            "clickable": true,
+            "lemma": "paisaje",
+            "surface": "paisaje",
+            "token_idx": 4
+          },
+          {
+            "clickable": true,
+            "lemma": "típico",
+            "surface": "típico",
+            "token_idx": 5
+          },
+          {
+            "clickable": true,
+            "lemma": "del",
+            "surface": "del",
+            "token_idx": 6
+          },
+          {
+            "clickable": true,
+            "lemma": "oeste",
+            "surface": "oeste",
+            "token_idx": 7
+          },
+          {
+            "clickable": true,
+            "lemma": "español",
+            "surface": "español",
+            "token_idx": 8
+          },
+          {
+            "clickable": false,
+            "lemma": ".",
+            "surface": ".",
+            "token_idx": 9
+          }
+        ],
+        "voice_id": "es_narrator"
+      },
+      {
+        "audio_rel_path": "assets/reading/free_es_b1_la_dehesa_espa_ola_1782406666/seg_02_narrator.mp3",
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "text": "Combina árboles separados, pastos y trabajo humano.",
+        "text_translation_ru": "Он сочетает редкие деревья, пастбища и человеческий труд.",
+        "tokens": [
+          {
+            "clickable": true,
+            "lemma": "combina",
+            "surface": "Combina",
+            "token_idx": 0
+          },
+          {
+            "clickable": true,
+            "lemma": "árboles",
+            "surface": "árboles",
+            "token_idx": 1
+          },
+          {
+            "clickable": true,
+            "lemma": "separados",
+            "surface": "separados",
+            "token_idx": 2
+          },
+          {
+            "clickable": false,
+            "lemma": ",",
+            "surface": ",",
+            "token_idx": 3
+          },
+          {
+            "clickable": true,
+            "lemma": "pastos",
+            "surface": "pastos",
+            "token_idx": 4
+          },
+          {
+            "clickable": true,
+            "lemma": "y",
+            "surface": "y",
+            "token_idx": 5
+          },
+          {
+            "clickable": true,
+            "lemma": "trabajo",
+            "surface": "trabajo",
+            "token_idx": 6
+          },
+          {
+            "clickable": true,
+            "lemma": "humano",
+            "surface": "humano",
+            "token_idx": 7
+          },
+          {
+            "clickable": false,
+            "lemma": ".",
+            "surface": ".",
+            "token_idx": 8
+          }
+        ],
+        "voice_id": "es_narrator"
+      },
+      {
+        "audio_rel_path": "assets/reading/free_es_b1_la_dehesa_espa_ola_1782406666/seg_03_narrator.mp3",
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "text": "Se encuentra sobre todo en Extremadura y Andalucía.",
+        "text_translation_ru": "Встречается в основном в Эстремадуре и Андалусии.",
+        "tokens": [
+          {
+            "clickable": true,
+            "lemma": "se",
+            "surface": "Se",
+            "token_idx": 0
+          },
+          {
+            "clickable": true,
+            "lemma": "encuentra",
+            "surface": "encuentra",
+            "token_idx": 1
+          },
+          {
+            "clickable": true,
+            "lemma": "sobre",
+            "surface": "sobre",
+            "token_idx": 2
+          },
+          {
+            "clickable": true,
+            "lemma": "todo",
+            "surface": "todo",
+            "token_idx": 3
+          },
+          {
+            "clickable": true,
+            "lemma": "en",
+            "surface": "en",
+            "token_idx": 4
+          },
+          {
+            "clickable": true,
+            "lemma": "extremadura",
+            "surface": "Extremadura",
+            "token_idx": 5
+          },
+          {
+            "clickable": true,
+            "lemma": "y",
+            "surface": "y",
+            "token_idx": 6
+          },
+          {
+            "clickable": true,
+            "lemma": "andalucía",
+            "surface": "Andalucía",
+            "token_idx": 7
+          },
+          {
+            "clickable": false,
+            "lemma": ".",
+            "surface": ".",
+            "token_idx": 8
+          }
+        ],
+        "voice_id": "es_narrator"
+      },
+      {
+        "audio_rel_path": "assets/reading/free_es_b1_la_dehesa_espa_ola_1782406666/seg_04_narrator.mp3",
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "text": "Allí crecen encinas, alcornoques y mucha hierba estacional.",
+        "text_translation_ru": "Там растут каменные дубы, пробковые дубы и сезонная трава.",
+        "tokens": [
+          {
+            "clickable": true,
+            "lemma": "allí",
+            "surface": "Allí",
+            "token_idx": 0
+          },
+          {
+            "clickable": true,
+            "lemma": "crecen",
+            "surface": "crecen",
+            "token_idx": 1
+          },
+          {
+            "clickable": true,
+            "lemma": "encinas",
+            "surface": "encinas",
+            "token_idx": 2
+          },
+          {
+            "clickable": false,
+            "lemma": ",",
+            "surface": ",",
+            "token_idx": 3
+          },
+          {
+            "clickable": true,
+            "lemma": "alcornoques",
+            "surface": "alcornoques",
+            "token_idx": 4
+          },
+          {
+            "clickable": true,
+            "lemma": "y",
+            "surface": "y",
+            "token_idx": 5
+          },
+          {
+            "clickable": true,
+            "lemma": "mucha",
+            "surface": "mucha",
+            "token_idx": 6
+          },
+          {
+            "clickable": true,
+            "lemma": "hierba",
+            "surface": "hierba",
+            "token_idx": 7
+          },
+          {
+            "clickable": true,
+            "lemma": "estacional",
+            "surface": "estacional",
+            "token_idx": 8
+          },
+          {
+            "clickable": false,
+            "lemma": ".",
+            "surface": ".",
+            "token_idx": 9
+          }
+        ],
+        "voice_id": "es_narrator"
+      },
+      {
+        "audio_rel_path": "assets/reading/free_es_b1_la_dehesa_espa_ola_1782406666/seg_05_narrator.mp3",
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "text": "Los animales aprovechan sombra, bellotas y espacios abiertos.",
+        "text_translation_ru": "Животные используют тень, жёлуди и открытые пространства.",
+        "tokens": [
+          {
+            "clickable": true,
+            "lemma": "los",
+            "surface": "Los",
+            "token_idx": 0
+          },
+          {
+            "clickable": true,
+            "lemma": "animales",
+            "surface": "animales",
+            "token_idx": 1
+          },
+          {
+            "clickable": true,
+            "lemma": "aprovechan",
+            "surface": "aprovechan",
+            "token_idx": 2
+          },
+          {
+            "clickable": true,
+            "lemma": "sombra",
+            "surface": "sombra",
+            "token_idx": 3
+          },
+          {
+            "clickable": false,
+            "lemma": ",",
+            "surface": ",",
+            "token_idx": 4
+          },
+          {
+            "clickable": true,
+            "lemma": "bellotas",
+            "surface": "bellotas",
+            "token_idx": 5
+          },
+          {
+            "clickable": true,
+            "lemma": "y",
+            "surface": "y",
+            "token_idx": 6
+          },
+          {
+            "clickable": true,
+            "lemma": "espacios",
+            "surface": "espacios",
+            "token_idx": 7
+          },
+          {
+            "clickable": true,
+            "lemma": "abiertos",
+            "surface": "abiertos",
+            "token_idx": 8
+          },
+          {
+            "clickable": false,
+            "lemma": ".",
+            "surface": ".",
+            "token_idx": 9
+          }
+        ],
+        "voice_id": "es_narrator"
+      },
+      {
+        "audio_rel_path": "assets/reading/free_es_b1_la_dehesa_espa_ola_1782406666/seg_06_narrator.mp3",
+        "segment_id": "s6",
+        "speaker_id": "narrator",
+        "text": "El cerdo ibérico es uno de sus símbolos.",
+        "text_translation_ru": "Иберийская свинья — один из её символов.",
+        "tokens": [
+          {
+            "clickable": true,
+            "lemma": "el",
+            "surface": "El",
+            "token_idx": 0
+          },
+          {
+            "clickable": true,
+            "lemma": "cerdo",
+            "surface": "cerdo",
+            "token_idx": 1
+          },
+          {
+            "clickable": true,
+            "lemma": "ibérico",
+            "surface": "ibérico",
+            "token_idx": 2
+          },
+          {
+            "clickable": true,
+            "lemma": "es",
+            "surface": "es",
+            "token_idx": 3
+          },
+          {
+            "clickable": true,
+            "lemma": "uno",
+            "surface": "uno",
+            "token_idx": 4
+          },
+          {
+            "clickable": true,
+            "lemma": "de",
+            "surface": "de",
+            "token_idx": 5
+          },
+          {
+            "clickable": true,
+            "lemma": "sus",
+            "surface": "sus",
+            "token_idx": 6
+          },
+          {
+            "clickable": true,
+            "lemma": "símbolos",
+            "surface": "símbolos",
+            "token_idx": 7
+          },
+          {
+            "clickable": false,
+            "lemma": ".",
+            "surface": ".",
+            "token_idx": 8
+          }
+        ],
+        "voice_id": "es_narrator"
+      },
+      {
+        "audio_rel_path": "assets/reading/free_es_b1_la_dehesa_espa_ola_1782406666/seg_07_narrator.mp3",
+        "segment_id": "s7",
+        "speaker_id": "narrator",
+        "text": "En otoño, algunos cerdos comen bellotas libremente.",
+        "text_translation_ru": "Осенью некоторые свиньи свободно едят жёлуди.",
+        "tokens": [
+          {
+            "clickable": true,
+            "lemma": "en",
+            "surface": "En",
+            "token_idx": 0
+          },
+          {
+            "clickable": true,
+            "lemma": "otoño",
+            "surface": "otoño",
+            "token_idx": 1
+          },
+          {
+            "clickable": false,
+            "lemma": ",",
+            "surface": ",",
+            "token_idx": 2
+          },
+          {
+            "clickable": true,
+            "lemma": "algunos",
+            "surface": "algunos",
+            "token_idx": 3
+          },
+          {
+            "clickable": true,
+            "lemma": "cerdos",
+            "surface": "cerdos",
+            "token_idx": 4
+          },
+          {
+            "clickable": true,
+            "lemma": "comen",
+            "surface": "comen",
+            "token_idx": 5
+          },
+          {
+            "clickable": true,
+            "lemma": "bellotas",
+            "surface": "bellotas",
+            "token_idx": 6
+          },
+          {
+            "clickable": true,
+            "lemma": "libremente",
+            "surface": "libremente",
+            "token_idx": 7
+          },
+          {
+            "clickable": false,
+            "lemma": ".",
+            "surface": ".",
+            "token_idx": 8
+          }
+        ],
+        "voice_id": "es_narrator"
+      },
+      {
+        "audio_rel_path": "assets/reading/free_es_b1_la_dehesa_espa_ola_1782406666/seg_08_narrator.mp3",
+        "segment_id": "s8",
+        "speaker_id": "narrator",
+        "text": "Esta etapa se llama montanera en muchas zonas.",
+        "text_translation_ru": "Этот период во многих местах называется монтанера.",
+        "tokens": [
+          {
+            "clickable": true,
+            "lemma": "esta",
+            "surface": "Esta",
+            "token_idx": 0
+          },
+          {
+            "clickable": true,
+            "lemma": "etapa",
+            "surface": "etapa",
+            "token_idx": 1
+          },
+          {
+            "clickable": true,
+            "lemma": "se",
+            "surface": "se",
+            "token_idx": 2
+          },
+          {
+            "clickable": true,
+            "lemma": "llama",
+            "surface": "llama",
+            "token_idx": 3
+          },
+          {
+            "clickable": true,
+            "lemma": "montanera",
+            "surface": "montanera",
+            "token_idx": 4
+          },
+          {
+            "clickable": true,
+            "lemma": "en",
+            "surface": "en",
+            "token_idx": 5
+          },
+          {
+            "clickable": true,
+            "lemma": "muchas",
+            "surface": "muchas",
+            "token_idx": 6
+          },
+          {
+            "clickable": true,
+            "lemma": "zonas",
+            "surface": "zonas",
+            "token_idx": 7
+          },
+          {
+            "clickable": false,
+            "lemma": ".",
+            "surface": ".",
+            "token_idx": 8
+          }
+        ],
+        "voice_id": "es_narrator"
+      },
+      {
+        "audio_rel_path": "assets/reading/free_es_b1_la_dehesa_espa_ola_1782406666/seg_09_narrator.mp3",
+        "segment_id": "s9",
+        "speaker_id": "narrator",
+        "text": "La dehesa también produce corcho, leña y miel.",
+        "text_translation_ru": "Деэса также даёт пробку, дрова и мёд.",
+        "tokens": [
+          {
+            "clickable": true,
+            "lemma": "la",
+            "surface": "La",
+            "token_idx": 0
+          },
+          {
+            "clickable": true,
+            "lemma": "dehesa",
+            "surface": "dehesa",
+            "token_idx": 1
+          },
+          {
+            "clickable": true,
+            "lemma": "también",
+            "surface": "también",
+            "token_idx": 2
+          },
+          {
+            "clickable": true,
+            "lemma": "produce",
+            "surface": "produce",
+            "token_idx": 3
+          },
+          {
+            "clickable": true,
+            "lemma": "corcho",
+            "surface": "corcho",
+            "token_idx": 4
+          },
+          {
+            "clickable": false,
+            "lemma": ",",
+            "surface": ",",
+            "token_idx": 5
+          },
+          {
+            "clickable": true,
+            "lemma": "leña",
+            "surface": "leña",
+            "token_idx": 6
+          },
+          {
+            "clickable": true,
+            "lemma": "y",
+            "surface": "y",
+            "token_idx": 7
+          },
+          {
+            "clickable": true,
+            "lemma": "miel",
+            "surface": "miel",
+            "token_idx": 8
+          },
+          {
+            "clickable": false,
+            "lemma": ".",
+            "surface": ".",
+            "token_idx": 9
+          }
+        ],
+        "voice_id": "es_narrator"
+      },
+      {
+        "audio_rel_path": "assets/reading/free_es_b1_la_dehesa_espa_ola_1782406666/seg_10_narrator.mp3",
+        "segment_id": "s10",
+        "speaker_id": "narrator",
+        "text": "Pero necesita equilibrio entre uso y conservación.",
+        "text_translation_ru": "Но ей нужен баланс между использованием и сохранением.",
+        "tokens": [
+          {
+            "clickable": true,
+            "lemma": "pero",
+            "surface": "Pero",
+            "token_idx": 0
+          },
+          {
+            "clickable": true,
+            "lemma": "necesita",
+            "surface": "necesita",
+            "token_idx": 1
+          },
+          {
+            "clickable": true,
+            "lemma": "equilibrio",
+            "surface": "equilibrio",
+            "token_idx": 2
+          },
+          {
+            "clickable": true,
+            "lemma": "entre",
+            "surface": "entre",
+            "token_idx": 3
+          },
+          {
+            "clickable": true,
+            "lemma": "uso",
+            "surface": "uso",
+            "token_idx": 4
+          },
+          {
+            "clickable": true,
+            "lemma": "y",
+            "surface": "y",
+            "token_idx": 5
+          },
+          {
+            "clickable": true,
+            "lemma": "conservación",
+            "surface": "conservación",
+            "token_idx": 6
+          },
+          {
+            "clickable": false,
+            "lemma": ".",
+            "surface": ".",
+            "token_idx": 7
+          }
+        ],
+        "voice_id": "es_narrator"
+      },
+      {
+        "audio_rel_path": "assets/reading/free_es_b1_la_dehesa_espa_ola_1782406666/seg_11_narrator.mp3",
+        "segment_id": "s11",
+        "speaker_id": "narrator",
+        "text": "Si se abandona, pierde parte de su riqueza.",
+        "text_translation_ru": "Если её забросить, она теряет часть своего богатства.",
+        "tokens": [
+          {
+            "clickable": true,
+            "lemma": "si",
+            "surface": "Si",
+            "token_idx": 0
+          },
+          {
+            "clickable": true,
+            "lemma": "se",
+            "surface": "se",
+            "token_idx": 1
+          },
+          {
+            "clickable": true,
+            "lemma": "abandona",
+            "surface": "abandona",
+            "token_idx": 2
+          },
+          {
+            "clickable": false,
+            "lemma": ",",
+            "surface": ",",
+            "token_idx": 3
+          },
+          {
+            "clickable": true,
+            "lemma": "pierde",
+            "surface": "pierde",
+            "token_idx": 4
+          },
+          {
+            "clickable": true,
+            "lemma": "parte",
+            "surface": "parte",
+            "token_idx": 5
+          },
+          {
+            "clickable": true,
+            "lemma": "de",
+            "surface": "de",
+            "token_idx": 6
+          },
+          {
+            "clickable": true,
+            "lemma": "su",
+            "surface": "su",
+            "token_idx": 7
+          },
+          {
+            "clickable": true,
+            "lemma": "riqueza",
+            "surface": "riqueza",
+            "token_idx": 8
+          },
+          {
+            "clickable": false,
+            "lemma": ".",
+            "surface": ".",
+            "token_idx": 9
+          }
+        ],
+        "voice_id": "es_narrator"
+      },
+      {
+        "audio_rel_path": "assets/reading/free_es_b1_la_dehesa_espa_ola_1782406666/seg_12_narrator.mp3",
+        "segment_id": "s12",
+        "speaker_id": "narrator",
+        "text": "Por eso, es paisaje, economía y cultura rural.",
+        "text_translation_ru": "Поэтому это одновременно ландшафт, экономика и сельская культура.",
+        "tokens": [
+          {
+            "clickable": true,
+            "lemma": "por",
+            "surface": "Por",
+            "token_idx": 0
+          },
+          {
+            "clickable": true,
+            "lemma": "eso",
+            "surface": "eso",
+            "token_idx": 1
+          },
+          {
+            "clickable": false,
+            "lemma": ",",
+            "surface": ",",
+            "token_idx": 2
+          },
+          {
+            "clickable": true,
+            "lemma": "es",
+            "surface": "es",
+            "token_idx": 3
+          },
+          {
+            "clickable": true,
+            "lemma": "paisaje",
+            "surface": "paisaje",
+            "token_idx": 4
+          },
+          {
+            "clickable": false,
+            "lemma": ",",
+            "surface": ",",
+            "token_idx": 5
+          },
+          {
+            "clickable": true,
+            "lemma": "economía",
+            "surface": "economía",
+            "token_idx": 6
+          },
+          {
+            "clickable": true,
+            "lemma": "y",
+            "surface": "y",
+            "token_idx": 7
+          },
+          {
+            "clickable": true,
+            "lemma": "cultura",
+            "surface": "cultura",
+            "token_idx": 8
+          },
+          {
+            "clickable": true,
+            "lemma": "rural",
+            "surface": "rural",
+            "token_idx": 9
+          },
+          {
+            "clickable": false,
+            "lemma": ".",
+            "surface": ".",
+            "token_idx": 10
+          }
+        ],
+        "voice_id": "es_narrator"
+      }
+    ],
+    "target_language": "es",
+    "title": "La dehesa española",
+    "vocab_focus": [
+      "la dehesa",
+      "paisaje típico",
+      "pastos",
+      "encinas",
+      "alcornoques",
+      "bellotas",
+      "montanera",
+      "conservación"
+    ]
+  },
+  "cover_image_prompt": "casual watercolor illustration, A traditional Spanish dehesa landscape with scattered cork oak trees, grazing Iberian pigs under the shade, and a farmer tending to the open grasslands in Extremadura",
+  "cover_thumb_rel_path": "assets/reading/free_es_b1_la_dehesa_espa_ola_1782406666/cover_thumb.webp",
+  "cover_hero_rel_path": "assets/reading/free_es_b1_la_dehesa_espa_ola_1782406666/cover_hero.webp"
+}

@@ -146,7 +146,7 @@ def main() -> int:
     parser.add_argument("--workspace", default=os.getenv("WORKSPACE_ROOT", str(Path(__file__).resolve().parents[2])))
     parser.add_argument("--scenarios-per-course", type=int, default=int(os.getenv("COMPLAINTS_QUALITY_SCENARIOS", "5")))
     parser.add_argument("--questions-per-block", type=int, default=int(os.getenv("COMPLAINTS_QUALITY_QPB", "3")))
-    parser.add_argument("--llm-base-url", default=os.getenv("LLAMACPP_URL", "http://127.0.0.1:8080"))
+    parser.add_argument("--llm-base-url", default=os.getenv("LLAMACPP_URL", "http://127.0.0.1:8090"))
     parser.add_argument("--llm-model", default=os.getenv("LLAMACPP_MODEL", "qwen3:30b"))
     parser.add_argument("--baseline-path", default="", help="Optional baseline json path")
     parser.add_argument("--set-baseline", action="store_true", help="Write current metrics as baseline")

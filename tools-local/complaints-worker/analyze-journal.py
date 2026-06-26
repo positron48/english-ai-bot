@@ -157,7 +157,7 @@ def main() -> int:
     parser.add_argument("--workspace", default=os.getenv("WORKSPACE_ROOT", str(Path(__file__).resolve().parents[2])))
     parser.add_argument("--journal", default="", help="Path to complaints jsonl. If empty, latest file is used.")
     parser.add_argument("--run-id", default="", help="Limit analysis to specific run_id (optional).")
-    parser.add_argument("--llama-url", default=os.getenv("LLAMACPP_URL", "http://127.0.0.1:8080"))
+    parser.add_argument("--llama-url", default=os.getenv("LLAMACPP_URL", "http://127.0.0.1:8090"))
     parser.add_argument("--llama-model", default=os.getenv("LLAMACPP_MODEL", "local-model"))
     args = parser.parse_args()
 

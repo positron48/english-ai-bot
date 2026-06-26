@@ -10599,7 +10599,38 @@
       "description": "Software engineering advanced: слова 1-30 из ~85 в этом наборе.",
       "sort_order": 6,
       "target_count": 30,
-      "words": []
+      "words": [
+        "encapsulamiento",
+        "paralelismo",
+        "especificación",
+        "fusión",
+        "confirmación",
+        "subsistema",
+        "reutilización",
+        "compilador",
+        "intérprete",
+        "sobreescritura",
+        "polimorfismo",
+        "puntero",
+        "tipado",
+        "enlazado",
+        "enlazador",
+        "ensamblador",
+        "transpilación",
+        "parametrización",
+        "especialización",
+        "generalización",
+        "sobreescribir",
+        "metaprogramación",
+        "metaclase",
+        "anidamiento",
+        "desreferenciación",
+        "vinculación",
+        "transpilador",
+        "preprocesador",
+        "depurador",
+        "perfilador"
+      ]
     },
     {
       "level": "C1",
@@ -10608,7 +10639,38 @@
       "description": "Software engineering advanced: слова 31-60 из ~85 в этом наборе.",
       "sort_order": 7,
       "target_count": 30,
-      "words": []
+      "words": [
+        "preproducción",
+        "enrutamiento",
+        "pasarela",
+        "proxy",
+        "particionado",
+        "fragmentación",
+        "serialización",
+        "deserialización",
+        "reversión",
+        "esquema",
+        "caché",
+        "secreto",
+        "contenerización",
+        "particionar",
+        "fragmentar",
+        "serializar",
+        "deserializar",
+        "persistir",
+        "revertir",
+        "cachear",
+        "mensajería",
+        "intermediario",
+        "consumidor",
+        "publicador",
+        "replicado",
+        "descubrimiento",
+        "contenedorizar",
+        "multiinquilino",
+        "aprovisionador",
+        "autoservicio"
+      ]
     },
     {
       "level": "C1",
@@ -10617,7 +10679,33 @@
       "description": "Software engineering advanced: слова 61-85 из ~85 в этом наборе.",
       "sort_order": 8,
       "target_count": 25,
-      "words": []
+      "words": [
+        "idempotencia",
+        "inmutabilidad",
+        "atomicidad",
+        "aislamiento",
+        "antipatrón",
+        "semántica",
+        "invariante",
+        "poscondición",
+        "bitácora",
+        "perfilado",
+        "retardo",
+        "capacidad",
+        "rendición",
+        "compatibilidad",
+        "obsolescencia",
+        "desacoplamiento",
+        "granularidad",
+        "contrapresión",
+        "recuperabilidad",
+        "testabilidad",
+        "legibilidad",
+        "ciclomático",
+        "instrumentable",
+        "reentrancia",
+        "reentrante"
+      ]
     },
     {
       "level": "C1",
@@ -10626,7 +10714,38 @@
       "description": "Cybersecurity, privacy, compliance: слова 1-30 из ~75 в этом наборе.",
       "sort_order": 9,
       "target_count": 30,
-      "words": []
+      "words": [
+        "exploit",
+        "malware",
+        "ransomware",
+        "phishing",
+        "descifrado",
+        "criptografía",
+        "endurecimiento",
+        "actualización",
+        "detección",
+        "escaneo",
+        "penetración",
+        "payload",
+        "botnet",
+        "troyano",
+        "spyware",
+        "adware",
+        "rootkit",
+        "keylogger",
+        "cryptojacking",
+        "gusano",
+        "exfiltración",
+        "desbordamiento",
+        "interceptación",
+        "ofuscación",
+        "inyectar",
+        "exfiltrar",
+        "interceptar",
+        "comprometer",
+        "infectar",
+        "propagar"
+      ]
     },
     {
       "level": "C1",
@@ -10635,7 +10754,38 @@
       "description": "Cybersecurity, privacy, compliance: слова 31-60 из ~75 в этом наборе.",
       "sort_order": 10,
       "target_count": 30,
-      "words": []
+      "words": [
+        "supresión",
+        "encargado",
+        "normativa",
+        "tercero",
+        "licitud",
+        "limitación",
+        "destrucción",
+        "borrado",
+        "reclamante",
+        "delegado",
+        "supervisor",
+        "resarcimiento",
+        "reporte",
+        "divulgación",
+        "depositario",
+        "revocabilidad",
+        "oponibilidad",
+        "desidentificación",
+        "reidentificación",
+        "aplicabilidad",
+        "subencargado",
+        "precepto",
+        "denunciante",
+        "seudonimizar",
+        "desidentificar",
+        "reidentificar",
+        "anonimizador",
+        "seudonimizador",
+        "perfilamiento",
+        "subencargo"
+      ]
     },
     {
       "level": "C1",
@@ -10644,7 +10794,23 @@
       "description": "Cybersecurity, privacy, compliance: слова 61-75 из ~75 в этом наборе.",
       "sort_order": 11,
       "target_count": 15,
-      "words": []
+      "words": [
+        "forense",
+        "huella",
+        "hash",
+        "entropía",
+        "certificadora",
+        "revocación",
+        "federación",
+        "perímetro",
+        "sandbox",
+        "honeypot",
+        "cuarentena",
+        "erradicación",
+        "inteligencia",
+        "adversario",
+        "superficie"
+      ]
     },
     {
       "level": "C1",
@@ -10653,7 +10819,38 @@
       "description": "AI, ML, NLP, data science: слова 1-30 из ~85 в этом наборе.",
       "sort_order": 12,
       "target_count": 30,
-      "words": []
+      "words": [
+        "característica",
+        "autosupervisado",
+        "semisupervisado",
+        "refuerzo",
+        "especificidad",
+        "lote",
+        "perceptrón",
+        "regresor",
+        "hiperplano",
+        "kernel",
+        "sigmoide",
+        "softmax",
+        "convolución",
+        "convolucional",
+        "afinación",
+        "destilación",
+        "cuantización",
+        "poda",
+        "ensamble",
+        "autocodificador",
+        "anotación",
+        "preentrenamiento",
+        "reentrenamiento",
+        "perplejidad",
+        "gaussiano",
+        "linealidad",
+        "separabilidad",
+        "discriminante",
+        "clasificatorio",
+        "embolsado"
+      ]
     },
     {
       "level": "C1",
@@ -10662,7 +10859,38 @@
       "description": "AI, ML, NLP, data science: слова 31-60 из ~85 в этом наборе.",
       "sort_order": 13,
       "target_count": 30,
-      "words": []
+      "words": [
+        "neurona",
+        "retropropagación",
+        "transformador",
+        "decodificador",
+        "vocabulario",
+        "corpus",
+        "contexto",
+        "sintaxis",
+        "morfología",
+        "lema",
+        "traducción",
+        "similitud",
+        "tensor",
+        "dimensión",
+        "representación",
+        "discriminativo",
+        "alucinación",
+        "subpalabra",
+        "ngrama",
+        "lexema",
+        "fonema",
+        "grafema",
+        "pragmática",
+        "correferencia",
+        "desambiguación",
+        "lematización",
+        "autoregresivo",
+        "bidireccional",
+        "secuencial",
+        "tokenizador"
+      ]
     },
     {
       "level": "C1",
@@ -10671,7 +10899,33 @@
       "description": "AI, ML, NLP, data science: слова 61-85 из ~85 в этом наборе.",
       "sort_order": 14,
       "target_count": 25,
-      "words": []
+      "words": [
+        "media",
+        "mediana",
+        "moda",
+        "percentil",
+        "cuantil",
+        "agregación",
+        "filtrado",
+        "preprocesamiento",
+        "histograma",
+        "atípico",
+        "partición",
+        "almacén",
+        "binarización",
+        "interpolación",
+        "extrapolación",
+        "desbalance",
+        "cardinalidad",
+        "dispersograma",
+        "pivotación",
+        "desnormalización",
+        "desduplicación",
+        "ingesta",
+        "tabular",
+        "visualizar",
+        "winsorización"
+      ]
     },
     {
       "level": "C1",
@@ -10680,7 +10934,38 @@
       "description": "Инженерия, производство, материалы: слова 1-30 из ~75 в этом наборе.",
       "sort_order": 15,
       "target_count": 30,
-      "words": []
+      "words": [
+        "ingeniería",
+        "manufactura",
+        "aleación",
+        "polímero",
+        "cerámica",
+        "semiconductor",
+        "sustrato",
+        "recubrimiento",
+        "adhesivo",
+        "soldadura",
+        "fundición",
+        "forja",
+        "mecanizado",
+        "extrusión",
+        "laminación",
+        "sinterización",
+        "temple",
+        "recocido",
+        "ductilidad",
+        "maleabilidad",
+        "tenacidad",
+        "plasticidad",
+        "dureza",
+        "corrosión",
+        "deformación",
+        "torsión",
+        "cizallamiento",
+        "compresión",
+        "tracción",
+        "porosidad"
+      ]
     },
     {
       "level": "C1",
@@ -10689,7 +10974,38 @@
       "description": "Инженерия, производство, материалы: слова 31-60 из ~75 в этом наборе.",
       "sort_order": 16,
       "target_count": 30,
-      "words": []
+      "words": [
+        "conductividad",
+        "resistividad",
+        "ensamblaje",
+        "electrodo",
+        "electrolito",
+        "galvanizado",
+        "anodizado",
+        "cromado",
+        "niquelado",
+        "revenido",
+        "cementación",
+        "nitruración",
+        "carburización",
+        "vulcanización",
+        "polimerización",
+        "cristalización",
+        "solidificación",
+        "colada",
+        "troquelado",
+        "estampado",
+        "embutición",
+        "cizallado",
+        "fresado",
+        "torneado",
+        "taladrado",
+        "rectificado",
+        "bruñido",
+        "pulido",
+        "granallado",
+        "arenado"
+      ]
     },
     {
       "level": "C1",
@@ -10698,7 +11014,23 @@
       "description": "Инженерия, производство, материалы: слова 61-75 из ~75 в этом наборе.",
       "sort_order": 17,
       "target_count": 15,
-      "words": []
+      "words": [
+        "microestructura",
+        "cristalino",
+        "amorfo",
+        "isótropo",
+        "anisótropo",
+        "dislocación",
+        "vacancia",
+        "intersticial",
+        "granular",
+        "monocristal",
+        "policristalino",
+        "nanomaterial",
+        "grafeno",
+        "resina",
+        "elastómero"
+      ]
     },
     {
       "level": "C1",
@@ -10707,7 +11039,38 @@
       "description": "Энергия, транспорт, инфраструктура: слова 1-30 из ~80 в этом наборе.",
       "sort_order": 18,
       "target_count": 30,
-      "words": []
+      "words": [
+        "potencia",
+        "voltaje",
+        "frecuencia",
+        "generador",
+        "turbina",
+        "alternador",
+        "reactor",
+        "caldera",
+        "condensador",
+        "intercambiador",
+        "gasoducto",
+        "oleoducto",
+        "refinería",
+        "yacimiento",
+        "perforación",
+        "extracción",
+        "combustible",
+        "carburante",
+        "petróleo",
+        "carbón",
+        "biomasa",
+        "hidrógeno",
+        "geotérmico",
+        "electrólisis",
+        "acumulador",
+        "descarbonización",
+        "interconexión",
+        "despacho",
+        "cogeneración",
+        "termoeléctrico"
+      ]
     },
     {
       "level": "C1",
@@ -10716,7 +11079,38 @@
       "description": "Энергия, транспорт, инфраструктура: слова 31-60 из ~80 в этом наборе.",
       "sort_order": 19,
       "target_count": 30,
-      "words": []
+      "words": [
+        "calzada",
+        "arcén",
+        "intersección",
+        "locomotora",
+        "aeródromo",
+        "pista",
+        "hangar",
+        "muelle",
+        "dársena",
+        "esclusa",
+        "embalse",
+        "presa",
+        "acueducto",
+        "saneamiento",
+        "drenaje",
+        "pavimento",
+        "asfalto",
+        "balasto",
+        "peaje",
+        "congestión",
+        "cabotaje",
+        "flete",
+        "circunvalación",
+        "apartadero",
+        "apeadero",
+        "catenaria",
+        "traviesa",
+        "cremallera",
+        "funicular",
+        "teleférico"
+      ]
     },
     {
       "level": "C1",
@@ -10725,7 +11119,28 @@
       "description": "Энергия, транспорт, инфраструктура: слова 61-80 из ~80 в этом наборе.",
       "sort_order": 20,
       "target_count": 20,
-      "words": []
+      "words": [
+        "almacenar",
+        "recargar",
+        "transportar",
+        "canalizar",
+        "bombear",
+        "licuar",
+        "gasificar",
+        "distribuir",
+        "despachar",
+        "interconectar",
+        "deslastrar",
+        "apagón",
+        "aislante",
+        "impedancia",
+        "reactancia",
+        "capacitancia",
+        "inductancia",
+        "trifásico",
+        "monofásico",
+        "convertidor"
+      ]
     },
     {
       "level": "C1",
@@ -10734,7 +11149,38 @@
       "description": "Научная коммуникация и публикации: слова 1-30 из ~90 в этом наборе.",
       "sort_order": 21,
       "target_count": 30,
-      "words": []
+      "words": [
+        "manuscrito",
+        "revista",
+        "editor",
+        "revisor",
+        "citación",
+        "cuestionario",
+        "postulado",
+        "teorema",
+        "axioma",
+        "constructo",
+        "conceptualización",
+        "experimentación",
+        "prospectivo",
+        "retrospectivo",
+        "metasíntesis",
+        "epistemología",
+        "ontología",
+        "taxonomía",
+        "tipología",
+        "casuística",
+        "paradigma",
+        "dialéctica",
+        "racionalismo",
+        "abducción",
+        "nomotético",
+        "idiográfico",
+        "cuasiexperimental",
+        "multicéntrico",
+        "unicéntrico",
+        "translacional"
+      ]
     },
     {
       "level": "C1",
@@ -10743,7 +11189,38 @@
       "description": "Научная коммуникация и публикации: слова 31-60 из ~90 в этом наборе.",
       "sort_order": 22,
       "target_count": 30,
-      "words": []
+      "words": [
+        "prepublicación",
+        "apéndice",
+        "tabla",
+        "figura",
+        "diagrama",
+        "leyenda",
+        "correspondencia",
+        "financiación",
+        "agradecimiento",
+        "plagio",
+        "retractación",
+        "errata",
+        "identificador",
+        "cuartil",
+        "simposio",
+        "seminario",
+        "coloquio",
+        "póster",
+        "bibliometría",
+        "cienciometría",
+        "altmetría",
+        "preimpresión",
+        "posimpresión",
+        "diagramación",
+        "paginación",
+        "galerada",
+        "editar",
+        "coeditar",
+        "referenciar",
+        "autocitación"
+      ]
     },
     {
       "level": "C1",
@@ -10752,7 +11229,38 @@
       "description": "Научная коммуникация и публикации: слова 61-90 из ~90 в этом наборе.",
       "sort_order": 23,
       "target_count": 30,
-      "words": []
+      "words": [
+        "tecnicismo",
+        "terminología",
+        "claridad",
+        "objetividad",
+        "justificación",
+        "corroboración",
+        "controversia",
+        "línea",
+        "interdisciplinario",
+        "multidisciplinario",
+        "transdisciplinario",
+        "divulgador",
+        "comunicador",
+        "inteligibilidad",
+        "comprensibilidad",
+        "concisión",
+        "rigurosidad",
+        "generalizable",
+        "extrapolable",
+        "indiciario",
+        "concluyente",
+        "conceptualizar",
+        "metadiscurso",
+        "intensificación",
+        "intensificador",
+        "marcador",
+        "divulgativo",
+        "académico",
+        "especializado",
+        "demostrativo"
+      ]
     },
     {
       "level": "C1",
@@ -10761,7 +11269,38 @@
       "description": "Литература и стилистика: слова 1-30 из ~70 в этом наборе.",
       "sort_order": 0,
       "target_count": 30,
-      "words": []
+      "words": [
+        "epopeya",
+        "fábula",
+        "mito",
+        "clímax",
+        "estrofa",
+        "verso",
+        "rima",
+        "atmósfera",
+        "ambientación",
+        "temática",
+        "símil",
+        "personificación",
+        "metonimia",
+        "sinécdoque",
+        "anáfora",
+        "antítesis",
+        "diégesis",
+        "mímesis",
+        "analepsis",
+        "prolepsis",
+        "cronotopo",
+        "focalizador",
+        "narratario",
+        "paratexto",
+        "intertexto",
+        "metaficción",
+        "catarsis",
+        "peripecia",
+        "anagnórisis",
+        "intriga"
+      ]
     },
     {
       "level": "C1",
@@ -10770,7 +11309,38 @@
       "description": "Литература и стилистика: слова 31-60 из ~70 в этом наборе.",
       "sort_order": 1,
       "target_count": 30,
-      "words": []
+      "words": [
+        "estilística",
+        "retórica",
+        "dicción",
+        "léxico",
+        "prosodia",
+        "musicalidad",
+        "sonoridad",
+        "eufonía",
+        "cacofonía",
+        "aliteración",
+        "asonancia",
+        "consonancia",
+        "encabalgamiento",
+        "cesura",
+        "hemistiquio",
+        "octosílabo",
+        "endecasílabo",
+        "soneto",
+        "romance",
+        "oda",
+        "elegía",
+        "égloga",
+        "epigrama",
+        "aforismo",
+        "máxima",
+        "retruécano",
+        "quiasmo",
+        "oxímoron",
+        "pleonasmo",
+        "polisíndeton"
+      ]
     },
     {
       "level": "C1",
@@ -10779,7 +11349,18 @@
       "description": "Литература и стилистика: слова 61-70 из ~70 в этом наборе.",
       "sort_order": 2,
       "target_count": 10,
-      "words": []
+      "words": [
+        "asíndeton",
+        "hipérbaton",
+        "epífora",
+        "anadiplosis",
+        "gradación",
+        "apóstrofe",
+        "perífrasis",
+        "dialogismo",
+        "polifonía",
+        "isotopía"
+      ]
     },
     {
       "level": "C1",
@@ -10788,7 +11369,38 @@
       "description": "Кино, театр, визуальное искусство: слова 1-30 из ~70 в этом наборе.",
       "sort_order": 3,
       "target_count": 30,
-      "words": []
+      "words": [
+        "cinematografía",
+        "filmación",
+        "toma",
+        "fotograma",
+        "travelling",
+        "paneo",
+        "zoom",
+        "picado",
+        "cenital",
+        "raccord",
+        "flashback",
+        "flashforward",
+        "fundido",
+        "cortinilla",
+        "sobreimpresión",
+        "storyboard",
+        "claqueta",
+        "atrezzo",
+        "vestuario",
+        "maquillaje",
+        "sonido",
+        "operador",
+        "figurante",
+        "audición",
+        "casting",
+        "teleobjetivo",
+        "granangular",
+        "diafragma",
+        "obturador",
+        "desenfoque"
+      ]
     },
     {
       "level": "C1",
@@ -10797,7 +11409,38 @@
       "description": "Кино, театр, визуальное искусство: слова 31-60 из ~70 в этом наборе.",
       "sort_order": 4,
       "target_count": 30,
-      "words": []
+      "words": [
+        "puesta",
+        "proscenio",
+        "bambalina",
+        "tramoya",
+        "utilería",
+        "decorado",
+        "palco",
+        "platea",
+        "anfiteatro",
+        "camerino",
+        "cartelera",
+        "entreacto",
+        "soliloquio",
+        "mutis",
+        "mímica",
+        "gestualidad",
+        "declamación",
+        "coreografía",
+        "happening",
+        "comisariado",
+        "colección",
+        "bienal",
+        "vernissage",
+        "litografía",
+        "aguafuerte",
+        "acuarela",
+        "óleo",
+        "linograbado",
+        "xilografía",
+        "serigrafía"
+      ]
     },
     {
       "level": "C1",
@@ -10806,7 +11449,18 @@
       "description": "Кино, театр, визуальное искусство: слова 61-70 из ~70 в этом наборе.",
       "sort_order": 5,
       "target_count": 10,
-      "words": []
+      "words": [
+        "claroscuro",
+        "trazo",
+        "pincelada",
+        "pigmento",
+        "paleta",
+        "caballete",
+        "boceto",
+        "croquis",
+        "mosaico",
+        "figuración"
+      ]
     },
     {
       "level": "C1",
@@ -10815,7 +11469,38 @@
       "description": "Музыка, архитектура, дизайн: слова 1-30 из ~65 в этом наборе.",
       "sort_order": 6,
       "target_count": 30,
-      "words": []
+      "words": [
+        "tempo",
+        "compás",
+        "tonalidad",
+        "acorde",
+        "arpegio",
+        "monodia",
+        "homofonía",
+        "disonancia",
+        "modulación",
+        "transposición",
+        "improvisación",
+        "pentagrama",
+        "notación",
+        "sostenido",
+        "bemol",
+        "becuadro",
+        "semicorchea",
+        "corchea",
+        "negra",
+        "blanca",
+        "redonda",
+        "fraseo",
+        "legato",
+        "staccato",
+        "vibrato",
+        "crescendo",
+        "diminuendo",
+        "forte",
+        "piano",
+        "timbre"
+      ]
     },
     {
       "level": "C1",
@@ -10824,7 +11509,38 @@
       "description": "Музыка, архитектура, дизайн: слова 31-60 из ~65 в этом наборе.",
       "sort_order": 7,
       "target_count": 30,
-      "words": []
+      "words": [
+        "cubierta",
+        "cimentación",
+        "viga",
+        "arco",
+        "bóveda",
+        "cúpula",
+        "contrafuerte",
+        "dintel",
+        "forjado",
+        "muro",
+        "tabique",
+        "vano",
+        "ventanal",
+        "lucernario",
+        "voladizo",
+        "terraza",
+        "claustro",
+        "nave",
+        "ábside",
+        "transepto",
+        "pórtico",
+        "frontón",
+        "friso",
+        "cornisa",
+        "capitel",
+        "pedestal",
+        "ornamento",
+        "moldura",
+        "revestimiento",
+        "mampostería"
+      ]
     },
     {
       "level": "C1",
@@ -10833,7 +11549,13 @@
       "description": "Музыка, архитектура, дизайн: слова 61-65 из ~65 в этом наборе.",
       "sort_order": 8,
       "target_count": 5,
-      "words": []
+      "words": [
+        "funcionalismo",
+        "brutalismo",
+        "organicismo",
+        "minimalismo",
+        "historicismo"
+      ]
     },
     {
       "level": "C1",
@@ -10842,7 +11564,38 @@
       "description": "История и историография: слова 1-30 из ~70 в этом наборе.",
       "sort_order": 9,
       "target_count": 30,
-      "words": []
+      "words": [
+        "periodización",
+        "cronología",
+        "datación",
+        "prosopografía",
+        "paleografía",
+        "epigrafía",
+        "numismática",
+        "etnohistoria",
+        "microhistoria",
+        "prehistoria",
+        "medievo",
+        "imperio",
+        "reino",
+        "dinastía",
+        "monarquía",
+        "república",
+        "colonia",
+        "conquista",
+        "poblamiento",
+        "asedio",
+        "batalla",
+        "insurrección",
+        "levantamiento",
+        "sublevación",
+        "rebelión",
+        "motín",
+        "sedición",
+        "capitulación",
+        "anexión",
+        "secesión"
+      ]
     },
     {
       "level": "C1",
@@ -10851,7 +11604,38 @@
       "description": "История и историография: слова 31-60 из ~70 в этом наборе.",
       "sort_order": 10,
       "target_count": 30,
-      "words": []
+      "words": [
+        "anacronismo",
+        "diacronía",
+        "sincronía",
+        "acontecimiento",
+        "sujeto",
+        "colectividad",
+        "mentalidad",
+        "imaginario",
+        "campesinado",
+        "burguesía",
+        "proletariado",
+        "aristocracia",
+        "clero",
+        "estamento",
+        "gremio",
+        "vasallaje",
+        "feudalismo",
+        "colonialismo",
+        "imperialismo",
+        "secularización",
+        "globalización",
+        "revisionismo",
+        "teleología",
+        "materialismo",
+        "estructuralismo",
+        "annalista",
+        "contrafactual",
+        "comparatismo",
+        "poscolonial",
+        "decolonial"
+      ]
     },
     {
       "level": "C1",
@@ -10860,7 +11644,18 @@
       "description": "История и историография: слова 61-70 из ~70 в этом наборе.",
       "sort_order": 11,
       "target_count": 10,
-      "words": []
+      "words": [
+        "archivística",
+        "analista",
+        "efeméride",
+        "anales",
+        "cartulario",
+        "códice",
+        "pergamino",
+        "vestigio",
+        "reliquia",
+        "artefacto"
+      ]
     },
     {
       "level": "C1",
@@ -10869,7 +11664,38 @@
       "description": "Философия, этика, религии как культурная тема: слова 1-30 из ~65 в этом наборе.",
       "sort_order": 12,
       "target_count": 30,
-      "words": []
+      "words": [
+        "metafísica",
+        "gnoseología",
+        "axiología",
+        "cosmología",
+        "antropología",
+        "empirismo",
+        "idealismo",
+        "realismo",
+        "nominalismo",
+        "existencialismo",
+        "nihilismo",
+        "pragmatismo",
+        "estoicismo",
+        "hedonismo",
+        "utilitarismo",
+        "relativismo",
+        "dogmatismo",
+        "dualismo",
+        "monismo",
+        "solipsismo",
+        "trascendentalismo",
+        "esencialismo",
+        "naturalismo",
+        "humanismo",
+        "personalismo",
+        "posestructuralismo",
+        "fenomenismo",
+        "panpsiquismo",
+        "fisicalismo",
+        "cognitivismo"
+      ]
     },
     {
       "level": "C1",
@@ -10878,7 +11704,38 @@
       "description": "Философия, этика, религии как культурная тема: слова 31-60 из ~65 в этом наборе.",
       "sort_order": 13,
       "target_count": 30,
-      "words": []
+      "words": [
+        "vicio",
+        "mal",
+        "heteronomía",
+        "intención",
+        "templanza",
+        "fortaleza",
+        "benevolencia",
+        "egoísmo",
+        "religión",
+        "teología",
+        "divinidad",
+        "sagrado",
+        "profano",
+        "trascendencia",
+        "inmanencia",
+        "revelación",
+        "fe",
+        "creencia",
+        "doctrina",
+        "dogma",
+        "liturgia",
+        "culto",
+        "mitología",
+        "cosmogonía",
+        "teodicea",
+        "escatología",
+        "salvación",
+        "redención",
+        "pecado",
+        "gracia"
+      ]
     },
     {
       "level": "C1",
@@ -10887,7 +11744,13 @@
       "description": "Философия, этика, религии как культурная тема: слова 61-65 из ~65 в этом наборе.",
       "sort_order": 14,
       "target_count": 5,
-      "words": []
+      "words": [
+        "monoteísmo",
+        "politeísmo",
+        "panteísmo",
+        "deísmo",
+        "ateísmo"
+      ]
     },
     {
       "level": "C1",
@@ -10896,7 +11759,38 @@
       "description": "Языкознание, этимология, перевод: слова 1-30 из ~70 в этом наборе.",
       "sort_order": 15,
       "target_count": 30,
-      "words": []
+      "words": [
+        "lingüística",
+        "lenguaje",
+        "lengua",
+        "habla",
+        "dialecto",
+        "sociolecto",
+        "idiolecto",
+        "variedad",
+        "fonética",
+        "fonología",
+        "lexicología",
+        "lexicografía",
+        "fraseología",
+        "gramática",
+        "ortografía",
+        "etimología",
+        "onomástica",
+        "toponimia",
+        "antroponimia",
+        "semasiología",
+        "onomasiología",
+        "dialectología",
+        "sociolingüística",
+        "psicolingüística",
+        "neurolingüística",
+        "geolingüística",
+        "enunciado",
+        "discurso",
+        "significante",
+        "referente"
+      ]
     },
     {
       "level": "C1",
@@ -10905,7 +11799,38 @@
       "description": "Языкознание, этимология, перевод: слова 31-60 из ~70 в этом наборе.",
       "sort_order": 16,
       "target_count": 30,
-      "words": []
+      "words": [
+        "alófono",
+        "morfema",
+        "semema",
+        "sema",
+        "sintagma",
+        "oración",
+        "predicado",
+        "valencia",
+        "deixis",
+        "catáfora",
+        "gramaticalización",
+        "lexicalización",
+        "flexión",
+        "conjugación",
+        "declinación",
+        "prefijo",
+        "sufijo",
+        "infijo",
+        "calco",
+        "neologismo",
+        "arcaísmo",
+        "barbarismo",
+        "cultismo",
+        "vulgarismo",
+        "tabú",
+        "jerga",
+        "traductor",
+        "equivalencia",
+        "fidelidad",
+        "localización"
+      ]
     },
     {
       "level": "C1",
@@ -10914,7 +11839,18 @@
       "description": "Языкознание, этимология, перевод: слова 61-70 из ~70 в этом наборе.",
       "sort_order": 17,
       "target_count": 10,
-      "words": []
+      "words": [
+        "glosa",
+        "transcripción",
+        "transliteración",
+        "romanización",
+        "simultáneo",
+        "consecutivo",
+        "susurrado",
+        "etimón",
+        "cognado",
+        "isoglosa"
+      ]
     },
     {
       "level": "C1",
@@ -10923,7 +11859,38 @@
       "description": "Культурные конфликты и память: слова 1-30 из ~70 в этом наборе.",
       "sort_order": 18,
       "target_count": 30,
-      "words": []
+      "words": [
+        "cultura",
+        "olvido",
+        "represión",
+        "genocidio",
+        "masacre",
+        "desaparición",
+        "amnistía",
+        "indulto",
+        "negacionismo",
+        "amnesia",
+        "desmemoria",
+        "memorabilidad",
+        "recordación",
+        "evocación",
+        "reminiscencia",
+        "doliente",
+        "traumatización",
+        "revictimización",
+        "deshumanización",
+        "exterminio",
+        "aniquilación",
+        "confinamiento",
+        "internamiento",
+        "destierro",
+        "exhumación",
+        "inhumación",
+        "fosa",
+        "desclasificación",
+        "amnistiar",
+        "indultar"
+      ]
     },
     {
       "level": "C1",
@@ -10932,7 +11899,38 @@
       "description": "Культурные конфликты и память: слова 31-60 из ~70 в этом наборе.",
       "sort_order": 19,
       "target_count": 30,
-      "words": []
+      "words": [
+        "sincretismo",
+        "colonialidad",
+        "decolonialidad",
+        "eurocentrismo",
+        "orientalismo",
+        "etnocentrismo",
+        "multiculturalismo",
+        "interculturalidad",
+        "subcultura",
+        "contracultura",
+        "reivindicación",
+        "fanatismo",
+        "iconoclasia",
+        "vandalismo",
+        "expolio",
+        "saqueo",
+        "folclorización",
+        "turistificación",
+        "visibilidad",
+        "estereotipo",
+        "prejuicio",
+        "desmitificación",
+        "banalización",
+        "iconoclasta",
+        "apropiacionismo",
+        "asimilacionismo",
+        "segregacionismo",
+        "supremacismo",
+        "nativismo",
+        "chauvinismo"
+      ]
     },
     {
       "level": "C1",
@@ -10941,7 +11939,18 @@
       "description": "Культурные конфликты и память: слова 61-70 из ~70 в этом наборе.",
       "sort_order": 20,
       "target_count": 10,
-      "words": []
+      "words": [
+        "homenaje",
+        "ritualización",
+        "oralidad",
+        "memoricidio",
+        "iconoclastia",
+        "desmonumentalización",
+        "contramonumento",
+        "reparatorio",
+        "amnésico",
+        "mnemónico"
+      ]
     },
     {
       "level": "C1",
@@ -10950,7 +11959,38 @@
       "description": "Критика и эссеистика: слова 1-30 из ~70 в этом наборе.",
       "sort_order": 21,
       "target_count": 30,
-      "words": []
+      "words": [
+        "ensayística",
+        "contrarréplica",
+        "analogía",
+        "disertación",
+        "panfleto",
+        "fragmento",
+        "prosa",
+        "polémica",
+        "erudición",
+        "lucidez",
+        "perspicacia",
+        "criticismo",
+        "metacrítica",
+        "recensionista",
+        "ensayista",
+        "exégeta",
+        "hermeneuta",
+        "polemista",
+        "prosista",
+        "exegético",
+        "comparatista",
+        "textualismo",
+        "impresionismo",
+        "biografismo",
+        "sociologismo",
+        "contextualismo",
+        "intencionalismo",
+        "esteticismo",
+        "teorización",
+        "caracterización"
+      ]
     },
     {
       "level": "C1",
@@ -10959,7 +11999,14 @@
       "description": "Критика и эссеистика: слова 31-60 из ~70 в этом наборе.",
       "sort_order": 22,
       "target_count": 30,
-      "words": []
+      "words": [
+        "monografismo", "paratextualidad", "transtextualidad", "hipotexto", "hipertexto",
+        "architexto", "palimpsesto", "semiótica", "deconstrucción", "psicoanálisis",
+        "poscolonialismo", "ecocrítica", "poética", "tematología", "imagología",
+        "genología", "recepcionismo", "alegorismo", "metaforicidad", "ironismo",
+        "canonicidad", "literariedad", "ficcionalidad", "textualidad", "discursividad",
+        "autorreflexividad", "metaficcionalidad", "narratividad", "poeticidad", "referencialidad"
+      ]
     },
     {
       "level": "C1",
@@ -10968,7 +12015,10 @@
       "description": "Критика и эссеистика: слова 61-70 из ~70 в этом наборе.",
       "sort_order": 23,
       "target_count": 10,
-      "words": []
+      "words": [
+        "apostilla", "escolio", "recensión", "miscelánea", "divagación",
+        "excursus", "preámbulo", "exordio", "peroración", "marginalia"
+      ]
     },
     {
       "level": "C1",
@@ -10977,7 +12027,14 @@
       "description": "Политическая риторика: слова 1-30 из ~60 в этом наборе.",
       "sort_order": 0,
       "target_count": 30,
-      "words": []
+      "words": [
+        "oratoria", "alocución", "arenga", "proclama", "consigna",
+        "eslogan", "demagogia", "patriotismo", "régimen", "promesa",
+        "pregonero", "tribuno", "orador", "declamador", "grandilocuencia",
+        "vehemencia", "elocuencia", "solemnidad", "contundencia", "dicotomía",
+        "binarismo", "antagonización", "plebiscitarismo", "triunfalismo", "catastrofismo",
+        "alarmismo", "derrotismo", "inmovilismo", "continuismo", "proclamación"
+      ]
     },
     {
       "level": "C1",
@@ -10986,7 +12043,14 @@
       "description": "Политическая риторика: слова 31-60 из ~60 в этом наборе.",
       "sort_order": 1,
       "target_count": 30,
-      "words": []
+      "words": [
+        "contrincante", "aliado", "enemigo", "pueblo", "casta",
+        "establishment", "unidad", "división", "prosperidad", "instar",
+        "advertir", "acusar", "culpar", "descalificar", "demonizar",
+        "glorificar", "descalificación", "demonización", "glorificación", "acusatorio",
+        "exhortativo", "promisorio", "moralizante", "triunfalista", "catastrofista",
+        "derrotista", "inmovilista", "demagógico", "grandilocuente", "vehemente"
+      ]
     },
     {
       "level": "C1",
@@ -10995,7 +12059,14 @@
       "description": "Пропаганда, манипуляция, фрейминг: слова 1-30 из ~60 в этом наборе.",
       "sort_order": 2,
       "target_count": 30,
-      "words": []
+      "words": [
+        "adoctrinamiento", "sugestión", "framing", "priming", "distorsión",
+        "tergiversación", "falsificación", "ocultamiento", "omisión", "amplificación",
+        "viralización", "microsegmentación", "personalización", "emocionalización", "mitificación",
+        "idealización", "descontextualización", "encuadramiento", "agendamiento", "primado",
+        "cebado", "inoculación", "adoctrinar", "sugestionar", "tergiversar",
+        "ocultar", "amplificar", "viralizar", "emocionalizar", "descontextualizar"
+      ]
     },
     {
       "level": "C1",
@@ -11004,7 +12075,14 @@
       "description": "Пропаганда, манипуляция, фрейминг: слова 31-60 из ~60 в этом наборе.",
       "sort_order": 3,
       "target_count": 30,
-      "words": []
+      "words": [
+        "falacia", "sofisma", "bulo", "fabricación", "conspiración",
+        "conspiracionismo", "sensacionalismo", "pseudociencia", "posverdad", "icono",
+        "bandera", "chivo", "autocensura", "silenciamiento", "hostigamiento",
+        "trol", "bot", "astroturfing", "brigading", "clickbait",
+        "infodemia", "infoxicación", "psicografía", "neuromarketing", "propagandista",
+        "agitador", "panfletario", "tendencioso", "engañoso", "falaz"
+      ]
     },
     {
       "level": "C1",
@@ -11013,7 +12091,14 @@
       "description": "Журналистские жанры: слова 1-30 из ~55 в этом наборе.",
       "sort_order": 4,
       "target_count": 30,
-      "words": []
+      "words": [
+        "obituario", "teletipo", "ladillo", "sumario", "magacín",
+        "semanario", "fotoperiodista", "camarógrafo", "presentador", "locutor",
+        "noticiario", "radiodiario", "telediario", "cronicón", "maquetador",
+        "archivero", "infografista", "ilustrador", "agenciero", "prensista",
+        "radiofonía", "teledifusión", "despiece", "recuadro", "cintillo",
+        "antetítulo", "destacado", "subdirector", "diagramador", "noticiero"
+      ]
     },
     {
       "level": "C1",
@@ -11022,7 +12107,13 @@
       "description": "Журналистские жанры: слова 31-55 из ~55 в этом наборе.",
       "sort_order": 5,
       "target_count": 25,
-      "words": []
+      "words": [
+        "fotoreportaje", "viñeta", "tribuna", "necrológica", "breve",
+        "flash", "podcast", "videoblog", "newsletter", "radiodifusión",
+        "televisión", "tirada", "lectorado", "anunciante", "tertulia",
+        "periodicidad", "mensuario", "quincenario", "anuario", "almanaque",
+        "gacetilla", "suelto", "folletín", "serial", "radioteatro"
+      ]
     },
     {
       "level": "C1",
@@ -11031,7 +12122,14 @@
       "description": "Соцсети, инфлюенсеры, платформы: слова 1-30 из ~55 в этом наборе.",
       "sort_order": 6,
       "target_count": 30,
-      "words": []
+      "words": [
+        "influencer", "engagement", "mención", "hashtag", "feed",
+        "timeline", "reel", "short", "meme", "sticker",
+        "emoji", "filtro", "selfie", "avatar", "posteador",
+        "tuitero", "forero", "internauta", "cibernauta", "follower",
+        "like", "likear", "postear", "tuitear", "retuitear",
+        "hashtaguear", "streamear", "loguear", "desloguear", "scrollear"
+      ]
     },
     {
       "level": "C1",
@@ -11040,7 +12138,13 @@
       "description": "Соцсети, инфлюенсеры, платформы: слова 31-55 из ~55 в этом наборе.",
       "sort_order": 7,
       "target_count": 25,
-      "words": []
+      "words": [
+        "microinfluencer", "macroinfluencer", "prescriptor", "clic", "reproducción",
+        "repost", "retuit", "troleo", "ciberacoso", "doxing",
+        "shadowban", "baneo", "desmonetización", "agregador", "podcaster",
+        "streamer", "youtuber", "tiktoker", "instagramer", "bloguero",
+        "vloguero", "community", "multiplataforma", "interactividad", "gamificación"
+      ]
     },
     {
       "level": "C1",
@@ -11049,7 +12153,14 @@
       "description": "Дезинформация и fact-checking: слова 1-30 из ~60 в этом наборе.",
       "sort_order": 8,
       "target_count": 30,
-      "words": []
+      "words": [
+        "factchecking", "comprobación", "geolocalización", "búsqueda", "rastreo",
+        "falsedad", "adulteración", "deepfake", "cheapfake", "hoax",
+        "desinformador", "fotoforense", "videoforense", "georreferenciación", "cronolocalización",
+        "fotolocalización", "hashing", "instantánea", "archivado", "hipervínculo",
+        "url", "registrante", "timestamp", "miniatura", "pixelado",
+        "clonación", "superposición", "reflejo", "meteorología", "geointeligencia"
+      ]
     },
     {
       "level": "C1",
@@ -11058,7 +12169,14 @@
       "description": "Дезинформация и fact-checking: слова 31-60 из ~60 в этом наборе.",
       "sort_order": 9,
       "target_count": 30,
-      "words": []
+      "words": [
+        "verdadero", "impreciso", "incompleto", "inverificable", "infundado",
+        "manipulado", "reaparecer", "desmentir", "rastrear", "identificar",
+        "atribuir", "reversear", "alertar", "prebunking", "debunking",
+        "desinformativo", "desinformante", "factchequear", "chequear", "geolocalizar",
+        "fechar", "autenticar", "desmontar", "apócrifo", "fraudulento",
+        "espurio", "desmentidor", "refutador", "desmentible", "falseador"
+      ]
     },
     {
       "level": "C1",
@@ -11067,7 +12185,14 @@
       "description": "Репутация, скандалы, кризисные коммуникации: слова 1-30 из ~55 в этом наборе.",
       "sort_order": 10,
       "target_count": 30,
-      "words": []
+      "words": [
+        "reputación", "prestigio", "notoriedad", "escándalo", "boicot",
+        "descrédito", "difamación", "calumnia", "injuria", "desprestigio",
+        "dimisión", "destitución", "reputacional", "reputado", "irreputabilidad",
+        "deshonra", "oprobio", "infamia", "reprobación", "repudio",
+        "indignación", "recriminación", "señalamiento", "linchamiento", "cancelamiento",
+        "funamiento", "confesión", "cese", "apartamiento", "inhabilitación"
+      ]
     },
     {
       "level": "C1",
@@ -11076,7 +12201,13 @@
       "description": "Репутация, скандалы, кризисные коммуникации: слова 31-55 из ~55 в этом наборе.",
       "sort_order": 11,
       "target_count": 25,
-      "words": []
+      "words": [
+        "vocería", "cooperar", "evadir", "contraatacar", "judicializar",
+        "comunicacional", "reactivo", "anticipatorio", "proactivo", "responsivo",
+        "autoinculpación", "contrición", "arrepentimiento", "retractarse", "excusarse",
+        "justificarse", "responsabilizarse", "transparentar", "centralizar", "portavocía",
+        "argumentario", "inmediatez", "reposicionamiento", "contramensaje", "contranarrativa"
+      ]
     },
     {
       "level": "C1",
@@ -11085,7 +12216,14 @@
       "description": "Публичные выступления и презентации: слова 1-30 из ~55 в этом наборе.",
       "sort_order": 12,
       "target_count": 30,
-      "words": []
+      "words": [
+        "presentación", "conferencia", "charla", "ponente", "conferenciante",
+        "diapositiva", "proyector", "atril", "micrófono", "anécdota",
+        "memorización", "cronometraje", "keynote", "webinar", "pitch",
+        "teleprompter", "rotafolio", "notas", "anticipación", "panelista",
+        "comentarista", "maestro", "expositiva", "argumentativa", "demostrativa",
+        "divulgativa", "expositor", "disertante", "webinario", "videopresentación"
+      ]
     },
     {
       "level": "C1",
@@ -11094,7 +12232,13 @@
       "description": "Публичные выступления и презентации: слова 31-55 из ~55 в этом наборе.",
       "sort_order": 13,
       "target_count": 25,
-      "words": []
+      "words": [
+        "pronunciación", "entonación", "énfasis", "gesto", "ademán",
+        "movimiento", "presencia", "carisma", "nerviosismo", "enganchar",
+        "ensayar", "cronometrar", "improvisar", "vocalizar", "gesticular",
+        "titubear", "divagar", "interpelar", "vocalización", "gesticulación",
+        "desenvoltura", "aplomo", "naturalidad", "expresividad", "espontaneidad"
+      ]
     },
     {
       "level": "C1",
@@ -11103,7 +12247,14 @@
       "description": "Метрики медиа и аудитория: слова 1-30 из ~50 в этом наборе.",
       "sort_order": 14,
       "target_count": 30,
-      "words": []
+      "words": [
+        "espectador", "oyente", "abandono", "rebote", "recencia",
+        "afinidad", "duplicación", "decrecimiento", "pageview", "impresionable",
+        "audimetría", "peoplemeter", "universo", "extrapolado", "ponderado",
+        "acumulado", "promedio", "duplicidad", "solapamiento", "habitualidad",
+        "estacionalidad", "desagregación", "audímetro", "audimétrico", "televidente",
+        "radioyente", "navegante", "visionado", "sintonía", "visitación"
+      ]
     },
     {
       "level": "C1",
@@ -11112,7 +12263,12 @@
       "description": "Метрики медиа и аудитория: слова 31-50 из ~50 в этом наборе.",
       "sort_order": 15,
       "target_count": 20,
-      "words": []
+      "words": [
+        "ctr", "cpm", "cpc", "cpa", "roi",
+        "roas", "kpi", "benchmark", "rating", "share",
+        "reach", "view", "completion", "watchtime", "organicidad",
+        "sentimiento", "favorabilidad", "consideración", "churn", "lifetime"
+      ]
     },
     {
       "level": "C1",
@@ -11121,7 +12277,14 @@
       "description": "Анатомия и физиология advanced: слова 1-30 из ~60 в этом наборе.",
       "sort_order": 0,
       "target_count": 30,
-      "words": []
+      "words": [
+        "anatomía", "fisiología", "célula", "hueso", "cartílago",
+        "ligamento", "tendón", "músculo", "fascia", "membrana",
+        "epitelio", "endotelio", "dermis", "epidermis", "médula",
+        "corteza", "cerebro", "cerebelo", "tronco", "nervio",
+        "sinapsis", "axón", "dendrita", "mielina", "cráneo",
+        "vértebra", "costilla", "esternón", "clavícula", "escápula"
+      ]
     },
     {
       "level": "C1",
@@ -11130,7 +12293,14 @@
       "description": "Анатомия и физиология advanced: слова 31-60 из ~60 в этом наборе.",
       "sort_order": 1,
       "target_count": 30,
-      "words": []
+      "words": [
+        "corazón", "aurícula", "ventrículo", "válvula", "arteria",
+        "vena", "capilar", "aorta", "sangre", "plasma",
+        "eritrocito", "leucocito", "plaqueta", "hemoglobina", "linfa",
+        "pulmón", "bronquio", "bronquiolo", "alvéolo", "pleura",
+        "tráquea", "laringe", "faringe", "esófago", "intestino",
+        "duodeno", "yeyuno", "íleon", "colon", "hígado"
+      ]
     },
     {
       "level": "C1",

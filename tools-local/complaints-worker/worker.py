@@ -197,7 +197,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Local grammar complaints worker")
     parser.add_argument("--service-url", default=os.getenv("COMPLAINTS_SERVICE_URL", "http://localhost:8184"))
     parser.add_argument("--service-token", default=os.getenv("COMPLAINTS_SERVICE_TOKEN", ""))
-    parser.add_argument("--llama-url", default=os.getenv("LLAMACPP_URL", "http://127.0.0.1:8080"))
+    parser.add_argument("--llama-url", default=os.getenv("LLAMACPP_URL", "http://127.0.0.1:8090"))
     parser.add_argument("--llama-model", default=os.getenv("LLAMACPP_MODEL", "local-model"))
     parser.add_argument("--course-scope", default=os.getenv("COURSE_SCOPE", "both"), choices=["english", "spanish", "both"])
     parser.add_argument("--workspace", default=os.getenv("WORKSPACE_ROOT", str(Path(__file__).resolve().parents[2])))

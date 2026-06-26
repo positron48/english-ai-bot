@@ -60,7 +60,7 @@ func (s *Service) GenerateAudio(ctx context.Context, textID string) (*DraftMeta,
 			"--text", text,
 			"--output", outPath,
 		)
-		cmd.Env = os.Environ()
+		cmd.Env = s.paths.ScriptEnv(meta.CourseCode)
 		var stderr bytes.Buffer
 		cmd.Stderr = &stderr
 		if err := cmd.Run(); err != nil {

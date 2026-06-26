@@ -19,8 +19,18 @@ def _env_int(name: str, default: int) -> int:
 
 def cover_sizes() -> tuple[tuple[int, int], tuple[int, int]]:
     thumb = (_env_int("READING_COVER_THUMB_W", 400), _env_int("READING_COVER_THUMB_H", 300))
-    hero = (_env_int("READING_COVER_HERO_W", 1200), _env_int("READING_COVER_HERO_H", 480))
+    hero = (_env_int("READING_COVER_HERO_W", 1024), _env_int("READING_COVER_HERO_H", 768))
     return thumb, hero
+
+
+def _cover_fit(img: Image.Image, max_size: tuple[int, int]) -> Image.Image:
+    """Scale down to fit inside max_size; never crop."""
+    max_w, max_h = max_size
+    src_w, src_h = img.size
+    if src_w <= max_w and src_h <= max_h:
+        return img.copy()
+    scale = min(max_w / src_w, max_h / src_h)
+    return img.resize((max(1, int(src_w * scale)), max(1, int(src_h * scale))), Image.Resampling.LANCZOS)
 
 
 def _cover_crop(img: Image.Image, target_size: tuple[int, int]) -> Image.Image:
@@ -37,7 +47,9 @@ def resize_cover_assets(raw_png: pathlib.Path, thumb_path: pathlib.Path, hero_pa
     thumb_sz, hero_sz = cover_sizes()
     quality = _env_int("READING_COVER_WEBP_QUALITY", 85)
     img = Image.open(raw_png).convert("RGB")
-    for out_path, size in ((thumb_path, thumb_sz), (hero_path, hero_sz)):
-        cropped = _cover_crop(img, size)
-        out_path.parent.mkdir(parents=True, exist_ok=True)
-        cropped.save(out_path, format="WEBP", quality=quality, method=6)
+
+    thumb_path.parent.mkdir(parents=True, exist_ok=True)
+    _cover_crop(img, thumb_sz).save(thumb_path, format="WEBP", quality=quality, method=6)
+
+    hero_path.parent.mkdir(parents=True, exist_ok=True)
+    _cover_fit(img, hero_sz).save(hero_path, format="WEBP", quality=quality, method=6)

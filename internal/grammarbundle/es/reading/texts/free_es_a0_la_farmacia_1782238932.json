@@ -437,5 +437,8 @@
       "noche",
       "euros"
     ]
-  }
+  },
+  "cover_thumb_rel_path": "assets/reading/free_es_a0_la_farmacia_1782238932/cover_thumb.webp",
+  "cover_hero_rel_path": "assets/reading/free_es_a0_la_farmacia_1782238932/cover_hero.webp",
+  "cover_image_prompt": "casual watercolor illustration, - Pharmacies have a green cross, no readable text"
 }

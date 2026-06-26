@@ -10,11 +10,12 @@ import subprocess
 import sys
 import time
 
-REPO_ROOT = pathlib.Path(__file__).resolve().parents[2]
+REPO_ROOT = pathlib.Path(__file__).resolve().parents[1]
 SCRIPTS = REPO_ROOT / "scripts"
 if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
+from reading_cover_log import log, log_comfy_prompt, log_stage  # noqa: E402
 from reading_cover_prompt import build_cover_prompt  # noqa: E402
 from reading_cover_resize import resize_cover_assets  # noqa: E402
 
@@ -62,11 +63,88 @@ def write_json_atomic(path: pathlib.Path, data: dict) -> None:
     tmp.replace(path)
 
 
+def render_cover_for_doc(
+    course_root: pathlib.Path,
+    json_path: pathlib.Path,
+    image_prompt: str,
+    *,
+    force: bool = True,
+) -> str:
+    """ComfyUI + resize + JSON update using a ready-made image prompt (no LLM)."""
+    image_prompt = " ".join((image_prompt or "").split()).strip()
+    if not image_prompt:
+        raise ValueError("image_prompt is required")
+    doc = json.loads(json_path.read_text(encoding="utf-8"))
+    text_id = str(doc.get("id") or json_path.stem).strip()
+    title = str(doc.get("title") or text_id).strip()
+    log(f"=== {text_id} — {title} (prompt only, no LLM) ===")
+    if not force and has_cover_files(course_root, doc):
+        log("skip: cover files already exist (use --force to regenerate)")
+        return "skip"
+    log_stage("prepare", "Подготовка")
+    log("step 1/4: skipped LLM — using provided image prompt")
+    out_dir = assets_dir(course_root, text_id)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    raw_png = out_dir / "cover_raw.png"
+    thumb_path = out_dir / "cover_thumb.webp"
+    hero_path = out_dir / "cover_hero.webp"
+
+    log_stage("comfyui", "Картинка (ComfyUI)")
+    log_comfy_prompt(image_prompt)
+    log(f"step 2/4: ComfyUI txt2img -> {raw_png.name}")
+    script = SCRIPTS / "generate-reading-cover.sh"
+    subprocess.run(
+        ["bash", str(script), "--prompt", image_prompt, "--output", str(raw_png)],
+        check=True,
+        cwd=str(REPO_ROOT),
+    )
+    log_stage("resize", "WebP thumb + hero")
+    log(f"step 3/4: resize WebP thumb + hero")
+    resize_cover_assets(raw_png, thumb_path, hero_path)
+    log(f"  thumb: {thumb_path} ({thumb_path.stat().st_size if thumb_path.is_file() else 0} bytes)")
+    log(f"  hero:  {hero_path} ({hero_path.stat().st_size if hero_path.is_file() else 0} bytes)")
+    log_stage("save", "Сохранение")
+    log("step 4/4: update text JSON")
+    update_doc_cover(doc, text_id, image_prompt)
+    write_json_atomic(json_path, doc)
+    log_stage("done", "Готово")
+    log("done")
+    return "ok"
+
+
+def save_prompt_for_doc(course_root: pathlib.Path, json_path: pathlib.Path, force: bool = False) -> str:
+    """LLM cover prompt only — saves cover_image_prompt without ComfyUI."""
+    doc = json.loads(json_path.read_text(encoding="utf-8"))
+    text_id = str(doc.get("id") or json_path.stem).strip()
+    title = str(doc.get("title") or text_id).strip()
+    log(f"=== {text_id} — {title} (prompt only) ===")
+    if not force and str(doc.get("cover_image_prompt") or "").strip():
+        log("skip: cover_image_prompt already set (use --force to regenerate)")
+        return "skip"
+    log_stage("prepare", "Подготовка")
+    log_stage("llm", "Промпт (LLM)")
+    log("step 1/2: LLM cover scene prompt (local llama.cpp)")
+    image_prompt = build_cover_prompt(course_root, doc)
+    log_stage("save", "Сохранение промпта")
+    log("step 2/2: update text JSON (cover_image_prompt)")
+    doc["cover_image_prompt"] = image_prompt
+    write_json_atomic(json_path, doc)
+    log_stage("done", "Готово")
+    log("done (prompt saved, no image)")
+    return "ok"
+
+
 def generate_for_doc(course_root: pathlib.Path, json_path: pathlib.Path, force: bool = False) -> str:
     doc = json.loads(json_path.read_text(encoding="utf-8"))
     text_id = str(doc.get("id") or json_path.stem).strip()
+    title = str(doc.get("title") or text_id).strip()
+    log(f"=== {text_id} — {title} ===")
     if not force and has_cover_files(course_root, doc):
+        log("skip: cover files already exist (use --force to regenerate)")
         return "skip"
+    log_stage("prepare", "Подготовка")
+    log_stage("llm", "Промпт (LLM)")
+    log("step 1/4: LLM cover scene prompt (local llama.cpp)")
     image_prompt = build_cover_prompt(course_root, doc)
     out_dir = assets_dir(course_root, text_id)
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -74,15 +152,26 @@ def generate_for_doc(course_root: pathlib.Path, json_path: pathlib.Path, force: 
     thumb_path = out_dir / "cover_thumb.webp"
     hero_path = out_dir / "cover_hero.webp"
 
+    log_stage("comfyui", "Картинка (ComfyUI)")
+    log_comfy_prompt(image_prompt)
+    log(f"step 2/4: ComfyUI txt2img -> {raw_png.name}")
     script = SCRIPTS / "generate-reading-cover.sh"
     subprocess.run(
         ["bash", str(script), "--prompt", image_prompt, "--output", str(raw_png)],
         check=True,
         cwd=str(REPO_ROOT),
     )
+    log_stage("resize", "WebP thumb + hero")
+    log(f"step 3/4: resize WebP thumb + hero")
     resize_cover_assets(raw_png, thumb_path, hero_path)
+    log(f"  thumb: {thumb_path} ({thumb_path.stat().st_size if thumb_path.is_file() else 0} bytes)")
+    log(f"  hero:  {hero_path} ({hero_path.stat().st_size if hero_path.is_file() else 0} bytes)")
+    log_stage("save", "Сохранение")
+    log("step 4/4: update text JSON")
     update_doc_cover(doc, text_id, image_prompt)
     write_json_atomic(json_path, doc)
+    log_stage("done", "Готово")
+    log("done")
     return "ok"
 
 
@@ -116,6 +205,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--course-root", type=pathlib.Path, default=pathlib.Path(".").resolve())
     parser.add_argument("--draft-dir", default="reading")
     parser.add_argument("--text-id", default="", help="single text id from index")
+    parser.add_argument("--image-prompt", default="", help="ready prompt: ComfyUI+resize only, skip LLM")
+    parser.add_argument("--prompt-only", action="store_true", help="LLM prompt only, save cover_image_prompt")
     parser.add_argument("--force", action="store_true")
     parser.add_argument("--limit", type=int, default=0)
     args = parser.parse_args(argv)
@@ -128,7 +219,13 @@ def main(argv: list[str] | None = None) -> int:
             print(f"text_id not in index: {args.text_id}", file=sys.stderr)
             return 1
         json_path = text_json_path(course_root, args.draft_dir, args.text_id, rel)
-        generate_for_doc(course_root, json_path, force=args.force)
+        prompt = (args.image_prompt or "").strip()
+        if args.prompt_only:
+            save_prompt_for_doc(course_root, json_path, force=args.force)
+        elif prompt:
+            render_cover_for_doc(course_root, json_path, prompt, force=args.force)
+        else:
+            generate_for_doc(course_root, json_path, force=args.force)
         return 0
     return batch(course_root, args.draft_dir, args.force, args.limit)
 

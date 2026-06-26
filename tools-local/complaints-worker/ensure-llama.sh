@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-LLAMA_URL="${LLAMACPP_URL:-http://127.0.0.1:8080}"
+LLAMA_URL="${LLAMACPP_URL:-http://127.0.0.1:8090}"
 START_CMD="${LLAMACPP_START_CMD:-}"
 MAX_WAIT_SEC="${LLAMACPP_START_MAX_WAIT_SEC:-45}"
 

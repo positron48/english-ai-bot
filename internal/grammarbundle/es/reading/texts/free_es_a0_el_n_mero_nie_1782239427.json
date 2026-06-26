@@ -432,5 +432,8 @@
       "documentos",
       "banco"
     ]
-  }
+  },
+  "cover_thumb_rel_path": "assets/reading/free_es_a0_el_n_mero_nie_1782239427/cover_thumb.webp",
+  "cover_hero_rel_path": "assets/reading/free_es_a0_el_n_mero_nie_1782239427/cover_hero.webp",
+  "cover_image_prompt": "casual watercolor illustration, - The NIE is for foreigners, so we might show a foreigner (or a diverse group) in a Spanish setting, but note: the text is about the NIE as a document number, but the instruction says not to show paperwork clichés, no readable text"
 }
