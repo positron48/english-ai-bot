@@ -3,11 +3,8 @@ package ru.qantrix.embedded;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Color;
-import android.graphics.Insets;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.view.WindowInsets;
 import android.webkit.JavascriptInterface;
 import android.webkit.CookieManager;
 import android.webkit.WebResourceRequest;
@@ -36,14 +33,6 @@ public class MainActivity extends Activity {
         webView = new WebView(this);
         setContentView(webView);
 
-        // targetSdk 35 forces edge-to-edge: the WebView draws under the status/navigation bars.
-        // Padding the WebView natively proved unreliable on some devices, so we keep the proven
-        // path: read the real bar insets here and push them to the web layer as CSS px, where the
-        // layout pads every screen via --android-inset-top.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            getWindow().setDecorFitsSystemWindows(false);
-        }
-
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
@@ -59,23 +48,13 @@ public class MainActivity extends Activity {
         webView.addJavascriptInterface(new AndroidBridge(), "QantrixAndroid");
         webView.setWebViewClient(new EmbeddedWebViewClient());
 
+        // The WebView draws edge-to-edge under the system bars on some devices (e.g. Samsung)
+        // without reliably exposing env(safe-area-inset-*) to CSS. Read the real insets and
+        // push them to the web layer as CSS px so the layout can pad the status/nav bars.
         final float density = getResources().getDisplayMetrics().density;
         webView.setOnApplyWindowInsetsListener((v, insets) -> {
-            int topPx;
-            int bottomPx;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                // Take the max of the modern inset and the legacy value: some devices report the
-                // full status-bar height only via one of them.
-                Insets bars = insets.getInsets(WindowInsets.Type.systemBars()
-                        | WindowInsets.Type.displayCutout());
-                topPx = Math.max(bars.top, insets.getSystemWindowInsetTop());
-                bottomPx = Math.max(bars.bottom, insets.getSystemWindowInsetBottom());
-            } else {
-                topPx = insets.getSystemWindowInsetTop();
-                bottomPx = insets.getSystemWindowInsetBottom();
-            }
-            lastInsetTop = Math.round(topPx / density);
-            lastInsetBottom = Math.round(bottomPx / density);
+            lastInsetTop = Math.round(insets.getSystemWindowInsetTop() / density);
+            lastInsetBottom = Math.round(insets.getSystemWindowInsetBottom() / density);
             pushSafeAreaInsets();
             return insets;
         });
