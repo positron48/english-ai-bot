@@ -113,7 +113,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref } from 'vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import {
@@ -193,7 +193,18 @@ async function send() {
   }
 }
 
-onMounted(async () => {
+// loadForRoute (re)loads the list or the active session for the current route. It must run on
+// every scenarioCode change, not just onMounted: PublicLayout keys <router-view> by course code,
+// so navigating list -> scenario reuses this same component instance and onMounted does not re-fire.
+async function loadForRoute() {
+  loading.value = true
+  loadError.value = ''
+  session.value = null
+  messages.value = []
+  tasks.value = []
+  questPassed.value = false
+  budgetExhausted.value = false
+  status.value = 'open'
   try {
     await ensureCourseLoaded()
     const course = currentCourseCode.value || undefined
@@ -219,7 +230,10 @@ onMounted(async () => {
   } finally {
     loading.value = false
   }
-})
+}
+
+watch(scenarioCode, () => { loadForRoute() })
+onMounted(loadForRoute)
 </script>
 
 <style scoped>
