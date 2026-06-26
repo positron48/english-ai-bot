@@ -484,7 +484,7 @@ onMounted(() => {
 
 /* ─── New home header ─── */
 .lg-home-header {
-  padding: 22px 4px 0;
+  padding: 16px 4px 0;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
