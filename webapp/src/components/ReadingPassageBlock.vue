@@ -138,37 +138,26 @@
             <span class="feedback-text">{{ t('reading.quizResult', { percent: quizPercent, correct: quizCorrectCount, total: quizQuestions.length }) }}</span>
           </div>
         </div>
-        <div v-if="currentWrongExplanation" class="translation" style="margin-top:10px">{{ currentWrongExplanation }}</div>
-        <div v-if="quizResultMessage" class="translation" style="margin-top:10px">{{ quizResultMessage }}</div>
+        <div v-if="!quizDone && currentWrongExplanation" class="translation" style="margin-top:10px">{{ currentWrongExplanation }}</div>
         <div style="display:flex; gap:8px; margin-top:14px">
-          <button type="button" class="word-modal-close-btn" @click="closeQuiz">{{ t('common.close') }}</button>
-          <button
-            v-if="!quizDone && quizIndex < quizQuestions.length - 1"
-            type="button"
-            class="word-modal-close-btn"
-            :disabled="!quizAnswers[quizIndex]"
-            @click="nextQuizQuestion"
-          >
-            {{ t('common.next') }}
-          </button>
-          <button
-            v-else-if="!quizDone"
-            type="button"
-            class="word-modal-close-btn"
-            :disabled="markingRead || !allQuizAnswered"
-            @click="finishQuiz"
-          >
-            {{ t('reading.quizFinish') }}
-          </button>
-          <button
-            v-else-if="quizCorrectCount >= passThreshold"
-            type="button"
-            class="word-modal-close-btn"
-            :disabled="markingRead"
-            @click="submitQuizAndMarkRead"
-          >
-            {{ t('reading.quizMarkRead') }}
-          </button>
+          <template v-if="quizDone">
+            <button
+              v-if="quizCorrectCount >= passThreshold"
+              type="button"
+              class="word-modal-close-btn"
+              :disabled="markingRead"
+              @click="backToList"
+            >
+              {{ t('reading.quizBackToList') }}
+            </button>
+            <template v-else>
+              <button type="button" class="word-modal-close-btn" :disabled="markingRead" @click="retryQuiz">
+                {{ t('reading.quizRetry') }}
+              </button>
+              <button type="button" class="word-modal-close-btn" @click="closeQuiz">{{ t('common.close') }}</button>
+            </template>
+          </template>
+          <button v-else type="button" class="word-modal-close-btn" @click="closeQuiz">{{ t('common.close') }}</button>
         </div>
       </div>
     </div>
@@ -236,36 +225,46 @@ const otherUnreadInCategoryCount = ref(0)
 const randomUnreadNavigating = ref(false)
 const quizOpen = ref(false)
 const quizAnswers = ref<Record<number, string>>({})
-const quizResultMessage = ref('')
 const quizIndex = ref(0)
 const quizAnswered = ref<Record<number, boolean>>({})
 const quizCorrectMap = ref<Record<number, boolean>>({})
 const quizDone = ref(false)
 const quizPercent = ref(0)
 
+const MAX_QUIZ_QUESTIONS = 3
+
 const segments = computed(() => props.block?.reading_passage?.segments || [])
-const quizQuestions = computed(() => {
+const quizPool = computed(() => {
   const raw = props.block?.reading_passage?.comprehension_questions
   return Array.isArray(raw) ? raw : []
 })
+// Subset (max 3, random order) chosen each time the quiz opens.
+const quizQuestions = ref<any[]>([])
+// Strictly more than 50% correct is required to mark the text as read.
 const passThreshold = computed(() => {
   const n = quizQuestions.value.length
   if (n <= 0) return 0
-  return Math.ceil(n / 2)
+  return Math.floor(n / 2) + 1
 })
+
+function shuffle<T>(arr: T[]): T[] {
+  const a = arr.slice()
+  for (let i = a.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[a[i], a[j]] = [a[j], a[i]]
+  }
+  return a
+}
+
+function pickQuizQuestions(): any[] {
+  return shuffle(quizPool.value).slice(0, MAX_QUIZ_QUESTIONS)
+}
 const quizQuestionCurrent = computed(() => {
   const q = quizQuestions.value[quizIndex.value] || {}
   if (String(q?.type || '').toLowerCase() === 'true_false' || !Array.isArray(q?.choices) || !q.choices.length) {
     return { ...q, type: 'true_false' as const }
   }
   return { ...q, type: 'mcq_single' as const }
-})
-const allQuizAnswered = computed(() => {
-  const n = quizQuestions.value.length
-  for (let i = 0; i < n; i += 1) {
-    if (!normalizeAnswer(quizAnswers.value[i])) return false
-  }
-  return n > 0
 })
 const quizCorrectCount = computed(() => Object.values(quizCorrectMap.value).filter(Boolean).length)
 const currentWrongExplanation = computed(() => {
@@ -502,14 +501,24 @@ const markRead = async () => {
     await markReadDirect()
     return
   }
+  quizQuestions.value = pickQuizQuestions()
+  resetQuizState()
+  quizOpen.value = true
+}
+
+function resetQuizState() {
   quizAnswers.value = {}
-  quizResultMessage.value = ''
   quizIndex.value = 0
   quizAnswered.value = {}
   quizCorrectMap.value = {}
   quizDone.value = false
   quizPercent.value = 0
-  quizOpen.value = true
+}
+
+function retryQuiz() {
+  if (markingRead.value) return
+  quizQuestions.value = pickQuizQuestions()
+  resetQuizState()
 }
 
 const closeQuiz = () => {
@@ -518,7 +527,7 @@ const closeQuiz = () => {
 }
 
 function isReadQuestionGateEnabled(): boolean {
-  return quizQuestions.value.length > 0
+  return quizPool.value.length > 0
 }
 
 function normalizeAnswer(v: unknown): string {
@@ -538,42 +547,31 @@ function onQuizAnswer(answer: any) {
   setTimeout(() => {
     if (quizDone.value || !quizOpen.value) return
     if (idx !== quizIndex.value) return
-    if (ok && idx < quizQuestions.value.length - 1) quizIndex.value += 1
+    // Advance regardless of correctness; auto-finish after the last question.
+    if (idx < quizQuestions.value.length - 1) {
+      quizIndex.value += 1
+    } else {
+      void finishQuiz()
+    }
   }, ok ? 700 : 1000)
 }
-function nextQuizQuestion() {
-  if (quizIndex.value < quizQuestions.value.length - 1) quizIndex.value += 1
-}
 
-const submitQuizAndMarkRead = async () => {
-  const questions = quizQuestions.value
-  if (!questions.length) {
-    await markReadDirect()
-    return
-  }
-  let correct = 0
-  for (let i = 0; i < questions.length; i += 1) {
-    const q = questions[i]
-    const got = normalizeAnswer(quizAnswers.value[i])
-    const want = normalizeAnswer(q?.correct_answer)
-    if (got && want && got === want) correct += 1
-  }
-  const needed = passThreshold.value
-  if (correct < needed) {
-    quizResultMessage.value = `Недостаточно верных ответов: ${correct}/${questions.length}. Нужно минимум ${needed}.`
-    return
-  }
-  quizResultMessage.value = `Отлично: ${correct}/${questions.length}. Отмечаю как прочитанное.`
-  await markReadDirect()
-  quizOpen.value = false
-}
-
-const finishQuiz = () => {
+const finishQuiz = async () => {
   const total = quizQuestions.value.length
   const correct = quizCorrectCount.value
   quizDone.value = true
   quizPercent.value = total > 0 ? Math.round((correct * 100) / total) : 0
-  triggerHapticFeedback(correct >= passThreshold.value)
+  const passed = correct >= passThreshold.value
+  triggerHapticFeedback(passed)
+  // Pass = strictly more than 50% correct -> mark read immediately.
+  if (passed && !props.isRead) {
+    await markReadDirect()
+  }
+}
+
+const backToList = async () => {
+  quizOpen.value = false
+  await goBack()
 }
 
 const playCorrectSound = () => {

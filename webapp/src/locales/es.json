@@ -465,6 +465,10 @@
     "quizResult": "Resultado: {percent}% ({correct}/{total})",
     "quizFinish": "Finalizar quiz",
     "quizMarkRead": "Marcar como leído",
+    "quizBackToList": "Volver a la lista de textos",
+    "quizRetry": "Intentar de nuevo",
+    "quizPassed": "Texto marcado como leído",
+    "quizFailed": "Respuestas correctas insuficientes",
     "deleteConfirm": "¿Eliminar «{title}» y todos los archivos relacionados?",
     "deleteSuccess": "Texto de lectura eliminado.",
     "deleteFailed": "No se pudo eliminar el texto."

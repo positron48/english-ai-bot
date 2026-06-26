@@ -504,6 +504,10 @@
     "quizResult": "Result: {percent}% ({correct}/{total})",
     "quizFinish": "Finish quiz",
     "quizMarkRead": "Mark as read",
+    "quizBackToList": "Back to text list",
+    "quizRetry": "Try again",
+    "quizPassed": "Text marked as read",
+    "quizFailed": "Not enough correct answers",
     "deleteConfirm": "Delete \"{title}\" and all related files?",
     "deleteSuccess": "Reading text deleted.",
     "deleteFailed": "Could not delete reading text."
