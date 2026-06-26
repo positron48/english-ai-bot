@@ -29,11 +29,6 @@ const router = createRouter({
           component: () => import('../views/AdminCircuitBreakerView.vue')
         },
         {
-          path: 'prompt-tester',
-          name: 'AdminPromptTester',
-          component: () => import('../views/AdminPromptTesterView.vue')
-        },
-        {
           path: 'content-reports',
           name: 'AdminContentReports',
           component: () => import('../views/AdminContentReportsView.vue')

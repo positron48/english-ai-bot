@@ -572,6 +572,15 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/admin/lumi-facts": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Управление Lumi-фактами",
+                "responses": {}
+            }
+        },
         "/api/admin/orphaned-cards": {
             "get": {
                 "security": [
@@ -789,104 +798,6 @@ const docTemplate = `{
                     },
                     "404": {
                         "description": "Карточка не найдена",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/admin/prompt-tester/default-prompts": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Возвращает дефолтные промпты для word data и training cards из конфигурации",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Admin"
-                ],
-                "summary": "Получить дефолтные промпты",
-                "responses": {
-                    "200": {
-                        "description": "Дефолтные промпты",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "401": {
-                        "description": "Неавторизован",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "403": {
-                        "description": "Доступ запрещен",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/admin/prompt-tester/run": {
-            "post": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Прогоняет список слов через LLM с указанными промптами и возвращает результаты в формате NDJSON stream",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/x-ndjson"
-                ],
-                "tags": [
-                    "Admin"
-                ],
-                "summary": "Запустить тестирование промптов",
-                "parameters": [
-                    {
-                        "description": "Запрос с словами и промптами",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/internal_web.PromptTesterRunRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "NDJSON stream событий",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "400": {
-                        "description": "Неверный запрос",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "401": {
-                        "description": "Неавторизован",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "403": {
-                        "description": "Доступ запрещен",
                         "schema": {
                             "type": "string"
                         }
@@ -1956,6 +1867,26 @@ const docTemplate = `{
                         }
                     }
                 }
+            }
+        },
+        "/api/admin/word-sets/sync-districts": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Синхронизировать словарные наборы с районами города",
+                "responses": {}
             }
         },
         "/api/admin/word-sets/{id}": {
@@ -3525,6 +3456,233 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/linglow/activity": {
+            "post": {
+                "description": "Принимает heartbeat с количеством активных секунд и копит их в дневной статистике курса",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Linglow"
+                ],
+                "summary": "Записать активное время обучения",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/linglow/conversation/scenarios": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Linglow"
+                ],
+                "summary": "Сценарии общения в районе",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/linglow/conversation/sessions": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Linglow"
+                ],
+                "summary": "Начать сессию общения",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/linglow/district-extras": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Linglow"
+                ],
+                "summary": "Открытия и задачи дня района",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/linglow/lumi-fact": {
+            "get": {
+                "description": "Возвращает факт дня для пары (курс, контекст, локаль) с ротацией «самый давно не показанный — следующий»",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Linglow"
+                ],
+                "summary": "Факт дня от Lumi",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "204": {
+                        "description": "Фактов нет"
+                    }
+                }
+            }
+        },
+        "/api/linglow/stats": {
+            "get": {
+                "description": "Стрик, ритм недели, метрики месяца (минуты/слова/тексты/диалоги), навыки по режимам, любимый район",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Linglow"
+                ],
+                "summary": "Сводная статистика обучения",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/linglow/word-progress": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Возвращает список всех слов пользователя с статистикой (общее количество карточек, количество готовых к повторению, дата последнего повторения). Поддерживает пагинацию и поиск.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/json"
+                ],
+                "tags": [
+                    "Vocab",
+                    "Linglow"
+                ],
+                "summary": "Прогресс по словам в разрезе уровней",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Поиск по слову",
+                        "name": "search",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Фильтр по уровню мастерства: new, learning, mastered, known",
+                        "name": "mastery_level",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Номер страницы (начиная с 1)",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Количество элементов на странице (по умолчанию 25)",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "401": {
+                        "description": "Неавторизован",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "405": {
+                        "description": "Метод не разрешен",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/me": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Профиль текущего пользователя",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
         "/api/settings": {
             "get": {
                 "security": [
@@ -3532,7 +3690,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Возвращает текущие настройки пользователя",
+                "description": "Возвращает текущие настройки пользователя и блок learning (pair, native_lang, target_lang, имена целевого языка) для мультиязычного UI",
                 "consumes": [
                     "application/json"
                 ],
@@ -3871,12 +4029,14 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "produces": [
+                    "application/json",
                     "application/json"
                 ],
                 "tags": [
-                    "Vocab"
+                    "Vocab",
+                    "Linglow"
                 ],
-                "summary": "Получить список слов",
+                "summary": "Прогресс по словам в разрезе уровней",
                 "parameters": [
                     {
                         "type": "string",
@@ -3905,7 +4065,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Список слов с статистикой",
+                        "description": "OK",
                         "schema": {
                             "type": "object",
                             "additionalProperties": true
@@ -4327,23 +4487,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "internal_web.PromptTesterRunRequest": {
-            "type": "object",
-            "properties": {
-                "training_prompt": {
-                    "type": "string"
-                },
-                "word_prompt": {
-                    "type": "string"
-                },
-                "words": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                }
-            }
-        },
         "internal_web.RefreshTokenRequest": {
             "type": "object",
             "properties": {

@@ -73,16 +73,6 @@
         <Icon name="toggle" class="admin-sidebar-icon" />
         <span>Circuit Breaker</span>
       </router-link>
-      <router-link 
-        v-if="can('full_access')"
-        to="/prompt-tester" 
-        class="admin-sidebar-item" 
-        :class="{ active: $route.path === '/prompt-tester' }"
-        @click="isMobile && handleCloseSidebar()"
-      >
-        <Icon name="code" class="admin-sidebar-icon" />
-        <span>Prompt Tester</span>
-      </router-link>
       <router-link
         v-if="can('full_access')"
         to="/content-reports"

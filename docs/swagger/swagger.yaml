@@ -1,16 +1,5 @@
 basePath: /
 definitions:
-  internal_web.PromptTesterRunRequest:
-    properties:
-      training_prompt:
-        type: string
-      word_prompt:
-        type: string
-      words:
-        items:
-          type: string
-        type: array
-    type: object
   internal_web.RefreshTokenRequest:
     properties:
       refresh_token:
@@ -416,6 +405,12 @@ paths:
       summary: Переименовать категорию/главу
       tags:
       - Admin
+  /api/admin/lumi-facts:
+    get:
+      responses: {}
+      summary: Управление Lumi-фактами
+      tags:
+      - Admin
   /api/admin/orphaned-cards:
     get:
       consumes:
@@ -563,70 +558,6 @@ paths:
       summary: Удалить подвешенную user карточку
       tags:
       - Admin
-  /api/admin/prompt-tester/default-prompts:
-    get:
-      consumes:
-      - application/json
-      description: Возвращает дефолтные промпты для word data и training cards из
-        конфигурации
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Дефолтные промпты
-          schema:
-            additionalProperties: true
-            type: object
-        "401":
-          description: Неавторизован
-          schema:
-            type: string
-        "403":
-          description: Доступ запрещен
-          schema:
-            type: string
-      security:
-      - ApiKeyAuth: []
-      summary: Получить дефолтные промпты
-      tags:
-      - Admin
-  /api/admin/prompt-tester/run:
-    post:
-      consumes:
-      - application/json
-      description: Прогоняет список слов через LLM с указанными промптами и возвращает
-        результаты в формате NDJSON stream
-      parameters:
-      - description: Запрос с словами и промптами
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/internal_web.PromptTesterRunRequest'
-      produces:
-      - application/x-ndjson
-      responses:
-        "200":
-          description: NDJSON stream событий
-          schema:
-            type: string
-        "400":
-          description: Неверный запрос
-          schema:
-            type: string
-        "401":
-          description: Неавторизован
-          schema:
-            type: string
-        "403":
-          description: Доступ запрещен
-          schema:
-            type: string
-      security:
-      - ApiKeyAuth: []
-      summary: Запустить тестирование промптов
-      tags:
-      - Admin
   /api/admin/stats:
     get:
       consumes:
@@ -706,7 +637,8 @@ paths:
         in: formData
         name: distractors_ru
         type: string
-      - description: Отвлекающие варианты на изучаемом языке (target, JSON array) (для POST)
+      - description: Отвлекающие варианты на изучаемом языке (target, JSON array)
+          (для POST)
         in: formData
         name: distractors_en
         type: string
@@ -797,7 +729,8 @@ paths:
         in: formData
         name: distractors_ru
         type: string
-      - description: Отвлекающие варианты на изучаемом языке (target, JSON array) (для POST)
+      - description: Отвлекающие варианты на изучаемом языке (target, JSON array)
+          (для POST)
         in: formData
         name: distractors_en
         type: string
@@ -889,7 +822,8 @@ paths:
         in: formData
         name: distractors_ru
         type: string
-      - description: Отвлекающие варианты на изучаемом языке (target, JSON array) (для POST)
+      - description: Отвлекающие варианты на изучаемом языке (target, JSON array)
+          (для POST)
         in: formData
         name: distractors_en
         type: string
@@ -1454,6 +1388,18 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Управление наборами слов
+      tags:
+      - Admin
+  /api/admin/word-sets/sync-districts:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - ApiKeyAuth: []
+      summary: Синхронизировать словарные наборы с районами города
       tags:
       - Admin
   /api/admin/words:
@@ -2367,11 +2313,166 @@ paths:
       summary: Добавить слово в тренировку
       tags:
       - Learning
+  /api/linglow/activity:
+    post:
+      consumes:
+      - application/json
+      description: Принимает heartbeat с количеством активных секунд и копит их в
+        дневной статистике курса
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Записать активное время обучения
+      tags:
+      - Linglow
+  /api/linglow/conversation/scenarios:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Сценарии общения в районе
+      tags:
+      - Linglow
+  /api/linglow/conversation/sessions:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Начать сессию общения
+      tags:
+      - Linglow
+  /api/linglow/district-extras:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Открытия и задачи дня района
+      tags:
+      - Linglow
+  /api/linglow/lumi-fact:
+    get:
+      description: Возвращает факт дня для пары (курс, контекст, локаль) с ротацией
+        «самый давно не показанный — следующий»
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "204":
+          description: Фактов нет
+      summary: Факт дня от Lumi
+      tags:
+      - Linglow
+  /api/linglow/stats:
+    get:
+      description: Стрик, ритм недели, метрики месяца (минуты/слова/тексты/диалоги),
+        навыки по режимам, любимый район
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Сводная статистика обучения
+      tags:
+      - Linglow
+  /api/linglow/word-progress:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает список всех слов пользователя с статистикой (общее количество
+        карточек, количество готовых к повторению, дата последнего повторения). Поддерживает
+        пагинацию и поиск.
+      parameters:
+      - description: Поиск по слову
+        in: query
+        name: search
+        type: string
+      - description: 'Фильтр по уровню мастерства: new, learning, mastered, known'
+        in: query
+        name: mastery_level
+        type: string
+      - description: Номер страницы (начиная с 1)
+        in: query
+        name: page
+        type: integer
+      - description: Количество элементов на странице (по умолчанию 25)
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Неавторизован
+          schema:
+            type: string
+        "405":
+          description: Метод не разрешен
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Прогресс по словам в разрезе уровней
+      tags:
+      - Vocab
+      - Linglow
+  /api/me:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Профиль текущего пользователя
+      tags:
+      - Auth
   /api/settings:
     get:
       consumes:
       - application/json
-      description: Возвращает текущие настройки пользователя
+      description: Возвращает текущие настройки пользователя и блок learning (pair,
+        native_lang, target_lang, имена целевого языка) для мультиязычного UI
       produces:
       - application/json
       responses:
@@ -2612,9 +2713,10 @@ paths:
         type: integer
       produces:
       - application/json
+      - application/json
       responses:
         "200":
-          description: Список слов с статистикой
+          description: OK
           schema:
             additionalProperties: true
             type: object
@@ -2632,9 +2734,10 @@ paths:
             type: string
       security:
       - ApiKeyAuth: []
-      summary: Получить список слов
+      summary: Прогресс по словам в разрезе уровней
       tags:
       - Vocab
+      - Linglow
   /api/vocab/{word}:
     get:
       consumes:

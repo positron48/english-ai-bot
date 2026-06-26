@@ -650,8 +650,6 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/admin/circuit/open", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminCircuitOpen))))
 	r.mux.HandleFunc("/api/admin/circuit/tts", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminTTSCircuitStatus))))
 	r.mux.HandleFunc("/api/admin/circuit/tts/reset", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminTTSCircuitReset))))
-	r.mux.HandleFunc("/api/admin/prompt-tester/default-prompts", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminPromptTesterDefaultPrompts))))
-	r.mux.HandleFunc("/api/admin/prompt-tester/run", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminPromptTesterRun))))
 	r.mux.HandleFunc("/api/admin/content-reports", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminContentReports))))
 	r.mux.HandleFunc("/api/admin/content-reports/", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminContentReportByID))))
 	r.mux.HandleFunc("/api/admin/linglow/srs-readiness", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminLinglowSRSReadiness))))
