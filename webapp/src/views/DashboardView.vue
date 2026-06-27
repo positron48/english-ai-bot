@@ -223,7 +223,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useAuth } from '../composables/useAuth'
@@ -253,6 +253,26 @@ const { currentCourse, currentCourseCode } = useCourse()
 
 const linglowProgress = ref<CourseProgress | null>(null)
 const dailyToday = ref<NonNullable<DailyRoute['today']> | null>(null)
+const lastGrammarChapter = ref<{ id: string; title: string; url: string } | null>(null)
+
+const loadLastGrammarChapter = () => {
+  try {
+    const stored = localStorage.getItem('linglow:last-grammar-chapter')
+    if (!stored) {
+      lastGrammarChapter.value = null
+      return
+    }
+    const parsed = JSON.parse(stored) as { id?: unknown; title?: unknown; url?: unknown }
+    const title = typeof parsed.title === 'string' ? parsed.title.trim() : ''
+    const url = typeof parsed.url === 'string' ? parsed.url.trim() : ''
+    const id = typeof parsed.id === 'string' ? parsed.id : ''
+    lastGrammarChapter.value = title && url.startsWith('/learning/grammar/chapter/')
+      ? { id, title, url }
+      : null
+  } catch {
+    lastGrammarChapter.value = null
+  }
+}
 
 // "Today's path" rows: generated from the daily route, done steps sink to the bottom
 const pathSteps = computed(() => {
@@ -265,6 +285,16 @@ const pathSteps = computed(() => {
       key: 'words', type: 'words', done: wordsDone,
       title: wordsDone ? t('lg.repeatWordsDone') : (t as any)('lg.repeatWords', wordsLeft, { n: wordsLeft }),
       sub: t('lg.repeatWordsSub'), to: '/training',
+    })
+  }
+  if (lastGrammarChapter.value) {
+    steps.push({
+      key: 'grammar-last',
+      type: 'grammar',
+      done: false,
+      title: t('lg.quickStudyGrammar'),
+      sub: lastGrammarChapter.value.title,
+      to: lastGrammarChapter.value.url,
     })
   }
   const suggestion = today?.reading_suggestion
@@ -418,10 +448,16 @@ watch(isAuthenticated, (authenticated) => {
 }, { immediate: true })
 
 onMounted(() => {
+  loadLastGrammarChapter()
+  window.addEventListener('focus', loadLastGrammarChapter)
   if (isAuthenticated.value) {
     loadData()
     void ensureMe().catch(() => {})
   }
+})
+
+onUnmounted(() => {
+  window.removeEventListener('focus', loadLastGrammarChapter)
 })
 </script>
 

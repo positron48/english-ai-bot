@@ -77,6 +77,12 @@ const router = createRouter({
           meta: { requiresAuth: true, navTab: 'practice' }
         },
         {
+          path: 'learning/conversations',
+          name: 'ConversationNpcList',
+          component: () => import('../views/ConversationNpcListView.vue'),
+          meta: { requiresAuth: true, navTab: 'practice' }
+        },
+        {
           path: 'learning/grammar',
           name: 'LearningGrammar',
           component: () => import('../views/GrammarCategoriesView.vue'),

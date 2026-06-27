@@ -63,3 +63,16 @@ func TestParseStringJSONArray(t *testing.T) {
 		t.Fatalf("%#v", got)
 	}
 }
+
+func TestNormalizeVerbFormat_StripsEnglishToForSpanishTarget(t *testing.T) {
+	svc := NewOptionsService(nil, nil, "es")
+	got := svc.normalizeVerbFormat("to hablar", "verb", "ru_en")
+	if got != "hablar" {
+		t.Fatalf("got %q, want hablar", got)
+	}
+
+	enSvc := NewOptionsService(nil, nil, "en")
+	if got := enSvc.normalizeVerbFormat("speak", "verb", "ru_en"); got != "to speak" {
+		t.Fatalf("English target should keep infinitive marker, got %q", got)
+	}
+}

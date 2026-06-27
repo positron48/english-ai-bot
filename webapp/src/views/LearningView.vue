@@ -71,16 +71,6 @@
       <LgIcon name="chevron-right" :s="16" c="var(--text-muted)" />
     </router-link>
 
-    <!-- AI conversations (Pro only) -->
-    <router-link v-if="!isOffline && isPro" to="/city" class="lg-card practice-dict">
-      <div class="practice-dict-left">
-        <div class="practice-dict-emoji"><LgActivityIcon type="words" status="green" :size="28" /></div>
-        <div class="practice-dict-title">{{ t('lg.quickChat') }}</div>
-        <div class="practice-dict-sub">{{ t('lg.quickChatSub') }}</div>
-      </div>
-      <LgIcon name="chevron-right" :s="16" c="var(--text-muted)" />
-    </router-link>
-
     <!-- Lumi fact -->
     <LgLumiFact :lumi-size="46" context="practice" />
   </div>
@@ -107,35 +97,59 @@ const vocabSummaryText = ref('')
 
 const lastGrammarChapter = ref<{ id: string; title: string; url: string } | null>(null)
 
-const modes = computed(() => [
-  {
-    type: 'words' as const,
-    bg: 'rgba(45,107,58,0.10)',
-    title: t('learning.words'),
-    desc: t('learning.wordsDescription'),
-    art: artWords,
-    to: '/learning/words',
-    disabled: isOffline.value,
-  },
-  {
-    type: 'grammar' as const,
-    bg: 'rgba(45,107,58,0.10)',
-    title: t('learning.grammar'),
-    desc: t('learning.grammarDescription'),
-    art: artGrammar,
-    to: '/learning/grammar',
-    disabled: false,
-  },
-  {
-    type: 'reading' as const,
-    bg: 'rgba(45,107,58,0.10)',
-    title: t('learning.reading'),
-    desc: t('learning.readingDescription'),
-    art: artReading,
-    to: '/learning/reading',
-    disabled: isOffline.value,
-  },
-])
+interface PracticeMode {
+  type: 'words' | 'grammar' | 'reading' | 'conversation'
+  bg: string
+  title: string
+  desc: string
+  art: string
+  to: string
+  disabled: boolean
+}
+
+const modes = computed(() => {
+  const items: PracticeMode[] = [
+    {
+      type: 'words',
+      bg: 'rgba(45,107,58,0.10)',
+      title: t('learning.words'),
+      desc: t('learning.wordsDescription'),
+      art: artWords,
+      to: '/learning/words',
+      disabled: isOffline.value,
+    },
+    {
+      type: 'grammar',
+      bg: 'rgba(45,107,58,0.10)',
+      title: t('learning.grammar'),
+      desc: t('learning.grammarDescription'),
+      art: artGrammar,
+      to: '/learning/grammar',
+      disabled: false,
+    },
+    {
+      type: 'reading',
+      bg: 'rgba(45,107,58,0.10)',
+      title: t('learning.reading'),
+      desc: t('learning.readingDescription'),
+      art: artReading,
+      to: '/learning/reading',
+      disabled: isOffline.value,
+    },
+  ]
+  if (isPro.value) {
+    items.push({
+      type: 'conversation',
+      bg: 'rgba(45,107,58,0.10)',
+      title: t('learning.conversation'),
+      desc: t('learning.conversationDescription'),
+      art: '/app/linglow/city/level3.jpg',
+      to: '/learning/conversations',
+      disabled: isOffline.value,
+    })
+  }
+  return items
+})
 
 const handleNetworkChange = () => {
   isOffline.value = typeof navigator !== 'undefined' && navigator.onLine === false

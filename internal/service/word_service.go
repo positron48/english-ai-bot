@@ -330,26 +330,27 @@ func (s *WordService) getWordDefinitionForCourse(ctx context.Context, userID int
 	normalizedWord := s.NormalizeWord(word)
 	inputWord := word // Keep original for history
 
-	// Step 1: Try to resolve word form to lemma via word_forms table
-	wordForm, err := s.wordRepo.GetWordFormMapping(normalizedWord)
-	if err != nil {
-		s.logger.Warn("failed to get word form mapping", zap.Error(err))
-	}
-
 	var wordCard *models.WordCard
-	if wordForm != nil {
-		// Found mapping, get lemma
-		wordCard, err = s.wordRepo.GetWordCardByID(wordForm.WordCardID)
-		if err != nil {
-			s.logger.Warn("failed to get word card by ID", zap.Error(err))
-		}
+
+	// Step 1: Prefer a direct lemma match in the selected course. A global
+	// word_forms hit for the same spelling must not shadow the learner's course.
+	wordCard, err := s.wordRepo.GetWordCardByLemmaForCourse(normalizedWord, courseCode)
+	if err != nil {
+		s.logger.Warn("failed to get word card by lemma", zap.Error(err))
 	}
 
-	// Step 2: If no mapping found, try direct lookup by lemma
+	// Step 2: If no lemma exists in this course, resolve form -> lemma through a
+	// course-scoped mapping only. No global fallback: it can leak another course.
 	if wordCard == nil {
-		wordCard, err = s.wordRepo.GetWordCardByLemmaForCourse(normalizedWord, courseCode)
+		wordForm, err := s.wordRepo.GetWordFormMappingForCourse(normalizedWord, courseCode)
 		if err != nil {
-			s.logger.Warn("failed to get word card by lemma", zap.Error(err))
+			s.logger.Warn("failed to get word form mapping", zap.Error(err))
+		}
+		if wordForm != nil {
+			wordCard, err = s.wordRepo.GetWordCardByID(wordForm.WordCardID)
+			if err != nil {
+				s.logger.Warn("failed to get word card by ID", zap.Error(err))
+			}
 		}
 	}
 

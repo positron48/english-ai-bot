@@ -24,11 +24,12 @@
           <button
             type="button"
             class="icon-button"
-            :class="{ active: isAutoplaying }"
-            aria-label="Автовоспроизведение"
+            :class="{ 'icon-button--stop': isAutoplaying }"
+            :aria-label="isAutoplaying ? 'Остановить текст' : 'Автовоспроизведение'"
+            :title="isAutoplaying ? 'Остановить текст' : 'Автовоспроизведение'"
             @click="toggleAutoplay"
           >
-            <Icon name="play" />
+            <Icon :name="isAutoplaying ? 'stop' : 'play'" />
           </button>
         </div>
       </header>
@@ -84,7 +85,9 @@
               v-if="segment.audio_rel_path"
               type="button"
               class="sentence-audio-button"
+              :class="{ 'sentence-audio-button--stop': activeSegmentId === segment.segment_id }"
               :aria-label="activeSegmentId === segment.segment_id ? 'Остановить' : 'Озвучить предложение'"
+              :title="activeSegmentId === segment.segment_id ? 'Остановить' : 'Озвучить предложение'"
               @click.stop="activeSegmentId === segment.segment_id ? stopCurrentAudio() : playSingleSegment(segment)"
             >
               <Icon :name="activeSegmentId === segment.segment_id ? 'stop' : 'play'" />
@@ -278,6 +281,7 @@ const activeSegmentId = ref<string | null>(null)
 const selectedTokenKey = ref('')
 const isAutoplaying = ref(false)
 let currentAudio: HTMLAudioElement | null = null
+let currentAudioFinish: (() => void) | null = null
 let autoplayRun = 0
 
 /** Distinct hues for dialogue speakers (first appearance order). */
@@ -351,10 +355,14 @@ const readingImageUrl = (relPath: string) => {
 const isNarrator = (segment: any) => String(segment?.speaker_id || '').toLowerCase() === 'narrator'
 
 const stopCurrentAudio = () => {
-  if (!currentAudio) return
-  currentAudio.pause()
-  currentAudio.currentTime = 0
+  const audio = currentAudio
+  if (!audio) return
   currentAudio = null
+  audio.pause()
+  audio.currentTime = 0
+  const finish = currentAudioFinish
+  currentAudioFinish = null
+  finish?.()
   activeSegmentId.value = null
 }
 
@@ -365,13 +373,21 @@ const playSegmentAudio = async (audioRelPath: string) => {
   stopCurrentAudio()
   const audio = new Audio(url)
   currentAudio = audio
-  await audio.play().catch((error) => {
-    console.error('Failed to play segment audio', error)
-  })
   await new Promise<void>((resolve) => {
-    const finish = () => resolve()
+    const finish = () => {
+      audio.removeEventListener('ended', finish)
+      audio.removeEventListener('error', finish)
+      if (currentAudio === audio) currentAudio = null
+      if (currentAudioFinish === finish) currentAudioFinish = null
+      resolve()
+    }
+    currentAudioFinish = finish
     audio.addEventListener('ended', finish, { once: true })
     audio.addEventListener('error', finish, { once: true })
+    audio.play().catch((error) => {
+      console.error('Failed to play segment audio', error)
+      finish()
+    })
   })
 }
 
@@ -726,13 +742,18 @@ const openRandomUnreadInCategory = async () => {
   font-size: 16px;
 }
 
-.icon-button.active {
-  color: var(--color-primary);
-  border-color: var(--color-primary);
+.icon-button--stop {
+  background: color-mix(in srgb, var(--error, #C04A2B) 16%, var(--bg-tertiary));
+  color: var(--error, #C04A2B);
+  border-color: color-mix(in srgb, var(--error, #C04A2B) 45%, var(--border-primary));
 }
 
 .icon-button:hover {
   background: var(--bg-hover);
+}
+
+.icon-button--stop:hover {
+  background: color-mix(in srgb, var(--error, #C04A2B) 22%, var(--bg-hover));
 }
 
 .icon-button-danger {
@@ -857,9 +878,15 @@ const openRandomUnreadInCategory = async () => {
   cursor: pointer;
 }
 
-.sentence-row.active .sentence-audio-button {
-  background: var(--bg-hover);
-  color: var(--text-primary);
+.sentence-audio-button--stop {
+  background: var(--error, #C04A2B);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--error, #C04A2B) 28%, transparent);
+}
+
+.sentence-audio-button--stop:hover {
+  background: color-mix(in srgb, var(--error, #C04A2B) 86%, #000);
 }
 
 .word-modal-overlay {

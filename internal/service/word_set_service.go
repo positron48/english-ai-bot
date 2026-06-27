@@ -441,21 +441,23 @@ func (s *WordSetService) EnsureTrainingCardsExist(ctx context.Context, wordCardI
 
 	// Create training cards
 	for i, sense := range trainingResp.Senses {
+		// Get POS
+		pos := sense.POS
+		if pos == "" && wordCard.POS != nil {
+			pos = *wordCard.POS
+		}
+
 		// Marshal distractors
 		distractorsRU, _ := json.Marshal(sense.DistractorsRU)
-		distractorsEN, _ := json.Marshal(sense.DistractorsEN)
+		distractorsTarget := normalizeTargetVerbDisplays(s.learning.TargetLang, pos, sense.DistractorsEN)
+		distractorsEN, _ := json.Marshal(distractorsTarget)
 
 		// Determine display_word
 		displayWord := trainingResp.WordEN
 		if sense.DisplayWord != "" {
 			displayWord = sense.DisplayWord
 		}
-
-		// Get POS
-		pos := sense.POS
-		if pos == "" && wordCard.POS != nil {
-			pos = *wordCard.POS
-		}
+		displayWord = normalizeTargetVerbDisplay(s.learning.TargetLang, pos, displayWord)
 
 		trainingCard := &models.TrainingCard{
 			WordCardID:    wordCardID,

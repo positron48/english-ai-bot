@@ -433,6 +433,33 @@ func (r *WordRepository) GetWordFormMapping(form string) (*models.WordForm, erro
 	return &wf, nil
 }
 
+// GetWordFormMappingForCourse retrieves a word-form mapping only when the mapped
+// word_card belongs to courseCode. It intentionally does not fall back to a
+// different course: a same-spelled token in es_ru must never resolve to en_ru.
+func (r *WordRepository) GetWordFormMappingForCourse(form, courseCode string) (*models.WordForm, error) {
+	courseCode = strings.TrimSpace(strings.ToLower(courseCode))
+	if courseCode == "" {
+		return r.GetWordFormMapping(form)
+	}
+	query := `SELECT wf.form, wf.word_card_id
+			  FROM word_forms wf
+			  JOIN word_cards wc ON wc.id = wf.word_card_id
+			  WHERE LOWER(wf.form) = LOWER(?)
+			    AND LOWER(COALESCE(wc.course_code, '')) = LOWER(?)
+			  LIMIT 1`
+
+	var wf models.WordForm
+	err := r.db.QueryRow(query, form, courseCode).Scan(&wf.Form, &wf.WordCardID)
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, fmt.Errorf("failed to get course-scoped word form mapping: %w", err)
+	}
+
+	return &wf, nil
+}
+
 // UpsertWordFormMapping creates or updates a mapping from word form to lemma
 func (r *WordRepository) UpsertWordFormMapping(form string, wordCardID int64) error {
 	query := `INSERT INTO word_forms (form, word_card_id) 

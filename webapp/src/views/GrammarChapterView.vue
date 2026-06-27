@@ -208,7 +208,8 @@ const loadChapter = async () => {
     }
     // Track last opened grammar chapter for home quick-jump
     try {
-      const title = data.title || data.chapter?.title || chapterId.value
+      const baseTitle = data.title || data.chapter?.title || chapterId.value
+      const title = getLocalizedTitle(baseTitle, data.title_translations || data.chapter?.title_translations)
       localStorage.setItem('linglow:last-grammar-chapter', JSON.stringify({
         id: chapterId.value,
         title,

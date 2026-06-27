@@ -12309,7 +12309,14 @@
       "description": "Болезни и симптомы: нюансы: слова 1-30 из ~60 в этом наборе.",
       "sort_order": 2,
       "target_count": 30,
-      "words": []
+      "words": [
+        "afección", "dolencia", "padecimiento", "trastorno", "síndrome",
+        "exacerbación", "agudización", "tumor", "neoplasia", "metástasis",
+        "edema", "trombosis", "embolia", "isquemia", "necrosis",
+        "fibrosis", "atrofia", "hipertrofia", "hiperplasia", "displasia",
+        "ulceración", "supuración", "obstrucción", "estenosis", "aneurisma",
+        "absceso", "fístula", "hernia", "aplasia", "hipoplasia"
+      ]
     },
     {
       "level": "C1",
@@ -12318,7 +12325,14 @@
       "description": "Болезни и симптомы: нюансы: слова 31-60 из ~60 в этом наборе.",
       "sort_order": 3,
       "target_count": 30,
-      "words": []
+      "words": [
+        "febrícula", "sudoración", "astenia", "vértigo", "síncope",
+        "cefalea", "migraña", "vómito", "diarrea", "estreñimiento",
+        "disnea", "sibilancia", "ronquera", "taquicardia", "bradicardia",
+        "hipotensión", "ictericia", "cianosis", "prurito", "urticaria",
+        "parestesia", "temblor", "convulsión", "cojera", "incontinencia",
+        "hemoptisis", "epistaxis", "melena", "hematemesis", "poliuria"
+      ]
     },
     {
       "level": "C1",
@@ -12327,7 +12341,14 @@
       "description": "Диагностика, анализы, процедуры: слова 1-30 из ~60 в этом наборе.",
       "sort_order": 4,
       "target_count": 30,
-      "words": []
+      "words": [
+        "percusión", "punción", "colonoscopia", "gastroscopia", "broncoscopia",
+        "mamografía", "densitometría", "angiografía", "electroencefalograma", "espirometría",
+        "citología", "histología", "cultivo", "hemograma", "bioquímica",
+        "serología", "inmunoensayo", "uroanálisis", "coprocultivo", "antibiograma",
+        "coagulograma", "glucemia", "creatinina", "urea", "bilirrubina",
+        "transaminasa", "proteinograma", "ionograma", "gasometría", "ecocardiograma"
+      ]
     },
     {
       "level": "C1",
@@ -12336,7 +12357,14 @@
       "description": "Диагностика, анализы, процедуры: слова 31-60 из ~60 в этом наборе.",
       "sort_order": 5,
       "target_count": 30,
-      "words": []
+      "words": [
+        "biomarcador", "hisopo", "torunda", "catéter", "sonda",
+        "incisión", "sutura", "curación", "infiltración", "sedación",
+        "intubación", "extubación", "perfusión", "transfusión", "diálisis",
+        "quimioterapia", "radioterapia", "laparoscopia", "artroscopia", "cauterización",
+        "ablación", "resección", "trasplante", "férula", "yeso",
+        "oximetría", "posoperatorio", "hemodiálisis", "plasmaféresis", "toracocentesis"
+      ]
     },
     {
       "level": "C1",
@@ -12345,7 +12373,14 @@
       "description": "Лекарства, побочные эффекты, инструкции: слова 1-30 из ~55 в этом наборе.",
       "sort_order": 6,
       "target_count": 30,
-      "words": []
+      "words": [
+        "fármaco", "excipiente", "ungüento", "supositorio", "inyectable",
+        "infusión", "antihistamínico", "anticoagulante", "antidepresivo", "ansiolítico",
+        "sedante", "antipirético", "corticoide", "diurético", "laxante",
+        "antiácido", "broncodilatador", "inmunosupresor", "genérico", "dispensación",
+        "automedicación", "antiviral", "antifúngico", "antiemético", "antiepiléptico",
+        "antipsicótico", "hipnótico", "estatina", "betabloqueante", "vasodilatador"
+      ]
     },
     {
       "level": "C1",
@@ -12354,7 +12389,13 @@
       "description": "Лекарства, побочные эффекты, инструкции: слова 31-55 из ~55 в этом наборе.",
       "sort_order": 7,
       "target_count": 25,
-      "words": []
+      "words": [
+        "hepatotoxicidad", "nefrotoxicidad", "teratogenicidad", "sequedad", "ardor",
+        "enrojecimiento", "eritema", "anafilaxia", "ingerir", "diluir",
+        "agitar", "tragar", "masticar", "absorber", "metabolizar",
+        "excretar", "farmacocinética", "farmacodinámica", "biodisponibilidad", "semivida",
+        "titulación", "polifarmacia", "teratogénico", "emesis", "dispepsia"
+      ]
     },
     {
       "level": "C1",
@@ -12363,7 +12404,14 @@
       "description": "Психология и психотерапия: слова 1-30 из ~60 в этом наборе.",
       "sort_order": 8,
       "target_count": 30,
-      "words": []
+      "words": [
+        "psique", "cognición", "fobia", "obsesión", "delirio",
+        "anhedonia", "rumiación", "ira", "distimia", "ciclotimia",
+        "hipomanía", "manía", "abulia", "alexitimia", "desrealización",
+        "catatonia", "paranoia", "hipervigilancia", "evitativo", "narcisismo",
+        "desamparo", "desesperanza", "labilidad", "alexia", "apraxia",
+        "agnosia", "disforia", "eutimia", "bradipsiquia", "taquipsiquia"
+      ]
     },
     {
       "level": "C1",
@@ -12372,7 +12420,14 @@
       "description": "Психология и психотерапия: слова 31-60 из ~60 в этом наборе.",
       "sort_order": 9,
       "target_count": 30,
-      "words": []
+      "words": [
+        "psicoterapia", "conductismo", "terapeuta", "contratransferencia", "insight",
+        "desensibilización", "mindfulness", "psicoeducación", "afrontamiento", "evitación",
+        "autolesión", "suicidalidad", "mentalización", "interconsulta", "abreacción",
+        "elaboración", "autorregistro", "habituación", "reprocesamiento", "genograma",
+        "psicodrama", "biofeedback", "neurofeedback", "sociograma", "roleplaying",
+        "contracondicionamiento", "descatastrofizar", "exponerse", "verbalizar", "mentalizar"
+      ]
     },
     {
       "level": "C1",
@@ -12381,7 +12436,14 @@
       "description": "Общественное здоровье: слова 1-30 из ~55 в этом наборе.",
       "sort_order": 10,
       "target_count": 30,
-      "words": []
+      "words": [
+        "prevalencia", "mortalidad", "morbilidad", "letalidad", "epidemia",
+        "pandemia", "endemia", "zoonosis", "patógeno", "tamizaje",
+        "potabilidad", "desinfección", "bioseguridad", "hacinamiento", "seroprevalencia",
+        "inmunidad", "antígeno", "anticuerpo", "aerosol", "fómite",
+        "infectividad", "virulencia", "patogenicidad", "entomológico", "centinela",
+        "sindrómico", "subregistro", "eliminación", "desparasitación", "cloración"
+      ]
     },
     {
       "level": "C1",
@@ -12390,7 +12452,13 @@
       "description": "Общественное здоровье: слова 31-55 из ~55 в этом наборе.",
       "sort_order": 11,
       "target_count": 25,
-      "words": []
+      "words": [
+        "primaria", "contrarreferencia", "casocontrol", "efectividad", "desabastecimiento",
+        "tecnovigilancia", "iatrogenia", "sobrediagnóstico", "medicalización", "subdiagnóstico",
+        "sobremedicalización", "regionalización", "intersectorialidad", "derivabilidad", "resolutividad",
+        "capitación", "copagamiento", "costeefectividad", "farmacoeconomía", "desprescripción",
+        "desinstitucionalización", "nosocomial", "extrahospitalario", "intrahospitalario", "sanitarismo"
+      ]
     },
     {
       "level": "C1",
@@ -12399,7 +12467,14 @@
       "description": "Биология, генетика, эволюция: слова 1-30 из ~50 в этом наборе.",
       "sort_order": 12,
       "target_count": 30,
-      "words": []
+      "words": [
+        "orgánulo", "citoplasma", "mitocondria", "ribosoma", "lisosoma",
+        "retículo", "genoma", "cromosoma", "gen", "alelo",
+        "locus", "genotipo", "fenotipo", "dominancia", "recesividad",
+        "deleción", "translocación", "haplotipo", "cariotipo", "homocigoto",
+        "heterocigoto", "autosoma", "gameto", "cigoto", "meiosis",
+        "mitosis", "epigenética", "metilación", "recombinación", "plásmido"
+      ]
     },
     {
       "level": "C1",
@@ -12408,7 +12483,12 @@
       "description": "Биология, генетика, эволюция: слова 31-50 из ~50 в этом наборе.",
       "sort_order": 13,
       "target_count": 20,
-      "words": []
+      "words": [
+        "especiación", "filogenia", "clado", "taxón", "ancestro",
+        "homología", "deriva", "radiación", "coevolución", "microevolución",
+        "macroevolución", "paleontología", "embriología", "ontogenia", "cladística",
+        "monofilético", "parafilético", "polifilético", "endogamia", "exogamia"
+      ]
     },
     {
       "level": "C1",
@@ -12417,7 +12497,14 @@
       "description": "Этика медицины: слова 1-30 из ~50 в этом наборе.",
       "sort_order": 14,
       "target_count": 30,
-      "words": []
+      "words": [
+        "bioética", "beneficencia", "maleficencia", "futilidad", "encarnizamiento",
+        "eutanasia", "paliativo", "testamento", "voluntariedad", "donación",
+        "autonomismo", "principialismo", "asentimiento", "biobanco", "recontacto",
+        "nocebo", "placeboterapia", "obstinación", "limitante", "proporcionado",
+        "desproporcionado", "inviolabilidad", "biopoder", "biopolítica", "tecnociencia",
+        "genetización", "eugenesia", "neoeugenesia", "neonatología", "perinatología"
+      ]
     },
     {
       "level": "C1",
@@ -12426,7 +12513,12 @@
       "description": "Этика медицины: слова 31-50 из ~50 в этом наборе.",
       "sort_order": 15,
       "target_count": 20,
-      "words": []
+      "words": [
+        "impericia", "praxis", "incidentaloma", "sobretratamiento", "encarnizar",
+        "humanización", "morir", "terminalidad", "pronóstico", "ensañamiento",
+        "autodeterminación", "encarnizado", "proporcional", "fútil", "paliativista",
+        "sedar", "agonía", "reanimación", "reanimar", "intubable"
+      ]
     },
     {
       "level": "C1",
@@ -12435,7 +12527,14 @@
       "description": "Климатология и энергетика: слова 1-30 из ~55 в этом наборе.",
       "sort_order": 0,
       "target_count": 30,
-      "words": []
+      "words": [
+        "troposfera", "estratosfera", "albedo", "forzamiento", "partícula",
+        "invernadero", "ozono", "ciclón", "anticiclón", "monzón",
+        "teleconexión", "paleoclima", "criósfera", "permafrost", "glaciar",
+        "deshielo", "evapotranspiración", "pluviometría", "isoterma", "isobara",
+        "barlovento", "sotavento", "continentalidad", "maritimidad", "termoclina",
+        "haloclina", "afloramiento", "estratocúmulo", "cumulonimbo", "radiativo"
+      ]
     },
     {
       "level": "C1",
@@ -12444,7 +12543,13 @@
       "description": "Климатология и энергетика: слова 31-55 из ~55 в этом наборе.",
       "sort_order": 1,
       "target_count": 25,
-      "words": []
+      "words": [
+        "biogás", "electrolizador", "aerogenerador", "intermitencia", "microrred",
+        "amperaje", "sobretensión", "curtailment", "termosolar", "mareomotriz",
+        "undimotriz", "bombeo", "electroquímico", "despachable", "despachabilidad",
+        "autoconsumo", "prosumidor", "kilovatio", "megavatio", "gigavatio",
+        "teravatio", "electrointensivo", "gasificación", "hibridado", "repotenciación"
+      ]
     },
     {
       "level": "C1",
@@ -12453,7 +12558,14 @@
       "description": "Экосистемы и биоразнообразие: слова 1-30 из ~50 в этом наборе.",
       "sort_order": 2,
       "target_count": 30,
-      "words": []
+      "words": [
+        "biosfera", "ecotono", "trófico", "herbívoro", "polinizador",
+        "descomponedor", "simbiosis", "mutualismo", "comensalismo", "parasitismo",
+        "endemismo", "renaturalización", "manglar", "arrecife", "estuario",
+        "turbera", "sabana", "taiga", "matorral", "epífito",
+        "xerófito", "halófito", "hidrófito", "mesófito", "detritívoro",
+        "saprófito", "micorriza", "rizosfera", "dosel", "sotobosque"
+      ]
     },
     {
       "level": "C1",
@@ -12462,7 +12574,12 @@
       "description": "Экосистемы и биоразнообразие: слова 31-50 из ~50 в этом наборе.",
       "sort_order": 3,
       "target_count": 20,
-      "words": []
+      "words": [
+        "subespecie", "metapoblación", "abundancia", "extinto", "silvestre",
+        "cautiverio", "reintroducción", "transecto", "bioindicador", "invertebrado",
+        "anfibio", "reptil", "mamífero", "ave", "flora",
+        "fauna", "micobiota", "microbiota", "fitoplancton", "zooplancton"
+      ]
     },
     {
       "level": "C1",
@@ -12471,7 +12588,14 @@
       "description": "Ресурсы, отходы, потребление: слова 1-30 из ~50 в этом наборе.",
       "sort_order": 4,
       "target_count": 30,
-      "words": []
+      "words": [
+        "minería", "acuífero", "sobreexplotación", "consumismo", "compostaje",
+        "desecho", "basura", "vertedero", "relleno", "incineración",
+        "lixiviado", "escoria", "chatarra", "plástico", "microplástico",
+        "retornable", "reutilizable", "reciclable", "ecodiseño", "sobrante",
+        "desperdicio", "despilfarro", "reciclador", "recuperador", "separador",
+        "compactador", "enfardadora", "peletización", "granulado", "rechazado"
+      ]
     },
     {
       "level": "C1",
@@ -12480,7 +12604,12 @@
       "description": "Ресурсы, отходы, потребление: слова 31-50 из ~50 в этом наборе.",
       "sort_order": 5,
       "target_count": 20,
-      "words": []
+      "words": [
+        "compactación", "trituración", "granulación", "pirólisis", "biorreactor",
+        "biodigestor", "digestato", "lodo", "fangos", "efluente",
+        "peligroso", "inerte", "inorgánico", "textil", "posconsumo",
+        "suprarreciclaje", "infrareciclaje", "recogida", "separativo", "ecoparque"
+      ]
     },
     {
       "level": "C1",
@@ -12489,7 +12618,14 @@
       "description": "Урбанистика, жильё, районы: слова 1-30 из ~55 в этом наборе.",
       "sort_order": 6,
       "target_count": 30,
-      "words": []
+      "words": [
+        "aglomeración", "periurbano", "suburbano", "guetización", "centralidad",
+        "policentrismo", "travesía", "ronda", "ensanche", "casco",
+        "arrabal", "extrarradio", "chabolismo", "intraurbano", "macrocefalia",
+        "periurbanización", "suburbanización", "metropolización", "terciarización", "desindustrialización",
+        "reparcelación", "parcelario", "edificatorio", "viario", "plazuela",
+        "bulevar", "alcorque", "bordillo", "adoquín", "interbloque"
+      ]
     },
     {
       "level": "C1",
@@ -12498,7 +12634,13 @@
       "description": "Урбанистика, жильё, районы: слова 31-55 из ~55 в этом наборе.",
       "sort_order": 7,
       "target_count": 25,
-      "words": []
+      "words": [
+        "infravivienda", "cohousing", "coliving", "realojo", "realojamiento",
+        "medianera", "domótica", "residencialización", "promocional", "lanzamiento",
+        "subrogado", "nuda", "alicuota", "mancomunidad", "bajocubierta",
+        "entreplanta", "semisótano", "trastero", "tendedero", "montante",
+        "bajante", "acometida", "envolvente", "sobreelevación", "retranqueo"
+      ]
     },
     {
       "level": "C1",
@@ -12507,7 +12649,14 @@
       "description": "Транспорт, инфраструктура, логистика: слова 1-30 из ~55 в этом наборе.",
       "sort_order": 8,
       "target_count": 30,
-      "words": []
+      "words": [
+        "cercanías", "trolebús", "autovía", "variante", "balizamiento",
+        "capilaridad", "aforo", "rodadura", "peralte", "rasante",
+        "desdoblamiento", "interurbano", "intramodal", "lanzadera", "electrolinera",
+        "bicipuerto", "ciclocarril", "aparcabicis", "estacionamiento", "telepeaje",
+        "telecabina", "monorraíl", "baliza", "balizar", "semaforización",
+        "intercambiabilidad", "transitable", "motorización", "motorizado", "rebase"
+      ]
     },
     {
       "level": "C1",
@@ -12516,7 +12665,13 @@
       "description": "Транспорт, инфраструктура, логистика: слова 31-55 из ~55 в этом наборе.",
       "sort_order": 9,
       "target_count": 25,
-      "words": []
+      "words": [
+        "astillero", "grúa", "estiba", "desestiba", "aduana",
+        "hub", "mercancía", "paquetería", "últimamilla", "palé",
+        "pallet", "fleje", "stock", "expedición", "transitario",
+        "transportista", "dragado", "calado", "fondeo", "atraque",
+        "amarre", "varadero", "grupaje", "despachante", "crossdocking"
+      ]
     },
     {
       "level": "C1",
@@ -12525,7 +12680,14 @@
       "description": "География Испании, Латинской Америки и мира: слова 1-30 из ~50 в этом наборе.",
       "sort_order": 10,
       "target_count": 30,
-      "words": []
+      "words": [
+        "istmo", "cabo", "acantilado", "duna", "marisma",
+        "afluente", "vertiente", "sierra", "macizo", "páramo",
+        "oasis", "cráter", "falla", "placa", "subducción",
+        "orogenia", "albufera", "rambla", "barranco", "desfiladero",
+        "cañón", "garganta", "meandro", "chaparral", "malpaís",
+        "karst", "dolína", "sumidero", "acuicludo", "endorreico"
+      ]
     },
     {
       "level": "C1",
@@ -12534,7 +12696,12 @@
       "description": "География Испании, Латинской Америки и мира: слова 31-50 из ~50 в этом наборе.",
       "sort_order": 11,
       "target_count": 20,
-      "words": []
+      "words": [
+        "latitud", "longitud", "meridiano", "paralelo", "ecuador",
+        "trópico", "hemisferio", "antípoda", "atlas", "topografía",
+        "batimetría", "altitud", "orografía", "hidrografía", "geodesia",
+        "enclave", "exclave", "ultramar", "interior", "ribereño"
+      ]
     },
     {
       "level": "C1",
@@ -12543,7 +12710,14 @@
       "description": "Риски, катастрофы, адаптация: слова 1-30 из ~45 в этом наборе.",
       "sort_order": 12,
       "target_count": 30,
-      "words": []
+      "words": [
+        "albergue", "socorro", "reubicación", "derrumbe", "alud",
+        "riada", "crecida", "ola", "maremoto", "ceniza",
+        "lava", "multirriesgo", "ciclónico", "torrencial", "inundabilidad",
+        "ignición", "conato", "piroclasto", "lahar", "epicentro",
+        "hipocentro", "magnitud", "intensidad", "prealerta", "preemergencia",
+        "autoprotección", "evacuable", "incomunicado", "anegado", "damnificación"
+      ]
     },
     {
       "level": "C1",
@@ -12552,7 +12726,11 @@
       "description": "Риски, катастрофы, адаптация: слова 31-45 из ~45 в этом наборе.",
       "sort_order": 13,
       "target_count": 15,
-      "words": []
+      "words": [
+        "peligrosidad", "sismicidad", "volcanismo", "licuefacción", "subsidencia",
+        "socavón", "hundimiento", "anegamiento", "damnificado", "brigadista",
+        "hidroavión", "cortaviento", "rompeolas", "dique", "escollera"
+      ]
     },
     {
       "level": "C1",
@@ -12561,7 +12739,14 @@
       "description": "Сельское хозяйство, пища, земля: слова 1-30 из ~40 в этом наборе.",
       "sort_order": 14,
       "target_count": 30,
-      "words": []
+      "words": [
+        "agricultura", "ganadería", "agroecología", "agronomía", "cosecha",
+        "siembra", "labranza", "barbecho", "regadío", "secano",
+        "riego", "aspersión", "goteo", "fertilización", "compost",
+        "estiércol", "plaguicida", "herbicida", "fungicida", "insecticida",
+        "fitosanitario", "injerto", "vivero", "latifundio", "minifundio",
+        "aparcería", "cooperativa", "denominación", "agroganadero", "agroalimentario"
+      ]
     },
     {
       "level": "C1",
@@ -12570,7 +12755,10 @@
       "description": "Сельское хозяйство, пища, земля: слова 31-40 из ~40 в этом наборе.",
       "sort_order": 15,
       "target_count": 10,
-      "words": []
+      "words": [
+        "arcilla", "limo", "humus", "salinidad", "escorrentía",
+        "nitrato", "fosfato", "potasio", "micronutriente", "monocultivo"
+      ]
     },
     {
       "level": "C1",
@@ -12579,7 +12767,14 @@
       "description": "Испания: автономии, институты, реалии: слова 1-30 из ~40 в этом наборе.",
       "sort_order": 0,
       "target_count": 30,
-      "words": []
+      "words": [
+        "diputación", "cabildo", "consell", "generalitat", "concejalía",
+        "municipio", "provincia", "comarca", "pedanía", "concejo",
+        "alcaldía", "alcalde", "concejal", "edil", "interinidad",
+        "pleno", "bando", "foralidad", "municipalismo", "provincialismo",
+        "comarcalización", "cooficialidad", "bilingüismo", "cooficial", "foral",
+        "cabildar", "concejalato", "tenencia", "alcaldesa", "munícipe"
+      ]
     },
     {
       "level": "C1",
@@ -12588,7 +12783,10 @@
       "description": "Испания: автономии, институты, реалии: слова 31-40 из ~40 в этом наборе.",
       "sort_order": 1,
       "target_count": 10,
-      "words": []
+      "words": [
+        "procurador", "abogacía", "fiscalía", "defensor", "síndic",
+        "ararteko", "ombudsman", "educación", "beca", "convalidación"
+      ]
     },
     {
       "level": "C1",
@@ -12597,7 +12795,14 @@
       "description": "Латинская Америка: страны, регионы, реалии: слова 1-30 из ~40 в этом наборе.",
       "sort_order": 2,
       "target_count": 30,
-      "words": []
+      "words": [
+        "virreinato", "intendencia", "caciquismo", "criollo", "indigenismo",
+        "ejido", "chacra", "milpa", "conuco", "rancho",
+        "favela", "villa", "asentamiento", "barriada", "comuna",
+        "corregimiento", "departamento", "gobernación", "prefectura", "regidor",
+        "cabildante", "diputado", "senador", "ayllu", "mita",
+        "encomienda", "quilombo", "palenque", "malón", "estanciero"
+      ]
     },
     {
       "level": "C1",
@@ -12606,7 +12811,10 @@
       "description": "Латинская Америка: страны, регионы, реалии: слова 31-40 из ~40 в этом наборе.",
       "sort_order": 3,
       "target_count": 10,
-      "words": []
+      "words": [
+        "zapatismo", "peronismo", "sandinismo", "bolivarianismo", "aprismo",
+        "cardenismo", "batllismo", "indigenista", "extractivismo", "sojización"
+      ]
     },
     {
       "level": "C1",
@@ -12615,7 +12823,14 @@
       "description": "Варианты испанского и региональная лексика: слова 1-30 из ~40 в этом наборе.",
       "sort_order": 4,
       "target_count": 30,
-      "words": []
+      "words": [
+        "vos", "voseo", "tuteo", "ustedeo", "ceceo",
+        "seseo", "yeísmo", "lleísmo", "elisión", "dequeísmo",
+        "queísmo", "loísmo", "laísmo", "leísmo", "americanismo",
+        "hispanismo", "peninsularismo", "andalucismo", "canarismo", "mexicanismo",
+        "argentinismo", "chilenismo", "colombianismo", "peruanismo", "rioplatense",
+        "caribeño", "andino", "norteño", "sureño", "pibe"
+      ]
     },
     {
       "level": "C1",
@@ -12624,7 +12839,10 @@
       "description": "Варианты испанского и региональная лексика: слова 31-40 из ~40 в этом наборе.",
       "sort_order": 5,
       "target_count": 10,
-      "words": []
+      "words": [
+        "celular", "frutilla", "fresa", "palta", "aguacate",
+        "maíz", "elote", "choclo", "poroto", "frijol"
+      ]
     },
     {
       "level": "C1",
@@ -12633,7 +12851,14 @@
       "description": "Устойчивые выражения и коллокации C1: слова 1-30 из ~45 в этом наборе.",
       "sort_order": 6,
       "target_count": 30,
-      "words": []
+      "words": [
+        "colación", "entredicho", "hincapié", "medida", "miras",
+        "objeto", "perjuicio", "término", "tenor", "rigor",
+        "detrimento", "menoscabo", "sazón", "ultranza", "soslayo",
+        "antojo", "despecho", "colofón", "tino", "tapujos",
+        "ambages", "renglón", "rebufo", "albur", "pretexto",
+        "tesitura", "disyuntiva", "perentorio", "pormenor", "menester"
+      ]
     },
     {
       "level": "C1",
@@ -12642,7 +12867,11 @@
       "description": "Устойчивые выражения и коллокации C1: слова 31-45 из ~45 в этом наборе.",
       "sort_order": 7,
       "target_count": 15,
-      "words": []
+      "words": [
+        "poner", "echar", "caer", "cobrar", "cundir",
+        "surtir", "dirimir", "sopesar", "barajar", "esgrimir",
+        "aducir", "argüir", "colegir", "atisbar", "vislumbrar"
+      ]
     },
     {
       "level": "C1",
@@ -12651,7 +12880,14 @@
       "description": "Фразовые шаблоны из СМИ и документов: слова 1-30 из ~35 в этом наборе.",
       "sort_order": 8,
       "target_count": 30,
-      "words": []
+      "words": [
+        "anunciar", "avanzar", "recalcar", "reiterar", "aseverar",
+        "lamentar", "cifrar", "cuantificar", "desglosar", "pormenorizar",
+        "enmarcar", "formalizar", "vehicular", "consignar", "contemplar",
+        "preceptuar", "oficiar", "comisionar", "incardinar", "cohonestar",
+        "dilucidar", "elucidar", "obrante", "susodicho", "meritado",
+        "sustanciar", "glosar", "extractar", "coadyuvar", "convalidar"
+      ]
     },
     {
       "level": "C1",
@@ -12660,7 +12896,9 @@
       "description": "Фразовые шаблоны из СМИ и документов: слова 31-35 из ~35 в этом наборе.",
       "sort_order": 9,
       "target_count": 5,
-      "words": []
+      "words": [
+        "suscribir", "exhortar", "constatar", "recabar", "desestimar"
+      ]
     },
     {
       "level": "C1",
@@ -12669,7 +12907,14 @@
       "description": "Бытовая идиоматика без жёсткого жаргона: слова 1-30 из ~35 в этом наборе.",
       "sort_order": 10,
       "target_count": 30,
-      "words": []
+      "words": [
+        "apuro", "apaño", "brega", "chollo", "faena",
+        "jaleo", "lío", "rollo", "tajo", "marrón",
+        "achaque", "pega", "pinta", "racha", "respiro",
+        "codo", "manga", "bolsillo", "candado", "cuerda",
+        "aguja", "grano", "gota", "pizca", "montón",
+        "puñado", "bocado", "pelín", "mogollón", "periquete"
+      ]
     },
     {
       "level": "C1",
@@ -12678,7 +12923,9 @@
       "description": "Бытовая идиоматика без жёсткого жаргона: слова 31-35 из ~35 в этом наборе.",
       "sort_order": 11,
       "target_count": 5,
-      "words": []
+      "words": [
+        "meter", "sacar", "tirar", "pillar", "colarse"
+      ]
     },
     {
       "level": "C1",
@@ -12687,7 +12934,11 @@
       "description": "Ложные друзья и тонкие пары слов: слова 1-15 из ~15 в этом наборе.",
       "sort_order": 12,
       "target_count": 15,
-      "words": []
+      "words": [
+        "actual", "constipado", "embarazada", "realizar", "pretender",
+        "copa", "jamón", "vinagre", "rato", "soportar",
+        "introducir", "remover", "acordarse", "quitar", "atestar"
+      ]
     }
   ]
 }

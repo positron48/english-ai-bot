@@ -662,9 +662,9 @@ const handleNetworkChange = async () => {
   align-items: center;
   gap: 8px;
   padding: 12px 20px;
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
-  color: white;
-  border: none;
+  background: var(--btn-gradient, linear-gradient(180deg, #3F6F3F 0%, #345D35 100%));
+  color: #fff;
+  border: 1px solid var(--btn-border, rgba(32, 53, 42, 0.12));
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
@@ -674,8 +674,13 @@ const handleNetworkChange = async () => {
 }
 
 .btn-placement-test:hover {
+  color: #fff;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  box-shadow: var(--btn-shadow, 0 4px 12px rgba(63, 111, 63, 0.25));
+}
+
+.btn-placement-test:visited {
+  color: #fff;
 }
 
 @media (max-width: 768px) {

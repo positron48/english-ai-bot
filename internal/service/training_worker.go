@@ -671,16 +671,6 @@ func (w *TrainingWorker) processCard(ctx context.Context, wordCard *models.WordC
 	trainingCardIDs := make([]int64, 0, len(trainingResp.Senses))
 
 	for i, sense := range trainingResp.Senses {
-		// Marshal distractors
-		distractorsRU, _ := json.Marshal(sense.DistractorsRU)
-		distractorsEN, _ := json.Marshal(sense.DistractorsEN)
-
-		// Determine display_word for this sense: use from sense, or fallback to word_en
-		displayWord := trainingResp.WordEN
-		if sense.DisplayWord != "" {
-			displayWord = sense.DisplayWord
-		}
-
 		// Get POS for this sense: use from sense, or fallback to word_card if available
 		pos := sense.POS
 		if pos == "" {
@@ -689,6 +679,18 @@ func (w *TrainingWorker) processCard(ctx context.Context, wordCard *models.WordC
 				pos = *wordCard.POS
 			}
 		}
+
+		// Marshal distractors
+		distractorsRU, _ := json.Marshal(sense.DistractorsRU)
+		distractorsTarget := normalizeTargetVerbDisplays(w.learning.TargetLang, pos, sense.DistractorsEN)
+		distractorsEN, _ := json.Marshal(distractorsTarget)
+
+		// Determine display_word for this sense: use from sense, or fallback to word_en
+		displayWord := trainingResp.WordEN
+		if sense.DisplayWord != "" {
+			displayWord = sense.DisplayWord
+		}
+		displayWord = normalizeTargetVerbDisplay(w.learning.TargetLang, pos, displayWord)
 
 		trainingCard := &models.TrainingCard{
 			WordCardID:    wordCard.ID,

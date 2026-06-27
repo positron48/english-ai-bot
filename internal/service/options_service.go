@@ -449,10 +449,14 @@ func (s *OptionsService) hasMatchingPOS(word string, targetPOS string, direction
 	return false
 }
 
-// normalizeVerbFormat adds "to " prefix to English verbs for RU->target (ru_en) direction when target is English.
+// normalizeVerbFormat keeps English infinitives as "to …" for RU->EN, and strips
+// that English-only marker for Spanish/non-English RU->target cards.
 func (s *OptionsService) normalizeVerbFormat(word string, pos string, direction models.CardDirection) string {
-	if direction != models.DirectionRUtoEN || pos != "verb" || s.targetLang != "en" {
+	if direction != models.DirectionRUtoEN || pos != "verb" {
 		return word
+	}
+	if s.targetLang != "en" {
+		return normalizeTargetVerbDisplay(s.targetLang, pos, word)
 	}
 
 	// Check if word already starts with "to "

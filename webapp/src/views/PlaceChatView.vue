@@ -32,6 +32,7 @@
             <div class="chat-card-body">
               <div class="chat-card-title">
                 {{ g.npcName }}
+                <span v-if="g.npcRole" class="npc-role">, {{ g.npcRole }}</span>
                 <span v-if="g.hasIncompleteQuests && !g.locked" class="npc-bang" :title="t('chat.newQuests')">!</span>
               </div>
               <div class="chat-card-meta">
@@ -44,7 +45,8 @@
                 <div class="npc-bar-fill" :style="{ width: g.pct + '%' }" />
               </div>
             </div>
-            <span v-if="g.allDone" class="chat-done">✓</span>
+            <span v-if="g.allDone" class="chat-done chat-done--perfect">★</span>
+            <span v-else-if="g.hasCompletedQuests" class="chat-done">✓</span>
             <svg
               v-else-if="g.expandable"
               class="npc-chevron"
@@ -73,7 +75,7 @@
                 <span class="npc-step-meta"><span class="chat-tag">{{ t('chat.quest') }}</span></span>
               </span>
               <span class="npc-step-state">
-                <template v-if="s.session_status === 'completed'">★</template>
+                <template v-if="s.session_status === 'completed'">✓</template>
                 <template v-else-if="s.locked">🔒</template>
                 <template v-else>›</template>
               </span>
@@ -81,7 +83,9 @@
             <button
               v-if="g.freeScenario"
               class="npc-step npc-step--freechat"
+              :class="{ 'npc-step--locked': g.freeScenario.locked }"
               type="button"
+              :disabled="g.freeScenario.locked"
               @click="openScenario(g.freeScenario.code)"
             >
               <span class="npc-step-num">💬</span>
@@ -89,7 +93,7 @@
                 <span class="npc-step-title">{{ t('chat.freeChat') }}</span>
                 <span class="npc-step-meta"><span class="chat-tag chat-tag--free">{{ t('chat.free') }}</span></span>
               </span>
-              <span class="npc-step-state">›</span>
+              <span class="npc-step-state">{{ g.freeScenario.locked ? '🔒' : '›' }}</span>
             </button>
           </div>
         </div>
@@ -193,6 +197,8 @@ import {
   type ConversationMessage,
   type ConversationTask,
 } from '../api/courseClient'
+import { buildNpcGroups } from '../utils/conversations'
+import type { NpcGroup } from '../utils/conversations'
 import LgPageHeader from '../components/linglow/LgPageHeader.vue'
 import LgActivityIcon from '../components/linglow/LgActivityIcon.vue'
 import LgSpeechBubble from '../components/linglow/LgSpeechBubble.vue'
@@ -213,55 +219,7 @@ const loading = ref(true)
 const scenarios = ref<ConversationScenarioSummary[]>([])
 const expandedNpc = ref('')
 
-interface NpcGroup {
-  key: string
-  npcName: string
-  placeType: string
-  level: string
-  questScenarios: ConversationScenarioSummary[]
-  freeScenario: ConversationScenarioSummary | null
-  questTotal: number
-  completedCount: number
-  pct: number
-  allDone: boolean
-  hasIncompleteQuests: boolean
-  locked: boolean
-  expandable: boolean
-}
-
-// Group scenarios by NPC (npc_code). Quests form the ordered chain; a single is_quest=false
-// scenario (if any) is offered as a separate "free chat". Standalone scenarios (no npc_code) each
-// form their own group. Backend already orders scenarios by sort_order, so chain order is preserved.
-const npcGroups = computed<NpcGroup[]>(() => {
-  const groups: NpcGroup[] = []
-  const byKey = new Map<string, NpcGroup>()
-  for (const s of scenarios.value) {
-    const key = s.npc_code || `_solo_${s.code}`
-    let g = byKey.get(key)
-    if (!g) {
-      g = {
-        key, npcName: s.npc_name, placeType: s.place_type, level: s.cefr_level,
-        questScenarios: [], freeScenario: null, questTotal: 0, completedCount: 0, pct: 0,
-        allDone: false, hasIncompleteQuests: false, locked: false, expandable: false,
-      }
-      byKey.set(key, g)
-      groups.push(g)
-    }
-    if (s.is_quest) g.questScenarios.push(s)
-    else if (!g.freeScenario) g.freeScenario = s
-  }
-  for (const g of groups) {
-    g.questTotal = g.questScenarios.length
-    g.completedCount = g.questScenarios.filter(s => s.session_status === 'completed').length
-    g.pct = g.questTotal > 0 ? Math.round((g.completedCount / g.questTotal) * 100) : 0
-    g.allDone = g.questTotal > 0 && g.completedCount === g.questTotal
-    g.hasIncompleteQuests = g.questScenarios.some(s => s.session_status !== 'completed')
-    // Locked only when there is nothing to start: every quest is locked AND there is no free chat.
-    g.locked = !g.freeScenario && g.questScenarios.every(s => s.locked)
-    g.expandable = (g.questTotal + (g.freeScenario ? 1 : 0)) > 1
-  }
-  return groups
-})
+const npcGroups = computed<NpcGroup[]>(() => buildNpcGroups(scenarios.value, currentCourseCode.value || ''))
 
 const PLACE_LABELS: Record<string, string> = {
   cafe: 'Кафе', shop: 'Магазин', police_station: 'Полиция',
@@ -449,6 +407,7 @@ onMounted(loadForRoute)
 }
 .chat-card-body { flex: 1; min-width: 0; }
 .chat-card-title { font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 600; color: var(--text); }
+.npc-role { color: var(--subtext); font-weight: 500; }
 .chat-card-meta { font-family: 'Inter', sans-serif; font-size: 12px; color: var(--subtext); margin-top: 2px; }
 .chat-tag {
   display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 10px;
@@ -458,6 +417,7 @@ onMounted(loadForRoute)
 .chat-tag--locked { background: rgba(120,120,120,0.16); color: var(--subtext); }
 .chat-tag--perfect { background: rgba(200,168,75,0.22); color: #9a7b1e; }
 .chat-done { color: #2d6b3a; font-weight: 700; font-size: 18px; }
+.chat-done--perfect { color: #c8a84b; text-shadow: 0 1px 4px rgba(200,168,75,0.35); }
 
 /* "!" marker on NPCs that still have unfinished quests */
 .npc-bang {

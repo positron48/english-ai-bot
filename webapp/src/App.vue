@@ -215,11 +215,15 @@ const dismissAuthError = () => {
   z-index: 10020;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 12px;
-  max-width: min(92vw, 560px);
-  padding: 12px 14px;
-  border-radius: 12px;
+  width: min(92vw, 640px);
+  min-height: 46px;
+  padding: 10px 16px;
+  border-radius: 10px;
   color: #fff;
+  font-size: 15px;
+  font-weight: 700;
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22);
 }
 

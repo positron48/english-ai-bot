@@ -18,18 +18,18 @@ import (
 )
 
 type packIndex struct {
-	Version string            `json:"version"`
-	Language string           `json:"language"`
-	Lemmas map[string]string  `json:"lemmas"`
+	Version  string            `json:"version"`
+	Language string            `json:"language"`
+	Lemmas   map[string]string `json:"lemmas"`
 }
 
 type syncStats struct {
-	LemmasTotal    int
-	LemmasSkipped  int
+	LemmasTotal   int
+	LemmasSkipped int
 	FormsUpserted int
 	CardsUpserted int
-	FormsDeleted int
-	CardsDeleted int
+	FormsDeleted  int
+	CardsDeleted  int
 	LemmasDeleted int
 }
 
@@ -67,7 +67,8 @@ func main() {
 func run() int {
 	var (
 		courseRoot = flag.String("course-root", "courses/spanish-grammar", "path to spanish grammar course root")
-		dryRun = flag.Bool("dry-run", false, "validate and report only, no DB changes")
+		courseCode = flag.String("course-code", "es_ru", "course_code for Spanish vocabulary word_cards")
+		dryRun     = flag.Bool("dry-run", false, "validate and report only, no DB changes")
 	)
 	flag.Parse()
 
@@ -146,7 +147,7 @@ func run() int {
 	}
 	defer db.Close()
 
-	stats, err := syncArtifacts(db.GetConnection(), artifacts, *dryRun)
+	stats, err := syncArtifacts(db.GetConnection(), artifacts, *courseCode, *dryRun)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "sync failed: %v\n", err)
 		return 1
@@ -156,18 +157,94 @@ func run() int {
 	return 0
 }
 
-// lookupWordCardIDForVerbLemma resolves the vocabulary row for an infinitive lemma:
-//  1) word_cards.word (canonical headword)
-//  2) training_cards whose display_word equals the lemma → word_card_id (prefer rows with verb POS)
+// lookupWordCardIDForVerbLemma resolves the vocabulary row for an infinitive lemma
+// inside courseCode:
+//  1. word_cards.word (canonical headword)
+//  2. training_cards whose display_word equals the lemma → word_card_id (prefer rows with verb POS)
+//
 // If nothing matches, ErrLemmaNoWordCard — caller may skip.
-func lookupWordCardIDForVerbLemma(tx *sql.Tx, lemma string) (int64, error) {
+func lookupWordCardIDForVerbLemma(tx *sql.Tx, lemma, courseCode string) (int64, error) {
 	lemma = strings.TrimSpace(lemma)
 	if lemma == "" {
 		return 0, fmt.Errorf("empty lemma")
 	}
 	l := strings.ToLower(lemma)
+	courseCode = strings.ToLower(strings.TrimSpace(courseCode))
 
 	var id int64
+	if courseCode != "" {
+		err := tx.QueryRow(`SELECT id FROM word_cards WHERE LOWER(TRIM(word)) = ? AND LOWER(COALESCE(course_code, '')) = ?`, l, courseCode).Scan(&id)
+		if err == nil {
+			return id, nil
+		}
+		if err != sql.ErrNoRows {
+			return 0, err
+		}
+
+		err = tx.QueryRow(`
+			SELECT tc.word_card_id
+			FROM training_cards tc
+			JOIN word_cards wc ON wc.id = tc.word_card_id
+			WHERE LOWER(TRIM(COALESCE(tc.display_word, ''))) = ?
+			  AND LOWER(COALESCE(wc.course_code, '')) = ?
+			ORDER BY CASE WHEN LOWER(TRIM(COALESCE(tc.pos, ''))) LIKE 'verb%' THEN 0 ELSE 1 END, tc.id
+			LIMIT 1
+		`, l, courseCode).Scan(&id)
+		if err == nil {
+			return id, nil
+		}
+		if err != sql.ErrNoRows {
+			return 0, err
+		}
+
+		// Legacy Spanish single-course DBs can still have untagged rows. Use them
+		// only when the same lemma is not already owned by another explicit course.
+		err = tx.QueryRow(`
+			SELECT id
+			FROM word_cards wc
+			WHERE LOWER(TRIM(wc.word)) = ?
+			  AND COALESCE(wc.course_code, '') = ''
+			  AND NOT EXISTS (
+			    SELECT 1 FROM word_cards other
+			    WHERE LOWER(TRIM(other.word)) = ?
+			      AND COALESCE(other.course_code, '') <> ''
+			      AND LOWER(other.course_code) <> ?
+			  )
+			LIMIT 1`, l, l, courseCode).Scan(&id)
+		if err == nil {
+			return id, nil
+		}
+		if err != sql.ErrNoRows {
+			return 0, err
+		}
+
+		err = tx.QueryRow(`
+			SELECT tc.word_card_id
+			FROM training_cards tc
+			JOIN word_cards wc ON wc.id = tc.word_card_id
+			WHERE LOWER(TRIM(COALESCE(tc.display_word, ''))) = ?
+			  AND COALESCE(wc.course_code, '') = ''
+			  AND NOT EXISTS (
+			    SELECT 1
+			    FROM training_cards other_tc
+			    JOIN word_cards other_wc ON other_wc.id = other_tc.word_card_id
+			    WHERE LOWER(TRIM(COALESCE(other_tc.display_word, ''))) = ?
+			      AND COALESCE(other_wc.course_code, '') <> ''
+			      AND LOWER(other_wc.course_code) <> ?
+			  )
+			ORDER BY CASE WHEN LOWER(TRIM(COALESCE(tc.pos, ''))) LIKE 'verb%' THEN 0 ELSE 1 END, tc.id
+			LIMIT 1
+		`, l, l, courseCode).Scan(&id)
+		if err == nil {
+			return id, nil
+		}
+		if err != sql.ErrNoRows {
+			return 0, err
+		}
+
+		return 0, fmt.Errorf("%w: %q (no word_cards/training_cards match for course %s)", ErrLemmaNoWordCard, lemma, courseCode)
+	}
+
 	err := tx.QueryRow(`SELECT id FROM word_cards WHERE LOWER(TRIM(word)) = ?`, l).Scan(&id)
 	if err == nil {
 		return id, nil
@@ -193,7 +270,7 @@ func lookupWordCardIDForVerbLemma(tx *sql.Tx, lemma string) (int64, error) {
 	return 0, fmt.Errorf("%w: %q (no word_cards headword and no training_cards.display_word match)", ErrLemmaNoWordCard, lemma)
 }
 
-func syncArtifacts(db *sql.DB, artifacts []verbtraining.LemmaArtifact, dryRun bool) (*syncStats, error) {
+func syncArtifacts(db *sql.DB, artifacts []verbtraining.LemmaArtifact, courseCode string, dryRun bool) (*syncStats, error) {
 	tx, err := db.Begin()
 	if err != nil {
 		return nil, err
@@ -209,7 +286,7 @@ func syncArtifacts(db *sql.DB, artifacts []verbtraining.LemmaArtifact, dryRun bo
 		bundleLemmas[strings.ToLower(strings.TrimSpace(a.Lemma))] = struct{}{}
 	}
 	for _, a := range artifacts {
-		wordCardID, err := lookupWordCardIDForVerbLemma(tx, a.Lemma)
+		wordCardID, err := lookupWordCardIDForVerbLemma(tx, a.Lemma, courseCode)
 		if err != nil {
 			if errors.Is(err, ErrLemmaNoWordCard) {
 				fmt.Fprintf(os.Stderr, "sync_verb_training_json: skip lemma %q (no word_cards.word or training_cards.display_word match)\n", a.Lemma)
@@ -281,7 +358,7 @@ func syncArtifacts(db *sql.DB, artifacts []verbtraining.LemmaArtifact, dryRun bo
 
 func upsertLemma(tx *sql.Tx, lemma string, wordCardID int64) (int64, error) {
 	meta, _ := json.Marshal(map[string]interface{}{
-		"source": "verb_forms_json",
+		"source":       "verb_forms_json",
 		"word_card_id": wordCardID,
 	})
 	q := `INSERT INTO verb_lemmas (lemma, language, source, source_version, checksum, metadata_json, updated_at)
@@ -435,4 +512,3 @@ func pruneLemmasMissingFromJSON(tx *sql.Tx, expected map[string]struct{}) (int, 
 	}
 	return len(del), nil
 }
-

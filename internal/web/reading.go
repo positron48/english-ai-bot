@@ -346,17 +346,17 @@ func (r *Router) handleLearningReadingTextGet(w http.ResponseWriter, req *http.R
 
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(map[string]interface{}{
-		"text_id":               doc.ID,
-		"category_id":           doc.CategoryID,
-		"title":                 doc.Title,
-		"title_translations":    doc.TitleTranslations,
-		"level":                 doc.Level,
-		"target_language":       doc.TargetLanguage,
-		"cover_thumb_rel_path":  doc.CoverThumbRelPath,
-		"cover_hero_rel_path":   doc.CoverHeroRelPath,
-		"cover_image_prompt":    doc.CoverImagePrompt,
-		"block":                 block,
-		"reading_progress":      readingProgress,
+		"text_id":              doc.ID,
+		"category_id":          doc.CategoryID,
+		"title":                doc.Title,
+		"title_translations":   doc.TitleTranslations,
+		"level":                doc.Level,
+		"target_language":      doc.TargetLanguage,
+		"cover_thumb_rel_path": doc.CoverThumbRelPath,
+		"cover_hero_rel_path":  doc.CoverHeroRelPath,
+		"cover_image_prompt":   doc.CoverImagePrompt,
+		"block":                block,
+		"reading_progress":     readingProgress,
 	})
 }
 
@@ -502,12 +502,20 @@ func (r *Router) findReadingWordCardByInput(input, courseCode string) (string, i
 	}
 	courseCode = strings.TrimSpace(strings.ToLower(courseCode))
 
-	// Prefer a card in the requested course (so the same word in another course
-	// doesn't shadow it), then fall back to an unscoped match for legacy/untagged rows.
+	// Prefer a direct lemma in the requested course, then a form mapping in the same
+	// course. Do not fall back globally: a selected Spanish course must never show
+	// an English card with the same spelling.
 	if courseCode != "" {
 		var canonicalLemma string
 		var wordCardID int64
-		err := r.db.QueryRow(`
+		err := r.db.QueryRow(`SELECT word, id FROM word_cards WHERE LOWER(word) = LOWER(?) AND LOWER(course_code) = ?`, normalized, courseCode).Scan(&canonicalLemma, &wordCardID)
+		if err == nil {
+			return canonicalLemma, wordCardID, true, nil
+		}
+		if err != nil && !errors.Is(err, sql.ErrNoRows) {
+			return "", 0, false, err
+		}
+		err = r.db.QueryRow(`
 SELECT wc.word, wc.id
 FROM word_forms wf
 JOIN word_cards wc ON wc.id = wf.word_card_id
@@ -519,13 +527,7 @@ LIMIT 1`, normalized, courseCode).Scan(&canonicalLemma, &wordCardID)
 		if err != nil && !errors.Is(err, sql.ErrNoRows) {
 			return "", 0, false, err
 		}
-		err = r.db.QueryRow(`SELECT word, id FROM word_cards WHERE LOWER(word) = LOWER(?) AND LOWER(course_code) = ?`, normalized, courseCode).Scan(&canonicalLemma, &wordCardID)
-		if err == nil {
-			return canonicalLemma, wordCardID, true, nil
-		}
-		if err != nil && !errors.Is(err, sql.ErrNoRows) {
-			return "", 0, false, err
-		}
+		return "", 0, false, nil
 	}
 
 	var canonicalLemma string

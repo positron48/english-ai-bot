@@ -46,6 +46,7 @@ import { ref, onMounted, onUnmounted, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useCourse } from '../composables/useCourse'
+import { useMe } from '../composables/useMe'
 import { grammarClient } from '../api/grammarClient'
 import { courseClient, type CourseProgressLocation } from '../api/courseClient'
 import LgActivityIcon from '../components/linglow/LgActivityIcon.vue'
@@ -55,6 +56,7 @@ import { wordsPercentForLevel, type WordLevelProgressMap } from '../utils/wordsP
 const { t } = useI18n()
 const router = useRouter()
 const { currentCourse, currentCourseCode, ensureCourseLoaded } = useCourse()
+const { ensureMe, hasFeature } = useMe()
 
 const cityName = computed(() => currentCourse.value?.city_name || currentCourse.value?.title || 'Ciudad Luminaria')
 
@@ -82,6 +84,7 @@ const courseProgress = ref<{ masteredItems: number; byLocation: CourseProgressLo
 const districtTitles = ref<Record<string, string>>({})
 // Per-CEFR-level word coverage (mastered/total) from the legacy vocab.
 const wordLevels = ref<WordLevelProgressMap>({})
+const conversationPro = ref(false)
 // True once district titles + progress are loaded, so labels render at final width.
 const mapReady = ref(false)
 
@@ -171,17 +174,32 @@ function readingStatus(distCode: string): 'gray' | 'orange' | 'yellow' | 'green'
   return pctToStatus(Math.round((done / total) * 100))
 }
 
+function conversationStatus(distCode: string): 'gray' | 'orange' | 'yellow' | 'green' {
+  const locs = courseProgress.value.byLocation.filter(
+    l => l.district_code === distCode && l.location_type === 'conversation'
+  )
+  const total = locs.reduce((s, l) => s + l.total_items, 0)
+  const done = locs.reduce((s, l) => s + l.attempted_items, 0)
+  if (total === 0) return 'gray'
+  return pctToStatus(Math.round((done / total) * 100))
+}
+
 const STATUS_SCORE: Record<string, number> = { gray: 0, orange: 1, yellow: 2, green: 3 }
+type ActivityType = 'grammar' | 'words' | 'reading' | 'conversation'
+type ActivityStatus = 'gray' | 'orange' | 'yellow' | 'green'
 
 // Derived district list with computed lv — reactively updates when grammarByLevel changes
 const CITY_DISTS = computed(() =>
   DIST_DEFS.map(d => {
     const locked = districtLv(d.cefrLevel) <= 1
-    const acts = [
-      { type: 'grammar' as const, status: grammarStatus(d.cefrLevel) },
-      { type: 'words' as const, status: wordsStatus(d.cefrLevel) },
-      { type: 'reading' as const, status: readingStatus(d.id) },
+    const acts: Array<{ type: ActivityType; status: ActivityStatus }> = [
+      { type: 'grammar', status: grammarStatus(d.cefrLevel) },
+      { type: 'words', status: wordsStatus(d.cefrLevel) },
+      { type: 'reading', status: readingStatus(d.id) },
     ]
+    if (conversationPro.value) {
+      acts.push({ type: 'conversation', status: conversationStatus(d.id) })
+    }
     let lv: number
     if (locked) {
       lv = 1
@@ -202,6 +220,7 @@ watch(grammarByLevel, () => renderCity())
 watch(courseProgress, () => renderCity())
 watch(districtTitles, () => renderCity())
 watch(wordLevels, () => renderCity())
+watch(conversationPro, () => renderCity())
 
 // ─── Canvas rendering ───────────────────────────────────────────────────────
 const cvsRef = ref<HTMLCanvasElement | null>(null)
@@ -302,7 +321,13 @@ function handleCanvasClick(e: MouseEvent) {
 
 onMounted(() => {
   ensureCourseLoaded()
-    .then(() => Promise.all([loadGrammarProgress(), loadProgress(), loadDistrictTitles(), loadWordLevels()]))
+    .then(() => Promise.all([
+      loadGrammarProgress(),
+      loadProgress(),
+      loadDistrictTitles(),
+      loadWordLevels(),
+      ensureMe().then(() => { conversationPro.value = hasFeature('conversation') }),
+    ]))
     .finally(() => { mapReady.value = true })
   setTimeout(resize, 50)
   const srcs = [
@@ -381,7 +406,7 @@ onUnmounted(() => {
   position: absolute;
   transform: translate(-50%, -50%);
   text-align: center;
-  max-width: 115px;
+  max-width: 150px;
   pointer-events: auto;
   cursor: pointer;
 }
@@ -418,13 +443,13 @@ onUnmounted(() => {
 }
 .district-acts {
   display: flex;
-  gap: 3px;
+  gap: 2px;
   margin-top: 5px;
   justify-content: center;
 }
 .district-act {
-  width: 36px;
-  height: 36px;
+  width: 34px;
+  height: 34px;
   border-radius: 7px;
   display: flex;
   align-items: center;

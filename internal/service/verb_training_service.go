@@ -3,6 +3,7 @@ package service
 import (
 	"encoding/json"
 	"fmt"
+	"hash/fnv"
 	"math"
 	"strings"
 	"time"
@@ -10,6 +11,7 @@ import (
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
+	"tgbot-skeleton/internal/spanishverbs"
 
 	"go.uber.org/zap"
 )
@@ -127,10 +129,127 @@ func (s *VerbTrainingService) StartSession(userID int64, scopes []string) (*Verb
 }
 
 func (s *VerbTrainingService) ensureTrainingCardsForUser(userID int64, scopes []string) error {
-	// Cards are synced by JSON importer during release; runtime must not generate them algorithmically.
-	_ = userID
-	_ = scopes
+	rows, err := s.repo.GetLinkedVerbFormsForUser(userID, scopes)
+	if err != nil {
+		return err
+	}
+	if len(rows) == 0 {
+		return nil
+	}
+	lemmas := make([]string, 0, len(rows))
+	seen := map[string]struct{}{}
+	for _, row := range rows {
+		lemma := strings.ToLower(strings.TrimSpace(row.Lemma))
+		if lemma == "" {
+			continue
+		}
+		if _, ok := seen[lemma]; ok {
+			continue
+		}
+		seen[lemma] = struct{}{}
+		lemmas = append(lemmas, lemma)
+	}
+	metadata, err := s.repo.GetVerbLemmaMetadataJSONBatch(lemmas)
+	if err != nil {
+		return err
+	}
+	for _, row := range rows {
+		card, err := buildRuntimeVerbTrainingCard(row, metadata[strings.ToLower(strings.TrimSpace(row.Lemma))])
+		if err != nil {
+			return err
+		}
+		if _, err := s.repo.UpsertVerbTrainingCard(card); err != nil {
+			return err
+		}
+	}
 	return nil
+}
+
+func stableVerbTrainingSeed(row repository.LinkedVerbFormRow) int64 {
+	h := fnv.New64a()
+	_, _ = h.Write([]byte(strings.ToLower(strings.TrimSpace(row.Lemma))))
+	_, _ = h.Write([]byte{0})
+	_, _ = h.Write([]byte(strings.ToLower(strings.TrimSpace(row.Mood))))
+	_, _ = h.Write([]byte{0})
+	_, _ = h.Write([]byte(strings.ToLower(strings.TrimSpace(row.Tense))))
+	_, _ = h.Write([]byte{0})
+	_, _ = h.Write([]byte(strings.ToLower(strings.TrimSpace(row.Person))))
+	_, _ = h.Write([]byte{0})
+	_, _ = h.Write([]byte(strings.ToLower(strings.TrimSpace(row.Number))))
+	return int64(h.Sum64() ^ uint64(row.VerbFormDictID))
+}
+
+func buildRuntimeVerbTrainingCard(row repository.LinkedVerbFormRow, metadataJSON string) (*models.VerbTrainingCard, error) {
+	lemma := strings.ToLower(strings.TrimSpace(row.Lemma))
+	mood := strings.ToLower(strings.TrimSpace(row.Mood))
+	tense := strings.ToLower(strings.TrimSpace(row.Tense))
+	person := strings.ToLower(strings.TrimSpace(row.Person))
+	number := strings.ToLower(strings.TrimSpace(row.Number))
+	surface := strings.ToLower(strings.TrimSpace(row.SurfaceForm))
+	if lemma == "" || mood == "" || tense == "" || person == "" || number == "" || surface == "" {
+		return nil, fmt.Errorf("incomplete linked verb form row: %+v", row)
+	}
+
+	ruGloss := spanishverbs.RuGlossFromLemmaMetadataJSON(metadataJSON)
+	if ruGloss == "" {
+		ruGloss = spanishverbs.DefaultRuGloss(lemma)
+	}
+	verbClass := spanishverbs.VerbClassFromLemmaMetadataJSON(metadataJSON)
+	allowed := spanishverbs.AllowedTemplateIDsFromLemmaMetadataJSON(metadataJSON)
+	seed := stableVerbTrainingSeed(row)
+	question, translation := spanishverbs.GenerateVerbExamplePair(seed, lemma, mood, tense, person, number, surface, ruGloss, verbClass, allowed)
+	if strings.TrimSpace(question) == "" {
+		question = spanishverbs.BuildVerbTrainingClozeQuestion(person, number, lemma, mood, tense)
+	}
+	if strings.TrimSpace(translation) == "" {
+		translation = spanishverbs.PlainRussianVerbTrainingHintLine(lemma, person, number, ruGloss, mood, tense)
+	}
+	if strings.TrimSpace(translation) == "" {
+		translation = "форма глагола"
+	}
+
+	prompt := map[string]interface{}{
+		"type":                models.VerbCardTypeCloze,
+		"example_mode":        "runtime_generated",
+		"example_source":      "verb_forms_dict_runtime",
+		"lemma":               lemma,
+		"mood":                mood,
+		"tense":               tense,
+		"person":              person,
+		"number":              number,
+		"expected_form":       surface,
+		"question":            question,
+		"example_translation": translation,
+	}
+	if ruGloss != "" {
+		prompt["ru_gloss"] = ruGloss
+	}
+	if verbClass != "" {
+		prompt["verb_class"] = verbClass
+	}
+	if len(allowed) > 0 {
+		prompt["allowed_template_ids"] = allowed
+	}
+	promptJSON, err := json.Marshal(prompt)
+	if err != nil {
+		return nil, err
+	}
+	answerJSON, err := json.Marshal(map[string]string{"surface_form": surface})
+	if err != nil {
+		return nil, err
+	}
+	optionsJSON, err := json.Marshal(BuildVerbFormMultipleChoiceOptions(surface, lemma, seed))
+	if err != nil {
+		return nil, err
+	}
+	return &models.VerbTrainingCard{
+		WordCardID:      row.WordCardID,
+		VerbFormDictID:  row.VerbFormDictID,
+		CardType:        models.VerbCardTypeCloze,
+		PromptJSON:      string(promptJSON),
+		AnswerJSON:      string(answerJSON),
+		DistractorsJSON: string(optionsJSON),
+	}, nil
 }
 
 func (s *VerbTrainingService) Grade(userID, sessionID, userVerbCardID int64, isCorrect bool) error {

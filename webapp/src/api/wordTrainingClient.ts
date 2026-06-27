@@ -291,7 +291,16 @@ export const wordTrainingClient = {
       async () => {
         const pack = await requirePack()
         const count = packQueueItems(pack).length
-        return { due_count: count, total_cards: count, available_for_training: count, offline: true }
+        return {
+          due_count: count,
+          total_cards: pack.total_cards || count,
+          available_for_training: count,
+          new_count: count,
+          learning_count: 0,
+          review_count: 0,
+          known_count: 0,
+          offline: true,
+        }
       },
     )
   },

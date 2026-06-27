@@ -17,6 +17,7 @@ import (
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/testutil"
 
+	"github.com/DATA-DOG/go-sqlmock"
 	"go.uber.org/zap"
 )
 
@@ -107,6 +108,44 @@ func TestGetWordDefinition_WordFormMapping(t *testing.T) {
 	// Form "ran" must resolve to lemma "run" and appear in response
 	if !strings.Contains(resp, "run") {
 		t.Errorf("expected response to resolve form 'ran' to lemma 'run', got %q", resp)
+	}
+}
+
+func TestGetWordDefinition_WordFormMappingDoesNotLeakOtherCourse(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, mock, err := sqlmock.New(sqlmock.QueryMatcherOption(sqlmock.QueryMatcherRegexp))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer db.Close()
+
+	mock.ExpectQuery(`FROM word_cards\s+WHERE LOWER\(word\) = LOWER\(\?\) AND course_code IS NOT DISTINCT FROM \?`).
+		WithArgs("algo", "es_ru").
+		WillReturnRows(sqlmock.NewRows([]string{
+			"id", "word", "definition", "pos", "noun_gender", "opposite_gender_word", "transcription", "definition_ru",
+			"examples_json", "verb_forms_json", "display_en", "processed_at", "processing_error", "course_code", "created_at", "updated_at",
+		}))
+	mock.ExpectQuery(`FROM word_forms wf\s+JOIN word_cards wc ON wc\.id = wf\.word_card_id`).
+		WithArgs("algo", "es_ru").
+		WillReturnRows(sqlmock.NewRows([]string{"form", "word_card_id"}))
+
+	wordRepo := repository.NewWordRepository(db, logger)
+	service := NewWordService(wordRepo, nil, nil, nil, config.LearningConfig{
+		TargetLang: "es",
+		NativeLang: "ru",
+		Pair:       "ru-es",
+		AppCode:    "es_ru",
+	}, logger)
+
+	resp, err := service.GetWordDefinition(context.Background(), 2, "algo")
+	if err == nil {
+		t.Fatalf("expected no cross-course DB hit and no AI fallback, got response %q", resp)
+	}
+	if strings.Contains(resp, "english card") || strings.Contains(resp, "something") {
+		t.Fatalf("cross-course card leaked into response: %q", resp)
+	}
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Fatal(err)
 	}
 }
 

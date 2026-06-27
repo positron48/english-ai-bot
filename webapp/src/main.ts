@@ -116,6 +116,33 @@ const showRuntimeDebugOverlay = (payload: unknown) => {
   document.body.appendChild(overlay)
 }
 
+const warmOfflineRouteChunks = () => {
+  if (typeof navigator !== 'undefined' && navigator.onLine === false) return
+  void Promise.all([
+    import('./views/LearningView.vue'),
+    import('./views/TrainingView.vue'),
+    import('./views/GrammarCategoriesView.vue'),
+    import('./views/GrammarChaptersView.vue'),
+    import('./views/GrammarChapterView.vue'),
+    import('./views/GrammarTestView.vue'),
+    import('./views/GrammarPlacementTestView.vue'),
+    import('./views/GrammarTrainingView.vue'),
+  ]).catch((error) => {
+    console.debug('[PWA] Offline route warmup failed:', error)
+  })
+}
+
+const warmServiceWorkerAppShell = async () => {
+  if (!('serviceWorker' in navigator)) return
+  if (navigator.onLine === false) return
+  try {
+    const registration = await navigator.serviceWorker.ready
+    registration.active?.postMessage({ type: 'CACHE_APP_SHELL' })
+  } catch (error) {
+    console.debug('[PWA] Service worker warmup failed:', error)
+  }
+}
+
 window.__showQantrixRuntimeDebug = () => {
   const payload = localStorage.getItem(RUNTIME_ERROR_STORAGE_KEY) || localStorage.getItem(OFFLINE_DEBUG_STORAGE_KEY) || '{}'
   document.body.innerHTML = `<pre style="margin:12px;padding:12px;white-space:pre-wrap;background:#111827;color:#f9fafb;border-radius:12px;font:12px/1.45 monospace">${escapeHtml(payload)}</pre>`
@@ -167,9 +194,20 @@ router.onError((error, to) => {
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch((error) => {
-      console.warn('[PWA] Service worker registration failed:', error)
-    })
+    navigator.serviceWorker.register('/sw.js', { scope: '/' })
+      .then(() => {
+        setTimeout(() => {
+          warmOfflineRouteChunks()
+          void warmServiceWorkerAppShell()
+        }, 1500)
+      })
+      .catch((error) => {
+        console.warn('[PWA] Service worker registration failed:', error)
+      })
+  })
+  window.addEventListener('online', () => {
+    warmOfflineRouteChunks()
+    void warmServiceWorkerAppShell()
   })
 }
 
