@@ -584,7 +584,11 @@
     "scenarioMissing": "This chat scenario is not available yet",
     "npcTitle": "People to talk to",
     "locked": "Locked",
-    "lockedHint": "Complete the previous chat first"
+    "lockedHint": "Complete the previous chat first",
+    "reset": "Reset",
+    "resetConfirm": "Start the conversation over? The current dialogue progress will be lost.",
+    "freeChat": "Free chat",
+    "completed100": "100%"
   },
   "trainingFeedback": {
     "encouragingPhrases": [

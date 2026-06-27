@@ -246,20 +246,32 @@ func (r *Router) handleLinglowConversationSessions(w http.ResponseWriter, req *h
 
 	// On a fresh session, generate the NPC opening line and store it as the first message.
 	if created {
-		systemPrompt := buildConversationSystemPrompt(r.aiSvc().ConversationPromptForCourse(courseCode), targetLang, scenario, tasks, nil, false)
-		result, err := r.aiSvc().ConversationTurn(ctx, systemPrompt, nil, openingTrigger, 400)
-		if err != nil {
-			r.logger.Warn("opening line generation failed", zap.Error(err))
-		} else if strings.TrimSpace(result.VisibleContent) != "" {
-			if err := r.conversationRepo.AppendMessage(ctx, session.ID, 1, "assistant", result.VisibleContent, result.PromptTokens, result.CompletionTokens); err != nil {
-				r.logger.Warn("store opening message failed", zap.Error(err))
-			} else {
-				_ = r.conversationRepo.BumpSessionCounters(ctx, session.ID, 0, result.PromptTokens+result.CompletionTokens)
-			}
-		}
+		r.generateOpeningLine(ctx, courseCode, targetLang, scenario, session.ID)
 	}
 
 	r.writeSessionState(w, ctx, userID, session.ID, userCourseID, scenario, tasks)
+}
+
+// generateOpeningLine produces the NPC's first greeting and stores it as seq 1. The opening prompt
+// deliberately omits the task list so the greeting never hints at the quest objectives.
+func (r *Router) generateOpeningLine(ctx context.Context, courseCode, targetLang string, scenario *repository.ConversationScenario, sessionID int64) {
+	if r.aiSvc() == nil {
+		return
+	}
+	systemPrompt := buildOpeningSystemPrompt(r.aiSvc().ConversationPromptForCourse(courseCode), targetLang, scenario)
+	result, err := r.aiSvc().ConversationTurn(ctx, systemPrompt, nil, openingTrigger, 400)
+	if err != nil {
+		r.logger.Warn("opening line generation failed", zap.Error(err))
+		return
+	}
+	if strings.TrimSpace(result.VisibleContent) == "" {
+		return
+	}
+	if err := r.conversationRepo.AppendMessage(ctx, sessionID, 1, "assistant", result.VisibleContent, result.PromptTokens, result.CompletionTokens); err != nil {
+		r.logger.Warn("store opening message failed", zap.Error(err))
+		return
+	}
+	_ = r.conversationRepo.BumpSessionCounters(ctx, sessionID, 0, result.PromptTokens+result.CompletionTokens)
 }
 
 // handleLinglowConversationSessionByID dispatches GET /{id}, POST /{id}/message, POST /{id}/end.
@@ -290,6 +302,8 @@ func (r *Router) handleLinglowConversationSessionByID(w http.ResponseWriter, req
 		r.handleConversationMessage(w, req, sessionID, userID)
 	case len(parts) == 2 && parts[1] == "end" && req.Method == http.MethodPost:
 		r.handleConversationEnd(w, req, sessionID, userID)
+	case len(parts) == 2 && parts[1] == "reset" && req.Method == http.MethodPost:
+		r.handleConversationReset(w, req, sessionID, userID)
 	case len(parts) == 1 && req.Method == http.MethodGet:
 		r.handleConversationGet(w, req, sessionID, userID)
 	default:
@@ -344,6 +358,43 @@ func (r *Router) handleConversationEnd(w http.ResponseWriter, req *http.Request,
 		return
 	}
 	writeJSON(w, map[string]interface{}{"status": status})
+}
+
+// handleConversationReset abandons the current session and starts a fresh one for the same
+// scenario (new opening line, empty history), letting the learner restart a conversation.
+func (r *Router) handleConversationReset(w http.ResponseWriter, req *http.Request, sessionID, userID int64) {
+	ctx := req.Context()
+	session, err := r.conversationRepo.GetSessionForUser(ctx, sessionID, userID)
+	if err != nil || session == nil {
+		http.Error(w, "Session not found", http.StatusNotFound)
+		return
+	}
+	scenario, err := r.conversationRepo.GetScenarioByID(ctx, session.ScenarioID)
+	if err != nil || scenario == nil {
+		http.Error(w, "Scenario not found", http.StatusNotFound)
+		return
+	}
+	// Free up the current open session (no-op if it is already closed).
+	_ = r.conversationRepo.CloseSession(ctx, session.ID, session.UserCourseID, "abandoned")
+
+	fresh, created, err := r.conversationRepo.StartSession(ctx, session.UserCourseID, scenario.ID)
+	if err != nil {
+		r.logger.Error("reset start session", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	tasks, err := r.conversationRepo.ListTasks(ctx, scenario.ID)
+	if err != nil {
+		r.logger.Error("list tasks", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	if created {
+		courseCode := r.courseCodeByID(ctx, scenario.CourseID)
+		targetLang := r.courseTargetLang(ctx, scenario.CourseID)
+		r.generateOpeningLine(ctx, courseCode, targetLang, scenario, fresh.ID)
+	}
+	r.writeSessionState(w, ctx, userID, fresh.ID, session.UserCourseID, scenario, tasks)
 }
 
 func (r *Router) handleConversationMessage(w http.ResponseWriter, req *http.Request, sessionID, userID int64) {
@@ -453,6 +504,10 @@ func (r *Router) handleConversationMessage(w http.ResponseWriter, req *http.Requ
 		http.Error(w, "AI provider error", http.StatusBadGateway)
 		return
 	}
+
+	// Guard against the model resurfacing mistakes from earlier turns: keep only corrections whose
+	// original fragment actually appears in the learner's latest message.
+	result.Corrections = filterCorrectionsToMessage(result.Corrections, userText)
 
 	// Persist the NPC reply together with any error corrections for the learner's last message.
 	correctionsJSON := "[]"
@@ -605,6 +660,25 @@ func (r *Router) courseTargetLang(ctx context.Context, courseID int64) string {
 	return lang
 }
 
+// filterCorrectionsToMessage drops corrections whose original fragment is not present in the
+// learner's latest message — a defensive guard against the model re-reporting earlier mistakes.
+func filterCorrectionsToMessage(corrections []ai.ChatCorrection, message string) []ai.ChatCorrection {
+	if len(corrections) == 0 {
+		return corrections
+	}
+	norm := func(s string) string { return strings.Join(strings.Fields(strings.ToLower(s)), " ") }
+	haystack := norm(message)
+	out := make([]ai.ChatCorrection, 0, len(corrections))
+	for _, c := range corrections {
+		orig := norm(c.Original)
+		// Keep corrections we cannot verify (no original) and those that match the latest message.
+		if orig == "" || strings.Contains(haystack, orig) {
+			out = append(out, c)
+		}
+	}
+	return out
+}
+
 // tasksJSON renders the checklist; completedByID may be nil (all incomplete).
 func tasksJSON(tasks []repository.ConversationTask, completedByID map[int64]bool) []map[string]interface{} {
 	out := make([]map[string]interface{}, 0, len(tasks))
@@ -659,8 +733,13 @@ func buildConversationSystemPrompt(base, targetLang string, scenario *repository
 		b.WriteString("You are an NPC in a language-learning role-play game. Speak only in the target language, stay fully in character, and answer the learner's questions from your role (e.g. as a shop assistant, state the price yourself — never ask the buyer the price, never repeat their words back as your line). Keep replies short and simple. Never coach the learner or tell them what to say, and never reveal the task list. After each reply output a line '###CONTROL###' followed by a JSON object {\"completed_task_codes\":[...],\"all_done\":bool,\"corrections\":[{\"original\":\"...\",\"corrected\":\"...\",\"explanation\":\"...\"}]}. In corrections, report only real mistakes in the learner's LATEST message (never repeat earlier ones) with a short explanation in Russian; use an empty array when there are none.\n\n")
 	}
 
-	fmt.Fprintf(&b, "SCENE\n- You are %s, %s.\n- Setting: %s\n- Target language code: %s. CEFR level: %s.\n",
-		scenario.NPCName, scenario.NPCPersona, scenario.SceneSetup, targetLang, scenario.CEFRLevel)
+	fmt.Fprintf(&b, "SCENE\n- You are %s, %s.\n- Target language code: %s. CEFR level: %s.\n",
+		scenario.NPCName, scenario.NPCPersona, targetLang, scenario.CEFRLevel)
+	// The authored scene only frames a quest. Free-chat sessions use the persona alone so the NPC
+	// just chats in character without an imposed situation.
+	if scenario.IsQuest && strings.TrimSpace(scenario.SceneSetup) != "" {
+		fmt.Fprintf(&b, "- Setting: %s\n", scenario.SceneSetup)
+	}
 
 	if scenario.IsQuest && len(tasks) > 0 {
 		b.WriteString("\nTASKS the learner should accomplish (do NOT read this list aloud):\n")
@@ -686,5 +765,24 @@ func buildConversationSystemPrompt(base, targetLang string, scenario *repository
 		b.WriteString("\nThis is a free-chat scene with no tasks. Keep an easy, friendly conversation going. Always still output the control line with an empty completed_task_codes array.\n")
 	}
 
+	return b.String()
+}
+
+// buildOpeningSystemPrompt assembles the system prompt for the NPC's first greeting. It omits the
+// task list entirely so the opening line cannot reveal or hint at quest objectives.
+func buildOpeningSystemPrompt(base, targetLang string, scenario *repository.ConversationScenario) string {
+	var b strings.Builder
+	if strings.TrimSpace(base) != "" {
+		b.WriteString(base)
+		b.WriteString("\n\n")
+	}
+	fmt.Fprintf(&b, "SCENE\n- You are %s, %s.\n- Target language code: %s. CEFR level: %s.\n",
+		scenario.NPCName, scenario.NPCPersona, targetLang, scenario.CEFRLevel)
+	if scenario.IsQuest && strings.TrimSpace(scenario.SceneSetup) != "" {
+		fmt.Fprintf(&b, "- Setting: %s\n", scenario.SceneSetup)
+	}
+	b.WriteString("\nGreet the learner warmly in character with ONE short, simple opening line to start the scene. " +
+		"Do NOT tell them what to do, do NOT mention or hint at any task or goal, and do NOT ask them to order/buy/report anything yet — just a natural greeting. " +
+		"Still output the control line with an empty completed_task_codes array.\n")
 	return b.String()
 }

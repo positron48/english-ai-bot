@@ -54,6 +54,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { courseClient, type CourseMap, type CourseProgress } from '../api/courseClient'
 import { useLocale } from '../composables/useLocale'
 import { useCourse } from '../composables/useCourse'
+import { useMe } from '../composables/useMe'
 import { grammarClient } from '../api/grammarClient'
 import LgPageHeader from '../components/linglow/LgPageHeader.vue'
 import LgLumiFact from '../components/linglow/LgLumiFact.vue'
@@ -65,6 +66,8 @@ const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const { currentCourseCode, ensureCourseLoaded } = useCourse()
+const { ensureMe, hasFeature } = useMe()
+const conversationPro = ref(false)
 
 const courseMap = ref<CourseMap | null>(null)
 const progress = ref<CourseProgress | null>(null)
@@ -160,10 +163,12 @@ const areas = computed(() => {
     },
     {
       type: 'conversation' as const,
-      status: pctToStatus(chatPct.value),
+      // Conversations are a Pro feature: non-Pro see a locked (gray) icon; Pro see progress colour.
+      status: conversationPro.value ? pctToStatus(chatPct.value) : 'gray',
       label: t('city.areaChat'), color: '#2d6b3a',
-      meta: t('city.areaMetaChat', { pct: chatPct.value }),
-      pct: chatPct.value, cta: t('city.ctaPractice'),
+      meta: conversationPro.value ? t('city.areaMetaChat', { pct: chatPct.value }) : t('chat.requiresPro'),
+      pct: conversationPro.value ? chatPct.value : null,
+      cta: conversationPro.value ? t('city.ctaPractice') : '🔒 Pro',
       action: () => router.push({ name: 'PlaceChatList', params: { districtCode: districtCode.value } }),
     },
   ]
@@ -174,6 +179,7 @@ const areas = computed(() => {
 onMounted(async () => {
   try {
     await ensureCourseLoaded()
+    ensureMe().then(() => { conversationPro.value = hasFeature('conversation') })
     const wpCourse = courseCode.value || currentCourseCode.value || undefined
     const [map, prog, grammarData, wp] = await Promise.all([
       courseClient.getCourseMap(courseCode.value),

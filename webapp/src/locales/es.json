@@ -545,7 +545,11 @@
     "scenarioMissing": "Este escenario de chat aún no está disponible",
     "npcTitle": "Personas para conversar",
     "locked": "Bloqueado",
-    "lockedHint": "Completa la conversación anterior primero"
+    "lockedHint": "Completa la conversación anterior primero",
+    "reset": "Reiniciar",
+    "resetConfirm": "¿Empezar la conversación de nuevo? Se perderá el progreso del diálogo actual.",
+    "freeChat": "Charla libre",
+    "completed100": "100%"
   },
   "trainingFeedback": {
     "encouragingPhrases": [

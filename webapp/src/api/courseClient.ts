@@ -525,6 +525,11 @@ export const courseClient = {
       body: JSON.stringify({ status }),
     })
   },
+  resetConversationSession(sessionId: number): Promise<ConversationSessionState> {
+    return apiClient.request(`/api/linglow/conversation/sessions/${sessionId}/reset`, {
+      method: 'POST',
+    })
+  },
 }
 
 function withCourseCode(url: string, courseCode?: string): string {

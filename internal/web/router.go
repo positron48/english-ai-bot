@@ -518,11 +518,10 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/me", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleMe)))
 	r.mux.HandleFunc("/api/linglow/lumi-fact", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLumiFact)))
 	r.mux.HandleFunc("/api/linglow/district-extras", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLinglowDistrictExtras)))
-	// District conversations (quest + free chat) are available to everyone; only the
-	// standalone general AI chat (/api/chat) stays behind the conversation feature.
-	r.mux.HandleFunc("/api/linglow/conversation/scenarios", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLinglowConversationScenarios)))
-	r.mux.HandleFunc("/api/linglow/conversation/sessions", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLinglowConversationSessions)))
-	r.mux.HandleFunc("/api/linglow/conversation/sessions/", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLinglowConversationSessionByID)))
+	// District conversations (quest + free chat) are a Pro feature, gated by 'conversation'.
+	r.mux.HandleFunc("/api/linglow/conversation/scenarios", appAPIMiddleware.Wrap(auth.RequireAuth(r.RequireFeature("conversation")(r.handleLinglowConversationScenarios))))
+	r.mux.HandleFunc("/api/linglow/conversation/sessions", appAPIMiddleware.Wrap(auth.RequireAuth(r.RequireFeature("conversation")(r.handleLinglowConversationSessions))))
+	r.mux.HandleFunc("/api/linglow/conversation/sessions/", appAPIMiddleware.Wrap(auth.RequireAuth(r.RequireFeature("conversation")(r.handleLinglowConversationSessionByID))))
 	r.mux.HandleFunc("/api/vocab", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleVocab)))
 	r.mux.HandleFunc("/api/vocab/", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleVocabDelete)))
 
