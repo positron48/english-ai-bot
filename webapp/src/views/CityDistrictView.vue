@@ -129,6 +129,17 @@ const districtDesc = computed(() => {
   return i18nDesc || d.description || d.title || ''
 })
 
+interface AreaItem {
+  type: 'grammar' | 'words' | 'reading' | 'conversation'
+  status: 'gray' | 'orange' | 'yellow' | 'green'
+  label: string
+  color: string
+  meta: string
+  pct: number | null
+  cta: string
+  action: () => void
+}
+
 const areas = computed(() => {
   function pctToStatus(pct: number): 'gray' | 'orange' | 'yellow' | 'green' {
     if (pct <= 0) return 'gray'
@@ -136,7 +147,7 @@ const areas = computed(() => {
     if (pct < 67) return 'yellow'
     return 'green'
   }
-  const list = [
+  const list: AreaItem[] = [
     {
       type: 'grammar' as const,
       status: pctToStatus(grammarPct.value),
@@ -161,18 +172,19 @@ const areas = computed(() => {
       pct: readingPct.value, cta: t('city.ctaRead'),
       action: () => router.push({ name: 'ReadingCategories', query: districtLevelQuery.value }),
     },
-    {
-      type: 'conversation' as const,
-      // Conversations are a Pro feature: non-Pro see a locked (gray) icon; Pro see progress colour.
-      status: conversationPro.value ? pctToStatus(chatPct.value) : 'gray',
-      label: t('city.areaChat'), color: '#2d6b3a',
-      meta: conversationPro.value ? t('city.areaMetaChat', { pct: chatPct.value }) : t('chat.requiresPro'),
-      pct: conversationPro.value ? chatPct.value : null,
-      cta: conversationPro.value ? t('city.ctaPractice') : '🔒 Pro',
-      action: () => router.push({ name: 'PlaceChatList', params: { districtCode: districtCode.value } }),
-    },
   ]
-  // District conversations are open to everyone now.
+  // Conversations are a Pro feature: show the chat area (with progress colour) only to Pro users;
+  // hide it entirely otherwise.
+  if (conversationPro.value) {
+    list.push({
+      type: 'conversation' as const,
+      status: pctToStatus(chatPct.value),
+      label: t('city.areaChat'), color: '#2d6b3a',
+      meta: t('city.areaMetaChat', { pct: chatPct.value }),
+      pct: chatPct.value, cta: t('city.ctaPractice'),
+      action: () => router.push({ name: 'PlaceChatList', params: { districtCode: districtCode.value } }),
+    })
+  }
   return list
 })
 
