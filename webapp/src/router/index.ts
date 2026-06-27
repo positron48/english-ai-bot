@@ -188,7 +188,7 @@ const router = createRouter({
           path: 'training/verbs',
           name: 'VerbTraining',
           component: () => import('../views/VerbTrainingView.vue'),
-          meta: { requiresAuth: true, navTab: 'practice', fullscreen: true }
+          meta: { requiresAuth: true, navTab: 'practice' }
         },
         {
           path: 'chat',

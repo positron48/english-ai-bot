@@ -13,7 +13,7 @@
     </section>
 
     <section v-else-if="showIdleChrome" class="card verb-forms-pre">
-      <component :is="headingTag" class="verb-forms-pre__title">
+      <component v-if="!hidePageTitle" :is="headingTag" class="verb-forms-pre__title">
         {{ t('verbTraining.title') }}
       </component>
       <p class="verb-forms-pre__intro">{{ t('verbTraining.intro') }}</p>
@@ -211,8 +211,10 @@ const props = withDefaults(
   defineProps<{
     embedded?: boolean
     autoStart?: boolean
+    /** Parent view shows LgPageHeader title — hide duplicate h1/h3 on idle screen */
+    hidePageTitle?: boolean
   }>(),
-  { embedded: true, autoStart: false }
+  { embedded: true, autoStart: false, hidePageTitle: false }
 )
 
 const router = useRouter()

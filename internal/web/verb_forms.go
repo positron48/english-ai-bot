@@ -177,21 +177,26 @@ func (r *Router) newVerbTrainingServiceForUser(ctx context.Context, userID int64
 	return service.NewVerbTrainingService(repo, r.learningConfigForUser(ctx, userID), r.config.Training, r.logger)
 }
 
-// ensureVerbFormUserCardsAfterVocab mirrors word training: once user_cards exist for vocabulary,
-// materialize verb form cards (verb_training_cards + user_verb_cards) for Spanish.
-func (r *Router) ensureVerbFormUserCardsAfterVocab(userID int64) {
-	ctx := context.Background()
+// ensureVerbFormUserCardsForUser links lemmas and materializes verb_training_cards + user_verb_cards
+// for the user's Spanish vocabulary and enabled scopes.
+func (r *Router) ensureVerbFormUserCardsForUser(ctx context.Context, userID int64) {
 	if !r.verbFormsEnabledForUser(ctx, userID) {
 		return
 	}
 	vs := r.newVerbTrainingServiceForUser(ctx, userID)
 	scopes := r.getUserVerbScopes(ctx, userID)
 	if err := vs.EnsureVerbFormUserCards(userID, scopes); err != nil {
-		r.logger.Warn("ensure verb form user cards after vocabulary change",
+		r.logger.Warn("ensure verb form user cards",
 			zap.Int64("user_id", userID),
 			zap.Error(err),
 		)
 	}
+}
+
+// ensureVerbFormUserCardsAfterVocab mirrors word training: once user_cards exist for vocabulary,
+// materialize verb form cards (verb_training_cards + user_verb_cards) for Spanish.
+func (r *Router) ensureVerbFormUserCardsAfterVocab(userID int64) {
+	r.ensureVerbFormUserCardsForUser(context.Background(), userID)
 }
 
 func (r *Router) handleVerbTrainingStart(w http.ResponseWriter, req *http.Request) {
@@ -583,6 +588,9 @@ func (r *Router) handleVerbTrainingUpcoming(w http.ResponseWriter, req *http.Req
 		r.writeVerbTrainingDisabled(w)
 		return
 	}
+	// Materialize user_verb_cards from global verb_training_cards + user vocabulary before counting.
+	// Without this, upcoming stays at total_cards=0 until POST /start even when sync/import succeeded.
+	r.ensureVerbFormUserCardsForUser(req.Context(), userID)
 	repo := repository.NewVerbFormsRepository(r.db, r.logger)
 	queue, err := repo.GetVerbQueue(userID, time.Now(), r.config.Training.VerbFormsMaxCards, r.config.Training.VerbFormsMaxNew)
 	if err != nil {
