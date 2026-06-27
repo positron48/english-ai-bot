@@ -369,7 +369,7 @@ func TestWordService_renderWordCardMarkdown(t *testing.T) {
 		ExamplesJSON:  &examplesJSON,
 		VerbFormsJSON: &verbFormsJSON,
 	}
-	md := service.renderWordCardMarkdown(card)
+	md := service.renderWordCardMarkdown(card, "en")
 	if md == "" {
 		t.Fatal("expected non-empty markdown")
 	}
@@ -526,5 +526,57 @@ func TestWordService_ensureUserCardsForWord_WithMasteringRepo(t *testing.T) {
 	}
 	if score != 0 {
 		t.Errorf("expected initial mastering score 0, got %d", score)
+	}
+}
+
+func TestGetWordDefinitionForCourse_AlgoSpanishNotEnglishAlgorithm(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	conn := db.GetConnection()
+
+	wordRepo := repository.NewWordRepository(conn, logger)
+
+	posNoun := "noun"
+	defAlgo := "алгоритм"
+	displayAlgorithm := "algorithm"
+	algoCardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{
+		Word:         "algorithm",
+		CourseCode:   "en_ru",
+		POS:          &posNoun,
+		DefinitionRU: &defAlgo,
+		DisplayEN:    &displayAlgorithm,
+	})
+	if err != nil {
+		t.Fatalf("upsert algorithm: %v", err)
+	}
+	if err := wordRepo.UpsertWordFormMapping("algo", algoCardID); err != nil {
+		t.Fatalf("UpsertWordFormMapping algo->algorithm: %v", err)
+	}
+
+	defSomething := "что-то, нечто"
+	displayAlgo := "algo"
+	_, err = wordRepo.UpsertWordCardLemma(&models.WordCard{
+		Word:         "algo",
+		CourseCode:   "es_ru",
+		POS:          &posNoun,
+		DefinitionRU: &defSomething,
+		DisplayEN:    &displayAlgo,
+	})
+	if err != nil {
+		t.Fatalf("upsert es algo: %v", err)
+	}
+
+	// English-default WordService: lookup must still honor explicit es_ru course.
+	service := NewWordService(wordRepo, nil, nil, nil, config.DefaultLearningConfig(), logger)
+
+	resp, err := service.GetWordDefinitionForCourse(context.Background(), 1, "algo", "es_ru")
+	if err != nil {
+		t.Fatalf("GetWordDefinitionForCourse: %v", err)
+	}
+	if strings.Contains(resp, "алгоритм") || strings.Contains(strings.ToLower(resp), "algorithm") {
+		t.Fatalf("expected Spanish course card, got English algorithm: %q", resp)
+	}
+	if !strings.Contains(resp, "что-то") {
+		t.Fatalf("expected Spanish definition, got %q", resp)
 	}
 }

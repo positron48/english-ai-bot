@@ -398,7 +398,7 @@ func (s *WordService) getWordDefinitionForCourse(ctx context.Context, userID int
 			// Pronunciation is canonical per word (lemma), not per training-card display form.
 			s.pronunciationService.ScheduleWord(wordCard.Word)
 		}
-		markdown := s.renderWordCardMarkdown(wordCard)
+		markdown := s.renderWordCardMarkdown(wordCard, targetLang)
 		return markdown, nil
 	}
 
@@ -659,7 +659,7 @@ func (s *WordService) getWordDefinitionForCourse(ctx context.Context, userID int
 		// Pronunciation is canonical per word (lemma), not per training-card display form.
 		s.pronunciationService.ScheduleWord(lemma)
 	}
-	markdown := s.renderWordCardMarkdown(wordCard)
+	markdown := s.renderWordCardMarkdown(wordCard, targetLang)
 	return markdown, nil
 }
 
@@ -681,8 +681,12 @@ func (s *WordService) tryLinkVerbLemmaForLang(card *models.WordCard, targetLang 
 	}
 }
 
-// renderWordCardMarkdown renders markdown from structured WordCard data
-func (s *WordService) renderWordCardMarkdown(card *models.WordCard) string {
+// renderWordCardMarkdown renders markdown from structured WordCard data.
+// targetLang is the learner's course target language (e.g. "es"); when empty, falls back to the service default.
+func (s *WordService) renderWordCardMarkdown(card *models.WordCard, targetLang string) string {
+	if strings.TrimSpace(targetLang) == "" {
+		targetLang = s.learning.TargetLang
+	}
 	var examples []models.WordInfoExample
 	var verbForms *models.WordInfoVerbForms
 
@@ -703,7 +707,7 @@ func (s *WordService) renderWordCardMarkdown(card *models.WordCard) string {
 		}
 	}
 
-	return utils.RenderWordCardMarkdownForTarget(card, examples, verbForms, s.learning.TargetLang)
+	return utils.RenderWordCardMarkdownForTarget(card, examples, verbForms, targetLang)
 }
 
 func min(a, b int) int {

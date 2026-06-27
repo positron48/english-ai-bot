@@ -206,7 +206,7 @@ func TestRenderWordCardMarkdown_InvalidExamplesJSON(t *testing.T) {
 		Word:         "test",
 		ExamplesJSON: &invalidJSON,
 	}
-	md := service.renderWordCardMarkdown(card)
+	md := service.renderWordCardMarkdown(card, "en")
 	if md == "" {
 		t.Error("expected non-empty markdown even with invalid examples JSON")
 	}
@@ -223,7 +223,7 @@ func TestRenderWordCardMarkdown_InvalidVerbFormsJSON(t *testing.T) {
 		Word:          "test",
 		VerbFormsJSON: &invalidJSON,
 	}
-	md := service.renderWordCardMarkdown(card)
+	md := service.renderWordCardMarkdown(card, "en")
 	if md == "" {
 		t.Error("expected non-empty markdown even with invalid verb forms JSON")
 	}
