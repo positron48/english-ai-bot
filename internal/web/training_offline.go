@@ -196,7 +196,7 @@ func (r *Router) handleTrainingOfflinePack(w http.ResponseWriter, req *http.Requ
 				continue
 			}
 			cardIndex := indexOfCardInQueue(cardQueue, item.Card.UserCard.ID)
-			options, correctAnswer, err := r.optionsService.GenerateOptions(item.Card, models.DefaultOptionCount, r.extractSessionWords(cardQueue, cardIndex, item.Card, nil), collectWordENs(cardQueue, cardIndex), collectWordRUs(cardQueue, cardIndex))
+			options, correctAnswer, err := r.optionsServiceForUser(req.Context(), userID).GenerateOptions(item.Card, models.DefaultOptionCount, r.extractSessionWords(cardQueue, cardIndex, item.Card, nil), collectWordENs(cardQueue, cardIndex), collectWordRUs(cardQueue, cardIndex))
 			if err != nil {
 				r.logger.Warn("failed to generate offline word options", zap.Int64("user_card_id", item.Card.UserCard.ID), zap.Error(err))
 				continue
@@ -504,7 +504,7 @@ func (r *Router) handleTrainingOfflineSyncAttempts(w http.ResponseWriter, req *h
 		chosenOption := attempt.ChosenOption
 		correctAnswer := attempt.CorrectAnswer
 		if correctAnswer == "" {
-			_, generatedCorrect, _ := r.optionsService.GenerateOptions(&models.UserCardWithTraining{UserCard: *userCard, TrainingCard: *trainingCard}, models.DefaultOptionCount, nil, nil, nil)
+			_, generatedCorrect, _ := r.optionsServiceForUser(req.Context(), userID).GenerateOptions(&models.UserCardWithTraining{UserCard: *userCard, TrainingCard: *trainingCard}, models.DefaultOptionCount, nil, nil, nil)
 			correctAnswer = generatedCorrect
 		}
 		isCorrect := chosenOption == correctAnswer

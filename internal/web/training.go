@@ -201,7 +201,8 @@ func (r *Router) handleTrainingStart(w http.ResponseWriter, req *http.Request) {
 		sessionConfig = service.DefaultSessionConfig()
 	}
 	sessionConfig.CourseCode = r.currentCourseCodeForUser(req.Context(), userID)
-	sessionConfig.IsEnglishTarget = !strings.EqualFold(r.config.Learning.TargetLang, "es")
+	userLC := r.learningConfigForUser(req.Context(), userID)
+	sessionConfig.IsEnglishTarget = !strings.EqualFold(userLC.TargetLang, "es")
 
 	// Start session
 	session, queue, err := r.trainingService.StartSession(userID, models.SourceManual, sessionConfig)
@@ -382,8 +383,8 @@ func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, stat
 	state.ShownAt = time.Now()
 	state.OptionsShownAt = nil
 
-	// Generate options
-	options, correctAnswer, err := r.optionsService.GenerateOptions(card, models.DefaultOptionCount, sessionWords, sessionWordENs, sessionWordRUs)
+	// Generate options (course-scoped target lang so Spanish verbs don't get English "to ")
+	options, correctAnswer, err := r.optionsServiceForUser(req.Context(), state.UserID).GenerateOptions(card, models.DefaultOptionCount, sessionWords, sessionWordENs, sessionWordRUs)
 	if err != nil {
 		r.logger.Error("failed to generate options", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)

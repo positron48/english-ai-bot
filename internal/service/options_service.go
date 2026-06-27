@@ -33,6 +33,18 @@ func NewOptionsService(trainingCardRepo *repository.TrainingCardRepository, logg
 	}
 }
 
+// ForTargetLang returns an OptionsService scoped to targetLang (reuses receiver when unchanged).
+func (s *OptionsService) ForTargetLang(targetLang string) *OptionsService {
+	if s == nil {
+		return nil
+	}
+	tl := strings.ToLower(strings.TrimSpace(targetLang))
+	if tl == "" || tl == s.targetLang {
+		return s
+	}
+	return NewOptionsService(s.trainingCardRepo, s.logger, tl)
+}
+
 // GenerateOptions generates multiple choice options for a card
 // sessionWords: correct answers from other cards in the current session (to mix in as distractors)
 // sessionWordENs: set of WordEN values from all cards in the session (to exclude distractors with matching English spelling)

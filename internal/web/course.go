@@ -11,6 +11,7 @@ import (
 
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/repository"
+	"tgbot-skeleton/internal/service"
 
 	"go.uber.org/zap"
 )
@@ -26,6 +27,15 @@ func (r *Router) learningConfigForUser(ctx context.Context, userID int64) config
 		return learningConfigForCourse(lc, courseCode)
 	}
 	return lc
+}
+
+// optionsServiceForUser returns multiple-choice option generation scoped to the user's course
+// target language (critical on Linglow unified where server default is en but user may study es).
+func (r *Router) optionsServiceForUser(ctx context.Context, userID int64) optionsServiceInterface {
+	if svc, ok := r.optionsService.(*service.OptionsService); ok {
+		return svc.ForTargetLang(r.learningConfigForUser(ctx, userID).TargetLang)
+	}
+	return r.optionsService
 }
 
 func (r *Router) defaultCourseCode() string {

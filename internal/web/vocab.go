@@ -463,39 +463,23 @@ func (r *Router) handleVocabSummary(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	courseCode := r.currentCourseCodeForUser(req.Context(), userID)
-	courseFilter := ""
-	var args []interface{}
-	if courseCode != "" {
-		courseFilter = " AND EXISTS (SELECT 1 FROM training_cards tc2 JOIN word_cards wc2 ON tc2.word_card_id = wc2.id WHERE tc2.id = uc.training_card_id AND wc2.course_code = ?)"
-		args = append(args, courseCode)
+	summary, err := r.queryVocabSummary(userID, courseCode)
+	if err != nil {
+		r.logger.Error("failed to get vocab summary", zap.Error(err), zap.Int64("user_id", userID))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
 	}
-	baseArgs := []interface{}{userID}
-	baseArgs = append(baseArgs, args...)
-
-	var total, reviewCount, learning, newCount, masteredCount int
-	_ = r.db.QueryRow(`SELECT COUNT(DISTINCT tc.word_card_id) FROM user_cards uc JOIN training_cards tc ON uc.training_card_id = tc.id WHERE uc.user_id = ?`+courseFilter, baseArgs...).Scan(&total)
-	_ = r.db.QueryRow(`SELECT COUNT(DISTINCT tc.word_card_id) FROM user_cards uc JOIN training_cards tc ON uc.training_card_id = tc.id WHERE uc.user_id = ? AND uc.state = 'review'`+courseFilter, baseArgs...).Scan(&reviewCount)
-	_ = r.db.QueryRow(`SELECT COUNT(DISTINCT tc.word_card_id) FROM user_cards uc JOIN training_cards tc ON uc.training_card_id = tc.id WHERE uc.user_id = ? AND uc.state = 'learning'`+courseFilter, baseArgs...).Scan(&learning)
-	_ = r.db.QueryRow(`SELECT COUNT(DISTINCT tc.word_card_id) FROM user_cards uc JOIN training_cards tc ON uc.training_card_id = tc.id WHERE uc.user_id = ? AND uc.state = 'new'`+courseFilter, baseArgs...).Scan(&newCount)
-
-	masteredFilter := ""
-	masteredArgs := []interface{}{userID}
-	if courseCode != "" {
-		masteredFilter = " AND EXISTS (SELECT 1 FROM word_cards wc WHERE wc.id = uwk.word_card_id AND wc.course_code = ?)"
-		masteredArgs = append(masteredArgs, courseCode)
-	}
-	_ = r.db.QueryRow(`SELECT COUNT(DISTINCT uwk.word_card_id) FROM user_word_knowledge uwk WHERE uwk.user_id = ? AND uwk.status = 'known'`+masteredFilter, masteredArgs...).Scan(&masteredCount)
 
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(map[string]interface{}{
-		"total":           total,
-		"new":             newCount,
-		"learning":        learning,
-		"review":          reviewCount,
-		"review_count":    reviewCount,
-		"mastered":        masteredCount,
-		"mastered_count":  masteredCount,
-		"known":           masteredCount, // backward compat: "изучено" in Practice dictionary card
+		"total":           summary.Total,
+		"new":             summary.New,
+		"learning":        summary.Learning,
+		"review":          summary.Review,
+		"review_count":    summary.Review,
+		"mastered":        summary.Mastered,
+		"mastered_count":  summary.Mastered,
+		"known":           summary.Mastered, // backward compat: "изучено" in Practice dictionary card
 	})
 }
 

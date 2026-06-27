@@ -145,6 +145,25 @@ func TestOptionsService_hasMatchingPOS(t *testing.T) {
 	})
 }
 
+func TestOptionsService_ForTargetLang(t *testing.T) {
+	base := NewOptionsService(nil, zap.NewNop(), "en")
+	if base.ForTargetLang("en") != base {
+		t.Fatal("ForTargetLang(en) should return same instance")
+	}
+	es := base.ForTargetLang("es")
+	if es == base || es.targetLang != "es" {
+		t.Fatalf("ForTargetLang(es) = %#v, want separate svc with targetLang es", es)
+	}
+	word := "hablar"
+	got := es.normalizeVerbFormat(word, "verb", models.DirectionRUtoEN)
+	if got != word {
+		t.Fatalf("normalizeVerbFormat(es) = %q, want %q", got, word)
+	}
+	gotEn := base.normalizeVerbFormat(word, "verb", models.DirectionRUtoEN)
+	if gotEn != "to hablar" {
+		t.Fatalf("normalizeVerbFormat(en) = %q, want to hablar", gotEn)
+	}
+}
 func TestOptionsService_normalizeVerbFormat(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	service := NewOptionsService(nil, logger, "en")
