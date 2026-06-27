@@ -277,7 +277,20 @@
     "impDueBacklog": "{n} palabra espera repaso | {n} palabras esperan repaso",
     "impWeakDistrict": "Visita {name} — allí se acumulan errores",
     "impNoReading": "Ninguna lectura esta semana — lee un texto corto",
-    "impNoChat": "Hace tiempo sin diálogos — habla con la IA"
+    "impNoChat": "Hace tiempo sin diálogos — habla con la IA",
+    "monthStart": "El mes acaba de empezar — ¡es el mejor momento para comenzar!",
+    "monthGreat": "¡Mes productivo — excelente ritmo!",
+    "monthGood": "Buen progreso, sigue así.",
+    "monthLittle": "Un pequeño comienzo — cada paso cuenta.",
+    "weekNone": "Empieza ahora mismo — incluso una sesión crea el hábito.",
+    "weekBrokenStreak": "Esta semana estudiaste {n} día — pero se rompió tu racha. Practica hoy para recuperarla. | Esta semana estudiaste {n} días — pero se rompió tu racha. Practica hoy para recuperarla.",
+    "weekStreak1": "¡Primer día de racha! Vuelve mañana para no romper la cadena.",
+    "weekStreakFew": "{n} días seguidos — buen comienzo. Un poco más y se convierte en hábito.",
+    "weekStreakWeek": "{n} días seguidos — el ritmo se está formando. ¡Intenta llegar a una semana completa!",
+    "weekStreak7": "7 días sin parar — esto ya es un hábito de verdad.",
+    "weekStreakMid": "{n} días seguidos — estable y seguro. ¡Sigue así!",
+    "weekStreakLong": "{n} días sin parar — disciplina seria. ¡Excelente!",
+    "weekStreakEpic": "{n} días seguidos — impresionante. Claramente has aprendido cómo aprender."
   },
   "settings": {
     "title": "Configuración",
@@ -471,7 +484,11 @@
     "quizFailed": "Respuestas correctas insuficientes",
     "deleteConfirm": "¿Eliminar «{title}» y todos los archivos relacionados?",
     "deleteSuccess": "Texto de lectura eliminado.",
-    "deleteFailed": "No se pudo eliminar el texto."
+    "deleteFailed": "No se pudo eliminar el texto.",
+    "loadMore": "Cargar más",
+    "viewArchive": "Ver textos leídos",
+    "archiveTitle": "Textos leídos",
+    "archiveEmpty": "Aún no has leído ningún texto en esta categoría."
   },
   "wordSets": {
     "back": "← Atrás",
@@ -858,6 +875,7 @@
     "quickTrainingSub": "Repaso de palabras con repetición espaciada",
     "quickGrammarTraining": "Entrenamiento de gramática",
     "quickGrammarTrainingSub": "Test de los capítulos completados",
+    "quickLastGrammarChapter": "Continuar gramática",
     "quickChat": "Práctica con IA — diálogo",
     "quickChatSub": "Diálogo situacional",
     "myDictionary": "Mi diccionario",

@@ -49,7 +49,7 @@ func (r *Router) learningJSONForSettingsAPI(ctx context.Context, userID int64) m
 			lc.GrammarBundleID = target
 		}
 	}
-	spanishVerbForms := strings.EqualFold(lc.TargetLang, "es") && r.config.Training.SpanishVerbFormsEnabled
+	spanishVerbForms := strings.EqualFold(lc.TargetLang, "es")
 	out := map[string]interface{}{
 		"pair":                       lc.Pair,
 		"native_lang":                lc.NativeLang,

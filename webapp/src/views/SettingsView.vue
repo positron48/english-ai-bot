@@ -196,29 +196,6 @@
       </div>
     </div>
 
-    <!-- VERB PROGRESSION -->
-    <template v-if="showVerbFormProgression">
-      <div class="prf-section-title">{{ t('settings.verbFormProgressionTitle') }}</div>
-      <div class="prf-section-card">
-        <div class="prf-row prf-row--col">
-          <div class="prf-row-head">
-            <div class="prf-row-info">
-              <span class="prf-row-label">{{ t('settings.verbFormProgressionLabel') }}</span>
-              <span class="prf-row-sub">{{ t('settings.verbFormProgressionDescription') }}</span>
-            </div>
-          </div>
-          <div style="display:flex;align-items:center;gap:8px;padding-left:36px">
-            <span v-if="verbProgressionSaved" class="prf-saved">{{ t('settings.verbFormProgressionSaved') }}</span>
-            <select v-model.number="verbFormsProgressionIndex" class="prf-select" @change="handleVerbFormProgressionChange">
-              <option v-for="(step, idx) in verbLadder" :key="step.scope" :value="idx">
-                {{ verbProgressionOptionLabel(step) }}
-              </option>
-            </select>
-          </div>
-        </div>
-      </div>
-    </template>
-
     <!-- NOTIFICATIONS -->
     <div class="prf-section-title">{{ t('settings.notifications') }}</div>
     <div class="prf-section-card">

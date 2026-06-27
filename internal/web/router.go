@@ -368,7 +368,7 @@ func (r *Router) handleHealth(w http.ResponseWriter, req *http.Request) {
 	if lc.TargetLang == "" {
 		lc = config.DefaultLearningConfig()
 	}
-	spanishVerbForms := r.config.Training.SpanishVerbFormsEnabled && strings.EqualFold(lc.TargetLang, "es")
+	spanishVerbForms := strings.EqualFold(lc.TargetLang, "es")
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	_ = json.NewEncoder(w).Encode(map[string]interface{}{
@@ -523,6 +523,7 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/linglow/conversation/sessions", appAPIMiddleware.Wrap(auth.RequireAuth(r.RequireFeature("conversation")(r.handleLinglowConversationSessions))))
 	r.mux.HandleFunc("/api/linglow/conversation/sessions/", appAPIMiddleware.Wrap(auth.RequireAuth(r.RequireFeature("conversation")(r.handleLinglowConversationSessionByID))))
 	r.mux.HandleFunc("/api/vocab", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleVocab)))
+	r.mux.HandleFunc("/api/vocab/summary", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleVocabSummary)))
 	r.mux.HandleFunc("/api/vocab/", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleVocabDelete)))
 
 	// Learning word sets routes

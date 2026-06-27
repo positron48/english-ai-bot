@@ -63,6 +63,9 @@
     <svg v-else-if="name === 'play'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <polygon points="5 3 19 12 5 21 5 3"/>
     </svg>
+    <svg v-else-if="name === 'stop'" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+      <rect x="4" y="4" width="16" height="16" rx="2"/>
+    </svg>
     <svg v-else-if="name === 'shield'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
     </svg>
@@ -210,6 +213,7 @@ defineProps<{
     | 'more'
     | 'gear'
     | 'play'
+    | 'stop'
     | 'shield'
     | 'arrow-left'
     | 'chevron-down'

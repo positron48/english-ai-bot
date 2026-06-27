@@ -14,6 +14,9 @@
         <h3 class="level-label">{{ categoryLabel(category) }}</h3>
         <p class="meta">
           {{ t('reading.textsCount', category.text_count, { n: category.text_count }) }}
+          <span v-if="category.text_count > 0" class="meta-pct">
+            · {{ Math.round((category.read_count || 0) / category.text_count * 100) }}%
+          </span>
         </p>
       </router-link>
     </div>

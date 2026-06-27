@@ -159,9 +159,15 @@ func (r *Router) handleTrainingOfflinePack(w http.ResponseWriter, req *http.Requ
 			displayWord := item.TypeChallenge.DisplayWord
 			prefix := ""
 			wordForHint := displayWord
+			isEnglishTarget := !strings.EqualFold(r.config.Learning.TargetLang, "es")
 			if strings.HasPrefix(displayWord, "to ") && len(displayWord) > 3 {
-				prefix = "to "
-				wordForHint = displayWord[3:]
+				if isEnglishTarget {
+					prefix = "to "
+					wordForHint = displayWord[3:]
+				} else {
+					displayWord = displayWord[3:]
+					wordForHint = displayWord
+				}
 			}
 			runes := []rune(wordForHint)
 			hintFirstLetter := ""

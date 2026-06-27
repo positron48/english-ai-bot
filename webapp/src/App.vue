@@ -74,11 +74,17 @@ const showNetworkToast = (kind: 'offline' | 'online') => {
     kind,
     message: kind === 'offline' ? t('offline.connectionLost') : t('offline.connectionRestored'),
   }
-  if (networkToastTimer) clearTimeout(networkToastTimer)
-  networkToastTimer = setTimeout(() => {
-    networkToast.value.visible = false
+  if (networkToastTimer) {
+    clearTimeout(networkToastTimer)
     networkToastTimer = null
-  }, 5200)
+  }
+  if (kind === 'online') {
+    networkToastTimer = setTimeout(() => {
+      networkToast.value.visible = false
+      networkToastTimer = null
+    }, 3000)
+  }
+  // offline toast stays until dismissed or until online event fires
 }
 
 const handleOffline = () => showNetworkToast('offline')
@@ -232,8 +238,13 @@ const dismissAuthError = () => {
   width: 26px;
   height: 26px;
   border-radius: 50%;
-  font-size: 18px;
+  font-size: 16px;
   line-height: 1;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0;
 }
 </style>

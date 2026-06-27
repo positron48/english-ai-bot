@@ -84,10 +84,10 @@
               v-if="segment.audio_rel_path"
               type="button"
               class="sentence-audio-button"
-              aria-label="Озвучить предложение"
-              @click.stop="playSingleSegment(segment)"
+              :aria-label="activeSegmentId === segment.segment_id ? 'Остановить' : 'Озвучить предложение'"
+              @click.stop="activeSegmentId === segment.segment_id ? stopCurrentAudio() : playSingleSegment(segment)"
             >
-              <Icon name="play" />
+              <Icon :name="activeSegmentId === segment.segment_id ? 'stop' : 'play'" />
             </button>
           </div>
         </div>
@@ -355,6 +355,7 @@ const stopCurrentAudio = () => {
   currentAudio.pause()
   currentAudio.currentTime = 0
   currentAudio = null
+  activeSegmentId.value = null
 }
 
 const playSegmentAudio = async (audioRelPath: string) => {

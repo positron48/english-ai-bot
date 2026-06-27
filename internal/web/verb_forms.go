@@ -34,7 +34,7 @@ var (
 )
 
 func (r *Router) verbFormsEnabled() bool {
-	return strings.EqualFold(r.config.Learning.TargetLang, "es") && r.config.Training.SpanishVerbFormsEnabled
+	return strings.EqualFold(r.config.Learning.TargetLang, "es")
 }
 
 // writeVerbTrainingDisabled responds when verb-form training is off (wrong target language or SPANISH_VERB_FORMS_ENABLED=false).

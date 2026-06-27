@@ -293,7 +293,18 @@ watch([() => percentageAnimationComplete.value, () => accuracyPercentage.value],
 .remaining-cards-info { padding: 10px 14px; border-radius: 10px; background: var(--bg-secondary); color: var(--text-secondary); }
 .remaining-label { font-weight: 600; margin-right: 6px; }
 .btn-continue { width: 100%; }
-.celebration-container, .failure-container {
+.celebration-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 2;
+}
+.failure-container {
   position: absolute;
   inset: 0;
   pointer-events: none;
@@ -304,7 +315,6 @@ watch([() => percentageAnimationComplete.value, () => accuracyPercentage.value],
   position: absolute;
   width: 100%;
   height: 100%;
-  inset: 0;
 }
 .confetti {
   position: absolute;

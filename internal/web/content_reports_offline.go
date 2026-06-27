@@ -9,6 +9,7 @@ import (
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"go.uber.org/zap"
 )
 
@@ -273,5 +274,30 @@ func (r *Router) createContentReport(userID int64, input repository.CreateConten
 		}
 	}
 	input.UserID = userID
-	return repo.Create(input)
+	id, err := repo.Create(input)
+	if err != nil {
+		return id, err
+	}
+	r.notifyAdminContentReport(input)
+	return id, nil
+}
+
+func (r *Router) notifyAdminContentReport(input repository.CreateContentReportInput) {
+	adminID := r.config.Admin.TelegramID
+	if r.bot == nil || adminID == 0 {
+		return
+	}
+	subject := input.Word
+	if subject == "" {
+		subject = input.GrammarChapterID
+	}
+	comment := input.CommentText
+	if len(comment) > 300 {
+		comment = comment[:300] + "…"
+	}
+	text := fmt.Sprintf("📣 Репорт\nТип: %s\nТема: %s\nКомментарий: %s", input.SourceType, subject, comment)
+	msg := tgbotapi.NewMessage(adminID, text)
+	if _, err := r.bot.Send(msg); err != nil {
+		r.logger.Error("failed to send report notification to admin", zap.Error(err))
+	}
 }

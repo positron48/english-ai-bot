@@ -11,10 +11,10 @@
         >
           {{ t('grammar.trainingTitle') || 'Grammar Training' }}
         </button>
-        <router-link 
+        <router-link
           v-if="settingsLoaded && !hidePlacementTestButton"
-          to="/learning/grammar/placement-test" 
-          class="btn btn-placement-test"
+          to="/learning/grammar/placement-test"
+          class="btn-placement-test"
         >
           <Icon name="sparkles" />
           {{ t('grammar.takePlacementTest') || 'Take Placement Test' }}

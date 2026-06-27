@@ -66,23 +66,27 @@ func Test_computeMasteringScore(t *testing.T) {
 
 func Test_spellPrefixAndLetters(t *testing.T) {
 	tests := []struct {
-		word       string
-		wantPrefix string
-		wantLen    int // length of letters slice
+		word            string
+		isEnglishTarget bool
+		wantPrefix      string
+		wantLen         int // length of letters slice
 	}{
-		{"to spy", "to ", 3},
-		{"to run", "to ", 3},
-		{"hello", "", 5},
-		{"to ", "", 3}, // len("to ") is 3, not > 3, so no prefix; letters from full string
-		{"a", "", 0},
+		{"to spy", true, "to ", 3},
+		{"to run", true, "to ", 3},
+		{"hello", true, "", 5},
+		{"to ", true, "", 3}, // len("to ") is 3, not > 3, so no prefix; letters from full string
+		{"a", true, "", 0},
+		// Spanish: "to " prefix stripped, no prefix in output
+		{"hablar", false, "", 6},
+		{"to hablar", false, "", 6},
 	}
 	for _, tt := range tests {
-		prefix, letters := spellPrefixAndLetters(tt.word)
+		prefix, letters := spellPrefixAndLetters(tt.word, tt.isEnglishTarget)
 		if prefix != tt.wantPrefix {
-			t.Errorf("spellPrefixAndLetters(%q) prefix = %q, want %q", tt.word, prefix, tt.wantPrefix)
+			t.Errorf("spellPrefixAndLetters(%q, %v) prefix = %q, want %q", tt.word, tt.isEnglishTarget, prefix, tt.wantPrefix)
 		}
 		if len(letters) != tt.wantLen {
-			t.Errorf("spellPrefixAndLetters(%q) letters len = %d, want %d", tt.word, len(letters), tt.wantLen)
+			t.Errorf("spellPrefixAndLetters(%q, %v) letters len = %d, want %d", tt.word, tt.isEnglishTarget, len(letters), tt.wantLen)
 		}
 	}
 }

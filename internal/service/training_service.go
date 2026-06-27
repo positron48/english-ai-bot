@@ -83,6 +83,7 @@ type SessionConfig struct {
 	TypeEnabled             bool   // inject type-the-word (no letters) challenges
 	TypeMasteringThreshold  int    // min mastering_score 0-100 for words eligible for type
 	CourseCode              string // scope the pool to a course (empty = no course filter)
+	IsEnglishTarget         bool   // true for EN target language; false for ES or others (affects "to " prefix)
 }
 
 // DefaultSessionConfig returns the default session configuration (spell+type enabled).
@@ -383,7 +384,7 @@ func (s *TrainingService) applySpellTypeChallenges(queue []*models.TrainingQueue
 			case 0:
 				// keep card
 			case 1:
-				prefix, letters := spellPrefixAndLetters(displayWord)
+				prefix, letters := spellPrefixAndLetters(displayWord, config.IsEnglishTarget)
 				if len(letters) > 0 {
 					queue[i] = &models.TrainingQueueItem{Type: "spell", Spell: &models.SpellChallenge{
 						WordCardID: wordCardID, DisplayWord: displayWord, WordTarget: displayWord, WordRU: tc.WordRU, WordNative: tc.WordRU,
@@ -402,7 +403,7 @@ func (s *TrainingService) applySpellTypeChallenges(queue []*models.TrainingQueue
 		// Spell threshold: 50% card, 50% spell
 		if config.SpellEnabled && score >= spellThresh {
 			if rand.Intn(2) == 1 {
-				prefix, letters := spellPrefixAndLetters(displayWord)
+				prefix, letters := spellPrefixAndLetters(displayWord, config.IsEnglishTarget)
 				if len(letters) > 0 {
 					queue[i] = &models.TrainingQueueItem{Type: "spell", Spell: &models.SpellChallenge{
 						WordCardID: wordCardID, DisplayWord: displayWord, WordTarget: displayWord, WordRU: tc.WordRU, WordNative: tc.WordRU,
@@ -440,12 +441,16 @@ func computeMasteringScore(stats *repository.WordMasteringStats) int {
 	return 0
 }
 
-// spellPrefixAndLetters returns prefix (e.g. "to " for verbs) and shuffled letters for the rest. For "to spy" -> ("to ", ["s","p","y"]).
-func spellPrefixAndLetters(displayWord string) (prefix string, letters []string) {
-	if strings.HasPrefix(displayWord, "to ") && len(displayWord) > 3 {
+// spellPrefixAndLetters returns prefix (e.g. "to " for English verbs) and shuffled letters for the rest.
+// For English "to spy" -> ("to ", ["s","p","y"]). For Spanish/non-English "hablar" -> ("", ["h","a","b","l","a","r"]).
+func spellPrefixAndLetters(displayWord string, isEnglishTarget bool) (prefix string, letters []string) {
+	if isEnglishTarget && strings.HasPrefix(displayWord, "to ") && len(displayWord) > 3 {
 		prefix = "to "
 		letters = shuffleLetters(displayWord[3:])
 		return prefix, letters
+	}
+	if !isEnglishTarget && strings.HasPrefix(displayWord, "to ") && len(displayWord) > 3 {
+		return "", shuffleLetters(displayWord[3:])
 	}
 	return "", shuffleLetters(displayWord)
 }

@@ -1,35 +1,20 @@
 <template>
-  <div class="reading-chapters">
+  <div class="reading-archive">
     <div class="page-heading">
       <button
         type="button"
-        class="back-levels-btn"
+        class="back-btn"
         :aria-label="t('common.back')"
-        @click="fromDistrict ? router.back() : router.push('/learning/reading')"
+        @click="router.push(`/learning/reading/category/${categoryId}`)"
       >
         <Icon name="arrow-left" />
         <span>{{ t('common.back') }}</span>
       </button>
-      <h1 class="page-title">{{ pageHeading }}</h1>
-      <button
-        v-if="!loading && !error && pagedTexts.length > 0"
-        type="button"
-        class="random-unread-btn"
-        :aria-label="t('reading.randomUnread')"
-        :title="t('reading.randomUnread')"
-        @click="openRandomUnread"
-      >
-        <Icon name="dice" />
-      </button>
+      <h1 class="page-title">{{ t('reading.archiveTitle') }}</h1>
     </div>
     <LgLoader v-if="loading" />
     <div v-else-if="error">{{ error }}</div>
-    <div v-else-if="total === 0 && !loadingMore" class="all-read-hint">
-      {{ t('reading.allReadInCategory') }}
-      <router-link :to="`/learning/reading/category/${categoryId}/archive`" class="archive-link">
-        {{ t('reading.viewArchive') }}
-      </router-link>
-    </div>
+    <div v-else-if="total === 0" class="empty">{{ t('reading.archiveEmpty') }}</div>
     <div v-else class="list">
       <router-link
         v-for="text in pagedTexts"
@@ -38,7 +23,7 @@
         class="item"
       >
         <div class="item-main">
-          <strong>{{ getLocalizedTitle(text.title, text.title_translations) }}</strong>
+          <span class="item-title">{{ getLocalizedTitle(text.title, text.title_translations) }}</span>
           <span class="level-pill">{{ text.level }}</span>
         </div>
         <img
@@ -50,9 +35,8 @@
         />
       </router-link>
     </div>
-    <div v-if="!loading && !error" class="footer-row">
+    <div v-if="!loading && !error && hasMore" class="footer-row">
       <button
-        v-if="hasMore"
         type="button"
         class="load-more-btn"
         :disabled="loadingMore"
@@ -60,13 +44,6 @@
       >
         {{ loadingMore ? t('common.loading') : t('reading.loadMore') }}
       </button>
-      <router-link
-        v-if="total > 0"
-        :to="`/learning/reading/category/${categoryId}/archive`"
-        class="archive-link"
-      >
-        {{ t('reading.viewArchive') }}
-      </router-link>
     </div>
   </div>
 </template>
@@ -84,7 +61,6 @@ const { t, locale } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const categoryId = computed(() => route.params.categoryId as string)
-const fromDistrict = computed(() => route.query.from_district === '1')
 const loading = ref(true)
 const loadingMore = ref(false)
 const error = ref<string | null>(null)
@@ -92,16 +68,8 @@ const pagedTexts = ref<any[]>([])
 const total = ref(0)
 const page = ref(1)
 const perPage = 20
-const categoryLevel = ref('')
-const categoryTitleFallback = ref('Reading')
 
 const hasMore = computed(() => pagedTexts.value.length < total.value)
-
-const pageHeading = computed(() => {
-  const lv = categoryLevel.value.trim()
-  if (lv) return lv
-  return categoryTitleFallback.value
-})
 
 const getLocalizedTitle = (value: string, translations?: Record<string, string>) => {
   const currentLocale = locale.value
@@ -117,18 +85,11 @@ const readingImageUrl = (relPath: string) => {
   return `/api/learning/reading/image?path=${encodeURIComponent(relPath)}${courseParam}`
 }
 
-const openRandomUnread = () => {
-  const pool = pagedTexts.value
-  if (!pool.length) return
-  const pick = pool[Math.floor(Math.random() * pool.length)]
-  router.push(`/learning/reading/text/${pick.text_id}`)
-}
-
 const fetchPage = async (pg: number) => {
   const courseCode = getGrammarCourseCode()
-  const params = new URLSearchParams({ page: String(pg), per_page: String(perPage) })
+  const params = new URLSearchParams({ page: String(pg), per_page: String(perPage), archive: 'true' })
   if (courseCode) params.set('course_code', courseCode)
-  const data: { category?: any; texts?: any[]; total?: number } = await apiClient.request(
+  const data: { texts?: any[]; total?: number } = await apiClient.request(
     `/api/learning/reading/categories/${categoryId.value}/texts?${params}`
   )
   return data
@@ -141,17 +102,8 @@ onMounted(async () => {
     pagedTexts.value = data.texts || []
     total.value = data.total ?? pagedTexts.value.length
     page.value = 1
-    if (data.category?.level) {
-      categoryLevel.value = String(data.category.level).trim()
-    }
-    if (data.category?.title) {
-      categoryTitleFallback.value = getLocalizedTitle(
-        data.category.title,
-        data.category.title_translations
-      )
-    }
   } catch (e: any) {
-    error.value = e?.message || 'Failed to load reading texts'
+    error.value = e?.message || 'Failed to load archive'
   } finally {
     loading.value = false
   }
@@ -167,7 +119,7 @@ const loadMore = async () => {
     total.value = data.total ?? total.value
     page.value = nextPage
   } catch (e: any) {
-    error.value = e?.message || 'Failed to load more texts'
+    error.value = e?.message || 'Failed to load more'
   } finally {
     loadingMore.value = false
   }
@@ -175,16 +127,15 @@ const loadMore = async () => {
 </script>
 
 <style scoped>
-.reading-chapters { max-width: 900px; margin: 0 auto; padding: 20px; }
+.reading-archive { max-width: 900px; margin: 0 auto; padding: 20px; }
 .page-heading {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
+  align-items: center;
   gap: 12px;
   margin-bottom: 1rem;
 }
-.page-title { margin: 0; flex: 1; min-width: 0; }
-.back-levels-btn {
+.page-title { margin: 0; flex: 1; }
+.back-btn {
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;
@@ -198,32 +149,13 @@ const loadMore = async () => {
   cursor: pointer;
   font: inherit;
 }
-.back-levels-btn:hover {
-  border-color: var(--accent-primary, #3b82f6);
-  color: var(--accent-primary, #3b82f6);
-}
-.random-unread-btn {
-  flex-shrink: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 42px;
-  height: 42px;
-  padding: 0;
-  border: 2px solid var(--border-primary);
-  border-radius: 10px;
-  background: var(--card-bg);
-  color: var(--text-primary);
-  cursor: pointer;
-  font-size: 1.35rem;
-}
-.random-unread-btn:hover {
+.back-btn:hover {
   border-color: var(--accent-primary, #3b82f6);
   color: var(--accent-primary, #3b82f6);
 }
 .list { display: flex; flex-direction: column; gap: 10px; }
 .item {
-  border: 2px solid var(--border-primary);
+  border: 2px dashed var(--border-primary);
   border-radius: 8px;
   padding: 14px;
   text-decoration: none;
@@ -233,6 +165,7 @@ const loadMore = async () => {
   justify-content: space-between;
   align-items: center;
   gap: 12px;
+  opacity: 0.85;
 }
 .item-main {
   display: flex;
@@ -242,6 +175,7 @@ const loadMore = async () => {
   flex: 1;
   min-width: 0;
 }
+.item-title { font-weight: 600; }
 .item-thumb {
   width: 100px;
   height: 72px;
@@ -255,19 +189,7 @@ const loadMore = async () => {
   font-size: 0.85rem;
   color: var(--text-secondary);
 }
-.all-read-hint {
-  margin: 0 0 0.5rem;
-  color: var(--text-secondary);
-  font-size: 0.95rem;
-}
-.footer-row {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  margin-top: 20px;
-  flex-wrap: wrap;
-}
+.footer-row { display: flex; justify-content: center; margin-top: 20px; }
 .load-more-btn {
   padding: 10px 24px;
   border: 2px solid var(--border-primary);
@@ -283,10 +205,5 @@ const loadMore = async () => {
   color: var(--accent-primary, #3b82f6);
 }
 .load-more-btn:disabled { opacity: 0.5; cursor: default; }
-.archive-link {
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-  text-decoration: underline;
-}
 .empty { color: var(--text-secondary); }
 </style>

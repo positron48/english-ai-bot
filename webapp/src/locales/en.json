@@ -277,7 +277,20 @@
     "impDueBacklog": "{n} word is due for review | {n} words are due for review",
     "impWeakDistrict": "Visit {name} — mistakes are piling up there",
     "impNoReading": "No texts this week — read a short one",
-    "impNoChat": "No chats lately — talk to the AI"
+    "impNoChat": "No chats lately — talk to the AI",
+    "monthStart": "The month is just beginning — a great time to kick off!",
+    "monthGreat": "Productive month — great pace!",
+    "monthGood": "Good progress, keep it up.",
+    "monthLittle": "A small start — every step counts.",
+    "weekNone": "Start right now — even one session builds the habit.",
+    "weekBrokenStreak": "You studied {n} day this week | You studied {n} days this week — but your streak broke. Practice today to restore it.",
+    "weekStreak1": "Day one of your streak! Come back tomorrow to keep the chain going.",
+    "weekStreakFew": "{n} days in a row — good start. A bit more and it becomes a habit.",
+    "weekStreakWeek": "{n} days in a row — rhythm is forming. Try to reach a full week!",
+    "weekStreak7": "7 days without a break — this is already a real habit.",
+    "weekStreakMid": "{n} days in a row — steady and confident. Keep going!",
+    "weekStreakLong": "{n} days without a break — serious discipline. Excellent!",
+    "weekStreakEpic": "{n} days in a row — that's impressive. You've clearly figured out how to learn."
   },
   "settings": {
     "title": "Settings",
@@ -510,7 +523,11 @@
     "quizFailed": "Not enough correct answers",
     "deleteConfirm": "Delete \"{title}\" and all related files?",
     "deleteSuccess": "Reading text deleted.",
-    "deleteFailed": "Could not delete reading text."
+    "deleteFailed": "Could not delete reading text.",
+    "loadMore": "Load more",
+    "viewArchive": "View read texts",
+    "archiveTitle": "Read texts",
+    "archiveEmpty": "You haven't read any texts in this category yet."
   },
   "wordSets": {
     "back": "← Back",
@@ -897,6 +914,7 @@
     "quickTrainingSub": "Spaced-repetition word review",
     "quickGrammarTraining": "Grammar training",
     "quickGrammarTrainingSub": "Test on completed chapters",
+    "quickLastGrammarChapter": "Continue grammar",
     "quickChat": "AI practice — dialogue",
     "quickChatSub": "Situational dialogue",
     "myDictionary": "My dictionary",

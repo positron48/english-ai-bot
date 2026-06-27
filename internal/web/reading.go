@@ -119,6 +119,8 @@ func (r *Router) handleLearningReadingCategories(w http.ResponseWriter, req *htt
 	// Show only categories for the selected course's target language (e.g. es_*).
 	lang := grammarBundleForCourse(r.requestedCourseCodeForUser(req, userID))
 
+	progressRepo := repository.NewReadingTextProgressRepository(r.db)
+
 	type categoryResponse struct {
 		CategoryID        string            `json:"category_id"`
 		Title             string            `json:"title"`
@@ -126,6 +128,7 @@ func (r *Router) handleLearningReadingCategories(w http.ResponseWriter, req *htt
 		Level             string            `json:"level"`
 		Order             int               `json:"order"`
 		TextCount         int               `json:"text_count"`
+		ReadCount         int               `json:"read_count"`
 	}
 	out := make([]categoryResponse, 0, len(idx.Categories))
 	for id, cat := range idx.Categories {
@@ -137,6 +140,7 @@ func (r *Router) handleLearningReadingCategories(w http.ResponseWriter, req *htt
 		if title == "" {
 			title = id
 		}
+		readCount, _ := progressRepo.CountReadInSet(userID, cat.TextIDs)
 		out = append(out, categoryResponse{
 			CategoryID:        id,
 			Title:             title,
@@ -144,6 +148,7 @@ func (r *Router) handleLearningReadingCategories(w http.ResponseWriter, req *htt
 			Level:             cat.Level,
 			Order:             cat.Order,
 			TextCount:         len(cat.TextIDs),
+			ReadCount:         readCount,
 		})
 	}
 	sort.Slice(out, func(i, j int) bool {
@@ -194,6 +199,21 @@ func (r *Router) handleLearningReadingCategoryTexts(w http.ResponseWriter, req *
 
 	lang := grammarBundleForCourse(r.requestedCourseCodeForUser(req, userID))
 
+	q := req.URL.Query()
+	archive := q.Get("archive") == "true"
+	page := 1
+	perPage := 20
+	if v := q.Get("page"); v != "" {
+		if n, err2 := fmt.Sscanf(v, "%d", &page); n != 1 || err2 != nil || page < 1 {
+			page = 1
+		}
+	}
+	if v := q.Get("per_page"); v != "" {
+		if n, err2 := fmt.Sscanf(v, "%d", &perPage); n != 1 || err2 != nil || perPage < 1 {
+			perPage = 20
+		}
+	}
+
 	progressRepo := repository.NewReadingTextProgressRepository(r.db)
 	type textResponse struct {
 		TextID            string            `json:"text_id"`
@@ -206,7 +226,7 @@ func (r *Router) handleLearningReadingCategoryTexts(w http.ResponseWriter, req *
 		CoverHeroRelPath  string            `json:"cover_hero_rel_path,omitempty"`
 		IsRead            bool              `json:"is_read"`
 	}
-	out := make([]textResponse, 0, len(cat.TextIDs))
+	all := make([]textResponse, 0, len(cat.TextIDs))
 	for _, textID := range cat.TextIDs {
 		doc, err := r.readReadingText(idx, textID)
 		if err != nil {
@@ -221,7 +241,11 @@ func (r *Router) handleLearningReadingCategoryTexts(w http.ResponseWriter, req *
 		if err != nil {
 			r.logger.Warn("failed to get reading progress", zap.Int64("user_id", userID), zap.String("text_id", textID), zap.Error(err))
 		}
-		out = append(out, textResponse{
+		isRead := progress != nil
+		if isRead != archive {
+			continue
+		}
+		all = append(all, textResponse{
 			TextID:            doc.ID,
 			CategoryID:        doc.CategoryID,
 			Title:             doc.Title,
@@ -230,9 +254,20 @@ func (r *Router) handleLearningReadingCategoryTexts(w http.ResponseWriter, req *
 			TargetLanguage:    doc.TargetLanguage,
 			CoverThumbRelPath: doc.CoverThumbRelPath,
 			CoverHeroRelPath:  doc.CoverHeroRelPath,
-			IsRead:            progress != nil,
+			IsRead:            isRead,
 		})
 	}
+
+	total := len(all)
+	start := (page - 1) * perPage
+	if start > total {
+		start = total
+	}
+	end := start + perPage
+	if end > total {
+		end = total
+	}
+	out := all[start:end]
 
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(map[string]interface{}{
@@ -242,7 +277,10 @@ func (r *Router) handleLearningReadingCategoryTexts(w http.ResponseWriter, req *
 			"title_translations": cat.TitleTranslations,
 			"level":              cat.Level,
 		},
-		"texts": out,
+		"texts":    out,
+		"total":    total,
+		"page":     page,
+		"per_page": perPage,
 	})
 }
 

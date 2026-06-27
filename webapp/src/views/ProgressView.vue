@@ -203,32 +203,32 @@ const monthMotivation = computed(() => {
   const words = m.words_learned ?? 0
   const texts = m.texts_read ?? 0
   const mins = m.active_minutes ?? 0
-  if (words === 0 && texts === 0 && mins === 0) return 'Этот месяц только начинается — самое время стартовать!'
-  if (words >= 100 || texts >= 20 || mins >= 300) return 'Продуктивный месяц — отличный темп!'
-  if (words >= 30 || texts >= 5 || mins >= 60) return 'Хороший прогресс, продолжай в том же духе.'
-  return 'Небольшой старт — каждый шаг на счету.'
+  if (words === 0 && texts === 0 && mins === 0) return t('progress.monthStart')
+  if (words >= 100 || texts >= 20 || mins >= 300) return t('progress.monthGreat')
+  if (words >= 30 || texts >= 5 || mins >= 60) return t('progress.monthGood')
+  return t('progress.monthLittle')
 })
 
 const weekMotivation = computed(() => {
   const done = weekCells.value.filter(c => c.status === 'done').length
   const s = streakDays.value
   if (s === 0 && done === 0)
-    return 'Начни прямо сейчас — даже одно занятие запускает привычку.'
+    return t('progress.weekNone')
   if (s === 0 && done > 0)
-    return `На этой неделе ${done} ${done === 1 ? 'день' : 'дня'} — но streak прервался. Займись сегодня, чтобы восстановить цепочку.`
+    return t('progress.weekBrokenStreak', done)
   if (s === 1)
-    return 'Первый день streak! Приходи завтра, чтобы не прерывать цепочку.'
+    return t('progress.weekStreak1')
   if (s <= 3)
-    return `${s} дня подряд — хорошее начало. Ещё немного — и войдёт в привычку.`
+    return t('progress.weekStreakFew', s)
   if (s <= 6)
-    return `${s} дней подряд — ритм складывается. Попробуй дотянуть до недели!`
+    return t('progress.weekStreakWeek', s)
   if (s === 7)
-    return '7 дней без перерыва — это уже настоящая привычка.'
+    return t('progress.weekStreak7')
   if (s <= 13)
-    return `${s} дней подряд — стабильно и уверенно. Продолжай!`
+    return t('progress.weekStreakMid', s)
   if (s <= 29)
-    return `${s} дней без перерыва — серьёзная дисциплина. Отлично!`
-  return `${s} дней подряд — это впечатляет. Ты явно понял, как учиться.`
+    return t('progress.weekStreakLong', s)
+  return t('progress.weekStreakEpic', s)
 })
 
 // Show the current calendar week (Mon–Sun). Future days are always empty,

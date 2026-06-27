@@ -452,6 +452,41 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 // @Failure      400  {string}  string  "Неверный запрос"
 // @Failure      401  {string}  string  "Неавторизован"
 // @Failure      404  {object}  map[string]interface{}  "Слово не найдено"
+func (r *Router) handleVocabSummary(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	userID := getUserIDFromContext(req.Context())
+	if userID == 0 {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+	courseCode := r.currentCourseCodeForUser(req.Context(), userID)
+	courseFilter := ""
+	var args []interface{}
+	if courseCode != "" {
+		courseFilter = " AND EXISTS (SELECT 1 FROM training_cards tc2 JOIN word_cards wc2 ON tc2.word_card_id = wc2.id WHERE tc2.id = uc.training_card_id AND wc2.course_code = ?)"
+		args = append(args, courseCode)
+	}
+	baseArgs := []interface{}{userID}
+	baseArgs = append(baseArgs, args...)
+
+	var total, known, learning, newCount int
+	_ = r.db.QueryRow(`SELECT COUNT(DISTINCT tc.word_card_id) FROM user_cards uc JOIN training_cards tc ON uc.training_card_id = tc.id WHERE uc.user_id = ?`+courseFilter, baseArgs...).Scan(&total)
+	_ = r.db.QueryRow(`SELECT COUNT(DISTINCT tc.word_card_id) FROM user_cards uc JOIN training_cards tc ON uc.training_card_id = tc.id WHERE uc.user_id = ? AND uc.state = 'review'`+courseFilter, baseArgs...).Scan(&known)
+	_ = r.db.QueryRow(`SELECT COUNT(DISTINCT tc.word_card_id) FROM user_cards uc JOIN training_cards tc ON uc.training_card_id = tc.id WHERE uc.user_id = ? AND uc.state = 'learning'`+courseFilter, baseArgs...).Scan(&learning)
+	_ = r.db.QueryRow(`SELECT COUNT(DISTINCT tc.word_card_id) FROM user_cards uc JOIN training_cards tc ON uc.training_card_id = tc.id WHERE uc.user_id = ? AND uc.state = 'new'`+courseFilter, baseArgs...).Scan(&newCount)
+
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(map[string]interface{}{
+		"total":    total,
+		"known":    known,
+		"learning": learning,
+		"new":      newCount,
+	})
+}
+
 // @Failure      500  {string}  string  "Внутренняя ошибка сервера"
 // @Router       /api/vocab/{word} [get]
 func (r *Router) handleVocabDelete(w http.ResponseWriter, req *http.Request) {

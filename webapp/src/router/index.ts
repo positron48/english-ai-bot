@@ -131,6 +131,12 @@ const router = createRouter({
           meta: { requiresAuth: true, navTab: 'practice' }
         },
         {
+          path: 'learning/reading/category/:categoryId/archive',
+          name: 'ReadingArchive',
+          component: () => import('../views/ReadingArchiveView.vue'),
+          meta: { requiresAuth: true, navTab: 'practice' }
+        },
+        {
           path: 'learning/reading/text/:textId',
           name: 'ReadingText',
           component: () => import('../views/ReadingTextView.vue'),

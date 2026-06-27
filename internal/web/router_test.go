@@ -97,13 +97,13 @@ func TestHandleHealth_SpanishVerbFormsEnabled(t *testing.T) {
 			wantBool: true,
 		},
 		{
-			name: "es_flag_off",
+			name: "es_flag_off_still_true",
 			lc: config.LearningConfig{
 				Pair: "ru-es", NativeLang: "ru", TargetLang: "es",
 				AppCode: "spanish", GrammarBundleID: "es",
 			},
 			flag:     false,
-			wantBool: false,
+			wantBool: true, // flag is ignored; target_lang=es always enables verb forms
 		},
 		{
 			name:     "en_flag_on_still_false",

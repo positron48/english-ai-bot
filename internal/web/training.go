@@ -201,6 +201,7 @@ func (r *Router) handleTrainingStart(w http.ResponseWriter, req *http.Request) {
 		sessionConfig = service.DefaultSessionConfig()
 	}
 	sessionConfig.CourseCode = r.currentCourseCodeForUser(req.Context(), userID)
+	sessionConfig.IsEnglishTarget = !strings.EqualFold(r.config.Learning.TargetLang, "es")
 
 	// Start session
 	session, queue, err := r.trainingService.StartSession(userID, models.SourceManual, sessionConfig)

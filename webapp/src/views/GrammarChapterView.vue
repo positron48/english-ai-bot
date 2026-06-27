@@ -32,22 +32,12 @@
         >
           <!-- Theory Block -->
           <div v-if="block.type === 'theory'" class="theory-block">
-            <div class="theory-block-header">
-              <button
-                type="button"
-                class="report-text-link"
-                :disabled="reportSubmitting || reportSentForBlock === block.id"
-                @click="openChapterReportDialog(block)"
-              >
-                {{ reportSentForBlock === block.id ? t('training.reportSent') : t('training.reportIssue') }}
-              </button>
-            </div>
-            <div 
-              v-if="block.theory?.content_md" 
+            <div
+              v-if="block.theory?.content_md"
               class="theory-content markdown-content"
               v-html="renderMarkdown(block.theory.content_md)"
             ></div>
-            
+
             <!-- Key Points (callout) -->
             <div v-if="block.theory?.key_points && block.theory.key_points.length > 0" class="key-points key-points-callout">
               <h3 class="key-points-title">{{ t('grammar.keyPoints') }}</h3>
@@ -57,7 +47,7 @@
                 </li>
               </ul>
             </div>
-            
+
             <!-- Common Mistakes -->
             <div v-if="block.theory?.common_mistakes && block.theory.common_mistakes.length > 0" class="common-mistakes">
               <h3>{{ t('grammar.commonMistakes') }}</h3>
@@ -77,12 +67,23 @@
                 </div>
               </div>
             </div>
-            
+
             <GrammarTheoryExamples
               v-if="block.theory?.examples && block.theory.examples.length > 0"
               :examples="block.theory.examples"
               variant="chapter"
             />
+
+            <div class="report-row">
+              <button
+                type="button"
+                class="report-text-link"
+                :disabled="reportSubmitting || reportSentForBlock === block.id"
+                @click="openChapterReportDialog(block)"
+              >
+                {{ reportSentForBlock === block.id ? t('training.reportSent') : t('training.reportIssue') }}
+              </button>
+            </div>
           </div>
           
           <!-- Inline Quiz Block -->
@@ -205,6 +206,15 @@ const loadChapter = async () => {
     if (data.title_translations && chapter.value) {
       chapter.value.title_translations = data.title_translations
     }
+    // Track last opened grammar chapter for home quick-jump
+    try {
+      const title = data.title || data.chapter?.title || chapterId.value
+      localStorage.setItem('linglow:last-grammar-chapter', JSON.stringify({
+        id: chapterId.value,
+        title,
+        url: `/learning/grammar/chapter/${chapterId.value}`,
+      }))
+    } catch { /* ignore storage errors */ }
     // Build question map for quick lookup
     if (chapter.value?.question_bank?.questions) {
       questionMap.value = new Map()
@@ -478,10 +488,31 @@ onMounted(() => {
   padding: 24px;
 }
 
-.theory-block-header {
+.report-row {
+  margin-top: 12px;
   display: flex;
-  justify-content: flex-end;
-  margin-bottom: 8px;
+  justify-content: center;
+}
+
+.report-text-link {
+  border: 0;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.2;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.report-text-link:hover:not(:disabled) {
+  color: var(--text-primary);
+}
+
+.report-text-link:disabled {
+  cursor: default;
+  opacity: 0.8;
 }
 
 .theory-content {

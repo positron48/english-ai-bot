@@ -32,6 +32,14 @@
         </div>
         <LgIcon name="chevron-right" :s="14" c="var(--subtext)" />
       </router-link>
+      <router-link v-if="lastGrammarChapter" :to="lastGrammarChapter.url" class="lg-list-row">
+        <div class="lg-icon-box"><LgActivityIcon type="grammar" status="green" :size="28" /></div>
+        <div class="quick-text">
+          <div class="lg-list-row-title">{{ t('lg.quickLastGrammarChapter') }}</div>
+          <div class="lg-list-row-sub">{{ lastGrammarChapter.title }}</div>
+        </div>
+        <LgIcon name="chevron-right" :s="14" c="var(--subtext)" />
+      </router-link>
     </div>
 
     <!-- Mode grid 2×2 -->
@@ -58,7 +66,17 @@
       <div class="practice-dict-left">
         <div class="practice-dict-emoji"><LgActivityIcon type="reading" status="green" :size="28" /></div>
         <div class="practice-dict-title">{{ t('lg.myDictionary') }}</div>
-        <div class="practice-dict-sub">{{ t('lg.myDictionarySub') }}</div>
+        <div class="practice-dict-sub">{{ vocabSummaryText || t('lg.myDictionarySub') }}</div>
+      </div>
+      <LgIcon name="chevron-right" :s="16" c="var(--text-muted)" />
+    </router-link>
+
+    <!-- AI conversations (Pro only) -->
+    <router-link v-if="!isOffline && isPro" to="/city" class="lg-card practice-dict">
+      <div class="practice-dict-left">
+        <div class="practice-dict-emoji"><LgActivityIcon type="words" status="green" :size="28" /></div>
+        <div class="practice-dict-title">{{ t('lg.quickChat') }}</div>
+        <div class="practice-dict-sub">{{ t('lg.quickChatSub') }}</div>
       </div>
       <LgIcon name="chevron-right" :s="16" c="var(--text-muted)" />
     </router-link>
@@ -75,12 +93,19 @@ import LgLumi from '../components/linglow/LgLumi.vue'
 import LgIcon from '../components/linglow/LgIcon.vue'
 import LgLumiFact from '../components/linglow/LgLumiFact.vue'
 import LgActivityIcon from '../components/linglow/LgActivityIcon.vue'
+import { useMe } from '../composables/useMe'
+import { apiClient } from '../api/client'
 import artWords from '../assets/linglow/art/bg-word-cards-440.jpg'
 import artGrammar from '../assets/linglow/art/bg-grammar-440.jpg'
 import artReading from '../assets/linglow/art/bg-read-440.jpg'
 
 const { t } = useI18n()
+const { ensureMe, hasFeature } = useMe()
 const isOffline = ref(typeof navigator !== 'undefined' && navigator.onLine === false)
+const isPro = ref(false)
+const vocabSummaryText = ref('')
+
+const lastGrammarChapter = ref<{ id: string; title: string; url: string } | null>(null)
 
 const modes = computed(() => [
   {
@@ -116,9 +141,22 @@ const handleNetworkChange = () => {
   isOffline.value = typeof navigator !== 'undefined' && navigator.onLine === false
 }
 
-onMounted(() => {
+onMounted(async () => {
   window.addEventListener('online', handleNetworkChange)
   window.addEventListener('offline', handleNetworkChange)
+  try {
+    const stored = localStorage.getItem('linglow:last-grammar-chapter')
+    if (stored) lastGrammarChapter.value = JSON.parse(stored)
+  } catch { /* ignore */ }
+  ensureMe().then(() => { isPro.value = hasFeature('conversation') })
+  if (!isOffline.value) {
+    try {
+      const summary = await apiClient.request<{ total: number; known: number; learning: number; new: number }>('/api/vocab/summary')
+      if (summary && summary.total > 0) {
+        vocabSummaryText.value = `${summary.total} слов · ${summary.known} изучено`
+      }
+    } catch { /* ignore */ }
+  }
 })
 
 onUnmounted(() => {
