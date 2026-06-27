@@ -126,9 +126,17 @@ func getSharedDB(t *testing.T) *database.DB {
 
 func truncateAll(t *testing.T, conn *sql.DB) {
 	t.Helper()
-	// RESTART IDENTITY resets sequences so the next insert gets id=1
-	for _, tbl := range truncateTables {
-		_, _ = conn.Exec("TRUNCATE TABLE " + tbl + " RESTART IDENTITY CASCADE")
+	// RESTART IDENTITY resets sequences so the next insert gets id=1.
+	// Truncate all tables in a single statement: this collapses ~50 network
+	// round-trips (one per table) into one, which is the dominant per-test cost
+	// across the DB-backed packages (web/service/repository/database/bot).
+	combined := "TRUNCATE TABLE " + strings.Join(truncateTables, ", ") + " RESTART IDENTITY CASCADE"
+	if _, err := conn.Exec(combined); err != nil {
+		// Fallback to per-table truncation (e.g. if a table is absent in some
+		// schema variant), preserving the previous best-effort behavior.
+		for _, tbl := range truncateTables {
+			_, _ = conn.Exec("TRUNCATE TABLE " + tbl + " RESTART IDENTITY CASCADE")
+		}
 	}
 	_, _ = conn.Exec(circuitBreakerInit)
 	_, _ = conn.Exec(appSettingsInit)

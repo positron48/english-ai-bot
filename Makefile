@@ -219,70 +219,20 @@ llm-es: llm-words-es llm-cards-es
 # Packages included in coverage (exclude cmd, integration tests and test-only helpers)
 COVER_PKGS := $(shell $(GO) list ./... | grep -v '/cmd/' | grep -v 'internal/integration/' | grep -v 'internal/testutil')
 
-# CI checks (same as in GitHub Actions)
+# Local test parallelism / cache knobs (CI is unaffected; it pins -p 3 -count=1 in ci.yml).
+#   make check P=3        -> match CI parallelism
+#   make check COUNT=1    -> disable Go test cache (force a clean rerun, full CI parity)
+P     ?= 8
+COUNT ?= 0
+
+# CI checks (same stages as GitHub Actions, run in parallel with an ordered, readable summary).
+# Stages run concurrently; output is buffered per-stage and printed in a fixed order at the end,
+# with full error text for any failed stage. Result is identical to CI (see scripts/run_check.py).
 check:
-	@echo "=== Running CI Checks ==="
-	@echo ""
-	@echo "1. Checking webapp dependencies..."
-	@cd webapp && npm ci --prefer-offline --no-audit --no-fund > /dev/null 2>&1 || npm install --no-audit --no-fund
-	@echo "✅ Webapp dependencies installed"
-	@echo ""
-	@echo "2. Running webapp type check..."
-	@cd webapp && npm run type-check
-	@echo "✅ Webapp type check passed"
-	@echo ""
-	@echo "3. Building webapp..."
-	@cd webapp && npm run build
-	@echo "✅ Webapp build passed"
-	@echo ""
-	@echo "4. Verifying Go dependencies..."
-	@$(GO) mod verify
-	@echo "✅ Go dependencies verified"
-	@echo ""
-	@echo "4b. Validating reading artifacts in courses..."
-	@$(MAKE) -C courses/english-grammar reading-validate
-	@$(MAKE) -C courses/spanish-grammar reading-validate
-	@echo "✅ Reading artifacts validation passed"
-	@echo ""
-	@echo "5. Running Go tests for coverage (compact: . ok | E fail | F panic/build | S skip)..."
-	@rm -f coverage.out .go-test-output.jsonl
-	@/bin/bash -c 'set -o pipefail; $(GO) test -tags=test -count=1 -p 3 -timeout 30m -coverprofile=coverage.out -covermode=atomic -json $(COVER_PKGS) 2>&1 | tee .go-test-output.jsonl | python3 scripts/go-test-compact.py'; \
-	TEST_EXIT_CODE=$$?; \
-	if [ $$TEST_EXIT_CODE -ne 0 ]; then \
-		echo ""; \
-		echo "ℹ️  Raw JSON stream: .go-test-output.jsonl"; \
-		exit $$TEST_EXIT_CODE; \
-	fi; \
-	rm -f .go-test-output.jsonl; \
-	echo ""; \
-	echo "✅ Go tests passed"
-	@echo ""
-	@if [ "$${CHECK_SKIP_INTEGRATION:-0}" = "1" ]; then \
-		echo "5b. Skipping integration tests (quick run)"; \
-	else \
-		echo "5b. Running integration tests (Testcontainers)..."; \
-		$(MAKE) test-integration; \
-	fi
-	@echo ""
-	@echo "6. Running Go linter..."
-	@$(GO) run github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.10.1 run --timeout=3m
-	@echo "✅ Go linter passed"
-	@echo ""
-	@echo "7. Checking test coverage..."
-	@COVERAGE=$$($(GO) tool cover -func=coverage.out | awk '/^total:/ {print $$3}' | sed 's/%//'); \
-	if [ -z "$$COVERAGE" ]; then \
-		echo "❌ Failed to get coverage"; \
-		exit 1; \
-	fi; \
-	COVERAGE_INT=$$(echo "$$COVERAGE" | cut -d. -f1); \
-	if [ "$$COVERAGE_INT" -lt 50 ]; then \
-		echo "❌ Test coverage is $$COVERAGE% (minimum required: 50%)"; \
-		exit 1; \
-	fi; \
-	echo "✅ Test coverage: $$COVERAGE% (minimum: 50%)"
-	@echo ""
-	@echo "🎉 All CI checks passed!"
-	@COVERAGE=$$($(GO) tool cover -func=coverage.out | awk '/^total:/ {print $$3}'); echo "📊 Total test coverage: $$COVERAGE"
+	@CHECK_P='$(P)' CHECK_COUNT='$(COUNT)' \
+		GO='$(GO)' COVER_PKGS='$(COVER_PKGS)' GOLANGCI_VERSION='v2.10.1' \
+		CHECK_SKIP_INTEGRATION='$(CHECK_SKIP_INTEGRATION)' \
+		python3 scripts/run_check.py
 
 # Migration command for existing word cards
 build-migrate:
