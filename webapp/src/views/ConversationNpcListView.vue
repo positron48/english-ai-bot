@@ -28,7 +28,14 @@
           type="button"
           @click="openNpc(districtGroup.district.code, npc)"
         >
+          <img
+            v-if="npc.npcImageUrl"
+            :src="npc.npcImageUrl"
+            class="npc-avatar"
+            alt=""
+          />
           <LgActivityIcon
+            v-else
             type="conversation"
             :status="npc.allDone ? 'green' : (npc.hasCompletedQuests ? 'yellow' : 'orange')"
             :size="24"
@@ -101,7 +108,7 @@ function placeLabel(placeType: string): string {
 }
 
 function openNpc(districtCode: string, npc: NpcGroup) {
-  const firstAvailable = npc.questScenarios.find(s => !s.locked) || npc.freeScenario
+  const firstAvailable = npc.questScenarios.find(s => !s.locked) || (npc.allDone ? npc.freeScenario : null)
   if (!firstAvailable) return
   router.push({ name: 'PlaceChat', params: { districtCode, scenarioCode: firstAvailable.code } })
 }
@@ -194,6 +201,7 @@ onMounted(async () => {
   font-size: 12px;
   font-weight: 700;
 }
+.npc-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
 .npc-card {
   width: 100%;
   display: flex;

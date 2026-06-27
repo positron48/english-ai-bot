@@ -18,47 +18,64 @@
       <div v-else-if="!npcGroups.length" class="chat-loading">{{ t('chat.noPlaces') }}</div>
       <div v-else class="chat-list">
         <div v-for="g in npcGroups" :key="g.key" class="npc-block">
-          <button
-            class="chat-card"
-            :class="{ 'chat-card--locked': g.locked }"
-            type="button"
-            @click="onNpcClick(g)"
-          >
-            <LgActivityIcon
-              type="conversation"
-              :status="g.allDone ? 'green' : (g.locked ? 'gray' : 'orange')"
-              :size="22"
-            />
-            <div class="chat-card-body">
-              <div class="chat-card-title">
-                {{ g.npcName }}
-                <span v-if="g.npcRole" class="npc-role">, {{ g.npcRole }}</span>
-                <span v-if="g.hasIncompleteQuests && !g.locked" class="npc-bang" :title="t('chat.newQuests')">!</span>
-              </div>
-              <div class="chat-card-meta">
-                {{ placeLabel(g.placeType) }} · {{ g.level }}
-                <span v-if="g.questTotal" class="chat-tag">{{ g.completedCount }}/{{ g.questTotal }}</span>
-                <span v-if="g.allDone" class="chat-tag chat-tag--perfect">★ {{ t('chat.completed100') }}</span>
-                <span v-if="g.locked" class="chat-tag chat-tag--locked">🔒 {{ t('chat.locked') }}</span>
-              </div>
-              <div v-if="g.questTotal > 1" class="npc-bar-track">
-                <div class="npc-bar-fill" :style="{ width: g.pct + '%' }" />
-              </div>
-            </div>
-            <span v-if="g.allDone" class="chat-done chat-done--perfect">★</span>
-            <span v-else-if="g.hasCompletedQuests" class="chat-done">✓</span>
-            <svg
-              v-else-if="g.expandable"
-              class="npc-chevron"
-              :class="{ 'npc-chevron--open': expandedNpc === g.key }"
-              width="16" height="16" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+          <div class="npc-card-row">
+            <button
+              class="chat-card"
+              :class="{ 'chat-card--locked': g.locked }"
+              type="button"
+              @click="onNpcClick(g)"
             >
-              <path d="M6 9l6 6 6-6" />
-            </svg>
-          </button>
+              <img
+                v-if="g.npcImageUrl"
+                :src="g.npcImageUrl"
+                class="npc-avatar"
+                alt=""
+              />
+              <LgActivityIcon
+                v-else
+                type="conversation"
+                :status="g.allDone ? 'green' : (g.locked ? 'gray' : 'orange')"
+                :size="22"
+              />
+              <div class="chat-card-body">
+                <div class="chat-card-title">
+                  {{ g.npcName }}
+                  <span v-if="g.npcRole" class="npc-role">, {{ g.npcRole }}</span>
+                  <span v-if="g.hasIncompleteQuests && !g.locked" class="npc-bang" :title="t('chat.newQuests')">!</span>
+                </div>
+                <div class="chat-card-meta">
+                  {{ placeLabel(g.placeType) }} · {{ g.level }}
+                  <span v-if="g.questTotal" class="chat-tag">{{ g.completedCount }}/{{ g.questTotal }}</span>
+                  <span v-if="g.allDone" class="chat-tag chat-tag--perfect">★ {{ t('chat.completed100') }}</span>
+                  <span v-if="g.locked" class="chat-tag chat-tag--locked">🔒 {{ t('chat.locked') }}</span>
+                </div>
+                <div v-if="g.questTotal > 1" class="npc-bar-track">
+                  <div class="npc-bar-fill" :style="{ width: g.pct + '%' }" />
+                </div>
+              </div>
+              <span v-if="g.allDone" class="chat-done chat-done--perfect">★</span>
+              <span v-else-if="g.hasCompletedQuests" class="chat-done">✓</span>
+              <svg
+                v-else-if="g.expandable"
+                class="npc-chevron"
+                :class="{ 'npc-chevron--open': expandedNpc === g.key }"
+                width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+              >
+                <path d="M6 9l6 6 6-6" />
+              </svg>
+            </button>
+            <!-- free chat button: shown only when all quests are complete -->
+            <button
+              v-if="g.freeChatAvailable && g.freeScenario"
+              class="npc-free-btn"
+              type="button"
+              :title="t('chat.freeChat')"
+              @click="openScenario(g.freeScenario.code)"
+            >💬</button>
+          </div>
 
-          <!-- quest chain + free chat -->
+          <!-- quest chain -->
           <div v-if="g.expandable && expandedNpc === g.key" class="npc-steps">
             <button
               v-for="(s, idx) in g.questScenarios"
@@ -72,28 +89,16 @@
               <span class="npc-step-num">{{ idx + 1 }}</span>
               <span class="npc-step-body">
                 <span class="npc-step-title">{{ s.title }}</span>
-                <span class="npc-step-meta"><span class="chat-tag">{{ t('chat.quest') }}</span></span>
+                <span class="npc-step-meta">
+                  <span class="chat-tag">{{ t('chat.quest') }}</span>
+                  <span v-if="s.locked && s.cooldown_until" class="npc-cooldown">⏱ {{ formatCooldown(s.cooldown_until) }}</span>
+                </span>
               </span>
               <span class="npc-step-state">
                 <template v-if="s.session_status === 'completed'">✓</template>
                 <template v-else-if="s.locked">🔒</template>
                 <template v-else>›</template>
               </span>
-            </button>
-            <button
-              v-if="g.freeScenario"
-              class="npc-step npc-step--freechat"
-              :class="{ 'npc-step--locked': g.freeScenario.locked }"
-              type="button"
-              :disabled="g.freeScenario.locked"
-              @click="openScenario(g.freeScenario.code)"
-            >
-              <span class="npc-step-num">💬</span>
-              <span class="npc-step-body">
-                <span class="npc-step-title">{{ t('chat.freeChat') }}</span>
-                <span class="npc-step-meta"><span class="chat-tag chat-tag--free">{{ t('chat.free') }}</span></span>
-              </span>
-              <span class="npc-step-state">{{ g.freeScenario.locked ? '🔒' : '›' }}</span>
             </button>
           </div>
         </div>
@@ -117,6 +122,11 @@
             <span class="chat-task-label">{{ task.title }}</span>
             <span v-if="!task.required" class="chat-task-opt">{{ t('chat.optional') }}</span>
           </div>
+        </div>
+
+        <!-- quest image banner -->
+        <div v-if="session.image_url" class="chat-quest-image">
+          <img :src="session.image_url" alt="" class="chat-quest-img" />
         </div>
 
         <!-- messages -->
@@ -187,7 +197,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import {
@@ -366,6 +376,23 @@ async function loadForRoute() {
   }
 }
 
+// Cooldown countdown timer.
+const nowMs = ref(Date.now())
+let cooldownTimer: ReturnType<typeof setInterval> | null = null
+onMounted(() => { cooldownTimer = setInterval(() => { nowMs.value = Date.now() }, 1000) })
+onUnmounted(() => { if (cooldownTimer) clearInterval(cooldownTimer) })
+
+function formatCooldown(isoUntil: string | null): string {
+  if (!isoUntil) return ''
+  const diff = Math.max(0, new Date(isoUntil).getTime() - nowMs.value)
+  if (diff === 0) return ''
+  const h = Math.floor(diff / 3600000)
+  const m = Math.floor((diff % 3600000) / 60000)
+  const s = Math.floor((diff % 60000) / 1000)
+  if (h > 0) return `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
+  return `${m}:${String(s).padStart(2, '0')}`
+}
+
 watch(scenarioCode, () => { loadForRoute() })
 onMounted(loadForRoute)
 </script>
@@ -445,7 +472,25 @@ onMounted(loadForRoute)
 :root[data-theme="dark"] .chat-error { background: rgba(200,80,60,0.18); border-color: rgba(200,80,60,0.4); }
 .chat-error-dismiss { border: none; background: none; color: inherit; cursor: pointer; font-size: 14px; }
 
-.npc-step--freechat .npc-step-num { background: rgba(200,168,75,0.18); }
+/* NPC avatar image in card */
+.npc-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+
+/* NPC card row wraps the card + optional free-chat button */
+.npc-card-row { display: flex; align-items: stretch; gap: 6px; }
+.npc-card-row .chat-card { flex: 1; }
+.npc-free-btn {
+  flex-shrink: 0; width: 48px; border-radius: 14px;
+  border: 1px solid var(--border, rgba(0,0,0,0.08)); background: var(--card-bg);
+  font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
+.npc-free-btn:active { opacity: 0.7; }
+
+/* cooldown countdown label inside a quest step */
+.npc-cooldown { margin-left: 6px; font-size: 11px; color: #d97706; font-weight: 600; }
+
+/* quest banner image at the top of the dialog */
+.chat-quest-image { flex-shrink: 0; padding: 8px 16px 0; }
+.chat-quest-img { width: 100%; max-height: 180px; object-fit: cover; border-radius: 14px; display: block; }
 
 /* NPC groups + chain steps */
 .npc-block { display: flex; flex-direction: column; }

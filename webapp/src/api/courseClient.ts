@@ -390,6 +390,9 @@ export interface ConversationScenarioSummary {
   cefr_level: string
   is_quest: boolean
   prerequisite_code: string
+  image_url: string
+  npc_image_url: string
+  cooldown_until: string | null
   locked: boolean
   tasks: ConversationTask[]
   session_status: string
@@ -416,6 +419,7 @@ export interface ConversationSessionState {
   cefr_level: string
   is_quest: boolean
   scene_setup: string
+  image_url: string
   opening_line: string
   messages: ConversationMessage[]
   tasks: ConversationTask[]
@@ -529,6 +533,22 @@ export const courseClient = {
     return apiClient.request(`/api/linglow/conversation/sessions/${sessionId}/reset`, {
       method: 'POST',
     })
+  },
+
+  uploadAdminMedia(file: File, type: 'npc' | 'quest'): Promise<{ url: string }> {
+    const fd = new FormData()
+    fd.append('file', file)
+    return apiClient.request(`/api/admin/media/upload?type=${encodeURIComponent(type)}`, {
+      method: 'POST',
+      body: fd,
+    })
+  },
+
+  setAdminNpcImage(npcCode: string, imageUrl: string, courseCode: string): Promise<{ success: boolean }> {
+    return apiClient.request(
+      `/api/admin/conversations/npcs/${encodeURIComponent(npcCode)}/image?course_code=${encodeURIComponent(courseCode)}`,
+      { method: 'PUT', body: JSON.stringify({ image_url: imageUrl }) },
+    )
   },
 }
 

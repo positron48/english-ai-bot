@@ -28,6 +28,7 @@ type adminConversationScenario struct {
 	TokenBudget      int                     `json:"token_budget"`
 	NPCCode          string                  `json:"npc_code"`
 	PrerequisiteCode string                  `json:"prerequisite_code"`
+	ImageURL         string                  `json:"image_url"`
 	SortOrder        int                     `json:"sort_order"`
 	Status           string                  `json:"status"`
 	Tasks            []adminConversationTask `json:"tasks"`
@@ -103,7 +104,7 @@ func (r *Router) adminConversationsList(w http.ResponseWriter, req *http.Request
 			ID: sc.ID, Code: sc.Code, Title: sc.Title, CEFRLevel: sc.CEFRLevel, PlaceType: sc.PlaceType,
 			NPCName: sc.NPCName, NPCPersona: sc.NPCPersona, SceneSetup: sc.SceneSetup, IsQuest: sc.IsQuest,
 			MaxTurns: sc.MaxTurns, TokenBudget: sc.TokenBudget,
-			NPCCode: sc.NPCCode, PrerequisiteCode: sc.PrerequisiteCode,
+			NPCCode: sc.NPCCode, PrerequisiteCode: sc.PrerequisiteCode, ImageURL: sc.ImageURL,
 			SortOrder: sc.SortOrder, Status: sc.Status,
 			Tasks: taskOut,
 		})
@@ -120,10 +121,18 @@ func (r *Router) adminConversationsList(w http.ResponseWriter, req *http.Request
 		levelOut = append(levelOut, map[string]string{"level_code": l.LevelCode, "title": l.Title})
 	}
 
+	npcImages, err := r.conversationRepo.GetNPCImages(ctx, courseID)
+	if err != nil {
+		r.logger.Error("admin get npc images", zap.Error(err))
+		// non-fatal — return empty map
+		npcImages = map[string]string{}
+	}
+
 	writeJSON(w, map[string]interface{}{
 		"course_code": courseCode,
 		"scenarios":   out,
 		"levels":      levelOut,
+		"npc_images":  npcImages,
 	})
 }
 
@@ -141,6 +150,7 @@ type scenarioPayload struct {
 	TokenBudget      int    `json:"token_budget"`
 	NPCCode          string `json:"npc_code"`
 	PrerequisiteCode string `json:"prerequisite_code"`
+	ImageURL         string `json:"image_url"`
 	SortOrder        int    `json:"sort_order"`
 	Status           string `json:"status"`
 }
@@ -160,6 +170,7 @@ func (p *scenarioPayload) toInput(courseCode string) (repository.AdminScenarioIn
 		TokenBudget:      p.TokenBudget,
 		NPCCode:          strings.TrimSpace(p.NPCCode),
 		PrerequisiteCode: strings.TrimSpace(p.PrerequisiteCode),
+		ImageURL:         strings.TrimSpace(p.ImageURL),
 		SortOrder:        p.SortOrder,
 		Status:           strings.TrimSpace(p.Status),
 	}
@@ -365,4 +376,46 @@ func (r *Router) handleAdminConversationTaskByID(w http.ResponseWriter, req *htt
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 	}
+}
+
+// handleAdminConversationNPCImage handles PUT /api/admin/conversations/npcs/{npc_code}/image.
+func (r *Router) handleAdminConversationNPCImage(w http.ResponseWriter, req *http.Request) {
+	if r.conversationRepo == nil {
+		http.Error(w, "Conversation repository is not available", http.StatusServiceUnavailable)
+		return
+	}
+	if req.Method != http.MethodPut {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	path := strings.Trim(strings.TrimPrefix(req.URL.Path, "/api/admin/conversations/npcs/"), "/")
+	parts := strings.Split(path, "/")
+	if len(parts) != 2 || parts[1] != "image" || parts[0] == "" {
+		http.Error(w, "Invalid path: expected /npcs/{npc_code}/image", http.StatusBadRequest)
+		return
+	}
+	npcCode := parts[0]
+
+	var body struct {
+		ImageURL string `json:"image_url"`
+	}
+	if err := json.NewDecoder(req.Body).Decode(&body); err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	ctx := req.Context()
+	courseCode := r.adminConversationCourseCode(req)
+	courseID, err := r.conversationRepo.CourseIDByCode(ctx, courseCode)
+	if err != nil {
+		http.Error(w, "Course not found", http.StatusNotFound)
+		return
+	}
+
+	if err := r.conversationRepo.UpsertNPCImage(ctx, courseID, npcCode, strings.TrimSpace(body.ImageURL)); err != nil {
+		r.logger.Error("upsert npc image", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	writeJSON(w, map[string]interface{}{"success": true})
 }

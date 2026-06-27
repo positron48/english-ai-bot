@@ -35,6 +35,7 @@ type AdminScenarioInput struct {
 	Status           string
 	NPCCode          string
 	PrerequisiteCode string
+	ImageURL         string
 }
 
 // AdminTaskInput holds the writable fields of a quest task.
@@ -51,7 +52,7 @@ func (r *ConversationRepository) ListScenariosForCourseAdmin(ctx context.Context
 	rows, err := r.db.QueryContext(ctx, `
 		SELECT cs.id, cs.course_id, cs.district_id, cs.location_id, cs.learning_item_id, cs.code,
 		       cs.place_type, cs.cefr_level, cs.title, cs.npc_name, cs.npc_persona, cs.scene_setup,
-		       cs.is_quest, cs.max_turns, cs.token_budget, cs.npc_code, cs.prerequisite_code,
+		       cs.is_quest, cs.max_turns, cs.token_budget, cs.npc_code, cs.prerequisite_code, cs.image_url,
 		       cs.sort_order, cs.status,
 		       COALESCE(d.code, ''), COALESCE(d.level_code, ''), COALESCE(l.code, '')
 		FROM conversation_scenarios cs
@@ -70,7 +71,7 @@ func (r *ConversationRepository) ListScenariosForCourseAdmin(ctx context.Context
 		if err := rows.Scan(
 			&s.ID, &s.CourseID, &s.DistrictID, &s.LocationID, &s.LearningItemID, &s.Code,
 			&s.PlaceType, &s.CEFRLevel, &s.Title, &s.NPCName, &s.NPCPersona, &s.SceneSetup,
-			&s.IsQuest, &s.MaxTurns, &s.TokenBudget, &s.NPCCode, &s.PrerequisiteCode,
+			&s.IsQuest, &s.MaxTurns, &s.TokenBudget, &s.NPCCode, &s.PrerequisiteCode, &s.ImageURL,
 			&s.SortOrder, &s.Status,
 			&s.DistrictCode, &s.LevelCode, &s.LocationCode,
 		); err != nil {
@@ -139,12 +140,12 @@ func (r *ConversationRepository) CreateScenario(ctx context.Context, in AdminSce
 		INSERT INTO conversation_scenarios
 			(course_id, district_id, location_id, learning_item_id, code, place_type, cefr_level,
 			 title, npc_name, npc_persona, scene_setup, is_quest, max_turns, token_budget,
-			 npc_code, prerequisite_code, sort_order, status, updated_at)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+			 npc_code, prerequisite_code, image_url, sort_order, status, updated_at)
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
 		RETURNING id`,
 		courseID, districtID, locationID, learningItemID, in.Code, in.PlaceType, in.CEFRLevel,
 		in.Title, in.NPCName, in.NPCPersona, in.SceneSetup, in.IsQuest, in.MaxTurns, in.TokenBudget,
-		in.NPCCode, in.PrerequisiteCode, in.SortOrder, in.Status,
+		in.NPCCode, in.PrerequisiteCode, in.ImageURL, in.SortOrder, in.Status,
 	).Scan(&id); err != nil {
 		if isUniqueViolation(err) {
 			return 0, ErrDuplicateScenarioCode
@@ -179,12 +180,12 @@ func (r *ConversationRepository) UpdateScenario(ctx context.Context, id int64, i
 			district_id = ?, location_id = ?, code = ?, place_type = ?, cefr_level = ?,
 			title = ?, npc_name = ?, npc_persona = ?, scene_setup = ?, is_quest = ?,
 			max_turns = ?, token_budget = ?, npc_code = ?, prerequisite_code = ?,
-			sort_order = ?, status = ?, updated_at = CURRENT_TIMESTAMP
+			image_url = ?, sort_order = ?, status = ?, updated_at = CURRENT_TIMESTAMP
 		WHERE id = ?`,
 		districtID, locationID, in.Code, in.PlaceType, in.CEFRLevel,
 		in.Title, in.NPCName, in.NPCPersona, in.SceneSetup, in.IsQuest,
 		in.MaxTurns, in.TokenBudget, in.NPCCode, in.PrerequisiteCode,
-		in.SortOrder, in.Status, id,
+		in.ImageURL, in.SortOrder, in.Status, id,
 	); err != nil {
 		if isUniqueViolation(err) {
 			return ErrDuplicateScenarioCode

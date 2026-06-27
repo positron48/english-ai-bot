@@ -33,6 +33,8 @@ type ConversationScenario struct {
 	// PrerequisiteCode is the scenario code that must be completed before this one
 	// unlocks for a learner ("" = always available).
 	PrerequisiteCode string
+	// ImageURL is an optional banner image shown at the start of the quest dialog.
+	ImageURL string
 }
 
 // ConversationTask is one ordered task inside a quest scenario.
@@ -83,14 +85,14 @@ func NewConversationRepository(db *sql.DB, logger *zap.Logger) *ConversationRepo
 
 const conversationScenarioColumns = `
 	id, course_id, district_id, location_id, learning_item_id, code, place_type, cefr_level,
-	title, npc_name, npc_persona, scene_setup, is_quest, max_turns, token_budget, npc_code, prerequisite_code`
+	title, npc_name, npc_persona, scene_setup, is_quest, max_turns, token_budget, npc_code, prerequisite_code, image_url`
 
 func scanScenario(row interface{ Scan(...interface{}) error }) (*ConversationScenario, error) {
 	var s ConversationScenario
 	if err := row.Scan(
 		&s.ID, &s.CourseID, &s.DistrictID, &s.LocationID, &s.LearningItemID, &s.Code, &s.PlaceType, &s.CEFRLevel,
 		&s.Title, &s.NPCName, &s.NPCPersona, &s.SceneSetup, &s.IsQuest, &s.MaxTurns, &s.TokenBudget,
-		&s.NPCCode, &s.PrerequisiteCode,
+		&s.NPCCode, &s.PrerequisiteCode, &s.ImageURL,
 	); err != nil {
 		return nil, err
 	}
@@ -440,6 +442,65 @@ func (r *ConversationRepository) CloseSession(ctx context.Context, sessionID, us
 		SET status = ?, completed_at = CURRENT_TIMESTAMP
 		WHERE id = ? AND user_course_id = ? AND status = 'open'`, status, sessionID, userCourseID); err != nil {
 		return fmt.Errorf("close session: %w", err)
+	}
+	return nil
+}
+
+// GetNPCImages returns a map of npc_code → image_url for NPCs that have an image set in the course.
+func (r *ConversationRepository) GetNPCImages(ctx context.Context, courseID int64) (map[string]string, error) {
+	rows, err := r.db.QueryContext(ctx, `
+		SELECT npc_code, image_url FROM conversation_npcs
+		WHERE course_id = ? AND image_url <> ''`, courseID)
+	if err != nil {
+		return nil, fmt.Errorf("get npc images: %w", err)
+	}
+	defer rows.Close()
+	out := make(map[string]string)
+	for rows.Next() {
+		var code, url string
+		if err := rows.Scan(&code, &url); err != nil {
+			return nil, err
+		}
+		out[code] = url
+	}
+	return out, rows.Err()
+}
+
+// CompletedAtByScenarioCode returns a map of scenario_code → latest completed_at for all
+// scenarios this user_course has finished. Used to compute cooldown windows.
+func (r *ConversationRepository) CompletedAtByScenarioCode(ctx context.Context, userCourseID, courseID int64) (map[string]time.Time, error) {
+	rows, err := r.db.QueryContext(ctx, `
+		SELECT sc.code, MAX(sess.completed_at)
+		FROM conversation_sessions sess
+		JOIN conversation_scenarios sc ON sc.id = sess.scenario_id
+		WHERE sess.user_course_id = ? AND sc.course_id = ? AND sess.status = 'completed'
+		GROUP BY sc.code`, userCourseID, courseID)
+	if err != nil {
+		return nil, fmt.Errorf("completed at by scenario code: %w", err)
+	}
+	defer rows.Close()
+	out := make(map[string]time.Time)
+	for rows.Next() {
+		var code string
+		var t time.Time
+		if err := rows.Scan(&code, &t); err != nil {
+			return nil, err
+		}
+		out[code] = t
+	}
+	return out, rows.Err()
+}
+
+// UpsertNPCImage sets (or clears, when imageURL == "") the avatar image for an NPC in a course.
+func (r *ConversationRepository) UpsertNPCImage(ctx context.Context, courseID int64, npcCode, imageURL string) error {
+	if _, err := r.db.ExecContext(ctx, `
+		INSERT INTO conversation_npcs (course_id, npc_code, image_url, updated_at)
+		VALUES (?, ?, ?, CURRENT_TIMESTAMP)
+		ON CONFLICT (course_id, npc_code) DO UPDATE SET
+			image_url = EXCLUDED.image_url,
+			updated_at = CURRENT_TIMESTAMP`,
+		courseID, npcCode, imageURL); err != nil {
+		return fmt.Errorf("upsert npc image: %w", err)
 	}
 	return nil
 }

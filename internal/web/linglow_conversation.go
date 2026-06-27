@@ -20,6 +20,9 @@ import (
 // conversationHistoryLimit caps how many prior messages are replayed to the model per turn.
 const conversationHistoryLimit = 12
 
+// questCooldown is the time a learner must wait before the next quest unlocks after completing one.
+const questCooldown = time.Hour
+
 // openingTrigger is the (unstored) prompt that makes the NPC greet the learner first.
 const openingTrigger = "(The learner has just entered. Greet them in character and start the scene.)"
 
@@ -117,7 +120,19 @@ func (r *Router) handleLinglowConversationScenarios(w http.ResponseWriter, req *
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
+	completedAt, err := r.conversationRepo.CompletedAtByScenarioCode(ctx, userCourseID, courseID)
+	if err != nil {
+		r.logger.Error("completed at by scenario code", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	npcImages, err := r.conversationRepo.GetNPCImages(ctx, courseID)
+	if err != nil {
+		r.logger.Error("get npc images", zap.Error(err))
+		npcImages = map[string]string{}
+	}
 
+	now := time.Now()
 	out := make([]map[string]interface{}, 0, len(scenarios))
 	for i := range scenarios {
 		sc := &scenarios[i]
@@ -127,8 +142,8 @@ func (r *Router) handleLinglowConversationScenarios(w http.ResponseWriter, req *
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
-		locked := sc.PrerequisiteCode != "" && !completedCodes[sc.PrerequisiteCode]
-		out = append(out, map[string]interface{}{
+		locked, cooldownUntil := r.scenarioLockState(sc, completedCodes, completedAt, now)
+		entry := map[string]interface{}{
 			"code":              sc.Code,
 			"title":             sc.Title,
 			"npc_name":          sc.NPCName,
@@ -137,12 +152,43 @@ func (r *Router) handleLinglowConversationScenarios(w http.ResponseWriter, req *
 			"cefr_level":        sc.CEFRLevel,
 			"is_quest":          sc.IsQuest,
 			"prerequisite_code": sc.PrerequisiteCode,
+			"image_url":         sc.ImageURL,
+			"npc_image_url":     npcImages[sc.NPCCode],
 			"locked":            locked,
+			"cooldown_until":    nil,
 			"tasks":             tasksJSON(tasks, nil),
 			"session_status":    r.latestSessionStatus(ctx, userCourseID, sc.ID),
-		})
+		}
+		if cooldownUntil != nil {
+			entry["cooldown_until"] = cooldownUntil.UTC().Format(time.RFC3339)
+		}
+		out = append(out, entry)
 	}
 	writeJSON(w, map[string]interface{}{"scenarios": out})
+}
+
+// scenarioLockState returns whether a scenario is locked and, if locked due to cooldown only,
+// the time at which it will unlock. A scenario is on cooldown when its prerequisite has been
+// completed but questCooldown has not yet elapsed since that completion.
+func (r *Router) scenarioLockState(
+	sc *repository.ConversationScenario,
+	completedCodes map[string]bool,
+	completedAt map[string]time.Time,
+	now time.Time,
+) (locked bool, cooldownUntil *time.Time) {
+	if sc.PrerequisiteCode == "" {
+		return false, nil
+	}
+	if !completedCodes[sc.PrerequisiteCode] {
+		return true, nil
+	}
+	if t, ok := completedAt[sc.PrerequisiteCode]; ok {
+		until := t.Add(questCooldown)
+		if now.Before(until) {
+			return true, &until
+		}
+	}
+	return false, nil
 }
 
 // latestSessionStatus returns the most recent session status for a scenario, or "" if none.
@@ -216,7 +262,7 @@ func (r *Router) handleLinglowConversationSessions(w http.ResponseWriter, req *h
 	}
 
 	// Enforce prerequisite chains: a gated scenario cannot be started until its predecessor
-	// has been completed (mirrors the locked flag in the scenario list).
+	// has been completed and any cooldown has elapsed.
 	if scenario.PrerequisiteCode != "" {
 		completedCodes, err := r.conversationRepo.LatestCompletedScenarioCodes(ctx, userCourseID, courseID)
 		if err != nil {
@@ -226,6 +272,16 @@ func (r *Router) handleLinglowConversationSessions(w http.ResponseWriter, req *h
 		}
 		if !completedCodes[scenario.PrerequisiteCode] {
 			http.Error(w, "Scenario is locked: complete the previous one first", http.StatusForbidden)
+			return
+		}
+		completedAt, err := r.conversationRepo.CompletedAtByScenarioCode(ctx, userCourseID, courseID)
+		if err != nil {
+			r.logger.Error("completed at by scenario code", zap.Error(err))
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
+		}
+		if locked, _ := r.scenarioLockState(scenario, completedCodes, completedAt, time.Now()); locked {
+			http.Error(w, "Scenario is in cooldown: please wait before starting the next quest", http.StatusForbidden)
 			return
 		}
 	}
@@ -616,6 +672,7 @@ func (r *Router) writeSessionState(w http.ResponseWriter, ctx context.Context, u
 		"cefr_level":    scenario.CEFRLevel,
 		"is_quest":      scenario.IsQuest,
 		"scene_setup":   scenario.SceneSetup,
+		"image_url":     scenario.ImageURL,
 		"opening_line":  openingLine,
 		"messages":      msgs,
 		"tasks":         tasksJSON(tasks, completed),

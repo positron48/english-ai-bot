@@ -33,6 +33,13 @@ type Config struct {
 	Linglow   LinglowConfig   `mapstructure:"linglow"`
 	Speaking  SpeakingConfig  `mapstructure:"speaking"`
 	Migration MigrationConfig `mapstructure:"migration"`
+	Media     MediaConfig     `mapstructure:"media"`
+}
+
+// MediaConfig holds settings for admin-uploaded NPC/quest images.
+type MediaConfig struct {
+	Dir            string `mapstructure:"dir"`
+	PublicBasePath string `mapstructure:"public_base_path"`
 }
 
 // MigrationConfig holds settings for the legacy-instance migration shim:
@@ -530,6 +537,10 @@ func Load() (*Config, error) {
 	_ = viper.BindEnv("migration.enabled", "MIGRATION_REDIRECT_ENABLED")
 	_ = viper.BindEnv("migration.bot_username", "MIGRATION_BOT_USERNAME")
 	_ = viper.BindEnv("migration.message", "MIGRATION_MESSAGE")
+	viper.SetDefault("media.dir", "./data/media")
+	viper.SetDefault("media.public_base_path", "/api/media")
+	_ = viper.BindEnv("media.dir", "MEDIA_DIR")
+	_ = viper.BindEnv("media.public_base_path", "MEDIA_PUBLIC_BASE_PATH")
 
 	// Set config file
 	viper.SetConfigName("config")

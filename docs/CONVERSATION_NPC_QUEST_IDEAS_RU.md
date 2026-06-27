@@ -8,7 +8,7 @@
 - Сделано: в списке NPC показывается специализация рядом с именем на языке курса (`Mara, barista` для `en_ru`, `Mara, barista de cafetería` для `es_ru`).
 - Сделано: продолжение цепочки Mara добавлено в миграции `internal/database/migrations/000049_extend_mara_cafe_chain.sql`.
 - Сделано: продолжения цепочек Sam и Officer Park добавлены в миграции `internal/database/migrations/000050_extend_sam_park_chains.sql`.
-- Не начато: новые NPC для English course.
+- Сделано: все 10 новых NPC для English course (`en_ru`) в миграциях `000062`–`000071`; каждая цепочка закреплена на первом уровне из диапазона NPC (см. таблицу в конце документа).
 - Сделано: все 10 новых NPC для Spanish course (`es_ru`) в миграциях `000052`–`000061`; каждая цепочка закреплена на первом уровне из диапазона NPC (см. таблицу в конце документа).
 
 ## Текущая модель conversation mode
@@ -91,6 +91,8 @@ NPC-квесты хранятся в таблицах `conversation_scenarios` �
 
 ### Dr. June Vale, психолог, A2-B1
 
+Статус: реализовано в `internal/database/migrations/000062_seed_english_npc_june_vale.sql` (`en_ru`, все сценарии `A2`).
+
 История: спокойный психолог в городском центре. Сначала учит говорить о себе простыми словами, потом помогает герою разобраться с привычками, страхами и целями.
 
 Квесты:
@@ -103,6 +105,8 @@ NPC-квесты хранятся в таблицах `conversation_scenarios` �
 6. B1 `therapy_letter_to_self` - обсудить письмо себе из будущего.
 
 ### Professor Rowan Pike, университетский преподаватель, B1-B2
+
+Статус: реализовано в `internal/database/migrations/000063_seed_english_npc_rowan_pike.sql` (`en_ru`, все сценарии `B1`).
 
 История: профессор ведёт курс "городские легенды и язык". Он просит студента помогать собирать истории жителей, постепенно открывая, что некоторые легенды похожи на правду.
 
@@ -117,6 +121,8 @@ NPC-квесты хранятся в таблицах `conversation_scenarios` �
 
 ### Nora Finch, аптекарь, A1-A2
 
+Статус: реализовано в `internal/database/migrations/000064_seed_english_npc_nora_finch.sql` (`en_ru`, все сценарии `A1`).
+
 История: аптекарь знает всех жителей района и часто слышит странные симптомы, жалобы и слухи. Квесты тренируют здоровье, просьбы, инструкции.
 
 Квесты:
@@ -129,6 +135,8 @@ NPC-квесты хранятся в таблицах `conversation_scenarios` �
 6. A2 `pharmacy_strange_prescription` - обсудить странный рецепт без мистики и опасных советов.
 
 ### Dr. Elias Stone, врач, A2-B1
+
+Статус: реализовано в `internal/database/migrations/000065_seed_english_npc_elias_stone.sql` (`en_ru`, все сценарии `A2`).
 
 История: врач в маленькой клинике. Сначала бытовая медицина, потом пациент помогает ему понять цепочку необычных, но безопасных городских случаев.
 
@@ -143,6 +151,8 @@ NPC-квесты хранятся в таблицах `conversation_scenarios` �
 
 ### Mr. Bell, городской сумасшедший у часов, A1-B1
 
+Статус: реализовано в `internal/database/migrations/000066_seed_english_npc_mr_bell.sql` (`en_ru`, все сценарии `A1`).
+
 История: странный, но добрый человек у старых часов. Говорит загадками, но постепенно становится понятно, что он просто очень одинок и хранит память о прошлом города.
 
 Квесты:
@@ -155,6 +165,8 @@ NPC-квесты хранятся в таблицах `conversation_scenarios` �
 6. B1 `clockman_last_chime` - помочь ему решить, что делать дальше.
 
 ### Iris Lane, прохожая-детектив, B1
+
+Статус: реализовано в `internal/database/migrations/000067_seed_english_npc_iris_lane.sql` (`en_ru`, все сценарии `B1`).
 
 Рефрен: нуарная сыщица в плаще, без прямых отсылок к конкретным героям.
 
@@ -171,6 +183,8 @@ NPC-квесты хранятся в таблицах `conversation_scenarios` �
 
 ### Captain Grey, водитель ночного автобуса, A2-B1
 
+Статус: реализовано в `internal/database/migrations/000068_seed_english_npc_captain_grey.sql` (`en_ru`, все сценарии `A2`).
+
 История: водитель знает маршруты и людей. Ночной автобус становится местом маленьких историй пассажиров.
 
 Квесты:
@@ -183,6 +197,8 @@ NPC-квесты хранятся в таблицах `conversation_scenarios` �
 6. B1 `bus_city_map_secret` - понять, почему маршрут изменился.
 
 ### Lila Moon, уличная музыкантка, A1-B1
+
+Статус: реализовано в `internal/database/migrations/000069_seed_english_npc_lila_moon.sql` (`en_ru`, все сценарии `A1`).
 
 История: играет на площади, собирает песни прохожих и ищет мелодию, которую напевала её бабушка.
 
@@ -197,6 +213,8 @@ NPC-квесты хранятся в таблицах `conversation_scenarios` �
 
 ### Ada Quill, библиотекарь, B1-C1
 
+Статус: реализовано в `internal/database/migrations/000070_seed_english_npc_ada_quill.sql` (`en_ru`, все сценарии `B1`).
+
 История: библиотекарь охраняет "тихую полку", где книги появляются сами. Хорошо для пересказа, гипотез, абстрактной речи.
 
 Квесты:
@@ -209,6 +227,8 @@ NPC-квесты хранятся в таблицах `conversation_scenarios` �
 6. C1 `library_book_that_reads_you` - философски обсудить книгу, которая "выбирает" читателя.
 
 ### Victor North, бывший герой без имени, B2-C1
+
+Статус: реализовано в `internal/database/migrations/000071_seed_english_npc_victor_north.sql` (`en_ru`, все сценарии `B2`).
 
 Рефрен: уставший супергерой или защитник города, но без костюмов, эмблем и имён.
 
@@ -398,4 +418,21 @@ NPC-квесты хранятся в таблицах `conversation_scenarios` �
 
 Итого для Spanish course: **60 quest-сценариев**, **300 conversation tasks**, **10 новых NPC-цепочек**.
 
-English course NPC из этого документа пока **не реализованы**.
+## Статус выполнения: English course NPC (2026-06-27)
+
+Все 10 English NPC реализованы отдельными непересекающимися миграциями `000062`–`000071` (по одному NPC на файл, только `en_ru`). Каждая цепочка закреплена на **первом** уровне из диапазона NPC: все `learning_items` и `conversation_scenarios` внутри цепочки используют один `cefr_level`, даже если исходная идея квеста была для более высокого уровня.
+
+| Миграция | NPC | `npc_code` | Закреплённый `cefr_level` | Сценариев | Tasks |
+| --- | --- | --- | --- | --- | --- |
+| `000062_seed_english_npc_june_vale.sql` | Dr. June Vale | `june_therapist` | A2 | 6 | 30 |
+| `000063_seed_english_npc_rowan_pike.sql` | Professor Rowan Pike | `rowan_professor` | B1 | 6 | 30 |
+| `000064_seed_english_npc_nora_finch.sql` | Nora Finch | `nora_pharmacist` | A1 | 6 | 30 |
+| `000065_seed_english_npc_elias_stone.sql` | Dr. Elias Stone | `elias_doctor` | A2 | 6 | 30 |
+| `000066_seed_english_npc_mr_bell.sql` | Mr. Bell | `bell_clockman` | A1 | 6 | 30 |
+| `000067_seed_english_npc_iris_lane.sql` | Iris Lane | `iris_detective` | B1 | 6 | 30 |
+| `000068_seed_english_npc_captain_grey.sql` | Captain Grey | `grey_bus_driver` | A2 | 6 | 30 |
+| `000069_seed_english_npc_lila_moon.sql` | Lila Moon | `lila_musician` | A1 | 6 | 30 |
+| `000070_seed_english_npc_ada_quill.sql` | Ada Quill | `ada_librarian` | B1 | 6 | 30 |
+| `000071_seed_english_npc_victor_north.sql` | Victor North | `victor_old_hero` | B2 | 6 | 30 |
+
+Итого для English course: **60 quest-сценариев**, **300 conversation tasks**, **10 новых NPC-цепочек**.

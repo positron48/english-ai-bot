@@ -6,8 +6,11 @@ export interface NpcGroup {
   npcRole: string
   placeType: string
   level: string
+  npcImageUrl: string
   questScenarios: ConversationScenarioSummary[]
   freeScenario: ConversationScenarioSummary | null
+  freeChatAvailable: boolean
+  cooldownUntil: string | null
   questTotal: number
   completedCount: number
   pct: number
@@ -34,8 +37,11 @@ export function buildNpcGroups(scenarios: ConversationScenarioSummary[], courseC
         npcRole: npcRoleLabel(s, courseCode),
         placeType: s.place_type,
         level: s.cefr_level,
+        npcImageUrl: '',
         questScenarios: [],
         freeScenario: null,
+        freeChatAvailable: false,
+        cooldownUntil: null,
         questTotal: 0,
         completedCount: 0,
         pct: 0,
@@ -48,6 +54,8 @@ export function buildNpcGroups(scenarios: ConversationScenarioSummary[], courseC
       byKey.set(key, g)
       groups.push(g)
     }
+    // Pick up NPC image from any scenario in the group.
+    if (!g.npcImageUrl && s.npc_image_url) g.npcImageUrl = s.npc_image_url
     if (s.is_quest) g.questScenarios.push(s)
     else if (!g.freeScenario) g.freeScenario = s
   }
@@ -62,7 +70,12 @@ export function buildNpcGroups(scenarios: ConversationScenarioSummary[], courseC
     // Locked only when there is nothing to start: every quest is locked and free chat is absent
     // or still gated by a prerequisite.
     g.locked = (!g.freeScenario || g.freeScenario.locked) && g.questScenarios.every(s => s.locked)
-    g.expandable = (g.questTotal + (g.freeScenario ? 1 : 0)) > 1
+    // Free chat is only available once all quests in the chain are completed.
+    g.freeChatAvailable = g.allDone && !!g.freeScenario && !g.freeScenario.locked
+    // Cooldown: surface the unlock time of the next locked-but-cooldown quest so the UI can show a timer.
+    const nextCooldown = g.questScenarios.find(s => s.locked && s.cooldown_until)
+    g.cooldownUntil = nextCooldown?.cooldown_until ?? null
+    g.expandable = g.questTotal > 1
   }
   return groups
 }

@@ -21,8 +21,28 @@
     <div v-else-if="error" class="error">{{ error }}</div>
     <div v-else-if="selectedCourseCode && !scenarios.length" class="empty-message">Сценариев нет.</div>
 
+    <!-- NPC AVATARS -->
+    <div v-if="!loading && selectedCourseCode && scenarios.length" class="npc-avatars-section">
+      <h4 class="npc-avatars-title">Аватары NPC</h4>
+      <div class="npc-avatars-grid">
+        <div
+          v-for="npcCode in [...new Set(scenarios.filter(s => s.npc_code).map(s => s.npc_code))]"
+          :key="npcCode"
+          class="npc-avatar-card"
+        >
+          <img v-if="npcImages[npcCode]" :src="npcImages[npcCode]" class="npc-avatar-img" alt="" />
+          <div v-else class="npc-avatar-placeholder">?</div>
+          <div class="npc-avatar-code">{{ npcCode }}</div>
+          <label class="btn btn-xs file-btn">
+            Загрузить
+            <input type="file" accept="image/png,image/jpeg,image/webp" style="display:none" @change="uploadNpcImage(npcCode, $event)" />
+          </label>
+        </div>
+      </div>
+    </div>
+
     <!-- SCENARIO LIST -->
-    <div v-else class="scenario-list">
+    <div v-if="!loading && scenarios.length" class="scenario-list">
       <div v-for="s in scenarios" :key="s.id" class="scenario-card">
         <div class="scenario-head">
           <div>
@@ -106,6 +126,16 @@
             <input v-model="scenarioForm.prerequisite_code" class="inp mono" placeholder="пусто = доступен сразу" />
           </label>
         </div>
+        <label class="full">Картинка квеста (URL или загрузите файл)
+          <div class="image-field">
+            <input v-model="scenarioForm.image_url" class="inp mono" placeholder="https://..." />
+            <label class="btn btn-sm file-btn">
+              Загрузить
+              <input type="file" accept="image/png,image/jpeg,image/webp" style="display:none" @change="uploadQuestImage($event)" />
+            </label>
+          </div>
+          <img v-if="scenarioForm.image_url" :src="scenarioForm.image_url" class="image-preview" alt="" />
+        </label>
         <label class="full">NPC персона (инструкция для ИИ)
           <textarea v-model="scenarioForm.npc_persona" class="inp" rows="2"></textarea>
         </label>
@@ -202,6 +232,7 @@ interface AdminScenario {
   token_budget: number
   npc_code: string
   prerequisite_code: string
+  image_url: string
   sort_order: number
   status: string
   tasks: AdminTask[]
@@ -213,6 +244,7 @@ const selectedCourseCode = ref('')
 const coursesError = ref<string | null>(null)
 const scenarios = ref<AdminScenario[]>([])
 const levels = ref<LevelOption[]>([])
+const npcImages = ref<Record<string, string>>({})
 const loading = ref(false)
 const error = ref<string | null>(null)
 const saving = ref(false)
@@ -235,10 +267,11 @@ async function load() {
   loading.value = true
   error.value = null
   try {
-    const data: { scenarios?: AdminScenario[], levels?: LevelOption[] } =
+    const data: { scenarios?: AdminScenario[], levels?: LevelOption[], npc_images?: Record<string, string> } =
       await apiClient.request(`/api/admin/conversations/scenarios?course_code=${encodeURIComponent(selectedCourseCode.value)}`)
     scenarios.value = data.scenarios || []
     levels.value = data.levels || []
+    npcImages.value = data.npc_images || {}
   } catch (e: any) {
     error.value = e?.message || 'Не удалось загрузить сценарии'
   } finally {
@@ -250,8 +283,31 @@ function newScenario() {
   scenarioForm.value = {
     code: '', title: '', cefr_level: levels.value[0]?.level_code || 'A0', place_type: 'cafe',
     npc_name: '', npc_persona: '', scene_setup: '', is_quest: true,
-    max_turns: 30, token_budget: 40000, npc_code: '', prerequisite_code: '',
+    max_turns: 30, token_budget: 40000, npc_code: '', prerequisite_code: '', image_url: '',
     sort_order: scenarios.value.length, status: 'draft',
+  }
+}
+
+async function uploadQuestImage(event: Event) {
+  const file = (event.target as HTMLInputElement).files?.[0]
+  if (!file || !scenarioForm.value) return
+  try {
+    const res = await courseClient.uploadAdminMedia(file, 'quest')
+    scenarioForm.value.image_url = res.url
+  } catch (e: any) {
+    await showAlert(e?.message || 'Не удалось загрузить изображение')
+  }
+}
+
+async function uploadNpcImage(npcCode: string, event: Event) {
+  const file = (event.target as HTMLInputElement).files?.[0]
+  if (!file) return
+  try {
+    const res = await courseClient.uploadAdminMedia(file, 'npc')
+    await courseClient.setAdminNpcImage(npcCode, res.url, selectedCourseCode.value)
+    npcImages.value = { ...npcImages.value, [npcCode]: res.url }
+  } catch (e: any) {
+    await showAlert(e?.message || 'Не удалось загрузить изображение NPC')
   }
 }
 function editScenario(s: AdminScenario) {
@@ -456,4 +512,19 @@ textarea.inp { resize: vertical; font-family: inherit; }
 .hint { font-size: 12px; color: var(--text-secondary); margin: 0 0 10px; line-height: 1.5; }
 .code-area { width: 100%; box-sizing: border-box; font-family: ui-monospace, monospace; font-size: 12px; resize: vertical; }
 .scenario-meta.chain { display: flex; gap: 14px; margin-top: -4px; color: var(--text-secondary); }
+
+/* NPC avatar management section */
+.npc-avatars-section { margin-bottom: 20px; }
+.npc-avatars-title { margin: 0 0 10px; font-size: 13px; font-weight: 600; color: var(--text-secondary); }
+.npc-avatars-grid { display: flex; flex-wrap: wrap; gap: 12px; }
+.npc-avatar-card { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px; border: 1px solid var(--border-primary); border-radius: 10px; background: var(--bg-secondary); min-width: 100px; }
+.npc-avatar-img { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; }
+.npc-avatar-placeholder { width: 56px; height: 56px; border-radius: 50%; background: rgba(0,0,0,0.08); display: flex; align-items: center; justify-content: center; font-size: 22px; color: var(--text-secondary); }
+.npc-avatar-code { font-size: 11px; font-family: ui-monospace, monospace; color: var(--text-secondary); text-align: center; }
+.file-btn { cursor: pointer; }
+
+/* Quest image upload in form */
+.image-field { display: flex; gap: 8px; align-items: center; }
+.image-field .inp { flex: 1; }
+.image-preview { margin-top: 6px; max-height: 80px; border-radius: 8px; object-fit: cover; }
 </style>
