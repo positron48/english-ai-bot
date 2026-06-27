@@ -29,9 +29,14 @@ RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o main ./cmd/bot
 # Build only the maintenance binaries actually invoked in-cluster.
 # Keep import_learning_content available for DB-first content refreshes after a new bundle
 # is rolled out; it embeds grammar/reading assets and must run against the deployed image.
+# Spanish verb-forms: import_spanish_verbs + backfill_word_verb_links (one-time bootstrap per DB),
+# sync_verb_training_json (initContainer on each rollout).
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o merge_language_databases ./cmd/merge_language_databases
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o dedup_word_forms ./cmd/dedup_word_forms
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o import_learning_content ./cmd/import_learning_content
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o import_spanish_verbs ./cmd/import_spanish_verbs
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o backfill_word_verb_links ./cmd/backfill_word_verb_links
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o sync_verb_training_json ./cmd/sync_verb_training_json
 
 # Final stage
 FROM alpine:latest
@@ -54,6 +59,9 @@ COPY --from=builder /app/main .
 COPY --from=builder /app/merge_language_databases .
 COPY --from=builder /app/dedup_word_forms .
 COPY --from=builder /app/import_learning_content .
+COPY --from=builder /app/import_spanish_verbs .
+COPY --from=builder /app/backfill_word_verb_links .
+COPY --from=builder /app/sync_verb_training_json .
 COPY --from=builder /app/scripts/requeue_invalid_training_cards.sh ./scripts/requeue_invalid_training_cards.sh
 COPY --from=builder /app/prompts ./prompts
 # Ship static Spanish frequency CSV for in-cluster imports (independent from grammar submodule).

@@ -19,3 +19,12 @@ Notes:
 - Do not port-forward, spin up an ad-hoc `pg-client` pod, or look for
   Vault/ExternalSecret-based access — none of that is set up for this project;
   the `kubectl exec` into `english-postgres` above is the working path.
+
+## Spanish verb-forms binaries in the `linglow` image
+
+Dockerfile ships `/app/import_spanish_verbs`, `/app/backfill_word_verb_links`,
+`/app/sync_verb_training_json` (+ Jehle CSV and bundled `verb_forms` JSON).
+
+- **One-time per DB** (`linglow_unified` after merge): `import_spanish_verbs` (Jehle + haber) + `backfill_word_verb_links`.
+- **Every rollout**: initContainer runs `sync_verb_training_json` (GitOps: `devops-time-host/apps/linglow/base/deployment.yaml`).
+- Operator runbook: `devops-time-host/apps/linglow/RELEASE_K3S.md` §2.7.
