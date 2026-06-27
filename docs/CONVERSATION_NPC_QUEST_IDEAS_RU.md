@@ -8,7 +8,8 @@
 - Сделано: в списке NPC показывается специализация рядом с именем на языке курса (`Mara, barista` для `en_ru`, `Mara, barista de cafetería` для `es_ru`).
 - Сделано: продолжение цепочки Mara добавлено в миграции `internal/database/migrations/000049_extend_mara_cafe_chain.sql`.
 - Сделано: продолжения цепочек Sam и Officer Park добавлены в миграции `internal/database/migrations/000050_extend_sam_park_chains.sql`.
-- Не начато: новые NPC для English course и Spanish course.
+- Не начато: новые NPC для English course.
+- Сделано: все 10 новых NPC для Spanish course (`es_ru`) в миграциях `000052`–`000061`; каждая цепочка закреплена на первом уровне из диапазона NPC (см. таблицу в конце документа).
 
 ## Текущая модель conversation mode
 
@@ -226,7 +227,7 @@ NPC-квесты хранятся в таблицах `conversation_scenarios` �
 
 ### Inés Robles, психолог, A2-B1
 
-История: тёплая психологиня из районного центра. Больше испанского колорита: семья, привычки, личные границы, планы.
+Статус: реализовано в `internal/database/migrations/000052_seed_spanish_npc_ines_robles.sql` (`es_ru`, все сценарии `A2`).
 
 Квесты:
 
@@ -239,7 +240,7 @@ NPC-квесты хранятся в таблицах `conversation_scenarios` �
 
 ### Profesor Martín Sol, преподаватель, B1-B2
 
-История: преподаватель культурологии собирает городские истории о площади, рынке и старом театре.
+Статус: реализовано в `internal/database/migrations/000053_seed_spanish_npc_martin_sol.sql` (`es_ru`, все сценарии `B1`).
 
 Квесты:
 
@@ -252,7 +253,7 @@ NPC-квесты хранятся в таблицах `conversation_scenarios` �
 
 ### Doña Pilar, аптекарь, A1-A2
 
-История: пожилая аптекарь с острым языком и добрым сердцем. Знает всё о районе, но выдаёт секреты только в обмен на вежливость.
+Статус: реализовано в `internal/database/migrations/000054_seed_spanish_npc_dona_pilar.sql` (`es_ru`, все сценарии `A1`).
 
 Квесты:
 
@@ -265,7 +266,7 @@ NPC-квесты хранятся в таблицах `conversation_scenarios` �
 
 ### Dr. Mateo Cruz, врач, A2-B1
 
-История: врач при маленькой клинике возле рынка. Очень практичный, но замечает, что многие пациенты видели один и тот же странный сон.
+Статус: реализовано в `internal/database/migrations/000055_seed_spanish_npc_mateo_cruz.sql` (`es_ru`, все сценарии `A2`).
 
 Квесты:
 
@@ -278,7 +279,7 @@ NPC-квесты хранятся в таблицах `conversation_scenarios` �
 
 ### El Hombre del Paraguas, городской чудак, A1-B1
 
-История: человек с зонтом появляется даже в солнечную погоду и говорит, что "дождь бывает не только с неба". Постепенно это становится историей о потерянной любви и памяти.
+Статус: реализовано в `internal/database/migrations/000056_seed_spanish_npc_umbrella_man.sql` (`es_ru`, все сценарии `A1`).
 
 Квесты:
 
@@ -291,9 +292,7 @@ NPC-квесты хранятся в таблицах `conversation_scenarios` �
 
 ### Carmen Sombra, прохожая-сыщица, B1-B2
 
-Рефрен: тень классического детектива в плаще и шляпе, без прямых имён.
-
-История: Кармен расследует не преступление, а исчезновение городского мурала.
+Статус: реализовано в `internal/database/migrations/000057_seed_spanish_npc_carmen_sombra.sql` (`es_ru`, все сценарии `B1`).
 
 Квесты:
 
@@ -306,7 +305,7 @@ NPC-квесты хранятся в таблицах `conversation_scenarios` �
 
 ### Rafa, водитель автобуса, A2-B1
 
-История: болтливый водитель знает город по остановкам. Каждая остановка - маленькая история.
+Статус: реализовано в `internal/database/migrations/000058_seed_spanish_npc_rafa_bus.sql` (`es_ru`, все сценарии `A2`).
 
 Квесты:
 
@@ -319,7 +318,7 @@ NPC-квесты хранятся в таблицах `conversation_scenarios` �
 
 ### Lucía Canta, уличная певица, A1-B1
 
-История: поёт на площади и собирает слова для песни о городе. Игрок помогает ей выбирать слова и истории.
+Статус: реализовано в `internal/database/migrations/000059_seed_spanish_npc_lucia_canta.sql` (`es_ru`, все сценарии `A1`).
 
 Квесты:
 
@@ -332,7 +331,7 @@ NPC-квесты хранятся в таблицах `conversation_scenarios` �
 
 ### Bibliotecaria Vega, библиотекарь, B1-C1
 
-История: хранит архив писем, которые никто не отправил. Это хорошая цепочка для пересказа, косвенной речи, предположений и нюансов.
+Статус: реализовано в `internal/database/migrations/000060_seed_spanish_npc_bibliotecaria_vega.sql` (`es_ru`, все сценарии `B1`).
 
 Квесты:
 
@@ -345,9 +344,7 @@ NPC-квесты хранятся в таблицах `conversation_scenarios` �
 
 ### Don Álvaro, бывший "герой площади", B2-C1
 
-Рефрен: старый авантюрист или рыцарь без прямых отсылок.
-
-История: он считает себя защитником площади, но его настоящая битва - признать возраст, ошибки и одиночество.
+Статус: реализовано в `internal/database/migrations/000061_seed_spanish_npc_don_alvaro.sql` (`es_ru`, все сценарии `B2`).
 
 Квесты:
 
@@ -381,3 +378,24 @@ NPC-квесты хранятся в таблицах `conversation_scenarios` �
 - `is_quest`;
 - `max_turns`;
 - список `conversation_tasks` с `code`, `title`, `is_required`, `sort_order`, `completion_criteria`.
+
+## Статус выполнения: Spanish course NPC (2026-06-27)
+
+Все 10 Spanish NPC реализованы отдельными непересекающимися миграциями `000052`–`000061` (по одному NPC на файл, только `es_ru`). Каждая цепочка закреплена на **первом** уровне из диапазона NPC: все `learning_items` и `conversation_scenarios` внутри цепочки используют один `cefr_level`, даже если исходная идея квеста была для более высокого уровня.
+
+| Миграция | NPC | `npc_code` | Закреплённый `cefr_level` | Сценариев | Tasks |
+| --- | --- | --- | --- | --- | --- |
+| `000052_seed_spanish_npc_ines_robles.sql` | Inés Robles | `ines_therapist` | A2 | 6 | 30 |
+| `000053_seed_spanish_npc_martin_sol.sql` | Profesor Martín Sol | `martin_professor` | B1 | 6 | 30 |
+| `000054_seed_spanish_npc_dona_pilar.sql` | Doña Pilar | `pilar_pharmacist` | A1 | 6 | 30 |
+| `000055_seed_spanish_npc_mateo_cruz.sql` | Dr. Mateo Cruz | `mateo_doctor` | A2 | 6 | 30 |
+| `000056_seed_spanish_npc_umbrella_man.sql` | El Hombre del Paraguas | `umbrella_man` | A1 | 6 | 30 |
+| `000057_seed_spanish_npc_carmen_sombra.sql` | Carmen Sombra | `carmen_detective` | B1 | 6 | 30 |
+| `000058_seed_spanish_npc_rafa_bus.sql` | Rafa | `rafa_bus_driver` | A2 | 6 | 30 |
+| `000059_seed_spanish_npc_lucia_canta.sql` | Lucía Canta | `lucia_singer` | A1 | 6 | 30 |
+| `000060_seed_spanish_npc_bibliotecaria_vega.sql` | Bibliotecaria Vega | `vega_librarian` | B1 | 6 | 30 |
+| `000061_seed_spanish_npc_don_alvaro.sql` | Don Álvaro | `don_alvaro_old_hero` | B2 | 6 | 30 |
+
+Итого для Spanish course: **60 quest-сценариев**, **300 conversation tasks**, **10 новых NPC-цепочек**.
+
+English course NPC из этого документа пока **не реализованы**.
