@@ -545,6 +545,7 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/learning/reading/image", appAPIMiddleware.Wrap(r.handleLearningReadingImage))
 	r.mux.HandleFunc("/api/learning/grammar/tests/submit", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarSubmitTest)))
 	r.mux.HandleFunc("/api/learning/grammar/statistics", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarStatistics)))
+	r.mux.HandleFunc("/api/learning/grammar/continue-chapter", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarContinueChapter)))
 	r.mux.HandleFunc("/api/learning/grammar/training/availability", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarTrainingAvailability)))
 	r.mux.HandleFunc("/api/learning/grammar/training/session/start", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarTrainingStart)))
 	r.mux.HandleFunc("/api/learning/grammar/training/session/answer", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarTrainingAnswer)))

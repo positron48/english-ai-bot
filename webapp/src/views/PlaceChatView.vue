@@ -54,7 +54,7 @@
                 </div>
               </div>
               <span v-if="g.allDone" class="chat-done chat-done--perfect">★</span>
-              <span v-else-if="g.hasCompletedQuests" class="chat-done">✓</span>
+              <span v-else-if="g.allPassed || g.hasCompletedQuests" class="chat-done">✓</span>
               <svg
                 v-else-if="g.expandable"
                 class="npc-chevron"
@@ -81,7 +81,11 @@
               v-for="(s, idx) in g.questScenarios"
               :key="s.code"
               class="npc-step"
-              :class="{ 'npc-step--locked': s.locked, 'npc-step--done': s.session_status === 'completed' }"
+              :class="{
+                'npc-step--locked': s.locked,
+                'npc-step--done': scenarioQuestPassed(s),
+                'npc-step--perfect': scenarioQuestPerfect(s),
+              }"
               type="button"
               :disabled="s.locked"
               @click="openScenario(s.code)"
@@ -95,7 +99,8 @@
                 </span>
               </span>
               <span class="npc-step-state">
-                <template v-if="s.session_status === 'completed'">✓</template>
+                <template v-if="scenarioQuestPerfect(s)">★</template>
+                <template v-else-if="scenarioQuestPassed(s)">✓</template>
                 <template v-else-if="s.locked">🔒</template>
                 <template v-else>›</template>
               </span>
@@ -163,10 +168,14 @@
         </div>
 
         <!-- completion / budget banners -->
-        <div v-if="questPassed" class="chat-banner chat-banner--win">
+        <div v-if="questPassed" class="chat-banner chat-banner--win" :class="{ 'chat-banner--perfect': allTasksDone }">
           <LgLumi pose="clapping" :size="48" />
-          <div class="chat-banner-text">{{ t('chat.questComplete') }}</div>
-          <div v-if="status === 'open'" class="chat-banner-hint">{{ t('chat.questCompleteHint') }}</div>
+          <div class="chat-banner-text">
+            <span v-if="allTasksDone">★ {{ t('chat.questPerfect') }}</span>
+            <span v-else>✓ {{ t('chat.questComplete') }}</span>
+          </div>
+          <div v-if="status === 'open' && !allTasksDone" class="chat-banner-hint">{{ t('chat.questOptionalHint') }}</div>
+          <div v-else-if="status === 'open'" class="chat-banner-hint">{{ t('chat.questCompleteHint') }}</div>
           <LgButton @click="goBack">{{ t('chat.backToDistrict') }}</LgButton>
         </div>
         <div v-else-if="budgetExhausted" class="chat-banner">
@@ -207,7 +216,7 @@ import {
   type ConversationMessage,
   type ConversationTask,
 } from '../api/courseClient'
-import { buildNpcGroups } from '../utils/conversations'
+import { buildNpcGroups, scenarioQuestPassed, scenarioQuestPerfect } from '../utils/conversations'
 import type { NpcGroup } from '../utils/conversations'
 import LgPageHeader from '../components/linglow/LgPageHeader.vue'
 import LgActivityIcon from '../components/linglow/LgActivityIcon.vue'
@@ -275,6 +284,7 @@ const headerTitle = computed(() => {
 // Keep the composer usable after the quest passes so the learner can say goodbye / finish
 // optional tasks; the session only truly ends when status flips to completed or budget runs out.
 const canSend = computed(() => status.value === 'open' && !budgetExhausted.value)
+const allTasksDone = computed(() => tasks.value.length > 0 && tasks.value.every(t => t.completed))
 
 function goBack() {
   router.push({ name: 'CityDistrict', params: { districtCode: districtCode.value } })
@@ -373,6 +383,7 @@ async function loadForRoute() {
     console.error('Failed to start conversation:', e)
   } finally {
     loading.value = false
+    if (scenarioCode.value && canSend.value) focusComposer()
   }
 }
 
@@ -508,6 +519,7 @@ onMounted(loadForRoute)
 }
 .npc-step:disabled { cursor: default; opacity: 0.55; }
 .npc-step--done { background: rgba(45,107,58,0.06); border-color: rgba(45,107,58,0.25); }
+.npc-step--perfect { background: rgba(200,168,75,0.08); border-color: rgba(200,168,75,0.35); }
 .npc-step-num {
   width: 22px; height: 22px; flex-shrink: 0; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
@@ -520,6 +532,7 @@ onMounted(loadForRoute)
 .npc-step-meta { margin-top: 2px; }
 .npc-step-state { flex-shrink: 0; color: var(--subtext); font-size: 16px; font-weight: 700; }
 .npc-step--done .npc-step-state { color: #2d6b3a; }
+.npc-step--perfect .npc-step-state { color: #c8a84b; }
 
 /* task checklist */
 .chat-tasks { margin: 8px 16px; padding: 12px 14px; border-radius: 14px; background: var(--card-bg); border: 1px solid var(--border, rgba(0,0,0,0.08)); }
@@ -569,6 +582,7 @@ onMounted(loadForRoute)
 /* banners */
 .chat-banner { margin: 10px 16px; padding: 16px; border-radius: 14px; background: var(--card-bg); border: 1px solid var(--border, rgba(0,0,0,0.08)); display: flex; flex-direction: column; align-items: center; gap: 10px; }
 .chat-banner--win { background: rgba(45,107,58,0.08); border-color: rgba(45,107,58,0.3); }
+.chat-banner--perfect { background: rgba(200,168,75,0.10); border-color: rgba(200,168,75,0.35); }
 .chat-banner-text { font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 600; color: var(--text); text-align: center; }
 .chat-banner-hint { font-family: 'Inter', sans-serif; font-size: 12px; color: var(--subtext); text-align: center; margin-top: -4px; }
 

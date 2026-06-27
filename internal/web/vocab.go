@@ -472,18 +472,30 @@ func (r *Router) handleVocabSummary(w http.ResponseWriter, req *http.Request) {
 	baseArgs := []interface{}{userID}
 	baseArgs = append(baseArgs, args...)
 
-	var total, known, learning, newCount int
+	var total, reviewCount, learning, newCount, masteredCount int
 	_ = r.db.QueryRow(`SELECT COUNT(DISTINCT tc.word_card_id) FROM user_cards uc JOIN training_cards tc ON uc.training_card_id = tc.id WHERE uc.user_id = ?`+courseFilter, baseArgs...).Scan(&total)
-	_ = r.db.QueryRow(`SELECT COUNT(DISTINCT tc.word_card_id) FROM user_cards uc JOIN training_cards tc ON uc.training_card_id = tc.id WHERE uc.user_id = ? AND uc.state = 'review'`+courseFilter, baseArgs...).Scan(&known)
+	_ = r.db.QueryRow(`SELECT COUNT(DISTINCT tc.word_card_id) FROM user_cards uc JOIN training_cards tc ON uc.training_card_id = tc.id WHERE uc.user_id = ? AND uc.state = 'review'`+courseFilter, baseArgs...).Scan(&reviewCount)
 	_ = r.db.QueryRow(`SELECT COUNT(DISTINCT tc.word_card_id) FROM user_cards uc JOIN training_cards tc ON uc.training_card_id = tc.id WHERE uc.user_id = ? AND uc.state = 'learning'`+courseFilter, baseArgs...).Scan(&learning)
 	_ = r.db.QueryRow(`SELECT COUNT(DISTINCT tc.word_card_id) FROM user_cards uc JOIN training_cards tc ON uc.training_card_id = tc.id WHERE uc.user_id = ? AND uc.state = 'new'`+courseFilter, baseArgs...).Scan(&newCount)
 
+	masteredFilter := ""
+	masteredArgs := []interface{}{userID}
+	if courseCode != "" {
+		masteredFilter = " AND EXISTS (SELECT 1 FROM word_cards wc WHERE wc.id = uwk.word_card_id AND wc.course_code = ?)"
+		masteredArgs = append(masteredArgs, courseCode)
+	}
+	_ = r.db.QueryRow(`SELECT COUNT(DISTINCT uwk.word_card_id) FROM user_word_knowledge uwk WHERE uwk.user_id = ? AND uwk.status = 'known'`+masteredFilter, masteredArgs...).Scan(&masteredCount)
+
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(map[string]interface{}{
-		"total":    total,
-		"known":    known,
-		"learning": learning,
-		"new":      newCount,
+		"total":           total,
+		"new":             newCount,
+		"learning":        learning,
+		"review":          reviewCount,
+		"review_count":    reviewCount,
+		"mastered":        masteredCount,
+		"mastered_count":  masteredCount,
+		"known":           masteredCount, // backward compat: "изучено" in Practice dictionary card
 	})
 }
 

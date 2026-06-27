@@ -56,7 +56,7 @@
             </div>
           </div>
           <span v-if="npc.allDone" class="npc-done npc-done--perfect">★</span>
-          <span v-else-if="npc.hasCompletedQuests" class="npc-done">✓</span>
+          <span v-else-if="npc.allPassed || npc.hasCompletedQuests" class="npc-done">✓</span>
           <span v-else class="npc-arrow">›</span>
         </button>
       </section>
@@ -70,6 +70,7 @@ import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { courseClient } from '../api/courseClient'
 import type { CourseMapDistrict } from '../api/courseClient'
+import { grammarClient } from '../api/grammarClient'
 import LgActivityIcon from '../components/linglow/LgActivityIcon.vue'
 import LgLoader from '../components/linglow/LgLoader.vue'
 import LgPageHeader from '../components/linglow/LgPageHeader.vue'
@@ -77,6 +78,7 @@ import { useCourse } from '../composables/useCourse'
 import { useMe } from '../composables/useMe'
 import { buildNpcGroups } from '../utils/conversations'
 import type { NpcGroup } from '../utils/conversations'
+import { buildGrammarLevelAccess, isDistrictUnlocked } from '../utils/districtUnlock'
 
 interface DistrictNpcGroup {
   district: CourseMapDistrict
@@ -108,13 +110,9 @@ function placeLabel(placeType: string): string {
 }
 
 function openNpc(districtCode: string, npc: NpcGroup) {
-  const firstAvailable = npc.questScenarios.find(s => !s.locked) || (npc.allDone ? npc.freeScenario : null)
+  const firstAvailable = npc.questScenarios.find(s => !s.locked) || (npc.allPassed ? npc.freeScenario : null)
   if (!firstAvailable) return
   router.push({ name: 'PlaceChat', params: { districtCode, scenarioCode: firstAvailable.code } })
-}
-
-function districtIsOpen(district: CourseMapDistrict): boolean {
-  return district.status !== 'locked'
 }
 
 onMounted(async () => {
@@ -125,8 +123,12 @@ onMounted(async () => {
     if (!isPro.value) return
 
     const courseCode = currentCourseCode.value || undefined
-    const map = await courseClient.getCourseMap(courseCode)
-    const openDistricts = (map.districts || []).filter(districtIsOpen)
+    const [map, grammarData] = await Promise.all([
+      courseClient.getCourseMap(courseCode),
+      grammarClient.getCategories().catch(() => ({ categories: [] })),
+    ])
+    const grammarAccess = buildGrammarLevelAccess(grammarData.categories || [])
+    const openDistricts = (map.districts || []).filter(d => isDistrictUnlocked(d.level_code, grammarAccess))
     const results = await Promise.all(openDistricts.map(async (district) => {
       const res = await courseClient.listConversationScenarios(district.code, courseCode)
       const npcs = buildNpcGroups(res.scenarios || [], courseCode || '').filter(npc => !npc.locked)

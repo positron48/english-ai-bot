@@ -129,7 +129,8 @@ import { ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { marked } from 'marked'
-import { grammarClient } from '../api/grammarClient'
+import { grammarClient, getGrammarCourseCode } from '../api/grammarClient'
+import { writeStoredGrammarContinueChapter } from '../utils/grammarContinueChapter'
 import GrammarQuestion from '../components/GrammarQuestion.vue'
 import GrammarTheoryExamples from '../components/GrammarTheoryExamples.vue'
 import ContentReportDialog from '../components/ContentReportDialog.vue'
@@ -206,15 +207,15 @@ const loadChapter = async () => {
     if (data.title_translations && chapter.value) {
       chapter.value.title_translations = data.title_translations
     }
-    // Track last opened grammar chapter for home quick-jump
+    // Track last opened grammar chapter (course-scoped cache for offline fallback)
     try {
       const baseTitle = data.title || data.chapter?.title || chapterId.value
       const title = getLocalizedTitle(baseTitle, data.title_translations || data.chapter?.title_translations)
-      localStorage.setItem('linglow:last-grammar-chapter', JSON.stringify({
+      writeStoredGrammarContinueChapter({
         id: chapterId.value,
         title,
         url: `/learning/grammar/chapter/${chapterId.value}`,
-      }))
+      }, getGrammarCourseCode())
     } catch { /* ignore storage errors */ }
     // Build question map for quick lookup
     if (chapter.value?.question_bank?.questions) {

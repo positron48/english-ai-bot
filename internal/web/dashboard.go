@@ -39,17 +39,8 @@ func (r *Router) settingsJSONForAPI(settings models.UserSettings) map[string]int
 // learningJSONForSettingsAPI returns the learning metadata for the API response, scoped to the
 // user's currently selected course rather than the server's static default language pair.
 func (r *Router) learningJSONForSettingsAPI(ctx context.Context, userID int64) map[string]interface{} {
-	lc := r.config.Learning
-	if courseCode := r.currentCourseCodeForUser(ctx, userID); courseCode != "" {
-		if target, native, ok := strings.Cut(courseCode, "_"); ok && target != "" && native != "" {
-			lc.TargetLang = target
-			lc.NativeLang = native
-			lc.Pair = native + "-" + target
-			lc.AppCode = appCodeForTargetLang(target)
-			lc.GrammarBundleID = target
-		}
-	}
-	spanishVerbForms := strings.EqualFold(lc.TargetLang, "es")
+	lc := r.learningConfigForUser(ctx, userID)
+	spanishVerbForms := r.verbFormsEnabledForLearning(lc)
 	out := map[string]interface{}{
 		"pair":                       lc.Pair,
 		"native_lang":                lc.NativeLang,
@@ -74,19 +65,6 @@ func (r *Router) learningJSONForSettingsAPI(ctx context.Context, userID int64) m
 	}
 	out["speaking_mode_enabled"] = r.config.Speaking.Enabled
 	return out
-}
-
-// appCodeForTargetLang maps a target language code to its app_code, mirroring config.DefaultLearningConfig
-// for the two supported targets. Falls back to the language code itself for anything unrecognized.
-func appCodeForTargetLang(target string) string {
-	switch strings.ToLower(target) {
-	case "en":
-		return "english"
-	case "es":
-		return "spanish"
-	default:
-		return target
-	}
 }
 
 // handleDashboard shows the user dashboard
@@ -924,7 +902,8 @@ func (r *Router) handleTrainingSettings(w http.ResponseWriter, req *http.Request
 		}
 	}
 	verbScopeDirty := false
-	if requestData.VerbFormsProgressionIndex != nil && strings.EqualFold(r.config.Learning.TargetLang, "es") && r.verbFormsEnabled() {
+	userLC := r.learningConfigForUser(req.Context(), userID)
+	if requestData.VerbFormsProgressionIndex != nil && r.verbFormsEnabledForLearning(userLC) {
 		n := len(models.SpanishVerbScopeLadder())
 		if n > 0 {
 			idx := *requestData.VerbFormsProgressionIndex
@@ -948,7 +927,7 @@ func (r *Router) handleTrainingSettings(w http.ResponseWriter, req *http.Request
 		settings.EnabledVerbScopes = scopes
 		verbScopeDirty = true
 	}
-	if strings.EqualFold(r.config.Learning.TargetLang, "es") {
+	if strings.EqualFold(userLC.TargetLang, "es") {
 		if len(settings.EnabledVerbScopes) == 0 {
 			settings.EnabledVerbScopes = models.DefaultSpanishVerbScopes()
 		}
@@ -971,7 +950,7 @@ func (r *Router) handleTrainingSettings(w http.ResponseWriter, req *http.Request
 		return
 	}
 
-	if verbScopeDirty && strings.EqualFold(r.config.Learning.TargetLang, "es") && r.verbFormsEnabled() {
+	if verbScopeDirty && r.verbFormsEnabledForLearning(userLC) {
 		r.ensureVerbFormUserCardsAfterVocab(userID)
 	}
 

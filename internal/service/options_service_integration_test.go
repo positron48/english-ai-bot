@@ -3,6 +3,7 @@ package service
 import (
 	"database/sql"
 	"encoding/json"
+	"strings"
 	"testing"
 
 	"tgbot-skeleton/internal/models"
@@ -401,5 +402,55 @@ func TestOptionsService_GenerateOptions_WrongAnswersIncluded(t *testing.T) {
 	// Wrong answers (produce, create) can appear in pool; at least one non-correct option expected
 	if len(options) < 2 {
 		t.Errorf("expected at least 2 options, got %d", len(options))
+	}
+}
+
+func TestOptionsService_GenerateOptions_SpanishVerbStripsToPrefix(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, trainingCardRepo := setupOptionsServiceTestDB(t)
+
+	var wordCardID int64
+	err := db.QueryRow("INSERT INTO word_cards (word, definition) VALUES ($1, $2) RETURNING id", "hablar", "hablar").Scan(&wordCardID)
+	if err != nil {
+		t.Fatalf("insert word_card: %v", err)
+	}
+	displayWord := "to hablar"
+	pos := "verbo"
+	distractorsEN, _ := json.Marshal([]string{"to comer", "to vivir", "to correr"})
+	card := &models.TrainingCard{
+		WordCardID:    wordCardID,
+		WordEN:        "hablar",
+		SenseIndex:    0,
+		WordRU:        "говорить",
+		MeaningEN:     "hablar",
+		POS:           &pos,
+		DisplayWord:   &displayWord,
+		DistractorsEN: string(distractorsEN),
+	}
+	cardID, err := trainingCardRepo.CreateTrainingCard(card)
+	if err != nil {
+		t.Fatalf("CreateTrainingCard: %v", err)
+	}
+
+	service := NewOptionsService(trainingCardRepo, logger, "es")
+	userCard := &models.UserCardWithTraining{
+		UserCard: models.UserCard{ID: 1, Direction: models.DirectionRUtoEN},
+		TrainingCard: models.TrainingCard{
+			ID: cardID, WordCardID: wordCardID, WordEN: "hablar", WordRU: "говорить",
+			POS: &pos, DisplayWord: &displayWord, DistractorsEN: string(distractorsEN),
+		},
+	}
+
+	options, correctAnswer, err := service.GenerateOptions(userCard, 4, []string{}, make(map[string]bool), make(map[string]bool))
+	if err != nil {
+		t.Fatalf("GenerateOptions: %v", err)
+	}
+	if correctAnswer != "hablar" {
+		t.Fatalf("correct answer = %q, want hablar", correctAnswer)
+	}
+	for _, o := range options {
+		if strings.HasPrefix(o, "to ") {
+			t.Fatalf("option %q must not use English to-prefix for Spanish", o)
+		}
 	}
 }

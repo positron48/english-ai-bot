@@ -757,6 +757,51 @@ func (r *Router) handleLearningGrammarSectionAccess(w http.ResponseWriter, req *
 	})
 }
 
+// handleLearningGrammarContinueChapter returns the chapter the user should resume studying.
+// @Summary      Получить главу для продолжения грамматики
+// @Description  Возвращает главу, на которую нужно вести пользователя с home quick access
+// @Tags         Learning
+// @Accept       json
+// @Produce      application/json
+// @Security     ApiKeyAuth
+// @Success      200  {object}  map[string]interface{}  "Глава для продолжения или null"
+// @Failure      401  {string}  string  "Неавторизован"
+// @Failure      500  {string}  string  "Внутренняя ошибка сервера"
+// @Router       /api/learning/grammar/continue-chapter [get]
+func (r *Router) handleLearningGrammarContinueChapter(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	userID := getUserIDFromContext(req.Context())
+	if userID == 0 {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	chapter, err := r.grammarServiceForRequest(req, userID).GetContinueChapter(req.Context(), userID)
+	if err != nil {
+		r.logger.Error("failed to get continue grammar chapter", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	payload := map[string]interface{}{"chapter": nil}
+	if chapter != nil {
+		payload["chapter"] = map[string]interface{}{
+			"chapter_id":         chapter.ChapterID,
+			"title":              chapter.Title,
+			"title_translations": chapter.TitleTranslations,
+			"section_id":         chapter.SectionID,
+			"url":                "/learning/grammar/chapter/" + chapter.ChapterID,
+		}
+	}
+	json.NewEncoder(w).Encode(payload)
+}
+
 // handleLearningGrammarStatistics returns overall grammar statistics
 // @Summary      Получить статистику грамматики
 // @Description  Возвращает подтвержденный уровень грамматики и процент завершения курса

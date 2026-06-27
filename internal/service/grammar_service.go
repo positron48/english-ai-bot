@@ -271,6 +271,161 @@ func (s *GrammarService) GetPublishedChapters(ctx context.Context, sectionID str
 	return result, nil
 }
 
+// ContinueChapter is the grammar chapter the user should resume on home quick access.
+type ContinueChapter struct {
+	ChapterID         string            `json:"chapter_id"`
+	Title             string            `json:"title"`
+	TitleTranslations map[string]string `json:"title_translations,omitempty"`
+	SectionID         string            `json:"section_id"`
+}
+
+// GetContinueChapter returns the chapter the user should continue studying.
+// Priority: (1) first accessible unpassed chapter that needs study,
+// (2) most recently attempted accessible chapter unless placement unlocked higher levels,
+// (3) furthest accessible chapter in canonical course order.
+func (s *GrammarService) GetContinueChapter(ctx context.Context, userID int64) (*ContinueChapter, error) {
+	sectionsData, err := s.ContentRepo.GetSections()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get sections: %w", err)
+	}
+
+	placementLevelOrder := s.placementEffectiveLevelOrder(userID, sectionsData)
+
+	var (
+		studyTarget       *ContinueChapter
+		byRecentAttempt   *ContinueChapter
+		recentAttemptTime time.Time
+		frontier          *ContinueChapter
+	)
+
+	for si := range sectionsData.Sections {
+		section := &sectionsData.Sections[si]
+		sectionAccess, err := s.CanAccessSection(ctx, userID, section.SectionID)
+		if err != nil {
+			return nil, fmt.Errorf("failed to check section access: %w", err)
+		}
+		if !sectionAccess {
+			break
+		}
+
+		isOpenedByPlacement, err := s.isSectionOpenedByPlacement(ctx, userID, section.SectionID)
+		if err != nil {
+			return nil, fmt.Errorf("failed to check placement section: %w", err)
+		}
+
+		chapters, err := s.GetPublishedChapters(ctx, section.SectionID, userID)
+		if err != nil {
+			if strings.Contains(err.Error(), "not published") {
+				continue
+			}
+			return nil, fmt.Errorf("failed to get chapters for section %s: %w", section.SectionID, err)
+		}
+
+		for _, chapter := range chapters {
+			canAccess := chapter.CanAccess
+			passed := chapter.Progress.Passed
+			if !canAccess && !passed {
+				break
+			}
+
+			cc := s.continueChapterFromProgress(chapter, section.SectionID)
+			frontier = cc
+
+			hasAttempt := !chapter.Progress.LastAttemptAt.IsZero()
+			if canAccess && hasAttempt {
+				if byRecentAttempt == nil || chapter.Progress.LastAttemptAt.After(recentAttemptTime) {
+					byRecentAttempt = cc
+					recentAttemptTime = chapter.Progress.LastAttemptAt
+				}
+			}
+
+			if studyTarget == nil && canAccess && !passed {
+				if isOpenedByPlacement && !hasAttempt {
+					continue
+				}
+				sectionLevelOrder := s.sectionLevelOrder(sectionsData, section.SectionID)
+				if isOpenedByPlacement && placementLevelOrder >= 0 && sectionLevelOrder >= 0 && placementLevelOrder > sectionLevelOrder {
+					continue
+				}
+				studyTarget = cc
+			}
+		}
+	}
+
+	if studyTarget != nil {
+		return studyTarget, nil
+	}
+	if byRecentAttempt != nil {
+		attemptLevelOrder := s.sectionLevelOrder(sectionsData, byRecentAttempt.SectionID)
+		if placementLevelOrder >= 0 && attemptLevelOrder >= 0 && placementLevelOrder > attemptLevelOrder {
+			if frontier != nil {
+				return frontier, nil
+			}
+		}
+		return byRecentAttempt, nil
+	}
+	if frontier != nil {
+		return frontier, nil
+	}
+	return nil, nil
+}
+
+func (s *GrammarService) continueChapterFromProgress(chapter *ChapterWithProgress, sectionID string) *ContinueChapter {
+	title := chapter.Title
+	if title == "" && chapter.Chapter != nil {
+		title = chapter.Chapter.Title
+	}
+	var titleTranslations map[string]string
+	if chapter.Chapter != nil {
+		titleTranslations = chapter.Chapter.TitleTranslations
+	}
+	chapterID := ""
+	if chapter.Chapter != nil {
+		chapterID = chapter.Chapter.ID
+	}
+	return &ContinueChapter{
+		ChapterID:         chapterID,
+		Title:             title,
+		TitleTranslations: titleTranslations,
+		SectionID:         sectionID,
+	}
+}
+
+func (s *GrammarService) sectionLevelOrder(sectionsData *repository.SectionsData, sectionID string) int {
+	levelOrder := grammarLevelOrderMap()
+	for i := range sectionsData.Sections {
+		if sectionsData.Sections[i].SectionID != sectionID {
+			continue
+		}
+		if ord, ok := levelOrder[sectionsData.Sections[i].Level]; ok {
+			return ord
+		}
+		return -1
+	}
+	return -1
+}
+
+func (s *GrammarService) placementEffectiveLevelOrder(userID int64, sectionsData *repository.SectionsData) int {
+	placementResult, _ := s.AttemptRepo.GetPlacementTestResult(userID)
+	if placementResult == nil || len(placementResult.OpenedSections) == 0 {
+		return -1
+	}
+	levelOrder := grammarLevelOrderMap()
+	effectiveOrder := -1
+	for _, openedSectionID := range placementResult.OpenedSections {
+		for j := range sectionsData.Sections {
+			if sectionsData.Sections[j].SectionID != openedSectionID {
+				continue
+			}
+			if ord, ok := levelOrder[sectionsData.Sections[j].Level]; ok && ord >= 0 && ord > effectiveOrder {
+				effectiveOrder = ord
+			}
+			break
+		}
+	}
+	return effectiveOrder
+}
+
 // GetNextPublishedChapterID returns the next published chapter within the same section,
 // using the canonical order from sections.json (section.ChapterIDs).
 func (s *GrammarService) GetNextPublishedChapterID(ctx context.Context, chapterID string) (nextChapterID string, isLast bool, sectionID string, err error) {

@@ -1,5 +1,17 @@
 import type { ConversationScenarioSummary } from '../api/courseClient'
 
+/** Mandatory tasks done (quest passed). */
+export function scenarioQuestPassed(s: ConversationScenarioSummary): boolean {
+  if (s.quest_passed) return true
+  return s.session_status === 'passed' || s.session_status === 'completed'
+}
+
+/** All tasks done including optional (100% / golden star). */
+export function scenarioQuestPerfect(s: ConversationScenarioSummary): boolean {
+  if (s.all_tasks_done) return true
+  return s.session_status === 'completed'
+}
+
 export interface NpcGroup {
   key: string
   npcName: string
@@ -15,6 +27,7 @@ export interface NpcGroup {
   completedCount: number
   pct: number
   allDone: boolean
+  allPassed: boolean
   hasCompletedQuests: boolean
   hasIncompleteQuests: boolean
   locked: boolean
@@ -46,6 +59,7 @@ export function buildNpcGroups(scenarios: ConversationScenarioSummary[], courseC
         completedCount: 0,
         pct: 0,
         allDone: false,
+        allPassed: false,
         hasCompletedQuests: false,
         hasIncompleteQuests: false,
         locked: false,
@@ -62,16 +76,19 @@ export function buildNpcGroups(scenarios: ConversationScenarioSummary[], courseC
 
   for (const g of groups) {
     g.questTotal = g.questScenarios.length
-    g.completedCount = g.questScenarios.filter(s => s.session_status === 'completed').length
-    g.pct = g.questTotal > 0 ? Math.round((g.completedCount / g.questTotal) * 100) : 0
-    g.allDone = g.questTotal > 0 && g.completedCount === g.questTotal
-    g.hasCompletedQuests = g.completedCount > 0
-    g.hasIncompleteQuests = g.questScenarios.some(s => s.session_status !== 'completed')
+    const passedCount = g.questScenarios.filter(scenarioQuestPassed).length
+    const perfectCount = g.questScenarios.filter(scenarioQuestPerfect).length
+    g.completedCount = passedCount
+    g.pct = g.questTotal > 0 ? Math.round((perfectCount / g.questTotal) * 100) : 0
+    g.allDone = g.questTotal > 0 && perfectCount === g.questTotal
+    g.allPassed = g.questTotal > 0 && passedCount === g.questTotal
+    g.hasCompletedQuests = passedCount > 0
+    g.hasIncompleteQuests = g.questScenarios.some(s => !scenarioQuestPassed(s))
     // Locked only when there is nothing to start: every quest is locked and free chat is absent
     // or still gated by a prerequisite.
     g.locked = (!g.freeScenario || g.freeScenario.locked) && g.questScenarios.every(s => s.locked)
-    // Free chat is only available once all quests in the chain are completed.
-    g.freeChatAvailable = g.allDone && !!g.freeScenario && !g.freeScenario.locked
+    // Free chat is only available once all quests in the chain are passed (mandatory tasks done).
+    g.freeChatAvailable = g.allPassed && !!g.freeScenario && !g.freeScenario.locked
     // Cooldown: surface the unlock time of the next locked-but-cooldown quest so the UI can show a timer.
     const nextCooldown = g.questScenarios.find(s => s.locked && s.cooldown_until)
     g.cooldownUntil = nextCooldown?.cooldown_until ?? null

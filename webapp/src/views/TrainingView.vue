@@ -68,25 +68,6 @@
               <span v-if="estimatedTime">({{ estimatedTime }})</span>
             </span>
           </div>
-          <div class="training-vocab-overview">
-            <div class="training-vocab-overview__head">
-              <span class="training-vocab-overview__title">{{ t('training.vocabOverviewTitle') }}</span>
-              <span class="training-vocab-overview__total">
-                {{ stats.totalCards }} {{ (t as any)('common.words', stats.totalCards) }}
-              </span>
-            </div>
-            <div class="training-vocab-overview__grid">
-              <div
-                v-for="item in vocabBreakdownItems"
-                :key="item.key"
-                class="training-vocab-overview__item"
-                :class="`training-vocab-overview__item--${item.key}`"
-              >
-                <span class="training-vocab-overview__count">{{ item.count }}</span>
-                <span class="training-vocab-overview__label">{{ item.label }}</span>
-              </div>
-            </div>
-          </div>
         </div>
         
         <!-- Upcoming cards chart -->
@@ -531,7 +512,6 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, watch, nextTick, TransitionGroup } from 'vue'
-import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { apiClient } from '../api/client'
 import { contentReportClient } from '../api/contentReportClient'
@@ -552,55 +532,26 @@ import {
 } from '../constants/contentReportCategories'
 import { useLearningConfig } from '../composables/useLearningConfig'
 import { useCourse } from '../composables/useCourse'
+import { useSpanishVerbFormsPractice } from '../composables/useSpanishVerbFormsPractice'
 
 const { t, tm, locale } = useI18n()
-const router = useRouter()
-const { learning, ensureLearningLoaded } = useLearningConfig()
+const { ensureLearningLoaded } = useLearningConfig()
 const { currentCourseCode } = useCourse()
 
-watch(currentCourseCode, () => {
+const isOnline = ref(typeof navigator === 'undefined' ? true : navigator.onLine)
+const {
+  verbFormsTotalCardsPool,
+  showSpanishVerbFormsTraining,
+  refreshVerbFormsPoolCount,
+  openVerbFormsTraining,
+} = useSpanishVerbFormsPractice(isOnline)
+
+watch(currentCourseCode, async () => {
+  await ensureLearningLoaded()
   loadStats()
   loadUpcomingCards()
+  await refreshVerbFormsPoolCount()
 })
-
-const verbFormsTotalCardsPool = ref<number | null>(null)
-/** Set true after we know whether the user has any materialized verb-form training cards. */
-const verbFormsPoolResolved = ref(false)
-
-async function refreshVerbFormsPoolCount() {
-  verbFormsPoolResolved.value = false
-  await ensureLearningLoaded()
-  const ly = learning.value
-  if (!ly || ly.target_lang?.toLowerCase() !== 'es' || !ly.spanish_verb_forms_enabled) {
-    verbFormsTotalCardsPool.value = null
-    verbFormsPoolResolved.value = true
-    return
-  }
-  try {
-    const data = await apiClient.request<{ total_cards?: number }>('/api/verb-training/upcoming')
-    verbFormsTotalCardsPool.value = typeof data?.total_cards === 'number' ? data.total_cards : null
-  } catch {
-    verbFormsTotalCardsPool.value = null
-  } finally {
-    verbFormsPoolResolved.value = true
-  }
-}
-
-function openVerbFormsTraining() {
-  void router.push({ path: '/training/verbs', query: { start: '1' } })
-}
-
-const isSpanishTarget = computed(() => (learning.value?.target_lang || '').toLowerCase() === 'es')
-
-const showSpanishVerbFormsTraining = computed(
-  () =>
-    isSpanishTarget.value &&
-    isOnline.value &&
-    learning.value?.spanish_verb_forms_enabled === true &&
-    verbFormsPoolResolved.value &&
-    verbFormsTotalCardsPool.value !== null &&
-    verbFormsTotalCardsPool.value > 0
-)
 
 function phraseList(key: string): string[] {
   const raw = tm(key) as unknown
@@ -707,12 +658,7 @@ const trainingStats = ref({
 })
 const stats = ref({
   dueCount: 0,
-  totalCards: 0,
   availableForTraining: 0,
-  newCount: 0,
-  learningCount: 0,
-  reviewCount: 0,
-  knownCount: 0
 })
 const statsLoaded = ref(false)
 const networkError = ref(false)
@@ -724,7 +670,6 @@ const percentageAnimationComplete = ref(false)
 const upcomingChartCanvas = ref<HTMLCanvasElement | null>(null)
 const upcomingCardsLoaded = ref(false)
 const upcomingCardsData = ref<Record<string, { date: string; label: string; count: number }>>({})
-const isOnline = ref(typeof navigator === 'undefined' ? true : navigator.onLine)
 const wordPreloading = ref(false)
 const wordSyncing = ref(false)
 const wordOfflineStatus = ref<WordTrainingOfflineStatus>({ ready: false, downloadedCards: 0, pendingAttempts: 0 })
@@ -759,13 +704,6 @@ const reportAlreadySent = computed(() => {
 const showWordOfflinePanel = computed(() => {
   return isInstalledWebApp.value || !isOnline.value || wordOfflineStatus.value.ready || wordOfflineStatus.value.pendingAttempts > 0
 })
-
-const vocabBreakdownItems = computed(() => [
-  { key: 'new', label: t('training.vocabStatusNew'), count: stats.value.newCount },
-  { key: 'learning', label: t('training.vocabStatusLearning'), count: stats.value.learningCount },
-  { key: 'review', label: t('training.vocabStatusReview'), count: stats.value.reviewCount },
-  { key: 'known', label: t('training.vocabStatusKnown'), count: stats.value.knownCount },
-])
 
 // Spell (compose word) state
 const spellAnswerLetters = ref<string[]>([])
@@ -1628,26 +1566,10 @@ const loadStats = async () => {
   try {
     const data: {
       due_count: number
-      total_cards?: number
       available_for_training?: number
-      new_count?: number
-      learning_count?: number
-      review_count?: number
-      known_count?: number
-      mastered_count?: number
     } = await wordTrainingClient.getDashboard()
-    let vocabSummary: { total?: number; known?: number; learning?: number; new?: number } | null = null
-    if (isOnline.value) {
-      vocabSummary = await apiClient.request<{ total?: number; known?: number; learning?: number; new?: number }>('/api/vocab/summary')
-        .catch(() => null)
-    }
     stats.value.dueCount = data.due_count || 0
-    stats.value.totalCards = vocabSummary?.total ?? data.total_cards ?? 0
     stats.value.availableForTraining = data.available_for_training || data.due_count || 0
-    stats.value.newCount = vocabSummary?.new ?? data.new_count ?? 0
-    stats.value.learningCount = vocabSummary?.learning ?? data.learning_count ?? 0
-    stats.value.reviewCount = data.review_count ?? data.due_count ?? 0
-    stats.value.knownCount = vocabSummary?.known ?? data.known_count ?? data.mastered_count ?? 0
     statsLoaded.value = true
   } catch (error) {
     console.error('Failed to load stats:', error)
@@ -4221,83 +4143,6 @@ const handleTimerMouseLeave = () => {
   margin-left: 6px;
 }
 
-.training-vocab-overview {
-  width: 100%;
-  border: 1px solid var(--border-primary, rgba(0, 0, 0, 0.1));
-  border-radius: 16px;
-  padding: 14px;
-  background:
-    linear-gradient(135deg, color-mix(in srgb, var(--color-primary) 8%, transparent), transparent),
-    var(--bg-secondary);
-  text-align: left;
-}
-
-.training-vocab-overview__head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-
-.training-vocab-overview__title {
-  font-weight: 700;
-  color: var(--text-primary);
-}
-
-.training-vocab-overview__total {
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-  white-space: nowrap;
-}
-
-.training-vocab-overview__grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 8px;
-}
-
-.training-vocab-overview__item {
-  min-width: 0;
-  border-radius: 12px;
-  padding: 10px 8px;
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-primary, rgba(0, 0, 0, 0.08));
-  text-align: center;
-}
-
-.training-vocab-overview__item--new {
-  background: color-mix(in srgb, #3b82f6 12%, var(--bg-tertiary));
-}
-
-.training-vocab-overview__item--learning {
-  background: color-mix(in srgb, #f59e0b 14%, var(--bg-tertiary));
-}
-
-.training-vocab-overview__item--review {
-  background: color-mix(in srgb, #8b5cf6 12%, var(--bg-tertiary));
-}
-
-.training-vocab-overview__item--known {
-  background: color-mix(in srgb, #10b981 14%, var(--bg-tertiary));
-}
-
-.training-vocab-overview__count {
-  display: block;
-  font-size: 1.35rem;
-  font-weight: 800;
-  line-height: 1;
-  color: var(--text-primary);
-}
-
-.training-vocab-overview__label {
-  display: block;
-  margin-top: 5px;
-  font-size: 0.78rem;
-  line-height: 1.15;
-  color: var(--text-secondary);
-}
-
 .upcoming-cards-chart {
   width: 100%;
   margin-top: 28px;
@@ -5020,16 +4865,6 @@ const handleTimerMouseLeave = () => {
   
   .start-stat-value span:last-child {
     font-size: 16px;
-  }
-
-  .training-vocab-overview__head {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
-  }
-
-  .training-vocab-overview__grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   
   .upcoming-cards-chart {

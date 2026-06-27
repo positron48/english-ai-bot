@@ -411,6 +411,87 @@ func (r *ConversationRepository) RecordQuestCompletion(ctx context.Context, user
 	return nil
 }
 
+// LatestPassedScenarioCodes returns scenario codes where the learner finished mandatory tasks
+// (exercise_attempts from RecordQuestCompletion) or fully completed the session.
+func (r *ConversationRepository) LatestPassedScenarioCodes(ctx context.Context, userCourseID, courseID int64) (map[string]bool, error) {
+	rows, err := r.db.QueryContext(ctx, `
+		SELECT DISTINCT sc.code
+		FROM conversation_scenarios sc
+		WHERE sc.course_id = ?
+		AND (
+			EXISTS (
+				SELECT 1 FROM exercise_attempts ea
+				WHERE ea.user_course_id = ?
+					AND ea.mode = 'chat'
+					AND ea.result_json->>'scenario_code' = sc.code
+			)
+			OR EXISTS (
+				SELECT 1 FROM conversation_sessions sess
+				WHERE sess.scenario_id = sc.id
+					AND sess.user_course_id = ?
+					AND sess.status = 'completed'
+			)
+		)`, courseID, userCourseID, userCourseID)
+	if err != nil {
+		return nil, fmt.Errorf("passed scenario codes: %w", err)
+	}
+	defer rows.Close()
+	out := make(map[string]bool)
+	for rows.Next() {
+		var code string
+		if err := rows.Scan(&code); err != nil {
+			return nil, err
+		}
+		out[code] = true
+	}
+	return out, rows.Err()
+}
+
+// PassedAtByScenarioCode returns the latest pass/completion time per scenario code.
+// Cooldown windows start when mandatory tasks are done, not only after optional farewell.
+func (r *ConversationRepository) PassedAtByScenarioCode(ctx context.Context, userCourseID, courseID int64) (map[string]time.Time, error) {
+	rows, err := r.db.QueryContext(ctx, `
+		SELECT code, MAX(ts) FROM (
+			SELECT sc.code AS code, sess.completed_at AS ts
+			FROM conversation_sessions sess
+			JOIN conversation_scenarios sc ON sc.id = sess.scenario_id
+			WHERE sess.user_course_id = ? AND sc.course_id = ? AND sess.status = 'completed'
+			UNION ALL
+			SELECT ea.result_json->>'scenario_code' AS code, ea.answered_at AS ts
+			FROM exercise_attempts ea
+			WHERE ea.user_course_id = ? AND ea.mode = 'chat'
+				AND ea.result_json->>'scenario_code' IS NOT NULL
+		) sub
+		WHERE code IS NOT NULL AND code <> ''
+		GROUP BY code`, userCourseID, courseID, userCourseID)
+	if err != nil {
+		return nil, fmt.Errorf("passed at by scenario code: %w", err)
+	}
+	defer rows.Close()
+	out := make(map[string]time.Time)
+	for rows.Next() {
+		var code string
+		var t time.Time
+		if err := rows.Scan(&code, &t); err != nil {
+			return nil, err
+		}
+		out[code] = t
+	}
+	return out, rows.Err()
+}
+
+// ScenarioEverPassed reports whether mandatory tasks were completed for a scenario.
+func (r *ConversationRepository) ScenarioEverPassed(ctx context.Context, userCourseID int64, scenarioCode string) (bool, error) {
+	var exists bool
+	err := r.db.QueryRowContext(ctx, `
+		SELECT EXISTS(
+			SELECT 1 FROM exercise_attempts
+			WHERE user_course_id = ? AND mode = 'chat'
+				AND result_json->>'scenario_code' = ?
+		)`, userCourseID, scenarioCode).Scan(&exists)
+	return exists, err
+}
+
 // LatestCompletedScenarioCodes returns the set of scenario codes the user_course has at least one
 // 'completed' session for, within a course. Used to resolve prerequisite/unlock state.
 func (r *ConversationRepository) LatestCompletedScenarioCodes(ctx context.Context, userCourseID, courseID int64) (map[string]bool, error) {

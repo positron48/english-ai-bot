@@ -165,6 +165,14 @@ func TestOptionsService_normalizeVerbFormat(t *testing.T) {
 		}
 	})
 
+	t.Run("RU to target Spanish verbo POS strips legacy to prefix", func(t *testing.T) {
+		svcES := NewOptionsService(nil, logger, "es")
+		result := svcES.normalizeVerbFormat("to hablar", "verbo", models.DirectionRUtoEN)
+		if result != "hablar" {
+			t.Errorf("normalizeVerbFormat() = %q, want hablar", result)
+		}
+	})
+
 	t.Run("RU to EN with verb POS already has 'to ' prefix", func(t *testing.T) {
 		result := service.normalizeVerbFormat("to make", "verb", models.DirectionRUtoEN)
 		expected := "to make"

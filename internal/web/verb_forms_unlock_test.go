@@ -1,6 +1,7 @@
 package web
 
 import (
+	"context"
 	"testing"
 
 	"tgbot-skeleton/internal/config"
@@ -19,7 +20,7 @@ func TestGetUserVerbScopes_UsesUnlockGatesAlwaysUnlocked(t *testing.T) {
 		},
 	}, nil, nil, nil, nil, nil)
 
-	scopes := r.getUserVerbScopes(0)
+	scopes := r.getUserVerbScopes(context.Background(), 0)
 	if len(scopes) == 0 {
 		t.Fatalf("expected non-empty scopes")
 	}

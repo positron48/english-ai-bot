@@ -11,6 +11,7 @@ import (
 	"sync"
 	"time"
 
+	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/grammartrainingpack"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
@@ -33,8 +34,22 @@ var (
 	webVerbSessions   = map[int64]*webVerbTrainingState{}
 )
 
+func (r *Router) verbFormsEnabledForLearning(lc config.LearningConfig) bool {
+	return r.config.Training.SpanishVerbFormsEnabled && strings.EqualFold(lc.TargetLang, "es")
+}
+
 func (r *Router) verbFormsEnabled() bool {
-	return strings.EqualFold(r.config.Learning.TargetLang, "es")
+	if r == nil || r.config == nil {
+		return false
+	}
+	return r.verbFormsEnabledForLearning(r.config.Learning)
+}
+
+func (r *Router) verbFormsEnabledForUser(ctx context.Context, userID int64) bool {
+	if r == nil || r.config == nil {
+		return false
+	}
+	return r.verbFormsEnabledForLearning(r.learningConfigForUser(ctx, userID))
 }
 
 // writeVerbTrainingDisabled responds when verb-form training is off (wrong target language or SPANISH_VERB_FORMS_ENABLED=false).
@@ -72,7 +87,7 @@ func (r *Router) handleVerbTrainingLemmaForms(w http.ResponseWriter, req *http.R
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
-	if !r.verbFormsEnabled() {
+	if !r.verbFormsEnabledForUser(req.Context(), getUserIDFromContext(req.Context())) {
 		http.NotFound(w, req)
 		return
 	}
@@ -100,7 +115,7 @@ func (r *Router) handleVocabVerbForms(w http.ResponseWriter, req *http.Request, 
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
-	if !r.verbFormsEnabled() {
+	if !r.verbFormsEnabledForUser(req.Context(), userID) {
 		http.NotFound(w, req)
 		return
 	}
@@ -114,11 +129,12 @@ func (r *Router) handleVocabVerbForms(w http.ResponseWriter, req *http.Request, 
 	writeVerbFormsGroupedResponse(w, wordCardID, rows)
 }
 
-func (r *Router) getUserVerbScopes(userID int64) []string {
-	if strings.ToLower(strings.TrimSpace(r.config.Learning.TargetLang)) != "es" {
+func (r *Router) getUserVerbScopes(ctx context.Context, userID int64) []string {
+	lc := r.learningConfigForUser(ctx, userID)
+	if strings.ToLower(strings.TrimSpace(lc.TargetLang)) != "es" {
 		return nil
 	}
-	if fsys, err := grammartrainingpack.PackFS(r.config.Learning.GrammarBundleID); err == nil {
+	if fsys, err := grammartrainingpack.PackFS(lc.GrammarBundleID); err == nil {
 		if gates, err := verbtraining.LoadUnlockGates(fsys); err == nil && gates != nil {
 			allowed := map[string]bool{}
 			if r.grammarService != nil && userID > 0 {
@@ -153,22 +169,23 @@ func (r *Router) getUserVerbScopes(userID int64) []string {
 	if err := json.Unmarshal([]byte(user.SettingsJSON), &settings); err != nil {
 		return models.DefaultSpanishVerbScopes()
 	}
-	return service.ResolveVerbScopes(&settings, r.config.Learning)
+	return service.ResolveVerbScopes(&settings, lc)
 }
 
-func (r *Router) newVerbTrainingService() *service.VerbTrainingService {
+func (r *Router) newVerbTrainingServiceForUser(ctx context.Context, userID int64) *service.VerbTrainingService {
 	repo := repository.NewVerbFormsRepository(r.db, r.logger)
-	return service.NewVerbTrainingService(repo, r.config.Learning, r.config.Training, r.logger)
+	return service.NewVerbTrainingService(repo, r.learningConfigForUser(ctx, userID), r.config.Training, r.logger)
 }
 
 // ensureVerbFormUserCardsAfterVocab mirrors word training: once user_cards exist for vocabulary,
 // materialize verb form cards (verb_training_cards + user_verb_cards) for Spanish.
 func (r *Router) ensureVerbFormUserCardsAfterVocab(userID int64) {
-	if !r.verbFormsEnabled() {
+	ctx := context.Background()
+	if !r.verbFormsEnabledForUser(ctx, userID) {
 		return
 	}
-	vs := r.newVerbTrainingService()
-	scopes := r.getUserVerbScopes(userID)
+	vs := r.newVerbTrainingServiceForUser(ctx, userID)
+	scopes := r.getUserVerbScopes(ctx, userID)
 	if err := vs.EnsureVerbFormUserCards(userID, scopes); err != nil {
 		r.logger.Warn("ensure verb form user cards after vocabulary change",
 			zap.Int64("user_id", userID),
@@ -187,12 +204,12 @@ func (r *Router) handleVerbTrainingStart(w http.ResponseWriter, req *http.Reques
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
-	vs := r.newVerbTrainingService()
+	vs := r.newVerbTrainingServiceForUser(req.Context(), userID)
 	if !vs.Enabled() {
 		r.writeVerbTrainingDisabled(w)
 		return
 	}
-	session, err := vs.StartSession(userID, r.getUserVerbScopes(userID))
+	session, err := vs.StartSession(userID, r.getUserVerbScopes(req.Context(), userID))
 	if err != nil {
 		r.logger.Error("failed to start verb training", zap.Error(err))
 		w.Header().Set("Content-Type", "application/json")
@@ -478,7 +495,7 @@ func (r *Router) handleVerbTrainingAnswer(w http.ResponseWriter, req *http.Reque
 		chosen = ""
 	}
 
-	vs := r.newVerbTrainingService()
+	vs := r.newVerbTrainingServiceForUser(req.Context(), userID)
 	if err := vs.Grade(userID, state.SessionID, item.UserVerbCardID, isCorrect); err != nil {
 		r.logger.Error("failed to grade verb card", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -562,7 +579,7 @@ func (r *Router) handleVerbTrainingUpcoming(w http.ResponseWriter, req *http.Req
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
-	if !r.verbFormsEnabled() {
+	if !r.verbFormsEnabledForUser(req.Context(), userID) {
 		r.writeVerbTrainingDisabled(w)
 		return
 	}

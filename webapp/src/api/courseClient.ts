@@ -396,6 +396,8 @@ export interface ConversationScenarioSummary {
   locked: boolean
   tasks: ConversationTask[]
   session_status: string
+  quest_passed: boolean
+  all_tasks_done: boolean
 }
 
 export interface ConversationCorrection {

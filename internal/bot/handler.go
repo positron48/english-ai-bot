@@ -103,7 +103,22 @@ func (h *Handler) resolveUserCourse(ctx context.Context, internalUserID int64) (
 	if ws, ok := h.wordServices[courseCode]; ok {
 		return courseCode, ws
 	}
-	// Fallback to the default course's word service.
+	// Per-course WordService may be unavailable (e.g. startup could not build es_ru).
+	// Keep the resolved course for DB/AI scoping and fall back to the default instance.
+	if ws, ok := h.wordServices[h.defaultCourse]; ok && ws != nil {
+		if courseCode != h.defaultCourse {
+			h.logger.Warn("per-course word service unavailable, using default service with course-scoped lookup",
+				zap.String("course_code", courseCode),
+				zap.String("default_course", h.defaultCourse),
+			)
+		}
+		return courseCode, ws
+	}
+	for _, ws := range h.wordServices {
+		if ws != nil {
+			return courseCode, ws
+		}
+	}
 	return h.defaultCourse, h.wordServices[h.defaultCourse]
 }
 
@@ -387,7 +402,7 @@ func (h *Handler) handleMessage(ctx context.Context, message *tgbotapi.Message) 
 			zap.String("word", text),
 			zap.String("course_code", courseCode),
 		)
-		response, err = wordService.GetWordDefinition(ctx, internalUserID, text)
+		response, err = wordService.GetWordDefinitionForCourse(ctx, internalUserID, text, courseCode)
 	} else {
 		// Regular message - use AI service with the user's selected course prompt
 		response, err = h.aiService.GenerateResponseForCourse(ctx, text, courseCode)

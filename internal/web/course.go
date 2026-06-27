@@ -9,10 +9,24 @@ import (
 	"strings"
 	"time"
 
+	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/repository"
 
 	"go.uber.org/zap"
 )
+
+// learningConfigForUser returns learning metadata scoped to the user's selected course on
+// multi-course instances (e.g. Linglow unified), or the server default otherwise.
+func (r *Router) learningConfigForUser(ctx context.Context, userID int64) config.LearningConfig {
+	if r == nil || r.config == nil {
+		return config.DefaultLearningConfig()
+	}
+	lc := r.config.Learning
+	if courseCode := r.currentCourseCodeForUser(ctx, userID); courseCode != "" {
+		return learningConfigForCourse(lc, courseCode)
+	}
+	return lc
+}
 
 func (r *Router) defaultCourseCode() string {
 	if r == nil || r.config == nil {

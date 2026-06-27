@@ -27,4 +27,30 @@ BEGIN
     END IF;
 END $$;
 
+-- SQLite imports may leave a standalone unique index on word (not a pg_constraint).
+DROP INDEX IF EXISTS idx_18611_sqlite_autoindex_word_cards_1;
+
+DO $$
+DECLARE
+    idx_name text;
+BEGIN
+    FOR idx_name IN
+        SELECT ci.relname
+        FROM pg_index i
+        JOIN pg_class ct ON ct.oid = i.indrelid
+        JOIN pg_class ci ON ci.oid = i.indexrelid
+        WHERE ct.relname = 'word_cards'
+          AND i.indisunique
+          AND NOT i.indisprimary
+          AND i.indpred IS NULL
+          AND (
+            SELECT array_agg(a.attname ORDER BY u.ord)
+            FROM unnest(i.indkey) WITH ORDINALITY AS u(attnum, ord)
+            JOIN pg_attribute a ON a.attrelid = ct.oid AND a.attnum = u.attnum
+          ) = ARRAY['word']::name[]
+    LOOP
+        EXECUTE format('DROP INDEX IF EXISTS %I', idx_name);
+    END LOOP;
+END $$;
+
 ALTER TABLE word_cards ADD CONSTRAINT word_cards_word_course_code_key UNIQUE (word, course_code);

@@ -32,10 +32,27 @@
         </div>
         <LgIcon name="chevron-right" :s="14" c="var(--subtext)" />
       </router-link>
+      <router-link
+        v-if="!isOffline && showSpanishVerbFormsTraining"
+        to="/training/verbs?start=1"
+        class="lg-list-row"
+      >
+        <div class="lg-icon-box"><LgActivityIcon type="grammar" status="green" :size="28" /></div>
+        <div class="quick-text">
+          <div class="lg-list-row-title">{{ t('lg.quickVerbFormsTraining') }}</div>
+          <div class="lg-list-row-sub">
+            <template v-if="verbFormsTotalCardsPool !== null">
+              {{ t('verbTraining.totalCardsAvailable', { count: verbFormsTotalCardsPool }) }}
+            </template>
+            <template v-else>{{ t('lg.quickVerbFormsTrainingSub') }}</template>
+          </div>
+        </div>
+        <LgIcon name="chevron-right" :s="14" c="var(--subtext)" />
+      </router-link>
       <router-link v-if="lastGrammarChapter" :to="lastGrammarChapter.url" class="lg-list-row">
         <div class="lg-icon-box"><LgActivityIcon type="grammar" status="green" :size="28" /></div>
         <div class="quick-text">
-          <div class="lg-list-row-title">{{ t('lg.quickLastGrammarChapter') }}</div>
+          <div class="lg-list-row-title">{{ t('lg.quickStudyGrammar') }}</div>
           <div class="lg-list-row-sub">{{ lastGrammarChapter.title }}</div>
         </div>
         <LgIcon name="chevron-right" :s="14" c="var(--subtext)" />
@@ -66,7 +83,25 @@
       <div class="practice-dict-left">
         <div class="practice-dict-emoji"><LgActivityIcon type="reading" status="green" :size="28" /></div>
         <div class="practice-dict-title">{{ t('lg.myDictionary') }}</div>
-        <div class="practice-dict-sub">{{ vocabSummaryText || t('lg.myDictionarySub') }}</div>
+        <div v-if="vocabStatsLoaded && vocabStats.total > 0" class="practice-dict-stats">
+          <div class="practice-dict-stats__head">
+            <span class="practice-dict-stats__total">
+              {{ vocabStats.total }} {{ (t as any)('common.words', vocabStats.total) }}
+            </span>
+          </div>
+          <div class="practice-dict-stats__grid">
+            <div
+              v-for="item in vocabBreakdownItems"
+              :key="item.key"
+              class="practice-dict-stats__item"
+              :class="`practice-dict-stats__item--${item.key}`"
+            >
+              <span class="practice-dict-stats__count">{{ item.count }}</span>
+              <span class="practice-dict-stats__label">{{ item.label }}</span>
+            </div>
+          </div>
+        </div>
+        <div v-else class="practice-dict-sub">{{ t('lg.myDictionarySub') }}</div>
       </div>
       <LgIcon name="chevron-right" :s="16" c="var(--text-muted)" />
     </router-link>
@@ -77,13 +112,17 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import LgLumi from '../components/linglow/LgLumi.vue'
 import LgIcon from '../components/linglow/LgIcon.vue'
 import LgLumiFact from '../components/linglow/LgLumiFact.vue'
 import LgActivityIcon from '../components/linglow/LgActivityIcon.vue'
 import { useMe } from '../composables/useMe'
+import { useCourse } from '../composables/useCourse'
+import { useGrammarContinueChapter } from '../composables/useGrammarContinueChapter'
+import { ensureLearningLoaded } from '../composables/useLearningConfig'
+import { useSpanishVerbFormsPractice } from '../composables/useSpanishVerbFormsPractice'
 import { apiClient } from '../api/client'
 import artWords from '../assets/linglow/art/bg-word-cards-440.jpg'
 import artGrammar from '../assets/linglow/art/bg-grammar-440.jpg'
@@ -91,11 +130,32 @@ import artReading from '../assets/linglow/art/bg-read-440.jpg'
 
 const { t } = useI18n()
 const { ensureMe, hasFeature } = useMe()
+const { currentCourseCode, ensureCourseLoaded } = useCourse()
 const isOffline = ref(typeof navigator !== 'undefined' && navigator.onLine === false)
+const isOnline = computed(() => !isOffline.value)
+const {
+  verbFormsTotalCardsPool,
+  showSpanishVerbFormsTraining,
+  refreshVerbFormsPoolCount,
+} = useSpanishVerbFormsPractice(isOnline)
 const isPro = ref(false)
-const vocabSummaryText = ref('')
+const vocabStatsLoaded = ref(false)
+const vocabStats = ref({
+  total: 0,
+  newCount: 0,
+  learningCount: 0,
+  reviewCount: 0,
+  masteredCount: 0,
+})
 
-const lastGrammarChapter = ref<{ id: string; title: string; url: string } | null>(null)
+const vocabBreakdownItems = computed(() => [
+  { key: 'new', label: t('training.vocabStatusNew'), count: vocabStats.value.newCount },
+  { key: 'learning', label: t('training.vocabStatusLearning'), count: vocabStats.value.learningCount },
+  { key: 'review', label: t('training.vocabStatusReview'), count: vocabStats.value.reviewCount },
+  { key: 'known', label: t('training.vocabStatusKnown'), count: vocabStats.value.masteredCount },
+])
+
+const { continueChapter: lastGrammarChapter, loadContinueChapter } = useGrammarContinueChapter()
 
 interface PracticeMode {
   type: 'words' | 'grammar' | 'reading' | 'conversation'
@@ -158,18 +218,42 @@ const handleNetworkChange = () => {
 onMounted(async () => {
   window.addEventListener('online', handleNetworkChange)
   window.addEventListener('offline', handleNetworkChange)
-  try {
-    const stored = localStorage.getItem('linglow:last-grammar-chapter')
-    if (stored) lastGrammarChapter.value = JSON.parse(stored)
-  } catch { /* ignore */ }
+  await ensureCourseLoaded()
+  await Promise.all([loadContinueChapter(), ensureLearningLoaded(), refreshVerbFormsPoolCount()])
   ensureMe().then(() => { isPro.value = hasFeature('conversation') })
   if (!isOffline.value) {
     try {
-      const summary = await apiClient.request<{ total: number; known: number; learning: number; new: number }>('/api/vocab/summary')
-      if (summary && summary.total > 0) {
-        vocabSummaryText.value = `${summary.total} слов · ${summary.known} изучено`
+      const summary = await apiClient.request<{
+        total?: number
+        new?: number
+        learning?: number
+        review?: number
+        review_count?: number
+        mastered?: number
+        mastered_count?: number
+      }>('/api/vocab/summary')
+      if (summary) {
+        vocabStats.value = {
+          total: summary.total ?? 0,
+          newCount: summary.new ?? 0,
+          learningCount: summary.learning ?? 0,
+          reviewCount: summary.review ?? summary.review_count ?? 0,
+          masteredCount: summary.mastered ?? summary.mastered_count ?? 0,
+        }
       }
+      vocabStatsLoaded.value = true
     } catch { /* ignore */ }
+  }
+})
+
+watch(currentCourseCode, async () => {
+  await ensureLearningLoaded()
+  await refreshVerbFormsPoolCount()
+})
+
+watch(isOffline, async (offline) => {
+  if (!offline) {
+    await refreshVerbFormsPoolCount()
   }
 })
 
@@ -314,5 +398,64 @@ onUnmounted(() => {
   font-size: 11px;
   color: var(--subtext);
   margin-top: 2px;
+}
+
+.practice-dict-stats {
+  margin-top: 8px;
+}
+
+.practice-dict-stats__head {
+  margin-bottom: 8px;
+}
+
+.practice-dict-stats__total {
+  font-size: 12px;
+  color: var(--subtext);
+}
+
+.practice-dict-stats__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.practice-dict-stats__item {
+  min-width: 0;
+  border-radius: 10px;
+  padding: 8px 6px;
+  background: var(--bg-secondary, rgba(0, 0, 0, 0.04));
+  text-align: center;
+}
+
+.practice-dict-stats__item--new {
+  background: color-mix(in srgb, #3b82f6 12%, var(--card-bg));
+}
+
+.practice-dict-stats__item--learning {
+  background: color-mix(in srgb, #f59e0b 12%, var(--card-bg));
+}
+
+.practice-dict-stats__item--review {
+  background: color-mix(in srgb, #8b5cf6 12%, var(--card-bg));
+}
+
+.practice-dict-stats__item--known {
+  background: color-mix(in srgb, var(--color-primary, #2d6b3a) 12%, var(--card-bg));
+}
+
+.practice-dict-stats__count {
+  display: block;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.practice-dict-stats__label {
+  display: block;
+  margin-top: 2px;
+  font-size: 9px;
+  line-height: 1.2;
+  color: var(--subtext);
 }
 </style>

@@ -112,17 +112,17 @@ func (r *Router) handleLinglowConversationScenarios(w http.ResponseWriter, req *
 		return
 	}
 
-	// Resolve which scenarios the learner has already completed so prerequisite-gated
+	// Resolve which scenarios the learner has already passed so prerequisite-gated
 	// scenarios (NPC chains) can be marked locked until their predecessor is done.
-	completedCodes, err := r.conversationRepo.LatestCompletedScenarioCodes(ctx, userCourseID, courseID)
+	passedCodes, err := r.conversationRepo.LatestPassedScenarioCodes(ctx, userCourseID, courseID)
 	if err != nil {
-		r.logger.Error("completed scenario codes", zap.Error(err))
+		r.logger.Error("passed scenario codes", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
-	completedAt, err := r.conversationRepo.CompletedAtByScenarioCode(ctx, userCourseID, courseID)
+	passedAt, err := r.conversationRepo.PassedAtByScenarioCode(ctx, userCourseID, courseID)
 	if err != nil {
-		r.logger.Error("completed at by scenario code", zap.Error(err))
+		r.logger.Error("passed at by scenario code", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
@@ -142,7 +142,9 @@ func (r *Router) handleLinglowConversationScenarios(w http.ResponseWriter, req *
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
-		locked, cooldownUntil := r.scenarioLockState(sc, completedCodes, completedAt, now)
+		locked, cooldownUntil := r.scenarioLockState(sc, passedCodes, passedAt, now)
+		questPassed, allTasksDone := r.scenarioProgressFlags(ctx, userCourseID, sc.ID, tasks)
+		sessionStatus := r.derivedSessionStatus(ctx, userCourseID, sc.ID, tasks, questPassed, allTasksDone)
 		entry := map[string]interface{}{
 			"code":              sc.Code,
 			"title":             sc.Title,
@@ -157,7 +159,9 @@ func (r *Router) handleLinglowConversationScenarios(w http.ResponseWriter, req *
 			"locked":            locked,
 			"cooldown_until":    nil,
 			"tasks":             tasksJSON(tasks, nil),
-			"session_status":    r.latestSessionStatus(ctx, userCourseID, sc.ID),
+			"session_status":    sessionStatus,
+			"quest_passed":      questPassed,
+			"all_tasks_done":    allTasksDone,
 		}
 		if cooldownUntil != nil {
 			entry["cooldown_until"] = cooldownUntil.UTC().Format(time.RFC3339)
@@ -169,26 +173,63 @@ func (r *Router) handleLinglowConversationScenarios(w http.ResponseWriter, req *
 
 // scenarioLockState returns whether a scenario is locked and, if locked due to cooldown only,
 // the time at which it will unlock. A scenario is on cooldown when its prerequisite has been
-// completed but questCooldown has not yet elapsed since that completion.
+// passed but questCooldown has not yet elapsed since that pass.
 func (r *Router) scenarioLockState(
 	sc *repository.ConversationScenario,
-	completedCodes map[string]bool,
-	completedAt map[string]time.Time,
+	passedCodes map[string]bool,
+	passedAt map[string]time.Time,
 	now time.Time,
 ) (locked bool, cooldownUntil *time.Time) {
 	if sc.PrerequisiteCode == "" {
 		return false, nil
 	}
-	if !completedCodes[sc.PrerequisiteCode] {
+	if !passedCodes[sc.PrerequisiteCode] {
 		return true, nil
 	}
-	if t, ok := completedAt[sc.PrerequisiteCode]; ok {
+	if t, ok := passedAt[sc.PrerequisiteCode]; ok {
 		until := t.Add(questCooldown)
 		if now.Before(until) {
 			return true, &until
 		}
 	}
 	return false, nil
+}
+
+// scenarioProgressFlags derives mandatory-pass and 100% completion for a scenario.
+func (r *Router) scenarioProgressFlags(ctx context.Context, userCourseID, scenarioID int64, tasks []repository.ConversationTask) (questPassed, fullyDone bool) {
+	var sessionID int64
+	var status string
+	err := r.db.QueryRowContext(ctx, `
+		SELECT id, status FROM conversation_sessions
+		WHERE user_course_id = ? AND scenario_id = ?
+		ORDER BY started_at DESC, id DESC LIMIT 1`, userCourseID, scenarioID).Scan(&sessionID, &status)
+	if err == nil {
+		completed, _ := r.conversationRepo.GetCompletedTaskIDs(ctx, sessionID)
+		questPassed = allRequiredDone(tasks, completed)
+		fullyDone = status == "completed" || allTasksDone(tasks, completed)
+	}
+	if !questPassed {
+		scenario, _ := r.conversationRepo.GetScenarioByID(ctx, scenarioID)
+		if scenario != nil {
+			ever, _ := r.conversationRepo.ScenarioEverPassed(ctx, userCourseID, scenario.Code)
+			questPassed = ever
+		}
+	}
+	if !fullyDone && status == "completed" {
+		fullyDone = true
+	}
+	return questPassed, fullyDone
+}
+
+// derivedSessionStatus maps runtime progress to list UI states: passed (mandatory), completed (100%).
+func (r *Router) derivedSessionStatus(ctx context.Context, userCourseID, scenarioID int64, tasks []repository.ConversationTask, questPassed, allTasksDone bool) string {
+	if allTasksDone {
+		return "completed"
+	}
+	if questPassed {
+		return "passed"
+	}
+	return r.latestSessionStatus(ctx, userCourseID, scenarioID)
 }
 
 // latestSessionStatus returns the most recent session status for a scenario, or "" if none.
@@ -262,25 +303,25 @@ func (r *Router) handleLinglowConversationSessions(w http.ResponseWriter, req *h
 	}
 
 	// Enforce prerequisite chains: a gated scenario cannot be started until its predecessor
-	// has been completed and any cooldown has elapsed.
+	// has been passed (mandatory tasks done) and any cooldown has elapsed.
 	if scenario.PrerequisiteCode != "" {
-		completedCodes, err := r.conversationRepo.LatestCompletedScenarioCodes(ctx, userCourseID, courseID)
+		passedCodes, err := r.conversationRepo.LatestPassedScenarioCodes(ctx, userCourseID, courseID)
 		if err != nil {
-			r.logger.Error("completed scenario codes", zap.Error(err))
+			r.logger.Error("passed scenario codes", zap.Error(err))
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
-		if !completedCodes[scenario.PrerequisiteCode] {
+		if !passedCodes[scenario.PrerequisiteCode] {
 			http.Error(w, "Scenario is locked: complete the previous one first", http.StatusForbidden)
 			return
 		}
-		completedAt, err := r.conversationRepo.CompletedAtByScenarioCode(ctx, userCourseID, courseID)
+		passedAt, err := r.conversationRepo.PassedAtByScenarioCode(ctx, userCourseID, courseID)
 		if err != nil {
-			r.logger.Error("completed at by scenario code", zap.Error(err))
+			r.logger.Error("passed at by scenario code", zap.Error(err))
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
-		if locked, _ := r.scenarioLockState(scenario, completedCodes, completedAt, time.Now()); locked {
+		if locked, _ := r.scenarioLockState(scenario, passedCodes, passedAt, time.Now()); locked {
 			http.Error(w, "Scenario is in cooldown: please wait before starting the next quest", http.StatusForbidden)
 			return
 		}
@@ -314,8 +355,21 @@ func (r *Router) generateOpeningLine(ctx context.Context, courseCode, targetLang
 	if r.aiSvc() == nil {
 		return
 	}
-	systemPrompt := buildOpeningSystemPrompt(r.aiSvc().ConversationPromptForCourse(courseCode), targetLang, scenario)
-	result, err := r.aiSvc().ConversationTurn(ctx, systemPrompt, nil, openingTrigger, 400)
+	systemPrompt := buildOpeningNPCPrompt(r.aiSvc().ConversationNPCPromptForCourse(courseCode), targetLang, scenario)
+	var result *ai.ChatTurnResult
+	var err error
+	if r.aiSvc().HasSplitConversationPrompts(courseCode) {
+		result, err = r.aiSvc().ConversationTurnSplit(ctx, ai.ConversationTurnSplitInput{
+			NPCPrompt:           systemPrompt,
+			UserMessage:         openingTrigger,
+			MaxTokens:           400,
+			EvaluateQuest:       false,
+			EvaluateCorrections: false,
+		})
+	} else {
+		legacyPrompt := buildOpeningSystemPrompt(r.aiSvc().ConversationPromptForCourse(courseCode), targetLang, scenario)
+		result, err = r.aiSvc().ConversationTurn(ctx, legacyPrompt, nil, openingTrigger, 400)
+	}
 	if err != nil {
 		r.logger.Warn("opening line generation failed", zap.Error(err))
 		return
@@ -552,9 +606,32 @@ func (r *Router) handleConversationMessage(w http.ResponseWriter, req *http.Requ
 	nudge := scenario.IsQuest && session.TurnCount >= (scenario.MaxTurns*85/100) && !allRequiredDone(tasks, completedBefore)
 
 	targetLang := r.courseTargetLang(ctx, scenario.CourseID)
-	systemPrompt := buildConversationSystemPrompt(r.aiSvc().ConversationPromptForCourse(courseCode), targetLang, scenario, tasks, completedBefore, nudge)
-
-	result, err := r.aiSvc().ConversationTurn(ctx, systemPrompt, history, userText, 500)
+	svc := r.aiSvc()
+	var result *ai.ChatTurnResult
+	if svc.HasSplitConversationPrompts(courseCode) {
+		result, err = svc.ConversationTurnSplit(ctx, ai.ConversationTurnSplitInput{
+			QuestPrompt: buildQuestEvalPrompt(
+				svc.ConversationQuestPromptForCourse(courseCode),
+				targetLang, scenario, tasks, completedBefore,
+			),
+			CorrectionPrompt: buildCorrectionPrompt(
+				svc.ConversationCorrectionPromptForCourse(courseCode),
+				targetLang, scenario.CEFRLevel,
+			),
+			NPCPrompt: buildNPCReplyPrompt(
+				svc.ConversationNPCPromptForCourse(courseCode),
+				targetLang, scenario, nudge,
+			),
+			History:             history,
+			UserMessage:         userText,
+			MaxTokens:           500,
+			EvaluateQuest:       scenario.IsQuest && len(tasks) > 0,
+			EvaluateCorrections: true,
+		})
+	} else {
+		systemPrompt := buildConversationSystemPrompt(svc.ConversationPromptForCourse(courseCode), targetLang, scenario, tasks, completedBefore, nudge)
+		result, err = svc.ConversationTurn(ctx, systemPrompt, history, userText, 500)
+	}
 	if err != nil {
 		r.logger.Error("conversation turn", zap.Error(err))
 		http.Error(w, "AI provider error", http.StatusBadGateway)
@@ -778,8 +855,90 @@ func allRequiredDone(tasks []repository.ConversationTask, completedByID map[int6
 	return hasRequired
 }
 
-// buildConversationSystemPrompt assembles the per-turn system prompt from the course base prompt
-// and the runtime scenario details.
+// buildQuestEvalPrompt assembles Prompt A: quest task completion evaluation only.
+func buildQuestEvalPrompt(base, targetLang string, scenario *repository.ConversationScenario, tasks []repository.ConversationTask, completedByID map[int64]bool) string {
+	var b strings.Builder
+	if strings.TrimSpace(base) != "" {
+		b.WriteString(base)
+		b.WriteString("\n\n")
+	} else {
+		b.WriteString("Evaluate quest task completion from the learner's latest message. Output JSON only: {\"completed_task_codes\":[...],\"all_done\":bool}.\n\n")
+	}
+	fmt.Fprintf(&b, "SCENE\n- NPC: %s (%s)\n- Target language code: %s. CEFR level: %s.\n",
+		scenario.NPCName, scenario.NPCPersona, targetLang, scenario.CEFRLevel)
+	if scenario.IsQuest && strings.TrimSpace(scenario.SceneSetup) != "" {
+		fmt.Fprintf(&b, "- Setting: %s\n", scenario.SceneSetup)
+	}
+	if len(tasks) > 0 {
+		b.WriteString("\nTASKS (evaluate the learner's latest message against these):\n")
+		for _, t := range tasks {
+			done := completedByID[t.ID]
+			req := "required"
+			if !t.IsRequired {
+				req = "optional"
+			}
+			status := "not done yet"
+			if done {
+				status = "ALREADY DONE"
+			}
+			fmt.Fprintf(&b, "- [%s] (%s, %s) %s\n", t.Code, req, status, t.CompletionCriteria)
+		}
+		b.WriteString("\nUse the task codes in square brackets in completed_task_codes. Re-check each 'not done yet' task independently; one message can complete several at once.\n")
+	}
+	return b.String()
+}
+
+// buildCorrectionPrompt assembles Prompt B: error correction feedback only.
+func buildCorrectionPrompt(base, targetLang, cefrLevel string) string {
+	var b strings.Builder
+	if strings.TrimSpace(base) != "" {
+		b.WriteString(base)
+		b.WriteString("\n\n")
+	} else {
+		b.WriteString("Detect mistakes in the learner's latest message. Output JSON only: {\"corrections\":[{\"original\":\"...\",\"corrected\":\"...\",\"explanation\":\"...\"}]}.\n\n")
+	}
+	fmt.Fprintf(&b, "CONTEXT\n- Target language code: %s\n- CEFR level: %s\n", targetLang, cefrLevel)
+	return b.String()
+}
+
+// buildNPCReplyPrompt assembles Prompt C: in-character NPC response only (no task list).
+func buildNPCReplyPrompt(base, targetLang string, scenario *repository.ConversationScenario, nudge bool) string {
+	var b strings.Builder
+	if strings.TrimSpace(base) != "" {
+		b.WriteString(base)
+		b.WriteString("\n\n")
+	} else {
+		b.WriteString("You are an NPC in a language-learning role-play game. Speak only in the target language, stay fully in character, and keep replies short and simple. Never coach the learner or reveal hidden tasks. Reply with your in-character line(s) only — no JSON.\n\n")
+	}
+	fmt.Fprintf(&b, "SCENE\n- You are %s, %s.\n- Target language code: %s. CEFR level: %s.\n",
+		scenario.NPCName, scenario.NPCPersona, targetLang, scenario.CEFRLevel)
+	if scenario.IsQuest && strings.TrimSpace(scenario.SceneSetup) != "" {
+		fmt.Fprintf(&b, "- Setting: %s\n", scenario.SceneSetup)
+	}
+	if nudge {
+		b.WriteString("\nThe scene has stalled. You may move your own part of the scene forward in very simple language, staying in character — but do not tell the learner what to say.\n")
+	}
+	return b.String()
+}
+
+// buildOpeningNPCPrompt assembles the NPC-only opening prompt (no task list, no corrections).
+func buildOpeningNPCPrompt(base, targetLang string, scenario *repository.ConversationScenario) string {
+	var b strings.Builder
+	if strings.TrimSpace(base) != "" {
+		b.WriteString(base)
+		b.WriteString("\n\n")
+	}
+	fmt.Fprintf(&b, "SCENE\n- You are %s, %s.\n- Target language code: %s. CEFR level: %s.\n",
+		scenario.NPCName, scenario.NPCPersona, targetLang, scenario.CEFRLevel)
+	if scenario.IsQuest && strings.TrimSpace(scenario.SceneSetup) != "" {
+		fmt.Fprintf(&b, "- Setting: %s\n", scenario.SceneSetup)
+	}
+	b.WriteString("\nGreet the learner warmly in character with ONE short, simple opening line to start the scene. " +
+		"Do NOT tell them what to do, do NOT mention or hint at any task or goal, and do NOT ask them to order/buy/report anything yet — just a natural greeting.\n")
+	return b.String()
+}
+
+// buildConversationSystemPrompt assembles the legacy combined per-turn system prompt (single LLM call fallback).
 func buildConversationSystemPrompt(base, targetLang string, scenario *repository.ConversationScenario, tasks []repository.ConversationTask, completedByID map[int64]bool, nudge bool) string {
 	var b strings.Builder
 	if strings.TrimSpace(base) != "" {

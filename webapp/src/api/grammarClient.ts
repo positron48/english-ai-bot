@@ -478,6 +478,50 @@ export const grammarClient = {
     )
   },
 
+  async getContinueChapter(): Promise<{ chapter: {
+    chapter_id: string
+    title: string
+    title_translations?: Record<string, string>
+    section_id?: string
+    url: string
+  } | null }> {
+    return offlineFallback(
+      () => apiClient.request(`/api/learning/grammar/continue-chapter${grammarCourseParam()}`),
+      async () => {
+        const meta = await requireMeta()
+        let frontier: {
+          chapter_id: string
+          title: string
+          title_translations?: Record<string, string>
+          section_id: string
+          url: string
+        } | null = null
+        for (const section of meta.sections) {
+          if (!computeSectionAccess(meta, section.section_id)) break
+          const placementOpened = !!section.opened_by_placement
+          for (let i = 0; i < section.chapters.length; i++) {
+            const chapter = section.chapters[i]
+            const canAccess = computeChapterAccess(meta, chapter.chapter_id)
+            const passed = !!chapter.passed
+            if (!canAccess && !passed) break
+            const item = {
+              chapter_id: chapter.chapter_id,
+              title: chapter.title,
+              title_translations: chapter.title_translations,
+              section_id: section.section_id,
+              url: `/learning/grammar/chapter/${chapter.chapter_id}`,
+            }
+            frontier = item
+            if (canAccess && !passed && !(placementOpened && !(chapter.best_score > 0))) {
+              return { chapter: item }
+            }
+          }
+        }
+        return { chapter: frontier }
+      },
+    )
+  },
+
   async getTrainingAvailability(): Promise<any> {
     return offlineFallback(
       () => apiClient.request(`/api/learning/grammar/training/availability${grammarCourseParam()}`),

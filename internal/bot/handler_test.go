@@ -15,6 +15,7 @@ import (
 	"tgbot-skeleton/internal/ai"
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/database"
+	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/service"
 	"tgbot-skeleton/internal/testutil"
@@ -299,6 +300,122 @@ func TestCourseDisplayName(t *testing.T) {
 	got = courseDisplayName(repository.CourseSummary{Code: "es_ru", TargetLanguage: "es"})
 	if !strings.Contains(got, "es_ru") {
 		t.Fatalf("courseDisplayName fallback: got %q", got)
+	}
+}
+
+func TestResolveUserCourse_PreservesSelectedCourseWhenServiceMissing(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	conn := db.GetConnection()
+
+	userRepo := repository.NewUserRepository(conn, logger)
+	courseRepo := repository.NewCourseRepository(conn, logger)
+	ws := service.NewWordService(nil, nil, nil, nil, config.DefaultLearningConfig(), logger)
+
+	user, err := userRepo.GetOrCreateUser(8001)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	if _, err := courseRepo.SelectCurrentCourse(context.Background(), user.ID, "es_ru"); err != nil {
+		t.Fatalf("SelectCurrentCourse: %v", err)
+	}
+
+	h := NewHandler(
+		nil, logger, nil,
+		map[string]*service.WordService{testDefaultCourse: ws},
+		testDefaultCourse,
+		courseRepo, userRepo, nil, nil, nil, nil, conn,
+	)
+
+	code, resolved := h.resolveUserCourse(context.Background(), user.ID)
+	if code != "es_ru" {
+		t.Fatalf("resolveUserCourse course: got %q, want es_ru", code)
+	}
+	if resolved != ws {
+		t.Fatal("resolveUserCourse: expected default word service fallback")
+	}
+}
+
+func TestHandleMessage_SingleWordLookup_UsesSelectedCourse(t *testing.T) {
+	client := &mockTelegramClient{}
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	conn := db.GetConnection()
+
+	userRepo := repository.NewUserRepository(conn, logger)
+	courseRepo := repository.NewCourseRepository(conn, logger)
+	wordRepo := repository.NewWordRepository(conn, logger)
+	bot := newTestBot(client)
+
+	user, err := userRepo.GetOrCreateUser(9001)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	if _, err := courseRepo.SelectCurrentCourse(context.Background(), user.ID, "es_ru"); err != nil {
+		t.Fatalf("SelectCurrentCourse: %v", err)
+	}
+
+	posNoun := "noun"
+	defAlgo := "алгоритм"
+	displayAlgorithm := "algorithm"
+	algoCardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{
+		Word:         "algorithm",
+		CourseCode:   "en_ru",
+		POS:          &posNoun,
+		DefinitionRU: &defAlgo,
+		DisplayEN:    &displayAlgorithm,
+	})
+	if err != nil {
+		t.Fatalf("upsert algorithm: %v", err)
+	}
+	if err := wordRepo.UpsertWordFormMapping("algo", algoCardID); err != nil {
+		t.Fatalf("UpsertWordFormMapping algo->algorithm: %v", err)
+	}
+
+	defSomething := "что-то"
+	displayAlgo := "algo"
+	_, err = wordRepo.UpsertWordCardLemma(&models.WordCard{
+		Word:         "algo",
+		CourseCode:   "es_ru",
+		POS:          &posNoun,
+		DefinitionRU: &defSomething,
+		DisplayEN:    &displayAlgo,
+	})
+	if err != nil {
+		t.Fatalf("upsert es algo: %v", err)
+	}
+
+	// Only en_ru WordService registered — lookup must still honor user's es_ru selection.
+	wordService := service.NewWordService(wordRepo, nil, nil, nil, config.DefaultLearningConfig(), logger)
+
+	cfg := &config.Config{}
+	cfg.Bot.ErrorMessage = "error"
+
+	h := NewHandler(
+		bot, logger, nil,
+		map[string]*service.WordService{testDefaultCourse: wordService},
+		testDefaultCourse,
+		courseRepo, userRepo, nil, nil,
+		service.NewCircuitBreakerService(repository.NewCircuitBreakerRepository(conn, logger), 5, logger),
+		cfg, conn,
+	)
+
+	msg := &tgbotapi.Message{
+		Text: "algo",
+		Chat: &tgbotapi.Chat{ID: 10},
+		From: &tgbotapi.User{ID: 9001},
+	}
+	h.handleMessage(context.Background(), msg)
+
+	got := lastText(client)
+	if got == "" {
+		t.Fatal("expected bot response")
+	}
+	if strings.Contains(got, "алгоритм") || strings.Contains(strings.ToLower(got), "algorithm") {
+		t.Fatalf("expected Spanish course card, got English algorithm: %q", got)
+	}
+	if !strings.Contains(got, "что-то") {
+		t.Fatalf("expected Spanish definition, got %q", got)
 	}
 }
 

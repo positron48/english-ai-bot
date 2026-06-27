@@ -275,13 +275,8 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 	}
 
 	defaultCourseCode := repository.CourseCodeForLearning(cfg.Learning)
-	// Register the NPC conversation prompt for the default course (the per-course loop below
-	// skips the default course because its word service is already created).
-	if p, err := ai.LoadRenderedPromptFile(fmt.Sprintf("prompts/conversation-%s.txt", cfg.Learning.Pair), cfg.Learning.NativeLang, cfg.Learning.TargetLang, cfg.Learning.Pair); err != nil {
-		log.Warn("failed to load default conversation prompt, using built-in default", zap.Error(err))
-	} else {
-		aiService.SetConversationPromptForCourse(defaultCourseCode, p)
-	}
+	// Register split NPC conversation prompts for the default course.
+	loadSplitConversationPrompts(aiService, defaultCourseCode, cfg.Learning, log)
 	wordServices := map[string]*service.WordService{defaultCourseCode: wordService}
 	if courseCodes, cErr := courseRepo.ListActiveCourseCodes(context.Background()); cErr != nil {
 		log.Warn("failed to list active courses for per-course word services, only the default course will be available", zap.Error(cErr))
@@ -803,10 +798,39 @@ func registerCoursePrompts(aiService *ai.Service, courseCode string, lc config.L
 
 	convFile := fmt.Sprintf("prompts/conversation-%s.txt", lc.Pair)
 	if p, err := ai.LoadRenderedPromptFile(convFile, lc.NativeLang, lc.TargetLang, lc.Pair); err != nil {
-		log.Warn("failed to load course conversation prompt, using built-in default",
+		log.Warn("failed to load course legacy conversation prompt",
 			zap.String("course_code", courseCode), zap.String("file", convFile), zap.Error(err))
 	} else {
 		aiService.SetConversationPromptForCourse(courseCode, p)
+	}
+	loadSplitConversationPrompts(aiService, courseCode, lc, log)
+}
+
+// loadSplitConversationPrompts registers the three dedicated conversation prompts (quest eval,
+// error correction, NPC reply) for a course. Missing files are logged and skipped.
+func loadSplitConversationPrompts(aiService *ai.Service, courseCode string, lc config.LearningConfig, log *zap.Logger) {
+	questFile := fmt.Sprintf("prompts/conversation-quest-%s.txt", lc.Pair)
+	if p, err := ai.LoadRenderedPromptFile(questFile, lc.NativeLang, lc.TargetLang, lc.Pair); err != nil {
+		log.Warn("failed to load course conversation quest prompt",
+			zap.String("course_code", courseCode), zap.String("file", questFile), zap.Error(err))
+	} else {
+		aiService.SetConversationQuestPromptForCourse(courseCode, p)
+	}
+
+	corrFile := fmt.Sprintf("prompts/conversation-correction-%s.txt", lc.Pair)
+	if p, err := ai.LoadRenderedPromptFile(corrFile, lc.NativeLang, lc.TargetLang, lc.Pair); err != nil {
+		log.Warn("failed to load course conversation correction prompt",
+			zap.String("course_code", courseCode), zap.String("file", corrFile), zap.Error(err))
+	} else {
+		aiService.SetConversationCorrectionPromptForCourse(courseCode, p)
+	}
+
+	npcFile := fmt.Sprintf("prompts/conversation-npc-%s.txt", lc.Pair)
+	if p, err := ai.LoadRenderedPromptFile(npcFile, lc.NativeLang, lc.TargetLang, lc.Pair); err != nil {
+		log.Warn("failed to load course conversation npc prompt",
+			zap.String("course_code", courseCode), zap.String("file", npcFile), zap.Error(err))
+	} else {
+		aiService.SetConversationNPCPromptForCourse(courseCode, p)
 	}
 }
 

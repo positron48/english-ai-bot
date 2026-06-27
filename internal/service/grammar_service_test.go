@@ -363,6 +363,75 @@ func TestGrammarService_GetGrammarStatistics_WithPlacementOpenedSections(t *test
 	}
 }
 
+func TestGrammarService_GetContinueChapter(t *testing.T) {
+	svc, contentRepo, publishRepo, attemptRepo, _, cleanup := setupGrammarService(t)
+	defer cleanup()
+
+	sectionsData, err := contentRepo.GetSections()
+	if err != nil {
+		t.Fatalf("GetSections: %v", err)
+	}
+	if len(sectionsData.Sections) < 2 {
+		t.Fatal("expected at least 2 sections")
+	}
+
+	section0 := sectionsData.Sections[0]
+	section1 := sectionsData.Sections[1]
+	ch0 := section0.ChapterIDs[0]
+	ch1 := section0.ChapterIDs[1]
+	chNextSection := section1.ChapterIDs[0]
+
+	for _, id := range []string{section0.SectionID, section1.SectionID} {
+		if err := publishRepo.SetPublished("section", id, true, nil); err != nil {
+			t.Fatalf("publish section: %v", err)
+		}
+	}
+	for _, id := range []string{ch0, ch1, chNextSection} {
+		if err := publishRepo.SetPublished("chapter", id, true, nil); err != nil {
+			t.Fatalf("publish chapter: %v", err)
+		}
+	}
+
+	t.Run("no progress returns first accessible chapter", func(t *testing.T) {
+		ch, err := svc.GetContinueChapter(context.Background(), 1)
+		if err != nil {
+			t.Fatalf("GetContinueChapter: %v", err)
+		}
+		if ch == nil || ch.ChapterID != ch0 {
+			t.Fatalf("expected first chapter %q, got %+v", ch0, ch)
+		}
+	})
+
+	t.Run("passed first chapter returns next accessible chapter", func(t *testing.T) {
+		if err := attemptRepo.UpdateProgress(1, ch0, 80, true); err != nil {
+			t.Fatalf("UpdateProgress: %v", err)
+		}
+		ch, err := svc.GetContinueChapter(context.Background(), 1)
+		if err != nil {
+			t.Fatalf("GetContinueChapter: %v", err)
+		}
+		if ch == nil || ch.ChapterID != ch1 {
+			t.Fatalf("expected next chapter %q, got %+v", ch1, ch)
+		}
+	})
+
+	t.Run("placement beyond first section returns frontier not first chapter", func(t *testing.T) {
+		if err := attemptRepo.UpdateProgress(1, ch0, 10, false); err != nil {
+			t.Fatalf("UpdateProgress: %v", err)
+		}
+		if err := attemptRepo.SavePlacementTestResult(1, 100, 25, []string{section0.SectionID, section1.SectionID}); err != nil {
+			t.Fatalf("SavePlacementTestResult: %v", err)
+		}
+		ch, err := svc.GetContinueChapter(context.Background(), 1)
+		if err != nil {
+			t.Fatalf("GetContinueChapter: %v", err)
+		}
+		if ch == nil || ch.ChapterID != chNextSection {
+			t.Fatalf("expected frontier chapter %q, got %+v", chNextSection, ch)
+		}
+	})
+}
+
 func TestGrammarService_GenerateChapterAndCategoryTests(t *testing.T) {
 	svc, contentRepo, publishRepo, _, _, cleanup := setupGrammarService(t)
 	defer cleanup()

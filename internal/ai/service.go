@@ -73,8 +73,11 @@ type Service struct {
 	trainingPrompt      string
 	dictionaryPrompts   map[string]string // course_code -> dictionary lookup prompt override
 	trainingPrompts     map[string]string // course_code -> training card generation prompt override
-	conversationPrompts map[string]string // course_code -> NPC role-play base prompt
-	conversationModel   string            // optional model override for NPC conversations ("" = use model)
+	conversationPrompts           map[string]string // course_code -> legacy combined NPC prompt (deprecated)
+	conversationQuestPrompts      map[string]string // course_code -> quest task evaluation prompt (Prompt A)
+	conversationCorrectionPrompts map[string]string // course_code -> error correction prompt (Prompt B)
+	conversationNPCPrompts        map[string]string // course_code -> in-character NPC reply prompt (Prompt C)
+	conversationModel             string            // optional model override for NPC conversations ("" = use model)
 	logger              *zap.Logger
 }
 
@@ -152,13 +155,67 @@ func (s *Service) SetConversationPromptForCourse(courseCode, prompt string) {
 	s.conversationPrompts[courseCode] = strings.ReplaceAll(prompt, "\\n", "\n")
 }
 
-// ConversationPromptForCourse returns the registered conversation base prompt for a course,
-// falling back to an empty string when none is registered (the caller supplies scenario details).
+// ConversationPromptForCourse returns the registered legacy combined conversation prompt for a course.
 func (s *Service) ConversationPromptForCourse(courseCode string) string {
 	if p, ok := s.conversationPrompts[courseCode]; ok && p != "" {
 		return p
 	}
 	return ""
+}
+
+// SetConversationQuestPromptForCourse registers the quest task evaluation prompt (Prompt A).
+func (s *Service) SetConversationQuestPromptForCourse(courseCode, prompt string) {
+	if s.conversationQuestPrompts == nil {
+		s.conversationQuestPrompts = make(map[string]string)
+	}
+	s.conversationQuestPrompts[courseCode] = strings.ReplaceAll(prompt, "\\n", "\n")
+}
+
+// ConversationQuestPromptForCourse returns the quest evaluation base prompt for a course.
+func (s *Service) ConversationQuestPromptForCourse(courseCode string) string {
+	if p, ok := s.conversationQuestPrompts[courseCode]; ok && p != "" {
+		return p
+	}
+	return ""
+}
+
+// SetConversationCorrectionPromptForCourse registers the error correction prompt (Prompt B).
+func (s *Service) SetConversationCorrectionPromptForCourse(courseCode, prompt string) {
+	if s.conversationCorrectionPrompts == nil {
+		s.conversationCorrectionPrompts = make(map[string]string)
+	}
+	s.conversationCorrectionPrompts[courseCode] = strings.ReplaceAll(prompt, "\\n", "\n")
+}
+
+// ConversationCorrectionPromptForCourse returns the error correction base prompt for a course.
+func (s *Service) ConversationCorrectionPromptForCourse(courseCode string) string {
+	if p, ok := s.conversationCorrectionPrompts[courseCode]; ok && p != "" {
+		return p
+	}
+	return ""
+}
+
+// SetConversationNPCPromptForCourse registers the in-character NPC reply prompt (Prompt C).
+func (s *Service) SetConversationNPCPromptForCourse(courseCode, prompt string) {
+	if s.conversationNPCPrompts == nil {
+		s.conversationNPCPrompts = make(map[string]string)
+	}
+	s.conversationNPCPrompts[courseCode] = strings.ReplaceAll(prompt, "\\n", "\n")
+}
+
+// ConversationNPCPromptForCourse returns the NPC reply base prompt for a course.
+func (s *Service) ConversationNPCPromptForCourse(courseCode string) string {
+	if p, ok := s.conversationNPCPrompts[courseCode]; ok && p != "" {
+		return p
+	}
+	return ""
+}
+
+// HasSplitConversationPrompts reports whether all three split prompts are registered for a course.
+func (s *Service) HasSplitConversationPrompts(courseCode string) bool {
+	return s.ConversationQuestPromptForCourse(courseCode) != "" &&
+		s.ConversationCorrectionPromptForCourse(courseCode) != "" &&
+		s.ConversationNPCPromptForCourse(courseCode) != ""
 }
 
 // ChatRequest represents the OpenAI-compatible chat request

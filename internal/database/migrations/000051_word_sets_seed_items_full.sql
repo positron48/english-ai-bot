@@ -4,6 +4,49 @@
 
 BEGIN;
 
+-- 000038 replaces UNIQUE(word) with UNIQUE(word, course_code). Legacy SQLite imports
+-- may still have a standalone unique index on word alone; drop it so homographs
+-- shared across en_ru/es_ru (de, no, para, ...) can coexist per course.
+DO $$
+DECLARE
+    cname text;
+BEGIN
+    SELECT conname INTO cname
+    FROM pg_constraint
+    WHERE conrelid = 'word_cards'::regclass
+      AND contype = 'u'
+      AND pg_get_constraintdef(oid) = 'UNIQUE (word)';
+
+    IF cname IS NOT NULL THEN
+        EXECUTE format('ALTER TABLE word_cards DROP CONSTRAINT %I', cname);
+    END IF;
+END $$;
+
+DROP INDEX IF EXISTS idx_18611_sqlite_autoindex_word_cards_1;
+
+DO $$
+DECLARE
+    idx_name text;
+BEGIN
+    FOR idx_name IN
+        SELECT ci.relname
+        FROM pg_index i
+        JOIN pg_class ct ON ct.oid = i.indrelid
+        JOIN pg_class ci ON ci.oid = i.indexrelid
+        WHERE ct.relname = 'word_cards'
+          AND i.indisunique
+          AND NOT i.indisprimary
+          AND i.indpred IS NULL
+          AND (
+            SELECT array_agg(a.attname ORDER BY u.ord)
+            FROM unnest(i.indkey) WITH ORDINALITY AS u(attnum, ord)
+            JOIN pg_attribute a ON a.attrelid = ct.oid AND a.attnum = u.attnum
+          ) = ARRAY['word']::name[]
+    LOOP
+        EXECUTE format('DROP INDEX IF EXISTS %I', idx_name);
+    END LOOP;
+END $$;
+
 INSERT INTO word_cards (word, definition, course_code, updated_at)
 VALUES
   ('yo', '', 'es_ru', CURRENT_TIMESTAMP),

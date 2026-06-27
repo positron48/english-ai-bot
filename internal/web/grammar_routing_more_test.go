@@ -249,3 +249,44 @@ func TestHandleLearningGrammarStatistics_SuccessAndGuards(t *testing.T) {
 		}
 	})
 }
+
+func TestHandleLearningGrammarContinueChapter_SuccessAndGuards(t *testing.T) {
+	router, _, _, cleanup := setupGrammarTest(t)
+	defer cleanup()
+
+	t.Run("method not allowed", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodPost, "/api/learning/grammar/continue-chapter", nil)
+		req = setUserIDInContext(req, 1)
+		w := httptest.NewRecorder()
+		router.handleLearningGrammarContinueChapter(w, req)
+		if w.Code != http.StatusMethodNotAllowed {
+			t.Fatalf("expected 405, got %d", w.Code)
+		}
+	})
+
+	t.Run("unauthorized", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodGet, "/api/learning/grammar/continue-chapter", nil)
+		w := httptest.NewRecorder()
+		router.handleLearningGrammarContinueChapter(w, req)
+		if w.Code != http.StatusUnauthorized {
+			t.Fatalf("expected 401, got %d", w.Code)
+		}
+	})
+
+	t.Run("success", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodGet, "/api/learning/grammar/continue-chapter", nil)
+		req = setUserIDInContext(req, 1)
+		w := httptest.NewRecorder()
+		router.handleLearningGrammarContinueChapter(w, req)
+		if w.Code != http.StatusOK {
+			t.Fatalf("expected 200, got %d: %s", w.Code, w.Body.String())
+		}
+		var resp map[string]interface{}
+		if err := json.NewDecoder(w.Body).Decode(&resp); err != nil {
+			t.Fatalf("decode response: %v", err)
+		}
+		if _, ok := resp["chapter"]; !ok {
+			t.Fatal("expected chapter key in response")
+		}
+	})
+}

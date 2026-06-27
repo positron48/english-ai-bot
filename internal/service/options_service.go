@@ -452,11 +452,14 @@ func (s *OptionsService) hasMatchingPOS(word string, targetPOS string, direction
 // normalizeVerbFormat keeps English infinitives as "to …" for RU->EN, and strips
 // that English-only marker for Spanish/non-English RU->target cards.
 func (s *OptionsService) normalizeVerbFormat(word string, pos string, direction models.CardDirection) string {
-	if direction != models.DirectionRUtoEN || pos != "verb" {
+	if direction != models.DirectionRUtoEN {
 		return word
 	}
 	if s.targetLang != "en" {
 		return normalizeTargetVerbDisplay(s.targetLang, pos, word)
+	}
+	if !models.IsVerbPOS(pos) {
+		return word
 	}
 
 	// Check if word already starts with "to "

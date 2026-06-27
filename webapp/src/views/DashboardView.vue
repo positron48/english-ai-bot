@@ -223,7 +223,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useAuth } from '../composables/useAuth'
@@ -242,6 +242,7 @@ import LgCourseSwitcher from '../components/linglow/LgCourseSwitcher.vue'
 import LgActivityIcon from '../components/linglow/LgActivityIcon.vue'
 import { useStats } from '../composables/useStats'
 import { useMe } from '../composables/useMe'
+import { useGrammarContinueChapter } from '../composables/useGrammarContinueChapter'
 
 const { t } = useI18n()
 const { ensureMe } = useMe()
@@ -253,26 +254,7 @@ const { currentCourse, currentCourseCode } = useCourse()
 
 const linglowProgress = ref<CourseProgress | null>(null)
 const dailyToday = ref<NonNullable<DailyRoute['today']> | null>(null)
-const lastGrammarChapter = ref<{ id: string; title: string; url: string } | null>(null)
-
-const loadLastGrammarChapter = () => {
-  try {
-    const stored = localStorage.getItem('linglow:last-grammar-chapter')
-    if (!stored) {
-      lastGrammarChapter.value = null
-      return
-    }
-    const parsed = JSON.parse(stored) as { id?: unknown; title?: unknown; url?: unknown }
-    const title = typeof parsed.title === 'string' ? parsed.title.trim() : ''
-    const url = typeof parsed.url === 'string' ? parsed.url.trim() : ''
-    const id = typeof parsed.id === 'string' ? parsed.id : ''
-    lastGrammarChapter.value = title && url.startsWith('/learning/grammar/chapter/')
-      ? { id, title, url }
-      : null
-  } catch {
-    lastGrammarChapter.value = null
-  }
-}
+const { continueChapter: lastGrammarChapter, loadContinueChapter } = useGrammarContinueChapter()
 
 // "Today's path" rows: generated from the daily route, done steps sink to the bottom
 const pathSteps = computed(() => {
@@ -365,6 +347,7 @@ const loadData = async () => {
         apiClient.request(currentCourseCode.value ? `/api/dashboard?course_code=${encodeURIComponent(currentCourseCode.value)}` : '/api/dashboard'),
         courseClient.getProgress(currentCourseCode.value || undefined).then(p => { linglowProgress.value = p }).catch(() => {}),
         courseClient.getDailyRoute(8, currentCourseCode.value || undefined).then(rt => { dailyToday.value = rt.today || null }).catch(() => {}),
+        loadContinueChapter(),
       ])
     }
     stats.value = {
@@ -436,7 +419,10 @@ const goToTraining = () => {
 
 watch(currentCourseCode, () => {
   if (isAuthenticated.value) {
-    ensureLearningLoaded().then(() => loadData())
+    ensureLearningLoaded().then(() => {
+      loadData()
+      void loadContinueChapter()
+    })
   }
 })
 
@@ -448,16 +434,10 @@ watch(isAuthenticated, (authenticated) => {
 }, { immediate: true })
 
 onMounted(() => {
-  loadLastGrammarChapter()
-  window.addEventListener('focus', loadLastGrammarChapter)
   if (isAuthenticated.value) {
     loadData()
     void ensureMe().catch(() => {})
   }
-})
-
-onUnmounted(() => {
-  window.removeEventListener('focus', loadLastGrammarChapter)
 })
 </script>
 
