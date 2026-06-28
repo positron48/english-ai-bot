@@ -286,7 +286,9 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 				continue
 			}
 			lc := learningForCourse(cfg.Learning, code)
-			registerCoursePrompts(aiService, code, lc, log)
+			if err := registerCoursePrompts(aiService, code, lc, log); err != nil {
+				return nil, err
+			}
 			wordServices[code] = buildWordService(lc)
 			log.Info("per-course word service configured",
 				zap.String("course_code", code),
@@ -338,7 +340,9 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 			}
 			for _, code := range courseCodes {
 				learning := learningForCourse(cfg.Learning, code)
-				registerCoursePrompts(aiService, code, learning, log)
+				if err := registerCoursePrompts(aiService, code, learning, log); err != nil {
+					return nil, err
+				}
 				w := newWorker(learning)
 				w.SetCourseCode(code)
 				trainingWorkers = append(trainingWorkers, w)
@@ -778,15 +782,17 @@ func learningForCourse(base config.LearningConfig, courseCode string) config.Lea
 // registerCoursePrompts loads and registers the dictionary and training-card prompts for a
 // course by convention (prompts/teacher-<pair>.txt and prompts/training-card-<pair>.txt),
 // so the per-course worker generates against the correct language prompt instead of the
-// default. Missing files are logged and skipped (the AI service falls back to defaults).
-func registerCoursePrompts(aiService *ai.Service, courseCode string, lc config.LearningConfig, log *zap.Logger) {
+// default. The dictionary prompt is REQUIRED: without it word-card generation would silently
+// fall back to the default (English) prompt and produce wrong-language cards (e.g. an English
+// card under es_ru), so a missing dictionary prompt is a fatal misconfiguration. Other prompts
+// are logged and skipped.
+func registerCoursePrompts(aiService *ai.Service, courseCode string, lc config.LearningConfig, log *zap.Logger) error {
 	dictFile := fmt.Sprintf("prompts/teacher-%s.txt", lc.Pair)
-	if p, err := ai.LoadRenderedPromptFile(dictFile, lc.NativeLang, lc.TargetLang, lc.Pair); err != nil {
-		log.Warn("failed to load course dictionary prompt, using default",
-			zap.String("course_code", courseCode), zap.String("file", dictFile), zap.Error(err))
-	} else {
-		aiService.SetDictionaryPromptForCourse(courseCode, p)
+	p, err := ai.LoadRenderedPromptFile(dictFile, lc.NativeLang, lc.TargetLang, lc.Pair)
+	if err != nil {
+		return fmt.Errorf("load required dictionary prompt for course %q (%s): %w", courseCode, dictFile, err)
 	}
+	aiService.SetDictionaryPromptForCourse(courseCode, p)
 
 	trainFile := fmt.Sprintf("prompts/training-card-%s.txt", lc.Pair)
 	if p, err := ai.LoadRenderedPromptFile(trainFile, lc.NativeLang, lc.TargetLang, lc.Pair); err != nil {
@@ -804,6 +810,7 @@ func registerCoursePrompts(aiService *ai.Service, courseCode string, lc config.L
 		aiService.SetConversationPromptForCourse(courseCode, p)
 	}
 	loadSplitConversationPrompts(aiService, courseCode, lc, log)
+	return nil
 }
 
 // loadSplitConversationPrompts registers the three dedicated conversation prompts (quest eval,

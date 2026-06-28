@@ -200,8 +200,12 @@ func (r *Router) handleTrainingStart(w http.ResponseWriter, req *http.Request) {
 	if sessionConfig == nil {
 		sessionConfig = service.DefaultSessionConfig()
 	}
-	sessionConfig.CourseCode = r.currentCourseCodeForUser(req.Context(), userID)
-	userLC := r.learningConfigForUser(req.Context(), userID)
+	courseCode := r.requestedCourseCodeForUser(req, userID)
+	sessionConfig.CourseCode = courseCode
+	userLC := r.config.Learning
+	if courseCode != "" {
+		userLC = learningConfigForCourse(r.config.Learning, courseCode)
+	}
 	sessionConfig.IsEnglishTarget = !strings.EqualFold(userLC.TargetLang, "es")
 
 	// Start session
@@ -644,7 +648,7 @@ func (r *Router) handleTrainingCurrent(w http.ResponseWriter, req *http.Request)
 
 	// If the user switched courses since this session started, abandon it so the
 	// client starts a fresh session scoped to the now-current course.
-	currentCourse := r.currentCourseCodeForUser(req.Context(), userID)
+	currentCourse := r.requestedCourseCodeForUser(req, userID)
 	if state.CourseCode != currentCourse {
 		if err := r.trainingService.FinishSession(state.SessionID, state.CurrentIndex); err != nil {
 			r.logger.Error("failed to finish stale session on course switch", zap.Error(err))
@@ -1334,7 +1338,7 @@ func (r *Router) handleTrainingUpcoming(w http.ResponseWriter, req *http.Request
 
 	// Get upcoming cards by date
 	userCardRepo := repository.NewUserCardRepository(r.db, r.logger)
-	courseCode := r.currentCourseCodeForUser(req.Context(), userID)
+	courseCode := r.requestedCourseCodeForUser(req, userID)
 	upcomingCards, err := userCardRepo.GetUpcomingCardsByDateForCourse(userID, courseCode, startDate)
 	if err != nil {
 		r.logger.Error("failed to get upcoming cards", zap.Error(err))

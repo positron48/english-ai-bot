@@ -3,6 +3,8 @@ package ai
 import (
 	"os"
 	"strings"
+
+	"tgbot-skeleton/prompts"
 )
 
 // RenderLearningPromptTemplate substitutes {{native_lang}}, {{target_lang}}, and {{pair}}.
@@ -21,11 +23,17 @@ func PreparePrompt(prompt string, nativeLang, targetLang, pair string) string {
 	return RenderLearningPromptTemplate(s, nativeLang, targetLang, pair)
 }
 
-// LoadRenderedPromptFile reads a prompt file and runs PreparePrompt.
+// LoadRenderedPromptFile reads a prompt file and runs PreparePrompt. An on-disk file (e.g. a
+// deployment override) takes precedence; if it is not present, the prompt embedded into the
+// binary at build time is used, so prompt loading never depends on the working directory.
 func LoadRenderedPromptFile(path string, nativeLang, targetLang, pair string) (string, error) {
 	content, err := os.ReadFile(path)
 	if err != nil {
-		return "", err
+		embedded, embErr := prompts.FS.ReadFile(strings.TrimPrefix(path, "prompts/"))
+		if embErr != nil {
+			return "", err
+		}
+		content = embedded
 	}
 	raw := strings.TrimSpace(string(content))
 	return PreparePrompt(raw, nativeLang, targetLang, pair), nil

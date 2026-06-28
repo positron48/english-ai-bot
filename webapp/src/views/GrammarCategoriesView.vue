@@ -670,7 +670,8 @@ const handleNetworkChange = async () => {
   cursor: pointer;
   transition: all 0.2s ease;
   text-decoration: none;
-  white-space: nowrap;
+  text-align: center;
+  max-width: 100%;
 }
 
 .btn-placement-test:hover {

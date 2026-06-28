@@ -1,4 +1,5 @@
 import { apiClient } from './client'
+import { getGrammarCourseCode } from './grammarClient'
 import {
   OfflineWordTrainingPack,
   OfflineWordTrainingQueueItem,
@@ -31,6 +32,15 @@ export interface WordTrainingOfflineStatus {
   downloadedAt?: string
   pendingAttempts: number
   legacyPack?: boolean
+}
+
+/** Append the active course code so legacy training endpoints scope to the UI-selected
+ *  course (the UI is the source of truth, avoiding the stale DB-persisted course race). */
+const withCourse = (url: string): string => {
+  const code = getGrammarCourseCode()
+  if (!code) return url
+  const sep = url.includes('?') ? '&' : '?'
+  return `${url}${sep}course_code=${encodeURIComponent(code)}`
 }
 
 const isBrowserOffline = () => typeof navigator !== 'undefined' && navigator.onLine === false
@@ -287,7 +297,7 @@ export const wordTrainingClient = {
 
   async getDashboard(): Promise<any> {
     return offlineFallback(
-      () => apiClient.request('/api/dashboard'),
+      () => apiClient.request(withCourse('/api/dashboard')),
       async () => {
         const pack = await requirePack()
         const count = packQueueItems(pack).length
@@ -307,7 +317,7 @@ export const wordTrainingClient = {
 
   async getUpcoming(): Promise<any> {
     return offlineFallback(
-      () => apiClient.request('/api/training/upcoming'),
+      () => apiClient.request(withCourse('/api/training/upcoming')),
       async () => {
         const pack = await requirePack()
         const count = packQueueItems(pack).length
@@ -319,7 +329,7 @@ export const wordTrainingClient = {
 
   async start(): Promise<any> {
     return offlineFallback(
-      () => apiClient.request('/api/training/start', { method: 'POST' }),
+      () => apiClient.request(withCourse('/api/training/start'), { method: 'POST' }),
       async () => {
         const pack = await requirePack()
         const source = packQueueItems(pack)
@@ -334,7 +344,7 @@ export const wordTrainingClient = {
 
   async current(): Promise<any> {
     return offlineFallback(
-      () => apiClient.request('/api/training/current'),
+      () => apiClient.request(withCourse('/api/training/current')),
       async () => {
         const session = await getWordTrainingSession()
         if (!session) return { active: false, message: 'No active offline session', offline: true }

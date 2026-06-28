@@ -30,7 +30,7 @@ func (m *mockWordService) IsSingleWord(text string) bool {
 	return m.isSingle
 }
 
-func (m *mockWordService) GetWordDefinition(ctx context.Context, userID int64, word string) (string, error) {
+func (m *mockWordService) GetWordDefinitionForCourse(ctx context.Context, userID int64, word, courseCode string) (string, error) {
 	return m.resp, nil
 }
 
@@ -39,21 +39,21 @@ type mockAIService struct {
 	err  error
 }
 
-func (m *mockAIService) GenerateResponse(ctx context.Context, text string) (string, error) {
+func (m *mockAIService) GenerateResponseForCourse(ctx context.Context, text, courseCode string) (string, error) {
 	if m.err != nil {
 		return "", m.err
 	}
 	return m.resp, nil
 }
 
-// mockWordServiceErr implements WordService and returns error from GetWordDefinition.
+// mockWordServiceErr implements WordService and returns error from GetWordDefinitionForCourse.
 type mockWordServiceErr struct {
 	isSingle bool
 }
 
 func (m *mockWordServiceErr) IsSingleWord(text string) bool { return m.isSingle }
 
-func (m *mockWordServiceErr) GetWordDefinition(ctx context.Context, userID int64, word string) (string, error) {
+func (m *mockWordServiceErr) GetWordDefinitionForCourse(ctx context.Context, userID int64, word, courseCode string) (string, error) {
 	return "", errors.New("injected error")
 }
 

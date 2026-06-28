@@ -462,7 +462,7 @@ func (r *Router) handleVocabSummary(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
-	courseCode := r.currentCourseCodeForUser(req.Context(), userID)
+	courseCode := r.requestedCourseCodeForUser(req, userID)
 	summary, err := r.queryVocabSummary(userID, courseCode)
 	if err != nil {
 		r.logger.Error("failed to get vocab summary", zap.Error(err), zap.Int64("user_id", userID))

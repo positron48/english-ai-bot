@@ -215,40 +215,44 @@ const handleNetworkChange = () => {
   isOffline.value = typeof navigator !== 'undefined' && navigator.onLine === false
 }
 
+async function loadVocabSummary() {
+  if (isOffline.value) return
+  try {
+    const summary = await apiClient.request<{
+      total?: number
+      new?: number
+      learning?: number
+      review?: number
+      review_count?: number
+      mastered?: number
+      mastered_count?: number
+    }>(`/api/vocab/summary${currentCourseCode.value ? `?course_code=${encodeURIComponent(currentCourseCode.value)}` : ''}`)
+    if (summary) {
+      vocabStats.value = {
+        total: summary.total ?? 0,
+        newCount: summary.new ?? 0,
+        learningCount: summary.learning ?? 0,
+        reviewCount: summary.review ?? summary.review_count ?? 0,
+        masteredCount: summary.mastered ?? summary.mastered_count ?? 0,
+      }
+    }
+    vocabStatsLoaded.value = true
+  } catch { /* ignore */ }
+}
+
 onMounted(async () => {
   window.addEventListener('online', handleNetworkChange)
   window.addEventListener('offline', handleNetworkChange)
   await ensureCourseLoaded()
   await Promise.all([loadContinueChapter(), ensureLearningLoaded(), refreshVerbFormsPoolCount()])
   ensureMe().then(() => { isPro.value = hasFeature('conversation') })
-  if (!isOffline.value) {
-    try {
-      const summary = await apiClient.request<{
-        total?: number
-        new?: number
-        learning?: number
-        review?: number
-        review_count?: number
-        mastered?: number
-        mastered_count?: number
-      }>('/api/vocab/summary')
-      if (summary) {
-        vocabStats.value = {
-          total: summary.total ?? 0,
-          newCount: summary.new ?? 0,
-          learningCount: summary.learning ?? 0,
-          reviewCount: summary.review ?? summary.review_count ?? 0,
-          masteredCount: summary.mastered ?? summary.mastered_count ?? 0,
-        }
-      }
-      vocabStatsLoaded.value = true
-    } catch { /* ignore */ }
-  }
+  await loadVocabSummary()
 })
 
 watch(currentCourseCode, async () => {
   await ensureLearningLoaded()
   await refreshVerbFormsPoolCount()
+  await loadVocabSummary()
 })
 
 watch(isOffline, async (offline) => {

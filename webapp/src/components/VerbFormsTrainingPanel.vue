@@ -810,7 +810,7 @@ function closeWordInfo() {
 
 @media (min-width: 768px) {
   .options {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -822,6 +822,10 @@ function closeWordInfo() {
   align-items: center;
   gap: 12px;
   padding: 12px 16px;
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
   background-color: var(--bg-secondary);
   color: var(--text-primary);
   border: 1px solid var(--border-primary);
@@ -857,7 +861,10 @@ function closeWordInfo() {
 
 .option-text {
   flex: 1;
+  min-width: 0;
   text-align: left;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .option-btn.option-disabled {

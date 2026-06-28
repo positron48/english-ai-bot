@@ -773,7 +773,7 @@
   },
   "grammar": {
     "courseTitle": "Курс грамматики",
-    "takePlacementTest": "Пройти тест на определение уровня",
+    "takePlacementTest": "Определить уровень",
     "noCategories": "Категории грамматики пока недоступны.",
     "complete": "завершено",
     "chaptersShort": "гл.",

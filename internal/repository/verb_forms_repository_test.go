@@ -351,6 +351,7 @@ func TestVerbSessionAndSRSFlow(t *testing.T) {
 }
 
 func TestListVerbExampleCatalogTemplatesCached(t *testing.T) {
+	ResetVerbExampleCatalogCacheForTests()
 	repo, db := setupVerbFormsRepo(t)
 	t.Cleanup(func() { ResetVerbExampleCatalogCacheForTests() })
 
@@ -363,7 +364,14 @@ func TestListVerbExampleCatalogTemplatesCached(t *testing.T) {
 	if err != nil {
 		t.Fatalf("first load: %v", err)
 	}
-	if len(tpl1) == 0 || tpl1[0].ID != "test_tpl" {
+	found := false
+	for _, tpl := range tpl1 {
+		if tpl.ID == "test_tpl" {
+			found = true
+			break
+		}
+	}
+	if !found {
 		t.Fatalf("unexpected templates: %+v", tpl1)
 	}
 
@@ -383,7 +391,14 @@ func TestListVerbExampleCatalogTemplatesCached(t *testing.T) {
 	if err != nil {
 		t.Fatalf("reload after cache reset: %v", err)
 	}
-	if len(tpl3) == 0 || tpl3[0].ID != "test_tpl_v2" {
+	foundV2 := false
+	for _, tpl := range tpl3 {
+		if tpl.ID == "test_tpl_v2" {
+			foundV2 = true
+			break
+		}
+	}
+	if !foundV2 {
 		t.Fatalf("expected refreshed template, got %+v", tpl3)
 	}
 }

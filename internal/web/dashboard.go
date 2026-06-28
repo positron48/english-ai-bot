@@ -91,7 +91,7 @@ func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 	}
 
 	now := time.Now()
-	courseCode := r.currentCourseCodeForUser(req.Context(), userID)
+	courseCode := r.requestedCourseCodeForUser(req, userID)
 
 	newQuery := `SELECT COUNT(*)
 		FROM user_cards uc
@@ -319,7 +319,7 @@ func (r *Router) handleChat(w http.ResponseWriter, req *http.Request) {
 	// Get WordService - need to properly type it
 	type WordService interface {
 		IsSingleWord(text string) bool
-		GetWordDefinition(ctx context.Context, userID int64, word string) (string, error)
+		GetWordDefinitionForCourse(ctx context.Context, userID int64, word, courseCode string) (string, error)
 	}
 	wordService, ok := r.wordService.(WordService)
 	if !ok {
@@ -330,14 +330,19 @@ func (r *Router) handleChat(w http.ResponseWriter, req *http.Request) {
 
 	// Get AI service interface for both cases
 	type AIService interface {
-		GenerateResponse(ctx context.Context, text string) (string, error)
+		GenerateResponseForCourse(ctx context.Context, text, courseCode string) (string, error)
 	}
 	aiService, ok := r.aiService.(AIService)
 	if !ok {
-		r.logger.Error("AI service does not implement GenerateResponse")
+		r.logger.Error("AI service does not implement GenerateResponseForCourse")
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
+
+	// Resolve the user's selected course so single-word cards and AI replies use the right
+	// per-course (language) prompt. A Spanish-course user must never get an English card.
+	// Empty courseCode (single-course instances) degrades to the legacy default behaviour.
+	courseCode := r.requestedCourseCodeForUser(req, userID)
 
 	// Check if it's a single word - use word service (DB + AI, saves to DB)
 	// BUT: if single word contains Cyrillic, send to AI directly (don't save to DB)
@@ -357,23 +362,24 @@ func (r *Router) handleChat(w http.ResponseWriter, req *http.Request) {
 				zap.String("word", message),
 				zap.Int64("user_id", userID),
 			)
-			response, err = aiService.GenerateResponse(ctx, message)
+			response, err = aiService.GenerateResponseForCourse(ctx, message, courseCode)
 		} else {
 			// English word - use word service (DB + AI, saves to DB)
 			r.logger.Info("detected single word in chat",
 				zap.String("word", message),
 				zap.Int64("user_id", userID),
+				zap.String("course_code", courseCode),
 			)
 			// Use word service which will:
-			// 1. Check if word exists in DB
-			// 2. If not, request from AI
-			// 3. Save word to DB
+			// 1. Check if word exists in DB (scoped to courseCode)
+			// 2. If not, request from AI with the course's language prompt
+			// 3. Save word to DB under courseCode
 			// 4. Add to word_request_history for this user
-			response, err = wordService.GetWordDefinition(ctx, userID, message)
+			response, err = wordService.GetWordDefinitionForCourse(ctx, userID, message, courseCode)
 		}
 	} else {
 		// Regular message - use AI service directly (no DB saving)
-		response, err = aiService.GenerateResponse(ctx, message)
+		response, err = aiService.GenerateResponseForCourse(ctx, message, courseCode)
 	}
 
 	if err != nil {
