@@ -124,22 +124,147 @@ func getSharedDB(t *testing.T) *database.DB {
 	return sharedPostgres.db
 }
 
+// resetSQL is a server-side DO block (computed once per process) that:
+//   - TRUNCATEs only the currently non-empty tables in the cascade closure of
+//     truncateTables, with RESTART IDENTITY CASCADE, and
+//   - resets every sequence owned by those tables back to 1.
+//
+// This is behaviorally equivalent to "TRUNCATE <all listed> RESTART IDENTITY
+// CASCADE" (same cleared data, same id=1 sequences) but ~10x cheaper, because
+// TRUNCATE pays a large fixed per-table cost (file truncation + catalog work)
+// even for empty tables — and across a package nearly every reset leaves most
+// of the ~55 tables empty. Skipping the empty ones is the dominant per-test
+// saving in the DB-backed packages (web/service/repository/database/bot).
+var (
+	resetSQLOnce sync.Once
+	resetSQL     string
+)
+
+// computeResetSQL builds the DO block from the live schema (cascade closure of
+// truncateTables and the sequences they own). Returns "" if the schema can't be
+// introspected, in which case callers fall back to the plain combined TRUNCATE.
+func computeResetSQL(conn *sql.DB) string {
+	// Cascade closure: truncateTables plus every table that (recursively) has a
+	// foreign key referencing them — exactly what TRUNCATE ... CASCADE touches.
+	// Table names are inlined as literals (the pgx-stdlib driver does not bind
+	// []string to "= ANY($1)"); the list is our own static, trusted slice.
+	closureQ := fmt.Sprintf(`
+WITH RECURSIVE seed AS (
+    SELECT c.oid FROM pg_class c
+    JOIN pg_namespace n ON n.oid = c.relnamespace
+    WHERE n.nspname = 'public' AND c.relname IN (%s)
+), clo AS (
+    SELECT oid FROM seed
+    UNION
+    SELECT con.conrelid FROM pg_constraint con
+    JOIN clo ON con.confrelid = clo.oid
+    WHERE con.contype = 'f'
+)
+SELECT c.relname FROM clo JOIN pg_class c ON c.oid = clo.oid ORDER BY 1`,
+		litList(truncateTables))
+
+	rows, err := conn.Query(closureQ)
+	if err != nil {
+		return ""
+	}
+	var tables []string
+	for rows.Next() {
+		var name string
+		if err := rows.Scan(&name); err != nil {
+			_ = rows.Close()
+			return ""
+		}
+		tables = append(tables, name)
+	}
+	_ = rows.Close()
+	if err := rows.Err(); err != nil || len(tables) == 0 {
+		return ""
+	}
+
+	// Sequences owned (identity/serial) by the closure tables.
+	seqQ := fmt.Sprintf(`
+SELECT n.nspname, s.relname
+FROM pg_class s
+JOIN pg_namespace n ON n.oid = s.relnamespace
+JOIN pg_depend d ON d.objid = s.oid AND d.deptype = 'a'
+JOIN pg_class t ON t.oid = d.refobjid
+WHERE s.relkind = 'S' AND t.relname IN (%s)`, litList(tables))
+	type seq struct{ schema, name string }
+	var seqs []seq
+	if srows, err := conn.Query(seqQ); err == nil {
+		for srows.Next() {
+			var s seq
+			if err := srows.Scan(&s.schema, &s.name); err == nil {
+				seqs = append(seqs, s)
+			}
+		}
+		_ = srows.Close()
+	}
+
+	// Build the DO block: one EXISTS check per table (server-side, microseconds),
+	// truncate the non-empty subset, then reset the owned sequences.
+	var existsParts []string
+	for _, tbl := range tables {
+		existsParts = append(existsParts,
+			fmt.Sprintf("SELECT %s AS t WHERE EXISTS (SELECT 1 FROM public.%s)",
+				quoteLit(tbl), quoteIdent(tbl)))
+	}
+	var setvalParts strings.Builder
+	for _, s := range seqs {
+		fmt.Fprintf(&setvalParts, "  PERFORM setval(%s, 1, false);\n",
+			quoteLit(s.schema+"."+s.name))
+	}
+
+	return fmt.Sprintf(`DO $reset$
+DECLARE dirty text;
+BEGIN
+  SELECT string_agg('public.'||quote_ident(t), ', ') INTO dirty FROM (
+%s
+  ) x;
+  IF dirty IS NOT NULL THEN
+    EXECUTE 'TRUNCATE TABLE '||dirty||' RESTART IDENTITY CASCADE';
+  END IF;
+%s
+END
+$reset$;`, strings.Join(existsParts, "\n    UNION ALL\n"), setvalParts.String())
+}
+
 func truncateAll(t *testing.T, conn *sql.DB) {
 	t.Helper()
-	// RESTART IDENTITY resets sequences so the next insert gets id=1.
-	// Truncate all tables in a single statement: this collapses ~50 network
-	// round-trips (one per table) into one, which is the dominant per-test cost
-	// across the DB-backed packages (web/service/repository/database/bot).
+	resetSQLOnce.Do(func() { resetSQL = computeResetSQL(conn) })
+
+	if resetSQL != "" {
+		if _, err := conn.Exec(resetSQL); err == nil {
+			_, _ = conn.Exec(circuitBreakerInit)
+			_, _ = conn.Exec(appSettingsInit)
+			return
+		}
+	}
+
+	// Fallback: plain combined TRUNCATE (and per-table on error), preserving the
+	// previous best-effort behavior if schema introspection or the DO block fail.
 	combined := "TRUNCATE TABLE " + strings.Join(truncateTables, ", ") + " RESTART IDENTITY CASCADE"
 	if _, err := conn.Exec(combined); err != nil {
-		// Fallback to per-table truncation (e.g. if a table is absent in some
-		// schema variant), preserving the previous best-effort behavior.
 		for _, tbl := range truncateTables {
 			_, _ = conn.Exec("TRUNCATE TABLE " + tbl + " RESTART IDENTITY CASCADE")
 		}
 	}
 	_, _ = conn.Exec(circuitBreakerInit)
 	_, _ = conn.Exec(appSettingsInit)
+}
+
+// quoteIdent / quoteLit produce safe SQL identifiers/literals for the static
+// table and sequence names introspected from the catalog.
+func quoteIdent(s string) string { return `"` + strings.ReplaceAll(s, `"`, `""`) + `"` }
+func quoteLit(s string) string   { return `'` + strings.ReplaceAll(s, `'`, `''`) + `'` }
+
+// litList renders a comma-separated list of SQL string literals.
+func litList(v []string) string {
+	parts := make([]string, len(v))
+	for i, s := range v {
+		parts[i] = quoteLit(s)
+	}
+	return strings.Join(parts, ", ")
 }
 
 // setupPostgresDB returns *database.DB with a clean schema (truncated).
