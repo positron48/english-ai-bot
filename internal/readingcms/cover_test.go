@@ -15,14 +15,11 @@ func setupCoverService(t *testing.T) (*Service, string) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	repoRoot, err := FindRepoRoot(wd)
-	if err != nil {
+	if _, err := FindRepoRoot(wd); err != nil {
 		t.Fatal(err)
 	}
 	root := t.TempDir()
-	if err := os.Symlink(filepath.Join(repoRoot, "scripts"), filepath.Join(root, "scripts")); err != nil {
-		t.Fatal(err)
-	}
+	installMockCoverScript(t, root)
 	initCourseTree(t, root, "courses/spanish-grammar")
 	svc, err := NewService(root)
 	if err != nil {
