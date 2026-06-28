@@ -110,6 +110,16 @@ func TestCourseRepository_MapLegacyContent_GrammarTheoryBlocks(t *testing.T) {
 	logger := zap.NewNop()
 	repo := NewCourseRepository(conn, logger)
 
+	for _, q := range []string{
+		`DELETE FROM grammar_training_content_questions WHERE bundle_id = 'es'`,
+		`DELETE FROM grammar_content_chapters WHERE bundle_id = 'es'`,
+		`DELETE FROM grammar_content_sections WHERE bundle_id = 'es'`,
+	} {
+		if _, err := conn.Exec(q); err != nil {
+			t.Fatalf("cleanup grammar fixture: %v\n%s", err, q)
+		}
+	}
+
 	inserts := []string{
 		`INSERT INTO grammar_content_sections (bundle_id, section_id, title, level, sort_order, chapter_ids_json, raw_json, source_hash)
 		 VALUES ('es', 'es.section.tb', 'Grammar TB', 'A0', 1, '["es.chapter.tb"]', '{}', 'sec-tb')`,
@@ -138,7 +148,7 @@ func TestCourseRepository_MapLegacyContent_GrammarTheoryBlocks(t *testing.T) {
 		SELECT COUNT(*)
 		FROM learning_items li
 		JOIN courses c ON c.id = li.course_id
-		WHERE c.code = 'es_ru' AND li.source_kind = 'grammar_theory_block'
+		WHERE c.code = 'es_ru' AND li.source_kind = 'grammar_theory_block' AND li.source_id = 'es.chapter.tb:block-alpha'
 	`).Scan(&theoryCount); err != nil {
 		t.Fatalf("count theory blocks: %v", err)
 	}
@@ -307,6 +317,24 @@ func TestCourseRepository_GetCourseMap(t *testing.T) {
 	if _, err := repo.BackfillUserCourses(context.Background(), "es_ru"); err != nil {
 		t.Fatalf("BackfillUserCourses: %v", err)
 	}
+	var baselineDistricts, baselineLocations int
+	if err := conn.QueryRow(`
+		SELECT COUNT(*)
+		FROM districts d
+		JOIN courses c ON c.id = d.course_id
+		WHERE c.code = 'es_ru'
+	`).Scan(&baselineDistricts); err != nil {
+		t.Fatalf("count baseline districts: %v", err)
+	}
+	if err := conn.QueryRow(`
+		SELECT COUNT(*)
+		FROM locations l
+		JOIN districts d ON d.id = l.district_id
+		JOIN courses c ON c.id = d.course_id
+		WHERE c.code = 'es_ru'
+	`).Scan(&baselineLocations); err != nil {
+		t.Fatalf("count baseline locations: %v", err)
+	}
 	if _, err := conn.Exec(`
 		INSERT INTO modules (course_id, district_id, location_id, code, module_type, title, source_kind, source_id, sort_order, status)
 		SELECT c.id, d.id, l.id, 'grammar_section:test', 'grammar', 'Grammar Test', 'grammar_section', 'test.section', 1, 'published'
@@ -337,8 +365,8 @@ func TestCourseRepository_GetCourseMap(t *testing.T) {
 	if courseMap.UserCourse == nil {
 		t.Fatalf("expected user_course in response")
 	}
-	if courseMap.Totals.Districts != 6 || courseMap.Totals.Locations != 36 || courseMap.Totals.Modules != 1 || courseMap.Totals.Items != 1 {
-		t.Fatalf("unexpected totals: %+v", courseMap.Totals)
+	if courseMap.Totals.Districts != baselineDistricts || courseMap.Totals.Locations != baselineLocations || courseMap.Totals.Modules != 1 || courseMap.Totals.Items != 1 {
+		t.Fatalf("unexpected totals: %+v (baseline districts=%d locations=%d)", courseMap.Totals, baselineDistricts, baselineLocations)
 	}
 	if courseMap.Totals.ByType["grammar_chapter"] != 1 {
 		t.Fatalf("grammar_chapter total = %d, want 1", courseMap.Totals.ByType["grammar_chapter"])
