@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"io"
 	"net/http"
 	"net/url"
@@ -105,7 +106,7 @@ func newAIServiceWithError(t *testing.T, logger *zap.Logger) *ai.Service {
 	return aiService
 }
 
-func newTestBot(client *mockTelegramClient) *tgbotapi.BotAPI {
+func newTestBot(client interface{ Do(*http.Request) (*http.Response, error) }) *tgbotapi.BotAPI {
 	bot := &tgbotapi.BotAPI{Token: "test", Client: client, Buffer: 1}
 	bot.SetAPIEndpoint("http://example.com/bot%s/%s")
 	return bot
@@ -210,6 +211,186 @@ func lastText(client *mockTelegramClient) string {
 		return ""
 	}
 	return client.lastParams.Get("text")
+}
+
+// editFailingTelegramClient fails editMessageText but allows other Telegram API calls.
+type editFailingTelegramClient struct {
+	mockTelegramClient
+}
+
+func (c *editFailingTelegramClient) Do(req *http.Request) (*http.Response, error) {
+	body, _ := io.ReadAll(req.Body)
+	_ = req.Body.Close()
+	if strings.Contains(req.URL.Path, "editMessageText") {
+		return nil, io.EOF
+	}
+	req.Body = io.NopCloser(bytes.NewBuffer(body))
+	return c.mockTelegramClient.Do(req)
+}
+
+type stubUserRepo struct {
+	getErr error
+	user   *models.User
+}
+
+func (s *stubUserRepo) GetOrCreateUser(telegramID int64) (*models.User, error) {
+	if s.getErr != nil {
+		return nil, s.getErr
+	}
+	if s.user != nil {
+		return s.user, nil
+	}
+	return &models.User{ID: 1, TelegramID: telegramID}, nil
+}
+
+func (s *stubUserRepo) UpdateUsername(int64, string) error { return nil }
+func (s *stubUserRepo) UpdateUserSettings(int64, string) error { return nil }
+
+func callbackQuery(data string, userID int64) *tgbotapi.CallbackQuery {
+	return &tgbotapi.CallbackQuery{
+		ID:   "cb-1",
+		Data: data,
+		From: &tgbotapi.User{ID: userID},
+		Message: &tgbotapi.Message{
+			MessageID: 99,
+			Chat:      &tgbotapi.Chat{ID: 10},
+		},
+	}
+}
+
+func TestHandleCallbackQuery_SetLanguage(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, _ := setupHandler(t, client)
+
+	h.handleCallbackQuery(context.Background(), callbackQuery("setlang:en_ru", 42))
+
+	if client.DoCount == 0 {
+		t.Fatal("expected Telegram API calls")
+	}
+}
+
+func TestHandleCallbackQuery_NotificationUnsubscribe(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, _ := setupHandler(t, client)
+
+	h.handleCallbackQuery(context.Background(), callbackQuery("notification_unsubscribe", 42))
+
+	if client.DoCount == 0 {
+		t.Fatal("expected bot command service to call Telegram API")
+	}
+}
+
+func TestHandleSetLanguage_InvalidCourse(t *testing.T) {
+	client := &mockTelegramClient{}
+	h, _ := setupHandler(t, client)
+
+	h.handleSetLanguage(context.Background(), callbackQuery("setlang:invalid_course", 42), "invalid_course")
+
+	got := lastText(client)
+	if got == "" || !strings.Contains(got, "Не удалось переключить язык") {
+		t.Fatalf("got %q", got)
+	}
+}
+
+func TestHandleSetLanguage_UserRepoError(t *testing.T) {
+	client := &mockTelegramClient{}
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	courseRepo := repository.NewCourseRepository(db.GetConnection(), logger)
+	cfg := &config.Config{}
+
+	h := NewHandler(
+		newTestBot(client),
+		logger,
+		nil,
+		nil,
+		testDefaultCourse,
+		courseRepo,
+		nil,
+		nil,
+		nil,
+		nil,
+		cfg,
+		db.GetConnection(),
+	)
+	h.userRepo = &stubUserRepo{getErr: errors.New("db down")}
+
+	h.handleSetLanguage(context.Background(), callbackQuery("setlang:en_ru", 42), "en_ru")
+
+	got := lastText(client)
+	if got == "" || !strings.Contains(got, "Произошла ошибка") {
+		t.Fatalf("got %q", got)
+	}
+}
+
+func TestHandleSetLanguage_EditFailureFallsBackToSend(t *testing.T) {
+	client := &editFailingTelegramClient{}
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+	conn := db.GetConnection()
+	userRepo := repository.NewUserRepository(conn, logger)
+	courseRepo := repository.NewCourseRepository(conn, logger)
+	cfg := &config.Config{}
+
+	h := NewHandler(
+		newTestBot(client),
+		logger,
+		nil,
+		nil,
+		testDefaultCourse,
+		courseRepo,
+		userRepo,
+		nil,
+		nil,
+		nil,
+		cfg,
+		conn,
+	)
+
+	h.handleSetLanguage(context.Background(), callbackQuery("setlang:en_ru", 42), "en_ru")
+
+	got := lastText(&client.mockTelegramClient)
+	if got == "" || !strings.Contains(got, "Язык переключён") {
+		t.Fatalf("got %q", got)
+	}
+}
+
+func TestHandleResetCircuitCommand(t *testing.T) {
+	t.Run("non admin silent", func(t *testing.T) {
+		client := &mockTelegramClient{}
+		cfg := &config.Config{}
+		cfg.Admin.TelegramID = 999
+		h, _ := newHandlerForTest(t, client, nil, nil, cfg)
+
+		h.handleResetCircuitCommand(10, 42)
+
+		if client.DoCount != 0 {
+			t.Fatalf("non-admin should not send messages, DoCount=%d", client.DoCount)
+		}
+	})
+
+	t.Run("admin success", func(t *testing.T) {
+		client := &mockTelegramClient{}
+		cfg := &config.Config{}
+		cfg.Admin.TelegramID = 42
+		h, _ := newHandlerForTest(t, client, nil, nil, cfg)
+
+		h.handleResetCircuitCommand(10, 42)
+
+		got := lastText(client)
+		if got == "" || !strings.Contains(got, "Circuit breaker сброшен") {
+			t.Fatalf("got %q", got)
+		}
+	})
+}
+
+func TestLanguageFlag(t *testing.T) {
+	if languageFlag("en") == "" || languageFlag("es") == "" {
+		t.Fatal("expected flags for en/es")
+	}
+	if languageFlag("de") != "" {
+		t.Fatalf("unexpected flag for de: %q", languageFlag("de"))
+	}
 }
 
 func TestHandleUpdate_StartCommand(t *testing.T) {

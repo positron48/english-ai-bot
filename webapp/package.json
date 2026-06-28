@@ -7,7 +7,8 @@
     "build": "tsc && vite build && node scripts/write-asset-manifest.mjs",
     "preview": "vite preview",
     "type-check": "tsc --noEmit",
-    "lint": "npm run type-check"
+    "lint": "npm run type-check",
+    "test": "vitest run"
   },
   "dependencies": {
     "chart.js": "^4.5.1",
@@ -21,7 +22,10 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^6.0.0",
+    "@vue/test-utils": "^2.4.6",
+    "jsdom": "^26.1.0",
     "typescript": "^5.3.3",
-    "vite": "^7.3.0"
+    "vite": "^7.3.0",
+    "vitest": "^3.2.4"
   }
 }

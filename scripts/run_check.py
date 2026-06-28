@@ -34,7 +34,7 @@ GOLANGCI_VERSION = os.environ.get("GOLANGCI_VERSION", "v2.10.1").strip()
 CHECK_P = os.environ.get("CHECK_P", "8").strip() or "8"
 CHECK_COUNT = os.environ.get("CHECK_COUNT", "0").strip()
 SKIP_INTEGRATION = os.environ.get("CHECK_SKIP_INTEGRATION", "0").strip() == "1"
-COVERAGE_MIN = int(os.environ.get("CHECK_COVERAGE_MIN", "50"))
+COVERAGE_MIN = int(os.environ.get("CHECK_COVERAGE_MIN", "75"))
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 

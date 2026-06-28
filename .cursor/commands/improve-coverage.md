@@ -14,7 +14,11 @@
 
 - **1.2.** Если в ответе planner есть «work complete, coverage 100%» — выйти из внешнего цикла, перейти к шагу **2 (Финальный отчёт)**.
 
-- **1.3.** Для каждого задания от planner вызвать **mcp_task** с `subagent_type="coverage-worker"`, `prompt` = текст задания от planner (в задании уже должно быть требование достижения 100% покрытия в зоне). `description`: "Worker add tests for &lt;package&gt;" (подставить пакет). Вызовы можно делать последовательно или пачками по 2–3 параллельно.
+- **1.3.** Для каждого batch planner выдаёт **disjoint assignment table** (разрешённые `*_test.go` на worker, запрет shared infra). Вызвать **2–3 `coverage-worker` параллельно** в одном turn (разные зоны: пакеты или отдельные test-файлы). Workers **не редактируют** prod-код и не трогают `Makefile`, `scripts/run_check.py`, `internal/testutil/*`, чужие тесты. После завершения всех workers — **barrier**, затем только один test-runner / fixer / committer (не параллелить).
+
+- **1.3b.** Шаблон промпта worker: explicit allow/deny paths, user ID range (900001+), цель 100% в зоне, локальные setup-хелперы (без `web_test_helpers.go` в parallel batch).
+
+- **1.3c.** (legacy) Последовательный режим: для каждого задания от planner — один worker, если parallel batch не используется.
 
 - **1.4.** Внутренний цикл (пока `make check` не пройдёт):
   - Вызвать **mcp_task** с `subagent_type="test-runner"`, `prompt`: «Запусти make check в корне проекта. Верни: passed или failed, точное значение coverage_percent (из вывода "Total test coverage: ..."), и при failed — фрагмент лога с ошибками для fixer.» `description`: "Run make check". **Таймаут вызова — не менее 15 минут**, так как `make check` выполняется долго.

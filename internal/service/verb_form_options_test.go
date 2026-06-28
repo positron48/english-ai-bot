@@ -64,6 +64,75 @@ func TestParseStringJSONArray(t *testing.T) {
 	}
 }
 
+func TestCapVerbMultipleChoiceOptions(t *testing.T) {
+	opts := []string{"hablo", "habla", "hablas", "hablan", "hablamos", "habláis"}
+	capped := CapVerbMultipleChoiceOptions("hablo", opts, 7)
+	if len(capped) != VerbChoiceOptionCount {
+		t.Fatalf("want %d options, got %d %#v", VerbChoiceOptionCount, len(capped), capped)
+	}
+	var hasCorrect bool
+	for _, o := range capped {
+		if strings.EqualFold(o, "hablo") {
+			hasCorrect = true
+		}
+	}
+	if !hasCorrect {
+		t.Fatalf("correct answer missing: %#v", capped)
+	}
+}
+
+func TestCapVerbMultipleChoiceOptions_preservesCanonicalCorrect(t *testing.T) {
+	opts := []string{"HABLO", "habla", "hablas", "hablan", "hablamos"}
+	capped := CapVerbMultipleChoiceOptions("hablo", opts, 11)
+	if !strings.EqualFold(capped[0], "HABLO") && !containsFold(capped, "HABLO") {
+		t.Fatalf("expected canonical correct preserved: %#v", capped)
+	}
+}
+
+func containsFold(ss []string, want string) bool {
+	for _, s := range ss {
+		if strings.EqualFold(s, want) {
+			return true
+		}
+	}
+	return false
+}
+
+func TestBuildVerbFormMultipleChoiceOptions_oSuffix(t *testing.T) {
+	opts := BuildVerbFormMultipleChoiceOptions("hablo", "hablar", 1)
+	if len(opts) != VerbChoiceOptionCount {
+		t.Fatalf("got %d options", len(opts))
+	}
+	if !containsFold(opts, "habla") {
+		t.Fatalf("expected -o->-a distractor in %#v", opts)
+	}
+}
+
+func TestBuildVerbFormMultipleChoiceOptions_shortSurface(t *testing.T) {
+	opts := BuildVerbFormMultipleChoiceOptions("a", "ir", 5)
+	if len(opts) != VerbChoiceOptionCount {
+		t.Fatalf("pathological input should still return %d options, got %d", VerbChoiceOptionCount, len(opts))
+	}
+}
+
+func TestMaskClozeVerbSurfaceInQuestion_emptyInputs(t *testing.T) {
+	if got := MaskClozeVerbSurfaceInQuestion("", "somos"); got != "" {
+		t.Fatalf("empty question: got %q", got)
+	}
+	if got := MaskClozeVerbSurfaceInQuestion("Nosotros somos.", ""); got != "Nosotros somos." {
+		t.Fatalf("empty surface: got %q", got)
+	}
+}
+
+func TestParseStringJSONArray_invalidAndNull(t *testing.T) {
+	if ParseStringJSONArray("null") != nil {
+		t.Fatal("null should return nil")
+	}
+	if ParseStringJSONArray("{") != nil {
+		t.Fatal("invalid JSON should return nil")
+	}
+}
+
 func TestNormalizeVerbFormat_StripsEnglishToForSpanishTarget(t *testing.T) {
 	svc := NewOptionsService(nil, nil, "es")
 	got := svc.normalizeVerbFormat("to hablar", "verb", "ru_en")

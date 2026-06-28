@@ -2,7 +2,7 @@
   "testing": {
     "checkCommand": "make check",
     "coverageProfile": "coverage.out",
-    "coverageMinPercent": 50
+    "coverageMinPercent": 75
   },
   "verbQuality": {
     "packagePath": "internal/spanishverbs",
