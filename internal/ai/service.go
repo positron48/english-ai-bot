@@ -78,6 +78,8 @@ type Service struct {
 	conversationCorrectionPrompts map[string]string // course_code -> error correction prompt (Prompt B)
 	conversationNPCPrompts        map[string]string // course_code -> in-character NPC reply prompt (Prompt C)
 	conversationModel             string            // optional model override for NPC conversations ("" = use model)
+	sentenceGenPrompts            map[string]string // course_code -> daily sentence-set generation prompt
+	sentenceGradePrompts          map[string]string // course_code -> per-sentence grading prompt
 	logger              *zap.Logger
 }
 

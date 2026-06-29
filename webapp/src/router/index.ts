@@ -191,6 +191,12 @@ const router = createRouter({
           meta: { requiresAuth: true, navTab: 'practice' }
         },
         {
+          path: 'training/sentences',
+          name: 'SentenceComposition',
+          component: () => import('../views/SentenceCompositionView.vue'),
+          meta: { requiresAuth: true, navTab: 'practice' }
+        },
+        {
           path: 'chat',
           name: 'Chat',
           component: () => import('../views/ChatView.vue'),

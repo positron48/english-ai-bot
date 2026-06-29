@@ -40,6 +40,7 @@ type Bot struct {
 	trainingWorkers      []*service.TrainingWorker
 	pronunciationService *service.PronunciationService
 	notificationService  *service.NotificationService
+	sentenceWorker       *service.SentenceCompositionWorker
 	webRouter            *web.Router
 	// shutdownCtxFn returns the context used for http.Server.Shutdown; defaults to context.Background.
 	// Overridable in tests to exercise the shutdown-error path.
@@ -277,6 +278,7 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 	defaultCourseCode := repository.CourseCodeForLearning(cfg.Learning)
 	// Register split NPC conversation prompts for the default course.
 	loadSplitConversationPrompts(aiService, defaultCourseCode, cfg.Learning, log)
+	loadSentenceCompositionPrompts(aiService, defaultCourseCode, cfg.Learning, log)
 	wordServices := map[string]*service.WordService{defaultCourseCode: wordService}
 	if courseCodes, cErr := courseRepo.ListActiveCourseCodes(context.Background()); cErr != nil {
 		log.Warn("failed to list active courses for per-course word services, only the default course will be available", zap.Error(cErr))
@@ -369,6 +371,23 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 		log,
 	)
 	notificationService.SetSiteURL(cfg.WebApp.PublicURL)
+
+	// Create daily sentence-composition worker (Pro feature; off unless explicitly enabled).
+	var sentenceWorker *service.SentenceCompositionWorker
+	if cfg.SentenceComposition.Enabled {
+		sentenceRepo := repository.NewSentenceCompositionRepository(conn, log)
+		sentenceWorker = service.NewSentenceCompositionWorker(
+			aiService,
+			sentenceRepo,
+			userRepo,
+			courseRepo,
+			cbService,
+			cfg.SentenceComposition,
+			cfg.Learning,
+			defaultCourseCode,
+			log,
+		)
+	}
 
 	// Create web repositories
 	otpRepo := repository.NewWebOTPRepository(conn, log)
@@ -473,6 +492,7 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 		trainingWorkers:      trainingWorkers,
 		pronunciationService: pronunciationService,
 		notificationService:  notificationService,
+		sentenceWorker:       sentenceWorker,
 		webRouter:            webRouter,
 		shutdownCtxFn:        context.Background,
 	}
@@ -507,6 +527,12 @@ func (b *Bot) Start(ctx context.Context) error {
 	if b.notificationService != nil {
 		go b.notificationService.Start(ctx)
 		b.logger.Info("notification service started")
+	}
+
+	// Start daily sentence-composition worker
+	if b.sentenceWorker != nil {
+		go b.sentenceWorker.Start(ctx)
+		b.logger.Info("sentence composition worker started")
 	}
 
 	// Reading/speaking catalog: in bundle mode sync bundle → DB on startup; in DB-first mode
@@ -810,7 +836,29 @@ func registerCoursePrompts(aiService *ai.Service, courseCode string, lc config.L
 		aiService.SetConversationPromptForCourse(courseCode, p)
 	}
 	loadSplitConversationPrompts(aiService, courseCode, lc, log)
+	loadSentenceCompositionPrompts(aiService, courseCode, lc, log)
 	return nil
+}
+
+// loadSentenceCompositionPrompts registers the daily sentence-composition generation and
+// grading prompts for a course. Missing files are logged and skipped (the feature simply
+// stays unavailable for that course until both prompts exist).
+func loadSentenceCompositionPrompts(aiService *ai.Service, courseCode string, lc config.LearningConfig, log *zap.Logger) {
+	genFile := fmt.Sprintf("prompts/sentence-gen-%s.txt", lc.Pair)
+	if p, err := ai.LoadRenderedPromptFile(genFile, lc.NativeLang, lc.TargetLang, lc.Pair); err != nil {
+		log.Warn("failed to load sentence generation prompt",
+			zap.String("course_code", courseCode), zap.String("file", genFile), zap.Error(err))
+	} else {
+		aiService.SetSentenceGenPromptForCourse(courseCode, p)
+	}
+
+	gradeFile := fmt.Sprintf("prompts/sentence-grade-%s.txt", lc.Pair)
+	if p, err := ai.LoadRenderedPromptFile(gradeFile, lc.NativeLang, lc.TargetLang, lc.Pair); err != nil {
+		log.Warn("failed to load sentence grading prompt",
+			zap.String("course_code", courseCode), zap.String("file", gradeFile), zap.Error(err))
+	} else {
+		aiService.SetSentenceGradePromptForCourse(courseCode, p)
+	}
 }
 
 // loadSplitConversationPrompts registers the three dedicated conversation prompts (quest eval,

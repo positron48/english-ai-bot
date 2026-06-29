@@ -582,6 +582,14 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/verb-training/answer", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleVerbTrainingAnswer)))
 	r.mux.HandleFunc("/api/verb-training/upcoming", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleVerbTrainingUpcoming)))
 	r.mux.HandleFunc("/api/verb-training/forms-by-lemma", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleVerbTrainingLemmaForms)))
+	sentenceAuth := func(h http.HandlerFunc) http.HandlerFunc {
+		return appAPIMiddleware.Wrap(auth.RequireAuth(r.RequireFeature("sentence_composition")(h)))
+	}
+	r.mux.HandleFunc("/api/sentence-training/today", sentenceAuth(r.handleSentenceTrainingToday))
+	r.mux.HandleFunc("/api/sentence-training/start", sentenceAuth(r.handleSentenceTrainingStart))
+	r.mux.HandleFunc("/api/sentence-training/current", sentenceAuth(r.handleSentenceTrainingCurrent))
+	// The answer route triggers an LLM grading call, so it uses the stricter chat rate limiter.
+	r.mux.HandleFunc("/api/sentence-training/answer", appChatMiddleware.Wrap(auth.RequireAuth(r.RequireFeature("sentence_composition")(r.handleSentenceTrainingAnswer))))
 	r.mux.HandleFunc("/api/chat", appChatMiddleware.Wrap(auth.RequireAuth(r.RequireFeature("conversation")(r.handleChat))))
 	r.mux.HandleFunc("/api/settings", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleSettings)))
 	r.mux.HandleFunc("/api/settings/notifications", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleNotificationSettings)))

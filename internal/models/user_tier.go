@@ -64,6 +64,8 @@ func TierAllowsFeature(t UserTier, feature string) bool {
 		return ParseUserTier(string(t)).AtLeast(TierPro)
 	case "speaking_roleplay":
 		return ParseUserTier(string(t)).AtLeast(TierProPlus)
+	case "sentence_composition":
+		return ParseUserTier(string(t)).AtLeast(TierPro)
 	default:
 		return false
 	}
@@ -73,8 +75,9 @@ func TierAllowsFeature(t UserTier, feature string) bool {
 func UserFeaturesForTier(t UserTier) map[string]bool {
 	t = ParseUserTier(string(t))
 	return map[string]bool{
-		"speaking":          TierAllowsFeature(t, "speaking"),
-		"conversation":      TierAllowsFeature(t, "conversation"),
-		"speaking_roleplay": TierAllowsFeature(t, "speaking_roleplay"),
+		"speaking":             TierAllowsFeature(t, "speaking"),
+		"conversation":         TierAllowsFeature(t, "conversation"),
+		"speaking_roleplay":    TierAllowsFeature(t, "speaking_roleplay"),
+		"sentence_composition": TierAllowsFeature(t, "sentence_composition"),
 	}
 }

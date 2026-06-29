@@ -34,6 +34,18 @@ type Config struct {
 	Speaking  SpeakingConfig  `mapstructure:"speaking"`
 	Migration MigrationConfig `mapstructure:"migration"`
 	Media     MediaConfig     `mapstructure:"media"`
+
+	SentenceComposition SentenceCompositionConfig `mapstructure:"sentence_composition"`
+}
+
+// SentenceCompositionConfig configures the daily Pro sentence-composition training.
+type SentenceCompositionConfig struct {
+	Enabled            bool   `mapstructure:"enabled"`
+	Interval           string `mapstructure:"interval"`            // worker tick interval, e.g. "1h"
+	SentencesPerSet    int    `mapstructure:"sentences_per_set"`   // sentences generated per daily set
+	WordsPerSet        int    `mapstructure:"words_per_set"`       // well-learned words offered to the generator
+	MinWords           int    `mapstructure:"min_words"`           // minimum candidates required to generate
+	MasteringThreshold int    `mapstructure:"mastering_threshold"` // min mastering_score (0-100) to count as well-learned
 }
 
 // MediaConfig holds settings for admin-uploaded NPC/quest images.
@@ -366,6 +378,14 @@ func Load() (*Config, error) {
 	viper.SetDefault("training.verb_forms_max_new_per_session", 30)
 	viper.SetDefault("training.verb_forms_typed_min_reps", 2)
 	viper.SetDefault("training.verb_forms_typed_chance_percent", 50)
+
+	// Sentence composition (daily Pro training) defaults
+	viper.SetDefault("sentence_composition.enabled", true)
+	viper.SetDefault("sentence_composition.interval", "1h")
+	viper.SetDefault("sentence_composition.sentences_per_set", 20)
+	viper.SetDefault("sentence_composition.words_per_set", 40)
+	viper.SetDefault("sentence_composition.min_words", 12)
+	viper.SetDefault("sentence_composition.mastering_threshold", 70)
 
 	// Admin defaults
 	viper.SetDefault("admin.telegram_id", 0)

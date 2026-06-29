@@ -18,6 +18,7 @@
     "retrying": "Reintentando conexión ({attempt}/{max})...",
     "networkError": "No se pudo conectar al servidor",
     "words": "palabra | palabras",
+    "sentences": "oración | oraciones",
     "new": "nuevas",
     "test": "Test",
     "noItemsFound": "No se encontraron elementos.",
@@ -451,6 +452,22 @@
     "totalCardsAvailable": "{count} tarjetas de formas verbales disponibles",
     "noCardsPool": "Aún no hay tarjetas de formas en la base: sincroniza el vocabulario y ejecuta el import de artefactos (sync_verb_training_json), luego abre listas o añade palabras.",
     "formsInfoAria": "Tabla de conjugación de este verbo"
+  },
+  "sentence": {
+    "title": "Composición de oraciones",
+    "dashboardTitle": "Tu set de oraciones está listo",
+    "dashboardSub": "Traduce las oraciones de hoy a tu idioma de estudio",
+    "noSet": "Aún no hay entrenamiento disponible. Vuelve mañana.",
+    "progress": "{done} / {total}",
+    "inputPlaceholder": "Escribe tu traducción…",
+    "checkBtn": "Comprobar",
+    "checking": "Comprobando…",
+    "nextBtn": "Siguiente",
+    "doneTitle": "Entrenamiento completado",
+    "correctAnswer": "Correcto",
+    "outcomeStar": "Sin errores",
+    "outcomePassed": "Aprobado",
+    "outcomeFailed": "No aprobado"
   },
   "learning": {
     "title": "Aprendizaje",

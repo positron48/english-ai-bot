@@ -16,6 +16,7 @@ interface ActivityBatch {
 }
 
 function routeMode(path: string, navTab?: string): string {
+  if (path.includes('sentence')) return 'sentences'
   if (path.startsWith('/chat')) return 'chat'
   if (path.includes('speaking')) return 'speaking'
   if (path.includes('reading')) return 'reading'

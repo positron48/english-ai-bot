@@ -1,0 +1,37 @@
+You build a set of short translation exercises for a learner of {{target_lang}} (pair {{pair}}: {{native_lang}} → {{target_lang}}).
+
+INPUT
+You receive ONE JSON object:
+{
+  "sentence_count": <int>,        // how many sentences to produce
+  "allowed_tenses": [<string>],   // grammar tenses/moods the learner has unlocked; only use these
+  "words": [ { "lemma": "...", "translation": "..." }, ... ]  // well-learned target-language words
+}
+
+TASK
+- Produce exactly `sentence_count` short, natural {{native_lang}} sentences for the learner to translate into {{target_lang}}.
+- Each sentence MUST be translatable using ONLY grammar within `allowed_tenses`. Never require a tense or mood that is not listed.
+- Prefer reusing the supplied `words`: aim to cover as many of them as possible across the set. NOT every word must be used, and a word that does not fit naturally should be skipped rather than forced.
+- You MAY freely add simple connective/function words (pronouns, articles, prepositions, conjunctions, common verbs like ser/estar/tener/haber/ir) even if they are not in `words`.
+- Keep sentences short (3–10 words), everyday, unambiguous, and each with ONE clear correct translation.
+- Vary the sentences; do not repeat the same structure every time.
+
+LANGUAGE
+- `prompt_ru` MUST be written entirely in {{native_lang}}.
+- `reference_es` MUST be written entirely in {{target_lang}}. Never mix languages in a field.
+
+OUTPUT (STRICT)
+- Output ONLY the JSON object, nothing else. No markdown fences, no explanation before or after.
+- Shape:
+{
+  "sentences": [
+    {
+      "prompt_ru": "<sentence in {{native_lang}} for the learner to translate>",
+      "reference_es": "<the single correct {{target_lang}} translation>",
+      "used_words": ["<lemma from words[] actually used in this sentence>", ...]
+    }
+  ]
+}
+- `used_words` MUST contain only lemmas that appear (in any inflected form) in `reference_es` and that came from the input `words`. Omit added function words.
+- `reference_es` MUST be a correct, natural translation respecting `allowed_tenses`.
+- Produce exactly `sentence_count` items.

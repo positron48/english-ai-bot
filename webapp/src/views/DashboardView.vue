@@ -78,6 +78,19 @@
         <button class="lg-due-btn" @click="goToTraining">{{ t('lg.start') }}</button>
       </div>
 
+      <!-- Sentence composition (Pro): daily translation training -->
+      <div v-if="sentenceAvailable" class="lg-due-card">
+        <div class="lg-due-counter">
+          <span class="lg-due-num">{{ sentenceRemaining }}</span>
+          <span class="lg-due-unit">{{ (t as any)('common.sentences', sentenceRemaining) }}</span>
+        </div>
+        <div class="lg-due-text">
+          <div class="lg-list-row-title">{{ t('sentence.dashboardTitle') }}</div>
+          <div class="lg-list-row-sub">{{ t('sentence.dashboardSub') }}</div>
+        </div>
+        <button class="lg-due-btn" @click="goToSentences">{{ t('lg.start') }}</button>
+      </div>
+
       <!-- Offline notice -->
       <div v-if="offlineDashboard" class="lg-card lg-section-gap">
         <strong>{{ t('offline.modeTitle') }}</strong>
@@ -242,6 +255,7 @@ import LgCourseSwitcher from '../components/linglow/LgCourseSwitcher.vue'
 import LgActivityIcon from '../components/linglow/LgActivityIcon.vue'
 import { useStats } from '../composables/useStats'
 import { useMe } from '../composables/useMe'
+import { sentenceClient } from '../api/sentenceClient'
 import { useGrammarContinueChapter } from '../composables/useGrammarContinueChapter'
 
 const { t } = useI18n()
@@ -416,6 +430,29 @@ const goToTraining = () => {
   router.push('/training')
 }
 
+const goToSentences = () => {
+  router.push('/training/sentences')
+}
+
+// Sentence composition (Pro): daily availability badge on the dashboard.
+const sentenceAvailable = ref(false)
+const sentenceRemaining = ref(0)
+
+async function loadSentenceAvailability() {
+  const me = await ensureMe().catch(() => null)
+  if (!me?.features?.sentence_composition) {
+    sentenceAvailable.value = false
+    return
+  }
+  try {
+    const today = await sentenceClient.today(currentCourseCode.value)
+    sentenceAvailable.value = !!today.available && (today.remaining ?? 0) > 0
+    sentenceRemaining.value = today.remaining ?? 0
+  } catch {
+    sentenceAvailable.value = false
+  }
+}
+
 
 watch(currentCourseCode, () => {
   if (isAuthenticated.value) {
@@ -437,6 +474,7 @@ onMounted(() => {
   if (isAuthenticated.value) {
     loadData()
     void ensureMe().catch(() => {})
+    void loadSentenceAvailability()
   }
 })
 </script>

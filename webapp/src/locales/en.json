@@ -18,6 +18,7 @@
     "retrying": "Retrying connection ({attempt}/{max})...",
     "networkError": "Failed to connect to server",
     "words": "word | words",
+    "sentences": "sentence | sentences",
     "new": "new",
     "test": "Test",
     "noItemsFound": "No items found.",
@@ -456,6 +457,22 @@
     "totalCardsAvailable": "{count} verb-form cards available",
     "noCardsPool": "No verb-form training cards in the database yet: sync vocabulary and run the verb-forms artifact import (sync_verb_training_json), then load word sets or add words.",
     "formsInfoAria": "Full conjugation table for this verb"
+  },
+  "sentence": {
+    "title": "Sentence composition",
+    "dashboardTitle": "Your sentence set is ready",
+    "dashboardSub": "Translate today's sentences into your target language",
+    "noSet": "No training available yet. Check back tomorrow.",
+    "progress": "{done} / {total}",
+    "inputPlaceholder": "Write your translation…",
+    "checkBtn": "Check",
+    "checking": "Checking…",
+    "nextBtn": "Next",
+    "doneTitle": "Training complete",
+    "correctAnswer": "Correct",
+    "outcomeStar": "No mistakes",
+    "outcomePassed": "Passed",
+    "outcomeFailed": "Not passed"
   },
   "learning": {
     "title": "Learning",
