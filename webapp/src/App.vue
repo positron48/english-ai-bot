@@ -27,6 +27,8 @@
       @confirm="() => closeConfirm(true)"
       @cancel="() => closeConfirm(false)"
     />
+
+    <AppUpdateModal />
   </div>
 </template>
 
@@ -40,8 +42,10 @@ import { useDialog } from './composables/useDialog'
 import { useLocale } from './composables/useLocale'
 import { useLearningConfig } from './composables/useLearningConfig'
 import { isEmbeddedAndroidApp } from './utils/runtime'
+import { useAppUpdate } from './composables/useAppUpdate'
 import AlertModal from './components/AlertModal.vue'
 import ConfirmModal from './components/ConfirmModal.vue'
+import AppUpdateModal from './components/AppUpdateModal.vue'
 
 const route = useRoute()
 const { t } = useI18n()
@@ -50,6 +54,7 @@ const { currentLocale } = useLocale()
 const { learning, ensureLearningLoaded } = useLearningConfig()
 const { theme } = useTheme()
 const { alertState, confirmState, closeAlert, closeConfirm } = useDialog()
+const { checkForUpdate } = useAppUpdate()
 
 const mounted = ref(false)
 const authError = ref<string | null>(null)
@@ -120,6 +125,11 @@ onMounted(() => {
 
   mounted.value = true
   updateThemeMetaColor()
+
+  // Embedded APK only: check GitHub for a newer release and prompt if found.
+  if (isEmbeddedAndroidApp()) {
+    checkForUpdate({ manual: false })
+  }
 
   // Check auth status after a delay
   setTimeout(() => {

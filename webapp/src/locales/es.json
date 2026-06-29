@@ -32,6 +32,23 @@
     "titleEnInstance": "Linglow — Aprende inglés online con IA",
     "titleEsInstance": "Linglow — Aprende español online con IA"
   },
+  "appUpdate": {
+    "aboutApp": "Acerca de la app",
+    "title": "Actualización disponible",
+    "newVersionAvailable": "Hay una nueva versión {version} disponible.",
+    "currentVersion": "Versión instalada {version}",
+    "currentVersionLabel": "Versión de la app",
+    "update": "Actualizar",
+    "later": "Más tarde",
+    "skipVersion": "Omitir esta versión",
+    "checkForUpdates": "Buscar actualizaciones",
+    "checking": "Comprobando…",
+    "downloading": "Descargando…",
+    "installing": "Instalando…",
+    "installFailed": "No se pudo descargar la actualización. Inténtalo de nuevo.",
+    "upToDate": "Tienes la última versión",
+    "sourceHint": "La instalación te pedirá permitir instalaciones desde esta fuente."
+  },
   "offline": {
     "online": "Online",
     "offline": "Offline",

@@ -234,6 +234,25 @@
       </div>
     </template>
 
+    <!-- ABOUT APP (embedded APK only) -->
+    <template v-if="isEmbedded">
+      <div class="prf-section-title">{{ t('appUpdate.aboutApp') }}</div>
+      <div class="prf-section-card">
+        <div class="prf-row">
+          <div class="prf-row-info">
+            <span class="prf-row-label">{{ t('appUpdate.currentVersionLabel') }}</span>
+            <span class="prf-row-sub">{{ currentVersion || '—' }}</span>
+          </div>
+          <button class="prf-preview-btn" :disabled="checking" @click="handleCheckForUpdates">
+            {{ checking ? t('appUpdate.checking') : t('appUpdate.checkForUpdates') }}
+          </button>
+        </div>
+        <div v-if="updateUpToDate" class="prf-row">
+          <span class="prf-row-sub">{{ t('appUpdate.upToDate') }}</span>
+        </div>
+      </div>
+    </template>
+
   </div>
 </template>
 
@@ -254,6 +273,8 @@ import Icon from '../components/Icon.vue'
 import LgIcon from '../components/linglow/LgIcon.vue'
 import LgLumi from '../components/linglow/LgLumi.vue'
 import { useStats } from '../composables/useStats'
+import { isEmbeddedAndroidApp } from '../utils/runtime'
+import { useAppUpdate } from '../composables/useAppUpdate'
 
 const { t, locale } = useI18n()
 const { currentLocale, setLocale } = useLocale()
@@ -262,11 +283,23 @@ const { courses, currentCourse, currentCourseCode, selectCourse } = useCourse()
 const { streakDays, ensureStatsLoaded } = useStats()
 ensureStatsLoaded()
 
+const isEmbedded = isEmbeddedAndroidApp()
+const {
+  currentVersion,
+  checking,
+  upToDate: updateUpToDate,
+  checkForUpdate,
+} = useAppUpdate()
+const handleCheckForUpdates = () => checkForUpdate({ manual: true })
+
 const meUsername = ref('')
 const confirmedLevel = ref('')
 const displayName = computed(() => meUsername.value || 'Linglow')
 
 onMounted(async () => {
+  if (isEmbedded && !currentVersion.value) {
+    currentVersion.value = (window as any).QantrixAndroid?.getAppVersion?.() || ''
+  }
   try {
     const me: any = await apiClient.request('/api/me')
     meUsername.value = me?.telegram_username || ''

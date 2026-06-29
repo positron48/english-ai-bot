@@ -32,6 +32,23 @@
     "titleEnInstance": "Linglow — учим английский язык онлайн с AI",
     "titleEsInstance": "Linglow — учим испанский язык онлайн с AI"
   },
+  "appUpdate": {
+    "aboutApp": "О приложении",
+    "title": "Доступно обновление",
+    "newVersionAvailable": "Доступна новая версия {version}.",
+    "currentVersion": "Установлена версия {version}",
+    "currentVersionLabel": "Версия приложения",
+    "update": "Обновить",
+    "later": "Позже",
+    "skipVersion": "Пропустить эту версию",
+    "checkForUpdates": "Проверить обновления",
+    "checking": "Проверка…",
+    "downloading": "Загрузка…",
+    "installing": "Установка…",
+    "installFailed": "Не удалось загрузить обновление. Попробуйте ещё раз.",
+    "upToDate": "Установлена последняя версия",
+    "sourceHint": "Для установки потребуется разрешить установку из этого источника."
+  },
   "offline": {
     "online": "Онлайн",
     "offline": "Офлайн",
