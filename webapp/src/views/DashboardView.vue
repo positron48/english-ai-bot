@@ -65,32 +65,6 @@
         </div>
       </div>
 
-      <!-- N слов пора повторить -->
-      <div v-if="stats.availableForTraining > 0" class="lg-due-card">
-        <div class="lg-due-counter">
-          <span class="lg-due-num">{{ stats.availableForTraining }}</span>
-          <span class="lg-due-unit">{{ (t as any)('common.words', stats.availableForTraining) }}</span>
-        </div>
-        <div class="lg-due-text">
-          <div class="lg-list-row-title">{{ (t as any)('lg.wordsDueTitle', stats.availableForTraining, { n: stats.availableForTraining }) }}</div>
-          <div class="lg-list-row-sub">{{ t('lg.wordsDueSub') }}</div>
-        </div>
-        <button class="lg-due-btn" @click="goToTraining">{{ t('lg.start') }}</button>
-      </div>
-
-      <!-- Sentence composition (Pro): daily translation training -->
-      <div v-if="sentenceAvailable" class="lg-due-card">
-        <div class="lg-due-counter">
-          <span class="lg-due-num">{{ sentenceRemaining }}</span>
-          <span class="lg-due-unit">{{ (t as any)('common.sentences', sentenceRemaining) }}</span>
-        </div>
-        <div class="lg-due-text">
-          <div class="lg-list-row-title">{{ t('sentence.dashboardTitle') }}</div>
-          <div class="lg-list-row-sub">{{ t('sentence.dashboardSub') }}</div>
-        </div>
-        <button class="lg-due-btn" @click="goToSentences">{{ t('lg.start') }}</button>
-      </div>
-
       <!-- Offline notice -->
       <div v-if="offlineDashboard" class="lg-card lg-section-gap">
         <strong>{{ t('offline.modeTitle') }}</strong>
@@ -271,10 +245,14 @@ const linglowProgress = ref<CourseProgress | null>(null)
 const dailyToday = ref<NonNullable<DailyRoute['today']> | null>(null)
 const { continueChapter: lastGrammarChapter, loadContinueChapter } = useGrammarContinueChapter()
 
+// Sentence composition (Pro): daily translation training, surfaced as a path step
+const sentenceAvailable = ref(false)
+const sentenceRemaining = ref(0)
+
 // "Today's path" rows: generated from the daily route, done steps sink to the bottom
 const pathSteps = computed(() => {
   const today = dailyToday.value
-  const steps: Array<{ key: string; type: 'grammar' | 'words' | 'reading'; title: string; sub: string; to: any; done: boolean }> = []
+  const steps: Array<{ key: string; type: 'grammar' | 'words' | 'reading' | 'conversation'; title: string; sub: string; to: any; done: boolean }> = []
   const wordsLeft = stats.value.availableForTraining
   const wordsDone = (today?.words_done ?? 0) > 0 && wordsLeft === 0
   if (wordsLeft > 0 || wordsDone) {
@@ -282,6 +260,15 @@ const pathSteps = computed(() => {
       key: 'words', type: 'words', done: wordsDone,
       title: wordsDone ? t('lg.repeatWordsDone') : (t as any)('lg.repeatWords', wordsLeft, { n: wordsLeft }),
       sub: t('lg.repeatWordsSub'), to: '/training',
+    })
+  }
+  // Sentence composition (Pro): show today's translation training as a path step
+  if (sentenceAvailable.value) {
+    steps.push({
+      key: 'sentence', type: 'conversation', done: false,
+      title: t('sentence.shortTitle'),
+      sub: `${sentenceRemaining.value} ${(t as any)('common.sentences', sentenceRemaining.value)}`,
+      to: '/training/sentences',
     })
   }
   if (lastGrammarChapter.value) {
@@ -426,18 +413,6 @@ const getGrammarPercentageColor = (percent: number): string => {
   if (percent >= 25) return '#f97316' // orange-red
   return '#ef4444' // red
 }
-
-const goToTraining = () => {
-  router.push('/training')
-}
-
-const goToSentences = () => {
-  router.push('/training/sentences')
-}
-
-// Sentence composition (Pro): daily availability badge on the dashboard.
-const sentenceAvailable = ref(false)
-const sentenceRemaining = ref(0)
 
 async function loadSentenceAvailability() {
   const me = await ensureMe().catch(() => null)
@@ -711,57 +686,6 @@ onMounted(() => {
 .lg-path-title--done {
   text-decoration: line-through;
   color: var(--subtext);
-}
-
-/* ─── Words due card ─── */
-.lg-due-card {
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-  border-radius: 22px;
-  padding: 16px;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  box-shadow: var(--shadow-card);
-  margin-bottom: 10px;
-}
-.lg-due-counter {
-  width: 58px;
-  height: 60px;
-  border-radius: 14px;
-  flex-shrink: 0;
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-.lg-due-num {
-  font-family: 'Lora', serif;
-  font-size: 24px;
-  font-weight: 600;
-  color: var(--text);
-  line-height: 1;
-}
-.lg-due-unit {
-  font-size: 9px;
-  color: var(--subtext);
-  margin-top: 2px;
-}
-.lg-due-text { flex: 1; }
-.lg-due-btn {
-  padding: 12px 20px;
-  border-radius: 14px;
-  border: 1px solid var(--btn-border);
-  background: var(--btn-gradient);
-  color: white;
-  flex-shrink: 0;
-  font-weight: 600;
-  font-size: 15px;
-  cursor: pointer;
-  white-space: nowrap;
-  box-shadow: var(--btn-shadow);
 }
 
 @keyframes rotate {

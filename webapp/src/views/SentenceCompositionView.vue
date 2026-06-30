@@ -63,7 +63,7 @@
           :class="`sc-result-card--${result.outcome}`"
         >
           <div class="sc-result-title">
-            <template v-if="result.outcome === 'star'">★ {{ t('sentence.outcomeStar') }}</template>
+            <template v-if="result.outcome === 'star'"><span class="sc-star">★</span> {{ t('sentence.outcomeStar') }}</template>
             <template v-else-if="result.outcome === 'passed'">✓ {{ t('sentence.outcomePassed') }}</template>
             <template v-else>✗ {{ t('sentence.outcomeFailed') }}</template>
           </div>
@@ -349,10 +349,37 @@ onMounted(async () => {
   margin-bottom: 12px;
 }
 .sc-result-card--failed .sc-result-title { color: var(--wrong-ink); }
-.sc-result-card--passed .sc-result-title,
-.sc-result-card--star .sc-result-title { color: var(--salvia, #3f6f3f); }
+.sc-result-card--passed .sc-result-title { color: var(--salvia, #3f6f3f); }
+.sc-result-card--star .sc-result-title { color: var(--dorado, #d9a83f); }
 .sc-result-card--star { margin-bottom: 0; }
 .sc-result-card--star .sc-result-title { margin-bottom: 0; }
+
+/* gold star for a flawless answer: twinkle in, then a soft idle shimmer */
+.sc-star {
+  display: inline-block;
+  color: var(--dorado, #d9a83f);
+  text-shadow: 0 0 10px rgba(217, 168, 63, 0.55);
+  transform-origin: center;
+  animation: sc-star-pop 520ms cubic-bezier(0.34, 1.56, 0.64, 1) both,
+             sc-star-shine 2.4s ease-in-out 620ms infinite;
+}
+@keyframes sc-star-pop {
+  0% { opacity: 0; transform: scale(0.2) rotate(-40deg); }
+  60% { opacity: 1; transform: scale(1.25) rotate(8deg); }
+  100% { opacity: 1; transform: scale(1) rotate(0); }
+}
+@keyframes sc-star-shine {
+  0%, 100% { text-shadow: 0 0 8px rgba(217, 168, 63, 0.45); }
+  50% { text-shadow: 0 0 16px rgba(217, 168, 63, 0.85); }
+}
+.sc-result-card--star {
+  background: var(--luz-soft, rgba(217, 168, 63, 0.12));
+  border-color: rgba(217, 168, 63, 0.35);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sc-star { animation: none; opacity: 1; }
+}
 
 /* success (correct answer) */
 .sc-success-card {

@@ -57,6 +57,14 @@
         </div>
         <LgIcon name="chevron-right" :s="14" c="var(--subtext)" />
       </router-link>
+      <router-link v-if="!isOffline && sentenceAvailable" to="/training/sentences" class="lg-list-row">
+        <div class="lg-icon-box"><LgActivityIcon type="conversation" status="green" :size="28" /></div>
+        <div class="quick-text">
+          <div class="lg-list-row-title">{{ t('sentence.shortTitle') }}</div>
+          <div class="lg-list-row-sub">{{ t('sentence.dashboardSub') }}</div>
+        </div>
+        <LgIcon name="chevron-right" :s="14" c="var(--subtext)" />
+      </router-link>
     </div>
 
     <!-- Mode grid 2×2 -->
@@ -124,6 +132,7 @@ import { useGrammarContinueChapter } from '../composables/useGrammarContinueChap
 import { ensureLearningLoaded } from '../composables/useLearningConfig'
 import { useSpanishVerbFormsPractice } from '../composables/useSpanishVerbFormsPractice'
 import { apiClient } from '../api/client'
+import { sentenceClient } from '../api/sentenceClient'
 import artWords from '../assets/linglow/art/bg-word-cards-440.jpg'
 import artGrammar from '../assets/linglow/art/bg-grammar-440.jpg'
 import artReading from '../assets/linglow/art/bg-read-440.jpg'
@@ -139,6 +148,7 @@ const {
   refreshVerbFormsPoolCount,
 } = useSpanishVerbFormsPractice(isOnline)
 const isPro = ref(false)
+const sentenceAvailable = ref(false)
 const vocabStatsLoaded = ref(false)
 const vocabStats = ref({
   total: 0,
@@ -215,6 +225,17 @@ const handleNetworkChange = () => {
   isOffline.value = typeof navigator !== 'undefined' && navigator.onLine === false
 }
 
+async function loadSentenceAvailability() {
+  if (isOffline.value) { sentenceAvailable.value = false; return }
+  if (!hasFeature('sentence_composition')) { sentenceAvailable.value = false; return }
+  try {
+    const today = await sentenceClient.today(currentCourseCode.value)
+    sentenceAvailable.value = !!today.available && (today.remaining ?? 0) > 0
+  } catch {
+    sentenceAvailable.value = false
+  }
+}
+
 async function loadVocabSummary() {
   if (isOffline.value) return
   try {
@@ -245,7 +266,10 @@ onMounted(async () => {
   window.addEventListener('offline', handleNetworkChange)
   await ensureCourseLoaded()
   await Promise.all([loadContinueChapter(), ensureLearningLoaded(), refreshVerbFormsPoolCount()])
-  ensureMe().then(() => { isPro.value = hasFeature('conversation') })
+  ensureMe().then(() => {
+    isPro.value = hasFeature('conversation')
+    void loadSentenceAvailability()
+  })
   await loadVocabSummary()
 })
 
@@ -253,6 +277,7 @@ watch(currentCourseCode, async () => {
   await ensureLearningLoaded()
   await refreshVerbFormsPoolCount()
   await loadVocabSummary()
+  await loadSentenceAvailability()
 })
 
 watch(isOffline, async (offline) => {

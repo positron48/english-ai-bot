@@ -2820,8 +2820,8 @@ const handleTimerMouseLeave = () => {
 /* Buttons will handle their own click events when not disabled */
 
 .question {
-  font-size: 24px;
-  margin: 30px 0;
+  font-size: clamp(17px, 4.6vw, 24px);
+  margin: 20px 0;
   text-align: center;
   overflow-x: visible;
   overflow-y: visible;
