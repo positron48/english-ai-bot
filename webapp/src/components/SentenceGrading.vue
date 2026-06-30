@@ -95,8 +95,8 @@ const rendered = computed<RenderTok[]>(() => {
   align-items: flex-end;
   gap: 10px 8px;
   font-family: 'Lora', Georgia, serif;
-  font-size: 22px;
-  line-height: 1.25;
+  font-size: 20px;
+  line-height: 1.3;
   color: var(--text);
   /* pen-stroke timing (teacher marks words left-to-right, one after another) */
   --base: 220ms;   /* wait for the card to settle */
@@ -149,13 +149,24 @@ const rendered = computed<RenderTok[]>(() => {
   animation-delay: calc(var(--base) + var(--o, 0) * var(--step));
 }
 
-/* inserted letters: green, written in place with a small caret marking the spot */
+/* inserted letters: green, written in place with a caret (∧) pointing at the spot */
 .sg-ins {
   position: relative;
   color: var(--correct-ink, #2f9d57);
-  border-bottom: 1.5px solid var(--correct-ink, #2f9d57);
+  padding-bottom: 0.1em;
   animation: sg-write var(--write) ease-out both;
   animation-delay: calc(var(--base) + var(--o, 0) * var(--step) + var(--strike) * 0.6);
+}
+.sg-ins::after {
+  content: '∧';
+  position: absolute;
+  left: 50%;
+  bottom: -0.45em;
+  transform: translateX(-50%);
+  font-size: 0.5em;
+  line-height: 1;
+  font-weight: 700;
+  color: var(--correct-ink, #2f9d57);
 }
 
 .sg-tok--insert .sg-caret { color: var(--correct-ink, #2f9d57); font-weight: 700; }

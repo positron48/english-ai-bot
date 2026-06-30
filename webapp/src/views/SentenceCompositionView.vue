@@ -284,9 +284,9 @@ onMounted(async () => {
 }
 .sc-task-title {
   margin: 0;
-  font-family: 'Georgia', 'Times New Roman', serif;
-  font-size: 27px;
-  line-height: 1.2;
+  font-family: 'Lora', Georgia, serif;
+  font-size: 21px;
+  line-height: 1.25;
   font-weight: 700;
   color: var(--text);
 }
@@ -307,27 +307,29 @@ onMounted(async () => {
 }
 .sc-answer-input {
   width: 100%;
-  min-height: 52px;
+  min-height: 48px;
   border: 0;
   outline: 0;
   resize: vertical;
   background: transparent;
-  font-size: 20px;
+  font-size: 17px;
   line-height: 1.35;
   color: var(--text);
 }
 .sc-answer-input::placeholder { color: var(--text-muted); }
 
-/* result cards */
+/* result cards — cascade in one after another */
 .sc-result-card,
 .sc-success-card,
 .sc-explanation-card {
   border-radius: 16px;
   padding: 18px;
-  animation: cardIn 180ms ease-out;
+  animation: cardIn 220ms ease-out both;
 }
+.sc-success-card { animation-delay: 90ms; }
+.sc-explanation-card { animation-delay: 180ms; }
 @keyframes cardIn {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
@@ -344,7 +346,7 @@ onMounted(async () => {
   border: 1px solid var(--border-green);
 }
 .sc-result-title {
-  font-size: 19px;
+  font-size: 16px;
   font-weight: 700;
   margin-bottom: 12px;
 }
@@ -378,7 +380,15 @@ onMounted(async () => {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .sc-star { animation: none; opacity: 1; }
+  .sc-star,
+  .sc-result-card,
+  .sc-success-card,
+  .sc-explanation-card,
+  .sc-success-icon {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* success (correct answer) */
@@ -401,6 +411,11 @@ onMounted(async () => {
   justify-content: center;
   font-size: 22px;
   font-weight: 700;
+  animation: checkPop 380ms cubic-bezier(0.34, 1.56, 0.64, 1) 140ms both;
+}
+@keyframes checkPop {
+  0% { opacity: 0; transform: scale(0.3); }
+  100% { opacity: 1; transform: scale(1); }
 }
 .sc-success-label {
   font-size: 15px;
@@ -409,7 +424,7 @@ onMounted(async () => {
   margin-bottom: 6px;
 }
 .sc-success-answer {
-  font-size: 19px;
+  font-size: 16px;
   line-height: 1.4;
   color: var(--text);
 }
@@ -466,8 +481,8 @@ onMounted(async () => {
 
 @media (max-width: 360px) {
   .sc-card { margin-left: 12px; margin-right: 12px; padding: 18px; border-radius: 22px; }
-  .sc-task-title { font-size: 23px; }
-  .sc-answer-input { font-size: 18px; }
-  .sc-success-answer { font-size: 17px; }
+  .sc-task-title { font-size: 19px; }
+  .sc-answer-input { font-size: 16px; }
+  .sc-success-answer { font-size: 15px; }
 }
 </style>
