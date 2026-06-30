@@ -535,7 +535,7 @@ export const grammarClient = {
 
   async startTrainingSession(limit = 20): Promise<any> {
     return offlineFallback(
-      () => apiClient.request('/api/learning/grammar/training/session/start', {
+      () => apiClient.request(`/api/learning/grammar/training/session/start${grammarCourseParam()}`, {
         method: 'POST',
         body: { limit } as any,
       }),
@@ -563,7 +563,7 @@ export const grammarClient = {
   async submitTrainingAnswer(questionID: string, answer: any): Promise<any> {
     if (!isBrowserOffline()) {
       try {
-        return await apiClient.request('/api/learning/grammar/training/session/answer', {
+        return await apiClient.request(`/api/learning/grammar/training/session/answer${grammarCourseParam()}`, {
           method: 'POST',
           body: { question_id: questionID, answer } as any,
         })
@@ -730,7 +730,7 @@ export const grammarClient = {
   async submitTest(scope: 'chapter' | 'category', scopeID: string, answers: any[]): Promise<any> {
     if (!isBrowserOffline()) {
       try {
-        const result = await apiClient.request('/api/learning/grammar/tests/submit', {
+        const result = await apiClient.request(`/api/learning/grammar/tests/submit${grammarCourseParam()}`, {
           method: 'POST',
           body: { scope, scope_id: scopeID, answers } as any,
         })
@@ -749,7 +749,7 @@ export const grammarClient = {
   async submitPlacementTest(answersMap: Record<string, any>): Promise<any> {
     if (!isBrowserOffline()) {
       try {
-        const result = await apiClient.request('/api/learning/grammar/placement-test/submit', {
+        const result = await apiClient.request(`/api/learning/grammar/placement-test/submit${grammarCourseParam()}`, {
           method: 'POST',
           body: answersMap as any,
         })
