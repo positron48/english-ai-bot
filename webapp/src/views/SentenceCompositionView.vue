@@ -67,7 +67,11 @@
             <template v-else-if="result.outcome === 'passed'">✓ {{ t('sentence.outcomePassed') }}</template>
             <template v-else>✗ {{ t('sentence.outcomeFailed') }}</template>
           </div>
-          <SentenceGrading v-if="result.error_count > 0" :grade="result" />
+          <SentenceGrading
+            v-if="result.error_count > 0"
+            :user-input="resultInput"
+            :corrected="result.corrected_es"
+          />
         </section>
 
         <!-- correct answer -->
@@ -124,6 +128,7 @@ const finished = ref(false)
 const grading = ref(false)
 const current = ref<SentenceItem | null>(null)
 const result = ref<SentenceGrade | null>(null)
+const resultInput = ref('') // the exact text the learner submitted, for the correction diff
 const input = ref('')
 const total = ref(0)
 const attempted = ref(0)
@@ -159,6 +164,7 @@ async function submit() {
   if (!current.value || grading.value || !input.value.trim()) return
   grading.value = true
   try {
+    resultInput.value = input.value.trim()
     const res = await sentenceClient.answer(current.value.id, input.value)
     result.value = res.grading
     setState.value = res.set

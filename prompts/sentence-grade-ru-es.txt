@@ -11,34 +11,27 @@ You receive ONE JSON object:
 GRADING RULES
 - Compare `user_input` to a correct translation of `prompt_ru`. `reference_es` is ONE acceptable answer, but ANY correct, natural translation is fully valid — do not penalize valid synonyms, word-order variants, or equally correct alternatives.
 - Be lenient about FORM: when unsure whether a valid alternative is wrong, treat it as CORRECT. Never invent mistakes. BUT always require COMPLETENESS (see next rule).
-- Completeness: the answer must express the FULL meaning of `prompt_ru`. Every part of the meaning the learner left out is an error — emit the missing {{target_lang}} word(s) as "insert" tokens and count each missing word/phrase. A shorter sentence that drops part of the meaning is NOT acceptable even if what remains is grammatical.
-- Count as errors only real, unambiguous mistakes: wrong/missing/extra words, omitted parts of the meaning, wrong verb form or agreement, wrong gender/number, wrong preposition, and clear misspellings.
+- Completeness: the answer must express the FULL meaning of `prompt_ru`. If the learner left out part of the meaning, that is an error and the missing word(s) MUST appear in `corrected_es`.
+- Count as errors only real, unambiguous mistakes: wrong/missing/extra words, omitted meaning, wrong verb form or agreement, wrong gender/number, wrong preposition, and clear misspellings.
 - Accents: count a missing or wrong accent ONLY when it turns the word into a different word or is plainly required spelling (e.g. "esta" vs "está"). Otherwise ignore accents.
 - NEVER count as errors: capitalization at the start of the sentence, and trailing punctuation (. ! ? ¡ ¿).
 - If `user_input` equals `reference_es` (ignoring leading capitalization and trailing punctuation), it MUST be 0 errors / "star".
-- `error_count` MUST equal the number of "wrong" tokens plus the number of "insert" tokens in `tokens` (every correction counts, including each missing word you insert). It must never be less than the number of corrections you show.
 
-TEACHER MARKUP (tokens)
-- Produce `tokens`: an ordered list reconstructing the learner's answer with corrections, as a teacher would mark on paper.
-- Each token:
-  - { "text": "<the word/letters the learner wrote>", "status": "ok" }  -> correct, left as-is.
-  - { "text": "<the wrong word the learner wrote>", "status": "wrong", "correction": "<correct form>" }  -> struck out, correct form written above.
-  - { "text": "", "status": "insert", "correction": "<missing word>" }  -> a word the learner omitted, inserted in place.
-- Tokenize on words, preserving the learner's order left-to-right; insert "insert" tokens where words are missing.
-- `correction` MUST be the FULL correct form of the word (not a fragment) — the client highlights the differing letters itself.
-- For a misspelling, keep it as ONE "wrong" token with the full correct word; do not split a word into several tokens.
-- Do not double-mark: each learner word becomes at most one token; each missing word becomes one "insert" token.
+CORRECTED SENTENCE (most important field)
+- `corrected_es` MUST be the learner's own sentence with ONLY the necessary fixes applied — a MINIMAL edit, not a rewrite. Keep every word the learner got right, in their order. Only change wrong words, fix wrong forms, insert missing words, and drop extra words.
+- Do NOT replace the learner's correct wording with a different (even if equivalent) phrasing — the client shows a word-by-word diff between `user_input` and `corrected_es`, so unnecessary changes show up as fake mistakes.
+- When the answer is fully correct, `corrected_es` equals the learner's sentence (cleaned only for capitalization/punctuation).
+- `error_count` = the number of distinct corrections needed to turn `user_input` into `corrected_es` (a run of wrong letters in one word counts as one; a missing word counts as one).
 
 OUTPUT (STRICT)
-- Output ONLY the JSON object, nothing else. No markdown fences, no explanation before or after.
+- Output ONLY the JSON object, nothing else. No markdown fences, no text before or after.
 - Shape:
 {
   "error_count": <int>,
   "outcome": "star" | "passed" | "failed",   // star = 0 errors, passed = 1 error, failed = 2+ errors
-  "corrected_es": "<the fully corrected {{target_lang}} sentence>",
-  "tokens": [ { "text": "...", "status": "ok|wrong|insert", "correction": "..." } ],
+  "corrected_es": "<the learner's sentence, minimally corrected>",
   "explanation": "<short tip in {{native_lang}}, max ~140 chars, on the MAIN mistake; empty string when there are no mistakes>"
 }
 - `outcome` MUST match `error_count`: 0 -> "star", 1 -> "passed", >=2 -> "failed".
 - `explanation`: when there is at least one mistake, give ONE short, friendly grammar/vocabulary tip in {{native_lang}} about the most important error (e.g. why "hay" not "está"). When the answer is correct (star), use "".
-- If `user_input` is empty or unrelated, mark all reference words as "insert" and outcome "failed".
+- If `user_input` is empty or unrelated, `corrected_es` is a correct translation of `prompt_ru` and outcome is "failed".

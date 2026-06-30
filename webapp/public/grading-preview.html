@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sentence grading — correction preview</title>
+<style>
+  :root {
+    --text: #20352A;
+    --subtext: #6F685C;
+    --card: #FFF9ED;
+    --bg: #F8F1E4;
+    --correct-ink: #2f7d46;
+    --wrong-ink: #c4443c;
+    --border: rgba(129,93,42,0.18);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 24px; background: var(--bg); color: var(--text);
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  }
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  .hint { color: var(--subtext); font-size: 13px; margin: 0 0 20px; }
+  .case {
+    background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+    padding: 14px 16px; margin-bottom: 12px; max-width: 760px;
+  }
+  .case-label { font-size: 12px; color: var(--subtext); margin-bottom: 8px; }
+  .io { font-size: 12px; color: var(--subtext); margin-bottom: 2px; }
+  .io b { color: var(--text); font-weight: 600; }
+
+  /* ---- mirror of SentenceGrading.vue rendering (final, non-animated state) ---- */
+  .cl {
+    display: flex; flex-wrap: wrap; align-items: flex-end; gap: 8px 7px;
+    font-family: 'Lora', Georgia, serif; font-size: 19px; line-height: 1.3; color: var(--text);
+    margin-top: 10px;
+  }
+  .tk { display: inline-flex; flex-direction: column; align-items: center; }
+  .base { white-space: nowrap; }
+  .above { display: flex; flex-direction: column; align-items: center; line-height: 1.05; margin-bottom: 1px; }
+  .above-word { font-size: 0.78em; color: var(--correct-ink); white-space: nowrap; }
+  .arrow { width: 13px; height: 15px; stroke: var(--correct-ink); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+  .ins-gap { color: transparent; }
+  .del { position: relative; color: var(--wrong-ink); }
+  .del::after { content: ''; position: absolute; left: -1px; right: -1px; top: 56%; height: 2px; background: var(--wrong-ink); }
+  .ins { color: var(--correct-ink); }
+
+  form { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; max-width: 760px; margin: 8px 0 24px; }
+  form label { display: block; font-size: 12px; color: var(--subtext); margin: 8px 0 4px; }
+  form textarea { width: 100%; font-size: 16px; padding: 8px; border-radius: 8px; border: 1px solid var(--border); resize: vertical; font-family: inherit; }
+  form button { margin-top: 12px; padding: 8px 18px; border: 0; border-radius: 8px; background: #2f7d46; color: #fff; font-size: 14px; font-weight: 600; cursor: pointer; }
+</style>
+</head>
+<body>
+  <h1>Проверка отрисовки исправлений</h1>
+  <p class="hint">Слева — ввод ученика, справа (сверху зелёным) — минимальная правка до правильного. Анимации тут отключены, показано финальное состояние. Зачёркивание — только неверные символы/слова, вставки — со стрелкой к месту.</p>
+
+  <form id="dyn">
+    <label>Ввод ученика (user_input)</label>
+    <textarea id="u" rows="2">Este es cebolla anillo dulce</textarea>
+    <label>Правильный ответ (corrected_es)</label>
+    <textarea id="c" rows="2">Es una cebolla dulce</textarea>
+    <button type="submit">Показать</button>
+    <div class="cl" id="dynOut" style="margin-top:14px"></div>
+  </form>
+
+  <div id="cases"></div>
+
+<script>
+// ===== mirror of webapp/src/lib/correctionDiff.ts (keep in sync) =====
+var SIMILAR_THRESHOLD = 0.5;
+function splitWords(s){ return s.trim().split(/\s+/).filter(Boolean); }
+function stripPunct(w){ return w.replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu,''); }
+function alignKey(w){ return stripPunct(w.toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu,'')); }
+function caseKey(w){ return stripPunct(w.toLowerCase()); }
+
+function wordDiff(u,c){
+  var n=u.length,m=c.length;
+  var dp=Array.from({length:n+1},function(){return new Array(m+1).fill(0);});
+  for(var i=n-1;i>=0;i--)for(var j=m-1;j>=0;j--){
+    dp[i][j]= alignKey(u[i])===alignKey(c[j]) ? dp[i+1][j+1]+1 : Math.max(dp[i+1][j],dp[i][j+1]);
+  }
+  var ops=[],i2=0,j2=0;
+  while(i2<n&&j2<m){
+    if(alignKey(u[i2])===alignKey(c[j2])){ ops.push({type:'equal',u:u[i2],c:c[j2]}); i2++;j2++; }
+    else if(dp[i2+1][j2]>=dp[i2][j2+1]){ ops.push({type:'del',u:u[i2]}); i2++; }
+    else { ops.push({type:'ins',c:c[j2]}); j2++; }
+  }
+  while(i2<n) ops.push({type:'del',u:u[i2++]});
+  while(j2<m) ops.push({type:'ins',c:c[j2++]});
+  return ops;
+}
+
+function charDiff(a,b){
+  var n=a.length,m=b.length;
+  var dp=Array.from({length:n+1},function(){return new Array(m+1).fill(0);});
+  for(var i=n-1;i>=0;i--)for(var j=m-1;j>=0;j--){
+    dp[i][j]= a[i]===b[j] ? dp[i+1][j+1]+1 : Math.max(dp[i+1][j],dp[i][j+1]);
+  }
+  var raw=[],i2=0,j2=0;
+  while(i2<n&&j2<m){
+    if(a[i2]===b[j2]){ raw.push({t:a[i2],kind:'same'}); i2++;j2++; }
+    else if(dp[i2+1][j2]>=dp[i2][j2+1]){ raw.push({t:a[i2],kind:'del'}); i2++; }
+    else { raw.push({t:b[j2],kind:'ins'}); j2++; }
+  }
+  while(i2<n) raw.push({t:a[i2++],kind:'del'});
+  while(j2<m) raw.push({t:b[j2++],kind:'ins'});
+  var segs=[];
+  for(var k=0;k<raw.length;k++){
+    var last=segs[segs.length-1];
+    if(last&&last.kind===raw[k].kind) last.t+=raw[k].t; else segs.push({t:raw[k].t,kind:raw[k].kind});
+  }
+  return segs;
+}
+function commonChars(a,b){ var c=0; charDiff(a,b).forEach(function(s){ if(s.kind==='same') c+=s.t.length; }); return c; }
+
+function renderCorrection(userInput, corrected){
+  var ops=wordDiff(splitWords(userInput), splitWords(corrected));
+  var out=[], dels=[], inss=[];
+  function flush(){
+    if(dels.length&&inss.length){
+      var single=dels.length===1&&inss.length===1;
+      var ratio= single ? commonChars(dels[0],inss[0])/Math.max(dels[0].length,inss[0].length,1) : 0;
+      if(single&&ratio>=SIMILAR_THRESHOLD) out.push({kind:'edit',segs:charDiff(dels[0],inss[0])});
+      else out.push({kind:'replace',from:dels.join(' '),to:inss.join(' ')});
+    } else if(dels.length){ dels.forEach(function(d){ out.push({kind:'del',text:d}); }); }
+    else if(inss.length){ out.push({kind:'insert',text:inss.join(' ')}); }
+    dels=[]; inss=[];
+  }
+  ops.forEach(function(op){
+    if(op.type==='equal'){ flush(); var u=op.u||'',c=op.c||''; if(u===c||caseKey(u)===caseKey(c)) out.push({kind:'equal',text:c}); else out.push({kind:'edit',segs:charDiff(u,c)}); }
+    else if(op.type==='del'){ dels.push(op.u); }
+    else { inss.push(op.c); }
+  });
+  flush();
+  return out;
+}
+// ===== end mirror =====
+
+var SVGNS='http://www.w3.org/2000/svg';
+function arrowSvg(){
+  var s=document.createElementNS(SVGNS,'svg');
+  s.setAttribute('class','arrow'); s.setAttribute('viewBox','0 0 14 16');
+  var p1=document.createElementNS(SVGNS,'path'); p1.setAttribute('d','M7 1 V11');
+  var p2=document.createElementNS(SVGNS,'path'); p2.setAttribute('d','M3 8 L7 12 L11 8');
+  s.appendChild(p1); s.appendChild(p2); return s;
+}
+function span(cls,text){ var e=document.createElement('span'); if(cls) e.className=cls; if(text!=null) e.textContent=text; return e; }
+
+function renderInto(container, userInput, corrected){
+  container.innerHTML='';
+  renderCorrection(userInput, corrected).forEach(function(tk){
+    var t=span('tk tk--'+tk.kind);
+    if(tk.kind==='replace'||tk.kind==='insert'){
+      var above=span('above');
+      above.appendChild(span('above-word', tk.kind==='replace'?tk.to:tk.text));
+      if(tk.kind==='insert') above.appendChild(arrowSvg());
+      t.appendChild(above);
+    }
+    var base=span('base');
+    if(tk.kind==='equal') base.appendChild(document.createTextNode(tk.text));
+    else if(tk.kind==='del') base.appendChild(span('del',tk.text));
+    else if(tk.kind==='replace') base.appendChild(span('del',tk.from));
+    else if(tk.kind==='insert') base.appendChild(span('ins-gap','·'));
+    else tk.segs.forEach(function(s){ base.appendChild(span(s.kind==='del'?'del':s.kind==='ins'?'ins':'', s.t)); });
+    t.appendChild(base);
+    container.appendChild(t);
+  });
+}
+
+var CASES=[
+  ['Идеально (без правок)', 'Tengo un gato', 'Tengo un gato'],
+  ['Только заглавная/точка — не ошибка', 'es una cebolla dulce', 'Es una cebolla dulce.'],
+  ['Одна неверная буква', 'La casa es grando', 'La casa es grande'],
+  ['Пропущенная буква в середине слова', 'El pero come', 'El perro come'],
+  ['Неверное слово целиком', 'El gato está agua', 'El gato bebe agua'],
+  ['Пропущено слово (вставка со стрелкой)', 'Es cebolla dulce', 'Es una cebolla dulce'],
+  ['Две вставки подряд объединяются', 'gato', 'El gato negro'],
+  ['Лишнее слово (зачёркнуто)', 'Yo tengo un gato grande', 'Tengo un gato'],
+  ['Перестановка слов', 'En la habitación está la luz grande', 'En la habitación hay una gran luz'],
+  ['Кейс «Este es…» — слово зачёркнуто целиком', 'Este es cebolla anillo dulce', 'Es una cebolla dulce'],
+  ['Акценты, где меняют слово', 'El esta aqui', 'Él está aquí'],
+  ['Пустой ответ', '', 'Tengo un gato'],
+];
+
+var casesEl=document.getElementById('cases');
+CASES.forEach(function(c){
+  var box=span('case');
+  box.appendChild(span('case-label', c[0]));
+  var io1=span('io'); io1.innerHTML='Ученик: <b>'+(c[1]||'(пусто)')+'</b>'; box.appendChild(io1);
+  var io2=span('io'); io2.innerHTML='Верно: <b>'+c[2]+'</b>'; box.appendChild(io2);
+  var cl=span('cl'); renderInto(cl, c[1], c[2]); box.appendChild(cl);
+  casesEl.appendChild(box);
+});
+
+var dyn=document.getElementById('dyn');
+function runDyn(){ renderInto(document.getElementById('dynOut'), document.getElementById('u').value, document.getElementById('c').value); }
+dyn.addEventListener('submit', function(e){ e.preventDefault(); runDyn(); });
+runDyn();
+</script>
+</body>
+</html>
