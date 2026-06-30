@@ -208,7 +208,8 @@ func hasStaticAssetExtension(path string) bool {
 	case ".js", ".mjs", ".css", ".map",
 		".ico", ".png", ".jpg", ".jpeg", ".gif", ".svg", ".webp",
 		".txt", ".xml", ".webmanifest", ".json",
-		".woff", ".woff2", ".ttf", ".eot":
+		".woff", ".woff2", ".ttf", ".eot",
+		".html": // static pages bundled under public/ (e.g. grading-preview.html); SPA routes never end in .html
 		return true
 	default:
 		return false

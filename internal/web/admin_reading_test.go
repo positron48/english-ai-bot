@@ -79,7 +79,8 @@ func TestReadingWritableRootDir_GrammarBundleDir(t *testing.T) {
 }
 
 func TestReadingBundleFS_matchesWritableRootInRepo(t *testing.T) {
-	t.Parallel()
+	// NOT t.Parallel(): this test mutates the process-global working directory (os.Chdir),
+	// which would race with the other cwd-mutating reading test under parallel execution.
 	repoRoot := findRepoRoot(t)
 	if repoRoot == "" {
 		t.Skip("not inside english-ai-bot repo")
@@ -115,7 +116,8 @@ func TestReadingBundleFS_matchesWritableRootInRepo(t *testing.T) {
 }
 
 func TestReadingWritableRootDir_DevRepoFallback(t *testing.T) {
-	t.Parallel()
+	// NOT t.Parallel(): mutates the process-global working directory (os.Chdir); see the
+	// matching note on TestReadingBundleFS_matchesWritableRootInRepo.
 	repoRoot := findRepoRoot(t)
 	if repoRoot == "" {
 		t.Skip("not inside english-ai-bot repo")

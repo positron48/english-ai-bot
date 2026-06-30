@@ -549,7 +549,7 @@ webapp-dev:
 
 webapp-build:
 	@echo "Building webapp..."
-	@cd webapp && npm run build
+	@cd webapp && { [ -d node_modules ] || npm ci; } && npm run build
 
 # Development - builds and runs both backend and frontend
 dev: tidy webapp-install webapp-build grammar-bundle
