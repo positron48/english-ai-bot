@@ -42,6 +42,7 @@ type SentenceGrade struct {
 	Outcome     string               `json:"outcome"`
 	CorrectedES string               `json:"corrected_es"`
 	Tokens      []SentenceGradeToken `json:"tokens"`
+	Explanation string               `json:"explanation,omitempty"`
 }
 
 // SetSentenceGenPromptForCourse registers the daily sentence-set generation prompt for a course.

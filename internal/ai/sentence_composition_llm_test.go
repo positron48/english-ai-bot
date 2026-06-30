@@ -60,8 +60,8 @@ func TestSentenceLLMHarness(t *testing.T) {
 		if err != nil {
 			t.Fatalf("fixed grade: %v", err)
 		}
-		t.Logf("\nFIXED GRADE:\n  prompt_ru=%q\n  reference=%q\n  input=%q\n  errors=%d outcome=%s corrected=%q\n  tokens=%+v",
-			fp, fr, fin, g.ErrorCount, g.Outcome, g.CorrectedES, g.Tokens)
+		t.Logf("\nFIXED GRADE:\n  prompt_ru=%q\n  reference=%q\n  input=%q\n  errors=%d outcome=%s corrected=%q\n  explanation=%q\n  tokens=%+v",
+			fp, fr, fin, g.ErrorCount, g.Outcome, g.CorrectedES, g.Explanation, g.Tokens)
 		return
 	}
 

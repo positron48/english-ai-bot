@@ -11,6 +11,7 @@ export interface SentenceGrade {
   outcome: 'star' | 'passed' | 'failed'
   corrected_es: string
   tokens: SentenceGradeToken[]
+  explanation?: string
 }
 
 export interface SentenceItem {

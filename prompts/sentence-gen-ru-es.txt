@@ -12,8 +12,10 @@ TASK
 - Produce exactly `sentence_count` short, natural {{native_lang}} sentences for the learner to translate into {{target_lang}}.
 - Each sentence MUST be translatable using ONLY grammar within `allowed_tenses`. Never require a tense or mood that is not listed.
 - Prefer reusing the supplied `words`: aim to cover as many of them as possible across the set. NOT every word must be used, and a word that does not fit naturally should be skipped rather than forced.
-- You MAY freely add simple connective/function words (pronouns, articles, prepositions, conjunctions, common verbs like ser/estar/tener/haber/ir) even if they are not in `words`.
-- Keep sentences short (3–10 words), everyday, unambiguous, and each with ONE clear correct translation.
+- VOCABULARY IS RESTRICTED. Every meaningful word (noun, adjective, adverb, main verb) in the sentence MUST come from `words`. The learner only knows those words — do NOT introduce any other content word, even a common or "easy" one (e.g. do not add "maduro/спелый", "rojo", "rápido", "ayer" unless it is in `words`).
+- The ONLY words you may add that are not in `words` are tiny grammatical/function words: articles (el/la/un/una), pronouns (yo/tú/él…), prepositions (en/a/de/con…), conjunctions (y/o/que/pero), negation (no), and the basic auxiliary/linking verbs ser, estar, tener, haber, ir, hacer. Nothing else.
+- If you cannot build a natural sentence from the available words for one slot, make a simpler sentence using fewer of them — never reach for an outside content word.
+- Keep sentences short (3–8 words), everyday, unambiguous, and each with ONE clear correct translation.
 - Vary the sentences; do not repeat the same structure every time.
 
 LANGUAGE
