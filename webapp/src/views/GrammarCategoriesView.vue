@@ -26,35 +26,6 @@
       </div>
     </div>
 
-    <div v-if="showOfflinePanel" class="offline-preload-panel">
-      <div>
-        <div class="offline-title-row">
-          <strong>{{ t('offline.grammarTitle') }}</strong>
-          <span class="network-badge" :class="{ 'network-badge--offline': !isOnline }">
-            {{ isOnline ? t('offline.online') : t('offline.offline') }}
-          </span>
-        </div>
-        <p v-if="offlineStatus.ready">
-          {{ t('offline.grammarReady', { downloaded: offlineStatus.downloadedChapters, total: offlineStatus.totalChapters }) }}
-          <span v-if="offlineStatus.pendingAttempts > 0">{{ t('offline.pendingSync', { count: offlineStatus.pendingAttempts }) }}</span>
-        </p>
-        <p v-else>
-          {{ t('offline.grammarDescription') }}
-        </p>
-      </div>
-      <div class="offline-actions">
-        <button @click="preloadGrammar" class="btn btn-secondary" :disabled="preloading || !isOnline">
-          {{ preloading ? t('offline.downloadingProgress', { done: preloadDone, total: preloadTotal }) : (offlineStatus.ready ? t('offline.updatePreload') : t('offline.preloadGrammar')) }}
-        </button>
-        <button v-if="offlineStatus.pendingAttempts > 0" @click="syncOfflineAttempts" class="btn btn-primary" :disabled="syncing">
-          {{ syncing ? t('offline.syncing') : t('offline.syncResults') }}
-        </button>
-        <button v-if="offlineStatus.ready" @click="clearPreload" class="btn btn-secondary" :disabled="preloading">
-          {{ t('offline.deletePreload') }}
-        </button>
-      </div>
-    </div>
-    
     <!-- Statistics Block -->
     <div v-if="!loading && !error && statistics" class="statistics-block">
       <div class="stats-content">
@@ -264,14 +235,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter, useRoute } from 'vue-router'
-import { grammarClient, setGrammarCourse, type OfflineStatus } from '../api/grammarClient'
+import { grammarClient, setGrammarCourse } from '../api/grammarClient'
 import Icon from '../components/Icon.vue'
 import LgPageHeader from '../components/linglow/LgPageHeader.vue'
 import LgLumiFact from '../components/linglow/LgLumiFact.vue'
-import { isEmbeddedAndroidApp } from '../utils/runtime'
 import { useCourse } from '../composables/useCourse'
 
 const { t, locale } = useI18n()
@@ -321,19 +291,6 @@ const statistics = ref<{
 const hidePlacementTestButton = ref(true) // По умолчанию скрыта, пока не загрузим данные
 const settingsLoaded = ref(false) // Флаг загрузки настроек
 const grammarTrainingAvailable = ref(false)
-const offlineStatus = ref<OfflineStatus>({
-  ready: false,
-  downloading: false,
-  downloadedChapters: 0,
-  totalChapters: 0,
-  pendingAttempts: 0
-})
-const preloading = ref(false)
-const preloadDone = ref(0)
-const preloadTotal = ref(0)
-const syncing = ref(false)
-const isOnline = ref(typeof navigator === 'undefined' ? true : navigator.onLine)
-const isInstalledWebApp = ref(false)
 const offlineDebugStorageKey = 'qantrix-offline-debug-state'
 const readStoredDebugState = () => {
   if (typeof localStorage === 'undefined') return ''
@@ -387,10 +344,6 @@ const levelDescription = computed(() => {
   if (level.startsWith('B')) return 'Intermediate level'
   if (level.startsWith('A')) return 'Beginner level'
   return 'Keep learning!'
-})
-
-const showOfflinePanel = computed(() => {
-  return isInstalledWebApp.value || !isOnline.value || offlineStatus.value.ready || offlineStatus.value.pendingAttempts > 0
 })
 
 // Small circle calculations
@@ -461,12 +414,7 @@ const loadCategories = async () => {
     console.error('Failed to load grammar categories:', err)
   } finally {
     loading.value = false
-    await refreshOfflineStatus()
   }
-}
-
-const refreshOfflineStatus = async () => {
-  offlineStatus.value = await grammarClient.getOfflineStatus()
 }
 
 const refreshDebugState = async (action = 'manual') => {
@@ -519,59 +467,9 @@ const openCategory = async (category: Category) => {
   await navigateToAppPath(`/learning/grammar/${category.section_id}`)
 }
 
-const preloadGrammar = async () => {
-  preloading.value = true
-  error.value = null
-  try {
-    offlineStatus.value = await grammarClient.preload((done, total) => {
-      preloadDone.value = done
-      preloadTotal.value = total
-    })
-    await refreshDebugState('preloadGrammar')
-  } catch (err: any) {
-    error.value = err.message || 'Failed to preload grammar'
-  } finally {
-    preloading.value = false
-  }
-}
-
-const syncOfflineAttempts = async () => {
-  syncing.value = true
-  try {
-    await grammarClient.syncQueuedAttempts()
-    await loadCategories()
-  } catch (err) {
-    console.error('Failed to sync offline attempts:', err)
-  } finally {
-    syncing.value = false
-    await refreshOfflineStatus()
-  }
-}
-
-const clearPreload = async () => {
-  await grammarClient.clear()
-  await refreshOfflineStatus()
-}
-
 onMounted(() => {
-  isInstalledWebApp.value = isEmbeddedAndroidApp() || window.matchMedia?.('(display-mode: standalone)').matches || document.referrer.startsWith('android-app://')
-  window.addEventListener('online', handleNetworkChange)
-  window.addEventListener('offline', handleNetworkChange)
   loadCategories()
 })
-
-onUnmounted(() => {
-  window.removeEventListener('online', handleNetworkChange)
-  window.removeEventListener('offline', handleNetworkChange)
-})
-
-const handleNetworkChange = async () => {
-  isOnline.value = typeof navigator === 'undefined' ? true : navigator.onLine
-  await refreshOfflineStatus()
-  if (isOnline.value && offlineStatus.value.pendingAttempts > 0) {
-    await syncOfflineAttempts()
-  }
-}
 </script>
 
 <style scoped>
@@ -595,51 +493,6 @@ const handleNetworkChange = async () => {
   flex-wrap: wrap;
   align-items: flex-start;
   gap: 12px;
-}
-
-.offline-preload-panel {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  align-items: center;
-  padding: 16px;
-  margin-bottom: 24px;
-  border: 1px solid var(--border-color);
-  border-radius: 14px;
-  background: var(--bg-secondary);
-}
-
-.offline-preload-panel p {
-  margin: 4px 0 0;
-  color: var(--text-secondary);
-}
-
-.offline-title-row {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.network-badge {
-  display: inline-flex;
-  align-items: center;
-  border-radius: 999px;
-  padding: 3px 9px;
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: #065f46;
-  background: #d1fae5;
-}
-
-.network-badge--offline {
-  color: #92400e;
-  background: #fef3c7;
-}
-
-.offline-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
 }
 
 .grammar-categories h1 {

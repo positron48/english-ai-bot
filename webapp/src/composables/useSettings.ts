@@ -9,6 +9,7 @@ interface Settings {
   soundTheme: string
   hideMorphInTraining: boolean
   autoplayPronunciation: boolean
+  offlineAutoDownload: boolean
 }
 
 const defaultSettings: Settings = {
@@ -17,7 +18,8 @@ const defaultSettings: Settings = {
   theme: 'dark',
   soundTheme: 'tick',
   hideMorphInTraining: false,
-  autoplayPronunciation: true
+  autoplayPronunciation: true,
+  offlineAutoDownload: false
 }
 
 const currentSettings = ref<Settings>({ ...defaultSettings })
@@ -36,7 +38,8 @@ const loadSettings = () => {
         theme: parsed.theme || defaultSettings.theme,
         soundTheme: parsed.soundTheme || defaultSettings.soundTheme,
         hideMorphInTraining: parsed.hideMorphInTraining !== undefined ? parsed.hideMorphInTraining : defaultSettings.hideMorphInTraining,
-        autoplayPronunciation: parsed.autoplayPronunciation !== undefined ? parsed.autoplayPronunciation : defaultSettings.autoplayPronunciation
+        autoplayPronunciation: parsed.autoplayPronunciation !== undefined ? parsed.autoplayPronunciation : defaultSettings.autoplayPronunciation,
+        offlineAutoDownload: parsed.offlineAutoDownload !== undefined ? parsed.offlineAutoDownload : defaultSettings.offlineAutoDownload
       }
     } else {
       // If no saved settings, try to get theme from useTheme's storage
@@ -97,6 +100,9 @@ export function useSettings() {
   const setAutoplayPronunciation = (enabled: boolean) => {
     currentSettings.value.autoplayPronunciation = enabled
   }
+  const setOfflineAutoDownload = (enabled: boolean) => {
+    currentSettings.value.offlineAutoDownload = enabled
+  }
 
   return {
     settings: currentSettings,
@@ -106,6 +112,7 @@ export function useSettings() {
     setSoundTheme,
     setHideMorphInTraining,
     setAutoplayPronunciation,
+    setOfflineAutoDownload,
     loadSettings,
     saveSettings
   }

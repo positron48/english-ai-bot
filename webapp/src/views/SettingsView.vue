@@ -194,6 +194,24 @@
           </label>
         </div>
       </div>
+      <div class="prf-row">
+        <div class="prf-row-info">
+          <span class="prf-row-label">{{ t('settings.offlineAutoDownload') }}</span>
+          <span class="prf-row-sub">{{ t('settings.offlineAutoDownloadDescription') }}</span>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" v-model="offlineAutoDownload" @change="handleOfflineAutoDownloadChange" />
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div v-if="hasOfflineData" class="prf-row prf-row--col">
+        <div class="prf-row-info">
+          <span class="prf-row-sub">{{ t('settings.offlineDataStatus', { chapters: grammarOffline?.downloadedChapters ?? 0, cards: wordOffline?.downloadedCards ?? 0 }) }}</span>
+        </div>
+        <button class="btn btn-secondary" :disabled="clearingOffline" @click="clearOfflineData">
+          {{ t('settings.deleteOfflineData') }}
+        </button>
+      </div>
     </div>
 
     <!-- NOTIFICATIONS -->
@@ -266,6 +284,9 @@ import { useAudio } from '../composables/useAudio'
 import { useAuth } from '../composables/useAuth'
 import { useLearningConfig, type SpanishVerbScopeLadderStep } from '../composables/useLearningConfig'
 import { apiClient } from '../api/client'
+import { grammarClient, type OfflineStatus } from '../api/grammarClient'
+import { wordTrainingClient, type WordTrainingOfflineStatus } from '../api/wordTrainingClient'
+import { maybeRunOfflineAutoDownload } from '../composables/useOfflineAutoDownload'
 import { useLocale } from '../composables/useLocale'
 import { AVAILABLE_LOCALES } from '../i18n'
 import { useCourse } from '../composables/useCourse'
@@ -311,7 +332,7 @@ onMounted(async () => {
 })
 
 const router = useRouter()
-const { settings, setSoundsEnabled, setVibrationEnabled, setTheme, setSoundTheme, setHideMorphInTraining, setAutoplayPronunciation } = useSettings()
+const { settings, setSoundsEnabled, setVibrationEnabled, setTheme, setSoundTheme, setHideMorphInTraining, setAutoplayPronunciation, setOfflineAutoDownload } = useSettings()
 const { theme: currentTheme, setTheme: setThemeInTheme } = useTheme()
 const { getThemes, previewTheme } = useAudio()
 const { logout: authLogout } = useAuth()
@@ -338,6 +359,13 @@ const typeModeEnabled = ref(true)
 const typeMasteringThreshold = ref(70)
 const hideMorphInTraining = ref(false)
 const autoplayPronunciation = ref(true)
+const offlineAutoDownload = ref(false)
+const grammarOffline = ref<OfflineStatus | null>(null)
+const wordOffline = ref<WordTrainingOfflineStatus | null>(null)
+const clearingOffline = ref(false)
+const hasOfflineData = computed(
+  () => (grammarOffline.value?.downloadedChapters ?? 0) > 0 || (wordOffline.value?.downloadedCards ?? 0) > 0
+)
 const verbFormsProgressionIndex = ref(0)
 const verbProgressionSaved = ref(false)
 let trainingDelaysSavedTimeout: ReturnType<typeof setTimeout> | null = null
@@ -365,7 +393,9 @@ onMounted(async () => {
   selectedTheme.value = currentTheme.value
   selectedSoundTheme.value = settings.value.soundTheme || 'tick'
   autoplayPronunciation.value = settings.value.autoplayPronunciation
-  
+  offlineAutoDownload.value = settings.value.offlineAutoDownload
+  void refreshOfflineStatus()
+
   // Load notification settings from API
   await loadNotificationSettings()
   // Load training delay settings from API
@@ -605,6 +635,36 @@ const handleSoundsChange = () => {
 
 const handleVibrationChange = () => {
   setVibrationEnabled(vibrationEnabled.value)
+}
+
+const refreshOfflineStatus = async () => {
+  const [g, w] = await Promise.all([
+    grammarClient.getOfflineStatus().catch(() => null),
+    wordTrainingClient.getOfflineStatus().catch(() => null),
+  ])
+  grammarOffline.value = g
+  wordOffline.value = w
+}
+
+const handleOfflineAutoDownloadChange = async () => {
+  setOfflineAutoDownload(offlineAutoDownload.value)
+  if (offlineAutoDownload.value) {
+    await maybeRunOfflineAutoDownload()
+    await refreshOfflineStatus()
+  }
+}
+
+const clearOfflineData = async () => {
+  clearingOffline.value = true
+  try {
+    await grammarClient.clear()
+    await wordTrainingClient.clear()
+    await refreshOfflineStatus()
+  } catch (e) {
+    console.error('Failed to clear offline data:', e)
+  } finally {
+    clearingOffline.value = false
+  }
 }
 
 const handleThemeToggle = (event: Event) => {

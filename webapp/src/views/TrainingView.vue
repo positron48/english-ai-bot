@@ -34,30 +34,6 @@
     </div>
 
     <div v-if="!sessionActive && !loading && !sessionComplete" class="training-idle-stack">
-      <div v-if="showWordOfflinePanel" class="card word-offline-panel">
-        <div class="word-offline-title-row">
-          <h3>{{ t('offline.wordTrainingTitle') }}</h3>
-          <span class="network-badge" :class="{ 'network-badge--offline': !isOnline }">
-            {{ isOnline ? t('offline.online') : t('offline.offline') }}
-          </span>
-        </div>
-        <p v-if="wordOfflineStatus.ready">
-          {{ t('offline.wordTrainingReady', { count: wordOfflineStatus.downloadedCards }) }}
-          <span v-if="wordOfflineStatus.pendingAttempts > 0">{{ t('offline.pendingSync', { count: wordOfflineStatus.pendingAttempts }) }}</span>
-        </p>
-        <p v-else>{{ t('offline.wordTrainingDescription') }}</p>
-        <div class="word-offline-actions">
-          <button class="btn btn-secondary" :disabled="wordPreloading || !isOnline" @click="preloadWordTraining">
-            {{ wordPreloading ? t('offline.downloading') : (wordOfflineStatus.ready ? t('offline.updatePreload') : t('offline.preloadWords')) }}
-          </button>
-          <button v-if="wordOfflineStatus.pendingAttempts > 0" class="btn btn-primary" :disabled="wordSyncing || !isOnline" @click="syncWordTrainingAttempts">
-            {{ wordSyncing ? t('offline.syncing') : t('offline.syncResults') }}
-          </button>
-          <button v-if="wordOfflineStatus.ready" class="btn btn-secondary" :disabled="wordPreloading" @click="clearWordTrainingPreload">
-            {{ t('offline.deletePreload') }}
-          </button>
-        </div>
-      </div>
       <div class="card start-screen">
         <div class="start-screen-content">
         <div class="start-screen-stats" v-if="statsLoaded">
@@ -515,7 +491,7 @@ import { ref, computed, onMounted, onUnmounted, watch, nextTick, TransitionGroup
 import { useI18n } from 'vue-i18n'
 import { apiClient } from '../api/client'
 import { contentReportClient } from '../api/contentReportClient'
-import { wordTrainingClient, type WordTrainingOfflineStatus } from '../api/wordTrainingClient'
+import { wordTrainingClient } from '../api/wordTrainingClient'
 import { showAlert } from '../composables/useDialog'
 import { useSettings } from '../composables/useSettings'
 import { useAudio } from '../composables/useAudio'
@@ -523,7 +499,6 @@ import { useLocale } from '../composables/useLocale'
 import { Chart, registerables } from 'chart.js'
 import Icon from '../components/Icon.vue'
 import LgLoader from '../components/linglow/LgLoader.vue'
-import { isEmbeddedAndroidApp } from '../utils/runtime'
 import TrainingSessionCompletion from '../components/TrainingSessionCompletion.vue'
 import ContentReportDialog from '../components/ContentReportDialog.vue'
 import {
@@ -670,10 +645,6 @@ const percentageAnimationComplete = ref(false)
 const upcomingChartCanvas = ref<HTMLCanvasElement | null>(null)
 const upcomingCardsLoaded = ref(false)
 const upcomingCardsData = ref<Record<string, { date: string; label: string; count: number }>>({})
-const wordPreloading = ref(false)
-const wordSyncing = ref(false)
-const wordOfflineStatus = ref<WordTrainingOfflineStatus>({ ready: false, downloadedCards: 0, pendingAttempts: 0 })
-const isInstalledWebApp = ref(false)
 let upcomingChartInstance: Chart | null = null
 let networkErrorHideTimer: ReturnType<typeof setTimeout> | null = null
 const showExampleButton = ref(false)
@@ -699,10 +670,6 @@ const cardReportKey = (card: Card | null): string => {
 const reportAlreadySent = computed(() => {
   const key = cardReportKey(currentCard.value)
   return !!key && reportSentForCardKey.value === key
-})
-
-const showWordOfflinePanel = computed(() => {
-  return isInstalledWebApp.value || !isOnline.value || wordOfflineStatus.value.ready || wordOfflineStatus.value.pendingAttempts > 0
 })
 
 // Spell (compose word) state
@@ -1465,52 +1432,11 @@ const dismissNetworkError = () => {
   }
 }
 
-const refreshWordOfflineStatus = async () => {
-  wordOfflineStatus.value = await wordTrainingClient.getOfflineStatus()
-}
-
-const syncWordTrainingAttempts = async () => {
-  if (!isOnline.value) return
-  wordSyncing.value = true
-  try {
-    await wordTrainingClient.syncQueuedAttempts()
-    await refreshWordOfflineStatus()
-    await loadStats()
-  } catch (error) {
-    console.error('Failed to sync offline word training attempts:', error)
-  } finally {
-    wordSyncing.value = false
-  }
-}
-
-const preloadWordTraining = async () => {
-  if (!isOnline.value) return
-  wordPreloading.value = true
-  try {
-    wordOfflineStatus.value = await wordTrainingClient.preload()
-  } catch (error) {
-    console.error('Failed to preload word training:', error)
-    await showAlert('Не удалось загрузить тренировку слов для офлайна')
-  } finally {
-    wordPreloading.value = false
-  }
-}
-
-const clearWordTrainingPreload = async () => {
-  await wordTrainingClient.clear()
-  await refreshWordOfflineStatus()
-}
-
-const handleNetworkChange = async () => {
+const handleNetworkChange = () => {
   isOnline.value = typeof navigator === 'undefined' ? true : navigator.onLine
-  await refreshWordOfflineStatus()
-  if (isOnline.value && wordOfflineStatus.value.pendingAttempts > 0) {
-    await syncWordTrainingAttempts()
-  }
 }
 
 onMounted(async () => {
-  isInstalledWebApp.value = isEmbeddedAndroidApp() || window.matchMedia?.('(display-mode: standalone)').matches || document.referrer.startsWith('android-app://')
   // Set up network error callback
   apiClient.setNetworkErrorCallback((isRetrying: boolean, attempt: number, maxAttempts: number) => {
     if (typeof navigator !== 'undefined' && navigator.onLine === false) {
@@ -1535,7 +1461,7 @@ onMounted(async () => {
   window.addEventListener('online', handleNetworkChange)
   window.addEventListener('offline', handleNetworkChange)
   
-  await Promise.all([ensureLearningLoaded(), loadTrainingUISettings(), refreshWordOfflineStatus(), loadStats(), loadUpcomingCards(), checkCurrentSession()])
+  await Promise.all([ensureLearningLoaded(), loadTrainingUISettings(), loadStats(), loadUpcomingCards(), checkCurrentSession()])
 
   // Spell: scale collected letters to fit container width
   watch(
@@ -4897,48 +4823,5 @@ const handleTimerMouseLeave = () => {
     padding: 14px 28px;
     font-size: 16px;
   }
-}
-.word-offline-panel {
-  padding: 20px;
-  border: 1px solid var(--border-primary);
-  background: linear-gradient(135deg, var(--bg-secondary), rgba(67, 160, 71, 0.08));
-}
-
-.word-offline-title-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 8px;
-}
-
-.word-offline-title-row h3 {
-  margin: 0;
-  color: var(--text-primary);
-}
-
-.word-offline-panel p {
-  margin: 0 0 14px;
-  color: var(--text-secondary);
-}
-
-.word-offline-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.network-badge {
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: rgba(46, 125, 50, 0.14);
-  color: #2e7d32;
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.network-badge--offline {
-  background: rgba(198, 40, 40, 0.14);
-  color: #c62828;
 }
 </style>

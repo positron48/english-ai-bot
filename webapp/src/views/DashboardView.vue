@@ -257,6 +257,7 @@ import { useStats } from '../composables/useStats'
 import { useMe } from '../composables/useMe'
 import { sentenceClient } from '../api/sentenceClient'
 import { useGrammarContinueChapter } from '../composables/useGrammarContinueChapter'
+import { maybeRunOfflineAutoDownload } from '../composables/useOfflineAutoDownload'
 
 const { t } = useI18n()
 const { ensureMe } = useMe()
@@ -475,6 +476,7 @@ onMounted(() => {
     loadData()
     void ensureMe().catch(() => {})
     void loadSentenceAvailability()
+    void maybeRunOfflineAutoDownload()
   }
 })
 </script>
