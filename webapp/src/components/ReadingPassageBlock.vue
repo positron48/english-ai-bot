@@ -7,9 +7,6 @@
         </button>
         <h1 class="title">{{ block.reading_passage?.title || block.title }}</h1>
         <div class="header-actions">
-          <button type="button" class="icon-button" aria-label="Показать перевод" @click="showTranslation = !showTranslation">
-            文A
-          </button>
           <button
             v-if="canDelete"
             type="button"
@@ -96,6 +93,13 @@
         </div>
 
         <footer class="footer">
+          <button
+            type="button"
+            class="translation-toggle"
+            @click="showTranslation = !showTranslation"
+          >
+            {{ showTranslation ? t('reading.hideTranslation') : t('reading.showTranslation') }}
+          </button>
           <button
             type="button"
             class="mark-read-button"
@@ -954,6 +958,22 @@ const openRandomUnreadInCategory = async () => {
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+
+.translation-toggle {
+  align-self: center;
+  border: 0;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.2;
+  padding: 4px 8px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.translation-toggle:hover {
+  color: var(--text-primary);
 }
 
 .mark-read-button {

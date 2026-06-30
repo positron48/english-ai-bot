@@ -10,9 +10,11 @@
     </div>
     
     <div v-else>
-      <div class="chapters-header">
-        <h1>{{ categoryTitle }}</h1>
-      </div>
+      <LgPageHeader
+        :title="categoryTitle"
+        :show-back="true"
+        @back="router.push('/learning/grammar')"
+      />
       
       <div v-if="allChaptersPassed && chapters.length > 0" class="category-test-banner">
         <p>{{ bannerMessage }}</p>
@@ -93,6 +95,7 @@ import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { grammarClient } from '../api/grammarClient'
 import Icon from '../components/Icon.vue'
+import LgPageHeader from '../components/linglow/LgPageHeader.vue'
 
 const { t, locale } = useI18n()
 const route = useRoute()

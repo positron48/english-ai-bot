@@ -10,8 +10,12 @@
     </div>
     
     <div v-else-if="chapter">
+      <LgPageHeader
+        :title="chapterTitle"
+        :show-back="true"
+        @back="router.back()"
+      />
       <div class="chapter-header">
-        <h1>{{ chapterTitle }}</h1>
         <div class="chapter-meta">
           <span v-if="chapter.level" class="meta-badge">{{ chapter.level }}</span>
           <span v-if="chapter.estimated_minutes" class="meta-badge">
@@ -133,6 +137,7 @@ import { grammarClient, getGrammarCourseCode } from '../api/grammarClient'
 import { writeStoredGrammarContinueChapter } from '../utils/grammarContinueChapter'
 import GrammarQuestion from '../components/GrammarQuestion.vue'
 import GrammarTheoryExamples from '../components/GrammarTheoryExamples.vue'
+import LgPageHeader from '../components/linglow/LgPageHeader.vue'
 import ContentReportDialog from '../components/ContentReportDialog.vue'
 import { contentReportClient } from '../api/contentReportClient'
 import {

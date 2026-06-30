@@ -745,6 +745,65 @@ func TestWordReposGap_WordSetProgressKnownAndVocab(t *testing.T) {
 	}
 }
 
+// A word card shared by two sets in the same category must not be double-counted in the
+// category denominator: each set reads 100% and so must the category aggregate. Guards the
+// COUNT(DISTINCT word_card_id) total fix (previously COUNT(*) over rows inflated the total).
+func TestWordReposGap_AggregateProgressSharedWordAcrossSets(t *testing.T) {
+	db := wordReposGapDB(t)
+	setRepo := NewWordSetRepository(db, zap.NewNop())
+	wordRepo := NewWordRepository(db, zap.NewNop())
+	userID := wordReposGapUser(t, db, wordReposGapUserTelegramID+50)
+
+	catID, _ := NewWordSetCategoryRepository(db, zap.NewNop()).CreateCategory(&models.WordSetCategory{
+		CourseCode:  "en_ru",
+		Name:        "Gap Shared Word",
+		IsPublished: true,
+		SortOrder:   1,
+	})
+	set1, _ := setRepo.CreateWordSet(&models.WordSet{
+		CourseCode: "en_ru", CategoryID: &catID, Title: "Shared Set 1", IsPublished: true, SortOrder: 1,
+	})
+	set2, _ := setRepo.CreateWordSet(&models.WordSet{
+		CourseCode: "en_ru", CategoryID: &catID, Title: "Shared Set 2", IsPublished: true, SortOrder: 2,
+	})
+
+	sharedID, _ := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "gap-shared-word", Definition: "def"})
+	uniq1, _ := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "gap-uniq-word-1", Definition: "def"})
+	uniq2, _ := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "gap-uniq-word-2", Definition: "def"})
+	if err := setRepo.SetWordSetItems(set1, []int64{sharedID, uniq1}); err != nil {
+		t.Fatalf("SetWordSetItems set1: %v", err)
+	}
+	if err := setRepo.SetWordSetItems(set2, []int64{sharedID, uniq2}); err != nil {
+		t.Fatalf("SetWordSetItems set2: %v", err)
+	}
+
+	for _, id := range []int64{sharedID, uniq1, uniq2} {
+		if _, err := db.Exec(`INSERT INTO user_word_knowledge (user_id, word_card_id, status) VALUES (?, ?, 'known')`, userID, id); err != nil {
+			t.Fatalf("known %d: %v", id, err)
+		}
+	}
+
+	// Each set is fully learned.
+	for _, setID := range []int64{set1, set2} {
+		p, err := setRepo.GetWordSetProgress(setID, userID)
+		if err != nil {
+			t.Fatalf("GetWordSetProgress %d: %v", setID, err)
+		}
+		if p.ProgressPercent != 100 {
+			t.Fatalf("set %d percent = %f, want 100", setID, p.ProgressPercent)
+		}
+	}
+
+	// Category aggregate dedups the shared card: 3 distinct cards, all known → 100%.
+	total, known, inVocab, err := setRepo.GetCategoriesAggregateProgress([]int64{catID}, userID)
+	if err != nil {
+		t.Fatalf("aggregate: %v", err)
+	}
+	if total != 3 || known != 3 || inVocab != 0 {
+		t.Fatalf("aggregate = %d/%d/%d, want 3/3/0", total, known, inVocab)
+	}
+}
+
 func TestWordReposGap_GetWordSetWordsPreferredPOS(t *testing.T) {
 	db := wordReposGapDB(t)
 	setRepo := NewWordSetRepository(db, zap.NewNop())
@@ -1155,7 +1214,7 @@ func TestWordReposGap_GetWordSetProgressCountErrors(t *testing.T) {
 		}
 		defer db.Close()
 		mock.ExpectQuery("SELECT id, category_id").WillReturnRows(newSetRow())
-		mock.ExpectQuery("SELECT COUNT\\(\\*\\) FROM word_set_items").
+		mock.ExpectQuery("SELECT COUNT\\(DISTINCT word_card_id\\) FROM word_set_items").
 			WillReturnError(fmt.Errorf("count total failed"))
 		repo := NewWordSetRepository(db, zap.NewNop())
 		if _, err := repo.GetWordSetProgress(1, 900001); err == nil {
@@ -1170,7 +1229,7 @@ func TestWordReposGap_GetWordSetProgressCountErrors(t *testing.T) {
 		}
 		defer db.Close()
 		mock.ExpectQuery("SELECT id, category_id").WillReturnRows(newSetRow())
-		mock.ExpectQuery("SELECT COUNT\\(\\*\\) FROM word_set_items").
+		mock.ExpectQuery("SELECT COUNT\\(DISTINCT word_card_id\\) FROM word_set_items").
 			WillReturnRows(sqlmock.NewRows([]string{"count"}).AddRow(2))
 		mock.ExpectQuery("SELECT COUNT\\(DISTINCT wsi.word_card_id\\)").
 			WillReturnError(fmt.Errorf("known count failed"))
@@ -1187,7 +1246,7 @@ func TestWordReposGap_GetWordSetProgressCountErrors(t *testing.T) {
 		}
 		defer db.Close()
 		mock.ExpectQuery("SELECT id, category_id").WillReturnRows(newSetRow())
-		mock.ExpectQuery("SELECT COUNT\\(\\*\\) FROM word_set_items").
+		mock.ExpectQuery("SELECT COUNT\\(DISTINCT word_card_id\\) FROM word_set_items").
 			WillReturnRows(sqlmock.NewRows([]string{"count"}).AddRow(2))
 		mock.ExpectQuery("SELECT COUNT\\(DISTINCT wsi.word_card_id\\)").
 			WillReturnRows(sqlmock.NewRows([]string{"count"}).AddRow(1))
@@ -1206,7 +1265,7 @@ func TestWordReposGap_GetWordSetProgressCountErrors(t *testing.T) {
 		}
 		defer db.Close()
 		mock.ExpectQuery("SELECT id, category_id").WillReturnRows(newSetRow())
-		mock.ExpectQuery("SELECT COUNT\\(\\*\\) FROM word_set_items").
+		mock.ExpectQuery("SELECT COUNT\\(DISTINCT word_card_id\\) FROM word_set_items").
 			WillReturnRows(sqlmock.NewRows([]string{"count"}).AddRow(1))
 		mock.ExpectQuery("SELECT COUNT\\(DISTINCT wsi.word_card_id\\)").
 			WillReturnRows(sqlmock.NewRows([]string{"count"}).AddRow(2))

@@ -10,17 +10,21 @@
       </div>
       <div v-else class="items-grid">
         <!-- Categories -->
-        <div 
-          v-for="category in categories" 
+        <div
+          v-for="category in categories"
           :key="`cat-${category.id}`"
           class="category-card"
-          @click="selectCategory(category.id)"
+          :class="{ locked: isCategoryLocked(category) }"
+          @click="isCategoryLocked(category) ? null : selectCategory(category.id)"
         >
           <div class="card-header">
             <Icon name="folder" class="card-icon" />
             <h3>{{ category.name }}</h3>
+            <div v-if="isCategoryLocked(category)" class="lock-badge">
+              <Icon name="lock" />
+            </div>
             <div
-              v-if="(category.total_words ?? 0) > 0"
+              v-else-if="(category.total_words ?? 0) > 0"
               class="progress-badge"
               :class="getProgressClass(category.progress_percent ?? 0)"
             >
@@ -28,7 +32,7 @@
             </div>
           </div>
           <p v-if="category.description" class="card-description">{{ category.description }}</p>
-          <div v-if="(category.total_words ?? 0) > 0" class="word-set-stats">
+          <div v-if="!isCategoryLocked(category) && (category.total_words ?? 0) > 0" class="word-set-stats">
             <span>{{ (category.known_words ?? 0) + (category.words_in_vocab ?? 0) }}/{{ category.total_words }} {{ (t as any)('common.words', category.total_words ?? 0) }}</span>
             <span v-if="(category.unknown_words ?? 0) > 0" class="unknown-count">
               {{ category.unknown_words }} {{ t('common.new') || 'new' }}
@@ -73,8 +77,10 @@ import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { apiClient } from '../api/client'
+import { grammarClient } from '../api/grammarClient'
 import Icon from '../components/Icon.vue'
 import { useCourse } from '../composables/useCourse'
+import { buildGrammarLevelAccess, isDistrictUnlocked, type GrammarLevelAccess } from '../utils/districtUnlock'
 
 const { t } = useI18n()
 const { currentCourseCode, ensureCourseLoaded } = useCourse()
@@ -118,6 +124,9 @@ const loading = ref(false)
 const error = ref<string | null>(null)
 const categories = ref<Category[]>([])
 const wordSets = ref<WordSet[]>([])
+// Grammar level access, keyed by CEFR level — top-level word-set categories stay locked
+// until the learner has unlocked the matching grammar level (mirrors the city map gating).
+const grammarAccess = ref<GrammarLevelAccess>({})
 const selectedCategoryId = ref<number | null>(null)
 const currentParentId = ref<number | null>(null)
 const categoryHistory = ref<number[]>([]) // Track navigation history
@@ -189,9 +198,26 @@ onMounted(async () => {
     }
   }
 
-  await loadCategories()
-  await loadWordSets()
+  await Promise.all([loadCategories(), loadWordSets(), loadGrammarAccess()])
 })
+
+// Loads grammar level access so root categories for not-yet-unlocked levels show as locked.
+const loadGrammarAccess = async () => {
+  try {
+    const { categories: grammarCategories } = await grammarClient.getCategories()
+    grammarAccess.value = buildGrammarLevelAccess(grammarCategories || [])
+  } catch {
+    grammarAccess.value = {}
+  }
+}
+
+// A top-level (root) category is locked when its CEFR level hasn't been unlocked in grammar.
+// Only root categories carry a level_code and only the root list gates access.
+const isCategoryLocked = (category: Category): boolean => {
+  if (selectedCategoryId.value !== null) return false
+  if (!category.level_code) return false
+  return !isDistrictUnlocked(category.level_code, grammarAccess.value)
+}
 
 // Отслеживаем изменения query параметра category_id
 watch(() => route.query.category_id, async (newCategoryId) => {
@@ -411,6 +437,24 @@ const getProgressClass = (percent: number): string => {
 
 .card-header .progress-badge {
   margin-left: auto;
+}
+
+.category-card.locked {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.category-card.locked:hover {
+  border-color: var(--border-primary);
+  box-shadow: none;
+  transform: none;
+}
+
+.lock-badge {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  color: var(--text-secondary);
 }
 
 .category-card .word-set-stats {

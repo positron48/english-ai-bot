@@ -566,7 +566,9 @@
     "loadMore": "Load more",
     "viewArchive": "View read texts",
     "archiveTitle": "Read texts",
-    "archiveEmpty": "You haven't read any texts in this category yet."
+    "archiveEmpty": "You haven't read any texts in this category yet.",
+    "showTranslation": "Show translation",
+    "hideTranslation": "Hide translation"
   },
   "wordSets": {
     "back": "← Back",

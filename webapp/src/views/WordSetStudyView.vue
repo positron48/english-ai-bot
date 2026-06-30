@@ -219,6 +219,18 @@ const loadTrainingCard = async (wordCardId: number) => {
         return
       }
       currentPronunciationURL.value = url
+      // Auto-play the word as soon as it's shown. Guarded by the same generation check so a
+      // fast word-switch never plays stale audio. May be blocked by the browser autoplay
+      // policy until the user's first gesture (useAudio.unlock handles that).
+      if (url && pronunciationWord) {
+        playingPronunciation.value = true
+        try {
+          await playWordPronunciation(pronunciationWord)
+        } catch { /* autoplay may be blocked; the manual play button stays available */ }
+        finally {
+          playingPronunciation.value = false
+        }
+      }
     }
   } catch (error: any) {
     console.error('Failed to load training card:', error)

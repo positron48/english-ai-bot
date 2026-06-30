@@ -1013,6 +1013,33 @@ onBeforeRouteUpdate(async (to, from) => {
   gap: 16px;
 }
 
+.result-report-row {
+  margin-top: 12px;
+  display: flex;
+  justify-content: center;
+}
+
+.report-text-link {
+  border: 0;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.2;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.report-text-link:hover:not(:disabled) {
+  color: var(--text-primary);
+}
+
+.report-text-link:disabled {
+  cursor: default;
+  opacity: 0.8;
+}
+
 .btn-exit {
   flex-shrink: 0;
 }

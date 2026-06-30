@@ -1,7 +1,11 @@
 <template>
   <div class="grammar-categories">
+    <LgPageHeader
+      :title="districtLevel ? (t('grammar.courseTitle') + ' · ' + districtLevel) : (t('grammar.courseTitle') || 'Grammar Course')"
+      :show-back="true"
+      @back="router.push('/learning')"
+    />
     <div class="header-section">
-      <h1>{{ districtLevel ? (t('grammar.courseTitle') + ' · ' + districtLevel) : (t('grammar.courseTitle') || 'Grammar Course') }}</h1>
       <div class="header-actions">
         <button
           v-if="grammarTrainingAvailable"
@@ -265,6 +269,7 @@ import { useI18n } from 'vue-i18n'
 import { useRouter, useRoute } from 'vue-router'
 import { grammarClient, setGrammarCourse, type OfflineStatus } from '../api/grammarClient'
 import Icon from '../components/Icon.vue'
+import LgPageHeader from '../components/linglow/LgPageHeader.vue'
 import LgLumiFact from '../components/linglow/LgLumiFact.vue'
 import { isEmbeddedAndroidApp } from '../utils/runtime'
 import { useCourse } from '../composables/useCourse'

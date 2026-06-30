@@ -334,9 +334,10 @@ func (r *WordSetRepository) GetWordSetProgress(wordSetID, userID int64) (*models
 		return nil, fmt.Errorf("word set not found")
 	}
 
-	// Count total words (all words, no filtering)
+	// Count total words (distinct cards, so a card duplicated within the set isn't
+	// double-counted against the deduplicated known/in-vocab numerators below)
 	var totalWords int
-	err = r.db.QueryRow(`SELECT COUNT(*) FROM word_set_items WHERE word_set_id = ?`, wordSetID).Scan(&totalWords)
+	err = r.db.QueryRow(`SELECT COUNT(DISTINCT word_card_id) FROM word_set_items WHERE word_set_id = ?`, wordSetID).Scan(&totalWords)
 	if err != nil {
 		return nil, fmt.Errorf("failed to count total words: %w", err)
 	}
@@ -406,9 +407,12 @@ func (r *WordSetRepository) GetCategoriesAggregateProgress(categoryIDs []int64, 
 		catArgs = append(catArgs, id)
 	}
 
-	// Total words across all published sets in the categories
+	// Total words across all published sets in the categories. Count DISTINCT cards so a
+	// word shared by two sets in the same category isn't counted twice in the denominator
+	// while the known/in-vocab numerators (also DISTINCT) count it once — otherwise a
+	// category reads <100% even when every set inside is fully learned.
 	totalQuery := fmt.Sprintf(`
-		SELECT COUNT(*)
+		SELECT COUNT(DISTINCT wsi.word_card_id)
 		FROM word_set_items wsi
 		INNER JOIN word_sets ws ON wsi.word_set_id = ws.id
 		WHERE ws.is_published = 1 AND ws.category_id IN (%s)
