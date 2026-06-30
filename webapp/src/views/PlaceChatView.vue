@@ -114,28 +114,30 @@
     <template v-else>
       <div v-if="loading" class="chat-loading">{{ t('common.loading') }}</div>
       <template v-else-if="session">
-        <!-- task checklist -->
-        <div v-if="session.is_quest && tasks.length" class="chat-tasks">
-          <div class="chat-tasks-title">{{ t('chat.tasksTitle') }}</div>
-          <div
-            v-for="task in tasks"
-            :key="task.code"
-            class="chat-task"
-            :class="{ 'chat-task--done': task.completed, 'chat-task--optional': !task.required }"
-          >
-            <span class="chat-task-check">{{ task.completed ? '✓' : '○' }}</span>
-            <span class="chat-task-label">{{ task.title }}</span>
-            <span v-if="!task.required" class="chat-task-opt">{{ t('chat.optional') }}</span>
-          </div>
-        </div>
-
-        <!-- quest image banner -->
-        <div v-if="session.image_url" class="chat-quest-image">
-          <img :src="session.image_url" alt="" class="chat-quest-img" />
-        </div>
-
-        <!-- messages -->
+        <!-- messages (task checklist, quest image and completion banners scroll along with the
+             conversation instead of pinning to the top/bottom, so the thread keeps usable height
+             when the keyboard is open and the composer never gets pushed off-screen). -->
         <div ref="scrollEl" class="chat-thread">
+          <!-- task checklist -->
+          <div v-if="session.is_quest && tasks.length" class="chat-tasks">
+            <div class="chat-tasks-title">{{ t('chat.tasksTitle') }}</div>
+            <div
+              v-for="task in tasks"
+              :key="task.code"
+              class="chat-task"
+              :class="{ 'chat-task--done': task.completed, 'chat-task--optional': !task.required }"
+            >
+              <span class="chat-task-check">{{ task.completed ? '✓' : '○' }}</span>
+              <span class="chat-task-label">{{ task.title }}</span>
+              <span v-if="!task.required" class="chat-task-opt">{{ t('chat.optional') }}</span>
+            </div>
+          </div>
+
+          <!-- quest image banner -->
+          <div v-if="session.image_url" class="chat-quest-image">
+            <img :src="session.image_url" alt="" class="chat-quest-img" />
+          </div>
+
           <template v-for="(m, i) in messages" :key="i">
             <div
               class="chat-row"
@@ -159,28 +161,28 @@
           <div v-if="sending" class="chat-row chat-row--npc">
             <div class="chat-typing">…</div>
           </div>
-        </div>
 
-        <!-- transient send error (styled notice, not a chat bubble) -->
-        <div v-if="sendError" class="chat-error" role="alert">
-          <span>{{ t('chat.errorSend') }}</span>
-          <button class="chat-error-dismiss" type="button" @click="sendError = false">✕</button>
-        </div>
-
-        <!-- completion / budget banners -->
-        <div v-if="questPassed" class="chat-banner chat-banner--win" :class="{ 'chat-banner--perfect': allTasksDone }">
-          <LgLumi pose="clapping" :size="48" />
-          <div class="chat-banner-text">
-            <span v-if="allTasksDone">★ {{ t('chat.questPerfect') }}</span>
-            <span v-else>✓ {{ t('chat.questComplete') }}</span>
+          <!-- transient send error (styled notice, not a chat bubble) -->
+          <div v-if="sendError" class="chat-error" role="alert">
+            <span>{{ t('chat.errorSend') }}</span>
+            <button class="chat-error-dismiss" type="button" @click="sendError = false">✕</button>
           </div>
-          <div v-if="status === 'open' && !allTasksDone" class="chat-banner-hint">{{ t('chat.questOptionalHint') }}</div>
-          <div v-else-if="status === 'open'" class="chat-banner-hint">{{ t('chat.questCompleteHint') }}</div>
-          <LgButton @click="goBack">{{ t('chat.backToDistrict') }}</LgButton>
-        </div>
-        <div v-else-if="budgetExhausted" class="chat-banner">
-          <div class="chat-banner-text">{{ t('chat.budgetEnded') }}</div>
-          <LgButton @click="goBack">{{ t('chat.backToDistrict') }}</LgButton>
+
+          <!-- completion / budget banners -->
+          <div v-if="questPassed" class="chat-banner chat-banner--win" :class="{ 'chat-banner--perfect': allTasksDone }">
+            <LgLumi pose="clapping" :size="48" />
+            <div class="chat-banner-text">
+              <span v-if="allTasksDone">★ {{ t('chat.questPerfect') }}</span>
+              <span v-else>✓ {{ t('chat.questComplete') }}</span>
+            </div>
+            <div v-if="status === 'open' && !allTasksDone" class="chat-banner-hint">{{ t('chat.questOptionalHint') }}</div>
+            <div v-else-if="status === 'open'" class="chat-banner-hint">{{ t('chat.questCompleteHint') }}</div>
+            <LgButton @click="goBack">{{ t('chat.backToDistrict') }}</LgButton>
+          </div>
+          <div v-else-if="budgetExhausted" class="chat-banner">
+            <div class="chat-banner-text">{{ t('chat.budgetEnded') }}</div>
+            <LgButton @click="goBack">{{ t('chat.backToDistrict') }}</LgButton>
+          </div>
         </div>
 
         <!-- composer -->
@@ -476,7 +478,7 @@ onMounted(loadForRoute)
 /* transient send error notice */
 .chat-error {
   display: flex; align-items: center; justify-content: space-between; gap: 10px;
-  margin: 4px 16px 0; padding: 10px 14px; border-radius: 12px;
+  flex-shrink: 0; padding: 10px 14px; border-radius: 12px;
   background: rgba(200,80,60,0.10); border: 1px solid rgba(200,80,60,0.30);
   color: #b3503c; font-family: 'Inter', sans-serif; font-size: 13px;
 }
@@ -500,7 +502,7 @@ onMounted(loadForRoute)
 .npc-cooldown { margin-left: 6px; font-size: 11px; color: #d97706; font-weight: 600; }
 
 /* quest banner image at the top of the dialog */
-.chat-quest-image { flex-shrink: 0; padding: 8px 16px 0; }
+.chat-quest-image { flex-shrink: 0; }
 .chat-quest-img { width: 100%; max-height: 180px; object-fit: cover; border-radius: 14px; display: block; }
 
 /* NPC groups + chain steps */
@@ -534,8 +536,9 @@ onMounted(loadForRoute)
 .npc-step--done .npc-step-state { color: #2d6b3a; }
 .npc-step--perfect .npc-step-state { color: #c8a84b; }
 
-/* task checklist */
-.chat-tasks { margin: 8px 16px; padding: 12px 14px; border-radius: 14px; background: var(--card-bg); border: 1px solid var(--border, rgba(0,0,0,0.08)); }
+/* task checklist — scrolls with the thread instead of pinning to the top of the screen, so it
+   doesn't eat into the conversation's visible height when the mobile keyboard is open. */
+.chat-tasks { flex-shrink: 0; padding: 12px 14px; border-radius: 14px; background: var(--card-bg); border: 1px solid var(--border, rgba(0,0,0,0.08)); }
 .chat-tasks-title { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; color: var(--subtext); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 8px; }
 .chat-task { display: flex; align-items: center; gap: 8px; padding: 4px 0; font-family: 'Inter', sans-serif; font-size: 13px; color: var(--text); transition: opacity 0.25s; }
 .chat-task-check { width: 18px; text-align: center; color: var(--subtext); }
@@ -579,8 +582,9 @@ onMounted(loadForRoute)
 .chat-correction-good { color: #2d6b3a; font-weight: 600; }
 .chat-correction-expl { font-family: 'Inter', sans-serif; font-size: 12px; color: var(--subtext); margin-top: 2px; }
 
-/* banners */
-.chat-banner { margin: 10px 16px; padding: 16px; border-radius: 14px; background: var(--card-bg); border: 1px solid var(--border, rgba(0,0,0,0.08)); display: flex; flex-direction: column; align-items: center; gap: 10px; }
+/* banners — scroll inside the thread (not a fixed block) so they never push the composer
+   off-screen, even on small screens or when there are no optional tasks to pad the layout out. */
+.chat-banner { flex-shrink: 0; padding: 16px; border-radius: 14px; background: var(--card-bg); border: 1px solid var(--border, rgba(0,0,0,0.08)); display: flex; flex-direction: column; align-items: center; gap: 10px; }
 .chat-banner--win { background: rgba(45,107,58,0.08); border-color: rgba(45,107,58,0.3); }
 .chat-banner--perfect { background: rgba(200,168,75,0.10); border-color: rgba(200,168,75,0.35); }
 .chat-banner-text { font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 600; color: var(--text); text-align: center; }
