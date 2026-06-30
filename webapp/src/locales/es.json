@@ -242,7 +242,7 @@
   },
   "progress": {
     "title": "Progreso",
-    "monthTitle": "Mi español este mes",
+    "monthTitle": "Mi {lang} este mes",
     "monthSub": "¡Gran progreso! ¡Sigue así!",
     "weekDays": "Lu,Ma,Mi,Ju,Vi,Sá,Do",
     "rhythmTitle": "Ritmo actual",
@@ -373,7 +373,7 @@
     "course": "Gramática",
     "wholeCourse": "Curso completo",
     "publishedGrade": "Nota (publicada)",
-    "testAvg": "Test (prom.)",
+    "testAvg": "Test",
     "chapters": "Capítulos",
     "yourProgress": "Tu progreso",
     "totalCards": "Total de tarjetas",

@@ -1851,8 +1851,11 @@ const startTraining = async () => {
     sessionActive.value = true
     setupCard(card)
     sessionComplete.value = false
-    // Update stats after starting
-    await loadStats()
+    // Card is on screen — hide the loader before refreshing stats so the
+    // spinner doesn't keep spinning over the first card.
+    loading.value = false
+    // Update stats in the background (non-blocking).
+    void loadStats()
   } catch (error: any) {
     if (error.message?.includes('No cards available')) {
       await showAlert(t('training.noCardsAvailable'))

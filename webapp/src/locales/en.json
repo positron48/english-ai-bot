@@ -242,7 +242,7 @@
   },
   "progress": {
     "title": "Progress",
-    "monthTitle": "My Spanish this month",
+    "monthTitle": "My {lang} this month",
     "monthSub": "Great progress! Keep it up!",
     "weekDays": "Mo,Tu,We,Th,Fr,Sa,Su",
     "rhythmTitle": "Current rhythm",
@@ -378,7 +378,7 @@
     "course": "Grammar",
     "wholeCourse": "Whole course",
     "publishedGrade": "Grade (published)",
-    "testAvg": "Test (avg.)",
+    "testAvg": "Test",
     "chapters": "Chapters",
     "yourProgress": "Your Progress",
     "totalCards": "Total Cards",

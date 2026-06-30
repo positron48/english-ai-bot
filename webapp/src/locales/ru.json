@@ -242,7 +242,7 @@
   },
   "progress": {
     "title": "Прогресс",
-    "monthTitle": "Мой испанский за месяц",
+    "monthTitle": "Мой {lang} за месяц",
     "monthSub": "Отличный прогресс! Продолжай в том же духе!",
     "weekDays": "Пн,Вт,Ср,Чт,Пт,Сб,Вс",
     "rhythmTitle": "Текущий ритм",
@@ -378,7 +378,7 @@
     "course": "Грамматика",
     "wholeCourse": "Весь курс",
     "publishedGrade": "Зачётка (опубл.)",
-    "testAvg": "Тест (средн.)",
+    "testAvg": "Тест",
     "chapters": "Главы",
     "yourProgress": "Ваш прогресс",
     "totalCards": "Всего карточек",

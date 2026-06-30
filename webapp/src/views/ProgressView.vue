@@ -18,7 +18,7 @@
           <LgLumi :size="66" pose="proud" />
         </div>
         <div class="prg-summary-body">
-          <div class="prg-summary-title">{{ t('progress.monthTitle') }} <span class="prg-star-s">✦</span></div>
+          <div class="prg-summary-title">{{ t('progress.monthTitle', { lang: targetLangDisplay }) }} <span class="prg-star-s">✦</span></div>
           <div class="prg-summary-sub">{{ monthMotivation }}</div>
           <div class="prg-metrics-grid">
             <div v-for="m in metrics" :key="m.label" class="prg-metric-cell">
@@ -166,6 +166,7 @@ import { useI18n } from 'vue-i18n'
 import { statsClient, type LinglowStats } from '../api/statsClient'
 import { courseClient, type CourseProgress } from '../api/courseClient'
 import { useCourse } from '../composables/useCourse'
+import { useLearningConfig } from '../composables/useLearningConfig'
 import { useLocale } from '../composables/useLocale'
 import LgLumiFact from '../components/linglow/LgLumiFact.vue'
 import LgLumi from '../components/linglow/LgLumi.vue'
@@ -175,6 +176,7 @@ import mapCityImg from '../assets/linglow/art/city-map-826x664.jpg'
 
 const { t } = useI18n()
 const { currentCourseCode } = useCourse()
+const { targetLangDisplay, ensureLearningLoaded } = useLearningConfig()
 const { currentLocale } = useLocale()
 
 const loading = ref(true)
@@ -187,6 +189,7 @@ onMounted(async () => {
     const [s, p] = await Promise.all([
       statsClient.getStats({ courseCode: code }),
       courseClient.getProgress(code).catch(() => null),
+      ensureLearningLoaded().catch(() => {}),
     ])
     stats.value = s
     progress.value = p
@@ -279,8 +282,16 @@ const metrics = computed(() => {
 })
 
 const DISTRICT_FILLS = ['#3F6F3F', '#7FAE6A', '#D9A83F', '#E3D8C6']
+// Order districts by the CEFR level at which they unlock (A0 → C2).
+const CEFR_ORDER = ['A0', 'A1', 'A2', 'B1', 'B2', 'C1', 'C2']
+const cefrRank = (code: string) => {
+  const i = CEFR_ORDER.indexOf((code || '').toUpperCase())
+  return i === -1 ? CEFR_ORDER.length : i
+}
 const districtItems = computed(() => {
-  const rows = progress.value?.by_district || []
+  const rows = [...(progress.value?.by_district || [])].sort(
+    (a, b) => cefrRank(a.level_code) - cefrRank(b.level_code),
+  )
   return rows.map((d) => {
     const pct = Math.round(d.progress_percent)
     let status = ''
@@ -435,10 +446,17 @@ const improvements = computed(() => {
   font-family: 'Lora', serif;
   font-size: 18px; font-weight: 600; color: var(--text);
   line-height: 1.15; margin-bottom: 2px;
+  /* Keep clear of the Lumi firefly that peeks in at the top-right corner. */
+  padding-right: 64px;
 }
 .prg-summary-sub {
   font-family: 'Inter', sans-serif;
   font-size: 12px; color: var(--subtext); margin-bottom: 14px;
+  padding-right: 64px;
+}
+@media (max-width: 360px) {
+  .prg-summary-title { font-size: 16px; }
+  .prg-summary-sub { font-size: 11px; }
 }
 .prg-metrics-grid {
   display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px;
@@ -484,12 +502,20 @@ const improvements = computed(() => {
 }
 
 /* WEEK */
-.prg-week-row { display: flex; justify-content: space-between; margin-top: 12px; }
-.prg-week-col { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.prg-week-row { display: flex; justify-content: space-between; gap: 2px; margin-top: 12px; }
+.prg-week-col { display: flex; flex-direction: column; align-items: center; gap: 3px; min-width: 0; }
 .prg-week-dot {
   width: 22px; height: 22px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center; flex-shrink: 0;
   background: var(--surface-3);
+}
+/* Shrink the week dots on narrow screens so the 7 days don't overflow the card. */
+@media (max-width: 400px) {
+  .prg-week-dot { width: 18px; height: 18px; }
+  .prg-week-label { font-size: 7.5px; }
+}
+@media (max-width: 340px) {
+  .prg-week-dot { width: 15px; height: 15px; }
 }
 .prg-week-dot--done { background: #3F6F3F; }
 .prg-week-dot--today { background: #FFF0C7; border: 1.5px dashed var(--dorado); }
