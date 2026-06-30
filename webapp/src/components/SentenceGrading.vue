@@ -1,6 +1,12 @@
 <template>
   <div class="correction-line">
-    <span v-for="(tok, i) in rendered" :key="i" class="sg-tok" :class="`sg-tok--${tok.kind}`">
+    <span
+      v-for="(tok, i) in rendered"
+      :key="i"
+      class="sg-tok"
+      :class="`sg-tok--${tok.kind}`"
+      :style="{ '--o': tok.order }"
+    >
       <span class="sg-top">{{ tok.top }}</span>
       <span class="sg-bottom">
         <template v-if="tok.kind === 'insert'">
@@ -29,6 +35,7 @@ interface RenderTok {
   kind: 'ok' | 'wrong' | 'insert'
   top: string
   parts: { t: string; struck: boolean }[]
+  order: number // sequential slot among marked tokens, drives the pen-stroke timing
 }
 
 // Build a teacher-markup model: for "wrong" tokens we diff at the character level so only
@@ -36,13 +43,14 @@ interface RenderTok {
 // "insert" tokens render a caret with the missing word written above.
 const rendered = computed<RenderTok[]>(() => {
   const out: RenderTok[] = []
+  let mark = 0
   for (const tok of props.grade.tokens || []) {
     if (tok.status === 'ok') {
-      out.push({ kind: 'ok', top: '', parts: [{ t: tok.text, struck: false }] })
+      out.push({ kind: 'ok', top: '', parts: [{ t: tok.text, struck: false }], order: -1 })
       continue
     }
     if (tok.status === 'insert') {
-      out.push({ kind: 'insert', top: (tok.correction || '').trim(), parts: [] })
+      out.push({ kind: 'insert', top: (tok.correction || '').trim(), parts: [], order: mark++ })
       continue
     }
     // wrong: char-level diff when it's a near-miss (misspelling/inflection) so only the
@@ -69,7 +77,7 @@ const rendered = computed<RenderTok[]>(() => {
         top = correction
       }
     }
-    out.push({ kind: 'wrong', top, parts })
+    out.push({ kind: 'wrong', top, parts, order: mark++ })
   }
   return out
 })
@@ -85,6 +93,11 @@ const rendered = computed<RenderTok[]>(() => {
   font-size: 30px;
   line-height: 1.2;
   color: var(--text);
+  /* pen-stroke timing (teacher marks words left-to-right, one after another) */
+  --base: 240ms;   /* wait for the card to settle */
+  --step: 420ms;   /* gap between consecutive marked words */
+  --strike: 260ms; /* time to draw one strikethrough */
+  --write: 340ms;  /* time to write one correction */
 }
 
 .sg-tok {
@@ -100,25 +113,69 @@ const rendered = computed<RenderTok[]>(() => {
   position: absolute;
   top: -0.15em;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%) rotate(-3deg);
   font-size: 0.72em;
   line-height: 1;
   white-space: nowrap;
   color: var(--correct-ink, #2f9d57);
 }
 
-.sg-bottom {
-  white-space: nowrap;
-}
+.sg-bottom { white-space: nowrap; }
 
+/* struck letters: keep the glyph, draw the red line as a pen stroke on top of it */
 .sg-del {
+  position: relative;
   color: var(--wrong-ink, #c4443c);
-  text-decoration: line-through;
-  text-decoration-thickness: 2px;
+}
+.sg-del::after {
+  content: '';
+  position: absolute;
+  left: -1px;
+  right: -1px;
+  top: 56%;
+  height: 2px;
+  background: var(--wrong-ink, #c4443c);
+  transform-origin: left center;
+  /* both = hold the hidden start-state during the delay, keep the final state after */
+  animation: sg-strike var(--strike) ease-out both;
+  animation-delay: calc(var(--base) + var(--o, 0) * var(--step));
 }
 
+.sg-tok--insert .sg-caret { color: var(--correct-ink, #2f9d57); font-weight: 700; }
+
+/* write each correction (green, above) just after striking the same word */
+.sg-tok--wrong .sg-top,
+.sg-tok--insert .sg-top {
+  animation: sg-write var(--write) ease-out both;
+  animation-delay: calc(var(--base) + var(--o, 0) * var(--step) + var(--strike) * 0.6);
+}
 .sg-tok--insert .sg-caret {
-  color: var(--correct-ink, #2f9d57);
-  font-weight: 700;
+  animation: sg-pop 200ms ease-out both;
+  animation-delay: calc(var(--base) + var(--o, 0) * var(--step));
+}
+
+@keyframes sg-strike { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes sg-write {
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(0 -4px 0 0); }
+}
+@keyframes sg-pop {
+  from { opacity: 0; transform: translateY(3px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* accessibility: no pen animation, show the final marked-up state immediately */
+@media (prefers-reduced-motion: reduce) {
+  .sg-tok--wrong .sg-top,
+  .sg-tok--insert .sg-top,
+  .sg-tok--insert .sg-caret {
+    animation: none;
+    clip-path: none;
+    opacity: 1;
+  }
+  .sg-del::after {
+    animation: none;
+    transform: scaleX(1);
+  }
 }
 </style>
